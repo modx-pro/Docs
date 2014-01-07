@@ -1,0 +1,52 @@
+Автоматизированное сжатие и кэширование скриптов и стилей сайта.
+
+## Параметры
+* **&cacheFolder** — Директорию для хранения готовых файлов.
+* **&cssFilename** — Базовое имя готового CSS файла.
+* **&cssPlaceholder** — Имя плейсхолдера css. Используется,если &registerCss=`placeholder`
+* **&cssSources** — Список CSS файлов для обработки. Можно указывать `*.css`, `*.less` и `*.scss`.
+* **&forceUpdate** — Отключить проверку изменения файлов и генерировать новые скрипты и стили каждый раз.
+* **&jsFilename** — Базовое имя готового JS файла.
+* **&jsPlaceholder** — Имя плейсхолдера javascript. Используется, если &registerJs=`placeholder`
+* **&jsSources** — Список JS файлов для обработки. Можно указывать `*.js` и `*.coffee`.
+* **&minifyCss** — Включить минификацию CSS?
+* **&minifyJs** — Включить минификацию JS?
+* **&registerCss** — Подключение сss: можно сохранить в плейсхолдер (`placeholder`) или вызвать в теге "head" (`default`).
+* **&registerJs** — Подключение javascript: можно сохранить в плейсхолдер (`placeholder`), вызвать в теге "head" (`startup`) или разместить перед закрывающим "body" (`default`).
+
+## Примеры
+Вывод сниппета с авто регистрированием стилей перед `</head>` и скриптов перед `</body>`
+
+```
+[[MinifyX? 
+  &minifyCss=`1`
+  &minifyJs=`1`
+  &registerCss=`default`
+  &registerJs=`default`
+  &cssSources=`
+    assets/templates/himyf/css/normalize.css,
+    assets/templates/himyf/css/foundation.css,
+    assets/templates/himyf/css/font-awesome.css,
+    assets/templates/himyf/css/app.css`
+  &jsSources=`
+    assets/templates/himyf/js/foundation.js`
+]]
+```
+
+Вывод работы сниппета в плейсхолдеры `cssPlaceholder` *по умолчанию MinifyX.css* и `jsPlaceholder` *по умолчанию MinifyX.javascript*:
+
+```
+[[MinifyX? 
+  &minifyCss=`1`
+  &minifyJs=`1`
+  &cssSources=`
+    assets/templates/himyf/css/normalize.css,
+    assets/templates/himyf/css/foundation.css,
+    assets/templates/himyf/css/font-awesome.css,
+    assets/templates/himyf/css/app.css`
+  &jsSources=`
+    assets/templates/himyf/js/foundation.js`
+]]
+[[+MinifyX.css]]
+[[+MinifyX.javascript]]
+```

@@ -1,4 +1,4 @@
-Этот сниппет одновременоо обладает возможностями [getResourceField](http://rtfm.modx.com/extras/revo/getresourcefield) и [UltimateParent](http://modx.com/extras/package/ultimateparent), то есть выводит любое поле указанного ресурса или его родителя, включая ТВ параметры.
+Этот сниппет одновременно обладает возможностями [getResourceField](http://rtfm.modx.com/extras/revo/getresourcefield) и [UltimateParent](http://modx.com/extras/package/ultimateparent), то есть выводит любое поле указанного ресурса или его родителя, включая ТВ параметры.
 
 Отличием от аналогов является работа с документами любых контекстов, и возможность указать дополнительные параметры при выборке, что позволяет не выводить поля, например, скрытых ресурсов.
 
