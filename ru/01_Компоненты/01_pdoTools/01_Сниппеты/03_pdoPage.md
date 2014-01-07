@@ -1,7 +1,7 @@
 Вывод результатов работы других сниппетов с разбивкой на страницы.
 
-<a rel="fancybox" href="http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68.png"><img src="http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68.png" width="300" class="fancybox thumbnail center"></a>
-<a rel="fancybox" href="http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png"><img src="http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png" width="300" class="fancybox thumbnail center"></a>
+[![Картинка меню 1](http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68.png "Вариант меню 1")](http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68.png "Вариант меню 1")
+[![Картинка меню 2](http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png "Вариант меню 2")](http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png "Вариант меню 2")
 
 Есть несколько серьезных отличий от сниппета getPage:
 * 2 вида пагинации: с пропуском страниц и классическая (зависит от параметра pageLimit).
