@@ -4,18 +4,18 @@
 
 * Переходим по ссылке https://developers.facebook.com/apps
 * Нажимаем создать приложение.
-* Заполняем поля 
-Display Name b Namespace
+* Заполняем поля **Display Name** и **Namespace**
+* Сохраняем приложение и переходим в режим редактирования.
+* Изменяем следующие настройки:
+  * **App Domains** - *yoursite.ltd*
+  * **Sandbox Mode** - *Off*
+  * **Site URL** - *http://yoursite.ltd/*
 
-Заполняем и вводим капчу
-
-Сохраняем приложение и переходим в режим редактирования.
-Изменяем следующие настройки:
-* App Domains - xarieyle.com
-* Sandbox Mode - Off
-* Site URL - http://xarieyle.com/
-
-
+Имя      | Возраст
+---------|:-------:
+Анна     |   29
+Дмитрий  |   47
+Федор    |   32
 ID	Facebook
  Protocol	OAuth 2
  IDp URL	http://www.facebook.com/
