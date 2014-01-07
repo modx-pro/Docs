@@ -1,0 +1,133 @@
+Сниппет для построения навигации в стиле хлебных крошек.
+
+Хорошо заменяет [BreadCrumb](http://rtfm.modx.com/extras/revo/breadcrumb), работает с документами из любых контекстов и позволяет указывать различные условия для выборки ресурсов.
+
+Сниппет обладает очень высокой скоростью работы, за счет выборки всех нужных элементов из БД за один запрос.
+
+## Параметры
+* **&showLog** - Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекте "mgr".
+* **&fastMode** - Быстрый режим обработки чанков. Все необработанные теги (условия, сниппеты и т.п.) будут вырезаны.
+* **&from** - Id ресурса, от которого строить хлебные крошки. Обычно это корень сайта, то есть "0".
+* **&to** - Id ресурса для которого строятся хлебные крошки. По умолчанию это id текущей страницы.
+* **&limit** - Ограничение количества результатов выборки. Можно использовать "0".
+* **&exclude** - Список id ресурсов, которые нужно исключить из выборки.
+* **&outputSeparator** - Необязательная строка для разделения результатов работы.
+* **&toPlaceholder** - Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.
+* **&includeTVs** - Список ТВ параметров для выборки, через запятую. Например: "action,time" дадут плейсхолдеры [[+action]] и [[+time]].
+* **&prepareTVs** - Список ТВ параметров, которые нужно подготовить перед выводом. По умолчанию, установлено в "1", что означает подготовку всех ТВ, указанных в "&includeTVs=``"
+* **&processTVs** - Список ТВ параметров, которые нужно обработать перед выводом. Если установить в "1" - будут обработаны все ТВ, указанные в "&includeTVs=``". По умолчанию параметр пуст.
+* **&tvPrefix** - Префикс для ТВ параметров.
+* **&where** - Массив дополнительных параметров выборки, закодированный в JSON.
+* **&showUnpublished** - Показывать неопубликованные ресурсы.
+* **&showDeleted** - Показывать удалённые ресурсы.
+* **&showHidden** - Показывать ресурсы, скрытые в меню.
+* **&hideContainers** - Отключает вывод контейнеров, то есть, ресурсов с isfolder = 1.
+* **&tpl** - Имя чанка для оформления ресурса. Если не указан, то содержимое полей ресурса будет распечатано на экран.
+* **&tplCurrent** - Чанк оформления текущего документа в навигации.
+* **&tplMax** - Чанк, который добавляется в начало результатов, если их больше чем "&limit".
+* **&tplHome** - Чанк оформления ссылки на главную страницу.
+* **&tplWrapper** - Чанк-обёртка, для заворачивания всех результатов. Понимает один плейсхолдер: [[+output]]. Не работает вместе с параметром "toSeparatePlaceholders".
+* **&wrapIfEmpty** - Включает вывод чанка-обертки (tplWrapper) даже если результатов нет.
+* **&showCurrent** - Выводить текущий документ в навигации.
+* **&showHome** - Выводить ссылку на главную в начале навигации.
+* **&showAtHome** - Показывать хлебные крошки на главной странице сайта.
+* **&hideSingle** - Не выводить результат, если он один единственный.
+* **&direction** - Направление навигации: слева направо (ltr) или справа налево (rtl), например для Арабского языка.
+* **&scheme** - Схема формирования url, передаётся в modX::makeUrl().
+* **&useWeblinkUrl** - Генерировать ссылку с учетом класса ресурса.
+
+
+По умолчанию все чанки указаны в свойствах сниппета, как @INLINE строки.
+<a rel="fancybox" href="http://st.bezumkin.ru/files/3/3/3/3332c6ecc1874cab0f9874b15aa6826b.png"><img src="http://st.bezumkin.ru/files/3/3/3/3332c6ecc1874cab0f9874b15aa6826bs.jpg" class="fancybox thumbnail center"></a>
+
+## Примеры
+Генерация хлебных крошек для текущей страницы:
+```
+[[pdoCrumbs]]
+```
+
+Генерация в ограничением по количеству пунктов:
+```
+[[pdoCrumbs?
+	&limit=`2`
+]]```
+```
+
+Сниппет хорошо работает при вызове из pdoResources. Например, вот такой чанк:
+```
+## [[+pagetitle]]
+<p>[[+introtext]]</p>
+[[pdoCrumbs?
+	&to=`[[+id]]`
+	&showCurrent=`0`
+]]
+```
+
+## Генерация title страниц
+pdoCrumbs можно вызывать внутри другого сниппета, например, чтобы генерировать тег title для страниц сайта.
+Сниппет Title:
+```
+<?php
+// Определяем переменные
+if (empty($separator)) {$separator = ' / ';}
+if (empty($titlefield)) {$titlefield = 'longtitle';}
+if (empty($parents_limit)) {$parents_limit = 3;}
+if (empty($tplPages)) {$tplPages = 'стр. [[+page]] из [[+pageCount]]';}
+
+// Ключ и параметры кэширования
+$cacheKey = $modx->resource->getCacheKey() . '/title_' . sha1(serialize($_REQUEST));
+$cacheOptions = array('cache_key' => 'resource');
+
+if (!$title = $modx->cacheManager->get($cacheKey, $cacheOptions)) {
+	// Узнаём имя страницы
+	$title = !empty($modx->resource->$titlefield)
+		? $modx->resource->$titlefield
+		: $modx->resource->pagetitle;
+
+	// Добавляем поисковый запрос, если есть
+	if (!empty($_GET['query']) && strlen($_GET['query']) > 2) {
+		// Нужно использовать плейсхолдер, чтобы не подсунули бяку
+		$title .= ' «[[+mse2_query]]»';
+	}
+
+	// Добавляем пагинацию, если есть
+	if (!empty($_GET['page'])) {
+		$title .= $separator . str_replace('[[+page]]', intval($_GET['page']), $tplPages);
+	}
+
+	// Добавляем родителей
+	$crumbs = $modx->runSnippet('pdoCrumbs', array(
+		'to' => $modx->resource->id,
+		'limit' => $parents_limit,
+		'outputSeparator' => $separator,
+		'showHome' => 0,
+		'showAtHome' => 0,
+		'showCurrent' => 0,
+		'direction' => 'rtl',
+		'tpl' => '@INLINE [[+menutitle]]',
+		'tplCurrent' => '@INLINE [[+menutitle]]',
+		'tplWrapper' => '@INLINE [[+output]]',
+		'tplMax' => ''
+	));
+	if (!empty($crumbs)) {
+		$title = $title . $separator . $crumbs;
+	}
+
+	// Кэшируем результаты
+	$modx->cacheManager->set($cacheKey, $title, 0, $cacheOptions);
+}
+
+// Возвращаем title
+return $title;
+```
+
+Вызов сниппета на странице
+```
+<title>[[!Title]] / [[++site_name]] - мой самый лучший на свете сайт</title>
+```
+
+## Демо
+Рабочий пример [генерации хлебных крошек в результатах поиска](http://bezumkin.ru/search?query=pdotools) mSearch2.
+<a rel="fancybox" href="http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png"><img src="http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg" class="fancybox thumbnail center"></a>
+
+Также на всём сайте bezumkin.ru используются динамические title.
