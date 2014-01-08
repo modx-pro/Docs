@@ -43,7 +43,7 @@
 
 ## Настройки провайдеров
 Для каждого провайдера авторизации указывается отдельная системная настройка с префиксом **ha.keys.**:
-<a rel="fancybox" href="http://st.bezumkin.ru/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png"><img src="http://st.bezumkin.ru/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0bs.jpg" class="fancybox thumbnail center"></a>
+[![](http://st.bezumkin.ru/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0bs.jpg)](http://st.bezumkin.ru/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png)
 
 Значение настройки - JSON массив, содержимое которого зависит от самого провайдера.
 
@@ -51,11 +51,12 @@
 
 ### Ссылки на регистрацию у провайдеров
 Для работы компонента нужно получить ключи от провайдера, и далеко не всегда понятно, где их искать. Поэтому, вот несколько основных ссылок:
-* Яндекс - https://oauth.yandex.ru/client/new
-* Вконтакте - http://vk.com/editapp?act=create
-* Twitter - https://dev.twitter.com/apps/new
-* Google - https://dev.twitter.com/apps/new
-* Facebook - https://developers.facebook.com/apps
+
+* [Яндекс](https://oauth.yandex.ru/client/new)
+* [Вконтакте](http://vk.com/editapp?act=create)
+* [Twitter](https://dev.twitter.com/apps/new)
+* [Google](https://dev.twitter.com/apps/new)
+* [Facebook](https://developers.facebook.com/apps)
 
 ### Контексты
 Если у вас несколько независимых контекстов на сайте, вы можете организовать для них авторизацию через одних и тех же провайдеров, но для разных доменов.

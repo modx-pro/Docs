@@ -50,4 +50,4 @@
 ]]
 ```
 
-<a rel="fancybox" href="http://st.bezumkin.ru/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26.png"><img src="http://st.bezumkin.ru/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26s.jpg" class="fancybox thumbnail center"></a>
+[![](http://st.bezumkin.ru/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26s.jpg)](http://st.bezumkin.ru/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26.png)

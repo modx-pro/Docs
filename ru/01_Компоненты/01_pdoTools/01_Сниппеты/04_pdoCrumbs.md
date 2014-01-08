@@ -38,7 +38,7 @@
 
 
 По умолчанию все чанки указаны в свойствах сниппета, как @INLINE строки.
-<a rel="fancybox" href="http://st.bezumkin.ru/files/3/3/3/3332c6ecc1874cab0f9874b15aa6826b.png"><img src="http://st.bezumkin.ru/files/3/3/3/3332c6ecc1874cab0f9874b15aa6826bs.jpg" class="fancybox thumbnail center"></a>
+[![](http://st.bezumkin.ru/files/3/3/3/3332c6ecc1874cab0f9874b15aa6826bs.jpg)](http://st.bezumkin.ru/files/3/3/3/3332c6ecc1874cab0f9874b15aa6826b.png)
 
 ## Примеры
 Генерация хлебных крошек для текущей страницы:
@@ -50,7 +50,7 @@
 ```
 [[pdoCrumbs?
 	&limit=`2`
-]]```
+]]
 ```
 
 Сниппет хорошо работает при вызове из pdoResources. Например, вот такой чанк:
@@ -128,6 +128,6 @@ return $title;
 
 ## Демо
 Рабочий пример [генерации хлебных крошек в результатах поиска](http://bezumkin.ru/search?query=pdotools) mSearch2.
-<a rel="fancybox" href="http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png"><img src="http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg" class="fancybox thumbnail center"></a>
+[![](http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg)](http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
 
 Также на всём сайте bezumkin.ru используются динамические title.
