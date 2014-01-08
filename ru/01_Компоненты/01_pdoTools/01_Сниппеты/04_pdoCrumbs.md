@@ -55,7 +55,7 @@
 
 Сниппет хорошо работает при вызове из pdoResources. Например, вот такой чанк:
 ```
-## [[+pagetitle]]
+<h3>[[+pagetitle]]</h3>
 <p>[[+introtext]]</p>
 [[pdoCrumbs?
 	&to=`[[+id]]`
