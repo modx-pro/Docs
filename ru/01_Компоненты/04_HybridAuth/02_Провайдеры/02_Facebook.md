@@ -4,7 +4,7 @@
 
 * Переходим по ссылке <https://developers.facebook.com/apps>
 * Нажимаем создать приложение.
-* Заполняем поля **Display Name** и **Namespace**
+* Заполняем поля **App Name** и **App Namespace**
 
 [![Картинка 1](http://st.bezumkin.ru/files/d/a/e/dae95f96646d6262f51b27ac2f520ffcs.jpg)](http://st.bezumkin.ru/files/d/a/e/dae95f96646d6262f51b27ac2f520ffc.png)
 
