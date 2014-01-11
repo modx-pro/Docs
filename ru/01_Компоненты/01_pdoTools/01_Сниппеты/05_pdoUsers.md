@@ -51,9 +51,9 @@
 ]]
 ```
 
-Можно комбинировать его с getPage
+Можно комбинировать его с pdoPage\getPage:
 ```
-[[!getPage?
+[[!pdoPage?
 	&element=`pdoUsers`
 	&groups=`Authors`
 	&tpl=`tpl.Authors.author`
