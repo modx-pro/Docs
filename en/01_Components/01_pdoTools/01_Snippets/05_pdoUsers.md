@@ -2,8 +2,7 @@ Snippet for the listing of site users, based on the pdoTools library.
  
 Users can select specific groups and roles to display or omit. By and large there are no other add-ons with comparable functionality.
 
-## Options ##
-
+## Options
 * __&tpl__ - Name of the chunk tpl for formatting the output. If not specified, the content of the user fields will be printed to the screen.
 * __&returnIds__ - Returns a string with a list of user ids instead of formatted results.
 * __&showLog__ - Show more information about running the snippet. Only displayed for logged-in users with the "mgr" context authorization.
@@ -35,40 +34,40 @@ Users can select specific groups and roles to display or omit. By and large ther
 * __&select__ - List of fields to retrieve, separated by commas. You can specify a JSON string array, eg {"modUser": "id, username, email"}.
 * __&toSeparatePlaceholders__ - If you specify a prefix in this parameter, all of the results will be displayed with different placeholders starting with the prefix and the ending line number from zero. For example, specifying a "myPl", you get placeholders [[+myPl0]], [[+myPl1]], etc.
 
-## Examples ##
-
+## Examples
 Used without parameters, the snippet lists all users:
-
-    [[!pdoUsers]] 
+```
+[[!pdoUsers]]
+```
 
 Members of usergroup Authors:
+```
+[[!pdoUsers?
+	&groups = `Authors`
+	&tpl = `tpl.Authors.author`
+	&sortdir = `asc`
+]]
+```
 
-    [[!pdoUsers?
-        &groups = `Authors`
-        &tpl = `tpl.Authors.author`
-        &sortdir = `asc`
-    ]] 
-
- You can combine it with getPage:
-     
-    [[!getPage?
-        &element = `pdoUsers`
-        &groups = `Authors`
-        &tpl = `tpl.Authors.author`
-        &sortdir = `asc`
-    ]]
+You can combine it with pdoPage\getPage:
+```
+[[!pdoPage?
+	&element = `pdoUsers`
+	&groups = `Authors`
+	&tpl = `tpl.Authors.author`
+	&sortdir = `asc`
+]]
+```
 
 Inline tpl:
+```
+[[!pdoUsers?
+	 &roles = `Member`
+	 &tpl=`@INLINE <p>Name - [[+fullname]], ID - [[+id]]</p>`
+	 &sortby = `id`
+	 &sortdir = `asc`
+]]
+```
 
-    [[!pdoUsers?
-         &roles = `Member`
-         &tpl = `@ INLINE  Name - [[+fullname]], ID - [[+ id]] </ p>`
-         &sortby = `id`
-         &sortdir = `asc`
-    ]]
-
-
-## Demo ##
-
+## Demo
 [Authors and friends](http://store.simpledream.ru/friends.html) of the Simple Dream repository.
-
