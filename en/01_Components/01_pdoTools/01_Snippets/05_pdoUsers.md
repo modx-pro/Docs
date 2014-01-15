@@ -43,29 +43,29 @@ Used without parameters, the snippet lists all users:
 Members of usergroup Authors:
 ```
 [[!pdoUsers?
-	&groups = `Authors`
-	&tpl = `tpl.Authors.author`
-	&sortdir = `asc`
+	&groups=`Authors`
+	&tpl=`tpl.Authors.author`
+	&sortdir=`asc`
 ]]
 ```
 
 You can combine it with pdoPage\getPage:
 ```
 [[!pdoPage?
-	&element = `pdoUsers`
-	&groups = `Authors`
-	&tpl = `tpl.Authors.author`
-	&sortdir = `asc`
+	&element=`pdoUsers`
+	&groups=`Authors`
+	&tpl=`tpl.Authors.author`
+	&sortdir=`asc`
 ]]
 ```
 
 Inline tpl:
 ```
 [[!pdoUsers?
-	 &roles = `Member`
+	 &roles=`Member`
 	 &tpl=`@INLINE <p>Name - [[+fullname]], ID - [[+id]]</p>`
-	 &sortby = `id`
-	 &sortdir = `asc`
+	 &sortby=`id`
+	 &sortdir=`asc`
 ]]
 ```
 

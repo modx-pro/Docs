@@ -4,9 +4,7 @@ For example, can build menus from several parents, showing them both together an
 
 A substantial increase in speed, although only on first page view if the Wayfinder menu is cached. 
 
-Options
--------
-
+## Options
 * __&showLog__ - Show more information about running the snippet. Only visible to users with permission for context "mgr".
 * __&fastMode__ - Quick mode processing chunks. All raw tags (output modifiers, snippets, etc.) are removed.
 * __&level__ - Depth of generated menu.
@@ -57,28 +55,27 @@ Options
 * __&scheme__ - Scheme of generated url, passed to modX :: makeUrl ().
 * __&toPlaceholder__ - If not empty, the snippet will save all data to a placeholder with the same name, instead of displaying the generated menu. 
 
-Examples
---------
-
+## Examples
 A simple top-level menu:
-
-    [[PdoMenu?
-        &parents = `0`
-        &level = `1`
-    ]]
-
+```
+[[pdoMenu?
+	&parents=`0`
+	&level=`1`
+]]
+```
 
 Output with the exception of certain parents:
-
-    [[PdoMenu?
-        &parents = `-10, -15`
-        &level = `2`
-    ]]
-
+```
+[[pdoMenu?
+	&parents=`-10, -15`
+	&level=`2`
+]]
+```
 
 Menu generated from two parents, showing the parents:
-
-    [[PdoMenu?
-        &parents = `10,15`
-        &displayStart = `1`
-    ]]
+```
+[[PdoMenu?
+	&parents=`10,15`
+	&displayStart=`1`
+]]
+```
