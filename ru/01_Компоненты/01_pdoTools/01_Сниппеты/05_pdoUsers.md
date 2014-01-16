@@ -51,9 +51,9 @@
 ]]
 ```
 
-Можно комбинировать его с getPage
+Можно комбинировать его с pdoPage\getPage:
 ```
-[[!getPage?
+[[!pdoPage?
 	&element=`pdoUsers`
 	&groups=`Authors`
 	&tpl=`tpl.Authors.author`
@@ -74,4 +74,4 @@
 ## Демо
 [Вывод авторов и друзей](http://store.simpledream.ru/friends.html) репозитория Simple Dream.
 
-<a rel="fancybox" href="http://st.bezumkin.ru/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png"><img src="http://st.bezumkin.ru/files/b/7/9/b792406326ccd13a79ce417c6e7d2306s.jpg" class="fancybox thumbnail center"></a>
+[![](http://st.bezumkin.ru/files/b/7/9/b792406326ccd13a79ce417c6e7d2306s.jpg)](http://st.bezumkin.ru/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)

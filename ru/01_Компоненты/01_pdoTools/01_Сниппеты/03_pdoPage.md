@@ -1,15 +1,17 @@
 Вывод результатов работы других сниппетов с разбивкой на страницы.
 
-<a rel="fancybox" href="http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68.png"><img src="http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68.png" width="300" class="fancybox thumbnail center"></a>
-<a rel="fancybox" href="http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png"><img src="http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png" width="300" class="fancybox thumbnail center"></a>
+[![](http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68s.jpg)](http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68.png)
 
 Есть несколько серьезных отличий от сниппета getPage:
+
 * 2 вида пагинации: с пропуском страниц и классическая (зависит от параметра pageLimit).
 * Пагинация не плавает. Если указано показывать 5 ссылок на страницы - всегда будет 5 и не больше.
 * Можно указать чанки для вывода при отсутствии ссылок на первую, последнюю, следующую или предыдущую страницу.
 * Параметр maxLimit не позволяет пользователю затормозить ваш сайт большой выборкой.
 * Редирект на первую страницу при отсутствии результатов или некорректном параметре page.
 * Работает со сниппетом pdoResources, по умолчанию.
+
+[![](http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9s.jpg)](http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png)
 
 ## Параметры
 * **&plPrefix** - Префикс для выставляемых плейсхолдеров, по умолчанию пуст.
