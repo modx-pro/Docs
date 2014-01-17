@@ -45,7 +45,7 @@
 Так как pdoPage является частью pdoTools, в параметре &element у него сразу прописан сниппет pdoResources. Поэтому простой вызов сниппета сразу выведет вам дочерние ресурсы:
 ```
 [[!pdoPage?
-	&tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+	&tpl=`@INLINE <p>[[+idx]] <a href="[[+uri]]">[[+pagetitle]]</a></p>`
 ]]
 [[!+page.nav]]
 ```
@@ -53,7 +53,7 @@
 Выводим все возможные документы сайта:
 ```
 [[!pdoPage?
-	&tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+	&tpl=`@INLINE <p>[[+idx]] <a href="[[+uri]]">[[+pagetitle]]</a></p>`
 	&parents=`0`
 ]]
 [[!+page.nav]]
@@ -62,7 +62,7 @@
 Включаем навигацию с пропуском страниц. Обратите внимание, что если страниц выходит меньше 7, то будет работать обычная навигация.
 ```
 [[!pdoPage?
-	&tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+	&tpl=`@INLINE <p>[[+idx]] <a href="[[+uri]]">[[+pagetitle]]</a></p>`
 	&parents=`0`
 	&pageLimit=`7`
 ]]
@@ -72,7 +72,7 @@
 Активируем кэш на 30 минут:
 ```
 [[!pdoPage?
-	&tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+	&tpl=`@INLINE <p>[[+idx]] <a href="[[+uri]]">[[+pagetitle]]</a></p>`
 	&parents=`0`
 	&pageLimit=`7`
 	&cache=`1`
@@ -84,7 +84,7 @@
 Указываем максимальный лимит выборки. Теперь, какой бы limit не указал пользвоатель в url - все равно будет не больше 10 результатов на странице.
 ```
 [[!pdoPage?
-	&tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+	&tpl=`@INLINE <p>[[+idx]] <a href="[[+uri]]">[[+pagetitle]]</a></p>`
 	&parents=`0`
 	&pageLimit=`7`
 	&cache=`1`
