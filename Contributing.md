@@ -1,0 +1,114 @@
+Правила оформления документации
+-------------------------------
+
+### Структура
+Формат репозитория определяется следующей структурой:
+1. Языковая версия
+2. Раздел
+3. Тема
+4. Дальше структура определяется в зависимости от темы
+5. Чтобы указать порядок директорий и файлов, мы используем числовые префиксы.
+
+Вот путь к файлу с описанием сниппета HybridAuth на русском:
+```
+/ru/01_Компоненты/04_HybridAuth/01_Сниппеты/01_HybridAuth
+```
+
+### Заголовки
+Для заголовков мы используем хештэги \#\# и между ними и текстом ставим пробел. Например: \#\# Заголовок
+
+Заголовки должны быть не больше h2, то есть, 2 решетки \#\#:
+h2 = \#\#
+h3 = \#\#\#
+h4 = \#\#\#\#
+
+Между заголовком и текстом сверху оставляется одна пустая строка. Между заголовком и текстом снизу отступов делать не нужно.
+
+### Выделение
+Cистемные параметры нужно выделять жирным текстом, например: \*\*&parametr\*\* будет выглядеть, как **&parametr**.
+
+Плейсхолдеры оборачиваются в одинарные обратные апострофы. Например: \`[[+placeholder]]\` будет выглядеть, как `[[+placeholder]]`.
+
+Для обрамления кода нужно использовать 3 обратных апострофа  \`\`\` перед секцией кода, и после:
+\`\`\`
+//Тут код
+\`\`\`
+Сам код начинается с новой строки.
+
+```
+//Тут код
+```
+Пустые строки до и после кода - по желанию.
+
+### Таблицы
+Вы можете использовать таблицы для удобного отображения различных данных, например параметров какого-то сниппета:
+```
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+```
+
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+
+
+======================================
+
+
+Rules of drawing up documents
+-----------------------------
+
+### Structure
+The format of the repository is defined by the following structure:
+1. Language version
+2. Section
+3. Theme
+4. Further structure is defined depending on the theme
+5. To specify the order of the directories and files, we use the numeric prefixes.
+
+Here is the path to the file with the description of a snippet HybridAuth on English:
+```
+/en/01_Components/04_HybridAuth/01_Snippets/01_HybridAuth
+```
+
+### Headers
+For the headlines we use hashtags \#\# and between them and the text put a space. For example: \#\# Header
+
+Headlines should not be more h2, e.g - 2 hashtags \#\#:
+h2 = \#\#
+h3 = \#\#\#
+h4 = \#\#\#\#
+
+Between the header and the text from the top and one blank line. Between the header and the text of the bottom blank line not needed.
+
+### Highlighting
+System settings need to use bold text, for example: \*\*&parametr\*\* will look like **&parametr**.
+
+Зlaceholders wrapped in single reverse apostrophes. For example: \`[[+placeholder]]\` will look like `[[+placeholder]]`.
+
+For block with code we using 3 reverse apostrophe \`\`\` before and after:
+\`\`\`
+//Here is the code
+\`\`\`
+The code starts from the new line.
+```
+//Here is the code
+```
+Blank lines before and after the code voluntarily.
+
+### Tables
+You can use tables for easy display data, such as snippet properties:
+```
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+```
+
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
