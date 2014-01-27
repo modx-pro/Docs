@@ -1,11 +1,11 @@
 Сниппет для построения навигации в стиле хлебных крошек.
 
-Хорошо заменяет [BreadCrumb](http://rtfm.modx.com/extras/revo/breadcrumb), работает с документами из любых контекстов и позволяет указывать различные условия для выборки ресурсов.
+Хорошо заменяет [BreadCrumb][1], работает с документами из любых контекстов и позволяет указывать различные условия для выборки ресурсов.
 
 Сниппет обладает очень высокой скоростью работы, за счет выборки всех нужных элементов из БД за один запрос.
 
 ## Параметры
-Принимает все параметры [pdoTools](index.md) и некоторые свои:
+Принимает все параметры [pdoTools][2] и некоторые свои:
 
 Параметр | Описание | По умолчанию
 ---|---|---
@@ -124,9 +124,14 @@ return $title;
 ```
 
 ## Демо
-Рабочий пример [генерации хлебных крошек в результатах поиска](http://bezumkin.ru/search?query=pdotools) mSearch2.
+Рабочий пример [генерации хлебных крошек в результатах поиска][3] mSearch2.
 
--
 [![](http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg)](http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
 
-Также на всём сайте [bezumkin.ru](http://bezumkin.ru) используются динамические title.
+Также на всём сайте [bezumkin.ru][4] используются динамические title.
+
+
+[1]: http://rtfm.modx.com/extras/revo/breadcrumb
+[2]: components/pdotools/general-parameters
+[3]: http://bezumkin.ru/search?query=pdotools
+[4]: http://bezumkin.ru/
