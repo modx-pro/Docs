@@ -60,8 +60,9 @@
 ```
 
 ## Демо
-[Вывод авторов и друзей](http://store.simpledream.ru/friends.html) репозитория Simple Dream.
+[Вывод авторов и друзей][2] репозитория Simple Dream.
 
 [![](http://st.bezumkin.ru/files/b/7/9/b792406326ccd13a79ce417c6e7d2306s.jpg)](http://st.bezumkin.ru/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
 
 [1]: components/pdotools/general-parameters
+[2]: http://store.simpledream.ru/friends.html
