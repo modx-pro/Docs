@@ -97,7 +97,7 @@
 ```
 
 
-[1]: components/pdotools/
-[2]: components/pdotools/snippets/pdoresources
-[3]: components/pdotools/snippets/pdopage
-[4]: components/msearch2/snippets/msearchform
+[1]: /ru/01_Компоненты/01_pdoTools
+[2]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/01_pdoResources.md
+[3]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/03_pdoPage.md
+[4]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/03_mSearchForm.md

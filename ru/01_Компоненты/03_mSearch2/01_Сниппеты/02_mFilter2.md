@@ -230,7 +230,7 @@ Grandparents выводит имена родителей-дедушек и пр
 
 
 
-[1]: components/pdotools/snippets/pdopage
-[2]: components/msearch2/snippets/msearch2
+[1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/03_pdoPage.md
+[2]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/01_mSearch2.md
 [3]: http://jqueryui.com/slider/
 [4]: http://getbootstrap.com/

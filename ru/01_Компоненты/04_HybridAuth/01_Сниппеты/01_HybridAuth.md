@@ -52,11 +52,11 @@
 ### Ссылки на регистрацию у провайдеров
 Для работы компонента нужно получить ключи от провайдера, и далеко не всегда понятно, где их искать. Поэтому, вот несколько основных ссылок:
 
-* [Яндекс](https://oauth.yandex.ru/client/new)
-* [Вконтакте](http://vk.com/editapp?act=create)
-* [Twitter](https://dev.twitter.com/apps/new)
-* [Google](https://dev.twitter.com/apps/new)
-* [Facebook](https://developers.facebook.com/apps)
+* [Яндекс][1]
+* [Вконтакте][2]
+* [Twitter][3]
+* [Google][4]
+* [Facebook][5]
 
 ### Контексты
 Если у вас несколько независимых контекстов на сайте, вы можете организовать для них авторизацию через одних и тех же провайдеров, но для разных доменов.
@@ -72,3 +72,10 @@
 
 ini_set('apc.cache_by_default' , 0);
 ```
+
+
+[1]: https://oauth.yandex.ru/client/new
+[2]: http://vk.com/editapp?act=create
+[3]: https://dev.twitter.com/apps/new
+[4]: https://dev.twitter.com/apps/new
+[5]: https://developers.facebook.com/apps

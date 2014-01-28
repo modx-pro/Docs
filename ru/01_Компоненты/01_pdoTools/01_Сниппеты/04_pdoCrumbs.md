@@ -132,6 +132,6 @@ return $title;
 
 
 [1]: http://rtfm.modx.com/extras/revo/breadcrumb
-[2]: components/pdotools/general-parameters
+[2]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
 [3]: http://bezumkin.ru/search?query=pdotools
 [4]: http://bezumkin.ru/

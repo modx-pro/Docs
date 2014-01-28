@@ -50,4 +50,4 @@
 
 [![](http://st.bezumkin.ru/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26s.jpg)](http://st.bezumkin.ru/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26.png)
 
-[1]: components/pdotools/general-parameters
+[1]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md

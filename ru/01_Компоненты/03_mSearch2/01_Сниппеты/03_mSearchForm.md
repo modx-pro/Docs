@@ -71,6 +71,6 @@ mSearchForm передаёт все полученные параметры в �
 
 ```
 
-[1]: components/msearch2/snippets/msearch2
-[2]: components/msearch2/snippets/mfilter2
+[1]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/01_mSearch2.md
+[2]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/02_mFilter2.md
 [3]: http://jqueryui.com/autocomplete/

@@ -114,4 +114,4 @@
 [[!+page.nav]]
 ```
 
-[1]: components/pdotools/general-parameters
+[1]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
