@@ -1,31 +1,5 @@
-Open Source документация [MODX Revolution][1], распространяемая через GitHub.
-
-Для того, чтобы внести свой вклад в развитие документации, вам нужно просто [сделать pull-request в репозиторий][2].
-
-Такая организация гарантирует:
-
-* Сохранение истории всех изменений.
-* Использование простого языка разметки [Markdown][3].
-* Возможность не переживать за проект - вы всегда можете запустить копию у себя.
-
-## Идея
-Сам принцип подсмотрен у проекта [daux.io][4], который генерирует сайт налету по статичным страницам. Для работы нужен только его скрипт и директория с определённой структурой и файлами в формате Markdown.
-
-Однако, на мой взгляд у daux.io есть несколько серьёзных недостатков:
-
-* Неудобное управление шаблоном.
-* Отсутствие мультиязычности в оформлении страниц.
-* Нет кэширования, неизвестно каких объемов документацию он потянет.
-* Нет встроенного поиска.
-* Нет перенаправления с одного адреса на другой, при переносе документа.
-* Довольно [много ошибок в коде][5].
-
-В общем, для небольших объёмов это хорошее решение, но для нашего проекта мы используем MODX.
-
-Принцип остаётся тот же: директория с файлами Markdown, из которых строится сайт. Но теперь это самостоятельный сайт, со всеми наворотами, который обновляет свои страницы из GitHub.
-Мы избавились от всех недостатков daux.io и добавили преимущества MODX.
-
-## Правила оформления документации
+Правила оформления документации
+-------------------------------
 
 ### Структура
 Формат репозитория определяется следующей структурой:
@@ -37,7 +11,7 @@ Open Source документация [MODX Revolution][1], распростра�
 
 Вот путь к файлу с описанием сниппета HybridAuth на русском:
 ```
-/ru/02_Компоненты/04_HybridAuth/01_Сниппеты/01_HybridAuth
+/ru/01_Компоненты/04_HybridAuth/01_Сниппеты/01_HybridAuth
 ```
 
 ### Заголовки
@@ -114,21 +88,101 @@ First Header  | Second Header
 Content Cell  | Content Cell
 Content Cell  | Content Cell
 
-## Основы Markdown
-[![](http://st.bezumkin.ru/files/9/5/0/95060490b555925b9366f5bea96b510es.jpg)](http://st.bezumkin.ru/files/9/5/0/95060490b555925b9366f5bea96b510e.png)
-
-Подробная документация [на сайте у автора][6].
-
-Обратите внимание, что на этом сайте используется **Markdown Extra**, в котором [можно использовать таблицы и другие навороты][7].
-
-Проверить, как будет выглядеть ваш документ можно на [bezumkin.ru/utils/markdown][8].
 
 
-[1]: http://modx.com
-[2]: https://github.com/bezumkin/Docs/issues/new
-[3]: http://ru.wikipedia.org/wiki/Markdown
-[4]: http://daux.io
-[5]: https://github.com/justinwalsh/daux.io/issues/
-[6]: http://daringfireball.net/projects/markdown/syntax
-[7]: http://michelf.ca/projects/php-markdown/extra/
-[8]: http://bezumkin.ru/utils/markdown
+======================================
+
+
+
+Rules of drawing up documents
+-----------------------------
+
+### Structure
+The format of the repository is defined by the following structure:
+1. Language version
+2. Section
+3. Theme
+4. Further structure is defined depending on the theme
+5. To specify the order of the directories and files, we use the numeric prefixes.
+
+Here is the path to the file with the description of a snippet HybridAuth on English:
+```
+/en/01_Components/04_HybridAuth/01_Snippets/01_HybridAuth
+```
+
+### Headers
+For the headlines we use hashtags \#\# and between them and the text put a space. For example: \#\# Header
+
+Headlines should not be more h2, e.g - 2 hashtags \#\#:
+
+* h2 = \#\#
+* h3 = \#\#\#
+* h4 = \#\#\#\#
+
+Between the header and the text from the top and one blank line. Between the header and the text of the bottom blank line not needed.
+
+### Links
+Links to documents need to set at the end of the page to make it searchable and update. In markdown this is accomplished by:
+<pre>
+[Link]&#91;1&#93;
+[Name of another link]&#91;2&#93;
+
+&#91;1&#93;: http://mylink.com/
+&#91;2&#93;: http://mylink.com/test.html
+</pre>
+
+Among other things, this allows you to use one link multiple times on a page:
+<pre>
+[Link 1]&#91;1&#93;
+[Link 2]&#91;1&#93;
+
+&#91;1&#93;: http://mylink.com/
+</pre>
+
+Links to pages of the repository, you must specify the root, with a leading slash, then you can go directly on GitHub:
+<pre>
+[Link to the english section of pdoTools]&#91;3&#93;
+
+&#91;3&#93;: /en/01_Components/01_pdoTools
+</pre>
+Easier to open the desired page on GitHub and copy the address from the url.
+
+
+The image links can be inserted directly in the text. To specify the image, and use the service on [st.bezumkin.ru][1] (requires authorization).
+It automatically generates thumbnail and markdown code for insertion.
+```
+[![](http://st.bezumkin.ru/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](http://st.bezumkin.ru/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
+```
+
+[![](http://st.bezumkin.ru/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9s.jpg)](http://st.bezumkin.ru/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9.png)
+
+### Highlighting
+System settings need to use bold text, for example: \*\*&parametr\*\* will look like **&parametr**.
+
+Зlaceholders wrapped in single reverse apostrophes. For example: \`[[+placeholder]]\` will look like `[[+placeholder]]`.
+
+For block with code we using 3 reverse apostrophe \`\`\` before and after:
+<pre>
+&#96;&#96;&#96;
+Here is the code
+&#96;&#96;&#96;
+</pre>
+
+The code starts from the new line. Blank lines before and after the code voluntarily.
+
+### Tables
+You can use tables for easy display data, such as snippet properties:
+```
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+```
+
+First Header  | Second Header
+------------- | -------------
+Content Cell  | Content Cell
+Content Cell  | Content Cell
+
+
+[1]: http://st.bezumkin.ru

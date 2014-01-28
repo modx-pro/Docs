@@ -70,4 +70,7 @@ Inline tpl:
 ```
 
 ## Demo
-[Authors and friends](http://store.simpledream.ru/friends.html) of the Simple Dream repository.
+[Authors and friends][1] of the Simple Dream repository.
+
+
+[1]: http://store.simpledream.ru/friends.html
