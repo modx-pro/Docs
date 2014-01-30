@@ -1,0 +1,1 @@
+Здесь будет про генерацию моделей из Xml-схемы. Классы xPDOManager и xPDOGenerator.
