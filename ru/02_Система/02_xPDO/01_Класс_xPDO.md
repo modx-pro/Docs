@@ -100,82 +100,181 @@ if ($xpdo->getService('myService', 'myServiceClass', '/path/to/model/root/', arr
 ---|---
 **xPDO::OPT_BASE_CLASSES** | Массив имен классов, загружаемых во время создания экземпляра класса xPDO.
 **xPDO::OPT_BASE_PACKAGES** | Строка имен пакетов и путей к ним, в формате "имя_пакета1:путь_до_пакета1,имя_пакета1:путь_до_пакета1,...", загружаемые при создании экземпляра класса xPDO.
-**xPDO::OPT_CACHE_COMPRESS** | Если установлена, любой экземпляр класса xPDOCache, использующий провайдера, который поддерживает сжатие данных, будет использовать эту опцию по умолчанию (например, xPDOMemCache).
+**xPDO::OPT_CACHE_COMPRESS** | Если установлена, любой экземпляр класса ***xPDOCache***, использующий провайдера, который поддерживает сжатие данных, будет использовать эту опцию по умолчанию (например, xPDOMemCache).
 **xPDO::OPT_CACHE_DB** | Если установлена, будет включено кеширование наборов данных запросов к БД.
 **xPDO::OPT_CACHE_DB_COLLECTIONS** | Если установлена, кеширование наборов данных запросов к БД будет пытаться кешировать целые коллекции.
 **xPDO::OPT_CACHE_DB_OBJECTS_BY_PK** | Если установлена, кеширование наборов данных запросов к БД будет создавать элементы кеша по первичному ключу в дополнение к используемой подписи запроса.
 **xPDO::OPT_CACHE_DB_EXPIRES** | Если установлена, определяет число секунд, которые существует кеш наборов данных; 0 означает, что кеш не истекает.
-**xPDO::OPT_CACHE_DB_HANDLER** | Если установлена, определяет наследника класса xPDOCache для управления кеширование наборов данных.
+**xPDO::OPT_CACHE_DB_HANDLER** | Если установлена, определяет наследника класса ***xPDOCache*** для управления кеширование наборов данных.
 **xPDO::OPT_CACHE_EXPIRES** | Если установлена, определяет число секунд жизни кеша для любого провайдера по умолчанию; 0 означает, что кеш не истекает.
-**xPDO::OPT_CACHE_FORMAT** | Если установлена, определяет формат файлов кеша, используемых в xPDOFileCache; по умолчанию PHP, но доступны JSON и сериализованный. (начиная с версии xPDO 2.1)
-**xPDO::OPT_CACHE_KEY** | Если установлена, defines the key of the default cache instance; the default value is default.
-**xPDO::OPT_CACHE_PATH** | Если установлена, will set a custom cachePath class variable to the xPDO object that can be used in caching.
-**xPDO::OPT_CACHE_ATTEMPTS** | Если установлена, defines the number attempts xPDOFileCache will attempt to lock an existing cache entry for writing; default is 1. (2.1 only)
-**xPDO::OPT_CACHE_ATTEMPT_DELAY** | Если установлена, defines the number microseconds to delay each attempt to lock existing cache entries for writing; default is 10000. (2.1 only)
-**xPDO::OPT_CONNECTIONS** | Optionally defines a pool of additional connections to select from when instantiating xPDO. (2.2 only)
-**xPDO::OPT_CONN_INIT** | Defines options a connection must have to be selected as the initial connection; applicable when multiple connections are defined. (2.2 only)
-**xPDO::OPT_CONN_MUTABLE** | Defines if data from a connection can be changed, i.e. is writable. (2.2 only)
-**xPDO::OPT_HYDRATE_FIELDS** | If true, fields will be hydrated.
-**xPDO::OPT_HYDRATE_RELATED_OBJECTS** | If true, related objects will be hydrated.
-**xPDO::OPT_HYDRATE_ADHOC_FIELDS** | If true, ad-hoc fields will be hydrated.
-**xPDO::OPT_LOADER_CLASSES** | Can be an array of class names to load upon instantiation of the xPDO object. (deprecated in 2.0.0-pl)
-**xPDO::OPT_ON_SET_STRIPSLASHES** | Если установлена, stripslashes() is applied to values being set() on xPDOObject instances.
-**xPDO::OPT_TABLE_PREFIX** | Если установлена, all database class references will be prefixed with this prefix.
-**xPDO::OPT_VALIDATOR_CLASS** | Если установлена, will use a custom class specified that derives from xPDOValidator (the default)
-**xPDO::OPT_VALIDATE_ON_SAVE** | If true, xPDOObjects will be validated against their Validators before saving.
+**xPDO::OPT_CACHE_FORMAT** | Если установлена, определяет формат файлов кеша, используемых в ***xPDOFileCache***; по умолчанию PHP, но доступны JSON и сериализованный (начиная с версии xPDO 2.1).
+**xPDO::OPT_CACHE_KEY** | Если установлена, определяет ключ кеша по умолчанию; значение по умолчанию `default`.
+**xPDO::OPT_CACHE_PATH** | Если установлена, определяет пользовательскую переменную класса ***cachePath*** для объекта xPDO, которая может использоваться при кешировании.
+**xPDO::OPT_CACHE_ATTEMPTS** | Если установлена, определяет число попыток, которое ***xPDOFileCache*** будет блокировать на запись существующий элемент кеша; по умолчанию 1. (начиная с версии xPDO 2.1)
+**xPDO::OPT_CACHE_ATTEMPT_DELAY** | Если установлена, определяет число микросекунд задержки между попытками блокировки элементов кеша на запись; по умолчанию 10000 (начиная с версии xPDO 2.1).
+**xPDO::OPT_CONNECTIONS** | Дополнительно определяет набор соединений с БД при создании экземпляра класса xPDO (начиная с версии xPDO 2.2).
+**xPDO::OPT_CONN_INIT** | Определяет настройки, которые должны быть выбраны для соединения при его инициализации; применяется, если определены несколько соединений (начиная с версии xPDO 2.2).
+**xPDO::OPT_CONN_MUTABLE** | Определяет могут ли данные из соединения быть изменены, например, перезаписаны (начиная с версии xPDO 2.2).
+**xPDO::OPT_HYDRATE_FIELDS** | Если true, поля будут [гидратированы](#hydrate).
+**xPDO::OPT_HYDRATE_RELATED_OBJECTS** | Если true, связанные объекты будут [гидратированы](#hydrate).
+**xPDO::OPT_HYDRATE_ADHOC_FIELDS** | Если true, ad-hoc поля (не описанные в карте класса, создаваемые на лету) будут [гидратированы](#hydrate).
+**xPDO::OPT_LOADER_CLASSES** | Массив имен классов для загрузки во время создания экземпляра xPDO объекта. (устарело с версии 2.0.0-pl)
+**xPDO::OPT_ON_SET_STRIPSLASHES** | Если установлена, `stripslashes()` применяется для значений, устанавливаемых методом `xPDOObject::set()`.
+**xPDO::OPT_TABLE_PREFIX** | Если установлена, все классы будут ссылаться на таблицы, начинающиеся с данного префикса.
+**xPDO::OPT_VALIDATOR_CLASS** | Если установлена, будет использоваться пользовательский класс валидации, производный от ***xPDOValidator*** (который используется по умолчанию).
+**xPDO::OPT_VALIDATE_ON_SAVE** | Если true, объекты ***xPDOObject*** будут проверяться своими Валидаторами перед сохранением.
 
-$driverOptions
+#### $driverOptions
 
-An optional array of driver-specific PDO options. More info can be found here.
+Необязательный массив настроек, специфичных для каждого PDO драйвера. Больше информации в [справочнике PHP][3].
 
-## Hydrating Fields
 
-### What is hydration?
+## Соединения с базой данных и xPDO
 
-Hydration is the process in which fields and related objects represented by an xPDOObject are populated with values. By default, these fields are only accessible using the get(), getOne() and getMany() methods of xPDOObject, and must be defined with appropriate metadata in the map for the object. However, there are a number of options you can use to extend how xPDO hydrates fields and related objects.
+Способность подключения к базе данных в xPDO задана в конструкторе. Объект xPDO одновременно может поддерживать только одно соединение, но вы можете создавать столько экземпляров xPDO, сколько вам потребуется. Синтаксис конструктора следующий:
+```
+xPDO::__construct($dsn, $username= '', $password= '', $options= array(), $driverOptions= null)
+```
 
-The options are available by passing any of the following configuration options into the $config parameter of the xPDO constructor:
+Итак предположим, что нам нужно соединиться с базой данной 'text' на localhost с портом 3306, в кодировке utf-8:
+```
+$dsn = 'mysql:host=localhost;dbname=test;port=3306;charset=utf-8';
+$xpdo = new xPDO($dsn,'username','password');
+```
+И готово!
 
-    xPDO::OPT_HYDRATE_FIELDS - If true, fields will be hydrated as public member variables of the object.
-    xPDO::OPT_HYDRATE_RELATED_OBJECTS - If true, related objects will be hydrated as public member variables of the object.
-    xPDO::OPT_HYDRATE_ADHOC_FIELDS - If true, ad-hoc fields will be allowed and hydrated on the object (respects xPDO::OPT_HYDRATE_FIELDS setting as well).
+Опционально можно проверить соединение, просто добавив далее следующую строку:
+```
+echo $o=($xpdo->connect()) ? 'Соединено' : 'Не соединено';
+```
+xPDO создает объект PDO, и таким образом соединяется с базой данных, только когда вызывается метод PDO и требуется соединение. Эта особенность «соединение-по-требованию» позволяет xPDO получать данные из кеша без дополнительного соединения к базе данных (конечно, если данные в кеше уже сохранены).
 
-Hydrating Fields
+### Пример соединения
 
-If the xPDO::OPT_HYDRATE_FIELDS option is set to true, in addition to accessing fields via the xPDOObject::get() method, all object fields will be made accessible for reading directly as public member variables of the object. An example of this is such:
+```<?php
 
+define('MODX_CORE_PATH', '/path/to/revo/core/');
+define('MODX_CONFIG_KEY','config');
+require_once MODX_CORE_PATH . 'model/modx/modx.class.php';
+
+// Параметры базы данных
+$host = 'localhost';
+$username = 'your_username';
+$password = 'your_password';
+$dbname = 'your_database';
+$port = 3306;
+$charset = 'utf-8';
+
+$dsn = "mysql:host=$host;dbname=$dbname;port=$port;charset=$charset";
+$xpdo = new xPDO($dsn, $username, $password);
+
+// Тестирование соединения
+echo $o = ($xpdo->connect()) ? 'Connected' : 'Not Connected';
+
+// Делаем запрос к базе данных и выводим количество результатов:
+$results = $xpdo->query("SELECT id FROM some_table");
+$recordCount = $results->rowCount();
+print $recordCount;
+```
+
+## Установка нескольких соединений (xPDO 2.2+)
+
+xPDO 2.2 добавило возможность устанавливать несколько соединений и включает параметры конфигурации для определения неизменяемых атрибутов для каждого соединения. Это позволяет использовать xPDO с разного рода master/slave конфигурациями баз данных. Под этой особенностью понимается не соединение к конкретному узлу базы данных, а настройка master/slave конфигураций, где один (или более) узлов доступны только для чтения, и хотя бы один узел доступен для записи (т.е. mutable). В этом случае вы можете запрашивать исходное соединение только на чтение, и xPDO автоматически переключится на доступное для записи соединение, если над объектом базы данных производится операция записи.
+
+### xPDO::OPT_CONNECTIONS
+
+Для определения дополнительных соединений для экземпляра xPDO, можно передать массив конфигураций соединений (конфигурации так же являются массивами) в параметр *$options* конструктора xPDO. Каждый массив соединения определяет такие же параметры, как и вызов конструктора xPDO. Пример вызова конструктора с несколькими соединениями только для чтения:
+```
+$xpdo = new xPDO('mysql:host=127.0.0.1:19570;dbname=xpdotest;charset=utf8', 'username', 'password' array(
+    xPDO::OPT_CONN_MUTABLE => true,
+    xPDO::OPT_CONN_INIT => array(xPDO::OPT_CONN_MUTABLE => false),
+    xPDO::OPT_CONNECTIONS => array(
+            array(
+                'dsn' => 'mysql:host=127.0.0.1:19571;dbname=xpdotest;charset=utf8',
+                'username' => 'username',
+                'password' => 'password',
+                'options' => array(
+                    xPDO::OPT_CONN_MUTABLE => false,
+                ),
+                'driverOptions' => array(),
+            ),
+            array(
+                'dsn' => 'mysql:host=127.0.0.1:19572;dbname=xpdotest;charset=utf8',
+                'username' => 'username',
+                'password' => 'password',
+                'options' => array(
+                    xPDO::OPT_CONN_MUTABLE => false,
+                ),
+                'driverOptions' => array(),
+            ),
+        ),
+));
+
+### xPDO::OPT_CONN_MUTABLE
+
+Этот параметр определяет доступность соединения для записи (true) или только для чтения (false). Устанавливается в массиве *$options* конструктора, а так же в дополнительных соединениях.
+
+### xPDO::OPT_CONN_INIT
+
+Этот параметр определяет условия, которым должно удовлетворять соединение, чтобы рассматриваться в качестве используемого для исходного соединения, создаваемого в xPDO. В конфигурациях master/slave обычное значение для этого параметра (которое устанавливается только раз в главных конфигурационных настройках) указывает использовать соединение, доступное только для чтения.
+```
+xPDO::OPT_CONN_INIT => array(xPDO::_OPT_CONN_MUTABLE => false)
+```
+
+Это обеспечивает, что xPDO выбирает соединение с параметром **xPDO::_OPT_CONN_MUTABLE**, установленным в значение `false`. Если производится операция на запись при инициализированном соединении, доступном только для чтения, будет выбрано новое соединение, доступное для записи, и закешировано для последующего использования другими операциями записи в данном цикле выполнения.
+
+## <a name="hydrate"></a>Гидратирование полей
+
+### Что такое гидратирование?
+
+Гидратирование (Hydration) это процесс, при котором поля и связанные объекты, представленные экземплярами класса ***xPDOObject***, заполняются значениями. По умолчанию, эти поля доступны только с помощью методов `get()`, `getOne()` и `getMany()` класса ***xPDOObject*** и должны быть определены подходящими метаданными в карте объекта. Тем не менее, существует несколько настроек, которые вы можете использовать для расширения процесса того, как xPDO гидратирует поля и связанные объекты.
+
+Эти настройки применяются при передаче следующих параметров в параметр $config конструктора xPDO:
+Параметр | Описание
+---|---
+**xPDO::OPT_HYDRATE_FIELDS** | Если true, поля будут гидратированы в качестве публичных переменных объекта.
+**xPDO::OPT_HYDRATE_RELATED_OBJECTS** | Если true, связанные объекты будут гидратированы в качестве публичных переменных объекта.
+**xPDO::OPT_HYDRATE_ADHOC_FIELDS** | Если true, ad-hoc поля (не описанные в карте класса, создаваемые на лету)  будут разрешены и гидратированы в качестве публичных переменных объекта (при этом должна быть установлена настройка **xPDO::OPT_HYDRATE_FIELDS**).
+
+### Гидратированные Поля
+
+Если параметр **xPDO::OPT_HYDRATE_FIELDS** установлен в значении true, в дополнение к доступу к полям через метод `xPDOObject::get()` все поля объекта становятся доступными через публичные переменные объекта. Пример:
+```
 $object->set('name',$name);
 echo $object->name;
+```
+Этот код выведет значение поля *'name'* объекта *$object*, при условии что поле  *'name'*  определено в схеме объекта.
+> **Замечание: Это "сырые" значения**
+> Доступ к полям объекта напрямую выводит только "сырые" значения, т.е. в таком виде, как они выгружены из базы данных, игнорируя метаданные, определенные для поля, и избегая любую логику, примененную в методе `get()` вашего класса, наследуемого от ***xPDOObject*** (а так же, всех его родительских классов).
+Рекомендуется всегда использовать метод `get()` для доступа к полям объектов, за исключением некоторых особых случаев, когда вам могут потребоваться сырые значения из базы данных, которые не должны быть изменены логикой метода `get()`.
 
-This would output the 'name' field of the object, assuming that the 'name' field is defined in the object's schema.
-These are "raw" values
-Please note that accessing fields of the object directly provides only the "raw" value as loaded from the database, ignoring the metadata that is defined for the field, and avoiding any logic applied by the get() method of your xPDOObject class (or any of it's parent classes). It is recommended that you always use the get() method to access object fields unless you need the raw value or to avoid the get() logic for a specific reason.
-Hydrating Ad Hoc Fields
+### Гидратирование Ad Hoc Полей
 
-If the xPDO::OPT_HYDRATE_ADHOC_FIELDS option is set to true, field hydration will be enabled for arbitrary fields not defined in the class map. It takes one step further the idea of hydrating fields, and now hydrates all ad hoc fields; or rather, any field that is not defined in the schema. Say we want to set an arbitrary field called 'puns' to a Person object:
+Если параметр **xPDO::OPT_HYDRATE_ADHOC_FIELDS** установлен в значении true, для произвольных полей, не определенных в карте класса, так же будет проводиться гидратация. Теперь все поля, даже не указанные в схеме объекта будут заполняться. Например, мы хотим установить произвольное поле *'puns'* для объекта *Person*:
+```
+$object->set('name','Вася Пупкин');
+$object->set('dollars',45);
+echo $object->get('name') .' имеет '. $object->get('dollars') . ' долларов.';
+```
+Этот код вернет `Вася Пупкин имеет 45 долларов.`, даже если поле *'dollars'* не определено в схеме, конечно, только в том случае, если включены параметры **xPDO::OPT_HYDRATE_ADHOC_FIELDS** и **xPDO::OPT_HYDRATE_FIELDS**.
 
-$object->set('name','Arthur Dent');
-$object->set('puns',42);
-echo $object->get('name') .' has '. $object->get('puns') . ' puns.';
+### Гидратирование связанных объектов
 
-This would echo the appropriate value, even if the field 'puns' isn't defined in the schema.
-The option respects the xPDO::OPT_HYDRATE_FIELDS option with respect to making the ad hoc fields available directly as public member variables of the object.
-Hydrating Related Objects
-
-If the xPDO::OPT_HYDRATE_RELATED_OBJECTS option is set to true, all related objects will be made available as public member variables of the object. By default, related objects are only accessible via the getOne or getMany methods of xPDOObject, but this option (similar to xPDO::OPT_HYDRATE_FIELDS) makes any related objects already loaded by those methods accessible directly as variables. Example:
-
-$fordPrefect->getMany('Beers');
-foreach ($fordPrefect->Beers as $beer) {
-   echo $beer->get('name').'<br />';
+Если **xPDO::OPT_HYDRATE_RELATED_OBJECTS** установлена в значение true, все связанные объекты так же будут доступны в качестве публичных переменных объекта.
+По умолчанию связанные объекты доступны только через методы `getOne()` или `getMany()` класса ***xPDOObject***, но этот параметр (как ***xPDO::OPT_HYDRATE_FIELDS***)
+загружает все связанные объекты напрямую в переменные. Пример:
+```
+$user->getMany('UserSettings');
+foreach ($user->UserSettings as $setting) {
+   echo $setting->get('key').' = ' . $setting->get('value') . '<br />';
 }
+```
 
-This would echo a list of all the Beers associated to the $fordPrefect object loaded by the getMany method.
-One vs. Many
-Objects loaded with getOne are available directly as an object of that class, while those with getMany are available as an array of objects of the class.
-See Also
+Этот код вернет список ключей и значений пользовательских настроек, принадлежащих объекту *$user*, которые по умолчанию загружаются через `getMany()`.
 
-    The xPDO Constructor
-    Setting Object Fields
-    Working with Related Objects
+> **One против Many**
+> Объекты, загружаемые через `getOne()` доступны напрямую как объекты соответствующего класса, в то время как через метод `getMany()` они доступны в качестве **массива** объектов класса.
+
 [1]: ru/02_Система/02_xPDO/01_Объектная_модель/01_Объекты_xPDO.md
 [2]: http://php.net/manual/ru/pdo.construct.php
+[3]: http://php.net/manual/ru/pdo.drivers.php
