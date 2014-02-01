@@ -159,7 +159,7 @@ It automatically generates thumbnail and markdown code for insertion.
 ### Highlighting
 System settings need to use bold text, for example: \*\*&parametr\*\* will look like **&parametr**.
 
-Зlaceholders wrapped in single reverse apostrophes. For example: \`[[+placeholder]]\` will look like `[[+placeholder]]`.
+Placeholders wrapped in single reverse apostrophes. For example: \`[[+placeholder]]\` will look like `[[+placeholder]]`.
 
 For block with code we using 3 reverse apostrophe \`\`\` before and after:
 <pre>
