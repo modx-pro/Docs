@@ -1,0 +1,1 @@
+Здесь будет про построение запросов в xPDO (xPDOCriteria и xPDOQuery)

@@ -1,0 +1,1 @@
+Здесь будет про CRUD: newObject, getObject, getObjectGraph, save(), remove(), get(), set(), fromArray() и т.п.
