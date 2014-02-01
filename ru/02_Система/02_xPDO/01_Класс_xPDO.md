@@ -209,6 +209,7 @@ $xpdo = new xPDO('mysql:host=127.0.0.1:19570;dbname=xpdotest;charset=utf8', 'use
             ),
         ),
 ));
+```
 
 ### xPDO::OPT_CONN_MUTABLE
 
