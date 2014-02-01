@@ -69,7 +69,7 @@ if ($xpdo->getService('myService', 'myServiceClass', '/path/to/model/root/', arr
  Эти методы будут рассмотрены подробнее в разделе [«Объектная модель»][1].
 
 
-## <a name="constructor"></a>Конструктор The xPDO Constructor
+## <a name="constructor"></a>Конструктор xPDO
 
 По умолчанию xPDO конструктор вызывается так:
 `$xpdo= new xPDO($dsn, $username, $password, $options, $driverOptions)`
@@ -98,6 +98,7 @@ if ($xpdo->getService('myService', 'myServiceClass', '/path/to/model/root/', arr
 
 Параметр | Описание
 ---|---
+**xPDO::OPT_AUTO_CREATE_TABLES** | Если true, создает таблицы, соответствующие запрашиваемым классам, в случае если эти таблицы еще не существуют в базе данных.
 **xPDO::OPT_BASE_CLASSES** | Массив имен классов, загружаемых во время создания экземпляра класса xPDO.
 **xPDO::OPT_BASE_PACKAGES** | Строка имен пакетов и путей к ним, в формате "имя_пакета1:путь_до_пакета1,имя_пакета1:путь_до_пакета1,...", загружаемые при создании экземпляра класса xPDO.
 **xPDO::OPT_CACHE_COMPRESS** | Если установлена, любой экземпляр класса ***xPDOCache***, использующий провайдера, который поддерживает сжатие данных, будет использовать эту опцию по умолчанию (например, xPDOMemCache).
