@@ -47,7 +47,7 @@ Superglobal arrays:
 [[#COOKIE.some_key]]
 ```
 
-You can indicate any friends in arrays:
+You can indicate any fields in arrays:
 ```
 [[#15.properties.key1.key2]]
 ```
