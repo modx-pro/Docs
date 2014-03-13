@@ -10,8 +10,8 @@ Snippet outputs formula for authorization on the site.
 * **&groups** — – list of groups to register the user, separated by commas. User role can be indicated in the group with colon. E.g. &groups=`Users:1` добавит юзера в группу "Users" с ролью "member".
 * **&loginContext** — main context for authorization. On default – current.
 * **&loginResourceId** — identifier of a resource on which user should be sent after end of the session. On default 0 renews the current page.
-* **&loginTpl** — Этот чанк будет показан анонимному пользователю, то есть любому гостю.
-* **&logoutResourceId** — Идентификатор ресурса, на который отправлять юзера после завершения сессии. По умолчанию, это 0 - обновляет текущую страницу.
+* **&loginTpl** — this chunk will be pointed to an anonymous user, i.e. to any guest.
+* **&logoutResourceId** — resource identifier, where a user is sent after the end of the session. On default, 0 updates a current page.
 * **&logoutTpl** — this chunk will be shown to an anonymous user.
 * **&providerTpl** — chank to output links for authorization, or binding of server to the account.
 * **&providers** — list of providers for authorization, separated by commas. All available providers are here {core_path}components/hybridauth/model/hybridauth/lib/Providers/. Например, &providers=`Google,Twitter,Facebook`.
