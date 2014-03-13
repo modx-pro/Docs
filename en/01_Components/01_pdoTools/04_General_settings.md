@@ -22,23 +22,23 @@ Name | Description | On default
 **&rightJoin** | Analog SQL of right join | 
 **&sortby** | Any resource field for sorting, it includes TV parameter, if it is indicated in «**&includeTVs**» parameter. JSON line can be indicated with array for several fields. Indicate «**RAND()**» for random sorting | pagetitle
 **&sortdir** | Sorting direction: descending or ascending | ASC
-**&groupby** | Indicate the field by which results are grouped | 
+**&groupby** | Indicate the field by which results are grouped |
 **&having** | It is used to limit the sample of grouping lines by condition for the whole group, specified in **&groupby** | 
 **&limit** | Limitation of sample results. «0» can be used | 0
 **&offset** | Result skip from the beginning | 0
 **&first** | Number of the first iteration in output results | 1
 **&last** | Number of the last iteration in output results | Automatic formula evaluation (total + first — 1)
-**&loadModels** | List of components, which models should be downloaded for query building, they should be separated by commas, e.g. «**&loadModels=\`ms2gallery,msearch2\`**». | 
+**&loadModels** | List of components, which models should be downloaded for query building, they should be separated by commas, e.g. «**&loadModels=`ms2gallery,msearch2`**». |
 **&tvFilters** | List of TV filters with delimiter AND and OR. Delimiter, indicated in "&tvFiltersOrDelimiter" is a logic condition OR and its conditions are grouped in the first place. You can define the list of values in each group, separated by «**&tvFiltersAndDelimiter**». Search of values can be held in any specific TV, if it is («**myTV==value**») or any («**value**»). E.g. «**&tvFilters=\`filter2==one,filter1==bar%&#124;&#124;filter1==foo\`**». Pay attention: filtration uses LIKE and “%” is metacharacter. Search is on values that physically located in the database, i.e. values from TV settings don’t get here on default | 
 **&tvFiltersAndDelimiter** | Delimiter for conditions AND in «**&tvFilters**». | ","
 **&tvFiltersOrDelimiter** | Delimiter for conditions Or in «**&tvFilters**». | "||"
-**&sortbyTV** | Edditional field by which all the results should be sorted. It can be indicated directly in **&sortby** | 
+**&sortbyTV** | Additional field by which all the results should be sorted. It can be indicated directly in **&sortby** |
 **&sortdirTV** | Sorting direction on extra fiend indicated in &sortby. It can be indicated directly in &sortby | 
 **&checkPermissions** | Indicate which permissions should be checked at the output of objects | 
 **&checkConditions** | It disables the specific sample parameters at for modResource | 
 
 ### Template parameters
-These parameters set up chunks which contain templates for output generation, i.e. they  are chanrged with the overview.
+These parameters set up chunks which contain templates for output generation, i.e. they  are changed with the overview.
 
 Name | Description
 ---|---
@@ -70,7 +70,7 @@ Name | Description | On default
 **&prepareTVs** | List of TV parameters that need to be processed before the output | «1» means preparation for all TV included in "&includeTVs"
 **&processTVs** | List of TV parameters that need to be processed before the output. If it is set in «1», all TV mentioned in «**&includeTVs**» will be processed | 
 **&tvPrefix** | Prefix for TV parameters | tv
-**&prepareSnippet** | Indicate the snippet that accepts data before the output in chank and can vary or add them | 
+**&prepareSnippet** | Indicate the snippet that accepts data before the output in chunk and can vary or add them |
 **&decodeJSON** | Dissemble fields like JSON instead of outputting in line | 1
 **&scheme** | Scheme of forming url is passed to modX::makeUrl() | -1 (concerning site_url)
 **&useWeblinkUrl** | Ensure the link subject to resource class | 
@@ -81,16 +81,16 @@ Name | Description | On default
 **&cache_handler** | Cache handler | Value of system setting *cache_resource_handler* or xPDOFileCache
 **&cache Time** | Cache time | Value of system setting *cache_resource_expires* or 0 (eternal)
 
-### Ways to activate chunks
+### How to call chunks
 All chunks can have one of these prefixes:
 
-* **@INLINE** или **@CODE**. Code after this prefix will be used as template.
+* **@INLINE** or **@CODE**. Code after this prefix will be used as template.
 ```
 [[!pdoResources?
 	&tpl=`@INLINE <li>[[+pagetitle]]</li>`
 ]]
 ```
-*Snippets, other chunks and output filters cannot be indicated in INLINE chunks, because parser MODX handle them in the first place, and snippet will not get what u wanted.*
+*Snippets, other chunks and output filters cannot be indicated in INLINE chunks, because parser MODX handle them in the first place, and snippet will not get what you wanted.*
 
 * **@FILE**. File content Is used instead of chunk from the database. Track to the file is indicated by **&tplPath**. Name of the file have extention .tpl or .html.
 ```
@@ -110,5 +110,8 @@ All chunks can have one of these prefixes:
 ```
 [[!pdoResources?
 	&tpl=`@CHUNK tpl.Resource.row`
+]]
+[[!pdoResources?
+	&tpl=`tpl.Resource.row`
 ]]
 ```
