@@ -5,6 +5,7 @@
 * Переходим [по ссылке][1]
 * Нажимаем создать приложение.
 * Принимаем лицинзионное соглашение и правила.
+* *В некоторых случаях еще необходимо заполнить название компании приложения в **APIs & auth** &rarr; **Consent screen***
 * Переходим в **APIs & auth** &rarr; **Credential**
 
 [![](http://st.bezumkin.ru/files/9/e/7/9e75c595a6b5f8d2d7f3cfb8712f9732s.jpg)](http://st.bezumkin.ru/files/9/e/7/9e75c595a6b5f8d2d7f3cfb8712f9732.png)
