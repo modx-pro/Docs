@@ -16,48 +16,48 @@
 ## Параметры
 При вызове сниппета *pdoPage* указываются параметры сниппета, для которого производится пагинация. Данный сниппет должен понимать параметры **&page** и **&limit**. По умолчанию pdoPage принимает все параметры [pdoTools][1] и кроме того, некоторые свои:
 
-Название | Описание | По умолчанию
----|---|---
-**&plPrefix** | Префикс для выставляемых плейсхолдеров |
-**&limit** | Ограничение количества результатов на странице. Если "0" - не ограниченно. | 10
-**&maxLimit** | Максимально возможный лимит выборки. Перекрывает лимит, указанный пользователем через url. | 100
-**&offset** | Пропуск результатов от начала. | 0
-**&page** | Номер страницы для вывода. Перекрывается номером, указанным пользователем через url. | 1
-**&pageVarKey** | Имя переменной для поиска номера страницы в url. | page
-**&totalVar** | Имя плейсхолдера для сохранения общего количества результатов. | total
-**&pageLimit** | Количество ссылок на страницы. Если больше или равно 7 - включается продвинутый режим отображения. | 5
-**&element** | Имя сниппета для запуска. | pdoResources
-**&pageNavVar** | Имя плейсхолдера для вывода пагинации. | page.nav
-**&tplPage** | Чанк оформления обычной ссылки на страницу.
-**&tplPageWrapper** | Чанк оформления всего блока пагинации, содержит плейсхолдеры страниц.
-**&tplPageActive** | Чанк оформления ссылки на текущую страницу.
-**&tplPageFirst** | Чанк оформления ссылки на первую страницу. 
-**&tplPageLast** | Чанк оформления ссылки на последнюю страницу.
-**&tplPagePrev** | Чанк оформления ссылки на предыдущую страницу.
-**&tplPageNext** | Чанк оформления ссылки на следующую страницу.
-**&tplPageSkip** | Чанк оформления пропущенных страниц при продвинутом режиме отображения (&pageLimit >= 7).
-**&tplPageFirstEmpty** | Чанк, выводящийся при отсутствии ссылки на первую страницу.
-**&tplPageLastEmpty** | Чанк, выводящийся при отсутствии ссылки на последнюю страницу.
-**&tplPagePrevEmpty** | Чанк, выводящийся при отсутствии ссылки на предыдущую страницу.
-**&tplPageNextEmpty** | Чанк, выводящийся при отсутствии ссылки на следующую страницу.
-**&cache** | Кэширование результатов работы сниппета. | 0
-**&cacheTime** | Время актуальности кэша, в секундах. | 3600
-**&toPlaceholder** | Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран. |
+Название				| Описание		| По умолчанию
+------------------------|---------------|------------------------------------------------------------------------------------------
+**&plPrefix**			|  				| Префикс для выставляемых плейсхолдеров
+**&limit**				| 10			| Ограничение количества результатов на странице. Если 0 - не ограниченно.
+**&maxLimit**			| 100			| Максимально возможный лимит выборки. Перекрывает лимит, указанный пользователем через url.
+**&offset**				| 0				| Пропуск результатов от начала.
+**&page**				| 1				| Номер страницы для вывода. Перекрывается номером, указанным пользователем через url.
+**&pageVarKey**			| page			| Имя переменной для поиска номера страницы в url.
+**&totalVar**			| total			| Имя плейсхолдера для сохранения общего количества результатов.
+**&pageLimit**			| 5				| Количество ссылок на страницы. Если больше или равно 7 - включается продвинутый режим отображения.
+**&element**			| pdoResources	| Имя сниппета для запуска.
+**&pageNavVar**			| page.nav		| Имя плейсхолдера для вывода пагинации.
+**&tplPage**			|  				| Чанк оформления обычной ссылки на страницу.
+**&tplPageWrapper**		|  				| Чанк оформления всего блока пагинации, содержит плейсхолдеры страниц.
+**&tplPageActive**		|  				| Чанк оформления ссылки на текущую страницу.
+**&tplPageFirst**		|  				| Чанк оформления ссылки на первую страницу.
+**&tplPageLast**		|  				| Чанк оформления ссылки на последнюю страницу.
+**&tplPagePrev**		|  				| Чанк оформления ссылки на предыдущую страницу.
+**&tplPageNext**		|  				| Чанк оформления ссылки на следующую страницу.
+**&tplPageSkip**		|  				| Чанк оформления пропущенных страниц при продвинутом режиме отображения (**&pageLimit** >= 7).
+**&tplPageFirstEmpty**	|  				| Чанк, выводящийся при отсутствии ссылки на первую страницу.
+**&tplPageLastEmpty**	|  				| Чанк, выводящийся при отсутствии ссылки на последнюю страницу.
+**&tplPagePrevEmpty**	|  				| Чанк, выводящийся при отсутствии ссылки на предыдущую страницу.
+**&tplPageNextEmpty**	|  				| Чанк, выводящийся при отсутствии ссылки на следующую страницу.
+**&cache**				| 0				| Кэширование результатов работы сниппета.
+**&cacheTime**			| 3600			| Время актуальности кэша, в секундах.
+**&toPlaceholder**		|  				| Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.
 
-Шаблон | По умолчанию
----|---
-**&tplPage** | `@INLINE <li><a href="[[+href]]">[[+pageNo]]</a></li>`
-**&tplPageWrapper** | `@INLINE <div class="pagination"><ul class="pagination">[[+first]][[+prev]][[+pages]][[+next]][[+last]]</ul></div>`
-**&tplPageActive** | `@INLINE <li class="active"><a href="[[+href]]">[[+pageNo]]</a></li>`
-**&tplPageFirst** | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_first]]</a></li>`
-**&tplPageLast** | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_last]]</a></li>`
-**&tplPagePrev** | `@INLINE <li class="control"><a href="[[+href]]">&laquo;</a></li>`
-**&tplPageNext** | `@INLINE <li class="control"><a href="[[+href]]">&raquo;</a></li>`
-**&tplPageSkip** | `@INLINE <li class="disabled"><span>...</span></li>`
-**&tplPageFirstEmpty** | `@INLINE <li class="control"><span>[[%pdopage_first]]</span></li>`
-**&tplPageLastEmpty** | `@INLINE <li class="control"><span>[[%pdopage_last]]</span></li>`
-**&tplPagePrevEmpty** | `@INLINE <li class="disabled"><span>&laquo;</span></li>`
-**&tplPageNextEmpty** | `@INLINE <li class="disabled"><span>&raquo;</span></li>`
+Шаблон					| По умолчанию
+------------------------|------------------------------------------------------------------------------
+**&tplPage**			| `@INLINE <li><a href="[[+href]]">[[+pageNo]]</a></li>`
+**&tplPageWrapper**		| `@INLINE <div class="pagination"><ul class="pagination">[[+first]][[+prev]][[+pages]][[+next]][[+last]]</ul></div>`
+**&tplPageActive**		| `@INLINE <li class="active"><a href="[[+href]]">[[+pageNo]]</a></li>`
+**&tplPageFirst**		| `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_first]]</a></li>`
+**&tplPageLast**		| `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_last]]</a></li>`
+**&tplPagePrev**		| `@INLINE <li class="control"><a href="[[+href]]">&laquo;</a></li>`
+**&tplPageNext**		| `@INLINE <li class="control"><a href="[[+href]]">&raquo;</a></li>`
+**&tplPageSkip**		| `@INLINE <li class="disabled"><span>...</span></li>`
+**&tplPageFirstEmpty**	| `@INLINE <li class="control"><span>[[%pdopage_first]]</span></li>`
+**&tplPageLastEmpty**	| `@INLINE <li class="control"><span>[[%pdopage_last]]</span></li>`
+**&tplPagePrevEmpty**	| `@INLINE <li class="disabled"><span>&laquo;</span></li>`
+**&tplPageNextEmpty**	| `@INLINE <li class="disabled"><span>&raquo;</span></li>`
 
 
 
