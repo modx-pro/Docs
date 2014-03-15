@@ -36,7 +36,26 @@
 
 ```
 
+Пример вывода с пагинацией исходящих сообщений аналогичен
 
+**_данном примере используется pdoPage, вы можете использывать getPage_**
+
+```
+<div class="social-container">
+[[!pdoPage?
+  &element=`socDialogList`
+  &action=`outbox`
+]]
+
+<div class="paging">
+<ul class="pagination">
+  [[+page.nav]]
+</ul>
+</div>
+
+</div>
+
+```
 
 
 
