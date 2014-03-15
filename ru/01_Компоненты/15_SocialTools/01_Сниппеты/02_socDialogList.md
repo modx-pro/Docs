@@ -15,8 +15,11 @@
 
 
 ## Примеры
-Пример вывода с пагинацией входящих сообщений _данном примере используется pdoPage, вы можете использывать getPage_
-```<div class='social-container'>
+Пример вывода с пагинацией входящих сообщений 
+** _данном примере используется pdoPage, вы можете использывать getPage_ **
+
+```
+<div class="social-container">
 [[!pdoPage?
   &element=`socDialogList`
   &action=`inbox`
@@ -33,7 +36,7 @@
 ```
 
 Пример исходящих аналогичен _данном примере используется pdoPage, вы можете использывать getPage_
-```<div class='social-container'>
+```<div class="social-container">
 [[!pdoPage?
   &element=`socDialogList`
   &action=`outbox`
