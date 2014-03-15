@@ -8,7 +8,7 @@
 Название | По умолчанию | Описание
 ---|---|---
 **&tplFormReadInbox** | soc.readFormInbox | Шаблон для вывода входящего сообщений
-**&tplFormReadOutbox** | soc.readFormOutbox | Шаблон для вывода строки исходящего сообщений
+**&tplFormReadOutbox** | soc.readFormOutbox | Шаблон для вывода исходящего сообщений
 
 ## Примеры
 Простейший пример вывода формы 
