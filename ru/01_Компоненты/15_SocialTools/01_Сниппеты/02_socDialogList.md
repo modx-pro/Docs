@@ -16,41 +16,8 @@
 
 ## Примеры
 Пример вывода с пагинацией входящих сообщений 
-** _данном примере используется pdoPage, вы можете использывать getPage_ **
 
-```
-<div class="social-container">
-[[!pdoPage?
-  &element=`socDialogList`
-  &action=`inbox`
-]]
-
-<div class="paging">
-<ul class="pagination">
-  [[+page.nav]]
-</ul>
-</div>
-
-</div>
-
-```
-
-Пример исходящих аналогичен _данном примере используется pdoPage, вы можете использывать getPage_
-```<div class="social-container">
-[[!pdoPage?
-  &element=`socDialogList`
-  &action=`outbox`
-]]
-
-<div class="paging">
-<ul class="pagination">
-  [[+page.nav]]
-</ul>
-</div>
-
-</div>
-
-```
+**_данном примере используется pdoPage, вы можете использывать getPage_**
 
 
 
