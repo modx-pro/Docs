@@ -14,9 +14,10 @@ Plugin activity can be seen on [demo-site][1].
 [![](http://st.bezumkin.ru/files/0/e/d/0ed53550272ad3c7d3860d18a0697762s.jpg)](http://st.bezumkin.ru/files/0/e/d/0ed53550272ad3c7d3860d18a0697762.png)
 
 ## Facilities
+
 * Operates with cached resources.
 * Loads only when there r delimiters in content.
-* Delivered with plugin PageBreak and TinyMCE (TypoMCE) to do automatic layout bloof the text.
+* Delivered with plugin PageBreak and TinyMCE (TypoMCE) to do automatic layout split of the text.
 * Supports friendly urls
 * Supports common documents and containers
 
@@ -25,15 +26,15 @@ Following chunks are used to format page-navigation:
 
 Имя						| Описание											| Плейсхолдеры
 ------------------------|---------------------------------------------------|-----------------------------------
-tpl.PageBreaker.begin	| Reference to the first page							| `[[+link]]` - reference to the page
-tpl.PageBreaker.next	| Reference to the next page, it can be empty.	| `[[+link]]` - reference to the page
+tpl.PageBreaker.begin	| Reference to the first page						| `[[+link]]` - reference to the page
+tpl.PageBreaker.next	| Reference to the next page, it can be empty.		| `[[+link]]` - reference to the page
 tpl.PageBreaker.prev	| Reference to the previous page, it can be empty.	| `[[+link]]` - reference to the page
-tpl.PageBreaker.outer	| Block with all references.							| `[[+pb_link_prev]]`, `[[+pb_link_next]]`, `[[+pb_link_begin]]` - formatting the reference
+tpl.PageBreaker.outer	| Block with all references.						| `[[+pb_link_prev]]`, `[[+pb_link_next]]`, `[[+pb_link_begin]]` - formatting the reference
 						| 													| `[[+pb_page]]` - number of a current page
 						| 													| `[[+pb_total]]` - general quantity
 
 
-If you are on the first or last page, references to the next or previous pages will not be generated. This is done so that you can check such situations with [output filters][2] and substitute a reference to the beginning of the document. It was done this way with standard chunk outer:
+If you are on the first or last page, references to the next or previous pages will not be generated. This is done so that you can check such situations with output filters and substitute a reference to the beginning of the document. It was done this way with standard chunk outer:
 ```
 <div class="pagebreaker">
 		[[+pb_link_prev]]
@@ -49,7 +50,7 @@ If you are on the first or last page, references to the next or previous pages w
 ## Ajax
 Plugin can operate in Ajax regime, it means to switch pages without restart.
 
-* For this you need to activate [system setting][3] **pagebreaker_ajax**
+* For this you need to activate system setting **pagebreaker_ajax**
 * References to pages should have class `pb_link`. Check it if you changed standard chunks.
 * Tag `[[*content]]` should be wrapped in element with **#pagebreaker_content** (**pagebreaker_ajax_selector** can be changed in the settings).
 
@@ -66,5 +67,3 @@ If page user has an old browser – hash should be enabled in url
 
 
 [1]: http://demo.modx.pro/pagebreaker
-[2]: /ru/02_Система/01_Основы/02_Фильтры_ввода_и_вывода.md
-[3]: /ru/01_Компоненты/10_PageBreaker/02_Настройки.md

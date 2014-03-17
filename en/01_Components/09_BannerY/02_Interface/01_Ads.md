@@ -1,10 +1,10 @@
-## Ads
 * To create a Ads go to **Components** -> **BannerY**
 * On the tab **Ads** click **New ad** and then save the changes.
 
 [![](http://st.bezumkin.ru/files/e/6/1/e610c64fcbe0bcfc66f1e692e9cb551bs.jpg)](http://st.bezumkin.ru/files/e/6/1/e610c64fcbe0bcfc66f1e692e9cb551b.png)
 
 In the pop-up window you will need to fill:
+
 * **Name**
 * **Media source**
 * **Active**

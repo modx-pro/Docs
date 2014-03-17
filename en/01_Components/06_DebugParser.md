@@ -4,7 +4,7 @@ Now you can specify and optimize slow calls on every page.
 
 [![](http://st.bezumkin.ru/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3s.jpg)](http://st.bezumkin.ru/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
 
-Tag MODX activation, number of queries to the database when it is operation, time of quesies and total time spent on processing are shown in the table.
+Tag MODX activation, number of queries to the database when it is operation, time of queries and total time spent on processing are shown in the table.
 
 If a tag is activated several times on the page, so these tags are totalized.
 
@@ -12,14 +12,15 @@ If a tag is activated several times on the page, so these tags are totalized.
 
 At the bottom of the table you see total according to statistics and general data: PHP version, database and etc.
 
-##Parameters
+## Parameters
 Plugin debugParser works only for the users authorized in mgr context. It gets all the parameters through $_GET.
+
 * **debug** — activates debugging mode and tablet output. 
 * **cache** — permits to use cached pages. On default - no.
 * **top** — the quantity of tags for output. On default – unlimited.
 * **add** — add the tablet at the end of the page, but don’t replace it totally. On default – no.
 
-##Samples
+## Samples
 General output:
 
 ```

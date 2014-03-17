@@ -1,4 +1,3 @@
-## Positions
 * To create a position, go to **Components** -> **BannerY**
 * On the tab **Positions** click **New position** and then save the changes.
 
