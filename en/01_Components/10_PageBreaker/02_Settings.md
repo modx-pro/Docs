@@ -1,9 +1,9 @@
 Component PageBreaker operates with following system settings:
 
 
-Parameter					| Value on default			| Description
+Parameter					| Value on default				| Description
 ----------------------------|-------------------------------|----------
-pagebreaker_splitter		| &lt;!-- pagebreak --&gt;			| Set of symbols to delimiter the text on subpages
+pagebreaker_splitter		| &lt;!-- pagebreak --&gt;		| Set of symbols to delimiter the text on subpages
 pagebreaker_page_var		| p								| Variable that will be used for page generation
 pagebreaker_frontend_js		| [[+assetsUrl]]js/default.js	| Link to JavaScript to load it on the page. It operates only if **pagebreaker_ajax** is on
 pagebreaker_frontend_css	| [[+assetsUrl]]css/default.css	| CSS formatting to load it on the page
