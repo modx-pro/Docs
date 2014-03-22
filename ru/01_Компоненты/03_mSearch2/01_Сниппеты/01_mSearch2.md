@@ -47,7 +47,7 @@
 * **mse2_err_no_query** &rarr; "Задан пустой поисковый запрос".
 
 Там же находятся и другие записи, используемые с чанках и сниппетах по умолчанию.
-[![](http://st.bezumkin.ru/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8cs.jpg)](http://st.bezumkin.ru/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8c.png)
+[![](http://file.modx.pro/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8cs.jpg)](http://file.modx.pro/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8c.png)
 
 ## Форма поиска
 Для работы сниппету нужен только поисковый запрос в массиве $_REQUEST. Его может отправить простейшая форма:

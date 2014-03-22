@@ -2,7 +2,7 @@
 
 Теперь вы можете точно определить и оптимизировать медленные вызовы на каждой странице.
 
-[![](http://st.bezumkin.ru/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3s.jpg)](http://st.bezumkin.ru/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
+[![](http://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3s.jpg)](http://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
 
 В таблице показывается вызов тега MODX, количество запросов в БД при его работе, время запросов и общее время, затраченное на обработку.
 

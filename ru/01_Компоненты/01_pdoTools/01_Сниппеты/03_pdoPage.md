@@ -1,6 +1,6 @@
 Сниппет **pdoPage** позволяет вывести результаты работы других сниппетов с разбивкой на страницы.
 
-[![](http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68s.jpg)](http://st.bezumkin.ru/files/7/e/a/7ea43b037fac16e28073cca778602c68.png)
+[![](http://file.modx.pro/files/7/e/a/7ea43b037fac16e28073cca778602c68s.jpg)](http://file.modx.pro/files/7/e/a/7ea43b037fac16e28073cca778602c68.png)
 
 Есть несколько серьезных отличий от сниппета *getPage*:
 
@@ -11,7 +11,7 @@
 * Редирект на первую страницу при отсутствии результатов или некорректном параметре **&page**.
 * Работает со сниппетом *pdoResources*, по умолчанию.
 
-[![](http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9s.jpg)](http://st.bezumkin.ru/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png)
+[![](http://file.modx.pro/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9s.jpg)](http://file.modx.pro/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png)
 
 ## Параметры
 При вызове сниппета *pdoPage* указываются параметры сниппета, для которого производится пагинация. Данный сниппет должен понимать параметры **&page** и **&limit**. По умолчанию pdoPage принимает все параметры [pdoTools][1] и кроме того, некоторые свои:

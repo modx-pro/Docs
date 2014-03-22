@@ -19,6 +19,6 @@
 {"id":"123456789","key":"ABCDEFGHIJKLMNOPQ","secret":"ABCDEFGHIJKLMNOPQ1234A12"}
 ```
 
-[1]: http://www.odnoklassniki.ru/dk?st.cmd=anonymRegistrationEdit&st._aid=AnonymMain_Register_RegisterEdit
-[2]: http://www.odnoklassniki.ru/devaccess
+[1]: http://odnoklassniki.ru/dk?st.cmd=anonymRegistrationEdit&st._aid=AnonymMain_Register_RegisterEdit
+[2]: http://odnoklassniki.ru/devaccess
 [3]: http://odnoklassniki.ru/dk?st.cmd=appEdit&st._aid=Apps_Info_MyDev_AddApp
