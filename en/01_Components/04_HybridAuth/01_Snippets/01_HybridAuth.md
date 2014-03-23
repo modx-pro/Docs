@@ -8,8 +8,8 @@ Snippet outputs formula for authorization on the site.
 Name						| Default value						| Description
 ----------------------------|-----------------------------------|-----------------------------------------------
 **&activeProviderTpl**		| tpl.HybridAuth.provider.active	| chunk to output icons of a bound service.
-**&addContexts**			|									| additional contexts, separated by commas. E.g. **&addContexts=\`web,ru,en\`**
-**&groups**					|									| list of groups to register the user, separated by commas. User role can be indicated in the group with colon. E.g. &groups=`Users:1` will add user to group "Users" with role "member".
+**&addContexts**			|  									| additional contexts, separated by commas. E.g. **&addContexts=\`web,ru,en\`**
+**&groups**					|  									| list of groups to register the user, separated by commas. User role can be indicated in the group with colon. E.g. &groups=`Users:1` will add user to group "Users" with role "member".
 **&loginContext**			| current context					| main context for authorization. On default – current.
 **&loginResourceId**		| 0									| identifier of a resource on which user should be sent after end of the session. On default 0 renews the current page.
 **&loginTpl**				| tpl.HybridAuth.login				| this chunk will be pointed to an anonymous user, i.e. to any guest.
@@ -45,7 +45,7 @@ Authorization in 2 contexts at once:
 
 ## Provider settings
 Individual system setting with prefix **ha.keys.** is indicated for every provider of authorization:
-[![](http://st.bezumkin.ru/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0bs.jpg)](http://st.bezumkin.ru/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png)
+[![](http://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0bs.jpg)](http://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png)
 
 Value of setting is JSON array which content depends on the provider.
 
@@ -70,7 +70,7 @@ For this you need to indicate keys directly in settings of the context, but not 
 *For proper work of snippet it is better to include friendly url.*
 
 [1]: https://oauth.yandex.ru/client/new
-[2]: http://vk.com/editapp?act=create
+[2]: https://vk.com/editapp?act=create
 [3]: https://dev.twitter.com/apps/new
 [4]: https://dev.twitter.com/apps/new
 [5]: https://developers.facebook.com/apps

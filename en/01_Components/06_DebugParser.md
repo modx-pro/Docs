@@ -2,7 +2,7 @@ Plugin for identification bottlenecks of the site. It shows all handled tags and
 
 Now you can specify and optimize slow calls on every page.
 
-[![](http://st.bezumkin.ru/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3s.jpg)](http://st.bezumkin.ru/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
+[![](http://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3s.jpg)](http://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
 
 Tag MODX activation, number of queries to the database when it is operation, time of queries and total time spent on processing are shown in the table.
 

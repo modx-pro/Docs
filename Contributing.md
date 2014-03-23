@@ -52,13 +52,13 @@
 
 Проще всего открывать нужную страницу на GitHub и копировать адрес из url.
 
-Ссылки на изображения можно вставлять сразу в тексте. Для указания изображений лучше использовать сервис на [st.bezumkin.ru][1] (требует авторизацию).
+Ссылки на изображения можно вставлять сразу в тексте. Для указания изображений лучше использовать сервис на [file.modx.pro][1] (требует авторизацию).
 Он автоматически сгенерирует уменьшенную копию и код markdown для вставки.
 ```
-[![](http://st.bezumkin.ru/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](http://st.bezumkin.ru/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
+[![](http://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](http://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
 ```
 
-[![](http://st.bezumkin.ru/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9s.jpg)](http://st.bezumkin.ru/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9.png)
+[![](http://file.modx.pro/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9s.jpg)](http://file.modx.pro/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9.png)
 
 ### Выделение
 Cистемные параметры нужно выделять жирным текстом, например: \*\*&parametr\*\* будет выглядеть, как **&parametr**.
@@ -148,13 +148,13 @@ Links to pages of the repository, you must specify the root, with a leading slas
 Easier to open the desired page on GitHub and copy the address from the url.
 
 
-The image links can be inserted directly in the text. To specify the image, and use the service on [st.bezumkin.ru][1] (requires authorization).
+The image links can be inserted directly in the text. To specify the image, and use the service on [file.modx.pro][1] (requires authorization).
 It automatically generates thumbnail and markdown code for insertion.
 ```
-[![](http://st.bezumkin.ru/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](http://st.bezumkin.ru/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
+[![](http://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](http://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
 ```
 
-[![](http://st.bezumkin.ru/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9s.jpg)](http://st.bezumkin.ru/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9.png)
+[![](http://file.modx.pro/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9s.jpg)](http://file.modx.pro/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9.png)
 
 ### Highlighting
 System settings need to use bold text, for example: \*\*&parametr\*\* will look like **&parametr**.
@@ -185,4 +185,4 @@ Content Cell  | Content Cell
 Content Cell  | Content Cell
 
 
-[1]: http://st.bezumkin.ru
+[1]: http://file.modx.pro
