@@ -45,7 +45,7 @@
 
 ## Настройки провайдеров
 Для каждого провайдера авторизации указывается отдельная системная настройка с префиксом **ha.keys.**:
-[![](http://st.bezumkin.ru/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0bs.jpg)](http://st.bezumkin.ru/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png)
+[![](http://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0bs.jpg)](http://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png)
 
 Значение настройки - JSON массив, содержимое которого зависит от самого провайдера.
 

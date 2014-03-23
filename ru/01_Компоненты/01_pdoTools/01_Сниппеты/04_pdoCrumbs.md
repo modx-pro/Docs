@@ -126,7 +126,7 @@ return $title;
 ## Демо
 Рабочий пример [генерации хлебных крошек в результатах поиска][3] mSearch2.
 
-[![](http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg)](http://st.bezumkin.ru/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
+[![](http://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg)](http://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
 
 Также на всём сайте [bezumkin.ru][4] используются динамические title.
 

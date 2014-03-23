@@ -11,7 +11,7 @@ Thus several "virtual" pages are resulted from one real page.
 
 ## Demonstration
 Plugin activity can be seen on [demo-site][1].
-[![](http://st.bezumkin.ru/files/0/e/d/0ed53550272ad3c7d3860d18a0697762s.jpg)](http://st.bezumkin.ru/files/0/e/d/0ed53550272ad3c7d3860d18a0697762.png)
+[![](http://file.modx.pro/files/0/e/d/0ed53550272ad3c7d3860d18a0697762s.jpg)](http://file.modx.pro/files/0/e/d/0ed53550272ad3c7d3860d18a0697762.png)
 
 ## Facilities
 

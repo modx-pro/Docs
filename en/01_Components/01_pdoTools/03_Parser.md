@@ -1,5 +1,5 @@
 The new parser appeared in pdoTools with version 1.9.0. It can be initiated after installation of the application
-[![](http://st.bezumkin.ru/files/9/a/d/9ad76b519ea8ded17db7fe5d69688863s.jpg)](http://st.bezumkin.ru/files/9/a/d/9ad76b519ea8ded17db7fe5d69688863.png)
+[![](http://file.modx.pro/files/9/a/d/9ad76b519ea8ded17db7fe5d69688863s.jpg)](http://file.modx.pro/files/9/a/d/9ad76b519ea8ded17db7fe5d69688863.png)
 
 All chunks and adds MODX of this parser process are a bit faster, because it does not take frameworks and filters, just simple tags like [[+id]] and [[~15]]. However, it does modPaser faster because it does not create odd objects.
 If a tag has any condition, it is processed by the original modParser and no mistakes should be made. It is likely that over some time pdoParser will begin to process more functions and we will accelerate by degrees.

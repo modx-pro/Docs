@@ -3,7 +3,7 @@
 Обладает огромным количеством настроек и работает, используя свой собственный класс фильтрации, который вы можете расширить.
 При небольших знаниях PHP и фантазии, вы можете организовать фильтрацию по любым позициям.
 
-[![](http://st.bezumkin.ru/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20s.jpg)](http://st.bezumkin.ru/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20.png)
+[![](http://file.modx.pro/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20s.jpg)](http://file.modx.pro/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20.png)
 
 ## Параметры
 
@@ -65,7 +65,7 @@
 * Стандартная комплектация рассчитана так, чтобы работать при минимальном вызове `[[!mFilter2]]` и установленном Bootstrap 3.
 Если у вас что-то "сломалось", после того, как вы изменили чанк - смотрите, что именно вы изменили.
 
-[![](http://st.bezumkin.ru/files/5/6/8/568f372891fb70d76941280929399efds.jpg)](http://st.bezumkin.ru/files/5/6/8/568f372891fb70d76941280929399efd.png)
+[![](http://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efds.jpg)](http://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efd.png)
 
 ## Чанки и оформление
 У mFilter2 есть один основной чанк, куда выводятся все результаты его работы, с основными плейсхолдерами: `[[+filters]]` и `[[+results]]`.
@@ -121,7 +121,7 @@
 	`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9as.jpg)](http://st.bezumkin.ru/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9a.png)
+[![](http://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9as.jpg)](http://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9a.png)
 
 В комплекте с mFilter2 идёт несколько стандартный методов фильтрации, которые позволяют сделать вывод фильтров более приятным.
 
@@ -139,7 +139,7 @@
 	&tplFilter.row.resource|template=`tpl.mFilter2.filter.number`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74s.jpg)](http://st.bezumkin.ru/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74.png)
+[![](http://file.modx.pro/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74s.jpg)](http://file.modx.pro/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74.png)
 
 #### boolean
 Фильтр для вывода параметров да\нет. Например, опубликован ли ресурс, скрыт в меню, доступен для поиска и т.д.
@@ -151,7 +151,7 @@
 	`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/b/c/0/bc022499933ae06b101e290e9b784a16s.jpg)](http://st.bezumkin.ru/files/b/c/0/bc022499933ae06b101e290e9b784a16.png)
+[![](http://file.modx.pro/files/b/c/0/bc022499933ae06b101e290e9b784a16s.jpg)](http://file.modx.pro/files/b/c/0/bc022499933ae06b101e290e9b784a16.png)
 
 #### parents, categories и grandparents
 Следующие три фильтра применяются только к полю *parent* ресурса.
@@ -164,7 +164,7 @@ Parents выводит имена двух родителей, через раз
 	`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252s.jpg)](http://st.bezumkin.ru/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252.png)
+[![](http://file.modx.pro/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252s.jpg)](http://file.modx.pro/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252.png)
 
 Categories выводит имя непосредственного родителя.
 
@@ -175,7 +175,7 @@ Categories выводит имя непосредственного родите
 	`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326s.jpg)](http://st.bezumkin.ru/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326.png)
+[![](http://file.modx.pro/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326s.jpg)](http://file.modx.pro/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326.png)
 
 Grandparents выводит имена родителей-дедушек и предназначен для больших каталогов. Если "дедушки" нет, то будет выведен непосредственный родитель.
 ```
@@ -185,7 +185,7 @@ Grandparents выводит имена родителей-дедушек и пр
 	`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/5/5/e/55e5e69063b9580d534b50a03c1acb4fs.jpg)](http://st.bezumkin.ru/files/5/5/e/55e5e69063b9580d534b50a03c1acb4f.png)
+[![](http://file.modx.pro/files/5/5/e/55e5e69063b9580d534b50a03c1acb4fs.jpg)](http://file.modx.pro/files/5/5/e/55e5e69063b9580d534b50a03c1acb4f.png)
 
 #### vendors
 Фильтр для вывода имён производителей товаров miniShop2. Применяется только к полю `vendor` таблицы `ms`.
@@ -197,7 +197,7 @@ Grandparents выводит имена родителей-дедушек и пр
 	`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](http://st.bezumkin.ru/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
+[![](http://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](http://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
 
 #### fullname
 Этот фильтр выводит полное имя пользователя. Может применяться к любому полю, содержащему id юзера.
@@ -208,7 +208,7 @@ Grandparents выводит имена родителей-дедушек и пр
 	`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4ds.jpg)](http://st.bezumkin.ru/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4d.png)
+[![](http://file.modx.pro/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4ds.jpg)](http://file.modx.pro/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4d.png)
 
 #### year
 Этот фильтр применяется к полям с датой и выводит год. Можно, например, фильтровать новости по году создания.
@@ -219,11 +219,11 @@ Grandparents выводит имена родителей-дедушек и пр
 	`
 ]]
 ```
-[![](http://st.bezumkin.ru/files/c/1/3/c13c234629cde60be2122e85ee18483as.jpg)](http://st.bezumkin.ru/files/c/1/3/c13c234629cde60be2122e85ee18483a.png)
+[![](http://file.modx.pro/files/c/1/3/c13c234629cde60be2122e85ee18483as.jpg)](http://file.modx.pro/files/c/1/3/c13c234629cde60be2122e85ee18483a.png)
 
 ## Предварительные результаты
 Предварительные результаты - это маленькие циферки рядом с каждым фильтром, которые показывают, сколько вы получите результатов, если кликните на него.
-[![](http://st.bezumkin.ru/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0s.jpg)](http://st.bezumkin.ru/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0.png)
+[![](http://file.modx.pro/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0s.jpg)](http://file.modx.pro/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0.png)
 
 При каждом клике это значение пересчитывается для **всех фильтров**, с учетом текущего состояния. То есть, скрипт пробегает по каждому варианту и считает, сколько будет результатов, если его активировать.
 
@@ -283,8 +283,8 @@ mFilter2 умеет сортировать сразу по нескольким 
 Для оформления фильтров используются записи из лексикона.
 Если вы добавили новый фильтр и он отображается непонятной длинной надписью на английском - это значит, что её нужно добавить в словарь mSearch2.
 
-[![](http://st.bezumkin.ru/files/5/5/2/552180f6bee53f13c033fb188c622f04s.jpg)](http://st.bezumkin.ru/files/5/5/2/552180f6bee53f13c033fb188c622f04.png)
-[![](http://st.bezumkin.ru/files/e/b/b/ebbc79941c98e61692f47d1e8046c721s.jpg)](http://st.bezumkin.ru/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
+[![](http://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04s.jpg)](http://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04.png)
+[![](http://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721s.jpg)](http://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
 
 
 
