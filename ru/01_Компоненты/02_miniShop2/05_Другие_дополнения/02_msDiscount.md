@@ -71,6 +71,36 @@
 ```
 Для оформления внешнего вида счетчика можно использовать `.msd_remains span {}`, `.msd_remains .days {}` и т. д.
 
+## Вывод скидки пользователя
+Следуя логике работы компонента, у покупателя нет как таковой скидки, она есть только по отношению к определённому товару.
+
+Однако, если пользователь приписан к группе, для которой указана скидка - её можно вывести таким сниппетом:
+```
+<?php
+// Если не указан &uid=``, то выбираем для текущего юзера
+if (empty($uid)) {$uid = $modx->user->id;}
+
+$pdoFetch = $modx->getService('pdoFetch');
+$group = $pdoFetch->getObject('msdUserGroup', array('modUser.id' => $uid), array(
+	'loadModels' => 'msdiscount',
+	'leftJoin' => array(
+		'modUserGroupMember' => array('class' => 'modUserGroupMember', 'on' => 'modUserGroupMember.user_group = msdUserGroup.id'),
+		'modUser' => array('class' => 'modUser', 'on' => 'modUser.id = modUserGroupMember.member AND modUser.id = '.$uid),
+	),
+	'groupby' => 'msdUserGroup.id',
+	'sortby' => 'msdUserGroup.discount',
+	'sortdir' => 'desc',
+	'select' => 'discount',
+));
+
+if (isset($group['discount'])) {
+	return $group['discount'];
+}
+```
+Сниппет вернёт максимальную скидку группы пользователя, или пустоту.
+*Для работы требуется pdoTools, который идёт в комплекте с miniShop2.*
+
+
 ## Заключение
 Компонент немного тормозит работу вывода каталога, так как скидки считаются для всех выводимых товаров, в зависимости от того, кто их видит.
 
