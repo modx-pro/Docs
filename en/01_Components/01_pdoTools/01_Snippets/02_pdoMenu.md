@@ -8,6 +8,7 @@ Options
 -------
 
 * __&showLog__ - Show more information about running the snippet. Only visible to users with permission for context "mgr".
+* __&checkPermissions__ - Specify whether permissions should be checked in the processing of the resources. Comma-separated list of permissions to check for, ex. load,list,view.
 * __&fastMode__ - Quick mode processing chunks. All raw tags (output modifiers, snippets, etc.) are removed.
 * __&level__ - Depth of generated menu.
 * __&parents__ - List parents, separated by commas, to search for results. By default, the result is limited to the current parent. If set to 0 - unlimited. If the parent id starts with a hyphen, it and its children are excluded from the result.
@@ -50,7 +51,6 @@ Options
 * __&tplParentRowActive__ - Chunk design active category.
 * __&tplCategoryFolder__ - Special chunk design category. Category__ - this document isfolder = 1 and zero or template or attribute "rel = category".
 * __&tplStart__ - Chunk for the parent resource, provided that "displayStart" is also used.
-* __&checkPermissions__ - Specify whether permissions should be checked in the processing of the resources. Comma-separated list of permissions to check for, ex. load,list,view.
 * __&hereId__ - Id document generated for the current menu item. Must be specified only when the script itself it incorrectly identifies, for example when the menu screen is another chunk of the snippet.
 * __&where__ - Array of additional selection properties encoded in JSON.
 * __&select__ - List of fields to retrieve, separated by commas. You can specify a JSON string array, eg {"modResource": "id, pagetitle, content"}.
