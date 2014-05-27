@@ -36,12 +36,12 @@
 [![](http://file.modx.pro/files/b/d/2/bd26231a09d3b60691db2ddabe460b39s.jpg)](http://file.modx.pro/files/b/d/2/bd26231a09d3b60691db2ddabe460b39.png)
 
 На этой вкладке Вы можете ознакомиться с логом выгрузки:
+
 * Количество выбранных товаров
 * Причины, по которым были отфильтрованы те или иные товары
 * Количество товаров в итоговой выгрузке
 
 ## Пример выгрузки
-
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
