@@ -44,7 +44,7 @@ A substantial increase in speed, although only on first page view if the Wayfind
 * __&tplParentRow__ - Chunk design container with children.
 * __&tplParentRowHere__ - Chunk for current parent item.
 * __&tplHere__ - Chunk for current resource
-* __&tplInner__ - Chunk wrapper internal menu items. If empty - will use "tplInner".
+* __&tplInner__ - Chunk wrapper internal menu items. If empty - will use "&tplOuter".
 * __&tplInnerRow__ - Chunk for submenu rows.
 * __&tplInnerHere__ - Chunk for submenu current item.
 * __&tplParentRowActive__ - Chunk design active category.
