@@ -24,4 +24,10 @@
 
 [![](http://modx.pro/assets/images/tickets/3409/198b956b16510e7c3a24092a2faef19e3b7cb240.png)](http://modx.pro/assets/images/tickets/3409/198b956b16510e7c3a24092a2faef19e3b7cb240.png)
 
- 
+#### обновление цен на фронте сайта
+необходимо обернуть плейсходер [[!+price]]
+например
+```
+<span class="pr_change">[[!+price]]</span>
+```
+теперь при выборе опций товара автоматически сменится и цена.
