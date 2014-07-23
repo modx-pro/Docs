@@ -6,7 +6,7 @@ These parameters define the derived objects.
 Name | Description | On default
 ---|---|---
 **&class** | Class of a derived object | modResource
-**&parents** | List of parents to search the result, separated by commas. If you put 0, the sample is not limited. If parent id begins with a hyphen, it and its children are eliminated from the sample | Current resource
+**&parents** | List of parents to search the result, separated by commas. If you put 0, the sample is not limited. If parent id begins with a hyphen, it and its children are eliminated from the sample. If you have to limit the sample by **&depth** parameter in resource root, you should use **&parents=`+0`** | Current resource
 **&depth** | Search depth of child resources from its parent | 10
 **&resources** | List of resources to search the results, separated by commas. If resource id begins with a hyphen, this resource is eliminated from the sample. | 
 **&templates** | List of templates to filter the results, separated cy commas. If template id begins with a hyphen, resources with it are eliminated from the sample. | 
