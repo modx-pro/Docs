@@ -1,19 +1,18 @@
 Компонент реализует функционал - автодополнение адреса и ФИО при оформлении заказа в minishop.
 
-## получить ключ
+Вам нужно зайти на сайт [dadata.ru][1], зарегистироваться и получить ключ.
 
-зайти на сайт dadata.ru, зарегистироваться и получить ключ
-
-## подключение
-
-в шаблон корзины
+Затем вызвать сниппет msDaData перед оформлением заказа:
 ```
 [[msDaData? &token=`тут ваш токен`]]
-[[!msCart?]]
+
+[[!msCart]]
 [[!msOrder? &tplOuter=`tpl.msOrderDaData.outer`]]
 ```
+Для оформления заказа нужно указать шаблон `tpl.msOrderDaData.outer`, идущий в комплекте.
 
-## вывод на сайте
-[![](http://file.modx.pro/files/7/8/2/78231f588fdab0f7f36a49696aafc88es.jpg)](http://file.modx.pro/files/7/8/2/78231f588fdab0f7f36a49696aafc88e.png)
+Результат:
+[![](http://file.modx.pro/files/3/9/d/39d379ec493cf148e0b190cdf8ca8812s.jpg)](http://file.modx.pro/files/3/9/d/39d379ec493cf148e0b190cdf8ca8812.png)
 
 
+[1]: http://dadata.ru
