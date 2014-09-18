@@ -55,7 +55,7 @@
 Для работы сниппету нужен только поисковый запрос в массиве $_REQUEST. Его может отправить простейшая форма:
 ```
 <form action="/search.html" method="get">
-	<input type="text" name="query" value="[[+mse_query]]" />
+	<input type="text" name="query" value="[[+mse2_query]]" />
 	<button type="submit">Искать!</button>
 </form>
 ```
