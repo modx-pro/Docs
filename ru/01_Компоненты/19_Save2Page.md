@@ -10,19 +10,19 @@
 
 ### На текущий момент доступно:
 
-- генерации [**pdf**](http://s2p.vgrish.ru/?s2p=pdf&amp;download=0)на основе **ресурса modx**
+- генерации [**pdf**][0] на основе **ресурса modx**
 - генерация **pdf** на основе **чанка modx**
 - генерация **pdf** на основе **сниппета modx**
-- генерация **[Markdown](http://s2p.vgrish.ru/?s2p=md&amp;download=0) **на основе** **ресурса modx****
-- генерация **[Txt](http://s2p.vgrish.ru/?s2p=text&amp;download=0)**** **на основе** **ресурса modx****
+- генерация **[Markdown][1] **на основе** **ресурса modx****
+- генерация **[Txt][2]**** **на основе** **ресурса modx****
 
-Конвертирование данных из HTML в PDF происходит с помощью [mPDF](https://github.com/finwe/mpdf &quot;mPDF&quot;).
+Конвертирование данных из HTML в PDF происходит с помощью [mPDF][3] "mPDF".
 
 После установки пакета страницы вашего сайта будут доступны по ссылкам с параметром запроса **s2p**
 
 Доступно задание параметров mPDF в настройках MODx:
 
-![](https://file.modx.pro/files/3/2/7/32765c451cddbcbd0c8997731636f505.png)
+[![](https://file.modx.pro/files/3/2/7/32765c451cddbcbd0c8997731636f505s.jpg)](https://file.modx.pro/files/3/2/7/32765c451cddbcbd0c8997731636f505.png)
 
 - формат pdf (Возможно A0 - A10, B0 - B10, C0 - C10, 4A0, 2A0, RA0 - RA4, SRA0 - SRA4, Letter, Legal, Executive, Folio, Demy, Royal, A, B, Ledger, Tabloid)
 - ориентация pdf (P: портретная - по дефолту, L: альбомная. Указывается в формате pdf. Пример - &quot;A4-L&quot;)
@@ -31,7 +31,7 @@
 
 ### сниппет Save2page - сохранение чанка / сниппета в pdf
 
-![](https://file.modx.pro/files/5/7/1/57173668cc8975edee4617f1897847e9.png)
+[![](https://file.modx.pro/files/5/7/1/57173668cc8975edee4617f1897847e9s.jpg)](https://file.modx.pro/files/5/7/1/57173668cc8975edee4617f1897847e9.png)
 
 ### параметры сниппета:
 
@@ -44,7 +44,7 @@
 - font_size - размер шрифта по умолчанию
 - name_pdf - задать имя файла
 
-пример выгрузки в файл можно [посмотреть тут](http://s2p.vgrish.ru/primer-vyigruzki-v-fajl.html)
+пример выгрузки в файл можно [посмотреть тут][4]
 
 ### сниппет Save2pagelink - вывод ссылок на страницу ресурса
 
@@ -54,3 +54,9 @@
 - tpl - шаблон ссылок
 
 *данное описание в формате **Markdown** сформировано пакетом Save2Page
+
+[0]: http://s2p.vgrish.ru/?s2p=pdf&download=0
+[1]: http://s2p.vgrish.ru/?s2p=md&download=0
+[2]: http://s2p.vgrish.ru/?s2p=text&download=0
+[3]: https://github.com/finwe/mpdf
+[4]: http://s2p.vgrish.ru/primer-vyigruzki-v-fajl.html
