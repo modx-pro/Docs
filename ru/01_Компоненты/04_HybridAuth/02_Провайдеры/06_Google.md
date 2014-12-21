@@ -6,6 +6,10 @@
 * Нажимаем создать приложение.
 * Принимаем лицинзионное соглашение и правила.
 * *В некоторых случаях еще необходимо заполнить название компании приложения в **APIs & auth** &rarr; **Consent screen***
+* Переходим в **APIs & auth** &rarr; **APIs** и включаем Contacts API и Google+ API
+
+[![](https://file.modx.pro/files/1/a/2/1a23dbb7774059caba5bcf78bb30f0d0s.jpg)](https://file.modx.pro/files/1/a/2/1a23dbb7774059caba5bcf78bb30f0d0.png)
+
 * Переходим в **APIs & auth** &rarr; **Credential**
 
 [![](http://file.modx.pro/files/9/e/7/9e75c595a6b5f8d2d7f3cfb8712f9732s.jpg)](http://file.modx.pro/files/9/e/7/9e75c595a6b5f8d2d7f3cfb8712f9732.png)
