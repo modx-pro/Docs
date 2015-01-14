@@ -87,6 +87,9 @@ Here is the code
 
 The code starts from the new line. Blank lines before and after the code voluntarily.
 
+### Newline
+For making the forced line break you need to add two spaces at the end of the line. Parser will replace them with the tag `br`.
+
 ### Tables
 You can use tables for easy display data, such as snippet properties:
 ```
