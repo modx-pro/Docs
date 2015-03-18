@@ -30,7 +30,7 @@
 **&width**  | 500px  | Ширина карты, например 500px или 100%. Обязательно укажите единицы измерения.
 **&height**  | 400px  | Высота карты
 **&containerCssClass**  |   | Можно указать css класс блока, в который обернута карта
-**&mapTpl**  | mapex.Map.Tpl  | Основноый чанк для вывода карты
+**&mapTpl**  | mapex.Map.Tpl  | Основной чанк для вывода карты
 **&placemarkTpl**  | mapex.Placemark.Tpl  | Чанк для вывода точки
 **&polygonTpl**  | mapex.Polygon.Tpl  | Чанк для вывода многоугольника
 **&polylineTpl**  | mapex.Polyline.Tpl  | Чанк для вывода линии
@@ -45,7 +45,7 @@
 
 Имя  | По умолчанию  | Описание
 ------------- | ------------- | -------------
-**&mapTpl**  | mapex.Map21.Tpl  | Основноый чанк для вывода карты
+**&mapTpl**  | mapex.Map21.Tpl  | Основной чанк для вывода карты
 **&placemarkTpl**  | mapex.Placemark21.Tpl  | Чанк для вывода точки
 **&polygonTpl**  | mapex.Polygon21.Tpl  | Чанк для вывода многоугольника
 **&polylineTpl**  | mapex.Polyline21.Tpl  | Чанк для вывода линии
