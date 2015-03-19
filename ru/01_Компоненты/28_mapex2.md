@@ -3,7 +3,7 @@
 [![](https://file.modx.pro/files/f/4/4/f44f2ad54baab0ccfc076ae74946bd58.png)](https://file.modx.pro/files/f/4/4/f44f2ad54baab0ccfc076ae74946bd58.png)
 
 ## Возможности
-Компонент позволяет рисовать на этой карте следуюющие объекты:
+Компонент позволяет рисовать на этой карте следующие объекты:
 * **Точки**. Произвольное количество точек, для каждой задается Текст, Цвет (из предустановленных в Яндекс.Картах), Текст балуна
 * **Линии**. Произвольное количество линий, для каждой задается Цвет линии, Ширина линии, Прозрачность, Текст балуна
 * **Многоугольник**. Произвольное количество многоугольников, для каждого задается Цвет границы, Цвет заливки, Ширина линии, Прозрачность, Текст балуна
@@ -13,6 +13,7 @@
 * тип карты (схема, спутник, гибрид, народная карта, народная + спутник),
 * координаты центра карты,
 * масштаб карты.
+
 Все это позволяет отобразить карту на сайте точно также, как она выглядит в административном интерфейсе.
 
 В админке реализован поиск объектов на карте по адресу или названию.
@@ -39,7 +40,7 @@
 **&polygonTpl**  | mapex.Polygon.Tpl  | Чанк для вывода многоугольника
 **&polylineTpl**  | mapex.Polyline.Tpl  | Чанк для вывода линии
 **&routeTpl**  | mapex.Route.Tpl  | Чанк для вывода маршрута
-**&controls**  | mapTools, typeSelector, zoomControl, searchControl, miniMap, trafficControl, scaleLine  | Набор элементов управления, которые будут на карте. См. [https://tech.yandex.ru/maps/doc/jsapi/2.0/dg/concepts/controls-docpage/][https://tech.yandex.ru/maps/doc/jsapi/2.0/dg/concepts/controls-docpage/]
+**&controls**  | mapTools, typeSelector, zoomControl, searchControl, miniMap, trafficControl, scaleLine  | Набор элементов управления, которые будут на карте. См. [https://tech.yandex.ru/maps/doc/jsapi/2.0/dg/concepts/controls-docpage/]
 **&includeJS**  | 1  | Подключать или нет на страницу скрипт Яндекс.Карт
 
 ### mapexMap21
