@@ -40,7 +40,7 @@
 **&polygonTpl**  | mapex.Polygon.Tpl  | Чанк для вывода многоугольника
 **&polylineTpl**  | mapex.Polyline.Tpl  | Чанк для вывода линии
 **&routeTpl**  | mapex.Route.Tpl  | Чанк для вывода маршрута
-**&controls**  | mapTools, typeSelector, zoomControl, searchControl, miniMap, trafficControl, scaleLine  | Набор элементов управления, которые будут на карте. См. [https://tech.yandex.ru/maps/doc/jsapi/2.0/dg/concepts/controls-docpage/]
+**&controls**  | mapTools, typeSelector, zoomControl, searchControl, miniMap, trafficControl, scaleLine  | Набор элементов управления, которые будут на карте. См. [https://tech.yandex.ru/maps/doc/jsapi/2.0/dg/concepts/controls-docpage/][1]
 **&includeJS**  | 1  | Подключать или нет на страницу скрипт Яндекс.Карт
 
 ### mapexMap21
@@ -55,7 +55,7 @@
 **&polygonTpl**  | mapex.Polygon21.Tpl  | Чанк для вывода многоугольника
 **&polylineTpl**  | mapex.Polyline21.Tpl  | Чанк для вывода линии
 **&routeTpl**  | mapex.Route21.Tpl  | Чанк для вывода маршрута
-**&controls**  | default  | Набор элементов управления, которые будут на карте. См. [https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/controls-docpage/][https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/controls-docpage/]
+**&controls**  | default  | Набор элементов управления, которые будут на карте. См. [https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/controls-docpage/][2]
 
 ## Настройки компонента
 В настройках компонента (см. Настройки системы, пространство mapex2) можно задать начальное положение, масштаб и тип карты в административном интерфейсе, а также скрыть или показать служебное поле, в котором храниться состояние карты в json формате.
@@ -68,3 +68,6 @@
 Во фронтенде реализованна поддержка API Яндекс.Карт как версии 2.0 (сниппет mapexMap), так и 2.1 (сниппет mapexMap21).
 
 Единственный нюанс - в версии API 2.1 поддерживаются мультимаршруты, но из-за работы административного интерфейса на младшей версии API, данная возможность в компоненте не используется.
+
+[1]: https://tech.yandex.ru/maps/doc/jsapi/2.0/dg/concepts/controls-docpage/
+[2]: https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/controls-docpage/
