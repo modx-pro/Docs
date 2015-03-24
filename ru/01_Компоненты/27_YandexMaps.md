@@ -5,10 +5,10 @@
 Чтобы указать местоположение объекта нужно просто кликнуть на том месте на карте в "дополнительных полях" ресурса.
 
 #### Так выглядит TV поле в админке
-[![](https://file.modx.pro/files/0/3/a/03aee8a2ca26a39fd5e4ea6462335c03.jpg)](https://file.modx.pro/files/0/3/a/03aee8a2ca26a39fd5e4ea6462335c03s.jpg)
+[![](https://file.modx.pro/files/0/3/a/03aee8a2ca26a39fd5e4ea6462335c03.jpg)](https://file.modx.pro/files/0/3/a/03aee8a2ca26a39fd5e4ea6462335c03.jpg)
 
 #### Так выглядит карта со множеством объектов во фронтенде
-[![](https://file.modx.pro/files/9/9/8/998222912119bf1c4576ceead8a24e04.jpg)](https://file.modx.pro/files/9/9/8/998222912119bf1c4576ceead8a24e04s.jpg)
+[![](https://file.modx.pro/files/1/1/f/11f453ac93d154b2d2dc395188492a18.jpg)](https://file.modx.pro/files/1/1/f/11f453ac93d154b2d2dc395188492a18.jpg)
 
 
 
@@ -16,8 +16,8 @@
 Имя  | По умолчанию  | Описание
 ------------- | ------------- | -------------
 **&tpl**  | tpl.yandexMaps  | Шаблон обёртка вывода ссылок фильтров для отображения/скрытия объектов на карте
-**&tplEventsItemsWrapper**  | `@INLINE ...`  | Шаблон обёртка вывода ссылок фильтров для отображения/скрытия объектов на карте.
-**&tplEventsItems**  | `@INLINE ...`  | Шаблон вывода ссылок фильтров для отображения/скрытия объектов на карте.
+**&tplFiltersItemsWrapper**  | tpl.yandexMaps.filtersItemsWrapper  | Шаблон обёртка вывода ссылок фильтров для отображения/скрытия объектов на карте.
+**&tplFiltersItems**  | tpl.yandexMaps.filtersItems  | Шаблон вывода ссылок фильтров для отображения/скрытия объектов на карте.
 **&idMap**  | yandexMap  | Id карты для html разметки и JS инициализации.
 **&centerCoords**  | 55.75356,37.62001  | Координаты для центра карты.
 **&zoom**  | 14  | Zoom карты (приближение).
@@ -27,19 +27,19 @@
 **&objectsTypesJSON**  |   | JSON строка с типами объектов, родительскими id, тайтлами, иконками или пресетами, а также субфильтрами по TV (и назначение каждому варианту ответа иконки или пресета).
 **&id**  |   | Id ресурса для вызова одиночного объекта на карте. Например: [[*id]].
 **&markerIcon**  |   | Иконка для одиночного объекта. Например: "/images/map_marker.png".
-**&markerPreset**  |   | Ключ стиля для одиночного объекта. Например: "islands#yellowStretchyIcon" или "islands#violetDotIcon".
+**&markerPreset**  | islands#redDotIcon  | Ключ стиля для одиночного объекта. Например: "islands#yellowStretchyIcon" или "islands#violetDotIcon".
 **&markerPresetText**  |   | Текст для одиночного объекта на preset. Например: "Плавательный бассейн".
 **&markerPresetFieldText**  |   | Поле, откуда извлекать текст для одиночного объекта на preset. Например: "menutitle".
 **&fieldForBalloonContent**  |   | Какое поле ресурса использовать для описания в balloon.
 **&fieldForHint**  |   | Какое поле ресурса использовать для подсказки при наведении на объект.
 **&showMoreLink**  | 0  | Ставить ли ссылку "подробнее" на ресурс в конец текста в balloonContent.
-**&showMoreLinkTpl**  | `@INLINE ...`  | Шаблон ссылки "подробнее" на ресурс в конце текста в balloonContent.
-**&classMapBlock**  | yandexMapsBlock  | Класс для блока карты.
+**&showMoreLinkTpl**  | `@INLINE <p><a href="[[~[[+id]]]]" target="_blank">Подробнее</a></p>`  | Шаблон ссылки "подробнее" на ресурс в конце текста в balloonContent.
+**&classMapBlock**  | ymBlock  | Класс для блока карты.
 **&styleMapBlock**  | float:left; width:90%; height:100%;  | Стиль для блока карты.
-**&idEventsForm**  | yandexMapsEventsForm  | Id для формы фильтров (вкл/выкл) гео-объектов.
-**&classEventsBlock**  | yandexMapsEventsBlock  | Класс для блока ссылок фильтров (вкл/выкл) гео-объектов.
-**&styleEventsBlock**  | float:left; width:10%; height:100%;  | Стиль для блока ссылок фильтров (вкл/выкл) гео-объектов.
-**&classEventItem**  | yandexMapsEvent  | Класс для ссылки фильтра (вкл/выкл) гео-объектов (нужен для отслеживания клика JSом).
+**&idFiltersForm**  | ymFiltersForm  | Id для формы фильтров (вкл/выкл) гео-объектов.
+**&classFiltersBlock**  | ymFiltersBlock  | Класс для блока ссылок фильтров (вкл/выкл) гео-объектов.
+**&styleFiltersBlock**  | float:left; width:10%; height:100%;  | Стиль для блока ссылок фильтров (вкл/выкл) гео-объектов.
+**&classFiltersItem**  | ymFilters  | Класс для ссылки фильтра (вкл/выкл) гео-объектов (нужен для отслеживания клика JSом).
 
 
 
