@@ -158,8 +158,9 @@ $.get('document.html?page=5', function(response) {
 pdoPage.callbacks['before'] = function(config) {
 	console.log('Конфиг перед загрузкой!', config);
 };
-pdoPage.callbacks['after'] = function(config) {
+pdoPage.callbacks['after'] = function(config, response) {
 	console.log('Конфиг после загрузки!', config);
+	console.log('Ответ от сервера!', response);
 }
 ```
 Проверка данных в config позволит вам различить разные вызовы pdoPage на одной странице и сделать с ними что-то.
