@@ -163,7 +163,14 @@ pdoPage.callbacks['after'] = function(config, response) {
 	console.log('Ответ от сервера!', response);
 }
 ```
-Проверка данных в config позволит вам различить разные вызовы pdoPage на одной странице и сделать с ними что-то.
+
+С версии 1.11.0-pl появилась возможность добавления обработчика на событие **pdopage_load**:
+```
+$(document).on('pdopage_load', function(e, config, response) {
+	console.log(e, config, response);
+});
+```
+Проверка данных в config позволит вам различить разные вызовы pdoPage на одной странице.
 
 ## Примеры
 Так как pdoPage является частью pdoTools, в параметре **&element** у него сразу прописан сниппет pdoResources. Поэтому простой вызов сниппета выведет вам дочерние ресурсы:
