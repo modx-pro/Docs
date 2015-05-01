@@ -2,14 +2,14 @@
 
 [![](https://file.modx.pro/files/c/3/a/c3a73249165844c116d0463006c6272cs.jpg)](https://file.modx.pro/files/c/3/a/c3a73249165844c116d0463006c6272c.png)
 
-[Github](https://github.com/me6iaton/ms2form)  
-[Поледние версии](https://github.com/me6iaton/ms2form/releases)
+[Github][1]  
+[Поледние версии][2]
 
 ## Возможности
 
 - Создание продуктов minishop2 из фронтэнда.
 - Редактирование существующих minishop2 продуктов с фронтенда, с проверкой прав.  
-- Поддержка нескольких редакторов [quill](http://quilljs.com/) и [bootstrap-markdown](http://www.codingdrama.com/bootstrap-markdown/).
+- Поддержка нескольких редакторов [quill][3] и [bootstrap-markdown][4].
 - Автоматическое создание новой категории в которой будет опубликован продукт, интеграция с msearch2 для автодополнения.
 - Загрузка изображений в галерею продукта перетаскиванием, запись превью на диск, настройка параметров через источник файлов.
 - Поддержка мультикатегорий
@@ -48,7 +48,7 @@
 | **resources** |  | Список id, через запятую, категорий в которых будет опубликован ресурс одновременно с основной категориией. Альтернатива parents |
 | **permissions** | section_add_children | Проверка прав на публикацию в раздел. По умолчанию проверяется разрешение "section_add_children". |
 | **redirectPublished** | new | На какой документ отправлять пользователя при создании ресурса? new - на вновь созданный, 0 - не перенаправлять, id - на ресурс с указанным id [new|0|id] |
-| **redirectScheme** | -1 | Схема создания url для перенаправления [modx.makeurl](http://rtfm.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.makeurl) |
+| **redirectScheme** | -1 | Схема создания url для перенаправления [modx.makeurl][5] |
 | **requiredFields** | parent,pagetitle,content | Обязательные поля ресурса, которые пользователь должен заполнить для отправки формы. |
 | **source** |  | Id источника медиа для загрузки файлов. По умолчанию будет использован источник, указанный в системной настройке "ms2_product_source_default". |
 | **template** |  | id шаблона для публикации ресурса, эта настройка отключает настройку templates |
@@ -69,7 +69,7 @@
 Для создания нового товара вызовите не кешируемый сниплет ms2form с необходимыми параметрами.
 
 Для редактирования существующего товара с помощью формы, на ресурс с формой должна вести ссылка
-с GET параметром ?&pid=[id товара]
+с GET параметром `?&pid=[id товара]`
 
 ## Политики доступа
 
@@ -134,4 +134,12 @@ tpl.ms2form.update:
 
 ## Разработка дополнения
 
-О предложениях и ошибках в работе ms2Form сообщайте на [Github](https://github.com/me6iaton/ms2form/issues).
+О предложениях и ошибках в работе ms2Form сообщайте на [Github][6].
+
+
+[1]: https://github.com/me6iaton/ms2form
+[2]: https://github.com/me6iaton/ms2form/releases
+[3]: http://quilljs.com/
+[4]: http://www.codingdrama.com/bootstrap-markdown/
+[5]: http://rtfm.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.makeurl
+[6]: https://github.com/me6iaton/ms2form/issues
