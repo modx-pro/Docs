@@ -1,6 +1,6 @@
 Система голосования и опросов для MODX Revolution
 
-[![](https://file.modx.pro/files/b/a/7/ba7e5f21b01fb0787c8f9e983acb4c99s.jpg)](https://file.modx.pro/files/b/a/7/ba7e5f21b01fb0787c8f9e983acb4c99.png)
+![](https://file.modx.pro/files/b/a/7/ba7e5f21b01fb0787c8f9e983acb4c99.png)
 
 [Github][1]  
 [Поcледние версии][2]
