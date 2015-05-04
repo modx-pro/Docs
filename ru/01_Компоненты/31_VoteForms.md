@@ -60,6 +60,29 @@
 [[getVoteFormRating?form=1&field=2]]
 ```
 
+Испрользование вместе с pdoResources : сортировка ресурсов по рейтингу из формы c id 1
+
+```
+[[pdoResources?
+    &class=`modResource`
+    &parents=`0`
+    &tpl=`@INLINE <li>[[+pagetitle]] - <span class="badge">[[+rating]]</span> </li>`
+    &leftJoin=`{
+        "VoteFormThread": {
+        "class": "VoteFormThread",
+        "on": "modResource.id = VoteFormThread.resource AND VoteFormThread.form = 1"
+        }
+    }`
+    &select=`{
+    "modResource": "*",
+    "VoteFormThread": "rating"
+    }`
+    &sortby=`VoteFormThread.rating`
+    &sortdir=`DESC`
+]]
+```
+
+
 ## Плейсхолдеры доступные в чанках компонента
 
 ### VoteForm - tpl.VoteForms.outer
