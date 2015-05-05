@@ -3,7 +3,7 @@
 [![](https://file.modx.pro/files/c/3/a/c3a73249165844c116d0463006c6272cs.jpg)](https://file.modx.pro/files/c/3/a/c3a73249165844c116d0463006c6272c.png)
 
 [Github][1]  
-[Поледние версии][2]
+[Поcледние версии][2]
 
 ## Возможности
 
