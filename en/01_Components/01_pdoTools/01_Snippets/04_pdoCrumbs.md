@@ -32,7 +32,6 @@ Property			| Default			| Description
 
 Template		| Default
 ----------------|----------------------------------------------------
-
 **&tpl**		| `@INLINE <a href="[[+link]]">[[+menutitle]]</a>`
 **&tplCurrent**	| `@INLINE <span>[[+menutitle]]</span>`
 **&tplMax**		| `@INLINE <span>&nbsp;...&nbsp;</span>`
