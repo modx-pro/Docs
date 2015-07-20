@@ -28,7 +28,7 @@ Property			| Default			| Description
 **&hideSingle**		| 0						| Do not display the result if it is only a single crumb.
 **&direction**		| ltr					| The direction of navigation: from left to right «ltr» or right to left «rtl», such as for Arabic.
 
-## Template Properties
+### Template Properties
 
 Template		| Default
 ----------------|----------------------------------------------------
