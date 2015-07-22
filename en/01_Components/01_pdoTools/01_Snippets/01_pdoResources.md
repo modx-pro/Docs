@@ -19,7 +19,7 @@ Title					| Default									| Description
 **&hideContainers**			| 0												| Exclude container resources, that is, resources with «isfolder = 1».
 **&select**					| 0												| A comma-separated list of fields to retrieve. You can specify a JSON string array, for example **{"modResource":"id,pagetitle,content"}**.
 **&sortby**					| pagetitle										| Any resource field for sorting, including TVs if the **&includeTVs** property is also set. You can specify a JSON string with an array of multiple fields. To randomly sort use «RAND()».
-**&sortdir**				| ASC											| Sort direction : Ascending or Descending.
+**&sortdir**				| DESC											| Sort direction : Ascending or Descending.
 **&limit**					| 10												| Limit the number of results . You can use «0» for no limit.
 **&offset**					| 0												| Number of items to skip, from the beginning.
 **&first**					| 1												| Number of the first item of the output results.
