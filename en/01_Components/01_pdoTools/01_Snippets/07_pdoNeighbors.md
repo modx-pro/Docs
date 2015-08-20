@@ -49,3 +49,5 @@ The snippet is perfect for displaying links to adjacent news items (it is best t
 ```
 
 [![](http://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26s.jpg)](http://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26.png)
+
+[1]: /en/01_Components/01_pdoTools/04_General_settings.md
