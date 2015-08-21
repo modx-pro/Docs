@@ -1,12 +1,12 @@
-Snippet pdoNeighbors displays the previous and the following documents of the application.
+The snippet pdoNeighbors displays the previous and the next resources.
 
-I can display several neighbors at once, check their status (unpublished, published), and allows you to specify sorting.
+It can display several neighbors at once, check their status (unpublished, published), and allows you to specify sorting.
 
-You can display the previous / following documents based on «menuindex», publication date or other resource field.
+You can display the previous / next resources based on «menuindex», publication date or other resource field.
 
 ## Options
 
-Accepts all options [pdoTools][1] (except chunks templates) and some of its:
+Accepts all options of [pdoTools][1] (except chunks templates) and some of its own:
 
 Parameter			| Default		| Description
 --------------------|-------------------|----------------------------------------------------------------------------------
