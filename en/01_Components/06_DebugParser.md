@@ -20,7 +20,16 @@ Plugin debugParser works only for the users authorized in mgr context. It gets a
 * **top** — the quantity of tags for output. On default – unlimited.
 * **add** — add the tablet at the end of the page, but don’t replace it totally. On default – no.
 
-## Samples
+## Support of Fenom
+For displaying Fenom tags you must:
+
+* Use pdoTools <b>2.1.8</b>-pl or newer</li>
+* Use debugParser <b>1.1.0</b>-pl or newer</li>
+* Execute methods of <b>{$_modx}</b>. There is no way to catch system call via disabled by default {$modx} variable.
+
+[![](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6s.jpg)](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6.png)
+
+## Examples
 General output:
 
 ```
