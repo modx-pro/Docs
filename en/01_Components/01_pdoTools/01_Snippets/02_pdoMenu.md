@@ -36,7 +36,8 @@ Title				| Default		| Description
 **&useWeblinkUrl**	|  							| When set to 1, the URL specified in a weblink resource will be output to the placeholder «[[+link]]» instead of the link to the weblink resource itself. 
 **&rowIdPrefix**	|  							|  If set, this parameter creates a unique ID for each item. The value will be rowIdPrefix + docId. 
 **&hereId**			|  							| Define the current ID to use for the snippet. Use a value of [[*id]] if the template specified by hereTpl and activeRowParentTpl is not applied correctly to the menu item. 
-
+**&includeTVs**			|  							| Define comma delimited list of TVs to include. 
+**&tvPrefix**			|  							| Define tvPrefix eg. tv.
 
 ### Template Properties
 These properties specify the chunks that contain the templates to format the parts of the generated menus.
