@@ -39,7 +39,7 @@ Headlines should not be more h2, e.g - 2 hashtags \#\#:
 Between the header and the text from the top and one blank line. Between the header and the text of the bottom blank line not needed.
 
 ### Links
-Links to documents need to set at the end of the page to make it searchable and update. In markdown this is accomplished by:
+Links to documents should be added to the end of the page to make it easy to search and update. In markdown this is accomplished by:
 <pre>
 [Link]&#91;1&#93;
 [Name of another link]&#91;2&#93;
@@ -56,14 +56,13 @@ Among other things, this allows you to use one link multiple times on a page:
 &#91;1&#93;: http://mylink.com/
 </pre>
 
-Links to pages of the repository, you must specify the root, with a leading slash, then you can go directly on GitHub:
+Links to pages of the repository should start with a leading slash which specifies the root, then you can go directly on GitHub:
 <pre>
 [Link to the english section of pdoTools]&#91;3&#93;
 
 &#91;3&#93;: /en/01_Components/01_pdoTools
 </pre>
 Easier to open the desired page on GitHub and copy the address from the url.
-
 
 The image links can be inserted directly in the text. To specify the image, and use the service on [file.modx.pro][4] (requires authorization).
 It automatically generates thumbnail and markdown code for insertion.
