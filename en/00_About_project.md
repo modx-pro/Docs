@@ -63,7 +63,6 @@ Links to pages of the repository should start with a leading slash which specifi
 &#91;3&#93;: /en/01_Components/01_pdoTools
 </pre>
 Easier to open the desired page on GitHub and copy the address from the url.
-[4]: /en/01_Components/01_pdoTools
 
 The image links can be inserted directly in the text. To specify the image, and use the service on [file.modx.pro][4] (requires authorization).
 It automatically generates thumbnail and markdown code for insertion.
