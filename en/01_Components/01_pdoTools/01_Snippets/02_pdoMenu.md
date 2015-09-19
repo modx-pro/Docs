@@ -2,7 +2,9 @@ Snippet generation menu. It can replace Wayfinder, and allows more flexibility t
 
 For example, it can build menus from several parents, showing them both together and as separate branches.
 
-Provides a substantial increase in speed, although only on first page view if the Wayfinder menu is cached. 
+Provides a substantial increase in speed, although only on first page view if the Wayfinder menu is cached.
+
+If you never used Wayfinder before, it would make sense to read the Wayfinder documentation, because pdoMenu reuses many of the Wayfinder concepts and settings. You can find the docs here, or read the excellent (but 184 page) Wayfinder ebook in this thread.
 
 ## Properties
 
@@ -19,7 +21,7 @@ Title				| Default		| Description
 **&showUnpublished**	| 0					| Show unpublished resources to everyone.
 **&previewUnpublished**	| 0					| Show unpublished resources only for logged-in Manager users with permission to view unpublished.
 **&hideSubMenus**		| 0					| Hide inactive submenu branches.
-**&select**				|  					| Comma-separated list of fields to retrieve. You can specify a JSON string array , for example {"modResource":"id,pagetitle,content"}.
+**&select**				|  					| Comma-separated list of fields to retrieve. You can specify a JSON string array, for example {"modResource":"id,pagetitle,content"}. By default, all fields of the modResource object are selected. You don't need this option if you want to use special fields like [[+introtext]] because they are already available. This option can be used if you do NOT want to retrieve all fields, only those which you specify.
 **&sortby**				| menuindex			| Any resource field for sorting, including TV option the property **includeTVs** is set. A JSON string can be specified with an array of several fields. To randomly select sorting use «RAND()».
 **&sortdir**			| ASC				| Sort Direction: Ascending or Descending.
 **&limit**				| 0					| Limit the number of results. Can be set to «0» for no limit.
@@ -41,7 +43,7 @@ Title				| Default		| Description
 
 ### Template Properties
 These properties specify the chunks that contain the templates to format the parts of the generated menus.
-
+As stated above, it would make sense to read the Wayfinder docs before using your own chunks, even though the pdoMenu chunk hierarchy is a bit different. Most importantly, make sure to include [[+wrapper]] in your chunks. Contrary to its name, it is a placeholder for wrappED content (it is similar to [[*content]] in your Resources). It will be replaced with your lower-level menu content. If you miss it, parts of or the whole menu will not appear without warning.
 Title				| Description
 ------------------------|------------------------------------------------------------------------------------------
 **&tplOuter**			| Chunk to wrap the entire menu block. default: `@INLINE <ul[[+classes]]>[[+wrapper]]</ul>`
