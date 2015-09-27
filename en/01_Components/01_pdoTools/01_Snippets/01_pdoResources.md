@@ -8,7 +8,7 @@ These properties determine what resources will appear in the generated list.
 
 Title					| Default									| Description
 ----------------------------|-----------------------------------------------|------------------------------------------------------------------------------------------
-**&parents**				| Current resource								| Comma-separated list of parents, to find results . If set to 0 - not limited to sampling . If a parent id starts with a dash, it and its children are excluded from the query.
+**&parents**				| Current resource								| Comma-separated list of parents, to find results . Set to 0 for unlimited, to +0 for the top level . If a parent id starts with a dash, it and its children are excluded from the query.
 **&depth**					| 10											| Search depth of child resources from parent in the Resource Tree.
 **&resources**				|  												| Comma-separated list of resources to add to the results. If the id of the resource starts with a hyphen , this resource is excluded from the query.
 **&context**				|  												| List resources from given context.
