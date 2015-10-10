@@ -1,0 +1,31 @@
+# ignore config.php
+/config.php
+
+# ignore all .htaccess
+.htaccess
+
+# ignore all IIS files
+web.config
+
+# ignore all config.core.php
+config.core.php
+
+# ignore various IDE project files and folders
+.idea/
+.buildpath
+.project
+.settings/
+nbproject/
+
+# ignore PHP files beginning with test-
+test-*.php
+test-*.json
+
+# ignore mac files
+.DS_Store
+
+# ignore phar archives
+*.phar
+
+# ignore composer.lock
+composer.lock
