@@ -5,7 +5,7 @@ Unlike its analogue it works with documents in any context and has the ability t
 ## Properties
 It takes [the general properties and sampling results] [4] of pdoTools and some of its own:
 
-Property			| Default		| Description 
+Property			| Default		| Description
 --------------------|-------------------|--------------------------------------------------------------------------------------------------------------
 **&id**				| Current resource	| Resource ID.
 **&field**			| pagetitle			| Resource field.
@@ -15,7 +15,7 @@ Property			| Default		| Description
 **&output**			|  					| It specifies the string that is returned if **&default** and **&field** are all empty .
 **&toPlaceholder**	|  					| If not empty, the snippet will save the field value to a placeholder with the same name, instead of displaying it to the screen.
 
-*If you specify **&top** or **&topLevel**, but not a **& context**, an additional request to the database will be made to determine the context.*
+*If you specify **&top** or **&topLevel**, but not a **&context**, an additional request to the database will be made to determine the context.*
 
 Does not support working with chunk or snippet objects, as it returns only one field.
 
