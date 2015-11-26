@@ -58,7 +58,7 @@ Name					| Default														| Description
 **&includeTVs**				|  																	|  Comma-separated list of Template Variable values that should be included in the placeholders available to each resource template . Example: «action,time» will produce the placeholders `[[+tv.action]]` and `[[+tv.time]]`.
 **&prepareTVs**				| «1», prepares all TVs specified in **&includeTVs**	|  Comma-separated list of media source-dependant TV values to be prepared before output.
 **&processTVs**				|  																	| Comma-separated list of TVs that should be processed according to their output options. If set to «1», all TV listed in **&includeTVs** will be processed.
-**&tvPrefix**				| tv															| Prefix TV property.
+**&tvPrefix**				| tv.															| Prefix TV property.
 **&scheme**					| -1																| Type of URL scheme, passed to modX::makeUrl(). [See this][0] for a list of valid options.
 **&useWeblinkUrl**			|  																	| Generate link to the weblink resource, not to the destination URL.
 **&toPlaceholder**			|  																	| Save output to a placeholder with this name instead of displaying the output to the screen.
