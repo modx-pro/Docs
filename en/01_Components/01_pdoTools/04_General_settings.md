@@ -70,7 +70,7 @@ Name | Description | On default
 **&includeTVList** | Alias **&includeTVs** |
 **&prepareTVs** | List of TV parameters that need to be processed before the output | «1» means preparation for all TV included in **&includeTVs**
 **&processTVs** | List of TV parameters that need to be processed before the output. If it is set in «1», all TV mentioned in «**&includeTVs**» will be processed |
-**&tvPrefix** | Prefix for TV parameters | tv
+**&tvPrefix** | Prefix for TV parameters | tv.
 **&prepareSnippet** | Indicate the snippet that accepts data before the output in chunk and can vary or add them | 1
 **&decodeJSON** | Dissemble fields like JSON instead of outputting in line |
 **&scheme** | Scheme of forming url is passed to modX::makeUrl() | -1 (concerning site_url)
