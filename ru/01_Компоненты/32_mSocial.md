@@ -6,9 +6,9 @@
 * Менеджер приложений находится [тут][1].
 * Регистрируем приложение в Twitter.
 * Жмем кнопочку Create New App и заполняем простую форму.
-* После создания приложения переходим на вкладку Keys and Access Tokens и жмем кнопку Create my access token. 
-Копируем поля: Consumer Key, Consumer Secret, Access Token, Access Token Secret.   
-**Важно**:в поле Access Level должно стоять значение Read and write. 
+* После создания приложения переходим на вкладку Keys and Access Tokens и жмем кнопку Create my access token.
+Копируем поля: Consumer Key, Consumer Secret, Access Token, Access Token Secret.
+**Важно**:в поле Access Level должно стоять значение Read and write.
 
 [![](https://file.modx.pro/files/1/1/8/118dc35db2127bd1a16c557a8b86e0e0s.jpg)](https://file.modx.pro/files/1/1/8/118dc35db2127bd1a16c557a8b86e0e0.png)
 
@@ -31,22 +31,30 @@
 **msocial_im_ps** |  0  |  Дополнять ли посты в соцсети изображениями на основе парсинга поста (те если сообщение содержит изображения они будут прикреплены к посту, при условии что данный параметр переключен на Да).
 
 ## Содержимое компонента
-* Плагины  
-*mSocial* - производит постинг в соцсети.
-* TVs  
-*twPost* - tv для отслеживания постинга в Twitter.
-* Чанки  
-*tpl.msocial.tw* - шаблон для постинга в Twitter.  
-Список поддерживаемых полей:  id, type, contentType, pagetitle, longtitle, description, alias, link_attributes, published, pub_date, unpub_date, parent, isfolder, introtext, content, richtext, template, menutitle, publishedby, publishedon, menuindex, hidemenu, class_key, context_key, content_type.  
-**TV поля не поддерживаются, пока :)**  
-		
-## Информация о прикрепляемых изображениях для Twitter.
-Для того что бы изображения корректно загружались нужно что бы они присутствовали в теле сообщения, в виде ```<img src="путь до изображения"/>```. Например можно вставлять изображения в тело поля content с помощью редактора TinyMCE. Путь к изображению должен быть следующего вида files/mSocial.jpg. 
-		
-Twitter поддерживаются следующие форматы: PNG, JPEG, WEBP и GIF. 
+Плагины
+    * **mSocial** - производит постинг в соцсети.
 
-С требованиями к изображениям можно ознакомиться [тут][2].  
+TVs
+    * **twPost** - tv для отслеживания постинга в Twitter.
+
+Чанки
+    * **tpl.msocial.tw** - шаблон для постинга в Twitter.
+
+    Список поддерживаемых полей:  *id, type, contentType, pagetitle, longtitle, description, alias, link_attributes, published, pub_date, unpub_date, parent, isfolder, introtext, content, richtext, template, menutitle, publishedby, publishedon, menuindex, hidemenu, class_key, context_key, content_type*.
+    **TV поля не поддерживаются, пока :)**
+
+## Информация о прикрепляемых изображениях для Twitter.
+Для того что бы изображения корректно загружались нужно что бы они присутствовали в теле сообщения, в виде
+```
+<img src="путь до изображения"/>
+```
+Например можно вставлять изображения в тело поля content с помощью редактора TinyMCE. Путь к изображению должен быть следующего вида `files/mSocial.jpg`.
+
+Twitter поддерживаются следующие форматы: PNG, JPEG, WEBP и GIF.
+
+С требованиями к изображениям можно ознакомиться [тут][2].
 Обсуждение первого релиза [тут][3].
+
 
 [1]: https://apps.twitter.com/
 [2]: https://dev.twitter.com/rest/public/uploading-media/
