@@ -3,6 +3,7 @@
 ## Как настроить mSocial?
 * Устанавливаем расширение.
 * Регистрируемся в Twitter, авторизовываемся.
+* Менеджер приложений находится [тут][1].
 * Регистрируем приложение в Twitter.
 * Жмем кнопочку Create New App и заполняем простую форму.
 * После создания приложения переходим на вкладку Keys and Access Tokens и жмем кнопку Create my access token. 
@@ -44,6 +45,9 @@
 		
 Twitter поддерживаются следующие форматы: PNG, JPEG, WEBP и GIF. 
 
-Менеджер приложений находится [тут](https://apps.twitter.com/ "Twitter Apps")
-С требованиями к изображениям можно ознакомиться [тут](https://dev.twitter.com/rest/public/uploading-media/ "Требования к изображениям").  
-Обсуждение первого релиза [тут](https://modx.pro/solutions/7782-msocial-first-release/ "Обсуждение первого релиза").
+С требованиями к изображениям можно ознакомиться [тут][2].  
+Обсуждение первого релиза [тут][3].
+
+[1]: https://apps.twitter.com/
+[2]: https://dev.twitter.com/rest/public/uploading-media/
+[3]: https://modx.pro/solutions/7782-msocial-first-release/
