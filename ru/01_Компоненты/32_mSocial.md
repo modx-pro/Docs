@@ -39,9 +39,7 @@ TVs
 
 Чанки
     * **tpl.msocial.tw** - шаблон для постинга в Twitter.
-
-    Список поддерживаемых полей:  *id, type, contentType, pagetitle, longtitle, description, alias, link_attributes, published, pub_date, unpub_date, parent, isfolder, introtext, content, richtext, template, menutitle, publishedby, publishedon, menuindex, hidemenu, class_key, context_key, content_type*.
-    **TV поля не поддерживаются, пока :)**
+    **В чанке можно использовать все поля документа, а так же TV поля.**
 
 ## Информация о прикрепляемых изображениях для Twitter.
 Для того что бы изображения корректно загружались нужно что бы они присутствовали в теле сообщения, в виде
