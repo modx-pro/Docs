@@ -56,7 +56,7 @@
 ```
 <div class="ft-content row">
 	<div class="col-lg-12">
-		[[ms2Gallery? &tplOuter=`@INLINE [[+rows]]`]]
+		[[msGallery? &tplOuter=`@INLINE [[+rows]]`]]
 	</div>
 </div>
 ```
