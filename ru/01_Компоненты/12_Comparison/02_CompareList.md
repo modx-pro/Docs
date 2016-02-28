@@ -33,12 +33,19 @@
 ]]
 
 [[!CompareList?
-	&fields=`{"mobile":["price","article","year","vendor.name","memory","cpu","country"]}`
+	&fields=`{"mobile":["price","article","year","vendor.name","option.memory","option.cpu","country"]}`
 ]]
 ```
-Указывать можно как ТВ параметры, так и параметры товаров [miniShop2][3].
-
 Если вы не указываете **&list**, то будет использована конфигурация **default**, прописанная по умолчанию.
+
+### Префиксы
+
+В настройках полей сравнения можно указывать поля ресурса, ТВ параметры, и даже параметры товаров [miniShop2][3].
+
+* **option.** - префикс для опций товаров из miniShop2.2
+* **vendor.** - префикс для полей производителя товара
+* ТВ параметры считаются полями ресурса и указываются без префикса
+* Поля объекта **msProductData** (price, weight, country и др.) тоже считаются полями ресурса
 
 ## Оформление
 
@@ -85,6 +92,38 @@ return $value;
 
 Также для **&tplCell** добавляется CSS класс с именем параметра и префиксом `field-`.
 Например, для цены добавляется CSS класс `field-price`, который по умолчанию выводится жирным текстом.
+
+### Замена картинки
+Если вы используете компонент без miniShop2, то вам понадобится заменить изображение в шапке таблицы файлом из ТВ параметра.
+Сделать это можно с помощью параметра **prepareSnippet** библиотеки pdoTools.
+
+Создаём сниппет подготовки данных **addThumb**:
+```
+<?php
+$tv_id = 10; // Id ТВ параметра с картинкой
+$empty = '/assets/img/no_image.jpg'; // Путь к картинке, которую нужно выводить если ТВ пуст
+
+if (empty($row) || !is_array($row)) {return $row;}
+$q = $modx->newQuery('modTemplateVarResource', array('tmplvarid' => $tv_id, 'contentid' => $row['id']));
+$q->select('value');
+if ($q->prepare() && $q->stmt->execute()) {
+    $row['thumb'] = $q->stmt->fetchColumn();
+}
+if (empty($row['thumb'])) {
+    $row['thumb'] = $empty;
+}
+
+return json_encode($row);
+```
+
+И указываем его в вызове сниппета:
+```
+[[!CompareList?
+	&fields=`{"mobile":["price","article","year","vendor.name","option.memory","option.cpu","country"]}`
+	&prepareSnippet=`addThumb`
+]]
+```
+При работе будет добавлен недостающий плейсхолдер `[[+thumb]]` с картинкой из ТВ параметра или изображением по умолчанию, если ТВ пуст.
 
 [1]: /ru/01_Компоненты/01_pdoTools/
 [2]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md

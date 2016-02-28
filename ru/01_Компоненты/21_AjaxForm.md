@@ -75,10 +75,19 @@ $(document).on('submit', '.ajax_form', function() {
 ## Событие af_complete
 При получении ответа от сервера вызывается событие **af_complete**, которое вы можете использовать для обновления содержимого страницы или другой операции javascript.
 
-Вам просто нужно указать функцию для обработки этого события, например:
+Вам просто нужно указать функцию, в которую будет передано событие javascript и объект с ответом от сервера. Обратите внимание, что внутри этого объекта есть и отправляющая форма.
 ```
-$(document).on('af_complete', function(res) {
-	console.log(res);
+$(document).on('af_complete', function(event, response) {
+	var form = response.form;
+	// Если у формы определённый id
+	if (form.attr('id') == 'my_form_3') {
+		// Скрываем её!
+		form.hide();
+	}
+	// Иначе печатаем в консоль весь ответ
+	else {
+		console.log(response)
+	}
 });
 ```
 
