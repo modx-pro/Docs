@@ -1,4 +1,4 @@
-The first thing you need to do right after install of new copy of MODX - is the install of extras.
+After creating a fresh MODX install, the next step is often to install a number of extras to add functionality to the site.
 
 The usual set is well-known:
 * **getResources** for list your documents
@@ -7,15 +7,18 @@ The usual set is well-known:
 * **Breadcrumb(s)** for, hm, breadcrumbs
 * **GoogleSitemap** for sitemap
 
-But now you can replace all of them by **one** package - pdoTools. And why pdoTools?
+But it's possible to replace all of them with one package: **pdoTools**!
+
+Let's start with an introduction of what pdoTools can do.
 
 ### 9 snippets
-Yes, I`m not joking. It contains 9 snippets (for now) that could to realize almost any functionality of usual website. And, what important, almost of them is a drop-in replacement for other popular snippets.
+Yes, I'm serious. pdoTools contains 9 snippets that can perform almost any functionality of usual website. And almost all of them are a drop-in replacement for other popular snippets.
 
 #### pdoResources
-It is replacement for getResources.
-As all other snippets, it is not use xPDO objects for representation of resources. It works directly with database tables, so you do not need to convert resources dates to timestamps before pass them to "date" output filter.
-And it joins only needed TVs, so you must specify them in `&includeTVs` parameter as comma-separated list.
+pdoResources is a replacement for getResources.
+As all other snippets in pdoTools, it doesn't use xPDO objects for representation of resources. It works directly with database tables.
+This makes it faster. You don't have to convert resources dates to timestamps before you can pass pass them to "date" output filter.
+And it joins only needed TVs, so you must specify them in the `&includeTVs` property as comma-separated list.
 ```
 [[!pdoResources?
     &parents=`0`
@@ -26,11 +29,13 @@ And it joins only needed TVs, so you must specify them in `&includeTVs` paramete
     &showLog=`1`
 ]]
 ```
-`&showLog` - is the one of the most important futures of pdoTools snippets. It allows you to controll how fast this snippet processing, exaclty. Is there a slow SQL query, or too complicated chunk? You will know.
+One of the most important features of pdoTools is the `&showLog` property.
+It allows you to check how fast the snippet is. Is it a slow SQL query, or too complicated chunk?
+The `&showLog` property will help you figure it out.
 
 [![](https://file.modx.pro/files/d/9/3/d931de6c3c2f67be8879c1765e833bbcs.jpg)](https://file.modx.pro/files/d/9/3/d931de6c3c2f67be8879c1765e833bbc.png)
 
-The second important future that you could see on screenshot - SQL joins. Yes, you can create complicate queries and select only what you need:
+The second important feature is SQL joins. With pdoTools you can create complex queries and select only what you need.
 ```
 [[!pdoResources?
     &parents=`0`
@@ -53,18 +58,19 @@ The second important future that you could see on screenshot - SQL joins. Yes, y
     &showLog=`1`
 ]]
 ```
-No need to call any snippets or output filters to get parent of resource or creator name. How fast it works? You tell me:
+With the above example, you don't have to call any snippets or output filters to get the parent of the resource or the creator name.
+How fast it works? Let's look at the log output.
 
 [![](https://file.modx.pro/files/0/4/5/04558020e2a34bd6e94fe734db1b6ae3s.jpg)](https://file.modx.pro/files/0/4/5/04558020e2a34bd6e94fe734db1b6ae3.png)
 
-There is many other cool features, but you should know at list about this two.
+There are many other cool features, but these are the most important.
 
 #### pdoPage
-It is replacement for getPage. What the difference?
-1. It do not shows empty pages. If you do not have results on page or user entered wrong page manually - you will get redirect to the first page.
-2. It has parameter `&maxLimit` equal to 100 by default. User could not hang your site by setting `&limit=100000` in url. If you are using getPage - just try to do it on your site.
-3. It sets metatags to previous and next pages for crawlers.
-4. It has built-in ajax pagination, seriosly. You need only correct markup and one parameter:
+pdoPage is a replacement for getPage. There are a few differences compared to getPage:
+1. It do not shows empty pages. If you do not have results on the page, or the user entered wrong page manually - you will get redirected to the first page.
+2. It has a property `&maxLimit`, which is set to 100 by default. It makes sure users can not slow down your site by setting `&limit=100000` in the url. If you are using getPage - just try to do it on your site.
+3. It sets metatags to previous and next pages for crawlers in the page header.
+4. It has built-in ajax pagination. Here's how that works:
 ```
 <div id="pdopage">
     <div class="rows">
@@ -76,19 +82,19 @@ It is replacement for getPage. What the difference?
     [[!+page.nav]]
 </div>
 ```
-Of course, you can change markup by specifying additional parameters to snippet.
+Of course, you can change the markup by specifying additional parameters to snippet.
 
 #### pdoMenu
-This snippet has no so many difference with Wayfinder but works a little faster.
+This snippet can replace Wayfinder. It mostly works the same, but it is a bit faster.
 
-Because of bypass of xPDO objects you need to check permissions of items in menu by special parameter:
+Because xPDO objects are bypassed, you need to check permissions of items in menu with a special property manually:
 ```
 [[!pdoMenu?
     &parents=`0`
     &checkPermissions=`list`
 ]]
 ```
-By default, all permissions checks are disabled. This parameter common for all pdoTools snippets, by the way.
+By default, all permission checks are disabled. This property can be used on all pdoTools snippets, by the way.
 
 #### pdoUsers
 This snippets lists users of your site. You can filter them by groups and roles:
@@ -98,9 +104,10 @@ This snippets lists users of your site. You can filter them by groups and roles:
     &sortdir=`asc`
 ]]
 ```
-You could combine it with **pdoPage**:
+You can combine this with **pdoPage** to provide a paginated list of users:
 ```
-[[!pdoUsers?
+[[!pdoPage?
+    &element=`pdoUsers`
     &groups=`Authors`
     &roles=`Member`
     &sortby=`id`
@@ -108,18 +115,20 @@ You could combine it with **pdoPage**:
 ]]
 [[!+page.nav]]
 ```
-Placeholders are `modUser` and `modUserProfile` fields. You can see them all if you will just set blank `&tpl` parameter (or do not set it at all, if snippet do not has default tpl value).
+Placeholders are all fields from the `modUser` and `modUserProfile` objects.
+You can see them all if you will just set blank `&tpl` parameter (or do not set it at all, if snippet does not have a default tpl value).
 
 [![](https://file.modx.pro/files/0/a/d/0ad486c2c7412ad9a32c25f9027b3962s.jpg)](https://file.modx.pro/files/0/a/d/0ad486c2c7412ad9a32c25f9027b3962.png)
 
-Blank `&tpl` is another common feauture of pdoTools snippets. You will not forget usable placeholders, right?
+The empty &tpl is another common feature of all pdoTools snippets.
 
 #### pdoSitemap
-Fast sitemap that do not requires to set XML type of resource. If parameter `&forceXML` is enabled (by default).
+pdoSitemap creates a fast sitemap that does not require the resource to be set to XML if the property `&forceXML` is enabled (by default).
 
-It caches data by default and cache key depends from snippet params but you can set your own key. How fast it is?
+It caches data, and the cache key depends on the snippet params, but you can also set your own key.
 
-Well, we can test it by disabling `&forceXML` and enabling `&showLog`. On my site it takes almost 30 seconds for the first run and only 0.03 for the second:
+To see how fast it is, we can test it by disabling `&forceXML` and enabling `&showLog`.
+On my site it takes almost 30 seconds for the first run and only 0.03 for the second:
 ```
 [[!pdoSitemap?
     &forceXML=`0`
@@ -131,7 +140,7 @@ There are **6873** resources in my sitemap.
 [![](https://file.modx.pro/files/0/d/3/0d3b7798fd8464ee2bb39fbb481e3902s.jpg)](https://file.modx.pro/files/0/d/3/0d3b7798fd8464ee2bb39fbb481e3902.png) [![](https://file.modx.pro/files/1/9/1/1916b6d00e0c7e77e0119c29f1d3aba6s.jpg)](https://file.modx.pro/files/1/9/1/1916b6d00e0c7e77e0119c29f1d3aba6.png)
 
 #### pdoNeighbors
-Snippet for make links to previous, next and upper pages of current document.
+Snippet for make links to previous, next and upper pages of the current document.
 ```
 [[!pdoNeighbors?
     &sortby=`menuindex`
@@ -141,26 +150,27 @@ Snippet for make links to previous, next and upper pages of current document.
 Just neighbors, you know.
 
 #### pdoCrumbs
-My version of simple snippet for breadcrumbs of site. Nothing special except use of pdoTools core with fast chunks processing and data fetching.
+My version of a simple snippet for breadcrumbs on the site. Nothing special, except it uses the pdoTools core with fast chunks processing and data fetching.
 ```
-[[!Breadcrumbs]]
+[[!pdoCrumbs]]
 ```
 
 #### pdoTitle
-This snippet generates "title" tag of pages. It runs **pdoCrumbs** and shows path to current document in title.
+This snippet generates the "title" tag of pages. It runs **pdoCrumbs** and shows the path to the current document in the title.
 ```
 <title>[[!pdoTitle]] / [[++site_name]]</title>
 ```
-Also it supports **pdoPage** by default and you will see number of pages in title.
+It supports **pdoPage** by default, so you will see the number of pages in title.
 ```
 <title>Questions / page 5 from 593 / Sections / mysite.com</title>
 ```
-Crawlers loves it!
+Crawlers love it!
 
 [![](https://file.modx.pro/files/a/e/f/aef145845f8c84ad6bc104fe31e6d796s.jpg)](https://file.modx.pro/files/a/e/f/aef145845f8c84ad6bc104fe31e6d796.png)
 
 #### pdoField
-And, finally, snippet that allows you to get any field from any resources. It is replacement both for **UltimateParent** and **getResourceField** snippets.
+And, finally, pdoField is a snippet that allows you to get any field from any resources.
+It is a replacement both for **UltimateParent** and **getResourceField** snippets.
 
 For example, we need to get `longtitle` of resource with id = 15
 ```
@@ -169,7 +179,7 @@ For example, we need to get `longtitle` of resource with id = 15
     &field=`longtitle`
 ]]
 ```
-Or we want to get `pagetitle` of grandparent of current document:
+Or if we want to get `pagetitle` of grandparent of current document:
 ```
 [[pdoField?
     &id=`[[*id]]`
@@ -179,12 +189,10 @@ Or we want to get `pagetitle` of grandparent of current document:
 ```
 
 ### Conclusion
-I can wright more and more about pdoTools but it is enought for the first time.
+git push -f origin HEAD^:masterIt is important to remember, that all pdoTools snippets use the same core and most parameters can be used for all of them.
 
-It is important to remember, that all pdoTools snippets uses one core and most parameters are common for all of them.
+You can use `&showLog` to see how the snippets work, you can specify empty chunks to see the available placeholders, and you can join tables on the fly.
 
-You can use `&showLog` for details about snippets work, you can specify empty chunks to see available placeholders and you can join tables on the fly.
+pdoTools is a library, not just set of snippets. Many MODX extras uses pdoTools for their own snippets, like **miniShop2**, **Tickets**, **BannerY**, **AjaxForm**, and more.
 
-pdoTools - is a library, not just set of snippets. Many MODX extras uses pdoTools for their own snippets: **miniShop2, Tickets, BannerY, AjaxForm**, etc.
-
-And do not forget that all of snippets parameters are described inside them. Just see the appropriate tab in MODX manager.
+And don't forget that all of snippets parameters are described inside them. Just open the snippet in the manager and see the Properties tab.
