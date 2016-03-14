@@ -85,6 +85,9 @@
 ```
 
 В чанке **ListRowTpl** за это поле будет отвечать плейсхолдер `[[+tv.image]]`
-
+Для вывода даты указывать без **strtotime**
+```
+[[+publishedon:date=`%d.%m.%yг.`]]
+```
 
 [0]: http://rtfm.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.makeurl
