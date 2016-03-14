@@ -84,7 +84,12 @@
 ]]
 ```
 
-В чанке **ListRowTpl** за это поле будет отвечать плейсхолдер `[[+tv.image]]`
+В чанке **ListRowTpl** за это поле будет отвечать плейсхолдер `[[+tv.image]]`  
 
+## Дополнительная информация
+Для вывода даты **strtotime** не нужен
+```
+[[+publishedon:date=`%d.%m.%yг.`]]
+```
 
 [0]: http://rtfm.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.makeurl
