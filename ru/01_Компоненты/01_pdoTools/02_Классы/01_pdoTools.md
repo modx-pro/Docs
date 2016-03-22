@@ -79,19 +79,13 @@ foreach ($users as $id) {
 * **setCache**(mixed $data, array $options) - сохраняет данные `$data` в кэш, генерируя ключ из `$options`
 * **getCache**(array $options) - выдает данные, согласно `$options`
 
-Здесь данные уже сохраняются на диск, параметры кэширования можно передавать при инициализации pdoTools:
-```
-$pdo = $modx->getService('pdoTools', array(
-	'cacheTime' => 10,
-));
-```
-
-Пример:
+Здесь данные уже сохраняются на диск, время кэширования можно передавать в массиве параметров:
 ```
 $pdo = $modx->getService('pdoTools');
 $options = array(
 	'user' => $modx->user->get('id'),
 	'page' => @$_REQUEST['page'],
+	'cacheTime' => 10,
 );
 $pdo->addTime('pdoTools загружен');
 if (!$data = $pdo->getCache($options)) {
@@ -268,7 +262,7 @@ echo $pdo->getChunk($tpl, $pls);
 
 
 С версии 2.0 pdoTools включает в свой состав шаблонизатор [Fenom][4], что позволяет отказаться от тегов MODX и писать в чанках более продвинуютую логику.
-Про работу с Fenom читайте в разделе [pdoParser][3].  
+Про работу с Fenom читайте в разделе [pdoParser][3].
 
 [1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/02_pdoMenu.md
 [2]: /ru/01_Компоненты/01_pdoTools/02_Классы/02_pdoFetch.md
