@@ -82,6 +82,13 @@ Name | Description | On default
 **&cache_handler** | Cache handler | Value of system setting *cache_resource_handler* or xPDOFileCache
 **&cache Time** | Cache time | Value of system setting *cache_resource_expires* or 0 (eternal)
 
+### Fenom Parser parameters
+These parameters define settings for the fenom parser.
+
+Name | Description | On default
+---|---|---
+**&fenomModifiers** | Comma separated list of snippets that could be used as [fenom modifier](https://github.com/fenom-template/fenom/blob/master/docs/en/syntax.md#modifiers) | 
+
 ### How to call chunks
 All chunks can have one of these prefixes:
 
