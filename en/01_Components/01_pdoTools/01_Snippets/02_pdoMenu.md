@@ -22,8 +22,8 @@ Name				| Default		| Description
 **&previewUnpublished**	| 0					| Show unpublished resources only for logged-in Manager users with permission to view unpublished.
 **&hideSubMenus**		| 0					| Hide inactive submenu branches.
 **&select**				|  					| Comma-separated list of fields to retrieve. You can specify a JSON string array, for example {"modResource":"id,pagetitle,content"}. By default, all fields of the modResource object are selected. You don't need this option if you want to use fields like `[[+introtext]]` because they are already available. This option should be used if you do not want to retrieve all fields, but only those which you specify.
-**&sortby**				| menuindex			| Any resource field for sorting, including TV option the property **&includeTVs** is set. A JSON string can be specified with an array of several fields. To randomly select sorting use «RAND()».
-**&sortdir**			| ASC				| Sort Direction: Ascending or Descending.
+**&sortby**				| menuindex			| Any resource field for sorting, including TV option the property **&includeTVs** is set. A JSON string can be specified with an array of several fields, for example **{"tvname":"ASC", "pagetitle":"DESC"}**. To randomly select sorting use «RAND()».
+**&sortdir**			| ASC				| Sort Direction: Ascending or Descending. If parameters &sortby and &sortdir will be empty the sorting will be in the order of resources in &resources parameter.
 **&limit**				| 0					| Limit the number of results. Can be set to «0» for no limit.
 **&offset**				| 0					| Results skip from the beginning. It should be used with **&limit**
 **&checkPermissions**	|  					| Specify which user permissions to check when listing resources. If no permissions are specified, permissions will not be checked at all. For example, **&checkPermissions=`list`**
