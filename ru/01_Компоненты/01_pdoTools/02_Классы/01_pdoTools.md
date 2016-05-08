@@ -206,7 +206,7 @@ $tpl = '@INLINE <p>[[+param]] - [[+value]]</p>';
 $res = '';
 for ($i = 1; $i <= 10000; $i++) {
 	$pls = array('param' =>$i, 'value' => rand());
-	$res .= $pdo->getChunk('test', $pls);;
+	$res .= $pdo->getChunk($tpl, $pls);
 }
 print_r($pdo->getTime());
 print_r($res);
