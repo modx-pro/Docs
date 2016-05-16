@@ -28,7 +28,7 @@ Delayed loading of resources by pdoResources:
 ]]
 ```
 
-The same but to start loading you need to clock on the link:
+The same but to start loading you need to click on the link:
 ```
 [[AjaxSnippet?
 	&snippet=`pdoResources`
