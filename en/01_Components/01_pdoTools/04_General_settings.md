@@ -76,7 +76,6 @@ Name | Description | On default
 **&scheme** | Scheme of forming url is passed to modX::makeUrl() | -1 (concerning site_url)
 **&useWeblinkUrl** | Ensure the link subject to resource class |
 **&toSeparatePlaceholders** | If you indicate a word in this parameter, ALL the results will be specified in different placeholders that begin with this word and end with the serial number of the line from zero. E.g. indicating «myPl», you get placeholders `[[+myPl0]]`, `[[+myPl1]]` and so on |
-**&tplPath** | Indicate where files of chunks are situated using prefix @FILE  | MODX_ASSETS_PATH . 'elements/chunks/'
 **&additionalPlaceholders** | Install additional placeholders |
 **&cache_key** | Cache key | Value of system setting *cache_resource_key* for resources (on default resource) or default
 **&cache_handler** | Cache handler | Value of system setting *cache_resource_handler* or xPDOFileCache
@@ -87,7 +86,7 @@ These parameters define settings for the fenom parser.
 
 Name | Description | On default
 ---|---|---
-**&fenomModifiers** | Comma separated list of snippets that could be used as [fenom modifier](https://github.com/fenom-template/fenom/blob/master/docs/en/syntax.md#modifiers) | 
+**&fenomModifiers** | Comma separated list of snippets that could be used as [fenom modifier](https://github.com/fenom-template/fenom/blob/master/docs/en/syntax.md#modifiers) |
 
 ### How to call chunks
 All chunks can have one of these prefixes:
@@ -100,7 +99,8 @@ All chunks can have one of these prefixes:
 ```
 *Snippets, other chunks and output filters cannot be indicated in INLINE chunks, because parser MODX handle them in the first place, and snippet will not get what you wanted.*
 
-* **@FILE**. File content Is used instead of chunk from the database. Track to the file is indicated by **&tplPath**. Name of the file have extention .tpl or .html.
+* **@FILE**. File content Is used instead of chunk from the database. Track to the file is indicated by system setting **pdotools_elements_path**.
+Name of the file have extension `.tpl` or `.html`.
 ```
 [[!pdoResources?
 	&tpl=`@FILE fileBasedRow.tpl`

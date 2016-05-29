@@ -7,11 +7,11 @@ $chunk = $pdo->getChunk('chunkName', array('with', 'values'));
 It can load chunks by various methods:
 1. Default method - as chunk from database. Just specify its name.
 2. `@INLINE` chunk that will be generated on the fly:
-3. `@FILE` chunk, that will be loaded from file. Due to security reasons you can use only files of types `tpl` and `html`. And they could be loaded only from `&tplPath`.
+3. `@FILE` chunk, that will be loaded from file. Due to security reasons you can use only files of types `tpl` and `html`. Files are loaded from directory specified in system setting **pdotools_elements_path**.
 ```
 [[!pdoResources?
-    &tplPath=`/assets/chunks/`
-    &tpl=`@FILE dir/file.tpl`
+    &elementsPath=`/core/elements/`
+    &tpl=`@FILE chunks/file.tpl`
 ]]
 ```
 4. `@TEMPLATE`- chunk will be generated on the fly from template of resource. So, this one only for rows with filled field `template`. It is kind of replacement for snippet **renderResources**.
