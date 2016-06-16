@@ -189,7 +189,7 @@ Or if we want to get `pagetitle` of grandparent of current document:
 ```
 
 ### Conclusion
-git push -f origin HEAD^:masterIt is important to remember, that all pdoTools snippets use the same core and most parameters can be used for all of them.
+It is important to remember, that all pdoTools snippets use the same core and most parameters can be used for all of them.
 
 You can use `&showLog` to see how the snippets work, you can specify empty chunks to see the available placeholders, and you can join tables on the fly.
 
