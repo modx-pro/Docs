@@ -37,7 +37,7 @@ Parameter     			| Default value		                							| Description
 @INLINE <?xml version=\"1.0\" encoding=\"[[++modx_charset]]\"?>\n<urlset xmlns=\"[[+schema]]\">\n[[+output]]\n</urlset>
 ```
 
-Priority and [Change frequency][5] for the resource is mapped based on the date for the last modification of the document:
+[Priority][4] and [Change frequency][5] for the resource is mapped based on the date for the last modification of the document:
 
 Time since the last update of the document	  	| Priority  | Change frequency
 ------------------------------------------------|-----------|--------------------
