@@ -18,7 +18,7 @@ Parameter     			| Default value		                							| Description
 --------------------|-----------------------------------------------|--------------------------------------------------------------------------------------------------------------
 **&sitemapSchema**	| http://www.sitemaps.org/schemas/sitemap/0.9	  | The scheme used for the sitemap.
 **&forceXML**		    | 1											                    	  | Force output as XML.
-**&priorityTV**		  |  												                      | An optional field that indicates the [priority][4] of the resource. The temlplate variable stated here must also be added to the parameter **&includeTVs**
+**&priorityTV**		  |  												                      | An optional field that indicates the [priority][4] of the resource. The template variable stated here must also be added to the parameter **&includeTVs**
 
 ### Templates
 
