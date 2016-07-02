@@ -10,7 +10,7 @@ pagebreaker_frontend_css	| [[+assetsUrl]]css/default.css	| CSS formatting to loa
 pagebreaker_ajax			| false							| Ajax regime
 pagebreaker_ajax_selector	| #pagebreaker_content			| CSS block selector with page content `[[*content]]`
 
-[![](http://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929s.jpg)](http://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929.png)
+[![](https://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929s.jpg)](https://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929.png)
 
 ## Link generation
 These types of links will be generated, it depends on parameter **pagebreaker_splitter**:

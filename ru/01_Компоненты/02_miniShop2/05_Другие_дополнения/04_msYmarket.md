@@ -1,7 +1,7 @@
 ## Настройки модуля
 Для редактирования настроек скрипта перейдите в раздел **"Настройки системы"** и выберите фильтр **"yandexmarket"**
 
-[![](http://file.modx.pro/files/c/5/d/c5d2374dd38b264392a122a128cd866as.jpg)](http://file.modx.pro/files/c/5/d/c5d2374dd38b264392a122a128cd866a.png)
+[![](https://file.modx.pro/files/c/5/d/c5d2374dd38b264392a122a128cd866as.jpg)](https://file.modx.pro/files/c/5/d/c5d2374dd38b264392a122a128cd866a.png)
 
 Доступные настройки:
 
@@ -17,7 +17,7 @@
 
 ## Настройки выгрузки
 
-[![](http://file.modx.pro/files/4/d/f/4df80ac0b6e556e50a9eae353716c55cs.jpg)](http://file.modx.pro/files/4/d/f/4df80ac0b6e556e50a9eae353716c55c.png)
+[![](https://file.modx.pro/files/4/d/f/4df80ac0b6e556e50a9eae353716c55cs.jpg)](https://file.modx.pro/files/4/d/f/4df80ac0b6e556e50a9eae353716c55c.png)
 
 * Выбор категорий
 
@@ -33,7 +33,7 @@
 ## Выгрузка
 Для выгрузки используется вторая вкладка с названием **Выгрузка**
 
-[![](http://file.modx.pro/files/b/d/2/bd26231a09d3b60691db2ddabe460b39s.jpg)](http://file.modx.pro/files/b/d/2/bd26231a09d3b60691db2ddabe460b39.png)
+[![](https://file.modx.pro/files/b/d/2/bd26231a09d3b60691db2ddabe460b39s.jpg)](https://file.modx.pro/files/b/d/2/bd26231a09d3b60691db2ddabe460b39.png)
 
 На этой вкладке Вы можете ознакомиться с логом выгрузки:
 

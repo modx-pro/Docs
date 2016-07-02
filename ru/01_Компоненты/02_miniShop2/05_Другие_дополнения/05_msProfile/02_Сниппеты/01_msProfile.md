@@ -7,4 +7,4 @@
 
 У сниппета нет чанка по умолчанию, так что при вызове без него, вы увидите все имеющиеся плейсхолдеры и их значения.
 
-<a rel="fancybox" href="http://file.modx.pro/files/1/d/e/1deffe60407585f33df0b3da6eedbd5a.png"><img src="http://file.modx.pro/files/1/d/e/1deffe60407585f33df0b3da6eedbd5as.jpg" class="fancybox thumbnail center"></a>
+<a rel="fancybox" href="https://file.modx.pro/files/1/d/e/1deffe60407585f33df0b3da6eedbd5a.png"><img src="https://file.modx.pro/files/1/d/e/1deffe60407585f33df0b3da6eedbd5as.jpg" class="fancybox thumbnail center"></a>

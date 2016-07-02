@@ -1,6 +1,6 @@
 В комплекте с компонентом идёт плагин **pagebreaker** для TinyMCE (TypoMCE), который устанавливается и активируется автоматически.
 
-[![](http://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80ds.jpg)](http://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80d.png)
+[![](https://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80ds.jpg)](https://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80d.png)
 
 При установке плагин добавляет 4 кнопки на панель редактора.
 
