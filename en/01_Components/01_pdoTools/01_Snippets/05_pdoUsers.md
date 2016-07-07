@@ -70,7 +70,7 @@ with INLINE:
 ## Demo
 [Authors and friends][2] of the Simple Dream repository.
 
-[![](http://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306s.jpg)](http://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
+[![](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306s.jpg)](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
 
 [1]: /en/components/pdotools/general-settings
 [2]: http://store.simpledream.ru/friends.html

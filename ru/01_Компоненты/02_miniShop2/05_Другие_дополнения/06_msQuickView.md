@@ -5,20 +5,20 @@
 Для редактирования настроек скрипта перейдите в раздел "Настройки системы" и выберите фильтр "msQuickView"
 
 ### Общие настройки
-[![](http://file.modx.pro/files/7/a/8/7a8d8b2bcbdb837f5e563e5eb797e834s.jpg)](http://file.modx.pro/files/7/a/8/7a8d8b2bcbdb837f5e563e5eb797e834.png)
+[![](https://file.modx.pro/files/7/a/8/7a8d8b2bcbdb837f5e563e5eb797e834s.jpg)](https://file.modx.pro/files/7/a/8/7a8d8b2bcbdb837f5e563e5eb797e834.png)
 
 * включить / выключить показ виджета
 * файл c javascript на фронте сайта
 
 ### Настройки виджета продукта
-[![](http://file.modx.pro/files/9/3/6/9364dc7dd0994599487b4e0f1f6d3d57s.jpg)](http://file.modx.pro/files/9/3/6/9364dc7dd0994599487b4e0f1f6d3d57.png)
+[![](https://file.modx.pro/files/9/3/6/9364dc7dd0994599487b4e0f1f6d3d57s.jpg)](https://file.modx.pro/files/9/3/6/9364dc7dd0994599487b4e0f1f6d3d57.png)
 
 * селектор запроса. Выставить селектор - по клику будет подгружен контент товара
 * селектор загрузки. Выставить селектор - область куда будет подгружен контент товара
 * параметры сниппета
 
 ### Настройки виджета корзины
-[![](http://file.modx.pro/files/2/2/a/22adafa625d806bb484c2477ec41f7d2s.jpg)](http://file.modx.pro/files/2/2/a/22adafa625d806bb484c2477ec41f7d2.png)
+[![](https://file.modx.pro/files/2/2/a/22adafa625d806bb484c2477ec41f7d2s.jpg)](https://file.modx.pro/files/2/2/a/22adafa625d806bb484c2477ec41f7d2.png)
 
 * селектор запроса. Выставить селектор - по клику будет подгружен контент корзины
 * селектор загрузки. Выставить селектор - область куда будет подгружен контент корзины
@@ -28,11 +28,11 @@
 
 * Выставить - по клику будет инициирована загрузка корзины
 ```
-<p class="msquickview_cart">показать корзину</p> 
+<p class="msquickview_cart">показать корзину</p>
 ```
 * Выставить - в шаблоне товара
 ```
-<div class="msquickview" data-href="[[+id]]">Быстрый просмотр</div> 
+<div class="msquickview" data-href="[[+id]]">Быстрый просмотр</div>
 ```
 * Выставить
 ```

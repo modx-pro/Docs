@@ -1,41 +1,41 @@
-First of all - why we need chunks? They needed to separate view from logic. In most cases it needed to allow users to edit default behaviour of installed extras.
+First of all - why do we need chunks? They are needed to separate the view from the logic. In most cases it is needed to allow users to edit default behaviour of installed extras.
 
-In MODX chunks and templates you can use various types of placeholders:
-* `[[+tag]]` - ususal placeholder that will be replaced to value due chunk processing
+In MODX's chunks and templates you can use various types of placeholders:
+* `[[+tag]]` - ususal placeholder that will be replaced with a value due chunk processing
 * `[[++setting]]` - system settings from `modX::config`
 * `[[*field]]` - field of current resource in `modX::resource` property
-* `[[%lexicon]]` - entry fron lexiocon to display text strings from extras dictionaries
+* `[[%lexicon]]` - entry from lexicon to display text strings from extras dictionaries
 * `[[~number]]` - links to resources
-* `[[snippet]]` - cached snippet.
-* `[[snippet]]` - snippet
+* `[[snippet]]` - cached snippet
+* `[[!snippet]]` - uncached snippet
 * `[[$chunk]]` - chunk
 
-Every tag might be called uncached if you will prefix it with exclamation sign. Also you might disable any tag by leading dash.
+Every tag can be called uncached if you prefix it with the exclamation sign. Also you might disable any tag by a leading dash.
 * `[[!uncached_snippet]]`
 * `[[-!disabled_snippet]]`
 
-And how exactly MODX parser processes this tags?
+And how exactly does MODX parser process this tags?
 
-modParser collects all tags from chunk with regular expressions, creates modTag objects from them and call method `process()` from them. Each tag in your chunk is one modTag object instance for modParser.
+modParser collects all tags from chunk with regular expressions, creates modTag objects from them and calls method `process()` from them. Each tag in your chunk is one modTag object instance for modParser.
 
-If you are using output filters for tags - it is another xPDO object. If you are using MODX snippet as output filter - it will be processed each time as modParser catch it in your chunk.
+If you are using output filters for tags - it is another xPDO object. If you are using MODX snippet as output filter - it will be processed each time as modParser catches it in your chunk.
 
-If you are using 3 snippets in chunk and get 10 records from database - you will get **30** snippet calls.
+If you are using 3 snippets in a chunk and get 10 records from the database - you will get **30** snippet calls.
 
-modParser is recursive parser, so if it can`t process some tag right now - it will leave it for next iteration. First, it processes all of a cached tags, then additionally processes all uncached.
+modParser is recursive parser, so if it can`t process some tag right away - it will leave it for the next iteration. First, it processes all of the cached tags, then additionally processes all uncached.
 
-If there is no value for uncached placeholder on current page - modParser will try to parse it up to 10 times (by default).
+If there is no value for a uncached placeholder on the current page - modParser will try to parse it up to 10 times (by default).
 
-That is why your complicated chunk can be parsed a very long time.
+That is why a complicated chunk can be parsed a very long time.
 
 ### pdoParser
-It is 3rd main class of pdoTools that tries to parse all simple tags by yourself. Simple tags are: `[[+tag]]`, `[[*field]]`,  `[[%lexion]]`, `[[~number]]` and `[[~[[+id]]]]`.
+It is the 3rd main class of pdoTools that tries to parse all simple tags by itself. Simple tags are: `[[+tag]]`, `[[*field]]`,  `[[%lexion]]`, `[[~number]]` and `[[~[[+id]]]]`.
 
 They must be called without any output filters, so pdoTools could just replace them to values without modTag objects - with simple `str_replace()`.
 
-If there are still remains any tags after pdoTools - it will call modParser to parse them. You know it from the previous article.
+If there are still any remaining tags after pdoTools - it will call modParser to parse them. You can read about it in the previous article.
 
-So, by default pdoParser is just simple pre-processor before modParser. That is why chunks in pdoTools are always a little (or much) faster.
+So, by default pdoParser is just a simple pre-processor before modParser. That is why chunks in pdoTools are always a little (or much) faster.
 
 ### Fenom
 pdoTools 2.0 brings you built-in support of Fenom template engine. Good news everyone - it has english documentation in [its repository on GitHub](https://github.com/fenom-template/fenom/tree/master/docs/en). Why Fenom? Because it is light, simple, fast, flexible and russian.

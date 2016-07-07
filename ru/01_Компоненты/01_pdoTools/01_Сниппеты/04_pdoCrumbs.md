@@ -14,7 +14,7 @@
 **&to**				|  						| Id ресурса для которого строятся хлебные крошки. По умолчанию это id текущей страницы.
 **&exclude**		|  						| Список id ресурсов, которые нужно исключить из выборки.
 **&toPlaceholder**	|  						| Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.
-**&outputSeparator**| `&nbsp;&rarr;&nbsp;`	| Разделитель между крошками
+**&outputSeparator**| `\n`					| Разделитель между крошками
 **&tpl**			|  						| Имя чанка для оформления ресурса. Если не указан, то содержимое полей ресурса будет распечатано на экран.
 **&tplCurrent**		|  						| Чанк оформления текущего документа в навигации.
 **&tplMax**			|  						| Чанк, который добавляется в начало результатов, если их больше чем **&limit**.
@@ -31,11 +31,11 @@
 
 Шаблон			| По умолчанию
 ----------------|--------------------------------------------------
-**&tpl**		| `@INLINE <a href="[[+link]]">[[+menutitle]]</a>`
-**&tplCurrent**	| `@INLINE <span>[[+menutitle]]</span>`
-**&tplMax**		| `@INLINE <span>&nbsp;...&nbsp;</span>`
-**&tplHome**	|
-**&tplWrapper**	| `@INLINE <div class="breadcrumbs">[[+output]]</div>`
+**&tpl**		| `@INLINE <li><a href="[[+link]]">[[+menutitle]]</a></li>`
+**&tplCurrent**	| `@INLINE <li class="active">[[+menutitle]]</li>`
+**&tplMax**		| `@INLINE <li class="disabled">&nbsp;...&nbsp;</li>`
+**&tplHome**	| ` `
+**&tplWrapper**	| `@INLINE <ul class="breadcrumb">[[+output]]</ul>`
 
 ## Примеры
 Генерация хлебных крошек для текущей страницы:
@@ -60,78 +60,12 @@
 ]]
 ```
 
-## Генерация title страниц
-pdoCrumbs можно вызывать внутри другого сниппета, например, чтобы генерировать тег title для страниц сайта.
-Сниппет Title:
-```
-<?php
-// Определяем переменные
-if (empty($separator)) {$separator = ' / ';}
-if (empty($titlefield)) {$titlefield = 'longtitle';}
-if (empty($parents_limit)) {$parents_limit = 3;}
-if (empty($tplPages)) {$tplPages = 'стр. [[+page]] из [[+pageCount]]';}
-
-// Ключ и параметры кэширования
-$cacheKey = $modx->resource->getCacheKey() . '/title_' . sha1(serialize($_REQUEST));
-$cacheOptions = array('cache_key' => 'resource');
-
-if (!$title = $modx->cacheManager->get($cacheKey, $cacheOptions)) {
-	// Узнаём имя страницы
-	$title = !empty($modx->resource->$titlefield)
-		? $modx->resource->$titlefield
-		: $modx->resource->pagetitle;
-
-	// Добавляем поисковый запрос, если есть
-	if (!empty($_GET['query']) && strlen($_GET['query']) > 2) {
-		// Нужно использовать плейсхолдер, чтобы не подсунули бяку
-		$title .= ' «[[+mse2_query]]»';
-	}
-
-	// Добавляем пагинацию, если есть
-	if (!empty($_GET['page'])) {
-		$title .= $separator . str_replace('[[+page]]', intval($_GET['page']), $tplPages);
-	}
-
-	// Добавляем родителей
-	$crumbs = $modx->runSnippet('pdoCrumbs', array(
-		'to' => $modx->resource->id,
-		'limit' => $parents_limit,
-		'outputSeparator' => $separator,
-		'showHome' => 0,
-		'showAtHome' => 0,
-		'showCurrent' => 0,
-		'direction' => 'rtl',
-		'tpl' => '@INLINE [[+menutitle]]',
-		'tplCurrent' => '@INLINE [[+menutitle]]',
-		'tplWrapper' => '@INLINE [[+output]]',
-		'tplMax' => ''
-	));
-	if (!empty($crumbs)) {
-		$title = $title . $separator . $crumbs;
-	}
-
-	// Кэшируем результаты
-	$modx->cacheManager->set($cacheKey, $title, 0, $cacheOptions);
-}
-
-// Возвращаем title
-return $title;
-```
-
-Вызов сниппета на странице
-```
-<title>[[Title]] / [[++site_name]] - мой самый лучший на свете сайт</title>
-```
-
 ## Демо
 Рабочий пример [генерации хлебных крошек в результатах поиска][3] mSearch2.
 
-[![](http://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg)](http://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
-
-Также на всём сайте [bezumkin.ru][4] используются динамические title.
+[![](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg)](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
 
 
 [1]: http://rtfm.modx.com/extras/revo/breadcrumb
 [2]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
-[3]: http://bezumkin.ru/search?query=pdotools
-[4]: http://bezumkin.ru/
+[3]: https://modx.pro/search?query=pdotools

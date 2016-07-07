@@ -3,7 +3,7 @@
 Обладает огромным количеством настроек и работает, используя свой собственный класс фильтрации, который вы можете расширить.
 При небольших знаниях PHP и фантазии, вы можете организовать фильтрацию по любым позициям.
 
-[![](http://file.modx.pro/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20s.jpg)](http://file.modx.pro/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20.png)
+[![](https://file.modx.pro/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20s.jpg)](https://file.modx.pro/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20.png)
 
 ## Параметры
 
@@ -25,13 +25,13 @@
 **&showDeleted**			| false							| Показывать удалённые ресурсы.
 **&showUnpublished**		| false							| Показывать неопубликованные товары.
 **&hideContainers**			| false							| Скрывать ресурсы-контейнеры.
-**&showLog**				| false							| Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекте «mgr».
+**&showLog**				| false							| Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекcте «mgr».
 **&suggestions**			| true							| Этот параметр включает предположительное количество результатов, которое показывается возле каждого фильтра. Отключите, если вы недовольны скоростью фильтрации.
 **&suggestionsMaxFilters**	| 200							| Максимальное количество фильтров, для которых работают предварительные результаты. Если фильтров будет больше - **suggestions** отключатся.
 **&suggestionsMaxResults**	| 1000							| Максимальное количество ресурсов, для которых работают предварительные результаты. Если ресурсов будет больше - **suggestions** отключатся.
 **&suggestionsRadio**		| 								| Список фильтров через запятую, для которых возможен выбор только одного значения, например, элементы radio и select. Предсказания этих групп фильтров не суммируются между собой. Например: «resource\|class_key,ms\|new»
-**&toPlaceholders**			| 								| Если не пусто, mFilter2 сохранит все данные в плейсхолдеры: `[[+filters]]`, `[[+results]]` и `[[+total]]` с префиксом, указанным в этом параметре. Например, если вы указжете **&toPlaceholders=\`my.\`**, то получите: `[[+my.filters]]`, `[[+my.results]]` и `[[+my.total]]`
-**&toSeparatePlaceholders**	| 								| Работает так же как и **&toPlaceholders**, только в раздельные плейсхолдеры попадает еще и **filters**. Например, усли вы укажите **&toSeparatePlaceholders=\`my.\`** и **&filters=\`tv\|test,resource\|pagetitle\`** то получите плейсхолдеры `[[+my.results]]`, `[[+my.total]]`, `[[+my.tv|test]]` и `[[+my.resource|pagetitle]]`.
+**&toPlaceholders**			| 								| Если не пусто, mFilter2 сохранит все данные в плейсхолдеры: `[[+filters]]`, `[[+results]]` и `[[+total]]` с префиксом, указанным в этом параметре. Например, если вы укажете **&toPlaceholders=\`my.\`**, то получите: `[[+my.filters]]`, `[[+my.results]]` и `[[+my.total]]`
+**&toSeparatePlaceholders**	| 								| Работает так же как и **&toPlaceholders**, только в раздельные плейсхолдеры попадает еще и **filters**. Например, если вы укажете **&toSeparatePlaceholders=\`my.\`** и **&filters=\`tv\|test,resource\|pagetitle\`** то получите плейсхолдеры `[[+my.results]]`, `[[+my.total]]`, `[[+my.tv|test]]` и `[[+my.resource|pagetitle]]`.
 **&filter_delimeter**		| \|							| Разделитель кодового имени таблицы и поля фильтра.
 **&method_delimeter**		| :								| Разделитель полного имени фильтра и метода его обработки.
 **&values_delimeter**		| ,								| Разделитель значений фильтров в адресной строке сайта.
@@ -85,7 +85,7 @@
 * Стандартная комплектация рассчитана так, чтобы работать при минимальном вызове `[[!mFilter2]]` и установленном Bootstrap 3.
 Если у вас что-то "сломалось", после того, как вы изменили чанк - смотрите, что именно вы изменили.
 
-[![](http://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efds.jpg)](http://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efd.png)
+[![](https://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efds.jpg)](https://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efd.png)
 
 ## Чанки и оформление
 У mFilter2 есть один основной чанк, куда выводятся все результаты его работы, с основными плейсхолдерами: `[[+filters]]` и `[[+results]]`.
@@ -148,7 +148,7 @@
 
 Если вы не указываете кодовое имя таблицы, то будет использовано `resource`. А если вы не указываете фильтр, то будет использован `default`.
 
-Вы можете указывать несколько фильтров для одного поля, например для раздельной фильтрации по году и месяцу. 
+Вы можете указывать несколько фильтров для одного поля, например для раздельной фильтрации по году и месяцу.
 
 Пример фильтров в работе:
 ```
@@ -162,7 +162,7 @@
 	`
 ]]
 ```
-[![](http://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9as.jpg)](http://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9a.png)
+[![](https://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9as.jpg)](https://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9a.png)
 
 В комплекте с mFilter2 идёт несколько стандартных методов фильтрации, которые позволяют сделать вывод фильтров более приятным.
 
@@ -180,7 +180,7 @@
 	&tplFilter.row.resource|template=`tpl.mFilter2.filter.number`
 ]]
 ```
-[![](http://file.modx.pro/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74s.jpg)](http://file.modx.pro/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74.png)
+[![](https://file.modx.pro/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74s.jpg)](https://file.modx.pro/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74.png)
 
 ### boolean
 Фильтр для вывода параметров да\нет. Например, опубликован ли ресурс, скрыт в меню, доступен для поиска и т.д.
@@ -192,7 +192,7 @@
 	`
 ]]
 ```
-[![](http://file.modx.pro/files/b/c/0/bc022499933ae06b101e290e9b784a16s.jpg)](http://file.modx.pro/files/b/c/0/bc022499933ae06b101e290e9b784a16.png)
+[![](https://file.modx.pro/files/b/c/0/bc022499933ae06b101e290e9b784a16s.jpg)](https://file.modx.pro/files/b/c/0/bc022499933ae06b101e290e9b784a16.png)
 
 ### parents, categories и grandparents
 Следующие три фильтра применяются только к полю *parent* ресурса.
@@ -205,7 +205,7 @@ Parents выводит имена двух родителей, через раз
 	`
 ]]
 ```
-[![](http://file.modx.pro/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252s.jpg)](http://file.modx.pro/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252.png)
+[![](https://file.modx.pro/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252s.jpg)](https://file.modx.pro/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252.png)
 
 Categories выводит имя непосредственного родителя.
 
@@ -216,7 +216,7 @@ Categories выводит имя непосредственного родите
 	`
 ]]
 ```
-[![](http://file.modx.pro/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326s.jpg)](http://file.modx.pro/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326.png)
+[![](https://file.modx.pro/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326s.jpg)](https://file.modx.pro/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326.png)
 
 Grandparents выводит имена родителей-дедушек и предназначен для больших каталогов. Если "дедушки" нет, то будет выведен непосредственный родитель.
 ```
@@ -226,7 +226,7 @@ Grandparents выводит имена родителей-дедушек и пр
 	`
 ]]
 ```
-[![](http://file.modx.pro/files/5/5/e/55e5e69063b9580d534b50a03c1acb4fs.jpg)](http://file.modx.pro/files/5/5/e/55e5e69063b9580d534b50a03c1acb4f.png)
+[![](https://file.modx.pro/files/5/5/e/55e5e69063b9580d534b50a03c1acb4fs.jpg)](https://file.modx.pro/files/5/5/e/55e5e69063b9580d534b50a03c1acb4f.png)
 
 ### vendors
 Фильтр для вывода имён производителей товаров miniShop2. Применяется только к полю `vendor` таблицы `ms`.
@@ -238,7 +238,7 @@ Grandparents выводит имена родителей-дедушек и пр
 	`
 ]]
 ```
-[![](http://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](http://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
+[![](https://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](https://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
 
 ### fullname
 Этот фильтр выводит полное имя пользователя. Может применяться к любому полю, содержащему id юзера.
@@ -249,7 +249,7 @@ Grandparents выводит имена родителей-дедушек и пр
 	`
 ]]
 ```
-[![](http://file.modx.pro/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4ds.jpg)](http://file.modx.pro/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4d.png)
+[![](https://file.modx.pro/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4ds.jpg)](https://file.modx.pro/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4d.png)
 
 ### year
 Этот фильтр применяется к полям с датой и выводит год. Можно, например, фильтровать новости по году создания.
@@ -260,10 +260,10 @@ Grandparents выводит имена родителей-дедушек и пр
 	`
 ]]
 ```
-[![](http://file.modx.pro/files/c/1/3/c13c234629cde60be2122e85ee18483as.jpg)](http://file.modx.pro/files/c/1/3/c13c234629cde60be2122e85ee18483a.png)
+[![](https://file.modx.pro/files/c/1/3/c13c234629cde60be2122e85ee18483as.jpg)](https://file.modx.pro/files/c/1/3/c13c234629cde60be2122e85ee18483a.png)
 
 ### month
-Этот фильтр применяется к полям с датой и выводит месяц прописьмю, подставляя его название из словаря компонента.
+Этот фильтр применяется к полям с датой и выводит месяц прописью, подставляя его название из словаря компонента.
 
 ### day
 Этот фильтр применяется к полям с датой и выводит день.
@@ -271,7 +271,7 @@ Grandparents выводит имена родителей-дедушек и пр
 ## Псевдонимы фильтров
 В последних версиях дополнения введена специальная система псевдонимов для фильтров, чтобы сделать их использование более удобным.
 
-Вы можете указать список замены длинных названий фильтрова на более короткие и понятные. Например:
+Вы можете указать список замены длинных названий фильтров на более короткие и понятные. Например:
 ```
 [[!mFilter2?
 	&parents=`0`
@@ -310,7 +310,7 @@ Grandparents выводит имена родителей-дедушек и пр
 parent-categories и parent-grandparents
 ```
 
-Соотвественно, псевдонимы должны быть такими:
+Соответственно, псевдонимы должны быть такими:
 ```
 &aliases=`
 	resource|parent-categories==categories,
@@ -326,7 +326,7 @@ parent-categories и parent-grandparents
 
 ## Предварительные результаты
 Предварительные результаты - это маленькие циферки рядом с каждым фильтром, которые показывают, сколько вы получите результатов, если кликните на него.
-[![](http://file.modx.pro/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0s.jpg)](http://file.modx.pro/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0.png)
+[![](https://file.modx.pro/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0s.jpg)](https://file.modx.pro/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0.png)
 
 При каждом клике это значение пересчитывается для **всех фильтров**, с учетом текущего состояния. То есть, скрипт пробегает по каждому варианту и считает, сколько будет результатов, если его активировать.
 
@@ -397,8 +397,8 @@ mFilter2 умеет сортировать сразу по нескольким 
 Для оформления фильтров используются записи из лексикона.
 Если вы добавили новый фильтр и он отображается непонятной длинной надписью на английском - это значит, что её нужно добавить в словарь mSearch2.
 
-[![](http://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04s.jpg)](http://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04.png)
-[![](http://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721s.jpg)](http://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
+[![](https://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04s.jpg)](https://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04.png)
+[![](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721s.jpg)](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
 
 
 
