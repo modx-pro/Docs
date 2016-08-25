@@ -60,7 +60,7 @@ Name					| Default														| Description
 **&processTVs**				|  																	| Comma-separated list of TVs that should be processed according to their output options. If set to «1», all TV listed in **&includeTVs** will be processed.
 **&tvPrefix**				| tv.															| Prefix TV property.
 **&scheme**					| -1																| Type of URL scheme, passed to modX::makeUrl(). [See this][0] for a list of valid options.
-**&useWeblinkUrl**			|  																	| Generate link to the weblink resource, not to the destination URL.
+**&useWeblinkUrl**			| 0																	| Generate link to the weblink resource, not to the destination URL. **NOTE:** To get this properly working, be sure to use `[[+link]]` instead of `[[~[[+id]]]]` eg. `<a href="[[+link]]">[[+pagetitle]]</a>`.
 **&toPlaceholder**			|  																	| Save output to a placeholder with this name instead of displaying the output to the screen.
 **&toSeparatePlaceholders**	|  																	| Each item will be displayed in a placeholder with a name starting with this value and ending with the sequential number starting from zero. For example, by specifying the property value «myPl», you'll get placeholders `[[+myPl0]]`, `[[+myPl1]]` & etc.
 **&showLog**				| 0																	| Show additional debugging information on the processing of the snippet only to logged-in Manager users.
