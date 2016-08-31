@@ -36,6 +36,30 @@
 | **&option**           | {}                            | Значение опции товара со связями в JSON   |
 | **&fieldName **       | pagetitle                     | Поле ресурса для вывода названия          |
 
+Пример вызова:
+```
+[[!msAddLinked.info? &option=`[[+option.msal]]`]]
+```
+В синтаксисе Fenom:
+```
+{$_modx->runSnippet('msAddLinked.info', ['option' => $product.options.msal])}
+```
+
+Если в корзине выводятся другие опции товаров, тогда следующий блок:
+```
+{foreach $product.options as $option}
+    {var $options = $options ~ $option ~ '; '}
+{/foreach}
+```
+необходимо заменить на такой:
+```
+{foreach $product.options as $k => $option}
+    {if $k != 'msal'}
+        {var $options = $options ~ $option ~ '; '}
+    {/if}
+{/foreach}
+```
+
 ##Системные настройки
 
 | Название                      | Значение по умолчанию         | Описание                      |
