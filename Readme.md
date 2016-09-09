@@ -39,7 +39,7 @@ At any moment you can clone this repository and deploy it on your server. Also y
 All records from this repository are hosted on the website [docs.modx.pro][5] automatically.
 
 
-[1]: https://github.com/bezumkin/Docs/issues/new
+[1]: https://github.com/bezumkin/Docs/
 [2]: http://daringfireball.net/projects/markdown/syntax
 [3]: http://daux.io
 [4]: http://docs.modx.pro
