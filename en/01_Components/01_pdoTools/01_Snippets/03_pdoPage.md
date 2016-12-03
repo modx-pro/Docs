@@ -212,7 +212,7 @@ All public methods of the jQuery plugin could be called with the following code:
 $('[[+wrapper]]').pdoPage('<methodname>', <comma>, <separated>, <parameters>);
 ```
 
-##### Example call with form filtering
+#### Example call with form filtering
 Form filtering the pdoPage ajax result could be done with the following code:
 
 ```
