@@ -39,6 +39,8 @@ Name                    | Default       | Description
 **ajaxHistory**         |               | Save the page number in the url when working in ajax mode.
 **frontend_js**         | [[+assetsUrl]]js/pdopage.min.js| Link on javascript for loading by the snippet.
 **frontend_css**        | [[+assetsUrl]]css/pdopage.min.css| Link on css styles for loading by the snippet.
+**frontend_startup_js** |               | Name of a chunk that contains the script code at the end of the head section used with enabled support of ajax requests.
+**frontend_init_js**    |               | Name of a chunk that contains the script code at the end of the body section used with enabled support of ajax requests.
 **setMeta**             | 1             | Registration of meta tags with links to previous and next page.
 **strictMode**          | 1             | Strict mode. pdoPage do redirects when loading non-existent pages.
 
@@ -176,6 +178,57 @@ $(document).on('pdopage_load', function(e, config, response) {
 });
 ```
 The checking of the data in the config will allow you to distinguish between different pdoPage calls on the same page.
+
+## Use your own javascripts in ajax mode
+
+From version 2.7.4 you could use your own javascripts in ajax mode. The frontend javascripts could be modified with the pdoPage snippet parameters **&frontend_js**, **&frontend_startup_js** and **&frontend_init_js**. Per default the external **[[+assetsUrl]]js/pdopage.min.js** javascript is referenced and the belonging script tags are placed at the end of the head/body section.
+
+### jQuery plugin
+Since version 2.7.4 **[[+assetsUrl]]js/jquery.pdopage.min.js** is available and could be referenced in **&frontend_js** parameter in the pdoPage snippet call. If you want to use it, you have to create two chunks and reference them in the **&frontend_startup_js** and **&frontend_init_js** parameter.
+
+The chunk for **frontend_startup_js** should stay empty and the chunk for **frontend_startup_js** could be filled with the following script tag:
+
+```
+<script type="text/javascript">
+    $('[[+wrapper]]').pdoPage([[+config]]);
+</script>
+```
+
+The plugin triggers two events on the wrapper element. These could be catched the following:
+
+```
+$('[[+wrapper]]').on('beforeLoad', function(event, pdopage, settings){
+  console.log(settings);
+});
+$('[[+wrapper]]').on('afterLoad', function(event, pdopage, settings, response){
+  console.log(settings);
+  console.log(response);
+});
+```
+
+All public methods of the jQuery plugin could be called with the following code:
+
+```
+$('[[+wrapper]]').pdoPage('<methodname>', <comma>, <separated>, <parameters>);
+```
+
+#### Example call with form filtering
+Form filtering the pdoPage ajax result could be done with the following code:
+
+```
+<script type="text/javascript">
+    var pdoPageWrapper = $('[[+wrapper]]');
+    pdoPageWrapper.pdoPage([[+config]]);
+    $(document).ready(function () {
+		$("form#my_id").on('click', 'button[type="submit"]', function(e) {
+            e.preventDefault();
+            var form = $(e.delegateTarget);
+            $('[[+wrapper]]').pdoPage('loadPage', 
+                form.attr('action') + '?' + form.serialize(), 'force');
+        });
+    });
+</script>
+```
 
 ## Friendly urls pagination
 From version 2.2.2 you can use the parameter **&pageLinkScheme** to specify the schema of generated links to the pages.
