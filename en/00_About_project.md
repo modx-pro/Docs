@@ -104,7 +104,7 @@ Content Cell  | Content Cell
 Content Cell  | Content Cell
 
 
-[1]: https://github.com/bezumkin/Docs/issues/new
+[1]: https://github.com/bezumkin/Docs/
 [2]: http://daringfireball.net/projects/markdown/syntax
 [3]: http://daux.io
 [4]: https://file.modx.pro

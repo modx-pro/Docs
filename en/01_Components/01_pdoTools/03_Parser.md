@@ -66,6 +66,41 @@ or
 {$pagetitle} for placeholders without it
 ```
 
+#### Placeholders filling
+
+Fenom works in one pass, ie, Unlike the MODX parser, it is not recursive
+
+Performing the entire template in one go gives a very high speed, but also should take into account, that
+**placeholders** will be available **only after working** corresponding snippet
+
+For example: you need to get the value of the placeholder `{$ mse2_query}` (Search request) in the form, but the search form display above the results.
+To do this you must perform a snippet mSearch2 and pass on the results to placeholder, eg `searchResults`:
+
+```
+{'!pdoPage' | snippet : [
+	'element' => 'mSearch2',
+	'toPlaceholder' => 'searchResults'
+]}
+```
+Next, call the snippet of search form, where Fenom parser will substitute the value of the placeholder `{$mse2_query}`:
+```
+{'!mSearchForm' | snippet}
+```
+Then display the results of the snippet mSearch2:
+```
+{'searchResults' | placeholders}
+```
+
+If the snippet is not able to save the results of its work to placeholder, you can assign them to a Fenom variable:
+```
+{var $date = 'dateAgo' | snippet : ['input' => '2016-09-10 12:55:35']}
+
+...
+
+Your date: {$date}.
+```
+Very similar to the logic of the usual script.
+
 #### System settings
 There is some important system settings for Fenom:
 * `pdotools_fenom_default` - use Fenom syntax in chunks. It is enabled by default.
