@@ -1,53 +1,53 @@
 Вывод изображений ms2Gallery в [типовом слайдере Bootstrap3][0] с помощью pdoResources.
 
-### Вызов на странице
+## Вызов на странице
 
 Готовый вызов со стандартным оформлением из примера на сайте Bootstrap3.
 ```
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-	<!-- Indicators -->
-	<ol class="carousel-indicators">
-		[[+indicators]]
-	</ol>
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+        [[+indicators]]
+    </ol>
 
-	<!-- Wrapper for slides -->
-	<div class="carousel-inner">
-		[[!pdoResources?
-			&class=`msResourceFile`
-			&loadModels=`ms2gallery`
-			&sortby=`rank`
-			&sortdir=`ASC`
-			&totalVar=`slider.total`
-			&tplFirst=`@INLINE <div class="item active">
-				<img src="[[+url]]" alt="">
-				<div class="carousel-caption">
-					<h3>[[+name]]</h3>
-					<p>[[+description]]</p>
-				</div>
-			</div>`
-			&tpl=`@INLINE <div class="item">
-				<img src="[[+url]]" alt="">
-				<div class="carousel-caption">
-					<h3>[[+name]]</h3>
-					<p>[[+description]]</p>
-				</div>
-			</div>`
-			&where=`{"msResourceFile.resource_id":[[*id]], "msResourceFile.path:LIKE":"%360x270%"}`
-	  ]]
-	</div>
-	[[!GenerateIndicators?
-		&input=`[[+slider.total]]`
-		&toPlaceholder=`indicators`
-	]]
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+        [[!pdoResources?
+            &class=`msResourceFile`
+            &loadModels=`ms2gallery`
+            &sortby=`rank`
+            &sortdir=`ASC`
+            &totalVar=`slider.total`
+            &tplFirst=`@INLINE <div class="item active">
+                <img src="[[+url]]" alt="">
+                <div class="carousel-caption">
+                    <h3>[[+name]]</h3>
+                    <p>[[+description]]</p>
+                </div>
+            </div>`
+            &tpl=`@INLINE <div class="item">
+                <img src="[[+url]]" alt="">
+                <div class="carousel-caption">
+                    <h3>[[+name]]</h3>
+                    <p>[[+description]]</p>
+                </div>
+            </div>`
+            &where=`{"msResourceFile.resource_id":[[*id]], "msResourceFile.path:LIKE":"%360x270%"}`
+      ]]
+    </div>
+    [[!GenerateIndicators?
+        &input=`[[+slider.total]]`
+        &toPlaceholder=`indicators`
+    ]]
 
-	<!-- Controls -->
-	  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-	    <span class="glyphicon glyphicon-chevron-left"></span>
-	  </a>
-	  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-	    <span class="glyphicon glyphicon-chevron-right"></span>
-	  </a>
-	</div>
+    <!-- Controls -->
+      <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+      </a>
+      <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right"></span>
+      </a>
+    </div>
 </div>
 ```
 
@@ -64,34 +64,34 @@
 ```
 <?php
 if (empty($tpl)) {
-	$tpl = '@INLINE <li data-target="#carousel-example-generic" data-slide-to="[[+idx]]" [[+class]]></li>';
+    $tpl = '@INLINE <li data-target="#carousel-example-generic" data-slide-to="[[+idx]]" [[+class]]></li>';
 }
 
 if (empty($input)) {
-	return '';
+    return '';
 }
 
 $pdo = $modx->getService('pdoTools');
 $output = '';
 for ($i = 0; $i < $input; $i++) {
-	$data = array(
-		'class' => $i === 0 ? 'class="active"' : '',
-		'idx' => $i
-	);
-	$output .= $pdo->getChunk($tpl, $data);
+    $data = array(
+        'class' => $i === 0 ? 'class="active"' : '',
+        'idx' => $i
+    );
+    $output .= $pdo->getChunk($tpl, $data);
 }
 
 if (!empty($toPlaceholder)) {
-	$modx->setPlaceholder($toPlaceholder, $output);
+    $modx->setPlaceholder($toPlaceholder, $output);
 }
 else {
-	return $output;
+    return $output;
 }
 ```
 Вы можете передавать свои параметры **&tpl** и **&toPlaceholder**, если нужно.
 
 
-### Логика работы
+## Логика работы
 pdoResources выводит картинки по заданным условиям и выставляет плейсхолдер с их общим количеством на страницу. Его принимает сниппет **GenerateIndicators** и генерирует индикаторы для переключения изображений.
 
 Сниппет генерации должен вызываться после pdoResources, чтобы в плейсхолдере `[[+slider.total]]` уже было число. А сами индикаторы должны выводиться до изображений, поэтому сниппет выводит их в плейсхолдер `[[+indicators]]`.
