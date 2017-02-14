@@ -47,7 +47,7 @@
 **nouserhide** — прятать ли ссылки для неавторизованных пользователей, по умолчанию — НЕТ  
 
 ```
-[[!msFavorites?
+[[!msf.favorites?
 	&id=`[[+id]]`
 	&list=`mylist`
 	&list_id=`10`
@@ -63,7 +63,7 @@
 **user_id** — id пользователя, по умолчанию текущий пользователь 
 
 ```
-[[!msFavoritesList?
+[[!msf.ids?
 	&list=`mylist`
 	&toPlaceholder=`list`
 ]]
