@@ -66,7 +66,7 @@ $pdo->setConfig(array(
 		'Profile' => array(
 			'class' => 'modUserProfile',
 			'on' => 'modUser.id = modUserProfile.internalKey',
-		),
+		)),
 	'select' => array(
 		'modUser' => '*',
 		'Profile' => 'fullname,email',
