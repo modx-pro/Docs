@@ -65,7 +65,7 @@ $pdo->setConfig(array(
 	'leftJoin' => array(
 		'Profile' => array(
 			'class' => 'modUserProfile',
-			'on' => 'modUser.id = modUserProfile.internalKey',
+			'on' => 'modUser.id = Profile.internalKey',
 		),
 	'select' => array(
 		'modUser' => '*',
