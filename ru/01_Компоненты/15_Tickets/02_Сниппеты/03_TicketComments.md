@@ -26,7 +26,7 @@
 **&tplCommentEmailBcc**				| tpl.Tickets.comment.email.bcc			| Чанк для уведомления админов сайта о новом комментарии.
 **&tplCommentEmailOwner**			| tpl.Tickets.comment.email.owner		| Чанк для уведомления владельца тикета о новом комментарии.
 **&tplCommentEmailReply**			| tpl.Tickets.comment.email.reply		| Чанк для уведомления пользователя о том, что на его комментарий появился ответ.
-**&vtplCommentEmailSubscription**	| tpl.Tickets.comment.email.subscription| Чанк для уведомления подписанного пользователя, что в теме появился новый комментарий.
+**&tplCommentEmailSubscription**	| tpl.Tickets.comment.email.subscription| Чанк для уведомления подписанного пользователя, что в теме появился новый комментарий.
 **&tplCommentForm**					| tpl.Tickets.comment.form				| Чанк для формы добавления нового комментария.
 **&tplCommentFormGuest**			| tpl.Tickets.comment.form.guest		| Чанк для формы добавления нового комментария гостям.
 **&tplCommentGuest**				| tpl.Tickets.comment.one.guest			| Чанк комментария для показа гостям.
