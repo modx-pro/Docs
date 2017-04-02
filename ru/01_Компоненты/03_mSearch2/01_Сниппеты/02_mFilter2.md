@@ -406,6 +406,23 @@ mFilter2 умеет сортировать сразу по нескольким 
 ]]
 ```
 
+Еще пример - сортировка по опции товара miniShop2:
+```
+[[!mFilter2?
+	&parents=`0`
+	&element=`msProducts`
+	&leftJoin=`{
+		"Option": {
+			"class": "msProductOption",
+			"on": "Option.key = 'test1' and Option.product_id = msProduct.id"
+		}
+	}`
+	&sortAliases=`{"msoption":"Option"}`
+	&sort=`msoption|value:asc`
+]]
+```
+Присоединяем опцию **test1**, добавляем для этой таблицы псевдоним и сортируем по значению присоединённой опции.
+
 ## Javascript
 Вся работа фильтров обеспечивается скриптом default.js, который идёт в комплекте.
 Путь к нему указывается в системной настройке **mse2_frontend_js**, так что, если вы захотите внести изменения,
@@ -423,7 +440,7 @@ mSearch2.reset();
 При обновлении фильтров срабатывает событие **mse2_load**:
 ```
 $(document).on('mse2_load', function(e, data) {
-    console.log(e, data);
+	console.log(e, data);
 });
 ```
 Вы можете использовать это событие для дополнительной обработки значений фильтра.
