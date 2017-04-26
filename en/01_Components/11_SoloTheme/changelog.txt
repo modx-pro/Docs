@@ -1,0 +1,52 @@
+Changelog for SOLO theme
+
+08-09-2015 solo-2.0.0-pl
+---------------------------------
+- Added support for dependencies for MODX 2.4.0 and up
+
+30-05-2015 solo-1.1.2-pl
+---------------------------------
+- Update URL on nav click (thanks Mark Hamstra)
+- Set sitemap template to blank (thanks Mark Hamstra)
+- Fix basic page top margin (thanks Mark Hamstra)
+- Cleanup unused files in JS and SCSS
+- Updated csssweet, formit, migx, stercseo
+
+24-04-2015 solo-1.1.1-pl
+---------------------------------
+- Removed bad solo.getSiteURL snippet (thanks Mark Ryder)
+
+11-04-2015 solo-1.1.0-pl
+---------------------------------
+- Added optional reCAPTCHA from Google to contact form
+- Update FormIt to 2.2.4-pl
+- Improved image resizing by using Resizer with pThumb
+- Fixed popup on retina screens
+- Replace the RTE
+- Add back to top button (thanks Psb Magar)
+- Add references/quotes section (thanks Josef)
+- Add mobile nav (thanks Psb Magar)
+- Add video embed options (Thanks Psb Magar)
+- Add optional contact form spamcheck
+
+03-04-2015 solo-1.0.2-pl
+---------------------------------
+- Fix for update script (thanks Bob Ray)
+
+02-04-2015 solo-1.0.1-pl
+---------------------------------
+- Add section to menu option
+- Add lexicon load to header
+- Separate header and footer in chunks
+- Set 'Pre-process tags in Property Values' for CSSSweet plugin on install (thanks YJ)
+- Test and improve install/upgrade process
+- Change custom CSS chunk name and category
+- Add more section types
+- Add Google Analytics option
+- Update CSSSweet
+- Add stage background image option
+- Fix image size on WP10
+
+30-03-2015 solo-1.0.0-pl
+---------------------------------
+First version
