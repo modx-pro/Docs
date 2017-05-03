@@ -1,4 +1,4 @@
-# SEO Suite [](#lang-nl)[](#lang-ru)[](#lang-us)
+## SEO Suite
 [SEO Suite][1] was introduced by [Sterc][4] as a premium MODX Extra that automatically redirects your 404 URLs to relevant pages on your website. 404 errors are a fairly common issue for anyone who’s transitioning from an old website to a new website. SEO Suite makes sure your visitors are redirected to a relevant page when they’re looking for an old URL.
 
 Through simply uploading a single column .csv file containing your 404 URLs, SEO Suite will look for similar pages on your website and redirect them automatically. This matching process is based on the information after the last slash in the URL.
