@@ -1,4 +1,4 @@
-The component has many applications. Some of them will be added to this list.
+The extra has many applications. Some of them will be added to this list.
 
 ### Displaying products with remains only
 If it is necessary to display on the page only the products with remains in at least one combination of properties, call the msProducts snippet as follows:
@@ -10,7 +10,7 @@ If it is necessary to display on the page only the products with remains in at l
   &where=`{"Remains.remains:>":"0"}`
 ]]
 ```
-Or the same ID in Fenom:
+Or the same code in Fenom:
 ```
 {'!msProducts' | snippet : [
   'leftJoin' => [
@@ -29,4 +29,4 @@ Or the same ID in Fenom:
   ]
 ]}
 ```
-In doing so the placeholder `[[+remains]]` will have a total amount of remaining product units recorded (the `getRemains` snippet called without any properties specified will display the same).
+In doing so the placeholder [[+remains]] will have a total amount of remaining product units recorded (the getRemains snippet called without any properties specified will display the same).
