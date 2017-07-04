@@ -1,4 +1,4 @@
-Apart from editing remains directly when editing a product, they can also be managed on a component page that can be found in the upper menu bar of the website control panel using the following path: `Applications -> miniShop2 -> Remains`.
+Apart from editing remains directly when editing a product, they can also be managed on an extra page that can be found in the upper menu bar of the website control panel using the following path: `Applications -> miniShop2 -> Remains`.
 
 [![](https://file.modx.pro/files/6/7/8/6782f3a9e0bb917e6bb5ac150027fd12s.jpg)](https://file.modx.pro/files/6/7/8/6782f3a9e0bb917e6bb5ac150027fd12.png)
 
