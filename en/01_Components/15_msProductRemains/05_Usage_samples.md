@@ -29,4 +29,4 @@ Or the same code in Fenom:
   ]
 ]}
 ```
-In doing so the placeholder `[[+remains]]` will have a total amount of remaining product units recorded (the `getRemains` snippet called without any properties specified will display the same).
+In doing so the placeholder [[+remains]] will have a total amount of remaining product units recorded (the getRemains snippet called without any properties specified will display the same).
