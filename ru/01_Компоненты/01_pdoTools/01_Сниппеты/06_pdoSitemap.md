@@ -91,9 +91,9 @@
 ]]
 ```
 
-А вот так можно посмотреть лог выборки карты:
+Перед просмотром лога выборки карты, необходимо на странице с картой во вкладке «Настройки» изменить «Тип содержимого» с «XML» на «HTML», после тестирования вернуть обратно параметр «XML». Пример сниппета просмотра лога выборки карты:
 ```
-[[pdoSitemap?
+[[!pdoSitemap?
 	&resources=`-25`
 	&parents=`-15,10`
 	&context=`web,catalog`
@@ -102,8 +102,8 @@
 ]]
 ```
 
-[1]: http://rtfm.modx.com/extras/revo/googlesitemap
-[2]: http://bezumkin.ru/sitemap.xml
+[1]: https://rtfm.modx.com/extras/revo/googlesitemap
+[2]: https://bezumkin.ru/sitemap.xml
 [3]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
-[4]: http://www.sitemaps.org/ru/protocol.html#prioritydef
-[5]: http://www.sitemaps.org/ru/protocol.html#changefreqdef
+[4]: https://www.sitemaps.org/ru/protocol.html#prioritydef
+[5]: https://www.sitemaps.org/ru/protocol.html#changefreqdef
