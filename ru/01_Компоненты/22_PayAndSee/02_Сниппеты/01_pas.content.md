@@ -1,4 +1,4 @@
-Сниппет для вывода контента **pas.content**
+Сниппет для вывода контента `pas.content`
 
 [![](https://file.modx.pro/files/a/8/c/a8cc2deec25e633e863ed7794541efbbs.jpg)](https://file.modx.pro/files/a/8/c/a8cc2deec25e633e863ed7794541efbb.png)
 
