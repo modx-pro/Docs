@@ -59,24 +59,24 @@
 Идентифицировать заказы контента можно по полю `context` заказа, и если нужно оформить данные заказы по своему.
 Например, заменим переменную `products` из сниппета msGetOrder на `products` из сниппета pas.get.order
 ```
-{if $order.context == 'pas'}
-{var $tmp = '!pas.get.order'|snippet:[
-'msorder' => $order.id,
-'return'=>'json'
-]|json_decode}
-{set $products = $tmp.products}
+{var $pas = $order.context == 'pas'}
+{if $pas}
+    {var $tmp = '!pas.get.order'|snippet:[
+    'msorder' => $order.id,
+    'return' => 'data'
+    ]}
+    {set $products = $tmp.products}
 {/if}
 ```
 Как видите, мы запустили на обработку сниппет `pas.get.order` и заменили значение переменной  `products`.
 В зависимости от функционала сайта, вы можете переопределить шаблон `tpl.msEmail` например так
 ```
-<!-- pas -->
 {var $pas = $order.context == 'pas'}
 {if $pas}
     {var $tmp = '!pas.get.order'|snippet:[
     'msorder' => $order.id,
-    'return'=>'json'
-    ]|json_decode}
+    'return' => 'data'
+    ]}
     {set $products = $tmp.products}
 {/if}
 
@@ -104,14 +104,13 @@
 <body style="margin:0;padding:0;background:#f6f6f6;">
 <div style="height:100%;padding-top:20px;background:#f6f6f6;">
     {block 'logo'}
-        <!-- pas -->
         {if !$pas}
-        <a href="{$site_url}">
-            <img style="{$style.logo}"
-                 src="{$site_url}{$assets_url}components/minishop2/img/web/ms2_small@2x.png"
-                 alt="{$site_url}"
-                 width="120" height="90"/>
-        </a>
+            <a href="{$site_url}">
+                <img style="{$style.logo}"
+                     src="{$site_url}{$assets_url}components/minishop2/img/web/ms2_small@2x.png"
+                     alt="{$site_url}"
+                     width="120" height="90"/>
+            </a>
         {/if}
     {/block}
     <!-- body -->
@@ -125,7 +124,6 @@
                             <td>
                                 <h3 style="{$style.h}{$style.h3}">
                                     {block 'title'}
-                                        <!-- pas -->
                                         {if !$pas}
                                             miniShop2
                                         {else}
@@ -135,127 +133,119 @@
                                 </h3>
 
                                 {block 'products'}
-                                    <!-- pas -->
                                     {if !$pas}
-                                    <table style="width:90%;margin:auto;">
-                                        <thead>
-                                        <tr>
-                                            <th>&nbsp;</th>
-                                            <th style="{$style.th}">{'ms2_cart_title' | lexicon}</th>
-                                            <th style="{$style.th}">{'ms2_cart_count' | lexicon}</th>
-                                            <th style="{$style.th}">{'ms2_cart_weight' | lexicon}</th>
-                                            <th style="{$style.th}">{'ms2_cart_cost' | lexicon}</th>
-                                        </tr>
-                                        </thead>
-                                        {foreach $products as $product}
+                                        <table style="width:90%;margin:auto;">
+                                            <thead>
                                             <tr>
-                                                <td style="{$style.th}">
-                                                    {if $product.thumb?}
-                                                        <img src="{$site_url}{$product.thumb}"
-                                                             alt="{$product.pagetitle}"
-                                                             title="{$product.pagetitle}"
-                                                             width="120" height="90"/>
-                                                    {else}
-                                                        <img src="{$site_url}{$assets_url}components/minishop2/img/web/ms2_small@2x.png"
-                                                             alt="{$product.pagetitle}"
-                                                             title="{$product.pagetitle}"
-                                                             width="120" height="90"/>
-                                                    {/if}
-                                                </td>
-                                                <td style="{$style.th}">
-                                                    {if $product.id?}
-                                                        <a href="{$product.id | url : ['scheme' => 'full']}"
-                                                           style="{$style.a}">
-                                                            {$product.name}
-                                                        </a>
-                                                    {else}
-                                                        {$product.name}
-                                                    {/if}
-                                                    {if $product.options?}
-                                                        <div class="small">
-                                                            {$product.options | join : '; '}
-                                                        </div>
-                                                    {/if}
-                                                </td>
-                                                <td style="{$style.th}">{$product.count} {'ms2_frontend_count_unit' | lexicon}</td>
-                                                <td style="{$style.th}">{$product.weight} {'ms2_frontend_weight_unit' | lexicon}</td>
-                                                <td style="{$style.th}">{$product.price} {'ms2_frontend_currency' | lexicon}</td>
+                                                <th>&nbsp;</th>
+                                                <th style="{$style.th}">{'ms2_cart_title' | lexicon}</th>
+                                                <th style="{$style.th}">{'ms2_cart_count' | lexicon}</th>
+                                                <th style="{$style.th}">{'ms2_cart_weight' | lexicon}</th>
+                                                <th style="{$style.th}">{'ms2_cart_cost' | lexicon}</th>
                                             </tr>
-                                        {/foreach}
-                                        <tfoot>
-                                        <tr>
-                                            <th colspan="2"></th>
-                                            <th style="{$style.th}">
-                                                {$total.cart_count} {'ms2_frontend_count_unit' | lexicon}
-                                            </th>
-                                            <th style="{$style.th}">
-                                                {$total.cart_weight} {'ms2_frontend_weight_unit' | lexicon}
-                                            </th>
-                                            <th style="{$style.th}">
-                                                {$total.cart_cost} {'ms2_frontend_currency' | lexicon}
-                                            </th>
-                                        </tr>
-                                        </tfoot>
-                                    </table>
-                                    <h3 style="{$style.h}{$style.h3}">
-                                        {'ms2_frontend_order_cost' | lexicon}:
-                                        {if $total.delivery_cost}
-                                            {$total.cart_cost} {'ms2_frontend_currency' | lexicon} + {$total.delivery_cost}
-                                            {'ms2_frontend_currency' | lexicon} =
-                                        {/if}
-                                        <strong>{$total.cost}</strong> {'ms2_frontend_currency' | lexicon}
-                                    </h3>
-                                    
-                                    {else}
-                                    <div class="pas-order">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <tr class="header">
-                                                    <th class="name col-md-4">{'payandsee_content' | lexicon}</th>
-                                                    <th class="options col-md-2">{'payandsee_term' | lexicon}</th>
-                                                    <th class="cost col-md-1">{'payandsee_cost' | lexicon}</th>
-                                                </tr>
-                                                {foreach $products as $row}
-                                                    <tr>
-                                                        <td class="name">
-                                                            <h4><a href="{$row.content_resource | url}">{$row.content_name}</a></h4>
-                                                            {if $row.content_description}
-                                                                <p>
-                                                                    <small>{$row.content_description}</small>
-                                                                </p>
-                                                            {/if}
-                                                        </td>
-                                                        <td class="options">
-                                                            {if $row.term_value?}
-                                                                <div class="small">
-                                                                    {$row.term_value} {('payandsee_unit_date_'~$row.term_unit)| lexicon}
-                                                                </div>
-                                                            {/if}
-                                                        </td>
-                                                        <td class="cost">
-                                                            {$row.cost} {'payandsee_unit_cost' | lexicon}
-                                                        </td>
-                                                    </tr>
-                                                {/foreach}
-                                                <tr class="footer">
-                                                    <th class="">
-                                                        {'payandsee_order_cost' | lexicon}:
-                                                        {if $total.delivery_cost}
-                                                            {$total.cart_cost} {'payandsee_unit_cost' | lexicon} + {$total.delivery_cost}
-                                                            {'payandsee_unit_cost' | lexicon} =
+                                            </thead>
+                                            {foreach $products as $product}
+                                                <tr>
+                                                    <td style="{$style.th}">
+                                                        {if $product.thumb?}
+                                                            <img src="{$site_url}{$product.thumb}"
+                                                                 alt="{$product.pagetitle}"
+                                                                 title="{$product.pagetitle}"
+                                                                 width="120" height="90"/>
+                                                        {else}
+                                                            <img src="{$site_url}{$assets_url}components/minishop2/img/web/ms2_small@2x.png"
+                                                                 alt="{$product.pagetitle}"
+                                                                 title="{$product.pagetitle}"
+                                                                 width="120" height="90"/>
                                                         {/if}
-                                                        <strong>{$total.cost}</strong> {'payandsee_unit_cost' | lexicon}
-                                                    </th>
-                                                    <th class="">
-                                                    </th>
-                                                    <th class="">
-                                                    </th>
+                                                    </td>
+                                                    <td style="{$style.th}">
+                                                        {if $product.id?}
+                                                            <a href="{$product.id | url : ['scheme' => 'full']}"
+                                                               style="{$style.a}">
+                                                                {$product.name}
+                                                            </a>
+                                                        {else}
+                                                            {$product.name}
+                                                        {/if}
+                                                        {if $product.options?}
+                                                            <div class="small">
+                                                                {$product.options | join : '; '}
+                                                            </div>
+                                                        {/if}
+                                                    </td>
+                                                    <td style="{$style.th}">{$product.count} {'ms2_frontend_count_unit' | lexicon}</td>
+                                                    <td style="{$style.th}">{$product.weight} {'ms2_frontend_weight_unit' | lexicon}</td>
+                                                    <td style="{$style.th}">{$product.price} {'ms2_frontend_currency' | lexicon}</td>
                                                 </tr>
-                                            </table>
-                                        </div>
-                                    </div>
+                                            {/foreach}
+                                            <tfoot>
+                                            <tr>
+                                                <th colspan="2"></th>
+                                                <th style="{$style.th}">
+                                                    {$total.cart_count} {'ms2_frontend_count_unit' | lexicon}
+                                                </th>
+                                                <th style="{$style.th}">
+                                                    {$total.cart_weight} {'ms2_frontend_weight_unit' | lexicon}
+                                                </th>
+                                                <th style="{$style.th}">
+                                                    {$total.cart_cost} {'ms2_frontend_currency' | lexicon}
+                                                </th>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+                                        <h3 style="{$style.h}{$style.h3}">
+                                            {'ms2_frontend_order_cost' | lexicon}:
+                                            {if $total.delivery_cost}
+                                                {$total.cart_cost} {'ms2_frontend_currency' | lexicon} + {$total.delivery_cost}
+                                                {'ms2_frontend_currency' | lexicon} =
+                                            {/if}
+                                            <strong>{$total.cost}</strong> {'ms2_frontend_currency' | lexicon}
+                                        </h3>
+                                    {else}
+                                        <table style="width:90%;margin:auto;">
+                                            <thead>
+                                            <tr>
+                                                <th style="{$style.th}">{'payandsee_content' | lexicon}</th>
+                                                <th style="{$style.th}">{'payandsee_term' | lexicon}</th>
+                                                <th style="{$style.th}">{'payandsee_cost' | lexicon}</th>
+                                            </tr>
+                                            </thead>
+                                            {foreach $products as $row}
+                                                <tr>
+                                                    <td style="{$style.th}">
+                                                        <h4><a href="{$row.content_resource | url: ['scheme' => 'full']}" style="{$style.a}">{$row.content_name}</a></h4>
+                                                        {if $row.content_description}
+                                                            <div class="small">
+                                                                <small>{$row.content_description}</small>
+                                                            </div>
+                                                        {/if}
+                                                    </td>
+                                                    <td style="{$style.th}">
+                                                        {if $row.term_value?}
+                                                            <div class="small">
+                                                                {$row.term_value} - {$row.term_value | decl : (('payandsee_decl_date_' ~ $row.term_unit) | lexicon)}
+                                                            </div>
+                                                        {/if}
+                                                    </td>
+                                                    <td style="{$style.th}">
+                                                        {$row.cost} {'payandsee_unit_cost' | lexicon}
+                                                    </td>
+                                                </tr>
+                                            {/foreach}
+                                            <tfoot>
+                                            </tfoot>
+                                        </table>
+                                        <h3 style="{$style.h}{$style.h3}">
+                                            {'payandsee_order_cost' | lexicon}:
+                                            {if $total.delivery_cost}
+                                                {$total.cart_cost} {'payandsee_unit_cost' | lexicon} + {$total.delivery_cost}
+                                                {'payandsee_unit_cost' | lexicon} =
+                                            {/if}
+                                            <strong>{$total.cost}</strong> {'payandsee_unit_cost' | lexicon}
+                                        </h3>
                                     {/if}
-                                    
+
                                 {/block}
                             </td>
                         </tr>
@@ -279,9 +269,9 @@
                             <td align="center">
                                 <p style="{$style.p}">
                                     {block 'footer'}
-                                    <a href="{$site_url}" style="color: #999999;">
-                                        {'site_name' | option}
-                                    </a>
+                                        <a href="{$site_url}" style="color: #999999;">
+                                            {'site_name' | option}
+                                        </a>
                                     {/block}
                                 </p>
                             </td>
