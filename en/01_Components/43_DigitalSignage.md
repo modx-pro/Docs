@@ -57,7 +57,7 @@ You can find the CSS and Javascript assets within the `narrowcasting` folder in 
 
     7. **Template**: Narrowcasting
 
-    8. **Ticker URL**: [https://www.nu.nl/rss/Algemeen](https://www.nu.nl/rss/Algemeen) (a RSS feed URL)
+    8. **Ticker URL**: [https://modx.today/feed.xml](https://modx.today/feed.xml) (a RSS feed URL)
 
 4. Connect slides to your broadcast by right clicking the broadcast in the `Broadcasts` tab.
 
