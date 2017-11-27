@@ -60,6 +60,27 @@
 {/foreach}
 ```
 
+Помимо этого, стандартные опции выводятся таким образом:
+```
+<div class="small">
+    {$product.options | join : '; '}
+</div>
+```
+Для исключения вывода сырого JSON необходимо обрамить следующим образом:
+```
+{if $product.options.msal?}
+    {var $msal = $product.options.msal}
+    {unset $product.options.msal}
+{/if}
+<div class="small">
+    {$product.options | join : '; '}
+</div>
+{if $msal?}
+    {$_modx->runSnippet('msAddLinked.info', ['option' => $msal])}
+    {unset $msal}
+{/if}
+```
+
 ##Системные настройки
 
 | Название                      | Значение по умолчанию         | Описание                      |
