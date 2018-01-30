@@ -186,7 +186,7 @@ From version 2.7.4 you could use your own javascripts in ajax mode. The frontend
 ### jQuery plugin
 Since version 2.7.4 **[[+assetsUrl]]js/jquery.pdopage.min.js** is available and could be referenced in **&frontend_js** parameter in the pdoPage snippet call. If you want to use it, you have to create two chunks and reference them in the **&frontend_startup_js** and **&frontend_init_js** parameter.
 
-The chunk for **frontend_startup_js** should stay empty and the chunk for **frontend_startup_js** could be filled with the following script tag:
+The chunk for **frontend_startup_js** should stay empty and the chunk for **frontend_init_js** could be filled with the following script tag:
 
 ```
 <script type="text/javascript">
