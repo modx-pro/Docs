@@ -53,6 +53,7 @@ Name					| Default														| Description
 ----------------------------|-------------------------------------------------------------------|-------------------------------------------------------------------------------
 **&fastMode**				| 0																	| Quick mode for processing chunks. All raw tags (output modifiers, snippets, etc.) are removed.
 **&idx**					|  																	| The starting number of iterations of the output.
+**&setTotal**				| 0																| Indicates if the total placeholder should be populated with a count of the results.
 **&totalVar**				| total																| Name of the placeholder for storing the total number of results.
 **&includeContent**			| 0																	|  Indicates if the «content» field of each resource should be returned in the results.
 **&includeTVs**				|  																	|  Comma-separated list of Template Variable values that should be included in the placeholders available to each resource template . Example: «action,time» will produce the placeholders `[[+tv.action]]` and `[[+tv.time]]`.
