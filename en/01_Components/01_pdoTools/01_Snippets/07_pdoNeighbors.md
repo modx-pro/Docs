@@ -17,7 +17,7 @@ Parameter			| Default		| Description
 **&tplWrapper**		| see below			| Chunk-wrapper for wrapping results. Uses placeholders: `[[+left]]`, `[[+top]]`, `[[+right]]` and `[[+log]]`. It does not work in conjunction with **&toSeparatePlaceholders**.
 **&toPlaceholder**	|  					| If not empty, the snippet will save all data to the placeholder specified, instead of displaying the output with the snippet call.
 **&showLog**		| 0					| Display log information of the snippet. Only authorized in the context «mgr».
-
+**&loop**		| 1					| 0/1: Hide/show neighbours first/last entry if at the end of list
 ### Template Chunks
 
 Template			| Default
