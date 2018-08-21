@@ -41,6 +41,80 @@ Name			    | By default			| Description
 **&fields**			| 						| System settings redefinition of weight for indexed fields with comma: **&fields=`pagetitle:5,content:3,comment:1`**. `mse2_index_fields` is used by default. 
 **&showSearchLog**	| false					| To show detailed information on given points of resource search when inserting **&showLog**.
 
+## Lexicons
+Snippet may display search errors messages which change in system dictionaries. 
+
+* **mse2_err_no_results** &rarr; "No results found".
+* **mse2_err_min_query** &rarr; "Search query is too short". That means the query is less than the **&minQuery** value. 
+* **mse2_err_no_query** &rarr; "Search query is empty".
+
+There you can also find other records used in chunks and snippets by default. 
+[![](https://file.modx.pro/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8cs.jpg)](https://file.modx.pro/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8c.png)
+
+## Search form
+Snippet must have search query in the array $_REQUEST for it to work. It can be sent by simplest form:
+```
+<form action="/search.html" method="get">
+	<input type="text" name="query" value="[[+mse2_query]]" />
+	<button type="submit">Искать!</button>
+</form>
+```
+
+Note that the query should be referred under the same name as specified in the parameter **&queryVar**, *query* by default.
+
+## Examples
+If empty action is specified, it is transferred to the current page. 
+```
+<form action="" method="get">
+	<input type="text" name="query" value="[[+mse2_query]]" />
+	<button type="submit">Искать!</button>
+</form>
+
+[[!mSearch2]]
+```
+
+You can use pages breakdown via [pdoPage][3]. mSearch2 sets pdoTools automatically, so you have already got pdoPage. 
+```
+<form action="" method="get">
+	<input type="text" name="query" value="[[+mse2_query]]" />
+	<button type="submit">Искать!</button>
+</form>
+
+[[!pdoPage?
+	&element=`mSearch2`
+]]
+
+[[!+page.nav]]
+```
+
+Snippet can be caused along with [mSearchForm][4]
+```
+[[!mSearchForm]]
+
+[[!pdoPage?
+	&element=`mSearch2`
+]]
+
+[[!+page.nav]]
+```
+
+
+You can also use **mSearch2** to search and output together with [msProducts][5]:
+```
+[[!pdoPage?
+	&element=`msProducts`
+	&parents=`0`
+	&resources=`[[!mSearch2:default=`999999`?returnIds=`1`&limit=`0`]]`
+	&sortby=`ids`
+]]
+
+[[!+page.nav]]
+```
+`returnIds` parameter specifies **msProducts** - found products list for the output. 
+And the `default` filter substitutes misssing id when nothing is found, otherwise **msProducts** will output every row at a time. 
+
+In that case you can use all the fields of the products in the chunk processing. 
+
 [1]: /en/01_Components/01_pdoTools
 [2]: /en/01_Components/01_pdoTools/01_Snippets/01_pdoResources.md
 [3]: /en/01_Components/01_pdoTools/01_Snippets/03_pdoPage.md
