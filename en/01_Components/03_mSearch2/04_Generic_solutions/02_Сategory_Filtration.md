@@ -4,7 +4,7 @@ The work logic of mFilter2:
 
 * The filter uses for search and output one snippet indicated in &elements. In case of working with products msProducts is usually indicated there.
 * There will be 2 calls for this snippet: preliminary selection and return of products suitable for id, and then their output for the user. 
-* You can distinguish between these two requests by the parameter **returnIds**.
+* These 2 calls can be distinguished by parameter **returnIds**, which is sent.
 
 You should not interfere in the process of id getting products because filter has to build filters from them. Only output of these products should be changed: they should be replaced by categories. 
 
