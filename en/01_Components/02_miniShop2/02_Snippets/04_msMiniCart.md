@@ -16,7 +16,7 @@ As usual there are:
 
 *These data are subject to change, if the expanded cart class is used*
 
-Standard chunk contains two? element blocks with `empty` and `not_empty` classes, displayed for different cart statuses accordingly.
+Standard chunk contains two element blocks with `empty` and `not_empty` classes, displayed for different cart statuses accordingly.
 
 
 [1]: /en/01_Components/01_pdoTools/03_Parser.md
