@@ -30,7 +30,7 @@
 **&tplCommentForm**					| tpl.Tickets.comment.form				| Чанк для формы добавления нового комментария.
 **&tplCommentFormGuest**			| tpl.Tickets.comment.form.guest		| Чанк для формы добавления нового комментария гостям.
 **&tplCommentGuest**				| tpl.Tickets.comment.one.guest			| Чанк комментария для показа гостям.
-**&tplComments**					| tpl.Tickets.comment.wrapper			| Чане обертка для всех комментариев страницы.
+**&tplComments**					| tpl.Tickets.comment.wrapper			| Чанк обертка для всех комментариев страницы.
 **&tplLoginToComment**				| tpl.Tickets.comment.login				| Чанк с требованием авторизоваться.
 
 ## Примеры
