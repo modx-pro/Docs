@@ -28,4 +28,4 @@ Go to the tab **Access to contexts** in the editable group and click **Add conte
 
 Access rights have been set, the only thing left is to add new users in the group. You can use any of the authorization components, but we recommend [HybridAuth][1]
 
-[1]: /ru/01_Components/04_HybridAuth/01_Snippets/01_HybridAuth.md
+[1]: /en/01_Components/04_HybridAuth/01_Snippets/01_HybridAuth.md
