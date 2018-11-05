@@ -44,4 +44,4 @@ Name			| By default				| Description
 [[!TicketLatest? &limit=`5` &fastMode=`1` &action=`comments` &tpl=`tpl.Tickets.comment.latest`]]
 ```
 
-[1]: /ru/01_Components/01_pdoTools/04_Common_parameters.md
+[1]: /en/01_Components/01_pdoTools/04_General_settings.md
