@@ -23,14 +23,14 @@
 
 ## Примеры
 ### Все объекты класса modDocument
-```
+```html
 {'!YandexMaps2' | snippet : [
     'class' => 'modDocument',
 ]}
 ```
 
 ### Все объекты класса msProduct с отключённым зуммированием при скролле
-```
+```html
 {'!YandexMaps2' | snippet : [
     'class' => 'msProduct',
     'scrollZoom' => false,
@@ -38,7 +38,7 @@
 ```
 
 ### Все объекты пользователей
-```
+```html
 {'!YandexMaps2' | snippet : [
     'class' => 'modUser',
     'map' => 'ym2map-users',
