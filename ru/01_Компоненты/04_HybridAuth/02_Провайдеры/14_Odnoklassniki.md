@@ -16,9 +16,9 @@
 
 Их необходимо указать в настройках системы в ключе **ha.keys.Odnoklassniki**
 ```
-{"id":"123456789","key":"ABCDEFGHIJKLMNOPQ","secret":"ABCDEFGHIJKLMNOPQ1234A12"}
+{"keys":{"id":"123456789","key":"ABCDEFGHIJKLMNOPQ","secret":"ABCDEFGHIJKLMNOPQ1234A12"},"scope":"VALUABLE_ACCESS;LONG_ACCESS_TOKEN"}
 ```
 
-[1]: http://odnoklassniki.ru/dk?st.cmd=anonymRegistrationEdit&st._aid=AnonymMain_Register_RegisterEdit
-[2]: http://odnoklassniki.ru/devaccess
-[3]: http://odnoklassniki.ru/dk?st.cmd=appEdit&st._aid=Apps_Info_MyDev_AddApp
+[1]: https://ok.ru/dk?st.cmd=anonymMain&st.registration=on
+[2]: https://ok.ru/devaccess
+[3]: https://ok.ru/dk?st.cmd=appEditBasic
