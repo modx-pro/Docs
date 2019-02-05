@@ -37,3 +37,12 @@
     {'page.nav' | placeholder}
 </div>
 ```
+
+Вывод ресурсов через mFilter2
+```
+{'!mFilter2' | snippet : [
+    'element' => 'Localizator',
+    'parents' => 0,
+    'localizator_key' => ('localizator_key' | option),
+]}
+```
