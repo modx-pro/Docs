@@ -79,11 +79,10 @@
 
 Параметр	|	По умолчанию				|	Описание
 ------------|-------------------------------|-----------------------------------------------------
-**create_order**		| MS     			| Метод отправки заказа: MS — отправить заказ в minishop2; MAIL — отправить заказ на e-mail, указанный в miniShop2 для менеджера, или по умолчанию (ms2_email_manager или emailsender)
+**method**		| MS     			| Метод отправки заказа: MS — отправить заказ в minishop2; MAIL — отправить заказ на e-mail, указанный в miniShop2 для менеджера, или по умолчанию (ms2_email_manager или emailsender)
 **default_images**		| /assets/components/minishop2/img/web/ms2_small.png     			| Изображение по умолчанию для товара. В случае когда изображение отсутствует
 **field_required_class**		| msoc_field__required     			| Класс css для обязательного поля для заполнения
-**email_method_mail**		| MS     			| 
-**create_order**		|      			| E-mail, куда будет уходить письмо, если использовать метод MAIL. Если оставить пустым, то будут использоватся настройки ms2_email_manager или emailsender
+**email_method_mail**		| Пусто     			| E-mail, куда будет уходить письмо, если использовать метод MAIL. Если оставить пустым, то будут использоватся настройки ms2_email_manager или emailsender
 **tplBtn**		| tpl.msOneClick.btn     			| Чанк оформления кнопки «быстрый заказ»
 **tplModal**		| tpl.msOneClick.modal     			| Чанк оформления модельного окна
 **tplForm**		| tpl.msOneClick.form     			| Чанк оформления формы заказа
