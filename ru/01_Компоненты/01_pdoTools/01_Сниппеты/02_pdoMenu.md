@@ -51,10 +51,10 @@
 **&tpl**				| Чанк оформления пункта меню. Если не указан, то содержимое полей ресурса будет распечатано на экран. По умолчанию: `@INLINE <li [[+classes]]><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>`
 **&tplHere**			| Чанк оформления текущего пункта меню.
 **&tplStart**			| Чанк оформления корневого пункта, при условии, что включен **&displayStart**. По умолчанию: `@INLINE <h2 [[+classes]]>[[+menutitle]]</h2>[[+wrapper]]`
-**&tplParentRow**		| Чанк оформления категории меню. Категория - это ресурс с потомками («isfolder = 1») или нулевым шаблоном, или с атрибутом "rel=category". Например: `@INLINE <li class="submenu_wrapp [[+classnames]]"><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>`
-**&tplParentRowHere**	| Чанк оформления текущей категории.
-**&tplParentRowActive**	| Чанк оформления активной категории.
-**&tplCategoryFolder**	| Специальный чанк оформления категории.
+**&tplParentRow**		| Чанк оформления родителя с потомками, не подпадающего под условия `&tplCategoryFolder`. Например: `@INLINE <li class="submenu_wrapp [[+classnames]]"><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>`
+**&tplParentRowHere**	| Чанк оформления текущего документа, если он содержит потомков.
+**&tplParentRowActive**	| Чанк оформления родителей с потомками в активной ветке меню.
+**&tplCategoryFolder**	| Специальный чанк оформления категории. Категорией считается родитель с потомками, у которого указан пустой шаблон или `rel="category"` в поле `link_attributes`.
 **&tplInner**			| Чанк оформления всего блока подпунктов меню. Если пуст - будет использовать **&tplOuter**. Например: `@INLINE <ul class="submenu [[+classnames]]">[[+wrapper]]</ul>`
 **&tplInnerRow**		| Чанк оформления подпункта меню. Например: `@INLINE <li class="submenu_item [[+classnames]]"><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>`
 **&tplInnerHere**		| Чанк оформления активного подпункта меню.
