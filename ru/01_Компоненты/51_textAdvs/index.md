@@ -6,4 +6,4 @@
 * Отображать блоки объявлений один за другим (по мере обновления страницы),
 * Подтягивать кастомные теги.
 
-[![](https://file.modx.pro/files/2/2/d/22d43278a36228c5a54741593ed2f7ed.png)](https://file.modx.pro/files/2/2/d/22d43278a36228c5a54741593ed2f7ed.png)
+![](https://file.modx.pro/files/2/2/d/22d43278a36228c5a54741593ed2f7ed.png)
