@@ -77,10 +77,8 @@ Cистемные параметры нужно выделять жирным т
 
 Для обрамления кода нужно использовать 3 обратных апострофа  \`\`\` перед секцией кода, и после:
 
-``` php
-&#96;&#96;&#96;
+``` plain
 Здесь код
-&#96;&#96;&#96;
 ```
 
 Сам код начинается с новой строки. Пустые строки до и после кода - по желанию.
@@ -148,8 +146,8 @@ Links to documents need to set at the end of the page to make it searchable and 
 Among other things, this allows you to use one link multiple times on a page:
 
 ``` php
-[Link 1]&#91;1&#93;
-[Link 2]&#91;1&#93;
+[Link 1][1]
+[Link 2][2]
 
 [1]: http://mylink.com/
 ```
@@ -181,10 +179,8 @@ Placeholders wrapped in single reverse apostrophes. For example: \`[[+placeholde
 
 For block with code we using 3 reverse apostrophe \`\`\` before and after:
 
-``` php
-&#96;&#96;&#96;
+``` plain
 Here is the code
-&#96;&#96;&#96;
 ```
 
 The code starts from the new line. Blank lines before and after the code voluntarily.
