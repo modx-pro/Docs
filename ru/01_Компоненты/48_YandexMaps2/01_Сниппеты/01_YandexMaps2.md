@@ -17,20 +17,22 @@
 **defaultIconCaption**		|               							    | Заголовок иконки. Используется, если у иконки на карте не заполнено.
 **defaultBalloonContent**   |               							    | Текст балуна. Используется, если у объекта на карте не заполнено.
 **mode**		     	    | `default`            							| Режим сниппета. Варианты: `default`, `mfilter2`
+**apiUrl**		     	    |             							        | Ссылка на API Яндекс Карт. Если указан, будет перебивать системную настройку `ym2_api_url`.
+**apiKey**		     	    |             							        | Ключ API Яндекс Карт. Если указан, будет перебивать системную настройку `ym2_api_key`.
 **scripts**		     	    | `1`            							    | Нужно ли подключать скрипты карты.
 **jquery**		     	    | `1`            							    | Нужно ли подключать jQuery.
 **tpl**		         	    | `tpl.YandexMaps2`        					    | Чанк вывода карты.
 
 ## Примеры
 ### Все объекты класса modDocument
-```
+```html
 {'!YandexMaps2' | snippet : [
     'class' => 'modDocument',
 ]}
 ```
 
 ### Все объекты класса msProduct с отключённым зуммированием при скролле
-```
+```html
 {'!YandexMaps2' | snippet : [
     'class' => 'msProduct',
     'scrollZoom' => false,
@@ -38,7 +40,7 @@
 ```
 
 ### Все объекты пользователей
-```
+```html
 {'!YandexMaps2' | snippet : [
     'class' => 'modUser',
     'map' => 'ym2map-users',
