@@ -1,3 +1,5 @@
+# msSetInCart
+
 Компонент реализует функционал покупки комплектов товаров.
 
 [![](https://file.modx.pro/files/d/9/e/d9efbebbfef6b748a2027a3a8813a3bes.jpg)](https://file.modx.pro/files/d/9/e/d9efbebbfef6b748a2027a3a8813a3be.png)
@@ -7,7 +9,7 @@
 [![](https://file.modx.pro/files/c/7/1/c7163e1f39c4bbb6baba7ed904077128s.jpg)](https://file.modx.pro/files/c/7/1/c7163e1f39c4bbb6baba7ed904077128.png)
 
 * id связи товаров, задается в настройках [miniShop2][1]
-* максимум комплектов, максимум одновременно добавляемых комплектов 
+* максимум комплектов, максимум одновременно добавляемых комплектов
 * включить / выключить работу пакет
 * файл с js на фронте сайта
 
@@ -16,7 +18,8 @@
 * в шаблоне вывода товара добавить кнопку покупки комплекта
 
 ## Пример добавления кнопки
-```
+
+```php
 <!-- стандартная кнопка отправить в корзину -->
 <div class="form-group">
     <div class="col-sm-3">
@@ -42,22 +45,22 @@
 * `[[!+mssetincart.total_count]]` - общее количество связанных товаров
 
 ## Вывод связанных товаров стандартно с помощью сниппета msProducts:
-```
+
+```php
 <div class="row">
-	<div class="span5 col-md-3">
-		<h5>цена соп.товаров - [[!+mssetincart.total_cost]] руб.</h5>
-		<h5>кол-во соп.товаров - [[!+mssetincart.total_count]] шт.</h5>
-	</div>
+    <div class="span5 col-md-3">
+        <h5>цена соп.товаров - [[!+mssetincart.total_cost]] руб.</h5>
+        <h5>кол-во соп.товаров - [[!+mssetincart.total_count]] шт.</h5>
+    </div>
 
-
-	<div class="span5 col-md-10">
-		[[!msProducts?
-		&tpl=`tpl.msProducts.row.mini`
-		&parents=`0`
-		&link=`1`
-		&master=`[[*id]]`
-		]]
-	</div>
+    <div class="span5 col-md-10">
+        [[!msProducts?
+        &tpl=`tpl.msProducts.row.mini`
+        &parents=`0`
+        &link=`1`
+        &master=`[[*id]]`
+        ]]
+    </div>
 </div>  
 ```
 
