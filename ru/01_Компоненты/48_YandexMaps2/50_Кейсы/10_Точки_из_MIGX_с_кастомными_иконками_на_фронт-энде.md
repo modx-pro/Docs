@@ -1,16 +1,20 @@
 В этом кейсе мы рассмотрим, какие чудеса можно творить при помощи события плагина `ymOnLoadObjects`. В данном случае, мы реализуем подгрузку точек из MIGX таблицы с возможностью указания своей иконки для точки.
 
-#### Шаг 1
+## Шаг 1
+
 Создаём ТВ MIGX `ym2objects` с такими полями:
 [![](https://file.modx.pro/files/a/9/7/a971d58b922b05ca69b935b098240db7.png)](https://file.modx.pro/files/a/9/7/a971d58b922b05ca69b935b098240db7.png)
 
-#### Шаг 2
+## Шаг 2
+
 Заполняем в ресурсе это поле, как нам угодно:
 [![](https://file.modx.pro/files/6/1/4/614a4d0ee6a9e58d06ebd11977401793.png)](https://file.modx.pro/files/6/1/4/614a4d0ee6a9e58d06ebd11977401793.png)
 
-#### Шаг 3
+## Шаг 3
+
 Вызываем карту в нужном месте данного ресурса:
-```html
+
+```php
 {'!YandexMaps2' | snippet : [
     'parent' => $_modx->resource['id'],
     'class' => 'modDocument',
@@ -18,8 +22,10 @@
 ]}
 ```
 
-#### Шаг 4
+## Шаг 4
+
 Создаём плагин на событие `ymOnLoadObjects`:
+
 ```php
 $sp = &$scriptProperties;
 switch ($modx->event->name) {
@@ -34,14 +40,14 @@ switch ($modx->event->name) {
             break;
         }
         $ym2->initialize($modx->context->key);
-        
+
         // Получаем данные из MIGX поля ресурса
         if ($ym2objects = $resource->getTvValue('ym2objects')) {
             $ym2objects = $ym2->tools->isJSON($ym2objects) ? $modx->fromJSON($ym2objects) : $ym2objects;
         }
         $ym2objects = is_array($ym2objects) ? $ym2objects : [];
-        
-        // 
+
+        //
         $objects = [];
         foreach ($ym2objects as $v) {
             $object = [
@@ -79,11 +85,12 @@ switch ($modx->event->name) {
             $objects[] = $object;
             unset($object);
         }
-        
+
         $modx->event->returnedValues['objects'] = $objects;
         break;
 }
 ```
 
-#### Важно
+## Важно
+
 Чтобы ресурс с картой был обработан плагином, **надо единожды сохранить его с подключённой вкладкой YandexMaps2**.

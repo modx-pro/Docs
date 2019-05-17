@@ -2,9 +2,11 @@
 Подобная логика позволяет навесить свой JS код на фронт-энд события карты.
 
 ## ymOnLoadMap
+
 Сработает при загрузке карты.
 
-#### Пример
+### Пример
+
 ```javascript
 $(document).ready(function() {
     $(document).on('ymOnLoadMap', function(e, ym2, map) {
