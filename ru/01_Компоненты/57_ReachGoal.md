@@ -1,5 +1,3 @@
-# ReachGoal
-
 **ReachGoal** — Настройка/управление целями для **Яндекс.Метрики**, **Google.Analytics**, **Google tag manager** через админку.
 
 [![](https://file.modx.pro/files/b/d/c/bdc375985bd23943731129ed3b337b57.png)](https://file.modx.pro/files/b/d/c/bdc375985bd23943731129ed3b337b57.png)
@@ -31,6 +29,6 @@
 
 [![](https://file.modx.pro/files/7/e/c/7eca53a10577657148fff74f2fd0ca3a.png)](https://file.modx.pro/files/7/e/c/7eca53a10577657148fff74f2fd0ca3a.png)
 
-### Настройки компонента
+## Настройки компонента
 
 `reachgoal_yacounter_default` — Номер счетчика по умолчанию (только для Яндекс.Метрики)
