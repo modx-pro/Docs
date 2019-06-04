@@ -1,3 +1,5 @@
+# pdoPage
+
 Сниппет **pdoPage** позволяет вывести результаты работы других сниппетов с разбивкой на страницы.
 
 [![](https://file.modx.pro/files/7/e/a/7ea43b037fac16e28073cca778602c68s.jpg)](https://file.modx.pro/files/7/e/a/7ea43b037fac16e28073cca778602c68.png)
@@ -15,68 +17,70 @@
 [![](https://file.modx.pro/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9s.jpg)](https://file.modx.pro/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png)
 
 ## Параметры
+
 При вызове сниппета *pdoPage* указываются параметры сниппета, для которого производится пагинация. Данный сниппет должен понимать параметры **&page** и **&limit**. По умолчанию pdoPage принимает все параметры [pdoTools][0] и кроме того, некоторые свои:
 
-Название                | По умолчанию  | Описание
-------------------------|---------------|------------------------------------------------------------------------------------------
-**&plPrefix**           |               | Префикс для выставляемых плейсхолдеров
-**&limit**              | 10            | Ограничение количества результатов на странице. Число должно быть больше 0, иначе вам не нужен этот сниппет.
-**&maxLimit**           | 100           | Максимально возможный лимит выборки. Перекрывает лимит, указанный пользователем через url.
-**&offset**             | 0             | Пропуск результатов от начала.
-**&page**               | 1             | Номер страницы для вывода. Перекрывается номером, указанным пользователем через url.
-**&pageVarKey**         | page          | Имя переменной для поиска номера страницы в url.
-**&totalVar**           | page.total    | Имя плейсхолдера для сохранения общего количества результатов.
-**&pageLimit**          | 5             | Количество ссылок на страницы. Если больше или равно 7 - включается продвинутый режим отображения.
-**&element**            | pdoResources  | Имя сниппета для запуска.
-**&pageNavVar**         | page.nav      | Имя плейсхолдера для вывода пагинации.
-**&pageCountVar**       | pageCount     | Имя плейсхолдера для вывода количества страниц.
-**&pageLinkScheme**     |               | Шаблон генерации ссылок на страницы. Позволяет реализовать ЧПУ пагинацию. См. ниже.
-**&tplPage**            |               | Чанк оформления обычной ссылки на страницу.
-**&tplPageWrapper**     |               | Чанк оформления всего блока пагинации, содержит плейсхолдеры страниц.
-**&tplPageActive**      |               | Чанк оформления ссылки на текущую страницу.
-**&tplPageFirst**       |               | Чанк оформления ссылки на первую страницу.
-**&tplPageLast**        |               | Чанк оформления ссылки на последнюю страницу.
-**&tplPagePrev**        |               | Чанк оформления ссылки на предыдущую страницу.
-**&tplPageNext**        |               | Чанк оформления ссылки на следующую страницу.
-**&tplPageSkip**        |               | Чанк оформления пропущенных страниц при продвинутом режиме отображения (**&pageLimit** >= 7).
-**&tplPageFirstEmpty**  |               | Чанк, выводящийся при отсутствии ссылки на первую страницу.
-**&tplPageLastEmpty**   |               | Чанк, выводящийся при отсутствии ссылки на последнюю страницу.
-**&tplPagePrevEmpty**   |               | Чанк, выводящийся при отсутствии ссылки на предыдущую страницу.
-**&tplPageNextEmpty**   |               | Чанк, выводящийся при отсутствии ссылки на следующую страницу.
-**&cache**              | 0             | Кэширование результатов работы сниппета.
-**&cacheTime**          | 3600          | Время актуальности кэша, в секундах.
-**&cache_user**         |               | Принудительно устанавливает ID посетителя, по-умолчанию кеширование производится с учетом ID посетителя
-**&toPlaceholder**      |               | Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.
-**ajax**                |               | Включить поддержку ajax запросов.
-**ajaxMode**            |               | Ajax пагинация "из коробки". Доступны 3 режима: "default", "button" и "scroll".
-**ajaxElemWrapper**     | #pdopage      | jQuery селектор элемента-обёртки с результатами и пагинацией.
-**ajaxElemRows**        | #pdopage .rows| jQuery селектор элемента с результатами.
-**ajaxElemPagination**  | #pdopage .pagination| jQuery селектор элемента с пагинацией.
-**ajaxElemLink**        | #pdopage .pagination a| jQuery селектор ссылки на страницу.
-**ajaxElemMore**        | #pdopage .btn-more| jQuery селектор кнопки загрузки результатов при ajaxMode = button.
-**ajaxHistory**         |               | Сохранять номер страницы в url при работе в режиме ajax.
-**frontend_js**         | [[+assetsUrl]]js/pdopage.min.js    | Ссылка на javascript для подключения сниппетом.
-**frontend_css**        | [[+assetsUrl]]css/pdopage.min.css    | Ссылка на css стили оформления для подключения сниппетом.
-**setMeta**             | 1             | Регистрация мета-тегов со ссылками на предыдущую и следующую страницу.
-**strictMode**          | 1             | Строгий режим работы. pdoPage делает редиректы при загрузке несуществующих страниц.
+| Название               | По умолчанию                      | Описание                                                                                                     |
+| ---------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **&plPrefix**          |                                   | Префикс для выставляемых плейсхолдеров                                                                       |
+| **&limit**             | 10                                | Ограничение количества результатов на странице. Число должно быть больше 0, иначе вам не нужен этот сниппет. |
+| **&maxLimit**          | 100                               | Максимально возможный лимит выборки. Перекрывает лимит, указанный пользователем через url.                   |
+| **&offset**            | 0                                 | Пропуск результатов от начала.                                                                               |
+| **&page**              | 1                                 | Номер страницы для вывода. Перекрывается номером, указанным пользователем через url.                         |
+| **&pageVarKey**        | page                              | Имя переменной для поиска номера страницы в url.                                                             |
+| **&totalVar**          | page.total                        | Имя плейсхолдера для сохранения общего количества результатов.                                               |
+| **&pageLimit**         | 5                                 | Количество ссылок на страницы. Если больше или равно 7 - включается продвинутый режим отображения.           |
+| **&element**           | pdoResources                      | Имя сниппета для запуска.                                                                                    |
+| **&pageNavVar**        | page.nav                          | Имя плейсхолдера для вывода пагинации.                                                                       |
+| **&pageCountVar**      | pageCount                         | Имя плейсхолдера для вывода количества страниц.                                                              |
+| **&pageLinkScheme**    |                                   | Шаблон генерации ссылок на страницы. Позволяет реализовать ЧПУ пагинацию. См. ниже.                          |
+| **&tplPage**           |                                   | Чанк оформления обычной ссылки на страницу.                                                                  |
+| **&tplPageWrapper**    |                                   | Чанк оформления всего блока пагинации, содержит плейсхолдеры страниц.                                        |
+| **&tplPageActive**     |                                   | Чанк оформления ссылки на текущую страницу.                                                                  |
+| **&tplPageFirst**      |                                   | Чанк оформления ссылки на первую страницу.                                                                   |
+| **&tplPageLast**       |                                   | Чанк оформления ссылки на последнюю страницу.                                                                |
+| **&tplPagePrev**       |                                   | Чанк оформления ссылки на предыдущую страницу.                                                               |
+| **&tplPageNext**       |                                   | Чанк оформления ссылки на следующую страницу.                                                                |
+| **&tplPageSkip**       |                                   | Чанк оформления пропущенных страниц при продвинутом режиме отображения (**&pageLimit** >= 7).                |
+| **&tplPageFirstEmpty** |                                   | Чанк, выводящийся при отсутствии ссылки на первую страницу.                                                  |
+| **&tplPageLastEmpty**  |                                   | Чанк, выводящийся при отсутствии ссылки на последнюю страницу.                                               |
+| **&tplPagePrevEmpty**  |                                   | Чанк, выводящийся при отсутствии ссылки на предыдущую страницу.                                              |
+| **&tplPageNextEmpty**  |                                   | Чанк, выводящийся при отсутствии ссылки на следующую страницу.                                               |
+| **&cache**             | 0                                 | Кэширование результатов работы сниппета.                                                                     |
+| **&cacheTime**         | 3600                              | Время актуальности кэша, в секундах.                                                                         |
+| **&cache_user**        |                                   | Принудительно устанавливает ID посетителя, по-умолчанию кеширование производится с учетом ID посетителя      |
+| **&toPlaceholder**     |                                   | Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.              |
+| **ajax**               |                                   | Включить поддержку ajax запросов.                                                                            |
+| **ajaxMode**           |                                   | Ajax пагинация "из коробки". Доступны 3 режима: "default", "button" и "scroll".                              |
+| **ajaxElemWrapper**    | #pdopage                          | jQuery селектор элемента-обёртки с результатами и пагинацией.                                                |
+| **ajaxElemRows**       | #pdopage .rows                    | jQuery селектор элемента с результатами.                                                                     |
+| **ajaxElemPagination** | #pdopage .pagination              | jQuery селектор элемента с пагинацией.                                                                       |
+| **ajaxElemLink**       | #pdopage .pagination a            | jQuery селектор ссылки на страницу.                                                                          |
+| **ajaxElemMore**       | #pdopage .btn-more                | jQuery селектор кнопки загрузки результатов при ajaxMode = button.                                           |
+| **ajaxHistory**        |                                   | Сохранять номер страницы в url при работе в режиме ajax.                                                     |
+| **frontend_js**        | [[+assetsUrl]]js/pdopage.min.js   | Ссылка на javascript для подключения сниппетом.                                                              |
+| **frontend_css**       | [[+assetsUrl]]css/pdopage.min.css | Ссылка на css стили оформления для подключения сниппетом.                                                    |
+| **setMeta**            | 1                                 | Регистрация мета-тегов со ссылками на предыдущую и следующую страницу.                                       |
+| **strictMode**         | 1                                 | Строгий режим работы. pdoPage делает редиректы при загрузке несуществующих страниц.                          |
 
-Шаблон                  | По умолчанию
-------------------------|------------------------------------------------------------------------------
-**&tplPage**            | `@INLINE <li><a href="[[+href]]">[[+pageNo]]</a></li>`
-**&tplPageWrapper**     | `@INLINE <div class="pagination"><ul class="pagination">[[+first]][[+prev]][[+pages]][[+next]][[+last]]</ul></div>`
-**&tplPageActive**      | `@INLINE <li class="active"><a href="[[+href]]">[[+pageNo]]</a></li>`
-**&tplPageFirst**       | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_first]]</a></li>`
-**&tplPageLast**        | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_last]]</a></li>`
-**&tplPagePrev**        | `@INLINE <li class="control"><a href="[[+href]]">&laquo;</a></li>`
-**&tplPageNext**        | `@INLINE <li class="control"><a href="[[+href]]">&raquo;</a></li>`
-**&tplPageSkip**        | `@INLINE <li class="disabled"><span>...</span></li>`
-**&tplPageFirstEmpty**  | `@INLINE <li class="control"><span>[[%pdopage_first]]</span></li>`
-**&tplPageLastEmpty**   | `@INLINE <li class="control"><span>[[%pdopage_last]]</span></li>`
-**&tplPagePrevEmpty**   | `@INLINE <li class="disabled"><span>&laquo;</span></li>`
-**&tplPageNextEmpty**   | `@INLINE <li class="disabled"><span>&raquo;</span></li>`
-**ajaxTplMore**         | `@INLINE <button class="btn btn-default btn-more">[[%pdopage_more]]</button>`
+| Шаблон                 | По умолчанию                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **&tplPage**           | `@INLINE <li><a href="[[+href]]">[[+pageNo]]</a></li>`                                                              |
+| **&tplPageWrapper**    | `@INLINE <div class="pagination"><ul class="pagination">[[+first]][[+prev]][[+pages]][[+next]][[+last]]</ul></div>` |
+| **&tplPageActive**     | `@INLINE <li class="active"><a href="[[+href]]">[[+pageNo]]</a></li>`                                               |
+| **&tplPageFirst**      | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_first]]</a></li>`                                       |
+| **&tplPageLast**       | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_last]]</a></li>`                                        |
+| **&tplPagePrev**       | `@INLINE <li class="control"><a href="[[+href]]">&laquo;</a></li>`                                                  |
+| **&tplPageNext**       | `@INLINE <li class="control"><a href="[[+href]]">&raquo;</a></li>`                                                  |
+| **&tplPageSkip**       | `@INLINE <li class="disabled"><span>...</span></li>`                                                                |
+| **&tplPageFirstEmpty** | `@INLINE <li class="control"><span>[[%pdopage_first]]</span></li>`                                                  |
+| **&tplPageLastEmpty**  | `@INLINE <li class="control"><span>[[%pdopage_last]]</span></li>`                                                   |
+| **&tplPagePrevEmpty**  | `@INLINE <li class="disabled"><span>&laquo;</span></li>`                                                            |
+| **&tplPageNextEmpty**  | `@INLINE <li class="disabled"><span>&raquo;</span></li>`                                                            |
+| **ajaxTplMore**        | `@INLINE <button class="btn btn-default btn-more">[[%pdopage_more]]</button>`                                       |
 
 ## Поддержка Ajax
+
 pdoPage может выдавать JSON и прерывать работу движка при соответствии запроса трём характеристикам:
 
 * У сниппета включен параметр &ajax.
@@ -84,17 +88,21 @@ pdoPage может выдавать JSON и прерывать работу дв
 * В запросе содержится переменная, указанная у сниппета в &pageVarKey. По умолчанию, это `page`.
 
 То есть, вам достаточно просто указать сниппету **&ajax=`1`** и отправить странице GET запрос типа:
-```
+
+``` javascript
 $.get('document.html?page=5', function(response) {
     console.log(response);
 }, 'json');
 ```
+
 И в ответ вы получите JSON c результатами работы, пагинацией и служебными данными: номер страницы, сколько всего страниц и сколько всего результатов.
 Учитывая, что pdoPage - это сниппет-обёртка, таким образом вы можете заставить работать через ajax многие другие сниппеты.
 
 ## Встроенная Ajax пагинация
+
 Начиная с версии **1.10** pdoPage умеет загружать страницы через ajax. Вам нужно только обернуть его вызов в специальную разметку:
-```
+
+``` php
 <div id="pdopage">
     <div class="rows">
         [[!pdoPage?
@@ -105,9 +113,11 @@ $.get('document.html?page=5', function(response) {
     [[!+page.nav]]
 </div>
 ```
+
 Внутри [[+page.nav]] у нас div с классом pagination — так в pdoPage по умолчанию.
 
 Вы можете менять идентификаторы этой разметки следующими параметрами:
+
 * **ajaxElemWrapper** — jQuery селектор элемента-обёртки с результатами и пагинацией. По умолчанию `#pdopage`.
 * **ajaxElemRows** — jQuery селектор элемента с результатами. По умолчанию `#pdopage .rows`
 * **ajaxElemPagination** — jQuery селектор элемента с пагинацией. По умолчанию `#pdopage .pagination`
@@ -119,10 +129,12 @@ $.get('document.html?page=5', function(response) {
 Параметр &ajax=`1` указывать необязательно. Не пустой &ajaxMode активирует его самостоятельно.
 
 ### Загрузка кнопкой
+
 В отличии от стандартной пагинации, этот тип работы предполагает, что пользователь будет двигаться только вниз, загружая новые элементы, и поэтому сдвигает блок пагинации при прокрутке.
 
 Так что, логично его размещать вверху:
-```
+
+``` php
 <div id="pdopage">
     [[!+page.nav]]
     <div class="rows">
@@ -134,7 +146,9 @@ $.get('document.html?page=5', function(response) {
     </div>
 </div>
 ```
+
 Используются всё те же селекторы, плюс:
+
 * **ajaxElemMore** — jQuery селектор кнопки загрузки результатов при ajaxMode = button. По умолчанию `#pdopage .btn-more`.
 * **ajaxTplMore** — Шаблон кнопки для загрузки новых результатов при ajaxMode = button. Должен включать селектор, указанный в **&ajaxElemMore**. По умолчанию
 `@INLINE <button class="btn btn-default btn-more">[[%pdopage_more]]</button>`
@@ -147,7 +161,8 @@ $.get('document.html?page=5', function(response) {
 ### Загрузка при прокрутке
 
 Этот способ очень похож на предыдущий, только нет кнопки и её не нужно нажимать — всё делается автоматически при прокрутке страницы.
-```
+
+``` php
 <div id="pdopage">
     [[!+page.nav]]
     <div class="rows">
@@ -160,10 +175,12 @@ $.get('document.html?page=5', function(response) {
 ```
 
 ### History API
+
 pdoPage поддерживает работу с History API вашего браузера. Это значит, что когда **&ajaxMode** включен, сниппет может сохранять номер страницы в адресной строке, чтобы при перезагрузке ничего не терялось.
 Также правильно работает навигация кнопками "вперёд\назад" браузера.
 
 Вы можете изменить это поведение параметром **&ajaxHistory**, включив или выключив его. По умолчанию он работает следующим образом:
+
 * Если ajaxMode установлен в **default**, то History API используется, номер страницы сохраняется.
 * Если ajaxMode установлен в **scroll** или **button**, то History API не используется.
 
@@ -172,7 +189,8 @@ pdoPage поддерживает работу с History API вашего бра
 ### Функции обратного вызова
 
 Вы можете указать функции, которые будут вызываться до и после загрузки страницы через ajax вот так:
-```
+
+``` javascript
 pdoPage.callbacks['before'] = function(config) {
     console.log('Конфиг перед загрузкой!', config);
 };
@@ -183,29 +201,36 @@ pdoPage.callbacks['after'] = function(config, response) {
 ```
 
 С версии 1.11.0-pl появилась возможность добавления обработчика на событие **pdopage_load**:
-```
+
+``` javascript
 $(document).on('pdopage_load', function(e, config, response) {
     console.log(e, config, response);
 });
 ```
+
 Проверка данных в config позволит вам различить разные вызовы pdoPage на одной странице.
 
 ## Человекопонятная навигация
+
 С версии 2.2.2 можно использовать параметр **&pageLinkScheme** для указания схемы генерации ссылок на страницу.
 В параметре может быть всего 2 плейсхолдера:
+
 * `[[+pageVarKey]]` - переменная с именем страницы. По умолчанию `page`.
 * `[[+page]]` - номер страницы
 
 Для примера укажите такой параметр:
-```
+
+``` php
 [[!pdoPage?
     &parents=`0`
     &pageLinkScheme=`/[[+pageVarKey]]-[[+page]]`
 ]]
 [[!+page.nav]]
 ```
+
 Это приведёт к генерации ссылок, типа
-```
+
+``` plain
 /res/news/
 /res/news/page-2
 /res/news/page-3
@@ -213,7 +238,8 @@ $(document).on('pdopage_load', function(e, config, response) {
 
 При переходе по этим ссылкам (кроме первой) MODX будет выдавать ошибку 404, потому что страниц с этими адресами не существует.
 Так что, нам нужно написать плагин для их обработки:
-```
+
+``` php
 <?php
 // Реагируем только на событие OnPageNotFound
 if ($modx->event->name == 'OnPageNotFound') {
@@ -245,12 +271,15 @@ if ($modx->event->name == 'OnPageNotFound') {
     }
 }
 ```
+
 Теперь этот плагин будет обрабатывать вашу ЧПУ навигацию.
 
 ## Примеры
+
 Так как pdoPage является частью pdoTools, в параметре **&element** у него сразу прописан сниппет pdoResources.
 Поэтому простой вызов сниппета выведет вам дочерние ресурсы:
-```
+
+``` php
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
 ]]
@@ -258,7 +287,8 @@ if ($modx->event->name == 'OnPageNotFound') {
 ```
 
 Выводим все возможные документы сайта:
-```
+
+``` php
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -268,7 +298,8 @@ if ($modx->event->name == 'OnPageNotFound') {
 
 Включаем навигацию с пропуском страниц.
 Обратите внимание, что если страниц выходит меньше 7, то будет работать обычная навигация.
-```
+
+``` php
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -278,7 +309,8 @@ if ($modx->event->name == 'OnPageNotFound') {
 ```
 
 Активируем кэш на 30 минут:
-```
+
+``` php
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -291,7 +323,8 @@ if ($modx->event->name == 'OnPageNotFound') {
 
 Указываем максимальный лимит выборки.
 Теперь, какой бы limit не указал пользователь в url - все равно будет не больше 10 результатов на странице.
-```
+
+``` php
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`

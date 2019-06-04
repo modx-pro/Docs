@@ -1,9 +1,13 @@
+# jQueryсобытия
+
 Подобная логика позволяет навесить свой JS код на применение купона и выводить пользователям какую-то дополнительную информацию, связанную со скидкой.
 
 ## mspc_set
+
 Сработает при успешном/неуспешном применении промо-кода.
 
-#### Пример
+### Пример
+
 ```javascript
 $(document).ready(function() {
     $(document).on('mspc_set', function(e, response) {
@@ -13,9 +17,11 @@ $(document).ready(function() {
 ```
 
 ## mspc_remove
+
 Сработает при отмене промо-кода.
 
-#### Пример
+### Пример
+
 ```javascript
 $(document).ready(function() {
     $(document).on('mspc_remove', function(e, response) {

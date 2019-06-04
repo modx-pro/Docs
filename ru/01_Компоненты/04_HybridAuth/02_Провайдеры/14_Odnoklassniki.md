@@ -1,4 +1,6 @@
-##Получение ключей в Odnoklassniki
+# Odnoklassniki
+
+## Получение ключей в Odnoklassniki
 
 * [Регистрация в Одноклассниках.][1]
 * [Регистрация в качестве разработчика.][2]
@@ -15,7 +17,8 @@
 * Секретный ключ приложения: `ABCDEFGHIJKLMNOPQ1234A12`.
 
 Их необходимо указать в настройках системы в ключе **ha.keys.Odnoklassniki**
-```
+
+```json
 {"keys":{"id":"123456789","key":"ABCDEFGHIJKLMNOPQ","secret":"ABCDEFGHIJKLMNOPQ1234A12"},"scope":"VALUABLE_ACCESS;LONG_ACCESS_TOKEN"}
 ```
 
