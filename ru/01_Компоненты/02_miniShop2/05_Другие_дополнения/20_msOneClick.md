@@ -266,8 +266,8 @@ js события
 
 ```html
 Пример форм
-<form class="ms2_form msoptionsprice-product-{$id}" method="post" > - для чанк tpl.msProducts.row
-<form class="ms2_form msoptionsprice-product-[[*id]]" method="post" > - - для чанк msProduct.content
+<form class="ms2_form msoptionsprice-product-{$id}" method="post" > // для чанк tpl.msProducts.row
+<form class="ms2_form msoptionsprice-product-[[*id]]" method="post" > // для чанк msProduct.content
 ```
 
 Добавить код в подключенный JS файл
