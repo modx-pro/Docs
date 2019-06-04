@@ -259,16 +259,18 @@ js события
 ```
 
 #### Подгрузка выбранных опций msOptionsPrice2 со страницы
+
 Пользователи могут выбрать опции находясь на странице. При запуске модельного окна опции не будут выбранны так как они запоминаются только на странице.
 
 Для того чтобы опции автоматически были выбранны в модельном окне, необходимо добавить в форму где выбираются опции класс с id товара:
-
 
 ```html
 Пример форм
 <form class="ms2_form msoptionsprice-product-{$id}" method="post" > - для чанк tpl.msProducts.row
 <form class="ms2_form msoptionsprice-product-[[*id]]" method="post" > - - для чанк msProduct.content
 ```
+
+Добавить код в подключенный JS файл
 
 ```javascript
    $(document).on('msoneclick_after_init', function (e, data) {
