@@ -1,6 +1,6 @@
 A component as a unit goes with plugin **pagebreaker** for TinyMCE (TypoMCE), which is automatically installed and activated.
 
-[![](http://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80ds.jpg)](http://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80d.png)
+[![](https://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80ds.jpg)](https://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80d.png)
 
 Plugin adds 4 buttons to the toolbar.
 

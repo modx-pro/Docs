@@ -45,7 +45,7 @@ Authorization in 2 contexts at once:
 
 ## Provider settings
 Individual system setting with prefix **ha.keys.** is indicated for every provider of authorization:
-[![](http://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0bs.jpg)](http://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png)
+[![](https://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0bs.jpg)](https://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png)
 
 Value of setting is JSON array which content depends on the provider.
 

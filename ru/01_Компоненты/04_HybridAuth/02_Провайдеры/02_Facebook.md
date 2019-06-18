@@ -1,12 +1,14 @@
+# Facebook
+
 Получение ключей в Facebook
 
-##Регистрация приложения
+## Регистрация приложения
 
 * Переходим [по ссылке][1]
 * Нажимаем создать приложение.
 * Заполняем поля **Display Name** и **Namespace**
 
-[![](http://file.modx.pro/files/d/a/e/dae95f96646d6262f51b27ac2f520ffcs.jpg)](http://file.modx.pro/files/d/a/e/dae95f96646d6262f51b27ac2f520ffc.png)
+[![](https://file.modx.pro/files/d/a/e/dae95f96646d6262f51b27ac2f520ffcs.jpg)](https://file.modx.pro/files/d/a/e/dae95f96646d6262f51b27ac2f520ffc.png)
 
 * Сохраняем приложение и переходим в режим редактирования.
 * Кликаем на пункт Настройки
@@ -23,10 +25,10 @@
 
 [![](https://file.modx.pro/files/5/1/f/51fba7266e286d4cd97d626044910e4es.jpg)](https://file.modx.pro/files/5/1/f/51fba7266e286d4cd97d626044910e4e.png)
 
-* Копируем **App ID** и **APP Secret**  
+* Копируем **App ID** и **APP Secret**
 
 [![](https://file.modx.pro/files/5/9/9/59977528a10bff82d3a9d2a5417d216as.jpg)](https://file.modx.pro/files/5/9/9/59977528a10bff82d3a9d2a5417d216a.png)
 
-[![](http://file.modx.pro/files/e/0/7/e070084b44b129fbeb24034be9c93387s.jpg)](http://file.modx.pro/files/e/0/7/e070084b44b129fbeb24034be9c93387.png)
+[![](https://file.modx.pro/files/e/0/7/e070084b44b129fbeb24034be9c93387s.jpg)](https://file.modx.pro/files/e/0/7/e070084b44b129fbeb24034be9c93387.png)
 
 [1]: https://developers.facebook.com/apps

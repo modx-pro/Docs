@@ -1,6 +1,8 @@
+# mspUP
+
 Для того, чтобы принимать оплату через «UnitPay» вам необходимо сначала [зарегистрировать][1] магазин в этой системе.
 
-### Регистрация «UnitPay»
+## Регистрация «UnitPay»
 
 * Указать название проекта
 * Указать описание проекта
@@ -12,17 +14,17 @@
 
 [![](https://file.modx.pro/files/6/0/4/604aa8e2c3523673d7a1ea87040155e5s.jpg)](https://file.modx.pro/files/6/0/4/604aa8e2c3523673d7a1ea87040155e5.png)
 
-### Настройка «UnitPay»
+## Настройка «UnitPay»
 
 В настройках магазина вам нужно указать следующие параметры:
 
-* url скрипта обработки платежей - http://вашСайт.ru/assets/components/minishop2/payment/mspup.php
+* url скрипта обработки платежей - <http://вашСайт.ru/assets/components/minishop2/payment/mspup.php>
 * Fail URL - страницу ошибки оплаты
 * Success URL - страницу успешной оплаты
 
 [![](https://file.modx.pro/files/4/a/8/4a80c539ccc64e18212c77ea89dba9f9s.jpg)](https://file.modx.pro/files/4/a/8/4a80c539ccc64e18212c77ea89dba9f9.png)
 
-### Настройка MODX
+## Настройка MODX
 
 В MODX вам нужно настроить следующие параметры (находятся в разделе «UnitPay» пространства имен minishop2):
 

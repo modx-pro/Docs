@@ -2,7 +2,7 @@ Plugin for identification bottlenecks of the site. It shows all handled tags and
 
 Now you can specify and optimize slow calls on every page.
 
-[![](http://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3s.jpg)](http://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
+[![](https://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3s.jpg)](https://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
 
 Tag MODX activation, number of queries to the database when it is operation, time of queries and total time spent on processing are shown in the table.
 
@@ -15,12 +15,21 @@ At the bottom of the table you see total according to statistics and general dat
 ## Parameters
 Plugin debugParser works only for the users authorized in mgr context. It gets all the parameters through $_GET.
 
-* **debug** — activates debugging mode and tablet output. 
+* **debug** — activates debugging mode and tablet output.
 * **cache** — permits to use cached pages. On default - no.
 * **top** — the quantity of tags for output. On default – unlimited.
 * **add** — add the tablet at the end of the page, but don’t replace it totally. On default – no.
 
-## Samples
+## Support of Fenom
+For displaying Fenom tags you must:
+
+* Use pdoTools <b>2.1.8</b>-pl or newer</li>
+* Use debugParser <b>1.1.0</b>-pl or newer</li>
+* Execute methods of <b>{$_modx}</b>. There is no way to catch system call via disabled by default {$modx} variable.
+
+[![](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6s.jpg)](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6.png)
+
+## Examples
 General output:
 
 ```
