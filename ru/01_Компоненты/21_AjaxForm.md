@@ -100,6 +100,21 @@ $(document).on('af_complete', function(event, response) {
 });
 ```
 
+### redirect на другую страницу сайта, после успешной отправки формы?
+
+Добавляем id к форме, если его нет и затем в js файл прописать вот такие строки
+
+```javascript
+$(document).on('af_complete', function(event, response) {
+    var form = response.form;
+    if (form.attr('id') == 'значение id формы') {
+       window.location.href = "[[~id страницы]]"
+    }
+});
+```
+
+Можно просто обернуть в `<script>`выше приведенный код`</script>` и подключить в шаблон с формой ближе к закрытию body.
+
 ## Всплывающие сообщения
 
 По умолчанию AjaxForm выводит сообщения об успешной отправке формы или о наличии ошибок.
