@@ -1,7 +1,8 @@
 Ядро компонента разделено на 3 класса: общий [pdoTools][1], работа с БД - [pdoFetch][2]</a> и работа с оформлением, то есть [pdoParser][3].
 
 При установке в систему они регистрируются таким образом, чтобы вы могли быстро их запускать:
-```
+
+``` php
 $pdoTools = $modx->getService('pdoTools');
 $pdoFetch = $modx->getService('pdoFetch');
 $pdoParser = $modx->getService('pdoParser');

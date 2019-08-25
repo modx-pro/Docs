@@ -11,7 +11,6 @@
 В действии (GIF)
 <a rel="fancybox" href="https://file.modx.pro/files/b/9/0/b9084bbfa4b72c4ffce1ba5c47029112.gif"><img src="https://file.modx.pro/files/b/9/0/b9084bbfa4b72c4ffce1ba5c47029112s.jpg" class="fancybox thumbnail"></a>
 
-
 **Внимание!!! Google кэширует изображения у себя на сервера, так что реальный результат может отличатся. Так же изображения могут быть уже удалены, изменены или вообще может быть не доступен сервер или отключен домен**
 
 ### Массовая загрузка
@@ -23,11 +22,10 @@
 ### Настройка и получение API ключа и Индитификатора системы
 
 Для работы сервиса требуется получить API ключ и Индитификатор поиска.
- 
+
 Здесь можно <a href="https://developers.google.com/custom-search/v1/overview">получить ключ,</a> нажав на кнопку "GET API KEY": 
 
 <img src="https://file.modx.pro/files/f/7/9/f799bc9b3d50526e8d25308dc7ebcac2.png" class="fancybox thumbnail">
-
 
 ### Инструкция по созданию поисковой системы
 
@@ -35,7 +33,7 @@
 
 <img src="https://file.modx.pro/files/e/5/6/e56bbf262943fd643ef7935bed4002c0.png" class="fancybox thumbnail">
 
-Вводим имя сайта, выбираем язык и жмем **создать**. 
+Вводим имя сайта, выбираем язык и жмем **создать**.
 
 <img src="https://file.modx.pro/files/1/5/4/154fd2f2d2394342c6dc71e77b1d151cs.jpg" class="fancybox thumbnail">
 
@@ -44,6 +42,7 @@
 <img src="https://file.modx.pro/files/b/6/0/b602bc9c5708ecd6a3b9b4f235061cads.jpg" class="fancybox thumbnail">
 
 Здесь устанавливаем настройки
+
 * Включаем поиск по изображениями
 * Включаем поиск по всему интернету
 * Удаляем сайты (если они там есть)
@@ -54,7 +53,7 @@
 ### Cистемные настройки
 
 * **msgallerysearch_api_cs**  - Идентификатор поисковой системы
-* **msgallerysearch_api_key** - Ключ API полученый на <a href="https://developers.google.com/custom-search/v1/overview">странице</a> 
+* **msgallerysearch_api_key** - Ключ API полученый на <a href="https://developers.google.com/custom-search/v1/overview">странице</a>
 
 <img src="https://file.modx.pro/files/c/d/5/cd58a02124eb2e909d7dca612158002as.jpg" class="fancybox thumbnail">
 
