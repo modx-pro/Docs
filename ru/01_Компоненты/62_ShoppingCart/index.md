@@ -16,7 +16,7 @@ https://modx.com/extras/package/shoppingcart
 * **contentType** - Название типа содержимого.
 
 Пример HTML-кода формы товара для добавления в корзину:
-~~~
+```html
 <div class="shk-item">
     <form id="shk-form" action="[[~6]]" method="post">
         <input type="hidden" name="item_id" value="[[*id]]">
@@ -40,7 +40,7 @@ https://modx.com/extras/package/shoppingcart
         </div>
     </form>
 </div>
-~~~
+```
 
 Пример вызова сниппета:
 ~~~
@@ -100,13 +100,13 @@ https://modx.com/extras/package/shoppingcart
 События: **OnShoppingCartAddProduct**, **OnShoppingCartCheckoutSave**.
 
 В форме товара должно быть скрытое поле с ID категории. Пример (страница товара):
-~~~
+```html
 <input type="hidden" name="category_id" value="[[+page.parentId]]">
-~~~
+```
 Пример поля категории в списке товаров:
-~~~
+```html
 <input type="hidden" name="category_id" value="[[+parentId]]">
-~~~
+```
 
 ## Плагин shoppingCartModResource
 
@@ -159,12 +159,12 @@ https://modx.com/extras/package/shoppingcart
 Скрипт ``shopping_cart.js`` можно использовать для управления корзиной покупок без перезагрузки страницы в браузере (Ajax).
 
 Добавьте строку в ваш шаблон для подключения скрипта перед ``</head>`` или ``</body>``:
-~~~
+```html
 <script src="[[++base_url]]assets/components/shopping_cart/js/shopping_cart.js"></script>
-~~~
+```
 
 Пример использования:
-~~~
+```html
 <script>
     var shoppingCart;
     document.addEventListener('DOMContentLoaded', function() {
@@ -176,7 +176,7 @@ https://modx.com/extras/package/shoppingcart
         });
     });
 </script>
-~~~
+```
 
 ### Параметры класса ShoppingCart
 
@@ -199,7 +199,7 @@ https://modx.com/extras/package/shoppingcart
 * **requestAfter** - После отправки запроса.
 
 Пример использования событий:
-~~~
+```html
 <script>
     shoppingCart
         .addEventListener('formSubmitBefore', function(e) {// До отправки данных формы
@@ -217,4 +217,4 @@ https://modx.com/extras/package/shoppingcart
             }
         });
 </script>
-~~~
+```
