@@ -16,7 +16,7 @@ https://modx.com/extras/package/shoppingcart
 * **contentType** - Название типа содержимого.
 
 Пример HTML-кода формы товара для добавления в корзину:
-~~~
+```
 <div class="shk-item">
     <form id="shk-form" action="[[~6]]" method="post">
         <input type="hidden" name="item_id" value="[[*id]]">
@@ -40,10 +40,10 @@ https://modx.com/extras/package/shoppingcart
         </div>
     </form>
 </div>
-~~~
+```
 
 Пример вызова сниппета:
-~~~
+```
 [[!shoppingCart?
 &action=`print`
 &contentType=`shop`
@@ -51,11 +51,11 @@ https://modx.com/extras/package/shoppingcart
 &outerTpl=`shoppingCart_outerTpl`
 &emptyTpl=`shoppingCart_emptyTpl`
 ]]
-~~~
+```
 Вызов сниппета с набором параметров (рекомендуется):
-~~~
+```
 [[!shoppingCart@shoppingCartFull]]
-~~~
+```
 
 ### Плейсхолдеры в чанке "outerTpl"
 
@@ -100,13 +100,13 @@ https://modx.com/extras/package/shoppingcart
 События: **OnShoppingCartAddProduct**, **OnShoppingCartCheckoutSave**.
 
 В форме товара должно быть скрытое поле с ID категории. Пример (страница товара):
-~~~
+```
 <input type="hidden" name="category_id" value="[[+page.parentId]]">
-~~~
+```
 Пример поля категории в списке товаров:
-~~~
+```
 <input type="hidden" name="category_id" value="[[+parentId]]">
-~~~
+```
 
 ## Плагин shoppingCartModResource
 
@@ -122,7 +122,7 @@ https://modx.com/extras/package/shoppingcart
 Для создания формы оформления заказа и отправки писем с уведомлениями нужно использовать сниппет [FormIt](https://modx.com/extras/package/formit). Для вывода списка товаров заказа в письме и сохранения заказа в БД можно использовать сниппет "shoppingCart", указав его в качестве хука (hooks).
 
 Пример вызова сниппета FormIt:
-~~~
+```
 [[!FormIt?
 &hooks=`spam,shoppingCart,FormItSaveForm,email,FormItAutoResponder,redirect`
 &submitVar=`action_order`
@@ -142,7 +142,7 @@ https://modx.com/extras/package/shoppingcart
 &shoppingCartMailRowTpl=`shoppingCart_mailOrderRowTpl`
 &shoppingCartMailOuterTpl=`shoppingCart_mailOrderOuterTpl`
 ]]
-~~~
+```
 В данном примере используется также хук "FormItSaveForm", который сохраняет данные формы для вывода в компоненте FormIt в административной части сайта. Если используете какой-то компонент для управления заказами, то этот хук можно убрать.
 
 Хук "shoppingCart" вызывает событие "OnShoppingCartCheckoutSave" и плагин, который слушает это событие, может сохранить данные заказа и создать список товаров в заказе для вывода в письме.
@@ -159,12 +159,12 @@ https://modx.com/extras/package/shoppingcart
 Скрипт ``shopping_cart.js`` можно использовать для управления корзиной покупок без перезагрузки страницы в браузере (Ajax).
 
 Добавьте строку в ваш шаблон для подключения скрипта перед ``</head>`` или ``</body>``:
-~~~
+```
 <script src="[[++base_url]]assets/components/shopping_cart/js/shopping_cart.js"></script>
-~~~
+```
 
 Пример использования:
-~~~
+```
 <script>
     var shoppingCart;
     document.addEventListener('DOMContentLoaded', function() {
@@ -176,7 +176,7 @@ https://modx.com/extras/package/shoppingcart
         });
     });
 </script>
-~~~
+```
 
 ### Параметры класса ShoppingCart
 
@@ -199,7 +199,7 @@ https://modx.com/extras/package/shoppingcart
 * **requestAfter** - После отправки запроса.
 
 Пример использования событий:
-~~~
+```
 <script>
     shoppingCart
         .addEventListener('formSubmitBefore', function(e) {// До отправки данных формы
@@ -217,4 +217,4 @@ https://modx.com/extras/package/shoppingcart
             }
         });
 </script>
-~~~
+```
