@@ -2,8 +2,7 @@
 
 Универсальный сниппет для создания корзины покупок в интернет-магазине. Так же сниппет можно использовать для временного хранения любых данных, например, функционал избранного и т.д. Данные сохраняются в базу данных, можно настроить время хранения. Управлять добавлением товаров в корзину и редактировать содержимое можно с помощью JavaScript функций (без зависимостей).
 
-Пакет в репозитории MODX:  
-https://modx.com/extras/package/shoppingcart
+[Пакет в репозитории MODX](https://modx.com/extras/package/shoppingcart)
 
 ## Параметры сниппета shoppingCart
 
@@ -16,6 +15,7 @@ https://modx.com/extras/package/shoppingcart
 * **contentType** - Название типа содержимого.
 
 Пример HTML-кода формы товара для добавления в корзину:
+
 ```html
 <div class="shk-item">
     <form id="shk-form" action="[[~6]]" method="post">
@@ -43,7 +43,8 @@ https://modx.com/extras/package/shoppingcart
 ```
 
 Пример вызова сниппета:
-~~~
+
+```php
 [[!shoppingCart?
 &action=`print`
 &contentType=`shop`
@@ -51,41 +52,43 @@ https://modx.com/extras/package/shoppingcart
 &outerTpl=`shoppingCart_outerTpl`
 &emptyTpl=`shoppingCart_emptyTpl`
 ]]
-~~~
+```
+
 Вызов сниппета с набором параметров (рекомендуется):
-~~~
+
+```php
 [[!shoppingCart@shoppingCartFull]]
-~~~
+```
 
 ### Плейсхолдеры в чанке "outerTpl"
 
-* ``[[+wrapper]]`` - HTML-код со списком товаров (чанк "rowTpl").
-* ``[[+priceTotal]]`` - Общая цена товаров в корзине.
-* ``[[+countTotal]]`` - Общее число товаров в корзине.
-* ``[[+countTotalUnique]]`` - Общее число уникальных товаров в корзине.
-* ``[[+currency]]`` - валюта.
+* `[[+wrapper]]` - HTML-код со списком товаров (чанк "rowTpl").
+* `[[+priceTotal]]` - Общая цена товаров в корзине.
+* `[[+countTotal]]` - Общее число товаров в корзине.
+* `[[+countTotalUnique]]` - Общее число уникальных товаров в корзине.
+* `[[+currency]]` - валюта.
 
 ### Плейсхолдеры в чанке "rowTpl"
 
-* ``[[+item_id]]`` - Идентификатор товара.
-* ``[[+title]]`` - Название товара.
-* ``[[+name]]`` - Псевдоним (alias) товара.
-* ``[[+uri]]`` - URI адрес товара.
-* ``[[+count]]`` - Количество единиц одного товара.
-* ``[[+price]]`` - Цена.
-* ``[[+priceTotal]]`` - Общая цена, включая цену праметров товара.
-* ``[[+options.x]]`` - Любой параметр из массива "options". Пример для ``$options['color']``: ``[[+options.color]]``.
-* ``[[+index]]`` - Индекс строки (от 0).
-* ``[[+num]]`` - Номер строки (от 1).
+* `[[+item_id]]` - Идентификатор товара.
+* `[[+title]]` - Название товара.
+* `[[+name]]` - Псевдоним (alias) товара.
+* `[[+uri]]` - URI адрес товара.
+* `[[+count]]` - Количество единиц одного товара.
+* `[[+price]]` - Цена.
+* `[[+priceTotal]]` - Общая цена, включая цену праметров товара.
+* `[[+options.x]]` - Любой параметр из массива "options". Пример для ``$options['color']``: ``[[+options.color]]``.
+* `[[+index]]` - Индекс строки (от 0).
+* `[[+num]]` - Номер строки (от 1).
 
 ### Плейсхолдеры, доступные в шаблоне, в котором вызывается сниппет "shoppingCart"
 
-* ``[[+shopping_cart.price_total]]`` 
-* ``[[+shopping_cart.items_total]]`` 
-* ``[[+shopping_cart.items_unique_total]]`` 
-* ``[[+shopping_cart.delivery_price]]`` 
-* ``[[+shopping_cart.delivery_name]]`` 
-* ``[[+shopping_cart.ids]]`` 
+* `[[+shopping_cart.price_total]]` 
+* `[[+shopping_cart.items_total]]` 
+* `[[+shopping_cart.items_unique_total]]` 
+* `[[+shopping_cart.delivery_price]]` 
+* `[[+shopping_cart.delivery_name]]` 
+* `[[+shopping_cart.ids]]` 
 
 ## Плагин shoppingCart
 
@@ -100,10 +103,20 @@ https://modx.com/extras/package/shoppingcart
 События: **OnShoppingCartAddProduct**, **OnShoppingCartCheckoutSave**.
 
 В форме товара должно быть скрытое поле с ID категории. Пример (страница товара):
+
+
 ```html
 <input type="hidden" name="category_id" value="[[+page.parentId]]">
 ```
+
 Пример поля категории в списке товаров:
+
+```html
+<input type="hidden" name="category_id" value="[[+page.parentId]]">
+```
+
+Пример поля категории в списке товаров:
+
 ```html
 <input type="hidden" name="category_id" value="[[+parentId]]">
 ```
@@ -122,7 +135,8 @@ https://modx.com/extras/package/shoppingcart
 Для создания формы оформления заказа и отправки писем с уведомлениями нужно использовать сниппет [FormIt](https://modx.com/extras/package/formit). Для вывода списка товаров заказа в письме и сохранения заказа в БД можно использовать сниппет "shoppingCart", указав его в качестве хука (hooks).
 
 Пример вызова сниппета FormIt:
-~~~
+
+```php
 [[!FormIt?
 &hooks=`spam,shoppingCart,FormItSaveForm,email,FormItAutoResponder,redirect`
 &submitVar=`action_order`
@@ -142,7 +156,7 @@ https://modx.com/extras/package/shoppingcart
 &shoppingCartMailRowTpl=`shoppingCart_mailOrderRowTpl`
 &shoppingCartMailOuterTpl=`shoppingCart_mailOrderOuterTpl`
 ]]
-~~~
+```
 В данном примере используется также хук "FormItSaveForm", который сохраняет данные формы для вывода в компоненте FormIt в административной части сайта. Если используете какой-то компонент для управления заказами, то этот хук можно убрать.
 
 Хук "shoppingCart" вызывает событие "OnShoppingCartCheckoutSave" и плагин, который слушает это событие, может сохранить данные заказа и создать список товаров в заказе для вывода в письме.
@@ -159,11 +173,13 @@ https://modx.com/extras/package/shoppingcart
 Скрипт ``shopping_cart.js`` можно использовать для управления корзиной покупок без перезагрузки страницы в браузере (Ajax).
 
 Добавьте строку в ваш шаблон для подключения скрипта перед ``</head>`` или ``</body>``:
+
 ```html
 <script src="[[++base_url]]assets/components/shopping_cart/js/shopping_cart.js"></script>
 ```
 
 Пример использования:
+
 ```html
 <script>
     var shoppingCart;
@@ -199,7 +215,8 @@ https://modx.com/extras/package/shoppingcart
 * **requestAfter** - После отправки запроса.
 
 Пример использования событий:
-```html
+
+```javascript
 <script>
     shoppingCart
         .addEventListener('formSubmitBefore', function(e) {// До отправки данных формы
