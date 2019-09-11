@@ -1,4 +1,7 @@
+# msYmarket
+
 ## Настройки модуля
+
 Для редактирования настроек скрипта перейдите в раздел **"Настройки системы"** и выберите фильтр **"yandexmarket"**
 
 [![](https://file.modx.pro/files/c/5/d/c5d2374dd38b264392a122a128cd866as.jpg)](https://file.modx.pro/files/c/5/d/c5d2374dd38b264392a122a128cd866a.png)
@@ -29,34 +32,33 @@
 
 Возможность полноценного использования с другими модулями ИМ предусмотрена. На текущий момент выбор категорий для выгрузки в админке в дереве поддерживается только для minishop2. Для остальных вариаций ИМ выгрузка осуществляется сразу по всем категориям с учетом ограничивающего списка шаблонов.
 
-                                     
-**Простой вариант**
+### Простой вариант
 
 `price=>price;pagetitle=>name`
 
-*Результат:*
-```
-				<price>0.00</price>
-				<name>тест 2222</name>
+> Результат:
+
+```xml
+    <price>0.00</price>
+    <name>тест 2222</name>
 ```
 
-**Поля param** 
+> Поля param
 
 `price=>param.Цена;pagetitle=>name`
 
 *Результат:*
 
-
-**Поля param с произвольными атрибутами**
+> Поля param с произвольными атрибутами
 
 `weight=>param.Вес:unit="кг":type="Брутто";pagetitle=>name`
 
 *Результат:*
-```
-				<param name="Вес" unit="кг" type="Брутто">5.00</param>
-				<name>тест 2222</name>
-```
 
+```xml
+<param name="Вес" unit="кг" type="Брутто">5.00</param>
+<name>тест 2222</name>
+```
 
 ## Настройки выгрузки
 
@@ -67,13 +69,14 @@
 Вы можете указать для выгрузки любые категории товаров на сайте. Для этого нужно поставить галочку напротив нужной категории (все дочерние категории будут отмечены автоматически). Если не выбирать категорий - в выгрузке будут участвовать все категории
 
 * Выбор параметров
-    * Производители
-    * Тэги
-    * Цвета
+  * Производители
+  * Тэги
+  * Цвета
 
 Вы можете отфильтровать выборку с помощью базовых параметров, перечисленных выше. По умолчанию товары не фильтруются.
 
 ## Выгрузка
+
 Для выгрузки используется вторая вкладка с названием **Выгрузка**
 
 [![](https://file.modx.pro/files/b/d/2/bd26231a09d3b60691db2ddabe460b39s.jpg)](https://file.modx.pro/files/b/d/2/bd26231a09d3b60691db2ddabe460b39.png)
@@ -85,56 +88,57 @@
 * Количество товаров в итоговой выгрузке
 
 ## Пример выгрузки
-```
+
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
 <yml_catalog date="2014-05-04 21:38">
     <shop>
-		<name>Рога и копыта</name>
-		<company>Рога и копыта</company>
-		<url>http://modx/</url>
-		<currencies>
-			<currency id="RUB" rate="CBRF" />
-			<currency id="EUR" rate="CBRF" />
-			<currency id="USD" rate="CBRF" />
-			<currency id="UAH" rate="1" />
-			<currency id="BYR" rate="CBRF" />
-			<currency id="KZT" rate="CBRF" />
-		</currencies>
-		<categories>
-			<category id="2">Одежда</category>
-			<category id="4">Обувь</category>
-			<category id="8" parentId="2">Майки</category>
-			<category id="9" parentId="2">Рубашки</category>
-			<category id="10" parentId="2">Пиджаки</category>
-			<category id="11" parentId="2">Пальто</category>
-			<category id="12" parentId="4">Кроссовки</category>
-			<category id="13" parentId="4">Туфли</category>
-			<category id="14" parentId="4">Босоножки</category>
-			<category id="15">Нижнее белье</category>
-		</categories>
-		<offers>
-			<offer id="5" available="true">
-				<url>http://modx/index.php?id=5</url>
-				<price>0.00</price>
-				<currencyId>UAH</currencyId>
-				<categoryId>4</categoryId>
-				<picture>http://modx/</picture>
-				<delivery>true</delivery>
-				<name>Очки для плавания</name>
-				<description></description>
-			</offer>
-			<offer id="3" available="true">
-				<url>http://modx/index.php?id=3</url>
-				<price>200.00</price>
-				<currencyId>UAH</currencyId>
-				<categoryId>2</categoryId>
-				<picture>http://modx/</picture>
-				<delivery>true</delivery>
-				<name>тест 2222</name>
-				<description></description>
-			</offer>
-		</offers>
-	</shop>
+        <name>Рога и копыта</name>
+        <company>Рога и копыта</company>
+        <url>http://modx/</url>
+        <currencies>
+            <currency id="RUB" rate="CBRF" />
+            <currency id="EUR" rate="CBRF" />
+            <currency id="USD" rate="CBRF" />
+            <currency id="UAH" rate="1" />
+            <currency id="BYR" rate="CBRF" />
+            <currency id="KZT" rate="CBRF" />
+        </currencies>
+        <categories>
+            <category id="2">Одежда</category>
+            <category id="4">Обувь</category>
+            <category id="8" parentId="2">Майки</category>
+            <category id="9" parentId="2">Рубашки</category>
+            <category id="10" parentId="2">Пиджаки</category>
+            <category id="11" parentId="2">Пальто</category>
+            <category id="12" parentId="4">Кроссовки</category>
+            <category id="13" parentId="4">Туфли</category>
+            <category id="14" parentId="4">Босоножки</category>
+            <category id="15">Нижнее белье</category>
+        </categories>
+        <offers>
+            <offer id="5" available="true">
+                <url>http://modx/index.php?id=5</url>
+                <price>0.00</price>
+                <currencyId>UAH</currencyId>
+                <categoryId>4</categoryId>
+                <picture>http://modx/</picture>
+                <delivery>true</delivery>
+                <name>Очки для плавания</name>
+                <description></description>
+            </offer>
+            <offer id="3" available="true">
+                <url>http://modx/index.php?id=3</url>
+                <price>200.00</price>
+                <currencyId>UAH</currencyId>
+                <categoryId>2</categoryId>
+                <picture>http://modx/</picture>
+                <delivery>true</delivery>
+                <name>тест 2222</name>
+                <description></description>
+            </offer>
+        </offers>
+    </shop>
 </yml_catalog>
 ```

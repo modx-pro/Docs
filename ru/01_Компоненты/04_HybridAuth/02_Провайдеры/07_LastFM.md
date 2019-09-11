@@ -1,6 +1,8 @@
+# LastFM
+
 Получение ключей в LastFM
 
-##Регистрация приложения
+## Регистрация приложения
 
 * Переходим [по ссылке][1]
 * Выбираем **Non-commercial Use** и заполняем **Application/Device Name**, **Application Description** и **Application Homepage**.
@@ -14,6 +16,5 @@
 * Копируем **API Key** и **Secret**
 
 [![](https://file.modx.pro/files/7/b/a/7ba656603e96e4e770667eed7d299b22s.jpg)](https://file.modx.pro/files/7/b/a/7ba656603e96e4e770667eed7d299b22.png)
-
 
 [1]: http://www.lastfm.ru/api/account/create

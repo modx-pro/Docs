@@ -2,7 +2,7 @@
 
 Вместо чанка `tpl.xCalc.outer` в сниппет передайте кастомный чанк с кодом примерно таким:
 
-```html
+```php
 <div class="xcalc [ js-xcc ]" data-xcc-propkey="{$propkey}">
     <h1>{$calculator['title']}</h1>
 
@@ -24,7 +24,7 @@
         <button type="submit">Рассчитать</button>
 
     </form>
-    
+
     <div class="[ js-ajaxform ]" style="display: none;">
         {'!AjaxForm' | snippet : [
             'snippet' => 'FormIt',

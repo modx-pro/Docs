@@ -1,3 +1,5 @@
+# mFilter2
+
 Сниппет реализует вторую половину компонента - фильтрацию найденных результатов.
 
 Обладает огромным количеством настроек и работает, используя свой собственный класс фильтрации, который вы можете расширить.
@@ -7,45 +9,46 @@
 
 ## Параметры
 
- Название					| По умолчанию					| Описание
-----------------------------|-------------------------------|--------------------------------------------------------
-**&paginator**				| pdoPage						| Сниппет для постраничной навигации, по умолчанию [pdoPage][1]. Вы можете указать набор параметров для него: **&paginator=`pdoPage@myParams`**.
-**&element**				| mSearch2						| Сниппет, который будет вызываться для вывода результатов работы, по умолчанию - [mSearch2][2]. Вы можете указать набор параметров для него: **&element=`mSearch2@myParams`**.
-**&sort**					| 								| Список полей ресурса для сортировки. Указывается в формате «таблица\|поле:направление». Можно указывать несколько полей через запятую, например: «resource\|publishedon:desc,ms\|price:asc».
-**&filters**				| resource\|parent:parents		| Список фильтров ресурсов, через запятую. Указывается в формате «таблица\|поле:метод».
-**&aliases**				| 								| Список псевдонимов для фильтров, которые будут использованы в URL фильтра, через запятую. Указывается в формате "таблица\|поле==псевдоним". Например: "resource\|parent==category".
-**&showEmptyFilters**		| true							| Показывать фильтры всего с одним значением.
-**&resources**				| 								| Список ресурсов для вывода, через запятую. Этот список будет обработан другими параметрами, такими как **&parents**, **&showDeleted**, **&showHidden** и **&showUnpublished**.
-**&parents**				| 								| Список категорий, через запятую, для ограничения вывода результатов.
-**&depth**					| 10							| Глубина поиска ресурсов от каждого родителя.
-**&tplOuter**				| tpl.mFilter2.outer			| Чанк оформления всего блока фильтров и результатов.
-**&tplFilter.outer.default**| tpl.mFilter2.filter.outer		| Стандартный чанк оформления одной группы фильтров.
-**&tplFilter.row.default**	| tpl.mFilter2.filter.checkbox	| Стандартный чанк оформления одного фильтра в группе. По умолчанию выводится как checkbox.
-**&showHidden**				| true							| Показывать ресурсы, скрытые в меню.
-**&showDeleted**			| false							| Показывать удалённые ресурсы.
-**&showUnpublished**		| false							| Показывать неопубликованные товары.
-**&hideContainers**			| false							| Скрывать ресурсы-контейнеры.
-**&showLog**				| false							| Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекcте «mgr».
-**&suggestions**			| true							| Этот параметр включает предположительное количество результатов, которое показывается возле каждого фильтра. Отключите, если вы недовольны скоростью фильтрации.
-**&suggestionsMaxFilters**	| 200							| Максимальное количество операций фильтрации (не самих фильтров), для которых работают предварительные результаты. Если операций требуется больше - **suggestions** отключатся.
-**&suggestionsMaxResults**	| 1000							| Максимальное количество ресурсов, для которых работают предварительные результаты. Если ресурсов будет больше - **suggestions** отключатся.
-**&suggestionsRadio**		| 								| Список фильтров через запятую, для которых возможен выбор только одного значения, например, элементы radio и select. Предсказания этих групп фильтров не суммируются между собой. Например: «resource\|class_key,ms\|new»
-**&toPlaceholders**			| 								| Если не пусто, mFilter2 сохранит все данные в плейсхолдеры: `[[+filters]]`, `[[+results]]` и `[[+total]]` с префиксом, указанным в этом параметре. Например, если вы укажете **&toPlaceholders=\`my.\`**, то получите: `[[+my.filters]]`, `[[+my.results]]` и `[[+my.total]]`
-**&toSeparatePlaceholders**	| 								| Работает так же как и **&toPlaceholders**, только в раздельные плейсхолдеры попадает еще и **filters**. Например, если вы укажете **&toSeparatePlaceholders=\`my.\`** и **&filters=\`tv\|test,resource\|pagetitle\`** то получите плейсхолдеры `[[+my.results]]`, `[[+my.total]]`, `[[+my.tv|test]]` и `[[+my.resource|pagetitle]]`.
-**&filter_delimeter**		| \|							| Разделитель кодового имени таблицы и поля фильтра.
-**&method_delimeter**		| :								| Разделитель полного имени фильтра и метода его обработки.
-**&values_delimeter**		| ,								| Разделитель значений фильтров в адресной строке сайта.
-**&tpls**					| 								| Список чанков для оформления строк, через запятую. Вы можете переключать их указанием в $_REQUEST параметра **&tpl**. 0 - это чанк по умолчанию, а дальше по порядку. Например: **&tpls=\`default,chunk1,chunk2\`**, для вывода товаров чанком "chunk1", нужно прислать в запросе `$_REQUEST[tpl] = 1`.
-**&forceSearch**			| false							| Обязательный поиск для вывода результатов. Если нет поискового запроса - ничего не выводится.
-**&fields**					| 								| Список проиндексированных полей ресурса, через запятую, в которых нужно искать. Вы можете также указать вес для каждого поля, через запятую: **&fields=`pagetitle:5,content:3,comment:1`**. По умолчанию используется системная настройка `mse2_index_fields`.
-**&onlyIndex**				| false							| Включить режим поиска только по индексу слов, и отключить дополнительные результаты, найденные простым поиском через LIKE.
-**&showSearchLog**			| false							| Показывать подробную информацию о начислении баллов поиска ресурсам при включенном **&showLog**.
-**&sortAliases**			| 								| JSON массив с псевдонимами классов для сортировки. Подробности ниже.
-**&filterOptions**			| 								| JSON строка с переменными для javascript фильтра. Подробности ниже.
-**&ajaxMode**   			| default						| Режим ajax пагинации: `default`, `scroll` или `button`. Работает аналогично [pdoPage][1], только без параметра **&ajaxHistory**.
-
+ | Название                     | По умолчанию                 | Описание                                                                                                                                                                                                                                                                                                                             |
+ | ---------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+ | **&paginator**               | pdoPage                      | Сниппет для постраничной навигации, по умолчанию [pdoPage][1]. Вы можете указать набор параметров для него: **&paginator=`pdoPage@myParams`**.                                                                                                                                                                                       |
+ | **&element**                 | mSearch2                     | Сниппет, который будет вызываться для вывода результатов работы, по умолчанию - [mSearch2][2]. Вы можете указать набор параметров для него: **&element=`mSearch2@myParams`**.                                                                                                                                                        |
+ | **&sort**                    |                              | Список полей ресурса для сортировки. Указывается в формате «таблица\|поле:направление». Можно указывать несколько полей через запятую, например: «resource\|publishedon:desc,ms\|price:asc».                                                                                                                                         |
+ | **&filters**                 | resource\|parent:parents     | Список фильтров ресурсов, через запятую. Указывается в формате «таблица\|поле:метод».                                                                                                                                                                                                                                                |
+ | **&aliases**                 |                              | Список псевдонимов для фильтров, которые будут использованы в URL фильтра, через запятую. Указывается в формате "таблица\|поле==псевдоним". Например: "resource\|parent==category".                                                                                                                                                  |
+ | **&showEmptyFilters**        | true                         | Показывать фильтры всего с одним значением.                                                                                                                                                                                                                                                                                          |
+ | **&resources**               |                              | Список ресурсов для вывода, через запятую. Этот список будет обработан другими параметрами, такими как **&parents**, **&showDeleted**, **&showHidden** и **&showUnpublished**.                                                                                                                                                       |
+ | **&parents**                 |                              | Список категорий, через запятую, для ограничения вывода результатов.                                                                                                                                                                                                                                                                 |
+ | **&depth**                   | 10                           | Глубина поиска ресурсов от каждого родителя.                                                                                                                                                                                                                                                                                         |
+ | **&tplOuter**                | tpl.mFilter2.outer           | Чанк оформления всего блока фильтров и результатов.                                                                                                                                                                                                                                                                                  |
+ | **&tplFilter.outer.default** | tpl.mFilter2.filter.outer    | Стандартный чанк оформления одной группы фильтров.                                                                                                                                                                                                                                                                                   |
+ | **&tplFilter.row.default**   | tpl.mFilter2.filter.checkbox | Стандартный чанк оформления одного фильтра в группе. По умолчанию выводится как checkbox.                                                                                                                                                                                                                                            |
+ | **&showHidden**              | true                         | Показывать ресурсы, скрытые в меню.                                                                                                                                                                                                                                                                                                  |
+ | **&showDeleted**             | false                        | Показывать удалённые ресурсы.                                                                                                                                                                                                                                                                                                        |
+ | **&showUnpublished**         | false                        | Показывать неопубликованные товары.                                                                                                                                                                                                                                                                                                  |
+ | **&hideContainers**          | false                        | Скрывать ресурсы-контейнеры.                                                                                                                                                                                                                                                                                                         |
+ | **&showLog**                 | false                        | Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекcте «mgr».                                                                                                                                                                                                                                 |
+ | **&suggestions**             | true                         | Этот параметр включает предположительное количество результатов, которое показывается возле каждого фильтра. Отключите, если вы недовольны скоростью фильтрации.                                                                                                                                                                     |
+ | **&suggestionsMaxFilters**   | 200                          | Максимальное количество операций фильтрации (не самих фильтров), для которых работают предварительные результаты. Если операций требуется больше - **suggestions** отключатся.                                                                                                                                                       |
+ | **&suggestionsMaxResults**   | 1000                         | Максимальное количество ресурсов, для которых работают предварительные результаты. Если ресурсов будет больше - **suggestions** отключатся.                                                                                                                                                                                          |
+ | **&suggestionsRadio**        |                              | Список фильтров через запятую, для которых возможен выбор только одного значения, например, элементы radio и select. Предсказания этих групп фильтров не суммируются между собой. Например: «resource\|class_key,ms\|new»                                                                                                            |
+ | **&suggestionsSliders**      | true                         | Активирует работу предположительных результатов со слайдерами, увеличивая при этом общее количество фильтраций.                                                                                                                                                                                                                      |
+ | **&toPlaceholders**          |                              | Если не пусто, mFilter2 сохранит все данные в плейсхолдеры: `[[+filters]]`, `[[+results]]` и `[[+total]]` с префиксом, указанным в этом параметре. Например, если вы укажете **&toPlaceholders=\`my.\`**, то получите: `[[+my.filters]]`, `[[+my.results]]` и `[[+my.total]]`                                                        |
+ | **&toSeparatePlaceholders**  |                              | Работает так же как и **&toPlaceholders**, только в раздельные плейсхолдеры попадает еще и **filters**. Например, если вы укажете **&toSeparatePlaceholders=\`my.\`** и **&filters=\`tv\|test,resource\|pagetitle\`** то получите плейсхолдеры `[[+my.results]]`, `[[+my.total]]`, `[[+my.tv|test]]` и `[[+my.resource|pagetitle]]`. |
+ | **&filter_delimeter**        | \|                           | Разделитель кодового имени таблицы и поля фильтра.                                                                                                                                                                                                                                                                                   |
+ | **&method_delimeter**        | :                            | Разделитель полного имени фильтра и метода его обработки.                                                                                                                                                                                                                                                                            |
+ | **&values_delimeter**        | ,                            | Разделитель значений фильтров в адресной строке сайта.                                                                                                                                                                                                                                                                               |
+ | **&tpls**                    |                              | Список чанков для оформления строк, через запятую. Вы можете переключать их указанием в $_REQUEST параметра **&tpl**. 0 - это чанк по умолчанию, а дальше по порядку. Например: **&tpls=\`default,chunk1,chunk2\`**, для вывода товаров чанком "chunk1", нужно прислать в запросе `$_REQUEST[tpl] = 1`.                              |
+ | **&forceSearch**             | false                        | Обязательный поиск для вывода результатов. Если нет поискового запроса - ничего не выводится.                                                                                                                                                                                                                                        |
+ | **&fields**                  |                              | Список проиндексированных полей ресурса, через запятую, в которых нужно искать. Вы можете также указать вес для каждого поля, через запятую: **&fields=`pagetitle:5,content:3,comment:1`**. По умолчанию используется системная настройка `mse2_index_fields`.                                                                       |
+ | **&onlyIndex**               | false                        | Включить режим поиска только по индексу слов, и отключить дополнительные результаты, найденные простым поиском через LIKE.                                                                                                                                                                                                           |
+ | **&showSearchLog**           | false                        | Показывать подробную информацию о начислении баллов поиска ресурсам при включенном **&showLog**.                                                                                                                                                                                                                                     |
+ | **&sortAliases**             |                              | JSON массив с псевдонимами классов для сортировки. Подробности ниже.                                                                                                                                                                                                                                                                 |
+ | **&filterOptions**           |                              | JSON строка с переменными для javascript фильтра. Подробности ниже.                                                                                                                                                                                                                                                                  |
+ | **&ajaxMode**                | default                      | Режим ajax пагинации: `default`, `scroll` или `button`. Работает аналогично [pdoPage][1], только без параметра **&ajaxHistory**.                                                                                                                                                                                                     |
 
 ## Принцип работы
+
 При первом запуске на странице сниппет получает нужные для фильтрации ресурсы, которые можно указать ему двумя способами:
 
 * Прямое указание параметров, таких как **&parents**, **&resources**, **&showHidden** и т.д. Они будут переданы в сниппет, указанный в **&element** и он вернёт нужные id.
@@ -57,6 +60,7 @@
 Всё полностью автоматизированно, вам нужно только указать верные параметры и настроить чанки.
 
 ## Скрипты и стили
+
 При работе mFilter2 регистрируются скрипты и стили, указанные в системных настройках:
 
 * **mse2_frontend_js** - стандартный javascript, по умолчанию `/assets/components/msearch2/js/web/default.js`
@@ -65,25 +69,30 @@
 Если вы хотите внести какие-то изменения в стандартные файлы, нужно их переименовать и указать новые значения в системных настройках, иначе все ваши изменения будут перезаписаны при очередном обновлении.
 
 Также вы можете менять переменные стандартного фильтра, указав их в виде JSON строки в параметре **&filterOptions**:
-```
+
+```php
 [[!mFilter2?
-	&parents=`0`
-	...
-	&filterOptions=`{
-		"pagination": "#mse2_pagination",
-		"selected_values_delimeter": ", "
-	}`
+    &parents=`0`
+    ...
+    &filterOptions=`{
+        "pagination": "#mse2_pagination",
+        "selected_values_delimeter": ", "
+    }`
 ]]
 ```
+
 Они заменят переменные объекта `mSearch2.options` javascript фильтра на фронтенде.
 
 Например, вот так можно отключить автоматическую отправку формы с фильтрами при изменении:
-```
+
+```php
 &filterOptions=`{"autoLoad":0}`
 ```
+
 Тогда в форме по умолчанию появится кнопка "Отправить" и нужно будет нажимать на неё.
 
 ### Особенности
+
 * Для правильной работы необходимо, чтобы все элементы фильтра располагались в одном блоке с `#mse2_mfilter`. Именно так прописано с стандартном чанке **tpl.mFilter2.outer**.
 * Скрипт работает через Ajax, сохраняя при этом параметры с адресной строке через HistoryAPI. То есть, у вас всегда есть прямые рабочие ссылки на состояние фильтров.
 * Для реализации цифровых слайдеров скрипт использует [jQueryUI.slider][3], который подключается автоматически, если нужен.
@@ -94,14 +103,16 @@
 [![](https://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efds.jpg)](https://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efd.png)
 
 ## Чанки и оформление
+
 У mFilter2 есть один основной чанк, куда выводятся все результаты его работы, с основными плейсхолдерами: `[[+filters]]` и `[[+results]]`.
 
 За результаты отвечают два сниппета: по умолчанию [pdoPage][1], который запускает [mSearch2][2] для вывода собственно строчек с документами.
 Вы можете указать и другие сниппеты, например getPage и msProducts:
-```
+
+```php
 [[!mFilter2?
-	&paginator=`getPage`
-	&element=`mSearch2`
+    &paginator=`getPage`
+    &element=`mSearch2`
 ]]
 ```
 
@@ -111,37 +122,41 @@
 * **&tplFilter.row.таблица\|поле**=`tpl.mFilter2.filter.checkbox` - чанк для оформления одного параметра фильтра, по умолчанию - это checkbox. В комплекте есть еще и чанк для чисел - его нужно указать самостоятельно.
 
 Например, **вызов слайдера** для цены товара:
-```
+
+```php
 [[!mFilter2?
-	&class=`msProduct`
-	&element=`msProducts`
-	&parents=`0`
-	&filters=`
-		ms|price:number
-	`
-	&tplFilter.outer.ms|price=`tpl.mFilter2.filter.slider`
-	&tplFilter.row.ms|price=`tpl.mFilter2.filter.number`
+    &class=`msProduct`
+    &element=`msProducts`
+    &parents=`0`
+    &filters=`
+        ms|price:number
+    `
+    &tplFilter.outer.ms|price=`tpl.mFilter2.filter.slider`
+    &tplFilter.row.ms|price=`tpl.mFilter2.filter.number`
 ]]
 ```
 
 А вот вывод родителей документов в **элементе select**:
-```
+
+```php
 [[!mFilter2?
-	&parents=`0`
-	&filters=`
-		resource|parent:parents
-	`
-	&tplFilter.outer.resource|parent=`tpl.mFilter2.filter.select`
-	&tplFilter.row.resource|parent=`tpl.mFilter2.filter.option`
-	&suggestionsRadio=`resource|parent`
+    &parents=`0`
+    &filters=`
+        resource|parent:parents
+    `
+    &tplFilter.outer.resource|parent=`tpl.mFilter2.filter.select`
+    &tplFilter.row.resource|parent=`tpl.mFilter2.filter.option`
+    &suggestionsRadio=`resource|parent`
 ]]
 ```
+
 Указание поля select в **&suggestionsRadio** активирует правильную работу предсказаний с этим фильтром.
 Блок select даёт выбирать только одно значение, поэтому у соседних значений не должно быть плюсиков перед предсказаниями.
 
 Таким образом, для каждого параметра фильтра можно указать собственные чанки оформления, а если они не указаны - будут использоваться стандартные.
 
 ## Фильтры
+
 Построение фильтров указывается через один параметр **&filters**, в формате `кодовое_имя_таблицы/поле:фильтр`. За один раз можно указать сколько угодно фильтров через запятую.
 
 Соотношение реальных таблиц и кодовых имён:
@@ -157,146 +172,173 @@
 Вы можете указывать несколько фильтров для одного поля, например для раздельной фильтрации по году и месяцу.
 
 Пример фильтров в работе:
-```
+
+```php
 [[!mFilter2?
-	&filters=`
-		parent:grandparents,
-		createdon:year,
-		createdon:month,
-		tv|radio:boolean,
-		createdby:fullname
-	`
+    &filters=`
+        parent:grandparents,
+        createdon:year,
+        createdon:month,
+        tv|radio:boolean,
+        createdby:fullname
+    `
 ]]
 ```
+
 [![](https://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9as.jpg)](https://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9a.png)
 
 В комплекте с mFilter2 идёт несколько стандартных методов фильтрации, которые позволяют сделать вывод фильтров более приятным.
 
 ### default
+
 Обычный, стандартный фильтр, рассчитанный на вывод чекбоксов. Применяется ко всем полям, для которых не указан свой фильтр.
 
 ### number
+
 Фильтр для чисел от min до max. При его использовании желательно указывать соответствующие чанки, чтобы вывод был оформлен слайдером.
-```
+
+```php
 [[!mFilter2?
-	&filters=`
-		template:number
-	`
-	&tplFilter.outer.resource|template=`tpl.mFilter2.filter.slider`
-	&tplFilter.row.resource|template=`tpl.mFilter2.filter.number`
+    &filters=`
+        template:number
+    `
+    &tplFilter.outer.resource|template=`tpl.mFilter2.filter.slider`
+    &tplFilter.row.resource|template=`tpl.mFilter2.filter.number`
 ]]
 ```
+
 [![](https://file.modx.pro/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74s.jpg)](https://file.modx.pro/files/5/7/5/57553cb66b79e1c93391a0ec58bc5f74.png)
 
 ### boolean
+
 Фильтр для вывода параметров да\нет. Например, опубликован ли ресурс, скрыт в меню, доступен для поиска и т.д.
 Если не указать фильтр `boolean` у таких полей, то вы получите 0 и 1 в значениях. А если указать - то "да" и "нет".
-```
+
+```php
 [[!mFilter2?
-	&filters=`
-		isfolder:boolean
-	`
+    &filters=`
+        isfolder:boolean
+    `
 ]]
 ```
+
 [![](https://file.modx.pro/files/b/c/0/bc022499933ae06b101e290e9b784a16s.jpg)](https://file.modx.pro/files/b/c/0/bc022499933ae06b101e290e9b784a16.png)
 
 ### parents, categories и grandparents
+
 Следующие три фильтра применяются только к полю *parent* ресурса.
 
 Parents выводит имена двух родителей, через разделитель. Он включен по умолчанию.
-```
+
+```php
 [[!mFilter2?
-	&filters=`
-		parent:parents
-	`
+    &filters=`
+        parent:parents
+    `
 ]]
 ```
+
 [![](https://file.modx.pro/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252s.jpg)](https://file.modx.pro/files/5/b/3/5b39cd5c3019e80fa4d66819f9a2d252.png)
 
 Categories выводит имя непосредственного родителя.
 
-```
+```php
 [[!mFilter2?
-	&filters=`
-		parent:categories
-	`
+    &filters=`
+        parent:categories
+    `
 ]]
 ```
+
 [![](https://file.modx.pro/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326s.jpg)](https://file.modx.pro/files/3/9/0/3907a5749b8d5dd5d7b38965eacd9326.png)
 
 Grandparents выводит имена родителей-дедушек и предназначен для больших каталогов. Если "дедушки" нет, то будет выведен непосредственный родитель.
-```
+
+```php
 [[!mFilter2?
-	&filters=`
-		parent:grandparents
-	`
+    &filters=`
+        parent:grandparents
+    `
 ]]
 ```
+
 [![](https://file.modx.pro/files/5/5/e/55e5e69063b9580d534b50a03c1acb4fs.jpg)](https://file.modx.pro/files/5/5/e/55e5e69063b9580d534b50a03c1acb4f.png)
 
 ### vendors
+
 Фильтр для вывода имён производителей товаров miniShop2. Применяется только к полю `vendor` таблицы `ms`.
-```
+
+```php
 [[!mFilter2?
-	&where=`{"class_key":"msProduct"}`
-	&filters=`
-		ms|vendor:vendors
-	`
+    &where=`{"class_key":"msProduct"}`
+    &filters=`
+        ms|vendor:vendors
+    `
 ]]
 ```
+
 [![](https://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](https://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
 
 ### fullname
+
 Этот фильтр выводит полное имя пользователя. Может применяться к любому полю, содержащему id юзера.
-```
+
+```php
 [[!mFilter2?
-	&filters=`
-		createdby:fullname
-	`
+    &filters=`
+        createdby:fullname
+    `
 ]]
 ```
+
 [![](https://file.modx.pro/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4ds.jpg)](https://file.modx.pro/files/f/c/a/fca1f4f3dc12e0bb19ae0d4388f03e4d.png)
 
 ### year
+
 Этот фильтр применяется к полям с датой и выводит год. Можно, например, фильтровать новости по году создания.
-```
+
+```php
 [[!mFilter2?
-	&filters=`
-		createdon:year
-	`
+    &filters=`
+        createdon:year
+    `
 ]]
 ```
+
 [![](https://file.modx.pro/files/c/1/3/c13c234629cde60be2122e85ee18483as.jpg)](https://file.modx.pro/files/c/1/3/c13c234629cde60be2122e85ee18483a.png)
 
 ### month
+
 Этот фильтр применяется к полям с датой и выводит месяц прописью, подставляя его название из словаря компонента.
 
 ### day
+
 Этот фильтр применяется к полям с датой и выводит день.
 
 ## Псевдонимы фильтров
+
 В последних версиях дополнения введена специальная система псевдонимов для фильтров, чтобы сделать их использование более удобным.
 
 Вы можете указать список замены длинных названий фильтров на более короткие и понятные. Например:
-```
+
+```php
 [[!mFilter2?
-	&parents=`0`
-	&element=`msProducts`
-	&aliases=`
-		ms|price==price,
-		resource|parent==parent,
-	`
-	&filters=`
-		ms|price:number,
-		parent:parents,
-		parent:categories,
-	`
-	&class=`msProduct`
-	&tplFilter.outer.price=`tpl.mFilter2.filter.slider`
-	&tplFilter.row.price=`tpl.mFilter2.filter.number`
+    &parents=`0`
+    &element=`msProducts`
+    &aliases=`
+        ms|price==price,
+        resource|parent==parent,
+    `
+    &filters=`
+        ms|price:number,
+        parent:parents,
+        parent:categories,
+    `
+    &class=`msProduct`
+    &tplFilter.outer.price=`tpl.mFilter2.filter.slider`
+    &tplFilter.row.price=`tpl.mFilter2.filter.number`
 ]]
 ```
-
 
 В результате, url будут вот такие:
 > site.com/mfilter2?**price**=102,750&**parent**=10,12,15
@@ -304,37 +346,41 @@ Grandparents выводит имена родителей-дедушек и пр
 Обратите внимание, что указание псевдонимов влияет и на указание параметров шаблонов.
 То есть, если для `ms|price` указан псевдоним, то и чанк нужно указывать как `&tplFilter.row.price`, а не `&tplFilter.row.ms|price`.
 
-
-```
+```php
 &filters=`
-	resource|parent:categories,
-	resource|parent:grandparents,
+    resource|parent:categories,
+    resource|parent:grandparents,
 `
 ```
+
 Если какое-то поле указано 2 и более раз, то его имя прописывается как поле-фильтр и получается
-```
+
+```php
 parent-categories и parent-grandparents
 ```
 
 Соответственно, псевдонимы должны быть такими:
-```
+
+```php
 &aliases=`
-	resource|parent-categories==categories,
-	resource|parent-grandparents==grandparents,
+    resource|parent-categories==categories,
+    resource|parent-grandparents==grandparents,
 `
 ```
 
 Ну а чанки указываются уже по псевдониму:
-```
+
+```php
 &tplFilter.row.categories=`tpl.mFilter2.filter.checkbox1`
 &tplFilter.row.grandparents=`tpl.mFilter2.filter.checkbox2`
 ```
 
 ## Предварительные результаты
+
 Предварительные результаты - это маленькие циферки рядом с каждым фильтром, которые показывают, сколько вы получите результатов, если кликните на него.
 [![](https://file.modx.pro/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0s.jpg)](https://file.modx.pro/files/6/3/9/639c9da527e3b25fa8c9b00ae64c59c0.png)
 
-При каждом клике это значение пересчитывается для **всех фильтров**, с учетом текущего состояния. 
+При каждом клике это значение пересчитывается для **всех фильтров**, с учетом текущего состояния.
 Для этого скрипт пробегает по каждому варианту и считает, сколько будет результатов, если его активировать.
 
 То есть, у вас может быть несколько десятков (сотен, тысяч) дополнительных фильтраций. Зачем это нужно?
@@ -342,37 +388,41 @@ parent-categories и parent-grandparents
 * Посетитель сразу знает, что получит при клике, и куда лучше кликнуть.
 * Позволяет отключать те комбинации фильтра, которые ничего не выведут. То есть, посетитель не увидит "По вашему запросу ничего не найдено".
 
-Функция безусловно приятная и полезная, но очень тяжелая для работы. 
+Функция безусловно приятная и полезная, но очень тяжелая для работы.
 Она напрямую зависит от количества фильтруемых результатов и параметров фильтров - то есть, сделать так, чтобы она не тормозила вообще нигде, невозможно.
 
 Поэтому она отключается автоматически для больших каталогов регулируемыми параметрами **&suggestionsMaxFilters** и **&suggestionsMaxResults**.
 Также вы можете полностью отключить её общим параметром
-```
+
+```php
 &suggestions=`0`
 ```
 
 При активации этой опции вы получите максимальную скорость, но циферки рядом с фильтром пропадут.
 
 ## Сортировка результатов
+
 mFilter2 умеет сортировать сразу по нескольким полям таблицы.
 
 Формат указания параметра **&sort** очень похож на работу **&filters**:
-```
+
+```php
 &sort=`
-	resource|publishedon:asc,
-	resource|createdby:desc
+    resource|publishedon:asc,
+    resource|createdby:desc
 `
 ```
 
 Тут нужно знать следующее: в зависимости от используемого сниппета вывода результатов, псевдонимы базы данных могут отличаться. Например в mSearch2 ресурсы джоинятся под псевдонимом **modResource**, а в msProducts - как **msProduct**.
 
 Поэтому при работе с [msProducts][5] нужно указывать вот так:
-```
+
+```php
 &sort=`
-	ms_product|publishedon:asc,
-	ms_product|createdby:desc,
-	ms|price:asc,
-	ms_vendor|name:desc
+    ms_product|publishedon:asc,
+    ms_product|createdby:desc,
+    ms|price:asc,
+    ms_vendor|name:desc
 `
 ```
 
@@ -387,87 +437,97 @@ mFilter2 умеет сортировать сразу по нескольким 
 * **resource** &rarr; modResource
 
 Вот что сниппет получит при обработке параметров из последнего примера:
-```
+
+```php
 `msProduct`.`publishedon` ASC, `msProduct`.`createdby` DESC, `Data`.`price` ASC, `Vendor`.`name` DESC
 ```
 
 То есть, **&sort** напрямую завязан на сниппет, выбирающий данные, и то, как у него внутри соединены таблицы.
 Поэтому, при любых ошибках сортировки нужно смотреть лог работы и проверять системный журнал.
 
-Если вам не хватает встроенных псевдонимов, вы можете добавить свои собственные через параметр **&sortAliases**. 
+Если вам не хватает встроенных псевдонимов, вы можете добавить свои собственные через параметр **&sortAliases**.
 Например, для фильтрации тикетов:
-```
+
+```php
 [[!mFilter2?
-	&parents=`0`
-	&class=`Ticket`
-	&element=`getTickets`
-	&sortAliases=`{"ticket":"Ticket"}`
-	&sort=`ticket|createdon:desc,ticket|pagetitle:asc`
-	&showLog=`1`
+    &parents=`0`
+    &class=`Ticket`
+    &element=`getTickets`
+    &sortAliases=`{"ticket":"Ticket"}`
+    &sort=`ticket|createdon:desc,ticket|pagetitle:asc`
+    &showLog=`1`
 ]]
 ```
 
 Еще пример - сортировка по опции товара miniShop2:
-```
+
+```php
 [[!mFilter2?
-	&parents=`0`
-	&element=`msProducts`
-	&leftJoin=`{
-		"Test1": {
-			"class": "msProductOption",
-			"on": "Test1.key = 'test1' and Test1.product_id = msProduct.id"
-		}
-	}`
-	&sortAliases=`{"test1":"Test1"}`
-	&aliases=`test1|value==test1`
-	&sort=`test1:desc`
+    &parents=`0`
+    &element=`msProducts`
+    &leftJoin=`{
+        "Test1": {
+            "class": "msProductOption",
+            "on": "Test1.key = 'test1' and Test1.product_id = msProduct.id"
+        }
+    }`
+    &sortAliases=`{"test1":"Test1"}`
+    &aliases=`test1|value==test1`
+    &sort=`test1:desc`
 ]]
 ```
+
 Присоединяем опцию **test1**, добавляем для этой таблицы псевдоним и сортируем по значению присоединённой опции.
 
 Ссылка для сортировки в чанке `tpl.mFilter2.outer` в данном случае должна быть примерно такой:
-```
+
+```html
 <a href="#" class="sort [[+mse2_sort:is=``:then=`active`]]"
-    data-sort="test1" 
-    data-dir="[[+mse2_sort:is=``:then=`desc`]]" 
+    data-sort="test1"
+    data-dir="[[+mse2_sort:is=``:then=`desc`]]"
     data-default="desc">Test1 <span></span></a>
 ```
+
 Обратите внимание, что указание псевдонима в **&aliases** даёт нам возможность сортировать по `test1`, вместо `test1|value`.
 
-Если вам понадобится сортировать более чем по одной опции, то все их нужно подключить в выборку под своими уникальными 
-псевдонимами и указать соответствующие ссылки. 
+Если вам понадобится сортировать более чем по одной опции, то все их нужно подключить в выборку под своими уникальными
+псевдонимами и указать соответствующие ссылки.
 
 ## Javascript
+
 Вся работа фильтров обеспечивается скриптом default.js, который идёт в комплекте.
 Путь к нему указывается в системной настройке **mse2_frontend_js**, так что, если вы захотите внести изменения,
 просто переименуйте этот файл и укажите новое название в настройке - чтобы при обновлении дополнения он не был перезаписан.
 
 Все методы находятся в одном объекте **mSearch2**. Программно отправить форму, например, можно вот так:
-```
+
+```javascript
 mSearch2.submit();
 ```
+
 А сбросить значения так:
-```
+
+```javascript
 mSearch2.reset();
 ```
 
 При обновлении фильтров срабатывает событие **mse2_load**:
-```
+
+```javascript
 $(document).on('mse2_load', function(e, data) {
-	console.log(e, data);
+    console.log(e, data);
 });
 ```
+
 Вы можете использовать это событие для дополнительной обработки значений фильтра.
 
-
 ## Лексиконы
+
 Для оформления фильтров используются записи из лексикона.
 Если вы добавили новый фильтр и он отображается непонятной длинной надписью на английском - это значит, что её нужно добавить в словарь mSearch2.
 
 [![](https://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04s.jpg)](https://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04.png)
 [![](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721s.jpg)](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
-
-
 
 [1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/03_pdoPage.md
 [2]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/01_mSearch2.md

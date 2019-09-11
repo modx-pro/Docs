@@ -42,7 +42,7 @@ pdoTools 2.0 brings you built-in support of Fenom template engine. Good news eve
 
 Fenom works completely different way. It **compiles** chunk to PHP code and caches it in memory. Then pdoTools pass array of values into this PHP code and it executed.
 
-There is no recursive iterations. Only one passage for one chunk at time. If you have no value for placeholder - it will be just empty and nobody will not replace it later. It is much more fair logig, as for me.
+There is no recursive iterations. Only one passage for one chunk at time. If you have no value for placeholder - it will be just empty and nobody will not replace it later. It is much more fair logic, as for me.
 
 Fenom syntax looks similar to Smarty and you could see it in official documentation, I only will show you how you could use it with MODX:
 * `{$placeholder}` of `{$_pls['placeholder']}` - for placeholders with dots or dashes (TVs).

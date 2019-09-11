@@ -1,3 +1,5 @@
+# Google
+
 Получение ключей в Google
 
 ## Регистрация приложения
@@ -27,6 +29,5 @@
 * Копируем **Client ID** и **Client secret**
 
 [![](https://file.modx.pro/files/b/c/9/bc965d7b789dcf4571c3896e77445f56s.jpg)](https://file.modx.pro/files/b/c/9/bc965d7b789dcf4571c3896e77445f56.png)
-
 
 [1]: https://code.google.com/apis/console/

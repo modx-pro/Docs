@@ -1,6 +1,8 @@
+# mspPayAnyWay
+
 Для того, чтобы принимать оплату через [«PayAnyWay»][1] вам необходимо сначала [зарегистрировать][2] магазин в этой системе.
 
-### Регистрация «PayAnyWay»
+## Регистрация «PayAnyWay»
 
 * Указать название организации
 * Указать сайт
@@ -9,27 +11,27 @@
 
 [![](https://file.modx.pro/files/c/8/1/c81185ad9ef991d8289befd1ef20d5bds.jpg)](https://file.modx.pro/files/c/8/1/c81185ad9ef991d8289befd1ef20d5bd.png)
 
-### Проверка документов «PayAnyWay»
+## Проверка документов «PayAnyWay»
 
 Прежде чем принимать платежи через «PayAnyWay» необходимо дождаться проверки документов.
 
 [![](https://file.modx.pro/files/3/e/4/3e4069ad047ae816f5a94f5ec684673as.jpg)](https://file.modx.pro/files/3/e/4/3e4069ad047ae816f5a94f5ec684673a.png)
 
-### Настройка «PayAnyWay»
+## Настройка «PayAnyWay»
 
-После того как ваши данные прошли проверку, 
+После того как ваши данные прошли проверку,
 В настройках магазина вам нужно указать следующие параметры:
 
 * Псевдоним магазина
-* Pay URL - адрес обработчика, в виде http://sitename.ru/assets/components/minishop2/payment/msppayanyway.php
-* HTTP метод отправки параметров - POST 
+* Pay URL - адрес обработчика, в виде <http://sitename.ru/assets/components/minishop2/payment/msppayanyway.php>
+* HTTP метод отправки параметров - POST
 * Код проверки целостности данных, должен совпадать с кодом в настройках компонента
 * Подпись формы оплаты обязательна - ДА
 * Можно переопределять настройки в url - ДА
 
 [![](https://file.modx.pro/files/9/1/b/91b5172962968e93527b54835ae38a08s.jpg)](https://file.modx.pro/files/9/1/b/91b5172962968e93527b54835ae38a08.png)
 
-### Настройка MODX
+## Настройка MODX
 
 В MODX вам нужно настроить следующие параметры (находятся в разделе «PayAnyWay» пространства имен minishop2):
 
