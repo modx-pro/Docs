@@ -17,7 +17,7 @@ Should be summoned uncached due to the specifics of working in Ajax.
 **&autocomplete**	| results				| Autocompletion settings. Possible variants: «results» - search through the site (snippet associated with **&element** will be summoned for the output), «queries» - search through the query table, «0» - deactivate autocompletion.
 **&queryVar**		| query					| Name of the variable for receiving search query from «$_REQUEST». By default - «query».
 **&minQuery**		| 3						| Minimal length of a query. 
-**&fields**			| 						| List of the indexed fields of the resource, with commas, to look through. You can also indicate each field’s weight, with commas: **&fields=`pagetitle:5,content:3,comment:1`**. By default system setting `mse2_index_fields`is used.
+**&fields**			| 						| List of the indexed fields of the resource, with commas, to look through. You can also indicate each field’s weight, with commas: **&fields=`pagetitle:5,content:3,comment:1,tv_mytvname:2`**. By default system setting `mse2_index_fields`is used.
 **&onlyIndex**		| false					| Activate search only by words’ index and deactivate extra results that can be found through simple search with LIKE.
 
 ## Autocompletion

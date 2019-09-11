@@ -38,7 +38,7 @@ Name			    | By default			| Description
 **&wrapIfEmpty**	| false					| Includes chunk-wrapper output **&tplWrapper** even though there are no results. 
 **&forceSearch**	| true					| Binding search for output. If there is no one - no output. 
 **&minQuery**		| 3						| Minimal length of the search query. 
-**&fields**			| 						| System settings redefinition of weight for indexed fields with comma: **&fields=`pagetitle:5,content:3,comment:1`**. `mse2_index_fields` is used by default. 
+**&fields**			| 						| System settings redefinition of weight for indexed fields with comma: **&fields=`pagetitle:5,content:3,comment:1,tv_mytvname:2`**. `mse2_index_fields` is used by default. 
 **&showSearchLog**	| false					| To show detailed information on given points of resource search when inserting **&showLog**.
 
 ## Lexicons
