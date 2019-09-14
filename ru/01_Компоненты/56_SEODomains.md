@@ -3,6 +3,7 @@
 ## Возможности
 
 * Управление доп. доменами и поддоменами (site.ru, spb.site.ru, astana.site.kz, site.by, brest.site.by)
+* Изменение контента у каждого ресурса под каждый домен/поддомен
 * Быстрое копирование любого домена
 * Управление доп. полями для каждого домена
 * Импорт доменов и всех его доп. полей через XLSX-файл
@@ -33,23 +34,53 @@
 * `[[!+sd.address_full]]` — Полный адрес
 * `[[!+sd.coordinats]]` — Координаты
 
+## Изменение контента для у каждого ресурса под каждый город
+
+После установки компонента у каждого ресурса появится новая вкладка «Города и домены».
+
+### Таблица со всеми городами и их содержимым
+
+[![](https://file.modx.pro/files/0/3/6/036157ea0d4e7b3c25ec6f6dd443ea87.png)](https://file.modx.pro/files/0/3/6/036157ea0d4e7b3c25ec6f6dd443ea87.png)
+
+### Пример добавления содержимого для Екатеринбурга
+
+[![](https://file.modx.pro/files/6/3/6/63620f3942354a53c55193924951d359.png)](https://file.modx.pro/files/6/3/6/63620f3942354a53c55193924951d359.png)
+
+После добавления содержимого плейсхолдер `content` автоматически заменяется на нужный контент исходя из домена
+
 ## Выбор города на сайте
 
 Вызовите сниппет `SeoDomainsList` в нужном вам месте
 
 ### Пример вызова со всеми параметрами
 
+Phx:
+
 ```php
 [[SeoDomainsList?
-    &tplRow=`SeoDomains.City.row`
-    &tplOuter=`SeoDomains.City.outer`
+    &tpl=`SeoDomains.City.tpl`
     &sortby=`city`
     &sortdir=`ASC`
     &activeClass=`active`
+    &limit=`10`
+    &showLog=`0`
 ]]
 ```
 
-[![](https://file.modx.pro/files/0/e/1/0e18e79498148bdac68c65a9e5711028.jpg)](https://file.modx.pro/files/0/e/1/0e18e79498148bdac68c65a9e5711028.jpg)
+Fenom:
+
+```php
+{'SeoDomainsList' | snippet : [
+    'tpl' => 'SeoDomains.City.tpl'
+    'sortby' => 'city'
+    'sortdir' => 'ASC'
+    'activeClass' => 'active'
+    'limit' => 10
+    'showLog' => 0
+]}
+```
+
+[![](https://file.modx.pro/files/5/7/2/572fdc490c5744b76da388e4eba8373f.png)](https://file.modx.pro/files/5/7/2/572fdc490c5744b76da388e4eba8373f.png)
 
 ## Автоматическое добавление сайта в Яндекс.Вебмастер
 
@@ -63,8 +94,8 @@
 
 ## Настройки компонента
 
-* `seodomains_default_email` — E-mail по умолчанию
-* `seodomains_default_phone` — Телефон по умолчанию
+* `seodomains_city_fields` — Поля таблицы
+* `seodomains_cyrillic_domain` — Выберите Да если у вас Кириллический домен
 * `seodomains_html_parent` — Родитель HTML ресурсов для подтверждения прав на домен
 * `seodomains_main_host` — Основной хост
 * `seodomains_phx_prefix` — Префикс для плейсхолдеров

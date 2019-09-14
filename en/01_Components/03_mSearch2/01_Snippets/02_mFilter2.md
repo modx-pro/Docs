@@ -38,7 +38,7 @@ You can organize filtration on any positions if you have a little knowledge PHP 
 **&values_delimeter**		| ,								| The delimeter of filter values in an address line of a website. 
 **&tpls**					| 								| Chunks list for lines design with a comma. You can switch them using reference in $_REQUEST of **&tpl** parameter. 0 - is a chunk by default and then in sequence. For example: **&tpls=\`default,chunk1,chunk2\`**, for the product output by the chunk "chunk1", `$_REQUEST[tpl] = 1` should be sent in the request. 
 **&forceSearch**			| false							| Binding search for the output. If search query is not there, nothing will output. 
-**&fields**					| 								| Indexed fields list of the resource with a comma, where you should search. Also you can specify weight for every field with a comma: **&fields=`pagetitle:5,content:3,comment:1`**. System setting `mse2_index_fields` is used by default.
+**&fields**					| 								| Indexed fields list of the resource with a comma, where you should search. Also you can specify weight for every field with a comma: **&fields=`pagetitle:5,content:3,comment:1,tv_mytvname:2`**. System setting `mse2_index_fields` is used by default.
 **&onlyIndex**				| false							| To activate search mode on words index only and disactivate additional results found by the simple search via LIKE.
 **&showSearchLog**			| false							| To show detailed information on given points of resource when activating **&showLog**.
 **&sortAliases**			| 								| JSON array with class pseudonyms for sorting. See below for details. 
