@@ -1,18 +1,19 @@
+# msMerchant
+
 Для того, чтобы принимать оплату через «Единую кассу» вам необходимо сначала [зарегистрировать][1] магазин в этой системе.
 
-### Настройка «Единой кассы»
+## Настройка «Единой кассы»
 
 В настройках магазина вам нужно указать следующие параметры:
 
 * url магазина
-* url скрипта обработки платежей - http://вашСайт.ru/assets/components/minishop2/payment/merchant.php
+* url скрипта обработки платежей - <http://вашСайт.ru/assets/components/minishop2/payment/merchant.php>
 * метод формирования ЭЦП - MD5
 
 [![](https://file.modx.pro/files/b/9/e/b9e48fff678a34edf5bdc979f8f5e96fs.jpg)](https://file.modx.pro/files/b/9/e/b9e48fff678a34edf5bdc979f8f5e96f.png)
 [![](https://file.modx.pro/files/6/5/3/6534da24de0b37e9afe5490684bac371s.jpg)](https://file.modx.pro/files/6/5/3/6534da24de0b37e9afe5490684bac371.png)
 
-
-### Настройка MODX
+## Настройка MODX
 
 В MODX вам нужно настроить следующие параметры (находятся в разделе "Платежи Единая Касса" пространства имен minishop2):
 
