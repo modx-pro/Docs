@@ -53,6 +53,7 @@ It is recommended to call this snippet in junction with the others on ordering p
 
 ## Writing letters
 This snippet  is used by miniShop2 class for writing mail notification to customers, if you switch on such sending in [status settings][3].
+All `msGetOrder` snippet variables: **order**, **products**, **user**, **address**, **delivery**, **payment** and **total** are also available in letters of mail notifications.
 
 All the letters expand single basic mail template **tpl.msEmail** and change its blocks by default:
 - **logo** - logo of the shop with home page reference
