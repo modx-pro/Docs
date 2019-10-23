@@ -64,7 +64,7 @@
 <div class="js-ym2-mse2-objects" style="display:none">{'!YandexMaps2' | snippet : [
     'parent' => $id,
     'scripts' => false,
-    'tpl' => '@INLINE {($objects | toJSON : 9) | replace : "[" : "[ "}',
+    'tpl' => '@INLINE {(($objects | toJSON: 9) | replace: "{": "{ ") | replace: "[": "[ "}',
 ]}</div>
 
 <!--msearch2_weight  ([[%mse2_weight]]: [[+weight]])-->
@@ -130,6 +130,6 @@
 {'!YandexMaps2' | snippet : [
     'parent' => $id,
     'scripts' => false,
-    'tpl' => '@INLINE {($objects | toJSON : 9) | replace : "[" : "[ "}',
+    'tpl' => '@INLINE {(($objects | toJSON: 9) | replace: "{": "{ ") | replace: "[": "[ "}',
 ]}
 ```
