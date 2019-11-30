@@ -67,6 +67,49 @@
 ]]
 ```
 
+Генерация микроразметки [Schema.org](http://Schema.org) в JSON-LD формате
+
+```php
+{'!pdoCrumbs' | snippet : [
+    'showHome' => 1,
+    'tplWrapper' => '@INLINE <script type="application/ld+json">
+{
+ "@context": "http://schema.org",
+ "@type": "BreadcrumbList",
+ "itemListElement":
+[ {$output} ]
+}
+</script>'
+    'tplHome' => '@INLINE {
+   "@type": "ListItem",
+   "position": {$idx},
+   "item":
+   {
+    "@id": "{$link}",
+    "name": "{$menutitle}"
+    }
+  },'
+    'tplCurrent' => '@INLINE {
+   "@type": "ListItem",
+   "position": {$idx},
+   "item":
+   {
+    "@id": "{$link}",
+    "name": "{$menutitle}"
+    }
+  }'
+    'tpl' => '@INLINE {
+   "@type": "ListItem",
+   "position": {$idx},
+   "item":
+   {
+    "@id": "{$link}",
+    "name": "{$menutitle}"
+    }
+  },'
+]}
+```
+
 ## Демо
 
 Рабочий пример [генерации хлебных крошек в результатах поиска][3] mSearch2.
