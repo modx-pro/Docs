@@ -1,4 +1,4 @@
-[![Contributors](https://img.shields.io/github/contributors/modxorg/Docs.svg?style=flat-square)](https://github.com/modxorg/Docs/graphs/contributors)
+[![Contributors](https://img.shields.io/github/contributors/bezumkin/Docs.svg?style=flat-square)](https://github.com/bezumkin/Docs/graphs/contributors)
 ![Last Commit](https://img.shields.io/github/last-commit/bezumkin/Docs.svg?style=flat-square)
 [![LICENSE](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](./license.txt)
 
