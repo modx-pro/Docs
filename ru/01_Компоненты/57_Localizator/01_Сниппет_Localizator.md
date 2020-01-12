@@ -13,7 +13,7 @@
 
 ## Примеры
 
-Вывод через pdoMenu
+### Вывод через pdoMenu
 
 ```php
 {'Localizator' | snippet : [
@@ -25,7 +25,7 @@
 ]}
 ```
 
-Вывод ресурсов через pdoPage
+### Вывод ресурсов через pdoPage
 
 ```php
 <div id="pdopage">
@@ -40,7 +40,7 @@
 </div>
 ```
 
-Вывод ресурсов через mFilter2
+### Вывод ресурсов через mFilter2
 
 ```php
 {'!mFilter2' | snippet : [
@@ -49,7 +49,17 @@
 ]}
 ```
 
-Использование для поиска и вывода товаров вместе с msProducts:
+### Вывод товаров через mFilter2
+
+```php
+{'!mFilter2' | snippet : [
+    'element' => 'Localizator',
+    'snippet' => 'msProducts',
+    'parents' => 0,
+]}
+```
+
+### Использование для поиска и вывода товаров вместе с msProducts:
 
 ```php
 [[!pdoPage?
@@ -60,7 +70,7 @@
 ]]
 ```
 
-Получение и вывод `pagetitle` от другого ресурса:
+### Получение и вывод `pagetitle` от другого ресурса:
 
 ``` php
 {'pdoResources' | snippet : [
@@ -78,8 +88,7 @@
 Где:
 `resource_id` - ID ресурса
 
-
-Получение и вывод TV от другого ресурса:
+### Получение и вывод TV от другого ресурса
 
 ``` php
 {'pdoResources' | snippet : [
@@ -96,10 +105,32 @@
 ```
 
 Где:
-`tmplvarid` - ID TV поля
-`contentid` - ID ресурса
 
-Использование совместно с `clientconfig`:
+- `tmplvarid` - ID TV поля
+- `contentid` - ID ресурса
+
+### Получение и вывод значений MIGX от другого ресурса
+
+``` php
+{foreach ('!pdoResources' | snippet : [
+    'tpl' => '@INLINE {$value | toJSON}',
+    'class' => 'locTemplateVarResource',
+    'sortby' => 'id',
+    'showLog' => 0,
+    'limit' => 1,
+    'where' => [
+        'key' => ('localizator_key' | option),
+        'tmplvarid' => 30,
+        'contentid' => $_modx->resource.parent,
+    ],
+]) | fromJSON as $spec}
+    <div class="product-spec-btn">
+        <a class="btn" href="{$spec.download_data_sheet}" download>{'download_data_sheet' | lexicon}</a>
+    </div>
+{/foreach}
+```
+
+### Использование совместно с `clientconfig`
 
 - Создаем два параметра, например:
 `work_clock_1_ru` и `work_clock_1_en`
@@ -110,7 +141,7 @@
 {('work_clock_1_' ~ $key) | option}
 ```
 
-Проверка отображаемой локализации и замена лого или ссылки (для примера):
+### Проверка отображаемой локализации и замена лого или ссылки (для примера)
 
 ``` php
 {if $_modx->config.cultureKey != 'ru'}

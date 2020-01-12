@@ -54,6 +54,21 @@
 ]]
 ```
 
+Получение соседних товаров с выводом превью:
+
+``` php
+{'!pdoNeighbors' | snippet : [
+    'snippet' => 'msProducts',
+    'sortby' => 'publishedon',
+    'sortdir' => 'ASC',
+    'leftJoin' => '{ "thumbs": { "class":"msProductData","alias":"thumbs", "on": "thumbs.id = modResource.id" }}',
+    'select' => '{ "thumbs":"thumbs.thumb as small" }',
+    'tplWrapper' => '@INLINE {$prev}',
+    'tplPrev' => '@FILE chunks/product/item_prev.tpl',
+]}
+
+```
+
 [![](https://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26s.jpg)](https://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26.png)
 
 [1]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
