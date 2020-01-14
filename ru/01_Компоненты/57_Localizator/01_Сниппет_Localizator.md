@@ -70,9 +70,9 @@
 ]]
 ```
 
-### Получение и вывод `pagetitle` от другого ресурса:
+### Получение и вывод `pagetitle` от другого ресурса
 
-``` php
+```php
 {'pdoResources' | snippet : [
     'tpl' => '@INLINE {$pagetitle}',
     'class' => 'localizatorContent',
@@ -90,7 +90,7 @@
 
 ### Получение и вывод TV от другого ресурса
 
-``` php
+```php
 {'pdoResources' | snippet : [
     'tpl' => '@INLINE {$value}',
     'class' => 'locTemplateVarResource',
@@ -109,9 +109,10 @@
 - `tmplvarid` - ID TV поля
 - `contentid` - ID ресурса
 
-**С помощью модификатора locfield**
-``` php
-{1|locfield:'tvname'}
+### Получение и вывод TV от другого ресурса помощью модификатора locfield
+
+```php
+{1 | locfield:'tvname'}
 ```
 
 Где:
@@ -119,10 +120,9 @@
 - `1` - ID ресурса
 - `tvname` - Наименование TV поля
 
-
 ### Получение и вывод значений MIGX от другого ресурса
 
-``` php
+```php
 {foreach ('!pdoResources' | snippet : [
     'tpl' => '@INLINE {$value | toJSON}',
     'class' => 'locTemplateVarResource',
@@ -144,21 +144,22 @@
 ### Использование совместно с `clientconfig`
 
 - Создаем два параметра, например:
-`work_clock_1_ru` и `work_clock_1_en`
+    `work_clock_1_ru` и `work_clock_1_en`
+
 - Выводим в нужном месте:
 
-``` php
+```php
 {var $key = ('localizator_key' | option)}
 {('work_clock_1_' ~ $key) | option}
 ```
 
 ### Проверка отображаемой локализации и замена лого или ссылки (для примера)
 
-``` php
+```php
 {if $_modx->config.cultureKey != 'ru'}
 <a class="header-logo" href="/" aria-label="{$_modx->config.site_name}">
     <img src="/assets/images/general/logo_ru.png" alt="{$_modx->resource.pagetitle}">
-</a>  
+</a>
 {else}
 <a class="header-logo" href="/ru/" aria-label="{$_modx->resource.pagetitle}">
     <img src="/assets/images/general/logo.png" alt="">
