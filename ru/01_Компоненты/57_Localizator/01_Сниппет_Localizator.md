@@ -1,4 +1,4 @@
-Сниппет предназначен для вывода переведенных в локализаторе ресурсов.
+# Сниппет предназначен для вывода переведенных в локализаторе ресурсов
 
 ## Параметры
 
@@ -59,7 +59,7 @@
 ]}
 ```
 
-### Использование для поиска и вывода товаров вместе с msProducts:
+### Использование для поиска и вывода товаров вместе с msProducts
 
 ```php
 [[!pdoPage?
@@ -106,8 +106,8 @@
 
 Где:
 
-- `tmplvarid` - ID TV поля
-- `contentid` - ID ресурса
+-   `tmplvarid` - ID TV поля
+-   `contentid` - ID ресурса
 
 ### Получение и вывод TV от другого ресурса помощью модификатора locfield
 
@@ -117,8 +117,8 @@
 
 Где:
 
-- `1` - ID ресурса
-- `tvname` - Наименование TV поля
+-   `1` - ID ресурса
+-   `tvname` - Наименование TV поля
 
 ### Получение и вывод значений MIGX от другого ресурса
 
@@ -143,26 +143,24 @@
 
 ### Использование совместно с `clientconfig`
 
-- Создаем два параметра, например:
+-   Создаем два параметра, например:
     `work_clock_1_ru` и `work_clock_1_en`
 
-- Выводим в нужном месте:
+-   Выводим в нужном месте:
 
 ```php
 {var $key = ('localizator_key' | option)}
 {('work_clock_1_' ~ $key) | option}
 ```
 
-### Проверка отображаемой локализации и замена лого или ссылки (для примера)
+### Проверка отображаемой локализации и замена лого
 
 ```php
-{if $_modx->config.cultureKey != 'ru'}
-<a class="header-logo" href="/" aria-label="{$_modx->config.site_name}">
+<a class="header-logo" href="{'site_start' | config}" aria-label="{'site_name' | config}">
+    {if $_modx->config.cultureKey == 'ru'}
     <img src="/assets/images/general/logo_ru.png" alt="{$_modx->resource.pagetitle}">
+    {else}
+    <img src="/assets/images/general/logo.png" alt="{$_modx->resource.pagetitle}">
+    {/if}
 </a>
-{else}
-<a class="header-logo" href="/ru/" aria-label="{$_modx->resource.pagetitle}">
-    <img src="/assets/images/general/logo.png" alt="">
-</a>
-{/if}
 ```
