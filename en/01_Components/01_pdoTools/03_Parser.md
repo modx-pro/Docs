@@ -113,7 +113,7 @@ Fenom works with MODX in two modes: only in chunks and site-wide. First mode ena
 
 You could use Fenom syntax along with MODX:
 ```
-{$_modx->isAuthenticated($_modx->content.key)}
+{if $_modx->isAuthenticated($_modx->context.key)}
     Hello, {$_modx->user.fullname}!
 {else}
     [[Login?params...]]
