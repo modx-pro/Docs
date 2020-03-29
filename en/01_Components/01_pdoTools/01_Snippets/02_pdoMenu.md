@@ -28,6 +28,7 @@ Name				| Default		| Description
 **&offset**				| 0					| Results skip from the beginning. It should be used with **&limit**
 **&checkPermissions**	|  					| Specify which user permissions to check when listing resources. If no permissions are specified, permissions will not be checked at all. For example, **&checkPermissions=`list`**
 **&countChildren**		| 0					| Count of the number of children of each parent resource and output it to the placeholder `[[+children]]`. It makes additional queries to the database, so is 0 by default.
+**&setTotal** | 0 | Enable calculating all rows, which will also result in the "totalVar" placeholder being set.
 **&toPlaceholder**	|  							| If not empty, the snippet will save its output to a placeholder with the same name, instead of returning the generated menu.
 **&plPrefix**		| wf.						| Prefix for placeholders used in the template chunks
 **&showLog**		| 0							| Show debugging details on the processing of the snippet. Only displayed to logged-in Manager users.
