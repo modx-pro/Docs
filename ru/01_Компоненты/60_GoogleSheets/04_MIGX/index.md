@@ -20,18 +20,19 @@
 
 2.Вам нужно изменить какое-то поле в migx-таблице во всех записях. Для этого будем использовать событие **gsOnExportValues**.
 
-	<?php
-	if($modx->event->name == 'gsOnExportValues') {
-		if($range == 'MIGX') { // range - название листа 
-			$modx->event->params['values'] = array_map(function($value){
-	        if(!empty($value['title'])) {
-	        	// Добавляем к заголовку дату
-	            $value['title'] = $value['title'] . ' ' . $value['date'];
-	        }
-	        return $resource;
-	    },$values);
-		}	
-	}
+```php
+<?php
+if($modx->event->name == 'gsOnExportValues') {
+  if($range == 'MIGX') { // range - название листа 
+    $modx->event->params['values'] = array_map(function($value){
+      if(!empty($value['title'])) {
+        // Добавляем к заголовку дату
+        $value['title'] = $value['title'] . ' ' . $value['date'];
+      }
+      return $resource;
+    },$values);
+  }	
+}
 
 После экспорта проверяем результат в гугл таблице и если все хорошо, то импортируем обратно данные.
 	
