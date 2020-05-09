@@ -50,7 +50,8 @@ rid,article,name,price,modification
 
 1.Выбираем все модификации определенного товара
 
-	<?php
-	if($modx->event->name == 'gsOnBeforeGetOptionsPrice2') {
-		$query->where(array('rid' => 3)); // 3  - id товара			
-	}
+```php
+<?php
+if($modx->event->name == 'gsOnBeforeGetOptionsPrice2') {
+  $query->where(array('rid' => 3)); // 3  - id товара			
+}
