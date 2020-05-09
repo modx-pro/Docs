@@ -31,9 +31,10 @@
 
 ## Пример:
 
-	{'!QuizResult' | snippet: [
-        'quiz' => 1,
-        'tplOuter' => '@INLINE <h3>{$title}</h3><table class="table table-striped">{$wrapper}</table>',
-        'tpl' => '@INLINE <tr><td>{$procent}% {$question}</td><td>{$value}</td></tr>',
-        'tplFooter' => '@INLINE <p>Проголосовали {$total} пользователей</p>'
-    ]}
+```php
+{'!QuizResult' | snippet: [
+  'quiz' => 1,
+  'tplOuter' => '@INLINE <h3>{$title}</h3><table class="table table-striped">{$wrapper}</table>',
+  'tpl' => '@INLINE <tr><td>{$procent}% {$question}</td><td>{$value}</td></tr>',
+  'tplFooter' => '@INLINE <p>Проголосовали {$total} пользователей</p>'
+]}
