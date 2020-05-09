@@ -44,18 +44,19 @@
 
 Реализация:
 
-	<?php
-	if($modx->event->name == 'gsOnBeforeExportValues') {
-		$modx->event->params['values'] = array_map(function($value) use (& $modx){
-	        if(!empty($value['template'])) {
-	        	// Получаем нужный нам шаблон
-	        	if($template = $modx->getObject('modTemplate', $value['template'])) {
-	        		$value['template'] = $template->get('templatename') . ' (' . $value['template'] . ')';
-	        	}
-	        }
-	        return $value;
-	    },$values);	
-	}
+```php
+<?php
+if($modx->event->name == 'gsOnBeforeExportValues') {
+  $modx->event->params['values'] = array_map(function($value) use (& $modx){
+    if(!empty($value['template'])) {
+      // Получаем нужный нам шаблон
+      if($template = $modx->getObject('modTemplate', $value['template'])) {
+        $value['template'] = $template->get('templatename') . ' (' . $value['template'] . ')';
+      }
+    }
+    return $value;
+  },$values);	
+}
 
 Результат:
 
