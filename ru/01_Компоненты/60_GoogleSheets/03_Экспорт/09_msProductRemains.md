@@ -21,7 +21,7 @@
 
 ### 1.Вариант 
 
-**Поля экспорта:** id,product_id,options,remains
+**Поля экспорта:** `id,product_id,options,remains`
 
 **Результат:**
 ![](https://file.modx.pro/files/9/f/5/9f5b5d30d94f6258825b6f5250ddd4bd.jpg)
