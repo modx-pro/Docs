@@ -223,6 +223,54 @@ $manager->unsetCoupon();
 ```
 
 
+### generateCoupon
+
+Генерирует промо-код с кодом в заданном формате `string $format` и с заданными параметрами `array $data`.
+
+Возвращает массив `array` с промо-кодом, если всё прошло успешно. Иначе строку `string` с ошибкой.
+
+```php
+$mspc2 = $modx->getService('mspromocode2', 'msPromoCode2',
+    MODX_CORE_PATH . 'components/mspromocode2/model/mspromocode2/');
+$mspc2->initialize($modx->context->key);
+$manager = $mspc2->getManager();
+
+// Формат промо-кода в виде regex-like синтаксиса
+$format = '[a-zA-Z0-9]{12}';
+
+// Параметры промо-кода
+$data = [
+    // Основное
+    'list' => 'custom-list', // Поле "Список" для промо-кода
+    'count' => 1, // Сколько раз можно применить генерируемый промо-код
+    'discount' => '10%', // Размер скидки для генерируемого промо-кода
+    'description' => '', // Описание промо-кода
+    
+    // Конфиг
+    'showinfo' => true, // Показывать предупреждения
+    'oneunit' => false, // На одну единицу товара
+    'onlycart' => true, // Только в корзине
+    'unsetifnull' => false, // Не применять без скидки
+    'unsetifnull_msg' => '', // Текст при отмене
+    'oldprice' => false, // Без старой цены
+    
+    // Время действия
+    // 'lifetime' => 60 * 20, // В секундах
+    // или
+    // 'startedon' => '', // Начало действия, timestamp
+    // 'stoppedon' => '', // Конец действия, timestamp
+];
+
+//
+$result = $manager->generateCoupon($format, $data);
+if (is_array($result)) {
+    print_r('Сгенерированный промо-код: ' . print_r($result, 1));
+} else {
+    print_r('Ошибка при создании промо-кода: ' . print_r($result, 1));
+}
+```
+
+
 
 ## События плагинов
 
