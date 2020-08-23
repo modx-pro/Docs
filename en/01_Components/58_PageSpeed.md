@@ -9,6 +9,7 @@ This extra is designed for easier integration of PageSpeed Insights optimization
 - Download and cache assets. Add **preconnect** tags.
 - Compute **SRI** hashes for files and add **defer** or **async** attributes to **script** tag.
 - Convert **gif**, **jpg** and **png** images to **webp** format if browser supports it.
+- Apply native lazy loading for **img** and **iframe** elements.
 - Manage and efficiently cache multiple configurations at once.
 - Output [MODX timing tags](https://docs.modx.com/revolution/2.x/making-sites-with-modx/tag-syntax#TagSyntax-Timing) to browser console for members of **Administrator** user group.
 
@@ -30,6 +31,7 @@ This extra is designed for easier integration of PageSpeed Insights optimization
     &defer=`true`
     &integrity=`sha256`
     &lifetime=`604800`
+    &loading=`lazy`
     &minify=`html link script`
     &preconnect=`true`
     &quality=`-1`
@@ -48,7 +50,8 @@ This extra is designed for easier integration of PageSpeed Insights optimization
     &tplLinkPreconnect=`PageSpeed.tplLinkPreconnect`
     &tplLinkStylesheet=`PageSpeed.tplLinkStylesheet`
     &tplScript=`PageSpeed.tplScript`
-]]```
+]]
+```
 
 #### Script properties:
 
@@ -61,9 +64,10 @@ This extra is designed for easier integration of PageSpeed Insights optimization
 | **defer** | Optional. Default is **true**. **Defer** attribute value for **script** subresource. Value is interpreted as a **boolean**. |
 | **integrity** | Optional. Default is **sha256**. Algorithms to use for subresource integrity hashing. Case insensitive. Possible values are: **sha256**, **sha384**, **sha512**, or any their combination. |
 | **lifetime** | Optional. Default is **604800**. Subresource cache lifetime. |
+| **loading** | Optional. Default is **lazy**. **loading** attribute value for **img** and **iframe** tags. Case insensitive. Possible values are: **auto**, **eager**, **lazy**. |
 | **minify** | Optional. Default is **html link script**. Determines types of content that will be minified. Case insensitive. Possible values are: **css**, **css-attr**, **html**, **js**, **js-attr**, **json**, **link**, **script**, or any their combination. <ul><li>**css** - inline CSS.</li><li>**css-attr** - style attributes.</li><li>**html** - HTML content.</li><li>**js** - inline JS.</li><li>**js-attr** - event attributes.</li><li>**json** - inline JSON and JSON+LD microdata.</li><li>**link** - CSS files.</li><li>**script** - JS files.</li></ul> |
 | **preconnect** | Optional. Default is **false**. Enables **preconnect** tag management. Value is interpreted as a **boolean**. |
-| **quality** | Optional. Default is **-1**. Enables convertion of **gif**, **jpg** and **png** images to **webp** format with specified quality. Possible values are integer from **0** to **100**. |
+| **quality** | Optional. Default is **80**. Enables convertion of **gif**, **jpg** and **png** images to **webp** format with specified quality. Possible values are integer from **-1** to **100**, where **-1** stands for disabled. |
 | **subresources** | Optional. Default is built by automatic mode. JSON object, containing information about subresources, their versions and files. Either subresource **URL** or **name** parameter for **cdnjs.com** API is required, while **media** attribute is optional. For **cdnjs.com** API all other properties are replaced by API defaults, if unspecified. |
 | **tplBeacon** | Optional. Default is **PageSpeed.tplBeacon**. Template for critical path CSS beacon. |
 | **tplConsole** | Optional. Default is **PageSpeed.tplConsole**. Template for information in browser console. |
