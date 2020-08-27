@@ -12,7 +12,7 @@ $resources = $pdo->getCollection('modResource', array(
     'parents' => '1,5,6,-9',
     'includeTVs' => 'tv1, tv2',
     'sortby' => 'id',
-    'sortby' => 'asc',
+    'sortdir' => 'asc',
     'limit' => 20,
 ));
 $tpl = '@INLINE <p>[[+id]] - [[+pagetitle]]</p>';
