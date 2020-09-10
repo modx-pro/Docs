@@ -6,7 +6,7 @@ This extra is designed for easier integration of PageSpeed Insights optimization
 - Generate critical path CSS rules. 
 - Handle subresources via **cdnjs.com** API and download **Google Fonts**.
 - Merge and minify styles, scripts and JSON. Minify HTML content.
-- Download and cache assets. Add **preconnect** tags.
+- Download and cache assets.
 - Compute **SRI** hashes for files and add **defer** or **async** attributes to **script** tag.
 - Convert **gif**, **jpg** and **png** images to **webp** format if browser supports it.
 - Apply native lazy loading for **img** and **iframe** elements.
@@ -24,8 +24,8 @@ This extra is designed for easier integration of PageSpeed Insights optimization
 
 ``` php
 [[!PageSpeed?
-    &assets=`true`
     &async=`false`
+    &convert=`static`
     &critical=`true`
     &crossorigin=`anonymous`
     &defer=`true`
@@ -33,22 +33,20 @@ This extra is designed for easier integration of PageSpeed Insights optimization
     &lifetime=`604800`
     &loading=`lazy`
     &minify=`html link script`
-    &preconnect=`true`
-    &quality=`-1`
+    &quality=`80`
     &subresources=`{
         "link" : [
             { "name" : "", "version" : "", "filename" : "", "media" : "" },
             { "url" : "", "media" : "" }
         ],
         "script" : [
-            { "name" : "", "version" : "", "filename" : "", "media" : "" },
-            { "url" : "", "media" : "" }
+            { "name" : "", "version" : "", "filename" : "" },
+            { "url" : "" }
         ]
     }`
     &tplBeacon=`PageSpeed.tplBeacon`
     &tplConsole=`PageSpeed.tplConsole`
-    &tplLinkPreconnect=`PageSpeed.tplLinkPreconnect`
-    &tplLinkStylesheet=`PageSpeed.tplLinkStylesheet`
+    &tplLink=`PageSpeed.tplLink`
     &tplScript=`PageSpeed.tplScript`
 ]]
 ```
@@ -57,32 +55,23 @@ This extra is designed for easier integration of PageSpeed Insights optimization
 
 | Property | Description |
 | ------------- | ------------- |
-| **assets** | Optional. Default is **true**. Enables CSS assets download. Value is interpreted as a **boolean**. |
 | **async** | Optional. Default is **false**. **Async** attribute value for **script** subresource. Value is interpreted as a **boolean**. |
+| **convert** | Optional. Default is **static**. Enables convertion of **gif**, **jpg** and **png** images to **webp** format with specified quality. Case insensitive. Possible values are: **disable**, **dynamic**, **static**. <ul><li>**disable** - images are not converted.</li><li>**dynamic** - images are not cached after convertsion. Requires additional CPU resources.</li><li>**static** - images are cached after conversion. Requires additional free space.</li></ul> |
 | **critical** | Optional. Default is **true**. Enables critical path CSS generator. Value is interpreted as a **boolean**. |
 | **crossorigin** | Optional. Default is **anonymous**. **Crossorigin** attribute value for subresource. Case insensitive. Possible values are: **anonymous**, **use-credentials**. |
 | **defer** | Optional. Default is **true**. **Defer** attribute value for **script** subresource. Value is interpreted as a **boolean**. |
 | **integrity** | Optional. Default is **sha256**. Algorithms to use for subresource integrity hashing. Case insensitive. Possible values are: **sha256**, **sha384**, **sha512**, or any their combination. |
 | **lifetime** | Optional. Default is **604800**. Subresource cache lifetime. |
 | **loading** | Optional. Default is **lazy**. **loading** attribute value for **img** and **iframe** tags. Case insensitive. Possible values are: **auto**, **eager**, **lazy**. |
-| **minify** | Optional. Default is **html link script**. Determines types of content that will be minified. Case insensitive. Possible values are: **css**, **css-attr**, **html**, **js**, **js-attr**, **json**, **link**, **script**, or any their combination. <ul><li>**css** - inline CSS.</li><li>**css-attr** - style attributes.</li><li>**html** - HTML content.</li><li>**js** - inline JS.</li><li>**js-attr** - event attributes.</li><li>**json** - inline JSON and JSON+LD microdata.</li><li>**link** - CSS files.</li><li>**script** - JS files.</li></ul> |
-| **preconnect** | Optional. Default is **false**. Enables **preconnect** tag management. Value is interpreted as a **boolean**. |
-| **quality** | Optional. Default is **80**. Enables convertion of **gif**, **jpg** and **png** images to **webp** format with specified quality. Possible values are integer from **-1** to **100**, where **-1** stands for disabled. |
+| **minify** | Optional. Default is **html link script**. Determines types of content that will be minified. Case insensitive. Possible values are: **css**, **html**, **js**, **json**, **link**, **script**, or any their combination. <ul><li>**css** - inline CSS.</li><li>**html** - HTML content.</li><li>**js** - inline JS.</li><li>**json** - inline JSON and JSON+LD microdata.</li><li>**link** - CSS files.</li><li>**script** - JS files.</li></ul> |
+| **quality** | Optional. Default is **80**. Quality of converted **webp** images. Possible values are integer from **0** to **100**. |
 | **subresources** | Optional. Default is built by automatic mode. JSON object, containing information about subresources, their versions and files. Either subresource **URL** or **name** parameter for **cdnjs.com** API is required, while **media** attribute is optional. For **cdnjs.com** API all other properties are replaced by API defaults, if unspecified. |
 | **tplBeacon** | Optional. Default is **PageSpeed.tplBeacon**. Template for critical path CSS beacon. |
 | **tplConsole** | Optional. Default is **PageSpeed.tplConsole**. Template for information in browser console. |
-| **tplLinkPreconnect** | Optional. Default is **PageSpeed.tplLinkPreconnect**. Template for **link** tags with **preconnect** attribute. |
-| **tplLinkStylesheet** | Optional. Default is **PageSpeed.tplLinkStylesheet**. Template for **link** tags with **stylesheet** attribute. |
+| **tplLink** | Optional. Default is **PageSpeed.tplLink**. Template for **link** tags. |
 | **tplScript** | Optional. Default is **PageSpeed.tplScript**. Template for **script** tags. |
 
 #### Examples:
-
-**Automatic** processing mode without local assets cache:
-``` php
-[[!PageSpeed?
-    &assets=`false`
-]]
-```
 
 Most recent **jQuery** with **daily** updates from **jsdelivr.net**:
 ``` php
@@ -115,4 +104,4 @@ Most recent **Bootstrap** with **defer** attribute for **script** subresources a
 
 #### Notes:
 
-Simultaneous execution is prevented by [System V Semaphores](https://www.php.net/manual/en/book.sem.php) extension. Cache can be refreshed manually from **Manage** / **Clear Cache** / **PageSpeed** menu. When using automatic conversion of **gif**, **jpg** and **png** images to **webp** format make sure to have **80%** more free space for cache. Automatic mode can not and will not handle any MODX confiuration ever by itself. This extra uses a [Minify](https://github.com/matthiasmullie/minify) library.
+Simultaneous execution is prevented by [System V Semaphores](https://www.php.net/manual/en/book.sem.php) extension. Cache can be refreshed manually from **Manage** / **Clear Cache** / **PageSpeed** menu. Automatic mode can not and will not handle any MODX confiuration ever by itself. This extra uses a [Minify](https://github.com/matthiasmullie/minify) library.
