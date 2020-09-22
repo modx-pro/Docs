@@ -1,30 +1,49 @@
 # Атрибут hreflang для мультиязычных сайтов
 
-Добавляем в `head` сайта
+Создаем сниппет `hreflang` и вставляем следующий код:
 
-``` php
-{set $prefix = ['/uk/', '/ua/', '/ru/', '/en/']}
-{$_modx->runSnippet('!pdoResources', [
+```php
+<?php
+$output = "";
+$default = "ua"; // Указываем язык по умолчанию
+$id = $modx->resource->get('id');
+$start = $modx->getOption('site_start');
+$protocol = $modx->getOption('server_protocol').'://';
+
+$resources = $modx->runSnippet('pdoResources', [
     'loadModels' => 'localizator',
     'class' => 'localizatorLanguage',
     'sortby' => 'id',
     'limit' => '0',
     'sortdir' => 'asc',
     'where' => ['active' => 1],
-    'tpl' => '@FILE chunks/main/langsHead.html',
-])}
+    'return' => 'json',
+]);
+
+if($resources) {
+    $resources = json_decode($resources);
+    foreach($resources as $resource) {
+
+        $key = $resource->key;
+        if($id != $start) {
+            $url = $resource->http_host.$modx->makeUrl($id);
+        } else {
+            $url = $resource->http_host;
+        }
+        if($key == $default) {
+            $output .= "<link rel='alternate' hreflang='x-default' href='{$protocol}{$resource->http_host}' />";
+        }
+        $output .= "<link rel='alternate' hreflang='{$key}' href='{$protocol}{$url}'>";
+    }
+}
+
+return $output;
 ```
 
-```html
-<link rel="alternate" hreflang="x-default" href="{$_modx->makeUrl($_modx->resource.id, '', '', 'full') | replace : $prefix : '/'}" />
-```
+Вызываем в `head`  
 
-## Chunk LangsHead.html
-
-``` php
-{set $prefix = $key ~ '/'}
-{set $langs = ['ru/', 'ua/', 'en/']}
-<link rel="alternate" hreflang="{$cultureKey}" href="{$_modx->config.site_url | replace : $langs : ''}{$prefix | replace : 'ua/' : ''}{if $_modx->resource.id != 1}{$_modx->resource.id | url}{/if}"/>
+```php
+{'!hreflangs' | snippet : []}
 ```
 
 ## Результат
