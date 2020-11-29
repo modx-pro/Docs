@@ -521,6 +521,33 @@ $(document).on('mse2_load', function(e, data) {
 
 Вы можете использовать это событие для дополнительной обработки значений фильтра.
 
+Уменьшаем прозрачность карточек товара, в начале фильтрации и делаем не прозрачными после фильтрации
+
+``` javascript
+{$_modx->regClientScript('
+  <script>
+    mSearch2.defaultBeforeLoad = mSearch2.beforeLoad;
+    mSearch2.defaultAfterLoad = mSearch2.afterLoad;
+
+    mSearch2.beforeLoad = function() {
+        mSearch2.defaultBeforeLoad();
+        this.filters.css({
+            opacity: .5,
+            pointerEvents: "none",
+        });
+    };
+
+    mSearch2.afterLoad = function() {
+        mSearch2.defaultAfterLoad();
+        this.filters.css({
+            opacity: 1,
+            pointerEvents: "auto",
+        });
+    };
+  </script>
+', true)}
+```
+
 ## Лексиконы
 
 Для оформления фильтров используются записи из лексикона.

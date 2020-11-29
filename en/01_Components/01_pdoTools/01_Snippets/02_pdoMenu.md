@@ -28,6 +28,7 @@ Name				| Default		| Description
 **&offset**				| 0					| Results skip from the beginning. It should be used with **&limit**
 **&checkPermissions**	|  					| Specify which user permissions to check when listing resources. If no permissions are specified, permissions will not be checked at all. For example, **&checkPermissions=`list`**
 **&countChildren**		| 0					| Count of the number of children of each parent resource and output it to the placeholder `[[+children]]`. It makes additional queries to the database, so is 0 by default.
+**&setTotal** | 0 | Enable calculating all rows, which will also result in the "totalVar" placeholder being set.
 **&toPlaceholder**	|  							| If not empty, the snippet will save its output to a placeholder with the same name, instead of returning the generated menu.
 **&plPrefix**		| wf.						| Prefix for placeholders used in the template chunks
 **&showLog**		| 0							| Show debugging details on the processing of the snippet. Only displayed to logged-in Manager users.
@@ -39,6 +40,8 @@ Name				| Default		| Description
 **&rowIdPrefix**	|  							|  If set, this parameter creates a unique ID for each item. The value will be rowIdPrefix + docId.
 **&hereId**			|  							| Define the current ID to use for the snippet. Use a value of `[[*id]]` if the template specified by **&tplHere** and **&tplParentRowActive** is not applied correctly to the menu item.
 **&includeTVs**			|  							| Define comma delimited list of TVs to include. For example, «action,time» will yiled placeholders `[[+action]]` & `[[+time]]`
+**&prepareTVs**				| «1», prepares all TVs specified in **&includeTVs**	|  Comma-separated list of media source-dependant TV values to be prepared before output.
+**&processTVs**				|  																	| Comma-separated list of TVs that should be processed according to their output options. If set to «1», all TV listed in **&includeTVs** will be processed.
 **&tvPrefix**			|  							| Prefix TV property.
 
 ### Template Properties

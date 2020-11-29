@@ -1,27 +1,34 @@
-## Сохранение данных с формы
+# GoogleSheetsSaveForm
 
- - Добавляем хук **GoogleSheetsSaveForm**
- - Добавляем параметр **formFields** - список полей, которые нужно сохранить, через запятую.
- - Указываем таблицу, куда будем сохранять данные:
-    - Добавляем адрес(url) таблицы в системную настройку **googlesheets_form_table** или в параметр **gsUri** (**googleSheetsUri**) сниппета AjaxForm(FormIt).
-    - Добавляем название листа таблицы в системную настройку **googlesheets_form_range** или в параметр **gsRange** (**googleSheetsRange**) сниппета AjaxForm(FormIt).
- - Добавляем список полей в системную настройку **googlesheets_form_fields** или в параметр **gsFields** (**googleSheetsFields**), которые находятся в гугл таблице, по порядку и через запятую. Для пропуска поля в таблице использовать слово *ignore* или пустое значение
+Сохраняет данные с формы в таблицу.
 
+## Настройка
+
+-   Добавляем хук **GoogleSheetsSaveForm**
+
+Дополнительные параметры:
+
+| Имя            | Описание                                        | По умолчанию                                 |
+| -------------- | ----------------------------------------------- | -------------------------------------------- |
+| **formFields** | Cписок полей, которые нужно сохранить           |                                              |
+| **gsUri**      | URL таблицы.                                    | Сис. настройка: **googlesheets_form_table**  |
+| **gsRange**    | Имя листа.                                      | Сис. настройка:: **googlesheets_form_range** |
+| **gsFields**   | Список полей, которые находятся в гугл таблице. | Сис. настройка: **googlesheets_form_fields** |
 
 ## Примеры:
+
 1.Будут сохранены поля **name, email, message** в таблицу, которая указанная в системной настройке **googlesheets_form_table** в лист, который указан в системной настройке **googlesheets_form_range**
 
-``` php
+```php
 [[!AjaxForm?
     &hooks = `spam,email,GoogleSheetsSaveForm`
     &formFields = `name,email,message`
 ]]
 ```
 
-
 2.Будут сохранены поля **name, email, message** в таблицу, которая указанная в системной настройке **googlesheets_form_table** в лист, который указан в параметре **gsRange**.
 
-``` php
+```php
 [[!AjaxForm?
     &hooks = `spam,email,GoogleSheetsSaveForm`
     &formFields = `name,email,message`
@@ -29,10 +36,9 @@
 ]]
 ```
 
-
 3.Будут сохранены поля **name, email, message** в таблицу, которая указанная в параметре **gsUri** в лист, который указан в параметре **gsRange**.
 
-``` php
+```php
 [[!AjaxForm?
     &hooks = `spam,email,GoogleSheetsSaveForm`
     &formFields = `name,email,message`

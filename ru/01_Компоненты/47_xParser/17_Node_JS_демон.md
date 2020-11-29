@@ -26,14 +26,14 @@ npm install xparser-daemon
 
 #### Настройка
 
-Установите порт для сокета, на котором будет крутиться демон, в файле `src/config.js`:
+Создайте файл `app.js` в папке демона и установите порт для сокета, на котором будет крутиться демон:
 
 ```js
-module.exports = {
+require('xparser-daemon').run({
     socket: {
         PORT: 3007,
     },
-};
+});
 ```
 
 
@@ -47,7 +47,7 @@ npm install pm2 -g
 Запустите демон через pm2:
 
 ```bash
-pm2 start src/index.js --name=xParserDaemon
+pm2 start app.js --name=xParserDaemon
 ```
 
 
