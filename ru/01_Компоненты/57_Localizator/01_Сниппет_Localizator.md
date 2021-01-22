@@ -143,10 +143,10 @@
 
 ### Использование совместно с `clientconfig`
 
--   Создаем два параметра, например:
+- Создаем два параметра, например:
     `work_clock_1_ru` и `work_clock_1_en`
 
--   Выводим в нужном месте:
+- Выводим в нужном месте:
 
 ```php
 {var $key = ('localizator_key' | option)}
@@ -163,4 +163,14 @@
     <img src="/assets/images/general/logo.png" alt="{$_modx->resource.pagetitle}">
     {/if}
 </a>
+```
+
+### Вывод корзины msCart
+
+``` php
+{'!Localizator' | snippet : [
+    'snippet' => 'msCart',
+    'class' => 'msProduct',
+    'tpl' => '@FILE chunks/_checkout.cart.tpl',
+]}
 ```
