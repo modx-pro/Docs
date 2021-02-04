@@ -19,7 +19,7 @@ $orders = $modRetailCrm->request->ordersList(array('externalIds' => [100]), 1, 2
 Таким образом можем получить все заказы одного клиента.
 
 ```php
-$orders = $modRetailCrm->request->ordersList(array('email' => 'info@megawebs.kz'), 1, 20);
+$orders = $modRetailCrm->request->ordersList(array('email' => 'info@site.ru'), 1, 20);
 ```
 
 ### Пример поиска заказа по дате
