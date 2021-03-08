@@ -121,13 +121,13 @@
 #### Примечания:
 
 Автоматический режим не может и не будет самостоятельно работать на любой конфигурации MODX.
+
 Кэш можно очистить вручную в меню **Управление** / **Очистить кэш** / **PageSpeed**.
-Для **AjaxForm** необходимо добавить следующие скрипты после **jQuery**. Этот пример для автоматического режима:
-``` php
-&lt;script src="[[++assets_url]]components/ajaxform/js/lib/jquery.form.min.js"&gt;&lt;/script&gt;
-&lt;script src="[[++assets_url]]components/ajaxform/js/lib/jquery.jgrowl.min.js"&gt;&lt;/script&gt;
-```
+
 Для ручного режима их нужно добавить в секцию **script** параметра **subresources**.
+
 Обработка анимированных **gif** изображений взможна после установки дополнения [Image Processing (ImageMagick)](https://www.php.net/manual/en/book.imagick.php) для PHP.
+
 Одновременное выполнение возможно предотвратить установив дополнение [Semaphore, Shared Memory and IPC](https://www.php.net/manual/en/book.sem.php) для PHP.
-Это дополнение использует библиотеку [Minify](https://github.com/matthiasmullie/minify).
+
+Это дополнение использует [PHP CSS Parser](https://github.com/sabberworm/PHP-CSS-Parser/) и [Minify](https://github.com/matthiasmullie/minify).
