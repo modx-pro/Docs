@@ -29,6 +29,7 @@
 Это **не** пример рабочей конфигурации, а обзор всех доступных параметров.
 ``` php
 [[!PageSpeed?
+    &bundle=`link script`
     &convert=`static`
     &critical=`true`
     &crossorigin=`anonymous`
@@ -42,12 +43,12 @@
     &script=`defer`
     &subresources=`{
         "link" : [
-            { "name" : "", "version" : "", "filename" : "", "media" : "" },
-            { "url" : "", "media" : "" }
+            { "name" : "", "version" : "", "filename" : "", "crossorigin" : "", "integrity" : "", "media" : "" },
+            { "url" : "", "crossorigin" : "", "integrity" : "", "media" : "" }
         ],
         "script" : [
-            { "name" : "", "version" : "", "filename" : "" },
-            { "url" : "" }
+            { "name" : "", "version" : "", "filename" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" },
+            { "url" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" }
         ]
     }`
 ]]
@@ -57,6 +58,7 @@
 
 | Параметр | Описание |
 | ------------- | ------------- |
+| **bundle** | Не обязательный. По-умолчанию **link script**. Определяет типы контента, которые будут связаны в один файл. Не чувствителен к регистру. Возможные значения: **link**, **script**, любая их комбинация или пустое значение. <ul><li>**link** - CSS файлы.</li><li>**script** - JS файлы.</li></ul> |
 | **convert** | Не обязательный. По-умолчанию **static**. Отвечает за конвертирование **gif**, **jpg** и **png** изображений в формат **webp** с указанным качеством. Не чувствителен к регистру. Возможные значения: **disable**, **dynamic**, **static**. <ul><li>**disable** - изображения не конвертируются.</li><li>**dynamic** - изображения не кешируются после конвертации. Потребляет больше ресурсов CPU.</li><li>**static** - изображения кешируются после конвертации. Потребляет больше свободного места.</li></ul> |
 | **critical** | Не обязательный. По-умолчанию **true**. Отвечает за генератор критических стилей. Интерпретируется как **boolean**. |
 | **crossorigin** | Не обязательный. По-умолчанию **anonymous**. Значения аттрибута **crossorigin** для всех ресурсов. Не чувствителен к регистру. Возможные значения: **anonymous**, **use-credentials**, или пустое значение. |
@@ -121,13 +123,13 @@
 #### Примечания:
 
 Автоматический режим не может и не будет самостоятельно работать на любой конфигурации MODX.
+
 Кэш можно очистить вручную в меню **Управление** / **Очистить кэш** / **PageSpeed**.
-Для **AjaxForm** необходимо добавить следующие скрипты после **jQuery**. Этот пример для автоматического режима:
-``` php
-&lt;script src="[[++assets_url]]components/ajaxform/js/lib/jquery.form.min.js"&gt;&lt;/script&gt;
-&lt;script src="[[++assets_url]]components/ajaxform/js/lib/jquery.jgrowl.min.js"&gt;&lt;/script&gt;
-```
+
 Для ручного режима их нужно добавить в секцию **script** параметра **subresources**.
+
 Обработка анимированных **gif** изображений взможна после установки дополнения [Image Processing (ImageMagick)](https://www.php.net/manual/en/book.imagick.php) для PHP.
+
 Одновременное выполнение возможно предотвратить установив дополнение [Semaphore, Shared Memory and IPC](https://www.php.net/manual/en/book.sem.php) для PHP.
-Это дополнение использует библиотеку [Minify](https://github.com/matthiasmullie/minify).
+
+Это дополнение использует [PHP CSS Parser](https://github.com/sabberworm/PHP-CSS-Parser/) и [Minify](https://github.com/matthiasmullie/minify).
