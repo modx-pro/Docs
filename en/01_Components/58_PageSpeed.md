@@ -43,8 +43,8 @@ This is **not** a working configuration example, but an overview of all availabl
     &script=`defer`
     &subresources=`{
         "link" : [
-            { "name" : "", "version" : "", "filename" : "", "crossorigin" : "", "integrity" : "", media" : "" },
-            { "url" : "", "crossorigin" : "", "integrity" : "", media" : "" }
+            { "name" : "", "version" : "", "filename" : "", "crossorigin" : "", "integrity" : "", "media" : "" },
+            { "url" : "", "crossorigin" : "", "integrity" : "", "media" : "" }
         ],
         "script" : [
             { "name" : "", "version" : "", "filename" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" },
