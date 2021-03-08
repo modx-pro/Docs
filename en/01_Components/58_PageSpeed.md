@@ -29,6 +29,7 @@ You can buy this extra on [Modstore](https://en.modstore.pro/packages/utilities/
 This is **not** a working configuration example, but an overview of all available properties.
 ``` php
 [[!PageSpeed?
+    &bundle=`link script`
     &convert=`static`
     &critical=`true`
     &crossorigin=`anonymous`
@@ -42,12 +43,12 @@ This is **not** a working configuration example, but an overview of all availabl
     &script=`defer`
     &subresources=`{
         "link" : [
-            { "name" : "", "version" : "", "filename" : "", "media" : "" },
-            { "url" : "", "media" : "" }
+            { "name" : "", "version" : "", "filename" : "", "crossorigin" : "", "integrity" : "", media" : "" },
+            { "url" : "", "crossorigin" : "", "integrity" : "", media" : "" }
         ],
         "script" : [
-            { "name" : "", "version" : "", "filename" : "" },
-            { "url" : "" }
+            { "name" : "", "version" : "", "filename" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" },
+            { "url" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" }
         ]
     }`
 ]]
@@ -57,6 +58,7 @@ This is **not** a working configuration example, but an overview of all availabl
 
 | Property | Description |
 | ------------- | ------------- |
+| **bundle** | Optional. Default is **link script**. Determines types of content that will be bundled into one file. Case insensitive. Possible values are: **link**, **script**, any their combination or empty value. <ul><li>**link** - CSS files.</li><li>**script** - JS files.</li></ul> |
 | **convert** | Optional. Default is **static**. Enables convertion of **gif**, **jpg** and **png** images to **webp** format with specified quality. Case insensitive. Possible values are: **disable**, **dynamic**, **static**. <ul><li>**disable** - images are not converted.</li><li>**dynamic** - images are not cached after convertsion. Requires additional CPU resources.</li><li>**static** - images are cached after conversion. Requires additional free space.</li></ul> |
 | **critical** | Optional. Default is **true**. Enables critical path CSS generator. Value is interpreted as a **boolean**. |
 | **crossorigin** | Optional. Default is **anonymous**. **Crossorigin** attribute value for subresource. Case insensitive. Possible values are: **anonymous**, **use-credentials**, or empty value. |
@@ -122,13 +124,13 @@ Appending custom **inline** style or script can be done with **PHx**. Please not
 #### Notes:
 
 Automatic mode can not and will not handle any MODX confiuration ever by itself.
+
 Cache can be refreshed manually from **Manage** / **Clear Cache** / **PageSpeed** menu.
-For **AjaxForm** extra you need to add the following scripts after **jQuery**. This exaple is for automatic mode:
-``` php
-&lt;script src="[[++assets_url]]components/ajaxform/js/lib/jquery.form.min.js"&gt;&lt;/script&gt;
-&lt;script src="[[++assets_url]]components/ajaxform/js/lib/jquery.jgrowl.min.js"&gt;&lt;/script&gt;
-```
+
 For manual configuration you should add them to **script** section of **subresources** property.
+
 Animated **gif** image processing is possible after installing [Image Processing (ImageMagick)](https://www.php.net/manual/en/book.imagick.php) PHP extension.
+
 Simultaneous execution can be prevented by installing [Semaphore, Shared Memory and IPC](https://www.php.net/manual/en/book.sem.php) PHP extension.
-This extra uses a [Minify](https://github.com/matthiasmullie/minify) library.
+
+This extra uses a [PHP CSS Parser](https://github.com/sabberworm/PHP-CSS-Parser/) and [Minify](https://github.com/matthiasmullie/minify).
