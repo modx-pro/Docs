@@ -43,8 +43,8 @@
     &script=`defer`
     &subresources=`{
         "link" : [
-            { "name" : "", "version" : "", "filename" : "", "crossorigin" : "", "integrity" : "", media" : "" },
-            { "url" : "", "crossorigin" : "", "integrity" : "", media" : "" }
+            { "name" : "", "version" : "", "filename" : "", "crossorigin" : "", "integrity" : "", "media" : "" },
+            { "url" : "", "crossorigin" : "", "integrity" : "", "media" : "" }
         ],
         "script" : [
             { "name" : "", "version" : "", "filename" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" },
