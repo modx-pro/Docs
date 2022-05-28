@@ -1,5 +1,11 @@
 # Атрибут hreflang для мультиязычных сайтов
 
+Для корректной работы адрес в настройках локализации в параметре **HTTP HOST** должен указан с `/` на конце.
+Для примера:
+
+- **ua**: modx.pro/ua/
+- **ru**: modx.pro/
+
 ## 1. Создаем сниппет `hreflang` и вставляем следующий код
 
 ```php
@@ -31,7 +37,7 @@ if($resources) {
             $url = $resource->http_host;
         }
         if($key == $default) {
-            $output .= "<link rel='alternate' hreflang='x-default' href='{$protocol}{$resource->http_host}' />";
+            $output .= "<link rel='alternate' hreflang='x-default' href='{$protocol}{$url}' />";
         }
         $output .= "<link rel='alternate' hreflang='{$key}' href='{$protocol}{$url}'>";
     }

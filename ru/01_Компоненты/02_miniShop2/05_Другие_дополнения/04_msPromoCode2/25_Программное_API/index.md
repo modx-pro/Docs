@@ -158,7 +158,7 @@ if (is_array($result)) {
 
 ### getCurrentCoupon
 
-Возвращает массив `array` с текущим установленным на корзину промо-кодом или `null`, если промо-код к корзине не применён.
+Возвращает массив `array` с текущим промо-кодом или `null`, если актуального промо-кода не найдено.
 
 ```php
 $mspc2 = $modx->getService('mspromocode2', 'msPromoCode2',
@@ -169,9 +169,9 @@ $manager = $mspc2->getManager();
 //
 $result = $manager->getCurrentCoupon();
 if (is_array($result)) {
-    print_r('Текущий промо-код применённый к корзине: ' . print_r($result, 1));
+    print_r('Актуальный промо-код: ' . print_r($result, 1));
 } else {
-    print_r('Промо-код к корзине не применён');
+    print_r('Не найдено актуального промо-кода: ' . print_r($result, 1));
 }
 ```
 

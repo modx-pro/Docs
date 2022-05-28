@@ -62,12 +62,26 @@
 ### Использование для поиска и вывода товаров вместе с msProducts
 
 ```php
-[[!pdoPage?
-    &element=`Localizator`
-    &parents=`0`
-    &resources=`[[!mSearch2:default=`999999`?returnIds=`1`&limit=`0`]]`
-    &sortby=`ids`
-]]
+{set $ids = '!mSearch2' | snippet :[
+    'returnIds' => 1,
+    'limit' => 0,
+] ?:'99999'}
+
+<div id="pdopage">
+    <div class="rows">
+        {'!pdoPage' | snippet : [
+            'element' => 'Localizator',
+            'snippet' => 'msProducts',
+            'parents' => 0,
+            'ajax' => 1,
+            'ajaxMode' => 'default',
+            'sortby' => 'ids',
+            'sortdir' => 'asc',
+            'resources' => $ids
+        ]}
+    </div>
+    {'page.nav' | placeholder}
+</div>
 ```
 
 ### Получение и вывод `pagetitle` от другого ресурса
@@ -106,8 +120,8 @@
 
 Где:
 
--   `tmplvarid` - ID TV поля
--   `contentid` - ID ресурса
+- `tmplvarid` - ID TV поля
+- `contentid` - ID ресурса
 
 ### Получение и вывод TV от другого ресурса помощью модификатора locfield
 
@@ -117,8 +131,8 @@
 
 Где:
 
--   `1` - ID ресурса
--   `tvname` - Наименование TV поля
+- `1` - ID ресурса
+- `tvname` - Наименование TV поля
 
 ### Получение и вывод значений MIGX от другого ресурса
 
