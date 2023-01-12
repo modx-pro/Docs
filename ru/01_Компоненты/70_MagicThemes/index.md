@@ -1,4 +1,5 @@
 # MagicThemes
+
 Документация в процессе подготовки. Вот что известно пока:
 
 Компонент MagicThemes - это пакет, который дает возможность управлять темами и создавать их на MODX Revolution.
@@ -8,16 +9,18 @@
 
 Почему я назвал его MagicThemes? Я как-то проникся темой что для MODX не существует тем, нет понятия тем и это не обсуждалось в сообществе, как вообще жизнено существующее. Да, есть сборки, да есть компоненты которые в различной мере решают вопрос тем, но не до конца. Поэтому в процессе написания и продумывания логики работы, решил что темы для модикс - это магия тк никто полномасштабно не вникал в суть дела. Поэтому я подумал, раз оно такое скрытое, пусто будет магия тем.
 
-### Пакет можно устновить через modstore.pro:
+## Пакет можно устновить через modstore
 
 * [MagicThemes](https://modstore.pro/packages/sites-themes/magicthemes)
 
-### Темы доступные для установки:
+## Темы доступные для установки
 
 * [mtDemo](https://modstore.pro/packages/sites-themes/mtdemo) (бесплатный, для тестов и "посмотреть")
-* [mtBlog](https://modstore.pro/packages/sites-themes/mtblog) (платный)
+* [mtBlog](https://modstore.pro/packages/sites-themes/mtblog) (платная)
+* [handyShop](https://modstore.pro/packages/sites-themes/handyshop) (платная)
 
-### Видео-обзор
+## Видео-обзор
+
 на примере **mtDemo**
 
 [![](https://img.youtube.com/vi/zwSxVINecg0/0.jpg)](https://www.youtube.com/watch?v=zwSxVINecg0)
