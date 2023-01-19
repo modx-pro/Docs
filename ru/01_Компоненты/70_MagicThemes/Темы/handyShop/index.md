@@ -1,6 +1,5 @@
-# HandyShop актуальный релиз
 
-    Обновлено 11.01.2023, версия v1.0.0 Alpha-1
+    Обновлено 18.01.2023, актуальная версия пакета v1.0.0 alpha-2
 <img src="https://file.modx.pro/files/c/e/a/cea37261ae548771e9f8b1ef3c2b4f4d.png"   alt=""/>
 
 ## Введение
