@@ -6,7 +6,7 @@
 * Физическое удаление файла при очистке поля
 * Ресайз через phpthumb при загрузке изображения
 * Загрузка по url
-* Drag-and-drop 
+* Drag-and-drop
 
 [![](https://file.modx.pro/files/1/b/1/1b19540fc2888f0c02879617e55c1039s.jpg)](https://file.modx.pro/files/1/b/1/1b19540fc2888f0c02879617e55c1039.png)
 
