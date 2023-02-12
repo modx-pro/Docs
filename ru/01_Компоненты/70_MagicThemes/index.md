@@ -17,7 +17,7 @@
 * [mtBlog](https://modstore.pro/packages/sites-themes/mtblog) (платная)
 * [handyShop](https://modstore.pro/packages/sites-themes/handyshop) (платная)
 
-## Видео-обзор
+## Видео обзор
 
 на примере **mtDemo**
 
