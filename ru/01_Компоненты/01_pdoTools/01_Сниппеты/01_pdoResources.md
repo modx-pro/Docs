@@ -94,6 +94,18 @@
 ]]
 ```
 
+Если нужно вывести элементы в том же порядке, как они объявлены в параметре &resources
+
+``` php
+[[pdoResources?
+    &resources=`213,34,58,290`
+    &sortby=``
+    &sortdir=`ASC`
+    &tpl=`ListRowTpl`
+    &includeTVs=`image`
+]]
+```
+
 В чанке **ListRowTpl** за это поле будет отвечать плейсхолдер `[[+tv.image]]`
 
 ## Дополнительная информация
