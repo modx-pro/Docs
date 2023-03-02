@@ -5,6 +5,7 @@ import { ruConfig } from "./ru";
 // import { sharedConfig } from "./shared";
 
 export default defineConfig({
+    base: "/docs/",
     // ...sharedConfig,
     lastUpdated: true,
     lastUpdatedText: "Update Date",
