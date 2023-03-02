@@ -1,0 +1,18 @@
+{
+    "name": "docs-modxpro",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "https://github.com/modx-pro/Docs.git",
+    "author": "Bochkarev Ivan <ivanx86@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+        "docs:dev": "vitepress dev docs",
+        "docs:build": "vitepress build docs",
+        "docs:serve": "vitepress serve docs"
+    },
+    "devDependencies": {
+        "vitepress": "^1.0.0-alpha.49",
+        "vitepress-plugin-auto-sidebar": "^1.0.6",
+        "vue": "^3.2.47"
+    }
+}
