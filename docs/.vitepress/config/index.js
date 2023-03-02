@@ -8,13 +8,20 @@ export default defineConfig({
     base: "/docs/",
     // ...sharedConfig,
     lastUpdated: true,
-    lastUpdatedText: "Update Date",
+    algolia: {
+        apiKey: "6a767bbcca227a92559817e2382d8938",
+        indexName: "modx",
+        appId: "BCE7F5SAJ2",
+    },
     themeConfig: {
         sidebar: getSidebar({
             contentRoot: "/docs",
             collapsible: true,
             collapsed: true,
         }),
+        socialLinks: [
+            { icon: 'github', link: 'https://github.com/modx-pro/Docs' }
+        ],
     },
     locales: {
         root: {

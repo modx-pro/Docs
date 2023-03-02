@@ -5,6 +5,7 @@ export const META_TITLE = 'Docs MODX.PRO'
 export const META_DESCRIPTION = 'META_DESCRIPTION'
 
 export const ruConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
+    title: 'Docs MODX.pro',
     description: META_DESCRIPTION,
     head: [
         ['meta', { property: 'og:url', content: META_URL }],
@@ -15,9 +16,13 @@ export const ruConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
     ],
 
     themeConfig: {
+        docFooter: {
+            prev: 'Предыдущая страница',
+            next: 'Следующая страница'
+        },
         editLink: {
             pattern: 'https://github.com/modx-pro/Docs/edit/v2/docs/:path',
-            text: 'Suggest changes to this page',
+            text: 'Предложить изменения на этой странице',
         },
     },
 }
