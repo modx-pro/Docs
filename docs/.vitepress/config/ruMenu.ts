@@ -48,6 +48,36 @@ export const ruMenu = [
                     },
                 ],
             },
+            {
+                text: 'amoCRM',
+                collapsed: true,
+                items: [
+                    {
+                        text: 'Возможности и быстрый старт',
+                        link: '/components/amocrm/fast-start',
+                    },
+                    {
+                        text: 'Установка и настройка',
+                        link: '/components/amocrm/basic-setup',
+                    },
+                    {
+                        text: 'Отправка данных из форм',
+                        link: '/components/amocrm/submitting-forms',
+                    },
+                    {
+                        text: 'Webhook',
+                        link: '/components/amocrm/webhook',
+                    },
+                    {
+                        text: 'События',
+                        link: '/components/amocrm/events',
+                    },
+                    {
+                        text: 'Распространенные ошибки',
+                        link: '/components/amocrm/common-mistakes',
+                    },
+                ],
+            },
         ],
     },
 ]

@@ -1,6 +1,7 @@
 # События
 
 При работе компонента вызываются события, позволяющие модифицировать данные или обработать ответы amoCRM:
+
 * amocrmOnBeforeOrderSend
 * amocrmOnOrderSend
 * amocrmOnBeforeUserSend
