@@ -2,7 +2,7 @@
 
 ## Настройка
 
-![](https://file.modx.pro/files/6/4/0/6406c4bf3b5e6db40158b940d9be0e53.jpg)
+![Настройка](https://file.modx.pro/files/6/4/0/6406c4bf3b5e6db40158b940d9be0e53.jpg)
 
 ### URL таблицы
 

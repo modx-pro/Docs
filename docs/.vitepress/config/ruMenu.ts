@@ -82,6 +82,8 @@ export const ruMenu = [
             { text: 'CallBack', link: '/components/callback' },
             { text: 'CitySelect', link: '/components/cityselect' },
             { text: 'ClickToCall', link: '/components/clicktocall' },
+            { text: 'Ideas', link: '/components/ideas' },
+            { text: 'SEO Suite', link: '/components/seosuite' }
         ],
     },
 ]
