@@ -462,7 +462,7 @@ mFilter2 умеет сортировать сразу по нескольким 
 
 Еще пример - сортировка по опции товара miniShop2:
 
-```php
+```modx
 [[!mFilter2?
     &parents=`0`
     &element=`msProducts`
@@ -554,8 +554,9 @@ $(document).on('mse2_load', function(e, data) {
 Для оформления фильтров используются записи из лексикона.
 Если вы добавили новый фильтр и он отображается непонятной длинной надписью на английском - это значит, что её нужно добавить в словарь mSearch2.
 
-[![](https://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04s.jpg)](https://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04.png)
-[![](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721s.jpg)](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
+![Лексиконы - 1](https://file.modx.pro/files/5/5/2/552180f6bee53f13c033fb188c622f04.png)
+
+![Лексиконы - 2](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
 
 [1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/03_pdoPage.md
 [2]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/01_mSearch2.md
