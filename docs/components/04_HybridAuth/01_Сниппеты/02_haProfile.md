@@ -16,13 +16,13 @@
 
 Сниппет нужно вызывать некэшированным, так как в зависимости от авторизации пользователя он выводит разные чанки:
 
-```php
+```modx
 [[!haProfile]]
 ```
 
 Вызов редактирования профиля с указанием разрешенных и обязательных полей:
 
-```php
+```modx
 [[!haProfile?
     &requiredFields=`email,username`
     &profileFields=`email,username:25,fullname:50,comment:100`
