@@ -14,13 +14,8 @@ export default defineConfig({
         appId: "BCE7F5SAJ2",
     },
     themeConfig: {
-        sidebar: getSidebar({
-            contentRoot: "/docs",
-            collapsible: true,
-            collapsed: true,
-        }),
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/modx-pro/Docs' }
+            { icon: "github", link: "https://github.com/modx-pro/Docs" },
         ],
     },
     locales: {

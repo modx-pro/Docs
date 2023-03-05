@@ -2,11 +2,14 @@
 
 Хук использующийся для работы с пользователями: регистрации, авторизации, восстановления доступа, выхода из аккаунта, редактирования личных данных.
 
+[[toc]]
+
+
 ## Примеры использования
 
 ### Регистрация пользователя
 
-```html
+```fenom
 {'!AjaxFormitLogin' | snippet : [
     'form' =>  'aflRegisterForm',
     'snippet' => 'FormIt',
@@ -50,7 +53,7 @@
 
 ### Авторизация пользователя
 
-```html
+```fenom
 {'!AjaxFormitLogin' | snippet : [
     'form' =>  'aflLoginForm',
     'snippet' => 'FormIt',
@@ -74,7 +77,7 @@
 
 ### Редактирование данных пользователя
 
-```html
+```fenom
 {'!AjaxFormitLogin' | snippet : [
     'form' =>  'aflUpdateProfileForm',
     'snippet' => 'FormIt',
@@ -91,7 +94,7 @@
 
 Пароль удобнее всего обновлять отдельно от остальных жанных, чтобы он постоянно не перезаписывался.
 
-```html
+```fenom
  {'!AjaxFormitLogin' | snippet : [
     'form' => 'aflUpdatePassForm',
     'snippet' => 'FormIt',
@@ -110,7 +113,7 @@
 
 ### Выход из аккаунта пользователя
 
-```html
+```fenom
 {'!AjaxFormitLogin' | snippet : [
     'form' =>  'aflLogoutForm',
     'snippet' => 'FormIt',
@@ -124,7 +127,7 @@
 
 ### Восстановление пароля пользователя
 
-```html
+```fenom
 {'!AjaxFormitLogin' | snippet : [
     'form' =>  'aflForgotForm',
     'snippet' => 'FormIt',

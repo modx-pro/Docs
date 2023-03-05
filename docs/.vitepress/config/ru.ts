@@ -1,4 +1,5 @@
 import type { DefaultTheme, LocaleSpecificConfig } from 'vitepress'
+import { ruMenu } from "./ruMenu";
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
@@ -16,6 +17,12 @@ export const ruConfig: LocaleSpecificConfig<DefaultTheme.Config> = {
     ],
 
     themeConfig: {
+        sidebar: [...ruMenu],
+        outlineTitle: 'На этой странице',
+        returnToTopLabel: 'Наверх',
+        sidebarMenuLabel: 'Меню',
+        darkModeSwitchLabel: 'Тема',
+        lastUpdatedText: 'Последнее обновление',
         docFooter: {
             prev: 'Предыдущая страница',
             next: 'Следующая страница'

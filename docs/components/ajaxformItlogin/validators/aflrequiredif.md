@@ -4,11 +4,11 @@
 
 ## Пример использования
 
-```html
+```fenom
 ...
 'customValidators' => 'aflRequiredIf',
 'validate' => 'ogrn:aflRequiredIf=^legal_form|2^',
 ...
 ```
 
-В примере поле с именем `ogrn` будет обязательным, если поле именем `legal_form` имеет значение 2.
+В примере поле с именем `ogrn` будет обязательным, если поле именем `legal_form` имеет значение `2`.
