@@ -35,13 +35,13 @@
 
 При запуске без параметров, сниппет выводит всех пользователей сайта.
 
-``` php
+``` modx
 [[!pdoUsers]]
 ```
 
 Вывод пользователей группы Authors:
 
-``` php
+``` modx
 [[!pdoUsers?
     &groups=`Authors`
     &tpl=`tpl.Authors.author`
@@ -51,7 +51,7 @@
 
 Можно комбинировать его с pdoPage\getPage:
 
-``` php
+``` modx
 [[!pdoPage?
     &element=`pdoUsers`
     &groups=`Authors`
@@ -62,7 +62,7 @@
 
 Встроенные чанки:
 
-``` php
+``` modx
 [[!pdoUsers?
     &roles=`Member`
     &tpl=`@INLINE <p>Имя - [[+fullname]], ID - [[+id]]</p>`
@@ -73,9 +73,8 @@
 
 ## Демо
 
-[Вывод авторов и друзей][2] репозитория Simple Dream.
+[Вывод авторов и друзей](http://store.simpledream.ru/friends.html) репозитория Simple Dream.
 
-[![](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306s.jpg)](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
+![Демо](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
 
 [1]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
-[2]: http://store.simpledream.ru/friends.html

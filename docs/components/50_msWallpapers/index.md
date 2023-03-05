@@ -1,6 +1,8 @@
+# msWallpapers
+
 Компонент создаёт расширенную форму заказа для выбора обоев. Работает только с miniShop2.
 
-[![](https://file.modx.pro/files/0/8/a/08a9f68098e8f4f5891f8d7a35a215cb.png)](https://file.modx.pro/files/0/8/a/08a9f68098e8f4f5891f8d7a35a215cb.png)
+![msWallpapers](https://file.modx.pro/files/0/8/a/08a9f68098e8f4f5891f8d7a35a215cb.png)
 
 ## Умеет
 

@@ -1,4 +1,4 @@
-Формирование sitemap
+# Формирование sitemap
 
 ## Сниппет sitemap.php
 

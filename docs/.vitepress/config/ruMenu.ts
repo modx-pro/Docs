@@ -78,6 +78,10 @@ export const ruMenu = [
                     },
                 ],
             },
+            { text: 'autoRedirector', link: '/components/autoredirector' },
+            { text: 'CallBack', link: '/components/callback' },
+            { text: 'CitySelect', link: '/components/cityselect' },
+            { text: 'ClickToCall', link: '/components/clicktocall' },
         ],
     },
 ]

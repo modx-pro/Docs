@@ -44,13 +44,13 @@
 
 Генерация хлебных крошек для текущей страницы:
 
-``` php
+``` modx
 [[pdoCrumbs]]
 ```
 
 Генерация в ограничением по количеству пунктов:
 
-``` php
+``` modx
 [[pdoCrumbs?
     &limit=`2`
 ]]
@@ -58,7 +58,7 @@
 
 Сниппет хорошо работает при вызове из pdoResources. Например, вот такой чанк:
 
-``` php
+``` modx
 <h3>[[+pagetitle]]</h3>
 <p>[[+introtext]]</p>
 [[pdoCrumbs?
@@ -69,7 +69,7 @@
 
 Генерация микроразметки [Schema.org](http://Schema.org) в JSON-LD формате
 
-```php
+```fenom
 {'!pdoCrumbs' | snippet : [
     'showHome' => 1,
     'tplWrapper' => '@INLINE <script type="application/ld+json">
@@ -114,7 +114,7 @@
 
 Рабочий пример [генерации хлебных крошек в результатах поиска][3] mSearch2.
 
-[![](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg)](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
+![Демо](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
 
 [1]: http://rtfm.modx.com/extras/revo/breadcrumb
 [2]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md

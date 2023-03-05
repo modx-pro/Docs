@@ -1,4 +1,7 @@
-# Сниппет предназначен для вывода переведенных в локализаторе ресурсов
+
+# Сниппет Localizator
+
+Предназначен для вывода переведенных в локализаторе ресурсов
 
 ## Параметры
 
@@ -6,16 +9,16 @@
 
 | Название            | По умолчанию | Описание                                                                                                                                      |
 | ------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **snippet**         | pdoResources | Имя сниппета для запуска                                                                                                                      |
-| **class**           | modResource  | Класс получаемого объекта                                                                                                                     |
-| **localizator_key** | Нет          | Ключ локализации, по умолчанию текущий                                                                                                        |
-| **localizatorTVs**  | Нет          | Список переведенных доп.полей. Если не заполнять, то будут подтягиваться поля в соответствии с системной настройкой **localizator_tv_fields** |
+| **snippet**         | `pdoResources` | Имя сниппета для запуска                                                                                                                      |
+| **class**           | `modResource`  | Класс получаемого объекта                                                                                                                     |
+| **localizator_key** | `Нет`          | Ключ локализации, по умолчанию текущий                                                                                                        |
+| **localizatorTVs**  | `Нет`          | Список переведенных доп.полей. Если не заполнять, то будут подтягиваться поля в соответствии с системной настройкой **localizator_tv_fields** |
 
 ## Примеры
 
 ### Вывод через pdoMenu
 
-```php
+```fenom
 {'Localizator' | snippet : [
     'snippet' => 'pdoMenu',
     'includeTVs' => 'img',
@@ -42,7 +45,7 @@
 
 ### Вывод ресурсов через mFilter2
 
-```php
+```fenom
 {'!mFilter2' | snippet : [
     'element' => 'Localizator',
     'parents' => 0,
@@ -51,7 +54,7 @@
 
 ### Вывод товаров через mFilter2
 
-```php
+```fenom
 {'!mFilter2' | snippet : [
     'element' => 'Localizator',
     'snippet' => 'msProducts',
@@ -61,7 +64,7 @@
 
 ### Использование для поиска и вывода товаров вместе с msProducts
 
-```php
+```fenom
 {set $ids = '!mSearch2' | snippet :[
     'returnIds' => 1,
     'limit' => 0,
@@ -86,7 +89,7 @@
 
 ### Получение и вывод `pagetitle` от другого ресурса
 
-```php
+```fenom
 {'pdoResources' | snippet : [
     'tpl' => '@INLINE {$pagetitle}',
     'class' => 'localizatorContent',
@@ -104,7 +107,7 @@
 
 ### Получение и вывод TV от другого ресурса
 
-```php
+```fenom
 {'pdoResources' | snippet : [
     'tpl' => '@INLINE {$value}',
     'class' => 'locTemplateVarResource',
@@ -125,7 +128,7 @@
 
 ### Получение и вывод TV от другого ресурса помощью модификатора locfield
 
-```php
+```fenom
 {1 | locfield:'tvname'}
 ```
 
@@ -136,7 +139,7 @@
 
 ### Получение и вывод значений MIGX от другого ресурса
 
-```php
+```fenom
 {foreach ('!pdoResources' | snippet : [
     'tpl' => '@INLINE {$value | toJSON}',
     'class' => 'locTemplateVarResource',
@@ -162,14 +165,14 @@
 
 - Выводим в нужном месте:
 
-```php
+```fenom
 {var $key = ('localizator_key' | option)}
 {('work_clock_1_' ~ $key) | option}
 ```
 
 ### Проверка отображаемой локализации и замена лого
 
-```php
+```fenom
 <a class="header-logo" href="{'site_start' | config}" aria-label="{'site_name' | config}">
     {if $_modx->config.cultureKey == 'ru'}
     <img src="/assets/images/general/logo_ru.png" alt="{$_modx->resource.pagetitle}">
@@ -181,7 +184,7 @@
 
 ### Вывод корзины msCart
 
-``` php
+``` fenom
 {'!Localizator' | snippet : [
     'snippet' => 'msCart',
     'class' => 'msProduct',

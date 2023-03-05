@@ -1,3 +1,5 @@
+# ShoppingCart
+
 ## Описание
 
 Универсальный сниппет для создания корзины покупок в интернет-магазине. Так же сниппет можно использовать для временного хранения любых данных, например, функционал избранного и т.д. Данные сохраняются в базу данных, можно настроить время хранения. Управлять добавлением товаров в корзину и редактировать содержимое можно с помощью JavaScript функций (без зависимостей).
@@ -44,19 +46,19 @@
 
 Пример вызова сниппета:
 
-```php
+```modx
 [[!shoppingCart?
-&action=`print`
-&contentType=`shop`
-&rowTpl=`shoppingCart_rowTpl`
-&outerTpl=`shoppingCart_outerTpl`
-&emptyTpl=`shoppingCart_emptyTpl`
+    &action=`print`
+    &contentType=`shop`
+    &rowTpl=`shoppingCart_rowTpl`
+    &outerTpl=`shoppingCart_outerTpl`
+    &emptyTpl=`shoppingCart_emptyTpl`
 ]]
 ```
 
 Вызов сниппета с набором параметров (рекомендуется):
 
-```php
+```modx
 [[!shoppingCart@shoppingCartFull]]
 ```
 
@@ -83,12 +85,12 @@
 
 ### Плейсхолдеры, доступные в шаблоне, в котором вызывается сниппет "shoppingCart"
 
-* `[[+shopping_cart.price_total]]` 
-* `[[+shopping_cart.items_total]]` 
-* `[[+shopping_cart.items_unique_total]]` 
-* `[[+shopping_cart.delivery_price]]` 
-* `[[+shopping_cart.delivery_name]]` 
-* `[[+shopping_cart.ids]]` 
+* `[[+shopping_cart.price_total]]`
+* `[[+shopping_cart.items_total]]`
+* `[[+shopping_cart.items_unique_total]]`
+* `[[+shopping_cart.delivery_price]]`
+* `[[+shopping_cart.delivery_name]]`
+* `[[+shopping_cart.ids]]`
 
 ## Плагин shoppingCart
 
@@ -128,6 +130,7 @@
 События: **OnShoppingCartAddProduct**, **OnShoppingCartCheckoutSave**.
 
 Параметры:
+
 * **tvNamePrice** - Имя доп. параметра цены товара. По умолчанию: "price".
 
 ## Оформление заказа
@@ -136,7 +139,7 @@
 
 Пример вызова сниппета FormIt:
 
-```php
+```modx
 [[!FormIt?
 &hooks=`spam,shoppingCart,FormItSaveForm,email,FormItAutoResponder,redirect`
 &submitVar=`action_order`
@@ -157,6 +160,7 @@
 &shoppingCartMailOuterTpl=`shoppingCart_mailOrderOuterTpl`
 ]]
 ```
+
 В данном примере используется также хук "FormItSaveForm", который сохраняет данные формы для вывода в компоненте FormIt в административной части сайта. Если используете какой-то компонент для управления заказами, то этот хук можно убрать.
 
 Хук "shoppingCart" вызывает событие "OnShoppingCartCheckoutSave" и плагин, который слушает это событие, может сохранить данные заказа и создать список товаров в заказе для вывода в письме.
@@ -164,6 +168,7 @@
 Пример формы оформления заказа можно увидеть [здесь](https://github.com/andchir/modx-shopkeeper4/blob/master/core/components/shopping_cart/elements/chunks/page_formCheckout.html). Пример шаблона письма тоже есть в [комплекте сниппета ShoppingCart](https://github.com/andchir/modx-shopkeeper4/blob/master/core/components/shopping_cart/elements/chunks/orderReport.html).
 
 ### Параметры хука shoppingCart
+
 * **shoppingCartMailRowTpl** - Название чанка одного товара. По умолчанию: "shoppingCart_mailOrderRowTpl".
 * **shoppingCartMailOuterTpl** - Название чанка обертки списка товаров. По умолчанию: "shoppingCart_mailOrderOuterTpl".
 * **shoppingCartMailContentType** - Название типа контента корзины. По умолчанию: "shop".

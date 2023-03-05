@@ -1,8 +1,10 @@
+# msImportExport 2.0
+
 Компонент для импорта/экспорта.
 
 ## Видео-обзор
 
-[![](https://img.youtube.com/vi/Tx-NXId8vYI/0.jpg)](https://www.youtube.com/watch?v=Tx-NXId8vYI)
+![Видео-обзор](https://www.youtube.com/watch?v=Tx-NXId8vYI)
 
 ## Поддерживаемые форматы файлов
 
@@ -13,7 +15,7 @@
 
 ## Поддерживаемы типы экспорта
 
-*  документы Modx
+* документы Modx
 * категории, товары, связи, галерея   [MiniShop2;](https://modstore.pro/packages/ecommerce/minishop2)
 * данные [msOptionsPrice2;](https://modstore.pro/packages/ecommerce/msoptionsprice2)
 * данные [msOptionsColor;](https://modstore.pro/packages/integration/msoptionscolor)
@@ -25,7 +27,7 @@
 
 ## Поддерживаемы типы импорта
 
-*  документы Modx
+* документы Modx
 * категории, товары, связи, галерея   [MiniShop2;](https://modstore.pro/packages/ecommerce/minishop2)
 * данные [msOptionsPrice2;](https://modstore.pro/packages/ecommerce/msoptionsprice2)
 * данные [msOptionsColor;](https://modstore.pro/packages/integration/msoptionscolor)

@@ -1,3 +1,5 @@
+# mswpOnGetProductPrice
+
 Вызывается в методе `msWallpapers::getPrice`, который в свою очередь отрабатывает при:
 
 1. Вызове сниппета `mswp.form`

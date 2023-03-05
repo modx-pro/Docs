@@ -50,7 +50,7 @@ if (!$ePochta->sendSMS_now($phone, $message, 0)) {
 
 В случае неудачи функция вернет FALSE,а в лог выдастся подробная ошибка с набором данных:
 
-```plain
+```text
 [2014-03-11 22:36:53] (ERROR @ /index.php) [ePochta] Error send sms to [7922], text [Тест] user_id [2]
 [2014-03-11 22:36:53] (ERROR @ /index.php) Array
 (

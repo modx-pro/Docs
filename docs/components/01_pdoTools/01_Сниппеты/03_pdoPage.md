@@ -2,7 +2,7 @@
 
 Сниппет **pdoPage** позволяет вывести результаты работы других сниппетов с разбивкой на страницы.
 
-[![](https://file.modx.pro/files/7/e/a/7ea43b037fac16e28073cca778602c68s.jpg)](https://file.modx.pro/files/7/e/a/7ea43b037fac16e28073cca778602c68.png)
+![pdoPage - 1](https://file.modx.pro/files/7/e/a/7ea43b037fac16e28073cca778602c68.png)
 
 Есть несколько серьезных отличий от сниппета *getPage*:
 
@@ -14,7 +14,7 @@
 * Работает со сниппетом *pdoResources*, по умолчанию.
 * Поддерка работы через ajax.
 
-[![](https://file.modx.pro/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9s.jpg)](https://file.modx.pro/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png)
+![pdoPage - 2](https://file.modx.pro/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png)
 
 ## Параметры
 
@@ -230,7 +230,7 @@ $(document).on('pdopage_load', function(e, config, response) {
 
 Это приведёт к генерации ссылок, типа
 
-``` plain
+```text
 /res/news/
 /res/news/page-2
 /res/news/page-3
@@ -279,7 +279,7 @@ if ($modx->event->name == 'OnPageNotFound') {
 Так как pdoPage является частью pdoTools, в параметре **&element** у него сразу прописан сниппет pdoResources.
 Поэтому простой вызов сниппета выведет вам дочерние ресурсы:
 
-``` php
+``` modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
 ]]
@@ -288,7 +288,7 @@ if ($modx->event->name == 'OnPageNotFound') {
 
 Выводим все возможные документы сайта:
 
-``` php
+``` modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -299,7 +299,7 @@ if ($modx->event->name == 'OnPageNotFound') {
 Включаем навигацию с пропуском страниц.
 Обратите внимание, что если страниц выходит меньше 7, то будет работать обычная навигация.
 
-``` php
+``` modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -310,7 +310,7 @@ if ($modx->event->name == 'OnPageNotFound') {
 
 Активируем кэш на 30 минут:
 
-``` php
+``` modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -324,7 +324,7 @@ if ($modx->event->name == 'OnPageNotFound') {
 Указываем максимальный лимит выборки.
 Теперь, какой бы limit не указал пользователь в url - все равно будет не больше 10 результатов на странице.
 
-``` php
+``` modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -337,4 +337,3 @@ if ($modx->event->name == 'OnPageNotFound') {
 ```
 
 [0]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
-[1]: https://bezumkin.ru/sections/tips_and_tricks/2153/

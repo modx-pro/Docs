@@ -1,10 +1,12 @@
+# CitySelect
+
 Компонент реализует функцию выбора города. Подсказки города во время набора организованны с помощью kladr-api. Геолокация пользователя с помощью SxGeo.
 
 ## Настройки модуля
 
 Для редактирования настроек скрипта перейдите в раздел "Настройки системы" и выберите фильтр "cityselect"
 
-[![](https://file.modx.pro/files/a/d/9/ad9bb66a4c426a1ff3e686273d447abds.jpg)](https://file.modx.pro/files/a/d/9/ad9bb66a4c426a1ff3e686273d447abd.png)
+![Настройки модуля - 1](https://file.modx.pro/files/a/d/9/ad9bb66a4c426a1ff3e686273d447abd.png)
 
 * указать ключ kladr-api - необязательно
 * имя базы данных SxGeo
@@ -13,4 +15,4 @@
 ## Вызов сниппета
 
 При установке доступен чанк example, по умолчанию он и используется при вызове сниппета.
-[![](https://file.modx.pro/files/a/d/6/ad67eed388799117fe0f03a034320120s.jpg)](https://file.modx.pro/files/a/d/6/ad67eed388799117fe0f03a034320120.png)
+![Настройки модуля - 2](https://file.modx.pro/files/a/d/6/ad67eed388799117fe0f03a034320120.png)

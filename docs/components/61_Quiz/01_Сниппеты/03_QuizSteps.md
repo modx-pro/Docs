@@ -26,10 +26,12 @@
 ## Пример:
 
 Выводим все разделы, у которых нет условий:
-	
-	{'!QuizSteps' | snippet: [
-	    'id' => 2,
-	    'where' => [
-	        'question:<' => '1'
-	    ]
-	]}
+
+```fenom
+{'!QuizSteps' | snippet: [
+    'id' => 2,
+    'where' => [
+        'question:<' => '1'
+    ]
+]}
+```

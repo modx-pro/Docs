@@ -46,9 +46,9 @@ if($resources) {
 return $output;
 ```
 
-## 2. Вызываем сниппет в `head`  
+## 2. Вызываем сниппет в `head`
 
-```php
+```fenom
 {'!hreflangs' | snippet : []}
 ```
 

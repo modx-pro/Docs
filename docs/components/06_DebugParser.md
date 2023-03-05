@@ -36,7 +36,7 @@
 
 Обычный вывод:
 
-```plain
+```text
 http://mystite.com/?debug=1
 ```
 
@@ -44,7 +44,7 @@ http://mystite.com/?debug=1
 
 Вывод с использованием кэша:
 
-```plain
+```text
 http://mystite.com/?debug=1&cache=1
 ```
 
@@ -52,7 +52,7 @@ http://mystite.com/?debug=1&cache=1
 
 Вывод первых 10 самых медленных тегов
 
-```plain
+```text
 http://mystite.com/?debug=1&cache=1&top=10
 ```
 
@@ -60,6 +60,6 @@ http://mystite.com/?debug=1&cache=1&top=10
 
 Вывод с присоединением таблицы к содержимому страницы
 
-```plain
+```text
 http://mystite.com/?debug=1&cache=1&top=10&add=1
 ```

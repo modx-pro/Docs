@@ -77,7 +77,7 @@ Cистемные параметры нужно выделять жирным т
 
 Для обрамления кода нужно использовать 3 обратных апострофа  \`\`\` перед секцией кода, и после:
 
-``` plain
+``` text
 Здесь код
 ```
 
@@ -179,7 +179,7 @@ Placeholders wrapped in single reverse apostrophes. For example: \`[[+placeholde
 
 For block with code we using 3 reverse apostrophe \`\`\` before and after:
 
-``` plain
+``` text
 Here is the code
 ```
 

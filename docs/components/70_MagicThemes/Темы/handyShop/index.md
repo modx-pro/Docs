@@ -1,4 +1,4 @@
-[![](https://file.modx.pro/files/c/e/a/cea37261ae548771e9f8b1ef3c2b4f4d.png)](https://file.modx.pro/files/c/e/a/cea37261ae548771e9f8b1ef3c2b4f4d.png)
+![https://file.modx.pro/files/c/e/a/cea37261ae548771e9f8b1ef3c2b4f4d.png](https://file.modx.pro/files/c/e/a/cea37261ae548771e9f8b1ef3c2b4f4d.png)
 
 > Обновлено 08.02.2023, актуальная версия пакета v1.0.0 beta1
 

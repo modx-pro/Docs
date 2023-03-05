@@ -10,21 +10,25 @@
 
 ## Пример:
 
-	{'!QuizData' | snippet: [
-	    'id' => 2,
-	    'param' => [
-	        'earch' => 'ball', 
-	    ],
-	] | print}
+```fenom
+{'!QuizData' | snippet: [
+    'id' => 2,
+    'param' => [
+        'earch' => 'ball',
+    ],
+] | print}
+```
 
 Ответ:
-	
-	Array
-	(
-	    [0] => Array
-	        (
-	            [question] => Какой формы Земля?
-	            [answer] => Шар
-	            [name] => earch
-	        )
-	)
+
+```php
+Array
+(
+    [0] => Array
+        (
+            [question] => Какой формы Земля?
+            [answer] => Шар
+            [name] => earch
+        )
+)
+```

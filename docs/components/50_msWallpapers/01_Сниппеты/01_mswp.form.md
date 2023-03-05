@@ -1,3 +1,5 @@
+# mswp.form
+
 Основной сниппет компонента, который реализует вывод формы заказа обоев на фронте.
 
 ## Параметры
@@ -32,7 +34,7 @@
 
 ### Форма с максимальной областью превью в виде квадрата 800x800 пикселей
 
-```php
+```fenom
 {'!mswp.form' | snippet : [
     'id' => $_modx->resource['id'],
     'image' => $_modx->resource['image'],
@@ -46,7 +48,7 @@
 
 ### Форма на фронте в см со значениями по-умолчанию 300x200см
 
-```php
+```fenom
 {'!mswp.form' | snippet : [
     'id' => $_modx->resource['id'],
     'image' => $_modx->resource['image'],
@@ -59,7 +61,7 @@
 
 ### Форма на фронте в м со значениями по-умолчанию 3.5x2.5м
 
-```php
+```fenom
 {'!mswp.form' | snippet : [
     'id' => $_modx->resource['id'],
     'image' => $_modx->resource['image'],

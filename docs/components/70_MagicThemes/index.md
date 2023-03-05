@@ -1,3 +1,5 @@
+# MagicThemes
+
 Документация в процессе подготовки. Вот что известно пока:
 
 Компонент MagicThemes - это пакет, который дает возможность управлять темами и создавать их на MODX Revolution.
@@ -21,8 +23,4 @@
 
 на примере **mtDemo**
 
-[![](https://img.youtube.com/vi/zwSxVINecg0/0.jpg)](https://www.youtube.com/watch?v=zwSxVINecg0)
-
-
-
-
+[mtDemo](https://www.youtube.com/watch?v=zwSxVINecg0)

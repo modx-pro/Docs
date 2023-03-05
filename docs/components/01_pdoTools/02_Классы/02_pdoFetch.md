@@ -113,7 +113,7 @@ $pdo->setConfig(array(
 
 И получаем вывод распечатанных массивов пользователей и вот такой лог pdoTools:
 
-``` plain
+``` text
 0.0000799: pdoTools loaded
 0.0000319: xPDO query object created
 0.0005212: leftJoined modUserProfile as Profile
@@ -177,7 +177,7 @@ Image.id = Thumb.parent
 
 В итоге мы видим такой лог:
 
-``` plain
+``` text
 0.0001011: Loaded model "ms2gallery" from "/core/components/ms2gallery/model/"
 0.0001070: pdoTools loaded
 0.0000360: xPDO query object created
@@ -235,7 +235,7 @@ Image.id = Thumb.parent
 
 Лог работы:
 
-``` plain
+``` text
 0.0001011: Loaded model "ms2gallery" from "/core/components/ms2gallery/model/"
 0.0000682: pdoTools loaded
 0.0000339: xPDO query object created
@@ -498,7 +498,7 @@ print_r($files);
 
 А вот так - вывод всех файлов тикетов с присоединением к ним **pagetitle** родительского документа:
 
-``` plain
+``` text
 $files = $pdo->getCollection('TicketFile', array(), array(
     'innerJoin' => array(
         'Ticket' => array(
@@ -522,7 +522,7 @@ print_r($files);
 
 Лог получается вот такой:
 
-``` plain
+``` text
 0.0000322: xPDO query object created
 0.0003891: innerJoined Ticket as Ticket
 0.0001400: Added selection of TicketFile: SQL_CALC_FOUND_ROWS `id`, `parent`, `class`, `source`, `name`, `description`, `path`, `file`, `type`, `size`, `createdon`, `createdby`, `url`, `thumb`, `deleted`, `properties`, `hash`
