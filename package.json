@@ -13,6 +13,7 @@
     "devDependencies": {
         "@docsearch/css": "^3.3.3",
         "@docsearch/js": "^3.3.3",
+        "modx-tmlanguage": "^1.1.1",
         "vitepress": "^1.0.0-alpha.49",
         "vitepress-plugin-auto-sidebar": "^1.0.6",
         "vue": "^3.2.47"

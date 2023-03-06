@@ -494,6 +494,11 @@ magic-string@^0.25.7:
   dependencies:
     sourcemap-codec "^1.4.8"
 
+modx-tmlanguage@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/modx-tmlanguage/-/modx-tmlanguage-1.1.1.tgz#61d8897b4e49be407b95837fe1a077706b4ab6e3"
+  integrity sha512-hPW4oeanJmmuvzajcS+neesL7Zs3vnYSTmu17PnqB1DDJYvm+fKrhZJxvLLwkTPZdR7jciSSa7vQoWWR8UwWqw==
+
 nanoid@^3.3.4:
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
