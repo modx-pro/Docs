@@ -48,5 +48,5 @@
 
 [1]: http://rtfm.modx.com/extras/revo/getresourcefield
 [2]: http://modx.com/extras/package/ultimateparent
-[3]: /ru/02_Система/01_Основы/02_Фильтры_ввода_и_вывода.md
+[3]: /system/01_Основы/02_Фильтры_ввода_и_вывода.md
 [4]: /components/01_pdoTools/04_Общие_параметры.md
