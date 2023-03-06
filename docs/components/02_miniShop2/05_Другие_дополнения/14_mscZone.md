@@ -60,5 +60,5 @@
 
 * Каждому товару задать вес
 
-[1]: /ru/01_Компоненты/02_miniShop2/
-[2]: /ru/01_Компоненты/02_miniShop2/02_Сниппеты/03_msOrder.md
+[1]: /components/02_miniShop2/
+[2]: /components/02_miniShop2/02_Сниппеты/03_msOrder.md

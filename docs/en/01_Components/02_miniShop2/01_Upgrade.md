@@ -2,7 +2,7 @@ Instructions for updating minor versions of miniShop2.
 
 ## From 2.2 to 2.4
 
-The main difference between 2.4 and 2.2, which can affect the functional of the working site, is the use of chunks 
+The main difference between 2.4 and 2.2, which can affect the functional of the working site, is the use of chunks
 [Fenom][1] **in all snippets**. Therefore, when updating the component, you must **necessarily** update your chunks.
 
 The general sense is that instead of 2-3 chunks of output of results, now one is used.
@@ -39,13 +39,13 @@ In this case, the chunk for an empty basket is also not needed, since the quanti
 {/if}
 ```
 
-All details about the work of snippets and their variables and placeholders will be translated later. 
+All details about the work of snippets and their variables and placeholders will be translated later.
 For now you can try to read [Russian vesion][2].
 
 ### Emails templates
 For emails, the Fenom template extension mechanism is used.
 
-That is, complete with miniShop2 there is one chunk `tpl.msEmail` with a default letter template, which is divided into 
+That is, complete with miniShop2 there is one chunk `tpl.msEmail` with a default letter template, which is divided into
 semantic blocks. Other letters expand this chunk and change the blocks they need.
 - **logo** - Store logo with link to main page
 - **title** - The title of the letter
@@ -70,7 +70,7 @@ For example, a letter with a new order to the buyer looks like this:
     {/if}
 {/block}
 ```
-As you can see, here the main template is inherited, the header changes, and a reference to the payment (if any) 
+As you can see, here the main template is inherited, the header changes, and a reference to the payment (if any)
 is added to the product table.
 
 [![](https://file.modx.pro/files/7/a/c/7ac00ca1c44088260da560463c21025bs.jpg)](https://file.modx.pro/files/7/a/c/7ac00ca1c44088260da560463c21025b.png)
@@ -103,5 +103,5 @@ The development of miniShop 2.3 has been canceled, so look at the upgrade to ver
 
 
 [1]: /en/01_Components/01_pdoTools/03_Parser.md
-[2]: /ru/01_Компоненты/02_miniShop2/02_Сниппеты
+[2]: /components/02_miniShop2/02_Сниппеты
 [3]: https://github.com/fenom-template/fenom/blob/master/docs/en/tags/extends.md

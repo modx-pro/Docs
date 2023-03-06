@@ -99,7 +99,7 @@
 ]]
 ```
 
-[1]: /ru/01_Компоненты/01_pdoTools/03_Парсер.md
-[2]: /ru/01_Компоненты/18_ms2Gallery/02_Генерация_превью.md
+[1]: /components/01_pdoTools/03_Парсер.md
+[2]: /components/18_ms2Gallery/02_Генерация_превью.md
 [3]: http://fotorama.io/
 [4]: http://fotorama.io/customize/

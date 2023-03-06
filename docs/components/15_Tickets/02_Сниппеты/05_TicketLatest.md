@@ -37,15 +37,15 @@
 ## Примеры
 
 * Вывод последних тикетов
-  
+
 ```php
 [[!TicketLatest? &limit=`5` &fastMode=`1` &action=`tickets` &tpl=`tpl.Tickets.ticket.latest`]]
 ```
 
 * Вывод последних комментариев
-  
+
 ```php
 [[!TicketLatest? &limit=`5` &fastMode=`1` &action=`comments` &tpl=`tpl.Tickets.comment.latest`]]
 ```
 
-[1]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
+[1]: /components/01_pdoTools/04_Общие_параметры.md

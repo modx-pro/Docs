@@ -41,7 +41,7 @@
 
 Соответственно, если Fotorama вам не нужна - просто удалите класс `.fotorama` из чанка.
 
-[1]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
-[2]: /ru/01_Компоненты/01_pdoTools/03_Парсер.md
+[1]: /components/01_pdoTools/04_Общие_параметры.md
+[2]: /components/01_pdoTools/03_Парсер.md
 [3]: http://fotorama.io/
 [4]: http://fotorama.io/customize/options/

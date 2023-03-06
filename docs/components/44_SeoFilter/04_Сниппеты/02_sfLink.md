@@ -66,6 +66,6 @@
     ]}
     ```
 
-[0]: /ru/01_Компоненты/44_SeoFilter/04_Сниппеты/01_sfWord.md
-[1]: /ru/01_Компоненты/44_SeoFilter/03_Дополнительные_возможности.md
-[2]: /ru/01_Компоненты/44_SeoFilter/04_Сниппеты/03_sfMenu.md
+[0]: /components/44_SeoFilter/04_Сниппеты/01_sfWord.md
+[1]: /components/44_SeoFilter/03_Дополнительные_возможности.md
+[2]: /components/44_SeoFilter/04_Сниппеты/03_sfMenu.md

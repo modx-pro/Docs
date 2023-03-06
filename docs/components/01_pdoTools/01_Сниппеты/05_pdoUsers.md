@@ -77,4 +77,4 @@
 
 ![Демо](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
 
-[1]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
+[1]: /components/01_pdoTools/04_Общие_параметры.md

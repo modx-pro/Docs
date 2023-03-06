@@ -230,7 +230,7 @@ $(document).on('pdopage_load', function(e, config, response) {
 
 Это приведёт к генерации ссылок, типа
 
-```text
+```txt
 /res/news/
 /res/news/page-2
 /res/news/page-3
@@ -336,4 +336,4 @@ if ($modx->event->name == 'OnPageNotFound') {
 [[!+page.nav]]
 ```
 
-[0]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
+[0]: /components/01_pdoTools/04_Общие_параметры.md

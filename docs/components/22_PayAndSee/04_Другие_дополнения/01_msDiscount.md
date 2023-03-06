@@ -41,4 +41,4 @@
 
 [0]: https://github.com/bezumkin/miniShop2/commit/f33462045561594e56fa11312003c25c04d1bc32
 [1]: http://getbootstrap.com
-[2]: /ru/01_Компоненты/02_miniShop2/05_Другие_дополнения/02_msDiscount/index.md
+[2]: /components/02_miniShop2/05_Другие_дополнения/02_msDiscount/index.md

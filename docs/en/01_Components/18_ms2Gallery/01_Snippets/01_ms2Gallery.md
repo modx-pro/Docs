@@ -1,4 +1,4 @@
-Snippet for the resource gallery output. 
+Snippet for the resource gallery output.
 
 ## Parameters
 Parameter            | By default  | Description
@@ -9,27 +9,27 @@ Parameter            | By default  | Description
 **toPlaceholder**   |               | If it is not empty, the snippet will save all data into a placeholder with this name instead of putting them to the screen.
 **tpl**             | tpl.ms2Gallery| Chunk for the whole gallery using [Fenom][1].
 **limit**           |               | Limiting the selection of results
-**offset**          |               | Omission of results from the beginning of the selection 
+**offset**          |               | Omission of results from the beginning of the selection
 **where**           |               | A line coded in JSON, with extra searching conditions. For filtration by files you should use the "File" table's pseudonym. For example, &where=`{"File.name:LIKE":"%img%"}`.
 **filetype**        |               | Type of files for selection. You can use "image" for indicating pictures and extending all other files. For example: "image,pdf,xls,doc".
-**showInactive**    |               | Show inactive files. 
-**sortby**          | rank          | Sorting the selection. 
-**sortdir**         | ASC           | The direction of sorting. 
+**showInactive**    |               | Show inactive files.
+**sortby**          | rank          | Sorting the selection.
+**sortdir**         | ASC           | The direction of sorting.
 **frontend_css**    | [[+cssUrl]]web/default.css | If you want to use your own styles, show the direction to them here, or clean up the parameter and download them yourself through the site's template.
 **frontend_js**     | [[+jsUrl]]web/default.js   | If you want to use your own scripts, show the direction to them here, or clean up the parameter and download them yourself through the site's template.
-**tags**            |               | List of tags for files output, with commas. 
+**tags**            |               | List of tags for files output, with commas.
 **tagsVar**         |               | If this parameter is not empty, the snippet will take "tags" value in $_REQUEST["indicatedname"]. For example, if you indicate "tag" here, the snippet will show only those files that suit in `$_REQUEST["tag"]`.
-**getTags**         |               | Make additional requests so as to get a line with the file's tags? 
+**getTags**         |               | Make additional requests so as to get a line with the file's tags?
 **tagsSeparator**   | ,             | If you switched on getting files' tags in the output, they will be divided through the line that you indicate in this parameter.
 
 ### Chunks
-Before the version 2.0 there were 4 chunks in ms2Gallery: 
+Before the version 2.0 there were 4 chunks in ms2Gallery:
 **tplRow** - chunk for one element of the selection (tpl.ms2Gallery.row).
 **tplOuter** - the outer part of the output of the results of the snippet's work (tpl.ms2Gallery.outer).
 **tplEmpty** - chunk that is shown if there are no results (tpl.ms2Gallery.empty).
-**tplSingle** - chunk that is ised if there is only one file in the results. 
+**tplSingle** - chunk that is ised if there is only one file in the results.
 
-Now it is the one and only **tpl**, which gets the $files array and has to sort it out by itself: 
+Now it is the one and only **tpl**, which gets the $files array and has to sort it out by itself:
 ```
 {if count($files) > 1}
     <!-- there are many files - we sort them out in cycle-->
@@ -43,7 +43,7 @@ Now it is the one and only **tpl**, which gets the $files array and has to sort 
     There are no files, we shown this caption.
 {/if}
 ```
-All [previews generated for files][2] are turned on automatically under their pseudonyms. 
+All [previews generated for files][2] are turned on automatically under their pseudonyms.
 
 If you do not want to switch to the new format, just indicate your old chunks and an empty **&tpl**:
 ```
@@ -58,7 +58,7 @@ If you do not want to switch to the new format, just indicate your old chunks an
 Although it is definitely better to rewrite them to Fenom. You will work more comfortably and change them faster.
 
 ### Scripts and styles
-Scripts and styles that you add are indicated by parameters **frontend_css** and **frontend_js**. 
+Scripts and styles that you add are indicated by parameters **frontend_css** and **frontend_js**.
 By default they have a simple interface, and the basic picture can be changed by a click (for old chunks, before the 2.0 version).
 
 For a new chunk of the 2.0 version there is also [Fotorama][3] if the picture container has `class="fotorama"`.
@@ -88,7 +88,7 @@ Output of pictures from different resources in one gallery
 ```
 
 
-[1]: /ru/01_Компоненты/01_pdoTools/03_Парсер.md
-[2]: /ru/01_Компоненты/18_ms2Gallery/02_Генерация_превью.md
+[1]: /components/01_pdoTools/03_Парсер.md
+[2]: /components/18_ms2Gallery/02_Генерация_превью.md
 [3]: http://fotorama.io/
 [4]: http://fotorama.io/customize/

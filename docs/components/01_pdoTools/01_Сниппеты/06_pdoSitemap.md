@@ -116,6 +116,6 @@
 
 [1]: http://rtfm.modx.com/extras/revo/googlesitemap
 [2]: http://bezumkin.ru/sitemap.xml
-[3]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
+[3]: /components/01_pdoTools/04_Общие_параметры.md
 [4]: http://www.sitemaps.org/ru/protocol.html#prioritydef
 [5]: http://www.sitemaps.org/ru/protocol.html#changefreqdef

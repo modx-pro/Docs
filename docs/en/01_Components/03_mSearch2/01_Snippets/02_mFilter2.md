@@ -1,7 +1,7 @@
-Snippet implements the second part of the component - filtration of the found results. 
+Snippet implements the second part of the component - filtration of the found results.
 
-It has a huge amount of settings and works using its own filtration class that you can expand. 
-You can organize filtration on any positions if you have a little knowledge PHP and use your imagination. 
+It has a huge amount of settings and works using its own filtration class that you can expand.
+You can organize filtration on any positions if you have a little knowledge PHP and use your imagination.
 
 [![](https://file.modx.pro/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20s.jpg)](https://file.modx.pro/files/3/a/5/3a53929e0b22f4c3849b9ab6dca71b20.png)
 
@@ -10,38 +10,38 @@ You can organize filtration on any positions if you have a little knowledge PHP 
  Name					    | By default					| Description
 ----------------------------|-------------------------------|--------------------------------------------------------
 **&paginator**				| pdoPage						| Snippet for page limits navigation, [pdoPage][1] by defaults.  You can specify set of parameters: **&paginator=`pdoPage@myParams`**.
-**&element**				| mSearch2						| Snippet caused for the output, [mSearch2][2] by defaults. You can specify set of parameters: **&element=`mSearch2@myParams`**. 
+**&element**				| mSearch2						| Snippet caused for the output, [mSearch2][2] by defaults. You can specify set of parameters: **&element=`mSearch2@myParams`**.
 **&sort**					| 								| Resource field list for the sorting. Specified in the format «table\|field:direction». You can specify a few fields with a comma, for example: «resource\|publishedon:desc,ms\|price:asc».
-**&filters**				| resource\|parent:parents		| List of resource filters with a comma, specified in the format «table\|field:method». 
+**&filters**				| resource\|parent:parents		| List of resource filters with a comma, specified in the format «table\|field:method».
 **&aliases**				| 								| Pseudonyms list for filter which are supposed to be used in the filter URL with a comma. Specified in the format «table\|field==pseudonym". For example: "resource\|parent==category".
-**&showEmptyFilters**		| true							| To show filters with one value only. 
+**&showEmptyFilters**		| true							| To show filters with one value only.
 **&resources**				| 								| Resource list fot the output, with a comma. This list will be processed by other parameters, such as **&parents**, **&showDeleted**, **&showHidden** and **&showUnpublished**.
-**&parents**				| 								| List of categories with a comma for the output restriction. 
-**&depth**					| 10							| Search depth of the resources from every parent. 
-**&tplOuter**				| tpl.mFilter2.outer			| Design chunk for the whole block of filters and results.  
-**&tplFilter.outer.default**| tpl.mFilter2.filter.outer		| Standard design chunk for one filter group. 
+**&parents**				| 								| List of categories with a comma for the output restriction.
+**&depth**					| 10							| Search depth of the resources from every parent.
+**&tplOuter**				| tpl.mFilter2.outer			| Design chunk for the whole block of filters and results.
+**&tplFilter.outer.default**| tpl.mFilter2.filter.outer		| Standard design chunk for one filter group.
 **&tplFilter.row.default**	| tpl.mFilter2.filter.checkbox	| Standard design chunk for one filter group. Displays as checkbox by default.
-**&showHidden**				| true							| To show resources hidden in the menu. 
-**&showDeleted**			| false							| To show remote resources. 
-**&showUnpublished**		| false							| To show unpublished products. 
+**&showHidden**				| true							| To show resources hidden in the menu.
+**&showDeleted**			| false							| To show remote resources.
+**&showUnpublished**		| false							| To show unpublished products.
 **&hideContainers**			| false							| To hide resources-containters.
-**&showLog**				| false							| To show additional information about snippet work. For the authorized in «mgr» context only. 
+**&showLog**				| false							| To show additional information about snippet work. For the authorized in «mgr» context only.
 **&suggestions**			| true							| This parameter includes the presumptive amount of result shown near every filter. Deactivate it if you are not satisfied with filter's speed.
 **&suggestionsMaxFilters**	| 200							| Maximal amount of filters operations (not the actual filters), for which tentative results work. If more operations are required - **suggestions** are deactivated.
-**&suggestionsMaxResults**	| 1000							| Maximal amount of resources, for which tentative results work. If there are more resources, **suggestions** will be deactivated. 
+**&suggestionsMaxResults**	| 1000							| Maximal amount of resources, for which tentative results work. If there are more resources, **suggestions** will be deactivated.
 **&suggestionsRadio**		| 								| List of filters with a comma, for which one choice of the value is possible only, for example radio and select elements. Predictions of these filter groups are not summable. For example: «resource\|class_key,ms\|new»
-**&suggestionsSliders**		| true							| Activates the work of tentative results with sliders, thus increasing total filtration number. 
+**&suggestionsSliders**		| true							| Activates the work of tentative results with sliders, thus increasing total filtration number.
 **&toPlaceholders**			| 								| If it is not empty, mFilter2 will keep all the data in placeholders: `[[+filters]]`, `[[+results]]` and `[[+total]]` with the prefix specified in the parameter. For example, if you indicate  **&toPlaceholders=\`my.\`**, you will get: `[[+my.filters]]`, `[[+my.results]]` and `[[+my.total]]`
 **&toSeparatePlaceholders**	| 								| Works the same way as **&toPlaceholders**, but **filters** also goes to separate placeholders. For example, if you indicate **&toSeparatePlaceholders=\`my.\`** and **&filters=\`tv\|test,resource\|pagetitle\`** you will get placeholders `[[+my.results]]`, `[[+my.total]]`, `[[+my.tv|test]]` and `[[+my.resource|pagetitle]]`.
-**&filter_delimeter**		| \|							| The delimeter of table code name and filter field. 
-**&method_delimeter**		| :								| The delimeter of filter full name and its processing method. 
-**&values_delimeter**		| ,								| The delimeter of filter values in an address line of a website. 
-**&tpls**					| 								| Chunks list for lines design with a comma. You can switch them using reference in $_REQUEST of **&tpl** parameter. 0 - is a chunk by default and then in sequence. For example: **&tpls=\`default,chunk1,chunk2\`**, for the product output by the chunk "chunk1", `$_REQUEST[tpl] = 1` should be sent in the request. 
-**&forceSearch**			| false							| Binding search for the output. If search query is not there, nothing will output. 
+**&filter_delimeter**		| \|							| The delimeter of table code name and filter field.
+**&method_delimeter**		| :								| The delimeter of filter full name and its processing method.
+**&values_delimeter**		| ,								| The delimeter of filter values in an address line of a website.
+**&tpls**					| 								| Chunks list for lines design with a comma. You can switch them using reference in $_REQUEST of **&tpl** parameter. 0 - is a chunk by default and then in sequence. For example: **&tpls=\`default,chunk1,chunk2\`**, for the product output by the chunk "chunk1", `$_REQUEST[tpl] = 1` should be sent in the request.
+**&forceSearch**			| false							| Binding search for the output. If search query is not there, nothing will output.
 **&fields**					| 								| Indexed fields list of the resource with a comma, where you should search. Also you can specify weight for every field with a comma: **&fields=`pagetitle:5,content:3,comment:1,tv_mytvname:2`**. System setting `mse2_index_fields` is used by default.
 **&onlyIndex**				| false							| To activate search mode on words index only and disactivate additional results found by the simple search via LIKE.
 **&showSearchLog**			| false							| To show detailed information on given points of resource when activating **&showLog**.
-**&sortAliases**			| 								| JSON array with class pseudonyms for sorting. See below for details. 
+**&sortAliases**			| 								| JSON array with class pseudonyms for sorting. See below for details.
 **&filterOptions**			| 								| JSON string with variables for javascript filter. See below for details.
 **&ajaxMode**   			| default						| Ajax mode of pagination:`default`, `scroll` or `button`. Works the same way as [pdoPage][1] does, but without using **&ajaxHistory** parameter.
 
@@ -50,17 +50,17 @@ You can organize filtration on any positions if you have a little knowledge PHP 
 When starting for the first time on page, snippet gets necessary filtration resources, which can be specified in two ways:
 
 * Explicit reference of the parameters, such as **&parents**, **&resources**, **&showHidden**, etc. They will be referred to the snippet specified in **&element**, and it will return appropriate id.
-* Search by mSearch2 algoritm, if there is something in `$_REQUEST[&queryVar]`. In this case found id will also be tested by the mentioned parameters. 
+* Search by mSearch2 algoritm, if there is something in `$_REQUEST[&queryVar]`. In this case found id will also be tested by the mentioned parameters.
 
-Then snippet inspects filter settings and generates data for them. After that snippet saves the settings in session (for ajax queries) and outputs designed chunks. 
+Then snippet inspects filter settings and generates data for them. After that snippet saves the settings in session (for ajax queries) and outputs designed chunks.
 
-Then you click on filters. Scripts catch their modificatioin, send a request to the server and update contents of the pages. 
+Then you click on filters. Scripts catch their modificatioin, send a request to the server and update contents of the pages.
 Everything is fully automated, you only should specify correct parameters and set up chunks.
 
 ## Scripts and styles
-In working with mFilter2, scripts and styles, specified in system settings, are registered. 
+In working with mFilter2, scripts and styles, specified in system settings, are registered.
 
-* **mse2_frontend_js** - standard javascript, `/assets/components/msearch2/js/web/default.js` by default 
+* **mse2_frontend_js** - standard javascript, `/assets/components/msearch2/js/web/default.js` by default
 * **mse2_frontend_css** - standard css styles, `/assets/components/msearch2/css/web/default.css` by default
 
 If you want to make some changes in standard files, you should rename them and specify new values in system settings, othertwise all your changes will be overwritten in regular updating.
@@ -88,16 +88,16 @@ Then "Send" button shows up in the form by default, and you should press it.
 * All the filter elements are supposed to be in one block with `#mse2_mfilter` in order to work properly.  That is the way it is prescribed in standard chunck **tpl.mFilter2.outer**.
 * Script works through Ajax, keeping the parameters in address line through HistoryAPI. That means you always have direct working link to filters status.
 * Script uses [jQueryUI.slider][3], which is connected automatically if needed, for implementing digital sliders
-* All the design is targeted at [Bootstrap 3][4] by default. 
+* All the design is targeted at [Bootstrap 3][4] by default.
 * Standard complete set is intended to work with minimal `[[!mFilter2]]` invocation and installed Bootstrap 3.
-If something goes wrong after changing the chunk - look carefully what exactly you have changed. 
+If something goes wrong after changing the chunk - look carefully what exactly you have changed.
 
 [![](https://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efds.jpg)](https://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efd.png)
 
 ## Chunks and design
 mFilter2 has one basic chunk, where all the its work results output, with basic placeholders: `[[+filters]]` and `[[+results]]`.
 
-Two snippets are responsible for the results: [pdoPage][1] by default, which runs [mSearch2][2] for the output of lines with documents. 
+Two snippets are responsible for the results: [pdoPage][1] by default, which runs [mSearch2][2] for the output of lines with documents.
 You can also specify other snippets, for example getPage and msProducts:
 ```
 [[!mFilter2?
@@ -108,8 +108,8 @@ You can also specify other snippets, for example getPage and msProducts:
 
 You can specify 2 proper chunks for every filter:
 
-* **&tplFilter.outer.table\|field**=`tpl.mFilter2.filter.outer` - chunk-wrapper where strings with filters (placeholder `[[+rows]]`) are inserted. 
-* **&tplFilter.row.table\|field**=`tpl.mFilter2.filter.checkbox` - chunk for design of one filter parameter, checkbox by default. There is also a chunk for numbers in complete set - you should specify it on your own. 
+* **&tplFilter.outer.table\|field**=`tpl.mFilter2.filter.outer` - chunk-wrapper where strings with filters (placeholder `[[+rows]]`) are inserted.
+* **&tplFilter.row.table\|field**=`tpl.mFilter2.filter.checkbox` - chunk for design of one filter parameter, checkbox by default. There is also a chunk for numbers in complete set - you should specify it on your own.
 
 For example, **sliders cause** for product price:
 ```
@@ -125,7 +125,7 @@ For example, **sliders cause** for product price:
 ]]
 ```
 
-And this is the output of parents' documents in **element select**: 
+And this is the output of parents' documents in **element select**:
 ```
 [[!mFilter2?
 	&parents=`0`
@@ -138,11 +138,11 @@ And this is the output of parents' documents in **element select**:
 ]]
 ```
 Specifying select field in **&suggestionsRadio** activates proper prediction work with the filter.
-Select block allows to choose one value only, so nearby values are not supposed to have pluses in front of predictions. 
+Select block allows to choose one value only, so nearby values are not supposed to have pluses in front of predictions.
 
-Thus, you can specify proper design chunks for every filter parameter. If they are not specified, the standard ones will be used. 
+Thus, you can specify proper design chunks for every filter parameter. If they are not specified, the standard ones will be used.
 
-## Filters 
+## Filters
 Filter structure is specified with the help of **&filters** parameter in `code_name_tables/field:filter` format. You can specify an unlimited amount of filters with a comma at once.
 
  Relation of real tables and code names:
@@ -153,9 +153,9 @@ Filter structure is specified with the help of **&filters** parameter in `code_n
 * **msoption** (msProductOption) - product options selection miniShop2, such as `size`, `color`, `tags`, etc.
 * **msvendor** (msVendor) - Selection of producer properties of a product, such as `title`, `country`, `phone`, etc.
 
-If you do not specify table code name, 'resource' will be used. And if you do not specify filter, `default` will be used. 
+If you do not specify table code name, 'resource' will be used. And if you do not specify filter, `default` will be used.
 
-You can specify a few filters for one field. for example for separate filtration on year and month. 
+You can specify a few filters for one field. for example for separate filtration on year and month.
 
 The example of filters in the work:
 ```
@@ -171,13 +171,13 @@ The example of filters in the work:
 ```
 [![](https://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9as.jpg)](https://file.modx.pro/files/9/6/3/963d4bc1be1657cdfd657d8fe0ce1e9a.png)
 
-A few standard filtration methods goes with mFilter2 in the set, which allow to output as appropriate. 
+A few standard filtration methods goes with mFilter2 in the set, which allow to output as appropriate.
 
 ### default
-Regular standard filter aimed at checkbox output. It is applicable to all the fields, for which the filter is not specified. 
+Regular standard filter aimed at checkbox output. It is applicable to all the fields, for which the filter is not specified.
 
 ### number
-Filter for numbers from min to max. It is highly recommended to specify proper chuncks while using the filter, for output to be designed by sliders. 
+Filter for numbers from min to max. It is highly recommended to specify proper chuncks while using the filter, for output to be designed by sliders.
 ```
 [[!mFilter2?
 	&filters=`
@@ -390,7 +390,7 @@ This is what snippet will get after processing parameters from the latter exampl
 `msProduct`.`publishedon` ASC, `msProduct`.`createdby` DESC, `Data`.`price` ASC, `Vendor`.`name` DESC
 ```
 
-As you see, **&sort** is clearly dependent on two things: what snippet chooses data and how tables are joined in it. 
+As you see, **&sort** is clearly dependent on two things: what snippet chooses data and how tables are joined in it.
 This means that when you have any sorting mistakes, you should check the work log and the system log.
 
 If you need more pseudonyms, you can add them with parameter **&sortAliases**.
@@ -427,8 +427,8 @@ We add option **test1**, then add a pseudonym for this table and sort by the val
 Link for sorting in chunk `tpl.mFilter2.outer` in this case should be like this:
 ```
 <a href="#" class="sort [[+mse2_sort:is=``:then=`active`]]"
-    data-sort="test1" 
-    data-dir="[[+mse2_sort:is=``:then=`desc`]]" 
+    data-sort="test1"
+    data-dir="[[+mse2_sort:is=``:then=`desc`]]"
     data-default="desc">Test1 <span></span></a>
 ```
 Note that naming the pseudonym in **&aliases** gives us the opportunity to sort by `test1` instead of `test1|value`.
@@ -468,11 +468,11 @@ If you implement a new filter and it appears as a long and confusing caption in 
 
 
 
-[1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/03_pdoPage.md
-[2]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/01_mSearch2.md
+[1]: /components/01_pdoTools/01_Сниппеты/03_pdoPage.md
+[2]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
 [3]: http://jqueryui.com/slider/
 [4]: http://getbootstrap.com/
-[5]: /ru/01_Компоненты/02_miniShop2/02_Сниппеты/01_msProducts.md
-[6]: /ru/01_Компоненты/03_mSearch2/03_Расширение/01_Методы_фильтрации.md
+[5]: /components/02_miniShop2/02_Сниппеты/01_msProducts.md
+[6]: /components/03_mSearch2/03_Расширение/01_Методы_фильтрации.md
 
 

@@ -126,8 +126,8 @@
 
 При таком вызове вы сможете использовать все поля товаров в чанке оформления.
 
-[1]: /ru/01_Компоненты/01_pdoTools
-[2]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/01_pdoResources.md
-[3]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/03_pdoPage.md
-[4]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/03_mSearchForm.md
-[5]: /ru/01_Компоненты/02_miniShop2/02_Сниппеты/01_msProducts.md
+[1]: /components/01_pdoTools
+[2]: /components/01_pdoTools/01_Сниппеты/01_pdoResources.md
+[3]: /components/01_pdoTools/01_Сниппеты/03_pdoPage.md
+[4]: /components/03_mSearch2/01_Сниппеты/03_mSearchForm.md
+[5]: /components/02_miniShop2/02_Сниппеты/01_msProducts.md

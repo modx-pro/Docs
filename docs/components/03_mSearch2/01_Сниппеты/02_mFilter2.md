@@ -558,9 +558,9 @@ $(document).on('mse2_load', function(e, data) {
 
 ![Лексиконы - 2](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
 
-[1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/03_pdoPage.md
-[2]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/01_mSearch2.md
+[1]: /components/01_pdoTools/01_Сниппеты/03_pdoPage.md
+[2]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
 [3]: http://jqueryui.com/slider/
 [4]: http://getbootstrap.com/
-[5]: /ru/01_Компоненты/02_miniShop2/02_Сниппеты/01_msProducts.md
-[6]: /ru/01_Компоненты/03_mSearch2/03_Расширение/01_Методы_фильтрации.md
+[5]: /components/02_miniShop2/02_Сниппеты/01_msProducts.md
+[6]: /components/03_mSearch2/03_Расширение/01_Методы_фильтрации.md

@@ -32,5 +32,5 @@
 ]]
 ```
 
-[1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/01_pdoResources.md
-[2]: /ru/01_Компоненты/18_ms2Gallery/02_Генерация_превью.md
+[1]: /components/01_pdoTools/01_Сниппеты/01_pdoResources.md
+[2]: /components/18_ms2Gallery/02_Генерация_превью.md

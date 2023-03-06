@@ -65,5 +65,5 @@
 ]]
 ```
 
-[0]: /ru/01_Компоненты/44_SeoFilter/04_Сниппеты/03_sfMenu.md
-[1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/06_pdoSitemap.md
+[0]: /components/44_SeoFilter/04_Сниппеты/03_sfMenu.md
+[1]: /components/01_pdoTools/01_Сниппеты/06_pdoSitemap.md

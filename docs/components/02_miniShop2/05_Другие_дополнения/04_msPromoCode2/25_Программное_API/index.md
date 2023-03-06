@@ -15,26 +15,26 @@ $tools = $mspc2->getTools();
 $data = [
     'code' => 'coupon_code', // Код
     'list' => 'default', // Список
-    
+
     'discount' => '50%', // Скидка
     'count' => 20, // Кол-во
-    
+
     'startedon' => 0, // Начало действия (timestamp)
     'stoppedon' => 0, // Конец действия (timestamp)
-    
+
     'description' => '', // Описание
-    
+
     'active' => true, // Включено
-    
+
     'showinfo' => true, // Показывать предупреждения
-    
+
     'oneunit' => false, // На одну единицу товара
-    
+
     'onlycart' => true, // Только в корзине
-    
+
     'unsetifnull' => true, // Не применять без скидки
     'unsetifnull_msg' => '', // Текст при отмене
-    
+
     'oldprice' => false, // Без старой цены
 ];
 
@@ -245,7 +245,7 @@ $data = [
     'count' => 1, // Сколько раз можно применить генерируемый промо-код
     'discount' => '10%', // Размер скидки для генерируемого промо-кода
     'description' => '', // Описание промо-кода
-    
+
     // Конфиг
     'showinfo' => true, // Показывать предупреждения
     'oneunit' => false, // На одну единицу товара
@@ -253,7 +253,7 @@ $data = [
     'unsetifnull' => false, // Не применять без скидки
     'unsetifnull_msg' => '', // Текст при отмене
     'oldprice' => false, // Без старой цены
-    
+
     // Время действия
     // 'lifetime' => 60 * 20, // В секундах
     // или
@@ -285,5 +285,5 @@ if (is_array($result)) {
 
 
 
-[14]: /ru/01_Компоненты/02_miniShop2/05_Другие_дополнения/04_msPromoCode2/17_События_плагинов/index.md
-[15]: /ru/01_Компоненты/02_miniShop2/05_Другие_дополнения/04_msPromoCode2/15_События_jQuery.md
+[14]: /components/02_miniShop2/05_Другие_дополнения/04_msPromoCode2/17_События_плагинов/index.md
+[15]: /components/02_miniShop2/05_Другие_дополнения/04_msPromoCode2/15_События_jQuery.md

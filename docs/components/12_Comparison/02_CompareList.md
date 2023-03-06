@@ -154,7 +154,7 @@ return json_encode($row);
 
 При работе будет добавлен недостающий плейсхолдер `[[+thumb]]` с картинкой из ТВ параметра или изображением по умолчанию, если ТВ пуст.
 
-[1]: /ru/01_Компоненты/01_pdoTools/
-[2]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
-[3]: /ru/01_Компоненты/02_miniShop2/
-[4]: /ru/01_Компоненты/12_Comparison/01_addComparison.md
+[1]: /components/01_pdoTools/
+[2]: /components/01_pdoTools/04_Общие_параметры.md
+[3]: /components/02_miniShop2/
+[4]: /components/12_Comparison/01_addComparison.md

@@ -76,4 +76,4 @@
 [[!+page.nav]]
 ```
 
-[1]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/02_mFilter2.md
+[1]: /components/03_mSearch2/01_Сниппеты/02_mFilter2.md

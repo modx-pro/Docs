@@ -28,7 +28,7 @@
 [[!msGetOrder]] <!-- Вывод информации о заказе, показывается после его создания -->
 ```
 
-[0104]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
-[0101]: /ru/01_Компоненты/01_pdoTools/
-[010103]: /ru/01_Компоненты/01_pdoTools/03_Парсер.md
-[010101]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/01_pdoResources.md
+[0104]: /components/01_pdoTools/04_Общие_параметры.md
+[0101]: /components/01_pdoTools/
+[010103]: /components/01_pdoTools/03_Парсер.md
+[010101]: /components/01_pdoTools/01_Сниппеты/01_pdoResources.md

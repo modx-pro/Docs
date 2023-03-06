@@ -1,16 +1,16 @@
 # ms2form
 
-Выводит форму для создания продукта minishop2 пользователем из фронтэнда.  
+Выводит форму для создания продукта minishop2 пользователем из фронтэнда.
 
 [![](https://file.modx.pro/files/c/3/a/c3a73249165844c116d0463006c6272cs.jpg)](https://file.modx.pro/files/c/3/a/c3a73249165844c116d0463006c6272c.png)
 
-[Github][1]  
+[Github][1]
 [Поcледние версии][2]
 
 ## Возможности
 
 - Создание продуктов minishop2 из фронтэнда.
-- Редактирование существующих minishop2 продуктов с фронтенда, с проверкой прав.  
+- Редактирование существующих minishop2 продуктов с фронтенда, с проверкой прав.
 - Поддержка нескольких редакторов [quill][3] и [bootstrap-markdown][4].
 - Автоматическое создание новой категории в которой будет опубликован продукт, интеграция с msearch2 для автодополнения.
 - Загрузка изображений в галерею продукта перетаскиванием, запись превью на диск, настройка параметров через источник файлов.
@@ -143,5 +143,5 @@ tpl.ms2form.update:
 [2]: https://github.com/me6iaton/ms2form/releases
 [3]: http://quilljs.com/
 [4]: http://www.codingdrama.com/bootstrap-markdown/
-[5]: http://rtfm.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.makeurl
+[5]: https://docs.modx.com/current/en/extending-modx/modx-class/reference/modx.makeurl
 [6]: https://github.com/me6iaton/ms2form/issues

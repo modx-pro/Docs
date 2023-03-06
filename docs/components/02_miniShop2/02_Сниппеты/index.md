@@ -13,5 +13,5 @@
 
 miniShop2.4 - первый компонент MODX, использующий только чанки с синтаксисом Fenom.
 
-[1]: /ru/01_Компоненты/01_pdoTools
-[2]: /ru/01_Компоненты/01_pdoTools/03_Парсер.md
+[1]: /components/01_pdoTools
+[2]: /components/01_pdoTools/03_Парсер.md

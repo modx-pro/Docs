@@ -19,6 +19,6 @@
 
 [Подробно про конструктор карт][3]
 
-[1]: /ru/01_Компоненты/48_YandexMaps2/05_Работа_с_mFilter2.md
+[1]: /components/48_YandexMaps2/05_Работа_с_mFilter2.md
 [2]: https://modstore.pro/packages/photos-and-files/userfiles
-[3]: /ru/01_Компоненты/48_YandexMaps2/09_Конструктор_карт.md
+[3]: /components/48_YandexMaps2/09_Конструктор_карт.md

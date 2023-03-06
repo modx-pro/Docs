@@ -41,4 +41,4 @@
 [[!msBuy? &id=`[[*id]]`]]
 ```
 
-[1]: /ru/01_Компоненты/02_miniShop2/
+[1]: /components/02_miniShop2/

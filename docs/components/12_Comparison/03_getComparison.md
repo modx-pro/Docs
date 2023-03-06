@@ -28,5 +28,5 @@
 
 На странице сравнения, где у вас должен быть вызван [CompareList][1] для этого списка, ссылка не выводится.
 
-[0]: /ru/01_Компоненты/12_Comparison/01_addComparison.md
-[1]: /ru/01_Компоненты/12_Comparison/02_CompareList.md
+[0]: /components/12_Comparison/01_addComparison.md
+[1]: /components/12_Comparison/02_CompareList.md

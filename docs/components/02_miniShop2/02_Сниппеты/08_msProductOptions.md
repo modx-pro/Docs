@@ -26,6 +26,6 @@
 
 [![](https://file.modx.pro/files/d/b/c/dbc7a001d2c7fe6d565b054a5119099bs.jpg)](https://file.modx.pro/files/d/b/c/dbc7a001d2c7fe6d565b054a5119099b.png)
 
-[1]: /ru/01_Компоненты/02_miniShop2/02_Сниппеты/07_msOptions.md
-[2]: /ru/01_Компоненты/02_miniShop2/01_Интерфейс/04_Настройки.md
-[3]: /ru/01_Компоненты/01_pdoTools/03_Парсер.md
+[1]: /components/02_miniShop2/02_Сниппеты/07_msOptions.md
+[2]: /components/02_miniShop2/01_Интерфейс/04_Настройки.md
+[3]: /components/01_pdoTools/03_Парсер.md

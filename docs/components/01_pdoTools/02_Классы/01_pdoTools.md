@@ -48,7 +48,7 @@ print_r($pdo->getTime());
 
 Выведет:
 
-``` text
+``` txt
 0.0000150: pdoTools инициализирован
 0.0000272: Total time
 1 572 864: Memory usage
@@ -125,7 +125,7 @@ print_r($data);
 
 В первый раз наш код покажет примерно такое
 
-``` text
+``` txt
 0.0000281: pdoTools загружен
 0.0004001: No cached data for key "default/e713939a1827e7934ff0242361c06b4b10c53d97"
 0.0000079: Кэш не найден, генерируем данные
@@ -137,7 +137,7 @@ print_r($data);
 
 А затем вот такое:
 
-``` text
+``` txt
 0.0000310: pdoTools загружен
 0.0007479: Retrieved data from cache "default/e713939a1827e7934ff0242361c06b4b10c53d97"
 0.0000081: Данные загружены из кэша
@@ -254,7 +254,7 @@ print_r($res);
 1. В чанке должен быть какой-то тег, например **[[+tag]]**.
 2. В чанке должен быть специальный html комментарий в таком виде:
 
-``` text
+``` txt
 <!--pdotools_tag значение, если тег не пуст-->
 <!--pdotools_!tag значение, если тег пуст, появилось только в версии 1.9.3-->
 ```
@@ -281,7 +281,7 @@ echo $pdo->getChunk($tpl, $pls);
 
 Получаем
 
-``` text
+``` txt
 1 - значение, если тег не пуст
 
 значение, если тег пуст, появилось только в версии 1.9.3
@@ -296,7 +296,7 @@ echo $pdo->getChunk($tpl, $pls);
 С версии 2.0 pdoTools включает в свой состав шаблонизатор [Fenom][4], что позволяет отказаться от тегов MODX и писать в чанках более продвинутую логику.
 Про работу с Fenom читайте в разделе [pdoParser][3].
 
-[1]: /ru/01_Компоненты/01_pdoTools/01_Сниппеты/02_pdoMenu.md
-[2]: /ru/01_Компоненты/01_pdoTools/02_Классы/02_pdoFetch.md
-[3]: /ru/01_Компоненты/01_pdoTools/02_Классы/03_pdoParser.md
+[1]: /components/01_pdoTools/01_Сниппеты/02_pdoMenu.md
+[2]: /components/01_pdoTools/02_Классы/02_pdoFetch.md
+[3]: /components/01_pdoTools/02_Классы/03_pdoParser.md
 [4]: https://github.com/fenom-template/fenom/tree/master/docs/ru#readme

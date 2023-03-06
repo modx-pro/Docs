@@ -124,6 +124,6 @@ List all resources in one step:
 ```
 
 
-[0]: http://rtfm.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.makeurl
+[0]: https://docs.modx.com/current/en/extending-modx/modx-class/reference/modx.makeurl
 [1]: https://rtfm.modx.com/extras/revo/wayfinder
 [2]: http://forums.modx.com/thread/?thread=34176&i=1&page=13

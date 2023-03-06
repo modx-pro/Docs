@@ -64,4 +64,4 @@
 
 Если у вас есть вопросы, то можете задавать их на modx.pro в топиках про SeoFilter.
 
-[0]: /ru/01_Компоненты/44_SeoFilter/01_Быстрый_старт_с_mFilter2.md
+[0]: /components/44_SeoFilter/01_Быстрый_старт_с_mFilter2.md

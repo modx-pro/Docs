@@ -96,7 +96,7 @@
 
 Подробнее о расширении шаблонов вы можете прочитать в [документации Fenom][4].
 
-[1]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
-[2]: /ru/01_Компоненты/01_pdoTools/03_Парсер.md
-[3]: /ru/01_Компоненты/02_miniShop2/01_Интерфейс/04_Настройки.md
+[1]: /components/01_pdoTools/04_Общие_параметры.md
+[2]: /components/01_pdoTools/03_Парсер.md
+[3]: /components/02_miniShop2/01_Интерфейс/04_Настройки.md
 [4]: https://github.com/fenom-template/fenom/blob/master/docs/ru/tags/extends.md

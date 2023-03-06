@@ -72,7 +72,7 @@ msImportExport интегрирован с дополнениями:
 
 **Пример:**
 
-```text
+```txt
 assets/pic/pic2.jpeg|assets/pic/pic3.jpg
 ```
 
@@ -83,7 +83,7 @@ alias — данное поле, как правило, импортироват
 
 **Пример импорт цвета для товара:**
 
-```text
+```txt
 Зеленый|Красный
 ```
 
@@ -301,7 +301,7 @@ msProductRemains (ключ mspr_options) и разделены символом 
 * в системных настройках modx включить опцию “Ожидать завершения выполнения скрипта в фоне” (ключ msimportexport.cron_wait )
 * убрать символ "&" в конце скрипта для крона
 
-```text
+```txt
 ...... /core/components/msimportexport/cron.php 1> /dev/null 2>&1 &
 ```
 
@@ -309,7 +309,7 @@ msProductRemains (ключ mspr_options) и разделены символом 
 
 Для того, чтобы сделать экспорт по cron необходимо дернуть следующею ссылку
 
-```text
+```txt
 /assets/components/msimportexport/export/export.php
 ```
 
@@ -326,13 +326,13 @@ msProductRemains (ключ mspr_options) и разделены символом 
 
 **Пример ссылки экспорта продукта в xlsx через wget:**
 
-```text
+```txt
 /assets/components/msimportexport/export.php?token=5321a3450db953783b7076a7e72072bb&to=xlsx&type=products&preset=1&save=0
 ```
 
 **Пример ссылки экспорта продукта в xlsx через консоль:**
 
-```text
+```txt
 php /assets/components/msimportexport/export.php token=5321a3450db953783b7076a7e72072bb to=xlsx type=products preset=1 save=1
 ```
 
@@ -392,7 +392,7 @@ switch ($modx->event->name) {
 которого (pagetitle) уже есть в том же каталоге (одинаковый родитель). Если это никак не обработать то modx
 сгенерирует ошибку:
 
-```text
+```txt
 uri: Ресурс с идентификатором ID уже использует URI alias: Ресурс с идентификатором ID уже использует URI.
 Пожалуйста, введите уникальный псевдоним или используйте «Заморозить URI», чтобы вручную заменить его.
 ```

@@ -77,4 +77,4 @@
 
 Таким образом, вы сами определяете, какой товар с чем можно сравнивать - указанием **&list** при вызове.
 
-[1]: /ru/01_Компоненты/12_Comparison/02_CompareList.md
+[1]: /components/12_Comparison/02_CompareList.md

@@ -148,12 +148,12 @@
 
 Пример скрипта callback `http://site.ru/assets/components/msliveinform/callback.php`.
 
-[0101]: /ru/01_Компоненты/01_pdoTools/
-[010103]: /ru/01_Компоненты/01_pdoTools/03_Парсер.md
-[0102]: /ru/01_Компоненты/02_miniShop2/
-[010200]: /ru/01_Компоненты/02_miniShop2/00_Быстрый_старт.md
-[01020103]: /ru/01_Компоненты/02_miniShop2/01_Интерфейс/03_Заказы.md
-[0104]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
+[0101]: /components/01_pdoTools/
+[010103]: /components/01_pdoTools/03_Парсер.md
+[0102]: /components/02_miniShop2/
+[010200]: /components/02_miniShop2/00_Быстрый_старт.md
+[01020103]: /components/02_miniShop2/01_Интерфейс/03_Заказы.md
+[0104]: /components/01_pdoTools/04_Общие_параметры.md
 
 [001]: https://liveinform.ru/?partner=166
 [00101]: https://www.liveinform.ru/account/settings?partner=166

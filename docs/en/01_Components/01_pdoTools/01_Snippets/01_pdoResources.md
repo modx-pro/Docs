@@ -90,4 +90,4 @@ To add a TV named  «image», then the call will be as follows:
 
 The chunk **ListRowTpl** will now allow the placeholder `[[+tv.image]]`.
 
-[0]: http://rtfm.modx.com/revolution/2.x/developing-in-modx/other-development-resources/class-reference/modx/modx.makeurl
+[0]: https://docs.modx.com/current/en/extending-modx/modx-class/reference/modx.makeurl

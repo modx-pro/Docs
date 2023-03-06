@@ -65,9 +65,9 @@
 
 [Александру Рахимову][6] за помощь в создании компонента
 
-[1]: /ru/01_Компоненты/02_miniShop2/
+[1]: /components/02_miniShop2/
 [2]: http://dev.dellin.ru/cms/
 [3]: http://kladr-api.ru/
-[4]: /ru/01_Компоненты/02_miniShop2/02_Сниппеты/03_msOrder.md
-[5]: /ru/01_Компоненты/02_miniShop2/05_Другие_дополнения/08_msDaData.md
+[4]: /components/02_miniShop2/02_Сниппеты/03_msOrder.md
+[5]: /components/02_miniShop2/05_Другие_дополнения/08_msDaData.md
 [6]: https://store.simpledream.ru/packages/?package|createdby=180

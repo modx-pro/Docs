@@ -2,7 +2,7 @@
 
 ## Пример задания для крона:
 
-```text
+```txt
 0 2 * * * php /home_path/core/components/xparser/cron/parser.php ids debug_mode
 ```
 

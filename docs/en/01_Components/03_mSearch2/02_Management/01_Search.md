@@ -9,8 +9,8 @@ This page has an interesting feature: it gives you an opportunity to go to the p
 That is, **mSearch2 adds morphological search of full value to your control system MODX**.
 
 
-[1]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/01_mSearch2.md
-[2]: /ru/01_Компоненты/03_mSearch2/01_Сниппеты/02_mFilter2.md
+[1]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
+[2]: /components/03_mSearch2/01_Сниппеты/02_mFilter2.md
 
 
 

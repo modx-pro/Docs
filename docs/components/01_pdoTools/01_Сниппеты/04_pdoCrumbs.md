@@ -117,5 +117,5 @@
 ![Демо](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
 
 [1]: http://rtfm.modx.com/extras/revo/breadcrumb
-[2]: /ru/01_Компоненты/01_pdoTools/04_Общие_параметры.md
+[2]: /components/01_pdoTools/04_Общие_параметры.md
 [3]: https://modx.pro/search?query=pdotools

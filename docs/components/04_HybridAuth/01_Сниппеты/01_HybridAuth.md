@@ -79,9 +79,9 @@
 
 *Для правильной работы сниппета желательно включить дружественные url.*
 
-[1]: /ru/01_Компоненты/04_HybridAuth/02_Провайдеры/11_Yandex.md
-[2]: /ru/01_Компоненты/04_HybridAuth/02_Провайдеры/13_Vkontakte.md
-[3]: /ru/01_Компоненты/04_HybridAuth/02_Провайдеры/12_Twitter.md
-[4]: /ru/01_Компоненты/04_HybridAuth/02_Провайдеры/06_Google.md
-[5]: /ru/01_Компоненты/04_HybridAuth/02_Провайдеры/02_Facebook.md
-[6]: /ru/01_Компоненты/04_HybridAuth/02_Провайдеры/
+[1]: /components/04_HybridAuth/02_Провайдеры/11_Yandex.md
+[2]: /components/04_HybridAuth/02_Провайдеры/13_Vkontakte.md
+[3]: /components/04_HybridAuth/02_Провайдеры/12_Twitter.md
+[4]: /components/04_HybridAuth/02_Провайдеры/06_Google.md
+[5]: /components/04_HybridAuth/02_Провайдеры/02_Facebook.md
+[6]: /components/04_HybridAuth/02_Провайдеры/
