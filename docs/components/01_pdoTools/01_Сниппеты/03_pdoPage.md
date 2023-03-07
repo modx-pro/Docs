@@ -230,7 +230,7 @@ $(document).on('pdopage_load', function(e, config, response) {
 
 Это приведёт к генерации ссылок, типа
 
-```txt
+```
 /res/news/
 /res/news/page-2
 /res/news/page-3

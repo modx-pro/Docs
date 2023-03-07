@@ -1,6 +1,8 @@
+# Frontend Editor
+
 Frontend Editor это простой плагин который позволяет редактировать контент не заходя в админ панель. Он включает в себя TinyMCE 5 для удобного редактирования.
 
-[![](https://file.modx.pro/files/5/c/8/5c8ed6dafbae4a9e2d4457b19787f0f1s.jpg)](https://file.modx.pro/files/5/c/8/5c8ed6dafbae4a9e2d4457b19787f0f1.png)
+![Frontend Editor](https://file.modx.pro/files/5/c/8/5c8ed6dafbae4a9e2d4457b19787f0f1.png)
 
 ## Возможности
 
@@ -20,7 +22,7 @@ Frontend Editor это простой плагин который позволя
 
 Доступные значения: `content, pagetitle, longtitle, menutitle, description, introtext`
 
-#### Редактирование TV полей
+### Редактирование TV полей
 
 Для редактирования TV полей в качестве значения атрибута необходимо указать  `tv-` перед названием поля.
 
@@ -30,7 +32,7 @@ Frontend Editor это простой плагин который позволя
 </div>
 ```
 
-#### Выбор редактора
+### Выбор редактора
 
 Для каждого поля можно указать один из двух типов редакторов: TinyMCE `tinymce` (по умолчанию можно не указывать) или простое поле ввода `simple`.
 
@@ -40,7 +42,7 @@ Frontend Editor это простой плагин который позволя
 </div>
 ```
 
-#### Редактирование значений по ID ресурса
+### Редактирование значений по ID ресурса
 
 Если нужно отредактировать поля другого ресурса нужно указать его id в качестве первой опции. Это особенно полезно для создания редактируемых меню, breadcrumbs и других элементов интерфейса.
 
@@ -48,13 +50,13 @@ Frontend Editor это простой плагин который позволя
 
 ```html
 <a href="/index.php?id=2" data-frontendeditor="2, pagetitle, simple">
-    [[pdoField?&id=`2`&field=`pagetitle`]]
+    [[pdoField? &id=`2` &field=`pagetitle`]]
 </a>
 ```
 
 Пример редактируемого меню:
 
-```html
+```modx
 [[pdoMenu?
     &parents=`0`
     &tpl=`@INLINE <li><a href="[[+link]]" data-frontendeditor="[[+id]], menutitle, simple">[[+menutitle]]</a>[[+wrapper]]</li>`
@@ -67,34 +69,29 @@ Frontend Editor это простой плагин который позволя
 
 ## Дополнительные настройки
 
-`frontendeditor.tinymce_init_default` - конфигурация TinyMCE подробнее смотрите [документацию TinyMCE 5.0 ][1]
-
+`frontendeditor.tinymce_init_default` - конфигурация TinyMCE подробнее смотрите [документацию TinyMCE 5.0](https://www.tiny.cloud/docs/)
 `frontendeditor.upload_path` - директория загрузки изображений
-
 `frontendeditor.upload_file_name` - обработка имени файла, может принимать следующие значения:
 
-* пусто(по умолчанию) - ничего не делает
-* sanitize - удаляет символы  `$-+!*'(),{}|\\^~[]`<>#%\";/?:@&=`
-* uniqid - генерирует уникальное имя вида 5db365920976f.png
+- пусто(по умолчанию) - ничего не делает
+- sanitize - удаляет символы  ```$-+!*'(),{}|\\^~[]`<>#%\";/?:@&=```
+- uniqid - генерирует уникальное имя вида `5db365920976f.png`
 
-`frontendeditor.menutitle_behavior` - поведение редактора для пустых полей menutitle. Может принимать следующие значения:
+`frontendeditor.menutitle_behavior` - поведение редактора для пустых полей `menutitle`. Может принимать следующие значения:
 
-* 0 - редактор работает с пустыми menutitle так же как и с остальными полями.
-* 1(по умолчанию) - В пустые поля menutitle подставляется значение из pagetitle, а сохраняются menutitle.
-* 2 - В пустые поля menutitle подставляется значение из pagetitle и сохраняются pagetitle.
+- 0 - редактор работает с пустыми `menutitle` так же как и с остальными полями.
+- 1 (по умолчанию) - В пустые поля `menutitle` подставляется значение из `pagetitle`, а сохраняются `menutitle`.
+- 2 - В пустые поля `menutitle` подставляется значение из `pagetitle` и сохраняются `pagetitle`.
 
 ## Системные требования
 
-* На тех страницах где вы собираетесь использовать редактор должен быть указан DOCTYPE такой как: <!DOCTYPE html>
-* TinyMCE 5 должен [поддерживать][2] ваш браузер.
+- На тех страницах где вы собираетесь использовать редактор должен быть указан DOCTYPE такой как: `<!DOCTYPE html>`
+- TinyMCE 5 должен [поддерживать](https://www.tiny.cloud/docs/general-configuration-guide/system-requirements) ваш браузер.
 
 ## Cкриншоты
 
-[![](https://file.modx.pro/files/1/6/1/1617d1d329d68265515338e0d4b9bd08.png)](https://file.modx.pro/files/1/6/1/1617d1d329d68265515338e0d4b9bd08.png)
+![Cкриншоты - 1](https://file.modx.pro/files/1/6/1/1617d1d329d68265515338e0d4b9bd08.png)
 
-[![](https://file.modx.pro/files/e/3/4/e3483249078e30ae051b9fd74f09dae5.png)](https://file.modx.pro/files/e/3/4/e3483249078e30ae051b9fd74f09dae5.png)
+![Cкриншоты - 2](https://file.modx.pro/files/e/3/4/e3483249078e30ae051b9fd74f09dae5.png)
 
-[![](https://file.modx.pro/files/7/4/a/74a888cbb8f1635033b868120a366850.png)](https://file.modx.pro/files/7/4/a/74a888cbb8f1635033b868120a366850.png)
-
-[1]: https://www.tiny.cloud/docs/
-[2]: https://www.tiny.cloud/docs/general-configuration-guide/system-requirements
+![Cкриншоты - 3](https://file.modx.pro/files/7/4/a/74a888cbb8f1635033b868120a366850.png)
