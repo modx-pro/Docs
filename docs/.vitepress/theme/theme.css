@@ -1,0 +1,47 @@
+:root {
+    --vp-font-family-base: 'Montserrat', sans-serif;
+    --vp-shadow-6: 0px 4px 15px rgba(47, 63, 147, 0.08);
+    --vp-border: var(--vp-border-width) solid var(--vp-c-divider);
+    --vp-border-width: 4px;
+    --vp-border-radius: 20px;
+}
+
+.VPNav {
+    background-color: var(--vp-c-bg);
+    border-radius: 0 0 var(--vp-border-radius) var(--vp-border-radius);
+    box-shadow: var(--vp-shadow-6);
+}
+
+.VPNavBar.has-sidebar {
+    border-bottom: none;
+}
+
+.VPNavBarTitle .title {
+    font-size: 0;
+    border: none;
+}
+
+.VPDocAsideOutline {
+    border: var(--vp-border);
+    border-radius: var(--vp-border-radius);
+    padding: 24px 24px 24px 0;
+}
+
+.VPDocAsideOutline .content {
+    padding-left: 24px;
+    border-left: none;
+}
+
+.VPDocAsideOutline .outline-marker {
+    width: 4px;
+    left: -4px;
+}
+
+.pager .pager-link {
+    border-width: 4px;
+    border-color: var(--vp-c-divider);
+}
+
+.curtain {
+    display: none;
+}
