@@ -33,6 +33,15 @@ export default defineConfig({
         appId: "BCE7F5SAJ2",
     },
     themeConfig: {
+        logo: {
+            light: 'logo.svg',
+            dark: 'logo-dark.svg',
+        },
+        ecosystem: [
+            { text: 'modhost.pro', link: 'https://modhost.pro', logo: 'modhost.png' },
+            { text: 'modstore.pro', link: 'https://modstore.pro', logo: 'modstore.svg' },
+            { text: 'modx.pro', link: 'https://modx.pro', logo: 'modxpro.png' },
+        ],
         socialLinks: [
             { icon: "github", link: "https://github.com/modx-pro/Docs" },
         ],
