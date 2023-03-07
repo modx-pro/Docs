@@ -1,3 +1,5 @@
+# customExtra
+
 Компонент позволяет вывести в админке MODX табличку, набор полей которой можно настраивать. Предназначен для упрощения жизни разработчиков.
 
 После установки компонента, в админке появляется соответствующий раздел. В этом разделе можно увидеть обычную табличку со списком кастомных объектов.
@@ -10,7 +12,7 @@
 
 Чтобы отобразить все доступные табы, необходимо указать следующий список:
 
-```
+```php
 item,order,operation,media,link
 ```
 
@@ -24,11 +26,14 @@ item,order,operation,media,link
 
 ```php
 <?php
-$modx->addPackage('customextra', $modx->getOption('core_path').'components/customextra/model/');
-$request = $modx->newObject('customExtraOperation');
-$request->set('name', $_POST['name']);
-$request->set('string1', $_POST['contact']);
-$request->set('description', $_POST['text']);
+$modx->addPackage(
+    "customextra",
+    $modx->getOption("core_path") . "components/customextra/model/"
+);
+$request = $modx->newObject("customExtraOperation");
+$request->set("name", $_POST["name"]);
+$request->set("string1", $_POST["contact"]);
+$request->set("description", $_POST["text"]);
 $request->save();
 return true;
 ```
@@ -37,7 +42,7 @@ return true;
 
 Выводятся объекты с помощью pdoTools
 
-```php
+```modx
 [[pdoResources?
   &class=`customExtraMedia`
   &loadModels=`customextra`
@@ -56,7 +61,7 @@ return true;
 
 При выводе на фронтенд объекты можно фильтровать по этим чекбоксам (впрочем, как и по любым другим полям):
 
-```php
+```modx
 [[pdoResources?
   &class=`customExtraItem`
   &loadModels=`customextra`
@@ -76,31 +81,36 @@ return true;
 
 ```php
 <?php
-$modx->addPackage('customextra', $modx->getOption('core_path').'components/customextra/model/');
+$modx->addPackage(
+    "customextra",
+    $modx->getOption("core_path") . "components/customextra/model/"
+);
 // Укажем, по сколько объектов обрабатывать за раз
 $step = 5;
 // Формируем запрос
-$q = $modx->newQuery('customExtraOrder', array('new' => 1));
+$q = $modx->newQuery("customExtraOrder", ["new" => 1]);
 // Посчитаем, сколько всего объектов с отмеченной галочкой в базе
-$count = $modx->getCount('customExtraOrder', $q);
+$count = $modx->getCount("customExtraOrder", $q);
 // Если «Новых» объектов не найдено, останавливаем выполнение
-if ($count == 0) return true;
+if ($count == 0) {
+    return true;
+}
 // Установим лимит
 $q->limit($step);
 // И получим порцию объектов для обработки
-$orders = $modx->getCollection('customExtraOrder', $q);
+$orders = $modx->getCollection("customExtraOrder", $q);
 // Теперь можно обработать полученные объекты
 foreach ($orders as $order) {
-  $order->set('new', 0);
-  $order->save();
+    $order->set("new", 0);
+    $order->save();
 }
 // Если всего в базе объектов меньше, чем мы обрабатываем за один шаг
 if ($count <= $step) {
-  // то мы останавливаем обработку
-  return true;
+    // то мы останавливаем обработку
+    return true;
 } else {
-  // если нет - указываем, что обработка не закончена
-  return false;
+    // если нет - указываем, что обработка не закончена
+    return false;
 }
 ```
 
