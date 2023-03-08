@@ -1,5 +1,4 @@
 import { defineConfig } from "vitepress";
-import { getSidebar } from "vitepress-plugin-auto-sidebar";
 import { enConfig } from "./en";
 import { ruConfig } from "./ru";
 // import { sharedConfig } from "./shared";
