@@ -6,9 +6,9 @@ const { Layout } = DefaultTheme
 </script>
 
 <template>
-    <Layout>
-        <template #nav-bar-content-before>
-            <DocsEcosystem />
-        </template>
-    </Layout>
+  <Layout>
+    <template #nav-bar-content-before>
+      <DocsEcosystem />
+    </template>
+  </Layout>
 </template>

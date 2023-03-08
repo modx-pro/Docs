@@ -6,9 +6,9 @@
     "author": "Bochkarev Ivan <ivanx86@gmail.com>",
     "license": "MIT",
     "scripts": {
-        "docs:dev": "vitepress dev docs",
-        "docs:build": "vitepress build docs",
-        "docs:serve": "vitepress serve docs"
+        "dev": "vitepress dev docs",
+        "build": "vitepress build docs",
+        "serve": "vitepress serve docs"
     },
     "devDependencies": {
         "@docsearch/css": "^3.3.3",

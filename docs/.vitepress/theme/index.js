@@ -3,7 +3,7 @@ import Layout from './Layout.vue'
 import './theme.css'
 
 export default {
-    ...DefaultTheme,
+  ...DefaultTheme,
 
-    Layout,
+  Layout,
 }
