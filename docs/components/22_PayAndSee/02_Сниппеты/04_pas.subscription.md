@@ -2,7 +2,7 @@
 
 Сниппет для вывода подписок `pas.subscription`
 
-[![](https://file.modx.pro/files/6/7/a/67a4c2f286f8a304b135ef555203f755s.jpg)](https://file.modx.pro/files/6/7/a/67a4c2f286f8a304b135ef555203f755.png)
+![Сниппет для вывода подписок](https://file.modx.pro/files/6/7/a/67a4c2f286f8a304b135ef555203f755.png)
 
 ## Параметры
 
@@ -27,7 +27,7 @@
 
 ### Получить подписки текущего пользователя
 
-```php
+```fenom
 {!pas.subscription'|snippet}
 ```
 
@@ -35,10 +35,10 @@
 
 Вы можете увидеть все доступные плейсхолдеры просто не указывая чанк оформления:
 
-```php
+```fenom
 <pre>
 {'!pas.subscription'|snippet:[
-'tpl' => ''
+    'tpl' => ''
 ]}
 </pre>
 ```
@@ -47,9 +47,9 @@
 
 Получить подписки текущего пользователя в переменную `$rows`
 
-```php
+```fenom
 {var $rows = '!pas.subscription'|snippet:[
-'return' => 'data'
+    'return' => 'data'
 ]}
 <br>
 {if !count($rows)}
@@ -63,10 +63,10 @@
 
 Вывод с постраничной разбивкой:
 
-```php
+```fenom
 {'!pdoPage'|snippet:[
-'element' => 'pas.subscription',
-'client' => $_modx->user.id
+    'element' => 'pas.subscription',
+    'client' => $_modx->user.id
 ]}
 {'page.nav'|placeholder}
 ```

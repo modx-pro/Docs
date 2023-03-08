@@ -9,15 +9,14 @@
 * Менеджер приложений находится [тут](https://apps.twitter.com/).
 * Регистрируем приложение в Twitter.
 * Жмем кнопочку Create New App и заполняем простую форму.
-* После создания приложения переходим на вкладку Keys and Access Tokens и жмем кнопку Create my access token.
-Копируем поля: Consumer Key, Consumer Secret, Access Token, Access Token Secret.
+* После создания приложения переходим на вкладку Keys and Access Tokens и жмем кнопку Create my access token. Копируем поля: Consumer Key, Consumer Secret, Access Token, Access Token Secret.
 **Важно**:в поле Access Level должно стоять значение Read and write.
 
-[![](https://file.modx.pro/files/1/1/8/118dc35db2127bd1a16c557a8b86e0e0s.jpg)](https://file.modx.pro/files/1/1/8/118dc35db2127bd1a16c557a8b86e0e0.png)
+![ Как настроить mSocial - 1](https://file.modx.pro/files/1/1/8/118dc35db2127bd1a16c557a8b86e0e0.png)
 
 * Теперь открываем наш сайт. Переходим в Системные настройки / mSocial.
 
-[![](https://file.modx.pro/files/e/7/a/e7a3b081010c426a93bc7602bd63ab66s.jpg)](https://file.modx.pro/files/e/7/a/e7a3b081010c426a93bc7602bd63ab66.png)
+![ Как настроить mSocial - 2](https://file.modx.pro/files/e/7/a/e7a3b081010c426a93bc7602bd63ab66.png)
 
 * Открываем чанк tpl.msocial.tw или тот который используется для постинга, вносим нужные параметры для постинга. Пример: `[[+pagetitle]]` - `[[+content]]`
 

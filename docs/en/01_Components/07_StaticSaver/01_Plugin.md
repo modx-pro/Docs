@@ -1,4 +1,4 @@
-StaticSaver is a plugin for MODx Revolution, which installs values for names and file sources of elements automatically (templates, chunks, snippets, additional fields and plugins), when you make them static. It is useful for developers who use local IDE.
+StaticSaver is a plugin for MODX Revolution, which installs values for names and file sources of elements automatically (templates, chunks, snippets, additional fields and plugins), when you make them static. It is useful for developers who use local IDE.
 
 ## Installation and setting
 Install the package through Package management from the [official Repository][1].

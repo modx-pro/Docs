@@ -151,7 +151,8 @@ print_r($data);
 
 Здесь всего два метода.
 
-* **&makePlaceholders**(array $data, string $plPrefix, string $prefix [ '[[+' ], string $suffix [ ']]' ], bool $uncacheable [ true ])
+`&makePlaceholders(array $data, string $plPrefix, string $prefix [ '[[+' ], string $suffix [ ']]' ], bool $uncacheable [ true ])`
+
 Принимает массив ключ => значение и возвращает два массива плейсхолдеры => значения, используется для шаблонизации.
 
 Первый параметр - массив данных, затем можно указать префикс для плейсхолдеров, открывающие и закрывающие символы, а также отключить генерацию некэшированных плейсхолдеров.

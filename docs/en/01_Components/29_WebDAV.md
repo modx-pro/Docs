@@ -1,4 +1,4 @@
-WebDAVMediaSource is a network media source for MODx Revolution.
+WebDAVMediaSource is a network media source for MODX Revolution.
 
 Supported operations:
 

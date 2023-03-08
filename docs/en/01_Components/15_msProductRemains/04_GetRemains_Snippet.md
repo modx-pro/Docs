@@ -26,7 +26,7 @@ For an amount of remains of a certain combination of properties:
 ]]
 ```
 
-Use standard MODx filter for call recording in a placeholder:
+Use standard MODX filter for call recording in a placeholder:
 ```
 [[!getRemains:toPlaceholder=`remains`?
 	&id=[[+id]]

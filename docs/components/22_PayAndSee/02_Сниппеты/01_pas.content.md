@@ -2,7 +2,7 @@
 
 Сниппет для вывода контента `pas.content`
 
-[![](https://file.modx.pro/files/a/8/c/a8cc2deec25e633e863ed7794541efbbs.jpg)](https://file.modx.pro/files/a/8/c/a8cc2deec25e633e863ed7794541efbb.png)
+![Сниппет для вывода контента](https://file.modx.pro/files/a/8/c/a8cc2deec25e633e863ed7794541efbb.png)
 
 ## Параметры
 
@@ -37,9 +37,9 @@
 
 Сниппет умеет выбирать тарифы при помощи параметра **processRates**
 
-```php
+```fenom
 {'!pas.content'|snippet:[
-'processRates' => 1
+    'processRates' => 1
 ]}
 ```
 
@@ -49,10 +49,10 @@
 
 Вы можете увидеть все доступные плейсхолдеры просто не указывая чанк оформления:
 
-```php
+```fenom
 <pre>
 {'!pas.content'|snippet:[
-'tpl' => ''
+    'tpl' => ''
 ]}
 </pre>
 ```
@@ -61,18 +61,18 @@
 
 Вывод контента из категории 15:
 
-```php
+```fenom
 {'!pas.content'|snippet:[
-'parents' => '15'
+    'parents' => '15'
 ]}
 ```
 
 Вывод с постраничной разбивкой:
 
-```php
+```fenom
 {'!pdoPage'|snippet:[
-'element' => 'pas.content',
-'parents' => '15'
+    'element' => 'pas.content',
+    'parents' => '15'
 ]}
 {'page.nav'|placeholder}
 ```

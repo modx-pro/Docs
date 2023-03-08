@@ -2,7 +2,7 @@
 
 Сниппет оформления заказа `pas.order`
 
-[![](https://file.modx.pro/files/6/e/3/6e3061d943b2f54fd99f5ee3d8e9e56bs.jpg)](https://file.modx.pro/files/6/e/3/6e3061d943b2f54fd99f5ee3d8e9e56b.png)
+![Сниппет оформления заказа](https://file.modx.pro/files/6/e/3/6e3061d943b2f54fd99f5ee3d8e9e56b.png)
 
 ## Параметры
 
@@ -41,10 +41,10 @@
 
 Вы можете увидеть все доступные плейсхолдеры заказа просто указав пустой чанк:
 
-```php
+```fenom
 <pre>
 {'!pas.order'|snippet:[
-'tpl'=>''
+    'tpl'=>''
 ]}
 </pre>
 ```
@@ -53,12 +53,10 @@
 
 Данный сниппет рекомендуется вызывать в связке с другими на странице оформления заказа:
 
-```php
+```fenom
 {'!pas.order'|snippet} <!-- Форма оформления заказа, скрывается после его создания -->
 {'!pas.get.order'|snippet} <!-- Вывод информации о заказе, показывается после его создания -->
 ```
 
 [0104]: /components/01_pdoTools/04_Общие_параметры.md
-[0101]: /components/01_pdoTools/
 [010103]: /components/01_pdoTools/03_Парсер.md
-[010101]: /components/01_pdoTools/01_Сниппеты/01_pdoResources.md

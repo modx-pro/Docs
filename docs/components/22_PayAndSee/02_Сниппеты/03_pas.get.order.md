@@ -7,7 +7,7 @@
 ## Параметры
 
 | Параметр          | По умолчанию  | Описание                                                                                                                                                                                     |
-| ----------------- | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|-------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **tpl**           | pas.get.order | Чанк оформления                                                                                                                                                                              |
 | **includeTVs**    |               | Список ТВ параметров для выборки, через запятую. Например: "action,time" дадут плейсхолдеры [[+action]] и [[+time]].                                                                         |
 | **includeThumbs** |               | Список размеров превьюшек для выборки, через запятую. Например: "120x90,360x240" дадут плейслолдеры [[+120x90]] и [[+360x240]]. Картинки должны быть заранее сгенерированы в галерее товара. |
@@ -37,10 +37,10 @@
 
 Вы можете увидеть все доступные плейсхолдеры заказа просто указав пустой чанк:
 
-```php
+```fenom
 <pre>
 {'!pas.get.order'|snippet:[
-'tpl'=>''
+    'tpl'=>''
 ]}
 </pre>
 ```
@@ -49,7 +49,7 @@
 
 Данный сниппет рекомендуется вызывать в связке с другими на странице оформления заказа:
 
-```php
+```fenom
 {'!pas.order'|snippet} <!-- Форма оформления заказа, скрывается после его создания -->
 {'!pas.get.order'|snippet} <!-- Вывод информации о заказе, показывается после его создания -->
 ```
@@ -68,12 +68,12 @@
 Идентифицировать заказы контента можно по полю `context` заказа, и если нужно оформить данные заказы по своему.
 Например, заменим переменную `products` из сниппета msGetOrder на `products` из сниппета pas.get.order
 
-```php
+```fenom
 {var $pas = $order.context == 'pas'}
 {if $pas}
     {var $tmp = '!pas.get.order'|snippet:[
-    'msorder' => $order.id,
-    'return' => 'data'
+        'msorder' => $order.id,
+        'return' => 'data'
     ]}
     {set $products = $tmp.products}
 {/if}
@@ -82,26 +82,26 @@
 Как видите, мы запустили на обработку сниппет `pas.get.order` и заменили значение переменной  `products`.
 В зависимости от функционала сайта, вы можете переопределить шаблон `tpl.msEmail` например так
 
-```php
+```fenom
 {var $pas = $order.context == 'pas'}
 {if $pas}
     {var $tmp = '!pas.get.order'|snippet:[
-    'msorder' => $order.id,
-    'return' => 'data'
+        'msorder' => $order.id,
+        'return' => 'data'
     ]}
     {set $products = $tmp.products}
 {/if}
 
 {var $style = [
-'logo' => 'display:block;margin: auto;',
-'a' => 'color:#348eda;',
-'p' => 'font-family: Arial;color: #666666;font-size: 12px;',
-'h' => 'font-family:Arial;color: #111111;font-weight: 200;line-height: 1.2em;margin: 40px 20px;',
-'h1' => 'font-size: 36px;',
-'h2' => 'font-size: 28px;',
-'h3' => 'font-size: 22px;',
-'th' => 'font-family: Arial;text-align: left;color: #111111;',
-'td' => 'font-family: Arial;text-align: left;color: #111111;',
+    'logo' => 'display:block;margin: auto;',
+    'a' => 'color:#348eda;',
+    'p' => 'font-family: Arial;color: #666666;font-size: 12px;',
+    'h' => 'font-family:Arial;color: #111111;font-weight: 200;line-height: 1.2em;margin: 40px 20px;',
+    'h1' => 'font-size: 36px;',
+    'h2' => 'font-size: 28px;',
+    'h3' => 'font-size: 22px;',
+    'th' => 'font-family: Arial;text-align: left;color: #111111;',
+    'td' => 'font-family: Arial;text-align: left;color: #111111;',
 ]}
 
 {var $site_url = ('site_url' | option) | preg_replace : '#/$#' : ''}
@@ -306,9 +306,7 @@
 Подробнее о расширении шаблонов вы можете прочитать в [документации Fenom][001].
 
 [0104]: /components/01_pdoTools/04_Общие_параметры.md
-[0101]: /components/01_pdoTools/
 [010103]: /components/01_pdoTools/03_Парсер.md
-[010101]: /components/01_pdoTools/01_Сниппеты/01_pdoResources.md
 [01020205]: /components/02_miniShop2/02_Сниппеты/05_msGetOrder.md
 [01020104]: /components/02_miniShop2/01_Интерфейс/04_Настройки.md
 [001]: https://github.com/fenom-template/fenom/blob/master/docs/ru/tags/extends.md
