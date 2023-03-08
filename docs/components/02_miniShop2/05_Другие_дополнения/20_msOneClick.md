@@ -1,20 +1,23 @@
 # msOneClick
 
-**Внимание!! Для тех кто обновляется с версии 1.1.0 обязательно измените [[+selector]] в чанке tpl.msOneClick.btn</strong> из id на class**
+:::warning
+Для тех кто обновляется с версии 1.1.0 обязательно измените `[[+selector]]` в чанке `tpl.msOneClick.btn` из id на class
+:::
 
-```html
-<a href="[[~[[+id]]]]#[[+selector]]"  class="[[+selector]] btn_one_click" data-hash="[[+hash]]" data-product="[[+id]]">[[%msoc_btn_one_click]]</a>
-```  
+```modx
+<a href="[[~[[+id]]]]#[[+selector]]" class="[[+selector]] btn_one_click" data-hash="[[+hash]]" data-product="[[+id]]">[[%msoc_btn_one_click]]</a>
+```
 
 Приложение создает заказ в интернет-магазине minishop2, а также может отправлять заказ в виде письма на указанный e-mail адрес.
 На данный момент приложение не передает не каких параметров из msOptions и других модификаций. Так как есть различие между добавлением в корзину и модификацией на стороне  клиента.
-Для работы необходимо вставить сниппет на страницу с товаром **[[!msOneClick]]**, и у вас появится кнопка «купить в 1 клик».
+Для работы необходимо вставить сниппет на страницу с товаром `[[!msOneClick]]`, и у вас появится кнопка «купить в 1 клик».
 Работает начиная с версии MODX Revolution 2.2.
 
 - [Купить][1]
 - [Демо-версия][2]
 
 ![](https://file.modx.pro/files/e/1/a/e1a81a32bebcb07dbe4e4553940837fd.png)
+
 ![](https://file.modx.pro/files/5/7/6/576f04ffeed94c85df55b5e9e05a3733.png)
 
 В miniShop2 добавляются метод доставки и метод оплаты «Быстры заказа» и назначаются для создания заказов через модельное окно. В настройка приложения можно изменить эти способы.
@@ -28,13 +31,16 @@
 
 Для создания заказа в miniShop2:
 
-``` php
+```modx
 [[!msOneClick?
     &id=`5`
     &create_order=`MS`
 ]]
+```
 
 Для отправки сообщения на e-mail:
+
+```modx
 [[!msOneClick?
     &id=`5`
     &create_order=`MAIL`
@@ -44,11 +50,15 @@
 
 ### На странице с товаров
 
-```[[!msOneClick]]```
+```modx
+[[!msOneClick]]
+```
 
 ### В категориях и на других страницах
 
-```[[!msOneClick? &id=`[[+id]]`]]```
+```modx
+[[!msOneClick? &id=`[[+id]]`]]
+```
 
 ### Подключение msOptionsPrice2
 
@@ -65,7 +75,9 @@
     })
 ```
 
-***Внимание!!! Если вы подключили js код и он у вас правильно инициализировался, то по вопросам настройки msOptionsPrice2 обращайтесь к автору приложения msOptionsPrice2***
+:::warning
+Если вы подключили js код и он у вас правильно инициализировался, то по вопросам настройки msOptionsPrice2 обращайтесь к автору приложения msOptionsPrice2
+:::
 
 ### Параметры настроек
 
@@ -77,8 +89,8 @@
 | **mask_phone**        | True                       | Включить маску телефонного номера              | На поле с телефоном будет добавлена обяательная маска +7 (999) 999 9999                                                                                                                                   |
 | **mask_phone_format** | +9 (999) 999-9999          | Маска телефона                                 | Формат ввода долже: +9 (999) 999-9999                                                                                                                                                                     |
 | **framework**         | default                    | Подключить framework                           | По умолчанию default будет подключен свой скрипт для запуска модельного окна. Можно указать default,bootstrap,semantic,materialize,uIkit для этих фрейм ворково определены функци запуска модельного окна |
-| **frontend_css**      | [[+cssUrl]]web/default.css | frontend_css                                   | По-умолчанию assets/components/msoneclick/css/web/default.css                                                                                                                                             |
-| **frontend_js**       | [[+jsUrl]]web/default.js   | Js для фронтенда                               | По-умолчанию assets/components/msoneclick/js/web/default.js                                                                                                                                               |
+| **frontend_css**      | `[[+cssUrl]]web/default.css` | frontend_css                                   | По-умолчанию assets/components/msoneclick/css/web/default.css                                                                                                                                             |
+| **frontend_js**       | `[[+jsUrl]]web/default.js`   | Js для фронтенда                               | По-умолчанию assets/components/msoneclick/js/web/default.js                                                                                                                                               |
 
 ### Параметры сниппета msOneClick
 
@@ -104,7 +116,7 @@ js события
 | Параметр                  | Описание                                     |
 | ------------------------- | -------------------------------------------- |
 | **msoneclick_load**       | Срабатыватыеваем после получение данных ajax |
-| **msoneclick_after_init** | Срабадывает после инициализации скриптов     |
+| **msoneclick_after_init** | Срабатывает после инициализации скриптов     |
 
 #### Добавлены события для js
 
@@ -138,124 +150,124 @@ js события
 вставить в чанк tpl.msoneclick.form
 
 ```html
-   <form class="ms2_form msoptionsprice-product" id="[[+formid]]" method="post" >
-       <input type="hidden" name="method" value="[[+method]]">
-       <input type="hidden" name="pageId" value="[[+pageId]]">
-       <input type="hidden" name="ctx" value="[[+ctx]]">
-       <input type="hidden" name="hash" value="[[+hash]]">
-       <input type="hidden" name="payment" value="[[+payment]]">
-       <input type="hidden" name="delivery" value="[[+delivery]]">
-       <input type="hidden" name="id" value="[[+product.id]]"/>
-       <input type="hidden" name="mssetincart_set" value="[[+product.id]]">
-       <input type="hidden" name="key" class="key-product" value="">
-       <input type="hidden" name="options" value="[]">
+<form class="ms2_form msoptionsprice-product" id="[[+formid]]" method="post" >
+    <input type="hidden" name="method" value="[[+method]]">
+    <input type="hidden" name="pageId" value="[[+pageId]]">
+    <input type="hidden" name="ctx" value="[[+ctx]]">
+    <input type="hidden" name="hash" value="[[+hash]]">
+    <input type="hidden" name="payment" value="[[+payment]]">
+    <input type="hidden" name="delivery" value="[[+delivery]]">
+    <input type="hidden" name="id" value="[[+product.id]]"/>
+    <input type="hidden" name="mssetincart_set" value="[[+product.id]]">
+    <input type="hidden" name="key" class="key-product" value="">
+    <input type="hidden" name="options" value="[]">
 
-       <div class="forder-popup__goods " >
-           <div id="msCart">
-               <div id="dynamicmodal">
-                   <div class="msoc_product_line" id="[[+product.key]]">
-                       <div class="msoc_product_line_image">
-                           <img src="[[+product.thumb]]" />
-                       </div>
-                       <div class="msoc_product_line_pagetitle">
-                           <span>[[+product.pagetitle]]</span>
-                       </div>
-                       <div class="msoc_product_line_count">
-                           <div class="product__add-cart ">
-                               <div class="text-right">
-                                   <span class="forder-popup__price">
-                                       <span id="[[+selector]]_price" class="msoptionsprice-cost msoptionsprice-[[+product.id]]">[[+product.price]]</span> руб.
-                                       [[+product.old_price:is=`0`:then=``:else=`<span  id="[[+selector]]_price_old" class="old_price msoptionsprice-old-cost msoptionsprice-[[+product.id]]">[[+product.old_price]]</span>  руб.`]]
-                                   </span>
-                               </div>
-                               <div class="text-right">
-                                   <input type="hidden" name="price" value="[[+product.price]]">
-                                   <input type="hidden" name="product_id" value="[[+product.id]]">
-                                   <div class="count-field input-group input-prepend">
-                                       <span class="count-field-control count-field-control-down" onselectstart="return false" onmousedown="return false">+</span>
-                                       <input value="[[+product.count]]" placeholder="0" type="text" autocomplete="off" name="count" class="count-field-input">
-                                       <span class="count-field-control count-field-control-up" onselectstart="return false" onmousedown="return false">-</span>
-                                   </div>
-                               </div>
+    <div class="forder-popup__goods " >
+        <div id="msCart">
+            <div id="dynamicmodal">
+                <div class="msoc_product_line" id="[[+product.key]]">
+                    <div class="msoc_product_line_image">
+                        <img src="[[+product.thumb]]" />
+                    </div>
+                    <div class="msoc_product_line_pagetitle">
+                        <span>[[+product.pagetitle]]</span>
+                    </div>
+                    <div class="msoc_product_line_count">
+                        <div class="product__add-cart ">
+                            <div class="text-right">
+                                <span class="forder-popup__price">
+                                    <span id="[[+selector]]_price" class="msoptionsprice-cost msoptionsprice-[[+product.id]]">[[+product.price]]</span> руб.
+                                    [[+product.old_price:is=`0`:then=``:else=`<span  id="[[+selector]]_price_old" class="old_price msoptionsprice-old-cost msoptionsprice-[[+product.id]]">[[+product.old_price]]</span>  руб.`]]
+                                </span>
+                            </div>
+                            <div class="text-right">
+                                <input type="hidden" name="price" value="[[+product.price]]">
+                                <input type="hidden" name="product_id" value="[[+product.id]]">
+                                <div class="count-field input-group input-prepend">
+                                    <span class="count-field-control count-field-control-down" onselectstart="return false" onmousedown="return false">+</span>
+                                    <input value="[[+product.count]]" placeholder="0" type="text" autocomplete="off" name="count" class="count-field-input">
+                                    <span class="count-field-control count-field-control-up" onselectstart="return false" onmousedown="return false">-</span>
+                                </div>
+                            </div>
 
-                           </div>
-                       </div>
+                        </div>
+                    </div>
 
-                       <!-- msOptionsPrice2 -->
-                       <div class="modal-options msoptionsprice-[[+product.id]]">
-                           {'msOptionsPrice.option' | snippet : [
-                           'product' => $product.id,
-                           'options' => 'color,size',
-                           'processColors' => 1,
-                           'constraintOptions' => [
-                           'phytomodule_color' => ['sizes'],
-                           'equipment' => ['sizes','phytomodule_color'],
-                           'frame_color' => ['sizes','phytomodule_color','equipment']
-                           ]
-                           ]}
-                       </div>
+                    <!-- msOptionsPrice2 -->
+                    <div class="modal-options msoptionsprice-[[+product.id]]">
+                        {'msOptionsPrice.option' | snippet : [
+                            'product' => $product.id,
+                            'options' => 'color,size',
+                            'processColors' => 1,
+                            'constraintOptions' => [
+                                'phytomodule_color' => ['sizes'],
+                                'equipment' => ['sizes','phytomodule_color'],
+                                'frame_color' => ['sizes','phytomodule_color','equipment']
+                            ]
+                        ]}
+                    </div>
 
-                   </div>
-               </div>
-           </div>
-       </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-       <div class="msoneclick_form" >
-           <div class="forder-popup__block forder-popup__block--grey">
+    <div class="msoneclick_form" >
+        <div class="forder-popup__block forder-popup__block--grey">
 
-               <div class="msoneclick_form-group">
-                   <label for="msoc_city" class="msoneclick_form-label [[+city_required]]">[[%msoc_field_city]]</label>
-                   <div class="msoneclick_form-field">
-                       <input type="text" value="[[!+order.city]]" name="city"  id="msoc_city" placeholder="[[%msoc_field_city_ple]]">
-                   </div>
-               </div>
+            <div class="msoneclick_form-group">
+                <label for="msoc_city" class="msoneclick_form-label [[+city_required]]">[[%msoc_field_city]]</label>
+                <div class="msoneclick_form-field">
+                    <input type="text" value="[[!+order.city]]" name="city"  id="msoc_city" placeholder="[[%msoc_field_city_ple]]">
+                </div>
+            </div>
 
-               <div class="msoneclick_form-group">
-                   <label for="msoc_addr_country" class="msoneclick_form-label [[+addr_country_required]]">[[%msoc_field_country]]</label>
-                   <div class="msoneclick_form-field">
-                       <input type="text" value="[[!+order.addr_country]]" name="addr_country" id="msoc_addr_country" placeholder="[[%msoc_field_country_ple]]">
-                   </div>
-               </div>
-           </div>
-           <div class="forder-popup__block forder-popup__block--grey">
-               <div class="msoneclick_form-group">
-                   <label for="msoc_receiver" class="msoneclick_form-label [[+receiver_required]]">[[%msoc_field_receiver]]</label>
-                   <div class="msoneclick_form-field">
-                       <input type="text" value="[[!+order.receiver]]" name="receiver" id="msoc_receiver" placeholder="[[%msoc_field_receiver_ple]]">
-                   </div>
-               </div>
-               <div class="msoneclick_form-group">
-                   <label for="msoc_phone" class="msoneclick_form-label [[+phone_required]]">[[%msoc_field_phone]]</label>
-                   <div class="msoneclick_form-field">
-                       <input type="text" name="phone" value="[[!+order.phone]]" autocomplete="off" id="msoc_phone" placeholder="[[%msoc_field_phone_ple]]">
-                   </div>
-               </div>
+            <div class="msoneclick_form-group">
+                <label for="msoc_addr_country" class="msoneclick_form-label [[+addr_country_required]]">[[%msoc_field_country]]</label>
+                <div class="msoneclick_form-field">
+                    <input type="text" value="[[!+order.addr_country]]" name="addr_country" id="msoc_addr_country" placeholder="[[%msoc_field_country_ple]]">
+                </div>
+            </div>
+        </div>
+        <div class="forder-popup__block forder-popup__block--grey">
+            <div class="msoneclick_form-group">
+                <label for="msoc_receiver" class="msoneclick_form-label [[+receiver_required]]">[[%msoc_field_receiver]]</label>
+                <div class="msoneclick_form-field">
+                    <input type="text" value="[[!+order.receiver]]" name="receiver" id="msoc_receiver" placeholder="[[%msoc_field_receiver_ple]]">
+                </div>
+            </div>
+            <div class="msoneclick_form-group">
+                <label for="msoc_phone" class="msoneclick_form-label [[+phone_required]]">[[%msoc_field_phone]]</label>
+                <div class="msoneclick_form-field">
+                    <input type="text" name="phone" value="[[!+order.phone]]" autocomplete="off" id="msoc_phone" placeholder="[[%msoc_field_phone_ple]]">
+                </div>
+            </div>
 
-               <div class="msoneclick_form-group">
-                   <label for="msoc_email" class="msoneclick_form-label [[+email_required]]">[[%msoc_field_email]]</label>
-                   <div class="msoneclick_form-field">
-                       <input type="email" name="email" value="[[!+order.email]]" id="msoc_email" placeholder="[[%msoc_field_email_ple]]">
-                   </div>
-               </div>
-           </div>
+            <div class="msoneclick_form-group">
+                <label for="msoc_email" class="msoneclick_form-label [[+email_required]]">[[%msoc_field_email]]</label>
+                <div class="msoneclick_form-field">
+                    <input type="email" name="email" value="[[!+order.email]]" id="msoc_email" placeholder="[[%msoc_field_email_ple]]">
+                </div>
+            </div>
+        </div>
 
-           <div class="forder-popup__block forder-popup__block--grey">
-               <div class="msoneclick_form-group">
-                   <label for="msoc_comment" class="msoneclick_form-label">[[%msoc_field_comment]]</label>
-                   <div class="msoneclick_form-field">
-                       <textarea autocomplete="off" placeholder="[[%msoc_field_comment_ple]]" id="msoc_comment" name="comment">[[!+order.comment:default=``]]</textarea>
-                   </div>
-               </div>
-           </div>
+        <div class="forder-popup__block forder-popup__block--grey">
+            <div class="msoneclick_form-group">
+                <label for="msoc_comment" class="msoneclick_form-label">[[%msoc_field_comment]]</label>
+                <div class="msoneclick_form-field">
+                    <textarea autocomplete="off" placeholder="[[%msoc_field_comment_ple]]" id="msoc_comment" name="comment">[[!+order.comment:default=``]]</textarea>
+                </div>
+            </div>
+        </div>
 
-           <div class="modal-footer">
-               <button type="submit"  name="msoc_send_from" class="mso_button btn_send">[[%msoc.button]]</button>
-               <p class="msoc-muted">
-                   [[%msoc_form_footer_text]]
-               </p>
-           </div>
-       </div>
-   </form>
+        <div class="modal-footer">
+            <button type="submit"  name="msoc_send_from" class="mso_button btn_send">[[%msoc.button]]</button>
+            <p class="msoc-muted">
+                [[%msoc_form_footer_text]]
+            </p>
+        </div>
+    </div>
+</form>
 ```
 
 #### Подгрузка выбранных опций msOptionsPrice2 со страницы
@@ -273,15 +285,14 @@ js события
 Добавить код в подключенный JS файл
 
 ```javascript
-   $(document).on('msoneclick_after_init', function (e, data) {
-       // После запуска модельного окна ищется форма на странице
-       var form = $('.msoptionsprice-product-'+msOneClick.Product.product_id)
-       if (form.length) {
-           // Если форма найден отправляется запрос для обновления данных в форме модельного окна
-           msOptionsPrice.Product.action('modification/get',form)
-       }
-   })
-
+$(document).on('msoneclick_after_init', function (e, data) {
+    // После запуска модельного окна ищется форма на странице
+    var form = $('.msoptionsprice-product-'+msOneClick.Product.product_id)
+    if (form.length) {
+        // Если форма найден отправляется запрос для обновления данных в форме модельного окна
+        msOptionsPrice.Product.action('modification/get',form)
+    }
+})
 ```
 
 [1]: https://modstore.pro/packages/integration/msoneclick

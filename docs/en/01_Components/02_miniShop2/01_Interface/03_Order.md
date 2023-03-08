@@ -45,7 +45,7 @@ When opening the order, the direct reference parameter `&order=id order` is adde
 Selected tab of the order panel is also stored. There are four of them by default.
 
 #### General information
-Here you may manually change the order status, delivery and payment method by drop-down list. They are interlinked as stated in the shop settings section. 
+Here you may manually change the order status, delivery and payment method by drop-down list. They are interlinked as stated in the shop settings section.
 Thus, it is impossible to  change the stateful order status or to choose the payment method which not correspond to the delivery.
 
 [![](https://file.modx.pro/files/8/f/a/8fab54bbc646551dd5daeea657eccc39s.jpg)](https://file.modx.pro/files/8/f/a/8fab54bbc646551dd5daeea657eccc39.png)
