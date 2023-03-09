@@ -33,23 +33,23 @@
 ## Минимум что необходимо сделать (пример)
 
 * Выставить - по клику будет инициирована загрузка корзины
-  
-```html
-<p class="msquickview_cart">показать корзину</p>
-```
+
+    ```html
+    <p class="msquickview_cart">показать корзину</p>
+    ```
 
 * Выставить - в шаблоне товара
 
-```html
-<div class="msquickview" data-href="[[+id]]">Быстрый просмотр</div>
-```
+    ```html
+    <div class="msquickview" data-href="[[+id]]">Быстрый просмотр</div>
+    ```
 
 * Выставить
 
-```html
-<div class="modal-body loadview loadview_cart">
-    сюда будет подгружен ответ
-    .loadview - product
-    .loadview_cart - cart
-</div>
-```
+    ```html
+    <div class="modal-body loadview loadview_cart">
+        сюда будет подгружен ответ
+        .loadview - product
+        .loadview_cart - cart
+    </div>
+    ```
