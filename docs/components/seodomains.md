@@ -79,6 +79,7 @@
     'showLog' => 0
 ]}
 ```
+
 :::
 
 ![Пример вызова со всеми параметрами](https://file.modx.pro/files/5/7/2/572fdc490c5744b76da388e4eba8373f.png)
