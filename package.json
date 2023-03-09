@@ -1,21 +1,23 @@
 {
     "name": "docs-modxpro",
     "version": "1.0.0",
-    "main": "index.js",
     "repository": "https://github.com/modx-pro/Docs.git",
-    "author": "Bochkarev Ivan <ivanx86@gmail.com>",
+    "contributors": [
+        { "name": "Bochkarev Ivan", "email": "ivanx86@gmail.com" },
+        { "name": "Gulomov Bakhtovar", "email": "gulomovcreative@gmail.com" }
+    ],
     "license": "MIT",
     "scripts": {
         "dev": "vitepress dev docs",
         "build": "vitepress build docs",
-        "serve": "vitepress serve docs"
+        "preview": "vitepress preview docs"
     },
     "devDependencies": {
         "@docsearch/css": "^3.3.3",
         "@docsearch/js": "^3.3.3",
         "@vueuse/core": "^9.13.0",
         "modx-tmlanguage": "^1.1.1",
-        "vitepress": "^1.0.0-alpha.49",
+        "vitepress": "^1.0.0-alpha.50",
         "vue": "^3.2.47"
     }
 }
