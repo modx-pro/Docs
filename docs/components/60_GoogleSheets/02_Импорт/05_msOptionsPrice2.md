@@ -18,7 +18,7 @@
 | active       | Активная модификация | `0 \|\| 1`         |
 | modification | Опции модификации    |                    |
 
-## Пример:
+## Пример
 
 **Поля импорта:** rid,article,name,price,modification
 
