@@ -558,7 +558,7 @@ $(document).on('mse2_load', function(e, data) {
 
 ![Лексиконы - 2](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
 
-[1]: /components/01_pdoTools/01_Сниппеты/03_pdoPage.md
+[1]: /components/pdotools/snippets/pdopage
 [2]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
 [3]: http://jqueryui.com/slider/
 [4]: http://getbootstrap.com/

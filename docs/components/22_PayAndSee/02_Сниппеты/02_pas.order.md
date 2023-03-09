@@ -58,5 +58,5 @@
 {'!pas.get.order'|snippet} <!-- Вывод информации о заказе, показывается после его создания -->
 ```
 
-[0104]: /components/01_pdoTools/04_Общие_параметры.md
-[010103]: /components/01_pdoTools/03_Парсер.md
+[0104]: /components/pdotools/general-parameters
+[010103]: /components/pdotools/parser

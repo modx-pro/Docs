@@ -165,4 +165,4 @@ pdoTools умеет возвращать данные в разном виде, 
 * **serialize** - возврат массива данных сериализованной строкой. Иногда, по непонятным причинам, может вызвать нехватку памяти. Лучше использовать `json`.
 
 [0]: https://docs.modx.com/current/en/extending-modx/modx-class/reference/modx.makeurl
-[1]: /components/01_pdoTools/03_Парсер.md
+[1]: /components/pdotools/parser

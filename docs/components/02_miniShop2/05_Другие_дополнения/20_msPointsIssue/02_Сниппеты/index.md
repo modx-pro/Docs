@@ -9,5 +9,4 @@
 - ускорить работу
 - делать более сложные чанки, за счёт продвинутой проверки условий через функции Fenom
 
-[0101]: /components/01_pdoTools
-[010103]: /components/01_pdoTools/03_Парсер.md
+[010103]: /components/pdotools/parser

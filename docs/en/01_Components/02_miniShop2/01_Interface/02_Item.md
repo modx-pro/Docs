@@ -205,8 +205,8 @@ Items may be copied. Herewith, the following are copied:
 
 **Gallery files are not copied** because of long duration, especially if remote file source is used as Amazon S3-type, and the process may fall off on time out.
 
-[1]: /ru/01_Components/02_miniShop2/03_Development/01_plug in_items.md
-[2]: /ru/01_Components/02_miniShop2/01_Interface/04_Settings.md
-[3]: /ru/01_Components/15_Tickets
-[4]: /ru/01_Components/18_ms2Gallery
+[1]: /components/02_miniShop2/03_Development/01_plug in_items.md
+[2]: /components/02_miniShop2/01_Interface/04_Settings.md
+[3]: /components/15_Tickets
+[4]: /components/18_ms2Gallery
 [5]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt

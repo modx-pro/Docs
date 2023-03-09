@@ -4,7 +4,7 @@
 
 **msLiveInform** - компонент отслеживания Заказов магазина [MiniShop2][0102] при помощи сервиса [LiveInform][001].
 
-[![](https://file.modx.pro/files/0/4/6/046f774ad0906fa37732868978226c1bs.jpg)](https://file.modx.pro/files/0/4/6/046f774ad0906fa37732868978226c1b.png)
+![msLiveInform](https://file.modx.pro/files/0/4/6/046f774ad0906fa37732868978226c1b.png)
 
 ## Особенности
 
@@ -26,7 +26,7 @@
 
 ## Настройка
 
-Все сниппеты **msLiveInform** работают при помощи [pdoTools][0101] и рассчитывают на использование [Fenom][010103] в чанках.
+Все сниппеты **msLiveInform** работают при помощи pdoTools и рассчитывают на использование [Fenom][010103] в чанках.
 Это позволяет:
 
 - сократить общее количество чанков
@@ -38,14 +38,14 @@
 
 В окне редактирования заказа [MiniShop2][01020103]
 
-[![](https://file.modx.pro/files/8/d/7/8d75d9656092ad99601e10253d83639fs.jpg)](https://file.modx.pro/files/8/d/7/8d75d9656092ad99601e10253d83639f.png)
+![Создание отслеживания - 1](https://file.modx.pro/files/8/d/7/8d75d9656092ad99601e10253d83639f.png)
 
 Нажимаем **+** создать отслеживание. Заполняем необходимые поля:
 
 - трек-номер отправления
 - телефон клиента
 
-[![](https://file.modx.pro/files/1/8/9/1895f4eec3345b16ce27b6c554d75a99s.jpg)](https://file.modx.pro/files/1/8/9/1895f4eec3345b16ce27b6c554d75a99.png)
+![Создание отслеживания - 2](https://file.modx.pro/files/1/8/9/1895f4eec3345b16ce27b6c554d75a99.png)
 
 Сохраняем. Отслеживание будет синхронизировано с сервисом [LiveInform][001].
 Информацию об ослеживании можно обновить тут же в админке, либо настроив скрипт на `cron`.
@@ -56,13 +56,13 @@
 
 На вкладке **Трекинг** доступна актуальная информация о перемещении отслеживания
 
-[![](https://file.modx.pro/files/a/9/7/a97479501e859dba0f3ba3d160da45ffs.jpg)](https://file.modx.pro/files/a/9/7/a97479501e859dba0f3ba3d160da45ff.png)
+![Создание отслеживания - 3](https://file.modx.pro/files/a/9/7/a97479501e859dba0f3ba3d160da45ff.png)
 
 ## Вывод отслеживаний на фронте
 
 Сниппет для вывода отслеживаний `msLiveInform.tracking`
 
-[![](https://file.modx.pro/files/e/c/2/ec25ccb251ffc95245151986512c6feas.jpg)](https://file.modx.pro/files/e/c/2/ec25ccb251ffc95245151986512c6fea.png)
+![Вывод отслеживаний на фронте](https://file.modx.pro/files/e/c/2/ec25ccb251ffc95245151986512c6fea.png)
 
 ### Параметры
 
@@ -78,28 +78,28 @@
 
 пример вызова отслеживаний конкретного заказа:
 
-``` php
+``` modx
 [[!msLiveInform.tracking?
-&order=`2`
+    &order=`2`
 ]]
 ```
 
 Вы можете увидеть все доступные плейсхолдеры отслеживаний просто не указывая чанк оформления:
 
-``` php
+``` modx
 <pre>
 [[!msLiveInform.tracking?
-&order=`2`
-&tpl=``
+    &order=`2`
+    &tpl=``
 ]]
 </pre>
 ```
 
 Вывод отслеживаний с постраничной разбивкой:
 
-```php
+```modx
 [[!pdoPage?
-&element=`msLiveInform.tracking`
+    &element=`msLiveInform.tracking`
 ]]
 [[!+page.nav]]
 ```
@@ -112,9 +112,9 @@
 - Количество врученных заказов
 - Общее число заказов
 
-[![](https://file.modx.pro/files/c/f/8/cf8bbcbda0f39ae7e500c0254c0caa84s.jpg)](https://file.modx.pro/files/c/f/8/cf8bbcbda0f39ae7e500c0254c0caa84.png)
+![Проверка по базе заказов сервиса LiveInform - 1](https://file.modx.pro/files/c/f/8/cf8bbcbda0f39ae7e500c0254c0caa84.png)
 
-[![](https://file.modx.pro/files/9/f/3/9f30f7d46f18f5588eb7fd76f039a95ds.jpg)](https://file.modx.pro/files/9/f/3/9f30f7d46f18f5588eb7fd76f039a95d.png)
+![Проверка по базе заказов сервиса LiveInform - 2](https://file.modx.pro/files/9/f/3/9f30f7d46f18f5588eb7fd76f039a95d.png)
 
 ## Настройки msLiveInform
 
@@ -136,8 +136,7 @@
 - 2 - Вручен
 - 3 - Возврат
 
-Для каждого статуса отслеживания можно создать/ указать свою настройку. Например статус отслеживания - **2 - Вручен** определяется соответствующей настройкой
-`order_status_2`
+Для каждого статуса отслеживания можно создать/ указать свою настройку. Например статус отслеживания - **2 - Вручен** определяется соответствующей настройкой `order_status_2`
 Если вы новый клиент **LiveInform**, настройте тексты сообщений для каждой из служб доставок в разделе [Настройки][00101].
 
 Можно отключить смену заказов по всем статусам задав настройку `change_order_status` в `нет`.
@@ -148,15 +147,12 @@
 
 Пример скрипта callback `http://site.ru/assets/components/msliveinform/callback.php`.
 
-[0101]: /components/01_pdoTools/
-[010103]: /components/01_pdoTools/03_Парсер.md
+[010103]: /components/pdotools/parser
 [0102]: /components/02_miniShop2/
-[010200]: /components/02_miniShop2/00_Быстрый_старт.md
 [01020103]: /components/02_miniShop2/01_Интерфейс/03_Заказы.md
-[0104]: /components/01_pdoTools/04_Общие_параметры.md
+[0104]: /components/pdotools/general-parameters
 
 [001]: https://liveinform.ru/?partner=166
 [00101]: https://www.liveinform.ru/account/settings?partner=166
 [00102]: https://liveinform.ru/account/integration/callback?partner=166
 [002]: https://modhost.pro
-[003]: https://modstore.pro/info/connection

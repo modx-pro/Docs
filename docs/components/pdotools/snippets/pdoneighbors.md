@@ -34,13 +34,13 @@
 
 По умолчанию сниппет выводит соседей, как они есть в дереве ресурсов, то есть, ориентируется на «menuindex»:
 
-```php
+```modx
 [[pdoNeighbors]]
 ```
 
 По умолчанию, соседи выбираются от текущего документа, но можно указать и другой id:
 
-```php
+```modx
 [[pdoNeighbors?
     &id=`55`
 ]]
@@ -48,7 +48,7 @@
 
 Сниппет отлично подходит для вывода ссылок на соседние новости (их лучше сортировать по дате публикации):
 
-```php
+```modx
 [[pdoNeighbors?
     &sortby=`publishedon`
     &sortdir=`asc`
@@ -57,7 +57,7 @@
 
 Получение соседних товаров с выводом превью:
 
-```php
+```fenom
 {'!pdoNeighbors' | snippet : [
     'snippet' => 'msProducts',
     'sortby' => 'publishedon',
@@ -72,4 +72,4 @@
 
 [![](https://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26s.jpg)](https://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26.png)
 
-[1]: /components/01_pdoTools/04_Общие_параметры.md
+[1]: /components/pdotools/general-parameters

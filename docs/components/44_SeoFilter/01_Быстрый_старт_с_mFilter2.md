@@ -153,5 +153,5 @@
 [0]: /components/03_mSearch2/01_Сниппеты/02_mFilter2.md
 [1]: /components/44_SeoFilter/02_Быстрый_старт_без_mFilter2_и_miniShop2.md
 [2]: /components/44_SeoFilter/03_Дополнительные_возможности.md
-[3]: /components/01_pdoTools/03_Парсер.md#Шаблонизатор-Fenom
+[3]: /components/pdotools/parser#Шаблонизатор-Fenom
 [4]: /components/44_SeoFilter/05_Замены_в_SEO_текстах.md

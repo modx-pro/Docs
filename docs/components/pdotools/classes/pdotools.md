@@ -216,11 +216,11 @@ print_r($tree);
 
 Все плейсхолдеры в чанки, какие только может, обрабатывает [pdoParser][3]. Условие одно - плейсхолдер должен быть без условий и фильтров. То есть:
 
-* [[%tag]] - строка лексикона
-* [[~id]] - ссылка
-* [[+tag]] - обычные плейсхолдеры
-* [[++tag]] - системные плейсхолдеры
-* [[*tag]] - плейсхолдеры ресурса
+* `[[%tag]]` - строка лексикона
+* `[[~id]]` - ссылка
+* `[[+tag]]` - обычные плейсхолдеры
+* `[[++tag]]` - системные плейсхолдеры
+* `[[*tag]]` - плейсхолдеры ресурса
 
 Еще getChunk в pdoTools умеет работать с разными типами чанков:
 
@@ -297,7 +297,7 @@ echo $pdo->getChunk($tpl, $pls);
 С версии 2.0 pdoTools включает в свой состав шаблонизатор [Fenom][4], что позволяет отказаться от тегов MODX и писать в чанках более продвинутую логику.
 Про работу с Fenom читайте в разделе [pdoParser][3].
 
-[1]: /components/01_pdoTools/01_Сниппеты/02_pdoMenu.md
-[2]: /components/01_pdoTools/02_Классы/02_pdoFetch.md
-[3]: /components/01_pdoTools/02_Классы/03_pdoParser.md
+[1]: /components/pdotools/snippets/pdomenu
+[2]: /components/pdotools/classes/pdofetch
+[3]: /components/pdotools/classes/pdoparser
 [4]: https://github.com/fenom-template/fenom/tree/master/docs/ru#readme

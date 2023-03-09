@@ -14,6 +14,6 @@ pdoFetch наследует pdoTools, так что не нужно вызыва
 
 Парсер вызывать вообще не нужно, он или включен в настройках MODX, или нет. pdoTools использует его для оформления чанков в любом случае.
 
-[1]: /components/01_pdoTools/02_Классы/01_pdoTools.md
-[2]: /components/01_pdoTools/02_Классы/02_pdoFetch.md
-[3]: /components/01_pdoTools/02_Классы/03_pdoParser.md
+[1]: /components/pdotools/classes/pdotools
+[2]: /components/pdotools/classes/pdofetch
+[3]: /components/pdotools/classes/pdoparser

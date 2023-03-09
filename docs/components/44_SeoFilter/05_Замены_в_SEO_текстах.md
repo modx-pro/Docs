@@ -62,5 +62,5 @@
 Можно использовать несколько модификаторов указывая их через "|". Пример: {'site_name'|option|upper}.
 Более полный список в Модификаторах [Fenom][0]
 
-[0]: /components/01_pdoTools/03_Парсер.md#Шаблонизатор-Fenom
+[0]: /components/pdotools/parser#Шаблонизатор-Fenom
 [1]: /components/44_SeoFilter/03_Дополнительные_возможности.md

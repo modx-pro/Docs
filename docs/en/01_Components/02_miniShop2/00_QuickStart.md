@@ -138,5 +138,5 @@ As a final touch one may enter`Navbar` chunk and add there mini cart page presen
 
 [1]: https://modhost.pro
 [2]: https://modstore.pro/info/connection
-[3]: /ru/01_Components/02_miniShop2/01_Interface/01_Category.md
-[4]: /ru/01_Components/02_miniShop2/01_Interface/02_Item.md
+[3]: /components/02_miniShop2/01_Interface/01_Category.md
+[4]: /components/02_miniShop2/01_Interface/02_Item.md

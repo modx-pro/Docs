@@ -92,7 +92,7 @@ $pdo->setConfig(array(
 
 Понятное дело, что при вызове сниппетов нельзя указывать массивы, поэтому в pdoResources наши параметры нужно превратить в JSON:
 
-``` php
+``` modx
 [[!pdoResources?
     &class=`modUser`
     &leftJoin=`{
@@ -113,7 +113,7 @@ $pdo->setConfig(array(
 
 И получаем вывод распечатанных массивов пользователей и вот такой лог pdoTools:
 
-```
+```php
 0.0000799: pdoTools loaded
 0.0000319: xPDO query object created
 0.0005212: leftJoined modUserProfile as Profile
@@ -137,7 +137,7 @@ $pdo->setConfig(array(
 
 Выбираем ресурсы, прикрепляя к каждому по одной, первой картинке галереи вместе с превьюшкой **120х90**:
 
-``` php
+``` modx
 [[!pdoResources?
     &parents=`0`
     &class=`modResource`
@@ -168,7 +168,7 @@ $pdo->setConfig(array(
 Дальше мы указываем как именно присоединять файлы. У превьюшек есть родитель, а у оригинальных картинок нет, значит нам нужно указать в условии Image.parent = 0.
 А вот превьюшки можно уже прицеплять не к ресурсу, а к их родителям, поэтому уловие для Thumb выглядит так:
 
-``` php
+``` modx
 Image.id = Thumb.parent
 ```
 
@@ -177,7 +177,7 @@ Image.id = Thumb.parent
 
 В итоге мы видим такой лог:
 
-```
+```php
 0.0001011: Loaded model "ms2gallery" from "/core/components/ms2gallery/model/"
 0.0001070: pdoTools loaded
 0.0000360: xPDO query object created
@@ -203,7 +203,7 @@ Image.id = Thumb.parent
 
 Ну и последний пример с той же галерей, для закрепления. Теперь мы выберем все большие картинки с превьюшками 120х90 и названиями ресурсов к ним:
 
-``` php
+``` modx
 [[!pdoResources?
     &class=`msResourceFile`
     &loadModels=`ms2gallery`
@@ -235,7 +235,7 @@ Image.id = Thumb.parent
 
 Лог работы:
 
-```
+```php
 0.0001011: Loaded model "ms2gallery" from "/core/components/ms2gallery/model/"
 0.0000682: pdoTools loaded
 0.0000339: xPDO query object created
@@ -264,7 +264,7 @@ Image.id = Thumb.parent
 
 Обычно группировка нужна для подсчета количества правых строк. например, давайте выведем количество больших картинок галереи для каждого ресурса:
 
-``` php
+``` modx
 [[!pdoResources?
     &parents=`0`
     &class=`modResource`
@@ -298,13 +298,13 @@ Image.id = Thumb.parent
 
 * Если вы не делаете Join, то select можно указывать строкой полей
 
-``` php
+``` modx
 &select=`id,pagetitle,longtitle`
 ```
 
 * При использовании Join нужен массив, который укажет из какой таблицы что выбирать
 
-``` php
+``` modx
 &select=`{
     "modResource": "id,pagetitle,longtitle"
     "Image": "url"
@@ -313,7 +313,7 @@ Image.id = Thumb.parent
 
 * Если используются псевдонимы в select, то обязательно нужно указать и псевдоним таблицы
 
-``` php
+``` modx
 &select=`{
     "modResource": "id,pagetitle,longtitle"
     "Image": "Image.url as image"
@@ -322,7 +322,7 @@ Image.id = Thumb.parent
 
 * Перечисление всех полей можно заменять звездочкой
 
-``` php
+``` modx
 &select=`{
     "modResource": "*"
     "Image": "Image.url as image"
@@ -337,13 +337,13 @@ Image.id = Thumb.parent
 
 Задаётся он так же, массивом:
 
-``` php
+``` modx
 &where=`{"id:>": "15", "published:!=": "0"}`
 ```
 
 Если вы подключили какие-то таблицы в выборку, то можно фильтровать по ним:
 
-``` php
+``` modx
 &leftJoin=`{
     "Image": {
         "class": "msResourceFile",
@@ -358,7 +358,7 @@ Image.id = Thumb.parent
 
 Если у полей таблицы могут быть одинаковые столбцы (обычно это id), то нужно указывать имя колонки с таблицей:
 
-``` php
+``` modx
 &where=`{
     "modResource.id:>": "15",
     "published:!=": "0",
@@ -368,7 +368,7 @@ Image.id = Thumb.parent
 
 Стоит также заметить, про при фильтрации по подключенным ТВ псевдонимы обычно указывать не нужно, за вас это делает специальный метод **replaceTVCondition**.
 
-``` php
+``` modx
 &includeTVs=`image,file,mytv`
 &where=`{
     "image:LIKE":"%yandex.ru%",
@@ -379,7 +379,7 @@ Image.id = Thumb.parent
 
 Но если вдруг автозамена не сработает, то по ТВ нужно фильтровать вот так:
 
-``` php
+``` modx
 &includeTVs=`image,file,mytv`
 &where=`{
     "TVimage.value:LIKE":"%yandex.ru%",
@@ -392,7 +392,7 @@ Image.id = Thumb.parent
 
 А что делать, если не получается указать нужное нам уловие при помощи массива для xPDO? Тогда нужно указывать массив с одной строкой с чистым SQL:
 
-``` php
+``` modx
 &where=`["
     TVimage LIKE '%yandex%' OR (TVfile.value = 1 AND TVtext.value != '')
 "]
@@ -407,21 +407,21 @@ Image.id = Thumb.parent
 Этот метод добавляет в запрос сортировку и умеет принимать как строку, так и массив.
 В случае простой сортировки по одному полю нужно указать два параметра:
 
-``` php
+``` modx
 &sortby=`publishedon`
 &sortdir=`ASC
 ```
 
 Если в запросе есть Join, то лучше указывать с именем таблицы:
 
-``` php
+``` modx
 &sortby=`modResource.publishedon`
 &sortdir=`ASC
 ```
 
 А если нужна сортировка по нескольким полям, тогда нужно указать массив поле => направление:
 
-``` php
+``` modx
 &sortby=`{
     "modResource.publishedon": "ASC",
     "modUser.id": "DESC"
@@ -452,7 +452,7 @@ Image.id = Thumb.parent
 Также вызывается еще  **checkPermissions()** - он отвечает за проверку разрешений, указанных в одноименном параметре.
 Учтите, что для проверки разрешений приходится создавать объекты xPDO, что замедляет работу, поэтому используйте этот параметр только если он реально необходим:
 
-``` php
+``` modx
 &checkPermissions=`list,view`
 ```
 
@@ -498,7 +498,7 @@ print_r($files);
 
 А вот так - вывод всех файлов тикетов с присоединением к ним **pagetitle** родительского документа:
 
-```
+```php
 $files = $pdo->getCollection('TicketFile', array(), array(
     'innerJoin' => array(
         'Ticket' => array(
@@ -522,7 +522,7 @@ print_r($files);
 
 Лог получается вот такой:
 
-```
+```php
 0.0000322: xPDO query object created
 0.0003891: innerJoined Ticket as Ticket
 0.0001400: Added selection of TicketFile: SQL_CALC_FOUND_ROWS `id`, `parent`, `class`, `source`, `name`, `description`, `path`, `file`, `type`, `size`, `createdon`, `createdby`, `url`, `thumb`, `deleted`, `properties`, `hash`

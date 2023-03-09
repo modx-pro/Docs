@@ -28,4 +28,4 @@
 
 [1]: /components/02_miniShop2/02_Сниппеты/07_msOptions.md
 [2]: /components/02_miniShop2/01_Интерфейс/04_Настройки.md
-[3]: /components/01_pdoTools/03_Парсер.md
+[3]: /components/pdotools/parser

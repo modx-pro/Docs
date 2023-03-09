@@ -129,4 +129,4 @@
     ]]
     ```
 
-[0]: /components/01_pdoTools/01_Сниппеты/02_pdoMenu.md
+[0]: /components/pdotools/snippets/pdomenu

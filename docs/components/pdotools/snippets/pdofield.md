@@ -26,19 +26,19 @@
 
 Сниппет может быть вызван как фильтр вывода:
 
-``` php
+``` modx
 [[*id:pdofield=`longtitle`]]
 ```
 
 При этом вы можете указывать параметры JSON массивом. Например, выбор второго родителя от ресурса и вывод его «longtitle»:
 
-``` php
+``` modx
 [[*id:pdofield=`{"top":2,"field":"longtitle"}`]]
 ```
 
 Но лучше использовать обычный вызов - он и быстрее, и удобнее:
 
-``` php
+``` modx
 [[pdoField?
     &id=`[[*id]]`
     &field=`longtitle`
@@ -49,4 +49,4 @@
 [1]: http://rtfm.modx.com/extras/revo/getresourcefield
 [2]: http://modx.com/extras/package/ultimateparent
 [3]: /system/01_Основы/02_Фильтры_ввода_и_вывода.md
-[4]: /components/01_pdoTools/04_Общие_параметры.md
+[4]: /components/pdotools/general-parameters

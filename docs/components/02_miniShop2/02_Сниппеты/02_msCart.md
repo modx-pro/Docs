@@ -74,5 +74,5 @@
 [[!msGetOrder]] <!-- Вывод информации о заказе, показывается после его создания -->
 ```
 
-[1]: /components/01_pdoTools/04_Общие_параметры.md
-[2]: /components/01_pdoTools/03_Парсер.md
+[1]: /components/pdotools/general-parameters
+[2]: /components/pdotools/parser

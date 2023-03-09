@@ -48,4 +48,4 @@
 [[!TicketLatest? &limit=`5` &fastMode=`1` &action=`comments` &tpl=`tpl.Tickets.comment.latest`]]
 ```
 
-[1]: /components/01_pdoTools/04_Общие_параметры.md
+[1]: /components/pdotools/general-parameters

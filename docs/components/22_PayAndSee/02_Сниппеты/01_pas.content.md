@@ -30,7 +30,7 @@
 
 ## Особенности
 
-Сниппет `pas.content`, как и все сниппеты PayAndSee, использует [pdoTools][0101] для работы.
+Сниппет `pas.content`, как и все сниппеты PayAndSee, использует pdoTools для работы.
 Поэтому все основные его параметры совпадают с [pdoResources][010101], но есть и особенности.
 
 ### Получение тарифов
@@ -77,6 +77,5 @@
 {'page.nav'|placeholder}
 ```
 
-[0104]: /components/01_pdoTools/04_Общие_параметры.md
-[0101]: /components/01_pdoTools/
-[010101]: /components/01_pdoTools/01_Сниппеты/01_pdoResources.md
+[0104]: /components/pdotools/general-parameters
+[010101]: /components/pdotools/snippets/pdoresources

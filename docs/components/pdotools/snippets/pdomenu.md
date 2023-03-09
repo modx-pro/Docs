@@ -93,7 +93,7 @@
 
 Вывод с исключением определенных родителей и проверкой разрешений пользователя:
 
-``` php
+``` modx
 [[pdoMenu?
     &parents=`-10,-15`
     &level=`2`
@@ -122,4 +122,4 @@
 ]]
 ```
 
-[1]: /components/01_pdoTools/04_Общие_параметры.md
+[1]: /components/pdotools/general-parameters

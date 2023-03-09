@@ -69,4 +69,4 @@
 ]]
 ```
 
-[1]: /components/01_pdoTools/03_Парсер.md
+[1]: /components/pdotools/parser

@@ -8,25 +8,25 @@
 
 * **tpl** - Имя чанка для оформления ресурса. Если не указан, то содержимое полей ресурса будет распечатано на экран.
 
-``` php
+``` modx
 @INLINE <li>[[+date]] <a href="[[+link]]">[[+menutitle]]</a></li>
 ```
 
 * **tplYear** - Шаблон для оформления года
 
-``` php
+``` modx
 @INLINE <h3>[[+year]] <sup>([[+count]])</sup></h3><ul>[[+wrapper]]</ul>
 ```
 
 * **tplMonth** - Шаблон для оформления месяца
 
-``` php
+``` modx
 @INLINE <li><h4>[[+month_name]] <sup>([[+count]])</sup></h4><ul>[[+wrapper]]</ul></li>
 ```
 
 * **tplDay** - Шаблон для оформления дня
 
-``` php
+``` modx
 @INLINE <li><h5>[[+day]] <sup>([[+count]])</sup></h5><ul>[[+wrapper]]</ul></li>
 ```
 
@@ -77,7 +77,7 @@
 
 Обычный вызов:
 
-``` php
+``` modx
 [[!pdoArchive?
     &parents=`0`
 ]]
@@ -85,7 +85,7 @@
 
 Вызов через pdoPage:
 
-``` php
+``` modx
 [[!pdoPage?
     &element=`pdoArchive`
     &parents=`0`
@@ -95,7 +95,7 @@
 
 Пример вывода тикетов, как на картинке в начале страницы:
 
-``` php
+``` modx
 [[!pdoPage?
     &element=`pdoArchive`
     &parents=`0`
@@ -120,4 +120,4 @@
 ]]
 ```
 
-[1]: /components/01_pdoTools/04_Общие_параметры.md
+[1]: /components/pdotools/general-parameters
