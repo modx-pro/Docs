@@ -1,3 +1,5 @@
+# YandexMaps2
+
 Основной сниппет компонента, который реализует вывод карты на фронте.
 
 ## Параметры
@@ -24,16 +26,14 @@
 | **jquery**                | `1`               | Нужно ли подключать jQuery.                                                                                                                                                                                              |
 | **tpl**                   | `tpl.YandexMaps2` | Чанк вывода карты.                                                                                                                                                                                                       |
 
-
 > **Важно!**
 > Указывайте либо параметр `parents`, либо `parent`. Они взаимозаменяемы. Ниже есть примеры по их использованию для более детального понимания.
-
 
 ## Примеры
 
 ### Все объекты ресурса 15 с классом modDocument
 
-```php
+```fenom
 {'!YandexMaps2' | snippet : [
     'parent' => 15,
     'class' => 'modDocument',
@@ -42,7 +42,7 @@
 
 ### Все объекты класса modDocument
 
-```php
+```fenom
 {'!YandexMaps2' | snippet : [
     'class' => 'modDocument',
 ]}
@@ -59,7 +59,7 @@
 
 ### Все объекты класса msProduct с отключённым зуммированием при скролле
 
-```php
+```fenom
 {'!YandexMaps2' | snippet : [
     'class' => 'msProduct',
     'scrollZoom' => false,
@@ -68,7 +68,7 @@
 
 ### Все объекты пользователей
 
-```php
+```fenom
 {'!YandexMaps2' | snippet : [
     'class' => 'modUser',
     'map' => 'ym2map-users',

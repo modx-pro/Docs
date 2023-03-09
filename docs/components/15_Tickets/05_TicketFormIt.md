@@ -10,20 +10,20 @@
 Возможно указание собственных валидаторов через параметр customValidators и собственных текстов для ошибки.
 Все существующие правила валидации FormIt можно найти на официальной странице документации компонента.
 
-Для вывода сообщения об ошибке в одном div-е с проверяемый полем должен находится элемент **<span class="error"></span>** для вывода ошибки
+Для вывода сообщения об ошибке в одном div-е с проверяемый полем должен находится элемент `<span class="error"></span>` для вывода ошибки
 
-```php
+```modx
     <div class="form-group">
         <label for="ticket-pagetitle">[[%ticket_pagetitle]]</label>
         <input type="text" class="form-control" placeholder="[[%ticket_pagetitle]]" name="pagetitle" value=""
-               maxlength="50" id="ticket-pagetitle"/>
+            maxlength="50" id="ticket-pagetitle"/>
         <span class="error"></span>
     </div>
 ```
 
 Либо элемент может находиться в произвольной месте HTML-разметки с уникальным id вида **имя_поля-error**
 
-```php
+```html
     <span class="error" id="content-error"></span>
 ```
 
@@ -44,7 +44,7 @@
 
 Сниппет TicketForm вызывается с параметрами. В чанке tpl.myTicket для формы добавлены например собственные поля date, email, username, которые также валидируются стандартными правилами из FormIt.
 
-```php
+```fenom
 {'!TicketForm' | snippet: [
     'customValidators'=>'mycensore',
     'validate'=>'date:required:isDate=^%m/%d/%Y^,
@@ -58,13 +58,13 @@
 ```
 
 * Цензурирование пользовательских комментариев
-  
-```php
-{'!TicketComments' | snippet: [
-    'allowGuest' => 1,
-    'autoPublishGuest' => 0,
-    'customValidators'=>'mycensore',
-    'validate'=>'text:minLength=^20^:mycensore',
-    'text.vTextMinLength' => 'Комментарий должен быть не короче 20 знаков',
-]}
-```
+
+    ```fenom
+    {'!TicketComments' | snippet: [
+        'allowGuest' => 1,
+        'autoPublishGuest' => 0,
+        'customValidators'=>'mycensore',
+        'validate'=>'text:minLength=^20^:mycensore',
+        'text.vTextMinLength' => 'Комментарий должен быть не короче 20 знаков',
+    ]}
+    ```
