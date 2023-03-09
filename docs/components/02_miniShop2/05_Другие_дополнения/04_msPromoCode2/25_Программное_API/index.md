@@ -1,3 +1,4 @@
+# Программное API
 
 ## Процессоры
 
@@ -48,7 +49,6 @@ if ($errors = $tools->formatProcessorErrors($response)) {
 }
 ```
 
-
 ### coupons/remove
 
 Пример удаления промо-кода через процессор:
@@ -71,12 +71,9 @@ if ($errors = $tools->formatProcessorErrors($response)) {
 }
 ```
 
-
-
 ## Служба mspc2Randexp
 
 Данная служба позволяет сгенерировать строку по шаблону. Работает на основе библиотеки RegRev.
-
 
 ### Подключение
 
@@ -86,7 +83,6 @@ $mspc2 = $modx->getService('mspromocode2', 'msPromoCode2',
 $mspc2->initialize($modx->context->key);
 $randexp = $mspc2->getRandexp();
 ```
-
 
 ### Генерация уникального кода
 
@@ -109,12 +105,9 @@ while (empty($code)) {
 print_r($code);
 ```
 
-
-
 ## Служба mspc2Manager
 
 Данная служба, в контексте публичного API, отвечает за проверку, установку и отмену промо-кода для корзины.
-
 
 ### Подключение
 
@@ -124,7 +117,6 @@ $mspc2 = $modx->getService('mspromocode2', 'msPromoCode2',
 $mspc2->initialize($modx->context->key);
 $manager = $mspc2->getManager();
 ```
-
 
 ### getCoupon
 
@@ -155,7 +147,6 @@ if (is_array($result)) {
 }
 ```
 
-
 ### getCurrentCoupon
 
 Возвращает массив `array` с текущим промо-кодом или `null`, если актуального промо-кода не найдено.
@@ -174,7 +165,6 @@ if (is_array($result)) {
     print_r('Не найдено актуального промо-кода: ' . print_r($result, 1));
 }
 ```
-
 
 ### setCoupon
 
@@ -207,7 +197,6 @@ if (is_array($result)) {
 }
 ```
 
-
 ### unsetCoupon
 
 Отменяет применённый к корзине промо-код.
@@ -221,7 +210,6 @@ $manager = $mspc2->getManager();
 //
 $manager->unsetCoupon();
 ```
-
 
 ### generateCoupon
 
@@ -270,20 +258,13 @@ if (is_array($result)) {
 }
 ```
 
-
-
 ## События плагинов
 
 Описано [в соответствующем разделе][14] документации.
 
-
-
 ## События jQuery
 
 Описано [в соответствующем разделе][15] документации.
-
-
-
 
 [14]: /components/02_miniShop2/05_Другие_дополнения/04_msPromoCode2/17_События_плагинов/index.md
 [15]: /components/02_miniShop2/05_Другие_дополнения/04_msPromoCode2/15_События_jQuery.md

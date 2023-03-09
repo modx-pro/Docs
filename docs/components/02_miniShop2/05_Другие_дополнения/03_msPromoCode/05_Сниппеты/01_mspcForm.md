@@ -10,6 +10,6 @@
 
 ## Пример
 
-```php
+```fenom
 {'!mspcForm' | snippet}
 ```
