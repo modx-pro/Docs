@@ -8,6 +8,8 @@ export default defineConfig({
   cleanUrls: true,
   ignoreDeadLinks: true,
 
+  base: '/docs/',
+
   markdown: {
     languages,
   },
