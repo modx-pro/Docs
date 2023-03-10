@@ -155,4 +155,4 @@ return json_encode($row);
 
 [2]: /components/pdotools/general-parameters
 [3]: /components/02_miniShop2/
-[4]: /components/12_Comparison/01_addComparison.md
+[4]: /components/comparison/addcomparison
