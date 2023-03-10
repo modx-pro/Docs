@@ -1,4 +1,4 @@
-# Настройка RBK Money
+# RBK Money
 
 Для того, чтобы принимать оплату через RBK Money вам необходимо сначала [зарегистрировать](https://rbkmoney.ru/Common/Registereshop.aspx) магазин в этой системе.
 
