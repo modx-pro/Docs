@@ -81,7 +81,7 @@ One compulsory category must be written in **parent**, and additional in
 Do not forget to save the products when changing category set! Native category of items cannot be switched off from the tree.
 
 ### Comments
-This tab is displayed if only the [Tickets][3] component is installed on site and system setting **ms2_product_show_comments** is switched on.
+This tab is displayed if only the **Tickets** component is installed on site and system setting **ms2_product_show_comments** is switched on.
 
 [![](https://file.modx.pro/files/5/c/4/5c43f7a822acfe411cfe1eef88f16d92s.jpg)](https://file.modx.pro/files/5/c/4/5c43f7a822acfe411cfe1eef88f16d92.png)
 
@@ -205,8 +205,7 @@ Items may be copied. Herewith, the following are copied:
 
 **Gallery files are not copied** because of long duration, especially if remote file source is used as Amazon S3-type, and the process may fall off on time out.
 
-[1]: /components/02_miniShop2/03_Development/01_plug in_items.md
-[2]: /components/02_miniShop2/01_Interface/04_Settings.md
-[3]: /components/15_Tickets
+[1]: /components/minishop2/03_Development/01_plug in_items.md
+[2]: /components/minishop2/01_Interface/04_Settings.md
 [4]: /components/18_ms2Gallery
 [5]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt

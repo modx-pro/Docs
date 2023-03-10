@@ -86,5 +86,5 @@ More details of template expanding you may find in [Fenom documentation][4].
 
 [1]: /en/01_Components/01_pdoTools/04_General_parameters.md
 [2]: /en/01_Components/01_pdoTools/03_Parser.md
-[3]: /en/01_Components/02_miniShop2/01_Interface/04_Settings.md
+[3]: /en/01_Components/minishop2/01_Interface/04_Settings.md
 [4]: https://github.com/fenom-template/fenom/blob/master/docs/ru/tags/extends.md

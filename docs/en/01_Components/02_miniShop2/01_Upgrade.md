@@ -103,5 +103,5 @@ The development of miniShop 2.3 has been canceled, so look at the upgrade to ver
 
 
 [1]: /en/01_Components/01_pdoTools/03_Parser.md
-[2]: /components/02_miniShop2/02_Сниппеты
+[2]: /components/minishop2/02_Сниппеты
 [3]: https://github.com/fenom-template/fenom/blob/master/docs/en/tags/extends.md

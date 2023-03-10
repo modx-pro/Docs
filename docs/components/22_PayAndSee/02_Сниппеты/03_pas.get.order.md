@@ -307,6 +307,6 @@
 
 [0104]: /components/pdotools/general-parameters
 [010103]: /components/pdotools/parser
-[01020205]: /components/02_miniShop2/02_Сниппеты/05_msGetOrder.md
-[01020104]: /components/02_miniShop2/01_Интерфейс/04_Настройки.md
+[01020205]: /components/minishop2/snippets/msgetorder
+[01020104]: /components/minishop2/interface/settings
 [001]: https://github.com/fenom-template/fenom/blob/master/docs/ru/tags/extends.md

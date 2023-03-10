@@ -30,5 +30,5 @@ You may see all available placeholders by empty chunk indication:
 Standard chunk is designed to display options in `select`, for sending to the cart along with the product.
 
 
-[1]: /en/01_Components/02_miniShop2/03_Development/01_Product_plugins.md
+[1]: /en/01_Components/minishop2/03_Development/01_Product_plugins.md
 [2]: /en/01_Components/01_pdoTools/03_Parser.md

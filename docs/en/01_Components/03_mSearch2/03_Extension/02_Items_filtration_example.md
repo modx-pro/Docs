@@ -226,6 +226,6 @@ We add records **mse2_filter_availability_no** and **mse2_filter_availability_ye
 
 Obviously, this can be supported by checkboxes, texts in dictionaries can be changed, etc. The principle remains as it is.
 
-[1]: /en/01_Components/02_miniShop2/
+[1]: /en/01_Components/minishop2/
 [2]: /en/01_Components/03_mSearch2/
 [3]: http://bezumkin.ru/modx/minishop2/classes/910/

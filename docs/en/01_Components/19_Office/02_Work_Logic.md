@@ -1,24 +1,24 @@
-**Office** extra is a modular system in which there can be any number of parts (controllers). 
-There are 4 of them in the standard set: 
+**Office** extra is a modular system in which there can be any number of parts (controllers).
+There are 4 of them in the standard set:
 
-* [Auth][0] - authorization through email 
-* [Profile][1] - work with a user's profile 
+* [Auth][0] - authorization through email
+* [Profile][1] - work with a user's profile
 * [miniShop2][2] - output of the user account MS2
-* [RemoteAuth][3] - authorization on one site through another 
+* [RemoteAuth][3] - authorization on one site through another
 
-The component itself has snippet **Office**, which calls for the needed controller and sends all the indicated parameters to it. 
-That is, all possible settings, chunks and other properties depend on the controller and are not written into the snippet. 
-For example, here is a call for all 3 controllers at once on one page. 
+The component itself has snippet **Office**, which calls for the needed controller and sends all the indicated parameters to it.
+That is, all possible settings, chunks and other properties depend on the controller and are not written into the snippet.
+For example, here is a call for all 3 controllers at once on one page.
 ```
 [[!Office?&action=`Auth`]]
 [[!Office?&action=`Profile`]]
 [[!Office?&action=`miniShop2`]]
 ```
-For standard controllers there are special snippets with parameters written into them for the sake of convenience. For work they still call for Office snippet. 
+For standard controllers there are special snippets with parameters written into them for the sake of convenience. For work they still call for Office snippet.
 
 [![](https://file.modx.pro/files/7/a/6/7a691dcfa2bf7915716c61a3450e487cs.jpg)](https://file.modx.pro/files/7/a/6/7a691dcfa2bf7915716c61a3450e487c.png)
 
-### Setting the controllers 
+### Setting the controllers
 
 Everything you tell the snippet is sent to the controller. It makes decisions about what is useful for it itself.
 All standard scripts and styles that are necessary for work are registered through system settings, like in [miniShop2][5].
@@ -41,21 +41,21 @@ By default the appearance is chosen due to what version of MODX is installed - 2
 
 
 Generally speaking, controller is an ordinary php class, which inherits standard class from Office.
-All classes are located in directory `/core/components/office/controllers/`. Due to the modular architecture you can easily change any one of them. 
+All classes are located in directory `/core/components/office/controllers/`. Due to the modular architecture you can easily change any one of them.
 
-You should just make a copy, rename it and call for it: 
+You should just make a copy, rename it and call for it:
 ```
 [[!Office?
     &action=`AuthCopy`
 ]]
 ```
 
-You can also register controllers from the addons you download in Office. 
-### Extension by extra components 
+You can also register controllers from the addons you download in Office.
+### Extension by extra components
 
 Extra components can register their own controllers by adding their directory to system parameter **office_controllers_paths**.
 
-To make this work easier it is better to use methods of Office::**addExtenstion**() и Office::**removeExtension**() - the principle is the same as when you register models of components in MODX. 
+To make this work easier it is better to use methods of Office::**addExtenstion**() и Office::**removeExtension**() - the principle is the same as when you register models of components in MODX.
 
 You can see an example in [a draft for addons design modExtra][6]:
 
@@ -81,16 +81,16 @@ After you register the way to a controller, Office will download it from the giv
 You do not have to copy anything, you can just provide and update your vidget inside your package.
 [Management of keys in modstore.pro][8] already works like this, as well as output [of the authors' sales statistics][9].
 
-And if you are planning to use Ext JS in your vidgets, notice that by default there already are some new [improved Office components][10], like a table with an imbedded search - you can extend them as much as you want. 
+And if you are planning to use Ext JS in your vidgets, notice that by default there already are some new [improved Office components][10], like a table with an imbedded search - you can extend them as much as you want.
 
-As[modExtra][11] is suited for designing addons for MODX and already supports Office, I recommend that you use it as an example. 
+As[modExtra][11] is suited for designing addons for MODX and already supports Office, I recommend that you use it as an example.
 
 
 [0]: /en/01_Components/19_Office/03_Controllers/01_Authorization.md
 [1]: /en/01_Components/19_Office/03_Controllers/02_Profile.md
 [2]: /en/01_Components/19_Office/03_Controllers/03_MS2_Orders_History.md
 [3]: /en/01_Components/19_Office/03_Controllers/04_Remote_Authorization.md
-[5]: /en/01_Components/02_miniShop2
+[5]: /en/01_Components/minishop2
 [6]: https://github.com/bezumkin/modExtra/blob/7b238647746fdd3443941a78fccc96ca9e96d76c/_build/resolvers/resolve.office.php
 [7]: https://github.com/bezumkin/modExtra/commit/7b238647746fdd3443941a78fccc96ca9e96d76c
 [8]: https://modstore.pro/cabinet/keys/

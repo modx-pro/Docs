@@ -161,5 +161,5 @@ Mandatory characteristics are bold.
 Swift editing of values by default is also available as well as characteristics sorting by dragging.
 
 [0]: http://rtfm.modx.com/revolution/2.x/developing-in-modx/advanced-development/custom-resource-classes
-[1]: /components/02_miniShop2/03_development/01_plugin_goods.md
-[2]: /components/02_miniShop2/01_Interface/04_Settings.md
+[1]: /components/minishop2/03_development/01_plugin_goods.md
+[2]: /components/minishop2/01_Interface/04_Settings.md

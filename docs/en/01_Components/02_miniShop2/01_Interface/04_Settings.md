@@ -80,8 +80,8 @@ To add a new record you should select pre-established link and item to apply it.
 
 The table **msProductLink** with only 3 columns presents the items links at the database level:
 * **link** - is link id in the table `msLink`created above, in settings
-* **master** - is primary item id 
-* **slave** - is descendent item id 
+* **master** - is primary item id
+* **slave** - is descendent item id
 
 Let us understand which records are created for different link types.
 
@@ -174,10 +174,10 @@ The created characteristics are displayed on [item page][5] in corresponding tab
 To display the goods options the snippet [msProducts][7] should be used.
 
 
-[1]: /en/01_Components/02_miniShop2/03_Development/03_Services/03_Delivery.md
-[2]: /en/01_Components/02_miniShop2/03_Development/03_Services/02_Order.md
+[1]: /en/01_Components/minishop2/03_Development/03_Services/03_Delivery.md
+[2]: /en/01_Components/minishop2/03_Development/03_Services/02_Order.md
 [3]: /en/01_Components/01_pdoTools
 [4]: /en/01_Components/01_pdoTools/03_Parser.md
-[5]: /en/01_Components/02_miniShop2/01_Interface/02_Item.md
-[6]: /en/01_Components/02_miniShop2/03_Development/03_Services/04_Payment.md
-[7]: /en/01_Components/02_miniShop2/02_Snippets/01_msProducts.md
+[5]: /en/01_Components/minishop2/01_Interface/02_Item.md
+[6]: /en/01_Components/minishop2/03_Development/03_Services/04_Payment.md
+[7]: /en/01_Components/minishop2/02_Snippets/01_msProducts.md

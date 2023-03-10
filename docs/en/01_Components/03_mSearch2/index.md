@@ -1,5 +1,5 @@
-Morphological search and filtering. 
+Morphological search and filtering.
 
-Works great with [miniShop2][1], implementing flexible output of products' catalogue with ajax filters. 
+Works great with [miniShop2][1], implementing flexible output of products' catalogue with ajax filters.
 
-[1]: en/01_Components/02_miniShop2
+[1]: en/01_Components/minishop2

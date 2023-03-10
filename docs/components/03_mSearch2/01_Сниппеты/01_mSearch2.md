@@ -129,4 +129,4 @@
 [2]: /components/pdotools/snippets/pdoresources
 [3]: /components/pdotools/snippets/pdopage
 [4]: /components/03_mSearch2/01_Сниппеты/03_mSearchForm.md
-[5]: /components/02_miniShop2/02_Сниппеты/01_msProducts.md
+[5]: /components/minishop2/snippets/msproducts

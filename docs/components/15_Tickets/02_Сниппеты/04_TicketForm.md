@@ -37,4 +37,4 @@
 Возможно использование параметра validate по аналогии как он применяется в компоненте FormIt. Компонент FormIt должен быть установлен.
 Примеры описаны [в отдельном разделе][1]
 
-[1]: /components/15_Tickets/05_TicketFormIt.md
+[1]: /components/tickets/ticketformit

@@ -23,6 +23,6 @@ You may see all available placeholders by indicating empty chunk:
 [![](https://file.modx.pro/files/d/b/c/dbc7a001d2c7fe6d565b054a5119099bs.jpg)](https://file.modx.pro/files/d/b/c/dbc7a001d2c7fe6d565b054a5119099b.png)
 
 
-[1]: /en/01_Components/02_miniShop2/02_Snippets/07_msOptions.md
-[2]: /en/01_Components/02_miniShop2/01_Interface/04_Settings.md
+[1]: /en/01_Components/minishop2/02_Snippets/07_msOptions.md
+[2]: /en/01_Components/minishop2/01_Interface/04_Settings.md
 [3]: /en/01_Components/01_pdoTools/03_Parser.md

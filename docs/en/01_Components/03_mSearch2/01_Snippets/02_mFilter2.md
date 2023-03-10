@@ -533,7 +533,7 @@ If you implement a new filter and it appears as a long and confusing caption in 
 [2]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
 [3]: http://jqueryui.com/slider/
 [4]: http://getbootstrap.com/
-[5]: /components/02_miniShop2/02_Сниппеты/01_msProducts.md
+[5]: /components/minishop2/snippets/msproducts
 [6]: /components/03_mSearch2/03_Расширение/01_Методы_фильтрации.md
 
 

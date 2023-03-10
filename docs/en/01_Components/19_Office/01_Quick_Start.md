@@ -113,6 +113,6 @@ Settings by default will suit most shops, unless you have to turn off the 'weigh
 ## Conclusion
 Now you know how you can easily provide authorization, profile editing and orders output miniShop2 on your site.
 
-[0]: /components/02_miniShop2
+[0]: /components/minishop2
 [1]: /components/04_HybridAuth
 [2]: https://gravatar.com
