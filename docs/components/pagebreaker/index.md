@@ -77,4 +77,4 @@
 
 [1]: http://demo.modx.pro/pagebreaker
 [2]: /system/01_Основы/02_Фильтры_ввода_и_вывода.md
-[3]: /components/pagebreaker/02_Настройки.md
+[3]: /components/pagebreaker/settings
