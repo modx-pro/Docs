@@ -14,12 +14,6 @@ export default defineConfig({
     languages,
   },
 
-  algolia: {
-    apiKey: '6a767bbcca227a92559817e2382d8938',
-    indexName: 'modx',
-    appId: 'BCE7F5SAJ2',
-  },
-
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
@@ -41,6 +35,12 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/modx-pro/Docs' },
     ],
+
+    algolia: {
+      appId: 'BCE7F5SAJ2',
+      apiKey: '6a767bbcca227a92559817e2382d8938',
+      indexName: 'modx',
+    },
   },
 
   locales: {

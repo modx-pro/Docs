@@ -17,7 +17,14 @@
         "@docsearch/js": "^3.3.3",
         "@vueuse/core": "^9.13.0",
         "modx-tmlanguage": "^1.1.1",
-        "vitepress": "^1.0.0-alpha.50",
+        "vitepress": "^1.0.0-alpha.52",
         "vue": "^3.2.47"
+    },
+    "pnpm": {
+        "peerDependencyRules": {
+        "ignoreMissing": [
+            "@algolia/client-search"
+        ]
+        }
     }
 }
