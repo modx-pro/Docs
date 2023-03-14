@@ -19,13 +19,13 @@
 
 ## Примеры экспорта
 
-### 1.Вариант
+### 1. Вариант
 
 **Поля экспорта:** id,product_id,options,remains
 
 **Результат:**
 
-![1.Вариант](https://file.modx.pro/files/9/f/5/9f5b5d30d94f6258825b6f5250ddd4bd.jpg)
+![1. Вариант](https://file.modx.pro/files/9/f/5/9f5b5d30d94f6258825b6f5250ddd4bd.jpg)
 
 ### 2.Вариант
 

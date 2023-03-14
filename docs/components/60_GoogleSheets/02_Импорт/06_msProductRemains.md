@@ -19,7 +19,7 @@
 
 ## Примеры импорта
 
-### 1.Вариант
+### 1. Вариант
 
 **Поля импорта:** id,product_id,options,remains
 
@@ -27,7 +27,7 @@
 
 **Таблица:**
 
-![1.Вариант](https://file.modx.pro/files/9/f/5/9f5b5d30d94f6258825b6f5250ddd4bd.jpg)
+![1. Вариант](https://file.modx.pro/files/9/f/5/9f5b5d30d94f6258825b6f5250ddd4bd.jpg)
 
 ### 2.Вариант
 **Поля импорта:** id,product_id,options.color,options.size,remains
