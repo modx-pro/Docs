@@ -47,7 +47,8 @@
                 <a href="{31|url}{$word.alias}" class="label label-success">{$word.value}</a>
         {/foreach}
     {/if}
-```
+
+    ```
 
 3. Вызов в синтаксисе MODX
 

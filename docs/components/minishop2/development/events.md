@@ -3,113 +3,112 @@
 ## Доступны следующие события
 
 * `msOnBeforeAddToCart`
-    * `product` - объект  *msProduct*
-    * `count` - кол-во продукта
-    * `options` - массив опций
-    * `cart` - экземпляр класса *корзина*
+  *`product` - объект  *msProduct*
+  *`count` - кол-во продукта
+  *`options` - массив опций
+  *`cart` - экземпляр класса *корзина*
 * `msOnAddToCart` - добавление продукта корзины
-    * `key` - ключ продукта
-    * `cart` - экземпляр класса *корзина*
+  *`key` - ключ продукта
+  *`cart` - экземпляр класса *корзина*
 * `msOnBeforeChangeInCart`
 * `msOnChangeInCart` - изменение продукта корзины
-    * `key` - ключ продукта
-    * `count` - кол-во продукта
-    * `cart` - экземпляр класса *корзина*
+  *`key` - ключ продукта
+  *`count` - кол-во продукта
+  *`cart` - экземпляр класса *корзина*
 * `msOnBeforeRemoveFromCart`
 * `msOnRemoveFromCart` - удаление продукта корзины
-    * `key` - ключ продукта
-    * `cart` - экземпляр класса *корзина*
+  *`key` - ключ продукта
+  *`cart` - экземпляр класса *корзина*
 * `msOnBeforeEmptyCart`
 * `msOnEmptyCart` - очистка корзины
-    * `cart` - экземпляр класса *корзина*
+  *`cart` - экземпляр класса *корзина*
 * `msOnGetStatusCart` - статус корзины
-    * `status` - статус
-    * `cart` - экземпляр класса *корзина*
-
+  *`status` - статус
+  *`cart` - экземпляр класса *корзина*
 * `msOnBeforeAddToOrder`
 * `msOnAddToOrder` - добавление поля заказа
-    * `key` - ключ поля
-    * `value` - значение поля
-    * `order` - экземпляр класса *заказ*
+  *`key` - ключ поля
+  *`value` - значение поля
+  *`order` - экземпляр класса *заказ*
 * `msOnBeforeValidateOrderValue`
 * `msOnValidateOrderValue` - валидация поля заказа
-    * `key` - ключ поля
-    * `value` - значение поля
-    * `order` - экземпляр класса *заказ*
+  *`key` - ключ поля
+  *`value` - значение поля
+  *`order` - экземпляр класса *заказ*
 * `msOnBeforeRemoveFromOrder`
 * `msOnRemoveFromOrder` - удаление поля заказа
-    * `key` - ключ поля
-    * `order` - экземпляр класса *заказ*
+  *`key` - ключ поля
+  *`order` - экземпляр класса *заказ*
 * `msOnBeforeEmptyOrder`
 * `msOnEmptyOrder` - очистка заказа
-    * `order` - экземпляр класса *заказ*
+  *`order` - экземпляр класса *заказ*
 * `msOnBeforeGetOrderCost`
-    * `order` - экземпляр класса *заказ*
-    * `cart` - экземпляр класса *корзина*
-    * `with_cart` - флаг *с учетом корзины*
-    * `only_cost` - флаг *только стоимость*
+  *`order` - экземпляр класса *заказ*
+  *`cart` - экземпляр класса *корзина*
+  *`with_cart` - флаг *с учетом корзины*
+  *`only_cost` - флаг *только стоимость*
 * `msOnGetOrderCost` - получение стоимости заказа
-    * `order` - экземпляр класса *заказ*
-    * `cart` - экземпляр класса *корзина*
-    * `with_cart` - флаг *с учетом корзины*
-    * `only_cost` - флаг *только стоимость*
-    * `cost` - стоимость
-    * `delivery_cost` - стоимость доставки
+  *`order` - экземпляр класса *заказ*
+  *`cart` - экземпляр класса *корзина*
+  *`with_cart` - флаг *с учетом корзины*
+  *`only_cost` - флаг *только стоимость*
+  *`cost` - стоимость
+  *`delivery_cost` - стоимость доставки
 * `msOnSubmitOrder` - оформление заказа
-    * `data` - данные заказа
-    * `order` - экземпляр класса *заказ*
+  *`data` - данные заказа
+  *`order` - экземпляр класса *заказ*
 * `msOnBeforeChangeOrderStatus`
 * `msOnChangeOrderStatus` - смена статуса заказа
-    * `order` - объект *msOrder*
-    * `status` - идентификатор статуса
+  *`order` - объект *msOrder*
+  *`status` - идентификатор статуса
 * `msOnBeforeGetOrderCustomer`
 * `msOnGetOrderCustomer` - получение пользователя заказа
-    * `order` - экземпляр класса *заказ*
-    * `customer` - объект *modUser*
+  *`order` - экземпляр класса *заказ*
+  *`customer` - объект *modUser*
 * `msOnBeforeCreateOrder`
 * `msOnCreateOrder` - создание заказа
-    * `order` - экземпляр класса *заказ*
-    * `msOrder` - объект *msOrder*
+  *`order` - экземпляр класса *заказ*
+  *`msOrder` - объект *msOrder*
 * `msOnBeforeUpdateOrder`
 * `msOnUpdateOrder` - обновление заказа
-    * `msOrder` - объект *msOrder*
+  *`msOrder` - объект *msOrder*
 * `msOnBeforeSaveOrder`
 * `msOnSaveOrder` - сохранение заказа
-    * `mode` - режим сохранения new или upd
-    * `object` - объект *msOrder*
-    * `msOrder` - объект *msOrder*
-    * `cacheFlag` - флаг кеширования
+  *`mode` - режим сохранения new или upd
+  *`object` - объект *msOrder*
+  *`msOrder` - объект *msOrder*
+  *`cacheFlag` - флаг кеширования
 * `msOnBeforeRemoveOrder`
 * `msOnRemoveOrder` - удаление заказа
-    * `id` - id записи
-    * `object` - объект *msOrder*
-    * `msOrder` - объект *msOrder*
-    * `ancestors` - массив where, переданный в метод
+  *`id` - id записи
+  *`object` - объект *msOrder*
+  *`msOrder` - объект *msOrder*
+  *`ancestors` - массив where, переданный в метод
 * `msOnBeforeCreateOrderProduct`
 * `msOnCreateOrderProduct` - создание продукта заказа
-    * `msOrderProduct` - объект *msOrderProduct*
+  *`msOrderProduct` - объект *msOrderProduct*
 * `msOnBeforeUpdateOrderProduct`
 * `msOnUpdateOrderProduct` - обновление продукта заказа
-    * `msOrderProduct` - объект *msOrderProduct*
+  *`msOrderProduct` - объект *msOrderProduct*
 * `msOnBeforeRemoveOrderProduct`
 * `msOnRemoveOrderProduct` - удаление продукта заказа
-    * `msOrderProduct` - объект *msOrderProduct*
+  *`msOrderProduct` - объект *msOrderProduct*
 
 * `msOnGetProductFields` - манипуляции с товаром на вывод
-    * `product` - объект *msProductData*
-    *  `data` - массив данных
+  *`product` - объект *msProductData*
+  * `data` - массив данных
 * `msOnGetProductPrice` - получение цены продукта
-    * `product` - объект *msProductData*
-    * `data` - данные продукта
-    * `price` - цена продукта
+  *`product` - объект *msProductData*
+  *`data` - данные продукта
+  *`price` - цена продукта
 * `msOnGetProductWeight` - получение веса продукта
-    * `product` - объект *msProductData*
-    * `data` - данные продукта
-    * `weight` - вес продукта
+  *`product` - объект *msProductData*
+  *`data` - данные продукта
+  *`weight` - вес продукта
 
 * `msOnManagerCustomCssJs` - загрузка скриптов *minishop2*
-    * `controller` - экземпляр класса *контроллер*
-    * `page` - идентификатор страницы
+  *`controller` - экземпляр класса *контроллер*
+  *`page` - идентификатор страницы
 
 ## Работа с событиями
 
@@ -123,7 +122,7 @@
 `$modx->event->_output`
 
 ```php
- <?php
+<?php
 if ($modx->event->name = 'msOnBeforeAddToCart') {
     $modx->event->output('Error');
 }
@@ -149,11 +148,9 @@ if ($modx->event->name = 'msOnBeforeAddToCart') {
 Для удобства можно создать переменную-ссылку  `$values = & $modx->event->returnedValues;`
 Обратите внимание.  Ссылка со знаком & означает, что все что вы напишите в `$values` сразу же, без дополнительного сохранения появится  `$modx->event->returnedValues` и будет возвращена в класс, вызывающий событие.
 
-
 ### Как получить список всех входящих переменных
 
 Это правило работает везде, с любым событием MODX.  Достаточно распечатать в лог такой код
-
 
 ```php
 <?php
@@ -181,7 +178,7 @@ $modx->invokeEvent($eventName, $params);
 ```php
 <?php
 switch ($modx->event->name) {
-  case "msOnAddToCart":
+case "msOnAddToCart":
     $sp = &$scriptProperties;
     $sp['count'] = 100;
     $modx->event->returnedValues = $sp;

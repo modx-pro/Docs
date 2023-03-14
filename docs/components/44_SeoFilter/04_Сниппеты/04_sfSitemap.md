@@ -4,13 +4,13 @@
 
 ## Различающиеся параметры от sfMenu
 
-| Название             | По умолчанию                                  | Описание                                                                                        |
-| -------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| **&sitemapSchema**   | <http://www.sitemaps.org/schemas/sitemap/0.9> | Схема карты сайта.                                                                              |
-| **&sortby**          | link                                          | Сортировка. По умолчанию по названию ссылки                                                     |
-| **&sortdir**         | ASC                                           | Порядок сортировки. По возрастанию                                                              |
-| **&outputSeparator** | `\n`                                          | Разделитель ссылок.                                                                             |
-| **&forceXML**        | 1                                             | Принудительно выводить страницу как XML. При сввместном использовании с pdoSitemap - отключите. |
+| Название             | По умолчанию                                    | Описание                                                                                        |
+|----------------------|-------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| **&sitemapSchema**   | `<http://www.sitemaps.org/schemas/sitemap/0.9>` | Схема карты сайта.                                                                              |
+| **&sortby**          | `link`                                          | Сортировка. По умолчанию по названию ссылки                                                     |
+| **&sortdir**         | `ASC`                                           | Порядок сортировки. По возрастанию                                                              |
+| **&outputSeparator** | `\n`                                            | Разделитель ссылок.                                                                             |
+| **&forceXML**        | `1`                                             | Принудительно выводить страницу как XML. При сввместном использовании с pdoSitemap - отключите. |
 
 ### Шаблоны
 
@@ -40,30 +40,30 @@
 1. Совместно использование pdoSitemap и sfSitemap.
 Вызов pdoSitemap:
 
-```php
-[[!pdoSitemap?
-    &tplWrapper=`sitemap.wrapper`
-]]
-```
+    ```modx
+    [[!pdoSitemap?
+        &tplWrapper=`sitemap.wrapper`
+    ]]
+    ```
 
-Чанк sitemap.wrapper:
+    Чанк sitemap.wrapper:
 
-```php
-<?xml version="1.0" encoding="{'modx_charset' | option}"?>
-<urlset xmlns="{$schema}">
-{$output}
-{$_modx->runSnippet('sfSitemap',['tplWrapper'=>'@INLINE {$output}', 'fast'=>1, 'mincount'=>1, 'forceXML'=>0])}
-</urlset>
-```
+    ```fenom
+    <?xml version="1.0" encoding="{'modx_charset' | option}"?>
+    <urlset xmlns="{$schema}">
+    {$output}
+    {$_modx->runSnippet('sfSitemap',['tplWrapper'=>'@INLINE {$output}', 'fast'=>1, 'mincount'=>1, 'forceXML'=>0])}
+    </urlset>
+    ```
 
 2. Отдельная карта сайта для SEO страниц:
 
-```php
-[[!sfSitemap?
-    &fast=`1` // можно использовать counChildren, но это будет медленее
-    &mincount=`1`
-]]
-```
+    ```modx
+    [[!sfSitemap?
+        &fast=`1` // можно использовать counChildren, но это будет медленее
+        &mincount=`1`
+    ]]
+    ```
 
 [0]: /components/44_SeoFilter/04_Сниппеты/03_sfMenu.md
 [1]: /components/pdotools/snippets/pdositemap
