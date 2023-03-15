@@ -15,6 +15,6 @@
 
 [1]: http://instagram.com/developer/clients/register/
 
-#### С 31 марта 2020 года больше не доступна авторизация через Instagram используйте авторизацию через Facebook [подробней][2]
+### С 31 марта 2020 года больше не доступна авторизация через Instagram используйте авторизацию через Facebook [подробней][2]
 
 [2]: https://developers.facebook.com/docs/instagram-basic-display-api

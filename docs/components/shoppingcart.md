@@ -106,7 +106,6 @@
 
 В форме товара должно быть скрытое поле с ID категории. Пример (страница товара):
 
-
 ```html
 <input type="hidden" name="category_id" value="[[+page.parentId]]">
 ```

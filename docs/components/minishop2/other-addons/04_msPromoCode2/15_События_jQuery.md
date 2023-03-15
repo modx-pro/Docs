@@ -6,7 +6,7 @@
 
 Сработает при применении промо-кода, даже если это было с ошибкой.
 
-### Пример
+### Пример mspc2_set
 
 ```javascript
 $(document).ready(function() {
@@ -20,7 +20,7 @@ $(document).ready(function() {
 
 Сработает при отмене промо-кода.
 
-### Пример
+### Пример mspc2_unset
 
 ```javascript
 $(document).ready(function() {

@@ -26,24 +26,24 @@
 
     Возможные значения:
 
-        * inner или rbkmoney — оплата с кошелька RBK Money
-        * bankcard — банковская карта Visa/MasterCard
-        * exchangers — электронные платежные системы
-        * terminals — платёжные терминалы
-        * prepaidcard — предоплаченная карта RBK Money
-        * postrus — Почта России
-        * mobilestores — салоны связи
-        * transfers — системы денежных Переводов
-        * ibank — интернет банкинг
-        * sberbank — банковский платёж
-        * svyaznoy — Связной
-        * euroset — Евросеть
-        * contact — Contact
-        * mts — МТС
-        * uralsib — кассы Уралсиб
-        * handybank — HandyBank
-        * ocean — Океан Банк
-        * ibankuralsib — Интернет-банк Уралсиб
+    * inner или rbkmoney — оплата с кошелька RBK Money
+    * bankcard — банковская карта Visa/MasterCard
+    * exchangers — электронные платежные системы
+    * terminals — платёжные терминалы
+    * prepaidcard — предоплаченная карта RBK Money
+    * postrus — Почта России
+    * mobilestores — салоны связи
+    * transfers — системы денежных Переводов
+    * ibank — интернет банкинг
+    * sberbank — банковский платёж
+    * svyaznoy — Связной
+    * euroset — Евросеть
+    * contact — Contact
+    * mts — МТС
+    * uralsib — кассы Уралсиб
+    * handybank — HandyBank
+    * ocean — Океан Банк
+    * ibankuralsib — Интернет-банк Уралсиб
 
 В будущем, возможно, добавятся и другие способы пополнения. Значения можете уточнить в документации к RBK Money или связаться с технической поддержкой RBK Money.
 

@@ -38,7 +38,7 @@
 ## Примеры использования
 
 1. Совместно использование pdoSitemap и sfSitemap.
-Вызов pdoSitemap:
+    Вызов pdoSitemap:
 
     ```modx
     [[!pdoSitemap?

@@ -36,7 +36,9 @@
 
 [![](https://file.modx.pro/files/3/1/5/315d7750d4c67a632f9dac140c1058e8s.jpg)](https://file.modx.pro/files/3/1/5/315d7750d4c67a632f9dac140c1058e8.png)
 
-**ВАЖНО!** Добавленные значения должны совпадать с указанными в системных настройках компонента. По умолчанию, на данный момент, там вписаны 2 значения (их достаточно для получения имени и email адреса пользователя -  "scope":"https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email" )
+:::warning Важно
+Добавленные значения должны совпадать с указанными в системных настройках компонента. По умолчанию, на данный момент, там вписаны 2 значения (их достаточно для получения имени и email адреса пользователя -  `"scope":"https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"` )
+:::
 
 [![](https://file.modx.pro/files/8/d/5/8d5fbbd35b52e9d65a28cb80ba8c8138s.jpg)](https://file.modx.pro/files/8/d/5/8d5fbbd35b52e9d65a28cb80ba8c8138.png)
 
@@ -52,7 +54,7 @@
 
 На пункте Summary видим все введенные данные, проверяем их еще раз и на этом настройка этого раздела завершена.
 
-**Далее переходим к получение необходимых ключей**
+Далее переходим к получение необходимых ключей
 
 Выбираем пункт **Credentials → Create Credentials → OAuth client ID**
 

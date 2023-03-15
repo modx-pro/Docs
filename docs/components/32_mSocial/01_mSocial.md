@@ -10,7 +10,10 @@
 * Регистрируем приложение в Twitter.
 * Жмем кнопочку Create New App и заполняем простую форму.
 * После создания приложения переходим на вкладку Keys and Access Tokens и жмем кнопку Create my access token. Копируем поля: Consumer Key, Consumer Secret, Access Token, Access Token Secret.
-**Важно**:в поле Access Level должно стоять значение Read and write.
+
+:::warning Важно:
+в поле Access Level должно стоять значение Read and write.
+:::
 
 ![ Как настроить mSocial - 1](https://file.modx.pro/files/1/1/8/118dc35db2127bd1a16c557a8b86e0e0.png)
 

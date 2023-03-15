@@ -6,7 +6,7 @@
 
 Сработает при применении бонусов к корзине, даже если это было с ошибкой.
 
-### Пример
+### Пример msb2_set
 
 ```javascript
 $(document).ready(function() {
@@ -20,7 +20,7 @@ $(document).ready(function() {
 
 Сработает при отмене бонусов.
 
-### Пример
+### Пример msb2_unset
 
 ```javascript
 $(document).ready(function() {

@@ -147,19 +147,19 @@ _Описывать подробно возможности пакета на д
 
 Тут добавляем 3 поля:
 
-### Pagetitle
+#### Pagetitle
 
 * **Системное поле** = `resource | pagetitle`
 * **Поле в источнике** = `@INLINE {$pagetitle | preg_replace : '! \<sup class.*!ui'}`
 * **Значение по-умолчанию** = *пусто*
 
-### Content
+#### Content
 
 * **Системное поле** = `resource | content`
 * **Поле в источнике** = `content`
 * **Значение по-умолчанию** = *пусто*
 
-### Published
+#### Published
 
 * **Системное поле** = `resource | published`
 * **Поле в источнике** = *пусто*

@@ -48,7 +48,6 @@
 `price=>param.Цена;pagetitle=>name`
 
 > Результат:
-
 > Поля param с произвольными атрибутами
 
 `weight=>param.Вес:unit="кг":type="Брутто";pagetitle=>name`

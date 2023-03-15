@@ -8,10 +8,10 @@
 
 ## Поддерживаемые форматы файлов
 
-*  CSV
-*  XLSX
-*  ODS
-*  XML (только экспорт)
+* CSV
+* XLSX
+* ODS
+* XML (только экспорт)
 
 ## Поддерживаемы типы экспорта
 
@@ -184,7 +184,7 @@ msieOnExportAfterWriteRow** - запись данных в файл
 | data     | массив данных импорта                                                   |
 
 **msieOnImportAfterPrepare
-msieOnImportBeforePrepare ** -  подготовка данных импорта
+msieOnImportBeforePrepare** -  подготовка данных импорта
 
 Параметры события
 

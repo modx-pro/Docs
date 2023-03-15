@@ -55,17 +55,19 @@
 
 Чанк `tpl.mSearch2.row` будет выглядеть примерно так:
 
-```php
+```fenom
 <div class="mse2-row">
     [[+idx]]. <a href="[[+uri]]">[[+pagetitle]]</a>[[+weight]]
     [[+intro]]
 </div>
 
-<div class="js-ym2-mse2-objects" style="display:none">{'!YandexMaps2' | snippet : [
-    'parent' => $id,
-    'scripts' => false,
-    'tpl' => '@INLINE {(($objects | toJSON: 9) | replace: "{": "{ ") | replace: "[": "[ "}',
-]}</div>
+<div class="js-ym2-mse2-objects" style="display:none">
+    {'!YandexMaps2' | snippet : [
+        'parent' => $id,
+        'scripts' => false,
+        'tpl' => '@INLINE {(($objects | toJSON: 9) | replace: "{": "{ ") | replace: "[": "[ "}',
+    ]}
+</div>
 
 <!--msearch2_weight  ([[%mse2_weight]]: [[+weight]])-->
 <!--msearch2_intro <p>[[+intro]]</p>-->
@@ -77,11 +79,11 @@
 
 Актуален для версии **1.0.5 и ниже**. Не предусматривает вывод результатов, кроме как объектами на карте.
 
-### Шаг 1
+### Старый способ Шаг 1
 
 В нужном месте страницы вызываем `mFilter2` со следующими параметрами:
 
-```php
+```fenom
 {'!mFilter2' | snippet : [
     'parents' => $_modx->resource['id'],
     'limit' => 0,
@@ -94,7 +96,7 @@
 
 Конечно, параметр `&filters` у вас должен быть свой, со своими полями.
 
-### Шаг 2
+### Старый способ Шаг 2
 
 Чанк `tpl.mFilter2.outer` будет выглядеть примерно так:
 
@@ -122,11 +124,11 @@
 </div>
 ```
 
-### Шаг 3
+### Старый способ Шаг 3
 
 Чанк `tpl.mSearch2.row` **должен** выглядеть так:
 
-```php
+```fenom
 {'!YandexMaps2' | snippet : [
     'parent' => $id,
     'scripts' => false,

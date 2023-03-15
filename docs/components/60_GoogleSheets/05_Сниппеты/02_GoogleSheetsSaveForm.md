@@ -17,16 +17,16 @@
 
 ## Примеры
 
-1.Будут сохранены поля **name, email, message** в таблицу, которая указанная в системной настройке **googlesheets_form_table** в лист, который указан в системной настройке **googlesheets_form_range**
+1. Будут сохранены поля **name, email, message** в таблицу, которая указанная в системной настройке **googlesheets_form_table** в лист, который указан в системной настройке **googlesheets_form_range**
 
     ``` modx
     [[!AjaxForm?
         &hooks = `spam,email,GoogleSheetsSaveForm`
         &formFields = `name,email,message`
     ]]
-```
+    ```
 
-2.Будут сохранены поля **name, email, message** в таблицу, которая указанная в системной настройке **googlesheets_form_table** в лист, который указан в параметре **gsRange**.
+2. Будут сохранены поля **name, email, message** в таблицу, которая указанная в системной настройке **googlesheets_form_table** в лист, который указан в параметре **gsRange**.
 
     ``` modx
     [[!AjaxForm?
@@ -36,7 +36,7 @@
     ]]
     ```
 
-3.Будут сохранены поля **name, email, message** в таблицу, которая указанная в параметре **gsUri** в лист, который указан в параметре **gsRange**.
+3. Будут сохранены поля **name, email, message** в таблицу, которая указанная в параметре **gsUri** в лист, который указан в параметре **gsRange**.
 
     ``` modx
     [[!AjaxForm?

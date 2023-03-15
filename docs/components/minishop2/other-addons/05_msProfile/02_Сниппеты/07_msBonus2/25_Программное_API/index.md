@@ -1,3 +1,4 @@
+# Программное API
 
 ## Служба msb2Manager
 
@@ -8,7 +9,6 @@
 * установку, отмену бонусов на корзину,
 * установку, отмену бонусов на заказ.
 
-
 ### Подключение
 
 ```php
@@ -17,5 +17,3 @@ $msb2 = $modx->getService('msbonus2', 'msBonus2',
 $msb2->initialize($modx->context->key);
 $manager = $msb2->getManager();
 ```
-
-
