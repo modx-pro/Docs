@@ -347,4 +347,58 @@ export default [
       { text: 'UsersOnline', link: '/components/usersonline' }
     ],
   },
+  {
+    text: 'Система',
+    collapsed: false,
+    items: [
+      {
+        text: 'Основы',
+        collapsed: true,
+        items: [
+          {
+            text: 'Синтаксис тегов',
+            link: '/system/basics/tag-syntax',
+          },
+          {
+            text: 'Фильтры Ввод и вывода',
+            link: '/system/basics/input-and-output-filters',
+          },
+        ],
+      },
+      {
+        text: 'xPDO',
+        link: '/system/xpdo/index',
+        collapsed: true,
+        items: [
+          {
+            text: 'Класс xPDO',
+            link: '/system/xpdo/xpdo-class',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    text: 'Утилиты',
+    collapsed: false,
+    items: [
+      {
+        text: 'Teleport',
+        link: '/utilities/teleport/index',
+        collapsed: true,
+        items: [
+          {
+            text: 'Использование',
+            link: '/utilities/teleport/usage',
+          },
+          {
+            text: 'Расширение',
+            items: [
+              { text: 'Шаблоны Извлечения', link: '/utilities/teleport/extension/extract-templates' },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 ]

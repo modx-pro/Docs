@@ -76,5 +76,5 @@
 Если у посетителя старый браузер - придётся задействовать хэш в url.
 
 [1]: http://demo.modx.pro/pagebreaker
-[2]: /system/01_Основы/02_Фильтры_ввода_и_вывода.md
+[2]: /system/basics/Input-and-output-filters
 [3]: /components/pagebreaker/settings
