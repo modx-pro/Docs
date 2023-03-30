@@ -10,8 +10,8 @@
 
 Затем создаём в таблице msProductData новую колонку **availability** INT(10).
 
-[![](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72s.jpg)](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72.png)
-[![](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492s.jpg)](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492.png)
+![](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72.png)
+![](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492.png)
 
 Добавляем новое поле в модель товара:
 
@@ -34,7 +34,7 @@ return array(
 );
 ```
 
-[![](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4s.jpg)](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4.png)
+![](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4.png)
 
 Добавляем виджеты ExtJS для этого поля в админку:
 
@@ -54,7 +54,7 @@ miniShop2.plugin.pluginname = {
 };
 ```
 
-[![](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecfs.jpg)](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecf.png)
+![](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecf.png)
 
 Связываем это вместе индексным файлом, который включит плагин:
 
@@ -71,20 +71,21 @@ return array(
 );
 ```
 
-[![](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009s.jpg)](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009.png)
+![](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009.png)
 
 И добавляем запись в лексикон:
 
-[![](https://file.modx.pro/files/d/b/c/dbc0d8f29d135e559ad052c244f335f0s.jpg)](https://file.modx.pro/files/d/b/c/dbc0d8f29d135e559ad052c244f335f0.png)
+![](https://file.modx.pro/files/d/b/c/dbc0d8f29d135e559ad052c244f335f0.png)
 
 Тщательно чистим кэш и пробуем включить новое поле в настройках.
 
-[![](https://file.modx.pro/files/1/2/4/124a4466e092bd4340662c7783bc2be5s.jpg)](https://file.modx.pro/files/1/2/4/124a4466e092bd4340662c7783bc2be5.png)
+![](https://file.modx.pro/files/1/2/4/124a4466e092bd4340662c7783bc2be5.png)
 
 Если не получилось - внимательно повторяем вся заново. У меня заработало с первого раза:
 
-[![](https://file.modx.pro/files/a/9/7/a97179f499ce5eb0329c56860c005bb2s.jpg)](https://file.modx.pro/files/a/9/7/a97179f499ce5eb0329c56860c005bb2.png)
-[![](https://file.modx.pro/files/a/8/a/a8ad101ebe4d170ca92c7bfd1f563674s.jpg)](https://file.modx.pro/files/a/8/a/a8ad101ebe4d170ca92c7bfd1f563674.png)
+![](https://file.modx.pro/files/a/9/7/a97179f499ce5eb0329c56860c005bb2.png)
+
+![](https://file.modx.pro/files/a/8/a/a8ad101ebe4d170ca92c7bfd1f563674.png)
 
 ## Добавление фильтра по новому полю
 
@@ -109,16 +110,17 @@ return array(
 ]]
 ```
 
-[![](https://file.modx.pro/files/0/5/d/05dc53a3bc715b00efa89be498b8b0f3s.jpg)](https://file.modx.pro/files/0/5/d/05dc53a3bc715b00efa89be498b8b0f3.png)
+![](https://file.modx.pro/files/0/5/d/05dc53a3bc715b00efa89be498b8b0f3.png)
 
 Упс! Добавляем запись в словари mSearch2, чистим кэш и обновляем:
 
-[![](https://file.modx.pro/files/7/2/4/72429ab995d21fd5447f74e21ee1d7c3s.jpg)](https://file.modx.pro/files/7/2/4/72429ab995d21fd5447f74e21ee1d7c3.png)
-[![](https://file.modx.pro/files/e/1/1/e11843246e354e562123930f42f25739s.jpg)](https://file.modx.pro/files/e/1/1/e11843246e354e562123930f42f25739.png)
+![](https://file.modx.pro/files/7/2/4/72429ab995d21fd5447f74e21ee1d7c3.png)
+
+![](https://file.modx.pro/files/e/1/1/e11843246e354e562123930f42f25739.png)
 
 Прописываем наличие в товары, чистим кэш и видим вполне ожидаемую картину - столбик значений:
 
-[![](https://file.modx.pro/files/3/7/6/376b75e579f656a1a2bef073f466cbe0s.jpg)](https://file.modx.pro/files/3/7/6/376b75e579f656a1a2bef073f466cbe0.png)
+![](https://file.modx.pro/files/3/7/6/376b75e579f656a1a2bef073f466cbe0.png)
 
 Нам нужно написать свой метод фильтрации, который будет выдавать: есть товар в наличии, или нет?
 
@@ -134,11 +136,11 @@ return array(
 class myCustomFilter extends mse2FiltersHandler {}
 ```
 
-[![](https://file.modx.pro/files/c/e/1/ce1b59d8e489e9ec87fa2f4b5b937d3fs.jpg)](https://file.modx.pro/files/c/e/1/ce1b59d8e489e9ec87fa2f4b5b937d3f.png)
+![](https://file.modx.pro/files/c/e/1/ce1b59d8e489e9ec87fa2f4b5b937d3f.png)
 
 Указываем его в системной настройке **mse2_filters_handler_class**.
 
-[![](https://file.modx.pro/files/4/1/e/41ef22830e9c9d4a916ba02c79acfafds.jpg)](https://file.modx.pro/files/4/1/e/41ef22830e9c9d4a916ba02c79acfafd.png)
+![](https://file.modx.pro/files/4/1/e/41ef22830e9c9d4a916ba02c79acfafd.png)
 
 С этого момента mSearch2 использует для работы **ваш** класс фильтрации, в котором вы можете писать новые методы, или переопределять стандартные.
 
@@ -224,11 +226,11 @@ class myCustomFilter extends mse2FiltersHandler {
 }
 ```
 
-[![](https://file.modx.pro/files/3/c/5/3c5f44865b879243f4f9ca2d7be16bd2s.jpg)](https://file.modx.pro/files/3/c/5/3c5f44865b879243f4f9ca2d7be16bd2.png)
+![](https://file.modx.pro/files/3/c/5/3c5f44865b879243f4f9ca2d7be16bd2.png)
 
 Добавляем в лексикон записи **mse2_filter_availability_no** и **mse2_filter_availability_yes** и получаем нужный нам фильтр:
 
-[![](https://file.modx.pro/files/4/e/b/4eb544d494a4a7e9b47fde7e938b6dd7s.jpg)](https://file.modx.pro/files/4/e/b/4eb544d494a4a7e9b47fde7e938b6dd7.png)
+![](https://file.modx.pro/files/4/e/b/4eb544d494a4a7e9b47fde7e938b6dd7.png)
 
 Конечно, можно оформить это чекбоксами, поменять текст в словарях и т.д. Принцип останется прежним.
 

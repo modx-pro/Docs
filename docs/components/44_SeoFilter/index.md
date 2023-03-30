@@ -46,7 +46,7 @@
 
 Сюда попадают все сгенерированные ссылки при сохранении правила. Также при добавлении новых слов - ссылки автоматически сгенерируются и появятся здесь. Подробнее на отдельной странице: [Таблица URL][9]
 
-[1]: /components/msearch2
+[1]: /components/msearch2/index
 [3]: /components/44_SeoFilter/05_Замены_в_SEO_текстах.md
 [4]: /components/44_SeoFilter/02_Быстрый_старт_без_mFilter2_и_miniShop2.md
 [5]: /components/44_SeoFilter/04_Сниппеты/03_sfMenu.md

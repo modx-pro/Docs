@@ -12,4 +12,4 @@
 То есть, **mSearch2 добавляет полноценный морфологический поиск в вашу систему управления MODX**.
 
 [1]: /components/msearch2/snippets/msearch2
-[2]: /components/msearch2/snippets/02_mFilter2.md
+[2]: /components/msearch2/snippets/mfilter2

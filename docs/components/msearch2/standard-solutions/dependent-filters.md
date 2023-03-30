@@ -6,7 +6,7 @@
 
 Вывод фильтра будет вот такой:
 
-```php
+```modx
 [[!mFilter2?
     &parents=`0`
     &filters=`
@@ -118,4 +118,4 @@ $(document).ready(function() {
 
 Вот, что должно получиться в итоге (кликабельная GIFка):
 
-[![](https://file.modx.pro/files/4/a/3/4a32ca06fe335d43de148c0faf640e04s.jpg)](https://file.modx.pro/files/4/a/3/4a32ca06fe335d43de148c0faf640e04.gif)
+![Зависимые фильтры](https://file.modx.pro/files/4/a/3/4a32ca06fe335d43de148c0faf640e04.gif)

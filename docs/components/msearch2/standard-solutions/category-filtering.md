@@ -44,7 +44,7 @@ return $modx->runSnippet('msProducts', $scriptProperties);
 
 Остаётся только указать этот новый сниппет при вызове mFilter2:
 
-```php
+```modx
 [[!mFilter2?
     &class=`msProduct`
     &element=`msProductsCategories`
