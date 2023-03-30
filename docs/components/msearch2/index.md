@@ -4,4 +4,4 @@
 
 Отлично работает с [miniShop2][1], реализуя гибкий вывод каталога товаров с ajax фильтрами.
 
-[1]: /components/minishop2
+[1]: /components/minishop2/index

@@ -157,7 +157,7 @@
 
 Если у вас есть вопросы, то можете задавать их на modx.pro в топиках про SeoFilter.
 
-[0]: /components/03_mSearch2/01_Сниппеты/02_mFilter2.md
+[0]: /components/msearch2/snippets/02_mFilter2.md
 [2]: /components/44_SeoFilter/03_Дополнительные_возможности.md
 [3]: /components/pdotools/parser#Шаблонизатор-Fenom
 [4]: /components/44_SeoFilter/05_Замены_в_SEO_текстах.md

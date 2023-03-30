@@ -3,7 +3,7 @@
 Компонент реализует функционал - "Сейчас покупают!".
 Выводит список товаров [miniShop2][1], которые были добавлены в корзину покупателей за N-время.
 
-[![](https://file.modx.pro/files/c/4/e/c4ec4b41e5bae08e2e5418faa74f59f2s.jpg)](https://file.modx.pro/files/c/4/e/c4ec4b41e5bae08e2e5418faa74f59f2.png)
+![msBuyNow](https://file.modx.pro/files/c/4/e/c4ec4b41e5bae08e2e5418faa74f59f2.png)
 
 ## Состав пакета
 
@@ -41,4 +41,4 @@
 [[!msBuy? &id=`[[*id]]`]]
 ```
 
-[1]: /components/minishop2/
+[1]: /components/minishop2/index

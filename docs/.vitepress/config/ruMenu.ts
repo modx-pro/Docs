@@ -101,6 +101,41 @@ export default [
       { text: 'FileAttach', link: '/components/fileattach' },
       { text: 'FrontendEditor', link: '/components/frontendeditor' },
       { text: 'frontTabs', link: '/components/fronttabs' },
+      {
+        text: 'HybridAuth',
+        collapsed: true,
+        items: [
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'HybridAuth', link: '/components/hybridauth/snippets/hybridauth', },
+              { text: 'haProfile', link: '/components/hybridauth/snippets/haprofile', },
+            ],
+          },
+          {
+            text: 'Провайдеры',
+            collapsed: true,
+            items: [
+              { text: 'Disqus', link: '/components/hybridauth/providers/disqus', },
+              { text: 'Facebook', link: '/components/hybridauth/providers/facebook', },
+              { text: 'Foursquare', link: '/components/hybridauth/providers/foursquare', },
+              { text: 'GitHub', link: '/components/hybridauth/providers/github', },
+              { text: 'Goodreads', link: '/components/hybridauth/providers/goodreads', },
+              { text: 'Google', link: '/components/hybridauth/providers/google', },
+              { text: 'GitHub', link: '/components/hybridauth/providers/github', },
+              { text: 'LastFM', link: '/components/hybridauth/providers/lastfm', },
+              { text: 'Live', link: '/components/hybridauth/providers/live', },
+              { text: 'Mailru', link: '/components/hybridauth/providers/mailru', },
+              { text: 'Instagram', link: '/components/hybridauth/providers/instagram', },
+              { text: 'Yandex', link: '/components/hybridauth/providers/yandex', },
+              { text: 'Twitter', link: '/components/hybridauth/providers/twitter', },
+              { text: 'Vkontakte', link: '/components/hybridauth/providers/vkontakte', },
+              { text: 'Odnoklassniki', link: '/components/hybridauth/providers/odnoklassniki', },
+            ],
+          },
+        ],
+      },
       { text: 'Ideas', link: '/components/ideas' },
       {
         text: 'Localizator',
@@ -223,6 +258,49 @@ export default [
               { text: 'msMCD', link: '/components/minishop2/other-addons/msmcd' },
               { text: 'msYmarket', link: '/components/minishop2/other-addons/msymarket' },
               { text: 'mscZone', link: '/components/minishop2/other-addons/msczone' },
+            ],
+          },
+        ],
+      },
+      {
+        text: 'mSearch2',
+        collapsed: true,
+        link: '/components/msearch2/index',
+        items: [
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'mSearch2', link: '/components/msearch2/snippets/msearch2', },
+              { text: 'mFilter2', link: '/components/msearch2/snippets/mfilter2', },
+              { text: 'mSearchForm', link: '/components/msearch2/snippets/msearch2', },
+            ],
+          },
+          {
+            text: 'Администрирование',
+            collapsed: true,
+            items: [
+              { text: 'Поиск', link: '/components/msearch2/administration/search', },
+              { text: 'Индексация', link: '/components/msearch2/administration/indexing', },
+              { text: 'Запросы', link: '/components/msearch2/administration/requests', },
+              { text: 'Синонимы', link: '/components/msearch2/administration/synonyms', },
+              { text: 'Словари', link: '/components/msearch2/administration/dictionaries', },
+            ],
+          },
+          {
+            text: 'Расширение',
+            collapsed: true,
+            items: [
+              { text: 'Методы фильтрации', link: '/components/msearch2/extension/filtering-methods', },
+              { text: 'Пример фильтрации товаров', link: '/components/msearch2/extension/product-filtering-example', },
+            ],
+          },
+          {
+            text: 'Типовые решения',
+            collapsed: true,
+            items: [
+              { text: 'Зависимые фильтры', link: '/components/msearch2/standard-solutions/dependent-filters', },
+              { text: 'Фильтрация категорий', link: '/components/msearch2/standard-solutions/category-filtering', },
             ],
           },
         ],

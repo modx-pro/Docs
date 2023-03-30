@@ -10,4 +10,4 @@
 Кстати говоря, именно эти запросы участвуют в автоподсказках режима **queries** сниппета [mSearchForm][2].
 
 [1]: http://phpmorphy.sourceforge.net/dokuwiki/
-[2]: /components/03_mSearch2/01_Сниппеты/03_mSearchForm.md
+[2]: /components/msearch2/snippets/msearchform

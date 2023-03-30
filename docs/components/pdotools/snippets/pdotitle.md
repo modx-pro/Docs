@@ -69,6 +69,6 @@ pdoTitle нужно вызывать **некэшированным**, чтоб�
 ```
 
 [0]: http://htmlbook.ru/html/TITLE
-[1]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
+[1]: /components/msearch2/snippets/msearch2
 [2]: /components/pdotools/snippets/pdocrumbs
 [3]: /components/pdotools/general-parameters

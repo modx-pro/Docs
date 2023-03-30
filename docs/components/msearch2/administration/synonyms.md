@@ -18,5 +18,5 @@
 
 По каким именно словам проходит поиск вы можете узнать, включив параметр **&showLog** сниппета [mSearch2][2].
 
-[1]: /components/03_mSearch2/02_Администрирование/03_Запросы.md
-[2]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
+[1]: /components/msearch2/administration/requests
+[2]: /components/msearch2/snippets/msearch2

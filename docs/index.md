@@ -43,7 +43,7 @@ Open Source документация MODX Revolution, распространяе
 Вот путь к файлу с описанием сниппета HybridAuth на русском:
 
 ```
-/ru/02_Компоненты/04_HybridAuth/01_Сниппеты/01_HybridAuth
+/ru/02_Компоненты/hybridauth/01_Сниппеты/01_HybridAuth
 ```
 
 ### Заголовки

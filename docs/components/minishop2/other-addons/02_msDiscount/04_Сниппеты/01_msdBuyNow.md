@@ -76,4 +76,4 @@
 [[!+page.nav]]
 ```
 
-[1]: /components/03_mSearch2/01_Сниппеты/02_mFilter2.md
+[1]: /components/msearch2/snippets/02_mFilter2.md

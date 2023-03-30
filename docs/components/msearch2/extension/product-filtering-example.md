@@ -92,7 +92,7 @@ return array(
 
 То есть, включить мы его можем очень просто:
 
-```php
+```modx
 [[!mFilter?
     &filters=`ms|availability:availability`
 ]]
@@ -101,7 +101,7 @@ return array(
 Только это выведет нам чекбоксы, где будут указаны цифрами разные варианты наличия товаров. 0, 5, 10 и т.д.
 Слайдер с диапазоном цен тут тоже не подходит, явно просится радиокнопка.
 
-```php
+```modx
 [[!mFilter?
     &filters=`ms|availability:availability`
     &suggestionsRadio=`ms|availability`
@@ -124,10 +124,10 @@ return array(
 
 ## Расширяем класс фильтрации
 
-Все стандартные фильтры mSearch2 находятся в файле **/core/components/msearch2/model/msearch2/filters.class.php**.
+Все стандартные фильтры mSearch2 находятся в файле `/core/components/msearch2/model/msearch2/filters.class.php`.
 Нам нужно унаследовать его, расширить и указать новый класс в системных настройках.
 
-Создаём новый файл в **/core/components/msearch2/custom/filters/custom.class.php** и пишем в него:
+Создаём новый файл в `/core/components/msearch2/custom/filters/custom.class.php` и пишем в него:
 
 ```php
 <?php
@@ -136,7 +136,7 @@ class myCustomFilter extends mse2FiltersHandler {}
 
 [![](https://file.modx.pro/files/c/e/1/ce1b59d8e489e9ec87fa2f4b5b937d3fs.jpg)](https://file.modx.pro/files/c/e/1/ce1b59d8e489e9ec87fa2f4b5b937d3f.png)
 
-Указывем его в системной настройке **mse2_filters_handler_class**.
+Указываем его в системной настройке **mse2_filters_handler_class**.
 
 [![](https://file.modx.pro/files/4/1/e/41ef22830e9c9d4a916ba02c79acfafds.jpg)](https://file.modx.pro/files/4/1/e/41ef22830e9c9d4a916ba02c79acfafd.png)
 
@@ -227,10 +227,11 @@ class myCustomFilter extends mse2FiltersHandler {
 [![](https://file.modx.pro/files/3/c/5/3c5f44865b879243f4f9ca2d7be16bd2s.jpg)](https://file.modx.pro/files/3/c/5/3c5f44865b879243f4f9ca2d7be16bd2.png)
 
 Добавляем в лексикон записи **mse2_filter_availability_no** и **mse2_filter_availability_yes** и получаем нужный нам фильтр:
+
 [![](https://file.modx.pro/files/4/e/b/4eb544d494a4a7e9b47fde7e938b6dd7s.jpg)](https://file.modx.pro/files/4/e/b/4eb544d494a4a7e9b47fde7e938b6dd7.png)
 
 Конечно, можно оформить это чекбоксами, поменять текст в словарях и т.д. Принцип останется прежним.
 
-[1]: /components/minishop2/
-[2]: /components/03_mSearch2/
+[1]: /components/minishop2/index
+[2]: /components/msearch2/
 [3]: /components/minishop2/development/product-plugins
