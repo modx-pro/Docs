@@ -4,6 +4,35 @@
   --vp-border: var(--vp-border-width) solid var(--vp-c-divider);
   --vp-border-width: 4px;
   --vp-border-radius: 20px;
+
+  --vp-c-blue: #0ea5e9;
+  --vp-c-blue-dimm-1: rgba(14, 165, 233, 0.05);
+  --vp-c-blue-dimm-2: rgba(14, 165, 233, 0.2);
+  --vp-c-blue-dimm-3: rgba(14, 165, 233, 0.5);
+
+  --vp-custom-block-info-border: var(--vp-c-blue-dimm-2);
+  --vp-custom-block-info-bg: var(--vp-c-blue-dimm-1);
+  --vp-custom-block-info-text: var(--vp-c-neutral);
+
+  --vp-custom-block-tip-border: var(--vp-c-green-dimm-2);
+  --vp-custom-block-tip-bg: var(--vp-c-green-dimm-1);
+  --vp-custom-block-tip-text: var(--vp-c-neutral);
+
+  --vp-custom-block-warning-border: var(--vp-c-yellow-dimm-2);
+  --vp-custom-block-warning-bg: var(--vp-c-yellow-dimm-1);
+  --vp-custom-block-warning-text: var(--vp-c-neutral);
+
+  --vp-custom-block-danger-border: var(--vp-c-red-dimm-2);
+  --vp-custom-block-danger-bg: var(--vp-c-red-dimm-1);
+  --vp-custom-block-danger-text: var(--vp-c-neutral);
+
+  --vp-custom-block-details-border: var(--vp-c-divider);
+  --vp-custom-block-details-bg: var(--vp-c-bg-soft-up);
+}
+
+.custom-block {
+  border-radius: var(--vp-border-radius);
+  border-width: var(--vp-border-width);
 }
 
 .VPNav {

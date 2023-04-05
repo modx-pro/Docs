@@ -3,8 +3,14 @@
     "version": "1.0.0",
     "repository": "https://github.com/modx-pro/Docs.git",
     "contributors": [
-        { "name": "Bochkarev Ivan", "email": "ivanx86@gmail.com" },
-        { "name": "Gulomov Bakhtovar", "email": "gulomovcreative@gmail.com" }
+        {
+            "name": "Bochkarev Ivan",
+            "email": "ivanx86@gmail.com"
+        },
+        {
+            "name": "Gulomov Bakhtovar",
+            "email": "gulomovcreative@gmail.com"
+        }
     ],
     "license": "MIT",
     "scripts": {
@@ -15,7 +21,10 @@
     "devDependencies": {
         "@docsearch/css": "^3.3.3",
         "@docsearch/js": "^3.3.3",
+        "@types/markdown-it": "^12.2.3",
         "@vueuse/core": "^9.13.0",
+        "markdown-it": "^13.0.1",
+        "markdown-it-container": "^3.0.0",
         "modx-tmlanguage": "^1.1.1",
         "vitepress": "^1.0.0-alpha.56",
         "vue": "^3.2.47"

@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { config as en } from './en'
 import { config as root } from './ru'
 import languages from '../theme/syntaxes'
+import { containerPlugin } from '../theme/plugins/containers'
 
 export default defineConfig({
   lastUpdated: true,
@@ -12,6 +13,10 @@ export default defineConfig({
 
   markdown: {
     languages,
+
+    config (md) {
+      containerPlugin(md)
+    },
   },
 
   head: [

@@ -1,5 +1,5 @@
 import type { LocaleConfig } from 'vitepress'
-import type { DocsThemeConfig } from '../theme/types'
+import type { DocsThemeConfig } from '../theme'
 import ruMenu from './ruMenu'
 
 export const META_URL = 'https://docs.modx.pro/'
