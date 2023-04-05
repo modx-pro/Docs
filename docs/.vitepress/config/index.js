@@ -26,6 +26,8 @@ export default defineConfig({
   ],
 
   themeConfig: {
+    i18nRouting: false,
+
     logo: {
       light: 'logo.svg',
       dark: 'logo-dark.svg',
