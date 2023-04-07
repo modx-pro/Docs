@@ -81,6 +81,19 @@ export default [
       },
       { text: 'autoRedirector', link: '/components/autoredirector' },
       { text: 'CallBack', link: '/components/callback' },
+      {
+        text: 'cityFields',
+        link: '/components/cityfields/',
+        collapsed: true,
+        items: [
+          { text: 'Управление городами и данными', link: '/components/cityfields/data-management' },
+          { text: 'Использование доменов, поддоменов и подкаталогов', link: '/components/cityfields/using' },
+          { text: 'Управление ценами товаров', link: '/components/cityfields/price-management' },
+          { text: 'Настройки компонента', link: '/components/cityfields/setup' },
+          { text: 'Сниппет cfCities', link: '/components/cityfields/snippets/cfcities' },
+          { text: 'Сниппет cfField', link: '/components/cityfields/snippets/cffield' },
+        ],
+      },
       { text: 'CitySelect', link: '/components/cityselect' },
       { text: 'ClickToCall', link: '/components/clicktocall' },
       {
