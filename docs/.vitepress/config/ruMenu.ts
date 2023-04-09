@@ -435,6 +435,22 @@ export default [
           { text: 'Разработка заданий', link: '/components/scheduler/task-development' },
         ],
       },
+      {
+        text: 'Sendex',
+        link: '/components/sendex/',
+        collapsed: true,
+        items: [
+          { text: 'Сниппет', link: '/components/sendex/' },
+          {
+            text: 'Интерфейс',
+            collapsed: true,
+            items: [
+              { text: 'Подписки', link: '/components/sendex/interface/subscriptions' },
+              { text: 'Очередь писем', link: '/components/sendex/interface/queue' },
+            ],
+          },
+        ],
+      },
       { text: 'ShoppingCart', link: '/components/shoppingcart' },
       {
         text: 'textAdvs',
