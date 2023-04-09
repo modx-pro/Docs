@@ -24,37 +24,37 @@
 
 Для удобства вывода контактов на фронте в комплекте поставляется сниппет `getContacts`.
 
-| Параметр     | По умолчанию                                          | Описание                                |
-|--------------|-------------------------------------------------------|-----------------------------------------|
-| **rid**      | берётся из системной настройки `mpc_contacts_page_id` | ID страницы с Контактами                |
-| **tvname**   | берётся из системной настройки `mpc_contacts_tvname`  | название TV типа migx хранящей контакты |
+| Параметр   | По умолчанию                                          | Описание                                |
+| ---------- | ----------------------------------------------------- | --------------------------------------- |
+| **rid**    | берётся из системной настройки `mpc_contacts_page_id` | ID страницы с Контактами                |
+| **tvname** | берётся из системной настройки `mpc_contacts_tvname`  | название TV типа migx хранящей контакты |
 
 Сниппет возвращает массив вида
 
 ```php
 [
-    'phones' => [
-        'Телефон' => [
-            'value' => '79998887766',
-            'formattedValue' => '8(999)888-77-66',
-            'caption' => 'Телефон',
-            'icon_class' => 'icon-phone',
-            'form' => ''
-            ],
-        'Телефон2' => [
-            'value' => '79998887766',
-            'formattedValue' => '8(999)888-77-66',
-            'caption' => 'Телефон2',
-            'icon_class' => 'icon-phone',
-            'form' => ''
-            ]
-        ],
-    'emails' => [],
-    'socials' => [],
-    'addresses' => [],
-    'maps' => [],
-    'worktime' => [],
-    'requisites' => [],
+  'phones' => [
+    'Телефон' => [
+      'value' => '79998887766',
+      'formattedValue' => '8(999)888-77-66',
+      'caption' => 'Телефон',
+      'icon_class' => 'icon-phone',
+      'form' => '',
+    ],
+    'Телефон2' => [
+      'value' => '79998887766',
+      'formattedValue' => '8(999)888-77-66',
+      'caption' => 'Телефон2',
+      'icon_class' => 'icon-phone',
+      'form' => '',
+    ],
+  ],
+  'emails' => [],
+  'socials' => [],
+  'addresses' => [],
+  'maps' => [],
+  'worktime' => [],
+  'requisites' => [],
 ]
 ```
 
@@ -63,32 +63,32 @@
 ```fenom
 {set $contacts = 'getContacts' | snippet: []}
 <div class="custom">
-    <div>
-        {$contacts['maps']['Карта']['value']}
-    </div>
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped">
-            <tbody>
-            {foreach $contacts['requisites'] as $requisite}
-            <tr>
-                <td><b>{$requisite['caption']}</b></td>
-                <td>{$requisite['value']}</td>
-            </tr>
-            {/foreach}
-            {foreach $contacts['phones'] as $phone}
-            <tr>
-                <td><b>{$phone['caption']}</b></td>
-                <td>{$phone['formattedValue']}</td>
-            </tr>
-            {/foreach}
-            {foreach $contacts['emails'] as $email}
-            <tr>
-                <td><b>{$email['caption']}</b></td>
-                <td>{$email['value']}</td>
-            </tr>
-            {/foreach}
-            </tbody>
-        </table>
-    </div>
+  <div>
+    {$contacts['maps']['Карта']['value']}
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <tbody>
+        {foreach $contacts['requisites'] as $requisite}
+          <tr>
+            <td><b>{$requisite['caption']}</b></td>
+            <td>{$requisite['value']}</td>
+          </tr>
+        {/foreach}
+        {foreach $contacts['phones'] as $phone}
+          <tr>
+            <td><b>{$phone['caption']}</b></td>
+            <td>{$phone['formattedValue']}</td>
+          </tr>
+        {/foreach}
+        {foreach $contacts['emails'] as $email}
+          <tr>
+            <td><b>{$email['caption']}</b></td>
+            <td>{$email['value']}</td>
+          </tr>
+        {/foreach}
+      </tbody>
+    </table>
+  </div>
 </div>
 ```
