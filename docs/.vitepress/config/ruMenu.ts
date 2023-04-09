@@ -166,6 +166,21 @@ export default [
       },
       { text: 'mapex2', link: '/components/mapex2' },
       { text: 'mdDocs', link: '/components/mddocs' },
+      {
+        text: 'MigxPageConfigurator',
+        link: '/components/migxpageconfigurator/',
+        collapsed: true,
+        items: [
+          { text: 'Начало работы', link: '/components/migxpageconfigurator/setup' },
+          { text: 'Работа с чанками', link: '/components/migxpageconfigurator/chunks' },
+          { text: 'Работа со сниппетами', link: '/components/migxpageconfigurator/snippets' },
+          { text: 'Работа с формами', link: '/components/migxpageconfigurator/forms' },
+          { text: 'Работа с контактами', link: '/components/migxpageconfigurator/contacts' },
+          { text: 'Работа с изображениями', link: '/components/migxpageconfigurator/images' },
+          { text: 'Создание и обновление элементов', link: '/components/migxpageconfigurator/elements' },
+          { text: 'Разная информация по регионам', link: '/components/migxpageconfigurator/regions' },
+        ],
+      },
       { text: 'MinifyX', link: '/components/minifyx' },
       {
         text: 'MiniShop2',

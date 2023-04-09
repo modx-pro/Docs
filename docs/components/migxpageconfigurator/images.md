@@ -9,9 +9,9 @@
 import * as functions from './../components/migxpageconfigurator/js/web/functions.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    elem.addEventListener('some-event', () => {
-        functions.lazyLoad(elem, 1);
-    });
+  elem.addEventListener('some-event', () => {
+    functions.lazyLoad(elem, 1);
+  });
 });
 ```
 

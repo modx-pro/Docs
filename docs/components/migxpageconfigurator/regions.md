@@ -23,36 +23,36 @@ $city_id = $resource->getTVValue('city_id');
 
 // EVENTS
 switch ($modx->event->name) {
-    case 'OnDocFormDelete':
-        if ($hidemenu && !$published && !in_array($parent, array(0, 2, 9, 40, 41, 42))) {
-            $modx->addPackage('cityfields', MODX_CORE_PATH . 'components/cityfields/model/');
-            if ($parentResource = $modx->getObject('modResource', $parent)) {
-                $alias = $parentResource->get('alias');
-                if ($field = $modx->getObject('cfField', array('placeholder' => $alias))) {
-                    $field->remove();
-                }
-            }
+  case 'OnDocFormDelete':
+    if ($hidemenu && !$published && !in_array($parent, array(0, 2, 9, 40, 41, 42))) {
+      $modx->addPackage('cityfields', MODX_CORE_PATH . 'components/cityfields/model/');
+      if ($parentResource = $modx->getObject('modResource', $parent)) {
+        $alias = $parentResource->get('alias');
+        if ($field = $modx->getObject('cfField', array('placeholder' => $alias))) {
+          $field->remove();
         }
-        break;
+      }
+    }
+    break;
 
-    case 'OnResourceUndelete':
-    case 'OnDocFormSave':
-        if ($hidemenu && !$published && !in_array($parent, array(0, 2, 9, 40, 41, 42))) {
-            $modx->addPackage('cityfields', MODX_CORE_PATH . 'components/cityfields/model/');
-            if ($parentResource = $modx->getObject('modResource', $parent)) {
-                $alias = $parentResource->get('alias');
-                if (!$modx->getCount('cfField', array('placeholder' => $alias, 'city_id' => $city_id))) {
-                    $field = $modx->newObject('cfField');
-                    $field->fromArray(array(
-                        'city_id' => $city_id,
-                        'placeholder' => $alias,
-                        'value' => $id
-                    ), '', true);
-                    $field->save();
-                }
-            }
+  case 'OnResourceUndelete':
+  case 'OnDocFormSave':
+    if ($hidemenu && !$published && !in_array($parent, array(0, 2, 9, 40, 41, 42))) {
+      $modx->addPackage('cityfields', MODX_CORE_PATH . 'components/cityfields/model/');
+      if ($parentResource = $modx->getObject('modResource', $parent)) {
+        $alias = $parentResource->get('alias');
+        if (!$modx->getCount('cfField', array('placeholder' => $alias, 'city_id' => $city_id))) {
+          $field = $modx->newObject('cfField');
+          $field->fromArray(array(
+            'city_id' => $city_id,
+            'placeholder' => $alias,
+            'value' => $id
+          ), '', true);
+          $field->save();
         }
-        break;
+      }
+    }
+    break;
 }
 ```
 
