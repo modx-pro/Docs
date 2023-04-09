@@ -11,7 +11,7 @@ export default [
         items: [
           {
             text: 'Общие сведения',
-            link: '/components/ajaxformItlogin/general-information/index',
+            link: '/components/ajaxformItlogin/general-information/',
             collapsed: true,
             items: [
               { text: 'Системные настройки', link: '/components/ajaxformItlogin/general-information/system-settings' },
@@ -99,7 +99,7 @@ export default [
       {
         text: 'Comparison',
         collapsed: true,
-        link: '/components/comparison/index',
+        link: '/components/comparison/',
         items: [
           { text: 'addComparison', link: '/components/comparison/addcomparison' },
           { text: 'CompareList', link: '/components/comparison/comparelist' },
@@ -152,7 +152,7 @@ export default [
       { text: 'Ideas', link: '/components/ideas' },
       {
         text: 'Localizator',
-        link: '/components/localizator/index',
+        link: '/components/localizator/',
         collapsed: true,
         items: [
           { text: 'Сниппет Localizator', link: '/components/localizator/snippet-localizator' },
@@ -185,7 +185,7 @@ export default [
       {
         text: 'MiniShop2',
         collapsed: true,
-        link: '/components/minishop2/index',
+        link: '/components/minishop2/',
         items: [
           { text: 'Быстрый старт', link: '/components/minishop2/fast-start' },
           { text: 'Системные требования и зависимости', link: '/components/minishop2/system-requirements-and-dependencies' },
@@ -203,7 +203,7 @@ export default [
           },
           {
             text: 'Сниппеты',
-            link: '/components/minishop2/snippets/index',
+            link: '/components/minishop2/snippets/',
             collapsed: true,
             items: [
               { text: 'msProducts', link: '/components/minishop2/snippets/msproducts' },
@@ -293,7 +293,7 @@ export default [
       {
         text: 'mSearch2',
         collapsed: true,
-        link: '/components/msearch2/index',
+        link: '/components/msearch2/',
         items: [
           {
             text: 'Сниппеты',
@@ -309,7 +309,7 @@ export default [
             collapsed: true,
             items: [
               { text: 'Поиск', link: '/components/msearch2/administration/search', },
-              { text: 'Индексация', link: '/components/msearch2/administration/indexing', },
+              { text: 'Индексация', link: '/components/msearch2/administration/ing', },
               { text: 'Запросы', link: '/components/msearch2/administration/requests', },
               { text: 'Синонимы', link: '/components/msearch2/administration/synonyms', },
               { text: 'Словари', link: '/components/msearch2/administration/dictionaries', },
@@ -339,7 +339,7 @@ export default [
       { text: 'modVkMarket', link: '/components/modvkmarket' },
       {
         text: 'msFavorites',
-        link: '/components/msfavorites/index',
+        link: '/components/msfavorites/',
         collapsed: true,
         items: [
           { text: 'Обновление', link: '/components/msfavorites/update' },
@@ -367,7 +367,7 @@ export default [
       {
         text: 'PageBreaker',
         collapsed: true,
-        link: '/components/pagebreaker/index',
+        link: '/components/pagebreaker/',
         items: [
           { text: 'Настройки', link: '/components/pagebreaker/settings' },
           { text: 'Поддержка TinyMCE', link: '/components/pagebreaker/tinymce-support' },
@@ -380,7 +380,7 @@ export default [
         items: [
           {
             text: 'Сниппеты',
-            link: '/components/pdotools/general-information/index',
+            link: '/components/pdotools/general-information/',
             collapsed: true,
             items: [
               { text: 'pdoResources', link: '/components/pdotools/snippets/pdoresources' },
@@ -397,7 +397,7 @@ export default [
           },
           {
             text: 'Классы',
-            link: '/components/pdotools/classes/index',
+            link: '/components/pdotools/classes/',
             collapsed: true,
             items: [
               { text: 'pdoResources', link: '/components/pdotools/classes/pdotools' },
@@ -426,7 +426,7 @@ export default [
       { text: 'simpleQueue', link: '/components/simplequeue' },
       {
         text: 'Scheduler',
-        link: '/components/scheduler/index',
+        link: '/components/scheduler/',
         collapsed: true,
         items: [
           { text: 'Установка', link: '/components/scheduler/installation' },
@@ -455,7 +455,7 @@ export default [
       {
         text: 'textAdvs',
         collapsed: true,
-        link: '/components/textadvs/index',
+        link: '/components/textadvs/',
         items: [
           { text: 'Как добавить тег', link: '/components/textadvs/how-to-add-a-tag' },
         ],
@@ -489,7 +489,7 @@ export default [
       },
       {
         text: 'xPDO',
-        link: '/system/xpdo/index',
+        link: '/system/xpdo/',
         collapsed: true,
         items: [
           {
@@ -506,7 +506,7 @@ export default [
     items: [
       {
         text: 'Teleport',
-        link: '/utilities/teleport/index',
+        link: '/utilities/teleport/',
         collapsed: true,
         items: [
           {
