@@ -80,6 +80,22 @@ export default [
         ],
       },
       { text: 'autoRedirector', link: '/components/autoredirector' },
+      {
+        text: 'BannerY',
+        link: '/components/bannery/',
+        collapsed: true,
+        items: [
+          { text: 'Сниппет', link: '/components/bannery/' },
+          {
+            text: 'Интерфейс',
+            collapsed: true,
+            items: [
+              { text: 'Баннеры', link: '/components/bannery/interface/banners' },
+              { text: 'Позиции', link: '/components/bannery/interface/positions' },
+            ],
+          },
+        ],
+      },
       { text: 'CallBack', link: '/components/callback' },
       {
         text: 'cityFields',
