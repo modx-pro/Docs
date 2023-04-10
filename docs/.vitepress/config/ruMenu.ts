@@ -181,6 +181,15 @@ export default [
         ],
       },
       {
+        text: 'LxQuiz',
+        link: '/components/lxquiz/',
+        collapsed: true,
+        items: [
+          { text: 'Сниппет LxQuiz', link: '/components/lxquiz/snippets/lxquiz' },
+          { text: 'Сниппет LxQuizList', link: '/components/lxquiz/snippets/lxquizlist' },
+        ],
+      },
+      {
         text: 'MagicThemes',
         link: '/components/magicthemes/',
         collapsed: true,

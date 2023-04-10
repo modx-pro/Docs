@@ -1,4 +1,4 @@
-# LxQuiz
+# Сниппет LxQuiz
 
 Вызывается без кеширования! Отображает форму для проведения тестирования. Если пользователь не авторизован, отобразит соответствующее сообщение.
 
@@ -8,10 +8,10 @@
 
 ```fenom
 {'!LxQuiz' | snippet : [
-    'quizId' => 1,
-    'nextStepName' => 'Главная страница сайта',
-    'nextStepUrl' => $_modx->config.site_url,
-    'closeUrl' => $_modx->config.site_url
+  'quizId' => 1,
+  'nextStepName' => 'Главная страница сайта',
+  'nextStepUrl' => $_modx->config.site_url,
+  'closeUrl' => $_modx->config.site_url
 ]}
 ```
 
@@ -19,38 +19,38 @@
 
 ```fenom
 {'!LxQuiz' | snippet : [
-    'nextStepName' => 'Главная страница сайта',
-    'nextStepUrl' => $_modx->config.site_url,
-    'closeUrl' => $_modx->config.site_url
+  'nextStepName' => 'Главная страница сайта',
+  'nextStepUrl' => $_modx->config.site_url,
+  'closeUrl' => $_modx->config.site_url
 ]}
 ```
 
 ## Параметры
 
-`quizId (необязательный)`
+### quizId <Badge type="info" text="необязательный" />
 
 ID отображаемого на странице теста. Если не указать, то сниппет попытается получить идентификатор по специальному хешу в URL адресе. Данный хеш автоматически генерируется сниппетом LxQuizList при отображении списка тестирований.
 
-`tpl (необязательный)`
+### tpl <Badge type="info" text="необязательный" />
 
-По-умолчанию lxQuizAppContainerTpl
+- По умолчанию: `lxQuizAppContainerTpl`
 
 Чанк для контейнера Vue-приложения.
 
-`errorTpl (необязательный)`
+### errorTpl <Badge type="info" text="необязательный" />
 
-По-умолчанию lxQuizErrorTpl
+- По умолчанию: `lxQuizErrorTpl`
 
-Чанк для ошибки (внутрь передается $message).
+Чанк для ошибки (внутрь передается `$message`).
 
-`nextStepName (необязательный)`
+### nextStepName <Badge type="info" text="необязательный" />
 
 Название следующего шага при успешной сдаче теста
 
-`nextStepUrl (необязательный)`
+### nextStepUrl <Badge type="info" text="необязательный" />
 
 URL для перехода после успешной сдачи теста
 
-`closeUrl (необязательный)`
+### closeUrl <Badge type="info" text="необязательный" />
 
 URL для перехода по кнопке "Завершить"
