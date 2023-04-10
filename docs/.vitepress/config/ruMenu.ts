@@ -506,6 +506,19 @@ export default [
           { text: 'Как добавить тег', link: '/components/textadvs/how-to-add-a-tag' },
         ],
       },
+      {
+        text: 'UserLocation',
+        link: '/components/userlocation/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Разработка',
+            items: [
+              { text: 'События', link: '/components/userlocation/development/events' },
+            ],
+          },
+        ],
+      },
       { text: 'StaticSaver', link: '/components/staticsaver' },
       { text: 'ViewsOnline', link: '/components/viewsonline' },
       { text: 'VoteForms', link: '/components/voteforms' },
