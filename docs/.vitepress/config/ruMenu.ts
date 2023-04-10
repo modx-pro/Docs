@@ -180,6 +180,27 @@ export default [
           { text: 'Атрибут hreflang', link: '/components/localizator/hreflang-attribute' },
         ],
       },
+      {
+        text: 'MagicThemes',
+        link: '/components/magicthemes/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Темы',
+            items: [
+              {
+                text: 'handyShop',
+                link: '/components/magicthemes/themes/handyshop/',
+                collapsed: true,
+                items: [
+                  { text: 'Настройка', link: '/components/magicthemes/themes/handyshop/setup' },
+                  { text: 'Пример работы со Штуковинами', link: '/components/magicthemes/themes/handyshop/example-things' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
       { text: 'mapex2', link: '/components/mapex2' },
       { text: 'mdDocs', link: '/components/mddocs' },
       {
