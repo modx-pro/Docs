@@ -3,7 +3,7 @@
 ## Стандартные поля
 
 | Поле          | Название               |
-|---------------|------------------------|
+| ------------- | ---------------------- |
 | id            | Id Заказа              |
 | user_id       | Покупатель (id)        |
 | createdon     | Дата создание заказа   |
@@ -22,7 +22,7 @@
 ### Модификации полей
 
 | Поле          | Название            |
-|---------------|---------------------|
+| ------------- | ------------------- |
 | status_name   | Статус (название)   |
 | delivery_name | Доставка (название) |
 | payment_name  | Оплата (название)   |
@@ -30,7 +30,7 @@
 ## Address
 
 | Поле               | Название                |
-|--------------------|-------------------------|
+| ------------------ | ----------------------- |
 | address_receiver   | Получатель              |
 | address_phone      | Телефон                 |
 | address_country    | Страна                  |
@@ -52,7 +52,7 @@
 ## Список купленных товаров
 
 | Поле                | Название                 |
-|---------------------|--------------------------|
+| ------------------- | ------------------------ |
 | products_(имя поля) | Список купленных товаров |
 
 Например:
@@ -75,15 +75,15 @@
 ```php
 <?php
 switch($modx->event->name) {
-    // получение списка заказов
-    case 'gsOnBeforeGetOrders':
-        // $query - запрос выборки
-        // $range - название листа таблицы, куда будут экспортироваться данные
-        break;
-    case 'gsOnGetOrders':
-        // $orders - массив заказов со всеми полями
-        // $range - название листа
-        break;
+  // получение списка заказов
+  case 'gsOnBeforeGetOrders':
+    // $query - запрос выборки
+    // $range - название листа таблицы, куда будут экспортироваться данные
+    break;
+  case 'gsOnGetOrders':
+    // $orders - массив заказов со всеми полями
+    // $range - название листа
+    break;
 }
 ```
 
@@ -93,8 +93,8 @@ switch($modx->event->name) {
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnBeforeGetOrders') {
-        $query->where(array('status' => 2));
+    if ($modx->event->name == 'gsOnBeforeGetOrders') {
+      $query->where(array('status' => 2));
     }
     ```
 
@@ -102,12 +102,12 @@ switch($modx->event->name) {
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnGetOrders') {
-        $modx->event->params['orders'] = array_map(function($order){
-            if(!empty($order['createdon'])) {
-                $order['createdon'] = date("d-m-Y",strtotime($order['createdon']));
-            }
-            return $order;
-        },$orders);
+    if ($modx->event->name == 'gsOnGetOrders') {
+      $modx->event->params['orders'] = array_map(function($order){
+        if (!empty($order['createdon'])) {
+          $order['createdon'] = date("d-m-Y",strtotime($order['createdon']));
+        }
+        return $order;
+      }, $orders);
     }
     ```

@@ -131,6 +131,61 @@ export default [
       { text: 'FrontendEditor', link: '/components/frontendeditor' },
       { text: 'frontTabs', link: '/components/fronttabs' },
       {
+        text: 'GoogleSheets',
+        link: '/components/googlesheets/',
+        collapsed: true,
+        items: [
+          { text: 'Авторизация', link: '/components/googlesheets/auth' },
+          {
+            text: 'Импорт',
+            link: '/components/googlesheets/import/',
+            collapsed: true,
+            items: [
+              { text: 'Ресурсы', link: '/components/googlesheets/import/resources' },
+              { text: 'Товары', link: '/components/googlesheets/import/products' },
+              { text: 'Категории', link: '/components/googlesheets/import/categories' },
+              { text: 'Производители', link: '/components/googlesheets/import/vendors' },
+              { text: 'msOptionsPrice2', link: '/components/googlesheets/import/msoptionsprice2' },
+              { text: 'msProductRemains', link: '/components/googlesheets/import/msproductremains' },
+            ],
+          },
+          {
+            text: 'Экспорт',
+            link: '/components/googlesheets/export/',
+            collapsed: true,
+            items: [
+              { text: 'Ресурсы', link: '/components/googlesheets/export/resources' },
+              { text: 'Категории', link: '/components/googlesheets/export/categories' },
+              { text: 'Товары', link: '/components/googlesheets/export/products' },
+              { text: 'Заказы', link: '/components/googlesheets/export/orders' },
+              { text: 'Производители', link: '/components/googlesheets/export/vendors' },
+              { text: 'Пользователи', link: '/components/googlesheets/export/users' },
+              { text: 'Покупатели', link: '/components/googlesheets/export/customers' },
+              { text: 'msOptionsPrice2', link: '/components/googlesheets/export/msoptionsprice2' },
+              { text: 'msProductRemains', link: '/components/googlesheets/export/msproductremains' },
+            ],
+          },
+          { text: 'MIGX', link: '/components/googlesheets/migx/' },
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'GoogleSheets', link: '/components/googlesheets/snippets/googlesheets' },
+              { text: 'GoogleSheetsSaveForm', link: '/components/googlesheets/snippets/googlesheetssaveform' },
+              { text: 'GoogleSheetsFront', link: '/components/googlesheets/snippets/googlesheetsfront' },
+            ],
+          },
+          {
+            text: 'Разработка',
+            link: '/components/googlesheets/development/',
+            collapsed: true,
+            items: [
+              { text: 'События', link: '/components/googlesheets/development/events' },
+            ],
+          },
+        ],
+      },
+      {
         text: 'HybridAuth',
         collapsed: true,
         items: [

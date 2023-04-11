@@ -5,7 +5,7 @@
 ## Стандартные поляs
 
 | Поле         | Название             |
-|--------------|----------------------|
+| ------------ | -------------------- |
 | name         | Название модификации |
 | rid          | id ресурса           |
 | type         | тип модификации      |
@@ -32,16 +32,16 @@
 
 ```php
 <?php
-switch($modx->event->name) {
-    // получение списка модификаций товара
-    case 'gsOnBeforeGetOptionsPrice2':
-        // $query - запрос выборки
-        // $range - название листа таблицы, куда будут экспортироваться данные
-        break;
-    case 'gsOnGetOptionsPrice2':
-        // $options - массив модификаций со всеми полями
-        // $range - название листа
-        break;
+switch ($modx->event->name) {
+  // получение списка модификаций товара
+  case 'gsOnBeforeGetOptionsPrice2':
+    // $query - запрос выборки
+    // $range - название листа таблицы, куда будут экспортироваться данные
+    break;
+  case 'gsOnGetOptionsPrice2':
+    // $options - массив модификаций со всеми полями
+    // $range - название листа
+    break;
 }
 ```
 
@@ -51,7 +51,7 @@ switch($modx->event->name) {
 
 ```php
 <?php
-if($modx->event->name == 'gsOnBeforeGetOptionsPrice2') {
-    $query->where(array('rid' => 3)); // 3  - id товара
+if ($modx->event->name == 'gsOnBeforeGetOptionsPrice2') {
+  $query->where(array('rid' => 3)); // 3  - id товара
 }
 ```

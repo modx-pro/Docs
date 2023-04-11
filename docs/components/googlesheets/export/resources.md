@@ -3,7 +3,7 @@
 ## Cтандартные поля ресурса
 
 | Поле            | Название                                  |
-|-----------------|-------------------------------------------|
+| --------------- | ----------------------------------------- |
 | id              | Id ресурса                                |
 | pagetitle       | Заголовок                                 |
 | longtitle       | Расширенный заголовок                     |
@@ -38,14 +38,14 @@
 ### Модификации полей
 
 | Поле          | Название                       |
-|---------------|--------------------------------|
+| ------------- | ------------------------------ |
 | template_name | Шаблон (название)              |
 | parent_name   | Родительский ресурс (название) |
 
 ## ms2Gallery
 
 | Поле   | Название        |
-|--------|-----------------|
+| ------ | --------------- |
 | images | список картинок |
 
 Все файлы картинок должны быть на сервере
@@ -53,7 +53,7 @@
 ## SEO Tab
 
 | Поле           | Название                                                                 |
-|----------------|--------------------------------------------------------------------------|
+| -------------- | ------------------------------------------------------------------------ |
 | seo.index      | Индексируемость поисковиками                                             |
 | seo.follow     | Следование по ссылкам                                                    |
 | searchable     | Участие страницы во внутреннем поиске по сайту. Стандартное поле ресурса |
@@ -67,7 +67,7 @@
 ## SEO Pro
 
 | Поле                       | Название       |
-|----------------------------|----------------|
+| -------------------------- |--------------- |
 | keywords \|\| seo.keywords | Ключевые слова |
 
 ## Пример
@@ -84,16 +84,16 @@
 
 ```php
 <?php
-switch($modx->event->name) {
-    // получение списка ресурсов
-    case 'gsOnBeforeGetResource':
-        // $query - запрос выборки
-        // $range - название листа таблицы, куда будут экспортироваться данные
-        break;
-    case 'gsOnGetResource':
-        // $resources - массив ресурсов со всеми полями
-        // $range - название листа
-        break;
+switch ($modx->event->name) {
+  // получение списка ресурсов
+  case 'gsOnBeforeGetResource':
+    // $query - запрос выборки
+    // $range - название листа таблицы, куда будут экспортироваться данные
+    break;
+  case 'gsOnGetResource':
+    // $resources - массив ресурсов со всеми полями
+    // $range - название листа
+    break;
 }
 ```
 
@@ -103,8 +103,8 @@ switch($modx->event->name) {
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnBeforeGetResource') {
-        $query->where(array('template' => 3)); // 3  - id шаблона
+    if ($modx->event->name == 'gsOnBeforeGetResource') {
+      $query->where(array('template' => 3)); // 3  - id шаблона
     }
     ```
 
@@ -112,12 +112,12 @@ switch($modx->event->name) {
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnGetResource') {
-        $modx->event->params['resources'] = array_map(function($resource){
-            if(!empty($resource['publishedon'])) {
-                $resource['publishedon'] = date("d-m-Y",$resource['publishedon']);
-            }
-            return $resource;
-        },$resources);
+    if ($modx->event->name == 'gsOnGetResource') {
+      $modx->event->params['resources'] = array_map(function ($resource) {
+        if (!empty($resource['publishedon'])) {
+          $resource['publishedon'] = date("d-m-Y",$resource['publishedon']);
+        }
+        return $resource;
+      }, $resources);
     }
     ```

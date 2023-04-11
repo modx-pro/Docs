@@ -3,7 +3,7 @@
 ## Стандартные поля
 
 | Поле        | Название |
-|-------------|----------|
+| ----------- | -------- |
 | id          | id       |
 | name        | Название |
 | resource    | Ресур    |
@@ -29,17 +29,17 @@
 
 ```php
 <?php
-    switch($modx->event->name) {
-        // получение списка производителей
-        case 'gsOnBeforeGetVendors':
-        // $query - запрос выборки
-        // $range - название листа таблицы, куда будут экспортироваться данные
-        break;
-        case 'gsOnGetVendors':
-        // $vendors - массив производителей со всеми полями
-        // $range - название листа
-        break;
-    }
+switch ($modx->event->name) {
+  // получение списка производителей
+  case 'gsOnBeforeGetVendors':
+    // $query - запрос выборки
+    // $range - название листа таблицы, куда будут экспортироваться данные
+    break;
+  case 'gsOnGetVendors':
+    // $vendors - массив производителей со всеми полями
+    // $range - название листа
+    break;
+}
 ```
 
 ### Примеры
@@ -48,8 +48,8 @@
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnBeforeGetVendors') {
-        $query->where(array('logo:!=' => ''));
+    if ($modx->event->name == 'gsOnBeforeGetVendors') {
+      $query->where(array('logo:!=' => ''));
     }
     ```
 
@@ -57,12 +57,12 @@
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnGetVendors') {
-    $modx->event->params['vendors'] = array_map(function($vendor){
-            if(empty($vendor['country'])) {
-                $vendor['country'] = 'Китай';
-            }
-            return $vendor;
-        },$vendors);
+    if ($modx->event->name == 'gsOnGetVendors') {
+      $modx->event->params['vendors'] = array_map(function ($vendor) {
+        if (empty($vendor['country'])) {
+          $vendor['country'] = 'Китай';
+        }
+        return $vendor;
+      }, $vendors);
     }
     ```

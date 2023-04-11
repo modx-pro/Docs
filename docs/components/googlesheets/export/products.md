@@ -5,7 +5,7 @@
 Поддерживаются все стандартные поля ресурса. И еще свои:
 
 | Поле                  | Название              |
-|-----------------------|-----------------------|
+| --------------------- | --------------------- |
 | price                 | Цена                  |
 | old_price             | Старая цена           |
 | article               | Артикул               |
@@ -25,14 +25,14 @@
 ### Модификации полей
 
 | Поле            | Название                |
-|-----------------|-------------------------|
+| --------------- | ----------------------- |
 | vendor_name     | Производитель (name)    |
 | categories_name | Список категорий (name) |
 
 ## ms2Gallery
 
 | Поле   | Название        |
-|--------|-----------------|
+| ------ | --------------- |
 | images | список картинок |
 
 Все файлы картинок должны быть на сервере
@@ -50,18 +50,18 @@
 Класс **gsProduct** генерирует следующие события:
 
 ```php
-    <?php
-    switch($modx->event->name) {
-        // получение списка товаров
-        case 'gsOnBeforeGetProducts':
-            // $query - запрос выборки
-            // $range - название листа таблицы, куда будут экспортироваться данные
-            break;
-        case 'gsOnGetProducts':
-            // $products - массив товаров со всеми полями
-            // $range - название листа
-            break;
-    }
+<?php
+switch ($modx->event->name) {
+  // получение списка товаров
+  case 'gsOnBeforeGetProducts':
+    // $query - запрос выборки
+    // $range - название листа таблицы, куда будут экспортироваться данные
+    break;
+  case 'gsOnGetProducts':
+    // $products - массив товаров со всеми полями
+    // $range - название листа
+    break;
+}
 ```
 
 ### Примеры
@@ -72,8 +72,8 @@
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnBeforeGetProducts') {
-        $query->where(array('Data.vendor' => 8)); // id производителя
+    if ($modx->event->name == 'gsOnBeforeGetProducts') {
+      $query->where(array('Data.vendor' => 8)); // id производителя
     }
     ```
 
@@ -81,8 +81,8 @@
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnBeforeGetProducts') {
-        $query->where(array('Vendor.name' => 'Samsung'));
+    if ($modx->event->name == 'gsOnBeforeGetProducts') {
+      $query->where(array('Vendor.name' => 'Samsung'));
     }
     ```
 
@@ -90,15 +90,15 @@
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnGetProducts') {
-        $modx->event->params['products'] = array_map(function($product){
-            if(isset($product['old_price']) && !empty($product['price'])) {
-                $product['old_price'] = $product['price'];
-            }
-            if(!empty($product['price'])) {
-                $product['price'] = $product['price'] * 1.1;
-            }
-            return $product;
-        },$products);
+    if ($modx->event->name == 'gsOnGetProducts') {
+      $modx->event->params['products'] = array_map(function($product){
+          if (isset($product['old_price']) && !empty($product['price'])) {
+            $product['old_price'] = $product['price'];
+          }
+          if (!empty($product['price'])) {
+            $product['price'] = $product['price'] * 1.1;
+          }
+          return $product;
+      }, $products);
     }
     ```
