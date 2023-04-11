@@ -457,6 +457,27 @@ export default [
         ],
       },
       { text: 'PromoDs', link: '/components/promods' },
+      {
+        text: 'Quiz',
+        link: '/components/quiz/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'Quiz', link: '/components/quiz/snippets/quiz' },
+              { text: 'QuizData', link: '/components/quiz/snippets/quizdata' },
+              { text: 'QuizSteps', link: '/components/quiz/snippets/quizsteps' },
+              { text: 'QuizResult', link: '/components/quiz/snippets/quizresult' },
+              { text: 'SeoImg', link: '/components/quiz/snippets/seoimg' },
+            ],
+          },
+          { text: 'События', link: '/components/quiz/events' },
+          { text: 'Методы', link: '/components/quiz/methods' },
+          { text: 'Примеры', link: '/components/quiz/examples' },
+        ],
+      },
       { text: 'ReachGoal', link: '/components/reachgoal' },
       { text: 'Save2Page', link: '/components/save2page' },
       { text: 'SEODomains', link: '/components/seodomains' },
