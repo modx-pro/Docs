@@ -488,6 +488,30 @@ export default [
           },
         ],
       },
+      {
+        text: 'multiLingual',
+        link: '/components/multilingual/',
+        collapsed: true,
+        items: [
+          { text: 'Принцип перевода выборок', link: '/components/multilingual/translation-principle' },
+          { text: 'Решение проблем', link: '/components/multilingual/problem-solving' },
+          {
+            text: 'Интерфейс',
+            collapsed: true,
+            items: [
+              { text: 'Добавление языковых версий', link: '/components/multilingual/interface/add-language' },
+              { text: 'Добавление переводов к полям', link: '/components/multilingual/interface/add-language-field' },
+            ],
+          },
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'mlLanguagesLinks', link: '/components/multilingual/snippets/mllanguageslinks' },
+            ],
+          },
+        ],
+      },
       { text: 'NotFoundParamAlert', link: '/components/notfoundparamalert' },
       {
         text: 'orderPrint',

@@ -1,4 +1,4 @@
-# Описание компонента
+# multiLingual
 
 Компонент multiLingual реализует функциональность мультиязычных сайтов без дополнительных контекстов, в отличие от компонента Babel.
 
@@ -35,10 +35,10 @@
 
 Для того, чтобы данные сниппеты выдавали на выходе выборки с переведенными полями, необходимо заменить значения двух системных настроек:
 
-```php
-pdoFetch.class = mlFetch
-pdofetch_class_path = {core_path}components/multilingual/model/multilingual/
-```
+| Настройка           | Значение                                                 |
+| ------------------- | -------------------------------------------------------- |
+| pdoFetch.class      | `mlFetch`                                                |
+| pdofetch_class_path | `{core_path}components/multilingual/model/multilingual/` |
 
 При выборке ресурсов другими способами, подстановка переводов ложится на плечи разработчика.
 
@@ -55,27 +55,27 @@ pdofetch_class_path = {core_path}components/multilingual/model/multilingual/
 
 ```json
 {
-    "modResource" : [
-        "pagetitle",
-        "longtitle",
-        "content",
-        "description",
-        "introtext",
-        "menutitle"
-    ]
+  "modResource" : [
+    "pagetitle",
+    "longtitle",
+    "content",
+    "description",
+    "introtext",
+    "menutitle"
+  ]
 }
 ```
 
 Ключ - имя класса, значение - массив полей для перевода.
 
-* Настройка `ml_resource_tv_fields` задает json массив, в котором перечисляются названия tv полей для перевода:
+- Настройка `ml_resource_tv_fields` задает json массив, в котором перечисляются названия tv полей для перевода:
 
-```php
+```json
 ["tv1","tv2"]
 ```
 
-:::warning Важно
+::: warning
 Перечисляются именно названия tv-полей, а не ID
 :::
 
-[1]:/components/56_multiLingual/03_Принцип_перевода_выборок
+[1]:/components/multilingual/translation-principle
