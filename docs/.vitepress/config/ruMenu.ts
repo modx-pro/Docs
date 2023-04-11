@@ -448,6 +448,17 @@ export default [
         ],
       },
       {
+        text: 'msGallerySearch',
+        link: '/components/msgallerysearch/',
+        collapsed: true,
+        items: [
+          { text: 'Загрузить по ссылке', link: '/components/msgallerysearch/load-from-link' },
+          { text: 'Найти в Google', link: '/components/msgallerysearch/find-in-google' },
+          { text: 'Найти в изображениях', link: '/components/msgallerysearch/find-in-images' },
+          { text: 'Системные настройки', link: '/components/msgallerysearch/settings' },
+        ],
+      },
+      {
         text: 'msImportExport',
         collapsed: true,
         items: [
