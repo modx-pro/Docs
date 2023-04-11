@@ -60,10 +60,9 @@
 Не все поля разрешено редактировать. Если у вас не редактируется поле, смотрите демо версию. Если оно и там не редактирует: значит его нельзя редактировать
 :::
 
-**Демо версия**
-<http://demo.mspre.bustep.ru/manager/?a=resource&namespace=mspre>
-Логин: manager
-Пароль: manager
+[**Демо версия**](http://demo.mspre.bustep.ru/manager/?a=resource&namespace=mspre)
+- Логин: `manager`
+- Пароль: `manager`
 
 ### ТВ-параметры
 
