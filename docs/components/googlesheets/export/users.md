@@ -3,7 +3,7 @@
 ## Стандартные поля
 
 | Поле             | Название                   |
-|------------------|----------------------------|
+| ---------------- | -------------------------- |
 | id               | id пользователя            |
 | username         | Имя пользователя           |
 | fullname         | Полное имя                 |
@@ -44,18 +44,18 @@
 Класс **gsUser** генерирует следующие события:
 
 ```php
-    <?php
-    switch($modx->event->name) {
-        // получение списка пользователей
-        case 'gsOnBeforeGetUsers':
-            // $query - запрос выборки
-            // $range - название листа таблицы, куда будут экспортироваться данные
-            break;
-        case 'gsOnGetUsers':
-            // $resources - массив ресурсов со всеми полями
-            // $range - название листа
-            break;
-    }
+<?php
+switch ($modx->event->name) {
+  // получение списка пользователей
+  case 'gsOnBeforeGetUsers':
+    // $query - запрос выборки
+    // $range - название листа таблицы, куда будут экспортироваться данные
+    break;
+  case 'gsOnGetUsers':
+    // $resources - массив ресурсов со всеми полями
+    // $range - название листа
+    break;
+}
 ```
 
 ### Примеры
@@ -64,8 +64,8 @@
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnBeforeGetUsers') {
-        $query->where(array('primary_group' => 1));
+    if ($modx->event->name == 'gsOnBeforeGetUsers') {
+      $query->where(array('primary_group' => 1));
     }
     ```
 
@@ -73,12 +73,12 @@
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnGetUsers') {
-        $modx->event->params['users'] = array_map(function($user){
-            if(!empty($user['createdon'])) {
-                $user['createdon'] = date("d-m-Y",$user['createdon']);
-            }
-            return $user;
-        },$users);
+    if ($modx->event->name == 'gsOnGetUsers') {
+      $modx->event->params['users'] = array_map(function($user){
+        if (!empty($user['createdon'])) {
+          $user['createdon'] = date("d-m-Y",$user['createdon']);
+        }
+        return $user;
+      }, $users);
     }
     ```

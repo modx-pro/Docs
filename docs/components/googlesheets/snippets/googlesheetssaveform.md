@@ -1,4 +1,4 @@
-# GoogleSheetsSaveForm
+# Сниппет GoogleSheetsSaveForm
 
 Сохраняет данные с формы в таблицу.
 
@@ -9,11 +9,11 @@
 Дополнительные параметры:
 
 | Имя            | Описание                                        | По умолчанию                                 |
-|----------------|-------------------------------------------------|----------------------------------------------|
+| -------------- | ----------------------------------------------- | -------------------------------------------- |
 | **formFields** | Cписок полей, которые нужно сохранить           |                                              |
-| **gsUri**      | URL таблицы.                                    | Сис. астройка: **googlesheets_form_table**  |
-| **gsRange**    | Имя листа.                                      | Сис. нстройка:: **googlesheets_form_range** |
-| **gsFields**   | Список полей, которые находятся в гугл таблице. | Сис. настройка: **googlesheets_form_fields**|
+| **gsUri**      | URL таблицы.                                    | Сис. астройка: **googlesheets_form_table**   |
+| **gsRange**    | Имя листа.                                      | Сис. нстройка:: **googlesheets_form_range**  |
+| **gsFields**   | Список полей, которые находятся в гугл таблице. | Сис. настройка: **googlesheets_form_fields** |
 
 ## Примеры
 
@@ -21,8 +21,8 @@
 
     ``` modx
     [[!AjaxForm?
-        &hooks = `spam,email,GoogleSheetsSaveForm`
-        &formFields = `name,email,message`
+      &hooks=`spam,email,GoogleSheetsSaveForm`
+      &formFields=`name,email,message`
     ]]
     ```
 
@@ -30,9 +30,9 @@
 
     ``` modx
     [[!AjaxForm?
-        &hooks = `spam,email,GoogleSheetsSaveForm`
-        &formFields = `name,email,message`
-        &gsRange = `DataForm`
+      &hooks=`spam,email,GoogleSheetsSaveForm`
+      &formFields=`name,email,message`
+      &gsRange=`DataForm`
     ]]
     ```
 
@@ -40,8 +40,8 @@
 
     ``` modx
     [[!AjaxForm?
-        &hooks = `spam,email,GoogleSheetsSaveForm`
-        &formFields = `name,email,message`
-        &gsUri = `https://docs.google.com/spreadsheets/d/16eyRFL94Dtqm30lBXVIpKGbw/edit#gid=0`
-        &gsRange = `DataForm`
+      &hooks=`spam,email,GoogleSheetsSaveForm`
+      &formFields=`name,email,message`
+      &gsUri=`https://docs.google.com/spreadsheets/d/16eyRFL94Dtqm30lBXVIpKGbw/edit#gid=0`
+      &gsRange=`DataForm`
     ]]

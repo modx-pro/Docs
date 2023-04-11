@@ -18,16 +18,16 @@
 Класс **gsUser** генерирует следующие события:
 
 ```php
- <?php
-    switch($modx->event->name) {
-        // получение списка покупателей
-        case 'gsOnBeforeGetClients':
-        // $query - запрос выборки
-        // $range - название листа таблицы, куда будут экспортироваться данные
-        break;
-        case 'gsOnGetClients':
-        // $users - массив покупателей со всеми полями
-        // $range - название листа
-        break;
-    }
+<?php
+switch ($modx->event->name) {
+  // получение списка покупателей
+  case 'gsOnBeforeGetClients':
+    // $query - запрос выборки
+    // $range - название листа таблицы, куда будут экспортироваться данные
+    break;
+  case 'gsOnGetClients':
+    // $users - массив покупателей со всеми полями
+    // $range - название листа
+    break;
+}
 ```

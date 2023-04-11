@@ -7,7 +7,7 @@
 ![Настройка](https://file.modx.pro/files/4/5/8/458cde4c4df9a839d414ff89e121fbb4.jpg)
 
 | Поле             | Описание                         |
-|------------------|----------------------------------|
+| ---------------- | -------------------------------- |
 | **URL таблицы**  | Ссылка гугл таблицы              |
 | **Лист таблицы** | Название листа в гугл таблице    |
 | **Ресурс**       | id ресурса                       |
@@ -21,16 +21,16 @@
 
     ```php
     <?php
-    if($modx->event->name == 'gsOnExportValues') {
-        if($range == 'MIGX') { // range - название листа
-            $modx->event->params['values'] = array_map(function($value){
-            if(!empty($value['title'])) {
-                // Добавляем к заголовку дату
-                $value['title'] = $value['title'] . ' ' . $value['date'];
-            }
-            return $resource;
-        },$values);
-        }
+    if ($modx->event->name == 'gsOnExportValues') {
+      if ($range == 'MIGX') { // range - название листа
+        $modx->event->params['values'] = array_map(function ($value) {
+          if (!empty($value['title'])) {
+            // Добавляем к заголовку дату
+            $value['title'] = $value['title'] . ' ' . $value['date'];
+          }
+          return $resource;
+        }, $values);
+      }
     }
     ```
 

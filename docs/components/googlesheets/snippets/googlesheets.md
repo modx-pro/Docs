@@ -1,11 +1,11 @@
-# GoogleSheets
+# Сниппет GoogleSheets
 
 Используется для вывода данных
 
 ## Параметры сниппета
 
 | Имя    | Описание                                                                                | По умолчанию                         |
-|--------|-----------------------------------------------------------------------------------------|--------------------------------------|
+| ------ | --------------------------------------------------------------------------------------- | ------------------------------------ |
 | table  | Ссылка гугл таблицы, с которой будут браться данные                                     |                                      |
 | range  | Название листа гугл таблицы, также можно добавить диапазон ячеек для выборки (!A1:J10); |                                      |
 | tpl    | Чанк для вывода результатов. Если не указан, то будет выведен массив результатов.       |                                      |
@@ -18,8 +18,8 @@
 
     ```modx
     [[!GoogleSheets?
-        &table = `https://docs.google.com/spreadsheets/d/16AXIj1Dw0Cnx0neYHavZUuuDDmDMNkp8/edit#gid=0`
-        &range = `Manhattan!A1:J10`
+      &table = `https://docs.google.com/spreadsheets/d/16AXIj1Dw0Cnx0neYHavZUuuDDmDMNkp8/edit#gid=0`
+      &range = `Manhattan!A1:J10`
     ]]
     ```
 
@@ -27,10 +27,10 @@
 
     ```modx
     [[!GoogleSheets?
-        &table = `https://docs.google.com/spreadsheets/d/16AXIj1Dw0Cnx0neYHavZUuuDDmDMNkp8/edit#gid=0`
-        &range = `Manhattan`
-        &ignore = `1`
-        &tpl' = `@INLINE <li>{$name} - {$email}</li>`
+      &table = `https://docs.google.com/spreadsheets/d/16AXIj1Dw0Cnx0neYHavZUuuDDmDMNkp8/edit#gid=0`
+      &range = `Manhattan`
+      &ignore = `1`
+      &tpl' = `@INLINE <li>{$name} - {$email}</li>`
     ]]
     ```
 
@@ -38,11 +38,11 @@
 
     ```modx
     [[!GoogleSheets?
-        &table = `https://docs.google.com/spreadsheets/d/16AXIj1Dw0Cnx0neYHavZUuuDDmDMNkp8/edit#gid=0`
-        &range = `Manhattan`
-        &ignore = `1`
-        &fields = `name,phone`
-        &tpl' = `@INLINE <li>{$name} - {$email}</li>`
+      &table = `https://docs.google.com/spreadsheets/d/16AXIj1Dw0Cnx0neYHavZUuuDDmDMNkp8/edit#gid=0`
+      &range = `Manhattan`
+      &ignore = `1`
+      &fields = `name,phone`
+      &tpl' = `@INLINE <li>{$name} - {$email}</li>`
     ]]
     ```
 
@@ -54,7 +54,7 @@
 
 ```fenom
 {'!GoogleSheets' | snippet: [
-    'table' => 'https://docs.google.com/spreadsheets/d/16AXIj1Dw0Cnx0neYHavZUuuDDmDMNkp8/edit#gid=0',
-    'range' = 'Manhattan!A1:J10'
+  'table' => 'https://docs.google.com/spreadsheets/d/16AXIj1Dw0Cnx0neYHavZUuuDDmDMNkp8/edit#gid=0',
+  'range' = 'Manhattan!A1:J10',
 ] | table: 'table table-hover'}
 ```
