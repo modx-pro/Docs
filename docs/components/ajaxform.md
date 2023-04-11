@@ -2,17 +2,17 @@
 
 Cниппет для отправки любых форм через ajax. По умолчанию рассчитан на работу с [FormIt](https://docs.modx.com/current/en/extras/formit), но можно использовать и собственный сниппет.
 
-* Регистрирует нужные скрипты на фронтенде: [jQuery.Form](http://malsup.com/jquery/form/) и [jQuery.jGrowl](http://plugins.jquery.com/jgrowl/).
-* Сохраняет в сессию `$scriptProperties` при вызове сниппета.
-* Выводит указанную форму, прописывая класс **ajax_form** и скрытый input для получения `$scriptProperties`.
-* Вешает обработчик на форму, чтобы она отправлялась через ajax.
-* При отправке запускает указанный сниппет для обработки и возвращает ответ от него.
-* Выводит сообщение об успехе, или ошибки, если есть.
+- Регистрирует нужные скрипты на фронтенде: [jQuery.Form](http://malsup.com/jquery/form/) и [jQuery.jGrowl](http://plugins.jquery.com/jgrowl/).
+- Сохраняет в сессию `$scriptProperties` при вызове сниппета.
+- Выводит указанную форму, прописывая класс **ajax_form** и скрытый input для получения `$scriptProperties`.
+- Вешает обработчик на форму, чтобы она отправлялась через ajax.
+- При отправке запускает указанный сниппет для обработки и возвращает ответ от него.
+- Выводит сообщение об успехе, или ошибки, если есть.
 
 ## Параметры сниппета
 
-| Имя               | По умолчанию                  | Плейсхолдеры                                      |
-| ----------------- | ----------------------------- | ------------------------------------------------- |
+| Имя               | По умолчанию                    | Плейсхолдеры                                      |
+| ----------------- | ------------------------------- | ------------------------------------------------- |
 | **&form**         | `tpl.AjaxForm.example`          | Образец чанка с формой, которую нужно обработать. |
 | **&snippet**      | `FormIt`                        | Сниппет для обработки формы.                      |
 | **&frontend_css** | `[[+assetsUrl]]css/default.css` | Стили оформления формы и полей с ошибками         |
@@ -26,9 +26,9 @@ Cниппет для отправки любых форм через ajax. По 
 Вы можете использовать собственный сниппет, вместо [FormIt](https://docs.modx.com/current/en/extras/formit), который будет делать что угодно (хоть создавать страницы на сайте).
 Единственное требование - он обязательно должен возвращать JSON массив с ключами:
 
-* **status** — 1 или 0, то есть успех или ошибка.
-* **message** — сообщение о работе сниппета, выводится если status = 0.
-* **data** — массив для полей с ошибками, в котором ключами является имя поля, а значением — сообщение об ошибке.
+- **status** — 1 или 0, то есть успех или ошибка.
+- **message** — сообщение о работе сниппета, выводится если status = 0.
+- **data** — массив для полей с ошибками, в котором ключами является имя поля, а значением — сообщение об ошибке.
 
 Для удобства работы в параметры сниппета передаётся переменная `$AjaxForm` с классом компонента, чтобы вы могли вызывать из него методы **error** и **success** при выдаче ответа.
 
@@ -37,12 +37,12 @@ Cниппет для отправки любых форм через ajax. По 
 ```php
 <?php
 if (empty($_POST['name'])) {
-    return $AjaxForm->error('Ошибки в форме', array(
-        'name' => 'Вы не заполнили имя'
-    ));
+  return $AjaxForm->error('Ошибки в форме', array(
+    'name' => 'Вы не заполнили имя'
+  ));
 }
 else {
-    return $AjaxForm->success('Форма прошла проверку');
+  return $AjaxForm->success('Форма прошла проверку');
 }
 ```
 
@@ -50,8 +50,8 @@ else {
 
 ```modx
 [[!AjaxForm?
-    &snippet=`MySnippet`
-    &form=`tpl.AjaxForm.example`
+  &snippet=`MySnippet`
+  &form=`tpl.AjaxForm.example`
 ]]
 ```
 
@@ -66,15 +66,15 @@ else {
 
 Обратите внимание, что **все** проверки на javascript можно обойти, так что эту переменную стоит использовать только для удобства пользователей, а не для реальной проверки данных.
 
-```javascript
+```modx
 <script type="text/javascript">
 $(document).on('submit', '.ajax_form', function() {
-    // Здесь любой код для проверки формы при отправке
-    // Я просто печатаю её в консоли бразуреа
-    console.log(this);
+  // Здесь любой код для проверки формы при отправке
+  // Я просто печатаю её в консоли бразуреа
+  console.log(this);
 
-    // Результатом работы будет выставление глобальной переменной
-    afValidated = false; // Или true, если валидация пройдена
+  // Результатом работы будет выставление глобальной переменной
+  afValidated = false; // Или true, если валидация пройдена
 });
 </script>
 
@@ -87,18 +87,18 @@ $(document).on('submit', '.ajax_form', function() {
 
 Вам просто нужно указать функцию, в которую будет передано событие javascript и объект с ответом от сервера. Обратите внимание, что внутри этого объекта есть и отправляющая форма.
 
-```javascript
-$(document).on('af_complete', function(event, response) {
-    var form = response.form;
-    // Если у формы определённый id
-    if (form.attr('id') == 'my_form_3') {
-        // Скрываем её!
-        form.hide();
-    }
-    // Иначе печатаем в консоль весь ответ
-    else {
-        console.log(response)
-    }
+```js
+$(document).on('af_complete', function (event, response) {
+  var form = response.form;
+  // Если у формы определённый id
+  if (form.attr('id') === 'my_form_3') {
+    // Скрываем её!
+    form.hide();
+  }
+  // Иначе печатаем в консоль весь ответ
+  else {
+    console.log(response)
+  }
 });
 ```
 
@@ -106,12 +106,12 @@ $(document).on('af_complete', function(event, response) {
 
 Добавляем id к форме, если его нет и затем в js файл прописать вот такие строки
 
-```javascript
-$(document).on('af_complete', function(event, response) {
-    var form = response.form;
-    if (form.attr('id') == 'значение id формы') {
-       window.location.href = "[[~id страницы]]"
-    }
+```js
+$(document).on('af_complete', function (event, response) {
+  var form = response.form;
+  if (form.attr('id') === 'значение id формы') {
+    window.location.href = "[[~id страницы]]"
+  }
 });
 ```
 
@@ -140,14 +140,14 @@ AjaxForm.Message.info('Черный popup');
 
 ```modx
 [[!AjaxForm?
-    &snippet=`FormIt`
-    &form=`tpl.AjaxForm.example`
-    &hooks=`email`
-    &emailSubject=`Тестовое сообщение`
-    &emailTo=`info@domain.com`
-    &validate=`name:required,email:required,message:required`
-    &validationErrorMessage=`В форме содержатся ошибки!`
-    &successMessage=`Сообщение успешно отправлено`
+  &snippet=`FormIt`
+  &form=`tpl.AjaxForm.example`
+  &hooks=`email`
+  &emailSubject=`Тестовое сообщение`
+  &emailTo=`info@domain.com`
+  &validate=`name:required,email:required,message:required`
+  &validationErrorMessage=`В форме содержатся ошибки!`
+  &successMessage=`Сообщение успешно отправлено`
 ]]
 ```
 
