@@ -466,6 +466,28 @@ export default [
           { text: 'msImportExport 2.0', link: '/components/msimportexport/msimportexport-2.0' },
         ],
       },
+      {
+        text: 'msPre',
+        link: '/components/mspre/',
+        collapsed: true,
+        items: [
+          { text: 'Возможности', link: '/components/mspre/features' },
+          {
+            text: 'Интерфейс',
+            link: '/components/mspre/interface/',
+            collapsed: true,
+            items: [
+              { text: 'COMBO', link: '/components/mspre/interface/combo' },
+              { text: 'Товар и Цены', link: '/components/mspre/interface/product-and-prices' },
+              { text: 'Опции minishop2', link: '/components/mspre/interface/ms2-options' },
+              { text: 'ТВ-параметры', link: '/components/mspre/interface/tv' },
+              { text: 'Настройка полей в списке', link: '/components/mspre/interface/list-field-settings' },
+              { text: 'Редактирование в списке', link: '/components/mspre/interface/list-editing' },
+              { text: 'Транзакции', link: '/components/mspre/interface/transactions' },
+            ],
+          },
+        ],
+      },
       { text: 'NotFoundParamAlert', link: '/components/notfoundparamalert' },
       {
         text: 'orderPrint',
