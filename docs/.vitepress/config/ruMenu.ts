@@ -507,6 +507,20 @@ export default [
         ],
       },
       {
+        text: 'UserAuthHash',
+        link: '/components/userauthhash/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Разработка',
+            items: [
+              { text: 'События', link: '/components/userauthhash/development/events' },
+              { text: 'Расширения', link: '/components/userauthhash/development/extensions' },
+            ],
+          },
+        ],
+      },
+      {
         text: 'UserLocation',
         link: '/components/userlocation/',
         collapsed: true,

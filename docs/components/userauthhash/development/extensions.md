@@ -6,12 +6,12 @@
 
 ```php
 $options = [
-    'user' => 'test@gmail.com',
-    'lifeTime' => '1m' // срок жизни хэш-кода 1 месяц
+  'user' => 'test@gmail.com',
+  'lifeTime' => '1m' // срок жизни хэш-кода 1 месяц
 ];
 /** @var UserAuthHash $UserAuthHash */
 if ($UserAuthHash = $modx->getService('userauthhash.UserAuthHash', '', MODX_CORE_PATH.'components/userauthhash/model/')) {
-    $hash = $UserAuthHash->getAuthHash($options);
+  $hash = $UserAuthHash->getAuthHash($options);
 }
 ```
 
@@ -19,10 +19,10 @@ if ($UserAuthHash = $modx->getService('userauthhash.UserAuthHash', '', MODX_CORE
 
 ```php
 $options = [
-'user' => 'test@gmail.com',
+  'user' => 'test@gmail.com',
 ];
 /** @var UserAuthHash $UserAuthHash */
 if ($UserAuthHash = $modx->getService('userauthhash.UserAuthHash', '', MODX_CORE_PATH.'components/userauthhash/model/')) {
-    $hash = $UserAuthHash->removeAuthHash($options);
+  $hash = $UserAuthHash->removeAuthHash($options);
 }
 ```
