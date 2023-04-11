@@ -1,21 +1,21 @@
-# SeoImg
+# Сниппет SeoImg
 
 Сниппет предназначен для формирования изображение с текстом при выводе результата.
 
 ## Параметры
 
-* **img** - ссылка на изображение
-* **points** - баллы
-* **title** - заголовок
-* **description** - описание
+- **img** - ссылка на изображение
+- **points** - баллы
+- **title** - заголовок
+- **description** - описание
 
 ## Пример
 
 ```fenom
 {set $img = '!SeoImg' | snippet: [
-    'img' => 'assets/img/quiz/1.jpg',
-    'title' => 'SEOIMG',
-    'description' => 'Описание',
+  'img' => 'assets/img/quiz/1.jpg',
+  'title' => 'SEOIMG',
+  'description' => 'Описание',
 ]}
 ```
 
