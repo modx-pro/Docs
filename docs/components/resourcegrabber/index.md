@@ -10,13 +10,14 @@
 
 Особенности:
 
-- интеграция с [**miniShop2**][0102]. (создание/ обновление товаров)
-- интеграция с [**CurrencyRate**][0103]. (модификация цен)
-- интеграция с [**msOptionSeller**](https://modstore.pro/packages/ecommerce/msoptionseller). (задание опции `Магазин` товара minishop2)
+- Интеграция с [**miniShop2**][0102]. (создание/ обновление товаров)
+- Интеграция с [**CurrencyRate**][0103]. (модификация цен)
+- Интеграция с [**msOptionSeller**](https://modstore.pro/packages/ecommerce/msoptionseller). (задание опции `Магазин` товара minishop2)
 
 ## Демо сайт
 
-Доступен демо сайт [http://s14332.h10.modhost.pro](http://s14332.h10.modhost.pro)
+Доступен демо сайт [http://s14332.h10.modhost.pro](http://s14332.h10.modhost.pro).
+
 Логин и пароль для входа в [админку](http://s14332.h10.modhost.pro/manager/): `test`
 
 ## Установка
@@ -37,7 +38,7 @@
 
 Создать сниппет для парсинга данных. В комплекте сниппет для сайта `aliexpress` в папке
 
-```php
+```
 core/components/resourcegrabber/snippets/aliexpress/product.inc
 ```
 
@@ -47,7 +48,7 @@ core/components/resourcegrabber/snippets/aliexpress/product.inc
 
 Для обновления ресурсов можно использовать скрипт для `cron`, пример в папке
 
-```php
+```
 core/components/resourcegrabber/cron/update.php
 ```
 
@@ -60,22 +61,22 @@ $q = $modx->newQuery('GrabData');
 $q->setClassAlias('Grab');
 $q->innerJoin('msProduct', 'Product', 'Grab.id = Product.id');
 $q->where(array(
-    'Grab.timestamp:<'  => $ResourceGrabber->changeDate(time(), '5d', true),
-    'Product.deletedon' => false,
+  'Grab.timestamp:<'  => $ResourceGrabber->changeDate(time(), '5d', true),
+  'Product.deletedon' => false,
 ));
 
 $idx = 0;
 /** @var GrabData $d */
 foreach ($modx->getCollection('GrabData', $q) as $d) {
-    if ($data = $d->grab()) {
-        $d->set('data', $data);
-        $d->save();
-        $idx++;
-    }
+  if ($data = $d->grab()) {
+    $d->set('data', $data);
+    $d->save();
+    $idx++;
+  }
 }
 
 $modx->log(modX::LOG_LEVEL_ERROR, "Process total: " . $idx);
 ```
 
 [0102]: /components/minishop2/
-[0103]: /components/23_CurrencyRate/
+[0103]: /components/currencyrate

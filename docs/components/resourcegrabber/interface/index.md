@@ -15,5 +15,5 @@
 Вкладка, на которой собраны [сниппеты][3].
 Действия: **создать**/**изменить**/**удалить** сниппет.
 
-[2]: /components/55_ResourceGrabber/01_Интерфейс/02_Данные.md
-[3]: /components/55_ResourceGrabber/01_Интерфейс/03_Сниппеты.md
+[2]: /components/resourcegrabber/interface/data
+[3]: /components/resourcegrabber/interface/snippets
