@@ -590,6 +590,39 @@ export default [
           { text: 'Примеры', link: '/components/quiz/examples' },
         ],
       },
+      {
+        text: 'ResourceGrabber',
+        link: '/components/resourcegrabber/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Интерфейс',
+            link: '/components/resourcegrabber/interface/',
+            collapsed: true,
+            items: [
+              { text: 'Данные', link: '/components/resourcegrabber/interface/data' },
+              { text: 'Сниппеты', link: '/components/resourcegrabber/interface/snippets' },
+              { text: 'Настройка', link: '/components/resourcegrabber/interface/settings' },
+            ],
+          },
+          {
+            text: 'Разработка',
+            collapsed: true,
+            items: [
+              {
+                text: 'Службы',
+                collapsed: true,
+                items: [
+                  { text: 'Геттер', link: '/components/resourcegrabber/development/services/getter' },
+                  { text: 'Граббер', link: '/components/resourcegrabber/development/services/grabber' },
+                  { text: 'Сеттер', link: '/components/resourcegrabber/development/services/setter' },
+                ],
+              },
+              { text: 'События', link: '/components/resourcegrabber/development/events' },
+            ],
+          },
+        ],
+      },
       { text: 'ReachGoal', link: '/components/reachgoal' },
       { text: 'Save2Page', link: '/components/save2page' },
       { text: 'SEODomains', link: '/components/seodomains' },
