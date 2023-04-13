@@ -1,7 +1,8 @@
-export default [
+import type { DefaultTheme } from 'vitepress/theme'
+
+export default<DefaultTheme.Sidebar> [
   {
-    text: 'Компоненты',
-    collapsed: false,
+    collapsed: true,
     items: [
       { text: 'ABTest', link: '/components/abtest' },
       { text: 'AjaxForm', link: '/components/ajaxform' },
