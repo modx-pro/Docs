@@ -128,6 +128,19 @@ export default [
       { text: 'DigitalSignage', link: '/components/digitalsignage' },
       { text: 'ePochta', link: '/components/epochta' },
       { text: 'FileAttach', link: '/components/fileattach' },
+      {
+        text: 'Formalicious',
+        link: '/components/formalicious/',
+        collapsed: true,
+        items: [
+          { text: 'Установка', link: '/components/formalicious/setup' },
+          { text: 'Источники медиа', link: '/components/formalicious/media-sources' },
+          { text: 'Категории', link: '/components/formalicious/categories' },
+          { text: 'Типы полей', link: '/components/formalicious/field-types' },
+          { text: 'Создание формы', link: '/components/formalicious/creating-form' },
+          { text: 'FAQs', link: '/components/formalicious/faqs' },
+        ],
+      },
       { text: 'FrontendEditor', link: '/components/frontendeditor' },
       { text: 'frontTabs', link: '/components/fronttabs' },
       {
