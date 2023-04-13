@@ -2,6 +2,7 @@ import type { DefaultTheme } from 'vitepress/theme'
 
 export default<DefaultTheme.Sidebar> [
   {
+    text: 'Компоненты',
     collapsed: false,
     items: [
       { text: 'ABTest', link: '/components/abtest' },
