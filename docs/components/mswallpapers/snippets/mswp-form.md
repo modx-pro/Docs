@@ -5,7 +5,7 @@
 ## Параметры
 
 | Название           | По умолчанию    | Описание                                                                                             |
-|--------------------|-----------------|------------------------------------------------------------------------------------------------------|
+| ------------------ | --------------- | ---------------------------------------------------------------------------------------------------- |
 | **id**             | `0`             | ID товара, по-умолчанию текущий ресурс.                                                              |
 | **image**          |                 | Изображение текстуры. Обязательно.                                                                   |
 | **unit**           | `mm`            | Единица измерения. Возможные значения `mm`, `cm`, `m`.                                               |
@@ -22,11 +22,11 @@
 
 ### Форма на странице товара
 
-```php
+```fenom
 {'!mswp.form' | snippet : [
-    'id' => $_modx->resource['id'],
-    'image' => $_modx->resource['image'],
-    'cart_id' => 7,
+  'id' => $_modx->resource.id,
+  'image' => $_modx->resource.image,
+  'cart_id' => 7,
 ]}
 ```
 
@@ -36,11 +36,11 @@
 
 ```fenom
 {'!mswp.form' | snippet : [
-    'id' => $_modx->resource['id'],
-    'image' => $_modx->resource['image'],
-    'preview_width' => 800,
-    'preview_height' => 800,
-    'cart_id' => 7,
+  'id' => $_modx->resource.id,
+  'image' => $_modx->resource.image,
+  'preview_width' => 800,
+  'preview_height' => 800,
+  'cart_id' => 7,
 ]}
 ```
 
@@ -50,12 +50,12 @@
 
 ```fenom
 {'!mswp.form' | snippet : [
-    'id' => $_modx->resource['id'],
-    'image' => $_modx->resource['image'],
-    'unit' => 'cm',
-    'width' => 300,
-    'height' => 200,
-    'cart_id' => 7,
+  'id' => $_modx->resource.id,
+  'image' => $_modx->resource.image,
+  'unit' => 'cm',
+  'width' => 300,
+  'height' => 200,
+  'cart_id' => 7,
 ]}
 ```
 
@@ -63,11 +63,11 @@
 
 ```fenom
 {'!mswp.form' | snippet : [
-    'id' => $_modx->resource['id'],
-    'image' => $_modx->resource['image'],
-    'unit' => 'm',
-    'width' => 3.5,
-    'height' => 2.5,
-    'cart_id' => 7,
+  'id' => $_modx->resource.id,
+  'image' => $_modx->resource.image,
+  'unit' => 'm',
+  'width' => 3.5,
+  'height' => 2.5,
+  'cart_id' => 7,
 ]}
 ```
