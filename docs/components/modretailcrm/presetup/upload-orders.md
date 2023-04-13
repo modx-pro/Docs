@@ -13,13 +13,13 @@
 ```php
 <?php
 if (!$modRetailCrm = $modx->getService(
-    'modretailcrm',
-    'modRetailCrm',
-    MODX_CORE_PATH . 'components/modretailcrm/model/modretailcrm/',
-    array($modx)
+  'modretailcrm',
+  'modRetailCrm',
+  MODX_CORE_PATH . 'components/modretailcrm/model/modretailcrm/',
+  array($modx)
 )) {
-    $modx->log(modX::LOG_LEVEL_ERROR, '[modRetailCrm] - Not found class modRetailCrm');
-    return;
+  $modx->log(modX::LOG_LEVEL_ERROR, '[modRetailCrm] - Not found class modRetailCrm');
+  return;
 }
 
 $q = $modx->newQuery('msOrder');
@@ -31,7 +31,7 @@ $q->limit($limit, $offset);
 $orders = $modx->getIterator('msOrder', $q);
 //Выгружаем по одному
 foreach($orders as $msOrder) {
-    $modRetailCrm->msOnCreateOrder($msOrder);
+  $modRetailCrm->msOnCreateOrder($msOrder);
 }
 
 

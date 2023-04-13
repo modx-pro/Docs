@@ -14,33 +14,33 @@
 
 ```php
 <?php
-//Вызов и первоначальная настройка компонента
+// Вызов и первоначальная настройка компонента
 if (!$modRetailCrm = $modx->getService(
-    'modretailcrm',
-    'modRetailCrm',
-    MODX_CORE_PATH . 'components/modretailcrm/model/modretailcrm/',
-    array($modx)
+  'modretailcrm',
+  'modRetailCrm',
+  MODX_CORE_PATH . 'components/modretailcrm/model/modretailcrm/',
+  array($modx)
 )) {
-    $modx->log(modX::LOG_LEVEL_ERROR, '[modRetailCrm] - Not found class modRetailCrm');
-    return;
+  $modx->log(modX::LOG_LEVEL_ERROR, '[modRetailCrm] - Not found class modRetailCrm');
+  return;
 }
 
-//Принимаю необходимый массив полей из формы
+// Принимаю необходимый массив полей из формы
 $contact = array();
 $name = trim(filter_var($hook->getValue('firstName'), FILTER_SANITIZE_STRING));
 $contact['firstName'] = $name;
 $contact['phones'][0]['number'] = trim(filter_var($hook->getValue('phone'), FILTER_SANITIZE_STRING));
 $contact['email'] = trim(filter_var($hook->getValue('email'), FILTER_VALIDATE_EMAIL));
-//Генерируем externalId клиента
+// Генерируем externalId клиента
 $contact['externalId'] = md5($contact['phones'][0]['number'] . $contact['email']);
-//Отправляю данные в RetailCRM
+// Отправляю данные в RetailCRM
 
 $response = $modRetailCrm->request->customersCreate($contact);
-if($response->isSuccessful()){
-    return true;
-}else{
-    $modx->log(1, '[modRetailCRM] contactToRetailCRM '.print_r($response, 1));
-    return false;
+if ($response->isSuccessful()) {
+  return true;
+} else {
+  $modx->log(1, '[modRetailCRM] contactToRetailCRM '.print_r($response, 1));
+  return false;
 }
 
 ```
@@ -57,24 +57,24 @@ $contact['externalId'] = md5($contact['phones'][0]['number'] . $contact['email']
 
 ```fenom
 {'!ajaxForm' | snippet : [
-   'form' => '@INLINE
-        <form>
-            <div class="form-group">
-                <label>Имя</label>
-                <input class="form-control" type="text" name="firstName" value="" placehoder="Имя">
-            </div>
-            <div class="form-group">
-                <label>Телефон</label>
-                <input class="form-control" type="text" name="phone" value="" placehoder="Телефон">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input class="form-control" type="text" name="email" value="" placehoder="Email">
-            </div>
-            <button type="submit" class="btn btn-primary">Оставить заявку</button>
-        </form>
-   ',
-   'hooks' => 'contactToRetailCRM'
+  'form' => '@INLINE
+    <form>
+      <div class="form-group">
+        <label>Имя</label>
+        <input class="form-control" type="text" name="firstName" value="" placehoder="Имя">
+      </div>
+      <div class="form-group">
+        <label>Телефон</label>
+        <input class="form-control" type="text" name="phone" value="" placehoder="Телефон">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input class="form-control" type="text" name="email" value="" placehoder="Email">
+      </div>
+      <button type="submit" class="btn btn-primary">Оставить заявку</button>
+    </form>
+  ',
+  'hooks' => 'contactToRetailCRM',
 ]}
 
 ```
