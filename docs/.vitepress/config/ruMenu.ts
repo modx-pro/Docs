@@ -502,6 +502,38 @@ export default [
         ],
       },
       {
+        text: 'msWallpapers',
+        link: '/components/mswallpapers/',
+        collapsed: true,
+        items: [
+          { text: 'Установка и настройка', link: '/components/mswallpapers/setup' },
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'mswp.form', link: '/components/mswallpapers/snippets/mswp-form' },
+            ],
+          },
+          {
+            text: 'События плагинов',
+            link: '/components/mswallpapers/events/',
+            collapsed: true,
+            items: [
+              { text: 'mswpOnGetProductPrice', link: '/components/mswallpapers/events/mswpongetproductprice' },
+              { text: 'mswpOnGetProductCost', link: '/components/mswallpapers/events/mswpongetproductcost' },
+              { text: 'Примеры', link: '/components/mswallpapers/events/examples' },
+            ],
+          },
+          {
+            text: 'Кейсы',
+            collapsed: true,
+            items: [
+              { text: 'Форма в модальном окне с предварительным выбором текстуры', link: '/components/mswallpapers/cases/modal-form' },
+            ],
+          },
+        ],
+      },
+      {
         text: 'multiLingual',
         link: '/components/multilingual/',
         collapsed: true,

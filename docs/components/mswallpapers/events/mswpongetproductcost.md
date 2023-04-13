@@ -8,5 +8,5 @@
 
 ## Параметры
 
-* `msProduct $product` — класс товара,
-* `array $data` — массив формы.
+- `msProduct $product` — класс товара,
+- `array $data` — массив формы.
