@@ -1,4 +1,6 @@
-export default [
+import type { DefaultTheme } from 'vitepress/theme'
+
+export default<DefaultTheme.Sidebar> [
   {
     text: 'Компоненты',
     collapsed: false,
