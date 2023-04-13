@@ -27,20 +27,20 @@
 ```php
 <?php
 
-//Подключаю основной класс управления заказами. Мы будем его наследовать
-if(!class_exists('ordersInterface')){
- require_once dirname(__FILE__) . '/orders.class.php';
+// Подключаю основной класс управления заказами. Мы будем его наследовать
+if (!class_exists('ordersInterface')) {
+  require_once dirname(__FILE__) . '/orders.class.php';
 }
 
-// Объявляю свой класс.  Он должен наследовать родительский класс и реализовывать определенный интерфейс
+// Объявляю свой класс. Он должен наследовать родительский класс и реализовывать определенный интерфейс
 class Custom_orders extends Orders implements ordersInterface {
 
-//Интерфейс  ordersInterface  требует чтобы в классе обязательно был метод  msOnCreateOrder
-public function msOnCreateOrder($msOrder)
-    {
-        //Для начала можно вызвать родительский метод и ничего больше не делать.
-        parent::msOnCreateOrder($msOrder);
-   }
+  // Интерфейс  ordersInterface  требует чтобы в классе обязательно был метод  msOnCreateOrder
+  public function msOnCreateOrder($msOrder)
+  {
+    // Для начала можно вызвать родительский метод и ничего больше не делать.
+    parent::msOnCreateOrder($msOrder);
+  }
 }
 ```
 
@@ -52,12 +52,11 @@ public function msOnCreateOrder($msOrder)
 
 ```php
 $value = array(
-    //Имя класса
-    'Custom_orders',
-    //Путь к классу, включая имя файла
-    '{core_path}components/modretailcrm/model/modretailcrm/custom_orders.php'
+  // Имя класса
+  'Custom_orders',
+  // Путь к классу, включая имя файла
+  '{core_path}components/modretailcrm/model/modretailcrm/custom_orders.php'
 );
-
 
 $setting = $modx->getObject('modSystemSetting', array('key' => 'modretailcrm_custom_orders_class'));
 $setting->set('value', json_encode($value));
@@ -73,40 +72,40 @@ $setting->save();
 ```php
 <?php
 
-//Подключаю основной класс управления заказами. Мы будем его наследовать
-if(!class_exists('ordersInterface')){
- require_once dirname(__FILE__) . '/orders.class.php';
+// Подключаю основной класс управления заказами. Мы будем его наследовать
+if (!class_exists('ordersInterface')) {
+  require_once dirname(__FILE__) . '/orders.class.php';
 }
 
-// Объявляю свой класс.  Он должен наследовать родительский класс и реализовывать определенный интерфейс
+// Объявляю свой класс. Он должен наследовать родительский класс и реализовывать определенный интерфейс
 class Custom_orders extends Orders implements ordersInterface {
 
-//Интерфейс  ordersInterface  требует чтобы в классе обязательно был метод  msOnCreateOrder
-public function msOnCreateOrder($msOrder)
-        //Главный метод пока не трогаю
-         {
-        //Для начала можно вызвать родительский метод и ничего больше не делать.
-        parent::msOnCreateOrder($msOrder);
-   }
+  // Интерфейс ordersInterface требует чтобы в классе обязательно был метод msOnCreateOrder
+  public function msOnCreateOrder($msOrder)
+  // Главный метод пока не трогаю
+  {
+    // Для начала можно вызвать родительский метод и ничего больше не делать.
+    parent::msOnCreateOrder($msOrder);
+  }
 
-    //Переписываю метод сбора данных о заказе, добавляю туда информацию о свежевыпеченном msPromoCode2
-    /**
-     * @param xPDOObject $msOrder
-     * @return mixed
-     */
-    public function orderCombine($msOrder)
-    {
-        $pdo =& $this->pdo;
-        $order = $msOrder->toArray();
-        $order['address'] = $pdo->getArray('msOrderAddress', array('id' => $order['address']), array('sortby' => 'id'));
-        $order['delivery'] = $pdo->getArray('msDelivery', array('id' => $order['delivery']), array('sortby' => 'id'));
-        $order['payment'] = $pdo->getArray('msPayment', array('id' => $order['payment']), array('sortby' => 'id'));
-        $order['profile'] = $pdo->getArray('modUserProfile', array('internalKey' => $order['user_id']), array('sortby' => 'id'));
-        $order['products'] = $pdo->getCollection('msOrderProduct', array('order_id' => $order['id']), array('sortby' => 'id'));
-       //  Теперь я могу работать с информацией о примененному к заказу промокоду
-        $order['sale'] = $pdo->getArray('mspc2CouponOrder', array('order' => $order['id']));
+  // Переписываю метод сбора данных о заказе, добавляю туда информацию о свежевыпеченном msPromoCode2
+  /**
+   * @param xPDOObject $msOrder
+   * @return mixed
+   */
+  public function orderCombine($msOrder)
+  {
+    $pdo =& $this->pdo;
+    $order = $msOrder->toArray();
+    $order['address'] = $pdo->getArray('msOrderAddress', array('id' => $order['address']), array('sortby' => 'id'));
+    $order['delivery'] = $pdo->getArray('msDelivery', array('id' => $order['delivery']), array('sortby' => 'id'));
+    $order['payment'] = $pdo->getArray('msPayment', array('id' => $order['payment']), array('sortby' => 'id'));
+    $order['profile'] = $pdo->getArray('modUserProfile', array('internalKey' => $order['user_id']), array('sortby' => 'id'));
+    $order['products'] = $pdo->getCollection('msOrderProduct', array('order_id' => $order['id']), array('sortby' => 'id'));
+    // Теперь я могу работать с информацией о примененному к заказу промокоду
+    $order['sale'] = $pdo->getArray('mspc2CouponOrder', array('order' => $order['id']));
 
-        return $order;
-    }
+    return $order;
+  }
 }
 ```

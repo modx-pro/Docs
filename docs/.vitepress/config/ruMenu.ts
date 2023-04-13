@@ -451,6 +451,46 @@ export default<DefaultTheme.Sidebar> [
       },
       { text: 'mixedImage', link: '/components/mixedimage' },
       { text: 'modDevTools', link: '/components/moddevtools' },
+      {
+        text: 'modRetailCRM',
+        link: '/components/modretailcrm/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Предварительная настройка',
+            collapsed: true,
+            items: [
+              { text: 'Выгрузка товаров', link: '/components/modretailcrm/presetup/upload-products' },
+              { text: 'Выгрузка пользователей', link: '/components/modretailcrm/presetup/upload-users' },
+              { text: 'Выгрузка заказов', link: '/components/modretailcrm/presetup/upload-orders' },
+            ],
+          },
+          {
+            text: 'Примеры работы с API',
+            collapsed: true,
+            items: [
+              { text: 'Создать новый контакт', link: '/components/modretailcrm/examples-api/create-new-contact' },
+              { text: 'Быстрый заказ товара', link: '/components/modretailcrm/examples-api/quick-order-product' },
+              { text: 'Поиск заказа в RetailCRM', link: '/components/modretailcrm/examples-api/search-order-retailcrm' },
+              { text: 'Поиск товара в RetailCRM', link: '/components/modretailcrm/examples-api/search-product-retailcrm' },
+            ],
+          },
+          {
+            text: 'Триггеры',
+            collapsed: true,
+            items: [
+              { text: 'Создать новый контакт', link: '/components/modretailcrm/triggers/order-status-change' },
+            ],
+          },
+          {
+            text: 'Модули и расширение классов',
+            collapsed: true,
+            items: [
+              { text: 'Пример расширения класса', link: '/components/modretailcrm/modules/example-class-extend' },
+            ],
+          },
+        ],
+      },
       { text: 'modTree', link: '/components/modtree' },
       { text: 'modVkMarket', link: '/components/modvkmarket' },
       {

@@ -38,88 +38,87 @@ RetailCRM позволяет и рекомендует размещать соб
 
 **outputWrapper**  Шаблон-обертка . Значение по умолчанию
 
-``` xml
+```fenom
 @INLINE
 <yml_catalog date="{$date}">
-    <shop>
-        <name>{$name | replace : "&" : "AND"}</name>
-        <company>{$company | replace : "&" : "AND"}</company>
-        <categories>{$categories}</categories>
-        <offers>{$offers}</offers>
-    </shop>
+  <shop>
+    <name>{$name | replace : "&" : "AND"}</name>
+    <company>{$company | replace : "&" : "AND"}</company>
+    <categories>{$categories}</categories>
+    <offers>{$offers}</offers>
+  </shop>
 </yml_catalog>
 ```
 
 **categoryTpl**  Шаблон одной строки категории. Значение по умолчанию
 
-``` fenom
+```fenom
 @INLINE
 <category id="{$id}" {if $parent?}parentId="{$parent}"{/if}>{$pagetitle | replace : "&" : "AND"}</category>
 ```
 
 **offerTpl**  Шаблон одного товарного предложения.  Значение по умолчанию
 
-``` fenom
+```fenom
 {if $modifications?}
-    {foreach $modifications as $modification}
-        <offer id="mod-{$id}-{$modification.id}" productId="{$id}" {if $modification.count?}quantity="{$modification.count}"{/if}>
-            <url>{$id | url : ["scheme" => "full"] }</url>
-            <price>{if $modification.price?}{$modification.price}.00{else}{$price}.00{/if}</price>
-            <categoryId>{$parent}</categoryId>
-            {if $image}<picture>{"site_url" | option | preg_replace : "#/$#" : ""}{$image}</picture> {/if}
+  {foreach $modifications as $modification}
+    <offer id="mod-{$id}-{$modification.id}" productId="{$id}" {if $modification.count?}quantity="{$modification.count}"{/if}>
+      <url>{$id | url : ["scheme" => "full"] }</url>
+      <price>{if $modification.price?}{$modification.price}.00{else}{$price}.00{/if}</price>
+      <categoryId>{$parent}</categoryId>
+      {if $image}<picture>{"site_url" | option | preg_replace : "#/$#" : ""}{$image}</picture> {/if}
 
-            <name>{$modification.name | replace : "&" : "AND"}</name>
-            {if $xmlId}<xmlId>{$xmlId}</xmlId> {/if}
-            <productName>{$pagetitle | replace : "&" : "AND"}</productName>
+      <name>{$modification.name | replace : "&" : "AND"}</name>
+      {if $xmlId}<xmlId>{$xmlId}</xmlId> {/if}
+      <productName>{$pagetitle | replace : "&" : "AND"}</productName>
 
-            {if $modification.article?}<param name="Артикул" code="article">{$modification.article | replace : "&" : "AND"}</param> {/if}
-            {foreach $modification.options as $key => $value}
-                {switch $key}
-                    {case "size"}
-                    <param name="Размер" code="{$key}">{$value | replace : "&" : "AND"}</param>
-                    {case "color"}
-                    <param name="Цвет" code="{$key}">{$value | replace : "&" : "AND"}</param>
-                    {case "weight"}
-                    <param name="Вес" code="{$key}">{$value | replace : "&" : "AND"}</param>
-                    {default}
-                    <param name="{$key}" code="{$key}">{$value | replace : "&" : "AND"}</param>
-                {/switch}
+      {if $modification.article?}<param name="Артикул" code="article">{$modification.article | replace : "&" : "AND"}</param> {/if}
+      {foreach $modification.options as $key => $value}
+        {switch $key}
+          {case "size"}
+          <param name="Размер" code="{$key}">{$value | replace : "&" : "AND"}</param>
+          {case "color"}
+          <param name="Цвет" code="{$key}">{$value | replace : "&" : "AND"}</param>
+          {case "weight"}
+          <param name="Вес" code="{$key}">{$value | replace : "&" : "AND"}</param>
+          {default}
+          <param name="{$key}" code="{$key}">{$value | replace : "&" : "AND"}</param>
+        {/switch}
+      {/foreach}
 
-            {/foreach}
-
-            <vendor>{$_pls["vendor.name"] | replace : "&" : "AND"}</vendor>
-            {if $weight?}<param name="Вес" code="weight">{$weight | replace : "&" : "AND"}</param> {/if}
-            {if $modification.weight?}<param name="Вес" code="weight">{$modification.weight | replace : "&" : "AND"}</param> {/if}
-            <unit code="pcs" name="Штука" sym="шт." />
-        </offer>
-    {/foreach}
-    <offer id="{$id}" productId="{$id}">
-        <url>{$id | url : ["scheme" => "full"] }</url>
-        <price>{$price}.00</price>
-        <categoryId>{$parent}</categoryId>
-        <picture>{"site_url" | option | preg_replace : "#/$#" : ""}{$image}</picture>
-        <name>{$pagetitle | replace : "&" : "AND"}</name>
-        {if $xmlId}<xmlId>{$xmlId}</xmlId> {/if}
-        <productName>{$pagetitle | replace : "&" : "AND"}</productName>
-        {if $article?}<param name="Артикул" code="article">{$article | replace : "&" : "AND"}</param> {/if}
-        <vendor>{$_pls["vendor.name"] | replace : "&" : "AND"}</vendor>
-        {if $weight?}<param name="Вес" code="weight">{$weight | replace : "&" : "AND"}</param> {/if}
-        <unit code="pcs" name="Штука" sym="шт." />
+      <vendor>{$_pls["vendor.name"] | replace : "&" : "AND"}</vendor>
+      {if $weight?}<param name="Вес" code="weight">{$weight | replace : "&" : "AND"}</param> {/if}
+      {if $modification.weight?}<param name="Вес" code="weight">{$modification.weight | replace : "&" : "AND"}</param> {/if}
+      <unit code="pcs" name="Штука" sym="шт." />
     </offer>
+  {/foreach}
+  <offer id="{$id}" productId="{$id}">
+    <url>{$id | url : ["scheme" => "full"] }</url>
+    <price>{$price}.00</price>
+    <categoryId>{$parent}</categoryId>
+    <picture>{"site_url" | option | preg_replace : "#/$#" : ""}{$image}</picture>
+    <name>{$pagetitle | replace : "&" : "AND"}</name>
+    {if $xmlId}<xmlId>{$xmlId}</xmlId> {/if}
+    <productName>{$pagetitle | replace : "&" : "AND"}</productName>
+    {if $article?}<param name="Артикул" code="article">{$article | replace : "&" : "AND"}</param> {/if}
+    <vendor>{$_pls["vendor.name"] | replace : "&" : "AND"}</vendor>
+    {if $weight?}<param name="Вес" code="weight">{$weight | replace : "&" : "AND"}</param> {/if}
+    <unit code="pcs" name="Штука" sym="шт." />
+  </offer>
 {else}
-    <offer id="{$id}" productId="{$id}">
-        <url>{$id | url : ["scheme" => "full"] }</url>
-        <price>{$price}.00</price>
-        <categoryId>{$parent}</categoryId>
-        <picture>{"site_url" | option | preg_replace : "#/$#" : ""}{$image}</picture>
-        <name>{$pagetitle | replace : "&" : "AND"}</name>
-        {if $xmlId}<xmlId>{$xmlId}</xmlId> {/if}
-        <productName>{$pagetitle | replace : "&" : "AND"}</productName>
-        {if $article?}<param name="Артикул" code="article">{$article | replace : "&" : "AND"}</param> {/if}
-        <vendor>{$_pls["vendor.name"] | replace : "&" : "AND"}</vendor>
-        {if $weight?}<param name="Вес" code="weight">{$weight}</param> {/if}
-        <unit code="pcs" name="Штука" sym="шт." />
-    </offer>
+  <offer id="{$id}" productId="{$id}">
+    <url>{$id | url : ["scheme" => "full"] }</url>
+    <price>{$price}.00</price>
+    <categoryId>{$parent}</categoryId>
+    <picture>{"site_url" | option | preg_replace : "#/$#" : ""}{$image}</picture>
+    <name>{$pagetitle | replace : "&" : "AND"}</name>
+    {if $xmlId}<xmlId>{$xmlId}</xmlId> {/if}
+    <productName>{$pagetitle | replace : "&" : "AND"}</productName>
+    {if $article?}<param name="Артикул" code="article">{$article | replace : "&" : "AND"}</param> {/if}
+    <vendor>{$_pls["vendor.name"] | replace : "&" : "AND"}</vendor>
+    {if $weight?}<param name="Вес" code="weight">{$weight}</param> {/if}
+    <unit code="pcs" name="Штука" sym="шт." />
+  </offer>
 {/if}
 ```
 
@@ -127,10 +126,10 @@ RetailCRM позволяет и рекомендует размещать соб
 
 Итак - мы имеем Интернет-магазин на базе miniShop2, десяток товарных разделов и сотню другую товаров.  Возможно с модификациями msOptionsPrice2
 
-* Создаем в админке страницу ICML, отключаем для нее текстовый редактор, назначаем пустой шаблон и выбираем тип содержимого XML. Сохраняем. При открытии такой страницы в браузере у вас должен открываться XML документ.
-* В содержимом (поле content) вызываем сниппет `[[!icml]]`
+- Создаем в админке страницу ICML, отключаем для нее текстовый редактор, назначаем пустой шаблон и выбираем тип содержимого XML. Сохраняем. При открытии такой страницы в браузере у вас должен открываться XML документ.
+- В содержимом (поле content) вызываем сниппет `[[!icml]]`
     При каждом обращении к странице сниппет будет формировать валидный XML код по правилам RetailCRM.
-* Следующий шаг - настройка RetailCRM. Переходим в личный кабинет "**Администрирование** - **Магазины** - **Ваш магазин** - **вкладка Каталог**"
+- Следующий шаг - настройка RetailCRM. Переходим в личный кабинет "**Администрирование** - **Магазины** - **Ваш магазин** - **вкладка Каталог**"
     В форме указываем ссылку на нашу ICML страницу в поле **URL ICML-файла**, созданную шагом ранее. Ставим отметку **Загрузить каталог из ICML сейчас**. Жмем кнопку "Сохранить" и через несколько секунд (в зависимости от размера каталога) обновляем страницу. Если RetailCRM в процессе автоматического чтения каталога обнаружит ошибки, она выдаст об этом предупреждение.  Если все нормально - переходим в раздел **Операционная деятельность** - **Товары** и видим наши товары
 
 RetailCRM обновляет каталог автоматически один-два раза в сутки.  Помните об этом, и если у вас есть необходимость обновлять каталог чаще - просто делайте это вручную, повторяя предыдущий шаг.
@@ -151,17 +150,17 @@ RetailCRM обновляет каталог автоматически один-
 
 В любом удобном месте создаем php скрипт примерно следующего содержания
 
-``` php
-//Подключаем MODX
+```php
+// Подключаем MODX
 define('MODX_API_MODE', true);
 while (!isset($modx) && ($i = isset($i) ? --$i : 10)) {
-    if (($file = dirname(!empty($file) ? dirname($file) : __FILE__) . '/index.php') AND !file_exists($file)) {
-        continue;
-    }
-    require_once $file;
+  if (($file = dirname(!empty($file) ? dirname($file) : __FILE__) . '/index.php') AND !file_exists($file)) {
+    continue;
+  }
+  require_once $file;
 }
 if (!is_object($modx)) {
-    exit('{"success":false,"message":"Access denied"}');
+  exit('{"success":false,"message":"Access denied"}');
 }
 
 $modx->getService('error', 'error.modError');
@@ -183,6 +182,6 @@ $filename = MODX_BASE_PATH.'icml.xml';
 file_put_contents($filename, $xml);
 ```
 
-:::info
+::: info
 Настраиваем запуск файла по расписанию, согласно документации вашего хостинга, либо запускаем файл в момент обновления вашей базы, если у вас настроено автоматическое обновление базы, например из 1C.
 :::
