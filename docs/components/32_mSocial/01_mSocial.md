@@ -15,7 +15,7 @@
 в поле Access Level должно стоять значение Read and write.
 :::
 
-![ Как настроить mSocial - 1](https://file.modx.pro/files/1/1/8/118dc35db2127bd1a16c557a8b86e0e0.png)
+![Как настроить mSocial - 1](https://file.modx.pro/files/1/1/8/118dc35db2127bd1a16c557a8b86e0e0.png)
 
 * Теперь открываем наш сайт. Переходим в Системные настройки / mSocial.
 
