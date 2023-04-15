@@ -813,7 +813,7 @@ export default<DefaultTheme.Sidebar> [
           },
         ],
       },
-      { text: 'YandexMaps', link: '/components/ajaxsnippet' },
+      { text: 'YandexMaps', link: '/components/yandexmaps' },
       {
         text: 'YandexMaps2',
         link: '/components/yandexmaps2/',
