@@ -6,15 +6,16 @@
 
 ## Параметры
 
-* `array $data` — данные выборки, обычно имеют структуру:
+- `array $data` — данные выборки, обычно имеют структуру:
 
 ```php
-Array(
-    parent => (int)
-    class => (string)
-    list => (string)
+Array
+(
+  parent => (int)
+  class => (string)
+  list => (string)
 )
 ```
 
-* `array $objects` — список объектов карты,
-* `array $snippetProperties` — параметры сниппета, из которого вызывается подгрузка объектов.
+- `array $objects` — список объектов карты,
+- `array $snippetProperties` — параметры сниппета, из которого вызывается подгрузка объектов.
