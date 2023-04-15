@@ -1,7 +1,8 @@
 # YandexMaps2
 
-> **Внимание!**
-> Для сохранения возможности бесплатного использования API Яндекс.Карт пользователи должны соблюдать ряд условий - <https://tech.yandex.ru/maps/jsapi/doc/2.1/terms/index-docpage/#index__conditions>
+::: warning
+Для сохранения возможности бесплатного использования API Яндекс.Карт пользователи должны соблюдать ряд условий - <https://tech.yandex.ru/maps/jsapi/doc/2.1/terms/index-docpage/#index__conditions>
+:::
 
 ## Преимущества перед подобными компонентами
 
@@ -20,6 +21,6 @@
 
 [Подробно про конструктор карт][3]
 
-[1]: /components/48_YandexMaps2/05_Работа_с_mFilter2.md
+[1]: /components/yandexmaps2/mfilter2-integration
 [2]: https://modstore.pro/packages/photos-and-files/userfiles
-[3]: /components/48_YandexMaps2/09_Конструктор_карт.md
+[3]: /components/yandexmaps2/map-constructor

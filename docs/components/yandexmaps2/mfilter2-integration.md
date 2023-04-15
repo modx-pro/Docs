@@ -1,3 +1,5 @@
+# Работа с mFilter2
+
 Работа фильтрации объектов на карте при помощи `mFilter2` продумана из коробки и реализуется в три шага:
 
 ## Новый способ
@@ -8,13 +10,13 @@
 
 В нужном месте страницы вызываем `mFilter2` со следующими параметрами:
 
-```php
+```fenom
 {'!mFilter2' | snippet : [
-    'parents' => $_modx->resource['id'],
-    'limit' => 0,
-    'filters' => '
-        tv|symbol,
-    ',
+  'parents' => $_modx->resource.id,
+  'limit' => 0,
+  'filters' => '
+    tv|symbol,
+  ',
 ]}
 ```
 
@@ -24,49 +26,49 @@
 
 Чанк `tpl.mFilter2.outer` будет выглядеть примерно так:
 
-```html
+```modx
 <div class="row msearch2" id="mse2_mfilter">
-    <div class="span3 col-md-3">
-        <form action="[[~[[*id]]]]" method="post" id="mse2_filters">
-            <div>
-                [[+filters]]
-            </div>
-            [[+filters:isnot=``:then=`
-                <button type="reset" class="btn btn-default hidden">[[%mse2_reset]]</button>
-                <button type="submit" class="btn btn-success pull-right hidden">[[%mse2_submit]]</button>
-                <div class="clearfix"></div>
-            `]]
-        </form>
-    </div>
+  <div class="span3 col-md-3">
+    <form action="[[~[[*id]]]]" method="post" id="mse2_filters">
+      <div>
+        [[+filters]]
+      </div>
+      [[+filters:isnot=``:then=`
+        <button type="reset" class="btn btn-default hidden">[[%mse2_reset]]</button>
+        <button type="submit" class="btn btn-success pull-right hidden">[[%mse2_submit]]</button>
+        <div class="clearfix"></div>
+      `]]
+    </form>
+  </div>
 
-    <div class="span9 col-md-9">
-        {'!YandexMaps2' | snippet : [
-            'mode' => 'mfilter2',
-        ]}
+  <div class="span9 col-md-9">
+    [[!YandexMaps2?
+      &mode=`mfilter2`
+    ]]
 
-        <div id="mse2_results">
-            {$results}
-        </div>
+    <div id="mse2_results">
+      [[+results]]
     </div>
+  </div>
 </div>
 ```
 
-## Шаг 3
+### Шаг 3
 
 Чанк `tpl.mSearch2.row` будет выглядеть примерно так:
 
-```fenom
+```modx
 <div class="mse2-row">
-    [[+idx]]. <a href="[[+uri]]">[[+pagetitle]]</a>[[+weight]]
-    [[+intro]]
+  [[+idx]]. <a href="[[+uri]]">[[+pagetitle]]</a>[[+weight]]
+  [[+intro]]
 </div>
 
 <div class="js-ym2-mse2-objects" style="display:none">
-    {'!YandexMaps2' | snippet : [
-        'parent' => $id,
-        'scripts' => false,
-        'tpl' => '@INLINE {(($objects | toJSON: 9) | replace: "{": "{ ") | replace: "[": "[ "}',
-    ]}
+  {'!YandexMaps2' | snippet : [
+    'parent' => $id,
+    'scripts' => false,
+    'tpl' => '@INLINE {(($objects | toJSON: 9) | replace: "{": "{ ") | replace: "[": "[ "}',
+  ]}
 </div>
 
 <!--msearch2_weight  ([[%mse2_weight]]: [[+weight]])-->
@@ -85,12 +87,12 @@
 
 ```fenom
 {'!mFilter2' | snippet : [
-    'parents' => $_modx->resource['id'],
-    'limit' => 0,
-    'outputSeparator' => ',',
-    'filters' => '
-        tv|symbol,
-    ',
+  'parents' => $_modx->resource.id,
+  'limit' => 0,
+  'outputSeparator' => ',',
+  'filters' => '
+    tv|symbol,
+  ',
 ]}
 ```
 
@@ -100,27 +102,27 @@
 
 Чанк `tpl.mFilter2.outer` будет выглядеть примерно так:
 
-```html
+```modx
 <div class="row msearch2" id="mse2_mfilter">
-    <div class="span3 col-md-3">
-        <form action="[[~[[*id]]]]" method="post" id="mse2_filters">
-            <div>
-                [[+filters]]
-            </div>
-            [[+filters:isnot=``:then=`
-                <button type="reset" class="btn btn-default hidden">[[%mse2_reset]]</button>
-                <button type="submit" class="btn btn-success pull-right hidden">[[%mse2_submit]]</button>
-                <div class="clearfix"></div>
-            `]]
-        </form>
-    </div>
+  <div class="span3 col-md-3">
+    <form action="[[~[[*id]]]]" method="post" id="mse2_filters">
+      <div>
+        [[+filters]]
+      </div>
+      [[+filters:isnot=``:then=`
+        <button type="reset" class="btn btn-default hidden">[[%mse2_reset]]</button>
+        <button type="submit" class="btn btn-success pull-right hidden">[[%mse2_submit]]</button>
+        <div class="clearfix"></div>
+      `]]
+    </form>
+  </div>
 
-    <div class="span9 col-md-9">
-        {'!YandexMaps2' | snippet : [
-            'objects' => $results,
-            'mode' => 'mfilter2',
-        ]}
-    </div>
+  <div class="span9 col-md-9">
+    {'!YandexMaps2' | snippet : [
+      'objects' => $results,
+      'mode' => 'mfilter2',
+    ]}
+  </div>
 </div>
 ```
 
@@ -130,8 +132,8 @@
 
 ```fenom
 {'!YandexMaps2' | snippet : [
-    'parent' => $id,
-    'scripts' => false,
-    'tpl' => '@INLINE {(($objects | toJSON: 9) | replace: "{": "{ ") | replace: "[": "[ "}',
+  'parent' => $id,
+  'scripts' => false,
+  'tpl' => '@INLINE {(($objects | toJSON: 9) | replace: "{": "{ ") | replace: "[": "[ "}',
 ]}
 ```

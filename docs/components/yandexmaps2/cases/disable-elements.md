@@ -13,22 +13,22 @@
 
 ```javascript
 $(document).ready(function() {
-    $(document).on('ymOnLoadMap', function(e, ym2, map) {
-        map.controls
-            .remove('fullscreenControl') // полный экран
-            .remove('geolocationControl') // моя геопозиция
-            .remove('rulerControl') // линейка
-            .remove('trafficControl') // пробки
-            .remove('searchControl') // поиск
-            .remove('typeSelector') // слои
-            .remove('zoomControl') // масштаб
-        ;
-    });
+  $(document).on('ymOnLoadMap', function(e, ym2, map) {
+    map.controls
+      .remove('fullscreenControl') // полный экран
+      .remove('geolocationControl') // моя геопозиция
+      .remove('rulerControl') // линейка
+      .remove('trafficControl') // пробки
+      .remove('searchControl') // поиск
+      .remove('typeSelector') // слои
+      .remove('zoomControl') // масштаб
+    ;
+  });
 });
 ```
 
 _Узнать названия всех доступных элементов управления [можно в документации][1]._
 
-Таким образом мы, после загрузки карты, выполняем свой JS код, не прибегая к правкам исходного default.js.
+Таким образом мы, после загрузки карты, выполняем свой JS код, не прибегая к правкам исходного `default.js`.
 
 [1]: https://tech.yandex.ru/maps/doc/jsapi/2.1/ref/reference/control.Manager-docpage/#method_detail__add-param-control

@@ -814,6 +814,42 @@ export default<DefaultTheme.Sidebar> [
         ],
       },
       { text: 'YandexMaps', link: '/components/ajaxsnippet' },
+      {
+        text: 'YandexMaps2',
+        link: '/components/yandexmaps2/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'YandexMaps2', link: '/components/yandexmaps2/snippets/yandexmaps2' },
+            ],
+          },
+          { text: 'Быстрый старт', link: '/components/yandexmaps2/quick-start' },
+          { text: 'Работа с mFilter2', link: '/components/yandexmaps2/mfilter2-integration' },
+          { text: 'jQuery события', link: '/components/yandexmaps2/jquery-events' },
+          { text: 'Конструктор карт', link: '/components/yandexmaps2/map-constructor' },
+          {
+            text: 'События плагинов',
+            link: '/components/yandexmaps2/events/',
+            collapsed: true,
+            items: [
+              { text: 'ymOnLoadObjects', link: '/components/yandexmaps2/events/ymonloadobjects' },
+              { text: 'Примеры', link: '/components/yandexmaps2/events/examples' },
+            ],
+          },
+          {
+            text: 'Кейсы',
+            collapsed: true,
+            items: [
+              { text: 'Точки из MIGX с кастомными иконками на фронт-энде', link: '/components/yandexmaps2/cases/migx-integration' },
+              { text: 'Отключаем все элементы управления на карте', link: '/components/yandexmaps2/cases/disable-elements' },
+              { text: 'Выводим данные родительского ресурса в балунах', link: '/components/yandexmaps2/cases/parent-data-in-baloons' },
+            ],
+          },
+        ],
+      },
       { text: 'WebDAV', link: '/components/webdav' },
       { text: 'userMarker', link: '/components/usermarker' },
       { text: 'UsersOnline', link: '/components/usersonline' }

@@ -8,8 +8,8 @@
 
 ```fenom
 {'!YandexMaps2' | snippet : [
-    'map' => 'custom-map',
-    ...
+  'map' => 'custom-map',
+  ...
 ]}
 ```
 
@@ -17,15 +17,15 @@
 
 ```php
 switch ($modx->event->name) {
-    case 'ymOnLoadObjects':
-        if ($snippetProperties['map'] != 'custom-map') {
-            break;
-        }
+  case 'ymOnLoadObjects':
+    if ($snippetProperties['map'] != 'custom-map') {
+      break;
+    }
 
-        /**
-         * Логика плагина
-         */
+    /**
+     * Логика плагина
+     */
 
-        break;
+    break;
 }
 ```
