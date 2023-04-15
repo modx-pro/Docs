@@ -18,31 +18,31 @@
 
 | Имя                         | По умолчанию                                                          | Описание                                                                                                                                                                 |
 | --------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **&tpl**                    | `tpl.yandexMaps`                                                        | Шаблон обёртка вывода ссылок фильтров для отображения/скрытия объектов на карте                                                                                          |
-| **&tplFiltersItemsWrapper** | `tpl.yandexMaps.filtersItemsWrapper`                                    | Шаблон обёртка вывода ссылок фильтров для отображения/скрытия объектов на карте.                                                                                         |
-| **&tplFiltersItems**        | `tpl.yandexMaps.filtersItems`                                           | Шаблон вывода ссылок фильтров для отображения/скрытия объектов на карте.                                                                                                 |
-| **&idMap**                  | `yandexMap`                                                             | Id карты для html разметки и JS инициализации.                                                                                                                           |
-| **&centerCoords**           | `55.75356,37.62001`                                                     | Координаты для центра карты.                                                                                                                                             |
-| **&zoom**                   | `14`                                                                    | Zoom карты (приближение).                                                                                                                                                |
+| **&tpl**                    | `tpl.yandexMaps`                                                      | Шаблон обёртка вывода ссылок фильтров для отображения/скрытия объектов на карте                                                                                          |
+| **&tplFiltersItemsWrapper** | `tpl.yandexMaps.filtersItemsWrapper`                                  | Шаблон обёртка вывода ссылок фильтров для отображения/скрытия объектов на карте.                                                                                         |
+| **&tplFiltersItems**        | `tpl.yandexMaps.filtersItems`                                         | Шаблон вывода ссылок фильтров для отображения/скрытия объектов на карте.                                                                                                 |
+| **&idMap**                  | `yandexMap`                                                           | Id карты для html разметки и JS инициализации.                                                                                                                           |
+| **&centerCoords**           | `55.75356,37.62001`                                                   | Координаты для центра карты.                                                                                                                                             |
+| **&zoom**                   | `14`                                                                  | Zoom карты (приближение).                                                                                                                                                |
 | **&tvCoords**               |                                                                       | Имя TV поля с типом yandexMaps (в которое будем записывать координаты объекта).                                                                                          |
 | **&tvAddress**              |                                                                       | Имя TV поля с адресом объекта (если хотим, чтобы компонент сам определил координаты для каждого объекта по его адресу в ТВшке).                                          |
 | **&addressPrefix**          |                                                                       | Префикс в начало адреса. Если в TV поле "tvAddress" все адреса указаны без обозначения страны и города. Например: "Россия, Москва, ".                                    |
 | **&objectsTypesJSON**       |                                                                       | JSON строка с типами объектов, родительскими id, тайтлами, иконками или пресетами, а также субфильтрами по TV (и назначение каждому варианту ответа иконки или пресета). |
 | **&id**                     |                                                                       | Id ресурса для вызова одиночного объекта на карте. Например: [[*id]].                                                                                                    |
 | **&markerIcon**             |                                                                       | Иконка для одиночного объекта. Например: "/images/map_marker.png".                                                                                                       |
-| **&markerPreset**           | `islands#redDotIcon`                                                    | Ключ стиля для одиночного объекта. Например: `islands#yellowStretchyIcon` или `islands#violetDotIcon`.                                                                   |
+| **&markerPreset**           | `islands#redDotIcon`                                                  | Ключ стиля для одиночного объекта. Например: `islands#yellowStretchyIcon` или `islands#violetDotIcon`.                                                                   |
 | **&markerPresetText**       |                                                                       | Текст для одиночного объекта на preset. Например: "Плавательный бассейн".                                                                                                |
 | **&markerPresetFieldText**  |                                                                       | Поле, откуда извлекать текст для одиночного объекта на preset. Например: "menutitle".                                                                                    |
 | **&fieldForBalloonContent** |                                                                       | Какое поле ресурса использовать для описания в balloon.                                                                                                                  |
 | **&fieldForHint**           |                                                                       | Какое поле ресурса использовать для подсказки при наведении на объект.                                                                                                   |
 | **&showMoreLink**           | 0                                                                     | Ставить ли ссылку "подробнее" на ресурс в конец текста в balloonContent.                                                                                                 |
 | **&showMoreLinkTpl**        | `@INLINE <p><a href="[[~[[+id]]]]" target="_blank">Подробнее</a></p>` | Шаблон ссылки "подробнее" на ресурс в конце текста в balloonContent.                                                                                                     |
-| **&classMapBlock**          | `ymBlock`                                                               | Класс для блока карты.                                                                                                                                                   |
-| **&styleMapBlock**          | `float:left; width:90%; height:100%;`                                   | Стиль для блока карты.                                                                                                                                                   |
-| **&idFiltersForm**          | `ymFiltersForm`                                                         | Id для формы фильтров (вкл/выкл) гео-объектов.                                                                                                                           |
-| **&classFiltersBlock**      | `ymFiltersBlock`                                                        | Класс для блока ссылок фильтров (вкл/выкл) гео-объектов.                                                                                                                 |
-| **&styleFiltersBlock**      | `float:left; width:10%; height:100%;`                                   | Стиль для блока ссылок фильтров (вкл/выкл) гео-объектов.                                                                                                                 |
-| **&classFiltersItem**       | `ymFilters`                                                             | Класс для ссылки фильтра (вкл/выкл) гео-объектов (нужен для отслеживания клика JSом).                                                                                    |
+| **&classMapBlock**          | `ymBlock`                                                             | Класс для блока карты.                                                                                                                                                   |
+| **&styleMapBlock**          | `float:left; width:90%; height:100%;`                                 | Стиль для блока карты.                                                                                                                                                   |
+| **&idFiltersForm**          | `ymFiltersForm`                                                       | Id для формы фильтров (вкл/выкл) гео-объектов.                                                                                                                           |
+| **&classFiltersBlock**      | `ymFiltersBlock`                                                      | Класс для блока ссылок фильтров (вкл/выкл) гео-объектов.                                                                                                                 |
+| **&styleFiltersBlock**      | `float:left; width:10%; height:100%;`                                 | Стиль для блока ссылок фильтров (вкл/выкл) гео-объектов.                                                                                                                 |
+| **&classFiltersItem**       | `ymFilters`                                                           | Класс для ссылки фильтра (вкл/выкл) гео-объектов (нужен для отслеживания клика JSом).                                                                                    |
 
 ## Инструкция
 
@@ -60,12 +60,12 @@
 
 ```modx
 [[!yandexMaps?
-    &id=`[[*id]]`
-    &tvCoords=`coords`
-    &markerIcon=`/images/cafe_marker_icon.png`
-    &fieldForBalloonContent=`description`
-    &fieldForHint=`pagetitle`
-    &showMoreLink=`true`
+  &id=`[[*id]]`
+  &tvCoords=`coords`
+  &markerIcon=`/images/cafe_marker_icon.png`
+  &fieldForBalloonContent=`description`
+  &fieldForHint=`pagetitle`
+  &showMoreLink=`true`
 ]]
 ```
 
@@ -73,11 +73,11 @@
 
 ```modx
 [[!yandexMaps?
-    &id=`[[*id]]`
-    &tvCoords=`coords`
-    &markerPreset=`islands#violetDotIcon`
-    &fieldForBalloonContent=`introtext`
-    &fieldForHint=`menutitle`
+  &id=`[[*id]]`
+  &tvCoords=`coords`
+  &markerPreset=`islands#violetDotIcon`
+  &fieldForBalloonContent=`introtext`
+  &fieldForHint=`menutitle`
 ]]
 ```
 
@@ -85,13 +85,13 @@
 
 ```modx
 [[!yandexMaps?
-    &id=`[[*id]]`
-    &tvCoords=`coords`
-    &markerPreset=`islands#yellowStretchyIcon`
-    &markerPresetText=`Плавательный бассейн`
-    &fieldForBalloonContent=`description`
-    &fieldForHint=`pagetitle`
-    &showMoreLink=`true`
+  &id=`[[*id]]`
+  &tvCoords=`coords`
+  &markerPreset=`islands#yellowStretchyIcon`
+  &markerPresetText=`Плавательный бассейн`
+  &fieldForBalloonContent=`description`
+  &fieldForHint=`pagetitle`
+  &showMoreLink=`true`
 ]]
 ```
 
@@ -99,24 +99,24 @@
 
 ```modx
 [[!yandexMaps?
-    &tvCoords=`coords`
-    &fieldForBalloonContent=`description`
-    &fieldForHint=`pagetitle`
-    &objectsTypesJSON=`[
-        {
-            "InvestProjects": {
-                "parent":"5",
-                "preset":"islands#violetStretchyIcon",
-                "presetText":"Реализованный",
-                "title":"Инвестиционные проекты"
-            },
-            "InvestPlaygrounds": {
-                "parent":"6",
-                "icon":"/images/playgrounds_map_icon.png",
-                "title":"Инвестиционные площадки"
-            }
-        }
-    ]`
+  &tvCoords=`coords`
+  &fieldForBalloonContent=`description`
+  &fieldForHint=`pagetitle`
+  &objectsTypesJSON=`[
+    {
+      "InvestProjects": {
+        "parent":"5",
+        "preset":"islands#violetStretchyIcon",
+        "presetText":"Реализованный",
+        "title":"Инвестиционные проекты"
+      },
+      "InvestPlaygrounds": {
+        "parent":"6",
+        "icon":"/images/playgrounds_map_icon.png",
+        "title":"Инвестиционные площадки"
+      }
+    }
+  ]`
 ]]
 ```
 
@@ -124,50 +124,50 @@
 
 ```modx
 [[!yandexMaps?
-    &tvCoords=`coords`
-    &fieldForBalloonContent=`description`
-    &fieldForHint=`pagetitle`
-    &objectsTypesJSON=`[
-        {
-            "InvestProjects": {
-                "parent":"5",
-                "icon":"/images/projects_map_icon.png",
-                "title":"Инвестиционные проекты",
-                "subFilters": {
-                    "status": {
-                        "title":"Статус проекта",
-                        "options": {
-                            "0":{ "value":"Реализуемый==1", "icon":"/images/projects_map_icon1.png" },
-                            "1":{ "value":"Реализованный==2", "preset":"islands#violetStretchyIcon", "presetText":"Реализованный" },
-                            "2":{ "value":"Подписано соглашение==3", "preset":"islands#blueStretchyIcon", "presetFieldText":"pagetitle" }
-                        }
-                    },
-                    "branch": {
-                        "title":"Отрасль",
-                        "options": {
-                            "0":{ "value":"Фармацевтика и биотехнологии==1" },
-                            "1":{ "value":"Автомобили и автокомпоненты==2" },
-                            "2":{ "value":"Транспортно-логистические==3" },
-                            "3":{ "value":"Другие направления==4" }
-                        }
-                    }
-                }
-            },
-            "InvestPlaygrounds": {
-                "parent":"6",
-                "icon":"/images/playgrounds_map_icon.png",
-                "title":"Инвестиционные площадки",
-                "subFilters": {
-                    "types": {
-                        "title":"",
-                        "options": {
-                            "0":{ "value":"Особые экономические зоны==1", "icon":"/images/playgrounds_map_icon1.png" },
-                            "1":{ "value":"Индустриальные парки==2", "icon":"/images/playgrounds_map_icon2.png" }
-                        }
-                    }
-                }
+  &tvCoords=`coords`
+  &fieldForBalloonContent=`description`
+  &fieldForHint=`pagetitle`
+  &objectsTypesJSON=`[
+    {
+      "InvestProjects": {
+        "parent":"5",
+        "icon":"/images/projects_map_icon.png",
+        "title":"Инвестиционные проекты",
+        "subFilters": {
+          "status": {
+            "title":"Статус проекта",
+            "options": {
+              "0":{ "value":"Реализуемый==1", "icon":"/images/projects_map_icon1.png" },
+              "1":{ "value":"Реализованный==2", "preset":"islands#violetStretchyIcon", "presetText":"Реализованный" },
+              "2":{ "value":"Подписано соглашение==3", "preset":"islands#blueStretchyIcon", "presetFieldText":"pagetitle" }
             }
+          },
+          "branch": {
+            "title":"Отрасль",
+            "options": {
+              "0":{ "value":"Фармацевтика и биотехнологии==1" },
+              "1":{ "value":"Автомобили и автокомпоненты==2" },
+              "2":{ "value":"Транспортно-логистические==3" },
+              "3":{ "value":"Другие направления==4" }
+            }
+          }
         }
-    ]`
+      },
+      "InvestPlaygrounds": {
+        "parent":"6",
+        "icon":"/images/playgrounds_map_icon.png",
+        "title":"Инвестиционные площадки",
+        "subFilters": {
+          "types": {
+            "title":"",
+            "options": {
+              "0":{ "value":"Особые экономические зоны==1", "icon":"/images/playgrounds_map_icon1.png" },
+              "1":{ "value":"Индустриальные парки==2", "icon":"/images/playgrounds_map_icon2.png" }
+            }
+          }
+        }
+      }
+    }
+  ]`
 ]]
 ```
