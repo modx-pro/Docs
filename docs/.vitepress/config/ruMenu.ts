@@ -789,6 +789,30 @@ export default<DefaultTheme.Sidebar> [
       { text: 'StaticSaver', link: '/components/staticsaver' },
       { text: 'ViewsOnline', link: '/components/viewsonline' },
       { text: 'VoteForms', link: '/components/voteforms' },
+      {
+        text: 'xCalc',
+        link: '/components/xcalc/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'xCalc', link: '/components/xcalc/snippets/xcalc' },
+            ],
+          },
+          { text: 'Типы полей', link: '/components/xcalc/field-types' },
+          { text: 'jQuery события', link: '/components/xcalc/jquery-events' },
+          {
+            text: 'Кейсы',
+            collapsed: true,
+            items: [
+              { text: 'Калькулятор подоконников', link: '/components/xcalc/cases/calculator-sill' },
+              { text: 'AjaxForm при выводе результатов', link: '/components/xcalc/cases/ajaxform-results' },
+            ],
+          },
+        ],
+      },
       { text: 'YandexMaps', link: '/components/ajaxsnippet' },
       { text: 'WebDAV', link: '/components/webdav' },
       { text: 'userMarker', link: '/components/usermarker' },
