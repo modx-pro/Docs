@@ -7,7 +7,7 @@
 ## Пример использования
 
 ```fenom
-{set $user  = '!aflActivateUser' | snippet:[]}
+{set $user = '!aflActivateUser' | snippet}
 {if $user}
 <h2>Уважаемый, {$user.username}, Ваш аккаунт успешно активирован!</h2>
 {/if}
