@@ -8,7 +8,7 @@
 
 Таким кодом я собрал все изображения, используемые в контенте спарсенной записи, в JSON массив:
 
-```modx
+```fenom
 @INLINE {($content | preg_get_all : '!https?://[^"]+\.(?:jpe?g|png|gif)!Ui') | toJSON}
 ```
 
@@ -16,7 +16,7 @@
 
 Важно, чтобы отдаваемый в поле галереи JSON, был такого вида:
 
-```html
+```json
 ["http://site.ru/image1.jpg","http://site.ru/image2.jpg", ...]
 ```
 

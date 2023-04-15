@@ -29,9 +29,9 @@ npm install xparser-daemon
 
 ```js
 require('xparser-daemon').run({
-    socket: {
-        PORT: 3007,
-    },
+  socket: {
+    PORT: 3007,
+  },
 });
 ```
 
@@ -65,6 +65,6 @@ pm2 monit
 Тут всё гораздо проще.
 Нужно указать в системной настройке `xparser_socket_url` URL и порт до сокета на локалхосте:
 
-```html
+```
 http://localhost:3007
 ```
