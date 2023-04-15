@@ -14,8 +14,8 @@
 
 ```js
 document.addEventListener('afl_complete', e => {
-    console.log(e.detail.response); // ответ сервера
-    console.log(e.detail.form); // текущая форма
+  console.log(e.detail.response); // ответ сервера
+  console.log(e.detail.form); // текущая форма
 });
 ```
 
@@ -29,7 +29,7 @@ document.addEventListener('afl_complete', e => {
 
 ```js
 document.addEventListener('afl_init', e => {
-    console.log(window.aflForms); // список всех инициализированных форм
+  console.log(window.aflForms); // список всех инициализированных форм
 });
 ```
 
@@ -46,13 +46,13 @@ document.addEventListener('afl_init', e => {
 import AflIziToast from './../components/ajaxformitlogin/js/modules/aflizitoast.class.js';
 
 const Notify = new AflIziToast({
-    "jsPath": "assets/components/ajaxformitlogin/js/lib/izitoast/iziToast.min.js",
-    "cssPath": "assets/components/ajaxformitlogin/css/lib/izitoast/iziToast.min.css",
-    "handlerClassName": "iziToast",
-    "handlerOptions": {
-        "timeout": 2000,
-        "position": "topCenter"
-    }
+  "jsPath": "assets/components/ajaxformitlogin/js/lib/izitoast/iziToast.min.js",
+  "cssPath": "assets/components/ajaxformitlogin/css/lib/izitoast/iziToast.min.css",
+  "handlerClassName": "iziToast",
+  "handlerOptions": {
+    "timeout": 2000,
+    "position": "topCenter"
+  }
 });
 
 // далее вам будут доступны три метода показа уведомлений

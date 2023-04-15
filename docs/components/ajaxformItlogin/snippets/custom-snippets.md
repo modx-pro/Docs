@@ -1,3 +1,5 @@
+# Кастомные сниппеты
+
 ## Написание своих сниппетов для AjaxFormitLogin
 
 Как и в случае с `AjaxForm` вам доступна возможность использовать для обработки форм, любые сниппеты, в том числе и написанные вами. В кастомных сниппетах доступен
@@ -5,10 +7,10 @@
 
 ```php
 <?php
-if((int)$_POST['age'] > 18){
-    return $AjaxFormitLogin->success('Взрослый', array('age' => (int)$_POST['age']));
-}else{
-    return $AjaxFormitLogin->error('Малыш', array('errors' => ['age' => 'Ваш возраст слишком мал.']));
+if ((int)$_POST['age'] > 18) {
+  return $AjaxFormitLogin->success('Взрослый', array('age' => (int)$_POST['age']));
+} else {
+  return $AjaxFormitLogin->error('Малыш', array('errors' => ['age' => 'Ваш возраст слишком мал.']));
 }
 ```
 
