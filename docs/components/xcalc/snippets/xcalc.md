@@ -14,8 +14,8 @@
 
 ```fenom
 {'!xCalc' | snippet : [
-    'id' => 1,
-    'tplOuter' => 'tpl.xCalc.outer',
-    'tplResults' => 'tpl.xCalc.results',
+  'id' => 1,
+  'tplOuter' => 'tpl.xCalc.outer',
+  'tplResults' => 'tpl.xCalc.results',
 ]}
 ```
