@@ -529,6 +529,15 @@ export default<DefaultTheme.Sidebar> [
         ],
       },
       {
+        text: 'mSocial',
+        link: '/components/msocial/',
+        collapsed: true,
+        items: [
+          { text: 'mSocialVK', link: '/components/msocial/msocialvk' },
+          { text: 'mSocialFB', link: '/components/msocial/msocialfb' },
+        ],
+      },
+      {
         text: 'msPre',
         link: '/components/mspre/',
         collapsed: true,
