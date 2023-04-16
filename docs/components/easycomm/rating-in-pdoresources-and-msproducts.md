@@ -10,15 +10,19 @@
 
 Здесь главное правильно сформировать параметр thread, на синтаксисе родного парсера MODX это будет
 
+::: code-group
 ```modx
-&thread=`resource-[[+id]]`
+[[ecThreadRating?
+  &thread=`resource-[[+id]]`
+]]
 ```
 
-, а на синтаксисе Fenom
-
-```modx
-'thread' => 'resource' ~ $id,
+```fenom
+{'ecThreadRating' | snippet : [
+  'thread' => 'resource' ~ $id,
+]}
 ```
+:::
 
 Этот вариант прост, но при выводе большого количества товаров на одной странице мы получим большое количество запросов в базу данных. Можно столкнуться с падением скорости работы сайта.
 
@@ -30,22 +34,22 @@
 
 У нас есть два способа того, как присоединять таблицы:
 
-* поле resource объекта ecThread, которое указывает на товар (или страницу);
-* поле name объекта ecThread так же содержит в себе id товара (например resource-42).
+- поле resource объекта ecThread, которое указывает на товар (или страницу);
+- поле name объекта ecThread так же содержит в себе id товара (например resource-42).
 
 Если у вас одному товару соответствует одна цепочка (например отзывы), то можно сделать JOIN с использованием первого варианта:
 
 ```modx
 &loadModels=`easycomm`
 &leftJoin=`{
-    "ecThread": {
-        "class": "ecThread",
-        "on": "msProduct.id = ecThread.resource"
-    }
+  "ecThread": {
+    "class": "ecThread",
+    "on": "msProduct.id = ecThread.resource"
+  }
 }`
 &select=`{
-    "msProduct": "*",
-    "ecThread": "ecThread.rating_simple AS rating"
+  "msProduct": "*",
+  "ecThread": "ecThread.rating_simple AS rating"
 }`
 ```
 
@@ -58,21 +62,21 @@
 ```modx
 &loadModels=`easycomm`
 &leftJoin=`{
-        "ecThreadRating": {
-        "class": "ecThread",
-        "alias": "ecThreadRating",
-        "on": " CONCAT('resource-rating-', modResource.id) = ecThreadRating.name"
-    },
-        "ecThreadQA": {
-        "class": "ecThread",
-        "alias": "ecThreadQA",
-        "on": " CONCAT('resource-qa-', modResource.id) = ecThreadReviews.name"
-    }
+  "ecThreadRating": {
+    "class": "ecThread",
+    "alias": "ecThreadRating",
+    "on": " CONCAT('resource-rating-', modResource.id) = ecThreadRating.name"
+  },
+  "ecThreadQA": {
+    "class": "ecThread",
+    "alias": "ecThreadQA",
+    "on": " CONCAT('resource-qa-', modResource.id) = ecThreadReviews.name"
+  }
 }`
 &select=`{
-    "modResource": "*",
-    "ecThreadRating": "ecThreadRating.rating_simple AS rating",
-    "ecThreadQA": "ecThreadQA.count AS qa_count"
+  "modResource": "*",
+  "ecThreadRating": "ecThreadRating.rating_simple AS rating",
+  "ecThreadQA": "ecThreadQA.count AS qa_count"
 }`
 ```
 

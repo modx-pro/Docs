@@ -122,6 +122,21 @@ export default<DefaultTheme.Sidebar> [
       { text: 'customExtra', link: '/components/customextra' },
       { text: 'DebugParser', link: '/components/debugparser' },
       { text: 'DigitalSignage', link: '/components/digitalsignage' },
+      {
+        text: 'easyComm',
+        link: '/components/easycomm/',
+        collapsed: true,
+        items: [
+          { text: 'Описание', link: '/components/easycomm/description' },
+          { text: 'Интерфейс', link: '/components/easycomm/interface' },
+          { text: 'Настройки', link: '/components/easycomm/settings' },
+          { text: 'Сниппеты', link: '/components/easycomm/snippets' },
+          { text: 'Плагины и кастомизация', link: '/components/easycomm/plugins-and-customization' },
+          { text: 'Несколько полей с рейтингом', link: '/components/easycomm/multiple-rating-fields' },
+          { text: 'Рейтинг в сниппетах pdoResources, msProducts', link: '/components/easycomm/rating-in-pdoresources-and-msproducts' },
+          { text: 'Типовые решения и частые вопросы', link: '/components/easycomm/solutions' },
+        ],
+      },
       { text: 'ePochta', link: '/components/epochta' },
       { text: 'FileAttach', link: '/components/fileattach' },
       {

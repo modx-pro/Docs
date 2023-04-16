@@ -22,7 +22,13 @@
 ```modx
 [[!ecMessages?
 ....
-&leftJoin=`{"modUserProfile":{"class":"modUserProfile","alias":"UserProfile","on":"ecMessage.createdby=UserProfile.internalKey"} }`
+&leftJoin=`{
+  "modUserProfile": {
+    "class": "modUserProfile",
+    "alias": "UserProfile",
+    "on": "ecMessage.createdby=UserProfile.internalKey"
+  }
+}`
 &select=`{"UserProfile":"*"}`
 ...
 ]]
@@ -30,8 +36,14 @@
 
 ``` fenom
 {$_modx->runSnippet('!ecMessages', [
-'leftJoin' => ['modUserProfile' => [ 'class'=>'modUserProfile', 'alias'=>'UserProfile', 'on'=>'ecMessage.createdby=UserProfile.internalKey']],
-'select' => ['UserProfile'=>'*']
+  'leftJoin' => [
+    'modUserProfile' => [
+      'class'=>'modUserProfile',
+      'alias'=>'UserProfile',
+      'on'=>'ecMessage.createdby=UserProfile.internalKey',
+    ],
+  ],
+  'select' => ['UserProfile' => '*'],
 ])}
 ```
 
@@ -53,10 +65,10 @@
 
 Возможные причины:
 
-* вы поместили вызов сниппета ecForm внутрь html тега form (что часто бывает при работе с товарами miniShop2). Сниппет ecForm генерирует свою html форму, а вложенные формы в html запрещены, поэтому ничего не работает.
-* иногда бывают трудности из-за старой версии php, попробуйте изменить версию php на более свежую.
-* проверьте, что у вас на странице jQuery подключается только 1 раз, частая причина в множественных подключениях этой библиотеки.
-* проверьте, что вы подключаете скрипты компонента ПОСЛЕ подключения jQuery.
+- вы поместили вызов сниппета ecForm внутрь html тега form (что часто бывает при работе с товарами miniShop2). Сниппет ecForm генерирует свою html форму, а вложенные формы в html запрещены, поэтому ничего не работает.
+- иногда бывают трудности из-за старой версии php, попробуйте изменить версию php на более свежую.
+- проверьте, что у вас на странице jQuery подключается только 1 раз, частая причина в множественных подключениях этой библиотеки.
+- проверьте, что вы подключаете скрипты компонента ПОСЛЕ подключения jQuery.
 
 ### Некоторые поля не сохраняются (при вызове ecForm)
 
