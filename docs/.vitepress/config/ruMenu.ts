@@ -715,6 +715,31 @@ export default<DefaultTheme.Sidebar> [
           },
         ],
       },
+      {
+        text: 'ResVideoGallery',
+        link: '/components/resvideogallery/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'ResVideoGallery', link: '/components/resvideogallery/snippets/resvideogallery' },
+              { text: 'ResVideoGalleryTags', link: '/components/resvideogallery/snippets/resvideogallerytags' },
+              { text: 'ResVideoGalleryUpload', link: '/components/resvideogallery/snippets/resvideogalleryupload' },
+            ],
+          },
+          { text: 'Добавление своего видео парсера', link: '/components/resvideogallery/adding-custom-video-parser' },
+          { text: 'События', link: '/components/resvideogallery/events' },
+          {
+            text: 'Настройка',
+            collapsed: true,
+            items: [
+              { text: 'Вконтакте', link: '/components/resvideogallery/setup/vkontakte' },
+            ],
+          },
+        ],
+      },
       { text: 'ReachGoal', link: '/components/reachgoal' },
       { text: 'Save2Page', link: '/components/save2page' },
       { text: 'SEODomains', link: '/components/seodomains' },
