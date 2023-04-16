@@ -2,21 +2,21 @@
 
 Параметры этого контроллера очень похожи на [HybridAuth][1].
 
-| Название               | По умолчанию                   | Описание                                                                                                                                                                                    |
-|------------------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Название               | По умолчанию                     | Описание                                                                                                                                                                                    |
+| ---------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **&tplLogin**          | `tpl.Office.auth.login`          | Этот чанк будет показан анонимному пользователю, то есть любому гостю.                                                                                                                      |
 | **&tplLogout**         | `tpl.Office.auth.logout`         | Этот чанк будет показан авторизованному пользователю.                                                                                                                                       |
 | **&tplActivate**       | `tpl.Office.auth.activate`       | Чанк для оформления письма активации.                                                                                                                                                       |
 | **&tplRegister**       | `tpl.Office.auth.register`       | Чанк для оформления письма регистрации.                                                                                                                                                     |
 | **&linkTTL**           | `600`                            | Время жизни ссылки активации профиля в секундах.                                                                                                                                            |
-| **&groups**            |                                | Список групп для регистрации пользователя, через запятую. Можно указывать роль юзера в группе через двоеточие. Например, &groups=`Users:1` добавит юзера в группу "Users" с ролью "member". |
+| **&groups**            |                                  | Список групп для регистрации пользователя, через запятую. Можно указывать роль юзера в группе через двоеточие. Например, &groups=`Users:1` добавит юзера в группу "Users" с ролью "member". |
 | **&rememberme**        | `1`                              | Запоминает пользователя на долгое время. По умолчанию - включено.                                                                                                                           |
-| **&loginContext**      |                                | Основной контекст для авторизации. По умолчанию - текущий.                                                                                                                                  |
-| **&addContexts**       |                                | Дополнительные контексты, через запятую. Например, &addContexts=`web,ru,en`                                                                                                                 |
+| **&loginContext**      |                                  | Основной контекст для авторизации. По умолчанию - текущий.                                                                                                                                  |
+| **&addContexts**       |                                  | Дополнительные контексты, через запятую. Например, &addContexts=`web,ru,en`                                                                                                                 |
 | **&loginResourceId**   | `0`                              | Идентификатор ресурса, на который отправлять юзера после авторизации. По умолчанию, это 0 - обновляет текущую страницу.                                                                     |
 | **&logoutResourceId**  | `0`                              | Идентификатор ресурса, на который отправлять юзера после завершения сессии. По умолчанию, это 0 - обновляет текущую страницу.                                                               |
 | **&HybridAuth**        | `1`                              | Включить интеграцию с [HybridAuth][1], если он установлен.                                                                                                                                  |
-| **&providers**         |                                | Список провайдеров авторизации [HybridAuth][1], через запятую.                                                                                                                              |
+| **&providers**         |                                  | Список провайдеров авторизации [HybridAuth][1], через запятую.                                                                                                                              |
 | **&providerTpl**       | `tpl.HybridAuth.provider`        | Чанк для вывода ссылки на авторизацию или привязку сервиса HybridAuth к учетной записи.                                                                                                     |
 | **&activeProviderTpl** | `tpl.HybridAuth.provider.active` | Чанк для вывода иконки привязанного сервиса HybridAuth.                                                                                                                                     |
 
@@ -24,8 +24,8 @@
 
 ```modx
 [[!OfficeAuth?
-    &groups=`Users`
-    &loginResourceId=`[[++site_start]]`
+  &groups=`Users`
+  &loginResourceId=`[[++site_start]]`
 ]]
 ```
 
@@ -44,9 +44,9 @@
 
 Для работы провайдеров используются следующие системные настройки
 
-* **office_sms_id** — идентификатор клиента на сервисе.
-* **office_sms_key** — ключ клиента на сервисе, для SmsRu не нужен.
-* **office_sms_from** — текстовое обозначение отправителя, его нужно согласовывать с сервисом.
+- **office_sms_id** — идентификатор клиента на сервисе.
+- **office_sms_key** — ключ клиента на сервисе, для SmsRu не нужен.
+- **office_sms_from** — текстовое обозначение отправителя, его нужно согласовывать с сервисом.
 
 В зависимости от режима работы поля **email** и **mobilephone** становятся обязательными для регистрации.
 
@@ -55,15 +55,15 @@
 Стандартный javascript написан таким образом, чтобы обрабатывать все формы авторизации универсально, различая их по указанным действиям в скрытом input:
 
 ```html
-<input type="hidden" name="action" value="auth/действие"/>
+<input type="hidden" name="action" value="auth/действие" />
 ```
 
 Возможны следующие действия:
 
-* **auth/formLogin** - обычная авторизация. Если пароль не указан, то будет отправлено письмо со ссылкой для сброса.
-* **auth/formRegister** - регистрация нового пользователя
-* **auth/formAdd** - дополнительня авторизация в другой аккаунт, для быстрого переключения между ними
-* **auth/sendLink** - отправка ссылки на сброс пароля
+- **auth/formLogin** - обычная авторизация. Если пароль не указан, то будет отправлено письмо со ссылкой для сброса.
+- **auth/formRegister** - регистрация нового пользователя
+- **auth/formAdd** - дополнительня авторизация в другой аккаунт, для быстрого переключения между ними
+- **auth/sendLink** - отправка ссылки на сброс пароля
 
 Выход из учётной записи доступен по простой загрузке страницы с параметром в ссылке.
 
@@ -89,15 +89,15 @@ https://your.site/?action=auth/logout&user_id=15
 <?php
 
 class MyProvider {
-    function __construct(modX $modx, array $config = array()) {
-        $this->modx = &$modx;
-    }
+  function __construct(modX $modx, array $config = array()) {
+    $this->modx = &$modx;
+  }
 
-    function send($phone, $text) {
-        // Получаем системные настройки для работы и шлём сообщение
+  function send($phone, $text) {
+    // Получаем системные настройки для работы и шлём сообщение
 
-        return true; // или текст ошибки
-    }
+    return true; // или текст ошибки
+  }
 }
 ```
 
@@ -108,11 +108,11 @@ class MyProvider {
 ```php
 $provider = $modx->getOption('office_sms_provider');
 if ($service = $modx->getService($provider, $provider, MODX_CORE_PATH . 'components/office/model/sms/')) {
-    $send = $service->send('79234778899', 'Приветик!');
-    return $send === true
-        ? 'Сообщение отправлено!'
-        : 'Ошибка при отправке сообщения: ' . $send;
-    }
+  $send = $service->send('79234778899', 'Приветик!');
+  return $send === true
+    ? 'Сообщение отправлено!'
+    : 'Ошибка при отправке сообщения: ' . $send;
+  }
 }
 ```
 
@@ -133,10 +133,10 @@ if ($service = $modx->getService($provider, $provider, MODX_CORE_PATH . 'compone
 ```html
 <label for="office-auth-register-group" class="col-md-3 control-label">Группа</label>
 <div class="col-md-8">
-    <select name="group" class="form-control" id="office-auth-register-group">
-        <option value="users">Обычные пользователи</option>
-        <option value="admins">Администраторы</option>
-    </select>
+  <select name="group" class="form-control" id="office-auth-register-group">
+    <option value="users">Обычные пользователи</option>
+    <option value="admins">Администраторы</option>
+  </select>
 </div>
 ```
 
@@ -144,33 +144,34 @@ if ($service = $modx->getService($provider, $provider, MODX_CORE_PATH . 'compone
 
 ```php
 <?php
+
 // Массив заранее определённых для регистрации групп защищает от подмены данных при отправке формы
 $groups = array(
-    'admins' => 'Administrator',
-    'users' => 'Users',
+  'admins' => 'Administrator',
+  'users' => 'Users',
 );
 
 if ($modx->context->key != 'mgr') {
-    switch ($modx->event->name) {
-        // Событие перед регистрацией пользователя
-        case 'OnBeforeUserFormSave':
-            if ($mode == 'new') {
-                if (empty($_POST['group']) || !array_key_exists($_POST['group'], $groups)) {
-                    // Возврат ошибки, если группа не заполнена или не из нашего списка
-                    $modx->event->output('Вы должны указать группу пользователя!');
-                }
-                // Также можно и добавить что-то в профиль
-                // $user->Profile->set('comment', 'Комментарий');
-            }
-            break;
-        // Событие после регистрации пользователя
-        case 'OnUserFormSave':
-            if ($mode == 'new') {
-                // Здесь мы добавляем выбранную группу
-                $user->joinGroup($groups[$_POST['group']]);
-            }
-            break;
-    }
+  switch ($modx->event->name) {
+    // Событие перед регистрацией пользователя
+    case 'OnBeforeUserFormSave':
+      if ($mode == 'new') {
+        if (empty($_POST['group']) || !array_key_exists($_POST['group'], $groups)) {
+          // Возврат ошибки, если группа не заполнена или не из нашего списка
+          $modx->event->output('Вы должны указать группу пользователя!');
+        }
+        // Также можно и добавить что-то в профиль
+        // $user->Profile->set('comment', 'Комментарий');
+      }
+      break;
+    // Событие после регистрации пользователя
+    case 'OnUserFormSave':
+      if ($mode == 'new') {
+        // Здесь мы добавляем выбранную группу
+        $user->joinGroup($groups[$_POST['group']]);
+      }
+      break;
+  }
 }
 ```
 

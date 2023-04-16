@@ -5,14 +5,14 @@
 
 Также он позволяет сменить email, с обязательной проверкой.
 
-| Название               | По умолчанию                                     | Описание                                                                                                                                                                                                           |
-|------------------------|--------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Название               | По умолчанию                                       | Описание                                                                                                                                                                                                           |
+| ---------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **&tplProfile**        | `tpl.Office.profile.form`                          | Чанк для вывода и редактирования профиля пользователя.                                                                                                                                                             |
 | **&tplActivate**       | `tpl.Office.profile.activate`                      | Чанк для оформления письма активации.                                                                                                                                                                              |
-| **&profileFields**     | все основные поля профиля                        | Список разрешенных для редактирования полей юзера, через запятую. Также можно указать максимальну. длину значений, через двоеточие. Например, &profileFields=`username:25,fullname:50,email`.                      |
+| **&profileFields**     | все основные поля профиля                          | Список разрешенных для редактирования полей юзера, через запятую. Также можно указать максимальну. длину значений, через двоеточие. Например, &profileFields=`username:25,fullname:50,email`.                      |
 | **&requiredFields**    | `username,email,fullname`                          | Список обязательных полей при редактировании. Эти поля должны быть заполнены для успешного обновления профиля. Например, &requiredFields=`username,fullname,email`.                                                |
 | **&HybridAuth**        | `1`                                                | Включить интеграцию с HybridAuth, если он установлен.                                                                                                                                                              |
-| **&providers**         |                                                  | Список провайдеров авторизации HybridAuth, через запятую. Все доступные провайдеры находятся тут {core_path}components/hybridauth/model/hybridauth/lib/Providers/. Например, &providers=`Google,Twitter,Facebook`. |
+| **&providers**         |                                                    | Список провайдеров авторизации HybridAuth, через запятую. Все доступные провайдеры находятся тут {core_path}components/hybridauth/model/hybridauth/lib/Providers/. Например, &providers=`Google,Twitter,Facebook`. |
 | **&providerTpl**       | `tpl.HybridAuth.provider`                          | Чанк для вывода ссылки на авторизацию или привязку сервиса HybridAuth к учетной записи.                                                                                                                            |
 | **&activeProviderTpl** | `tpl.HybridAuth.provider.active`                   | Чанк для вывода иконки привязанного сервиса HybridAuth.                                                                                                                                                            |
 | **&avatarParams**      | `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}` | JSON строка с параметрами конвертации аватара при помощи phpThumb. По умолчанию - `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}`.                                                                              |
@@ -35,7 +35,7 @@ username:50,email:50,fullname:50,phone:12,mobilephone:12,dob:10,gender,address,c
 
 1. Вывести их в форме
 
-```html
+```modx
 <label for="extended.some_field">Какое-то поле</label>
 <input name="extended[some_field]" value="[[+extended.some_field]]" id="extended.some_field">
 ```
@@ -44,7 +44,7 @@ username:50,email:50,fullname:50,phone:12,mobilephone:12,dob:10,gender,address,c
 
     ```modx
     [[!OfficeProfile?
-        &profileFields=`username:50,email:50,fullname:50,extended[some_field]`
+      &profileFields=`username:50,email:50,fullname:50,extended[some_field]`
     ]]
     ```
 

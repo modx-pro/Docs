@@ -643,6 +643,26 @@ export default<DefaultTheme.Sidebar> [
       },
       { text: 'NotFoundParamAlert', link: '/components/notfoundparamalert' },
       {
+        text: 'Office',
+        link: '/components/office/',
+        collapsed: true,
+        items: [
+          { text: 'Быстрый старт', link: '/components/office/quick-start' },
+          { text: 'Логика работы', link: '/components/office/logic' },
+          { text: 'Дополнительный функционал', link: '/components/office/additional-functionality' },
+          {
+            text: 'Контроллеры',
+            collapsed: true,
+            items: [
+              { text: 'Авторизация', link: '/components/office/controllers/auth' },
+              { text: 'Профиль', link: '/components/office/controllers/profile' },
+              { text: 'История заказов MS2', link: '/components/office/controllers/orders-history-minishop2' },
+              { text: 'Удаленная авторизация', link: '/components/office/controllers/auth-remote' },
+            ],
+          },
+        ],
+      },
+      {
         text: 'orderPrint',
         collapsed: true,
         items: [

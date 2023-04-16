@@ -3,10 +3,10 @@
 Компонент **Office** - это модульная система, в которой может быть сколько угодно частей (контроллеров).
 В стандартном комплекте их 4:
 
-* [Auth][0] - авторизация через email
-* [Profile][1] - работа с профилем пользователя
-* [miniShop2][2] - вывод личного кабинета MS2
-* [RemoteAuth][3] - авторизация на один сайт через другой
+- [Auth][0] - авторизация через email
+- [Profile][1] - работа с профилем пользователя
+- [miniShop2][2] - вывод личного кабинета MS2
+- [RemoteAuth][3] - авторизация на один сайт через другой
 
 В самом компоненте есть сниппет **Office**, который вызывает нужный контроллер и передает ему все указанные параметры.
 Таким образом, возможные настройки, чанки, и прочие свойства зависят от контроллера и в сниппете не прописаны.
@@ -14,9 +14,9 @@
 Например, вот вызов сразу всех 3х контроллеров на одной странице.
 
 ```modx
-[[!Office?&action=`Auth`]]
-[[!Office?&action=`Profile`]]
-[[!Office?&action=`miniShop2`]]
+[[!Office? &action=`Auth`]]
+[[!Office? &action=`Profile`]]
+[[!Office? &action=`miniShop2`]]
 ```
 
 Для стандартных контроллеров есть и специальные сниппеты с прописанными параметрами - просто для удобства. Внутри все они всё равно вызывают сниппет Office.
@@ -51,7 +51,7 @@
 
 ```modx
 [[!Office?
-    &action=`AuthCopy`
+  &action=`AuthCopy`
 ]]
 ```
 
@@ -78,7 +78,7 @@
 Зарегистрированный контроллер выводится по своему имени. В данном случае это:
 
 ```modx
-[[!Office?&action=`modExtra`]]
+[[!Office? &action=`modExtra`]]
 ```
 
 *Вам вовсе не обязательно использовать Ext JS, это просто пример возможностей.*
@@ -93,10 +93,10 @@
 
 Так как [modExtra][11] предназначен для разработки дополнений для MODX и уже поддерживает работу с Office, советую использовать в качестве примера именно его.
 
-[0]: /components/19_Office/03_Контроллеры/01_Авторизация.md
-[1]: /components/19_Office/03_Контроллеры/02_Профиль.md
-[2]: /components/19_Office/03_Контроллеры/03_История_заказов_MS2.md
-[3]: /components/19_Office/03_Контроллеры/04_Удаленная_авторизация.md
+[0]: /components/office/controllers/auth
+[1]: /components/office/controllers/profile
+[2]: /components/office/controllers/orders-history-minishop2
+[3]: /components/office/controllers/auth-remote
 [6]: https://github.com/bezumkin/modExtra/blob/7b238647746fdd3443941a78fccc96ca9e96d76c/_build/resolvers/resolve.office.php
 [7]: https://github.com/bezumkin/modExtra/commit/7b238647746fdd3443941a78fccc96ca9e96d76c
 [8]: https://modstore.pro/cabinet/keys/
