@@ -7,7 +7,7 @@
 ## Параметры
 
 | Параметр        | По умолчанию       | Описание                                                            |
-|-----------------|--------------------|---------------------------------------------------------------------|
+| --------------- | ------------------ | ------------------------------------------------------------------- |
 | **tpl**         | `pas.subscription` | Чанк оформления для каждого результата                              |
 | **status**      |                    | Статус подписки                                                     |
 | **client**      |                    | Клиент подписки                                                     |
@@ -18,7 +18,7 @@
 | **where**       |                    | Строка, закодированная в JSON, с дополнительными условиями выборки. |
 | **showOverdue** | `0`                | Показывать законченные подписки.                                    |
 
-:::tip
+::: tip
 Можно использовать и другие [общие параметры pdoTools][0104]
 :::
 
@@ -30,7 +30,7 @@
 ### Получить подписки текущего пользователя
 
 ```fenom
-{!pas.subscription'|snippet}
+{'!pas.subscription' | snippet}
 ```
 
 ### Плейсхолдеры
@@ -39,9 +39,9 @@
 
 ```fenom
 <pre>
-{'!pas.subscription'|snippet:[
-    'tpl' => ''
-]}
+  {'!pas.subscription' | snippet : [
+    'tpl' => '',
+  ]}
 </pre>
 ```
 
@@ -50,27 +50,27 @@
 Получить подписки текущего пользователя в переменную `$rows`
 
 ```fenom
-{var $rows = '!pas.subscription'|snippet:[
-    'return' => 'data'
+{var $rows = '!pas.subscription' | snippet : [
+  'return' => 'data',
 ]}
 <br>
 {if !count($rows)}
-    <p>У вас нет активных подписок.</p>
+  <p>У вас нет активных подписок.</p>
 {else}
-    {foreach $rows as $row}
-        {'pas.subscription'|chunk:$row}
-    {/foreach}
+  {foreach $rows as $row}
+    {'pas.subscription' | chunk : $row}
+  {/foreach}
 {/if}
 ```
 
 Вывод с постраничной разбивкой:
 
 ```fenom
-{'!pdoPage'|snippet:[
-    'element' => 'pas.subscription',
-    'client' => $_modx->user.id
+{'!pdoPage' | snippet : [
+  'element' => 'pas.subscription',
+  'client' => $_modx->user.id,
 ]}
-{'page.nav'|placeholder}
+{'page.nav' | placeholder}
 ```
 
 [0104]: /components/pdotools/general-parameters

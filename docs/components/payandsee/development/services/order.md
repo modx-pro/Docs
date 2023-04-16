@@ -27,29 +27,30 @@
 
 ```php
 <?php
+
 switch ($modx->event->name) {
-    // Добавление полей в заказ
-    case 'PasOnBeforeAddToOrder'; break; // получает $key с именем поля, $value - значение поля
-    case 'PasOnAddToOrder'; break; // получает $key с именем поля, $value - значение поля
+  // Добавление полей в заказ
+  case 'PasOnBeforeAddToOrder'; break; // получает $key с именем поля, $value - значение поля
+  case 'PasOnAddToOrder'; break; // получает $key с именем поля, $value - значение поля
 
-    // Удаление полей из заказа
-    case 'PasOnBeforeRemoveFromOrder'; break; // получает $key с именем поля
-    case 'PasOnRemoveFromOrder'; break; // получает $key с именем поля
+  // Удаление полей из заказа
+  case 'PasOnBeforeRemoveFromOrder'; break; // получает $key с именем поля
+  case 'PasOnRemoveFromOrder'; break; // получает $key с именем поля
 
-    // Отправка заказа
-    case 'PasOnSubmitOrder'; break; // необязательный массив $data с переназначаемыми полями
+  // Отправка заказа
+  case 'PasOnSubmitOrder'; break; // необязательный массив $data с переназначаемыми полями
 
-    // Создание заказа
-    case 'PasOnBeforeCreateOrder'; break; // получает готовый объект $order со всеми прицепленными объектами
-    case 'PasOnCreateOrder'; break; // тоже самое
+  // Создание заказа
+  case 'PasOnBeforeCreateOrder'; break; // получает готовый объект $order со всеми прицепленными объектами
+  case 'PasOnCreateOrder'; break; // тоже самое
 
-    // Очистка заказа
-    case 'PasOnBeforeEmptyOrder'; break; // получает только объект $order
-    case 'PasOnEmptyOrder'; break; // получает только объект $order
+  // Очистка заказа
+  case 'PasOnBeforeEmptyOrder'; break; // получает только объект $order
+  case 'PasOnEmptyOrder'; break; // получает только объект $order
 
-    // Смена статуса заказа (оплата, отмена и т.д.)
-    case 'msOnBeforeChangeOrderStatus': break; // получает объект $order и id статуса в $status
-    case 'msOnChangeOrderStatus': break; // получает объект $order и id статуса в $status
+  // Смена статуса заказа (оплата, отмена и т.д.)
+  case 'msOnBeforeChangeOrderStatus': break; // получает объект $order и id статуса в $status
+  case 'msOnChangeOrderStatus': break; // получает объект $order и id статуса в $status
 }
 ```
 

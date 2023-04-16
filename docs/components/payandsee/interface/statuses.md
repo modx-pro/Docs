@@ -24,6 +24,6 @@
 - `{1.php}` - выборка разрешающих **подписок** сроком действия менее 3-х дней и перевод их в статус **Скоро неАктивна**
 - `{2.php}` - выборка разрешающих **просроченных подписок** и перевод их в статус **неактивна**
 
-[4]: /components/22_PayAndSee/01_Интерфейс/04_Контент.md
-[6]: /components/22_PayAndSee/01_Интерфейс/06_Клиенты.md
-[7]: /components/22_PayAndSee/01_Интерфейс/07_Подписки.md
+[4]: /components/payandsee/interface/content
+[6]: /components/payandsee/interface/clients
+[7]: /components/payandsee/interface/subscriptions
