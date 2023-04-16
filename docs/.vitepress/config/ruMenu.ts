@@ -443,6 +443,19 @@ export default<DefaultTheme.Sidebar> [
           },
         ],
       },
+      {
+        text: 'msExtraFields',
+        link: '/components/msextrafields/',
+        collapsed: true,
+        items: [
+          { text: 'Возможности', link: '/components/msextrafields/features' },
+          { text: 'Установка', link: '/components/msextrafields/setup' },
+          { text: 'Интерфейс', link: '/components/msextrafields/interface' },
+          { text: 'Настройки', link: '/components/msextrafields/settings' },
+          { text: 'Сниппеты', link: '/components/msextrafields/snippets' },
+          { text: 'Плагины', link: '/components/msextrafields/plugins' },
+        ],
+      },
       { text: 'mixedImage', link: '/components/mixedimage' },
       { text: 'modDevTools', link: '/components/moddevtools' },
       {
