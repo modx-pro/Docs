@@ -664,9 +664,10 @@ export default<DefaultTheme.Sidebar> [
       },
       {
         text: 'orderPrint',
+        link: '/components/orderprint/',
         collapsed: true,
         items: [
-          { text: 'Параметры', link: '/components/orderprint/settings' },
+          { text: 'Настройка', link: '/components/orderprint/setup' },
           { text: 'Шаблоны', link: '/components/orderprint/templates' },
         ],
       },
