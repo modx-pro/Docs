@@ -1,4 +1,4 @@
-# Быстрый старт
+# PayAndSee
 
 Для работы вам нужен MODX не ниже **2.3** и PHP не ниже **5.4**.
 
@@ -47,18 +47,18 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 ```fenom
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        {'Head'|chunk}
-    </head>
-    <body>
-        {'Navbar'|chunk}
-        <div class="container">
-            <div id="content" class="main">
-                {$_modx->resource.content}
-            </div>
-            {'Navbar'|Footer}
-        </div>
-    </body>
+  <head>
+    {'Head' | chunk}
+  </head>
+  <body>
+    {'Navbar' | chunk}
+    <div class="container">
+      <div id="content" class="main">
+        {$_modx->resource.content}
+      </div>
+      {'Navbar' | Footer}
+    </div>
+  </body>
 </html>
 ```
 
@@ -73,7 +73,7 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 Главная страница у нас уже есть, просто назначаем ей "Общий" шаблон и пишем в контент:
 
 ```fenom
-{'!pdoMenu'|snippet}
+{'!pdoMenu' | snippet}
 ```
 
 Это покажет нам все документы сайта на главной, чтобы не заблудиться.
@@ -86,8 +86,8 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 Для этого создаём новую страницу с шаблоном "Общий" в корне сайта, и пишем там:
 
 ```fenom
-{'!pas.order'|snippet} <!-- Форма оформления заказа, скрывается после его создания -->
-{'!pas.get.order'|snippet} <!-- Вывод информации о заказе, показывается после его создания -->
+{'!pas.order' | snippet} <!-- Форма оформления заказа, скрывается после его создания -->
+{'!pas.get.order' | snippet} <!-- Вывод информации о заказе, показывается после его создания -->
 ```
 
 Эти сниппеты выведут нам оформление заказа и покажут созданный заказ.
@@ -116,42 +116,43 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 Закрыть свободный доступ для поля `content`
 
 ```fenom
-{$content|pasraccess}
+{$content | pasraccess}
 ```
 
 Закрыть свободный доступ для поля `content` и вывести форму покупки платного контента
 
 ```fenom
-{$content|pasraccess:('pas.content'|snippet:['resource'=>$id])}
+{$content | pasraccess : ('pas.content' | snippet : ['resource' => $id])}
 ```
 
 Проверить наличие доступа у текущего клиента к ресурсу 15 и записать в переменную
 
 ```fenom
-{set $access = 1|pasraccess:0:15}
+{set $access = 1 | pasraccess : 0 : 15}
 
 {* далее можно использовать для проверки доступа переменную $access *}
 
 {if $access}
-    Есть доступ
+  Есть доступ
 {else}
-    Нет доступа
+  Нет доступа
 {/if}
 ```
 
 ## Демо сайт
 
-Доступен демо сайт `http://pas.vgrish.ru`
+Доступен демо сайт <http://pas.vgrish.ru>
+
 Логин и пароль для входа в [админку][005]: `test`
 
 [010103]: /components/pdotools/parser
 [0102]: /components/minishop2/
 
-[4]: /components/22_PayAndSee/01_Интерфейс/04_Контент.md
-[5]: /components/22_PayAndSee/01_Интерфейс/05_Тарифы.md
-[6]: /components/22_PayAndSee/01_Интерфейс/06_Клиенты.md
-[7]: /components/22_PayAndSee/01_Интерфейс/07_Подписки.md
-[01220303]: /components/22_PayAndSee/03_Разработка/03_Расширения.md
+[4]: /components/payandsee/interface/content
+[5]: /components/payandsee/interface/rates
+[6]: /components/payandsee/interface/clients
+[7]: /components/payandsee/interface/subscriptions
+[01220303]: /components/payandsee/development/extensions
 
 [002]: https://modhost.pro
 [005]: http://pas.vgrish.ru/manager/

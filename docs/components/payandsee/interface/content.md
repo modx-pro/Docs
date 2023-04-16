@@ -12,5 +12,5 @@
 
 Доступны для редактирования все поля контента, так же активны вкладки [тарифы][5] и [подписки][7].
 
-[5]: /components/22_PayAndSee/01_Интерфейс/05_Тарифы.md
-[7]: /components/22_PayAndSee/01_Интерфейс/07_Подписки.md
+[5]: /components/payandsee/interface/rates
+[7]: /components/payandsee/interface/subscriptions

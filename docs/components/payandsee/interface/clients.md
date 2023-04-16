@@ -13,4 +13,4 @@
 
 Доступен для редактирования статус клиента. Активна для редактирования вкладка [подписки][7].
 
-[7]: /components/22_PayAndSee/01_Интерфейс/07_Подписки.md
+[7]: /components/payandsee/interface/subscriptions

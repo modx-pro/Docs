@@ -1,4 +1,4 @@
-# Основное
+# Интерфейс
 
 Основная панель управления находятся в отдельном разделе сайта, доступном через меню.
 Содержит следующие вкладки:
@@ -57,9 +57,9 @@
 
 Набор и порядок вывода полей на этой вкладке управляется системной настройкой **grid_alert_fields**.
 
-[4]: /components/22_PayAndSee/01_Интерфейс/04_Контент.md
-[5]: /components/22_PayAndSee/01_Интерфейс/05_Тарифы.md
-[6]: /components/22_PayAndSee/01_Интерфейс/06_Клиенты.md
-[7]: /components/22_PayAndSee/01_Интерфейс/07_Подписки.md
-[8]: /components/22_PayAndSee/01_Интерфейс/08_Статусы.md
-[9]: /components/22_PayAndSee/01_Интерфейс/09_Оповещения.md
+[4]: /components/payandsee/interface/content
+[5]: /components/payandsee/interface/rates
+[6]: /components/payandsee/interface/clients
+[7]: /components/payandsee/interface/subscriptions
+[8]: /components/payandsee/interface/statuses
+[9]: /components/payandsee/interface/notifications

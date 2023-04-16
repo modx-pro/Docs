@@ -662,6 +662,67 @@ export default<DefaultTheme.Sidebar> [
       },
       { text: 'PageSpeed', link: '/components/pagespeed' },
       {
+        text: 'PayAndSee',
+        link: '/components/payandsee/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Интерфейс',
+            link: '/components/payandsee/interface/',
+            collapsed: true,
+            items: [
+              { text: 'Ресурс', link: '/components/payandsee/interface/resource' },
+              { text: 'Заказы', link: '/components/payandsee/interface/orders' },
+              { text: 'Контент', link: '/components/payandsee/interface/content' },
+              { text: 'Тарифы', link: '/components/payandsee/interface/rates' },
+              { text: 'Клиенты', link: '/components/payandsee/interface/clients' },
+              { text: 'Подписки', link: '/components/payandsee/interface/subscriptions' },
+              { text: 'Статусы', link: '/components/payandsee/interface/statuses' },
+              { text: 'Оповещения', link: '/components/payandsee/interface/notifications' },
+              { text: 'Настройки', link: '/components/payandsee/interface/settings' },
+            ],
+          },
+          {
+            text: 'Сниппеты',
+            link: '/components/payandsee/snippets/',
+            collapsed: true,
+            items: [
+              { text: 'pas.content', link: '/components/payandsee/snippets/pas-content' },
+              { text: 'pas.order', link: '/components/payandsee/snippets/pas-order' },
+              { text: 'pas.get.order', link: '/components/payandsee/snippets/pas-get-order' },
+              { text: 'pas.subscription', link: '/components/payandsee/snippets/pas-subscription' },
+            ],
+          },
+          {
+            text: 'Разработка',
+            collapsed: true,
+            items: [
+              { text: 'Скрипты и стили', link: '/components/payandsee/development/scripts-and-styles' },
+              { text: 'События', link: '/components/payandsee/development/events' },
+              { text: 'Расширения', link: '/components/payandsee/development/extensions' },
+              {
+                text: 'Службы',
+                collapsed: true,
+                items: [
+                  { text: 'Корзина', link: '/components/payandsee/development/services/cart' },
+                  { text: 'Заказ', link: '/components/payandsee/development/services/order' },
+                  { text: 'Доставка', link: '/components/payandsee/development/services/delivery' },
+                  { text: 'Оплата', link: '/components/payandsee/development/services/payment' },
+                ],
+              },
+            ],
+          },
+          {
+            text: 'Другие дополнения',
+            collapsed: true,
+            items: [
+              { text: 'msDiscount', link: '/components/payandsee/integrations/msdiscount' },
+              { text: 'msPromoCode', link: '/components/payandsee/integrations/mspromocode' },
+            ],
+          },
+        ],
+      },
+      {
         text: 'PdoTools',
         collapsed: true,
         items: [
