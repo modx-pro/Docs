@@ -1,4 +1,4 @@
-# Основное
+# Интерфейс
 
 Основная панель управления находятся в отдельном разделе сайта, доступном через меню.
 Содержит следующие вкладки:
@@ -17,6 +17,6 @@
 
 ![Статусы](https://file.modx.pro/files/2/6/2/262a170102ccddd6bcefad4bc45fc195.jpg)
 
-[4]: /components/46_UserEvents/01_Интерфейс/04_События.md
-[8]: /components/46_UserEvents/01_Интерфейс/08_Статусы.md
-[9]: /components/46_UserEvents/01_Интерфейс/09_Оповещения.md
+[4]: /components/userevents/interface/events
+[8]: /components/userevents/interface/statuses
+[9]: /components/userevents/interface/notifications

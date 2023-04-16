@@ -768,6 +768,52 @@ export default<DefaultTheme.Sidebar> [
         ],
       },
       {
+        text: 'UserEvents',
+        link: '/components/userevents/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Интерфейс',
+            link: '/components/userevents/interface/',
+            collapsed: true,
+            items: [
+              { text: 'Заказы', link: '/components/userevents/interface/orders' },
+              { text: 'События', link: '/components/userevents/interface/events' },
+              { text: 'Статусы', link: '/components/userevents/interface/statuses' },
+              { text: 'Оповещения', link: '/components/userevents/interface/notifications' },
+              { text: 'Настройки', link: '/components/userevents/interface/settings' },
+            ],
+          },
+          {
+            text: 'Сниппеты',
+            link: '/components/userevents/snippets/',
+            collapsed: true,
+            items: [
+              { text: 'ue.order', link: '/components/userevents/snippets/ue-order' },
+              { text: 'ue.get.order', link: '/components/userevents/snippets/ue-get-order' },
+            ],
+          },
+          {
+            text: 'Разработка',
+            collapsed: true,
+            items: [
+              { text: 'Скрипты и стили', link: '/components/userevents/development/scripts-and-styles' },
+              { text: 'События', link: '/components/userevents/development/events' },
+              { text: 'Расширения', link: '/components/userevents/development/extensions' },
+              {
+                text: 'Службы',
+                collapsed: true,
+                items: [
+                  { text: 'Заказ', link: '/components/userevents/development/services/order' },
+                  { text: 'Доставка', link: '/components/userevents/development/services/delivery' },
+                  { text: 'Оплата', link: '/components/userevents/development/services/payment' },
+                ],
+              }
+            ],
+          },
+        ],
+      },
+      {
         text: 'UserLocation',
         link: '/components/userlocation/',
         collapsed: true,

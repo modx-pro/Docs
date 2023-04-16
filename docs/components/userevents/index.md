@@ -1,4 +1,4 @@
-# Быстрый старт
+# UserEvents
 
 Для работы вам нужен MODX не ниже **2.3** и PHP не ниже **5.4**.
 
@@ -62,21 +62,21 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 
 Это шаблон для вывода формы бронирования и заказа
 
-```html
+```fenom
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        {'Head'|chunk}
-    </head>
-    <body>
-        {'Navbar'|chunk}
-        <div class="container">
-            <div id="content" class="main">
-                {$_modx->resource.content}
-            </div>
-            {'Navbar'|Footer}
-        </div>
-    </body>
+  <head>
+    {'Head' | chunk}
+  </head>
+  <body>
+    {'Navbar' | chunk}
+    <div class="container">
+      <div id="content" class="main">
+        {$_modx->resource.content}
+      </div>
+      {'Navbar' | Footer}
+    </div>
+  </body>
 </html>
 ```
 
@@ -89,7 +89,7 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 Главная страница у нас уже есть, просто назначаем ей "Общий" шаблон и пишем в контент:
 
 ```fenom
-{'!pdoMenu'|snippet}
+{'!pdoMenu' | snippet}
 ```
 
 Это покажет нам все документы сайта на главной, чтобы не заблудиться.
@@ -98,8 +98,8 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 Для этого создаём новую страницу с шаблоном "Общий" в корне сайта, и пишем там:
 
 ```fenom
-{'!ue.order'|snippet} <!-- Форма оформления заказа, скрывается после его создания -->
-{'!ue.get.order'|snippet} <!-- Вывод информации о заказе, показывается после его создания -->
+{'!ue.order' | snippet} <!-- Форма оформления заказа, скрывается после его создания -->
+{'!ue.get.order' | snippet} <!-- Вывод информации о заказе, показывается после его создания -->
 ```
 
 Эти сниппеты выведут нам оформление заказа и покажут созданный заказ.
