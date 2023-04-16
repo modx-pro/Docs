@@ -47,10 +47,10 @@
 Сюда попадают все сгенерированные ссылки при сохранении правила. Также при добавлении новых слов - ссылки автоматически сгенерируются и появятся здесь. Подробнее на отдельной странице: [Таблица URL][9]
 
 [1]: /components/msearch2/index
-[3]: /components/44_SeoFilter/05_Замены_в_SEO_текстах.md
-[4]: /components/44_SeoFilter/02_Быстрый_старт_без_mFilter2_и_miniShop2.md
-[5]: /components/44_SeoFilter/04_Сниппеты/03_sfMenu.md
-[6]: /components/44_SeoFilter/06_Объекты_компонента/01_Поле.md
-[7]: /components/44_SeoFilter/06_Объекты_компонента/01_Правило.md
-[8]: /components/44_SeoFilter/06_Объекты_компонента/01_Словарь.md
-[9]: /components/44_SeoFilter/06_Объекты_компонента/01_Таблица_URL.md
+[3]: /components/seofilter/substitutions-in-seo
+[4]: /components/seofilter/quick-start-without-mfilter2-and-minishop2
+[5]: /components/seofilter/snippets/sfmenu
+[6]: /components/seofilter/objects/field
+[7]: /components/seofilter/objects/rule
+[8]: /components/seofilter/objects/dictionary
+[9]: /components/seofilter/objects/url-table

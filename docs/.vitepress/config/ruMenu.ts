@@ -718,6 +718,38 @@ export default<DefaultTheme.Sidebar> [
       { text: 'ReachGoal', link: '/components/reachgoal' },
       { text: 'Save2Page', link: '/components/save2page' },
       { text: 'SEODomains', link: '/components/seodomains' },
+      {
+        text: 'SeoFilter',
+        link: '/components/seofilter/',
+        collapsed: true,
+        items: [
+          { text: 'Быстрый старт с mFilter2', link: '/components/seofilter/quick-start-mfilter2' },
+          { text: 'Быстрый старт без mFilter2 и miniShop2', link: '/components/seofilter/quick-start-without-mfilter2-and-minishop2' },
+          { text: 'Дополнительные возможности', link: '/components/seofilter/additional-features' },
+          {
+            text: 'Сниппеты',
+            link: '/components/seofilter/snippets/',
+            collapsed: true,
+            items: [
+              { text: 'sfWord', link: '/components/seofilter/snippets/sfword' },
+              { text: 'sfLink', link: '/components/seofilter/snippets/sflink' },
+              { text: 'sfMenu', link: '/components/seofilter/snippets/sfmenu' },
+              { text: 'sfSitemap', link: '/components/seofilter/snippets/sfsitemap' },
+            ],
+          },
+          { text: 'Замены в SEO текстах', link: '/components/seofilter/substitutions-in-seo' },
+          {
+            text: 'Объекты компонента',
+            collapsed: true,
+            items: [
+              { text: 'Поле', link: '/components/seofilter/objects/field' },
+              { text: 'Правило', link: '/components/seofilter/objects/rule' },
+              { text: 'Словарь', link: '/components/seofilter/objects/dictionary' },
+              { text: 'Таблица URL', link: '/components/seofilter/objects/url-table' },
+            ],
+          },
+        ],
+      },
       { text: 'SEO Suite', link: '/components/seosuite' },
       {
         text: 'SEOtabs',
