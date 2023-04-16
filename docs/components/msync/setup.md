@@ -13,7 +13,7 @@
 
 Если не срабатывает авторизация, для FastCGI создайте файл .htaccess в папке /assets/components/msync/ и добавьте в него следующие строки:
 
-```
+```apache
 RewriteEngine On
 RewriteCond %{HTTP:Authorization} !^$
 RewriteRule ^(.*)$ $1?http_auth=%{HTTP:Authorization} [QSA]
@@ -21,13 +21,13 @@ RewriteRule ^(.*)$ $1?http_auth=%{HTTP:Authorization} [QSA]
 
 Так же может помочь, если прописать в .htaccess в корне сайта следующий код:
 
-```
+```apache
 SetEnvIf Authorization .+ HTTP_AUTHORIZATION=
 ```
 
 Пример настроек сервера **nginx**:
 
-```
+```nginx
 location / {
   rewrite ^(.*)$ /$1?http_auth=$http_authorization;
 }
@@ -46,9 +46,10 @@ location / {
 
 [![](https://file.modx.pro/files/0/a/9/0a92dfc1b86b68372a8ab86e4f2b2ec5s.jpg)](https://file.modx.pro/files/0/a/9/0a92dfc1b86b68372a8ab86e4f2b2ec5s.jpg)
 
-[![](https://file.modx.pro/files/e/8/0/e80811163a05d27971fc25bf2b5b986es.jpg)](https://file.modx.pro/files/e/8/0/
-e80811163a05d27971fc25bf2b5b986es.jpg)
+[![](https://file.modx.pro/files/e/8/0/e80811163a05d27971fc25bf2b5b986es.jpg)](https://file.modx.pro/files/e/8/0/e80811163a05d27971fc25bf2b5b986es.jpg)
 
 [![](https://file.modx.pro/files/f/8/0/f8075647c55dea303f913bf8c72e3560s.jpg)](https://file.modx.pro/files/f/8/0/f8075647c55dea303f913bf8c72e3560s.jpg)
 
-**ВНИМАНИЕ! Для правильной работы синхронизации, чтобы не было перебоев во время работы, желательно в системных настройках параметр «Лимит выполнения» (msync_time_limit) сделать минимальным. Рекомендуемое значение - 5. Значение зависит от кол-ва оперативной памяти на скрипт и времени выполнения скриптов PHP**
+::: warning
+Для правильной работы синхронизации, чтобы не было перебоев во время работы, желательно в системных настройках параметр «Лимит выполнения» (msync_time_limit) сделать минимальным. Рекомендуемое значение - 5. Значение зависит от кол-ва оперативной памяти на скрипт и времени выполнения скриптов PHP
+:::
