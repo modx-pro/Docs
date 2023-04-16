@@ -31,7 +31,7 @@
 
 [![](https://file.modx.pro/files/6/3/6/636a2d94f0ea2e5d19fea0e363fa2c3d.png)](https://file.modx.pro/files/6/3/6/636a2d94f0ea2e5d19fea0e363fa2c3d.png)
 
-Кнопка **"Очистить логи"** удаляет все файлы в папке ***/core/components/msync/logs***
+Кнопка **"Очистить логи"** удаляет все файлы в папке: `/core/components/msync/logs`
 
 ## Синхронизация справочника товаров
 

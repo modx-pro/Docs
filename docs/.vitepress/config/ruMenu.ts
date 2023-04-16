@@ -570,6 +570,17 @@ export default<DefaultTheme.Sidebar> [
         ],
       },
       {
+        text: 'mSync',
+        link: '/components/msync/',
+        collapsed: true,
+        items: [
+          { text: 'Установка', link: '/components/msync/setup' },
+          { text: 'Интерфейс', link: '/components/msync/interface' },
+          { text: 'Настройки', link: '/components/msync/settings' },
+          { text: 'События и плагины', link: '/components/msync/events-and-plugins' },
+        ],
+      },
+      {
         text: 'multiLingual',
         link: '/components/multilingual/',
         collapsed: true,
