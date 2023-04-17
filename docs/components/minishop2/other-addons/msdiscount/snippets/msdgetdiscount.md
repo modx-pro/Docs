@@ -9,7 +9,7 @@
 ## Параметры
 
 | Название          | По умолчанию                      | Описание                                                                             |
-|-------------------|-----------------------------------|--------------------------------------------------------------------------------------|
+| ----------------- | --------------------------------- | ------------------------------------------------------------------------------------ |
 | **&id**           |                                   | Id товара для вывода скидки и времени действия акции.                                |
 | **&sale**         |                                   | Список акций для вывода, через запятую. Если пусто - фильтрация по акциям отключена. |
 | **&tpl**          | `tpl.msProduct.discount`          | Чанк оформления для вывода результата работы сниппета.                               |
@@ -22,38 +22,38 @@
 
 Обычный вызов на странице товара:
 
-``` modx
+```modx
 [[!msdGetDiscount]]
 ```
 
 Вызов в другом месте, с указанием параметров:
 
-``` modx
+```modx
 [[!msdGetDiscount?
-    &id=`15`
-    &sale=`1,2,3,4,5`
+  &id=`15`
+  &sale=`1,2,3,4,5`
 ]]
 ```
 
 Вызов как сниппет подготовки в msProducts:
 
-``` modx
+```modx
 <link rel="stylesheet" href="[[++assets_url]]components/msdiscount/css/web/main.css" type="text/css" />
 [[!msProducts?
-    &parents=`0`
-    &prepareSnippet=`msdGetDiscount`
-    &tpl=`@INLINE
-        <div class="row ms2_product">
-            <a href="{{+link}}">{{+pagetitle}}</a>
-            <span class="price">{{+price}} {{%ms2_frontend_currency}}{{+remains}}</span>
-        </div>
-        <!--minishop2_remains -{{+sale_discount}} — <span class="msd_remains">{{+remains}}</span>-->
-        <!--minishop2_!remains -{{+sale_discount}}-->
-    `
+  &parents=`0`
+  &prepareSnippet=`msdGetDiscount`
+  &tpl=`@INLINE
+    <div class="row ms2_product">
+      <a href="{{+link}}">{{+pagetitle}}</a>
+      <span class="price">{{+price}} {{%ms2_frontend_currency}}{{+remains}}</span>
+    </div>
+    <!--minishop2_remains -{{+sale_discount}} — <span class="msd_remains">{{+remains}}</span>-->
+    <!--minishop2_!remains -{{+sale_discount}}-->
+  `
 ]]
 <script type="text/javascript" src="[[++assets_url]]components/msdiscount/js/web/default.js"></script>
 ```
 
 Будут выведены все товары со скидкой и временем до окончания акции (если есть). Если нужно вывести только товары по акциям, лучше и проще использовать [msdBuyNow][1].
 
-[1]: /components/minishop2/other-addons/02_msDiscount/04_Сниппеты/01_msdBuyNow.md
+[1]: /components/minishop2/other-addons/msdiscount/snippets/msdbuynow

@@ -1,10 +1,10 @@
-# allGift
+# allGifts
 
-## Описание:
+## Описание
 
-Компонент предназначен для выгрузки товаров с Gifts.ru, OasisCatalog.com, Stan.su, XindaoRussia.ru через предоставляемое API.
+Компонент предназначен для выгрузки товаров с [gifts.ru](https://gifts.ru), [oasiscatalog.com](https://oasiscatalog.com), [stan.su](https://stan.su), [xindaorussia.ru](https://xindaorussia.ru) через предоставляемое API.
 
-## Зависимости:
+## Зависимости
 
 Компонент **не работает без** miniShop2 и msOptionsPrice2.
 

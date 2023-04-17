@@ -4,10 +4,10 @@
 
 Для акций вы можете указать:
 
-* Дату начала и дату окончания
-* Группы товаров, на которые скидка действует, или наоборот - не действует
-* Группы пользователей, для которых скидка есть, или нет
-* Каждую скидку можно связать с ресурсов MODX и назначить картинку, если вы заходите вывести их список через xPDO
+- Дату начала и дату окончания
+- Группы товаров, на которые скидка действует, или наоборот - не действует
+- Группы пользователей, для которых скидка есть, или нет
+- Каждую скидку можно связать с ресурсов MODX и назначить картинку, если вы заходите вывести их список через xPDO
 
 ## Алгоритм работы и проверка
 
@@ -34,26 +34,26 @@
 
 Однако, если пользователь приписан к группе, для которой указана скидка, её можно вывести таким сниппетом:
 
-``` php
+```php
 <?php
 // Если не указан &uid=``, то выбираем для текущего юзера
 if (empty($uid)) {$uid = $modx->user->id;}
 
 $pdoFetch = $modx->getService('pdoFetch');
 $group = $pdoFetch->getObject('msdUserGroup', array('modUser.id' => $uid), array(
-    'loadModels' => 'msdiscount',
-    'leftJoin' => array(
-        'modUserGroupMember' => array('class' => 'modUserGroupMember', 'on' => 'modUserGroupMember.user_group = msdUserGroup.id'),
-        'modUser' => array('class' => 'modUser', 'on' => 'modUser.id = modUserGroupMember.member AND modUser.id = '.$uid),
-    ),
-    'groupby' => 'msdUserGroup.id',
-    'sortby' => 'CAST(`msdUserGroup`.`discount` AS DECIMAL(13,3))',
-    'sortdir' => 'desc',
-    'select' => 'discount',
+  'loadModels' => 'msdiscount',
+  'leftJoin' => array(
+    'modUserGroupMember' => array('class' => 'modUserGroupMember', 'on' => 'modUserGroupMember.user_group = msdUserGroup.id'),
+    'modUser' => array('class' => 'modUser', 'on' => 'modUser.id = modUserGroupMember.member AND modUser.id = '.$uid),
+  ),
+  'groupby' => 'msdUserGroup.id',
+  'sortby' => 'CAST(`msdUserGroup`.`discount` AS DECIMAL(13,3))',
+  'sortdir' => 'desc',
+  'select' => 'discount',
 ));
 
 if (isset($group['discount'])) {
-    return $group['discount'];
+  return $group['discount'];
 }
 ```
 

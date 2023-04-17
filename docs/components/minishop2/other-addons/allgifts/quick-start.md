@@ -15,8 +15,9 @@
 4. Очень желательно включить настройку `ms2_product_id_as_alias`
 
 5. Указать системные настройки:
-    5.1. `msoptionsprice_allow_zero_count` = Да
-    5.2. `msoptionsprice_allow_zero_mass` = Да
+
+    - `msoptionsprice_allow_zero_count` = Да
+    - `msoptionsprice_allow_zero_mass` = Да
 
 6. Создать опции miniShop2, которые требуется заполнять при выгрузке и указать их ключи в системных настройках компонента allGifts, в разделе «Поля» - <https://prnt.sc/pfgu08>. Для быстрой настройки данного пункта можно [воспользоваться скриптом][2], запустив его через компонент Console.
 
@@ -34,109 +35,107 @@
 <?php
 $ms2 = $modx->getService('miniShop2');
 foreach ([
-    'size' => null,
-    'color' => null,
-    'stocks' => [
-        'caption' => 'Склады',
-        'type' => 'combo-options',
-    ],
-    'gender' => [
-        'caption' => 'Пол',
-        'type' => 'combo-options',
-    ],
-    'brand' => [
-        'caption' => 'Бренд',
-        'type' => 'combo-options',
-    ],
-    'material' => [
-        'caption' => 'Материал',
-        'type' => 'combo-options',
-    ],
-    'product_size' => [
-        'caption' => 'Размеры товара',
-        'type' => 'combo-options',
-    ],
-    'density' => [
-        'caption' => 'Плотность',
-        'type' => 'combo-options',
-    ],
-    'branding' => [
-        'caption' => 'Вид нанесения',
-        'type' => 'combo-options',
-    ],
-    'memory' => [
-        'caption' => 'Объем памяти',
-        'type' => 'combo-options',
-    ],
-    'dating' => [
-        'caption' => 'Датировка',
-        'type' => 'combo-options',
-    ],
-    'calendars' => [
-        'caption' => 'Календари',
-        'type' => 'combo-options',
-    ],
-    'type_caps' => [
-        'caption' => 'Тип кепки',
-        'type' => 'combo-options',
-    ],
-    'migalki' => [
-        'caption' => 'Моргалки',
-        'type' => 'combo-options',
-    ],
-    'packing' => [
-        'caption' => 'Упаковка',
-        'type' => 'combo-options',
-    ],
-
-    'group' => [
-        'caption' => 'Группа товаров',
-        'type' => 'textfield',
-    ],
-
-    'count' => [
-        'key' => 'instock',
-        'caption' => 'Кол-во на складе',
-        'type' => 'numberfield',
-    ],
-    'reserves' => [
-        'caption' => 'В резерве',
-        'type' => 'numberfield',
-    ],
+  'size' => null,
+  'color' => null,
+  'stocks' => [
+    'caption' => 'Склады',
+    'type' => 'combo-options',
+  ],
+  'gender' => [
+    'caption' => 'Пол',
+    'type' => 'combo-options',
+  ],
+  'brand' => [
+    'caption' => 'Бренд',
+    'type' => 'combo-options',
+  ],
+  'material' => [
+    'caption' => 'Материал',
+    'type' => 'combo-options',
+  ],
+  'product_size' => [
+    'caption' => 'Размеры товара',
+    'type' => 'combo-options',
+  ],
+  'density' => [
+    'caption' => 'Плотность',
+    'type' => 'combo-options',
+  ],
+  'branding' => [
+    'caption' => 'Вид нанесения',
+    'type' => 'combo-options',
+  ],
+  'memory' => [
+    'caption' => 'Объем памяти',
+    'type' => 'combo-options',
+  ],
+  'dating' => [
+    'caption' => 'Датировка',
+    'type' => 'combo-options',
+  ],
+  'calendars' => [
+    'caption' => 'Календари',
+    'type' => 'combo-options',
+  ],
+  'type_caps' => [
+    'caption' => 'Тип кепки',
+    'type' => 'combo-options',
+  ],
+  'migalki' => [
+    'caption' => 'Моргалки',
+    'type' => 'combo-options',
+  ],
+  'packing' => [
+    'caption' => 'Упаковка',
+    'type' => 'combo-options',
+  ],
+  'group' => [
+    'caption' => 'Группа товаров',
+    'type' => 'textfield',
+  ],
+  'count' => [
+    'key' => 'instock',
+    'caption' => 'Кол-во на складе',
+    'type' => 'numberfield',
+  ],
+  'reserves' => [
+    'caption' => 'В резерве',
+    'type' => 'numberfield',
+  ],
 ] as $k => $v) {
-    if (!empty($v)) {
-        if (!isset($v['key'])) {
-            $v = array_merge(['key' => $k], $v);
-        }
-        if (!$modx->getCount('msOption', ['key' => $v['key']])) {
-            $modx->error->reset();
-            $response = $ms2->runProcessor('mgr/settings/option/create', array_merge([
-                'category' => 0,
-            ], $v));
-            $response = $response->getObject();
-            if (empty($response['id'])) {
-                print_r('Процесс остановлен! Не удалось создать опцию ' . print_r($v, 1));
-                break;
-            }
-        }
-        if ($modx->getCount('msOption', ['key' => $v['key']])) {
-            if ($setting = $modx->getObject('modSystemSetting', ['key' => 'ag_field_' . $k])) {
-                $setting->set('value', 'options-' . $v['key']);
-                $setting->save();
-            }
-        }
-    } else {
-        if ($setting = $modx->getObject('modSystemSetting', ['key' => 'ag_field_' . $k])) {
-            $setting->set('value', $k);
-            $setting->save();
-        }
+  if (!empty($v)) {
+    if (!isset($v['key'])) {
+      $v = array_merge(['key' => $k], $v);
     }
+    if (!$modx->getCount('msOption', ['key' => $v['key']])) {
+      $modx->error->reset();
+      $response = $ms2->runProcessor('mgr/settings/option/create', array_merge([
+        'category' => 0,
+      ], $v));
+      $response = $response->getObject();
+      if (empty($response['id'])) {
+        print_r('Процесс остановлен! Не удалось создать опцию ' . print_r($v, 1));
+        break;
+      }
+    }
+    if ($modx->getCount('msOption', ['key' => $v['key']])) {
+      if ($setting = $modx->getObject('modSystemSetting', ['key' => 'ag_field_' . $k])) {
+        $setting->set('value', 'options-' . $v['key']);
+        $setting->save();
+      }
+    }
+  } else {
+    if ($setting = $modx->getObject('modSystemSetting', ['key' => 'ag_field_' . $k])) {
+      $setting->set('value', $k);
+      $setting->save();
+    }
+  }
 }
 ```
 
 ## Запуск
 
-:::warning
+::: warning
 **Запускайте скрипт от имени юзера, под которым крутится сайт!**
 
 Если запустить от рута или другого юзера, то в кеше будут созданы папки с чужими правами и MODX начнёт сыпать ошибки о невозможности удалить файл или директорию в кеше.

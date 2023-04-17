@@ -2,113 +2,113 @@
 
 ## Доступны следующие события
 
-* `msOnBeforeAddToCart`
-  *`product` - объект  *msProduct*
-  *`count` - кол-во продукта
-  *`options` - массив опций
-  *`cart` - экземпляр класса *корзина*
-* `msOnAddToCart` - добавление продукта корзины
-  *`key` - ключ продукта
-  *`cart` - экземпляр класса *корзина*
-* `msOnBeforeChangeInCart`
-* `msOnChangeInCart` - изменение продукта корзины
-  *`key` - ключ продукта
-  *`count` - кол-во продукта
-  *`cart` - экземпляр класса *корзина*
-* `msOnBeforeRemoveFromCart`
-* `msOnRemoveFromCart` - удаление продукта корзины
-  *`key` - ключ продукта
-  *`cart` - экземпляр класса *корзина*
-* `msOnBeforeEmptyCart`
-* `msOnEmptyCart` - очистка корзины
-  *`cart` - экземпляр класса *корзина*
-* `msOnGetStatusCart` - статус корзины
-  *`status` - статус
-  *`cart` - экземпляр класса *корзина*
-* `msOnBeforeAddToOrder`
-* `msOnAddToOrder` - добавление поля заказа
-  *`key` - ключ поля
-  *`value` - значение поля
-  *`order` - экземпляр класса *заказ*
-* `msOnBeforeValidateOrderValue`
-* `msOnValidateOrderValue` - валидация поля заказа
-  *`key` - ключ поля
-  *`value` - значение поля
-  *`order` - экземпляр класса *заказ*
-* `msOnBeforeRemoveFromOrder`
-* `msOnRemoveFromOrder` - удаление поля заказа
-  *`key` - ключ поля
-  *`order` - экземпляр класса *заказ*
-* `msOnBeforeEmptyOrder`
-* `msOnEmptyOrder` - очистка заказа
-  *`order` - экземпляр класса *заказ*
-* `msOnBeforeGetOrderCost`
-  *`order` - экземпляр класса *заказ*
-  *`cart` - экземпляр класса *корзина*
-  *`with_cart` - флаг *с учетом корзины*
-  *`only_cost` - флаг *только стоимость*
-* `msOnGetOrderCost` - получение стоимости заказа
-  *`order` - экземпляр класса *заказ*
-  *`cart` - экземпляр класса *корзина*
-  *`with_cart` - флаг *с учетом корзины*
-  *`only_cost` - флаг *только стоимость*
-  *`cost` - стоимость
-  *`delivery_cost` - стоимость доставки
-* `msOnSubmitOrder` - оформление заказа
-  *`data` - данные заказа
-  *`order` - экземпляр класса *заказ*
-* `msOnBeforeChangeOrderStatus`
-* `msOnChangeOrderStatus` - смена статуса заказа
-  *`order` - объект *msOrder*
-  *`status` - идентификатор статуса
-* `msOnBeforeGetOrderCustomer`
-* `msOnGetOrderCustomer` - получение пользователя заказа
-  *`order` - экземпляр класса *заказ*
-  *`customer` - объект *modUser*
-* `msOnBeforeCreateOrder`
-* `msOnCreateOrder` - создание заказа
-  *`order` - экземпляр класса *заказ*
-  *`msOrder` - объект *msOrder*
-* `msOnBeforeUpdateOrder`
-* `msOnUpdateOrder` - обновление заказа
-  *`msOrder` - объект *msOrder*
-* `msOnBeforeSaveOrder`
-* `msOnSaveOrder` - сохранение заказа
-  *`mode` - режим сохранения new или upd
-  *`object` - объект *msOrder*
-  *`msOrder` - объект *msOrder*
-  *`cacheFlag` - флаг кеширования
-* `msOnBeforeRemoveOrder`
-* `msOnRemoveOrder` - удаление заказа
-  *`id` - id записи
-  *`object` - объект *msOrder*
-  *`msOrder` - объект *msOrder*
-  *`ancestors` - массив where, переданный в метод
-* `msOnBeforeCreateOrderProduct`
-* `msOnCreateOrderProduct` - создание продукта заказа
-  *`msOrderProduct` - объект *msOrderProduct*
-* `msOnBeforeUpdateOrderProduct`
-* `msOnUpdateOrderProduct` - обновление продукта заказа
-  *`msOrderProduct` - объект *msOrderProduct*
-* `msOnBeforeRemoveOrderProduct`
-* `msOnRemoveOrderProduct` - удаление продукта заказа
-  *`msOrderProduct` - объект *msOrderProduct*
+- `msOnBeforeAddToCart`
+  - `product` - объект  *msProduct*
+  - `count` - кол-во продукта
+  - `options` - массив опций
+  - `cart` - экземпляр класса *корзина*
+- `msOnAddToCart` - добавление продукта корзины
+  - `key` - ключ продукта
+  - `cart` - экземпляр класса *корзина*
+- `msOnBeforeChangeInCart`
+- `msOnChangeInCart` - изменение продукта корзины
+  - `key` - ключ продукта
+  - `count` - кол-во продукта
+  - `cart` - экземпляр класса *корзина*
+- `msOnBeforeRemoveFromCart`
+- `msOnRemoveFromCart` - удаление продукта корзины
+  - `key` - ключ продукта
+  - `cart` - экземпляр класса *корзина*
+- `msOnBeforeEmptyCart`
+- `msOnEmptyCart` - очистка корзины
+  - `cart` - экземпляр класса *корзина*
+- `msOnGetStatusCart` - статус корзины
+  - `status` - статус
+  - `cart` - экземпляр класса *корзина*
+- `msOnBeforeAddToOrder`
+- `msOnAddToOrder` - добавление поля заказа
+  - `key` - ключ поля
+  - `value` - значение поля
+  - `order` - экземпляр класса *заказ*
+- `msOnBeforeValidateOrderValue`
+- `msOnValidateOrderValue` - валидация поля заказа
+  - `key` - ключ поля
+  - `value` - значение поля
+  - `order` - экземпляр класса *заказ*
+- `msOnBeforeRemoveFromOrder`
+- `msOnRemoveFromOrder` - удаление поля заказа
+  - `key` - ключ поля
+  - `order` - экземпляр класса *заказ*
+- `msOnBeforeEmptyOrder`
+- `msOnEmptyOrder` - очистка заказа
+  - `order` - экземпляр класса *заказ*
+- `msOnBeforeGetOrderCost`
+  - `order` - экземпляр класса *заказ*
+  - `cart` - экземпляр класса *корзина*
+  - `with_cart` - флаг *с учетом корзины*
+  - `only_cost` - флаг *только стоимость*
+- `msOnGetOrderCost` - получение стоимости заказа
+  - `order` - экземпляр класса *заказ*
+  - `cart` - экземпляр класса *корзина*
+  - `with_cart` - флаг *с учетом корзины*
+  - `only_cost` - флаг *только стоимость*
+  - `cost` - стоимость
+  - `delivery_cost` - стоимость доставки
+- `msOnSubmitOrder` - оформление заказа
+  - `data` - данные заказа
+  - `order` - экземпляр класса *заказ*
+- `msOnBeforeChangeOrderStatus`
+- `msOnChangeOrderStatus` - смена статуса заказа
+  - `order` - объект *msOrder*
+  - `status` - идентификатор статуса
+- `msOnBeforeGetOrderCustomer`
+- `msOnGetOrderCustomer` - получение пользователя заказа
+  - `order` - экземпляр класса *заказ*
+  - `customer` - объект *modUser*
+- `msOnBeforeCreateOrder`
+- `msOnCreateOrder` - создание заказа
+  - `order` - экземпляр класса *заказ*
+  - `msOrder` - объект *msOrder*
+- `msOnBeforeUpdateOrder`
+- `msOnUpdateOrder` - обновление заказа
+  - `msOrder` - объект *msOrder*
+- `msOnBeforeSaveOrder`
+- `msOnSaveOrder` - сохранение заказа
+  - `mode` - режим сохранения new или upd
+  - `object` - объект *msOrder*
+  - `msOrder` - объект *msOrder*
+  - `cacheFlag` - флаг кеширования
+- `msOnBeforeRemoveOrder`
+- `msOnRemoveOrder` - удаление заказа
+  - `id` - id записи
+  - `object` - объект *msOrder*
+  - `msOrder` - объект *msOrder*
+  - `ancestors` - массив where, переданный в метод
+- `msOnBeforeCreateOrderProduct`
+- `msOnCreateOrderProduct` - создание продукта заказа
+  - `msOrderProduct` - объект *msOrderProduct*
+- `msOnBeforeUpdateOrderProduct`
+- `msOnUpdateOrderProduct` - обновление продукта заказа
+  - `msOrderProduct` - объект *msOrderProduct*
+- `msOnBeforeRemoveOrderProduct`
+- `msOnRemoveOrderProduct` - удаление продукта заказа
+  - `msOrderProduct` - объект *msOrderProduct*
 
-* `msOnGetProductFields` - манипуляции с товаром на вывод
-  *`product` - объект *msProductData*
-  * `data` - массив данных
-* `msOnGetProductPrice` - получение цены продукта
-  *`product` - объект *msProductData*
-  *`data` - данные продукта
-  *`price` - цена продукта
-* `msOnGetProductWeight` - получение веса продукта
-  *`product` - объект *msProductData*
-  *`data` - данные продукта
-  *`weight` - вес продукта
+- `msOnGetProductFields` - манипуляции с товаром на вывод
+  - `product` - объект *msProductData*
+  - `data` - массив данных
+- `msOnGetProductPrice` - получение цены продукта
+  - `product` - объект *msProductData*
+  - `data` - данные продукта
+  - `price` - цена продукта
+- `msOnGetProductWeight` - получение веса продукта
+  - `product` - объект *msProductData*
+  - `data` - данные продукта
+  - `weight` - вес продукта
 
-* `msOnManagerCustomCssJs` - загрузка скриптов *minishop2*
-  *`controller` - экземпляр класса *контроллер*
-  *`page` - идентификатор страницы
+- `msOnManagerCustomCssJs` - загрузка скриптов *minishop2*
+  - `controller` - экземпляр класса *контроллер*
+  - `page` - идентификатор страницы
 
 ## Работа с событиями
 
@@ -123,8 +123,9 @@
 
 ```php
 <?php
+
 if ($modx->event->name = 'msOnBeforeAddToCart') {
-    $modx->event->output('Error');
+  $modx->event->output('Error');
 }
 ```
 
@@ -132,15 +133,15 @@ if ($modx->event->name = 'msOnBeforeAddToCart') {
 
 ```php
 <?php
+
 if ($modx->event->name = 'msOnBeforeAddToCart') {
-    $values = & $modx->event->returnedValues;
-    $values['count'] = $count + 10;
-    $values['options'] = array('size' => '99');
+  $values = & $modx->event->returnedValues;
+  $values['count'] = $count + 10;
+  $values['options'] = array('size' => '99');
 }
 ```
 
-Общее правило для плагинов.  Все входящие данные попадают сюда
-`$modx->event->returnedValues`
+Общее правило для плагинов.  Все входящие данные попадают сюда `$modx->event->returnedValues`
 
 Взаимодействатвать можно с числами, строками и массивами данных.
 Если хотите что то на лету поменять, просто меняйте это в `$modx->event->returnedValues`
@@ -166,7 +167,7 @@ $modx->log(1, print_r(array_keys($scriptProperties), 1));
 ```php
 <?php
 $params = array(
-    'count' => 2,
+  'count' => 2,
 );
 $eventName = 'msOnAddToCart';
 $modx->invokeEvent($eventName, $params);
@@ -179,18 +180,18 @@ $modx->invokeEvent($eventName, $params);
 <?php
 switch ($modx->event->name) {
 case "msOnAddToCart":
-    $sp = &$scriptProperties;
-    $sp['count'] = 100;
-    $modx->event->returnedValues = $sp;
-    break;
+  $sp = &$scriptProperties;
+  $sp['count'] = 100;
+  $modx->event->returnedValues = $sp;
+  break;
 }
 ```
 
 ```php
 <?php
 if ($modx->event->name = 'msOnAddToCart') {
-    $values = & $modx->event->returnedValues;
-    $values['count'] = $count + 10;
+  $values = & $modx->event->returnedValues;
+  $values['count'] = $count + 10;
 }
 ```
 
@@ -200,7 +201,7 @@ if ($modx->event->name = 'msOnAddToCart') {
 <?php
 //  Здесь count = 2
 $params = array(
-    'count' => 2,
+  'count' => 2,
 );
 $eventName = 'msOnAddToCart';
 $modx->invokeEvent($eventName, $params);

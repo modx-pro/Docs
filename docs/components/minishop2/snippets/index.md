@@ -13,4 +13,13 @@
 
 miniShop2.4 - первый компонент MODX, использующий только чанки с синтаксисом Fenom.
 
+- [msProducts](/components/minishop2/snippets/msproducts)
+- [msCart](/components/minishop2/snippets/mscart)
+- [msOrder](/components/minishop2/snippets/msorder)
+- [msMiniCart](/components/minishop2/snippets/msminicart)
+- [msGetOrder](/components/minishop2/snippets/msgetorder)
+- [msGallery](/components/minishop2/snippets/msgallery)
+- [msOptions](/components/minishop2/snippets/msoptions)
+- [msProductOptions](/components/minishop2/snippets/msproductoptions)
+
 [2]: /components/pdotools/parser

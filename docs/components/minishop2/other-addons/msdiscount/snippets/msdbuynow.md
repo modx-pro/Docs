@@ -8,7 +8,7 @@
 ## Параметры
 
 | Название          | По умолчанию                      | Описание                                                         |
-|-------------------|-----------------------------------|------------------------------------------------------------------|
+| ----------------- | --------------------------------- | ---------------------------------------------------------------- |
 | **&sale**         |                                   | Список акций для вывода, через запятую. Если пусто, выведет все. |
 | **&tpl**          | `tpl.msProducts.discount.row`     | Чанк оформления для вывода результата работы сниппета.           |
 | **&frontend_css** | `[[+assetsUrl]]css/web/main.css`  | Файл с css стилями для подключения на фронтенде.                 |
@@ -22,10 +22,10 @@
 
 ``` modx
 [[!mFilter2?
-    &parents=`0`
-    &element=`msdBuyNow`
-    &force_date=`0`
-    &...
+  &parents=`0`
+  &element=`msdBuyNow`
+  &force_date=`0`
+  ...
 ]]
 ```
 
@@ -33,12 +33,12 @@
 
 В комплекте идет js-файл, запускающий обратный отсчет до конца акции. Он получает количество оставшихся секунд и преобразует их в счетчик:
 
-``` html
+```html
 <span class="msd_remains" data-remain="1473652">
-    <span class="days">17</span>
-    <span class="hours">01</span>
-    <span class="minutes">20</span>
-    <span class="seconds">52</span>
+  <span class="days">17</span>
+  <span class="hours">01</span>
+  <span class="minutes">20</span>
+  <span class="seconds">52</span>
 </span>
 ```
 
@@ -50,28 +50,28 @@
 
 Обычный вызов для вывода товаров по временным акциям:
 
-``` modx
+```modx
 [[!msdBuyNow]]
 ```
 
 Вывод с постраничной разбивкой:
 
-``` modx
+```modx
 [[!pdoPage?
-    &element=`msdBuyNow`
+  &element=`msdBuyNow`
 ]]
 [[!+page.nav]]
 ```
 
 Вывод с указанием параметров для msProducts:
 
-``` modx
+```modx
 [[!pdoPage?
-    &element=`msdBuyNow`
-    &sale=`1,2,3,4,5`
-    &includeTVs=`type`
-    &sortby=`type`
-    &includeThumbs=`120x90`
+  &element=`msdBuyNow`
+  &sale=`1,2,3,4,5`
+  &includeTVs=`type`
+  &sortby=`type`
+  &includeThumbs=`120x90`
 ]]
 [[!+page.nav]]
 ```

@@ -292,6 +292,6 @@ oreach ($user->UserSettings as $setting) {
 > **One против Many**
 > Объекты, загружаемые через `getOne()` доступны напрямую как объекты соответствующего класса, в то время как через метод `getMany()` они доступны в качестве **массива** объектов класса.
 
-[1]: /system/xpdo/object-model/index
+[1]: /system/xpdo/object-model/
 [2]: http://php.net/manual/ru/pdo.construct.php
 [3]: http://php.net/manual/ru/pdo.drivers.php

@@ -4,14 +4,14 @@
 
 Обязательные методы интерфейса:
 
-* **initialize** — Инициализирует класс в контекст. Может загружать скрипты и стили.
-* **add** — Добавляет товар в корзину, обязателен параметр `id`.
-* **remove** — Удаляет товар из корзины, обязателен параметр `key`
-* **change** — Изменение количества товара в корзине, обязательны `key` и `count`
-* **clean** — Полная очистка корзины
-* **status** — Возвращает статус корзины: общую стоимость, вес и количество товаров
-* **get** — Возвращает содержимое корзины, целиком
-* **set** — Перезаписывает содержимое корзины полученным массивом `cart`
+- **initialize** — Инициализирует класс в контекст. Может загружать скрипты и стили.
+- **add** — Добавляет товар в корзину, обязателен параметр `id`.
+- **remove** — Удаляет товар из корзины, обязателен параметр `key`
+- **change** — Изменение количества товара в корзине, обязательны `key` и `count`
+- **clean** — Полная очистка корзины
+- **status** — Возвращает статус корзины: общую стоимость, вес и количество товаров
+- **get** — Возвращает содержимое корзины, целиком
+- **set** — Перезаписывает содержимое корзины полученным массивом `cart`
 
 Конечно, в комплекте идёт стандартный класс `msCartHandler`, который реализует эти методы, плюс добавляет еще парочку своих, для удобного ответа на запросы.
 Вы можете унаследовать и расширить его, или реализовать интерфейс самостоятельно.
@@ -21,14 +21,14 @@
 
 ## Инициализация
 
-``` php
+```php
 if ($miniShop2 = $modx->getService('miniShop2')) {
-    // Инициализируем класс в текущий контекст
-    $miniShop2->initialize($modx->context->key);
+  // Инициализируем класс в текущий контекст
+  $miniShop2->initialize($modx->context->key);
 
-    print_r($miniShop2->cart->add(5)); // Добавляем товар с id = 5 и печатаем ответ
-    print_r($miniShop2->cart->get()); // Получаем и распечатываем содержимое корзины
-    print_r($miniShop2->cart->status()); // Получаем и распечатываем состояние корзины
+  print_r($miniShop2->cart->add(5)); // Добавляем товар с id = 5 и печатаем ответ
+  print_r($miniShop2->cart->get()); // Получаем и распечатываем содержимое корзины
+  print_r($miniShop2->cart->status()); // Получаем и распечатываем состояние корзины
 }
 ```
 
@@ -37,13 +37,13 @@ if ($miniShop2 = $modx->getService('miniShop2')) {
 
 Можно конфигурировать `msCartHandler` при инициализации:
 
-``` php
+```php
 // Инициализируем класс в текущий контекст
 $scriptProperties = array(
-    'json_response' => true, // возвращать ответы в JSON
-    'max_count' => 1000, // максимальное число товаров для добавления за один раз
-    'allow_deleted' => false, // не добавлять в корзину товары с deleted = 1
-    'allow_unpublished' => false, // не добавлять в корзину товары с published = 0
+  'json_response' => true, // возвращать ответы в JSON
+  'max_count' => 1000, // максимальное число товаров для добавления за один раз
+  'allow_deleted' => false, // не добавлять в корзину товары с deleted = 1
+  'allow_unpublished' => false, // не добавлять в корзину товары с published = 0
 );
 $miniShop2->initialize($modx->context->key, $scriptProperties);
 ```
@@ -54,24 +54,24 @@ $miniShop2->initialize($modx->context->key, $scriptProperties);
 
 Класс `msCartHandler` генерирует определённые события при работе с корзиной. Для удобства, вот они в виде заготовки-плагина:
 
-``` php
+```php
 <?php
 switch ($modx->event->name) {
-    // События на добавление товара
-    case 'msOnBeforeAddToCart': break; // получает $product, $count, $options и $cart
-    case 'msOnAddToCart': break; // получает $key и $cart
+  // События на добавление товара
+  case 'msOnBeforeAddToCart': break; // получает $product, $count, $options и $cart
+  case 'msOnAddToCart': break; // получает $key и $cart
 
-    // Удаление товара из корзины
-    case 'msOnBeforeRemoveFromCart': break; // получает $key и $cart
-    case 'msOnRemoveFromCart': break; // получает $key и $cart
+  // Удаление товара из корзины
+  case 'msOnBeforeRemoveFromCart': break; // получает $key и $cart
+  case 'msOnRemoveFromCart': break; // получает $key и $cart
 
-    // Изменение количества
-    case 'msOnBeforeChangeInCart': break; // получает $key, $count и $cart
-    case 'msOnChangeInCart': break; // получает $key, $count и $cart
+  // Изменение количества
+  case 'msOnBeforeChangeInCart': break; // получает $key, $count и $cart
+  case 'msOnChangeInCart': break; // получает $key, $count и $cart
 
-    // Очистка корзины
-    case 'msOnBeforeEmptyCart': break; // получает $cart
-    case 'msOnEmptyCart': break; // получает $cart
+  // Очистка корзины
+  case 'msOnBeforeEmptyCart': break; // получает $cart
+  case 'msOnEmptyCart': break; // получает $cart
 }
 ```
 
@@ -79,7 +79,7 @@ switch ($modx->event->name) {
 
 Переменная `$key` это ключ элемента корзины, формируется как:
 
-``` php
+```php
 md5($id . json_encode($data));
 // где $id - это идентификатор товара, а $data - массив параметров, присланных при добавлении
 ```
@@ -90,10 +90,10 @@ md5($id . json_encode($data));
 
 Если мы хотим изменить товар **перед** добавлением, то нужно воспользоваться событием **msOnBeforeAddToCart**, в котором есть объект `$product`.
 
-``` php
+```php
 case 'msOnBeforeAddToCart':
-    $product->set('new_price', 5555);
-    break;
+  $product->set('new_price', 5555);
+  break;
 ```
 
 Вы можете делать с товаром что угодно, даже сохранить ему новую цену через `$product->save();`.
@@ -102,12 +102,12 @@ case 'msOnBeforeAddToCart':
 
 А теперь меняем цену товара **после** добавления. В этом событии у нас уже нет товара, есть только корзина и ключ:
 
-``` php
+```php
 case 'msOnAddToCart':
-    $tmp = $cart->get();
-    $tmp[$key]['price'] = 1000;
-    $cart->set($tmp);
-    break;
+  $tmp = $cart->get();
+  $tmp[$key]['price'] = 1000;
+  $cart->set($tmp);
+  break;
 ```
 
 таким образом можно менять содержимое корзины при любом событии, `$cart` есть везде.

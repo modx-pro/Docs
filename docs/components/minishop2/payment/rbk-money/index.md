@@ -26,29 +26,31 @@
 
     Возможные значения:
 
-    * inner или rbkmoney — оплата с кошелька RBK Money
-    * bankcard — банковская карта Visa/MasterCard
-    * exchangers — электронные платежные системы
-    * terminals — платёжные терминалы
-    * prepaidcard — предоплаченная карта RBK Money
-    * postrus — Почта России
-    * mobilestores — салоны связи
-    * transfers — системы денежных Переводов
-    * ibank — интернет банкинг
-    * sberbank — банковский платёж
-    * svyaznoy — Связной
-    * euroset — Евросеть
-    * contact — Contact
-    * mts — МТС
-    * uralsib — кассы Уралсиб
-    * handybank — HandyBank
-    * ocean — Океан Банк
-    * ibankuralsib — Интернет-банк Уралсиб
+    - `inner` или `rbkmoney` — оплата с кошелька RBK Money
+    - `bankcard` — банковская карта Visa/MasterCard
+    - `exchangers` — электронные платежные системы
+    - `terminals` — платёжные терминалы
+    - `prepaidcard` — предоплаченная карта RBK Money
+    - `postrus` — Почта России
+    - `mobilestores` — салоны связи
+    - `transfers` — системы денежных Переводов
+    - `ibank` — интернет банкинг
+    - `sberbank` — банковский платёж
+    - `svyaznoy` — Связной
+    - `euroset` — Евросеть
+    - `contact` — Contact
+    - `mts` — МТС
+    - `uralsib` — кассы Уралсиб
+    - `handybank` — HandyBank
+    - `ocean` — Океан Банк
+    - `ibankuralsib` — Интернет-банк Уралсиб
 
 В будущем, возможно, добавятся и другие способы пополнения. Значения можете уточнить в документации к RBK Money или связаться с технической поддержкой RBK Money.
 
 ![Настройка - 1](https://file.modx.pro/files/4/f/9/4f9a7dd0f3c8dd5abdeab0052a1fdd16.jpg)
 
-**Также не забудьте включить новый метод оплаты и назначить его в вариантах доставки.**
+::: warning
+Также не забудьте включить новый метод оплаты и назначить его в вариантах доставки.
+:::
 
 ![Настройка - 2](https://file.modx.pro/files/e/1/7/e17abbacd95e883167c9ca98dd25de35.jpg)

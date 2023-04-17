@@ -10,11 +10,10 @@
 
 Правильный способ - создать php файл и зарегистрировать его через метод `miniShop2::addService()`:
 
-``` php
+```php
 if ($miniShop2 = $modx->getService('miniShop2')) {
-    $miniShop2->addService('payment', 'CustomerAccount',
-        '{core_path}components/msprofile/model/msprofile/customeraccount.class.php'
-    );
+  $miniShop2->addService('payment', 'CustomerAccount',
+      '{core_path}components/msprofile/model/msprofile/customeraccount.class.php');
 }
 ```
 
@@ -30,9 +29,9 @@ if ($miniShop2 = $modx->getService('miniShop2')) {
 
 Удаление сервиса производится через метод `miniShop2::removeService()`:
 
-``` php
+```php
 if ($miniShop2 = $modx->getService('miniShop2')) {
-    $miniShop2->removeService('payment', 'CustomerAccount');
+  $miniShop2->removeService('payment', 'CustomerAccount');
 }
 ```
 
@@ -44,35 +43,35 @@ if ($miniShop2 = $modx->getService('miniShop2')) {
 
 ``` php
 <?php
-if(!class_exists('msDeliveryInterface')) {
-    require_once dirname(dirname(dirname(__FILE__))) . '/model/minishop2/msdeliveryhandler.class.php';
+
+if (!class_exists('msDeliveryInterface')) {
+  require_once dirname(dirname(dirname(__FILE__))) . '/model/minishop2/msdeliveryhandler.class.php';
 }
 
-class msDeliveryHandlerMsk extends msDeliveryHandler implements msDeliveryInterface{
+class msDeliveryHandlerMsk extends msDeliveryHandler implements msDeliveryInterface {
 
-    public function getCost(msOrderInterface $order, msDelivery $delivery, $cost = 0) {
+  public function getCost(msOrderInterface $order, msDelivery $delivery, $cost = 0) {
 
-        $freedeliverysumm = 5000;
-        $cart = $order->ms2->cart->status();
-        $cart_cost = $cart['total_cost'];
+    $freedeliverysumm = 5000;
+    $cart = $order->ms2->cart->status();
+    $cart_cost = $cart['total_cost'];
 
-        if($cart_cost > $freedeliverysumm){
-            return $cost;
-        }else{
-            $delivery_cost = parent::getCost($order, $delivery, $cost);
-            return $delivery_cost;
-        }
+    if ($cart_cost > $freedeliverysumm) {
+      return $cost;
+    } else{
+      $delivery_cost = parent::getCost($order, $delivery, $cost);
+      return $delivery_cost;
     }
+  }
 }
 ```
 
 Далее, зарегистрируем службу по этому адресу выполнив код ниже в сниппете или в Console:
 
-``` php
+```php
 if ($miniShop2 = $modx->getService('miniShop2')) {
-    $miniShop2->addService('delivery', 'MskDelivery',
-        '{core_path}components/minishop2/custom/delivery/msdeliveryhandlermsk.class.php'
-    );
+  $miniShop2->addService('delivery', 'MskDelivery',
+      '{core_path}components/minishop2/custom/delivery/msdeliveryhandlermsk.class.php');
 }
 ```
 

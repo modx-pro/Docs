@@ -25,23 +25,23 @@
 
 В miniShop2.2 это **tpl.msOrder.outer**:
 
-``` html
+```modx
 <div class="form-group input-parent">
-    <label class="col-sm-4 control-label" for="coupon_code">Скидочный купон</label>
-    <div class="col-sm-6">
-        <input type="coupon_code" id="coupon_code" placeholder="XXXXX-XXXX-XXXX-XXXX" name="coupon_code" value="[[+coupon_code]]" class="form-control">
-    </div>
+  <label class="col-sm-4 control-label" for="coupon_code">Скидочный купон</label>
+  <div class="col-sm-6">
+    <input type="coupon_code" id="coupon_code" placeholder="XXXXX-XXXX-XXXX-XXXX" name="coupon_code" value="[[+coupon_code]]" class="form-control">
+  </div>
 </div>
 ```
 
 А в версии 2.4 это **tpl.msOrder**:
 
-``` php
+```fenom
 <div class="form-group input-parent">
-    <label class="col-sm-4 control-label" for="coupon_code">Скидочный купон</label>
-    <div class="col-sm-6">
-        <input type="coupon_code" id="coupon_code" placeholder="XXXXX-XXXX-XXXX-XXXX" name="coupon_code" value="{$order.coupon_code}" class="form-control">
-    </div>
+  <label class="col-sm-4 control-label" for="coupon_code">Скидочный купон</label>
+  <div class="col-sm-6">
+    <input type="coupon_code" id="coupon_code" placeholder="XXXXX-XXXX-XXXX-XXXX" name="coupon_code" value="{$order.coupon_code}" class="form-control">
+  </div>
 </div>
 ```
 
@@ -61,32 +61,28 @@
 
 Старый код, для магазина версии 2.2:
 
-``` javascript
-<script type="text/javascript">
-    $(document).ready(function() {
-        miniShop2.Callbacks.Order.add.ajax.done = function(res) {
-            var res = res.responseJSON;
-            if (typeof(res.data['coupon_code']) != 'undefined' || !res.success) {
-                miniShop2.Order.getcost();
-            };
-        };
-    })
-</script>
+```js
+$(document).ready(function () {
+  miniShop2.Callbacks.Order.add.ajax.done = function (res) {
+    var res = res.responseJSON;
+    if (typeof res.data.coupon_code !== 'undefined' || !res.success) {
+      miniShop2.Order.getcost();
+    };
+  };
+});
 ```
 
 Новый код, для магазинов версии 2.4 и выше:
 
-``` javascript
-<script type="text/javascript">
-    $(document).ready(function() {
-        miniShop2.Callbacks.add('Order.add.ajax.done', 'msdiscount', function(res) {
-            var res = res.responseJSON;
-            if (typeof(res.data['coupon_code']) != 'undefined' || !res.success) {
-                miniShop2.Order.getcost();
-            };
-        });
-    });
-</script>
+```js
+$(document).ready(function () {
+  miniShop2.Callbacks.add('Order.add.ajax.done', 'msdiscount', function (res) {
+    var res = res.responseJSON;
+    if (typeof res.data.coupon_code !== 'undefined' || !res.success) {
+      miniShop2.Order.getcost();
+    };
+  });
+});
 ```
 
 Код можно прописать в скриптах сайта, или прямо в чанке оформления заказа.

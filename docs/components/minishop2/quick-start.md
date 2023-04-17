@@ -25,21 +25,21 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 
 Это шаблон для вывода содержимого обычных ресурсов
 
-```html
+```modx
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        [[$Head]]
-    </head>
-    <body>
-        [[$Navbar]]
-        <div class="container">
-            <div id="content" class="main">
-                [[*content]]
-            </div>
-            [[$Footer]]
-        </div>
-    </body>
+  <head>
+    [[$Head]]
+  </head>
+  <body>
+    [[$Navbar]]
+    <div class="container">
+      <div id="content" class="main">
+        [[*content]]
+      </div>
+      [[$Footer]]
+    </div>
+  </body>
 </html>
 ```
 
@@ -49,24 +49,24 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 
 Шаблон вывода категории с постраничным выводом товаров
 
-```html
+```modx
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        [[$Head]]
-    </head>
-    <body>
-        [[$Navbar]]
-        <div class="container">
-            <div id="content" class="category">
-                [[!pdoPage?
-                    &element=`msProducts`
-                ]]
-                [[!+page.nav]]
-            </div>
-            [[$Footer]]
-        </div>
-    </body>
+  <head>
+    [[$Head]]
+  </head>
+  <body>
+    [[$Navbar]]
+    <div class="container">
+      <div id="content" class="category">
+        [[!pdoPage?
+          &element=`msProducts`
+        ]]
+        [[!+page.nav]]
+      </div>
+      [[$Footer]]
+    </div>
+  </body>
 </html>
 ```
 
@@ -74,21 +74,21 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 
 Шаблон товара, вместо содержимого вызывается чанк из комплекта ms2
 
-```html
+```modx
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        [[$Head]]
-    </head>
-    <body>
-        [[$Navbar]]
-        <div class="container">
-            <div id="content" class="product">
-                [[$msProduct.content]]
-            </div>
-            [[$Footer]]
-        </div>
-    </body>
+  <head>
+    [[$Head]]
+  </head>
+  <body>
+    [[$Navbar]]
+    <div class="container">
+      <div id="content" class="product">
+        [[$msProduct.content]]
+      </div>
+      [[$Footer]]
+    </div>
+  </body>
 </html>
 ```
 
@@ -102,7 +102,7 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 
 Главная страница у нас уже есть, просто назначаем ей "Общий" шаблон и пишем в контент:
 
-```php
+```modx
 [[!pdoMenu]]
 ```
 
@@ -115,7 +115,7 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 Теперь осталось только создать корзину.
 Для этого создаём новую страницу с шаблоном "Общий" в корне сайта, и пишем там:
 
-``` php
+```modx
 [[!msCart]]
 
 [[!msOrder]]
@@ -134,24 +134,24 @@ Theme.Bootstrap устанавливает 2 шаблона, которые вы
 
 В качестве финального штриха можно еще зайти в чанк `Navbar` и добавить там вывод миникорзины. Например, вот так:
 
-```html
+```modx
 <div class="navbar-collapse collapse">
-    <!-- Это вывод меню, он есть по умолчанию -->
-    <ul class="nav navbar-nav">
-        [[pdoMenu?
-            &startId=`0`
-            &level=`1`
-            &tplOuter=`@INLINE {$wrapper}`
-        ]]
-    </ul>
-    <!-- А вот здесь добавляем миникорзину -->
-    <ul class="nav navbar-nav pull-right" style="padding-top:10px;">
-        <li>[[!msMiniCart]]</li>
-    </ul>
+  <!-- Это вывод меню, он есть по умолчанию -->
+  <ul class="nav navbar-nav">
+    [[pdoMenu?
+      &startId=`0`
+      &level=`1`
+      &tplOuter=`@INLINE {$wrapper}`
+    ]]
+  </ul>
+  <!-- А вот здесь добавляем миникорзину -->
+  <ul class="nav navbar-nav pull-right" style="padding-top: 10px;">
+    <li>[[!msMiniCart]]</li>
+  </ul>
 </div>
 ```
 
 [1]: https://modstore.pro/info/connection
 [2]: https://modhost.pro
-[3]: /components/minishop2/interface/01_Категория.md
+[3]: /components/minishop2/interface/category
 [4]: /components/minishop2/interface/product

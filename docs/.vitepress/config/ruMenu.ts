@@ -51,7 +51,7 @@ export default<DefaultTheme.Sidebar> [
         items: [
           {
             text: 'Возможности и быстрый старт',
-            link: '/components/amocrm/fast-start',
+            link: '/components/amocrm/quick-start',
           },
           {
             text: 'Установка и настройка',
@@ -312,8 +312,8 @@ export default<DefaultTheme.Sidebar> [
         collapsed: true,
         link: '/components/minishop2/',
         items: [
-          { text: 'Быстрый старт', link: '/components/minishop2/fast-start' },
-          { text: 'Системные требования и зависимости', link: '/components/minishop2/system-requirements-and-dependencies' },
+          { text: 'Быстрый старт', link: '/components/minishop2/quick-start' },
+          { text: 'Системные требования и зависимости', link: '/components/minishop2/requirements-and-dependencies' },
           {
             text: 'Интерфейс',
             collapsed: true,
@@ -365,24 +365,24 @@ export default<DefaultTheme.Sidebar> [
             text: 'Модули оплаты',
             collapsed: true,
             items: [
-              { text: 'Яндекс.Деньги', link: '/components/minishop2/payment-modules/yandex-money' },
-              { text: 'Platron', link: '/components/minishop2/payment-modules/platron' },
-              { text: 'WebMoney', link: '/components/minishop2/payment-modules/webmoney' },
-              { text: 'msMerchant', link: '/components/minishop2/payment-modules/msmerchant' },
-              { text: 'mspUP', link: '/components/minishop2/payment-modules/mspup' },
-              { text: 'mspWebPay', link: '/components/minishop2/payment-modules/mspwebpay' },
-              { text: 'mspAssistBelarus', link: '/components/minishop2/payment-modules/mspassistbelarus' },
-              { text: 'mspPayU', link: '/components/minishop2/payment-modules/msppayu' },
-              { text: 'mspYaCassa', link: '/components/minishop2/payment-modules/mspyacassa' },
-              { text: 'mspPayAnyWay', link: '/components/minishop2/payment-modules/msppayanyway' },
-              { text: 'mspBePaid', link: '/components/minishop2/payment-modules/mspbepaid' },
-              { text: 'mspPayPal', link: '/components/minishop2/payment-modules/msppaypal' },
+              { text: 'Яндекс.Деньги', link: '/components/minishop2/payment/yandex-money' },
+              { text: 'Platron', link: '/components/minishop2/payment/platron' },
+              { text: 'WebMoney', link: '/components/minishop2/payment/webmoney' },
+              { text: 'msMerchant', link: '/components/minishop2/payment/msmerchant' },
+              { text: 'mspUP', link: '/components/minishop2/payment/mspup' },
+              { text: 'mspWebPay', link: '/components/minishop2/payment/mspwebpay' },
+              { text: 'mspAssistBelarus', link: '/components/minishop2/payment/mspassistbelarus' },
+              { text: 'mspPayU', link: '/components/minishop2/payment/msppayu' },
+              { text: 'mspYaCassa', link: '/components/minishop2/payment/mspyacassa' },
+              { text: 'mspPayAnyWay', link: '/components/minishop2/payment/msppayanyway' },
+              { text: 'mspBePaid', link: '/components/minishop2/payment/mspbepaid' },
+              { text: 'mspPayPal', link: '/components/minishop2/payment/msppaypal' },
               {
                 text: 'RBK Money',
-                link: '/components/minishop2/development/rbk-money/',
+                link: '/components/minishop2/payment/rbk-money/',
                 collapsed: true,
                 items: [
-                  { text: 'Выбор способа оплаты на сайте', link: '/components/minishop2/development/rbk-money/choosing-a-payment-method-on-the-site' },
+                  { text: 'Выбор способа оплаты на сайте', link: '/components/minishop2/payment/rbk-money/choosing-payment-method' },
                 ],
               },
             ],
@@ -403,14 +403,7 @@ export default<DefaultTheme.Sidebar> [
               { text: 'ordersUnformed', link: '/components/minishop2/other-addons/ordersunformed' },
               { text: 'msAddLinked', link: '/components/minishop2/other-addons/msaddlinked' },
               { text: 'msBuyNow', link: '/components/minishop2/other-addons/msbuynow' },
-              {
-                text: 'msCategoryOptions',
-                link: '/components/minishop2/other-addons/mscategoryoptions/',
-                collapsed: true,
-                items: [
-                  { text: 'Быстрый старт', link: '/components/minishop2/other-addons/mscategoryoptions/quick-start' },
-                ],
-              },
+              { text: 'msCategoryOptions', link: '/components/minishop2/other-addons/mscategoryoptions' },
               { text: 'msDaData', link: '/components/minishop2/other-addons/msdadata' },
               { text: 'msDellin', link: '/components/minishop2/other-addons/msdellin' },
               {
@@ -456,10 +449,9 @@ export default<DefaultTheme.Sidebar> [
                   },
                   {
                     text: 'Интерфейс',
-                    link: '/components/minishop2/other-addons/mspointsissue/snippets/',
+                    link: '/components/minishop2/other-addons/mspointsissue/interface/',
                     collapsed: true,
                     items: [
-                      { text: 'Основное', link: '/components/minishop2/other-addons/mspointsissue/interface/main' },
                       { text: 'Заказы', link: '/components/minishop2/other-addons/mspointsissue/interface/orders' },
                       { text: 'Настройка', link: '/components/minishop2/other-addons/mspointsissue/interface/settings' },
                     ],
@@ -472,7 +464,7 @@ export default<DefaultTheme.Sidebar> [
                 collapsed: true,
                 items: [
                   { text: 'Настройки компонента', link: '/components/minishop2/other-addons/msproductremains/settings' },
-                  { text: 'Вкладка остатков', link: '/components/minishop2/other-addons/msproductremains/residue-tab' },
+                  { text: 'Вкладка остатков', link: '/components/minishop2/other-addons/msproductremains/remains-tab' },
                   { text: 'Страница остатков', link: '/components/minishop2/other-addons/msproductremains/remains-page' },
                   { text: 'Сниппет getRemains', link: '/components/minishop2/other-addons/msproductremains/getremains' },
                   { text: 'Примеры', link: '/components/minishop2/other-addons/msproductremains/examples' },
@@ -592,7 +584,7 @@ export default<DefaultTheme.Sidebar> [
         collapsed: true,
         items: [
           { text: 'Обновление', link: '/components/msfavorites/update' },
-          { text: 'Быстрый старт', link: '/components/msfavorites/fast-start' },
+          { text: 'Быстрый старт', link: '/components/msfavorites/quick-start' },
         ],
       },
       {
@@ -970,7 +962,7 @@ export default<DefaultTheme.Sidebar> [
         text: 'SEOtabs',
         collapsed: true,
         items: [
-          { text: 'Быстрый старт', link: '/components/seotabs/fast-start' },
+          { text: 'Быстрый старт', link: '/components/seotabs/quick-start' },
           { text: 'Сниппет seoTabs', link: '/components/seotabs/snippet-seotabs' },
         ],
       },

@@ -10,14 +10,14 @@
 Как таковую операцию оплаты в базе данных создаёт класс заказа.
 И если к заказу прицеплен метод оплаты, то заказ вызывает из него обязательный метод `send`.
 
-``` php
+```php
 if ($payment = $this->modx->getObject('msPayment', array('id' => $order->get('payment'), 'active' => 1))) {
-    $response = $payment->send($order);
-    if (is_array($response)) {
-        $response = json_encode($response, true);
-    }
+  $response = $payment->send($order);
+  if (is_array($response)) {
+    $response = json_encode($response, true);
+  }
 
-    exit($response);
+  exit($response);
 }
 ```
 
