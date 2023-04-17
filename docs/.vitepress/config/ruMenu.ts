@@ -471,6 +471,44 @@ export default<DefaultTheme.Sidebar> [
                 ],
               },
               { text: 'msQuickView', link: '/components/minishop2/other-addons/msquickview' },
+              {
+                text: 'msBonus2',
+                link: '/components/minishop2/other-addons/msbonus2/',
+                collapsed: true,
+                items: [
+                  { text: 'Быстрый старт', link: '/components/minishop2/other-addons/msbonus2/quick-start' },
+                  {
+                    text: 'Сниппеты',
+                    collapsed: true,
+                    items: [
+                      { text: 'msBonus2Form', link: '/components/minishop2/other-addons/msbonus2/snippets/msbonus2form' },
+                      { text: 'msBonus2Logs', link: '/components/minishop2/other-addons/msbonus2/snippets/msbonus2logs' },
+                      { text: 'msBonus2ProductBonus', link: '/components/minishop2/other-addons/msbonus2/snippets/msbonus2productbonus' },
+                    ],
+                  },
+                  { text: 'События jQuery', link: '/components/minishop2/other-addons/msbonus2/jquery-events' },
+                  {
+                    text: 'События плагинов',
+                    collapsed: true,
+                    items: [
+                      { text: 'msb2OnBeforeSetBonus', link: '/components/minishop2/other-addons/msbonus2/events/msb2onbeforesetbonus' },
+                      { text: 'msb2OnSetBonus', link: '/components/minishop2/other-addons/msbonus2/events/msb2onsetbonus' },
+                      { text: 'msb2OnUnsetBonus', link: '/components/minishop2/other-addons/msbonus2/events/msb2onunsetbonus' },
+                      { text: 'Примеры', link: '/components/minishop2/other-addons/msbonus2/events/examples' },
+                    ],
+                  },
+                  { text: 'Программное API', link: '/components/minishop2/other-addons/msbonus2/api' },
+                  {
+                    text: 'Кейсы',
+                    collapsed: true,
+                    items: [
+                      { text: 'Вывод информации в письме о списанных бонусах за заказ', link: '/components/minishop2/other-addons/msbonus2/cases/email-inform' },
+                      { text: 'Дополнительные бонусы за первый заказ на сайте', link: '/components/minishop2/other-addons/msbonus2/cases/additional-bonuses' },
+                      { text: 'Применять либо промокод msPromoCode2, либо бонусы msBonus2', link: '/components/minishop2/other-addons/msbonus2/cases/mspromocode2-or-msbonus2' },
+                    ],
+                  },
+                ],
+              },
               { text: 'msSetInCart', link: '/components/minishop2/other-addons/mssetincart' },
               { text: 'msYmarket', link: '/components/minishop2/other-addons/msymarket' },
               { text: 'mscZone', link: '/components/minishop2/other-addons/msczone' },
