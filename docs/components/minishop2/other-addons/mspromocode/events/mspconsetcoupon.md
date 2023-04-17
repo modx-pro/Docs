@@ -6,5 +6,5 @@
 
 ## Параметры
 
-* `msPromoCode $mspc` — ссылка на основной класс msPromoCode
-* `array $coupon` — массив промо-кода
+- `msPromoCode $mspc` — ссылка на основной класс msPromoCode
+- `array $coupon` — массив промо-кода

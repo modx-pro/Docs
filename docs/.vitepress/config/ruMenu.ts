@@ -528,6 +528,55 @@ export default<DefaultTheme.Sidebar> [
               { text: 'msSetInCart', link: '/components/minishop2/other-addons/mssetincart' },
               { text: 'msYmarket', link: '/components/minishop2/other-addons/msymarket' },
               {
+                text: 'msPromoCode',
+                link: '/components/minishop2/other-addons/mspromocode/',
+                collapsed: true,
+                items: [
+                  {
+                    text: 'Функционал',
+                    collapsed: true,
+                    items: [
+                      { text: 'Акции', link: '/components/minishop2/other-addons/mspromocode/functionality/stocks' },
+                      { text: 'Условия применения', link: '/components/minishop2/other-addons/mspromocode/functionality/conditions' },
+                      { text: 'Реферальные промо-коды', link: '/components/minishop2/other-addons/mspromocode/functionality/referral-promo-codes' },
+                      { text: 'Фиксированная скидка на всю корзину', link: '/components/minishop2/other-addons/mspromocode/functionality/fixed-cart-discount' },
+                    ],
+                  },
+                  { text: 'Установка и настройка', link: '/components/minishop2/other-addons/mspromocode/setup' },
+                  {
+                    text: 'Сниппеты',
+                    collapsed: true,
+                    items: [
+                      { text: 'mspcForm', link: '/components/minishop2/other-addons/mspromocode/snippets/mspcform' },
+                      { text: 'mspcRefCoupon', link: '/components/minishop2/other-addons/mspromocode/snippets/mspcrefcoupon' },
+                    ],
+                  },
+                  { text: 'jQuery события', link: '/components/minishop2/other-addons/mspromocode/jquery-events' },
+                  {
+                    text: 'События плагинов',
+                    link: '/components/minishop2/other-addons/mspromocode/events/',
+                    collapsed: true,
+                    items: [
+                      { text: 'mspcOnBeforeSetCoupon', link: '/components/minishop2/other-addons/mspromocode/events/mspconbeforesetcoupon' },
+                      { text: 'mspcOnSetCoupon', link: '/components/minishop2/other-addons/mspromocode/events/mspconsetcoupon' },
+                      { text: 'mspcOnBeforeSetProductDiscount', link: '/components/minishop2/other-addons/mspromocode/events/mspconbeforesetproductdiscount' },
+                      { text: 'mspcOnSetProductDiscount', link: '/components/minishop2/other-addons/mspromocode/events/mspconsetproductdiscount' },
+                      { text: 'mspcOnBindCouponToOrder', link: '/components/minishop2/other-addons/mspromocode/events/mspconbindcoupontoorder' },
+                    ],
+                  },
+                  {
+                    text: 'Кейсы',
+                    link: '/components/minishop2/other-addons/mspromocode/cases/',
+                    collapsed: true,
+                    items: [
+                      { text: 'Вывод информации по промо-коду в письме', link: '/components/minishop2/other-addons/mspromocode/cases/email-inform' },
+                      { text: 'Именные промокоды для пользователя', link: '/components/minishop2/other-addons/mspromocode/cases/personalized-promo-codes' },
+                      { text: 'Отменить промо-код при наличии в корзине запрещённых товаров', link: '/components/minishop2/other-addons/mspromocode/cases/cancel-promo-code' },
+                    ],
+                  },
+                ],
+              },
+              {
                 text: 'msPromoCode2',
                 link: '/components/minishop2/other-addons/mspromocode2/',
                 collapsed: true,

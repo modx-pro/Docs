@@ -1,6 +1,0 @@
-# Кейсы
-
-Расширенная пользовательская кастомизация компонента при помощи [jQuery триггеров][1] и [событий плагинов][2] позволяет реализовать почти любые "хотелки".
-
-[1]: /components/minishop2/other-addons/03_msPromoCode/08_jQuery_события.md
-[2]: /components/minishop2/other-addons/03_msPromoCode/10_События_плагинов/
