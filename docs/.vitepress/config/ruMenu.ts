@@ -993,6 +993,22 @@ export default<DefaultTheme.Sidebar> [
       },
       { text: 'simpleQueue', link: '/components/simplequeue' },
       {
+        text: 'SocialTools',
+        link: '/components/socialtools/',
+        collapsed: true,
+        items: [
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'socDialogForm', link: '/components/socialtools/snippets/socdialogform' },
+              { text: 'socDialogList', link: '/components/socialtools/snippets/socdialoglist' },
+              { text: 'socDialogReceive', link: '/components/socialtools/snippets/socdialogreceive' },
+            ],
+          },
+        ],
+      },
+      {
         text: 'Scheduler',
         link: '/components/scheduler/',
         collapsed: true,
