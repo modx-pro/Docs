@@ -41,4 +41,4 @@
 ![Система скидок - 3](https://file.modx.pro/files/e/c/0/ec079395ad6ced00052e447b18cc036e.gif)
 
 [1]: http://getbootstrap.com
-[2]: /components/minishop2/other-addons/02_msDiscount/index.md
+[2]: /components/msdiscount/
