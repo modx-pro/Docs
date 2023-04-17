@@ -32,4 +32,4 @@
 [![](https://file.modx.pro/files/9/f/c/9fc018d8d6ddf15c0f2aa10210335495s.jpg)](https://file.modx.pro/files/9/f/c/9fc018d8d6ddf15c0f2aa10210335495.png)
 
 [1]: http://bezumkin.ru/sections/components/1656/
-[3]: /components/minishop2/other-addons/05_msProfile/02_Сниппеты/01_msProfileCharge.md
+[3]: /components/minishop2/other-addons/msprofile/snippets/msprofilecharge

@@ -435,6 +435,22 @@ export default<DefaultTheme.Sidebar> [
               { text: 'msOneClick', link: '/components/minishop2/other-addons/msoneclick' },
               { text: 'msOptionsPrice', link: '/components/minishop2/other-addons/msoptionsprice' },
               {
+                text: 'msProfile',
+                collapsed: true,
+                items: [
+                  { text: 'Интерфейс', link: '/components/minishop2/other-addons/msprofile/interface' },
+                  {
+                    text: 'Сниппеты',
+                    collapsed: true,
+                    items: [
+                      { text: 'msProfile', link: '/components/minishop2/other-addons/msprofile/snippets/msprofile' },
+                      { text: 'msProfileCharge', link: '/components/minishop2/other-addons/msprofile/snippets/msprofilecharge' },
+                    ],
+                  },
+                  { text: 'Плагин', link: '/components/minishop2/other-addons/msprofile/plugin' },
+                ],
+              },
+              {
                 text: 'msPointsIssue',
                 collapsed: true,
                 items: [
