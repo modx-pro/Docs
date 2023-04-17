@@ -1045,6 +1045,35 @@ export default<DefaultTheme.Sidebar> [
         ],
       },
       {
+        text: 'Tickets',
+        collapsed: true,
+        items: [
+          {
+            text: 'Интерфейс',
+            collapsed: true,
+            items: [
+              { text: 'Создание раздела с Тикетами', link: '/components/tickets/interface/create-ticket-section' },
+              { text: 'Создание тикета', link: '/components/tickets/interface/create-ticket' },
+              { text: 'Настройка прав пользователей', link: '/components/tickets/interface/setup-permissions' },
+            ],
+          },
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'getTickets', link: '/components/tickets/snippets/gettickets' },
+              { text: 'getTicketsSections', link: '/components/tickets/snippets/getticketssections' },
+              { text: 'TicketComments', link: '/components/tickets/snippets/ticketcomments' },
+              { text: 'TicketForm', link: '/components/tickets/snippets/ticketform' },
+              { text: 'TicketLatest', link: '/components/tickets/snippets/ticketlatest' },
+              { text: 'TicketMeta', link: '/components/tickets/snippets/ticketmeta' },
+              { text: 'subscribeAuthor', link: '/components/tickets/snippets/subscribeauthor' },
+            ],
+          },
+          { text: 'TicketFormit', link: '/components/tickets/ticketformit' },
+        ],
+      },
+      {
         text: 'UserAuthHash',
         link: '/components/userauthhash/',
         collapsed: true,
