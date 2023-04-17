@@ -12,7 +12,7 @@ $q = $modx->newQuery('msProduct');
 $q->where(array('class_key' => 'msProduct','parent:IN' => $pids,'published' => 1,'deleted' => 0));
 $q->select('`msProduct`.`id`');
 if ($q->prepare() && $q->stmt->execute()) {
-    $ids = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
+  $ids = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
 }
 
 $q = $modx->newQuery('msProduct');
@@ -20,10 +20,10 @@ $q->leftJoin('msCategoryMember', 'Member', '`Member`.`product_id` = `msProduct`.
 $q->where(array('class_key' => 'msProduct','Member.category_id:IN' => $pids,'published' => 1,'deleted' => 0));
 $q->select('`msProduct`.`id`');
 if ($q->prepare() && $q->stmt->execute()) {
-    $ids2 = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
-    if (!empty($ids2)) {
-        $ids = array_unique(array_merge($ids, $ids2));
-    }
+  $ids2 = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
+  if (!empty($ids2)) {
+    $ids = array_unique(array_merge($ids, $ids2));
+  }
 }
 
 return count($ids);
