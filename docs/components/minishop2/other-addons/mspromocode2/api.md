@@ -14,38 +14,38 @@ $tools = $mspc2->getTools();
 
 // Данные промо-кода
 $data = [
-    'code' => 'coupon_code', // Код
-    'list' => 'default', // Список
+  'code' => 'coupon_code', // Код
+  'list' => 'default', // Список
 
-    'discount' => '50%', // Скидка
-    'count' => 20, // Кол-во
+  'discount' => '50%', // Скидка
+  'count' => 20, // Кол-во
 
-    'startedon' => 0, // Начало действия (timestamp)
-    'stoppedon' => 0, // Конец действия (timestamp)
+  'startedon' => 0, // Начало действия (timestamp)
+  'stoppedon' => 0, // Конец действия (timestamp)
 
-    'description' => '', // Описание
+  'description' => '', // Описание
 
-    'active' => true, // Включено
+  'active' => true, // Включено
 
-    'showinfo' => true, // Показывать предупреждения
+  'showinfo' => true, // Показывать предупреждения
 
-    'oneunit' => false, // На одну единицу товара
+  'oneunit' => false, // На одну единицу товара
 
-    'onlycart' => true, // Только в корзине
+  'onlycart' => true, // Только в корзине
 
-    'unsetifnull' => true, // Не применять без скидки
-    'unsetifnull_msg' => '', // Текст при отмене
+  'unsetifnull' => true, // Не применять без скидки
+  'unsetifnull_msg' => '', // Текст при отмене
 
-    'oldprice' => false, // Без старой цены
+  'oldprice' => false, // Без старой цены
 ];
 
 $response = $tools->runProcessor('mgr/coupons/create', $data);
 if ($errors = $tools->formatProcessorErrors($response)) {
-    // Печатаем ошибку
-    print_r($errors);
+  // Печатаем ошибку
+  print_r($errors);
 } else {
-    // Печатаем массив с промо-кодом
-    print_r($response->getObject());
+  // Печатаем массив с промо-кодом
+  print_r($response->getObject());
 }
 ```
 
@@ -60,14 +60,14 @@ $mspc2->initialize($modx->context->key);
 $tools = $mspc2->getTools();
 
 $data = [
-    'id' => 22, // ID промо-кода для удаления
+  'id' => 22, // ID промо-кода для удаления
 ];
 
 $response = $tools->runProcessor('mgr/coupons/remove', $data);
 if ($errors = $tools->formatProcessorErrors($response)) {
-    print_r($errors);
+  print_r($errors);
 } else {
-    print_r('Removed!');
+  print_r('Removed!');
 }
 ```
 
@@ -95,11 +95,11 @@ $randexp = $mspc2->getRandexp();
 $code = '';
 $format = '[0-9]{4}-[a-zA-Z0-9]{12}'; // шаблон по типу регулярки
 while (empty($code)) {
-    $tmp = $randexp->get($format);
-    if (!$modx->getCount('mspc2Coupon', ['code' => $tmp])) {
-        $code = $tmp;
-    }
-    unset($tmp);
+  $tmp = $randexp->get($format);
+  if (!$modx->getCount('mspc2Coupon', ['code' => $tmp])) {
+    $code = $tmp;
+  }
+  unset($tmp);
 }
 
 print_r($code);
@@ -141,9 +141,9 @@ $result = $manager->getCoupon($coupon_id);
 
 // Проверяем, удалось ли получить промо-код
 if (is_array($result)) {
-    print_r('Промо-код: ' . print_r($result, 1));
+  print_r('Промо-код: ' . print_r($result, 1));
 } else {
-    print_r('Ошибка: ' . $result);
+  print_r('Ошибка: ' . $result);
 }
 ```
 
@@ -160,9 +160,9 @@ $manager = $mspc2->getManager();
 //
 $result = $manager->getCurrentCoupon();
 if (is_array($result)) {
-    print_r('Актуальный промо-код: ' . print_r($result, 1));
+  print_r('Актуальный промо-код: ' . print_r($result, 1));
 } else {
-    print_r('Не найдено актуального промо-кода: ' . print_r($result, 1));
+  print_r('Не найдено актуального промо-кода: ' . print_r($result, 1));
 }
 ```
 
@@ -191,9 +191,9 @@ $result = $manager->setCoupon($coupon_id);
 
 // Проверяем, удалось ли применить промо-код
 if (is_array($result)) {
-    print_r('Применённый промо-код: ' . print_r($result, 1));
+  print_r('Применённый промо-код: ' . print_r($result, 1));
 } else {
-    print_r('Ошибка: ' . $result);
+  print_r('Ошибка: ' . $result);
 }
 ```
 
@@ -228,33 +228,33 @@ $format = '[a-zA-Z0-9]{12}';
 
 // Параметры промо-кода
 $data = [
-    // Основное
-    'list' => 'custom-list', // Поле "Список" для промо-кода
-    'count' => 1, // Сколько раз можно применить генерируемый промо-код
-    'discount' => '10%', // Размер скидки для генерируемого промо-кода
-    'description' => '', // Описание промо-кода
+  // Основное
+  'list' => 'custom-list', // Поле "Список" для промо-кода
+  'count' => 1, // Сколько раз можно применить генерируемый промо-код
+  'discount' => '10%', // Размер скидки для генерируемого промо-кода
+  'description' => '', // Описание промо-кода
 
-    // Конфиг
-    'showinfo' => true, // Показывать предупреждения
-    'oneunit' => false, // На одну единицу товара
-    'onlycart' => true, // Только в корзине
-    'unsetifnull' => false, // Не применять без скидки
-    'unsetifnull_msg' => '', // Текст при отмене
-    'oldprice' => false, // Без старой цены
+  // Конфиг
+  'showinfo' => true, // Показывать предупреждения
+  'oneunit' => false, // На одну единицу товара
+  'onlycart' => true, // Только в корзине
+  'unsetifnull' => false, // Не применять без скидки
+  'unsetifnull_msg' => '', // Текст при отмене
+  'oldprice' => false, // Без старой цены
 
-    // Время действия
-    // 'lifetime' => 60 * 20, // В секундах
-    // или
-    // 'startedon' => '', // Начало действия, timestamp
-    // 'stoppedon' => '', // Конец действия, timestamp
+  // Время действия
+  // 'lifetime' => 60 * 20, // В секундах
+  // или
+  // 'startedon' => '', // Начало действия, timestamp
+  // 'stoppedon' => '', // Конец действия, timestamp
 ];
 
 //
 $result = $manager->generateCoupon($format, $data);
 if (is_array($result)) {
-    print_r('Сгенерированный промо-код: ' . print_r($result, 1));
+  print_r('Сгенерированный промо-код: ' . print_r($result, 1));
 } else {
-    print_r('Ошибка при создании промо-кода: ' . print_r($result, 1));
+  print_r('Ошибка при создании промо-кода: ' . print_r($result, 1));
 }
 ```
 
@@ -266,5 +266,5 @@ if (is_array($result)) {
 
 Описано [в соответствующем разделе][15] документации.
 
-[14]: /components/minishop2/other-addons/04_msPromoCode2/17_События_плагинов/index.md
-[15]: /components/minishop2/other-addons/04_msPromoCode2/15_События_jQuery.md
+[14]: /components/minishop2/other-addons/mspromocode2/events/
+[15]: /components/minishop2/other-addons/mspromocode2/jquery-events
