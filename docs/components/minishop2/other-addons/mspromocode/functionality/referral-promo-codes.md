@@ -14,9 +14,10 @@
 
 ```modx
 [[!pdoPage?
-    &element=`mspcRefCoupon`
-    &limit=`2`
+  &element=`mspcRefCoupon`
+  &limit=`2`
 ]]
+
 [[!+page.nav]]
 ```
 
@@ -24,7 +25,7 @@
 
 ```modx
 [[!mspcRefCoupon
-    &tpl=`@INLINE <p><b>Код реферального промо-кода</b>: {$coupon}</p><p><b>Количество применений</b>: {$orders_count}</p>`
+  &tpl=`@INLINE <p><b>Код реферального промо-кода</b>: {$coupon}</p><p><b>Количество применений</b>: {$orders_count}</p>`
 ]]
 ```
 
@@ -36,25 +37,25 @@
 
 ## Плейсхолдеры шаблона tpl
 
-* `coupon` — код купона
-* `coupon_id` — id купона
-* `orders_count` — кол-во заказов по текущему купону
-* `orders` — список заказов, сформированный по шаблону `tplOrder`
+- `coupon` — код купона
+- `coupon_id` — id купона
+- `orders_count` — кол-во заказов по текущему купону
+- `orders` — список заказов, сформированный по шаблону `tplOrder`
 
 ## Плейсхолдеры шаблона tplOrder
 
-* `order_id` — id заказа
-* `discount_amount` — сумма скидки
-* `user_id` — id юзера, совершившего заказ
-* `createdon` — дата создания заказа
-* `order_num` — номер заказа
-* `order_cost` — общая стоимость заказа, вместе с доставкой
-* `order_cart_cost` — стоимость заказа, без доставки
-* `username` — username покупателя
-* `fullname` — fullname покупателя
-* `email` — email покупателя
-* `phone` — телефон покупателя
-* `status_name` — название текущего статуса заказа
-* `status_description` — описание текущего статуса заказа
+- `order_id` — id заказа
+- `discount_amount` — сумма скидки
+- `user_id` — id юзера, совершившего заказ
+- `createdon` — дата создания заказа
+- `order_num` — номер заказа
+- `order_cost` — общая стоимость заказа, вместе с доставкой
+- `order_cart_cost` — стоимость заказа, без доставки
+- `username` — username покупателя
+- `fullname` — fullname покупателя
+- `email` — email покупателя
+- `phone` — телефон покупателя
+- `status_name` — название текущего статуса заказа
+- `status_description` — описание текущего статуса заказа
 
-[1]: /components/minishop2/other-addons/03_msPromoCode/10_События_плагинов/180_mspcOnBindCouponToOrder.md
+[1]: /components/minishop2/other-addons/mspromocode/events/mspconbindcoupontoorder

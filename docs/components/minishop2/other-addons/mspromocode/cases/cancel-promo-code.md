@@ -16,66 +16,66 @@
 ```php
 $sp = &$scriptProperties;
 switch ($modx->event->name) {
-    /**
-     * Запрещаем применять промо-код "testCoupon",
-     * если в корзине товар с ID == 25
-     */
-    case 'mspcOnSetCoupon':
-        // Проверяем, наш ли это купон
-        if ($coupon['code'] !== 'testCoupon') {
-            break;
-        }
+  /**
+   * Запрещаем применять промо-код "testCoupon",
+   * если в корзине товар с ID == 25
+   */
+  case 'mspcOnSetCoupon':
+    // Проверяем, наш ли это купон
+    if ($coupon['code'] !== 'testCoupon') {
+      break;
+    }
 
-        // Получаем массив корзины
-        $cart_data = $mspc->ms2->cart->get();
+    // Получаем массив корзины
+    $cart_data = $mspc->ms2->cart->get();
 
-        // Ищем в корзине запрещёнку
-        $is_stop = !empty(array_filter($cart_data, function ($v) {
-            return $v['id'] == 25;
-        }));
-        unset($cart_data);
+    // Ищем в корзине запрещёнку
+    $is_stop = !empty(array_filter($cart_data, function ($v) {
+      return $v['id'] == 25;
+    }));
+    unset($cart_data);
 
-        // Удаляем промо-код!
-        if ($is_stop) {
-            $mspc->discount->removeDiscountFromCart();
-            $mspc->coupon->removeCurrentCoupon();
-            $mspc->setError('Промо-код не соответствует условиям!', true);
-        }
-        break;
-    /**
-     * Отменяем промо-код "testCoupon",
-     * если в корзину добавлен товар с ID == 25
-     */
-    case 'msOnAddToCart':
-        // Получаем объект msPromoCode
-        $mspc = $modx->getService('mspromocode', 'msPromoCode', MODX_CORE_PATH . 'components/mspromocode/model/mspromocode/');
-        if (!is_object($mspc) || empty($mspc->active)) {
-            break;
-        }
-        // Получаем массив купона
-        $coupon = $mspc->coupon->getCurrentCoupon();
+    // Удаляем промо-код!
+    if ($is_stop) {
+      $mspc->discount->removeDiscountFromCart();
+      $mspc->coupon->removeCurrentCoupon();
+      $mspc->setError('Промо-код не соответствует условиям!', true);
+    }
+    break;
+  /**
+   * Отменяем промо-код "testCoupon",
+   * если в корзину добавлен товар с ID == 25
+   */
+  case 'msOnAddToCart':
+    // Получаем объект msPromoCode
+    $mspc = $modx->getService('mspromocode', 'msPromoCode', MODX_CORE_PATH . 'components/mspromocode/model/mspromocode/');
+    if (!is_object($mspc) || empty($mspc->active)) {
+      break;
+    }
+    // Получаем массив купона
+    $coupon = $mspc->coupon->getCurrentCoupon();
 
-        // Проверяем, наш ли это купон
-        if ($coupon['code'] !== 'testCoupon') {
-            break;
-        }
+    // Проверяем, наш ли это купон
+    if ($coupon['code'] !== 'testCoupon') {
+      break;
+    }
 
-        // Получаем массив корзины
-        $cart_data = $cart->get();
+    // Получаем массив корзины
+    $cart_data = $cart->get();
 
-        // Ищем в корзине запрещёнку
-        $is_stop = !empty(array_filter($cart_data, function ($v) {
-            return $v['id'] == 25;
-        }));
-        unset($cart_data);
+    // Ищем в корзине запрещёнку
+    $is_stop = !empty(array_filter($cart_data, function ($v) {
+      return $v['id'] == 25;
+    }));
+    unset($cart_data);
 
-        // Удаляем промо-код!
-        if ($is_stop) {
-            $mspc->discount->removeDiscountFromCart();
-            $mspc->coupon->removeCurrentCoupon();
-            $mspc->setError('Промо-код отменён, т.к. он не соответствует условиям!', true);
-        }
-        break;
+    // Удаляем промо-код!
+    if ($is_stop) {
+      $mspc->discount->removeDiscountFromCart();
+      $mspc->coupon->removeCurrentCoupon();
+      $mspc->setError('Промо-код отменён, т.к. он не соответствует условиям!', true);
+    }
+    break;
 }
 ```
 
