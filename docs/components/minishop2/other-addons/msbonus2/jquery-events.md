@@ -8,11 +8,11 @@
 
 ### Пример msb2_set
 
-```javascript
-$(document).ready(function() {
-    $(document).on('msb2_set', function(e, response) {
-        console.log('msb2_set response', response);
-    });
+```js
+$(document).ready(function () {
+  $(document).on('msb2_set', function (e, response) {
+    console.log('msb2_set response', response);
+  });
 });
 ```
 
@@ -22,10 +22,10 @@ $(document).ready(function() {
 
 ### Пример msb2_unset
 
-```javascript
-$(document).ready(function() {
-    $(document).on('msb2_unset', function(e, response) {
-        console.log('msb2_unset response', response);
-    });
+```js
+$(document).ready(function () {
+  $(document).on('msb2_unset', function (e, response) {
+    console.log('msb2_unset response', response);
+  });
 });
 ```
