@@ -579,6 +579,31 @@ export default<DefaultTheme.Sidebar> [
       { text: 'modTree', link: '/components/modtree' },
       { text: 'modVkMarket', link: '/components/modvkmarket' },
       {
+        text: 'ms2Gallery',
+        collapsed: true,
+        items: [
+          {
+            text: 'Сниппеты',
+            collapsed: true,
+            items: [
+              { text: 'ms2Gallery', link: '/components/ms2gallery/snippets/ms2gallery' },
+              { text: 'ms2GalleryResources', link: '/components/ms2gallery/snippets/ms2galleryresources' },
+            ],
+          },
+          { text: 'Генерация превью', link: '/components/ms2gallery/preview-generation' },
+          { text: 'Интеграция', link: '/components/ms2gallery/integration' },
+          { text: 'Картинки на странице', link: '/components/ms2gallery/output' },
+          {
+            text: 'Примеры',
+            collapsed: true,
+            items: [
+              { text: 'Консольный импорт', link: '/components/ms2gallery/examples/console-import' },
+              { text: 'Слайдер Bootstrap3', link: '/components/ms2gallery/examples/bootstrap3-slider' },
+            ],
+          },
+        ],
+      },
+      {
         text: 'msFavorites',
         link: '/components/msfavorites/',
         collapsed: true,
