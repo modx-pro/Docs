@@ -10,24 +10,24 @@
 
 ```fenom
 {var $coupon = (('!pdoResources' | snippet : [
-    'class' => 'mspc2CouponOrder',
-    'loadModels' => 'msPromoCode2',
-    'innerJoin' => [ [
-        'class' => 'mspc2Coupon',
-        'alias' => 'mspc2Coupon',
-        'on' => 'mspc2Coupon.id = mspc2CouponOrder.coupon',
-    ] ],
-    'select' => [
-        'mspc2CouponOrder' => 'code, discount, discount_amount',
-    ],
-    'where' => [
-        'mspc2CouponOrder.order' => $order['id'],
-    ],
-    'sortby' => '{"id":"ASC"}',
-    'return' => 'json',
+  'class' => 'mspc2CouponOrder',
+  'loadModels' => 'msPromoCode2',
+  'innerJoin' => [ [
+    'class' => 'mspc2Coupon',
+    'alias' => 'mspc2Coupon',
+    'on' => 'mspc2Coupon.id = mspc2CouponOrder.coupon',
+  ] ],
+  'select' => [
+    'mspc2CouponOrder' => 'code, discount, discount_amount',
+  ],
+  'where' => [
+    'mspc2CouponOrder.order' => $order['id'],
+  ],
+  'sortby' => '{"id":"ASC"}',
+  'return' => 'json',
 ]) | fromJSON)}
 {if $coupon?}
-    {var $coupon = $coupon[0]}
+  {var $coupon = $coupon[0]}
 {/if}
 ```
 
@@ -35,9 +35,9 @@
 
 ```php
 Array (
-    [code] => DISCOUNT
-    [discount] => 20%
-    [discount_amount] => 40218.00
+  [code] => DISCOUNT
+  [discount] => 20%
+  [discount_amount] => 40218.00
 )
 ```
 
@@ -45,10 +45,10 @@ Array (
 
 Имея эту информацию по купону мы можем узнать и стоимость корзины без скидки:
 
-```modx
-Сумма скидки: {$coupon['discount_amount']}
-Стоимость со скидкой: {$total['cart_cost']}
-Стоимость без скидки: {($coupon['discount_amount'] + ($total['cart_cost'] | replace : ' ' : ''))}
+```fenom
+Сумма скидки: {$coupon.discount_amount}
+Стоимость со скидкой: {$total.cart_cost}
+Стоимость без скидки: {($coupon.discount_amount + ($total.cart_cost | replace : ' ' : ''))}
 ```
 
 Обратите внимание на то, как я обрабатываю стоимость корзины: `$total.cart_cost | replace : ' ' : ''`.

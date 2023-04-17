@@ -26,27 +26,27 @@
 
 ```fenom
 <div id="msCart">
-    ...
-    {foreach $products as $product}
-        <tr id="{$product.key}" data-mspc2-id="{$product | mspc2CartKey}">
-            <td class="title">
-                ...
-            </td>
-            <td class="count">
-                ...
-            </td>
-            <td class="price [ js-mspc2-cart-product-prices ]">
-                <span class="mr-2 text-nowrap">{$product.price} {'ms2_frontend_currency' | lexicon}</span>
-                {if $product.old_price?}
-                    <span class="old_price text-nowrap">{$product.old_price} {'ms2_frontend_currency' | lexicon}</span>
-                {/if}
-            </td>
-            <td class="cost [ js-mspc2-cart-product-prices ]">
-                <span class="mr-2 text-nowrap"><span class="ms2_cost">{$product.cost}</span> {'ms2_frontend_currency' | lexicon}</span>
-            </td>
-        </tr>
-    {/foreach}
-    ...
+  ...
+  {foreach $products as $product}
+    <tr id="{$product.key}" data-mspc2-id="{$product | mspc2CartKey}">
+      <td class="title">
+        ...
+      </td>
+      <td class="count">
+        ...
+      </td>
+      <td class="price [ js-mspc2-cart-product-prices ]">
+        <span class="mr-2 text-nowrap">{$product.price} {'ms2_frontend_currency' | lexicon}</span>
+        {if $product.old_price?}
+          <span class="old_price text-nowrap">{$product.old_price} {'ms2_frontend_currency' | lexicon}</span>
+        {/if}
+      </td>
+      <td class="cost [ js-mspc2-cart-product-prices ]">
+        <span class="mr-2 text-nowrap"><span class="ms2_cost">{$product.cost}</span> {'ms2_frontend_currency' | lexicon}</span>
+      </td>
+    </tr>
+  {/foreach}
+  ...
 </div>
 ```
 
@@ -65,31 +65,31 @@
 
 ```fenom
 <div class="ms2_product [ js-mspc2-product ]" data-id="{$id}">
-    ...
-    <span class="price">
-        <span class="[ js-mspc2-product-price ]">
-            {$price}
-        </span>
-        {'ms2_frontend_currency' | lexicon}
+  ...
+  <span class="price">
+    <span class="[ js-mspc2-product-price ]">
+      {$price}
     </span>
+    {'ms2_frontend_currency' | lexicon}
+  </span>
 
-    <span class="discount" style="display: none;">
-        Скидка:
-        <span class="[ js-mspc2-product-discount-amount ]">
-            0
-        </span>
-        {'ms2_frontend_currency' | lexicon}
+  <span class="discount" style="display: none;">
+    Скидка:
+    <span class="[ js-mspc2-product-discount-amount ]">
+      0
     </span>
+    {'ms2_frontend_currency' | lexicon}
+  </span>
 
-    {if $old_price?}
-        <span class="old_price">
-            <span class="[ js-mspc2-product-old-price ]">
-                {$old_price}
-            </span>
-            {'ms2_frontend_currency' | lexicon}
-        </span>
-    {/if}
-    ...
+  {if $old_price?}
+    <span class="old_price">
+      <span class="[ js-mspc2-product-old-price ]">
+        {$old_price}
+      </span>
+      {'ms2_frontend_currency' | lexicon}
+    </span>
+  {/if}
+  ...
 </div>
 ```
 
@@ -100,28 +100,28 @@
 ```modx
 ...
 <div id="msProduct" class="[ js-mspc2-product ]" data-id="{$_modx->resource['id']}">
-    ...
-    <span class="[ js-mspc2-product-price ]">
-        [[+price]]
+  ...
+  <span class="[ js-mspc2-product-price ]">
+    [[+price]]
+  </span>
+  [[%ms2_frontend_currency]]
+
+  [[+old_price:gt=`0`:then=`
+    <span class="old_price ml-2">
+      <span class="[ js-mspc2-product-old-price ]">
+        [[+old_price]]
+      </span>
+      [[%ms2_frontend_currency]]
+    </span>
+  `:else=``]]
+
+  <div class="discount ml-md-3" style="display: none;">
+    Скидка:
+    <span class="[ js-mspc2-product-discount-amount ]">
+      0
     </span>
     [[%ms2_frontend_currency]]
-
-    [[+old_price:gt=`0`:then=`
-        <span class="old_price ml-2">
-            <span class="[ js-mspc2-product-old-price ]">
-                [[+old_price]]
-            </span>
-            [[%ms2_frontend_currency]]
-        </span>
-    `:else=``]]
-
-    <div class="discount ml-md-3" style="display: none;">
-        Скидка:
-        <span class="[ js-mspc2-product-discount-amount ]">
-            0
-        </span>
-        [[%ms2_frontend_currency]]
-    </div>
+  </div>
 </div>
 ```
 
@@ -131,9 +131,9 @@
 
 ```fenom
 <div style="display: none;">
-    Скидка:
-    <span class="[ js-mspc2-product-discount-amount ]">0</span>
-    {'ms2_frontend_currency' | lexicon}
+  Скидка:
+  <span class="[ js-mspc2-product-discount-amount ]">0</span>
+  {'ms2_frontend_currency' | lexicon}
 </div>
 ```
 

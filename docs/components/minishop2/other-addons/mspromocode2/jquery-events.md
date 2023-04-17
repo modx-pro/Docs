@@ -8,11 +8,11 @@
 
 ### Пример mspc2_set
 
-```javascript
-$(document).ready(function() {
-    $(document).on('mspc2_set', function(e, response) {
-        console.log('mspc2_set response', response);
-    });
+```js
+$(document).ready(function () {
+  $(document).on('mspc2_set', function (e, response) {
+    console.log('mspc2_set response', response);
+  });
 });
 ```
 
@@ -22,10 +22,10 @@ $(document).ready(function() {
 
 ### Пример mspc2_unset
 
-```javascript
-$(document).ready(function() {
-    $(document).on('mspc2_unset', function(e, response) {
-        console.log('mspc2_unset response', response);
-    });
+```js
+$(document).ready(function () {
+  $(document).on('mspc2_unset', function (e, response) {
+    console.log('mspc2_unset response', response);
+  });
 });
 ```

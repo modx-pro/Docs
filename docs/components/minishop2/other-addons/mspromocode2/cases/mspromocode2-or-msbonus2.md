@@ -18,18 +18,18 @@ $mspc2Manager = $mspc2->getManager();
 $error_text = 'Можно воспользоваться либо промо-кодом на скидку, либо бонусами.';
 
 switch ($modx->event->name) {
-    case 'msb2OnBeforeSetBonus':
-        $result = $mspc2Manager->getCurrentCoupon();
-        if (is_array($result)) {
-            $modx->event->output($error_text);
-        }
-        break;
+  case 'msb2OnBeforeSetBonus':
+    $result = $mspc2Manager->getCurrentCoupon();
+    if (is_array($result)) {
+      $modx->event->output($error_text);
+    }
+    break;
 
-    case 'mspc2OnBeforeSetCoupon':
-        $result = $msb2Manager->getCartWriteoff();
-        if (!empty($result)) {
-            $modx->event->output($error_text);
-        }
-        break;
+  case 'mspc2OnBeforeSetCoupon':
+    $result = $msb2Manager->getCartWriteoff();
+    if (!empty($result)) {
+      $modx->event->output($error_text);
+    }
+    break;
 }
 ```

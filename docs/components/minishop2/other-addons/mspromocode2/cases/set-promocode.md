@@ -21,13 +21,13 @@ $mspc2 = $modx->getService('mspromocode2', 'msPromoCode2',
 $mspc2->initialize($modx->context->key);
 $manager = $mspc2->getManager();
 switch ($modx->event->name) {
-    case 'OnWebPageInit':
-        $couponCurrent = $manager->getCurrentCoupon();
-        $couponNew = $manager->getCoupon($code);
-        if (!is_array($couponCurrent) && is_array($couponNew)) {
-            $manager->setCoupon((int)$couponNew['id']);
-        }
-        break;
+  case 'OnWebPageInit':
+    $couponCurrent = $manager->getCurrentCoupon();
+    $couponNew = $manager->getCoupon($code);
+    if (!is_array($couponCurrent) && is_array($couponNew)) {
+      $manager->setCoupon((int)$couponNew['id']);
+    }
+    break;
 }
 ```
 
