@@ -476,6 +476,19 @@ export default<DefaultTheme.Sidebar> [
               { text: 'mscZone', link: '/components/minishop2/other-addons/msczone' },
             ],
           },
+          {
+            text: 'Полезные выборки',
+            collapsed: true,
+            items: [
+              { text: 'Вывод количества товаров в категории', link: '/components/minishop2/useful-queries/count-category-products' },
+              { text: 'Вывод производителей товаров MS2', link: '/components/minishop2/useful-queries/get-vendors' },
+              { text: 'Получение id товаров по опции MS2', link: '/components/minishop2/useful-queries/get-product-id-by-option' },
+              { text: 'Дерево ресурсов', link: '/components/minishop2/useful-queries/get-resource-tree' },
+              { text: 'Вывод всех категорий товара', link: '/components/minishop2/useful-queries/get-categories' },
+              { text: 'Выбор товаров по опциям', link: '/components/minishop2/useful-queries/get-products-by-options' },
+              { text: 'Вывод ссылок на дополнительные категории товара', link: '/components/minishop2/useful-queries/get-categories-links' },
+            ],
+          },
         ],
       },
       {

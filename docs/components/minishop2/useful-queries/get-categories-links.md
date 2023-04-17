@@ -10,17 +10,17 @@ $pdo = $modx->getService('pdoFetch');
 
 $conditions = array('product_id' => $id);
 $options = array(
-    'innerJoin' => array(
-        'msCategory' => array('on' => 'msCategoryMember.category_id = msCategory.id')
-    ),
-    'select' => array('msCategory' => 'all'),
-    'sortby' => 'msCategory.id'
+  'innerJoin' => array(
+    'msCategory' => array('on' => 'msCategoryMember.category_id = msCategory.id')
+  ),
+  'select' => array('msCategory' => 'all'),
+  'sortby' => 'msCategory.id'
 );
 $rows = $pdo->getCollection('msCategoryMember', $conditions, $options);
 
 $output = '';
 foreach ($rows as $row) {
-    $output .= $pdo->getChunk($tpl, $row);
+  $output .= $pdo->getChunk($tpl, $row);
 }
 
 return $output;
