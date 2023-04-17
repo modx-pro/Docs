@@ -1,4 +1,4 @@
-# Основное
+# Интерфейс
 
 Панель управления находится в отдельном разделе сайта [Настройки miniShop2][01020104], вкладка - **варианты доставки**
 Окно доставки содержит следующие вкладки компонента:
@@ -28,7 +28,14 @@
 Вкладка, на которой доступны свойства способа доставки - поле `properties`.
 
 ```json
-{"hidden":"delivery_address,mspointsissue_map","geonames":{"country":"RU","cities":"cities15000"},"mode":"point"}
+{
+  "hidden": "delivery_address,mspointsissue_map",
+  "geonames": {
+    "country": "RU",
+    "cities": "cities15000"
+  },
+  "mode": "point"
+}
 ```
 
 - `mode` - режим способа доставки. Доступен `terminal`,`point`.
@@ -36,4 +43,3 @@
 - `hidden` - список скрытых полей формы заказа
 
 [01020104]: /components/minishop2/interface/settings
-

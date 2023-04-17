@@ -19,36 +19,36 @@
 
 У каждого товара есть свой источник файлов (Media source), который управляет параметрами загрузки. Основные свойства:
 
-* **basePath** - путь к директории с файлами товаров. По умолчанию: `assets/images/products/`
-* **basePathRelative** - basePath сожет быть указан относительно корня сайта, если включена эта опция.
-* **baseUrl** - url директории с файлами товаров, обычно совпадает с *basePath*, если включена *basePathRelative*.
-* **baseUrlRelative** - baseUrl может быть указан относительно корня сайта, если включена эта опция.
-* **allowedFileTypes** - разрешённые для загрузки типы файлов. По умолчанию только изображения: `jpg,jpeg,png,gif`.
-* **imageExtensions** - какие типы файлов являются изображениями. По умолчанию: `jpg,jpeg,png,gif`
-* **thumbnailType** - формат файлов превью: JPG или PNG.
-* **thumbnailQuality** - качество генерируемого превью, от 0 до 100, где 100 - максимальное качество.
-* **skipFiles** - служебные типы файлов, которые не нужно показывать.
-* **thumbnails** - настройка генерации картинок-превью в виде JSON массива. Можно указывать любые параметры, которые [примет phpThumb][5].
-* **maxUploadWidth** - максимальная ширина изображения. Всё что больше, будет пережато javascript на клиенте, перед загрузкой.
-* **maxUploadHeight** - максимальная высота изображения. Всё что больше, будет пережато javascript на клиенте, перед загрузкой.
-* **maxUploadSize** - максимальный размер изображения, в байтах.
-* **imageNameType** - вид наименования файлов: hash от содержимого, или обработка названия файла алгоритмом генерации friendly имён ресурсов.
+- **basePath** - путь к директории с файлами товаров. По умолчанию: `assets/images/products/`
+- **basePathRelative** - basePath сожет быть указан относительно корня сайта, если включена эта опция.
+- **baseUrl** - url директории с файлами товаров, обычно совпадает с *basePath*, если включена *basePathRelative*.
+- **baseUrlRelative** - baseUrl может быть указан относительно корня сайта, если включена эта опция.
+- **allowedFileTypes** - разрешённые для загрузки типы файлов. По умолчанию только изображения: `jpg,jpeg,png,gif`.
+- **imageExtensions** - какие типы файлов являются изображениями. По умолчанию: `jpg,jpeg,png,gif`
+- **thumbnailType** - формат файлов превью: JPG или PNG.
+- **thumbnailQuality** - качество генерируемого превью, от 0 до 100, где 100 - максимальное качество.
+- **skipFiles** - служебные типы файлов, которые не нужно показывать.
+- **thumbnails** - настройка генерации картинок-превью в виде JSON массива. Можно указывать любые параметры, которые [примет phpThumb][5].
+- **maxUploadWidth** - максимальная ширина изображения. Всё что больше, будет пережато javascript на клиенте, перед загрузкой.
+- **maxUploadHeight** - максимальная высота изображения. Всё что больше, будет пережато javascript на клиенте, перед загрузкой.
+- **maxUploadSize** - максимальный размер изображения, в байтах.
+- **imageNameType** - вид наименования файлов: hash от содержимого, или обработка названия файла алгоритмом генерации friendly имён ресурсов.
 
 При изменении источника медиа товара, уже загруженные файлы в него не скопируются - вам нужно позаботиться об этом самостоятельно.
 
 ## Основные настройки phpThumb
 
-* **w** - ширина превью в пикселях
-* **h** - высота превью в пикселях
-* **zc** - приблизить и обрезать изображение, чтобы вписать его в заданные *h* и *w*
-* **bg** - цвет фона в виде html color hex (ffffff, 000000 и т.п.)
-* **far** - подогнать в размеры *h* и *w* без обрезки. Требует указания фона в *bg*
-* **q** - качество изображения, от 0 до 100
-* **ar** - автоповорот изображения c использованием данных EXIF
+- **w** - ширина превью в пикселях
+- **h** - высота превью в пикселях
+- **zc** - приблизить и обрезать изображение, чтобы вписать его в заданные *h* и *w*
+- **bg** - цвет фона в виде html color hex (ffffff, 000000 и т.п.)
+- **far** - подогнать в размеры *h* и *w* без обрезки. Требует указания фона в *bg*
+- **q** - качество изображения, от 0 до 100
+- **ar** - автоповорот изображения c использованием данных EXIF
 
 Если нужно подгонять изображения только по высоте или ширине, то нужно указывать только *h* или *w*.
 
-``` json
+```json
 [{"w":120,"q":90,"zc":"1","bg":"000000"},{"h":270,"q":90,"far":"1","bg":"ffffff"}]
 ```
 
@@ -64,8 +64,9 @@
 
 Или вы можете обновить сразу **все картинки** специальным скриптом:
 
-``` php
+```php
 <?php
+
 $step = 5;
 $offset = isset($_SESSION['galgenoffset']) && $_SESSION['galgenoffset'] ? $_SESSION['galgenoffset'] : 0;
 $miniShop2 = $modx->getService('minishop2');
@@ -77,8 +78,8 @@ $q->sortby('rank', 'DESC');
 $q->limit($step,$offset);
 $resources = $modx->getCollection('msProductFile', $q);
 foreach ($resources as $resource) {
-    $modx->runProcessor('mgr/gallery/generate', array('id' => $resource->id),
-        array('processors_path' => $modx->getOption('core_path').'components/minishop2/processors/'));
+  $modx->runProcessor('mgr/gallery/generate', array('id' => $resource->id),
+    array('processors_path' => $modx->getOption('core_path').'components/minishop2/processors/'));
 }
 
 $_SESSION['galgenoffset'] = $offset + $step;
@@ -91,20 +92,20 @@ if ($_SESSION['galgenoffset'] >= $total) {
   $_SESSION['Console']['completed'] = false;
 }
 for ($i=0; $i<=100; $i++) {
-    if ($i <= $sucsess) {
-        print '=';
-    } else {
-        print '_';
-    }
+  if ($i <= $sucsess) {
+    print '=';
+  } else {
+    print '_';
+  }
 }
 $current = $_SESSION['galgenoffset'] ?
            $_SESSION['galgenoffset'] :
            ($sucsess == 100 ? $total : 0);
 print "\n";
-print $sucsess.'% ('.$current.')'."\n\n";
+print $sucsess . '% (' . $current . ')' . "\n\n";
 ```
 
 Так как операция генерации превью может занять длительное время, лучше запускать этот скрипт из консоли сервера.
 
-[4]: /components/18_ms2Gallery
+[4]: /components/ms2gallery
 [5]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt

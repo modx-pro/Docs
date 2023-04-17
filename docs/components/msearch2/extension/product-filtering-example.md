@@ -234,6 +234,6 @@ class myCustomFilter extends mse2FiltersHandler {
 
 Конечно, можно оформить это чекбоксами, поменять текст в словарях и т.д. Принцип останется прежним.
 
-[1]: /components/minishop2/index
+[1]: /components/minishop2/
 [2]: /components/msearch2/
 [3]: /components/minishop2/development/product-plugins

@@ -7,15 +7,15 @@
 
 Итак, обязательные методы интерфейса **msOrderInterface**:
 
-* **initialize** - Инициализирует класс в контекст. Может загружать скрипты и стили.
-* **add** - Добавляет одно поле в заказ.
-* **remove** - Удаляет одно поле из заказа.
-* **validate** - Проводит проверку поля при добавлении и возвращает фильтрованное значение.
-* **get** - Возвращает содержимое заказа, целиком.
-* **set** - Перезаписывает содержимое заказа полученным массивом.
-* **submit** - Оформление заказа, в нём уже должна быть доставка и обязательные поля.
-* **clean** - Полная очистка заказа.
-* **getcost** - Получение стоимости доставки. Запрос передаётся в `msDeliveryInterface`.
+- **initialize** - Инициализирует класс в контекст. Может загружать скрипты и стили.
+- **add** - Добавляет одно поле в заказ.
+- **remove** - Удаляет одно поле из заказа.
+- **validate** - Проводит проверку поля при добавлении и возвращает фильтрованное значение.
+- **get** - Возвращает содержимое заказа, целиком.
+- **set** - Перезаписывает содержимое заказа полученным массивом.
+- **submit** - Оформление заказа, в нём уже должна быть доставка и обязательные поля.
+- **clean** - Полная очистка заказа.
+- **getcost** - Получение стоимости доставки. Запрос передаётся в `msDeliveryInterface`.
 
 ## Алгоритм работы
 
@@ -75,29 +75,30 @@
 
 ``` php
 <?php
+
 switch ($modx->event->name) {
-    // Добавление полей в заказ
-    case 'msOnBeforeAddToOrder'; break; // получает $key с именем поля, $value - значение поля
-    case 'msOnAddToOrder'; break; // получает $key с именем поля, $value - значение поля
+  // Добавление полей в заказ
+  case 'msOnBeforeAddToOrder'; break; // получает $key с именем поля, $value - значение поля
+  case 'msOnAddToOrder'; break; // получает $key с именем поля, $value - значение поля
 
-    // Удаление полей из заказа
-    case 'msOnBeforeRemoveFromOrder'; break; // получает $key с именем поля
-    case 'msOnRemoveFromOrder'; break; // получает $key с именем поля
+  // Удаление полей из заказа
+  case 'msOnBeforeRemoveFromOrder'; break; // получает $key с именем поля
+  case 'msOnRemoveFromOrder'; break; // получает $key с именем поля
 
-    // Отправка заказа
-    case 'msOnSubmitOrder'; break; // необязательный массив $data с переназначаемыми полями
+  // Отправка заказа
+  case 'msOnSubmitOrder'; break; // необязательный массив $data с переназначаемыми полями
 
-    // Создание заказа
-    case 'msOnBeforeCreateOrder'; break; // получает готовый объект $order со всеми прицепленными объектами
-    case 'msOnCreateOrder'; break; // тоже самое
+  // Создание заказа
+  case 'msOnBeforeCreateOrder'; break; // получает готовый объект $order со всеми прицепленными объектами
+  case 'msOnCreateOrder'; break; // тоже самое
 
-    // Очистка заказа
-    case 'msOnBeforeEmptyOrder'; break; // получает только объект $order
-    case 'msOnEmptyOrder'; break; // получает только объект $order
+  // Очистка заказа
+  case 'msOnBeforeEmptyOrder'; break; // получает только объект $order
+  case 'msOnEmptyOrder'; break; // получает только объект $order
 
-    // Смена статуса заказа (оплата, отмена и т.д.)
-    case 'msOnBeforeChangeOrderStatus': break; // получает объект $order и id статуса в $status
-    case 'msOnChangeOrderStatus': break; // получает объект $order и id статуса в $status
+  // Смена статуса заказа (оплата, отмена и т.д.)
+  case 'msOnBeforeChangeOrderStatus': break; // получает объект $order и id статуса в $status
+  case 'msOnChangeOrderStatus': break; // получает объект $order и id статуса в $status
 }
 ```
 
@@ -109,40 +110,43 @@ switch ($modx->event->name) {
 
 * Создаём и [подключаем свой расширяющий класс][2]. Затем пишем в нём
 
-``` php
+```php
 <?php
-    class myOrderHandler extends msOrderHandler {
+
+class myOrderHandler extends msOrderHandler {
+
 }
 ```
 
 Это мы унаследовали оригинальный класс оформления заказа.
 
-* Теперь указываем новый класс **myOrderHandler** в системной настройке **ms2_order_handler_class**. Если что то пойдёт не так, то всегда можно вернуть старый класс. После этого ms2 уже использует ваш класс для работы, а тот, в свою очередь наследует свои методы от стандартного.
+- Теперь указываем новый класс **myOrderHandler** в системной настройке **ms2_order_handler_class**. Если что то пойдёт не так, то всегда можно вернуть старый класс. После этого ms2 уже использует ваш класс для работы, а тот, в свою очередь наследует свои методы от стандартного.
 
-* Теперь мы можем изменить любой метод создания заказа, чем и пользуемся — меняем `msOrderHandler::validate()`.
+- Теперь мы можем изменить любой метод создания заказа, чем и пользуемся — меняем `msOrderHandler::validate()`.
 
 ``` php
 <?php
 class myOrderHandler extends msOrderHandler {
-    public function validate($key, $value) {
-        switch ($key) {
-            case 'email':
-                // меняем filter_var() на простую регулярку
-                // $value = filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : @$this->order[$key];
-                $value = preg_match('/.+@.+\..+/i', $value) ? trim($value) : @$this->order[$key];
-            break;
-            // Конечно, также можно переопределить и другие валидаторы
+  public function validate($key, $value) {
+    switch ($key) {
+      case 'email':
+        // меняем filter_var() на простую регулярку
+        // $value = filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : @$this->order[$key];
+        $value = preg_match('/.+@.+\..+/i', $value) ? trim($value) : @$this->order[$key];
+      break;
+      // Конечно, также можно переопределить и другие валидаторы
 
-            // Если прислано поле, которого тут нет - отправляем в дефолтный класс
-            default:
-                return parent::validate($key, $value);
-        }
-        if ($value === false) {
-            $value = '';
-        }
-
-        return $value;
+      // Если прислано поле, которого тут нет - отправляем в дефолтный класс
+      default:
+        return parent::validate($key, $value);
     }
+
+    if ($value === false) {
+      $value = '';
+    }
+
+    return $value;
+  }
 }
 ```
 

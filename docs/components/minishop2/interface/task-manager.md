@@ -53,4 +53,4 @@
 Подробнее о компоненте Scheduler читайте в [соотвествующем разделе нашей документации][2]
 
 [1]: https://modstore.pro/packages/utilities/scheduler
-[2]: https://docs.modx.pro/komponentyi/scheduler
+[2]: /components/scheduler/

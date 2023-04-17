@@ -9,4 +9,8 @@
 - ускорить работу
 - делать более сложные чанки, за счёт продвинутой проверки условий через функции Fenom
 
+---
+
+- [msPointsIssue.Order](/components/minishop2/other-addons/mspointsissue/snippets/mspointsissue-order)
+
 [010103]: /components/pdotools/parser

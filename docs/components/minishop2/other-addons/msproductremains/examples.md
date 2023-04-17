@@ -4,9 +4,9 @@
 
 Если необходимо вывести на странице только те товары, у которых хотя бы по одной комбинации свойств имеется остатки, необходимо вызвать сниппет `msProducts` следующим образом:
 
-:::code-group
+::: code-group
 
-``` modx
+```modx
 [[!msProducts?
   &leftJoin=`{"Remains":{"class":"msprRemains","on":"msProduct.id = Remains.product_id AND Remains.remains > 0"}}`
   &groupby=`msProduct.id`
@@ -15,22 +15,22 @@
 ]]
 ```
 
-``` fenom
+```fenom
 {'!msProducts' | snippet : [
   'leftJoin' => [
     'Remains' => [
       'class' => 'msprRemains',
-      'on' => 'msProduct.id = Remains.product_id AND Remains.remains >= 0'
-    ]
+      'on' => 'msProduct.id = Remains.product_id AND Remains.remains >= 0',
+    ],
   ],
   'groupby' => 'msProduct.id',
   'select' => [
     'msProduct' => '*',
-    'Remains' => 'SUM(Remains.remains) as remains'
+    'Remains' => 'SUM(Remains.remains) as remains',
   ],
   'where' => [
-    'Remains.remains:>' => '0'
-  ]
+    'Remains.remains:>' => 0,
+  ],
 ]}
 ```
 
@@ -45,25 +45,25 @@
 :::code-group
 
 ```modx
-  &loadModels=`msProductRemains`
-  &leftJoin=`{"Remains":{"class":"msprRemains","on":"msProduct.id = Remains.product_id AND Remains.remains >= 0"}}`
-  &groupby=`msProduct.id`
-  &select=`{"msProduct":"*","Remains":"SUM(Remains.remains) as remains"}`
+&loadModels=`msProductRemains`
+&leftJoin=`{"Remains":{"class":"msprRemains","on":"msProduct.id = Remains.product_id AND Remains.remains >= 0"}}`
+&groupby=`msProduct.id`
+&select=`{"msProduct":"*","Remains":"SUM(Remains.remains) as remains"}`
 ```
 
-``` fenom
-  'loadModels => 'msProductRemains',
-  'leftJoin' => [
-    'Remains' => [
-      'class' => 'msprRemains',
-      'on' => 'msProduct.id = Remains.product_id AND Remains.remains >= 0'
-    ]
+```fenom
+'loadModels => 'msProductRemains',
+'leftJoin' => [
+  'Remains' => [
+    'class' => 'msprRemains',
+    'on' => 'msProduct.id = Remains.product_id AND Remains.remains >= 0',
   ],
-  'groupby' => 'msProduct.id',
-  'select' => [
-    'msProduct' => '*',
-    'Remains' => 'SUM(Remains.remains) as remains'
-  ],
+],
+'groupby' => 'msProduct.id',
+'select' => [
+  'msProduct' => '*',
+  'Remains' => 'SUM(Remains.remains) as remains',
+],
 ```
 
 :::
@@ -73,21 +73,17 @@
 :::code-group
 
 ```modx
-  &filters=`mspr|remains:availability`
-  &suggestionsRadio=`mspr|remains`
-  &tplFilter.row.mspr|value=`tpl.mFilter2.filter.checkbox`
+&filters=`mspr|remains:availability`
+&suggestionsRadio=`mspr|remains`
+&tplFilter.row.mspr|value=`tpl.mFilter2.filter.checkbox`
 ```
 
 ```fenom
-  'filters' => 'mspr|remains:availability',
-  'suggestionsRadio' => 'mspr|remains',
-  'tplFilter.row.mspr|value' => 'tpl.mFilter2.filter.checkbox',
+'filters' => 'mspr|remains:availability',
+'suggestionsRadio' => 'mspr|remains',
+'tplFilter.row.mspr|value' => 'tpl.mFilter2.filter.checkbox',
 ```
 
 :::
 
-А также в настройке `mse2_filters_handler_class` компонента `mSearch2` указать класс-обработчик фильтров
-
-``` php
-msprRemainsFilter
-```
+А также в настройке `mse2_filters_handler_class` компонента `mSearch2` указать класс-обработчик фильтров `msprRemainsFilter`.

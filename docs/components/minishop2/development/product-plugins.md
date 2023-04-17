@@ -4,10 +4,10 @@
 Если вам нужно что-то дополнительно, то для этого принято использовать ТВ параметры - это "механизм по умолчанию".
 Он очень гибкий и продвинутый, но имеет ряд недостатков:
 
-* Все поля в БД с типом text. Это означает медленный поиск и сортировку.
-* ТВ привязываются к шаблону, без шаблона с ними работать нельзя.
-* В них выполняются биндинги @EVAL и @SELECT, которые могут вызывать небезопасный код.
-* При выборке ресурсов необходимы дополнительные запросы.
+- Все поля в БД с типом text. Это означает медленный поиск и сортировку.
+- ТВ привязываются к шаблону, без шаблона с ними работать нельзя.
+- В них выполняются биндинги @EVAL и @SELECT, которые могут вызывать небезопасный код.
+- При выборке ресурсов необходимы дополнительные запросы.
 
 Так как у любого товара должен быть обязательный набор некоторых свойств (цена, артикул, вес и т.д.), в miniShop2 используется дополнительная таблица для них.
 
@@ -16,23 +16,23 @@
 
 Например, вы можете делать вот так:
 
-``` php
+```php
 if ($data = $modx->getObject('msProductData', 15)) {
-    $vendor = $product->getOne('Vendor'); // Объект с производителем товара, который привязан к продукту
-    $options = $product->getMany('Options'); // Массив с объектами опций товара
-    $files = $product->getMany('Files'); // Массив с объектами картинок товара
-    $product = $data->getOne('Product'); // Ресурс, к которму привязан объект
+  $vendor = $product->getOne('Vendor'); // Объект с производителем товара, который привязан к продукту
+  $options = $product->getMany('Options'); // Массив с объектами опций товара
+  $files = $product->getMany('Files'); // Массив с объектами картинок товара
+  $product = $data->getOne('Product'); // Ресурс, к которму привязан объект
 }
 ```
 
 Причем, объект **msProduct** как-бы транслирует объекту **msProductData** запросы.
 То есть, мы сразу из него может получать свойства товара:
 
-``` php
+```php
 if ($product = $modx->getObject('msProduct', 15)) {
-    echo $product->get('price');
-    $product->set('price', 500);
-    $product->save();
+  echo $product->get('price');
+  $product->set('price', 500);
+  $product->save();
 }
 ```
 
@@ -59,8 +59,8 @@ if ($product = $modx->getObject('msProduct', 15)) {
 
 Таким образом, контроллер плагина должен возвращать массив с двумя ключами:
 
-* **map** - массив объектов miniShop2 с файлами для загрузки изменений.
-* **manager** - массив ссылок на файлы для загрузки в админке.
+- **map** - массив объектов miniShop2 с файлами для загрузки изменений.
+- **manager** - массив ссылок на файлы для загрузки в админке.
 
 В общем виде контроллер плагина выглядит вот так:
 
@@ -68,12 +68,12 @@ if ($product = $modx->getObject('msProduct', 15)) {
 <?php
 
 return array(
-    'map' => array(
-        'msProductData' => require_once 'msproductdata.inc.php',
-    ),
-    'manager' => array(
-        'msProductData' => MODX_ASSETS_URL . 'components/msplcolor/msproductdata.js',
-    ),
+  'map' => array(
+    'msProductData' => require_once 'msproductdata.inc.php',
+  ),
+  'manager' => array(
+    'msProductData' => MODX_ASSETS_URL . 'components/msplcolor/msproductdata.js',
+  ),
 );
 ```
 
@@ -84,37 +84,37 @@ return array(
 
 Всё нужное для изменения модели мы загружаем из файла `msproductdata.inc.php`:
 
-``` php
+```php
 <?php
 
 return array(
-    'fields' => array(
-        'color' => null,
+  'fields' => array(
+    'color' => null,
+  ),
+  'fieldMeta' => array(
+    'color' => array(
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'string',
+      'null' => true,
+      'default' => null,
     ),
-    'fieldMeta' => array(
+  ),
+  'indexes' => array(
+    'color' => array(
+      'alias' => 'color',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => array(
         'color' => array(
-            'dbtype' => 'varchar',
-            'precision' => '255',
-            'phptype' => 'string',
-            'null' => true,
-            'default' => null,
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
         ),
+      ),
     ),
-    'indexes' => array(
-        'color' => array(
-            'alias' => 'color',
-            'primary' => false,
-            'unique' => false,
-            'type' => 'BTREE',
-            'columns' => array(
-                'color' => array(
-                    'length' => '',
-                    'collation' => 'A',
-                    'null' => false,
-                ),
-            ),
-        ),
-    ),
+  ),
 );
 ```
 
@@ -125,13 +125,13 @@ return array(
 
 Изменение модели MODX не влияет на физическую БД, поэтому нужно изменить тип колонки и в ней, например через SQL запрос:
 
-``` sql
+```sql
 ALTER TABLE `modx_ms2_products` CHANGE `color` `color` VARCHAR(255) NULL DEFAULT NULL;
 ```
 
 Так как в нашем плагине указан индекс по изменённому полю - добавляем и его:
 
-``` sql
+```sql
 ALTER TABLE `modx_ms2_products` ADD INDEX (`color`);
 ```
 
@@ -140,30 +140,30 @@ ALTER TABLE `modx_ms2_products` ADD INDEX (`color`);
 А изменение для менеджера мы грузим из `msproductdata.js`.
 В этом файле мы добавляем новый объект с двумя методами в `miniShop2.plugin`:
 
-``` javascript
+```js
 miniShop2.plugin.color = {
-    // Изменение полей для панели товара
-    getFields: function () {
-        return {
-            color: {
-                xtype: 'minishop2-combo-autocomplete',
-                description: '<b>[[+color]]</b><br />' + _('ms2_product_color_help')
-            }
-        }
-    },
-    // Изменение колонок таблицы товаров в категории
-    getColumns: function () {
-        return {
-            color: {
-                width: 50,
-                sortable: false,
-                editor: {
-                    xtype: 'minishop2-combo-autocomplete',
-                    name: 'color'
-                }
-            }
-        }
+  // Изменение полей для панели товара
+  getFields: function () {
+    return {
+      color: {
+        xtype: 'minishop2-combo-autocomplete',
+        description: '<b>[[+color]]</b><br />' + _('ms2_product_color_help')
+      }
     }
+  },
+  // Изменение колонок таблицы товаров в категории
+  getColumns: function () {
+    return {
+      color: {
+        width: 50,
+        sortable: false,
+        editor: {
+          xtype: 'minishop2-combo-autocomplete',
+          name: 'color'
+        }
+      }
+    }
+  }
 };
 ```
 
@@ -184,9 +184,9 @@ miniShop2.plugin.color = {
 Новый, рекомендуемый и удобный для сторонних дополнений - использовать методы API.
 Регистрация плагина:
 
-``` php
+```php
 if ($miniShop2 = $modx->getService('miniShop2')) {
-    $miniShop2->addPlugin('msplColor', '{core_path}components/msplcolor/index.php');
+  $miniShop2->addPlugin('msplColor', '{core_path}components/msplcolor/index.php');
 }
 ```
 
@@ -194,9 +194,9 @@ if ($miniShop2 = $modx->getService('miniShop2')) {
 
 Удаление плагина
 
-``` php
+```php
 if ($miniShop2 = $modx->getService('miniShop2')) {
-    $miniShop2->removePlugin('msplColor');
+  $miniShop2->removePlugin('msplColor');
 }
 ```
 
@@ -204,13 +204,15 @@ if ($miniShop2 = $modx->getService('miniShop2')) {
 
 ## Пример
 
-Система плагинов miniShop2 позволяет выпускать готовые компоненты для удобной установки\удаления новых свойств товаров.
+Система плагинов miniShop2 позволяет выпускать готовые компоненты для удобной установки/удаления новых свойств товаров.
 
 Исходники такого компонента, который меняет поле цветов товара, я выложил для [примера на GitHub][1].
 Собранный пакет можно [скачать там же][2].
 Разработчикам будущих плагинов советую обратить внимание на [ресолверы][3]: один меняет записи в лексиконе, а другой таблицу БД.
 
-**Внимание, при установке компонента очищаются поля `color` у товаров!** Не нужно экспериментировать на рабочем проекте!
+::: danger
+При установке компонента очищаются поля `color` у товаров! Не нужно экспериментировать на рабочем проекте!
+:::
 
 [1]: https://github.com/bezumkin/msplColor
 [2]: https://github.com/bezumkin/msplColor/releases/download/1.0.0-pl/msplcolor-1.0.0-pl.transport.zip

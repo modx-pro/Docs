@@ -10,24 +10,25 @@ RBK Money позволяет сделать выбор способа оплат
 
 Далее нам нужно указать каждому способу вариант оплаты в RBK, для этого создаем плагин на событие msOnBeforeCreateOrder:
 
-``` php
+```php
 <?php
+
 $rbkPaymentMap = array(
-    10 => 'bankcard',
-    11 => 'postrus'
+  10 => 'bankcard',
+  11 => 'postrus'
 );
 
 switch ($modx->event->name) {
-    case 'msOnBeforeCreateOrder':
-        $payment = $msOrder->get('payment');
-        if (isset($rbkPaymentMap[$payment])) {
-            $props = $msOrder->get('properties');
-            if (!is_array($props))
-                $props = array();
-            $props['payments']['rbk']['preference'] = $rbkPaymentMap[$payment];
-            $msOrder->set('properties', $props);
-        }
-        break;
+  case 'msOnBeforeCreateOrder':
+    $payment = $msOrder->get('payment');
+    if (isset($rbkPaymentMap[$payment])) {
+      $props = $msOrder->get('properties');
+      if (!is_array($props))
+          $props = array();
+      $props['payments']['rbk']['preference'] = $rbkPaymentMap[$payment];
+      $msOrder->set('properties', $props);
+    }
+    break;
 }
 ```
 
