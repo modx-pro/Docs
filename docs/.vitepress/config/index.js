@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { config as en } from './en'
-import { config as root } from './ru'
+import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
 import { containerPlugin } from '../theme/plugins/containers'
 
@@ -43,51 +43,14 @@ export default defineConfig({
       { icon: 'github', link: 'https://github.com/modx-pro/Docs' },
     ],
 
-    algolia: {
-      appId: 'BCE7F5SAJ2',
-      apiKey: '6a767bbcca227a92559817e2382d8938',
-      indexName: 'modx',
-      locales: {
-        root: {
-          placeholder: 'Введите поиск',
-          translations: {
-            button: {
-              buttonText: 'Поиск',
-              buttonAriaLabel: 'Поиск',
-            },
-            modal: {
-              searchBox: {
-                resetButtonTitle: 'Сбросить',
-                resetButtonAriaLabel: 'Сбросить',
-                cancelButtonText: 'Отмена',
-                cancelButtonAriaLabel: 'Отмена',
-              },
-              startScreen: {
-                recentSearchesTitle: 'Недавние',
-                noRecentSearchesText: 'Нет недавних запросов',
-                saveRecentSearchButtonTitle: 'Сохранить',
-                removeRecentSearchButtonTitle: 'Удалить этот запрос из истории',
-                favoriteSearchesTitle: 'Сохранить запрос',
-                removeFavoriteSearchButtonTitle: 'Удалить этот запрос из сохранённых',
-              },
-              errorScreen: {
-                titleText: 'Не удалось получить результаты',
-                helpText: 'Проверьте подключение к интернету',
-              },
-              footer: {
-                selectText: 'выбрать',
-                navigateText: 'навигация',
-                closeText: 'закрыть',
-                searchByText: 'Поиск реализован',
-              },
-              noResultsScreen: {
-                noResultsText: 'Нет результатов',
-                suggestedQueryText: 'Попробуйте другие запросы',
-                reportMissingResultsText: 'Считаете, что данный запрос должен вернуть результаты?',
-                reportMissingResultsLinkText: 'Дайте нам знать',
-              },
-            },
-          },
+    search: {
+      provider: 'algolia',
+      options: {
+        appId: 'BCE7F5SAJ2',
+        apiKey: '6a767bbcca227a92559817e2382d8938',
+        indexName: 'modx',
+        locales: {
+          ...searchLocaleRu,
         },
       },
     },
