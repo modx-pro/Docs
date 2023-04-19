@@ -6,13 +6,13 @@
 
 Есть несколько серьезных отличий от сниппета *getPage*:
 
-* 2 вида пагинации: с пропуском страниц и классическая (зависит от параметра **&pageLimit**).
-* Пагинация не плавает. Если указано показывать 5 ссылок на страницы - всегда будет 5 и не больше.
-* Можно указать чанки для вывода при отсутствии ссылок на первую, последнюю, следующую или предыдущую страницу.
-* Параметр **&maxLimit** не позволяет пользователю затормозить ваш сайт большой выборкой.
-* Редирект на первую страницу при отсутствии результатов или некорректном параметре **&page**.
-* Работает со сниппетом *pdoResources*, по умолчанию.
-* Поддерка работы через ajax.
+- 2 вида пагинации: с пропуском страниц и классическая (зависит от параметра **&pageLimit**).
+- Пагинация не плавает. Если указано показывать 5 ссылок на страницы - всегда будет 5 и не больше.
+- Можно указать чанки для вывода при отсутствии ссылок на первую, последнюю, следующую или предыдущую страницу.
+- Параметр **&maxLimit** не позволяет пользователю затормозить ваш сайт большой выборкой.
+- Редирект на первую страницу при отсутствии результатов или некорректном параметре **&page**.
+- Работает со сниппетом *pdoResources*, по умолчанию.
+- Поддерка работы через ajax.
 
 ![pdoPage - 2](https://file.modx.pro/files/6/a/e/6aeef74bd91fda2a92600802289ac5e9.png)
 
@@ -83,15 +83,15 @@
 
 pdoPage может выдавать JSON и прерывать работу движка при соответствии запроса трём характеристикам:
 
-* У сниппета включен параметр &ajax.
-* Запрос сделан при помощи XMLHttpRequest, то есть — ajax.
-* В запросе содержится переменная, указанная у сниппета в &pageVarKey. По умолчанию, это `page`.
+- У сниппета включен параметр &ajax.
+- Запрос сделан при помощи XMLHttpRequest, то есть — ajax.
+- В запросе содержится переменная, указанная у сниппета в &pageVarKey. По умолчанию, это `page`.
 
 То есть, вам достаточно просто указать сниппету **&ajax=`1`** и отправить странице GET запрос типа:
 
-``` javascript
-$.get('document.html?page=5', function(response) {
-    console.log(response);
+```js
+$.get('document.html?page=5', function (response) {
+  console.log(response);
 }, 'json');
 ```
 
@@ -102,31 +102,32 @@ $.get('document.html?page=5', function(response) {
 
 Начиная с версии **1.10** pdoPage умеет загружать страницы через ajax. Вам нужно только обернуть его вызов в специальную разметку:
 
-``` modx
+```modx
 <div id="pdopage">
-    <div class="rows">
-        [[!pdoPage?
-            &parents=`0`
-            &ajaxMode=`default`
-        ]]
-    </div>
-    [[!+page.nav]]
+  <div class="rows">
+    [[!pdoPage?
+      &parents=`0`
+      &ajaxMode=`default`
+    ]]
+  </div>
+
+  [[!+page.nav]]
 </div>
 ```
 
-Внутри [[+page.nav]] у нас div с классом pagination — так в pdoPage по умолчанию.
+Внутри `[[+page.nav]]` у нас div с классом pagination — так в pdoPage по умолчанию.
 
 Вы можете менять идентификаторы этой разметки следующими параметрами:
 
-* **ajaxElemWrapper** — jQuery селектор элемента-обёртки с результатами и пагинацией. По умолчанию `#pdopage`.
-* **ajaxElemRows** — jQuery селектор элемента с результатами. По умолчанию `#pdopage .rows`
-* **ajaxElemPagination** — jQuery селектор элемента с пагинацией. По умолчанию `#pdopage .pagination`
-* **ajaxElemLink** — jQuery селектор ссылки на страницу. По умолчанию `#pdopage .pagination a`
+- **ajaxElemWrapper** — jQuery селектор элемента-обёртки с результатами и пагинацией. По умолчанию `#pdopage`.
+- **ajaxElemRows** — jQuery селектор элемента с результатами. По умолчанию `#pdopage .rows`
+- **ajaxElemPagination** — jQuery селектор элемента с пагинацией. По умолчанию `#pdopage .pagination`
+- **ajaxElemLink** — jQuery селектор ссылки на страницу. По умолчанию `#pdopage .pagination a`
 
 Два последних селектора рассчитывают на то, что вы не меняли стандартное оформление блока пагинации в параметре **&tplPageWrapper**.
 Работа обеспечивается подключением javascript файла из параметра **&frontent_js**.
 
-Параметр &ajax=`1` указывать необязательно. Не пустой &ajaxMode активирует его самостоятельно.
+Параметр ``&ajax=`1` `` указывать необязательно. Не пустой `&ajaxMode` активирует его самостоятельно.
 
 ### Загрузка кнопкой
 
@@ -134,23 +135,23 @@ $.get('document.html?page=5', function(response) {
 
 Так что, логично его размещать вверху:
 
-``` php
+```modx
 <div id="pdopage">
-    [[!+page.nav]]
-    <div class="rows">
-        [[!pdoPage?
-            &parents=`0`
-            &ajaxMode=`button`
-            &limit=`5`
-        ]]
-    </div>
+  [[!+page.nav]]
+  <div class="rows">
+    [[!pdoPage?
+      &parents=`0`
+      &ajaxMode=`button`
+      &limit=`5`
+    ]]
+  </div>
 </div>
 ```
 
 Используются всё те же селекторы, плюс:
 
-* **ajaxElemMore** — jQuery селектор кнопки загрузки результатов при ajaxMode = button. По умолчанию `#pdopage .btn-more`.
-* **ajaxTplMore** — Шаблон кнопки для загрузки новых результатов при ajaxMode = button. Должен включать селектор, указанный в **&ajaxElemMore**. По умолчанию `@INLINE <button class="btn btn-default btn-more">[[%pdopage_more]]</button>`
+- **ajaxElemMore** — jQuery селектор кнопки загрузки результатов при ajaxMode = button. По умолчанию `#pdopage .btn-more`.
+- **ajaxTplMore** — Шаблон кнопки для загрузки новых результатов при ajaxMode = button. Должен включать селектор, указанный в **&ajaxElemMore**. По умолчанию `@INLINE <button class="btn btn-default btn-more">[[%pdopage_more]]</button>`
 
 При нажатии на кнопку загружаются &limit элементов и добавляются в конец блока результатов. Если больше загружать нечего — кнопка прячется.
 Плавающий блок навигации показывает текущую страницу и позволяет быстро перейти куда нужно. Здесь клик уже не обрабатывается через ajax, потому что и так выходит довольно сложно.
@@ -161,15 +162,15 @@ $.get('document.html?page=5', function(response) {
 
 Этот способ очень похож на предыдущий, только нет кнопки и её не нужно нажимать — всё делается автоматически при прокрутке страницы.
 
-``` php
+```modx
 <div id="pdopage">
-    [[!+page.nav]]
-    <div class="rows">
-        [[!pdoPage?
-            &parents=`0`
-            &ajaxMode=`scroll`
-        ]]
-    </div>
+  [[!+page.nav]]
+  <div class="rows">
+    [[!pdoPage?
+      &parents=`0`
+      &ajaxMode=`scroll`
+    ]]
+  </div>
 </div>
 ```
 
@@ -180,8 +181,8 @@ pdoPage поддерживает работу с History API вашего бра
 
 Вы можете изменить это поведение параметром **&ajaxHistory**, включив или выключив его. По умолчанию он работает следующим образом:
 
-* Если ajaxMode установлен в **default**, то History API используется, номер страницы сохраняется.
-* Если ajaxMode установлен в **scroll** или **button**, то History API не используется.
+- Если ajaxMode установлен в **default**, то History API используется, номер страницы сохраняется.
+- Если ajaxMode установлен в **scroll** или **button**, то History API не используется.
 
 При отключении **&ajaxHistory** блок в постраничной навигацией скрывается, чтобы страницы нельзя было переключать вручную.
 
@@ -189,21 +190,22 @@ pdoPage поддерживает работу с History API вашего бра
 
 Вы можете указать функции, которые будут вызываться до и после загрузки страницы через ajax вот так:
 
-``` javascript
-pdoPage.callbacks['before'] = function(config) {
-    console.log('Конфиг перед загрузкой!', config);
+```js
+pdoPage.callbacks.before = function (config) {
+  console.log('Конфиг перед загрузкой!', config);
 };
-pdoPage.callbacks['after'] = function(config, response) {
-    console.log('Конфиг после загрузки!', config);
-    console.log('Ответ от сервера!', response);
+
+pdoPage.callbacks.after = function (config, response) {
+  console.log('Конфиг после загрузки!', config);
+  console.log('Ответ от сервера!', response);
 }
 ```
 
 С версии 1.11.0-pl появилась возможность добавления обработчика на событие **pdopage_load**:
 
-``` javascript
-$(document).on('pdopage_load', function(e, config, response) {
-    console.log(e, config, response);
+```js
+$(document).on('pdopage_load', function (e, config, response) {
+  console.log(e, config, response);
 });
 ```
 
@@ -214,16 +216,17 @@ $(document).on('pdopage_load', function(e, config, response) {
 С версии 2.2.2 можно использовать параметр **&pageLinkScheme** для указания схемы генерации ссылок на страницу.
 В параметре может быть всего 2 плейсхолдера:
 
-* `[[+pageVarKey]]` - переменная с именем страницы. По умолчанию `page`.
-* `[[+page]]` - номер страницы
+- `[[+pageVarKey]]` - переменная с именем страницы. По умолчанию `page`.
+- `[[+page]]` - номер страницы
 
 Для примера укажите такой параметр:
 
-``` php
+```modx
 [[!pdoPage?
-    &parents=`0`
-    &pageLinkScheme=`/[[+pageVarKey]]-[[+page]]`
+  &parents=`0`
+  &pageLinkScheme=`/[[+pageVarKey]]-[[+page]]`
 ]]
+
 [[!+page.nav]]
 ```
 
@@ -238,36 +241,36 @@ $(document).on('pdopage_load', function(e, config, response) {
 При переходе по этим ссылкам (кроме первой) MODX будет выдавать ошибку 404, потому что страниц с этими адресами не существует.
 Так что, нам нужно написать плагин для их обработки:
 
-``` php
+```php
 <?php
 // Реагируем только на событие OnPageNotFound
 if ($modx->event->name == 'OnPageNotFound') {
-    // Определяем ключ запроса из настроек
-    $req = $modx->getOption('request_param_alias');
-    // Ловим нужный ключ страницы
-    $pageVarKey = 'page';
-    // Если в запросе повторяется наш шаблон "pageVarKey-page", то работаем дальше
-    if (preg_match("#.*?({$pageVarKey}-(\d+))#", $_REQUEST[$req], $matches)) {
-        // Отрезаем ЧПУ строку и получаем точный адрес текущей страницы
-        $uri = str_replace($matches[1], '', $matches[0]);
+  // Определяем ключ запроса из настроек
+  $req = $modx->getOption('request_param_alias');
+  // Ловим нужный ключ страницы
+  $pageVarKey = 'page';
+  // Если в запросе повторяется наш шаблон "pageVarKey-page", то работаем дальше
+  if (preg_match("#.*?({$pageVarKey}-(\d+))#", $_REQUEST[$req], $matches)) {
+    // Отрезаем ЧПУ строку и получаем точный адрес текущей страницы
+    $uri = str_replace($matches[1], '', $matches[0]);
 
-        // Ищем страницу по этому адресу
-        $id = 0;
-        // Сначала как есть, со слешем на конце
-        if (!$id = $modx->findResource($uri)) {
-            // Если не находим - то пробуем отрезать слэш и ищем повторно
-            $id = $modx->findResource(rtrim($uri, '/'));
-        }
-
-        // Если ресурс найден
-        if ($id) {
-            // Добавляем номер страницы в глобальные массивы, чтобы pdoPage их там увидел
-            $_GET[$pageVarKey] = $_REQUEST[$pageVarKey] = $matches[2];
-            // И загружаем эту страницу
-            $modx->sendForward($id);
-        }
-        // Если ресурс не был найден - ничего не делаем, возможно запрос поймает другой плагин
+    // Ищем страницу по этому адресу
+    $id = 0;
+    // Сначала как есть, со слешем на конце
+    if (!$id = $modx->findResource($uri)) {
+      // Если не находим - то пробуем отрезать слэш и ищем повторно
+      $id = $modx->findResource(rtrim($uri, '/'));
     }
+
+    // Если ресурс найден
+    if ($id) {
+      // Добавляем номер страницы в глобальные массивы, чтобы pdoPage их там увидел
+      $_GET[$pageVarKey] = $_REQUEST[$pageVarKey] = $matches[2];
+      // И загружаем эту страницу
+      $modx->sendForward($id);
+    }
+    // Если ресурс не был найден - ничего не делаем, возможно запрос поймает другой плагин
+  }
 }
 ```
 
@@ -278,61 +281,66 @@ if ($modx->event->name == 'OnPageNotFound') {
 Так как pdoPage является частью pdoTools, в параметре **&element** у него сразу прописан сниппет pdoResources.
 Поэтому простой вызов сниппета выведет вам дочерние ресурсы:
 
-``` modx
+```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
 ]]
+
 [[!+page.nav]]
 ```
 
 Выводим все возможные документы сайта:
 
-``` modx
+```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
-    &parents=`0`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &parents=`0`
 ]]
+
 [[!+page.nav]]
 ```
 
 Включаем навигацию с пропуском страниц.
 Обратите внимание, что если страниц выходит меньше 7, то будет работать обычная навигация.
 
-``` modx
+```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
-    &parents=`0`
-    &pageLimit=`7`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &parents=`0`
+  &pageLimit=`7`
 ]]
+
 [[!+page.nav]]
 ```
 
 Активируем кэш на 30 минут:
 
-``` modx
+```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
-    &parents=`0`
-    &pageLimit=`7`
-    &cache=`1`
-    &cacheTime=`1800`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &parents=`0`
+  &pageLimit=`7`
+  &cache=`1`
+  &cacheTime=`1800`
 ]]
+
 [[!+page.nav]]
 ```
 
 Указываем максимальный лимит выборки.
 Теперь, какой бы limit не указал пользователь в url - все равно будет не больше 10 результатов на странице.
 
-``` modx
+```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
-    &parents=`0`
-    &pageLimit=`7`
-    &cache=`1`
-    &cacheTime=`1800`
-    &maxLimit=`10`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &parents=`0`
+  &pageLimit=`7`
+  &cache=`1`
+  &cacheTime=`1800`
+  &maxLimit=`10`
 ]]
+
 [[!+page.nav]]
 ```
 
-[0]: /components/pdotools/general-parameters
+[0]: /components/pdotools/general-properties

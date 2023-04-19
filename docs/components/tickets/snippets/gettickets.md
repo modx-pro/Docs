@@ -28,7 +28,7 @@
 | **&user**            |                        | Выбрать только элементы, созданные этим пользователем.                                                                                                                 |
 | **&where**           |                        | Строка, закодированная в JSON, с дополнительными условиями выборки.                                                                                                    |
 
-<!--@include: ../parts/tip-general-parameters.md-->
+<!--@include: ../parts/tip-general-properties.md-->
 
 ## Примеры
 

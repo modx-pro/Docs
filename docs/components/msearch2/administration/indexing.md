@@ -15,12 +15,12 @@ Ajax в цикле.
 
 ## Системные настройки
 
-| Название                    | По умолчанию                                                | Описание                                                                              |
-| --------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `mse2_index_comments`         | `true`                                                        | Включить индексирование комментариев компонента **Tickets**                           |
-| mse2_index_comments_weight  | `1`                                                           | Поисковый вес слова, встречающегося в комментарии                                     |
-| `mse2_index_fields`           | `content:3,description:2,introtext:2,pagetitle:3,longtitle:3` | Настройка индексирования полей ресурса. Имя поля и его поисковый вес через двоеточие. |
-| `mse2_index_min_words_length` | `4`                                                           | Минимальная длина слова для участия в поиске                                          |
+| Название                        | По умолчанию                                                  | Описание                                                                              |
+|---------------------------------|---------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| **mse2_index_comments**         | `true`                                                        | Включить индексирование комментариев компонента **Tickets**                           |
+| **mse2_index_comments_weight**  | `1`                                                           | Поисковый вес слова, встречающегося в комментарии                                     |
+| **mse2_index_fields**           | `content:3,description:2,introtext:2,pagetitle:3,longtitle:3` | Настройка индексирования полей ресурса. Имя поля и его поисковый вес через двоеточие. |
+| **mse2_index_min_words_length** | `4`                                                           | Минимальная длина слова для участия в поиске                                          |
 
 Самым важным параметром является **mse2_index_fields**, именно он определяет, какую ценность представляют слова в разных полях документа.
 
@@ -53,15 +53,15 @@ Ajax в цикле.
 ```php
 <?php
 switch ($modx->event->name) {
-    case 'mse2OnBeforeSearchIndex':
-        $mSearch2->fields['my_field'] = 1;
-        $resource->set('my_field', 'My Words');
+  case 'mse2OnBeforeSearchIndex':
+    $mSearch2->fields['my_field'] = 1;
+    $resource->set('my_field', 'My Words');
 
-        if ($resource->get('class_key') == 'msProduct') {
-            $mSearch2->fields['product_field'] = 1;
-            $resource->set('product_field', 'Product Property');
-        }
-        break;
+    if ($resource->get('class_key') == 'msProduct') {
+      $mSearch2->fields['product_field'] = 1;
+      $resource->set('product_field', 'Product Property');
+    }
+    break;
 }
 ```
 
@@ -80,28 +80,28 @@ switch ($modx->event->name) {
 ```php
 <?php
 switch ($modx->event->name) {
-   case 'mse2OnBeforeSearchIndex':
-        // Имена опций
-        $names = array(
-            'option1',
-            'option2'
-        );
+  case 'mse2OnBeforeSearchIndex':
+    // Имена опций
+    $names = array(
+      'option1',
+      'option2'
+    );
 
-        foreach ($names as $key) {
-            $mSearch2->fields[$key] = 1;
-            $c = $modx->newQuery('msProductOption', array(
-               'product_id' => $resource->id,
-               'key' => $key,
-            ));
-            $c->select('value');
-            if ($c->prepare() && $c->stmt->execute()) {
-               $value = $c->stmt->fetchAll(PDO::FETCH_COLUMN);
-               if (!empty($value[0])) {
-                   $resource->set($key, $value);
-               }
-            }
+    foreach ($names as $key) {
+      $mSearch2->fields[$key] = 1;
+      $c = $modx->newQuery('msProductOption', array(
+        'product_id' => $resource->id,
+        'key' => $key,
+      ));
+      $c->select('value');
+      if ($c->prepare() && $c->stmt->execute()) {
+        $value = $c->stmt->fetchAll(PDO::FETCH_COLUMN);
+        if (!empty($value[0])) {
+          $resource->set($key, $value);
         }
-        break;
+      }
+    }
+    break;
 }
 ```
 

@@ -5,7 +5,7 @@
 ## Параметры
 
 | Название           | По умолчанию                                                   | Описание                                                                                                                                                                                      |
-|--------------------|----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------ | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **&fields**        | `{"default":["price","article","vendor.name","color","size"]}` | JSON строка с массивом конфигурации списков сравнения. Ключ - это имя параметра, указанного в параметре **&list** сниппета [addComparison][1], а значения - массив сравниваемых полей товара. |
 | **&tplRow**        | `tpl.Comparison.row`                                           | Чанк с одной строкой таблицы сравнения товаров. Плейсхолдеры `[[+cells]]` и `[[+same]]`.                                                                                                      |
 | **&tplParam**      | `tpl.Comparison.param`                                         | Чанк с именем параметра товара. Плейсхолдеры `[[+param]]` и `[[+row_idx]]`.                                                                                                                   |
@@ -15,7 +15,7 @@
 | **&tplOuter**      | `tpl.Comparison.outer`                                         | Чанк-обёртка таблицы сравнения. Плейсхолдеры `[[+head]]` и `[[+rows]]`.                                                                                                                       |
 | **&minItems**      | `2`                                                            | Минимальное количество товаров для сравнения.                                                                                                                                                 |
 | **&maxItems**      | `10`                                                           | Максимальное количество товаров для сравнения.                                                                                                                                                |
-| **&formatSnippet** | `-`                                                            | Произвольный сниппет для оформления значения параметра товара. Получает имя поля "$field" и его значение "$value". Должен вернуть отформатированную строку "$value".                          |
+| **&formatSnippet** |                                                                | Произвольный сниппет для оформления значения параметра товара. Получает имя поля "$field" и его значение "$value". Должен вернуть отформатированную строку "$value".                          |
 | **&showLog**       | `false`                                                        | Вывести администратору подробный лог работы сниппета.                                                                                                                                         |
 
 Сниппет выбирает и оформляет товары при помощи pdoTools. Вы можете использовать [общие параметры этой библиотеки][2].
@@ -31,12 +31,12 @@
 
 ```modx
 [[!addComparison?
-    &list_id=`15`
-    &list=`mobile`
+  &list_id=`15`
+  &list=`mobile`
 ]]
 
 [[!CompareList?
-    &fields=`{"mobile":["price","article","year","vendor.name","option.memory","option.cpu","country"]}`
+  &fields=`{"mobile":["price","article","year","vendor.name","option.memory","option.cpu","country"]}`
 ]]
 ```
 
@@ -46,10 +46,10 @@
 
 В настройках полей сравнения можно указывать поля ресурса, ТВ параметры, и даже параметры товаров [miniShop2][3].
 
-* **option.** - префикс для опций товаров из miniShop2.2
-* **vendor.** - префикс для полей производителя товара
-* ТВ параметры считаются полями ресурса и указываются без префикса
-* Поля объекта **msProductData** (price, weight, country и др.) тоже считаются полями ресурса
+- **option.** - префикс для опций товаров из miniShop2.2
+- **vendor.** - префикс для полей производителя товара
+- ТВ параметры считаются полями ресурса и указываются без префикса
+- Поля объекта **msProductData** (price, weight, country и др.) тоже считаются полями ресурса
 
 ## Оформление
 
@@ -75,20 +75,20 @@
 <?php
 // Получаемые массивы нужно преобразовать в строку, иначе вы получите слово Array, вместо значения
 if (is_array($value)) {
-    natsort($value);
-    $value = implode(',', $value);
+  natsort($value);
+  $value = implode(',', $value);
 }
 
 // Форматирование цены и веса товаров miniShop2
 if ($miniShop2 = $modx->getService('minishop2')) {
-    switch ($field) {
-        case 'price':
-            $value = $miniShop2->formatPrice($value) . ' ' . $modx->lexicon('ms2_frontend_currency');
-            break;
-        case 'weight':
-            $value = $miniShop2->formatWeight($value) . ' ' . $modx->lexicon('ms2_frontend_weight_unit');
-            break;
-    }
+  switch ($field) {
+    case 'price':
+      $value = $miniShop2->formatPrice($value) . ' ' . $modx->lexicon('ms2_frontend_currency');
+      break;
+    case 'weight':
+      $value = $miniShop2->formatWeight($value) . ' ' . $modx->lexicon('ms2_frontend_weight_unit');
+      break;
+  }
 }
 
 // Возвращаем значение
@@ -106,15 +106,15 @@ return $value;
 
 ```modx
 [[!CompareList?
-    &leftJoin=`{
-        "200x200": {
-            "class": "msProductFile",
-            "on": "`200x200`.`product_id` = `msProduct`.`id` AND `200x200`.`rank` = 0 AND `200x200`.`path` LIKE '%/200x200/%'"
-        }
-    }`
-    &select=`{
-        "200x200" : "`200x200`.`url` as `200x200`"
-    }`
+  &leftJoin=`{
+    "200x200": {
+      "class": "msProductFile",
+      "on": "`200x200`.`product_id` = `msProduct`.`id` AND `200x200`.`rank` = 0 AND `200x200`.`path` LIKE '%/200x200/%'"
+    }
+  }`
+  &select=`{
+    "200x200" : "`200x200`.`url` as `200x200`"
+  }`
 ]]
 ```
 
@@ -133,10 +133,10 @@ if (empty($row) || !is_array($row)) {return $row;}
 $q = $modx->newQuery('modTemplateVarResource', array('tmplvarid' => $tv_id, 'contentid' => $row['id']));
 $q->select('value');
 if ($q->prepare() && $q->stmt->execute()) {
-    $row['thumb'] = $q->stmt->fetchColumn();
+  $row['thumb'] = $q->stmt->fetchColumn();
 }
 if (empty($row['thumb'])) {
-    $row['thumb'] = $empty;
+  $row['thumb'] = $empty;
 }
 
 return json_encode($row);
@@ -146,13 +146,13 @@ return json_encode($row);
 
 ```modx
 [[!CompareList?
-    &fields=`{"mobile":["price","article","year","vendor.name","option.memory","option.cpu","country"]}`
-    &prepareSnippet=`addThumb`
+  &fields=`{"mobile":["price","article","year","vendor.name","option.memory","option.cpu","country"]}`
+  &prepareSnippet=`addThumb`
 ]]
 ```
 
 При работе будет добавлен недостающий плейсхолдер `[[+thumb]]` с картинкой из ТВ параметра или изображением по умолчанию, если ТВ пуст.
 
-[2]: /components/pdotools/general-parameters
+[2]: /components/pdotools/general-properties
 [3]: /components/minishop2/
 [4]: /components/comparison/addcomparison

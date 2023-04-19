@@ -11,13 +11,13 @@
 
 ## Пакет можно установить через modstore
 
-* [MagicThemes](https://modstore.pro/packages/sites-themes/magicthemes)
+- [MagicThemes](https://modstore.pro/packages/sites-themes/magicthemes)
 
 ## Темы доступные для установки
 
-* [mtDemo](https://modstore.pro/packages/sites-themes/mtdemo) (бесплатный, для тестов и "посмотреть")
-* [mtBlog](https://modstore.pro/packages/sites-themes/mtblog) (платная)
-* [handyShop](https://modstore.pro/packages/sites-themes/handyshop) (платная)
+- [mtDemo](https://modstore.pro/packages/sites-themes/mtdemo) (бесплатный, для тестов и "посмотреть")
+- [mtBlog](https://modstore.pro/packages/sites-themes/mtblog) (платная)
+- [handyShop](https://modstore.pro/packages/sites-themes/handyshop) (платная)
 
 ## Видео обзор
 

@@ -9,7 +9,7 @@
 
 ### Пример
 
-```javascript
+```js
 $(document).ready(function() {
   $(document).on('ymOnLoadMap', function(e, ym2, map) {
     console.log('ym2', ym2); // Экземпляр класса YandexMaps2

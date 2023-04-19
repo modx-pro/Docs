@@ -6,9 +6,9 @@
 
 По умолчанию отключена проверка прав на доступ к документам. Это легко исправить включением параметра **&checkPermissions** (Внимание: замедляет работу!):
 
-``` modx
+```modx
 [[!pdoSitemap?
-    &checkPermissions=`list`
+  &checkPermissions=`list`
 ]]
 ```
 
@@ -26,9 +26,9 @@
 
 ### Шаблоны
 
-> &tpl
+::: code-group
 
-``` xml
+```modx [&tpl]
 @INLINE <url>\n\t
 <loc>[[+url]]</loc>\n\t
 <lastmod>[[+date]]</lastmod>\n\t
@@ -37,11 +37,10 @@
 </url>
 ```
 
-> &tplWrapper
-
-``` xml
+```modx [&tplWrapper]
 @INLINE <?xml version=\"1.0\" encoding=\"[[++modx_charset]]\"?>\n<urlset xmlns=\"[[+schema]]\">\n[[+output]]\n</urlset>
 ```
+:::
 
 Приоритет и [частота обновления][5] для поисковиков устанавливаются в зависимости от последней даты изменения документа:
 
@@ -63,59 +62,59 @@
 
 Обычный вывод карты сайта для текущего контекста. В большинстве случаев этого может быть достаточно:
 
-``` modx
+```modx
 [[pdoSitemap]]
 ```
 
 Генерируем карту сайта только из определённый контейнеров:
 
-``` modx
+```modx
 [[pdoSitemap?
-    &parents=`10`
+  &parents=`10`
 ]]
 ```
 
 Исключаем ресурсы с id = 15 и 25, вместе с их потомками:
 
-``` modx
+```modx
 [[pdoSitemap?
-    &parents=`10, -15,-25`
+  &parents=`10, -15,-25`
 ]]
 ```
 
 А теперь исключаем id = 15 с потомками, а 25 - без:
 
-``` modx
+```modx
 [[pdoSitemap?
-    &resources=`-25`
-    &parents=`-15,10`
+  &resources=`-25`
+  &parents=`-15,10`
 ]]
 ```
 
 Добавляем еще один контекст:
 
-``` modx
+```modx
 [[pdoSitemap?
-    &resources=`-25`
-    &parents=`-15,10`
-    &context=`web,catalog`
+  &resources=`-25`
+  &parents=`-15,10`
+  &context=`web,catalog`
 ]]
 ```
 
 А вот так можно посмотреть лог выборки карты:
 
-``` modx
+```modx
 [[pdoSitemap?
-    &resources=`-25`
-    &parents=`-15,10`
-    &context=`web,catalog`
-    &showLog=`1`
-    &forceXML=`0`
+  &resources=`-25`
+  &parents=`-15,10`
+  &context=`web,catalog`
+  &showLog=`1`
+  &forceXML=`0`
 ]]
 ```
 
 [1]: http://rtfm.modx.com/extras/revo/googlesitemap
 [2]: http://bezumkin.ru/sitemap.xml
-[3]: /components/pdotools/general-parameters
+[3]: /components/pdotools/general-properties
 [4]: http://www.sitemaps.org/ru/protocol.html#prioritydef
 [5]: http://www.sitemaps.org/ru/protocol.html#changefreqdef

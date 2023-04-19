@@ -4,11 +4,11 @@ pdoTools умеет загружать и использовать элемен�
 
 Можно делать это через API:
 
-``` php
+```php
 if ($pdoTools = $modx->getService('pdoTools')) {
-    $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array('placeholder' => 'value'));
+  $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array('placeholder' => 'value'));
 
-    $snippet = $pdoTools->runSnippet('@FILE snippets/my_snippet.php', array('param' => 'value'));
+  $snippet = $pdoTools->runSnippet('@FILE snippets/my_snippet.php', array('param' => 'value'));
 }
 ```
 
@@ -16,10 +16,10 @@ if ($pdoTools = $modx->getService('pdoTools')) {
 
 Вы можете указать и произвольную директорию прямо при вызове метода:
 
-``` php
+```php
 $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array(
-    'placeholder' => 'value',
-    'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
+  'placeholder' => 'value',
+  'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
 ));
 ```
 
@@ -29,29 +29,33 @@ $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array(
 
 Для загрузки чанков и сниппетов в Fenom вы можете использовать такой синтаксис для чанков:
 
-``` php
+```fenom
 {$_modx->getChunk('@FILE chunks/my_chunk.tpl', [
-    'placeholder' => 'value',
-    'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
+  'placeholder' => 'value',
+  'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
 ])}
+
 // или
+
 {'@FILE chunks/my_chunk.tpl' | chunk : [
-   'placeholder' => 'value',
-   'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
+  'placeholder' => 'value',
+  'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
 ]}
 ```
 
 и для сниппетов:
 
-``` php
+```fenom
 {$_modx->runSnippet('@FILE snippets/my_snippet.php', [
-    'param' => 'value',
-    'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
+  'param' => 'value',
+  'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
 ])}
+
 // или
+
 {'@FILE snippets/my_snippet.php' | snippet : [
-    'param' => 'value',
-    'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
+  'param' => 'value',
+  'elementsPath' => MODX_ASSETS_PATH . 'mydir/',
 ]}
 ```
 
@@ -68,33 +72,37 @@ $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array(
 
 Простая загрузка шаблона:
 
-``` php
+```fenom
 {include 'file:chunks/my_chunk.tpl'}
 ```
 
 Расширение шаблона:
 
-``` php
+```fenom
 {extends 'file:chunks/my_chunk.tpl'}
 
 {block 'myblock'}
-    Hello world!
+  Hello world!
 {/block}
 ```
 
 Есть еще источник `template`, который создаёт чанки из объектов `modTemplate` системы:
 
-``` php
+```fenom
 {include 'template:MyTemplate'}
+
 // или по id
+
 {include 'template:1'}
 ```
 
 Если же не указывать никакой источник, то будет загружен обычный чанк из БД
 
-``` php
+```fenom
 {include 'myChunk'}
+
 // или по id
+
 {include '10'}
 ```
 
@@ -103,8 +111,13 @@ $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array(
 Также можно кэшировать только файлы, не кэшируя обычные чанки из БД.
 Для этого вам нужно отключить pdotools_fenom_cache и указать параметры напрямую Fenom через настройку **pdotools_fenom_options**:
 
-``` json
-{"force_compile": false, "disable_cache": false, "force_include": false, "auto_reload": true}
+```json
+{
+  "force_compile": false,
+  "disable_cache": false,
+  "force_include": false,
+  "auto_reload": true
+}
 ```
 
 Все параметры Fenom можно найти [в его документации](https://github.com/fenom-template/fenom/blob/master/docs/ru/configuration.md).
@@ -119,7 +132,7 @@ $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array(
 
 Создайте нужное количество шаблонов в системе и укажите их ресурсам. В самих шаблонах нужно написать просто
 
-``` php
+```fenom
 {include 'file:templates/my_template1.tpl'}
 ```
 
@@ -133,7 +146,7 @@ $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array(
 
 Например, мы можем прописать в нашем шаблоне `templates/my_template1.tpl` вот такие строки:
 
-``` php
+```fenom
 {include 'file:chunks/head.tpl'}
 {include 'file:chunks/body.tpl'}
 {include 'file:chunks/footer.tpl'}
@@ -145,7 +158,7 @@ $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array(
 
 Тоже самое и со сниппетами. Ничего кроме файлов создавать не нужно. Так как это PHP код, нужно использовать метод pdoTools:
 
-``` php
+```fenom
 {$_modx->runSnippet('@FILE snippets/my_snippet.php')}
 ```
 
@@ -157,24 +170,24 @@ $chunk = $pdoTools->getChunk('@FILE chunks/my_chunk.tpl', array(
 
 После этого просто вызывайте свой файловый сниппет из этого плагина через API:
 
-``` php
+```php
 <?php
 
 if ($pdoTools = $modx->getService('pdoTools')) {
-    $pdoTools->runSnippet('@FILE plugins/my_plugin.php', $scriptProperties);
+  $pdoTools->runSnippet('@FILE plugins/my_plugin.php', $scriptProperties);
 }
 
 ```
 
 Он будет проверять и обрабатывать события. Например:
 
-``` php
+```php
 <?php
 
 switch ($modx->event->name) {
-    case 'OnLoadWebDocument':
-        echo '<pre>'; print_r($modx->resource->toArray()); die;
-        break;
+  case 'OnLoadWebDocument':
+    echo '<pre>'; print_r($modx->resource->toArray()); die;
+    break;
 }
 ```
 

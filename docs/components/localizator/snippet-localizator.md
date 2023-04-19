@@ -1,4 +1,3 @@
-
 # Сниппет Localizator
 
 Предназначен для вывода переведенных в локализаторе ресурсов
@@ -8,7 +7,7 @@
 Сниппет Localizator работает со сниппетами пакета pdoTools. Не работает с getImageList
 
 | Название            | По умолчанию   | Описание                                                                                                                                      |
-|---------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | **snippet**         | `pdoResources` | Имя сниппета для запуска                                                                                                                      |
 | **class**           | `modResource`  | Класс получаемого объекта                                                                                                                     |
 | **localizator_key** | `Нет`          | Ключ локализации, по умолчанию текущий                                                                                                        |
@@ -20,11 +19,11 @@
 
 ```fenom
 {'Localizator' | snippet : [
-    'snippet' => 'pdoMenu',
-    'includeTVs' => 'img',
-    'processTVs' => 'img',
-    'parents' => 0,
-    'level' => 1,
+  'snippet' => 'pdoMenu',
+  'includeTVs' => 'img',
+  'processTVs' => 'img',
+  'parents' => 0,
+  'level' => 1,
 ]}
 ```
 
@@ -32,14 +31,14 @@
 
 ```fenom
 <div id="pdopage">
-    <div class="rows">
-        {'!pdoPage' | snippet : [
-            'element' => 'Localizator',
-            'parents' => 0,
-            'ajaxMode' => 'default',
-        ]}
-    </div>
-    {'page.nav' | placeholder}
+  <div class="rows">
+    {'!pdoPage' | snippet : [
+      'element' => 'Localizator',
+      'parents' => 0,
+      'ajaxMode' => 'default',
+    ]}
+  </div>
+  {'page.nav' | placeholder}
 </div>
 ```
 
@@ -47,8 +46,8 @@
 
 ```fenom
 {'!mFilter2' | snippet : [
-    'element' => 'Localizator',
-    'parents' => 0,
+  'element' => 'Localizator',
+  'parents' => 0,
 ]}
 ```
 
@@ -56,34 +55,34 @@
 
 ```fenom
 {'!mFilter2' | snippet : [
-    'element' => 'Localizator',
-    'snippet' => 'msProducts',
-    'parents' => 0,
+  'element' => 'Localizator',
+  'snippet' => 'msProducts',
+  'parents' => 0,
 ]}
 ```
 
 ### Использование для поиска и вывода товаров вместе с msProducts
 
 ```fenom
-{set $ids = '!mSearch2' | snippet :[
-    'returnIds' => 1,
-    'limit' => 0,
+{set $ids = '!mSearch2' | snippet : [
+  'returnIds' => 1,
+  'limit' => 0,
 ] ?:'99999'}
 
 <div id="pdopage">
-    <div class="rows">
-        {'!pdoPage' | snippet : [
-            'element' => 'Localizator',
-            'snippet' => 'msProducts',
-            'parents' => 0,
-            'ajax' => 1,
-            'ajaxMode' => 'default',
-            'sortby' => 'ids',
-            'sortdir' => 'asc',
-            'resources' => $ids
-        ]}
-    </div>
-    {'page.nav' | placeholder}
+  <div class="rows">
+    {'!pdoPage' | snippet : [
+      'element' => 'Localizator',
+      'snippet' => 'msProducts',
+      'parents' => 0,
+      'ajax' => 1,
+      'ajaxMode' => 'default',
+      'sortby' => 'ids',
+      'sortdir' => 'asc',
+      'resources' => $ids,
+    ]}
+  </div>
+  {'page.nav' | placeholder}
 </div>
 ```
 
@@ -91,14 +90,14 @@
 
 ```fenom
 {'pdoResources' | snippet : [
-    'tpl' => '@INLINE {$pagetitle}',
-    'class' => 'localizatorContent',
-    'sortby' => 'id',
-    'limit' => 1,
-    'where' => [
-        'key' => ('localizator_key' | option),
-        'resource_id' => 2,
-    ],
+  'tpl' => '@INLINE {$pagetitle}',
+  'class' => 'localizatorContent',
+  'sortby' => 'id',
+  'limit' => 1,
+  'where' => [
+    'key' => ('localizator_key' | option),
+    'resource_id' => 2,
+  ],
 ]}
 ```
 
@@ -108,15 +107,15 @@
 
 ```fenom
 {'pdoResources' | snippet : [
-    'tpl' => '@INLINE {$value}',
-    'class' => 'locTemplateVarResource',
-    'sortby' => 'id',
-    'limit' => 1,
-    'where' => [
-        'key' => ('localizator_key' | option),
-        'tmplvarid' => 1,
-        'contentid' => 2,
-    ],
+  'tpl' => '@INLINE {$value}',
+  'class' => 'locTemplateVarResource',
+  'sortby' => 'id',
+  'limit' => 1,
+  'where' => [
+    'key' => ('localizator_key' | option),
+    'tmplvarid' => 1,
+    'contentid' => 2,
+  ],
 ]}
 ```
 
@@ -128,7 +127,7 @@
 ### Получение и вывод TV от другого ресурса помощью модификатора locfield
 
 ```fenom
-{1 | locfield:'tvname'}
+{1 | locfield : 'tvname'}
 ```
 
 Где:
@@ -140,20 +139,20 @@
 
 ```fenom
 {foreach ('!pdoResources' | snippet : [
-    'tpl' => '@INLINE {$value | toJSON}',
-    'class' => 'locTemplateVarResource',
-    'sortby' => 'id',
-    'showLog' => 0,
-    'limit' => 1,
-    'where' => [
-        'key' => ('localizator_key' | option),
-        'tmplvarid' => 30,
-        'contentid' => $_modx->resource.parent,
-    ],
+  'tpl' => '@INLINE {$value | toJSON}',
+  'class' => 'locTemplateVarResource',
+  'sortby' => 'id',
+  'showLog' => 0,
+  'limit' => 1,
+  'where' => [
+    'key' => ('localizator_key' | option),
+    'tmplvarid' => 30,
+    'contentid' => $_modx->resource.parent,
+  ],
 ]) | fromJSON as $spec}
-    <div class="product-spec-btn">
-        <a class="btn" href="{$spec.download_data_sheet}" download>{'download_data_sheet' | lexicon}</a>
-    </div>
+  <div class="product-spec-btn">
+    <a class="btn" href="{$spec.download_data_sheet}" download>{'download_data_sheet' | lexicon}</a>
+  </div>
 {/foreach}
 ```
 
@@ -173,20 +172,20 @@
 
 ```fenom
 <a class="header-logo" href="{'site_start' | config}" aria-label="{'site_name' | config}">
-    {if $_modx->config.cultureKey == 'ru'}
+  {if $_modx->config.cultureKey == 'ru'}
     <img src="/assets/images/general/logo_ru.png" alt="{$_modx->resource.pagetitle}">
-    {else}
+  {else}
     <img src="/assets/images/general/logo.png" alt="{$_modx->resource.pagetitle}">
-    {/if}
+  {/if}
 </a>
 ```
 
 ### Вывод корзины msCart
 
-``` fenom
+```fenom
 {'!Localizator' | snippet : [
-    'snippet' => 'msCart',
-    'class' => 'msProduct',
-    'tpl' => '@FILE chunks/_checkout.cart.tpl',
+  'snippet' => 'msCart',
+  'class' => 'msProduct',
+  'tpl' => '@FILE chunks/_checkout.cart.tpl',
 ]}
 ```

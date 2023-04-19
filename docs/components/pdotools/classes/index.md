@@ -4,7 +4,7 @@
 
 При установке в систему они регистрируются таким образом, чтобы вы могли быстро их запускать:
 
-``` php
+```php
 $pdoTools = $modx->getService('pdoTools');
 $pdoFetch = $modx->getService('pdoFetch');
 $pdoParser = $modx->getService('pdoParser');

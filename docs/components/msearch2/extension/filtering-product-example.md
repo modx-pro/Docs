@@ -13,63 +13,68 @@
 ![](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72.png)
 ![](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492.png)
 
-Добавляем новое поле в модель товара:
+Добавляем новое поле в модель товара по пути: `/core/components/minishop2/plugins/availability/model/`
 
-```php
+::: code-group
+```php [msproductdata.map.inc.php]
 <?php
-// Файл /core/components/minishop2/plugins/availability/model/msproductdata.map.inc.php
+
 return array(
-    'fields' => array(
-        'availability' => 0
+  'fields' => array(
+    'availability' => 0
+  ),
+  'fieldMeta' => array(
+    'availability' => array(
+      'dbtype' => 'integer',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'null' => true,
+      'default' => 0
     )
-    ,'fieldMeta' => array(
-        'availability' => array(
-            'dbtype' => 'integer'
-            ,'precision' => '10'
-            ,'phptype' => 'integer'
-            ,'null' => true
-            ,'default' => 0
-        )
-    )
+  )
 );
 ```
+:::
 
 ![](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4.png)
 
-Добавляем виджеты ExtJS для этого поля в админку:
+Добавляем виджеты ExtJS для этого поля в админку по пути: `/assets/components/minishop2/plugins/availability/`
 
-```php
-// Файл /assets/components/minishop2/plugins/availability/msproductdata.js
+::: code-group
+```js [msproductdata.js]
 miniShop2.plugin.pluginname = {
-    getFields: function(config) {
-        return {
-            availability: {xtype: 'numberfield', description: _('ms2_product_availability_help')}
-        }
+  getFields: function (config) {
+    return {
+      availability: { xtype: 'numberfield', description: _('ms2_product_availability_help') }
     }
-    ,getColumns: function() {
-        return {
-            availability: {width:50, sortable:true, editor: {xtype:'numberfield'}}
-        }
+  },
+  getColumns: function () {
+    return {
+      availability: {width:50, sortable:true, editor: {xtype:'numberfield'}}
     }
+  }
 };
 ```
+:::
 
 ![](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecf.png)
 
-Связываем это вместе индексным файлом, который включит плагин:
+Связываем это вместе индексным файлом, который включит плагин по пути: `/core/components/minishop2/plugins/availability/`
 
-```php
+::: code-group
+```php [index.php]
 <?php
-// /core/components/minishop2/plugins/availability/index.php
+//
 return array(
-    'xpdo_meta_map' => array(
-        'msProductData' => require_once dirname(__FILE__) .'/model/msproductdata.map.inc.php'
-    )
-    ,'manager' => array(
-        'msProductData' => MODX_ASSETS_URL . 'components/minishop2/plugins/availability/msproductdata.js'
-    )
+  'xpdo_meta_map' => array(
+    'msProductData' => require_once dirname(__FILE__) .'/model/msproductdata.map.inc.php'
+  ),
+  'manager' => array(
+    'msProductData' => MODX_ASSETS_URL . 'components/minishop2/plugins/availability/msproductdata.js'
+  )
 );
 ```
+:::
 
 ![](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009.png)
 
@@ -95,7 +100,7 @@ return array(
 
 ```modx
 [[!mFilter?
-    &filters=`ms|availability:availability`
+  &filters=`ms|availability:availability`
 ]]
 ```
 
@@ -104,9 +109,9 @@ return array(
 
 ```modx
 [[!mFilter?
-    &filters=`ms|availability:availability`
-    &suggestionsRadio=`ms|availability`
-    &tplFilter.row.ms|availability=`tpl.mFilter2.filter.radio`
+  &filters=`ms|availability:availability`
+  &suggestionsRadio=`ms|availability`
+  &tplFilter.row.ms|availability=`tpl.mFilter2.filter.radio`
 ]]
 ```
 
@@ -152,8 +157,8 @@ class myCustomFilter extends mse2FiltersHandler {}
 
 ```html
 <ul>
-    <li>Поле availability <= 0</li>
-    <li>Поле availability > 0</li>
+  <li>Поле availability <= 0</li>
+  <li>Поле availability > 0</li>
 </ul>
 ```
 
@@ -165,64 +170,64 @@ class myCustomFilter extends mse2FiltersHandler {}
 <?php
 class myCustomFilter extends mse2FiltersHandler {
 
-    // За образец берем стандартный buildBooleanFilter и немного его меняем
-    public function buildAvailabilityFilter(array $values) {
-        if (count($values) < 2 && empty($this->config['showEmptyFilters'])) {
-            return array();
-        }
-
-        $results = array();
-        foreach ($values as $value => $ids) {
-            $title = ($value <= 0)
-                ? $this->modx->lexicon('mse2_filter_availability_no')
-                : $this->modx->lexicon('mse2_filter_availability_yes');
-
-            $value = $value <= 0 ? '0' : '1';
-
-            if (!isset($results[$value])) {
-                $results[$value] = array(
-                    'title' => $title
-                    ,'value' => $value
-                    ,'type' => 'availability'
-                    ,'resource' => array()
-                );
-            }
-
-            foreach ($ids as $id) {
-                $results[$value]['resources'][] = $id;
-            }
-        }
-
-        ksort($results);
-        return $results;
+  // За образец берем стандартный buildBooleanFilter и немного его меняем
+  public function buildAvailabilityFilter(array $values) {
+    if (count($values) < 2 && empty($this->config['showEmptyFilters'])) {
+      return array();
     }
 
+    $results = array();
+    foreach ($values as $value => $ids) {
+      $title = ($value <= 0)
+        ? $this->modx->lexicon('mse2_filter_availability_no')
+        : $this->modx->lexicon('mse2_filter_availability_yes');
 
-    // Собственно фильтрация, берём за основу filterNumber
-    public function filterAvailability(array $requested, array $values, array $ids) {
-        $matched = array();
+      $value = $value <= 0 ? '0' : '1';
 
-        $value = $requested[0];
-        $tmp = array_flip($ids);
-        foreach ($values as $number => $resources) {
-            if ($value && $number > 0) {
-                foreach ($resources as $id) {
-                    if (isset($tmp[$id])) {
-                        $matched[] = $id;
-                    }
-                }
-            }
-            elseif (!$value && $number <= 0) {
-                foreach ($resources as $id) {
-                    if (isset($tmp[$id])) {
-                        $matched[] = $id;
-                    }
-                }
-            }
-        }
+      if (!isset($results[$value])) {
+        $results[$value] = array(
+          'title' => $title
+          ,'value' => $value
+          ,'type' => 'availability'
+          ,'resource' => array()
+        );
+      }
 
-        return $matched;
+      foreach ($ids as $id) {
+        $results[$value]['resources'][] = $id;
+      }
     }
+
+    ksort($results);
+    return $results;
+  }
+
+
+  // Собственно фильтрация, берём за основу filterNumber
+  public function filterAvailability(array $requested, array $values, array $ids) {
+    $matched = array();
+
+    $value = $requested[0];
+    $tmp = array_flip($ids);
+    foreach ($values as $number => $resources) {
+      if ($value && $number > 0) {
+        foreach ($resources as $id) {
+          if (isset($tmp[$id])) {
+            $matched[] = $id;
+          }
+        }
+      }
+      elseif (!$value && $number <= 0) {
+        foreach ($resources as $id) {
+          if (isset($tmp[$id])) {
+            $matched[] = $id;
+          }
+        }
+      }
+    }
+
+    return $matched;
+  }
 }
 ```
 

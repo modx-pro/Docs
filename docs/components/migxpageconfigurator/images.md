@@ -27,11 +27,23 @@ document.addEventListener('DOMContentLoaded', () => {
 Формат миниатюры определяется системной настройкой `mpc_thumb_format`. Для картинки
 
 ```html
-<img data-mpc-field="img" src="assets/project_files/images/otkrytie1.png" width="100" height="100" alt="">
+<img
+  data-mpc-field="img"
+  src="assets/project_files/images/otkrytie1.png"
+  width="100"
+  height="100"
+  alt=""
+>
 ```
 
 Итоговый результат будет таким
 
-```html
-<img src="assets/components/migxpageconfigurator/images/fake-img.png" width="{$img_w}" height="{$img_h}" alt="{$title | notags}" data-lazy="{set $params = 'w='~$img_w~'&h='~$img_h~'&zc=1&ra=1&bg=&f=png'}{$img | pThumb:$params}">
+```fenom
+<img
+  src="assets/components/migxpageconfigurator/images/fake-img.png"
+  width="{$img_w}"
+  height="{$img_h}"
+  alt="{$title | notags}"
+  data-lazy="{set $params = 'w='~$img_w~'&h='~$img_h~'&zc=1&ra=1&bg=&f=png'}{$img | pThumb:$params}"
+>
 ```

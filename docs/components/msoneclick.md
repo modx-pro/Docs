@@ -291,7 +291,7 @@ msOneClick.Modal.hide = function () {
 
 Добавить код в подключенный JS файл
 
-```javascript
+```js
 $(document).on('msoneclick_after_init', function (e, data) {
   // После запуска модельного окна ищется форма на странице
   var form = $('.msoptionsprice-product-' + msOneClick.Product.product_id)

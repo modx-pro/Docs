@@ -13,7 +13,7 @@ AjaxFormItLogin это современный вариант всеми люби
 5. Позволяет отображать процесс загрузки файлов на сервер, для этого нужно указать параметр `showUploadProgress` со значением 1.
 6. Событие af_complete заменено на afl_complete.
 
-    ```javascript
+    ```js
     document.addEventListener('afl_complete', e => {
       console.log(e.detail.response); // ответ сервера
       console.log(e.detail.form); // текущая форма
@@ -143,9 +143,9 @@ else {
     ```
 
     ```fenom
-    {$name ? '<p>Имя: '~$name~'</p>' : ''}
-    {$phone ? '<p>Телефон: '~$phone~'</p>' : ''}
-    {$email ? '<p>Email: '~$email~'</p>' : ''}
+    {$name ? '<p>Имя: ' ~ $name ~ '</p>' : ''}
+    {$phone ? '<p>Телефон: ' ~ $phone ~ '</p>' : ''}
+    {$email ? '<p>Email: ' ~ $email ~ '</p>' : ''}
     ```
 
     :::

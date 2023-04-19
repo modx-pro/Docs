@@ -64,7 +64,7 @@ if ($product = $modx->getObject('msProduct', 15)) {
 
 В общем виде контроллер плагина выглядит вот так:
 
-``` php
+```php
 <?php
 
 return array(

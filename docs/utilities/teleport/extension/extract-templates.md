@@ -11,7 +11,7 @@
 ### Аттрибуты пакета
 
 ::: tip
-доступны в teleport'е >=1.2.0*
+Доступны в teleport'е >=1.2.0*
 :::
 
 Часть `attributes` даёт возможность задать аттрибуты транспортного пакета который генерируется командой Extract. Например, это может быть использовано для установки аттрибутов пакета, которые будут использованы Менеджером пакетов при установке Дополнения, даёт вам возможность использовать Teleport как простой способ создавать устанавливаемые транспортные пакеты для использования в любом сайте MODX.
@@ -23,13 +23,13 @@
 
 ```php
 "attributes": {
-    "changelog": {
-        "sourceType": "fileContent",
-        "source": "{+properties.modx.core_path}components/test/changelog.txt"
-    },
-    "requires": {
-        "collections": "~3.0"
-    }
+  "changelog": {
+    "sourceType": "fileContent",
+    "source": "{+properties.modx.core_path}components/test/changelog.txt"
+  },
+  "requires": {
+    "collections": "~3.0"
+  }
 },
 ```
 
@@ -43,34 +43,34 @@
 
 ```php
 "vehicles": [
-    {
-        "vehicle_class": "xPDOObjectVehicle",
-        "object": {
-            "class": "modSystemSetting",
-            "criteria": [
-                "1 = 1"
-            ],
-            "package": "modx"
-        },
-        "attributes": {
-            "preserve_keys": true,
-            "update_object": true
-        }
+  {
+    "vehicle_class": "xPDOObjectVehicle",
+    "object": {
+      "class": "modSystemSetting",
+      "criteria": [
+        "1 = 1"
+      ],
+      "package": "modx"
     },
-    {
-        "vehicle_class": "xPDOObjectVehicle",
-        "object": {
-            "class": "modContextSetting",
-            "criteria": [
-                "1 = 1"
-            ],
-            "package": "modx"
-        },
-        "attributes": {
-            "preserve_keys": true,
-            "update_object": true
-        }
+    "attributes": {
+      "preserve_keys": true,
+      "update_object": true
     }
+  },
+  {
+    "vehicle_class": "xPDOObjectVehicle",
+    "object": {
+      "class": "modContextSetting",
+      "criteria": [
+        "1 = 1"
+      ],
+      "package": "modx"
+    },
+    "attributes": {
+      "preserve_keys": true,
+      "update_object": true
+    }
+  }
 ]
 ```
 
@@ -80,20 +80,20 @@
 
 #### xPDOFileVehicle
 
-* `source`: абсолютный путь к файлу или каталогу, который должен быть упакован
-* `target`: PHP выражение которое будет исполнено `eval()` во время инсталляции, чтобы определить куда файл/директорию распаковывать
+- `source`: абсолютный путь к файлу или каталогу, который должен быть упакован
+- `target`: PHP выражение которое будет исполнено `eval()` во время инсталляции, чтобы определить куда файл/директорию распаковывать
 
 #### xPDOObjectVehicle
 
-* `class`: определяет класс xPDOObject чтобы быть упакованным транспортной единицей
-* `criteria`: массив или объект, описывающий критерии, которые будут использоваться, чтобы выбрать (xPDO выборка) экземпляры указанного класса `class`
-* `graph`: определяет, какой граф объекта использовать для связанных объектов xPDOObjects
-* `graphCriteria`: определяет критерии для фильтрации связанных xPDOObjects определённых в `graph`
-* `script`: дополнительный script который будет использоваться для создания транспортной единицы/единиц для этого описания транспортной единицы
-* `package`: xPDO имя пакета для указанного класса `class`
+- `class`: определяет класс xPDOObject чтобы быть упакованным транспортной единицей
+- `criteria`: массив или объект, описывающий критерии, которые будут использоваться, чтобы выбрать (xPDO выборка) экземпляры указанного класса `class`
+- `graph`: определяет, какой граф объекта использовать для связанных объектов xPDOObjects
+- `graphCriteria`: определяет критерии для фильтрации связанных xPDOObjects определённых в `graph`
+- `script`: дополнительный script который будет использоваться для создания транспортной единицы/единиц для этого описания транспортной единицы
+- `package`: xPDO имя пакета для указанного класса `class`
 
 #### xPDOScriptVehicle
 
-* `source`: сценарий для выполнения во время установки транспортной единицы
+- `source`: сценарий для выполнения во время установки транспортной единицы
 
 [1]: https://github.com/modxcms/teleport/blob/master/doc/use/inject.md

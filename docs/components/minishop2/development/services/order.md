@@ -73,7 +73,7 @@
 
 Класс `msOrderHandler` генерирует определённые события при работе с заказом. Для удобства, вот они в виде заготовки-плагина:
 
-``` php
+```php
 <?php
 
 switch ($modx->event->name) {
@@ -124,7 +124,7 @@ class myOrderHandler extends msOrderHandler {
 
 - Теперь мы можем изменить любой метод создания заказа, чем и пользуемся — меняем `msOrderHandler::validate()`.
 
-``` php
+```php
 <?php
 class myOrderHandler extends msOrderHandler {
   public function validate($key, $value) {

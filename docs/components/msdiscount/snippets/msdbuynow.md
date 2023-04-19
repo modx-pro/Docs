@@ -20,7 +20,7 @@
 
 Это может быть полезным для вывода всех товаров со скидкой, например, в [mFilter2][1]:
 
-``` modx
+```modx
 [[!mFilter2?
   &parents=`0`
   &element=`msdBuyNow`

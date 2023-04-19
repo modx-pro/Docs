@@ -11,7 +11,7 @@
 Принимает все параметры [pdoTools][1] (за исключением чанков-шаблонов) и некоторые свои:
 
 | Параметр           | По умолчанию     | Описание                                                                                                                                                                             |
-| ------------------ | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|--------------------|------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **&id**            | Текущий документ | Идентификатор ресурса, относительно которого выводятся соседи.                                                                                                                       |
 | **&loop**          | Да               | Показывает или отменяет показ записей в цикле                                                                                                                                        |
 | **&tplPrev**       | см. ниже         | Чанк ссылки на предыдущий документ.                                                                                                                                                  |
@@ -19,12 +19,12 @@
 | **&tplNext**       | см. ниже         | Чанк ссылки на следующий документ.                                                                                                                                                   |
 | **&tplWrapper**    | см. ниже         | Чанк-обёртка, для заворачивания результатов. Понимает плейсхолдеры: `[[+left]]`, `[[+top]]`, `[[+right]]` и `[[+log]]`. Не работает вместе с параметром **&toSeparatePlaceholders**. |
 | **&toPlaceholder** |                  | Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.                                                                                      |
-| **&showLog**       | 0                | Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекте «mgr».                                                                                  |
+| **&showLog**       | `0`              | Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекте «mgr».                                                                                  |
 
 ### Шаблоны
 
 | Шаблон          | По умолчанию                                                                           |
-| --------------- | -------------------------------------------------------------------------------------- |
+|-----------------|----------------------------------------------------------------------------------------|
 | **&tplPrev**    | `@INLINE <span class="link-prev"><a href="/[[+uri]]">&larr; [[+menutitle]]</a></span>` |
 | **&tplUp**      | `@INLINE <span class="link-up">&uarr; <a href="/[[+uri]]">[[+menutitle]]</a></span>`   |
 | **&tplNext**    | `@INLINE <span class="link-next"><a href="/[[+uri]]">[[+menutitle]] &rarr;</a></span>` |
@@ -42,7 +42,7 @@
 
 ```modx
 [[pdoNeighbors?
-    &id=`55`
+  &id=`55`
 ]]
 ```
 
@@ -50,8 +50,8 @@
 
 ```modx
 [[pdoNeighbors?
-    &sortby=`publishedon`
-    &sortdir=`asc`
+  &sortby=`publishedon`
+  &sortdir=`asc`
 ]]
 ```
 
@@ -59,17 +59,17 @@
 
 ```fenom
 {'!pdoNeighbors' | snippet : [
-    'snippet' => 'msProducts',
-    'sortby' => 'publishedon',
-    'sortdir' => 'ASC',
-    'leftJoin' => '{ "thumbs": { "class":"msProductData","alias":"thumbs", "on": "thumbs.id = modResource.id" }}',
-    'select' => '{ "thumbs":"thumbs.thumb as small" }',
-    'tplWrapper' => '@INLINE {$prev}',
-    'tplPrev' => '@FILE chunks/product/item_prev.tpl',
+  'snippet' => 'msProducts',
+  'sortby' => 'publishedon',
+  'sortdir' => 'ASC',
+  'leftJoin' => '{ "thumbs": { "class":"msProductData","alias":"thumbs", "on": "thumbs.id = modResource.id" }}',
+  'select' => '{ "thumbs":"thumbs.thumb as small" }',
+  'tplWrapper' => '@INLINE {$prev}',
+  'tplPrev' => '@FILE chunks/product/item_prev.tpl',
 ]}
 
 ```
 
 [![](https://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26s.jpg)](https://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26.png)
 
-[1]: /components/pdotools/general-parameters
+[1]: /components/pdotools/general-properties

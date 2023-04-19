@@ -6,7 +6,7 @@
 
 Простая инициализация класса:
 
-``` php
+```php
 $pdoTools = $modx->getService('pdoTools');
 ```
 
@@ -14,17 +14,17 @@ $pdoTools = $modx->getService('pdoTools');
 
 Вы можете указать другой путь к классу в системных настройках, чтобы его подменить и расшить, тогда инициализировать лучше так:
 
-``` php
+```php
 $fqn = $modx->getOption('pdoTools.class', null, 'pdotools.pdotools', true);
 if ($pdoClass = $modx->loadClass($fqn, '', false, true)) {
-    $pdoTools = new $pdoClass($modx, $scriptProperties);
+  $pdoTools = new $pdoClass($modx, $scriptProperties);
 }
 elseif ($pdoClass = $modx->loadClass($fqn, MODX_CORE_PATH . 'components/pdotools/model/', false, true)) {
-    $pdoTools = new $pdoClass($modx, $scriptProperties);
+  $pdoTools = new $pdoClass($modx, $scriptProperties);
 }
 else {
-    $modx->log(modX::LOG_LEVEL_ERROR, 'Could not load pdoTools from "MODX_CORE_PATH/components/pdotools/model/".');
-    return false;
+  $modx->log(modX::LOG_LEVEL_ERROR, 'Could not load pdoTools from "MODX_CORE_PATH/components/pdotools/model/".');
+  return false;
 }
 $pdoTools->addTime('pdoTools loaded');
 ```
@@ -35,12 +35,12 @@ $pdoTools->addTime('pdoTools loaded');
 
 Важная особенность pdoTools - он умеете вести лог того, что делает. Для этого вам доступны методы
 
-* **addTime(string $message)** - добавляет новую запись в лог
-* **getTime(bool $string [true])** - добавляет итоговое время и возвращает либо отформатированную строку (по умолчанию), либо массив время => сообщение
+- **addTime(string $message)** - добавляет новую запись в лог
+- **getTime(bool $string [true])** - добавляет итоговое время и возвращает либо отформатированную строку (по умолчанию), либо массив время => сообщение
 
 Например, вот этот код:
 
-``` php
+```php
 $pdo = $modx->getService('pdoTools');
 $pdo->addTime('pdoTools инициализирован');
 print_r($pdo->getTime());
@@ -60,27 +60,27 @@ print_r($pdo->getTime());
 
 pdoTools умеет кэшировать произвольные данные на время выполнения скрипта. Вы тоже можете этим пользоваться.
 
-* **setStore**(string $name, mixed $object, string $type ["data"]) - добавляет любые данные во временное хранилище.
-* **getStore**(string $name, string $type ["data"]) - получает или данные, или null.
+- **setStore**(string $name, mixed $object, string $type ["data"]) - добавляет любые данные во временное хранилище.
+- **getStore**(string $name, string $type ["data"]) - получает или данные, или null.
 
 Например, вам по ходу работы сниппета нужно закэшировать имена юзеров, чтобы не выбирать их каждый раз.
 Тогда вы можете проверить, есть ли нужный юзер в кэше, и если нет - получить его:
 
-``` php
+```php
 foreach ($users as $id) {
-    $user = $pdo->getStore($id, 'user')
-    if ($user === null) {
-        if (!$user = $modx->getObject('modUser', $id)) {
-            $user = false;
-        }
-        $pdo->setStore($id, $user, 'user');
+  $user = $pdo->getStore($id, 'user')
+  if ($user === null) {
+    if (!$user = $modx->getObject('modUser', $id)) {
+      $user = false;
     }
-    elseif ($user === false) {
-        echo 'Не могу найти юзера с id = ' . $id;
-    }
-    else {
-        echo $user->get('username');
-    }
+    $pdo->setStore($id, $user, 'user');
+  }
+  elseif ($user === false) {
+    echo 'Не могу найти юзера с id = ' . $id;
+  }
+  else {
+    echo $user->get('username');
+  }
 }
 ```
 
@@ -92,31 +92,31 @@ foreach ($users as $id) {
 
 Есть и более продвинутое кэширование, методами MODX:
 
-* **setCache**(mixed $data, array $options) - сохраняет данные `$data` в кэш, генерируя ключ из `$options`
-* **getCache**(array $options) - выдает данные, согласно `$options`
+- **setCache**(mixed $data, array $options) - сохраняет данные `$data` в кэш, генерируя ключ из `$options`
+- **getCache**(array $options) - выдает данные, согласно `$options`
 
 Здесь данные уже сохраняются на диск, время кэширования можно передавать в массиве параметров:
 
-``` php
+```php
 $pdo = $modx->getService('pdoTools');
 $options = array(
-    'user' => $modx->user->get('id'),
-    'page' => @$_REQUEST['page'],
-    'cacheTime' => 10,
+  'user' => $modx->user->get('id'),
+  'page' => @$_REQUEST['page'],
+  'cacheTime' => 10,
 );
 $pdo->addTime('pdoTools загружен');
 if (!$data = $pdo->getCache($options)) {
-    $pdo->addTime('Кэш не найден, генерируем данные');
-    $data = array();
-    for ($i = 1; $i <= 100000; $i ++) {
-        $data[] = rand();
-    }
-    $data = md5(implode($data));
-    $pdo->setCache($data, $options);
-    $pdo->addTime('Данные сохранены в кэш');
+  $pdo->addTime('Кэш не найден, генерируем данные');
+  $data = array();
+  for ($i = 1; $i <= 100000; $i ++) {
+    $data[] = rand();
+  }
+  $data = md5(implode($data));
+  $pdo->setCache($data, $options);
+  $pdo->addTime('Данные сохранены в кэш');
 }
 else {
-    $pdo->addTime('Данные загружены из кэша');
+  $pdo->addTime('Данные загружены из кэша');
 }
 print_r($data);
 ```
@@ -157,10 +157,10 @@ print_r($data);
 
 Первый параметр - массив данных, затем можно указать префикс для плейсхолдеров, открывающие и закрывающие символы, а также отключить генерацию некэшированных плейсхолдеров.
 
-``` php
+```php
 $data = array(
-    'key1' => 'value1',
-    'key2' => 'value2',
+  'key1' => 'value1',
+  'key2' => 'value2',
 );
 
 $pls = $pdo->makePlaceholders($data);
@@ -169,37 +169,36 @@ print_r($pls);
 
 Результат:
 
-``` php
+```php
 Array
 (
-    [pl] => Array
-        (
-            [key1] => [[+key1]]
-            [!key1] => [[!+key1]]
-            [key2] => [[+key2]]
-            [!key2] => [[!+key2]]
-        )
+  [pl] => Array
+    (
+      [key1] => [[+key1]]
+      [!key1] => [[!+key1]]
+      [key2] => [[+key2]]
+      [!key2] => [[!+key2]]
+    )
 
-    [vl] => Array
-        (
-            [key1] => value1
-            [!key1] => value1
-            [key2] => value2
-            [!key2] => value2
-        )
-
+  [vl] => Array
+    (
+      [key1] => value1
+      [!key1] => value1
+      [key2] => value2
+      [!key2] => value2
+    )
 )
 ```
 
 Дальше можно обработать какой-то html шаблон вот так:
 
-``` php
+```php
 $html = str_replace($pls['pl'], $pls['vl'], $html);
 ```
 
-* **buildTree**(array $resources) строит иерархическое дерево из массива ресурсов, используется [pdoMenu][1].
+- **buildTree**(array $resources) строит иерархическое дерево из массива ресурсов, используется [pdoMenu][1].
 
-``` php
+```php
 $pdo = $modx->getService('pdoFetch');
 $resources = $pdo->getCollection('modResource');
 $tree = $pdo->buildTree($resources);
@@ -216,27 +215,27 @@ print_r($tree);
 
 Все плейсхолдеры в чанки, какие только может, обрабатывает [pdoParser][3]. Условие одно - плейсхолдер должен быть без условий и фильтров. То есть:
 
-* `[[%tag]]` - строка лексикона
-* `[[~id]]` - ссылка
-* `[[+tag]]` - обычные плейсхолдеры
-* `[[++tag]]` - системные плейсхолдеры
-* `[[*tag]]` - плейсхолдеры ресурса
+- `[[%tag]]` - строка лексикона
+- `[[~id]]` - ссылка
+- `[[+tag]]` - обычные плейсхолдеры
+- `[[++tag]]` - системные плейсхолдеры
+- `[[*tag]]` - плейсхолдеры ресурса
 
 Еще getChunk в pdoTools умеет работать с разными типами чанков:
 
-* @**INLINE**, @**CODE** - чанк создаётся из полученной строки.
-* @**FILE** - чанк получается из файла. Для исключения инъекций, файлы могут быть только с расширением html и tpl, а директория для их выборки задаётся системной настройкой **pdotools_elements_path**.
-* @**TEMPLATE** - чанк создаётся из шаблона сайта, можно указывать его id или имя.
-* @**CHUNK** или просто строка, без @префикса - выборка обычного чанка из БД.
+- @**INLINE**, @**CODE** - чанк создаётся из полученной строки.
+- @**FILE** - чанк получается из файла. Для исключения инъекций, файлы могут быть только с расширением html и tpl, а директория для их выборки задаётся системной настройкой **pdotools_elements_path**.
+- @**TEMPLATE** - чанк создаётся из шаблона сайта, можно указывать его id или имя.
+- @**CHUNK** или просто строка, без @префикса - выборка обычного чанка из БД.
 
 Рабочий пример:
 
-``` php
+```php
 $tpl = '@INLINE <p>[[+param]] - [[+value]]</p>';
 $res = '';
 for ($i = 1; $i <= 10000; $i++) {
-    $pls = array('param' =>$i, 'value' => rand());
-    $res .= $pdo->getChunk($tpl, $pls);
+  $pls = array('param' =>$i, 'value' => rand());
+  $res .= $pdo->getChunk($tpl, $pls);
 }
 print_r($pdo->getTime());
 print_r($res);
@@ -266,11 +265,11 @@ print_r($res);
 
 Пример:
 
-``` php
+```php
 $tpl = '@INLINE
-    <p>[[+tag]]</p>
-    <!--pdotools_tag [[+tag]] - значение, если тег не пуст-->
-    <!--pdotools_!tag значение, если тег пуст, появилось только в версии 1.9.3, выпущенной сегодня-->
+  <p>[[+tag]]</p>
+  <!--pdotools_tag [[+tag]] - значение, если тег не пуст-->
+  <!--pdotools_!tag значение, если тег пуст, появилось только в версии 1.9.3, выпущенной сегодня-->
 ';
 
 $pls = array('tag' => 1);

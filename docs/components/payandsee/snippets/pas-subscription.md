@@ -73,5 +73,5 @@
 {'page.nav' | placeholder}
 ```
 
-[0104]: /components/pdotools/general-parameters
+[0104]: /components/pdotools/general-properties
 [010101]: /components/pdotools/snippets/pdoresources
