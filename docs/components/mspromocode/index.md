@@ -1,4 +1,47 @@
 ---
+name: msPromoCode
+
+items: [
+  {
+    text: 'Функционал',
+    items: [
+      { text: 'Акции', link: 'functionality/stocks' },
+      { text: 'Условия применения', link: 'functionality/conditions' },
+      { text: 'Реферальные промо-коды', link: 'functionality/referral-promo-codes' },
+      { text: 'Фиксированная скидка на всю корзину', link: 'functionality/fixed-cart-discount' },
+    ],
+  },
+  { text: 'Установка и настройка', link: 'setup' },
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'mspcForm', link: 'snippets/mspcform' },
+      { text: 'mspcRefCoupon', link: 'snippets/mspcrefcoupon' },
+    ],
+  },
+  { text: 'jQuery события', link: 'jquery-events' },
+  {
+    text: 'События плагинов',
+    link: 'events/',
+    items: [
+      { text: 'mspcOnBeforeSetCoupon', link: 'events/mspconbeforesetcoupon' },
+      { text: 'mspcOnSetCoupon', link: 'events/mspconsetcoupon' },
+      { text: 'mspcOnBeforeSetProductDiscount', link: 'events/mspconbeforesetproductdiscount' },
+      { text: 'mspcOnSetProductDiscount', link: 'events/mspconsetproductdiscount' },
+      { text: 'mspcOnBindCouponToOrder', link: 'events/mspconbindcoupontoorder' },
+    ],
+  },
+  {
+    text: 'Кейсы',
+    link: 'cases/',
+    items: [
+      { text: 'Вывод информации по промо-коду в письме', link: 'cases/email-inform' },
+      { text: 'Именные промокоды для пользователя', link: 'cases/personalized-promo-codes' },
+      { text: 'Отменить промо-код при наличии в корзине запрещённых товаров', link: 'cases/cancel-promo-code' },
+    ],
+  },
+]
+
 dependencies: ['miniShop2']
 ---
 

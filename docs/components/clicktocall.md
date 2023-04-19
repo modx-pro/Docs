@@ -1,3 +1,6 @@
+---
+name: ClickToCall
+---
 # ClickToCall
 
 Виджет звонка для мобильных устройств.

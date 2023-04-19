@@ -1,4 +1,5 @@
 ---
+name: msEMS
 dependencies: ['miniShop2']
 ---
 

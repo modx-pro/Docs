@@ -1,3 +1,37 @@
+---
+name: AjaxFormItLogin
+
+items: [
+  { text: 'Системные настройки', link: 'settings' },
+  { text: 'Скрипты и Стили', link: 'scripts-and-styles' },
+  { text: 'Системные события', link: 'events' },
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'AjaxFormitLogin', link: 'snippets/ajaxformitlogin' },
+      { text: 'aflActivateUser', link: 'snippets/aflactivateuser' },
+      { text: 'Кастомные сниппеты', link: 'snippets/custom-snippets' },
+    ],
+  },
+  {
+    text: 'Хуки',
+    items: [
+      { text: 'AjaxIdentification', link: 'hooks/ajaxidentification' },
+    ],
+  },
+  {
+    text: 'Валидаторы',
+    items: [
+      { text: 'aflCheckPassLength', link: 'validators/aflcheckpasslength' },
+      { text: 'aflPasswordConfirm', link: 'validators/aflpasswordconfirm' },
+      { text: 'aflRequiredIf', link: 'validators/aflrequiredif' },
+      { text: 'aflUserExists', link: 'validators/afluserexists' },
+      { text: 'aflUserNotExists', link: 'validators/aflusernotexists' },
+    ],
+  },
+]
+---
+
 # AjaxFormItLogin
 
 AjaxFormItLogin это современный вариант всеми любимого компонента AjaxForm.

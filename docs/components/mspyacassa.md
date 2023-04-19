@@ -1,4 +1,5 @@
 ---
+name: mspYaCassa
 dependencies: ['miniShop2']
 categories: payment
 ---

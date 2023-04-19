@@ -1,3 +1,13 @@
+---
+name: mSync
+
+items: [
+  { text: 'Установка', link: 'setup' },
+  { text: 'Интерфейс', link: 'interface' },
+  { text: 'Настройки', link: 'settings' },
+  { text: 'События и плагины', link: 'events-and-plugins' },
+]
+---
 # mSync
 
 Компонент позволяет импортировать товары и торговые предложения из **1С, Класс365 и МойСклад** по протоколу **CommerceML**

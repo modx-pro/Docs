@@ -1,3 +1,6 @@
+---
+name: WebDAV
+---
 # WebDAV
 
 WebDAVMediaSource сетевой медиа источник для MODX Revolution.

@@ -1,4 +1,5 @@
 ---
+name: msMCD
 dependencies: ['miniShop2']
 ---
 

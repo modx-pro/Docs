@@ -1,3 +1,16 @@
+---
+name: Localizator
+
+items: [
+  { text: 'Сниппет Localizator', link: 'snippet-localizator' },
+  { text: 'Переключение языков', link: 'switch-languages' },
+  { text: 'События', link: 'events' },
+  { text: 'Формирование sitemap', link: 'sitemap-formation' },
+  { text: 'Импорт в локализации', link: 'import-in-localization' },
+  { text: 'seoTemplates', link: 'seotemplates' },
+  { text: 'Атрибут hreflang', link: 'hreflang-attribute' },
+]
+---
 # Localizator
 
 Компонент Localizator дает возможность создания языковых версий / сателитов без контекстов, с автоматическим

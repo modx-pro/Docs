@@ -1,3 +1,15 @@
+---
+name: UserLocation
+
+items: [
+  {
+    text: 'Разработка',
+    items: [
+      { text: 'События', link: 'development/events' },
+    ],
+  },
+]
+---
 # UserLocation
 
 Компонент реализует выбор города пользователя.

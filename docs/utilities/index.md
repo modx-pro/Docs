@@ -1,3 +1,0 @@
-# Утилиты
-
-- [Teleport](/utilities/teleport/)

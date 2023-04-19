@@ -1,3 +1,6 @@
+---
+name: mdDocs
+---
 # mdDocs
 
 Компонент, позволяющий реализовать аналог docs.modx.pro из любого чистого сайта на MODX Revolution.

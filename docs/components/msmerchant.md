@@ -1,4 +1,5 @@
 ---
+name: msMerchant
 dependencies: ['miniShop2']
 ---
 

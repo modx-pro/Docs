@@ -1,4 +1,24 @@
 ---
+name: msPointsIssue
+
+items: [
+  {
+    text: 'Сниппеты',
+    link: 'snippets/',
+    items: [
+      { text: 'msPointsIssue.Order', link: 'snippets/mspointsissue-order' },
+    ],
+  },
+  {
+    text: 'Интерфейс',
+    link: 'interface/',
+    items: [
+      { text: 'Заказы', link: 'interface/orders' },
+      { text: 'Настройка', link: 'interface/settings' },
+    ],
+  },
+]
+
 dependencies: ['miniShop2']
 ---
 

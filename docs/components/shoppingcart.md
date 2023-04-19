@@ -1,3 +1,6 @@
+---
+name: ShoppingCart
+---
 # ShoppingCart
 
 ## Описание

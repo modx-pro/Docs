@@ -1,3 +1,24 @@
+---
+name: multiLingual
+
+items: [
+  { text: 'Принцип перевода выборок', link: 'translation-principle' },
+  { text: 'Решение проблем', link: 'problem-solving' },
+  {
+    text: 'Интерфейс',
+    items: [
+      { text: 'Добавление языковых версий', link: 'interface/add-language' },
+      { text: 'Добавление переводов к полям', link: 'interface/add-language-field' },
+    ],
+  },
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'mlLanguagesLinks', link: 'snippets/mllanguageslinks' },
+    ],
+  },
+]
+---
 # multiLingual
 
 Компонент multiLingual реализует функциональность мультиязычных сайтов без дополнительных контекстов, в отличие от компонента Babel.

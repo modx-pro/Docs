@@ -1,3 +1,6 @@
+---
+name: modVkMarket
+---
 # modVkMarket
 
 Пакет предназначен для синхронизации товаров с маркетом VKontakte.

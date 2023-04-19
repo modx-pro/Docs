@@ -1,4 +1,5 @@
 ---
+name: mspPayPal
 dependencies: ['miniShop2']
 categories: payment
 ---

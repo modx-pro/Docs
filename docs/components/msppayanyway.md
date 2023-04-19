@@ -1,4 +1,5 @@
 ---
+name: mspPayAnyWay
 dependencies: ['miniShop2']
 categories: payment
 ---

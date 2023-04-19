@@ -1,3 +1,17 @@
+---
+name: SocialTools
+
+items: [
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'socDialogForm', link: 'snippets/socdialogform' },
+      { text: 'socDialogList', link: 'snippets/socdialoglist' },
+      { text: 'socDialogReceive', link: 'snippets/socdialogreceive' },
+    ],
+  },
+]
+---
 # SocialTools
 
 SocialTools -  это компонент с социальным функционалом для CMS / CMF MODX.

@@ -1,4 +1,5 @@
 ---
+name: msOptionsPrice
 dependencies: ['miniShop2']
 ---
 

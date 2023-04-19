@@ -1,3 +1,6 @@
+---
+name: VoteForms
+---
 # VoteForms
 
 Система голосования и опросов для MODX Revolution

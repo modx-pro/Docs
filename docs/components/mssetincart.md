@@ -1,4 +1,5 @@
 ---
+name: msSetInCart
 dependencies: ['miniShop2']
 ---
 

@@ -1,3 +1,58 @@
+---
+name: PayAndSee
+
+items: [
+  {
+    text: 'Интерфейс',
+    link: 'interface/',
+    items: [
+      { text: 'Ресурс', link: 'interface/resource' },
+      { text: 'Заказы', link: 'interface/orders' },
+      { text: 'Контент', link: 'interface/content' },
+      { text: 'Тарифы', link: 'interface/rates' },
+      { text: 'Клиенты', link: 'interface/clients' },
+      { text: 'Подписки', link: 'interface/subscriptions' },
+      { text: 'Статусы', link: 'interface/statuses' },
+      { text: 'Оповещения', link: 'interface/notifications' },
+      { text: 'Настройки', link: 'interface/settings' },
+    ],
+  },
+  {
+    text: 'Сниппеты',
+    link: 'snippets/',
+    items: [
+      { text: 'pas.content', link: 'snippets/pas-content' },
+      { text: 'pas.order', link: 'snippets/pas-order' },
+      { text: 'pas.get.order', link: 'snippets/pas-get-order' },
+      { text: 'pas.subscription', link: 'snippets/pas-subscription' },
+    ],
+  },
+  {
+    text: 'Разработка',
+    items: [
+      { text: 'Скрипты и стили', link: 'development/scripts-and-styles' },
+      { text: 'События', link: 'development/events' },
+      { text: 'Расширения', link: 'development/extensions' },
+      {
+        text: 'Службы',
+        items: [
+          { text: 'Корзина', link: 'development/services/cart' },
+          { text: 'Заказ', link: 'development/services/order' },
+          { text: 'Доставка', link: 'development/services/delivery' },
+          { text: 'Оплата', link: 'development/services/payment' },
+        ],
+      },
+    ],
+  },
+  {
+    text: 'Другие дополнения',
+    items: [
+      { text: 'msDiscount', link: 'integrations/msdiscount' },
+      { text: 'msPromoCode', link: 'integrations/mspromocode' },
+    ],
+  },
+]
+---
 # PayAndSee
 
 Для работы вам нужен MODX не ниже **2.3** и PHP не ниже **5.4**.

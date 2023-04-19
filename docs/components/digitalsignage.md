@@ -1,3 +1,6 @@
+---
+name: DigitalSignage
+---
 # DigitalSignage
 
 ## Разрешения

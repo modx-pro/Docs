@@ -1,4 +1,5 @@
 ---
+name: WebMoney
 dependencies: ['miniShop2']
 categories: payment
 ---

@@ -1,3 +1,16 @@
+---
+name: BannerY
+
+items: [
+  {
+    text: 'Интерфейс',
+    items: [
+      { text: 'Баннеры', link: 'interface/banners' },
+      { text: 'Позиции', link: 'interface/positions' },
+    ],
+  },
+]
+---
 # BannerY
 
 Компонент для управления баннерами на сайте.

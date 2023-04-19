@@ -1,4 +1,5 @@
 ---
+name: msDaData
 dependencies: ['miniShop2']
 ---
 

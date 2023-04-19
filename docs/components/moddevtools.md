@@ -1,3 +1,6 @@
+---
+name: modDevTools
+---
 # modDevTools
 
 Компонент, который помогает разработчикам быстрее и проще работать в админке MODX Revolution.

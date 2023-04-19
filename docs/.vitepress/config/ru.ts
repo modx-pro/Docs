@@ -1,7 +1,7 @@
 import type { LocaleConfig } from 'vitepress'
 import type { DocSearchProps } from 'vitepress/types/docsearch'
 import type { DocsThemeConfig } from '../theme'
-import ruMenu from './ruMenu'
+import { generateSidebar } from '../theme/sidebar'
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
@@ -74,122 +74,20 @@ export const config: LocaleConfig<DocsThemeConfig> = {
         },
         {
           text: 'Система',
+          link: '/system/',
           activeMatch: '/system/',
-          items: [
-            {
-              text: 'Основы',
-              items: [
-                {
-                  text: 'Синтаксис тегов',
-                  link: '/system/basics/tag-syntax',
-                },
-                {
-                  text: 'Фильтры Ввод и вывода',
-                  link: '/system/basics/input-and-output-filters',
-                },
-              ],
-            },
-            {
-              text: 'xPDO',
-              link: '/system/xpdo/',
-              items: [
-                {
-                  text: 'Класс xPDO',
-                  link: '/system/xpdo/xpdo-class',
-                },
-              ],
-            },
-          ],
         },
         {
-          text: 'Утилиты',
-          link: '/utilities/',
-          activeMatch: '/utilities/',
-        },
-        {
-          text: 'FAQ',
+          text: 'Готовые решения',
+          link: '/faq/',
           activeMatch: '/faq/',
-          items: [
-            {
-              text: 'Ace',
-              items: [
-                { text: 'MODX Ace Material Theme', link: '/faq/ace/modx-ace-material-theme' },
-              ],
-            },
-            {
-              text: 'TinyMCE Rich Text Editor',
-              items: [
-                { text: 'Добавление кастомных кнопок', link: '/faq/tinymce-rte/add-custom-buttons' },
-              ],
-            },
-          ],
         },
       ],
 
       sidebar: {
-        '/components/': ruMenu,
-        '/system/': [
-          {
-            text: 'Основы',
-            collapsed: true,
-            items: [
-              {
-                text: 'Синтаксис тегов',
-                link: '/system/basics/tag-syntax',
-              },
-              {
-                text: 'Фильтры ввода и вывода',
-                link: '/system/basics/input-and-output-filters',
-              },
-            ],
-          },
-          {
-            text: 'xPDO',
-            link: '/system/xpdo/',
-            collapsed: true,
-            items: [
-              {
-                text: 'Класс xPDO',
-                link: '/system/xpdo/xpdo-class',
-              },
-            ],
-          },
-        ],
-        '/utilities/': [
-          {
-            text: 'Teleport',
-            link: '/utilities/teleport/',
-            collapsed: false,
-            items: [
-              {
-                text: 'Использование',
-                link: '/utilities/teleport/usage',
-              },
-              {
-                text: 'Расширение',
-                items: [
-                  { text: 'Шаблоны Извлечения', link: '/utilities/teleport/extension/extract-templates' },
-                ],
-              },
-            ],
-          },
-        ],
-        '/faq/': [
-          {
-            text: 'Ace',
-            collapsed: true,
-            items: [
-              { text: 'MODX Ace Material Theme', link: '/faq/ace/modx-ace-material-theme' },
-            ],
-          },
-          {
-            text: 'TinyMCE Rich Text Editor',
-            collapsed: true,
-            items: [
-              { text: 'Добавление кастомных кнопок', link: '/faq/tinymce-rte/add-custom-buttons' },
-            ],
-          },
-        ],
+        '/components/': generateSidebar({ root: ['docs/components/*.md', 'docs/components/*/index.md'], ignore: ['docs/components/index.md'] }),
+        '/system/': generateSidebar({ root: 'docs/system/*/index.md' }),
+        '/faq/': generateSidebar({ root: 'docs/faq/*/index.md' }),
       },
 
       outlineTitle: 'На этой странице',

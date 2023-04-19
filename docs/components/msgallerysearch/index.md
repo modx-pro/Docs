@@ -1,3 +1,13 @@
+---
+name: msGallerySearch
+
+items: [
+  { text: 'Загрузить по ссылке', link: 'load-from-link' },
+  { text: 'Найти в Google', link: 'find-in-google' },
+  { text: 'Найти в изображениях', link: 'find-in-images' },
+  { text: 'Системные настройки', link: 'settings' },
+]
+---
 # msGallerySearch
 
 Компонент встраивает кнопки на панель рядом с кнопкой **Загрузить/Выбрать файл** для галерей **minishop2** и **ms2Gallery**.

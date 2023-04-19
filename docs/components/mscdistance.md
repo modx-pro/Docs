@@ -1,4 +1,5 @@
 ---
+name: mscDistance
 dependencies: ['miniShop2']
 ---
 

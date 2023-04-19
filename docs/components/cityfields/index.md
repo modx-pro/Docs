@@ -1,3 +1,15 @@
+---
+name: cityFields
+
+items: [
+  { text: 'Управление городами и данными', link: 'data-management' },
+  { text: 'Использование доменов, поддоменов и подкаталогов', link: 'using' },
+  { text: 'Управление ценами товаров', link: 'price-management' },
+  { text: 'Настройки компонента', link: 'setup' },
+  { text: 'Сниппет cfCities', link: 'snippets/cfcities' },
+  { text: 'Сниппет cfField', link: 'snippets/cffield' },
+]
+---
 # cityFields
 
 Компонент позволяет реализовать разделение сайта по городам без создания контекстов. Для каждого города можно установить свой домен, поддомен или подкаталог.

@@ -1,3 +1,6 @@
+---
+name: ViewsOnline
+---
 # ViewsOnline
 
 ## Сниппет ViewsOnline

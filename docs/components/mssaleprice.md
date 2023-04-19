@@ -1,4 +1,5 @@
 ---
+name: msSalePrice
 dependencies: ['miniShop2']
 ---
 

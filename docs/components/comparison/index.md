@@ -1,3 +1,12 @@
+---
+name: Comparison
+
+items: [
+  { text: 'addComparison', link: 'addcomparison' },
+  { text: 'CompareList', link: 'comparelist' },
+  { text: 'getComparison', link: 'getcomparison' },
+]
+---
 # Comparison
 
 Платный компонент сравнения товаров.
