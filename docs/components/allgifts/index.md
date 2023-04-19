@@ -1,4 +1,11 @@
 ---
+name: allGifts
+
+items: [
+  { text: 'Быстрый старт', link: 'quick-start' },
+  { text: 'Решение проблем', link: 'problem-solving' },
+]
+
 dependencies: ['miniShop2', 'msOptionsPrice2']
 ---
 

@@ -1,3 +1,31 @@
+---
+name: msWallpapers
+
+items: [
+  { text: 'Установка и настройка', link: 'setup' },
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'mswp.form', link: 'snippets/mswp-form' },
+    ],
+  },
+  {
+    text: 'События плагинов',
+    link: 'events/',
+    items: [
+      { text: 'mswpOnGetProductPrice', link: 'events/mswpongetproductprice' },
+      { text: 'mswpOnGetProductCost', link: 'events/mswpongetproductcost' },
+      { text: 'Примеры', link: 'events/examples' },
+    ],
+  },
+  {
+    text: 'Кейсы',
+    items: [
+      { text: 'Форма в модальном окне с предварительным выбором текстуры', link: 'cases/modal-form' },
+    ],
+  },
+]
+---
 # msWallpapers
 
 Компонент создаёт расширенную форму заказа для выбора обоев. Работает только с miniShop2.

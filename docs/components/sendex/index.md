@@ -1,3 +1,16 @@
+---
+name: Sendex
+
+items: [
+  {
+    text: 'Интерфейс',
+    items: [
+      { text: 'Подписки', link: 'interface/subscriptions' },
+      { text: 'Очередь писем', link: 'interface/queue' },
+    ],
+  },
+]
+---
 # Сниппет Sendex
 
 Компонент для работы с Email рассылками.

@@ -1,3 +1,68 @@
+---
+name: miniShop2
+
+items: [
+  { text: 'Быстрый старт', link: 'quick-start' },
+  { text: 'Системные требования и зависимости', link: 'requirements-and-dependencies' },
+  {
+    text: 'Интерфейс',
+    items: [
+      { text: 'Категория', link: 'interface/category' },
+      { text: 'Товар', link: 'interface/product' },
+      { text: 'Заказы', link: 'interface/orders' },
+      { text: 'Настройки', link: 'interface/settings' },
+      { text: 'Галерея', link: 'interface/gallery' },
+      { text: 'Менеджер задач', link: 'interface/task-manager' },
+    ],
+  },
+  {
+    text: 'Сниппеты',
+    link: 'snippets/',
+    items: [
+      { text: 'msProducts', link: 'snippets/msproducts' },
+      { text: 'msCart', link: 'snippets/mscart' },
+      { text: 'msOrder', link: 'snippets/msorder' },
+      { text: 'msMiniCart', link: 'snippets/msminicart' },
+      { text: 'msGetOrder', link: 'snippets/msgetorder' },
+      { text: 'msGallery', link: 'snippets/msgallery' },
+      { text: 'msOptions', link: 'snippets/msoptions' },
+      { text: 'msProductOptions', link: 'snippets/msproductoptions' },
+    ],
+  },
+  {
+    text: 'Разработка',
+    items: [
+      { text: 'Плагины товаров', link: 'development/product-plugins' },
+      { text: 'Скрипты и стили', link: 'development/scripts-and-styles' },
+      { text: 'События', link: 'development/events' },
+      {
+        text: 'Службы',
+        items: [
+          { text: 'Корзина', link: 'development/services/cart' },
+          { text: 'Заказ', link: 'development/services/order' },
+          { text: 'Доставка', link: 'development/services/delivery' },
+          { text: 'Оплата', link: 'development/services/payment' },
+          { text: 'Подключение', link: 'development/services/connection' },
+        ],
+      },
+    ],
+  },
+  { text: 'Модули оплаты', link: 'payments' },
+  { text: 'Другие дополнения', link: 'modules'},
+  {
+    text: 'Полезные выборки',
+    items: [
+      { text: 'Вывод количества товаров в категории', link: 'useful-queries/count-category-products' },
+      { text: 'Вывод производителей товаров MS2', link: 'useful-queries/get-vendors' },
+      { text: 'Получение id товаров по опции MS2', link: 'useful-queries/get-product-id-by-option' },
+      { text: 'Дерево ресурсов', link: 'useful-queries/get-resource-tree' },
+      { text: 'Вывод всех категорий товара', link: 'useful-queries/get-categories' },
+      { text: 'Выбор товаров по опциям', link: 'useful-queries/get-products-by-options' },
+      { text: 'Вывод ссылок на дополнительные категории товара', link: 'useful-queries/get-categories-links' },
+    ],
+  },
+]
+---
 # miniShop2
 
 Самый гибкий и быстрый компонент интернет-магазина для MODX Revolution.

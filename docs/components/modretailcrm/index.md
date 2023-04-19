@@ -1,3 +1,38 @@
+---
+name: modRetailCRM
+
+items: [
+  {
+    text: 'Предварительная настройка',
+    items: [
+      { text: 'Выгрузка товаров', link: 'presetup/upload-products' },
+      { text: 'Выгрузка пользователей', link: 'presetup/upload-users' },
+      { text: 'Выгрузка заказов', link: 'presetup/upload-orders' },
+    ],
+  },
+  {
+    text: 'Примеры работы с API',
+    items: [
+      { text: 'Создать новый контакт', link: 'examples-api/create-new-contact' },
+      { text: 'Быстрый заказ товара', link: 'examples-api/quick-order-product' },
+      { text: 'Поиск заказа в RetailCRM', link: 'examples-api/search-order-retailcrm' },
+      { text: 'Поиск товара в RetailCRM', link: 'examples-api/search-product-retailcrm' },
+    ],
+  },
+  {
+    text: 'Триггеры',
+    items: [
+      { text: 'Создать новый контакт', link: 'triggers/order-status-change' },
+    ],
+  },
+  {
+    text: 'Модули и расширение классов',
+    items: [
+      { text: 'Пример расширения класса', link: 'modules/example-class-extend' },
+    ],
+  },
+]
+---
 # modRetailCRM
 
 ## Описание

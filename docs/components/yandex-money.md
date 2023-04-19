@@ -1,4 +1,5 @@
 ---
+name: Яндекс.Деньги
 dependencies: ['miniShop2']
 categories: payment
 ---

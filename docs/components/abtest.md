@@ -1,3 +1,6 @@
+---
+name: ABTest
+---
 # ABTest
 
 ## Описание

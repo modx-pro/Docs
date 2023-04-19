@@ -1,4 +1,10 @@
 ---
+name: RBK Money
+
+items: [
+  { text: 'Выбор способа оплаты на сайте', link: 'choosing-payment-method' },
+]
+
 dependencies: ['miniShop2']
 categories: payment
 ---

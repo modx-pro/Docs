@@ -1,4 +1,5 @@
 ---
+name: mspWebPay
 dependencies: ['miniShop2']
 categories: payment
 ---

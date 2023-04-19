@@ -1,3 +1,6 @@
+---
+name: NotFoundParamAlert
+---
 # NotFoundParamAlert
 
 MODX Revolution плагин который генерирует уведомление если страница не найдена и имеет заданные URL параметры.

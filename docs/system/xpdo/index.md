@@ -1,3 +1,11 @@
+---
+items: [
+  {
+    text: 'Класс xPDO',
+    link: 'xpdo-class',
+  },
+]
+---
 # Что такое xPDO?
 
 **xPDO** (open eXtensions to PDO) - это легковесная ORB (object-relational bridge, [объектно-реляционный][3] мост) библиотека, работающая на PHP 5, которая помогает пользоваться преимуществами последних

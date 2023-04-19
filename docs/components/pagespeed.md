@@ -1,3 +1,6 @@
+---
+name: PageSpeed
+---
 # PageSpeed
 
 ## Описание

@@ -1,4 +1,14 @@
 ---
+name: msProductRemains
+
+items: [
+  { text: 'Настройки компонента', link: 'settings' },
+  { text: 'Вкладка остатков', link: 'remains-tab' },
+  { text: 'Страница остатков', link: 'remains-page' },
+  { text: 'Сниппет getRemains', link: 'getremains' },
+  { text: 'Примеры', link: 'examples' },
+]
+
 dependencies: ['miniShop2']
 ---
 

@@ -1,3 +1,44 @@
+---
+name: UserEvents
+
+items: [
+  {
+    text: 'Интерфейс',
+    link: 'interface/',
+    items: [
+      { text: 'Заказы', link: 'interface/orders' },
+      { text: 'События', link: 'interface/events' },
+      { text: 'Статусы', link: 'interface/statuses' },
+      { text: 'Оповещения', link: 'interface/notifications' },
+      { text: 'Настройки', link: 'interface/settings' },
+    ],
+  },
+  {
+    text: 'Сниппеты',
+    link: 'snippets/',
+    items: [
+      { text: 'ue.order', link: 'snippets/ue-order' },
+      { text: 'ue.get.order', link: 'snippets/ue-get-order' },
+    ],
+  },
+  {
+    text: 'Разработка',
+    items: [
+      { text: 'Скрипты и стили', link: 'development/scripts-and-styles' },
+      { text: 'События', link: 'development/events' },
+      { text: 'Расширения', link: 'development/extensions' },
+      {
+        text: 'Службы',
+        items: [
+          { text: 'Заказ', link: 'development/services/order' },
+          { text: 'Доставка', link: 'development/services/delivery' },
+          { text: 'Оплата', link: 'development/services/payment' },
+        ],
+      }
+    ],
+  },
+]
+---
 # UserEvents
 
 Для работы вам нужен MODX не ниже **2.3** и PHP не ниже **5.4**.

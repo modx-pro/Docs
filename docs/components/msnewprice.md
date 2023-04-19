@@ -1,4 +1,5 @@
 ---
+name: msNewPrice
 dependencies: ['miniShop2']
 ---
 

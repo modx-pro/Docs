@@ -1,4 +1,5 @@
 ---
+name: mspUP
 dependencies: ['miniShop2']
 categories: payment
 ---

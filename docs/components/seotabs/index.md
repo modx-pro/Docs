@@ -1,3 +1,10 @@
+---
+name: SEOtabs
+
+items: [
+  { text: 'Сниппет seoTabs', link: 'snippet-seotabs' },
+]
+---
 # Быстрый старт
 
 Для быстрого старта пакета необходимо наличие подключенной библиотеки фраймворк Bootstrap четвертой версии или выше. При разработке на тестовом стенде CMS MODX (чистая версия) воспользуйтесь пакетом [Bootstrap](https://modstore.pro/packages/sites-themes/theme.bootstrap)

@@ -1,4 +1,19 @@
 ---
+name: msDiscount
+
+items: [
+  { text: 'Акции', link: 'stock' },
+  { text: 'Скидки', link: 'discounts' },
+  { text: 'Купоны', link: 'coupons' },
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'msdBuyNow', link: 'snippets/msdbuynow' },
+      { text: 'msdGetDiscount', link: 'snippets/msdgetdiscount' },
+    ],
+  },
+]
+
 dependencies: ['miniShop2']
 ---
 

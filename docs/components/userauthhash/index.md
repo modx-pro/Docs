@@ -1,3 +1,16 @@
+---
+name: UserAuthHash
+
+items: [
+  {
+    text: 'Разработка',
+    items: [
+      { text: 'События', link: 'development/events' },
+      { text: 'Расширения', link: 'development/extensions' },
+    ],
+  },
+]
+---
 # UserAuthHash
 
 Компонент реализует авторизацию пользователя по хэш-коду.

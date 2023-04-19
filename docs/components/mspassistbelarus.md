@@ -1,4 +1,5 @@
 ---
+name: mspAssistBelarus
 dependencies: ['miniShop2']
 categories: payment
 ---

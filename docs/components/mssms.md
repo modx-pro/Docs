@@ -1,4 +1,5 @@
 ---
+name: msSMS
 dependencies: ['miniShop2']
 ---
 

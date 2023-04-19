@@ -1,3 +1,6 @@
+---
+name: AjaxForm
+---
 # AjaxForm
 
 Cниппет для отправки любых форм через ajax. По умолчанию рассчитан на работу с [FormIt](https://docs.modx.com/current/en/extras/formit), но можно использовать и собственный сниппет.

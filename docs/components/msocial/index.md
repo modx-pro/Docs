@@ -1,3 +1,11 @@
+---
+name: mSocial
+
+items: [
+  { text: 'mSocialVK', link: 'msocialvk' },
+  { text: 'mSocialFB', link: 'msocialfb' },
+]
+---
 # mSocial
 
 Расширение реализует основу для постинга в соцсети. В основной набор входит только Twitter.

@@ -1,3 +1,15 @@
+---
+name: Formalicious
+
+items: [
+  { text: 'Установка', link: 'setup' },
+  { text: 'Источники медиа', link: 'media-sources' },
+  { text: 'Категории', link: 'categories' },
+  { text: 'Типы полей', link: 'field-types' },
+  { text: 'Создание формы', link: 'creating-form' },
+  { text: 'FAQs', link: 'faqs' },
+]
+---
 # Formalicious
 
 - [Установка](/components/formalicious/setup)

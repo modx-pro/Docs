@@ -1,4 +1,5 @@
 ---
+name: mscZone
 dependencies: ['miniShop2']
 ---
 

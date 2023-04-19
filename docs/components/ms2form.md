@@ -1,4 +1,5 @@
 ---
+name: ms2form
 dependencies: ['miniShop2']
 ---
 

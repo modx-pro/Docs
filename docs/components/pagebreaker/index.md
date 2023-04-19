@@ -1,3 +1,11 @@
+---
+name: PageBreaker
+
+items: [
+  { text: 'Настройки', link: 'settings' },
+  { text: 'Поддержка TinyMCE', link: 'tinymce-support' },
+]
+---
 # PageBreaker
 
 Плагин для разбивки контента большой страницы на несколько подстраниц.

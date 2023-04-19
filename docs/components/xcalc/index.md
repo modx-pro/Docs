@@ -1,3 +1,24 @@
+---
+name: xCalc
+
+items: [
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'xCalc', link: 'snippets/xcalc' },
+    ],
+  },
+  { text: 'Типы полей', link: 'field-types' },
+  { text: 'jQuery события', link: 'jquery-events' },
+  {
+    text: 'Кейсы',
+    items: [
+      { text: 'Калькулятор подоконников', link: 'cases/calculator-sill' },
+      { text: 'AjaxForm при выводе результатов', link: 'cases/ajaxform-results' },
+    ],
+  },
+]
+---
 # xCalc
 
 xCalc - это универсальный конструктор калькуляторов.

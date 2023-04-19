@@ -1,4 +1,5 @@
 ---
+name: mspBePaid
 dependencies: ['miniShop2']
 categories: payment
 ---

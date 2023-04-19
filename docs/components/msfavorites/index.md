@@ -1,3 +1,11 @@
+---
+name: msFavorites
+
+items: [
+  { text: 'Быстрый старт', link: 'quick-start' },
+  { text: 'Обновление', link: 'update' },
+]
+---
 # msFavorites
 
 Компонент реализует функционал создания списков избранного.

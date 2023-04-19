@@ -1,3 +1,13 @@
+---
+name: Scheduler
+
+items: [
+  { text: 'Установка', link: 'installation' },
+  { text: 'Создание задания', link: 'create-a-task' },
+  { text: 'Планирование задания', link: 'job-scheduling' },
+  { text: 'Разработка заданий', link: 'task-development' },
+]
+---
 # Scheduler
 
 Компонент от создателя MODX Марка Хамстра Scheduler - это менеджер отложенных задач.

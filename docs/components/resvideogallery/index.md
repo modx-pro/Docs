@@ -1,3 +1,25 @@
+---
+name: ResVideoGallery
+
+items: [
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'ResVideoGallery', link: 'snippets/resvideogallery' },
+      { text: 'ResVideoGalleryTags', link: 'snippets/resvideogallerytags' },
+      { text: 'ResVideoGalleryUpload', link: 'snippets/resvideogalleryupload' },
+    ],
+  },
+  { text: 'Добавление своего видео парсера', link: 'adding-custom-video-parser' },
+  { text: 'События', link: 'events' },
+  {
+    text: 'Настройка',
+    items: [
+      { text: 'Вконтакте', link: 'setup/vkontakte' },
+    ],
+  },
+]
+---
 # ResVideoGallery
 
 Адаптивная видеогалерея с Ajax-подгрузкой.

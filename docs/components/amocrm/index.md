@@ -1,3 +1,14 @@
+---
+name: amoCRM
+
+items: [
+  { text: 'Установка и настройка', link: 'setup' },
+  { text: 'Отправка данных из форм', link: 'submitting-forms' },
+  { text: 'Webhook', link: 'webhook' },
+  { text: 'События', link: 'events' },
+  { text: 'Распространенные ошибки', link: 'common-mistakes' },
+]
+---
 # amoCRM
 
 Модуль интеграции сайта на MODX Revolution и системы amoCRM

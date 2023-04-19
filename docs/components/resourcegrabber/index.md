@@ -1,3 +1,32 @@
+---
+name: ResourceGrabber
+
+items: [
+  {
+    text: 'Интерфейс',
+    link: 'interface/',
+    items: [
+      { text: 'Данные', link: 'interface/data' },
+      { text: 'Сниппеты', link: 'interface/snippets' },
+      { text: 'Настройка', link: 'interface/settings' },
+    ],
+  },
+  {
+    text: 'Разработка',
+    items: [
+      {
+        text: 'Службы',
+        items: [
+          { text: 'Геттер', link: 'development/services/getter' },
+          { text: 'Граббер', link: 'development/services/grabber' },
+          { text: 'Сеттер', link: 'development/services/setter' },
+        ],
+      },
+      { text: 'События', link: 'development/events' },
+    ],
+  },
+]
+---
 # Быстрый старт
 
 Для работы вам нужен MODX не ниже **2.3** и PHP не ниже **5.4**.

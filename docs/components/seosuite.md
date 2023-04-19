@@ -1,3 +1,6 @@
+---
+name: SEO Suite
+---
 # SEO Suite
 
 [SEO Suite](https://www.sterc.nl/en/modx-extras/seosuite) был представлен компанией [Sterc](https://www.sterc.nl/en/) как платное дополнение для MODX, которое автоматически перенаправляет битые ссылки (код 404) на подходящие страницы вашего сайта.

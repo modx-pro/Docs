@@ -1,4 +1,5 @@
 ---
+name: msAddLinked
 dependencies: ['miniShop2']
 ---
 

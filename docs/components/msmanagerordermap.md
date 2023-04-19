@@ -1,4 +1,5 @@
 ---
+name: msManagerOrderMap
 dependencies: ['miniShop2']
 ---
 

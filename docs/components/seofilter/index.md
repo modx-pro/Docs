@@ -1,3 +1,32 @@
+---
+name: SeoFilter
+
+items: [
+  { text: 'Быстрый старт с mFilter2', link: 'quick-start-mfilter2' },
+  { text: 'Быстрый старт без mFilter2 и miniShop2', link: 'quick-start-without-mfilter2-and-minishop2' },
+  { text: 'Дополнительные возможности', link: 'additional-features' },
+  {
+    text: 'Сниппеты',
+    link: 'snippets/',
+    items: [
+      { text: 'sfWord', link: 'snippets/sfword' },
+      { text: 'sfLink', link: 'snippets/sflink' },
+      { text: 'sfMenu', link: 'snippets/sfmenu' },
+      { text: 'sfSitemap', link: 'snippets/sfsitemap' },
+    ],
+  },
+  { text: 'Замены в SEO текстах', link: 'substitutions-in-seo' },
+  {
+    text: 'Объекты компонента',
+    items: [
+      { text: 'Поле', link: 'objects/field' },
+      { text: 'Правило', link: 'objects/rule' },
+      { text: 'Словарь', link: 'objects/dictionary' },
+      { text: 'Таблица URL', link: 'objects/url-table' },
+    ],
+  },
+]
+---
 # SeoFilter
 
 **SeoFilter** - это компонент, который позволяет сгенерировать виртуальные страницы по параметрам из фильтров, подменять их через AJAX и многое другое.

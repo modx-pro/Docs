@@ -1,3 +1,11 @@
+---
+name: LxQuiz
+
+items: [
+  { text: 'Сниппет LxQuiz', link: 'snippets/lxquiz' },
+  { text: 'Сниппет LxQuizList', link: 'snippets/lxquizlist' },
+]
+---
 # LxQuiz - описание и быстрый старт
 
 LxQuiz — быстрое внедрение функционала проверочных тестов на вашем сайте, где предусмотрена авторизация пользователей, "из коробки".

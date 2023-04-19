@@ -1,3 +1,6 @@
+---
+name: ReachGoal
+---
 # ReachGoal
 
 **ReachGoal** — Настройка/управление целями для **Яндекс.Метрики**, **Google.Analytics**, **Google tag manager** через админку.

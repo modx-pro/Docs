@@ -1,4 +1,5 @@
 ---
+name: msOneClick
 dependencies: ['miniShop2']
 ---
 

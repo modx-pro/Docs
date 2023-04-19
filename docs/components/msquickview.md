@@ -1,4 +1,5 @@
 ---
+name: msQuickView
 dependencies: ['miniShop2']
 ---
 

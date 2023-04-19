@@ -1,3 +1,22 @@
+---
+name: MagicThemes
+
+items: [
+  {
+    text: 'Темы',
+    items: [
+      {
+        text: 'handyShop',
+        link: 'themes/handyshop/',
+        items: [
+          { text: 'Настройка', link: 'themes/handyshop/setup' },
+          { text: 'Пример работы со Штуковинами', link: 'themes/handyshop/example-things' },
+        ],
+      },
+    ],
+  },
+]
+---
 # MagicThemes
 
 Документация в процессе подготовки. Вот что известно пока:

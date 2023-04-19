@@ -1,3 +1,21 @@
+---
+name: Office
+
+items: [
+  { text: 'Быстрый старт', link: 'quick-start' },
+  { text: 'Логика работы', link: 'logic' },
+  { text: 'Дополнительный функционал', link: 'additional-functionality' },
+  {
+    text: 'Контроллеры',
+    items: [
+      { text: 'Авторизация', link: 'controllers/auth' },
+      { text: 'Профиль', link: 'controllers/profile' },
+      { text: 'История заказов MS2', link: 'controllers/orders-history-minishop2' },
+      { text: 'Удаленная авторизация', link: 'controllers/auth-remote' },
+    ],
+  },
+]
+---
 # Office
 
 Личный кабинет пользователя MODX.

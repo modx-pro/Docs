@@ -1,3 +1,35 @@
+---
+name: YandexMaps2
+
+items: [
+  {
+    text: 'Сниппеты',
+    items: [
+      { text: 'YandexMaps2', link: 'snippets/yandexmaps2' },
+    ],
+  },
+  { text: 'Быстрый старт', link: 'quick-start' },
+  { text: 'Работа с mFilter2', link: 'mfilter2-integration' },
+  { text: 'jQuery события', link: 'jquery-events' },
+  { text: 'Конструктор карт', link: 'map-constructor' },
+  {
+    text: 'События плагинов',
+    link: 'events/',
+    items: [
+      { text: 'ymOnLoadObjects', link: 'events/ymonloadobjects' },
+      { text: 'Примеры', link: 'events/examples' },
+    ],
+  },
+  {
+    text: 'Кейсы',
+    items: [
+      { text: 'Точки из MIGX с кастомными иконками на фронт-энде', link: 'cases/migx-integration' },
+      { text: 'Отключаем все элементы управления на карте', link: 'cases/disable-elements' },
+      { text: 'Выводим данные родительского ресурса в балунах', link: 'cases/parent-data-in-baloons' },
+    ],
+  },
+]
+---
 # YandexMaps2
 
 ::: warning
