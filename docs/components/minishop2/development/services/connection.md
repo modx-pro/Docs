@@ -41,7 +41,7 @@ if ($miniShop2 = $modx->getService('miniShop2')) {
 
 Допустим нам необходимо обнулить стоимость доставки при общей сумме заказа свыше 5000, для этого, создадим php файл `msdeliveryhandlermsk.class.php` в произвольном каталоге, например: `/core/components/minishop2/custom/delivery`*, со следующим содержимым:
 
-``` php
+```php
 <?php
 
 if (!class_exists('msDeliveryInterface')) {

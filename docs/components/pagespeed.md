@@ -22,7 +22,7 @@
 ## Режимы
 
 | Режим              | Описание                                                                              |
-|--------------------|---------------------------------------------------------------------------------------|
+| ------------------ | ------------------------------------------------------------------------------------- |
 | **Автоматический** | Когда опция **subresources** не задана, плагин ищет ресурсы в HTML и обрабатывает их. |
 | **Ручной**         | Обрабатывает только ресурсы из опции **subresources**.                                |
 
@@ -30,37 +30,37 @@
 
 Это **не** пример рабочей конфигурации, а обзор всех доступных параметров.
 
-``` modx
+```modx
 [[!PageSpeed?
-    &bundle=`link script`
-    &convert=`static`
-    &critical=`true`
-    &crossorigin=`anonymous`
-    &display=`swap`
-    &integrity=`sha256`
-    &lifetime=`604800`
-    &loading=`lazy`
-    &minify=`html link script`
-    &quality=`80`
-    &resize=`true`
-    &script=`defer`
-    &subresources=`{
-        "link" : [
-            { "name" : "", "version" : "", "filename" : "", "crossorigin" : "", "integrity" : "", "media" : "" },
-            { "url" : "", "crossorigin" : "", "integrity" : "", "media" : "" }
-        ],
-        "script" : [
-            { "name" : "", "version" : "", "filename" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" },
-            { "url" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" }
-        ]
-    }`
+  &bundle=`link script`
+  &convert=`static`
+  &critical=`true`
+  &crossorigin=`anonymous`
+  &display=`swap`
+  &integrity=`sha256`
+  &lifetime=`604800`
+  &loading=`lazy`
+  &minify=`html link script`
+  &quality=`80`
+  &resize=`true`
+  &script=`defer`
+  &subresources=`{
+    "link": [
+      { "name" : "", "version" : "", "filename" : "", "crossorigin" : "", "integrity" : "", "media" : "" },
+      { "url" : "", "crossorigin" : "", "integrity" : "", "media" : "" }
+    ],
+    "script": [
+      { "name" : "", "version" : "", "filename" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" },
+      { "url" : "", "async" : "", "crossorigin" : "", "defer" : "", "integrity" : "", "nomodule" : "" }
+    ]
+  }`
 ]]
 ```
 
 ## Параметры
 
 | Параметр         | Описание                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **bundle**       | Не обязательный. По-умолчанию **link script**. Определяет типы контента, которые будут связаны в один файл. Не чувствителен к регистру. Возможные значения: **link**, **script**, любая их комбинация или пустое значение. <ul><li>**link** - CSS файлы.</li><li>**script** - JS файлы.</li></ul>                                                                                                                                                                                                                |
 | **convert**      | Не обязательный. По-умолчанию **static**. Отвечает за конвертирование **gif**, **jpg** и **png** изображений в формат **webp** с указанным качеством. Не чувствителен к регистру. Возможные значения: **disable**, **dynamic**, **static**. <ul><li>**disable** - изображения не конвертируются.</li><li>**dynamic** - изображения не кешируются после конвертации. Потребляет больше ресурсов CPU.</li><li>**static** - изображения кешируются после конвертации. Потребляет больше свободного места.</li></ul> |
 | **critical**     | Не обязательный. По-умолчанию **true**. Отвечает за генератор критических стилей. Интерпретируется как **boolean**.                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -79,51 +79,51 @@
 
 Последняя версия **jQuery** с **ежедневным** обновлением с **jsdelivr.net**:
 
-``` modx
+```modx
 [[!PageSpeed?
-    &lifetime=`86400`
-    &script=`async``
-    &subresources=`{
-        "script" : [
-            { "url" : "https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js" }
-        ]
-    }`
+  &lifetime=`86400`
+  &script=`async``
+  &subresources=`{
+    "script" : [
+      { "url" : "https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js" }
+    ]
+  }`
 ]]
 ```
 
 Последняя версия **Bootstrap** с **defer** для всех ресурсов **script** и **еженедельным** обновлением с **cdnjs.com**:
 
-``` modx
+```modx
 [[!PageSpeed?
-    &subresources=`{
-        "link" : [
-            { "name" : "twitter-bootstrap", "filename" : "css/bootstrap.min.css" }
-        ],
-        "script" : [
-            { "name" : "jquery" },
-            { "name" : "popper.js", "filename" : "umd/popper.min.js" },
-            { "name" : "twitter-bootstrap" }
-        ]
-    }`
+  &subresources=`{
+    "link": [
+      { "name" : "twitter-bootstrap", "filename" : "css/bootstrap.min.css" }
+    ],
+    "script": [
+      { "name" : "jquery" },
+      { "name" : "popper.js", "filename" : "umd/popper.min.js" },
+      { "name" : "twitter-bootstrap" }
+    ]
+  }`
 ]]
 ```
 
 Добавить любой **inline** стиль или скрипт можна с помощью **PHx**. Примите во внимание, что это повлечёт за собой создание нового экземпляра конфигурации, если данные отличаются при загрузке страницы. **Не используйте** этот метод для кода третьих сторон, таких как Google Analytics:
 
-``` modx
+```modx
 [[+phx:input=`data:text/css,
-    html {
-        color : [[+color]];
-    }
+  html {
+    color: [[+color]];
+  }
 `:cssToHead]]
 
 [[+phx:input=`data:text/javascript,
-    console.log( '[[+id]]' );
+  console.log('[[+id]]');
 `:jsToHead]]
 
 [[+phx:input=`data:text/javascript,
-    if( typeof performance === 'object' )
-        performance.mark( '[[++site_name]]' );
+  if (typeof performance === 'object')
+    performance.mark('[[++site_name]]');
 `:jsToBottom]]
 ```
 

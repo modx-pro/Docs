@@ -14,7 +14,7 @@
 | **&paginator**               | `pdoPage`                      | Сниппет для постраничной навигации, по умолчанию [pdoPage][1]. Вы можете указать набор параметров для него: **&paginator=`pdoPage@myParams`**.                                                                                                                                                                                       |
 | **&element**                 | `mSearch2`                     | Сниппет, который будет вызываться для вывода результатов работы, по умолчанию - [mSearch2][2]. Вы можете указать набор параметров для него: **&element=`mSearch2@myParams`**.                                                                                                                                                        |
 | **&sort**                    |                                | Список полей ресурса для сортировки. Указывается в формате «таблица\|поле:направление». Можно указывать несколько полей через запятую, например: «resource\|publishedon:desc,ms\|price:asc».                                                                                                                                         |
-| **&filters**                 | `resource|parent:parents`       | Список фильтров ресурсов, через запятую. Указывается в формате «таблица\|поле:метод».                                                                                                                                                                                                                                                |
+| **&filters**                 | `resource|parent:parents`      | Список фильтров ресурсов, через запятую. Указывается в формате «таблица\|поле:метод».                                                                                                                                                                                                                                                |
 | **&aliases**                 |                                | Список псевдонимов для фильтров, которые будут использованы в URL фильтра, через запятую. Указывается в формате "таблица\|поле==псевдоним". Например: "resource\|parent==category".                                                                                                                                                  |
 | **&showEmptyFilters**        | `true`                         | Показывать фильтры всего с одним значением.                                                                                                                                                                                                                                                                                          |
 | **&resources**               |                                | Список ресурсов для вывода, через запятую. Этот список будет обработан другими параметрами, такими как **&parents**, **&showDeleted**, **&showHidden** и **&showUnpublished**.                                                                                                                                                       |
@@ -45,14 +45,14 @@
 | **&showSearchLog**           | `false`                        | Показывать подробную информацию о начислении баллов поиска ресурсам при включенном **&showLog**.                                                                                                                                                                                                                                     |
 | **&sortAliases**             |                                | JSON массив с псевдонимами классов для сортировки. Подробности ниже.                                                                                                                                                                                                                                                                 |
 | **&filterOptions**           |                                | JSON строка с переменными для javascript фильтра. Подробности ниже.                                                                                                                                                                                                                                                                  |
-| **&ajaxMode**                | `default`                        | Режим ajax пагинации: `default`, `scroll` или `button`. Работает аналогично [pdoPage][1], только без параметра **&ajaxHistory**.                                                                                                                                                                                                     |
+| **&ajaxMode**                | `default`                      | Режим ajax пагинации: `default`, `scroll` или `button`. Работает аналогично [pdoPage][1], только без параметра **&ajaxHistory**.                                                                                                                                                                                                     |
 
 ## Принцип работы
 
 При первом запуске на странице сниппет получает нужные для фильтрации ресурсы, которые можно указать ему двумя способами:
 
-* Прямое указание параметров, таких как **&parents**, **&resources**, **&showHidden** и т.д. Они будут переданы в сниппет, указанный в **&element** и он вернёт нужные id.
-* Поиск по алгоритму mSearch2, если в `$_REQUEST[&queryVar]` что-то есть. При этом, найденные id также пройдут проверку указанными параметрами.
+- Прямое указание параметров, таких как **&parents**, **&resources**, **&showHidden** и т.д. Они будут переданы в сниппет, указанный в **&element** и он вернёт нужные id.
+- Поиск по алгоритму mSearch2, если в `$_REQUEST[&queryVar]` что-то есть. При этом, найденные id также пройдут проверку указанными параметрами.
 
 Затем сниппет смотрит настройки фильтров и генерирует данные для них. После чего сохраняет настройки в сессию (для ajax запросов) и выводит оформленные чанки.
 
@@ -63,8 +63,8 @@
 
 При работе mFilter2 регистрируются скрипты и стили, указанные в системных настройках:
 
-* **mse2_frontend_js** - стандартный javascript, по умолчанию `/assets/components/msearch2/js/web/default.js`
-* **mse2_frontend_css** - стандартные css стили оформления, по умолчанию `/assets/components/msearch2/css/web/default.css`
+- **mse2_frontend_js** - стандартный javascript, по умолчанию `/assets/components/msearch2/js/web/default.js`
+- **mse2_frontend_css** - стандартные css стили оформления, по умолчанию `/assets/components/msearch2/css/web/default.css`
 
 Если вы хотите внести какие-то изменения в стандартные файлы, нужно их переименовать и указать новые значения в системных настройках, иначе все ваши изменения будут перезаписаны при очередном обновлении.
 
@@ -72,12 +72,12 @@
 
 ```modx
 [[!mFilter2?
-    &parents=`0`
-    ...
-    &filterOptions=`{
-        "pagination": "#mse2_pagination",
-        "selected_values_delimeter": ", "
-    }`
+  &parents=`0`
+  ...
+  &filterOptions=`{
+    "pagination": "#mse2_pagination",
+    "selected_values_delimeter": ", "
+  }`
 ]]
 ```
 
@@ -93,11 +93,11 @@
 
 ### Особенности
 
-* Для правильной работы необходимо, чтобы все элементы фильтра располагались в одном блоке с `#mse2_mfilter`. Именно так прописано с стандартном чанке **tpl.mFilter2.outer**.
-* Скрипт работает через Ajax, сохраняя при этом параметры с адресной строке через HistoryAPI. То есть, у вас всегда есть прямые рабочие ссылки на состояние фильтров.
-* Для реализации цифровых слайдеров скрипт использует [jQueryUI.slider][3], который подключается автоматически, если нужен.
-* По умолчанию всё оформление рассчитано на [Bootstrap 3][4].
-* Стандартная комплектация рассчитана так, чтобы работать при минимальном вызове `[[!mFilter2]]` и установленном Bootstrap 3.
+- Для правильной работы необходимо, чтобы все элементы фильтра располагались в одном блоке с `#mse2_mfilter`. Именно так прописано с стандартном чанке **tpl.mFilter2.outer**.
+- Скрипт работает через Ajax, сохраняя при этом параметры с адресной строке через HistoryAPI. То есть, у вас всегда есть прямые рабочие ссылки на состояние фильтров.
+- Для реализации цифровых слайдеров скрипт использует [jQueryUI.slider][3], который подключается автоматически, если нужен.
+- По умолчанию всё оформление рассчитано на [Bootstrap 3][4].
+- Стандартная комплектация рассчитана так, чтобы работать при минимальном вызове `[[!mFilter2]]` и установленном Bootstrap 3.
 
 Если у вас что-то "сломалось", после того, как вы изменили чанк - смотрите, что именно вы изменили.
 
@@ -112,28 +112,28 @@
 
 ```modx
 [[!mFilter2?
-    &paginator=`getPage`
-    &element=`mSearch2`
+  &paginator=`getPage`
+  &element=`mSearch2`
 ]]
 ```
 
 Для каждого фильтра можно указать 2 собственных чанка:
 
-* **&tplFilter.outer.таблица\|поле**=`tpl.mFilter2.filter.outer` - чанк-обертка, в который вставляются строки с фильтрами (плейсхолдер `[[+rows]]`).
-* **&tplFilter.row.таблица\|поле**=`tpl.mFilter2.filter.checkbox` - чанк для оформления одного параметра фильтра, по умолчанию - это checkbox. В комплекте есть еще и чанк для чисел - его нужно указать самостоятельно.
+- **&tplFilter.outer.таблица\|поле**=`tpl.mFilter2.filter.outer` - чанк-обертка, в который вставляются строки с фильтрами (плейсхолдер `[[+rows]]`).
+- **&tplFilter.row.таблица\|поле**=`tpl.mFilter2.filter.checkbox` - чанк для оформления одного параметра фильтра, по умолчанию - это checkbox. В комплекте есть еще и чанк для чисел - его нужно указать самостоятельно.
 
 Например, **вызов слайдера** для цены товара:
 
 ```modx
 [[!mFilter2?
-    &class=`msProduct`
-    &element=`msProducts`
-    &parents=`0`
-    &filters=`
-        ms|price:number
-    `
-    &tplFilter.outer.ms|price=`tpl.mFilter2.filter.slider`
-    &tplFilter.row.ms|price=`tpl.mFilter2.filter.number`
+  &class=`msProduct`
+  &element=`msProducts`
+  &parents=`0`
+  &filters=`
+    ms|price:number
+  `
+  &tplFilter.outer.ms|price=`tpl.mFilter2.filter.slider`
+  &tplFilter.row.ms|price=`tpl.mFilter2.filter.number`
 ]]
 ```
 
@@ -141,13 +141,13 @@
 
 ```modx
 [[!mFilter2?
-    &parents=`0`
-    &filters=`
-        resource|parent:parents
-    `
-    &tplFilter.outer.resource|parent=`tpl.mFilter2.filter.select`
-    &tplFilter.row.resource|parent=`tpl.mFilter2.filter.option`
-    &suggestionsRadio=`resource|parent`
+  &parents=`0`
+  &filters=`
+    resource|parent:parents
+  `
+  &tplFilter.outer.resource|parent=`tpl.mFilter2.filter.select`
+  &tplFilter.row.resource|parent=`tpl.mFilter2.filter.option`
+  &suggestionsRadio=`resource|parent`
 ]]
 ```
 
@@ -162,11 +162,11 @@
 
 Соотношение реальных таблиц и кодовых имён:
 
-* **resource** (modResource) - выборка полей ресурса, таких как `pagetitle`, `longtitle` и др.
-* **tv** (modTemplateVar) - выборка ТВ параметров.
-* **ms** (msProductData) - выборка полей товара miniShop2, таких как `price`, `article`, `weight` и др.
-* **msoption** (msProductOption) - выборка опций товаров miniShop2, таких как `size`, `color`, `tags` и др.
-* **msvendor** (msVendor) - выборка свойств производителя товара, таких как `title`, `country`, `phone` и др.
+- **resource** (modResource) - выборка полей ресурса, таких как `pagetitle`, `longtitle` и др.
+- **tv** (modTemplateVar) - выборка ТВ параметров.
+- **ms** (msProductData) - выборка полей товара miniShop2, таких как `price`, `article`, `weight` и др.
+- **msoption** (msProductOption) - выборка опций товаров miniShop2, таких как `size`, `color`, `tags` и др.
+- **msvendor** (msVendor) - выборка свойств производителя товара, таких как `title`, `country`, `phone` и др.
 
 Если вы не указываете кодовое имя таблицы, то будет использовано `resource`. А если вы не указываете фильтр, то будет использован `default`.
 
@@ -176,13 +176,13 @@
 
 ```modx
 [[!mFilter2?
-    &filters=`
-        parent:grandparents,
-        createdon:year,
-        createdon:month,
-        tv|radio:boolean,
-        createdby:fullname
-    `
+  &filters=`
+    parent:grandparents,
+    createdon:year,
+    createdon:month,
+    tv|radio:boolean,
+    createdby:fullname
+  `
 ]]
 ```
 
@@ -200,11 +200,11 @@
 
 ```modx
 [[!mFilter2?
-    &filters=`
-        template:number
-    `
-    &tplFilter.outer.resource|template=`tpl.mFilter2.filter.slider`
-    &tplFilter.row.resource|template=`tpl.mFilter2.filter.number`
+  &filters=`
+    template:number
+  `
+  &tplFilter.outer.resource|template=`tpl.mFilter2.filter.slider`
+  &tplFilter.row.resource|template=`tpl.mFilter2.filter.number`
 ]]
 ```
 
@@ -215,11 +215,11 @@
 Фильтр для вывода параметров да\нет. Например, опубликован ли ресурс, скрыт в меню, доступен для поиска и т.д.
 Если не указать фильтр `boolean` у таких полей, то вы получите 0 и 1 в значениях. А если указать - то "да" и "нет".
 
-```php
+```modx
 [[!mFilter2?
-    &filters=`
-        isfolder:boolean
-    `
+  &filters=`
+    isfolder:boolean
+  `
 ]]
 ```
 
@@ -233,9 +233,9 @@ Parents выводит имена двух родителей, через раз
 
 ```modx
 [[!mFilter2?
-    &filters=`
-        parent:parents
-    `
+  &filters=`
+    parent:parents
+  `
 ]]
 ```
 
@@ -245,9 +245,9 @@ Categories выводит имя непосредственного родите
 
 ```modx
 [[!mFilter2?
-    &filters=`
-        parent:categories
-    `
+  &filters=`
+    parent:categories
+  `
 ]]
 ```
 
@@ -257,9 +257,9 @@ Grandparents выводит имена родителей-дедушек и пр
 
 ```modx
 [[!mFilter2?
-    &filters=`
-        parent:grandparents
-    `
+  &filters=`
+    parent:grandparents
+  `
 ]]
 ```
 
@@ -271,10 +271,10 @@ Grandparents выводит имена родителей-дедушек и пр
 
 ```modx
 [[!mFilter2?
-    &where=`{"class_key":"msProduct"}`
-    &filters=`
-        ms|vendor:vendors
-    `
+  &where=`{"class_key":"msProduct"}`
+  &filters=`
+    ms|vendor:vendors
+  `
 ]]
 ```
 
@@ -286,9 +286,9 @@ Grandparents выводит имена родителей-дедушек и пр
 
 ```modx
 [[!mFilter2?
-    &filters=`
-        createdby:fullname
-    `
+  &filters=`
+    createdby:fullname
+  `
 ]]
 ```
 
@@ -300,9 +300,9 @@ Grandparents выводит имена родителей-дедушек и пр
 
 ```modx
 [[!mFilter2?
-    &filters=`
-        createdon:year
-    `
+  &filters=`
+    createdon:year
+  `
 ]]
 ```
 
@@ -324,20 +324,20 @@ Grandparents выводит имена родителей-дедушек и пр
 
 ```modx
 [[!mFilter2?
-    &parents=`0`
-    &element=`msProducts`
-    &aliases=`
-        ms|price==price,
-        resource|parent==parent,
-    `
-    &filters=`
-        ms|price:number,
-        parent:parents,
-        parent:categories,
-    `
-    &class=`msProduct`
-    &tplFilter.outer.price=`tpl.mFilter2.filter.slider`
-    &tplFilter.row.price=`tpl.mFilter2.filter.number`
+  &parents=`0`
+  &element=`msProducts`
+  &aliases=`
+    ms|price==price,
+    resource|parent==parent,
+  `
+  &filters=`
+    ms|price:number,
+    parent:parents,
+    parent:categories,
+  `
+  &class=`msProduct`
+  &tplFilter.outer.price=`tpl.mFilter2.filter.slider`
+  &tplFilter.row.price=`tpl.mFilter2.filter.number`
 ]]
 ```
 
@@ -349,14 +349,14 @@ Grandparents выводит имена родителей-дедушек и пр
 
 ```modx
 &filters=`
-    resource|parent:categories,
-    resource|parent:grandparents,
+  resource|parent:categories,
+  resource|parent:grandparents,
 `
 ```
 
 Если какое-то поле указано 2 и более раз, то его имя прописывается как поле-фильтр и получается
 
-```modx
+```
 parent-categories и parent-grandparents
 ```
 
@@ -364,8 +364,8 @@ parent-categories и parent-grandparents
 
 ```modx
 &aliases=`
-    resource|parent-categories==categories,
-    resource|parent-grandparents==grandparents,
+  resource|parent-categories==categories,
+  resource|parent-grandparents==grandparents,
 `
 ```
 
@@ -387,8 +387,8 @@ parent-categories и parent-grandparents
 
 То есть, у вас может быть несколько десятков (сотен, тысяч) дополнительных фильтраций. Зачем это нужно?
 
-* Посетитель сразу знает, что получит при клике, и куда лучше кликнуть.
-* Позволяет отключать те комбинации фильтра, которые ничего не выведут. То есть, посетитель не увидит "По вашему запросу ничего не найдено".
+- Посетитель сразу знает, что получит при клике, и куда лучше кликнуть.
+- Позволяет отключать те комбинации фильтра, которые ничего не выведут. То есть, посетитель не увидит "По вашему запросу ничего не найдено".
 
 Функция безусловно приятная и полезная, но очень тяжелая для работы.
 Она напрямую зависит от количества фильтруемых результатов и параметров фильтров - то есть, сделать так, чтобы она не тормозила вообще нигде, невозможно.
@@ -410,8 +410,8 @@ mFilter2 умеет сортировать сразу по нескольким 
 
 ```modx
 &sort=`
-    resource|publishedon:asc,
-    resource|createdby:desc
+  resource|publishedon:asc,
+  resource|createdby:desc
 `
 ```
 
@@ -421,10 +421,10 @@ mFilter2 умеет сортировать сразу по нескольким 
 
 ```modx
 &sort=`
-    ms_product|publishedon:asc,
-    ms_product|createdby:desc,
-    ms|price:asc,
-    ms_vendor|name:desc
+  ms_product|publishedon:asc,
+  ms_product|createdby:desc,
+  ms|price:asc,
+  ms_vendor|name:desc
 `
 ```
 
@@ -432,11 +432,11 @@ mFilter2 умеет сортировать сразу по нескольким 
 
 По умолчанию заданы вот такие соответствия для псевдонимов таблиц:
 
-* **ms** &rarr; Data
-* **ms_product** &rarr; msProduct
-* **ms_vendor** &rarr; Vendor
-* **tv** &rarr; TV
-* **resource** &rarr; modResource
+- **ms** &rarr; Data
+- **ms_product** &rarr; msProduct
+- **ms_vendor** &rarr; Vendor
+- **tv** &rarr; TV
+- **resource** &rarr; modResource
 
 Вот что сниппет получит при обработке параметров из последнего примера:
 
@@ -452,12 +452,12 @@ mFilter2 умеет сортировать сразу по нескольким 
 
 ```modx
 [[!mFilter2?
-    &parents=`0`
-    &class=`Ticket`
-    &element=`getTickets`
-    &sortAliases=`{"ticket":"Ticket"}`
-    &sort=`ticket|createdon:desc,ticket|pagetitle:asc`
-    &showLog=`1`
+  &parents=`0`
+  &class=`Ticket`
+  &element=`getTickets`
+  &sortAliases=`{"ticket":"Ticket"}`
+  &sort=`ticket|createdon:desc,ticket|pagetitle:asc`
+  &showLog=`1`
 ]]
 ```
 
@@ -465,17 +465,17 @@ mFilter2 умеет сортировать сразу по нескольким 
 
 ```modx
 [[!mFilter2?
-    &parents=`0`
-    &element=`msProducts`
-    &leftJoin=`{
-        "Test1": {
-            "class": "msProductOption",
-            "on": "Test1.key = 'test1' and Test1.product_id = msProduct.id"
-        }
-    }`
-    &sortAliases=`{"test1":"Test1"}`
-    &aliases=`test1|value==test1`
-    &sort=`test1:desc`
+  &parents=`0`
+  &element=`msProducts`
+  &leftJoin=`{
+    "Test1": {
+      "class": "msProductOption",
+      "on": "Test1.key = 'test1' and Test1.product_id = msProduct.id"
+    }
+  }`
+  &sortAliases=`{"test1":"Test1"}`
+  &aliases=`test1|value==test1`
+  &sort=`test1:desc`
 ]]
 ```
 
@@ -483,11 +483,11 @@ mFilter2 умеет сортировать сразу по нескольким 
 
 Ссылка для сортировки в чанке `tpl.mFilter2.outer` в данном случае должна быть примерно такой:
 
-```html
+```modx
 <a href="#" class="sort [[+mse2_sort:is=``:then=`active`]]"
-    data-sort="test1"
-    data-dir="[[+mse2_sort:is=``:then=`desc`]]"
-    data-default="desc">Test1 <span></span></a>
+  data-sort="test1"
+  data-dir="[[+mse2_sort:is=``:then=`desc`]]"
+  data-default="desc">Test1 <span></span></a>
 ```
 
 Обратите внимание, что указание псевдонима в **&aliases** даёт нам возможность сортировать по `test1`, вместо `test1|value`.
@@ -503,21 +503,21 @@ mFilter2 умеет сортировать сразу по нескольким 
 
 Все методы находятся в одном объекте **mSearch2**. Программно отправить форму, например, можно вот так:
 
-```javascript
+```js
 mSearch2.submit();
 ```
 
 А сбросить значения так:
 
-```javascript
+```js
 mSearch2.reset();
 ```
 
 При обновлении фильтров срабатывает событие **mse2_load**:
 
-```javascript
-$(document).on('mse2_load', function(e, data) {
-    console.log(e, data);
+```js
+$(document).on('mse2_load', function (e, data) {
+  console.log(e, data);
 });
 ```
 
@@ -525,26 +525,26 @@ $(document).on('mse2_load', function(e, data) {
 
 Уменьшаем прозрачность карточек товара, в начале фильтрации и делаем не прозрачными после фильтрации
 
-``` javascript
+```fenom
 {$_modx->regClientScript('
   <script>
     mSearch2.defaultBeforeLoad = mSearch2.beforeLoad;
     mSearch2.defaultAfterLoad = mSearch2.afterLoad;
 
-    mSearch2.beforeLoad = function() {
-        mSearch2.defaultBeforeLoad();
-        this.filters.css({
-            opacity: .5,
-            pointerEvents: "none",
-        });
+    mSearch2.beforeLoad = function () {
+      mSearch2.defaultBeforeLoad();
+      this.filters.css({
+        opacity: .5,
+        pointerEvents: "none",
+      });
     };
 
-    mSearch2.afterLoad = function() {
-        mSearch2.defaultAfterLoad();
-        this.filters.css({
-            opacity: 1,
-            pointerEvents: "auto",
-        });
+    mSearch2.afterLoad = function () {
+      mSearch2.defaultAfterLoad();
+      this.filters.css({
+        opacity: 1,
+        pointerEvents: "auto",
+      });
     };
   </script>
 ', true)}

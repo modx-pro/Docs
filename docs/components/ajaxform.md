@@ -122,7 +122,7 @@ $(document).on('af_complete', function (event, response) {
 По умолчанию AjaxForm выводит сообщения об успешной отправке формы или о наличии ошибок.
 Вы можете самостоятельно вызывать их для своих целей:
 
-```javascript
+```js
 AjaxForm.Message.success('Зеленый popup');
 AjaxForm.Message.error('Красный popup', 1);
 AjaxForm.Message.info('Черный popup');

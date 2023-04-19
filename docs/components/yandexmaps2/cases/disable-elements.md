@@ -11,9 +11,9 @@
 
 Где-нибудь в коде, после того, как подключили jQuery, пишем код:
 
-```javascript
-$(document).ready(function() {
-  $(document).on('ymOnLoadMap', function(e, ym2, map) {
+```js
+$(document).ready(function () {
+  $(document).on('ymOnLoadMap', function (e, ym2, map) {
     map.controls
       .remove('fullscreenControl') // полный экран
       .remove('geolocationControl') // моя геопозиция

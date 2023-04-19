@@ -12,7 +12,7 @@
 
 Чтобы отобразить все доступные табы, необходимо указать следующий список:
 
-```php
+```
 item,order,operation,media,link
 ```
 
@@ -93,7 +93,7 @@ $q = $modx->newQuery("customExtraOrder", ["new" => 1]);
 $count = $modx->getCount("customExtraOrder", $q);
 // Если «Новых» объектов не найдено, останавливаем выполнение
 if ($count == 0) {
-    return true;
+  return true;
 }
 // Установим лимит
 $q->limit($step);
@@ -101,16 +101,16 @@ $q->limit($step);
 $orders = $modx->getCollection("customExtraOrder", $q);
 // Теперь можно обработать полученные объекты
 foreach ($orders as $order) {
-    $order->set("new", 0);
-    $order->save();
+  $order->set("new", 0);
+  $order->save();
 }
 // Если всего в базе объектов меньше, чем мы обрабатываем за один шаг
 if ($count <= $step) {
-    // то мы останавливаем обработку
-    return true;
+  // то мы останавливаем обработку
+  return true;
 } else {
-    // если нет - указываем, что обработка не закончена
-    return false;
+  // если нет - указываем, что обработка не закончена
+  return false;
 }
 ```
 

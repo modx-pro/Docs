@@ -8,43 +8,43 @@
 
 ## Поддерживаемые форматы файлов
 
-* CSV
-* XLSX
-* ODS
-* XML (только экспорт)
+- CSV
+- XLSX
+- ODS
+- XML (только экспорт)
 
 ## Поддерживаемы типы экспорта
 
-* документы Modx
-* категории, товары, связи, галерея   [MiniShop2;](https://modstore.pro/packages/ecommerce/minishop2)
-* данные [msOptionsPrice2;](https://modstore.pro/packages/ecommerce/msoptionsprice2)
-* данные [msOptionsColor;](https://modstore.pro/packages/integration/msoptionscolor)
-* данные [msProductRemain;](https://modstore.pro/packages/ecommerce/msproductremains)
-* данные [msSalePrice;](https://modstore.pro/packages/discounts/mssaleprice)
-* данные [ms2Gallery;](https://modstore.pro/packages/photos-and-files/ms2gallery)
-* данные [SEO Pro;](https://modx.com/extras/package/seopro)
-* фиды Yandex.Market для [DBS модели.](https://yandex.ru/support/marketplace/orders/dbs/index.html)
+- документы Modx
+- категории, товары, связи, галерея   [MiniShop2;](https://modstore.pro/packages/ecommerce/minishop2)
+- данные [msOptionsPrice2;](https://modstore.pro/packages/ecommerce/msoptionsprice2)
+- данные [msOptionsColor;](https://modstore.pro/packages/integration/msoptionscolor)
+- данные [msProductRemain;](https://modstore.pro/packages/ecommerce/msproductremains)
+- данные [msSalePrice;](https://modstore.pro/packages/discounts/mssaleprice)
+- данные [ms2Gallery;](https://modstore.pro/packages/photos-and-files/ms2gallery)
+- данные [SEO Pro;](https://modx.com/extras/package/seopro)
+- фиды Yandex.Market для [DBS модели.](https://yandex.ru/support/marketplace/orders/dbs/index.html)
 
 ## Поддерживаемы типы импорта
 
-* документы Modx
-* категории, товары, связи, галерея   [MiniShop2;](https://modstore.pro/packages/ecommerce/minishop2)
-* данные [msOptionsPrice2;](https://modstore.pro/packages/ecommerce/msoptionsprice2)
-* данные [msOptionsColor;](https://modstore.pro/packages/integration/msoptionscolor)
-* данные [msProductRemain;](https://modstore.pro/packages/ecommerce/msproductremains)
-* данные [msSalePrice;](https://modstore.pro/packages/discounts/mssaleprice)
-* данные [ms2Gallery;](https://modstore.pro/packages/photos-and-files/ms2gallery)
-* данные [SEO Pro;](https://modx.com/extras/package/seopro)
+- документы Modx
+- категории, товары, связи, галерея [MiniShop2;](https://modstore.pro/packages/ecommerce/minishop2)
+- данные [msOptionsPrice2;](https://modstore.pro/packages/ecommerce/msoptionsprice2)
+- данные [msOptionsColor;](https://modstore.pro/packages/integration/msoptionscolor)
+- данные [msProductRemain;](https://modstore.pro/packages/ecommerce/msproductremains)
+- данные [msSalePrice;](https://modstore.pro/packages/discounts/mssaleprice)
+- данные [ms2Gallery;](https://modstore.pro/packages/photos-and-files/ms2gallery)
+- данные [SEO Pro;](https://modx.com/extras/package/seopro)
 
 ## Дополнения расширяющие базовый компонент
 
-* [ieMs2](https://modstore.pro/packages/import-and-export/iems2) - сервисы импорта/экспорта MiniShop2;
-* [ieGallery](https://modstore.pro/packages/import-and-export/iegallery)  - сервисы импорта/экспорта галерей ms2Gallery и MiniShop2;
-* [ieMsOptionsPrice2](https://modstore.pro/packages/import-and-export/iemsoptionsprice2)  - сервисы импорта/экспорта msOptionsPrice2;
-* [ieMsOptionsColor](https://modstore.pro/packages/import-and-export/iemsoptionscolor)  - сервисы импорта/экспорта msOptionsColor;
-* [ieMsProductRemains](https://modstore.pro/packages/import-and-export/iemsproductremains)  - сервисы импорта/экспорта  msProductRemains;
-* [ieMsSalePrice](https://modstore.pro/packages/import-and-export/iemssaleprice)  - сервисы импорта/экспорта msSalePrice;
-* [ieYandexMarket](https://modstore.pro/packages/import-and-export/ieyandexmarket)  - сервис экспорта Yandex.Market для DBS модели.
+- [ieMs2](https://modstore.pro/packages/import-and-export/iems2) - сервисы импорта/экспорта MiniShop2;
+- [ieGallery](https://modstore.pro/packages/import-and-export/iegallery)  - сервисы импорта/экспорта галерей ms2Gallery и MiniShop2;
+- [ieMsOptionsPrice2](https://modstore.pro/packages/import-and-export/iemsoptionsprice2)  - сервисы импорта/экспорта msOptionsPrice2;
+- [ieMsOptionsColor](https://modstore.pro/packages/import-and-export/iemsoptionscolor)  - сервисы импорта/экспорта msOptionsColor;
+- [ieMsProductRemains](https://modstore.pro/packages/import-and-export/iemsproductremains)  - сервисы импорта/экспорта  msProductRemains;
+- [ieMsSalePrice](https://modstore.pro/packages/import-and-export/iemssaleprice)  - сервисы импорта/экспорта msSalePrice;
+- [ieYandexMarket](https://modstore.pro/packages/import-and-export/ieyandexmarket)  - сервис экспорта Yandex.Market для DBS модели.
 
 ## Системные события
 
@@ -259,7 +259,7 @@ msieOnImportBeforePrepare** -  подготовка данных импорта
 
 Если все же вы решили установить вторую версию на сайт где уже установлена первая версия, то перед этим нужно удалить первую версию, а также в базе данных вручную удалить следующие таблицы от первой версии.
 
-* msie_cron
-* msie_head_alias
-* msie_access_price
-* msie_presets_fields
+- msie_cron
+- msie_head_alias
+- msie_access_price
+- msie_presets_fields

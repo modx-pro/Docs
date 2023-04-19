@@ -8,7 +8,7 @@
 
 ## Пример
 
-```javascript
+```js
 $(document).ready(function() {
   $(document).on('xccResultsResponse', function (e, response, $form, propkey) {
     if (response.success) {

@@ -11,9 +11,9 @@
 Принимает все параметры [pdoTools][2] и некоторые свои:
 
 | Параметр             | По умолчанию | Описание                                                                                                                                                 |
-| -------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **&showLog**         | 0            | Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекте «mgr».                                                      |
-| **&from**            | 0            | Id ресурса, от которого строить хлебные крошки. Обычно это корень сайта, то есть «0».                                                                    |
+|----------------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **&showLog**         | `0`          | Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекте «mgr».                                                      |
+| **&from**            | `0`          | Id ресурса, от которого строить хлебные крошки. Обычно это корень сайта, то есть «0».                                                                    |
 | **&to**              |              | Id ресурса для которого строятся хлебные крошки. По умолчанию это id текущей страницы.                                                                   |
 | **&exclude**         |              | Список id ресурсов, которые нужно исключить из выборки.                                                                                                  |
 | **&toPlaceholder**   |              | Если не пусто, сниппет сохранит все данные в плейсхолдер с этим именем, вместо вывода не экран.                                                          |
@@ -24,46 +24,46 @@
 | **&tplHome**         |              | Чанк оформления ссылки на главную страницу.                                                                                                              |
 | **&tplWrapper**      |              | Чанк-обёртка, для заворачивания всех результатов. Понимает один плейсхолдер: `[[+output]]`. Не работает вместе с параметром **&toSeparatePlaceholders**. |
 | **&wrapIfEmpty**     |              | Включает вывод чанка-обертки **&tplWrapper** даже если результатов нет.                                                                                  |
-| **&showCurrent**     | 1            | Выводить текущий документ в навигации.                                                                                                                   |
-| **&showHome**        | 0            | Выводить ссылку на главную в начале навигации.                                                                                                           |
-| **&showAtHome**      | 1            | Показывать хлебные крошки на главной странице сайта.                                                                                                     |
-| **&hideSingle**      | 0            | Не выводить результат, если он один единственный.                                                                                                        |
-| **&direction**       | ltr          | Направление навигации: слева направо «ltr» или справа налево «rtl», например для Арабского языка.                                                        |
+| **&showCurrent**     | `1`          | Выводить текущий документ в навигации.                                                                                                                   |
+| **&showHome**        | `0`          | Выводить ссылку на главную в начале навигации.                                                                                                           |
+| **&showAtHome**      | `1`          | Показывать хлебные крошки на главной странице сайта.                                                                                                     |
+| **&hideSingle**      | `0`          | Не выводить результат, если он один единственный.                                                                                                        |
+| **&direction**       | `ltr`        | Направление навигации: слева направо «ltr» или справа налево «rtl», например для Арабского языка.                                                        |
 
 ### Шаблоны
 
 | Шаблон          | По умолчанию                                              |
-| --------------- | --------------------------------------------------------- |
+|-----------------|-----------------------------------------------------------|
 | **&tpl**        | `@INLINE <li><a href="[[+link]]">[[+menutitle]]</a></li>` |
 | **&tplCurrent** | `@INLINE <li class="active">[[+menutitle]]</li>`          |
 | **&tplMax**     | `@INLINE <li class="disabled">&nbsp;...&nbsp;</li>`       |
-| **&tplHome**    | ` `                                                       |
+| **&tplHome**    |                                                           |
 | **&tplWrapper** | `@INLINE <ul class="breadcrumb">[[+output]]</ul>`         |
 
 ## Примеры
 
 Генерация хлебных крошек для текущей страницы:
 
-``` modx
+```modx
 [[pdoCrumbs]]
 ```
 
 Генерация в ограничением по количеству пунктов:
 
-``` modx
+```modx
 [[pdoCrumbs?
-    &limit=`2`
+  &limit=`2`
 ]]
 ```
 
 Сниппет хорошо работает при вызове из pdoResources. Например, вот такой чанк:
 
-``` modx
+```modx
 <h3>[[+pagetitle]]</h3>
 <p>[[+introtext]]</p>
 [[pdoCrumbs?
-    &to=`[[+id]]`
-    &showCurrent=`0`
+  &to=`[[+id]]`
+  &showCurrent=`0`
 ]]
 ```
 
@@ -71,42 +71,46 @@
 
 ```fenom
 {'!pdoCrumbs' | snippet : [
-    'showHome' => 1,
-    'tplWrapper' => '@INLINE <script type="application/ld+json">
-{
- "@context": "http://schema.org",
- "@type": "BreadcrumbList",
- "itemListElement":
-[ {$output} ]
-}
-</script>'
-    'tplHome' => '@INLINE {
-   "@type": "ListItem",
-   "position": {$idx},
-   "item":
-   {
-    "@id": "{$link}",
-    "name": "{$menutitle}"
+  'showHome' => 1,
+  'tplWrapper' => '@INLINE
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [ {$output} ]
+      }
+    </script>
+  ',
+  'tplHome' => '@INLINE
+    {
+      "@type": "ListItem",
+      "position": {$idx},
+      "item": {
+        "@id": "{$link}",
+        "name": "{$menutitle}"
+      }
+    },
+  ',
+  'tplCurrent' => '@INLINE
+    {
+      "@type": "ListItem",
+      "position": {$idx},
+      "item": {
+        "@id": "{$link}",
+        "name": "{$menutitle}"
+      }
     }
-  },'
-    'tplCurrent' => '@INLINE {
-   "@type": "ListItem",
-   "position": {$idx},
-   "item":
-   {
-    "@id": "{$link}",
-    "name": "{$menutitle}"
-    }
-  }'
-    'tpl' => '@INLINE {
-   "@type": "ListItem",
-   "position": {$idx},
-   "item":
-   {
-    "@id": "{$link}",
-    "name": "{$menutitle}"
-    }
-  },'
+  ',
+  'tpl' => '@INLINE
+    {
+      "@type": "ListItem",
+      "position": {$idx},
+      "item": {
+        "@id": "{$link}",
+        "name": "{$menutitle}"
+      }
+    },
+  ',
 ]}
 ```
 
@@ -117,5 +121,5 @@
 ![Демо](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
 
 [1]: http://rtfm.modx.com/extras/revo/breadcrumb
-[2]: /components/pdotools/general-parameters
+[2]: /components/pdotools/general-properties
 [3]: https://modx.pro/search?query=pdotools

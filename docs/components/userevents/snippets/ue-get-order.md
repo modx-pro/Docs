@@ -321,7 +321,7 @@
 
 Подробнее о расширении шаблонов вы можете прочитать в [документации Fenom][001].
 
-[0104]: /components/pdotools/general-parameters
+[0104]: /components/pdotools/general-properties
 [010103]: /components/pdotools/parser
 [01020205]: /components/minishop2/snippets/msgetorder
 [01020104]: /components/minishop2/interface/settings

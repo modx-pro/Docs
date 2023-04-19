@@ -14,9 +14,9 @@ Frontend Editor это простой плагин который позволя
 
 Установите расширение. Оберните поля которые хотите редактировать тегом с атрибутом `data-frontendeditor` в качестве значения атрибута укажите название поля. Например так:
 
-```html
+```modx
 <div data-frontendeditor="content">
-    [[*content]]
+  [[*content]]
 </div>
 ```
 
@@ -26,9 +26,9 @@ Frontend Editor это простой плагин который позволя
 
 Для редактирования TV полей в качестве значения атрибута необходимо указать  `tv-` перед названием поля.
 
-```html
+```modx
 <div data-frontendeditor="tv-myTvField">
-    [[*myTvField]]
+  [[*myTvField]]
 </div>
 ```
 
@@ -36,9 +36,9 @@ Frontend Editor это простой плагин который позволя
 
 Для каждого поля можно указать один из двух типов редакторов: TinyMCE `tinymce` (по умолчанию можно не указывать) или простое поле ввода `simple`.
 
-```html
+```modx
 <div data-frontendeditor="tv-myTvField, simple">
-    [[*myTvField]]
+  [[*myTvField]]
 </div>
 ```
 
@@ -48,9 +48,9 @@ Frontend Editor это простой плагин который позволя
 
 Пример редактирования `pagetitle` для ресурса с id - `2`
 
-```html
+```modx
 <a href="/index.php?id=2" data-frontendeditor="2, pagetitle, simple">
-    [[pdoField? &id=`2` &field=`pagetitle`]]
+  [[pdoField? &id=`2` &field=`pagetitle`]]
 </a>
 ```
 
@@ -58,8 +58,8 @@ Frontend Editor это простой плагин который позволя
 
 ```modx
 [[pdoMenu?
-    &parents=`0`
-    &tpl=`@INLINE <li><a href="[[+link]]" data-frontendeditor="[[+id]], menutitle, simple">[[+menutitle]]</a>[[+wrapper]]</li>`
+  &parents=`0`
+  &tpl=`@INLINE <li><a href="[[+link]]" data-frontendeditor="[[+id]], menutitle, simple">[[+menutitle]]</a>[[+wrapper]]</li>`
 ]]
 ```
 

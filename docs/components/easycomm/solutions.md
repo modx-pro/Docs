@@ -21,20 +21,18 @@
 
 ```modx
 [[!ecMessages?
-....
-&leftJoin=`{
-  "modUserProfile": {
-    "class": "modUserProfile",
-    "alias": "UserProfile",
-    "on": "ecMessage.createdby=UserProfile.internalKey"
-  }
-}`
-&select=`{"UserProfile":"*"}`
-...
+  &leftJoin=`{
+    "modUserProfile": {
+      "class": "modUserProfile",
+      "alias": "UserProfile",
+      "on": "ecMessage.createdby=UserProfile.internalKey"
+    }
+  }`
+  &select=`{"UserProfile":"*"}`
 ]]
 ```
 
-``` fenom
+```fenom
 {$_modx->runSnippet('!ecMessages', [
   'leftJoin' => [
     'modUserProfile' => [

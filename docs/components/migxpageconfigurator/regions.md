@@ -61,8 +61,8 @@ switch ($modx->event->name) {
 ```fenom
 {extends 'file:elements/pages/wrapper.tpl'}
 {block 'content'}
-{set $plsName = 'cf.'~$_modx->resource.alias}
-{set $path = '!getParsedConfigPath' | snippet:['rid' => $_modx->getPlaceholder($plsName)]}
-{include $path}
+  {set $plsName = 'cf.' ~ $_modx->resource.alias}
+  {set $path = '!getParsedConfigPath' | snippet : ['rid' => $_modx->getPlaceholder($plsName)]}
+  {include $path}
 {/block}
 ```

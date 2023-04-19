@@ -10,12 +10,12 @@
 
 msImportExport интегрирован с дополнениями:
 
-* [msOptionsPrice2](https://modstore.pro/packages/ecommerce/msoptionsprice2)
-* [msOptionsColor](https://modstore.pro/packages/integration/msoptionscolor)
-* [msProductRemains](https://modstore.pro/packages/ecommerce/msproductremains)
-* [msSalePrice](https://modstore.pro/packages/discounts/mssaleprice)
-* [ms2Gallery](https://modstore.pro/packages/photos-and-files/ms2gallery)
-* [SEO Pro](https://modx.com/extras/package/seopro)
+- [msOptionsPrice2](https://modstore.pro/packages/ecommerce/msoptionsprice2)
+- [msOptionsColor](https://modstore.pro/packages/integration/msoptionscolor)
+- [msProductRemains](https://modstore.pro/packages/ecommerce/msproductremains)
+- [msSalePrice](https://modstore.pro/packages/discounts/mssaleprice)
+- [ms2Gallery](https://modstore.pro/packages/photos-and-files/ms2gallery)
+- [SEO Pro](https://modx.com/extras/package/seopro)
 
 ## Требования к структуре каталогов
 
@@ -27,15 +27,15 @@ msImportExport интегрирован с дополнениями:
 
 ## Cписок факторов/рекомендаций которые могут влиять на скорость импорта
 
-* если в файле нет полей типа content т/е полей которые могут содержать символ новой строки, то лучше использовать csv файл ( utf-8 кодировка) т/к для импорта из него необходимо меньше ресурсов и времени.
-* не тулить в файл импорта поля которые не будут импортироваться
-* по возможности отказаться от использований tv и опций и где это возможно заменить на поля созданные через систему плагинов [minishop2](https://docs.modx.pro/komponentyi/minishop2/razrabotka/plaginyi-tovarov) или использовать дополнение [msFieldsManager](https://modstore.pro/packages/integration/msfieldsmanager) т/к это увеличит как скорость работы сайта так и импорта (каждая и опция это лишний sql запрос к базе данных и количество подзапросов в mysql лимитировано )
-* по возможности при импорте фото указывать локальный к ним путь, а не http/https т/к тогда тратится время на их скачивание на сервер
-* поля которое указано в опции «Ключ товара, по которому определяется его уникальность» если там поле типа pagetitle по скорость будет меньше т/к в БД для этого поля нет индекса поэтому если у вас свое кастомное поле добавьте для него в БД индекс
-* количество уже имеющихся товаров в minishop2
-* размер файла импорта, если он очень большой то по возможности его стоит разбить на меньшие т/к тогда меньше тратится времени и ресурсов сервера на смещение указателя чтения для новой итерации
-* импорт через cron также использует чуть меньше расход ресурсов, а также позволяет частично решить проблему timeout. Дополнительная инфа по настройки сервера для работы с большими файлами есть в доках дополнения в разделе “Импорт больших файлов”
-* другие дополнения, которые могут срабатывать при определенных событиях minishop2 и делать свои какие то манипуляции с данными
+- если в файле нет полей типа content т/е полей которые могут содержать символ новой строки, то лучше использовать csv файл ( utf-8 кодировка) т/к для импорта из него необходимо меньше ресурсов и времени.
+- не тулить в файл импорта поля которые не будут импортироваться
+- по возможности отказаться от использований tv и опций и где это возможно заменить на поля созданные через систему плагинов [minishop2](https://docs.modx.pro/komponentyi/minishop2/razrabotka/plaginyi-tovarov) или использовать дополнение [msFieldsManager](https://modstore.pro/packages/integration/msfieldsmanager) т/к это увеличит как скорость работы сайта так и импорта (каждая и опция это лишний sql запрос к базе данных и количество подзапросов в mysql лимитировано )
+- по возможности при импорте фото указывать локальный к ним путь, а не http/https т/к тогда тратится время на их скачивание на сервер
+- поля которое указано в опции «Ключ товара, по которому определяется его уникальность» если там поле типа pagetitle по скорость будет меньше т/к в БД для этого поля нет индекса поэтому если у вас свое кастомное поле добавьте для него в БД индекс
+- количество уже имеющихся товаров в minishop2
+- размер файла импорта, если он очень большой то по возможности его стоит разбить на меньшие т/к тогда меньше тратится времени и ресурсов сервера на смещение указателя чтения для новой итерации
+- импорт через cron также использует чуть меньше расход ресурсов, а также позволяет частично решить проблему timeout. Дополнительная инфа по настройки сервера для работы с большими файлами есть в доках дополнения в разделе “Импорт больших файлов”
+- другие дополнения, которые могут срабатывать при определенных событиях minishop2 и делать свои какие то манипуляции с данными
 
 ## Импорт
 
@@ -57,8 +57,8 @@ msImportExport интегрирован с дополнениями:
 
 **Пример:**
 
-| parent    | categories                                           |
-|-----------|------------------------------------------------------|
+| parent    | categories                                             |
+|-----------|--------------------------------------------------------|
 | category1 | `sub_category1&#10072;sub_category2%sub_sub_category2` |
 
 Товар будет создан в категории category1 но также будет доступен в подкатегории sub_category1 и sub_sub_category2
@@ -76,7 +76,7 @@ msImportExport интегрирован с дополнениями:
 assets/pic/pic2.jpeg|assets/pic/pic3.jpg
 ```
 
-alias — данное поле, как правило, импортировать не нужно т/к он автоматически создается Modx на основании значения из pagetitle отсюда следует, что pagetitle должно быть уникально относительно категории.
+**alias** — данное поле, как правило, импортировать не нужно т/к он автоматически создается Modx на основании значения из pagetitle отсюда следует, что pagetitle должно быть уникально относительно категории.
 
 **Дополнительные опции и TV** — импорт пользовательских опции и TV поддерживаются, если они в качестве значения
 содержат список то данные нужно указывать через дополнительный разделитель (по умолчанию это | )
@@ -95,8 +95,8 @@ alias — данное поле, как правило, импортироват
 
 **Пример:**
 
-| pagetitle | parent                                          |
-|-----------|-------------------------------------------------|
+| pagetitle | parent                                            |
+|-----------|---------------------------------------------------|
 | category3 | `Base category&#10072;category1&#10072;category2` |
 
 В этом примере category3 будет создана в category2 вся цепочка из parent так же будет создана.
@@ -105,19 +105,19 @@ alias — данное поле, как правило, импортироват
 
 Файл импорта должен содержать 3 поля:
 
-* **link** — id связи из списка настроек связей minishop2
-* **master** — id главного товара
-* **slave** — id подчиненного товара
+- **link** — id связи из списка настроек связей minishop2
+- **master** — id главного товара
+- **slave** — id подчиненного товара
 
 Если при импорте id главного и подчиненного товара могут не совопадать (файл импорта был получен в реультате экспорта
 с другого сайта) то id можно заменить на любой другой идентификатор по которому можно будет найти товар, например article, после чего указать его название в настройках импорта в опции **“Ключ товара, по которому определяется его уникальность”**
 
 **Пример:**
 
-| link          | master_article   | slave_article |
-|---------------|------------------|------------|
-| 1             | 00000100         | 00000200   |
-| 1             | 00000100         | 00000300   |
+| link | master_article | slave_article |
+|------|----------------|---------------|
+| 1    | 00000100       | 00000200      |
+| 1    | 00000100       | 00000300      |
 
 ### Импорт галереи
 
@@ -125,9 +125,9 @@ alias — данное поле, как правило, импортироват
 
 Файл импорта должен содержать минимум 2 поля:
 
-* идентификатор по которому можно будет найти товар (id, article и т/д). Его название следует указать в настройках импорта в опции **“Ключ товара, по которому определяется его уникальность”**
+- идентификатор по которому можно будет найти товар (id, article и т/д). Его название следует указать в настройках импорта в опции **“Ключ товара, по которому определяется его уникальность”**
 
-* **file** — путь к изображению для галерее может быть как локальный (относительно указанного в настройках импорта
+- **file** — путь к изображению для галерее может быть как локальный (относительно указанного в настройках импорта
   опция **«Базовый директория для изображений»**) так и
   http/https ссылкой на сторонний ресурс (при использовании http/https ссылк импорт происходит меделенней)
 
@@ -187,15 +187,15 @@ msProductRemains (ключ mspr_options) и разделены символом 
 
 **Название основных полей модификации:**
 
-* name — название модификации
-* type — тип модификации цены может иметь значение 1|2|3 что соответствует =|+|и -
-* price — цена
-* old_price — старая цена
-* article — артикул для модификации(не одно и тоже что и для товара)
-* weight — вес
-* count — количество
-* image — изображение (должно содержать название изображения которое уже есть у товара)
-* active — активна ли модификация, может принимать значение 0|1
+- name — название модификации
+- type — тип модификации цены может иметь значение 1|2|3 что соответствует =|+|и -
+- price — цена
+- old_price — старая цена
+- article — артикул для модификации(не одно и тоже что и для товара)
+- weight — вес
+- count — количество
+- image — изображение (должно содержать название изображения которое уже есть у товара)
+- active — активна ли модификация, может принимать значение 0|1
 
 Все поля которые могут быть использованы для модификации товара будут в выпадающем списке иметь постфикс
 "(msOptionsPrice2)". Чтобы корректно работала функция «автоопределение полей» у полей которые относятся к модификации товара должен быть префикс «msop:».
@@ -263,14 +263,14 @@ msProductRemains (ключ mspr_options) и разделены символом 
 
 **Параметры:**
 
-* **tpl** — чанк оформления для кнопки скачивания. По умолчанию msieBtnDownloadPriceTpl
-* **usergroup** — список групп (через запятую) пользователя, которым показывать кнопку скачивания.
-* **res** — список категорий, через запятую, для поиска результатов. По умолчанию выборка ограничена текущим родителем
-* **preset** — ID настройки полей экспорта. Если данный параметр не указан, то в файле экспарта будут следующие поля: pagetitle,price и href
-* **to** — формат файла csv|xlsx. По умолчанию xlsx
-* **filename** — название файла
-* **where** — строка, закодированная в JSON, с дополнительными условиями выборки
-* **element** — Название сниппета возвращающего id товаров через запятую которые должны попасть в прайс-лист. Вы можете указать набор параметров для него: &element=`mySnippen@myParams`. В сниппет автоматически добавляется параметр &returnIds=`1`
+- **tpl** — чанк оформления для кнопки скачивания. По умолчанию msieBtnDownloadPriceTpl
+- **usergroup** — список групп (через запятую) пользователя, которым показывать кнопку скачивания.
+- **res** — список категорий, через запятую, для поиска результатов. По умолчанию выборка ограничена текущим родителем
+- **preset** — ID настройки полей экспорта. Если данный параметр не указан, то в файле экспарта будут следующие поля: pagetitle,price и href
+- **to** — формат файла csv|xlsx. По умолчанию xlsx
+- **filename** — название файла
+- **where** — строка, закодированная в JSON, с дополнительными условиями выборки
+- **element** — Название сниппета возвращающего id товаров через запятую которые должны попасть в прайс-лист. Вы можете указать набор параметров для него: &element=`mySnippen@myParams`. В сниппет автоматически добавляется параметр &returnIds=`1`
 
 Пример вызова сниппета с параметров where. В экспорт попадают товары цена которых > 0
 
@@ -298,8 +298,8 @@ msProductRemains (ключ mspr_options) и разделены символом 
 
 Т/к на beget.ru запрещено создавать процессы “демоны” то для того что бы импорта по cron все же работал необходимое сделать дополнительные настройки.
 
-* в системных настройках modx включить опцию “Ожидать завершения выполнения скрипта в фоне” (ключ msimportexport.cron_wait )
-* убрать символ "&" в конце скрипта для крона
+- в системных настройках modx включить опцию “Ожидать завершения выполнения скрипта в фоне” (ключ msimportexport.cron_wait )
+- убрать символ "&" в конце скрипта для крона
 
 ```
 ...... /core/components/msimportexport/cron.php 1> /dev/null 2>&1 &
@@ -307,7 +307,7 @@ msProductRemains (ключ mspr_options) и разделены символом 
 
 ## CRON Экспорт
 
-Для того, чтобы сделать экспорт по cron необходимо дернуть следующею ссылку
+Для того, чтобы сделать экспорт по cron необходимо дернуть следующую ссылку
 
 ```
 /assets/components/msimportexport/export/export.php
@@ -332,7 +332,7 @@ msProductRemains (ключ mspr_options) и разделены символом 
 
 **Пример ссылки экспорта продукта в xlsx через консоль:**
 
-```
+```sh
 php /assets/components/msimportexport/export.php token=5321a3450db953783b7076a7e72072bb to=xlsx type=products preset=1 save=1
 ```
 
@@ -356,19 +356,20 @@ php /assets/components/msimportexport/export.php token=5321a3450db953783b7076a7e
 $presets = array(1,2);
 if (!empty($presets) && !in_array($preset, $presets)) return;
 switch ($modx->event->name) {
-    case 'msieOnBeforeExport':
-        if ($section == 'data') {
-            $keys = array_flip($fields);
-            $tvs = array('tv.my_migx_field','tv.my_migx_field2'); // список TV полей через запятую которы следует преобразовать в строку (обязательно добавлять префикс tv.)
-            foreach ($tvs as $tv) {
-                if (!isset($keys[$tv]) || empty($srcData[$tv])) continue;
-                $index = $keys[$tv];
-                $destData[$index] = json_encode($srcData[$tv], JSON_UNESCAPED_UNICODE);
-            }
-            $modx->event->returnedValues['destData'] = $destData;
-        }
-    break;
+  case 'msieOnBeforeExport':
+    if ($section == 'data') {
+      $keys = array_flip($fields);
+      $tvs = array('tv.my_migx_field','tv.my_migx_field2'); // список TV полей через запятую которы следует преобразовать в строку (обязательно добавлять префикс tv.)
+      foreach ($tvs as $tv) {
+        if (!isset($keys[$tv]) || empty($srcData[$tv])) continue;
+        $index = $keys[$tv];
+        $destData[$index] = json_encode($srcData[$tv], JSON_UNESCAPED_UNICODE);
+      }
+      $modx->event->returnedValues['destData'] = $destData;
     }
+
+  break;
+}
 ```
 
 **Импорт MIGX** полей аналогичный импорту обычных полей, единственно особенность данных для таких полей это то, что они должны быть в исходном формате т/е JSON. Что бы узнать точно в каком формате у вас данные сделайте либо экспорт нужного поля, либо найдите его значение в базе данных.
@@ -379,14 +380,14 @@ switch ($modx->event->name) {
 
 **msieOnStartImportProduct** — срабатывает перед стартом импорта.
 
-* **file** — путь к файлу импорта
-* **msie** — объект класса Msie, со всеми методами
+- **file** — путь к файлу импорта
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnBeforePrepareImportProduct** — срабатывает перед началом обработки данных импорта.
 
-* **data** — входные данные импорта
-* **fields** — массив названий полей импорта
-* **msie** — объект класса Msie, со всеми методами
+- **data** — входные данные импорта
+- **fields** — массив названий полей импорта
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnEqualPageTitleImportProduct** — срабатывает когда происходит добавление/обновления товара название
 которого (pagetitle) уже есть в том же каталоге (одинаковый родитель). Если это никак не обработать то modx
@@ -397,12 +398,12 @@ uri: Ресурс с идентификатором ID уже используе
 Пожалуйста, введите уникальный псевдоним или используйте «Заморозить URI», чтобы вручную заменить его.
 ```
 
-* **mode** — действие (create|update)
-* **productId** — ID товара у которого дакой же pagetitle
-* **srcData** — входные данные импорта
-* **destData** — данные которые прошли подготовку для импорта (попадают в процессор импорта)
-* **fields** — массив названий полей импорта
-* **msie** — объект класса Msie, со всеми методами
+- **mode** — действие (create|update)
+- **productId** — ID товара у которого дакой же pagetitle
+- **srcData** — входные данные импорта
+- **destData** — данные которые прошли подготовку для импорта (попадают в процессор импорта)
+- **fields** — массив названий полей импорта
+- **msie** — объект класса Msie, со всеми методами
 
 Генерация данного события по умолчанию отключена в настройках импорта (опция “Проверять название товара на дублирование”) т.к она генерирует лишний запрос к БД, поэтому если вы уверен что у вас не будет одинаковых названий у товаров в пределах одного родителя то ее включать не стоит.
 
@@ -410,84 +411,86 @@ uri: Ресурс с идентификатором ID уже используе
 
 ```php
 <?php
-    /** @var modX $modx */
-    switch ($modx->event->name) {
-        case 'msieOnEqualPageTitleImportProduct':
-            $postfixAliasFieldName = 'article';
-            $destData = $modx->event->params['destData'];
-            $postfixAlias = isset($destData[$postfixAliasFieldName]) ? $destData[$postfixAliasFieldName] : '';
-            if ($postfixAlias && $destData['pagetitle']) {
-                $res = $modx->newObject('modResource');
-                $alias = $res->cleanAlias($destData['pagetitle']);
-                $delimiter = $modx->getOption('friendly_alias_word_delimiter', null, '-');
-                $destData['alias'] = $alias . $delimiter . $postfixAlias;
-                $modx->event->returnedValues['skip'] = false; // не пропускать импорт данного товара т.к был создан уникальный alias
-                $modx->event->returnedValues['destData'] = $destData;
-            }
-    break;
+/** @var modX $modx */
+switch ($modx->event->name) {
+  case 'msieOnEqualPageTitleImportProduct':
+    $postfixAliasFieldName = 'article';
+    $destData = $modx->event->params['destData'];
+    $postfixAlias = isset($destData[$postfixAliasFieldName]) ? $destData[$postfixAliasFieldName] : '';
+
+    if ($postfixAlias && $destData['pagetitle']) {
+      $res = $modx->newObject('modResource');
+      $alias = $res->cleanAlias($destData['pagetitle']);
+      $delimiter = $modx->getOption('friendly_alias_word_delimiter', null, '-');
+      $destData['alias'] = $alias . $delimiter . $postfixAlias;
+      $modx->event->returnedValues['skip'] = false; // не пропускать импорт данного товара т.к был создан уникальный alias
+      $modx->event->returnedValues['destData'] = $destData;
     }
+
+    break;
+}
 ```
 
 **msieOnBeforeImportProduct** — срабатывает перед импортом товара.
 
-* **mode** — действие (create|update)
-* **srcData** — входные данные импорта
-* **destData** — srcData данные которые прошли подготовку для импорта (попадают в процессор импорта)
-* **fields** — массив названий полей импорта
-* **msie** — объект класса Msie, со всеми методами
+- **mode** — действие (create|update)
+- **srcData** — входные данные импорта
+- **destData** — srcData данные которые прошли подготовку для импорта (попадают в процессор импорта)
+- **fields** — массив названий полей импорта
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnAfterImportProduct** — срабатывает после импорта товара.
 
-* **mode** — действие (create|update)
-* **srcData** — входные данные импорта
-* **destData** — данные которые прошли подготовку для импорта
-* **data** — данные товара
-* **fields** — массив названий полей импорта
-* **msie** — объект класса Msie, со всеми методами
+- **mode** — действие (create|update)
+- **srcData** — входные данные импорта
+- **destData** — данные которые прошли подготовку для импорта
+- **data** — данные товара
+- **fields** — массив названий полей импорта
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnCompleteImportProduct** — срабатывает после окончания импорта товаров.
 
-* **data** — строки с ID товарами через запятую которые были добавлены/обновлены
-* **msie** — объект класса Msie, со всеми методами
+- **data** — строки с ID товарами через запятую которые были добавлены/обновлены
+- **msie** — объект класса Msie, со всеми методами
 
 Пример плагина который отменяет у товара публикацию если он не попал в файл импорта:
 
 ```php
 <?php
-    /** @var modX $modx */
-    switch ($modx->event->name) {
-        case 'msieOnCompleteImportProduct':
-            // Массив ID настроек полей для которых нужно использовать данный плагин http://prntscr.com/kkwx4r
-            $presets = array();
-            if (!in_array($preset, $presets)) return;
-            // Получаем id всех товаров которые были импортированы
-            if (!$ids = $modx->event->params['data']) return;
-            // Снимаем с публикации товары которые не попали в файл импорта
-            $sql = "UPDATE {$modx->getTableName('msProduct')} SET published = 0 WHERE class_key = 'msProduct' AND id NOT
-            IN ({$ids});";
-            // $sql = "UPDATE {$modx->getTableName('msProductData')} SET my_custom_field = 0 WHERE id NOT IN ({$ids});";
-            $modx->exec($sql);
-        break;
-    }
+/** @var modX $modx */
+switch ($modx->event->name) {
+  case 'msieOnCompleteImportProduct':
+    // Массив ID настроек полей для которых нужно использовать данный плагин http://prntscr.com/kkwx4r
+    $presets = array();
+    if (!in_array($preset, $presets)) return;
+    // Получаем id всех товаров которые были импортированы
+    if (!$ids = $modx->event->params['data']) return;
+    // Снимаем с публикации товары которые не попали в файл импорта
+    $sql = "UPDATE {$modx->getTableName('msProduct')} SET published = 0 WHERE class_key = 'msProduct' AND id NOT IN ({$ids});";
+    // $sql = "UPDATE {$modx->getTableName('msProductData')} SET my_custom_field = 0 WHERE id NOT IN ({$ids});";
+    $modx->exec($sql);
+
+    break;
+}
 ```
 
 **msieOnStartUpdateProduct** — срабатывает перед стартам обновления товаровов.
 
-* **fields** — массив названий полей
-* **preset** — ID настройки полей
-* **msie** — объект класса Msie, со всеми методами
+- **fields** — массив названий полей
+- **preset** — ID настройки полей
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnBeforePrepareUpdateProduct** — срабатывает перед началом обработки данных.
 
-* **data** — входные данные
-* **fields** — массив названий полей
-* **msie** — объект класса Msie, со всеми методами
+- **data** — входные данные
+- **fields** — массив названий полей
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnBeforeUpdateProduct** — срабатывает перед началом обновления товара.
 
-* **data** —данные которые прошли подготовку дял обновления
-* **fields** — массив названий полей
-* **msie** — объект класса Msie, со всеми методами
+- **data** —данные которые прошли подготовку дял обновления
+- **fields** — массив названий полей
+- **msie** — объект класса Msie, со всеми методами
 
 Для того чтобы пропустить обновления товара в плагине можно присвоить переменной skip значение true.
 
@@ -495,110 +498,112 @@ uri: Ресурс с идентификатором ID уже используе
 
 ```php
 <?php
-    /** @var modX $modx */
-    switch ($modx->event->name) {
-        case 'msieOnBeforeUpdateProduct':
-            $modx->event->returnedValues['skip'] = true; // пропустить обновление товара
-        break;
-    }
+/** @var modX $modx */
+switch ($modx->event->name) {
+  case 'msieOnBeforeUpdateProduct':
+    $modx->event->returnedValues['skip'] = true; // пропустить обновление товара
+  break;
+}
 ```
 
 **msieOnCompleteUpdateProduct** — срабатывает после окончания обновления всех товаров.
 
-* **msie** — объект класса Msie, со всеми методами
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnStartImportOptionsPrice2** — срабатывает перед стартам импорта всех модификаций.
 
-* **file** — путь к файлу импорта
-* **preset** — ID настройки полей
-* **msie** — объект класса Msie, со всеми методами
+- **file** — путь к файлу импорта
+- **preset** — ID настройки полей
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnBeforeImportOptionsPrice2** — срабатывает перед импортом модификации.
 
-* **productId** — ID товара
-* **msie** — объект класса Msie, со всеми методами
+- **productId** — ID товара
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnAfterImportOptionsPrice2** — срабатывает после импортом модификации.
 
-* **data** — данные модификации
-* **productId** — ID товара
-* **msie** — объект класса Msie, со всеми методами
+- **data** — данные модификации
+- **productId** — ID товара
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnCompleteImportOptionsPrice2** — срабатывает после окончания импорт модификаций.
 
-* **msie** — объект класса Msie, со всеми методами
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnCompleteImportGallery** — срабатывает после окончания импорта в фото галерею.
 
-* **msie** — объект класса Msie, со всеми методами
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnCompleteImportLinks** — срабатывает после окончания импорта связей.
 
-* **msie** — объект класса Msie, со всеми методами
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnBeforeExportQuery** — срабатывает перед sql запросом выборки данных:
 
-* **type** — (products|categories|links|options_price2)
-* **preset** — ID настройки полей
-* **data** — массив параметров для sql запроса
-* **fields** — массив названий полей
-* **msie** — объект класса Msie, со всеми методами
+- **type** — (products|categories|links|options_price2)
+- **preset** — ID настройки полей
+- **data** — массив параметров для sql запроса
+- **fields** — массив названий полей
+- **msie** — объект класса Msie, со всеми методами
 
 **Пример** изменения параметра where. Добавление условия на выборку товара цена которого больше 100 и ID пресета 3 или 5
 
 ```php
 <?php
-    /** @var modX $modx */
-    $presets = array(3,5); // Массив ID   настроек полей для которых нужно использовать данный плагин http://prntscr.com/kkwx4r
-    if (!empty($presets) && !in_array($preset, $presets)) return;
-    switch ($modx->event->name) {
-    case 'msieOnBeforeExportQuery':
-        $where = $modx->fromJSON($modx->getOption('where', $data, '[]', true));
-        $where['Data.price:>'] = 100;
-        $data['where'] = $modx->toJSON($where);
-        $modx->event->returnedValues['data'] = $data;
+/** @var modX $modx */
+$presets = array(3,5); // Массив ID   настроек полей для которых нужно использовать данный плагин http://prntscr.com/kkwx4r
+if (!empty($presets) && !in_array($preset, $presets)) return;
+switch ($modx->event->name) {
+  case 'msieOnBeforeExportQuery':
+    $where = $modx->fromJSON($modx->getOption('where', $data, '[]', true));
+    $where['Data.price:>'] = 100;
+    $data['where'] = $modx->toJSON($where);
+    $modx->event->returnedValues['data'] = $data;
+
     break;
-    }
+}
 ```
 
 **msieOnCompleteExport** — срабатывает после окончания экспорта.
 
-* **to** — (csv|xlsx|xml)
-* **type** — (products|categories|links|options_price2)
-* **file** — путь к файлу
-* **msie** — объект класса Msie, со всеми методами
+- **to** — (csv|xlsx|xml)
+- **type** — (products|categories|links|options_price2)
+- **file** — путь к файлу
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnBeforeExport** — срабатывает перед экспортом каждого элемента.
 
-* **type** — (products|categories|links|options_price2)
-* **srcData** — входные данные
-* **destData** — данные которые прошли подготовку
-* **fields** — массив названий полей
-* **msie** — объект класса Msie, со всеми методами
+- **type** — (products|categories|links|options_price2)
+- **srcData** — входные данные
+- **destData** — данные которые прошли подготовку
+- **fields** — массив названий полей
+- **msie** — объект класса Msie, со всеми методами
 
 **msieOnCompleteExport** — срабатывает после окончания экспорта.
 
-* **to** — (csv|xlsx|xml)
-* **type** — (products|categories|links|options_price2)
-* **file** — путь к файлу
-* **msie** — объект класса Msie, со всеми методами
+- **to** — (csv|xlsx|xml)
+- **type** — (products|categories|links|options_price2)
+- **file** — путь к файлу
+- **msie** — объект класса Msie, со всеми методами
 
 **Пример** плагина который только для нового товара модифицирует его цену перед созданием.
 
 ```php
 <?php
-    /** @var modX $modx */
-    switch ($modx->event->name) {
-        case 'msieOnBeforeImportProduct':
-            if($mode == 'create') {
-                $modx->event->params['destData']['price'] = $modx->event->params['destData']['price'] + 100;
-                $modx->event->returnedValues['destData'] = $modx->event->params['destData'];
-            }
-            //$modx->event->returnedValues['skip'] = true; // пропустить импорт товара
-            //$modx->log(modX::LOG_LEVEL_ERROR, print_r($modx->event->params, 1));
-            //$modx->event->output('Error');
-         break;
+/** @var modX $modx */
+switch ($modx->event->name) {
+  case 'msieOnBeforeImportProduct':
+    if ($mode == 'create') {
+      $modx->event->params['destData']['price'] = $modx->event->params['destData']['price'] + 100;
+      $modx->event->returnedValues['destData'] = $modx->event->params['destData'];
     }
+    //$modx->event->returnedValues['skip'] = true; // пропустить импорт товара
+    //$modx->log(modX::LOG_LEVEL_ERROR, print_r($modx->event->params, 1));
+    //$modx->event->output('Error');
+
+    break;
+}
 ```
 
 ## Импорт больших файлов
@@ -612,11 +617,11 @@ uri: Ресурс с идентификатором ID уже используе
 
     ```nginx
     http {
-        ...
-        fastcgi_connect_timeout 300s;
-        fastcgi_send_timeout 300s;
-        fastcgi_read_timeout 300s;
-        ...
+      ...
+      fastcgi_connect_timeout 300s;
+      fastcgi_send_timeout 300s;
+      fastcgi_read_timeout 300s;
+      ...
     }
     ```
 
@@ -624,12 +629,12 @@ uri: Ресурс с идентификатором ID уже используе
 
     ```nginx
     server {
-        ...
-        proxy_connect_timeout 300s;
-        proxy_send_timeout 300s;
-        proxy_read_timeout 300s;
-        send_timeout 300s;
-        ...
+      ...
+      proxy_connect_timeout 300s;
+      proxy_send_timeout 300s;
+      proxy_read_timeout 300s;
+      send_timeout 300s;
+      ...
     }
     ```
 

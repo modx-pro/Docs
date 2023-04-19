@@ -9,7 +9,7 @@ mFilter2 может фильтровать информацию из любых 
 ```php
 <?php
 class myCustomFilter extends mse2FiltersHandler {
-    // Здесь можно переопределить методы родительского класса, или создать собственные
+  // Здесь можно переопределить методы родительского класса, или создать собственные
 }
 ```
 
@@ -21,13 +21,13 @@ class myCustomFilter extends mse2FiltersHandler {
 
 Эти методы обрабатывают значения, указанные в параметре **&filters**. Например:
 
-```php
+```modx
 &filters=`
-    resource|parent:categories,
-    resource|template:default,
-    ms|price:number,
-    tv|myname:default,
-    msoption|size:default
+  resource|parent:categories,
+  resource|template:default,
+  ms|price:number,
+  tv|myname:default,
+  msoption|size:default
 `
 ```
 
@@ -68,13 +68,13 @@ class myCustomFilter extends mse2FiltersHandler {
 
 ```php
 Array (
-    [ИмяПоля 1] => array(
-        [Значение1] => array(
-            [0] => id подходящего ресурса
-            [1] => id подходящего ресурса
-            [2] => id подходящего ресурса
-        ),
+  [ИмяПоля 1] => array(
+    [Значение1] => array(
+      [0] => id подходящего ресурса
+      [1] => id подходящего ресурса
+      [2] => id подходящего ресурса
     ),
+  ),
 )
 ```
 
@@ -88,22 +88,22 @@ Array (
 
 ```php
 Array (
-    [parent] => array(
-        [0] => array(
-            [0] => 1
-            [1] => 2
-        )
-        [2] => array(
-            [0] => 5
-        )
+  [parent] => array(
+    [0] => array(
+      [0] => 1
+      [1] => 2
     )
-    [template] => array(
-        [1] => array(
-            [0] => 1
-            [1] => 2
-            [2] => 3
-        ),
+    [2] => array(
+      [0] => 5
     )
+  )
+  [template] => array(
+    [1] => array(
+      [0] => 1
+      [1] => 2
+      [2] => 3
+    ),
+  )
 )
 ```
 
@@ -111,22 +111,22 @@ Array (
 
 ```php
 Array (
-    [ИмяФильтра] => Array (
-        [title] => ИмяФильтра
-        [value] => значение позиции фильтра
-        [type] => необязательное поле с типом фильтра
-        [resources] => Array (
-            [0] => id подходящего ресурса
-            [1] => id подходящего ресурса
-            [2] => id подходящего ресурса
-        )
+  [ИмяФильтра] => Array (
+    [title] => ИмяФильтра
+    [value] => значение позиции фильтра
+    [type] => необязательное поле с типом фильтра
+    [resources] => Array (
+      [0] => id подходящего ресурса
+      [1] => id подходящего ресурса
+      [2] => id подходящего ресурса
     )
+  )
 )
 ```
 
 Например, вызываем
 
-```php
+```modx
 &filters=`resource|parent:categories`
 ```
 
@@ -134,39 +134,39 @@ Array (
 
 ```php
 Array (
-    [Tickets] => Array (
-        [title] => Tickets
-        [value] => 71
-        [type] => parents
-        [resources] => Array (
-            [0] => 72
-            [1] => 73
-            [2] => 74
-        )
+  [Tickets] => Array (
+    [title] => Tickets
+    [value] => 71
+    [type] => parents
+    [resources] => Array (
+      [0] => 72
+      [1] => 73
+      [2] => 74
     )
-    [mSearch2] => Array (
-        [title] => mSearch2
-        [value] => 62
-        [type] => parents
-        [resources] => Array (
-            [0] => 63
-            [1] => 64
-        )
+  )
+  [mSearch2] => Array (
+    [title] => mSearch2
+    [value] => 62
+    [type] => parents
+    [resources] => Array (
+      [0] => 63
+      [1] => 64
     )
+  )
 )
 ```
 
 Ну а третий тип методов должен принять 3 массива:
 
-* Массив с запрошенными значениями
-* Массив имеющихся значений, где ключами являются значения фильтров, а значениями - подходящие ресурсы
-* Текущий массив результатов
+- Массив с запрошенными значениями
+- Массив имеющихся значений, где ключами являются значения фильтров, а значениями - подходящие ресурсы
+- Текущий массив результатов
 
 Например, если мы фильтруем по родителю, то в первом массиве придут id требуемых родителей:
 
 ```php
 Array (
-    [0] => 71
+  [0] => 71
 )
 ```
 
@@ -174,11 +174,11 @@ Array (
 
 ```php
 Array (
-    [71] => Array (
-        [0] => 72
-        [1] => 73
-        [2] => 74
-    )
+  [71] => Array (
+    [0] => 72
+    [1] => 73
+    [2] => 74
+  )
 )
 ```
 
@@ -186,11 +186,11 @@ Array (
 
 ```php
 Array (
-     [0] => 72
-    [1] => 73
-    [2] => 74
-    [3] => 75
-    [4] => 76
+  [0] => 72
+  [1] => 73
+  [2] => 74
+  [3] => 75
+  [4] => 76
 )
 ```
 

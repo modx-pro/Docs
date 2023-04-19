@@ -26,7 +26,7 @@ $orders = $modRetailCrm->request->ordersList(array('email' => 'info@site.ru'), 1
 
 Таким образом можем получить все заказы за конкретный промежуток времени. В данном случае нужно обязательно указать дату начала промежутка и дату окончания промежутка в формате Y-m-d
 
-``` php
+```php
 $orders = $modRetailCrm->request->ordersList(array('createdAtTo' => '2019-01-06', 'createdAtFrom' => '2019-01-06'), 1, 20);
 ```
 

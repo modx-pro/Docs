@@ -5,7 +5,7 @@
 ## Параметры
 
 | Название            | Описание                                                                                                                                                                                                                             |
-|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **&cssFilename**    | Префикс или полное имя скомпилированного CSS файла. По-умолчанию указан префикс «styles».                                                                                                                                            |
 | **&cssGroups**      | Названия групп стилей (через запятую).                                                                                                                                                                                               |
 | **&cssPlaceholder** | Имя плейсхолдера css. Используется, если **&registerCss=\`placeholder\`**. По-умолчанию «MinifyX.css».                                                                                                                               |
@@ -71,17 +71,17 @@
 
 ```modx
 [[MinifyX?
-    &minifyCss=`1`
-    &minifyJs=`1`
-    &registerCss=`default`
-    &registerJs=`default`
-    &cssSources=`
-        assets/templates/himyf/css/normalize.css,
-        assets/templates/himyf/css/foundation.css,
-        assets/templates/himyf/css/font-awesome.css,
-        assets/templates/himyf/css/app.css
-    `
-    &jsSources=`assets/templates/himyf/js/foundation.js`
+  &minifyCss=`1`
+  &minifyJs=`1`
+  &registerCss=`default`
+  &registerJs=`default`
+  &cssSources=`
+    assets/templates/himyf/css/normalize.css,
+    assets/templates/himyf/css/foundation.css,
+    assets/templates/himyf/css/font-awesome.css,
+    assets/templates/himyf/css/app.css
+  `
+  &jsSources=`assets/templates/himyf/js/foundation.js`
 ]]
 ```
 
@@ -89,13 +89,13 @@
 
 ```modx
 [[MinifyX@MinifyDefault?
-    &cssSources=`
-        assets/templates/himyf/css/normalize.css,
-        assets/templates/himyf/css/foundation.css,
-        assets/templates/himyf/css/font-awesome.css,
-        assets/templates/himyf/css/app.css
-    `
-    &jsSources=`assets/templates/himyf/js/foundation.js`
+  &cssSources=`
+    assets/templates/himyf/css/normalize.css,
+    assets/templates/himyf/css/foundation.css,
+    assets/templates/himyf/css/font-awesome.css,
+    assets/templates/himyf/css/app.css
+  `
+  &jsSources=`assets/templates/himyf/js/foundation.js`
 ]]
 ```
 
@@ -105,15 +105,15 @@
 
 ```modx
 [[MinifyX?
-    &minifyCss=`1`
-    &minifyJs=`1`
-    &cssSources=`
-        assets/templates/himyf/css/normalize.css,
-        assets/templates/himyf/css/foundation.css,
-        assets/templates/himyf/css/font-awesome.css,
-        assets/templates/himyf/css/app.css
-    `
-    &jsSources=`assets/templates/himyf/js/foundation.js`
+  &minifyCss=`1`
+  &minifyJs=`1`
+  &cssSources=`
+    assets/templates/himyf/css/normalize.css,
+    assets/templates/himyf/css/foundation.css,
+    assets/templates/himyf/css/font-awesome.css,
+    assets/templates/himyf/css/app.css
+  `
+  &jsSources=`assets/templates/himyf/js/foundation.js`
 ]]
 [[+MinifyX.css]]
 [[+MinifyX.javascript]]
@@ -121,21 +121,21 @@
 
 Если вы собираете сайта на шаблонизаторе Fenom, тогда вызов будет следующим:
 
-``` fenom
+```fenom
 {'!MinifyX' | snippet : [
-    'minifyCss' => 1,
-    'minifyJs' => 1,
-    'jsSources' => '
-        assets/plugins/jquery/jquery-2.1.4.min.js,
-        assets/js/scripts.js
-    ',
-    'cssSources' => '
-        assets/plugins/bootstrap/css/bootstrap.min.css,
-        assets/css/essentials.css,
-        assets/css/layout.css,
-        assets/css/header-1.css,
-        assets/css/color_scheme/green.css
-    '
+  'minifyCss' => 1,
+  'minifyJs' => 1,
+  'jsSources' => '
+    assets/plugins/jquery/jquery-2.1.4.min.js,
+    assets/js/scripts.js
+  ',
+  'cssSources' => '
+    assets/plugins/bootstrap/css/bootstrap.min.css,
+    assets/css/essentials.css,
+    assets/css/layout.css,
+    assets/css/header-1.css,
+    assets/css/color_scheme/green.css
+  '
 ]}
 {$_modx->getPlaceholder('MinifyX.css')}
 {$_modx->getPlaceholder('MinifyX.javascript')}
@@ -149,16 +149,16 @@
 <?php
 
 return [
-    'baseCss' => [
-       '[[+assets_url]]templates/himyf/css/normalize.css',
+  'baseCss' => [
+    '[[+assets_url]]templates/himyf/css/normalize.css',
     '{assets_url}templates/himyf/css/foundation.css',
     'assets/templates/himyf/css/font-awesome.css',
     'assets/templates/himyf/css/app.css'
-    ],
-    'baseJs' => [
-        'assets/templates/himyf/js/foundation.js',
-        '{assets_url}templates/himyf/js/scripts.js'
-    ],
+  ],
+  'baseJs' => [
+    'assets/templates/himyf/js/foundation.js',
+    '{assets_url}templates/himyf/js/scripts.js'
+  ],
 ];
 ```
 
@@ -166,12 +166,12 @@ return [
 
 ```modx
 [[MinifyX?
-    &minifyCss=`1`
-    &minifyJs=`1`
-    &registerCss=`default`
-    &registerJs=`default`
-    &cssGroups=`baseCss`
-    &jsGroups=`baseJs`
+  &minifyCss=`1`
+  &minifyJs=`1`
+  &registerCss=`default`
+  &registerJs=`default`
+  &cssGroups=`baseCss`
+  &jsGroups=`baseJs`
 ]]
 ```
 
@@ -181,12 +181,12 @@ return [
 <?php
 
 if ($modx->resource->parent == 10) {
-    // Добавляем группы
-    $MinifyX->addCssGroup('ticketsCss,officeCss');
-    $MinifyX->addJsGroup('ticketsJs,officeJs');
-    // Добавляем файлы
-    $MinifyX->addCssSource("{assets_url}css/jquery.fancybox.css");
-    $MinifyX->addJsSource("{assets_url}js/jquery.fancybox.js");
+  // Добавляем группы
+  $MinifyX->addCssGroup('ticketsCss,officeCss');
+  $MinifyX->addJsGroup('ticketsJs,officeJs');
+  // Добавляем файлы
+  $MinifyX->addCssSource("{assets_url}css/jquery.fancybox.css");
+  $MinifyX->addJsSource("{assets_url}js/jquery.fancybox.js");
 }
 ```
 
@@ -196,8 +196,8 @@ if ($modx->resource->parent == 10) {
 <?php
 
 if ($MinifyX->isCss()) {
-    $data = preg_replace('#vm (ax|in)#', 'vm$1', $MinifyX->getContent());
-    $MinifyX->setContent($data);
+  $data = preg_replace('#vm (ax|in)#', 'vm$1', $MinifyX->getContent());
+  $MinifyX->setContent($data);
 }
 ```
 

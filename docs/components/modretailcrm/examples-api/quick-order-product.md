@@ -14,7 +14,7 @@
 
 Выводим на странице простейшую форму. К примеру вот такую
 
-``` fenom
+```fenom
 {'!ajaxForm' | snippet : [
   'form' => '@INLINE
     <form>

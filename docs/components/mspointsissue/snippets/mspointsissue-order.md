@@ -30,5 +30,5 @@
 [[!msGetOrder]] <!-- Вывод информации о заказе, показывается после его создания -->
 ```
 
-[0104]: /components/pdotools/general-parameters
+[0104]: /components/pdotools/general-properties
 [010103]: /components/pdotools/parser

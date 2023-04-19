@@ -156,7 +156,7 @@ dependencies: ['miniShop2']
 
 [010103]: /components/pdotools/parser
 [01020103]: /components/minishop2/interface/orders
-[0104]: /components/pdotools/general-parameters
+[0104]: /components/pdotools/general-properties
 
 [001]: https://liveinform.ru/?partner=166
 [00101]: https://www.liveinform.ru/account/settings?partner=166
