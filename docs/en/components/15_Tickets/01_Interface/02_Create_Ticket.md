@@ -3,7 +3,7 @@
 ## Creating the ticket
 
 Ticket is the extended modDocument of the modx resource
-When creating the ticket, the display window has visually 4 categories of settings. 
+When creating the ticket, the display window has visually 4 categories of settings.
 
 * Basic information settings *(Title, Extended title, Description, Annotation (introduction), Content)*;
 * Meta information settings *(Publication, Date of publicatoin, Date of publication cancellation, Pattern, Author, Parental resource, Pseudonym)*;
@@ -15,6 +15,6 @@ When creating the ticket, the display window has visually 4 categories of settin
 [![](https://file.modx.pro/files/b/1/c/b1c5adbb248cef4c72df63b096f16320s.jpg)](https://file.modx.pro/files/b/1/c/b1c5adbb248cef4c72df63b096f16320.png)
 [![](https://file.modx.pro/files/3/b/d/3bdec280272bfd046c5a4b364d3ba49cs.jpg)](https://file.modx.pro/files/3/b/d/3bdec280272bfd046c5a4b364d3ba49c.png)
 
-Created ticket in the ticket section: 
+Created ticket in the ticket section:
 
 [![](https://file.modx.pro/files/8/2/c/82c2458a0990c147909ddfd421b7ed3as.jpg)](https://file.modx.pro/files/8/2/c/82c2458a0990c147909ddfd421b7ed3a.png)
