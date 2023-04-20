@@ -214,9 +214,9 @@ If you don’t use filter `boolean` for such fields, you’ll get 0 or 1 for val
 
 ```modx
 [[!mFilter2?
-	&filters=`
-		isfolder:boolean
-	`
+ &filters=`
+  isfolder:boolean
+ `
 ]]
 ```
 
@@ -343,7 +343,6 @@ As a result, urls are going to go like this:
 
 Please note that if you indicate pseudonyms, it’ll influence your indication of the templates’ parameters.
 That is, if you indicate a pseudonym for `ms|price`, you will have to write the chunk as `&tplFilter.row.price` rather than `&tplFilter.row.ms|price`.
-
 
 ```modx
 &filters=`
@@ -528,12 +527,9 @@ If you implement a new filter and it appears as a long and confusing caption in 
 
 [![](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721s.jpg)](https://file.modx.pro/files/e/b/b/ebbc79941c98e61692f47d1e8046c721.png)
 
-
 [1]: /en/components/pdotools/snippets/pdopage
 [2]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
 [3]: http://jqueryui.com/slider/
 [4]: http://getbootstrap.com/
 [5]: /components/minishop2/snippets/msproducts
 [6]: /components/03_mSearch2/03_Расширение/01_Методы_фильтрации.md
-
-
