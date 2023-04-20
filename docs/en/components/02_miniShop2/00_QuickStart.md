@@ -104,7 +104,6 @@ The home page has been accomplished. We will assign "general" template to it and
 [[!pdoMenu]]
 ```
 
-
 All site documents wiil be displayed on the homepage for guidance.
 
 After this we will [create items category][3] and verify if its template is "Category".
@@ -120,7 +119,6 @@ To do this we set up new page with "general" template in the site root and write
 
 [[!msOrder]]
 
-
 [[!msGetOrder]]
 ```
 
@@ -135,7 +133,8 @@ For example, `msCart` and `msOrder`are hidden if the parameter `msorder=id of an
 Thus, primary customizing of the shop is finished and goods may be ordered.
 
 As a final touch one may enter`Navbar` chunk and add there mini cart page presenting. For example:
-```
+
+```modx
 <div class="navbar-collapse collapse">
     <!-- To show menu, set by default  -->
     <ul class="nav navbar-nav">
@@ -149,6 +148,7 @@ As a final touch one may enter`Navbar` chunk and add there mini cart page presen
     <ul class="nav navbar-nav pull-right" style="padding-top:10px;">
         <li>[[!msMiniCart]]</li>
     </ul>
+</div>
 ```
 
 [1]: https://modhost.pro

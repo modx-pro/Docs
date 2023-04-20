@@ -2,6 +2,7 @@ All the snippets of miniShop2 work with [pdoTools][1] and count on [Fenom][2] us
 
 I.e. they, for example, do not process cart goods, but simply transfer product array to the chunk.
 This allows:
+
 - reduce the total number of chunks
 - improve convenience (to edit cart in 1 place instead of 3)
 - accelerate (to parse only 1 chunk, not 3 - 10 depending of cart goods)

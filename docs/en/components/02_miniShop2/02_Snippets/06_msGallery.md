@@ -4,26 +4,28 @@ Snippet for goods gallery display.
 
 ## Parameters
 
-Parameter           | By default    | Description
---------------------|---------------|---------------------------------------------
-**tpl**             | tpl.msGallery | Formatting chunk
-**product**         |               | Product identifier. If not indicated, current document id is used.
-**limit**           |               | Sample results limit
-**offset**          |               | Skip results from the beginning of the sample
-**sortby**          | rank          | Sample sorting
-**sortdir**         | ASC           | Sorting direction
-**toPlaceholder**   |               | If not empty, snippet will store all data in placeholder with this name, instead of displaying.
-**where**           |               | The line, coded in JSON,  containing additional sample conditions.
-**filetype**        |               | File type for sampling. "image" may be used for picture indication and other files extension. For example: "image,pdf,xls,doc".
-**showLog**         |               | To show additional information of snippet operation. For authorized in "mgr" context only.
+Parameter         | By default    | Description
+------------------|---------------|--------------------------------------------------------------------------------------------------------------------------------
+**tpl**           | `tpl.msGallery` | Formatting chunk
+**product**       |               | Product identifier. If not indicated, current document id is used.
+**limit**         |               | Sample results limit
+**offset**        |               | Skip results from the beginning of the sample
+**sortby**        | `rank`          | Sample sorting
+**sortdir**       | `ASC`           | Sorting direction
+**toPlaceholder** |               | If not empty, snippet will store all data in placeholder with this name, instead of displaying.
+**where**         |               | The line, coded in JSON,  containing additional sample conditions.
+**filetype**      |               | File type for sampling. "image" may be used for picture indication and other files extension. For example: "image,pdf,xls,doc".
+**showLog**       |               | To show additional information of snippet operation. For authorized in "mgr" context only.
 
 *Other [pdoTools general parameters][1] may be also used*
 
 ## Formatting
+
 The snippet counts on the work with [chunk Fenom][2] and transfers there only one variable`$files` with file array.
 
 You may see all available gallery placeholders simply indicating the empty chunk:
-```
+
+```modx
 <pre>[[!msGallery?tpl=``]]</pre>
 ```
 
@@ -36,7 +38,6 @@ The presence of the  chunk`.fotorama` element in `#msGallery` is verified when i
 The Fotorama scripts and styles will be loaded if only this element is present and contains files.
 
 So if you need not Fotorama at all, simply exclude `.fotorama` from the  chunk.
-
 
 [1]: /en/components/01_pdoTools/04_General_parameters.md
 [2]: /en/components/01_pdoTools/03_Parser.md

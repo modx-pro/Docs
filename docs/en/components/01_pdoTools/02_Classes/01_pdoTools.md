@@ -127,6 +127,7 @@ return json_encode($row);
 And now I can use `[[+class]]` in my chunk to highlight admins and blocked users. Using of "Store" methods of pdoTools allows me to cache the data only at run time without save to hdd. It is very fast and handy.
 
 It total:
+
 1. You can load chunks by various ways.
 2. They will be processed so fast, how they simple are.
 3. It is much better to put all your template logic to `&prepareSnippet` instead of additional nested snippets or output filters calls in chunks.

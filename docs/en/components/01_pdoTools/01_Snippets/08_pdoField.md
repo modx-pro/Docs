@@ -3,17 +3,18 @@ This snippet has the functionality of both [getResourceField][1] and [UltimatePa
 Unlike its analogue it works with documents in any context and has the ability to specify additional parameters in the snippet call, allowing output of resources normally not displayed, for example, hidden resources. By specifying the parameter **&class** it can get the field of any MODX object. It may be called as an [Output Modifier] [3].
 
 ## Properties
+
 It takes [the general properties and sampling results] [4] of pdoTools and some of its own:
 
-Property			| Default		| Description
---------------------|-------------------|--------------------------------------------------------------------------------------------------------------
-**&id**				| Current resource	| Resource ID.
-**&field**			| pagetitle			| Resource field.
-**&top**			|  					| Selects the root-level parent of the specified resource.
-**&topLevel**		|  					| Selects the resource's parent at this level from the root level.
-**&default**		|  					| Specifies the resource field to return if **&field** is empty. Faster than the Output Modifier filter *:default =*
-**&output**			|  					| It specifies the string that is returned if **&default** and **&field** are all empty .
-**&toPlaceholder**	|  					| If not empty, the snippet will save the field value to a placeholder with the same name, instead of displaying it to the screen.
+Property           | Default          | Description
+-------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------
+**&id**            | Current resource | Resource ID.
+**&field**         | `pagetitle`        | Resource field.
+**&top**           |                  | Selects the root-level parent of the specified resource.
+**&topLevel**      |                  | Selects the resource's parent at this level from the root level.
+**&default**       |                  | Specifies the resource field to return if **&field** is empty. Faster than the Output Modifier filter *:default =*
+**&output**        |                  | It specifies the string that is returned if **&default** and **&field** are all empty .
+**&toPlaceholder** |                  | If not empty, the snippet will save the field value to a placeholder with the same name, instead of displaying it to the screen.
 
 *If you specify **&top** or **&topLevel**, but not a **&context**, an additional request to the database will be made to determine the context.*
 
@@ -22,21 +23,24 @@ Does not support working with chunk or snippet objects, as it returns only one f
 ## Examples
 
 The snippet can be used as an Output Modifier:
-```
+
+```modx
 [[*id:pdofield=`longtitle`]]
 ```
 
 You can specify properties in a JSON array. For example, selecting the second parent of the resource and returning its «longtitle»:
-```
+
+```modx
 [[*id:pdofield=`{"top":2,"field":"longtitle"}`]]
 ```
 
 But it is better to use a normal snippet call - it is faster and more convenient:
-```
+
+```modx
 [[pdoField?
-	&id=`[[*id]]`
-	&field=`longtitle`
-	&top=`2`
+  &id=`[[*id]]`
+  &field=`longtitle`
+  &top=`2`
 ]]
 ```
 

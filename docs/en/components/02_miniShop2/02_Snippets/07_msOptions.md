@@ -6,17 +6,19 @@ These are `size`, `color` and  `tags` by default, but you may add others by [pro
 
 ## Parameters
 
-Parameter           | By default    | Description
---------------------|---------------|---------------------------------------------
-**tpl**             | tpl.msOptions | Formatting chunk
-**product**         |               | Product identifier. If not indicated, the current document id is used.
-**options**         |               | List of option for displaying, separated by commas.
+Parameter   | By default    | Description
+------------|---------------|-----------------------------------------------------------------------
+**tpl**     | `tpl.msOptions` | Formatting chunk
+**product** |               | Product identifier. If not indicated, the current document id is used.
+**options** |               | List of option for displaying, separated by commas.
 
 ## Formatting
+
 The snippet counts on the work with [Fenom chunk][2] and transfers there only one variable `$options` with option array.
 
 You may see all available placeholders by empty chunk indication:
-```
+
+```modx
 <pre>
 [[msOptions?
     &options=`color,size`
@@ -28,7 +30,6 @@ You may see all available placeholders by empty chunk indication:
 [![](https://file.modx.pro/files/f/a/c/fac9abd11c65a700d5ab2f5ff7cd075es.jpg)](https://file.modx.pro/files/f/a/c/fac9abd11c65a700d5ab2f5ff7cd075e.png)
 
 Standard chunk is designed to display options in `select`, for sending to the cart along with the product.
-
 
 [1]: /en/components/minishop2/03_Development/01_Product_plugins.md
 [2]: /en/components/01_pdoTools/03_Parser.md

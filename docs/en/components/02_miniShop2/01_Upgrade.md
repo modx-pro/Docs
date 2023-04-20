@@ -111,7 +111,6 @@ Changed settings:
 
 The development of miniShop 2.3 has been canceled, so look at the upgrade to version 2.4.
 
-
 [1]: /en/components/01_pdoTools/03_Parser.md
 [2]: /components/minishop2/02_Сниппеты
 [3]: https://github.com/fenom-template/fenom/blob/master/docs/en/tags/extends.md

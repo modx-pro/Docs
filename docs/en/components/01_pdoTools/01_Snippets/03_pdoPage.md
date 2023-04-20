@@ -11,57 +11,58 @@ There are several serious differences from the snippet *getPage*:
 * Supports the work via ajax.
 
 ## Settings
-Name                    | Default       | Description
-------------------------|---------------|---------------------------------------------
-**plPrefix**            |               | Prefix for output placeholders.
-**limit**               | 10            | Limits the number of resources returned.  Use "0" for unlimited results.
-**maxLimit**            | 100           | The maximum limit of the query. Overrides the limit specified by the user via a url.
-**offset**              |               | An offset of resources returned by the criteria to skip.
-**page**                |               | Number of page for output. Overlaps number specified by the user via the url.
-**pageVarKey**          | page          | The Name of the variable to search for the page number in the url.
-**totalVar**            | page.total    | Define the key of a placeholder set by getResources indicating the total number of Resources that would be selected not considering the limit value.
-**pageLimit**           | 5             | Number of links on a pages. If is 7 or more turns on the advanced mode.
-**element**             | pdoResources  | The name of the snippet to run.
-**pageNavVar**          | page.nav      | Name of placeholder for output pagination.
-**pageCountVar**        | pageCount     | Name of placeholder for output number of pages.
-**pageLinkScheme**      |               | Scheme of generation link to page. You can use placeholders [[+pageVarKey]] and [[+page]]
-**cache**               |               | Caching the results of the snippet.
-**cacheTime**           | 3600          | Time until the cache expires, in seconds.
-**cacheAnonymous**      |               | Enable caching only for unauthorized visitors.
-**toPlaceholder**       |               | If set, will assign the result to this placeholder instead of outputting it directly.
-**ajax**                |               | Enable support of ajax requests.
-**ajaxMode**            |               | Ajax pagination out of the box. Available in 3 modes: "default", "button" and "scroll".
-**ajaxElemWrapper**     | #pdopage      | jQuery selector for wrapper element with the results and pagination.
-**ajaxElemRows**        | #pdopage .rows| jQuery selector for element with results.
-**ajaxElemPagination**  | #pdopage .pagination| jQuery selector for element with pagination.
-**ajaxElemLink**        | #pdopage .pagination a| jQuery selector for pagination links.
-**ajaxElemMore**        | #pdopage .btn-more| jQuery selector for "load more" button in ajaxMode = button.
-**ajaxHistory**         |               | Save the page number in the url when working in ajax mode.
-**frontend_js**         | [[+assetsUrl]]js/pdopage.min.js| Link on javascript for loading by the snippet.
-**frontend_css**        | [[+assetsUrl]]css/pdopage.min.css| Link on css styles for loading by the snippet.
-**frontend_startup_js** |               | Name of a chunk that contains the script code at the end of the head section used with enabled support of ajax requests.
-**frontend_init_js**    |               | Name of a chunk that contains the script code at the end of the body section used with enabled support of ajax requests.
-**setMeta**             | 1             | Registration of meta tags with links to previous and next page.
-**strictMode**          | 1             | Strict mode. pdoPage do redirects when loading non-existent pages.
 
-Chunks                  | By default
-------------------------|------------------------------------------------------------------------------
-**tplPage**             | `@INLINE <li><a href="[[+href]]">[[+pageNo]]</a></li>`
-**tplPageWrapper**      | `@INLINE <div class="pagination"><ul class="pagination">[[+first]][[+prev]][[+pages]][[+next]][[+last]]</ul></div>`
-**tplPageActive**       | `@INLINE <li class="active"><a href="[[+href]]">[[+pageNo]]</a></li>`
-**tplPageFirst**        | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_first]]</a></li>`
-**tplPageLast**         | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_last]]</a></li>`
-**tplPagePrev**         | `@INLINE <li class="control"><a href="[[+href]]">&laquo;</a></li>`
-**tplPageNext**         | `@INLINE <li class="control"><a href="[[+href]]">&raquo;</a></li>`
-**tplPageSkip**         | `@INLINE <li class="disabled"><span>...</span></li>`
-**tplPageFirstEmpty**   | `@INLINE <li class="disabled"><span>[[%pdopage_first]]</span></li>`
-**tplPageLastEmpty**    | `@INLINE <li class="disabled"><span>[[%pdopage_last]]</span></li>`
-**tplPagePrevEmpty**    | `@INLINE <li class="disabled"><span>&laquo;</span></li>`
-**tplPageNextEmpty**    | `@INLINE <li class="disabled"><span>&raquo;</span></li>`
-**ajaxTplMore**         | `@INLINE <button class="btn btn-default btn-more">[[%pdopage_more]]</button>`
+Name                    | Default                           | Description
+------------------------|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------
+**plPrefix**            |                                   | Prefix for output placeholders.
+**limit**               | 10                                | Limits the number of resources returned.  Use "0" for unlimited results.
+**maxLimit**            | 100                               | The maximum limit of the query. Overrides the limit specified by the user via a url.
+**offset**              |                                   | An offset of resources returned by the criteria to skip.
+**page**                |                                   | Number of page for output. Overlaps number specified by the user via the url.
+**pageVarKey**          | page                              | The Name of the variable to search for the page number in the url.
+**totalVar**            | page.total                        | Define the key of a placeholder set by getResources indicating the total number of Resources that would be selected not considering the limit value.
+**pageLimit**           | 5                                 | Number of links on a pages. If is 7 or more turns on the advanced mode.
+**element**             | pdoResources                      | The name of the snippet to run.
+**pageNavVar**          | page.nav                          | Name of placeholder for output pagination.
+**pageCountVar**        | pageCount                         | Name of placeholder for output number of pages.
+**pageLinkScheme**      |                                   | Scheme of generation link to page. You can use placeholders [[+pageVarKey]] and [[+page]]
+**cache**               |                                   | Caching the results of the snippet.
+**cacheTime**           | 3600                              | Time until the cache expires, in seconds.
+**cacheAnonymous**      |                                   | Enable caching only for unauthorized visitors.
+**toPlaceholder**       |                                   | If set, will assign the result to this placeholder instead of outputting it directly.
+**ajax**                |                                   | Enable support of ajax requests.
+**ajaxMode**            |                                   | Ajax pagination out of the box. Available in 3 modes: "default", "button" and "scroll".
+**ajaxElemWrapper**     | #pdopage                          | jQuery selector for wrapper element with the results and pagination.
+**ajaxElemRows**        | #pdopage .rows                    | jQuery selector for element with results.
+**ajaxElemPagination**  | #pdopage .pagination              | jQuery selector for element with pagination.
+**ajaxElemLink**        | #pdopage .pagination a            | jQuery selector for pagination links.
+**ajaxElemMore**        | #pdopage .btn-more                | jQuery selector for "load more" button in ajaxMode = button.
+**ajaxHistory**         |                                   | Save the page number in the url when working in ajax mode.
+**frontend_js**         | [[+assetsUrl]]js/pdopage.min.js   | Link on javascript for loading by the snippet.
+**frontend_css**        | [[+assetsUrl]]css/pdopage.min.css | Link on css styles for loading by the snippet.
+**frontend_startup_js** |                                   | Name of a chunk that contains the script code at the end of the head section used with enabled support of ajax requests.
+**frontend_init_js**    |                                   | Name of a chunk that contains the script code at the end of the body section used with enabled support of ajax requests.
+**setMeta**             | 1                                 | Registration of meta tags with links to previous and next page.
+**strictMode**          | 1                                 | Strict mode. pdoPage do redirects when loading non-existent pages.
 
+Chunks                | By default
+----------------------|--------------------------------------------------------------------------------------------------------------------
+**tplPage**           | `@INLINE <li><a href="[[+href]]">[[+pageNo]]</a></li>`
+**tplPageWrapper**    | `@INLINE <div class="pagination"><ul class="pagination">[[+first]][[+prev]][[+pages]][[+next]][[+last]]</ul></div>`
+**tplPageActive**     | `@INLINE <li class="active"><a href="[[+href]]">[[+pageNo]]</a></li>`
+**tplPageFirst**      | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_first]]</a></li>`
+**tplPageLast**       | `@INLINE <li class="control"><a href="[[+href]]">[[%pdopage_last]]</a></li>`
+**tplPagePrev**       | `@INLINE <li class="control"><a href="[[+href]]">&laquo;</a></li>`
+**tplPageNext**       | `@INLINE <li class="control"><a href="[[+href]]">&raquo;</a></li>`
+**tplPageSkip**       | `@INLINE <li class="disabled"><span>...</span></li>`
+**tplPageFirstEmpty** | `@INLINE <li class="disabled"><span>[[%pdopage_first]]</span></li>`
+**tplPageLastEmpty**  | `@INLINE <li class="disabled"><span>[[%pdopage_last]]</span></li>`
+**tplPagePrevEmpty**  | `@INLINE <li class="disabled"><span>&laquo;</span></li>`
+**tplPageNextEmpty**  | `@INLINE <li class="disabled"><span>&raquo;</span></li>`
+**ajaxTplMore**       | `@INLINE <button class="btn btn-default btn-more">[[%pdopage_more]]</button>`
 
 ## Ajax support
+
 pdoPage is able to work with ajax out of the box. There are 3 conditions for it:
 
 * The snippet option `&ajax` is enabled.
@@ -69,18 +70,22 @@ pdoPage is able to work with ajax out of the box. There are 3 conditions for it:
 * A request contains the variable specified in the &pageVarKey parameter of snippet call. By default it is a `page`.
 
 So, you just need to enable the parameter **&ajax=`1`** and to send a GET request to the page with jQuery:
-```
+
+```js
 $.get('document.html?page=5', function(response) {
     console.log(response);
 }, 'json');
 ```
+
 And you will receive JSON response with results of query and service data: the number of current page, the total number of pages and total number of a results.
 Given that pdoPage is a snippet-wrapper, so you can get to work via ajax many other snippets.
 
 ## Built-in Ajax pagination
+
 Starting with version **1.10** pdoPage is able to load pages via ajax automatically.
 You only need to wrap the call in a special markup:
-```
+
+```modx
 <div id="pdopage">
     <div class="rows">
         [[!pdoPage?
@@ -91,6 +96,7 @@ You only need to wrap the call in a special markup:
     [[!+page.nav]]
 </div>
 ```
+
 Within a [[+page.nav]] we have a div with class "pagination" — so pdoPage by default.
 
 You can change the IDs for that layout with the following parameters:
@@ -108,7 +114,8 @@ You do not need to enable parameter `&ajax`, non-empty `&ajaxMode` will do it hi
 In contrast to the standard pagination, this type of work assumes that the user will only move down, loading new elements and therefore moves the block pagination when scrolling.
 
 So, it will be correct to place it at the top:
-```
+
+```modx
 <div id="pdopage">
     [[!+page.nav]]
     <div class="rows">
@@ -122,6 +129,7 @@ So, it will be correct to place it at the top:
 ```
 
 Uses all the same selectors, plus:
+
 * **ajaxElemMore** — jQuery selector for button to load results if your &ajaxMode is "button". Default is `#pdopage .btn-more`.
 * **ajaxTplMore** — the template of a button to load the new results when ajaxMode is "button". Must include the selector listed in the **&ajaxElemMore**.
 
@@ -136,7 +144,8 @@ If the output of a floating pagination block is not needed, just make it `displa
 ### Load on scroll
 This method is very similar to the previous one but there is no button and you do not need to click on it —
 everything is done automatically when you scroll the page.
-```
+
+```modx
 <div id="pdopage">
     [[!+page.nav]]
     <div class="rows">
@@ -149,19 +158,23 @@ everything is done automatically when you scroll the page.
 ```
 
 ### History API
+
 pdoPage supports History API in your browser.
 This means that when **&ajaxMode** enabled, the snippet can save the page number in the address bar, so when you reload nothing was lost.
 Also works correctly using the navigation buttons "forward\back" of the browser.
 
 You can change this behavior by setting **&ajaxHistory** by switching "on" or "off". By default, it works as follows:
+
 * If ajaxMode set to **default**, the History API is enabled, the page number is stored.
 * If ajaxMode set to **scroll** or **button**, the History API is disabled.
 
 When **&ajaxHistory** is disabled, the navigation block is hidden, so pages cannot be switched manually.
 
 ### Javascript callbacks
+
 You can specify the functions that will be called before and after page load via ajax:
-```
+
+```js
 pdoPage.callbacks['before'] = function(config) {
     console.log('The config before load!', config);
 };
@@ -172,11 +185,13 @@ pdoPage.callbacks['after'] = function(config, response) {
 ```
 
 Version 1.11.0-pl brings the ability to add a handler to the event **pdopage_load**:
-```
+
+```js
 $(document).on('pdopage_load', function(e, config, response) {
     console.log(e, config, response);
 });
 ```
+
 The checking of the data in the config will allow you to distinguish between different pdoPage calls on the same page.
 
 ## Use your own javascripts in ajax mode
@@ -184,11 +199,12 @@ The checking of the data in the config will allow you to distinguish between dif
 From version 2.7.4 you could use your own javascripts in ajax mode. The frontend javascripts could be modified with the pdoPage snippet parameters **&frontend_js**, **&frontend_startup_js** and **&frontend_init_js**. Per default the external **[[+assetsUrl]]js/pdopage.min.js** javascript is referenced and the belonging script tags are placed at the end of the head/body section.
 
 ### jQuery plugin
+
 Since version 2.7.4 **[[+assetsUrl]]js/jquery.pdopage.min.js** is available and could be referenced in **&frontend_js** parameter in the pdoPage snippet call. If you want to use it, you have to create two chunks and reference them in the **&frontend_startup_js** and **&frontend_init_js** parameter.
 
 The chunk for **frontend_startup_js** should stay empty and the chunk for **frontend_init_js** could be filled with the following script tag:
 
-```
+```html
 <script type="text/javascript">
     $('[[+wrapper]]').pdoPage([[+config]]);
 </script>
@@ -196,7 +212,7 @@ The chunk for **frontend_startup_js** should stay empty and the chunk for **fron
 
 The plugin triggers two events on the wrapper element. These could be catched the following:
 
-```
+```js
 $('[[+wrapper]]').on('beforeLoad', function(event, pdopage, settings){
   console.log(settings);
 });
@@ -208,14 +224,15 @@ $('[[+wrapper]]').on('afterLoad', function(event, pdopage, settings, response){
 
 All public methods of the jQuery plugin could be called with the following code:
 
-```
+```js
 $('[[+wrapper]]').pdoPage('<methodname>', <comma>, <separated>, <parameters>);
 ```
 
 #### Example call with form filtering
+
 Form filtering the pdoPage ajax result could be done with the following code:
 
-```
+```js
 <script type="text/javascript">
     var pdoPageWrapper = $('[[+wrapper]]');
     pdoPageWrapper.pdoPage([[+config]]);
@@ -231,13 +248,17 @@ Form filtering the pdoPage ajax result could be done with the following code:
 ```
 
 ## Friendly urls pagination
+
 From version 2.2.2 you can use the parameter **&pageLinkScheme** to specify the schema of generated links to the pages.
+
 There can be only two placeholders in the parameters:
+
 * `[[+pageVarKey]]` - a variable with name of the page. By default is `page`.
 * `[[+page]]` - the number of the page.
 
 For example just specify such parameter:
-```
+
+```modx
 [[!pdoPage?
     &parents=`0`
     &pageLinkScheme=`/[[+pageVarKey]]-[[+page]]`
@@ -253,7 +274,8 @@ And you will get links like
 
 But when you will go to this links, MODX will show you 404 error, because theese pages are not wxists.
 You need to create the plugin to handle this links:
-```
+
+```php
 <?php
 // Work only with OnPageNotFound
 if ($modx->event->name == 'OnPageNotFound') {
@@ -285,12 +307,15 @@ if ($modx->event->name == 'OnPageNotFound') {
     }
 }
 ```
+
 Now this plugin will handle your friendly urls pagination.
 
 ## Examples
+
 As pdoPage is part of pdoTools, in the parameter **&element** it contains a snippet *pdoResources*.
 Therefore, a simple call of the snippet will show the child resources:
-```
+
+```modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
 ]]
@@ -298,7 +323,8 @@ Therefore, a simple call of the snippet will show the child resources:
 ```
 
 Output all available documents of the site:
-```
+
+```modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -308,7 +334,8 @@ Output all available documents of the site:
 
 Included navigation with skip of pages.
 Please note that if the number of pages is less than 7, it will work as normal navigation.
-```
+
+```modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -318,7 +345,8 @@ Please note that if the number of pages is less than 7, it will work as normal n
 ```
 
 Enable cache for 30 minutes:
-```
+
+```modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`
@@ -331,7 +359,8 @@ Enable cache for 30 minutes:
 
 Specify the maximum limit of the query.
 Now, whichever limit is not specified by the user in the url will still be no more than 10 results per page.
-```
+
+```modx
 [[!pdoPage?
     &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
     &parents=`0`

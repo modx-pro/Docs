@@ -216,7 +216,7 @@ For example, we need to get `longtitle` of resource with id = 15
 
 Or if we want to get `pagetitle` of grandparent of current document:
 
-```
+```modx
 [[pdoField?
     &id=`[[*id]]`
     &field=`pagetitle`

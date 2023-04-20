@@ -65,6 +65,7 @@ To obtain name of authorized user not from`fullname`, but from `username`:
 
 ```modx
 [[!msOrder?
+  &userFields=`{"receiver":"username"}`
 ]]
 ```
 [1]: /en/components/01_pdoTools/03_Parser.md

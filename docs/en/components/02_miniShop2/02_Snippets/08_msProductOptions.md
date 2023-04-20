@@ -4,24 +4,25 @@ This snippet simply displays the list of [additional product options][2] without
 
 ## Parameters
 
-Parameter           | By default    | Description
---------------------|---------------|---------------------------------------------
-**tpl**             | tpl.msProductOptions    | Formatting chunk
-**product**         |               | Product identifier. If not indicated, id of the current document is used.
-**onlyOptions**     |               | Display only this option list, separated by commas.
-**ignoreOptions**   |               | The options, which do not need to be listed, separated by commas.
-**groups**          |               | To display only indicated group options (category name or identifier, separated by commas)
+Parameter         | By default           | Description
+------------------|----------------------|-------------------------------------------------------------------------------------------
+**tpl**           | `tpl.msProductOptions` | Formatting chunk
+**product**       |                      | Product identifier. If not indicated, id of the current document is used.
+**onlyOptions**   |                      | Display only this option list, separated by commas.
+**ignoreOptions** |                      | The options, which do not need to be listed, separated by commas.
+**groups**        |                      | To display only indicated group options (category name or identifier, separated by commas)
 
 ## Formatting
+
 The snippet counts on the work with [Fenom chunk][3] and transfers there only one variable`$options` with option array.
 
 You may see all available placeholders by indicating empty chunk:
-```
+
+```modx
 <pre>[[msProductOptions?tpl=``]]</pre>
 ```
 
 [![](https://file.modx.pro/files/d/b/c/dbc7a001d2c7fe6d565b054a5119099bs.jpg)](https://file.modx.pro/files/d/b/c/dbc7a001d2c7fe6d565b054a5119099b.png)
-
 
 [1]: /en/components/minishop2/02_Snippets/07_msOptions.md
 [2]: /en/components/minishop2/01_Interface/04_Settings.md

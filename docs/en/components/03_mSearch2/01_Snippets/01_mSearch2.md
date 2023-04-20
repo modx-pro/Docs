@@ -107,16 +107,18 @@ Snippet can be caused along with [mSearchForm][4]
 ```
 
 You can also use **mSearch2** to search and output together with [msProducts][5]:
-```
+
+```modx
 [[!pdoPage?
-	&element=`msProducts`
-	&parents=`0`
-	&resources=`[[!mSearch2:default=`999999`?returnIds=`1`&limit=`0`]]`
-	&sortby=`ids`
+  &element=`msProducts`
+  &parents=`0`
+  &resources=`[[!mSearch2:default=`999999`?returnIds=`1`&limit=`0`]]`
+  &sortby=`ids`
 ]]
 
 [[!+page.nav]]
 ```
+
 `returnIds` parameter specifies **msProducts** - found products list for the output.
 And the `default` filter substitutes misssing id when nothing is found, otherwise **msProducts** will output every row at a time.
 

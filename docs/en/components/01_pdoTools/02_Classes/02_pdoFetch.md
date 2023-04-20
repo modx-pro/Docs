@@ -44,7 +44,7 @@ That is why you need to use query for silter by TVs:
 
 Default TVs values do not saved to table, they are just TV settings, so you need to compare them to `null`:
 
-```
+```modx
 [[!pdoResources?
     &parents=`0`
     &includeTVs=`tv2`
@@ -55,6 +55,7 @@ Default TVs values do not saved to table, they are just TV settings, so you need
 If you want to select resource where `tv2` has default value - you need to select resources with `null` for this TV. But pdoFetch will return **default** value of TV as value for this field in results.
 
 I hope, now you understand logic of pdoFetch a little better. In total:
+
 1. One query to rule them all.
 2. With table joins, if you need more data. No additional requests!
 3. Pure arrays in results, without objects.

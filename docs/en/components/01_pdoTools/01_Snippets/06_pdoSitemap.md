@@ -3,7 +3,8 @@ pdoSitemap i a snippet that easily creates sitemaps for search engines (sitemap.
 The main feature is a much higher processing speed compared to the snippet GoogleSitemap. The site [bezumkin.ru][2] with 1700 pages increased the generation speed of the sitemap by ***12 times*** from 8.4 seconds down to 0.7.
 
 By default is the check for user permissions disabled. This can easily be remedied by including the parameter **&checkPermissions** (Note: slows down the generation!):
-```
+
+```modx
 [[!pdoSitemap?
 	&checkPermissions=`list`
 ]]
@@ -12,13 +13,14 @@ By default is the check for user permissions disabled. This can easily be remedi
 The sitemap generation is more effective if resources are excluded from the output rather than to explicit include resources that shall be visible (see examples below).
 
 ## Options
+
 *pdoSitemap* accepts all options for [pdoTools][3]. Here are some of them:
 
-Parameter     			| Default value		                							| Description
---------------------|-----------------------------------------------|--------------------------------------------------------------------------------------------------------------
-**&sitemapSchema**	| http://www.sitemaps.org/schemas/sitemap/0.9	  | The scheme used for the sitemap.
-**&forceXML**		    | 1											                    	  | Force output as XML.
-**&priorityTV**		  |  												                      | An optional field that indicates the [priority][4] of the resource. The template variable stated here must also be added to the parameter **&includeTVs**
+Parameter          | Default value                               | Description
+-------------------|---------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------
+**&sitemapSchema** | http://www.sitemaps.org/schemas/sitemap/0.9 | The scheme used for the sitemap.
+**&forceXML**      | 1                                           | Force output as XML.
+**&priorityTV**    |                                             | An optional field that indicates the [priority][4] of the resource. The template variable stated here must also be added to the parameter **&includeTVs**
 
 ### Templates
 
@@ -39,12 +41,12 @@ Parameter     			| Default value		                							| Description
 
 [Priority][4] and [Change frequency][5] for the resource is mapped based on the date for the last modification of the document:
 
-Time since the last update of the document	  	| Priority  | Change frequency
-------------------------------------------------|-----------|--------------------
-Less than a day ago						              		| 1.0	    	| daily
-Over one day but less than a week ago    		    | 0.75		  | weekly
-More than a week ago but less than a month ago	| 0.5	    	| weekly
-More than a month ago					              		| 0.25		  | monthly
+Time since the last update of the document     | Priority | Change frequency
+-----------------------------------------------|----------|-----------------
+Less than a day ago                            | 1.0      | daily
+Over one day but less than a week ago          | 0.75     | weekly
+More than a week ago but less than a month ago | 0.5      | weekly
+More than a month ago                          | 0.25     | monthly
 
 ### Instructions how to create a sitemap.xml resource
 
