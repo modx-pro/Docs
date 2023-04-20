@@ -1,3 +1,5 @@
+# DebugParser
+
 Plugin for identification bottlenecks of the site. It shows all handled tags and expended time.
 
 Now you can specify and optimize slow calls on every page.

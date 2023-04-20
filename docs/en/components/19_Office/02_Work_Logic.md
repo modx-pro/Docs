@@ -9,11 +9,13 @@ There are 4 of them in the standard set:
 The component itself has snippet **Office**, which calls for the needed controller and sends all the indicated parameters to it.
 That is, all possible settings, chunks and other properties depend on the controller and are not written into the snippet.
 For example, here is a call for all 3 controllers at once on one page.
-```
+
+```modx
 [[!Office?&action=`Auth`]]
 [[!Office?&action=`Profile`]]
 [[!Office?&action=`miniShop2`]]
 ```
+
 For standard controllers there are special snippets with parameters written into them for the sake of convenience. For work they still call for Office snippet.
 
 [![](https://file.modx.pro/files/7/a/6/7a691dcfa2bf7915716c61a3450e487cs.jpg)](https://file.modx.pro/files/7/a/6/7a691dcfa2bf7915716c61a3450e487c.png)
@@ -39,18 +41,19 @@ The new look (`[[++assets_url]]components/office/css/main/lib/xtheme-modx.new.cs
 
 By default the appearance is chosen due to what version of MODX is installed - 2.2 or older.
 
-
 Generally speaking, controller is an ordinary php class, which inherits standard class from Office.
 All classes are located in directory `/core/components/office/controllers/`. Due to the modular architecture you can easily change any one of them.
 
 You should just make a copy, rename it and call for it:
-```
+
+```modx
 [[!Office?
     &action=`AuthCopy`
 ]]
 ```
 
 You can also register controllers from the addons you download in Office.
+
 ### Extension by extra components
 
 Extra components can register their own controllers by adding their directory to system parameter **office_controllers_paths**.
@@ -70,9 +73,11 @@ Work with records modExtra from the outside
 [![](https://file.modx.pro/files/8/5/5/855490e75c5c93d364af3756d8d2bb92s.jpg)](https://file.modx.pro/files/8/5/5/855490e75c5c93d364af3756d8d2bb92.png)
 
 A registered controller is shown by its name. In this case it is:
-```
+
+```modx
 [[!Office?&action=`modExtra`]]
 ```
+
 *You do not have to use Ext JS, it is just an example of the opportunities you have.*
 
 Here is everything you need for editing records modExtra on the site's frontend на фронтенде сайта, [by one commit][7].

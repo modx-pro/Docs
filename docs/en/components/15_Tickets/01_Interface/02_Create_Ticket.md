@@ -1,6 +1,6 @@
-*It is highly important to remember that Tickets component is supplied without any demo data and patterns. That is why you should create them in advance.Also ticket section and ticket itself are extended standard «modDocument», so it has the same TV-fields, placeholders and logical line of work.*
+# Creating the ticket
 
-## Creating the ticket
+*It is highly important to remember that Tickets component is supplied without any demo data and patterns. That is why you should create them in advance.Also ticket section and ticket itself are extended standard «modDocument», so it has the same TV-fields, placeholders and logical line of work.*
 
 Ticket is the extended modDocument of the modx resource
 When creating the ticket, the display window has visually 4 categories of settings.

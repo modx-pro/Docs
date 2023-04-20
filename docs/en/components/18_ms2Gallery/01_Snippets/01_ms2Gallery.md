@@ -1,31 +1,34 @@
+# ms2Gallery
+
 Snippet for the resource gallery output.
 
 ## Parameters
 
-Parameter         | By default                 | Description
-------------------|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**parents**       |                            | List of categories for the search of results, with commas. By default the selection is limited by the current parent. If you put 0 there, the selection will not be limited.
-**resources**     |                            | List of resources for output in the results. If a good's id starts with a minus, it will not be shown in the selection.
-**showLog**       |                            | Show extra information about the work of the snippet. Obly for authorized users in "mgr" context.
-**toPlaceholder** |                            | If it is not empty, the snippet will save all data into a placeholder with this name instead of putting them to the screen.
-**tpl**           | tpl.ms2Gallery             | Chunk for the whole gallery using [Fenom][1].
-**limit**         |                            | Limiting the selection of results
-**offset**        |                            | Omission of results from the beginning of the selection
-**where**         |                            | A line coded in JSON, with extra searching conditions. For filtration by files you should use the "File" table's pseudonym. For example, &where=`{"File.name:LIKE":"%img%"}`.
-**filetype**      |                            | Type of files for selection. You can use "image" for indicating pictures and extending all other files. For example: "image,pdf,xls,doc".
-**showInactive**  |                            | Show inactive files.
-**sortby**        | rank                       | Sorting the selection.
-**sortdir**       | ASC                        | The direction of sorting.
-**frontend_css**  | [[+cssUrl]]web/default.css | If you want to use your own styles, show the direction to them here, or clean up the parameter and download them yourself through the site's template.
-**frontend_js**   | [[+jsUrl]]web/default.js   | If you want to use your own scripts, show the direction to them here, or clean up the parameter and download them yourself through the site's template.
-**tags**          |                            | List of tags for files output, with commas.
-**tagsVar**       |                            | If this parameter is not empty, the snippet will take "tags" value in $_REQUEST["indicatedname"]. For example, if you indicate "tag" here, the snippet will show only those files that suit in `$_REQUEST["tag"]`.
-**getTags**       |                            | Make additional requests so as to get a line with the file's tags?
-**tagsSeparator** | ,                          | If you switched on getting files' tags in the output, they will be divided through the line that you indicate in this parameter.
+Parameter         | By default                   | Description
+------------------|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**parents**       |                              | List of categories for the search of results, with commas. By default the selection is limited by the current parent. If you put 0 there, the selection will not be limited.
+**resources**     |                              | List of resources for output in the results. If a good's id starts with a minus, it will not be shown in the selection.
+**showLog**       |                              | Show extra information about the work of the snippet. Obly for authorized users in "mgr" context.
+**toPlaceholder** |                              | If it is not empty, the snippet will save all data into a placeholder with this name instead of putting them to the screen.
+**tpl**           | `tpl.ms2Gallery`             | Chunk for the whole gallery using [Fenom][1].
+**limit**         |                              | Limiting the selection of results
+**offset**        |                              | Omission of results from the beginning of the selection
+**where**         |                              | A line coded in JSON, with extra searching conditions. For filtration by files you should use the "File" table's pseudonym. For example, &where=`{"File.name:LIKE":"%img%"}`.
+**filetype**      |                              | Type of files for selection. You can use "image" for indicating pictures and extending all other files. For example: "image,pdf,xls,doc".
+**showInactive**  |                              | Show inactive files.
+**sortby**        | `rank`                       | Sorting the selection.
+**sortdir**       | `ASC`                        | The direction of sorting.
+**frontend_css**  | `[[+cssUrl]]web/default.css` | If you want to use your own styles, show the direction to them here, or clean up the parameter and download them yourself through the site's template.
+**frontend_js**   | `[[+jsUrl]]web/default.js`   | If you want to use your own scripts, show the direction to them here, or clean up the parameter and download them yourself through the site's template.
+**tags**          |                              | List of tags for files output, with commas.
+**tagsVar**       |                              | If this parameter is not empty, the snippet will take "tags" value in $_REQUEST["indicatedname"]. For example, if you indicate "tag" here, the snippet will show only those files that suit in `$_REQUEST["tag"]`.
+**getTags**       |                              | Make additional requests so as to get a line with the file's tags?
+**tagsSeparator** | `,`                          | If you switched on getting files' tags in the output, they will be divided through the line that you indicate in this parameter.
 
-### Chunks
+## Chunks
 
 Before the version 2.0 there were 4 chunks in ms2Gallery:
+
 **tplRow** - chunk for one element of the selection (tpl.ms2Gallery.row).
 **tplOuter** - the outer part of the output of the results of the snippet's work (tpl.ms2Gallery.outer).
 **tplEmpty** - chunk that is shown if there are no results (tpl.ms2Gallery.empty).
@@ -73,7 +76,7 @@ You can [set it according to the documentation][4] through `data-` attributes.
 
 If you do not going to need scripts and styles, you can just leave these parameters empty:
 
-```
+```modx
 [[!ms2Gallery?
     &frontend_css=``
     &frontend_js=``
@@ -89,7 +92,6 @@ Output of the gallery of the current resource's files
 ```
 
 Output of pictures from different resources in one gallery
-
 
 ```modx
 [[!ms2Gallery?

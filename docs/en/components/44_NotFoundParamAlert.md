@@ -1,9 +1,10 @@
-## NotFoundParamAlert
+# NotFoundParamAlert
 
 MODX Revolution plugin which generate alert on page not found with specified parameters in URL.
 Useful to catch wrong URLs on large context advertising projects with UTM or other URL parameters.
 
 ## Key features
+
 * generate alert message on page not found with specified URL parameters on mail and/or log file
 * set list of necessaries URL parameters with simple wildcards: ? — one any symbol, * — group of symbols
 * send mail messages using PHP or MODX build-in tools

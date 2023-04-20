@@ -1,3 +1,5 @@
+# Frontend Editor
+
 Frontend Editor is a simple plugin that allows you to edit content without having to log in through the manager interface to do this. It includes TinyMCE 5 for easy editing.
 
 [![](https://file.modx.pro/files/5/c/8/5c8ed6dafbae4a9e2d4457b19787f0f1s.jpg)](https://file.modx.pro/files/5/c/8/5c8ed6dafbae4a9e2d4457b19787f0f1.png)
@@ -54,7 +56,7 @@ Example of editing of `pagetitle` for a resource with id – `2`
 
 Example of an editable menu:
 
-```html
+```modx
 [[pdoMenu?
     &parents=`0`
     &tpl=`@INLINE <li><a href="[[+link]]" data-frontendeditor="[[+id]], menutitle, simple">[[+menutitle]]</a>[[+wrapper]]</li>`
@@ -73,20 +75,20 @@ For editable fields menutitle if they are empty special behavior are provided. T
 
 `frontendeditor.upload_file_name` - processing the file name, can take the following values:
 
-* empty (by default) - does nothing
-* sanitize - removes the characters  $-+!*'(),{}|\\^~[]`<>#%\";/?:@&="
-* uniqid - generates a unique name such as 5db365920976f.png
+- empty (by default) - does nothing
+- sanitize - removes the characters  $-+!*'(),{}|\\^~[]`<>#%\";/?:@&="
+- uniqid - generates a unique name such as 5db365920976f.png
 
 `frontendeditor.menutitle_behavior` - editor behavior for empty menutitle fields. It can take the following values:
 
-* 0 - the editor works with empty menutitle as well as with other fields.
-* 1 (default) - Empty menutitle field is substituted with the value from pagetitle and the result is saved in  menutitle.
-* 2 - Empty menutitle field is substituted with the value from pagetitle and the result is saved in pagetitle.
+- 0 - the editor works with empty menutitle as well as with other fields.
+- 1 (default) - Empty menutitle field is substituted with the value from pagetitle and the result is saved in  menutitle.
+- 2 - Empty menutitle field is substituted with the value from pagetitle and the result is saved in pagetitle.
 
 ## System Requirements
 
-* On those pages where you are going to use the editor, DOCTYPE should be indicated such as: <!DOCTYPE html>
-* TinyMCE 5 should [support][2] your browser.
+- On those pages where you are going to use the editor, DOCTYPE should be indicated such as: <!DOCTYPE html>
+- TinyMCE 5 should [support][2] your browser.
 
 ## Screenshots
 

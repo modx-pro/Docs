@@ -1,3 +1,5 @@
+# Media Sources
+
 Formalicious contains one **System Setting**: `formalicious.source`, which defaults to `1`.
 This is the default **Filesystem** media source.
 

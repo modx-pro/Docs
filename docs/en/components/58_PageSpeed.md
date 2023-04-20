@@ -27,7 +27,8 @@ You can buy this extra on [Modstore](https://en.modstore.pro/packages/utilities/
 #### Syntax:
 
 This is **not** a working configuration example, but an overview of all available properties.
-``` php
+
+```modx
 [[!PageSpeed?
     &bundle=`link script`
     &convert=`static`
@@ -75,7 +76,8 @@ This is **not** a working configuration example, but an overview of all availabl
 #### Examples:
 
 Most recent **jQuery** with **daily** updates from **jsdelivr.net**:
-``` php
+
+```modx
 [[!PageSpeed?
     &lifetime=`86400`
     &script=`async``
@@ -88,7 +90,8 @@ Most recent **jQuery** with **daily** updates from **jsdelivr.net**:
 ```
 
 Most recent **Bootstrap** with **defer** attribute for **script** subresources and **weekly** updates from **cdnjs.com**:
-``` php
+
+```modx
 [[!PageSpeed?
     &subresources=`{
         "link" : [
@@ -104,7 +107,8 @@ Most recent **Bootstrap** with **defer** attribute for **script** subresources a
 ```
 
 Appending custom **inline** style or script can be done with **PHx**. Please note, that this will force the creation of new configuration instance, if data differs on page load. **Do not** use this for third-party code, like Google Analytics:
-``` php
+
+```modx
 [[+phx:input=`data:text/css,
     html {
         color : [[+color]];

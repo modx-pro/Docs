@@ -1,6 +1,9 @@
+# Quick Start
+
 For a quick start we will set a user account with authorization, profile editing and output of orders from [miniShop2][0].
 
 ## Authorization
+
 User account  will be accessible only to authorized users.They will be registered into **Users** group.
 
 We shall create it:
@@ -23,7 +26,7 @@ Notice that we should give **(anonymous)** group access **Load only** so that th
 If we do not give them Load only, the page will not exist for them and they will get "404 Not Found".
 
 We create a new resource group Office, appoint rights for it and include all our 3 pages of user account in it.
-P
+
 [![](https://file.modx.pro/files/3/6/f/36f61755226bcae8e6ff855ece8332a8s.jpg)](https://file.modx.pro/files/3/6/f/36f61755226bcae8e6ff855ece8332a8.png)
 [![](https://file.modx.pro/files/b/7/a/b7a38c907e7c6fb0be1731f5c4e80b96s.jpg)](https://file.modx.pro/files/b/7/a/b7a38c907e7c6fb0be1731f5c4e80b96.png)
 
@@ -45,20 +48,23 @@ Now in the anonymous regime we get the authorization requirement when trying to 
 [![](https://file.modx.pro/files/6/d/9/6d974b4865574dbbbdc49eb418e53069s.jpg)](https://file.modx.pro/files/6/d/9/6d974b4865574dbbbdc49eb418e53069.png)
 
 Please notice that I call for snippet **officeAuth** with parameter **groups** - it makes the user register into group Users, which has access to user account.
-```
+
+```modx
 [[!officeAuth?
-	&groups=`Users`
+  &groups=`Users`
 ]]
 ```
 
 Everything is quite simple and logical if you only give it a thought. You can set authorization through **HybridAuth** with help of [documentation][1].
 If you do not need it, you can just turn it off:
-```
+
+```modx
 [[!officeAuth?
-	&groups=`Users`
-	&HybridAuth=`0`
+  &groups=`Users`
+  &HybridAuth=`0`
 ]]
 ```
+
 As for me, I prefer setting it because it is convenient for the user.
 
 All parameters of the authorization snippet can be viewed on its page:
@@ -74,7 +80,9 @@ Then this user can reset their password, receive it by email, enter their user a
 That is, by installing this addon you will open access to their history orders for **all** of your users.
 
 ## Profile editing
+
 There are several main differences of snippet **officeProfile** from other opportunities for profile editing:
+
 * It works through ajax completely.
 * It allows you to indicate those fields of profile that are to be filled in.
 * It can require certain fileds for filling in
@@ -84,16 +92,20 @@ There are several main differences of snippet **officeProfile** from other oppor
 * User can add their social media profiles (if it is turned on and set) to authorize quicklier with their help.
 
 All this works at once, when the addon is just unpacked, and requires no special effort.
+
 [![](https://file.modx.pro/files/1/9/a/19ab435142d62ce938dcf4892b4dcf45s.jpg)](https://file.modx.pro/files/1/9/a/19ab435142d62ce938dcf4892b4dcf45.png)
 
 The snippet itself can be called for very easily:
-```
+
+```modx
 [[!officeProfile]]
 ```
+
 You can indicate additional parameters for it: whether HybridAuth sould be turned off or not, where user should be sent after they exit the site (by default - to the current url), avatar parameters, etc.
 All this can be seen in its parameters in the admin space.
 
 ## Orders output
+
 Orders history is shown through snippet **officeMiniShop2**:
 
 [![](https://file.modx.pro/files/d/e/e/dee7bb2e05e4ca5f23188fba7b9d1064s.jpg)](https://file.modx.pro/files/d/e/e/dee7bb2e05e4ca5f23188fba7b9d1064.png)

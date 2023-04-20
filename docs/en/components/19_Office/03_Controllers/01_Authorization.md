@@ -141,7 +141,7 @@ For this we add select in the registration form:
 
 And then we write our own plugin that will check which group is selected and add it to the user:
 
-```
+```php
 <?php
 // Array of groups that are defined for registration beforehand saves you from data replacement in sending the form
 $groups = array(

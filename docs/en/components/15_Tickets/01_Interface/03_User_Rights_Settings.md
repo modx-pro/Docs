@@ -1,6 +1,6 @@
-For proper functioning of all the options of the Tickets component, the users must be in the common group with the special rights.
+# Creating user group and setting of the access rights
 
-## Creating user group and setting of the access rights
+For proper functioning of all the options of the Tickets component, the users must be in the common group with the special rights.
 
 The example of creating of simple user group:
 

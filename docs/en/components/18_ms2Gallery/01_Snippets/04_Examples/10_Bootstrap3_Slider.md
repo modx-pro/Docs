@@ -1,9 +1,12 @@
+# Bootstrap3 Slider
+
 Image output in ms2Gallery in [a typical slider Bootstrap3][0] with help of pdoResources.
 
 ## Call on the page
 
 A ready-made standard call from the example on the site Bootstrap3.
-```
+
+```modx
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
     <ol class="carousel-indicators">
@@ -36,8 +39,8 @@ A ready-made standard call from the example on the site Bootstrap3.
       ]]
     </div>
     [[!GenerateIndicators?
-        &input=`[[+slider.total]]`
-        &toPlaceholder=`indicators`
+      &input=`[[+slider.total]]`
+      &toPlaceholder=`indicators`
     ]]
 
     <!-- Controls -->
@@ -50,17 +53,20 @@ A ready-made standard call from the example on the site Bootstrap3.
     </div>
 </div>
 ```
+
 By default the snippet shows images of the current resource in **360x270** quality, but you can indicate your own selection criteria in parameter **&where=``**:
-```
+
+```modx
 &where=`{"msResourceFile.resource_id:IN":[1,2,3,4,5]", "msResourceFile.parent":0}`
 ```
-It will show big images from the resources 1 to 5. 
 
+It will show big images from the resources 1 to 5.
 
 ### Snippet GenerateIndicators
 
 Snippet accepts the general quantity of slider's images and generated indicators for switching:
-```
+
+```php
 <?php
 if (empty($tpl)) {
     $tpl = '@INLINE <li data-target="#carousel-example-generic" data-slide-to="[[+idx]]" [[+class]]></li>';
@@ -87,14 +93,13 @@ else {
     return $output;
 }
 ```
+
 You can transmit **&tpl** and **&toPlaceholder** if you need to.
 
-
 ## Work logic
+
 pdoResources shows images by the indicated conditions and puts out a placeholder with their general quantity on the page. It is in its turn accepted by snippet **GenerateIndicators**, which generates indicators for switching on the images.
 
 The generation snippet should be called for after pdoResources, so that there already is a number in placeholder`[[+slider.total]]`. The indicators should be shown before the images, that is why the snippet puts them in placeholder `[[+indicators]]`.
-
-
 
 [0]: http://getbootstrap.com/javascript/#carousel

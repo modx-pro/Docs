@@ -109,16 +109,16 @@ For making the forced line break you need to add two spaces at the end of the li
 You can use tables for easy display data, such as snippet properties:
 
 ```md
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
+First Header | Second Header
+-------------|--------------
+Content Cell | Content Cell
+Content Cell | Content Cell
 ```
 
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
+First Header | Second Header
+-------------|--------------
+Content Cell | Content Cell
+Content Cell | Content Cell
 
 
 [1]: https://github.com/bezumkin/Docs/
