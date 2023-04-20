@@ -4,4 +4,4 @@ Apart from editing remains directly when editing a product, they can also be man
 
 The table displays all entries from the remains table. So you can also find here combinations of properties that are no longer valid. Such entries can be removed from the table unless they are needed.
 
-To edit remains, double-click the left mouse button on the number you want to change. Then a field for entering remains amounts will appear. Input a new remains amount, press Enter, and the new amount of remains will be saved in the database. 
+To edit remains, double-click the left mouse button on the number you want to change. Then a field for entering remains amounts will appear. Input a new remains amount, press Enter, and the new amount of remains will be saved in the database.

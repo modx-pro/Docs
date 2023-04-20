@@ -11,6 +11,3 @@ That is, **mSearch2 adds morphological search of full value to your control syst
 
 [1]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
 [2]: /components/03_mSearch2/01_Сниппеты/02_mFilter2.md
-
-
-

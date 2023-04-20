@@ -30,8 +30,6 @@ Name			| B   efau     | Description
 
 ## Examples
 
-
-
 ```modx
 [[!pdoPage?
   element=`getTickets`

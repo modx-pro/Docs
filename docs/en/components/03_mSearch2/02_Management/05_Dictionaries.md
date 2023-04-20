@@ -16,4 +16,4 @@ Dictionaries are downloaded from SourceForge. This process depends on your serve
 [![](https://file.modx.pro/files/f/e/2/fe2a6450aaf85a054c506cef07a5ed84s.jpg)](https://file.modx.pro/files/f/e/2/fe2a6450aaf85a054c506cef07a5ed84.png)
 
 [1]: http://phpmorphy.sourceforge.net/dokuwiki/
-[2]: http://sourceforge.net/projects/phpmorphy/files/phpmorphy-dictionaries/0.3.x/
+[2]: http://sourceforge.net/pro\jects/phpmorphy/files/phpmorphy-dictionaries/0.3.x/
