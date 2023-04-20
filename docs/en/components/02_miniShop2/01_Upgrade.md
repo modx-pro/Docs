@@ -8,6 +8,7 @@ The main difference between 2.4 and 2.2, which can affect the functional of the 
 The general sense is that instead of 2-3 chunks of output of results, now one is used.
 
 For example, before the design of the basket, 3 chunks were required:
+
 - **tpl.msCart.outer** - Header and cellar of the product table, in the middle of the tag `[[+ goods]]` for substituting goods
 - **tpl.msCart.row** - Chunk of goods, which are substituted in `[[+ goods]]`
 - **tpl.msCart.empty** - Empty cart chunk
@@ -19,18 +20,22 @@ Previously, there was nothing to be done about it, but the latest versions of pd
 which allows you to make all the design of the snippet in one chunk.
 
 Therefore, since version 2.4, the basket has only one chunk:
+
 - **tpl.msCart** - The main chunk of the cart
 
 It contains the entire table, and the goods it processes in a cycle:
-```
+
+```fenom
 {foreach $products as $product}
     {$product | print} <!-- print all product properties for debug-->
 {/foreach}
 ```
+
 All the necessary data comes in arrays that need to be parsed using the Fenom syntax.
 
 In this case, the chunk for an empty basket is also not needed, since the quantity of goods can be verified very simply:
-```
+
+```fenom
 {if count($products) == 0}
     <!-- empty cart message -->
     {'ms2_cart_is_empty' | lexicon}
@@ -43,10 +48,11 @@ All details about the work of snippets and their variables and placeholders will
 For now you can try to read [Russian vesion][2].
 
 ### Emails templates
+
 For emails, the Fenom template extension mechanism is used.
 
-That is, complete with miniShop2 there is one chunk `tpl.msEmail` with a default letter template, which is divided into
-semantic blocks. Other letters expand this chunk and change the blocks they need.
+That is, complete with miniShop2 there is one chunk `tpl.msEmail` with a default letter template, which is divided into semantic blocks. Other letters expand this chunk and change the blocks they need.
+
 - **logo** - Store logo with link to main page
 - **title** - The title of the letter
 - **products** - Table with ordered products
@@ -54,7 +60,8 @@ semantic blocks. Other letters expand this chunk and change the blocks they need
 
 This makes it very easy to modify letters of different order statuses.
 For example, a letter with a new order to the buyer looks like this:
-```
+
+```fenom
 {extends 'tpl.msEmail'}
 
 {block 'title'}
@@ -67,6 +74,7 @@ For example, a letter with a new order to the buyer looks like this:
         <p style="margin-left:20px;{$style.p}">
             {'ms2_payment_link' | lexicon : ['link' => $payment_link]}
         </p>
+
     {/if}
 {/block}
 ```
@@ -81,6 +89,7 @@ More information about the expansion of templates you can read in [Fenom docs][3
 ### System settings
 
 Deleted settings:
+
 - **ms2_product_vertical_tabs** - There are no more vertical goods, only horizontal ones.
 - **ms2_category_remember_grid** - Setting how to save the status of the category tables with the goods in the cookie.
 Now the status of all tables is generic and is saved in `modRegistry` automatically.
@@ -90,6 +99,7 @@ When upgrading from older versions of miniShop2, the product fields from this se
 - **ms2_weight_snippet**- Snippet for formatting the weight of the goods. Use the plugin to the event `msOnGetProductWeight`.
 
 Added settings:
+
 - **ms2_template_category_default** - Setting to specify the default category template.
 - **mgr_tree_icon_mscategory** - Icon of product categories in the resource tree.
 - **mgr_tree_icon_msproduct** - Icon of goods in the resource tree.

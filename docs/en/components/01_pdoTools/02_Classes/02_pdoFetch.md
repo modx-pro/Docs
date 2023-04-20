@@ -1,10 +1,13 @@
 pdoFetch extends pdoTools so you need to load only one class depending of what you want right now.
 You can load each class very simple:
-```
+
+```php
 $pdo = $modx->getService('pdoFetch');
 ```
+
 And than
-```
+
+```php
 $resources = $pdo->getCollection('modResource', array(
     'published' => true,
     'deleted' => false
@@ -30,7 +33,8 @@ pdoFetch tries to execute only one query at a time. That is why you need to join
 But yes, TVs are joined as well as other tables, so there is no additional queries to get their values as in **getResources**.
 
 That is why you need to use query for silter by TVs:
-```
+
+```modx
 [[!pdoResources?
     &parents=`0`
     &includeTVs=`tv1`
@@ -39,6 +43,7 @@ That is why you need to use query for silter by TVs:
 ```
 
 Default TVs values do not saved to table, they are just TV settings, so you need to compare them to `null`:
+
 ```
 [[!pdoResources?
     &parents=`0`
