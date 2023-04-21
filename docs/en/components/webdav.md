@@ -1,3 +1,6 @@
+---
+name: WebDAV
+---
 # WebDAVMediaSource
 
 WebDAVMediaSource is a network media source for MODX Revolution.

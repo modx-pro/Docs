@@ -1,3 +1,6 @@
+---
+name: FileAttach
+---
 # FileAttach
 
 Package to upload and attach files to resources in site manager.
@@ -81,13 +84,13 @@ Outputs file list.
 
 | Name             | Default value | Description                                       |
 |------------------|---------------|---------------------------------------------------|
-| **calchash**     | `false`         | Calculate file hash at upload                     |
+| **calchash**     | `false`       | Calculate file hash at upload                     |
 | **files_path**   |               | Path relative to media source root. Ends with "/" |
-| **mediasource**  | `1`             | Media source ID                                   |
-| **private**      | `false`         | Make file private at upload                       |
-| **put_docid**    | `false`         | Upload file in subfolder with resource ID         |
+| **mediasource**  | `1`           | Media source ID                                   |
+| **private**      | `false`       | Make file private at upload                       |
+| **put_docid**    | `false`       | Upload file in subfolder with resource ID         |
 | **templates**    |               | List of templates to activate module              |
-| **user_folders** | `false`         | Upload file in user ID subfolder                  |
+| **user_folders** | `false`       | Upload file in user ID subfolder                  |
 
 ## Connector for file download
 

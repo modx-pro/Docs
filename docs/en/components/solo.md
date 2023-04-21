@@ -1,3 +1,8 @@
+---
+name: Solo
+---
+# Solo
+
 ## About
 
 SOLO is a SOLO is a responsive, flexible and beautiful theme. Perfect to showcase your work & services in a stylish, modern way.
