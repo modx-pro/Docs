@@ -1,3 +1,6 @@
+---
+name: DebugParser
+---
 # DebugParser
 
 Plugin for identification bottlenecks of the site. It shows all handled tags and expended time.
@@ -18,18 +21,18 @@ At the bottom of the table you see total according to statistics and general dat
 
 Plugin debugParser works only for the users authorized in mgr context. It gets all the parameters through $_GET.
 
-* **debug** — activates debugging mode and tablet output.
-* **cache** — permits to use cached pages. On default - no.
-* **top** — the quantity of tags for output. On default – unlimited.
-* **add** — add the tablet at the end of the page, but don’t replace it totally. On default – no.
+- **debug** — activates debugging mode and tablet output.
+- **cache** — permits to use cached pages. On default - no.
+- **top** — the quantity of tags for output. On default – unlimited.
+- **add** — add the tablet at the end of the page, but don’t replace it totally. On default – no.
 
 ## Support of Fenom
 
 For displaying Fenom tags you must:
 
-* Use pdoTools **2.1.8**-pl or newer
-* Use debugParser **1.1.0**-pl or newer
-* Execute methods of `{$_modx}`. There is no way to catch system call via disabled by default z variable.
+- Use pdoTools **2.1.8**-pl or newer
+- Use debugParser **1.1.0**-pl or newer
+- Execute methods of `{$_modx}`. There is no way to catch system call via disabled by default z variable.
 
 [![](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6s.jpg)](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6.png)
 

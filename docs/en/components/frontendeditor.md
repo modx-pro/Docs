@@ -1,3 +1,6 @@
+---
+name: Frontend Editor
+---
 # Frontend Editor
 
 Frontend Editor is a simple plugin that allows you to edit content without having to log in through the manager interface to do this. It includes TinyMCE 5 for easy editing.
@@ -14,9 +17,9 @@ Frontend Editor is a simple plugin that allows you to edit content without havin
 
 Install the extension. Wrap the fields you want to edit with the tag with attribute `data-frontendeditor="content"`  specify the field name as the attribute value. For example:
 
-```html
+```modx
 <div data-frontendeditor="content">
-    [[*content]]
+  [[*content]]
 </div>
 ```
 
@@ -26,9 +29,9 @@ Available values: `content, pagetitle, longtitle, menutitle, description, introt
 
 For editing TV fields as attribute value must be specified `tv-` in front of the field name.
 
-```html
+```modx
 <div data-frontendeditor="tv-myTvField">
-    [[*myTvField]]
+  [[*myTvField]]
 </div>
 ```
 
@@ -36,9 +39,9 @@ For editing TV fields as attribute value must be specified `tv-` in front of the
 
 For each field, you can specify one of two types of editors: TinyMCE `tinymce` (no need to specify by default) or a simple input field `simple`.
 
-```html
+```modx
 <div data-frontendeditor="tv-myTvField, simple">
-    [[*myTvField]]
+  [[*myTvField]]
 </div>
 ```
 
@@ -48,9 +51,9 @@ If you need to edit the fields of another resource, you need to specify its id a
 
 Example of editing of `pagetitle` for a resource with id – `2`
 
-```html
+```modx
 <a href="/index.php?id=2" data-frontendeditor="2, pagetitle, simple">
-    [[pdoField?&id=`2`&field=`pagetitle`]]
+  [[pdoField?&id=`2`&field=`pagetitle`]]
 </a>
 ```
 
@@ -58,8 +61,8 @@ Example of an editable menu:
 
 ```modx
 [[pdoMenu?
-    &parents=`0`
-    &tpl=`@INLINE <li><a href="[[+link]]" data-frontendeditor="[[+id]], menutitle, simple">[[+menutitle]]</a>[[+wrapper]]</li>`
+  &parents=`0`
+  &tpl=`@INLINE <li><a href="[[+link]]" data-frontendeditor="[[+id]], menutitle, simple">[[+menutitle]]</a>[[+wrapper]]</li>`
 ]]
 ```
 

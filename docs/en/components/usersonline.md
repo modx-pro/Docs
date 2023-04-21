@@ -1,20 +1,23 @@
+---
+name: UsersOnline
+---
 # UsersOnline
 
 List of online users and a blocked user authorization reset
 
 ## Features
 
-* Fixes the date of the last visit of each user (in all contexts)
-* Displays a list of online users on the website
-* Revokes authorizations of disconnected and blocked users
+- Fixes the date of the last visit of each user (in all contexts)
+- Displays a list of online users on the website
+- Revokes authorizations of disconnected and blocked users
 
 ## Fixing the date of the user visit
 
 For this purpose *UserOnline* object that is fixed:
 
-* user ID
-* current context
-* Visit datetime
+- user ID
+- current context
+- Visit datetime
 
 User visits in the *mgr* context also recorded. To turn of this, put the system setting **usersonline_mgr_check** to *«No»*.
 
@@ -33,7 +36,7 @@ For this task used *getOnlineUsers* snippet, which wraps *pdoUsers*. Accordingly
 
 | Name                      | Default | Description                                                       |
 |---------------------------|---------|-------------------------------------------------------------------|
-| **usersonline_time_span** | `900`     | Time in seconds, during which the user is considered to be online |
+| **usersonline_time_span** | `900`   | Time in seconds, during which the user is considered to be online |
 
 ## Reset authorization of blocked users
 
