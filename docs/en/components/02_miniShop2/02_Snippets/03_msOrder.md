@@ -1,6 +1,8 @@
+# msOrder
+
 Ordering snippet.
 
-[![](https://file.modx.pro/files/4/b/b/4bb767c02e0e7b09ddae5e426b34c7e6s.jpg)](https://file.modx.pro/files/4/b/b/4bb767c02e0e7b09ddae5e426b34c7e6.png)
+![Ordering snippet](https://file.modx.pro/files/4/b/b/4bb767c02e0e7b09ddae5e426b34c7e6.png)
 
 ## Parameters
 
@@ -10,7 +12,9 @@ Parameter      | By default    | Description
 **userFields** |               | Associative array of matching order fields to user profile fields in the format "order field" => "profile field".
 **showLog**    |               | To show additional information on snippet operation. For authorized in "mgr" context only.
 
-*Another [pdoTools general parameters][1] may be also used*
+:::info
+Another [pdoTools general parameters][1] may be also used
+:::
 
 ## Ordering
 
@@ -43,11 +47,9 @@ When indicating empty chunk you will be able to see all available order placehol
 <pre>[[!msOrder?tpl=``]]</pre>
 ```
 
-[![](https://file.modx.pro/files/7/3/e/73ea6a3680166bb81a59b0dd55475614s.jpg)](https://file.modx.pro/files/7/3/e/73ea6a3680166bb81a59b0dd55475614.png)
+![Placeholders](https://file.modx.pro/files/7/3/e/73ea6a3680166bb81a59b0dd55475614.png)
 
 ## Order creation
-
-
 
 It is recommended to call this snippet in junction with others on ordering page:
 
@@ -68,4 +70,5 @@ To obtain name of authorized user not from`fullname`, but from `username`:
   &userFields=`{"receiver":"username"}`
 ]]
 ```
+
 [1]: /en/components/01_pdoTools/03_Parser.md

@@ -8,6 +8,5 @@ Resources that don’t have the corresponding parameter ‘searchable’ matched
 This page has an interesting feature: it gives you an opportunity to go to the page of a result found in admin area.
 That is, **mSearch2 adds morphological search of full value to your control system MODX**.
 
-
 [1]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
 [2]: /components/03_mSearch2/01_Сниппеты/02_mFilter2.md

@@ -24,8 +24,7 @@ Work logic of the order repeat is the following:
 
 1. If repeat is allowed, there is a special icon in the orders table.
 2. When you click it, goods from the order apper in the session as if the user added them to the cart.
-3. Then, if parameter **cartLink** is not empty, the user is redirected to the indicated page of placing the order.
-They choose method of delivery, fill in or change address fields.
+3. Then, if parameter **cartLink** is not empty, the user is redirected to the indicated page of placing the order. They choose method of delivery, fill in or change address fields.
 4. If this parameter is empty, the order is made at once and everything is copied from the old one.
 
 Notice that, if the order being copied was made long ago and since then your rules of placing orders have changed, making an order without a cart can give oneself an error.

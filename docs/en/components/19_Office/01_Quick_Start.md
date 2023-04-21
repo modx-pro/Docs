@@ -123,6 +123,7 @@ You can also completely change the way ExtJS looks by your own css file, but I s
 Settings by default will suit most shops, unless you have to turn off the 'weight' field.
 
 ## Conclusion
+
 Now you know how you can easily provide authorization, profile editing and orders output miniShop2 on your site.
 
 [0]: /components/minishop2

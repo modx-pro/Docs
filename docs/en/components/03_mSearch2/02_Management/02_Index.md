@@ -8,7 +8,6 @@ You can indicate the number of resources to index your site through at once.
 10 resources is an optimal value.
 But of you get the timeout error, lessen this value.
 
-
 According to the system settings columns of resources and commentaries that are needed are extracted from the database and divided into words.
 Then for each word different forms of it are generated with help of [phpMorphy][1]. They’re saved into the index table.
 
@@ -27,10 +26,8 @@ The most important parameter is **mse2_index_fields**, it defines the value of w
 
 Table record consists of the very word, its weight (which you indicate in settings) and the link of the resource where it can be found.
 
-Thanks to a special algorithm unusual fields of documents can be indexed, like products characteristics miniShop2,
-if you just indicate them in settings as well as others.
-mSearch2 can also index **Tickets** commentaries,
-the needed setting is on by default.
+Thanks to a special algorithm unusual fields of documents can be indexed, like products characteristics miniShop2, if you just indicate them in settings as well as others.
+mSearch2 can also index **Tickets** commentaries, the needed setting is on by default.
 
 This means that all your site is divided into thousands of variants of words, by which search is done.
 Only those documents which have **searchable** parameter matched are included in index.

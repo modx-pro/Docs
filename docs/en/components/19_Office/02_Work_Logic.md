@@ -90,7 +90,6 @@ And if you are planning to use Ext JS in your vidgets, notice that by default th
 
 As[modExtra][11] is suited for designing addons for MODX and already supports Office, I recommend that you use it as an example.
 
-
 [0]: /en/components/19_Office/03_Controllers/01_Authorization.md
 [1]: /en/components/19_Office/03_Controllers/02_Profile.md
 [2]: /en/components/19_Office/03_Controllers/03_MS2_Orders_History.md

@@ -15,7 +15,9 @@ There are two ways to create a new category:
 
 [![](https://file.modx.pro/files/c/b/c/cbc1e2f61632967c578cdfc22763ad93s.jpg)](https://file.modx.pro/files/c/b/c/cbc1e2f61632967c578cdfc22763ad93.png)
 
-*Resource type may be further changed converting the category into regular document and vice versa*
+:::info
+Resource type may be further changed converting the category into regular document and vice versa
+:::
 
 When creating a category one may see plainly some difference from regular document:
 
@@ -96,7 +98,7 @@ System setting **ms2_category_grid_fields** contains the set of accessible colum
 Most of them you may edit by double click on a required field.
 At the moment you may display the following columns:
 
-**Resource characteristics**
+Resource characteristics:
 
 * **id** - initial key for reading only
 * **pagetitle** - product title as editing reference. If a product is embedded with regard to current category, its id and subcategory name are displayed also.
@@ -126,7 +128,7 @@ At the moment you may display the following columns:
 * **searchable** - stamp of item indexing for search:yes \ no
 * **cacheable** - stamp of item cache:yes \ no
 
-**Characteristics of goods**
+Characteristics of goods:
 
 * **new** - novelty stamp: yes \ no
 * **favorite** - exceptional stamp:yes \ no

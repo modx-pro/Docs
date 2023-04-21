@@ -17,7 +17,9 @@ Parameter         | By default    | Description
 **filetype**      |               | File type for sampling. "image" may be used for picture indication and other files extension. For example: "image,pdf,xls,doc".
 **showLog**       |               | To show additional information of snippet operation. For authorized in "mgr" context only.
 
-*Other [pdoTools general parameters][1] may be also used*
+:::info
+Another [pdoTools generalparameters][1] may be also used
+:::
 
 ## Formatting
 

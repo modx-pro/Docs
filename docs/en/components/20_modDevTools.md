@@ -36,6 +36,7 @@ After a search has occurred, the code of all found items is displayed with highl
 The "Replace" button replaces the search string, where the cursor is positioned (darker highlighting), by the replacement string. The "Skip" button moves the cursor to the next match. After the initial search, you can change the search string, and then button replacement already operate with this new line only for a specific element, after which they are located.
 
 ## User rights to access the functions of modDevTools:
+
 The component does not add itself, but uses standard user access permissions.
 
 Rights                                  | Description
@@ -53,7 +54,9 @@ Rights                                  | Description
 *delete_document*                       | To remove the resource to the recycle bin in the table on the "Resources" tab
 *save_chunk/save_template/save_snippet* | Standard MODX processors are used, so to edit items you need the appropriate permissions.
 
-***Attention:*** resource groups are no supported (yet?), i.e. if a resource group is hidden from the site managers in the mgr context, they will be able to see it in the list of resources.
+::: Attention
+Resource groups are no supported (yet?), i.e. if a resource group is hidden from the site managers in the mgr context, they will be able to see it in the list of resources.
+:::
 
 ## For more information:
 

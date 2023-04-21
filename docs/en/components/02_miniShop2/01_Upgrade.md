@@ -78,6 +78,7 @@ For example, a letter with a new order to the buyer looks like this:
     {/if}
 {/block}
 ```
+
 As you can see, here the main template is inherited, the header changes, and a reference to the payment (if any)
 is added to the product table.
 
@@ -91,10 +92,8 @@ More information about the expansion of templates you can read in [Fenom docs][3
 Deleted settings:
 
 - **ms2_product_vertical_tabs** - There are no more vertical goods, only horizontal ones.
-- **ms2_category_remember_grid** - Setting how to save the status of the category tables with the goods in the cookie.
-Now the status of all tables is generic and is saved in `modRegistry` automatically.
-- **ms2_product_main_fields** - On the main product page, only the `modResource` fields are now, so this setting is not needed.
-When upgrading from older versions of miniShop2, the product fields from this setting are copied to **ms2_product_extra_fields**.
+- **ms2_category_remember_grid** - Setting how to save the status of the category tables with the goods in the cookie. Now the status of all tables is generic and is saved in `modRegistry` automatically.
+- **ms2_product_main_fields** - On the main product page, only the `modResource` fields are now, so this setting is not needed. When upgrading from older versions of miniShop2, the product fields from this setting are copied to **ms2_product_extra_fields**.
 - **ms2_price_snippet** - Snippet for formatting the price of the goods. Use the plugin to the event `msOnGetProductPrice`.
 - **ms2_weight_snippet**- Snippet for formatting the weight of the goods. Use the plugin to the event `msOnGetProductWeight`.
 
@@ -105,6 +104,7 @@ Added settings:
 - **mgr_tree_icon_msproduct** - Icon of goods in the resource tree.
 
 Changed settings:
+
 - **ms2_category_content_default** - The content of the new product is now empty by default.
 
 ## From 2.2 to 2.3

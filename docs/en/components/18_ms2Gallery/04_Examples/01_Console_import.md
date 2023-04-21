@@ -27,13 +27,11 @@ else {
 
 A few aspects should be taken into account:
 
-*  In the current version download processor expects ms2Gallery class in MODX object.  You need to connect it:
+* In the current version download processor expects ms2Gallery class in MODX object.  You need to connect it:
 
-
-```php
-$modx->ms2Gallery = $modx->getService('ms2gallery', 'ms2Gallery', MODX_CORE_PATH . 'components/ms2gallery/model/ms2gallery/');
-
-```
+  ```php
+  $modx->ms2Gallery = $modx->getService('ms2gallery', 'ms2Gallery', MODX_CORE_PATH . 'components/ms2gallery/model/ms2gallery/');
+  ```
 
 * All picture files are to be found on the server. The scripts is unable to download them from a remote source.
 
@@ -120,5 +118,4 @@ foreach ($resources as $values) {
         }
     }
 }
-
 ```

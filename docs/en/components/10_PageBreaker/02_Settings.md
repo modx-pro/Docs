@@ -1,6 +1,5 @@
 Component PageBreaker operates with following system settings:
 
-
 Parameter                 | Value on default              | Description
 --------------------------|-------------------------------|------------------------------------------------------------------------------------------
 pagebreaker_splitter      | &lt;!-- pagebreak --&gt;      | Set of symbols to delimiter the text on subpages
@@ -13,6 +12,7 @@ pagebreaker_ajax_selector | #pagebreaker_content          | CSS block selector w
 [![](https://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929s.jpg)](https://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929.png)
 
 ## Link generation
+
 These types of links will be generated, it depends on parameter **pagebreaker_splitter**:
 
 Friendly urls **off**:
@@ -27,19 +27,19 @@ Friendly urls **on**:
 
 * Document is a container  (*isfolder = 1*)
 
-```
-http://domain.com/page/
-http://domain.com/page/p2.html
-http://domain.com/page/p5.html
-```
+  ```
+  http://domain.com/page/
+  http://domain.com/page/p2.html
+  http://domain.com/page/p5.html
+  ```
 
 * Common document
 
-```
-http://domain.com/page.html
-http://domain.com/page-p2.html
-http://domain.com/page-p5.html
-```
+  ```
+  http://domain.com/page.html
+  http://domain.com/page-p2.html
+  http://domain.com/page-p5.html
+  ```
 
 If friendly urls are on, system parameters also take part:
 

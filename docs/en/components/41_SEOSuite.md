@@ -9,7 +9,7 @@ This matching process is based on the information after the last slash in the UR
 
 ## Workflow
 
-1. Gather your 404 URLs in a single column .csv file by exporting them or adding them manually. Make sure you’ve entered full URLs, including the domain. Example: https://modx.org instead of modx.org.
+1. Gather your 404 URLs in a single column .csv file by exporting them or adding them manually. Make sure you’ve entered full URLs, including the domain. Example: `https://modx.org` instead of modx.org.
 2. Import the .csv file in SEO Suite.
 3. SEO Suite will look for similarities between your 404 URLs and the pages on your website:
    * When there’s one match, it will be automatically converted to a 301 redirect, stored in SEO Tab.

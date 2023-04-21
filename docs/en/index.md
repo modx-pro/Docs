@@ -81,11 +81,11 @@ Easier to open the desired page on GitHub and copy the address from the url.
 The image links can be inserted directly in the text. To specify the image, and use the service on [file.modx.pro][4] (requires authorization).
 It automatically generates thumbnail and markdown code for insertion.
 
-```
-[![](https://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559as.jpg)](https://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
+```md
+[![](title](https://file.modx.pro/files/8/5/3/85333575318f1fb2e7fe2881eb25559a.png)
 ```
 
-[![](https://file.modx.pro/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9s.jpg)](https://file.modx.pro/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9.png)
+[![](title)](https://file.modx.pro/files/9/1/3/9133c7c64f340c967fa9c6dba57cd2f9.png)
 
 ### Highlighting
 
@@ -106,6 +106,7 @@ The code starts from the new line. Blank lines before and after the code volunta
 For making the forced line break you need to add two spaces at the end of the line. Parser will replace them with the tag `br`.
 
 ### Tables
+
 You can use tables for easy display data, such as snippet properties:
 
 ```md
@@ -119,7 +120,6 @@ First Header | Second Header
 -------------|--------------
 Content Cell | Content Cell
 Content Cell | Content Cell
-
 
 [1]: https://github.com/bezumkin/Docs/
 [2]: http://daringfireball.net/projects/markdown/syntax

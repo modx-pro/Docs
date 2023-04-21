@@ -96,6 +96,7 @@ Then "Send" button shows up in the form by default, and you should press it.
 * Script uses [jQueryUI.slider][3], which is connected automatically if needed, for implementing digital sliders
 * All the design is targeted at [Bootstrap 3][4] by default.
 * Standard complete set is intended to work with minimal `[[!mFilter2]]` invocation and installed Bootstrap 3.
+
 If something goes wrong after changing the chunk - look carefully what exactly you have changed.
 
 [![](https://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efds.jpg)](https://file.modx.pro/files/5/6/8/568f372891fb70d76941280929399efd.png)

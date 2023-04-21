@@ -28,6 +28,7 @@ Name                        | Description
 **&toSeparatePlaceholders** | If set, will assign EACH result to a separate placeholder named by this param suffixed with a sequential number (starting from 0).
 
 ## Examples
+
 Before use it is necessary to create a banner and a position previously. See in section Interface
 
 ```modx

@@ -76,6 +76,7 @@ There are four available types of link:
 * **One to many** - the link between one item and several others. Affiliated goods are not linked with each other, only with parent.
 * **Many to one** - the same as preceding, but in the opposite way - affiliated item is linked with general. This type may be excess,but let it be for symmetry.
 * **Many to many** - the most interesting link type - equivalent multilateral link of several items. When adding new item to the group, it is linked with all group members.
+
 For example, this link is needed for indicating goods differed by one parameter.
 Or all the items of this group may participate in any promotion (and it is simple to display links to another offers on the item page).
 
@@ -88,6 +89,7 @@ To add a new record you should select pre-established link and item to apply it.
 [![](https://file.modx.pro/files/5/7/e/57e122559c34bd8cbb1c3e30963d0a87s.jpg)](https://file.modx.pro/files/5/7/e/57e122559c34bd8cbb1c3e30963d0a87.png)
 
 The table **msProductLink** with only 3 columns presents the items links at the database level:
+
 * **link** - is link id in the table `msLink`created above, in settings
 * **master** - is primary item id
 * **slave** - is descendent item id
@@ -174,6 +176,7 @@ Sets of goods (are displayed the references to other goods of the set in the car
 [![](https://file.modx.pro/files/0/b/1/0b15183d616799496b2a24cec43106c9s.jpg)](https://file.modx.pro/files/0/b/1/0b15183d616799496b2a24cec43106c9.png)
 
 To create new characteristic press the button "Create" and fill the appeared window:
+
 * **Key** - identifier of characteristic in the system, determining its frontend placeholder. Required to fill.
 * **Name** -  displayed characteristic title.
 * **Description**

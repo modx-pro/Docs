@@ -1,4 +1,5 @@
 # Authorization
+
 This controller's parameters are very much like those of [HybridAuth][1].
 
 Name                   | By default                       | Description

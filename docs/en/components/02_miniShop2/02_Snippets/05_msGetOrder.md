@@ -12,7 +12,9 @@ Parameter         | By default       | Description
 **toPlaceholder** |                  | If filled, the snippet will store all data in placeholder with this name, instead of displaying.
 **showLog**       |                  | To show additional information on snippet operation. For authorized in "mgr" context only.
 
-*Another [pdoTools generalparameters][1] may be also used*
+:::info
+Another [pdoTools generalparameters][1] may be also used
+:::
 
 ## Formatting
 

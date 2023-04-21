@@ -26,6 +26,7 @@ Filter output will be like this:
 ]]
 
 ```
+
 We need *&suggestionsRadio for normal work of select filters*.
 
 Now we write script that will hide car models the name of which **does not begin with the chosen brand**:

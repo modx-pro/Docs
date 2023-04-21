@@ -37,6 +37,7 @@ if (empty($returnIds)) {
 // We have added our own options. Then it should be the standard snippet that should work:
 return $modx->runSnippet('msProducts', $scriptProperties);
 ```
+
 As you see, everything works by standard parameters pdoTools and no special hacks are needed.
 You just have to indicate this new snippet when you summon mFilter2:
 

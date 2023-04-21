@@ -37,6 +37,5 @@ Initial code on [GitHub][2].
 
 At this moment Sendex is being tested and brought to a stable state.
 
-
 [1]: http://bezumkin.ru/training/course1/
 [2]: https://github.com/bezumkin/Sendex

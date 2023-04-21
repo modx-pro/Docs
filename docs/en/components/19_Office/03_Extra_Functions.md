@@ -12,7 +12,6 @@ and a button on the user's editing panel:
 
 [![](https://file.modx.pro/files/f/8/0/f802f7abeab90a1a6bf8faec7f8d4e88s.jpg)](https://file.modx.pro/files/f/8/0/f802f7abeab90a1a6bf8faec7f8d4e88.png)
 
-
 - Authorization always happens in the new window, the current window of a manager does not close.
 - Script tries to authorize in any context.
 - You can use direct links to authorization, like

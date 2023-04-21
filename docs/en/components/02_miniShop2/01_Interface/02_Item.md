@@ -81,6 +81,7 @@ One compulsory category must be written in **parent**, and additional in
 Do not forget to save the products when changing category set! Native category of items cannot be switched off from the tree.
 
 ### Comments
+
 This tab is displayed if only the **Tickets** component is installed on site and system setting **ms2_product_show_comments** is switched on.
 
 [![](https://file.modx.pro/files/5/c/4/5c43f7a822acfe411cfe1eef88f16d92s.jpg)](https://file.modx.pro/files/5/c/4/5c43f7a822acfe411cfe1eef88f16d92.png)
@@ -141,7 +142,7 @@ If you need to fit the image by height and width, *h* and *w* must be only state
 [{"w":120,"q":90,"zc":"1","bg":"000000"},{"h":270,"q":90,"far":"1","bg":"ffffff"}]
 ```
 
-For other parameters see [ phpThumb documents][5].
+For other parameters see [phpThumb documents][5].
 
 #### preview upgrading
 

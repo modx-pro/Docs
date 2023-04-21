@@ -72,13 +72,9 @@ This is much more convenient, because the exact width and height of a preview no
 * **ar** - automatical image rotation. `x` - rotate as it is indicated the file's EXIF.
   `L` horizontal image, `P` vertical image,
   `lP` rotate clockwise, `Lp` rotate counterclockwise.
-* **aoe** - Output Allow Enlarging, the possibility to generate a preview that is liarger than the source image: `1` and `0`.
-  `far` and `iar` cover this setting.
-* **iar** - Ignore Aspect Ratio, turns off the observance of proportions and draws the image exactly by `w` and `h` parameters
-(which have to be loaded mandatorily). Covers *far* parameter.
-* **far** - Force Aspect Ratio, the image will be made to fit parameters `w` and `h` (which have to be loaded mandatorily).
-  Alignment: `L` left, `R` - right, `T` top, `B` bottom, `C` - center.
-  `BL`, `BR`, `TL`, `TR` - use the right direction if the image is horizontal or vertical.
+* **aoe** - Output Allow Enlarging, the possibility to generate a preview that is liarger than the source image: `1` and `0`.   `far` and `iar` cover this setting.
+* **iar** - Ignore Aspect Ratio, turns off the observance of proportions and draws the image exactly by `w` and `h` parameters (which have to be loaded mandatorily). Covers *far* parameter.
+* **far** - Force Aspect Ratio, the image will be made to fit parameters `w` and `h` (which have to be loaded mandatorily). Alignment: `L` left, `R` - right, `T` top, `B` bottom, `C` - center. `BL`, `BR`, `TL`, `TR` - use the right direction if the image is horizontal or vertical.
 
 If you indicate only width or height, the other parameter will be calculated automatically, depending on the proportions of the source image.
 All other phpThumb parameters you may [see in the documentation][1].
@@ -89,8 +85,8 @@ For overlaying the watermark on images in the galleries 3 conditions should be f
 
 [![](https://file.modx.pro/files/6/c/1/6c18561f4383506c2bfef7a497858841s.jpg)](https://file.modx.pro/files/6/c/1/6c18561f4383506c2bfef7a497858841.png)
 
-**1.** **ImageMagick** should be installed on the server. It also should be accessible for php. [See details here][2].
-**2.** In the files source ms2Gallery **fltr** with **wmi** should be added:
+1. **ImageMagick** should be installed on the server. It also should be accessible for php. [See details here][2].
+2. In the files source ms2Gallery **fltr** with **wmi** should be added:
 
   ```json
   {
@@ -125,7 +121,7 @@ For overlaying the watermark on images in the galleries 3 conditions should be f
       <r is rotation angle of overlaid watermark
   ```
 
-**3.** File *wm.png* should be put in `/assets/components/ms2gallery/` - this is exactly where it will be looked for. Instead of assets there can be another directory if you renamed it when installing MODX in an advanced mode.
+3. File *wm.png* should be put in `/assets/components/ms2gallery/` - this is exactly where it will be looked for. Instead of assets there can be another directory if you renamed it when installing MODX in an advanced mode.
 
 You can indicate not just *wm.png*, but *images/wm.png* in the source - then the file should be put in `/assets/components/ms2gallery/images/`.
 
@@ -151,7 +147,10 @@ You can selectively update previews of the files you need through the admin spac
 
 [![](https://file.modx.pro/files/7/0/f/70fdb87589c0ccf0e2a4131cdbcdce11s.jpg)](https://file.modx.pro/files/7/0/f/70fdb87589c0ccf0e2a4131cdbcdce11.png)
 
-*To choose more than one hold Shift or Ctrl(Cmd)*
+:::
+info
+To choose more than one hold Shift or Ctrl(Cmd)
+:::
 
 If you need to update *all* previews on your site according to the settings of their file sources, just enter the server console and launch `generate.php` from the directory `core/components/ms2gallery/cli`. For example:
 

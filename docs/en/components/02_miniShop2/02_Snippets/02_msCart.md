@@ -12,7 +12,9 @@ Parameter         | By default   | Description
 **toPlaceholder** |              | If not empty, snippet will store all data in placeholder with this name, instead of display.
 **showLog**       |              | To show additional information of the snippet operation. For authorized in "mgr" context only.
 
-*Another [ pdoTools general parameters][1] may be used*
+:::info
+Another [pdoTools generalparameters][1] may be also used
+:::
 
 ## Formatting
 
@@ -57,6 +59,7 @@ Then call it in the cart:
   &tpl=`TestCart`
 ]]
 ```
+
 And you will see all available placeholders.
 
 ## Order creation
