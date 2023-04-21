@@ -2,7 +2,7 @@ Page for search index creating.
 
 Creating an index is a hard operation. It is divided into multiple queries which are sent through Ajax in a cycle.
 
-[![](https://file.modx.pro/files/e/8/a/e8abae2883fc9b722910b31930910d09s.jpg)](https://file.modx.pro/files/e/8/a/e8abae2883fc9b722910b31930910d09.png)
+![search index creating](https://file.modx.pro/files/e/8/a/e8abae2883fc9b722910b31930910d09.png)
 
 You can indicate the number of resources to index your site through at once.
 10 resources is an optimal value.
@@ -14,11 +14,12 @@ Then for each word different forms of it are generated with help of [phpMorphy][
 
 ## System settings
 
-Name                       | By default | Description
----------------------------|------------|------------------------------------------------------------------
-mse2_index_comments        | true       | Activate the indexation of commentaries for component **Tickets**
-mse2_index_comments_weight | 1          | Search weight of a word from the commentary
-mse2_index_fields			| content:3,description:2,introtext:2,pagetitle:3,longtitle:3	| Indexation of the resource fields setting. Name of the field and its weight after a colon. mse2_index_min_words_length	| 4						| Minimal length of a word for its participation in search.
+Name                        | By default                                                    | Description
+----------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------------------------
+mse2_index_comments         | `true`                                                        | Activate the indexation of commentaries for component **Tickets**
+mse2_index_comments_weight  | `1`                                                             | Search weight of a word from the commentary
+mse2_index_fields           | `content:3,description:2,introtext:2,pagetitle:3,longtitle:3` | Indexation of the resource fields setting. Name of the field and its weight after a colon.
+mse2_index_min_words_length | `4`                                                             | Minimal length of a word for its participation in search.
 
 The most important parameter is **mse2_index_fields**, it defines the value of words in different fields of the document.
 
@@ -48,21 +49,21 @@ There are cases in which you have to add some arbitrary words of yours to the do
 ```php
 <?php
 switch ($modx->event->name) {
-	case 'mse2OnBeforeSearchIndex':
-		$mSearch2->fields['my_field'] = 1;
-		$resource->set('my_field', 'My Words');
+  case 'mse2OnBeforeSearchIndex':
+    $mSearch2->fields['my_field'] = 1;
+    $resource->set('my_field', 'My Words');
 
-		if ($resource->get('class_key') == 'msProduct') {
-			$mSearch2->fields['product_field'] = 1;
-			$resource->set('product_field', 'Product Property');
-		}
-		break;
+    if ($resource->get('class_key') == 'msProduct') {
+      $mSearch2->fields['product_field'] = 1;
+      $resource->set('product_field', 'Product Property');
+    }
+    break;
 }
 ```
 
 In this example all resources will get field `my_field` with the word "WORDS" in their index ("my" will not be included in the index because of the restriction of length by default). Products miniShop2 will also be given `product_field` with the words "Product" and "Property".
 
-[![](https://file.modx.pro/files/5/7/9/579567140e4f4e8667380edd9ee2b224s.jpg)](https://file.modx.pro/files/5/7/9/579567140e4f4e8667380edd9ee2b224.png)
+![Adding arbitrary words to the index](https://file.modx.pro/files/5/7/9/579567140e4f4e8667380edd9ee2b224.png)
 
 Thereby, you can add different arbitrary words in the resource index.
 
@@ -73,7 +74,7 @@ Another example of adding arbitrary words to the index is the indexation of the 
 ```php
 <?php
 switch ($modx->event->name) {
-   case 'mse2OnBeforeSearchIndex':
+  case 'mse2OnBeforeSearchIndex':
         // Имена опций
         $names = array(
             'option1',
@@ -83,15 +84,15 @@ switch ($modx->event->name) {
         foreach ($names as $key) {
             $mSearch2->fields[$key] = 1;
             $c = $modx->newQuery('msProductOption', array(
-               'product_id' => $resource->id,
-               'key' => $key,
+              'product_id' => $resource->id,
+              'key' => $key,
             ));
             $c->select('value');
             if ($c->prepare() && $c->stmt->execute()) {
-               $value = $c->stmt->fetchAll(PDO::FETCH_COLUMN);
-               if (!empty($value[0])) {
-                   $resource->set($key, $value);
-               }
+              $value = $c->stmt->fetchAll(PDO::FETCH_COLUMN);
+              if (!empty($value[0])) {
+                  $resource->set($key, $value);
+              }
             }
         }
         break;

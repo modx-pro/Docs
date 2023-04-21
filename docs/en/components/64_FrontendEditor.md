@@ -22,7 +22,7 @@ Install the extension. Wrap the fields you want to edit with the tag with attrib
 
 Available values: `content, pagetitle, longtitle, menutitle, description, introtext`
 
-#### Editing TV fields
+### Editing TV fields
 
 For editing TV fields as attribute value must be specified `tv-` in front of the field name.
 
@@ -32,7 +32,7 @@ For editing TV fields as attribute value must be specified `tv-` in front of the
 </div>
 ```
 
-#### Editor's Choice
+### Editor's Choice
 
 For each field, you can specify one of two types of editors: TinyMCE `tinymce` (no need to specify by default) or a simple input field `simple`.
 
@@ -42,7 +42,7 @@ For each field, you can specify one of two types of editors: TinyMCE `tinymce` (
 </div>
 ```
 
-#### Editing values by resource ID
+### Editing values by resource ID
 
 If you need to edit the fields of another resource, you need to specify its id as the first option. This is especially useful for creating editable menus, breadcrumbs, and other interface elements.
 

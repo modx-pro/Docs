@@ -1,6 +1,7 @@
 Create and edit your subscriptions in part Subscriptions.
 
 ## Generation of distribution
+
 * To generate distribution go to **Components** -> **Sendex**
 * In inlay **Subscriptions** click on **Generate** and save after overpatching.
 
@@ -21,6 +22,7 @@ In a pop-up window you will need to fill in:
 [![](https://file.modx.pro/files/a/3/0/a3059d34688e43b4c4c17dc0a750c930s.jpg)](https://file.modx.pro/files/a/3/0/a3059d34688e43b4c4c17dc0a750c930.png)
 
 ## Manual addition of subscribers.
+
 * To add a subscriber it is necessary to go to **Components** -> **Sendex**
 * Right-click on a subscription on inlay **Subscriptions** and click **Edit subscription ** and save after overpatching.
 

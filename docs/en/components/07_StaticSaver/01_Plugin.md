@@ -3,9 +3,7 @@ StaticSaver is a plugin for MODX Revolution, which installs values for names and
 ## Installation and setting
 
 Install the package through Package management from the [official Repository][1].
-
 Then you will need to adapt **File Source ** and **System settings**. You can find necessary settings with the help of namespace filter "**staticsaver**".
-
 Detailed video about StaticSaver setting [can be found in YouTube][2].
 
 ## System settings of StaticSaver

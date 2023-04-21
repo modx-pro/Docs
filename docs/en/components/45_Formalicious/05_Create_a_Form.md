@@ -20,22 +20,19 @@ before being able to continue to the **Form Fields** tab.
 - Email to: This email address will receive the submitted form entries.
 - Subject: Subject of the email
 - Redirect to: Resource ID where the visitor is sent to after the form is successfully submitted.
-- Save submitted form: Check this to save the form into FormIt using the [FormItSaveForm hook][1];
-a great way to have a backup of all your submitted forms.
+- Save submitted form: Check this to save the form into FormIt using the [FormItSaveForm hook][1]; a great way to have a backup of all your submitted forms.
 - Published: Check this to make this form available throughout the manager.
 - Send auto reply: Check this to enable auto replies for this mail.
+
 The visitor who submits your form, will also receive a confirmation mail (auto reply).
 This is a good way to inform your visitors that a form actually worked and action is taken.
 **This will only work if you enter the fields below.**
-- Select email field: Select the form-field where the auto-reply should be sent to.
-This dropdown is automatically populated by all your fields.
-This means you have to add your fields first and then you select an email field you wish to use as your auto-reply field.
+
+- Select email field: Select the form-field where the auto-reply should be sent to. This dropdown is automatically populated by all your fields. This means you have to add your fields first and then you select an email field you wish to use as your auto-reply field.
 - Email from: The sender of the auto-reply. Your website-visitor will se this in the From-field when reading the email.
 - Subject: Subject of the auto-reply email.
-- Content: Content of the auto-reply email. Feel free to use HTML here, but keep it limited to simple tags
-like: `<b> <strong> <em> <br /> <br> <p></p> <a href="link-here"></a>`
-- Attachment: (optional) If you want to attach a file to the confirmation email, you can do it here.
-Bigger files mean a bigger chance of failure when sending an email.
+- Content: Content of the auto-reply email. Feel free to use HTML here, but keep it limited to simple tags like: `<b> <strong> <em> <br /> <br> <p></p> <a href="link-here"></a>`
+- Attachment: (optional) If you want to attach a file to the confirmation email, you can do it here. Bigger files mean a bigger chance of failure when sending an email.
 
 ## Form steps
 
@@ -52,8 +49,7 @@ The only thing you have to do is styling!
 Every step can contain fields. Click 'Add field' and choose a field type in the dialog window. This will open the "Save field" dialog.
 The title will be the label of the field, the placeholder is optional and works as a [HTML5 Placeholder attribute][2].
 
-Every field has two extra options: **Required** will make a field mandatory.
-**Published** allows you to disable a field (temporary).
+Every field has two extra options: **Required** will make a field mandatory. **Published** allows you to disable a field (temporary).
 
 ## Advanced
 

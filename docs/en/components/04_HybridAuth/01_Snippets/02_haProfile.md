@@ -1,3 +1,5 @@
+# haProfile
+
 Snippet outputs information about user for organize the profile.
 
 ## Options
@@ -11,6 +13,7 @@ Name                   | Description
 **&requiredFields**    | List of required fields while editing. This fields must be filled for successful profile updating. Example, &requiredFields=\`username,full name,email\`
 
 ## Examples
+
 Snippet must be called not cached, because since depending on the authorization it displays a different chunks:
 
 ```modx

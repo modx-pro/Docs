@@ -1,7 +1,8 @@
+# pdoUsers
+
 Snippet to list the site users, based on the pdoTools library.
 
 It generates a list of site users according to their's groups and roles.
-
 
 ## Settings
 
@@ -20,8 +21,7 @@ Name               | Default | Description
 **&wrapIfEmpty**   |         | Includes output chunk wrapper **&tplWrapper** even if there are no results.
 **&tplWrapper**    |         | Chunk - wrapper, to wrap all results. Accepts one placeholder:`[[+output]]`. It does not work in conjunction with **&toSeparatePlaceholders**.
 
-
-#### Override pdoTools
+### Override pdoTools
 
 Name         | Default    | Description
 -------------|------------|----------------------------------------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ with INLINE:
 
 [Authors and friends][2] of the Simple Dream repository.
 
-[![](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306s.jpg)](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
+![Demo](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
 
 [1]: /en/components/pdotools/general-settings
 [2]: http://store.simpledream.ru/friends.html

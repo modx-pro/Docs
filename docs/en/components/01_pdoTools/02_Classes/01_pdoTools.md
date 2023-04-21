@@ -63,7 +63,9 @@ $row['pagetitle'] .= rand();
 return json_encode($row);
 ```
 
-*you can use json_encode() or serialize() to return data*
+:::info
+you can use `json_encode()` or `serialize()` to return data
+:::
 
 Now you know how we able to throw away **all** output filters and nested snippets from your chunks to make them faster.
 Of course, it is much faster to do some work in one snippet instead of parsing multiple snippets in chunks.

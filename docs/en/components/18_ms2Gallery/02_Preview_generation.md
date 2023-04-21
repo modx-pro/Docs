@@ -20,8 +20,7 @@ All galleries are connected to the files source, and for previews generation its
 * **maxUploadHeight** - the same thing but for height. By default *1080px*.
 * **maxUploadSize** - the maximum size of a file. By default *10Mb*.
 * **imageUploadDir** - the direction of loading files. 1 (by default) - loading into the end of the list, 0 - into the beginning of it.
-* **imageNameType** - type of generation of previews' names. *hash* generates a unique name depending on the content of the file.
-*Friendly* (by default) makes the name acceptable for internet sites, cutting down all that is not letters or figures, reducing everything to the low register and replacing blank spaces with dashes.
+* **imageNameType** - type of generation of previews' names. *hash* generates a unique name depending on the content of the file. *Friendly* (by default) makes the name acceptable for internet sites, cutting down all that is not letters or figures, reducing everything to the low register and replacing blank spaces with dashes.
 * **thumbnails** - the most important parameter, which contains the array of previews generation settings for phpThumb. For example:
 
 ```json
@@ -98,39 +97,37 @@ For overlaying the watermark on images in the galleries 3 conditions should be f
       "small": {"w":120,"h":90,"q":90,"zc":"1","bg":"000000","fltr":"wmi|wm.png|BR|80"},
       "medium": {"w":360,"h":270,"q":90,"zc":"1","bg":"000000","fltr":"wmi|wm.png|BR|80"}
   }
-```
+  ```
 
-Parameters are decoded like this:
+  Parameters are decoded like this:
 
-```json
-"wmi" (WaterMarkImage)
-    [ex: &fltr[]=wmi|<f|<a|<o|<x|<y|<r] where
-    <f is the filename of the image to overlay;
-    <a is the alignment (one of BR, BL, TR, TL, C,
-        R, L, T, B, *) where B=bottom, T=top, L=left,
-        R=right, C=centre, *=tile)
-        *or*
-        an absolute position in pixels (from top-left
-        corner of canvas to top-left corner of overlay)
-        in format {xoffset}x{yoffset} (eg: "10x20")
-        note: this is center position of image if <x
-        and <y are set
-     <o is opacity from 0 (transparent) to 100 (opaque)
-        (requires PHP v4.3.2, otherwise 100% opaque);
-     <x and <y are the edge (and inter-tile) margin in
-        pixels (or percent if 0 < (x|y) < 1)
-        *or*
-        if <a is absolute-position format then <x and
-     <y represent maximum width and height that the
-        watermark image will be scaled to fit inside
-     <r is rotation angle of overlaid watermark
-```
+  ```json
+  "wmi" (WaterMarkImage)
+      [ex: &fltr[]=wmi|<f|<a|<o|<x|<y|<r] where
+      <f is the filename of the image to overlay;
+      <a is the alignment (one of BR, BL, TR, TL, C,
+          R, L, T, B, *) where B=bottom, T=top, L=left,
+          R=right, C=centre, *=tile)
+          *or*
+          an absolute position in pixels (from top-left
+          corner of canvas to top-left corner of overlay)
+          in format {xoffset}x{yoffset} (eg: "10x20")
+          note: this is center position of image if <x
+          and <y are set
+      <o is opacity from 0 (transparent) to 100 (opaque)
+          (requires PHP v4.3.2, otherwise 100% opaque);
+      <x and <y are the edge (and inter-tile) margin in
+          pixels (or percent if 0 < (x|y) < 1)
+          *or*
+          if <a is absolute-position format then <x and
+      <y represent maximum width and height that the
+          watermark image will be scaled to fit inside
+      <r is rotation angle of overlaid watermark
+  ```
 
-**3.** File *wm.png* should be put in `/assets/components/ms2gallery/` - this is exactly where it will be looked for.
-Instead of assets there can be another directory if you renamed it when installing MODX in an advanced mode.
+**3.** File *wm.png* should be put in `/assets/components/ms2gallery/` - this is exactly where it will be looked for. Instead of assets there can be another directory if you renamed it when installing MODX in an advanced mode.
 
-You can indicate not just *wm.png*, but *images/wm.png* in the source - then the file should be put in
-`/assets/components/ms2gallery/images/`.
+You can indicate not just *wm.png*, but *images/wm.png* in the source - then the file should be put in `/assets/components/ms2gallery/images/`.
 
 If everything is done correctly, you will get the watermark on your images when loading them into the gallery.
 

@@ -15,7 +15,7 @@ If it is necessary to display on the page only the products with remains in at l
 
 Or the same code in Fenom:
 
-```modx
+```fenom
 {'!msProducts' | snippet : [
   'leftJoin' => [
     'Remains' => [

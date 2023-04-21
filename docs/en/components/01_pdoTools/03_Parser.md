@@ -1,6 +1,9 @@
+# Parser
+
 First of all - why do we need chunks? They are needed to separate the view from the logic. In most cases it is needed to allow users to edit default behaviour of installed extras.
 
 In MODX's chunks and templates you can use various types of placeholders:
+
 * `[[+tag]]` - ususal placeholder that will be replaced with a value due chunk processing
 * `[[++setting]]` - system settings from `modX::config`
 * `[[*field]]` - field of current resource in `modX::resource` property
@@ -11,6 +14,7 @@ In MODX's chunks and templates you can use various types of placeholders:
 * `[[$chunk]]` - chunk
 
 Every tag can be called uncached if you prefix it with the exclamation sign. Also you might disable any tag by a leading dash.
+
 * `[[!uncached_snippet]]`
 * `[[-!disabled_snippet]]`
 
@@ -28,7 +32,7 @@ If there is no value for a uncached placeholder on the current page - modParser 
 
 That is why a complicated chunk can be parsed a very long time.
 
-### pdoParser
+## pdoParser
 
 It is the 3rd main class of pdoTools that tries to parse all simple tags by itself. Simple tags are: `[[+tag]]`, `[[*field]]`,  `[[%lexion]]`, `[[~number]]` and `[[~[[+id]]]]`.
 
@@ -38,7 +42,7 @@ If there are still any remaining tags after pdoTools - it will call modParser to
 
 So, by default pdoParser is just a simple pre-processor before modParser. That is why chunks in pdoTools are always a little (or much) faster.
 
-### Fenom
+## Fenom
 
 pdoTools 2.0 brings you built-in support of Fenom template engine. Good news everyone - it has english documentation in [its repository on GitHub](https://github.com/fenom-template/fenom/tree/master/docs/en). Why Fenom? Because it is light, simple, fast, flexible and russian.
 
@@ -63,16 +67,18 @@ Your manager will not have access to `modX` object from Fenom chunks by default.
 ).
 
 The second service variable is `{$_pls}`. It needed to get access to placeholders with dots or dashes. Fenom variables compiled to PHP and PHP do not allows you to use dots or dashes in them. So you can use
+
 ```fenom
 {$_pls['my.tv']} // for placeholders with dots or dashes
 ```
+
 or
 
 ```fenom
 {$pagetitle} //for placeholders without it
 ```
 
-#### Placeholders filling
+### Placeholders filling
 
 Fenom works in one pass, ie, Unlike the MODX parser, it is not recursive
 
@@ -84,8 +90,8 @@ To do this you must perform a snippet mSearch2 and pass on the results to placeh
 
 ```fenom
 {'!pdoPage' | snippet : [
-	'element' => 'mSearch2',
-	'toPlaceholder' => 'searchResults'
+  'element' => 'mSearch2',
+  'toPlaceholder' => 'searchResults'
 ]}
 ```
 
@@ -113,7 +119,7 @@ Your date: {$date}.
 
 Very similar to the logic of the usual script.
 
-#### System settings
+### System settings
 
 There is some important system settings for Fenom:
 
@@ -126,6 +132,7 @@ There is some important system settings for Fenom:
 Fenom works with MODX in two modes: only in chunks and site-wide. First mode enabled and recommended by default.
 
 You could use Fenom syntax along with MODX:
+
 ```fenom
 {if $_modx->isAuthenticated($_modx->context.key)}
     Hello, {$_modx->user.fullname}!
@@ -166,7 +173,8 @@ var y = {"key": "value"}; // it is ok now
 
 You must remember this 3 items when you enable `pdotools_fenom_parser` system setting. Every compile error will be recorded to error log of manager.
 
-#### What about speed?
+### What about speed?
+
 It is my favorite part. Lets make some tests now.
 
 MODX test:
@@ -204,13 +212,13 @@ And Fenom. Just notice that we need to specify snippet **dateAgo** as fenom modi
 
 We also could make another test with chunks without output modifiers. All is the same but now chunks are:
 
-```modx
+```fenom
 &tpl=`@INLINE <p>{{+id}}. {{+pagetitle}} {{+createdon}}`
 ```
 
 [![](https://file.modx.pro/files/c/d/d/cdd807767b6b5402b41496cd4245f723s.jpg)](https://file.modx.pro/files/c/d/d/cdd807767b6b5402b41496cd4245f723.png)
 
-```modx
+```fenom
 &tpl=`@INLINE <p>{$id}. {$pagetitle} {$createdon}</p>`
 ```
 
@@ -284,7 +292,7 @@ Tags fastField can be combined with tags MODX:
 ```modx
 [[#[[++site_start]].pagetitle]]
 <pre>
-	[[#[[++site_start]]]]
+[[#[[++site_start]]]]
 </pre>
 ```
 
@@ -293,7 +301,7 @@ Tags fastField can be combined with tags MODX:
 ```fenom
 {var $resource = $_modx->getResource(15)}
 {if $resource?}
-    {$resource.pagetitle}
+  {$resource.pagetitle}
 {/if}
 ```
 
@@ -301,11 +309,11 @@ You even can fetch and display some resources:
 
 ```fenom
 {var $resources = $_modx->getResources(
-	['published' => 1, 'deleted' => 0],
-	['sortby' => 'id', 'sortdir' => 'ASC', 'limit' => 50]
+  ['published' => 1, 'deleted' => 0],
+  ['sortby' => 'id', 'sortdir' => 'ASC', 'limit' => 50]
 )}
 {foreach $resources as $resource}
-	{$_modx->getChunk('@INLINE <p>{$id} {$pagetitle}</p>', $resource)}
+  {$_modx->getChunk('@INLINE <p>{$id} {$pagetitle}</p>', $resource)}
 {/foreach}
 ```
 

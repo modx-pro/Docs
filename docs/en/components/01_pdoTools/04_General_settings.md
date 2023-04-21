@@ -1,6 +1,6 @@
-General parameters for snippets based on pdoTools / pdoFetch.
+# General parameters for snippets based on pdoTools / pdoFetch.
 
-### Sample resource parameters
+## Sample resource parameters
 
 These parameters define the derived objects.
 
@@ -43,21 +43,20 @@ Name                       | Description                                        
 
 These parameters set up chunks which contain templates for output generation, i.e. they  are changed with the overview.
 
-Name | Description
----|---
-**&tpl** | Chunk name for resource registration. If it not indicated, ‘field content of the source will be printed to the screen |
-**&tplFirst** | Chunk name for the first resource in the results |
-**&tplLast** | Chunk name for the last resource in the results |
-**&tplOdd** | Chunk name for every second resource |
-**&tpl_N** | Chunk name for N-resource, e.g. **&tpl_4=`tpl4th`** will set up template for 4th resource |
-**&tpl_nN** | Chunk name for N-resource, e.g. **&tpl_n4=`tplEvery4th`** will be applied for every 4th resource |
-**&tplCondition** | Resource field from which the value for selecting chunk will be obtained by the condition in **&conditionalTpls**. |
-**&tplOperator** | Optional operator for comparison of resource field in **&tplCondition** with array of values and chunks in **&conditionalTpls**. |
-**&conditionalTpls** | JSON line with array which in keys has something which **&tplCondition** will be compared with, and values – chunks which will be used to output if the comparison is successful. Comparison operator is indicated in **&tplOperator**. Arrays without keys can be used for «**isempty**» operators |
-**&outputSeparator** | Optional line for separation of the results |
+Name                 | Description
+---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**&tpl**             | Chunk name for resource registration. If it not indicated, ‘field content of the source will be printed to the screen
+**&tplFirst**        | Chunk name for the first resource in the results
+**&tplLast**         | Chunk name for the last resource in the results
+**&tplOdd**          | Chunk name for every second resource
+**&tpl_N**           | Chunk name for N-resource, e.g. **&tpl_4=`tpl4th`** will set up template for 4th resource
+**&tpl_nN**          | Chunk name for N-resource, e.g. **&tpl_n4=`tplEvery4th`** will be applied for every 4th resource
+**&tplCondition**    | Resource field from which the value for selecting chunk will be obtained by the condition in **&conditionalTpls**.
+**&tplOperator**     | Optional operator for comparison of resource field in **&tplCondition** with array of values and chunks in **&conditionalTpls**.
+**&conditionalTpls** | JSON line with array which in keys has something which **&tplCondition** will be compared with, and values – chunks which will be used to output if the comparison is successful. Comparison operator is indicated in **&tplOperator**. Arrays without keys can be used for «**isempty**» operators
+**&outputSeparator** | Optional line for separation of the results
 
-
-### Results parameters
+## Results parameters
 
 These parameters define additionally what data and in what way it will be output.
 
@@ -84,50 +83,53 @@ Name                        | Description                                       
 **&cache_handler**          | Cache handler                                                                                                                                                                                                                                                           | Value of system setting *cache_resource_handler* or xPDOFileCache
 **&cache Time**             | Cache time                                                                                                                                                                                                                                                              | Value of system setting *cache_resource_expires* or 0 (eternal)
 
-### Fenom Parser parameters
+## Fenom Parser parameters
+
 These parameters define settings for the fenom parser.
 
 Name                | Description                                                                                                                                              | On default
 --------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------
 **&fenomModifiers** | Comma separated list of snippets that could be used as [fenom modifier](https://github.com/fenom-template/fenom/blob/master/docs/en/syntax.md#modifiers) |
 
-### How to call chunks
+## How to call chunks
 
 All chunks can have one of these prefixes:
 
 * **@INLINE** or **@CODE**. Code after this prefix will be used as template.
 
-```modx
-[[!pdoResources?
-	&tpl=`@INLINE <li>[[+pagetitle]]</li>`
-]]
-```
-*Snippets, other chunks and output filters cannot be indicated in INLINE chunks, because parser MODX handle them in the first place, and snippet will not get what you wanted.*
+  ```modx
+  [[!pdoResources?
+    &tpl=`@INLINE <li>[[+pagetitle]]</li>`
+  ]]
+  ```
 
-* **@FILE**. File content Is used instead of chunk from the database. Track to the file is indicated by system setting **pdotools_elements_path**.
-Name of the file have extension `.tpl` or `.html`.
+  :::info
+  Snippets, other chunks and output filters cannot be indicated in INLINE chunks, because parser MODX handle them in the first place, and snippet will not get what you wanted.
+  :::
 
-```modx
-[[!pdoResources?
-	&tpl=`@FILE fileBasedRow.tpl`
-]]
-```
+* **@FILE**. File content Is used instead of chunk from the database. Track to the file is indicated by system setting **pdotools_elements_path**. Name of the file have extension `.tpl` or `.html`.
+
+  ```modx
+  [[!pdoResources?
+    &tpl=`@FILE fileBasedRow.tpl`
+  ]]
+  ```
 
 * **@TEMPLATE**. Identifier or name of template is indicated. If it is empty – its own template will be used for every resource.
 
-```modx
-[[!pdoResources?
-	&tpl=`@TEMPLATE 10`
-]]
-```
+  ```modx
+  [[!pdoResources?
+    &tpl=`@TEMPLATE 10`
+  ]]
+  ```
 
 * **@CHUNK**. Similarly to the indication of chunk names.
 
-```modx
-[[!pdoResources?
-  &tpl=`@CHUNK tpl.Resource.row`
-]]
-[[!pdoResources?
-  &tpl=`tpl.Resource.row`
-]]
-```
+  ```modx
+  [[!pdoResources?
+    &tpl=`@CHUNK tpl.Resource.row`
+  ]]
+  [[!pdoResources?
+    &tpl=`tpl.Resource.row`
+  ]]
+  ```

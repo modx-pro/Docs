@@ -1,4 +1,5 @@
 ## Queue formatting
+
 To format a distribution of user emails, it is necessary to add them in the queue:
 
 * Go to **Components** -> **Sendex**
@@ -14,6 +15,7 @@ To format a distribution of user emails, it is necessary to add them in the queu
 * Then you need to send the generated.
 
 ## Email distribution
+
 There are some ways to distribute emails:
 
 1. Manual. You need to enter **Components** -> **Sendex**, and inlay  **Email queue**. Choose an email and send it through the context menu.

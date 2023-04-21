@@ -16,37 +16,39 @@ The sitemap generation is more effective if resources are excluded from the outp
 
 *pdoSitemap* accepts all options for [pdoTools][3]. Here are some of them:
 
-Parameter          | Default value                               | Description
--------------------|---------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------
-**&sitemapSchema** | http://www.sitemaps.org/schemas/sitemap/0.9 | The scheme used for the sitemap.
-**&forceXML**      | 1                                           | Force output as XML.
-**&priorityTV**    |                                             | An optional field that indicates the [priority][4] of the resource. The template variable stated here must also be added to the parameter **&includeTVs**
+Parameter          | Default value                                 | Description
+-------------------|-----------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------
+**&sitemapSchema** | `http://www.sitemaps.org/schemas/sitemap/0.9` | The scheme used for the sitemap.
+**&forceXML**      | `1`                                           | Force output as XML.
+**&priorityTV**    |                                               | An optional field that indicates the [priority][4] of the resource. The template variable stated here must also be added to the parameter **&includeTVs**
 
 ### Templates
 
-**&tpl**
-```
-@INLINE <url>\n\t
-<loc>[[+url]]</loc>\n\t
-<lastmod>[[+date]]</lastmod>\n\t
-<changefreq>[[+update]]</changefreq>\n\t
-<priority>[[+priority]]</priority>\n
-</url>
-```
+* **&tpl**
 
-**&tplWrapper**
-```
-@INLINE <?xml version=\"1.0\" encoding=\"[[++modx_charset]]\"?>\n<urlset xmlns=\"[[+schema]]\">\n[[+output]]\n</urlset>
-```
+  ```modx
+  @INLINE <url>\n\t
+  <loc>[[+url]]</loc>\n\t
+  <lastmod>[[+date]]</lastmod>\n\t
+  <changefreq>[[+update]]</changefreq>\n\t
+  <priority>[[+priority]]</priority>\n
+  </url>
+  ```
+
+* **&tplWrapper**
+
+  ```modx
+  @INLINE <?xml version=\"1.0\" encoding=\"[[++modx_charset]]\"?>\n<urlset xmlns=\"[[+schema]]\">\n[[+output]]\n</urlset>
+  ```
 
 [Priority][4] and [Change frequency][5] for the resource is mapped based on the date for the last modification of the document:
 
 Time since the last update of the document     | Priority | Change frequency
 -----------------------------------------------|----------|-----------------
-Less than a day ago                            | 1.0      | daily
-Over one day but less than a week ago          | 0.75     | weekly
-More than a week ago but less than a month ago | 0.5      | weekly
-More than a month ago                          | 0.25     | monthly
+Less than a day ago                            | `1.0`    | daily
+Over one day but less than a week ago          | `0.75`   | weekly
+More than a week ago but less than a month ago | `0.5`    | weekly
+More than a month ago                          | `0.25`   | monthly
 
 ### Instructions how to create a sitemap.xml resource
 
@@ -58,59 +60,66 @@ More than a month ago                          | 0.25     | monthly
 ### Examples
 
 To create a sitemap for the default context, this should be sufficient in the most cases:
-```
+
+```modx
 [[pdoSitemap]]
 ```
 
 Generate sitemap only from certain containers:
-```
+
+```modx
 [[pdoSitemap?
 	&parents=`10`
 ]]
 ```
 
 The extend the example above to also exclude resources with id = 15 and 25, together with their descendants:
-```
+
+```modx
 [[pdoSitemap?
 	&parents=`10,-15,-25`
 ]]
 ```
 
 Change the example above to exclude the resource with id = 25 but include its descendants:
-```
+
+```modx
 [[pdoSitemap?
-	&resources=`-25`
-	&parents=`-15,10`
+  &resources=`-25`
+  &parents=`-15,10`
 ]]
 ```
 
 Add another context (catalog) to the example above (if web is the default context):
-```
+
+```modx
 [[pdoSitemap?
-	&resources=`-25`
-	&parents=`-15,10`
-	&context=`web,catalog`
+&resources=`-25`
+&parents=`-15,10`
+&context=`web,catalog`
 ]]
 ```
 
 This call forces the http schema of the URL:s to https:
-```
+
+```modx
 [[pdoSitemap?
-	&resources=`-25`
-	&parents=`-15,10`
-	&context=`web,catalog`
-	&scheme=`https`
+  &resources=`-25`
+  &parents=`-15,10`
+  &context=`web,catalog`
+  &scheme=`https`
 ]]
 ```
 
 This call shows the execution log (remember to change the content type of the resource to HTML):
-```
+
+```modx
 [[pdoSitemap?
-	&resources=`-25`
-	&parents=`-15,10`
-	&context=`web,catalog`
-	&showLog=`1`
-	&forceXML=`0`
+  &resources=`-25`
+  &parents=`-15,10`
+  &context=`web,catalog`
+  &showLog=`1`
+  &forceXML=`0`
 ]]
 ```
 

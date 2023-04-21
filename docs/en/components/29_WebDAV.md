@@ -38,7 +38,6 @@ Tested with SabreDAV, CloudMe.com, Yandex Disk.
 | **thumbnailType**    | `png`                                        | The image type to render thumbnails as.                                                                                                                      |
 | **verifySSL**        | `true`                                       | Check host and peer for SSL certificate                                                                                                                      |
 
-
 ## Permission security
 
 | Name     | Description                 |

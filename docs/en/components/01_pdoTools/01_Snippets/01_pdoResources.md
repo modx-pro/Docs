@@ -32,6 +32,7 @@ Name                       | Default                                       | Des
 **&tvFiltersOrDelimiter**  | "\|\|"                                        | Separator for conditional OR property **&tvFilters**.
 
 ### Template Properties
+
 These properties specify the chunks that contain the templates to format the generated output.
 
 Name                 | Description
@@ -49,6 +50,7 @@ Name                 | Description
 **&outputSeparator** | Optional string to separate the results.
 
 ### Result Properties
+
 These properties further define what data to fetch and how to display it.
 
 Name                        | Default                                            | Description

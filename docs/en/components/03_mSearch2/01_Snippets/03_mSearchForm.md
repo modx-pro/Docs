@@ -10,21 +10,21 @@ Should be summoned uncached due to the specifics of working in Ajax.
 Name              | By default        | Description
 ------------------|-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **&pageId**       |                   | Id of the page on which the search request will be sent. By default it’s the current page.
-**&tplForm**      | tpl.mSearch2.form | Chunk with an HTML form for output, must contain «class="msearch2"» in tag «\<form\>».
-**&tpl**          | tpl.mSearch2.ac   | Chunk for the coding standards of each result
-**&element**      | mSearch2          | Snippet that will be summoned for work output. Bu default - [mSearch2][1].
-**&limit**        | 5                 | Limit of the results selection
-**&autocomplete** | results           | Autocompletion settings. Possible variants: «results» - search through the site (snippet associated with **&element** will be summoned for the output), «queries» - search through the query table, «0» - deactivate autocompletion.
-**&queryVar**     | query             | Name of the variable for receiving search query from «$_REQUEST». By default - «query».
-**&minQuery**     | 3                 | Minimal length of a query.
+**&tplForm**      | `tpl.mSearch2.form` | Chunk with an HTML form for output, must contain «class="msearch2"» in tag «\<form\>».
+**&tpl**          | `tpl.mSearch2.ac`   | Chunk for the coding standards of each result
+**&element**      | `mSearch2`          | Snippet that will be summoned for work output. Bu default - [mSearch2][1].
+**&limit**        | `5`                 | Limit of the results selection
+**&autocomplete** | `results`           | Autocompletion settings. Possible variants: «results» - search through the site (snippet associated with **&element** will be summoned for the output), «queries» - search through the query table, «0» - deactivate autocompletion.
+**&queryVar**     | `query`             | Name of the variable for receiving search query from «$_REQUEST». By default - «query».
+**&minQuery**     | `3`                 | Minimal length of a query.
 **&fields**       |                   | List of the indexed fields of the resource, with commas, to look through. You can also indicate each field’s weight, with commas: **&fields=`pagetitle:5,content:3,comment:1,tv_mytvname:2`**. By default system setting `mse2_index_fields`is used.
-**&onlyIndex**    | false             | Activate search only by words’ index and deactivate extra results that can be found through simple search with LIKE.
+**&onlyIndex**    | `false`             | Activate search only by words’ index and deactivate extra results that can be found through simple search with LIKE.
 
 ## Autocompletion
 
 The main function of the snippet is to realize autocompletions to queries. There are 2 regimes:
 
-#### results
+### results
 
 Search is made by a standard algorithm, through a lexical index with corrections.
 After that id of pages found are sent to the snippet associated with **&element**. It gives the results.
@@ -36,13 +36,15 @@ That’s why when you choose a point from the list, you go there immediately.
 
 [![](https://file.modx.pro/files/0/2/d/02d12e8588b9920752fddecef35ba99cs.jpg)](https://file.modx.pro/files/0/2/d/02d12e8588b9920752fddecef35ba99c.png)
 
-#### queries
+### queries
 
 This regime presupposes some real query completion. It searches through [query history][4], which is shown in your control system.
 
 That is, it shows you suitable queries that were already made by other users. Queries with no results will not be shown.
 
-If you choose a query from the list, it’ll be put in the form, which will be sent immediately.  [![](https://file.modx.pro/files/1/b/3/1b3240ec2c205bae779d771826bb789ds.jpg)](https://file.modx.pro/files/1/b/3/1b3240ec2c205bae779d771826bb789d.png)
+If you choose a query from the list, it’ll be put in the form, which will be sent immediately.
+
+[![](https://file.modx.pro/files/1/b/3/1b3240ec2c205bae779d771826bb789ds.jpg)](https://file.modx.pro/files/1/b/3/1b3240ec2c205bae779d771826bb789d.png)
 
 ## Scripts and styles
 

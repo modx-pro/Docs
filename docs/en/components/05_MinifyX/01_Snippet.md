@@ -1,6 +1,9 @@
+# MinifyX
+
 Automate comprassion and chaching of scrips and styles on the site.
 
 ## Parameters
+
 Name                | Description
 --------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------
 **&cacheFolder**    | folder to keep ready files.

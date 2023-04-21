@@ -31,7 +31,6 @@ In the example below we create a field called "Special email", with the template
 
 [![](https://file.modx.pro/files/d/7/a/d7ae1dc71e9b71a1a03521d584571b80s.jpg)](https://file.modx.pro/files/d/7/a/d7ae1dc71e9b71a1a03521d584571b80.png)
 
-
 ### Step 2: Create the associated chunk
 
 We specified the chunk called "specialEmailTpl". This chunk is a regular FormIt-chunk.
