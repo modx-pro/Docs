@@ -38,15 +38,15 @@ Now it is the one and only **tpl**, which gets the $files array and has to sort 
 
 ```fenom
 {if count($files) > 1}
-    <!-- there are many files - we sort them out in cycle-->
-    {foreach $files as $file}
-        <a href="{$file.url}"><img src="{$file.small}"></a>
-    {/foreach}
+  <!-- there are many files - we sort them out in cycle-->
+  {foreach $files as $file}
+    <a href="{$file.url}"><img src="{$file.small}"></a>
+  {/foreach}
 {elseif count($files) == 1}
-    <!--there is only one picture, we print the whole data array-->
-    {$file | print}
+  <!--there is only one picture, we print the whole data array-->
+  {$file | print}
 {else}
-    There are no files, we shown this caption.
+  There are no files, we shown this caption.
 {/if}
 ```
 
@@ -56,11 +56,11 @@ If you do not want to switch to the new format, just indicate your old chunks an
 
 ```modx
 [[!ms2Gallery?
-    &tplRow=`tpl.ms2Gallery.row`
-    &tplOuter=`tpl.ms2Gallery.outer`
-    &tplEmpty=`tpl.ms2Gallery.empty`
-    &tplSingle=`tpl.ms2Gallery.single`
-    &tpl=``
+  &tplRow=`tpl.ms2Gallery.row`
+  &tplOuter=`tpl.ms2Gallery.outer`
+  &tplEmpty=`tpl.ms2Gallery.empty`
+  &tplSingle=`tpl.ms2Gallery.single`
+  &tpl=``
 ]]
 ```
 
@@ -78,8 +78,8 @@ If you do not going to need scripts and styles, you can just leave these paramet
 
 ```modx
 [[!ms2Gallery?
-    &frontend_css=``
-    &frontend_js=``
+  &frontend_css=``
+  &frontend_js=``
 ]]
 ```
 
@@ -95,12 +95,12 @@ Output of pictures from different resources in one gallery
 
 ```modx
 [[!ms2Gallery?
-    &parents=`0`
-    &resources=`5,16,7`
+  &parents=`0`
+  &resources=`5,16,7`
 ]]
 ```
 
-[1]: /components/pdotools/parser
-[2]: /components/18_ms2Gallery/02_Генерация_превью.md
+[1]: /en/components/pdotools/parser
+[2]: /en/components/ms2gallery/preview-generation
 [3]: http://fotorama.io/
 [4]: http://fotorama.io/customize/

@@ -4,12 +4,12 @@
 
 You just have to activate systen setting **ms2gallery_set_placeholders** and you can use the following placeholders in the content:
 
-* `[[+ms2g.0]]` - printed array with all data of the resource's first image. The second image will be `[[+ms2g.1]]`
-* `[[+ms2g.0.url]]` - link to the original image
-* `[[+ms2g.0.small]]` - link to one preview
-* `[[+ms2g.0.medium]]` - link to another preview
-* `[[+ms2g.0.name]]` - the name of the image
-* etc..
+- `[[+ms2g.0]]` - printed array with all data of the resource's first image. The second image will be `[[+ms2g.1]]`
+- `[[+ms2g.0.url]]` - link to the original image
+- `[[+ms2g.0.small]]` - link to one preview
+- `[[+ms2g.0.medium]]` - link to another preview
+- `[[+ms2g.0.name]]` - the name of the image
+- etc..
 
 Obviously, selection of all images generates additional requests to the database, that is why it is by default turned off.
 
@@ -21,9 +21,9 @@ The first setting indicates the look, the other two are for the economy of resou
 
 The name of TV parameter or chunk for making placeholder `[[+ms2g.0]]`, the content of which will be used for the image. For example:
 
-```html
+```modx
 <a href="[[+url]]">
-    <img src="[[+120x90]]" />
+  <img src="[[+120x90]]" />
 </a>
 ```
 
