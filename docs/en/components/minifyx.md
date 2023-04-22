@@ -1,3 +1,6 @@
+---
+name: MinifyX
+---
 # MinifyX
 
 Automate comprassion and chaching of scrips and styles on the site.
