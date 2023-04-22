@@ -6,7 +6,7 @@ By default is the check for user permissions disabled. This can easily be remedi
 
 ```modx
 [[!pdoSitemap?
-	&checkPermissions=`list`
+  &checkPermissions=`list`
 ]]
 ```
 
@@ -69,7 +69,7 @@ Generate sitemap only from certain containers:
 
 ```modx
 [[pdoSitemap?
-	&parents=`10`
+  &parents=`10`
 ]]
 ```
 
@@ -77,7 +77,7 @@ The extend the example above to also exclude resources with id = 15 and 25, toge
 
 ```modx
 [[pdoSitemap?
-	&parents=`10,-15,-25`
+  &parents=`10,-15,-25`
 ]]
 ```
 

@@ -110,16 +110,16 @@ if (!$groups = $pdoTools->getStore('groups')) {
   foreach ($groups as & $v) {
     $v = array_flip($v);
   }
-	// Save groups to cache
-	$pdoTools->setStore('groups', $groups);
+  // Save groups to cache
+  $pdoTools->setStore('groups', $groups);
 }
 
 $class = '';
 if (!empty($row['blocked'])) {
-	$class = 'blocked';
+  $class = 'blocked';
 }
 elseif (isset($groups['administrator'][$row['createdby']])) {
-	$class = 'administrator';
+  $class = 'administrator';
 }
 $row['class'] = $class;
 
