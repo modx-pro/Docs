@@ -1,10 +1,10 @@
-import { defineConfig } from 'vitepress'
+import { defineConfigWithTheme } from 'vitepress'
 import { config as en } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
 import { containerPlugin } from '../theme/plugins/containers'
 
-export default defineConfig({
+export default defineConfigWithTheme({
   lastUpdated: true,
   cleanUrls: true,
   ignoreDeadLinks: true,
@@ -12,6 +12,7 @@ export default defineConfig({
   base: '/Docs/',
 
   markdown: {
+    // @ts-ignore
     languages,
 
     config (md) {
