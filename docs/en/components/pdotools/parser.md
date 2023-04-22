@@ -4,19 +4,19 @@ First of all - why do we need chunks? They are needed to separate the view from 
 
 In MODX's chunks and templates you can use various types of placeholders:
 
-* `[[+tag]]` - ususal placeholder that will be replaced with a value due chunk processing
-* `[[++setting]]` - system settings from `modX::config`
-* `[[*field]]` - field of current resource in `modX::resource` property
-* `[[%lexicon]]` - entry from lexicon to display text strings from extras dictionaries
-* `[[~number]]` - links to resources
-* `[[snippet]]` - cached snippet
-* `[[!snippet]]` - uncached snippet
-* `[[$chunk]]` - chunk
+- `[[+tag]]` - ususal placeholder that will be replaced with a value due chunk processing
+- `[[++setting]]` - system settings from `modX::config`
+- `[[*field]]` - field of current resource in `modX::resource` property
+- `[[%lexicon]]` - entry from lexicon to display text strings from extras dictionaries
+- `[[~number]]` - links to resources
+- `[[snippet]]` - cached snippet
+- `[[!snippet]]` - uncached snippet
+- `[[$chunk]]` - chunk
 
 Every tag can be called uncached if you prefix it with the exclamation sign. Also you might disable any tag by a leading dash.
 
-* `[[!uncached_snippet]]`
-* `[[-!disabled_snippet]]`
+- `[[!uncached_snippet]]`
+- `[[-!disabled_snippet]]`
 
 And how exactly does MODX parser process this tags?
 
@@ -52,15 +52,15 @@ There is no recursive iterations. Only one passage for one chunk at time. If you
 
 Fenom syntax looks similar to Smarty and you could see it in official documentation, I only will show you how you could use it with MODX:
 
-* `{$placeholder}` of `{$_pls['placeholder']}` - for placeholders with dots or dashes (TVs).
-* `{$_modx->resource.field}` or `{$_modx->resource['field']}` - for array with current resource (not object!).
-* `{$_modx->config.setting}` or `{$_modx->config['setting']}` - for system settings from `modX::config` array.
-* `{$_modx->user.proprety}` - get value from mixed array of modUser and modUserProfile properties.
-* `{$_modx->context.key}` - get value from array with current modContext values.
-* `{$_modx->lexicon('key')}` and `{$_modx->lexicon->load('dict')}` - lexicon strings and ability to load dictionaries
-* `{$_modx->makeUrl(number)}` - for making urls
-* `{$_modx->runSnippet('snippetName', ['key' => 'value'])}` - for snippets
-* `{$_modx->getChunk('chunkName', ['key' => 'value'])}` - for chunks
+- `{$placeholder}` of `{$_pls['placeholder']}` - for placeholders with dots or dashes (TVs).
+- `{$_modx->resource.field}` or `{$_modx->resource['field']}` - for array with current resource (not object!).
+- `{$_modx->config.setting}` or `{$_modx->config['setting']}` - for system settings from `modX::config` array.
+- `{$_modx->user.proprety}` - get value from mixed array of modUser and modUserProfile properties.
+- `{$_modx->context.key}` - get value from array with current modContext values.
+- `{$_modx->lexicon('key')}` and `{$_modx->lexicon->load('dict')}` - lexicon strings and ability to load dictionaries
+- `{$_modx->makeUrl(number)}` - for making urls
+- `{$_modx->runSnippet('snippetName', ['key' => 'value'])}` - for snippets
+- `{$_modx->getChunk('chunkName', ['key' => 'value'])}` - for chunks
 
 As you see - you get access to safe variable `{$_modx}`. It is **not** the `modX` object, it is another object from pdoTools with only safe functions.
 Your manager will not have access to `modX` object from Fenom chunks by default. You could see sources of `{$_modx}` [here](https://github.com/bezumkin/pdoTools/blob/master/core/components/pdotools/model/pdotools/_micromodx.php
@@ -75,7 +75,7 @@ The second service variable is `{$_pls}`. It needed to get access to placeholder
 or
 
 ```fenom
-{$pagetitle} //for placeholders without it
+{$pagetitle} // for placeholders without it
 ```
 
 ### Placeholders filling
@@ -91,7 +91,7 @@ To do this you must perform a snippet mSearch2 and pass on the results to placeh
 ```fenom
 {'!pdoPage' | snippet : [
   'element' => 'mSearch2',
-  'toPlaceholder' => 'searchResults'
+  'toPlaceholder' => 'searchResults',
 ]}
 ```
 
@@ -123,11 +123,11 @@ Very similar to the logic of the usual script.
 
 There is some important system settings for Fenom:
 
-* `pdotools_fenom_default` - use Fenom syntax in chunks. It is enabled by default.
-* `pdotools_fenom_modx` - enables very dangerous variable `{$modx}` with full access to `modX` object. Disabled by default and strongly recommended do not enable.
-* `pdotools_fenom_php`- enables pure PHP functions in chunks. Disabled by default and strongly recommended do not enable.
-* `pdotools_fenom_modifiers` - list of snippets that will be available as output filters. Also can be specified at snippet runtime.
-* `pdotools_fenom_parser` - enables processing of Fenom tags on the whole site. Do not recomended to newbies.
+- `pdotools_fenom_default` - use Fenom syntax in chunks. It is enabled by default.
+- `pdotools_fenom_modx` - enables very dangerous variable `{$modx}` with full access to `modX` object. Disabled by default and strongly recommended do not enable.
+- `pdotools_fenom_php`- enables pure PHP functions in chunks. Disabled by default and strongly recommended do not enable.
+- `pdotools_fenom_modifiers` - list of snippets that will be available as output filters. Also can be specified at snippet runtime.
+- `pdotools_fenom_parser` - enables processing of Fenom tags on the whole site. Do not recomended to newbies.
 
 Fenom works with MODX in two modes: only in chunks and site-wide. First mode enabled and recommended by default.
 
@@ -135,9 +135,9 @@ You could use Fenom syntax along with MODX:
 
 ```fenom
 {if $_modx->isAuthenticated($_modx->context.key)}
-    Hello, {$_modx->user.fullname}!
+  Hello, {$_modx->user.fullname}!
 {else}
-    [[Login?params...]]
+  [[Login?params...]]
 {/if}
 ```
 
@@ -181,12 +181,12 @@ MODX test:
 
 ```modx
 [[!pdoResources?
-    &parents=`0`
-    &tpl=`@INLINE <p>{{+id}}. {{+longtitle:default=`{{+pagetitle}}`}} {{+createdon:dateago}}</p>`
-    &limit=`1000`
-    &sortby=`id`
-    &sortdir=`asc`
-    &showLog=`1`
+  &parents=`0`
+  &tpl=`@INLINE <p>{{+id}}. {{+longtitle:default=`{{+pagetitle}}`}} {{+createdon:dateago}}</p>`
+  &limit=`1000`
+  &sortby=`id`
+  &sortdir=`asc`
+  &showLog=`1`
 ]]
 ```
 
@@ -196,13 +196,13 @@ And Fenom. Just notice that we need to specify snippet **dateAgo** as fenom modi
 
 ```modx
 [[!pdoResources?
-    &fenomModifiers=`dateAgo`
-    &parents=`0`
-    &tpl=`@INLINE <p>{$id}. {$longtitle ?: $pagetitle} {$createdon | dateago}</p>`
-    &limit=`1000`
-    &sortby=`id`
-    &sortdir=`asc`
-    &showLog=`1`
+  &fenomModifiers=`dateAgo`
+  &parents=`0`
+  &tpl=`@INLINE <p>{$id}. {$longtitle ?: $pagetitle} {$createdon | dateago}</p>`
+  &limit=`1000`
+  &sortby=`id`
+  &sortdir=`asc`
+  &showLog=`1`
 ]]
 ```
 

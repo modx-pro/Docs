@@ -1,6 +1,8 @@
+# pdoCrumbs
+
 Snippet for building breadcrumb-style navigation.
 
-Good substitute for [BreadCrumb] [1] works with documents from any contexts and provides a number of options for selecting resources.
+Good substitute for [BreadCrumb][1] works with documents from any contexts and provides a number of options for selecting resources.
 
 Snippet has a very high speed, due to selecting only the specified elements from the database per request .
 
@@ -128,7 +130,7 @@ return $title;
 
 Call the snippet on the page
 
-```html
+```modx
 <title>[[Title]] / [[++site_name]] - my best website in the world</title>
 ```
 
@@ -141,6 +143,6 @@ Working Example [generate breadcrumbs in the search results] [3] mSearch2.
 Also the site [bezumkin.ru][4] uses dynamic titles.
 
 [1]: http://rtfm.modx.com/extras/revo/breadcrumb
-[2]: /en/components/pdotools/general-settings
+[2]: /en/components/pdotools/general-properties
 [3]: http://bezumkin.ru/search?query=pdotools
 [4]: http://bezumkin.ru/
