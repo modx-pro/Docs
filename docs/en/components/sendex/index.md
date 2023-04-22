@@ -1,3 +1,18 @@
+---
+name: Sendex
+
+items: [
+  {
+    text: 'Interface',
+    items: [
+      { text: 'Subscriptions', link: 'interface/subscriptions' },
+      { text: 'Email queue', link: 'interface/queue' },
+    ],
+  },
+]
+---
+# Sendex
+
 It is a component to work with Email distribution.
 
 Snippet is very simple, it lets users work with subscription on their own: to subscribe and unsubscribe.
@@ -8,21 +23,21 @@ Also if an authorized user is already subscribed for distribution, he/she will b
 
 ## Parameters
 
-Name              | Description
-------------------|----------------------------------
-**&id**           | distribution identifier (number).
-**&showInactive** | show/hide inactive distributions.
-| **&msgClass**         | Class that will be displayed in the placeholder `[[+class]]` provided that the placeholder `[[+message]]` **is not empty**. The class is useful if you want to not initially show the block with messages in layout.
-**&tplActivate**        | chunk with formatting letter with subscribe activation.
-**&tplSubscribeAuth**   | chunk with form of newsletter subscription for authorized users.
-**&tplSubscribeGuest**  | chunk with form of newsletter subscription for anonyms.
-**&tplUnsubscribe**     | chunk with form of the end of newsletter subscription.
+Name                   | Description
+-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**&id**                | distribution identifier (number).
+**&showInactive**      | show/hide inactive distributions.
+**&msgClass**          | Class that will be displayed in the placeholder `[[+class]]` provided that the placeholder `[[+message]]` **is not empty**. The class is useful if you want to not initially show the block with messages in layout.
+**&tplActivate**       | chunk with formatting letter with subscribe activation.
+**&tplSubscribeAuth**  | chunk with form of newsletter subscription for authorized users.
+**&tplSubscribeGuest** | chunk with form of newsletter subscription for anonyms.
+**&tplUnsubscribe**    | chunk with form of the end of newsletter subscription.
 
 ## Snippet activation
 
 Snippet should be activated **uncached**, because it outputs different chunks depending on user authorization. It is necessary to create a distribution before the usage. See section interface.
 
-```php
+```modx
 [[!Sendex? &id=`1`]]
 ```
 
