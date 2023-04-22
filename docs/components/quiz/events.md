@@ -28,7 +28,7 @@
 - `Quiz.valid.before` - перед валидацией
   - **options** - опции квиза
   - **fields** - проверяемые поля
-- `Quiz.valid.after`	- после валидации
+- `Quiz.valid.after` - после валидации
   - **options** - опции квиза
   - **valid** - результат валидации
 - `Quiz.next.before` - перед получением раздела

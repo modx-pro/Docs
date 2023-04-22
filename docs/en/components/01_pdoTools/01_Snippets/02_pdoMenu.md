@@ -108,8 +108,8 @@ Menu generated from two parents, showing the parents:
 
 ```modx
 [[pdoMenu?
-	&parents=`10,15`
-	&displayStart=`1`
+  &parents=`10,15`
+  &displayStart=`1`
 ]]
 ```
 

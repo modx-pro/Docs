@@ -84,42 +84,42 @@ $cacheKey = $modx->resource->getCacheKey() . '/title_' . sha1(serialize($_REQUES
 $cacheOptions = array('cache_key' => 'resource');
 
 if (!$title = $modx->cacheManager->get($cacheKey, $cacheOptions)) {
-	// We learn the name of the page
-	$title = !empty($modx->resource->$titlefield)
-		? $modx->resource->$titlefield
-		: $modx->resource->pagetitle;
+  // We learn the name of the page
+  $title = !empty($modx->resource->$titlefield)
+    ? $modx->resource->$titlefield
+    : $modx->resource->pagetitle;
 
-	// Add a search query, if there is one
-	if (!empty($_GET['query']) && strlen($_GET['query']) > 2) {
-		// We need to use a placeholder to avoid
-		$title .= ' «[[+mse2_query]]»';
-	}
+  // Add a search query, if there is one
+  if (!empty($_GET['query']) && strlen($_GET['query']) > 2) {
+    // We need to use a placeholder to avoid
+    $title .= ' «[[+mse2_query]]»';
+  }
 
-	// Adding pagination if indicated
-	if (!empty($_GET['page'])) {
-		$title .= $separator . str_replace('[[+page]]', intval($_GET['page']), $tplPages);
-	}
+  // Adding pagination if indicated
+  if (!empty($_GET['page'])) {
+    $title .= $separator . str_replace('[[+page]]', intval($_GET['page']), $tplPages);
+  }
 
-	// Adding parents
-	$crumbs = $modx->runSnippet('pdoCrumbs', array(
-		'to' => $modx->resource->id,
-		'limit' => $parents_limit,
-		'outputSeparator' => $separator,
-		'showHome' => 0,
-		'showAtHome' => 0,
-		'showCurrent' => 0,
-		'direction' => 'rtl',
-		'tpl' => '@INLINE [[+menutitle]]',
-		'tplCurrent' => '@INLINE [[+menutitle]]',
-		'tplWrapper' => '@INLINE [[+output]]',
-		'tplMax' => ''
-	));
-	if (!empty($crumbs)) {
-		$title = $title . $separator . $crumbs;
-	}
+  // Adding parents
+  $crumbs = $modx->runSnippet('pdoCrumbs', array(
+    'to' => $modx->resource->id,
+    'limit' => $parents_limit,
+    'outputSeparator' => $separator,
+    'showHome' => 0,
+    'showAtHome' => 0,
+    'showCurrent' => 0,
+    'direction' => 'rtl',
+    'tpl' => '@INLINE [[+menutitle]]',
+    'tplCurrent' => '@INLINE [[+menutitle]]',
+    'tplWrapper' => '@INLINE [[+output]]',
+    'tplMax' => ''
+  ));
+  if (!empty($crumbs)) {
+    $title = $title . $separator . $crumbs;
+  }
 
-	// By caching the results
-	$modx->cacheManager->set($cacheKey, $title, 0, $cacheOptions);
+  // By caching the results
+  $modx->cacheManager->set($cacheKey, $title, 0, $cacheOptions);
 }
 
 // return title
