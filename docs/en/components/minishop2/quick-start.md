@@ -1,3 +1,5 @@
+# Quick Start
+
 miniShop2 is rolling out to customers with all needed snippets and chunks.
 You need MODX version no less than **2.3** and PHP- no less than **5.3** for work.
 
@@ -23,21 +25,21 @@ Only 3 templates are needed.
 
 This template is presenting common resourses
 
-```html
+```modx
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        [[$Head]]
-    </head>
-    <body>
-        [[$Navbar]]
-        <div class="container">
-            <div id="content" class="main">
-                [[*content]]
-            </div>
-            [[$Footer]]
-        </div>
-    </body>
+  <head>
+    [[$Head]]
+  </head>
+  <body>
+    [[$Navbar]]
+    <div class="container">
+      <div id="content" class="main">
+        [[*content]]
+      </div>
+      [[$Footer]]
+    </div>
+  </body>
 </html>
 ```
 
@@ -47,24 +49,24 @@ It will be used for the home page and the cart page.
 
 Template for category presenting with sheet-fed presentation of goods
 
-```html
+```modx
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        [[$Head]]
-    </head>
-    <body>
-        [[$Navbar]]
-        <div class="container">
-            <div id="content" class="category">
-                [[!pdoPage?
-                    &element=`msProducts`
-                ]]
-                [[!+page.nav]]
-            </div>
-            [[$Footer]]
-        </div>
-    </body>
+  <head>
+    [[$Head]]
+  </head>
+  <body>
+    [[$Navbar]]
+    <div class="container">
+      <div id="content" class="category">
+        [[!pdoPage?
+          &element=`msProducts`
+        ]]
+        [[!+page.nav]]
+      </div>
+      [[$Footer]]
+    </div>
+  </body>
 </html>
 ```
 
@@ -72,21 +74,21 @@ Template for category presenting with sheet-fed presentation of goods
 
 Product template, chunk from ms2 set is activated instead of the content
 
-```html
+```modx
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        [[$Head]]
-    </head>
-    <body>
-        [[$Navbar]]
-        <div class="container">
-            <div id="content" class="product">
-                [[$msProduct.content]]
-            </div>
-            [[$Footer]]
-        </div>
-    </body>
+  <head>
+    [[$Head]]
+  </head>
+  <body>
+    [[$Navbar]]
+    <div class="container">
+      <div id="content" class="product">
+        [[$msProduct.content]]
+      </div>
+      [[$Footer]]
+    </div>
+  </body>
 </html>
 ```
 
@@ -136,22 +138,22 @@ As a final touch one may enter`Navbar` chunk and add there mini cart page presen
 
 ```modx
 <div class="navbar-collapse collapse">
-    <!-- To show menu, set by default  -->
-    <ul class="nav navbar-nav">
-        [[pdoMenu?
-            &startId=`0`
-            &level=`1`
-            &tplOuter=`@INLINE {{+wrapper}}`
-        ]]
-    </ul>
-    <!-- here we will add the mini cart page -->
-    <ul class="nav navbar-nav pull-right" style="padding-top:10px;">
-        <li>[[!msMiniCart]]</li>
-    </ul>
+  <!-- To show menu, set by default  -->
+  <ul class="nav navbar-nav">
+    [[pdoMenu?
+      &startId=`0`
+      &level=`1`
+      &tplOuter=`@INLINE {{+wrapper}}`
+    ]]
+  </ul>
+  <!-- here we will add the mini cart page -->
+  <ul class="nav navbar-nav pull-right" style="padding-top:10px;">
+    <li>[[!msMiniCart]]</li>
+  </ul>
 </div>
 ```
 
 [1]: https://modhost.pro
 [2]: https://modstore.pro/info/connection
-[3]: /components/minishop2/01_Interface/01_Category.md
-[4]: /components/minishop2/01_Interface/02_Item.md
+[3]: /en/components/minishop2/interface/category
+[4]: /en/components/minishop2/interface/product

@@ -1,3 +1,8 @@
+---
+outline: deep
+---
+# Product
+
 MiniShop2 product is the MODX common resource class expanding.
 It has own Interface within the control system and expanded set of characteristics.
 
@@ -37,18 +42,18 @@ Characteristics of items tab is compulsory and the same for everybody.
 
 The system setting **ms2_product_extra_fields** controls the set and sequence of this tab fields' display. Accessible by default:
 
-* **price** - product price, the number with up to 2 decimal places
-* **old_price** - product price, the number with up to 2 decimal places
-* **article** - product article, may be edited as text
-* **weight** - product weight, the number with up to 3 decimal places
-* **color** - product color array, autolist
-* **size** - product dimension array, autolist
-* **made_in** - country of production, ordinary text with hints
-* **vendor** - manufacturer selection from drop down list
-* **tags** - product teg array, autolist
-* **new** - novelty stamp: yes \no
-* **pupular** - popular items stamp:yes \no
-* **favorite** - exceptional items stamp : yes \no
+- **price** - product price, the number with up to 2 decimal places
+- **old_price** - product price, the number with up to 2 decimal places
+- **article** - product article, may be edited as text
+- **weight** - product weight, the number with up to 3 decimal places
+- **color** - product color array, autolist
+- **size** - product dimension array, autolist
+- **made_in** - country of production, ordinary text with hints
+- **vendor** - manufacturer selection from drop down list
+- **tags** - product teg array, autolist
+- **new** - novelty stamp: yes \no
+- **pupular** - popular items stamp:yes \no
+- **favorite** - exceptional items stamp : yes \no
 
 Available option set may be changed by [plug in system][1] only.
 The tab itself may be hidden by **ms2_product_tab_extra**.
@@ -109,32 +114,32 @@ Its references and preview are saved in `image` and `thumb` product characterist
 
 Every product has its own file source (Media source), which manages boot options. Characteristics:
 
-* **basePath** - path to items file directory. By default: `assets/images/products/`
-* **basePathRelative** - basePath can be displayed in site root relation, if this option is on.
-* **baseUrl** - url of items file directory, usually match with *basePath*, if *basePathRelative* is on.
-* **baseUrlRelative** - baseUrl may be displayed in site root relation, if this option is on.
-* **allowedFileTypes** - file types, permitted for loading. By default images: `jpg,jpeg,png,gif only`.
-* **imageExtensions** - which file types are images. By default: `jpg,jpeg,png,gif`
-* **thumbnailType** - preview file format: JPG or PNG.
-* **thumbnailQuality** - quality of generated preview from 0 to 100, where 100 is maximum quality.
-* **skipFiles** - service file types no need to show.
-* **thumbnails** - setting for preview picture  generating as JSON array. Any parameters [acceptable by phpThumb][5] may be stated.
-* **maxUploadWidth** - maximum image width. Any excess will be compressed by javascript on client side before loading.
-* **maxUploadHeight** - maximum image height. Any excess will be compressed by javascript on client side before loading.
-* **maxUploadSize** - maximum image dimension, in bytes.
-* **imageNameType** - type of file name: content hash, or file name processing by friendly resource name generation algorithm.
+- **basePath** - path to items file directory. By default: `assets/images/products/`
+- **basePathRelative** - basePath can be displayed in site root relation, if this option is on.
+- **baseUrl** - url of items file directory, usually match with *basePath*, if *basePathRelative* is on.
+- **baseUrlRelative** - baseUrl may be displayed in site root relation, if this option is on.
+- **allowedFileTypes** - file types, permitted for loading. By default images: `jpg,jpeg,png,gif only`.
+- **imageExtensions** - which file types are images. By default: `jpg,jpeg,png,gif`
+- **thumbnailType** - preview file format: JPG or PNG.
+- **thumbnailQuality** - quality of generated preview from 0 to 100, where 100 is maximum quality.
+- **skipFiles** - service file types no need to show.
+- **thumbnails** - setting for preview picture  generating as JSON array. Any parameters [acceptable by phpThumb][5] may be stated.
+- **maxUploadWidth** - maximum image width. Any excess will be compressed by javascript on client side before loading.
+- **maxUploadHeight** - maximum image height. Any excess will be compressed by javascript on client side before loading.
+- **maxUploadSize** - maximum image dimension, in bytes.
+- **imageNameType** - type of file name: content hash, or file name processing by friendly resource name generation algorithm.
 
 When changing items media source the loaded files will not be copied. You must take care of it.
 
 #### Main settings of phpThumb
 
-* **w** - preview width in pixel
-* **h** - preview height in pixels
-* **zc** - to zoom in and crop the image to fit into setted *h* and *w*
-* **bg** - background color as hex (ffffff, 000000 etc.)
-* **far** - to fit *h* and *w* without cropping. Background must be displayed in *bg*
-* **q** - image quality from 0 to 100
-* **ar** - image auto rotation using EXIF data
+- **w** - preview width in pixel
+- **h** - preview height in pixels
+- **zc** - to zoom in and crop the image to fit into setted *h* and *w*
+- **bg** - background color as hex (ffffff, 000000 etc.)
+- **far** - to fit *h* and *w* without cropping. Background must be displayed in *bg*
+- **q** - image quality from 0 to 100
+- **ar** - image auto rotation using EXIF data
 
 If you need to fit the image by height and width, *h* and *w* must be only stated.
 
@@ -144,7 +149,7 @@ If you need to fit the image by height and width, *h* and *w* must be only state
 
 For other parameters see [phpThumb documents][5].
 
-#### preview upgrading
+#### Preview upgrading
 
 All previews must be upgraded if the file source settings are changed.
 
@@ -166,26 +171,26 @@ $modx->setLogTarget(XPDO_CLI_MODE ? 'ECHO' : 'HTML');
 // Scan all items
 $products = $modx->getIterator('msProduct', array('class_key' => 'msProduct'));
 foreach ($products as $product) {
-    // obtain originals of their pictures
-    $files = $product->getMany('Files', array('parent' => 0));
-    foreach ($files as $file) {
-        // Then obtain originals of their preview
-        $children = $file->getMany('Children');
-        foreach ($children as $child) {
-            // Delete these preview along with files
-            $child->remove();
-        }
-        // and generate new ones
-        $file->generateThumbnails();
-
-        // If it is the first file in the gallery upgrade items preview reference
-        /** @var msProductData $data */
-        if ($file->get('rank') == 0 && $data = $product->getOne('Data')) {
-            $thumb = $file->getFirstThumbnail();
-            $data->set('thumb', $thumb['url']);
-            $data->save();
-        }
+  // obtain originals of their pictures
+  $files = $product->getMany('Files', array('parent' => 0));
+  foreach ($files as $file) {
+    // Then obtain originals of their preview
+    $children = $file->getMany('Children');
+    foreach ($children as $child) {
+      // Delete these preview along with files
+      $child->remove();
     }
+    // and generate new ones
+    $file->generateThumbnails();
+
+    // If it is the first file in the gallery upgrade items preview reference
+    /** @var msProductData $data */
+    if ($file->get('rank') == 0 && $data = $product->getOne('Data')) {
+      $thumb = $file->getFirstThumbnail();
+      $data->set('thumb', $thumb['url']);
+      $data->save();
+    }
+  }
 }
 
 echo microtime(true) - $modx->startTime;
@@ -197,16 +202,16 @@ As preview generation operation may take a long time, better launch this script 
 
 Items may be copied. Herewith, the following are copied:
 
-* All document characteristics
-* All document settings
-* Items caracteristics
-* Items options
-* Items relations
-* Items category
+- All document characteristics
+- All document settings
+- Items caracteristics
+- Items options
+- Items relations
+- Items category
 
 **Gallery files are not copied** because of long duration, especially if remote file source is used as Amazon S3-type, and the process may fall off on time out.
 
-[1]: /components/minishop2/03_Development/01_plug in_items.md
-[2]: /components/minishop2/01_Interface/04_Settings.md
-[4]: /components/18_ms2Gallery
+[1]: /components/minishop2/development/product-plugins
+[2]: /en/components/minishop2/interface/settings
+[4]: /en/components/ms2gallery
 [5]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt

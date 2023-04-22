@@ -12,9 +12,7 @@ Parameter      | By default    | Description
 **userFields** |               | Associative array of matching order fields to user profile fields in the format "order field" => "profile field".
 **showLog**    |               | To show additional information on snippet operation. For authorized in "mgr" context only.
 
-:::info
-Another [pdoTools general parameters][1] may be also used
-:::
+<!--@include: ../parts/tip-general-properties.md-->
 
 ## Ordering
 
@@ -71,4 +69,4 @@ To obtain name of authorized user not from`fullname`, but from `username`:
 ]]
 ```
 
-[1]: /en/components/01_pdoTools/03_Parser.md
+[1]: /en/components/pdotools/parser

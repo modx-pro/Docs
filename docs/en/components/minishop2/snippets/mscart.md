@@ -1,3 +1,5 @@
+# msCart
+
 Snippet is designed to display customer's cart.
 
 [![](https://file.modx.pro/files/4/d/8/4d8ddea00da1c2ff10c94720ee26a588s.jpg)](https://file.modx.pro/files/4/d/8/4d8ddea00da1c2ff10c94720ee26a588.png)
@@ -12,9 +14,7 @@ Parameter         | By default   | Description
 **toPlaceholder** |              | If not empty, snippet will store all data in placeholder with this name, instead of display.
 **showLog**       |              | To show additional information of the snippet operation. For authorized in "mgr" context only.
 
-:::info
-Another [pdoTools generalparameters][1] may be also used
-:::
+<!--@include: ../parts/tip-general-properties.md-->
 
 ## Formatting
 
@@ -74,5 +74,5 @@ It is recommended to call this snippet in junction with others in ordering page:
 [[!msGetOrder]] <!-- Display of order information. Showed after order creation -->
 ```
 
-[1]: /en/components/01_pdoTools/04_General_parameters.md
-[2]: /en/components/01_pdoTools/03_Parser.md
+[1]: /en/components/pdotools/general-properties
+[2]: /en/components/pdotools/parser

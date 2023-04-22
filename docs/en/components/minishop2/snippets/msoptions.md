@@ -1,3 +1,5 @@
+# msOptions
+
 Snippet for additional product characteristics display, stored as JSON.
 
 These are `size`, `color` and  `tags` by default, but you may add others by [product model expansion][1].
@@ -6,11 +8,11 @@ These are `size`, `color` and  `tags` by default, but you may add others by [pro
 
 ## Parameters
 
-Parameter   | By default    | Description
-------------|---------------|-----------------------------------------------------------------------
+Parameter   | By default      | Description
+------------|-----------------|-----------------------------------------------------------------------
 **tpl**     | `tpl.msOptions` | Formatting chunk
-**product** |               | Product identifier. If not indicated, the current document id is used.
-**options** |               | List of option for displaying, separated by commas.
+**product** |                 | Product identifier. If not indicated, the current document id is used.
+**options** |                 | List of option for displaying, separated by commas.
 
 ## Formatting
 
@@ -21,8 +23,8 @@ You may see all available placeholders by empty chunk indication:
 ```modx
 <pre>
 [[msOptions?
-    &options=`color,size`
-    &tpl=``
+  &options=`color,size`
+  &tpl=``
 ]]
 </pre>
 ```
@@ -31,5 +33,5 @@ You may see all available placeholders by empty chunk indication:
 
 Standard chunk is designed to display options in `select`, for sending to the cart along with the product.
 
-[1]: /en/components/minishop2/03_Development/01_Product_plugins.md
-[2]: /en/components/01_pdoTools/03_Parser.md
+[1]: /components/minishop2/development/product-plugins
+[2]: /en/components/pdotools/parser
