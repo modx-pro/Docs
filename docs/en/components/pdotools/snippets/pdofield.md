@@ -1,3 +1,5 @@
+# pdoField
+
 This snippet has the functionality of both [getResourceField][1] and [UltimateParent][2], that is, it displays any field from the specified resource or of its parent, including TV values.
 
 Unlike its analogue it works with documents in any context and has the ability to specify additional parameters in the snippet call, allowing output of resources normally not displayed, for example, hidden resources. By specifying the parameter **&class** it can get the field of any MODX object. It may be called as an [Output Modifier] [3].
@@ -9,7 +11,7 @@ It takes [the general properties and sampling results] [4] of pdoTools and some 
 Property           | Default          | Description
 -------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------
 **&id**            | Current resource | Resource ID.
-**&field**         | `pagetitle`        | Resource field.
+**&field**         | `pagetitle`      | Resource field.
 **&top**           |                  | Selects the root-level parent of the specified resource.
 **&topLevel**      |                  | Selects the resource's parent at this level from the root level.
 **&default**       |                  | Specifies the resource field to return if **&field** is empty. Faster than the Output Modifier filter *:default =*
@@ -47,4 +49,4 @@ But it is better to use a normal snippet call - it is faster and more convenient
 [1]: http://rtfm.modx.com/extras/revo/getresourcefield
 [2]: http://modx.com/extras/package/ultimateparent
 [3]: https://rtfm.modx.com/revolution/2.x/making-sites-with-modx/customizing-content/input-and-output-filters-%28output-modifiers%29
-[4]: http://docs.modx.pro/en/components/pdotools/general-settings
+[4]: /en/components/pdotools/general-properties

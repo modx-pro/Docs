@@ -1,14 +1,43 @@
-# Quick start
+---
+name: pdoTools
+
+items: [
+  {
+    text: 'Snippets',
+    items: [
+      { text: 'pdoResources', link: 'snippets/pdoresources' },
+      { text: 'pdoMenu', link: 'snippets/pdomenu' },
+      { text: 'pdoPage', link: 'snippets/pdopage' },
+      { text: 'pdoCrumbs', link: 'snippets/pdocrumbs' },
+      { text: 'pdoUsers', link: 'snippets/pdousers' },
+      { text: 'pdoSitemap', link: 'snippets/pdositemap' },
+      { text: 'pdoNeighbors', link: 'snippets/pdoneighbors' },
+      { text: 'pdoField', link: 'snippets/pdofield' },
+    ],
+  },
+  {
+    text: 'Classes',
+    link: 'classes/',
+    items: [
+      { text: 'pdoTools', link: 'classes/pdotools' },
+      { text: 'pdoFetch', link: 'classes/pdofetch' },
+    ],
+  },
+  { text: 'General Properties', link: 'general-properties' },
+  { text: 'Parser', link: 'parser' },
+]
+---
+# pdoTools
 
 After creating a fresh MODX install, the next step is often to install a number of extras to add functionality to the site.
 
 The usual set is well-known:
 
-* **getResources** for list your documents
-* **getPage** for pagination of your lists
-* **Wayfinder** for build menus
-* **Breadcrumb(s)** for, hm, breadcrumbs
-* **GoogleSitemap** for sitemap
+- **getResources** for list your documents
+- **getPage** for pagination of your lists
+- **Wayfinder** for build menus
+- **Breadcrumb(s)** for, hm, breadcrumbs
+- **GoogleSitemap** for sitemap
 
 But it's possible to replace all of them with one package: **pdoTools**!
 
@@ -27,12 +56,12 @@ And it joins only needed TVs, so you must specify them in the `&includeTVs` prop
 
 ```modx
 [[!pdoResources?
-    &parents=`0`
-    &includeTVs=`my_tv1,my_tv2`
-    &tvPrefix=`tv.`
-    &processTVs=`1`
-    &includeContent=`1`
-    &showLog=`1`
+  &parents=`0`
+  &includeTVs=`my_tv1,my_tv2`
+  &tvPrefix=`tv.`
+  &processTVs=`1`
+  &includeContent=`1`
+  &showLog=`1`
 ]]
 ```
 
@@ -46,24 +75,24 @@ The second important feature is SQL joins. With pdoTools you can create complex 
 
 ```modx
 [[!pdoResources?
-    &parents=`0`
-    &class=`modResource`
-    &leftJoin=`{
-        "Parent": {
-            "class": "modResource",
-            "on": "modResource.parent = Parent.id"
-        },
-        "CreatedBy": {
-            "class": "modUserProfile",
-            "on": "modResource.createdby = CreatedBy.internalKey"
-        }
-    }`
-    &select=`{
-        "modResource": "modResource.id, modResource.pagetitle",
-        "Parent": "Parent.pagetitle as parent",
-        "CreatedBy": "CreatedBy.fullname as author"
-    }`
-    &showLog=`1`
+  &parents=`0`
+  &class=`modResource`
+  &leftJoin=`{
+    "Parent": {
+      "class": "modResource",
+      "on": "modResource.parent = Parent.id"
+    },
+    "CreatedBy": {
+      "class": "modUserProfile",
+      "on": "modResource.createdby = CreatedBy.internalKey"
+    }
+  }`
+  &select=`{
+    "modResource": "modResource.id, modResource.pagetitle",
+    "Parent": "Parent.pagetitle as parent",
+    "CreatedBy": "CreatedBy.fullname as author"
+  }`
+  &showLog=`1`
 ]]
 ```
 
@@ -85,13 +114,13 @@ pdoPage is a replacement for getPage. There are a few differences compared to ge
 
 ```modx
 <div id="pdopage">
-    <div class="rows">
-        [[!pdoPage?
-            &parents=`0`
-            &ajaxMode=`default`
-        ]]
-    </div>
-    [[!+page.nav]]
+  <div class="rows">
+    [[!pdoPage?
+      &parents=`0`
+      &ajaxMode=`default`
+    ]]
+  </div>
+  [[!+page.nav]]
 </div>
 ```
 
@@ -105,8 +134,8 @@ Because xPDO objects are bypassed, you need to check permissions of items in men
 
 ```modx
 [[!pdoMenu?
-    &parents=`0`
-    &checkPermissions=`list`
+  &parents=`0`
+  &checkPermissions=`list`
 ]]
 ```
 
@@ -118,8 +147,8 @@ This snippets lists users of your site. You can filter them by groups and roles:
 
 ```modx
 [[!pdoUsers?
-    &groups=`Authors`
-    &sortdir=`asc`
+  &groups=`Authors`
+  &sortdir=`asc`
 ]]
 ```
 
@@ -127,11 +156,11 @@ You can combine this with **pdoPage** to provide a paginated list of users:
 
 ```modx
 [[!pdoPage?
-    &element=`pdoUsers`
-    &groups=`Authors`
-    &roles=`Member`
-    &sortby=`id`
-    &sortdir=`asc`
+  &element=`pdoUsers`
+  &groups=`Authors`
+  &roles=`Member`
+  &sortby=`id`
+  &sortdir=`asc`
 ]]
 [[!+page.nav]]
 ```
@@ -154,8 +183,8 @@ On my site it takes almost 30 seconds for the first run and only 0.03 for the se
 
 ```modx
 [[!pdoSitemap?
-    &forceXML=`0`
-    &showLog=`1`
+  &forceXML=`0`
+  &showLog=`1`
 ]]
 ```
 
@@ -171,8 +200,8 @@ Snippet for make links to previous, next and upper pages of the current document
 
 ```modx
 [[!pdoNeighbors?
-    &sortby=`menuindex`
-    &sortdirc=`desc`
+  &sortby=`menuindex`
+  &sortdirc=`desc`
 ]]
 ```
 
@@ -190,7 +219,7 @@ My version of a simple snippet for breadcrumbs on the site. Nothing special, exc
 
 This snippet generates the "title" tag of pages. It runs **pdoCrumbs** and shows the path to the current document in the title.
 
-```html
+```modx
 <title>[[!pdoTitle]] / [[++site_name]]</title>
 ```
 
@@ -213,8 +242,8 @@ For example, we need to get `longtitle` of resource with id = 15
 
 ```modx
 [[pdoField?
-    &id=`15`
-    &field=`longtitle`
+  &id=`15`
+  &field=`longtitle`
 ]]
 ```
 
@@ -222,9 +251,9 @@ Or if we want to get `pagetitle` of grandparent of current document:
 
 ```modx
 [[pdoField?
-    &id=`[[*id]]`
-    &field=`pagetitle`
-    &top=`2`
+  &id=`[[*id]]`
+  &field=`pagetitle`
+  &top=`2`
 ]]
 ```
 

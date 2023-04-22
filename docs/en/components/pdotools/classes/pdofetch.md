@@ -1,3 +1,5 @@
+# pdoFetch
+
 pdoFetch extends pdoTools so you need to load only one class depending of what you want right now.
 You can load each class very simple:
 
@@ -11,17 +13,18 @@ And than
 $resources = $pdo->getCollection('modResource', array(
     'published' => true,
     'deleted' => false
-), array(
+  ), array(
     'parents' => '1,5,6,-9',
     'includeTVs' => 'tv1, tv2',
     'sortby' => 'id',
     'sortdir' => 'asc',
     'limit' => 20,
-));
+  )
+);
 $tpl = '@INLINE <p>[[+id]] - [[+pagetitle]]</p>';
 $output = '';
 foreach ($resources as $resource) {
-    $output .= $pdo->getChunk($tpl, $resource);
+  $output .= $pdo->getChunk($tpl, $resource);
 }
 return $output;
 ```
@@ -36,9 +39,9 @@ That is why you need to use query for silter by TVs:
 
 ```modx
 [[!pdoResources?
-    &parents=`0`
-    &includeTVs=`tv1`
-    &where=`{"tv1":"my_value"}`
+  &parents=`0`
+  &includeTVs=`tv1`
+  &where=`{"tv1":"my_value"}`
 ]]
 ```
 
@@ -46,9 +49,9 @@ Default TVs values do not saved to table, they are just TV settings, so you need
 
 ```modx
 [[!pdoResources?
-    &parents=`0`
-    &includeTVs=`tv2`
-    &where=`{"tv2":null}`
+  &parents=`0`
+  &includeTVs=`tv2`
+  &where=`{"tv2":null}`
 ]]
 ```
 

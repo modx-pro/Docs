@@ -1,3 +1,5 @@
+# pdoSitemap
+
 pdoSitemap i a snippet that easily creates sitemaps for search engines (sitemap.xml). The snippet understands the parameters used by the snippet [GoogleSitemap][1] (by translation to the native parameters) and can therefore easily replace it.
 
 The main feature is a much higher processing speed compared to the snippet GoogleSitemap. The site [bezumkin.ru][2] with 1700 pages increased the generation speed of the sitemap by ***12 times*** from 8.4 seconds down to 0.7.
@@ -94,9 +96,9 @@ Add another context (catalog) to the example above (if web is the default contex
 
 ```modx
 [[pdoSitemap?
-&resources=`-25`
-&parents=`-15,10`
-&context=`web,catalog`
+  &resources=`-25`
+  &parents=`-15,10`
+  &context=`web,catalog`
 ]]
 ```
 
@@ -125,6 +127,6 @@ This call shows the execution log (remember to change the content type of the re
 
 [1]: http://rtfm.modx.com/extras/revo/googlesitemap
 [2]: http://bezumkin.ru/sitemap.xml
-[3]: /en/components/01_pdoTools/04_General_settings.md
+[3]: /en/components/pdotools/general-properties
 [4]: http://www.sitemaps.org/protocol.html#prioritydef
 [5]: http://www.sitemaps.org/protocol.html#changefreqdef

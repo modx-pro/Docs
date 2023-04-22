@@ -4,13 +4,13 @@ Snippet **pdoPage** allows you to view the work of other snippets with the pagin
 
 There are several serious differences from the snippet *getPage*:
 
-* 2 types of pagination: skip pages and classic (depending on the parameter **&pageLimit**).
-* Pagination does not float. If set to show 5 page links - will always be 5 and no more.
-* You can specify chunks to output when there are no links to the first, last, next or previous page.
-* **&maxLimit** does not allow the user to slow down your website with a large numbers in a $_GET['limit'].
-* Redirect to first page if no results or an invalid parameter **&page**.
-* Works with the snippet [pdoResources][1], by default.
-* Supports the work via ajax.
+- 2 types of pagination: skip pages and classic (depending on the parameter **&pageLimit**).
+- Pagination does not float. If set to show 5 page links - will always be 5 and no more.
+- You can specify chunks to output when there are no links to the first, last, next or previous page.
+- **&maxLimit** does not allow the user to slow down your website with a large numbers in a $_GET['limit'].
+- Redirect to first page if no results or an invalid parameter **&page**.
+- Works with the snippet [pdoResources][1], by default.
+- Supports the work via ajax.
 
 ## Settings
 
@@ -67,15 +67,15 @@ Chunks                | By default
 
 pdoPage is able to work with ajax out of the box. There are 3 conditions for it:
 
-* The snippet option `&ajax` is enabled.
-* A request was made with XMLHttpRequest, eg ajax request.
-* A request contains the variable specified in the &pageVarKey parameter of snippet call. By default it is a `page`.
+- The snippet option `&ajax` is enabled.
+- A request was made with XMLHttpRequest, eg ajax request.
+- A request contains the variable specified in the &pageVarKey parameter of snippet call. By default it is a `page`.
 
 So, you just need to enable the parameter **&ajax=`1`** and to send a GET request to the page with jQuery:
 
 ```js
-$.get('document.html?page=5', function(response) {
-    console.log(response);
+$.get('document.html?page=5', function (response) {
+  console.log(response);
 }, 'json');
 ```
 
@@ -89,13 +89,13 @@ You only need to wrap the call in a special markup:
 
 ```modx
 <div id="pdopage">
-    <div class="rows">
-        [[!pdoPage?
-            &parents=`0`
-            &ajaxMode=`default`
-        ]]
-    </div>
-    [[!+page.nav]]
+  <div class="rows">
+    [[!pdoPage?
+      &parents=`0`
+      &ajaxMode=`default`
+    ]]
+  </div>
+  [[!+page.nav]]
 </div>
 ```
 
@@ -103,10 +103,10 @@ Within a `[[+page.nav]]` we have a div with class "pagination" — so pdoPage by
 
 You can change the IDs for that layout with the following parameters:
 
-* **ajaxElemWrapper** — jQuery selector of wrapper with results and pagination. By default is `#pdopage`.
-* **ajaxElemRows** — jQuery selector of element with results. By default is `#pdopage .rows`
-* **ajaxElemPagination** — jQuery selector of element with pagination. By default is `#pdopage .pagination`
-* **ajaxElemLink** — jQuery selector of pagination links. By default is `pdopage .pagination a`
+- **ajaxElemWrapper** — jQuery selector of wrapper with results and pagination. By default is `#pdopage`.
+- **ajaxElemRows** — jQuery selector of element with results. By default is `#pdopage .rows`
+- **ajaxElemPagination** — jQuery selector of element with pagination. By default is `#pdopage .pagination`
+- **ajaxElemLink** — jQuery selector of pagination links. By default is `pdopage .pagination a`
 
 The last two selector hopes that you have not changed the standard markup of pagination block in the parameter **&tplPageWrapper**.
 The whole logic is provided by connecting the javascript file from the parameter **&frontent_js**.
@@ -121,21 +121,21 @@ So, it will be correct to place it at the top:
 
 ```modx
 <div id="pdopage">
-    [[!+page.nav]]
-    <div class="rows">
-        [[!pdoPage?
-            &parents=`0`
-            &ajaxMode=`button`
-            &limit=`5`
-        ]]
-    </div>
+  [[!+page.nav]]
+  <div class="rows">
+    [[!pdoPage?
+      &parents=`0`
+      &ajaxMode=`button`
+      &limit=`5`
+    ]]
+  </div>
 </div>
 ```
 
 Uses all the same selectors, plus:
 
-* **ajaxElemMore** — jQuery selector for button to load results if your &ajaxMode is "button". Default is `#pdopage .btn-more`.
-* **ajaxTplMore** — the template of a button to load the new results when ajaxMode is "button". Must include the selector listed in the **&ajaxElemMore**.
+- **ajaxElemMore** — jQuery selector for button to load results if your &ajaxMode is "button". Default is `#pdopage .btn-more`.
+- **ajaxTplMore** — the template of a button to load the new results when ajaxMode is "button". Must include the selector listed in the **&ajaxElemMore**.
 
 When you click on the button it will load `&limit` elements and add them to the end of the results block.
 If there is no more results — the button will hide.
@@ -152,13 +152,13 @@ everything is done automatically when you scroll the page.
 
 ```modx
 <div id="pdopage">
-    [[!+page.nav]]
-    <div class="rows">
-        [[!pdoPage?
-            &parents=`0`
-            &ajaxMode=`scroll`
-        ]]
-    </div>
+  [[!+page.nav]]
+  <div class="rows">
+    [[!pdoPage?
+      &parents=`0`
+      &ajaxMode=`scroll`
+    ]]
+  </div>
 </div>
 ```
 
@@ -170,8 +170,8 @@ Also works correctly using the navigation buttons "forward\back" of the browser.
 
 You can change this behavior by setting **&ajaxHistory** by switching "on" or "off". By default, it works as follows:
 
-* If ajaxMode set to **default**, the History API is enabled, the page number is stored.
-* If ajaxMode set to **scroll** or **button**, the History API is disabled.
+- If ajaxMode set to **default**, the History API is enabled, the page number is stored.
+- If ajaxMode set to **scroll** or **button**, the History API is disabled.
 
 When **&ajaxHistory** is disabled, the navigation block is hidden, so pages cannot be switched manually.
 
@@ -180,20 +180,20 @@ When **&ajaxHistory** is disabled, the navigation block is hidden, so pages cann
 You can specify the functions that will be called before and after page load via ajax:
 
 ```js
-pdoPage.callbacks['before'] = function(config) {
-    console.log('The config before load!', config);
+pdoPage.callbacks.before = function (config) {
+  console.log('The config before load!', config);
 };
-pdoPage.callbacks['after'] = function(config, response) {
-    console.log('The config after load!', config);
-    console.log('The response from server!', response);
+pdoPage.callbacks.after = function (config, response) {
+  console.log('The config after load!', config);
+  console.log('The response from server!', response);
 }
 ```
 
 Version 1.11.0-pl brings the ability to add a handler to the event **pdopage_load**:
 
 ```js
-$(document).on('pdopage_load', function(e, config, response) {
-    console.log(e, config, response);
+$(document).on('pdopage_load', function (e, config, response) {
+  console.log(e, config, response);
 });
 ```
 
@@ -209,19 +209,19 @@ Since version 2.7.4 **[[+assetsUrl]]js/jquery.pdopage.min.js** is available and 
 
 The chunk for **frontend_startup_js** should stay empty and the chunk for **frontend_init_js** could be filled with the following script tag:
 
-```html
+```modx
 <script type="text/javascript">
-    $('[[+wrapper]]').pdoPage([[+config]]);
+  $('[[+wrapper]]').pdoPage([[+config]]);
 </script>
 ```
 
 The plugin triggers two events on the wrapper element. These could be catched the following:
 
 ```js
-$('[[+wrapper]]').on('beforeLoad', function(event, pdopage, settings){
+$('[[+wrapper]]').on('beforeLoad', function (event, pdopage, settings){
   console.log(settings);
 });
-$('[[+wrapper]]').on('afterLoad', function(event, pdopage, settings, response){
+$('[[+wrapper]]').on('afterLoad', function (event, pdopage, settings, response){
   console.log(settings);
   console.log(response);
 });
@@ -229,7 +229,7 @@ $('[[+wrapper]]').on('afterLoad', function(event, pdopage, settings, response){
 
 All public methods of the jQuery plugin could be called with the following code:
 
-```js
+```modx
 $('[[+wrapper]]').pdoPage('<methodname>', <comma>, <separated>, <parameters>);
 ```
 
@@ -237,7 +237,7 @@ $('[[+wrapper]]').pdoPage('<methodname>', <comma>, <separated>, <parameters>);
 
 Form filtering the pdoPage ajax result could be done with the following code:
 
-```js
+```modx
 <script type="text/javascript">
   var pdoPageWrapper = $('[[+wrapper]]');
   pdoPageWrapper.pdoPage([[+config]]);
@@ -257,15 +257,15 @@ From version 2.2.2 you can use the parameter **&pageLinkScheme** to specify the 
 
 There can be only two placeholders in the parameters:
 
-* `[[+pageVarKey]]` - a variable with name of the page. By default is `page`.
-* `[[+page]]` - the number of the page.
+- `[[+pageVarKey]]` - a variable with name of the page. By default is `page`.
+- `[[+page]]` - the number of the page.
 
 For example just specify such parameter:
 
 ```modx
 [[!pdoPage?
-    &parents=`0`
-    &pageLinkScheme=`/[[+pageVarKey]]-[[+page]]`
+  &parents=`0`
+  &pageLinkScheme=`/[[+pageVarKey]]-[[+page]]`
 ]]
 [[!+page.nav]]
 ```
@@ -285,32 +285,32 @@ You need to create the plugin to handle this links:
 <?php
 // Work only with OnPageNotFound
 if ($modx->event->name == 'OnPageNotFound') {
-    // Get the key from system settings
-    $req = $modx->getOption('request_param_alias');
-    // Trying to catch this key in a request
-    $pageVarKey = 'page';
-    // We continue only if the request is matched to our pattern "pageVarKey-page"
-    if (preg_match("#.*?({$pageVarKey}-(\d+))#", $_REQUEST[$req], $matches)) {
-        // Remove furl string and get the exact address of current page
-        $uri = str_replace($matches[1], '', $matches[0]);
+  // Get the key from system settings
+  $req = $modx->getOption('request_param_alias');
+  // Trying to catch this key in a request
+  $pageVarKey = 'page';
+  // We continue only if the request is matched to our pattern "pageVarKey-page"
+  if (preg_match("#.*?({$pageVarKey}-(\d+))#", $_REQUEST[$req], $matches)) {
+    // Remove furl string and get the exact address of current page
+    $uri = str_replace($matches[1], '', $matches[0]);
 
-        // Find a page by this address
-        $id = 0;
-        // First, as it is, with the slash at the end
-        if (!$id = $modx->findResource($uri)) {
-            // If there is no mathes - then we try to cut slash and search again
-            $id = $modx->findResource(rtrim($uri, '/'));
-        }
-
-        // If we found the resource
-        if ($id) {
-            // Adding the number of the page to the globals, so pdoPage could see them
-            $_GET[$pageVarKey] = $_REQUEST[$pageVarKey] = $matches[2];
-            // And load this page
-            $modx->sendForward($id);
-        }
-        // If the resource was not found - do nothing. Maybe another plugin will catch this request
+    // Find a page by this address
+    $id = 0;
+    // First, as it is, with the slash at the end
+    if (!$id = $modx->findResource($uri)) {
+      // If there is no mathes - then we try to cut slash and search again
+      $id = $modx->findResource(rtrim($uri, '/'));
     }
+
+    // If we found the resource
+    if ($id) {
+      // Adding the number of the page to the globals, so pdoPage could see them
+      $_GET[$pageVarKey] = $_REQUEST[$pageVarKey] = $matches[2];
+      // And load this page
+      $modx->sendForward($id);
+    }
+    // If the resource was not found - do nothing. Maybe another plugin will catch this request
+  }
 }
 ```
 
@@ -323,7 +323,7 @@ Therefore, a simple call of the snippet will show the child resources:
 
 ```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
 ]]
 [[!+page.nav]]
 ```
@@ -332,8 +332,8 @@ Output all available documents of the site:
 
 ```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
-    &parents=`0`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &parents=`0`
 ]]
 [[!+page.nav]]
 ```
@@ -343,9 +343,9 @@ Please note that if the number of pages is less than 7, it will work as normal n
 
 ```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
-    &parents=`0`
-    &pageLimit=`7`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &parents=`0`
+  &pageLimit=`7`
 ]]
 [[!+page.nav]]
 ```
@@ -354,11 +354,11 @@ Enable cache for 30 minutes:
 
 ```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
-    &parents=`0`
-    &pageLimit=`7`
-    &cache=`1`
-    &cacheTime=`1800`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &parents=`0`
+  &pageLimit=`7`
+  &cache=`1`
+  &cacheTime=`1800`
 ]]
 [[!+page.nav]]
 ```
@@ -368,14 +368,14 @@ Now, whichever limit is not specified by the user in the url will still be no mo
 
 ```modx
 [[!pdoPage?
-    &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
-    &parents=`0`
-    &pageLimit=`7`
-    &cache=`1`
-    &cacheTime=`1800`
-    &maxLimit=`10`
+  &tpl=`@INLINE <p>[[+idx]] <a href="/[[+uri]]">[[+pagetitle]]</a></p>`
+  &parents=`0`
+  &pageLimit=`7`
+  &cache=`1`
+  &cacheTime=`1800`
+  &maxLimit=`10`
 ]]
 [[!+page.nav]]
 ```
 
-[1]: /en/components/01_pdoTools/01_Snippets/01_pdoResources.md
+[1]: /en/components/pdotools/snippets/pdoresources

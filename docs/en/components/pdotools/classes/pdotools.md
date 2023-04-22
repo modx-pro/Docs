@@ -1,3 +1,5 @@
+# pdoTools
+
 This class handles chunks and contains various service methods.
 
 ```php
@@ -11,12 +13,12 @@ It can load chunks by various methods:
 2. `@INLINE` chunk that will be generated on the fly:
 3. `@FILE` chunk, that will be loaded from file. Due to security reasons you can use only files of types `tpl` and `html`. Files are loaded from directory specified in system setting **pdotools_elements_path**.
 
-  ```modx
-  [[!pdoResources?
+    ```modx
+    [[!pdoResources?
       &elementsPath=`/core/elements/`
       &tpl=`@FILE chunks/file.tpl`
-  ]]
-  ```
+    ]]
+    ```
 
 4. `@TEMPLATE`- chunk will be generated on the fly from template of resource. So, this one only for rows with filled field `template`. It is kind of replacement for snippet **renderResources**.
 
@@ -26,8 +28,8 @@ The only thing you must remember - is to be careful with `@INLINE` because if yo
 
 ```modx
 [[!pdoResources?
-    &parenets=`0`
-    &tpl=`@INLINE <p>{{+id}} - {{+pagetitle}}</p>`
+  &parenets=`0`
+  &tpl=`@INLINE <p>{{+id}} - {{+pagetitle}}</p>`
 ]]
 ```
 
@@ -35,10 +37,10 @@ This placeholders will pass to snippet unprocessed and than pdoTools will replac
 
 When placeholders are passed into pdoTools it tries to parse it yourself. It can parse simple tags like:
 
-* `[[+tag]]`
-* `[[%lexicon]]`
-* `[[~id_for_link]]`
-* `[[~[[+id]]]]`
+- `[[+tag]]`
+- `[[%lexicon]]`
+- `[[~id_for_link]]`
+- `[[~[[+id]]]]`
 
 But it will load MODX parser to process any nested snippets, chunks or output filters. So, any chunk with output filter will be **slower**.
 
@@ -46,9 +48,9 @@ But how we can modify our data before processing? It is a simple - we need to us
 
 ```modx
 [[!pdoResources?
-    &parents=`0`
-    &tpl=`@INLINE <p>{{+id}} - {{+pagetitle}}</p>`
-    &prepareSnippet=`cookMyData`
+  &parents=`0`
+  &tpl=`@INLINE <p>{{+id}} - {{+pagetitle}}</p>`
+  &prepareSnippet=`cookMyData`
 ]]
 ```
 
@@ -63,8 +65,8 @@ $row['pagetitle'] .= rand();
 return json_encode($row);
 ```
 
-:::info
-you can use `json_encode()` or `serialize()` to return data
+::: info Info
+You can use `json_encode()` or `serialize()` to return data
 :::
 
 Now you know how we able to throw away **all** output filters and nested snippets from your chunks to make them faster.
@@ -76,7 +78,7 @@ pdoTools has methods `setStore()` and `getStore()`. For example, I want to highl
 
 ```modx
 [[!TicketComments?
-    &prepareSnippet=`prepareComments`
+  &prepareSnippet=`prepareComments`
 ]]
 ```
 
