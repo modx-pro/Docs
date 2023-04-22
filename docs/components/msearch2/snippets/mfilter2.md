@@ -564,4 +564,4 @@ $(document).on('mse2_load', function (e, data) {
 [3]: http://jqueryui.com/slider/
 [4]: http://getbootstrap.com/
 [5]: /components/minishop2/snippets/msproducts
-[6]: /components/msearch2/extension/filtering-methods
+[6]: /components/msearch2/extension/filtration-methods
