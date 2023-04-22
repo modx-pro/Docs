@@ -134,7 +134,7 @@ Custom sorting:
 
 - File list in manager
 
-  [![File list in manager](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1es.jpg)](http://modstore.pro/assets/ uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png)
+  [![File list in manager](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1es.jpg)](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png)
 
 - Media source tree
 
