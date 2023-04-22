@@ -48,6 +48,4 @@ The same as above, but you need to click on the link to request the content:
 ]]
 ```
 
-History of a page changes is loading [on the documentation site][1] through AjaxSnippet.
-
-[1]: http://docs.modx.pro
+<!-- History of a page changes is loading [on the documentation site](http://docs.modx.pro) through AjaxSnippet. -->

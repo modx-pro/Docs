@@ -107,5 +107,5 @@ print $sucsess . '% (' . $current . ')' . "\n\n";
 
 Так как операция генерации превью может занять длительное время, лучше запускать этот скрипт из консоли сервера.
 
-[4]: /components/ms2gallery
+[4]: /components/ms2gallery/
 [5]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt
