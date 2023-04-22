@@ -1,3 +1,5 @@
+# Queries
+
 Page that shows what your visitors are looking for.
 
 [![](https://file.modx.pro/files/c/c/a/cca0d3b1ab820fc40997e80b89cd6323s.jpg)](https://file.modx.pro/files/c/c/a/cca0d3b1ab820fc40997e80b89cd6323.png)
@@ -8,6 +10,4 @@ This information helps you to optimize your index and [synonyms][1] for your vis
 By the way, these very queries work in autoprompts of **queries** regime of snippet [mSearchForm][2].
 
 [1]: http://phpmorphy.sourceforge.net/dokuwiki/
-[2]: /en/components/03_mSearch2/01_Snippets/03_mSearchForm.md
-
-
+[2]: /en/components/msearch2/snippets/msearchform

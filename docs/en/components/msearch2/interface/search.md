@@ -1,3 +1,5 @@
+# Search
+
 Control system page for checking how search through the site works.
 
 [![](https://file.modx.pro/files/f/2/8/f285fee4cd4b72561c289f38fd1677b4s.jpg)](https://file.modx.pro/files/f/2/8/f285fee4cd4b72561c289f38fd1677b4.png)
@@ -8,5 +10,5 @@ Resources that don’t have the corresponding parameter ‘searchable’ matched
 This page has an interesting feature: it gives you an opportunity to go to the page of a result found in admin area.
 That is, **mSearch2 adds morphological search of full value to your control system MODX**.
 
-[1]: /components/03_mSearch2/01_Сниппеты/01_mSearch2.md
-[2]: /components/03_mSearch2/01_Сниппеты/02_mFilter2.md
+[1]: /en/components/msearch2/snippets/msearch2
+[2]: /en/components/msearch2/snippets/mfilter2

@@ -1,3 +1,5 @@
+# Items filtration example
+
 [miniShop2][1] can work with any column of product properties table, whereas [mSearch2][2] can receive any columns from tables and generate filters on the base of them.
 
 Let us combine these 2 abilities and write a filter by product availability. We will also learn to add our own fields to product and build a special filter for it.
@@ -11,64 +13,68 @@ Then we create new column **availability** INT(10) in table msProductData.
 [![](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72s.jpg)](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72.png)
 [![](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492s.jpg)](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492.png)
 
-We add the new field in product model:
+We add the new field in product model on the path: `/core/components/minishop2/plugins/availability/model/`
 
-```php
+::: code-group
+```php [msproductdata.map.inc.php]
 <?php
-// File /core/components/minishop2/plugins/availability/model/msproductdata.map.inc.php
+
 return array(
-    'fields' => array(
-        'availability' => 0
+  'fields' => array(
+    'availability' => 0
+  ),
+  'fieldMeta' => array(
+    'availability' => array(
+      'dbtype' => 'integer',
+      'precision' => '10',
+      'phptype' => 'integer',
+      'null' => true,
+      'default' => 0
     )
-    ,'fieldMeta' => array(
-        'availability' => array(
-            'dbtype' => 'integer'
-            ,'precision' => '10'
-            ,'phptype' => 'integer'
-            ,'null' => true
-            ,'default' => 0
-        )
-    )
+  )
 );
 ```
+:::
 
 [![](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4s.jpg)](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4.png)
 
-We add vidgets ExtJS for this field to the admin space:
+We add vidgets ExtJS for this field to the admin space on the path: `/assets/components/minishop2/plugins/availability/`
 
-```php
-<?php
-    // File /assets/components/minishop2/plugins/availability/msproductdata.js
-    minniShop2.plugin.pluginname = {
-    tFields: function(config) {
+::: code-group
+```js [msproductdata.js]
+miniShop2.plugin.pluginname = {
+  getFields: function (config) {
     return {
-            availability: {xtype: 'numberfield', description: _('ms2_product_availability_help')}
-        }
-
-    etColumns: function() {
+      availability: { xtype: 'numberfield', description: _('ms2_product_availability_help') }
+    }
+  },
+  getColumns: function () {
     return {
-            availability: {width:50, sortable:true, editor: {xtype:'numberfield'}}
-            }
-        }
+      availability: {width:50, sortable:true, editor: {xtype:'numberfield'}}
+    }
+  }
 };
 ```
+:::
 
 [![](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecfs.jpg)](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecf.png)
 
-We join all this with an index file which will turn on the plugin:
+We join all this with an index file which will turn on the plugin on the path: `/core/components/minishop2/plugins/availability/`
 
-```php
+::: code-group
+```php [index.php]
 <?php
-    //core/components/minishop2/plugins/availability/index.php
-    turn array(
-    'xpdo_meta_map' => array(
+//
+return array(
+  'xpdo_meta_map' => array(
     'msProductData' => require_once dirname(__FILE__) .'/model/msproductdata.map.inc.php'
-
-    ,'manager' => array(
-        'msProductData' => MODX_ASSETS_URL . 'components/minishop2/plugins/availability/msproductdata.js'
-    )
+  ),
+  'manager' => array(
+    'msProductData' => MODX_ASSETS_URL . 'components/minishop2/plugins/availability/msproductdata.js'
+  )
 );
 ```
+:::
 
 [![](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009s.jpg)](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009.png)
 
@@ -93,7 +99,7 @@ This means that we can turn it on very easily:
 
 ```modx
 [[!mFilter?
-    &filters=`ms|availability:availability`
+  &filters=`ms|availability:availability`
 ]]
 ```
 
@@ -102,9 +108,9 @@ Evidently, a slider with a range of prices will not suit here. It is a radio but
 
 ```modx
 [[!mFilter?
-    &filters=`ms|availability:availability`
-    &suggestionsRadio=`ms|availability`
-    &tplFilter.row.ms|availability=`tpl.mFilter2.filter.radio`
+  &filters=`ms|availability:availability`
+  &suggestionsRadio=`ms|availability`
+  &tplFilter.row.ms|availability=`tpl.mFilter2.filter.radio`
 ]]
 ```
 
@@ -146,8 +152,8 @@ For getting data methods get**MethodName**Values() are used, for preparing filte
 
 We need to write our own methods of data preparation and filtration in order to divide all products into 2 arrays:
 
-* Field availability <= 0
-* Field availability > 0
+- Field availability <= 0
+- Field availability > 0
 
 This means that all products are divided into groups 'available' or 'unavailable'.
 
@@ -155,66 +161,66 @@ We write methods **buildAvailabilityFilter** and **filterAvailability**:
 
 ```php
 <?php
-    class myCustomFilter extends mse2FiltersHandler {
+class myCustomFilter extends mse2FiltersHandler {
 
-    // We take standard buildBooleanFilter as a sample and change it a little
-    pubblic function buildAvailabilityFilter(array $values) {
+  // We take standard buildBooleanFilter as a sample and change it a little
+  public function buildAvailabilityFilter(array $values) {
     if (count($values) < 2 && empty($this->config['showEmptyFilters'])) {
-    return array();
+      return array();
     }
 
-    results = array();
-        reach ($values as $value => $ids) {
-        title = ($value <= 0)
+    $results = array();
+    foreach ($values as $value => $ids) {
+      $title = ($value <= 0)
         ? $this->modx->lexicon('mse2_filter_availability_no')
         : $this->modx->lexicon('mse2_filter_availability_yes');
 
-    $value = $value <= 0 ? '0' : '1';
+      $value = $value <= 0 ? '0' : '1';
 
-        (!isset($results[$value])) {
-        results[$value] = array(
-        'title' => $title
-        ,'value' => $value
-        ,'type' => 'availability'
-        ,'resource' => array()
+      if (!isset($results[$value])) {
+        $results[$value] = array(
+          'title' => $title
+          ,'value' => $value
+          ,'type' => 'availability'
+          ,'resource' => array()
         );
-    }
+      }
 
-    foreach ($ids as $id) {
+      foreach ($ids as $id) {
         $results[$value]['resources'][] = $id;
-    }
+      }
     }
 
     ksort($results);
     return $results;
-    }
+  }
 
 
-    / When it comes to proper filtration, we take filterNumber as a basis
-    public function filterAvailability(array $requested, array $values, array $ids) {
+  // When it comes to proper filtration, we take filterNumber as a basis
+  public function filterAvailability(array $requested, array $values, array $ids) {
     $matched = array();
 
     $value = $requested[0];
-    tmp = array_flip($ids);
-        reach ($values as $number => $resources) {
-        ($value && $number > 0) {
-        reach ($resources as $id) {
-        if (isset($tmp[$id])) {
-        $matched[] = $id;
+    $tmp = array_flip($ids);
+    foreach ($values as $number => $resources) {
+      if ($value && $number > 0) {
+        foreach ($resources as $id) {
+          if (isset($tmp[$id])) {
+            $matched[] = $id;
+          }
         }
+      }
+      elseif (!$value && $number <= 0) {
+        foreach ($resources as $id) {
+          if (isset($tmp[$id])) {
+            $matched[] = $id;
+          }
         }
-
-        seif (!$value && $number <= 0) {
-        reach ($resources as $id) {
-        if (isset($tmp[$id])) {
-        $matched[] = $id;
-        }
-        }
-    }
+      }
     }
 
     return $matched;
-    }
+  }
 }
 ```
 
@@ -227,5 +233,5 @@ We add records **mse2_filter_availability_no** and **mse2_filter_availability_ye
 Obviously, this can be supported by checkboxes, texts in dictionaries can be changed, etc. The principle remains as it is.
 
 [1]: /en/components/minishop2/
-[2]: /en/components/03_mSearch2/
+[2]: /en/components/msearch2/
 [3]: http://bezumkin.ru/modx/minishop2/classes/910/
