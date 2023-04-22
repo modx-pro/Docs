@@ -13,7 +13,7 @@ items: [
       { text: 'pdoSitemap', link: 'snippets/pdositemap' },
       { text: 'pdoNeighbors', link: 'snippets/pdoneighbors' },
       { text: 'pdoField', link: 'snippets/pdofield' },
-      { text: 'pdotitle', link: 'snippets/pdotitle' },
+      { text: 'pdoTitle', link: 'snippets/pdotitle' },
       { text: 'pdoArchive', link: 'snippets/pdoarchive' },
     ],
   },
