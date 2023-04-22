@@ -25,5 +25,5 @@ Name                     | By default                                           
 ## Call method
 
 ```modx
-[[!TicketForm?]]
+[[!TicketForm]]
 ```

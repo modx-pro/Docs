@@ -2,7 +2,7 @@
 
 Outputs the information about the present ticket and also allows to vote for a ticket on it's own page.
 
-:::info
+::: info Info
 Beginning with version 1.4.0 snippet can be used with any MODX resource
 :::
 
@@ -16,13 +16,13 @@ Name            | By default         | Description
 
 ## Examples of the call
 
-* Standard snippet call
+- Standard snippet call
 
   ```modx
-  [[!TicketMeta?]]
+  [[!TicketMeta]]
   ```
 
-* In order to take a look at all the available standard placeholders
+- In order to take a look at all the available standard placeholders
 
   ```modx
   [[!TicketMeta? &tpl=``]]
