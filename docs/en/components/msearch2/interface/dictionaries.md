@@ -1,3 +1,5 @@
+# Dictionaries
+
 When you first install the component, you download Russian and English dictionary
 phpMorphy][1]. On this page you can add something or delete what you don’t need.
 
@@ -5,11 +7,11 @@ phpMorphy][1]. On this page you can add something or delete what you don’t nee
 
 In order for mSearch2 to work normally you will need at least one morphological dictionary. phpMorphy [has 5 dictionaries][2]:
 
-* Russian
-* English
-* German
-* Ukranian
-* Estonian
+- Russian
+- English
+- German
+- Ukranian
+- Estonian
 
 Dictionaries are downloaded from SourceForge. This process depends on your server connection. You can choose a mirror near to it.
 

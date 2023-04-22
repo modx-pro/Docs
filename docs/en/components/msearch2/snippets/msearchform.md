@@ -1,4 +1,3 @@
-
 # mSearchForm
 
 Snippet for the output of the autocompletion search form.
@@ -50,8 +49,8 @@ If you choose a query from the list, it’ll be put in the form, which will be s
 
 The snippet uses scripts and styles which are given in the system settings:
 
-* **mse2_frontend_js** - standard javascript, by default `/assets/components/msearch2/js/web/default.js`
-* **mse2_frontend_css** - standard css coding styles, by default `/assets/components/msearch2/css/web/default.css`
+- **mse2_frontend_js** - standard javascript, by default `/assets/components/msearch2/js/web/default.js`
+- **mse2_frontend_css** - standard css coding styles, by default `/assets/components/msearch2/css/web/default.css`
 
 In order to work properly scripts should know what parameters were given when the snippet was summoned. For this reason important settings like **&minQuery**, **&queryVar** and **&autocomplete** should be registered for every page.
 
@@ -73,19 +72,18 @@ mSearchForm sends all parameters received to the snippet associated with **&elem
 
 ```modx
 [[!mSearchForm?
-	&element=`pdoResources`
-	&includeTVs=`image,file`
+  &element=`pdoResources`
+  &includeTVs=`image,file`
 ]]
 
 [[!mSearchForm?
-	&element=`msProducts`
-	&includeThumbs=`120x90`
-	&where=`{"Data.price:>":0}`
+  &element=`msProducts`
+  &includeThumbs=`120x90`
+  &where=`{"Data.price:>":0}`
 ]]
-
 ```
 
-[1]: /en/components/03_mSearch2/01_Snippets/01_mSearch2.md
-[2]: /en/components/03_mSearch2/01_Snippets/02_mFilter2.md
+[1]: /en/components/msearch2/snippets/msearch2
+[2]: /en/components/msearch2/snippets/mfilter2
 [3]: http://jqueryui.com/autocomplete/
-[4]: /en/components/03_mSearch2/02_Management/03_Queries.md
+[4]: /en/components/msearch2/interface/queries

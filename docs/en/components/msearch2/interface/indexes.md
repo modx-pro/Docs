@@ -1,3 +1,5 @@
+# Indexes
+
 Page for search index creating.
 
 Creating an index is a hard operation. It is divided into multiple queries which are sent through Ajax in a cycle.
@@ -13,12 +15,12 @@ Then for each word different forms of it are generated with help of [phpMorphy][
 
 ## System settings
 
-Name                        | By default                                                    | Description
-----------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------------------------
-mse2_index_comments         | `true`                                                        | Activate the indexation of commentaries for component **Tickets**
-mse2_index_comments_weight  | `1`                                                             | Search weight of a word from the commentary
-mse2_index_fields           | `content:3,description:2,introtext:2,pagetitle:3,longtitle:3` | Indexation of the resource fields setting. Name of the field and its weight after a colon.
-mse2_index_min_words_length | `4`                                                             | Minimal length of a word for its participation in search.
+Name                            | By default                                                    | Description
+--------------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------------------------
+**mse2_index_comments**         | `true`                                                        | Activate the indexation of commentaries for component **Tickets**
+**mse2_index_comments_weight**  | `1`                                                           | Search weight of a word from the commentary
+**mse2_index_fields**           | `content:3,description:2,introtext:2,pagetitle:3,longtitle:3` | Indexation of the resource fields setting. Name of the field and its weight after a colon.
+**mse2_index_min_words_length** | `4`                                                           | Minimal length of a word for its participation in search.
 
 The most important parameter is **mse2_index_fields**, it defines the value of words in different fields of the document.
 
@@ -36,8 +38,8 @@ You don’t have to control index’s relevance – the plugin that is included 
 
 You should generate search index in admin area in two cases:
 
-* When you first install the component
-* When you change system settings responsible for indexation
+- When you first install the component
+- When you change system settings responsible for indexation
 
 ## Adding arbitrary words to the index
 
@@ -72,27 +74,27 @@ Another example of adding arbitrary words to the index is the indexation of the 
 <?php
 switch ($modx->event->name) {
   case 'mse2OnBeforeSearchIndex':
-        // Имена опций
-        $names = array(
-            'option1',
-            'option2'
-        );
+    // Имена опций
+    $names = array(
+      'option1',
+      'option2'
+    );
 
-        foreach ($names as $key) {
-            $mSearch2->fields[$key] = 1;
-            $c = $modx->newQuery('msProductOption', array(
-              'product_id' => $resource->id,
-              'key' => $key,
-            ));
-            $c->select('value');
-            if ($c->prepare() && $c->stmt->execute()) {
-              $value = $c->stmt->fetchAll(PDO::FETCH_COLUMN);
-              if (!empty($value[0])) {
-                  $resource->set($key, $value);
-              }
-            }
+    foreach ($names as $key) {
+      $mSearch2->fields[$key] = 1;
+      $c = $modx->newQuery('msProductOption', array(
+        'product_id' => $resource->id,
+        'key' => $key,
+      ));
+      $c->select('value');
+      if ($c->prepare() && $c->stmt->execute()) {
+        $value = $c->stmt->fetchAll(PDO::FETCH_COLUMN);
+        if (!empty($value[0])) {
+          $resource->set($key, $value);
         }
-        break;
+      }
+    }
+    break;
 }
 ```
 

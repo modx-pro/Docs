@@ -13,25 +13,25 @@ items: [
   {
     text: 'Администрирование',
     items: [
-      { text: 'Поиск', link: 'administration/search', },
-      { text: 'Индексация', link: 'administration/indexing', },
-      { text: 'Запросы', link: 'administration/requests', },
-      { text: 'Синонимы', link: 'administration/synonyms', },
-      { text: 'Словари', link: 'administration/dictionaries', },
+      { text: 'Поиск', link: 'interface/search', },
+      { text: 'Индексация', link: 'interface/indexes', },
+      { text: 'Запросы', link: 'interface/queries', },
+      { text: 'Синонимы', link: 'interface/synonyms', },
+      { text: 'Словари', link: 'interface/dictionaries', },
     ],
   },
   {
     text: 'Расширение',
     items: [
-      { text: 'Методы фильтрации', link: 'extension/filtering-methods', },
-      { text: 'Пример фильтрации товаров', link: 'extension/filtering-product-example', },
+      { text: 'Методы фильтрации', link: 'extension/filtration-methods', },
+      { text: 'Пример фильтрации товаров', link: 'extension/filtration-product-example', },
     ],
   },
   {
     text: 'Типовые решения',
     items: [
       { text: 'Зависимые фильтры', link: 'solutions/dependent-filters', },
-      { text: 'Фильтрация категорий', link: 'solutions/category-filtering', },
+      { text: 'Фильтрация категорий', link: 'solutions/category-filtration', },
     ],
   },
 ]
