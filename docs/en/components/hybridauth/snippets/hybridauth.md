@@ -1,9 +1,5 @@
 # HybridAuth
 
-Component for authorization through social and other services.
-
-Main advantage is work with services without moderators, and ability to bind several services to one account.
-
 Snippet outputs formula for authorization on the site.
 
 ## Parameters
@@ -36,7 +32,7 @@ They can be limited indicating them as a list, separated by commas:
 
 ```modx
 [[!HybridAuth?
-    &providers=`Yandex,Google,Twitter,Facebook,Vkontakte`
+  &providers=`Yandex,Google,Twitter,Facebook,Vkontakte`
 ]]
 ```
 
@@ -44,9 +40,9 @@ Authorization in 2 contexts at once:
 
 ```modx
 [[!HybridAuth?
-    &providers=`Yandex,Google`
-    &loginContext=`web`
-    &addContexts=`en`
+  &providers=`Yandex,Google`
+  &loginContext=`web`
+  &addContexts=`en`
 ]]
 ```
 
@@ -66,11 +62,11 @@ That is why pay attention to the settings which will be given to you during regi
 
 Keys from providers need to be derived to work of the component, and it is not understandable at once where you should look for them. That’s is why there are some main links:
 
-* [Yandex][1]
-* [Vkontakte][2]
-* [Twitter][3]
-* [Google][4]
-* [Facebook][5]
+- [Yandex][1]
+- [Vkontakte][2]
+- [Twitter][3]
+- [Google][4]
+- [Facebook][5]
 
 ### Contexts
 

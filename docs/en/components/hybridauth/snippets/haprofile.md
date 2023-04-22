@@ -24,8 +24,8 @@ The call editing profile with defining of allowed and required fields:
 
 ```modx
 [[!haProfile?
-	&requiredFields=`email,username`
-	&profileFields=`email,username:25,fullname:50,comment:100`
+  &requiredFields=`email,username`
+  &profileFields=`email,username:25,fullname:50,comment:100`
 ]]
 ```
 
