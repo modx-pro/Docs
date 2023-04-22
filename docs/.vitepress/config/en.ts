@@ -1,5 +1,6 @@
 import type { LocaleConfig } from 'vitepress'
 import type { DocsThemeConfig } from '../theme'
+import { generateSidebar } from '../theme/sidebar'
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
@@ -20,6 +21,18 @@ export const config: LocaleConfig<DocsThemeConfig> = {
     ],
 
     themeConfig: {
+      nav: [
+        {
+          text: 'Components',
+          link: '/en/components/',
+          activeMatch: '/en/components/',
+        },
+      ],
+
+      sidebar: {
+        '/en/components/': generateSidebar({ root: ['docs/en/components/*.md', 'docs/en/components/*/index.md'], ignore: ['docs/en/components/index.md'] }),
+      },
+
       ecosystemLabel: 'Ecosystem',
       docFooter: {
         prev: 'Previous page',
