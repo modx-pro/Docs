@@ -1,3 +1,18 @@
+---
+name: BannerY
+
+items: [
+  {
+    text: 'Interface',
+    items: [
+      { text: 'Ads', link: 'interface/banners' },
+      { text: 'Positions', link: 'interface/positions' },
+    ],
+  },
+]
+---
+# BannerY
+
 Component to manage the banners on the site.
 
 Create a banner ad space, then bind to one another, and output on the site in the right places.
