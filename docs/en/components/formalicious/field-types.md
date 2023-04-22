@@ -1,15 +1,18 @@
+---
+outline: deep
+---
 # Field Types
 
 A form consists of fields. These fields can be categorised by type. Formalicious is shipped with the most common field-types by default:
 
-* Checkboxes
-* Email
-* File
-* Number
-* Radiobuttons
-* Select
-* Text
-* Textarea
+- Checkboxes
+- Email
+- File
+- Number
+- Radiobuttons
+- Select
+- Text
+- Textarea
 
 All these types have a **Chunk** associated with them. These can be found in the Elements-tree, below the Formalicious-category.
 These chunks are optimised for [Bootstrap][1]
