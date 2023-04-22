@@ -1,19 +1,21 @@
+# Work Logic
+
 **Office** extra is a modular system in which there can be any number of parts (controllers).
 There are 4 of them in the standard set:
 
-* [Auth][0] - authorization through email
-* [Profile][1] - work with a user's profile
-* [miniShop2][2] - output of the user account MS2
-* [RemoteAuth][3] - authorization on one site through another
+- [Auth][0] - authorization through email
+- [Profile][1] - work with a user's profile
+- [miniShop2][2] - output of the user account MS2
+- [RemoteAuth][3] - authorization on one site through another
 
 The component itself has snippet **Office**, which calls for the needed controller and sends all the indicated parameters to it.
 That is, all possible settings, chunks and other properties depend on the controller and are not written into the snippet.
 For example, here is a call for all 3 controllers at once on one page.
 
 ```modx
-[[!Office?&action=`Auth`]]
-[[!Office?&action=`Profile`]]
-[[!Office?&action=`miniShop2`]]
+[[!Office? &action=`Auth`]]
+[[!Office? &action=`Profile`]]
+[[!Office? &action=`miniShop2`]]
 ```
 
 For standard controllers there are special snippets with parameters written into them for the sake of convenience. For work they still call for Office snippet.
@@ -48,7 +50,7 @@ You should just make a copy, rename it and call for it:
 
 ```modx
 [[!Office?
-    &action=`AuthCopy`
+  &action=`AuthCopy`
 ]]
 ```
 
@@ -75,7 +77,7 @@ Work with records modExtra from the outside
 A registered controller is shown by its name. In this case it is:
 
 ```modx
-[[!Office?&action=`modExtra`]]
+[[!Office? &action=`modExtra`]]
 ```
 
 *You do not have to use Ext JS, it is just an example of the opportunities you have.*
@@ -90,10 +92,10 @@ And if you are planning to use Ext JS in your vidgets, notice that by default th
 
 As[modExtra][11] is suited for designing addons for MODX and already supports Office, I recommend that you use it as an example.
 
-[0]: /en/components/19_Office/03_Controllers/01_Authorization.md
-[1]: /en/components/19_Office/03_Controllers/02_Profile.md
-[2]: /en/components/19_Office/03_Controllers/03_MS2_Orders_History.md
-[3]: /en/components/19_Office/03_Controllers/04_Remote_Authorization.md
+[0]: /en/components/office/controllers/auth
+[1]: /en/components/office/controllers/profile
+[2]: /en/components/office/controllers/orders-history-minishop2
+[3]: /en/components/office/controllers/auth-remote
 [5]: /en/components/minishop2
 [6]: https://github.com/bezumkin/modExtra/blob/7b238647746fdd3443941a78fccc96ca9e96d76c/_build/resolvers/resolve.office.php
 [7]: https://github.com/bezumkin/modExtra/commit/7b238647746fdd3443941a78fccc96ca9e96d76c

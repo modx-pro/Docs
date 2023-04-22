@@ -16,7 +16,7 @@ Name        | By default | Description
 ------------|------------|--------------------------------------------------------------------------------------------------------------------------------------------------------
 **&hosts**  |            | List of domens (with commas), which are allowed to access the authorization page.
 **&key**    |            | Obligatory data encryption key for keeping personal information safe. The key has to be the same for the client and the server.
-**&authId** | `0`          | Id of the site page, for user's authorization. After a successful authorization the user has to be redirected back to the snippet "officeRemoteServer".
+**&authId** | `0`        | Id of the site page, for user's authorization. After a successful authorization the user has to be redirected back to the snippet "officeRemoteServer".
 
 In the authorization snippet you have to indicate
 
@@ -56,20 +56,20 @@ When the user exits the client site, they exit the server site bu the same algor
 
 Most parameters coincide with those of [officeAuth][1] (chunks, groups, contexts, remembering, etc.), but there are also some unqie ones:
 
-Name                  | By default               | Description
-----------------------|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Name                  | By default                 | Description
+----------------------|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **&tplLogin**         | `tpl.Office.remote.login`  | This chunk will be shown to an anonymous user, i.e. to any guest.
 **&tplLogout**        | `tpl.Office.remote.logout` | This chunk will be shown to an authorized user.
-**&groups**           |                          | List of groups for a user registration, with commas. User's role in the group can be written after a colon. For example, &groups=`Users:1` will add a user to "Users" group with a "member" role.
+**&groups**           |                            | List of groups for a user registration, with commas. User's role in the group can be written after a colon. For example, &groups=`Users:1` will add a user to "Users" group with a "member" role.
 **&rememberme**       | `1`                        | Remembers a user for a long time. On by default.
-**&loginContext**     |                          | General context for authorization. By default - the current one.
-**&addContexts**      |                          | Additional contexts, with commas. For example, &addContexts=`web,ru,en`
+**&loginContext**     |                            | General context for authorization. By default - the current one.
+**&addContexts**      |                            | Additional contexts, with commas. For example, &addContexts=`web,ru,en`
 **&loginResourceId**  | `0`                        | Identifier of a resource to which the user will be sent after authorization. By default it is 0, which updates the current page.
 **&logoutResourceId** | `0`                        | Identifier of a resource to which the user will be sent when the session is ended. By default it is 0, which updates the current page.
 **&updateUser**       | `1`                        | Permission to update existing users with data from the remote server.
 **&createUser**       | `1`                        | Permission to create new users.
-**&remote**           |                          | Obligatory address of the remote server page with a call for snippet "officeAuthServer".
-**&key**              |                          | Obligatory data encryption key for keeping personal information safe. The key has to be the same for the client and the server.
+**&remote**           |                            | Obligatory address of the remote server page with a call for snippet "officeAuthServer".
+**&key**              |                            | Obligatory data encryption key for keeping personal information safe. The key has to be the same for the client and the server.
 
 On the client site the snippet can be called for like this:
 
@@ -81,4 +81,4 @@ On the client site the snippet can be called for like this:
 ]]
 ```
 
-[1]: /en/components/19_Office/03_Controllers/01_Authorization.md
+[1]: /en/components/office/controllers/auth
