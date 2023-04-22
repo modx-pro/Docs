@@ -1,3 +1,5 @@
+# Snippet getRemains
+
 The snippet displays the number of product remains. It can show both a total amount of remains for each property and a number for a certain combination of product properties.
 
 If you call the snippet without specifying one or several properties, it will display a total amount of remains for all combinations of properties.
@@ -24,7 +26,7 @@ For an amount of remains of a certain combination of properties:
 
 ```modx
 [[!getRemains?
-  &id=[[+id]]
+  &id=`[[+id]]`
   &color=`color`
   &size=`size`
 ]]
@@ -34,7 +36,7 @@ Use standard MODX filter for call recording in a placeholder:
 
 ```modx
 [[!getRemains:toPlaceholder=`remains`?
-  &id=[[+id]]
+  &id=`[[+id]]`
   &color=`color`
   &size=`size`
 ]]

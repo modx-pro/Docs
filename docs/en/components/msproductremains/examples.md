@@ -1,3 +1,5 @@
+# Examples
+
 The extra has many applications. Some of them will be added to this list.
 
 ## Displaying products with remains only

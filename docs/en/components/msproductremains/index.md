@@ -1,3 +1,18 @@
+---
+name: msProductRemains
+
+items: [
+  { text: 'Settings', link: 'settings' },
+  { text: 'Remains Tab', link: 'remains-tab' },
+  { text: 'Remains page', link: 'remains-page' },
+  { text: 'Snippet getRemains', link: 'getremains' },
+  { text: 'Examples', link: 'examples' },
+]
+
+dependencies: ['miniShop2']
+---
+# msProductRemains
+
 The component is intended for the accounting of warehouse product remains based on the properties specified in component settings. In general, several properties are used in the process. A product’s color and size are the default properties.
 
 While editing products, specify the number of product remains for each combination of product property values. Remains are edited in the “Remains” tab table by double-clicking the left mouse button on the number needed.
