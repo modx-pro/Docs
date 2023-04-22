@@ -1,3 +1,5 @@
+# Extra Functions
+
 Apart from the modular architecture and controllers, Office adds some nice little things to the system.
 
 ### Authorization from the admin space
@@ -54,8 +56,8 @@ https://your.site/?action=auth/logout&user_id=4
 
 And the authorization itself works like a standars authorization form, except that
 
-* the action will be `auth/formAdd` rather than `auth/formLogin`
-* if the password field is not filled in, it will give you an error rather than send you a letter of reset.
+- the action will be `auth/formAdd` rather than `auth/formLogin`
+- if the password field is not filled in, it will give you an error rather than send you a letter of reset.
 
 If you log off your current account but you still have other authorizations, you will be sent to one of them.
 

@@ -83,13 +83,13 @@ That is, by installing this addon you will open access to their history orders f
 
 There are several main differences of snippet **officeProfile** from other opportunities for profile editing:
 
-* It works through ajax completely.
-* It allows you to indicate those fields of profile that are to be filled in.
-* It can require certain fileds for filling in
-* User can change their username and email. For changing the latest an activation link is sent to the mailbox. The email will not change unless the user presses the link.
-* Field of profile **extended** can be shown and edited. Fields like this can be enabled in settings and shown in the form of **extended[FieldName]**.
-* User can download\delete a picture for their profile through ajax. If there is no picture then [gravatar][2] is shown.
-* User can add their social media profiles (if it is turned on and set) to authorize quicklier with their help.
+- It works through ajax completely.
+- It allows you to indicate those fields of profile that are to be filled in.
+- It can require certain fileds for filling in
+- User can change their username and email. For changing the latest an activation link is sent to the mailbox. The email will not change unless the user presses the link.
+- Field of profile **extended** can be shown and edited. Fields like this can be enabled in settings and shown in the form of **extended[FieldName]**.
+- User can download\delete a picture for their profile through ajax. If there is no picture then [gravatar][2] is shown.
+- User can add their social media profiles (if it is turned on and set) to authorize quicklier with their help.
 
 All this works at once, when the addon is just unpacked, and requires no special effort.
 
@@ -127,5 +127,5 @@ Settings by default will suit most shops, unless you have to turn off the 'weigh
 Now you know how you can easily provide authorization, profile editing and orders output miniShop2 on your site.
 
 [0]: /components/minishop2
-[1]: /components/04_HybridAuth
+[1]: /components/hybridauth
 [2]: https://gravatar.com

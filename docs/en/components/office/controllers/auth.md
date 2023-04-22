@@ -24,8 +24,8 @@ Example of a call with registration into Users group and a redirect to the main 
 
 ```modx
 [[!OfficeAuth?
-    &groups=`Users`
-    &loginResourceId=`[[++site_start]]`
+  &groups=`Users`
+  &loginResourceId=`[[++site_start]]`
 ]]
 ```
 
@@ -44,9 +44,9 @@ By default you can choose between [SmsRu][2] and [ByteHand][3].
 
 For the work of providers the following system settins are used:
 
-* **office_sms_id** — identifier of the client on the service
-* **office_sms_key** — key of the client on the service, not needed for SmsRu.
-* **office_sms_from** — text designation of the sender, should be approved by the service.
+- **office_sms_id** — identifier of the client on the service
+- **office_sms_key** — key of the client on the service, not needed for SmsRu.
+- **office_sms_from** — text designation of the sender, should be approved by the service.
 
 Depending on the working regime fields **email** and **mobilephone** can be obligatory.
 
@@ -61,10 +61,10 @@ distinguishing them by their indicated actions in hidden input:
 
 The following actions are possible:
 
-* **auth/formLogin** - standard authorization. If the password is not indicated, a reset letter will be sent.
-* **auth/formRegister** - new user registration
-* **auth/formAdd** - additional authorization into another account, for quick switching
-* **auth/sendLink** - sending link for password reset
+- **auth/formLogin** - standard authorization. If the password is not indicated, a reset letter will be sent.
+- **auth/formRegister** - new user registration
+- **auth/formAdd** - additional authorization into another account, for quick switching
+- **auth/sendLink** - sending link for password reset
 
 Logging off an account is accessible by a simple downloading of a page with a parameter in the link.
 
@@ -90,15 +90,15 @@ It can be structured like that:
 <?php
 
 class MyProvider {
-    function __construct(modX $modx, array $config = array()) {
-        $this->modx = &$modx;
-    }
+  function __construct(modX $modx, array $config = array()) {
+    $this->modx = &$modx;
+  }
 
-    function send($phone, $text) {
-        // We get system settings for work and send a message
+  function send($phone, $text) {
+    // We get system settings for work and send a message
 
-        return true; // or the text of an error
-    }
+    return true; // or the text of an error
+  }
 }
 ```
 
@@ -109,11 +109,11 @@ SMS provider can be also used for random sending of an SMS through API MODX:
 ```php
 $provider = $modx->getOption('office_sms_provider');
 if ($service = $modx->getService($provider, $provider, MODX_CORE_PATH . 'components/office/model/sms/')) {
-    $send = $service->send('79234778899', 'Hi!');
-    return $send === true
-        ? 'Your message is sent!'
-        : 'Error in sending your message: ' . $send;
-    }
+  $send = $service->send('79234778899', 'Hi!');
+  return $send === true
+    ? 'Your message is sent!'
+    : 'Error in sending your message: ' . $send;
+  }
 ```
 
 The provider's class should definitely have method `send`.
@@ -133,10 +133,10 @@ For this we add select in the registration form:
 ```html
 <label for="office-auth-register-group" class="col-md-3 control-label">Группа</label>
 <div class="col-md-8">
-    <select name="group" class="form-control" id="office-auth-register-group">
-        <option value="users">Ordinary Users</option>
-        <option value="admins">Administrators</option>
-    </select>
+  <select name="group" class="form-control" id="office-auth-register-group">
+    <option value="users">Ordinary Users</option>
+    <option value="admins">Administrators</option>
+  </select>
 </div>
 ```
 
@@ -146,33 +146,33 @@ And then we write our own plugin that will check which group is selected and add
 <?php
 // Array of groups that are defined for registration beforehand saves you from data replacement in sending the form
 $groups = array(
-    'admins' => 'Administrator',
-    'users' => 'Users',
+  'admins' => 'Administrator',
+  'users' => 'Users',
 );
 
 if ($modx->context->key != 'mgr') {
-    switch ($modx->event->name) {
-        // Event before the user's registration
-        case 'OnBeforeUserFormSave':
-            if (empty($_POST['group']) || !array_key_exists($_POST['group'], $groups)) {
-                // Error if group is not filled in or is not from the list
-                $modx->event->output('You should indicate the group of the user!');
-            }
-            // You can also add something to the profile
-            // $user->Profile->set('comment');
-            break;
-        // Event after the user's registration
-        case 'OnUserFormSave':
-            // Here we add the selected group
-            $user->joinGroup($groups[$_POST['group']]);
-            break;
-    }
+  switch ($modx->event->name) {
+    // Event before the user's registration
+    case 'OnBeforeUserFormSave':
+      if (empty($_POST['group']) || !array_key_exists($_POST['group'], $groups)) {
+        // Error if group is not filled in or is not from the list
+        $modx->event->output('You should indicate the group of the user!');
+      }
+      // You can also add something to the profile
+      // $user->Profile->set('comment');
+      break;
+    // Event after the user's registration
+    case 'OnUserFormSave':
+      // Here we add the selected group
+      $user->joinGroup($groups[$_POST['group']]);
+      break;
+  }
 }
 ```
 
 Do not forget to turn on events **OnBeforeUserFormSave** and **OnUserFormSave**for the plugin.
 In this case you do not have to indicate parameter **&groups** for snippet OfficeAuth.
 
-[1]: /components/04_HybridAuth/01_Сниппеты/01_HybridAuth.md
+[1]: /components/hybridauth/snippets/hybridauth
 [2]: http://sms.ru
 [3]: http://bytehand.com

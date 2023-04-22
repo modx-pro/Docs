@@ -16,9 +16,9 @@ You can indicate your CSS file with the ExtJS structure.
 
 Unlike miniShop2, you can add to the snippet 3 extra parameters:
 
-* **allowRemove** - turn on the opportunity to delete orders with the "New" status
-* **allowRepeat** - turn on the opportunity to repeat an order.
-* **cartLink** - link to the cart with the order.
+- **allowRemove** - turn on the opportunity to delete orders with the "New" status
+- **allowRepeat** - turn on the opportunity to repeat an order.
+- **cartLink** - link to the cart with the order.
 
 Work logic of the order repeat is the following:
 
@@ -32,8 +32,8 @@ For example, now you require to write the address and there is no address in the
 
 ```modx
 [[!officeMiniShop2?
-    &allowRemove=`1`
-    &allowRepeat=`1`
-    &cartLink=`/order/cart`
+  &allowRemove=`1`
+  &allowRepeat=`1`
+  &cartLink=`/order/cart`
 ]]
 ```

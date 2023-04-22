@@ -18,9 +18,9 @@ Name                   | By default                                         | De
 **&avatarParams**      | `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}` | JSON line with parameters of avatar convertation with help of строка phpThumb. By default - `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}`.
 **&avatarPath**        | `images/users/`                                    | Directory for saving avatars for users inside MODX_ASSETS_PATH. By default - "images/users/".
 
-*Accurate value of parameter &profileFields by default:*
+*Accurate value of parameter **&profileFields** by default:*
 
-```php
+```
 username:50,email:50,fullname:50,phone:12,mobilephone:12,dob:10,gender,address,country,city,state,zip,fax,photo,comment,website,specifiedpassword,confirmpassword
 ```
 
@@ -35,7 +35,7 @@ Controller helps to edit extended fields of a user's profile, like `extended.som
 
 1. Show them in the form
 
-  ```html
+  ```modx
   <label for="extended.some_field">Some field</label>
   <input name="extended[some_field]" value="[[+extended.some_field]]" id="extended.some_field">
   ```
