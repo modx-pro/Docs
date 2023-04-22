@@ -8,5 +8,5 @@ declare interface DocsEcosystem {
 
 export interface DocsThemeConfig extends DefaultTheme.Config {
   ecosystemLabel?: string,
-  ecosystem: Array<DocsEcosystem>,
+  ecosystem?: Array<DocsEcosystem>,
 }
