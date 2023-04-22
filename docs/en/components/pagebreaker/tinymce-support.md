@@ -1,13 +1,15 @@
+# TinyMCE Support
+
 A component as a unit goes with plugin **pagebreaker** for TinyMCE (TypoMCE), which is automatically installed and activated.
 
 [![](https://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80ds.jpg)](https://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80d.png)
 
 Plugin adds 4 buttons to the toolbar.
 
-* Manual burst. Specify a delimiter on the place of cursor.
-* Automatic burst through indicated quantity of characters.
-* Automatic burst after every 2000 characters.
-* Delimiter cleanup.
+- Manual burst. Specify a delimiter on the place of cursor.
+- Automatic burst through indicated quantity of characters.
+- Automatic burst after every 2000 characters.
+- Delimiter cleanup.
 
 In addition, it shows the places where delimiters were specified.
 
@@ -17,9 +19,9 @@ Auto burst functions by sections. At first text is divided by tags p, then conte
 
 E.g., you have 10 sections in text, each of them content 1500 characters. If you indicated to lay out this page every 2000 characters, then you will get 5 pages.
 
-* Page is laid out by 10 sections.
-* The first section is less than 2000 characters – it goes to the first page.
-* The second section + the first section = 3000 characters, it is over the limit, thus delimiter is put after adding the second section to the first page.
+- Page is laid out by 10 sections.
+- The first section is less than 2000 characters – it goes to the first page.
+- The second section + the first section = 3000 characters, it is over the limit, thus delimiter is put after adding the second section to the first page.
 
 Thus 10 sections will turn into 5 pages. If you do not like the burst of a document – you can delete all delimiters and indicate a new quantity of characters for auto burst.
 
