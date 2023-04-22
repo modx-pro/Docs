@@ -150,7 +150,7 @@ Teleport is Copyright (c) MODX, LLC
 [3]: https://github.com/modxcms/teleport/blob/master/doc/use/extract.md
 [4]: https://github.com/modxcms/teleport/blob/master/doc/use/user-create.md
 [5]: https://github.com/modxcms/teleport/blob/master/doc/use/inject.md
-[6]: /utilities/teleport/usage
+[6]: /system/utilities/teleport/usage
 [7]: https://github.com/modxcms/teleport/blob/master/doc/doc/install/git-clone.md
 [8]: https://github.com/modxcms/teleport/blob/master/doc/doc/install/releases.md
 [9]: http://getcomposer.org/

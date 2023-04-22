@@ -17,7 +17,7 @@
 
 Настройки источников файлов [minishop2](/components/minishop2/interface/product)
 <!-- TODO: Заменить ссылку -->
-Настройки источников файлов [ms2Gallery](https://docs.modx.pro/komponentyi/ms2gallery/generacziya-prevyu)
+Настройки источников файлов [ms2Gallery](/components/ms2gallery/preview-generation)
 
 ## Ошибки во время загрузки
 

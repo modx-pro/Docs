@@ -159,5 +159,5 @@
 
 [0]: /components/msearch2/snippets/mfilter2
 [2]: /components/seofilter/additional-features
-[3]: /components/pdotools/parser#Шаблонизатор-Fenom
+[3]: /components/pdotools/parser#шаблонизатор-fenom
 [4]: /components/seofilter/substitutions-in-seo
