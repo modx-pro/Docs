@@ -1,3 +1,5 @@
+# msProducts
+
 The product display snippet.
 
 [![](https://file.modx.pro/files/9/7/2/9725aed7accaed426b7324135baf4b19s.jpg)](https://file.modx.pro/files/9/7/2/9725aed7accaed426b7324135baf4b19.png)
@@ -35,7 +37,7 @@ Parameter                  | By default           | Description
 **wrapIfEmpty**            | `1`                  | Switch on the display of wrapper chunk (tplWrapper) even if there are no results.
 **showLog**                |                      | To show additional information of snippet operation. For authorized in context "mgr" only.
 
-*Another [pdoTools general parameters][1]* may be used
+<!--@include: ../parts/tip-general-properties.md-->
 
 ## Features
 
@@ -55,8 +57,8 @@ Snippet can select pictures from the item gallery through the **&includeThumbs**
 
 ```modx
 [[!msProducts?
-    &parents=`0`
-    &includeThumbs=`120x90,360x270`
+  &parents=`0`
+  &includeThumbs=`120x90,360x270`
 ]]
 ```
 
@@ -117,8 +119,8 @@ If you simply do not indicate formatting chunk then all available placeholders m
 ```modx
 <pre>
 [[!msProducts?
-    &parents=`0`
-    &tpl=``
+  &parents=`0`
+  &tpl=``
 ]]
 </pre>
 ```
@@ -129,7 +131,7 @@ Display all goods of 15 category:
 
 ```modx
 [[!msProducts?
-    &parents=`15`
+  &parents=`15`
 ]]
 ```
 
@@ -137,8 +139,8 @@ Display with page layout:
 
 ```modx
 [[!pdoPage?
-    &element=`msProducts`
-    &parents=`15`
+  &element=`msProducts`
+  &parents=`15`
 ]]
 [[!+page.nav]]
 ```
@@ -147,9 +149,9 @@ Display all goods more expensive than 1000 rubles:
 
 ```modx
 [[!pdoPage?
-    &element=`msProducts`
-    &parents=`0`
-    &where=`{"Data.price:>":1000}`
+  &element=`msProducts`
+  &parents=`0`
+  &where=`{"Data.price:>":1000}`
 ]]
 [[!+page.nav]]
 ```
@@ -158,9 +160,9 @@ Display Sony products:
 
 ```modx
 [[!pdoPage?
-    &element=`msProducts`
-    &parents=`0`
-    &where=`{"Vendor.name":"Sony"}`
+  &element=`msProducts`
+  &parents=`0`
+  &where=`{"Vendor.name":"Sony"}`
 ]]
 [[!+page.nav]]
 ```
@@ -169,14 +171,14 @@ Sorting by vendor code:
 
 ```modx
 [[!pdoPage?
-    &element=`msProducts`
-    &parents=`0`
-    &sortby=`Data.article`
-    &sortdir=`asc`
+  &element=`msProducts`
+  &parents=`0`
+  &sortby=`Data.article`
+  &sortdir=`asc`
 ]]
 [[!+page.nav]]
 ```
 
-[1]: /en/components/01_pdoTools/04_General_parameters.md
-[2]: /en/components/01_pdoTools/
-[3]: /en/components/01_pdoTools/01_Snippets/01_pdoResources.md
+[1]: /en/components/pdotools/general-properties
+[2]: /en/components/pdotools/
+[3]: /en/components/pdotools/snippets/pdoresources

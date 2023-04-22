@@ -1,3 +1,8 @@
+---
+outline: deep
+---
+# Orders
+
 Order control panel of miniShop2 consists of form with filters and data table.
 
 [![](https://file.modx.pro/files/0/2/8/02869bbdbaab68056444acf0e9f992b7s.jpg)](https://file.modx.pro/files/0/2/8/02869bbdbaab68056444acf0e9f992b7.png)
@@ -6,20 +11,20 @@ Order control panel of miniShop2 consists of form with filters and data table.
 
 To filter orders the following parameters may be used:
 
-* Beginning from order creation date
-* Finishing by order creation date
-* Order status filter
-* Customer filter
+- Beginning from order creation date
+- Finishing by order creation date
+- Order status filter
+- Customer filter
 
 [![](https://file.modx.pro/files/a/2/e/a2e0f0493819c617531729cfc84b1333s.jpg)](https://file.modx.pro/files/a/2/e/a2e0f0493819c617531729cfc84b1333.png)
 
 There is additional line of order search by:
 
-* Customer name
-* Customer profile Email
-* Order number
-* Comments to an order written by a manager
-* If integer is stated, by order id only
+- Customer name
+- Customer profile Email
+- Order number
+- Comments to an order written by a manager
+- If integer is stated, by order id only
 
 Information panel is displayed in the middle of the filter.
 First row displays the sum and number of selected orders with regard to search and filter values.

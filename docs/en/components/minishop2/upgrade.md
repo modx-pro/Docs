@@ -1,3 +1,5 @@
+# Upgrade miniShop2
+
 Instructions for updating minor versions of miniShop2.
 
 ## From 2.2 to 2.4
@@ -27,7 +29,7 @@ It contains the entire table, and the goods it processes in a cycle:
 
 ```fenom
 {foreach $products as $product}
-    {$product | print} <!-- print all product properties for debug-->
+  {$product | print} <!-- print all product properties for debug-->
 {/foreach}
 ```
 
@@ -37,10 +39,10 @@ In this case, the chunk for an empty basket is also not needed, since the quanti
 
 ```fenom
 {if count($products) == 0}
-    <!-- empty cart message -->
-    {'ms2_cart_is_empty' | lexicon}
+  <!-- empty cart message -->
+  {'ms2_cart_is_empty' | lexicon}
 {else}
-    <!-- list products -->
+  <!-- list products -->
 {/if}
 ```
 
@@ -65,17 +67,16 @@ For example, a letter with a new order to the buyer looks like this:
 {extends 'tpl.msEmail'}
 
 {block 'title'}
-    {'ms2_email_subject_new_user' | lexicon : $order}
+  {'ms2_email_subject_new_user' | lexicon : $order}
 {/block}
 
 {block 'products'}
-    {parent}
-    {if $payment_link?}
-        <p style="margin-left:20px;{$style.p}">
-            {'ms2_payment_link' | lexicon : ['link' => $payment_link]}
-        </p>
-
-    {/if}
+  {parent}
+  {if $payment_link?}
+    <p style="margin-left:20px;{$style.p}">
+      {'ms2_payment_link' | lexicon : ['link' => $payment_link]}
+    </p>
+  {/if}
 {/block}
 ```
 
@@ -111,6 +112,6 @@ Changed settings:
 
 The development of miniShop 2.3 has been canceled, so look at the upgrade to version 2.4.
 
-[1]: /en/components/01_pdoTools/03_Parser.md
-[2]: /components/minishop2/02_Сниппеты
+[1]: /en/components/pdotools/parser
+[2]: /en/components/minishop2/snippets/
 [3]: https://github.com/fenom-template/fenom/blob/master/docs/en/tags/extends.md

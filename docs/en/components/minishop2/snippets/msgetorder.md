@@ -1,3 +1,5 @@
+# msGetOrder
+
 Snippet for formed order display.
 
 Is used on ordering page and for mailing notification to customers.
@@ -12,9 +14,7 @@ Parameter         | By default       | Description
 **toPlaceholder** |                  | If filled, the snippet will store all data in placeholder with this name, instead of displaying.
 **showLog**       |                  | To show additional information on snippet operation. For authorized in "mgr" context only.
 
-:::info
-Another [pdoTools generalparameters][1] may be also used
-:::
+<!--@include: ../parts/tip-general-properties.md-->
 
 ## Formatting
 
@@ -27,15 +27,15 @@ Snippet counts on work with [chunk Fenom][2] and transfers 7 variables there:
 - **delivery** - array of selected delivery characteristics of`msDelivery` object
 - **payment** - array of selected payment characteristics of`msPayment`object
 - **total** - totals order array:
-  **cost** - total order cost
-  **weight** - total order weight
-  **delivery_cost** - separate delivery cost
-  **cart_cost** - separate ordered goods cost
-  **cart_weight** - total weight of the ordered goods
-  **cart_count** - ordered goods number
+  - **cost** - total order cost
+  - **weight** - total order weight
+  - **delivery_cost** - separate delivery cost
+  - **cart_cost** - separate ordered goods cost
+  - **cart_weight** - total weight of the ordered goods
+  - **cart_count** - ordered goods number
 
 *Data, transferred when calling snippet, may also be present.
-Foe example, the variable`payment_link`* may be in new letter formatting chunk
+For example, the variable `payment_link` may be in new letter formatting chunk*
 
 ### Placeholders
 
@@ -77,16 +77,16 @@ For example, the letter with new customer's order, is:
 {extends 'tpl.msEmail'}
 
 {block 'title'}
-    {'ms2_email_subject_new_user' | lexicon : $order}
+  {'ms2_email_subject_new_user' | lexicon : $order}
 {/block}
 
 {block 'products'}
-    {parent}
-    {if $payment_link?}
-        <p style="margin-left:20px;{$style.p}">
-            {'ms2_payment_link' | lexicon : ['link' => $payment_link]}
-        </p>
-    {/if}
+  {parent}
+  {if $payment_link?}
+    <p style="margin-left:20px;{$style.p}">
+      {'ms2_payment_link' | lexicon : ['link' => $payment_link]}
+    </p>
+  {/if}
 {/block}
 ```
 
@@ -96,7 +96,7 @@ As you can see, the main template is inherited, the title is changed, and paymen
 
 More details of template expanding you may find in [Fenom documentation][4].
 
-[1]: /en/components/01_pdoTools/04_General_parameters.md
-[2]: /en/components/01_pdoTools/03_Parser.md
-[3]: /en/components/minishop2/01_Interface/04_Settings.md
+[1]: /en/components/pdotools/general-properties
+[2]: /en/components/pdotools/parser
+[3]: /en/components/minishop2/interface/settings
 [4]: https://github.com/fenom-template/fenom/blob/master/docs/ru/tags/extends.md

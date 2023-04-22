@@ -1,3 +1,5 @@
+# Settings
+
 Settings of miniShop2 are presented in separate site section, accessible from a menu.
 
 All tables store settings of column width and position.
@@ -33,10 +35,10 @@ To indicate [a class- payment processing][6] is not necessary.
 
 There are several mandatory statuses of an order :
 
-* new
-* paid
-* sent
-* canceled"
+- new
+- paid
+- sent
+- canceled"
 
 They may be tuned but cannot be deleted, because they are necessary for the shop operation.
 You may indicate your own statuses for extended order processing logic in [own class][2].
@@ -72,10 +74,10 @@ This is a simple tool permitting to group goods according any attribute.
 
 There are four available types of link:
 
-* **One to one** - two-ways equal  link of goods.
-* **One to many** - the link between one item and several others. Affiliated goods are not linked with each other, only with parent.
-* **Many to one** - the same as preceding, but in the opposite way - affiliated item is linked with general. This type may be excess,but let it be for symmetry.
-* **Many to many** - the most interesting link type - equivalent multilateral link of several items. When adding new item to the group, it is linked with all group members.
+- **One to one** - two-ways equal  link of goods.
+- **One to many** - the link between one item and several others. Affiliated goods are not linked with each other, only with parent.
+- **Many to one** - the same as preceding, but in the opposite way - affiliated item is linked with general. This type may be excess,but let it be for symmetry.
+- **Many to many** - the most interesting link type - equivalent multilateral link of several items. When adding new item to the group, it is linked with all group members.
 
 For example, this link is needed for indicating goods differed by one parameter.
 Or all the items of this group may participate in any promotion (and it is simple to display links to another offers on the item page).
@@ -90,9 +92,9 @@ To add a new record you should select pre-established link and item to apply it.
 
 The table **msProductLink** with only 3 columns presents the items links at the database level:
 
-* **link** - is link id in the table `msLink`created above, in settings
-* **master** - is primary item id
-* **slave** - is descendent item id
+- **link** - is link id in the table `msLink`created above, in settings
+- **master** - is primary item id
+- **slave** - is descendent item id
 
 Let us understand which records are created for different link types.
 
@@ -144,14 +146,14 @@ It is simple: create snippet and select id of the group items, indicating **link
 
 ```php
 $q = $modx->newQuery('msProductLink', array(
-    'link' => 1,
-    'master' => 10
+  'link' => 1,
+  'master' => 10
 ));
 $q->select('slave');
 
 if ($q->prepare() && $q->stmt->execute()) {
-    $ids = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
-    print_r($ids);
+  $ids = $q->stmt->fetchAll(PDO::FETCH_COLUMN);
+  print_r($ids);
 }
 ```
 
@@ -177,12 +179,12 @@ Sets of goods (are displayed the references to other goods of the set in the car
 
 To create new characteristic press the button "Create" and fill the appeared window:
 
-* **Key** - identifier of characteristic in the system, determining its frontend placeholder. Required to fill.
-* **Name** -  displayed characteristic title.
-* **Description**
-* **Unit**
-* **Group** - category in MODX system, will be displayed in tab on item option page
-* **Property type** - determines valid format for the value
+- **Key** - identifier of characteristic in the system, determining its frontend placeholder. Required to fill.
+- **Name** -  displayed characteristic title.
+- **Description**
+- **Unit**
+- **Group** - category in MODX system, will be displayed in tab on item option page
+- **Property type** - determines valid format for the value
 
 The created characteristics may be filtered by the goods category tree in the left page side.
 When creating characteristic you also may spot it to according goods category with the help of the tree in the left.
@@ -193,10 +195,10 @@ The created characteristics are displayed on [item page][5] in corresponding tab
 
 To display the goods options the snippet [msProducts][7] should be used.
 
-[1]: /en/components/minishop2/03_Development/03_Services/03_Delivery.md
-[2]: /en/components/minishop2/03_Development/03_Services/02_Order.md
-[3]: /en/components/01_pdoTools
-[4]: /en/components/01_pdoTools/03_Parser.md
-[5]: /en/components/minishop2/01_Interface/02_Item.md
-[6]: /en/components/minishop2/03_Development/03_Services/04_Payment.md
-[7]: /en/components/minishop2/02_Snippets/01_msProducts.md
+[1]: /components/minishop2/development/services/delivery
+[2]: /components/minishop2/development/services/order
+[3]: /en/components/pdotools/
+[4]: /en/components/pdotools/parser
+[5]: /en/components/minishop2/interface/product
+[6]: /components/minishop2/development/services/payment
+[7]: /en/components/minishop2/snippets/msproducts
