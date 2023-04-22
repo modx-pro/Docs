@@ -5,10 +5,10 @@
 Ticket is the extended modDocument of the modx resource
 When creating the ticket, the display window has visually 4 categories of settings.
 
-* Basic information settings *(Title, Extended title, Description, Annotation (introduction), Content)*;
-* Meta information settings *(Publication, Date of publicatoin, Date of publication cancellation, Pattern, Author, Parental resource, Pseudonym)*;
-* System settings *(Is available for search, Cashed, Published, To use HTML-editor, Container, To freeze URL, To deactivate Jevix, To implement MODX tags, Closed ticket, To hide in the menu bar, To show in the tree)*;
-* Tab with comment management of the present ticket;
+- Basic information settings *(Title, Extended title, Description, Annotation (introduction), Content)*;
+- Meta information settings *(Publication, Date of publicatoin, Date of publication cancellation, Pattern, Author, Parental resource, Pseudonym)*;
+- System settings *(Is available for search, Cashed, Published, To use HTML-editor, Container, To freeze URL, To deactivate Jevix, To implement MODX tags, Closed ticket, To hide in the menu bar, To show in the tree)*;
+- Tab with comment management of the present ticket;
 
 [![](https://file.modx.pro/files/8/a/7/8a714c7cea8b3dab332a300d4d9af3b5s.jpg)](https://file.modx.pro/files/8/a/7/8a714c7cea8b3dab332a300d4d9af3b5.png)
 [![](https://file.modx.pro/files/8/d/2/8d2b567a4059bdbd1e2a32a571acc566s.jpg)](https://file.modx.pro/files/8/d/2/8d2b567a4059bdbd1e2a32a571acc566.png)
