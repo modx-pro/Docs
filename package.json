@@ -28,8 +28,8 @@
         "gray-matter": "^4.0.3",
         "markdown-it": "^13.0.1",
         "markdown-it-container": "^3.0.0",
-        "modx-tmlanguage": "^1.1.1",
-        "vitepress": "^1.0.0-alpha.72",
+        "modx-tmlanguage": "^1.1.2",
+        "vitepress": "^1.0.0-alpha.74",
         "vue": "^3.2.47"
     },
     "pnpm": {
