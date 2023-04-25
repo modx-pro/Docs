@@ -9,6 +9,9 @@
         "L:text.html.fenom": {
             "patterns": [
                 {
+                    "include": "#nonFenom"
+                },
+                {
                     "include": "#comments"
                 },
                 {
@@ -20,6 +23,9 @@
     "scopeName": "text.html.fenom",
     "patterns": [
         {
+            "include": "#nonFenom"
+        },
+        {
             "include": "#comments"
         },
         {
@@ -30,6 +36,13 @@
         }
     ],
     "repository": {
+        "nonFenom": {
+            "patterns": [
+                {
+                    "match": "(\\{%?)\\s"
+                }
+            ]
+        },
         "blocks": {
             "patterns": [
                 {
