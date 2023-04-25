@@ -7,8 +7,7 @@ import matter from 'gray-matter'
 
 import { generateSidebarItem, getTitleFromContent } from './sidebar'
 
-import { authors } from '../../../authors'
-import type { Author } from '../../../authors'
+import { Author, authors } from '../../../authors'
 import { findPath } from '../utils'
 
 export interface ComponentLinks {
