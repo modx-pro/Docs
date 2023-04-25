@@ -21,7 +21,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="NotFound">
+  <div class="DocsNotFound">
     <p class="code">404</p>
     <h1 class="title">Страница не найдена</h1>
     <div class="divider" />
@@ -44,12 +44,12 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.NotFound {
+.DocsNotFound {
   padding: 64px 24px 96px;
   text-align: center;
 }
 @media (min-width: 768px) {
-  .NotFound {
+  .DocsNotFound {
     padding: 96px 32px 168px;
   }
 }

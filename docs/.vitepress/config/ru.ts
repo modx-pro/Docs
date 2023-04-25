@@ -1,7 +1,7 @@
 import type { LocaleConfig } from 'vitepress'
 import type { DocSearchProps } from 'vitepress/types/docsearch'
 import type { DocsThemeConfig } from '../theme'
-import { generateSidebar } from '../theme/sidebar'
+import { generateSidebar } from '../theme/plugins/sidebar'
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
@@ -55,7 +55,6 @@ export const config: LocaleConfig<DocsThemeConfig> = {
   root: {
     label: 'Russian',
     lang: 'ru',
-    title: 'Docs MODX.pro',
     description: META_DESCRIPTION,
     head: [
       ['meta', { property: 'og:url', content: META_URL }],
@@ -85,9 +84,18 @@ export const config: LocaleConfig<DocsThemeConfig> = {
       ],
 
       sidebar: {
-        '/components/': generateSidebar({ root: ['docs/components/*.md', 'docs/components/*/index.md'], ignore: ['docs/components/index.md'] }),
-        '/system/': generateSidebar({ root: 'docs/system/*/index.md' }),
-        '/faq/': generateSidebar({ root: 'docs/faq/*/index.md' }),
+        '/components/': generateSidebar({
+          root: ['docs/components/*.md', 'docs/components/*/index.md'],
+          ignore: ['docs/components/index.md'],
+        }),
+        '/system/': generateSidebar({
+          root: 'docs/system/*/index.md',
+          collapsed: false,
+        }),
+        '/faq/': generateSidebar({
+          root: 'docs/faq/*/index.md',
+          collapsed: false,
+        }),
       },
 
       outlineTitle: 'На этой странице',
@@ -98,7 +106,7 @@ export const config: LocaleConfig<DocsThemeConfig> = {
       ecosystemLabel: 'Другие продукты',
       docFooter: {
         prev: 'Предыдущая страница',
-        next: 'Следующая страница'
+        next: 'Следующая страница',
       },
       editLink: {
         pattern: 'https://github.com/modx-pro/Docs/edit/v2/docs/:path',

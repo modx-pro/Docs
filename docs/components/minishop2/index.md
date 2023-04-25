@@ -1,5 +1,10 @@
 ---
 name: miniShop2
+author: modx-pro
+
+repository: https://github.com/modx-pro/miniShop2
+modstore: https://modstore.pro/packages/ecommerce/minishop2
+modx: https://modx.com/extras/package/minishop2
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

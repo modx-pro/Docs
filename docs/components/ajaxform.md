@@ -1,5 +1,10 @@
 ---
 name: AjaxForm
+author: modx-pro
+
+repository: https://github.com/modx-pro/AjaxForm
+modstore: https://modstore.pro/packages/utilities/ajaxform
+modx: https://modx.com/extras/package/ajaxform
 ---
 # AjaxForm
 

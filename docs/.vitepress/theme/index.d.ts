@@ -7,6 +7,7 @@ declare interface DocsEcosystem {
 }
 
 export interface DocsThemeConfig extends DefaultTheme.Config {
-  ecosystemLabel?: string,
-  ecosystem?: Array<DocsEcosystem>,
+  ecosystemLabel?: string
+  ecosystem?: Array<DocsEcosystem>
+  titleSeparator?: string
 }
