@@ -1,9 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useData } from 'vitepress'
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
-import { normalizeLink } from 'vitepress/dist/client/theme-default/support/utils'
 import { onClickOutside } from '@vueuse/core'
 
 const button = ref(null)
@@ -39,8 +38,9 @@ const { theme } = useData()
           :key="idx"
         >
           <VPLink
-            :href="normalizeLink(product.link)"
+            :href="product.link"
             class="link"
+            :no-icon="true"
           >
             <VPImage
               v-if="product.logo"
@@ -56,92 +56,92 @@ const { theme } = useData()
 </template>
 
 <style scoped>
-  .DocsEcosystem {
-    position: relative;
-    height: 100%;
-    min-width: 215px;
-  }
+.DocsEcosystem {
+  position: relative;
+  height: 100%;
+  min-width: 215px;
+}
 
-  .title {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 20px;
-    height: 100%;
+.title {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 20px;
+  height: 100%;
 
-    font-weight: 500;
-    text-transform: uppercase;
-    white-space: nowrap;
+  font-weight: 500;
+  text-transform: uppercase;
+  white-space: nowrap;
 
-    cursor: pointer;
-    user-select: none;
-  }
+  cursor: pointer;
+  user-select: none;
+}
 
-  .dropdown {
-    display: none;
-    position: absolute;
-    top: 0;
-    padding: calc(var(--vp-nav-height) - var(--vp-border-width)) 16px 20px;
-    width: 100%;
-    box-shadow: var(--vp-shadow-6);
-    border: var(--vp-border);
-    border-radius: var(--vp-border-radius);
-    background-color: var(--vp-c-bg-elv);
-  }
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 0;
+  padding: calc(var(--vp-nav-height) - var(--vp-border-width)) 16px 20px;
+  width: 100%;
+  box-shadow: var(--vp-shadow-6);
+  border: var(--vp-border);
+  border-radius: var(--vp-border-radius);
+  background-color: var(--vp-c-bg-elv);
+}
 
-  .active .dropdown {
-    display: block;
-  }
+.active .dropdown {
+  display: block;
+}
 
-  .menu {
-    padding-top: 16px;
+.menu {
+  padding-top: 16px;
 
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
-    border-top: 4px solid var(--vp-c-divider)
-  }
+  border-top: 4px solid var(--vp-c-divider)
+}
 
-  .link {
-    display: flex;
-    align-items: center;
+.link {
+  display: flex;
+  align-items: center;
 
-    gap: 10px;
-  }
+  gap: 10px;
+}
 
-  :deep(.logo) {
-    width: 32px;
-  }
+:deep(.logo) {
+  width: 20px;
+}
 
-  .burger {
-    position: relative;
-    width: 15px;
-    height: 12px;
+.burger {
+  position: relative;
+  width: 15px;
+  height: 12px;
 
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    overflow: hidden;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+}
 
-  .DocsEcosystem.active .top    { top: 5px; transform: translateX(0) rotate(225deg); }
-  .DocsEcosystem.active .middle { top: 5px; transform: translateX(16px); }
-  .DocsEcosystem.active .bottom { top: 5px; transform: translateX(0) rotate(135deg); }
+.DocsEcosystem.active .top    { top: 5px; transform: translateX(0) rotate(225deg); }
+.DocsEcosystem.active .middle { top: 5px; transform: translateX(16px); }
+.DocsEcosystem.active .bottom { top: 5px; transform: translateX(0) rotate(135deg); }
 
-  .top,
-  .middle,
-  .bottom {
-    position: absolute;
-    width: 16px;
-    height: 2px;
-    background-color: var(--vp-c-text-1);
-    transition: top .25s, background-color .5s, transform .25s;
-  }
+.top,
+.middle,
+.bottom {
+  position: absolute;
+  width: 16px;
+  height: 2px;
+  background-color: var(--vp-c-text-1);
+  transition: top .25s, background-color .5s, transform .25s;
+}
 
-  .top    { top: 0; left: 0; transform: translateX(0); }
-  .middle { top: 5px; left: 0; transform: translateX(0); }
-  .bottom { top: 10px; left: 0; transform: translateX(0); }
+.top    { top: 0; left: 0; transform: translateX(0); }
+.middle { top: 5px; left: 0; transform: translateX(0); }
+.bottom { top: 10px; left: 0; transform: translateX(0); }
 </style>

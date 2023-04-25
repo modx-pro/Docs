@@ -1,13 +1,21 @@
+import type { DocsThemeConfig } from '../theme'
 import { defineConfigWithTheme } from 'vitepress'
 import { config as en } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
 import { containerPlugin } from '../theme/plugins/containers'
+import { prepareData } from '../theme/plugins/component'
 
-export default defineConfigWithTheme({
+const SITE_TITLE = 'modx.pro'
+const SITE_TITLE_SEPARATOR = ' / '
+
+export default defineConfigWithTheme<DocsThemeConfig>({
   lastUpdated: true,
   cleanUrls: true,
   ignoreDeadLinks: true,
+
+  title: SITE_TITLE,
+  titleTemplate: `:title${SITE_TITLE_SEPARATOR}${SITE_TITLE}`,
 
   base: '/Docs/',
 
@@ -27,6 +35,7 @@ export default defineConfigWithTheme({
   ],
 
   themeConfig: {
+    titleSeparator: SITE_TITLE_SEPARATOR,
     i18nRouting: false,
 
     logo: {
@@ -60,5 +69,9 @@ export default defineConfigWithTheme({
   locales: {
     ...root,
     ...en,
+  },
+
+  transformPageData(pageData, { siteConfig }) {
+    return prepareData(pageData, siteConfig)
   },
 })

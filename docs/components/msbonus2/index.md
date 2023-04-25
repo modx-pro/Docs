@@ -1,5 +1,6 @@
 ---
 name: msBonus2
+author: gvozdb
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

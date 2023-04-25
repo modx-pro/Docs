@@ -1,9 +1,8 @@
 import DefaultTheme from 'vitepress/theme'
-import Layout from './Layout.vue'
-import './theme.css'
+import DocsLayout from './components/DocsLayout.vue'
+import './styles/global.css'
 
 export default {
   ...DefaultTheme,
-
-  Layout,
+  Layout: DocsLayout,
 }
