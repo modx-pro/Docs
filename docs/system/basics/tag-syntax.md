@@ -14,7 +14,7 @@
 | Шаблоны             | Нет                  | Нет                  |                         |
 | Поля ресурсов       | `[*field*]`          | `[[*field]]`         | `[[*pagetitle]]`        |
 | Дополнительные поля | `[*templatevar*]`    | `[[*templatevar]]`   | `[[*tags]]`             |
-| Чанки               | `{{ chunk }}`    | `[[$chunk]]`         | `[[$header]]`           |
+| Чанки               | `{{ chunk }}`        | `[[$chunk]]`         | `[[$header]]`           |
 | Сниппеты            | `[[snippet]]`        | `[[snippet]]`        | `[[getResources]]`      |
 | Плагины             | Нет                  | Нет                  |                         |
 | Модули              | Нет                  | В Revo нет модулей   |                         |
