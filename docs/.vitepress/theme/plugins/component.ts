@@ -29,6 +29,7 @@ export interface ComponentData {
   repository?: string
 
   items?: DefaultTheme.Sidebar
+  hidden?: boolean
 }
 
 export interface DocsPageData extends PageData {
@@ -48,7 +49,7 @@ export const components: ComponentData[] = fg
   .map(file => {
     const content = readFileSync(file, 'utf-8')
     const { data } = matter(content)
-    const { name, author, items, modstore, modx, repository } = data
+    const { name, author, items, modstore, modx, repository, hidden } = data
     const { title = name || getTitleFromContent(content) || basename(file) } = data
 
     const filePath = file.substring(file.indexOf('/') + 1)
@@ -60,6 +61,7 @@ export const components: ComponentData[] = fg
       repository,
       title,
       titleLower: title.toLowerCase(),
+      hidden,
     }
 
     if (author && authors[author]) {
