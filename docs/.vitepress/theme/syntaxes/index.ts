@@ -1,5 +1,8 @@
+import { createRequire } from 'module'
 import fenomGrammar from './fenom.tmLanguage.json'
-import modxGrammar from 'modx-tmlanguage/modx.tmLanguage.json'
+
+const require = createRequire(import.meta.url)
+const modxGrammar = require('modx-tmlanguage/modx.tmLanguage.json')
 
 const modx = {
   id: 'modx',
