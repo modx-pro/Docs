@@ -312,19 +312,21 @@ parseChunk(string $name, array $properties, string $prefix = '[[+', string $suff
 
 Для использования более сложных сущностей, в pdoParser предусмотрена служебная переменная `{$_modx}`, которая даёт безопасный доступ к некоторым переменным и методам системы.
 
-| MODX                        | Fenom                                          | Краткая запись                                                  |
-|-----------------------------|------------------------------------------------|-----------------------------------------------------------------|
-| `[[*pagetitle]]`            | `{$_modx->resource.pagetitle}`                 | `{'pagetitle' | resource}`                                      |
-| `[[*tv_name]]`              | `{$_modx->resource.tv_name}`                   | `{'tv.tv_name' | resource}`                                     |
-| `[[$chunk_name]]`           | `{$_modx->getChunk('chunk_name')}`             | `{'chunk_name' | chunk}` или `{include 'chunk_name'}`           |
-| `[[!snippet_name]]`         | `{$_modx->runSnippet('!snippet_name')}`        | `{'!snippet_name' | snippet}`                                   |
-| `[[++system_setting]]`      | `{$_modx->config.system_setting}`              | `{'system_setting' | config}` или `{'system_setting' | option}` |
-| `[[%lexicon_name]]`         | `{$_modx->lexicon('lexicon_name')}`            | `{'lexicon_name' | lexicon}`                                    |
-| `[[~15]]`                   | `{$_modx->makeUrl(15)}`                        | `{15 | url}`                                                    |
-| `[[~[[*id]]]]`              | `{$_modx->makeUrl($_modx->resource.id)}`       | `{('id' | resource) | url}`                                     |
-| `[[+placeholder_name]]` (*) | `{$_modx->getPlaceholder('placeholder_name')}` | `{'placeholder_name' | placeholder}`                            |
+| MODX                    | Fenom                                          | Краткая запись                                                    |
+|-------------------------|------------------------------------------------|-------------------------------------------------------------------|
+| `[[*pagetitle]]`        | `{$_modx->resource.pagetitle}`                 | `{'pagetitle' \| resource}`                                       |
+| `[[*tv_name]]`          | `{$_modx->resource.tv_name}`                   | `{'tv.tv_name' \| resource}`                                      |
+| `[[$chunk_name]]`       | `{$_modx->getChunk('chunk_name')}`             | `{'chunk_name' \| chunk}` или `{include 'chunk_name'}`            |
+| `[[!snippet_name]]`     | `{$_modx->runSnippet('!snippet_name')}`        | `{'!snippet_name' \| snippet}`                                    |
+| `[[++system_setting]]`  | `{$_modx->config.system_setting}`              | `{'system_setting' \| config}` или `{'system_setting' \| option}` |
+| `[[%lexicon_name]]`     | `{$_modx->lexicon('lexicon_name')}`            | `{'lexicon_name' \| lexicon}`                                     |
+| `[[~15]]`               | `{$_modx->makeUrl(15)}`                        | `{15 \| url}`                                                     |
+| `[[~[[*id]]]]`          | `{$_modx->makeUrl($_modx->resource.id)}`       | `{('id' \| resource) \| url}`                                     |
+| `[[+placeholder_name]]` | `{$_modx->getPlaceholder('placeholder_name')}` | `{'placeholder_name' \| placeholder}`                             |
 
-(*) Не путайте плейсходелры, возвращаемые сниппетом, например: `{'page.nav' | placeholder}` для pdoPage, и переменные, передающиеся сниппетом в чанк, например: `{$pagetitle}`. Для MODX-парсера же запись будет через `[[+...]]` в обоих случаях: `[[+page.nav]]` и `[[+pagetitle]]`.
+::: warning
+Не путайте плейсходелры, возвращаемые сниппетом, например: `{'page.nav' | placeholder}` для **pdoPage**, и переменные, передающиеся сниппетом в чанк, например: `{$pagetitle}`. Для MODX-парсера же запись будет через `[[+...]]` в обоих случаях: `[[+page.nav]]` и `[[+pagetitle]]`.
+:::
 
 Помимо этого вам доступны переменные:
 `{$_modx->config}` - системные настройки
