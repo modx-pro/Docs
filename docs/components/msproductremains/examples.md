@@ -8,10 +8,20 @@
 
 ```modx
 [[!msProducts?
-  &leftJoin=`{"Remains":{"class":"msprRemains","on":"msProduct.id = Remains.product_id AND Remains.remains > 0"}}`
+  &leftJoin=`{
+    "Remains": {
+      "class": "msprRemains",
+      "on": "msProduct.id = Remains.product_id AND Remains.remains > 0"
+    }
+  }`
   &groupby=`msProduct.id`
-  &select=`{"msProduct":"*","Remains":"SUM(Remains.remains) as remains"}`
-  &where=`{"Remains.remains:>":"0"}`
+  &select=`{
+    "msProduct": "*",
+    "Remains": "SUM(Remains.remains) as remains"
+  }`
+  &where=`{
+    "Remains.remains:>": "0"
+  }`
 ]]
 ```
 
@@ -46,9 +56,17 @@
 
 ```modx
 &loadModels=`msProductRemains`
-&leftJoin=`{"Remains":{"class":"msprRemains","on":"msProduct.id = Remains.product_id AND Remains.remains >= 0"}}`
+&leftJoin=`{
+  "Remains": {
+    "class": "msprRemains",
+    "on": "msProduct.id = Remains.product_id AND Remains.remains >= 0"
+  }
+}`
 &groupby=`msProduct.id`
-&select=`{"msProduct":"*","Remains":"SUM(Remains.remains) as remains"}`
+&select=`{
+  "msProduct": "*",
+  "Remains": "SUM(Remains.remains) as remains"
+}`
 ```
 
 ```fenom
