@@ -1,5 +1,3 @@
-
-
 const lexicon = {
   label: 'Русский / English',
   choose: 'Выберите язык / Choose language',
