@@ -5,8 +5,10 @@ import DocsEcosystem from './DocsEcosystem.vue'
 import DocsComponentWidget from './DocsComponentWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
 import DocsNotFound from './DocsNotFound.vue'
+import { useSyntaxSwitcher } from '../composables/syntax-switcher'
 
 const { Layout } = DefaultTheme
+useSyntaxSwitcher('vitepress:default-syntax', ['modx', 'fenom'])
 </script>
 
 <template>
