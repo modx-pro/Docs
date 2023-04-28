@@ -18,7 +18,7 @@
         "dev": "vitepress dev docs",
         "build": "vitepress build docs",
         "preview": "vitepress preview docs",
-        "plop": "plop"
+        "generate": "plop"
     },
     "devDependencies": {
         "@docsearch/css": "^3.3.3",
