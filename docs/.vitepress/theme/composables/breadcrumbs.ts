@@ -1,6 +1,8 @@
+import { computed } from 'vue'
+import { findPath } from '../utils'
+import type { Ref, ComputedRef } from 'vue'
 import type { PageData, SiteData } from 'vitepress'
-import { Ref, ComputedRef, computed } from 'vue'
-import { PathItem, findPath } from '../utils'
+import type { PathItem } from '../utils'
 
 export function useBreadcrumbs(
   pageData: Ref<PageData>,
