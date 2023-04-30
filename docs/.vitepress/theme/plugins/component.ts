@@ -63,6 +63,7 @@ export const components: ComponentData[] = fg
       repository,
       title,
       titleLower: title.toLowerCase(),
+      text: title,
       hidden,
     }
 
@@ -85,6 +86,11 @@ export default class DocsComponent {
     const newData = {
       ...pageData,
       component,
+    }
+
+    if (component) {
+      newData.frontmatter.next = false
+      newData.frontmatter.prev = false
     }
 
     const titleArr: Array<string> = findPath(newData, siteConfig.userConfig).map(item => item.text)
