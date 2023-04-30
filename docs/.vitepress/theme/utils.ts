@@ -1,17 +1,21 @@
 import type { SiteConfig, SiteData, UserConfig, LocaleConfig, LocaleSpecificConfig } from 'vitepress'
 import type { DocsPageData } from './plugins/component'
+import { normalize } from 'vitepress/dist/client/shared'
+
+import type { Author } from '../../authors'
+import { authors } from '../../authors'
 
 export declare interface PathItem {
   text: string
   link?: string
 }
 
-function findPath(
+export function findPath(
   pageData: DocsPageData,
   config: UserConfig,
 ): PathItem[] {
   const tree = pageData.component
-  const searchable = pageData.relativePath.replace(/\.md$/, '').replace(/index$/, '')
+  const searchable = ensureStartingSlash(normalize(pageData.relativePath))
   const locale = getLocale(pageData.relativePath, config.locales)
 
   const path: PathItem[] = []
@@ -21,7 +25,7 @@ function findPath(
     const matches = regex.exec(searchable)
 
     if (matches !== null) {
-      const nav = locale.themeConfig.nav.find(item => item.link.startsWith('/' + matches[0]))
+      const nav = locale.themeConfig.nav.find(item => item.link.startsWith(ensureStartingSlash(matches[0])))
 
       if (nav) {
         path.push({
@@ -72,7 +76,7 @@ function findPath(
   return path
 }
 
-function getLocale(
+export function getLocale(
   path: string,
   locales: LocaleConfig | undefined,
 ): LocaleSpecificConfig | SiteData {
@@ -85,4 +89,18 @@ function getLocale(
   return key && Object.prototype.hasOwnProperty.call(locales, key) ? locales[key] : locales.root
 }
 
-export { findPath }
+export function ensureStartingSlash(path: string): string {
+  return /^\//.test(path) ? path : `/${path}`
+}
+
+export function getAuthor(author: string): Author | undefined {
+  if (!author) {
+    return
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(authors, author)) {
+    return
+  }
+
+  return authors[author]
+}

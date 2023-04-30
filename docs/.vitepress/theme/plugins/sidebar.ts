@@ -1,6 +1,8 @@
 import type { DefaultTheme } from 'vitepress'
+import { normalize } from 'vitepress/dist/client/shared'
+
 import { readFileSync } from 'fs'
-import { join, normalize, basename } from 'path'
+import { join, basename } from 'path'
 import fg from 'fast-glob'
 import matter from 'gray-matter'
 
@@ -23,10 +25,7 @@ export default class DocsSidebar {
         const { name, hidden, items } = data
         const { title = name || DocsSidebar.getTitleFromContent(src) || basename(path) } = data
 
-        const link = path
-          .replace('docs', '')
-          .replace(/index\.md$/, '')
-          .replace(/\.md$/, '')
+        const link = normalize(path.replace(/^docs/, ''))
 
         const output: DefaultTheme.SidebarItem = {
           text: title,
@@ -54,7 +53,7 @@ export default class DocsSidebar {
       const item: DefaultTheme.SidebarItem = { text }
 
       if (link) {
-        item.link = normalize(join(path, link)).replace(/\\/g, '/')
+        item.link = join(path, link).replace(/\\/g, '/')
       }
 
       if (items) {

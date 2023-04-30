@@ -1,4 +1,6 @@
 import type { DefaultTheme, PageData, SiteConfig } from 'vitepress'
+import { normalize } from 'vitepress/dist/client/shared'
+import { ensureStartingSlash, getAuthor } from '../utils'
 
 import { readFileSync } from 'fs'
 import { basename } from 'path'
@@ -7,7 +9,7 @@ import matter from 'gray-matter'
 
 import { generateSidebarItem, getTitleFromContent } from './sidebar'
 
-import { Author, authors } from '../../../authors'
+import type { Author } from '../../../authors'
 import { findPath } from '../utils'
 
 export interface ComponentLinks {
@@ -55,7 +57,7 @@ export const components: ComponentData[] = fg
     const filePath = file.substring(file.indexOf('/') + 1)
     const component: ComponentData = {
       path: filePath,
-      link: filePath.replace(/index\.md$/, '').replace(/\.md$/, ''),
+      link: ensureStartingSlash(normalize(filePath)),
       modstore,
       modx,
       repository,
@@ -64,9 +66,7 @@ export const components: ComponentData[] = fg
       hidden,
     }
 
-    if (author && authors[author]) {
-      component.author = authors[author]
-    }
+    component.author = getAuthor(author)
 
     if (items) {
       component.items = generateSidebarItem(items, component.link)
