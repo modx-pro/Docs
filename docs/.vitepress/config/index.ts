@@ -1,10 +1,13 @@
 import type { DocsThemeConfig } from '../theme/types'
-import { defineConfigWithTheme } from 'vitepress'
+import { createContentLoader, defineConfigWithTheme } from 'vitepress'
 import { config as en } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
 import { containerPlugin } from '../theme/plugins/containers'
 import { components, prepareData } from '../theme/plugins/component'
+import { SitemapStream } from 'sitemap'
+import { createWriteStream } from 'node:fs'
+import { resolve } from 'node:path'
 
 const SITE_TITLE = 'modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
@@ -71,6 +74,18 @@ export default defineConfigWithTheme<DocsThemeConfig>({
   locales: {
     ...root,
     ...en,
+  },
+
+  buildEnd: async ({ outDir }) => {
+    const sitemap = new SitemapStream({ hostname: 'https://modx.pro/' })
+    const pages = await createContentLoader('*.md').load()
+    const writeStream = createWriteStream(resolve(outDir, 'sitemap.xml'))
+
+    sitemap.pipe(writeStream)
+    pages.forEach((page) => sitemap.write(page))
+    sitemap.end()
+
+    await new Promise((r) => writeStream.on('finish', r))
   },
 
   transformPageData(pageData, { siteConfig }) {
