@@ -1,6 +1,8 @@
 ---
 name: mscDistance
-dependencies: ['miniShop2']
+description: Расчет стоимости доставки по городу/району
+logo: https://modstore.pro/assets/extras/mscdistance/logo-md.jpg
+dependencies: miniShop2
 ---
 
 # mscDistance

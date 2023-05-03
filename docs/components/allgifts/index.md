@@ -1,5 +1,7 @@
 ---
 name: allGifts
+description: Выгрузка товаров с Gifts.ru и других сервисов
+logo: https://modstore.pro/assets/extras/allgifts/logo-md.jpg
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

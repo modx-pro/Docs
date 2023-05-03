@@ -1,5 +1,7 @@
 ---
 name: SEOtabs
+description: Пакет для работы со вкладками товаров. Табы для вашего SEO
+logo: https://modstore.pro/assets/extras/seotabs/logo-md.jpg
 
 items: [
   { text: 'Сниппет seoTabs', link: 'snippet-seotabs' },

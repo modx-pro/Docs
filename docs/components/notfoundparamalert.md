@@ -1,5 +1,7 @@
 ---
 name: NotFoundParamAlert
+description: Уведомляет о 404 страницах с заданными URL параметрами
+logo: https://modstore.pro/assets/extras/notfoundparamalert/logo-md.png
 ---
 # NotFoundParamAlert
 

@@ -1,5 +1,7 @@
 ---
 name: VoteForms
+description: Система голосования и опросов для MODX Revolution
+logo: https://modstore.pro/assets/extras/voteforms/logo-md.jpg
 ---
 # VoteForms
 

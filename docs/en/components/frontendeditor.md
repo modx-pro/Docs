@@ -1,5 +1,7 @@
 ---
 name: Frontend Editor
+description: Frontend content editor based on TinyMCE 5 RTE
+logo: https://modstore.pro/assets/extras/frontendeditor/logo-md.png
 ---
 # Frontend Editor
 

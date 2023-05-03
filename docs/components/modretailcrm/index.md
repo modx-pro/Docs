@@ -1,5 +1,7 @@
 ---
 name: modRetailCRM
+description: Интеграция с RetailCRM
+logo: https://modstore.pro/assets/extras/modretailcrm/logo-md.png
 
 items: [
   {

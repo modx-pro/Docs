@@ -1,5 +1,7 @@
 ---
 name: mSearch2
+description: Morphological search and ajax filter
+logo: https://modstore.pro/assets/extras/msearch2/logo-md.jpg
 
 items: [
   {

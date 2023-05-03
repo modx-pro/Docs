@@ -1,6 +1,8 @@
 ---
 name: msOneClick
-dependencies: ['miniShop2']
+description: Покупка в один клик через модальное окно
+logo: https://modstore.pro/assets/extras/msoneclick/logo-md.png
+dependencies: miniShop2
 ---
 
 # msOneClick

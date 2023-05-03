@@ -1,5 +1,7 @@
 ---
 name: Quiz
+description: Конструктор квизов
+logo: https://modstore.pro/assets/extras/quiz/logo-md.png
 
 items: [
   {

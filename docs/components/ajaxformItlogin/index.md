@@ -1,5 +1,6 @@
 ---
 name: AjaxFormItLogin
+description: Современная и функциональная замена AjaxForm
 
 items: [
   { text: 'Системные настройки', link: 'settings' },

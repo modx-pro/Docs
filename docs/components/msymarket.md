@@ -1,6 +1,6 @@
 ---
 name: msYmarket
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msYmarket

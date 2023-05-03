@@ -1,5 +1,7 @@
 ---
 name: ms2Gallery
+description: Улучшенная галерея miniShop2 для ресурсов любых типов
+logo: https://modstore.pro/assets/extras/ms2gallery/logo-md.jpg
 
 items: [
   {

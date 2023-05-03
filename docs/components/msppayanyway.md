@@ -1,6 +1,8 @@
 ---
 name: mspPayAnyWay
-dependencies: ['miniShop2']
+description: Интеграция с платежным сервисом PayAnyWay
+logo: https://modstore.pro/assets/extras/msppayanyway/logo-md.jpg
+dependencies: miniShop2
 categories: payment
 ---
 

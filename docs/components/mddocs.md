@@ -1,5 +1,7 @@
 ---
 name: mdDocs
+description: Компонент, превращающий новый сайт в систему документации
+logo: https://modstore.pro/assets/extras/mddocs/logo-md.png
 ---
 # mdDocs
 

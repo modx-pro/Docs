@@ -1,6 +1,8 @@
 ---
 name: mspAssistBelarus
-dependencies: ['miniShop2']
+description: Оплата заказов miniShop2 через Assist Belarus (Республика Беларусь)
+logo: https://modstore.pro/assets/extras/mspassistbelarus/logo-md.jpg
+dependencies: miniShop2
 categories: payment
 ---
 

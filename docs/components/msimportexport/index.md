@@ -1,5 +1,7 @@
 ---
 name: msImportExport
+description: Импорт и экспорт для miniShop2
+logo: https://modstore.pro/assets/extras/msimportexport/logo-md.png
 
 items: [
   { text: 'msImportExport 1.0', link: 'msimportexport-1' },

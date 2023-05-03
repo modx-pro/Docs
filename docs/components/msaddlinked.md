@@ -1,6 +1,8 @@
 ---
 name: msAddLinked
-dependencies: ['miniShop2']
+description: Добавление связанных товаров в виде опций с увеличением цены
+logo: https://modstore.pro/assets/extras/msaddlinked/logo-md.png
+dependencies: miniShop2
 ---
 
 # msAddLinked

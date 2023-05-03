@@ -1,5 +1,7 @@
 ---
 name: Comparison
+description: Компонент для сравнения товаров
+logo: https://modstore.pro/assets/extras/comparison/logo-md.jpg
 
 items: [
   { text: 'addComparison', link: 'addcomparison' },

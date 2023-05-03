@@ -1,5 +1,7 @@
 ---
 name: msPre
+description: Массовое редактирование и фильтрация товаров и ресурсов
+logo: https://modstore.pro/assets/extras/mspre/logo-md.png
 
 items: [
   { text: 'Возможности', link: 'features' },

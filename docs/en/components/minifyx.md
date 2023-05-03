@@ -1,5 +1,6 @@
 ---
 name: MinifyX
+logo: https://modstore.pro/assets/extras/minifyx/logo-md.jpg
 ---
 # MinifyX
 

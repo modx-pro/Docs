@@ -1,5 +1,7 @@
 ---
 name: Tickets
+description: Компонент для создания и комментирования пользовательских страниц
+logo: https://modstore.pro/assets/extras/tickets/logo-md.jpg
 
 items: [
   {

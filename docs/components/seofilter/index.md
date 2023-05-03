@@ -1,5 +1,7 @@
 ---
 name: SeoFilter
+description: Удобное управление ЧПУ, мета-тегами и генерация текстов
+logo: https://modstore.pro/assets/extras/seofilter/logo-md.png
 
 items: [
   { text: 'Быстрый старт с mFilter2', link: 'quick-start-mfilter2' },

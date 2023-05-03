@@ -1,5 +1,7 @@
 ---
 name: cityFields
+description: Компонент реализует на сайте мультигородность без контекстов
+logo: https://modstore.pro/assets/extras/cityfields/logo-md.png
 
 items: [
   { text: 'Управление городами и данными', link: 'data-management' },

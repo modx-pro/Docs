@@ -1,5 +1,7 @@
 ---
 name: MinifyX
+description: Автоматизированное сжатие скриптов и стилей сайта
+logo: https://modstore.pro/assets/extras/minifyx/logo-md.jpg
 ---
 # MinifyX
 

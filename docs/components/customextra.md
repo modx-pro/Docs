@@ -1,5 +1,7 @@
 ---
 name: customExtra
+description: Дополнительная таблица в админке MODX
+logo: https://modstore.pro/assets/extras/customextra/logo-md.png
 ---
 # customExtra
 

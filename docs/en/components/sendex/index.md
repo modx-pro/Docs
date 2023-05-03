@@ -1,5 +1,6 @@
 ---
 name: Sendex
+logo: https://modstore.pro/assets/extras/sendex/logo-md.jpg
 
 items: [
   {

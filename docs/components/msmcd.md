@@ -1,6 +1,8 @@
 ---
 name: msMCD
-dependencies: ['miniShop2']
+description: Динамическое обновление мини-корзины miniShop2
+logo: https://modstore.pro/assets/extras/msminicartdynamic/logo-md.png
+dependencies: miniShop2
 ---
 
 # Компонент msMCD (mini cart dynamic) для miniShop2

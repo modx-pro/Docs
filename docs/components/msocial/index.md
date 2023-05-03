@@ -1,5 +1,7 @@
 ---
 name: mSocial
+description: Постинг в Twitter
+logo: https://modstore.pro/assets/extras/msocial/logo-md.png
 
 items: [
   { text: 'mSocialVK', link: 'msocialvk' },

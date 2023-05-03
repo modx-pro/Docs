@@ -1,5 +1,7 @@
 ---
 name: SEO Suite
+description: Automatically fix 404 errors on your website
+logo: https://modstore.pro/assets/extras/seosuite/logo-md.png
 ---
 # SEO Suite
 

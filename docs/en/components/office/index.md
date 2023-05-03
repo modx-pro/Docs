@@ -1,5 +1,7 @@
 ---
 name: Office
+description: Ajax login and profile editing. List miniShop2 orders
+logo: https://modstore.pro/assets/extras/office/logo-md.png
 
 items: [
   { text: 'Quick Start', link: 'quick-start' },

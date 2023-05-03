@@ -1,5 +1,7 @@
 ---
 name: OrphoMan
+description: Выявление орфографических ошибок в тексте
+logo: https://modstore.pro/assets/extras/orphoman/logo-md.jpg
 ---
 # OrphoMan
 

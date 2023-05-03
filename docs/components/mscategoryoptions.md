@@ -1,6 +1,8 @@
 ---
 name: msCategoryOptions
-dependencies: ['miniShop2']
+description: Функционал дополнительных опций в зависимости от категории товара
+logo: https://modstore.pro/assets/extras/mscategoryoptions/logo-md.jpg
+dependencies: miniShop2
 ---
 
 # msCategoryOptions

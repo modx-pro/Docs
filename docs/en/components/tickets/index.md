@@ -1,5 +1,7 @@
 ---
 name: Tickets
+description: Blog and comments system
+logo: https://modstore.pro/assets/extras/tickets/logo-md.jpg
 
 items: [
   {

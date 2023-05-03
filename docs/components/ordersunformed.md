@@ -1,6 +1,8 @@
 ---
 name: ordersUnformed
-dependencies: ['miniShop2']
+description: Просмотр неоформленных корзин
+logo: https://modstore.pro/assets/extras/ordersunformed/logo-md.jpeg
+dependencies: miniShop2
 ---
 
 # ordersUnformed

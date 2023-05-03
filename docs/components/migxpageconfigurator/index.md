@@ -1,5 +1,6 @@
 ---
 name: MigxPageConfigurator
+description: Интеграция вёрстки и управление контентом
 
 items: [
   { text: 'Начало работы', link: 'setup' },

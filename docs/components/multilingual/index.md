@@ -1,5 +1,7 @@
 ---
 name: multiLingual
+description: Мультиязычные сайты без контекстов
+logo: https://modstore.pro/assets/extras/multilingual/logo-md.jpg
 
 items: [
   { text: 'Принцип перевода выборок', link: 'translation-principle' },

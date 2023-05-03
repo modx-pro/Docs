@@ -1,5 +1,7 @@
 ---
 name: WebDAV
+description: WebDAVMediaSource — сетевой медиаисточник для MODX Revolution
+logo: https://modstore.pro/assets/extras/webdav/logo-md.jpg
 ---
 # WebDAV
 

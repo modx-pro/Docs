@@ -1,5 +1,7 @@
 ---
 name: msPromoCode
+description: Скидочные промо-коды для miniShop2
+logo: https://modstore.pro/assets/extras/mspromocode/logo-md.png
 
 items: [
   {
@@ -42,7 +44,7 @@ items: [
   },
 ]
 
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msPromoCode

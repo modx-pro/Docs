@@ -1,5 +1,7 @@
 ---
 name: msWallpapers
+description: Продвинутая форма для заказа обоев
+logo: https://modstore.pro/assets/extras/mswallpapers/logo-md.png
 
 items: [
   { text: 'Установка и настройка', link: 'setup' },

@@ -1,5 +1,7 @@
 ---
 name: Scheduler
+description: Планирование отложенных задач
+logo: https://modstore.pro/assets/extras/scheduler/logo-md.png
 
 items: [
   { text: 'Установка', link: 'installation' },

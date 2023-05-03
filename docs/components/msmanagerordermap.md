@@ -1,6 +1,7 @@
 ---
 name: msManagerOrderMap
-dependencies: ['miniShop2']
+description: Выводит карту в панели управления заказом, во вкладке Адрес
+dependencies: miniShop2
 ---
 
 # msManagerOrderMap

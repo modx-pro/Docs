@@ -1,6 +1,8 @@
 ---
 name: msLiveInform
-dependencies: ['miniShop2']
+description: Отслеживание и проверка Заказов магазина MiniShop2 при помощи сервиса LiveInform
+logo: https://modstore.pro/assets/extras/msliveinform/logo-md.png
+dependencies: miniShop2
 ---
 
 # msLiveInform

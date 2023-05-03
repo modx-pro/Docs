@@ -1,5 +1,7 @@
 ---
 name: DebugParser
+description: Find your slow scripts
+logo: https://modstore.pro/assets/extras/debugparser/logo-md.jpg
 ---
 # DebugParser
 

@@ -1,5 +1,7 @@
 ---
 name: userMarker
+description: Добавление меток и тегов к ресурсам
+logo: https://modstore.pro/assets/extras/usermarker/logo-md.png
 ---
 # userMarker
 

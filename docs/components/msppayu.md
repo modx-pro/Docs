@@ -1,6 +1,8 @@
 ---
 name: mspPayU
-dependencies: ['miniShop2']
+description: Оплата заказов miniShop2 через платежный сервис PayU
+logo: https://modstore.pro/assets/extras/msppayu/logo-md.jpg
+dependencies: miniShop2
 categories: payment
 ---
 

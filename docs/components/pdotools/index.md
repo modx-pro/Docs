@@ -1,5 +1,7 @@
 ---
 name: pdoTools
+description: Быстрая выборка страниц и пользователей сайта
+logo: https://modstore.pro/assets/extras/pdotools/logo-md.jpg
 
 items: [
   {

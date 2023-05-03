@@ -1,5 +1,7 @@
 ---
 name: msPointsIssue
+description: Пункты выдачи заказов для miniShop2
+logo: https://modstore.pro/assets/extras/mspointsissue/logo-md.jpg
 
 items: [
   {
@@ -19,7 +21,7 @@ items: [
   },
 ]
 
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msPointsIssue

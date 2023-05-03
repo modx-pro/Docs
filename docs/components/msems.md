@@ -1,6 +1,8 @@
 ---
 name: msEMS
-dependencies: ['miniShop2']
+description: Расчет стоимости доставки службой EMS Russian Post
+logo: https://modstore.pro/assets/extras/msems/logo-md.jpeg
+dependencies: miniShop2
 ---
 
 # msEMS

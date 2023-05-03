@@ -1,5 +1,7 @@
 ---
 name: pdoTools
+description: Fast fetching of pages and users of the site
+logo: https://modstore.pro/assets/extras/pdotools/logo-md.jpg
 
 items: [
   {

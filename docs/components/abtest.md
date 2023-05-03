@@ -1,5 +1,7 @@
 ---
 name: ABTest
+description: Проверка маркетинговых гипотез на сайте
+logo: https://modstore.pro/assets/extras/abtest/logo-md.jpg
 ---
 # ABTest
 

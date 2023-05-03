@@ -1,5 +1,7 @@
 ---
 name: PageBreaker
+description: Разбивка страницы на части по специальному тегу
+logo: https://modstore.pro/assets/extras/pagebreaker/logo-md.jpg
 
 items: [
   { text: 'Настройки', link: 'settings' },
