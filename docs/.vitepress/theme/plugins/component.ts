@@ -22,9 +22,13 @@ export interface ComponentData {
   link: string
   title: string
   titleLower: string
+  description?: string
 
   text?: string
   author?: Author
+  logo?: string
+  dependencies?: Array<string>
+  categories?: Array<string>
 
   modstore?: string
   modx?: string
@@ -51,7 +55,19 @@ export const components: ComponentData[] = fg
   .map(file => {
     const content = readFileSync(file, 'utf-8')
     const { data } = matter(content)
-    const { name, author, items, modstore, modx, repository, hidden } = data
+    const {
+      name,
+      author,
+      logo,
+      categories,
+      dependencies,
+      items,
+      modstore,
+      modx,
+      repository,
+      hidden,
+      description,
+    } = data
     const { title = name || getTitleFromContent(content) || basename(file) } = data
 
     const filePath = file.substring(file.indexOf('/') + 1)
@@ -64,6 +80,10 @@ export const components: ComponentData[] = fg
       title,
       titleLower: title.toLowerCase(),
       text: title,
+      description,
+      logo,
+      dependencies: Array.isArray(dependencies) ? dependencies : Array(dependencies),
+      categories: Array.isArray(categories) ? categories : Array(categories),
       hidden,
     }
 
@@ -75,6 +95,7 @@ export const components: ComponentData[] = fg
 
     return component
   })
+  .sort((a, b) => (a.text && b.text) ? a.text.localeCompare(b.text) : 0)
 
 export default class DocsComponent {
   static prepareData(

@@ -1,7 +1,8 @@
 import type { LocaleConfig } from 'vitepress'
 import type { DocSearchProps } from 'vitepress/types/docsearch'
-import type { DocsThemeConfig } from '../theme'
+import type { DocsThemeConfig } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
+import { components } from '../theme/plugins/component'
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
@@ -113,6 +114,8 @@ export const config: LocaleConfig<DocsThemeConfig> = {
         pattern: 'https://github.com/modx-pro/Docs/edit/v2/docs/:path',
         text: 'Предложить изменения на этой странице',
       },
+
+      components: components.filter(component => component.path.startsWith('components/')),
     },
   }
 }

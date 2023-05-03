@@ -1,10 +1,10 @@
-import type { DocsThemeConfig } from '../theme'
+import type { DocsThemeConfig } from '../theme/types'
 import { defineConfigWithTheme } from 'vitepress'
 import { config as en } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
 import { containerPlugin } from '../theme/plugins/containers'
-import { prepareData } from '../theme/plugins/component'
+import { components, prepareData } from '../theme/plugins/component'
 
 const SITE_TITLE = 'modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
@@ -64,6 +64,8 @@ export default defineConfigWithTheme<DocsThemeConfig>({
         },
       },
     },
+
+    components,
   },
 
   locales: {

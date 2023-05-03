@@ -1,7 +1,6 @@
 ---
-prev: false
-next: false
+title: Компоненты
+layout: home
 ---
-# Компоненты
 
-В разработке
+<DocsComponentsList title="Компоненты" />

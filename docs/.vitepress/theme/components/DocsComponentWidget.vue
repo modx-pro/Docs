@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ComponentLinks, DocsPageData } from '../plugins/component'
-import { Ref, computed } from 'vue'
+import type { ComponentLinks, DocsPageData } from '../plugins/component'
+import { computed } from 'vue'
+import type { Ref } from 'vue'
 import { withBase, useData } from 'vitepress'
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'

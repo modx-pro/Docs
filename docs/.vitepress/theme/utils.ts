@@ -1,4 +1,4 @@
-import type { SiteConfig, SiteData, UserConfig, LocaleConfig, LocaleSpecificConfig } from 'vitepress'
+import type { UserConfig } from 'vitepress'
 import type { DocsPageData } from './plugins/component'
 import { normalize } from 'vitepress/dist/client/shared'
 
@@ -16,24 +16,28 @@ export function findPath(
 ): PathItem[] {
   const tree = pageData.component
   const searchable = ensureStartingSlash(normalize(pageData.relativePath))
-  const locale = getLocale(pageData.relativePath, config.locales)
 
   const path: PathItem[] = []
+  let root: PathItem | undefined
 
-  if (locale) {
-    const regex = locale.lang === 'ru' ? /(^.[^\/]+\/)/g : new RegExp(`(^${locale.lang}/.[^/]+/)`, 'g')
-    const matches = regex.exec(searchable)
-
-    if (matches !== null) {
-      const nav = locale.themeConfig.nav.find(item => item.link.startsWith(ensureStartingSlash(matches[0])))
-
-      if (nav) {
-        path.push({
-          text: nav.text,
-          link: nav.link,
-        })
-      }
+  if (config.themeConfig.nav) {
+    root = config.themeConfig.nav.find(item => searchable.startsWith(item.link))
+  } else {
+    const localeLinks = Object.entries(config.locales).flatMap(([key]) => ({
+      key,
+      link: key === 'root' ? '/' : `${key}/`,
+    }))
+    const locale = localeLinks.find(locale => searchable.startsWith(locale.link))
+    if (locale && Object.prototype.hasOwnProperty.call(config.locales, locale.key)) {
+      root = config.locales[locale.key].themeConfig.nav.find(item => searchable.startsWith(item.link))
     }
+  }
+
+  if (root) {
+    path.push({
+      text: root.text,
+      link: root.link,
+    })
   }
 
   if (!tree) {
@@ -76,17 +80,16 @@ export function findPath(
   return path
 }
 
-export function getLocale(
-  path: string,
-  locales: LocaleConfig | undefined,
-): LocaleSpecificConfig | SiteData {
-  if (typeof locales !== 'object' || locales === null || !Object.keys(locales).length) {
-    const config: SiteConfig = (globalThis as any).VITEPRESS_CONFIG
-    return config.site
+export function ellipsis(
+  string: string = '',
+  length: number = 0,
+  etc: string = '...'
+): string {
+  if (string.length <= length) {
+    return string
   }
 
-  const key = Object.keys(locales).find(locale => path.startsWith(locale))
-  return key && Object.prototype.hasOwnProperty.call(locales, key) ? locales[key] : locales.root
+  return string.substring(0, length) + (string.length > length ? etc : '')
 }
 
 export function ensureStartingSlash(path: string): string {
