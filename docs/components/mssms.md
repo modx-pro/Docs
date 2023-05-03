@@ -1,6 +1,8 @@
 ---
 name: msSMS
-dependencies: ['miniShop2']
+description: Отправка SMS-сообщений при оформлении заказов
+logo: https://modstore.pro/assets/extras/mssms/logo-md.jpg
+dependencies: miniShop2
 ---
 
 # msSMS

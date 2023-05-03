@@ -1,6 +1,8 @@
 ---
 name: mspBePaid
-dependencies: ['miniShop2']
+description: Интеграция miniShop2 с платежной системой bePaid, Беларусь
+logo: https://modstore.pro/assets/extras/mspbepaid/logo-md.png
+dependencies: miniShop2
 categories: payment
 ---
 

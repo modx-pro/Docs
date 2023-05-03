@@ -1,5 +1,7 @@
 ---
 name: ideas
+description: Идеи, вопросы, проблемы, предложения. Обратная связь с возможностью голосования
+logo: https://modstore.pro/assets/extras/ideas/logo-md.png
 ---
 # Идеи, вопросы, проблемы, предложения
 

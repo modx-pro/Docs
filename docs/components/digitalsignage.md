@@ -1,5 +1,7 @@
 ---
 name: DigitalSignage
+description: Приложение для создания трансляций на MODX
+logo: https://modstore.pro/assets/extras/digitalsignage/logo-md.png
 ---
 # DigitalSignage
 

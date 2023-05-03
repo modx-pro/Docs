@@ -1,5 +1,7 @@
 ---
 name: xCalc
+description: Универсальный конструктор калькуляторов
+logo: https://modstore.pro/assets/extras/xcalc/logo-md.png
 
 items: [
   {

@@ -1,5 +1,6 @@
 ---
 name: ClickToCall
+logo: https://modstore.pro/assets/extras/clicktocall/logo-md.png
 ---
 # ClickToCall
 

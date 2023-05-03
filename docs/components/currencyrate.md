@@ -1,5 +1,7 @@
 ---
 name: CurrencyRate
+description: Курсы иностранных валют с сайта Банка России
+logo: https://modstore.pro/assets/extras/currencyrate/logo-md.jpg
 ---
 # CurrencyRate
 

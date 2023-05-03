@@ -1,5 +1,7 @@
 ---
 name: UserLocation
+description: Геолокация и выбор города пользователя
+logo: https://modstore.pro/assets/extras/userlocation/logo-md.jpg
 
 items: [
   {

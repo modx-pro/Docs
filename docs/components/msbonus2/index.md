@@ -1,5 +1,7 @@
 ---
 name: msBonus2
+description: Бонусная система для miniShop2
+logo: https://modstore.pro/assets/extras/msbonus2/logo-md.jpg
 author: gvozdb
 
 items: [
@@ -33,7 +35,7 @@ items: [
   },
 ]
 
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msBonus2

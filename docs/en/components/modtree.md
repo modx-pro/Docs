@@ -1,5 +1,7 @@
 ---
 name: ModTree
+description: Linking resources with each other
+logo: https://modstore.pro/assets/extras/modtree/logo-md.png
 outline: deep
 ---
 # ModTree

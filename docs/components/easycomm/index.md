@@ -1,5 +1,7 @@
 ---
 name: easyComm
+description: Создание модулей и разделов отзывов, комментариев, вопросов и ответов
+logo: https://modstore.pro/assets/extras/easycomm/logo-md.png
 
 items: [
   { text: 'Описание', link: 'description' },

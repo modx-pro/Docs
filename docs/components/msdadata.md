@@ -1,6 +1,6 @@
 ---
 name: msDaData
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msDaData

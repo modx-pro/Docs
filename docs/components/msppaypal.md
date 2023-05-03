@@ -1,6 +1,8 @@
 ---
 name: mspPayPal
-dependencies: ['miniShop2']
+description: Компонент платежной системы PayPal для minishop2
+logo: https://modstore.pro/assets/extras/msppaypal/logo-md.png
+dependencies: miniShop2
 categories: payment
 ---
 

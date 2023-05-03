@@ -1,5 +1,7 @@
 ---
 name: orderPrint
+description: Компонент предназначен для подготовки и печати документов с информацией о заказах
+logo: https://modstore.pro/assets/extras/orderprint/logo-md.jpg
 
 items: [
   { text: 'Настройка', link: 'setup' },

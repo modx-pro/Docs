@@ -1,6 +1,6 @@
 ---
 name: msQuickView
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msQuickView

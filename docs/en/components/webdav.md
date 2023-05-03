@@ -1,5 +1,6 @@
 ---
 name: WebDAV
+logo: https://modstore.pro/assets/extras/webdav/logo-md.jpg
 ---
 # WebDAVMediaSource
 

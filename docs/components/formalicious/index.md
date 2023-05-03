@@ -1,5 +1,7 @@
 ---
 name: Formalicious
+description: Дополнение для мощной генерации форм, работает с FormIt
+logo: https://modstore.pro/assets/extras/formalicious/logo-md.png
 
 items: [
   { text: 'Установка', link: 'setup' },

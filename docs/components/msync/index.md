@@ -1,5 +1,7 @@
 ---
 name: mSync
+description: Компонент для синхронизации товаров, предложений и заказов с 1С
+logo: https://modstore.pro/assets/extras/msync/logo-md.png
 
 items: [
   { text: 'Установка', link: 'setup' },

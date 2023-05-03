@@ -1,6 +1,6 @@
 ---
 name: msBuyNow
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msBuyNow

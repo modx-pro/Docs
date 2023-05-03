@@ -1,5 +1,6 @@
 ---
 name: FileAttach
+logo: https://modstore.pro/assets/extras/fileattach/logo-md.jpg
 ---
 # FileAttach
 

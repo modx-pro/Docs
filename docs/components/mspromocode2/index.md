@@ -1,5 +1,7 @@
 ---
 name: msPromoCode2
+description: Улучшенные промо-коды для miniShop2
+logo: https://modstore.pro/assets/extras/mspromocode2/logo-md.jpg
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
@@ -38,7 +40,7 @@ items: [
   },
 ]
 
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msPromoCode2

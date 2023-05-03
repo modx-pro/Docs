@@ -1,6 +1,6 @@
 ---
 name: msDellin
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msDellin

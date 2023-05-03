@@ -1,6 +1,8 @@
 ---
 name: ms2form
-dependencies: ['miniShop2']
+description: Выводит форму для создания продукта minishop2 пользователем из фронтэнда
+logo: https://modstore.pro/assets/extras/ms2form/logo-md.jpg
+dependencies: miniShop2
 ---
 
 # ms2form

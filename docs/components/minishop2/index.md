@@ -1,5 +1,7 @@
 ---
 name: miniShop2
+description: Самый гибкий и быстрый компонент интернет-магазина для MODX Revolution
+logo: https://modstore.pro/assets/extras/minishop2/logo-md.png
 author: modx-pro
 
 repository: https://github.com/modx-pro/miniShop2

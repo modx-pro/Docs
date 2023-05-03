@@ -1,6 +1,8 @@
 ---
 name: msSetInCart
-dependencies: ['miniShop2']
+description: Компонент реализует функционал покупки комплектов товаров в Minishop2
+logo: https://modstore.pro/assets/extras/mssetincart/logo-md.jpg
+dependencies: miniShop2
 ---
 
 # msSetInCart

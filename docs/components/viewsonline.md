@@ -1,5 +1,7 @@
 ---
 name: ViewsOnline
+description: Число онлайн-пользователей на странице
+logo: https://modstore.pro/assets/extras/viewsonline/logo-md.png
 ---
 # ViewsOnline
 

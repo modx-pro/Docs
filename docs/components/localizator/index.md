@@ -1,5 +1,6 @@
 ---
 name: Localizator
+description: Мультиязычность, сео и автоматизация
 
 items: [
   { text: 'Сниппет Localizator', link: 'snippet-localizator' },

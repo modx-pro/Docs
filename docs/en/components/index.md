@@ -1,5 +1,6 @@
 ---
-prev: false
-next: false
+title: Components
+layout: home
 ---
-# Components
+
+<DocsComponentsList title="Components" />

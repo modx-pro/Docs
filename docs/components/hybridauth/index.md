@@ -1,5 +1,7 @@
 ---
 name: HybridAuth
+description: Авторизация через соцсети и другие сервисы
+logo: https://modstore.pro/assets/extras/hybridauth/logo-md.jpg
 
 items: [
   {

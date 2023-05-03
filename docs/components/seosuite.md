@@ -1,5 +1,7 @@
 ---
 name: SEO Suite
+description: SЕО Suite автоматически перенаправляет битые ссылки (код 404) на подходящие страницы
+logo: https://modstore.pro/assets/extras/seosuite/logo-md.png
 ---
 # SEO Suite
 

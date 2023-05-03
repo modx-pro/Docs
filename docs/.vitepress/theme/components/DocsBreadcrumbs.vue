@@ -38,7 +38,7 @@ const data = useBreadcrumbs(page, site)
       </template>
       <meta
         itemprop="position"
-        :content="idx"
+        :content="idx.toString()"
       >
     </li>
   </ol>

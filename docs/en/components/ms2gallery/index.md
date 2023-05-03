@@ -1,5 +1,7 @@
 ---
 name: ms2Gallery
+description: The gallery for any resource in separate tab
+logo: https://modstore.pro/assets/extras/ms2gallery/logo-md.jpg
 
 items: [
   {

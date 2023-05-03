@@ -1,5 +1,7 @@
 ---
 name: ResourceGrabber
+description: Компонент реализует функционал парсинга данных по ссылке
+logo: https://modstore.pro/assets/extras/resourcegrabber/logo-md.png
 
 items: [
   {

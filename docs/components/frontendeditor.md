@@ -1,5 +1,7 @@
 ---
 name: Frontend Editor
+description: Редактирование контента не заходя в админ панель
+logo: https://modstore.pro/assets/extras/frontendeditor/logo-md.png
 ---
 # Frontend Editor
 

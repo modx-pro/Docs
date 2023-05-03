@@ -1,5 +1,7 @@
 ---
 name: Solo
+description: Creative / corporate / portfolio one page MODX theme
+logo: https://modstore.pro/assets/extras/solo/logo-md.jpg
 ---
 # Solo
 

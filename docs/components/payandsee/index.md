@@ -1,5 +1,7 @@
 ---
 name: PayAndSee
+description: Компонент реализует закрытые ресурсы на MODx
+logo: https://modstore.pro/assets/extras/payandsee/logo-md.jpg
 
 items: [
   {

@@ -1,5 +1,7 @@
 ---
 name: mixedImage
+description: custom TV - смешанная загрузка файла
+logo: https://modstore.pro/assets/extras/mixedimage/logo-md.jpg
 ---
 # mixedImage
 

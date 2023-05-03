@@ -1,5 +1,7 @@
 ---
 name: msDiscount
+description: Система скидок и одноразовые купоны для miniShop2
+logo: https://modstore.pro/assets/extras/msdiscount/logo-md.png
 
 items: [
   { text: 'Акции', link: 'stock' },
@@ -14,7 +16,7 @@ items: [
   },
 ]
 
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # Система скидок для [miniShop2][1]

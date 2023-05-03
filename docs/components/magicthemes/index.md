@@ -1,5 +1,7 @@
 ---
 name: MagicThemes
+description: Управление темами для MODX Revo - MagicThemes
+logo: https://modstore.pro/assets/extras/magicthemes/logo-md.png
 
 items: [
   {

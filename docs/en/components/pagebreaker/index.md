@@ -1,5 +1,7 @@
 ---
 name: PageBreaker
+description: Split your long text to pages
+logo: https://modstore.pro/assets/extras/pagebreaker/logo-md.jpg
 
 items: [
   { text: 'Settings', link: 'settings' },

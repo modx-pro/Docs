@@ -1,6 +1,8 @@
 ---
 name: mspWebPay
-dependencies: ['miniShop2']
+description: Интеграция miniShop2 с платежной системой WebPay, Беларусь
+logo: https://modstore.pro/assets/extras/mspwebpay/logo-md.jpg
+dependencies: miniShop2
 categories: payment
 ---
 

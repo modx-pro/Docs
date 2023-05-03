@@ -1,6 +1,6 @@
 ---
 name: msNewPrice
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msNewPrice

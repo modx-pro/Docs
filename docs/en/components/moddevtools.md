@@ -1,5 +1,6 @@
 ---
 name: modDevTools
+logo: https://modstore.pro/assets/extras/moddevtools/logo-md.jpg
 ---
 # modDevTools
 

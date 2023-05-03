@@ -1,5 +1,7 @@
 ---
 name: UserEvents
+description: Создание пользователями событий на ресурсы
+logo: https://modstore.pro/assets/extras/userevents/logo-md.png
 
 items: [
   {

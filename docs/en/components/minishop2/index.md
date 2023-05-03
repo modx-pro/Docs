@@ -1,5 +1,7 @@
 ---
 name: miniShop2
+description: Extensible e-commerce for MODX Revolution
+logo: https://modstore.pro/assets/extras/minishop2/logo-md.png
 author: modx-pro
 
 repository: https://github.com/modx-pro/miniShop2

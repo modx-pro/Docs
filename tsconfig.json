@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "types": [
+      "vite/client"
+    ],
+    "moduleResolution": "node"
+  },
+  "include": [
+    "docs/.vitepress/theme/**/*"
+  ]
+}

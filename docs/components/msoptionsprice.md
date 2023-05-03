@@ -1,6 +1,6 @@
 ---
 name: msOptionsPrice
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msOptionsPrice

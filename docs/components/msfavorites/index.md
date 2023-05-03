@@ -1,5 +1,7 @@
 ---
 name: msFavorites
+description: Создание списков избранного
+logo: https://modstore.pro/assets/extras/msfavorites/logo-md.jpg
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

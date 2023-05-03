@@ -1,5 +1,7 @@
 ---
 name: textAdvs
+description: Умная реклама в контенте страницы
+logo: https://modstore.pro/assets/extras/textadvs/logo-md.png
 
 items: [
   { text: 'Как добавить тег', link: 'how-to-add-a-tag' },

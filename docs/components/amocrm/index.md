@@ -1,5 +1,7 @@
 ---
 name: amoCRM
+description: Интеграция с amoCRM
+logo: https://modstore.pro/assets/extras/amocrm/logo-md.png
 
 items: [
   { text: 'Установка и настройка', link: 'setup' },

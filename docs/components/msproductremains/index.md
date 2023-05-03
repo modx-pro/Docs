@@ -1,5 +1,7 @@
 ---
 name: msProductRemains
+description: Компонент реализует учёт количества оставшихся товаров
+logo: https://modstore.pro/assets/extras/msproductremains/logo-md.jpg
 
 items: [
   { text: 'Настройки компонента', link: 'settings' },
@@ -9,7 +11,7 @@ items: [
   { text: 'Примеры', link: 'examples' },
 ]
 
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 
 # msProductRemains

@@ -1,5 +1,7 @@
 ---
 name: UsersOnline
+description: Displays a list of online users on the website
+logo: https://modstore.pro/assets/extras/usersonline/logo-md.png
 ---
 # UsersOnline
 

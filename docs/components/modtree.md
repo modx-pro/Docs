@@ -1,5 +1,7 @@
 ---
 name: ModTree
+description: Связь ресурсов друг с другом
+logo: https://modstore.pro/assets/extras/modtree/logo-md.png
 ---
 # ModTree
 

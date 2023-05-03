@@ -1,5 +1,7 @@
 ---
 name: msProductRemains
+description: Stock-on-hand (product remains) account
+logo: https://modstore.pro/assets/extras/msproductremains/logo-md.jpg
 
 items: [
   { text: 'Settings', link: 'settings' },
@@ -9,7 +11,7 @@ items: [
   { text: 'Examples', link: 'examples' },
 ]
 
-dependencies: ['miniShop2']
+dependencies: miniShop2
 ---
 # msProductRemains
 

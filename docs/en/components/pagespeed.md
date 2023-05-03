@@ -1,5 +1,7 @@
 ---
 name: PageSpeed
+description: Integrates PageSpeed Insights optimization into MODX Revolution
+logo: https://modstore.pro/assets/extras/pagespeed/logo-md.jpg
 ---
 # PageSpeed
 

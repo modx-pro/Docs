@@ -1,5 +1,7 @@
 ---
 name: PromoDs
+description: Баннер вверху страницы
+logo: https://modstore.pro/assets/extras/promods/logo-md.png
 ---
 # PromoDs
 

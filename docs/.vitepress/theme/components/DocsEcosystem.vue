@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import type { Ref } from 'vue'
+import type { DocsThemeConfig } from '../types'
+
 import { ref } from 'vue'
 import { useData } from 'vitepress'
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
@@ -10,7 +13,7 @@ const active = ref(false)
 
 onClickOutside(button, () => { active.value = false })
 
-const { theme } = useData()
+const { theme }: { theme: Ref<DocsThemeConfig> } = useData()
 </script>
 
 <template>

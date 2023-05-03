@@ -1,6 +1,8 @@
 ---
 name: msMerchant
-dependencies: ['miniShop2']
+description: Дополнение для приема платежей через «Единую кассу»
+logo: https://modstore.pro/assets/extras/msmerchant/logo-md.jpg
+dependencies: miniShop2
 ---
 
 # msMerchant

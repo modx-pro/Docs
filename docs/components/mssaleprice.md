@@ -1,6 +1,8 @@
 ---
 name: msSalePrice
-dependencies: ['miniShop2']
+description: Дополнительные цены, зависящие от выбранного количества товара
+logo: https://modstore.pro/assets/extras/mssaleprice/logo-md.png
+dependencies: miniShop2
 ---
 
 # msSalePrice

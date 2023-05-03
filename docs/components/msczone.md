@@ -1,6 +1,8 @@
 ---
 name: mscZone
-dependencies: ['miniShop2']
+description: Расчет стоимости доставки для minishop2
+logo: https://modstore.pro/assets/extras/msczone/logo-md.jpg
+dependencies: miniShop2
 ---
 
 # mscZone

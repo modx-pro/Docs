@@ -1,6 +1,8 @@
 ---
 name: mspUP
-dependencies: ['miniShop2']
+description: Модуль оплаты unitpay.ru
+logo: https://modstore.pro/assets/extras/mspup/logo-md.jpg
+dependencies: miniShop2
 categories: payment
 ---
 
