@@ -77,8 +77,8 @@ export default defineConfigWithTheme<DocsThemeConfig>({
   },
 
   buildEnd: async ({ outDir }) => {
-    const sitemap = new SitemapStream({ hostname: 'https://modx.pro/' })
-    const pages = await createContentLoader('*.md').load()
+    const sitemap = new SitemapStream({ hostname: 'https://modx-pro.github.io/' })
+    const pages = await createContentLoader('**/*.md').load()
     const writeStream = createWriteStream(resolve(outDir, 'sitemap.xml'))
 
     sitemap.pipe(writeStream)
