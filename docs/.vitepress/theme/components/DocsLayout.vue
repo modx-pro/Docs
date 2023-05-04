@@ -30,7 +30,11 @@ if (inBrowser) {
       return
     }
 
-    const activeLink = sidebar.querySelector(`a[href="${toLink}"]`)
+    const activeLink: HTMLElement | null = sidebar.querySelector(`a[href="${toLink}"]`)
+    if (!activeLink) {
+      return
+    }
+
     const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vp-nav-height'))
     sidebar.scrollTo({
       top: activeLink.getBoundingClientRect().top - offset
