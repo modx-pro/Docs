@@ -8,8 +8,9 @@ const theme: Theme = {
   ...DefaultTheme,
   Layout: DocsLayout,
 
-  enhanceApp({ app }: EnhanceAppContext) {
-    app.component('DocsComponentsList', DocsComponentsList)
+  enhanceApp(ctx: EnhanceAppContext) {
+    DefaultTheme.enhanceApp(ctx)
+    ctx.app.component('DocsComponentsList', DocsComponentsList)
   },
 }
 
