@@ -5,7 +5,7 @@ import { useLangs } from 'vitepress/dist/client/theme-default/composables/langs'
 
 const { site } = useData()
 const { localeLinks } = useLangs({ removeCurrent: false })
-const root = ref('/')
+const root = ref<string>('/')
 
 onMounted(() => {
   const path = window.location.pathname

@@ -8,8 +8,8 @@ import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import { onClickOutside } from '@vueuse/core'
 
-const button = ref(null)
-const active = ref(false)
+const button = ref<HTMLElement | null>(null)
+const active = ref<boolean>(false)
 
 onClickOutside(button, () => { active.value = false })
 

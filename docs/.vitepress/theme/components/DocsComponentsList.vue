@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { ComputedRef } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { ComponentData } from '../plugins/component'
 import { useData } from 'vitepress'
 import { ellipsis } from '../utils'
@@ -15,22 +14,24 @@ const props = defineProps<{
   excludeCategory?: string
 }>()
 
-const components: ComputedRef<ComponentData[]> = computed(() => {
-  let output: ComponentData[] = site.value.themeConfig.components
+const components = ref<ComponentData[]>([])
+
+onMounted(() => {
+  let filtered: ComponentData[] = site.value.themeConfig.components
 
   if (props.dependency) {
-    output = output.filter(component => component.dependencies?.includes(props.dependency))
+    filtered = filtered.filter(component => component.dependencies?.includes(props.dependency))
   }
 
   if (props.category) {
-    output = output.filter(component => component.categories?.includes(props.category))
+    filtered = filtered.filter(component => component.categories?.includes(props.category))
   }
 
   if (props.excludeCategory) {
-    output = output.filter(component => !component.categories?.includes(props.excludeCategory))
+    filtered = filtered.filter(component => !component.categories?.includes(props.excludeCategory))
   }
 
-  return output
+  components.value = filtered
 })
 </script>
 

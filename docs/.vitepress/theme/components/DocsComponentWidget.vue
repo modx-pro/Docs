@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { ComponentLinks, DocsPageData } from '../plugins/component'
-import { computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { Ref } from 'vue'
 import { withBase, useData } from 'vitepress'
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
 const pageData: Ref<DocsPageData> = useData().page
-const links = computed(() => {
-  return [
+const links = ref<ComponentLinks[]>([])
+
+onMounted(() => {
+  links.value = [
     { key: 'modstore', label: 'modstore.pro' },
     { key: 'modx', label: 'modx.com' },
     { key: 'repository', label: 'github.com' },
