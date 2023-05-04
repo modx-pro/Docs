@@ -9,7 +9,7 @@ import { SitemapStream } from 'sitemap'
 import { createWriteStream } from 'node:fs'
 import { resolve } from 'node:path'
 
-const SITE_TITLE = 'modx.pro'
+const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
 
 export default defineConfigWithTheme<DocsThemeConfig>({
