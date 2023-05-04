@@ -82,7 +82,7 @@ onMounted(() => {
   align-items: center;
   column-gap: 12px;
   padding: 18px;
-  border: var(--vp-border-width) solid var(--vp-sidebar-bg-color);
+  border: var(--vp-border-width) solid var(--vp-c-divider);
   border-radius: 8px;
   transition: border-color 0.25s;
   color: inherit;
@@ -90,7 +90,7 @@ onMounted(() => {
 }
 
 .component:hover {
-  border-color: var(--vp-c-green-dimm-3);
+  border-color: var(--vp-c-green);
   text-decoration: none;
 }
 
