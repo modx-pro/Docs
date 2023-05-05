@@ -18,7 +18,7 @@ export default defineConfigWithTheme<DocsThemeConfig>({
   ignoreDeadLinks: true,
 
   title: SITE_TITLE,
-  titleTemplate: `:title${SITE_TITLE_SEPARATOR}${SITE_TITLE}`,
+  titleTemplate: ':title' + SITE_TITLE_SEPARATOR + SITE_TITLE,
 
   base: '/Docs/',
 
