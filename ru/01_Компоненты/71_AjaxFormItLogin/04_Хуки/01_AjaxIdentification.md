@@ -2,7 +2,7 @@
 
 Хук использующийся для работы с пользователями: регистрации, авторизации, восстановления доступа, выхода из аккаунта, редактирования личных данных.
 
-## Примеры использоания
+## Примеры использования
 
 ### Регистрация пользователя
 
@@ -13,7 +13,7 @@
 'hooks' => 'AjaxIdentification,FormItSaveForm,FormItAutoResponder',
 'method' => 'register',
 'successMessage' => 'Вы успешно зарегистрированы. Подтвердите email для активации учётной записи.',
-'customValidators' => 'aflUserExists,aflCheckPassLength,aflPasswordConfirm',
+'customValidators' => 'aflCheckPassLength,aflPasswordConfirm',
 'formName' => 'Регистрация по email',
 
 'fiarSubject' => 'Активация пользователя',
@@ -22,7 +22,7 @@
 
 'activation' => 1,
 'autoLogin' => 0,
-'redirectId' => '',
+'redirectTo' => '',
 'authenticateContexts' => '',
 'passwordField' => '',
 'usernameField' => 'email',
@@ -33,7 +33,7 @@
 'activationResourceId' => 1,
 'extendedFieldPrefix' => 'extended_',
 'activationUrlTime' => 10800,
-'validate' => 'email:required:aflUserExists,password:aflCheckPassLength=^8^,password_confirm:aflPasswordConfirm=^password^,politics:minValue=^1^',
+'validate' => 'email:required:email,password:aflCheckPassLength=^8^,password_confirm:aflPasswordConfirm=^password^,politics:minValue=^1^',
 'validationErrorMessage' => 'Исправьте, пожалуйста, ошибки!',
 'spamProtection' => 1,
 
@@ -144,7 +144,7 @@
 'fiarTpl' => 'aflResetPassEmail',
 
 'email.vTextRequired' => 'Укажите email.',
-'email.vTextAflUserNotExists' => 'Пользователь не найден',
+'email.vTextUserNotExists' => 'Пользователь не найден',
 'secret.vTextContains' => 'Кажется Вы робот. Если это не так, обновите страницу.'
 ]}
 ```
