@@ -3,6 +3,7 @@
     "target": "esnext",
     "module": "esnext",
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "types": [
       "vite/client"
     ],
