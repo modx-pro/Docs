@@ -47,7 +47,6 @@ export default defineConfigWithTheme<DocsThemeConfig>({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/modx-pro/Docs' },
       {
         icon: {
           svg: '<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="enable-background:new 0 0 409.6 414" viewBox="0 0 409.6 414"><path d="M99.6 414h293c9.4 0 17-7.6 17-17V17c0-9.4-7.6-17-17-17h-293C88.1 0 77.7 6.9 73.4 17.6L0 196.2c-2.8 6.9-2.8 14.6 0 21.5l73.4 178.7c4.3 10.7 14.7 17.6 26.2 17.6z" style="fill:#4b8aca"/><path d="M314.1 70.3c-13.3 0-24 10.7-24 24v84.3H181.8V94.3c0-13.3-10.7-24-24-24s-24 10.7-24 24v220.1c0 13.3 10.7 24 24 24s24-10.7 24-24v-94.5h108.3v94.5c0 13.3 10.7 24 24 24s24-10.7 24-24V94.3c0-13.2-10.8-24-24-24z" style="fill:#fff"/></svg>',
@@ -66,6 +65,7 @@ export default defineConfigWithTheme<DocsThemeConfig>({
         },
         link: 'https://modstore.pro',
       },
+      { icon: 'github', link: 'https://github.com/modx-pro/Docs' },
     ],
 
     search: {
