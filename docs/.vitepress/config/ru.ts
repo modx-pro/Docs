@@ -104,7 +104,6 @@ export const config: LocaleConfig<DocsThemeConfig> = {
       sidebarMenuLabel: 'Меню',
       darkModeSwitchLabel: 'Тема',
       lastUpdatedText: 'Последнее обновление',
-      ecosystemLabel: 'Другие продукты',
       langMenuLabel: 'Изменить язык',
       docFooter: {
         prev: 'Предыдущая страница',

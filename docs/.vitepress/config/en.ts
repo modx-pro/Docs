@@ -36,7 +36,6 @@ export const config: LocaleConfig<DocsThemeConfig> = {
         }),
       },
 
-      ecosystemLabel: 'Ecosystem',
       docFooter: {
         prev: 'Previous page',
         next: 'Next page',
