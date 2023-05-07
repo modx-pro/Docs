@@ -4,7 +4,6 @@ import { watch } from 'vue'
 import { useRouter, inBrowser, withBase } from 'vitepress'
 import { normalize } from 'vitepress/dist/client/shared'
 
-import DocsEcosystem from './DocsEcosystem.vue'
 import DocsComponentWidget from './DocsComponentWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
 import DocsPrevNext from './DocsPrevNext.vue'
@@ -45,9 +44,6 @@ if (inBrowser) {
 
 <template>
   <Layout>
-    <template #nav-bar-content-before>
-      <DocsEcosystem />
-    </template>
     <template #aside-outline-after>
       <DocsComponentWidget />
     </template>
