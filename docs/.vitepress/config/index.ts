@@ -1,4 +1,4 @@
-import { DocsTheme } from '../theme/types'
+import type { DocsTheme } from '../theme/types'
 import { createContentLoader, defineConfigWithTheme } from 'vitepress'
 import { config as en } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'

@@ -1,5 +1,5 @@
 import type { LocaleConfig } from 'vitepress'
-import { DocsTheme } from '../theme/types'
+import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
 
