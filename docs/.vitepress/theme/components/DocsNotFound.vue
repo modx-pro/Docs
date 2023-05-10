@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { withBase, useData } from 'vitepress'
+import { useData } from 'vitepress'
 import { useLangs } from 'vitepress/dist/client/theme-default/composables/langs'
+import DocsButton from './DocsButton.vue'
 
 const { site } = useData()
 const { localeLinks } = useLangs({ removeCurrent: false })
@@ -32,13 +33,12 @@ onMounted(() => {
       <p>Этот сайт автоматически генерируется из файлов, расположенных на GitHub, поэтому адреса могут иногда меняться.</p>
     </blockquote>
     <div class="action">
-      <a
+      <DocsButton
         class="link"
-        :href="withBase(root)"
-        aria-label="Вернуться на главную"
-      >
-        Вернуться на главную
-      </a>
+        :href="root"
+        theme="alt"
+        text="Вернуться на главную"
+      />
     </div>
   </div>
 </template>
@@ -80,23 +80,5 @@ onMounted(() => {
 }
 .action {
   padding-top: 20px;
-}
-.link {
-  display: inline-block;
-  border: 4px solid #F7F8F9;
-  border-radius: 8px;
-  padding: 12px 18px;
-  font-size: 16px;
-  font-weight: 500;
-  transition: all 0.25s, color 0.25s;
-}
-.link:hover {
-  background-color: #F7F8F9;
-  color: var(--vp-c-black);
-}
-.link:active {
-  border-color: var(--vp-c-black);
-  background-color: var(--vp-c-black);
-  color: var(--vp-c-white);
 }
 </style>
