@@ -19,11 +19,11 @@ main:
     - title: 😉 Простота
       details: Весь код в универсальном формате Markdown. Сделать себе полную копию или внести правки можно в пару кликов!
     - title: 👌🏼 Читаемость
-      details: Подсветка тегов парсера MODX и Fenom, JS, PHP, CSS и остального. А также удобные [вкладки-переключатели](https://vitepress.dev/guide/markdown#code-groups) кода.
+      details: Подсветка тегов парсера MODX и Fenom, JS, PHP, CSS и остального. А также удобные <a href="https://vitepress.dev/guide/markdown#code-groups" target="_blank">вкладки-переключатели</a> кода.
     - title: 🚀 Удобство
       details: Мгновенный деплой и предварительный просмотр для авторов. Навигация, мобильная версия, и поиск для читателей.
     - title: 🔥 Красота
-      details: "Расширенная разметка для легкого и красивого оформления документации: [focus code](https://vitepress.dev/guide/markdown#focus-in-code-blocks), [colored diffs](https://vitepress.dev/guide/markdown#colored-diffs-in-code-blocks) и [многое другое](https://vitepress.dev/guide/markdown#advanced-configuration)!"
+      details: 'Расширенная разметка для легкого и красивого оформления документации: <a href="https://vitepress.dev/guide/markdown#focus-in-code-blocks" target="_blank">focus code</a>, <a href="https://vitepress.dev/guide/markdown#colored-diffs-in-code-blocks" target="_blank">colored diffs</a> и <a href="https://vitepress.dev/guide/markdown#advanced-configuration" target="_blank">многое другое</a>!'
     - title: 💡 Заметки
       details: Вместо gist – оставляйте готовые решения частых или сложных задач по MODX для себя и других.
     - title: 🌌 Экосистема

@@ -1,31 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import MarkdownIt from 'markdown-it'
-import mirl from 'markdown-it-replace-link'
-import mila from 'markdown-it-link-attributes'
-import { withBase } from 'vitepress'
-import { EXTERNAL_URL_RE } from 'vitepress/dist/client/shared'
-
-const md = new MarkdownIt()
-md.use(mirl, { replaceLink: link => withBase(link) })
-md.use(mila, {
-  matcher: href => href && EXTERNAL_URL_RE.test(href),
-  attrs: { target: '_blank', rel: 'noopener' },
-})
-
-const props = defineProps<{
+defineProps<{
   title: string
   details?: string
 }>()
-
-const mdDetails = computed(() => md.render(props.details))
 </script>
 
 <template>
   <div class="DocsFeature">
     <article class="box">
       <h2 class="title" v-html="title"></h2>
-      <p v-if="mdDetails" class="details" v-html="mdDetails"></p>
+      <p v-if="details" class="details" v-html="details"></p>
     </article>
   </div>
 </template>
