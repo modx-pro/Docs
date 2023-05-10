@@ -1,8 +1,22 @@
-import type { DefaultTheme } from 'vitepress'
+import { DefaultTheme } from 'vitepress'
 import type { ComponentData } from '../plugins/component'
 
-export interface DocsThemeConfig extends DefaultTheme.Config {
-  titleSeparator?: string
+export namespace DocsTheme {
+  export interface Sponsor {
+    message?: string
+    linkText?: string
+  }
 
-  components?: Array<ComponentData>
+  export interface Config extends DefaultTheme.Config {
+    titleSeparator?: string
+    components?: Array<ComponentData>
+    teamSectionTitle?: string
+
+    sponsorLink?: string
+    sponsor?: Sponsor
+  }
+
+  export interface TeamMember extends Omit<DefaultTheme.TeamMember, 'name'> {
+    name: Record<string, string>
+  }
 }

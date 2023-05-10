@@ -1,6 +1,6 @@
 import type { LocaleConfig } from 'vitepress'
 import type { DocSearchProps } from 'vitepress/types/docsearch'
-import type { DocsThemeConfig } from '../theme/types'
+import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
 
@@ -52,7 +52,7 @@ export const searchLocale: Record<string, Partial<DocSearchProps>> = {
   },
 }
 
-export const config: LocaleConfig<DocsThemeConfig> = {
+export const config: LocaleConfig<DocsTheme.Config> = {
   root: {
     label: 'Russian',
     lang: 'ru',
@@ -105,6 +105,13 @@ export const config: LocaleConfig<DocsThemeConfig> = {
       darkModeSwitchLabel: 'Тема',
       lastUpdatedText: 'Последнее обновление',
       langMenuLabel: 'Изменить язык',
+      teamSectionTitle: 'Команда',
+
+      sponsor: {
+        message: 'Данный сервис является Open-Source проектом и его поддержка и развитие зависит от пожертвований.',
+        linkText: 'Поддержать проект!',
+      },
+
       docFooter: {
         prev: 'Предыдущая страница',
         next: 'Следующая страница',

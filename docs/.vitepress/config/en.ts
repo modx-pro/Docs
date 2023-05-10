@@ -1,5 +1,5 @@
 import type { LocaleConfig } from 'vitepress'
-import type { DocsThemeConfig } from '../theme/types'
+import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
 
@@ -7,7 +7,7 @@ export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
 export const META_DESCRIPTION = 'META_DESCRIPTION'
 
-export const config: LocaleConfig<DocsThemeConfig> = {
+export const config: LocaleConfig<DocsTheme.Config> = {
   en: {
     label: 'English',
     lang: 'en',
@@ -34,6 +34,12 @@ export const config: LocaleConfig<DocsThemeConfig> = {
           root: ['docs/en/components/*.md', 'docs/en/components/*/index.md'],
           ignore: ['docs/en/components/index.md'],
         }),
+      },
+
+      teamSectionTitle: 'Team',
+      sponsor: {
+        message: 'This service is free and open source, and its support and development depends on donations.',
+        linkText: 'Become a sponsor!',
       },
 
       docFooter: {

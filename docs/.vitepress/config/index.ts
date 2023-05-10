@@ -1,4 +1,4 @@
-import type { DocsThemeConfig } from '../theme/types'
+import type { DocsTheme } from '../theme/types'
 import { createContentLoader, defineConfigWithTheme } from 'vitepress'
 import { config as en } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
@@ -12,7 +12,7 @@ import { resolve } from 'node:path'
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
 
-export default defineConfigWithTheme<DocsThemeConfig>({
+export default defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
   cleanUrls: true,
   ignoreDeadLinks: true,
@@ -79,6 +79,8 @@ export default defineConfigWithTheme<DocsThemeConfig>({
         },
       },
     },
+
+    sponsorLink: 'https://github.com/modx-pro',
 
     components,
   },

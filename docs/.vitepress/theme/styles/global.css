@@ -12,6 +12,8 @@
   --vp-c-blue-dimm-2: rgba(14, 165, 233, 0.2);
   --vp-c-blue-dimm-3: rgba(14, 165, 233, 0.5);
 
+  --vp-c-yellow: #ecb732;
+
   --vp-custom-block-info-border: var(--vp-c-blue-dimm-2);
   --vp-custom-block-info-bg: var(--vp-c-blue-dimm-1);
   --vp-custom-block-info-text: var(--vp-c-neutral);
