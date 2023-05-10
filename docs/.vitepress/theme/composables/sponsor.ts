@@ -1,4 +1,5 @@
 import { computed } from 'vue'
+import { withBase } from 'vitepress'
 
 export interface Sponsors {
   tier: string
@@ -21,12 +22,12 @@ export function useSponsor(lang) {
         items: [
           {
             name: 'modhost.pro',
-            img: '/modhost.svg',
+            img: withBase('modhost.svg'),
             url: 'https://modhost.pro',
           },
           {
             name: 'codesolution.io',
-            img: '/codesolution.svg',
+            img: withBase('codesolution.svg'),
             url: 'https://codesolution.io',
           },
         ],
