@@ -1,7 +1,9 @@
 ---
 name: xParser
 description: Парсер HTML контента и RSS/XML лент
-logo: https://modstore.pro/assets/extras/xparser/logo-md.png
+logo: https://modstore.pro/assets/extras/xparser/logo-lg.png
+author: gvozdb
+modstore: https://modstore.pro/packages/import-and-export/xparser
 
 items: [
   { text: 'Парсер RSS лент', link: 'parser-rss' },

@@ -1,7 +1,11 @@
 ---
 name: Digital Signage
 description: Digital Signage is a MODX Extra by Sterc
-logo: https://modstore.pro/assets/extras/digitalsignage/logo-md.png
+logo: https://modstore.pro/assets/extras/digitalsignage/logo-lg.png
+author: Sterc
+modstore: https://en.modstore.pro/packages/other/digitalsignage
+modx: https://extras.modx.com/package/digitalsignage
+repository: https://github.com/Sterc/digitalsignage
 ---
 # Digital Signage
 

@@ -1,7 +1,11 @@
 ---
 name: pdoTools
 description: Быстрая выборка страниц и пользователей сайта
-logo: https://modstore.pro/assets/extras/pdotools/logo-md.jpg
+logo: https://modstore.pro/assets/extras/pdotools/logo-lg.jpg
+author: sergant210
+modstore: https://modstore.pro/packages/utilities/pdotools
+modx: https://extras.modx.com/package/pdotools
+repository: https://github.com/modx-pro/pdoTools
 
 items: [
   {

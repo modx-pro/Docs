@@ -1,6 +1,10 @@
 ---
 name: MinifyX
-logo: https://modstore.pro/assets/extras/minifyx/logo-md.jpg
+logo: https://modstore.pro/assets/extras/minifyx/logo-lg.jpg
+author: sergant210
+modstore: https://modstore.pro/packages/utilities/minifyx
+modx: https://extras.modx.com/package/minifyx
+repository: https://github.com/modx-pro/MinifyX
 ---
 # MinifyX
 

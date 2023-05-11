@@ -1,7 +1,11 @@
 ---
 name: DebugParser
 description: Find your slow scripts
-logo: https://modstore.pro/assets/extras/debugparser/logo-md.jpg
+logo: https://modstore.pro/assets/extras/debugparser/logo-lg.jpg
+author: gvozdb
+modstore: https://en.modstore.pro/packages/utilities/debugparser
+modx: https://extras.modx.com/package/debugparser
+repository: https://github.com/modx-pro/debugParser
 ---
 # DebugParser
 

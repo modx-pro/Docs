@@ -1,7 +1,9 @@
 ---
 name: Яндекс.Деньги
 description: Метод оплаты заказов miniShop2 через Яндекс.Деньги
-logo: https://modstore.pro/assets/extras/mspyandexmoney/logo-md.jpeg
+logo: https://modstore.pro/assets/extras/mspyandexmoney/logo-lg.jpeg
+modstore: https://modstore.pro/packages/payment-system/mspyandexmoney
+
 dependencies: miniShop2
 categories: payment
 ---

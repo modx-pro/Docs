@@ -1,7 +1,9 @@
 ---
 name: Comparison
 description: Компонент для сравнения товаров
-logo: https://modstore.pro/assets/extras/comparison/logo-md.jpg
+logo: https://modstore.pro/assets/extras/comparison/logo-lg.jpg
+author: ilyautkin
+modstore: https://modstore.pro/packages/ecommerce/comparison
 
 items: [
   { text: 'addComparison', link: 'addcomparison' },

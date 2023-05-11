@@ -1,7 +1,9 @@
 ---
 name: msProductRemains
 description: Компонент реализует учёт количества оставшихся товаров
-logo: https://modstore.pro/assets/extras/msproductremains/logo-md.jpg
+logo: https://modstore.pro/assets/extras/msproductremains/logo-lg.jpg
+author: feschukov
+modstore: https://modstore.pro/packages/ecommerce/msproductremains
 
 items: [
   { text: 'Настройки компонента', link: 'settings' },

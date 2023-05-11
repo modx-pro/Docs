@@ -1,7 +1,9 @@
 ---
 name: textAdvs
 description: Умная реклама в контенте страницы
-logo: https://modstore.pro/assets/extras/textadvs/logo-md.png
+logo: https://modstore.pro/assets/extras/textadvs/logo-lg.png
+author: gvozdb
+modstore: https://modstore.pro/packages/content/textadvs
 
 items: [
   { text: 'Как добавить тег', link: 'how-to-add-a-tag' },

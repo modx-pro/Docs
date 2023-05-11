@@ -1,7 +1,11 @@
 ---
 name: mspPayPal
 description: Компонент платежной системы PayPal для minishop2
-logo: https://modstore.pro/assets/extras/msppaypal/logo-md.png
+logo: https://modstore.pro/assets/extras/msppaypal/logo-lg.png
+author: modx-pro
+modstore: https://modstore.pro/packages/payment-system/msppaypal
+repository: https://github.com/modx-pro/PayPal
+
 dependencies: miniShop2
 categories: payment
 ---

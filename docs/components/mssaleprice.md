@@ -1,7 +1,10 @@
 ---
 name: msSalePrice
 description: Дополнительные цены, зависящие от выбранного количества товара
-logo: https://modstore.pro/assets/extras/mssaleprice/logo-md.png
+logo: https://modstore.pro/assets/extras/mssaleprice/logo-lg.png
+author: nizart91
+modstore: https://modstore.pro/packages/discounts/mssaleprice
+
 dependencies: miniShop2
 ---
 

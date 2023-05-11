@@ -1,7 +1,9 @@
 ---
 name: simpleQueue
 description: Простая очередь задач для использования в других компонентах
-logo: https://modstore.pro/assets/extras/simplequeue/logo-md.png
+logo: https://modstore.pro/assets/extras/simplequeue/logo-lg.png
+author: biz87
+modstore: https://modstore.pro/packages/utilities/simplequeue
 ---
 # simpleQueue
 

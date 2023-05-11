@@ -2,16 +2,22 @@ import authors from './authors.json'
 import type { DocsTheme } from './.vitepress/theme/types'
 
 export interface Author {
-  name: string
+  name: string | Record<string, string>
   github: string
   avatar: string
+  modstore?: string
+  modxpro?: string
+  website?: string
 }
 
 const authorsList: Record<string, Author> = {}
 
 for (const [key, value] of Object.entries(authors)) {
+  const data: Partial<Author> = typeof value === 'object' && value !== null ? value : {}
+
   authorsList[key] = {
-    name: value,
+    ...data,
+    name: typeof value === 'string' ? value : value.name,
     github: `https://github.com/${key}`,
     avatar: `https://github.com/${key}.png`,
   }

@@ -1,7 +1,10 @@
 ---
 name: BannerY
 description: Компонент для управления баннерами на сайте. Создаете баннеры, рекламные места, затем связываете одно с другим и выводите на сайте в нужных местах.Учитывается статистика кликов
-logo: https://modstore.pro/assets/extras/bannery/logo-md.jpg
+logo: https://modstore.pro/assets/extras/bannery/logo-lg.jpg
+author: biz87
+modstore: https://modstore.pro/packages/photos-and-files/bannery
+repository: https://github.com/modx-pro/BannerY
 
 items: [
   {

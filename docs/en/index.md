@@ -8,10 +8,7 @@ main:
   actions:
     - theme: brand
       text: Start learning
-      link: /components/
-    - theme: alt
-      text: Solutions
-      link: /faq/
+      link: /en/components/
     - theme: cta question
       text: How to publish your documentation
       link: /

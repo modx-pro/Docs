@@ -1,3 +1,6 @@
+---
+author: Ibochkarev
+---
 # Добавление кастомных кнопок
 
 1. Переходим по пути в `assets/components/tinymcerte/js/vendor/tinymce/plugins/` в данной директории создаем папку с названием нашего плагина, для примера `mxs_mce_plugin`, а в ней файл `plugin.min.js`.

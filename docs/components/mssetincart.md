@@ -1,7 +1,10 @@
 ---
 name: msSetInCart
 description: Компонент реализует функционал покупки комплектов товаров в Minishop2
-logo: https://modstore.pro/assets/extras/mssetincart/logo-md.jpg
+logo: https://modstore.pro/assets/extras/mssetincart/logo-lg.jpg
+author: vgrish
+modstore: https://modstore.pro/packages/ecommerce/mssetincart
+
 dependencies: miniShop2
 ---
 

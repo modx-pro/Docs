@@ -1,7 +1,10 @@
 ---
 name: msLiveInform
 description: Отслеживание и проверка Заказов магазина MiniShop2 при помощи сервиса LiveInform
-logo: https://modstore.pro/assets/extras/msliveinform/logo-md.png
+logo: https://modstore.pro/assets/extras/msliveinform/logo-lg.png
+author: vgrish
+modstore: https://modstore.pro/packages/delivery/msliveinform
+
 dependencies: miniShop2
 ---
 

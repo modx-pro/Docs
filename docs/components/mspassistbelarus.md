@@ -1,7 +1,10 @@
 ---
 name: mspAssistBelarus
 description: Оплата заказов miniShop2 через Assist Belarus (Республика Беларусь)
-logo: https://modstore.pro/assets/extras/mspassistbelarus/logo-md.jpg
+logo: https://modstore.pro/assets/extras/mspassistbelarus/logo-lg.jpg
+author: alroniks
+modstore: https://modstore.pro/packages/payment-system/mspassistbelarus
+
 dependencies: miniShop2
 categories: payment
 ---

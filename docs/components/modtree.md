@@ -1,7 +1,11 @@
 ---
 name: ModTree
 description: Связь ресурсов друг с другом
-logo: https://modstore.pro/assets/extras/modtree/logo-md.png
+logo: https://modstore.pro/assets/extras/modtree/logo-lg.png
+author: visermort
+modstore: https://modstore.pro/packages/ecommerce/modtree
+modx: https://extras.modx.com/package/modtree
+repository: https://github.com/visermort/ModTree
 ---
 # ModTree
 

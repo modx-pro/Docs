@@ -1,7 +1,11 @@
 ---
 name: SEO Suite
 description: Automatically fix 404 errors on your website
-logo: https://modstore.pro/assets/extras/seosuite/logo-md.png
+logo: https://modstore.pro/assets/extras/seosuite/logo-lg.png
+author: Sterc
+modstore: https://en.modstore.pro/packages/ecommerce/seosuite
+modx: https://extras.modx.com/package/seosuite
+repository: https://github.com/Sterc/seosuite
 ---
 # SEO Suite
 

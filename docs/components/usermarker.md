@@ -1,7 +1,9 @@
 ---
 name: userMarker
 description: Добавление меток и тегов к ресурсам
-logo: https://modstore.pro/assets/extras/usermarker/logo-md.png
+logo: https://modstore.pro/assets/extras/usermarker/logo-lg.png
+author: webnitros
+modstore: https://modstore.pro/packages/ecommerce/usermarker
 ---
 # userMarker
 

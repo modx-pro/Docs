@@ -1,7 +1,11 @@
 ---
 name: Frontend Editor
 description: Frontend content editor based on TinyMCE 5 RTE
-logo: https://modstore.pro/assets/extras/frontendeditor/logo-md.png
+logo: https://modstore.pro/assets/extras/frontendeditor/logo-lg.png
+author: apnix
+modstore: https://en.modstore.pro/packages/content/frontendeditor
+modx: https://extras.modx.com/package/frontendeditor
+repository: https://github.com/apnix/frontendeditor
 ---
 # Frontend Editor
 

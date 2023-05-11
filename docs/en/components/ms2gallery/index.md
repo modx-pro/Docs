@@ -1,7 +1,9 @@
 ---
 name: ms2Gallery
 description: The gallery for any resource in separate tab
-logo: https://modstore.pro/assets/extras/ms2gallery/logo-md.jpg
+logo: https://modstore.pro/assets/extras/ms2gallery/logo-lg.jpg
+author: ilyautkin
+modstore: https://en.modstore.pro/packages/photos-and-files/ms2gallery
 
 items: [
   {

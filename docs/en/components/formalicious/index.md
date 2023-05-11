@@ -1,7 +1,11 @@
 ---
 name: Formalicious
 description: Powerful multi-step form builder with advanced FormIt features
-logo: https://modstore.pro/assets/extras/formalicious/logo-md.png
+logo: https://modstore.pro/assets/extras/formalicious/logo-lg.png
+author: Sterc
+modstore: https://en.modstore.pro/packages/users/formalicious
+modx: https://extras.modx.com/package/formalicious
+repository: https://github.com/Sterc/Formalicious
 
 items: [
   { text: 'Installation', link: 'setup' },

@@ -1,7 +1,10 @@
 ---
 name: mspPayAnyWay
 description: Интеграция с платежным сервисом PayAnyWay
-logo: https://modstore.pro/assets/extras/msppayanyway/logo-md.jpg
+logo: https://modstore.pro/assets/extras/msppayanyway/logo-lg.jpg
+author: vgrish
+modstore: https://modstore.pro/packages/payment-system/msppayanyway
+
 dependencies: miniShop2
 categories: payment
 ---
