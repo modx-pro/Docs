@@ -117,7 +117,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         next: 'Следующая страница',
       },
       editLink: {
-        pattern: 'https://github.com/modx-pro/Docs/edit/v2/docs/:path',
+        pattern: 'https://github.com/modx-pro/Docs/edit/vitepress/docs/:path',
         text: 'Предложить изменения на этой странице',
       },
 
