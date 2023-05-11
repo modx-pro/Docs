@@ -1,7 +1,8 @@
 ---
 name: AjaxSnippet
 description: Run any snippet via ajax
-logo: https://modstore.pro/assets/extras/ajaxsnippet/logo-md.jpg
+logo: https://modstore.pro/assets/extras/ajaxsnippet/logo-lg.jpg
+modstore: https://en.modstore.pro/packages/utilities/ajaxsnippet
 ---
 # AjaxSnippet
 

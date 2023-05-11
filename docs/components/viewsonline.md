@@ -1,7 +1,9 @@
 ---
 name: ViewsOnline
 description: Число онлайн-пользователей на странице
-logo: https://modstore.pro/assets/extras/viewsonline/logo-md.png
+logo: https://modstore.pro/assets/extras/viewsonline/logo-lg.png
+author: bazmaster
+modstore: https://modstore.pro/packages/users/viewsonline
 ---
 # ViewsOnline
 

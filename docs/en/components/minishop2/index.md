@@ -1,12 +1,12 @@
 ---
 name: miniShop2
 description: Extensible e-commerce for MODX Revolution
-logo: https://modstore.pro/assets/extras/minishop2/logo-md.png
+logo: https://modstore.pro/assets/extras/minishop2/logo-lg.png
 author: modx-pro
 
-repository: https://github.com/modx-pro/miniShop2
-modstore: https://modstore.pro/packages/ecommerce/minishop2
+modstore: https://en.modstore.pro/packages/ecommerce/minishop2
 modx: https://modx.com/extras/package/minishop2
+repository: https://github.com/modx-pro/miniShop2
 
 items: [
   { text: 'Quick Start', link: 'quick-start' },

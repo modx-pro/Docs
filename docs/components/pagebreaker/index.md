@@ -1,7 +1,10 @@
 ---
 name: PageBreaker
 description: Разбивка страницы на части по специальному тегу
-logo: https://modstore.pro/assets/extras/pagebreaker/logo-md.jpg
+logo: https://modstore.pro/assets/extras/pagebreaker/logo-lg.jpg
+author: bezumkin
+modstore: https://modstore.pro/packages/content/pagebreaker
+repository: https://github.com/modx-pro/PageBreaker
 
 items: [
   { text: 'Настройки', link: 'settings' },

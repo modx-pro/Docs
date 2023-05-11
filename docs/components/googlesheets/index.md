@@ -1,7 +1,9 @@
 ---
 name: GoogleSheets
 description: Импорт и экспорт товаров / ресурсов / заказов / пользователей
-logo: https://modstore.pro/assets/extras/googlesheets/logo-md.jpg
+logo: https://modstore.pro/assets/extras/googlesheets/logo-lg.jpg
+author: boshnik
+modstore: https://modstore.pro/packages/import-and-export/googlesheets
 
 items: [
   { text: 'Авторизация', link: 'auth' },

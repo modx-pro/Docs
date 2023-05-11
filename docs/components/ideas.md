@@ -1,7 +1,10 @@
 ---
 name: ideas
 description: Идеи, вопросы, проблемы, предложения. Обратная связь с возможностью голосования
-logo: https://modstore.pro/assets/extras/ideas/logo-md.png
+logo: https://modstore.pro/assets/extras/ideas/logo-lg.png
+author: biz87
+modstore: https://modstore.pro/packages/other/ideas
+repository: https://github.com/biz87/ideas
 ---
 # Идеи, вопросы, проблемы, предложения
 

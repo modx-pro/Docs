@@ -1,7 +1,10 @@
 ---
 name: UsersOnline
 description: Displays a list of online users on the website
-logo: https://modstore.pro/assets/extras/usersonline/logo-md.png
+logo: https://modstore.pro/assets/extras/usersonline/logo-lg.png
+author: mvoevodskiy
+modstore: https://en.modstore.pro/packages/users/usersonline
+modx: https://extras.modx.com/package/usersonline
 ---
 # UsersOnline
 

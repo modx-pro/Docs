@@ -1,7 +1,11 @@
 ---
 name: NotFoundParamAlert
 description: Generate alert on page not found with specified parameters in URL
-logo: https://modstore.pro/assets/extras/notfoundparamalert/logo-md.png
+logo: https://modstore.pro/assets/extras/notfoundparamalert/logo-lg.png
+author: kudashevs
+modstore: https://en.modstore.pro/packages/alerts-mailing/notfoundparamalert
+modx: https://extras.modx.com/package/notfoundparamalert
+repository: https://github.com/kudashevs/NotFoundParamAlert
 ---
 # NotFoundParamAlert
 

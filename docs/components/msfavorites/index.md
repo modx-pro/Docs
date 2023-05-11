@@ -1,7 +1,9 @@
 ---
 name: msFavorites
 description: Создание списков избранного
-logo: https://modstore.pro/assets/extras/msfavorites/logo-md.jpg
+logo: https://modstore.pro/assets/extras/msfavorites/logo-lg.jpg
+author: vgrish
+modstore: https://modstore.pro/packages/ecommerce/msfavorites
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

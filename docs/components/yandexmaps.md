@@ -1,7 +1,11 @@
 ---
 name: YandexMaps
 description: Создание Яндекс Карты и размещение на ней списка объектов
-logo: https://modstore.pro/assets/extras/yandexmaps/logo-md.jpg
+logo: https://modstore.pro/assets/extras/yandexmaps/logo-lg.jpg
+author: gvozdb
+modstore: https://modstore.pro/packages/maps/yandexmaps
+modx: https://extras.modx.com/package/yandexmaps
+repository: https://github.com/gvozdb/YandexMaps
 ---
 # YandexMaps
 

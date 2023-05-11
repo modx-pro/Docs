@@ -6,6 +6,7 @@ import { normalize } from 'vitepress/dist/client/shared'
 
 import DocsHome from './DocsHome.vue'
 import DocsComponentWidget from './DocsComponentWidget.vue'
+import DocsAuthorWidget from './DocsAuthorWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
 import DocsPrevNext from './DocsPrevNext.vue'
 import DocsNotFound from './DocsNotFound.vue'
@@ -50,6 +51,7 @@ if (inBrowser) {
     </template>
     <template #aside-outline-after>
       <DocsComponentWidget />
+      <DocsAuthorWidget />
     </template>
     <template #doc-before>
       <DocsBreadcrumbs />

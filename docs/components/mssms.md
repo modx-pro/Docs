@@ -1,7 +1,9 @@
 ---
 name: msSMS
 description: Отправка SMS-сообщений при оформлении заказов
-logo: https://modstore.pro/assets/extras/mssms/logo-md.jpg
+logo: https://modstore.pro/assets/extras/mssms/logo-lg.jpg
+modstore: https://modstore.pro/packages/alerts-mailing/mssms
+
 dependencies: miniShop2
 ---
 

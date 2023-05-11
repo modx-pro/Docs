@@ -1,7 +1,10 @@
 ---
 name: msOneClick
 description: Покупка в один клик через модальное окно
-logo: https://modstore.pro/assets/extras/msoneclick/logo-md.png
+logo: https://modstore.pro/assets/extras/msoneclick/logo-lg.png
+author: webnitros
+modstore: https://modstore.pro/packages/integration/msoneclick
+
 dependencies: miniShop2
 ---
 

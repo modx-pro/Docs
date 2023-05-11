@@ -1,7 +1,10 @@
 ---
 name: PageBreaker
 description: Split your long text to pages
-logo: https://modstore.pro/assets/extras/pagebreaker/logo-md.jpg
+logo: https://modstore.pro/assets/extras/pagebreaker/logo-lg.jpg
+author: bezumkin
+modstore: https://en.modstore.pro/packages/content/pagebreaker
+repository: https://github.com/modx-pro/PageBreaker
 
 items: [
   { text: 'Settings', link: 'settings' },

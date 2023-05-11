@@ -1,7 +1,10 @@
 ---
 name: msAddLinked
 description: Добавление связанных товаров в виде опций с увеличением цены
-logo: https://modstore.pro/assets/extras/msaddlinked/logo-md.png
+logo: https://modstore.pro/assets/extras/msaddlinked/logo-lg.png
+author: mvoevodskiy
+modstore: https://modstore.pro/packages/integration/msaddlinked
+
 dependencies: miniShop2
 ---
 

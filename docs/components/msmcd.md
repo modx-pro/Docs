@@ -1,7 +1,11 @@
 ---
 name: msMCD
 description: Динамическое обновление мини-корзины miniShop2
-logo: https://modstore.pro/assets/extras/msminicartdynamic/logo-md.png
+logo: https://modstore.pro/assets/extras/msminicartdynamic/logo-lg.png
+author: marabar
+modstore: https://modstore.pro/packages/integration/msminicartdynamic
+repository: https://github.com/Marabar/msMiniCartDynamic
+
 dependencies: miniShop2
 ---
 

@@ -57,6 +57,7 @@ onMounted(() => {
           <VPImage
             :image="component.logo || '/placeholder-logo.png'"
             class="logo"
+            loading="lazy"
           />
           <div class="body">
             <span class="name">{{ component.title }}</span>
@@ -114,7 +115,6 @@ onMounted(() => {
 .title {
   max-width: 392px;
   letter-spacing: -0.4px;
-  line-height: 40px;
   line-height: normal;
   text-align: center;
   font-size: 32px;

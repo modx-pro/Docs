@@ -1,7 +1,11 @@
 ---
 name: SocialTools
 description: Компонент с социальным функционалом для MODX. С помощью него можно отправлять и читать сообщения, получать списки входящих и исходящих сообщений
-logo: https://modstore.pro/assets/extras/socialtools/logo-md.jpeg
+logo: https://modstore.pro/assets/extras/socialtools/logo-lg.jpeg
+author: Asanvery
+modstore: https://modstore.pro/packages/alerts-mailing/socialtools
+modx: https://extras.modx.com/package/socialtools
+repository: https://github.com/Asanvery/SocialTools
 
 items: [
   {

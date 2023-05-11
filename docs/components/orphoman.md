@@ -1,7 +1,11 @@
 ---
 name: OrphoMan
 description: Выявление орфографических ошибок в тексте
-logo: https://modstore.pro/assets/extras/orphoman/logo-md.jpg
+logo: https://modstore.pro/assets/extras/orphoman/logo-lg.jpg
+author: sergant210
+modstore: https://modstore.pro/packages/content/orphoman
+modx: https://extras.modx.com/package/orphoman
+repository: https://github.com/sergant210/OrphoMan
 ---
 # OrphoMan
 

@@ -1,7 +1,13 @@
 ---
 name: pdoTools
 description: Fast fetching of pages and users of the site
-logo: https://modstore.pro/assets/extras/pdotools/logo-md.jpg
+logo: https://modstore.pro/assets/extras/pdotools/logo-lg.jpg
+author: sergant210
+modstore: https://en.modstore.pro/packages/utilities/pdotools
+modx: https://extras.modx.com/package/pdotools
+repository: https://github.com/modx-pro/pdoTools
+
+outline: deep
 
 items: [
   {
@@ -259,7 +265,7 @@ Or if we want to get `pagetitle` of grandparent of current document:
 ]]
 ```
 
-### Conclusion
+## Conclusion
 
 It is important to remember, that all pdoTools snippets use the same core and most parameters can be used for all of them.
 
