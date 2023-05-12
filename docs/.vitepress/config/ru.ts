@@ -74,7 +74,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         },
         {
           text: 'Система',
-          link: '/system/',
+          link: '/system/basics/tag-syntax',
           activeMatch: '/system/',
         },
         {
@@ -84,7 +84,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         },
         {
           text: 'О проекте',
-          link: '/guide/',
+          link: '/guide/about',
           activeMatch: '/guide/',
         },
       ],
@@ -94,18 +94,9 @@ export const config: LocaleConfig<DocsTheme.Config> = {
           root: ['docs/components/*.md', 'docs/components/*/index.md'],
           ignore: ['docs/components/index.md'],
         }),
-        '/system/': generateSidebar({
-          root: 'docs/system/*/index.md',
-          collapsed: false,
-        }),
-        '/faq/': generateSidebar({
-          root: 'docs/faq/*/index.md',
-          collapsed: false,
-        }),
-        '/guide/': generateSidebar({
-          root: 'docs/guide/index.md',
-          collapsed: false,
-        }),
+        '/system/': getSystemSidebar(),
+        '/faq/': getFaqSidebar(),
+        '/guide/': getGuideSidebar(),
       },
 
       outlineTitle: 'На этой странице',
@@ -133,4 +124,91 @@ export const config: LocaleConfig<DocsTheme.Config> = {
       components: components.filter(component => component.path.startsWith('components/')),
     },
   }
+}
+
+function getSystemSidebar() {
+  return [
+    {
+      text: 'Основы',
+      collapsed: false,
+      items: [
+        {
+          text: 'Синтаксис тегов',
+          link: '/system/basics/tag-syntax',
+        },
+        {
+          text: 'Фильтры ввода и вывода',
+          link: '/system/basics/input-and-output-filters',
+        },
+      ]
+    },
+    {
+      text: 'Утилиты',
+      collapsed: false,
+      items: [
+        {
+          text: 'Teleport',
+          link: 'system/utilities/teleport/',
+          collapsed: true,
+          items: [
+            {
+              text: 'Использование',
+              link: 'system/utilities/teleport/usage',
+            },
+            {
+              text: 'Расширение',
+              items: [
+                { text: 'Шаблоны Извлечения', link: 'system/utilities/teleport/extension/extract-templates' },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      text: 'Что такое xPDO?',
+      link: '/system/xpdo/',
+      collapsed: false,
+      items: [
+        {
+          text: 'Класс xPDO',
+          link: '/system/xpdo/xpdo-class',
+        },
+      ],
+    },
+  ]
+}
+
+function getFaqSidebar() {
+  return [
+    {
+      text: 'Ace',
+      collapsed: false,
+      items: [
+        { text: 'MODX Ace Material Theme', link: '/faq/ace/modx-ace-material-theme' },
+      ],
+    },
+    {
+      text: 'TinyMCE Rich Text Editor',
+      collapsed: false,
+      items: [
+        { text: 'Добавление кастомных кнопок', link: '/faq/tinymce-rte/add-custom-buttons' },
+      ],
+    },
+  ]
+}
+
+function getGuideSidebar() {
+  return [
+    {
+      text: 'Начало работы',
+      collapsed: false,
+      items: [
+        { text: 'О проекте', link: '/guide/about' },
+        { text: 'Как начать работу', link: '/guide/howto' },
+        { text: 'Разметка md', link: '/guide/md' },
+        { text: 'Возможности Vitepress', link: '/guide/vitepress' },
+      ],
+    },
+  ]
 }

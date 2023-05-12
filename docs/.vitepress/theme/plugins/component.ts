@@ -44,13 +44,13 @@ export interface DocsPageData extends PageData {
 
 export const components: ComponentData[] = fg
   .sync([
-    'docs/*/*.md',
-    '!docs/*/index.md',
-    'docs/*/*/index.md',
+    'docs/components/*.md',
+    '!docs/components/index.md',
+    'docs/components/*/index.md',
 
-    'docs/en/*/*.md',
-    '!docs/en/*/index.md',
-    'docs/en/*/*/index.md',
+    'docs/en/components/*.md',
+    '!docs/en/components/index.md',
+    'docs/en/components/*/index.md',
   ])
   .map(file => {
     const content = readFileSync(file, 'utf-8')
