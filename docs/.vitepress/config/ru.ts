@@ -82,6 +82,11 @@ export const config: LocaleConfig<DocsTheme.Config> = {
           link: '/faq/',
           activeMatch: '/faq/',
         },
+        {
+          text: 'О проекте',
+          link: '/guide/',
+          activeMatch: '/guide/',
+        },
       ],
 
       sidebar: {
@@ -95,6 +100,10 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         }),
         '/faq/': generateSidebar({
           root: 'docs/faq/*/index.md',
+          collapsed: false,
+        }),
+        '/guide/': generateSidebar({
+          root: 'docs/guide/index.md',
           collapsed: false,
         }),
       },
