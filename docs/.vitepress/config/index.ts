@@ -29,6 +29,11 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     config (md) {
       containerPlugin(md)
     },
+    anchor: {
+      slugify(str) {
+          return encodeURIComponent('s')// s = section
+      }
+    },
   },
 
   head: [
