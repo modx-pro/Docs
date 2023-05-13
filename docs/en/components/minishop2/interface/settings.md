@@ -3,7 +3,7 @@
 Settings of miniShop2 are presented in separate site section, accessible from a menu.
 
 All tables store settings of column width and position.
-Multiply row highlighting may be used throughout tables by Ctrl(Cmd) or Shift.
+Multiply row highlighting may be used throughout tables by [[Ctrl]] [[⌘ Cmd]] or [[Shift]].
 
 ## Delivery
 

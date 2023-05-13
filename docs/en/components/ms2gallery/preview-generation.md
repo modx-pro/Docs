@@ -168,7 +168,7 @@ You can selectively update previews of the files you need through the admin spac
 [![](https://file.modx.pro/files/7/0/f/70fdb87589c0ccf0e2a4131cdbcdce11s.jpg)](https://file.modx.pro/files/7/0/f/70fdb87589c0ccf0e2a4131cdbcdce11.png)
 
 ::: info Info
-To choose more than one hold Shift or Ctrl(Cmd)
+To choose more than one hold [[Shift]] or [[Ctrl]] [[⌘ Cmd]]
 :::
 
 If you need to update *all* previews on your site according to the settings of their file sources, just enter the server console and launch `generate.php` from the directory `core/components/ms2gallery/cli`. For example:

@@ -43,7 +43,7 @@ Sorting with click on required column is available. It is also stored.
 
 [![](https://file.modx.pro/files/2/2/0/2208f4732d2a35f1baf146faa5123521s.jpg)](https://file.modx.pro/files/2/2/0/2208f4732d2a35f1baf146faa5123521.png)
 
-You may delete several orders at once by the keys Shift or Ctrl (Cmd) .
+You may delete several orders at once by the keys [[Shift]] or [[Ctrl]] [[⌘ Cmd]].
 
 ## Order editing
 

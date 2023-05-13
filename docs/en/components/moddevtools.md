@@ -68,7 +68,7 @@ Resource groups are no supported (yet?), i.e. if a resource group is hidden from
 
 ## For more information:
 
-- If the item shown in the new tabs is in focus and modified the hotkey **Ctrl-s** save this item, if it's not in focus so it saves the parent element (in this case changes in the child will be lost).
+- If the item shown in the new tabs is in focus and modified the hotkey [[Ctrl]]+[[s]] save this item, if it's not in focus so it saves the parent element (in this case changes in the child will be lost).
 - The "Save" button at the parent element is inactive, if the child was in focus to prevent accidental preservation. Included switching to another tab.
 - AjaxManager is supported
 - Supported versions are: MODX Revolution 2.3.x (first of all) and 2.2.x (minimum support, only to have all worked and didn't look scary).

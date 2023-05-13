@@ -1,13 +1,16 @@
 import type MarkdownIt from 'markdown-it'
 import type { RenderRule } from 'markdown-it/lib/renderer'
 import container from 'markdown-it-container'
+import kbd from 'markdown-it-kbd'
 
-export const containerPlugin = (md: MarkdownIt) => {
+export const addPlugins = (md: MarkdownIt) => {
   md.use(...createContainer('info', 'Информация', md))
     .use(...createContainer('tip', 'Подсказка', md))
     .use(...createContainer('warning', 'Внимание', md))
     .use(...createContainer('danger', 'Осторожно', md))
     .use(...createContainer('details', 'Подробнее', md))
+
+    .use(kbd)
 }
 
 type ContainerArgs = [typeof container, string, { render: RenderRule }]
