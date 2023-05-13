@@ -107,7 +107,7 @@ This provides maximum speed as direct references for ready images are displayed.
 
 [![](https://file.modx.pro/files/a/4/b/a4b89af1ea440c0581e16d0f3aed5930s.jpg)](https://file.modx.pro/files/a/4/b/a4b89af1ea440c0581e16d0f3aed5930.png)
 
-Files may be sorted by dragging. There is context menu and multi marking by Ctrl(Cmd) and Shift.
+Files may be sorted by dragging. There is context menu and multi marking by [[Ctrl]] [[⌘ Cmd]] and [[Shift]].
 
 First picture of a product is the main and is displayed in "Document" tab.
 Its references and preview are saved in `image` and `thumb` product characteristics. This enables us to display them in catalogue without additional request.

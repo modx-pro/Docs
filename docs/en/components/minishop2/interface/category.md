@@ -70,7 +70,7 @@ One may simply distinguish between direct descendants and enclosed goods of othe
 
 #### Grouped operations
 
-Operations for every product are listed in right-hand column. Using Shift or Ctrl (Cmd) you may select several lines at a time.
+Operations for every product are listed in right-hand column. Using [[Shift]] or [[Ctrl]] [[⌘ Cmd]] you may select several lines at a time.
 
 Possible:
 
