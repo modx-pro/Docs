@@ -201,11 +201,10 @@ function getFaqSidebar() {
 function getGuideSidebar() {
   return [
     {
-      text: 'Начало работы',
-      collapsed: false,
+      text: 'Введение',
       items: [
         { text: 'О проекте', link: '/guide/about' },
-        { text: 'Как начать работу', link: '/guide/howto' },
+        { text: 'Начало работы', link: '/guide/howto' },
         { text: 'Разметка md', link: '/guide/md' },
         { text: 'Возможности Vitepress', link: '/guide/vitepress' },
       ],
