@@ -29,6 +29,7 @@
         "gray-matter": "^4.0.3",
         "markdown-it": "^13.0.1",
         "markdown-it-container": "^3.0.0",
+        "markdown-it-kbd": "^2.2.2",
         "modx-tmlanguage": "^1.1.2",
         "plop": "^3.1.2",
         "sitemap": "^7.1.1",

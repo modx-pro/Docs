@@ -82,3 +82,15 @@
 .curtain {
   display: none;
 }
+
+kbd {
+  border: 1px solid var(--vp-c-border);
+  box-shadow: var(--vp-c-mute-darker) 0px 1px 1px 0px, var(--vp-c-neutral-inverse) 0px 1px 0px 0px inset;
+  background-color: var(--vp-c-mute-dark);
+  border-radius: 3px;
+  display: inline-block;
+  margin: 0 .1em;
+  overflow-wrap: break-word;
+  padding: .1em .6em;
+  text-shadow: 0 1px 0 var(--vp-c-white);
+}

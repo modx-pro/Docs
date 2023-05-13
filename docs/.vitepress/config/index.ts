@@ -3,7 +3,7 @@ import { createContentLoader, defineConfigWithTheme } from 'vitepress'
 import { config as en } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
-import { containerPlugin } from '../theme/plugins/containers'
+import { addPlugins } from '../theme/plugins/markdown'
 import { components, prepareData } from '../theme/plugins/component'
 import { SitemapStream } from 'sitemap'
 import { createWriteStream } from 'node:fs'
@@ -34,7 +34,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     },
 
     config (md) {
-      containerPlugin(md)
+      addPlugins(md)
     },
   },
 
