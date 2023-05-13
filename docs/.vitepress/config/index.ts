@@ -8,6 +8,7 @@ import { components, prepareData } from '../theme/plugins/component'
 import { SitemapStream } from 'sitemap'
 import { createWriteStream } from 'node:fs'
 import { resolve } from 'node:path'
+import { slugify } from 'transliteration'
 
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
@@ -25,6 +26,12 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   markdown: {
     // @ts-ignore
     languages,
+
+    anchor: {
+      slugify(str) {
+        return encodeURIComponent(slugify(str))
+      }
+    },
 
     config (md) {
       containerPlugin(md)

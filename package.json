@@ -32,6 +32,7 @@
         "modx-tmlanguage": "^1.1.2",
         "plop": "^3.1.2",
         "sitemap": "^7.1.1",
+        "transliteration": "^2.3.5",
         "vitepress": "^1.0.0-alpha.75",
         "vue": "^3.2.47"
     },
