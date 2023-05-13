@@ -1,4 +1,4 @@
-import type { LocaleConfig } from 'vitepress'
+import type { DefaultTheme, LocaleConfig } from 'vitepress'
 import type { DocSearchProps } from 'vitepress/types/docsearch'
 import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
@@ -126,7 +126,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
   }
 }
 
-function getSystemSidebar() {
+function getSystemSidebar(): DefaultTheme.SidebarItem[] {
   return [
     {
       text: 'Основы',
@@ -137,8 +137,22 @@ function getSystemSidebar() {
           link: '/system/basics/tag-syntax',
         },
         {
-          text: 'Фильтры ввода и вывода',
-          link: '/system/basics/input-and-output-filters',
+          text: 'Фильтры ввода',
+          link: '/system/basics/input-filters',
+        },
+        {
+          text: 'Фильтры вывода',
+          link: '/system/basics/output-filters',
+        },
+        {
+          text: 'Модификаторы вывода',
+          link: '/system/basics/modifiers/',
+          items: [
+            { text: 'Условные модификаторы', link: '/system/basics/modifiers/conditional' },
+            { text: 'Модификаторы для работы со строками', link: '/system/basics/modifiers/string' },
+            { text: 'Создание пользовательского модификатора', link: '/system/basics/modifiers/custom' },
+            { text: 'UserInfo', link: '/system/basics/modifiers/userinfo' },
+          ],
         },
       ]
     },
@@ -179,7 +193,7 @@ function getSystemSidebar() {
   ]
 }
 
-function getFaqSidebar() {
+function getFaqSidebar(): DefaultTheme.SidebarItem[] {
   return [
     {
       text: 'Ace',
@@ -198,7 +212,7 @@ function getFaqSidebar() {
   ]
 }
 
-function getGuideSidebar() {
+function getGuideSidebar(): DefaultTheme.SidebarItem[] {
   return [
     {
       text: 'Введение',
