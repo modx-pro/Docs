@@ -7,4 +7,3 @@ node_modules
 .temp
 *.log
 package-lock.json
-yarn.lock
