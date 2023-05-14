@@ -219,7 +219,7 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
       items: [
         { text: 'О проекте', link: '/guide/about' },
         { text: 'Начало работы', link: '/guide/howto' },
-        { text: 'Разметка md', link: '/guide/md' },
+        { text: 'Разметка markdown', link: '/guide/md' },
         { text: 'Возможности Vitepress', link: '/guide/vitepress' },
       ],
     },
