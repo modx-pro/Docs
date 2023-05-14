@@ -6,6 +6,7 @@ on:
       - vitepress
 jobs:
   deploy:
+    if: github.repository_owner == 'modx-pro'
     runs-on: ubuntu-latest
     permissions:
       pages: write
