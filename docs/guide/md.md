@@ -144,11 +144,9 @@ $user = $modx->getObject(modUser::class, ['id' => 5]);
 
 Markdown поддерживает правильную подсветку кода для различных языков разметки и программирования.
 Достаточно указать нужный язык после открыващих кавычек. Список поддерживаемых языков достаточно широк.
-Весь перечень можно посмотреть [по этой ссылке](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages)
+Весь перечень можно посмотреть [по этой ссылке](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages).
 
-
-Кроме того мы добавили подсветку синтаксиса MODX и fenom. Такой классной и удобной подсветки нет даже в официальной документации MODX
-
+Кроме того мы добавили подсветку синтаксиса MODX и fenom. Такой классной и удобной подсветки нет даже в официальной документации MODX.
 
 ```modx
 [[!msProducts?
@@ -157,11 +155,9 @@ Markdown поддерживает правильную подсветку код
 ]]
 ```
 
-
 ```fenom
-{'!msProducts'|snippet:[
-    'parents' => 0,
-    'includeThumbs' => '120x90,360x270'
+{'!msProducts' | snippet : [
+  'parents' => 0,
+  'includeThumbs' => '120x90,360x270',
 ]}
 ```
-
