@@ -29,7 +29,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
     anchor: {
       slugify(str) {
-        return encodeURIComponent(slugify(str))
+        return encodeURIComponent(slugify(str.trim().replace(/^(.{25}[^\s]*).*/, "$1"), { replace: { '—': '', '-': '' }, lowercase: true }))
       }
     },
 
