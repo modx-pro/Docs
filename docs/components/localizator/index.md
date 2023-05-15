@@ -1,6 +1,9 @@
 ---
 name: Localizator
 description: Мультиязычность, сео и автоматизация
+author: modx-pro
+modstore: https://modstore.pro/packages/utilities/localizator
+repository: https://github.com/modx-pro/localizator
 
 items: [
   { text: 'Сниппет Localizator', link: 'snippet-localizator' },

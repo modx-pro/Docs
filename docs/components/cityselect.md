@@ -1,7 +1,9 @@
 ---
 name: CitySelect
 description: Компонент реализует функцию выбора города
-logo: https://modstore.pro/assets/extras/cityselect/logo-md.jpg
+logo: https://modstore.pro/assets/extras/cityselect/logo-lg.jpg
+author: vgrish
+modstore: https://modstore.pro/packages/maps/cityselect
 ---
 # CitySelect
 

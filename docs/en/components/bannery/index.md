@@ -1,7 +1,10 @@
 ---
 name: BannerY
 description: Simple ads for MODX
-logo: https://modstore.pro/assets/extras/bannery/logo-md.jpg
+logo: https://modstore.pro/assets/extras/bannery/logo-lg.jpg
+author: biz87
+modstore: https://en.modstore.pro/packages/photos-and-files/bannery
+repository: https://github.com/modx-pro/BannerY
 
 items: [
   {

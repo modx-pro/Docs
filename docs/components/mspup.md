@@ -1,7 +1,10 @@
 ---
 name: mspUP
 description: Модуль оплаты unitpay.ru
-logo: https://modstore.pro/assets/extras/mspup/logo-md.jpg
+logo: https://modstore.pro/assets/extras/mspup/logo-lg.jpg
+author: vgrish
+modstore: https://modstore.pro/packages/payment-system/mspup
+
 dependencies: miniShop2
 categories: payment
 ---

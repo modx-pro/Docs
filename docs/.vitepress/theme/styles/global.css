@@ -12,6 +12,8 @@
   --vp-c-blue-dimm-2: rgba(14, 165, 233, 0.2);
   --vp-c-blue-dimm-3: rgba(14, 165, 233, 0.5);
 
+  --vp-c-yellow: #ecb732;
+
   --vp-custom-block-info-border: var(--vp-c-blue-dimm-2);
   --vp-custom-block-info-bg: var(--vp-c-blue-dimm-1);
   --vp-custom-block-info-text: var(--vp-c-neutral);
@@ -59,11 +61,11 @@
 .VPDocAsideOutline {
   border: var(--vp-border);
   border-radius: var(--vp-border-radius);
-  padding: 24px 24px 24px 0;
+  padding: 20px 20px 20px 0;
 }
 
 .VPDocAsideOutline .content {
-  padding-left: 24px;
+  padding-left: 20px;
   border-left: none;
 }
 
@@ -79,4 +81,16 @@
 
 .curtain {
   display: none;
+}
+
+kbd {
+  border: 1px solid var(--vp-c-border);
+  box-shadow: var(--vp-c-mute-darker) 0px 1px 1px 0px, var(--vp-c-neutral-inverse) 0px 1px 0px 0px inset;
+  background-color: var(--vp-c-mute-dark);
+  border-radius: 3px;
+  display: inline-block;
+  margin: 0 .1em;
+  overflow-wrap: break-word;
+  padding: .1em .6em;
+  text-shadow: 0 1px 0 var(--vp-c-white);
 }

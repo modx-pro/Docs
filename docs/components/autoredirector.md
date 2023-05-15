@@ -1,7 +1,11 @@
 ---
 name: autoRedirector
 description: Дополнение, которое позволит вам не беспокоиться о том, что иногда адреса страниц меняются
-logo: https://modstore.pro/assets/extras/autoredirector/logo-md.jpg
+logo: https://modstore.pro/assets/extras/autoredirector/logo-lg.jpg
+author: ilyautkin
+modstore: https://modstore.pro/packages/utilities/autoredirector
+modx: https://extras.modx.com/package/autoredirector
+repository: https://github.com/ilyautkin/autoRedirector
 ---
 # autoRedirector
 

@@ -1,7 +1,9 @@
 ---
 name: msEMS
 description: Расчет стоимости доставки службой EMS Russian Post
-logo: https://modstore.pro/assets/extras/msems/logo-md.jpeg
+logo: https://modstore.pro/assets/extras/msems/logo-lg.jpeg
+modstore: https://modstore.pro/packages/delivery/msems
+
 dependencies: miniShop2
 ---
 

@@ -3,22 +3,22 @@ import { useData, withBase } from 'vitepress'
 import { useBreadcrumbs } from '../composables/breadcrumbs'
 
 const { page, site } = useData()
-const data = useBreadcrumbs(page, site)
+const breadcrumbs = useBreadcrumbs(page, site)
 </script>
 
-<template v-if="data.length">
+<template v-if="breadcrumbs.length">
   <ol
     class="DocsBreadcrumbs"
     itemscope itemtype="https://schema.org/BreadcrumbList"
   >
     <li
-      v-for="(breadcrumb, idx) in data"
+      v-for="(breadcrumb, idx) in breadcrumbs"
       :key="idx"
       itemscope itemprop="itemListElement" itemtype="https://schema.org/ListItem"
       class="item"
-      :class="{ 'last': data.length > 1 && idx === data.length - 1 }"
+      :class="{ 'last': breadcrumbs.length > 1 && idx === breadcrumbs.length - 1 }"
     >
-      <template v-if="breadcrumb.link && idx !== data.length - 1">
+      <template v-if="breadcrumb.link && idx !== breadcrumbs.length - 1">
         <a
           :href="withBase(breadcrumb.link)"
           :title="breadcrumb.text"

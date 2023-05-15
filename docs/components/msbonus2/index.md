@@ -1,8 +1,9 @@
 ---
 name: msBonus2
 description: Бонусная система для miniShop2
-logo: https://modstore.pro/assets/extras/msbonus2/logo-md.jpg
+logo: https://modstore.pro/assets/extras/msbonus2/logo-lg.jpg
 author: gvozdb
+modstore: https://modstore.pro/packages/discounts/msbonus2
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

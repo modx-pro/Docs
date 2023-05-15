@@ -1,7 +1,9 @@
 ---
 name: msProductRemains
 description: Stock-on-hand (product remains) account
-logo: https://modstore.pro/assets/extras/msproductremains/logo-md.jpg
+logo: https://modstore.pro/assets/extras/msproductremains/logo-lg.jpg
+author: feschukov
+modstore: https://en.modstore.pro/packages/ecommerce/msproductremains
 
 items: [
   { text: 'Settings', link: 'settings' },

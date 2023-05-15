@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { ComputedRef } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { ComponentData } from '../plugins/component'
 import { useData } from 'vitepress'
 import { ellipsis } from '../utils'
@@ -15,73 +14,81 @@ const props = defineProps<{
   excludeCategory?: string
 }>()
 
-const components: ComputedRef<ComponentData[]> = computed(() => {
-  let output: ComponentData[] = site.value.themeConfig.components
+const components = ref<ComponentData[]>([])
+
+onMounted(() => {
+  let filtered: ComponentData[] = site.value.themeConfig.components
 
   if (props.dependency) {
-    output = output.filter(component => component.dependencies?.includes(props.dependency))
+    filtered = filtered.filter(component => component.dependencies?.includes(props.dependency))
   }
 
   if (props.category) {
-    output = output.filter(component => component.categories?.includes(props.category))
+    filtered = filtered.filter(component => component.categories?.includes(props.category))
   }
 
   if (props.excludeCategory) {
-    output = output.filter(component => !component.categories?.includes(props.excludeCategory))
+    filtered = filtered.filter(component => !component.categories?.includes(props.excludeCategory))
   }
 
-  return output
+  components.value = filtered
 })
 </script>
 
 <template>
-  <div :class="{ container: frontmatter.layout === 'home' }">
-    <h1
-      v-if="props.title"
-      class="title"
-    >
-      {{ props.title }}
-    </h1>
-    <div class="DocsComponentsList">
-      <VPLink
-        v-for="component, index in components"
-        :key="index"
-        :href="component.link"
-        class="component"
+  <div
+    class="DocsComponentsList"
+    :class="{ 'is-home': frontmatter.layout === 'home' }"
+  >
+    <div class="container">
+      <h1
+        v-if="props.title"
+        class="title"
       >
-        <VPImage
-          :image="component.logo || '/placeholder-logo.png'"
-          class="logo"
-        />
-        <div class="body">
-          <span class="name">{{ component.title }}</span>
-          <p
-            v-if="component.description"
-            class="description"
-          >
-            {{ ellipsis(component.description, 80) }}
-          </p>
-        </div>
-      </VPLink>
+        {{ props.title }}
+      </h1>
+      <div class="list">
+        <VPLink
+          v-for="component, index in components"
+          :key="index"
+          :href="component.link"
+          class="component"
+        >
+          <VPImage
+            :image="component.logo || '/placeholder-logo.png'"
+            class="logo"
+            loading="lazy"
+          />
+          <div class="body">
+            <span class="name">{{ component.title }}</span>
+            <p
+              v-if="component.description"
+              class="description"
+            >
+              {{ ellipsis(component.description, 80) }}
+            </p>
+          </div>
+        </VPLink>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.DocsComponentsList {
+.list {
   margin-top: 24px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, auto));
+  grid-template-columns: repeat(auto-fit, minmax(272px, auto));
   gap: 24px;
 }
 
 .component {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 80px 1fr;
   align-items: center;
   column-gap: 12px;
   padding: 18px;
-  border: var(--vp-border-width) solid var(--vp-sidebar-bg-color);
+  border: var(--vp-border-width) solid var(--vp-c-divider);
   border-radius: 8px;
   transition: border-color 0.25s;
   color: inherit;
@@ -89,7 +96,7 @@ const components: ComputedRef<ComponentData[]> = computed(() => {
 }
 
 .component:hover {
-  border-color: var(--vp-c-green-dimm-3);
+  border-color: var(--vp-c-green);
   text-decoration: none;
 }
 
@@ -108,7 +115,6 @@ const components: ComputedRef<ComponentData[]> = computed(() => {
 .title {
   max-width: 392px;
   letter-spacing: -0.4px;
-  line-height: 40px;
   line-height: normal;
   text-align: center;
   font-size: 32px;
@@ -130,9 +136,21 @@ const components: ComputedRef<ComponentData[]> = computed(() => {
     line-height: 64px;
     font-size: 56px;
   }
+
+  .list {
+    grid-template-columns: repeat(auto-fit, minmax(350px, auto));
+  }
+
+  .component {
+    grid-template-columns: 100px 1fr;
+  }
 }
 
-.container {
+.is-home.DocsComponentsList {
+  padding: 0 24px;
+}
+
+.is-home .container {
   margin: 0 auto;
   width: 100%;
   max-width: calc(var(--vp-layout-max-width) - 64px);

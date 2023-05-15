@@ -1,7 +1,9 @@
 ---
 name: msGallerySearch
 description: Поиск и загрузка по ссылке в галерею minishop2 и ms2Gallery
-logo: https://modstore.pro/assets/extras/msgallerysearch/logo-md.png
+logo: https://modstore.pro/assets/extras/msgallerysearch/logo-lg.png
+author: webnitros
+modstore: https://modstore.pro/packages/photos-and-files/msgallerysearch
 
 items: [
   { text: 'Загрузить по ссылке', link: 'load-from-link' },

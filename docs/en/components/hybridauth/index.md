@@ -1,7 +1,11 @@
 ---
 name: HybridAuth
 description: Authorization through social networks and other services
-logo: https://modstore.pro/assets/extras/hybridauth/logo-md.jpg
+logo: https://modstore.pro/assets/extras/hybridauth/logo-lg.jpg
+author: biz87
+modstore: https://en.modstore.pro/packages/users/hybridauth
+modx: https://extras.modx.com/package/hybridauth
+repository: https://github.com/modx-pro/modx-hybridauth
 
 items: [
   {

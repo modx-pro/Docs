@@ -1,7 +1,9 @@
 ---
 name: Solo
 description: Creative / corporate / portfolio one page MODX theme
-logo: https://modstore.pro/assets/extras/solo/logo-md.jpg
+logo: https://modstore.pro/assets/extras/solo/logo-lg.jpg
+author: DESIGNfromWITHIN
+modstore: https://en.modstore.pro/packages/sites-themes/solo
 ---
 # Solo
 

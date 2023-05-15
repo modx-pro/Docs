@@ -1,7 +1,9 @@
 ---
 name: Scheduler
 description: Планирование отложенных задач
-logo: https://modstore.pro/assets/extras/scheduler/logo-md.png
+logo: https://modstore.pro/assets/extras/scheduler/logo-lg.png
+author: modx-pro
+modstore: https://modstore.pro/packages/utilities/scheduler
 
 items: [
   { text: 'Установка', link: 'installation' },

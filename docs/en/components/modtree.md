@@ -1,7 +1,12 @@
 ---
 name: ModTree
 description: Linking resources with each other
-logo: https://modstore.pro/assets/extras/modtree/logo-md.png
+logo: https://modstore.pro/assets/extras/modtree/logo-lg.png
+author: visermort
+modstore: https://en.modstore.pro/packages/ecommerce/modtree
+modx: https://extras.modx.com/package/modtree
+repository: https://github.com/visermort/ModTree
+
 outline: deep
 ---
 # ModTree

@@ -1,3 +1,6 @@
+---
+author: Ibochkarev
+---
 # MODX Ace Material Theme
 
 Для смены визуального оформления редактора под вид Material Theme необходиом выполнить следующие шаги:

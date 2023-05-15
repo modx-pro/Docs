@@ -1,7 +1,9 @@
 ---
 name: msPromoCode
 description: Скидочные промо-коды для miniShop2
-logo: https://modstore.pro/assets/extras/mspromocode/logo-md.png
+logo: https://modstore.pro/assets/extras/mspromocode/logo-lg.png
+author: gvozdb
+modstore: https://modstore.pro/packages/discounts/mspromocode
 
 items: [
   {

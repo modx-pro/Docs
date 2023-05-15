@@ -1,4 +1,210 @@
 {
-  "gvozdb": "Павел Гвоздь",
-  "modx-pro": "MODX RSC"
+  "13hakta": {
+    "modstore": "https://modstore.pro/authors/13hakta",
+    "name": {
+      "en": "Vitaly Chekryzhev",
+      "ru": "Чекрыжев Виталий"
+    }
+  },
+  "Alexij2": {
+    "modstore": "https://modstore.pro/authors/alexij",
+    "name": "Alexey Smirnov"
+  },
+  "alroniks": {
+    "modstore": "https://modstore.pro/authors/alroniks",
+    "name": {
+      "en": "Ivan Klimchuk",
+      "ru": "Иван Климчук"
+    }
+  },
+  "apnix": {
+    "modstore": "https://modstore.pro/authors/10905",
+    "name": "Artemiy Titov"
+  },
+  "argnist": {
+    "modstore": "https://modstore.pro/authors/argnist",
+    "name": {
+      "en": "Vitaly Kireev",
+      "ru": "Виталий Киреев"
+    }
+  },
+  "Asanvery": {
+    "modstore": "https://modstore.pro/authors/2031",
+    "name": "Саша Пекшев"
+  },
+  "azernov": {
+    "modstore": "https://modstore.pro/authors/647",
+    "name": {
+      "en": "Artyom OpenModx",
+      "ru": "Артем OpenModx"
+    }
+  },
+  "bazmaster": {
+    "modstore": "https://modstore.pro/authors/bazmaster",
+    "name": {
+      "en": "Vasili Stoleicov",
+      "ru": "Василий Столейков"
+    }
+  },
+  "bezumkin": {
+    "modstore": "https://modstore.pro/authors/bezumkin",
+    "name": {
+      "en": "Vasily Naumkin",
+      "ru": "Василий Наумкин"
+    }
+  },
+  "biz87": {
+    "modstore": "https://modstore.pro/authors/biz87",
+    "name": {
+      "en": "Nikolay Savin",
+      "ru": "Николай Савин"
+    }
+  },
+  "boshnik": {
+    "modstore": "https://modstore.pro/authors/boshnik",
+    "name": "Aleksandr Huz"
+  },
+  "core01": {
+    "modstore": "https://modstore.pro/authors/4689",
+    "name": "Roman Sadoyan"
+  },
+  "createit-ru": {
+    "modstore": "https://modstore.pro/authors/createit",
+    "name": {
+      "en": "Alexey Naumov",
+      "ru": "Алексей Наумов"
+    }
+  },
+  "DESIGNfromWITHIN": {
+    "modstore": "https://modstore.pro/authors/10091",
+    "name": "Menno Pietersen"
+  },
+  "DevPastet": {
+    "modstore": "https://modstore.pro/authors/5836",
+    "name": "devPastet"
+  },
+  "electrica": {
+    "modstore": "https://modstore.pro/authors/electrica",
+    "name": "Михаил Электриков"
+  },
+  "feschukov": {
+    "modstore": "https://modstore.pro/authors/focusone",
+    "name": {
+      "en": "Sergey Feschukov",
+      "ru": "Сергей Фещуков"
+    }
+  },
+  "gvozdb": {
+    "modstore": "https://modstore.pro/authors/pavelgvozdb",
+    "name": {
+      "en": "Pavel Gvozd",
+      "ru": "Павел Гвоздь"
+    }
+  },
+  "Ibochkarev": {
+    "name": {
+      "en": "Ivan Bochkarev",
+      "ru": "Иван Бочкарев"
+    }
+  },
+  "ilyautkin": {
+    "modstore": "https://modstore.pro/authors/ilyautkin",
+    "name": {
+      "en": "Ilya Utkin",
+      "ru": "Илья Уткин"
+    }
+  },
+  "justenj": {
+    "modstore": "https://modstore.pro/authors/5991",
+    "name": {
+      "en": "Vladimir Kisilitsa",
+      "ru": "Владимир Кисилица"
+    }
+  },
+  "kudashevs": {
+    "modstore": "https://modstore.pro/authors/8567",
+    "name": {
+      "en": "Sergey Kudashev",
+      "ru": "Кудашев Сергей"
+    }
+  },
+  "marabar": {
+    "modstore": "https://modstore.pro/authors/marabar",
+    "name": "Марат Марабар"
+  },
+  "me6iaton": {
+    "modstore": "https://modstore.pro/authors/17",
+    "name": {
+      "en": "Anton Mamrashev",
+      "ru": "Антон Мамрашев"
+    }
+  },
+  "modx-pro": "MODX RSC",
+  "mvoevodskiy": {
+    "modstore": "https://modstore.pro/authors/mvoevodskiy",
+    "name": {
+      "en": "Mikhail Voevodskiy",
+      "ru": "Воеводский Михаил"
+    }
+  },
+  "nizart91": {
+    "modstore": "https://modstore.pro/authors/nizart91",
+    "name": {
+      "en": "Artem Nizovskikh",
+      "ru": "Артем Низовских"
+    }
+  },
+  "prihod": {
+    "modstore": "https://modstore.pro/authors/prihod",
+    "name": "Prihod"
+  },
+  "sergant210": {
+    "modstore": "https://modstore.pro/authors/sergant",
+    "name": {
+      "en": "Sergey Shlokov",
+      "ru": "Сергей Шлоков"
+    }
+  },
+  "sheronov": {
+    "modstore": "https://modstore.pro/authors/webrush",
+    "name": {
+      "en": "Evgeniy Sheronov",
+      "ru": "Евгений Шеронов"
+    }
+  },
+  "shevartv": {
+    "modstore": "https://modstore.pro/authors/shev_art_v",
+    "name": {
+      "en": "Arthur",
+      "ru": "Артур Шевченко"
+    }
+  },
+  "Sterc": {
+    "modstore": "https://modstore.pro/authors/henkeverts",
+    "name": "Sterc"
+  },
+  "tventos": {
+    "modstore": "https://modstore.pro/authors/tventos",
+    "name": "Mikhail Tyrsyna"
+  },
+  "vgrish": {
+    "modstore": "https://modstore.pro/authors/vgrish",
+    "name": "Володя Володин"
+  },
+  "visermort": {
+    "modstore": "visermort",
+    "name": "Andrei Spartak"
+  },
+  "webinmd": {
+    "modstore": "https://modstore.pro/authors/120",
+    "name": "Евгений Webinmd"
+  },
+  "webnitros": {
+    "modstore": "https://modstore.pro/authors/webnitros",
+    "name": "Андрей Степаненко"
+  },
+  "wfoojjaec": {
+    "modstore": "https://modstore.pro/authors/wfoojjaec",
+    "name": "wfoojjaec"
+  }
 }

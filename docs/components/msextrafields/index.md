@@ -1,7 +1,8 @@
 ---
 name: msExtraFields
 description: Комплексное управление товарами
-logo: https://modstore.pro/assets/extras/msextrafields/logo-md.png
+logo: https://modstore.pro/assets/extras/msextrafields/logo-lg.png
+modstore: https://modstore.pro/packages/ecommerce/msextrafields
 
 items: [
   { text: 'Возможности', link: 'features' },

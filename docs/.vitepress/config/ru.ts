@@ -1,6 +1,6 @@
-import type { LocaleConfig } from 'vitepress'
+import type { DefaultTheme, LocaleConfig } from 'vitepress'
 import type { DocSearchProps } from 'vitepress/types/docsearch'
-import type { DocsThemeConfig } from '../theme/types'
+import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
 
@@ -52,7 +52,7 @@ export const searchLocale: Record<string, Partial<DocSearchProps>> = {
   },
 }
 
-export const config: LocaleConfig<DocsThemeConfig> = {
+export const config: LocaleConfig<DocsTheme.Config> = {
   root: {
     label: 'Russian',
     lang: 'ru',
@@ -74,13 +74,18 @@ export const config: LocaleConfig<DocsThemeConfig> = {
         },
         {
           text: 'Система',
-          link: '/system/',
+          link: '/system/basics/tag-syntax',
           activeMatch: '/system/',
         },
         {
           text: 'Готовые решения',
           link: '/faq/',
           activeMatch: '/faq/',
+        },
+        {
+          text: 'О проекте',
+          link: '/guide/about',
+          activeMatch: '/guide/',
         },
       ],
 
@@ -89,14 +94,9 @@ export const config: LocaleConfig<DocsThemeConfig> = {
           root: ['docs/components/*.md', 'docs/components/*/index.md'],
           ignore: ['docs/components/index.md'],
         }),
-        '/system/': generateSidebar({
-          root: 'docs/system/*/index.md',
-          collapsed: false,
-        }),
-        '/faq/': generateSidebar({
-          root: 'docs/faq/*/index.md',
-          collapsed: false,
-        }),
+        '/system/': getSystemSidebar(),
+        '/faq/': getFaqSidebar(),
+        '/guide/': getGuideSidebar(),
       },
 
       outlineTitle: 'На этой странице',
@@ -104,18 +104,124 @@ export const config: LocaleConfig<DocsThemeConfig> = {
       sidebarMenuLabel: 'Меню',
       darkModeSwitchLabel: 'Тема',
       lastUpdatedText: 'Последнее обновление',
-      ecosystemLabel: 'Другие продукты',
       langMenuLabel: 'Изменить язык',
+      teamSectionTitle: 'Команда',
+
+      sponsor: {
+        message: 'Данный сервис является Open-Source проектом и его поддержка и развитие зависит от пожертвований.',
+        linkText: 'Поддержать проект!',
+      },
+
       docFooter: {
         prev: 'Предыдущая страница',
         next: 'Следующая страница',
       },
       editLink: {
-        pattern: 'https://github.com/modx-pro/Docs/edit/v2/docs/:path',
+        pattern: 'https://github.com/modx-pro/Docs/edit/vitepress/docs/:path',
         text: 'Предложить изменения на этой странице',
       },
 
       components: components.filter(component => component.path.startsWith('components/')),
     },
   }
+}
+
+function getSystemSidebar(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'Основы',
+      collapsed: false,
+      items: [
+        {
+          text: 'Синтаксис тегов',
+          link: '/system/basics/tag-syntax',
+        },
+        {
+          text: 'Фильтры ввода',
+          link: '/system/basics/input-filters',
+        },
+        {
+          text: 'Фильтры вывода',
+          link: '/system/basics/output-filters',
+        },
+        {
+          text: 'Модификаторы вывода',
+          link: '/system/basics/modifiers/',
+          items: [
+            { text: 'Условные модификаторы', link: '/system/basics/modifiers/conditional' },
+            { text: 'Модификаторы для работы со строками', link: '/system/basics/modifiers/string' },
+            { text: 'Создание пользовательского модификатора', link: '/system/basics/modifiers/custom' },
+            { text: 'UserInfo', link: '/system/basics/modifiers/userinfo' },
+          ],
+        },
+      ]
+    },
+    {
+      text: 'Утилиты',
+      collapsed: false,
+      items: [
+        {
+          text: 'Teleport',
+          link: 'system/utilities/teleport/',
+          collapsed: true,
+          items: [
+            {
+              text: 'Использование',
+              link: 'system/utilities/teleport/usage',
+            },
+            {
+              text: 'Расширение',
+              items: [
+                { text: 'Шаблоны Извлечения', link: 'system/utilities/teleport/extension/extract-templates' },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      text: 'Что такое xPDO?',
+      link: '/system/xpdo/',
+      collapsed: false,
+      items: [
+        {
+          text: 'Класс xPDO',
+          link: '/system/xpdo/xpdo-class',
+        },
+      ],
+    },
+  ]
+}
+
+function getFaqSidebar(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'Ace',
+      collapsed: false,
+      items: [
+        { text: 'MODX Ace Material Theme', link: '/faq/ace/modx-ace-material-theme' },
+      ],
+    },
+    {
+      text: 'TinyMCE Rich Text Editor',
+      collapsed: false,
+      items: [
+        { text: 'Добавление кастомных кнопок', link: '/faq/tinymce-rte/add-custom-buttons' },
+      ],
+    },
+  ]
+}
+
+function getGuideSidebar(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'Введение',
+      items: [
+        { text: 'О проекте', link: '/guide/about' },
+        { text: 'Начало работы', link: '/guide/howto' },
+        { text: 'Разметка markdown', link: '/guide/md' },
+        { text: 'Возможности Vitepress', link: '/guide/vitepress' },
+      ],
+    },
+  ]
 }

@@ -1,7 +1,9 @@
 ---
 name: LxQuiz
 description: Быстрое внедрение проверочных тестов для авторизованных пользователей
-logo: https://modstore.pro/assets/extras/lxquiz/logo-md.jpg
+logo: https://modstore.pro/assets/extras/lxquiz/logo-lg.jpg
+author: azernov
+modstore: https://modstore.pro/packages/users/lxquiz
 
 items: [
   { text: 'Сниппет LxQuiz', link: 'snippets/lxquiz' },

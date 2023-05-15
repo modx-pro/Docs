@@ -1,5 +1,6 @@
 import type { EnhanceAppContext, Theme } from 'vitepress'
-import DefaultTheme from 'vitepress/theme'
+// @ts-expect-error
+import DefaultTheme from 'vitepress/theme-without-fonts'
 import DocsLayout from './components/DocsLayout.vue'
 import DocsComponentsList from './components/DocsComponentsList.vue'
 import './styles/global.css'
@@ -8,8 +9,9 @@ const theme: Theme = {
   ...DefaultTheme,
   Layout: DocsLayout,
 
-  enhanceApp({ app }: EnhanceAppContext) {
-    app.component('DocsComponentsList', DocsComponentsList)
+  enhanceApp(ctx: EnhanceAppContext) {
+    DefaultTheme.enhanceApp(ctx)
+    ctx.app.component('DocsComponentsList', DocsComponentsList)
   },
 }
 

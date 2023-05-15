@@ -1,7 +1,9 @@
 ---
 name: msPromoCode2
 description: Улучшенные промо-коды для miniShop2
-logo: https://modstore.pro/assets/extras/mspromocode2/logo-md.jpg
+logo: https://modstore.pro/assets/extras/mspromocode2/logo-lg.jpg
+author: gvozdb
+modstore: https://modstore.pro/packages/discounts/mspromocode2
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

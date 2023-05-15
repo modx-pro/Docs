@@ -1,7 +1,10 @@
 ---
 name: mscDistance
 description: Расчет стоимости доставки по городу/району
-logo: https://modstore.pro/assets/extras/mscdistance/logo-md.jpg
+logo: https://modstore.pro/assets/extras/mscdistance/logo-lg.jpg
+author: vgrish
+modstore: https://modstore.pro/packages/delivery/mscdistance
+
 dependencies: miniShop2
 ---
 

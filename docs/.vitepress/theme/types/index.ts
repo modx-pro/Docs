@@ -1,16 +1,22 @@
-import type { DefaultTheme } from 'vitepress'
+import { DefaultTheme } from 'vitepress'
 import type { ComponentData } from '../plugins/component'
 
-declare interface DocsEcosystem {
-  text: string,
-  link: string,
-  logo: string,
-}
+export namespace DocsTheme {
+  export interface Sponsor {
+    message?: string
+    linkText?: string
+  }
 
-export interface DocsThemeConfig extends DefaultTheme.Config {
-  ecosystemLabel?: string
-  ecosystem?: Array<DocsEcosystem>
-  titleSeparator?: string
+  export interface Config extends DefaultTheme.Config {
+    titleSeparator?: string
+    components?: Array<ComponentData>
+    teamSectionTitle?: string
 
-  components?: Array<ComponentData>
+    sponsorLink?: string
+    sponsor?: Sponsor
+  }
+
+  export interface TeamMember extends Omit<DefaultTheme.TeamMember, 'name'> {
+    name: Record<string, string>
+  }
 }

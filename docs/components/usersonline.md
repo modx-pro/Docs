@@ -1,7 +1,10 @@
 ---
 name: UsersOnline
 description: Список онлайн-пользователей
-logo: https://modstore.pro/assets/extras/usersonline/logo-md.png
+logo: https://modstore.pro/assets/extras/usersonline/logo-lg.png
+author: mvoevodskiy
+modstore: https://modstore.pro/packages/users/usersonline
+modx: https://extras.modx.com/package/usersonline
 ---
 # UsersOnline
 

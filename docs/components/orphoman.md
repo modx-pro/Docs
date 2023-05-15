@@ -1,7 +1,11 @@
 ---
 name: OrphoMan
 description: Выявление орфографических ошибок в тексте
-logo: https://modstore.pro/assets/extras/orphoman/logo-md.jpg
+logo: https://modstore.pro/assets/extras/orphoman/logo-lg.jpg
+author: sergant210
+modstore: https://modstore.pro/packages/content/orphoman
+modx: https://extras.modx.com/package/orphoman
+repository: https://github.com/sergant210/OrphoMan
 ---
 # OrphoMan
 
@@ -38,7 +42,7 @@ logo: https://modstore.pro/assets/extras/orphoman/logo-md.jpg
 [[!Orphoman? &min=`3` &max=`50`]]
 ```
 
-Работает компонент очень просто. Нашли ошибку, выделили и нажали Ctrl+Enter. Если сообщение успешно отправлено, то вы увидите соответствующее уведомление.
+Работает компонент очень просто. Нашли ошибку, выделили и нажали [[Ctrl]]+[[Enter]]. Если сообщение успешно отправлено, то вы увидите соответствующее уведомление.
 
 ## Использование на мобильных устройствах
 

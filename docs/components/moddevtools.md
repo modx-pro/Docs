@@ -1,7 +1,11 @@
 ---
 name: modDevTools
 description: Компонент для вывода кода используемых чанков и сниппетов на странице шаблона или чанка
-logo: https://modstore.pro/assets/extras/moddevtools/logo-md.jpg
+logo: https://modstore.pro/assets/extras/moddevtools/logo-lg.jpg
+author: argnist
+modstore: https://modstore.pro/packages/utilities/moddevtools
+modx: https://extras.modx.com/package/moddevtools
+repository: https://github.com/argnist/modDevTools
 ---
 # modDevTools
 
@@ -65,7 +69,7 @@ logo: https://modstore.pro/assets/extras/moddevtools/logo-md.jpg
 
 ## Дополнительная информация:
 
-- Если элемент, показывающийся в новых вкладках, находится в фокусе и изменен, то с помощью **Ctrl-s** сохраняется он, если не в фокусе - то родительский элемент (при этом изменения в дочернем потеряются).
+- Если элемент, показывающийся в новых вкладках, находится в фокусе и изменен, то с помощью [[Ctrl]]+[[s]] сохраняется он, если не в фокусе - то родительский элемент (при этом изменения в дочернем потеряются).
 - Кнопка "Сохранить" у родительского элемента неактивна, если дочерний элемент оказывался в фокусе для предотвращения случайного сохранения. Включается переходом на другую вкладку.
 - Поддерживается AjaxManager
 - Поддерживаются версии MODX Revolution 2.3.x (в первую очередь, разработка ведется на нем) и 2.2.x (минимальная поддержка, только чтобы все работало и выглядело не совсем страшно).
