@@ -49,4 +49,4 @@ categories: payment
 
 [![](https://file.modx.pro/files/5/d/c/5dc4b8e7a7385edfffc8cb1a622e538fs.jpg)](https://file.modx.pro/files/5/d/c/5dc4b8e7a7385edfffc8cb1a622e538f.png)
 
-[1]: https://unitpay.ru/ "Регистрация магазина в сиситеме «UnitPay»"
+[1]: https://unitpay.ru/ "Регистрация магазина в системе «UnitPay»"
