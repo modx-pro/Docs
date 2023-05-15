@@ -29,19 +29,3 @@ items: [
 ]
 ---
 # xParser
-
-- [Парсер RSS лент](/components/xparser/parser-rss)
-- [Парсер HTML контента + Совмещенные задания](/components/xparser/parser-html)
-- [Работа с miniShop2 товарами](/components/xparser/minishop2)
-- [Работа с галереями](/components/xparser/gallery)
-- [Пагинация](/components/xparser/pagination)
-- [Регулярные выражения](/components/xparser/regex)
-- [События плагинов](/components/xparser/events/)
-    - [xParserOnFilterSourceItems](/components/xparser/events/xparseronfiltersourceitems)
-    - [xParserOnBeforeTaskParse](/components/xparser/events/xparseronbeforetaskparse)
-    - [xParserOnTaskItemParse](/components/xparser/events/xparserontaskitemparse)
-    - [xParserOnBeforeTaskActions](/components/xparser/events/xparseronbeforetaskactions)
-    - [xParserOnTaskParseDone](/components/xparser/events/xparserontaskparsedone)
-    - [Примеры](/components/xparser/events/examples)
-- [Скрипт запуска заданий из Cron](/components/xparser/cron)
-- [Node JS демон](/components/xparser/nodejs-demon)
