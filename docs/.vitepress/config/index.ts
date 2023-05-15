@@ -29,7 +29,13 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
     anchor: {
       slugify(str) {
-        return encodeURIComponent(slugify(str.trim().replace(/^(.{25}[^\s]*).*/, "$1"), { replace: { '—': '', '-': '' }, lowercase: true }))
+        str = str.trim()
+            .replace(/^\d*/g, '') // Удаление чисел из начала строки
+            .replace(/[^a-zA-Zа-яА-ЯЁё0-9\-\s]/g, '') // Удаление ненужных символов
+            .replace(/\s\-\s/, '-').replace(/\-+/g, '-') // Избавление от повторяющихся символов
+            .replace(/^(.{25}[^\s]*).*/, '$1') // Ограничение количества символов
+
+        return encodeURIComponent(slugify(str, { lowercase: true }))
       }
     },
 
