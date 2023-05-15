@@ -1,6 +1,15 @@
 ---
-name: {{ name }}
-outline: deep
+name: {{ name }} # Название компонента
+description: Отличный компонент который решает сложные задачи # Описание компонента
+logo: https://placehold.co/400 # Ссылка на логотип компонента
+author: modx-pro # Логин автора компонента на github.com (Список авторов находится по пути `docs/authors.json`. При необходимости добавьте или измените данные)
+modstore: https://modstore.pro/... # Ссылка на страницу компонента на modstore.pro
+modx: https://modx.com/extras/... # Ссылка на страницу компонента на modx.com
+repository: https://github.com/modx-pro/miniShop2 # Ссылка на репозиторий компонента
+
+dependencies: miniShop2 # Строка или массив строк с зависимостями компонента от других компонентов (Пример: miniShop2 или ['miniShop2', 'FormIt'])
+categories: payment # Строка или массив строк категорий компонента (Пример: payment или ['utilities', 'discounts'])
+outline: deep # Настройка генерации оглавления, по умолчанию: 2 (Подробнее: https://vitepress.dev/reference/frontmatter-config#outline)
 ---
 
 # {{ name }}
