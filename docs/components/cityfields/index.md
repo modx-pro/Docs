@@ -12,6 +12,7 @@ items: [
   { text: 'Настройки компонента', link: 'setup' },
   { text: 'Сниппет cfCities', link: 'snippets/cfcities' },
   { text: 'Сниппет cfField', link: 'snippets/cffield' },
+  { text: 'Формирование карты сайта', link: 'sitemap' },
 ]
 ---
 # cityFields

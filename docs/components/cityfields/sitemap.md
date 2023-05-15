@@ -19,13 +19,13 @@
 
 Так как INLINE чанки не умеют обрабатывать модификаторы и условия, то также создадим чанк `tpl.Sitemap` со следующим содержимым:
 
-```xml
+```modx
 <url>
-<loc>[[!+cf.current_city.url]]{$url!='/'?$url:''}</loc>
+<loc>[[!+cf.current_city.url]]{$url != '/' ? $url : ''}</loc>
 <lastmod>[[+date]]</lastmod>
 <changefreq>[[+update]]</changefreq>
 <priority>[[+priority]]</priority>
 </url>
 ```
 
-Таким образом на каждом поддомене или подкаталоге будет формироваться карта сайта `sitemap.xml`
+Таким образом на каждом поддомене или подкаталоге будет формироваться карта сайта `sitemap.xml`.
