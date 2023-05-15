@@ -8,7 +8,6 @@ import DocsHome from './DocsHome.vue'
 import DocsComponentWidget from './DocsComponentWidget.vue'
 import DocsAuthorWidget from './DocsAuthorWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
-import DocsPrevNext from './DocsPrevNext.vue'
 import DocsComponentTree from './DocsComponentTree.vue'
 import DocsNotFound from './DocsNotFound.vue'
 
@@ -59,9 +58,6 @@ if (inBrowser) {
     </template>
     <template #doc-footer-before>
       <DocsComponentTree />
-    </template>
-    <template #doc-after>
-      <DocsPrevNext />
     </template>
     <template #not-found>
       <DocsNotFound />

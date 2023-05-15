@@ -106,11 +106,6 @@ export default class DocsComponent {
       component,
     }
 
-    if (component) {
-      newData.frontmatter.next = false
-      newData.frontmatter.prev = false
-    }
-
     const titleArr: Array<string> = findPath(newData, siteConfig.userConfig).map(item => item.text)
     const title: string = titleArr.reverse().join(siteConfig.userConfig.themeConfig.titleSeparator)
     newData.title = title || pageData.title

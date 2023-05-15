@@ -129,6 +129,12 @@ export default defineConfigWithTheme<DocsTheme.Config>({
             new URL('../theme/components/DocsSidebar.vue', import.meta.url)
           )
         },
+        {
+          find: /^.*\/VPDocFooter\.vue$/,
+          replacement: fileURLToPath(
+            new URL('../theme/components/DocsDocFooter.vue', import.meta.url)
+          )
+        },
       ],
     },
   },
