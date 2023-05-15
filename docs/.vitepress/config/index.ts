@@ -9,6 +9,7 @@ import { SitemapStream } from 'sitemap'
 import { createWriteStream } from 'node:fs'
 import { resolve } from 'node:path'
 import { slugify } from 'transliteration'
+import { fileURLToPath, URL } from 'node:url'
 
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
@@ -117,5 +118,18 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
   transformPageData(pageData, { siteConfig }) {
     return prepareData(pageData, siteConfig)
+  },
+
+  vite: {
+    resolve: {
+      alias: [
+        {
+          find: /^.*\/VPSidebar\.vue$/,
+          replacement: fileURLToPath(
+            new URL('../theme/components/DocsSidebar.vue', import.meta.url)
+          )
+        },
+      ],
+    },
   },
 })
