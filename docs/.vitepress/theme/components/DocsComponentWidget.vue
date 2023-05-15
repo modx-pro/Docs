@@ -27,11 +27,16 @@ const links = computed<ComponentLinks[]>(() => {
       return filtered
     }, [] as ComponentLinks[])
 })
+
+const show = computed<boolean>(() => {
+  return (page.value.component && !page.value.component.hidden) &&
+      (page.value.component.logo || page.value.component.description || links.value.length)
+})
 </script>
 
 <template>
   <article
-    v-if="page.component && !page.component.hidden"
+    v-if="show"
     class="DocsComponentWidget"
   >
     <figure
