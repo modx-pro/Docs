@@ -9,6 +9,7 @@ import DocsComponentWidget from './DocsComponentWidget.vue'
 import DocsAuthorWidget from './DocsAuthorWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
 import DocsPrevNext from './DocsPrevNext.vue'
+import DocsComponentTree from './DocsComponentTree.vue'
 import DocsNotFound from './DocsNotFound.vue'
 
 const { Layout } = DefaultTheme
@@ -55,6 +56,9 @@ if (inBrowser) {
     </template>
     <template #doc-before>
       <DocsBreadcrumbs />
+    </template>
+    <template #doc-footer-before>
+      <DocsComponentTree />
     </template>
     <template #doc-after>
       <DocsPrevNext />

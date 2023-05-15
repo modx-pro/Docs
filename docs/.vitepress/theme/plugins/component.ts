@@ -34,7 +34,7 @@ export interface ComponentData {
   modx?: string
   repository?: string
 
-  items?: DefaultTheme.Sidebar
+  items?: DefaultTheme.SidebarItem[]
 }
 
 export interface DocsPageData extends PageData {
