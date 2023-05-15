@@ -103,7 +103,7 @@ const links = computed<ComponentLinks[]>(() => {
 .title {
   letter-spacing: -0.4px;
   line-height: normal;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   white-space: pre-wrap;
 }
