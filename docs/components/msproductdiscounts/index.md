@@ -8,6 +8,8 @@ items: [
   { text: 'Javascript', link: 'javascript' },
   { text: 'Кейсы', link: 'cases' },
 ]
+
+dependencies: miniShop2
 ---
 
 # msProductDiscounts
