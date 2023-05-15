@@ -1,37 +1,39 @@
+# Javascript
+
 ## Расширение классов
 
 Представим, что нам нужно добавить новый метод в класс `mspdGetDiscounts` и запустить его при загрузке страницы.
 
 1. Создаем новый файл `assets/project_files/js/mspd/mspdgetdiscountsnew.js` cо следующим содержимым:
 
-  ```js
-  import mspdGetDiscounts from './../../../components/msproductdiscounts/js/web/mspdgetdiscounts.min.js'
+    ```js
+    import mspdGetDiscounts from './../../../components/msproductdiscounts/js/web/mspdgetdiscounts.min.js'
 
-  export default class mspdGetDiscountsNew extends mspdGetDiscounts {
-    test() {
-      console.log(123);
+    export default class mspdGetDiscountsNew extends mspdGetDiscounts {
+      test() {
+        console.log(123);
+      }
     }
-  }
-  ```
+    ```
 
 2. Создаем копию плагина `msProductDiscounts` и меняем
 
-  ```php
-  $modx->regClientScript("<script type=\"module\">
-    import mspdGetDiscounts from \"{$assetsUrl}js/web/mspdgetdiscounts.min.js\";
-    new mspdGetDiscounts({$config});
-    </script>", 1);
-  ```
+    ```php
+    $modx->regClientScript("<script type=\"module\">
+      import mspdGetDiscounts from \"{$assetsUrl}js/web/mspdgetdiscounts.min.js\";
+      new mspdGetDiscounts({$config});
+      </script>", 1);
+    ```
 
-  на
+    на
 
-  ```php
-  $modx->regClientScript("<script type=\"module\">
-    import mspdGetDiscountsNew from \"./assets/project_files/js/mspd/mspdgetdiscountsnew.js\";
-    const getDiscouts = new mspdGetDiscountsNew({$config});
-    getDiscouts.test();
-    </script>", 1);
-  ```
+    ```php
+    $modx->regClientScript("<script type=\"module\">
+      import mspdGetDiscountsNew from \"./assets/project_files/js/mspd/mspdgetdiscountsnew.js\";
+      const getDiscouts = new mspdGetDiscountsNew({$config});
+      getDiscouts.test();
+      </script>", 1);
+    ```
 
 Аналогично можно расширить и второй класс `mspdUpdateCart` при необходимости.
 
