@@ -46,7 +46,7 @@ export function findPath(
 
   path.push({
     text: tree.text || tree.title,
-    link: !tree.hidden ? tree.link : undefined,
+    link: tree.link,
   })
 
   const keyExists = (tree) => {

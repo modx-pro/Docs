@@ -22,17 +22,14 @@ export default class DocsSidebar {
       .map(path => {
         const src = readFileSync(path, 'utf-8')
         const { data } = matter(src)
-        const { name, hidden, items } = data
+        const { name, items } = data
         const { title = name || DocsSidebar.getTitleFromContent(src) || basename(path) } = data
 
         const link = normalize(path.replace(/^docs/, ''))
 
         const output: DefaultTheme.SidebarItem = {
           text: title,
-        }
-
-        if (!hidden) {
-          output.link = link
+          link,
         }
 
         if (items) {

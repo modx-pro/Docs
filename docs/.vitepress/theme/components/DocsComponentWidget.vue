@@ -29,7 +29,7 @@ const links = computed<ComponentLinks[]>(() => {
 })
 
 const show = computed<boolean>(() => {
-  return (page.value.component && !page.value.component.hidden) &&
+  return page.value.component &&
       (page.value.component.logo || page.value.component.description || links.value.length)
 })
 </script>
