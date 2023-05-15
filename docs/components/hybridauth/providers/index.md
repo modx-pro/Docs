@@ -1,5 +1,7 @@
 # Провайдеры HybridAuth
 
+Ниже представлен список с инструкциями подключения провайдеров:
+
 - [Disqus](/components/hybridauth/providers/disqus)
 - [Facebook](/components/hybridauth/providers/facebook)
 - [Foursquare](/components/hybridauth/providers/foursquare)

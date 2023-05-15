@@ -34,8 +34,7 @@ export interface ComponentData {
   modx?: string
   repository?: string
 
-  items?: DefaultTheme.Sidebar
-  hidden?: boolean
+  items?: DefaultTheme.SidebarItem[]
 }
 
 export interface DocsPageData extends PageData {
@@ -65,7 +64,6 @@ export const components: ComponentData[] = fg
       modstore,
       modx,
       repository,
-      hidden,
       description,
     } = data
     const { title = name || getTitleFromContent(content) || basename(file) } = data
@@ -84,7 +82,6 @@ export const components: ComponentData[] = fg
       logo,
       dependencies: Array.isArray(dependencies) ? dependencies : Array(dependencies),
       categories: Array.isArray(categories) ? categories : Array(categories),
-      hidden,
     }
 
     component.author = getAuthor(author)
