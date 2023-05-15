@@ -221,6 +221,7 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
         { text: 'Начало работы', link: '/guide/howto' },
         { text: 'Разметка markdown', link: '/guide/md' },
         { text: 'Возможности Vitepress', link: '/guide/vitepress' },
+        { text: 'Виджеты с Frontmatter', link: '/guide/frontmatter' },
       ],
     },
   ]
