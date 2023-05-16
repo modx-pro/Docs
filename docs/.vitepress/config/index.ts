@@ -6,12 +6,10 @@ import languages from '../theme/syntaxes'
 import { addPlugins } from '../theme/plugins/markdown'
 import { components, prepareData } from '../theme/plugins/component'
 import { SitemapStream } from 'sitemap'
-import { createWriteStream, writeFile } from 'node:fs'
-import { ensureFile } from 'fs-extra'
+import { createWriteStream } from 'node:fs'
 import { resolve } from 'node:path'
 import { slugify } from 'transliteration'
 import { fileURLToPath, URL } from 'node:url'
-import { rewrites } from './rewrites'
 
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
@@ -117,12 +115,6 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     sitemap.end()
 
     await new Promise((r) => writeStream.on('finish', r))
-
-    for (const [oldUrl, newUrl] of Object.entries(rewrites)) {
-      const filePath = resolve(outDir, oldUrl + '.html')
-      await ensureFile(filePath)
-      await writeFile(filePath, `<!DOCTYPE html><meta http-equiv="refresh" content="0; url=${SITE_BASE + newUrl}">`, () => {})
-    }
   },
 
   transformPageData(pageData, { siteConfig }) {
