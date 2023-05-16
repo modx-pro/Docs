@@ -19,9 +19,10 @@ defineProps<{
       <VPLink
         v-if="item.link"
         :href="item.link"
-        :text="item.text"
         :class="{ active: withBase(item.link) === route.path }"
-      />
+      >
+        {{ item.text }}
+      </VPLink>
       <span v-else>
         {{ item.text }}
       </span>
