@@ -18,7 +18,7 @@ const { page, theme, lang }: Data = useData()
 
 const links = computed<DefaultTheme.SidebarItem[]>(() => {
   if (!page.value.component) {
-    return
+    return []
   }
 
   return links.value = ['modstore', 'modx', 'repository']
@@ -51,11 +51,13 @@ const dependencies = computed<DefaultTheme.SidebarItem[]>(() => {
 })
 
 const show = computed<boolean>(() => {
-  return page.value.component &&
-      page.value.component.logo ||
-      page.value.component.description ||
-      page.value.component.dependencies.length ||
-      links.value.length
+  return page.value?.component &&
+      (
+        page.value?.component.logo ||
+        page.value?.component.description ||
+        page.value?.component.dependencies.length ||
+        links.value.length
+      )
 })
 </script>
 
