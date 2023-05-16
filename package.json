@@ -16,16 +16,18 @@
     "license": "MIT",
     "scripts": {
         "dev": "vitepress dev docs",
-        "build": "vitepress build docs",
+        "build": "node --max_old_space_size=4096 ./node_modules/vitepress/bin/vitepress.js build docs",
         "preview": "vitepress preview docs",
         "generate": "plop"
     },
     "devDependencies": {
         "@docsearch/css": "^3.3.3",
         "@docsearch/js": "^3.3.3",
+        "@types/fs-extra": "^11.0.1",
         "@types/markdown-it": "^12.2.3",
         "@types/node": "^18.15.11",
         "fast-glob": "^3.2.12",
+        "fs-extra": "^11.1.1",
         "gray-matter": "^4.0.3",
         "markdown-it": "^13.0.1",
         "markdown-it-container": "^3.0.0",

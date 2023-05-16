@@ -6,23 +6,26 @@ import languages from '../theme/syntaxes'
 import { addPlugins } from '../theme/plugins/markdown'
 import { components, prepareData } from '../theme/plugins/component'
 import { SitemapStream } from 'sitemap'
-import { createWriteStream } from 'node:fs'
+import { createWriteStream, writeFile } from 'node:fs'
+import { ensureFile } from 'fs-extra'
 import { resolve } from 'node:path'
 import { slugify } from 'transliteration'
 import { fileURLToPath, URL } from 'node:url'
+import { rewrites } from './rewrites'
 
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
+const SITE_BASE = '/Docs/'
 
 export default defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
-  cleanUrls: true,
+  // cleanUrls: true,
   ignoreDeadLinks: true,
 
   title: SITE_TITLE,
   titleTemplate: ':title' + SITE_TITLE_SEPARATOR + SITE_TITLE,
 
-  base: '/Docs/',
+  base: SITE_BASE,
 
   markdown: {
     // @ts-ignore
@@ -114,6 +117,13 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     sitemap.end()
 
     await new Promise((r) => writeStream.on('finish', r))
+
+    for (let [oldUrl, newUrl] of Object.entries(rewrites)) {
+      const filePath = resolve(outDir, oldUrl + '.html')
+      newUrl = !newUrl.endsWith('/') ? (newUrl + '.html') : newUrl
+      await ensureFile(filePath)
+      await writeFile(filePath, `<!DOCTYPE html><meta http-equiv="refresh" content="0; url=${SITE_BASE + newUrl}">`, () => {})
+    }
   },
 
   transformPageData(pageData, { siteConfig }) {
