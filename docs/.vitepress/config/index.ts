@@ -118,9 +118,8 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
     await new Promise((r) => writeStream.on('finish', r))
 
-    for (let [oldUrl, newUrl] of Object.entries(rewrites)) {
+    for (const [oldUrl, newUrl] of Object.entries(rewrites)) {
       const filePath = resolve(outDir, oldUrl + '.html')
-      newUrl = !newUrl.endsWith('/') ? (newUrl + '.html') : newUrl
       await ensureFile(filePath)
       await writeFile(filePath, `<!DOCTYPE html><meta http-equiv="refresh" content="0; url=${SITE_BASE + newUrl}">`, () => {})
     }
