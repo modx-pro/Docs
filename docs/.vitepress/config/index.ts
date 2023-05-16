@@ -19,7 +19,7 @@ const SITE_BASE = '/Docs/'
 
 export default defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
-  // cleanUrls: true,
+  cleanUrls: true,
   ignoreDeadLinks: true,
 
   title: SITE_TITLE,

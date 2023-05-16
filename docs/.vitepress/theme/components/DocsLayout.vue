@@ -9,7 +9,7 @@ import DocsComponentWidget from './DocsComponentWidget.vue'
 import DocsAuthorWidget from './DocsAuthorWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
 import DocsComponentTree from './DocsComponentTree.vue'
-import DocsNotFound from './DocsNotFound.vue'
+// import DocsNotFound from './DocsNotFound.vue'
 
 const { Layout } = DefaultTheme
 const router = useRouter()
@@ -59,8 +59,8 @@ if (inBrowser) {
     <template #doc-footer-before>
       <DocsComponentTree />
     </template>
-    <template #not-found>
+    <!-- <template #not-found>
       <DocsNotFound />
-    </template>
+    </template> -->
   </Layout>
 </template>
