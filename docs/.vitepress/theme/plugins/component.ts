@@ -12,11 +12,6 @@ import { generateSidebarItem, getTitleFromContent } from './sidebar'
 import type { Author } from '../../../authors'
 import { findPath } from '../utils'
 
-export interface ComponentLinks {
-  label: string
-  link: string
-}
-
 export interface ComponentData {
   path: string
   link: string
@@ -58,8 +53,8 @@ export const components: ComponentData[] = fg
       name,
       author,
       logo,
-      categories,
-      dependencies,
+      categories = [],
+      dependencies = [],
       items,
       modstore,
       modx,

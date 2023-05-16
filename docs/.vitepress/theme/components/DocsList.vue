@@ -15,6 +15,7 @@ defineProps<{
       v-for="(item, key) in items"
       :key="key"
       class="item"
+      :class="{ 'has-link': item.link }"
     >
       <VPLink
         v-if="item.link"
