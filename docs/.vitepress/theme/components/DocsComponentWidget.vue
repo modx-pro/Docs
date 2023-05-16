@@ -1,14 +1,22 @@
 <script setup lang="ts">
-import type { ComponentLinks, DocsPageData } from '../plugins/component'
+import type { DocsTheme } from '../types'
+import type { DocsPageData } from '../plugins/component'
 import { computed } from 'vue'
 import type { Ref } from 'vue'
-import { useData } from 'vitepress'
+import { DefaultTheme, useData } from 'vitepress'
+import DocsList from './DocsList.vue'
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
-const { page }: { page: Ref<DocsPageData> } = useData()
+export interface Data {
+  page: Ref<DocsPageData>
+  theme: Ref<DocsTheme.Config>
+  lang: Ref<string>
+}
 
-const links = computed<ComponentLinks[]>(() => {
+const { page, theme, lang }: Data = useData()
+
+const links = computed<DefaultTheme.SidebarItem[]>(() => {
   if (!page.value.component) {
     return
   }
@@ -19,18 +27,35 @@ const links = computed<ComponentLinks[]>(() => {
         const link = page.value.component[key]
 
         filtered.push({
-          label: link.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i)[1].split('.').slice(-2).join('.'),
+          text: link.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i)[1].split('.').slice(-2).join('.'),
           link,
         })
       }
 
       return filtered
-    }, [] as ComponentLinks[])
+    }, [] as DefaultTheme.SidebarItem[])
+})
+
+const dependencies = computed<DefaultTheme.SidebarItem[]>(() => {
+  if (!page.value.component.dependencies.length) {
+    return []
+  }
+
+  return page.value.component.dependencies.map(name => {
+    const component = theme.value.components.find(component => component.title === name)
+    return {
+      text: component?.title || name,
+      link: component?.link || '',
+    }
+  })
 })
 
 const show = computed<boolean>(() => {
   return page.value.component &&
-      (page.value.component.logo || page.value.component.description || links.value.length)
+      page.value.component.logo ||
+      page.value.component.description ||
+      page.value.component.dependencies.length ||
+      links.value.length
 })
 </script>
 
@@ -58,23 +83,18 @@ const show = computed<boolean>(() => {
       <div v-if="page.component.description" class="description">
         {{ page.component.description }}
       </div>
-      <ul
+      <DocsList
         v-if="links.length"
+        :items="links"
         class="list"
-      >
-        <li
-          v-for="item in links"
-          :key="item.label"
-        >
-          <VPLink
-            :href="item.link"
-            :no-icon="true"
-            class="link"
-          >
-            {{ item.label }}
-          </VPLink>
-        </li>
-      </ul>
+      />
+    </div>
+    <div
+      v-if="dependencies.length"
+      class="footer"
+    >
+      <span class="title">{{ lang === 'ru' ? 'Зависимости' : 'Dependencies' }}</span>
+      <DocsList :items="dependencies" class="list" />
     </div>
   </article>
 </template>
@@ -85,6 +105,7 @@ const show = computed<boolean>(() => {
   border-radius: var(--vp-border-radius);
   margin-top: 20px;
   overflow: hidden;
+  background-color: var(--vp-sidebar-bg-color);
 }
 
 .figure {
@@ -97,12 +118,12 @@ const show = computed<boolean>(() => {
   width: 100%;
 }
 
+.footer,
 .body {
   display: flex;
   flex-direction: column;
   gap: 10px;
   padding: 20px;
-  background-color: var(--vp-sidebar-bg-color);
 }
 
 .title {
@@ -131,5 +152,13 @@ const show = computed<boolean>(() => {
 .list {
   list-style: disc;
   padding-left: 15px;
+}
+
+.footer {
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+:deep(.list .item:not(.has-link)) {
+  color: var(--vp-c-text-3);
 }
 </style>
