@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { ref, watchPostEffect, computed } from 'vue'
+import { ref, watch, watchPostEffect, computed } from 'vue'
 import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
-import { useRoute } from 'vitepress'
+import { DefaultTheme, useRoute } from 'vitepress'
 import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
 import VPSidebarItem from 'vitepress/dist/client/theme-default/components/VPSidebarItem.vue'
 
 const { sidebar: flatSidebar, sidebarGroups, hasSidebar } = useSidebar()
 const route = useRoute()
 
-const sidebar = computed(() => {
+const sidebar = computed<DefaultTheme.SidebarItem[]>(() => {
   return route.path.includes('/components/') ? flatSidebar.value : sidebarGroups.value
 })
 
@@ -17,7 +17,7 @@ const props = defineProps<{
 }>()
 
 // a11y: focus Nav element when menu has opened
-let navEl = ref<HTMLElement | null>(null)
+const navEl = ref<HTMLElement | null>(null)
 
 function lockBodyScroll() {
   disableBodyScroll(navEl.value!, { reserveScrollBarGap: true })
@@ -35,6 +35,27 @@ watchPostEffect(async () => {
     unlockBodyScroll()
   }
 })
+
+const activeLinkEl = ref<HTMLElement | null>(null)
+
+watch(
+  () => route.path,
+  (to, from) => {
+    if (!from || !from.endsWith('components/')) {
+      return
+    }
+
+    if (!navEl.value) {
+      return
+    }
+
+    activeLinkEl.value = navEl.value.querySelector(`a[href="${to}"]`)
+
+    const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vp-nav-height'))
+    navEl.value.scrollTo({
+      top: activeLinkEl.value.getBoundingClientRect().top - (offset * 2)
+    })
+}, { immediate: true, flush: 'post' })
 </script>
 
 <template>
