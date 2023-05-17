@@ -33,7 +33,7 @@ items: [
       { text: 'msProductOptions', link: 'snippets/msproductoptions' },
     ],
   },
-  { text: 'miniShop2', link: 'upgrade' },
+  { text: 'Upgrade miniShop2', link: 'upgrade' },
 ]
 ---
 # miniShop2

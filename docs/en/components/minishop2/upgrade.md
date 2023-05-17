@@ -11,8 +11,8 @@ The general sense is that instead of 2-3 chunks of output of results, now one is
 
 For example, before the design of the basket, 3 chunks were required:
 
-- **tpl.msCart.outer** - Header and cellar of the product table, in the middle of the tag `[[+ goods]]` for substituting goods
-- **tpl.msCart.row** - Chunk of goods, which are substituted in `[[+ goods]]`
+- **tpl.msCart.outer** - Header and cellar of the product table, in the middle of the tag `[[+goods]]` for substituting goods
+- **tpl.msCart.row** - Chunk of goods, which are substituted in `[[+goods]]`
 - **tpl.msCart.empty** - Empty cart chunk
 
 As many as 3 chunks for the design of one snippet itself is not very convenient, given that in ms2 there are **8 snippets**,
