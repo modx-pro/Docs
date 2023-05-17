@@ -142,6 +142,12 @@ export default defineConfigWithTheme<DocsTheme.Config>({
             new URL('../theme/components/DocsNavBarTranslations.vue', import.meta.url)
           )
         },
+        {
+          find: /^.*\/VPNavScreenTranslations\.vue$/,
+          replacement: fileURLToPath(
+            new URL('../theme/components/DocsNavScreenTranslations.vue', import.meta.url)
+          )
+        },
       ],
     },
   },
