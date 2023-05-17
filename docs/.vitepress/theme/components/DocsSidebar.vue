@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { ref, watch, watchPostEffect, computed } from 'vue'
+import { ref, watchPostEffect, watch, computed } from 'vue'
 import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
-import { DefaultTheme, useRoute } from 'vitepress'
+import { DefaultTheme, useRoute, useData } from 'vitepress'
 import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
 import VPSidebarItem from 'vitepress/dist/client/theme-default/components/VPSidebarItem.vue'
 
@@ -36,26 +36,41 @@ watchPostEffect(async () => {
   }
 })
 
+const { lang } = useData()
 const activeLinkEl = ref<HTMLElement | null>(null)
+const activeGroupEl = ref<HTMLElement | null>(null)
 
-watch(
-  () => route.path,
-  (to, from) => {
-    if (!from || !from.endsWith('components/')) {
-      return
-    }
+watch(() => route.path, () => {
+  if (!route.path.includes('/components/')) {
+    return
+  }
 
-    if (!navEl.value) {
-      return
-    }
+  if (!navEl.value) {
+    return
+  }
 
-    activeLinkEl.value = navEl.value.querySelector(`a[href="${to}"]`)
+  activeLinkEl.value = navEl.value.querySelector<HTMLElement>(`a[href="${route.path}"]`)
+  activeGroupEl.value = activeLinkEl.value.closest<HTMLElement>('.VPSidebarItem.level-0')
 
-    const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vp-nav-height'))
+  const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vp-nav-height')) * 2
+
+  if (!isInViewport(activeGroupEl.value, offset)) {
     navEl.value.scrollTo({
-      top: activeLinkEl.value.getBoundingClientRect().top - (offset * 2)
+      top: activeGroupEl.value.offsetTop - offset
     })
-}, { immediate: true, flush: 'post' })
+  }
+}, { flush: 'post' })
+
+// tmp fix vitepress bug
+watch(lang, () => {
+  activeGroupEl.value.classList.remove('collapsed')
+}, { flush: 'post' })
+
+function isInViewport(el: HTMLElement, offset: number) {
+  const { top, bottom } = el.getBoundingClientRect()
+  const { innerHeight } = window
+  return top >= offset && bottom <= offset + innerHeight
+};
 </script>
 
 <template>
