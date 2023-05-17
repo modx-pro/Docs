@@ -54,7 +54,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
   themeConfig: {
     titleSeparator: SITE_TITLE_SEPARATOR,
-    i18nRouting: false,
+    i18nRouting: true,
 
     logo: {
       light: 'logo.svg',
@@ -134,6 +134,12 @@ export default defineConfigWithTheme<DocsTheme.Config>({
           find: /^.*\/VPDocFooter\.vue$/,
           replacement: fileURLToPath(
             new URL('../theme/components/DocsDocFooter.vue', import.meta.url)
+          )
+        },
+        {
+          find: /^.*\/VPNavBarTranslations\.vue$/,
+          replacement: fileURLToPath(
+            new URL('../theme/components/DocsNavBarTranslations.vue', import.meta.url)
           )
         },
       ],
