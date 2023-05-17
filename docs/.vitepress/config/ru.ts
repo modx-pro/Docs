@@ -54,7 +54,7 @@ export const searchLocale: Record<string, Partial<DocSearchProps>> = {
 
 export const config: LocaleConfig<DocsTheme.Config> = {
   root: {
-    label: 'Russian',
+    label: 'Русский',
     lang: 'ru',
     description: META_DESCRIPTION,
     head: [
