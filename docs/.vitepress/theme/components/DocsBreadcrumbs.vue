@@ -147,8 +147,7 @@ const breadcrumbs = computed(() => {
   top: -12px;
   left: -8px;
   right: -8px;
-  width: fit-content;
-  max-width: 300px;
+  min-width: fit-content;
   padding: 40px 20px 20px;
   background-color: var(--vp-c-bg-elv);
   border-radius: var(--vp-border-radius);
