@@ -2,7 +2,7 @@ import { computed } from 'vue'
 import type { ComputedRef, Ref } from 'vue'
 import type { DocsPageData } from '../plugins/component'
 import { useData } from 'vitepress'
-import { isActive } from 'vitepress/dist/client/theme-default/support/utils'
+import { isActive } from 'vitepress/dist/client/shared'
 import { getFlatSideBarLinks } from 'vitepress/dist/client/theme-default/support/sidebar'
 
 export function usePrevNext(): ComputedRef {

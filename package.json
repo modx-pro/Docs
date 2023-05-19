@@ -24,7 +24,7 @@
         "@docsearch/css": "^3.3.3",
         "@docsearch/js": "^3.3.3",
         "@types/markdown-it": "^12.2.3",
-        "@types/node": "^18.15.11",
+        "@types/node": "^18.16.13",
         "fast-glob": "^3.2.12",
         "gray-matter": "^4.0.3",
         "markdown-it": "^13.0.1",
@@ -34,8 +34,8 @@
         "plop": "^3.1.2",
         "sitemap": "^7.1.1",
         "transliteration": "^2.3.5",
-        "vitepress": "^1.0.0-alpha.75",
-        "vue": "^3.2.47"
+        "vitepress": "^1.0.0-alpha.76",
+        "vue": "^3.3.4"
     },
     "pnpm": {
         "peerDependencyRules": {
