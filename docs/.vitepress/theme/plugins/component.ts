@@ -34,6 +34,7 @@ export interface ComponentData {
 
 export interface DocsPageData extends PageData {
   component?: ComponentData
+  breadcrumbs?: DefaultTheme.SidebarItem[]
 }
 
 export const components: ComponentData[] = fg
@@ -91,21 +92,19 @@ export const components: ComponentData[] = fg
 
 export default class DocsComponent {
   static prepareData(
-    pageData: PageData,
+    pageData: DocsPageData,
     siteConfig: SiteConfig,
   ): DocsPageData {
     const component = components.find(component => pageData.relativePath.startsWith(component.path.replace(/index\.md$/, '')))
 
-    const newData = {
-      ...pageData,
-      component,
-    }
+    pageData.component = component
+    pageData.breadcrumbs = findPath(pageData, siteConfig.userConfig)
 
-    const titleArr: Array<string> = findPath(newData, siteConfig.userConfig).map(item => item.text)
-    const title: string = titleArr.reverse().join(siteConfig.userConfig.themeConfig.titleSeparator)
-    newData.title = title || pageData.title
+    pageData.title = !pageData.frontmatter.title && pageData.breadcrumbs.length
+        ? pageData.breadcrumbs.map(item => item.text).reverse().join(siteConfig.userConfig.themeConfig.titleSeparator)
+        : pageData.title
 
-    return newData
+    return pageData
   }
 }
 

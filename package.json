@@ -43,5 +43,8 @@
                 "@algolia/client-search"
             ]
         }
+    },
+    "dependencies": {
+        "@vueuse/core": "^10.1.2"
     }
 }
