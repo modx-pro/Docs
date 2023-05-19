@@ -62,9 +62,7 @@ watch(() => route.path, () => {
 }, { flush: 'post' })
 
 // tmp fix vitepress bug
-watch(lang, () => {
-  activeGroupEl.value.classList.remove('collapsed')
-}, { flush: 'post' })
+watch(lang, () => activeGroupEl.value && activeGroupEl.value.classList.remove('collapsed'), { flush: 'post' })
 
 function isInViewport(el: HTMLElement, offset: number) {
   const { top, bottom } = el.getBoundingClientRect()
