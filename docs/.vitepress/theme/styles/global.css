@@ -94,3 +94,54 @@ kbd {
   padding: .1em .6em;
   text-shadow: 0 1px 0 var(--vp-c-white);
 }
+
+@media screen and (max-width: 1024px) {
+  .vp-doc table {
+    border: 0;
+  }
+
+  .vp-doc table tbody {
+    display: block;
+  }
+
+  .vp-doc table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  .vp-doc table tr {
+    border-bottom: 1px solid var(--vp-c-divider);;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .vp-doc tr:nth-child(2n) {
+    background-color: inherit;
+  }
+
+  .vp-doc table td {
+    border-top: none;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .vp-doc table td::before {
+    display: block;
+    content: attr(data-label) ':';
+    color: var(--vp-c-text-2);
+  }
+
+  .vp-doc table td:empty {
+    display: none;
+  }
+
+  .vp-doc table td:last-child {
+    border-bottom: 0;
+  }
+}
