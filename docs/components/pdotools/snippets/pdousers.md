@@ -73,7 +73,7 @@
 
 ## Демо
 
-[Вывод авторов и друзей](http://store.simpledream.ru/friends.html) репозитория Simple Dream.
+[Вывод авторов и друзей](https://modstore.pro/authors) репозитория Simple Dream.
 
 ![Демо](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
 

@@ -68,10 +68,9 @@ dependencies: miniShop2
 
 ## Благодарность
 
-[Александру Рахимову][6] за помощь в создании компонента
+Александру Рахимову за помощь в создании компонента
 
 [2]: http://dev.dellin.ru/cms/
 [3]: http://kladr-api.ru/
 [4]: /components/minishop2/snippets/msorder
 [5]: /components/msdadata
-[6]: https://store.simpledream.ru/packages/?package|createdby=180

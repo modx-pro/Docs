@@ -83,8 +83,8 @@ categories: payment
 | **ms2_payment_webpay_success_id**     | Страница успешной оплаты WebPay         | `0`                   | Страница, куда будет отправлен покупатель после успешной оплаты. Рекомендуется указывать id страницы с корзиной.                                                                                                                                                                                                                                              |
 | **ms2_payment_webpay_failure_id**     | Страница отказа от оплаты WebPay        | `0`                   | Страница, куда будет отправлен покупатель после отказа от оплаты. Рекомендуется указывать id страницы с корзиной.                                                                                                                                                                                                                                             |
 
-[1]: https://store.simpledream.ru/packages/ecommerce/mspwebpay.html
+[1]: https://modstore.pro/packages/payment-system/mspwebpay
 [2]: http://reg.webpay.by/registration-form.php
-[3]: https://store.simpledream.ru/cabinet/tickets/
+[3]: https://modstore.pro/office/support
 [4]: http://klimchuk.by/about.html
 [5]: http://www.iso.org/iso/home/standards/currency_codes.htm
