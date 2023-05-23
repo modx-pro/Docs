@@ -79,9 +79,9 @@ categories: payment
 | **ms2_payment_payu_success_payment_id** | Статус заказа при успешной оплате                | `2`                                   | При успешной оплате заказа ему будет установлен указанный номер статуса. Сами статусы редактируются в настройках miniShop2.                         |
 | **ms2_payment_payu_cancel_payment_id**  | Статус заказа при отмененной оплате              | `4`                                   | При отмене оплаты заказа ему будет установлен указанный номер статуса. Сами статусы редактируются в настройках miniShop2.                           |
 
-[1]: https://store.simpledream.ru/packages/ecommerce/msppayu.html
+[1]: https://modstore.pro/packages/payment-system/msppayu
 [2]: http://payu.ru/dlya-biznesa/podklyuchitsya/?utm_source=payu-bottom
-[3]: https://store.simpledream.ru/cabinet/tickets/
+[3]: https://modstore.pro/office/support
 [4]: http://klimchuk.by/about.html
 [5]: http://payu.ru/o-nas/kontakty/
 [6]: http://payu-api.ru/pages/viewpage.action?pageId=589827

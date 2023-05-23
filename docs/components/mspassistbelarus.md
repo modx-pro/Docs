@@ -81,10 +81,10 @@ _**Важно! Для проверки механизма платежей по�
 | **ms2_payment_assistbelarus_success_payment_id** | Статус заказа при успешной оплате                          | `2`                   | При успешной оплате заказа ему будет установлен указанный номер статуса. Сами статусы редактируются в настройках miniShop2.                                                                                                   |
 | **ms2_payment_assistbelarus_cancel_payment_id**  | Статус заказа при отмененной оплате                        | `4`                   | При отмене оплаты заказа ему будет установлен указанный номер статуса. Сами статусы редактируются в настройках miniShop2.                                                                                                     |
 
-[1]: https://store.simpledream.ru/packages/ecommerce/mspassistbelarus.html
+[1]: https://modstore.pro/packages/payment-system/mspassistbelarus
 [2]: http://belassist.by/
 [3]: http://belassist.by/toclients/connect/register.php
-[4]: https://store.simpledream.ru/cabinet/tickets/
+[4]: https://modstore.pro/office/support
 [5]: http://klimchuk.by/about.html
 [6]: https://account.paysec.by/
 [7]: http://www.iso.org/iso/home/standards/currency_codes.htm

@@ -78,4 +78,4 @@ with INLINE:
 ![Demo](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
 
 [1]: /en/components/pdotools/general-properties
-[2]: http://store.simpledream.ru/friends.html
+[2]: https://en.modstore.pro/authors
