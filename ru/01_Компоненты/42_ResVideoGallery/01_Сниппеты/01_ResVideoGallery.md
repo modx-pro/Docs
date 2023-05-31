@@ -49,7 +49,7 @@
 ### Пример вызова сниппета ResVideoGallery с Ajax подгрузкой  при прокрутке для ресурса с ID 5
 
 ```php
-[[ResVideoGallery?
+[[!ResVideoGallery?
     &limit=`3`
     &resources=`5`
     &ajaxMode=`scroll`
@@ -72,7 +72,7 @@
 ### Пример вызова сниппета ResVideoGallery для совместного вывода видео и фото из фотогалереи miniShop2
 
 ```php
-[[ResVideoGallery?
+[[!ResVideoGallery?
     &limit=`3`
     &resources=`5`
     &photoGallery=`ms2Images`
