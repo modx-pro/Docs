@@ -1,5 +1,5 @@
 ---
-name: msFavorites
+title: msFavorites
 description: Создание списков избранного
 logo: https://modstore.pro/assets/extras/msfavorites/logo-lg.jpg
 author: vgrish

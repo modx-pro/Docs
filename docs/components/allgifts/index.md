@@ -1,5 +1,5 @@
 ---
-name: allGifts
+title: allGifts
 description: Выгрузка товаров с Gifts.ru и других сервисов
 logo: https://modstore.pro/assets/extras/allgifts/logo-lg.jpg
 author: gvozdb

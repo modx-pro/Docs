@@ -1,5 +1,5 @@
 ---
-name: UserLocation
+title: UserLocation
 description: Геолокация и выбор города пользователя
 logo: https://modstore.pro/assets/extras/userlocation/logo-lg.jpg
 author: vgrish

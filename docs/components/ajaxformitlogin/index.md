@@ -1,5 +1,5 @@
 ---
-name: AjaxFormItLogin
+title: AjaxFormItLogin
 description: Современная и функциональная замена AjaxForm
 author: shevartv
 modstore: https://modstore.pro/packages/users/ajaxformitlogin

@@ -1,5 +1,5 @@
 ---
-name: xCalc
+title: xCalc
 description: Универсальный конструктор калькуляторов
 logo: https://modstore.pro/assets/extras/xcalc/logo-lg.png
 author: gvozdb

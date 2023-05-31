@@ -1,5 +1,5 @@
 ---
-name: Office
+title: Office
 description: Универсальный личный кабинет покупателя
 logo: https://modstore.pro/assets/extras/office/logo-lg.png
 author: ilyautkin

@@ -1,5 +1,5 @@
 ---
-name: PageSpeed
+title: PageSpeed
 description: Интеграция оптимизаций PageSpeed Insights для MODX Revolution
 logo: https://modstore.pro/assets/extras/pagespeed/logo-lg.jpg
 author: wfoojjaec

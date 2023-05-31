@@ -1,5 +1,5 @@
 ---
-name: msGallerySearch
+title: msGallerySearch
 description: Поиск и загрузка по ссылке в галерею minishop2 и ms2Gallery
 logo: https://modstore.pro/assets/extras/msgallerysearch/logo-lg.png
 author: webnitros

@@ -1,5 +1,5 @@
 ---
-name: msDellin
+title: msDellin
 dependencies: miniShop2
 ---
 

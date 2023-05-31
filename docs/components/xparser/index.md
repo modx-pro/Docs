@@ -1,5 +1,5 @@
 ---
-name: xParser
+title: xParser
 description: Парсер HTML контента и RSS/XML лент
 logo: https://modstore.pro/assets/extras/xparser/logo-lg.png
 author: gvozdb

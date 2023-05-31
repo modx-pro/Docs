@@ -1,5 +1,5 @@
 ---
-name: msSalePrice
+title: msSalePrice
 description: Дополнительные цены, зависящие от выбранного количества товара
 logo: https://modstore.pro/assets/extras/mssaleprice/logo-lg.png
 author: nizart91

@@ -1,5 +1,5 @@
 ---
-name: Localizator
+title: Localizator
 description: Мультиязычность, сео и автоматизация
 author: modx-pro
 modstore: https://modstore.pro/packages/utilities/localizator

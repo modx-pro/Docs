@@ -84,11 +84,8 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     ],
 
     search: {
-      provider: 'algolia',
+      provider: 'local',
       options: {
-        appId: 'BCE7F5SAJ2',
-        apiKey: '6a767bbcca227a92559817e2382d8938',
-        indexName: 'modx',
         locales: {
           ...searchLocaleRu,
         },
@@ -146,6 +143,12 @@ export default defineConfigWithTheme<DocsTheme.Config>({
           find: /^.*\/VPNavScreenTranslations\.vue$/,
           replacement: fileURLToPath(
             new URL('../theme/components/DocsNavScreenTranslations.vue', import.meta.url)
+          )
+        },
+        {
+          find: /^.*\/VPLocalSearchBox\.vue$/,
+          replacement: fileURLToPath(
+            new URL('../theme/components/DocsLocalSearchBox.vue', import.meta.url)
           )
         },
       ],

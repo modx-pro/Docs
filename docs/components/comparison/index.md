@@ -1,5 +1,5 @@
 ---
-name: Comparison
+title: Comparison
 description: Компонент для сравнения товаров
 logo: https://modstore.pro/assets/extras/comparison/logo-lg.jpg
 author: ilyautkin

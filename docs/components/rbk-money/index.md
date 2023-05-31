@@ -1,5 +1,5 @@
 ---
-name: RBK Money
+title: RBK Money
 
 items: [
   { text: 'Выбор способа оплаты на сайте', link: 'choosing-payment-method' },

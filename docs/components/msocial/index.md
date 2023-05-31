@@ -1,5 +1,5 @@
 ---
-name: mSocial
+title: mSocial
 description: Постинг в Twitter
 logo: https://modstore.pro/assets/extras/msocial/logo-lg.png
 author: DevPastet

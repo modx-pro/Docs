@@ -1,5 +1,5 @@
 ---
-name: UsersOnline
+title: UsersOnline
 description: Список онлайн-пользователей
 logo: https://modstore.pro/assets/extras/usersonline/logo-lg.png
 author: mvoevodskiy

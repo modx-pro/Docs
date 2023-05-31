@@ -1,5 +1,5 @@
 ---
-name: Formalicious
+title: Formalicious
 description: Дополнение для мощной генерации форм, работает с FormIt
 logo: https://modstore.pro/assets/extras/formalicious/logo-lg.png
 author: Sterc

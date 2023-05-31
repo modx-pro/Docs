@@ -1,5 +1,5 @@
 ---
-name: msProductDiscounts
+title: msProductDiscounts
 description: Создание скидок на товары с широкими возможностями настройки
 author: shevartv
 modstore: https://modstore.pro/packages/discounts/msproductdiscounts

@@ -1,5 +1,5 @@
 ---
-name: modVkMarket
+title: modVkMarket
 ---
 # modVkMarket
 

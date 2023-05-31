@@ -1,5 +1,5 @@
 ---
-name: MigxPageConfigurator
+title: MigxPageConfigurator
 description: Интеграция вёрстки и управление контентом
 author: shevartv
 modstore: https://modstore.pro/packages/utilities/migxpageconfigurator

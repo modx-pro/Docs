@@ -51,7 +51,7 @@ export const components: ComponentData[] = fg
     const content = readFileSync(file, 'utf-8')
     const { data } = matter(content)
     const {
-      name,
+      title = getTitleFromContent(content) || basename(file),
       author,
       logo,
       categories = [],
@@ -62,7 +62,6 @@ export const components: ComponentData[] = fg
       repository,
       description,
     } = data
-    const { title = name || getTitleFromContent(content) || basename(file) } = data
 
     const filePath = file.substring(file.indexOf('/') + 1)
     const component: ComponentData = {

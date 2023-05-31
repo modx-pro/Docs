@@ -1,5 +1,5 @@
 ---
-name: ideas
+title: ideas
 description: Идеи, вопросы, проблемы, предложения. Обратная связь с возможностью голосования
 logo: https://modstore.pro/assets/extras/ideas/logo-lg.png
 author: biz87

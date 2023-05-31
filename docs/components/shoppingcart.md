@@ -1,5 +1,5 @@
 ---
-name: ShoppingCart
+title: ShoppingCart
 ---
 # ShoppingCart
 

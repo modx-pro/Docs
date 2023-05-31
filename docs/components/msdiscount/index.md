@@ -1,5 +1,5 @@
 ---
-name: msDiscount
+title: msDiscount
 description: Система скидок и одноразовые купоны для miniShop2
 logo: https://modstore.pro/assets/extras/msdiscount/logo-lg.png
 author: ilyautkin

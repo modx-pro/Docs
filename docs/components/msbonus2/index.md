@@ -1,5 +1,5 @@
 ---
-name: msBonus2
+title: msBonus2
 description: Бонусная система для miniShop2
 logo: https://modstore.pro/assets/extras/msbonus2/logo-lg.jpg
 author: gvozdb

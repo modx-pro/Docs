@@ -19,7 +19,7 @@
 
 ```markdown
 ---
-name: miniShop2
+title: miniShop2
 description: Самый гибкий и быстрый компонент интернет-магазина для MODX Revolution
 logo: https://modstore.pro/assets/extras/minishop2/logo-lg.png
 author: modx-pro
@@ -105,7 +105,7 @@ items: [
 
 ```markdown
 ---
-name: miniShop2
+title: miniShop2
 description: Самый гибкий и быстрый компонент интернет-магазина для MODX Revolution
 logo: https://modstore.pro/assets/extras/minishop2/logo-lg.png
 author: modx-pro
@@ -183,7 +183,7 @@ items: [
 
 ```markdown
 ---
-name: mspPayPal
+title: mspPayPal
 description: Компонент платежной системы PayPal для minishop2
 logo: https://modstore.pro/assets/extras/msppaypal/logo-lg.png
 author: modx-pro

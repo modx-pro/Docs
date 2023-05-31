@@ -1,5 +1,5 @@
 ---
-name: msDaData
+title: msDaData
 dependencies: miniShop2
 ---
 

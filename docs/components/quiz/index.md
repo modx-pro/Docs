@@ -1,5 +1,5 @@
 ---
-name: Quiz
+title: Quiz
 description: Конструктор квизов
 logo: https://modstore.pro/assets/extras/quiz/logo-lg.png
 author: boshnik

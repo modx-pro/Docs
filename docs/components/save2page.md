@@ -1,5 +1,5 @@
 ---
-name: Save2Page
+title: Save2Page
 ---
 # Save2Page
 

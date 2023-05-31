@@ -1,5 +1,5 @@
 ---
-name: GoogleSheets
+title: GoogleSheets
 description: Импорт и экспорт товаров / ресурсов / заказов / пользователей
 logo: https://modstore.pro/assets/extras/googlesheets/logo-lg.jpg
 author: boshnik

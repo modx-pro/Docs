@@ -1,5 +1,5 @@
 ---
-name: msManagerOrderMap
+title: msManagerOrderMap
 description: Выводит карту в панели управления заказом, во вкладке Адрес
 author: webinmd
 modstore: https://modstore.pro/packages/integration/msmanagerordermap

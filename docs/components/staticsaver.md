@@ -1,5 +1,5 @@
 ---
-name: StaticSaver
+title: StaticSaver
 ---
 # StaticSaver
 

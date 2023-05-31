@@ -1,5 +1,5 @@
 ---
-name: cityFields
+title: cityFields
 description: Компонент реализует на сайте мультигородность без контекстов
 logo: https://modstore.pro/assets/extras/cityfields/logo-lg.png
 author: feschukov

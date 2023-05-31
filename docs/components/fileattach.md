@@ -1,5 +1,5 @@
 ---
-name: FileAttach
+title: FileAttach
 description: Позволяет загружать файлы к ресурсам в менеджере сайта
 logo: https://modstore.pro/assets/extras/fileattach/logo-lg.jpg
 author: 13hakta

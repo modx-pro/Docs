@@ -1,5 +1,5 @@
 ---
-name: mspAssistBelarus
+title: mspAssistBelarus
 description: Оплата заказов miniShop2 через Assist Belarus (Республика Беларусь)
 logo: https://modstore.pro/assets/extras/mspassistbelarus/logo-lg.jpg
 author: alroniks

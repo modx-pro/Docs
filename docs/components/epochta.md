@@ -1,5 +1,5 @@
 ---
-name: ePochta
+title: ePochta
 ---
 # ePochta
 

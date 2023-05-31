@@ -1,5 +1,5 @@
 ---
-name: Mapex2
+title: Mapex2
 description: Яндекс.Карты с продвинутым редактором
 logo: https://modstore.pro/assets/extras/mapex2/logo-lg.jpg
 author: createit-ru

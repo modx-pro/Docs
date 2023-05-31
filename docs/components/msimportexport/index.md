@@ -1,5 +1,5 @@
 ---
-name: msImportExport
+title: msImportExport
 description: Импорт и экспорт для miniShop2
 logo: https://modstore.pro/assets/extras/msimportexport/logo-lg.png
 author: prihod

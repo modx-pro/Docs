@@ -1,5 +1,5 @@
 ---
-name: msBuyNow
+title: msBuyNow
 dependencies: miniShop2
 ---
 
