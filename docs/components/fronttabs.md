@@ -1,5 +1,5 @@
 ---
-name: frontTabs
+title: frontTabs
 description: Вывод блока с вкладками на странице сайта
 logo: https://modstore.pro/assets/extras/fronttabs/logo-lg.png
 author: justenj

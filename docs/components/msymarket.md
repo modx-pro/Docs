@@ -1,5 +1,5 @@
 ---
-name: msYmarket
+title: msYmarket
 dependencies: miniShop2
 ---
 

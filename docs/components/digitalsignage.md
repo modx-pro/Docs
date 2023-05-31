@@ -1,5 +1,5 @@
 ---
-name: DigitalSignage
+title: DigitalSignage
 description: Приложение для создания трансляций на MODX
 logo: https://modstore.pro/assets/extras/digitalsignage/logo-lg.png
 author: Sterc

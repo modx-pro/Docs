@@ -1,5 +1,5 @@
 ---
-name: ModTree
+title: ModTree
 description: Связь ресурсов друг с другом
 logo: https://modstore.pro/assets/extras/modtree/logo-lg.png
 author: visermort

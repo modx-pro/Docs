@@ -1,5 +1,5 @@
 ---
-name: Sendex
+title: Sendex
 description: Компонент для работы с рассылками. Написан в качестве демонстрации разработки компонента MODX
 logo: https://modstore.pro/assets/extras/sendex/logo-lg.jpg
 author: modx-pro

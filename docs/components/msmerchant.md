@@ -1,5 +1,5 @@
 ---
-name: msMerchant
+title: msMerchant
 description: Дополнение для приема платежей через «Единую кассу»
 logo: https://modstore.pro/assets/extras/msmerchant/logo-lg.jpg
 author: vgrish

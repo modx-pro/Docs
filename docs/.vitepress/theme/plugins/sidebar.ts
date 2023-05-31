@@ -22,8 +22,10 @@ export default class DocsSidebar {
       .map(path => {
         const src = readFileSync(path, 'utf-8')
         const { data } = matter(src)
-        const { name, items } = data
-        const { title = name || DocsSidebar.getTitleFromContent(src) || basename(path) } = data
+        const {
+          title = DocsSidebar.getTitleFromContent(src) || basename(path),
+          items,
+        } = data
 
         const link = normalize(path.replace(/^docs/, ''))
 

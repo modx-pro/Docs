@@ -1,5 +1,5 @@
 ---
-name: OrphoMan
+title: OrphoMan
 description: Выявление орфографических ошибок в тексте
 logo: https://modstore.pro/assets/extras/orphoman/logo-lg.jpg
 author: sergant210

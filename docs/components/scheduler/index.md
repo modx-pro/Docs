@@ -1,5 +1,5 @@
 ---
-name: Scheduler
+title: Scheduler
 description: Планирование отложенных задач
 logo: https://modstore.pro/assets/extras/scheduler/logo-lg.png
 author: modx-pro

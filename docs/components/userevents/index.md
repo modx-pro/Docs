@@ -1,5 +1,5 @@
 ---
-name: UserEvents
+title: UserEvents
 description: Создание пользователями событий на ресурсы
 logo: https://modstore.pro/assets/extras/userevents/logo-lg.png
 author: vgrish

@@ -1,5 +1,5 @@
 ---
-name: SeoFilter
+title: SeoFilter
 description: Удобное управление ЧПУ, мета-тегами и генерация текстов
 logo: https://modstore.pro/assets/extras/seofilter/logo-lg.png
 author: sheronov

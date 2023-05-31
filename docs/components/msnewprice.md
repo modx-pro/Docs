@@ -1,5 +1,5 @@
 ---
-name: msNewPrice
+title: msNewPrice
 dependencies: miniShop2
 ---
 

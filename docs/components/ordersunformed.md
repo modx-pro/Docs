@@ -1,5 +1,5 @@
 ---
-name: ordersUnformed
+title: ordersUnformed
 description: Просмотр неоформленных корзин
 logo: https://modstore.pro/assets/extras/ordersunformed/logo-lg.jpeg
 modstore: https://modstore.pro/packages/integration/ordersunformed

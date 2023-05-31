@@ -1,5 +1,5 @@
 ---
-name: msMCD
+title: msMCD
 description: Динамическое обновление мини-корзины miniShop2
 logo: https://modstore.pro/assets/extras/msminicartdynamic/logo-lg.png
 author: marabar

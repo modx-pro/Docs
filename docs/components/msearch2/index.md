@@ -1,5 +1,5 @@
 ---
-name: mSearch2
+title: mSearch2
 description: Морфологический поиск и фильтрация данных
 logo: https://modstore.pro/assets/extras/msearch2/logo-lg.jpg
 author: ilyautkin

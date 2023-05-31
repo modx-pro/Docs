@@ -1,5 +1,5 @@
 ---
-name: YandexMaps2
+title: YandexMaps2
 description: Конструктор Яндекс Карт для любых объектов, работа с mFilter2
 logo: https://modstore.pro/assets/extras/yandexmaps2/logo-lg.png
 author: gvozdb

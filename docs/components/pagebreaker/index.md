@@ -1,5 +1,5 @@
 ---
-name: PageBreaker
+title: PageBreaker
 description: Разбивка страницы на части по специальному тегу
 logo: https://modstore.pro/assets/extras/pagebreaker/logo-lg.jpg
 author: bezumkin

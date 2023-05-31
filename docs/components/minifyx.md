@@ -1,5 +1,5 @@
 ---
-name: MinifyX
+title: MinifyX
 description: Автоматизированное сжатие скриптов и стилей сайта
 logo: https://modstore.pro/assets/extras/minifyx/logo-lg.jpg
 author: sergant210

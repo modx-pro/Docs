@@ -1,5 +1,5 @@
 ---
-name: SEO Domains
+title: SEO Domains
 description: Добавление доп. доменов для сайта, без контекстов с добавлением в Вебмастер
 logo: https://modstore.pro/assets/extras/seodomains/logo-lg.png
 author: tventos

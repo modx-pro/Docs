@@ -1,5 +1,5 @@
 ---
-name: ABTest
+title: ABTest
 description: Проверка маркетинговых гипотез на сайте
 logo: https://modstore.pro/assets/extras/abtest/logo-lg.jpg
 author: azernov

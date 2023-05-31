@@ -1,5 +1,5 @@
 ---
-name: msOptionsPrice
+title: msOptionsPrice
 dependencies: miniShop2
 ---
 

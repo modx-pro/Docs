@@ -1,5 +1,4 @@
 import type { DefaultTheme, LocaleConfig } from 'vitepress'
-import type { DocSearchProps } from 'vitepress/types/docsearch'
 import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
@@ -8,47 +7,28 @@ export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
 export const META_DESCRIPTION = 'META_DESCRIPTION'
 
-export const searchLocale: Record<string, Partial<DocSearchProps>> = {
+export const searchLocale: Record<string, Partial<Omit<DefaultTheme.LocalSearchOptions, 'locales'>>> = {
   root: {
-    placeholder: 'Введите поиск',
     translations: {
       button: {
         buttonText: 'Поиск',
-        buttonAriaLabel: 'Поиск',
+        buttonAriaLabel: 'Поиск'
       },
       modal: {
-        searchBox: {
-          resetButtonTitle: 'Сбросить',
-          resetButtonAriaLabel: 'Сбросить',
-          cancelButtonText: 'Отмена',
-          cancelButtonAriaLabel: 'Отмена',
-        },
-        startScreen: {
-          recentSearchesTitle: 'Недавние',
-          noRecentSearchesText: 'Нет недавних запросов',
-          saveRecentSearchButtonTitle: 'Сохранить',
-          removeRecentSearchButtonTitle: 'Удалить этот запрос из истории',
-          favoriteSearchesTitle: 'Сохранить запрос',
-          removeFavoriteSearchButtonTitle: 'Удалить этот запрос из сохранённых',
-        },
-        errorScreen: {
-          titleText: 'Не удалось получить результаты',
-          helpText: 'Проверьте подключение к интернету',
-        },
+        resetButtonTitle: 'Сбросить',
+        backButtonTitle: 'Закрыть',
+        noResultsText: 'Нет результатов по запросу',
         footer: {
-          selectText: 'выбрать',
-          navigateText: 'навигация',
+          selectText: 'для выбора',
+          selectKeyAriaLabel: 'enter',
+          navigateText: 'для навигации',
+          navigateUpKeyAriaLabel: 'стрелка вверх',
+          navigateDownKeyAriaLabel: 'стрелка вниз',
           closeText: 'закрыть',
-          searchByText: 'Поиск реализован',
-        },
-        noResultsScreen: {
-          noResultsText: 'Нет результатов',
-          suggestedQueryText: 'Попробуйте другие запросы',
-          reportMissingResultsText: 'Считаете, что данный запрос должен вернуть результаты?',
-          reportMissingResultsLinkText: 'Дайте нам знать',
-        },
-      },
-    },
+          closeKeyAriaLabel: 'escape'
+        }
+      }
+    }
   },
 }
 

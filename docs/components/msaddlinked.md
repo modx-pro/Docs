@@ -1,5 +1,5 @@
 ---
-name: msAddLinked
+title: msAddLinked
 description: Добавление связанных товаров в виде опций с увеличением цены
 logo: https://modstore.pro/assets/extras/msaddlinked/logo-lg.png
 author: mvoevodskiy

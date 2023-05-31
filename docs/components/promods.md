@@ -1,5 +1,5 @@
 ---
-name: PromoDs
+title: PromoDs
 description: Баннер вверху страницы
 logo: https://modstore.pro/assets/extras/promods/logo-lg.png
 author: electrica

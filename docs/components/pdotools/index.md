@@ -1,5 +1,5 @@
 ---
-name: pdoTools
+title: pdoTools
 description: Быстрая выборка страниц и пользователей сайта
 logo: https://modstore.pro/assets/extras/pdotools/logo-lg.jpg
 author: sergant210

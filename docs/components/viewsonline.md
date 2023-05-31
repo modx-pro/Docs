@@ -1,5 +1,5 @@
 ---
-name: ViewsOnline
+title: ViewsOnline
 description: Число онлайн-пользователей на странице
 logo: https://modstore.pro/assets/extras/viewsonline/logo-lg.png
 author: bazmaster

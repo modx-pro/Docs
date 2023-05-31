@@ -1,5 +1,5 @@
 ---
-name: mspPayU
+title: mspPayU
 description: Оплата заказов miniShop2 через платежный сервис PayU
 logo: https://modstore.pro/assets/extras/msppayu/logo-lg.jpg
 author: alroniks

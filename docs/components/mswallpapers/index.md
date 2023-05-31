@@ -1,5 +1,5 @@
 ---
-name: msWallpapers
+title: msWallpapers
 description: Продвинутая форма для заказа обоев
 logo: https://modstore.pro/assets/extras/mswallpapers/logo-lg.png
 author: gvozdb

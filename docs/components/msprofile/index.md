@@ -1,5 +1,5 @@
 ---
-name: msProfile
+title: msProfile
 description: "Работа с профилями: оплата товаров с внутреннего счета пользователя"
 logo: https://modstore.pro/assets/extras/msprofile/logo-lg.jpg
 author: biz87

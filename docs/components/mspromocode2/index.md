@@ -1,5 +1,5 @@
 ---
-name: msPromoCode2
+title: msPromoCode2
 description: Улучшенные промо-коды для miniShop2
 logo: https://modstore.pro/assets/extras/mspromocode2/logo-lg.jpg
 author: gvozdb

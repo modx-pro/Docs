@@ -1,5 +1,5 @@
 ---
-name: ClickToCall
+title: ClickToCall
 description: Виджет звонка для мобильных устройств
 logo: https://modstore.pro/assets/extras/clicktocall/logo-lg.png
 author: core01

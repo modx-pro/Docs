@@ -1,5 +1,5 @@
 ---
-name: mscDistance
+title: mscDistance
 description: Расчет стоимости доставки по городу/району
 logo: https://modstore.pro/assets/extras/mscdistance/logo-lg.jpg
 author: vgrish

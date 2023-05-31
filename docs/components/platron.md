@@ -1,5 +1,5 @@
 ---
-name: Platron
+title: Platron
 dependencies: miniShop2
 categories: payment
 ---

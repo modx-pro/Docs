@@ -1,5 +1,5 @@
 ---
-name: DebugParser
+title: DebugParser
 description: Плагин для выявления узких мест сайта. Показывает все обработанные теги и затраченное время
 logo: https://modstore.pro/assets/extras/debugparser/logo-lg.jpg
 author: gvozdb

@@ -1,5 +1,5 @@
 ---
-name: msOneClick
+title: msOneClick
 description: Покупка в один клик через модальное окно
 logo: https://modstore.pro/assets/extras/msoneclick/logo-lg.png
 author: webnitros

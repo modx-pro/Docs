@@ -1,5 +1,5 @@
 ---
-name: easyComm
+title: easyComm
 description: Создание модулей и разделов отзывов, комментариев, вопросов и ответов
 logo: https://modstore.pro/assets/extras/easycomm/logo-lg.png
 author: createit-ru

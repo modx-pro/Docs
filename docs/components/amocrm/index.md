@@ -1,5 +1,5 @@
 ---
-name: amoCRM
+title: amoCRM
 description: Интеграция с amoCRM
 logo: https://modstore.pro/assets/extras/amocrm/logo-lg.png
 author: biz87

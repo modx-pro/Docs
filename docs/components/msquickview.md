@@ -1,5 +1,5 @@
 ---
-name: msQuickView
+title: msQuickView
 dependencies: miniShop2
 ---
 

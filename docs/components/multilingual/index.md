@@ -1,5 +1,5 @@
 ---
-name: multiLingual
+title: multiLingual
 description: Мультиязычные сайты без контекстов
 logo: https://modstore.pro/assets/extras/multilingual/logo-lg.jpg
 author: azernov
