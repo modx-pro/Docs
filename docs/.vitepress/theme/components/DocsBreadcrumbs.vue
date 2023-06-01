@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, ref, computed } from 'vue'
+import { Ref, computed } from 'vue'
 import { useData, withBase, useRoute } from 'vitepress'
 import { useMediaQuery } from '@vueuse/core'
 import type { DocsPageData } from '../plugins/component'
@@ -152,6 +152,10 @@ const breadcrumbs = computed(() => {
   background-color: var(--vp-c-bg-elv);
   border-radius: var(--vp-border-radius);
   box-shadow: 0px 4px 15px rgba(47, 63, 147, 0.08);
+}
+
+.item:first-child .dropdown {
+  left: -20px;
 }
 
 .link {
