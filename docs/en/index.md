@@ -11,7 +11,7 @@ main:
       link: /en/components/
     - theme: cta question
       text: How to publish your documentation
-      link: /
+      link: /en/guide/howto
   features:
     - title: 😉 Simple
       details: All code is in the universal Markdown format. You can make a full copy or make edits in a couple of clicks!
