@@ -28,6 +28,10 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   markdown: {
     // @ts-ignore
     languages,
+    theme: {
+      light: 'vitesse-light',
+      dark: 'vitesse-dark',
+    },
 
     anchor: {
       slugify(str) {
