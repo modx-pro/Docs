@@ -258,22 +258,14 @@ dependencies:
 
 ### Категория компонента
 
-- Тип: `string | string[]`
+- Тип: `string`
 
-Укажите одну или несколько категорий вашего компонента. Список доступных категорий находится в файле по пути: `docs/categories.json`.
+На данный момент есть одна категория `payment`, который отвечает за вывод модулей оплаты на странице [списка модулей оплаты miniShop2](/components/minishop2/payments).
+
+<!-- Укажите одну или несколько категорий вашего компонента. Список доступных категорий находится в файле по пути: `docs/categories.json`. -->
 
 ```yaml
 categories: payment
-
-// или
-
-categories: ['ecommerce', 'payment-system']
-
-// или
-
-categories:
-  - ecommerce
-  - payment-system
 ```
 
 [modstore.pro]: https://modstore.pro
