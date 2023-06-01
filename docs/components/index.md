@@ -3,4 +3,4 @@ title: Компоненты
 layout: home
 ---
 
-<DocsComponentsList title="Компоненты" />
+<DocsComponentsList title="Компоненты" :with-filter="true" />
