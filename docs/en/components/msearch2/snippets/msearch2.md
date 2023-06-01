@@ -129,5 +129,5 @@ In that case you can use all the fields of the products in the chunk processing.
 [1]: /en/components/pdotools/
 [2]: /en/components/pdotools/snippets/pdoresources
 [3]: /en/components/pdotools/snippets/pdopage
-[4]: /en/components/msearch2/snippet/msearchform
+[4]: /en/components/msearch2/snippets/msearchform
 [5]: /en/components/minishop2/snippets/msproducts

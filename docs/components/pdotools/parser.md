@@ -1818,5 +1818,5 @@ switch ($modx->event->name) {
 [14]: https://modstore.pro/pdotools
 [17]: http://php.net/manual/ru/language.variables.basics.php
 [18]: https://github.com/bezumkin/pdoTools/blob/master/core/components/pdotools/model/pdotools/_micromodx.php
-[19]: /system/basics/input-and-output-filters
+[19]: /system/basics/modifiers/
 [22]: https://modzone.ru/blog/2017/10/06/why-doesnt-work-tag-ignore/

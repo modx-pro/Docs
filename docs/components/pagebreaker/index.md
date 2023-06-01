@@ -87,5 +87,5 @@ items: [
 Если у посетителя старый браузер - придётся задействовать хэш в url.
 
 [1]: http://demo.modx.pro/pagebreaker
-[2]: /system/basics/input-and-output-filters
+[2]: /system/basics/output-filters
 [3]: /components/pagebreaker/settings

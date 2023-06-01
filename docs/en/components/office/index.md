@@ -28,5 +28,5 @@ The client can register and authorize on site through email and social media, up
 
 Thanks to [the modular architecture][2] of the extra you can add your own controllers to create unique functions.
 
-[1]: /en/components/minishop2
+[1]: /en/components/minishop2/
 [2]: /en/components/office/logic

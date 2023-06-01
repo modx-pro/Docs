@@ -100,4 +100,4 @@ dependencies: miniShop2
 ```
 
 [010103]: /components/pdotools/parser
-[010200]: /components/minishop2/00_Быстрый_старт.md
+[010200]: /components/minishop2/quick-start

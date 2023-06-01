@@ -213,5 +213,5 @@ Items may be copied. Herewith, the following are copied:
 
 [1]: /components/minishop2/development/product-plugins
 [2]: /en/components/minishop2/interface/settings
-[4]: /en/components/ms2gallery
+[4]: /en/components/ms2gallery/
 [5]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt

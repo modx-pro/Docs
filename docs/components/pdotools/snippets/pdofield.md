@@ -48,5 +48,5 @@
 
 [1]: http://rtfm.modx.com/extras/revo/getresourcefield
 [2]: http://modx.com/extras/package/ultimateparent
-[3]: /system/basics/Input-and-output-filters
+[3]: /system/basics/output-filters
 [4]: /components/pdotools/general-properties

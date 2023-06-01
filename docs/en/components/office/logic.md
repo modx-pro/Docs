@@ -96,7 +96,7 @@ As[modExtra][11] is suited for designing addons for MODX and already supports Of
 [1]: /en/components/office/controllers/profile
 [2]: /en/components/office/controllers/orders-history-minishop2
 [3]: /en/components/office/controllers/auth-remote
-[5]: /en/components/minishop2
+[5]: /en/components/minishop2/
 [6]: https://github.com/bezumkin/modExtra/blob/7b238647746fdd3443941a78fccc96ca9e96d76c/_build/resolvers/resolve.office.php
 [7]: https://github.com/bezumkin/modExtra/commit/7b238647746fdd3443941a78fccc96ca9e96d76c
 [8]: https://modstore.pro/cabinet/keys/
