@@ -236,6 +236,46 @@ interface SidebarItem {
 }
 ```
 
+### Зависимости компонента
+
+- Тип: `string | string[]`
+
+Данное свойство отвечает за вывод зависимостей вашего компонента. Даже если документации зависимости нет в нашем сервисе.
+
+```yaml
+dependencies: miniShop2
+
+// или
+
+dependencies: ['miniShop2', 'msOptionsPrice2']
+
+// или
+
+dependencies:
+  - miniShop2
+  - msOptionsPrice2
+```
+
+### Категория компонента
+
+- Тип: `string | string[]`
+
+Укажите одну или несколько категорий вашего компонента. Список доступных категорий находится в файле по пути: `docs/categories.json`.
+
+```yaml
+categories: payment
+
+// или
+
+categories: ['ecommerce', 'payment-system']
+
+// или
+
+categories:
+  - ecommerce
+  - payment-system
+```
+
 [modstore.pro]: https://modstore.pro
 [modx.com]: https://modx.com/extras
 [github.com]: https://github.com
