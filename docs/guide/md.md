@@ -1,3 +1,6 @@
+---
+lastUpdated: false
+---
 # Краткий справочник markdown разметки
 
 Материал позаимствован [отсюда](https://htmlacademy.ru/blog/html/markdown).

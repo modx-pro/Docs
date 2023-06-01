@@ -63,9 +63,15 @@ export const config: LocaleConfig<DocsTheme.Config> = {
           activeMatch: '/faq/',
         },
         {
-          text: 'О проекте',
-          link: '/guide/about',
+          text: 'Введение',
           activeMatch: '/guide/',
+          items: [
+            { text: 'О проекте', link: '/guide/about' },
+            { text: 'Начало работы', link: '/guide/howto' },
+            { text: 'Разметка markdown', link: '/guide/md' },
+            { text: 'Возможности Vitepress', link: '/guide/vitepress' },
+            { text: 'Frontmatter', link: '/guide/frontmatter' },
+          ],
         },
       ],
 
@@ -201,7 +207,7 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
         { text: 'Начало работы', link: '/guide/howto' },
         { text: 'Разметка markdown', link: '/guide/md' },
         { text: 'Возможности Vitepress', link: '/guide/vitepress' },
-        { text: 'Виджеты с Frontmatter', link: '/guide/frontmatter' },
+        { text: 'Frontmatter', link: '/guide/frontmatter' },
       ],
     },
   ]
