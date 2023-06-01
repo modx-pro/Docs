@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import type { ComponentData } from '../plugins/component'
 import { useData } from 'vitepress'
 import { ellipsis } from '../utils'
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
+import DocsSearchBar from './DocsSearchBar.vue'
 
-const { site, frontmatter } = useData()
+const { site, frontmatter, localeIndex } = useData()
 const props = defineProps<{
   title?: string
   dependency?: string
   category?: string
   excludeCategory?: string
+  withFilter?: boolean
 }>()
 
-const components = ref<ComponentData[]>([])
-
-onMounted(() => {
+const components = computed<ComponentData[]>(() => {
   let filtered: ComponentData[] = site.value.themeConfig.components
 
   if (props.dependency) {
@@ -31,8 +31,15 @@ onMounted(() => {
     filtered = filtered.filter(component => !component.categories?.includes(props.excludeCategory))
   }
 
-  components.value = filtered
+  if (search.value) {
+    filtered = filtered.filter(component => component.title.toLowerCase().includes(search.value))
+  }
+
+  return filtered
 })
+
+const search = ref<string>('')
+const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name' : 'Поиск по названию')
 </script>
 
 <template>
@@ -47,7 +54,20 @@ onMounted(() => {
       >
         {{ props.title }}
       </h1>
-      <div class="list">
+      <div
+        v-if="withFilter"
+        class="filter"
+      >
+        <DocsSearchBar
+          v-model="search"
+          :placeholder="placeholder"
+          :backButton="!withFilter"
+        />
+      </div>
+      <div
+        class="list"
+        :class="{ slim: withFilter }"
+      >
         <VPLink
           v-for="component, index in components"
           :key="index"
@@ -139,6 +159,10 @@ onMounted(() => {
 
   .list {
     grid-template-columns: repeat(auto-fit, minmax(350px, auto));
+  }
+
+  .list.slim {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .component {

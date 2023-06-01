@@ -1,6 +1,6 @@
 import type { DocsTheme } from '../theme/types'
 import { createContentLoader, defineConfigWithTheme } from 'vitepress'
-import { config as en } from './en'
+import { config as en, searchLocale as searchLocaleEn } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
 import { addPlugins } from '../theme/plugins/markdown'
@@ -88,6 +88,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
       options: {
         locales: {
           ...searchLocaleRu,
+          ...searchLocaleEn,
         },
       },
     },

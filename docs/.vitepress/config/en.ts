@@ -1,4 +1,4 @@
-import type { LocaleConfig } from 'vitepress'
+import type { DefaultTheme, LocaleConfig } from 'vitepress'
 import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
@@ -6,6 +6,31 @@ import { components } from '../theme/plugins/component'
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
 export const META_DESCRIPTION = 'META_DESCRIPTION'
+
+export const searchLocale: Record<string, Partial<Omit<DefaultTheme.LocalSearchOptions, 'locales'>>> = {
+  en: {
+    translations: {
+      button: {
+        buttonText: 'Search',
+        buttonAriaLabel: 'Search'
+      },
+      modal: {
+        resetButtonTitle: 'Reset search',
+        backButtonTitle: 'Close search',
+        noResultsText: 'No results for',
+        footer: {
+          selectText: 'to select',
+          selectKeyAriaLabel: 'enter',
+          navigateText: 'to navigate',
+          navigateUpKeyAriaLabel: 'up arrow',
+          navigateDownKeyAriaLabel: 'down arrow',
+          closeText: 'to close',
+          closeKeyAriaLabel: 'escape'
+        }
+      }
+    }
+  },
+}
 
 export const config: LocaleConfig<DocsTheme.Config> = {
   en: {

@@ -24,9 +24,9 @@ import {
   watch,
   type Ref
 } from 'vue'
-import type { ModalTranslations } from 'vitepress/types/local-search'
 import { useData } from 'vitepress'
 import { createTranslate } from 'vitepress/dist/client/theme-default/support/translation'
+import DocsSearchBar from './DocsSearchBar.vue'
 
 defineProps<{
   placeholder: string
@@ -174,25 +174,6 @@ debouncedWatch(
   { debounce: 200, immediate: true }
 )
 
-/* Search input focus */
-
-const searchInput = ref<HTMLInputElement>()
-
-function focusSearchInput() {
-  searchInput.value?.focus()
-  // searchInput.value?.select()
-}
-
-onMounted(() => {
-  focusSearchInput()
-})
-
-function onSearchBarClick(event: PointerEvent) {
-  if (event.pointerType === 'mouse') {
-    focusSearchInput()
-  }
-}
-
 /* Search keyboard selection */
 
 const selectedIndex = ref(0)
@@ -249,25 +230,7 @@ onKeyStroke('Escape', () => {
 })
 
 // Translations
-const defaultTranslations: { modal: ModalTranslations } = {
-  modal: {
-    displayDetails: 'Display detailed list',
-    resetButtonTitle: 'Reset search',
-    backButtonTitle: 'Close search',
-    noResultsText: 'No results for',
-    footer: {
-      selectText: 'to select',
-      selectKeyAriaLabel: 'enter',
-      navigateText: 'to navigate',
-      navigateUpKeyAriaLabel: 'up arrow',
-      navigateDownKeyAriaLabel: 'down arrow',
-      closeText: 'to close',
-      closeKeyAriaLabel: 'escape'
-    }
-  }
-}
-
-const $t = createTranslate(theme.value.search?.options, defaultTranslations)
+const $t = createTranslate(theme.value.search?.options)
 
 // Back
 
@@ -318,67 +281,11 @@ function formMarkRegex(terms: Set<string>) {
 
       <div class="shell">
         <div class="header">
-          <div class="search-bar" @pointerup="onSearchBarClick($event)">
-            <svg
-              class="search-icon"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <g
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21l-4.35-4.35" />
-              </g>
-            </svg>
-            <div class="search-actions before">
-              <button
-                class="back-button"
-                :title="$t('modal.backButtonTitle')"
-                @click="$emit('close')"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 12H5m7 7l-7-7l7-7"
-                  />
-                </svg>
-              </button>
-            </div>
-            <input
-              ref="searchInput"
-              v-model="filterText"
-              :placeholder="placeholder"
-              class="search-input"
-            />
-            <div class="search-actions">
-              <button
-                v-if="filterText"
-                class="clear-button"
-                :title="$t('modal.resetButtonTitle')"
-                @click="filterText = ''"
-              >
-                <svg width="24" height="24" viewBox="0 0 20 20">
-                  <path d="M10 10l5.09-5.09L10 10l5.09 5.09L10 10zm0 0L4.91 4.91 10 10l-5.09 5.09L10 10z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
+          <DocsSearchBar
+            v-model="filterText"
+            :placeholder="placeholder"
+            @close="$emit('close')"
+          />
         </div>
 
         <div
@@ -527,74 +434,6 @@ function formMarkRegex(terms: Set<string>) {
 
 .header {
   padding: 12px;
-}
-
-.search-bar {
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  padding: 6px 8px;
-  height: 56px;
-  cursor: text;
-  background-color: var(--vp-local-search-result-bg);
-}
-
-@media (max-width: 768px) {
-  .search-bar {
-    padding: 0 8px;
-  }
-}
-
-.search-bar:focus-within {
-  border-color: var(--vp-c-brand);
-}
-
-.search-icon {
-  margin: 8px;
-}
-
-@media (max-width: 768px) {
-  .search-icon {
-    display: none;
-  }
-}
-
-.search-input {
-  padding: 6px 12px;
-  font-size: inherit;
-  width: 100%;
-}
-
-@media (max-width: 768px) {
-  .search-input {
-    padding: 6px 4px;
-  }
-}
-
-.search-actions {
-  display: flex;
-  gap: 4px;
-}
-
-@media (any-pointer: coarse) {
-  .search-actions {
-    gap: 8px;
-  }
-}
-
-@media (min-width: 769px) {
-  .search-actions.before {
-    display: none;
-  }
-}
-
-.search-actions button {
-  padding: 8px;
-}
-
-.search-actions button:hover {
-  color: var(--vp-c-brand);
 }
 
 .search-keyboard-shortcuts {
