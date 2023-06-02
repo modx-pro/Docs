@@ -16,6 +16,8 @@ const props = defineProps<{
   withFilter?: boolean
 }>()
 
+const search = ref<string>('')
+
 const components = computed<ComponentData[]>(() => {
   let filtered: ComponentData[] = site.value.themeConfig.components
 
@@ -32,13 +34,12 @@ const components = computed<ComponentData[]>(() => {
   }
 
   if (search.value) {
-    filtered = filtered.filter(component => component.title.toLowerCase().includes(search.value))
+    filtered = filtered.filter(component => component.title.toLowerCase().includes(search.value.replace(/\s/, '').toLowerCase()))
   }
 
   return filtered
 })
 
-const search = ref<string>('')
 const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name' : 'Поиск по названию')
 </script>
 
@@ -59,7 +60,7 @@ const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name'
         class="filter"
       >
         <DocsSearchBar
-          v-model="search"
+          v-model.trim="search"
           :placeholder="placeholder"
           :backButton="!withFilter"
         />
