@@ -14,7 +14,7 @@ const route = useRoute()
 const { theme, page, frontmatter } = useData()
 
 const editLink = useEditLink()
-const control = route.path.includes('/components/') ? usePrevNext() : useVPPrevNext()
+const control = computed(() => (route.path.includes('/components/') ? usePrevNext() : useVPPrevNext()).value)
 
 const hasEditLink = computed(() => {
   return theme.value.editLink && frontmatter.value.editLink !== false
