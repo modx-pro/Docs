@@ -142,24 +142,24 @@ repository: https://github.com/13hakta/FileAttach
 
 - Список файлов в менеджере
 
-    ![Список файлов в менеджере](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png)
+    ![Список файлов в менеджере](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- FIXME: 404 -->
 
 - Дерево медиа источника
 
-    ![Дерево медиа источника](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137.jpg)
+    ![Дерево медиа источника](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137.jpg) <!-- FIXME: 404 -->
 
 - Редактирование файла
 
-    ![Редактирование файла](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66.jpg)
+    ![Редактирование файла](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66.jpg) <!-- FIXME: 404 -->
 
 - Редактирование файла в административном режиме
 
-    ![Редактирование файла в административном режиме](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dce.jpg)
+    ![Редактирование файла в административном режиме](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dce.jpg) <!-- FIXME: 404 -->
 
 - Список файлов в фронтенде сайта
 
-    ![Список файлов в фронтенде сайта](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png)
+    ![Список файлов в фронтенде сайта](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- FIXME: 404 -->
 
 - Окно загрузки
 
-    ![Окно загрузки](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512.png)
+    ![Окно загрузки](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512.png) <!-- FIXME: 404 -->
