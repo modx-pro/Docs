@@ -76,7 +76,7 @@
 
 К примеру если у вас есть товары с одинаковыми названиями, то вы можете выбрать
 
-![](https://file.modx.pro/files/4/9/c/49c3567e509ac7f3f158c39f60e3c1b8.pn)
+![](https://file.modx.pro/files/4/9/c/49c3567e509ac7f3f158c39f60e3c1b8.png)
 
 ### Переключение между компонентами
 
@@ -85,7 +85,7 @@
 Для поиска по таблице **ms2_resource_files** выберите **ms2Gallery**
 Для поиска по таблице **ms2_product_files** выберите **minishop2**
 
-![Переключение между компонентами](https://file.modx.pro/files/c/1/e/c1e55de955d2ec8f4ee517c7d8d7c4bc.pn)
+![Переключение между компонентами](https://file.modx.pro/files/c/1/e/c1e55de955d2ec8f4ee517c7d8d7c4bc.png)
 
 ### Изображение уже есть в галереи
 
