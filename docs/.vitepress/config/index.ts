@@ -18,7 +18,6 @@ const SITE_BASE = '/Docs/'
 export default defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
   cleanUrls: true,
-  mpa: true,
 
   title: SITE_TITLE,
   titleTemplate: ':title' + SITE_TITLE_SEPARATOR + SITE_TITLE,
