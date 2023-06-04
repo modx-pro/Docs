@@ -5,7 +5,7 @@ import DocsHome from './DocsHome.vue'
 import DocsComponentWidget from './DocsComponentWidget.vue'
 import DocsAuthorWidget from './DocsAuthorWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
-// import DocsComponentTree from './DocsComponentTree.vue'
+import DocsComponentTree from './DocsComponentTree.vue'
 import DocsNotFound from './DocsNotFound.vue'
 
 const { Layout } = DefaultTheme
@@ -23,9 +23,9 @@ const { Layout } = DefaultTheme
     <template #doc-before>
       <DocsBreadcrumbs />
     </template>
-    <!-- <template #doc-footer-before>
+    <template #doc-footer-before>
       <DocsComponentTree />
-    </template> -->
+    </template>
     <template #not-found>
       <DocsNotFound />
     </template>
