@@ -34,7 +34,7 @@
         "plop": "^3.1.2",
         "sitemap": "^7.1.1",
         "transliteration": "^2.3.5",
-        "vitepress": "^1.0.0-alpha.76",
+        "vitepress": "^1.0.0-beta.1",
         "vue": "^3.3.4"
     },
     "pnpm": {
