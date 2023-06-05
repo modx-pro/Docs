@@ -148,17 +148,17 @@ function getSystemSidebar(): DefaultTheme.SidebarItem[] {
       items: [
         {
           text: 'Teleport',
-          link: 'system/utilities/teleport/',
+          link: '/system/utilities/teleport/',
           collapsed: true,
           items: [
             {
               text: 'Использование',
-              link: 'system/utilities/teleport/usage',
+              link: '/system/utilities/teleport/usage',
             },
             {
               text: 'Расширение',
               items: [
-                { text: 'Шаблоны Извлечения', link: 'system/utilities/teleport/extension/extract-templates' },
+                { text: 'Шаблоны Извлечения', link: '/system/utilities/teleport/extension/extract-templates' },
               ],
             },
           ],
