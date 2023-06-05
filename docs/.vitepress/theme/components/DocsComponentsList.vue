@@ -13,10 +13,10 @@ const props = defineProps<{
   dependency?: string
   category?: string
   excludeCategory?: string
-  withFilter?: boolean
+  search?: boolean
 }>()
 
-const search = ref<string>('')
+const query = ref<string>('')
 
 const components = computed<ComponentData[]>(() => {
   let filtered: ComponentData[] = site.value.themeConfig.components
@@ -33,8 +33,8 @@ const components = computed<ComponentData[]>(() => {
     filtered = filtered.filter(component => !component.categories?.includes(props.excludeCategory))
   }
 
-  if (search.value) {
-    filtered = filtered.filter(component => component.title.toLowerCase().includes(search.value.replace(/\s/, '').toLowerCase()))
+  if (query.value) {
+    filtered = filtered.filter(component => component.title.toLowerCase().includes(query.value.replace(/\s/, '').toLowerCase()))
   }
 
   return filtered
@@ -56,18 +56,18 @@ const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name'
         {{ props.title }}
       </h1>
       <div
-        v-if="withFilter"
+        v-if="search"
         class="filter"
       >
         <DocsSearchBar
-          v-model.trim="search"
+          v-model.trim="query"
           :placeholder="placeholder"
-          :backButton="!withFilter"
+          :backButton="!search"
         />
       </div>
       <div
         class="list"
-        :class="{ slim: withFilter }"
+        :class="{ slim: search }"
       >
         <VPLink
           v-for="component, index in components"
