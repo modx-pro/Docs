@@ -198,7 +198,7 @@ if ($q->prepare() && $q->stmt->execute()) {
 
 [1]: /components/minishop2/development/services/delivery
 [2]: /components/minishop2/development/services/order
-[3]: /components/pdoTools/
+[3]: /components/pdotools/
 [4]: /components/pdotools/parser
 [5]: /components/minishop2/interface/product
 [6]: /components/minishop2/development/services/payment
