@@ -10,4 +10,3 @@
 ![Заказы - 2](https://file.modx.pro/files/9/c/a/9ca642d2e57a0f2fe4cbb08940cfbac1.png)
 
 [020103]: /components/minishop2/interface/orders
-[020104]: /components/minishop2/interface/settings

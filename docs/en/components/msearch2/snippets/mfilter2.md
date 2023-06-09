@@ -354,11 +354,7 @@ That is, if you indicate a pseudonym for `ms|price`, you will have to write the 
 `
 ```
 
-If some field is indicated more than once, its name will be written as field-filter and go like
-
-```
-parent-categories and parent-grandparents
-```
+If some field is indicated more than once, its name will be written as field-filter and go like `parent-categories` and `parent-grandparents`.
 
 Therefore, pseudonyms should be like this:
 

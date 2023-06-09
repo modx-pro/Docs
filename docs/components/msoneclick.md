@@ -287,12 +287,15 @@ msOneClick.Modal.hide = function () {
 Пример форм:
 
 ::: code-group
+
 ```modx [tpl.msProducts.row]
 <form class="ms2_form msoptionsprice-product-[[+id]]" method="post">
 ```
+
 ```modx [msProduct.content]
 <form class="ms2_form msoptionsprice-product-[[*id]]" method="post">
 ```
+
 :::
 
 Добавить код в подключенный JS файл

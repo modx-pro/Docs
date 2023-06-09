@@ -139,20 +139,20 @@ Custom sorting:
 
 - File list in manager
 
-  [![File list in manager](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1es.jpg)](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- FIXME: 404 -->
+  [![File list in manager](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1es.jpg)](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- TODO: 404 -->
 
 - Media source tree
 
-[![Media source tree](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137s.jpg)](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137.jpg) <!-- FIXME: 404 -->
+[![Media source tree](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137s.jpg)](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137.jpg) <!-- TODO: 404 -->
 
 - File editor
-  [![File editor](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66s.jpg)](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66.jpg) <!-- FIXME: 404 -->
+  [![File editor](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66s.jpg)](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66.jpg) <!-- TODO: 404 -->
 
 - Editor in admin mode
-  [![Editor in admin mode](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dces.jpg)](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dce.jpg) <!-- FIXME: 404 -->
+  [![Editor in admin mode](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dces.jpg)](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dce.jpg) <!-- TODO: 404 -->
 
 - File list in frontend
-  [![File list in frontend](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1es.jpg)](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- FIXME: 404 -->
+  [![File list in frontend](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1es.jpg)](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- TODO: 404 -->
 
 - Upload dialog window
-  [![Upload dialog window](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512s.jpg)](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512.png) <!-- FIXME: 404 -->
+  [![Upload dialog window](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512s.jpg)](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512.png) <!-- TODO: 404 -->

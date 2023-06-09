@@ -55,6 +55,7 @@
 Остальное на ваш вкус и цвет.
 
 ::: code-group
+
 ```modx [myForm.tpl]
 <form action="[[~[[*id]]]]" method="post">
   <input type="text" name="name" placeholder="Ваше имя" value="[[+fi.name]]">
@@ -66,23 +67,5 @@
   <button type="submit">Отправить</button>
 </form>
 ```
+
 :::
-
-<!-- <script setup>
-import { inBrowser } from 'vitepress'
-
-if (inBrowser) {
-  window.addEventListener('click', (e) => {
-    const el = e.target
-    if (el.matches('.vp-code-group input')) {
-      const allGroups = document.querySelectorAll('.vp-code-group')
-      const group = el.parentElement?.parentElement
-      const i = Array.from(group?.querySelectorAll('input') || []).indexOf(el)
-      for (let index = 0; index < allGroups.length; index++) {
-        if (allGroups[index] === group) continue
-        allGroups[index].querySelectorAll('input')[i].click()
-      }
-    }
-  })
-}
-</script> -->

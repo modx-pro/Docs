@@ -40,6 +40,7 @@
 ```modx [&tplWrapper]
 @INLINE <?xml version=\"1.0\" encoding=\"[[++modx_charset]]\"?>\n<urlset xmlns=\"[[+schema]]\">\n[[+output]]\n</urlset>
 ```
+
 :::
 
 Приоритет и [частота обновления][5] для поисковиков устанавливаются в зависимости от последней даты изменения документа:

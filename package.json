@@ -18,7 +18,8 @@
         "dev": "vitepress dev docs",
         "build": "node --max_old_space_size=4096 ./node_modules/vitepress/bin/vitepress.js build docs",
         "preview": "vitepress preview docs",
-        "generate": "plop"
+        "generate": "plop",
+        "lint": "markdownlint **/*.md --disable MD045 MD024"
     },
     "devDependencies": {
         "@docsearch/css": "^3.3.3",
@@ -30,6 +31,8 @@
         "markdown-it": "^13.0.1",
         "markdown-it-container": "^3.0.0",
         "markdown-it-kbd": "^2.2.2",
+        "markdownlint": "^0.29.0",
+        "markdownlint-cli": "^0.34.0",
         "modx-tmlanguage": "^1.1.2",
         "plop": "^3.1.2",
         "sitemap": "^7.1.1",

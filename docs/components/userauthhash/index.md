@@ -52,9 +52,11 @@ items: [
 ### Пример вызова
 
 ::: code-group
+
 ```modx
 <a href="[[++site_start]]?auth_hash=[[!UserAuthHash? &user=`2` &lifeTime=`1h`]]"&msorder=1>Заказы</a>
 ```
+
 ```fenom
 {set $args = [
   'msorder' => 1,
@@ -62,6 +64,7 @@ items: [
 ]}
 <a href="{'site_start' | option | url : ['scheme' => 'full', 'xhtml_urls' => 0] : $args}">Заказы</a>
 ```
+
 ```fenom [fenom (модификатор)]
 {set $args = [
   'msorder' => 1,
@@ -69,14 +72,15 @@ items: [
 ]}
 <a href="{'site_start' | option | url : ['scheme' => 'full', 'xhtml_urls' => 0] : $args}">Заказы</a>
 ```
+
 :::
 
 ## Примечание
 
 Авторизация не работает:
 
-* Для пользователей с ключем `sudo`.
-* Для заблокированных пользователей.
-* В контексте `mgr`.
+- Для пользователей с ключем `sudo`.
+- Для заблокированных пользователей.
+- В контексте `mgr`.
 
 [4]: https://modhost.pro

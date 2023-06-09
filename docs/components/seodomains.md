@@ -5,6 +5,7 @@ logo: https://modstore.pro/assets/extras/seodomains/logo-lg.png
 author: tventos
 modstore: https://modstore.pro/packages/other/seodomains
 ---
+
 # SEO Domains
 
 **SEO Domains** — Это добавление дополнительных доменов и поддоменов для сайта, с возможностью импорта доменов из XLSX файла, а также автоматически добавлять их в Вебмастер Яндекса.
@@ -125,4 +126,5 @@ modstore: https://modstore.pro/packages/other/seodomains
   {"name":"Название вашего 2 поля (необязательно)","key":"Ключ вашего 2 доп поля","value":"Его значение"}
 ]
 ```
+
 :::

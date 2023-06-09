@@ -12,11 +12,7 @@
 
 ## Шаг 1
 
-Создаем новый php файл в любом месте вашего проекта. Например в каталоге
-
-```
-/core/components/modretailcrm/model/modretailcrm/
-```
+Создаем новый php файл в любом месте вашего проекта. Например в каталоге `/core/components/modretailcrm/model/modretailcrm/`.
 
 Назовем его **custom_orders.php**
 

@@ -19,6 +19,7 @@
 Сниппет **FetchIt** сохранил основные параметры нетронутыми, но мы перенесли некоторые из них в [системные настройки](/components/fetchit/settings).
 
 :::code-group
+
 ```modx
 [[!FetchIt?
   &form=`название чанка`
@@ -31,6 +32,7 @@
   &formSelector=`` // [!code --]
 ]]
 ```
+
 ```fenom
 {'!FetchIt' | snippet : [
   'form' => 'название чанка',
@@ -43,6 +45,7 @@
   'formSelector' => '', // [!code --]
 ]}
 ```
+
 :::
 
 ## Разметка формы
@@ -129,6 +132,7 @@ document.addEventListener('fetchit:before', (e) => {
 :::
 
 Было:
+
 ```js
 $(document).on('af_complete', function(event, response) {
   var form = response.form;
@@ -145,6 +149,7 @@ $(document).on('af_complete', function(event, response) {
 ```
 
 Стало:
+
 ```js
 document.addEventListener('fetchit:after', (e) => {
   const { form, response } = e.detail;

@@ -15,6 +15,7 @@ easyComm позволяет вам добавить дополнительные
 2. В каталоге `/core/components/easycomm/plugins/myplugin/` создать файлы:
 
     ::: code-group
+
     ```php [index.php]
     <?php
 
@@ -57,11 +58,13 @@ easyComm позволяет вам добавить дополнительные
       )
     );
     ```
+
     :::
 
 3. В каталоге `/assets/components/easycomm/plugins/myplugin/` создать файл:
 
     ::: code-group
+
     ```js [ecmessage.js]
     easyComm.plugin.myplugin = {
       getFields: function (config) {
@@ -78,6 +81,7 @@ easyComm позволяет вам добавить дополнительные
       }
     };
     ```
+
     :::
 
 4. Создать поля в таблице `modx_ec_messages`.

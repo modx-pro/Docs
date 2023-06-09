@@ -16,7 +16,3 @@
 ## Смена статуса
 
 Сменить статус можно из админки сайта, либо задействовав какой либо обработчик.
-
-[4]: /components/userevents/interface/events
-[8]: /components/userevents/interface/statuses
-[9]: /components/userevents/interface/notifications

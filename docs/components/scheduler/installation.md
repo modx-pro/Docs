@@ -6,6 +6,7 @@ Scheduler можно установить с помощью поставщика
 
 - [Подключите наш репозиторий](https://modstore.pro/info/connection)
 - Выберите нужного поставщика компонентов, найдите у него Scheduler и установите
+
 ## Установка через modMore {#modmore}
 
 - [Подключите репозиторий modmore.com](https://modmore.com/about/package-provider/), следуя [инструкции](https://modmore.com/extras/scheduler/download/)
@@ -24,17 +25,13 @@ php7.4 /home/server/user/path/to/assets/components/scheduler/run.php
 
 Пример записи для ежеминутного выполнения в планировщике cron на хостинге MODHOST:
 
-```
+```console
 **** * php7.4 ~/www/assets/components/scheduler/run.php
 ```
 
 ## Запуск через HTTP запрос {#run-over-http}
 
-Если по какой то причине, вам необходимо срочно выполнить задачу без ожидания, а также если используете внешние подключения - выполните следующий запрос, включая ctx параметр
-
-```
-https://yoursite.com/assets/components/scheduler/run.php?ctx=web
-```
+Если по какой то причине, вам необходимо срочно выполнить задачу без ожидания, а также если используете внешние подключения - выполните следующий запрос, включая ctx параметр `https://yoursite.com/assets/components/scheduler/run.php?ctx=web`.
 
 Не рекомендуется запускать задания cron через HTTP. Это означает, что внешний веб-сервер обрабатывает запрос, который практически всегда настроен с ограничениями на память и время обработки, что может привести к сбою длительных или тяжелых задач.
 

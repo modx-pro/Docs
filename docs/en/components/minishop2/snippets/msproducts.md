@@ -179,6 +179,5 @@ Sorting by vendor code:
 [[!+page.nav]]
 ```
 
-[1]: /en/components/pdotools/general-properties
 [2]: /en/components/pdotools/
 [3]: /en/components/pdotools/snippets/pdoresources

@@ -7,8 +7,8 @@
 - Для отправки данных из формы необходимо добавить хук _amoCRMAddContact_ в вызов _AjaxForm_ или _FormIt_
     Чтобы указать соответствие полей формы полям amoCRM добавляется параметр _amoCRMmodxAmoFieldsEq_.
     Варианты формата:
-    - Стандартный `formField1==amoField1||formField2==amoField2`
-    - Упрощенный, когда наименование поля в форме и в **amoCRM** совпадает `field1||field2||field3`
+  - Стандартный `formField1==amoField1||formField2==amoField2`
+  - Упрощенный, когда наименование поля в форме и в **amoCRM** совпадает `field1||field2||field3`
 
       Упрощенный и стандартный форматы можно комбинировать, например: `phone||email||mobilephoneForm==mobilephoneAMO||addressForm==addressAMO`
 - JSON:

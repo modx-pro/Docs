@@ -1,4 +1,4 @@
-# General parameters for snippets based on pdoTools / pdoFetch.
+# General parameters for snippets based on pdoTools / pdoFetch
 
 ## Sample resource parameters
 

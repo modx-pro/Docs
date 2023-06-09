@@ -4,7 +4,7 @@
 
 [![](https://modx.pro/assets/images/tickets/8405/24346f91041dddc1f6da9f560611f334dddf7b82.png)](https://modx.pro/assets/images/tickets/8405/24346f91041dddc1f6da9f560611f334dddf7b82.png)
 
-## Список условий:
+## Список условий
 
 - Сумма корзины (от)
 - Сумма корзины (до)

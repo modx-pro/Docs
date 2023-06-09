@@ -45,4 +45,3 @@ All records from this repository are hosted on the website [docs.modx.pro][5] au
 [3]: http://daux.io
 [4]: http://docs.modx.pro
 [5]: http://docs.modx.pro/en/
-

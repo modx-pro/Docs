@@ -69,21 +69,13 @@ items: [
 
 ## Сниппеты
 
-Создать сниппет для парсинга данных. В комплекте сниппет для сайта `aliexpress` в папке
-
-```
-core/components/resourcegrabber/snippets/aliexpress/product.inc
-```
+Создать сниппет для парсинга данных. В комплекте сниппет для сайта `aliexpress` в папке `core/components/resourcegrabber/snippets/aliexpress/product.inc`.
 
 Вы можете создать сниппет для своих нужд по аналогии.
 
 ## Cron
 
-Для обновления ресурсов можно использовать скрипт для `cron`, пример в папке
-
-```
-core/components/resourcegrabber/cron/update.php
-```
+Для обновления ресурсов можно использовать скрипт для `cron`, пример в папке `core/components/resourcegrabber/cron/update.php`.
 
 ```php
 <?php

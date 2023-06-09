@@ -8,25 +8,25 @@
 
 1. С помощью события [`fetchit:success`](/components/fetchit/frontend/events#fetchitsuccess).
 
-```js
-const successModal = new tingle.modal();
+    ```js
+    const successModal = new tingle.modal();
 
-document.addEventListener('fetchit:success', ({ detail: { response: { message } } }) => {
-  successModal.setContent(message);
-  successModal.open();
-});
-```
+    document.addEventListener('fetchit:success', ({ detail: { response: { message } } }) => {
+      successModal.setContent(message);
+      successModal.open();
+    });
+    ```
 
 2. С помощью [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage).
 
-```js
-const successModal = new tingle.modal();
+    ```js
+    const successModal = new tingle.modal();
 
-FetchIt.Message = {
-  // ...
-  success (message) {
-    successModal.setContent(message);
-    successModal.open();
-  },
-}
-```
+    FetchIt.Message = {
+      // ...
+      success (message) {
+        successModal.setContent(message);
+        successModal.open();
+      },
+    }
+    ```

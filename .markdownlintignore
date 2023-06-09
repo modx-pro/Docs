@@ -1,0 +1,3 @@
+node_modules
+plop-templates
+**/parts/**/*.md

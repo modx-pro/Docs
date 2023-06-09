@@ -96,7 +96,6 @@ As you can see, the main template is inherited, the title is changed, and paymen
 
 More details of template expanding you may find in [Fenom documentation][4].
 
-[1]: /en/components/pdotools/general-properties
 [2]: /en/components/pdotools/parser
 [3]: /en/components/minishop2/interface/settings
 [4]: https://github.com/fenom-template/fenom/blob/master/docs/ru/tags/extends.md

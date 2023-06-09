@@ -9,7 +9,7 @@
 | id   | идентификатор экспорта/импорта |                                                    |
 | mode | режим работы                   | export \|\| import \|\| migxExport \|\| migxImport |
 
-## Пример:
+## Пример
 
 ```modx
 [[!GoogleSheetsFront?

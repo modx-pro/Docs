@@ -8,13 +8,13 @@ It has own Interface within the control system and expanded set of characteristi
 
 [![](https://file.modx.pro/files/5/4/6/546f08580a43a9a34fca13625666055ds.jpg)](https://file.modx.pro/files/5/4/6/546f08580a43a9a34fca13625666055d.png)
 
-### Main menu
+## Main menu
 
 When creating items, you can save it or cancel this action only.
 
 When changing, the buttons of site display, copy and transition to the next items(if any) are added.
 
-### Items panel
+## Items panel
 
 Items inherits and expands MODX resource standard panel.
 As it has a lot of characteristics, they are located conveniently in separate tab set.
@@ -33,7 +33,7 @@ All items are hidden from menu by default, accelerating the tree operations. How
 
 System setting **ms2_product_show_in_tree_default** controls its actions.
 
-#### Characteristics of items
+### Characteristics of items
 
 This is a special tab containing additional items characteristics, such as price, article, weigh, manufacturer and so on.
 Characteristics of items tab is compulsory and the same for everybody.
@@ -58,7 +58,7 @@ The system setting **ms2_product_extra_fields** controls the set and sequence of
 Available option set may be changed by [plug in system][1] only.
 The tab itself may be hidden by **ms2_product_tab_extra**.
 
-#### Items options
+### Items options
 
 Options, which are inherited from category and may vary in different items, are unlimited.
 
@@ -68,7 +68,7 @@ Options are created in corresponding shop setting section and added to category 
 
 More option details may be found in[corresponding section][2].
 
-#### Items relations
+### Items relations
 
 This tab appears when editing items only, because it requires items id, which cannot exist at the beginning.
 
@@ -76,7 +76,7 @@ This tab appears when editing items only, because it requires items id, which ca
 
 Available links are created in the shop settings. System setting **ms2_product_tab_links** may switch off this tab.
 
-#### Categories
+### Categories
 
 Every product of the shop may be in several categories.
 One compulsory category must be written in **parent**, and additional in
@@ -85,7 +85,7 @@ One compulsory category must be written in **parent**, and additional in
 
 Do not forget to save the products when changing category set! Native category of items cannot be switched off from the tree.
 
-### Comments
+## Comments
 
 This tab is displayed if only the **Tickets** component is installed on site and system setting **ms2_product_show_comments** is switched on.
 
@@ -93,7 +93,7 @@ This tab is displayed if only the **Tickets** component is installed on site and
 
 To enable site visitors to comment your items, **TicketComments** snippet must be recalled on their pages.
 
-### Gallery
+## Gallery
 
 Items file loading panel is the simplified version of the paid update [ms2Gallery][4].
 Basically, is used for image loading, and other file types, allowed by media source settings.
@@ -131,7 +131,7 @@ Every product has its own file source (Media source), which manages boot options
 
 When changing items media source the loaded files will not be copied. You must take care of it.
 
-#### Main settings of phpThumb
+### Main settings of phpThumb
 
 - **w** - preview width in pixel
 - **h** - preview height in pixels
@@ -149,7 +149,7 @@ If you need to fit the image by height and width, *h* and *w* must be only state
 
 For other parameters see [phpThumb documents][5].
 
-#### Preview upgrading
+### Preview upgrading
 
 All previews must be upgraded if the file source settings are changed.
 
@@ -198,7 +198,7 @@ echo microtime(true) - $modx->startTime;
 
 As preview generation operation may take a long time, better launch this script from server console.
 
-### Duplicates
+## Duplicates
 
 Items may be copied. Herewith, the following are copied:
 

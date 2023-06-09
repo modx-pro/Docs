@@ -27,18 +27,21 @@ else {
 Вызываем так:
 
 :::code-group
+
 ```modx
 [[!FetchIt?
   &snippet=`MySnippet`
   &form=`tpl.FetchIt.example`
 ]]
 ```
+
 ```fenom
 {'!FetchIt' | snippet : [
   'snippet' => 'MySnippet',
   'form' => 'tpl.FetchIt.example',
 ]}
 ```
+
 :::
 
 Этот сниппет ничего не делает, просто возвращает результат проверки имени.

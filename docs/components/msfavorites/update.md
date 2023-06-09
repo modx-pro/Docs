@@ -18,6 +18,7 @@ include MODX_CORE_PATH .'components/msfavorites/migration/v2tov3/favorites.php';
 ```
 
 ::: details Результат работы скрипта
+
 ```
 Import complete in 2.0370631 s
 
@@ -25,4 +26,5 @@ Total idx: 601
 Positive: 601
 Negative: 0
 ```
+
 :::

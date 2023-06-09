@@ -21,17 +21,17 @@ Parameter         | By default   | Description
 Snippet counts on work with Fenom chunk. It transfers there 2 variables:
 
 - **total** - array of final cart values, in which:
-    - **count** - number of goods
-    - **cost** - price of goods
-    - **weight** - total goods weight
+  - **count** - number of goods
+  - **cost** - price of goods
+  - **weight** - total goods weight
 - **products** - array of cart goods, where every product contains:
-    - **key** - a key of the product in the cart, hash of its values and options
-    - **count** - quantity of goods
-    - **cost** - cost per unit of goods
-    - **id** - goods identifier
-    - **pagetitle** - title of the goods page
-    - **uri** - product address
-    - other product characteristics, including options, manufacturer's characteristics, etc.
+  - **key** - a key of the product in the cart, hash of its values and options
+  - **count** - quantity of goods
+  - **cost** - cost per unit of goods
+  - **id** - goods identifier
+  - **pagetitle** - title of the goods page
+  - **uri** - product address
+  - other product characteristics, including options, manufacturer's characteristics, etc.
 
 ### Placeholders
 
@@ -74,5 +74,4 @@ It is recommended to call this snippet in junction with others in ordering page:
 [[!msGetOrder]] <!-- Display of order information. Showed after order creation -->
 ```
 
-[1]: /en/components/pdotools/general-properties
 [2]: /en/components/pdotools/parser

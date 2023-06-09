@@ -41,7 +41,6 @@ The Fotorama scripts and styles will be loaded if only this element is present a
 
 So if you need not Fotorama at all, simply exclude `.fotorama` from the  chunk.
 
-[1]: /en/components/pdotools/general-properties
 [2]: /en/components/pdotools/parser
 [3]: http://fotorama.io/
 [4]: http://fotorama.io/customize/options/

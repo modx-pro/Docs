@@ -237,7 +237,6 @@ BMW Q5, BMW Хантер, УАЗ X5 и т.д. Чтобы не тратить н�
 Если у вас есть вопросы, то можете задавать их на modx.pro в топиках про SeoFilter.
 
 [0]: /components/seofilter/quick-start-mfilter2
-[1]: /components/seofilter/snippets/
 [2]: /components/seofilter/snippets/sfword
 [3]: /components/customextra
 [4]: https://modstore.pro/packages/utilities/frontendmanager

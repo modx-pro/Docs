@@ -37,6 +37,7 @@ document.addEventListener('fetchit:success', ({ detail: { form } }) => {
 :::
 
 :::details Если у вас возникли проблемы, то воспользуйтесь следующим кодом
+
 ```js
 document.addEventListener('fetchit:success', ({ detail: { form } }) => {
   const modal = form.closest('.modal');
@@ -52,6 +53,7 @@ document.addEventListener('fetchit:success', ({ detail: { form } }) => {
   closeBtn.click();
 });
 ```
+
 :::
 
 ## Открытие модального окна

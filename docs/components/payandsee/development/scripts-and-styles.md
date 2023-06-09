@@ -86,5 +86,4 @@ payandsee.Callbacks.add('Order.add.ajax.always', 'ajax_log', function (xhr) {
 });
 ```
 
-[01020205]: /components/minishop2/snippets/msgetorder
 [01020302]: /components/minishop2/development/scripts-and-styles

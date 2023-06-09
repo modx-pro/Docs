@@ -24,6 +24,7 @@
 ## Пример вызова
 
 ::: code-group
+
 ```modx
 [[getCategories?
   &parents=`[[*id]]`
@@ -33,6 +34,7 @@
   }`
 ]]
 ```
+
 ```fenom
 {'getCategories' | snippet : [
   'parents' => $_modx->resource.id,
@@ -42,6 +44,7 @@
   },
 ]}
 ```
+
 :::
 
 Надеюсь, это поможет вам лучше понять, как работает сниппет getItems в MODX Revolution.

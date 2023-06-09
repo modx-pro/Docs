@@ -84,6 +84,5 @@ mSearchForm sends all parameters received to the snippet associated with **&elem
 ```
 
 [1]: /en/components/msearch2/snippets/msearch2
-[2]: /en/components/msearch2/snippets/mfilter2
 [3]: http://jqueryui.com/autocomplete/
 [4]: /en/components/msearch2/interface/queries

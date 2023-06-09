@@ -22,7 +22,7 @@ For standard controllers there are special snippets with parameters written into
 
 [![](https://file.modx.pro/files/7/a/6/7a691dcfa2bf7915716c61a3450e487cs.jpg)](https://file.modx.pro/files/7/a/6/7a691dcfa2bf7915716c61a3450e487c.png)
 
-### Setting the controllers
+## Setting the controllers
 
 Everything you tell the snippet is sent to the controller. It makes decisions about what is useful for it itself.
 All standard scripts and styles that are necessary for work are registered through system settings, like in [miniShop2][5].
@@ -56,7 +56,7 @@ You should just make a copy, rename it and call for it:
 
 You can also register controllers from the addons you download in Office.
 
-### Extension by extra components
+## Extension by extra components
 
 Extra components can register their own controllers by adding their directory to system parameter **office_controllers_paths**.
 

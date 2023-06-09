@@ -2,7 +2,7 @@
 
 Apart from the modular architecture and controllers, Office adds some nice little things to the system.
 
-### Authorization from the admin space
+## Authorization from the admin space
 
 You can authorize as any active user directly from the admin space.
 
@@ -16,17 +16,9 @@ and a button on the user's editing panel:
 
 - Authorization always happens in the new window, the current window of a manager does not close.
 - Script tries to authorize in any context.
-- You can use direct links to authorization, like
+- You can use direct links to authorization, like `http://your.site/?action=office/login_as&user_id=4`.
 
-```
-http://your.site/?action=office/login_as&user_id=4
-```
-
-or even
-
-```
-http://your.site/any/page/?action=office/login_as&user_id=2&any_key=value
-```
+or even `http://your.site/any/page/?action=office/login_as&user_id=2&any_key=value`.
 
 Links like this are proccessed by Office plugins, that is why you can indicate any page by them.
 
@@ -42,17 +34,9 @@ In the 1.6 version you can authorize in several accounts and switch between them
 
 [![](https://file.modx.pro/files/1/e/a/1eab19e934b92ddb79008c8ce5b23427s.jpg)](https://file.modx.pro/files/1/e/a/1eab19e934b92ddb79008c8ce5b23427.png)
 
-When you authorize like this, you enter a new user's account but your old accounts remain in session `$_SESSION['Office']['LoggedIn']`, and then you can switch between them with link like
+When you authorize like this, you enter a new user's account but your old accounts remain in session `$_SESSION['Office']['LoggedIn']`, and then you can switch between them with link like `https://your.site/?action=auth/change&user_id=4`.
 
-```
-https://your.site/?action=auth/change&user_id=4
-```
-
-You can turn such an account off with link
-
-```
-https://your.site/?action=auth/logout&user_id=4
-```
+You can turn such an account off with link `https://your.site/?action=auth/logout&user_id=4`.
 
 And the authorization itself works like a standars authorization form, except that
 

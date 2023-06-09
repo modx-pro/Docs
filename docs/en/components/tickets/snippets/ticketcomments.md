@@ -3,12 +3,11 @@
 Outputs comments and the form of the commenting on resource.
 
 > Can be used with any MODX document.
-
 > Snippet is caused uncashed.
 
 ## Parameters of the snippet's call
 
-[//]: # (Перевести описания некоторых свойств)
+<!-- TODO: Перевести описания некоторых свойств -->
 | Name                             | By default                               | Description                                                                                                                                                     |
 |----------------------------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **&allowGuest**                  | `0`                                      | To activate commenting for unauthorized users?                                                                                                                  |

@@ -55,7 +55,7 @@
 
 Возможные причины:
 
-### Вижу сообщение Can`t find jQuery ajaxForm plugin!
+### Вижу сообщение ``Can`t find jQuery ajaxForm plugin!``
 
 Необходимо самостоятельно подключить плагин [jquery.form](http://malsup.com/jquery/form/). В пакет easyComm он не входит, но требуется для отправки форм через ajax. Подключить скрипт нужно после подключения библиотеки jQuery, но до подключения скриптов от easyComm.
 

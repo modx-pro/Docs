@@ -30,6 +30,7 @@
 :::
 
 ::: code-group
+
 ```modx [Изменения]
 <form class="ui form"> // [!code --]
 <form action="[[~[[*id]]]]" class="ui form"> // [!code ++]
@@ -53,6 +54,7 @@
   <button class="ui button" type="reset">Reset</button>
 </form>
 ```
+
 ```modx [Готовая разметка]
 <form action="[[~[[*id]]]]" class="ui form">
   <div class="field" data-custom="name">
@@ -69,4 +71,5 @@
   <button class="ui button" type="reset">Reset</button>
 </form>
 ```
+
 :::

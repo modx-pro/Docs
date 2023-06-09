@@ -61,6 +61,7 @@
 :::
 
 [**Демо версия**](http://demo.mspre.bustep.ru/manager/?a=resource&namespace=mspre)
+
 - Логин: `manager`
 - Пароль: `manager`
 

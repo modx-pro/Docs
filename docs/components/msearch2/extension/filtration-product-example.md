@@ -16,6 +16,7 @@
 Добавляем новое поле в модель товара по пути: `/core/components/minishop2/plugins/availability/model/`
 
 ::: code-group
+
 ```php [msproductdata.map.inc.php]
 <?php
 
@@ -34,6 +35,7 @@ return array(
   )
 );
 ```
+
 :::
 
 ![](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4.png)
@@ -41,6 +43,7 @@ return array(
 Добавляем виджеты ExtJS для этого поля в админку по пути: `/assets/components/minishop2/plugins/availability/`
 
 ::: code-group
+
 ```js [msproductdata.js]
 miniShop2.plugin.pluginname = {
   getFields: function (config) {
@@ -55,6 +58,7 @@ miniShop2.plugin.pluginname = {
   }
 };
 ```
+
 :::
 
 ![](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecf.png)
@@ -62,6 +66,7 @@ miniShop2.plugin.pluginname = {
 Связываем это вместе индексным файлом, который включит плагин по пути: `/core/components/minishop2/plugins/availability/`
 
 ::: code-group
+
 ```php [index.php]
 <?php
 //
@@ -74,6 +79,7 @@ return array(
   )
 );
 ```
+
 :::
 
 ![](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009.png)

@@ -16,6 +16,3 @@
 
 - `{order_handler_class}` - имя класса, который реализует логику оформления заказа.
 - `{order_resource_id}` - - идентификатор страницы, на которую будет произведен редирект после оформление заказа.
-
-[020103]: /components/minishop2/interface/orders
-[020104]: /components/minishop2/interface/settings

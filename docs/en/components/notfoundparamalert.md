@@ -20,7 +20,7 @@ Useful to catch wrong URLs on large context advertising projects with UTM or oth
 
 After installation use System settings notfoundparamalert namespace to set preferable settings values.
 
-## Available system settings (namespace notfoundparamalert):
+## Available system settings (namespace notfoundparamalert)
 
 - `parameters` – list of URL parameters, separated by coma, which will generate alert. Available simple wildcards: `?` — one any symbol, `*` — group of symbols.
 - `parameters_all` – include in alert message all URL parameters or only matching parameters.
@@ -32,7 +32,7 @@ After installation use System settings notfoundparamalert namespace to set prefe
 
 In Lexicon notfoundparamalert namespace it is possible to set up your own template for log/email message.
 
-## Available placeholders used in message/mail text:
+## Available placeholders used in message/mail text
 
 - `alertName` - component name.
 - `alertMethod` - alert method.

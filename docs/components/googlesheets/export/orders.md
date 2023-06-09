@@ -44,7 +44,7 @@
 | address_comment    | Комментарий             |
 | address_properties | Дополнительные свойства |
 
-## User:
+## User
 
 Поддерживаются все стандартные поля пользователя, но с префиксом **user_**.
 Например: user_email,user_fullname

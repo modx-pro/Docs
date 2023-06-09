@@ -15,10 +15,3 @@
 - `{$manager_email}` - почта менеджера
 
 Таким образом вы можете просто указать `{$client_email | join}` и для сущности клиент это будет почта клиента, для сущности контент это будет почта всех клиентов с активной подпиской на данный контент и тп.
-
-[4]: /components/payandsee/interface/content
-[5]: /components/payandsee/interface/rates
-[6]: /components/payandsee/interface/clients
-[7]: /components/payandsee/interface/subscriptions
-[8]: /components/payandsee/interface/statuses
-[9]: /components/payandsee/interface/notifications

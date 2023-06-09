@@ -44,32 +44,16 @@ For displaying Fenom tags you must:
 
 ## Examples
 
-General output:
-
-```
-http://mystite.com/?debug=1
-```
+General output: `http://mystite.com/?debug=1`.
 
 Table with report will replace the content of the page, so you will see only the page.
 
-Display with cache:
-
-```
-http://mystite.com/?debug=1&cache=1
-```
+Display with cache: `http://mystite.com/?debug=1&cache=1`.
 
 If the page loads from cache, only uncached tags will be displayed.
 
-Display of 10 first slowest tags:
-
-```
-http://mystite.com/?debug=1&cache=1&top=10
-```
+Display of 10 first slowest tags: `http://mystite.com/?debug=1&cache=1&top=10`.
 
 All unchaches tags are sorted by the runtime, that is why some of the most labor-intensive can be shown.
 
-Display with attaching table to the page content:
-
-```
-http://mystite.com/?debug=1&cache=1&top=10&add=1
-```
+Display with attaching table to the page content: `http://mystite.com/?debug=1&cache=1&top=10&add=1`.

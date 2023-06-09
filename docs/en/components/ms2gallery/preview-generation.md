@@ -88,61 +88,61 @@ For overlaying the watermark on images in the galleries 3 conditions should be f
 1. **ImageMagick** should be installed on the server. It also should be accessible for php. [See details here][2].
 2. In the files source ms2Gallery **fltr** with **wmi** should be added:
 
-  ```json
-  {
-    "small": {
-      "w": 120,
-      "h": 90,
-      "q": 90,
-      "zc": "1",
-      "bg": "000000",
-      "fltr": "wmi|wm.png|BR|80"
-    },
-    "medium": {
-      "w": 360,
-      "h": 270,
-      "q": 90,
-      "zc": "1",
-      "bg": "000000",
-      "fltr": "wmi|wm.png|BR|80"
+    ```json
+    {
+      "small": {
+        "w": 120,
+        "h": 90,
+        "q": 90,
+        "zc": "1",
+        "bg": "000000",
+        "fltr": "wmi|wm.png|BR|80"
+      },
+      "medium": {
+        "w": 360,
+        "h": 270,
+        "q": 90,
+        "zc": "1",
+        "bg": "000000",
+        "fltr": "wmi|wm.png|BR|80"
+      }
     }
-  }
-  ```
+    ```
 
-  Parameters are decoded like this:
+    Parameters are decoded like this:
 
-  ```json
-  "wmi" (WaterMarkImage)
-    [ex: &fltr[]=wmi|<f|<a|<o|<x|<y|<r] where
-    <f is the filename of the image to overlay;
-    <a is the alignment (one of BR, BL, TR, TL, C,
-      R, L, T, B, *) where B=bottom, T=top, L=left,
-      R=right, C=centre, *=tile)
-      *or*
-      an absolute position in pixels (from top-left
-      corner of canvas to top-left corner of overlay)
-      in format {xoffset}x{yoffset} (eg: "10x20")
-      note: this is center position of image if <x
-      and <y are set
-    <o is opacity from 0 (transparent) to 100 (opaque)
-      (requires PHP v4.3.2, otherwise 100% opaque);
-    <x and <y are the edge (and inter-tile) margin in
-      pixels (or percent if 0 < (x|y) < 1)
-      *or*
-      if <a is absolute-position format then <x and
-    <y represent maximum width and height that the
-      watermark image will be scaled to fit inside
-    <r is rotation angle of overlaid watermark
-  ```
+    ```json
+    "wmi" (WaterMarkImage)
+      [ex: &fltr[]=wmi|<f|<a|<o|<x|<y|<r] where
+      <f is the filename of the image to overlay;
+      <a is the alignment (one of BR, BL, TR, TL, C,
+        R, L, T, B, *) where B=bottom, T=top, L=left,
+        R=right, C=centre, *=tile)
+        *or*
+        an absolute position in pixels (from top-left
+        corner of canvas to top-left corner of overlay)
+        in format {xoffset}x{yoffset} (eg: "10x20")
+        note: this is center position of image if <x
+        and <y are set
+      <o is opacity from 0 (transparent) to 100 (opaque)
+        (requires PHP v4.3.2, otherwise 100% opaque);
+      <x and <y are the edge (and inter-tile) margin in
+        pixels (or percent if 0 < (x|y) < 1)
+        *or*
+        if <a is absolute-position format then <x and
+      <y represent maximum width and height that the
+        watermark image will be scaled to fit inside
+      <r is rotation angle of overlaid watermark
+    ```
 
 3. File *wm.png* should be put in `/assets/components/ms2gallery/` - this is exactly where it will be looked for. Instead of assets there can be another directory if you renamed it when installing MODX in an advanced mode.
 
-You can indicate not just *wm.png*, but *images/wm.png* in the source - then the file should be put in `/assets/components/ms2gallery/images/`.
+    You can indicate not just *wm.png*, but *images/wm.png* in the source - then the file should be put in `/assets/components/ms2gallery/images/`.
 
-If everything is done correctly, you will get the watermark on your images when loading them into the gallery.
+    If everything is done correctly, you will get the watermark on your images when loading them into the gallery.
 
-Please notice again that **the hosting should be ready for such a difficult work** with images,
-as overlaying the watermark.
+    Please notice again that **the hosting should be ready for such a difficult work** with images,
+    as overlaying the watermark.
 
 ### Examples
 

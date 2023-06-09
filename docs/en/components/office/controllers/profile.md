@@ -35,18 +35,18 @@ Controller helps to edit extended fields of a user's profile, like `extended.som
 
 1. Show them in the form
 
-  ```modx
-  <label for="extended.some_field">Some field</label>
-  <input name="extended[some_field]" value="[[+extended.some_field]]" id="extended.some_field">
-  ```
+    ```modx
+    <label for="extended.some_field">Some field</label>
+    <input name="extended[some_field]" value="[[+extended.some_field]]" id="extended.some_field">
+    ```
 
 2. Allow input
 
-  ```modx
-  [[!OfficeProfile?
-    &profileFields=`username:50,email:50,fullname:50,extended[some_field]`
-  ]]
-  ```
+    ```modx
+    [[!OfficeProfile?
+      &profileFields=`username:50,email:50,fullname:50,extended[some_field]`
+    ]]
+    ```
 
 Please notice that `extended` field is an array, and for this reason when sending the form it is indicated
 as `extended[some_field]`, whereas when putting placeholders as `extended.some_field`.

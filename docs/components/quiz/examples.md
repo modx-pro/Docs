@@ -19,7 +19,7 @@ $(document).on('Quiz.result.before', function (e, options, field) {
 });
 ```
 
-## Отменяем получение след. раздела.
+## Отменяем получение след. раздела
 
 ```js
 $(document).on('Quiz.next.before', function (e, options) {

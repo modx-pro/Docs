@@ -19,4 +19,3 @@
 
 [4]: /components/userevents/interface/events
 [8]: /components/userevents/interface/statuses
-[9]: /components/userevents/interface/notifications

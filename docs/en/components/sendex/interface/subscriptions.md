@@ -23,7 +23,7 @@ In a pop-up window you will need to fill in:
 
 [![](https://file.modx.pro/files/a/3/0/a3059d34688e43b4c4c17dc0a750c930s.jpg)](https://file.modx.pro/files/a/3/0/a3059d34688e43b4c4c17dc0a750c930.png)
 
-## Manual addition of subscribers.
+## Manual addition of subscribers
 
 - To add a subscriber it is necessary to go to **Components** -> **Sendex**
 - Right-click on a subscription on inlay **Subscriptions** and click **Edit subscription** and save after overpatching.

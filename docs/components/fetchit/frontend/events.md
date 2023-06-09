@@ -11,7 +11,7 @@
 
 ## fetchit:before
 
-#### Аргументы: `(form <HTMLFormElement>, formData <FormData>, fetchit <FetchIt>)`
+- Аргументы: `(form <HTMLFormElement>, formData <FormData>, fetchit <FetchIt>)`
 
 Самое раннее событие, которое вызывается до отправки формы. Удобен в случаях, если вам нужно добавить поле и/или валидации данных на стороне клиента. При желании может прервать отправку формы.
 
@@ -29,7 +29,7 @@ document.addEventListener('fetchit:before', (e) => {
 
 ## fetchit:after
 
-#### Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
+- Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
 
 Событие вызывается после отправки формы и получения ответа от сервера. Нужно для исключительных случаев, когда вам необходимо реализовать функционал вне зависимости от статуса ответа.
 
@@ -45,18 +45,18 @@ document.addEventListener('fetchit:after', (e) => {
 
 ## fetchit:success
 
-#### Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
+- Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
 
 Данное событие будет вызвано, если в ответе сервера поле `success` будет `true` и соответственно необходим для выполнения кода при успешной отправке формы.
 
 ## fetchit:error
 
-#### Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
+- Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
 
 Данное событие будет вызвано, если в ответе сервера поле `success` будет `false` и нужно для обработки ошибок.
 
 ## fetchit:reset
 
-#### Аргументы: `(form <HTMLFormElement>, fetchit <FetchIt>)`
+- Аргументы: `(form <HTMLFormElement>, fetchit <FetchIt>)`
 
 Данное событие будет вызвано, при сброса формы. Может быть полезен в случаях когда необходимо скрыть кастомные сообщения или ошибки.

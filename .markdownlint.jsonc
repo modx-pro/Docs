@@ -1,0 +1,9 @@
+{
+    "line-length": false,
+    "link-fragments": false,
+    "no-inline-html": false,
+    "fenced-code-language": false,
+    "single-title": {
+        "front_matter_title": ""
+    }
+}

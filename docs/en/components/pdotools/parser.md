@@ -324,6 +324,3 @@ And of course, there are a global variables:
 {$.get['query']} or {$.get.query}
 {$.server['REQUEST_URI']}
 ```
-
-[1]: http://modx.com/extras/package/fastfield
-[2]: https://github.com/argnist/fastField/issues/5
