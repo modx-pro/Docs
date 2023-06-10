@@ -1,0 +1,22 @@
+name: Lint
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  markdownlint:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: reviewdog/action-markdownlint@v0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          filter_mode: file
+          fail_on_error: true
