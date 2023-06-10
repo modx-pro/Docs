@@ -13,7 +13,6 @@ import { fileURLToPath, URL } from 'node:url'
 
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
-const SITE_BASE = '/Docs/'
 
 export default defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
@@ -21,8 +20,6 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
   title: SITE_TITLE,
   titleTemplate: ':title' + SITE_TITLE_SEPARATOR + SITE_TITLE,
-
-  base: SITE_BASE,
 
   markdown: {
     // @ts-ignore
@@ -107,7 +104,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   },
 
   buildEnd: async ({ outDir }) => {
-    const sitemap = new SitemapStream({ hostname: 'https://modx-pro.github.io/Docs/' })
+    const sitemap = new SitemapStream({ hostname: 'http://new-docs.modx.pro/' })
     const pages = await createContentLoader('**/*.md').load()
     const writeStream = createWriteStream(resolve(outDir, 'sitemap.xml'))
 
