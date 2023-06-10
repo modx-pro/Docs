@@ -2,7 +2,7 @@
 outline: [2,3]
 lastUpdated: false
 ---
-# Возможности Vitepress
+# Возможности VitePress
 
 ::: info
 VitePress использует [markdown-it](https://github.com/markdown-it/markdown-it) в качестве парсера который расширает возможности markdown.
