@@ -52,6 +52,17 @@ export const config: LocaleConfig<DocsTheme.Config> = {
           link: '/en/components/',
           activeMatch: '/en/components/',
         },
+        {
+          text: 'Introduction',
+          activeMatch: '/en/guide/',
+          items: [
+            { text: 'About', link: '/en/guide/about' },
+            { text: 'Getting Started', link: '/en/guide/howto' },
+            { text: 'Markdown', link: '/en/guide/md' },
+            { text: 'VitePress Features', link: '/en/guide/vitepress' },
+            { text: 'Frontmatter', link: '/en/guide/frontmatter' },
+          ],
+        },
       ],
 
       sidebar: {
@@ -59,6 +70,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
           root: ['docs/en/components/*.md', 'docs/en/components/*/index.md'],
           ignore: ['docs/en/components/index.md'],
         }),
+        '/en/guide/': getGuideSidebar(),
       },
 
       teamSectionTitle: 'Team',
@@ -79,4 +91,19 @@ export const config: LocaleConfig<DocsTheme.Config> = {
       components: components.filter(component => component.path.startsWith('en/components/')),
     },
   }
+}
+
+function getGuideSidebar(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'Introduction',
+      items: [
+        { text: 'About', link: '/en/guide/about' },
+        { text: 'Getting Started', link: '/en/guide/howto' },
+        { text: 'Markdown', link: '/en/guide/md' },
+        { text: 'VitePress Features', link: '/en/guide/vitepress' },
+        { text: 'Frontmatter', link: '/en/guide/frontmatter' },
+      ],
+    },
+  ]
 }

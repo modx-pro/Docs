@@ -18,7 +18,13 @@ export function findPath(
   const locale = localeLinks.find(locale => locale.link.startsWith(searchable.replace(/(^.*?\/).*$/, '$1'))) || localeLinks[0]
   searchable = ensureStartingSlash(searchable)
   const localeConfig: DocsTheme.Config = config.locales[locale.key].themeConfig
-  const root = localeConfig.nav.find(item => 'link' in item && searchable.startsWith(item.link.replace(/(^\/.*?\/).*$/, '$1')))
+  const root = localeConfig.nav.find(item => {
+    if (!('link' in item)) {
+      return false
+    }
+    const tmp = locale.link === '/' ? item.link.replace(/(^\/.*?\/).*$/, '$1') : item.link.replace(/(^\/.*?\/)(.*?\/).*$/, '$1$2')
+    return searchable.startsWith(tmp)
+  })
   const path: DefaultTheme.SidebarItem[] = []
   if (root && ('link' in root)) {
     path.push({ text: root.text, link: root.link })
