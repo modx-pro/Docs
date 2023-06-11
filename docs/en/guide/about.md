@@ -1,28 +1,27 @@
 ---
 lastUpdated: false
 ---
-# О проекте
+# About the project
 
-## Введение
+## Introduction
 
-Представляем вашему вниманию документацию для компонентов [MODX Revolution](https://modx.com/), открытую каждому.
+We present to your attention the documentation for the [MODX Revolution](https://modx.com/) components, open to everyone.
 
-Это бесплатный Open Source проект, размещенный на [GitHub](https://github.com/modx-pro/Docs).
-Такое размещение, позволяет каждому дополнять страницы "Документации", делать форки, клонировать проект, сохраняя и изменяя по своему вкусу.
+This is a free Open Source project hosted on [github](https://github.com/modx-pro/Docs).
+This placement allows everyone to supplement the "Documentation" pages, fork, clone the project, saving and modifying the documentation to their liking.
 
-## Принцип работы
+## How it works
 
-"Документация" работает на технологии [VitePress](https://vitepress.dev/). Это статичные текстовые файлы, написанные на простеньком языке разметки md, с некоторыми "украшающими" добавками от VitePress.
-В отличии от "сухого" языка разметки md - мы получаем возможности размещать смайлики, подсвечивать и фокусироваться на важных элементах кода, добавлять красивые цветные Warning-блоки и еще много чего.
+"Documentation" is powered by [VitePress](https://vitepress.dev/) technology. These are static text files written in the simple markup md-language, with some "decorating" additions from VitePress and Front Matter.
+Unlike the strict md markup language, we get the ability to place emoji, highlight and focus on important code elements, add beautiful warning blocks, and much much more.
 
-Портал с документацией связан с нашим [GitHub репозиторием](https://github.com/modx-pro/Docs). Предлагайте Ваши правки в виде Pull Request и после одобрения они мгновенно окажутся на сайте.
+The documentation portal is linked to our [github repository](https://github.com/modx-pro/Docs). Propose your changes through a Pull Request and after approval they will be on the site.
 
-## Авторы и участники проекта
+## Authors and participants
 
-Проект "Документация" принадлежит русскоязычному сообществу MODX в лице [MODX RSC](https://github.com/modx-pro), разрабатывается и поддерживается на добровольной основе.
-Каждый из участников сообщества является равноправным совладельцем проекта и вносит свой посильный вклад.
+The "Documentation" project belongs to the Russian-speaking MODX community represented by [MODX RSC](https://github.com/modx-pro), is developed and maintained on a voluntary basis. Each of the community members is an equal co-owner of the project and contributes as much as possible.
 
-## Финансовая поддержка
+## Financial support
 
-Данный сервис является Open-Source проектом и его поддержка и развитие зависит от пожертвований.
-На пожертвования команда разработчиков может выделить больше времени для работы над экосистемой сообщества MODX.
+This service is an Open-Source project and its support and development depends on donations.
+Donations can allow the development team more time to work on the MODX community ecosystem.
