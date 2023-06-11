@@ -3,170 +3,171 @@ outline: [2,3]
 lastUpdated: false
 ---
 
-# Frontmatter - Дополнительные свойства страниц и компонентов
+# Frontmatter - Additional properties of pages and components
 
-Помимо возможностей, которые дает markdown и vitepress, на нашем проекте предусмотрена и дополнительная разметка страницы с помощью Frontmatter. Для его добавления вам необходимо в начале файла в блоке между `---` тремя символами дефиса написать пары: название свойства и её значение.
+In addition to the features provided by markdown and VitePress, our project also supports Frontmatter markup.
+To add Frontmatter, you need to set the names and values ​​of the properties at the beginning of the file, in the block between `---` (three hyphen characters).
 
-Пример:
+Example:
 
 ```markdown
 ---
-title: Заголовок страницы
-description: Описание страницы
+title: Page title
+description: Page description
 ---
 ```
 
-## Общие свойства
+## General properties
 
-Ниже список основных свойств которые помогут вам лучше представить читателю вашу документацию.
+Below is a list of properties that will help you better present your documentation to the reader.
 
-### Заголовок страницы
+### Page title
 
-- Тип: `string`
-- По умолчанию: Первый заголовок в файле
-
-```yaml
-title: Это заголовок страницы
-```
-
-Также данное свойство отвечает за название вашего компонента, если у вас одностраничная документация, то в том единственном файле, а в случае многостраничной документации в файле `index.md` в корне папки вашего компонента.
-
-### Описание страницы
-
-- Тип: `string`
+- Type: `string`
+- By default: First header in file
 
 ```yaml
-description: Это описание страницы
+title: The page title
 ```
 
-Данное свойство отвечает за содержимое мета-тега description. А в случае с главным файлом компонента еще и за описание в списке компонентов.
+Also, this property is responsible for the name of your component, if you have a single-page documentation, then in that single file, and in the case of multi-page documentation, then in the `index.md` file at the root of your component directory.
 
-### Оглавление
+### Page description
 
-- Тип: `number | [number, number] | 'deep' | false`
-- По умолчанию: `2`
+- Type: `string`
+
+```yaml
+description: The page description
+```
+
+This property is responsible for the contents of the description meta tag. And, in the case of the main component file, also for the description in the general list of components.
+
+### Table of contents
+
+- Type: `number | [number, number] | 'deep' | false`
+- By default: `2`
 
 ```yaml
 outline: [2,3]
 ```
 
-Уровень или уровни заголовков из которых необходимо сгенерировать оглавление.
+The heading level or levels from which to generate the table of contents.
 
-Вы можете указать конкретный уровень, передав число, или задать диапазон. Есть возможность указать `deep` который эквивалентен значению: `[2, 6]` для того чтобы оглавление сгенерировалось из всех заголовков кроме `h1`. Также можно указать `false` для того, чтобы его скрыть.
+You can specify the heading level as a number, or as a range. It is possible to specify `deep`, which is equivalent to `[2, 6]`, to have the table of contents generated from all headings except `h1`. You can also specify `false` to hide the table of contents.
 
-Например у данной страницы указано значение: `[2, 3]` и поэтому вы видите оглавление сгенерированное из заголовков второго и третьего уровня.
+For example, this page has the value `[2, 3]` and therefore you see a table of contents generated from the headings of the second and third levels.
 
-### Последнее обновление
+### Last update
 
-- Тип: `boolean`
-- По умолчанию: `true`
+- Type: `boolean`
+- By default: `true`
 
 ```yaml
 lastUpdated: false
 ```
 
-Отображать ли дату последнего обновления в конце страницы.
+Whether to display the date of the last update at the end of the page.
 
-### Ссылка на обновление
+### Update link
 
-- Тип: `boolean`
-- По умолчанию: `true`
+- Type: `boolean`
+- By default: `true`
 
 ```yaml
 editLink: false
 ```
 
-Отображать ли ссылку на обновление страницы.
+Whether to display a link to page updates.
 
-## Свойства компонента
+## Component properties
 
-В данном разделе представлен список свойств относящихся только к данным компонентов, т.е. они могут быть указаны в файле документации компонента если у вас одностраничная документация (Пример: `ajaxform.md`) или если у вас многостраничная документация, то в файле `index.md` который находится в корне папки вашего компонента (Пример: `minishop2/index.md`).
+This section provides a list of properties that apply only to components, i.e. they can be specified in the component's documentation file if you have a single-page documentation (Example: `ajaxform.md`) or if you have multi-page documentation, then in the `index.md` file located at the root of your component directory (Example: `minishop2/index.md`).
 
-### Логотип компонента
+### Component logo
 
-- Тип: `string`
+- Type: `string`
 
 ```yaml
 logo: https://modstore.pro/assets/extras/minishop2/logo-lg.png
 ```
 
-Ссылка на логотип компонента.
+Link to the component logo.
 
-### Страница компонента на [modstore.pro]
+### Component page on [modstore.pro]
 
-- Тип: `string`
+- Type: `string`
 
 ```yaml
 modstore: https://modstore.pro/packages/ecommerce/minishop2
 ```
 
-Ссылка на страницу компонента в маркетплейсе [modstore.pro].
+Link to the component page in the marketplace [modstore.pro].
 
-### Страница компонента на [modx.com]
+### Component page on [modx.com]
 
-- Тип: `string`
+- Type: `string`
 
 ```yaml
 modx: https://modx.com/extras/package/minishop2
 ```
 
-Ссылка на страницу компонента в официальном репозитории [modx.com].
+Link to the component page in the official repository [modx.com].
 
-### Репозиторий исходного кода компонента
+### Component source code repository
 
-- Тип: `string`
+- Type: `string`
 
 ```yaml
 repository: https://github.com/modx-pro/miniShop2
 ```
 
-Ссылка на репозиторий исходного кода компонента.
+Link to the source code repository of the component.
 
-### Автор компонента
+### Component author
 
-- Тип: `string`
+- Type: `string`
 
 ```yaml
 author: modx-pro
 ```
 
-Укажите свой логин на [github.com].  В файле по пути `docs/authors.json` хранится объект с данными авторов в нескольких возможных форматах. Если в нём нет вашего аккаунта, то добавьте.
+Login on [github.com]. The file along the path `docs/authors.json` stores an object with the data of authors in several possible formats. If it does not contain your account, then add it.
 
 ```json
 {
-  "логин": "Имя автора"
+  "login": "Author's name"
 }
 
-// или
+// or
 
 {
-  "логин": {
-    "name": "Имя автора",
-    "modstore": "Ссылка на страницу автора в маркетплейсе modstore.pro"
+  "login": {
+    "name": "Author's name",
+    "modstore": "Link to the author's page in the modstore.pro marketplace"
   }
 }
 
-// или
+// or
 
 {
-  "логин": {
+  "login": {
     "name": {
-      "ru": "Имя автора на русском",
-      "en": "Имя автора на английском"
+      "ru": "Author's name in russian",
+      "en": "Author's name in english"
     },
-    "modstore": "Ссылка на страницу автора в маркетплейсе modstore.pro"
+    "modstore": "Link to the author's page in the modstore.pro marketplace"
   }
 }
 ```
 
-### Меню компонента
+### Component menu
 
-- Тип: `SidebarItem[]`
+- Type: `SidebarItem[]`
 
 ```yaml
 items: [
   {
-    text: 'Сниппеты',
+    text: 'Snippets',
     items: [
       { text: 'pdoResources', link: 'snippets/pdoresources' },
       { text: 'pdoMenu', link: 'snippets/pdomenu' },
@@ -174,7 +175,7 @@ items: [
     ],
   },
   {
-    text: 'Классы',
+    text: 'Classes',
     link: 'classes/',
     items: [
       { text: 'pdoTools', link: 'classes/pdotools' },
@@ -182,15 +183,15 @@ items: [
       { text: 'pdoParser', link: 'classes/pdoparser' },
     ],
   },
-  { text: 'Общие параметры', link: 'general-properties' },
-  { text: 'Файловые элементы', link: 'file-elements' },
-  { text: 'Парсер', link: 'parser' },
+  { text: 'Properties', link: 'general-properties' },
+  { text: 'File elements', link: 'file-elements' },
+  { text: 'Parser', link: 'parser' },
 ]
 
-// или
+// or
 
 items:
-  - text: Сниппеты
+  - text: Snippets
     items:
       - text: pdoResources
         link: snippets/pdoresources
@@ -198,7 +199,7 @@ items:
         link: snippets/pdomenu
       - text: pdoPage
         link: snippets/pdopage
-  - text: Классы
+  - text: Classes
     link: classes/
     items:
       - text: pdoTools
@@ -207,62 +208,62 @@ items:
         link: classes/pdofetch
       - text: pdoParser
         link: classes/pdoparser
-  - text: Общие параметры
+  - text: Properties
     link: general-properties
-  - text: Файловые элементы
+  - text: File elements
     link: file-elements
-  - text: Парсер
+  - text: Parser
     link: parser
 ```
 
-Данное свойство отвечает за меню документации вашего компонента. Ссылки нужно указывать относительно корня вашей папки и соответственно без `.md`.
+This property is responsible for displaying the documentation menu of your component. Links must be specified relative to the root directory of your component and, accordingly, without `.md`.
 
 ```ts
 interface SidebarItem {
   /**
-   * Текст пункта меню.
+   * Menu item text.
    */
   text?: string
 
   /**
-   * Ссылка на пункт меню.
+   * Menu item link.
    */
   link?: string
 
   /**
-   * Список вложенных пунктов.
+   * List of nested items.
    */
   items?: SidebarItem[]
 }
 ```
 
-### Зависимости компонента
+### Component dependencies
 
-- Тип: `string | string[]`
+- Type: `string | string[]`
 
-Данное свойство отвечает за вывод зависимостей вашего компонента. Даже если документации зависимости нет в нашем сервисе.
+This property is responsible for displaying the dependencies of your component. Even if no dependency documentation is provided.
 
 ```yaml
 dependencies: miniShop2
 
-// или
+// or
 
 dependencies: ['miniShop2', 'msOptionsPrice2']
 
-// или
+// or
 
 dependencies:
   - miniShop2
   - msOptionsPrice2
 ```
 
-### Категория компонента
+### Component category
 
-- Тип: `string`
+- Type: `string`
 
-На данный момент есть одна категория `payment`, который отвечает за вывод модулей оплаты на странице [списка модулей оплаты miniShop2](/components/minishop2/payments).
+At the moment there is one `payment` category, which is responsible for displaying payment modules on the [list of miniShop2 payment modules](/components/minishop2/payments) page.
 
-<!-- Укажите одну или несколько категорий вашего компонента. Список доступных категорий находится в файле по пути: `docs/categories.json`. -->
+<!-- Specify one or more categories for your component. The list of available categories is in the file along the path: `docs/categories.json`. -->
 
 ```yaml
 categories: payment
