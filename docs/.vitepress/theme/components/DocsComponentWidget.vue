@@ -78,10 +78,12 @@ const show = computed<boolean>(() => {
     </figure>
     <div class="body">
       <VPLink
+        v-if="page.component.title"
         :href="page.component.link"
         class="title"
-        v-text="page.component.title"
-      />
+      >
+        {{ page.component.title }}
+      </VPLink>
       <div v-if="page.component.description" class="description">
         {{ page.component.description }}
       </div>
