@@ -5,7 +5,7 @@ lastUpdated: false
 
 ## Introduction
 
-We present to your attention the documentation for the [MODX Revolution](https://modx.com/) components, open to everyone.
+We present to your attention the documentation for the [MODX Revolution](https://modx.com/) extras, open to everyone.
 
 This is a free Open Source project hosted on [github](https://github.com/modx-pro/Docs).
 This placement allows everyone to supplement the "Documentation" pages, fork, clone the project, saving and modifying the documentation to their liking.

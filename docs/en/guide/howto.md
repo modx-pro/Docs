@@ -18,7 +18,7 @@ But to track the quality of the changes (especially if you add visual design to 
 
 The quickest and easiest way to make small edits is to do it right inside the [github repository][repository].
 
-::: info
+::: info INFO
 You must have a GitHub account ([simple signup](https://github.com/signup)).
 :::
 
@@ -26,12 +26,12 @@ Select the required file for editing in the `docs/components/` directory.
 
 ## Recommended way to make changes to the documentation
 
-::: info
+::: info INFO
 For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as an npm or yarn package manager installed on your computer.
 Knowledge and skills of working with VUE are not required.
 :::
 
-::: tip
+::: tip TIP
 Link to step by step instructions
 [How to correctly send a Pull Request to someone else's project](https://gist.github.com/AgelxNash/a030d9c080eda4a3791e#file-pull-request-md)
 :::
@@ -41,7 +41,7 @@ Link to step by step instructions
 
     [![](https://file.modx.pro/files/6/1/2/612882dad02d9ba59041e114f060b9b5s.jpg)](https://file.modx.pro/files/6/1/2/612882dad02d9ba59041e114f060b9b5.png)
 
-    ::: warning
+    ::: warning WARNING
     If you already have a documentation fork, be sure to sync it to get the latest changes.
     :::
 
@@ -73,7 +73,7 @@ Link to step by step instructions
 
     ```shell
     git add .
-    git commit -m "new change in my component"
+    git commit -m "new change in my extra"
     git push -u origin 999-your-branch-name
     ```
 
@@ -83,7 +83,7 @@ All documentation is located in the `docs` directory.
 
 ```
 📦docs
- ┣ 📂components     - component documentation
+ ┣ 📂components     - extras documentation
  ┣ 📂faq            - ready-made solutions, blanks for frequently encountered tasks
  ┣ 📂guide          - documentation for documentation
  ┣ 📂system         - MODX documentation
@@ -93,11 +93,11 @@ All documentation is located in the `docs` directory.
  ┗ 📜authors.json   - list of authors
 ```
 
-The documentation for components in the `docs/components` directory is organized as follows:
+The documentation for extras in the `docs/components` directory is organized as follows:
 
-You can create one single file with the name of the component and the extension `.md` (for example `ajaxform.md`) and place all the necessary information in it.
+You can create one single file with the name of the extra and the extension `.md` (for example `ajaxform.md`) and place all the necessary information in it.
 
-You can create a directory with the name of the component and place any number of `.md` files inside, according to the theme of your component.
+You can create a directory with the name of the extra and place any number of `.md` files inside, according to the theme of your extra.
 In this case, the main required file will be `index.md`, which will contain links to other page files.
 
 ::: info Naming requirements for files and folders
@@ -110,7 +110,7 @@ Do not use punctuation other than a hyphen (use to link words).
 
 ## plop generator
 
-For those who want to add new component documentation to the project, the [plop] generator script is integrated.
+For those who want to add new documentation of the extra to the project, the [plop] generator script is integrated.
 
 ### Instructions
 
@@ -145,7 +145,7 @@ For those who want to add new component documentation to the project, the [plop]
     > Multi-page documentation
     ```
 
-4. Now you need to give your component a name and press [[Enter]] as well.
+4. Now you need to give your extra a name and press [[Enter]] as well.
 
     ```sh
     $ plop
@@ -167,7 +167,7 @@ For those who want to add new component documentation to the project, the [plop]
     >(*) English
     ```
 
-6. **Done!** You will see something like this in the terminal. This means that the script has created the necessary structure, and you will have to fill out the documentation for your component.
+6. **Done!** You will see something like this in the terminal. This means that the script has created the necessary structure, and you will have to fill out the documentation for your extra.
 
     ```sh
     $ plop
@@ -187,8 +187,8 @@ For those who want to add new component documentation to the project, the [plop]
     Done in 1071.49s.
     ```
 
-    ::: tip
-    Of course, you can change the structure, add or change files and directories, the script is intended only for quick deployment of the template structure of the component documentation.
+    ::: tip TIP
+    Of course, you can change the structure, add or change files and directories, the script is intended only for quick deployment of the template structure of the documentation of extra.
     :::
 
 [plop]: https://github.com/plopjs/plop

@@ -4,7 +4,7 @@ lastUpdated: false
 ---
 # VitePress features
 
-::: info
+::: info INFO
 VitePress uses [markdown-it](https://github.com/markdown-it/markdown-it) as a parser that extends markdown.
 We can add substantially more convenience and beauty.
 :::
@@ -267,7 +267,7 @@ In addition to single-line highlights, there are also multi-line highlights:
 You can add a comment `// [!code focus]` on the desired line of code, and all code will be blurred except for that line.
 Also, you can specify line numbers `// [!code focus:<lines>]`.
 
-::: warning
+::: warning WARNING
 Only **one** space is required after `code`. In the examples below, an extra space has been added for correct output.
 :::
 
