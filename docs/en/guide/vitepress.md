@@ -2,36 +2,36 @@
 outline: [2,3]
 lastUpdated: false
 ---
-# Возможности VitePress
+# VitePress features
 
 ::: info
-VitePress использует [markdown-it](https://github.com/markdown-it/markdown-it) в качестве парсера который расширает возможности markdown.
-Мы можем добавить существенно больше красоты и удобства.
+VitePress uses [markdown-it](https://github.com/markdown-it/markdown-it) as a parser that extends markdown.
+We can add substantially more convenience and beauty.
 :::
 
-Полный, актуальный текст всех возможностей всегда можно посмотреть на <https://vitepress.dev/guide/markdown>.
+See <https://vitepress.dev/guide/markdown> for a complete list of all features.
 
-Рассмотрим подробнее каждую из них.
+Let's take a closer look at each of them.
 
-## Заголовки-ссылки
+## Anchor links for headers
 
-Заголовки автоматически становятся ссылками-якорями вида `guide/vitepress#zagolovkissylki` .
-Текст заголовка автоматически транслитерируется и обрезается до 25-ти символов (без обрезки слов).
+Headings automatically become anchor links like `guide/vitepress#zagolovkissylki`.
+Title text is automatically transliterated and truncated to 25 characters (words are not truncated).
 
-### Произвольный анкор {#my-anchor}
+### Custom anchor {#my-anchor}
 
-Но вы можете назначить произвольный анкор любому из заголовков, используя конструкцию `{#my-anchor}`.
+But you can assign a custom anchor to any of the headings using the `{#my-anchor}` construct.
 
 ```markdown
-## Обычный заголовок
-### Произвольный анкор {#my-anchor}
+## Regular header
+### Custom anchor {#my-anchor}
 ```
 
-## Таблицы
+## Tables
 
-Генерируйте таблицы в стиле GitHub.
+Create tables in GitHub style.
 
-**Пример:**
+**Example:**
 
 ```markdown
 | Tables        |      Are      |  Cool |
@@ -41,7 +41,7 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 | zebra stripes |   are neat    |    $1 |
 ```
 
-**Вывод:**
+**Output:**
 
 | Tables        |      Are      |  Cool |
 | ------------- | :-----------: | ----: |
@@ -49,37 +49,37 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 | col 2 is      |   centered    |   $12 |
 | zebra stripes |   are neat    |    $1 |
 
-## Эмоджи
+## Emoji
 
-**Пример:**
+**Example:**
 
 ```markdown
 :tada: :100:
 ```
 
-**Вывод:**
+**Output:**
 
 :tada: :100:
 
-[Список всех доступных эмоджи здесь](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json).
+[List of all available emojis here](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json).
 
-## Вывод оглавления в любом месте
+## Displaying the table of contents anywhere
 
-Генерируется на основе заголовков.
+Generated based on headers.
 
-**Пример:**
+**Example:**
 
 ```
 [[toc]]
 ```
 
-**Вывод:**
+**Output:**
 
 [[toc]]
 
-## Красивые уведомления
+## Beautiful notifications
 
-**Пример:**
+**Example:**
 
 ```markdown
 ::: info
@@ -103,7 +103,7 @@ This is a details block.
 :::
 ```
 
-**Вывод:**
+**Output:**
 
 ::: info
 This is an info box.
@@ -125,50 +125,50 @@ This is a dangerous warning.
 This is a details block.
 :::
 
-## Уведомдения с произвольными заголовками
+## Notifications with custom titles
 
-**Пример:**
+**Example:**
 
 ````markdown
-::: info Произвольный заголовок
+::: info Custom title
 This is an info box.
 :::
 
-::: danger Опасно
+::: danger Important
 This is a dangerous warning.
 :::
 
-::: details Нажмите для отображения кода
+::: details Click to display code
 ```js
-console.log('Привет, VitePress!');
+console.log('Hello, VitePress!');
 ```
 :::
 ````
 
-**Вывод:**
+**Output:**
 
-::: info Произвольный заголовок
+::: info Custom title
 This is an info box.
 :::
 
-::: danger Опасно
+::: danger Important
 This is a dangerous warning.
 :::
 
-::: details Нажмите для отображения кода
+::: details Click to display code
 
 ```js
-console.log('Привет, VitePress!');
+console.log('Hello, VitePress!');
 ```
 
 :::
 
-## Подсветка синтаксиса в блоках кода
+## Syntax highlighting in code blocks
 
-VitePress использует [Shiki](https://shiki.matsu.io/) для подсветки синтаксиса вашего кода в блоках markdown, используя цветной текст
-Shiki поддерживает довольно широкий диапазон языков программирования. Все что вам нужно - указать нужный язык сразу после открывающих блок кода кавычек.
+VitePress uses [Shiki](https://shiki.matsu.io/) for code syntax highlighting in markdown blocks using colored text.
+Shiki supports a wide range of programming languages. You only need to specify the programming language immediately after the opening quotes of the code block.
 
-**Пример:**
+**Example:**
 
 ````markdown
 ```modx
@@ -179,7 +179,7 @@ Shiki поддерживает довольно широкий диапазон 
 ```
 ````
 
-**Вывод:**
+**Output:**
 
 ```modx
 [[!msProducts?
@@ -190,7 +190,7 @@ Shiki поддерживает довольно широкий диапазон 
 
 ---
 
-**Пример:**
+**Example:**
 
 ````markdown
 ```fenom
@@ -201,7 +201,7 @@ Shiki поддерживает довольно широкий диапазон 
 ```
 ````
 
-**Вывод:**
+**Output:**
 
 ```fenom
 {'!msProducts' | snippet : [
@@ -210,13 +210,13 @@ Shiki поддерживает довольно широкий диапазон 
 ]}
 ```
 
-Перечень поддерживаемых языков можно посмотреть [по этой ссылке](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages).
+See the list of supported programming languages [at the link](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages).
 
-## Подсветка строки внутри кода
+## Line highlighting inside code
 
-Для того, чтобы привлечь внимание пользователя, вы можете подчеркнуть нужные строки.
+To grab the user's attention, you can highlight the lines you want.
 
-**Пример:**
+**Example:**
 
 ````markdown
 ```fenom{2}
@@ -227,7 +227,7 @@ Shiki поддерживает довольно широкий диапазон 
 ```
 ````
 
-**Вывод:**
+**Output:**
 
 ```fenom{2}
 {'!msProducts' | snippet : [
@@ -236,13 +236,13 @@ Shiki поддерживает довольно широкий диапазон 
 ]}
 ```
 
-Вдобавок к однострочным выделениям есть и многострочные:
+In addition to single-line highlights, there are also multi-line highlights:
 
-- Диапазон `{5-8}`, `{3-10}`, `{10-17}`
-- Перечисление `{4,7,9}`
-- Микс `{4,7-13,16,23-27,40}`
+- Range `{5-8}`, `{3-10}`, `{10-17}`
+- Enumeration `{4,7,9}`
+- Mixed `{4,7-13,16,23-27,40}`
 
-**Пример:**
+**Example:**
 
 ````markdown
 ```fenom{1,3}
@@ -253,7 +253,7 @@ Shiki поддерживает довольно широкий диапазон 
 ```
 ````
 
-**Вывод:**
+**Output:**
 
 ```fenom{1,3}
 {'!msProducts' | snippet : [
@@ -262,16 +262,16 @@ Shiki поддерживает довольно широкий диапазон 
 ]}
 ```
 
-## Фокусировка
+## Focus
 
-Добавляем комментарий `// [!code focus]` в нужной строке кода, и весь код, кроме указанной строки будет размыт
-Также, вы можете задать номера строк `// [!code focus:<lines>]`.
+You can add a comment `// [!code focus]` on the desired line of code, and all code will be blurred except for that line.
+Also, you can specify line numbers `// [!code focus:<lines>]`.
 
 ::: warning
-Между `code` и `focus` **один** пробел. В примерах для корректного вывода добавлен лишний.
+Only **one** space is required after `code`. In the examples below, an extra space has been added for correct output.
 :::
 
-**Пример:**
+**Example:**
 
 ````markdown
 ```fenom
@@ -282,7 +282,7 @@ Shiki поддерживает довольно широкий диапазон 
 ```
 ````
 
-**Вывод:**
+**Output:**
 
 ```fenom
 {'!msProducts' | snippet : [
@@ -291,11 +291,11 @@ Shiki поддерживает довольно широкий диапазон 
 ]}
 ```
 
-## Подсветка различий
+## Highlighting differences in code
 
-Добавляем комментарии `// [!code --]` или `// [!code ++]` в нужных строках и получаем красивую подсветку разницы.
+You can add `// [!code --]` or `// [!code ++]` comments on the lines and get nice highlighting differences in code.
 
-**Пример:**
+**Example:**
 
 ````markdown
 ```fenom
@@ -307,7 +307,7 @@ Shiki поддерживает довольно широкий диапазон 
 ```
 ````
 
-**Вывод:**
+**Output:**
 
 ```fenom
 {'!msProducts' | snippet : [
@@ -317,11 +317,11 @@ Shiki поддерживает довольно широкий диапазон 
 ]}
 ```
 
-## Ошибки и предупреждения в блоках кода
+## Errors and warnings in code blocks
 
-Добавляем комментарии `// [!code warning]` или `// [!code error]` в нужную строку и раскрашиваем ее в указанный цвет.
+You can add `// [!code warning]` or `// [!code error]` comments on the lines and color the lines with the appropriate color.
 
-**Пример:**
+**Example:**
 
 ````markdown
 ```fenom
@@ -333,7 +333,7 @@ Shiki поддерживает довольно широкий диапазон 
 ```
 ````
 
-**Вывод:**
+**Output:**
 
 ```fenom
 {'!msProducts'|snippet:[
@@ -343,45 +343,45 @@ Shiki поддерживает довольно широкий диапазон 
 ]}
 ```
 
-## Нумерация строк кода
+## Code line numbering
 
-Для включения нумерации кода вам необходимо добавить: `:line-numbers`.
+To enable code line numbering you need to add: `:line-numbers`.
 
-**Пример:**
+**Example:**
 
 ````markdown
 ```ts {1}
-// Нумерация строк по умолчанию выключена
-const line2 = 'Вторая строка кода'
-const line3 = 'Третья строка кода'
+// Line numbering is off by default
+const line2 = 'Second line of code'
+const line3 = 'Third line of code'
 ```
 
 ```ts:line-numbers {1}
-// Нумерация строк включена
-const line2 = 'Вторая строка кода'
-const line3 = 'Третья строка кода'
+// Line numbering is now enabled
+const line2 = 'Second line of code'
+const line3 = 'Third line of code'
 ```
 ````
 
-**Вывод:**
+**Output:**
 
 ```ts {1}
-// Нумерация строк по умолчанию выключена
-const line2 = 'Вторая строка кода'
-const line3 = 'Третья строка кода'
+// Line numbering is off by default
+const line2 = 'Second line of code'
+const line3 = 'Third line of code'
 ```
 
 ```ts:line-numbers {1}
-// Нумерация строк включена
-const line2 = 'Вторая строка кода'
-const line3 = 'Третья строка кода'
+// Line numbering is now enabled
+const line2 = 'Second line of code'
+const line3 = 'Third line of code'
 ```
 
-## Группы кода
+## Grouping code blocks
 
-Есть возможность группировать блоки кода вот таким образом:
+You can group blocks of code like this:
 
-**Пример:**
+**Example:**
 
 ````markdown
 ::: code-group
@@ -403,7 +403,7 @@ const line3 = 'Третья строка кода'
 :::
 ````
 
-**Вывод:**
+**Output:**
 
 ::: code-group
 
@@ -423,14 +423,14 @@ const line3 = 'Третья строка кода'
 
 :::
 
-А также есть возможность указать произвольный заголовок каждой вкладке, например для того, чтобы уточнить названия файлов или чанков.
+It is also possible to specify an custom title for each group tab, for example, to clarify the names of files or chunks.
 
-**Пример:**
+**Example:**
 
 ````markdown
 ::: code-group
 
-```modx [В шаблоне]
+```modx [In template]
 [[!pdoMenu?
   &parents=`0`
   &tplOuter=`MyMenuOuterChunk`
@@ -456,11 +456,11 @@ const line3 = 'Третья строка кода'
 :::
 ````
 
-**Вывод:**
+**Output:**
 
 ::: code-group
 
-```modx [В шаблоне]
+```modx [In template]
 [[!pdoMenu?
   &parents=`0`
   &tplOuter=`MyMenuOuterChunk`
@@ -485,20 +485,20 @@ const line3 = 'Третья строка кода'
 
 :::
 
-## Элементы ввода с клавиатуры `<kbd>`
+## Keyboard buttons displaying `<kbd>`
 
-Для того, чтобы указать элементы ввода с клавиатуры, например сочетания клавиш, оберните их в двойные квадратные скобки.
+To display keyboard buttons, such as keyboard shortcuts, wrap them in double square brackets.
 
-**Пример:**
+**Example:**
 
 ```markdown
-Для сохранения ресурса нажмите сочетание клавиш [[Ctrl]] или [[⌘ Cmd]] + [[s]]
+To save a resource, press the keyboard shortcut [[Ctrl]] / [[⌘ Cmd]] + [[s]]
 ```
 
-**Вывод:**
+**Output:**
 
-Для сохранения ресурса нажмите сочетание клавиш [[Ctrl]] или [[⌘ Cmd]] + [[s]]
+To save a resource, press the keyboard shortcut [[Ctrl]] / [[⌘ Cmd]] + [[s]]
 
-::: warning Помните
-Значение `[[toc]]` зарезервированно плагином **toc** (table of contents) и оно выведет оглавление страницы.
+::: warning Keep in mind
+The `[[toc]]` string is reserved by the **toc** (table of contents) plugin and it will display the table of contents (see above).
 :::

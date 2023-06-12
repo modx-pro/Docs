@@ -1,59 +1,58 @@
 ---
 lastUpdated: false
 ---
-# Начало работы
+# How to start
 
-Данный сервис связан с нашим [GitHub репозиторием][repository]. Любые изменения внесенные в репозиторий сразу же отображаются и на сайте.
+This service is linked to our [github repository][repository]. Any changes made to the repository are displayed on the site.
 
-Изнутри проект представляет собой VUE приложение, с плагином vitepress который преобразует md разметку в красивый HTML.
-VitePress также поставляет инструменты, украшающие сухой и строгий стиль md разметки.
+From the inside, the project is a VUE application, with a VitePress plugin that converts md markup into beautiful HTML.
+VitePress also provides tools that spruce up the strict style of md markup.
 
-Все что вам нужно - изменить текст внутри конкретного *.md файла (или создать новый файл/каталог с файлами по примеру существующих) и прислать Pull Request
-с вашими изменениями.
+All you need is to change the text inside a specific *.md file (or create a new file/directory) and send a Pull Request with your changes.
 
-Изменить или добавить новый текст можно по разному. Самый простой способ - сделать это прямо внутри GitHub. В нем достаточно инструментов для работы с текстом.
-Но проследить за качеством изменений (особенно если вы добавляете визуальное оформление текста) не получится. Нужно разворачивать проект локально на компьютере.
+You can change or add new text in different ways.
+The easiest way is to do it right inside github. It has enough tools for working with text.
+But to track the quality of the changes (especially if you add visual design to the text) will not work. You need to deploy the project locally on your computer.
 
-## Простой способ внесения изменений в документацию
+## Easiest way to make changes to the documentation
 
-Наиболее быстрый и простой способ внесения небольших правок - сделать это прямо внутри [GitHub][repository].
+The quickest and easiest way to make small edits is to do it right inside the [github repository][repository].
 
 ::: info
-У Вас должен быть аккаунт GitHub ([простейшая регистрация](https://github.com/signup)).
+You must have a GitHub account ([simple signup](https://github.com/signup)).
 :::
 
-Выберите необходимый вам файл для редактирования в каталоге `docs/components/`.
+Select the required file for editing in the `docs/components/` directory.
 
-## Рекомендуемый способ внесения изменений в документацию
+## Recommended way to make changes to the documentation
 
 ::: info
-Для рекомендуемого способа работы вам потребуются навыки работы с основными git командами (clone, fetch, add, commit, push),
-а также установленный на компьютере менеджер пакетов npm или yarn.
-Знания и навыки работы с VUE не требутся.
+For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as an npm or yarn package manager installed on your computer.
+Knowledge and skills of working with VUE are not required.
 :::
 
 ::: tip
-Ссылка на пошаговую инструкцию
-[Как правильно отправить Pull Request в чужой проект](https://gist.github.com/AgelxNash/a030d9c080eda4a3791e#file-pull-request-md)
+Link to step by step instructions
+[How to correctly send a Pull Request to someone else's project](https://gist.github.com/AgelxNash/a030d9c080eda4a3791e#file-pull-request-md)
 :::
 
-1. Зарегистрируйтесь в GitHub если, у вас до сих пор нет там аккаунта.
-2. Сделайте форк репозитория.
+1. Sign up for GitHub if you don't have an account.
+2. Fork the repository.
 
     [![](https://file.modx.pro/files/6/1/2/612882dad02d9ba59041e114f060b9b5s.jpg)](https://file.modx.pro/files/6/1/2/612882dad02d9ba59041e114f060b9b5.png)
 
     ::: warning
-    Если у вас уже есть форк документации, обязательно синхронизируйте его, чтобы забрать самые свежие обновления.
+    If you already have a documentation fork, be sure to sync it to get the latest changes.
     :::
 
-3. Клонируйте ваш форк к себе на компьютер.
+3. Clone your fork to your computer.
 
     ```shell
     git clone https://github.com/your-fork/Docs.git
     ```
 
-4. Рекомендуется создать отдельную ветку, для вносимого изменения. Но это не обязательно.
-5. Если вы хотите предварительно просмотреть вносимые изменения локально на компьютере (рекомендуется), установите необходимые зависимости.
+4. It is recommended to create a separate branch for the changes you make, but this is not required.
+5. If you want to preview your changes on your computer (recommended) before submitting a Pull Request, install the required dependencies.
 
     ::: code-group
 
@@ -69,54 +68,53 @@ VitePress также поставляет инструменты, украшаю
 
     :::
 
-6. Найдите и внесите необходимые изменения в существующий файл документации или создайте новый.
-7. Добавьте внесенные изменения в git, создав новый коммит.
+6. Make the required changes to the existing documentation file or create a new one.
+7. Add your changes to git by creating a new commit.
 
     ```shell
     git add .
     git commit -m "new change in my component"
-    git push -u origin 999-название-вашей-ветки
+    git push -u origin 999-your-branch-name
     ```
 
-## Структура документации
+## Structure of the documentation
 
-Вся документация располагается в каталоге `docs`.
+All documentation is located in the `docs` directory.
 
 ```
 📦docs
- ┣ 📂components     - документация по компонентам
- ┣ 📂faq            - готовые решения, заготовки для часто повторяемых задач
- ┣ 📂guide          - документация к документации
- ┣ 📂system         - документация по MODX
- ┣ 📂en             - англоязычная версия документации
+ ┣ 📂components     - component documentation
+ ┣ 📂faq            - ready-made solutions, blanks for frequently encountered tasks
+ ┣ 📂guide          - documentation for documentation
+ ┣ 📂system         - MODX documentation
+ ┣ 📂en             - english language documentation
  ┃ ┣ 📂components
- ┣ 📂public         - логотипы, изображения используемые внутри проекта
- ┗ 📜authors.json   - список авторов
+ ┣ 📂public         - logos, images used within the project
+ ┗ 📜authors.json   - list of authors
 ```
 
-Документация по компонентам в каталоге `docs/components` устроена следующим образом:
+The documentation for components in the `docs/components` directory is organized as follows:
 
-Можно создать один единственный файл с названием компонента и расширением `.md`, (например `ajaxform.md`) и разместить всю необходимую информацию в нем.
+You can create one single file with the name of the component and the extension `.md` (for example `ajaxform.md`) and place all the necessary information in it.
 
-Можно создать каталог с названием компонента и внутри разместить произвольное количество `.md` файлов, по теме вашего компонента.
-В этом случае главным обязательным файлом будет `index.md`, внутри которого разместятся ссылки на соседние страницы.
+You can create a directory with the name of the component and place any number of `.md` files inside, according to the theme of your component.
+In this case, the main required file will be `index.md`, which will contain links to other page files.
 
-::: info Минимальные требования к именованию файлов и папок
-Используйте лаконичные имена файлов и папок
-(пример: не `systemniye-nastroyki` и не `system-settings`, а просто `settings`)
+::: info Naming requirements for files and folders
+Use concise file and folder names (for example, use `settings` instead of `system-settings`).
 
-Не используйте кириллицу.
-Не используйте знаки препинания, кроме дефиса. Да и его только для связки слов.
-Только нижний регистр слов
+Use latin letters.
+Use only lowercase words.
+Do not use punctuation other than a hyphen (use to link words).
 :::
 
-## Генератор plop
+## plop generator
 
-Для тех кто хочет добавить новую документацию компонента в проект интегрирован скрипт генератора [plop].
+For those who want to add new component documentation to the project, the [plop] generator script is integrated.
 
-### Инструкция по применению
+### Instructions
 
-1. После установки зависимостей, вам нужно ввести в терминале след. команду:
+1. After installing the dependencies, you need to enter the following command in the terminal:
     ::: code-group
 
     ```sh [npm]
@@ -128,55 +126,55 @@ VitePress также поставляет инструменты, украшаю
     ```
 
     :::
-2. Таким образом вы запустите CLI helper и увидете такую картину. Используя клавиши [[&uarr;]] и [[&darr;]] выберите нужный язык и нажмите [[Enter]]:
+2. So you will run the CLI helper and you will see the following message. Use the [[&uarr;]] and [[&darr;]] keys to select the desired language and press [[Enter]]:
 
     ```sh
     $ plop
     ? Выберите язык / Choose language (Use arrow keys)
-    > Русский
-      English
+      Русский
+    > English
     ```
 
-3. Далее вам будет предложено выбрать шаблон документации, их два: **Одностраничная** и **Многостраничная**. Выберите нужный и нажмите [[Enter]].
+3. Next, you will be asked to select a documentation template, there are two of them: **Single-page** and **Multi-page documentation**. Select the one you want and press [[Enter]].
 
     ```sh
     $ plop
-    ? Выберите язык / Choose language Русский
-    ? Выберите шаблон документации (Use arrow keys)
-      Одностраничная документация
-    > Многостраничная документация
+    ? Выберите язык / Choose language English
+    ? Choose documentation template (Use arrow keys)
+      Single-page documentation
+    > Multi-page documentation
     ```
 
-4. Теперь вам нужно ввести название вашего компонента и также нажать на [[Enter]].
+4. Now you need to give your component a name and press [[Enter]] as well.
 
     ```sh
     $ plop
-    ? Выберите язык / Choose language Русский
-    ? Выберите шаблон документации Многостраничная документация
-    ? Введите название компонента
+    ? Выберите язык / Choose language English
+    ? Choose documentation template Multi-page documentation
+    ? Enter the component name
     ```
 
-5. И наконец вам нужно будет выбрать языковые версии документации. Используя клавиши [[&uarr;]] и [[&darr;]] и нажатием на [[Пробел]] вы сможете отметить нужные вам языки. Затем нажмите на кнопку [[Enter]].
+5. Finally, you will need to select the language versions of the documentation. By using the [[&uarr;]] and [[&darr;]] keys and pressing the [[Space]] you can mark the languages you need. Then press the [[Enter]] button.
 
     ```sh
     $ plop
-    ? Выберите язык / Choose language Русский
-    ? Выберите шаблон документации Многостраничная документация
-    ? Введите название компонента myFirstComponent
-    ? Выберите языковые версии документации (Press <space> to select, <a> to toggle all, <i> to invert
+    ? Выберите язык / Choose language English
+    ? Choose documentation template Multi-page documentation
+    ? Enter the component name myFirstComponent
+    ? Select the language versions of the documentation (Press <space> to select, <a> to toggle all, <i> to invert
     selection, and <enter> to proceed)
-    >(*) Русский
-     ( ) English
+     ( ) Русский
+    >(*) English
     ```
 
-6. **Готово!** Вы увидите примерно такой вывод в терминале. Это значит, что скрипт для вас создал структуру из файлов и папок, а вам останется написать документацию для своего компонента.
+6. **Done!** You will see something like this in the terminal. This means that the script has created the necessary structure, and you will have to fill out the documentation for your component.
 
     ```sh
     $ plop
-    ? Выберите язык / Choose language Русский
-    ? Выберите шаблон документации Многостраничная документация
-    ? Введите название компонента myFirstComponent
-    ? Выберите языковые версии документации Русский
+    ? Выберите язык / Choose language English
+    ? Choose documentation template Multi-page documentation
+    ? Enter the component name myFirstComponent
+    ? Select the language versions of the documentation English
     ✔  +! 8 files added
     -> \docs\components\myfirstcomponent\events.md
     -> \docs\components\myfirstcomponent\index.md
@@ -190,7 +188,7 @@ VitePress также поставляет инструменты, украшаю
     ```
 
     ::: tip
-    Конечно же вы можете изменять структуру, добавлять или изменять файлы и папки по своему усмотрению, скрипт предназначен лишь для быстрого развёртывания шаблонной структуры.
+    Of course, you can change the structure, add or change files and directories, the script is intended only for quick deployment of the template structure of the component documentation.
     :::
 
 [plop]: https://github.com/plopjs/plop
