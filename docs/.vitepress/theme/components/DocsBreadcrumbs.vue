@@ -21,7 +21,7 @@ const route = useRoute()
       class="item"
       :class="{
         active: item.link && withBase(item.link) === route.path,
-        'has-children': item.items && item.items.some(item => item.link && withBase(item.link) !== route.path),
+        // 'has-children': item.items && item.items.some(item => item.link && withBase(item.link) !== route.path),
       }"
     >
       <template v-if="item.link && withBase(item.link) !== route.path">
@@ -33,7 +33,7 @@ const route = useRoute()
         <span itemprop="name" class="name" :title="item.text" v-text="item.text" />
         <link v-if="item.link" :href="withBase(item.link)" itemprop="item">
       </template>
-      <ul
+      <!-- <ul
         v-if="item.items && item.items.some(item => item.link && withBase(item.link) !== route.path)"
         class="dropdown"
       >
@@ -54,7 +54,7 @@ const route = useRoute()
             />
           </template>
         </li>
-      </ul>
+      </ul> -->
       <meta itemprop="position" :content="idx.toString()">
     </li>
   </ol>
