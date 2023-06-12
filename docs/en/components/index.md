@@ -1,6 +1,6 @@
 ---
-title: Components
+title: Extras
 layout: home
 ---
 
-<DocsComponentsList title="Components" :search="true" />
+<DocsComponentsList title="Extras" :search="true" />

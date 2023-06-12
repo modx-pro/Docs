@@ -1,10 +1,10 @@
 ---
-title: Documentation hub for MODX components and more
+title: Documentation hub for MODX extras and more
 layout: home
 
 main:
-  title: Discover documentation of all MODX components and more
-  tagline: A simple and easy-to-use Open-Source project by and for the community, where you can find and explore the documentation of all popular MODX components, and developers can easily describe their
+  title: Discover documentation of all MODX extras and more
+  tagline: A simple and easy-to-use Open-Source project by and for the community, where you can find and explore the documentation of all popular MODX extras, and developers can easily describe their
   actions:
     - theme: brand
       text: Start learning
@@ -26,7 +26,7 @@ main:
     - title: 🌌 Ecosystem
       details: Links to authors, add-on marketplaces and repositories for better feedback, support and promotion.
     - title: 🌎 Multilingual
-      details: Publish documentation in different languages to broaden the audience of components. Participate in translations!
+      details: Publish documentation in different languages to broaden the audience of extras. Participate in translations!
     - title: 🌗 Dark theme
       details: Automatic and manual switching to study at night 👀 and already use during the day.
 ---

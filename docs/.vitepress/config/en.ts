@@ -48,7 +48,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
     themeConfig: {
       nav: [
         {
-          text: 'Components',
+          text: 'Extras',
           link: '/en/components/',
           activeMatch: '/en/components/',
         },
