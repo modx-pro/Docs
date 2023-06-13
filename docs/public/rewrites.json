@@ -1,31 +1,25 @@
 {
   "/en/components/bannery/interface":           "/en/components/bannery/",
   "/en/components/bannery/snippet":             "/en/components/bannery/",
-  "/en/components/bannery/interface/positions": "/en/components/bannery/interface/positions",
 
-  "/en/components/formalicious":               "/en/components/formalicious/",
   "/en/components/formalicious/create-a-form": "/en/components/formalicious/creating-form",
   "/en/components/formalicious/installation":  "/en/components/formalicious/setup",
 
-  "/en/components/hybridauth":          "/en/components/hybridauth/",
   "/en/components/hybridauth/snippets": "/en/components/hybridauth/",
 
   "/en/components/minifyx/snippet": "/en/components/minifyx",
 
-  "/en/components/minishop2":                 "/en/components/minishop2/",
   "/en/components/minishop2/interface":       "/en/components/minishop2/",
   "/en/components/minishop2/interface/item":  "/en/components/minishop2/interface/product",
   "/en/components/minishop2/interface/order": "/en/components/minishop2/interface/orders",
   "/en/components/minishop2/quickstart":      "/en/components/minishop2/quick-start",
   "/en/components/minishop2/snippets":        "/en/components/minishop2/snippets/",
 
-  "/en/components/ms2gallery":                   "/en/components/ms2gallery/",
   "/en/components/ms2gallery/examples":          "/en/components/ms2gallery/",
   "/en/components/ms2gallery/snippets":          "/en/components/ms2gallery/",
   "/en/components/ms2gallery/snippets/examples": "/en/components/ms2gallery/",
   "/en/components/ms2gallery/images-on-a-page":  "/en/components/ms2gallery/output",
 
-  "/en/components/msearch2":                                       "/en/components/msearch2/",
   "/en/components/msearch2/extension":                             "/en/components/msearch2/",
   "/en/components/msearch2/generic-solutions":                     "/en/components/msearch2/",
   "/en/components/msearch2/management":                            "/en/components/msearch2/",
@@ -38,11 +32,9 @@
   "/en/components/msearch2/generic-solutions/dependent-filters":   "/en/components/msearch2/solutions/dependent-filters",
   "/en/components/msearch2/generic-solutions/sategory-filtration": "/en/components/msearch2/solutions/category-filtration",
 
-  "/en/components/msproductremains":                    "/en/components/msproductremains/",
   "/en/components/msproductremains/getremains-snippet": "/en/components/msproductremains/getremains",
   "/en/components/msproductremains/usage-samples":      "/en/components/msproductremains/examples",
 
-  "/en/components/office":                                  "/en/components/office/",
   "/en/components/office/controllers":                      "/en/components/office/",
   "/en/components/office/work-logic":                       "/en/components/office/logic",
   "/en/components/office/controllers/authorization":        "/en/components/office/controllers/auth",
@@ -50,31 +42,26 @@
   "/en/components/office/controllers/remote-authorization": "/en/components/office/controllers/auth-remote",
   "/en/components/office/extra-functions":                  "/en/components/office/additional-functionality",
 
-  "/en/components/pagebreaker":        "/en/components/pagebreaker/",
   "/en/components/pagebreaker/plugin": "/en/components/pagebreaker/",
 
-  "/en/components/pdotools":                  "/en/components/pdotools/",
   "/en/components/pdotools/quick-start":      "/en/components/pdotools/",
   "/en/components/pdotools/snippets":         "/en/components/pdotools/",
   "/en/components/pdotools/classes":          "/en/components/pdotools/classes/",
   "/en/components/pdotools/classes/pdotools": "/en/components/pdotools/classes/pdotools",
   "/en/components/pdotools/general-settings": "/en/components/pdotools/general-properties",
 
-  "/en/components/sendex":                       "/en/components/sendex/",
   "/en/components/sendex/interface":             "/en/components/sendex/",
   "/en/components/sendex/snippet":               "/en/components/sendex/",
   "/en/components/sendex/interface/email-queue": "/en/components/sendex/interface/queue",
 
   "/en/components/staticsaver/plugin": "/en/components/staticsaver",
 
-  "/en/components/tickets":                                "/en/components/tickets/",
   "/en/components/tickets/interface":                      "/en/components/tickets/",
   "/en/components/tickets/snippets":                       "/en/components/tickets/",
   "/en/components/tickets/interface/user-rights-settings": "/en/components/tickets/interface/setup-permissions",
 
-  "/faq":                                             "/faq/",
   "/faq/tinymce-rich-text-editor":                    "/faq/",
-  "/faq/ace":                                         "/faq/ace/modx-ace-material-theme",
+  "/faq/ace":                                         "/faq/",
   "/faq/tinymce-rich-text-editor/add-custom-buttons": "/faq/tinymce-rte/add-custom-buttons",
 
   "/komponentyi": "/components/",
@@ -854,14 +841,14 @@
   "/komponentyi/yandexmaps2/sobyitiya-plaginov/primeryi":                                "/components/yandexmaps2/events/examples",
   "/komponentyi/yandexmaps2/sobyitiya-plaginov/ymonloadobjects":                         "/components/yandexmaps2/events/ymonloadobjects",
 
-  "/sistema":                                   "/system/",
-  "/sistema/osnovyi":                           "/system/",
+  "/sistema":                                   "/system/basics/tag-syntax",
+  "/sistema/osnovyi":                           "/system/basics/tag-syntax",
   "/sistema/xpdo":                              "/system/xpdo/",
   "/sistema/xpdo/obektnaya-model":              "/system/xpdo/",
   "/sistema/xpdo/obektnaya-model/obektyi-xpdo": "/system/xpdo/",
   "/sistema/xpdo/obzor":                        "/system/xpdo/",
   "/sistema/xpdo/klass-xpdo":                   "/system/xpdo/xpdo-class",
-  "/sistema/osnovyi/filtryi-vvoda-i-vyivoda":   "/system/basics/input-and-output-filters",
+  "/sistema/osnovyi/filtryi-vvoda-i-vyivoda":   "/system/basics/output-filters",
   "/sistema/osnovyi/sintaksis-tegov":           "/system/basics/tag-syntax",
 
   "/utilityi":                                             "/system/utilities/teleport/",
