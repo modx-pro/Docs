@@ -5,7 +5,7 @@ import { components } from '../theme/plugins/component'
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
-export const META_DESCRIPTION = 'META_DESCRIPTION'
+export const META_DESCRIPTION = 'A simple and easy-to-use Open-Source project by and for the community, where you can find and explore the documentation of all popular MODX extras, and developers can easily describe their'
 
 export const searchLocale: Record<string, Partial<Omit<DefaultTheme.LocalSearchOptions, 'locales'>>> = {
   en: {
