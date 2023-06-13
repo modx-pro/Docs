@@ -21,41 +21,38 @@ const route = useRoute()
       class="item"
       :class="{
         active: item.link && withBase(item.link) === route.path,
-        // 'has-children': item.items && item.items.some(item => item.link && withBase(item.link) !== route.path),
       }"
     >
-      <template v-if="item.link && withBase(item.link) !== route.path">
-        <VPLink :href="item.link" :title="item.text" itemprop="item" class="link">
-          <span itemprop="name" class="name" v-text="item.text" />
-        </VPLink>
-      </template>
-      <template v-else>
-        <span itemprop="name" class="name" :title="item.text" v-text="item.text" />
-        <link v-if="item.link" :href="withBase(item.link)" itemprop="item">
-      </template>
-      <!-- <ul
-        v-if="item.items && item.items.some(item => item.link && withBase(item.link) !== route.path)"
-        class="dropdown"
+      <VPLink
+        v-if="item.link && idx < page.breadcrumbs.length - 1"
+        :href="item.link"
+        :title="item.text"
+        itemprop="item"
+        class="link"
       >
-        <li v-for="i in item.items" class="dropdown-item">
-          <template v-if="i.link">
-            <VPLink
-              v-if="route.path !== withBase(i.link)"
-              :href="i.link"
-              :title="i.text"
-              itemprop="item"
-              class="link"
-              v-text="i.text"
-            />
-            <span
-              v-else
-              class="active"
-              v-text="i.text"
-            />
-          </template>
-        </li>
-      </ul> -->
-      <meta itemprop="position" :content="idx.toString()">
+        <span
+          itemprop="name"
+          class="name"
+          v-text="item.text"
+        />
+      </VPLink>
+      <template v-else>
+        <span
+          :title="item.text"
+          itemprop="name"
+          class="name"
+          v-text="item.text"
+        />
+        <link
+          v-if="item.link"
+          :href="item.link"
+          itemprop="item"
+        >
+      </template>
+      <meta
+        itemprop="position"
+        :content="idx.toString()"
+      >
     </li>
   </ol>
 </template>
@@ -87,22 +84,6 @@ const route = useRoute()
   margin-right: 8px;
 }
 
-.item.has-children::after {
-  content: '';
-  display: inline-block;
-  vertical-align: middle;
-  width: 0;
-  height: 0;
-  margin-left: 5px;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 5px solid var(--vp-c-text-3);
-}
-
-.item:hover .dropdown {
-  display: block;
-}
-
 .item:hover .name {
   position: relative;
   z-index: 10;
@@ -110,24 +91,6 @@ const route = useRoute()
 
 .item:not(:last-child):hover .name {
   overflow: visible;
-}
-
-.dropdown {
-  z-index: 5;
-  display: none;
-  position: absolute;
-  top: -12px;
-  left: -8px;
-  right: -8px;
-  min-width: fit-content;
-  padding: 40px 20px 20px;
-  background-color: var(--vp-c-bg-elv);
-  border-radius: var(--vp-border-radius);
-  box-shadow: 0px 4px 15px rgba(47, 63, 147, 0.08);
-}
-
-.item:first-child .dropdown {
-  left: -20px;
 }
 
 .link {
@@ -140,8 +103,6 @@ const route = useRoute()
   color: var(--vp-c-green);
 }
 
-
-.dropdown-item,
 .name {
   overflow: hidden;
   white-space: nowrap;
