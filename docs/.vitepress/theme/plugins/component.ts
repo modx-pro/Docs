@@ -103,6 +103,14 @@ export default class DocsComponent {
         ? pageData.breadcrumbs.map(item => item.text).reverse().join(siteConfig.userConfig.themeConfig.titleSeparator)
         : pageData.title
 
+    if (
+      component
+      && !pageData.description
+      && pageData.component.description
+    ) {
+      pageData.description = pageData.component.description
+    }
+
     return pageData
   }
 }
