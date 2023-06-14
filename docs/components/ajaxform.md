@@ -9,6 +9,10 @@ repository: https://github.com/modx-pro/AjaxForm
 ---
 # AjaxForm
 
+::: warning
+13 июня 2023 года команда [MODX RSC](https://github.com/modx-pro) прекратила поддержку **AjaxForm**. Он будет продолжать быть доступным на маркетплейсах [modstore.pro](https://modstore.pro/packages/utilities/ajaxform) и [extras.modx.com](https://modx.com/extras/package/ajaxform), но мы рекомендуем использовать вместо него компонент [FetchIt](/components/fetchit/).
+:::
+
 Cниппет для отправки любых форм через ajax. По умолчанию рассчитан на работу с [FormIt](https://docs.modx.com/current/en/extras/formit), но можно использовать и собственный сниппет.
 
 - Регистрирует нужные скрипты на фронтенде: [jQuery.Form](http://malsup.com/jquery/form/) и [jQuery.jGrowl](http://plugins.jquery.com/jgrowl/).
