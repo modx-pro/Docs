@@ -3,7 +3,7 @@ import type { DocsPageData } from '../plugins/component'
 import { computed } from 'vue'
 import type { Ref } from 'vue'
 import { useData } from 'vitepress'
-import DocsList from '../components/DocsList.vue'
+import DocsTree from '../components/DocsTree.vue'
 
 export interface Data {
   page: Ref<DocsPageData>
@@ -20,7 +20,7 @@ const show = computed<boolean>(() => {
   <nav v-if="show" class="vp-doc">
     <hr />
     <h3>{{ lang === 'ru' ? 'Меню компонента' : 'Component menu' }}</h3>
-    <DocsList
+    <DocsTree
       :items="page.component.items"
       class="DocsList"
     />
