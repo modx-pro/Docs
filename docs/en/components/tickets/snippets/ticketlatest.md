@@ -2,7 +2,9 @@
 
 Outputs the line of the tickets that were created and\\or commented last.
 
-*\*Snippet is caused uncashed.*
+::: tip TIP
+Snippet is caused uncashed
+:::
 
 ## Parameters
 

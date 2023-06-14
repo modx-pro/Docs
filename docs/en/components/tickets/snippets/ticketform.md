@@ -2,7 +2,9 @@
 
 Outputs the form for creating ticket by the user from frontend.
 
-*\*Snippet is caused uncashed.*
+::: tip TIP
+Snippet is caused uncashed
+:::
 
 ## Snippet's call parameters
 

@@ -29,3 +29,20 @@ items: [
 ]
 ---
 # Tickets
+
+Blog and comments system.
+
+- Unique pages in manager for sections and tickets.
+- Ability to create and edit tickets on frontend.
+- Awesome ajax comments.
+- Ability to change your comment on frontend in limited time.
+- Ability to edit, delete and remove comments in manager.
+- Built-in security policies for work with tickets and comments.
+- Smart tickets cache. When you update one page it is not clear the whole site cache.
+- Advanced content sanitization by snippet Jevix.
+- Built-in HTML editor [MarkItUp](http://markitup.jaysalvat.com/home/) for frontend.
+- Email notices about replies to ticket and comment.
+- pdoTools based snippets for get tickets, comments, sections and last events.
+- Three languages: english, russian and ukraine.
+- Ability to vote for tickets and comments, e.g. like\dislike.
+- Ability to create comments without authorization.
