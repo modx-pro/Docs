@@ -1,6 +1,3 @@
----
-outline: deep
----
 # Orders
 
 Order control panel of miniShop2 consists of form with filters and data table.

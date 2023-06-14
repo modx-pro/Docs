@@ -5,7 +5,6 @@ logo: https://modstore.pro/assets/extras/tvtable/logo-lg.png
 author: wax100
 modstore: https://modstore.pro/packages/utilities/tvtable
 repository: https://github.com/wax100/TVTable
-outline: [2,3]
 ---
 
 # TVTable

@@ -9,7 +9,7 @@ repository: https://github.com/modx-pro/miniShop2 # Ссылка на репоз
 
 dependencies: miniShop2 # Строка или массив строк с зависимостями компонента от других компонентов (Пример: miniShop2 или ['miniShop2', 'FormIt'])
 categories: payment # Строка или массив строк категорий компонента (Пример: payment или ['utilities', 'discounts'])
-outline: deep # Настройка генерации оглавления, по умолчанию: 2 (Подробнее: https://vitepress.dev/reference/frontmatter-config#outline)
+outline: deep # Настройка генерации оглавления, по умолчанию: deep (Подробнее: https://vitepress.dev/reference/frontmatter-config#outline)
 
 items: [ # Многомерный массив меню компонента
   { text: '{{ quickStart }}', link: 'quick-start' },

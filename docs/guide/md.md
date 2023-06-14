@@ -1,6 +1,5 @@
 ---
 lastUpdated: false
-outline: [2,3]
 ---
 <!-- markdownlint-disable MD049 MD050  -->
 # Краткий справочник markdown разметки

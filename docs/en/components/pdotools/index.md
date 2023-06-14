@@ -7,8 +7,6 @@ modstore: https://en.modstore.pro/packages/utilities/pdotools
 modx: https://extras.modx.com/package/pdotools
 repository: https://github.com/modx-pro/pdoTools
 
-outline: deep
-
 items: [
   {
     text: 'Snippets',

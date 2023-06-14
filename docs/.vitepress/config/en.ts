@@ -73,6 +73,11 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         '/en/guide/': getGuideSidebar(),
       },
 
+      outline: {
+        label: 'On this page',
+        level: 'deep',
+      },
+
       teamSectionTitle: 'Team',
       sponsor: {
         message: 'This service is free and open source, and its support and development depends on donations.',

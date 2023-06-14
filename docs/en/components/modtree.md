@@ -6,8 +6,6 @@ author: visermort
 modstore: https://en.modstore.pro/packages/ecommerce/modtree
 modx: https://extras.modx.com/package/modtree
 repository: https://github.com/visermort/ModTree
-
-outline: deep
 ---
 # ModTree
 

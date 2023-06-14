@@ -1,6 +1,3 @@
----
-outline: deep
----
 # Field Types
 
 A form consists of fields. These fields can be categorised by type. Formalicious is shipped with the most common field-types by default:

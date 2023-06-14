@@ -1,5 +1,4 @@
 ---
-outline: [2,3]
 lastUpdated: false
 ---
 
@@ -44,7 +43,7 @@ description: Это описание страницы
 ### Оглавление
 
 - Тип: `number | [number, number] | 'deep' | false`
-- По умолчанию: `2`
+- По умолчанию: `deep`
 
 ```yaml
 outline: [2,3]

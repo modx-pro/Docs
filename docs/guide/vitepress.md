@@ -1,5 +1,4 @@
 ---
-outline: [2,3]
 lastUpdated: false
 ---
 # Возможности VitePress

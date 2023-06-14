@@ -1,5 +1,4 @@
 ---
-outline: [2,3]
 lastUpdated: false
 ---
 
@@ -45,7 +44,7 @@ This property is responsible for the contents of the description meta tag. And, 
 ### Table of Contents
 
 - Type: `number | [number, number] | 'deep' | false`
-- Default: `2`
+- Default: `deep`
 
 ```yaml
 outline: [2,3]

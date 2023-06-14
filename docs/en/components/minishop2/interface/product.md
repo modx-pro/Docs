@@ -1,6 +1,3 @@
----
-outline: deep
----
 # Product
 
 MiniShop2 product is the MODX common resource class expanding.

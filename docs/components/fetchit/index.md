@@ -6,7 +6,6 @@ author: GulomovCreative
 modstore: https://modstore.pro/packages/utilities/fetchit
 modx: https://extras.modx.com/package/fetchit
 repository: https://github.com/GulomovCreative/FetchIt
-outline: [2,3]
 
 items:
   - text: Быстрый старт

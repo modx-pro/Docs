@@ -85,7 +85,11 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         '/guide/': getGuideSidebar(),
       },
 
-      outlineTitle: 'На этой странице',
+      outline: {
+        label: 'На этой странице',
+        level: 'deep',
+      },
+
       returnToTopLabel: 'Наверх',
       sidebarMenuLabel: 'Меню',
       darkModeSwitchLabel: 'Тема',

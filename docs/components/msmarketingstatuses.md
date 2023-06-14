@@ -5,7 +5,6 @@ author: gvozdb
 modstore: https://modstore.pro/packages/integration/msmarketingstatuses
 
 dependencies: miniShop2
-outline: deep
 ---
 
 # msMarketingStatuses
