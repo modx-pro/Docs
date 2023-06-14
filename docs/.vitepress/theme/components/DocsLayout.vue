@@ -4,6 +4,7 @@ import DefaultTheme from 'vitepress/theme'
 import DocsHome from './DocsHome.vue'
 import DocsComponentWidget from './DocsComponentWidget.vue'
 import DocsAuthorWidget from './DocsAuthorWidget.vue'
+import DocsScreenAuthorWidget from './DocsScreenAuthorWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
 import DocsComponentTree from './DocsComponentTree.vue'
 import DocsNotFound from './DocsNotFound.vue'
@@ -24,6 +25,7 @@ const { Layout } = DefaultTheme
       <DocsBreadcrumbs />
     </template>
     <template #doc-footer-before>
+      <DocsScreenAuthorWidget />
       <DocsComponentTree />
     </template>
     <template #not-found>
