@@ -59,7 +59,7 @@ const route = useRoute()
 
 <style scoped>
 .DocsBreadcrumbs {
-  display: none;
+  display: flex;
   white-space: nowrap;
   column-gap: 10px;
 
@@ -70,11 +70,14 @@ const route = useRoute()
 
 .item {
   position: relative;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-@media (min-width: 1025px) {
-  .DocsBreadcrumbs {
-    display: flex;
+@media (max-width: 767px) {
+  .item:last-child {
+    display: none;
   }
 }
 
@@ -82,15 +85,6 @@ const route = useRoute()
   content: '/';
   font-weight: normal;
   margin-right: 8px;
-}
-
-.item:hover .name {
-  position: relative;
-  z-index: 10;
-}
-
-.item:not(:last-child):hover .name {
-  overflow: visible;
 }
 
 .link {
