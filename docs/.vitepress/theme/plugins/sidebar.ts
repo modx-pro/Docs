@@ -1,5 +1,6 @@
 import type { DefaultTheme } from 'vitepress'
 import { normalize } from 'vitepress/dist/client/shared'
+import faqCategories from '../../../faq/categories.json'
 
 import { readFileSync } from 'fs'
 import { join, basename } from 'path'
@@ -19,29 +20,27 @@ export default class DocsSidebar {
     const entries = fg.sync(options.root, options)
 
     return entries
-      .map(path => {
-        const src = readFileSync(path, 'utf-8')
-        const { data } = matter(src)
-        const {
-          title = DocsSidebar.getTitleFromContent(src) || basename(path),
-          items,
-        } = data
-
-        const link = normalize(path.replace(/^docs/, ''))
-
-        const output: DefaultTheme.SidebarItem = {
-          text: title,
-          link,
-        }
-
-        if (items) {
-          output.collapsed = options.collapsed === null || options.collapsed === undefined || options.collapsed
-          output.items = DocsSidebar.generateSidebarItem(items, link)
-        }
-
-        return output
-      })
+      .map(path => DocsSidebar.getData(path, options))
       .sort((a, b) => (a.text && b.text) ? a.text.localeCompare(b.text) : 0)
+  }
+
+  static generateFaqSidebar(): DefaultTheme.SidebarItem[] {
+    if (!Object.keys(faqCategories).length) {
+      return []
+    }
+
+    const entries = fg.sync(['docs/faq/**/*.md', '!docs/faq/index.md'])
+
+    return Object.entries(faqCategories).map(([category, text]) => {
+      const articles = entries.filter(path => path.match(/^docs\/faq\/(.*)\//i)[1] === category)
+      const items = articles.map(path => DocsSidebar.getData(path))
+
+      return {
+        text,
+        items,
+        collapsed: false,
+      } as DefaultTheme.SidebarItem
+    })
   }
 
   static generateSidebarItem(
@@ -66,6 +65,32 @@ export default class DocsSidebar {
     return items
   }
 
+  static getData(
+    path: string,
+    options?: Partial<Options>
+  ): DefaultTheme.SidebarItem {
+    const src = readFileSync(path, 'utf-8')
+    const { data } = matter(src)
+    const {
+      title = DocsSidebar.getTitleFromContent(src) || basename(path),
+      items,
+    } = data
+
+    const link = normalize(path.replace(/^docs/, ''))
+
+    const output: DefaultTheme.SidebarItem = {
+      text: title,
+      link,
+    }
+
+    if (items) {
+      output.collapsed = options.collapsed === null || options.collapsed === undefined || options.collapsed
+      output.items = DocsSidebar.generateSidebarItem(items, link)
+    }
+
+    return output
+  }
+
   static getTitleFromContent(
     content: string,
   ): string | undefined {
@@ -84,4 +109,9 @@ export default class DocsSidebar {
 
 export { DocsSidebar }
 
-export const { generateSidebar, generateSidebarItem, getTitleFromContent } = DocsSidebar;
+export const {
+  generateSidebar,
+  generateFaqSidebar,
+  generateSidebarItem,
+  getTitleFromContent
+} = DocsSidebar

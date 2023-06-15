@@ -1,6 +1,6 @@
 import type { DefaultTheme, LocaleConfig } from 'vitepress'
 import type { DocsTheme } from '../theme/types'
-import { generateSidebar } from '../theme/plugins/sidebar'
+import { generateSidebar, generateFaqSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
 
 export const META_URL = 'https://docs.modx.pro/'
@@ -81,7 +81,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
           ignore: ['docs/components/index.md'],
         }),
         '/system/': getSystemSidebar(),
-        '/faq/': getFaqSidebar(),
+        '/faq/': generateFaqSidebar(),
         '/guide/': getGuideSidebar(),
       },
 
@@ -178,25 +178,6 @@ function getSystemSidebar(): DefaultTheme.SidebarItem[] {
           text: 'Класс xPDO',
           link: '/system/xpdo/xpdo-class',
         },
-      ],
-    },
-  ]
-}
-
-function getFaqSidebar(): DefaultTheme.SidebarItem[] {
-  return [
-    {
-      text: 'Ace',
-      collapsed: false,
-      items: [
-        { text: 'MODX Ace Material Theme', link: '/faq/ace/modx-ace-material-theme' },
-      ],
-    },
-    {
-      text: 'TinyMCE Rich Text Editor',
-      collapsed: false,
-      items: [
-        { text: 'Добавление кастомных кнопок', link: '/faq/tinymce-rte/add-custom-buttons' },
       ],
     },
   ]
