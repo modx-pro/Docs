@@ -22,7 +22,11 @@ const toggle = function () {
 <template>
   <li
     class="item"
-    :class="{ folder: isFolder, opened: isOpen }"
+    :class="{
+      folder: isFolder,
+      opened: isOpen,
+      'is-link': !!props.item.link
+    }"
   >
     <span
       class="title"
@@ -54,11 +58,22 @@ const toggle = function () {
 
 <style scoped>
 .item {
+  position: relative;
   margin-left: 5px;
 }
 
 .item:not(.folder) {
   border-left: 1px dashed var(--vp-c-text-3);
+}
+
+.item:not(.folder)::before {
+  content: '';
+  position: absolute;
+  top: calc(50% - .5px);
+  left: 3px;
+  width: 12px;
+  height: 0;
+  border-top: 1px dashed var(--vp-c-text-3);
 }
 
 .title {
@@ -86,6 +101,12 @@ const toggle = function () {
   width: 10px;
   height: 10px;
   fill: var(--vp-c-text-3);
+  transition: fill .25s;
+}
+
+.item:not(.is-link) > .title:hover > .icon svg,
+.icon:hover svg {
+  fill: var(--vp-c-green);
 }
 
 .opened > .title > .icon svg {
