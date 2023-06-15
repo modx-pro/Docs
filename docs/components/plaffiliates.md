@@ -26,7 +26,7 @@ modstore: https://modstore.pro/packages/other/plaffiliates
 
 ## Видео-обзор
 
-[![](https://file.modx.pro/files/c/9/f/c9f8f50a1e6ffdc62af65147be4d667d.jpg)](https://www.youtube.com/watch?v=_aQuQaUsW1I)
+[![plAffiliates - Видео-обзор](https://file.modx.pro/files/c/9/f/c9f8f50a1e6ffdc62af65147be4d667d.jpg)](https://www.youtube.com/watch?v=_aQuQaUsW1I)
 
 ## Создание групп для полей филиалов
 
@@ -34,7 +34,7 @@ modstore: https://modstore.pro/packages/other/plaffiliates
 
 Из "коробки" будет доступен список основных групп для полей.
 
-![](https://file.modx.pro/files/4/5/c/45c84f5950d5c437aad7ee812cf6887a.png)
+![plAffiliates - Создание групп для полей филиалов](https://file.modx.pro/files/4/5/c/45c84f5950d5c437aad7ee812cf6887a.png)
 
 ## Создание полей для филиалов
 
@@ -48,13 +48,13 @@ modstore: https://modstore.pro/packages/other/plaffiliates
 
 Через перетаскивание поля в списке полей вы можете менять порядок его вывода.
 
-![](https://file.modx.pro/files/3/3/e/33ecfb141bb4bd213c63cc3455437e87.png)
+![plAffiliates - Создание полей для филиалов](https://file.modx.pro/files/3/3/e/33ecfb141bb4bd213c63cc3455437e87.png)
 
-![](https://file.modx.pro/files/e/9/4/e94d29838cd431631f0dd2a473dee876.png)
+![plAffiliates - Создание полей для филиалов - 2](https://file.modx.pro/files/e/9/4/e94d29838cd431631f0dd2a473dee876.png)
 
-![](https://file.modx.pro/files/c/e/5/ce59d29e8df2fd00bbe066a25315e53d.png)
+![plAffiliates - Создание полей для филиалов - 3](https://file.modx.pro/files/c/e/5/ce59d29e8df2fd00bbe066a25315e53d.png)
 
-![](https://file.modx.pro/files/5/0/6/50622b5d49d6f36f7de70e28942a2b6c.png)
+![plAffiliates - Создание полей для филиалов - 4](https://file.modx.pro/files/5/0/6/50622b5d49d6f36f7de70e28942a2b6c.png)
 
 ## Создание филиалов
 
@@ -71,9 +71,9 @@ modstore: https://modstore.pro/packages/other/plaffiliates
 
 Через перетаскивание филиала в списке филиалов вы можете менять порядок его вывода.
 
-![](https://file.modx.pro/files/c/8/2/c82d5273aef69990e956649a8f4e9cda.png)
+![plAffiliates - Редактировать филиал](https://file.modx.pro/files/c/8/2/c82d5273aef69990e956649a8f4e9cda.png)
 
-![](https://file.modx.pro/files/3/b/6/3b62c336c37d6b9e5dc33a34f752a332.png)
+![plAffiliates - Редактировать филиал - 2](https://file.modx.pro/files/3/b/6/3b62c336c37d6b9e5dc33a34f752a332.png)
 
 ## Управление количеством оставшегося товара в филиалах
 
@@ -81,8 +81,8 @@ modstore: https://modstore.pro/packages/other/plaffiliates
 
 Добавлять информацию по количеству оставшегося товара по филиалам можно, как на отдельной странице "Пакеты" -> Филиалы" -> "Остатки товаров в филиалах", так и непосредственно в карточки товара во вкладке "Остатки товара в филиалах"
 
-![](https://file.modx.pro/files/e/8/f/e8f521cc27c81de848ac05837b48a0ec.png)
-![](https://file.modx.pro/files/1/d/a/1da0f22a77acb82eed493a59d23ee31e.png)
+![plAffiliates - Создать товар](https://file.modx.pro/files/e/8/f/e8f521cc27c81de848ac05837b48a0ec.png)
+![plAffiliates - Создать товар - 2](https://file.modx.pro/files/1/d/a/1da0f22a77acb82eed493a59d23ee31e.png)
 
 ### Через скрипт
 
@@ -108,7 +108,7 @@ $remain = $tools->getAllAffiliateProductRemain($productId);
 $tools->resetAllAffiliateProductRemain($productId);
 ```
 
-![](https://file.modx.pro/files/4/2/4/42410a8e12f9dbdf192fb89c6bd5f994.png)
+![plAffiliates - Редактировать филиал](https://file.modx.pro/files/4/2/4/42410a8e12f9dbdf192fb89c6bd5f994.png)
 
 :::info Примечание
 Если вы не планируете вообще работу с остатками и хотите, что бы в карточки товара не выводилась вкладка "Остатки товара в филиалах", то в системных настройках компонента отключите опцию "**Показать вкладку остатки у товара**".
@@ -127,22 +127,22 @@ $tools->resetAllAffiliateProductRemain($productId);
 * Статусы списания остатков (`plaffiliates_status_pickup_remains`)
 * Статусы возврата остатков (`plaffiliates_status_return_remains`)
 
-![](https://file.modx.pro/files/3/0/4/304e54efbc021d0d9342e87f2de81ee7.png)
+![plAffiliates - Системные настройки](https://file.modx.pro/files/3/0/4/304e54efbc021d0d9342e87f2de81ee7.png)
 
 ## Создание SEO-полей для филиалов
 
 В меню компонента, кликнув на пункте "SEO" на открывшейся странице на вкладке "SEO-Поля", вы можете создать нужные вам поля.
 
-![](https://file.modx.pro/files/0/e/b/0eb61267a91b67ee40b46ef682a5b484.png)
+![plAffiliates - Создание SEO-полей для филиалов](https://file.modx.pro/files/0/e/b/0eb61267a91b67ee40b46ef682a5b484.png)
 
 После чего на вкладке "SEO-Шаблоны полей" задать значения для поля, связав его с филиалом и шаблоном MODX. Значение поля обрабатывается шаблонизатором Fenom.
 
-![](https://file.modx.pro/files/c/1/9/c194695836de0e2b1ce0a21fa1a6ffde.png)
+![plAffiliates - Создание SEO-полей для филиалов - 2](https://file.modx.pro/files/c/1/9/c194695836de0e2b1ce0a21fa1a6ffde.png)
 
 Для того, что бы созданные SEO-полей были доступны через плейсхолдеры Modx, необходимо:
 
 * В системных настройках компонента включить опцию "**Включить плейсхолдеры SEO-полей**"
-  ![](https://file.modx.pro/files/a/4/c/a4cd8c27ba8e3fc6aee44f857f076641.png)
+  ![plAffiliates - Включить плейсхолдеры SEO-полей](https://file.modx.pro/files/a/4/c/a4cd8c27ba8e3fc6aee44f857f076641.png)
 * При необходимости изменить префикс полей в системной опции компонента "Префикс для плейсхолдеров SEO-полей" по умолчанию используется **pas**
 
 Пример использования плейсхолдеров SEO-полей
@@ -165,13 +165,13 @@ title: {$_modx->getPlaceholder('pas.title')
 
 1) В меню компонента, кликнув на пункте "SEO" на открывшейся странице на вкладке "robots.txt", можно создать содержания файла robots.txt для нужного филиала.
 
-![](https://file.modx.pro/files/2/0/f/20f14e376b9e5fbdddce43b80b12d0ab.png)
+![plAffiliates - Создание robots.txt для филиалов](https://file.modx.pro/files/2/0/f/20f14e376b9e5fbdddce43b80b12d0ab.png)
 
 2) Создать документ с названием robots, у которого "**Тип содержимого**" должен быть указан как "**text**", "**Шаблон**" выбран "**(пустой шаблон)**" и в поле "**Содержимое**" указать вызов сниппета **getPlAffiliateRobots**
 
-![](https://file.modx.pro/files/7/3/c/73ccb11a3e52dd32e4c65972fd4de340.png)
+![plAffiliates - Создание robots.txt для филиалов - 2](https://file.modx.pro/files/7/3/c/73ccb11a3e52dd32e4c65972fd4de340.png)
 
- ![](https://file.modx.pro/files/a/1/4/a1476a68a811a0283f8c99e3a280d9fa.png)
+ ![plAffiliates - Создание robots.txt для филиалов - 3](https://file.modx.pro/files/a/1/4/a1476a68a811a0283f8c99e3a280d9fa.png)
 
 Если для филиала не будет создано значение robots.txt, то сниппет **getPlAffiliateRobots** вернет значение по умолчанию, которое указано в чанке "**tpl.plAffiliates.robots.default**"
 
@@ -187,7 +187,7 @@ title: {$_modx->getPlaceholder('pas.title')
 
 Необходимо создать документ с названием sitemap, у которого "**Тип содержимого**" должен быть указан как "**XML**", "**Шаблон**" выбран "**(пустой шаблон)**" и в поле "**Содержимое**" указать вызов сниппета **getPlAffiliateSitemap**
 
-![](https://file.modx.pro/files/0/e/3/0e34fcc47bbe202b811843a727e1e05e.png)
+![plAffiliates - Создание sitemap.xml для филиалов](https://file.modx.pro/files/0/e/3/0e34fcc47bbe202b811843a727e1e05e.png)
 
 :::warning Важно!
 В корне сайта не должно быть файла `sitemap.txt`
@@ -208,7 +208,7 @@ title: {$_modx->getPlaceholder('pas.title')
 Для работы с Google картами необходимо обязательно [получить API-ключ](https://developers.google.com/maps/documentation/javascript/get-api-key?hl=ru#key) и указать его в опции "API Ключ Google Maps"
 :::
 
-![](https://file.modx.pro/files/c/2/5/c2511ca614f9b553e7c5eeb91ffe1b08.png)
+![plAffiliates - API Ключ Google Maps](https://file.modx.pro/files/c/2/5/c2511ca614f9b553e7c5eeb91ffe1b08.png)
 
 ### Настройка геолокации у филиалов
 
@@ -220,9 +220,9 @@ title: {$_modx->getPlaceholder('pas.title')
 
 Для того, что бы маркер быстро переместить в нужное место, зажмите на клавиатуре клавишу **SHIFT** и не отпуская ее сделайте клик левой кнопкой мышки в нужном месте карты, если при этом еще одновременно зажать **Alt**, то дополнительно произойдёт центрирование карты.
 
-![](https://file.modx.pro/files/0/0/1/00122b14513c45b21a2dce60a6acb798.png)
+![plAffiliates - Редактировать филиал](https://file.modx.pro/files/0/0/1/00122b14513c45b21a2dce60a6acb798.png)
 
-![](https://file.modx.pro/files/d/a/8/da86fcae40ccfa6027065c3da976819e.png)
+![plAffiliates - Определить координаты](https://file.modx.pro/files/d/a/8/da86fcae40ccfa6027065c3da976819e.png)
 
 ### Настройка сервиса определения местоположения пользователя по IP
 
@@ -245,7 +245,7 @@ title: {$_modx->getPlaceholder('pas.title')
 * API ключ сервиса iploka.com
 * PlAffiliateIpLokaGeoLocation
 
-![](https://file.modx.pro/files/6/b/f/6bf729a6b11f23997856e914c294ed41.png)
+![plAffiliates - Системные настройки](https://file.modx.pro/files/6/b/f/6bf729a6b11f23997856e914c294ed41.png)
 
 ### Настройка автоматического перенаправления посетителей на поддомены филиалов
 
@@ -264,13 +264,13 @@ IP нужного города можно получить, например, н
 Если через какое-то время вы решите изменить сервис определения геоданных, то после перехода на него необходимо заново произвести настройку поля "Город", так как каждый сервис может по-разному его именовать.
 :::
 
-![](https://file.modx.pro/files/5/6/4/564120cacacf75d33e863d5aeaf717ef.png)
+![plAffiliates - Редактирование филиала](https://file.modx.pro/files/5/6/4/564120cacacf75d33e863d5aeaf717ef.png)
 
-![](https://file.modx.pro/files/e/a/6/ea684d6f2bb56cac151b52a84242abef.png)
+![plAffiliates - Геолокация](https://file.modx.pro/files/e/a/6/ea684d6f2bb56cac151b52a84242abef.png)
 
 После того, как вся необходимая информация у филиалов заполнена в системных настройках компонента, следует включить опцию "**Перенаправлять посетителей на хост филиала**", а также в системных настройках Modx в опции "**Домен для сессионных куки**" (session_cookie_domain) укажите свой основной домен.
 
-![](https://file.modx.pro/files/1/5/d/15dec7233173f25f694cdb0849f50a49.png)
+![plAffiliates - session_cookie_domain](https://file.modx.pro/files/1/5/d/15dec7233173f25f694cdb0849f50a49.png)
 
 :::info Примечание
 Перенаправление будет происходить через 302-редирект только один раз на [сессию сайта.](https://vc.ru/u/740266-mks-media/301859-vse-chto-nuzhno-znat-o-sessii-na-sayte)
@@ -278,13 +278,13 @@ IP нужного города можно получить, например, н
 
 ### Добавление информации о текущем выбранном филиале в плейсхолдеры MODX
 
-Для того, что информация о текущем выбранном филиале была доступна через плейсхолдеры Modx, необходимо:
+Для того, что информация о текущем выбранном филиале была доступна через плейсхолдеры MODX, необходимо:
 
 * В системных настройках компонента включить опцию "**Включить плейсхолдеры филиала**"
-  ![](https://file.modx.pro/files/a/4/c/a4cd8c27ba8e3fc6aee44f857f076641.png)
+  ![plAffiliates - Включить плейсхолдеры филиала](https://file.modx.pro/files/a/4/c/a4cd8c27ba8e3fc6aee44f857f076641.png)
 * При необходимости изменить префикс полей в системной опции компонента "Префикс для плейсхолдеров филиала" по умолчанию используется **pa**
 * Для полей филиала, которые должны быть доступны через плейсхолдеры MODX, необходимо в менеджере полей филиалов включить опцию "**Доступно в плейсхолдере**"
-  ![](https://file.modx.pro/files/0/1/c/01cce052601c7f7e955ca01801eaed82.png)
+  ![plAffiliates - Доступно в плейсхолдере](https://file.modx.pro/files/0/1/c/01cce052601c7f7e955ca01801eaed82.png)
 
 Пример использования плейсхолдеров филиала
 
@@ -475,7 +475,7 @@ E-mail: {$_modx->getPlaceholder('pa.email')
 
 ### getPlAffiliateRobots - Вывод содержания файла robots.txt для текущего филиала
 
-**Параметры**
+#### Параметры getPlAffiliateRobots
 
 | Имя           | Описание                                                                       |
 |---------------|--------------------------------------------------------------------------------|
