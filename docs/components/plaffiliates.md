@@ -448,7 +448,7 @@ E-mail: {$_modx->getPlaceholder('pa.email')
 
 ### getPlAffiliateProducts - Вывод списка товаров с учетом его наличия в филиале
 
-Сниппет является оберткой над сниппетом [msProducts](https://docs.modx.pro/komponentyi/minishop2/snippetyi/msproducts), поэтому содержит все его параметры плюс следующие свои.
+Сниппет является оберткой над сниппетом [msProducts](components/minishop2/snippets/msproducts), поэтому содержит все его параметры плюс следующие свои.
 
 #### Параметры getPlAffiliateProducts
 
@@ -465,7 +465,7 @@ E-mail: {$_modx->getPlaceholder('pa.email')
 
 Среди списка товаров будут только те, для которых есть остаток.
 
-Сниппет является оберткой над сниппетом [pdoSitemap](https://docs.modx.pro/komponentyi/pdotools/snippetyi/pdositemap), поэтому содержит все его параметры плюс следующие свои.
+Сниппет является оберткой над сниппетом [pdoSitemap](components/pdotools/snippets/pdositemap), поэтому содержит все его параметры плюс следующие свои.
 
 #### Параметры getPlAffiliateSitemap
 
