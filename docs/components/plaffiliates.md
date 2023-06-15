@@ -163,15 +163,15 @@ title: {$_modx->getPlaceholder('pas.title')
 
 ## Создание robots.txt для филиалов
 
-1) В меню компонента, кликнув на пункте "SEO" на открывшейся странице на вкладке "robots.txt", можно создать содержания файла robots.txt для нужного филиала.
+* В меню компонента, кликнув на пункте "SEO" на открывшейся странице на вкладке "robots.txt", можно создать содержания файла robots.txt для нужного филиала.
 
-![plAffiliates - Создание robots.txt для филиалов](https://file.modx.pro/files/2/0/f/20f14e376b9e5fbdddce43b80b12d0ab.png)
+  ![plAffiliates - Создание robots.txt для филиалов](https://file.modx.pro/files/2/0/f/20f14e376b9e5fbdddce43b80b12d0ab.png)
 
-2) Создать документ с названием robots, у которого "**Тип содержимого**" должен быть указан как "**text**", "**Шаблон**" выбран "**(пустой шаблон)**" и в поле "**Содержимое**" указать вызов сниппета **getPlAffiliateRobots**
+* Создать документ с названием robots, у которого "**Тип содержимого**" должен быть указан как "**text**", "**Шаблон**" выбран "**(пустой шаблон)**" и в поле "**Содержимое**" указать вызов сниппета **getPlAffiliateRobots**
 
-![plAffiliates - Создание robots.txt для филиалов - 2](https://file.modx.pro/files/7/3/c/73ccb11a3e52dd32e4c65972fd4de340.png)
+  ![plAffiliates - Создание robots.txt для филиалов - 2](https://file.modx.pro/files/7/3/c/73ccb11a3e52dd32e4c65972fd4de340.png)
 
- ![plAffiliates - Создание robots.txt для филиалов - 3](https://file.modx.pro/files/a/1/4/a1476a68a811a0283f8c99e3a280d9fa.png)
+  ![plAffiliates - Создание robots.txt для филиалов - 3](https://file.modx.pro/files/a/1/4/a1476a68a811a0283f8c99e3a280d9fa.png)
 
 Если для филиала не будет создано значение robots.txt, то сниппет **getPlAffiliateRobots** вернет значение по умолчанию, которое указано в чанке "**tpl.plAffiliates.robots.default**"
 
