@@ -6,8 +6,8 @@ import DocsButton from './DocsButton.vue'
 
 const { site } = useData()
 const { localeLinks } = useLangs({ removeCurrent: false })
-const root = ref<string>('/')
 
+const root = ref<string>('/')
 onMounted(() => {
   const path = window.location.pathname
     .replace(site.value.base, '')

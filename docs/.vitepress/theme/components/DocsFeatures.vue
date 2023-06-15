@@ -26,7 +26,7 @@ const grid = computed(() => {
     return 'grid-3'
   } else if (length % 3 === 0) {
     return 'grid-6'
-  } else if (length % 2 === 0) {
+  } else if (length > 3) {
     return 'grid-4'
   }
 })
@@ -69,11 +69,11 @@ const grid = computed(() => {
 .items {
   display: flex;
   flex-wrap: wrap;
-  margin: -8px;
+  margin: -12px;
 }
 
 .item {
-  padding: 8px;
+  padding: 12px;
   width: 100%;
 }
 

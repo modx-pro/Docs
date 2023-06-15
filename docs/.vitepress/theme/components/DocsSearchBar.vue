@@ -34,28 +34,27 @@ function onSearchBarClick(event: PointerEvent) {
 </script>
 
 <template>
-  <div
-    class="search-bar"
-    @pointerup="onSearchBarClick($event)"
-  >
-    <svg
-      class="search-icon"
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <g
-        fill="none"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
+  <form class="search-bar" @pointerup="onSearchBarClick($event)" @submit.prevent="">
+    <label :title="placeholder" id="localsearch-label" for="localsearch-input">
+      <svg
+        class="search-icon"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
       >
-        <circle cx="11" cy="11" r="8" />
-        <path d="m21 21l-4.35-4.35" />
-      </g>
-    </svg>
+        <g
+          fill="none"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21l-4.35-4.35" />
+        </g>
+      </svg>
+    </label>
     <div
       v-if="backButton"
       class="search-actions before"
@@ -101,7 +100,7 @@ function onSearchBarClick(event: PointerEvent) {
         </svg>
       </button>
     </div>
-  </div>
+  </form>
 </template>
 
 <style scoped>

@@ -276,7 +276,15 @@ function formMarkRegex(terms: Set<string>) {
 
 <template>
   <Teleport to="body">
-    <div ref="el" class="VPLocalSearchBox" aria-modal="true">
+    <div
+      ref="el"
+      role="button"
+      :aria-owns="results?.length ? 'localsearch-list' : undefined"
+      aria-expanded="true"
+      aria-haspopup="listbox"
+      aria-labelledby="localsearch-label"
+      class="VPLocalSearchBox"
+    >
       <div class="backdrop" @click="$emit('close')" />
 
       <div class="shell">
@@ -288,55 +296,63 @@ function formMarkRegex(terms: Set<string>) {
           />
         </div>
 
-        <div
+        <ul
           ref="resultsEl"
+          :id="results?.length ? 'localsearch-list' : undefined"
+          :role="results?.length ? 'listbox' : undefined"
+          :aria-labelledby="results?.length ? 'localsearch-label' : undefined"
           class="results"
           @mousemove="disableMouseOver = false"
         >
-          <a
+          <li
             v-for="(p, index) in results"
             :key="p.id"
-            :href="p.id"
-            class="result"
-            :class="{
-              selected: selectedIndex === index
-            }"
-            :aria-label="[...p.titles, p.title].join(' > ')"
-            @mouseenter="!disableMouseOver && (selectedIndex = index)"
-            @focusin="selectedIndex = index"
-            @click="$emit('close')"
+            role="option"
+            :aria-selected="selectedIndex === index ? 'true' : 'false'"
           >
-            <div>
-              <div class="titles">
-                <span class="title-icon">#</span>
-                <span v-for="(t, index) in p.titles" :key="index" class="title">
-                  <span class="text" v-html="t" />
-                  <svg width="18" height="18" viewBox="0 0 24 24">
-                    <path
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="m9 18l6-6l-6-6"
-                    />
-                  </svg>
-                </span>
-                <span class="title main">
-                  <span class="text" v-html="p.title" />
-                </span>
+            <a
+              :href="p.id"
+              class="result"
+              :class="{
+                selected: selectedIndex === index
+              }"
+              :aria-label="[...p.titles, p.title].join(' > ')"
+              @mouseenter="!disableMouseOver && (selectedIndex = index)"
+              @focusin="selectedIndex = index"
+              @click="$emit('close')"
+            >
+              <div>
+                <div class="titles">
+                  <span class="title-icon">#</span>
+                  <span v-for="(t, index) in p.titles" :key="index" class="title">
+                    <span class="text" v-html="t" />
+                    <svg width="18" height="18" viewBox="0 0 24 24">
+                      <path
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="m9 18l6-6l-6-6"
+                      />
+                    </svg>
+                  </span>
+                  <span class="title main">
+                    <span class="text" v-html="p.title" />
+                  </span>
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
+          </li>
 
-          <div
+          <li
             v-if="filterText && !results.length && enableNoResults"
             class="no-results"
           >
             {{ $t('modal.noResultsText') }} "<strong>{{ filterText }}</strong
             >"
-          </div>
-        </div>
+          </li>
+        </ul>
 
         <div class="search-keyboard-shortcuts">
           <span>

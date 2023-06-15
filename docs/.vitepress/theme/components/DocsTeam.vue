@@ -31,7 +31,7 @@ const members = computed(() => coreMembers.map(member => ({ ...member, name: mem
 
 @media (min-width: 640px) {
   .DocsTeam {
-    padding: 40px 20px 0;
+    padding-top: 40px;
   }
 
   .title {
@@ -42,12 +42,18 @@ const members = computed(() => coreMembers.map(member => ({ ...member, name: mem
 
 @media (min-width: 960px) {
   .DocsTeam {
-    padding: 60px 20px 0;
+    padding-top: 60px;
   }
 
   .title {
     font-size: 32px;
     margin-bottom: 60px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .DocsTeam {
+    padding-inline: 0;
   }
 }
 </style>
