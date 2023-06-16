@@ -24,6 +24,7 @@
     "devDependencies": {
         "@docsearch/css": "^3.3.3",
         "@docsearch/js": "^3.3.3",
+        "@modix/smarty-tmlanguage": "^1.1.0",
         "@types/markdown-it": "^12.2.3",
         "@types/node": "^18.16.13",
         "fast-glob": "^3.2.12",
