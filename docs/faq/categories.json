@@ -1,4 +1,6 @@
 {
   "ace": "Ace",
+  "scripts": "Полезные скрипты",
+  "manager-customize": "Кастомизация панели управления",
   "tinymce-rte": "TinyMCE Rich Text Editor"
 }
