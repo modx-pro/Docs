@@ -40,7 +40,7 @@
 ### Пример вызова сниппета ResVideoGallery с Ajax подгрузкой при клике на кнопку для ресурса с ID 5
 
 ```modx
-[[ResVideoGallery?
+[[!ResVideoGallery?
   &limit=`3`
   &resources=`5`
 ]]
@@ -49,7 +49,7 @@
 ### Пример вызова сниппета ResVideoGallery с Ajax подгрузкой  при прокрутке для ресурса с ID 5
 
 ```modx
-[[ResVideoGallery?
+[[!ResVideoGallery?
   &limit=`3`
   &resources=`5`
   &ajaxMode=`scroll`
