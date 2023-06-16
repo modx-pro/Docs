@@ -3,6 +3,7 @@ import fenomGrammar from './fenom.tmLanguage.json'
 
 const require = createRequire(import.meta.url)
 const modxGrammar = require('modx-tmlanguage/modx.tmLanguage.json')
+const smartyGrammar = require('@modix/smarty-tmlanguage/smarty.tmLanguage.json')
 
 const modx = {
   id: 'modx',
@@ -18,7 +19,15 @@ const fenom = {
   grammar: fenomGrammar,
 }
 
+const smarty = {
+  id: 'smarty',
+  scopeName: 'source.smarty',
+  aliases: ['smarty'],
+  grammar: smartyGrammar,
+}
+
 export default [
   modx,
   fenom,
+  smarty,
 ]
