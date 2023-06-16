@@ -83,6 +83,6 @@ switch ($eventName) {
 
 Теперь на странице редактирования шаблона появится кнопка, по нажатию которой будет показываться кликабельный список файловых шаблонов:
 
-![](https://file.modx.pro/files/f/d/5/fd53154c99970772170c8a84a59c2c82.png)
+![Вид кнопки файлов шаблона](https://file.modx.pro/files/f/d/5/fd53154c99970772170c8a84a59c2c82.png)
 
-![](https://file.modx.pro/files/a/b/7/ab79ce4235ecd268b723d78ff0f6dbc1.png)
+![Вид выводимого списка файлов шаблона](https://file.modx.pro/files/a/b/7/ab79ce4235ecd268b723d78ff0f6dbc1.png)

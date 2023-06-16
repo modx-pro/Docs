@@ -25,16 +25,16 @@ $managerUriNew = "$newNameManager/";
 $configFilePath = $corePath."config/config.inc.php";
 $managerPathNew = str_replace($managerUri, $managerUriNew, $managerPath);
 
-if(in_array($newNameManager, $itemsRoot)) {
-	die("Нельзя переименовать панель управления. Данная директория занята.");
+if (in_array($newNameManager, $itemsRoot)) {
+  die("Нельзя переименовать панель управления. Данная директория занята.");
 }
 
-if(!file_exists($configFilePath)) {
-	die("Файл конфига не найден");
+if (!file_exists($configFilePath)) {
+  die("Файл конфига не найден");
 }
 
 if (!is_dir($managerPath)) {
-	die("Не найдена папка панели управления");
+  die("Не найдена папка панели управления");
 }
 
 $configFileContent = file_get_contents($configFilePath);
@@ -45,9 +45,9 @@ file_put_contents($configFilePath, $configFileContentNew);
 echo ("Конфиг успешно изменен\n");
 
 if (rename($managerPath, $managerPathNew)) {
-	echo("Папка успешно переименована\n");
+  echo("Папка успешно переименована\n");
 } else {
-	echo("Не удалось переименовать папку\n");
+  echo("Не удалось переименовать папку\n");
 }
 
 $modx->cacheManager->refresh();
