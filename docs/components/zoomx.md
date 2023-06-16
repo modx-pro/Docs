@@ -6,6 +6,11 @@ author: sergant210
 modstore: https://modstore.pro/packages/utilities/zoomx
 modx: https://modx.com/extras/package/zoomx
 repository: https://github.com/sergant210/ZoomX
+
+head:
+  - - link
+    - rel: canonical
+      href: https://modzone.ru/documentation/zoomx/
 ---
 
 # ZoomX
