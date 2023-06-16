@@ -35,7 +35,7 @@ git clone https://github.com/alexsoin/moxi.git
 
 Открываем `http://домен_сайта/moxi/` видим интерфейс настройки.
 
-![setup](/assets/img/moxi/setup.png)
+![setup](https://file.modx.pro/files/1/a/8/1a8465d4200e8d6e997f54d3c24e244e.png)
 
 Здесь можно настроить следующие параметры перед запуском настройки:
 
