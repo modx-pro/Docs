@@ -1,36 +1,40 @@
 ---
 lastUpdated: false
----
-# VitePress features
 
-::: info INFO
+head:
+  - - link
+    - rel: canonical
+      href: https://vitepress.dev/guide/markdown
+---
+# VitePress Features
+
 VitePress uses [markdown-it](https://github.com/markdown-it/markdown-it) as a parser that extends markdown.
 We can add substantially more convenience and beauty.
-:::
 
 See <https://vitepress.dev/guide/markdown> for a complete list of all features.
 
 Let's take a closer look at each of them.
 
-## Anchor links for headers
+## Header Anchors
 
-Headings automatically become anchor links like `guide/vitepress#zagolovkissylki`.
-Title text is automatically transliterated and truncated to 25 characters (words are not truncated).
+Headers automatically get anchor links applied.
+Title text is automatically transliterated and truncated to 25 characters (words will not be truncated).
 
-### Custom anchor {#my-anchor}
+### Custom anchors {#my-anchor}
 
-But you can assign a custom anchor to any of the headings using the `{#my-anchor}` construct.
+To specify a custom anchor tag for a heading instead of using the auto-generated one, add a suffix to the heading:
 
 ```markdown
-## Regular header
-### Custom anchor {#my-anchor}
+# Using custom anchors {#my-anchor}
 ```
+
+This allows you to link to the heading as #my-anchor instead of the default #using-custom-anchors.
 
 ## Tables
 
-Create tables in GitHub style.
+Create GitHub-Style tables.
 
-**Example:**
+**Input:**
 
 ```markdown
 | Tables        |      Are      |  Cool |
@@ -50,7 +54,7 @@ Create tables in GitHub style.
 
 ## Emoji
 
-**Example:**
+**Input:**
 
 ```markdown
 :tada: :100:
@@ -60,13 +64,13 @@ Create tables in GitHub style.
 
 :tada: :100:
 
-[List of all available emojis here](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json).
+A [list of all emojis](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json) is available.
 
-## Displaying the table of contents anywhere
+## Table of Contents
 
 Generated based on headers.
 
-**Example:**
+**Input:**
 
 ```
 [[toc]]
@@ -76,9 +80,13 @@ Generated based on headers.
 
 [[toc]]
 
-## Beautiful notifications
+## Custom Containers
 
-**Example:**
+Custom containers can be defined by their types, titles, and contents.
+
+### Default Title
+
+**Input:**
 
 ```markdown
 ::: info
@@ -124,9 +132,11 @@ This is a dangerous warning.
 This is a details block.
 :::
 
-## Notifications with custom titles
+### Custom Title
 
-**Example:**
+You may set custom title by appending the text right after the "type" of the container.
+
+**Input:**
 
 ````markdown
 ::: info Custom title
@@ -162,12 +172,11 @@ console.log('Hello, VitePress!');
 
 :::
 
-## Syntax highlighting in code blocks
+## Syntax Highlighting in Code Blocks
 
-VitePress uses [Shiki](https://shiki.matsu.io/) for code syntax highlighting in markdown blocks using colored text.
-Shiki supports a wide range of programming languages. You only need to specify the programming language immediately after the opening quotes of the code block.
+VitePress uses [Shiki](https://shiki.matsu.io/) to highlight language syntax in Markdown code blocks, using coloured text. Shiki supports a wide variety of programming languages. All you need to do is append a valid language alias to the beginning backticks for the code block:
 
-**Example:**
+**Input:**
 
 ````markdown
 ```modx
@@ -178,6 +187,15 @@ Shiki supports a wide range of programming languages. You only need to specify t
 ```
 ````
 
+````markdown
+```fenom
+{'!msProducts' | snippet : [
+  'parents' => 0,
+  'includeThumbs' => '120x90,360x270',
+]}
+```
+````
+
 **Output:**
 
 ```modx
@@ -185,37 +203,30 @@ Shiki supports a wide range of programming languages. You only need to specify t
   &parents=`0`
   &includeThumbs=`120x90,360x270`
 ]]
+```
+
+```fenom
+{'!msProducts' | snippet : [
+  'parents' => 0,
+  'includeThumbs' => '120x90,360x270',
+]}
 ```
 
 ---
 
-**Example:**
+A [list of valid languages](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages) is available on Shiki's repository.
 
-````markdown
-```fenom
-{'!msProducts' | snippet : [
-  'parents' => 0,
-  'includeThumbs' => '120x90,360x270',
-]}
-```
-````
+The following languages are also available:
 
-**Output:**
+- [MODX](https://docs.modx.com/3.x/en/building-sites/tag-syntax): `modx`
+- [Fenom](https://github.com/fenom-template/fenom): `fenom`
+- [Smarty](https://www.smarty.net/docsv2/en/): `smarty`
 
-```fenom
-{'!msProducts' | snippet : [
-  'parents' => 0,
-  'includeThumbs' => '120x90,360x270',
-]}
-```
-
-See the list of supported programming languages [at the link](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages).
-
-## Line highlighting inside code
+## Line Highlighting in Code Blocks
 
 To grab the user's attention, you can highlight the lines you want.
 
-**Example:**
+**Input:**
 
 ````markdown
 ```fenom{2}
@@ -235,13 +246,13 @@ To grab the user's attention, you can highlight the lines you want.
 ]}
 ```
 
-In addition to single-line highlights, there are also multi-line highlights:
+In addition to a single line, you can also specify multiple single lines, ranges, or both:
 
-- Range `{5-8}`, `{3-10}`, `{10-17}`
-- Enumeration `{4,7,9}`
-- Mixed `{4,7-13,16,23-27,40}`
+- Line ranges: for example `{5-8}`, `{3-10}`, `{10-17}`
+- Multiple single lines: for example `{4,7,9}`
+- Line ranges and single lines: for example `{4,7-13,16,23-27,40}`
 
-**Example:**
+**Input:**
 
 ````markdown
 ```fenom{1,3}
@@ -261,16 +272,43 @@ In addition to single-line highlights, there are also multi-line highlights:
 ]}
 ```
 
-## Focus
+Alternatively, it's possible to highlight directly in the line by using the `// [!code hl]` comment.
 
-You can add a comment `// [!code focus]` on the desired line of code, and all code will be blurred except for that line.
-Also, you can specify line numbers `// [!code focus:<lines>]`.
+**Input:**
 
-::: warning WARNING
-Only **one** space is required after `code`. In the examples below, an extra space has been added for correct output.
-:::
+````markdown
+```js
+export default {
+  data () {
+    return {
+      msg: 'Highlighted!' // [!code  hl]
+    }
+  }
+}
+```
+````
 
-**Example:**
+**Output:**
+
+```js
+export default {
+  data () {
+    return {
+      msg: 'Highlighted!' // [!code  hl]
+    }
+  }
+}
+```
+
+## Focus in Code Blocks
+
+Adding the `// [!code focus]` comment on a line will focus it and blur the other parts of the code.
+
+Additionally, you can define a number of lines to focus using `// [!code focus:<lines>]`.
+
+<!--@include: ./parts/one-space.md-->
+
+**Input:**
 
 ````markdown
 ```fenom
@@ -290,11 +328,13 @@ Only **one** space is required after `code`. In the examples below, an extra spa
 ]}
 ```
 
-## Highlighting differences in code
+## Colored Diffs in Code Blocks
 
-You can add `// [!code --]` or `// [!code ++]` comments on the lines and get nice highlighting differences in code.
+Adding the `// [!code --]` or `// [!code ++]` comments on a line will create a diff of that line, while keeping the colors of the codeblock.
 
-**Example:**
+<!--@include: ./parts/one-space.md-->
+
+**Input:**
 
 ````markdown
 ```fenom
@@ -316,11 +356,13 @@ You can add `// [!code --]` or `// [!code ++]` comments on the lines and get nic
 ]}
 ```
 
-## Errors and warnings in code blocks
+## Errors and Warnings in Code Blocks
 
-You can add `// [!code warning]` or `// [!code error]` comments on the lines and color the lines with the appropriate color.
+Adding the `// [!code warning]` or `// [!code error]` comments on a line will color it accordingly.
 
-**Example:**
+<!--@include: ./parts/one-space.md-->
+
+**Input:**
 
 ````markdown
 ```fenom
@@ -342,11 +384,11 @@ You can add `// [!code warning]` or `// [!code error]` comments on the lines and
 ]}
 ```
 
-## Code line numbering
+## Line Numbers
 
-To enable code line numbering you need to add: `:line-numbers`.
+You can enable line numbers for code blocks via adding `:line-numbers`.
 
-**Example:**
+**Input:**
 
 ````markdown
 ```ts {1}
@@ -376,11 +418,11 @@ const line2 = 'Second line of code'
 const line3 = 'Third line of code'
 ```
 
-## Grouping code blocks
+## Code Groups
 
-You can group blocks of code like this:
+You can group multiple code blocks like this:
 
-**Example:**
+**Input:**
 
 ````markdown
 ::: code-group
@@ -424,7 +466,7 @@ You can group blocks of code like this:
 
 It is also possible to specify an custom title for each group tab, for example, to clarify the names of files or chunks.
 
-**Example:**
+**Input:**
 
 ````markdown
 ::: code-group
@@ -484,11 +526,11 @@ It is also possible to specify an custom title for each group tab, for example, 
 
 :::
 
-## Keyboard buttons displaying `<kbd>`
+## `<kbd>`
 
 To display keyboard buttons, such as keyboard shortcuts, wrap them in double square brackets.
 
-**Example:**
+**Input:**
 
 ```markdown
 To save a resource, press the keyboard shortcut [[Ctrl]] / [[⌘ Cmd]] + [[s]]
