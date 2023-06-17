@@ -164,7 +164,7 @@ console.log('Привет, VitePress!');
 
 ## Подсветка синтаксиса в блоках кода
 
-VitePress использует [Shiki](https://shiki.matsu.io/) для подсветки синтаксиса вашего кода в блоках markdown, используя цветной текст
+VitePress использует [Shiki](https://shiki.matsu.io/) для подсветки синтаксиса вашего кода в блоках markdown, используя цветной текст.
 Shiki поддерживает довольно широкий диапазон языков программирования. Все что вам нужно - указать нужный язык сразу после открывающих блок кода кавычек.
 
 **Пример:**
@@ -210,6 +210,12 @@ Shiki поддерживает довольно широкий диапазон 
 ```
 
 Перечень поддерживаемых языков можно посмотреть [по этой ссылке](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages).
+
+Кроме них доступны:
+
+- Парсер [MODX](https://docs.modx.com/3.x/ru/building-sites/tag-syntax): `modx`
+- Шаблонизатор [fenom](https://github.com/fenom-template/fenom): `fenom`
+- Шаблонизатор [smarty](https://www.smarty.net/docsv2/ru/): `smarty`
 
 ## Подсветка строки внутри кода
 
