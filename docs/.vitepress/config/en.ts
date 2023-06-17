@@ -89,8 +89,8 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
       text: 'Introduction',
       items: [
         { text: 'About', link: '/en/guide/about' },
-        { text: 'Getting Started', link: '/en/guide/howto' },
-        { text: 'Markdown', link: '/en/guide/md' },
+        { text: 'Getting Started', link: '/en/guide/getting-started' },
+        { text: 'Markdown', link: '/en/guide/markdown' },
         { text: 'VitePress Features', link: '/en/guide/vitepress' },
         { text: 'Frontmatter', link: '/en/guide/frontmatter' },
       ],
@@ -101,8 +101,8 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
 function getNav(): DefaultTheme.NavItem[] {
   const guideItems: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
     { text: 'About', link: '/en/guide/about' },
-    { text: 'Getting Started', link: '/en/guide/howto' },
-    { text: 'Markdown', link: '/en/guide/md' },
+    { text: 'Getting Started', link: '/en/guide/getting-started' },
+    { text: 'Markdown', link: '/en/guide/markdown' },
     { text: 'VitePress Features', link: '/en/guide/vitepress' },
     { text: 'Frontmatter', link: '/en/guide/frontmatter' },
   ]

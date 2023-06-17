@@ -1,7 +1,7 @@
 ---
 lastUpdated: false
 ---
-# How to start
+# Getting Started
 
 This service is linked to our [github repository][repository]. Any changes made to the repository are displayed on the site.
 

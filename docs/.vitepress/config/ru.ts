@@ -164,8 +164,8 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
       text: 'Введение',
       items: [
         { text: 'О проекте', link: '/guide/about' },
-        { text: 'Начало работы', link: '/guide/howto' },
-        { text: 'Разметка markdown', link: '/guide/md' },
+        { text: 'Начало работы', link: '/guide/getting-started' },
+        { text: 'Разметка markdown', link: '/guide/markdown' },
         { text: 'Возможности VitePress', link: '/guide/vitepress' },
         { text: 'Frontmatter', link: '/guide/frontmatter' },
       ],
@@ -176,8 +176,8 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
 function getNav(): DefaultTheme.NavItem[] {
   const guideItems: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
     { text: 'О проекте', link: '/guide/about' },
-    { text: 'Начало работы', link: '/guide/howto' },
-    { text: 'Разметка markdown', link: '/guide/md' },
+    { text: 'Начало работы', link: '/guide/getting-started' },
+    { text: 'Разметка markdown', link: '/guide/markdown' },
     { text: 'Возможности VitePress', link: '/guide/vitepress' },
     { text: 'Frontmatter', link: '/guide/frontmatter' },
   ]
