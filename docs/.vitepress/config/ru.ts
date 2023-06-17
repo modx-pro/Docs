@@ -2,6 +2,7 @@ import type { DefaultTheme, LocaleConfig } from 'vitepress'
 import type { DocsTheme } from '../theme/types'
 import { generateSidebar, generateFaqSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
+import { sponsorLink } from './common'
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
@@ -46,34 +47,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
     ],
 
     themeConfig: {
-      nav: [
-        {
-          text: 'Компоненты',
-          link: '/components/',
-          activeMatch: '/components/',
-        },
-        {
-          text: 'Система',
-          link: '/system/basics/tag-syntax',
-          activeMatch: '/system/',
-        },
-        {
-          text: 'Готовые решения',
-          link: '/faq/',
-          activeMatch: '/faq/',
-        },
-        {
-          text: 'Введение',
-          activeMatch: '/guide/',
-          items: [
-            { text: 'О проекте', link: '/guide/about' },
-            { text: 'Начало работы', link: '/guide/howto' },
-            { text: 'Разметка markdown', link: '/guide/md' },
-            { text: 'Возможности VitePress', link: '/guide/vitepress' },
-            { text: 'Frontmatter', link: '/guide/frontmatter' },
-          ],
-        },
-      ],
+      nav: getNav(),
 
       sidebar: {
         '/components/': generateSidebar({
@@ -100,6 +74,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
       sponsor: {
         message: 'Данный сервис является Open-Source проектом и его поддержка и развитие зависит от пожертвований.',
         linkText: 'Поддержать проект!',
+        link: sponsorLink,
       },
 
       docFooter: {
@@ -194,6 +169,47 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
         { text: 'Возможности VitePress', link: '/guide/vitepress' },
         { text: 'Frontmatter', link: '/guide/frontmatter' },
       ],
+    },
+  ]
+}
+
+function getNav(): DefaultTheme.NavItem[] {
+  const guideItems: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
+    { text: 'О проекте', link: '/guide/about' },
+    { text: 'Начало работы', link: '/guide/howto' },
+    { text: 'Разметка markdown', link: '/guide/md' },
+    { text: 'Возможности VitePress', link: '/guide/vitepress' },
+    { text: 'Frontmatter', link: '/guide/frontmatter' },
+  ]
+
+  if (sponsorLink) {
+    guideItems.push({
+      items: [
+        { text: '❤️ Поддержать проект', link: sponsorLink }
+      ],
+    })
+  }
+
+  return [
+    {
+      text: 'Компоненты',
+      link: '/components/',
+      activeMatch: '/components/',
+    },
+    {
+      text: 'Система',
+      link: '/system/basics/tag-syntax',
+      activeMatch: '/system/',
+    },
+    {
+      text: 'Готовые решения',
+      link: '/faq/',
+      activeMatch: '/faq/',
+    },
+    {
+      text: 'Введение',
+      activeMatch: '/guide/',
+      items: guideItems,
     },
   ]
 }

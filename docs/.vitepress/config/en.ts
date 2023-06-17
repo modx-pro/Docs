@@ -2,6 +2,7 @@ import type { DefaultTheme, LocaleConfig } from 'vitepress'
 import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
+import { sponsorLink } from './common'
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
@@ -46,24 +47,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
     ],
 
     themeConfig: {
-      nav: [
-        {
-          text: 'Extras',
-          link: '/en/components/',
-          activeMatch: '/en/components/',
-        },
-        {
-          text: 'Introduction',
-          activeMatch: '/en/guide/',
-          items: [
-            { text: 'About', link: '/en/guide/about' },
-            { text: 'Getting Started', link: '/en/guide/howto' },
-            { text: 'Markdown', link: '/en/guide/md' },
-            { text: 'VitePress Features', link: '/en/guide/vitepress' },
-            { text: 'Frontmatter', link: '/en/guide/frontmatter' },
-          ],
-        },
-      ],
+      nav: getNav(),
 
       sidebar: {
         '/en/components/': generateSidebar({
@@ -82,6 +66,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
       sponsor: {
         message: 'This service is free and open source, and its support and development depends on donations.',
         linkText: 'Become a sponsor!',
+        link: sponsorLink,
       },
 
       docFooter: {
@@ -109,6 +94,37 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
         { text: 'VitePress Features', link: '/en/guide/vitepress' },
         { text: 'Frontmatter', link: '/en/guide/frontmatter' },
       ],
+    },
+  ]
+}
+
+function getNav(): DefaultTheme.NavItem[] {
+  const guideItems: (DefaultTheme.NavItemWithLink | DefaultTheme.NavItemChildren)[] = [
+    { text: 'About', link: '/en/guide/about' },
+    { text: 'Getting Started', link: '/en/guide/howto' },
+    { text: 'Markdown', link: '/en/guide/md' },
+    { text: 'VitePress Features', link: '/en/guide/vitepress' },
+    { text: 'Frontmatter', link: '/en/guide/frontmatter' },
+  ]
+
+  if (sponsorLink) {
+    guideItems.push({
+      items: [
+        { text: '❤️ Become a sponsor!', link: sponsorLink }
+      ],
+    })
+  }
+
+  return [
+    {
+      text: 'Extras',
+      link: '/en/components/',
+      activeMatch: '/en/components/',
+    },
+    {
+      text: 'Introduction',
+      activeMatch: '/en/guide/',
+      items: guideItems,
     },
   ]
 }

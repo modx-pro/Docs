@@ -21,11 +21,14 @@ const sponsors = useSponsor(lang)
         <VPSponsors :data="sponsors" />
       </div>
 
-      <div class="action">
+      <div
+        v-if="theme.sponsor.link"
+        class="action"
+      >
         <DocsButton
           theme="sponsor"
+          :href="theme.sponsor.link"
           :text="theme.sponsor.linkText"
-          :href="theme.sponsorLink"
         />
       </div>
     </div>

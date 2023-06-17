@@ -98,8 +98,6 @@ export default defineConfigWithTheme<DocsTheme.Config>({
       },
     },
 
-    sponsorLink: 'https://github.com/modx-pro',
-
     components,
   },
 

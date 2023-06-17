@@ -5,6 +5,7 @@ export namespace DocsTheme {
   export interface Sponsor {
     message?: string
     linkText?: string
+    link?: string
   }
 
   export interface Config extends DefaultTheme.Config {
