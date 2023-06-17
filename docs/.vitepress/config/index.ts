@@ -154,6 +154,12 @@ export default defineConfigWithTheme<DocsTheme.Config>({
             new URL('../theme/components/DocsLocalSearchBox.vue', import.meta.url)
           )
         },
+        {
+          find: /^.*\/VPNavBar\.vue$/,
+          replacement: fileURLToPath(
+            new URL('../theme/components/DocsNavBar.vue', import.meta.url)
+          )
+        },
       ],
     },
   },
