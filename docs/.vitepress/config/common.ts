@@ -1,4 +1,4 @@
-const sponsorLink = 'https://github.com/modx-pro'
+const sponsorLink = ''
 
 export {
   sponsorLink
