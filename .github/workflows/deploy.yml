@@ -3,7 +3,7 @@ on:
   workflow_dispatch: {}
   push:
     branches:
-      - vitepress
+      - master
 jobs:
   deploy:
     if: github.repository_owner == 'modx-pro'
