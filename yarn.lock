@@ -1641,10 +1641,10 @@ mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-modx-tmlanguage@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/modx-tmlanguage/-/modx-tmlanguage-1.1.2.tgz#47b17b668e8b98dd29c7ce31c083dd648f3a6806"
-  integrity sha512-C3cqh93TIG/TvdZZpBOSPbznmGjgRzgYX9fd0oBJHxdxE++kZKXBfmBYijM8KkQ+gBFyNz0b65SIRnxKWqqw/Q==
+modx-tmlanguage@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/modx-tmlanguage/-/modx-tmlanguage-1.2.0.tgz#b8b306f19c59b368a3b0c3edc601310ed56a84b6"
+  integrity sha512-qQ4XQjgIopXQq2jN3mBiQmu4M+t7vvhsN1e9eSsn90WbYyOnhJNS+dvdNV8mlC9R1TEVmIE2u4lo8FwPG/w3rA==
 
 mute-stream@0.0.8:
   version "0.0.8"
