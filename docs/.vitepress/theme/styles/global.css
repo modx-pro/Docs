@@ -108,6 +108,44 @@ kbd {
   text-shadow: 0 1px 0 var(--vp-c-white);
 }
 
+.vp-doc p {
+  line-height: 26px;
+}
+
+.vp-doc li + li {
+  margin-top: .25em;
+}
+
+.vp-doc table {
+  line-height: 1.5;
+}
+
+.vp-doc ol {
+  counter-reset: li;
+  list-style: none;
+  position: relative;
+}
+
+.vp-doc ol li {
+  padding-left: 1.25rem;
+}
+
+.vp-doc ol li::before {
+  width: calc(1.5rem - 2px);
+  height: calc(1.5rem - 2px);
+  font-size: calc(1rem - 2px);
+  margin: 1px 0 0 .5rem;
+  content: counter(li);
+  counter-increment: li;
+  position: absolute;
+  left: 0;
+  color: var(--vp-c-text-1);
+  font-weight: 500;
+  text-align: center;
+  border-radius: 50%;
+  background-color: var(--vp-sidebar-bg-color);
+}
+
 @media screen and (max-width: 1024px) {
   .vp-doc table {
     border: 0;
