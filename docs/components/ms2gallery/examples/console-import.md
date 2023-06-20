@@ -26,9 +26,9 @@ else {
 
 - В текущей версии процессор загрузки ожидает класс ms2Gallery в объекте MODX. Нужно его подключить:
 
-```php
-$modx->ms2Gallery = $modx->getService('ms2gallery', 'ms2Gallery', MODX_CORE_PATH . 'components/ms2gallery/model/ms2gallery/');
-```
+  ```php
+  $modx->ms2Gallery = $modx->getService('ms2gallery', 'ms2Gallery', MODX_CORE_PATH . 'components/ms2gallery/model/ms2gallery/');
+  ```
 
 - Все файлы картинок уже должны быть на сервере. Закачивать их с удалённого источника скрипт не умеет.
 - В поле `properties` ресурса должен быть прописан источник файлов. Обычно для этого достаточно просто открыть ресурс в админке, но в консольном импорте этот момент нужно предусмотреть.

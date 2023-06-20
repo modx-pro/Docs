@@ -80,7 +80,7 @@
 - **far** - Force Aspect Ratio, изображение будет приведено к параметрам `w` и `h` (которые обязательно должны быть установлены). Выравнивание: `L` left, `R` - right, `T` top, `B` bottom, `C` - center. `BL`, `BR`, `TL`, `TR` - использовать верное направление, если изображение горизонтальное или вертикальное.
 
 Если вы указываете только высоту или ширину, другой параметр будет рассчитан автоматически, исходя из пропорций исходного изображения.
-Все остальные параметры phpThumb вы можете [посмотреть в его документации][1].
+Все остальные параметры phpThumb вы можете [посмотреть в его документации][phpthumb Docs].
 
 ### Наложение watermark
 
@@ -89,7 +89,7 @@
 ![Наложение watermark](https://file.modx.pro/files/6/c/1/6c18561f4383506c2bfef7a497858841.png)
 
 **1.** На сервере должен быть установлен **ImageMagick**. Также нужно проследить, чтобы он был доступен для php.
-[Подробнее здесь][2].
+[Подробнее здесь][Работа с phpThumb].
 
 **2.** В источнике файлов ms2Gallery нужно наложить **fltr** с **wmi**:
 
@@ -178,5 +178,5 @@ foreach ($files as $file) {
 Если вы накладываете watermark на ваши изображения, проверьте в источнике файлов, чтобы у них был абсолютный путь от
 корня сайта, например `/assets/components/ms2gallery/img/wm.png`.
 
-[1]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt
-[2]: http://modx.pro/development/619-working-with-phpthumb/
+[phpthumb Docs]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt
+[Работа с phpThumb]: https://modx.pro/development/619
