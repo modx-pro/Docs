@@ -4,32 +4,43 @@
   --vp-border: var(--vp-border-width) solid var(--vp-c-gray);
   --vp-border-width: 4px;
   --vp-border-radius: 20px;
+
   --vp-c-gray: #F7F7F7;
+
   --vp-c-blue: #0ea5e9;
   --vp-c-blue-dimm-1: rgba(14, 165, 233, 0.05);
   --vp-c-blue-dimm-2: rgba(14, 165, 233, 0.2);
   --vp-c-blue-dimm-3: rgba(14, 165, 233, 0.5);
+
   --vp-c-yellow: #ecb732;
+
   --vp-custom-block-info-border: var(--vp-c-blue-dimm-2);
   --vp-custom-block-info-bg: var(--vp-c-blue-dimm-1);
   --vp-custom-block-info-text: var(--vp-c-neutral);
+
   --vp-custom-block-tip-border: var(--vp-c-green-dimm-2);
   --vp-custom-block-tip-bg: var(--vp-c-green-dimm-1);
   --vp-custom-block-tip-text: var(--vp-c-neutral);
+
   --vp-custom-block-warning-border: var(--vp-c-yellow-dimm-2);
   --vp-custom-block-warning-bg: var(--vp-c-yellow-dimm-1);
   --vp-custom-block-warning-text: var(--vp-c-neutral);
+
   --vp-custom-block-danger-border: var(--vp-c-red-dimm-2);
   --vp-custom-block-danger-bg: var(--vp-c-red-dimm-1);
   --vp-custom-block-danger-text: var(--vp-c-neutral);
+
   --vp-custom-block-details-border: var(--vp-c-divider);
   --vp-custom-block-details-bg: var(--vp-c-bg-soft-up);
-  --vp-local-search-highlight-bg: transparent;
+
+  --vp-local-search-highlight-bg: transparent; 
   --vp-local-search-highlight-text: var(--vp-c-green);
+
   --vp-local-search-bg: var(--vp-c-bg-soft);
   --vp-local-search-result-bg: var(--vp-c-white);
   --vp-local-search-result-shadow: 0 1px 3px 0 #d4d9e1;
   --vp-local-search-footer-shadow: 0 -1px 0 0 #e0e3e8, 0 -3px 6px 0 rgba(69, 98, 155, .12);
+
   --vp-layout-max-width: 1600px;
 }
 
