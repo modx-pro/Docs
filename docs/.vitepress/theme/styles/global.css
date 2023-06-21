@@ -195,4 +195,9 @@ kbd {
   .vp-doc table td:last-child {
     border-bottom: 0;
   }
+  .edit-link-button{
+    align-items: start !important;
+    line-height: 1.2 !important;
+    margin-bottom: .5em !important;
+  }
 }
