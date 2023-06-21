@@ -8,18 +8,6 @@
 @breakpoint-large-max: (@breakpoint-xlarge - 1);
 
 :root {
-  /*responsive variables*/
-  --vp-custom-breakpoint-small: @breakpoint-small;
-  --vp-custom-breakpoint-medium: @breakpoint-medium;
-  --vp-custom-breakpoint-large: @breakpoint-large;
-  --vp-custom-breakpoint-xlarge: @breakpoint-xlarge;
-
-  --vp-custom-breakpoint-xsmall-max: (var(--vp-custom-breakpoint-small) - 1);
-  --vp-custom-breakpoint-small-max: (var(--vp-custom-breakpoint-medium) - 1);
-  --vp-custom-breakpoint-medium-max: (var(--vp-custom-breakpoint-large) - 1);
-  --vp-custom-breakpoint-large-max: (var(--vp-custom-breakpoint-xlarge) - 1);
-
-  /*global variables*/
   --vp-font-family-base: 'Montserrat', sans-serif;
   --vp-shadow-6: 0px 4px 15px rgba(47, 63, 147, 0.08);
   --vp-border: var(--vp-border-width) solid var(--vp-c-gray);
@@ -60,7 +48,8 @@
   --vp-local-search-result-bg: var(--vp-c-white);
   --vp-local-search-result-shadow: 0 1px 3px 0 #d4d9e1;
   --vp-local-search-footer-shadow: 0 -1px 0 0 #e0e3e8, 0 -3px 6px 0 rgba(69, 98, 155, .12);
-  --vp-layout-max-width: var(--vp-custom-breakpoint-xlarge);
+
+  --vp-layout-max-width: @breakpoint-xlarge;
 }
 
 .dark {
