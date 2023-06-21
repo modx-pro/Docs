@@ -1,6 +1,6 @@
 :root {
   --vp-font-family-base: 'Montserrat', sans-serif;
-  --vp-shadow-6: 0px 4px 15px rgba(47, 63, 147, 0.08);
+  --vp-shadow-6: 0px 4px 15px rgba(47, 63, 147, .08);
   --vp-border: var(--vp-border-width) solid var(--vp-c-gray);
   --vp-border-width: 4px;
   --vp-border-radius: 20px;
@@ -8,9 +8,9 @@
   --vp-c-gray: #F7F7F7;
 
   --vp-c-blue: #0ea5e9;
-  --vp-c-blue-dimm-1: rgba(14, 165, 233, 0.05);
-  --vp-c-blue-dimm-2: rgba(14, 165, 233, 0.2);
-  --vp-c-blue-dimm-3: rgba(14, 165, 233, 0.5);
+  --vp-c-blue-dimm-1: rgba(14, 165, 233, .05);
+  --vp-c-blue-dimm-2: rgba(14, 165, 233, .2);
+  --vp-c-blue-dimm-3: rgba(14, 165, 233, .5);
 
   --vp-c-yellow: #ecb732;
 
@@ -33,7 +33,7 @@
   --vp-custom-block-details-border: var(--vp-c-divider);
   --vp-custom-block-details-bg: var(--vp-c-bg-soft-up);
 
-  --vp-local-search-highlight-bg: transparent; 
+  --vp-local-search-highlight-bg: transparent;
   --vp-local-search-highlight-text: var(--vp-c-green);
 
   --vp-local-search-bg: var(--vp-c-bg-soft);
@@ -125,9 +125,9 @@ kbd {
   background-color: var(--vp-c-mute-dark);
   border-radius: 3px;
   display: inline-block;
-  margin: 0 0.1em;
+  margin: 0 .1em;
   overflow-wrap: break-word;
-  padding: 0.1em 0.6em;
+  padding: .1em .6em;
   text-shadow: 0 1px 0 var(--vp-c-white);
 }
 
@@ -136,7 +136,7 @@ kbd {
 }
 
 .vp-doc li + li {
-  margin-top: 0.25em;
+  margin-top: .25em;
 }
 
 .vp-doc table {
@@ -157,7 +157,7 @@ kbd {
   width: calc(1.5rem - 2px);
   height: calc(1.5rem - 2px);
   font-size: calc(1rem - 2px);
-  margin: 1px 0 0 0.5rem;
+  margin: 1px 0 0 .5rem;
   content: counter(li);
   counter-increment: li;
   position: absolute;
