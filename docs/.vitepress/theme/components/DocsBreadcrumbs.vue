@@ -2,6 +2,7 @@
 import { Ref } from 'vue'
 import { useData, withBase, useRoute } from 'vitepress'
 import type { DocsPageData } from '../plugins/component'
+
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
 const { page }: { page: Ref<DocsPageData> } = useData()

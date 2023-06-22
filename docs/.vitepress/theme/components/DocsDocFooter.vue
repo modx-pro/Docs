@@ -5,6 +5,7 @@ import { normalizeLink } from 'vitepress/dist/client/theme-default/support/utils
 import { useEditLink } from 'vitepress/dist/client/theme-default/composables/edit-link'
 import { usePrevNext as useVPPrevNext } from 'vitepress/dist/client/theme-default/composables/prev-next'
 import { usePrevNext } from '../composables/prev-next'
+
 import VPIconEdit from 'vitepress/dist/client/theme-default/components/icons/VPIconEdit.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import VPDocFooterLastUpdated from 'vitepress/dist/client/theme-default/components/VPDocFooterLastUpdated.vue'
@@ -97,7 +98,7 @@ const showFooter = computed(() => {
   .edit-link-button {
     align-items: start;
   }
-  
+
   :deep(.VPLastUpdated) {
     line-height: normal;
   }

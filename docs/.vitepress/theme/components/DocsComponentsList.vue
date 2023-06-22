@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import type { ComponentData } from '../plugins/component'
 import { useData } from 'vitepress'
 import { ellipsis } from '../utils'
+
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import DocsSearchBar from './DocsSearchBar.vue'

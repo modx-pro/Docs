@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { DefaultTheme } from 'vitepress/theme'
 import { computed } from 'vue'
+import type { DefaultTheme } from 'vitepress/theme'
+
 import DocsFeature from './DocsFeature.vue'
 
 export interface Feature {

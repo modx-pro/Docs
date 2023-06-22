@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { type Ref, computed } from 'vue'
+import { DefaultTheme, useData } from 'vitepress'
 import type { DocsTheme } from '../types'
 import type { DocsPageData } from '../plugins/component'
-import { computed } from 'vue'
-import type { Ref } from 'vue'
-import { DefaultTheme, useData } from 'vitepress'
-import DocsList from './DocsList.vue'
+
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
+import DocsList from './DocsList.vue'
 
 export interface Data {
   page: Ref<DocsPageData>

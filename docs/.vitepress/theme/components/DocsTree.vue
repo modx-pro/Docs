@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DefaultTheme } from 'vitepress'
+
 import DocsTreeItem from './DocsTreeItem.vue'
 
 defineProps<{

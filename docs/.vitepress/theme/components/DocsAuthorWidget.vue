@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { PageData } from 'vitepress'
+import { type Ref, computed } from 'vue'
+import { type PageData, useData } from 'vitepress'
 import type { DocsPageData } from '../plugins/component'
-import { computed } from 'vue'
-import type { Ref } from 'vue'
-import { useData } from 'vitepress'
-import type { Author } from '../../../authors'
-import { authors } from '../../../authors'
+import { type Author, authors } from '../../../authors'
+
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 

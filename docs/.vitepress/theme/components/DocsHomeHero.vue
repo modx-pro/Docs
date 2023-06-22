@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DocsButton from '../components/DocsButton.vue'
+import DocsButton from './DocsButton.vue'
 
 export interface HeroAction {
   theme?: 'brand' | 'alt'

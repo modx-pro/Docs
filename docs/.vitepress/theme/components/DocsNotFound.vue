@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useData } from 'vitepress'
 import { useLangs } from 'vitepress/dist/client/theme-default/composables/langs'
+
 import DocsButton from './DocsButton.vue'
 
 const { site } = useData()

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import type { DocsPageData } from '../plugins/component'
-import { computed } from 'vue'
-import type { Ref } from 'vue'
+import { type Ref, computed } from 'vue'
 import { useData } from 'vitepress'
-import DocsTree from '../components/DocsTree.vue'
+import type { DocsPageData } from '../plugins/component'
+
+import DocsTree from './DocsTree.vue'
 
 export interface Data {
   page: Ref<DocsPageData>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { DefaultTheme } from 'vitepress'
+
 import DocsTree from './DocsTree.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
