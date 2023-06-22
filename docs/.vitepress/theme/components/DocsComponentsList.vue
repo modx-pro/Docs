@@ -42,6 +42,12 @@ const components = computed<ComponentData[]>(() => {
 })
 
 const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name' : 'Поиск по названию')
+const emptyTitle = computed(() => localeIndex.value === 'en'
+    ? `No results were found for the query <b>"${query.value}"</b>`
+    : `По запросу <b>«${query.value}»</b> ничего не найдено`)
+const emptyText = computed(() => localeIndex.value === 'en'
+    ? 'Check if the query is written without errors'
+    : 'Проверьте написан ли запрос без ошибок')
 </script>
 
 <template>
@@ -67,6 +73,7 @@ const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name'
         />
       </div>
       <div
+        v-if="components.length"
         class="list"
         :class="{ slim: search }"
       >
@@ -91,6 +98,23 @@ const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name'
             </p>
           </div>
         </VPLink>
+      </div>
+      <div
+        v-else-if="
+          search
+          && query.length
+          && !components.length
+        "
+        class="empty"
+      >
+        <div
+          class="empty-title"
+          v-html="emptyTitle"
+        />
+        <div
+          class="empty-text"
+          v-html="emptyText"
+        />
       </div>
     </div>
   </div>
@@ -180,5 +204,21 @@ const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name'
   margin: 0 auto;
   width: 100%;
   max-width: calc(var(--vp-layout-max-width) - 64px);
+}
+
+.empty {
+  padding-block: 40px;
+  text-align: center;
+  line-height: normal;
+}
+
+.empty-title {
+  display: block;
+  font-size: 1.5rem;
+}
+
+.empty-text {
+  display: block;
+  margin-top: 1rem;
 }
 </style>
