@@ -96,6 +96,10 @@ const showFooter = computed(() => {
     line-height: 1.2;
     margin-bottom: .5em;
   }
+  .last-updated .VPLastUpdated{
+    line-height: 1.2;
+    margin-bottom: .5em;
+  }
 }
 
 .edit-link-button:hover {
