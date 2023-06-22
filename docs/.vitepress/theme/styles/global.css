@@ -126,11 +126,11 @@ kbd {
   position: relative;
 }
 
-.vp-doc ol li {
+.vp-doc ol > li {
   padding-left: 1.25rem;
 }
 
-.vp-doc ol li::before {
+.vp-doc ol > li::before {
   width: calc(1.5rem - 2px);
   height: calc(1.5rem - 2px);
   font-size: calc(1rem - 2px);
