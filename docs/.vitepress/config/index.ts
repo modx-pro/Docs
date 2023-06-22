@@ -23,11 +23,11 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   titleTemplate: ':title' + SITE_TITLE_SEPARATOR + SITE_TITLE,
 
   markdown: {
-    // @ts-ignore
+    // @ts-expect-error
     languages,
     theme: {
-      light: 'vitesse-light',
-      dark: 'vitesse-dark',
+      light: 'github-light',
+      dark: 'one-dark-pro',
     },
 
     anchor: {
