@@ -67,12 +67,15 @@ const showFooter = computed(() => {
 }
 
 .edit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   padding-bottom: 18px;
 }
 
 @media (min-width: 640px) {
   .edit-info {
-    display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding-bottom: 14px;
@@ -83,7 +86,7 @@ const showFooter = computed(() => {
   display: flex;
   align-items: center;
   border: 0;
-  line-height: 32px;
+  line-height: normal;
   font-size: 14px;
   font-weight: 500;
   color: var(--vp-c-brand);
@@ -93,12 +96,10 @@ const showFooter = computed(() => {
 @media screen and (max-width: 1024px) {
   .edit-link-button {
     align-items: start;
-    line-height: 1.2;
-    margin-bottom: .5em;
   }
-  .last-updated .VPLastUpdated{
-    line-height: 1.2;
-    margin-bottom: .5em;
+  
+  :deep(.VPLastUpdated) {
+    line-height: normal;
   }
 }
 
