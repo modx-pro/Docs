@@ -58,7 +58,7 @@ const author = computed<Author>(() => {
 
 <style scoped>
 .DocsScreenAuthorWidget {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 1280px) {
