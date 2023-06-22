@@ -90,6 +90,14 @@ const showFooter = computed(() => {
   transition: color 0.25s;
 }
 
+@media screen and (max-width: 1024px) {
+  .edit-link-button {
+    align-items: start;
+    line-height: 1.2;
+    margin-bottom: .5em;
+  }
+}
+
 .edit-link-button:hover {
   color: var(--vp-c-brand-dark);
 }
