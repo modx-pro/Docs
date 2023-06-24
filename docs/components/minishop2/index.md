@@ -19,6 +19,14 @@ items: [
       { text: 'Настройки', link: 'interface/settings' },
       { text: 'Галерея', link: 'interface/gallery' },
       { text: 'Менеджер задач', link: 'interface/task-manager' },
+      { 
+        text: 'Утилиты',
+        link: 'interface/utilities/',
+        items: [
+          { text: 'Галерея', link: 'interface/utilities/gallery' },
+          { text: 'Импорт', link: 'interface/utilities/import' },
+        ],
+      },
     ],
   },
   {
