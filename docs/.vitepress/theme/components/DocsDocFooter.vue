@@ -35,39 +35,74 @@ const showFooter = computed(() => {
         document[where].append(link);
 
     };
+
     let GoLoadJS = function(path, where='body') {
         let script = document.createElement('script');
             script.src = path;
         document[where].append(script);
     };
     //TODO подписать этот кусок кода на готовность VUE потому что не будет работать, если убрать таймаут
+    let handleLinkClick = function(event){
+        event.preventDefault();
+        console.log('click '+this.src);
+        console.log('click '+this.href);
+        let docGallery = GLightbox({
+            // reference: https://github.com/biati-digital/glightbox#lightbox-options
+            elements: [
+                {
+                    'href': this.href,
+                    'type': 'image',
+                    'title': this.title,
+                    //'description': 'Example',
+                },
+                //TODO собрать галерею из всех ссылок и картинок, а по клику открывать нужную. Чтобы можно было листать.
+            ],
+            autoplayVideos: true,
+        });
+        docGallery.open();
+    }
+
+    let handleImageClick = function(){
+        //console.log('click '+this.src);
+        let docGallery = GLightbox({
+            // reference: https://github.com/biati-digital/glightbox#lightbox-options
+            elements: [
+                {
+                    'href': this.src,
+                    'type': 'image',
+                    'title': this.alt,
+                    //'description': 'Example',
+                },
+                //TODO собрать галерею из всех картинок, а по клику открывать нужную. Чтобы можно было листать.
+            ],
+            autoplayVideos: true,
+        });
+        docGallery.open();
+    }
+
     window.setTimeout(()=>{
         GoLoadJS("https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js");
         GoLoadCSS("https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css");
-        let imgs = document.querySelectorAll('.vp-doc img');
+
+        let imgs = document.querySelectorAll('.vp-doc :not(:is(a)) img');
         for (let img of imgs) {
-            img.addEventListener( 'click', function(){
-                console.log('click '+this.src);
-                let docGallery = GLightbox({
-                    // reference: https://github.com/biati-digital/glightbox#lightbox-options
-                    elements: [
-                        {
-                            'href': this.src,
-                            'type': 'image',
-                            'title': this.alt,
-                            //'description': 'Example',
-                        },
-                        //TODO собрать галерею из всех картинок, а по клику открывать нужную. Чтобы можно было листать.
-                    ],
-                    autoplayVideos: true,
-                });
-                docGallery.open();
-            })
+            img.addEventListener('click', handleImageClick)
         }
+
+        let links = document.querySelectorAll('.vp-doc a[href$=".png"]');
+
+        for (let link of links) {
+            link.addEventListener('click', handleLinkClick)
+
+            //убираеми обработку клика на дочерние картинки, раз ссылка есть
+            let imgs = link.querySelectorAll('img');
+            for (let img of imgs) {
+                img.removeEventListener('click', handleImageClick);
+            }
+        }
+
     }, 1500);//если сильно переживаем за первую загрузку TODO проверить cookie или еще что-нибудь, чтобы убрать таймаут для повторных загрузок
 
-    //TODO обрабатывать ссылки, типа как во 2й картинке здесь: https://docs.modx.pro/components/amocrm/webhook
-    //https://github.com/modx-pro/Docs/edit/master/docs/components/amocrm/webhook.md
 </script>
 
 <template>
