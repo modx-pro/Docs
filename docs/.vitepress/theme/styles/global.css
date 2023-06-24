@@ -35,13 +35,10 @@
 
   --vp-local-search-highlight-bg: transparent;
   --vp-local-search-highlight-text: var(--vp-c-green);
-
   --vp-local-search-bg: var(--vp-c-bg-soft);
   --vp-local-search-result-bg: var(--vp-c-white);
   --vp-local-search-result-shadow: 0 1px 3px 0 #d4d9e1;
   --vp-local-search-footer-shadow: 0 -1px 0 0 #e0e3e8, 0 -3px 6px 0 rgba(69, 98, 155, .12);
-
-  --vp-layout-max-width: 1600px;
 }
 
 .dark {
@@ -77,7 +74,7 @@
 .VPDocAsideOutline {
   border: var(--vp-border);
   border-radius: var(--vp-border-radius);
-  padding: 20px;
+  padding: 20px 20px 20px 0;
 }
 
 .VPDocAsideOutline .content {
@@ -87,7 +84,11 @@
 
 .VPDocAsideOutline .outline-marker {
   width: 4px;
-  left: -24px;
+  left: -4px;
+}
+
+.VPDoc .content-container {
+  max-width: unset !important;
 }
 
 .pager .pager-link {
@@ -97,45 +98,6 @@
 
 .curtain {
   display: none;
-}
-
-@media (min-width: 960px) {
-  .content {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
-  .VPDoc{
-    padding-right: 24px !important;
-  }
-}
-
-@media (min-width: 960px) and (max-width: 1599px) {
-  .VPNavBar,
-  .VPSidebar,
-  .VPDoc {
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-  }
-
-  .VPSidebar {
-    width: calc(var(--vp-sidebar-width) - calc(32px - 15px)) !important;
-  }
-}
-
-@media (min-width: 1440px) and (max-width: 1599px) {
-  .VPDoc.has-aside .content-container {
-    max-width: 860px !important;
-  }
-    
-  .VPContent.has-sidebar{
-    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width) + 3%) !important;
-  }
-}
-
-@media (min-width: 1600px){
-  .VPDoc.has-aside .content-container {
-    max-width: 925px !important;
-  }
 }
 
 kbd {
@@ -168,11 +130,11 @@ kbd {
   position: relative;
 }
 
-.vp-doc ol li {
+.vp-doc ol > li {
   padding-left: 1.25rem;
 }
 
-.vp-doc ol li::before {
+.vp-doc ol > li::before {
   width: calc(1.5rem - 2px);
   height: calc(1.5rem - 2px);
   font-size: calc(1rem - 2px);
@@ -188,7 +150,7 @@ kbd {
   background-color: var(--vp-sidebar-bg-color);
 }
 
-@media screen and (max-width: 1024px) {
+@media (max-width: 1024px) {
   .vp-doc table {
     border: 0;
   }
