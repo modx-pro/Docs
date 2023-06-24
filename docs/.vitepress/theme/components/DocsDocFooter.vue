@@ -27,6 +27,49 @@ const showFooter = computed(() => {
 })
 </script>
 
+<script lang="ts">
+    let GoLoadCSS = function(path, where='head') {
+        let link = document.createElement('link');
+        link.rel = "stylesheet";
+        link.href = path;
+        document[where].append(link);
+
+    };
+    let GoLoadJS = function(path, where='body') {
+        let script = document.createElement('script');
+            script.src = path;
+        document[where].append(script);
+    };
+    //TODO подписать этот кусок кода на готовность VUE потому что не будет работать, если убрать таймаут
+    window.setTimeout(()=>{
+        GoLoadJS("https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js");
+        GoLoadCSS("https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css");
+        let imgs = document.querySelectorAll('.vp-doc img');
+        for (let img of imgs) {
+            img.addEventListener( 'click', function(){
+                console.log('click '+this.src);
+                let docGallery = GLightbox({
+                    // reference: https://github.com/biati-digital/glightbox#lightbox-options
+                    elements: [
+                        {
+                            'href': this.src,
+                            'type': 'image',
+                            'title': this.alt,
+                            //'description': 'Example',
+                        },
+                        //TODO собрать галерею из всех картинок, а по клику открывать нужную. Чтобы можно было листать.
+                    ],
+                    autoplayVideos: true,
+                });
+                docGallery.open();
+            })
+        }
+    }, 1500);//если сильно переживаем за первую загрузку TODO проверить cookie или еще что-нибудь, чтобы убрать таймаут для повторных загрузок
+
+    //TODO обрабатывать ссылки, типа как во 2й картинке здесь: https://docs.modx.pro/components/amocrm/webhook
+    //https://github.com/modx-pro/Docs/edit/master/docs/components/amocrm/webhook.md
+</script>
+
 <template>
   <footer v-if="showFooter" class="VPDocFooter">
     <slot name="doc-footer-before" />
@@ -60,6 +103,24 @@ const showFooter = computed(() => {
     </div>
   </footer>
 </template>
+
+<style>
+/*Кстомизация для лайтбокса TODO вынести отсюда в правильнео место и/или заменить на css-переменные*/
+.vp-doc img{
+    cursor: pointer;
+}
+.glightbox-open{
+    overflow: auto !important;
+}
+.glightbox-clean .gslide-description {
+    background: none !important;
+}
+.gslide-title{
+    color: #10b981 !important;
+    margin-bottom: 0 !important;
+    text-align: center;
+}
+</style>
 
 <style scoped>
 .VPDocFooter {
