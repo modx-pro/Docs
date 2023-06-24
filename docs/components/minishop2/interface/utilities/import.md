@@ -10,7 +10,7 @@
 - Поддерживает ТВ параметры и поля товаров, включая JSON типа size и color.
 - Есть режим отладки, с обработкой только первой строки файла.
 
-[![](https://file.modx.pro/files/7/e/2/7e2921a4ffdf3e8d3ba6f0114f502dd6.png)](https://file.modx.pro/files/7/e/2/7e2921a4ffdf3e8d3ba6f0114f502dd6.png)
+[![Интерфейс импорта товаров miniShop2](https://file.modx.pro/files/7/e/2/7e2921a4ffdf3e8d3ba6f0114f502dd6.png)](https://file.modx.pro/files/7/e/2/7e2921a4ffdf3e8d3ba6f0114f502dd6.png)
 
 ## Настройки 
 1. **Файл для импорта** (на данный момент поддерживается только CSV)

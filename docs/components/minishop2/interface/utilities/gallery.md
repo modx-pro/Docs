@@ -21,4 +21,4 @@
 
 ### Интерфейс
 
-[![](https://file.modx.pro/files/e/a/6/ea60b490b01a83f1f67f7be0217c9a15.png)](https://file.modx.pro/files/e/a/6/ea60b490b01a83f1f67f7be0217c9a15.png)
+[![Обновление превью miniShop2](https://file.modx.pro/files/e/a/6/ea60b490b01a83f1f67f7be0217c9a15.png)](https://file.modx.pro/files/e/a/6/ea60b490b01a83f1f67f7be0217c9a15.png)
