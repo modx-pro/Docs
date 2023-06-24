@@ -87,6 +87,10 @@
   left: -4px;
 }
 
+.VPDoc .content-container {
+  max-width: unset !important;
+}
+
 .pager .pager-link {
   border-width: 4px;
   border-color: var(--vp-c-divider);
@@ -146,7 +150,7 @@ kbd {
   background-color: var(--vp-sidebar-bg-color);
 }
 
-@media screen and (max-width: 1024px) {
+@media (max-width: 1024px) {
   .vp-doc table {
     border: 0;
   }
@@ -167,12 +171,12 @@ kbd {
   }
 
   .vp-doc table tr {
-    border-bottom: 1px solid var(--vp-c-divider);;
+    border-bottom: 1px solid var(--vp-c-divider);
     display: block;
     margin-bottom: 1rem;
   }
 
-  .vp-doc tr:nth-child(2n) {
+  .vp-doc table tr:nth-child(2n) {
     background-color: inherit;
   }
 
