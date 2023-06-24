@@ -17,6 +17,6 @@
 
 3. С помощью плейсхолдеров `[[+schema]]` и `[[+base_domain]]`
 
-    Например: `[[+schema]]eng.[[+base_domain]]/` `[[+schema]]english.[[+base_domain]]/`
+    Например: `[[+schema]]eng.[[+base_domain]]/`, `[[+schema]]english.[[+base_domain]]/`
 
     Данный вариант более удобен, если языковые версии строятся на поддоменах. Например `http://mybasedomain.ru/` и `http://eng.mybasedomain.ru/`

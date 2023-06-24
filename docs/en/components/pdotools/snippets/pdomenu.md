@@ -38,7 +38,7 @@ Name                    | Default                                            | D
 **&cache**              | `0`                                                | Caching snippet results.
 **&cacheTime**          | `3600`                                             | Duration of the cache in seconds.
 **&scheme**             | `-1` (relative to site_url)                        | How the URL is generated, based on values valid for the modX::makeUrl() API.
-**&useWeblinkUrl**      | `1`                                                | When set to 1, the URL specified in a weblink resource will be output to the placeholder «[[+link]]» instead of the link to the weblink resource itself.
+**&useWeblinkUrl**      | `1`                                                | When set to 1, the URL specified in a weblink resource will be output to the placeholder `[[+link]]` instead of the link to the weblink resource itself.
 **&rowIdPrefix**        |                                                    | If set, this parameter creates a unique ID for each item. The value will be rowIdPrefix + docId.
 **&hereId**             |                                                    | Define the current ID to use for the snippet. Use a value of `[[*id]]` if the template specified by **&tplHere** and **&tplParentRowActive** is not applied correctly to the menu item.
 **&includeTVs**         |                                                    | Define comma delimited list of TVs to include. For example, «action,time» will yiled placeholders `[[+action]]` & `[[+time]]`

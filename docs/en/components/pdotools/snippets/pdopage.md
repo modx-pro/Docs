@@ -27,7 +27,7 @@ Name                    | Default                             | Description
 **element**             | `pdoResources`                      | The name of the snippet to run.
 **pageNavVar**          | `page.nav`                          | Name of placeholder for output pagination.
 **pageCountVar**        | `pageCount`                         | Name of placeholder for output number of pages.
-**pageLinkScheme**      |                                     | Scheme of generation link to page. You can use placeholders [[+pageVarKey]] and [[+page]]
+**pageLinkScheme**      |                                     | Scheme of generation link to page. You can use placeholders `[[+pageVarKey]]` and `[[+page]]`
 **cache**               |                                     | Caching the results of the snippet.
 **cacheTime**           | `3600`                              | Time until the cache expires, in seconds.
 **cacheAnonymous**      |                                     | Enable caching only for unauthorized visitors.
@@ -201,11 +201,11 @@ The checking of the data in the config will allow you to distinguish between dif
 
 ## Use your own javascripts in ajax mode
 
-From version 2.7.4 you could use your own javascripts in ajax mode. The frontend javascripts could be modified with the pdoPage snippet parameters **&frontend_js**, **&frontend_startup_js** and **&frontend_init_js**. Per default the external **[[+assetsUrl]]js/pdopage.min.js** javascript is referenced and the belonging script tags are placed at the end of the head/body section.
+From version 2.7.4 you could use your own javascripts in ajax mode. The frontend javascripts could be modified with the pdoPage snippet parameters **&frontend_js**, **&frontend_startup_js** and **&frontend_init_js**. Per default the external `[[+assetsUrl]]js/pdopage.min.js` javascript is referenced and the belonging script tags are placed at the end of the head/body section.
 
 ### jQuery plugin
 
-Since version 2.7.4 **[[+assetsUrl]]js/jquery.pdopage.min.js** is available and could be referenced in **&frontend_js** parameter in the pdoPage snippet call. If you want to use it, you have to create two chunks and reference them in the **&frontend_startup_js** and **&frontend_init_js** parameter.
+Since version 2.7.4 `[[+assetsUrl]]js/jquery.pdopage.min.js` is available and could be referenced in **&frontend_js** parameter in the pdoPage snippet call. If you want to use it, you have to create two chunks and reference them in the **&frontend_startup_js** and **&frontend_init_js** parameter.
 
 The chunk for **frontend_startup_js** should stay empty and the chunk for **frontend_init_js** could be filled with the following script tag:
 
