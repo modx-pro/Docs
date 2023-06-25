@@ -110,36 +110,35 @@
   - `controller` - экземпляр класса *контроллер*
   - `page` - идентификатор страницы
 
-- `msOnBeforeVendorCreate` - перед созданием нового вендора
+- `msOnBeforeVendorCreate` - перед созданием нового производителя
   - `mode` - для данного события = new 
   - `data` - данные вендора
   - `object` - объект *msVendor*
 
-- `msOnAfterVendorCreate` - после создания нового вендора
+- `msOnAfterVendorCreate` - после создания нового производителя
   - `mode` - для данного события = new 
   - `id` - id созданного вендора
   - `data` - данные вендора
   - `object` - объект *msVendor*
 
-- `msOnBeforeVendorUpdate` - перед обновлением вендора
+- `msOnBeforeVendorUpdate` - перед обновлением производителя
   - `mode` - для данного события = upd 
   - `data` - данные вендора
   - `id` - id вендора
   - `object` - объект *msVendor*
 
-- `msOnAfterVendorUpdate` - после обновления вендора
+- `msOnAfterVendorUpdate` - после обновления производителя
   - `mode` - для данного события = upd 
   - `id` - id вендора
   - `object` - объект *msVendor*
 
-- `msOnBeforeVendorDelete` - перед удалением вендора
+- `msOnBeforeVendorDelete` - перед удалением производителя
   - `id` - id вендора
   - `object` - объект *msVendor*
 
-- `msOnAfterVendorDelete` - после удаления вендора
+- `msOnAfterVendorDelete` - после удаления производителя
   - `id` - id вендора
   - `object` - объект *msVendor*
-
 
 ## Работа с событиями
 
