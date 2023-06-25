@@ -200,3 +200,11 @@ kbd {
     border-bottom: 0;
   }
 }
+
+.medium-zoom-overlay {
+  z-index: calc(var(--vp-z-index-nav) + 10);
+}
+
+.medium-zoom-image {
+  z-index: calc(var(--vp-z-index-nav) + 20);
+}

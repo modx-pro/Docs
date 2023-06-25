@@ -49,6 +49,7 @@
         }
     },
     "dependencies": {
-        "@vueuse/core": "^10.1.2"
+        "@vueuse/core": "^10.1.2",
+        "medium-zoom": "^1.0.8"
     }
 }
