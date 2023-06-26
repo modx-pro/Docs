@@ -1,0 +1,96 @@
+:root {
+  --vp-c-overlay: rgba(255 255 255 / .92);
+  --vp-c-overlay-1: rgba(255 255 255 / .32);
+  --vp-c-overlay-2: rgba(255 255 255 / .7);
+}
+
+.dark {
+  --vp-c-overlay: rgba(0 0 0 / .92);
+  --vp-c-overlay-1: rgba(0 0 0 / .32);
+  --vp-c-overlay-2: rgba(0 0 0 / .7);
+}
+
+.vp-doc :not(a) > img {
+  cursor: zoom-in;
+}
+
+.glightbox-white {
+  color: var(--vp-c-text-1);
+}
+
+.glightbox-white .goverlay {
+  background: var(--vp-c-overlay);
+}
+
+.glightbox-white .gslide-description {
+  background: none;
+  padding-block: 20px;
+}
+
+.glightbox-white .gclose {
+  width: 35px;
+  height: 35px;
+  top: 15px;
+  right: 10px;
+  position: absolute;
+}
+
+.glightbox-white .gclose:hover {
+  opacity: 1;
+}
+
+.glightbox-white .gnext,
+.glightbox-white .gprev {
+  position: absolute;
+  top: -100%;
+  width: 40px;
+  height: 50px;
+}
+
+.glightbox-white .gprev {
+  left: 30px;
+}
+
+.glightbox-white .gnext {
+  right: 30px;
+}
+
+@media (min-width: 992px) {
+  .glightbox-white .gclose {
+    opacity: 0.7;
+    right: 20px;
+  }
+}
+
+.glightbox-white .gprev svg,
+.glightbox-white .gnext svg,
+.glightbox-white .gclose svg {
+  fill: currentColor;
+}
+
+@media (min-width: 769px) {
+  .glightbox-white .gprev,
+  .glightbox-white .gnext,
+  .glightbox-white .gclose {
+    background-color: var(--vp-c-overlay-1);
+  }
+
+  .glightbox-white .gprev:hover,
+  .glightbox-white .gnext:hover,
+  .glightbox-white .gclose:hover {
+    background-color: var(--vp-c-overlay-2);
+  }
+}
+
+@media (min-width: 769px) {
+  .glightbox-white .gprev,
+  .glightbox-white .gnext {
+    top: 45%;
+  }
+}
+
+.glightbox-mobile .glightbox-container .gslide-title,
+.glightbox-mobile .glightbox-container .gslide-description {
+  background: none;
+  color: var(--vp-c-text-1);
+}
