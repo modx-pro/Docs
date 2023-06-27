@@ -22,7 +22,7 @@ export function useZoom() {
 }
 
 export function createZoom(app: App, router: Router) {
-  const zoom = mediumZoom()
+  const zoom = mediumZoom({ margin: 24 })
   zoom.refresh = () => zoom.detach().attach('.vp-doc :not(a) > img')
   app.provide(key, zoom)
   watch(

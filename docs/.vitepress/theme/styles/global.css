@@ -202,9 +202,9 @@ kbd {
 }
 
 .medium-zoom-overlay {
-  z-index: calc(var(--vp-z-index-nav) + 10);
+  z-index: calc(var(--vp-z-index-nav) - 10);
 }
 
 .medium-zoom-image {
-  z-index: calc(var(--vp-z-index-nav) + 20);
+  z-index: calc(var(--vp-z-index-nav) - 10);
 }
