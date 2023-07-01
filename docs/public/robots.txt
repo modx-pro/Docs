@@ -1,2 +1,2 @@
 User-agent: *
-Disallow: /
+Sitemap: https://docs.modx.pro/sitemap.xml
