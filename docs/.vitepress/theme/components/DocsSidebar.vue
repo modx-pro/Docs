@@ -2,7 +2,7 @@
 import { ref, watchPostEffect, watch, computed } from 'vue'
 import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
 import { DefaultTheme, useRoute, useData } from 'vitepress'
-import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
+import { useSidebar } from 'vitepress/theme'
 import VPSidebarItem from 'vitepress/dist/client/theme-default/components/VPSidebarItem.vue'
 
 const { sidebar: flatSidebar, sidebarGroups, hasSidebar } = useSidebar()

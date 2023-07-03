@@ -67,9 +67,12 @@ export const config: LocaleConfig<DocsTheme.Config> = {
       returnToTopLabel: 'Наверх',
       sidebarMenuLabel: 'Меню',
       darkModeSwitchLabel: 'Тема',
-      lastUpdatedText: 'Последнее обновление',
       langMenuLabel: 'Изменить язык',
       teamSectionTitle: 'Команда',
+
+      lastUpdated: {
+        text: 'Последнее обновление',
+      },
 
       sponsor: {
         message: 'Данный сервис является Open-Source проектом и его поддержка и развитие зависит от пожертвований.',
