@@ -80,11 +80,11 @@ export default defineConfigWithTheme<DocsTheme.Config>({
         icon: { svg: modxpro },
         link: 'https://modx.pro',
       },
-      { icon: 'github', link: 'https://github.com/modx-pro/Docs' },
       {
         icon: { svg: telegram },
         link: 'https://t.me/ru_modx',
       },
+      { icon: 'github', link: 'https://github.com/modx-pro/Docs' },
     ],
 
     search: {
