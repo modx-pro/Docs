@@ -1,4 +1,5 @@
 import type { EnhanceAppContext } from 'vitepress'
+import { createZoom, useZoom } from './composables/zoom'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import DocsLayout from './components/DocsLayout.vue'
 import DocsComponentsList from './components/DocsComponentsList.vue'
@@ -8,7 +9,12 @@ export default {
   extends: DefaultTheme,
   Layout: DocsLayout,
 
-  enhanceApp(ctx: EnhanceAppContext) {
-    ctx.app.component('DocsComponentsList', DocsComponentsList)
+  enhanceApp({ app, router }: EnhanceAppContext) {
+    app.component('DocsComponentsList', DocsComponentsList)
+    createZoom(app, router)
+  },
+
+  setup() {
+    useZoom()
   },
 }
