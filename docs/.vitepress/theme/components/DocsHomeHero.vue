@@ -27,7 +27,6 @@ defineProps<{
       <div v-for="action in data.actions" :key="action.link" class="action">
         <DocsButton
           tag="a"
-          size="medium"
           :theme="action.theme"
           :text="action.text"
           :href="action.link"

@@ -2,7 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { useData } from 'vitepress'
 import { createTranslate } from 'vitepress/dist/client/theme-default/support/translation'
+import { v4 as uuidv4 } from 'uuid'
 
+const uid = uuidv4()
 const { theme } = useData()
 const $t = createTranslate(theme.value.search?.options)
 withDefaults(defineProps<{
@@ -35,7 +37,7 @@ function onSearchBarClick(event: PointerEvent) {
 
 <template>
   <form class="search-bar" @pointerup="onSearchBarClick($event)" @submit.prevent="">
-    <label :title="placeholder" id="localsearch-label" for="localsearch-input">
+    <label :title="placeholder" id="localsearch-label" :for="uid">
       <svg
         class="search-icon"
         width="18"
@@ -83,6 +85,7 @@ function onSearchBarClick(event: PointerEvent) {
     </div>
     <input
       ref="searchInput"
+      :id="uid"
       :value="modelValue"
       :placeholder="placeholder"
       class="search-input"

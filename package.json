@@ -49,6 +49,7 @@
         }
     },
     "dependencies": {
-        "@vueuse/core": "^10.1.2"
+        "@vueuse/core": "^10.1.2",
+        "uuid": "^9.0.0"
     }
 }
