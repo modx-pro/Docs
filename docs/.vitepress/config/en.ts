@@ -2,7 +2,7 @@ import type { DefaultTheme, LocaleConfig } from 'vitepress'
 import type { DocsTheme } from '../theme/types'
 import { generateSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
-import { sponsorLink } from './common'
+import 'dotenv/config'
 
 export const META_URL = 'https://docs.modx.pro/'
 export const META_TITLE = 'Docs MODX.PRO'
@@ -66,7 +66,7 @@ export const config: LocaleConfig<DocsTheme.Config> = {
       sponsor: {
         message: 'This service is free and open source, and its support and development depends on donations.',
         linkText: 'Become a sponsor!',
-        link: sponsorLink,
+        link: process.env.SPONSOR_LINK,
       },
 
       docFooter: {
@@ -107,10 +107,10 @@ function getNav(): DefaultTheme.NavItem[] {
     { text: 'Frontmatter', link: '/en/guide/frontmatter' },
   ]
 
-  if (sponsorLink) {
+  if (process.env.SPONSOR_LINK) {
     guideItems.push({
       items: [
-        { text: '❤️ Become a sponsor!', link: sponsorLink }
+        { text: '❤️ Become a sponsor!', link: process.env.SPONSOR_LINK }
       ],
     })
   }
