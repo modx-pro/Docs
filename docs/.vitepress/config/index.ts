@@ -134,17 +134,20 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
     const output: HeadConfig[] = [
       ['meta', { property: 'og:title', content: title }],
-      ['meta', { property: 'og:description', content: pageData.description }],
       ['meta', { property: 'og:type', content: 'article' }],
       ['meta', { property: 'og:url', content: SITE_HOST + normalize(pageData.relativePath) }],
       ['meta', { property: 'og:image', content: image }],
 
-      ['meta', { property: 'og:site_name', content: SITE_TITLE }],
-
       ['meta', { name: 'twitter:title', content: title }],
-      ['meta', { name: 'twitter:description', content: pageData.description }],
-      ['meta', { name: 'twitter:card', content: 'summary' }],
+      ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
     ]
+
+    if (pageData.description) {
+      output.push(
+        ['meta', { property: 'og:description', content: pageData.description }],
+        ['meta', { name: 'twitter:description', content: pageData.description }],
+      )
+    }
 
     if (author) {
       output.push(

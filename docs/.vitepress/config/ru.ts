@@ -4,6 +4,7 @@ import { generateSidebar, generateFaqSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
 import 'dotenv/config'
 
+export const SITE_NAME = 'Документация компонентов MODX и не только'
 export const META_DESCRIPTION = 'Простой и удобный Open-Source проект от сообщества и для сообщества, где вы можете найти и изучить документацию всех популярных компонентов MODX, а разработчики – легко описать свои'
 
 export const searchLocale: Record<string, Partial<Omit<DefaultTheme.LocalSearchOptions, 'locales'>>> = {
@@ -36,6 +37,10 @@ export const config: LocaleConfig<DocsTheme.Config> = {
     label: 'Русский',
     lang: 'ru',
     description: META_DESCRIPTION,
+
+    head: [
+      ['meta', { property: 'og:site_name', content: SITE_NAME }],
+    ],
 
     themeConfig: {
       nav: getNav(),
