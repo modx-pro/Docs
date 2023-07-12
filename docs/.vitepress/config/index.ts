@@ -1,5 +1,6 @@
 import type { DocsTheme } from '../theme/types'
-import { createContentLoader, defineConfigWithTheme } from 'vitepress'
+import type { DocsPageData } from '../theme/plugins/component'
+import { type HeadConfig, createContentLoader, defineConfigWithTheme } from 'vitepress'
 import { config as en, searchLocale as searchLocaleEn } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
@@ -11,7 +12,10 @@ import { resolve } from 'node:path'
 import { slugify } from 'transliteration'
 import { fileURLToPath, URL } from 'node:url'
 import { modhost, modstore, modxpro, telegram } from '../../icons'
+import { coreMembers } from '../../authors'
+import { normalize } from 'vitepress/dist/client/shared'
 
+const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
 
@@ -106,7 +110,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   },
 
   buildEnd: async ({ outDir }) => {
-    const sitemap = new SitemapStream({ hostname: 'https://docs.modx.pro/' })
+    const sitemap = new SitemapStream({ hostname: SITE_HOST })
     const pages = await createContentLoader('**/*.md').load()
     const writeStream = createWriteStream(resolve(outDir, 'sitemap.xml'))
 
@@ -119,6 +123,36 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
   transformPageData(pageData, { siteConfig }) {
     return prepareData(pageData, siteConfig)
+  },
+
+  transformHead({ pageData }: { pageData: DocsPageData }) {
+    const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
+    const image = pageData?.component?.logo || SITE_HOST + 'icon-512.png'
+    const author = pageData?.component?.author?.modxpro
+        || pageData?.component?.author?.github
+        || coreMembers.at(0)?.links?.find(item => item.link.startsWith('https://modx.pro/'))?.link
+
+    const output: HeadConfig[] = [
+      ['meta', { property: 'og:title', content: title }],
+      ['meta', { property: 'og:description', content: pageData.description }],
+      ['meta', { property: 'og:type', content: 'article' }],
+      ['meta', { property: 'og:url', content: SITE_HOST + normalize(pageData.relativePath) }],
+      ['meta', { property: 'og:image', content: image }],
+
+      ['meta', { property: 'og:site_name', content: SITE_TITLE }],
+
+      ['meta', { name: 'twitter:title', content: title }],
+      ['meta', { name: 'twitter:description', content: pageData.description }],
+      ['meta', { name: 'twitter:card', content: 'summary' }],
+    ]
+
+    if (author) {
+      output.push(
+        ['meta', { property: 'article:author', content: author }],
+      )
+    }
+
+    return output
   },
 
   vite: {

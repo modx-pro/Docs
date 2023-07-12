@@ -4,8 +4,6 @@ import { generateSidebar, generateFaqSidebar } from '../theme/plugins/sidebar'
 import { components } from '../theme/plugins/component'
 import 'dotenv/config'
 
-export const META_URL = 'https://docs.modx.pro/'
-export const META_TITLE = 'Docs MODX.PRO'
 export const META_DESCRIPTION = 'Простой и удобный Open-Source проект от сообщества и для сообщества, где вы можете найти и изучить документацию всех популярных компонентов MODX, а разработчики – легко описать свои'
 
 export const searchLocale: Record<string, Partial<Omit<DefaultTheme.LocalSearchOptions, 'locales'>>> = {
@@ -38,13 +36,6 @@ export const config: LocaleConfig<DocsTheme.Config> = {
     label: 'Русский',
     lang: 'ru',
     description: META_DESCRIPTION,
-    head: [
-      ['meta', { property: 'og:url', content: META_URL }],
-      ['meta', { property: 'og:description', content: META_DESCRIPTION }],
-      ['meta', { property: 'twitter:url', content: META_URL }],
-      ['meta', { property: 'twitter:title', content: META_TITLE }],
-      ['meta', { property: 'twitter:description', content: META_DESCRIPTION }],
-    ],
 
     themeConfig: {
       nav: getNav(),
