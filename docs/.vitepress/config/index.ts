@@ -127,19 +127,24 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
   transformHead({ pageData }: { pageData: DocsPageData }) {
     const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
-    const image = pageData?.component?.logo || SITE_HOST + 'icon-512.png'
+    const image = pageData?.component?.logo || SITE_HOST + 'og-default.png'
+    const type = pageData.component ? 'article' : 'website'
+    const url = SITE_HOST + normalize(pageData.relativePath)
     const author = pageData?.component?.author?.modxpro
         || pageData?.component?.author?.github
         || coreMembers.at(0)?.links?.find(item => item.link.startsWith('https://modx.pro/'))?.link
 
     const output: HeadConfig[] = [
       ['meta', { property: 'og:title', content: title }],
-      ['meta', { property: 'og:type', content: 'article' }],
-      ['meta', { property: 'og:url', content: SITE_HOST + normalize(pageData.relativePath) }],
+      ['meta', { property: 'og:type', content: type }],
+      ['meta', { property: 'og:url', content: url }],
       ['meta', { property: 'og:image', content: image }],
 
-      ['meta', { name: 'twitter:title', content: title }],
       ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+      ['meta', { property: 'twitter:domain', content: 'docs.modx.pro' }],
+      ['meta', { property: 'twitter:url', content: url }],
+      ['meta', { name: 'twitter:title', content: title }],
+      ['meta', { name: 'twitter:image', content: image }],
     ]
 
     if (pageData.description) {
@@ -149,7 +154,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
       )
     }
 
-    if (author) {
+    if (pageData.component && author) {
       output.push(
         ['meta', { property: 'article:author', content: author }],
       )
