@@ -84,3 +84,19 @@ switch ($modx->event->name) {
     break;
 }
 ```
+
+
+Изменения стоимости заказа и возвращения значений из плагина. В данном примере изменяется стоимость заказа
+
+```php
+<?php
+
+switch ($modx->event->name) {
+
+  case 'PasOnGetOrderCost':
+    $values = $modx->Event->returnedValues;
+    $values['cost'] = 5000;
+    $modx->event->returnedValues = $values;
+    break;
+}
+```
