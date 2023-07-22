@@ -2,8 +2,7 @@ import type { DefaultTheme, UserConfig } from 'vitepress'
 import type { ComponentData, DocsPageData } from './plugins/component'
 import { normalize } from 'vitepress/dist/client/shared'
 
-import type { Author } from '../../authors'
-import { authors } from '../../authors'
+import { type Author, authors } from '../../docs/authors'
 import { DocsTheme } from './types'
 
 export function findPath(

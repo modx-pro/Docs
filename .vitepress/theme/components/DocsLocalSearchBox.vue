@@ -78,6 +78,8 @@ const searchIndex = computedAsync(async () =>
           fuzzy: 0.2,
           prefix: true,
           boost: { title: 4, text: 1, titles: 1 },
+          ...(theme.value.search?.provider === 'local' &&
+            theme.value.search.options?.miniSearch?.searchOptions),
           boostDocument: (documentId) => {
             const component = documentId.match(/components\/([^\/#]*)/)?.[1]
             const pathArr = documentId.replace(/\#.*/, '').replace(/^\//, '').replace(/\/$/, '').split('/')
@@ -92,7 +94,9 @@ const searchIndex = computedAsync(async () =>
 
             return 1.0
           }
-        }
+        },
+        ...(theme.value.search?.provider === 'local' &&
+          theme.value.search.options?.miniSearch?.options)
       }
     )
   )

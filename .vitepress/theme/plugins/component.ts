@@ -9,7 +9,7 @@ import matter from 'gray-matter'
 
 import { generateSidebarItem, getTitleFromContent } from './sidebar'
 
-import type { Author } from '../../../authors'
+import type { Author } from '../../../docs/authors'
 import { findPath } from '../utils'
 
 export interface ComponentData {

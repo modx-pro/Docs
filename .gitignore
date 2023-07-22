@@ -1,7 +1,7 @@
 .idea
 .DS_Store
-docs/.vitepress/cache
-docs/.vitepress/dist
+.vitepress/cache
+.vitepress/dist
 node_modules
 
 .temp

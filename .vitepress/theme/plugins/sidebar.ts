@@ -1,6 +1,6 @@
 import type { DefaultTheme } from 'vitepress'
 import { normalize } from 'vitepress/dist/client/shared'
-import faqCategories from '../../../faq/categories.json'
+import faqCategories from '../../../docs/faq/categories.json'
 
 import { readFileSync } from 'fs'
 import { join, basename } from 'path'

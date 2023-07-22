@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useData } from 'vitepress'
-import { VPTeamMembers } from 'vitepress/theme'
-import { coreMembers } from '../../../authors'
+import { VPTeamMembers } from 'vitepress/theme-without-fonts'
+import { coreMembers } from '../../../docs/authors'
 
 const { lang, theme } = useData()
 const members = computed(() => coreMembers.map(member => ({ ...member, name: member.name[lang.value] })))

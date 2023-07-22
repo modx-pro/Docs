@@ -10,7 +10,7 @@
     ]
   },
   "include": [
-    "docs/.vitepress/theme/**/*",
+    ".vitepress/theme/**/*",
     "node_modules/vitepress/dist/client/theme-default/components/**/*.vue"
   ]
 }

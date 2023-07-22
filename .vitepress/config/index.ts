@@ -11,8 +11,8 @@ import { createWriteStream } from 'node:fs'
 import { resolve } from 'node:path'
 import { slugify } from 'transliteration'
 import { fileURLToPath, URL } from 'node:url'
-import { modhost, modstore, modxpro, telegram } from '../../icons'
-import { coreMembers } from '../../authors'
+import { modhost, modstore, modxpro, telegram } from '../../docs/icons'
+import { coreMembers } from '../../docs/authors'
 import { normalize } from 'vitepress/dist/client/shared'
 
 const SITE_HOST = 'https://docs.modx.pro/'
@@ -25,6 +25,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
 
   title: SITE_TITLE,
   titleTemplate: ':title' + SITE_TITLE_SEPARATOR + SITE_TITLE,
+  srcDir: './docs',
 
   markdown: {
     // @ts-expect-error

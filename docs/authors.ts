@@ -1,5 +1,5 @@
 import authors from './authors.json'
-import type { DocsTheme } from './.vitepress/theme/types'
+import type { DocsTheme } from '../.vitepress/theme/types'
 import { modxpro } from './icons'
 
 export interface Author {

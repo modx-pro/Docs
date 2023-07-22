@@ -2,7 +2,7 @@
 import { type Ref, computed } from 'vue'
 import { type PageData, useData } from 'vitepress'
 import type { DocsPageData } from '../plugins/component'
-import { type Author, authors } from '../../../authors'
+import { type Author, authors } from '../../../docs/authors'
 
 import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
@@ -33,7 +33,7 @@ const author = computed<Author>(() => {
 <template>
   <article
     v-if="author"
-    class="DocsAuthorWidget"
+    class="DocsScreenAuthorWidget"
   >
     <VPLink
       :href="author.github"
@@ -46,8 +46,8 @@ const author = computed<Author>(() => {
         :image="author.avatar"
       />
       <div class="info">
-        <div class="name">{{ author.name }}</div>
-        <div class="label">{{ authorLabel }}</div>
+        <span class="label">{{ authorLabel }}:</span>
+        <span class="name">{{ author.name }}</span>
       </div>
     </VPLink>
   </article>
@@ -55,11 +55,14 @@ const author = computed<Author>(() => {
 
 
 <style scoped>
-.DocsAuthorWidget {
-  background-color: var(--vp-sidebar-bg-color);
-  border-radius: var(--vp-border-radius);
-  margin-top: 20px;
-  padding: 20px;
+.DocsScreenAuthorWidget {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 1280px) {
+  .DocsScreenAuthorWidget {
+    display: none;
+  }
 }
 
 .body {
@@ -67,21 +70,25 @@ const author = computed<Author>(() => {
   align-items: center;
 }
 
+.info {
+  display: flex;
+  font-size: 13px;
+  gap: 5px;
+}
+
 :deep(.avatar) {
-  width: 35px;
-  height: 35px;
+  width: 25px;
+  height: 25px;
   border-radius: 50%;
-  margin-right: 12px;
+  margin-right: 5px;
 }
 
 :deep(.name) {
-  font-size: 13px;
   font-weight: bold;
   line-height: normal;
 }
 
 :deep(.label) {
-  font-size: 14px;
   line-height: normal;
 }
 
