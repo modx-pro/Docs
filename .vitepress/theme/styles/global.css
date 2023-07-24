@@ -159,6 +159,21 @@ kbd {
   background-color: var(--vp-sidebar-bg-color);
 }
 
+.vp-doc [class*='language-'] > button.copy.copied::before,
+.vp-doc [class*='language-'] > button.copy:hover.copied::before {
+  width: auto;
+  left: unset;
+  right: calc(100% + 1px);
+  position: absolute;
+  padding-inline: 12px;
+  border-right-width: 1px;
+}
+
+[lang|="ru"] .vp-doc [class*='language-'] > button.copy.copied::before,
+[lang|="ru"] .vp-doc [class*='language-'] > button.copy:hover.copied::before {
+  content: 'Скопировано';
+}
+
 @media (max-width: 1024px) {
   .vp-doc table {
     border: 0;
