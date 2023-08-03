@@ -2,8 +2,14 @@
 
 Хоть и **FetchIt** не имеет никаких зависимостей, всё подготовлено для того, чтобы с помощью минимального кода подключить любую готовую или вашу собственную библиотеку для показа сообщений.
 
-- [SweetAlert2](/components/fetchit/examples/notifications/sweetalert2)
+::: tip
+
+С версии 1.1.0 и 3.1.0 доступна системная настройка [`fetchit.frontend.default.notifier`](/components/fetchit/settings#fetchitfrontenddefaultnotifier) при включении которой будут отображаться всплывающие уведомления [Notyf](/components/fetchit/examples/notifications/notyf).
+
+:::
+
 - [Notyf](/components/fetchit/examples/notifications/notyf)
+- [SweetAlert2](/components/fetchit/examples/notifications/sweetalert2)
 - [iziToast](/components/fetchit/examples/notifications/izitoast)
 - [Notiflix.Notify](/components/fetchit/examples/notifications/notiflix-notify)
 - [Notie](/components/fetchit/examples/notifications/notie)

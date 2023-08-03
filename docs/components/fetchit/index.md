@@ -50,10 +50,10 @@ items:
   - text: Всплывающие сообщения
     link: examples/notifications/
     items:
-      - text: SweetAlert2
-        link: examples/notifications/sweetalert2
       - text: Notyf
         link: examples/notifications/notyf
+      - text: SweetAlert2
+        link: examples/notifications/sweetalert2
       - text: iziToast
         link: examples/notifications/izitoast
       - text: Notiflix.Notify
