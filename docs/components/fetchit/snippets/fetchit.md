@@ -12,3 +12,33 @@
 | **clearFieldsOnSuccess** | `1`                        | Данный параметр отвечает за очистку данных формы после успешного ответа |
 
 Все остальные параметры, которые вы укажете при вызове **FetchIt** будут переданы сниппету указанному в параметре `snippet`.
+
+## Пример вызова
+
+::: code-group
+
+```modx
+[[!FetchIt?
+  &form=`myForm.tpl`
+  &hooks=`email`
+  &emailSubject=`Тема письма`
+  &emailTo=`info@domain.com`
+  &validate=`name:required,email:required`
+  &validationErrorMessage=`В форме содержатся ошибки!`
+  &successMessage=`Сообщение успешно отправлено!`
+]]
+```
+
+```fenom
+{'!FetchIt' | snippet : [
+  'form' => 'myForm.tpl',
+  'hooks' => 'email',
+  'emailSubject' => 'Тема письма',
+  'emailTo' => 'info@domain.com',
+  'validate' => 'name:required,email:required',
+  'validationErrorMessage' => 'В форме содержатся ошибки!',
+  'successMessage' => 'Сообщение успешно отправлено!',
+]}
+```
+
+:::
