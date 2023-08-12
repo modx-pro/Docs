@@ -118,7 +118,7 @@ function onSearchBarClick(event: PointerEvent) {
   background-color: var(--vp-local-search-result-bg);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .search-bar {
     padding: 0 8px;
   }
@@ -132,7 +132,7 @@ function onSearchBarClick(event: PointerEvent) {
   margin: 8px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .search-icon {
     display: none;
   }
@@ -144,7 +144,7 @@ function onSearchBarClick(event: PointerEvent) {
   width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .search-input {
     padding: 6px 4px;
   }

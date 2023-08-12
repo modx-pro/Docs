@@ -110,22 +110,6 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     ...en,
   },
 
-  buildEnd: async ({ outDir }) => {
-    const sitemap = new SitemapStream({ hostname: SITE_HOST })
-    const pages = await createContentLoader('./docs/**/*.md', {
-      includeSrc: false,
-      render: false,
-      excerpt: false,
-    }).load()
-    const writeStream = createWriteStream(resolve(outDir, 'sitemap.xml'))
-
-    sitemap.pipe(writeStream)
-    pages.forEach((page) => sitemap.write({ url: page.url.replace(/^\/docs/, '').replace(/\/index$/, '/') }))
-    sitemap.end()
-
-    await new Promise((r) => writeStream.on('finish', r))
-  },
-
   transformPageData(pageData, { siteConfig }) {
     return prepareData(pageData, siteConfig)
   },
@@ -209,5 +193,9 @@ export default defineConfigWithTheme<DocsTheme.Config>({
         },
       ],
     },
+  },
+
+  sitemap: {
+    hostname: SITE_HOST,
   },
 })

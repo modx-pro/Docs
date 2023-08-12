@@ -5,7 +5,7 @@ import { useLangs } from 'vitepress/dist/client/theme-default/composables/langs'
 
 import DocsButton from './DocsButton.vue'
 
-const { site } = useData()
+const { site, theme } = useData()
 const { localeLinks } = useLangs({ removeCurrent: false })
 
 const root = ref<string>('/')
@@ -24,21 +24,26 @@ onMounted(() => {
 
 <template>
   <div class="DocsNotFound">
-    <p class="code">404</p>
-    <h1 class="title">Страница не найдена</h1>
+    <p class="code">{{ theme.notFound?.code ?? '404' }}</p>
+    <h1 class="title">{{ theme.notFound?.title ?? 'Страница не найдена' }}</h1>
     <div class="divider" />
     <blockquote class="quote">
-      <p>Похоже, что вы перешли по неверной или устаревшей ссылке.</p>
-      <p>Информация, которую вы искали, где-то здесь. Вы можете воспользоваться поиском.</p>
-      <br>
-      <p>Этот сайт автоматически генерируется из файлов, расположенных на GitHub, поэтому адреса могут иногда меняться.</p>
+      <template v-if="theme.notFound?.quote">
+        {{ theme.notFound?.quote }}
+      </template>
+      <template v-else>
+        <p>Похоже, что вы перешли по неверной или устаревшей ссылке.</p>
+        <p>Информация, которую вы искали, где-то здесь. Вы можете воспользоваться поиском.</p>
+        <br>
+        <p>Этот сайт автоматически генерируется из файлов, расположенных на GitHub, поэтому адреса могут иногда меняться.</p>
+      </template>
     </blockquote>
     <div class="action">
       <DocsButton
         class="link"
         :href="root"
         theme="alt"
-        text="Вернуться на главную"
+        :text="theme.notFound?.linkText ?? 'Вернуться на главную'"
       />
     </div>
   </div>

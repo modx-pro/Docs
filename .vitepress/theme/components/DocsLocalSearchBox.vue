@@ -442,7 +442,7 @@ function formMarkRegex(terms: Set<string>) {
   overflow: hidden;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .shell {
     margin: 0;
     width: 100vw;
@@ -474,7 +474,7 @@ function formMarkRegex(terms: Set<string>) {
   gap: 4px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .search-keyboard-shortcuts {
     display: none;
   }
@@ -520,7 +520,7 @@ function formMarkRegex(terms: Set<string>) {
   overflow: hidden;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .result > div {
     margin: 10px 12px;
   }

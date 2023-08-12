@@ -10,11 +10,24 @@
   --vp-c-green: #1abc9c;
   --vp-c-green-light: #1dd7b2;
   --vp-c-green-lighter: #28e2bc;
+  --vp-c-green-lightest: #3AE4C2;
   --vp-c-green-dark: #18b495;
   --vp-c-green-darker: #1abc9c;
+  --vp-c-green-darkest: #16A286;
   --vp-c-green-dimm-1: rgba(26, 188, 156, 0.05);
   --vp-c-green-dimm-2: rgba(26, 188, 156, 0.2);
   --vp-c-green-dimm-3: rgba(26, 188, 156, 0.5);
+
+  --vp-c-brand: var(--vp-c-green);
+  --vp-c-brand-light: var(--vp-c-green-light);
+  --vp-c-brand-lighter: var(--vp-c-green-lighter);
+  --vp-c-brand-lightest: var(--vp-c-green-lightest);
+  --vp-c-brand-dark: var(--vp-c-green-dark);
+  --vp-c-brand-darker: var(--vp-c-green-darker);
+  --vp-c-brand-darkest: var(--vp-c-green-darkest);
+  --vp-c-brand-dimm-1: var(--vp-c-green-dimm-1);
+  --vp-c-brand-dimm-2: var(--vp-c-green-dimm-2);
+  --vp-c-brand-dimm-3: var(--vp-c-green-dimm-3);
 
   --vp-c-blue: #0ea5e9;
   --vp-c-blue-dimm-1: rgba(14, 165, 233, 0.05);
