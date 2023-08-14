@@ -21,3 +21,9 @@ export namespace DocsTheme {
     name: Record<string, string>
   }
 }
+
+declare global {
+  interface Window {
+    ym?: Function;
+  }
+}
