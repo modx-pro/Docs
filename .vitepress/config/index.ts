@@ -75,7 +75,8 @@ export default defineConfigWithTheme<DocsTheme.Config>({
         clickmap:true,
         trackLinks:true,
         accurateTrackBounce:true,
-        webvisor:true
+        webvisor:false,
+        trackHash:true,
       });`,
     ],
   ],
