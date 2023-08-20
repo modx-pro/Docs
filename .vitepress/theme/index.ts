@@ -19,7 +19,11 @@ export default {
     ) {
       watch(
         () => router.route.data.relativePath,
-        (path) => {
+        (path, oldPath) => {
+          if (!oldPath) { // Skip initial change
+            return
+          }
+
           const url = '/' + path.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')
           window.ym(24242593, 'hit', url)
         }
