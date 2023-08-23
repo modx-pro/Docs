@@ -10,4 +10,7 @@ author: ShevArtV
 item:
     - text: Общая информация
       link: index
+dependencies:
+    - pdoTools
+    - FormIt
 ---
