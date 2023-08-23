@@ -14,6 +14,8 @@ items: [
 { text: 'Загрузка файлов', link: 'fileuploader' },
 { text: 'Сохранение данных', link: 'saveformdata' },
 { text: 'Уведомления', link: 'notify' },
+{ text: 'События', link: 'events' },
+{ text: 'Разработка', link: 'development' },
 ]
 dependencies: ['pdoTools', 'FormIt']
 ---
