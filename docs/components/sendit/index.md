@@ -7,23 +7,15 @@ logo: https://sendit.art-sites.ru/assets/components/sendit/web/logo.jpg
 modstore: https://modstore.pro/packages/users/sendit
 repository: https://github.com/ShevArtV/sendit
 author: ShevArtV
-item:
-    - text: Начало работы
-      link: index
-    - text: Простые формы 
-      link: sending
-    - text: Опросники
-      link: quizform
-    - text: Загрузка файлов
-      link: fileuploader
-    - text: Сохранение данных
-      link: saveformdata
-    - text: Уведомления
-      link: notify
-
-dependencies:
-    - pdoTools
-    - FormIt
+items: [
+{ text: 'Начало работы', link: 'index' },
+{ text: 'Простые формы', link: 'sending' },
+{ text: 'Опросники', link: 'quizform' },
+{ text: 'Загрузка файлов', link: 'fileuploader' },
+{ text: 'Сохранение данных', link: 'saveformdata' },
+{ text: 'Уведомления', link: 'notify' },
+]
+dependencies: ['pdoTools', 'FormIt']
 ---
 
 Возможности:
