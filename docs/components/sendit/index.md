@@ -21,10 +21,9 @@ item:
     - text: Уведомления
       link: notify
 
-  dependencies:
+dependencies:
     - pdoTools
     - FormIt
-
 ---
 
 Возможности:
