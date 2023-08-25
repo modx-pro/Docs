@@ -54,61 +54,22 @@ dependencies: ['pdoTools', 'FormIt']
 
 ## Системные настройки
 
-| Ключ                    | Описание                              | Значение                                                 |
-|-------------------------|---------------------------------------|----------------------------------------------------------|
-| **si_frontend_css**     | Путь к основным стилям                | *[\[+assetsUrl]]components/sendit/web/css/index.min.css* |
-| **si_frontend_js**      | Путь к основным JS скриптам           | *[\[+assetsUrl]]components/sendit/web/js/sendit.js*      |
-| **si_js_config_path**   | Путь к файлу JS конфигурации          | *./sendit.inc.js*                                        |
-| **si_uploaddir**        | Путь для загрузки файлов              | */assets/components/sendit/uploaded_files/*              |
-| **si_path_to_presets**  | Путь к пресетам                       | */core/components/sendit/presets/sendit.inc.php*         |
-| **si_send_goal**        | Отправлять цели в Яндекс.Метрику      | *Нет*                                                    |
-| **si_counter_id**       | ID счётчика метрики                   |                                                          |
-| **si_default_email**    | Адрес для отправки писем по умолчанию |                                                          |
-| **si_default_emailtpl** | Чанк письма по умолчанию              | *siDefaultEmail*                                         |
+|           Ключ            |                Описание                 |                          Значение                          |
+|:-------------------------:|:---------------------------------------:|:----------------------------------------------------------:|
+|    **si_frontend_css**    |         Путь к основным стилям          |  *[\[+assetsUrl]]components/sendit/web/css/index.min.css*  |
+|    **si_frontend_js**     |       Путь к основным JS скриптам       |    *[\[+assetsUrl]]components/sendit/web/js/sendit.js*     |
+|   **si_js_config_path**   |      Путь к файлу JS конфигурации       |                     *./sendit.inc.js*                      |
+|     **si_uploaddir**      |        Путь для загрузки файлов         |        */assets/components/sendit/uploaded_files/*         |
+|  **si_path_to_presets**   |             Путь к пресетам             |      */core/components/sendit/presets/sendit.inc.php*      |
+|     **si_send_goal**      |    Отправлять цели в Яндекс.Метрику     |                           *Нет*                            |
+|     **si_counter_id**     |           ID счётчика метрики           |                                                            |
+|   **si_default_email**    |  Адрес для отправки писем по умолчанию  |                                                            |
+|  **si_default_emailtpl**  |        Чанк письма по умолчанию         |                      *siDefaultEmail*                      |
 
 ## Начало работы
-
-Входящие в комплект стили на большинстве сайтов будут только мешать. В связи с этим, рекомендую удалить из настроек путь к стилям, чтобы они не подключались.  
-Если хотите, чтобы при отправке форм, отправлялись цели в Яндекс.Метрику включите эту опцию в системных настройках и укажите ID счётчика, установленного на сайте.
-::: info
-Убедитесь, что на сайте установлен актуальный код метрики
-
-```html
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function (m, e, t, r, i, k, a) {
-        m[i] = m[i] || function () {
-            (m[i].a = m[i].a || []).push(arguments)
-        };
-        m[i].l = 1 * new Date();
-        for (var j = 0; j < document.scripts.length; j++) {
-            if (document.scripts[j].src === r) {
-                return;
-            }
-        }
-        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
-    })
-    (window, document, "script", "https://mcc.yandex.ru/metrika/tag.js", "ym");
-
-    ym(12345678, "init", { // [!code focus]
-        clickmap: true,
-        trackLinks: true,
-        accurateTrackBounce: true,
-        webvisor: true
-    });
-</script>
-<noscript>
-    <div>
-        <img src="https://mc.yandex.ru/watch/57463354" style="position:absolute; left:-9999px;" alt=""/>
-    </div>
-</noscript>
-<!-- /Yandex.Metrika counter -->
-```
-
+::: tip
+Если входящие в комплект стили будут мешать, можете либо пересобрать их с нужными значениями (в комплекте есть sass-файлы), либо переопределить.
 :::
-Подробнее об отправке целей читайте [тут](https://docs.modx.pro/components/sendit/sending/#otpravka-celey)
-
-### Отправка формы
 Чтобы отправить форму просто добавьте ей атрибут **data-si-form**. В этом случае будет сформирован массив параметров **"по умолчанию"**.
 Почта для отправки письма будет взята из системной настройки компонента (**si_default_email**), если вы её не указали, будет проверена настройка **ms2_email_manager**,
 если и там пусто - будет взята почта администратора (пользователь с ID = 1). Если же по какой-то причине почта так и не будет найдена,
@@ -131,3 +92,125 @@ dependencies: ['pdoTools', 'FormIt']
 :::
 В итоге, форма будет сохранена в админке и отправлена на найденный email.  
 О том как отправить форму со своими параметрами читайте в разделе [Простые формы](https://docs.modx.pro/components/sendit/sending)
+
+## Конфигурация JavaScript
+Компонент предоставляет возможность изменить некоторые параметры работы JavaScript.
+::: details Конфигурация по умолчанию
+```js:line-numbers
+export default function returnConfigs() {
+    return {
+        QuizForm: { // [!code warning]
+            pathToScripts: './modules/quizform.js',
+            rootSelector: '[data-si-form]',
+            rootKey: 'siForm',
+            autoKey: 'qfAuto',
+            itemSelector: '[data-qf-item]',
+            itemKey: 'qfItem',
+            itemCompleteSelector: '[data-qf-complete="1"]',
+            itemCompleteKey: 'qfComplete',
+            finishSelector: '[data-qf-finish]',
+            itemCurrentSelector: '[data-qf-item="${currentIndex}"]',
+            btnSelector: '[data-qf-btn]',
+            btnKey: 'qfBtn',
+            btnNextSelector: '[data-qf-btn="next"]',
+            btnPrevSelector: '[data-qf-btn="prev"]',
+            btnSendSelector: '[data-qf-btn="send"]',
+            btnResetSelector: '[data-qf-btn="reset"]',
+            nextIndexSelector: '[data-qf-next]',
+            nextIndexKey: 'qfNext',
+            progressSelector: '[data-qf-progress]',
+            currentQuestionSelector: '[data-qf-page]',
+            totalQuestionSelector: '[data-qf-total]',
+            pagesSelector: '[data-qf-pages]',
+            progressValueSelector: '[data-qf-progress-value]',
+            activeClass: 'active',
+            visabilityClass: 'v_hidden',
+            disabledClass: 'disabled',
+            sendEvent: 'si:send:finish',
+        },
+        Sending: { // [!code warning]
+            pathToScripts: './modules/sending.js',
+            rootSelector: '[data-si-form]',
+            rootKey: 'siForm',
+            presetKey: 'siPreset',
+            actionUrl: 'assets/components/sendit/web/action.php',
+            antiSpamEvent: 'click',
+            eventSelector: '[data-si-event="${eventName}"]',
+            errorClass: 'si-error'
+        },
+        SaveFormData: { // [!code warning]
+            pathToScripts: './modules/saveformdata.js',
+            rootSelector: '[data-si-form]',
+            rootKey: 'siForm',
+            resetEvent: 'si:send:reset'
+        },
+        Notify: { // [!code warning]
+            pathToScripts: './modules/notify.js',
+            jsPath: 'assets/components/sendit/web/js/lib/izitoast/iziToast.min.js',
+            cssPath: 'assets/components/sendit/web/css/lib/izitoast/iziToast.min.css',
+            handlerClassName: 'iziToast',
+            toastSelector: '.iziToast',
+            typeSelectors: {
+                success: '.iziToast-color-green',
+                info: '.iziToast-color-blue',
+                error: '.iziToast-color-red',
+                warning: '.iziToast-color-yellow',
+            },
+            titleSelector: '.iziToast-title',
+            handlerOptions: {
+                timeout: 2500,
+                position: "topCenter"
+            }
+        },
+        FileUploader:{ // [!code warning]
+            pathToScripts: './modules/fileuploader.js',
+            formSelector: '[data-si-form]',
+            rootSelector: '[data-fu-wrap]',
+            fieldSelector: '[data-fu-field]',
+            rootKey: 'fuWrap',
+            presetKey: 'siPreset',
+            sendEvent: 'si:send:after',
+            pathKey: 'fuPath',
+            pathAttr: 'data-fu-path',
+            actionUrl: 'assets/components/sendit/web/action.php',
+            layout: {
+                list: {
+                    tagName: 'ul',
+                    classNames: ['file-list', 'list_unslyled', 'd_flex', 'flex_wrap', 'gap_col-10', 'pt-20'],
+                    parentSelector: '[data-fu-wrap]',
+                    selector: '.file-list'
+                },
+                item: {
+                    tagName: 'li',
+                    classNames: ['file-list__item'],
+                    parentSelector: '.file-list',
+                    selector: '.file-list__item'
+                },
+                btn: {
+                    tagName: 'button',
+                    classNames: ['file-list__btn', 'btn', 'py-5', 'px-20', 'ta_center', 'border-1', 'border_error', 'hover_bg_error', 'radius_pill', 'hover_color_light'],
+                    parentSelector: '.file-list__item',
+                    selector: '[data-fu-path="${filepath}"]',
+                    type: 'button',
+                    text: '${filename}&nbsp;X'
+                },
+                input: {
+                    classNames: ['file-list__input'],
+                    tagName: 'input',
+                    type: 'hidden',
+                    selector: '.file-list__input'
+                }
+            }
+        }
+    }
+}
+```
+:::
+Выделенные строки содержат имена модулей, которые будут импортированы при инициализации компонента. Если удалить конфигурацию модуля, он не будет загружен.
+И, конечно же, можно через эту же конфигурацию подключать свои модули, которые станут доступны в глобальном объекте **SendIt**. Подробнее о каждом модуле читайте в 
+соответствующем разделе этой документации:
+* [**Sending**](https://docs.modx.pro/components/sendit/sending)
+* [**QuizForm**](https://docs.modx.pro/components/sendit/quizform)
+* [**FileUploader**](https://docs.modx.pro/components/sendit//fileuploader)
+* [**SaveFormData**](https://docs.modx.pro/components/sendit/saveformdata)
+* [**Notify**](https://docs.modx.pro/components/sendit/notify)

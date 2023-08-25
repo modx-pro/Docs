@@ -1,5 +1,38 @@
 # Простые формы
 
+## Пример формы
+
+```html:line-numbers
+<form data-si-form="oneStepForm" data-si-preset="onestepform"> // [!code warning]
+    <label>
+        <input type="text" name="name" placeholder="Полное имя">
+        <p data-si-error="name"></p> // [!code warning]
+    </label>
+    <label>
+        <input type="text" name="email" placeholder="Email">
+        <p data-si-error="email"></p>
+    </label>
+    <label>
+        <input type="tel" name="phone" placeholder="+7(">
+        <p data-si-error="phone"></p>
+    </label>
+    <label for="politics">
+        <input type="checkbox" name="politics" id="politics">
+        Я на всё согласен!
+    </label>    
+    <button type="submit">Отправить</button>
+</form>
+```
+
+### Описание атрибутов
+
+* **data-si-preset** - содержит название набора параметров(необязательный).
+* **data-si-form** - содержит название формы; сам атрибут нужен, чтобы комопнент мог работать с этой формой;
+  значение атрибута позволяет [сохранять введённые данные](https://docs.modx.pro/components/sendit/saveformdata)
+  и [редактировать параметры из админки](https://docs.modx.pro/components/sendit/development).
+* **data-si-error** - содержит имя валидируемого поля, указывает на элемент, в котором будет показан текст ошибки(необязательный); если не указан
+  ошибка будет выведена при помощи [всплывающих уведомлений](https://docs.modx.pro/components/sendit/notify).
+
 ## Пресеты
 
 Путь к файлу с пресетами указан в системной настройке **si_path_to_presets**. Путь следует указывать относительно **base_path** (**MODX_BASE_PATH**).
@@ -52,39 +85,6 @@ return [
 Таким образом комбинация **:checkbox:required** позволяет сделать поле **politics** обязательным.
 :::
 Никакие дополнительые манипуляции для валидации чекбоксов выполнять не требуется, т.е. добавлять скрытые поля и заполнять их средствами JS не нужно.
-
-## Пример формы
-
-```html:line-numbers
-<form data-si-form="oneStepForm" data-si-preset="onestepform"> // [!code warning]
-    <label>
-        <input type="text" name="name" placeholder="Полное имя">
-        <p data-si-error="name"></p> // [!code warning]
-    </label>
-    <label>
-        <input type="text" name="email" placeholder="Email">
-        <p data-si-error="email"></p>
-    </label>
-    <label>
-        <input type="tel" name="phone" placeholder="+7(">
-        <p data-si-error="phone"></p>
-    </label>
-    <label for="politics">
-        <input type="checkbox" name="politics" id="politics">
-        Я на всё согласен!
-    </label>    
-    <button type="submit">Отправить</button>
-</form>
-```
-
-Давайте рассмотрим используемые атрибуты:
-
-* **data-si-preset** - содержит название набора параметров(необязательный).
-* **data-si-form** - содержит название формы; сам атрибут нужен, чтобы комопнент мог работать с этой формой;
-  значение атрибута позволяет [сохранять введённые данные](https://docs.modx.pro/components/sendit/saveformdata)
-  и [редактировать параметры из админки](https://docs.modx.pro/components/sendit/development).
-* **data-si-error** - содержит имя валидируемого поля, указывает на элемент, в котором будет показан текст ошибки(необязательный); если не указан
-  ошибка будет выведена при помощи [всплывающих уведомлений](https://docs.modx.pro/components/sendit/notify).
 
 ## Отправка на событие "change"
 
@@ -184,6 +184,42 @@ return [
 **si_counter_id** и передать в пресете параметр `goalName` с названием цели.
 ::: warning
 Цель должна иметь тип **JavaScript-событие**
+:::
+::: info
+Убедитесь, что на сайте установлен актуальный код метрики
+
+```html
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function (m, e, t, r, i, k, a) {
+        m[i] = m[i] || function () {
+            (m[i].a = m[i].a || []).push(arguments)
+        };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+            if (document.scripts[j].src === r) {
+                return;
+            }
+        }
+        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+    })
+    (window, document, "script", "https://mcc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(12345678, "init", { // [!code focus]
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: true
+    });
+</script>
+<noscript>
+    <div>
+        <img src="https://mc.yandex.ru/watch/57463354" style="position:absolute; left:-9999px;" alt=""/>
+    </div>
+</noscript>
+<!-- /Yandex.Metrika counter -->
+```
+
 :::
 
 ## Идентификация
@@ -325,6 +361,7 @@ return [
 ### Редактирование профиля
 
 ::: details Форма
+
 ```html:line-numbers
 <form data-si-form="dataForm" data-si-preset="dataedit">
     <label>
@@ -346,8 +383,10 @@ return [
     <button type="submit">Сохранить</button>
 </form>
 ```
+
 :::
 ::: details Пресет
+
 ```php:line-numbers
     'dataedit' => [
         'hooks' => 'AjaxIdentification',
@@ -359,10 +398,13 @@ return [
         'email.vTextRequired' => 'Укажите email.'
     ],
 ```
+
 :::
 
 ### Смена пароля
+
 ::: details Форма
+
 ```html:line-numbers
 <form data-si-form="editPassForm" data-si-preset="editpass">
     <label>
@@ -376,8 +418,10 @@ return [
     <button type="submit">Изменить</button>
 </form>
 ```
+
 :::
 ::: details Пресет
+
 ```php:line-numbers
     'editpass' => [
         'hooks' => 'AjaxIdentification',
@@ -391,18 +435,23 @@ return [
         'password.vTextMinLength' => 'Пароль должен быть не менее 8 символов.',
     ],
 ```
+
 :::
 
 ### Выход из аккаунта
+
 ::: details Форма
+
 ```html:line-numbers
 <form data-si-form="logoutForm" data-si-preset="logout">
     <input type="hidden" name="errorLogout">  // [!code warning]         
     <button type="submit">Выйти</button>
 </form>
 ```
+
 :::
 ::: details Пресет
+
 ```php:line-numbers
     'logout' => [
         'hooks' => 'AjaxIdentification',
@@ -412,9 +461,11 @@ return [
         'errorFieldName' => 'errorLogout' // [!code warning]
     ],
 ```
+
 :::
 
 ### Сброс пароля
+
 ::: details Форма
 
 ```html:line-numbers
@@ -449,50 +500,113 @@ return [
 ```
 
 :::
+
 ## Валидаторы
+
 ### requiredIf
+
 Позволяет делать проверяемое поле обязательным в зависимости от значения в другом поле.
 ::: details Пример использования
+
 ```php:line-numbers
 ...
 'validate' => 'ogrn:requiredIf=^legal_form|2^',
 ...
 ```
+
 :::
 В примере поле с именем **ogrn** будет обязательным, если поле именем **legal_form** имеет значение **2**.
+
 ### checkPassLength
+
 Сниппет для проверки длины пароля. Используйте именно его, а не стандартный валидатор **minLength**,
 так как в компоненте доступна автоматическая генерация пароля, если пользователь его не укажет.
 При использовании **minLength** и пустом поле с паролем будет возвращаться ошибка валидации,
 в то время как **checkPassLength** проверяет длину только в случае, когда пароль задан.
 При этом в качестве параметра можно передать минимальную длину, если этого не сделать будет взято значение системной настройки **password_min_length** или **8**.
 ::: details Пример использования
+
 ```php:line-numbers
 ...
 'validate' => 'password:checkPassLength=^10^',
 ...
 ```
+
 :::
+
 ### passwordConfirm
+
 Сниппет для проверки совпадения паролей. Используйте именно его, а не стандартный валидатор **password_confirm**,
 так как в компоненте доступна автоматическая генерация пароля, если пользователь его не укажет.
-При использовании **password_confirm** и пустом поле с паролем будет возвращаться ошибка валидации, 
+При использовании **password_confirm** и пустом поле с паролем будет возвращаться ошибка валидации,
 в то время как **passwordConfirm** проверяет длину только в случае, когда пароль задан. При этом в качестве параметра **НУЖНО** передать имя поля с паролем.
 ::: details Пример использования
+
 ```php:line-numbers
 ...
 'validate' => 'password_confirm:passwordConfirm=^password^',
 ...
 ```
+
 :::
+
 ### userNotExists
+
 Сниппет проверяет существование пользователя с таким username на сайте.
 Возвращает ошибку, если пользователь **НЕ НАЙДЕН**. Используется при восстановлении доступа на сайт.
 ::: details Пример использования
+
 ```php:line-numbers
 ...
 'validate' => 'email:required:userNotExists',
 ...
 ```
+
 :::
 
+## Конфигурация JavaScript
+
+::: details Конфигурация по умолчанию
+
+```js:line-numbers{3-12}
+export default function returnConfigs() {
+    return {
+        Sending: { 
+            pathToScripts: './modules/sending.js',
+            rootSelector: '[data-si-form]', 
+            rootKey: 'siForm', 
+            presetKey: 'siPreset', 
+            actionUrl: 'assets/components/sendit/web/action.php', 
+            antiSpamEvent: 'click', 
+            eventSelector: '[data-si-event="${eventName}"]', 
+            errorClass: 'si-error' 
+        },
+    }
+}
+```
+
+:::
+
+|      Ключ       |                              Описание                               |                             Значение                              |
+|:---------------:|:-------------------------------------------------------------------:|:-----------------------------------------------------------------:|
+| `pathToScripts` |                   **./modules&nbsp;/sending.js**                    |     путь к модулю, указывается относительно файла *sendit.js*     |
+| `rootSelector`  |                         **[data-si-form]**                          |                          селектор формы                           |
+|    `rootKey`    |                             **siForm**                              |              ключ свойства *dataset* с именем формы               |
+|   `presetKey`   |                            **siPreset**                             |             ключ свойства *dataset* с именем пресета              |
+|   `actionUrl`   | **assets&nbsp;/components&nbsp;/sendit&nbsp;/web&nbsp;/action.php** |             путь к файлу-приёмнику запроса на сервере             |
+| `antiSpamEvent` |                              **click**                              |  событие, по которому будем определять, что пользователь не бот   |
+| `eventSelector` |                 **[data-si-event="${eventName}"]**                  | селектор элемента, который нужно отправить не на событие *submit* |
+|  `errorClass`   |                            **si-error**                             |        класс добавляемый к полю в котором допущена ошибка         |
+
+::: warning
+**${eventName}** плейсхолдер, который будет заменён на *change* или *input*
+:::
+## Защита от ботов и внешнего доступа
+::: info
+Из коробки компонент не поддерживает капчу, но вы можете добавить её проверку самостоятельно, иcпользуя [События](https://docs.modx.pro/components/sendit/events)
+:::
+Вместо этого перед отправкой есть проверка **event.isTrusted**, т.е. действие должно быть инициировано пользователем,
+а не с помощью функции **dispatchEvent()**. Кроме того, по клику (можно изменить `antiSpamEvent`) в куки записывается значение свойства **event.isTrusted**,
+если значение равно *false* обработка запроса произведена не будет, пользователь получит уведомление (см. *"Управление словарями"*, ключ *si_msg_antispam*).  
+Чтобы предотвратить доступ из вне, каждый запрос на сервер подписывается специальным токеном, это не полноценный CSRF-токен, так как живёт он до перезагрузки страницы и 
+сгенерировать его достаточно просто, если получить идентификатор "живой" сессии. Однако этого должно быть достаточно для того, чтобы отвадить шутников. 
