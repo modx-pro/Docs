@@ -5,51 +5,57 @@
 
 ```html:line-numbers
 <form enctype="multipart/form-data" data-si-form="fileForm" data-si-preset="fileupload">
-    <label data-fu-wrap>
-        <input type="file" name="files" data-fu-field multiple placeholder="Выберите файл">
-        <p data-si-error="file"></p>
-    </label>
-    <button type="submit">Отправить</button>    
+  <label data-fu-wrap>
+    <input type="file" name="files" data-fu-field multiple placeholder="Выберите файл">
+    <p data-si-error="file"></p>
+  </label>
+  <button type="submit">Отправить</button>
 </form>
 ```
 
-### Описание атрибутов
+## Описание атрибутов
 
 * **data-fu-wrap** - атрибут блока-обёртки.
 * **data-fu-field** - атрибут поля загрузки.
 * **data-si-error** - атрибут блока вывода ошибок валидации (необязательный).
 
-### Порядок работы
+## Порядок работы
 
 Пользователь выбирает файлы, которые хочет загрузить.
+
 ::: tip
 Атрибут **multiple** позволяет загружать сразу несколько файлов, зажав клавишу [[Ctrl]]. Загрузка будет последовательной.
 :::
+
 После этого файлы по очереди отправляются порциями на сервер. При этом сервер при получении первой порции, до начала
 загрузки, проводит проверку файла на размер, тип и количество. Если хотя бы одна проверка не пройдена, файл не будет загружен, пользователь увидит уведомление об ошибке,
 скрипт начнёт обработку следующего файла, если он есть. На время загрузки, кнопка отправки формы блокируется.
+
 ::: danger
 Поле загрузки файлов и кнопка отправки формы ОБЯЗАТЕЛЬНО должны быть внутри формы с атрибутом **data-si-form**.
 :::
+
 После успешной загрузки путь к файлу будет добавлен в список загруженных файлов - скрытый input, который будет создан автоматически. Кроме того появятся кнопки с именем
 файла, или другим заданным вами текстом, по нажатию на которые пользователь сможет удалить загруженный файл. На сервере файл помещается в папку с именем равным id сессии.
+
 ::: warning
 Пользователь сможет удалить только свои файлы, так как перед удалением проверяется соответствие его session_id и пути к файлу.
 :::
+
 ::: warning
 Загруженные файлы хранятся на сервере до перезагрузки или закрытия страницы.
 :::
 
-### Параметры пресета
+## Параметры пресета
 
 ```php:line-numbers
 'fileupload' => [
-    'attachFilesToEmail' => 'files',
-    'allowFiles' => 'filelist',
-    'maxSize' => 6,
-    'maxCount' => 2,
-    'allowExt' => 'jpg,png',
-    'portion' => 0.1,
+  'attachFilesToEmail' => 'files',
+  'allowFiles' => 'filelist',
+  'maxSize' => 6,
+  'maxCount' => 2,
+  'allowExt' => 'jpg,png',
+  'portion' => 0.1,
 ]
 ```
 
@@ -66,6 +72,7 @@
 ::: warning
 Размер порции не должен превышать максимально разрешённый на вашем хостинге разме post-запроса
 :::
+
 ::: danger
 Все перечисленный параметры, кроме **attachFilesToEmail**, являются обязательными.
 :::
@@ -86,47 +93,47 @@
 
 ```js:line-numbers{3-42}
 export default function returnConfigs() {
-    return {
-        FileUploader:{
-            pathToScripts: './modules/fileuploader.js',
-            formSelector: '[data-si-form]',
-            rootSelector: '[data-fu-wrap]',
-            fieldSelector: '[data-fu-field]',
-            rootKey: 'fuWrap',
-            presetKey: 'siPreset',
-            sendEvent: 'si:send:after',
-            pathKey: 'fuPath',
-            pathAttr: 'data-fu-path',
-            actionUrl: 'assets/components/sendit/web/action.php',
-            layout: {
-                list: {
-                    tagName: 'ul',
-                    classNames: ['file-list', 'list_unstyled', 'd_flex', 'flex_wrap', 'gap_col-10', 'pt-20'],                    
-                    selector: '.file-list'
-                },
-                item: {
-                    tagName: 'li',
-                    classNames: ['file-list__item'],
-                    parentSelector: '.file-list',
-                    selector: '.file-list__item'
-                },
-                btn: {
-                    tagName: 'button',
-                    classNames: ['file-list__btn', 'btn', 'py-5', 'px-20', 'ta_center', 'border-1', 'border_error', 'hover_bg_error', 'radius_pill', 'hover_color_light'],
-                    parentSelector: '.file-list__item',
-                    selector: '[data-fu-path="${filepath}"]',
-                    type: 'button',
-                    text: '${filename}&nbsp;X'
-                },
-                input: {
-                    classNames: ['file-list__input'],
-                    tagName: 'input',
-                    type: 'hidden',                    
-                    selector: '.file-list__input'
-                }
-            }
+  return {
+    FileUploader:{
+      pathToScripts: './modules/fileuploader.js',
+      formSelector: '[data-si-form]',
+      rootSelector: '[data-fu-wrap]',
+      fieldSelector: '[data-fu-field]',
+      rootKey: 'fuWrap',
+      presetKey: 'siPreset',
+      sendEvent: 'si:send:after',
+      pathKey: 'fuPath',
+      pathAttr: 'data-fu-path',
+      actionUrl: 'assets/components/sendit/web/action.php',
+      layout: {
+        list: {
+          tagName: 'ul',
+          classNames: ['file-list', 'list_unstyled', 'd_flex', 'flex_wrap', 'gap_col-10', 'pt-20'],
+          selector: '.file-list'
+        },
+        item: {
+          tagName: 'li',
+          classNames: ['file-list__item'],
+          parentSelector: '.file-list',
+          selector: '.file-list__item'
+        },
+        btn: {
+          tagName: 'button',
+          classNames: ['file-list__btn', 'btn', 'py-5', 'px-20', 'ta_center', 'border-1', 'border_error', 'hover_bg_error', 'radius_pill', 'hover_color_light'],
+          parentSelector: '.file-list__item',
+          selector: '[data-fu-path="${filepath}"]',
+          type: 'button',
+          text: '${filename}&nbsp;X'
+        },
+        input: {
+          classNames: ['file-list__input'],
+          tagName: 'input',
+          type: 'hidden',
+          selector: '.file-list__input'
         }
+      }
     }
+  }
 }
 ```
 
@@ -144,11 +151,12 @@ export default function returnConfigs() {
 |    `pathKey`    |                             **fuPath**                              | ключ свойства *dataset* атрибута для записи пути к файлу  |
 |   `pathAttr`    |                          **data-fu-path**                           |              атрибут для записи пути к файлу              |
 |   `actionUrl`   | **assets&nbsp;/components&nbsp;/sendit&nbsp;/web&nbsp;/action.php** |              путь к файлу-приемнику запроса               |
-|    `layout`     |                            **_объект_**                             |   объект описывающий верстку списка загруженных файлов    |
-
+|    `layout`     |                            ***объект***                             |   объект описывающий верстку списка загруженных файлов    |
 
 ## Вёрстка списка файлов
+
 В параметре JS конфигурации `layout` есть 4 дочерних объекта
+
 * **list** - описывает корневой элемент списка.
 * **item** - описывает элемент списка, внутри которого будет располагаться кнопка удаления файла.
 * **btn** - описывает кнопку удаления файла, параметр `text` содержит плейсхолдер *${filename}*, заменяемый на имя файла.

@@ -3,25 +3,25 @@
 ## Заменить стандартные уведомления miniShop2
 
 ```js:line-numbers
-document.addEventListener('si:init', (e) => {   
-    if(typeof miniShop2 !== 'undefined'){
-        miniShop2.Message = SendIt.Notify;
-    }    
+document.addEventListener('si:init', (e) => {
+  if(typeof miniShop2 !== 'undefined'){
+    miniShop2.Message = SendIt.Notify;
+  }
 });
 ```
 
 ## Отправить запрос на свой коннектор
 
 ```js:line-numbers
-document.addEventListener('si:init', (e) => {    
-    document.addEventListener('submit', (e) => {
-        const target = e.target.closest('.js-my-form');
-        if(!target) return;
-        const params = new FormData(target);
-        const url = 'assets/action.php';
-        const headers = {};
-    })
-    SendIt.Sending.send(target, url, headers, params);
+document.addEventListener('si:init', (e) => {
+  document.addEventListener('submit', (e) => {
+    const target = e.target.closest('.js-my-form');
+    if(!target) return;
+    const params = new FormData(target);
+    const url = 'assets/action.php';
+    const headers = {};
+  })
+  SendIt.Sending.send(target, url, headers, params);
 });
 ```
 
@@ -32,13 +32,13 @@ document.addEventListener('si:init', (e) => {
 ## Отправить запрос на стандартный коннектор
 
 ```js:line-numbers
-document.addEventListener('si:init', (e) => {    
-    document.addEventListener('submit', (e) => {
-        const target = e.target.closest('.js-my-form');
-        if(!target) return;
-        const preset = target.dataset[Sendit.Sending.config.presetKey];        
-    })
-    SendIt.Sending.prepareSendParams(target, preset);
+document.addEventListener('si:init', (e) => {
+  document.addEventListener('submit', (e) => {
+    const target = e.target.closest('.js-my-form');
+    if(!target) return;
+    const preset = target.dataset[Sendit.Sending.config.presetKey];
+  })
+  SendIt.Sending.prepareSendParams(target, preset);
 });
 ```
 
@@ -54,9 +54,9 @@ document.addEventListener('si:init', (e) => {
 
 ```php:line-numbers
 if($flag){
-    return $SendIt->success($successMessage, ['somedata' => 1234]);
+  return $SendIt->success($successMessage, ['somedata' => 1234]);
 }else{
-    return $SendIt->error($validationErrorMessage, ['erorrs' => ['fieldName' => 'Тут текст ошибки']]);
+  return $SendIt->error($validationErrorMessage, ['erorrs' => ['fieldName' => 'Тут текст ошибки']]);
 }
 ```
 
@@ -68,177 +68,180 @@ if($flag){
 
 1. Устанавливаем Migx.
 2. Создаем конфигурацию **validators**
-   ::: details Можно импортировать эту
-   ```json
-    {
-    "formtabs":[
-    {
-    "MIGX_id":405,
-    "caption":"",
-    "print_before_tabs":"0",
-    "fields":[
-    {
-    "MIGX_id":2297,
-    "field":"name",
-    "caption":"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435",
-    "description":"",
-    "description_is_code":"0",
-    "inputTV":"",
-    "inputTVtype":"listbox-multiple",
-    "validation":"",
-    "configs":"",
-    "restrictive_condition":"",
-    "display":"",
-    "sourceFrom":"config",
-    "sources":"",
-    "inputOptionValues":"\u041e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0435\u0441\u043b\u0438==requiredIf||\u0414\u043b\u0438\u043d\u0430 \u043f\u0430\u0440\u043e\u043b\u044f==checkPassLength||\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u0435 \u043f\u0430\u0440\u043e\u043b\u044f==passwordConfirm||\u0421\u0443\u0449\u0435\u0441\u0442\u0432\u043e\u0432\u0430\u043d\u0438\u0435 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f==userNotExists||\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043d\u0430 \u043f\u0443\u0441\u0442\u043e\u0442\u0443==blank||\u041e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e==required||\u0412\u0430\u043b\u0438\u0434\u043d\u044b\u0439 email==email||\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0434\u043b\u0438\u043d\u0430==minLength||\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0434\u043b\u0438\u043d\u0430==maxLength||\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435==minValue||\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435==maxValue||\u0421\u043e\u0434\u0435\u0440\u0436\u0438\u0442 \u0441\u0442\u0440\u043e\u043a\u0443==contains||\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0441\u0442\u0440\u043e\u043a\u0443==strip||\u0423\u0434\u0430\u043b\u0438\u0442\u044c html-\u0442\u044d\u0433\u0438==stripTags||\u0420\u0430\u0437\u0440\u0435\u0448\u0438\u0442\u044c \u0442\u044d\u0433\u0438==allowTags||\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043d\u0430 \u0447\u0438\u0441\u043b\u043e==isNumber||\u0420\u0430\u0437\u0440\u0435\u0448\u0438\u0442\u044c \u0441\u043f\u0435\u0446\u0441\u0438\u043c\u0432\u043e\u043b\u044b==allowSpecialChars||\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043d\u0430 \u0434\u0430\u0442\u0443==isDate||\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043f\u043e \u0440\u0435\u0433\u0443\u043b\u044f\u0440\u043a\u0435==regexp",
-    "default":"",
-    "useDefaultIfEmpty":"0",
-    "pos":1
-    },
-    {
-    "MIGX_id":2298,
-    "field":"params",
-    "caption":"\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b",
-    "description":"",
-    "description_is_code":"0",
-    "inputTV":"",
-    "inputTVtype":"",
-    "validation":"",
-    "configs":"",
-    "restrictive_condition":"",
-    "display":"",
-    "sourceFrom":"config",
-    "sources":"",
-    "inputOptionValues":"",
-    "default":"",
-    "useDefaultIfEmpty":"0",
-    "pos":2
-    },
-    {
-    "MIGX_id":2311,
-    "field":"error_text",
-    "caption":"\u0422\u0435\u043a\u0441\u0442 \u043e\u0448\u0438\u0431\u043a\u0438",
-    "description":"",
-    "description_is_code":"0",
-    "inputTV":"",
-    "inputTVtype":"",
-    "validation":"",
-    "configs":"",
-    "restrictive_condition":"",
-    "display":"",
-    "sourceFrom":"config",
-    "sources":"",
-    "inputOptionValues":"",
-    "default":"",
-    "useDefaultIfEmpty":"0",
-    "pos":3
-    }
-    ],
-    "pos":1
-    }
-    ],
-    "contextmenus":"",
-    "actionbuttons":"",
-    "columnbuttons":"",
-    "filters":"",
-    "extended":{
-    "migx_add":"",
-    "disable_add_item":"",
-    "add_items_directly":"",
-    "formcaption":"",
-    "update_win_title":"",
-    "win_id":"",
-    "maxRecords":"",
-    "addNewItemAt":"bottom",
-    "media_source_id":"",
-    "multiple_formtabs":"",
-    "multiple_formtabs_label":"",
-    "multiple_formtabs_field":"",
-    "multiple_formtabs_optionstext":"",
-    "multiple_formtabs_optionsvalue":"",
-    "actionbuttonsperrow":4,
-    "winbuttonslist":"",
-    "extrahandlers":"",
-    "filtersperrow":4,
-    "packageName":"",
-    "classname":"",
-    "task":"",
-    "getlistsort":"",
-    "getlistsortdir":"",
-    "sortconfig":"",
-    "gridpagesize":"",
-    "use_custom_prefix":"0",
-    "prefix":"",
-    "grid":"",
-    "gridload_mode":1,
-    "check_resid":1,
-    "check_resid_TV":"",
-    "join_alias":"",
-    "has_jointable":"yes",
-    "getlistwhere":"",
-    "joins":"",
-    "hooksnippets":"",
-    "cmpmaincaption":"",
-    "cmptabcaption":"",
-    "cmptabdescription":"",
-    "cmptabcontroller":"",
-    "winbuttons":"",
-    "onsubmitsuccess":"",
-    "submitparams":""
-    },
-    "permissions":{
-    "apiaccess":"",
-    "view":"",
-    "list":"",
-    "save":"",
-    "create":"",
-    "remove":"",
-    "delete":"",
-    "publish":"",
-    "unpublish":"",
-    "viewdeleted":"",
-    "viewunpublished":""
-    },
-    "fieldpermissions":"",
-    "columns":[
-    {
-    "MIGX_id":1,
-    "header":"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435",
-    "dataIndex":"name",
-    "width":"",
-    "sortable":"false",
-    "show_in_grid":1,
-    "customrenderer":"",
-    "renderer":"",
-    "clickaction":"",
-    "selectorconfig":"",
-    "renderchunktpl":"",
-    "renderoptions":"",
-    "editor":""
-    },
-    {
-    "MIGX_id":2,
-    "header":"\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b",
-    "dataIndex":"params",
-    "width":"",
-    "sortable":"false",
-    "show_in_grid":1,
-    "customrenderer":"",
-    "renderer":"",
-    "clickaction":"",
-    "selectorconfig":"",
-    "renderchunktpl":"",
-    "renderoptions":"",
-    "editor":""
-    }
-    ],
-    "category":""
-    }
-    ```
-   :::
+    ::: details Можно импортировать эту
+
+    ```json
+      {
+      "formtabs":[
+      {
+      "MIGX_id":405,
+      "caption":"",
+      "print_before_tabs":"0",
+      "fields":[
+      {
+      "MIGX_id":2297,
+      "field":"name",
+      "caption":"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435",
+      "description":"",
+      "description_is_code":"0",
+      "inputTV":"",
+      "inputTVtype":"listbox-multiple",
+      "validation":"",
+      "configs":"",
+      "restrictive_condition":"",
+      "display":"",
+      "sourceFrom":"config",
+      "sources":"",
+      "inputOptionValues":"\u041e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0435\u0441\u043b\u0438==requiredIf||\u0414\u043b\u0438\u043d\u0430 \u043f\u0430\u0440\u043e\u043b\u044f==checkPassLength||\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u0435 \u043f\u0430\u0440\u043e\u043b\u044f==passwordConfirm||\u0421\u0443\u0449\u0435\u0441\u0442\u0432\u043e\u0432\u0430\u043d\u0438\u0435 \u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u0442\u0435\u043b\u044f==userNotExists||\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043d\u0430 \u043f\u0443\u0441\u0442\u043e\u0442\u0443==blank||\u041e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e==required||\u0412\u0430\u043b\u0438\u0434\u043d\u044b\u0439 email==email||\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0434\u043b\u0438\u043d\u0430==minLength||\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0434\u043b\u0438\u043d\u0430==maxLength||\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435==minValue||\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435==maxValue||\u0421\u043e\u0434\u0435\u0440\u0436\u0438\u0442 \u0441\u0442\u0440\u043e\u043a\u0443==contains||\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0441\u0442\u0440\u043e\u043a\u0443==strip||\u0423\u0434\u0430\u043b\u0438\u0442\u044c html-\u0442\u044d\u0433\u0438==stripTags||\u0420\u0430\u0437\u0440\u0435\u0448\u0438\u0442\u044c \u0442\u044d\u0433\u0438==allowTags||\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043d\u0430 \u0447\u0438\u0441\u043b\u043e==isNumber||\u0420\u0430\u0437\u0440\u0435\u0448\u0438\u0442\u044c \u0441\u043f\u0435\u0446\u0441\u0438\u043c\u0432\u043e\u043b\u044b==allowSpecialChars||\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043d\u0430 \u0434\u0430\u0442\u0443==isDate||\u041f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043f\u043e \u0440\u0435\u0433\u0443\u043b\u044f\u0440\u043a\u0435==regexp",
+      "default":"",
+      "useDefaultIfEmpty":"0",
+      "pos":1
+      },
+      {
+      "MIGX_id":2298,
+      "field":"params",
+      "caption":"\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b",
+      "description":"",
+      "description_is_code":"0",
+      "inputTV":"",
+      "inputTVtype":"",
+      "validation":"",
+      "configs":"",
+      "restrictive_condition":"",
+      "display":"",
+      "sourceFrom":"config",
+      "sources":"",
+      "inputOptionValues":"",
+      "default":"",
+      "useDefaultIfEmpty":"0",
+      "pos":2
+      },
+      {
+      "MIGX_id":2311,
+      "field":"error_text",
+      "caption":"\u0422\u0435\u043a\u0441\u0442 \u043e\u0448\u0438\u0431\u043a\u0438",
+      "description":"",
+      "description_is_code":"0",
+      "inputTV":"",
+      "inputTVtype":"",
+      "validation":"",
+      "configs":"",
+      "restrictive_condition":"",
+      "display":"",
+      "sourceFrom":"config",
+      "sources":"",
+      "inputOptionValues":"",
+      "default":"",
+      "useDefaultIfEmpty":"0",
+      "pos":3
+      }
+      ],
+      "pos":1
+      }
+      ],
+      "contextmenus":"",
+      "actionbuttons":"",
+      "columnbuttons":"",
+      "filters":"",
+      "extended":{
+      "migx_add":"",
+      "disable_add_item":"",
+      "add_items_directly":"",
+      "formcaption":"",
+      "update_win_title":"",
+      "win_id":"",
+      "maxRecords":"",
+      "addNewItemAt":"bottom",
+      "media_source_id":"",
+      "multiple_formtabs":"",
+      "multiple_formtabs_label":"",
+      "multiple_formtabs_field":"",
+      "multiple_formtabs_optionstext":"",
+      "multiple_formtabs_optionsvalue":"",
+      "actionbuttonsperrow":4,
+      "winbuttonslist":"",
+      "extrahandlers":"",
+      "filtersperrow":4,
+      "packageName":"",
+      "classname":"",
+      "task":"",
+      "getlistsort":"",
+      "getlistsortdir":"",
+      "sortconfig":"",
+      "gridpagesize":"",
+      "use_custom_prefix":"0",
+      "prefix":"",
+      "grid":"",
+      "gridload_mode":1,
+      "check_resid":1,
+      "check_resid_TV":"",
+      "join_alias":"",
+      "has_jointable":"yes",
+      "getlistwhere":"",
+      "joins":"",
+      "hooksnippets":"",
+      "cmpmaincaption":"",
+      "cmptabcaption":"",
+      "cmptabdescription":"",
+      "cmptabcontroller":"",
+      "winbuttons":"",
+      "onsubmitsuccess":"",
+      "submitparams":""
+      },
+      "permissions":{
+      "apiaccess":"",
+      "view":"",
+      "list":"",
+      "save":"",
+      "create":"",
+      "remove":"",
+      "delete":"",
+      "publish":"",
+      "unpublish":"",
+      "viewdeleted":"",
+      "viewunpublished":""
+      },
+      "fieldpermissions":"",
+      "columns":[
+      {
+      "MIGX_id":1,
+      "header":"\u041d\u0430\u0437\u0432\u0430\u043d\u0438\u0435",
+      "dataIndex":"name",
+      "width":"",
+      "sortable":"false",
+      "show_in_grid":1,
+      "customrenderer":"",
+      "renderer":"",
+      "clickaction":"",
+      "selectorconfig":"",
+      "renderchunktpl":"",
+      "renderoptions":"",
+      "editor":""
+      },
+      {
+      "MIGX_id":2,
+      "header":"\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b",
+      "dataIndex":"params",
+      "width":"",
+      "sortable":"false",
+      "show_in_grid":1,
+      "customrenderer":"",
+      "renderer":"",
+      "clickaction":"",
+      "selectorconfig":"",
+      "renderchunktpl":"",
+      "renderoptions":"",
+      "editor":""
+      }
+      ],
+      "category":""
+      }
+      ```
+
+    :::
 3. Создаем конфигурацию **formfield**
     ::: details Можно импортировать эту
+
      ```json
       {
     "formtabs":[
@@ -520,9 +523,11 @@ if($flag){
     "category":""
     }
     ```
+
     :::
 4. Создаем конфигурацию **list_double**
     ::: details Можно импортировать эту
+
     ```json
     {
     "formtabs":[
@@ -656,9 +661,11 @@ if($flag){
     "category":""
     }
     ```
+
     :::
 5. Создаем конфигурацию **si_forms**
    ::: details Можно импортировать эту
+
     ```json
     {
     "formtabs":[
@@ -883,31 +890,33 @@ if($flag){
     ],
     "category":""
     }
-    ```   
+    ```
+
    :::
-6. Создаём TV типа *migx* с именем *si_form* и привязываем её в любому удобному шаблону. 
+6. Создаём TV типа *migx* с именем *si_form* и привязываем её в любому удобному шаблону.
 7. Создаём плагин на событие **OnGetFormParams**, который достанет параметры нужной формы и вернёт их в виде массива.
-   ::: details Пример плагина
+    ::: details Пример плагина
+
     ```php:line-numbers
     switch($modx->event->name){
-        case 'OnGetFormParams':
-            $resource = $modx->getObject('modResource', 10);
-            $forms = json_decode($resource->getTVValue('si_forms'),1);
-            $params = [];
-            foreach($forms as $form){
-                if($form['fid'] === $formName){
-                    $paramsRaw = json_decode($form['params'],1);
-                    break;
-                }
-    
-            }
-            if($paramsRaw){
-                foreach($paramsRaw as $p){
-                    $params[$p['title']] = $p['content'];
-                }
-            }
-            $modx->event->returnedValues = $params;
+      case 'OnGetFormParams':
+        $resource = $modx->getObject('modResource', 10);
+        $forms = json_decode($resource->getTVValue('si_forms'),1);
+        $params = [];
+        foreach($forms as $form){
+          if($form['fid'] === $formName){
+            $paramsRaw = json_decode($form['params'],1);
             break;
+          }
+        }
+        if($paramsRaw){
+          foreach($paramsRaw as $p){
+            $params[$p['title']] = $p['content'];
+          }
+        }
+        $modx->event->returnedValues = $params;
+        break;
     }
     ```
+
     :::
