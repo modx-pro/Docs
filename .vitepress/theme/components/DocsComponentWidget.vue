@@ -4,7 +4,7 @@ import { DefaultTheme, useData } from 'vitepress'
 import type { DocsTheme } from '../types'
 import type { DocsPageData } from '../plugins/component'
 
-import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
+import { VPImage } from 'vitepress/theme-without-fonts'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import DocsList from './DocsList.vue'
 
@@ -105,11 +105,11 @@ const show = computed<boolean>(() => {
 
 <style scoped>
 .DocsComponentWidget {
-  border: 4px solid var(--vp-sidebar-bg-color);
+  border: 4px solid var(--vp-c-bg-soft);
   border-radius: var(--vp-border-radius);
   margin-top: 20px;
   overflow: hidden;
-  background-color: var(--vp-sidebar-bg-color);
+  background-color: var(--vp-c-bg-soft);
 }
 
 .figure {
@@ -150,7 +150,7 @@ const show = computed<boolean>(() => {
 }
 
 :deep(.link):hover {
-  color: var(--vp-c-green);
+  color: var(--vp-c-brand-1);
 }
 
 .list {

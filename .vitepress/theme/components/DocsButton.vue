@@ -8,6 +8,7 @@ const props = defineProps<{
   theme?: 'brand' | 'alt' | 'sponsor'
   text: string
   href?: string
+  target?: string
 }>()
 
 const classes = computed(() => [
@@ -31,7 +32,7 @@ const component = computed(() => {
     class="DocsButton"
     :class="classes"
     :href="href ? normalizeLink(href) : undefined"
-    :target="isExternal ? '_blank' : undefined"
+    :target="target ?? (isExternal ? '_blank' : undefined)"
     :rel="isExternal ? 'noreferrer' : undefined"
     :aria-label="text"
   >
@@ -52,11 +53,11 @@ const component = computed(() => {
 }
 
 .DocsButton.alt {
-  border: 4px solid var(--vp-c-gray);
+  border: 4px solid var(--vp-c-gray-1);
 }
 
 .DocsButton.alt:hover {
-  background-color: var(--vp-c-gray);
+  background-color: var(--vp-c-gray-1);
   color: var(--vp-c-black);
 }
 
@@ -67,7 +68,7 @@ const component = computed(() => {
 }
 
 .DocsButton.cta:hover {
-  background-color: var(--vp-c-gray);
+  background-color: var(--vp-c-gray-1);
   color: var(--vp-c-black);
 }
 
@@ -116,18 +117,20 @@ const component = computed(() => {
 }
 
 .DocsButton.sponsor {
-  border-color: var(--vp-c-yellow);
+  border-color: var(--vp-button-sponsor-border);
+  color: var(--vp-button-sponsor-text);
+  background-color: var(--vp-button-sponsor-bg);
 }
 
 .DocsButton.sponsor:hover {
-  border-color: var(--vp-c-yellow-light);
-  background-color: var(--vp-c-yellow-light);
-  color: var(--vp-c-white);
+  border-color: var(--vp-button-sponsor-hover-border);
+  color: var(--vp-button-sponsor-hover-text);
+  background-color: var(--vp-button-sponsor-hover-bg);
 }
 
 .DocsButton.sponsor:active {
-  border-color: var(--vp-c-yellow-dark);
-  background-color: var(--vp-c-yellow-dark);
-  color: var(--vp-c-white);
+  border-color: var(--vp-button-sponsor-active-border);
+  color: var(--vp-button-sponsor-active-text);
+  background-color: var(--vp-button-sponsor-active-bg);
 }
 </style>

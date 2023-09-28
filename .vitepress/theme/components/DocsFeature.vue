@@ -47,7 +47,7 @@ defineProps<{
 }
 
 .details:deep(a) {
-  color: var(--vp-c-brand);
+  color: var(--vp-c-brand-1);
 }
 
 .details:deep(a:hover) {

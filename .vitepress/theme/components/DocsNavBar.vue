@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useWindowScroll } from '@vueuse/core'
 import { ref, watchPostEffect } from 'vue'
-import { useData } from 'vitepress'
+import { useData, inBrowser } from 'vitepress'
 import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
 import VPNavBarTitle from 'vitepress/dist/client/theme-default/components/VPNavBarTitle.vue'
 import VPNavBarSearch from 'vitepress/dist/client/theme-default/components/VPNavBarSearch.vue'
@@ -20,7 +20,7 @@ defineEmits<{
   (e: 'toggle-screen'): void
 }>()
 
-const { y } = useWindowScroll()
+const { y } = useWindowScroll({ window: inBrowser && window })
 const { hasSidebar } = useSidebar()
 const { frontmatter } = useData()
 

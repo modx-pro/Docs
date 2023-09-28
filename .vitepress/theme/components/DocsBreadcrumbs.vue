@@ -95,7 +95,7 @@ const route = useRoute()
 }
 
 .link:hover {
-  color: var(--vp-c-green);
+  color: var(--vp-c-brand-1);
 }
 
 .name {

@@ -86,8 +86,8 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     i18nRouting: true,
 
     logo: {
-      light: 'logo.svg',
-      dark: 'logo-dark.svg',
+      light: '/logo.svg',
+      dark: '/logo-dark.svg',
     },
 
     socialLinks: [

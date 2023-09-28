@@ -4,7 +4,7 @@ import type { ComponentData } from '../plugins/component'
 import { useData } from 'vitepress'
 import { ellipsis } from '../utils'
 
-import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
+import { VPImage } from 'vitepress/theme-without-fonts'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import DocsSearchBar from './DocsSearchBar.vue'
 
@@ -134,16 +134,27 @@ const emptyText = computed(() => localeIndex.value === 'en'
   align-items: center;
   column-gap: 12px;
   padding: 18px;
-  border: var(--vp-border-width) solid var(--vp-c-divider);
+  border: 1px solid var(--vp-c-gray-soft);
   border-radius: 8px;
   transition: border-color 0.25s;
   color: inherit;
   font-weight: bold;
+  box-shadow: var(--vp-shadow-1);
+  text-decoration: none;
+  background-color: var(--vp-c-bg-elv);
 }
 
 .component:hover {
-  border-color: var(--vp-c-green);
+  border-color: var(--vp-c-brand-1);
   text-decoration: none;
+}
+
+.component:hover .name {
+  color: var(--vp-c-brand-1);
+}
+
+.name {
+  transition: color 0.25s;
 }
 
 .description {

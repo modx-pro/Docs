@@ -1,7 +1,7 @@
 <script lang="ts" setup>
+import { useScrollLock } from '@vueuse/core'
 import { ref, watchPostEffect, watch, computed } from 'vue'
-import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
-import { DefaultTheme, useRoute, useData } from 'vitepress'
+import { DefaultTheme, useRoute, useData, inBrowser } from 'vitepress'
 import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
 import VPSidebarItem from 'vitepress/dist/client/theme-default/components/VPSidebarItem.vue'
 
@@ -18,23 +18,18 @@ const props = defineProps<{
 
 // a11y: focus Nav element when menu has opened
 const navEl = ref<HTMLElement | null>(null)
+const isLocked = useScrollLock(inBrowser ? document.body : null)
 
-function lockBodyScroll() {
-  disableBodyScroll(navEl.value!, { reserveScrollBarGap: true })
-}
-
-function unlockBodyScroll() {
-  clearAllBodyScrollLocks()
-}
-
-watchPostEffect(async () => {
-  if (props.open) {
-    lockBodyScroll()
-    navEl.value?.focus()
-  } else {
-    unlockBodyScroll()
-  }
-})
+watch(
+  [props, navEl],
+  () => {
+    if (props.open) {
+      isLocked.value = true
+      navEl.value?.focus()
+    } else isLocked.value = false
+  },
+  { immediate: true, flush: 'post' }
+)
 
 const { lang } = useData()
 const activeLinkEl = ref<HTMLElement | null>(null)
@@ -113,7 +108,7 @@ function isInViewport(el: HTMLElement, offset: number) {
   max-width: 320px;
   background-color: var(--vp-sidebar-bg-color);
   opacity: 0;
-  box-shadow: var(--vp-c-shadow-3);
+  box-shadow: var(--vp-shadow-3);
   overflow-x: hidden;
   overflow-y: auto;
   transform: translateX(-100%);
@@ -126,7 +121,7 @@ function isInViewport(el: HTMLElement, offset: number) {
   visibility: visible;
   transform: translateX(0);
   transition: opacity 0.25s,
-              transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .dark .VPSidebar {

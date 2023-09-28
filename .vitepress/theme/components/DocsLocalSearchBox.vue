@@ -12,7 +12,7 @@ import {
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 import Mark from 'mark.js/src/vanilla.js'
 import MiniSearch, { type SearchResult } from 'minisearch'
-import { useRouter } from 'vitepress'
+import { inBrowser, useRouter } from 'vitepress'
 import {
   computed,
   markRaw,
@@ -38,7 +38,6 @@ const emit = defineEmits<{
 
 const el = shallowRef<HTMLElement>()
 const resultsEl = shallowRef<HTMLElement>()
-const body = shallowRef<HTMLElement>()
 
 /* Search */
 
@@ -221,8 +220,16 @@ onKeyStroke('ArrowDown', (event) => {
 
 const router = useRouter()
 
-onKeyStroke('Enter', () => {
+onKeyStroke('Enter', (e) => {
+  if (e.target instanceof HTMLButtonElement && e.target.type !== 'submit')
+    return
+
   const selectedPackage = results.value[selectedIndex.value]
+  if (e.target instanceof HTMLInputElement && !selectedPackage) {
+    e.preventDefault()
+    return
+  }
+
   if (selectedPackage) {
     router.go(selectedPackage.id)
     emit('close')
@@ -249,10 +256,9 @@ useEventListener('popstate', (event) => {
 })
 
 /** Lock body */
-const isLocked = useScrollLock(body)
+const isLocked = useScrollLock(inBrowser ? document.body : null)
 
 onMounted(() => {
-  body.value = document.body
   nextTick(() => {
     isLocked.value = true
     nextTick().then(() => activate())
@@ -548,7 +554,7 @@ function formMarkRegex(terms: Set<string>) {
 .title-icon {
   opacity: 0.5;
   font-weight: 500;
-  color: var(--vp-c-brand);
+  color: var(--vp-c-brand-1);
 }
 
 .title svg {

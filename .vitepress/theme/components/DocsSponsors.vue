@@ -4,7 +4,7 @@ import { useSponsor } from '../composables/sponsor'
 
 import DocsButton from './DocsButton.vue'
 import VPIconHeart from 'vitepress/dist/client/theme-default/components/icons/VPIconHeart.vue'
-import VPSponsors from 'vitepress/dist/client/theme-default/components/VPSponsors.vue'
+import { VPSponsors } from 'vitepress/theme-without-fonts'
 
 const { theme, lang } = useData()
 const sponsors = useSponsor(lang)

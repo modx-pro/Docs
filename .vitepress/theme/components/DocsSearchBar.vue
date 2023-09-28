@@ -108,14 +108,15 @@ function onSearchBarClick(event: PointerEvent) {
 
 <style scoped>
 .search-bar {
-  border: 2px solid var(--vp-c-divider);
-  border-radius: 4px;
+  border: 1px solid var(--vp-c-gray-soft);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   padding: 6px 8px;
   height: 56px;
   cursor: text;
-  background-color: var(--vp-local-search-result-bg);
+  background-color: var(--vp-c-bg-elv);
+  box-shadow: var(--vp-shadow-1);
 }
 
 @media (max-width: 767px) {
@@ -125,7 +126,7 @@ function onSearchBarClick(event: PointerEvent) {
 }
 
 .search-bar:focus-within {
-  border-color: var(--vp-c-brand);
+  border-color: var(--vp-c-border);
 }
 
 .search-icon {
@@ -172,6 +173,6 @@ function onSearchBarClick(event: PointerEvent) {
 }
 
 .search-actions button:hover {
-  color: var(--vp-c-brand);
+  color: var(--vp-c-brand-1);
 }
 </style>

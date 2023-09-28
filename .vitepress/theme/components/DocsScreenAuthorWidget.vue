@@ -4,7 +4,7 @@ import { type PageData, useData } from 'vitepress'
 import type { DocsPageData } from '../plugins/component'
 import { type Author, authors } from '../../../docs/authors'
 
-import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
+import { VPImage } from 'vitepress/theme-without-fonts'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
 export interface Data {
@@ -97,6 +97,6 @@ const author = computed<Author>(() => {
 }
 
 :deep(.link):hover {
-  color: var(--vp-c-green);
+  color: var(--vp-c-brand-1);
 }
 </style>

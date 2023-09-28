@@ -2,7 +2,7 @@
     "line-length": false,
     "link-fragments": false,
     "no-inline-html": {
-        "allowed_elements": ["Badge", "DocsComponentsList", "ul", "ol", "li"]
+        "allowed_elements": ["Badge", "DocsComponentsList", "ul", "ol", "li", "small", "sub", "sup", "br"]
     },
     "fenced-code-language": false,
     "no-duplicate-heading": {
