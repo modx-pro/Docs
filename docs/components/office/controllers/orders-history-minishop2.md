@@ -5,12 +5,15 @@
 Всё построено на ExtJS - это очень удобно. Сам он загружается из установленного MODX, поэтому на разных версиях MODX он может выглядеть немного по разному.
 
 [![](https://file.modx.pro/files/c/b/f/cbf808da0f481e1c746144a9549c61ccs.jpg)](https://file.modx.pro/files/c/b/f/cbf808da0f481e1c746144a9549c61cc.png)
+
 [![](https://file.modx.pro/files/8/f/e/8fe7aa15248aa16bf8f4509e15093fd5s.jpg)](https://file.modx.pro/files/8/f/e/8fe7aa15248aa16bf8f4509e15093fd5.png)
+
 [![](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fds.jpg)](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fd.png)
 
 Настройки вывода таблицы заказов работают примерно так же, как и у miniShop2:
 
 [![](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baads.jpg)](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baad.png)
+
 [![](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531s.jpg)](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531.png)
 
 Можно указать свой CSS файл с офрмлением ExtJS.
