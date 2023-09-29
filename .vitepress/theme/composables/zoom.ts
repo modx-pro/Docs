@@ -1,47 +1,22 @@
-import GLightbox from 'glightbox'
 import 'glightbox/dist/css/glightbox.css'
 import { scrollbarWidth } from '@xobotyi/scrollbar-width'
 
 import {
-  inject,
-  nextTick,
-  onMounted,
   watch,
   type App,
-  type InjectionKey
 } from 'vue'
 import type { Router } from 'vitepress'
 
-export const glightboxSymbol: InjectionKey<GLightbox> = Symbol('glightbox')
+export const glightboxSymbol = Symbol('glightbox')
 
-export function useZoom() {
-  return onMounted(() => reload(inject(glightboxSymbol)))
-}
+export async function createZoom(app: App, router: Router) {
+  if (import.meta.env.SSR) {
+    return
+  }
 
-export function reload(lightbox: GLightbox) {
-  const elements = Array.from(document.querySelectorAll('.vp-doc img'))
-    .map((element, index) => {
-      const target = element.parentElement instanceof HTMLAnchorElement ? element.parentElement : element
-      target.addEventListener('click', (e) => {
-        e.preventDefault()
-        lightbox.openAt(index)
-      })
+  const GLightbox = await import('glightbox')
 
-      const href = target.getAttribute(target instanceof HTMLAnchorElement ? 'href' : 'src')
-      const title = element.getAttribute('alt')
-
-      return {
-        href,
-        title,
-        type: 'image',
-      }
-    })
-
-  lightbox.setElements(elements)
-}
-
-export function createZoom(app: App, router: Router) {
-  const lightbox = GLightbox({
+  const lightbox = GLightbox.default({
     openEffect: 'fade',
     closeEffect: 'fade',
     zoomable: true,
@@ -53,6 +28,28 @@ export function createZoom(app: App, router: Router) {
     },
   })
 
+  lightbox.reload = () => {
+    const elements = Array.from(document.querySelectorAll('.vp-doc img'))
+      .map((element, index) => {
+        const target = element.parentElement instanceof HTMLAnchorElement ? element.parentElement : element
+        target.addEventListener('click', (e) => {
+          e.preventDefault()
+          lightbox.openAt(index)
+        })
+
+        const href = target.getAttribute(target instanceof HTMLAnchorElement ? 'href' : 'src')
+        const title = element.getAttribute('alt')
+
+        return {
+          href,
+          title,
+          type: 'image',
+        }
+      })
+
+    lightbox.setElements(elements)
+  }
+
   const scrollWidth = scrollbarWidth()
 
   lightbox.on('open', () => updateFixedElements(scrollWidth))
@@ -62,9 +59,10 @@ export function createZoom(app: App, router: Router) {
 
   watch(
     () => router.route.data.relativePath,
-    (path, oldPath) => oldPath && nextTick(() => {
-      reload(lightbox)
-    })
+    () => setTimeout(() => {
+      lightbox.reload()
+    }),
+    { immediate: true }
   )
 }
 

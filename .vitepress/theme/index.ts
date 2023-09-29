@@ -1,6 +1,6 @@
 import { type Router, inBrowser } from 'vitepress'
 import { type App, watch } from 'vue'
-import { createZoom, useZoom } from './composables/zoom'
+import { createZoom } from './composables/zoom'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import DocsLayout from './components/DocsLayout.vue'
 import DocsComponentsList from './components/DocsComponentsList.vue'
@@ -32,9 +32,5 @@ export default {
         }
       )
     }
-  },
-
-  setup() {
-    useZoom()
   },
 }
