@@ -9,6 +9,7 @@
 Нужно её создать:
 
 [![](https://file.modx.pro/files/7/a/7/7a777c495c0e0abccc46e79525725c62s.jpg)](https://file.modx.pro/files/7/a/7/7a777c495c0e0abccc46e79525725c62.png)
+
 [![](https://file.modx.pro/files/6/5/5/655a16c9aa7e36db7e73c6df62411ba8s.jpg)](https://file.modx.pro/files/6/5/5/655a16c9aa7e36db7e73c6df62411ba8.png)
 
 Права доступа на контекст назначаем **Load, List and View**.
@@ -16,7 +17,9 @@
 Теперь создаём раздел "Личный кабинет" и в нём 2 страницы: "Профиль" и "История заказов". Сам личный кабинет должен быть ссылкой на "Историю заказов" - для удобства:
 
 [![](https://file.modx.pro/files/d/0/1/d017b1210c7b83dd53778d44279e35ecs.jpg)](https://file.modx.pro/files/d/0/1/d017b1210c7b83dd53778d44279e35ec.png)
+
 [![](https://file.modx.pro/files/4/4/9/449cd41a395ab891cd7998aebefa5680s.jpg)](https://file.modx.pro/files/4/4/9/449cd41a395ab891cd7998aebefa5680.png)
+
 [![](https://file.modx.pro/files/8/3/d/83d92d38d78ffaf2a3d1a138bbeb978as.jpg)](https://file.modx.pro/files/8/3/d/83d92d38d78ffaf2a3d1a138bbeb978a.png)
 
 Пока делаем настройки, вывода кабинета в меню лучше выключить. Главное потом - не забыть включить обратно.
@@ -28,12 +31,14 @@
 Создаём новую группу ресурсов Office, назначаем ей права и включаем в неё все наши 3 страницы личного кабинета.
 
 [![](https://file.modx.pro/files/3/6/f/36f61755226bcae8e6ff855ece8332a8s.jpg)](https://file.modx.pro/files/3/6/f/36f61755226bcae8e6ff855ece8332a8.png)
+
 [![](https://file.modx.pro/files/b/7/a/b7a38c907e7c6fb0be1731f5c4e80b96s.jpg)](https://file.modx.pro/files/b/7/a/b7a38c907e7c6fb0be1731f5c4e80b96.png)
 
 После этого нужно снова зайти в "Контроль доступа" и ужесточить доступ групп Users и (аноним) к этой группе ресурсов, потому что MODX выставляет не совсем верные права по умолчанию.
 Для Users он ставит **Resource**, а для (аноним) **Load, List and View**.
 
 [![](https://file.modx.pro/files/5/1/e/51ee007654944ce323b33386b8ba9bd6s.jpg)](https://file.modx.pro/files/5/1/e/51ee007654944ce323b33386b8ba9bd6.png)
+
 [![](https://file.modx.pro/files/c/d/c/cdc63e9d9701d52d19913a73889548e2s.jpg)](https://file.modx.pro/files/c/d/c/cdc63e9d9701d52d19913a73889548e2.png)
 
 Всё, теперь можно открыть страницу кабинета из анонимного режима браузера (мы не должны быть залогинены в админке, это даёт нам дополнительные права) и получить вывод главной страницы по этому адресу.
@@ -41,6 +46,7 @@
 Чтобы вместо главной нам показывалась страница авторизации, нужно её создать и указать её id в системной настройке **unauthorized_page**.
 
 [![](https://file.modx.pro/files/8/1/a/81aab317054bca52864f5710294f25d1s.jpg)](https://file.modx.pro/files/8/1/a/81aab317054bca52864f5710294f25d1.png)
+
 [![](https://file.modx.pro/files/4/8/7/48794e4f2161f9c70f033e611893d2d3s.jpg)](https://file.modx.pro/files/4/8/7/48794e4f2161f9c70f033e611893d2d3.png)
 
 И теперь в анонимном режиме мы получаем требование авторизации при переходе в личный кабинет:
@@ -109,7 +115,9 @@
 История заказов вызывается через сниппет **officeMiniShop2**:
 
 [![](https://file.modx.pro/files/d/e/e/dee7bb2e05e4ca5f23188fba7b9d1064s.jpg)](https://file.modx.pro/files/d/e/e/dee7bb2e05e4ca5f23188fba7b9d1064.png)
+
 [![](https://file.modx.pro/files/8/f/e/8fe7aa15248aa16bf8f4509e15093fd5s.jpg)](https://file.modx.pro/files/8/f/e/8fe7aa15248aa16bf8f4509e15093fd5.png)
+
 [![](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fds.jpg)](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fd.png)
 
 Всё построено на ExtJS - это очень удобно. Сам он загружается из установленного MODX, поэтому на разных версиях MODX он может выглядеть немного по разному.
@@ -118,6 +126,7 @@
 Также вы можете полностью изменить внешний вид ExtJS собственным css файлом, но это довольно кропотливая работа - предупреждаю сразу.
 
 [![](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baads.jpg)](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baad.png)
+
 [![](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531s.jpg)](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531.png)
 
 Большинству магазинов подойдут настройки по умолчанию, разве что может понадобиться убрать поле "вес".

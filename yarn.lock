@@ -969,6 +969,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@xobotyi/scrollbar-width@npm:^1.9.5":
+  version: 1.9.5
+  resolution: "@xobotyi/scrollbar-width@npm:1.9.5"
+  checksum: e880c8696bd6c7eedaad4e89cc7bcfcd502c22dc6c061288ffa7f5a4fe5dab4aa2358bdd68e7357bf0334dc8b56724ed9bee05e010b60d83a3bb0d855f3d886f
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^1.0.0":
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
@@ -1533,8 +1540,10 @@ __metadata:
     "@types/markdown-it": ^12.2.3
     "@types/node": ^18.16.13
     "@vueuse/core": ^10.1.2
+    "@xobotyi/scrollbar-width": ^1.9.5
     dotenv: ^16.3.1
     fast-glob: ^3.2.12
+    glightbox: ^3.2.0
     gray-matter: ^4.0.3
     markdown-it: ^13.0.1
     markdown-it-container: ^3.0.0
@@ -1954,6 +1963,13 @@ __metadata:
   version: 9.0.0
   resolution: "get-stdin@npm:9.0.0"
   checksum: 5972bc34d05932b45512c8e2d67b040f1c1ca8afb95c56cbc480985f2d761b7e37fe90dc8abd22527f062cc5639a6930ff346e9952ae4c11a2d4275869459594
+  languageName: node
+  linkType: hard
+
+"glightbox@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "glightbox@npm:3.2.0"
+  checksum: 051067290ab05cbdd5844ada638290e8abc95e3bff497dee28667fb7db4878f5d151a90f52f862bdafdcf39a65b8731f840022f471b65d77e0df7cf2a0f503e2
   languageName: node
   linkType: hard
 
