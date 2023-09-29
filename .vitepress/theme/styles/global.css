@@ -65,6 +65,10 @@
   --vp-local-search-footer-shadow: 0 -1px 0 0 #e0e3e8, 0 -3px 6px 0 rgba(69, 98, 155, .12);
 }
 
+[lang|="ru"] {
+  --vp-code-copy-copied-text-content: 'Скопировано';
+}
+
 .dark {
   --vp-local-search-result-bg: var(--vp-c-bg-soft-mute);
   --vp-local-search-result-shadow: none;
@@ -204,11 +208,6 @@ kbd {
 
 .custom-block.info a:hover {
   color: var(--vp-c-blue-2);
-}
-
-[lang|="ru"] .vp-doc [class*='language-'] > button.copy.copied::before,
-[lang|="ru"] .vp-doc [class*='language-'] > button.copy:hover.copied::before {
-  content: 'Скопировано';
 }
 
 @media (max-width: 1023px) {
