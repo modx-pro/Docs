@@ -170,43 +170,18 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   vite: {
     resolve: {
       alias: [
-        {
-          find: /^.*\/VPSidebar\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsSidebar.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPDocFooter\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsDocFooter.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPNavBarTranslations\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsNavBarTranslations.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPNavScreenTranslations\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsNavScreenTranslations.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPLocalSearchBox\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsLocalSearchBox.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPNavBar\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsNavBar.vue', import.meta.url)
-          )
-        },
-      ],
+        'VPSidebar',
+        'VPDocFooter',
+        'VPNavBarTranslations',
+        'VPNavScreenTranslations',
+        'VPLocalSearchBox',
+        'VPNavBar',
+      ].map(componentName => ({
+        find: new RegExp(`^.*\/${componentName}\.vue$`),
+        replacement: fileURLToPath(
+          new URL(`../theme/components/${componentName.replace(/^VP/, 'Docs')}.vue`, import.meta.url)
+        )
+      })),
     },
   },
 
