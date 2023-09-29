@@ -1,9 +1,11 @@
 import { type Router, inBrowser } from 'vitepress'
 import { type App, watch } from 'vue'
+import { createZoom, useZoom } from './composables/zoom'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import DocsLayout from './components/DocsLayout.vue'
 import DocsComponentsList from './components/DocsComponentsList.vue'
 import './styles/global.css'
+import './styles/glightbox.css'
 
 export default {
   extends: DefaultTheme,
@@ -11,6 +13,7 @@ export default {
 
   enhanceApp({ app, router }: { app: App, router: Router }) {
     app.component('DocsComponentsList', DocsComponentsList)
+    createZoom(app, router)
 
     if (
       import.meta.env.PROD &&
@@ -29,5 +32,9 @@ export default {
         }
       )
     }
+  },
+
+  setup() {
+    useZoom()
   },
 }
