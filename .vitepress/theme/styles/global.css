@@ -192,10 +192,6 @@ kbd {
   background-color: var(--vp-sidebar-bg-color);
 }
 
-.vp-doc :not(pre) > code {
-  display: inline-flex;
-}
-
 .custom-block {
   border-radius: var(--vp-border-radius);
   border-width: var(--vp-border-width);
