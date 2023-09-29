@@ -6,17 +6,17 @@ Taking into account that your users enter the site through email, they will have
 It also helps to change email, with an obligatory check.
 
 Name                   | By default                                         | Description
------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **&tplProfile**        | `tpl.Office.profile.form`                          | Chunk for output and editing of a user's profile.
 **&tplActivate**       | `tpl.Office.profile.activate`                      | Chunk for activation letter.
-**&profileFields**     | все основные поля профиля                          | List of fields that a user can edit, with commas. You can also indicate maximal length of values after a colon. For example, &profileFields=`username:25,fullname:50,email`.
-**&requiredFields**    | `username,email,fullname`                          | List of fields that are obligatory for editing. These fields shoud be filled in for successful profile update. For example, &requiredFields=`username,fullname,email`.
-**&HybridAuth**        | `1`                                                | Turn on integration with HybridAuth, if it is installed.
-**&providers**         |                                                    | List of providers of HybridAuthauthorization, with commas. All accessible providers are here {core_path}components/hybridauth/model/hybridauth/lib/Providers/. For example, &providers=`Google,Twitter,Facebook`.
-**&providerTpl**       | `tpl.HybridAuth.provider`                          | Chunk for output of a link to authorization or adding the HybridAuth service to an account.
-**&activeProviderTpl** | `tpl.HybridAuth.provider.active`                   | Chunk for output of the icon of the added HybridAuth service.
-**&avatarParams**      | `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}` | JSON line with parameters of avatar convertation with help of строка phpThumb. By default - `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}`.
-**&avatarPath**        | `images/users/`                                    | Directory for saving avatars for users inside MODX_ASSETS_PATH. By default - "images/users/".
+**&profileFields**     | все основные поля профиля                          | List of fields that a user can edit, with commas. You can also indicate maximal length of values after a colon. For example, ``&profileFields=`username:25,fullname:50,email` ``.
+**&requiredFields**    | `username,email,fullname`                          | List of fields that are obligatory for editing. These fields shoud be filled in for successful profile update. For example, ``&requiredFields=`username,fullname,email` ``.
+**&HybridAuth**        | `1`                                                | Turn on integration with **HybridAuth**, if it is installed.
+**&providers**         |                                                    | List of providers of **HybridAuth** authorization, with commas. All accessible providers are here `{core_path}components/hybridauth/model/hybridauth/lib/Providers/`. For example, ``&providers=`Google,Twitter,Facebook` ``.
+**&providerTpl**       | `tpl.HybridAuth.provider`                          | Chunk for output of a link to authorization or adding the **HybridAuth** service to an account.
+**&activeProviderTpl** | `tpl.HybridAuth.provider.active`                   | Chunk for output of the icon of the added **HybridAuth** service.
+**&avatarParams**      | `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}` | JSON line with parameters of avatar convertation with help of phpThumb. By default - `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}`.
+**&avatarPath**        | `images/users/`                                    | Directory for saving avatars for users inside MODX_ASSETS_PATH. By default - `images/users/`.
 
 *Accurate value of parameter **&profileFields** by default:*
 

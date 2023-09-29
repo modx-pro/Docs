@@ -57,15 +57,15 @@ When the user exits the client site, they exit the server site bu the same algor
 Most parameters coincide with those of [officeAuth][1] (chunks, groups, contexts, remembering, etc.), but there are also some unqie ones:
 
 Name                  | By default                 | Description
-----------------------|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **&tplLogin**         | `tpl.Office.remote.login`  | This chunk will be shown to an anonymous user, i.e. to any guest.
 **&tplLogout**        | `tpl.Office.remote.logout` | This chunk will be shown to an authorized user.
-**&groups**           |                            | List of groups for a user registration, with commas. User's role in the group can be written after a colon. For example, &groups=`Users:1` will add a user to "Users" group with a "member" role.
+**&groups**           |                            | List of groups for a user registration, with commas. User's role in the group can be written after a colon. For example, ``&groups=`Users:1` `` will add a user to "Users" group with a "member" role.
 **&rememberme**       | `1`                        | Remembers a user for a long time. On by default.
 **&loginContext**     |                            | General context for authorization. By default - the current one.
-**&addContexts**      |                            | Additional contexts, with commas. For example, &addContexts=`web,ru,en`
-**&loginResourceId**  | `0`                        | Identifier of a resource to which the user will be sent after authorization. By default it is 0, which updates the current page.
-**&logoutResourceId** | `0`                        | Identifier of a resource to which the user will be sent when the session is ended. By default it is 0, which updates the current page.
+**&addContexts**      |                            | Additional contexts, with commas. For example, ``&addContexts=`web,ru,en` ``
+**&loginResourceId**  | `0`                        | Identifier of a resource to which the user will be sent after authorization. By default it is `0`, which updates the current page.
+**&logoutResourceId** | `0`                        | Identifier of a resource to which the user will be sent when the session is ended. By default it is `0`, which updates the current page.
 **&updateUser**       | `1`                        | Permission to update existing users with data from the remote server.
 **&createUser**       | `1`                        | Permission to create new users.
 **&remote**           |                            | Obligatory address of the remote server page with a call for snippet "officeAuthServer".

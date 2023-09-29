@@ -3,16 +3,16 @@
 This controller's parameters are very much like those of [HybridAuth][1].
 
 Name                   | By default                       | Description
------------------------|----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **&tplLogin**          | `tpl.Office.auth.login`          | This chunk will be shown to an anonymous user, that is, to any guest.
 **&tplLogout**         | `tpl.Office.auth.logout`         | This chunk will be shown to an authorized user.
 **&tplActivate**       | `tpl.Office.auth.activate`       | Chunk for activation letter.
 **&tplRegister**       | `tpl.Office.auth.register`       | Chunk for registration letter.
 **&linkTTL**           | `600`                            | Time of life of a profile activation link in seconds.
-**&groups**            |                                  | List of groups for a user registration, with commas. User's role in the group can be written after a colon. For example, &groups=`Users:1` will add a user to "Users" group with a "member" role.
+**&groups**            |                                  | List of groups for a user registration, with commas. User's role in the group can be written after a colon. For example, ``&groups=`Users:1` `` will add a user to "Users" group with a "member" role.
 **&rememberme**        | `1`                              | Remembers a user for a long time. On by default.
 **&loginContext**      |                                  | General context for authorization. By default - the current one.
-**&addContexts**       |                                  | Additional contexts, with commas. For example, &addContexts=`web,ru,en`
+**&addContexts**       |                                  | Additional contexts, with commas. For example, ``&addContexts=`web,ru,en` ``
 **&loginResourceId**   | `0`                              | Identifier of a resource to which the user will be sent after authorization. By default it is 0, which updates the current page.
 **&logoutResourceId**  | `0`                              | Identifier of a resource to which the user will be sent when the session is ended. By default it is 0, which updates the current page.
 **&HybridAuth**        | `1`                              | Turn on integration with [HybridAuth][1], if it is installed.
@@ -56,7 +56,7 @@ The standard javascript is written so as to process all forms of authorization u
 distinguishing them by their indicated actions in hidden input:
 
 ```html
-<input type="hidden" name="action" value="auth/действие"/>
+<input type="hidden" name="action" value="auth/action"/>
 ```
 
 The following actions are possible:

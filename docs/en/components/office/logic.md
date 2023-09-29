@@ -34,11 +34,13 @@ For example, you can change the way the user account miniShop2 looks through sys
 The old look (`[[++assets_url]]components/office/css/main/lib/xtheme-modx.old.css`)
 
 [![](https://file.modx.pro/files/9/6/4/9640c1d8fe2742274dba1c0238491001s.jpg)](https://file.modx.pro/files/9/6/4/9640c1d8fe2742274dba1c0238491001.png)
+
 [![](https://file.modx.pro/files/e/d/6/ed6b56bc39dffbb68c8c9425399e17aas.jpg)](https://file.modx.pro/files/e/d/6/ed6b56bc39dffbb68c8c9425399e17aa.png)
 
 The new look (`[[++assets_url]]components/office/css/main/lib/xtheme-modx.new.css`)
 
 [![](https://file.modx.pro/files/5/a/b/5ab2fdf1b80cac13a660e07e319b57ees.jpg)](https://file.modx.pro/files/5/a/b/5ab2fdf1b80cac13a660e07e319b57ee.png)
+
 [![](https://file.modx.pro/files/e/c/4/ec40dca2f9e8e2d620cf2a47ea5a4befs.jpg)](https://file.modx.pro/files/e/c/4/ec40dca2f9e8e2d620cf2a47ea5a4bef.png)
 
 By default the appearance is chosen due to what version of MODX is installed - 2.2 or older.
@@ -67,11 +69,13 @@ You can see an example in [a draft for addons design modExtra][6]:
 Work with records modExtra in the admin space
 
 [![](https://file.modx.pro/files/0/9/a/09acd54474eac1da1a18a45ef417b0c6s.jpg)](https://file.modx.pro/files/0/9/a/09acd54474eac1da1a18a45ef417b0c6.png)
+
 [![](https://file.modx.pro/files/9/9/f/99f389219e64d198d80cf34de3bcc359s.jpg)](https://file.modx.pro/files/9/9/f/99f389219e64d198d80cf34de3bcc359.png)
 
 Work with records modExtra from the outside
 
 [![](https://file.modx.pro/files/d/6/c/d6c064323f14c85809a852decd09b8a9s.jpg)](https://file.modx.pro/files/d/6/c/d6c064323f14c85809a852decd09b8a9.png)
+
 [![](https://file.modx.pro/files/8/5/5/855490e75c5c93d364af3756d8d2bb92s.jpg)](https://file.modx.pro/files/8/5/5/855490e75c5c93d364af3756d8d2bb92.png)
 
 A registered controller is shown by its name. In this case it is:
@@ -90,7 +94,7 @@ You do not have to copy anything, you can just provide and update your vidget in
 
 And if you are planning to use Ext JS in your vidgets, notice that by default there already are some new [improved Office components][10], like a table with an imbedded search - you can extend them as much as you want.
 
-As[modExtra][11] is suited for designing addons for MODX and already supports Office, I recommend that you use it as an example.
+As [modExtra][11] is suited for designing addons for MODX and already supports Office, I recommend that you use it as an example.
 
 [0]: /en/components/office/controllers/auth
 [1]: /en/components/office/controllers/profile

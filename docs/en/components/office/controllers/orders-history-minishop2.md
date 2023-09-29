@@ -4,12 +4,15 @@ Snippet **OfficeMiniShop2** shows the miniShop2 orders history of a current user
 Everything is built on ExtJS, which is very convenient. It is loaded from the installed MODX, and that is why it can look differently on different versions of MODX.
 
 [![](https://file.modx.pro/files/c/b/f/cbf808da0f481e1c746144a9549c61ccs.jpg)](https://file.modx.pro/files/c/b/f/cbf808da0f481e1c746144a9549c61cc.png)
+
 [![](https://file.modx.pro/files/8/f/e/8fe7aa15248aa16bf8f4509e15093fd5s.jpg)](https://file.modx.pro/files/8/f/e/8fe7aa15248aa16bf8f4509e15093fd5.png)
+
 [![](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fds.jpg)](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fd.png)
 
 Orders history output settings work approximately the same as for miniShop2:
 
 [![](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baads.jpg)](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baad.png)
+
 [![](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531s.jpg)](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531.png)
 
 You can indicate your CSS file with the ExtJS structure.
