@@ -4,6 +4,7 @@ description: Авторизация пользователей через ajax
 logo: https://modstore.pro/assets/extras/ajaxlogin/logo-md.png
 author: modx-pro
 modstore: https://modstore.pro/packages/users/ajaxlogin
+repository: https://github.com/modx-pro/ajaxLogin
 ---
 
 # ajaxLogin
