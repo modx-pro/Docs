@@ -73,6 +73,8 @@
   --vp-local-search-result-bg: var(--vp-c-bg-soft-mute);
   --vp-local-search-result-shadow: none;
   --vp-local-search-footer-shadow: none;
+
+  --vp-code-color: var(--vp-c-blue-1);
 }
 
 .Layout {
