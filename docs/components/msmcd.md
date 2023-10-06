@@ -1,10 +1,10 @@
 ---
 title: msMCD
 description: Динамическое обновление мини-корзины miniShop2
-logo: https://modstore.pro/assets/extras/msminicartdynamic/logo-lg.png
-author: marabar
-modstore: https://modstore.pro/packages/integration/msminicartdynamic
-repository: https://github.com/Marabar/msMiniCartDynamic
+logo: https://modstore.pro/assets/extras/msmcd/logo-md.png
+author: modx-pro
+modstore: https://modstore.pro/packages/integration/msmcd
+repository: https://github.com/modx-pro/msMCD
 
 dependencies: miniShop2
 ---
@@ -30,51 +30,93 @@ dependencies: miniShop2
 
 После установки компонента, вместо стандартного сниппета `msMiniCart` воспользуйтесь `msMCDMiniCart`, который идёт с компонентом msMCD.
 
+::: code-group
+
+```modx
+[[!msMCDMiniCart?
+  &img=`50x50`
+]]
+```
+
 ```fenom
 {'!msMCDMiniCart' | snippet: [
   'img' => '50x50',
 ]}
 ```
+:::
 
-### Параметры msMCDMiniCart
+### Параметры
 
-- `tpl` — `[msMCDMiniCartRowTpl]`, чанк для каждого результата
-- `tplOuter` — `[msMCDMiniCartOuterTpl]`, чанк обёртка
-- `jsUrl` — путь до файла со скриптами
-- `img` — картинка товара. Указывается так же как и в источнике файлов, например: 50x50
-
-## Вывод товаров
-
-В комплекте с msMCDM идут идут два примера чанков для вывода товаров: `msMCDProductsRowTpl` и `msMCDProductsRowInputTpl`. Например для добавления товара в корзину кнопкой, вызов сниппета `msProducts` будет таким:
-
-```fenom
-{'!msProducts' | snippet: [
-  'tpl' => 'msMCDProductsRowTpl',
-]}
-```
-
-Соответственно для добавления товара кнопками/ручным вводом таким:
-
-```fenom
-{'!msProducts' | snippet: [
-  'tpl' => 'msMCDProductsRowInputTpl',
-]}
-```
-
-Эти чанки служат только для примера, и обратите внимание, что картинка товара находится в теге form. Это необходимо для анимации добавления товара (полёт картинки).
+| Имя                      | По умолчанию            | Описание                                                                                                                  |
+|--------------------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| **tpl**                  | `msMCDMiniCartRowTpl`   | чанк для каждого результата                                                                                               |
+| **tplOuter**             | `msMCDMiniCartOuterTpl` | чанк обёртка                                                                                                              |
+| **jsUrl**                |                         | путь до файла со скриптами                                                                                                |
+| **img**                  |                         | картинка товара. Указывается так же как и в источнике файлов, например: `50x50` или `small`                               |
+| **animate**              | `false`                 | Анимированное добавление в корзину. У изображения, в чанке вывода списка товаров необходимо добавить класс `msmcd-img`. Также изображение должно находится внутри тега `form`    |
+| **dropdown**             | `false`                 | Раскрывать мини корзину при дорбавлении товара                                                                            |
+| **changeCount**          | `false`                 | Дать возможность изменять количество товара в мини корзине                                                                |
+ 
 
 ## Сниппет msMCDCount
 
 Сниппет `msMCDCount` — для добавления товара, вместо кнопки выводит инпут с `-/+`.
 Вызов этого сниппета прописан в чанке `msMCDProductsRowInputTpl`.
 
-### Параметры msMCDCount
+### Параметры
 
-- `tpl` — `[msMCDCountTpl]`, чанк для вывода инпута
-- `jsUrl` — путь до файла со скриптами
+| Имя                      | По умолчанию            | Описание                                                                                                                  |
+|--------------------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| **tpl**                  | `msMCDCountTpl`         | чанк для вывода инпута                                                                                                    |
+| **jsUrl**                |                         | путь до файла со скриптами                                                                                                |
+
 
 ## Системные настройки
 
-- `msmcd_fields_mini_cart` — Поля, которые необходимо передать в мини корзину, по умолчанию: `pagetitle`. Доступны все поля объектов:`msProduct(modResource), msProductData, msVendor` В мини-корзине есть всегда: `id, price, count, options, weight, ctx, sum, img`
-- `msmcd_animate_mini_cart` — Включает анимацию добавления товара, по умолчанию: выключено.
-- `msmcd_dropdown_mini_cart` — Открывать мини-корзину при добавлении товара, по умолчанию: выключено
+| Имя                          | По умолчанию            | Описание                                                                                                                  |
+|------------------------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| **msmcd_fields_mini_cart**   | `pagetitle`             |  Поля, которые необходимо передать в мини корзину. Доступны все поля объектов:`msProduct(modResource), msProductData, msVendor` В мини-корзине есть всегда: `id, price, count, options, weight, ctx, sum, img`                                                                                                                                   |
+| **msmcd_animate_mini_cart**  | `false`                 | Включает анимацию добавления товара                                                                                       |
+| **msmcd_dropdown_mini_cart** | `false`                 | Открывать мини-корзину при добавлении товара                                                                              |
+
+Системные настройки можно переопределить параметрами сниппета.
+
+
+## Примеры
+
+В комплекте с msMCDM идут идут два примера чанков для вывода товаров: `msMCDProductsRowTpl` и `msMCDProductsRowInputTpl`. 
+Например для добавления товара в корзину кнопкой, вызов сниппета `msProducts` будет таким:
+
+::: code-group
+
+```modx
+[[!msProducts?
+  &tpl=`msMCDProductsRowTpl`
+]]
+```
+
+```fenom
+{'!msProducts' | snippet: [
+  'tpl' => 'msMCDProductsRowTpl',
+]}
+```
+:::
+
+Соответственно для добавления товара кнопками/ручным вводом таким:
+
+::: code-group
+
+```modx
+[[!msProducts?
+  &tpl=`msMCDProductsRowInputTpl`
+]]
+```
+
+```fenom
+{'!msProducts' | snippet: [
+  'tpl' => 'msMCDProductsRowInputTpl',
+]}
+```
+:::
+
+Эти чанки служат только для примера, и обратите внимание, что картинка товара находится в теге `form` и класс `msmcd-img`. Это необходимо для анимации добавления товара (полёт картинки).
