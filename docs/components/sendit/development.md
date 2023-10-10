@@ -13,41 +13,63 @@ document.addEventListener('si:init', (e) => {
 ## Отправить запрос на свой коннектор
 
 ```js:line-numbers
-document.addEventListener('si:init', (e) => {    
-    document.addEventListener('submit', (e) => {
-        const target = e.target.closest('.js-my-form');
-        if(!target) return;
-        const params = new FormData(target);
-        const url = 'assets/action.php';
-        const headers = {};
-    })
+document.addEventListener('submit', (e) => {
+    const target = e.target.closest('.js-my-form');
+    if(!target) return;
+    const params = new FormData(target);
+    const url = 'assets/action.php';
+    const headers = {};
     SendIt.Sending.send(target, url, headers, params);
-});
+})
+
 ```
 
 ::: warning
-Отправляя данные на собственный коннектор позаботьтесь о том, чтобы защити сервер от XSS атак и ботов.
+Отправляя данные на собственный коннектор позаботьтесь о том, чтобы защитить сервер от XSS атак и ботов.
 :::
 
-## Отправить запрос на стандартный коннектор
+## Отправить форму на стандартный коннектор
 
 ```js:line-numbers
-document.addEventListener('si:init', (e) => {    
-    document.addEventListener('submit', (e) => {
-        const target = e.target.closest('.js-my-form');
-        if(!target) return;
-        const preset = target.dataset[Sendit.Sending.config.presetKey];        
-    })
+document.addEventListener('submit', (e) => {
+    const target = e.target.closest('.js-my-form');
+    if(!target) return;
+    const preset = target.dataset[Sendit.Sending.config.presetKey];
     SendIt.Sending.prepareSendParams(target, preset);
-});
+})
 ```
 
 ::: tip
 Предполагается, что ключ пресета записан в атрибуте **data-si-preset**.
 :::
 
-## Свой сниппет для обработки данных
+## Отправить запрос БЕЗ формы на стандартный коннектор
 
+```js:line-numbers
+document.addEventListener('si:init', (e) => {
+    SendIt?.setComponentCookie('sitrusted', '1');
+    SendIt?.Sending?.prepareSendParams(document, 'custom');
+})
+```
+::: tip
+Предполагается, что `custom` - ключ пресета, который вы добавили в соответствующий файл.
+:::
+
+Чтобы не давать свободу действий ботам, при получении ответа, если отправляете запрос при загрузке, лучше установить `sitrusted` значение 0
+```js:line-numbers
+document.addEventListener('si:send:after', (e) => {
+    const {action, target, result, headers, Sending} = e.detail;
+
+    if(result.somedata){
+        SendIt?.setComponentCookie('sitrusted', '0');
+    }
+})
+```
+
+## Свой сниппет для обработки данных
+::: tip
+Если на сайте установлен компонент **pdoTools**, Вы можете использовать файловые сниппеты (@FILE 'path/to/snippet.php)
+:::
 ::: tip
 В вашем сниппете параметры пресета будут доступны в виде переменных, а данные формы можно получить из массива $_POST, файлы из массива $_FILES.
 :::
