@@ -46,6 +46,29 @@ document.addEventListener('si:init', (e) => {
 Предполагается, что ключ пресета записан в атрибуте **data-si-preset**.
 :::
 
+## Отправить запрос БЕЗ формы на стандартный коннектор
+
+```js:line-numbers
+document.addEventListener('si:init', (e) => {
+    SendIt?.setComponentCookie('sitrusted', '1');
+    SendIt?.Sending?.prepareSendParams(document, 'custom');
+})
+```
+::: tip
+Предполагается, что `custom` - ключ пресета, который вы добавили в соответствующий файл.
+:::
+
+Чтобы не давать свободу действий ботам, при получении ответа, если отправляете запрос при загрузке, лучше установить `sitrusted` значение 0
+```js:line-numbers
+document.addEventListener('si:send:after', (e) => {
+    const {action, target, result, headers, Sending} = e.detail;
+
+    if(result.somedata){
+        SendIt?.setComponentCookie('sitrusted', '0');
+    }
+})
+```
+
 ## Свой сниппет для обработки данных
 
 ::: tip
