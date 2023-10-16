@@ -70,7 +70,7 @@
 ```
 
 ```fenom
-'loadModels => 'msProductRemains',
+'loadModels' => 'msProductRemains',
 'leftJoin' => [
   'Remains' => [
     'class' => 'msprRemains',
