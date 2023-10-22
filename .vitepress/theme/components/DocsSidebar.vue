@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useScrollLock } from '@vueuse/core'
-import { ref, watchPostEffect, watch, computed } from 'vue'
+import { useScrollLock, useElementVisibility, useScroll } from '@vueuse/core'
 import { DefaultTheme, useRoute, useData, inBrowser } from 'vitepress'
-import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
+import { ref, watch, computed, nextTick } from 'vue'
+import { useSidebar } from 'vitepress/theme'
 import VPSidebarItem from 'vitepress/dist/client/theme-default/components/VPSidebarItem.vue'
 
 const { sidebar: flatSidebar, sidebarGroups, hasSidebar } = useSidebar()
@@ -35,35 +35,36 @@ const { lang } = useData()
 const activeLinkEl = ref<HTMLElement | null>(null)
 const activeGroupEl = ref<HTMLElement | null>(null)
 
-watch(() => route.path, () => {
-  if (!route.path.includes('/components/')) {
-    return
-  }
-
+function scrollToActiveElement() {
   if (!navEl.value) {
     return
   }
 
   activeLinkEl.value = navEl.value.querySelector<HTMLElement>(`a[href="${route.path}"]`)
-  activeGroupEl.value = activeLinkEl.value.closest<HTMLElement>('.VPSidebarItem.level-0')
+  activeGroupEl.value = activeLinkEl.value.closest<HTMLElement>('.group')
 
   const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vp-nav-height')) * 2
+  const isElementVisible = useElementVisibility(activeGroupEl)
 
-  if (!isInViewport(activeGroupEl.value, offset)) {
-    navEl.value.scrollTo({
-      top: activeGroupEl.value.offsetTop - offset
-    })
+  if (!isElementVisible.value) {
+    const { y } = useScroll(navEl)
+    y.value = activeGroupEl.value.offsetTop - offset
   }
+}
+
+watch(() => route.data.relativePath, (newPath, oldPath) => {
+  nextTick(() => {
+    if (/^(\w*\/)?components\/(?!index.md)/.test(oldPath)) {
+      return
+    }
+
+    scrollToActiveElement()
+  })
+}, { immediate: true, flush: 'post' })
+
+watch(lang, () => {
+  nextTick(scrollToActiveElement)
 }, { flush: 'post' })
-
-// tmp fix vitepress bug
-watch(lang, () => activeGroupEl.value && activeGroupEl.value.classList.remove('collapsed'), { flush: 'post' })
-
-function isInViewport(el: HTMLElement, offset: number) {
-  const { top, bottom } = el.getBoundingClientRect()
-  const { innerHeight } = window
-  return top >= offset && bottom <= offset + innerHeight
-};
 </script>
 
 <template>
