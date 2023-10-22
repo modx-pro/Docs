@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useData } from 'vitepress'
 import { createTranslate } from 'vitepress/dist/client/theme-default/support/translation'
 import { v4 as uuidv4 } from 'uuid'
@@ -11,17 +11,20 @@ withDefaults(defineProps<{
   modelValue: string
   placeholder: string
   backButton?: boolean
+  disabled?: boolean
 }>(), {
-  backButton: true
+  backButton: true,
 })
+
+const emit = defineEmits(['update:modelValue', 'close'])
 
 /* Search input focus */
 
 const searchInput = ref<HTMLInputElement>()
 
-function focusSearchInput() {
+function focusSearchInput(select = true) {
   searchInput.value?.focus()
-  // searchInput.value?.select()
+  select && searchInput.value?.select()
 }
 
 onMounted(() => {
@@ -33,10 +36,19 @@ function onSearchBarClick(event: PointerEvent) {
     focusSearchInput()
   }
 }
+
+function resetSearch() {
+  emit('update:modelValue', '')
+  nextTick().then(() => focusSearchInput(false))
+}
 </script>
 
 <template>
-  <form class="search-bar" @pointerup="onSearchBarClick($event)" @submit.prevent="">
+  <form
+    class="search-bar"
+    @pointerup="onSearchBarClick($event)"
+    @submit.prevent=""
+  >
     <label :title="placeholder" id="localsearch-label" :for="uid">
       <svg
         class="search-icon"
@@ -65,6 +77,7 @@ function onSearchBarClick(event: PointerEvent) {
         class="back-button"
         :title="$t('modal.backButtonTitle')"
         @click="$emit('close')"
+        :disabled="disabled"
       >
         <svg
           width="18"
@@ -96,7 +109,7 @@ function onSearchBarClick(event: PointerEvent) {
         v-if="modelValue"
         class="clear-button"
         :title="$t('modal.resetButtonTitle')"
-        @click="$emit('update:modelValue', '')"
+        @click="resetSearch"
       >
         <svg width="24" height="24" viewBox="0 0 20 20">
           <path d="M10 10l5.09-5.09L10 10l5.09 5.09L10 10zm0 0L4.91 4.91 10 10l-5.09 5.09L10 10z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path>

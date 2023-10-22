@@ -28,10 +28,6 @@ import { useData } from 'vitepress'
 import { createTranslate } from 'vitepress/dist/client/theme-default/support/translation'
 import DocsSearchBar from './DocsSearchBar.vue'
 
-defineProps<{
-  placeholder: string
-}>()
-
 const emit = defineEmits<{
   (e: 'close'): void
 }>()
@@ -71,28 +67,14 @@ const searchIndex = computedAsync(async () =>
     MiniSearch.loadJSON<Result>(
       (await searchIndexData.value[localeIndex.value]?.())?.default,
       {
-        fields: ['title', 'titles', 'text', 'test'],
-        storeFields: ['title', 'titles', 'test'],
+        fields: ['title', 'titles', 'text'],
+        storeFields: ['title', 'titles'],
         searchOptions: {
           fuzzy: 0.2,
           prefix: true,
           boost: { title: 4, text: 1, titles: 1 },
           ...(theme.value.search?.provider === 'local' &&
             theme.value.search.options?.miniSearch?.searchOptions),
-          boostDocument: (documentId) => {
-            const component = documentId.match(/components\/([^\/#]*)/)?.[1]
-            const pathArr = documentId.replace(/\#.*/, '').replace(/^\//, '').replace(/\/$/, '').split('/')
-
-            if (pathArr.pop().toLowerCase() === filterText.value) {
-              return 3.0
-            }
-
-            if (component === filterText.value) {
-              return 2.0
-            }
-
-            return 1.0
-          }
         },
         ...(theme.value.search?.provider === 'local' &&
           theme.value.search.options?.miniSearch?.options)
@@ -301,7 +283,7 @@ function formMarkRegex(terms: Set<string>) {
         <div class="header">
           <DocsSearchBar
             v-model="filterText"
-            :placeholder="placeholder"
+            :placeholder="$t('button.buttonText')"
             @close="$emit('close')"
           />
         </div>

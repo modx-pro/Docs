@@ -120,6 +120,26 @@ export default defineConfigWithTheme<DocsTheme.Config>({
           ...searchLocaleRu,
           ...searchLocaleEn,
         },
+        miniSearch: {
+          options: {
+            // @ts-expect-error
+            fields: ['title', 'titles', 'text', 'isComponentIndex'],
+            storeFields: ['title', 'titles', 'isComponentIndex'],
+            extractField(document, fieldName) {
+              if (fieldName === 'isComponentIndex') {
+                return /(?<=(\/en)?)\/components\/(\w*)\/?(#\w+)?$/.test(document.id)
+              }
+
+              return document[fieldName]
+            },
+          },
+          searchOptions: {
+            boostDocument(documentId, term, storedFields) {
+              if (storedFields?.isComponentIndex) return 2.0
+              return 1.0
+            },
+          },
+        },
       },
     },
 
