@@ -1,48 +1,11 @@
 import type MarkdownIt from 'markdown-it'
-import type { RenderRule } from 'markdown-it/lib/renderer'
 import type StateBlock from 'markdown-it/lib/rules_block/state_block'
 import { isSpace } from 'markdown-it/lib/common/utils'
-import container from 'markdown-it-container'
 import kbd from 'markdown-it-kbd'
 
 export const addPlugins = (md: MarkdownIt) => {
-  md.use(...createContainer('info', 'Информация', md))
-    .use(...createContainer('tip', 'Подсказка', md))
-    .use(...createContainer('warning', 'Внимание', md))
-    .use(...createContainer('danger', 'Осторожно', md))
-    .use(...createContainer('details', 'Подробнее', md))
-
-    .use(kbd)
-
+  md.use(kbd)
   md.block.ruler.at('table', table)
-}
-
-type ContainerArgs = [typeof container, string, { render: RenderRule }]
-
-function createContainer(
-  klass: string,
-  defaultTitle: string,
-  md: MarkdownIt
-): ContainerArgs {
-  return [
-    container,
-    klass,
-    {
-      render(tokens, idx, _options, env) {
-        const token = tokens[idx]
-        const info = token.info.trim().slice(klass.length).trim()
-        const attrs = md.renderer.renderAttrs(token)
-        if (token.nesting === 1) {
-          const title = md.renderInline(info || defaultTitle, {
-            references: env.references
-          })
-          if (klass === 'details')
-            return `<details class="${klass} custom-block"${attrs}><summary>${title}</summary>\n`
-          return `<div class="${klass} custom-block"${attrs}><p class="custom-block-title">${title}</p>\n`
-        } else return klass === 'details' ? `</details>\n` : `</div>\n`
-      }
-    }
-  ]
 }
 
 // from https://github.com/markdown-it/markdown-it/blob/2b6cac25823af011ff3bc7628bc9b06e483c5a08/lib/rules_block/table.js

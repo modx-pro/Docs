@@ -31,7 +31,13 @@ export default defineConfigWithTheme<DocsTheme.Config>({
       light: 'github-light',
       dark: 'one-dark-pro',
     },
-
+    container: {
+      tipLabel: 'Подсказка',
+      warningLabel: 'Внимание',
+      dangerLabel: 'Осторожно',
+      infoLabel: 'Информация',
+      detailsLabel: 'Подробнее',
+    },
     anchor: {
       slugify(str) {
         str = str.trim()
