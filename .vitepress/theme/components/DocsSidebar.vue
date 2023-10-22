@@ -54,7 +54,10 @@ function scrollToActiveElement() {
 
 watch(() => route.data.relativePath, (newPath, oldPath) => {
   nextTick(() => {
-    if (/^(\w*\/)?components\/(?!index.md)/.test(oldPath)) {
+    if (
+      !newPath.includes('components/')
+      || /^(\w*\/)?components\/(?!index.md)/.test(oldPath)
+    ) {
       return
     }
 
