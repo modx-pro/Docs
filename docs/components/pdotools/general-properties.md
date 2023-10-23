@@ -167,7 +167,9 @@ pdoTools умеет возвращать данные в разном виде, 
 
 :::warning Важно!
 Все значения параметра `&return` понимают только **pdoResources** (pdoPage в связке с pdoResources) и **pdoUsers**.
+
 Значения `chunks` и `data` понимают только **pdoMenu** и **pdoCrumbs**.
+
 Остальные сниппеты понимают, в основном, только `chunks`. 
 :::
 
