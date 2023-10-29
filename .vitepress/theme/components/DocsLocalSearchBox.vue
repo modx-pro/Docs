@@ -5,6 +5,7 @@ import {
   computedAsync,
   debouncedWatch,
   onKeyStroke,
+  reactify,
   useEventListener,
   useScrollLock,
   useSessionStorage
@@ -12,7 +13,7 @@ import {
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 import Mark from 'mark.js/src/vanilla.js'
 import MiniSearch, { type SearchResult } from 'minisearch'
-import { inBrowser, useRouter } from 'vitepress'
+import { dataSymbol, inBrowser, useRouter } from 'vitepress'
 import {
   computed,
   markRaw,
@@ -21,6 +22,7 @@ import {
   onMounted,
   ref,
   shallowRef,
+  toRef,
   watch,
   type Ref
 } from 'vue'
@@ -223,7 +225,9 @@ onKeyStroke('Escape', () => {
 })
 
 // Translations
-const $t = createTranslate(theme.value.search?.options)
+const $t = reactify(createTranslate)(
+  toRef(() => theme.value.search?.options)
+)
 
 // Back
 
