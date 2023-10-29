@@ -39,7 +39,7 @@ if ($resources) {
     $lastmod = $date->format('Y-m-d');
     } */
 
-    // пометка ежечастного обноавления, id категорий
+    // пометка ежечастного обновления, id категорий
     if (in_array($resource->parent, [3, 7, 11])) $changefreq = 'hourly';
 
     // приоритет

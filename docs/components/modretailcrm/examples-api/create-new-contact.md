@@ -61,15 +61,15 @@ $contact['externalId'] = md5($contact['phones'][0]['number'] . $contact['email']
     <form>
       <div class="form-group">
         <label>Имя</label>
-        <input class="form-control" type="text" name="firstName" value="" placehoder="Имя">
+        <input class="form-control" type="text" name="firstName" value="" placeholder="Имя">
       </div>
       <div class="form-group">
         <label>Телефон</label>
-        <input class="form-control" type="text" name="phone" value="" placehoder="Телефон">
+        <input class="form-control" type="text" name="phone" value="" placeholder="Телефон">
       </div>
       <div class="form-group">
         <label>Email</label>
-        <input class="form-control" type="text" name="email" value="" placehoder="Email">
+        <input class="form-control" type="text" name="email" value="" placeholder="Email">
       </div>
       <button type="submit" class="btn btn-primary">Оставить заявку</button>
     </form>

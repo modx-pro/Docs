@@ -136,7 +136,7 @@ Appending custom **inline** style or script can be done with **PHx**. Please not
 
 ## Notes
 
-Automatic mode can not and will not handle any MODX confiuration ever by itself.
+Automatic mode can not and will not handle any MODX configuration ever by itself.
 
 Cache can be refreshed manually from **Manage** / **Clear Cache** / **PageSpeed** menu.
 

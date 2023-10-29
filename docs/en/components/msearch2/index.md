@@ -35,7 +35,7 @@ items: [
     text: 'Generic solutions',
     items: [
       { text: 'Dependent filters', link: 'solutions/dependent-filters', },
-      { text: 'Сategory Filtration', link: 'solutions/category-filtration', },
+      { text: 'Category Filtration', link: 'solutions/category-filtration', },
     ],
   },
 ]

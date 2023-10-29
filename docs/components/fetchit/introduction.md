@@ -8,7 +8,7 @@
 
 ## Никаких зависимостей
 
-**FetchIt** не имеет никаких зависмостей, тогда как у **AjaxForm** их три: Большая библиотека [jquery](https://github.com/jquery/jquery) и плагины к нему [jquery-form](https://github.com/jquery-form/form/) и [jGrowl](https://github.com/stanlemon/jGrowl).
+**FetchIt** не имеет никаких зависимостей, тогда как у **AjaxForm** их три: Большая библиотека [jquery](https://github.com/jquery/jquery) и плагины к нему [jquery-form](https://github.com/jquery-form/form/) и [jGrowl](https://github.com/stanlemon/jGrowl).
 
 Если с последним особых проблем нет (можно переопределить методы для показа уведомлений), то с двумя другими сложнее.
 

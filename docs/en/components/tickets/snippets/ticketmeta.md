@@ -12,7 +12,7 @@ Name            | By default         | Description
 ----------------|--------------------|------------------------------------------------------
 **&getSection** | `1`                | To make a request in DB for getting parent section?
 **&getUser**    | `1`                | To make a request in DB for getting author's profile?
-**&tpl**        | `tpl.Tickets.meta` | Design chunck of the information about a ticket.
+**&tpl**        | `tpl.Tickets.meta` | Design chunk of the information about a ticket.
 
 ## Examples of the call
 

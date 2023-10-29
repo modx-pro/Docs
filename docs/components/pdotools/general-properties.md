@@ -165,12 +165,12 @@ pdoTools умеет возвращать данные в разном виде, 
 - **json** - возврат массива данных JSON строкой.
 - **serialize** - возврат массива данных сериализованной строкой. Иногда, по непонятным причинам, может вызвать нехватку памяти. Лучше использовать `json`.
 
-:::warning Важно!
+:::warning
 Все значения параметра `&return` понимают только **pdoResources** (pdoPage в связке с pdoResources) и **pdoUsers**.
 
 Значения `chunks` и `data` понимают **pdoMenu** и **pdoCrumbs**.
 
-Остальные сниппеты понимают, в основном, лишь `chunks`. 
+Остальные сниппеты понимают, в основном, лишь `chunks`.
 :::
 
 [0]: https://docs.modx.com/current/en/extending-modx/modx-class/reference/modx.makeurl

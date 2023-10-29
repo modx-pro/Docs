@@ -16,7 +16,7 @@
 
 - **tplCover** - чанк оформления обложки. По умолчанию: `tpl.Quiz.cover`
 - **tplCounter** - чанк оформления счетчика. По умолчанию: `tpl.Quiz.cover`
-- **tplProgess** - чанк оформления прогрес-бара. По умолчанию: `tpl.Quiz.progress`
+- **tplProgess** - чанк оформления прогресс-бара. По умолчанию: `tpl.Quiz.progress`
 - **tplStep** - чанк оформления раздела. По умолчанию: `tpl.Quiz.step`
 - **tplStepNav** - чанк оформления кнопок навигации. По умолчанию: `tpl.Quiz.stepNav`
 - **tplSubmit** - чанк оформления кнопки отправки формы. По умолчанию: `tpl.Quiz.submit`

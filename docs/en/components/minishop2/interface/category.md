@@ -79,7 +79,7 @@ Possible:
 - to copy a product
 - to publish \ to cancel item publishing
 - to delete \ to restore
-- to hide \ to show a product in the resouce tree
+- to hide \ to show a product in the resource tree
 
 #### Sorting
 
@@ -90,7 +90,7 @@ To sort correctly the goods must be of a single category.
 #### Transfer to subcategory
 
 If you are dragging a product to **another** category member, it will be **transferred** there.
-That is to say its fild parent will change.
+That is to say its field parent will change.
 
 In such a manner one may swiftly change the embedded goods category, but only if any product is already displayed in it.
 
@@ -115,7 +115,7 @@ Resource characteristics:
 - **editedby** - user selection from the drop down list
 - **editedon** - selection of date and time of resource editing
 - **deleted** - resource is marked for deletion: yes \ no.
-- **deletedon** - selection of date and time of resourse deletion
+- **deletedon** - selection of date and time of resource deletion
 - **deletedby** - user selection from the drop down list
 - **published** - resource is published: yes \ no.
 - **publishedon** - date of publishing
@@ -134,7 +134,7 @@ Characteristics of goods:
 
 - **new** - novelty stamp: yes \ no
 - **favorite** - exceptional stamp:yes \ no
-- **pupular** -popular stamp:yes \ no
+- **popular** -popular stamp:yes \ no
 - **article** - article, may be edited as text
 - **price** - price, number with up to 2 decimal places
 - **old_price** - previous price,  number with up to 2 decimal places

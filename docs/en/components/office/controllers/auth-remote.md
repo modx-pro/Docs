@@ -54,7 +54,7 @@ This information is encrypted by the indicated key **&key**, and after getting t
 
 When the user exits the client site, they exit the server site bu the same algorithm (only without any data exchange).
 
-Most parameters coincide with those of [officeAuth][1] (chunks, groups, contexts, remembering, etc.), but there are also some unqie ones:
+Most parameters coincide with those of [officeAuth][1] (chunks, groups, contexts, remembering, etc.), but there are also some unique ones:
 
 Name                  | By default                 | Description
 ----------------------|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

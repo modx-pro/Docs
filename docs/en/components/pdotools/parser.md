@@ -55,7 +55,7 @@ Fenom syntax looks similar to Smarty and you could see it in official documentat
 - `{$placeholder}` of `{$_pls['placeholder']}` - for placeholders with dots or dashes (TVs).
 - `{$_modx->resource.field}` or `{$_modx->resource['field']}` - for array with current resource (not object!).
 - `{$_modx->config.setting}` or `{$_modx->config['setting']}` - for system settings from `modX::config` array.
-- `{$_modx->user.proprety}` - get value from mixed array of modUser and modUserProfile properties.
+- `{$_modx->user.property}` - get value from mixed array of modUser and modUserProfile properties.
 - `{$_modx->context.key}` - get value from array with current modContext values.
 - `{$_modx->lexicon('key')}` and `{$_modx->lexicon->load('dict')}` - lexicon strings and ability to load dictionaries
 - `{$_modx->makeUrl(number)}` - for making urls
@@ -127,7 +127,7 @@ There is some important system settings for Fenom:
 - `pdotools_fenom_modx` - enables very dangerous variable `{$modx}` with full access to `modX` object. Disabled by default and strongly recommended do not enable.
 - `pdotools_fenom_php`- enables pure PHP functions in chunks. Disabled by default and strongly recommended do not enable.
 - `pdotools_fenom_modifiers` - list of snippets that will be available as output filters. Also can be specified at snippet runtime.
-- `pdotools_fenom_parser` - enables processing of Fenom tags on the whole site. Do not recomended to newbies.
+- `pdotools_fenom_parser` - enables processing of Fenom tags on the whole site. Do not recommended to newbies.
 
 Fenom works with MODX in two modes: only in chunks and site-wide. First mode enabled and recommended by default.
 
@@ -141,8 +141,8 @@ You could use Fenom syntax along with MODX:
 {/if}
 ```
 
-Fenom will be run at first turn in chunks, so it can help you to fair devide their parts.
-In this example snippet **Login** will be called only for unauthorised user. modParser, as you klow, would run both parts of code and then select only one for current user.
+Fenom will be run at first turn in chunks, so it can help you to fair divide their parts.
+In this example snippet **Login** will be called only for unauthorized user. modParser, as you know, would run both parts of code and then select only one for current user.
 
 But you should now, that when you are using mixed syntax - there will be called both Fenom and MODX parser, and it is not good for maximum performance. It is always better and faster to use only Fenom syntax, but you can smoothly migrate to it with mixed syntax.
 

@@ -2,7 +2,7 @@
 
 **ms2Gallery** can show images right at the time of a resource page generation, without help of any snippets.
 
-You just have to activate systen setting **ms2gallery_set_placeholders** and you can use the following placeholders in the content:
+You just have to activate system setting **ms2gallery_set_placeholders** and you can use the following placeholders in the content:
 
 - `[[+ms2g.0]]` - printed array with all data of the resource's first image. The second image will be `[[+ms2g.1]]`
 - `[[+ms2g.0.url]]` - link to the original image

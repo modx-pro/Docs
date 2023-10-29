@@ -56,7 +56,7 @@ document.addEventListener('si:init', (e) => {
 if($flag){
   return $SendIt->success($successMessage, ['somedata' => 1234]);
 }else{
-  return $SendIt->error($validationErrorMessage, ['erorrs' => ['fieldName' => 'Тут текст ошибки']]);
+  return $SendIt->error($validationErrorMessage, ['errors' => ['fieldName' => 'Тут текст ошибки']]);
 }
 ```
 
@@ -385,7 +385,7 @@ if($flag){
     },
     {
     "MIGX_id":2304,
-    "field":"atributes",
+    "field":"attributes",
     "caption":"\u0414\u0440\u0443\u0433\u0438\u0435 \u0430\u0442\u0440\u0438\u0431\u0443\u0442\u044b",
     "description":"",
     "description_is_code":"0",

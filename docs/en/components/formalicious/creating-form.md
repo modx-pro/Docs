@@ -15,7 +15,7 @@ General form-settings are modified here.
 **Important:** When creating a form, you first have to finish the **Form settings** and save your form
 before being able to continue to the **Form Fields** tab.
 
-- Title: A recognisable name, for internal usage only. Won't be shown on the website itself.
+- Title: A recognizable name, for internal usage only. Won't be shown on the website itself.
 - Email header text: This message will be displayed in the email sent to the email address specified in **Email to**.
 - Email to: This email address will receive the submitted form entries.
 - Subject: Subject of the email

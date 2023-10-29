@@ -13,7 +13,7 @@ repository: https://github.com/modx-pro/AjaxForm
 13 июня 2023 года команда [MODX RSC](https://github.com/modx-pro) прекратила поддержку **AjaxForm**. Он будет продолжать быть доступным на маркетплейсах [modstore.pro](https://modstore.pro/packages/utilities/ajaxform) и [extras.modx.com](https://modx.com/extras/package/ajaxform), но мы рекомендуем использовать вместо него компонент [FetchIt](/components/fetchit/).
 :::
 
-Cниппет для отправки любых форм через ajax. По умолчанию рассчитан на работу с [FormIt](https://docs.modx.com/current/en/extras/formit), но можно использовать и собственный сниппет.
+Сниппет для отправки любых форм через ajax. По умолчанию рассчитан на работу с [FormIt](https://docs.modx.com/current/en/extras/formit), но можно использовать и собственный сниппет.
 
 - Регистрирует нужные скрипты на фронтенде: [jQuery.Form](http://malsup.com/jquery/form/) и [jQuery.jGrowl](http://plugins.jquery.com/jgrowl/).
 - Сохраняет в сессию `$scriptProperties` при вызове сниппета.
@@ -83,7 +83,7 @@ else {
 <script type="text/javascript">
 $(document).on('submit', '.ajax_form', function() {
   // Здесь любой код для проверки формы при отправке
-  // Я просто печатаю её в консоли бразуреа
+  // Я просто печатаю её в консоли браузера
   console.log(this);
 
   // Результатом работы будет выставление глобальной переменной

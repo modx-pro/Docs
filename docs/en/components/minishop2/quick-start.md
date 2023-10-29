@@ -7,7 +7,7 @@ You need MODX version no less than **2.3** and PHP- no less than **5.3** for wor
 
 - [Make our repository available][1]
 - Install**pdoTools** - this is a library for fast work with databases and styling, required for many components
-- Install **Theme.Bootstrap** - this is the theme customising Twitter Bootstrap for MODX, standard chunks of the shop are designed for it
+- Install **Theme.Bootstrap** - this is the theme customizing Twitter Bootstrap for MODX, standard chunks of the shop are designed for it
 - Install **miniShop2**itself
 
 You may use [our hosting][1] for testing, and choose these updates during site developing.
@@ -23,7 +23,7 @@ Only 3 templates are needed.
 
 ### General
 
-This template is presenting common resourses
+This template is presenting common resources
 
 ```modx
 <!DOCTYPE html>
@@ -106,7 +106,7 @@ The home page has been accomplished. We will assign "general" template to it and
 [[!pdoMenu]]
 ```
 
-All site documents wiil be displayed on the homepage for guidance.
+All site documents will be displayed on the homepage for guidance.
 
 After this we will [create items category][3] and verify if its template is "Category".
 

@@ -63,13 +63,13 @@ This is much more convenient, because the exact width and height of a preview no
 - **f** - file format: `jpeg`, `png` and `gif`
 - **q** - quality of JPEG resize: `1` the worst one, `95` the best one
 - **zc** - zoom-crop, zooming or cropping images so as they fit the indicated parameters.
-  (needs inidcating `w` and `h`, covers parameters `iar` and `far`).
+  (needs indicating `w` and `h`, covers parameters `iar` and `far`).
   `1` and `C` chooses images for work from the center.
   Use`T`, `B`, `L`, `R`, `TL`, `TR`, `BL`, `BR` for choosing from top/bottom/left/right and their combinations.
   All parameters apart from `C` need **ImageMagick** to be plugged.
 - **bg** - pouring the background with colour hex (`000000`, `ffffff` etc.)
 - **ra** - rotating the image to some angle in degrees. A negative number stands for clockwise rotation and a positive number - for counterclockwise rotation.
-- **ar** - automatical image rotation. `x` - rotate as it is indicated the file's EXIF.
+- **ar** - automatic image rotation. `x` - rotate as it is indicated the file's EXIF.
   `L` horizontal image, `P` vertical image,
   `lP` rotate clockwise, `Lp` rotate counterclockwise.
 - **aoe** - Output Allow Enlarging, the possibility to generate a preview that is liarger than the source image: `1` and `0`.   `far` and `iar` cover this setting.

@@ -6,7 +6,7 @@ In the work [pdoTools][1] is used, so all basic options are available: TV connec
 Basically this snippet represents modified [pdoResources][2] with two distinctions:
 
 - It uses search and add placeholder `[[+weight]]` with points for output.
-- Also it adds placeholder `[[+intro]]` with mathces highlighted.
+- Also it adds placeholder `[[+intro]]` with matches highlighted.
 
 Snippet is supposed to react to transferred request, so it is highly recommended to involve it uncaсhed.
 

@@ -10,7 +10,7 @@ Multiply row highlighting may be used throughout tables by [[Ctrl]] [[⌘ Cmd]] 
 [![](https://file.modx.pro/files/0/3/d/03d43063bc5f0c15e2b59e7c75c646fbs.jpg)](https://file.modx.pro/files/0/3/d/03d43063bc5f0c15e2b59e7c75c646fb.png)
 
 You may create different delivery methods with custom logic, stated in settings  [custom class][1].
-Such class is optional. You are free to ndicate none and ,in such a case there will be no special order processing.
+Such class is optional. You are free to indicate none and, in such a case there will be no special order processing.
 
 [![](https://file.modx.pro/files/e/d/5/ed56f7ddd5f45402442370885078d8a1s.jpg)](https://file.modx.pro/files/e/d/5/ed56f7ddd5f45402442370885078d8a1.png)
 

@@ -1,4 +1,4 @@
-# Сategory Filtration
+# Category Filtration
 
 A ready-made decision for filtration of product categories by daughter products. Parameters of products are shown in filters, whereas categories that contain those products are shown in results.
 

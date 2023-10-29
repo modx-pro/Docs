@@ -20,7 +20,7 @@
 У каждого товара есть свой источник файлов (Media source), который управляет параметрами загрузки. Основные свойства:
 
 - **basePath** - путь к директории с файлами товаров. По умолчанию: `assets/images/products/`
-- **basePathRelative** - basePath сожет быть указан относительно корня сайта, если включена эта опция.
+- **basePathRelative** - basePath может быть указан относительно корня сайта, если включена эта опция.
 - **baseUrl** - url директории с файлами товаров, обычно совпадает с *basePath*, если включена *basePathRelative*.
 - **baseUrlRelative** - baseUrl может быть указан относительно корня сайта, если включена эта опция.
 - **allowedFileTypes** - разрешённые для загрузки типы файлов. По умолчанию только изображения: `jpg,jpeg,png,gif`.
@@ -34,7 +34,7 @@
 - **maxUploadSize** - максимальный размер изображения, в байтах.
 - **imageNameType** - вид наименования файлов: hash от содержимого, или обработка названия файла алгоритмом генерации friendly имён ресурсов.
 
-При изменении источника медиа товара, уже загруженные файлы в него не скопируются - вам нужно позаботиться об этом самостоятельно.
+При изменении источника медиа товара, уже загруженные файлы в него не будут скопированы - вам нужно позаботиться об этом самостоятельно.
 
 ## Основные настройки phpThumb
 
@@ -84,15 +84,15 @@ foreach ($resources as $resource) {
 
 $_SESSION['galgenoffset'] = $offset + $step;
 if ($_SESSION['galgenoffset'] >= $total) {
-  $sucsess = 100;
+  $success = 100;
   $_SESSION['Console']['completed'] = true;
   unset($_SESSION['galgenoffset']);
 } else {
-  $sucsess = round($_SESSION['galgenoffset'] / $total, 2) * 100;
+  $success = round($_SESSION['galgenoffset'] / $total, 2) * 100;
   $_SESSION['Console']['completed'] = false;
 }
 for ($i=0; $i<=100; $i++) {
-  if ($i <= $sucsess) {
+  if ($i <= $success) {
     print '=';
   } else {
     print '_';
@@ -100,9 +100,9 @@ for ($i=0; $i<=100; $i++) {
 }
 $current = $_SESSION['galgenoffset'] ?
            $_SESSION['galgenoffset'] :
-           ($sucsess == 100 ? $total : 0);
+           ($success == 100 ? $total : 0);
 print "\n";
-print $sucsess . '% (' . $current . ')' . "\n\n";
+print $success . '% (' . $current . ')' . "\n\n";
 ```
 
 Так как операция генерации превью может занять длительное время, лучше запускать этот скрипт из консоли сервера.

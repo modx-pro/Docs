@@ -47,7 +47,7 @@ In this case, the chunk for an empty basket is also not needed, since the quanti
 ```
 
 All details about the work of snippets and their variables and placeholders will be translated later.
-For now you can try to read [Russian vesion][2].
+For now you can try to read [Russian version][2].
 
 ### Emails templates
 
