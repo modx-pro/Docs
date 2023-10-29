@@ -343,6 +343,8 @@
   "/komponentyi/minishop2/drugie-dopolneniya/msprofile/snippetyi/msprofile":       "/components/msprofile/snippets/msprofile",
   "/komponentyi/minishop2/drugie-dopolneniya/msprofile/snippetyi/msprofilecharge": "/components/msprofile/snippets/msprofilecharge",
 
+  "/komponentyi/minishop2/other-additions/msprofile/":                           "/components/msprofile/",
+
   "/komponentyi/minishop2/drugie-dopolneniya/mspromocode":                                                                         "/components/mspromocode/",
   "/komponentyi/minishop2/drugie-dopolneniya/mspromocode/funkczional":                                                             "/components/mspromocode/",
   "/komponentyi/minishop2/drugie-dopolneniya/mspromocode/snippetyi":                                                               "/components/mspromocode/",
