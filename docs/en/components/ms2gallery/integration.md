@@ -26,8 +26,8 @@ There is one particularity of which you are to know: if you import images into t
 
 That is:
 
-— if you commit all actions with files only through the admin space and processors ms2Gallery (and then synchronization works one-sidedly for the old gallery).
-— if you inport files through side addons to the old gallery, they will be synchronized with the new one and you just will not use tags.
+— if you commit all actions with files only through the admin space and processors ms2Gallery (and then synchronization works one-sidely for the old gallery).
+— if you import files through side addons to the old gallery, they will be synchronized with the new one and you just will not use tags.
 
 ## Tickets
 

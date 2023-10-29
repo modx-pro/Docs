@@ -54,6 +54,6 @@ If the page loads from cache, only uncached tags will be displayed.
 
 Display of 10 first slowest tags: `http://mystite.com/?debug=1&cache=1&top=10`.
 
-All unchaches tags are sorted by the runtime, that is why some of the most labor-intensive can be shown.
+All uncached tags are sorted by the runtime, that is why some of the most labor-intensive can be shown.
 
 Display with attaching table to the page content: `http://mystite.com/?debug=1&cache=1&top=10&add=1`.

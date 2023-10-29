@@ -25,7 +25,7 @@ Now we create the "User account" section and 2 pages inside it: "Profile" and "O
 While we are doing settings, it is better to turn off the account output menu. But let us not forget to turn it on after that.
 
 Now we are to close these pages for access to anybody other than **Users** group.
-Notice that we should give **(anonymous)** group access **Load only** so that they could load the page, check thir access rights and get "403 Access Prohibited".
+Notice that we should give **(anonymous)** group access **Load only** so that they could load the page, check their access rights and get "403 Access Prohibited".
 If we do not give them Load only, the page will not exist for them and they will get "404 Not Found".
 
 We create a new resource group Office, appoint rights for it and include all our 3 pages of user account in it.
@@ -91,7 +91,7 @@ There are several main differences of snippet **officeProfile** from other oppor
 
 - It works through ajax completely.
 - It allows you to indicate those fields of profile that are to be filled in.
-- It can require certain fileds for filling in
+- It can require certain fields for filling in
 - User can change their username and email. For changing the latest an activation link is sent to the mailbox. The email will not change unless the user presses the link.
 - Field of profile **extended** can be shown and edited. Fields like this can be enabled in settings and shown in the form of **extended[FieldName]**.
 - User can download\delete a picture for their profile through ajax. If there is no picture then [gravatar](https://gravatar.com) is shown.
@@ -107,7 +107,7 @@ The snippet itself can be called for very easily:
 [[!officeProfile]]
 ```
 
-You can indicate additional parameters for it: whether HybridAuth sould be turned off or not, where user should be sent after they exit the site (by default - to the current url), avatar parameters, etc.
+You can indicate additional parameters for it: whether HybridAuth should be turned off or not, where user should be sent after they exit the site (by default - to the current url), avatar parameters, etc.
 All this can be seen in its parameters in the admin space.
 
 ## Orders output

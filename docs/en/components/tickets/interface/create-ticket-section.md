@@ -8,7 +8,7 @@ You should choose **Create** -> **Ticket section** in the document root or folde
 [![Old interface](https://file.modx.pro/files/f/9/7/f975338bbb77224ca2ac77c65d63a4cds.jpg)](https://file.modx.pro/files/f/9/7/f975338bbb77224ca2ac77c65d63a4cd.png)
 [![New interface](https://file.modx.pro/files/5/8/c/58c5dcc35f808a63afa526246d6d2d8es.jpg)](https://file.modx.pro/files/5/8/c/58c5dcc35f808a63afa526246d6d2d8e.png)
 
-Fill the relevant information abput your ticket section. It can be both website news section or Peter's blog about web-optimization.
+Fill the relevant information about your ticket section. It can be both website news section or Peter's blog about web-optimization.
 
 [![Old interface](https://file.modx.pro/files/1/0/a/10a39435633aaa7ad831d20c18847156s.jpg)](https://file.modx.pro/files/1/0/a/10a39435633aaa7ad831d20c18847156.png)
 [![New interface](https://file.modx.pro/files/9/1/4/91428134c6bb3dda7ab278444c54180bs.jpg)](https://file.modx.pro/files/9/1/4/91428134c6bb3dda7ab278444c54180b.png)

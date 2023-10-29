@@ -51,7 +51,7 @@ switch ($modx->event->name) {
       }
     }
     unset($resource, $row);
-    $modx->event->returnedValues = $sp; // передаём измененённые значения обратно
+    $modx->event->returnedValues = $sp; // передаём измененные значения обратно
     break;
 }
 ```

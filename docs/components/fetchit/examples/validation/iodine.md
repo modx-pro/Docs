@@ -131,7 +131,7 @@
     });
     ```
 
-8. Если поле валидно (речь идёт именно о состоянии валидации каждого поля, а не всех), то очищаем его ошибки с помощью метода [`clearError()`](/components/fetchit/frontend/instance#clearerror), иначе добавляем ошибку полю воспользуясь методом [`setError()`](/components/fetchit/frontend/instance#seterror).
+8. Если поле валидно (речь идёт именно о состоянии валидации каждого поля, а не всех), то очищаем его ошибки с помощью метода [`clearError()`](/components/fetchit/frontend/instance#clearerror), иначе добавляем ошибку полю воспользовавшись методом [`setError()`](/components/fetchit/frontend/instance#seterror).
 
     ```js
     document.addEventListener('fetchit:before', (e) => {

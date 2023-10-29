@@ -16,7 +16,7 @@
 
 [![](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531s.jpg)](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531.png)
 
-Можно указать свой CSS файл с офрмлением ExtJS.
+Можно указать свой CSS файл с оформлением ExtJS.
 
 В отличие от miniShop2, вы еще можете указать 3 дополнительных параметра сниппету:
 

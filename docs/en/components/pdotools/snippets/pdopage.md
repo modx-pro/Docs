@@ -109,7 +109,7 @@ You can change the IDs for that layout with the following parameters:
 - **ajaxElemLink** — jQuery selector of pagination links. By default is `pdopage .pagination a`
 
 The last two selector hopes that you have not changed the standard markup of pagination block in the parameter **&tplPageWrapper**.
-The whole logic is provided by connecting the javascript file from the parameter **&frontent_js**.
+The whole logic is provided by connecting the javascript file from the parameter **&frontend_js**.
 
 You do not need to enable parameter `&ajax`, non-empty `&ajaxMode` will do it himself.
 
@@ -278,7 +278,7 @@ And you will get links like
 /res/news/page-3
 ```
 
-But when you will go to this links, MODX will show you 404 error, because theese pages are not wxists.
+But when you will go to this links, MODX will show you 404 error, because theese pages are not exists.
 You need to create the plugin to handle this links:
 
 ```php

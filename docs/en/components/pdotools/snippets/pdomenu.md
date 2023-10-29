@@ -41,7 +41,7 @@ Name                    | Default                                            | D
 **&useWeblinkUrl**      | `1`                                                | When set to 1, the URL specified in a weblink resource will be output to the placeholder `[[+link]]` instead of the link to the weblink resource itself.
 **&rowIdPrefix**        |                                                    | If set, this parameter creates a unique ID for each item. The value will be rowIdPrefix + docId.
 **&hereId**             |                                                    | Define the current ID to use for the snippet. Use a value of `[[*id]]` if the template specified by **&tplHere** and **&tplParentRowActive** is not applied correctly to the menu item.
-**&includeTVs**         |                                                    | Define comma delimited list of TVs to include. For example, «action,time» will yiled placeholders `[[+action]]` & `[[+time]]`
+**&includeTVs**         |                                                    | Define comma delimited list of TVs to include. For example, «action,time» will filled placeholders `[[+action]]` & `[[+time]]`
 **&prepareTVs**         | `1`, prepares all TVs specified in **&includeTVs** | Comma-separated list of media source-dependant TV values to be prepared before output.
 **&processTVs**         |                                                    | Comma-separated list of TVs that should be processed according to their output options. If set to «1», all TV listed in **&includeTVs** will be processed.
 **&tvPrefix**           |                                                    | Prefix TV property.

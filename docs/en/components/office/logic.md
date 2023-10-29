@@ -62,7 +62,7 @@ You can also register controllers from the addons you download in Office.
 
 Extra components can register their own controllers by adding their directory to system parameter **office_controllers_paths**.
 
-To make this work easier it is better to use methods of Office::**addExtenstion**() и Office::**removeExtension**() - the principle is the same as when you register models of components in MODX.
+To make this work easier it is better to use methods of Office::**addExtension**() и Office::**removeExtension**() - the principle is the same as when you register models of components in MODX.
 
 You can see an example in [a draft for addons design modExtra][6]:
 
@@ -89,10 +89,10 @@ A registered controller is shown by its name. In this case it is:
 Here is everything you need for editing records modExtra on the site's frontend на фронтенде сайта, [by one commit][7].
 
 After you register the way to a controller, Office will download it from the given directory for all actions that have to do with it.
-You do not have to copy anything, you can just provide and update your vidget inside your package.
+You do not have to copy anything, you can just provide and update your widget inside your package.
 [Management of keys in modstore.pro][8] already works like this, as well as output [of the authors' sales statistics][9].
 
-And if you are planning to use Ext JS in your vidgets, notice that by default there already are some new [improved Office components][10], like a table with an imbedded search - you can extend them as much as you want.
+And if you are planning to use Ext JS in your widgets, notice that by default there already are some new [improved Office components][10], like a table with an imbedded search - you can extend them as much as you want.
 
 As [modExtra][11] is suited for designing addons for MODX and already supports Office, I recommend that you use it as an example.
 

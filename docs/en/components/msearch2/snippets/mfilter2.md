@@ -52,11 +52,11 @@ Name                         | By default                     | Description
 When starting for the first time on page, snippet gets necessary filtration resources, which can be specified in two ways:
 
 - Explicit reference of the parameters, such as **&parents**, **&resources**, **&showHidden**, etc. They will be referred to the snippet specified in **&element**, and it will return appropriate id.
-- Search by mSearch2 algoritm, if there is something in `$_REQUEST[&queryVar]`. In this case found id will also be tested by the mentioned parameters.
+- Search by mSearch2 algorithm, if there is something in `$_REQUEST[&queryVar]`. In this case found id will also be tested by the mentioned parameters.
 
 Then snippet inspects filter settings and generates data for them. After that snippet saves the settings in session (for ajax queries) and outputs designed chunks.
 
-Then you click on filters. Scripts catch their modificatioin, send a request to the server and update contents of the pages.
+Then you click on filters. Scripts catch their modification, send a request to the server and update contents of the pages.
 Everything is fully automated, you only should specify correct parameters and set up chunks.
 
 ## Scripts and styles
@@ -66,7 +66,7 @@ In working with mFilter2, scripts and styles, specified in system settings, are 
 - **mse2_frontend_js** - standard javascript, `/assets/components/msearch2/js/web/default.js` by default
 - **mse2_frontend_css** - standard css styles, `/assets/components/msearch2/css/web/default.css` by default
 
-If you want to make some changes in standard files, you should rename them and specify new values in system settings, othertwise all your changes will be overwritten in regular updating.
+If you want to make some changes in standard files, you should rename them and specify new values in system settings, otherwise all your changes will be overwritten in regular updating.
 
 You can also change standard filter variables if you specify them as JSON string in **&filterOptions** parameter:
 
@@ -93,7 +93,7 @@ Then "Send" button shows up in the form by default, and you should press it.
 
 ### Features
 
-- All the filter elements are supposed to be in one block with `#mse2_mfilter` in order to work properly.  That is the way it is prescribed in standard chunck **tpl.mFilter2.outer**.
+- All the filter elements are supposed to be in one block with `#mse2_mfilter` in order to work properly.  That is the way it is prescribed in standard chunk **tpl.mFilter2.outer**.
 - Script works through Ajax, keeping the parameters in address line through HistoryAPI. That means you always have direct working link to filters status.
 - Script uses [jQueryUI.slider][3], which is connected automatically if needed, for implementing digital sliders
 - All the design is targeted at [Bootstrap 3][4] by default.
@@ -196,7 +196,7 @@ Regular standard filter aimed at checkbox output. It is applicable to all the fi
 
 ### number
 
-Filter for numbers from min to max. It is highly recommended to specify proper chuncks while using the filter, for output to be designed by sliders.
+Filter for numbers from min to max. It is highly recommended to specify proper chunks while using the filter, for output to be designed by sliders.
 
 ```modx
 [[!mFilter2?

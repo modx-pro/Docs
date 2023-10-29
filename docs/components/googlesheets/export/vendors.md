@@ -6,7 +6,7 @@
 | ----------- | -------- |
 | id          | id       |
 | name        | Название |
-| resource    | Ресур    |
+| resource    | Ресурс    |
 | country     | Страна   |
 | logo        | Логотип  |
 | address     | Адрес    |

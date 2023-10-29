@@ -155,7 +155,7 @@
 ## Описание атрибутов
 
 * **data-si-preset** - содержит название набора параметров(необязательный).
-* **data-si-form** - содержит название формы; сам атрибут нужен, чтобы комопнент мог работать с этой формой;
+* **data-si-form** - содержит название формы; сам атрибут нужен, чтобы компонент мог работать с этой формой;
 * **data-si-error** - содержит имя валидируемого поля, указывает на элемент, в котором будет показан текст ошибки(необязательный); если не указан
   ошибка будет выведена при помощи [всплывающих уведомлений](https://docs.modx.pro/components/sendit/notify).
 * **data-qf-progress** - селектор блока-обёртки индикации прогресса, сам блок может отсутствовать;
@@ -270,7 +270,7 @@ export default function returnConfigs() {
       pagesSelector: '[data-qf-pages]',
       progressValueSelector: '[data-qf-progress-value]',
       activeClass: 'active',
-      visabilityClass: 'v_hidden',
+      visibilityClass: 'v_hidden',
       disabledClass: 'disabled',
       sendEvent: 'si:send:finish',
     },
@@ -306,6 +306,6 @@ export default function returnConfigs() {
 |      `pagesSelector`      |         **[data-qf-pages]**          |             селектор блока-обёртки пагинации              |
 |  `progressValueSelector`  |     **[data-qf-progress-value]**     |           селектор блока отображения прогресса            |
 |       `activeClass`       |              **active**              |    класс активного элемента (применяется к прогрессу)     |
-|     `visabilityClass`     |             **v_hidden**             |                  класс скрытых элементов                  |
+|     `visibilityClass`     |             **v_hidden**             |                  класс скрытых элементов                  |
 |      `disabledClass`      |             **disabled**             |           класс не активных элементов (кнопки)            |
 |        `sendEvent`        |          **si:send:finish**          |                событие завершения отправки                |

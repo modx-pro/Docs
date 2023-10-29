@@ -97,10 +97,10 @@ Frontend Editor это простой плагин который позволя
 - На тех страницах где вы собираетесь использовать редактор должен быть указан DOCTYPE такой как: `<!DOCTYPE html>`
 - TinyMCE 5 должен [поддерживать](https://www.tiny.cloud/docs/general-configuration-guide/system-requirements) ваш браузер.
 
-## Cкриншоты
+## Скриншоты
 
-![Cкриншоты - 1](https://file.modx.pro/files/1/6/1/1617d1d329d68265515338e0d4b9bd08.png)
+![Скриншоты - 1](https://file.modx.pro/files/1/6/1/1617d1d329d68265515338e0d4b9bd08.png)
 
-![Cкриншоты - 2](https://file.modx.pro/files/e/3/4/e3483249078e30ae051b9fd74f09dae5.png)
+![Скриншоты - 2](https://file.modx.pro/files/e/3/4/e3483249078e30ae051b9fd74f09dae5.png)
 
-![Cкриншоты - 3](https://file.modx.pro/files/7/4/a/74a888cbb8f1635033b868120a366850.png)
+![Скриншоты - 3](https://file.modx.pro/files/7/4/a/74a888cbb8f1635033b868120a366850.png)

@@ -15,7 +15,7 @@ dependencies: miniShop2
 
 ![ms2form](https://file.modx.pro/files/c/3/a/c3a73249165844c116d0463006c6272c.png)
 
-[Поcледние версии][releases]
+[Последние версии][releases]
 
 ## Возможности
 

@@ -20,7 +20,7 @@ dependencies: ['pdoTools', 'FormIt']
 # SendIt
 
 ::: tip
-Компонент **pdoTools** необходим только для возможности указывать файловые снипеты и работы парсера **Fenom**.
+Компонент **pdoTools** необходим только для возможности указывать файловые сниппеты и работы парсера **Fenom**.
 Однако и без него компонент будет работать.
 :::
 
@@ -127,7 +127,7 @@ export default function returnConfigs() {
       pagesSelector: '[data-qf-pages]',
       progressValueSelector: '[data-qf-progress-value]',
       activeClass: 'active',
-      visabilityClass: 'v_hidden',
+      visibilityClass: 'v_hidden',
       disabledClass: 'disabled',
       sendEvent: 'si:send:finish',
     },
@@ -179,7 +179,7 @@ export default function returnConfigs() {
       layout: {
         list: {
           tagName: 'ul',
-          classNames: ['file-list', 'list_unslyled', 'd_flex', 'flex_wrap', 'gap_col-10', 'pt-20'],
+          classNames: ['file-list', 'list_unstyled', 'd_flex', 'flex_wrap', 'gap_col-10', 'pt-20'],
           parentSelector: '[data-fu-wrap]',
           selector: '.file-list'
         },

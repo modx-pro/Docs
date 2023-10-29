@@ -32,7 +32,7 @@ dependencies: miniShop2
 
 ## Описание
 
-**msPointsIssue** - компонент реализует фунцкионал Пункты Выдачи Заказов для магазина MiniShop2
+**msPointsIssue** - компонент реализует функционал Пункты Выдачи Заказов для магазина MiniShop2
 
 ![msPointsIssue](https://file.modx.pro/files/4/f/d/4fd49fd13aea3c258b83d37597d5b0bc.png)
 

@@ -101,7 +101,7 @@ easyComm позволяет вам добавить дополнительные
 - **ec_thread_grid_fields** - список полей, доступных в таблице цепочек
 - **ec_thread_window_fields** - список полей, доступных в окне редактирования цепочки
 
-Те, что списки - это просто перечесление полей через запятую, например `thread, subject, date, user_name, user_email, user_contacts, rating, text, reply_author, reply_text, ip`.
+Те, что списки - это просто перечисление полей через запятую, например `thread, subject, date, user_name, user_email, user_contacts, rating, text, reply_author, reply_text, ip`.
 
 Настройки **ec_message_window_layout** задается в более сложном формате. Значение по-умолчанию следующее:
 
