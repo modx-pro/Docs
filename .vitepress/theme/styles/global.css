@@ -23,7 +23,7 @@
   --vp-c-sponsor-soft: rgba(236, 183, 50, 0.14);
 
   --vp-button-sponsor-border: var(--vp-c-sponsor-3);
-  --vp-button-sponsor-text: var(--vp-c-black);
+  --vp-button-sponsor-text: var(--vp-c-neutral);
   --vp-button-sponsor-hover-border: var(--vp-c-sponsor-3);
   --vp-button-sponsor-hover-text: var(--vp-c-black);
   --vp-button-sponsor-hover-bg: var(--vp-c-sponsor-3);
