@@ -20,8 +20,8 @@ document.addEventListener('si:init', (e) => {
         const params = new FormData(target);
         const url = 'assets/action.php';
         const headers = {};
-    })
-    SendIt.Sending.send(target, url, headers, params);
+        SendIt.Sending.send(target, url, headers, params);
+    })    
 });
 ```
 
@@ -36,9 +36,10 @@ document.addEventListener('si:init', (e) => {
     document.addEventListener('submit', (e) => {
         const target = e.target.closest('.js-my-form');
         if(!target) return;
-        const preset = target.dataset[Sendit.Sending.config.presetKey];        
+        const preset = target.dataset[Sendit.Sending.config.presetKey];    
+        SendIt.Sending.prepareSendParams(target, preset);    
     })
-    SendIt.Sending.prepareSendParams(target, preset);
+    
 });
 ```
 
