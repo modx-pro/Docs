@@ -54,8 +54,8 @@
   --vp-custom-block-danger-bg: var(--vp-c-danger-soft);
   --vp-custom-block-danger-text: var(--vp-c-neutral);
 
-  --vp-custom-block-details-border: var(--vp-c-divider);
-  --vp-custom-block-details-bg: var(--vp-c-bg-soft);
+  --vp-custom-block-details-border: transparent;
+  --vp-custom-block-details-bg: var(--vp-c-default-soft);
 
   --vp-local-search-highlight-bg: transparent;
   --vp-local-search-highlight-text: var(--vp-c-green-1);
