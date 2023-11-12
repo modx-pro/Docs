@@ -1,6 +1,6 @@
 # Pico.css
 
-With the [Pico.css](https://picocss.com/) framework everything is much simpler, because the `aria-invalid` attribute controls the invalid state, and our component adds it automatically. Let's look at a small example.
+With the [Pico.css](https://picocss.com/) framework everything is much simpler, because the `aria-invalid` attribute controls the invalid state, and our extra adds it automatically. Let's look at a small example.
 
 ```html
 <form>

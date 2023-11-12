@@ -98,11 +98,11 @@ An lightweight Extra for processing forms using the Fetch API.
 
 ## Introduction
 
-**CMS/CMF MODX Revolution** has [FormIt](https://github.com/Sterc/FormIt) component, which implements sending and processing forms, but it works by standard browser method, i.e. with page reloading. But the modern web is demanding and the progressive step is to process them «on the fly». **FetchIt**, which uses **FormIt**, is exactly for these tasks, but you can also use your own snippet.
+**CMS/CMF MODX Revolution** has [FormIt](https://github.com/Sterc/FormIt) extra, which implements sending and processing forms, but it works by standard browser method, i.e. with page reloading. But the modern web is demanding and the progressive step is to process them «on the fly». **FetchIt**, which uses **FormIt**, is exactly for these tasks, but you can also use your own snippet.
 
 ## Features
 
-For such purposes there is [AjaxForm](https://github.com/modx-pro/AjaxForm) component (although **FetchIt** is almost the same in its server part), but **FetchIt** has some advantages:
+For such purposes there is [AjaxForm](https://github.com/modx-pro/AjaxForm) extra (although **FetchIt** is almost the same in its server part), but **FetchIt** has some advantages:
 
 ### Zero dependencies
 
@@ -126,4 +126,4 @@ The extra is available for installation via Package Manager from:
   - [How to connect to the repository](https://en.modstore.pro/faq)
 - Official repository [modx.com](https://modx.com/extras/package/fetchit)
 
-Or you can build a package from the component repository on [GitHub](https://github.com/GulomovCreative/FetchIt)
+Or you can build a package from the extra repository on [GitHub](https://github.com/GulomovCreative/FetchIt)

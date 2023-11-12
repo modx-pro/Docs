@@ -8,7 +8,7 @@ You can use your own snippet, instead of **FormIt**, which will do anything (eve
 | message  | snippet message, output if status = 0                                                              |
 | data     | array for fields with errors, where the keys are the field name and the value is the error message |
 
-For convenience, the `$FetchIt` variable with the component class is passed into the snippet parameters so that you can call the `error` and `success` methods from it when it produces a response.
+For convenience, the `$FetchIt` variable with the extra class is passed into the snippet parameters so that you can call the `error` and `success` methods from it when it produces a response.
 
 The simplest example of your snippet:
 

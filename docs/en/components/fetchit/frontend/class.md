@@ -79,7 +79,7 @@ An object with events and their names. May be useful for prototype inheritance.
 Remember, to access this class, you must wait until the script in which it is declared is executed.
 :::
 
-If you have a file script, it is enough to specify the `defer` attribute when connecting it (Recall that the component registers the script in the `<head>` tag).
+If you have a file script, it is enough to specify the `defer` attribute when connecting it (Recall that the extra registers the script in the `<head>` tag).
 
 And in the case of an inline script, you need to wait for the script to execute, and this is possible in the `DOMContentLoaded` event handler. Example:
 
