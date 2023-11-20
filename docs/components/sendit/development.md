@@ -20,6 +20,7 @@ document.addEventListener('si:init', (e) => {
         const params = new FormData(target);
         const url = 'assets/action.php';
         const headers = {};
+        SendIt?.setComponentCookie('sitrusted', '1');
         SendIt.Sending.send(target, url, headers, params);
     })    
 });
