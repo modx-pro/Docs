@@ -20,7 +20,7 @@
 
 ```fenom
 {'ecThreadRating' | snippet : [
-  'thread' => 'resource' ~ $id,
+  'thread' => 'resource-' ~ $id,
 ]}
 ```
 
