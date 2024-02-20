@@ -60,7 +60,7 @@
   --vp-local-search-highlight-bg: transparent;
   --vp-local-search-highlight-text: var(--vp-c-green-1);
   --vp-local-search-bg: var(--vp-c-bg-soft);
-  --vp-local-search-result-bg: var(--vp-c-white);
+  --vp-local-search-result-bg: var(--vp-c-gray-1);
   --vp-local-search-result-shadow: 0 1px 3px 0 #d4d9e1;
   --vp-local-search-footer-shadow: 0 -1px 0 0 #e0e3e8, 0 -3px 6px 0 rgba(69, 98, 155, .12);
 }
@@ -70,7 +70,7 @@
 }
 
 .dark {
-  --vp-local-search-result-bg: var(--vp-c-bg-soft-mute);
+  --vp-local-search-result-bg: var(--vp-c-gray-3);
   --vp-local-search-result-shadow: none;
   --vp-local-search-footer-shadow: none;
 
@@ -279,4 +279,73 @@ kbd {
   .DocSearch-Button {
     min-width: 200px;
   }
+}
+
+.VPLocalSearchBox>.shell:is(div) {
+  gap: 0;
+  padding: 0;
+  border-radius: 8px;
+  background-color: var(--vp-c-bg-elv);
+}
+
+.VPLocalSearchBox>.shell>.search-bar {
+  border: none;
+  border-bottom: 1px solid var(--vp-c-gray-soft);
+  border-radius: 8px 8px 0 0;
+  padding: 12px 16px;
+  background-color: var(--vp-c-bg-elv);
+}
+
+.VPLocalSearchBox>.shell>.search-bar:focus-within {
+  border-color: var(--vp-c-gray-2);
+}
+
+#localsearch-list {
+  padding: 24px;
+  gap: 8px;
+}
+
+#localsearch-list .result {
+  background-color: var(--vp-local-search-result-bg);
+  border-width: 0;
+  border-radius: 8px;
+}
+
+#localsearch-list .result.selected {
+  background-color: var(--vp-c-green-3);
+}
+
+#localsearch-list .result.selected .titles,
+#localsearch-list .result.selected .title-icon,
+#localsearch-list .result.selected .titles mark {
+  color: var(--vp-c-white) !important;
+}
+
+#localsearch-list .result .title-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--vp-c-gray-3);
+  background-color: var(--vp-c-gray-soft);
+  color: var(--vp-c-gray);
+  border-radius: 6px;
+  opacity: 1;
+}
+
+#localsearch-list .result.selected .title-icon {
+  background-color: var(--vp-c-green-1);
+  color: var(--vp-c-white);
+  border-color: rgba(230, 230, 230, 0.5);
+}
+
+.search-keyboard-shortcuts {
+  border-top: 1px solid var(--vp-c-gray-3);
+  padding: 24px;
+}
+
+.vpi-delete {
+  --icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>');
+  font-size: 24px !important;
 }

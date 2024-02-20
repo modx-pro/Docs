@@ -1,12 +1,14 @@
-import type { DefaultTheme, UserConfig } from 'vitepress'
-import type { ComponentData, DocsPageData } from './plugins/component'
-import { normalize } from 'vitepress/dist/client/shared'
+import type { DefaultTheme, UserConfig, PageData } from 'vitepress'
+import type { ComponentData } from './plugins/component'
 
 import { type Author, authors } from '../../docs/authors'
 import { DocsTheme } from './types'
 
+const HASH_OR_QUERY_RE = /[?#].*$/;
+const INDEX_OR_EXT_RE = /(?:(^|\/)index)?\.(?:md|html)$/;
+
 export function findPath(
-  pageData: DocsPageData,
+  pageData: PageData,
   config: UserConfig,
 ): DefaultTheme.SidebarItem[] {
   let searchable = normalize(pageData.relativePath)
@@ -108,4 +110,10 @@ export function getAuthor(author: string): Author | undefined {
   }
 
   return authors[author]
+}
+
+export function normalize(path) {
+  return decodeURI(path)
+      .replace(HASH_OR_QUERY_RE, '')
+      .replace(INDEX_OR_EXT_RE, '$1');
 }

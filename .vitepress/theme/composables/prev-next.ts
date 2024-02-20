@@ -1,18 +1,11 @@
 import { computed } from 'vue'
-import type { ComputedRef, Ref } from 'vue'
-import type { DocsPageData } from '../plugins/component'
+import type { ComputedRef } from 'vue'
 import { useData } from 'vitepress'
 import { isActive } from 'vitepress/dist/client/shared'
 import { getFlatSideBarLinks } from 'vitepress/dist/client/theme-default/support/sidebar'
 
 export function usePrevNext(): ComputedRef {
-  interface Data {
-    theme: Ref<any>
-    page: Ref<DocsPageData>
-    frontmatter: Ref<DocsPageData['frontmatter']>
-  }
-
-  const { page, theme, frontmatter }: Data = useData()
+  const { page, theme, frontmatter } = useData()
 
   return computed(() => {
     const component = page.value.component

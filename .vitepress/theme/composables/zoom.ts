@@ -29,7 +29,7 @@ export async function createZoom(app: App, router: Router) {
   })
 
   lightbox.reload = () => {
-    const elements = Array.from(document.querySelectorAll('.vp-doc img'))
+    const elements = Array.from(document.querySelectorAll('.VPContent.has-sidebar .vp-doc img:not(.logo)'))
       .map((element, index) => {
         const target = element.parentElement instanceof HTMLAnchorElement ? element.parentElement : element
         target.addEventListener('click', (e) => {

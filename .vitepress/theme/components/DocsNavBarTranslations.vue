@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import VPIconLanguages from 'vitepress/dist/client/theme-default/components/icons/VPIconLanguages.vue'
 import VPFlyout from 'vitepress/dist/client/theme-default/components/VPFlyout.vue'
 import VPMenuLink from 'vitepress/dist/client/theme-default/components/VPMenuLink.vue'
 import { useData } from 'vitepress'
@@ -10,15 +9,10 @@ const { localeLinks, currentLang } = useLangs({ correspondingLink: true })
 </script>
 
 <template>
-  <VPFlyout
-    v-if="localeLinks.length && currentLang.label"
-    class="VPNavBarTranslations"
-    :icon="VPIconLanguages"
-    :label="theme.langMenuLabel || 'Change language'"
-  >
+  <VPFlyout v-if="localeLinks.length && currentLang.label" class="VPNavBarTranslations" icon="vpi-languages"
+    :label="theme.langMenuLabel || 'Change language'">
     <div class="items">
       <p class="title">{{ currentLang.label }}</p>
-
       <template v-for="locale in localeLinks" :key="locale.link">
         <VPMenuLink :item="locale" />
       </template>

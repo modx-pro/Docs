@@ -1,5 +1,5 @@
 import type { DefaultTheme } from 'vitepress'
-import { normalize } from 'vitepress/dist/client/shared'
+import { normalize } from '../utils'
 import faqCategories from '../../../docs/faq/categories.json'
 
 import { readFileSync } from 'fs'

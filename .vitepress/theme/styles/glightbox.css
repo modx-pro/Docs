@@ -6,7 +6,7 @@
   --vp-c-overlay: rgba(0 0 0 / .8);
 }
 
-.vp-doc img {
+.vp-doc img:not(.logo) {
   cursor: zoom-in;
 }
 

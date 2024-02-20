@@ -71,13 +71,7 @@ watch(lang, () => {
 </script>
 
 <template>
-  <aside
-    v-if="hasSidebar"
-    class="VPSidebar"
-    :class="{ open }"
-    ref="navEl"
-    @click.stop
-  >
+  <aside v-if="hasSidebar" class="VPSidebar" :class="{ open }" ref="navEl" @click.stop>
     <div class="curtain" />
 
     <nav class="nav" id="VPSidebarNav" aria-labelledby="sidebar-aria-label" tabindex="-1">
@@ -87,11 +81,7 @@ watch(lang, () => {
 
       <slot name="sidebar-nav-before" />
 
-      <div
-        v-for="item in sidebar"
-        :key="item.text"
-        class="group"
-      >
+      <div v-for="item in sidebar" :key="item.text" class="group">
         <VPSidebarItem :item="item" :depth="0" :class="{ landing: !item.items }" />
       </div>
 
@@ -125,7 +115,7 @@ watch(lang, () => {
   visibility: visible;
   transform: translateX(0);
   transition: opacity 0.25s,
-  transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .dark .VPSidebar {
@@ -134,9 +124,7 @@ watch(lang, () => {
 
 @media (min-width: 960px) {
   .VPSidebar {
-    z-index: 1;
     padding-top: var(--vp-nav-height);
-    padding-bottom: 128px;
     width: var(--vp-sidebar-width);
     max-width: 100%;
     background-color: var(--vp-sidebar-bg-color);
@@ -172,7 +160,7 @@ watch(lang, () => {
   outline: 0;
 }
 
-.group + .group {
+.group+.group {
   border-top: 1px solid var(--vp-c-divider);
   padding-top: 10px;
 }

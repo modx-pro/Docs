@@ -1,5 +1,4 @@
 import type { DocsTheme } from '../theme/types'
-import type { DocsPageData } from '../theme/plugins/component'
 import { type HeadConfig, defineConfigWithTheme } from 'vitepress'
 import { config as en, searchLocale as searchLocaleEn } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
@@ -10,7 +9,7 @@ import { slugify } from 'transliteration'
 import { fileURLToPath, URL } from 'node:url'
 import { modhost, modstore, modxpro, telegram } from '../../docs/icons'
 import { coreMembers } from '../../docs/authors'
-import { normalize } from 'vitepress/dist/client/shared'
+import { normalize } from '../theme/utils'
 
 const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
@@ -25,7 +24,6 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   srcDir: './docs',
 
   markdown: {
-    // @ts-expect-error
     languages,
     theme: {
       light: 'github-light',
@@ -41,18 +39,20 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     anchor: {
       slugify(str) {
         str = str.trim()
-            .replace(/^\d*/g, '') // Удаление чисел из начала строки
-            .replace(/[^a-zA-Zа-яА-ЯЁё0-9\-\s]/g, '') // Удаление ненужных символов
-            .replace(/\s\-\s/, '-').replace(/\-+/g, '-') // Избавление от повторяющихся символов
-            .replace(/^(.{25}[^\s]*).*/, '$1') // Ограничение количества символов
+          .replace(/^\d*/g, '') // Удаление чисел из начала строки
+          .replace(/[^a-zA-Zа-яА-ЯЁё0-9\-\s]/g, '') // Удаление ненужных символов
+          .replace(/\s\-\s/, '-').replace(/\-+/g, '-') // Избавление от повторяющихся символов
+          .replace(/^(.{25}[^\s]*).*/, '$1') // Ограничение количества символов
 
         return encodeURIComponent(slugify(str, { lowercase: true }))
       }
     },
-
-    config (md) {
+    config(md) {
       addPlugins(md)
     },
+    image: {
+      lazyLoading: true
+    }
   },
 
   head: [
@@ -120,6 +120,7 @@ export default defineConfigWithTheme<DocsTheme.Config>({
           ...searchLocaleRu,
           ...searchLocaleEn,
         },
+        detailedView: false,
         miniSearch: {
           options: {
             // @ts-expect-error
@@ -155,14 +156,14 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     return prepareData(pageData, siteConfig)
   },
 
-  transformHead({ pageData }: { pageData: DocsPageData }) {
+  transformHead({ pageData }: { pageData }) {
     const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
     const image = pageData?.component?.logo || SITE_HOST + 'og-default.png'
     const type = pageData.component ? 'article' : 'website'
     const url = SITE_HOST + normalize(pageData.relativePath)
     const author = pageData?.component?.author?.modxpro
-        || pageData?.component?.author?.github
-        || coreMembers.at(0)?.links?.find(item => item.link.startsWith('https://modx.pro/'))?.link
+      || pageData?.component?.author?.github
+      || coreMembers.at(0)?.links?.find(item => item.link.startsWith('https://modx.pro/'))?.link
 
     const output: HeadConfig[] = [
       ['meta', { property: 'og:title', content: title }],
@@ -200,7 +201,6 @@ export default defineConfigWithTheme<DocsTheme.Config>({
         'VPDocFooter',
         'VPNavBarTranslations',
         'VPNavScreenTranslations',
-        'VPLocalSearchBox',
         'VPNavBar',
       ].map(componentName => ({
         find: new RegExp(`^.*\/${componentName}\.vue$`),

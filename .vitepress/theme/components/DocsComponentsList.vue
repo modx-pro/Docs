@@ -43,84 +43,56 @@ const components = computed<ComponentData[]>(() => {
 
 const placeholder = computed(() => localeIndex.value === 'en' ? 'Search by name' : 'Поиск по названию')
 const emptyTitle = computed(() => localeIndex.value === 'en'
-    ? `No results were found for the query <b>"${query.value}"</b>`
-    : `По запросу <b>«${query.value}»</b> ничего не найдено`)
+  ? `No results were found for the query <b>"${query.value}"</b>`
+  : `По запросу <b>«${query.value}»</b> ничего не найдено`)
 const emptyText = computed(() => localeIndex.value === 'en'
-    ? 'Check if the query is written without errors'
-    : 'Проверьте написан ли запрос без ошибок')
+  ? 'Check if the query is written without errors'
+  : 'Проверьте написан ли запрос без ошибок')
 </script>
 
 <template>
-  <div
-    class="DocsComponentsList"
-    :class="{ 'is-home': frontmatter.layout === 'home' }"
-  >
+  <div class="DocsComponentsList" :class="{ 'is-home': frontmatter.layout === 'home' }">
+
     <div class="container">
-      <h1
-        v-if="props.title"
-        class="title"
-      >
+      <h1 v-if="props.title" class="title">
         {{ props.title }}
       </h1>
-      <div
-        v-if="search"
-        class="filter"
-      >
-        <DocsSearchBar
-          v-model.trim="query"
-          :placeholder="placeholder"
-          :backButton="!search"
-        />
+      <div v-if="search" class="filter">
+        <DocsSearchBar v-model.trim="query" :placeholder="placeholder" :backButton="!search" />
       </div>
-      <div
-        v-if="components.length"
-        class="list"
-        :class="{ slim: search }"
-      >
-        <VPLink
-          v-for="component, index in components"
-          :key="index"
-          :href="component.link"
-          class="component"
-        >
-          <VPImage
-            :image="component.logo || '/placeholder-logo.png'"
-            class="logo"
-            loading="lazy"
-          />
+      <div v-if="components.length" class="list" :class="{ slim: search }">
+        <VPLink v-for="component, index in components" :key="index" :href="component.link" class="component">
+          <VPImage :image="component.logo || '/placeholder-logo.png'" class="logo" loading="lazy" />
           <div class="body">
             <span class="name">{{ component.title }}</span>
-            <p
-              v-if="component.description"
-              class="description"
-            >
+            <p v-if="component.description" class="description">
               {{ ellipsis(component.description, 80) }}
             </p>
           </div>
         </VPLink>
       </div>
-      <div
-        v-else-if="
-          search
-          && query.length
-          && !components.length
-        "
-        class="empty"
-      >
-        <div
-          class="empty-title"
-          v-html="emptyTitle"
-        />
-        <div
-          class="empty-text"
-          v-html="emptyText"
-        />
+      <div v-else-if="search
+        && query.length
+        && !components.length
+        " class="empty">
+        <div class="empty-title" v-html="emptyTitle" />
+        <div class="empty-text" v-html="emptyText" />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.DocsComponentsList {
+  margin-bottom: 96px;
+}
+
+@media (min-width: 768px) {
+  .DocsComponentsList {
+    margin-bottom: 128px;
+  }
+}
+
 .list {
   margin-top: 24px;
   display: grid;
@@ -211,7 +183,7 @@ const emptyText = computed(() => localeIndex.value === 'en'
   padding: 0 24px;
 }
 
-.is-home .container {
+.container {
   margin: 0 auto;
   width: 100%;
   max-width: calc(var(--vp-layout-max-width) - 64px);

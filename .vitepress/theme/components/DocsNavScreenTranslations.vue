@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import VPIconChevronDown from 'vitepress/dist/client/theme-default/components/icons/VPIconChevronDown.vue'
-import VPIconLanguages from 'vitepress/dist/client/theme-default/components/icons/VPIconLanguages.vue'
 import { useLangs } from '../composables/langs'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
@@ -14,15 +12,11 @@ function toggle() {
 </script>
 
 <template>
-  <div
-    v-if="localeLinks.length && currentLang.label"
-    class="VPNavScreenTranslations"
-    :class="{ open: isOpen }"
-  >
+  <div v-if="localeLinks.length && currentLang.label" class="VPNavScreenTranslations" :class="{ open: isOpen }">
     <button class="title" @click="toggle">
-      <VPIconLanguages class="icon lang" />
+      <span class="vpi-languages icon lang" />
       {{ currentLang.label }}
-      <VPIconChevronDown class="icon chevron" />
+      <span class="vpi-chevron-down icon chevron" />
     </button>
 
     <ul class="list">
@@ -52,9 +46,7 @@ function toggle() {
 }
 
 .icon {
-  width: 16px;
-  height: 16px;
-  fill: currentColor;
+  font-size: 16px;
 }
 
 .icon.lang {
