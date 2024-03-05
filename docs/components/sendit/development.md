@@ -13,31 +13,35 @@ document.addEventListener('si:init', (e) => {
 ## Отправить запрос на свой коннектор
 
 ```js:line-numbers
-document.addEventListener('submit', (e) => {
-    const target = e.target.closest('.js-my-form');
-    if(!target) return;
-    const params = new FormData(target);
-    const url = 'assets/action.php';
-    const headers = {};
-    SendIt?.setComponentCookie('sitrusted', '1');
-    SendIt.Sending.send(target, url, headers, params);
-})
-
+document.addEventListener('si:init', (e) => {    
+    document.addEventListener('submit', (e) => {
+        const target = e.target.closest('.js-my-form');
+        if(!target) return;
+        const params = new FormData(target);
+        const url = 'assets/action.php';
+        const headers = {};
+        SendIt?.setComponentCookie('sitrusted', '1');
+        SendIt.Sending.send(target, url, headers, params);
+    })    
+});
 ```
 
 ::: warning
-Отправляя данные на собственный коннектор позаботьтесь о том, чтобы защитить сервер от XSS атак и ботов.
+Отправляя данные на собственный коннектор позаботьтесь о том, чтобы защити сервер от XSS атак и ботов.
 :::
 
-## Отправить форму на стандартный коннектор
+## Отправить запрос на стандартный коннектор
 
 ```js:line-numbers
-document.addEventListener('submit', (e) => {
-    const target = e.target.closest('.js-my-form');
-    if(!target) return;
-    const preset = target.dataset[Sendit.Sending.config.presetKey];
-    SendIt.Sending.prepareSendParams(target, preset);
-})
+document.addEventListener('si:init', (e) => {    
+    document.addEventListener('submit', (e) => {
+        const target = e.target.closest('.js-my-form');
+        if(!target) return;
+        const preset = target.dataset[Sendit.Sending.config.presetKey];    
+        SendIt.Sending.prepareSendParams(target, preset);    
+    })
+    
+});
 ```
 
 ::: tip
@@ -52,11 +56,13 @@ document.addEventListener('si:init', (e) => {
     SendIt?.Sending?.prepareSendParams(document, 'custom');
 })
 ```
+
 ::: tip
 Предполагается, что `custom` - ключ пресета, который вы добавили в соответствующий файл.
 :::
 
 Чтобы не давать свободу действий ботам, при получении ответа, если отправляете запрос при загрузке, лучше установить `sitrusted` значение 0
+
 ```js:line-numbers
 document.addEventListener('si:send:after', (e) => {
     const {action, target, result, headers, Sending} = e.detail;
@@ -68,9 +74,7 @@ document.addEventListener('si:send:after', (e) => {
 ```
 
 ## Свой сниппет для обработки данных
-::: tip
-Если на сайте установлен компонент **pdoTools**, Вы можете использовать файловые сниппеты (@FILE 'path/to/snippet.php)
-:::
+
 ::: tip
 В вашем сниппете параметры пресета будут доступны в виде переменных, а данные формы можно получить из массива $_POST, файлы из массива $_FILES.
 :::
@@ -86,6 +90,27 @@ if($flag){
 ::: tip
 Вы можете делегировать валидацию полей компоненту **FormIt**, для этого просто добавьте в пресет параметр **validate**.
 :::
+
+## Изменение параметров валидации файлов из JavaScript
+В примере ниже, мы меняем максимально разрешённое количество файлов для пресета *upload_design* в зависимости от выбранного родителя и размера.
+```js:line-numbers
+document.addEventListener('si:send:before', (e) => {
+    const {fetchOptions, headers} = e.detail;
+    if (typeof fetchOptions.body.get === 'function') {
+        switch (headers['X-SIPRESET']) {               
+            case 'upload_design':
+                const parent = document.querySelector('[name="parent"]:checked');
+                let count = 0;
+                if (parent) {
+                    const sizeSelect = document.querySelector(parent.dataset.sizeTarget);
+                    count = sizeSelect.options[sizeSelect.selectedIndex].value;
+                }
+                fetchOptions.body.set('params', JSON.stringify({maxCount: count}));
+            break;
+        }
+    }
+})
+```
 
 ## Создать интерфейс управления формами в админке
 
@@ -261,7 +286,7 @@ if($flag){
     ```
    :::
 3. Создаем конфигурацию **formfield**
-    ::: details Можно импортировать эту
+   ::: details Можно импортировать эту
      ```json
       {
     "formtabs":[
@@ -543,9 +568,9 @@ if($flag){
     "category":""
     }
     ```
-    :::
+   :::
 4. Создаем конфигурацию **list_double**
-    ::: details Можно импортировать эту
+   ::: details Можно импортировать эту
     ```json
     {
     "formtabs":[
@@ -679,7 +704,7 @@ if($flag){
     "category":""
     }
     ```
-    :::
+   :::
 5. Создаем конфигурацию **si_forms**
    ::: details Можно импортировать эту
     ```json
@@ -908,7 +933,7 @@ if($flag){
     }
     ```   
    :::
-6. Создаём TV типа *migx* с именем *si_form* и привязываем её в любому удобному шаблону. 
+6. Создаём TV типа *migx* с именем *si_form* и привязываем её в любому удобному шаблону.
 7. Создаём плагин на событие **OnGetFormParams**, который достанет параметры нужной формы и вернёт их в виде массива.
    ::: details Пример плагина
     ```php:line-numbers
@@ -933,4 +958,4 @@ if($flag){
             break;
     }
     ```
-    :::
+   :::
