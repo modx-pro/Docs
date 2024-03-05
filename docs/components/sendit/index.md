@@ -22,7 +22,7 @@ items: [
 dependencies: ['pdoTools', 'FormIt']
 ---
 
-# SendIt
+# SendIt 
 
 ::: tip
 Компонент **pdoTools** необходим только для возможности указывать файловые снипеты и работы парсера **Fenom**. 
