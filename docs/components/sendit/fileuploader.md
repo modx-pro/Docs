@@ -15,7 +15,7 @@
     </label>   
 </form>
 ```
-
+ 
 Чтобы появилась возможность добавлять файлы перетаскиванием, используйте такую разметку
 ```html:line-numbers
 <form enctype="multipart/form-data" data-si-form="formWithFile" data-si-preset="form_with_file">
