@@ -6,7 +6,7 @@ lastUpdated: true
 logo: https://sendit.art-sites.ru/assets/components/sendit/web/logo.jpg
 modstore: https://modstore.pro/packages/users/sendit
 repository: https://github.com/ShevArtV/sendit
-author: ShevArtV
+author: ShevArtV 
 items: [
 { text: 'Начало работы', link: 'index' },
 { text: 'Отправка данных', link: 'sending' },
