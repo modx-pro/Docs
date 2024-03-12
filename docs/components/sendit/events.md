@@ -1,255 +1,235 @@
 # События
-
 ## Системные события
-
 ### Перед установкой параметров (OnGetFormParams)
-
-**OnGetFormParams** - генерируется на этапе формирования списка параметров, позволяет полностью переписать параметры отправки формы, должен возвращать массив.
+**OnGetFormParams** - генерируется на этапе формирования списка параметров, позволяет полностью переписать параметры отправки формы, должен возвращать массив.  
 Доступные параметры:
-
 * **$formName** - ключ формы из атрибута **data-si-form**.
 
 ::: details Пример плагина
-
 ```php:line-numbers
 switch($modx->event->name){
-  case 'OnGetFormParams':
-    $values = & $modx->event->returnedValues;
-    $values = [
-      'formName' => $formName,
-      'testParam' => 'Some param'
-    ];
-    break;
+    case 'OnGetFormParams':
+        $values = & $modx->event->returnedValues;
+        $values = [
+            'formName' => $formName,
+            'testParam' => 'Some param'
+        ];
+        break;
 }
 ```
+:::
 
+### Перед проверкой файлов параметров (OnBeforeFileValidate)
+**OnBeforeFileValidate** - генерируется перед началом валидации группы файлов.  
+Доступные параметры:
+* **$params** - массив параметров пресета.
+* **$filesData** - массив информации о файлах.
+* **$totalCount** - количество уже загруженных пользователем файлов.
+
+::: details Пример плагина
+```php:line-numbers
+switch($modx->event->name){
+    case 'OnBeforeFileValidate':
+        $values = & $modx->event->returnedValues;
+        $values['params']['maxCount'] = 5;        
+        break;
+}
+```
+:::
+
+### После проверки допустимости отправки (OnCheckPossibilityWork)
+**OnCheckPossibilityWork** - генерируется после проведения штатной проверки, перед проверкой результатов, позволяет изменить результаты проверки.  
+Доступные параметры:
+* **$formName** - имя формы или пресета.
+* **$result** - результат проверки.
+
+::: details Пример плагина
+```php:line-numbers
+switch($modx->event->name){
+    case 'OnCheckPossibilityWork':
+        $values = & $modx->event->returnedValues;
+        if($formName === 'allowForm'){
+            $values['result']['success'] = true;      
+        }          
+        break;
+}
+```
 :::
 
 ## События JavaScript
-
-### Инициализация компонента (si:init)
-
+###  Инициализация компонента (si:init)
 Событие возникает после загрузки всех модулей, указанных в JS конфигурации. Не имеет параметров. Не может быть отменено. Чтобы без проблем использовать все модули,
 подписывайте на это событие,
 так как после его срабатывания объект **Sendit** и его дочерние элементы точно доступны.
-
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('si:init', (e) => {
-  console.log(SendIt);
+    console.log(SendIt);
 });
 ```
-
 :::
 
 ### Перед отправкой (si:send:before)
-
 Событие возникает перед отправкой данных на сервер. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
-
-* **target** - при классической отправке - форма, если отправка произведена на событие *change* или *input* - поле ввода, если происходит обработка файла -
-  блок-обёртка.
+* **target** - может быть формой, полем, кнопкой или всем документом.
 * **action** - название действия, служит для удобства дифференцирования логики, т.е. если вам нужно чтобы какая-то функция срабатывала только при отправке формы,
   но не при загрузке файла; менять этот параметр не нужно; возможные значения:
-  * *send* - отправка данных;
-  * *upload* - загрузка файлов;
-  * *removeFile* - удаление файла;
-  * *removeDir* - удаление всех загруженных файлов;
-  * *preset* - получения пресета перед загрузкой файла;
-* **params** - параметры запроса в объекте FormData, можно изменить, удалить (с осторожностью), добавить свои данные.
+    * *send* - отправка данных;
+    * *validate_files* - валидация файлов;
+    * *removeFile* - удаление файла;    
+* **fetchOptions** - параметры запроса (url, method, body), можно изменить, удалить (с осторожностью), добавить свои данные.
 * **headers** - заголовки запроса, можно изменить, удалить (с осторожностью), добавить свои данные.
-* **method** - метод запроса *POST* или *GET*.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
 :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('si:send:before', (e) => {
-  const {action, target, params, headers, method, Sending} = e.detail;
+    const {action, target, params, headers, method, Sending} = e.detail;
 
-  // не будем отправлять код подтверждения пока длина номера телефона меньше 11 символов
-  if(target.name === 'phone' && target.value.length < 11){
-    e.preventDefault();
-  }
+    // не будем отправлять код подтверждения пока длина номера телефона меньше 11 символов 
+    if(target.name === 'phone' && target.value.length < 11){
+        e.preventDefault();
+    }
 })
 ```
-
 :::
 
 ### После получения ответа (si:send:after)
-
 Событие возникает сразу после получения ответа от сервера и его преобразование в JSON. Может быть отменено, что прервёт дальнейшее выполнение скрипта, т.е. выполнение методов
 **success()** и **error()**.
 
 ::: details Передаваемые параметры
-
-* **target** - при классической отправке - форма, если отправка произведена на событие *change* или *input* - поле ввода, если происходит обработка файла -
-  блок-обёртка.
+* **target** - может быть формой, полем, кнопкой или всем документом.
 * **action** - название действия, служит для удобства дифференцирования логики, т.е. если вам нужно чтобы какая-то функция срабатывала только при отправке формы,
   но не при загрузке файла; менять этот параметр не нужно; возможные значения:
-  * *send* - отправка данных;
-  * *upload* - загрузка файлов;
-  * *removeFile* - удаление файла;
-  * *removeDir* - удаление всех загруженных файлов;
-  * *preset* - получения пресета перед загрузкой файла;
+    * *send* - отправка данных;
+    * *validate_files* - валидация файлов;
+    * *removeFile* - удаление файла;
 * **result** - ответ сервера в формате JSON.
 * **headers** - заголовки запроса, можно изменить, удалить (с осторожностью), добавить свои данные.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-
-:::
+  :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('si:send:after', (e) => {
-  const {action, target, result, headers, Sending} = e.detail;
+    const {action, target, result, headers, Sending} = e.detail;
 
-  // покажем информационное сообщение
-  SendIt.Notify.info('Получен ответ сервера. Ура!');
+    // покажем информационное сообщение
+    SendIt.Notify.info('Получен ответ сервера. Ура!');
 })
 ```
-
 :::
-
 ### Обработка успешного ответа (si:send:success)
-
 Событие возникает при получении успешного ответа от сервера и ДО срабатывания обработчика **success()**. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
-
 ::: details Передаваемые параметры
-
-* **target** - при классической отправке - форма, если отправка произведена на событие *change* или *input* - поле ввода, если происходит обработка файла -
-  блок-обёртка.
+* **target** - может быть формой, полем, кнопкой или всем документом.
 * **action** - название действия, служит для удобства дифференцирования логики, т.е. если вам нужно чтобы какая-то функция срабатывала только при отправке формы,
   но не при загрузке файла; менять этот параметр не нужно; возможные значения:
-  * *send* - отправка данных;
-  * *upload* - загрузка файлов;
-  * *removeFile* - удаление файла;
-  * *removeDir* - удаление всех загруженных файлов;
-  * *preset* - получения пресета перед загрузкой файла;
+    * *send* - отправка данных;
+    * *validate_files* - валидация файлов;
+    * *removeFile* - удаление файла;
 * **result** - ответ сервера в формате JSON.
 * **headers** - заголовки запроса, можно изменить, удалить (с осторожностью), добавить свои данные.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-
 :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('si:send:success', (e) => {
-  const {action, target, result, headers, Sending} = e.detail;
+    const {action, target, result, headers, Sending} = e.detail;
 
-  // установим свой обработчик успешной отправки
-  Sending.success = (result, target) => {
-    SendIt.Notify.success('Данные отправлены. Спасибо!');
-  }
+    // установим свой обработчик успешной отправки
+    Sending.success = (result, target) => {
+        SendIt.Notify.success('Данные отправлены. Спасибо!');
+    }
 })
 ```
-
 :::
-
 ### Обработка ошибок (si:send:error)
-
 Событие возникает при получении ответа от сервера с ошибками и ДО срабатывания обработчика **error()**. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
-
 ::: details Передаваемые параметры
-
-* **target** - при классической отправке - форма, если отправка произведена на событие *change* или *input* - поле ввода, если происходит обработка файла -
-  блок-обёртка.
+* **target** - может быть формой, полем, кнопкой или всем документом.
 * **action** - название действия, служит для удобства дифференцирования логики, т.е. если вам нужно чтобы какая-то функция срабатывала только при отправке формы,
   но не при загрузке файла; менять этот параметр не нужно; возможные значения:
-  * *send* - отправка данных;
-  * *upload* - загрузка файлов;
-  * *removeFile* - удаление файла;
-  * *removeDir* - удаление всех загруженных файлов;
-  * *preset* - получения пресета перед загрузкой файла;
+    * *send* - отправка данных;
+    * *validate_files* - валидация файлов;
+    * *removeFile* - удаление файла;
 * **result** - ответ сервера в формате JSON.
 * **headers** - заголовки запроса, можно изменить, удалить (с осторожностью), добавить свои данные.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-
-:::
+  :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('si:send:error', (e) => {
-  const {action, target, result, headers, Sending} = e.detail;
+    const {action, target, result, headers, Sending} = e.detail;
 
-  // установим свой обработчик ошибок
-  Sending.error = (result, target) => {
-    SendIt.Notify.error('Данные не отправлены. Исправьте ошибки!');
-  }
+    // установим свой обработчик ошибок
+    Sending.error = (result, target) => {
+        SendIt.Notify.error('Данные не отправлены. Исправьте ошибки!');
+    }
 })
 ```
-
 :::
-
 ### Завершение отправки (si:send:finish)
-
 Событие возникает при получении ответа от сервера и ПОСЛЕ срабатывания обработчиков  **success()** и **error()**. Не может быть отменено.
-
 ::: details Передаваемые параметры
-
-* **target** - при классической отправке - форма, если отправка произведена на событие *change* или *input* - поле ввода, если происходит обработка файла -
-  блок-обёртка.
+* **target** - может быть формой, полем, кнопкой или всем документом.
 * **action** - название действия, служит для удобства дифференцирования логики, т.е. если вам нужно чтобы какая-то функция срабатывала только при отправке формы,
   но не при загрузке файла; менять этот параметр не нужно; возможные значения:
-  * *send* - отправка данных;
-  * *upload* - загрузка файлов;
-  * *removeFile* - удаление файла;
-  * *removeDir* - удаление всех загруженных файлов;
-  * *preset* - получения пресета перед загрузкой файла;
+    * *send* - отправка данных;
+    * *validate_files* - валидация файлов;
+    * *removeFile* - удаление файла;
 * **result** - ответ сервера в формате JSON.
 * **headers** - заголовки запроса, можно изменить, удалить (с осторожностью), добавить свои данные.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-
-:::
+  :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('si:send:finish', (e) => {
-  const {action, target, result, headers, Sending} = e.detail;
-
-  // выведем все параметры пресета
-  console.log(result.data);
+    const {action, target, result, headers, Sending} = e.detail;
+    
+    // выведем все параметры пресета
+    console.log(result.data);
 })
 ```
-
 :::
 
 ### Сброс формы (si:send:reset)
-
-Событие возникает в конце работы метода **success()**, если в пресете указан параметр **clearFieldsOnSuccess**, или при нажатии кнопки **type="reset"**. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
+Событие возникает в конце работы метода **success()**, если в пресете указан параметр **clearFieldsOnSuccess**, или при нажатии кнопки **type="reset"**. Может быть отменено,
+что прервёт
+дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
-
-* **target** - элемент формы.
+* **target** - может быть формой, полем, кнопкой или всем документом.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-
-:::
+  :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('si:send:reset', (e) => {
-  const {target, Sending} = e.detail;
+    const {target, Sending} = e.detail;
 
-  // отменим сброс формы
-  e.preventDefault();
+    // отменим сброс формы
+    e.preventDefault();
 })
 ```
-
 :::
 
 ### Изменение шага в опроснике (si:quiz:change)
-
 Событие возникает ДО смены шага. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
-
+* **isTrusted** - передаёт признак автоматического или ручного переключения.
+* **btnReset** - элемент кнопки сброса формы.
+* **btnSend** - элемент кнопки отправки формы.
+* **btnNext** - элемент кнопки переключения *Вперёд*.
+* **btnPrev** - элемент кнопки переключения *Назад*.
 * **root** - элемент формы.
 * **nextIndex** - идентификатор шага, который должен стать видимым (значение атрибута **data-qf-item**).
 * **items** - массив элементов-шагов.
@@ -260,195 +240,172 @@ document.addEventListener('si:send:reset', (e) => {
 * **nextItem** - элемент-шаг, который станет видимым после переключения (значение атрибута **data-qf-item**).
 * **dir** - направление переключения (*prev* - назад, *next* - вперёд).
 * **Quiz** - объект класса *Quiz* для быстрого доступа к методам и свойства этого класса.
-
 :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('si:quiz:change', (e) => {
-  const {root, nextIndex, items, current, currentQuestion, totalQuestions, prevIndex, nextItem, dir, Quiz} = e.detail;
+    const {root, nextIndex, items, current, currentQuestion, totalQuestions, prevIndex, nextItem, dir, Quiz} = e.detail;
 
-  // проверим соответствует ли телефон паттерну
-  const phoneField = current.querySelector('[name="phone"]');
-  if(phoneField && phoneField.value){
-    const pattern = new RegExp(/^\+7\(\d{3}\)\d{3}\-\d{2}\-\d{2}$/g);
-    if(!pattern.test(phoneField.value)){
-      SendIt.Notify.error('Введите телефон в формате +7(999)999-99-99');
-      e.preventDefault();
+    // проверим соответствует ли телефон паттерну
+    const phoneField = current.querySelector('[name="phone"]');
+    if(phoneField && phoneField.value){
+        const pattern = new RegExp(/^\+7\(\d{3}\)\d{3}\-\d{2}\-\d{2}$/g);
+        if(!pattern.test(phoneField.value)){
+            SendIt.Notify.error('Введите телефон в формате +7(999)999-99-99');
+            e.preventDefault();
+        }
     }
-  }
 })
 ```
-
 :::
 
-### Перед добавлением файла в список (fu:before:add)
-
-Событие возникает ПОСЛЕ полной загрузки файла и ПЕРЕД добавлением пути к нему в список загруженных файлов. Может быть отменено, что прервёт дальнейшее выполнение
-скрипта.
+### Перед началом загрузки файлов (fu:uploading:start)
+Событие возникает перед началом загрузки файлов.
 
 ::: details Передаваемые параметры
-
 * **form** - элемент формы.
-* **data** - данные полученные с сервера.
+* **field** - элемент поля загрузки.
 * **root** - элемент-обёртка для поля загрузки файлов.
+* **files** - список файлов для загрузки файлов (объект типа FileList).
 * **FileUploader** - объект класса *FileUploader* для быстрого доступа к методам и свойства этого класса.
-
 :::
 
 ::: details Пример использования
-
 ```js:line-numbers
-document.addEventListener('fu:before:add', (e) => {
-  const {root, form, data, FileUploader} = e.detail;
+document.addEventListener('fu:uploading:start', (e) => {
+    const {root, form, field, files, FileUploader} = e.detail;
 
-  // добавим тексту кнопки размер файла
-  const size = data.position / (1024 * 1024);
-  FileUploader.config.layout.btn.text = `${data.filename}(${size.toFixed(3)}МБ)&nbsp;X`;
+    // можно провести дополнительную проверку файлом перед загрузкой и превать загрузку в случае чего.
 })
 ```
-
 :::
 
-### Во время загрузки файла (fu:uploading)
-
-Событие возникает после загрузки очередной порции файла. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
+### После окончания загрузки файлов (fu:uploading:end)
+Событие возникает после окончания загрузки всех файлов.
 
 ::: details Передаваемые параметры
-
 * **form** - элемент формы.
-* **result** - ответ сервера.
+* **field** - элемент поля загрузки.
 * **root** - элемент-обёртка для поля загрузки файлов.
-* **field** - поле для загрузки файлов.
+* **files** - список файлов для загрузки файлов (объект типа FileList).
 * **FileUploader** - объект класса *FileUploader* для быстрого доступа к методам и свойства этого класса.
-
 :::
 
 ::: details Пример использования
-
 ```js:line-numbers
-document.addEventListener('fu:uploading', (e) => {
-  const {root, form, result, field, FileUploader} = e.detail;
+document.addEventListener('fu:uploading:start', (e) => {
+    const {root, form, field, files, FileUploader} = e.detail;
 
-  // уберем показ прогресса загрузки
-  result.data.loadingMsg = false;
+    // можно произвести какие-то манипуляции с документом.
 })
 ```
-
-:::
-
-### Перед удалением файла (fu:remove)
-
-Событие возникает ДО отправки запроса на удаление файла на сервер. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
-
-::: details Передаваемые параметры
-
-* **root** - элемент-обёртка для поля загрузки файлов.
-* **btn** - кнопка удаления файла.
-* **params** - параметры запроса в объекте FormData.
-* **headers** - заголовки запроса.
-* **FileUploader** - объект класса *FileUploader* для быстрого доступа к методам и свойства этого класса.
-
-:::
-
-::: details Пример использования
-
-```js:line-numbers
-document.addEventListener('fu:remove', (e) => {
-  const {root, btn, params, headers, FileUploader} = e.detail;
-  const path = btn.dataset[FileUploader.config.pathKey].split('/');
-  const filename = path[path.length - 1];
-
-  // добавим подтверждение удаления
-  if (!window.confirm(`Вы уверены, что хотите удалить файл ${filename}`)) {
-    e.preventDefault();
-  }
-})
-```
-
 :::
 
 ### Перед сохранением данных (sf:save)
-
 Событие возникает ДО сохранения значения поля в localStorage. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
-
 * **root** - элемент формы.
 * **field** - поле, значение которого сохраняем.
 * **savedData** - массив сохраняемых данных.
 * **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
-
-:::
+  :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('sf:save', (e) => {
-  const {root, field, savedData, SaveFormData} = e.detail;
+    const {root, field, savedData, SaveFormData} = e.detail;
 
-  // отформатируем телефон
-  if(field.name === 'phone' && field.value){
-    const formatted = field.value.replace(/^\d(\d{3})(\d{3})(\d{2})(\d{2})$/, '8 ($1)$2-$3-$4');
-    savedData.phone = field.value = formatted;
-  }
+    // отформатируем телефон
+    if(field.name === 'phone' && field.value){
+        const formatted = field.value.replace(/^\d(\d{3})(\d{3})(\d{2})(\d{2})$/, '8 ($1)$2-$3-$4');
+        savedData.phone = field.value = formatted;        
+    }
 })
 ```
-
 :::
 
-### Перед сохранением данных (sf:set)
 
+### Перед сохранением данных (sf:set:before)
 Событие возникает ПЕРЕД установкой сохранённых данных в соответствующие поля. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
-
 * **root** - элемент формы.
 * **formFields** - коллекция элементов-полей.
 * **savedData** - массив сохраняемых данных.
 * **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
-
-:::
+  :::
 
 ::: details Пример использования
-
 ```js:line-numbers
-document.addEventListener('sf:set', (e) => {
-  const {root, formFields, savedData, SaveFormData} = e.detail;
+document.addEventListener('sf:set:before', (e) => {
+    const {root, formFields, savedData, SaveFormData} = e.detail;
 
-  // запретим автозаполнение поля выбором возраста
-  for(let k in savedData){
-    if(k === 'age'){
-      savedData[k] = ''
+    // запретим автозаполнение поля с выбором возраста    
+    for(let k in savedData){
+        if(k === 'age'){
+            savedData[k] = ''
+        }
     }
-  }
 })
 ```
+:::
 
+### После установки значения (sf:change)
+Событие возникает ПОСЛЕ установки сохранённых данных в соответствующее поле. Не может быть отменено.
+
+::: details Передаваемые параметры
+* **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
+  :::
+
+::: details Пример использования
+```js:line-numbers
+document.addEventListener('sf:set:before', (e) => {
+    const SaveFormData = e.detail.SaveFormData;
+    const field = e.target;
+
+    // можно изменить установленное значение, оно не будет сохранено в localStorage 
+})
+```
+:::
+
+### Перед сохранением данных (sf:set:after)
+Событие возникает ПОСЛЕ установки сохранённых данных в соответствующие поля. Не может быть отменено.
+
+::: details Передаваемые параметры
+* **root** - элемент формы.
+* **formFields** - коллекция элементов-полей.
+* **savedData** - массив сохраняемых данных.
+* **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
+  :::
+
+::: details Пример использования
+```js:line-numbers
+document.addEventListener('sf:set:after', (e) => {
+    const {root, formFields, savedData, SaveFormData} = e.detail;
+
+    // можно производить манипуляции с DOM    
+})
+```
 :::
 
 ### Перед сохранением данных (sf:remove)
-
 Событие возникает ПЕРЕД очисткой данных для конкретной формы. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
-
 * **root** - элемент-обёртка для поля загрузки файлов.
 * **formName** - ключ формы (значение атрибута **data-si-form**).
 * **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
-
-:::
+  :::
 
 ::: details Пример использования
-
 ```js:line-numbers
 document.addEventListener('sf:remove', (e) => {
-  const {root, formName, SaveFormData} = e.detail;
-
-  // отменим удаление сохраненных данных
-  e.preventDefault();
+    const {root, formName, SaveFormData} = e.detail;
+    
+    // отменим удаление сохраненных данных
+    e.preventDefault();
 })
 ```
-
 :::
