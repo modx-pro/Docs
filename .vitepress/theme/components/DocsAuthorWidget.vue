@@ -1,19 +1,12 @@
 <script setup lang="ts">
-import { type Ref, computed } from 'vue'
-import { type PageData, useData } from 'vitepress'
-import type { DocsPageData } from '../plugins/component'
+import { computed } from 'vue'
+import { useData } from 'vitepress'
 import { type Author, authors } from '../../../docs/authors'
 
-import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
+import { VPImage } from 'vitepress/theme-without-fonts'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
-export interface Data {
-  page: Ref<DocsPageData>
-  frontmatter: Ref<PageData['frontmatter']>
-  lang: Ref<string>
-}
-
-const { page, frontmatter, lang }: Data = useData()
+const { page, frontmatter, lang } = useData()
 
 const authorLabel = computed<string>(() => lang.value === 'ru' ? 'Автор' : 'Author')
 const author = computed<Author>(() => {
@@ -31,20 +24,9 @@ const author = computed<Author>(() => {
 </script>
 
 <template>
-  <article
-    v-if="author"
-    class="DocsAuthorWidget"
-  >
-    <VPLink
-      :href="author.github"
-      :no-icon="true"
-      class="body"
-    >
-      <VPImage
-        v-if="author.avatar"
-        class="avatar"
-        :image="author.avatar"
-      />
+  <article v-if="author" class="DocsAuthorWidget">
+    <VPLink :href="author.github" :no-icon="true" class="body">
+      <VPImage v-if="author.avatar" class="avatar" :image="author.avatar" />
       <div class="info">
         <div class="name">{{ author.name }}</div>
         <div class="label">{{ authorLabel }}</div>
@@ -56,7 +38,7 @@ const author = computed<Author>(() => {
 
 <style scoped>
 .DocsAuthorWidget {
-  background-color: var(--vp-sidebar-bg-color);
+  background-color: var(--vp-c-bg-soft);
   border-radius: var(--vp-border-radius);
   margin-top: 20px;
   padding: 20px;
@@ -90,6 +72,6 @@ const author = computed<Author>(() => {
 }
 
 :deep(.link):hover {
-  color: var(--vp-c-green);
+  color: var(--vp-c-brand-1);
 }
 </style>

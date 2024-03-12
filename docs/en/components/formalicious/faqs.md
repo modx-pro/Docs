@@ -19,7 +19,7 @@ You can mention a comma-separated list of FormIt-validators in the **Validation*
 
 ## I don't like the emails sent by Formalicious
 
-Everything is customisable by using chunks or FormIt parameters.
+Everything is customizable by using chunks or FormIt parameters.
 First, create a duplicate of the email-chunk (`emailFormTpl` or `fiarTpl`) you wish to change and rename it.
 Then go to the form which should use this new chunk.
 

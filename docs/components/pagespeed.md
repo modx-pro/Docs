@@ -115,7 +115,7 @@ modstore: https://modstore.pro/packages/ecommerce/pagespeed
 ]]
 ```
 
-Добавить любой **inline** стиль или скрипт можна с помощью **PHx**. Примите во внимание, что это повлечёт за собой создание нового экземпляра конфигурации, если данные отличаются при загрузке страницы. **Не используйте** этот метод для кода третьих сторон, таких как Google Analytics:
+Добавить любой **inline** стиль или скрипт можно с помощью **PHx**. Примите во внимание, что это повлечёт за собой создание нового экземпляра конфигурации, если данные отличаются при загрузке страницы. **Не используйте** этот метод для кода третьих сторон, таких как Google Analytics:
 
 ```modx
 [[+phx:input=`data:text/css,
@@ -142,7 +142,7 @@ modstore: https://modstore.pro/packages/ecommerce/pagespeed
 
 Для ручного режима их нужно добавить в секцию **script** параметра **subresources**.
 
-Обработка анимированных **gif** изображений взможна после установки дополнения [Image Processing (ImageMagick)](https://www.php.net/manual/en/book.imagick.php) для PHP.
+Обработка анимированных **gif** изображений возможна после установки дополнения [Image Processing (ImageMagick)](https://www.php.net/manual/en/book.imagick.php) для PHP.
 
 Одновременное выполнение возможно предотвратить установив дополнение [Semaphore, Shared Memory and IPC](https://www.php.net/manual/en/book.sem.php) для PHP.
 

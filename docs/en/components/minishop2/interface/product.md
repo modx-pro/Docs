@@ -49,7 +49,7 @@ The system setting **ms2_product_extra_fields** controls the set and sequence of
 - **vendor** - manufacturer selection from drop down list
 - **tags** - product teg array, autolist
 - **new** - novelty stamp: yes \no
-- **pupular** - popular items stamp:yes \no
+- **popular** - popular items stamp:yes \no
 - **favorite** - exceptional items stamp : yes \no
 
 Available option set may be changed by [plug in system][1] only.

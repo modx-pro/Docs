@@ -35,7 +35,7 @@ These methods process values written in parameter **&filters**. For example:
 
 The first word is code word for the selection of data from tables. If it is **resource**, **getResourceValues** will be summoned, if it is **ms**, then get**Ms**Values will be summoned, etc.
 
-The second word is the field being selected. You can incidate more than one field for one table if they all are in it.
+The second word is the field being selected. You can indicate more than one field for one table if they all are in it.
 
 The third word is the name of the method that you are applying to filter construction and filtration itself.
 If it is **default**, then **Default**Filter and filter**Default** will be summoned, if it is **number**, then build**Number**Filter and filter**Number** will be summoned, etc.
@@ -50,7 +50,7 @@ Method                      | Name in **&filters** | What it does
 **getMsOptionValues**       | `msoption`           | Selects data from special JSON table of fields of product MS2
 **buildDefaultFilter**      | `default`            | Builds new filter (which consists of checkboxes) by default
 **buildNumberFilter**       | `number`             | Builds filter for numbers that can be shown as slider
-**buildVendorsFilter**      | `vendors`            | Bulds filter in which names of producers of products MS2 operate as values. Can be applied only to **vendor** field `ms\|vendor:vendors`.
+**buildVendorsFilter**      | `vendors`            | Builds filter in which names of producers of products MS2 operate as values. Can be applied only to **vendor** field `ms\|vendor:vendors`.
 **buildBooleanFilter**      | `boolean`            | Builds filter for zero values. Thanks to it 'yes' and 'no' answers will be shown instead of 0 and 1.
 **buildParentsFilter**      | `parents`            | Builds filter in which two parents of resource are selected and shown. Can be applied only to **parent** field `resource\|parent:parents`.
 **buildCategoriesFilter**   | `categories`         | Builds filter in which one parent of resource is selected and shown. Can be applied only to **parent** field `resource\|parent:categories`.

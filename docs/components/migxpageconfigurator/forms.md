@@ -76,7 +76,7 @@ return [
                     style="height:160px;"></textarea>
         </div>
         <div class="contact-form-submit">
-          <button id="buton" style="margin-top:25px;"
+          <button id="button" style="margin-top:25px;"
                 class="btn center-block btn-primary btn-large validate sp-rounded"
                 type="submit"><i class="fa fa-envelope"></i>&nbsp;Отправить обращение
           </button>
@@ -95,7 +95,7 @@ return [
 
 1. Максимальный приоритет имеет значение этого параметра в списке форм
 2. Если у формы в админке параметр `emailTo` не задан, но в TV со списком контактов (по умолчанию contacts) есть хотя бы один email привязанный к форме, то будет взято его значение
-3. Если привязанных email'ов в списке контактов нет, то будет взято значение системной настройки `mpc_email`
+3. Если привязанных emailов в списке контактов нет, то будет взято значение системной настройки `mpc_email`
 4. Если значение системной настройки `mpc_email` пустое, будет взято значение системной настройки `ms2_email_manager`
 5. Если значение системной настройки `ms2_email_manager` пустое, будет установлена заглушка `info@имя_вашего_домена`
 

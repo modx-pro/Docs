@@ -1,6 +1,7 @@
 ---
 title: Extras
-layout: home
+layout: page
+sidebar: false
 ---
 
 <DocsComponentsList title="Extras" :search="true" />

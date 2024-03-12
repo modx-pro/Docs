@@ -36,9 +36,10 @@ defineProps<{
 <style scoped>
 .link {
   color: var(--vp-c-text-1);
+  text-decoration: none;
 }
 
 .active {
-  color: var(--vp-c-brand);
+  color: var(--vp-c-brand-1);
 }
 </style>

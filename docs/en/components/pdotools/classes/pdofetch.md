@@ -35,7 +35,7 @@ pdoFetch tries to execute only one query at a time. That is why you need to join
 
 But yes, TVs are joined as well as other tables, so there is no additional queries to get their values as in **getResources**.
 
-That is why you need to use query for silter by TVs:
+That is why you need to use query for filter by TVs:
 
 ```modx
 [[!pdoResources?

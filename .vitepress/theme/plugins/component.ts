@@ -1,6 +1,5 @@
 import type { DefaultTheme, PageData, SiteConfig } from 'vitepress'
-import { normalize } from 'vitepress/dist/client/shared'
-import { ensureStartingSlash, getAuthor } from '../utils'
+import { ensureStartingSlash, getAuthor, normalize } from '../utils'
 
 import { readFileSync } from 'fs'
 import { basename } from 'path'
@@ -30,11 +29,6 @@ export interface ComponentData {
   repository?: string
 
   items?: DefaultTheme.SidebarItem[]
-}
-
-export interface DocsPageData extends PageData {
-  component?: ComponentData
-  breadcrumbs?: DefaultTheme.SidebarItem[]
 }
 
 export const components: ComponentData[] = fg
@@ -91,9 +85,9 @@ export const components: ComponentData[] = fg
 
 export default class DocsComponent {
   static prepareData(
-    pageData: DocsPageData,
+    pageData: PageData,
     siteConfig: SiteConfig,
-  ): DocsPageData {
+  ): PageData {
     const component = components.find(component => pageData.relativePath.startsWith(component.path.replace(/index\.md$/, '')))
 
     pageData.component = component

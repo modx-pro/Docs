@@ -25,12 +25,7 @@ defineProps<{
 
     <div v-if="data.actions" class="actions">
       <div v-for="action in data.actions" :key="action.link" class="action">
-        <DocsButton
-          tag="a"
-          :theme="action.theme"
-          :text="action.text"
-          :href="action.link"
-        />
+        <DocsButton tag="a" :theme="action.theme" :text="action.text" :href="action.link" />
       </div>
     </div>
   </div>
@@ -38,7 +33,7 @@ defineProps<{
 
 <style scoped>
 .hero {
-  padding: 20px;
+  padding: 40px 20px;
   text-align: center;
 }
 
@@ -61,7 +56,7 @@ defineProps<{
 
 @media (min-width: 640px) {
   .hero {
-    padding: 40px 20px;
+    padding: 60px 20px;
   }
 
   .title {
@@ -76,7 +71,7 @@ defineProps<{
 
 @media (min-width: 960px) {
   .hero {
-    padding: 60px 20px;
+    padding: 80px 20px;
   }
 
   .title {

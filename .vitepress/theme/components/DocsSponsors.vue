@@ -4,7 +4,7 @@ import { useSponsor } from '../composables/sponsor'
 
 import DocsButton from './DocsButton.vue'
 import VPIconHeart from 'vitepress/dist/client/theme-default/components/icons/VPIconHeart.vue'
-import VPSponsors from 'vitepress/dist/client/theme-default/components/VPSponsors.vue'
+import { VPSponsors } from 'vitepress/theme-without-fonts'
 
 const { theme, lang } = useData()
 const sponsors = useSponsor(lang)
@@ -14,7 +14,9 @@ const sponsors = useSponsor(lang)
   <section class="VPHomeSponsors">
     <div class="container">
       <div class="header">
-        <div class="love"><VPIconHeart class="icon" /></div>
+        <div class="love">
+          <VPIconHeart class="icon" />
+        </div>
         <h2 v-if="theme.sponsor.message" class="message">{{ theme.sponsor.message }}</h2>
       </div>
 
@@ -22,15 +24,8 @@ const sponsors = useSponsor(lang)
         <VPSponsors :data="sponsors" />
       </div>
 
-      <div
-        v-if="theme.sponsor.link"
-        class="action"
-      >
-        <DocsButton
-          theme="sponsor"
-          :href="theme.sponsor.link"
-          :text="theme.sponsor.linkText"
-        />
+      <div v-if="theme.sponsor.link" class="action">
+        <DocsButton theme="sponsor" :href="theme.sponsor.link" :text="theme.sponsor.linkText" />
       </div>
     </div>
   </section>
@@ -38,8 +33,9 @@ const sponsors = useSponsor(lang)
 
 <style scoped>
 .VPHomeSponsors {
+  margin-top: 112px;
   border-top: 1px solid var(--vp-c-gutter);
-  padding: 88px 24px 96px;
+  padding: 88px 24px 0;
   background-color: var(--vp-c-bg);
 }
 

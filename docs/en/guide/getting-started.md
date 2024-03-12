@@ -128,54 +128,49 @@ For those who want to add new documentation of the extra to the project, the [pl
     :::
 2. So you will run the CLI helper and you will see the following message. Use the [[&uarr;]] and [[&darr;]] keys to select the desired language and press [[Enter]]:
 
-    ```sh
-    $ plop
-    ? Выберите язык / Choose language (Use arrow keys)
+    ```ansi
+    [0;2m[0;36m?[0m Выберите язык / Choose language (Use arrow keys)
       Русский
-    > English
+    [0;36m> English[0m
+    [0m
     ```
 
 3. Next, you will be asked to select a documentation template, there are two of them: **Single-page** and **Multi-page documentation**. Select the one you want and press [[Enter]].
 
-    ```sh
-    $ plop
-    ? Выберите язык / Choose language English
-    ? Choose documentation template (Use arrow keys)
+    ```ansi
+    [0;2m[0;2m[0;2m[0;36m?[0m Выберите язык / Choose language [0;36mEnglish[0m
+    [0;36m?[0m Choose documentation template (Use arrow keys)
       Single-page documentation
-    > Multi-page documentation
+    [0;36m> Multi-page documentation[0m [0m[0m[0m
     ```
 
 4. Now you need to give your extra a name and press [[Enter]] as well.
 
-    ```sh
-    $ plop
-    ? Выберите язык / Choose language English
-    ? Choose documentation template Multi-page documentation
-    ? Enter the component name
+    ```ansi
+    [2;36m[0m[0;2m[0;36m?[0m Выберите язык / Choose language [0;36mEnglish[0m
+    [0;36m?[0m Choose documentation template [0;36mMulti-page documentation[0m
+    [0;36m?[0m Enter the component name[0m │
     ```
 
 5. Finally, you will need to select the language versions of the documentation. By using the [[&uarr;]] and [[&darr;]] keys and pressing the [[Space]] you can mark the languages you need. Then press the [[Enter]] button.
 
-    ```sh
-    $ plop
-    ? Выберите язык / Choose language English
-    ? Choose documentation template Multi-page documentation
-    ? Enter the component name myFirstComponent
-    ? Select the language versions of the documentation (Press <space> to select, <a> to toggle all, <i> to invert
-    selection, and <enter> to proceed)
-     ( ) Русский
-    >(*) English
+    ```ansi
+    [0;2m[0;2m[0;2m[0;2m[0;36m?[0m Выберите язык / Choose language [0;36mРусский[0m
+    [0;36m?[0m Choose documentation template [0;36mMulti-page documentation[0m
+    [0;36m?[0m Enter the component name [0;36mmyFirstComponent[0m
+    [0;36m?[0m Выберите языковые версии документации (Press [0;36m<space>[0m to select, [0;36m<a>[0m to toggle all, [0;36m<i>[0m to invert selection, and [0;36m<enter>[0m to proceed)
+     ( ) Русский[0m[0m[0m[0m
+    [0;36m>(*) English[0m
     ```
 
 6. **Done!** You will see something like this in the terminal. This means that the script has created the necessary structure, and you will have to fill out the documentation for your extra.
 
-    ```sh
-    $ plop
-    ? Выберите язык / Choose language English
-    ? Choose documentation template Multi-page documentation
-    ? Enter the component name myFirstComponent
-    ? Select the language versions of the documentation English
-    ✔  +! 8 files added
+    ```ansi
+    [0;2m[0;2m[0;36m?[0m Выберите язык / Choose language [0;36mРусский[0m
+    [0;36m?[0m Choose documentation template [0;36mMulti-page documentation[0m
+    [0;36m?[0m Enter the component name [0;36mmyFirstComponent[0m
+    [0;36m?[0m Select the language versions of the documentation [0;36mEnglish[0m
+    [0;32m✔  +![0m 8 files added
     -> \docs\components\myfirstcomponent\events.md
     -> \docs\components\myfirstcomponent\index.md
     -> \docs\components\myfirstcomponent\quick-start.md
@@ -183,8 +178,7 @@ For those who want to add new documentation of the extra to the project, the [pl
     -> \docs\components\myfirstcomponent\interface\items.md
     -> \docs\components\myfirstcomponent\snippets\getcategories.md
     -> \docs\components\myfirstcomponent\snippets\getitems.md
-    -> \docs\components\myfirstcomponent\snippets\index.md
-    Done in 1071.49s.
+    -> \docs\components\myfirstcomponent\snippets\index.md[0m[0m
     ```
 
     ::: tip TIP

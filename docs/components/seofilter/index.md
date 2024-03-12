@@ -4,6 +4,7 @@ description: Удобное управление ЧПУ, мета-тегами �
 logo: https://modstore.pro/assets/extras/seofilter/logo-lg.png
 author: sheronov
 modstore: https://modstore.pro/packages/ecommerce/seofilter
+repository: https://github.com/sheronov/SeoFilter
 
 items: [
   { text: 'Быстрый старт с mFilter2', link: 'quick-start-mfilter2' },

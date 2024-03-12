@@ -1,4 +1,4 @@
-# Cниппеты msPointsIssue
+# Сниппеты msPointsIssue
 
 Все сниппеты msPointsIssue работают при помощи pdoTools и рассчитывают на использование [Fenom][010103] в чанках.
 

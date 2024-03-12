@@ -1,9 +1,18 @@
-.idea
 .DS_Store
+node_modules/
+.yarn
+
+.env.local
+.env.*.local
+
 .vitepress/cache
 .vitepress/dist
-node_modules
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 .temp
-*.log
+.idea
+
 package-lock.json

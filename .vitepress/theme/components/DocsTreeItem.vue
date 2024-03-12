@@ -107,7 +107,7 @@ const toggle = function () {
 
 .item:not(.is-link) > .title:hover > .icon svg,
 .icon:hover svg {
-  fill: var(--vp-c-green);
+  fill: var(--vp-c-brand-1);
 }
 
 .opened > .title > .icon svg {
@@ -116,10 +116,11 @@ const toggle = function () {
 
 :deep(.link) {
   color: var(--vp-c-text-1);
+  text-decoration: none;
 }
 
 :deep(.link:hover) {
-  color: var(--vp-c-green);
+  color: var(--vp-c-brand-1);
   text-decoration: none;
 }
 

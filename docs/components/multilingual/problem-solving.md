@@ -10,7 +10,7 @@
 
 | Настройка            | Значение                                                          |
 | -------------------- | ----------------------------------------------------------------- |
-| minishop2.action_url | `assets/components/minishop2/action.php`  // (без слеша в начале) |
+| minishop2.action_url | `assets/components/minishop2/action.php`  // (без слэша в начале) |
 
 ## Вывод названий товаров в корзине
 

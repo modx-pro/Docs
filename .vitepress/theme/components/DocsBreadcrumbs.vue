@@ -1,59 +1,27 @@
 <script setup lang="ts">
-import { Ref } from 'vue'
 import { useData, withBase, useRoute } from 'vitepress'
-import type { DocsPageData } from '../plugins/component'
 
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
-const { page }: { page: Ref<DocsPageData> } = useData()
+const { page } = useData()
 const route = useRoute()
 </script>
 
 <template>
-  <ol
-    v-if="page.breadcrumbs.length"
-    class="DocsBreadcrumbs"
-    itemscope itemtype="https://schema.org/BreadcrumbList"
-  >
-    <li
-      v-for="(item, idx) in page.breadcrumbs"
-      :key="idx"
-      itemscope itemprop="itemListElement" itemtype="https://schema.org/ListItem"
-      class="item"
-      :class="{
+  <ol v-if="page.breadcrumbs.length" class="DocsBreadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li v-for="(item, idx) in page.breadcrumbs" :key="idx" itemscope itemprop="itemListElement"
+      itemtype="https://schema.org/ListItem" class="item" :class="{
         active: item.link && withBase(item.link) === route.path,
-      }"
-    >
-      <VPLink
-        v-if="item.link && idx < page.breadcrumbs.length - 1"
-        :href="item.link"
-        :title="item.text"
-        itemprop="item"
-        class="link"
-      >
-        <span
-          itemprop="name"
-          class="name"
-          v-text="item.text"
-        />
+      }">
+      <VPLink v-if="item.link && idx < page.breadcrumbs.length - 1" :href="item.link" :title="item.text" itemprop="item"
+        class="link">
+        <span itemprop="name" class="name" v-text="item.text" />
       </VPLink>
       <template v-else>
-        <span
-          :title="item.text"
-          itemprop="name"
-          class="name"
-          v-text="item.text"
-        />
-        <link
-          v-if="item.link"
-          :href="item.link"
-          itemprop="item"
-        >
+        <span :title="item.text" itemprop="name" class="name" v-text="item.text" />
+        <link v-if="item.link" :href="item.link" itemprop="item">
       </template>
-      <meta
-        itemprop="position"
-        :content="idx.toString()"
-      >
+      <meta itemprop="position" :content="idx.toString()">
     </li>
   </ol>
 </template>
@@ -82,7 +50,7 @@ const route = useRoute()
   }
 }
 
-.item + .item::before {
+.item+.item::before {
   content: '/';
   font-weight: normal;
   margin-right: 8px;
@@ -95,7 +63,7 @@ const route = useRoute()
 }
 
 .link:hover {
-  color: var(--vp-c-green);
+  color: var(--vp-c-brand-1);
 }
 
 .name {

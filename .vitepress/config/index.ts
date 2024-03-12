@@ -1,19 +1,15 @@
 import type { DocsTheme } from '../theme/types'
-import type { DocsPageData } from '../theme/plugins/component'
-import { type HeadConfig, createContentLoader, defineConfigWithTheme } from 'vitepress'
+import { type HeadConfig, defineConfigWithTheme } from 'vitepress'
 import { config as en, searchLocale as searchLocaleEn } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
 import { addPlugins } from '../theme/plugins/markdown'
 import { components, prepareData } from '../theme/plugins/component'
-import { SitemapStream } from 'sitemap'
-import { createWriteStream } from 'node:fs'
-import { resolve } from 'node:path'
 import { slugify } from 'transliteration'
 import { fileURLToPath, URL } from 'node:url'
 import { modhost, modstore, modxpro, telegram } from '../../docs/icons'
 import { coreMembers } from '../../docs/authors'
-import { normalize } from 'vitepress/dist/client/shared'
+import { normalize } from '../theme/utils'
 
 const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
@@ -28,28 +24,35 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   srcDir: './docs',
 
   markdown: {
-    // @ts-expect-error
     languages,
     theme: {
       light: 'github-light',
       dark: 'one-dark-pro',
     },
-
+    container: {
+      tipLabel: 'Подсказка',
+      warningLabel: 'Внимание',
+      dangerLabel: 'Осторожно',
+      infoLabel: 'Информация',
+      detailsLabel: 'Подробнее',
+    },
     anchor: {
       slugify(str) {
         str = str.trim()
-            .replace(/^\d*/g, '') // Удаление чисел из начала строки
-            .replace(/[^a-zA-Zа-яА-ЯЁё0-9\-\s]/g, '') // Удаление ненужных символов
-            .replace(/\s\-\s/, '-').replace(/\-+/g, '-') // Избавление от повторяющихся символов
-            .replace(/^(.{25}[^\s]*).*/, '$1') // Ограничение количества символов
+          .replace(/^\d*/g, '') // Удаление чисел из начала строки
+          .replace(/[^a-zA-Zа-яА-ЯЁё0-9\-\s]/g, '') // Удаление ненужных символов
+          .replace(/\s\-\s/, '-').replace(/\-+/g, '-') // Избавление от повторяющихся символов
+          .replace(/^(.{25}[^\s]*).*/, '$1') // Ограничение количества символов
 
         return encodeURIComponent(slugify(str, { lowercase: true }))
       }
     },
-
-    config (md) {
+    config(md) {
       addPlugins(md)
     },
+    image: {
+      lazyLoading: true
+    }
   },
 
   head: [
@@ -86,8 +89,8 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     i18nRouting: true,
 
     logo: {
-      light: 'logo.svg',
-      dark: 'logo-dark.svg',
+      light: '/logo.svg',
+      dark: '/logo-dark.svg',
     },
 
     socialLinks: [
@@ -117,6 +120,27 @@ export default defineConfigWithTheme<DocsTheme.Config>({
           ...searchLocaleRu,
           ...searchLocaleEn,
         },
+        detailedView: false,
+        miniSearch: {
+          options: {
+            // @ts-expect-error
+            fields: ['title', 'titles', 'text', 'isComponentIndex'],
+            storeFields: ['title', 'titles', 'isComponentIndex'],
+            extractField(document, fieldName) {
+              if (fieldName === 'isComponentIndex') {
+                return /(?<=(\/en)?)\/components\/(\w*)\/?(#\w+)?$/.test(document.id)
+              }
+
+              return document[fieldName]
+            },
+          },
+          searchOptions: {
+            boostDocument(documentId, term, storedFields) {
+              if (storedFields?.isComponentIndex) return 2.0
+              return 1.0
+            },
+          },
+        },
       },
     },
 
@@ -132,14 +156,14 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     return prepareData(pageData, siteConfig)
   },
 
-  transformHead({ pageData }: { pageData: DocsPageData }) {
+  transformHead({ pageData }: { pageData }) {
     const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
     const image = pageData?.component?.logo || SITE_HOST + 'og-default.png'
     const type = pageData.component ? 'article' : 'website'
     const url = SITE_HOST + normalize(pageData.relativePath)
     const author = pageData?.component?.author?.modxpro
-        || pageData?.component?.author?.github
-        || coreMembers.at(0)?.links?.find(item => item.link.startsWith('https://modx.pro/'))?.link
+      || pageData?.component?.author?.github
+      || coreMembers.at(0)?.links?.find(item => item.link.startsWith('https://modx.pro/'))?.link
 
     const output: HeadConfig[] = [
       ['meta', { property: 'og:title', content: title }],
@@ -173,43 +197,17 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   vite: {
     resolve: {
       alias: [
-        {
-          find: /^.*\/VPSidebar\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsSidebar.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPDocFooter\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsDocFooter.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPNavBarTranslations\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsNavBarTranslations.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPNavScreenTranslations\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsNavScreenTranslations.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPLocalSearchBox\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsLocalSearchBox.vue', import.meta.url)
-          )
-        },
-        {
-          find: /^.*\/VPNavBar\.vue$/,
-          replacement: fileURLToPath(
-            new URL('../theme/components/DocsNavBar.vue', import.meta.url)
-          )
-        },
-      ],
+        'VPSidebar',
+        'VPDocFooter',
+        'VPNavBarTranslations',
+        'VPNavScreenTranslations',
+        'VPNavBar',
+      ].map(componentName => ({
+        find: new RegExp(`^.*\/${componentName}\.vue$`),
+        replacement: fileURLToPath(
+          new URL(`../theme/components/${componentName.replace(/^VP/, 'Docs')}.vue`, import.meta.url)
+        )
+      })),
     },
   },
 

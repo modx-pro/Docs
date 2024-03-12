@@ -20,15 +20,15 @@
     <form>
       <div class="form-group">
         <label>Имя</label>
-        <input class="form-control" type="text" name="name" value="Николай" placehoder="Имя">
+        <input class="form-control" type="text" name="name" value="Николай" placeholder="Имя">
       </div>
       <div class="form-group">
         <label>Телефон</label>
-        <input class="form-control" type="text" name="phone" value="98779788987" placehoder="Телефон">
+        <input class="form-control" type="text" name="phone" value="98779788987" placeholder="Телефон">
       </div>
       <div class="form-group">
         <label>Email</label>
-        <input class="form-control" type="text" name="email" value="info@site.ru" placehoder="Email">
+        <input class="form-control" type="text" name="email" value="info@site.ru" placeholder="Email">
       </div>
       <input type="hidden" name="productId" value="137">
 

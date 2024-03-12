@@ -1,6 +1,7 @@
 ---
 title: Компоненты
-layout: home
+layout: page
+sidebar: false
 ---
 
 <DocsComponentsList title="Компоненты" :search="true" />

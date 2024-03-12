@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useData, useRoute } from 'vitepress'
-import { normalizeLink } from 'vitepress/dist/client/theme-default/support/utils'
 import { useEditLink } from 'vitepress/dist/client/theme-default/composables/edit-link'
 import { usePrevNext as useVPPrevNext } from 'vitepress/dist/client/theme-default/composables/prev-next'
 import { usePrevNext } from '../composables/prev-next'
 
-import VPIconEdit from 'vitepress/dist/client/theme-default/components/icons/VPIconEdit.vue'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import VPDocFooterLastUpdated from 'vitepress/dist/client/theme-default/components/VPDocFooterLastUpdated.vue'
 
@@ -35,7 +33,7 @@ const showFooter = computed(() => {
     <div v-if="hasEditLink || hasLastUpdated" class="edit-info">
       <div v-if="hasEditLink" class="edit-link">
         <VPLink class="edit-link-button" :href="editLink.url" :no-icon="true">
-          <VPIconEdit class="edit-link-icon" aria-label="edit icon"/>
+          <span class="vpi-square-pen edit-link-icon" aria-label="edit icon" />
           {{ editLink.text }}
         </VPLink>
       </div>
@@ -47,16 +45,16 @@ const showFooter = computed(() => {
 
     <nav v-if="control.prev?.link || control.next?.link" class="prev-next">
       <div class="pager">
-        <a v-if="control.prev?.link" class="pager-link prev" :href="normalizeLink(control.prev.link)">
+        <VPLink v-if="control.prev?.link" class="pager-link prev" :href="control.prev.link">
           <span class="desc" v-html="theme.docFooter?.prev || 'Previous page'"></span>
           <span class="title" v-html="control.prev.text"></span>
-        </a>
+        </VPLink>
       </div>
       <div class="pager">
-        <a v-if="control.next?.link" class="pager-link next" :href="normalizeLink(control.next.link)">
+        <VPLink v-if="control.next?.link" class="pager-link next" :href="control.next.link">
           <span class="desc" v-html="theme.docFooter?.next || 'Next page'"></span>
           <span class="title" v-html="control.next.text"></span>
-        </a>
+        </VPLink>
       </div>
     </nav>
   </footer>
@@ -90,7 +88,7 @@ const showFooter = computed(() => {
   line-height: normal;
   font-size: 14px;
   font-weight: 500;
-  color: var(--vp-c-brand);
+  color: var(--vp-c-brand-1);
   transition: color 0.25s;
 }
 
@@ -105,14 +103,11 @@ const showFooter = computed(() => {
 }
 
 .edit-link-button:hover {
-  color: var(--vp-c-brand-dark);
+  color: var(--vp-c-brand-2);
 }
 
 .edit-link-icon {
   margin-right: 8px;
-  width: 14px;
-  height: 14px;
-  fill: currentColor;
 }
 
 .prev-next {
@@ -140,7 +135,7 @@ const showFooter = computed(() => {
 }
 
 .pager-link:hover {
-  border-color: var(--vp-c-brand);
+  border-color: var(--vp-c-brand-1);
 }
 
 .pager-link.next {
@@ -161,7 +156,7 @@ const showFooter = computed(() => {
   line-height: 20px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--vp-c-brand);
+  color: var(--vp-c-brand-1);
   transition: color 0.25s;
 }
 </style>

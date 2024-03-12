@@ -26,6 +26,6 @@ If you also use [ContentBlocks][1], you can use a field to select a form to inse
 instead of needing the template variable and form code in your template.
 This gives your content editors more control over what form is inserted at what position.
 
-At Extras > ContentBlocks, create a new fie ld using the "Formalicious Form Selector" input type and customise the template as needed.
+At Extras > ContentBlocks, create a new fie ld using the "Formalicious Form Selector" input type and customize the template as needed.
 
 [1]: https://www.modmore.com/contentblocks/

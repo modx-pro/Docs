@@ -2,15 +2,16 @@
 import { useWindowScroll } from '@vueuse/core'
 import { ref, watchPostEffect } from 'vue'
 import { useData } from 'vitepress'
-import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
-import VPNavBarTitle from 'vitepress/dist/client/theme-default/components/VPNavBarTitle.vue'
-import VPNavBarSearch from 'vitepress/dist/client/theme-default/components/VPNavBarSearch.vue'
-import VPNavBarMenu from 'vitepress/dist/client/theme-default/components/VPNavBarMenu.vue'
-import VPNavBarTranslations from 'vitepress/dist/client/theme-default/components/VPNavBarTranslations.vue'
+import { useLocalNav } from 'vitepress/theme'
+import { useSidebar } from 'vitepress/theme'
 import VPNavBarAppearance from 'vitepress/dist/client/theme-default/components/VPNavBarAppearance.vue'
-import VPNavBarSocialLinks from 'vitepress/dist/client/theme-default/components/VPNavBarSocialLinks.vue'
 import VPNavBarExtra from 'vitepress/dist/client/theme-default/components/VPNavBarExtra.vue'
 import VPNavBarHamburger from 'vitepress/dist/client/theme-default/components/VPNavBarHamburger.vue'
+import VPNavBarMenu from 'vitepress/dist/client/theme-default/components/VPNavBarMenu.vue'
+import VPNavBarSearch from 'vitepress/dist/client/theme-default/components/VPNavBarSearch.vue'
+import VPNavBarSocialLinks from 'vitepress/dist/client/theme-default/components/VPNavBarSocialLinks.vue'
+import VPNavBarTitle from 'vitepress/dist/client/theme-default/components/VPNavBarTitle.vue'
+import VPNavBarTranslations from 'vitepress/dist/client/theme-default/components/VPNavBarTranslations.vue'
 
 defineProps<{
   isScreenOpen: boolean
@@ -22,6 +23,7 @@ defineEmits<{
 
 const { y } = useWindowScroll()
 const { hasSidebar } = useSidebar()
+const { hasLocalNav } = useLocalNav()
 const { frontmatter } = useData()
 
 const classes = ref<Record<string, boolean>>({})
@@ -29,36 +31,46 @@ const classes = ref<Record<string, boolean>>({})
 watchPostEffect(() => {
   classes.value = {
     'has-sidebar': hasSidebar.value,
-    top: frontmatter.value?.layout === 'home' && y.value === 0,
+    'has-local-nav': hasLocalNav.value,
+    top: frontmatter.value.layout === 'home' && y.value === 0,
   }
 })
 </script>
 
 <template>
   <div class="VPNavBar" :class="classes">
-    <div class="container">
-      <div class="title">
-        <VPNavBarTitle>
-          <template #nav-bar-title-before><slot name="nav-bar-title-before" /></template>
-          <template #nav-bar-title-after><slot name="nav-bar-title-after" /></template>
-        </VPNavBarTitle>
-      </div>
+    <div class="wrapper">
+      <div class="container">
+        <div class="title">
+          <VPNavBarTitle>
+            <template #nav-bar-title-before>
+              <slot name="nav-bar-title-before" />
+            </template>
+            <template #nav-bar-title-after>
+              <slot name="nav-bar-title-after" />
+            </template>
+          </VPNavBarTitle>
+        </div>
 
-      <div class="content">
-        <div class="curtain" />
-        <div class="content-body">
-          <slot name="nav-bar-content-before" />
-          <VPNavBarSearch class="search" />
-          <VPNavBarMenu class="menu" />
-          <VPNavBarTranslations class="translations" />
-          <VPNavBarAppearance class="appearance" />
-          <VPNavBarSocialLinks class="social-links" />
-          <VPNavBarExtra class="extra" />
-          <slot name="nav-bar-content-after" />
-          <VPNavBarHamburger class="hamburger" :active="isScreenOpen" @click="$emit('toggle-screen')" />
+        <div class="content">
+          <div class="content-body">
+            <slot name="nav-bar-content-before" />
+            <VPNavBarSearch class="search" />
+            <VPNavBarMenu class="menu" />
+            <VPNavBarTranslations class="translations" />
+            <VPNavBarAppearance class="appearance" />
+            <VPNavBarSocialLinks class="social-links" />
+            <VPNavBarExtra class="extra" />
+            <slot name="nav-bar-content-after" />
+            <VPNavBarHamburger class="hamburger" :active="isScreenOpen" @click="$emit('toggle-screen')" />
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- <div class="divider">
+      <div class="divider-line" />
+    </div> -->
   </div>
 </template>
 
@@ -66,20 +78,38 @@ watchPostEffect(() => {
 .VPNavBar {
   position: relative;
   border-bottom: 1px solid transparent;
-  padding: 0 8px 0 24px;
   height: var(--vp-nav-height);
   pointer-events: none;
   white-space: nowrap;
+  transition: background-color 0.5s;
+}
+
+.VPNavBar.has-local-nav {
+  background-color: var(--vp-nav-bg-color);
+}
+
+@media (min-width: 960px) {
+  .VPNavBar.has-local-nav {
+    background-color: transparent;
+  }
+
+  .VPNavBar:not(.has-sidebar):not(.top) {
+    background-color: var(--vp-nav-bg-color);
+  }
+}
+
+.wrapper {
+  padding: 0 8px 0 24px;
 }
 
 @media (min-width: 768px) {
-  .VPNavBar {
+  .wrapper {
     padding: 0 32px;
   }
 }
 
 @media (min-width: 960px) {
-  /* .VPNavBar.has-sidebar {
+  /* .VPNavBar.has-sidebar .wrapper {
     padding: 0;
   } */
 
@@ -98,8 +128,8 @@ watchPostEffect(() => {
   pointer-events: none;
 }
 
-.container > .title,
-.container > .content {
+.container>.title,
+.container>.content {
   pointer-events: none;
 }
 
@@ -107,11 +137,11 @@ watchPostEffect(() => {
   pointer-events: auto;
 }
 
-/* @media (min-width: 960px) {
+@media (min-width: 960px) {
   .VPNavBar.has-sidebar .container {
     max-width: 100%;
   }
-} */
+}
 
 .title {
   flex-shrink: 0;
@@ -132,15 +162,25 @@ watchPostEffect(() => {
   }
 } */
 
-/* @media (min-width: 1440px) {
+@media (min-width: 1440px) {
   .VPNavBar.has-sidebar .title {
     padding-left: max(32px, calc((100% - (var(--vp-layout-max-width) - 64px)) / 2));
-    width: calc((100% - (var(--vp-layout-max-width) - 64px)) / 2 + var(--vp-sidebar-width) - 32px);
+    /* width: calc((100% - (var(--vp-layout-max-width) - 64px)) / 2 + var(--vp-sidebar-width) - 32px); */
   }
-} */
+}
 
 .content {
   flex-grow: 1;
+}
+
+@media (min-width: 1280px) {
+  .VPNolebaseEnhancedReadabilitiesLayoutSwitchFullWidth .VPNavBar.has-sidebar>.wrapper>.container>.content {
+    padding-left: 0 !important;
+  }
+
+  .VPNolebaseEnhancedReadabilitiesLayoutSwitchFullWidth .VPNavBar.has-sidebar>.wrapper>.container>.title {
+    width: unset !important;
+  }
 }
 
 /* @media (min-width: 960px) {
@@ -152,18 +192,18 @@ watchPostEffect(() => {
   }
 } */
 
-/* @media (min-width: 1440px) {
+@media (min-width: 1440px) {
   .VPNavBar.has-sidebar .content {
     padding-right: calc((100vw - var(--vp-layout-max-width)) / 2 + 32px);
-    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width));
+    /* padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width)); */
   }
-} */
+}
 
 .content-body {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  height: calc(var(--vp-nav-height) - 1px);
+  height: var(--vp-nav-height);
   transition: background-color 0.5s;
 }
 
@@ -171,6 +211,10 @@ watchPostEffect(() => {
   .VPNavBar:not(.top) .content-body {
     position: relative;
     background-color: var(--vp-nav-bg-color);
+  }
+
+  .VPNavBar:not(.has-sidebar):not(.top) .content-body {
+    background-color: transparent;
   }
 }
 
@@ -180,11 +224,11 @@ watchPostEffect(() => {
   }
 }
 
-.menu + .translations::before,
-.menu + .appearance::before,
-.menu + .social-links::before,
-.translations + .appearance::before,
-.appearance + .social-links::before {
+.menu+.translations::before,
+.menu+.appearance::before,
+.menu+.social-links::before,
+.translations+.appearance::before,
+.appearance+.social-links::before {
   margin-right: 8px;
   margin-left: 8px;
   width: 1px;
@@ -193,12 +237,12 @@ watchPostEffect(() => {
   content: "";
 }
 
-.menu + .appearance::before,
-.translations + .appearance::before {
+.menu+.appearance::before,
+.translations+.appearance::before {
   margin-right: 16px;
 }
 
-.appearance + .social-links::before {
+.appearance+.social-links::before {
   margin-left: 16px;
 }
 
@@ -206,27 +250,40 @@ watchPostEffect(() => {
   margin-right: -8px;
 }
 
-/* @media (min-width: 960px) {
-  .VPNavBar.has-sidebar .curtain {
-    position: absolute;
-    right: 0;
-    bottom: -31px;
-    width: calc(100% - var(--vp-sidebar-width));
-    height: 32px;
+.divider {
+  width: 100%;
+  height: 1px;
+}
+
+@media (min-width: 960px) {
+  .VPNavBar.has-sidebar .divider {
+    padding-left: var(--vp-sidebar-width);
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPNavBar.has-sidebar .divider {
+    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width));
+  }
+}
+
+.divider-line {
+  width: 100%;
+  height: 1px;
+  transition: background-color 0.5s;
+}
+
+.VPNavBar.has-local-nav .divider-line {
+  background-color: var(--vp-c-gutter);
+}
+
+@media (min-width: 960px) {
+  .VPNavBar:not(.top) .divider-line {
+    background-color: var(--vp-c-gutter);
   }
 
-  .VPNavBar.has-sidebar .curtain::before {
-    display: block;
-    width: 100%;
-    height: 32px;
-    background: linear-gradient(var(--vp-c-bg), transparent 70%);
-    content: "";
+  .VPNavBar:not(.has-sidebar):not(.top) .divider {
+    background-color: var(--vp-c-gutter);
   }
-} */
-
-/* @media (min-width: 1440px) {
-  .VPNavBar.has-sidebar .curtain {
-    width: calc(100% - ((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width)));
-  }
-} */
+}
 </style>

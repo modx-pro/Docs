@@ -1,6 +1,6 @@
 # Field Types
 
-A form consists of fields. These fields can be categorised by type. Formalicious is shipped with the most common field-types by default:
+A form consists of fields. These fields can be categorized by type. Formalicious is shipped with the most common field-types by default:
 
 - Checkboxes
 - Email
@@ -12,7 +12,7 @@ A form consists of fields. These fields can be categorised by type. Formalicious
 - Textarea
 
 All these types have a **Chunk** associated with them. These can be found in the Elements-tree, below the Formalicious-category.
-These chunks are optimised for [Bootstrap][1]
+These chunks are optimized for [Bootstrap][1]
 
 All the required fields are implemented in Formalicious, but you can change these chunks to match your needs.
 **It is recommended to duplicate and rename a field before changing it**, because an update of Formalicious will override the original chunks.

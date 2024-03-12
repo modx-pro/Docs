@@ -14,7 +14,7 @@
 {'!QuizData' | snippet: [
   'id' => 2,
   'param' => [
-    'earch' => 'ball',
+    'earth' => 'ball',
   ],
 ] | print}
 ```
@@ -28,7 +28,7 @@ Array
     (
       [question] => Какой формы Земля?
       [answer] => Шар
-      [name] => earch
+      [name] => earth
     )
 )
 ```

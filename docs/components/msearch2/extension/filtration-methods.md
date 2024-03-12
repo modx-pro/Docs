@@ -56,7 +56,7 @@ class myCustomFilter extends mse2FiltersHandler {
 | `buildFullnameFilter`     | `fullname`     | Строит фильтр, в котором выбираются и показываются полные имена пользователей. Можно применять только к id юзера, например `resource|createdby:fullname`. |
 | `buildYearFilter`         | `year`         | Строит фильтр, в котором показывается год, например `resource|createdon:year`.                                                                            |
 | `filterDefault`           | `default`      | Обычная фильтрация, работает по умолчанию, если нет специального метода.                                                                                  |
-| `filterGrandParents`      | `grandparents` | Специальная фильтрация по втрому родителю (дедушке ресурса).                                                                                              |
+| `filterGrandParents`      | `grandparents` | Специальная фильтрация по второму родителю (дедушке ресурса).                                                                                              |
 | `filterNumber`            | `number`       | Специальная фильтрация по диапазонам числовых значений.                                                                                                   |
 | `filterYear`              | `year`         | Специальная фильтрация по дате.                                                                                                                           |
 

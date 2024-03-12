@@ -10,7 +10,7 @@
 | -------------- | ------------- | -------------------------------------------------------------------------------------------------------------------- |
 | **tpl**        | `tpl.msOrder` | Чанк оформления                                                                                                      |
 | **userFields** |               | Ассоциативный массив соответствия полей заказа полям профиля пользователя в формате "поле заказа" => "поле профиля". |
-| **showLog**    |               | Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контекcте "mgr".                 |
+| **showLog**    |               | Показывать дополнительную информацию о работе сниппета. Только для авторизованных в контексте "mgr".                 |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
@@ -45,7 +45,83 @@
 <pre>[[!msOrder?tpl=``]]</pre>
 ```
 
-[![](https://file.modx.pro/files/7/3/e/73ea6a3680166bb81a59b0dd55475614s.jpg)](https://file.modx.pro/files/7/3/e/73ea6a3680166bb81a59b0dd55475614.png)
+::: details Пример
+
+```php
+Array
+(
+    [order] => Array
+        (
+            [cost] => 2 300
+            [cart_cost] => 2 300
+            [delivery_cost] => 0
+            [discount_cost] => 0
+        )
+
+    [form] => Array
+        (
+            [receiver] => Ivan Ivanov
+            [email] => ivanov@yandex.ru
+        )
+
+    [deliveries] => Array
+        (
+            [1] => Array
+                (
+                    [id] => 1
+                    [name] => Самовывоз
+                    [description] =>
+                    [price] => 0
+                    [weight_price] => 0.00
+                    [distance_price] => 0.00
+                    [logo] =>
+                    [rank] => 0
+                    [active] => 1
+                    [class] =>
+                    [properties] =>
+                    [requires] => email,receiver
+                    [free_delivery_amount] => 0.00
+                    [payments] => Array
+                        (
+                            [0] => 1
+                        )
+
+                )
+
+        )
+
+    [payments] => Array
+        (
+            [1] => Array
+                (
+                    [id] => 1
+                    [name] => Оплата наличными
+                    [description] =>
+                    [price] => 0
+                    [logo] =>
+                    [rank] => 0
+                    [active] => 1
+                    [class] =>
+                    [properties] =>
+                )
+
+        )
+
+    [errors] => Array
+        (
+        )
+
+    [scriptProperties] => Array
+        (
+            [tpl] =>
+            [userFields] =>
+            [showLog] =>
+        )
+
+)
+```
+
+:::
 
 ## Создание заказа
 

@@ -1,6 +1,4 @@
-import { Ref, computed } from 'vue'
-import type { DefaultTheme, SiteData } from 'vitepress'
-import type { DocsPageData } from '../plugins/component'
+import { computed } from 'vue'
 import { useData } from 'vitepress'
 import { ensureStartingSlash } from '../utils'
 import { getFlatSideBarLinks } from 'vitepress/dist/client/theme-default/support/sidebar'
@@ -9,14 +7,7 @@ export function useLangs({
   removeCurrent = true,
   correspondingLink = false
 } = {}) {
-  interface Data {
-    site: Ref<SiteData>
-    localeIndex: Ref<string>
-    page: Ref<DocsPageData>
-    theme: Ref<DefaultTheme.Config>
-  }
-
-  const { site, localeIndex, page, theme }: Data = useData()
+  const { site, localeIndex, page, theme } = useData()
   const currentLang = computed(() => ({
     label: site.value.locales[localeIndex.value]?.label,
     link:

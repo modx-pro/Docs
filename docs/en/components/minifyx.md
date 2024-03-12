@@ -8,7 +8,7 @@ repository: https://github.com/modx-pro/MinifyX
 ---
 # MinifyX
 
-Automate comprassion and chaching of scrips and styles on the site.
+Automate compression and chaching of scrips and styles on the site.
 
 ## Parameters
 

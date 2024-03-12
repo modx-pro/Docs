@@ -35,11 +35,13 @@
 Старый вид (`[[++assets_url]]components/office/css/main/lib/xtheme-modx.old.css`)
 
 [![](https://file.modx.pro/files/9/6/4/9640c1d8fe2742274dba1c0238491001s.jpg)](https://file.modx.pro/files/9/6/4/9640c1d8fe2742274dba1c0238491001.png)
+
 [![](https://file.modx.pro/files/e/d/6/ed6b56bc39dffbb68c8c9425399e17aas.jpg)](https://file.modx.pro/files/e/d/6/ed6b56bc39dffbb68c8c9425399e17aa.png)
 
 Новый вид (`[[++assets_url]]components/office/css/main/lib/xtheme-modx.new.css`)
 
 [![](https://file.modx.pro/files/5/a/b/5ab2fdf1b80cac13a660e07e319b57ees.jpg)](https://file.modx.pro/files/5/a/b/5ab2fdf1b80cac13a660e07e319b57ee.png)
+
 [![](https://file.modx.pro/files/e/c/4/ec40dca2f9e8e2d620cf2a47ea5a4befs.jpg)](https://file.modx.pro/files/e/c/4/ec40dca2f9e8e2d620cf2a47ea5a4bef.png)
 
 По умолчанию внешний вид выбирается в зависимости от установленной версии MODX - 2.2 или старше.
@@ -61,18 +63,20 @@
 
 Сторонние дополнения могу регистрировать свои контроллеры путём добавлением пути к ним в системном параметре **office_controllers_paths**.
 
-Для упрощения этой работы лучше всего использовать методы Office::**addExtenstion**() и Office::**removeExtension**() - принцип такой же, как и при регистрации моделей компонентов в MODX.
+Для упрощения этой работы лучше всего использовать методы Office::**addExtension**() и Office::**removeExtension**() - принцип такой же, как и при регистрации моделей компонентов в MODX.
 
 Вы можете посмотреть пример в [заготовке для разработки дополнений modExtra][6]:
 
 Работа с записями modExtra в админке
 
 [![](https://file.modx.pro/files/0/9/a/09acd54474eac1da1a18a45ef417b0c6s.jpg)](https://file.modx.pro/files/0/9/a/09acd54474eac1da1a18a45ef417b0c6.png)
+
 [![](https://file.modx.pro/files/9/9/f/99f389219e64d198d80cf34de3bcc359s.jpg)](https://file.modx.pro/files/9/9/f/99f389219e64d198d80cf34de3bcc359.png)
 
 Работа с записями modExtra снаружи сайта
 
 [![](https://file.modx.pro/files/d/6/c/d6c064323f14c85809a852decd09b8a9s.jpg)](https://file.modx.pro/files/d/6/c/d6c064323f14c85809a852decd09b8a9.png)
+
 [![](https://file.modx.pro/files/8/5/5/855490e75c5c93d364af3756d8d2bb92s.jpg)](https://file.modx.pro/files/8/5/5/855490e75c5c93d364af3756d8d2bb92.png)
 
 Зарегистрированный контроллер выводится по своему имени. В данном случае это:

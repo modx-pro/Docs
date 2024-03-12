@@ -1,20 +1,12 @@
 <script setup lang="ts">
-import { type Ref, computed } from 'vue'
+import { computed } from 'vue'
 import { DefaultTheme, useData } from 'vitepress'
-import type { DocsTheme } from '../types'
-import type { DocsPageData } from '../plugins/component'
 
-import VPImage from 'vitepress/dist/client/theme-default/components/VPImage.vue'
+import { VPImage } from 'vitepress/theme-without-fonts'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import DocsList from './DocsList.vue'
 
-export interface Data {
-  page: Ref<DocsPageData>
-  theme: Ref<DocsTheme.Config>
-  lang: Ref<string>
-}
-
-const { page, theme, lang }: Data = useData()
+const { page, theme, lang } = useData()
 
 const links = computed<DefaultTheme.SidebarItem[]>(() => {
   if (!page.value.component) {
@@ -52,51 +44,30 @@ const dependencies = computed<DefaultTheme.SidebarItem[]>(() => {
 
 const show = computed<boolean>(() => {
   return page.value?.component &&
-      (
-        page.value?.component.logo ||
-        page.value?.component.description ||
-        page.value?.component.dependencies.length ||
-        links.value.length
-      )
+    (
+      page.value?.component.logo ||
+      page.value?.component.description ||
+      page.value?.component.dependencies.length ||
+      links.value.length
+    )
 })
 </script>
 
 <template>
-  <article
-    v-if="show"
-    class="DocsComponentWidget"
-  >
-    <figure
-      v-if="page.component.logo"
-      class="figure"
-    >
-      <VPImage
-        :image="page.component.logo"
-        :alt="page.component.title"
-        class="image"
-      />
+  <article v-if="show" class="DocsComponentWidget">
+    <figure v-if="page.component.logo" class="figure">
+      <VPImage :image="page.component.logo" :alt="page.component.title" class="image" />
     </figure>
     <div class="body">
-      <VPLink
-        v-if="page.component.title"
-        :href="page.component.link"
-        class="title"
-      >
+      <VPLink v-if="page.component.title" :href="page.component.link" class="title">
         {{ page.component.title }}
       </VPLink>
       <div v-if="page.component.description" class="description">
         {{ page.component.description }}
       </div>
-      <DocsList
-        v-if="links.length"
-        :items="links"
-        class="list"
-      />
+      <DocsList v-if="links.length" :items="links" class="list" />
     </div>
-    <div
-      v-if="dependencies.length"
-      class="footer"
-    >
+    <div v-if="dependencies.length" class="footer">
       <span class="title">{{ lang === 'ru' ? 'Зависимости' : 'Dependencies' }}</span>
       <DocsList :items="dependencies" class="list" />
     </div>
@@ -105,11 +76,11 @@ const show = computed<boolean>(() => {
 
 <style scoped>
 .DocsComponentWidget {
-  border: 4px solid var(--vp-sidebar-bg-color);
+  border: 4px solid var(--vp-c-bg-soft);
   border-radius: var(--vp-border-radius);
   margin-top: 20px;
   overflow: hidden;
-  background-color: var(--vp-sidebar-bg-color);
+  background-color: var(--vp-c-bg-soft);
 }
 
 .figure {
@@ -150,7 +121,7 @@ const show = computed<boolean>(() => {
 }
 
 :deep(.link):hover {
-  color: var(--vp-c-green);
+  color: var(--vp-c-brand-1);
 }
 
 .list {

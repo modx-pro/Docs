@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { ref, watchPostEffect, watch, computed } from 'vue'
-import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock'
-import { DefaultTheme, useRoute, useData } from 'vitepress'
-import { useSidebar } from 'vitepress/dist/client/theme-default/composables/sidebar'
+import { useScrollLock, useElementVisibility, useScroll } from '@vueuse/core'
+import { DefaultTheme, useRoute, useData, inBrowser } from 'vitepress'
+import { ref, watch, computed, nextTick } from 'vue'
+import { useSidebar } from 'vitepress/theme'
 import VPSidebarItem from 'vitepress/dist/client/theme-default/components/VPSidebarItem.vue'
 
 const { sidebar: flatSidebar, sidebarGroups, hasSidebar } = useSidebar()
@@ -18,67 +18,60 @@ const props = defineProps<{
 
 // a11y: focus Nav element when menu has opened
 const navEl = ref<HTMLElement | null>(null)
+const isLocked = useScrollLock(inBrowser ? document.body : null)
 
-function lockBodyScroll() {
-  disableBodyScroll(navEl.value!, { reserveScrollBarGap: true })
-}
-
-function unlockBodyScroll() {
-  clearAllBodyScrollLocks()
-}
-
-watchPostEffect(async () => {
-  if (props.open) {
-    lockBodyScroll()
-    navEl.value?.focus()
-  } else {
-    unlockBodyScroll()
-  }
-})
+watch(
+  [props, navEl],
+  () => {
+    if (props.open) {
+      isLocked.value = true
+      navEl.value?.focus()
+    } else isLocked.value = false
+  },
+  { immediate: true, flush: 'post' }
+)
 
 const { lang } = useData()
 const activeLinkEl = ref<HTMLElement | null>(null)
 const activeGroupEl = ref<HTMLElement | null>(null)
 
-watch(() => route.path, () => {
-  if (!route.path.includes('/components/')) {
-    return
-  }
-
+function scrollToActiveElement() {
   if (!navEl.value) {
     return
   }
 
   activeLinkEl.value = navEl.value.querySelector<HTMLElement>(`a[href="${route.path}"]`)
-  activeGroupEl.value = activeLinkEl.value.closest<HTMLElement>('.VPSidebarItem.level-0')
+  activeGroupEl.value = activeLinkEl.value.closest<HTMLElement>('.group')
 
   const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vp-nav-height')) * 2
+  const isElementVisible = useElementVisibility(activeGroupEl)
 
-  if (!isInViewport(activeGroupEl.value, offset)) {
-    navEl.value.scrollTo({
-      top: activeGroupEl.value.offsetTop - offset
-    })
+  if (!isElementVisible.value) {
+    const { y } = useScroll(navEl)
+    y.value = activeGroupEl.value.offsetTop - offset
   }
+}
+
+watch(() => route.data.relativePath, (newPath, oldPath) => {
+  nextTick(() => {
+    if (
+      !newPath.includes('components/')
+      || /^(\w*\/)?components\/(?!index.md)/.test(oldPath)
+    ) {
+      return
+    }
+
+    scrollToActiveElement()
+  })
+}, { immediate: true, flush: 'post' })
+
+watch(lang, () => {
+  nextTick(scrollToActiveElement)
 }, { flush: 'post' })
-
-// tmp fix vitepress bug
-watch(lang, () => activeGroupEl.value && activeGroupEl.value.classList.remove('collapsed'), { flush: 'post' })
-
-function isInViewport(el: HTMLElement, offset: number) {
-  const { top, bottom } = el.getBoundingClientRect()
-  const { innerHeight } = window
-  return top >= offset && bottom <= offset + innerHeight
-};
 </script>
 
 <template>
-  <aside
-    v-if="hasSidebar"
-    class="VPSidebar"
-    :class="{ open }"
-    ref="navEl"
-    @click.stop
-  >
+  <aside v-if="hasSidebar" class="VPSidebar" :class="{ open }" ref="navEl" @click.stop>
     <div class="curtain" />
 
     <nav class="nav" id="VPSidebarNav" aria-labelledby="sidebar-aria-label" tabindex="-1">
@@ -88,11 +81,7 @@ function isInViewport(el: HTMLElement, offset: number) {
 
       <slot name="sidebar-nav-before" />
 
-      <div
-        v-for="item in sidebar"
-        :key="item.text"
-        class="group"
-      >
+      <div v-for="item in sidebar" :key="item.text" class="group">
         <VPSidebarItem :item="item" :depth="0" :class="{ landing: !item.items }" />
       </div>
 
@@ -113,7 +102,7 @@ function isInViewport(el: HTMLElement, offset: number) {
   max-width: 320px;
   background-color: var(--vp-sidebar-bg-color);
   opacity: 0;
-  box-shadow: var(--vp-c-shadow-3);
+  box-shadow: var(--vp-shadow-3);
   overflow-x: hidden;
   overflow-y: auto;
   transform: translateX(-100%);
@@ -126,7 +115,7 @@ function isInViewport(el: HTMLElement, offset: number) {
   visibility: visible;
   transform: translateX(0);
   transition: opacity 0.25s,
-              transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 .dark .VPSidebar {
@@ -135,9 +124,7 @@ function isInViewport(el: HTMLElement, offset: number) {
 
 @media (min-width: 960px) {
   .VPSidebar {
-    z-index: 1;
     padding-top: var(--vp-nav-height);
-    padding-bottom: 128px;
     width: var(--vp-sidebar-width);
     max-width: 100%;
     background-color: var(--vp-sidebar-bg-color);
@@ -173,7 +160,7 @@ function isInViewport(el: HTMLElement, offset: number) {
   outline: 0;
 }
 
-.group + .group {
+.group+.group {
   border-top: 1px solid var(--vp-c-divider);
   padding-top: 10px;
 }

@@ -76,7 +76,7 @@ var modelFilter = {
 
   // Turning off models function
   disableModel: function() {
-    // We look for all fields witn an unempty value
+    // We look for all fields with an unempty value
     $this.model.find('option[value!=""]').attr('selected', false).attr('disabled', true);
     // Then we hide the whole block
     $this.model.hide();
@@ -95,13 +95,13 @@ var modelFilter = {
         $this.attr('disabled', true);
         $this.hide();
       }
-      // If it doesm model should be turned on
+      // If it does model should be turned on
       else {
         $this.attr('disabled', false);
         $this.show();
       }
     });
-    // Then we show the whole block witn models
+    // Then we show the whole block with models
     $this.model.show();
   },
 }

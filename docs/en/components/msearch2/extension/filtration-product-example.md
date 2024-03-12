@@ -40,7 +40,7 @@ return array(
 
 [![](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4s.jpg)](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4.png)
 
-We add vidgets ExtJS for this field to the admin space on the path: `/assets/components/minishop2/plugins/availability/`
+We add widgets ExtJS for this field to the admin space on the path: `/assets/components/minishop2/plugins/availability/`
 
 ::: code-group
 

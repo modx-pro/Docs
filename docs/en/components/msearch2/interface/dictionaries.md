@@ -10,7 +10,7 @@ In order for mSearch2 to work normally you will need at least one morphological 
 - Russian
 - English
 - German
-- Ukranian
+- Ukrainian
 - Estonian
 
 Dictionaries are downloaded from SourceForge. This process depends on your server connection. You can choose a mirror near to it.

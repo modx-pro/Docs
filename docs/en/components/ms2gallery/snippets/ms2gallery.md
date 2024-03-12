@@ -8,7 +8,7 @@ Parameter         | By default                   | Description
 ------------------|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **parents**       |                              | List of categories for the search of results, with commas. By default the selection is limited by the current parent. If you put 0 there, the selection will not be limited.
 **resources**     |                              | List of resources for output in the results. If a good's id starts with a minus, it will not be shown in the selection.
-**showLog**       |                              | Show extra information about the work of the snippet. Obly for authorized users in "mgr" context.
+**showLog**       |                              | Show extra information about the work of the snippet. Only for authorized users in "mgr" context.
 **toPlaceholder** |                              | If it is not empty, the snippet will save all data into a placeholder with this name instead of putting them to the screen.
 **tpl**           | `tpl.ms2Gallery`             | Chunk for the whole gallery using [Fenom][1].
 **limit**         |                              | Limiting the selection of results
@@ -32,7 +32,7 @@ Before the version 2.0 there were 4 chunks in ms2Gallery:
 **tplRow** - chunk for one element of the selection (tpl.ms2Gallery.row).
 **tplOuter** - the outer part of the output of the results of the snippet's work (tpl.ms2Gallery.outer).
 **tplEmpty** - chunk that is shown if there are no results (tpl.ms2Gallery.empty).
-**tplSingle** - chunk that is ised if there is only one file in the results.
+**tplSingle** - chunk that is used if there is only one file in the results.
 
 Now it is the one and only **tpl**, which gets the $files array and has to sort it out by itself:
 

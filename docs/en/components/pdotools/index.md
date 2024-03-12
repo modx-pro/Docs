@@ -207,7 +207,7 @@ Snippet for make links to previous, next and upper pages of the current document
 ```modx
 [[!pdoNeighbors?
   &sortby=`menuindex`
-  &sortdirc=`desc`
+  &sortdir=`desc`
 ]]
 ```
 
