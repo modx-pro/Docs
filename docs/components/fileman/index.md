@@ -8,7 +8,8 @@ repository: https://github.com/createit-ru/FileMan
 
 items: [
   { text: 'Интерфейс', link: 'interface' },
-  { text: 'Сниппеты', link: 'snippets' }
+  { text: 'Сниппеты', link: 'snippets' },
+  { text: 'Настройки', link: 'settings' }
 ]
 ---
 
