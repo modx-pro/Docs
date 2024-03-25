@@ -56,6 +56,29 @@ switch($modx->event->name){
 ```
 :::
 
+### Перед отдачей ответа на фронт (OnBeforeReturnResponse)
+**OnBeforeReturnResponse** - генерируется перед отдачей ответа на фронт, вне зависимости от того какой сниппет вы используете.  
+Доступные параметры:
+* **$formName** - имя формы или пресета.
+* **$presetName** - имя пресета.
+* **$response** - данные отправляемые на фронт.
+
+::: details Пример плагина
+```php:line-numbers
+switch($modx->event->name){
+    case 'OnBeforeReturnResponse':
+        if($_POST['email'] && in_array($presetName, ['auth', 'register'])){
+            $user = $modx->getObject('modUser', ['username' => $_POST['email']]);
+            if ($user && !$user->isMember('Designers')) {
+                $response['data']['redirectUrl'] = $modx->makeUrl(54750, '', '', 'full');
+                $modx->event->returnedValues['response'] = $response;
+            }
+        }
+        break;
+}
+```
+:::
+
 ## События JavaScript
 ###  Инициализация компонента (si:init)
 Событие возникает после загрузки всех модулей, указанных в JS конфигурации. Не имеет параметров. Не может быть отменено. Чтобы без проблем использовать все модули,
@@ -260,6 +283,36 @@ document.addEventListener('si:quiz:change', (e) => {
 ```
 :::
 
+### Сброс опросника на начало (si:quiz:reset)
+Событие возникает при сбросе опросника. Событие не может преврать сброс.
+
+::: details Передаваемые параметры
+* **items** - массив элементов-шагов.
+* **btns** - список элементов кнопок.
+* **progress** - элемент индикатора прогресса.
+* **currentQuestion** - элемент текущего вопрса.
+* **totalQuestions** - элемент с общим количеством вопросов.
+* **root** - корневой элемент.
+* **finishItem** - элемент последнего этапа.
+* **pages** - элемент-обертка для отображения количества шагов.
+* **Quiz** - объект класса *Quiz* для быстрого доступа к методам и свойства этого класса.
+:::
+
+::: details Пример использования
+```js:line-numbers
+document.addEventListener('si:quiz:reset', (e) => {
+    const {items, btns, progress, currentQuestion, totalQuestions, root, finishItem, pages, Quiz} = e.detail;
+
+    // сбрасываем дополнительную индикацию прогресса
+    const steps = root.querySelectorAll('[data-qf-step]');
+    steps.length && steps.forEach(el => {
+        el.classList.remove('complete');
+        el.classList[el.dataset.qfStep !== '1' ? 'remove' : 'add']('active');
+    })
+})
+```
+:::
+
 ### Перед началом загрузки файлов (fu:uploading:start)
 Событие возникает перед началом загрузки файлов.
 
@@ -296,6 +349,26 @@ document.addEventListener('fu:uploading:start', (e) => {
 ```js:line-numbers
 document.addEventListener('fu:uploading:start', (e) => {
     const {root, form, field, files, FileUploader} = e.detail;
+
+    // можно произвести какие-то манипуляции с документом.
+})
+```
+:::
+
+### После окончания загрузки файлов (fu:preview:remove)
+Событие возникает после удаления превию файла.
+
+::: details Передаваемые параметры
+* **path** - путь к удаленному файлу.
+* **root** - элемент-обёртка для поля загрузки файлов.
+* **preview** - элемент превью.
+* **FileUploader** - объект класса *FileUploader* для быстрого доступа к методам и свойства этого класса.
+  :::
+
+::: details Пример использования
+```js:line-numbers
+document.addEventListener('fu:preview:remove', (e) => {
+    const {root, path, preview, FileUploader} = e.detail;
 
     // можно произвести какие-то манипуляции с документом.
 })
