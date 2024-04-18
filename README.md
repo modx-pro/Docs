@@ -50,7 +50,7 @@ All records from this repository are hosted on the website [docs.modx.pro](http:
 
 ## For contributors
 
-All information can be found on the [Getting Started](https://docs.modx.pro/en/quide/getting-started) page of the [website](https://docs.modx.pro/en/).
+All information can be found on the [Getting Started](https://docs.modx.pro/en/guide/getting-started) page of the [website](https://docs.modx.pro/en/).
 
 [repository]: https://github.com/modx-pro/Docs/
 [VitePress]: https://vitepress.dev
