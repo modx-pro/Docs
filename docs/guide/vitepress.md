@@ -34,7 +34,7 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 
 ```markdown
 | Tables        |      Are      |  Cool |
-| ------------- | :-----------: | ----: |
+|---------------|:-------------:|------:|
 | col 3 is      | right-aligned | $1600 |
 | col 2 is      |   centered    |   $12 |
 | zebra stripes |   are neat    |    $1 |
@@ -43,7 +43,7 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 **Вывод:**
 
 | Tables        |      Are      |  Cool |
-| ------------- | :-----------: | ----: |
+|---------------|:-------------:|------:|
 | col 3 is      | right-aligned | $1600 |
 | col 2 is      |   centered    |   $12 |
 | zebra stripes |   are neat    |    $1 |
@@ -161,6 +161,46 @@ console.log('Привет, VitePress!');
 ```
 
 :::
+
+## Уведомления в формате GFM (GitHub-flavored Markdown)
+
+VitePress также поддерживает уведомления в стиле GitHub. Они будут отображаться также, как уведомления выше.
+
+**Пример:**
+
+````markdown
+> [!NOTE]
+> This is an info box.
+
+> [!TIP]
+> This is a tip.
+
+> [!IMPORTANT]
+> This is an important message.
+
+> [!WARNING]
+> This is a warning.
+
+> [!CAUTION]
+> This is a dangerous warning.
+````
+
+**Вывод:**
+
+> [!NOTE]
+> This is an info box.
+
+> [!TIP]
+> This is a tip.
+
+> [!IMPORTANT]
+> This is an important message.
+
+> [!WARNING]
+> This is a warning.
+
+> [!CAUTION]
+> This is a dangerous warning.
 
 ## Подсветка синтаксиса в блоках кода
 
