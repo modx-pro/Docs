@@ -51,8 +51,7 @@ const emptyText = computed(() => localeIndex.value === 'en'
 </script>
 
 <template>
-  <div class="DocsComponentsList" :class="{ 'is-home': frontmatter.layout === 'home' }">
-
+  <div class="DocsComponentsList" :class="{ 'is-page': frontmatter.layout === 'page' }">
     <div class="container">
       <h1 v-if="props.title" class="title">
         {{ props.title }}
@@ -74,7 +73,7 @@ const emptyText = computed(() => localeIndex.value === 'en'
       <div v-else-if="search
         && query.length
         && !components.length
-        " class="empty">
+      " class="empty">
         <div class="empty-title" v-html="emptyTitle" />
         <div class="empty-text" v-html="emptyText" />
       </div>
@@ -179,8 +178,8 @@ const emptyText = computed(() => localeIndex.value === 'en'
   }
 }
 
-.is-home.DocsComponentsList {
-  padding: 0 24px;
+.is-page.DocsComponentsList {
+  padding-inline: 24px;
 }
 
 .container {
