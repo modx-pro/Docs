@@ -3,13 +3,14 @@ title: SendIt
 description: Компонент для работы с формами на сайте, аналог AjaxForm.
 outline: [2,3]
 lastUpdated: true
-logo: https://sendit.art-sites.ru/assets/components/sendit/web/logo.jpg
+logo: https://sendit.art-sites.ru/assets/components/sendit/logo.jpg
 modstore: https://modstore.pro/packages/users/sendit
 repository: https://github.com/ShevArtV/sendit
 author: ShevArtV 
 items: [
 { text: 'Начало работы', link: 'index' },
 { text: 'Отправка данных', link: 'sending' },
+{ text: 'Пагинация', link: 'pagination' },
 { text: 'Идентификация', link: 'identification' },
 { text: 'Создание опросников', link: 'quizform' },
 { text: 'Загрузка файлов', link: 'fileuploader' },
@@ -36,6 +37,7 @@ dependencies: ['pdoTools', 'FormIt']
 3. Создание опросников (многошаговых форм).
 4. Сохранение данных форм в localStorage и заполнение полей после перезагрузки.
 5. Авторизация, регистрация, восстановление пароля и редактирование личных данных.
+6. Вывод любых данных с разбивкой по страницам.
 
 ## Особенности
 
@@ -44,10 +46,17 @@ dependencies: ['pdoTools', 'FormIt']
 3. Есть защита от ботов и внешнего доступа.
 4. Можно корректировать работу с помощью событий.
 5. Отправка возможна на события change, input и click по кнопке. 
+6. С версии 2.0.0 для хранения временных данных используется отдельная таблица **si_sessions**.
 
 ## Стандартное использование
 
-Компонент предназначен для отправки произвольных данных на сервер, передачи их в указанный обработчик и возвращение ответа.
+::: danger
+Не вносите изменения в файл пресетов расположенный в папке *core/components/sendit/presets/sendit.inc.php*, так как при обновлении компонента все изменения будут стёрты.
+
+Создайте копию файла в удобной для вас директории и укажите путь к нему в системной настройке **si_path_to_presets**.
+:::
+
+Компонент предназначен для отправки произвольных данных на сервер, передачи их в указанный обработчик и возвращения ответа.
 Обработчиком может служить как любой из стандартных сниппетов, например *FormIt* (для отправки писем), так и сниппет написанный вами.
 
 Для того чтобы начать использование **SendIt**, достаточно разместить на странице форму или хотя бы поле для ввода данных со специальными атрибутами (подробнее про атрибуты 
@@ -104,26 +113,29 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 
 ## Системные настройки
 
-|              Ключ              |                         Описание                         |                         Значение                         |
-|:------------------------------:|:--------------------------------------------------------:|:--------------------------------------------------------:|
-|      **si_frontend_css**       |                  Путь к основным стилям                  | *[\[+assetsUrl]]components/sendit/web/css/index.min.css* |
-|       **si_frontend_js**       |               Путь к основным JS скриптам                |   *[\[+assetsUrl]]components/sendit/web/js/sendit.js*    |
-|     **si_js_config_path**      |               Путь к файлу JS конфигурации               |                    *./sendit.inc.js*                     |
-|        **si_uploaddir**        |                 Путь для загрузки файлов                 |       */assets/components/sendit/uploaded_files/*        |
-|     **si_path_to_presets**     |                     Путь к пресетам                      |     */core/components/sendit/presets/sendit.inc.php*     |
-|        **si_send_goal**        |             Отправлять цели в Яндекс.Метрику             |                          *Нет*                           |
-|       **si_counter_id**        |                   ID счётчика метрики                    |                                                          |
-|      **si_default_email**      |          Адрес для отправки писем по умолчанию           |                                                          |
-|    **si_default_emailtpl**     |                 Чанк письма по умолчанию                 |                     *siDefaultEmail*                     |
-| **si_max_sending_per_session** |  Максимальное количество отправок одной формы за сессию  |                           *2*                            |
-|  **si_pause_between_sending**  |          Пауза между отправками одной формы.             |                           *30*                           |
-|     **si_unset_params**        | Список параметров, которые не нужно возвращать в ответе. |                    *emailTo,extends*                     |
+|               Ключ               |                        Описание                         |                         Значение                         |
+|:--------------------------------:|:-------------------------------------------------------:|:--------------------------------------------------------:|
+|       **si_frontend_css**        |                 Путь к основным стилям                  | *[\[+assetsUrl]]components/sendit/web/css/index.min.css* |
+|        **si_frontend_js**        |               Путь к основным JS скриптам               |   *[\[+assetsUrl]]components/sendit/web/js/sendit.js*    |
+|      **si_js_config_path**       |              Путь к файлу JS конфигурации               |                    *./sendit.inc.js*                     |
+|         **si_uploaddir**         |                Путь для загрузки файлов                 |       */assets/components/sendit/uploaded_files/*        |
+|      **si_path_to_presets**      |                     Путь к пресетам                     |     */core/components/sendit/presets/sendit.inc.php*     |
+|         **si_send_goal**         |            Отправлять цели в Яндекс.Метрику             |                          *Нет*                           |
+|        **si_counter_id**         |                   ID счётчика метрики                   |                                                          |
+|       **si_default_email**       |          Адрес для отправки писем по умолчанию          |                                                          |
+|       **si_default_admin**       |             ID администратора по умолчанию              |                                                          |
+|     **si_default_emailtpl**      |                Чанк письма по умолчанию                 |                     *siDefaultEmail*                     |
+|  **si_max_sending_per_session**  | Максимальное количество отправок одной формы за сессию  |                           *2*                            |
+|   **si_pause_between_sending**   |           Пауза между отправками одной формы.           |                           *30*                           |
+|       **si_unset_params**        | Список параметров, которые не нужно возвращать в ответе |                    *emailTo,extends*                     |
+|         **si_precision**         |      Точность округления процентов загрузки файлов      |                           *2*                            |
+|       **si_storage_time**        |  Время хранения загруженных файлов во временной папке   |                         *86400*                          |
 
 ## Параметры по умолчанию
 Чтобы отправить данные на почту необязательно создавать пресет, достаточно добавить форме атрибут **data-si-form**.
 В этом случае будет сформирован массив параметров **"по умолчанию"**.
 Почта для отправки письма будет взята из системной настройки компонента (**si_default_email**), если вы её не указали, будет проверена настройка **ms2_email_manager**,
-если и там пусто - будет взята почта администратора (пользователь с ID = 1). Если же по какой-то причине почта так и не будет найдена,
+если и там пусто - будет взята почта администратора (пользователь с ID = **si_default_admin**). Если же по какой-то причине почта так и не будет найдена,
 в параметры будет добавлен только хук **FormItSaveForm**. Название формы, тема письма и сообщение пользователю будут взяты из словаря компонента.
 Чанк письма указан в системных настройках (**si_default_emailtpl**). Таким образов параметры по умолчанию будут выглядеть примерно так:
 
@@ -147,12 +159,32 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 ## Конфигурация JavaScript
 Компонент предоставляет возможность изменить некоторые параметры работы JavaScript.
 ::: details Конфигурация по умолчанию
-```js:line-numbers
+```js:line-numbers{3,22,29,47,76,89}
 export default function returnConfigs() {
     return {
+        PaginationFactory: {
+            pathToScripts: './modules/paginationhandler.js',
+            sendEvent: 'si:send:finish',
+            rootSelector: '[data-pn-pagination]',
+            firstPageBtnSelector: '[data-pn-first]',
+            lastPageBtnSelector: '[data-pn-last]',
+            lastPageKey: 'pnLast',
+            prevPageBtnSelector: '[data-pn-prev]',
+            nextPageBtnSelector: '[data-pn-next]',
+            morePageBtnSelector: '[data-pn-more]',
+            resultBlockSelector: '[data-pn-result="${key}"]',
+            currentPageInputSelector: '[data-pn-current]',
+            totalPagesSelector: '[data-pn-total]',
+            limitSelector: '[data-pn-limit]',
+            typeKey: 'pnType',
+            hideClass: 'v_hidden',
+            presetKey: 'siPreset',
+            rootKey: 'pnPagination'
+        },
         SaveFormData: {
             pathToScripts: './modules/saveformdata.js',
             rootSelector: '[data-si-form]',
+            noSaveSelector: '[data-si-nosave]',
             rootKey: 'siForm',
             resetEvent: 'si:send:reset'
         },
@@ -216,7 +248,7 @@ export default function returnConfigs() {
             eventSelector: '[data-si-event="${eventName}"]',
             errorClass: 'si-error'
         },
-        FileUploaderFactory:{
+        FileUploaderFactory: {
             pathToScripts: './modules/fileuploader.js',
             formSelector: '[data-si-form]',
             progressSelector: '[data-fu-progress]',
@@ -235,7 +267,7 @@ export default function returnConfigs() {
             actionUrl: 'assets/components/sendit/action.php',
             hiddenClass: 'v_hidden',
             progressClass: 'progress__line',
-            showTime: false
+            showTime: true
         }
     }
 }
@@ -249,3 +281,4 @@ export default function returnConfigs() {
 * [**FileUploader**](https://docs.modx.pro/components/sendit//fileuploader)
 * [**SaveFormData**](https://docs.modx.pro/components/sendit/saveformdata)
 * [**Notify**](https://docs.modx.pro/components/sendit/notify)
+* [**Pagination**](https://docs.modx.pro/components/sendit/pagination)

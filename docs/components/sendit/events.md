@@ -1,67 +1,104 @@
 # События
 ## Системные события
-### Перед установкой параметров (OnGetFormParams)
-**OnGetFormParams** - генерируется на этапе формирования списка параметров, позволяет полностью переписать параметры отправки формы, должен возвращать массив.  
+### События SendIt
+###
+#### OnGetFormParams - генерируется на этапе формирования списка параметров, позволяет полностью переписать параметры отправки формы, должен возвращать массив.  
 Доступные параметры:
 * **$formName** - ключ формы из атрибута **data-si-form**.
+* **$presetName** - ключ параметров пресета из атрибута **data-si-preset**.
+* **$SendIt** - экземпляр класса-обработчика.
 
 ::: details Пример плагина
 ```php:line-numbers
 switch($modx->event->name){
     case 'OnGetFormParams':
-        $values = & $modx->event->returnedValues;
-        $values = [
-            'formName' => $formName,
-            'testParam' => 'Some param'
-        ];
+        if($presetName === 'test'){
+            $SendIt->pluginParams['myparam'] = 123;
+        }        
         break;
 }
 ```
 :::
 
-### Перед проверкой файлов параметров (OnBeforeFileValidate)
-**OnBeforeFileValidate** - генерируется перед началом валидации группы файлов.  
+#### OnBeforeFileValidate - генерируется перед началом валидации группы файлов.  
 Доступные параметры:
-* **$params** - массив параметров пресета.
+* **$formName** - ключ формы из атрибута **data-si-form**.
+* **$presetName** - ключ параметров пресета из атрибута **data-si-preset**.
+* **$SendIt** - экземпляр класса-обработчика.
 * **$filesData** - массив информации о файлах.
 * **$totalCount** - количество уже загруженных пользователем файлов.
 
 ::: details Пример плагина
 ```php:line-numbers
 switch($modx->event->name){
-    case 'OnBeforeFileValidate':
-        $values = & $modx->event->returnedValues;
-        $values['params']['maxCount'] = 5;        
+    case 'OnBeforeFileValidate':       
+        $SendIt->params['maxCount'] = 5;        
         break;
 }
 ```
 :::
 
-### После проверки допустимости отправки (OnCheckPossibilityWork)
-**OnCheckPossibilityWork** - генерируется после проведения штатной проверки, перед проверкой результатов, позволяет изменить результаты проверки.  
+
+#### OnCheckPossibilityWork - генерируется после проведения штатной проверки, перед проверкой результатов, позволяет изменить результаты проверки.  
 Доступные параметры:
 * **$formName** - имя формы или пресета.
 * **$result** - результат проверки.
 
 ::: details Пример плагина
 ```php:line-numbers
+// добавляем ограничение на частоту отправок с одного IP 
 switch($modx->event->name){
     case 'OnCheckPossibilityWork':
-        $values = & $modx->event->returnedValues;
-        if($formName === 'allowForm'){
-            $values['result']['success'] = true;      
-        }          
+        if(!$session = $modx->getObject('siSession', [
+            'session_id' => $_SERVER['REMOTE_ADDR'],
+            'class_name' => $formName
+            ])){
+            SendIt::setSession($modx, ['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
+            $modx->event->returnedValues['result']['success'] = 1;
+        }else{
+           $createdon = strtotime($session->get('createdon')) + 360;
+           if($createdon > time()){
+               $modx->event->returnedValues['result'] = [
+                   'success' => 0,
+                   'message' => 'Вы пока не можете отправить эту форму.',
+                   'data' => []
+                   ];
+           }else{
+               $modx->event->returnedValues['result']['success'] = 1;
+               SendIt::setSession($modx, ['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
+           }
+        }
         break;
 }
 ```
 :::
 
-### Перед отдачей ответа на фронт (OnBeforeReturnResponse)
-**OnBeforeReturnResponse** - генерируется перед отдачей ответа на фронт, вне зависимости от того какой сниппет вы используете.  
+
+#### OnBeforePageRender - генерируется перед тем как будет проверен хэш и вызван сниппет-рендер.  
 Доступные параметры:
-* **$formName** - имя формы или пресета.
-* **$presetName** - имя пресета.
-* **$response** - данные отправляемые на фронт.
+* **$formName** - ключ формы из атрибута **data-si-form**.
+* **$presetName** - ключ параметров пресета из атрибута **data-si-preset**.
+* **$SendIt** - экземпляр класса-обработчика.
+
+::: details Пример плагина
+```php:line-numbers
+switch($modx->event->name){
+    case 'OnBeforePageRender':
+        if($_REQUEST['query']){
+            $SendIt->params['where']['pagetitle:LIKE'] = '%' . $_REQUEST['query'] . '%';
+            $SendIt->params['query'] = $_REQUEST['query'];
+        }
+        break;
+}
+```
+:::
+
+
+#### OnBeforeReturnResponse - генерируется перед отдачей ответа на фронт, вне зависимости от того какой сниппет вы используете.  
+Доступные параметры:
+* **$formName** - ключ формы из атрибута **data-si-form**.
+* **$presetName** - ключ параметров пресета из атрибута **data-si-preset**.
+* **$SendIt** - экземпляр класса-обработчика.
 
 ::: details Пример плагина
 ```php:line-numbers
@@ -70,8 +107,7 @@ switch($modx->event->name){
         if($_POST['email'] && in_array($presetName, ['auth', 'register'])){
             $user = $modx->getObject('modUser', ['username' => $_POST['email']]);
             if ($user && !$user->isMember('Designers')) {
-                $response['data']['redirectUrl'] = $modx->makeUrl(54750, '', '', 'full');
-                $modx->event->returnedValues['response'] = $response;
+                $SendIt->params['redirectUrl'] = $modx->makeUrl(54750, '', '', 'full');                
             }
         }
         break;
@@ -79,8 +115,63 @@ switch($modx->event->name){
 ```
 :::
 
+### События Identification
+###
+#### siOnUserUpdate - генерируется после обновления данных пользователя с фронта.  
+Доступные параметры:
+* **$user** - объект modUser.
+* **$profile** - объект modUserProfile.
+* **$data** - массив значений переданных с фронта.
+
+::: details Пример плагина
+```php:line-numbers
+switch($modx->event->name){
+    case 'siOnUserUpdate':
+        
+        break;
+}
+```
+:::
+
+#### OnWebLogin - генерируется при авторизации пользователя с фронта.
+Доступные параметры:
+* **$user** - объект modUser.
+* **$attributes** - параметр **rememberme**.
+* **$lifetime** - время хранения сессии.
+* **$loginContext** - контекст в который авторизуется пользователь.
+* **$addContexts** - список дополнительных контекстов для авторизации.
+* **$session_id** - ID сессии.
+
+::: details Пример плагина
+```php:line-numbers
+switch($modx->event->name){
+    case 'OnWebLogin':
+        
+        break;
+}
+```
+:::
+
+#### OnUserActivate - генерируется при активации пользователя с фронта.
+Доступные параметры:
+* **$user** - объект modUser.
+* **$profile** - объект modUserProfile.
+* **$data** - массив значений переданных с фронта.
+
+::: details Пример плагина
+```php:line-numbers
+switch($modx->event->name){
+    case 'OnWebLogin':
+        
+        break;
+}
+```
+:::
+
 ## События JavaScript
-###  Инициализация компонента (si:init)
+### События SendIt
+###
+#### si:init - инициализация компонента
 Событие возникает после загрузки всех модулей, указанных в JS конфигурации. Не имеет параметров. Не может быть отменено. Чтобы без проблем использовать все модули,
 подписывайте на это событие,
 так как после его срабатывания объект **Sendit** и его дочерние элементы точно доступны.
@@ -92,7 +183,9 @@ document.addEventListener('si:init', (e) => {
 ```
 :::
 
-### Перед отправкой (si:send:before)
+### События Отправки (Sending)
+###
+#### si:send:before - перед отправкой
 Событие возникает перед отправкой данных на сервер. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
@@ -120,7 +213,7 @@ document.addEventListener('si:send:before', (e) => {
 ```
 :::
 
-### После получения ответа (si:send:after)
+#### si:send:after - после получения ответа
 Событие возникает сразу после получения ответа от сервера и его преобразование в JSON. Может быть отменено, что прервёт дальнейшее выполнение скрипта, т.е. выполнение методов
 **success()** и **error()**.
 
@@ -146,7 +239,8 @@ document.addEventListener('si:send:after', (e) => {
 })
 ```
 :::
-### Обработка успешного ответа (si:send:success)
+
+#### si:send:success - обработка успешного ответа
 Событие возникает при получении успешного ответа от сервера и ДО срабатывания обработчика **success()**. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 ::: details Передаваемые параметры
 * **target** - может быть формой, полем, кнопкой или всем документом.
@@ -172,7 +266,8 @@ document.addEventListener('si:send:success', (e) => {
 })
 ```
 :::
-### Обработка ошибок (si:send:error)
+
+#### si:send:error - обработка ошибок
 Событие возникает при получении ответа от сервера с ошибками и ДО срабатывания обработчика **error()**. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 ::: details Передаваемые параметры
 * **target** - может быть формой, полем, кнопкой или всем документом.
@@ -198,7 +293,8 @@ document.addEventListener('si:send:error', (e) => {
 })
 ```
 :::
-### Завершение отправки (si:send:finish)
+
+#### si:send:finish - завершение отправки
 Событие возникает при получении ответа от сервера и ПОСЛЕ срабатывания обработчиков  **success()** и **error()**. Не может быть отменено.
 ::: details Передаваемые параметры
 * **target** - может быть формой, полем, кнопкой или всем документом.
@@ -223,7 +319,7 @@ document.addEventListener('si:send:finish', (e) => {
 ```
 :::
 
-### Сброс формы (si:send:reset)
+#### si:send:reset - сброс формы
 Событие возникает в конце работы метода **success()**, если в пресете указан параметр **clearFieldsOnSuccess**, или при нажатии кнопки **type="reset"**. Может быть отменено,
 что прервёт
 дальнейшее выполнение скрипта.
@@ -244,7 +340,9 @@ document.addEventListener('si:send:reset', (e) => {
 ```
 :::
 
-### Изменение шага в опроснике (si:quiz:change)
+### События Квиза (Quiz)
+###
+#### si:quiz:change - изменение шага в опроснике
 Событие возникает ДО смены шага. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
@@ -283,7 +381,30 @@ document.addEventListener('si:quiz:change', (e) => {
 ```
 :::
 
-### Сброс опросника на начало (si:quiz:reset)
+#### si:quiz:progress - изменение процента в опроснике
+Событие возникает ПОСЛЕ установки процентов прогресса. Не может быть отменено.
+
+::: details Передаваемые параметры
+* **items** - массив элементов-шагов.
+* **progressValue** -  DOM-элемент прогресс-бара.
+* **progress** - DOM-элемент обёртка прогресс-бара.
+* **itemsComplete** - массив элементов-шагов завершённых.
+* **total** - общее число шагов.
+* **root** - элемент формы.
+* **complete** - количество завершённых вопросов.
+* **percent** - процент завершённых вопросов.
+* **Quiz** - объект класса *Quiz* для быстрого доступа к методам и свойства этого класса.
+:::
+
+::: details Пример использования
+```js:line-numbers
+document.addEventListener('si:quiz:progress', (e) => {
+    const {root, progressValue, items, progress, itemsComplete, total, percent, Quiz} = e.detail;
+})
+```
+:::
+
+#### si:quiz:reset - сброс опросника на начало
 Событие возникает при сбросе опросника. Событие не может преврать сброс.
 
 ::: details Передаваемые параметры
@@ -313,7 +434,9 @@ document.addEventListener('si:quiz:reset', (e) => {
 ```
 :::
 
-### Перед началом загрузки файлов (fu:uploading:start)
+### События Загрузки файлов (Fileuploader)
+###
+#### fu:uploading:start - перед началом загрузки файлов
 Событие возникает перед началом загрузки файлов.
 
 ::: details Передаваемые параметры
@@ -334,7 +457,7 @@ document.addEventListener('fu:uploading:start', (e) => {
 ```
 :::
 
-### После окончания загрузки файлов (fu:uploading:end)
+#### fu:uploading:end - после окончания загрузки файлов
 Событие возникает после окончания загрузки всех файлов.
 
 ::: details Передаваемые параметры
@@ -347,7 +470,7 @@ document.addEventListener('fu:uploading:start', (e) => {
 
 ::: details Пример использования
 ```js:line-numbers
-document.addEventListener('fu:uploading:start', (e) => {
+document.addEventListener('fu:uploading:end', (e) => {
     const {root, form, field, files, FileUploader} = e.detail;
 
     // можно произвести какие-то манипуляции с документом.
@@ -355,8 +478,8 @@ document.addEventListener('fu:uploading:start', (e) => {
 ```
 :::
 
-### После окончания загрузки файлов (fu:preview:remove)
-Событие возникает после удаления превию файла.
+#### fu:uploading:remove - после удаления превью файла
+Событие возникает после удаления превью файла.
 
 ::: details Передаваемые параметры
 * **path** - путь к удаленному файлу.
@@ -375,7 +498,9 @@ document.addEventListener('fu:preview:remove', (e) => {
 ```
 :::
 
-### Перед сохранением данных (sf:save)
+### События Сохранения данных (Saveformdata)
+###
+#### sf:save - перед сохранением данных
 Событие возникает ДО сохранения значения поля в localStorage. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
@@ -400,7 +525,7 @@ document.addEventListener('sf:save', (e) => {
 :::
 
 
-### Перед сохранением данных (sf:set:before)
+#### sf:set:before - перед установкой сохранённых данных
 Событие возникает ПЕРЕД установкой сохранённых данных в соответствующие поля. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
@@ -425,7 +550,7 @@ document.addEventListener('sf:set:before', (e) => {
 ```
 :::
 
-### После установки значения (sf:change)
+#### sf:change - после установки сохранённых данных в конкретное поле
 Событие возникает ПОСЛЕ установки сохранённых данных в соответствующее поле. Не может быть отменено.
 
 ::: details Передаваемые параметры
@@ -434,7 +559,7 @@ document.addEventListener('sf:set:before', (e) => {
 
 ::: details Пример использования
 ```js:line-numbers
-document.addEventListener('sf:set:before', (e) => {
+document.addEventListener('sf:change', (e) => {
     const SaveFormData = e.detail.SaveFormData;
     const field = e.target;
 
@@ -443,7 +568,7 @@ document.addEventListener('sf:set:before', (e) => {
 ```
 :::
 
-### Перед сохранением данных (sf:set:after)
+#### sf:set:after - после установки всех сохранённых данных
 Событие возникает ПОСЛЕ установки сохранённых данных в соответствующие поля. Не может быть отменено.
 
 ::: details Передаваемые параметры
@@ -463,7 +588,7 @@ document.addEventListener('sf:set:after', (e) => {
 ```
 :::
 
-### Перед сохранением данных (sf:remove)
+#### sf:remove - перед очисткой сохранённых данных
 Событие возникает ПЕРЕД очисткой данных для конкретной формы. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
 
 ::: details Передаваемые параметры
@@ -479,6 +604,43 @@ document.addEventListener('sf:remove', (e) => {
     
     // отменим удаление сохраненных данных
     e.preventDefault();
+})
+```
+:::
+
+### События Пагинации (Pagination)
+###
+#### pn:handle:before - перед обработкой ответа сервера
+Событие возникает ПЕРЕД выводом результатов пагинации. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
+
+::: details Передаваемые параметры
+* **result** - объект ответа сервера.
+* **PaginationHandler** - объект класса *PaginationHandler* для быстрого доступа к методам и свойства этого класса.
+  :::
+
+::: details Пример использования
+```js:line-numbers
+document.addEventListener('pn:handle:before', (e) => {
+    const {result, PaginationHandler} = e.detail;
+    
+    // отменим удаление сохраненных данных
+    e.preventDefault();
+})
+```
+:::
+
+#### pn:handle:after - после обработки ответа сервера
+Событие возникает ПОСЛЕ вывода результатов пагинации. Не может быть отменено.
+
+::: details Передаваемые параметры
+* **result** - объект ответа сервера.
+* **PaginationHandler** - объект класса *PaginationHandler* для быстрого доступа к методам и свойства этого класса.
+:::
+
+::: details Пример использования
+```js:line-numbers
+document.addEventListener('pn:handle:after', (e) => {
+    const {result, PaginationHandler} = e.detail;   
 })
 ```
 :::
