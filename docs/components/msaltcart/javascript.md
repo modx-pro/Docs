@@ -40,7 +40,7 @@ document.addEventListener('msac:init', (e) => {
 ::: details Пример использования
 ```js:line-numbers
 document.addEventListener('msac:row:replace:after', (e) => {
-    {cart, cartName, keyNew} = e.detail;
+    const {cart, cartName, keyNew} = e.detail;
     
    const newRow = cart.querySelector(`data-msac-product="${keyNew}"`); // получаем вставленный ряд
    
@@ -63,7 +63,7 @@ document.addEventListener('msac:row:replace:after', (e) => {
 ::: details Пример использования
 ```js:line-numbers
 document.addEventListener('msac:row:update:before', (e) => {
-    {cart, cartName, data, row, html} = e.detail;   
+    const {cart, cartName, data, row, html} = e.detail;   
    
    // тут можно инициализировать плагины, например для кастомизации селекта
    // или делать что-то ещё
@@ -82,7 +82,7 @@ document.addEventListener('msac:row:update:before', (e) => {
 ::: details Пример использования
 ```js:line-numbers
 document.addEventListener('msac:totals:update:before', (e) => {
-    {cart, data} = e.detail;   
+    const {cart, data} = e.detail;   
    
    // тут можно внести какие-то изменения в данные   
 });
@@ -101,10 +101,15 @@ document.addEventListener('msac:totals:update:before', (e) => {
 ::: details Пример использования
 ```js:line-numbers
 document.addEventListener('msac:row:add:after', (e) => {
-    {cart, cartName, newRow} = e.detail;   
+   const {cart, cartName, newRow} = e.detail;   
    
    // тут можно инициализировать плагины, например для кастомизации селекта
-   // или делать что-то ещё   
+   // или показать модалку с только что добавленным товаром
+   const modalCartEl = document.getElementById('modalCart');
+   if (e.detail.cartName === 'modal' && modalCartEl) {
+       const modalCart = new bootstrap.Modal(modalCartEl, {})
+       modalCart.show();
+   }
 });
 ```
 :::
@@ -121,7 +126,7 @@ document.addEventListener('msac:row:add:after', (e) => {
 ::: details Пример использования
 ```js:line-numbers
 document.addEventListener('msac:row:remove:before', (e) => {
-    {cart, cartName, row} = e.detail;   
+    const {cart, cartName, row} = e.detail;   
    
    // тут можно инициализировать плагины, например для кастомизации селекта
    // или делать что-то ещё   
@@ -139,7 +144,7 @@ document.addEventListener('msac:row:remove:before', (e) => {
 ::: details Пример использования
 ```js:line-numbers
 document.addEventListener('msac:html:prepare:after', (e) => {
-    {element} = e.detail;   
+    const {element} = e.detail;   
    
    // тут можно инициализировать плагины, например для кастомизации селекта
    // или делать что-то ещё   
@@ -158,7 +163,7 @@ document.addEventListener('msac:html:prepare:after', (e) => {
 ::: details Пример использования
 ```js:line-numbers
 document.addEventListener('msac:cart:clean:before', (e) => {
-    {cartName, cart} = e.detail;   
+    const {cartName, cart} = e.detail;   
    
    // тут можно инициализировать плагины, например для кастомизации селекта
    // или делать что-то ещё   
