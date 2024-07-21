@@ -113,23 +113,24 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 
 ## Системные настройки
 
-|               Ключ               |                        Описание                         |                         Значение                         |
-|:--------------------------------:|:-------------------------------------------------------:|:--------------------------------------------------------:|
-|       **si_frontend_css**        |                 Путь к основным стилям                  | *[\[+assetsUrl]]components/sendit/web/css/index.min.css* |
-|        **si_frontend_js**        |               Путь к основным JS скриптам               |   *[\[+assetsUrl]]components/sendit/web/js/sendit.js*    |
-|      **si_js_config_path**       |              Путь к файлу JS конфигурации               |                    *./sendit.inc.js*                     |
-|         **si_uploaddir**         |                Путь для загрузки файлов                 |       */assets/components/sendit/uploaded_files/*        |
-|      **si_path_to_presets**      |                     Путь к пресетам                     |     */core/components/sendit/presets/sendit.inc.php*     |
-|         **si_send_goal**         |            Отправлять цели в Яндекс.Метрику             |                          *Нет*                           |
-|        **si_counter_id**         |                   ID счётчика метрики                   |                                                          |
-|       **si_default_email**       |          Адрес для отправки писем по умолчанию          |                                                          |
-|       **si_default_admin**       |             ID администратора по умолчанию              |                                                          |
-|     **si_default_emailtpl**      |                Чанк письма по умолчанию                 |                     *siDefaultEmail*                     |
-|  **si_max_sending_per_session**  | Максимальное количество отправок одной формы за сессию  |                           *2*                            |
-|   **si_pause_between_sending**   |           Пауза между отправками одной формы.           |                           *30*                           |
-|       **si_unset_params**        | Список параметров, которые не нужно возвращать в ответе |                    *emailTo,extends*                     |
-|         **si_precision**         |      Точность округления процентов загрузки файлов      |                           *2*                            |
-|       **si_storage_time**        |  Время хранения загруженных файлов во временной папке   |                         *86400*                          |
+|              Ключ              |                         Описание                         |                         Значение                         |
+|:------------------------------:|:--------------------------------------------------------:|:--------------------------------------------------------:|
+|      **si_frontend_css**       |                  Путь к основным стилям                  | *[\[+assetsUrl]]components/sendit/web/css/index.min.css* |
+|       **si_frontend_js**       |               Путь к основным JS скриптам                |   *[\[+assetsUrl]]components/sendit/web/js/sendit.js*    |
+|     **si_js_config_path**      |               Путь к файлу JS конфигурации               |                    *./sendit.inc.js*                     |
+|        **si_uploaddir**        |                 Путь для загрузки файлов                 |       */assets/components/sendit/uploaded_files/*        |
+|     **si_path_to_presets**     |                     Путь к пресетам                      |     */core/components/sendit/presets/sendit.inc.php*     |
+|        **si_send_goal**        |             Отправлять цели в Яндекс.Метрику             |                          *Нет*                           |
+|       **si_counter_id**        |                   ID счётчика метрики                    |                                                          |
+|      **si_default_email**      |          Адрес для отправки писем по умолчанию           |                                                          |
+|      **si_default_admin**      |              ID администратора по умолчанию              |                                                          |
+|    **si_default_emailtpl**     |                 Чанк письма по умолчанию                 |                     *siDefaultEmail*                     |
+| **si_max_sending_per_session** |  Максимальное количество отправок одной формы за сессию  |                           *2*                            |
+|  **si_pause_between_sending**  |           Пауза между отправками одной формы.            |                           *30*                           |
+|      **si_unset_params**       | Список параметров, которые не нужно возвращать в ответе  |                    *emailTo,extends*                     |
+|        **si_precision**        |      Точность округления процентов загрузки файлов       |                           *2*                            |
+|      **si_storage_time**       |   Время хранения загруженных файлов во временной папке   |                         *86400*                          |
+|       **si_allow_dirs**        | Список имен папок из которых можно удалять другие папки  |                     *uploaded_files*                     |
 
 ## Параметры по умолчанию
 Чтобы отправить данные на почту необязательно создавать пресет, достаточно добавить форме атрибут **data-si-form**.
