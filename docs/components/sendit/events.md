@@ -203,7 +203,7 @@ document.addEventListener('si:init', (e) => {
 ::: details Пример использования
 ```js:line-numbers
 document.addEventListener('si:send:before', (e) => {
-    const {action, target, params, headers, method, Sending} = e.detail;
+    const {action, target, fetchOptions, headers, Sending} = e.detail;
 
     // не будем отправлять код подтверждения пока длина номера телефона меньше 11 символов 
     if(target.name === 'phone' && target.value.length < 11){
