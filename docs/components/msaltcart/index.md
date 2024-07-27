@@ -11,6 +11,7 @@ items: [
   { text: 'Начало работы', link: 'index' },
   { text: 'Сниппеты', link: 'snippets' },
   { text: 'JavaScript', link: 'javascript' },
+  { text: 'События', link: 'events' },
   { text: 'Поле ввода типа число', link: 'inputnumber' },
 
 ]

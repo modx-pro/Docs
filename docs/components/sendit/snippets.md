@@ -130,7 +130,7 @@
 Сниппет-валидатор проверяет существование пользователя с таким username на сайте.
 Возвращает ошибку, если пользователь **НАЙДЕН**.
 
-## ResetPassword
+## PasswordReset
 
 ### Назначение
 
@@ -151,7 +151,7 @@
 :::
 
 ```php:line-numbers
-{'!ResetPassword' | snippet: []}
+{'!PasswordReset' | snippet: []}
 ```
 
 ## Pagination
