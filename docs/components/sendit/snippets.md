@@ -19,17 +19,17 @@
 
 ### Пример использования
 
-```smarty
+```fenom
 {'RenderForm' | snippet: [
-    'tpl' => '@FILE chunks/forms/exampleForm.tpl',
-    'presetName' => 'snippet_form',
-    'extends' => 'default',
-    'redirectTo' => 0,
-    'redirectTimeout' => 3000,
-    'clearFieldsOnSuccess' => 1,
-    'fieldNames' => 'age==Возраст,name==Имя,phone==Телефон,email==Почта',
-    'successMessage' => 'Форма отправлена!',
-    'validationErrorMessage' => 'Исправьте ошибки!'
+  'tpl' => '@FILE chunks/forms/exampleForm.tpl',
+  'presetName' => 'snippet_form',
+  'extends' => 'default',
+  'redirectTo' => 0,
+  'redirectTimeout' => 3000,
+  'clearFieldsOnSuccess' => 1,
+  'fieldNames' => 'age==Возраст,name==Имя,phone==Телефон,email==Почта',
+  'successMessage' => 'Форма отправлена!',
+  'validationErrorMessage' => 'Исправьте ошибки!'
 ]}
 ```
 
@@ -53,7 +53,7 @@
 Вызывать сниппет следует на странице с ID равным значению параметра `activationResourceId`.
 :::
 
-```smarty
+```fenom
 {'!ActivateUser' | snippet: ['toPls' => 'userData']}
 ```
 
@@ -150,7 +150,7 @@
 Вызывать сниппет следует на странице с ID равным значению параметра `activationResourceId`.
 :::
 
-```php:line-numbers
+```fenom:line-numbers
 {'!ResetPassword' | snippet: []}
 ```
 
@@ -171,8 +171,8 @@
 должен соответствовать значениям data-атрибутов **data-pn-result**, **data-pn-pagination**
 * `resultBlockSelector` - CSS-селектор блока для вставки результатов работы сниппета.
 * `resultShowMethod` - метод вывода результатов; **insert** - вставляет контент взамен имеющемуся, **append** - добавляет контент к существующему.
-* `hashParams` - список ключей параметров вызова сниппета, которые попадут в хэш. 
-* `totalVar` - ключ плейсхолдера для сохранения общего количества результатов. 
+* `hashParams` - список ключей параметров вызова сниппета, которые попадут в хэш.
+* `totalVar` - ключ плейсхолдера для сохранения общего количества результатов.
 * `limit` - количество результатов на одной странице.
 
 Остальные параметры относятся в сниппету из параметра **render**
@@ -183,22 +183,22 @@
 
 ### Пример использования
 
-```php:line-numbers
+```fenom:line-numbers
 {'!Pagination' | snippet: [
-    'snippet' => '!Pagination',
-    'render' => '!pdoResources',
-    'presetName' => 'pagination',
-    'tplEmpty' => '@FILE chunks/pdoresources/empty.tpl',
-    'pagination' => 'one',
-    'resultBlockSelector' => '[data-pn-result="one"]',
-    'resultShowMethod' => 'insert',
-    'hashParams' => '',
-    'totalVar' => 'total'
-    'limit' => 6,
-    
-    'parents' => 7,    
-    'tpl' => '@FILE chunks/pdoresources/item.tpl',        
-    'includeContent' => 1,
-    'setTotal' => 1,        
+  'snippet' => '!Pagination',
+  'render' => '!pdoResources',
+  'presetName' => 'pagination',
+  'tplEmpty' => '@FILE chunks/pdoresources/empty.tpl',
+  'pagination' => 'one',
+  'resultBlockSelector' => '[data-pn-result="one"]',
+  'resultShowMethod' => 'insert',
+  'hashParams' => '',
+  'totalVar' => 'total'
+  'limit' => 6,
+
+  'parents' => 7,
+  'tpl' => '@FILE chunks/pdoresources/item.tpl',
+  'includeContent' => 1,
+  'setTotal' => 1,
 ]}
 ```
