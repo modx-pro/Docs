@@ -12,9 +12,9 @@
 
 Пагинация работает почти так же как и pdoPage, только не требует подключения jQuery. Разметка должна быть такой
 
-```html:line-numbers
+```fenom:line-numbers
 <div data-pn-result="one">
-    {'!Pagination' | snippet: [
+  {'!Pagination' | snippet: [
     'parents' => 7,
     'query' => '',
     'snippet' => '!Pagination',
@@ -28,24 +28,26 @@
     'pagination' => 'one',
     'resultBlockSelector' => '[data-pn-result="one"]',
     'resultShowMethod' => 'insert'
-    ]}
+  ]}
 </div>
+
 <!-- PAGINATION -->
 {set $totalPages = 'one.totalPages' | placeholder}
 {set $currentPage = 'one.currentPage' | placeholder}
 {set $limit = 'one.limit' | placeholder}
-<form data-pn-pagination="one" data-pn-type="" class="{$totalPages < 2 ? 'v_hidden' : ''}">
-    <button type="button" data-pn-more="">Загрузить ещё</button>
-    <div>
-        <button type="button" data-pn-first="1"><<</button>
-        <button type="button" data-pn-prev=""><</button>
-        <input type="number" name="onepage" data-pn-current data-si-preset="pagination" min="1" max="{$totalPages}" value="{$currentPage?:1}">
-        <p>из <span data-pn-total="">{$totalPages?:1}</span></p>
-        <button type="button" data-pn-next="">></button>
-        <button type="button" data-pn-last="{$totalPages}">>></button>
-    </div>
 
-    <p>Показывать по <input type="number" name="limit" data-pn-limit min="1" max="96" value="{$limit?:6}"></p>
+<form data-pn-pagination="one" data-pn-type="" class="{$totalPages < 2 ? 'v_hidden' : ''}">
+  <button type="button" data-pn-more="">Загрузить ещё</button>
+  <div>
+    <button type="button" data-pn-first="1"><<</button>
+    <button type="button" data-pn-prev=""><</button>
+    <input type="number" name="onepage" data-pn-current data-si-preset="pagination" min="1" max="{$totalPages}" value="{$currentPage?:1}">
+    <p>из <span data-pn-total="">{$totalPages?:1}</span></p>
+    <button type="button" data-pn-next="">></button>
+    <button type="button" data-pn-last="{$totalPages}">>></button>
+  </div>
+
+  <p>Показывать по <input type="number" name="limit" data-pn-limit min="1" max="96" value="{$limit?:6}"></p>
 </form>
 ```
 
@@ -82,9 +84,9 @@
 
 Это классический вариант постраничной навигации, при котором выводится список ссылок на другие доступные страницы.
 
-```html:line-numbers
+```fenom:line-numbers
 <div data-pn-result="four">
-    {'!Pagination' | snippet: [
+  {'!Pagination' | snippet: [
     'parents' => 7,
     'query' => '',
     'snippet' => '!Pagination',
@@ -101,27 +103,31 @@
     'maxPageListItems' => 6,
     'tplPageListItem' => 'siPageListItem',
     'tplPageListWrapper' => 'siPageListWrapper',
-    ]}
+  ]}
 </div>
+
 <!-- PAGINATION -->
 {set $totalPages = 'four.totalPages' | placeholder}
 {set $currentPage = 'four.currentPage' | placeholder}
 {set $limit = 'four.limit' | placeholder}
 {set $pageList = 'four.pageList' | placeholder}
+
 <div data-pn-pagination="four" data-pn-type="" class="{$totalPages < 2 ? 'v_hidden' : ''}">
-    <button type="button" data-pn-more="">Загрузить ещё</button>
-    <ul data-pn-list>
-        {$pageList}
-    </ul>
-    <input class="v_hidden" type="number" name="fourpage" data-pn-current data-si-preset="pagination-classic" min="1" max="{$totalPages}" value="{$currentPage?:1}">
-    <p>Показывать по <input type="number" name="limit" data-pn-limit form="searchForm" min="1" max="96" value="{$limit?:12}"></p>
+  <button type="button" data-pn-more="">Загрузить ещё</button>
+  <ul data-pn-list>
+    {$pageList}
+  </ul>
+  <input class="v_hidden" type="number" name="fourpage" data-pn-current data-si-preset="pagination-classic" min="1" max="{$totalPages}" value="{$currentPage?:1}">
+  <p>Показывать по <input type="number" name="limit" data-pn-limit form="searchForm" min="1" max="96" value="{$limit?:12}"></p>
 </div>
 ```
+
 :::tip
 Для того, чтобы выводился список страниц, обязательно нужно указать значение для параметра *maxPageListItems*. И добавить в шаблон html-элемент с атрибутом *data-pn-list*
 :::
 
 Чанк по умолчанию для обёртки списка выглядит так
+
 ```html:line-numbers
 <li><a style="padding:10px" href="#" data-pn-first="1"><<</a></li>
 <li><a style="padding:10px" href="#" data-pn-prev=""><</a></li>
@@ -131,27 +137,28 @@
 ```
 
 Чанк по умолчанию для элемента списка выглядит так
+
 ```html:line-numbers
 <li><a style="padding:10px" data-pn-page="{$page}" class="{$currentPage === $page ? 'active' : ''}" href="#">{$page}</a></li>
 ```
+
 :::warning
 Атрибут *data-pn-page* обязательный.
 :::
 
 В обоих чанках доступны плейсхолдеры
+
 * **currentPage** - номер текущей страницы.
 * **totalPages** - общее число страниц.
 * **pageKey** - значение параметра *pagination*.
-
-
 
 ## Загрузка страниц при прокрутке
 
 Для отслеживания прокрутки используется Intersection Observer API. Разметка для этого способа гораздо проще. В форме есть только два обязательных поля, сама форма скрыта и содержит атрибут **data-pn-type="scroll"**
 
-```html:line-numbers
+```fenom:line-numbers
 <div data-pn-result="two">
-    {'!Pagination' | snippet: [
+  {'!Pagination' | snippet: [
     'parents' => 7,
     'snippet' => '!Pagination',
     'render' => '!pdoResources',
@@ -164,15 +171,17 @@
     'pagination' => 'two',
     'resultBlockSelector' => '[data-pn-result="two"]',
     'resultShowMethod' => 'append'
-    ]}
+  ]}
 </div>
+
 <!-- PAGINATION -->
 {set $twoTotalPages = 'two.totalPages' | placeholder}
 {set $twoCurrentPage = 'two.currentPage' | placeholder}
 {set $twoLimit = 'two.limit' | placeholder}
+
 <form data-pn-pagination="two" data-pn-type="scroll" class="v_hidden">
-    <input type="number" name="twopage" data-pn-current data-si-preset="pagination-scroll" min="1" max="{$twoTotalPages}" value="{$currentPage?:1}">
-    <input type="number" name="limit" data-pn-limit min="1" max="96" value="{$twoLimit?:6}">
+  <input type="number" name="twopage" data-pn-current data-si-preset="pagination-scroll" min="1" max="{$twoTotalPages}" value="{$currentPage?:1}">
+  <input type="number" name="limit" data-pn-limit min="1" max="96" value="{$twoLimit?:6}">
 </form>
 ```
 
@@ -184,13 +193,13 @@
 
 Ниже я приведу пример самого простого варианта решения данной задачи.
 
-```html:line-numbers
+```fenom:line-numbers
 <form action="#" id="searchForm" data-si-form data-si-nosave>
-    <input type="text" name="query" data-si-event="input" data-si-preset="pagination-search" placeholder="Поисковый запрос">
+  <input type="text" name="query" data-si-event="input" data-si-preset="pagination-search" placeholder="Поисковый запрос">
 </form>
 
 <div data-pn-result="three">
-    {'!Pagination' | snippet: [
+  {'!Pagination' | snippet: [
     'parents' => 7,
     'query' => '',
     'snippet' => '!Pagination',
@@ -204,22 +213,24 @@
     'pagination' => 'three',
     'resultBlockSelector' => '[data-pn-result="three"]',
     'resultShowMethod' => 'insert'
-    ]}
+  ]}
 </div>
+
 <!-- PAGINATION -->
 {set $totalPages = 'three.totalPages' | placeholder}
 {set $currentPage = 'three.currentPage' | placeholder}
 {set $limit = 'three.limit' | placeholder}
+
 <div data-pn-pagination="three" data-pn-type="" class="{$totalPages < 2 ? 'v_hidden' : ''}">
     <button type="button" data-pn-more="">Загрузить ещё</button>
     <div>
-        <button type="button" data-pn-first="1"><<</button>
-        <button type="button" data-pn-prev=""><</button>
-        <input type="number" name="threepage" data-pn-current data-si-preset="pagination-search" form="searchForm" min="1" max="{$totalPages}" value="{$currentPage?:1}">
-        <p>из <span data-pn-total="">{$totalPages?:1}</span>
-        </p>
-        <button type="button" data-pn-next="">></button>
-        <button type="button" data-pn-last="{$totalPages}">>></button>
+      <button type="button" data-pn-first="1"><<</button>
+      <button type="button" data-pn-prev=""><</button>
+      <input type="number" name="threepage" data-pn-current data-si-preset="pagination-search" form="searchForm" min="1" max="{$totalPages}" value="{$currentPage?:1}">
+      <p>из <span data-pn-total="">{$totalPages?:1}</span>
+      </p>
+      <button type="button" data-pn-next="">></button>
+      <button type="button" data-pn-last="{$totalPages}">>></button>
     </div>
 
     <p>Показывать по <input type="number" name="limit" data-pn-limit form="searchForm" min="1" max="96" value="{$limit?:12}"></p>
@@ -234,12 +245,12 @@
 Для того, чтобы работал поиск нужно написать плагин, который добавит в вызов сниппета **pdoResources** параметр **where**
 
 ```php:line-numbers
-switch($modx->event->name) {
-    case 'OnBeforePageRender':
-        if($_REQUEST['query']){
-            $SendIt->params['where']['pagetitle:LIKE'] = '%' . $_REQUEST['query'] . '%';
-        }
-        break;
+switch ($modx->event->name) {
+  case 'OnBeforePageRender':
+    if ($_REQUEST['query']){
+      $SendIt->params['where']['pagetitle:LIKE'] = '%' . $_REQUEST['query'] . '%';
+    }
+    break;
 }
 ```
 

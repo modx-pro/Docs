@@ -42,5 +42,5 @@ export default function returnConfigs() {
 | `handlerClassName` |                            **iziToast**                            |             имя класса библиотеки уведомлений             |
 |  `toastSelector`   |                           **.iziToast**                            |                   селектор уведомления                    |
 |  `typeSelectors`   |                            ***объект***                            |          селекторы уведомлений конкретного типа           |
-| `titleSelector`    |                        **.iziToast-title**                         |                 селектор заголовка текста                 |
+|  `titleSelector`   |                        **.iziToast-title**                         |                 селектор заголовка текста                 |
 |  `handlerOptions`  |                            ***объект***                            |                 опции показа уведомления                  |
