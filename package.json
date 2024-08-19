@@ -16,7 +16,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vitepress dev",
-    "build": "node --max_old_space_size=4096 ./node_modules/vitepress/bin/vitepress.js build",
+    "build": "vitepress build",
     "preview": "vitepress preview",
     "generate": "plop",
     "lint": "markdownlint **/*.md --disable MD045"

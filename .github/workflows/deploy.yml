@@ -18,8 +18,6 @@ jobs:
       - run: bun install --frozen-lockfile
       - name: Build
         run: bun run build
-        env:
-          NODE_OPTIONS: "--BUN_JSC_forceRAMSize=4096"
       - uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
