@@ -74,6 +74,17 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         text: 'Suggest changes to this page',
       },
 
+      notFound: {
+        title: 'Page not found',
+        quote: `
+          <p>It looks like you followed an incorrect or outdated link.</p>
+          <br>
+          <p>This site is automatically generated from files located on GitHub, so links may change.</p>
+        `,
+        linkText: 'Back to home',
+        linkLabel: 'Back to home',
+      },
+
       components: components.filter(component => component.path.startsWith('en/components/')),
     },
   }
