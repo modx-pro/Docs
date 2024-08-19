@@ -9,18 +9,17 @@ jobs:
     if: github.repository_owner == 'modx-pro'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v3
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 18
-          cache: npm
-      - run: npm install --frozen-lockfile
+          bun-version: latest
+      - run: bun install --frozen-lockfile
       - name: Build
-        run: npm run build
+        run: bun run build
         env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
+          NODE_OPTIONS: "--BUN_JSC_forceRAMSize=4096"
       - uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
