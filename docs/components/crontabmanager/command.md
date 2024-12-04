@@ -1,24 +1,6 @@
----
-title: CronTabManager
-description: Автоматически запуск скриптов по расписанию
-logo: https://modstore.pro/assets/extras/crontabmanager/logo-md.png
-author: webnitros
-modstore: https://modstore.pro/packages/utilities/crontabmanager
-repository: https://github.com/astra-modx/modx-app-crontabmanager
----
-
-# CronTabManager
-
-Это удобный инструмент для автоматического запуска заданий в фоновом режиме прямо из панели управления вашего сайта на MODX Revolution.
-
-## Что такое «crontab»?
-
-Это специальный механизм, который позволяет автоматизировать выполнение задач на сервере, например, отправку писем, обновление данных или запуск скриптов по
-расписанию. Вы задаете расписание (например, «каждый час» или «раз в неделю»), а crontab выполняет задания автоматически.
-
 # Консоль
 
-Запуск команд из под консоля ssh
+Запуск команд из под консоля ssh с помощью `php core/scheduler/artisan`
 
 ## Исполняемый файл
 
