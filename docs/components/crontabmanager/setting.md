@@ -42,7 +42,7 @@
 
 5. Сохраните изменения и выполните выход из файла: **CTRL+x && Yes Enter**
 
-Пример как будет выглядеть crontab:
+    Пример как будет выглядеть crontab:
 
     ```bash
     # modX component CronTabManager
