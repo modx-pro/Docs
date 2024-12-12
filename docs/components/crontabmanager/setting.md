@@ -8,46 +8,46 @@
 
 Добавление крон задания в linux crontab
 
-Войдите на сервер по ssh:
+1. Войдите на сервер по ssh:
 
-```bash
-ssh www-data@127.0.0.1
-```
+    ```bash
+    ssh www-data@127.0.0.1
+    ```
 
-> **Примечание**: Замените `user` и `ip адрес 127.0.0.1` на имя пользователя, под которым работает сайт, и IP адрес для подключения.
+    > **Примечание**: Замените `user` и `ip адрес 127.0.0.1` на имя пользователя, под которым работает сайт, и IP адрес для подключения.
 
-Выполните команду от вашего пользователя:
+2. Выполните команду от вашего пользователя:
 
-```bash
-crontab -e
-```
+    ```bash
+    crontab -e
 
-> **Примечание**: Для выполнения от имени ROOT-пользователя:
+    ```
 
-```bash
-crontab -u www-data -e
-```
+    > **Примечание**: Для выполнения от имени ROOT-пользователя:
 
-> **Внимание!!** Не выполняйте команду `crontab -e` под ROOT пользователем без явного указания USER, иначе после исполнения команды у сайта пропадут доступы к
-> созданным файлам.
+    ```bash
+    crontab -u www-data -e
+    ```
 
-3. Откроется редактор [nano](https://www.digitalocean.com/community/tutorials/how-to-use-cron-to-automate-tasks-ubuntu-1804), при первом запуске может спросить,
-   какой редактор использовать по умолчанию.
+    > **Внимание!!** Не выполняйте команду `crontab -e` под ROOT пользователем без явного указания USER, иначе после исполнения команды у сайта пропадут доступы к
+    > созданным файлам.
+
+3. Откроется редактор [nano](https://www.digitalocean.com/community/tutorials/how-to-use-cron-to-automate-tasks-ubuntu-1804), при первом запуске может спросить, какой редактор использовать по умолчанию.
 
 4. Добавьте строку в конец файла:
 
-```bash
-*/1    *       *       *       *       /usr/local/bin/php /var/www/html/core/scheduler/artisan schedule:run 2>&1
-```
+    ```bash
+    */1    *       *       *       *       /usr/local/bin/php /var/www/html/core/scheduler/artisan schedule:run 2>&1
+    ```
 
 5. Сохраните изменения и выполните выход из файла: **CTRL+x && Yes Enter**
 
 Пример как будет выглядеть crontab:
 
-```bash
-# modX component CronTabManager
-*/1    *       *       *       *       /usr/local/bin/php /var/www/html/core/scheduler/artisan schedule:run 2>&1
-```
+    ```bash
+    # modX component CronTabManager
+    */1    *       *       *       *       /usr/local/bin/php /var/www/html/core/scheduler/artisan schedule:run 2>&1
+    ```
 
 **CronTab** запускается каждую минуту и выполняет команду от имени вашего пользователя `www-data`.
 
@@ -74,7 +74,7 @@ su - www-data
 
 ## Schedule Work console
 
-Для подключения через supervesor (php artisan schedule:work):
+Для подключения через supervisor (php artisan schedule:work):
 
 ```ini
 [program:crontab]

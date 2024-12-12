@@ -83,7 +83,7 @@ php artisan mysupertask --arg_name=water
 class CrontabControllerMySuperTask extends modCrontabController
 {
     protected $signature = 'mysupertask {--arg_name}'; // необязательные аргументы
-    
+
     public function process()
     {
         $name = $this->getArgument('arg_name', 'world');
@@ -115,11 +115,11 @@ php artisan crontab:add --command=mysupertask
 ```shell
 php artisan schedule:list
 
-# ------ -------- ------------- --------------------- ----------------- --------------------------- 
-#  Path   Active   Crontab       Next run              Diff              Comment                    
-# ------ -------- ------------- --------------------- ----------------- --------------------------- 
+# ------ -------- ------------- --------------------- ----------------- ---------------------------
+#  Path   Active   Crontab       Next run              Diff              Comment
+# ------ -------- ------------- --------------------- ----------------- ---------------------------
 #  demo   Yes      */1 * * * *   2024-11-30 05:48:00   через 6 секунд    Тестовое задание для демонстрации
-# ------ -------- ------------- --------------------- ----------------- --------------------------- 
+# ------ -------- ------------- --------------------- ----------------- ---------------------------
 ```
 
 #### Запуск текущих заданий Cron
@@ -129,12 +129,11 @@ php artisan schedule:list
 ```shell
 php artisan schedule:run
 # // Тестовое задание для демонстрации работы контроллера...
-# 
-# [INFO] [1 1 * * *] mysupertask.php run 
+#
+# [INFO] [1 1 * * *] mysupertask.php run
 ```
 
 ### Настройка времени для crontab
 
 В административной части сайта можно настроить время для крон
 [manager](http://127.0.0.1:9001/manager/?a=home&namespace=crontabmanager)
-
