@@ -83,7 +83,7 @@ document.addEventListener('si:send:after', (e) => {
 if($flag){
     return $SendIt->success($successMessage, ['somedata' => 1234]);
 }else{
-    return $SendIt->error($validationErrorMessage, ['erorrs' => ['fieldName' => 'Тут текст ошибки']]);
+    return $SendIt->error($validationErrorMessage, ['errors' => ['fieldName' => 'Тут текст ошибки']]);
 }
 ```
 
