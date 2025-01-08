@@ -212,7 +212,8 @@
     'setTotal' => 1,
     'pagination' => 'three',
     'resultBlockSelector' => '[data-pn-result="three"]',
-    'resultShowMethod' => 'insert'
+    'resultShowMethod' => 'insert',
+    'hashParams' => 'pagination,limit,presetName,query'
   ]}
 </div>
 
@@ -247,6 +248,7 @@
 ```php:line-numbers
 switch ($modx->event->name) {
   case 'OnBeforePageRender':
+    $SendIt->params['query'] = $_REQUEST['query'] ?? '';
     if ($_REQUEST['query']){
       $SendIt->params['where']['pagetitle:LIKE'] = '%' . $_REQUEST['query'] . '%';
     }
