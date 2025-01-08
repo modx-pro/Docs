@@ -14,6 +14,8 @@ _Список событий прописан в порядке их испол�
 - [xParserOnFilterSourceItems](/components/xparser/events/xparseronfiltersourceitems)
 - [xParserOnBeforeTaskParse](/components/xparser/events/xparseronbeforetaskparse)
 - [xParserOnTaskItemParse](/components/xparser/events/xparserontaskitemparse)
+- [xParserOnAfterPagesCollected](/components/xparser/events/xparseronafterpagescollected)
 - [xParserOnBeforeTaskActions](/components/xparser/events/xparseronbeforetaskactions)
+- [xParserOnTaskRowsPrepared](/components/xparser/events/xparserontaskrowsprepared)
 - [xParserOnTaskParseDone](/components/xparser/events/xparserontaskparsedone)
 - [Примеры](/components/xparser/events/examples)

@@ -1,24 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useData } from 'vitepress'
-import { useLangs } from 'vitepress/dist/client/theme-default/composables/langs'
 
 import DocsButton from './DocsButton.vue'
 
 const { site, theme } = useData()
-const { localeLinks } = useLangs({ removeCurrent: false })
 
-const root = ref<string>('/')
-onMounted(() => {
-  const path = window.location.pathname
-    .replace(site.value.base, '')
-    .replace(/(^.*?\/).*$/, '/$1')
-
-  if (localeLinks.value.length) {
-    root.value =
-      localeLinks.value.find(({ link }) => link.startsWith(path))?.link ||
-      localeLinks.value[0].link
-  }
+const root = computed(() => {
+  return site.value.localeIndex !== 'root' ? (site.value.base + site.value.localeIndex + '/') : site.value.base
 })
 </script>
 
@@ -28,9 +17,7 @@ onMounted(() => {
     <h1 class="title">{{ theme.notFound?.title ?? 'Страница не найдена' }}</h1>
     <div class="divider" />
     <blockquote class="quote">
-      <template v-if="theme.notFound?.quote">
-        {{ theme.notFound?.quote }}
-      </template>
+      <div v-if="theme.notFound?.quote" v-html="theme.notFound?.quote" />
       <template v-else>
         <p>Похоже, что вы перешли по неверной или устаревшей ссылке.</p>
         <p>Информация, которую вы искали, где-то здесь. Вы можете воспользоваться поиском.</p>

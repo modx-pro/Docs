@@ -1,19 +1,23 @@
 # Сохранение данных
-Значения всех полей форм с атрибутом **data-si-form** и заполненным значением этого атрибута, кроме полей типа *file* и *password*, будут сохранены в localStorage, 
+
+Значения всех полей форм с атрибутом **data-si-form** и заполненным значением этого атрибута, кроме полей типа *file* и *password*, будут сохранены в localStorage,
 до успешной отправки этой формы или сброса значений формы.
+
 ::: warning
 Сохранение значений происходит при изменении в поле, поэтому, если используете плагины для кастомизации полей ввода или
 списков, убедитесь, что они генерируют событие *change* или самостоятельно инициируйте это событие.
 :::
+
 ::: info
 Чтобы отключить сохранение данных, добавьте форме атрибут **data-si-nosave**
 :::
-После перезагрузки страницы значения будут установлены в соответствующие поля, будут отмечены чекбоксы и переключатели, выбраны опции в 
+
+После перезагрузки страницы значения будут установлены в соответствующие поля, будут отмечены чекбоксы и переключатели, выбраны опции в
 списках, как с одним, так и с множественным выбором.
+
 ::: info
 При установке значений инициируется событие *change* на изменяемом поле.
 :::
-
 
 ## Конфигурация JavaScript
 
@@ -21,15 +25,15 @@
 
 ```js:line-numbers{3-12}
 export default function returnConfigs() {
-    return {
-        SaveFormData: {
-            pathToScripts: './modules/saveformdata.js',
-            rootSelector: '[data-si-form]',
-            noSaveSelector: '[data-si-nosave]',
-            rootKey: 'siForm',
-            resetEvent: 'si:send:reset'
-        },
-    }
+  return {
+    SaveFormData: {
+      pathToScripts: './modules/saveformdata.js',
+      rootSelector: '[data-si-form]',
+      noSaveSelector: '[data-si-nosave]',
+      rootKey: 'siForm',
+      resetEvent: 'si:send:reset'
+    },
+  }
 }
 ```
 
@@ -42,4 +46,3 @@ export default function returnConfigs() {
 | `noSaveSelector` |     **[data-si-nosave]**      |     селектор  для отключения сохранения данных формы      |
 |    `rootKey`     |          **siForm**           |          ключ свойства *dataset* с именем формы           |
 |   `resetEvent`   |       **si:send:reset**       |               событие сброса значений формы               |
-
