@@ -6,6 +6,8 @@
 
 ![Видео-обзор](https://www.youtube.com/watch?v=Tx-NXId8vYI)
 
+[RuTube](https://rutube.ru/video/97d50d3046d9d6f80293e602e3640cad/)
+
 ## Поддерживаемые форматы файлов
 
 - CSV
