@@ -6,6 +6,8 @@
 
 [Видео-обзор](https://www.youtube.com/watch?v=e-1WLTRmA4I)
 
+[RuTube](https://rutube.ru/video/6b569e10e476212f1cab4a5cecf8b842/)
+
 ## Интеграция
 
 msImportExport интегрирован с дополнениями:

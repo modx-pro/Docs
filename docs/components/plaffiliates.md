@@ -28,6 +28,8 @@ modstore: https://modstore.pro/packages/other/plaffiliates
 
 [![plAffiliates - Видео-обзор](https://file.modx.pro/files/c/9/f/c9f8f50a1e6ffdc62af65147be4d667d.jpg)](https://www.youtube.com/watch?v=_aQuQaUsW1I)
 
+[RuTube](https://rutube.ru/video/06d5bd7c3075588d40f95f6e48e8d994/)
+
 ## Создание групп для полей филиалов
 
 На странице "Пакеты" -> Филиалы" во вкладке "Менеджер полей филиалов" вы можете создать свои группы для полей, что в дальнейшем позволит вам в различных сниппетах, как получать нужные поля передав название группы, так и использовать отдельные чанки для каждой группы полей.

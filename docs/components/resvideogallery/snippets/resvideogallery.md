@@ -72,7 +72,7 @@
 ### Пример вызова сниппета ResVideoGallery для совместного вывода видео и фото из фотогалереи miniShop2
 
 ```modx
-[[ResVideoGallery?
+[[!ResVideoGallery?
   &limit=`3`
   &resources=`5`
   &photoGallery=`ms2Images`
