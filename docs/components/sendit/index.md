@@ -286,7 +286,7 @@ export default function returnConfigs() {
 
 * [**Sending**](https://docs.modx.pro/components/sendit/sending)
 * [**QuizForm**](https://docs.modx.pro/components/sendit/quizform)
-* [**FileUploader**](https://docs.modx.pro/components/sendit//fileuploader)
+* [**FileUploader**](https://docs.modx.pro/components/sendit/fileuploader)
 * [**SaveFormData**](https://docs.modx.pro/components/sendit/saveformdata)
 * [**Notify**](https://docs.modx.pro/components/sendit/notify)
 * [**Pagination**](https://docs.modx.pro/components/sendit/pagination)
