@@ -19,16 +19,16 @@ Cabinet - Комплексное решение для быстрого внед
 - Интеграция с социальными сетями для регистрации/авторизации
 - Верификация телефона через SMS/Voice OTP
 - Интеграция с дополнениями:
-  * [miniShop2](https://modstore.pro/packages/ecommerce/minishop2)
-  * [Polylang](https://modstore.pro/packages/other/polylang)
-  * [MyFavorites](https://modstore.pro/packages/other/myfavorites)
-  * [msInShopNotify](https://modstore.pro/packages/alerts-mailing/msinshopnotify)
-  * [msMultiCurrency](https://modstore.pro/packages/integration/msmulticurrency)
+    * [miniShop2](https://modstore.pro/packages/ecommerce/minishop2)
+    * [Polylang](https://modstore.pro/packages/other/polylang)
+    * [MyFavorites](https://modstore.pro/packages/other/myfavorites)
+    * [msInShopNotify](https://modstore.pro/packages/alerts-mailing/msinshopnotify)
+    * [msMultiCurrency](https://modstore.pro/packages/integration/msmulticurrency)
 - Расширенные возможности для интернет-магазина:
-  * Автоматическая авторизация при первом заказе
-  * История и управление заказами
-  * Повторный заказ товаров
-  * Шаринг заказов
+    * Автоматическая авторизация при первом заказе
+    * История и управление заказами
+    * Повторный заказ товаров
+    * Шаринг заказов
 - Гибкое управление профилем пользователя
 - Защита от CSRF-атак
 - Интеграция с reCAPTCHA 3
@@ -62,7 +62,7 @@ Cabinet - Комплексное решение для быстрого внед
     * Статус показа в меню
     * Шаблон
     * Содержимое
-  
+
 [![Настройка установки](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/install.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/install.png)
 
 [![Основные опции](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/base.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/base.png)
@@ -148,8 +148,8 @@ Cabinet - Комплексное решение для быстрого внед
    Позволяет разрешить или запретить пользователям авторизоваться через социальные сети.
 
 3. **`Регистрировать новых пользователей через социальные сети` (ключ cabinet_social_signup):**
-  - Разрешает или запрещает регистрацию новых пользователей через социальные сети.
-  - Если регистрация отключена, но опция "Авторизация пользователей через социальные сети" включена, пользователи смогут добавлять социальные сети для авторизации в настройках своего профиля.
+- Разрешает или запрещает регистрацию новых пользователей через социальные сети.
+- Если регистрация отключена, но опция "Авторизация пользователей через социальные сети" включена, пользователи смогут добавлять социальные сети для авторизации в настройках своего профиля.
 
 4. **`Включить социальные сети` (ключ cabinet_enable_socials):**
    Позволяет глобально включать или отключать использование социальных сетей.
@@ -244,7 +244,7 @@ Cabinet - Комплексное решение для быстрого внед
 
 Сниппет для вывода списка заказов пользователя.
 
-[![Вывода списка заказов](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/orders.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/orders.png) 
+[![Вывода списка заказов](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/orders.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/orders.png)
 
 #### Параметры
 
@@ -275,7 +275,7 @@ Cabinet - Комплексное решение для быстрого внед
 
 Сниппет для вывода детальной информации о заказе.
 
-[![Вывод деталей заказа](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/order_details.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/order_details.png) 
+[![Вывод деталей заказа](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/order_details.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/order_details.png)
 
 #### Параметры
 
@@ -367,7 +367,6 @@ Cabinet - Комплексное решение для быстрого внед
 | available | Статус доступности. Допустимые значения 0 и 1 |
 | tools     | Ссылка на инстанс класса  CabinetTools        |
 
-
 ### cabinetBeforePrepareOrderProduct
 
 Событие подготовки данных товара из заказа
@@ -382,6 +381,57 @@ Cabinet - Комплексное решение для быстрого внед
 | order      | Ссылка на инстанс класса msOrder       |
 | tools      | Ссылка на инстанс класса  CabinetTools |
 
+### cabinetBeforeUploadAvatar
+
+Событие перед загрузкой аватарки
+
+#### Параметры
+
+| Название | Описание                               |
+|----------|----------------------------------------|
+| userId   | ID пользователя                        |
+| user     | Ссылка на инстанс класса  modUser      |
+| file     | Файл аватарки                          |
+| tools    | Ссылка на инстанс класса  CabinetTools |
+
+### cabinetUploadAvatar
+
+Событие загрузки аватарки
+
+#### Параметры
+
+| Название | Описание                               |
+|----------|----------------------------------------|
+| userId   | ID пользователя                        |
+| user     | Ссылка на инстанс класса  modUser      |
+| file     | Файл аватарки                          |
+| url      | Url на загруженную аватарку            |
+| tools    | Ссылка на инстанс класса  CabinetTools |
+
+### cabinetBeforeRemoveAvatar
+
+Событие перед удалением аватарки
+
+#### Параметры
+
+| Название | Описание                               |
+|----------|----------------------------------------|
+| userId   | ID пользователя                        |
+| user     | Ссылка на инстанс класса  modUser      |
+| file     | Файл аватарки                          |
+| tools    | Ссылка на инстанс класса  CabinetTools |
+
+### cabinetRemoveAvatar
+
+Событие удаление аватарки
+
+#### Параметры
+
+| Название | Описание                               |
+|----------|----------------------------------------|
+| userId   | ID пользователя                        |
+| user     | Ссылка на инстанс класса  modUser      |
+| tools    | Ссылка на инстанс класса  CabinetTools |
 
 ## 💻 Разработка
 
@@ -392,9 +442,10 @@ Cabinet - Комплексное решение для быстрого внед
 - Тема `auth`: сообщения авторизации
 - Тема `profile`: сообщения профиля
 
-[![Лексиконы auth](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/lexicon_auth.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/lexicon_auth.png)
+[![](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/lexicon_auth.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/lexicon_auth.png)
 
-[![Лексиконы profile](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/lexicon_profile.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/lexicon_profile.png)
+[![](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/lexicon_profile.png)](https://raw.githubusercontent.com/Prihod/modx-extras-docs/main/Cabinet/images/lexicon_profile.png)
+
 ### Консольные скрипты
 
 **core/components/cabinet/scripts/generate_orders_share_key.php**  
