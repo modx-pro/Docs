@@ -210,9 +210,9 @@ dependencies: [ 'pdoTools', 'SendIt', 'miniShop2' ]
                 <button class="ms-input-number-btn ms-input-number-plus btn btn-sm btn-secondary" type="button">&#43;</button>
             </div>
         </form>
-        <form class="col-2 mb-3" data-si-form data-si-preset="cart_remove">
+        <form class="col-2 mb-3" data-si-form>
             <input type="hidden" name="key" value="{$key}">
-            <button class="btn btn-sm btn-danger" type="button" data-si-event="click">&times;</button>
+            <button class="btn btn-sm btn-danger" type="button" data-si-preset="cart_remove" data-si-event="click">&times;</button>
         </form>
         <div class="col-3 mb-3">
             <span class="text-nowrap">{$weight} {'ms2_frontend_weight_unit' | lexicon}</span>
@@ -289,9 +289,9 @@ dependencies: [ 'pdoTools', 'SendIt', 'miniShop2' ]
 Внутри формы следует разместить скрытый input с именем **key** и значением равным ключу товара. А так же кнопку с типом **button** и атрибутом **data-si-event="click"**.
 
 ```fenom:line-numbers
-<form class="col-2 mb-3" data-si-form data-si-preset="cart_remove">
+<form class="col-2 mb-3" data-si-form>
     <input type="hidden" name="key" value="{$key}">
-    <button class="btn btn-sm btn-danger" type="button" data-si-event="click">&times;</button>
+    <button class="btn btn-sm btn-danger" type="button" data-si-preset="cart_remove" data-si-event="click">&times;</button>
 </form>
 ```
 
