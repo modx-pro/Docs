@@ -207,8 +207,30 @@ dependencies: [ 'pdoTools', 'SendIt', 'miniShop2' ]
         <div class="small">
           Размеры: {$options['size']}
         </div>
-        <div class="small">
-          Вес: {$options['weight']}
+
+        <form class="col-10 mb-3" data-si-form data-si-preset="cart_change" data-si-event="change" data-si-nosave>
+            <input type="hidden" name="key" value="{$key}"/>
+            <div class="ms-input-number-wrap">
+                <button class="ms-input-number-btn ms-input-number-minus btn btn-sm btn-secondary" type="button">&#8722;</button>
+                <input class="ms-input-number-emulator" value="{$count}" name="count" data-msac-prop="count" type="text">
+                <button class="ms-input-number-btn ms-input-number-plus btn btn-sm btn-secondary" type="button">&#43;</button>
+            </div>
+        </form>
+        <form class="col-2 mb-3" data-si-form>
+            <input type="hidden" name="key" value="{$key}">
+            <button class="btn btn-sm btn-danger" type="button" data-si-preset="cart_remove" data-si-event="click">&times;</button>
+        </form>
+        <div class="col-3 mb-3">
+            <span class="text-nowrap">{$weight} {'ms2_frontend_weight_unit' | lexicon}</span>
+        </div>
+        <div class="col-6 mb-3">
+            <span class="mr-2 text-nowrap">{$price | replace: ' ': '' | number: 0: '.': ' '} {'ms2_frontend_currency' | lexicon}</span>
+            {if $old_price?}
+                <s class="old_price text-nowrap">{$old_price | replace: ' ': '' | number: 0: '.': ' '} {'ms2_frontend_currency' | lexicon}</s>
+            {/if}
+        </div>
+        <div class="col-3 mb-3">
+            <span class="mr-2 text-nowrap"><span data-msac-prop="cost">{$cost | replace: ' ': '' | number: 0: '.': ' '}</span> {'ms2_frontend_currency' | lexicon}</span>
         </div>
       </form>
     </div>
@@ -303,9 +325,9 @@ dependencies: [ 'pdoTools', 'SendIt', 'miniShop2' ]
 Внутри формы следует разместить скрытый input с именем **key** и значением равным ключу товара. А так же кнопку с типом **button** и атрибутом **data-si-event="click"**.
 
 ```fenom:line-numbers
-<form class="col-2 mb-3" data-si-form data-si-preset="cart_remove">
-  <input type="hidden" name="key" value="{$key}">
-  <button class="btn btn-sm btn-danger" type="button" data-si-event="click">&times;</button>
+<form class="col-2 mb-3" data-si-form>
+    <input type="hidden" name="key" value="{$key}">
+    <button class="btn btn-sm btn-danger" type="button" data-si-preset="cart_remove" data-si-event="click">&times;</button>
 </form>
 ```
 
