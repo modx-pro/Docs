@@ -36,6 +36,8 @@ MyFavorites – компонент, который позволяет добав
 
 [![Видео-обзор](https://file.modx.pro/files/4/b/4/4b4e91f1a63403f7c9a1447c586ee498.png)](https://youtu.be/X8GBbn_ycjI)
 
+[RuTube](https://rutube.ru/video/private/0ae885535a849d69bd7122020f479726)
+
 ## Быстрый старт
 
 ### Вызов сниппетов

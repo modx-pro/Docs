@@ -33,7 +33,13 @@
 
 ```php
 <?php
+$modx->setLogLevel(xPDO::LOG_LEVEL_FATAL);
 $ms2 = $modx->getService('miniShop2');
+$categories = [];
+$q = $modx->newQuery('msCategory', ['class_key' => 'msCategory'])->select('id');
+if ($q->prepare()->execute()) {
+  $categories = @$q->stmt->fetchAll(PDO::FETCH_COLUMN)?:[];
+}
 foreach ([
   'size' => null,
   'color' => null,
@@ -93,6 +99,15 @@ foreach ([
     'caption' => 'Группа товаров',
     'type' => 'textfield',
   ],
+  'main_product' => [
+    'caption' => 'Главный товар группы',
+    'type' => 'combo-boolean',
+  ],
+  'source' => [
+    'key' => 'service',
+    'caption' => 'Источник',
+    'type' => 'textfield',
+  ],
   'count' => [
     'key' => 'instock',
     'caption' => 'Кол-во на складе',
@@ -102,31 +117,53 @@ foreach ([
     'caption' => 'В резерве',
     'type' => 'numberfield',
   ],
-] as $k => $v) {
-  if (!empty($v)) {
-    if (!isset($v['key'])) {
-      $v = array_merge(['key' => $k], $v);
+] as $key => $field) {
+  if (!empty($field)) {
+    if (!isset($field['key'])) {
+      $field = array_merge(['key' => $key], $field);
     }
-    if (!$modx->getCount('msOption', ['key' => $v['key']])) {
+    if ($option = $modx->getObject('msOption', ['key' => $field['key']])) {
+      $field['id'] = $option->get('id');
+      print_r('Опция ' . $field['key'] . ' уже существует.' . PHP_EOL);
+    } else {
       $modx->error->reset();
       $response = $ms2->runProcessor('mgr/settings/option/create', array_merge([
         'category' => 0,
-      ], $v));
+      ], $field));
       $response = $response->getObject();
-      if (empty($response['id'])) {
-        print_r('Процесс остановлен! Не удалось создать опцию ' . print_r($v, 1));
-        break;
+      if (!empty($response['id'])) {
+        $field['id'] = $response['id'];
+        print_r('Опция ' . $field['key'] . ' успешно создана.' . PHP_EOL);
+      } else {
+        print_r('Процесс остановлен! Не удалось создать опцию ' . $field['key'] . '. Ошибка: ' . print_r(@$modx->error->errors[0]['msg'], 1));
+        continue;
       }
     }
-    if ($modx->getCount('msOption', ['key' => $v['key']])) {
-      if ($setting = $modx->getObject('modSystemSetting', ['key' => 'ag_field_' . $k])) {
-        $setting->set('value', 'options-' . $v['key']);
+    if (!empty($field['id'])) {
+      foreach ($categories as $category_id) {
+        if (!$modx->getCount('msCategoryOption', [
+          'option_id' => $field['id'],
+          'category_id' => $category_id,
+          'active' => true,
+        ])) {
+          $modx->error->reset();
+          $ms2->runProcessor('mgr/settings/option/assign', [
+            'option_id' => $field['id'],
+            'category_id' => $category_id,
+            'value' => '',
+          ]);
+        }
+      }
+    }
+    if ($modx->getCount('msOption', ['key' => $field['key']])) {
+      if ($setting = $modx->getObject('modSystemSetting', ['key' => 'ag_field_' . $key])) {
+        $setting->set('value', 'options-' . $field['key']);
         $setting->save();
       }
     }
   } else {
-    if ($setting = $modx->getObject('modSystemSetting', ['key' => 'ag_field_' . $k])) {
-      $setting->set('value', $k);
+    if ($setting = $modx->getObject('modSystemSetting', ['key' => 'ag_field_' . $key])) {
+      $setting->set('value', $key);
       $setting->save();
     }
   }

@@ -3,17 +3,17 @@
 ## Заменить стандартные уведомления miniShop2
 
 ```js:line-numbers
-document.addEventListener('si:init', (e) => {   
+document.addEventListener('si:init', (e) => {
     if(typeof miniShop2 !== 'undefined'){
         miniShop2.Message = SendIt.Notify;
-    }    
+    }
 });
 ```
 
 ## Отправить запрос на свой коннектор
 
 ```js:line-numbers
-document.addEventListener('si:init', (e) => {    
+document.addEventListener('si:init', (e) => {
     document.addEventListener('submit', (e) => {
         const target = e.target.closest('.js-my-form');
         if(!target) return;
@@ -22,7 +22,7 @@ document.addEventListener('si:init', (e) => {
         const headers = {};
         SendIt?.setComponentCookie('sitrusted', '1');
         SendIt.Sending.send(target, url, headers, params);
-    })    
+    })
 });
 ```
 
@@ -33,14 +33,14 @@ document.addEventListener('si:init', (e) => {
 ## Отправить запрос на стандартный коннектор
 
 ```js:line-numbers
-document.addEventListener('si:init', (e) => {    
+document.addEventListener('si:init', (e) => {
     document.addEventListener('submit', (e) => {
         const target = e.target.closest('.js-my-form');
         if(!target) return;
-        const preset = target.dataset[Sendit.Sending.config.presetKey];    
-        SendIt.Sending.prepareSendParams(target, preset);    
+        const preset = target.dataset[Sendit.Sending.config.presetKey];
+        SendIt.Sending.prepareSendParams(target, preset);
     })
-    
+
 });
 ```
 
@@ -83,7 +83,7 @@ document.addEventListener('si:send:after', (e) => {
 if($flag){
     return $SendIt->success($successMessage, ['somedata' => 1234]);
 }else{
-    return $SendIt->error($validationErrorMessage, ['erorrs' => ['fieldName' => 'Тут текст ошибки']]);
+    return $SendIt->error($validationErrorMessage, ['errors' => ['fieldName' => 'Тут текст ошибки']]);
 }
 ```
 
@@ -92,12 +92,14 @@ if($flag){
 :::
 
 ## Изменение параметров валидации файлов из JavaScript
+
 В примере ниже, мы меняем максимально разрешённое количество файлов для пресета *upload_design* в зависимости от выбранного родителя и размера.
+
 ```js:line-numbers
 document.addEventListener('si:send:before', (e) => {
     const {fetchOptions, headers} = e.detail;
     if (typeof fetchOptions.body.get === 'function') {
-        switch (headers['X-SIPRESET']) {               
+        switch (headers['X-SIPRESET']) {
             case 'upload_design':
                 const parent = document.querySelector('[name="parent"]:checked');
                 let count = 0;
@@ -117,6 +119,7 @@ document.addEventListener('si:send:before', (e) => {
 1. Устанавливаем Migx.
 2. Создаем конфигурацию **validators**
    ::: details Можно импортировать эту
+
    ```json
     {
     "formtabs":[
@@ -284,9 +287,11 @@ document.addEventListener('si:send:before', (e) => {
     "category":""
     }
     ```
+
    :::
 3. Создаем конфигурацию **formfield**
    ::: details Можно импортировать эту
+
      ```json
       {
     "formtabs":[
@@ -568,9 +573,11 @@ document.addEventListener('si:send:before', (e) => {
     "category":""
     }
     ```
+
    :::
 4. Создаем конфигурацию **list_double**
    ::: details Можно импортировать эту
+
     ```json
     {
     "formtabs":[
@@ -704,9 +711,11 @@ document.addEventListener('si:send:before', (e) => {
     "category":""
     }
     ```
+
    :::
 5. Создаем конфигурацию **si_forms**
    ::: details Можно импортировать эту
+
     ```json
     {
     "formtabs":[
@@ -931,11 +940,13 @@ document.addEventListener('si:send:before', (e) => {
     ],
     "category":""
     }
-    ```   
+    ```
+
    :::
 6. Создаём TV типа *migx* с именем *si_form* и привязываем её в любому удобному шаблону.
 7. Создаём плагин на событие **OnGetFormParams**, который достанет параметры нужной формы и вернёт их в виде массива.
    ::: details Пример плагина
+
     ```php:line-numbers
     switch($modx->event->name){
         case 'OnGetFormParams':
@@ -947,7 +958,7 @@ document.addEventListener('si:send:before', (e) => {
                     $paramsRaw = json_decode($form['params'],1);
                     break;
                 }
-    
+
             }
             if($paramsRaw){
                 foreach($paramsRaw as $p){
@@ -958,4 +969,5 @@ document.addEventListener('si:send:before', (e) => {
             break;
     }
     ```
+
    :::

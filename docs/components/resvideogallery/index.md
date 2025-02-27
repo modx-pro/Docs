@@ -38,3 +38,5 @@ items: [
 - coub.com
 
 [ResVideoGallery (old video)](https://www.youtube.com/watch?v=GC-YCY_vmWM)
+
+[RuTube](https://rutube.ru/video/f3a71cfc764f0692a2abf484c1f321be/)
