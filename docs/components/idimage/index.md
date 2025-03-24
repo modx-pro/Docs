@@ -8,7 +8,14 @@ repository: https://github.com/astra-modx/idimage
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
-  { text: 'Индексация товаров', link: 'indexed' },
+  {
+    text: 'Индексация товаров',
+    link: 'indexed/index',
+    items: [
+      { text: 'Типы индексации', link: 'indexed/type' },
+      { text: 'Настройка категорий', link: 'indexed/category' },
+    ],
+  },
   { text: 'Системные требования', link: 'requirements-and-dependencies' },
   { text: 'Сниппеты', link: 'snippets' },
   { text: 'Фоновый задания', link: 'crontab' },
