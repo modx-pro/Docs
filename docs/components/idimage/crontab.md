@@ -20,10 +20,8 @@
 Использование в сторонних решениях
 
 ```php
-
 # Подключение библиотеки
 $idImage = $modx->getService('idimage', 'idImage', MODX_CORE_PATH.'components/idimage/model/');
-
 
 # Создание товаров
 $Command = new \IdImage\Command\CreationCommand($idImage, $cli);
@@ -36,5 +34,4 @@ $Command->run();
 # Индексация товаров
 $command = new \IdImage\Command\IndexedCommand($idImage, $cli, 100);
 $command->run();
-
 ```

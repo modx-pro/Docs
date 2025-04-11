@@ -25,7 +25,7 @@
 
 ![Проверка баланса](https://file.modx.pro/files/8/d/1/8d112cfd4e738b6c1b35865281513d17.png)
 
-::: warning Важно  
+::: warning Важно
 Баланс запросов в сервисе [idimage.ru](https://idimage.ru) должен быть положительным!
 :::
 
@@ -37,7 +37,9 @@
 
 Разместите сниппет в шаблоне карточки товара или в любом другом месте
 
-```shell
+::: code-group
+
+```modx
 [[!idImageSimilar]]
 [[!msProducts?
     &resources=`[[+idimage.ids]]`
@@ -47,22 +49,19 @@
 ]]
 ```
 
-::: details Fenom
-
-```php
-# Fenom
+```fenom
 {$modx->runSnippet('idImageSimilar', [
     'min_scope' => 65
 ])}
 
 {var $ids = $modx->getPlaceholder('idimage.ids')}
 {if  $ids}
-   {$modx->runSnippet('msProducts', [
-       'tpl' => '@FILE chunks/catalog/product.row.tpl',
-       'resources' => $ids,
-       'sortby' => "FIELD(msProduct.id, {$ids})",
-       'parents' => 0,
-   ])}
+  {$modx->runSnippet('msProducts', [
+      'tpl' => '@FILE chunks/catalog/product.row.tpl',
+      'resources' => $ids,
+      'sortby' => "FIELD(msProduct.id, {$ids})",
+      'parents' => 0,
+  ])}
 {/if}
 ```
 
@@ -72,7 +71,7 @@
 
 **Пример блока с похожими товарами**
 
-::: warning Важно  
+::: warning Важно
 Сниппет **idImageSimilar** возвращает только id товаров, и не каким образом не отвечает за то в каком визуальном виде товары будут выводиться.
 :::
 

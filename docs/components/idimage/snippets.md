@@ -1,13 +1,12 @@
 ## Сниппеты
 
-
 ### idImageSimilar
 
 Сниппет `idImageSimilar` **только предоставляет информацию** о том, какие ID товаров являются похожими на ID выбранного товара.
 
 Он **не отвечает за отображение** блока с товарами, а лишь передает данные о схожих товарах для дальнейшей обработки.
 
-```shell
+```modx
 [[!idImageSimilar]]
 [[!msProducts?
     &resources=`[[+idimage.ids]]`
@@ -33,26 +32,23 @@
 | **&max_scope** | 100                 | Максимальная вероятность от 100 до 0 (по умолчанию 100, если изображение схоже с оригиналом то вероятность будет 100%)                |
 | **&limit**     | 10                  | Кол-во возвращаемых id товаров похожих на оригинал                                                                                    |
 
-::: details Fenom
+::: code-group
 
-```php
-# Fenom
-
+```fenom
 # записываем id товаров в плейсхолдер idimage.ids
 {$modx->runSnippet('idImageSimilar', [
-    'min_scope' => 65
+  'min_scope' => 65
 ])}
 
 {var $ids = $modx->getPlaceholder('idimage.ids')}
 {if  $ids}
-   {$modx->runSnippet('msProducts', [
-       'tpl' => '@FILE chunks/catalog/product.row.tpl',
-       'resources' => $ids,
-       'sortby' => "FIELD(msProduct.id, {$ids})",
-       'parents' => 0,
-   ])}
+  {$modx->runSnippet('msProducts', [
+    'tpl' => '@FILE chunks/catalog/product.row.tpl',
+    'resources' => $ids,
+    'sortby' => "FIELD(msProduct.id, {$ids})",
+    'parents' => 0,
+  ])}
 {/if}
-
 ```
 
 ```php
