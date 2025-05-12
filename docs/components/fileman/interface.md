@@ -11,11 +11,15 @@
 - с компьютера пользователя, посредством стандартного окна загрузки файлов в MODX;
 - по ссылке, исключая необходимость предварительного сохранения на компьютер.
 
- [![](https://file.modx.pro/files/b/d/8/bd82ccc44d5cda78e5e3eae2a42f3ed8s.jpg)](https://file.modx.pro/files/b/d/8/bd82ccc44d5cda78e5e3eae2a42f3ed8.png)
+[![](https://file.modx.pro/files/b/d/8/bd82ccc44d5cda78e5e3eae2a42f3ed8s.jpg)](https://file.modx.pro/files/b/d/8/bd82ccc44d5cda78e5e3eae2a42f3ed8.png)
 
- С файлами доступны некоторые групповые действия:
+С файлами доступны некоторые групповые действия:
 
- [![](https://file.modx.pro/files/9/c/f/9cfcdc6e12fe0043c2ca22f86f6bad38s.jpg)](https://file.modx.pro/files/9/c/f/9cfcdc6e12fe0043c2ca22f86f6bad38.png)
+[![](https://file.modx.pro/files/9/c/f/9cfcdc6e12fe0043c2ca22f86f6bad38s.jpg)](https://file.modx.pro/files/9/c/f/9cfcdc6e12fe0043c2ca22f86f6bad38.png)
+
+Для изображений можно включить превью (добавьте ```thumb``` в настройку ```fileman_grid_fields```):
+
+[![](https://file.modx.pro/files/7/f/1/7f142cf09287a0cf17f73506367c7779s.jpg)](https://file.modx.pro/files/7/f/1/7f142cf09287a0cf17f73506367c7779.png)
 
 ## Окно редактирования файла
 
