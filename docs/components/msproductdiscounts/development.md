@@ -129,7 +129,6 @@ document.addEventListener('change', e => {
 ```js:line-numbers
 document.addEventListener('click', e => {
   if (e.target.closest('[data-src="#map-modal"]')) {
-    Fancybox.defaults.dragToClose = false; // чтобы можно было двигать карту мышкой или пальцем
     Fancybox.show([{src: "#map-modal", type: "inline"}]);
   }
 })
@@ -205,8 +204,6 @@ const showBaloon = (markerData) => {
   if (baloon) {
     const addressBlock = baloon.querySelector('[data-mscdek-prop="address"]');
     const workTimeBlock = baloon.querySelector('[data-mscdek-prop="work_time"]');
-    const btn = baloon.querySelector('#select-pvz-btn');
-    btn.setAttribute('data-pvz-code', markerData.code);
     addressBlock.innerHTML = markerData.location.address;
     workTimeBlock.innerHTML = markerData.work_time;
 
@@ -226,20 +223,12 @@ document.addEventListener('mscdek:map:choose', e => {
 ```js:line-numbers
 document.addEventListener('click', e => {
   if (e.target.closest('#select-pvz-btn')) {
+    const addressBlock = document.querySelector('[data-pvz-details] [data-mscdek-prop="address"]');
     const pointField = document.querySelector('[name="point"]');
-    const pvzCode = e.target.closest('#select-pvz-btn').dataset.pvzCode;
-    const msCdekList = window.mscdek.container.getModule('list');
-    const result = await msCdekList.pointsStore.get(msCdekList.indexField.value);
-    const selectedPoint = result.data.points.find(point => point.code === pvzCode);
-    pointField && (pointField.value = selectedPoint[msCdekList.config.pointValueFieldName] ?? selectedPoint.location[msCdekList.config.pointValueFieldName]);
+    pointField && (pointField.value = addressBlock.innerHTML);
     pointField && pointField.dispatchEvent(new Event('change', {bubbles: true}));
 
-    // раскомментируйте для показа всплывающего уведомления с адресом выбранного ПВЗ
-    /* 
-    const message = `ПВЗ: ${selectedPoint.location.address} (${selectedPoint.distance} км.)`
-    SendIt.Notify.info(message);
-    */ 
-    
+    /* SendIt.Notify.info(`ПВЗ: ${addressBlock.innerHTML}`); */ // раскомментируйте для показа всплывающего уведомления с адресом выбранного ПВЗ
     /* Fancybox.close(); */ // раскоментируйте, если хотите чтобы модальное окно закрывалось после выбора
   }  
 })
