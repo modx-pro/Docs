@@ -47,7 +47,7 @@ switch ($modx->event->name){
 
 :::
 
-#### msCdekOnGetWebConfig - генерируется добавление JavaScript компонента на страницу, позволяет прокинуть любые параметры в JavaScript
+#### msCdekOnGetWebConfig - генерируется при добавление JavaScript компонента на страницу, позволяет прокинуть любые параметры в JavaScript
 
 Доступные параметры:
 
@@ -70,6 +70,26 @@ switch($modx->event->name){
 ```
 
 :::
+
+#### msCdek2OnResetStatus - генерируется после сброса некоторых данных статуса доставки
+
+Доступные параметры:
+
+* **$object** - экземпляр класса MsCdek2Services\MsCdek2.
+
+::: details Пример плагина
+
+```php:line-numbers
+// удаляем custom_param из статуса доставки
+switch ($modx->event->name){
+  case 'msCdek2OnResetStatus':
+       unset($_SESSION['mscdek2']['data']['custom_param']);
+    break;
+}
+```
+
+:::
+
 
 ## События JavaScript
 
@@ -200,7 +220,7 @@ document.addEventListener('mscdek:point:change', e => {
 
 :::
 
-#### mscdek:point:error - создание маркера на карте
+#### mscdek:point:error - отправка заказа без ПВЗ
 
 Событие возникает, когда пользователь отправляет заказ не выбрав ПВЗ. Не может быть отменено.
 
