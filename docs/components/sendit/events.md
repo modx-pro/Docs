@@ -136,6 +136,25 @@ switch ($modx->event->name){
 
 :::
 
+#### senditOnGetWebConfig - генерируется при формировании конфигурации для фронта
+
+Доступные параметры:
+
+* **$webConfig** - массив параметров конфигурации.
+* **$object** - экземпляр класса SendIt.
+
+::: details Пример плагина
+
+```php:line-numbers
+switch ($modx->event->name){
+  case 'senditOnGetWebConfig':
+    $object->webConfig['myparam'] = 'test;
+    break;
+}
+```
+
+:::
+
 ### События Identification
 
 ---
