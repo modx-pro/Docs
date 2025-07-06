@@ -147,7 +147,7 @@
 'auth' => [
   'successMessage' => 'Вы успешно авторизованы и будете перенаправлены в личный кабинет.',
   'validate' => 'email:required,password:required',
-  'hooks' => 'AjaxIdentification',
+  'hooks' => 'Identification',
 
   'method' => 'login',
 
@@ -201,7 +201,7 @@
 
 ```php:line-numbers
 'dataedit' => [
-  'hooks' => 'AjaxIdentification',
+  'hooks' => 'Identification',
   'method' => 'update',
   'successMessage' => 'Данные сохранены.',
   'clearFieldsOnSuccess' => 0,
@@ -237,7 +237,7 @@
 
 ```php:line-numbers
 'editpass' => [
-  'hooks' => 'AjaxIdentification',
+  'hooks' => 'Identification',
   'method' => 'update',
   'successMessage' => 'Пароль изменён.',
 
@@ -268,7 +268,7 @@
 
 ```php:line-numbers
 'logout' => [
-  'hooks' => 'AjaxIdentification',
+  'hooks' => 'Identification',
   'method' => 'logout',
   'successMessage' => 'До новых встреч!',
   'redirectTo' => 1,
@@ -310,7 +310,7 @@
 
 ```php:line-numbers
 'forgot' => [
-  'hooks' => 'AjaxIdentification,FormItSaveForm,FormItAutoResponder',
+  'hooks' => 'Identification,FormItSaveForm,FormItAutoResponder',
   'method' => 'forgot',
   'successMessage' => 'Новый пароль отправлен на ваш email',
 
