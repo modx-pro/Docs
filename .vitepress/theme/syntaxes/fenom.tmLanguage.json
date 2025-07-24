@@ -1,0 +1,245 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Fenom",
+  "scopeName": "text.html.fenom",
+  "fileTypes": ["tpl"],
+  "injections": {
+    "L:text.html.fenom -meta.embedded.literal -comment.block.fenom": {
+      "patterns": [
+        {
+          "include": "#nonFenom"
+        },
+        {
+          "include": "#comments"
+        },
+        {
+          "include": "#blocks"
+        },
+        { "include": "#lineComments" }
+      ]
+    }
+  },
+  "patterns": [
+    { "include": "text.html.derivative" },
+    { "include": "#lineComments" }
+  ],
+  "repository": {
+    "nonFenom": {
+      "patterns": [
+        {
+          "match": "(\\{%)\\s",
+          "name": "invalid.illegal.non-fenom.fenom"
+        }
+      ]
+    },
+    "comments": {
+      "begin": "{{?\\*",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.comment.begin.fenom" }
+      },
+      "name": "comment.block.fenom",
+      "end": "\\*}}?",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.comment.end.fenom" }
+      },
+      "patterns": [
+        {
+          "match": "{{?\\*",
+          "name": "invalid.illegal.characters-not-allowed-here.fenom"
+        }
+      ]
+    },
+    "blocks": {
+      "patterns": [
+        {
+          "begin": "(\\{%?)",
+          "beginCaptures": {
+            "1": {
+                "name": "punctuation.section.embedded.begin.fenom"
+            }
+          },
+          "end": "(%?\\})",
+          "endCaptures": {
+            "1": {
+                "name": "punctuation.section.embedded.end.fenom"
+            }
+          },
+          "name": "source.fenom",
+          "patterns": [
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#variables"
+            },
+            {
+              "include": "#lang"
+            }
+          ]
+        }
+      ]
+    },
+    "lang": {
+      "patterns": [
+        {
+          "match": "(\\|=|\\+=|-=|\\*=|\\%=|!==|=|&=|\\^=|~|/=|\\-|\\+|/|\\*|@|!=|!|<=|>=|<|>|===|==|%|&&|\\|\\|)|\\b(and|or|xor)\\b",
+          "name": "keyword.operator.fenom"
+        },
+        {
+          "match": "\\b(TRUE|FALSE|true|false)\\b",
+          "name": "constant.language.fenom"
+        },
+        {
+          "match": "\\b(var|set|add|if|else|elseif|foreach|foreachelse|autoescape|autotrim|for|extends|block|use|paste|parent|filter|break|continue|forelse|ignore|include|insert|macro|import|raw|switch|case|unset)\\b",
+          "name": "keyword.control.fenom"
+        },
+        {
+        "captures": {
+          "0": {
+            "name": "variable.parameter.fenom"
+          }
+        },
+          "match": "\\b([a-zA-Z]+)=",
+          "name": "meta.attribute.fenom"
+        },
+        {
+          "match": "\\b(plus|from|as|capture|default|cycle)\\b",
+          "name": "support.function.built-in.fenom"
+        },
+        {
+          "captures": {
+            "0": {
+              "name": "entity.name.function.fenom"
+            }
+          },
+          "match": "\\|\\s*([a-zA-Z_]+)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "begin": "'",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.fenom"
+            }
+          },
+          "end": "'",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.fenom"
+            }
+          },
+          "name": "string.quoted.single.fenom",
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.fenom"
+            }
+          ]
+        },
+        {
+          "begin": "\"",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.fenom"
+            }
+          },
+          "end": "\"",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.fenom"
+            }
+          },
+          "name": "string.quoted.double.fenom",
+          "patterns": [
+            {
+              "match": "\\\\.",
+              "name": "constant.character.escape.fenom"
+            }
+          ]
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "match": "\\$_modx\\b",
+          "name": "support.variable.fenom"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "variable.language.fenom"
+            }
+          },
+          "match": "(\\$)\\.\\b",
+          "name": "variable.other.global.fenom"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.variable.fenom"
+            },
+            "2": {
+              "name": "variable.other.fenom"
+            }
+          },
+          "match": "(\\$)([a-zA-Z_][a-zA-Z0-9_]*)\\b",
+          "name": "variable.other.fenom"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.variable.fenom"
+            },
+            "2": {
+              "name": "variable.other.fenom"
+            }
+          },
+          "match": "(\\$\\.)([a-zA-Z_.][a-zA-Z0-9_.]*)\\b",
+          "name": "variable.other.fenom"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "keyword.operator.fenom"
+            },
+            "2": {
+              "name": "variable.other.property.fenom"
+            }
+          },
+          "match": "(->)([a-zA-Z_][a-zA-Z0-9_]*)\\b",
+          "name": "variable.other.fenom"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "keyword.operator.fenom"
+            },
+            "2": {
+              "name": "meta.function-call.object.fenom"
+            },
+            "3": {
+              "name": "punctuation.definition.variable.fenom"
+            },
+            "4": {
+              "name": "punctuation.definition.variable.fenom"
+            }
+          },
+          "match": "(->)([a-zA-Z_][a-zA-Z0-9_]*)(\\().*?(\\))",
+          "name": "variable.other.fenom"
+        }
+      ]
+    },
+    "lineComments": {
+      "patterns": [
+        {
+          "match": "//.*$",
+          "name": "comment.line.double-slash.fenom"
+        }
+      ]
+    }
+  }
+}
