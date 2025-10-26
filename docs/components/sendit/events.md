@@ -148,7 +148,28 @@ switch ($modx->event->name){
 ```php:line-numbers
 switch ($modx->event->name){
   case 'senditOnGetWebConfig':
-    $object->webConfig['myparam'] = 'test;
+    $object->webConfig['myparam'] = 'test';
+    break;
+}
+```
+
+:::
+
+#### senditOnSetValue - генерируется перед присвоением нового значения ключу в $_POST
+
+Доступные параметры:
+
+* **$key** - имя поля.
+* **$value** - оригинальное значение.
+* **$SendIt** - экземпляр класса SendIt.
+
+::: details Пример плагина
+
+```php:line-numbers
+switch ($modx->event->name){
+  case 'senditOnSetValue':
+    // устанавливаем оригинальное значение без каких-либо проверок
+    $SendIt->newValue = $value;
     break;
 }
 ```
