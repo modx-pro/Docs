@@ -1,6 +1,6 @@
 # API Composables
 
-ModxProVueCore предоставляет готовые composables (хелперы) для работы с MODX из Vue компонентов.
+VueTools предоставляет готовые composables (хелперы) для работы с MODX из Vue компонентов.
 
 ## useLexicon
 
@@ -9,7 +9,7 @@ ModxProVueCore предоставляет готовые composables (хелпе
 ### Импорт
 
 ```javascript
-import { useLexicon } from '@modxprovuecore/useLexicon'
+import { useLexicon } from '@vuetools/useLexicon'
 ```
 
 ### API
@@ -66,7 +66,7 @@ public function getLanguageTopics()
 ### Импорт
 
 ```javascript
-import { useModx } from '@modxprovuecore/useModx'
+import { useModx } from '@vuetools/useModx'
 ```
 
 ### API
@@ -121,7 +121,7 @@ modx.msg.confirm({
 ### Импорт
 
 ```javascript
-import { usePermission } from '@modxprovuecore/usePermission'
+import { usePermission } from '@vuetools/usePermission'
 ```
 
 ### API
@@ -162,7 +162,7 @@ if (hasAllPermissions(['view', 'edit'])) {
 ```vue
 <script setup>
 import { computed } from 'vue'
-import { usePermission } from '@modxprovuecore/usePermission'
+import { usePermission } from '@vuetools/usePermission'
 
 const { hasPermission } = usePermission()
 
@@ -183,7 +183,7 @@ HTTP клиент для **стандартного** MODX connector API.
 ### Импорт
 
 ```javascript
-import { useApi } from '@modxprovuecore/useApi'
+import { useApi } from '@vuetools/useApi'
 ```
 
 ### API
@@ -242,10 +242,10 @@ POST /connectors/index.php?action=security/user/getlist
 ```vue
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useLexicon } from '@modxprovuecore/useLexicon'
-import { useModx } from '@modxprovuecore/useModx'
-import { usePermission } from '@modxprovuecore/usePermission'
-import { useApi } from '@modxprovuecore/useApi'
+import { useLexicon } from '@vuetools/useLexicon'
+import { useModx } from '@vuetools/useModx'
+import { usePermission } from '@vuetools/usePermission'
+import { useApi } from '@vuetools/useApi'
 
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'

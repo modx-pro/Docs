@@ -1,6 +1,6 @@
 # Интеграция в компонент
 
-Пошаговое руководство по интеграции Vue 3 + PrimeVue в компонент MODX 3 с использованием ModxProVueCore.
+Пошаговое руководство по интеграции Vue 3 + PrimeVue в компонент MODX 3 с использованием VueTools.
 
 ## Настройка Vite
 
@@ -20,10 +20,10 @@ export default defineConfig({
         'vue',
         'pinia',
         'primevue',
-        '@modxprovuecore/useApi',
-        '@modxprovuecore/useLexicon',
-        '@modxprovuecore/useModx',
-        '@modxprovuecore/usePermission'
+        '@vuetools/useApi',
+        '@vuetools/useLexicon',
+        '@vuetools/useModx',
+        '@vuetools/usePermission'
       ],
       output: {
         format: 'es',
@@ -47,7 +47,7 @@ export default defineConfig({
 ```
 
 ::: info Ключевой момент
-Массив `external` указывает Vite **НЕ включать** эти зависимости в бандл. Браузер загрузит их из Import Map, зарегистрированного ModxProVueCore.
+Массив `external` указывает Vite **НЕ включать** эти зависимости в бандл. Браузер загрузит их из Import Map, зарегистрированного VueTools.
 :::
 
 ### Установка зависимостей
@@ -102,9 +102,9 @@ $this->modx->regClientStartupHTMLBlock('
 ');
 ```
 
-## Проверка наличия ModxProVueCore
+## Проверка наличия VueTools
 
-При отсутствии ModxProVueCore на сайте Vue модули не загрузятся, а в консоли появятся ошибки. Рекомендуется реализовать проверку и показывать понятное сообщение пользователю.
+При отсутствии VueTools на сайте Vue модули не загрузятся, а в консоли появятся ошибки. Рекомендуется реализовать проверку и показывать понятное сообщение пользователю.
 
 ### Метод addVueModule()
 
@@ -147,8 +147,8 @@ class MyComponentManagerController extends modExtraManagerController
     protected function registerVueCoreCheck(): void
     {
         $alertTitle = $this->modx->lexicon('mycomponent_error') ?: 'Error';
-        $alertMessage = $this->modx->lexicon('mycomponent_modxprovuecore_required')
-            ?: 'ModxProVueCore package is required. Please install it from Package Manager.';
+        $alertMessage = $this->modx->lexicon('mycomponent_vuetools_required')
+            ?: 'VueTools package is required. Please install it from Package Manager.';
 
         $script = <<<JS
 <script>
@@ -226,11 +226,11 @@ public function loadCustomCssJs()
 ```php
 // lexicon/ru/default.inc.php
 $_lang['mycomponent_error'] = 'Ошибка';
-$_lang['mycomponent_modxprovuecore_required'] = 'Для работы требуется пакет ModxProVueCore. Установите его через Менеджер пакетов.';
+$_lang['mycomponent_vuetools_required'] = 'Для работы требуется пакет VueTools. Установите его через Менеджер пакетов.';
 
 // lexicon/en/default.inc.php
 $_lang['mycomponent_error'] = 'Error';
-$_lang['mycomponent_modxprovuecore_required'] = 'ModxProVueCore package is required. Please install it via Package Manager.';
+$_lang['mycomponent_vuetools_required'] = 'VueTools package is required. Please install it via Package Manager.';
 ```
 
 ### Результат
@@ -256,10 +256,10 @@ import Button from 'primevue/button'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 
-// Composables из ModxProVueCore
-import { useLexicon } from '@modxprovuecore/useLexicon'
-import { useModx } from '@modxprovuecore/useModx'
-import { usePermission } from '@modxprovuecore/usePermission'
+// Composables из VueTools
+import { useLexicon } from '@vuetools/useLexicon'
+import { useModx } from '@vuetools/useModx'
+import { usePermission } from '@vuetools/usePermission'
 
 const { _ } = useLexicon()
 const { modx, config } = useModx()
@@ -468,7 +468,7 @@ await request.post('/api/products', { name: 'New Product' })
 
 ## Чеклист интеграции
 
-- [ ] Добавить `modxprovuecore` в зависимости пакета (setup options)
+- [ ] Добавить `vuetools` в зависимости пакета (setup options)
 - [ ] Настроить `external` в vite.config.js
 - [ ] Настроить postcss prefix selector для изоляции стилей
 - [ ] Реализовать `addVueModule()` с проверкой зависимости
