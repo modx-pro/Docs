@@ -1,9 +1,9 @@
 ---
-title: ModxProVueCore
+title: VueTools
 description: Базовый пакет Vue 3 стека для компонентов MODX 3
-logo: https://modstore.pro/assets/extras/modxprovuecore/logo-lg.png
+logo: https://modstore.pro/assets/extras/vuetools/logo-lg.png
 author: modx-pro
-repository: https://github.com/modx-pro/modxprovuecore
+repository: https://github.com/modx-pro/vuetools
 
 items:
   - text: Интеграция
@@ -12,13 +12,13 @@ items:
     link: composables
 ---
 
-# ModxProVueCore
+# VueTools
 
 Базовый пакет, предоставляющий **Vue 3 стек** для компонентов MODX 3.x через ES Modules Import Map.
 
 ## Назначение
 
-ModxProVueCore решает проблему **дублирования библиотек** при использовании Vue 3 в нескольких компонентах MODX. Вместо того чтобы каждый компонент включал свою копию Vue, Pinia и PrimeVue, все они используют **общие библиотеки** из ModxProVueCore.
+VueTools решает проблему **дублирования библиотек** при использовании Vue 3 в нескольких компонентах MODX. Вместо того чтобы каждый компонент включал свою копию Vue, Pinia и PrimeVue, все они используют **общие библиотеки** из VueTools.
 
 ### Преимущества
 
@@ -26,6 +26,10 @@ ModxProVueCore решает проблему **дублирования библ
 - **Меньший размер загрузки** — библиотеки загружаются один раз и кэшируются браузером
 - **Изолированные стили** — PrimeVue стили не конфликтуют с ExtJS админки MODX
 - **Готовые composables** — useLexicon, useApi, useModx, usePermission для работы с MODX
+
+::: info Переименование
+Ранее пакет назывался **ModxProVueCore**. С версии 2.0 он переименован в **VueTools** для краткости.
+:::
 
 ## Состав пакета
 
@@ -59,7 +63,7 @@ ModxProVueCore решает проблему **дублирования библ
 
 1. Перейдите в **Extras → Installer**
 2. Нажмите **Download Extras**
-3. Найдите **ModxProVueCore** в списке
+3. Найдите **VueTools** в списке
 4. Нажмите **Download** и затем **Install**
 
 ::: info Автоматическая активация
@@ -70,20 +74,20 @@ ModxProVueCore решает проблему **дублирования библ
 
 ### Import Map
 
-ModxProVueCore использует [Import Map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) — стандартную технологию браузера для разрешения ES Module импортов.
+VueTools использует [Import Map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) — стандартную технологию браузера для разрешения ES Module импортов.
 
-Плагин `VueCoreManager` срабатывает на событие `OnManagerPageInit` и регистрирует Import Map в `<head>` страницы:
+Плагин `VueToolsManager` срабатывает на событие `OnManagerPageInit` и регистрирует Import Map в `<head>` страницы:
 
 ```json
 {
   "imports": {
-    "vue": "/assets/components/modxprovuecore/vendor/vue.min.js",
-    "pinia": "/assets/components/modxprovuecore/vendor/pinia.min.js",
-    "primevue": "/assets/components/modxprovuecore/vendor/primevue.min.js",
-    "@modxprovuecore/useApi": "/assets/components/modxprovuecore/composables/useApi.min.js",
-    "@modxprovuecore/useLexicon": "/assets/components/modxprovuecore/composables/useLexicon.min.js",
-    "@modxprovuecore/useModx": "/assets/components/modxprovuecore/composables/useModx.min.js",
-    "@modxprovuecore/usePermission": "/assets/components/modxprovuecore/composables/usePermission.min.js"
+    "vue": "/assets/components/vuetools/vendor/vue.min.js",
+    "pinia": "/assets/components/vuetools/vendor/pinia.min.js",
+    "primevue": "/assets/components/vuetools/vendor/primevue.min.js",
+    "@vuetools/useApi": "/assets/components/vuetools/composables/useApi.min.js",
+    "@vuetools/useLexicon": "/assets/components/vuetools/composables/useLexicon.min.js",
+    "@vuetools/useModx": "/assets/components/vuetools/composables/useModx.min.js",
+    "@vuetools/usePermission": "/assets/components/vuetools/composables/usePermission.min.js"
   }
 }
 ```
@@ -91,7 +95,7 @@ ModxProVueCore использует [Import Map](https://developer.mozilla.org/e
 ### Как это работает
 
 ```
-1. Плагин VueCoreManager (OnManagerPageInit)
+1. Плагин VueToolsManager (OnManagerPageInit)
    ↓
 2. Регистрирует Import Map в <head> (до ES modules)
    ↓
@@ -119,7 +123,7 @@ PrimeVue стили изолированы с помощью CSS префикс�
 Без класса `vueApp` стили PrimeVue не применятся к вашим компонентам.
 :::
 
-## Компоненты, использующие ModxProVueCore
+## Компоненты, использующие VueTools
 
 - **[MiniShop3](/components/minishop3/)** — современный интернет-магазин для MODX 3
 
@@ -132,4 +136,4 @@ PrimeVue стили изолированы с помощью CSS префикс�
 
 ## Поддержка
 
-- GitHub Issues: [modx-pro/modxprovuecore](https://github.com/modx-pro/modxprovuecore/issues)
+- GitHub Issues: [modx-pro/vuetools](https://github.com/modx-pro/vuetools/issues)
