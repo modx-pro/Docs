@@ -752,7 +752,7 @@ ms3.hooks.add('afterAddToCart', ({response}) => {
 });
 ```
 
-Подробнее в разделе [Скрипты и стили](scripts-and-styles).
+Подробнее в разделе [Frontend JavaScript](frontend-js).
 
 ## Коды ошибок
 

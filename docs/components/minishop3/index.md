@@ -112,7 +112,7 @@ MiniShop3 сохраняет обратную совместимость с mini
 
 - **pdoTools 3.x** — для работы сниппетов и шаблонизатора Fenom
 - **[ModxProVueCore](/components/modxprovuecore/)** — Vue 3 и PrimeVue для административного интерфейса
-- **[Scheduler](/components/scheduler)** *(опционально)* — для фоновых задач (импорт, уведомления, очистка)
+- **[Scheduler](/components/scheduler/)** *(опционально)* — для фоновых задач (импорт, уведомления, очистка)
 
 ::: warning ModxProVueCore
 MiniShop3 использует Vue 3 для современного интерфейса админки. Пакет **[ModxProVueCore](/components/modxprovuecore/)** должен быть установлен до или вместе с MiniShop3. При отсутствии пакета будет показано сообщение с инструкцией по установке.
