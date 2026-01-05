@@ -120,7 +120,7 @@ class MyComponentManagerController extends modExtraManagerController
     protected static $vueCoreCheckRegistered = false;
 
     /**
-     * Регистрация Vue ES module с проверкой зависимости ModxProVueCore
+     * Регистрация Vue ES module с проверкой зависимости VueTools
      *
      * @param string $src URL скрипта модуля
      */
@@ -459,7 +459,7 @@ export default new Request()
 Использование:
 
 ```javascript
-// Вместо useApi из ModxProVueCore
+// Вместо useApi из VueTools
 import request from '../request.js'
 
 const products = await request.get('/api/products', { limit: 20 })
