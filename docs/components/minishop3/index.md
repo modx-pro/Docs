@@ -1,8 +1,8 @@
 ---
 title: MiniShop3
 description: Современный компонент интернет-магазина для MODX 3
-logo: https://modstore.pro/assets/extras/minishop2/logo-lg.png
-author: modx-pro
+logo: https://modstore.pro/assets/extras/minishop3/logo-lg.png
+author: biz87
 repository: https://github.com/modx-pro/MiniShop3
 
 items: [
@@ -25,7 +25,7 @@ items: [
     ],
   },
   {
-    text: 'Интерфейс',
+    text: 'Интерфейс админки',
     items: [
       { text: 'Категория', link: 'interface/category' },
       { text: 'Товар', link: 'interface/product' },
@@ -54,6 +54,12 @@ items: [
           { text: 'Поля модели', link: 'interface/utilities/model-fields' },
         ],
       },
+    ],
+  },
+  {
+    text: 'Интерфейс фронтенда',
+    items: [
+      { text: 'Корзина', link: 'frontend/cart' },
     ],
   },
   {
