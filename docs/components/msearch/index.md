@@ -2,7 +2,7 @@
 title: mSearch
 description: Полнотекстовый поиск с морфологическим анализом для MODX 3
 logo: https://modstore.pro/assets/extras/msearch2/logo-lg.jpg
-author: modx-pro
+author: biz87
 repository: https://github.com/modx-pro/msearch
 
 items: [
@@ -23,6 +23,7 @@ items: [
       { text: 'Словари', link: 'interface/dictionaries' },
     ],
   },
+  { text: 'Расширение компонента', link: 'extending' },
 ]
 ---
 # mSearch
@@ -148,6 +149,7 @@ mse_index_fields = pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 
 | Событие | Описание |
 |---------|----------|
+| `mseOnRegisterAdapters` | Регистрация адаптеров для индексации кастомных моделей |
 | `mseOnBeforeIndex` | Перед индексацией ресурса |
 | `mseOnGetWorkFields` | Изменение списка полей для индексации |
 | `mseOnAfterIndex` | После индексации ресурса |
