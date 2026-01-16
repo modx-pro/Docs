@@ -57,7 +57,9 @@ title: msProducts
 | **includeTVs** | | Список TV через запятую |
 | **includeThumbs** | | Превью изображений через запятую |
 | **includeVendorFields** | `*` | Поля производителя (`*` = все) |
-| **includeOptions** | | Опции товара для включения |
+| **includeOptions** | | Опции товара для включения (через запятую) |
+| **formatPrices** | `false` | Форматировать цены через `$ms3->format->price()` |
+| **withCurrency** | `false` | Добавить символ валюты (работает с `formatPrices`) |
 
 ### Вывод
 
@@ -71,6 +73,45 @@ title: msProducts
 | **tplWrapper** | | Чанк-обёртка для всего вывода |
 | **wrapIfEmpty** | `true` | Использовать обёртку при пустом результате |
 | **showLog** | `false` | Показать лог выполнения |
+
+## Псевдонимы таблиц
+
+Сниппет msProducts автоматически присоединяет связанные таблицы товара. Поля основной таблицы (msProduct) доступны без префикса, а для присоединённых таблиц нужен псевдоним.
+
+### Таблицы и их поля
+
+| Таблица | Псевдоним | Поля |
+|---------|-----------|------|
+| msProduct | — (не нужен) | id, pagetitle, longtitle, alias, uri, parent, createdon, publishedon, template... |
+| msProductData | `Data` | price, old_price, article, weight, vendor_id, new, popular, favorite, color, size, tags... |
+| msVendor | `Vendor` | name, country, logo, address, phone, email (при `includeVendorFields`) |
+
+### Динамические псевдонимы
+
+| Псевдоним | Когда появляется | Описание |
+|-----------|------------------|----------|
+| `Link` | При `link` + `master`/`slave` | Таблица связей товаров |
+| `{размер}` | При `includeThumbs` | Эскизы. Псевдоним = название размера (small, medium...) |
+| `{опция}` | При `optionFilters` / `sortbyOptions` | Опции товара. Псевдоним = ключ опции (color, size...) |
+
+### Пример
+
+```fenom
+{'msProducts' | snippet : [
+    'parents' => 0,
+    'where' => [
+        'parent' => 15,
+        'Data.price:>' => 1000,
+        'Data.vendor_id' => 3
+    ],
+    'sortby' => 'Data.price',
+    'sortdir' => 'ASC'
+]}
+```
+
+::: warning Важно
+Поля товара (price, article, new, popular и др.) находятся в таблице `Data`. Без псевдонима запрос завершится ошибкой: `'Data.price:>' => 1000`, а не `'price:>' => 1000`.
+:::
 
 ## Примеры
 
@@ -102,7 +143,7 @@ title: msProducts
     'sortby' => 'createdon',
     'sortdir' => 'DESC',
     'limit' => 8,
-    'where' => '{"new":1}'
+    'where' => ['Data.new' => 1]
 ]}
 ```
 
@@ -111,7 +152,7 @@ title: msProducts
 ```fenom
 {'msProducts' | snippet : [
     'parents' => 0,
-    'where' => '{"popular":1}',
+    'where' => ['Data.popular' => 1],
     'limit' => 4
 ]}
 ```
@@ -121,7 +162,7 @@ title: msProducts
 ```fenom
 {'msProducts' | snippet : [
     'parents' => 0,
-    'where' => '{"Data.vendor_id":5}'
+    'where' => ['Data.vendor_id' => 5]
 ]}
 ```
 
@@ -131,7 +172,7 @@ title: msProducts
 {* Товары красного цвета размера M *}
 {'msProducts' | snippet : [
     'parents' => 0,
-    'optionFilters' => '{"color":"red","size":"M"}'
+    'optionFilters' => ['color' => 'red', 'size' => 'M']
 ]}
 ```
 
@@ -141,7 +182,7 @@ title: msProducts
 {* Красные ИЛИ синие товары *}
 {'msProducts' | snippet : [
     'parents' => 0,
-    'optionFilters' => '{"color":"red","OR:color":"blue"}'
+    'optionFilters' => ['color' => 'red', 'OR:color' => 'blue']
 ]}
 ```
 
@@ -185,10 +226,10 @@ title: msProducts
 
 Создать новые типы связей можно в разделе **Настройки → Типы связей**.
 
-### Сортировка по опции (числовой)
+### Сортировка по опции
 
 ```fenom
-{* Сортировка по весу (опция weight) *}
+{* Сортировка по весу (числовая опция) *}
 {'msProducts' | snippet : [
     'parents' => 0,
     'sortby' => 'weight',
@@ -196,6 +237,15 @@ title: msProducts
     'sortdir' => 'ASC'
 ]}
 ```
+
+**Поддерживаемые типы для `sortbyOptions`:**
+
+| Тип | Пример | Когда использовать |
+|-----|--------|-------------------|
+| `number` / `decimal` | `weight:number` | Дробные числа: цена, вес, объём |
+| `int` / `integer` | `quantity:int` | Целые числа: количество, рейтинг, возраст |
+| `date` / `datetime` | `release_date:date` | Даты: дата выпуска, дата поступления |
+| (без типа) | `color` | Текст: сортировка по алфавиту |
 
 ### С превью изображений
 
@@ -206,7 +256,42 @@ title: msProducts
 ]}
 ```
 
-В чанке будут доступны: `{$small}`, `{$medium}` — URL превью.
+В чанке будут доступны: `{$small}`, `{$medium}` — URL первого изображения каждого размера.
+
+### Несколько изображений товара
+
+Параметр `includeThumbs` возвращает только первое изображение (position = 0). Чтобы получить 2-3 изображения для карусели или галереи, используйте `leftJoin` и `select`:
+
+```fenom
+{'msProducts' | snippet : [
+    'parents' => 0,
+    'leftJoin' => [
+        'Img1' => [
+            'class' => 'MiniShop3\\Model\\msProductFile',
+            'on' => 'Img1.product_id = msProduct.id AND Img1.position = 0 AND Img1.path LIKE "%/small/%"'
+        ],
+        'Img2' => [
+            'class' => 'MiniShop3\\Model\\msProductFile',
+            'on' => 'Img2.product_id = msProduct.id AND Img2.position = 1 AND Img2.path LIKE "%/small/%"'
+        ],
+        'Img3' => [
+            'class' => 'MiniShop3\\Model\\msProductFile',
+            'on' => 'Img3.product_id = msProduct.id AND Img3.position = 2 AND Img3.path LIKE "%/small/%"'
+        ]
+    ],
+    'select' => [
+        'Img1' => 'Img1.url as img1',
+        'Img2' => 'Img2.url as img2',
+        'Img3' => 'Img3.url as img3'
+    ]
+]}
+```
+
+В чанке будут доступны `{$img1}`, `{$img2}`, `{$img3}` — URL изображений в порядке их расположения в галерее.
+
+::: tip Позиция изображения
+`position = 0` — первое изображение, `position = 1` — второе, и т.д. Порядок определяется сортировкой в галерее товара.
+:::
 
 ### Получение только ID
 
@@ -278,6 +363,7 @@ title: msProducts
 - `{$color}` — Цвет (JSON)
 - `{$size}` — Размер (JSON)
 - `{$tags}` — Теги (JSON)
+- `{$discount}` — Скидка в процентах (вычисляется автоматически)
 
 ### Поля производителя (Vendor)
 
