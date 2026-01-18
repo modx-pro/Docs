@@ -14,11 +14,12 @@ title: msOrder
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|
 | **tpl** | `tpl.msOrder` | Чанк формы заказа |
-| **userFields** | | Дополнительные поля покупателя |
-| **includeDeliveryFields** | `*` | Поля доставки (`*` = все) |
-| **includePaymentFields** | `*` | Поля оплаты (`*` = все) |
+| **userFields** | | Маппинг полей профиля MODX на поля заказа (JSON) |
+| **includeDeliveryFields** | `id` | Поля доставки через запятую (`*` = все) |
+| **includePaymentFields** | `*` | Поля оплаты через запятую (`*` = все) |
+| **includeCustomerAddresses** | `true` | Загружать сохранённые адреса покупателя |
 | **showLog** | `false` | Показать лог выполнения |
-| **return** | `tpl` | Формат вывода: `tpl`, `data`, `json` |
+| **return** | `tpl` | Формат вывода: `tpl`, `data` |
 
 ## Примеры
 
@@ -50,31 +51,39 @@ title: msOrder
 
 ```php
 [
-    'user' => [
-        'id' => 5,                    // ID пользователя (0 если гость)
-        'email' => 'user@example.com',
-        'phone' => '+7 999 123-45-67',
-        'receiver' => 'Иван Иванов',
-        // ... другие поля
-    ],
     'order' => [
         'delivery_id' => 1,
         'payment_id' => 2,
-        'address' => '...',
         'comment' => '...',
+        'cost' => '5 300 ₽',          // Итого (форматировано)
+        'cart_cost' => '5 000 ₽',     // Стоимость товаров
+        'delivery_cost' => '300 ₽',   // Стоимость доставки
+        'discount_cost' => '0 ₽',     // Скидка
+    ],
+    'form' => [
+        'first_name' => 'Иван',
+        'last_name' => 'Иванов',
+        'email' => 'user@example.com',
+        'phone' => '+7 999 123-45-67',
+        'city' => 'Москва',
+        'street' => 'ул. Примерная',
+        'building' => '1',
+        'room' => '42',
+        // ... другие поля адреса
     ],
     'deliveries' => [
-        [
+        1 => [
             'id' => 1,
             'name' => 'Самовывоз',
             'description' => '...',
             'price' => 0,
             'logo' => '...',
+            'payments' => [1, 2],     // ID доступных способов оплаты
         ],
         // ...
     ],
     'payments' => [
-        [
+        1 => [
             'id' => 1,
             'name' => 'Наличными',
             'description' => '...',
@@ -82,25 +91,37 @@ title: msOrder
         ],
         // ...
     ],
-    'cart' => [
-        // Данные корзины
+    'addresses' => [                  // Сохранённые адреса (при includeCustomerAddresses)
+        [
+            'id' => 1,
+            'city' => 'Москва',
+            'street' => 'ул. Ленина',
+            // ...
+        ],
     ],
-    'total' => [
-        'cost' => 5000,
-        'delivery_cost' => 300,
-        'total' => 5300,
-    ],
+    'errors' => [],                   // Массив полей с ошибками
+    'isCustomerAuth' => true,         // Авторизован ли покупатель
+    'isCartEmpty' => false,           // Пуста ли корзина
 ]
 ```
 
 ## Плейсхолдеры в чанке
 
-### Данные покупателя
+### Данные формы (контакты и адрес)
 
-- `{$user.id}` — ID пользователя (0 для гостя)
-- `{$user.email}` — Email
-- `{$user.phone}` — Телефон
-- `{$user.receiver}` — ФИО получателя
+- `{$form.first_name}` — Имя
+- `{$form.last_name}` — Фамилия
+- `{$form.email}` — Email
+- `{$form.phone}` — Телефон
+- `{$form.city}` — Город
+- `{$form.street}` — Улица
+- `{$form.building}` — Дом
+- `{$form.room}` — Квартира/офис
+
+### Флаги состояния
+
+- `{$isCustomerAuth}` — Авторизован ли покупатель (bool)
+- `{$isCartEmpty}` — Пуста ли корзина (bool)
 
 ### Способы доставки
 
@@ -135,15 +156,20 @@ title: msOrder
 
 ### Итоги
 
-- `{$total.cost}` — Стоимость товаров
-- `{$total.delivery_cost}` — Стоимость доставки
-- `{$total.total}` — Итого к оплате
+- `{$order.cart_cost}` — Стоимость товаров
+- `{$order.delivery_cost}` — Стоимость доставки
+- `{$order.discount_cost}` — Скидка
+- `{$order.cost}` — Итого к оплате
 
 ## Пример чанка
 
 ```fenom
 {* tpl.msOrder *}
-<form class="ms-order" data-ms-order>
+{if $isCartEmpty}
+    <div class="alert alert-warning">Корзина пуста</div>
+{else}
+<form class="ms-order ms3_form" method="post">
+    <input type="hidden" name="ms3_action" value="order/submit">
     <h2>Оформление заказа</h2>
 
     {* Контактные данные *}
@@ -151,18 +177,25 @@ title: msOrder
         <legend>Контактные данные</legend>
 
         <div class="form-group">
-            <label>Имя получателя *</label>
+            <label>Имя *</label>
             <input type="text"
-                   name="receiver"
-                   value="{$user.receiver}"
+                   name="first_name"
+                   value="{$form.first_name}"
                    required>
+        </div>
+
+        <div class="form-group">
+            <label>Фамилия</label>
+            <input type="text"
+                   name="last_name"
+                   value="{$form.last_name}">
         </div>
 
         <div class="form-group">
             <label>Email *</label>
             <input type="email"
                    name="email"
-                   value="{$user.email}"
+                   value="{$form.email}"
                    required>
         </div>
 
@@ -170,8 +203,34 @@ title: msOrder
             <label>Телефон *</label>
             <input type="tel"
                    name="phone"
-                   value="{$user.phone}"
+                   value="{$form.phone}"
                    required>
+        </div>
+    </fieldset>
+
+    {* Адрес *}
+    <fieldset>
+        <legend>Адрес доставки</legend>
+
+        <div class="form-group">
+            <label>Город</label>
+            <input type="text" name="city" value="{$form.city}">
+        </div>
+
+        <div class="form-group">
+            <label>Улица</label>
+            <input type="text" name="street" value="{$form.street}">
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label>Дом</label>
+                <input type="text" name="building" value="{$form.building}">
+            </div>
+            <div class="col">
+                <label>Квартира</label>
+                <input type="text" name="room" value="{$form.room}">
+            </div>
         </div>
     </fieldset>
 
@@ -182,9 +241,8 @@ title: msOrder
         {foreach $deliveries as $delivery}
             <label class="delivery-option">
                 <input type="radio"
-                       name="delivery"
+                       name="delivery_id"
                        value="{$delivery.id}"
-                       data-ms-action="order/delivery"
                        {if $order.delivery_id == $delivery.id}checked{/if}>
                 <span>{$delivery.name}</span>
                 {if $delivery.price > 0}
@@ -192,13 +250,6 @@ title: msOrder
                 {/if}
             </label>
         {/foreach}
-
-        <div class="form-group">
-            <label>Адрес доставки</label>
-            <input type="text"
-                   name="address"
-                   value="{$order.address}">
-        </div>
     </fieldset>
 
     {* Оплата *}
@@ -208,9 +259,8 @@ title: msOrder
         {foreach $payments as $payment}
             <label class="payment-option">
                 <input type="radio"
-                       name="payment"
+                       name="payment_id"
                        value="{$payment.id}"
-                       data-ms-action="order/payment"
                        {if $order.payment_id == $payment.id}checked{/if}>
                 <span>{$payment.name}</span>
             </label>
@@ -220,25 +270,26 @@ title: msOrder
     {* Комментарий *}
     <fieldset>
         <legend>Комментарий к заказу</legend>
-        <textarea name="comment"
-                  rows="3">{$order.comment}</textarea>
+        <textarea name="comment" rows="3">{$order.comment}</textarea>
     </fieldset>
 
     {* Итого *}
     <div class="order-total">
-        <div>Товары: <span data-ms-order-cost>{$total.cost}</span> руб.</div>
-        <div>Доставка: <span data-ms-order-delivery>{$total.delivery_cost}</span> руб.</div>
+        <div>Товары: <span>{$order.cart_cost}</span></div>
+        <div>Доставка: <span>{$order.delivery_cost}</span></div>
+        {if $order.discount_cost}
+            <div>Скидка: <span>{$order.discount_cost}</span></div>
+        {/if}
         <div class="total">
-            <strong>Итого: <span data-ms-order-total>{$total.total}</span> руб.</strong>
+            <strong>Итого: <span>{$order.cost}</span></strong>
         </div>
     </div>
 
-    <button type="submit"
-            data-ms-action="order/submit"
-            class="btn btn-primary btn-lg">
+    <button type="submit" class="btn btn-primary btn-lg">
         Оформить заказ
     </button>
 </form>
+{/if}
 ```
 
 ## JavaScript взаимодействие

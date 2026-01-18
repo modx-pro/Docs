@@ -159,6 +159,7 @@ $imageService = $modx->services->get('ms3_product_image');
 | `ms3_email_verification_service` | `Services\Customer\EmailVerificationService` | Верификация email |
 | `ms3_sms_verification_service` | `Services\Customer\SmsVerificationService` | Верификация по SMS |
 | `ms3_rate_limiter` | `Services\Customer\RateLimiter` | Ограничение частоты запросов |
+| `ms3_customer_address_manager` | `Services\Customer\CustomerAddressManager` | Управление адресами покупателя |
 | `ms3_customer_duplicate_checker` | `Services\CustomerDuplicateChecker` | Проверка дубликатов |
 | `ms3_customer_factory` | `Services\CustomerFactory` | Фабрика покупателей |
 
@@ -194,6 +195,7 @@ $authManager->registerProvider(new SmsAuthProvider($modx));
 | `ms3_order_submit_handler` | `Services\Order\OrderSubmitHandler` | Оформление заказа |
 | `ms3_order_log` | `Services\Order\OrderLogService` | Логирование изменений заказа |
 | `ms3_order_status` | `Services\Order\OrderStatusService` | Смена статуса + уведомления |
+| `ms3_order_finalize` | `Services\Order\OrderFinalizeService` | Финализация заказа (валидация, создание клиента) |
 
 ```php
 // Получение сервисов напрямую

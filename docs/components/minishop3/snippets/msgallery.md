@@ -9,31 +9,36 @@ title: msGallery
 
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|
-| **tpl** | `tpl.msGallery` | Чанк оформления галереи |
 | **product** | текущий ресурс | ID товара |
+| **tpl** | `tpl.msGallery` | Чанк оформления галереи |
 | **limit** | `0` | Количество изображений (0 = все) |
 | **offset** | `0` | Пропустить указанное количество |
 | **sortby** | `position` | Поле сортировки |
 | **sortdir** | `ASC` | Направление сортировки |
 | **where** | | JSON с дополнительными условиями |
-| **filetype** | | Фильтр по типу файла |
+| **filetype** | | Фильтр по типу файла (через запятую) |
+| **thumbnails** | | Фильтр превью по именам (через запятую) |
+| **showInactive** | `false` | Показывать неактивные файлы |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
 | **showLog** | `false` | Показать лог выполнения |
-| **return** | `tpl` | Формат: `tpl`, `data`, `json` |
+| **return** | `data` | Формат: `data`, `tpl`, `json`, `sql` |
 
 ## Примеры
 
 ### Базовый вывод
 
 ```fenom
-{'msGallery' | snippet}
+{'msGallery' | snippet : [
+    'return' => 'tpl'
+]}
 ```
 
 ### Для конкретного товара
 
 ```fenom
 {'msGallery' | snippet : [
-    'product' => 15
+    'product' => 15,
+    'return' => 'tpl'
 ]}
 ```
 
@@ -41,7 +46,8 @@ title: msGallery
 
 ```fenom
 {'msGallery' | snippet : [
-    'limit' => 5
+    'limit' => 5,
+    'return' => 'tpl'
 ]}
 ```
 
@@ -49,7 +55,17 @@ title: msGallery
 
 ```fenom
 {'msGallery' | snippet : [
-    'filetype' => 'image'
+    'filetype' => 'image',
+    'return' => 'tpl'
+]}
+```
+
+### Только определённые превью
+
+```fenom
+{'msGallery' | snippet : [
+    'thumbnails' => 'small,medium',
+    'return' => 'tpl'
 ]}
 ```
 
@@ -58,106 +74,186 @@ title: msGallery
 ```fenom
 {'msGallery' | snippet : [
     'sortby' => 'name',
-    'sortdir' => 'ASC'
+    'sortdir' => 'ASC',
+    'return' => 'tpl'
 ]}
 ```
 
-### Получение данных
+### Получение данных для обработки
 
 ```fenom
-{set $images = 'msGallery' | snippet : [
-    'return' => 'data'
-]}
+{set $files = 'msGallery' | snippet}
 
-{foreach $images as $image}
-    <img src="{$image.url}" alt="{$image.name}">
+{foreach $files as $file}
+    <img src="{$file['url']}" alt="{$file['name']}">
 {/foreach}
 ```
 
+::: info return=data по умолчанию
+По умолчанию сниппет возвращает массив данных (`return=data`). Для вывода через чанк укажите `return=tpl`.
+:::
+
 ## Плейсхолдеры в чанке
 
-Для каждого файла галереи:
+В чанк передаются:
 
-- `{$id}` — ID файла
-- `{$product_id}` — ID товара
-- `{$name}` — Имя файла
-- `{$description}` — Описание
-- `{$url}` — URL оригинала
-- `{$path}` — Путь к файлу
-- `{$type}` — MIME-тип
-- `{$createdon}` — Дата добавления
-- `{$position}` — Позиция в галерее
-- `{$idx}` — Порядковый номер в выборке
+| Плейсхолдер | Описание |
+|-------------|----------|
+| `{$files}` | Массив файлов галереи |
+| `{$scriptProperties}` | Параметры вызова сниппета |
 
-### Превью (thumbnails)
+### Поля каждого файла
 
-Превью доступны по имени папки:
+| Поле | Описание |
+|------|----------|
+| `{$file['id']}` | ID файла |
+| `{$file['product_id']}` | ID товара |
+| `{$file['name']}` | Имя файла |
+| `{$file['description']}` | Описание |
+| `{$file['url']}` | URL оригинала |
+| `{$file['path']}` | Путь к файлу |
+| `{$file['file']}` | Имя файла на диске |
+| `{$file['type']}` | Тип файла (image, video, document и т.д.) |
+| `{$file['createdon']}` | Дата добавления |
+| `{$file['createdby']}` | ID пользователя |
+| `{$file['position']}` | Позиция в галерее |
+| `{$file['active']}` | Активен (1/0) |
+| `{$file['hash']}` | Хеш файла |
 
-- `{$small}` — Маленькое превью
-- `{$medium}` — Среднее превью
-- `{$large}` — Большое превью
+### Превью изображений
+
+Превью добавляются как дополнительные поля с именем папки:
+
+| Поле | Описание |
+|------|----------|
+| `{$file['small']}` | URL маленького превью |
+| `{$file['medium']}` | URL среднего превью |
+| `{$file['large']}` | URL большого превью |
 
 ::: info Имена превью
 Имена превью зависят от настроек медиа-источника товаров. По умолчанию создаются `small`, `medium`, `large`.
 :::
 
-## Пример чанка
+### Служебные переменные цикла
+
+В Fenom доступны переменные итерации:
+
+```fenom
+{foreach $files as $file}
+    {$file@index}     {* Индекс с 0 *}
+    {$file@iteration} {* Номер с 1 *}
+    {$file@first}     {* true для первого *}
+    {$file@last}      {* true для последнего *}
+{/foreach}
+```
+
+## Чанк по умолчанию
+
+Стандартный чанк `tpl.msGallery` использует Splide.js для слайдера и GLightbox для просмотра:
 
 ```fenom
 {* tpl.msGallery *}
-<div class="product-gallery" data-gallery>
-    {* Главное изображение *}
-    <div class="gallery-main">
-        <a href="{$url}" data-fancybox="gallery">
-            <img src="{$medium}" alt="{$name}">
-        </a>
+{if $files?}
+    {* Splide Slider + GLightbox CSS/JS *}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/css/glightbox.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/js/glightbox.min.js"></script>
+
+    <div class="ms3-gallery">
+        {* Основной слайдер *}
+        <div class="splide ms3-gallery-main" id="ms3-gallery-main">
+            <div class="splide__track">
+                <ul class="splide__list">
+                    {foreach $files as $file}
+                        <li class="splide__slide">
+                            <a href="{$file['url']}"
+                               class="glightbox"
+                               data-gallery="ms3-product-gallery"
+                               data-title="{$file['name']}"
+                               data-description="{$file['description']}">
+                                <img src="{$file['medium'] ?: $file['url']}"
+                                     alt="{$file['description'] ?: $file['name']}"
+                                     loading="{$file@first ? 'eager' : 'lazy'}">
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+
+        {* Слайдер миниатюр *}
+        {if ($files | length) > 1}
+            <div class="splide ms3-gallery-thumbs" id="ms3-gallery-thumbs">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        {foreach $files as $file}
+                            <li class="splide__slide">
+                                <img src="{$file['small'] ?: $file['medium'] ?: $file['url']}"
+                                     alt="{$file['description'] ?: $file['name']}">
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+        {/if}
     </div>
 
-    {* Превью *}
-    {if $total > 1}
-        <div class="gallery-thumbs">
-            {foreach $images as $image}
-                <button type="button"
-                        data-index="{$image.idx}"
-                        class="{if $image.idx == 1}active{/if}">
-                    <img src="{$image.small}" alt="{$image.name}">
-                </button>
-            {/foreach}
-        </div>
-    {/if}
-</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var main = new Splide('#ms3-gallery-main', {
+                type: 'fade',
+                rewind: true,
+                pagination: false,
+                arrows: true,
+            });
+
+            var thumbsEl = document.getElementById('ms3-gallery-thumbs');
+            if (thumbsEl) {
+                var thumbs = new Splide('#ms3-gallery-thumbs', {
+                    fixedWidth: 100,
+                    fixedHeight: 80,
+                    gap: 10,
+                    rewind: true,
+                    pagination: false,
+                    arrows: false,
+                    isNavigation: true,
+                    focus: 'center',
+                });
+                main.sync(thumbs);
+                main.mount();
+                thumbs.mount();
+            } else {
+                main.mount();
+            }
+
+            GLightbox({ selector: '.glightbox', loop: true });
+        });
+    </script>
+{else}
+    <div class="ms3-gallery ms3-gallery-empty">
+        <img src="{'assets_url' | option}components/minishop3/img/web/ms3_medium.png" alt="">
+    </div>
+{/if}
 ```
 
-## Альтернативный чанк для слайдера
+## Простой чанк
+
+Минимальный пример без внешних библиотек:
 
 ```fenom
-{* tpl.msGallery.slider *}
-<div class="swiper product-slider">
-    <div class="swiper-wrapper">
-        {foreach $images as $image}
-            <div class="swiper-slide">
-                <a href="{$image.url}" data-fancybox="product-gallery">
-                    <img src="{$image.large}"
-                         alt="{$image.name}"
-                         loading="{if $image.idx > 1}lazy{else}eager{/if}">
-                </a>
-            </div>
+{* tpl.msGallery.simple *}
+{if $files?}
+    <div class="product-gallery">
+        {foreach $files as $file}
+            <a href="{$file['url']}" target="_blank">
+                <img src="{$file['medium'] ?: $file['url']}"
+                     alt="{$file['name']}"
+                     loading="{$file@first ? 'eager' : 'lazy'}">
+            </a>
         {/foreach}
     </div>
-    <div class="swiper-pagination"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
-</div>
-
-<div class="swiper product-thumbs">
-    <div class="swiper-wrapper">
-        {foreach $images as $image}
-            <div class="swiper-slide">
-                <img src="{$image.small}" alt="{$image.name}">
-            </div>
-        {/foreach}
-    </div>
-</div>
+{/if}
 ```
 
 ## Работа с видео
@@ -165,13 +261,28 @@ title: msGallery
 Если в галерее есть видео:
 
 ```fenom
+{set $files = 'msGallery' | snippet}
+
 {foreach $files as $file}
-    {if $file.type | match : 'video'}
+    {if $file['type'] == 'video'}
         <video controls>
-            <source src="{$file.url}" type="{$file.type}">
+            <source src="{$file['url']}" type="video/{$file['file'] | pathinfo : 'extension'}">
         </video>
     {else}
-        <img src="{$file.medium}" alt="{$file.name}">
+        <img src="{$file['medium'] ?: $file['url']}" alt="{$file['name']}">
     {/if}
 {/foreach}
+```
+
+## Фильтрация по типу
+
+```fenom
+{* Только изображения *}
+{'msGallery' | snippet : ['filetype' => 'image']}
+
+{* Только видео *}
+{'msGallery' | snippet : ['filetype' => 'video']}
+
+{* Изображения и видео *}
+{'msGallery' | snippet : ['filetype' => 'image,video']}
 ```
