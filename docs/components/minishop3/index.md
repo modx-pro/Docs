@@ -30,7 +30,6 @@ items: [
       { text: 'Категория', link: 'interface/category' },
       { text: 'Товар', link: 'interface/product' },
       { text: 'Галерея', link: 'interface/gallery' },
-      { text: 'Заказы', link: 'interface/orders' },
       {
         text: 'Настройки',
         link: 'interface/settings',
@@ -59,13 +58,43 @@ items: [
   {
     text: 'Интерфейс фронтенда',
     items: [
+      { text: 'Каталог', link: 'frontend/catalog' },
+      { text: 'Страница товара', link: 'frontend/product' },
       { text: 'Корзина', link: 'frontend/cart' },
+      { text: 'Оформление заказа', link: 'frontend/order' },
+      { text: 'Спасибо за заказ', link: 'frontend/thanks' },
+      {
+        text: 'Личный кабинет',
+        items: [
+          { text: 'Профиль покупателя', link: 'frontend/customer-profile' },
+          { text: 'Адреса доставки', link: 'frontend/customer-addresses' },
+          { text: 'История заказов', link: 'frontend/customer-orders' },
+        ],
+      },
     ],
   },
   {
     text: 'Разработка',
     items: [
-      { text: 'События', link: 'development/events' },
+      {
+        text: 'События',
+        link: 'development/events',
+        items: [
+          { text: 'Руководство по плагинам', link: 'development/events/plugins-guide' },
+          { text: 'Корзина', link: 'development/events/cart' },
+          { text: 'Заказ', link: 'development/events/order' },
+          { text: 'Модель заказа', link: 'development/events/order-model' },
+          { text: 'Товар в заказе', link: 'development/events/order-product' },
+          { text: 'Стоимость', link: 'development/events/cost' },
+          { text: 'Статус', link: 'development/events/status' },
+          { text: 'Покупатель', link: 'development/events/customer' },
+          { text: 'Товар', link: 'development/events/product' },
+          { text: 'Производитель', link: 'development/events/vendor' },
+          { text: 'Уведомления', link: 'development/events/notifications' },
+          { text: 'Импорт', link: 'development/events/import' },
+          { text: 'Менеджер', link: 'development/events/manager' },
+        ],
+      },
       { text: 'REST API', link: 'development/api' },
       { text: 'API Router', link: 'development/routing' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
