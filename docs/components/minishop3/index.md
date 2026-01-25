@@ -97,6 +97,7 @@ items: [
       },
       { text: 'REST API', link: 'development/api' },
       { text: 'API Router', link: 'development/routing' },
+      { text: 'JavaScript API', link: 'development/javascript' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
       { text: 'Scheduler', link: 'development/scheduler' },
       { text: 'Модели и схема БД', link: 'development/models' },
