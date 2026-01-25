@@ -13,4 +13,5 @@ title: Разработка
 - [Scheduler](scheduler) — фоновые задачи и интеграция с Scheduler
 - [Модели и схема БД](models) — xPDO модели и структура таблиц
 - [Сервисный слой](services) — DI контейнер, расширение и замена сервисов
-- Скрипты и стили *(в разработке)* — JavaScript API и CSS
+- [JavaScript API](javascript) — Headless API для SPA (Vue, React, Vanilla JS)
+- [Frontend JavaScript](frontend-js) — полная документация включая UI-слой
