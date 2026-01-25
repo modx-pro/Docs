@@ -1,7 +1,7 @@
 ---
 title: mSearch
 description: Полнотекстовый поиск с морфологическим анализом для MODX 3
-logo: https://modstore.pro/assets/extras/msearch2/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/msearch/logo-lg.png
 author: biz87
 repository: https://github.com/modx-pro/msearch
 

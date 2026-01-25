@@ -16,17 +16,19 @@ title: Быстрый старт
 
 ### Зависимости
 
-- **pdoTools 3.x** — обязательно для работы сниппетов и шаблонизатора Fenom
+- **pdoTools 3.x** — для работы сниппетов и шаблонизатора Fenom
+- **[VueTools](/components/vuetools/)** — Vue 3 и PrimeVue для административного интерфейса
 - **[Scheduler](/components/scheduler/)** *(опционально)* — для фоновых задач (импорт, уведомления, очистка)
 
 ## Установка
 
 ### Через менеджер пакетов MODX
 
-1. Перейдите в **Extras → Installer**
-2. Нажмите **Download Extras**
-3. Найдите **MiniShop3** в каталоге
-4. Нажмите **Download** и **Install**
+1. [Подключите наш репозиторий](https://modstore.pro/info/connection)
+2. Перейдите в **Пакеты → Установщик**
+3. Выберите поставщика Modstore.pro, Нажмите **Загрузить пакеты**
+4. Найдите по очереди **pdoTools**, **VueTools**, **Scheduler**,  **MiniShop3** в каталоге
+5. Для каждого Нажмите **Скачать** и **Установить**
 
 Подробнее о способах установки — на [главной странице документации](index).
 
@@ -42,174 +44,86 @@ MiniShop3 автоматически:
 
 ## Первоначальная настройка
 
-### 1. Системные настройки
-
-Перейдите в **System → System Settings** и найдите настройки с пространством имён `minishop3`:
-
-| Настройка | Описание |
-|-----------|----------|
-| `ms3_order_redirect_thanks_id` | ID страницы «Спасибо за заказ» |
-| `ms3_order_success_page_id` | ID страницы успешной оплаты |
-| `ms3_customer_login_page_id` | ID страницы входа |
-| `ms3_customer_profile_page_id` | ID страницы профиля |
-| `ms3_customer_orders_page_id` | ID страницы истории заказов |
-
-Полный список настроек — на странице [Системные настройки](settings).
-
-### 2. Создание страниц магазина
+### 1. Служебные страницы магазина
 
 Создайте следующие страницы:
 
 1. **Корзина** — разместите сниппет `msCart`
 2. **Оформление заказа** — разместите сниппет `msOrder`
-3. **Личный кабинет** — разместите сниппет `msCustomer`
+3. **Заказ оформлен** — разместите сниппет `msGetOrder`
+4. **Личный кабинет** — разместите сниппет `msCustomer` с сервисом `profile`
+5. **Заказы клиента** — разместите сниппет `msCustomer` с сервисом `orders`
+6. **Адреса клиента** — разместите сниппет `msCustomer` с сервисом `addresses`
 
-Укажите ID этих страниц в системных настройках.
+Примеры реализации шаблонов для каждой из этих страниц подготовлены в каталоге `/core/components/minishop3/elements/templates/`
+Для быстрого старта можете полностью скопировать разметку шаблонов и далее подгонять ее под себя
+
+
+### 2. Системные настройки
+
+Перейдите в **Системные настройки** и найдите настройки с пространством имён `minishop3` (можно написать `page_id` в поиске):
+
+[![](https://file.modx.pro/files/e/b/4/eb4bfa6a1a38faf46638bad136138b72s.jpg)](https://file.modx.pro/files/e/b/4/eb4bfa6a1a38faf46638bad136138b72.png)  
+    
+| Настройка | Описание                                                                     |
+|-----------|------------------------------------------------------------------------------|
+| `ms3_cart_page_id` | ID страницы с корзиной                                                       |
+| `ms3_order_page_id` | ID страницы оформления заказа                                                |
+| `ms3_order_success_page_id` | ID страницы, на которую перенаправляется клиент после успешной оплаты заказа |
+| `ms3_order_redirect_thanks_id` | ID страницы «Спасибо за заказ»                                               |
+| `ms3_customer_login_page_id` | ID страницы авторизации клиента (Обычно равен ID страницы профиля)           |
+| `ms3_customer_register_page_id` | ID страницы регистрацииы клиента (Обычно равен ID страницы профиля)          |
+| `ms3_customer_profile_page_id` | ID страницы профиля клиента                                                  |
+| `ms3_customer_orders_page_id` | ID страницы истории заказов клиента                                          |
+
+Полный список настроек — на странице [Системные настройки](settings).
+
 
 ### 3. Создание категорий
 
-1. Перейдите в **Resources**
-2. Создайте новый ресурс с **Resource Type** = `msCategory`
-3. Заполните название и сохраните
+1. Перейдите в **Ресурсы**
+2. Создайте новый ресурс с **Типом ресурса** = `Категория товаров`
+   3. Заполните название, выберите нужный шаблон и сохраните
+
+[![](https://file.modx.pro/files/e/b/7/eb75082fda3e16c578f90bf622dc1f56s.jpg)](https://file.modx.pro/files/e/b/7/eb75082fda3e16c578f90bf622dc1f56.png)
 
 ### 4. Создание товаров
 
-1. В категории создайте дочерний ресурс
-2. Выберите **Resource Type** = `msProduct`
-3. Заполните вкладку **Данные товара**:
+1. В категории нажмите `Добавить товар`
+2. Введите название, выберите подходящий шаблон и сохраните
+3. После сохранения Заполните вкладку **Свойства товара**:
    - Артикул
    - Цена
    - Вес (опционально)
    - Изображение
-4. Сохраните товар
+4. Сохраните товар, не забыл поставить отметку `Опубликовано`
 
-## Вывод каталога
+## Шаблоны
 
-### Простой список товаров
-
-```fenom
-{'msProducts' | snippet : [
-    'parents' => 0,
-    'limit' => 12,
-    'tpl' => 'tpl.msProducts.row'
-]}
-```
-
-### С пагинацией
-
-```fenom
-{'pdoPage' | snippet : [
-    'element' => 'msProducts',
-    'parents' => 0,
-    'limit' => 12,
-    'tpl' => 'tpl.msProducts.row'
-]}
-
-{$_modx->getPlaceholder('page.nav')}
-```
-
-### Из конкретной категории
-
-```fenom
-{'msProducts' | snippet : [
-    'parents' => 5,
-    'depth' => 2,
-    'limit' => 12
-]}
-```
-
-## Корзина
-
-### Минимальный вывод
-
-```fenom
-{'!msCart' | snippet}
-```
-
-### С кастомным чанком
-
-```fenom
-{'!msCart' | snippet : [
-    'tpl' => 'myCartTemplate'
-]}
-```
-
-::: warning Некэшируемый вызов
-Сниппет `msCart` работает с сессией и должен вызываться **некэшированно** (с `!`).
-:::
-
-## Мини-корзина в шапке
-
-```fenom
-{set $cart = '!msOrderTotal' | snippet}
-
-<a href="{'ms3_cart_page' | option}" class="header-cart">
-    <span class="cart-count">{$cart.count}</span>
-    <span class="cart-total">{$cart.cost}</span> руб.
-</a>
-```
-
-## Добавление в корзину
-
-### Кнопка добавления
-
-```html
-<button type="button"
-        data-ms-action="cart/add"
-        data-id="123">
-    В корзину
-</button>
-```
-
-### С указанием количества
-
-```html
-<form>
-    <input type="number" name="count" value="1" min="1">
-    <button type="button"
-            data-ms-action="cart/add"
-            data-id="123">
-        В корзину
-    </button>
-</form>
-```
-
-### С опциями товара
-
-```html
-<form>
-    <select name="options[color]">
-        <option value="red">Красный</option>
-        <option value="blue">Синий</option>
-    </select>
-    <select name="options[size]">
-        <option value="S">S</option>
-        <option value="M">M</option>
-        <option value="L">L</option>
-    </select>
-    <button type="button"
-            data-ms-action="cart/add"
-            data-id="123">
-        В корзину
-    </button>
-</form>
-```
+Для быстрого старта, и в качестве примера, в комплекте прилагается целый шабор готовых шаблонов, из которых вы можете забрать себе код целиком, а потом подредактировать под свой дизайн. 
+Для вас доступны шаблоны
+- `core/components/minishop3/elements/templates/catalog.tpl` - Каталог
+- `core/components/minishop3/elements/templates/product.tpl` - Информация о товаре
+- `core/components/minishop3/elements/templates/cart.tpl` - Корзина
+- `core/components/minishop3/elements/templates/order.tpl` - Оформление заказа
+- `core/components/minishop3/elements/templates/thanks.tpl` - Спасибо за заказ
+- `core/components/minishop3/elements/templates/customer.tpl` - Личный кабинет клиента
 
 ## Оформление заказа
 
-```fenom
-{'!msOrder' | snippet}
-```
+Для успешного оформления заказа, вам нужно убедиться, что на странице `Настройки` созданы, как минимум один способ оплаты и один способ заказа.
+[![](https://file.modx.pro/files/e/c/8/ec8465a41233991c2ec0cd62d3ac6d25s.jpg)](https://file.modx.pro/files/e/c/8/ec8465a41233991c2ec0cd62d3ac6d25.png)
 
-Сниппет автоматически отображает:
-- Список товаров в заказе
-- Форму контактных данных
-- Выбор доставки и оплаты
-- Кнопку оформления
+
+И напоследок, убедитесь что в существующем способе доставки, указаны обязательные для вашего случая поля. Обычно это телефон, имя, фамилия, иногда Email
+
+[![](https://file.modx.pro/files/3/d/e/3de8bb7a8a195fe8e406319b80ef44d4s.jpg)](https://file.modx.pro/files/3/d/e/3de8bb7a8a195fe8e406319b80ef44d4.png)
 
 ## Следующие шаги
 
 - [Сниппеты](snippets/) — полный справочник по сниппетам
-- [Интерфейс](interface/) — описание административного интерфейса
+- [Интерфейс админки](interface/) — описание административного интерфейса
+- [Интерфейс фронтенда](frontend/) — описание интерфейса сайта, шаблонов, чанков
+- [Возможности JavaScript](development//frontend-js) — как использовать JS на вашем сайте
 - [REST API](development/api) — интеграция через API
 - [События](development/events) — расширение через плагины
