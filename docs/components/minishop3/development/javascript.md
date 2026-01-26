@@ -85,7 +85,7 @@ const order = new OrderAPI(apiClient)
 const customer = new CustomerAPI(apiClient)
 
 // Готово к использованию
-const response = await cart.add(123, 2, { color: 'red' })
+const response = await ms3.cartAPI.add(123, 2, { color: 'red' })
 ```
 
 ## Глобальные объекты
@@ -117,26 +117,40 @@ API для работы с корзиной.
 Получить содержимое корзины.
 
 ```javascript
-const response = await cart.get()
+const response = await ms3.cartAPI.get()
 
-// response.data:
+// response:
 {
-  cart: [
-    {
-      product_key: "ms5d41d8cd98f00b204e9800998ecf8427e",
-      product_id: 123,
-      count: 2,
-      price: 1500,
-      old_price: 2000,
-      cost: 3000,
-      options: { color: "red", size: "L" },
-      // ... данные товара
+  success: true,
+  message: "ms3_cart_get_success",
+  data: {
+    cart: {
+      // Объект, где ключ — product_key
+      "ms43ce202fd27c84c28230cc771328e37f": {
+        id: 10,
+        product_id: 152248,
+        order_id: 7,
+        product_key: "ms43ce202fd27c84c28230cc771328e37f",
+        name: "Название товара",
+        count: 2,
+        price: 148343,
+        weight: 2.508,
+        cost: 296686,
+        options: [],
+        properties: {
+          old_price: 0,
+          discount_price: 0,
+          discount_cost: 0
+        }
+      }
+    },
+    status: {
+      total_count: 9,
+      total_cost: 1094850,
+      total_weight: 35.62,
+      total_discount: 19241,
+      total_positions: 3
     }
-  ],
-  status: {
-    total_count: 2,
-    total_cost: 3000,
-    total_discount: 1000
   }
 }
 ```
@@ -150,21 +164,22 @@ const response = await cart.get()
 | `id` | number | ID товара (обязательный) |
 | `count` | number | Количество (по умолчанию 1) |
 | `options` | object | Опции товара (цвет, размер и т.д.) |
-| `render` | array | Токены для серверного рендеринга |
+| `render` | array | Токены для SSR (см. ниже) |
 
 ```javascript
 // Простое добавление
-await cart.add(123)
+await ms3.cartAPI.add(123)
 
 // С количеством
-await cart.add(123, 3)
+await ms3.cartAPI.add(123, 3)
 
 // С опциями
-await cart.add(123, 1, { color: 'red', size: 'L' })
-
-// С запросом HTML для обновления
-await cart.add(123, 1, {}, ['mini', 'full'])
+await ms3.cartAPI.add(123, 1, { color: 'red', size: 'L' })
 ```
+
+:::tip SSR (Server-Side Rendering)
+Параметр `render` позволяет получить готовый HTML с сервера. Токены должны быть зарегистрированы на сервере через `TokenService`. Если токены настроены, HTML возвращается в `response.data.render`. Это продвинутая функция для оптимизации — в большинстве случаев не требуется.
+:::
 
 **Формат ответа:**
 
@@ -194,7 +209,7 @@ await cart.add(123, 1, {}, ['mini', 'full'])
 | `render` | array | Токены для рендеринга |
 
 ```javascript
-await cart.change('ms5d41d8cd98f00b204e9800998ecf8427e', 5)
+await ms3.cartAPI.change('ms5d41d8cd98f00b204e9800998ecf8427e', 5)
 ```
 
 :::tip product_key
@@ -206,7 +221,7 @@ await cart.change('ms5d41d8cd98f00b204e9800998ecf8427e', 5)
 Удалить товар из корзины.
 
 ```javascript
-await cart.remove('ms5d41d8cd98f00b204e9800998ecf8427e')
+await ms3.cartAPI.remove('ms5d41d8cd98f00b204e9800998ecf8427e')
 ```
 
 #### clean(render)
@@ -214,7 +229,7 @@ await cart.remove('ms5d41d8cd98f00b204e9800998ecf8427e')
 Очистить корзину.
 
 ```javascript
-await cart.clean()
+await ms3.cartAPI.clean()
 ```
 
 ## OrderAPI
@@ -228,7 +243,7 @@ API для работы с заказом.
 Получить текущий заказ (данные из сессии).
 
 ```javascript
-const response = await order.get()
+const response = await ms3.orderAPI.get()
 
 // response.data:
 {
@@ -246,12 +261,12 @@ const response = await order.get()
 Сохранить поле заказа.
 
 ```javascript
-await order.add('receiver', 'Иван Иванов')
-await order.add('email', 'ivan@example.com')
-await order.add('phone', '+79991234567')
-await order.add('delivery', 1)
-await order.add('payment', 2)
-await order.add('comment', 'Позвонить перед доставкой')
+await ms3.orderAPI.add('receiver', 'Иван Иванов')
+await ms3.orderAPI.add('email', 'ivan@example.com')
+await ms3.orderAPI.add('phone', '+79991234567')
+await ms3.orderAPI.add('delivery', 1)
+await ms3.orderAPI.add('payment', 2)
+await ms3.orderAPI.add('comment', 'Позвонить перед доставкой')
 ```
 
 :::info Автосохранение
@@ -263,7 +278,7 @@ await order.add('comment', 'Позвонить перед доставкой')
 Удалить поле заказа.
 
 ```javascript
-await order.remove('comment')
+await ms3.orderAPI.remove('comment')
 ```
 
 #### clean()
@@ -271,7 +286,7 @@ await order.remove('comment')
 Очистить все данные заказа.
 
 ```javascript
-await order.clean()
+await ms3.orderAPI.clean()
 ```
 
 #### submit()
@@ -279,7 +294,7 @@ await order.clean()
 Оформить заказ.
 
 ```javascript
-const response = await order.submit()
+const response = await ms3.orderAPI.submit()
 
 if (response.success) {
   // response.data:
@@ -306,47 +321,42 @@ if (response.success) {
 Получить расчёт стоимости заказа.
 
 ```javascript
-const response = await order.getCost()
+const response = await ms3.orderAPI.getCost()
 
-// response.data:
+// response:
 {
-  cart_cost: 5000,
-  delivery_cost: 300,
-  discount: 500,
-  total_cost: 4800
+  success: true,
+  message: "Стоимость рассчитана",
+  data: {
+    cost: 0,
+    cart_cost: 0,
+    delivery_cost: 0,
+    payment_cost: 0,
+    total_count: 0,
+    total_cost: 0,
+    total_weight: 0,
+    total_discount: 0,
+    total_positions: 0
+  }
 }
 ```
 
 ## CustomerAPI
 
-API для работы с данными покупателя.
+API для работы с данными авторизованного покупателя.
+
+:::warning Требуется авторизация
+Все методы CustomerAPI доступны только для авторизованных пользователей. Для гостей используйте `OrderAPI.add()` для сохранения данных заказа.
+:::
 
 ### Методы
-
-#### add(key, value)
-
-Сохранить данные покупателя в сессию (для гостей и авторизованных).
-
-```javascript
-await customer.add('email', 'user@example.com')
-await customer.add('phone', '+79991234567')
-await customer.add('fullname', 'Иван Иванов')
-```
-
-#### changeAddress(key, value)
-
-Выбрать сохранённый адрес доставки.
-
-```javascript
-await customer.changeAddress('address_hash', 'addr_abc123')
-```
 
 #### updateProfile(data)
 
 Обновить профиль авторизованного пользователя.
 
 ```javascript
-await customer.updateProfile({
+await ms3.customerAPI.updateProfile({
   first_name: 'Иван',
   last_name: 'Иванов',
   email: 'ivan@example.com',
@@ -359,7 +369,7 @@ await customer.updateProfile({
 Создать новый адрес.
 
 ```javascript
-await customer.createAddress({
+await ms3.customerAPI.createAddress({
   name: 'Домашний',
   city: 'Москва',
   street: 'Тверская',
@@ -374,7 +384,7 @@ await customer.createAddress({
 Обновить существующий адрес.
 
 ```javascript
-await customer.updateAddress(5, {
+await ms3.customerAPI.updateAddress(5, {
   city: 'Санкт-Петербург',
   street: 'Невский проспект'
 })
@@ -385,7 +395,7 @@ await customer.updateAddress(5, {
 Удалить адрес.
 
 ```javascript
-await customer.deleteAddress(5)
+await ms3.customerAPI.deleteAddress(5)
 ```
 
 ## Система хуков
