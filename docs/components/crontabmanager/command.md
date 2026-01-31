@@ -41,7 +41,7 @@ php artisan list
 #   help                     Display help for a command
 #   list                     List commands
 #   command
-#   command:create           Создает новый контроллер.
+#   command:create           Создаёт новый контроллер.
 #   schedule
 #   schedule:list            Список запланированных задач
 #   schedule:run             Запуск текущих задач

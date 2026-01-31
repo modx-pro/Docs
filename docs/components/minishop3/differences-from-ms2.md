@@ -83,18 +83,21 @@ php vendor/bin/phinx migrate -c phinx.php
 MiniShop3 добавляет множество новых настроек:
 
 **API и безопасность:**
+
 - `ms3_cors_allowed_origins` — разрешённые домены для CORS
 - `ms3_api_debug` — режим отладки API
 - `ms3_rate_limit_max_attempts` — лимит запросов API
 - `ms3_customer_token_ttl` — время жизни токена клиента
 
 **Клиенты (новая сущность):**
+
 - `ms3_customer_auto_register_on_order` — авторегистрация при заказе
 - `ms3_customer_auto_login_after_register` — автовход после регистрации
 - `ms3_customer_require_email_verification` — верификация email
 - `ms3_customer_sync_enabled` — синхронизация с modUser
 
 **Валюта:**
+
 - `ms3_currency_symbol` — символ валюты (₽, $, €)
 - `ms3_currency_position` — позиция символа (before/after)
 
@@ -252,6 +255,7 @@ switch ($modx->event->name) {
 ### Имена сниппетов (совместимость сохранена)
 
 Все сниппеты сохранили свои имена:
+
 - `msProducts`
 - `msCart`
 - `msOrder`
@@ -375,13 +379,15 @@ ms3.cart.add(id);
 MiniShop3 сохраняет совместимость на уровне:
 
 ✅ **Совместимо:**
+
 - Имена сниппетов
 - Структура плейсхолдеров в чанках
 - Основные параметры сниппетов
 - Большинство событий плагинов
 
 ❌ **Несовместимо:**
-- Системные настройки (ms2_ → ms3_)
+
+- Системные настройки (ms2_→ ms3_)
 - JavaScript API (miniShop2 → ms3)
 - PHP классы (требуют namespaces)
 - Точки входа API (action.php → api.php)

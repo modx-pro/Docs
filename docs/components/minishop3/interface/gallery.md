@@ -511,6 +511,7 @@ $driverInfo = $imageService->getDriverInfo();
 ### WebP не генерируется
 
 **Требования:**
+
 - Imagick с поддержкой WebP, или
 - GD скомпилированный с `--enable-webp`
 
@@ -535,6 +536,7 @@ convert -list format | grep AVIF
 ### Изображения загружаются, но не отображаются
 
 **Проверьте:**
+
 - URL Media Source в настройках
 - Доступность файлов по указанному пути
 - Настройки `.htaccess` для статических файлов

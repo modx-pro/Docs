@@ -122,6 +122,7 @@ mFilter использует Fenom для шаблонизации. Основн
 ## Шаблоны по умолчанию
 
 Встроенные шаблоны находятся в:
+
 ```
 core/components/mfilter/elements/chunks/
 ```

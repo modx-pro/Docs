@@ -248,6 +248,7 @@ GET /api/mgr/grid-config/{grid_name}
 ```
 
 **Ответ:**
+
 ```json
 {
   "success": true,
@@ -275,6 +276,7 @@ PUT /api/mgr/grid-config/{grid_name}
 ```
 
 **Тело запроса:**
+
 ```json
 {
   "columns": [

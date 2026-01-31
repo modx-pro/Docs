@@ -48,8 +48,8 @@
 |------------------------------|---------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
 | **ec_captcha_enable**        | Включить каптчу (Google ReCaptcha v2) | Если включено, то для защиты от спама компонент использует Google ReCaptcha v2.                                                                    |
 | **ec_recaptcha2_api**        | Google ReCaptcha v2 API url           | Адрес, откуда загружать скрипт ReCaptcha. В этом адресе должна быть указана callback функция, в которой и будет вызываться механизм рендера капчи. |
-| **ec_recaptcha2_site_key**   | Google ReCaptcha v2 site key          | Выдается при регистрации сайта                                                                                                                     |
-| **ec_recaptcha2_secret_key** | Google ReCaptcha v2 secret            | Выдается при регистрации сайта                                                                                                                     |
+| **ec_recaptcha2_site_key**   | Google ReCaptcha v2 site key          | Выдаётся при регистрации сайта                                                                                                                     |
+| **ec_recaptcha2_secret_key** | Google ReCaptcha v2 secret            | Выдаётся при регистрации сайта                                                                                                                     |
 
 ## Настройка интеграции с Gravatar
 

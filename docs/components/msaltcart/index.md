@@ -1,6 +1,6 @@
 ---
 title: msAltCart
-description: динамическая корзина для MiniShop2 с JS API.
+description: Динамическая корзина для MiniShop2 с JS API.
 outline: [ 2,3 ]
 lastUpdated: true
 logo: https://msaltcart.art-sites.ru/assets/components/msaltcart/logo.jpg

@@ -4,7 +4,7 @@ lastUpdated: false
 # Возможности VitePress
 
 ::: info
-VitePress использует [markdown-it](https://github.com/markdown-it/markdown-it) в качестве парсера который расширяет возможности markdown.
+VitePress использует [markdown-it](https://github.com/markdown-it/markdown-it) в качестве парсера, который расширяет возможности markdown.
 Мы можем добавить существенно больше красоты и удобства.
 :::
 

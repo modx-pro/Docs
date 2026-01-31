@@ -90,7 +90,6 @@ switch ($modx->event->name){
 
 :::
 
-
 ## События JavaScript
 
 #### mscdek:initialized - инициализация компонента завершена
@@ -131,7 +130,6 @@ document.addEventListener('mscdek:init', e => {
 ```
 
 :::
-
 
 #### mscdek:address:select:suggestion - выбор подсказки при вводе адреса
 
@@ -175,7 +173,6 @@ document.addEventListener('mscdek:list:get', e => {
 ```
 
 :::
-
 
 #### mscdek:status:get - получение статуса доставки
 

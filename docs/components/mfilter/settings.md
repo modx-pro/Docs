@@ -22,11 +22,13 @@
 ### Примеры URL
 
 С настройками по умолчанию:
+
 ```
 /catalog/brand_apple/color_red-or-blue/price_1000-5000/
 ```
 
 С `url_separator` = `-` и `values_separator` = `,`:
+
 ```
 /catalog/brand-apple/color-red,blue/price-1000-5000/
 ```
@@ -68,6 +70,7 @@ seo_max_filters = 3             → noindex если активно больше
 ### Очистка кэша
 
 Кэш автоматически очищается при:
+
 - Сохранении ресурса с настроенными фильтрами
 - Очистке кэша MODX
 - Изменении набора фильтров в админке
@@ -141,6 +144,7 @@ seo_max_filters = 3             → noindex если активно больше
 | `mfilter.frontend_assets` | JSON массив CSS/JS файлов для подключения |
 
 По умолчанию:
+
 ```json
 [
     "[[+cssUrl]]web/mfilter.css",

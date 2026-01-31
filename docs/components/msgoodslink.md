@@ -1,6 +1,6 @@
 ---
 title: msGoodsLinks
-description: навигация, перелинковка
+description: Навигация, перелинковка
 logo: https://modstore.pro/assets/extras/msgoodslink/logo-lg.png
 author: prihod
 modstore: https://modstore.pro/packages/other/msgoodslink

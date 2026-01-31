@@ -1,13 +1,20 @@
 # События
+
 ## Системные события
+
 ### События индексации
+
 ###
-#### ffOnGetIndexingQuery - генерируется на этапе формирования запроса на индексацию, позволяет изменить этот запрос.
+
+#### ffOnGetIndexingQuery - генерируется на этапе формирования запроса на индексацию, позволяет изменить этот запрос
+
 Доступные параметры:
+
 * **$configData** - массив параметров конфигурации.
 * **$query** - объект `xPDOQuery_mysql`.
 
 ::: details Пример плагина
+
 ```php:line-numbers
 switch($modx->event->name){
     case 'ffOnGetIndexingQuery':
@@ -18,15 +25,19 @@ switch($modx->event->name){
         break;
 }
 ```
+
 :::
 
-#### ffOnBeforeSetIndexValue - генерируется на этапе формирования данных для индексации, позволяет изменить индексируемые значения.
+#### ffOnBeforeSetIndexValue - генерируется на этапе формирования данных для индексации, позволяет изменить индексируемые значения
+
 Доступные параметры:
+
 * **$FlatFilters** - объект класса индексации.
 * **$key** - ключ фильтра.
 * **$value** - значение фильтра.
 
 ::: details Пример плагина
+
 ```php:line-numbers
 switch($modx->event->name){
     case 'ffOnBeforeSetIndexValue':
@@ -37,16 +48,22 @@ switch($modx->event->name){
         break;
 }
 ```
+
 :::
 
 ### События фильтрации
+
 ###
-#### ffOnGetFieldKeys - генерируется на этапе получения списка полей для фильтрации при отрисовки страницы конфигурации в админке, позволяет изменить этот список.
+
+#### ffOnGetFieldKeys - генерируется на этапе получения списка полей для фильтрации при отрисовки страницы конфигурации в админке, позволяет изменить этот список
+
 Доступные параметры:
+
 * **$type** - массив параметров конфигурации.
 * **$FlatFilters** - объект класса фильтрации.
 
 ::: details Пример плагина
+
 ```php:line-numbers
 switch($modx->event->name){
     case 'ffOnGetFieldKeys':
@@ -61,14 +78,18 @@ switch($modx->event->name){
         break;
 }
 ```
+
 :::
 
-#### ffOnBeforeFilter - генерируется перед фильтрацией и проверкой хэша, позволяет изменить значения фильтров.
+#### ffOnBeforeFilter - генерируется перед фильтрацией и проверкой хэша, позволяет изменить значения фильтров
+
 Доступные параметры:
+
 * **$configData** - массив параметров конфигурации.
 * **$FlatFilters** - объект класса фильтрации.
 
 ::: details Пример плагина
+
 ```php:line-numbers
 switch($modx->event->name){
     case 'ffOnBeforeFilter':
@@ -79,14 +100,18 @@ switch($modx->event->name){
         break;
 }
 ```
+
 :::
 
-#### ffOnAfterFilter - генерируется после фильтрации, позволяет изменить список ID найденных ресурсов.
+#### ffOnAfterFilter - генерируется после фильтрации, позволяет изменить список ID найденных ресурсов
+
 Доступные параметры:
+
 * **$configData** - массив параметров конфигурации.
 * **$rids** - объект класса фильтрации.
 
 ::: details Пример плагина
+
 ```php:line-numbers
 switch($modx->event->name){
     case 'ffOnAfterFilter':
@@ -99,15 +124,19 @@ switch($modx->event->name){
         break;
 }
 ```
+
 :::
 
-#### ffOnBeforeSetFilterConditions - генерируется при формировании запроса на фильтрацию, позволяет изменить условия фильтрации.
+#### ffOnBeforeSetFilterConditions - генерируется при формировании запроса на фильтрацию, позволяет изменить условия фильтрации
+
 Доступные параметры:
+
 * **$configData** - массив параметров конфигурации.
 * **$FlatFilters** - объект класса фильтрации.
 * **$conditions** - массив условий фильтрации.
 
 ::: details Пример плагина
+
 ```php:line-numbers
 switch($modx->event->name){
     case 'ffOnBeforeSetFilterConditions':
@@ -120,15 +149,19 @@ switch($modx->event->name){
         break;
 }
 ```
+
 :::
 
-#### ffOnBeforeGetFilterValues - генерируется перед формированием списка значений фильтров, позволяет изменить условия получения значений.
+#### ffOnBeforeGetFilterValues - генерируется перед формированием списка значений фильтров, позволяет изменить условия получения значений
+
 Доступные параметры:
+
 * **$configData** - массив параметров конфигурации.
 * **$FlatFilters** - объект класса фильтрации.
 * **$conditions** - массив условий фильтрации.
 
 ::: details Пример плагина
+
 ```php:line-numbers
 switch($modx->event->name){
     case 'ffOnBeforeGetFilterValues':
@@ -145,15 +178,19 @@ switch($modx->event->name){
         break;
 }
 ```
+
 :::
 
-#### ffOnAfterGetFilterValues - генерируется после формированием списка значений фильтров, позволяет изменить этот список.
+#### ffOnAfterGetFilterValues - генерируется после формированием списка значений фильтров, позволяет изменить этот список
+
 Доступные параметры:
+
 * **$configData** - массив параметров конфигурации.
 * **$FlatFilters** - объект класса фильтрации.
 * **$output** - массив значений.
 
 ::: details Пример плагина
+
 ```php:line-numbers
 switch($modx->event->name){
     case 'ffOnAfterGetFilterValues':
@@ -175,14 +212,17 @@ switch($modx->event->name){
         break;
 }
 ```
+
 :::
 
-
 ## События JavaScript
+
 #### ff:init - инициализация компонента
+
 Событие возникает после загрузки всех модулей, указанных в JS конфигурации. Не имеет параметров. Не может быть отменено. Чтобы без проблем использовать все модули,
 подписывайте на это событие, так как после его срабатывания объект **FlatFilters** и его дочерние элементы точно доступны.
 ::: details Пример использования
+
 ```js:line-numbers
 document.addEventListener('ff:init', (e) => {
     // получаем дополнительные общие данные после инициализации фильтров
@@ -191,15 +231,19 @@ document.addEventListener('ff:init', (e) => {
     total && SendIt.Sending.prepareSendParams(FlatFilters.MainHandler.form, 'get_totals');
 });
 ```
+
 :::
 
 #### ff:after:reset - сброс всех фильтров
+
 Событие возникает после сброса всех фильтров. Не может быть отменено. Позволяет произвести дополнительные манипуляции после сброса.
 ::: details Передаваемые параметры
+
 * **filters** - коллекция DOM-элементов с полями фильтрации.
 :::
 
 ::: details Пример использования
+
 ```js:line-numbers
 document.addEventListener('ff:after:reset', (e) => {
     const queryField = document.querySelector('[data-query]');
@@ -216,17 +260,21 @@ document.addEventListener('ff:after:reset', (e) => {
     }    
 });
 ```
+
 :::
 
 #### ff:before:remove - удаление выбранного значения
+
 Событие возникает перед удалением выбранного значения фильтра. Может быть отменено. Позволяет отменить удаление значения.
 ::: details Передаваемые параметры
+
 * **eventOptions.target** - DOM-элемент кнопки удаления значения.
 * **eventOptions.filter** - DOM-элемент поля с фильтром.
 * **eventOptions.type** - тип поля.
 :::
 
 ::: details Пример использования
+
 ```js:line-numbers
 document.addEventListener('ff:before:remove', (e) => {
     const { eventOptions } = e.detail;  
@@ -236,17 +284,21 @@ document.addEventListener('ff:before:remove', (e) => {
     }   
 });
 ```
+
 :::
 
 #### ff:before:render - отображение выбранного значения
+
 Событие возникает перед показом выбранного значения фильтра. Может быть отменено. Позволяет изменить показываемое значение.
 ::: details Передаваемые параметры
+
 * **eventOptions.key** - ключ фильтра.
 * **eventOptions.value** - передаваемое на сервер значение фильтра.
 * **eventOptions.caption** - видимое значение фильтра.
 :::
 
 ::: details Пример использования
+
 ```js:line-numbers
 document.addEventListener('ff:before:render', (e) => {
     const { eventOptions } = e.detail;
@@ -256,12 +308,15 @@ document.addEventListener('ff:before:render', (e) => {
     }
 });
 ```
+
 :::
 
 #### ff:values:disabled - установка недоступных значений
+
 Событие возникает в процессе установки недоступных значений фильтров. Не может быть отменено. Позволяет отменить произведённое действие.
 
 ::: details Передаваемые параметры
+
 * **type** - тип поля.
 * **element** - DOM-элемент поля с фильтром.
 * **key** - ключ фильтра.
@@ -270,6 +325,7 @@ document.addEventListener('ff:before:render', (e) => {
 :::
 
 ::: details Пример использования
+
 ```js:line-numbers
 document.addEventListener('ff:values:disabled', (e) => {
     const { type, element, key, data, filters } = e.detail;
@@ -277,4 +333,5 @@ document.addEventListener('ff:values:disabled', (e) => {
     // какой-то полезный код
 });
 ```
+
 :::

@@ -1,6 +1,6 @@
 ---
 title: mixedImage
-description: custom TV - смешанная загрузка файла
+description: Custom TV — смешанная загрузка файла
 logo: https://modstore.pro/assets/extras/mixedimage/logo-lg.jpg
 author: webinmd
 modstore: https://modstore.pro/packages/photos-and-files/mixedimage

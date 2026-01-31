@@ -7,7 +7,7 @@ repository: https://github.com/createit-ru/easyRedirects
 ---
 # easyRedirects
 
-Дополнение easyRedirects для MODX Revolution (создано для MODX 2, но работает и в MODX 3) дает возможность управлять редиректами со старых URL страниц на новые через административную панель.
+Дополнение easyRedirects для MODX Revolution (создано для MODX 2, но работает и в MODX 3) даёт возможность управлять редиректами со старых URL страниц на новые через административную панель.
 
 Весь функционал доступен в единственном разделе, перейти в который можно через основное меню панели управления сайтом "Пакеты" / "easyRedirects". В этом разделе вы сможете создавать и просматривать правила редиректов для различных url адресов.
 
@@ -29,7 +29,7 @@ repository: https://github.com/createit-ru/easyRedirects
 
 ## Принцип работы
 
-Общий принцип работы компонента: 
+Общий принцип работы компонента:
 
 * плагин на событии OnPageNotFound сравнивает запрашиваемый url (без учета query, т.е. без get параметров) с существующими правилами;
 * сначала проверяются правила, в которых url совпадает точно, затем проверяются правила с регулярными выражениями;
@@ -48,7 +48,7 @@ repository: https://github.com/createit-ru/easyRedirects
 > url: catalog/phones/iphone-13-cherniy \
 цель: catalog/phones/iphone-13-black
 
-или 
+или
 
 > url: catalog/telephony \
 цель: catalog/phones

@@ -38,7 +38,7 @@ title: CallBack
 
 Можно использовать и любые другие параметры AjaxForm и FormIt.
 
-Маска для телефона задается параметром data-mask, например:
+Маска для телефона задаётся параметром data-mask, например:
 
 ```modx
 <input type="text" class="form-control" id="phone" name="phone" value="[[!+fi.phone]]" data-mask="+0(000)000-00-00">
