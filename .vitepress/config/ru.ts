@@ -179,6 +179,7 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
         { text: 'Разметка markdown', link: '/guide/markdown' },
         { text: 'Возможности VitePress', link: '/guide/vitepress' },
         { text: 'Frontmatter', link: '/guide/frontmatter' },
+        { text: 'Проверка орфографии (cspell)', link: '/guide/cspell' },
       ],
     },
   ]
@@ -191,6 +192,7 @@ function getNav(): DefaultTheme.NavItem[] {
     { text: 'Разметка markdown', link: '/guide/markdown' },
     { text: 'Возможности VitePress', link: '/guide/vitepress' },
     { text: 'Frontmatter', link: '/guide/frontmatter' },
+    { text: 'Проверка орфографии (cspell)', link: '/guide/cspell' },
   ]
 
   if (process.env.SPONSOR_LINK) {
