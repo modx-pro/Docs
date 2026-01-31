@@ -86,7 +86,6 @@
 </div>
 ```
 
-
 ## tpl.ffCheckboxGroup
 
 ### Описание
@@ -118,6 +117,7 @@
 ```
 
 ## tpl.ffDateRange
+
 :::tip
 Для выбора периода используется JavaScript плагин [Air DatePicker](https://air-datepicker.com/ru).
 :::
@@ -149,6 +149,7 @@
 ```
 
 ## tpl.ffRange
+
 :::tip
 За работу слайдера отвечает JavaScript плагин [noUiSlider](https://refreshless.com/nouislider/).
 :::
@@ -282,6 +283,7 @@
 ```
 
 ## tpl.Info
+
 :::tip
 Выбранные значения фильтров отображаются при помощи JavaScript, который обрабатывает содержимое тега `<template>`.
 :::

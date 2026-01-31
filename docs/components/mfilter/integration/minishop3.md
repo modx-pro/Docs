@@ -227,21 +227,25 @@
 ### SEO шаблон для производителя
 
 **Условия:**
+
 ```json
 {"filters": {"vendor": ["*"]}}
 ```
 
 **Title:**
+
 ```
 {$filters.vendor} — купить в интернет-магазине | {$site_name}
 ```
 
 **H1:**
+
 ```
 {$filters.vendor}
 ```
 
 **Description:**
+
 ```
 Купить {$filters.vendor|accusative} с доставкой по России.
 {$total} товаров в каталоге. Гарантия качества.
@@ -250,11 +254,13 @@
 ### SEO для комбинаций
 
 **Условия (производитель + цвет):**
+
 ```json
 {"filters": {"vendor": ["*"], "color": ["*"]}}
 ```
 
 **Title:**
+
 ```
 {$filters.vendor} {$filters.color} — каталог товаров
 ```

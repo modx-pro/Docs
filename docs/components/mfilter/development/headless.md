@@ -162,6 +162,7 @@ const response = await mfilter.parseUrl('/catalog/brand_apple/color_red/');
 | `with_counts` | bool | Включать counts (default: true) |
 
 **Ответ:**
+
 ```json
 {
     "success": true,
@@ -208,6 +209,7 @@ const response = await mfilter.parseUrl('/catalog/brand_apple/color_red/');
 | `format` | string | Формат: json или html |
 
 **Ответ:**
+
 ```json
 {
     "success": true,

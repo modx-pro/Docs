@@ -136,7 +136,7 @@ $(document).on('af_complete', function (event, response) {
 Вы можете самостоятельно вызывать их для своих целей:
 
 ```js
-AjaxForm.Message.success('Зеленый popup');
+AjaxForm.Message.success('Зелёный popup');
 AjaxForm.Message.error('Красный popup', 1);
 AjaxForm.Message.info('Черный popup');
 ```

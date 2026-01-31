@@ -39,7 +39,7 @@ To configure the component, go to the "System Settings", "smartsessions" namespa
 
 The standard session lifetime is still determined by the ```session_gc_maxlifetime``` setting.
 
-### Example component configuration script:
+### Example component configuration script
 
 * ```session_gc_maxlifetime``` — standart value 604800 (7 days);
 * ```smartsessions_bots_gc_maxlifetime``` — 10800, bot sessions are stored for 3 hours and take up minimal space in the database;
@@ -49,7 +49,6 @@ The standard session lifetime is still determined by the ```session_gc_maxlifeti
 ## Known Issues
 
 The menu item "Manage" / "Logout All Users" will no longer work. This happens because this action only works with the standard session handler ```modSessionHandler```, which is hard-coded in the code.
-
 
 # Useful
 

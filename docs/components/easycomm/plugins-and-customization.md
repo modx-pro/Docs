@@ -107,7 +107,7 @@ easyComm позволяет вам добавить дополнительные
 
 Те, что списки - это просто перечисление полей через запятую, например `thread, subject, date, user_name, user_email, user_contacts, rating, text, reply_author, reply_text, ip`.
 
-Настройки **ec_message_window_layout** задается в более сложном формате. Значение по-умолчанию следующее:
+Настройки **ec_message_window_layout** задаётся в более сложном формате. Значение по-умолчанию следующее:
 
 ```json
 {

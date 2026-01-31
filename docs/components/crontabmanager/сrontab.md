@@ -35,4 +35,3 @@ php artisan schedule:run
 
 В административной части сайта можно настроить время для крон
 [manager](http://127.0.0.1:9001/manager/?a=home&namespace=crontabmanager)
-

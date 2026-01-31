@@ -158,6 +158,7 @@ Response::error($message, $statusCode, $errors);
 ### Формат ответа
 
 **Успешный ответ:**
+
 ```json
 {
   "success": true,
@@ -170,6 +171,7 @@ Response::error($message, $statusCode, $errors);
 ```
 
 **Ответ с ошибкой:**
+
 ```json
 {
   "success": false,
@@ -230,6 +232,7 @@ $router->get('/api/mgr/secure', function($params) use ($modx) {
 ```
 
 **Проверки:**
+
 - Наличие авторизованного пользователя `$modx->user`
 - Для `mgr`: валидность токена `HTTP_MODAUTH`
 
@@ -248,6 +251,7 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 ```
 
 **Основные права MiniShop3:**
+
 - `msproduct_save` — создание/редактирование товаров
 - `mssetting_save` — управление настройками
 - `msorder_list` — просмотр заказов
@@ -268,6 +272,7 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 ```
 
 **Публичные роуты** (не требуют токен):
+
 - `/api/v1/cart/get`
 - `/api/v1/product/get`
 - `/api/v1/product/list`
@@ -306,10 +311,12 @@ $rateLimitMiddleware = new RateLimitMiddleware(
 ```
 
 **Системные настройки:**
+
 - `ms3_rate_limit_max_attempts` — максимум запросов (по умолчанию: 60)
 - `ms3_rate_limit_decay_seconds` — период в секундах (по умолчанию: 60)
 
 **Заголовки ответа:**
+
 ```
 X-RateLimit-Limit: 60
 X-RateLimit-Remaining: 45
@@ -644,19 +651,24 @@ $router->get('/api/mgr/debug', function($params) use ($modx) {
 ### Типичные ошибки
 
 **401 Unauthorized:**
+
 - Не авторизован в MODX
 - Отсутствует или невалидный `HTTP_MODAUTH` токен
 - Для Web API: отсутствует или истёк `MS3TOKEN`
 
 **403 Forbidden:**
+
 - Нет права доступа (проверьте ACL пользователя)
 
 **404 Not Found:**
+
 - Роут не зарегистрирован
 - Опечатка в URL
 
 **405 Method Not Allowed:**
+
 - Используется неправильный HTTP метод (GET вместо POST и т.д.)
 
 **429 Too Many Requests:**
+
 - Превышен лимит запросов, подождите `Retry-After` секунд

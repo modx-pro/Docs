@@ -170,6 +170,7 @@
 ```
 
 **chunks/filter.custom.tpl:**
+
 ```html
 <div class="filter-block filter-{$key}" data-filter="{$key}">
     <h4 class="filter-title">{$label}</h4>

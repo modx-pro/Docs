@@ -58,16 +58,19 @@
 ### Примеры конфигурации
 
 **Стандартная:**
+
 ```
 pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 ```
 
 **С TV-параметрами:**
+
 ```
 pagetitle:3,content:1,tv_subtitle:2,tv_keywords:3
 ```
 
 **Для товаров MiniShop3:**
+
 ```
 pagetitle:3,description:2,content:1,article:5,vendor_name:2
 ```

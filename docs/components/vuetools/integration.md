@@ -80,6 +80,7 @@ class MyComponentManagerController extends modExtraManagerController
 ```
 
 ::: danger Критично
+
 - Используйте `regClientStartupHTMLBlock()` для `<script type="module">`
 - **НЕ** используйте `addJavascript()` или `addLastJavascript()` для ES modules — они не поддерживают `type="module"`
 :::

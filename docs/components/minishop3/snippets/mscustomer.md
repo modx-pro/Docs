@@ -280,6 +280,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 ### Базовый layout
 
 Чанк `tpl.msCustomer.base` содержит:
+
 - Боковую панель (`tpl.msCustomer.sidebar`)
 - Область контента через `{block 'content'}`
 
