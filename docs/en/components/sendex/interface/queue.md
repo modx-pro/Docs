@@ -1,32 +1,31 @@
 # Email queue
 
-## Queue formatting
+## Building the queue
 
-To format a distribution of user emails, it is necessary to add them in the queue:
+To send a newsletter, add messages to the queue first.
 
-- Go to **Components** -> **Sendex**
+- Go to **Components** → **Sendex**
 
-[![](https://file.modx.pro/files/3/f/0/3f0e673a7ed51e205d2e683d35914390s.jpg)](https://file.modx.pro/files/3/f/0/3f0e673a7ed51e205d2e683d35914390.png)
+![Building the queue - 1](https://file.modx.pro/files/3/f/0/3f0e673a7ed51e205d2e683d35914390.png)
 
-- On inlay **Email queue** in the pop-up list choose the distribution, which requires to generate an email.
+- On the **Email queue** tab select the newsletter in the dropdown and generate messages.
 
-[![](https://file.modx.pro/files/5/0/9/5099cea4f7eb982ef5ca4ee59faca458s.jpg)](https://file.modx.pro/files/5/0/9/5099cea4f7eb982ef5ca4ee59faca458.png)
+![Building the queue - 2](https://file.modx.pro/files/5/0/9/5099cea4f7eb982ef5ca4ee59faca458.png)
 
-[![](https://file.modx.pro/files/4/1/a/41ae797ee96de03bf8c634e72e722bc9s.jpg)](https://file.modx.pro/files/4/1/a/41ae797ee96de03bf8c634e72e722bc9.png)
+![Building the queue - 3](https://file.modx.pro/files/4/1/a/41ae797ee96de03bf8c634e72e722bc9.png)
 
-- Then you need to send the generated.
+- Then send the generated messages.
 
-## Email distribution
+## Sending
 
-There are some ways to distribute emails:
+You can send in several ways:
 
-1. Manual. You need to enter **Components** -> **Sendex**, and inlay  **Email queue**. Choose an email and send it through the context menu.
+1. **Manually.** **Components** → **Sendex**, **Email queue** tab. Select a message and send via the context menu.
+    ![Sending](https://file.modx.pro/files/4/1/a/41ae797ee96de03bf8c634e72e722bc9.png)
 
-    [![](https://file.modx.pro/files/4/1/a/41ae797ee96de03bf8c634e72e722bc9s.jpg)](https://file.modx.pro/files/4/1/a/41ae797ee96de03bf8c634e72e722bc9.png)
+2. **Automatically via cron.** Use `core/components/sendex/cron/send.php` in cron. Run frequency depends on subscriber count and hosting; the script sends up to 100 emails per run. Sent messages are removed from the queue.
 
-2. Automatic, through **cron**. As a unit with addition there is a file `core/components/sendex/cron/send.php`, which needs to be added it in cron. Frequency of starts depends on quantity of your subscribers and hosting resources, script sends up to 100 emails at one time. An email is deleted from the queue after sending.
-
-3. Through API.
+3. **Via API.**
 
     ```php
     $modx->addPackage('sendex', MODX_CORE_PATH . 'components/sendex/model/');

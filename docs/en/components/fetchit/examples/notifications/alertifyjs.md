@@ -1,8 +1,8 @@
 # AlertifyJS
 
-In this section, we will show how to connect the [AlertifyJS](https://alertifyjs.com/) framework to display messages.
+This section shows how to integrate [AlertifyJS](https://alertifyjs.com/) for displaying messages.
 
-- First you need to load the script and framework styles, we'll use CDN as an example.
+- First include the framework script and styles; for example via CDN:
 
 ```html
 <!-- JavaScript -->
@@ -14,7 +14,7 @@ In this section, we will show how to connect the [AlertifyJS](https://alertifyjs
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1/build/css/themes/default.min.css"/>
 ```
 
-- And define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and get direct access to the FetchIt class:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
@@ -42,4 +42,4 @@ FetchIt.Message = {
 }
 ```
 
-Done! With these simple steps, we have integrated the **AlertifyJS** framework.
+Done! With these steps you integrate **AlertifyJS**.

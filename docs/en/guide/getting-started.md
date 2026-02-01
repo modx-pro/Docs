@@ -5,7 +5,7 @@ lastUpdated: false
 
 This service is linked to our [github repository][repository]. Any changes made to the repository are displayed on the site.
 
-From the inside, the project is a VUE application, with a VitePress plugin that converts md markup into beautiful HTML.
+From the inside, the project is a Vue application, with a VitePress plugin that converts md markup into beautiful HTML.
 VitePress also provides tools that spruce up the strict style of md markup.
 
 All you need is to change the text inside a specific *.md file (or create a new file/directory) and send a Pull Request with your changes.
@@ -28,7 +28,7 @@ Select the required file for editing in the `docs/components/` directory.
 
 ::: info INFO
 For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as an npm or yarn package manager installed on your computer.
-Knowledge and skills of working with VUE are not required.
+Knowledge and skills of working with Vue are not required.
 :::
 
 ::: tip TIP
@@ -87,7 +87,7 @@ All documentation is located in the `docs` directory.
  ┣ 📂faq            - ready-made solutions, blanks for frequently encountered tasks
  ┣ 📂guide          - documentation for documentation
  ┣ 📂system         - MODX documentation
- ┣ 📂en             - english language documentation
+ ┣ 📂en             - English language documentation
  ┃ ┣ 📂components
  ┣ 📂public         - logos, images used within the project
  ┗ 📜authors.json   - list of authors
@@ -129,8 +129,8 @@ For those who want to add new documentation of the extra to the project, the [pl
 2. So you will run the CLI helper and you will see the following message. Use the [[&uarr;]] and [[&darr;]] keys to select the desired language and press [[Enter]]:
 
     ```ansi
-    [0;2m[0;36m?[0m Выберите язык / Choose language (Use arrow keys)
-      Русский
+    [0;2m[0;36m?[0m Choose language (Use arrow keys)
+      Russian
     [0;36m> English[0m
     [0m
     ```
@@ -138,7 +138,7 @@ For those who want to add new documentation of the extra to the project, the [pl
 3. Next, you will be asked to select a documentation template, there are two of them: **Single-page** and **Multi-page documentation**. Select the one you want and press [[Enter]].
 
     ```ansi
-    [0;2m[0;2m[0;2m[0;36m?[0m Выберите язык / Choose language [0;36mEnglish[0m
+    [0;2m[0;2m[0;2m[0;36m?[0m Choose language [0;36mEnglish[0m
     [0;36m?[0m Choose documentation template (Use arrow keys)
       Single-page documentation
     [0;36m> Multi-page documentation[0m [0m[0m[0m
@@ -147,7 +147,7 @@ For those who want to add new documentation of the extra to the project, the [pl
 4. Now you need to give your extra a name and press [[Enter]] as well.
 
     ```ansi
-    [2;36m[0m[0;2m[0;36m?[0m Выберите язык / Choose language [0;36mEnglish[0m
+    [2;36m[0m[0;2m[0;36m?[0m Choose language [0;36mEnglish[0m
     [0;36m?[0m Choose documentation template [0;36mMulti-page documentation[0m
     [0;36m?[0m Enter the component name[0m │
     ```
@@ -155,18 +155,18 @@ For those who want to add new documentation of the extra to the project, the [pl
 5. Finally, you will need to select the language versions of the documentation. By using the [[&uarr;]] and [[&darr;]] keys and pressing the [[Space]] you can mark the languages you need. Then press the [[Enter]] button.
 
     ```ansi
-    [0;2m[0;2m[0;2m[0;2m[0;36m?[0m Выберите язык / Choose language [0;36mРусский[0m
+    [0;2m[0;2m[0;2m[0;2m[0;36m?[0m Choose language [0;36mRussian[0m
     [0;36m?[0m Choose documentation template [0;36mMulti-page documentation[0m
     [0;36m?[0m Enter the component name [0;36mmyFirstComponent[0m
-    [0;36m?[0m Выберите языковые версии документации (Press [0;36m<space>[0m to select, [0;36m<a>[0m to toggle all, [0;36m<i>[0m to invert selection, and [0;36m<enter>[0m to proceed)
-     ( ) Русский[0m[0m[0m[0m
+    [0;36m?[0m Select the language versions of the documentation (Press [0;36m<space>[0m to select, [0;36m<a>[0m to toggle all, [0;36m<i>[0m to invert selection, and [0;36m<enter>[0m to proceed)
+     ( ) Russian[0m[0m[0m[0m
     [0;36m>(*) English[0m
     ```
 
 6. **Done!** You will see something like this in the terminal. This means that the script has created the necessary structure, and you will have to fill out the documentation for your extra.
 
     ```ansi
-    [0;2m[0;2m[0;36m?[0m Выберите язык / Choose language [0;36mРусский[0m
+    [0;2m[0;2m[0;36m?[0m Choose language [0;36mRussian[0m
     [0;36m?[0m Choose documentation template [0;36mMulti-page documentation[0m
     [0;36m?[0m Enter the component name [0;36mmyFirstComponent[0m
     [0;36m?[0m Select the language versions of the documentation [0;36mEnglish[0m

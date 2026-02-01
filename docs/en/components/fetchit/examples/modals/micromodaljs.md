@@ -1,16 +1,16 @@
-# Micromodal.js
+# Micromodal.js modals
 
-In this section, let's take a few examples with [Micromodal.js](https://micromodal.vercel.app/) modals.
+This section covers examples with [Micromodal.js](https://micromodal.vercel.app/) modals.
 
-## Closing a modal
+## Closing the modal
 
-If your form is in a modal window and you would like to close it after a successful form submission, you should use the [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) event to solve the issue.
+If your form is inside a modal and you want to close it after a successful submit, use the [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) event.
 
 ```js
 document.addEventListener('fetchit:success', ({ detail }) => {
   const { form } = detail;
 
-  // Define the ID of the window relative to the form
+  // Determine the modal ID relative to the form
 
   MicroModal.close('modal-id');
 });

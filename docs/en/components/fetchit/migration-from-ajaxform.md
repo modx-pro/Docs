@@ -1,22 +1,22 @@
 # Migration from AjaxForm
 
-This section provides information about migrating from **AjaxForm** to **FetchIt**.
+This section describes how to migrate from **AjaxForm** to **FetchIt**.
 
 ## Styles
 
-**FetchIt** does not register any styles. Therefore, your layout should already have styles for invalid fields and should add [`fetchit.frontend.input.invalid.class`](/en/components/fetchit/settings#fetchitfrontendinputinvalidclass) and [`fetchit.frontend.custom.invalid.class`](/en/components/fetchit/settings#fetchitfrontendcustominvalidclass) to the system settings.
+**FetchIt** does not register any styles. Your layout should already define styles for invalid field state and add them to the system settings [`fetchit.frontend.input.invalid.class`](/en/components/fetchit/settings#fetchitfrontendinputinvalidclass) and [`fetchit.frontend.custom.invalid.class`](/en/components/fetchit/settings#fetchitfrontendcustominvalidclass).
 
 ## Notifications
 
-Unlike **AjaxForm** which has a **jGrowl** dependency in the box, we provide the ability to add any library or your own with a few lines of code.
+Unlike **AjaxForm**, which bundles **jGrowl**, FetchIt lets you add any notification library or your own with a few lines of code.
 
-This documentation has a whole section with all the popular and not-so-popular libraries plugged in.
+This documentation has a section on integrating popular (and other) libraries.
 
-[Examples](/en/components/fetchit/examples/notifications/).
+[Notification examples](/en/components/fetchit/examples/notifications/).
 
 ## Snippet call
 
-The **FetchIt** snippet kept the basic parameters intact, but we moved some of them to [system settings](/en/components/fetchit/settings).
+The **FetchIt** snippet keeps the main parameters the same; some have been moved to [system settings](/en/components/fetchit/settings).
 
 :::code-group
 
@@ -34,7 +34,7 @@ The **FetchIt** snippet kept the basic parameters intact, but we moved some of t
 ```
 
 ```fenom
-{'!FetchIt' | snippet : [
+{'!FetchIt' | snippet: [
   'form' => 'chunk name',
   'snippet' => 'FormIt',
   'actionUrl' => '[[+assetsUrl]]action.php',
@@ -48,9 +48,9 @@ The **FetchIt** snippet kept the basic parameters intact, but we moved some of t
 
 :::
 
-## Layout
+## Form markup
 
-The form markup itself hasn't changed, just the [selectors](/en/components/fetchit/selectors). Let's take a look at the form chunk that comes with **AjaxForm** and visualise the changes:
+The form structure is the same; only the [selectors](/en/components/fetchit/selectors) changed. Below is the form chunk that ships with **AjaxForm** and the required changes:
 
 ```modx
 <form action="[[~[[*id]]]]" method="post" class="ajax_form"> // [!code --]
@@ -92,9 +92,9 @@ The form markup itself hasn't changed, just the [selectors](/en/components/fetch
 </form>
 ```
 
-## Validation
+## Client-side validation
 
-If you had a validation like this:
+If you had client-side validation like this:
 
 ```js
 $(document).on('submit', '.ajax_form', function() {
@@ -103,32 +103,32 @@ $(document).on('submit', '.ajax_form', function() {
 });
 ```
 
-Then you need to rewrite your code like this:
+Rewrite it as:
 
 ```js
 document.addEventListener('fetchit:before', (e) => {
-  const { form, fetchit } = e.detail; // Get form and an instance of FetchIt class
+  const { form, fetchit } = e.detail; // Get form and FetchIt instance
 
   // Validation code
 
-  // If validation fails
+  // If validation failed
   fetchit.setError('field_name', 'Error message'); // Optional
   e.preventDefault();
 
-  // If the validation is successful, we can do nothing
+  // If passed, we can do nothing
 });
 ```
 
 <!--@include: ./parts/validation.warning.md-->
 
-## `af_complete` event
+## Event `af_complete`
 
-The **AjaxForm** has one event, and it fires after the server response. The similar event is [`fetchit:after`](/en/components/fetchit/frontend/events#fetchitafter).
+**AjaxForm** has one event that fires after the server response. The equivalent is [`fetchit:after`](/en/components/fetchit/frontend/events#fetchitafter).
 
 ::: info Remember
-The [`fetchit:after`](/en/components/fetchit/frontend/events#fetchitafter) event fires anyway after the server response, regardless of its status.
+[`fetchit:after`](/en/components/fetchit/frontend/events#fetchitafter) fires in all cases after the server response, regardless of status.
 
-If you need to implement status-dependent functionality, use the [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) and [`fetchit:error`](/en/components/fetchit/frontend/events#fetchiterror) events.
+To run code based on status, use [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) and [`fetchit:error`](/en/components/fetchit/frontend/events#fetchiterror).
 :::
 
 Before:
@@ -136,12 +136,12 @@ Before:
 ```js
 $(document).on('af_complete', function(event, response) {
   var form = response.form;
-  // If the form has a specific id
+  // If form has a specific id
   if (form.attr('id') == 'my_form_3') {
     // Hide it!
     form.hide();
   }
-  // Otherwise, we print the entire response to the console
+  // Otherwise log the response
   else {
     console.log(response)
   }
@@ -153,18 +153,18 @@ After:
 ```js
 document.addEventListener('fetchit:after', (e) => {
   const { form, response } = e.detail;
-  // If the form has a specific id
+  // If form has a specific id
   if (form.getAttribute('id') === 'my_form_3') {
     // Hide it!
     form.style.display = 'none';
   }
-  // Otherwise, we print the entire response to the console
+  // Otherwise log the response
   else {
     console.log(response);
   }
 });
 ```
 
-::: warning WARNING
-The **FetchIt** events do not return a **jQuery Object** and have nothing to do with **jQuery** and therefore **form** will naturally have no **attr()** or **hide()** methods.
+:::warning Note
+**FetchIt** events do not use **jQuery** objects, so **form** does not have **attr()** or **hide()**. Use native DOM APIs.
 :::

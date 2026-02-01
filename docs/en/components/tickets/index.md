@@ -1,6 +1,6 @@
 ---
-name: Tickets
-description: Blog and comments system
+title: Tickets
+description: Component for creating and commenting user pages
 logo: https://modstore.pro/assets/extras/tickets/logo-lg.jpg
 author: bezumkin
 modstore: https://modstore.pro/packages/users/tickets
@@ -10,9 +10,9 @@ items: [
   {
     text: 'Interface',
     items: [
-      { text: 'Creating ticket section', link: 'interface/create-ticket-section' },
-      { text: 'Creating the ticket', link: 'interface/create-ticket' },
-      { text: 'Creating user group and setting of the access rights', link: 'interface/setup-permissions' },
+      { text: 'Creating a ticket section', link: 'interface/create-ticket-section' },
+      { text: 'Creating a ticket', link: 'interface/create-ticket' },
+      { text: 'User permissions setup', link: 'interface/setup-permissions' },
     ],
   },
   {
@@ -24,25 +24,29 @@ items: [
       { text: 'TicketForm', link: 'snippets/ticketform' },
       { text: 'TicketLatest', link: 'snippets/ticketlatest' },
       { text: 'TicketMeta', link: 'snippets/ticketmeta' },
+      { text: 'subscribeAuthor', link: 'snippets/subscribeauthor' },
     ],
   },
+  { text: 'TicketFormit', link: 'ticketformit' },
 ]
 ---
 # Tickets
 
-Blog and comments system.
+Component for creating and commenting user pages.
 
-- Unique pages in manager for sections and tickets.
-- Ability to create and edit tickets on frontend.
-- Awesome ajax comments.
-- Ability to change your comment on frontend in limited time.
-- Ability to edit, delete and remove comments in manager.
-- Built-in security policies for work with tickets and comments.
-- Smart tickets cache. When you update one page it is not clear the whole site cache.
-- Advanced content sanitization by snippet Jevix.
-- Built-in HTML editor [MarkItUp](http://markitup.jaysalvat.com/home/) for frontend.
-- Email notices about replies to ticket and comment.
-- pdoTools based snippets for get tickets, comments, sections and last events.
-- Three languages: english, russian and ukraine.
-- Ability to vote for tickets and comments, e.g. like\dislike.
-- Ability to create comments without authorization.
+## Main features
+
+- Create dedicated ticket sections in the Manager with a custom interface.
+- Create tickets in the Manager with dedicated panels and tabs.
+- Create pages from the frontend.
+- Edit pages from the frontend with permission checks.
+- Ajax comments.
+- Edit and delete comments from the Manager.
+- Access rights for adding pages to a section and creating comments.
+- Its own caching for tickets.
+- Jevix filtering when outputting tickets.
+- Automatic Jevix setup on package install; two parameter sets (tickets and comments).
+- [MarkItUp](https://markitup.jaysalvat.com/home/) editor for tickets and comments.
+- Email notifications to the ticket author and to users whose comments received a reply.
+- Output of latest comments and tickets by section with optional caching.
+- Ready-made chunks, snippet parameters documented; Russian and English.

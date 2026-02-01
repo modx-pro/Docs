@@ -1,44 +1,44 @@
 # pdoNeighbors
 
-The snippet pdoNeighbors displays the previous and the next resources.
+pdoNeighbors outputs previous and next documents for a given resource.
 
-It can display several neighbors at once, check their status (unpublished, published), and allows you to specify sorting.
+Can output multiple neighbors, checks status (deleted, published) and supports custom sort.
 
-You can display the previous / next resources based on «menuindex», publication date or other resource field.
+You can get prev/next by menuindex, publish date or any other resource field.
 
-## Options
+## Parameters
 
-Accepts all options of [pdoTools][1] (except chunks templates) and some of its own:
+Accepts all [pdoTools][1] params (except chunk templates) plus:
 
-Parameter          | Default              | Description
--------------------|----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&id**            | The current document | The resource ID, of which are displayed the neighbors.
-**&tplPrev**       | see below            | Chunk reference to the previous document.
-**&tplUp**         | see below            | Chunk reference to the parent document.
-**&tplNext**       | see below            | Chunk reference to the following document.
-**&tplWrapper**    | see below            | Chunk-wrapper for wrapping results. Uses placeholders: `[[+prev]]`, `[[+up]]`, `[[+next]]` and `[[+log]]`. It does not work in conjunction with **&toSeparatePlaceholders**.
-**&toPlaceholder** |                      | If not empty, the snippet will save all data to the placeholder specified, instead of displaying the output with the snippet call.
-**&showLog**       | `0`                  | Display log information of the snippet. Only authorized in the context «mgr».
-**&loop**          | `1`                  | 0/1: Hide/show neighbours first/last entry if at the end of list
+| Parameter        | Default           | Description |
+|------------------|-------------------|-------------|
+| **&id**          | Current document  | Resource ID for neighbor calculation. |
+| **&loop**        | Yes               | Enable or disable loop output. |
+| **&tplPrev**     | see below         | Chunk for previous document link. |
+| **&tplUp**       | see below         | Chunk for parent document link. |
+| **&tplNext**     | see below         | Chunk for next document link. |
+| **&tplWrapper**  | see below         | Wrapper chunk. Placeholders: `[[+prev]]`, `[[+top]]`, `[[+next]]`, `[[+log]]`. Not used with **&toSeparatePlaceholders**. |
+| **&toPlaceholder** |                  | If set, snippet stores data in placeholder instead of outputting. |
+| **&showLog**     | `0`               | Show extra debug info. Only for users logged in to "mgr" context. |
 
-### Template Chunks
+### Templates
 
-Template        | Default
-----------------|---------------------------------------------------------------------------------------
-**&tplPrev**    | `@INLINE <span class="link-prev"><a href="/[[+uri]]">&larr; [[+menutitle]]</a></span>`
-**&tplUp**      | `@INLINE <span class="link-up">&uarr; <a href="/[[+uri]]">[[+menutitle]]</a></span>`
-**&tplNext**    | `@INLINE <span class="link-next"><a href="/[[+uri]]">[[+menutitle]] &rarr;</a></span>`
-**&tplWrapper** | `@INLINE <div class="neighbors">[[+prev]][[+up]][[+next]]</div>`
+| Template       | Default                                                                           |
+|----------------|-----------------------------------------------------------------------------------|
+| **&tplPrev**   | `@INLINE <span class="link-prev"><a href="/[[+uri]]">&larr; [[+menutitle]]</a></span>` |
+| **&tplUp**     | `@INLINE <span class="link-up">&uarr; <a href="/[[+uri]]">[[+menutitle]]</a></span>`   |
+| **&tplNext**   | `@INLINE <span class="link-next"><a href="/[[+uri]]">[[+menutitle]] &rarr;</a></span>` |
+| **&tplWrapper**| `@INLINE <div class="neighbors">[[+prev]][[+up]][[+next]]</div>`                   |
 
 ## Examples
 
-Default snippet displays the neighbors as they are in the resource tree, that is, based on  «menuindex»:
+By default neighbors follow resource tree (menuindex):
 
 ```modx
 [[pdoNeighbors]]
 ```
 
-By default, the neighbors are selected from the current document, but you can specify a different id:
+Neighbors are from current document by default; you can pass another id:
 
 ```modx
 [[pdoNeighbors?
@@ -46,13 +46,27 @@ By default, the neighbors are selected from the current document, but you can sp
 ]]
 ```
 
-The snippet is perfect for displaying links to adjacent news items (it is best to sort by date of publication):
+Good for neighboring news links (sort by publish date):
 
 ```modx
 [[pdoNeighbors?
   &sortby=`publishedon`
   &sortdir=`asc`
 ]]
+```
+
+Neighboring products with thumbnail:
+
+```fenom
+{'!pdoNeighbors' | snippet: [
+  'snippet' => 'msProducts',
+  'sortby' => 'publishedon',
+  'sortdir' => 'ASC',
+  'leftJoin' => '{ "thumbs": { "class":"msProductData","alias":"thumbs", "on": "thumbs.id = modResource.id" }}',
+  'select' => '{ "thumbs":"thumbs.thumb as small" }',
+  'tplWrapper' => '@INLINE {$prev}',
+  'tplPrev' => '@FILE chunks/product/item_prev.tpl',
+]}
 ```
 
 [![](https://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26s.jpg)](https://file.modx.pro/files/0/b/0/0b0f9549bbf2d026243a71c5908f4f26.png)

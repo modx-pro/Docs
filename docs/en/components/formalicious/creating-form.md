@@ -1,70 +1,56 @@
-# Create a Form
+# Creating a form
 
-Creating a form is something you can do yourself, as a MODX website maintainer, but Formalicious enables content-manager to also create forms.
+Usually form creation is done by developers, but **Formalicious** lets content managers do it too.
 
-The process of setting up a Formalicious-form can be split into 3 steps. Each step has a Tab in the create-form dialog:
+Form creation is split into 3 steps, each in its own tab:
 
-1. Form settings
-2. Form fields
-3. Advanced
+1. Form settings.
+2. Form fields.
+3. Advanced settings.
 
 ## Form settings
 
-General form-settings are modified here.
+Main settings tab.
 
-**Important:** When creating a form, you first have to finish the **Form settings** and save your form
-before being able to continue to the **Form Fields** tab.
+::: warning
+When creating a form you must fill the first tab, save the form, and only then can you use the **Form fields** tab.
+:::
 
-- Title: A recognizable name, for internal usage only. Won't be shown on the website itself.
-- Email header text: This message will be displayed in the email sent to the email address specified in **Email to**.
-- Email to: This email address will receive the submitted form entries.
-- Subject: Subject of the email
-- Redirect to: Resource ID where the visitor is sent to after the form is successfully submitted.
-- Save submitted form: Check this to save the form into FormIt using the [FormItSaveForm hook][1]; a great way to have a backup of all your submitted forms.
-- Published: Check this to make this form available throughout the manager.
-- Send auto reply: Check this to enable auto replies for this mail.
-
-The visitor who submits your form, will also receive a confirmation mail (auto reply).
-This is a good way to inform your visitors that a form actually worked and action is taken.
-**This will only work if you enter the fields below.**
-
-- Select email field: Select the form-field where the auto-reply should be sent to. This dropdown is automatically populated by all your fields. This means you have to add your fields first and then you select an email field you wish to use as your auto-reply field.
-- Email from: The sender of the auto-reply. Your website-visitor will se this in the From-field when reading the email.
-- Subject: Subject of the auto-reply email.
-- Content: Content of the auto-reply email. Feel free to use HTML here, but keep it limited to simple tags like: `<b> <strong> <em> <br /> <br> <p></p> <a href="link-here"></a>`
-- Attachment: (optional) If you want to attach a file to the confirmation email, you can do it here. Bigger files mean a bigger chance of failure when sending an email.
+- **Name** – Internal name only; not shown on the site.
+- **Email title** – Shown in the body of the email sent to **Send to email**.
+- **Send to email** – Address that receives form submissions.
+- **Subject** – Email subject.
+- **Redirect to** – Resource ID to redirect to after successful submission.
+- **Save submitted forms** – If enabled, forms are saved via the [FormItSaveForm hook](https://docs.modx.com/extras/revo/formit/formit.hooks/formit.hooks.formitsaveform). Good for backing up submissions.
+- **Published** – Whether the form appears in the TV selector.
+- **Send auto-reply** – Enable to configure auto-reply. The visitor who submits the form receives a confirmation email. **You must fill in the fields under this checkbox.**
+- **Email field** – Field whose value is used as the recipient for the auto-reply. The list is built from the form fields, so set up fields first, then auto-reply.
+- **Sender email** – Sender address for the auto-reply.
+- **Email subject** – Auto-reply subject.
+- **Email body** – Auto-reply content. You can use simple HTML: `<b>`, `<strong>`, `<em>`, `<br>`, `<p>`, `<a href="link-here"></a>`.
+- **Attachment** (optional) – File to attach to the auto-reply. Large files can make sending slow.
 
 ## Form steps
 
-You have to save the form settings before you can access this tab and add steps/fields.
+You need to save the form first to access this tab.
+Double-click a step tab to rename it; press Enter to save.
 
-Before adding a field, you need to add a **Step**. You can change the text of a **Step** by double clicking the text of the step.
-It will allow you to change the text inline. Hit **Enter** to save the changes.
+Steps group fields on the front-end and add next/back buttons. You only need to style them.
 
-Steps will group your from fields on the frontend and next/previous buttons will be automatically added by Formalicious for your users.
-The only thing you have to do is styling!
+## Form fields
 
-### Form fields
+Each step contains fields. Click **Add field** and choose a type in the dialog. Another dialog opens for field settings. **Name** is the label; **placeholder** is the [HTML5 placeholder attribute](https://www.w3.org/TR/html5/forms.html#the-placeholder-attribute).
 
-Every step can contain fields. Click 'Add field' and choose a field type in the dialog window. This will open the "Save field" dialog.
-The title will be the label of the field, the placeholder is optional and works as a [HTML5 Placeholder attribute][2].
+Each field has **Required** (must be filled to submit) and **Published** (show/hide the field).
 
-Every field has two extra options: **Required** will make a field mandatory. **Published** allows you to disable a field (temporary).
+## Advanced settings
 
-## Advanced
+Configure pre-hooks, post-hooks, and FormIt parameters here. See [FormIt hooks documentation](https://docs.modx.com/extras/revo/formit/formit.hooks).
 
-In the Advanced tab you can add FormIt prehooks, posthooks and custom parameters.
-More on that can be found on the [FormIt docs (hooks section)][3].
+## Displaying the form on a page
 
-## Getting your form in a page
+Go to the page and select a template that has the **formalicious** TV assigned. Then choose the form from the dropdown.
 
-Now is the time to put a form on a page! This can be done by going to a page and select a template you assigned the **formalicious** Template Variable to. From there, select the Formalicious form you wish to show on that page.
+![Displaying the form on a page](https://file.modx.pro/files/a/c/f/acf07fb4530d2d22d78b28a1795eeeec.png)
 
-[![](https://file.modx.pro/files/a/c/f/acf07fb4530d2d22d78b28a1795eeeecs.jpg)](https://file.modx.pro/files/a/c/f/acf07fb4530d2d22d78b28a1795eeeec.png)
-
-Alternatively, if you use [ContentBlocks][4], you can also create a **Formalicious Form Selector** field and insert that into your page.
-
-[1]: https://docs.modx.com/extras/revo/formit/formit.hooks/formit.hooks.formitsaveform
-[2]: https://www.w3.org/TR/html5/forms.html#the-placeholder-attribute
-[3]: https://docs.modx.com/extras/revo/formit/formit.hooks
-[4]: https://www.modmore.com/contentblocks/
+If you have [ContentBlocks](https://www.modmore.com/contentblocks/) installed, you can use its Formalicious input type instead.

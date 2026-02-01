@@ -1,10 +1,19 @@
 # Classes
 
-As you must know, the main point of pdoTools - is speed.
+The component core is split into 3 classes: [pdoTools][1] (general), [pdoFetch][2] (database), and [pdoParser][3] (templating).
 
-I developed first version of pdoTools during making of **Tickets**. It should be tickets system but at the end of development it was some kind of simple blog system with awesome ajax comments. And I really don't have enough speed with common MODX extras like getResources. So i developed my own library, without any snippets at the beginning.
+They register on install so you can run them like this:
 
-It stands on two ideas:
+```php
+$pdoTools = $modx->getService('pdoTools');
+$pdoFetch = $modx->getService('pdoFetch');
+$pdoParser = $modx->getService('pdoParser');
+```
 
-1. The query to database is built with xPDO but executing via PDO. No objects to represent selected rows.
-2. Fast chunk processing. No MODX parser calls if pdoTools can parse chunk yourself.
+pdoFetch extends pdoTools, so you don't need both. Use Fetch for database work, Tools otherwise.
+
+You don't need to call the parser directly; it is enabled or disabled in MODX. pdoTools uses it for chunk processing anyway.
+
+[1]: /en/components/pdotools/classes/pdotools
+[2]: /en/components/pdotools/classes/pdofetch
+[3]: /en/components/pdotools/classes/pdoparser

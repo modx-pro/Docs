@@ -1,19 +1,19 @@
-# FetchIt Snippet
+# FetchIt snippet
 
-This snippet submits a form using the **Fetch API** and runs the snippet specified in the `snippet` parameter by passing parameters to it. By default it calls the **FormIt** snippet, but you can use your own. It also loads the server response processing script on the frontend.
+This snippet submits the form via **Fetch API** and runs the snippet specified in the `snippet` parameter, passing it the form data. By default it calls **FormIt**, but you can use your own snippet. It also loads the front-end script that handles the server response.
 
-## Snippet properties
+## Snippet parameters
 
-| **Property**             | Default value              |                                                                                      |
-|--------------------------|----------------------------|--------------------------------------------------------------------------------------|
-| **form**                 | `tpl.FetchIt.example`      | Chunk with the form to be processed                                                  |
-| **snippet**              | `FormIt`                   | Runable snippet for form processing                                                  |
-| **actionUrl**            | `[[+assetsUrl]]action.php` | The address of the connector to which the form is sent                               |
-| **clearFieldsOnSuccess** | `1`                        | This parameter is responsible for clearing the form data after a successful response |
+| **Parameter**           | Default                   | Description                                                                 |
+|-------------------------|---------------------------|-----------------------------------------------------------------------------|
+| **form**                | `tpl.FetchIt.example`      | Chunk containing the form to process                                       |
+| **snippet**             | `FormIt`                  | Snippet to run for form processing                                         |
+| **actionUrl**           | `[[+assetsUrl]]action.php`| URL of the connector that receives the form                                 |
+| **clearFieldsOnSuccess**| `1`                       | Clear form fields after a successful response                               |
 
-All other parameters you specify when calling **FetchIt** will be passed to the snippet specified in the `snippet` parameter.
+All other parameters you pass to **FetchIt** are forwarded to the snippet named in **snippet**.
 
-## Example
+## Example call
 
 ::: code-group
 
@@ -24,20 +24,20 @@ All other parameters you specify when calling **FetchIt** will be passed to the 
   &emailSubject=`Email subject`
   &emailTo=`info@domain.com`
   &validate=`name:required,email:required`
-  &validationErrorMessage=`This form has errors!`
-  &successMessage=`The form has been submitted successfully`
+  &validationErrorMessage=`The form contains errors!`
+  &successMessage=`Message sent successfully!`
 ]]
 ```
 
 ```fenom
-{'!FetchIt' | snippet : [
+{'!FetchIt' | snippet: [
   'form' => 'myForm.tpl',
   'hooks' => 'email',
   'emailSubject' => 'Email subject',
   'emailTo' => 'info@domain.com',
   'validate' => 'name:required,email:required',
-  'validationErrorMessage' => 'This form has errors!',
-  'successMessage' => 'The form has been submitted successfully',
+  'validationErrorMessage' => 'The form contains errors!',
+  'successMessage' => 'Message sent successfully!',
 ]}
 ```
 

@@ -1,32 +1,35 @@
 ---
-title: Documentation hub for MODX extras and more
+title: MODX Components Documentation and More
 layout: home
 
 main:
-  title: Discover documentation of all MODX extras and more
-  tagline: A simple and easy-to-use Open-Source project by and for the community, where you can find and explore the documentation of all popular MODX extras, and developers can easily describe their
+  title: Discover documentation for all MODX components and more
+  tagline: A simple and convenient Open-Source project by and for the community, where you can find and study documentation for popular MODX components, and developers can easily document their own
   actions:
     - theme: brand
-      text: Start learning
+      text: Get started
       link: /en/components/
+    - theme: alt
+      text: Ready-made solutions
+      link: /en/faq/
     - theme: cta question
       text: How to publish your documentation
       link: /en/guide/getting-started
   features:
-    - title: 😉 Simple
-      details: All code is in the universal Markdown format. You can make a full copy or make edits in a couple of clicks!
-    - title: 👌🏼 Easy-to-read
-      details: Tag highlighting for MODX and Fenom parser, JS, PHP, CSS and the rest. As well as convenient <a href="/en/guide/vitepress#code-groups">code groups</a>.
+    - title: 😉 Simplicity
+      details: All code in universal Markdown format. Make a full copy or apply edits in just a few clicks!
+    - title: 👌🏼 Readability
+      details: Syntax highlighting for MODX and Fenom parser tags, JS, PHP, CSS and more. Plus convenient <a href="/en/guide/vitepress#code-tabs">code tabs</a>.
     - title: 🚀 Convenience
-      details: Instant deplay and preview for authors. Navigation, mobile version, and search for readers.
+      details: Instant deploy and live preview for authors. Navigation, mobile layout, and search for readers.
     - title: 🔥 Beauty
-      details: 'Advanced markup for easy and beautiful documentation: <a href="/en/guide/vitepress#focus-in-code-blocks">focus code</a>, <a href="/en/guide/vitepress#colored-diffs-in-code-blocks">colored diffs</a> and <a href="/en/guide/vitepress">more</a>!'
-    - title: 💡 Solutions
-      details: Instead of gist - leave ready-made solutions to frequent or complex MODX tasks for yourself and others.
+      details: 'Extended markup for easy and beautiful documentation: <a href="/en/guide/vitepress#focus-code">focus code</a>, <a href="/en/guide/vitepress#colored-diffs">colored diffs</a> and <a href="/en/guide/vitepress">more</a>!'
+    - title: 💡 Notes
+      details: Instead of gist – leave ready-made solutions for common or complex MODX tasks for yourself and others.
     - title: 🌌 Ecosystem
       details: Links to authors, add-on marketplaces and repositories for better feedback, support and promotion.
     - title: 🌎 Multilingual
-      details: Publish documentation in different languages to broaden the audience of extras. Participate in translations!
+      details: Publish documentation in different languages to reach a wider audience. Contribute to translations!
     - title: 🌗 Dark theme
-      details: Automatic and manual switching to study at night 👀 and already use during the day.
+      details: Automatic and manual switching so you can study at night 👀 and use during the day.
 ---

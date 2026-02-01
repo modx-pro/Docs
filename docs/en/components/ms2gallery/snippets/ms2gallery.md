@@ -1,58 +1,60 @@
 # ms2Gallery
 
-Snippet for the resource gallery output.
+Snippet for outputting a resource gallery.
 
 ## Parameters
 
-Parameter         | By default                   | Description
-------------------|------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**parents**       |                              | List of categories for the search of results, with commas. By default the selection is limited by the current parent. If you put 0 there, the selection will not be limited.
-**resources**     |                              | List of resources for output in the results. If a good's id starts with a minus, it will not be shown in the selection.
-**showLog**       |                              | Show extra information about the work of the snippet. Only for authorized users in "mgr" context.
-**toPlaceholder** |                              | If it is not empty, the snippet will save all data into a placeholder with this name instead of putting them to the screen.
-**tpl**           | `tpl.ms2Gallery`             | Chunk for the whole gallery using [Fenom][1].
-**limit**         |                              | Limiting the selection of results
-**offset**        |                              | Omission of results from the beginning of the selection
-**where**         |                              | A line coded in JSON, with extra searching conditions. For filtration by files you should use the "File" table's pseudonym. For example, &where=`{"File.name:LIKE":"%img%"}`.
-**filetype**      |                              | Type of files for selection. You can use "image" for indicating pictures and extending all other files. For example: "image,pdf,xls,doc".
-**showInactive**  |                              | Show inactive files.
-**sortby**        | `rank`                       | Sorting the selection.
-**sortdir**       | `ASC`                        | The direction of sorting.
-**frontend_css**  | `[[+cssUrl]]web/default.css` | If you want to use your own styles, show the direction to them here, or clean up the parameter and download them yourself through the site's template.
-**frontend_js**   | `[[+jsUrl]]web/default.js`   | If you want to use your own scripts, show the direction to them here, or clean up the parameter and download them yourself through the site's template.
-**tags**          |                              | List of tags for files output, with commas.
-**tagsVar**       |                              | If this parameter is not empty, the snippet will take "tags" value in $_REQUEST["indicatedname"]. For example, if you indicate "tag" here, the snippet will show only those files that suit in `$_REQUEST["tag"]`.
-**getTags**       |                              | Make additional requests so as to get a line with the file's tags?
-**tagsSeparator** | `,`                          | If you switched on getting files' tags in the output, they will be divided through the line that you indicate in this parameter.
+| Parameter        | Default                     | Description                                                                                                                                                                                                                  |
+|------------------|-----------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **parents**      |                             | Comma-separated list of parent IDs for the query. Default: limited to current parent. Use `0` for no limit.                                                                                                                  |
+| **resources**    |                             | Comma-separated list of resource IDs to include. If an ID is prefixed with minus, that resource is excluded.                                                                                                                |
+| **showLog**      |                             | Show extra snippet debug info. Only for authenticated users in `mgr` context.                                                                                                                                               |
+| **toPlaceholder**|                             | If set, snippet output is saved to a placeholder with this name instead of printed.                                                                                                                                          |
+| **tpl**          | `tpl.ms2Gallery`           | Chunk for the whole gallery using [Fenom].                                                                                                                                                                                    |
+| **limit**        |                             | Maximum number of results                                                                                                                                                                                                     |
+| **offset**       |                             | Number of results to skip from the start                                                                                                                                                                                     |
+| **where**        |                             | JSON-encoded extra query conditions. For file filtering use table alias **File**. Example: ``&where=`{"File.name:LIKE":"%img%"}` ``                                                                                           |
+| **filetype**     |                             | File types to include. Use `image` for images and extensions for others. Example: `image, pdf, xls, doc`.                                                                                                                    |
+| **showInactive** |                             | Include inactive files.                                                                                                                                                                                                      |
+| **sortby**       | `rank`                      | Sort field                                                                                                                                                                                                                    |
+| **sortdir**       | `ASC`                       | Sort direction                                                                                                                                                                                                               |
+| **frontend_css** | `[[+cssUrl]]web/default.css` | Path to your CSS, or leave empty and include styles in the site template.                                                                                                                                                    |
+| **frontend_js**  | `[[+jsUrl]]web/default.js`  | Path to your JS, or leave empty and include scripts in the site template.                                                                                                                                                    |
+| **tags**         |                             | Comma-separated list of tags for filtering files.                                                                                                                                                                            |
+| **tagsVar**      |                             | If set, snippet takes **tags** from `$_REQUEST["this_name"]`. E.g. `tag` → filter by `$_REQUEST["tag"]`.                                                                                                                    |
+| **getTags**      |                             | Run extra queries to get each file's tags as a string?                                                                                                                                                                       |
+| **tagsSeparator**| `,`                         | If file tags are requested, they are joined with this string.                                                                                                                                                                |
 
 ## Chunks
 
-Before the version 2.0 there were 4 chunks in ms2Gallery:
+Before 2.0 ms2Gallery used 4 chunks:
 
-**tplRow** - chunk for one element of the selection (tpl.ms2Gallery.row).
-**tplOuter** - the outer part of the output of the results of the snippet's work (tpl.ms2Gallery.outer).
-**tplEmpty** - chunk that is shown if there are no results (tpl.ms2Gallery.empty).
-**tplSingle** - chunk that is used if there is only one file in the results.
+- **tplRow** — one result row: `tpl.ms2Gallery.row`.
+- **tplOuter** — wrapper: `tpl.ms2Gallery.outer`.
+- **tplEmpty** — when no results: `tpl.ms2Gallery.empty`.
+- **tplSingle** — when exactly one file: `tpl.ms2Gallery.single`.
 
-Now it is the one and only **tpl**, which gets the $files array and has to sort it out by itself:
+Now there is a single **tpl** that receives the `$files` array and must iterate it:
 
 ```fenom
 {if count($files) > 1}
-  <!-- there are many files - we sort them out in cycle-->
+  <!-- multiple files — loop -->
   {foreach $files as $file}
-    <a href="{$file.url}"><img src="{$file.small}"></a>
+    <a href="{$file.url}">
+      <img src="{$file.small}" />
+    </a>
   {/foreach}
 {elseif count($files) == 1}
-  <!--there is only one picture, we print the whole data array-->
+  <!-- single image — print full data -->
   {$file | print}
 {else}
-  There are no files, we shown this caption.
+  No files, show this message.
 {/if}
 ```
 
-All [previews generated for files][2] are turned on automatically under their pseudonyms.
+All [thumbnails generated for files][preview-generation] are available by their aliases.
 
-If you do not want to switch to the new format, just indicate your old chunks and an empty **&tpl**:
+To keep the old chunk layout, set your old chunks and leave **&tpl** empty:
 
 ```modx
 [[!ms2Gallery?
@@ -64,17 +66,15 @@ If you do not want to switch to the new format, just indicate your old chunks an
 ]]
 ```
 
-Although it is definitely better to rewrite them to Fenom. You will work more comfortably and change them faster.
+Rewriting to Fenom is recommended for easier use and editing.
 
-### Scripts and styles
+### Scripts and Styles
 
-Scripts and styles that you add are indicated by parameters **frontend_css** and **frontend_js**.
-By default they have a simple interface, and the basic picture can be changed by a click (for old chunks, before the 2.0 version).
+**frontend_css** and **frontend_js** control which assets are loaded. By default: simple styling and main image change on click (for pre-2.0 chunks).
 
-For a new chunk of the 2.0 version there is also [Fotorama][3] if the picture container has `class="fotorama"`.
-You can [set it according to the documentation][4] through `data-` attributes.
+For the 2.0 chunk, [Fotorama] is also loaded if the image container has `class="fotorama"`. You can [configure it via data attributes][Fotorama Docs].
 
-If you do not going to need scripts and styles, you can just leave these parameters empty:
+To disable default scripts and styles, set the parameters to empty:
 
 ```modx
 [[!ms2Gallery?
@@ -85,13 +85,13 @@ If you do not going to need scripts and styles, you can just leave these paramet
 
 ## Examples
 
-Output of the gallery of the current resource's files
+Output gallery of the current resource:
 
 ```modx
 [[!ms2Gallery]]
 ```
 
-Output of pictures from different resources in one gallery
+Output images from several resources in one gallery:
 
 ```modx
 [[!ms2Gallery?
@@ -100,7 +100,7 @@ Output of pictures from different resources in one gallery
 ]]
 ```
 
-[1]: /en/components/pdotools/parser
-[2]: /en/components/ms2gallery/preview-generation
-[3]: http://fotorama.io/
-[4]: http://fotorama.io/customize/
+[preview-generation]: /components/ms2gallery/preview-generation
+[Fenom]: /components/pdotools/parser
+[Fotorama Docs]: https://fotorama.io/docs/4/
+[Fotorama]: https://fotorama.io/

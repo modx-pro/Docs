@@ -1,59 +1,69 @@
 ---
-name: DebugParser
-description: Find your slow scripts
+title: DebugParser
+description: Plugin to find site bottlenecks. Shows all processed tags and time spent
 logo: https://modstore.pro/assets/extras/debugparser/logo-lg.jpg
 author: gvozdb
-modstore: https://en.modstore.pro/packages/utilities/debugparser
+modstore: https://modstore.pro/packages/utilities/debugparser
 modx: https://extras.modx.com/package/debugparser
 repository: https://github.com/modx-pro/debugParser
 ---
 # DebugParser
 
-Plugin for identification bottlenecks of the site. It shows all handled tags and expended time.
+Plugin to find site bottlenecks. Shows all processed tags and time spent.
 
-Now you can specify and optimize slow calls on every page.
+You can pinpoint and optimize slow calls on each page.
 
-[![](https://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3s.jpg)](https://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
+![DebugParser](https://file.modx.pro/files/1/a/c/1acbdf642c641a641ad6a646576fe4b3.png)
 
-Tag MODX activation, number of queries to the database when it is operation, time of queries and total time spent on processing are shown in the table.
+The table shows each MODX tag call, database queries count, query time, and total processing time.
 
-If a tag is activated several times on the page, so these tags are totalized.
+If a tag is called multiple times on a page, those calls are summed.
 
-*Parameters `Queries` and `Queries time` can be inaccurate if any snippet works with the database directly and don not write data in variable `modX::executedQueries` and `modX::queryTime`. E.g. **pdoResources** is written, but there is no **getProducts**.*
+::: warning
+`Queries` and `Queries time` may be inaccurate if a snippet uses the database directly and does not write to `modX::executedQueries` and `modX::queryTime`. For example, **pdoResources** does, **getProducts** does not.
+:::
 
-At the bottom of the table you see total according to statistics and general data: PHP version, database and etc.
+At the bottom you see totals and general info: PHP version, DB, etc.
 
 ## Parameters
 
-Plugin debugParser works only for the users authorized in mgr context. It gets all the parameters through $_GET.
+The debugParser plugin runs only for users logged in to the mgr context. It reads parameters from `$_GET`.
 
-- **debug** — activates debugging mode and tablet output.
-- **cache** — permits to use cached pages. On default - no.
-- **top** — the quantity of tags for output. On default – unlimited.
-- **add** — add the tablet at the end of the page, but don’t replace it totally. On default – no.
+- `debug` — Enables debug mode and shows the table.
+- `cache` — Allow page caching. Default: no.
+- `top` — Number of tags to show. Default: unlimited.
+- `add` — Append the table to the page instead of replacing it. Default: no.
 
-## Support of Fenom
+## Fenom support
 
-For displaying Fenom tags you must:
+To see Fenom template engine tag execution you need:
 
-- Use pdoTools **2.1.8**-pl or newer
-- Use debugParser **1.1.0**-pl or newer
-- Execute methods of `{$_modx}`. There is no way to catch system call via disabled by default z variable.
+- pdoTools **2.1.8**-pl or higher
+- debugParser **1.1.0**-pl or higher
+- Calls via `{$_modx}`; the default `{$modx}` cannot be tracked
 
-[![](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6s.jpg)](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6.png)
+![Fenom support](https://file.modx.pro/files/f/f/2/ff2a021a63bfda91d10dab7a5cc84be6.png)
 
 ## Examples
 
-General output: `http://mystite.com/?debug=1`.
+Basic output:
 
-Table with report will replace the content of the page, so you will see only the page.
+`http://mysite.com/?debug=1`
 
-Display with cache: `http://mystite.com/?debug=1&cache=1`.
+The report table replaces the page content, so you only see the table.
 
-If the page loads from cache, only uncached tags will be displayed.
+With cache:
 
-Display of 10 first slowest tags: `http://mystite.com/?debug=1&cache=1&top=10`.
+`http://mysite.com/?debug=1&cache=1`
 
-All uncached tags are sorted by the runtime, that is why some of the most labor-intensive can be shown.
+If the page is loaded from cache, only uncached tags are processed and shown.
 
-Display with attaching table to the page content: `http://mystite.com/?debug=1&cache=1&top=10&add=1`.
+Top 10 slowest tags:
+
+`http://mysite.com/?debug=1&cache=1&top=10`
+
+Tags are sorted by execution time, so you can show only the heaviest ones.
+
+Append table to page content:
+
+`http://mysite.com/?debug=1&cache=1&top=10&add=1`

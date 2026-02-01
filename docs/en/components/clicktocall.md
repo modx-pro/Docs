@@ -1,5 +1,6 @@
 ---
-name: ClickToCall
+title: ClickToCall
+description: Call widget for mobile devices
 logo: https://modstore.pro/assets/extras/clicktocall/logo-lg.png
 author: core01
 modstore: https://modstore.pro/packages/alerts-mailing/clicktocall
@@ -8,56 +9,54 @@ repository: https://github.com/core01/ClickToCall
 ---
 # ClickToCall
 
-The call widget for mobile devices.
+Call widget for mobile devices.
 
 ## Features
 
-- Widget show only for mobile device users (use mobile-detect.js to detect mobile).
-- Flexible configuration of the widget display time for each day.
-- You may to turn off using mobile-detect library in system settings.
-- You can use your own JS/CSS files.
+- Shows the widget only to mobile users (uses mobile-detect.js).
+- Flexible schedule: set display time per day.
+- You can disable the built-in mobile-detect.js if you already use it on the site.
+- Custom JS/CSS files are supported.
 
 ## Component settings
 
-[![](https://file.modx.pro/files/2/9/b/29b961716d1558107c1685bbff6feedf.png)](https://file.modx.pro/files/2/9/b/29b961716d1558107c1685bbff6feedf.png)
+![Component settings](https://file.modx.pro/files/e/d/e/ede2cae090be91001e6bd3c28c38ed6b.png)
 
-## ClickToCall snippet parameter
+## ClickToCall snippet parameters
 
-| Name              | Default           | Description                                                                               |
-|-------------------|-------------------|-------------------------------------------------------------------------------------------|
-| **&force**        | `0`               | Forced widget call                                                                        |
-| **&phone**        |                   | Phone number for widget, if not specified system setting *clicktocall_phone* will be used |
-| **&tpl**          | `ClickToCall.tpl` | Widget's chunk                                                                            |
-| **&useCustomCss** | `0`               | Turn off default CSS.                                                                     |
-| **&useCustomJs**  | `0`               | Turn off default JS.                                                                      |
-
-Note: If you turn off default CSS and JS you need manually write your own JS and CSS for widget
+| Name | Default | Description |
+|------|---------|-------------|
+| **&force** | `0` | Force the widget to show. |
+| **&phone** | | Phone number for the widget; if empty, taken from system settings. |
+| **&tpl** | `ClickToCall.tpl` | Chunk for the widget. |
+| **&useCustomCss** | `0` | Disable component CSS (use your own styles). |
+| **&useCustomJs** | `0` | Disable component JS (use your own scripts). |
 
 ### System settings
 
-| Name                         | Default | Description                                                                               |
-|------------------------------|---------|-------------------------------------------------------------------------------------------|
-| **clicktocall_mobiledetect** | `Yes`   | Use mobile-detect.js?. If you are already use mobile-detect.js on your site, turn it off. |
-| **clicktocall_phone**        |         | Default phone for widget                                                                  |
+| Name | Default | Description |
+|------|---------|-------------|
+| **clicktocall_mobiledetect** | `Yes` | Use mobile-detect.js. Disable if you already use it on the site. |
+| **clicktocall_phone** | | Default phone for the widget. |
 
-NOTE: Snippet must be called non-cached!
+The snippet must be called uncached!
 
-### Examples
+### Usage examples
 
-For forced widget's call use *&force* parameter:
+To force the widget to show, use *&force*:
 
 ```modx
 [[!ClickToCall? &force=`1`]]
 ```
 
-In this case snippet will ignore time frames.
+The widget will then always show, ignoring the schedule.
 
-If you want to show different phones one your pages you can use:
+To use different phone numbers on different pages:
 
 ```modx
 [[!ClickToCall? &phone=`+79991234567`]]
 ```
 
-### Result
+## Widget appearance
 
-[![](https://file.modx.pro/files/6/c/1/6c145fac108b67a90d7e604fbe076ba8.png)](https://file.modx.pro/files/6/c/1/6c145fac108b67a90d7e604fbe076ba8.png)
+![Widget appearance](https://file.modx.pro/files/6/c/1/6c145fac108b67a90d7e604fbe076ba8.png)

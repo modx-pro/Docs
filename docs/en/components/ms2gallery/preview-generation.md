@@ -1,27 +1,26 @@
-# Preview generation
+# Thumbnail Generation
 
-One of the strenghts of ms2Gallery is that it generates all previews when loading.
-This helps you to do without any need to use dynamic resize for pictures output on the site, which usually works not so fast.
+A strength of ms2Gallery is that it generates all thumbnails on upload. That avoids the need for dynamic resizing when displaying images on the site, which is often slow.
 
-## Previews generation setting
+## Generation Settings
 
-All galleries are connected to the files source, and for previews generation its settings should be consulted.
+All galleries are tied to a file source; thumbnail generation uses that source's settings.
 
-- **basePath** - path to the directory with loaded files and server-based previews. By default `assets/images/products/`.
-- **basePathRelative** - indicates that *basePath* is set in relation to the site's root. By default - *yes*.
-- **baseUrl** - url for access to files and previews from outside of the site. By default `assets/images/products/`.
-- **baseUrlRelative** - indicates that *baseUrl* is set in relation to the site's root. By default - *yes*.
-- **allowedFileTypes** - files allowed for loading. By default `jpg,jpeg,png,gif`.
-- **imageExtensions** - list of extensions in *allowedFileTypes*, which stand for pictures. By default `jpg,jpeg,png,gif`.
-- **thumbnailType** - what preview type can be used by default. Usually it is *jpg*.
-- **thumbnailQuality** - the previews generation quality. By default - *90%*.
-- **skipFiles** - list of file extensions that are not to be put in the list. By default it contains service extensions like `.svn,.git,_notes,nbproject,.idea,.DS_Store`.
-- **maxUploadWidth** - the maximum width of the source. If the picture being loaded is wider, its size will be reduced right in the browser, and the server disk will get the new version of it with the maximum width. By default *1980px*.
-- **maxUploadHeight** - the same thing but for height. By default *1080px*.
-- **maxUploadSize** - the maximum size of a file. By default *10Mb*.
-- **imageUploadDir** - the direction of loading files. 1 (by default) - loading into the end of the list, 0 - into the beginning of it.
-- **imageNameType** - type of generation of previews' names. *hash* generates a unique name depending on the content of the file. *Friendly* (by default) makes the name acceptable for internet sites, cutting down all that is not letters or figures, reducing everything to the low register and replacing blank spaces with dashes.
-- **thumbnails** - the most important parameter, which contains the array of previews generation settings for phpThumb. For example:
+- **basePath** — path to the directory with uploaded files and thumbnails on the server. Default: `assets/images/products/`.
+- **basePathRelative** — whether *basePath* is relative to the site root. Default: *yes*.
+- **baseUrl** — URL for accessing files and thumbnails from outside. Default: `assets/images/products/`.
+- **baseUrlRelative** — whether *baseUrl* is relative to the site root. Default: *yes*.
+- **allowedFileTypes** — allowed upload types. Default: `jpg,jpeg,png,gif`.
+- **imageExtensions** — list of extensions in *allowedFileTypes* that are images. Default: `jpg,jpeg,png,gif`.
+- **thumbnailType** — default thumbnail format. Usually *jpg*.
+- **thumbnailQuality** — thumbnail quality. Default: *90%*.
+- **skipFiles** — list of file extensions to hide from the list. Default includes `.svn,.git,_notes,nbproject,.idea,.DS_Store`.
+- **maxUploadWidth** — maximum source width. If the uploaded image is wider, it is resized in the browser and the server stores an image with this max width. Default: *1980px*.
+- **maxUploadHeight** — same for height. Default: *1080px*.
+- **maxUploadSize** — maximum file size. Default: *10Mb*.
+- **imageUploadDir** — upload order. 1 (default) — append to list, 0 — prepend.
+- **imageNameType** — thumbnail name generation. *hash* — unique name from file content. *Friendly* (default) — web-safe name: non-alphanumeric removed, lower case, spaces to hyphens.
+- **thumbnails** — main parameter: array of phpThumb settings for thumbnail generation. Example:
 
 ```json
 {
@@ -42,142 +41,121 @@ All galleries are connected to the files source, and for previews generation its
 }
 ```
 
-Every array of settings creates its own preview, and in our example there will be 2 files: 120x90 и 360x270.
+Each entry creates one thumbnail; this example yields two files: 120x90 and 360x270.
 
-Before the 2.0 version, the size of previews served as their pseudonym, and the previews generated were saved into the directory under that name: `assets/images/products/id_ресурса/120x90/file_name` and `assets/images/products/id_ресурса/360x270/file_name`
+Before 2.0, thumbnail size was used as its alias and files were stored as:
+`assets/images/products/resource_id/120x90/filename` and `assets/images/products/resource_id/360x270/filename`
 
-For the 2.0 version the preview's pseudonym can be the same as the key to the array. In our example these will be paths `assets/images/products/id_ресурса/small/file_name` and `assets/images/products/id_ресурса/medium/file_name`
+From 2.0 you can set an alias as the array key. In our example:
+`assets/images/products/resource_id/small/filename` and `assets/images/products/resource_id/medium/filename`
 
-This is much more convenient, because the exact width and height of a preview not always can be indicated, usually it seems easier to indicate only the maximum width or height and to have the other parameter calculated automatically, depending on the proportions of the source image.
+This is more convenient because you often want only max width or height and the other dimension calculated from the source aspect ratio.
 
-### Basic phpThumb parameters
+### Main phpThumb Parameters
 
-- **w** - the maximum width of an image in pixels
-- **h** - the maximum height of an image in pixels
-- **wp** - the maximum width for portraits
-- **hp** - the maximum height for portraits
-- **wl** - the maximum width for horizontal images
-- **hl** - the maximum height for horizontal images
-- **ws** - the maximum width for square images
-- **hs** - the maximum height for square images
-- **f** - file format: `jpeg`, `png` and `gif`
-- **q** - quality of JPEG resize: `1` the worst one, `95` the best one
-- **zc** - zoom-crop, zooming or cropping images so as they fit the indicated parameters.
-  (needs indicating `w` and `h`, covers parameters `iar` and `far`).
-  `1` and `C` chooses images for work from the center.
-  Use`T`, `B`, `L`, `R`, `TL`, `TR`, `BL`, `BR` for choosing from top/bottom/left/right and their combinations.
-  All parameters apart from `C` need **ImageMagick** to be plugged.
-- **bg** - pouring the background with colour hex (`000000`, `ffffff` etc.)
-- **ra** - rotating the image to some angle in degrees. A negative number stands for clockwise rotation and a positive number - for counterclockwise rotation.
-- **ar** - automatic image rotation. `x` - rotate as it is indicated the file's EXIF.
-  `L` horizontal image, `P` vertical image,
-  `lP` rotate clockwise, `Lp` rotate counterclockwise.
-- **aoe** - Output Allow Enlarging, the possibility to generate a preview that is liarger than the source image: `1` and `0`.   `far` and `iar` cover this setting.
-- **iar** - Ignore Aspect Ratio, turns off the observance of proportions and draws the image exactly by `w` and `h` parameters (which have to be loaded mandatorily). Covers *far* parameter.
-- **far** - Force Aspect Ratio, the image will be made to fit parameters `w` and `h` (which have to be loaded mandatorily). Alignment: `L` left, `R` - right, `T` top, `B` bottom, `C` - center. `BL`, `BR`, `TL`, `TR` - use the right direction if the image is horizontal or vertical.
+- **w** — max width in pixels
+- **h** — max height in pixels
+- **wp** — max width for portrait images
+- **hp** — max height for portrait images
+- **wl** — max width for landscape images
+- **hl** — max height for landscape images
+- **ws** — max width for square images
+- **hs** — max height for square images
+- **f** — file format: `jpeg`, `png` or `gif`
+- **q** — JPEG quality: `1` worst, `95` best
+- **zc** — zoom-crop: scale and crop to fit the given dimensions.
+  - (requires `w` and `h`, overrides `iar` and `far`).
+  - `1` or `C` — crop from center.
+  - Use `T`, `B`, `L`, `R`, `TL`, `TR`, `BL`, `BR` for top/bottom/left/right and combinations.
+  - All except `C` require **ImageMagick**.
+- **bg** — background fill hex color (`000000`, `ffffff`, etc.)
+- **ra** — rotate by angle in degrees. Negative — clockwise, positive — counterclockwise.
+- **ar** — auto-rotate. `x` — rotate as in EXIF.
+  - `L` landscape, `P` portrait,
+  - `lP` rotate clockwise, `Lp` counterclockwise.
+- **aoe** — Output Allow Enlarging: allow thumbnails larger than source: `1` or `0`. `far` and `iar` override this.
+- **iar** — Ignore Aspect Ratio: draw exactly to `w` and `h` (both required). Overrides *far*.
+- **far** — Force Aspect Ratio: fit to `w` and `h` (both required). Alignment: `L` left, `R` right, `T` top, `B` bottom, `C` center. `BL`, `BR`, `TL`, `TR` — correct direction for landscape/portrait.
 
-If you indicate only width or height, the other parameter will be calculated automatically, depending on the proportions of the source image.
-All other phpThumb parameters you may [see in the documentation][1].
+If you set only width or height, the other is calculated from the source aspect ratio. For more phpThumb options see [its documentation][phpthumb Docs].
 
-### Overlaying the watermark
+### Watermark
 
-For overlaying the watermark on images in the galleries 3 conditions should be followed.
+To add watermarks, three conditions must be met.
 
-[![](https://file.modx.pro/files/6/c/1/6c18561f4383506c2bfef7a497858841s.jpg)](https://file.modx.pro/files/6/c/1/6c18561f4383506c2bfef7a497858841.png)
+![Watermark overlay](https://file.modx.pro/files/6/c/1/6c18561f4383506c2bfef7a497858841.png)
 
-1. **ImageMagick** should be installed on the server. It also should be accessible for php. [See details here][2].
-2. In the files source ms2Gallery **fltr** with **wmi** should be added:
+**1.** **ImageMagick** must be installed on the server and available to PHP. [Details][Working with phpThumb].
 
-    ```json
-    {
-      "small": {
-        "w": 120,
-        "h": 90,
-        "q": 90,
-        "zc": "1",
-        "bg": "000000",
-        "fltr": "wmi|wm.png|BR|80"
-      },
-      "medium": {
-        "w": 360,
-        "h": 270,
-        "q": 90,
-        "zc": "1",
-        "bg": "000000",
-        "fltr": "wmi|wm.png|BR|80"
-      }
-    }
-    ```
-
-    Parameters are decoded like this:
-
-    ```json
-    "wmi" (WaterMarkImage)
-      [ex: &fltr[]=wmi|<f|<a|<o|<x|<y|<r] where
-      <f is the filename of the image to overlay;
-      <a is the alignment (one of BR, BL, TR, TL, C,
-        R, L, T, B, *) where B=bottom, T=top, L=left,
-        R=right, C=centre, *=tile)
-        *or*
-        an absolute position in pixels (from top-left
-        corner of canvas to top-left corner of overlay)
-        in format {xoffset}x{yoffset} (eg: "10x20")
-        note: this is center position of image if <x
-        and <y are set
-      <o is opacity from 0 (transparent) to 100 (opaque)
-        (requires PHP v4.3.2, otherwise 100% opaque);
-      <x and <y are the edge (and inter-tile) margin in
-        pixels (or percent if 0 < (x|y) < 1)
-        *or*
-        if <a is absolute-position format then <x and
-      <y represent maximum width and height that the
-        watermark image will be scaled to fit inside
-      <r is rotation angle of overlaid watermark
-    ```
-
-3. File *wm.png* should be put in `/assets/components/ms2gallery/` - this is exactly where it will be looked for. Instead of assets there can be another directory if you renamed it when installing MODX in an advanced mode.
-
-    You can indicate not just *wm.png*, but *images/wm.png* in the source - then the file should be put in `/assets/components/ms2gallery/images/`.
-
-    If everything is done correctly, you will get the watermark on your images when loading them into the gallery.
-
-    Please notice again that **the hosting should be ready for such a difficult work** with images,
-    as overlaying the watermark.
-
-### Examples
-
-Turning off the zoom of pictures in previews. That is, when the preview size is indicated to be bigger than the size of the file being loaded.
+**2.** In the ms2Gallery file source add **fltr** with **wmi**:
 
 ```json
 {
-  "big": {
-    "wp": 1920,
-    "aoe": 0,
-    "far": 0,
-    "iar": 0
-  }
+  "small": {"w":120,"h":90,"q":90,"zc":"1","bg":"000000","fltr":"wmi|wm.png|BR|80"},
+  "medium": {"w":360,"h":270,"q":90,"zc":"1","bg":"000000","fltr":"wmi|wm.png|BR|80"}
 }
 ```
 
-Parameter *aoe* turns off the zoom, but **iar** and **far** ignore this setting - they should be turned off.
+Parameter meaning:
 
-### Preview update
+```
+"wmi" (WaterMarkImage)
+  [ex: &fltr[]=wmi|<f|<a|<o|<x|<y|<r] where
+  <f is the filename of the image to overlay;
+  <a is the alignment (one of BR, BL, TR, TL, C,
+    R, L, T, B, *) where B=bottom, T=top, L=left,
+    R=right, C=centre, *=tile)
+    *or*
+    an absolute position in pixels (from top-left
+    corner of canvas to top-left corner of overlay)
+    in format {xoffset}x{yoffset} (eg: "10x20")
+    note: this is center position of image if <x
+    and <y are set
+  <o is opacity from 0 (transparent) to 100 (opaque)
+    (requires PHP v4.3.2, otherwise 100% opaque);
+  <x and <y are the edge (and inter-tile) margin in
+    pixels (or percent if 0 < (x|y) < 1)
+    *or*
+    if <a is absolute-position format then <x and
+  <y represent maximum width and height that the
+    watermark image will be scaled to fit inside
+  <r is rotation angle of overlaid watermark
+```
 
-You can selectively update previews of the files you need through the admin space:
+**3.** Place the *wm.png* file in `/assets/components/ms2gallery/` — that is where it is looked for. If you renamed the assets folder during MODX advanced install, use that path instead.
 
-[![](https://file.modx.pro/files/7/0/f/70fdb87589c0ccf0e2a4131cdbcdce11s.jpg)](https://file.modx.pro/files/7/0/f/70fdb87589c0ccf0e2a4131cdbcdce11.png)
+In the source you can specify *images/wm.png* — then put the file in `/assets/components/ms2gallery/images/`.
 
-::: info Info
-To choose more than one hold [[Shift]] or [[Ctrl]] [[⌘ Cmd]]
-:::
+If everything is set correctly, watermarks will appear on images when uploaded to the gallery.
 
-If you need to update *all* previews on your site according to the settings of their file sources, just enter the server console and launch `generate.php` from the directory `core/components/ms2gallery/cli`. For example:
+**Your hosting must support** image processing such as watermarking.
+
+### Examples
+
+Disable enlarging thumbnails (when thumbnail size is larger than the uploaded file):
+
+```json
+{"big":{"wp":1920,"aoe":0,"far":0,"iar":0}}
+```
+
+*aoe* disables enlarging, but **iar** and **far** override it — they must be set to 0.
+
+## Updating Thumbnails
+
+You can selectively regenerate thumbnails in the manager:
+
+![Thumbnail update](https://file.modx.pro/files/7/0/f/70fdb87589c0ccf0e2a4131cdbcdce11.png)
+
+> You can select multiple items with [[Shift]] or [[Ctrl]] [[⌘ Cmd]]
+
+To regenerate *all* thumbnails on the site according to their file source settings, run from the server console:
+`generate.php` from `core/components/ms2gallery/cli`. For example:
 
 ```shell
 php ~/www/core/components/ms2gallery/cli/generate.php
 ```
 
-If you need to update all previews from the script intself, use this code:
+To regenerate all thumbnails from your own script:
 
 ```php
 $modx->addPackage('ms2gallery', MODX_CORE_PATH . 'components/ms2gallery/model/');
@@ -192,8 +170,7 @@ foreach ($files as $file) {
 }
 ```
 
-If you overlay the watermark on your image, check in your files' source that they have the absolute path from
-the site's root, for example `/assets/components/ms2gallery/img/wm.png`.
+If you use watermarks, ensure the file source uses an absolute path from the site root, e.g. `/assets/components/ms2gallery/img/wm.png`.
 
-[1]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt
-[2]: http://modx.pro/development/619-working-with-phpthumb/
+[phpthumb Docs]: http://phpthumb.sourceforge.net/demo/docs/phpthumb.readme.txt
+[Working with phpThumb]: https://modx.pro/development/619

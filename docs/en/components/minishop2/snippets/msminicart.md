@@ -1,27 +1,24 @@
 # msMiniCart
 
-The simple snippet for cart current status display.
+Simple snippet for outputting the current cart status.
 
 ![](https://file.modx.pro/files/f/a/3/fa36fb44f79cf689e7f8f9e7a577931f.png)
 
 ## Parameters
 
-Parameter | By default       | Description
-----------|------------------|-----------------
-**tpl**   | `tpl.msMiniCart` | Formatting chunk
+| Parameter | Default     | Description   |
+| --------- | ----------- | ------------- |
+| **tpl**   | `tpl.msMiniCart` | Output chunk |
 
-## Formatting
+## Output
 
-Snippet counts on the work with [chunk Fenom][1]. It transfers the cart status of the user's session there.
-As usual there are:
+The snippet works with a [Fenom chunk][1] and passes cart status from the user session. Typically:
 
-- **total_count** - total number of goods in the cart
-- **total_cost** - total cost of the goods in the cart
+- **total_count** — total number of items in the cart
+- **total_cost** — total cart cost
 
-::: info Info
-These data are subject to change, if the expanded cart class is used
-:::
+These may differ if you use an extended cart class.
 
-Standard chunk contains two element blocks with `empty` and `not_empty` classes, displayed for different cart statuses accordingly.
+The default chunk has two blocks with classes `empty` and `not_empty` for the two cart states.
 
 [1]: /en/components/pdotools/parser

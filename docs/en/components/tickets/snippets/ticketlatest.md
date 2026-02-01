@@ -1,51 +1,59 @@
 # TicketLatest
 
-Outputs the line of the tickets that were created and\\or commented last.
+Outputs the feed of latest created and/or commented tickets.
 
-::: tip TIP
-Snippet is caused uncashed
-:::
+The snippet is called uncached.
 
 ## Parameters
 
-Name                 | By default                   | Description
----------------------|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&action**          | `Comments`                   | Snippet's mode of work. Comments or Tickets are available.
-**&cacheKey**        |                              | Name of the snippet cash. If it is empty - cashing the results will be deactivated.
-**&cacheTime**       | `1800`                       | Cashing time.
-**&depth**           | `10`                         | Search depth of resources from every parent.
-**&fastMode**        | `0`                          | If activated - values from DB only will be fitted in the result chunk. All the unprocessed tags MODX, such as filters, snippet output and others - will be cut.
-**&includeContent**  | `0`                          | Chooses the field «content» from resources.
-**&includeTVs**      |                              | The list of TV parameters for the selection, with a comma. For example: «action,time» will give the placeholders `[[+action]]` and `[[+time]]`.
-**&limit**           | `10`                         | Limit of the result selection.
-**&offset**          | `0`                          | Result omission from the beginning of the selection.
-**&outputSeparator** |                              | Optional string for separation of the work result.
-**&parents**         |                              | List of the categories, with a comma, for search of the results.The selection is limited by the current parent by default. If 0 is set - the selection is not limited.
-**&resources**       |                              | The list of the resources, with a comma, for the result output. If resource id begins with a minus, this resource is excluded from the selection.
-**&showDeleted**     | `0`                          | Shows the deleted resources.
-**&showHidden**      | `1`                          | Shows resources hidden in the menu.
-**&showLog**         | `0`                          | Shows extra information about snippet’s work. For authorized in the «mgr» context only.
-**&showUnpublished** | `0`                          | Shows unpublished resources.
-**&sortby**          | `createdon`                  | Shows unpublished resources.
-**&sortdir**         | `DESC`                       | Direction od selection.
-**&toPlaceholder**   |                              | If it is not empty, snippet will save all the data in placeholder with the very name instead of displaying on the screen.
-**&tpl**             | `tpl.Tickets.comment.latest` | Design chunk for every result.
-**&tvPrefix**        |                              | Prefix for TV placeholders, for example «tv.». The parameter is empty by default.
-**&user**            |                              | Only chooses the elements, created by this user.
-**&where**           |                              | The string coded in JSON with extra conditions of selection.
+| Name             | Default                 | Description                                                                                                                                 |
+| ----------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **&action**          | `Comments`           | Snippet mode. Available: Comments or Tickets.                                                                                               |
+| **&cacheKey**        |                      | Snippet cache key. If empty, result caching is disabled.                                                                                    |
+| **&cacheTime**       | `1800`                | Cache lifetime.                                                                                                                             |
+| **&depth**           | `10`                  | Search depth of child resources from each parent.                                                                                           |
+| **&fastMode**        | `0`                   | If enabled, only raw DB values are inserted into the result chunk; all unprocessed MODX tags (filters, snippet calls, etc.) are stripped.   |
+| **&includeContent**  | `0`                   | Include the content field of resources.                                                                                                     |
+| **&includeTVs**      |                      | Comma-separated list of TV names to select. E.g. "action,time" yields placeholders `[[+action]]` and `[[+time]]`.                            |
+| **&limit**           | `10`                  | Maximum number of results.                                                                                                                  |
+| **&offset**          | `0`                   | Number of results to skip from the start.                                                                                                   |
+| **&outputSeparator** |                      | Optional string to separate results.                                                                                                        |
+| **&parents**         |                      | Comma-separated list of parent IDs to search in. Default: current parent. Use 0 for no limit.                                               |
+| **&resources**       |                      | Comma-separated list of resource IDs to include. If an ID is prefixed with minus, that resource is excluded.                               |
+| **&showDeleted**     | `0`                   | Include deleted resources.                                                                                                                  |
+| **&showHidden**      | `1`                   | Include resources hidden from the menu.                                                                                                     |
+| **&showLog**         | `0`                   | Show extra debug info. Only for users logged in to the "mgr" context.                                                                       |
+| **&showUnpublished** | `0`                   | Include unpublished resources.                                                                                                              |
+| **&sortby**          | `createdon`          | Sort field.                                                                                                                                 |
+| **&sortdir**         | `DESC`                | Sort direction.                                                                                                                             |
+| **&toPlaceholder**   |                      | If set, the snippet saves all data to this placeholder instead of outputting to the page.                                                   |
+| **&tpl**             | `tpl.Tickets.comment.latest` | Chunk for each result row.                                                                                                            |
+| **&tvPrefix**        |                      | Prefix for TV placeholders, e.g. "tv.". Default: empty.                                                                                     |
+| **&user**            |                      | Filter to items created by this user only.                                                                                                  |
+| **&where**           |                      | JSON-encoded string with extra conditions for the query.                                                                                     |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
 ## Examples
 
-- Output of the last tickets
+- Output latest tickets
 
-```modx
-[[!TicketLatest? &limit=`5` &fastMode=`1` &action=`tickets` &tpl=`tpl.Tickets.ticket.latest`]]
-```
+    ```modx
+    [[!TicketLatest?
+      &limit=`5`
+      &fastMode=`1`
+      &action=`tickets`
+      &tpl=`tpl.Tickets.ticket.latest`
+    ]]
+    ```
 
-- Output of the last comments
+- Output latest comments
 
-```modx
-[[!TicketLatest? &limit=`5` &fastMode=`1` &action=`comments` &tpl=`tpl.Tickets.comment.latest`]]
-```
+    ```modx
+    [[!TicketLatest?
+      &limit=`5`
+      &fastMode=`1`
+      &action=`comments`
+      &tpl=`tpl.Tickets.comment.latest`
+    ]]
+    ```

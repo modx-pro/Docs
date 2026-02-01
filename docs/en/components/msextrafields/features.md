@@ -1,0 +1,27 @@
+# Features
+
+- **Dynamic creation of properties of any kind** regardless of product category (configured in the plugin settings)
+- Works in multiple contexts without duplicating product properties
+- Binding properties to product categories
+- **Hierarchical inheritance of properties** from categories
+- Automatic filling of product properties on creation, inherited from parents (categories)
+- Copying product/category properties when copying a document
+- Drag-and-drop sorting of properties in global settings, categories, and products
+- Different display modes for properties (info, short, edit)
+- **Customize appearance and behavior of each property**
+- Control appearance and behavior of the same property per category
+- **Control product price** based on selected property
+- Enable/disable applying discounts to products
+- **Per-property and per-product discount control**
+- When quantity changes before adding to cart, total price is recalculated; on add, price updates for already added items
+- Price recalculation when quantity changes on the order page
+- **Grouping properties in the manager and on the frontend** in a fieldset with group name
+- Extra description for product properties
+- Display discount info to the client without page reload
+- **Separate article (SKU)** per extra product/category property
+- **Stock by property** (e.g. 20 blue and 10 red t-shirts for one document)
+- **Access** to the component is **controlled by miniShop2 access policy**
+- Flexible table layout; column positions can be stored in browser cookies
+- **All product properties saved in order history**
+- Properties can be used as mSearch2 search criteria
+- Flexible use as mFilter2 criteria per category via the mFilter2 snippet

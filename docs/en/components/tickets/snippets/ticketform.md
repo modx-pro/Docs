@@ -1,31 +1,40 @@
 # TicketForm
 
-Outputs the form for creating ticket by the user from frontend.
+Outputs a form for creating a ticket by the user from the frontend.
+The snippet must be called uncached.
 
-::: tip TIP
-Snippet is caused uncashed
-:::
+## Snippet call parameters
 
-## Snippet's call parameters
+| Name                 | Default                                                            | Description                                                                                                                                                                          |
+| -------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **&allowedFields**   | `parent,pagetitle,content,published`                               | Ticket fields the user is allowed to fill. You can list TV names.                                                                                                                   |
+| **&context**         |                                                                    | Comma-separated list of contexts to search for sections.                                                                                                                             |
+| **&parents**         |                                                                    | By default all available ticket sections are shown; you can limit them with a comma-separated list of parent IDs. Prefix with minus "-" to exclude a parent.                        |
+| **&resources**       |                                                                    | Comma-separated list of specific sections to show (or exclude with "-") in combination with **&parents**.                                                                             |
+| **&permissions**     | `section_add_children`                                             | Permission checked for publishing in the section. Default: "section_add_children".                                                                                                     |
+| **&tid**             |                                                                    | Use this parameter to edit a specific ticket via the snippet without the URL parameter $_REQUEST['tid'].                                                                             |
+| **&redirectUnpublished** | `0`                                                            | Resource ID or URI to redirect the user to when an unpublished ticket is created.                                                                                                   |
+| **&redirectDeleted** | `0`                                                                | Resource ID or URI to redirect the user to when a ticket is deleted.                                                                                                                |
+| **&redirectUnDeleted** | `0`                                                              | Resource ID or URI to redirect the user to when a ticket is restored.                                                                                                               |
+| **&requiredFields**  | `parent,pagetitle,content`                                         | Ticket fields the user must fill to submit the form.                                                                                                                                 |
+| **&sortby**          | `pagetitle`                                                        | Field to sort the section list by.                                                                                                                                                  |
+| **&sortdir**         | `ASC`                                                              | Sort direction for the section list.                                                                                                                                                |
+| **&tplFormCreate**   | `tpl.Tickets.form.create`                                          | Chunk for creating a new ticket.                                                                                                                                                    |
+| **&tplFormUpdate**   | `tpl.Tickets.form.update`                                          | Chunk for editing an existing ticket.                                                                                                                                               |
+| **&tplPreview**      | `tpl.Tickets.form.preview`                                         | Chunk for ticket preview before publishing.                                                                                                                                         |
+| **&tplSectionRow**   | `@INLINE <option value="[[+id]]" [[+selected]]>[[+pagetitle]]</option>` | Chunk for each section option in the form.                                                                                                        |
+| **&tplTicketEmailBcc** | `tpl.Tickets.ticket.email.bcc`                                   | Chunk for notifying site admins of a new ticket.                                                                                                                                    |
+| **&validate**        |                                                                    | Form field validation using FormIt rules (when FormIt is installed).                                                                                                                 |
 
-Name                     | By default                                                              | Description
--------------------------|-------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------
-**&allowedFields**       | `parent,pagetitle,content,published`                                    | Ticket field which can be filled by a user. You can specify the names of TV parameters.
-**&context**             |                                                                         | List of contexts for searching for sections, with a comma.
-**&parents**             |                                                                         | All the available ticket sections are displayed by default, but you can limit them, specifying concrete parents with a comma.
-**&permissions**         | `section_add_children`                                                  | Rights check for publication. Permission "section_add_children" is checked by default.
-**&redirectUnpublished** | `0`                                                                     | You can specify to what document a user is supposed to be sent while creating an unpublished ticket.
-**&requiredFields**      | `parent,pagetitle,content`                                              | Obligatory ticket fields which a user should fill in order to send a form.
-**&sortby**              | `pagetitle`                                                             | Field for sotring a section list.
-**&sortdir**             | `ASC`                                                                   | Sorting direction of the section list.
-**&tplFormCreate**       | `tpl.Tickets.form.create`                                               | Chunk for creating a new ticket.
-**&tplFormUpdate**       | `tpl.Tickets.form.update`                                               | Chunk for updating current ticket.
-**&tplPreview**          | `tpl.Tickets.form.preview`                                              | Chunk for ticket preview before publication.
-**&tplSectionRow**       | `@INLINE <option value="[[+id]]" [[+selected]]>[[+pagetitle]]</option>` | Chunk for design of question section in the form.
-**&tplTicketEmailBcc**   | `tpl.Tickets.ticket.email.bcc`                                          | Chunk for notifications of the web-site's admins about new ticket.
-
-## Call method
+## Call syntax
 
 ```modx
 [[!TicketForm]]
 ```
+
+## FormIt validator examples
+
+You can use the **validate** parameter the same way as in FormIt. FormIt must be installed.
+Examples are described [in a separate section][1]
+
+[1]: /en/components/tickets/ticketformit

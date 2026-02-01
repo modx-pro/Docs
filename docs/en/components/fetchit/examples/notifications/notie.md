@@ -1,8 +1,8 @@
 # Notie
 
-This section will help you to integrate a minimalistic javascript [Notie](https://jaredreich.com/notie/) module to show notifications, input and select data. Let's plug it in.
+This section helps you integrate the minimal [Notie](https://jaredreich.com/notie/) module for notifications, input and selection on JavaScript. Let's integrate it.
 
-- First you need to plug in the script and module styles, let's use CDN as an example.
+- First include the module script and styles; for example via CDN.
 
 ```html
 <!-- JavaScript -->
@@ -12,7 +12,7 @@ This section will help you to integrate a minimalistic javascript [Notie](https:
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notie@4/dist/notie.min.css">
 ```
 
-- And let's define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and get direct access to the FetchIt class:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
@@ -52,4 +52,4 @@ FetchIt.Message = {
 }
 ```
 
-Voila! This is the simple way we can integrate the **Notie** module.
+Done! With these steps you integrate the **Notie** module.

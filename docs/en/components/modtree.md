@@ -1,39 +1,44 @@
 ---
-name: ModTree
-description: Linking resources with each other
+title: ModTree
+description: Linking resources to each other
 logo: https://modstore.pro/assets/extras/modtree/logo-lg.png
 author: visermort
-modstore: https://en.modstore.pro/packages/ecommerce/modtree
+modstore: https://modstore.pro/packages/ecommerce/modtree
 modx: https://extras.modx.com/package/modtree
 repository: https://github.com/visermort/ModTree
 ---
 # ModTree
 
-With this component, you can link resources of your site with each other and show them on page as a tree.
+Component for linking site resources. Linked resources are shown as a tree on the page.
 
-Make links between resources on CMP.
+Create links between resources in the manager.
 
-[![](https://file.modx.pro/files/b/3/1/b31a66bf709cb4e4212e157d7c1d496ds.jpg)](https://file.modx.pro/files/b/3/1/b31a66bf709cb4e4212e157d7c1d496d.jpg)
+![Create links between resources](https://file.modx.pro/files/b/3/1/b31a66bf709cb4e4212e157d7c1d496d.jpg)
 
-See result on [live demo][1].
+Demo: [examples](http://modtree.visermort.ru/examples.html).
 
-When the page loads, start search is performed for:
-&queryLinks=`1` (default) - linked resourcesfor &parent (default current page),
-&queryLinks=`0` - child resources for &parent.
+On page load an initial query runs:
 
-Then, when you click on the resources icons, searches for related resources of them.
+- ``&queryLinks=`1` `` (default) — linked resources for &parent (default: current resource),
+- ``&queryLinks=`0` `` — child resources for &parent.
 
-When you click on resource the resource content is displayed.
+Clicking node icons then loads linked resources for those nodes.
 
-[![](https://file.modx.pro/files/4/1/1/41169caaac34dbce4a1215f8a61963ffs.jpg)](https://file.modx.pro/files/4/1/1/41169caaac34dbce4a1215f8a61963ff.png)
+Clicking a resource shows its content.
 
-Uses AJAX. JQuery not required.
+![Clicking a resource shows its content](https://file.modx.pro/files/4/1/1/41169caaac34dbce4a1215f8a61963ff.png)
 
-## Examples
+Uses AJAX. jQuery not required.
 
-### Display child resources
+## Snippet call examples
 
-&queryLinks=`0`. Display child resources of resource 7 on start search.
+### Show child resources
+
+```modx
+&queryLinks=`0`
+```
+
+Show child resources of resource 7 on page load.
 
 ```modx
 [[modTree?
@@ -43,9 +48,9 @@ Uses AJAX. JQuery not required.
 ]]
 ```
 
-### Display linked resources
+### Show linked resources
 
-Display related resources of resource 15 on start search.
+Show linked resources of resource 15 on page load.
 
 ```modx
 [[modTree?
@@ -54,32 +59,30 @@ Display related resources of resource 15 on start search.
 ]]
 ```
 
-## Snippet parameters
+### Snippet parameters
 
-### Result parameters
+#### Display parameters
 
-| Name                 | Default                       | Description                                                                                                                                                                                                   |
-|----------------------|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **&tplOuter**        | `tpl.ModTree.outer`           | Main template                                                                                                                                                                                                 |
-| **&tplList**         | `tpl.ModTree.itemList`        | Template for start items                                                                                                                                                                                      |
-| **&tplTree**         | `tpl.ModTree.itemTree`        | Template for childs branches on tree                                                                                                                                                                          |
-| **&tplSearchField**  | `tpl.ModTree.itemSearchField` | Template for search fields                                                                                                                                                                                    |
-| **&tplButtons**      | `tpl.ModTree.paginateBtns`    | Template for paginate buttons                                                                                                                                                                                 |
-| **&sortBy**          | `menuindex`                   |                                                                                                                                                                                                               |
-| **&sortDir**         | `ASC`                         |                                                                                                                                                                                                               |
-| **&limit**           | `0`                           | Limit on tree for child branches                                                                                                                                                                              |
-| **&limitList**       | `15`                          | Limit for start search                                                                                                                                                                                        |
-| **&contentIdPrefix** | `modtree-`                    | Prefix of ID for content fields. In case using two or more snippet on page you must use other &tplOuter with other $contentIdPrefix. Fields can be placed anywhere on the page, even outside of the &tplOuter |
-| **&customCss**       | `0`                           | 1 - not linked component CSS. If you use your own styles you may disable component CSS                                                                                                                        |
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| **&tplOuter** | `tpl.ModTree.outer` | Main template |
+| **&tplList** | `tpl.ModTree.itemList` | Template for initial list items |
+| **&tplTree** | `tpl.ModTree.itemTree` | Template for tree child items |
+| **&tplSearchField** | `tpl.ModTree.itemSearchField` | Search field template |
+| **&tplButtons** | `tpl.ModTree.paginateBtns` | Pagination buttons template |
+| **&sortBy** | `menuindex` | Sort field |
+| **&sortDir** | `ASC` | Sort direction |
+| **&limit** | `0` | Max child resources |
+| **&limitList** | `15` | Max initial query results |
+| **&contentIdPrefix** | `modtree-` | ID prefix for content areas. With two or more snippet calls per page, use a different template and prefix per call. Content areas can be anywhere on the page |
+| **&customCss** | `0` | 1 — do not load component CSS (use your own styles) |
 
-### Search parameters
+#### Search parameters
 
-| Name              | Default             | Description                                                                                                   |
-|-------------------|---------------------|---------------------------------------------------------------------------------------------------------------|
-| **&queryLinks**   | `1`                 | Determines the start search. `1` - related resources. `0` - child resources.                                  |
-| **&parent**       | `current resource`  | Resource for start search                                                                                     |
-| **&queryForce**   | `1`                 | Determines whether to perform a start search. `1` - do start search, `0` - search only on search button click |
-| **&linkWay**      | `0`                 | Link direction. `1` - master to slave. `-1` - slave to master. `0` - both way                                 |
-| **&searchFields** | `pagetitle,content` | Search fields. String with comma separator. To disable - &searchFields=``                                     |
-
-[1]: http://modtree.visermort.ru/examples.html
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| **&queryLinks** | `1` | Initial query: `1` — linked resources, `0` — child resources |
+| **&parent** | Current resource | Resource for initial query |
+| **&queryForce** | `1` | When to run initial query: `1` — on page load, `0` — only on "Search" click |
+| **&linkWay** | `0` | Link direction: `1` — master to slave, `-1` — slave to master, `0` — both |
+| **&searchFields** | `pagetitle,content` | Comma-separated search fields. Use &searchFields=`` to disable |

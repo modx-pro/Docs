@@ -1,46 +1,45 @@
 # Profile
 
-This controller is meant for the user's profile editing.
-Taking into account that your users enter the site through email, they will have to give some of their data, for example, their name and surname.
+This controller is for editing user profile. Since users log in via email, they need to fill in their data, e.g. full name.
 
-It also helps to change email, with an obligatory check.
+It also allows changing email with mandatory verification.
 
-Name                   | By default                                         | Description
------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&tplProfile**        | `tpl.Office.profile.form`                          | Chunk for output and editing of a user's profile.
-**&tplActivate**       | `tpl.Office.profile.activate`                      | Chunk for activation letter.
-**&profileFields**     | все основные поля профиля                          | List of fields that a user can edit, with commas. You can also indicate maximal length of values after a colon. For example, ``&profileFields=`username:25,fullname:50,email` ``.
-**&requiredFields**    | `username,email,fullname`                          | List of fields that are obligatory for editing. These fields should be filled in for successful profile update. For example, ``&requiredFields=`username,fullname,email` ``.
-**&HybridAuth**        | `1`                                                | Turn on integration with **HybridAuth**, if it is installed.
-**&providers**         |                                                    | List of providers of **HybridAuth** authorization, with commas. All accessible providers are here `{core_path}components/hybridauth/model/hybridauth/lib/Providers/`. For example, ``&providers=`Google,Twitter,Facebook` ``.
-**&providerTpl**       | `tpl.HybridAuth.provider`                          | Chunk for output of a link to authorization or adding the **HybridAuth** service to an account.
-**&activeProviderTpl** | `tpl.HybridAuth.provider.active`                   | Chunk for output of the icon of the added **HybridAuth** service.
-**&avatarParams**      | `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}` | JSON line with parameters of avatar conversion with help of phpThumb. By default - `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}`.
-**&avatarPath**        | `images/users/`                                    | Directory for saving avatars for users inside MODX_ASSETS_PATH. By default - `images/users/`.
+| Name               | Default                                       | Description |
+|--------------------|-----------------------------------------------|-------------|
+| **&tplProfile**    | `tpl.Office.profile.form`                     | Chunk for displaying and editing user profile. |
+| **&tplActivate**   | `tpl.Office.profile.activate`                 | Chunk for activation email. |
+| **&profileFields** | all main profile fields                       | Comma-separated list of editable user fields. Max length via colon, e.g. ``&profileFields=`username:25,fullname:50,email` ``. |
+| **&requiredFields**| `username,email,fullname`                     | Required fields for update. Must be filled for successful update, e.g. ``&requiredFields=`username,fullname,email` ``. |
+| **&HybridAuth**    | `1`                                           | Enable **HybridAuth** integration if installed. |
+| **&providers**     |                                               | Comma-separated list of **HybridAuth** providers. Available in `{core_path}components/hybridauth/model/hybridauth/lib/Providers/`, e.g. ``&providers=`Google,Twitter,Facebook` ``. |
+| **&providerTpl**   | `tpl.HybridAuth.provider`                     | Chunk for auth link or binding **HybridAuth** service to account. |
+| **&activeProviderTpl** | `tpl.HybridAuth.provider.active`           | Chunk for icon of bound **HybridAuth** service. |
+| **&avatarParams**  | `{"w":200,"h":200,"zc":0,"bg":"ffffff","f":"jpg"}` | JSON with phpThumb avatar conversion params. |
+| **&avatarPath**    | `images/users/`                               | Directory for avatars inside `MODX_ASSETS_PATH`. |
 
-*Accurate value of parameter **&profileFields** by default:*
+*Default **&profileFields** value:*
 
 ```
 username:50,email:50,fullname:50,phone:12,mobilephone:12,dob:10,gender,address,country,city,state,zip,fax,photo,comment,website,specifiedpassword,confirmpassword
 ```
 
-This snippet also has its own system setting with a standard id, which is filled in at the first call.
-If a user has no name and **office_profile_page_id** is not empty, this user will be redirected to this page unless they fill in their name.
+This snippet has its own system setting with standard id, filled on first call.
+If the user has no name and **office_profile_page_id** is set, the user is redirected to that page until they fill in their name.
 
-That is, after the first authorization through email the user will be sent to fill in their profile and will not be able to exit it until they fill all the gaps.
+So after first email login, the user is forced to fill the profile and cannot leave until all required fields are filled.
 
 ## Extended fields
 
-Controller helps to edit extended fields of a user's profile, like `extended.some_field`. For this you have to:
+The controller allows editing extended profile fields like `extended.some_field`. To do this:
 
-1. Show them in the form
+1. Output them in the form
 
     ```modx
     <label for="extended.some_field">Some field</label>
     <input name="extended[some_field]" value="[[+extended.some_field]]" id="extended.some_field">
     ```
 
-2. Allow input
+2. Allow them for input
 
     ```modx
     [[!OfficeProfile?
@@ -48,15 +47,13 @@ Controller helps to edit extended fields of a user's profile, like `extended.som
     ]]
     ```
 
-Please notice that `extended` field is an array, and for this reason when sending the form it is indicated
-as `extended[some_field]`, whereas when putting placeholders as `extended.some_field`.
+Note: `extended` is an array, so in form submit use `extended[some_field]`, in placeholders use `extended.some_field`.
 
-## Filtration
+## Filtering
 
-As profile editing by the user helps them to save different data in your site's database,
-and their data will be then shown in the admin space and maybe even on the site itself, the data have to be filtrated.
+Profile editing lets users save data to your site DB; this data is shown in the manager and possibly on the site. All such data is filtered.
 
-The rules are the following:
+Rules:
 
-1. All HTML tags in all fields, except for `comment`, are obligatorily cut.
-2. All fields, except for `comment`, are filtrated by the regular expression that is indicated in system setting **office_sanitize_pcre**.
+1. All HTML tags are stripped from all fields except `comment`.
+2. All fields except `comment` are filtered by the regex in **office_sanitize_pcre**.

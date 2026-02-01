@@ -1,42 +1,42 @@
 # pdoField
 
-This snippet has the functionality of both [getResourceField][1] and [UltimateParent][2], that is, it displays any field from the specified resource or of its parent, including TV values.
+This snippet combines [getResourceField][1] and [UltimateParent][2]: it outputs any field of a specified resource or its parent, including TV parameters.
 
-Unlike its analogue it works with documents in any context and has the ability to specify additional parameters in the snippet call, allowing output of resources normally not displayed, for example, hidden resources. By specifying the parameter **&class** it can get the field of any MODX object. It may be called as an [Output Modifier] [3].
+Unlike those, it works with documents in any context and allows extra select parameters (e.g. to exclude fields of hidden resources). With **&class** you can get a field of any MODX object. Can be used as [output filter][3].
 
-## Properties
+## Parameters
 
-It takes [the general properties and sampling results] [4] of pdoTools and some of its own:
+Accepts [general pdoTools select and output parameters][4] plus:
 
-Property           | Default          | Description
--------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------
-**&id**            | Current resource | Resource ID.
-**&field**         | `pagetitle`      | Resource field.
-**&top**           |                  | Selects the root-level parent of the specified resource.
-**&topLevel**      |                  | Selects the resource's parent at this level from the root level.
-**&default**       |                  | Specifies the resource field to return if **&field** is empty. Faster than the Output Modifier filter *:default =*
-**&output**        |                  | It specifies the string that is returned if **&default** and **&field** are all empty .
-**&toPlaceholder** |                  | If not empty, the snippet will save the field value to a placeholder with the same name, instead of displaying it to the screen.
+| Parameter        | Default           | Description |
+|------------------|-------------------|-------------|
+| **&id**          | Current document  | Resource ID. |
+| **&field**       | `pagetitle`       | Resource field. |
+| **&top**         |                   | Selects parent of **&id** at level **&top**. |
+| **&topLevel**    |                   | Selects parent of **&id** at **&topLevel** from context root. |
+| **&default**     |                   | Resource field to return if **&field** is empty. Faster than *:default=* filter. |
+| **&output**      |                   | String to return if both **&default** and **&field** are empty. |
+| **&toPlaceholder** |                 | If set, snippet stores data in placeholder instead of outputting. |
 
-*If you specify **&top** or **&topLevel**, but not a **&context**, an additional request to the database will be made to determine the context.*
+*If **&top** or **&topLevel** is used and **&context** is not set, an extra DB query will determine the context.*
 
-Does not support working with chunk or snippet objects, as it returns only one field.
+Snippet does not support chunks; it returns only one field value.
 
 ## Examples
 
-The snippet can be used as an Output Modifier:
+As output filter:
 
 ```modx
 [[*id:pdofield=`longtitle`]]
 ```
 
-You can specify properties in a JSON array. For example, selecting the second parent of the resource and returning its «longtitle»:
+Parameters as JSON. Second parent and its longtitle:
 
 ```modx
 [[*id:pdofield=`{"top":2,"field":"longtitle"}`]]
 ```
 
-But it is better to use a normal snippet call - it is faster and more convenient:
+Regular call is faster and clearer:
 
 ```modx
 [[pdoField?
@@ -48,5 +48,5 @@ But it is better to use a normal snippet call - it is faster and more convenient
 
 [1]: http://rtfm.modx.com/extras/revo/getresourcefield
 [2]: http://modx.com/extras/package/ultimateparent
-[3]: https://rtfm.modx.com/revolution/2.x/making-sites-with-modx/customizing-content/input-and-output-filters-%28output-modifiers%29
+[3]: /en/system/basics/output-filters
 [4]: /en/components/pdotools/general-properties

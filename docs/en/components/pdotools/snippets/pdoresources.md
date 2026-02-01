@@ -1,80 +1,77 @@
 # pdoResources
 
-Snippet to display a list of resources. It is an advanced replacement for getResources: it has all the features but without flaws .
+Snippet for resource lists. Advanced replacement for getResources: same features, fewer drawbacks.
 
-Knows how to properly sort the TV settings , attach a table with the sample , include or exclude categories from different contexts , and much more .
+Properly sorts TVs, joins tables, includes/excludes categories from contexts and more.
 
-## Properties
+## Parameters
 
-### Resource selection properties
+### Resource selection
 
-These properties determine what resources will appear in the generated list.
+Define which resources appear in output.
 
-Name                       | Default                                       | Description
----------------------------|-----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&parents**               | Current resource                              | Comma-separated list of parents, to find results . Set to 0 for unlimited, to +0 for the top level . If a parent id starts with a dash, it and its children are excluded from the query.
-**&depth**                 | `10`                                          | Search depth of child resources from parent in the Resource Tree.
-**&resources**             |                                               | Comma-separated list of resources to add to the results. If the id of the resource starts with a hyphen , this resource is excluded from the query.
-**&context**               |                                               | Limit the resources from the given context.
-**&where**                 |                                               | An array of additional selection parameters encoded JSON.
-**&showHidden**            | `1`                                           | Show resources that are hidden in the menu.
-**&showUnpublished**       | `0`                                           | Show unpublished resources.
-**&showDeleted**           | `0`                                           | Show resources that have been marked as deleted.
-**&hideContainers**        | `0`                                           | Exclude container resources, that is, resources with «isfolder = 1».
-**&select**                | `0`                                           | A comma-separated list of fields to retrieve. You can specify a JSON string array, for example **{"modResource":"id,pagetitle,content"}**.
-**&sortby**                | `pagetitle`                                   | Any resource field for sorting, including TVs if the **&includeTVs** property is also set. You can specify a JSON string with an array of multiple fields, for example **{"tvname":"ASC", "pagetitle":"DESC"}**. To randomly sort use «RAND()».
-**&sortdir**               | `DESC`                                        | Sort direction : Ascending or Descending.
-**&limit**                 | `10`                                          | Limit the number of results . You can use «0» for no limit.
-**&offset**                | `0`                                           | Number of items to skip, from the beginning.
-**&first**                 | `1`                                           | Number of the first item of the output results.
-**&last**                  | Automatic, by the formula (total + first - 1) | Number of the last item of the results.
-**&loadModels**            |                                               | Comma-separated list of components whose model you need to download for building a query. Example: **&loadModels=\`ms2gallery,msearch2\`**.
-**&tvFilters**             |                                               | List of filters on TV , delimited AND and OR. Separator specified parameter **&tvFiltersOrDelimiter** represents the logical OR condition thereon and conditions grouped primarily. Within each group, you can specify a list of values, separated **&tvFiltersAndDelimiter**. Search values ​​can be performed in any particular TV, if it is provided «myTV == value», or in any «value». Sample call: **&tvFilters=\`filter2==one,filter1==bar%&#124;&#124;filter1==foo\`**. Please note: The filter uses the LIKE operator and the "%" symbol is a metacharacter. This will search for the values for the resources that are located in the site_tmplvar_contentvalues table, not from the default settings of the TV.
-**&tvFiltersAndDelimiter** | `,`                                           | Separator for conditional AND property **&tvFilters**.
-**&tvFiltersOrDelimiter**  | `\|\|`                                        | Separator for conditional OR property **&tvFilters**.
+| Name | Default | Description |
+| --- | --- | --- |
+| **&parents** | Current resource | Comma-separated parent IDs. Use 0 for no limit. Minus prefix excludes |
+| **&depth** | `10` | Child depth |
+| **&resources** | | Comma-separated resource IDs. Minus excludes |
+| **&context** | | Limit by context |
+| **&where** | | JSON extra conditions |
+| **&showHidden** | `1` | Show menu-hidden |
+| **&showUnpublished** | `0` | Show unpublished |
+| **&showDeleted** | `0` | Show deleted |
+| **&hideContainers** | `0` | Exclude containers |
+| **&select** | | Comma or JSON fields |
+| **&sortby** | `pagetitle` | Sort field; TV if in &includeTVs; JSON for multi; RAND() |
+| **&sortdir** | `DESC` | Sort direction |
+| **&setTotal** | `0` | Disable total by default (since 2.11.0). pdoPage always enables it |
+| **&limit** | `10` | Max results |
+| **&offset** | `0` | Skip count; use with &limit |
+| **&first** | `1` | First iteration index |
+| **&last** | total + first - 1 | Last iteration index |
+| **&loadModels** | | Comma component models e.g. ms2gallery,msearch2 |
+| **&tvFilters** | | TV filters with AND/OR. Uses LIKE; % wildcard. Search in DB only |
+| **&tvFiltersAndDelimiter** | `,` | AND delimiter |
+| **&tvFiltersOrDelimiter** | `\|\|` | OR delimiter |
 
-### Template Properties
+### Template parameters
 
-These properties specify the chunks that contain the templates to format the generated output.
+Chunks for output layout.
 
-Name                 | Description
----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&returnIds**       | Set to "1" to return a string with a list of resource ids, instead of complete results. All of the templates are ignored.
-**&tpl**             | Name chunk for formatting the individual items. If not specified, the contents of the resource fields will be printed to the screen.
-**&tplFirst**        | Name of the chunk to format the first item in the results.
-**&tplLast**         | Name of the chunk to format the last item in the results.
-**&tplOdd**          | Name of the chunk to format every odd-numbered item in the results.
-**&tplWrapper**      | Chunk - wrapper, to wrap all results. Accepts one placeholder:`[[+output]]`. It does not work in conjunction with **&toSeparatePlaceholders**.
-**&wrapIfEmpty**     | Includes outer chunk wrapper *&tplWrapper** even if there are no results.
-**&tplCondition**    | Defines a field of the resource to evaluate against keys defined in the **&conditionalTpls** property.
-**&tplOperator**     | Optional operator for comparison of the resource field **&tplCondition** with an array of values and in **&conditionalTpls** chunks.
-**&conditionalTpls** | A JSON object defining a map of field values and the associated tpl Chunks to use when the field defined by **&tplCondition** matches the value. The comparison operator is specified in **&tplOperator**. For operators such as *isempty* you can not use an array of keys.
-**&outputSeparator** | Optional string to separate the results.
+| Name | Description |
+| --- | --- |
+| **&returnIds** | "1" returns comma IDs; templates ignored |
+| **&tpl** | Chunk for resource row |
+| **&tplFirst** | Chunk for first row |
+| **&tplLast** | Chunk for last row |
+| **&tplOdd** | Chunk for even rows |
+| **&tplWrapper** | Wrapper chunk; [[+output]]. Incompatible with &toSeparatePlaceholders |
+| **&wrapIfEmpty** | Output wrapper when no results |
+| **&tplCondition** | Field for conditional chunk |
+| **&tplOperator** | Comparison operator |
+| **&conditionalTpls** | JSON: keys = compare values, values = chunks |
+| **&outputSeparator** | Result separator |
 
-### Result Properties
+### Output parameters
 
-These properties further define what data to fetch and how to display it.
-
-Name                        | Default                                            | Description
-----------------------------|----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&fastMode**               | `0`                                                | Quick mode for processing chunks. All raw tags (output modifiers, snippets, etc.) are removed.
-**&idx**                    |                                                    | The starting number of iterations of the output.
-**&setTotal**               | `0`                                                | Indicates if the total placeholder should be populated with a count of the results.
-**&totalVar**               | `total`                                            | Name of the placeholder for storing the total number of results.
-**&includeContent**         | `0`                                                | Indicates if the «content» field of each resource should be returned in the results.
-**&includeTVs**             |                                                    | Comma-separated list of Template Variable values that should be included in the placeholders available to each resource template . Example: «action,time» will produce the placeholders `[[+tv.action]]` and `[[+tv.time]]`.
-**&prepareTVs**             | `1`, prepares all TVs specified in **&includeTVs** | Comma-separated list of media source-dependant TV values to be prepared before output.
-**&processTVs**             |                                                    | Comma-separated list of TVs that should be processed according to their output options. If set to «1», all TV listed in **&includeTVs** will be processed.
-**&tvPrefix**               | `tv.`                                              | Prefix TV property.
-**&scheme**                 | `-1`                                               | Type of URL scheme, passed to modX::makeUrl(). [See this][0] for a list of valid options.
-**&useWeblinkUrl**          | `0`                                                | Generate link to the weblink resource, not to the destination URL. **NOTE:** To get this properly working, be sure to use `[[+link]]` instead of `[[~[[+id]]]]` eg. `<a href="[[+link]]">[[+pagetitle]]</a>`.
-**&toPlaceholder**          |                                                    | Save output to a placeholder with this name instead of displaying the output to the screen.
-**&toSeparatePlaceholders** |                                                    | Each item will be displayed in a placeholder with a name starting with this value and ending with the sequential number starting from zero. For example, by specifying the property value «myPl», you'll get placeholders `[[+myPl0]]`, `[[+myPl1]]` & etc.
-**&showLog**                | `0`                                                | Show additional debugging information on the processing of the snippet only to logged-in Manager users.
+| Name | Default | Description |
+| --- | --- | --- |
+| **&fastMode** | `0` | Strip unprocessed tags |
+| **&idx** | | Start iteration index |
+| **&totalVar** | `total` | Placeholder for total; setTotal must be on |
+| **&includeContent** | `0` | Include content field |
+| **&includeTVs** | | Comma TVs; yields [[+tv.name]] |
+| **&prepareTVs** | `1` | Prepare all &includeTVs |
+| **&processTVs** | | Process TVs per manager; 1 = all; slows |
+| **&tvPrefix** | `tv.` | TV prefix |
+| **&useWeblinkUrl** | | Generate URL by class; adds [[+link]] |
+| **&toPlaceholder** | | Output to placeholder |
+| **&toSeparatePlaceholders** | | Output each to myPl0, myPl1... |
+| **&showLog** | `0` | Debug info; mgr context only |
 
 ## Examples
 
-A simple list of the children of resource #1:
+Simple child list for resource 1:
 
 ```modx
 [[pdoResources?
@@ -84,7 +81,7 @@ A simple list of the children of resource #1:
 ]]
 ```
 
-To add a TV named  «image», then the call will be as follows:
+With TV image:
 
 ```modx
 [[pdoResources?
@@ -95,6 +92,28 @@ To add a TV named  «image», then the call will be as follows:
 ]]
 ```
 
-The chunk **ListRowTpl** will now allow the placeholder `[[+tv.image]]`.
+Custom order by &resources:
 
-[0]: https://docs.modx.com/current/en/extending-modx/modx-class/reference/modx.makeurl
+```modx
+[[pdoResources?
+  &resources=`213,34,58,290`
+  &sortby=``
+  &sortdir=`ASC`
+  &tpl=`ListRowTpl`
+  &includeTVs=`image`
+]]
+```
+
+In chunk **ListRowTpl** use `[[+tv.image]]` for image.
+
+## Additional info
+
+Common error when migrating from [getResources](https://docs.modx.com/current/en/extras/getresources): using **strtotime** for dates. Resource dates are stored as timestamp but modResource converts them; pdoTools works directly with DB, so chunk gets timestamp. Use **date** modifier:
+
+```modx
+[[+publishedon:date=`%d.%m.%Y`]]
+or
+[[+createdon:date=`%Y-%m-%d`]]
+```
+
+Same for dates in other pdoTools snippets.

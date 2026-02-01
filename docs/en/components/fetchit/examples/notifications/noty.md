@@ -1,12 +1,12 @@
 # NOTY
 
-This section contains information on how to connect the [NOTY](https://ned.im/noty/) notification library.
+This section describes how to integrate the [NOTY](https://ned.im/noty/) notification library.
 
-::: danger DANGER
-The NOTY library is currently unsupported by its author and is marked as **DEPRECATED**.
+:::danger Warning!
+At this time the NOTY library is not maintained by its author and is marked **DEPRECATED**.
 :::
 
-- First we need to connect the script and library styles, we'll use CDN as an example.
+- First include the library script and styles; for example via CDN.
 
 ```html
 <!-- JavaScript -->
@@ -17,7 +17,7 @@ The NOTY library is currently unsupported by its author and is marked as **DEPRE
 <link href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta-deprecated/lib/themes/mint.min.css" rel="stylesheet">
 ```
 
-- And let's define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-- Or in your file script with the `defer` connection attribute, then you don't need to put a handler on the `DOMContentLoaded` event and access the FetchIt class directly:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
@@ -57,4 +57,4 @@ FetchIt.Message = {
 }
 ```
 
-Done! With these simple steps we can connect **NOTY**.
+Done! With these steps you integrate **NOTY**.

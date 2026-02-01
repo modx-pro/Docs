@@ -1,9 +1,9 @@
 # Quick start
 
-For a quick start, just call a single **FetchIt** snippet by specifying the name of your chunk as the value in the `form` parameter.
+To get started, call the **FetchIt** snippet once and set the `form` parameter to your chunk name.
 
-::: warning WARNING
-The snippet must be called uncached, i.e. there must be an exclamation mark before its name.
+::: warning Important!
+The snippet must be called uncached, i.e. with an exclamation mark before its name.
 :::
 
 ::: code-group
@@ -16,27 +16,27 @@ The snippet must be called uncached, i.e. there must be an exclamation mark befo
   &emailSubject=`Email subject`
   &emailTo=`info@domain.com`
   &validate=`name:required,email:required`
-  &validationErrorMessage=`This form has errors!`
-  &successMessage=`The form has been submitted successfully`
+  &validationErrorMessage=`The form contains errors!`
+  &successMessage=`Message sent successfully`
 ]]
 ```
 
 ```fenom
-{'!FetchIt' | snippet : [
+{'!FetchIt' | snippet: [
   'snippet' => 'FormIt',
   'form' => 'myForm.tpl',
   'hooks' => 'email',
   'emailSubject' => 'Email subject',
   'emailTo' => 'info@domain.com',
   'validate' => 'name:required,email:required',
-  'validationErrorMessage' => 'This form has errors!',
-  'successMessage' => 'The form has been submitted successfully',
+  'validationErrorMessage' => 'The form contains errors!',
+  'successMessage' => 'Message sent successfully',
 ]}
 ```
 
 :::
 
-Let's imagine that the form in your layout looks like this:
+Suppose your form looks like this:
 
 ```html
 <form action="#" method="post">
@@ -50,9 +50,7 @@ Let's imagine that the form in your layout looks like this:
 </form>
 ```
 
-The minimum you need to do is to set `data-error` attribute with a value matching the field name to the elements that will be displayed if they fail validation.
-
-The rest is up to your taste and colour.
+Add a `data-error` attribute with the field name to the elements that will show validation errors. The rest is up to you.
 
 ::: code-group
 

@@ -22,7 +22,7 @@
     "lint": "markdownlint **/*.md --disable MD045",
     "lint:fix": "markdownlint **/*.md --disable MD045 --fix",
     "spellcheck": "cspell \"docs/**/*.md\" --exclude \"docs/en/**\" --no-progress",
-    "spellcheck:fix": "cspell \"docs/**/*.md\" --exclude \"docs/en/**\" --no-progress --fix"
+    "spellcheck:fix": "cspell \"docs/**/*.md\" --exclude \"docs/en/**\" --no-progress --show-suggestions"
   },
   "devDependencies": {
     "@cspell/dict-ru_ru": "^2.3.2",
