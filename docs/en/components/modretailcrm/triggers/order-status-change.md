@@ -20,8 +20,8 @@ Goal: detect order status changes in RetailCRM and send that information to the 
    | Name               | Value                            |
    | ------------------ | --------------------------------- |
    | retailCRM_action   | `change_status`                   |
-   | status             | `{{order.getStatus().getCode()}}` |
-   | order_id           | `{{order.getExternalId()}}`       |
+   | status             | <span v-pre>`{{order.getStatus().getCode()}}`</span> |
+   | order_id           | <span v-pre>`{{order.getExternalId()}}`</span>       |
 
 8. Save.
 

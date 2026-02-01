@@ -47,4 +47,4 @@ The snippet uses the user session and must be called **uncached**.
 
 ## Data structure
 
-With `return=data` the snippet returns an array with `order`, `form`, `deliveries`, `payments`, `addresses`, `isCartEmpty`, `isCustomerAuth`, and related keys. See [frontend/order](frontend/order) for form structure and placeholders.
+With `return=data` the snippet returns an array with `order`, `form`, `deliveries`, `payments`, `addresses`, `isCartEmpty`, `isCustomerAuth`, and related keys. See [frontend/order](../frontend/order) for form structure and placeholders.

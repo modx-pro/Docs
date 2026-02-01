@@ -81,7 +81,7 @@ Chunks for output layout.
 
 ## Chunk call types
 
-- **@INLINE** or **@CODE** - template is the string after prefix. MODX parses `[[+]]` before snippet; use `{{+}}` so pdoTools handles it.
+- **@INLINE** or **@CODE** - template is the string after prefix. MODX parses `[[+]]` before snippet; use <span v-pre>{{+}}</span> so pdoTools handles it.
 - **@FILE** - load from file. Path in **pdotools_elements_path**. Extensions .tpl, .html.
 - **@TEMPLATE** - use template by id or name. Empty = resource's own template.
 - **@CHUNK** - chunk from DB; same as plain name.

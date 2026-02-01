@@ -28,7 +28,7 @@ After installation, assign the "mdDocs" template to a resource and save that res
 | mddocs_custom_css    |                                | Custom CSS file for styling                                                                                                                                            |
 | mddocs_docs_page_id  | `1`                            | ID of the page where documentation is displayed                                                                                                                                                            |
 | mddocs_docs_path     | `{corePath}gitdocs/`           | Default path to documentation relative to site root                                                                                                                                           |
-| mddocs_git_token     | *<Generated on install>* | Token for the webhook that accepts requests to run git pull                                                                                                                                        |
+| mddocs_git_token     | *`Generated on install`* | Token for the webhook that accepts requests to run git pull                                                                                                                                        |
 | mddocs_lang_default  | `en`                           | Default language                                                                                                                                                                                   |
 | mddocs_lang_switch   | `{"ru":"RU","en":"EN"}`       | JSON object mapping folder names to displayed language labels                                                                                                                        |
 | mddocs_logo          |                                | Path to logo image                                                                                                                                                                      |
@@ -42,7 +42,7 @@ If the **translit** component is installed, all URL segments are automatically t
 
 ## Pulling from git
 
-For automatic documentation updates a webhook is used: `SITE_URL>/assets/components/mddocs/gitpull.php?token=<TOKEN>`
+For automatic documentation updates a webhook is used: `&lt;SITE_URL&gt;/assets/components/mddocs/gitpull.php?token=&lt;TOKEN&gt;`
 
 In your git (e.g. GitHub) settings specify the full webhook URL including the token. Example:
 
