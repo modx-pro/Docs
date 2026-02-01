@@ -60,6 +60,7 @@ title: msProducts
 | **includeOptions** | | Опции товара для включения (через запятую) |
 | **formatPrices** | `false` | Форматировать цены через `$ms3->format->price()` |
 | **withCurrency** | `false` | Добавить символ валюты (работает с `formatPrices`) |
+| **usePackages** | | Внешние пакеты через запятую (см. [Интеграция](#интеграция-с-внешними-пакетами)) |
 
 ### Вывод
 
@@ -410,3 +411,73 @@ title: msProducts
     </button>
 </div>
 ```
+
+## Интеграция с внешними пакетами
+
+Сниппет msProducts поддерживает интеграцию с внешними пакетами (ms3Variants, msBrands и др.) через систему событий. Это позволяет расширять данные товаров без модификации кода ядра MiniShop3.
+
+### Параметр usePackages
+
+Для загрузки данных из внешнего пакета укажите его имя в параметре `usePackages`:
+
+```fenom
+{* Загрузить варианты товаров *}
+{'msProducts' | snippet : [
+    'parents' => 0,
+    'usePackages' => 'ms3Variants'
+]}
+
+{* Загрузить варианты и бренды *}
+{'msProducts' | snippet : [
+    'parents' => 0,
+    'usePackages' => 'ms3Variants,msBrands'
+]}
+```
+
+Без параметра `usePackages` данные внешних пакетов не загружаются — это экономит ресурсы на страницах, где они не нужны.
+
+### Доступные плейсхолдеры
+
+Каждый пакет добавляет свои плейсхолдеры. Например, ms3Variants добавляет:
+
+| Плейсхолдер | Тип | Описание |
+|-------------|-----|----------|
+| `{$has_variants}` | bool | Есть ли варианты у товара |
+| `{$variants_count}` | int | Количество вариантов |
+| `{$variants_json}` | string | JSON массив для JavaScript |
+| `{$variants}` | array | Массив вариантов для Fenom |
+
+### Пример с вариантами
+
+```fenom
+{'msProducts' | snippet : [
+    'parents' => 0,
+    'usePackages' => 'ms3Variants',
+    'tpl' => 'tpl.msProducts.variants'
+]}
+```
+
+**Чанк tpl.msProducts.variants:**
+
+```fenom
+<div class="product-card" data-product-id="{$id}">
+    <h3>{$pagetitle}</h3>
+    <div class="price">{$price} руб.</div>
+
+    {if $has_variants}
+        <div class="variants-selector" data-variants='{$variants_json}'>
+            {* JavaScript инициализирует селекторы на основе JSON *}
+        </div>
+    {/if}
+
+    <form method="post" class="ms-product-form">
+        <input type="hidden" name="id" value="{$id}">
+        <input type="hidden" name="variant_id" value="">
+        <button type="submit">В корзину</button>
+    </form>
+</div>
+```
+
+### События для разработчиков
+
+Внешние пакеты используют события `msOnProductsLoad` и `msOnProductPrepare` для интеграции. Подробнее см. раздел [События](/components/minishop3/development/events).

@@ -15,3 +15,4 @@ title: Разработка
 - [Сервисный слой](services) — DI контейнер, расширение и замена сервисов
 - [JavaScript API](javascript) — Headless API для SPA (Vue, React, Vanilla JS)
 - [Frontend JavaScript](frontend-js) — полная документация включая UI-слой
+- [Интеграция вкладок товара](product-tabs-integration) — добавление вкладок на страницу товара
