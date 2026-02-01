@@ -1,15 +1,15 @@
-# Bootstrap modal
+# Bootstrap modals
 
-In this section, we will deal with several cases related to modal windows [Bootstrap](https://getbootstrap.com/).
+This section covers several cases involving [Bootstrap](https://getbootstrap.com/) modals.
 
-## Closing a modal
+## Closing the modal
 
-Let's suppose that your form is in a modal window and you want to close it after successful form submission. To solve the problem you should use the [`fetchit:success`] event (/en/components/fetchit/frontend/events#fetchitsuccess).
+Suppose your form is inside a modal and you want to close it after a successful submit. Use the [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) event.
 
-- If the modal were initialised using JavaScript.
+- If modals were initialized with JavaScript.
 
 ```js
-// Init
+// Modal initialization
 const exampleModal = new bootstrap.Modal(document.getElementById('exampleModal'));
 
 document.addEventListener('fetchit:success', () => {
@@ -17,7 +17,7 @@ document.addEventListener('fetchit:success', () => {
 });
 ```
 
-- If modals are initialised on page load using attributes.
+- If modals are initialized on page load via attributes.
 
 ```js
 document.addEventListener('fetchit:success', ({ detail: { form } }) => {
@@ -32,11 +32,11 @@ document.addEventListener('fetchit:success', ({ detail: { form } }) => {
 });
 ```
 
-::: warning WARNING
-At the time of publishing the documentation, in Bootstrap@5.3 the bootstrap.Modal.getInstance() method does not work as expected. This may be fixed in future versions.
+:::warning Warning
+As of this documentation, in Bootstrap@5.3 the method bootstrap.Modal.getInstance() does not work as expected. This may be fixed in future versions.
 :::
 
-::: details If you are having problems, use the following code
+:::details If you run into issues, use the following code instead
 
 ```js
 document.addEventListener('fetchit:success', ({ detail: { form } }) => {
@@ -58,7 +58,7 @@ document.addEventListener('fetchit:success', ({ detail: { form } }) => {
 
 ## Opening a modal
 
-This issue is even easier to solve. But let's complicate it a bit by adding the response from the server to the body of the modal window.
+This is even simpler. Let's add the server response into the modal body.
 
 ```js
 document.addEventListener('fetchit:success', ({ detail: { response: { message } } }) => {

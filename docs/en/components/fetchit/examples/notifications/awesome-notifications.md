@@ -1,8 +1,8 @@
 # Awesome Notifications
 
-In this section, let's plug in the lightweight library [Awesome Notifications](https://f3oall.github.io/awesome-notifications/).
+This section shows how to integrate the lightweight library [Awesome Notifications](https://f3oall.github.io/awesome-notifications/).
 
-- Let's add scripts and styles. For simplicity of the example, let's do it via CDN.
+- Add the scripts and styles. For simplicity we use CDN.
 
 ```html
 <!-- JavaScript -->
@@ -12,7 +12,7 @@ In this section, let's plug in the lightweight library [Awesome Notifications](h
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/awesome-notifications@3/dist/style.min.css">
 ```
 
-- Create an instance of the notification class and define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Create an instance of the notification class and set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and access the FetchIt class directly:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 const notifier = new AWN();
@@ -44,4 +44,4 @@ FetchIt.Message = {
 }
 ```
 
-Done! This is how you can integrate **Awesome Notifications**.
+Done! This is how you integrate **Awesome Notifications**.

@@ -1,29 +1,29 @@
 # TicketMeta
 
-Outputs the information about the present ticket and also allows to vote for a ticket on it's own page.
+Outputs information about the current ticket and allows voting for the ticket on its page.
 
-::: info Info
-Beginning with version 1.4.0 snippet can be used with any MODX resource
+::: tip
+Since version 1.4.0 the snippet can be used with any MODX resources.
 :::
 
-## Parameters of the snippet call
+## Snippet call parameters
 
-Name            | By default         | Description
-----------------|--------------------|------------------------------------------------------
-**&getSection** | `1`                | To make a request in DB for getting parent section?
-**&getUser**    | `1`                | To make a request in DB for getting author's profile?
-**&tpl**        | `tpl.Tickets.meta` | Design chunk of the information about a ticket.
+| Name        | Default       | Description                                                                 |
+| ----------- | ------------- | --------------------------------------------------------------------------- |
+| **&getSection** | `1`        | Make an extra DB query to fetch the parent section?                         |
+| **&getUser**    | `1`        | Make an extra DB query to fetch the author profile?                         |
+| **&tpl**        | `tpl.Tickets.meta` | Chunk for ticket info display.                                        |
 
-## Examples of the call
+## Call examples
 
 - Standard snippet call
 
-  ```modx
-  [[!TicketMeta]]
-  ```
+```modx
+[[!TicketMeta]]
+```
 
-- In order to take a look at all the available standard placeholders
+- To see all available standard placeholders
 
-  ```modx
-  [[!TicketMeta? &tpl=``]]
-  ```
+```modx
+[[!TicketMeta? &tpl=``]]
+```

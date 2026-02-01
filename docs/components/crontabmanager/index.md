@@ -10,7 +10,7 @@ items: [
   { text: 'Настройки', link: 'setting' },
   { text: 'Интерфейс', link: 'interface' },
   { text: 'Команды', link: 'command' },
-  { text: 'Фоновый задания', link: 'сrontab' },
+  { text: 'Фоновые задания', link: 'crontab' },
 ]
 ---
 # CronTabManager

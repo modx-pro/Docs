@@ -1,59 +1,57 @@
 # msProducts
 
-The product display snippet.
+Snippet for outputting products.
 
-[![](https://file.modx.pro/files/9/7/2/9725aed7accaed426b7324135baf4b19s.jpg)](https://file.modx.pro/files/9/7/2/9725aed7accaed426b7324135baf4b19.png)
+![msProducts](https://file.modx.pro/files/9/7/2/9725aed7accaed426b7324135baf4b19.png)
 
 ## Parameters
 
-Parameter                  | By default           | Description
----------------------------|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**tpl**                    | `tpl.msProducts.row` | Chunk for a result formatting
-**limit**                  | `10`                 | Sample result limit
-**offset**                 |                      | Skip results from the beginning of the sample
-**depth**                  | `10`                 | Depth of searching goods of every parent.
-**sortby**                 | `id`                 | Sample sorting. To sort by item fields the prefix "Data" should be added, for example: "&sortby=`Data.price`"
-**sortbyOptions**          |                      | Indicates how and by what options to sort among listed in &sortby. Passed by a line, for example, "optionkey:integer,optionkey2:datetime"
-**sortdir**                | `ASC`                | Sorting direction
-**toPlaceholder**          |                      | If filled, snippet will store all data in placeholder with this name, instead of displaying.
-**toSeparatePlaceholders** |                      | If a word is indicated in this parameter, ALL results will be in different placeholders, beginning with this word and end in sequence number of the line, from zero. For example, if "myPl" is in the parameter, the placeholders will be `[[+myPl0]]`, `[[+myPl1]]` etc.
-**parents**                |                      | The category list separated by commas for result searching. The sample is limited by default to current parent. If 0 is indicated- the sample is not limited.
-**resources**              |                      | The list of goods separated by commas for result display. If goods id begins with minus it is excluded from sample.
-**includeContent**         |                      | To select"content" field of goods.
-**includeTVs**             |                      | The list of TV sample parameters separated by commas. For example: "action,time" is given by placeholders `[[+action]]` and `[[+time]]`.
-**includeThumbs**          |                      | The list of sample preview dimensions separated by commas. For example: "120x90,360x240" are given by placeholders `[[+120x90]]` and `[[+360x240]]`. The pictures should be pre-generated in item gallery.
-**optionFilters**          |                      | Goods option filters. Transmitted by JSON line, for example, {"optionkey:>":10}
-**where**                  |                      | JSON-coded line with additional sample conditions.
-**link**                   |                      | Goods link Id, which is automatically assigned in settings when new link is created.
-**master**                 |                      | Master item Id. If both "master" and "slave" are indicated the sampling will follow master.
-**slave**                  |                      | Id of affiliated item. If "master" is set this option will be ignored.
-**tvPrefix**               |                      | A prefix for TV placeholders, for example "tv." Empty by default.
-**outputSeparator**        | `\n`                 | Optional line for results separation.
-**returnIds**              |                      | To return goods id line, instead of formatted chunks.
-**showUnpublished**        |                      | To display non-published goods.
-**showDeleted**            |                      | To display deleted goods.
-**showHidden**             | `1`                  | To display goods, hidden in menu.
-**showZeroPrice**          | `1`                  | To display goods with zero price.
-**wrapIfEmpty**            | `1`                  | Switch on the display of wrapper chunk (tplWrapper) even if there are no results.
-**showLog**                |                      | To show additional information of snippet operation. For authorized in context "mgr" only.
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| **tpl** | `tpl.msProducts.row` | Chunk per result |
+| **limit** | `10` | Max results |
+| **offset** | | Skip first N results |
+| **depth** | `10` | Search depth from each parent |
+| **sortby** | `id` | Sort field. For product fields use prefix "Data.", e.g. ``&sortby=`Data.price` `` |
+| **sortbyOptions** | | Options to sort by, e.g. "optionkey:integer,optionkey2:datetime" |
+| **sortdir** | `ASC` | Sort direction |
+| **toPlaceholder** | | If set, save output to a placeholder instead of outputting. |
+| **toSeparatePlaceholders** | | If set, each result goes to a placeholder named by this prefix + index (e.g. "myPl" → `[[+myPl0]]`, `[[+myPl1]]`). |
+| **parents** | | Comma-separated category ids. Default: current parent. Use 0 for no limit. |
+| **resources** | | Comma-separated product ids. Minus prefix excludes that id. |
+| **includeContent** | | Include product "content" field. |
+| **includeTVs** | | Comma-separated TV list. |
+| **includeThumbs** | | Comma-separated thumbnail sizes (must exist in product gallery). |
+| **optionFilters** | | Option filters as JSON, e.g. {"optionkey:>":10} |
+| **where** | | Extra conditions as JSON. |
+| **link** | | Product link id (from settings). |
+| **master** | | Main product id. If both master and slave are set, query uses master. |
+| **slave** | | Linked product id. Ignored if master is set. |
+| **tvPrefix** | | Prefix for TV placeholders, e.g. "tv." |
+| **outputSeparator** | `\n` | String between results. |
+| **returnIds** | | Return comma-separated product ids instead of chunk output. |
+| **showUnpublished** | | Include unpublished products. |
+| **showDeleted** | | Include deleted products. |
+| **showHidden** | `1` | Include products hidden from menu. |
+| **showZeroPrice** | `1` | Include zero-price products. |
+| **wrapIfEmpty** | `1` | Output wrapper chunk (tplWrapper) even when there are no results. |
+| **showLog** | | Show debug info. Only for users authorized in context "mgr". |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
 ## Features
 
-msProducts snippet, as all snippets of miniShop2, works using [pdoTools][2].
-Because of this all its main parameters coincide with [pdoResources][3], but some peculiarities exist.
+msProducts, like all miniShop2 snippets, uses pdoTools. Main parameters match [pdoResources][3], with additions.
 
-### Multicategory support
+### Multi-category support
 
-The MS2 item is physically in single category. However, it may «virtually» exist in several sections.
-This is taken into account through msProducts.
+An MS2 product has one physical parent but can belong to several categories. msProducts respects that.
 
-[![](https://file.modx.pro/files/7/2/f/72f87345aac1e801f316dd722b52c827s.jpg)](https://file.modx.pro/files/7/2/f/72f87345aac1e801f316dd722b52c827.png)
+![Multi-category support](https://file.modx.pro/files/7/2/f/72f87345aac1e801f316dd722b52c827.png)
 
-### Picture deriving
+### Images
 
-Snippet can select pictures from the item gallery through the **&includeThumbs** parameter. Simply list preview separated by commas:
+Use **&includeThumbs** to load images from the product gallery. Comma-separated sizes:
 
 ```modx
 [[!msProducts?
@@ -62,11 +60,11 @@ Snippet can select pictures from the item gallery through the **&includeThumbs**
 ]]
 ```
 
-and you will obtain`[[+120x90]]` and `[[+360x270]]` in chunk.
+Placeholders `[[+120x90]]` and `[[+360x270]]` will be available in the chunk.
 
 ### Link filtering
 
-You may display `&link` parameter and required`&master` or `&slave`,thus selecting linked goods:
+Use **&link** with **&master** or **&slave** to get related products:
 
 ```modx
 [[!msProducts?
@@ -76,13 +74,13 @@ You may display `&link` parameter and required`&master` or `&slave`,thus selecti
 ]]
 ```
 
-This call will obtain all goods connected by link 1 with master item 15.
+This returns all products linked to product 15 via link type 1.
 
-### Work with options
+### Options
 
-msProducts automatically switches on and transfers all goods options in kind of `[[+key_options]] placeholder`.
+msProducts adds all product options as placeholders `[[+option_key]]`.
 
-The special parameter **&optionFilters** connects the necessary tables and complements the **&where** parameter, thus permitting to filter goods by their options.
+**&optionFilters** adds conditions to filter by options:
 
 ```modx
 [[!msProducts?
@@ -91,43 +89,65 @@ The special parameter **&optionFilters** connects the necessary tables and compl
 ]]
 ```
 
-This call displays all goods with `core_count` option if it exceeds 4.
+This outputs products that have option `core_count` greater than 4.
 
-The parameter **&sortbyOptions** is used for sorting. The required characteristics and their type are indicated in it , separated by commas.
+For sorting by options use **&sortbyOptions** (option keys and types, comma-separated) and **&sortby**:
 
 ```modx
 &sortbyOptions=`core_count:number`
 &sortby=`{"pagetitle":"ASC", "core_count":"DESC"}`
 ```
 
-Sorting order is indicated as in **&sort** parameter.
-
 ## Aliases
 
-msProducts snippet immediately attaches several linked item tables allowing you to receive data from them without unnecessary inquiries.
+msProducts joins related tables so you can use their data without extra queries:
 
-This is the main class. The rest are listed below:
-
-- **msProduct** - the main class of a sample, descendant of`modResource`.
-- **Data** - Class of `msProductData`. The price, vendor code and other item characteristics are here.
-- **Vendor** - Class of item manufacturer`msVendor`. Its name, country, logo, etc. are here.
+- **msProduct** — main class (extends `modResource`)
+- **Data** — `msProductData`: price, article, and other product fields
+- **Vendor** — `msVendor`: name, country, logo, etc.
 
 ### Placeholders
 
-If you simply do not indicate formatting chunk then all available placeholders may be seen:
+To see all placeholders, omit the output chunk:
 
 ```modx
 <pre>
-[[!msProducts?
-  &parents=`0`
-  &tpl=``
-]]
+  [[!msProducts?
+    &parents=`0`
+    &tpl=``
+  ]]
 </pre>
+```
+
+### Filter examples
+
+Products with sale price:
+
+```modx
+&where=`{"Data.old_price:!=":"0"}`
+```
+
+Products marked **New**:
+
+```modx
+&where=`{"Data.new":"1"}`
+```
+
+Products marked **Popular**:
+
+```modx
+&where=`{"Data.popular":"1"}`
+```
+
+Products marked **Favorite**:
+
+```modx
+&where=`{"Data.favorite":"1"}`
 ```
 
 ## Examples
 
-Display all goods of 15 category:
+All products from category 15:
 
 ```modx
 [[!msProducts?
@@ -135,7 +155,7 @@ Display all goods of 15 category:
 ]]
 ```
 
-Display with page layout:
+With pagination:
 
 ```modx
 [[!pdoPage?
@@ -145,7 +165,7 @@ Display with page layout:
 [[!+page.nav]]
 ```
 
-Display all goods more expensive than 1000 rubles:
+All products with price > 1000:
 
 ```modx
 [[!pdoPage?
@@ -156,7 +176,7 @@ Display all goods more expensive than 1000 rubles:
 [[!+page.nav]]
 ```
 
-Display Sony products:
+Products by vendor Sony:
 
 ```modx
 [[!pdoPage?
@@ -167,7 +187,7 @@ Display Sony products:
 [[!+page.nav]]
 ```
 
-Sorting by vendor code:
+Sort by article:
 
 ```modx
 [[!pdoPage?
@@ -179,5 +199,4 @@ Sorting by vendor code:
 [[!+page.nav]]
 ```
 
-[2]: /en/components/pdotools/
 [3]: /en/components/pdotools/snippets/pdoresources

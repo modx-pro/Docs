@@ -1,49 +1,43 @@
 ---
-name: SEO Suite
-description: Automatically fix 404 errors on your website
+title: SEO Suite
+description: SEO Suite automatically redirects broken links (404) to suitable pages
 logo: https://modstore.pro/assets/extras/seosuite/logo-lg.png
 author: Sterc
-modstore: https://en.modstore.pro/packages/ecommerce/seosuite
+modstore: https://modstore.pro/packages/ecommerce/seosuite
 modx: https://extras.modx.com/package/seosuite
 repository: https://github.com/Sterc/seosuite
 ---
 # SEO Suite
 
-[SEO Suite][1] was introduced by [Sterc][4] as a premium MODX Extra that automatically redirects your 404 URLs to relevant pages on your website.
-404 errors are a fairly common issue for anyone who’s transitioning from an old website to a new website.
-SEO Suite makes sure your visitors are redirected to a relevant page when they’re looking for an old URL.
+[SEO Suite](https://www.sterc.nl/en/modx-extras/seosuite) by [Sterc](https://www.sterc.nl/en/) is a paid MODX extra that automatically redirects broken links (404) to suitable pages on your site.
+Broken links are common when migrating from an old site to a new one.
+SEO Suite ensures visitors are redirected to the right page when they follow old links.
 
-Through simply uploading a single column .csv file containing your 404 URLs, SEO Suite will look for similar pages on your website and redirect them automatically.
-This matching process is based on the information after the last slash in the URL.
+By uploading a single-column .csv file with broken links, SEO Suite finds similar pages on your site and redirects to them automatically.
+Matching is based on the link content after the last slash `/`.
 
 ## Workflow
 
-1. Gather your 404 URLs in a single column .csv file by exporting them or adding them manually. Make sure you’ve entered full URLs, including the domain. Example: `https://modx.org` instead of modx.org.
-2. Import the .csv file in SEO Suite.
-3. SEO Suite will look for similarities between your 404 URLs and the pages on your website:
-   - When there’s one match, it will be automatically converted to a 301 redirect, stored in SEO Tab.
-   - When there are several matches, you can choose the desired redirect manually.
-   - When there are no matches, you can enter a URL yourself.
+1. Collect broken links in a single-column .csv file via export or add manually. Ensure full URLs including scheme. Example: <https://modx.org> not modx.org.
+2. Import the .csv file into SEO Suite.
+3. SEO Suite matches broken links with your site pages:
+   - Single match: automatically converted to 301 redirect and added to SEO Tab.
+   - Multiple matches: choose the page manually.
+   - No matches: enter the target URL manually.
 
 ## Requirements
 
-To make sure that SEO Suite functions properly, the following requirements should be met:
+For SEO Suite to work:
 
-- [SEO Tab][2] (version 2.0 or newer) has to be installed. This is where the redirects of your 404 URLs will be stored.
-- [MODX version 2.5.0 or newer][3] has to be installed.
+- [SEO Tab](https://www.sterc.nl/en/modx-extras/seotab) (2.0 or newer). Stores 404 redirects.
+- [MODX 2.5.0 or newer](https://modx.com/download).
 
 ## Future features
 
-- Automatically track 404 pages on your MODX website and add them to SEO Suite to solve them. A dashboard widget will be provided which shows the 10 most recent generated 404 pages.
-- 301 redirect statistics: SEO Suite will feature a custom manager page containing 301 redirects statistics. A dashboard widget will be provided which shows the 10 redirects with the most hits.
-- Automatically import 404's from Google Search Console.
+- Auto-tracking of 404 pages and adding them to SEO Suite. Dashboard widget with 10 latest 404s.
+- 301 redirect stats: admin page with 301 redirect statistics. Dashboard widget with 10 most-used redirects.
+- Auto-import of 404 pages from Google Search Console.
 
-## Bugs and feature requests
+## Feedback and bug reports
 
-We greatly value your feedback, feature requests and bug reports. Please issue them on [Bitbucket][5].
-
-[1]: https://www.sterc.nl/en/modx-extras/seosuite
-[2]: https://www.sterc.nl/en/modx-extras/seotab
-[3]: https://modx.com/download
-[4]: https://www.sterc.nl/en/
-[5]: https://bitbucket.org/sterc/seosuite/issues?status=new&status=open
+Feedback and bug reports are welcome. Please submit on the project [Bitbucket](https://bitbucket.org/sterc/seosuite/issues?status=new&status=open) page.

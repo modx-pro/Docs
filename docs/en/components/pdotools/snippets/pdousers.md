@@ -1,45 +1,45 @@
 # pdoUsers
 
-Snippet to list the site users, based on the pdoTools library.
+Snippet for outputting site users via pdoTools.
 
-It generates a list of site users according to their's groups and roles.
+Builds a user list with groups and roles.
 
-## Settings
+## Parameters
 
-It uses all [General Settings of pdoTools][1] except the specific class *modResource*, as well as their own:
+Uses all [general pdoTools params][1] except those specific to *modResource*, plus its own:
 
-Name               | Default | Description
--------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&groups**        |         | List of user groups, separated by commas. You can use the names and id. If the value begins with dash it means users belonging to this group will be skipped.
-**&roles**         |         | List of user roles, separated by commas. You can use the names and id. If the value begins with a dash, then users with this role will be skipped.
-**&users**         |         | List for output, separated by commas. You can use usernames and id. If the value begins with a dash, that user will be excluded from the results.
-**&showInactive**  | `0`     | Includes  Inactive users in the results.
-**&showBlocked**   | `0`     | Includes Blocked users in the results.
-**&returnIds**     |         | Returns a string with a list of user ids instead of formatted results.
-**&showLog**       | `0`     | Show more information about running the snippet. Only displayed for logged-in users with the «mgr» context authorization.
-**&toPlaceholder** |         | If not empty, this will the save output to a placeholder with this name instead of displaying the output to the screen.
-**&wrapIfEmpty**   |         | Includes output chunk wrapper **&tplWrapper** even if there are no results.
-**&tplWrapper**    |         | Chunk - wrapper, to wrap all results. Accepts one placeholder:`[[+output]]`. It does not work in conjunction with **&toSeparatePlaceholders**.
+| Parameter         | Default | Description |
+|-------------------|---------|-------------|
+| **&groups**       |         | Comma-separated user groups. Names or ids. Prefix with minus (-) to exclude. |
+| **&roles**        |         | Comma-separated roles. Names or ids. Prefix with minus (-) to exclude. |
+| **&users**        |         | Comma-separated users. Username or id. Prefix with minus (-) to exclude. |
+| **&showInactive** | `0`     | Include inactive users |
+| **&showBlocked**  | `0`     | Include blocked users |
+| **&returnIds**    |         | Set to `1` to return comma-separated ids instead of rendered output. All templates ignored. |
+| **&showLog**      | `0`     | Extra debug info. Only for users in "mgr" context. |
+| **&toPlaceholder**|         | If set, stores data in placeholder instead of outputting. |
+| **&wrapIfEmpty**  |         | Output wrapper chunk even when no results. |
+| **&tplWrapper**   |         | Wrapper chunk. Placeholder `[[+output]]`. Not used with **&toSeparatePlaceholders**. |
 
-### Override pdoTools
+## Overridden pdoTools parameters
 
-Name         | Default      | Description
--------------|--------------|----------------------------------------------------------------------------------------------------------------------------------
-**&class**   | `modUser`    | The base User class for MODX Revolution
-**&sortby**  | `modUser.id` | Any user field for sorting. You can specify a JSON string with an array of multiple fields. To randomly select the sort «RAND ()»
-**&sortdir** | `ASC`        | Sorting direction: Descending «DESC» or Ascending «ASC» .
+| Parameter  | Default      | Description |
+|------------|--------------|-------------|
+| **&class** | `modUser`    | User class |
+| **&sortby**| `modUser.id` | Sort field. JSON for multiple. Use "RAND()" for random. |
+| **&sortdir**| `ASC`       | Sort direction: "DESC" or "ASC". |
 
-All default templates are empty. To display the result as HTML, you must specify at least the value of the template in **&tpl**.
+All templates are empty by default. For HTML output, set at least **&tpl**.
 
 ## Examples
 
-Used without parameters, the snippet lists all users:
+Without params, outputs all site users:
 
 ```modx
 [[!pdoUsers]]
 ```
 
-Members of usergroup Authors:
+Output users in Authors group:
 
 ```modx
 [[!pdoUsers?
@@ -49,7 +49,7 @@ Members of usergroup Authors:
 ]]
 ```
 
-You can combine it with pdoPage / getPage:
+With pdoPage/getPage:
 
 ```modx
 [[!pdoPage?
@@ -60,12 +60,12 @@ You can combine it with pdoPage / getPage:
 ]]
 ```
 
-with INLINE:
+Inline chunk:
 
 ```modx
 [[!pdoUsers?
   &roles=`Member`
-  &tpl=`@INLINE <p>Имя - [[+fullname]], ID - [[+id]]</p>`
+  &tpl=`@INLINE <p>Name - [[+fullname]], ID - [[+id]]</p>`
   &sortby=`id`
   &sortdir=`asc`
 ]]
@@ -73,9 +73,8 @@ with INLINE:
 
 ## Demo
 
-[Authors and friends][2] of the Simple Dream repository.
+[Authors and friends output](https://modstore.pro/authors) from Simple Dream repo.
 
 ![Demo](https://file.modx.pro/files/b/7/9/b792406326ccd13a79ce417c6e7d2306.png)
 
 [1]: /en/components/pdotools/general-properties
-[2]: https://en.modstore.pro/authors

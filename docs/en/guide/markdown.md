@@ -2,30 +2,30 @@
 lastUpdated: false
 ---
 <!-- markdownlint-disable MD049 MD050  -->
-# Quick reference markdown
+# Quick markdown reference
 
-Material taken from [here](https://htmlacademy.ru/blog/html/markdown).
+Content adapted from [here](https://htmlacademy.ru/blog/html/markdown).
 
-Markdown is a convenient and fast way to mark up text. Markdown is used when HTML is not available, and the text needs to be made readable and structured (headings, lists, pictures, links).
+Markdown is a simple, fast way to format text. It’s used when HTML isn’t available and you want readable, lightly structured text (headings, lists, images, links).
 
-The main example of using markdown is the readme.md file, which is found in every github repository. The .md extension is short for markdown.
+A common example is `readme.md` files in GitHub repos — the `.md` stands for markdown.
 
-Another common example is messages in messaging app. You can put stars around the text in Telegram, and the text will become bold.
+Another example is messaging apps: in Telegram you can wrap text in asterisks to make it bold.
 
 ![](https://assets.htmlacademy.ru/content/blog/1185/01.png)
 
-Markdown versions are different, so double check which one you are using.
+Markdown flavors differ; check which one you’re using.
 
-## Text decoration
+## Text emphasis
 
-We do not have many options, but there are analogues of the `<b>` and `<i>` tags. And they can also be nested inside each other.
+Options are limited, but you get equivalents of `<b>` and `<i>`, and you can nest them.
 
 **Example:**
 
 ```markdown
 *Italic text* or _italic text_.
 **Bold text** or __bold text__.
-**Bold _italic_ text**.
+**Bold _italic_ text**
 ```
 
 **Output:**
@@ -34,62 +34,62 @@ We do not have many options, but there are analogues of the `<b>` and `<i>` tags
 
 **Bold text** or __bold text__.
 
-**Bold _italic_ text**.
+**Bold _italic_ text**
 
 ## Headings
 
-The more times we repeat #, the higher the heading level. In general, 6 levels are available, but in practice headings of more than 3 are rarely needed.
+More `#` means a deeper level. There are 6 levels; in practice you rarely need beyond the third.
 
 **Example:**
 
 ```markdown
-# Heading level 1 / h1
-## Heading level 2 / h2
-### Heading level 3 / h3
-#### Heading level 4 / h4
+# Heading h1
+## Heading h2
+### Heading h3
+#### Heading h4
 ```
 
 ## Lists
 
 ### Unordered list
 
-You can use `*`, `+` or `-` on one side of the line, for a nested item use tabulation.
+Use `*`, `+`, or `-`. Indent with a tab for nested items.
 
 **Example:**
 
 ```markdown
-* Hello!
-* How are you doing?
-  * After using tabulation, there will be a nested item.
+* Hello
+* How are you
+  * After a tab you get a nested list
 ```
 
 **Output:**
 
-* Hello!
-* How are you doing?
-  * After using tabulation, there will be a nested item.
+* Hello
+* How are you
+  * After a tab you get a nested list
 
-### Ordered lists
+### Ordered list
 
-The situation with numbering is funny - you can just put `1.` everywhere and the correct numbering will appear in the document.
+You can use `1.` for every item; the renderer will number them correctly.
 
 **Example:**
 
 ```markdown
-1. Yep
-1. Yep-yep
-    1. Yep-yep-yep-yep
-    1. Yep-yep-yep-yep-yep
-1. Yep-yep-yep
+1. Yes
+1. Yes yes
+    1. Yes yes yes yes
+    1. Yes yes yes yes yes
+1. Yes yes yes
 ```
 
 **Output:**
 
-1. Yep
-1. Yep-yep
-    1. Yep-yep-yep-yep
-    1. Yep-yep-yep-yep-yep
-1. Yep-yep-yep
+1. Yes
+1. Yes yes
+    1. Yes yes yes yes
+    1. Yes yes yes yes yes
+1. Yes yes yes
 
 ## Links
 
@@ -97,10 +97,10 @@ The situation with numbering is funny - you can just put `1.` everywhere and the
 [Link text](https://modx.pro)
 ```
 
-Pictures are placed as links, only at the beginning of the line you need to add `!`.
+Images use the same syntax with a leading `!`.
 
 ```markdown
-![Picture text](/assets/img/logo.png)
+![Alt text](image-url)
 ```
 
 ## Blockquotes
@@ -108,21 +108,20 @@ Pictures are placed as links, only at the beginning of the line you need to add 
 **Example:**
 
 ```markdown
-This is plain text.
-> And this is the quoted text.
+This is normal text, and
+> This is a quote, and it’s clear that it’s quoted
 ```
 
 **Output:**
 
-This is plain text.
-> And this is the quoted text.
+This is normal text, and
+> This is a quote, and it’s clear that it’s quoted
 
-That's it, now you can write your first `index.md` document.
+You’re ready to write your first `index.md`.
 
 ## Code
 
-This is, in fact, what we are all here for.
-The code is marked up with back quotes. Three at the beginning, three at the end for multi-line blocks, or one quote each to highlight one or two words.
+Code is wrapped in backticks. Use three backticks at the start and end for multi-line blocks, or one for a short inline span.
 
 **Example:**
 
@@ -140,10 +139,10 @@ $user = $modx->getObject(modUser::class, ['id' => 5]);
 
 ## Code highlighting
 
-Markdown supports correct code highlighting for various programming and markup languages.
-You must specify the language after the opening quotes. The [list of supported languages](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages) is quite wide.
+Markdown supports syntax highlighting for many languages.
+Specify the language right after the opening backticks. The list of supported languages is large; see [this link](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages).
 
-In addition, we have added syntax highlighting for MODX and fenom. Such a cool and convenient highlighting is not yet available even in the official MODX documentation.
+We also added MODX and Fenom syntax highlighting. You won’t find this in the official MODX docs.
 
 ```modx
 [[!msProducts?
@@ -153,7 +152,7 @@ In addition, we have added syntax highlighting for MODX and fenom. Such a cool a
 ```
 
 ```fenom
-{'!msProducts' | snippet : [
+{'!msProducts' | snippet: [
   'parents' => 0,
   'includeThumbs' => '120x90,360x270',
 ]}

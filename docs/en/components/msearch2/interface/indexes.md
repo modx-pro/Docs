@@ -1,49 +1,48 @@
-# Indexes
+# Indexing
 
-Page for search index creating.
+Page for creating the search index.
 
-Creating an index is a hard operation. It is divided into multiple queries which are sent through Ajax in a cycle.
+Building the index is heavy, so it is split into many requests sent via Ajax in a loop.
 
-![search index creating](https://file.modx.pro/files/e/8/a/e8abae2883fc9b722910b31930910d09.png)
+[![](https://file.modx.pro/files/e/8/a/e8abae2883fc9b722910b31930910d09s.jpg)](https://file.modx.pro/files/e/8/a/e8abae2883fc9b722910b31930910d09.png)
 
-You can indicate the number of resources to index your site through at once.
-10 resources is an optimal value.
-But of you get the timeout error, lessen this value.
+You can set how many resources to index per batch. 10 is a good default. If you get timeout errors, lower this value.
 
-According to the system settings columns of resources and commentaries that are needed are extracted from the database and divided into words.
-Then for each word different forms of it are generated with help of [phpMorphy][1]. They’re saved into the index table.
+According to system settings, resource columns are loaded from the DB, split into words, and word forms are generated via [phpMorphy][1] and saved to the index table.
 
 ## System settings
 
-Name                            | By default                                                    | Description
---------------------------------|---------------------------------------------------------------|-------------------------------------------------------------------------------------------
-**mse2_index_comments**         | `true`                                                        | Activate the indexation of commentaries for component **Tickets**
-**mse2_index_comments_weight**  | `1`                                                           | Search weight of a word from the commentary
-**mse2_index_fields**           | `content:3,description:2,introtext:2,pagetitle:3,longtitle:3` | Indexation of the resource fields setting. Name of the field and its weight after a colon.
-**mse2_index_min_words_length** | `4`                                                           | Minimal length of a word for its participation in search.
+| Name | Default | Description |
+|------|---------|-------------|
+| **mse2_index_comments** | `true` | Index **Tickets** comments |
+| **mse2_index_comments_weight** | `1` | Search weight for words from comments |
+| **mse2_index_fields** | `content:3, description:2, introtext:2, pagetitle:3, longtitle:3` | Resource fields to index. Field name and weight separated by colon. |
+| **mse2_index_min_words_length** | `4` | Minimum word length to index |
 
-The most important parameter is **mse2_index_fields**, it defines the value of words in different fields of the document.
+The main setting is **mse2_index_fields**; it sets how much weight words in each field have.
 
-## Work logic
+## How it works
 
-Table record consists of the very word, its weight (which you indicate in settings) and the link of the resource where it can be found.
+Each index row contains the word, its weight from settings, and the resource where it was found.
 
-Thanks to a special algorithm unusual fields of documents can be indexed, like products characteristics miniShop2, if you just indicate them in settings as well as others.
-mSearch2 can also index **Tickets** commentaries, the needed setting is on by default.
+A special algorithm allows indexing non-standard fields, e.g. miniShop2 product properties — just add them to the settings. miniShop2 can also expose data from `msVendor` with the `vendor_` prefix, e.g. `vendor_name` for manufacturer search.
 
-This means that all your site is divided into thousands of variants of words, by which search is done.
-Only those documents which have **searchable** parameter matched are included in index.
+For TV parameters use the `tv_` prefix, e.g. `tv_subtitle:3`.
 
-You don’t have to control index’s relevance – the plugin that is included does it with full accordance with system settings, working to event **OnDocFormSave**.
+mSearch2 can index **Tickets** comments; the option is on by default.
 
-You should generate search index in admin area in two cases:
+So the site is split into many word variants that are used for search. Only resources with **searchable** (Participates in search) checked are indexed.
 
-- When you first install the component
-- When you change system settings responsible for indexation
+A bundled plugin keeps the index up to date on **OnDocFormSave** according to system settings.
 
-## Adding arbitrary words to the index
+Generate the index in the manager only when:
 
-There are cases in which you have to add some arbitrary words of yours to the documents of the index. With version **1.5.2-pl**, you can use plugin to event **mse2OnBeforeSearchIndex**:
+- Installing the component for the first time
+- Changing indexing-related system settings
+
+## Adding custom words to the index
+
+Sometimes you need to add your own words to a resource's index. From **1.5.2-pl** you can use a plugin on **mse2OnBeforeSearchIndex**:
 
 ```php
 <?php
@@ -60,21 +59,20 @@ switch ($modx->event->name) {
 }
 ```
 
-In this example all resources will get field `my_field` with the word "WORDS" in their index ("my" will not be included in the index because of the restriction of length by default). Products miniShop2 will also be given `product_field` with the words "Product" and "Property".
+In this example all resources get `my_field` with "WORDS" in the index ("my" is skipped due to min length), and miniShop2 products also get `product_field` with "Product" and "Property".
 
-![Adding arbitrary words to the index](https://file.modx.pro/files/5/7/9/579567140e4f4e8667380edd9ee2b224.png)
+![](https://file.modx.pro/files/5/7/9/579567140e4f4e8667380edd9ee2b224.png)
 
-Thereby, you can add different arbitrary words in the resource index.
+You can add any custom words to the index this way.
 
-### Products’ options indexation
+### Indexing product options
 
-Another example of adding arbitrary words to the index is the indexation of the options of products miniShop2.
+Another use of custom words is indexing miniShop2 product options:
 
 ```php
 <?php
 switch ($modx->event->name) {
   case 'mse2OnBeforeSearchIndex':
-    // Имена опций
     $names = array(
       'option1',
       'option2'
@@ -98,6 +96,6 @@ switch ($modx->event->name) {
 }
 ```
 
-Certainly, you’ll have to write the analysis and saving of unusual options if you’re going to have those.
+You will need to handle parsing and saving for non-standard options if you have any.
 
 [1]: http://phpmorphy.sourceforge.net/dokuwiki/

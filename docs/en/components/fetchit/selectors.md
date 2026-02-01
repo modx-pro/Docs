@@ -1,13 +1,13 @@
 # Selectors
 
-This section contains information about the selectors that the **FetchIt** interacts with.
+This section describes the selectors used by **FetchIt**.
 
 ## `data-fetchit`
 
-This selector is added to a form element by a snippet. It allows **FetchIt** to process only necessary forms without disturbing the behaviour of other forms on the page.
+This attribute is added to the form element by the snippet. It lets the component handle only the forms you want without affecting other forms on the page.
 
-::: info TIP
-The snippet at the time of loading the chunk looks for the form and if this attribute is not present, sets it on its own.
+:::info Tip
+When loading the chunk, the snippet finds the form and, if this attribute is missing, adds it automatically.
 :::
 
 ```html
@@ -18,7 +18,7 @@ The snippet at the time of loading the chunk looks for the form and if this attr
 
 ## `data-error`
 
-By specifying the name of the field in the value of this attribute, i.e. the same value as in the `name` attribute, you tell **FetchIt** to load the error text of a particular field.
+Set the value to the field name (the same as the `name` attribute) so the component can inject the error message for that field.
 
 ```html
 <input type="text" name="username" />
@@ -27,7 +27,7 @@ By specifying the name of the field in the value of this attribute, i.e. the sam
 
 ## `data-custom`
 
-By default **FetchIt** adds CSS classes from the `fetchit.frontend.input.invalid.class` system setting to input field elements, but there are cases when due to layout peculiarities it is necessary to add them to other elements, for example wrapper elements, and for such cases there is this selector and `fetchit.frontend.custom.invalid.class` system setting.
+By default **FetchIt** adds the CSS class from the `fetchit.frontend.input.invalid.class` system setting to input elements. For layouts where the invalid state should be applied to wrapper elements instead, use this attribute and the `fetchit.frontend.custom.invalid.class` system setting.
 
 ```html
 <div class="input-parent" data-custom="password">

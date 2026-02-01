@@ -1,27 +1,23 @@
-# FAQs
+# FAQ
 
-We're collecting the questions we get most often into a list of FAQs.
+Common questions and answers.
 
-## How do I show my created form?
+## How do I display my form?
 
-Make sure that you marked your form as Published, and then add the following snippet call where you want the form to appear (without the spaces):
+Make sure the form is marked as published, then add this where you want it (no spaces):
 
 ```modx
-[[!renderForm? &form=`FORM ID HERE`]]
+[[!renderForm? &form=`form_id`]]
 ```
 
-You can also use a template variable to select the form, and to place the template variable value in the form property.
+You can also use a TV to select the form and pass it as the form parameter.
 
-## I want to setup custom validation per field
+## I want to use validators for fields
 
-This can be accomplished by going to the creating (or editing) a field-type in the admin-panel.
-You can mention a comma-separated list of FormIt-validators in the **Validation** field in the dialog-window.
+Add the FormIt validators you need in the field settings in the Formalicious dashboard. The parameter accepts a comma-separated list of validators.
 
-## I don't like the emails sent by Formalicious
+## I don't like how Formalicious emails look
 
-Everything is customizable by using chunks or FormIt parameters.
-First, create a duplicate of the email-chunk (`emailFormTpl` or `fiarTpl`) you wish to change and rename it.
-Then go to the form which should use this new chunk.
+You can change everything by editing chunks. Create copies of the default chunks (`emailFormTpl` or `fiarTpl`) under new names and edit them.
 
-Go to the **Advanced** section and click **Add parameter**.
-Set the parameter-key to **emailTpl** or **fiarTpl** and set the value to the chunk you just made.
+Then go to the form's **Advanced settings** and add the FormIt parameter **emailTpl** or **fiarTpl** with your chunk name.

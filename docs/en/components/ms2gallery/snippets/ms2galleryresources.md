@@ -1,20 +1,20 @@
 # ms2GalleryResources
 
-Snippet for the results output through **pdoResources** with an attachment of the first picture from the resource's gallery.
+Snippet for outputting resources via **pdoResources** with the first image from each resource's gallery joined.
 
 ## Parameters
 
-All parameters [pdoResources][1] are acceptable, plus there are some unique ones:
+All [pdoResources] parameters are supported, plus:
 
-Parameter           | By default | Description
---------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**typeOfJoin**      | `left`     | Type of adding pictures from a resource. Left stands for Left Join, which means that resources will be selected even if they do not host any pictures. And inner stands for Inner Join, which will select only resources with pictures.
-**includeThumbs**   | `small`    | List of [previews generated][2] with commas. For example, "small,medium".
-**includeOriginal** |            | Adding an extra join to the selection with a link to the original picture. It will be available in the resource's array as "pseudonym.original", for example, "small.original".
+| Parameter            | Default | Description                                                                                                                                                                                       |
+|----------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **typeOfJoin**       | `left`  | How to join gallery images. `left` — Left Join: resources are included even without images. `inner` — Inner Join: only resources that have images.                                              |
+| **includeThumbs**    | `small`| Comma-separated list of [thumbnail sizes][preview-generation]. Example: `small, medium`.                                                                                                          |
+| **includeOriginal**  |         | Add a join with the original image URL. Available on the resource as `alias.original`, e.g. `small.original`.                                                                                     |
 
 ## Examples
 
-Output of all resources. For those resources that have galleries the first file will be attached.
+Output all resources; first gallery file is joined where available:
 
 ```modx
 [[!ms2GalleryResources?
@@ -23,7 +23,7 @@ Output of all resources. For those resources that have galleries the first file 
 ]]
 ```
 
-Output of resources with galleries only
+Output only resources that have galleries:
 
 ```modx
 [[!ms2GalleryResources?
@@ -32,5 +32,5 @@ Output of resources with galleries only
 ]]
 ```
 
-[1]: /en/components/pdotools/snippets/pdoresources
-[2]: /en/components/ms2gallery/preview-generation
+[pdoResources]: /components/pdotools/snippets/pdoresources
+[preview-generation]: /components/ms2gallery/preview-generation

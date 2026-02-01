@@ -1,6 +1,6 @@
-# Pico.css
+# Form with Pico.css
 
-With the [Pico.css](https://picocss.com/) framework everything is much simpler, because the `aria-invalid` attribute controls the invalid state, and our extra adds it automatically. Let's look at a small example.
+With the framework [Pico.css](https://picocss.com/) it is simpler because the invalid state is controlled by the attribute `aria-invalid`, and our component adds it automatically. Here is a short example.
 
 ```html
 <form>
@@ -16,12 +16,14 @@ With the [Pico.css](https://picocss.com/) framework everything is much simpler, 
 </form>
 ```
 
-To prepare, you will need to do the following:
+To set it up:
 
-1. Add text elements with attributes `data-error="*"` to be displayed with the error text.
-2. For FormIt compatibility, placeholders with values and errors must be specified.
+1. Add text elements with the `data-error="*"` that will display error text.
+2. For FormIt compatibility add placeholders for values and errors.
 
-<!--@include: ../../parts/action.info.md-->
+::: info Important
+Markup validators complain about an empty `action`, so set the page URL there.
+:::
 
 ```modx
 <form> // [!code --]

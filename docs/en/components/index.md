@@ -1,7 +1,7 @@
 ---
-title: Extras
+title: Components
 layout: page
 sidebar: false
 ---
 
-<DocsComponentsList title="Extras" :search="true" />
+<DocsComponentsList title="Components" :search="true" />

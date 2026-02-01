@@ -1,6 +1,6 @@
-# turretcss
+# Form with turretcss
 
-[turretcss](https://turretcss.com/) is not much different from many frameworks, but still, let's break down an example:
+[turretcss](https://turretcss.com/) is similar to other frameworks; here is an example:
 
 ```html
 <form>
@@ -21,13 +21,15 @@
 </form>
 ```
 
-To prepare, you will need to do the following:
+To set it up:
 
-1. Add `data-error="*"` attributes for elements that will be displayed with the error text.
-2. For FormIt compatibility, placeholders with values and errors must be specified.
-3. In turretcss, invalid status is specified by the `error` class, so we specify it in the `fetchit.frontend.input.invalid.class` system setting.
+1. Add the `data-error="*"` to elements that will display error text.
+2. For FormIt compatibility add placeholders for values and errors.
+3. In turretcss the invalid state uses the class `error`, so set it in system setting `fetchit.frontend.input.invalid.class`.
 
-<!--@include: ../../parts/action.info.md-->
+::: info Important
+Markup validators complain about an empty `action`, so set the page URL there.
+:::
 
 ```modx
 <form> // [!code --]

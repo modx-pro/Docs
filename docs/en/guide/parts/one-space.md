@@ -1,3 +1,3 @@
-::: warning WARNING
-Note that only one space is required after `!code`, here are two to prevent processing.
+::: warning
+There must be **one** space after `!code`. In the examples an extra space is added for correct output.
 :::

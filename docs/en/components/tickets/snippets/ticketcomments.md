@@ -1,57 +1,52 @@
 # TicketComments
 
-Outputs comments and the form of the commenting on resource.
+Outputs comments and a form to comment on a resource.
 
-::: tip TIP
-Can be used with any MODX document.
+> Can be used with any MODX document.
+> The snippet must be called uncached.
 
-Snippet is caused uncashed.
-:::
+## Snippet call parameters
 
-## Parameters of the snippet's call
-
-<!-- TODO: Перевести описания некоторых свойств -->
-| Name                             | By default                               | Description                                                                                                                                                     |
-|----------------------------------|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **&allowGuest**                  | `0`                                      | To activate commenting for unauthorized users?                                                                                                                  |
-| **&allowGuestEdit**              | `1`                                      | To allow unauthorized users to edit their comments?                                                                                                             |
-| **&allowGuestEmails**            | `0`                                      | To send the guests mail notifications about the answers?                                                                                                        |
-| **&autoPublish**                 | `1`                                      | To publish automatically all the new comments without any premoderation.                                                                                        |
-| **&autoPublishGuest**            | `1`                                      | To publish automatically all the new comments of the unauthorized users without any premoderation.                                                              |
-| **&depth**                       | `0`                                      | Integer for indicating maximum depth of the comment branch.                                                                                                     |
-| **&enableCaptcha**               | `1`                                      | To activate protection from spam for unauthorized users?                                                                                                        |
-| **&fastMode**                    | `1`                                      | If activated - values from DB only will be fitted in the result chunk. All the unprocessed tags MODX, such as filters, snippet output and others - will be cut. |
-| **&formBefore**                  | `0`                                      | To place form of the commenting before comments. No by default.                                                                                                 |
-| **&toPlaceholder**               |                                          | If it is not empty, snippet will save all the data in placeholder with the very name instead of displaying on the screen.                                       |
-| **&separatePlaceholder**         | `0`                                      | При параметре 1 вывести форму и комментарии в плейсхолдеры *toPlaceholder*_form, *toPlaceholder*_thread.                                                        |
-| **&gravatarIcon**                | `mm`                                     | If user's profile picture is not found - to load this picture for the replacement.                                                                              |
-| **&gravatarSize**                | `24`                                     | Profile picture size loaded.                                                                                                                                    |
-| **&gravatarUrl**                 | `http://www.gravatar.com/avatar/`        | Download location for profile pictures.                                                                                                                         |
-| **&maxCaptcha**                  | `10`                                     | Maximum number for generation of the code which protects from spam.                                                                                             |
-| **&minCaptcha**                  | `1`                                      | Minimum number for generation of the code which protects from spam.                                                                                             |
-| **&thread**                      |                                          | Name of the comment branch. `resource-[[*id]]` by default.                                                                                                      |
-| **&tplCommentAuth**              | `tpl.Tickets.comment.one.auth`           | Comment chunk to show to authorized user.                                                                                                                       |
-| **&tplCommentDeleted**           | `tpl.Tickets.comment.one.deleted`        | Chunk of the deleted comment.                                                                                                                                   |
-| **&tplCommentEmailBcc**          | `tpl.Tickets.comment.email.bcc`          | Chunk for notification of the web-sites admins about new comment.                                                                                               |
-| **&tplCommentEmailOwner**        | `tpl.Tickets.comment.email.owner`        | Chunk for notification of the ticket's owner about new comment.                                                                                                 |
-| **&tplCommentEmailReply**        | `tpl.Tickets.comment.email.reply`        | Chunk for notification of the user that a response to his comment has appeared.                                                                                 |
-| **&tplCommentEmailSubscription** | `tpl.Tickets.comment.email.subscription` | Chunk for notification of subscribed user that a new comment has appeared in the theme.                                                                         |
-| **&tplCommentForm**              | `tpl.Tickets.comment.form`               | Chunk for form of the new comment to add.                                                                                                                       |
-| **&tplCommentFormGuest**         | `tpl.Tickets.comment.form.guest`         | Chunk for form of the new comment to add for quests.                                                                                                            |
-| **&tplCommentGuest**             | `tpl.Tickets.comment.one.guest`          | Comment chunk for quests to show.                                                                                                                               |
-| **&tplComments**                 | `tpl.Tickets.comment.wrapper`            | Chunk wrapper for all the comments of the page.                                                                                                                 |
-| **&tplLoginToComment**           | `tpl.Tickets.comment.login`              | Chunk with the requirement to authorize.                                                                                                                        |
+| Name                         | Default                             | Description                                                                                                                                 |
+| ---------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **&allowGuest**                  | `0`                              | Allow unauthenticated users to comment?                                                                                                     |
+| **&allowGuestEdit**              | `1`                              | Allow guests to edit their own comments?                                                                                                    |
+| **&allowGuestEmails**            | `0`                              | Send email notifications about replies to guests?                                                                                           |
+| **&autoPublish**                 | `1`                              | Automatically publish all new comments without moderation.                                                                                  |
+| **&autoPublishGuest**            | `1`                              | Automatically publish all new comments from guests without moderation.                                                                      |
+| **&depth**                       | `0`                              | Integer: maximum depth of the comment thread.                                                                                                |
+| **&enableCaptcha**               | `1`                              | Enable spam protection for unauthenticated users?                                                                                          |
+| **&fastMode**                    | `1`                              | If enabled, only raw DB values are passed to the result chunk; all unprocessed MODX tags are stripped.                                       |
+| **&formBefore**                  | `0`                              | Show the comment form above the comments. Default: no.                                                                                      |
+| **&toPlaceholder**               |                                  | Do not output the result; put it in the placeholder *toPlaceholder*.                                                                        |
+| **&separatePlaceholder**         | `0`                              | If 1, output the form and comments to *toPlaceholder*_form and *toPlaceholder*_thread.                                                       |
+| **&gravatarIcon**                | `mm`                             | Fallback image when the user avatar is not found.                                                                                           |
+| **&gravatarSize**                | `24`                             | Size of the loaded avatar.                                                                                                                  |
+| **&gravatarUrl**                 | `http://www.gravatar.com/avatar/` | URL for loading avatars.                                                                                                                    |
+| **&maxCaptcha**                  | `10`                             | Maximum value for the spam-protection code.                                                                                                 |
+| **&minCaptcha**                  | `1`                              | Minimum value for the spam-protection code.                                                                                                 |
+| **&thread**                      |                                  | Comment thread name. Default: `resource-[[*id]]`.                                                                                           |
+| **&tplCommentAuth**              | `tpl.Tickets.comment.one.auth`   | Chunk for a comment shown to a logged-in user.                                                                                              |
+| **&tplCommentDeleted**           | `tpl.Tickets.comment.one.deleted`| Chunk for a deleted comment.                                                                                                                 |
+| **&tplCommentEmailBcc**          | `tpl.Tickets.comment.email.bcc`  | Chunk for notifying site admins of a new comment.                                                                                           |
+| **&tplCommentEmailOwner**        | `tpl.Tickets.comment.email.owner`| Chunk for notifying the ticket owner of a new comment.                                                                                      |
+| **&tplCommentEmailReply**        | `tpl.Tickets.comment.email.reply`| Chunk for notifying a user that their comment received a reply.                                                                             |
+| **&tplCommentEmailSubscription** | `tpl.Tickets.comment.email.subscription` | Chunk for notifying a subscribed user of a new comment in the thread.                                |
+| **&tplCommentForm**              | `tpl.Tickets.comment.form`       | Chunk for the new-comment form.                                                                                                              |
+| **&tplCommentFormGuest**         | `tpl.Tickets.comment.form.guest` | Chunk for the new-comment form for guests.                                                                                                  |
+| **&tplCommentGuest**             | `tpl.Tickets.comment.one.guest`  | Chunk for a comment shown to guests.                                                                                                        |
+| **&tplComments**                 | `tpl.Tickets.comment.wrapper`    | Wrapper chunk for all comments on the page.                                                                                                 |
+| **&tplLoginToComment**           | `tpl.Tickets.comment.login`      | Chunk prompting the user to log in to comment.                                                                                               |
 
 ## Examples
 
 - Standard snippet call
 
 ```modx
-[[!TicketComments]]
-
+[[!TicketComments?]]
 ```
 
-- Snippet call with the comments for unauthorized.
+- Snippet call with comments allowed for unauthenticated users
 
 ```modx
 [[!TicketComments? &allowGuest=`1`]]

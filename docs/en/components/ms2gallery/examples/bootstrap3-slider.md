@@ -1,10 +1,10 @@
 # Bootstrap3 Slider
 
-Image output in ms2Gallery in [a typical slider Bootstrap3][0] with help of pdoResources.
+Displaying ms2Gallery images in the [standard Bootstrap3 carousel][Bootstrap 3 Carousel] using pdoResources.
 
-## Call on the page
+## Page call
 
-A ready-made standard call from the example on the site Bootstrap3.
+Ready-to-use call with standard styling from the Bootstrap3 example site:
 
 ```modx
 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
@@ -22,18 +22,18 @@ A ready-made standard call from the example on the site Bootstrap3.
       &sortdir=`ASC`
       &totalVar=`slider.total`
       &tplFirst=`@INLINE <div class="item active">
-        <img src="[[+url]]" alt="">
-        <div class="carousel-caption">
-          <h3>[[+name]]</h3>
-          <p>[[+description]]</p>
-        </div>
+          <img src="[[+url]]" alt="">
+          <div class="carousel-caption">
+              <h3>[[+name]]</h3>
+              <p>[[+description]]</p>
+          </div>
       </div>`
       &tpl=`@INLINE <div class="item">
-        <img src="[[+url]]" alt="">
-        <div class="carousel-caption">
-          <h3>[[+name]]</h3>
-          <p>[[+description]]</p>
-        </div>
+          <img src="[[+url]]" alt="">
+          <div class="carousel-caption">
+              <h3>[[+name]]</h3>
+              <p>[[+description]]</p>
+          </div>
       </div>`
       &where=`{"msResourceFile.resource_id":[[*id]], "msResourceFile.path:LIKE":"%360x270%"}`
     ]]
@@ -53,17 +53,17 @@ A ready-made standard call from the example on the site Bootstrap3.
 </div>
 ```
 
-By default the snippet shows images of the current resource in **360x270** quality, but you can indicate your own selection criteria in parameter **&where=``**:
+By default the snippet outputs images of the current resource at **360x270** resolution; you can set your own criteria in **&where=``**:
 
 ```modx
 &where=`{"msResourceFile.resource_id:IN":[1,2,3,4,5]", "msResourceFile.parent":0}`
 ```
 
-It will show big images from the resources 1 to 5.
+This will output full-size images from resources 1 through 5.
 
-### Snippet GenerateIndicators
+### GenerateIndicators snippet
 
-Snippet accepts the general quantity of slider's images and generated indicators for switching:
+The snippet takes the total number of slider images and generates indicators for switching:
 
 ```php
 <?php
@@ -93,12 +93,12 @@ else {
 }
 ```
 
-You can transmit **&tpl** and **&toPlaceholder** if you need to.
+You can pass your own **&tpl** and **&toPlaceholder** parameters if needed.
 
-## Work logic
+## How it works
 
-pdoResources shows images by the indicated conditions and puts out a placeholder with their general quantity on the page. It is in its turn accepted by snippet **GenerateIndicators**, which generates indicators for switching on the images.
+pdoResources outputs images by the given conditions and sets a placeholder with their total count. The **GenerateIndicators** snippet reads that and generates the slide indicators.
 
-The generation snippet should be called for after pdoResources, so that there already is a number in placeholder`[[+slider.total]]`. The indicators should be shown before the images, that is why the snippet puts them in placeholder `[[+indicators]]`.
+The generator snippet must be called after pdoResources so that the `[[+slider.total]]` placeholder already has a value. The indicators themselves should appear before the images, so the snippet outputs them to the `[[+indicators]]` placeholder.
 
-[0]: http://getbootstrap.com/javascript/#carousel
+[Bootstrap 3 Carousel]: https://getbootstrap.com/docs/3.4/javascript/#carousel

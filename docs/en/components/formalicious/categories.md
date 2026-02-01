@@ -1,9 +1,7 @@
 # Categories
 
-Organising your forms from the start is highly recommended. You can do this by creating Form Categories.
-Categories allow you to group forms into tabs.
+To keep your forms organized, you can group them into categories.
 
-Create tabs by going to the Formalicious page in the Extras-menu and click on **Admin panel**.
+Go to **Formalicious** in the manager and click **Dashboard** in the top-right. You'll enter admin mode where you can manage categories.
 
-Manage your **Categories** in the first tab. The category-name will be displayed as the tab-name, followed by the description,
-which can be used to explain to your users what the category is used for.
+In the normal view you can switch between category tabs and create forms in each.

@@ -1,10 +1,8 @@
 # Notyf
 
-Another minimalistic notification library based on pure JavaScript that has many advantages. Let's plug in [Notyf](https://carlosroso.com/notyf/).
+Another minimal notification library in pure JavaScript with many advantages. Let's integrate [Notyf](https://carlosroso.com/notyf/).
 
-<!--@include: ../../parts/notifier.tip.md-->
-
-- First you need to connect the script and library styles, we'll use CDN as an example.
+- First include the library script and styles; for example via CDN.
 
 ```html
 <!-- JavaScript -->
@@ -14,7 +12,7 @@ Another minimalistic notification library based on pure JavaScript that has many
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 ```
 
-- Create an instance of the notification class and define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Create an instance of the notification class and set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -31,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and get direct access to the FetchIt class:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 const notyf = new Notyf();
@@ -46,4 +44,4 @@ FetchIt.Message = {
 }
 ```
 
-Voila! That's how easy it is to connect the **Notyf** library.
+Done! With these steps we integrate **Notyf**.

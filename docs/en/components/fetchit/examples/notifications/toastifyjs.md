@@ -1,43 +1,43 @@
 # Toastify JS
 
-[Toastify JS](https://apvarun.github.io/toastify-js/) is a lightweight library for showing notifications in the browser and in this example we will show how to integrate it.
+[Toastify JS](https://apvarun.github.io/toastify-js/) is a lightweight library for browser notifications. This example shows how to integrate it.
 
-- First we need to add the script and library styles, we'll use CDN as an example.
+- First include the library script and styles; for example via CDN:
 
 ```html
 <!-- JavaScript -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.js" defer></script>
 
 <!-- CSS -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.css">
 ```
 
-- And let's define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      Toastify({ text: message }).showToast();
+      Toastify({ text: message, className: 'success', gravity: 'top' }).showToast();
     },
     error(message) {
-      Toastify({ text: message }).showToast();
+      Toastify({ text: message, className: 'error', gravity: 'top' }).showToast();
     },
   }
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and get direct access to the FetchIt class:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    Toastify({ text: message }).showToast();
+    Toastify({ text: message, className: 'success', gravity: 'top' }).showToast();
   },
   error(message) {
-    Toastify({ text: message }).showToast();
+    Toastify({ text: message, className: 'error', gravity: 'top' }).showToast();
   },
 }
 ```
 
-Great! That's the simple way we can integrate the **Toastify JS** library.
+Done! With these steps we integrate **Toastify JS**.

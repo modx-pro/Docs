@@ -1,0 +1,70 @@
+# Events
+
+Available events:
+
+- `Quiz.init.before` - start of quiz initialization
+  - **quiz** - object
+  - **options** - quiz options
+- `Quiz.init.after` - initialization complete
+  - **options** - quiz options
+- `Quiz.start.before` - quiz start (if cover exists)
+  - **options** - quiz options
+  - **cover** - quiz cover
+- `Quiz.start.request` - on server response
+  - **options** - quiz options
+  - **request** - server response
+- `Quiz.start.request` - after first section received
+  - **options** - quiz options
+  - **step** - active section
+- `Quiz.answer.before` - before answer validation
+  - **options** - quiz options
+  - **field** - field being validated
+- `Quiz.answer.request` - on server response
+  - **options** - quiz options
+  - **request** - server response
+- `Quiz.answer.after` - after answer received
+  - **options** - quiz options
+  - **request** - server response
+- `Quiz.valid.before` - before validation
+  - **options** - quiz options
+  - **fields** - fields to validate
+- `Quiz.valid.after` - after validation
+  - **options** - quiz options
+  - **valid** - validation result
+- `Quiz.next.before` - before section fetch
+  - **options** - quiz options
+- `Quiz.next.request` - on server response
+  - **options** - quiz options
+  - **request** - server response (section)
+- `Quiz.next.after` - after section received
+  - **options** - quiz options
+  - **step** - active section
+- `Quiz.prev.before` - before going to previous section
+  - **options** - quiz options
+  - **step** - previous section
+- `Quiz.prev.after` - after switching to previous section
+  - **options** - quiz options
+  - **step** - previous section (now active)
+- `Quiz.change.before` - before field change
+  - **options** - quiz options
+  - **field** - field being changed
+- `Quiz.change.after` - after field change
+  - **options** - quiz options
+- `Quiz.submit.before` - before form submit
+  - **options** - quiz options
+- `Quiz.submit.after` - after form submit
+  - **options** - quiz options
+  - **response** - server response object
+- `Quiz.result.before` - before result fetch
+  - **options** - quiz options
+- `Quiz.result.request` - on server response
+  - **options** - quiz options
+  - **request** - server response
+- `Quiz.result.after` - after result output
+  - **options** - quiz options
+- `Quiz.reset.before` - before form reset
+  - **quiz** - object
+  - **options** - quiz options
+- `Quiz.reset.after` - after form reset
+  - **quiz** - object
+  - **options** - quiz options
