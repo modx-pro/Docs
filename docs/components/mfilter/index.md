@@ -14,6 +14,10 @@ items: [
     items: [
       { text: 'mFilter', link: 'snippets/mfilter' },
       { text: 'mFilterForm', link: 'snippets/mfilterform' },
+      { text: 'mFilterSelected', link: 'snippets/mfilterselected' },
+      { text: 'mFilterCrumbs', link: 'snippets/mfiltercrumbs' },
+      { text: 'mFilterNav', link: 'snippets/mfilternav' },
+      { text: 'mFilterSitemap', link: 'snippets/mfiltersitemap' },
     ],
   },
   {
