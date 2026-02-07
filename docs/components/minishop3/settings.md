@@ -219,9 +219,25 @@ title: Системные настройки
 
 ## Уведомления
 
+### Email
+
 | Настройка | По умолчанию | Описание |
 |-----------|--------------|----------|
-| `ms3_telegram_bot_token` | | Токен Telegram бота для уведомлений |
+| `ms3_email_manager` | | Email-адреса менеджеров для уведомлений (через запятую) |
+
+### Telegram
+
+| Настройка | По умолчанию | Описание |
+|-----------|--------------|----------|
+| `ms3_telegram_bot_token` | | Токен Telegram бота (получить у [@BotFather](https://t.me/BotFather)) |
+| `ms3_telegram_manager_chat_id` | | Chat ID менеджера для уведомлений (получить у [@userinfobot](https://t.me/userinfobot)) |
+
+::: tip Настройка Telegram бота
+1. Создайте бота через [@BotFather](https://t.me/BotFather) и получите токен
+2. Напишите боту любое сообщение, чтобы инициировать чат
+3. Узнайте свой Chat ID через [@userinfobot](https://t.me/userinfobot)
+4. Укажите токен и Chat ID в настройках
+:::
 
 ## Примеры использования
 

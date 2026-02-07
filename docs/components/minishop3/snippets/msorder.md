@@ -14,7 +14,8 @@ title: msOrder
 | Параметр | По умолчанию | Описание |
 |----------|--------------|----------|
 | **tpl** | `tpl.msOrder` | Чанк формы заказа |
-| **userFields** | | Маппинг полей профиля MODX на поля заказа (JSON) |
+| **userFields** | | Маппинг полей профиля MODX (modUserProfile) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = true` |
+| **customerFields** | | Маппинг полей клиента (msCustomer) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = false` |
 | **includeDeliveryFields** | `id` | Поля доставки через запятую (`*` = все) |
 | **includePaymentFields** | `*` | Поля оплаты через запятую (`*` = все) |
 | **includeCustomerAddresses** | `true` | Загружать сохранённые адреса покупателя |
@@ -29,13 +30,32 @@ title: msOrder
 {'!msOrder' | snippet}
 ```
 
-### С дополнительными полями
+### Маппинг полей клиента (msCustomer)
+
+При отключённой синхронизации (`ms3_customer_sync_enabled = false`) данные берутся из msCustomer:
 
 ```fenom
 {'!msOrder' | snippet : [
-    'userFields' => 'comment,company_name'
+    'customerFields' => '{"company": "company_name", "inn": "tax_id"}'
 ]}
 ```
+
+### Маппинг полей профиля MODX (modUserProfile)
+
+При включённой синхронизации (`ms3_customer_sync_enabled = true`) данные берутся из modUserProfile:
+
+```fenom
+{'!msOrder' | snippet : [
+    'userFields' => '{"company": "extended.company_name"}'
+]}
+```
+
+::: tip Выбор источника данных
+- `ms3_customer_sync_enabled = false` (по умолчанию): используется `customerFields` и данные msCustomer
+- `ms3_customer_sync_enabled = true`: используется `userFields` и данные modUserProfile
+
+Источники данных взаимоисключающие — активен только один в зависимости от настройки.
+:::
 
 ### Получение данных
 
