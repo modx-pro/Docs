@@ -1,13 +1,12 @@
 # Queries
 
-Page that shows what your visitors are looking for.
+Page showing what your visitors search for.
 
 [![](https://file.modx.pro/files/c/c/a/cca0d3b1ab820fc40997e80b89cd6323s.jpg)](https://file.modx.pro/files/c/c/a/cca0d3b1ab820fc40997e80b89cd6323.png)
 
-Here you see a list of all queries, how many times they were made and how many results were found.
-This information helps you to optimize your index and [synonyms][1] for your visitors to find something always.
+You see all queries, how many times each was used, and how many results were found. This helps you tune the index and [synonyms][1] so users always find something.
 
-By the way, these very queries work in autoprompts of **queries** regime of snippet [mSearchForm][2].
+These queries are used for autocomplete in **queries** mode of the [mSearchForm][2] snippet.
 
-[1]: http://phpmorphy.sourceforge.net/dokuwiki/
+[1]: /en/components/msearch2/interface/synonyms
 [2]: /en/components/msearch2/snippets/msearchform

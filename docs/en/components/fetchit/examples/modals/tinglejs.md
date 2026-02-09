@@ -1,10 +1,10 @@
-# tingle.js
+# tingle.js modals
 
-In this section, let's see an example of working with modal windows [tingle.js](https://tingle.robinparisi.com/).
+This section covers an example with [tingle.js](https://tingle.robinparisi.com/) modals.
 
 ## Opening a modal
 
-If you have the task of opening a modal window after a successful form submission, it can be solved in two ways:
+To open a modal after a successful form submit, you can do it in two ways:
 
 1. Using the [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) event.
 
@@ -17,7 +17,7 @@ If you have the task of opening a modal window after a successful form submissio
     });
     ```
 
-2. With [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage).
+2. Using [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage).
 
     ```js
     const successModal = new tingle.modal();

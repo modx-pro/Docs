@@ -1,34 +1,34 @@
 ---
-name: AjaxSnippet
-description: Run any snippet via ajax
+title: AjaxSnippet
+description: Component to run snippets via Ajax. Lets you load news or comments after the main page
 logo: https://modstore.pro/assets/extras/ajaxsnippet/logo-lg.jpg
-modstore: https://en.modstore.pro/packages/utilities/ajaxsnippet
+modstore: https://modstore.pro/packages/utilities/ajaxsnippet
 ---
 # AjaxSnippet
 
-A small snippet that lets you accelerate the website loading by the removal of its secondary elements to ajax requests.
+Small snippet that speeds up the site by loading less critical content via ajax.
 
-- You can call AjaxSnippet on any page of the website indicating name of the necessary snippet and parameters.
-- Snippet yields an empty block with preload to current line and register ajax query.
-- After loading the page the request is sent to the server and the response is placed in the prepared block.
-- Request can be sent immediately after page is loaded, or on demand after clicking on link.
+- Call AjaxSnippet on any page with the snippet name and parameters.
+- The snippet outputs an empty block with a preloader and registers an ajax request.
+- After the page loads, the request runs and the response is put into that block.
+- The request can run on page load or when a trigger link is clicked.
 
 ## Snippet parameters
 
-| Name             | Default values | Placeholders                                                                                                                          |
-|------------------|----------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| **&snippet**     | `pdoResources` | Snippet name you want to run through Ajax.                                                                                            |
-| **&propertySet** |                | If you wish to use snippet settings (property set) - specify its name.                                                                |
-| **&wrapper**     |                | Chunk wrapper. Must contain an element with `id="[[+key]]"`.                                                                          |
-| **&as_mode**     | `onload`       | How to load snippet output content: immediately after download (onload) page or by clicking on the link trigger (onclick)?            |
-| **&as_trigger**  |                | Link text-trigger mode onclick. On default – entry from the dictionary as_trigger.                                                    |
-| **&as_target**   |                | CSS selector element, which is loaded in the response from the server. By default, the content will be placed into the chunk wrapper. |
+| Name | Default | Description |
+|------|---------|-------------|
+| **&snippet** | `pdoResources` | Snippet to run via Ajax. |
+| **&propertySet** | | Name of the snippet property set to use. |
+| **&wrapper** | | Wrapper chunk. Must contain an element with `id="[[+key]]"`. |
+| **&as_mode** | `onload` | When to load: right after page load («onload») or on trigger link click («onclick»). |
+| **&as_trigger** | | Trigger link text for «onclick» mode. Default: lexicon entry «as_trigger». |
+| **&as_target** | | CSS selector of the element to insert the response into. Default: where the wrapper chunk is output. |
 
-All other/extra parameters you define in AjaxSnippet will be applied to the `&snippet`. **Snippet can be called uncached.**
+Everything you pass to AjaxSnippet is forwarded to the snippet. **The snippet can be called cached.**
 
 ## Examples
 
-Delayed loading of resources by pdoResources:
+Deferred loading with pdoResources:
 
 ```modx
 [[AjaxSnippet?
@@ -39,7 +39,7 @@ Delayed loading of resources by pdoResources:
 ]]
 ```
 
-The same as above, but you need to click on the link to request the content:
+Same, but load starts on link click:
 
 ```modx
 [[AjaxSnippet?
@@ -50,5 +50,3 @@ The same as above, but you need to click on the link to request the content:
   &as_trigger=`Click me!`
 ]]
 ```
-
-<!-- History of a page changes is loading [on the documentation site](http://docs.modx.pro) through AjaxSnippet. -->

@@ -1,3 +1,3 @@
-::: danger DANGER
-Client-side validation is insecure and should only be implemented for the convenience of the user.
+::: danger Important!
+Client-side validation is not secure and should only be used to improve user experience.
 :::

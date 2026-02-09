@@ -1,50 +1,44 @@
 # jGrowl
 
-This section contains information on how to integrate [jGrowl](https://github.com/stanlemon/jGrowl).
+We cannot skip [jGrowl](https://github.com/stanlemon/jGrowl), which was a dependency of **AjaxForm**. This section describes how to integrate this plugin.
 
-- For **jGrowl** to work, we need to connect **jQuery** itself, and then the library script and its styles. Also define styles for different types of notifications.
+- For **jGrowl** to work you need to include **jQuery** first, then the plugin script and styles. Also define styles for different notification types.
 
 ```html
 <!-- jQuery -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" defer></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- Javascript -->
+<!-- jGrowl -->
 <script src="https://cdn.jsdelivr.net/npm/jgrowl@1/jquery.jgrowl.min.js" defer></script>
-
-<!-- CSS -->
-<link href="https://cdn.jsdelivr.net/npm/jgrowl@1/jquery.jgrowl.min.css" rel="stylesheet">
-<style>
-  .custom-success { background: green; }
-  .custom-error { background: red; }
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jgrowl@1/jquery.jgrowl.min.css">
 ```
 
-- Next, define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      $.jGrowl(message, { theme: 'custom-success' });
+      $.jGrowl(message, { theme: 'success' });
     },
     error(message) {
-      $.jGrowl(message, { theme: 'custom-error' });
+      $.jGrowl(message, { theme: 'error' });
     },
   }
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and get direct access to the FetchIt class:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    $.jGrowl(message, { theme: 'custom-success' });
+    $.jGrowl(message, { theme: 'success' });
   },
   error(message) {
-    $.jGrowl(message, { theme: 'custom-error' });
+    $.jGrowl(message, { theme: 'error' });
   },
 }
 ```
 
-That's it! But we don't recommend using this library in your project if it doesn't have jQuery. It is illogical and resource-consuming to plug in a whole other plugin just for the sake of one notification plugin.
+Done! We do not recommend using this library in your project if you do not already have jQuery. Adding jQuery just for one notification plugin is unnecessary and resource-heavy.

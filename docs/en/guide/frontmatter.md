@@ -2,10 +2,9 @@
 lastUpdated: false
 ---
 
-# Frontmatter - Additional properties of pages and extras
+# Frontmatter – Extra page and component properties
 
-In addition to the features provided by markdown and VitePress, our project also supports Frontmatter markup.
-To add Frontmatter, you need to set the names and values ​​of the properties at the beginning of the file, in the block between `---` (three hyphen characters).
+In addition to what markdown and VitePress provide, this project supports extra page metadata via Frontmatter. To add it, at the top of the file, between a pair of `---` (three hyphens), write property–value pairs.
 
 Example:
 
@@ -16,32 +15,32 @@ description: Page description
 ---
 ```
 
-## General properties
+## Common properties
 
-Below is a list of properties that will help you better present your documentation to the reader.
+Below is the main set of properties that help you present your documentation to readers.
 
-### Title
-
-- Type: `string`
-- Default: First header in file
-
-```yaml
-title: The page title
-```
-
-Also, this property is responsible for the name of your extra, if you have a single-page documentation, then in that single file, and in the case of multi-page documentation, then in the `index.md` file at the root of your extra's directory.
-
-### Description
+### Page title
 
 - Type: `string`
+- Default: First heading in the file
 
 ```yaml
-description: The page description
+title: This is the page title
 ```
 
-This property is responsible for the contents of the description meta tag. And, in the case of the main extra's file, also for the description in the general list of extras.
+This property also sets your component name: in a single-page doc it goes in that one file; in multi-page docs it goes in the component root `index.md`.
 
-### Table of Contents
+### Page description
+
+- Type: `string`
+
+```yaml
+description: This is the page description
+```
+
+This property sets the meta `description` content. For a component’s main file it also sets the description in the component list.
+
+### Table of contents
 
 - Type: `number | [number, number] | 'deep' | false`
 - Default: `deep`
@@ -50,13 +49,13 @@ This property is responsible for the contents of the description meta tag. And, 
 outline: [2,3]
 ```
 
-The heading level or levels from which to generate the table of contents.
+Heading level(s) used to generate the table of contents.
 
-You can specify the heading level as a number, or as a range. It is possible to specify `deep`, which is equivalent to `[2, 6]`, to have the table of contents generated from all headings except `h1`. You can also specify `false` to hide the table of contents.
+You can pass a single level as a number or a range. Use `deep` (equivalent to `[2, 6]`) to include all headings except `h1`, or `false` to hide the TOC.
 
-For example, this page has the value `[2, 3]` and therefore you see a table of contents generated from the headings of the second and third levels.
+This page uses `[2, 3]`, so the TOC is built from level 2 and 3 headings.
 
-### Last Updated
+### Last updated
 
 - Type: `boolean`
 - Default: `true`
@@ -65,9 +64,9 @@ For example, this page has the value `[2, 3]` and therefore you see a table of c
 lastUpdated: false
 ```
 
-Whether to display the date of the last update at the bottom of the page.
+Whether to show the last updated date at the bottom of the page.
 
-### Edit Link
+### Edit link
 
 - Type: `boolean`
 - Default: `true`
@@ -76,13 +75,13 @@ Whether to display the date of the last update at the bottom of the page.
 editLink: false
 ```
 
-Whether to display a link to page updates.
+Whether to show the link to edit the page.
 
-## Extra's properties
+## Component properties
 
-This section provides a list of properties that apply only to extras, i.e. they can be specified in the extra's documentation file if you have a single-page documentation (Example: `ajaxform.md`) or if you have multi-page documentation, then in the `index.md` file located at the root of your extra directory (Example: `minishop2/index.md`).
+This section lists properties that apply only to component docs. They can be set in the component’s single doc file (e.g. `ajaxform.md`) or, for multi-page docs, in the component root `index.md` (e.g. `minishop2/index.md`).
 
-### Logo
+### Component logo
 
 - Type: `string`
 
@@ -90,9 +89,9 @@ This section provides a list of properties that apply only to extras, i.e. they 
 logo: https://modstore.pro/assets/extras/minishop2/logo-lg.png
 ```
 
-Link to the extra's logo.
+URL of the component logo.
 
-### [modstore.pro]
+### Component page on [modstore.pro]
 
 - Type: `string`
 
@@ -100,9 +99,9 @@ Link to the extra's logo.
 modstore: https://modstore.pro/packages/ecommerce/minishop2
 ```
 
-Link to the page of extra in the [modstore.pro].
+Link to the component page on [modstore.pro].
 
-### [modx.com]
+### Component page on [modx.com]
 
 - Type: `string`
 
@@ -110,9 +109,9 @@ Link to the page of extra in the [modstore.pro].
 modx: https://modx.com/extras/package/minishop2
 ```
 
-Link to the extra's page in the official [modx.com] repository.
+Link to the component page in the official [modx.com] repository.
 
-### Source Code Repository
+### Component source repository
 
 - Type: `string`
 
@@ -120,9 +119,9 @@ Link to the extra's page in the official [modx.com] repository.
 repository: https://github.com/modx-pro/miniShop2
 ```
 
-Link to the source code repository of the extra.
+Link to the component source code repository.
 
-### Author
+### Component author
 
 - Type: `string`
 
@@ -130,19 +129,19 @@ Link to the source code repository of the extra.
 author: modx-pro
 ```
 
-Login on [github.com]. The file along the path `docs/authors.json` stores an object with the data of authors in several possible formats. If it does not contain your account, then add it.
+Use your [github.com] login. Author data is stored in `docs/authors.json` in one of these formats. Add your account if it’s missing.
 
 ```json
 {
-  "login": "Author's name"
+  "login": "Author name"
 }
 
 // or
 
 {
   "login": {
-    "name": "Author's name",
-    "modstore": "Link to the author's page in the modstore.pro marketplace"
+    "name": "Author name",
+    "modstore": "Link to author page on modstore.pro"
   }
 }
 
@@ -151,15 +150,15 @@ Login on [github.com]. The file along the path `docs/authors.json` stores an obj
 {
   "login": {
     "name": {
-      "ru": "Author's name in russian",
-      "en": "Author's name in english"
+      "ru": "Author name in Russian",
+      "en": "Author name in English"
     },
-    "modstore": "Link to the author's page in the modstore.pro marketplace"
+    "modstore": "Link to author page on modstore.pro"
   }
 }
 ```
 
-### Menu
+### Component sidebar menu
 
 - Type: `SidebarItem[]`
 
@@ -182,7 +181,7 @@ items: [
       { text: 'pdoParser', link: 'classes/pdoparser' },
     ],
   },
-  { text: 'Properties', link: 'general-properties' },
+  { text: 'Common parameters', link: 'general-properties' },
   { text: 'File elements', link: 'file-elements' },
   { text: 'Parser', link: 'parser' },
 ]
@@ -207,7 +206,7 @@ items:
         link: classes/pdofetch
       - text: pdoParser
         link: classes/pdoparser
-  - text: Properties
+  - text: Common parameters
     link: general-properties
   - text: File elements
     link: file-elements
@@ -215,12 +214,12 @@ items:
     link: parser
 ```
 
-This property is responsible for displaying the documentation menu of your extra. Links must be specified relative to the root directory of your extra and, accordingly, without `.md`.
+This property defines the component’s sidebar menu. Links are relative to the component folder root and should not include `.md`.
 
 ```ts
 interface SidebarItem {
   /**
-   * Menu item text.
+   * Menu item label.
    */
   text?: string
 
@@ -230,17 +229,17 @@ interface SidebarItem {
   link?: string
 
   /**
-   * List of nested items.
+   * Nested items.
    */
   items?: SidebarItem[]
 }
 ```
 
-### Dependencies
+### Component dependencies
 
 - Type: `string | string[]`
 
-This property is responsible for displaying the dependencies of your extra. Even if no dependency documentation is provided.
+This property controls how your component’s dependencies are shown, even if their docs are not on this site.
 
 ```yaml
 dependencies: miniShop2
@@ -256,13 +255,11 @@ dependencies:
   - msOptionsPrice2
 ```
 
-### Category
+### Component category
 
 - Type: `string`
 
-At the moment there is one `payment` category, which is responsible for displaying payment modules on the [list of miniShop2 payment modules](/components/minishop2/payments) page.
-
-<!-- Specify one or more categories for your extra. The list of available categories is in the file along the path: `docs/categories.json`. -->
+Currently there is one category, `payment`, used to list payment modules on the [miniShop2 payment modules page](/en/components/minishop2/payments).
 
 ```yaml
 categories: payment

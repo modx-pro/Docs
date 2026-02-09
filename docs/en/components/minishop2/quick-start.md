@@ -1,29 +1,29 @@
-# Quick Start
+# Quick start
 
-miniShop2 is rolling out to customers with all needed snippets and chunks.
-You need MODX version no less than **2.3** and PHP- no less than **5.3** for work.
+miniShop2 comes with all needed snippets and chunks.
+You need MODX **2.3** or higher and PHP **7.0** or higher.
 
 ## Installation
 
-- [Make our repository available][1]
-- Install**pdoTools** - this is a library for fast work with databases and styling, required for many components
-- Install **Theme.Bootstrap** - this is the theme customizing Twitter Bootstrap for MODX, standard chunks of the shop are designed for it
-- Install **miniShop2**itself
+- [Add our repository][1]
+- Install **pdoTools** — library for fast DB and output work; required by many components
+- Install **Theme.Bootstrap** — Twitter Bootstrap theme for MODX; default store chunks are built for it
+- Install **miniShop2**
 
-You may use [our hosting][1] for testing, and choose these updates during site developing.
+For testing you can use [our hosting][2]; these extras can be selected when creating a site.
 
-[![](https://file.modx.pro/files/d/a/0/da07c498260916d63690e7796152ea34s.jpg)](https://file.modx.pro/files/d/a/0/da07c498260916d63690e7796152ea34.png)
+[![](https://file.modx.pro/files/5/7/a/57a30e0dc6e98d36ff56e9718a5f0bc0s.jpg)](https://file.modx.pro/files/5/7/a/57a30e0dc6e98d36ff56e9718a5f0bc0.png)
 
 ## Templates
 
-Theme.Bootstrap realizes 2 templates, which are subject to change by you.
-You may rename and use them or establish new ones.
+Theme.Bootstrap installs 2 templates that you can change as you like.
+You can rename and use them or create new ones.
 
-Only 3 templates are needed.
+You need 3 templates in total.
 
 ### General
 
-This template is presenting common resources
+Template for regular resource content:
 
 ```modx
 <!DOCTYPE html>
@@ -43,11 +43,11 @@ This template is presenting common resources
 </html>
 ```
 
-It will be used for the home page and the cart page.
+Use it for the home page and cart.
 
 ### Category
 
-Template for category presenting with sheet-fed presentation of goods
+Template for category with paginated products:
 
 ```modx
 <!DOCTYPE html>
@@ -72,7 +72,7 @@ Template for category presenting with sheet-fed presentation of goods
 
 ### Product
 
-Product template, chunk from ms2 set is activated instead of the content
+Product template; content is replaced by an ms2 chunk:
 
 ```modx
 <!DOCTYPE html>
@@ -92,29 +92,27 @@ Product template, chunk from ms2 set is activated instead of the content
 </html>
 ```
 
-The created templates may be displayed in tweakers:
+Set templates in system settings:
 
-- **default_template** - the general template is shown here
-- **ms2_template_category_default** - the category template
-- **ms2_template_product_default** - the product template
+- **default_template** — general template
+- **ms2_template_category_default** — category template
+- **ms2_template_product_default** — product template
 
-## Partitions
+## Sections
 
-The home page has been accomplished. We will assign "general" template to it and write in the content:
+Assign the "General" template to the home page and put in content:
 
 ```modx
 [[!pdoMenu]]
 ```
 
-All site documents will be displayed on the homepage for guidance.
+This shows all site documents on the home page.
 
-After this we will [create items category][3] and verify if its template is "Category".
+Then [create a product category][3] and set its template to "Category".
 
-After this we will [add several items in the created category][4] and verify their template as well.
+After the category, [add products][4] and set their template too.
 
-All one can do is to create a cart page.
-
-To do this we set up new page with "general" template in the site root and write in it:
+Then create the cart page: new page with "General" template in site root and content:
 
 ```modx
 [[!msCart]]
@@ -124,35 +122,34 @@ To do this we set up new page with "general" template in the site root and write
 [[!msGetOrder]]
 ```
 
-These snippets will show the cart page, checkout and generated order.
+These snippets output the cart, checkout form, and order view (after checkout).
 
-They are designed for presenting something only when it is required.
-For example, `msCart` and `msOrder`are hidden if the parameter `msorder=id of an item is in the page address of an order`,
-`msGetOrder` reacts on it quite the opposite.
+They only show when needed: `msCart` and `msOrder` hide when the URL has `msorder=order_id`; `msGetOrder` only runs in that case.
 
-## Mini cart page
+## Mini cart
 
-Thus, primary customizing of the shop is finished and goods may be ordered.
+Initial store setup is done; you can already order products.
 
-As a final touch one may enter`Navbar` chunk and add there mini cart page presenting. For example:
+As a final step, edit chunk `Navbar` and add the mini cart, e.g.:
 
 ```modx
 <div class="navbar-collapse collapse">
-  <!-- To show menu, set by default  -->
+  <!-- Menu output (default) -->
   <ul class="nav navbar-nav">
     [[pdoMenu?
       &startId=`0`
       &level=`1`
-      &tplOuter=`@INLINE {{+wrapper}}`
+      &tplOuter=`@INLINE {$wrapper}`
     ]]
   </ul>
-  <!-- here we will add the mini cart page -->
-  <ul class="nav navbar-nav pull-right" style="padding-top:10px;">
+  <!-- Mini cart -->
+  <ul class="nav navbar-nav pull-right" style="padding-top: 10px;">
     <li>[[!msMiniCart]]</li>
   </ul>
 </div>
 ```
 
-[1]: https://modhost.pro
+[1]: https://modstore.pro/info/connection
+[2]: https://modhost.pro
 [3]: /en/components/minishop2/interface/category
 [4]: /en/components/minishop2/interface/product

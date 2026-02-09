@@ -1,0 +1,156 @@
+{
+  "name": "modx",
+  "scopeName": "text.html.modx",
+  "fileTypes": [
+    "tpl",
+    "html"
+  ],
+  "injections": {
+    "L:text.html.modx": {
+      "patterns": [
+        {
+          "include": "#interpolation"
+        },
+        { "include": "#lineComments" }
+      ]
+    }
+  },
+  "patterns": [
+    {
+      "include": "text.html.basic"
+    },
+    {
+      "include": "#interpolation"
+    },
+    { "include": "#lineComments" }
+  ],
+  "repository": {
+    "interpolation": {
+      "name": "source.modx",
+      "patterns": [
+        {
+          "include": "#comment"
+        },
+        {
+          "include": "#main"
+        },
+        {
+          "include": "#timing-tags"
+        }
+      ]
+    },
+    "main": {
+      "begin": "(\\[\\[)(!?)([\\x{0025}\\x{002a}\\x{007e}\\$]?\\+{0,2})([-_a-zA-Z0-9\\.]*)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.begin.modx"
+        },
+        "2": {
+          "name": "constant.other.key.modx"
+        },
+        "3": {
+          "name": "support.type.modx"
+        },
+        "4": {
+          "name": "entity.name.function.modx"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#propertyset"
+        },
+        {
+          "include": "#modifier"
+        },
+        {
+          "include": "#attribute"
+        },
+        {
+          "include": "#value"
+        },
+        {
+          "patterns": [
+            {
+              "match": "\\?",
+              "name": "punctuation.modx"
+            }
+          ]
+        }
+      ],
+      "end": "(\\]\\])",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.tag.end.modx"
+        }
+      }
+    },
+    "propertyset": {
+      "patterns": [
+        {
+          "match": "@[-_a-zA-Z0-9\\.]+",
+          "name": "entity.name.modx"
+        }
+      ]
+    },
+    "modifier": {
+      "patterns": [
+        {
+          "match": "(:[-_a-zA-Z0-9\\.]+)",
+          "name": "modifier.modx"
+        }
+      ]
+    },
+    "attribute": {
+      "patterns": [
+        {
+          "begin": "\\&",
+          "name": "keyword.other.modx",
+          "contentName": "variable.object.property.modx",
+          "end": "\\="
+        }
+      ]
+    },
+    "value": {
+      "patterns": [
+        {
+          "begin": "\\`",
+          "name": "constant.character.escape",
+          "patterns": [
+            {
+              "include": "#interpolation"
+            }
+          ],
+          "end": "\\`"
+        }
+      ]
+    },
+    "comment": {
+      "patterns": [
+        {
+          "begin": "\\[\\[\\-\\s?",
+          "name": "comment.modx",
+          "contentName": "comment.modx",
+          "end": "\\]\\]$"
+        }
+      ]
+    },
+    "lineComments": {
+      "patterns": [
+        {
+          "match": "//.*$",
+          "name": "comment.line.double-slash.fenom"
+        }
+      ]
+    },
+    "timing-tags": {
+      "patterns": [
+        {
+          "begin": "\\[\\^",
+          "name": "punctuation.modx",
+          "contentName": "string",
+          "end": "\\^\\]"
+        }
+      ]
+    }
+  }
+}

@@ -1,24 +1,24 @@
 # msProductOptions
 
-This snippet simply displays the list of [additional product options][2] without choice unlike [msOptions][1].
+Unlike [msOptions][1], this snippet simply outputs the list of [product options][2] without a selector.
 
 [![](https://file.modx.pro/files/2/4/5/2452dfe5f33009776d55943b61ce3414s.jpg)](https://file.modx.pro/files/2/4/5/2452dfe5f33009776d55943b61ce3414.png)
 
 ## Parameters
 
-Parameter         | By default             | Description
-------------------|------------------------|-------------------------------------------------------------------------------------------
-**tpl**           | `tpl.msProductOptions` | Formatting chunk
-**product**       |                        | Product identifier. If not indicated, id of the current document is used.
-**onlyOptions**   |                        | Display only this option list, separated by commas.
-**ignoreOptions** |                        | The options, which do not need to be listed, separated by commas.
-**groups**        |                        | To display only indicated group options (category name or identifier, separated by commas)
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| **tpl** | `tpl.msProductOptions` | Output chunk |
+| **product** | | Product id. If omitted, current resource id is used. |
+| **onlyOptions** | | Output only these options, comma-separated. |
+| **ignoreOptions** | | Options to exclude from output, comma-separated. |
+| **groups** | | Output only options from these groups (group name or category id, comma-separated). |
 
-## Formatting
+## Output
 
-The snippet counts on the work with [Fenom chunk][3] and transfers there only one variable`$options` with option array.
+The snippet expects a [Fenom chunk][3] and passes one variable **$options** (array of option values).
 
-You may see all available placeholders by indicating empty chunk:
+To see all placeholders, use an empty chunk:
 
 ```modx
 <pre>[[msProductOptions?tpl=``]]</pre>

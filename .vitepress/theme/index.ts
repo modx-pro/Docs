@@ -28,7 +28,7 @@ export default {
           }
 
           const url = '/' + path.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')
-          window.ym(24242593, 'hit', url)
+          window.ym(103589705, 'hit', url)
         }
       )
     }

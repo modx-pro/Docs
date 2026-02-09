@@ -1,53 +1,53 @@
 ---
 title: FetchIt
-description: An lightweight Extra for processing forms using the Fetch API
+description: Lightweight component for form handling and submission using Fetch API
 logo: https://modstore.pro/assets/extras/fetchit/logo-lg.png
 author: GulomovCreative
-modstore: https://en.modstore.pro/packages/utilities/fetchit
+modstore: https://modstore.pro/packages/utilities/fetchit
 modx: https://extras.modx.com/package/fetchit
 repository: https://github.com/GulomovCreative/FetchIt
 
 items:
   - text: Quick start
     link: quick-start
-  - text: FetchIt Snippet
+  - text: FetchIt snippet
     link: snippets/fetchit
-  - text: Settings
+  - text: Component settings
     link: settings
   - text: Selectors
     link: selectors
   - text: Migration from AjaxForm
     link: migration-from-ajaxform
-  - text: Custom snippet
+  - text: Custom snippet handling
     link: snippets/custom
   - text: JS API
     items:
-      - text: FetchIt Class
+      - text: FetchIt class
         link: frontend/class
-      - text: FetchIt Class Instance
+      - text: FetchIt instance
         link: frontend/instance
       - text: Events
         link: frontend/events
-  - text: Form examples
+  - text: Form markup
     link: examples/form/
     items:
-      - text: Bootstrap
+      - text: Bootstrap form
         link: examples/form/bootstrap
-      - text: Bulma
+      - text: Bulma form
         link: examples/form/bulma
-      - text: UIkit
+      - text: UIkit form
         link: examples/form/uikit
-      - text: Fomantic-UI
+      - text: Fomantic-UI form
         link: examples/form/fomantic
-      - text: Pico.css
+      - text: Pico.css form
         link: examples/form/pico
-      - text: Cirrus CSS
+      - text: Cirrus CSS form
         link: examples/form/cirrus
-      - text: turretcss
+      - text: turretcss form
         link: examples/form/turretcss
-      - text: Vanilla
+      - text: Vanilla form
         link: examples/form/vanilla
-  - text: Notifications
+  - text: Popup notifications
     link: examples/notifications/
     items:
       - text: Notyf
@@ -77,53 +77,53 @@ items:
   - text: Modals
     link: examples/modals/
     items:
-      - text: Bootstrap
+      - text: Bootstrap modals
         link: examples/modals/bootstrap
-      - text: tingle.js
+      - text: tingle.js modals
         link: examples/modals/tinglejs
-      - text: Micromodal.js
+      - text: Micromodal.js modals
         link: examples/modals/micromodaljs
   - text: Validation
     link: examples/validation/
     items:
-      - text: Iodine
+      - text: Validation with Iodine
         link: examples/validation/iodine
-      - text: yup
+      - text: Validation with yup
         link: examples/validation/yup
 ---
 
 # FetchIt
 
-An lightweight Extra for processing forms using the Fetch API.
+MODX Revolution component for form submission using the Fetch API.
 
 ## Introduction
 
-**CMS/CMF MODX Revolution** has [FormIt](https://github.com/Sterc/FormIt) extra, which implements sending and processing forms, but it works by standard browser method, i.e. with page reloading. But the modern web is demanding and the progressive step is to process them «on the fly». **FetchIt**, which uses **FormIt**, is exactly for these tasks, but you can also use your own snippet.
+**MODX Revolution** has [FormIt](https://github.com/Sterc/FormIt) for form submission and handling, but it uses the browser’s default method (page reload). Modern sites often need forms handled “on the fly”. **FetchIt** uses **FormIt** on the server but lets you use your own script as well.
 
-## Features
+## Advantages
 
-For such purposes there is [AjaxForm](https://github.com/modx-pro/AjaxForm) extra (although **FetchIt** is almost the same in its server part), but **FetchIt** has some advantages:
+[AjaxForm](https://github.com/modx-pro/AjaxForm) is similar (FetchIt’s server side is almost the same), but **FetchIt** has several advantages:
 
-### Zero dependencies
+### No dependencies
 
-**FetchIt** has no dependencies, while **AjaxForm** has three: Big [jquery](https://github.com/jquery/jquery) library and its [jquery-form](https://github.com/jquery-form/form/) and [jGrowl](https://github.com/stanlemon/jGrowl) plugins.
+**FetchIt** has no dependencies. **AjaxForm** has three: the large [jQuery](https://github.com/jquery/jquery) library and plugins [jquery-form](https://github.com/jquery-form/form/) and [jGrowl](https://github.com/stanlemon/jGrowl).
 
-While there's no problem with the latter (you can override methods to show notifications), the first two are tricky.
+The last one is easy to override (notification methods), but the other two are harder to replace.
 
 ### Modern code
 
-Minified script weighs 5 kilobytes and snippet registers it with attribute `defer`, thereby not preventing the page load.
+The minified script is about 5 KB and the snippet registers it with the `defer` attribute so it does not block page load.
 
-### Comfort
+### Ease of use
 
-Incorporating your wraparound, adding popup messages and modal windows, these are tasks that you can solve very easily.
+Integrating your markup, adding popup messages and modals is straightforward.
 
 ## Installation
 
-The extra is available for installation via Package Manager from:
+The component is free and can be installed via the Package Manager from:
 
-- [modstore.pro](https://en.modstore.pro/packages/utilities/fetchit)
-  - [How to connect to the repository](https://en.modstore.pro/faq)
-- Official repository [modx.com](https://modx.com/extras/package/fetchit)
+- [modstore.pro](https://modstore.pro/packages/utilities/fetchit)
+  - [How to add this repository](https://modstore.pro/faq)
+- Official [modx.com](https://modx.com/extras/package/fetchit) repository
 
-Or you can build a package from the extra repository on [GitHub](https://github.com/GulomovCreative/FetchIt)
+Or build the package from the component repo on [GitHub](https://github.com/GulomovCreative/FetchIt)

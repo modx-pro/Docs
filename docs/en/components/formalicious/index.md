@@ -1,50 +1,50 @@
 ---
-name: Formalicious
-description: Powerful multi-step form builder with advanced FormIt features
+title: Formalicious
+description: Add-on for powerful form generation, works with FormIt
 logo: https://modstore.pro/assets/extras/formalicious/logo-lg.png
 author: Sterc
-modstore: https://en.modstore.pro/packages/users/formalicious
+modstore: https://modstore.pro/packages/users/formalicious
 modx: https://extras.modx.com/package/formalicious
 repository: https://github.com/Sterc/Formalicious
 
 items: [
-  { text: 'Installation', link: 'setup' },
-  { text: 'Media Sources', link: 'media-sources' },
+  { text: 'Setup', link: 'setup' },
+  { text: 'Media sources', link: 'media-sources' },
   { text: 'Categories', link: 'categories' },
-  { text: 'Field Types', link: 'field-types' },
-  { text: 'Create a Form', link: 'creating-form' },
+  { text: 'Field types', link: 'field-types' },
+  { text: 'Creating a form', link: 'creating-form' },
   { text: 'FAQs', link: 'faqs' },
 ]
 ---
 # Formalicious
 
-Formalicious is a powerful multi-step form builder, with support for 8 different field types, built-in validation, and the ability to use hooks and other advanced FormIt features.
-Formalicious speeds up your own form-building and also enables your clients to manage their own forms with just a few clicks.
+Formalicious is a powerful add-on for building multi-step forms. It supports 8 field types, built-in validation, and FormIt hooks and advanced features.
+It speeds up form creation for both admins and site visitors, with form management in a few clicks.
 
-## 8 Field Types
+## 8 field types
 
-With all necessary fields types, you can intuitively build forms for anything from contact forms to event registrations. You can choose from the following: text, textarea, email, number, checkboxes, radiobuttons, select, and file upload.
+With the right field types you can build forms for anything: contact forms, event registration, and more. Options include: text, textarea, email, number, checkboxes, radio buttons, select, and file upload.
 
-## Multiple Steps Support
+## Multi-step forms
 
-Create forms that span multiple pages, without having to worry about setting up temporary storage, resources for each step, or other headache-inducing steps. Just click Create new step and add the fields, Formalicious takes care of the rest.
+Build forms that span multiple pages without configuring temporary storage, per-step resources, or other tedious setup. Click "Create new step", add fields, and Formalicious handles the rest.
 
-## Automatic Validation & Sanitization
+## Automatic validation
 
-Just tick the box to mark a field as required, and Formalicious automatically handles validation for you. Submitted values are also automatically sanitized to make sure your form is protected against Cross Site Scripting (XSS) attacks.
+Mark a field as required in its settings and Formalicious validates it for you. Submitted values are also validated to protect against Cross-Site Scripting (XSS).
 
-## Advanced FormIt Features
+## Full FormIt support
 
-If you need to use one of the more advanced features of FormIt, such as pre- and post-hooks, or want to specify additional properties, you can add those to your forms through the Formalicious component as well.
+For advanced FormIt features (pre- and post-hooks) or extra properties, Formalicious can add them to your forms.
 
-## HTML email & auto-replies
+## HTML emails and auto-replies
 
-Every form submission is automatically sent to a designated email address and a friendly auto-reply is sent to the website visitor when submitting a form. All emails are 100% customizable with your own corporate identity.
+Each form can send to a specified email address, and the user can receive an automatic confirmation. All emails can be styled to match your brand.
 
-## Save data with 256-bit encryption
+## Saved data with 256-bit encryption
 
-Saving forms can be useful as a backup, but it's also a privacy risk. Therefore FormIt has been equipped with Rijndael 256-bit encryption to keep your data secure (mcrypt module required).
+Saving form submissions is useful for backup but carries data-leak risk. FormIt uses 256-bit Rijndael encryption for stored data (requires mcrypt).
 
-## Powerful customization
+## Advanced settings
 
-Formalicious has tons of possibilities by default, but it also comes with the ability to customize it to your own needs. Add you own custom validators, field types and emails.
+Formalicious has many options out of the box; you can add custom validators, field types, and email templates.

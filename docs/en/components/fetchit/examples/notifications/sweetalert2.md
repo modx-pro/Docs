@@ -1,58 +1,42 @@
 # SweetAlert2
 
-[SweetAlert2](https://sweetalert2.github.io/) is one of the most popular notification libraries that has no dependencies. To connect it we need to do the following steps.
+[SweetAlert2](https://sweetalert2.github.io/) is one of the most popular notification libraries and has no dependencies. To integrate it:
 
-- Let's add the scripts and styles of the library. For simplicity, let's do it via CDN.
+- Include the library scripts and styles. For simplicity we use CDN:
 
 ```html
 <!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.all.min.js"></script>
-<!-- CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- CSS is included in the script -->
 ```
 
-- And let's define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      Swal.fire({
-        icon: 'success',
-        title: message,
-        showConfirmButton: false,
-      });
+      Swal.fire({ icon: 'success', title: 'Success', text: message });
     },
     error(message) {
-      Swal.fire({
-        icon: 'error',
-        title: message,
-        showConfirmButton: false,
-      });
+      Swal.fire({ icon: 'error', title: 'Error', text: message });
     },
   }
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and get direct access to the FetchIt class:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    Swal.fire({
-      icon: 'success',
-      title: message,
-      showConfirmButton: false,
-    });
+    Swal.fire({ icon: 'success', title: 'Success', text: message });
   },
   error(message) {
-    Swal.fire({
-      icon: 'error',
-      title: message,
-      showConfirmButton: false,
-    });
+    Swal.fire({ icon: 'error', title: 'Error', text: message });
   },
 }
 ```
 
-Great! We will now have beautiful **SweetAlert2** notifications displayed.
+Done! You now have **SweetAlert2** notifications.

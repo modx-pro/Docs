@@ -1,67 +1,67 @@
 # msOrder
 
-Ordering snippet.
+Checkout form snippet.
 
-![Ordering snippet](https://file.modx.pro/files/4/b/b/4bb767c02e0e7b09ddae5e426b34c7e6.png)
+[![](https://file.modx.pro/files/4/b/b/4bb767c02e0e7b09ddae5e426b34c7e6s.jpg)](https://file.modx.pro/files/4/b/b/4bb767c02e0e7b09ddae5e426b34c7e6.png)
 
 ## Parameters
 
-Parameter      | By default    | Description
----------------|---------------|------------------------------------------------------------------------------------------------------------------
-**tpl**        | `tpl.msOrder` | ordering chunk
-**userFields** |               | Associative array of matching order fields to user profile fields in the format "order field" => "profile field".
-**showLog**    |               | To show additional information on snippet operation. For authorized in "mgr" context only.
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| **tpl** | `tpl.msOrder` | Output chunk |
+| **userFields** | | Associative array mapping order fields to user profile fields: "order_field" => "profile_field". |
+| **showLog** | | Show debug info. Only for users authorized in context "mgr". |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
-## Ordering
+## Output
 
-Snippet counts on the work with  [chunk Fenom][1]. It transfers 5 variables there:
+The snippet expects a [Fenom chunk][1]. It passes 5 variables:
 
-- **order** - order array from the user session
-  - **delivery** - selected delivery method
-  - **payment** - selected payment method
-  - **cost** - total cost of the order
-- **deliveries** - array of available order delivery options
-- **payments** - array of payment methods
-- **form** - array with customer data. It may contain:
-  - **email** - customer address
-  - **receiver** - receiver name
-  - **phone** - phone number
-  - **index** - postcode
-  - **region** - region
-  - **city** - city
-  - **street** - street
-  - **building** - building number
-  - **room** - room number
-  - there may be another values, given by **&userFields** parameter
-- **errors** - array of the form fields, containing mistakes
+- **order** — order data from session: **delivery**, **payment**, **cost**
+- **deliveries** — available delivery methods
+- **payments** — payment methods
+- **form** — customer data: **email**, **receiver**, **phone**, **index**, **region**, **city**, **street**, **building**, **room**, and any **&userFields** mappings
+- **errors** — form fields with validation errors
 
 ### Placeholders
 
-When indicating empty chunk you will be able to see all available order placeholders:
+To see all placeholders, use an empty chunk:
 
 ```modx
 <pre>[[!msOrder?tpl=``]]</pre>
 ```
 
-![Placeholders](https://file.modx.pro/files/7/3/e/73ea6a3680166bb81a59b0dd55475614.png)
+::: details Example
 
-## Order creation
+```php
+Array
+(
+    [order] => Array ( [cost] => 2 300, [cart_cost] => 2 300, [delivery_cost] => 0, [discount_cost] => 0 )
+    [form] => Array ( [receiver] => Ivan Ivanov, [email] => ivanov@example.com )
+    [deliveries] => Array ( [1] => Array ( [id] => 1, [name] => Pickup, ... ) )
+    [payments] => Array ( [1] => Array ( [id] => 1, [name] => Cash, ... ) )
+    [errors] => Array ( )
+)
+```
 
-It is recommended to call this snippet in junction with others on ordering page:
+:::
+
+## Checkout
+
+Use together with other snippets on the checkout page:
 
 ```modx
-[[!msCart]] <!-- Cart view and change, hidden after order creation -->
+[[!msCart]] <!-- Cart; hidden after order is created -->
 
-[[!msOrder]] <!-- Ordering form, hidden after order creation  -->
+[[!msOrder]] <!-- Checkout form; hidden after order is created -->
 
-[[!msGetOrder]] <!-- Order information display, showed after order creation -->
+[[!msGetOrder]] <!-- Order info; shown after order is created -->
 ```
 
 ## Examples
 
-To obtain name of authorized user not from`fullname`, but from `username`:
+Get receiver name from `username` instead of `fullname` for logged-in users:
 
 ```modx
 [[!msOrder?

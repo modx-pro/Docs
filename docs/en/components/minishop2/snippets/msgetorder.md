@@ -1,77 +1,86 @@
 # msGetOrder
 
-Snippet for formed order display.
+Snippet for displaying a completed order.
 
-Is used on ordering page and for mailing notification to customers.
+Used on the checkout page and for email notifications to customers.
 
 ## Parameters
 
-Parameter         | By default       | Description
-------------------|------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**tpl**           | `tpl.msGetOrder` | Formatting chunk
-**includeTVs**    |                  | List of TV parameters for sampling, separated by commas. For example: "action,time" is given by `[[+action]]` and `[[+time]]` placeholders.
-**includeThumbs** |                  | List of sample preview dimensions, separated by commas. For example: "120x90,360x240" is given by `[[+120x90]]` and `[[+360x240]]` placeholders. The pictures should be pre-generated in item s gallery.
-**toPlaceholder** |                  | If filled, the snippet will store all data in placeholder with this name, instead of displaying.
-**showLog**       |                  | To show additional information on snippet operation. For authorized in "mgr" context only.
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| **id** | | Order id; if omitted, taken from `$_GET['msorder']`. |
+| **tpl** | `tpl.msGetOrder` | Output chunk |
+| **includeTVs** | | Comma-separated TV list. |
+| **includeThumbs** | | Comma-separated thumbnail sizes. |
+| **toPlaceholder** | | If set, save output to a placeholder instead of outputting. |
+| **showLog** | | Show debug info. Only for users authorized in context "mgr". |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
-## Formatting
+## Output
 
-Snippet counts on work with [chunk Fenom][2] and transfers 7 variables there:
+The snippet expects a [Fenom chunk][2] and passes 7 variables:
 
-- **order** - order data array from `msOrder`object
-- **products** - ordered goods array with all their properties
-- **user** - data array of `modUser` and `modUserProfile`objects with all customer's characteristics
-- **address** - data array of `msAddress` object with delivery data
-- **delivery** - array of selected delivery characteristics of`msDelivery` object
-- **payment** - array of selected payment characteristics of`msPayment`object
-- **total** - totals order array:
-  - **cost** - total order cost
-  - **weight** - total order weight
-  - **delivery_cost** - separate delivery cost
-  - **cart_cost** - separate ordered goods cost
-  - **cart_weight** - total weight of the ordered goods
-  - **cart_count** - ordered goods number
+- **order** — order data from `msOrder`
+- **products** — order items with full product data
+- **user** — customer data from `modUser` and `modUserProfile`
+- **address** — delivery address from `msAddress`
+- **delivery** — selected delivery from `msDelivery`
+- **payment** — selected payment from `msPayment`
+- **total** — order totals: **cost**, **weight**, **delivery_cost**, **cart_cost**, **cart_weight**, **cart_count**
 
-*Data, transferred when calling snippet, may also be present.
-For example, the variable `payment_link` may be in new letter formatting chunk*
+Snippet parameters (e.g. **payment_link** in email chunks) are also available.
 
 ### Placeholders
 
-All available order placeholders may be seen when displaying empty chunk:
+To see all placeholders, use an empty chunk:
 
 ```modx
 <pre>[[!msGetOrder?tpl=``]]</pre>
 ```
 
-[![](https://file.modx.pro/files/3/a/9/3a922d1321d8f853aada28c176b21767s.jpg)](https://file.modx.pro/files/3/a/9/3a922d1321d8f853aada28c176b21767.png)
+::: details Example
 
-## Order creation
-
-It is recommended to call this snippet in junction with the others on ordering page:
-
-```modx
-[[!msCart]] <!-- Cart view and change, hidden after order creation -->
-
-[[!msOrder]] <!-- Ordering form, hidden after order creation -->
-
-[[!msGetOrder]] <!-- Order information display, showed after its creation -->
+```php
+Array
+(
+    [order] => Array ( [id] => 1, [num] => 2311/1, [cost] => 2100, [status] => 1, ... )
+    [products] => Array ( [0] => Array ( [name] => Product 1, [count] => 3, [cost] => 1 500, ... ), ... )
+    [user] => Array ( [fullname] => Ivan Ivanov, [email] => ..., ... )
+    [address] => Array ( [receiver] => Ivan Ivanov, ... )
+    [delivery] => Array ( [name] => Pickup, ... )
+    [payment] => Array ( [name] => Cash, ... )
+    [total] => Array ( [cost] => 2 100, [cart_count] => 4, ... )
+)
 ```
 
-## Writing letters
+:::
 
-This snippet  is used by miniShop2 class for writing mail notification to customers, if you switch on such sending in [status settings][3].
-All `msGetOrder` snippet variables: **order**, **products**, **user**, **address**, **delivery**, **payment** and **total** are also available in letters of mail notifications.
+## Checkout
 
-All the letters expand single basic mail template **tpl.msEmail** and change its blocks by default:
+Use together with other snippets on the checkout page:
 
-- **logo** - logo of the shop with home page reference
-- **title** - letter title
-- **products** - ordered goods table
-- **footer** - site reference in letter footage
+```modx
+[[!msCart]] <!-- Cart; hidden after order is created -->
 
-For example, the letter with new customer's order, is:
+[[!msOrder]] <!-- Checkout form; hidden after order is created -->
+
+[[!msGetOrder]] <!-- Order info; shown after order is created -->
+```
+
+## Email templates
+
+This snippet is used by miniShop2 for email notifications if enabled in [order status settings][3].
+All msGetOrder variables — **order**, **products**, **user**, **address**, **delivery**, **payment**, **total** — are available in email chunks.
+
+By default all emails extend one base chunk **tpl.msEmail** and override blocks:
+
+- **logo** — store logo with link to home
+- **title** — email title
+- **products** — order products table
+- **footer** — site link in footer
+
+Example: new order email to customer:
 
 ```fenom
 {extends 'tpl.msEmail'}
@@ -90,11 +99,11 @@ For example, the letter with new customer's order, is:
 {/block}
 ```
 
-As you can see, the main template is inherited, the title is changed, and payment reference is added to the table of goods (if any).
+Here the base template is extended, the title is set, and the payment link is added to the products block when present.
 
 [![](https://file.modx.pro/files/b/1/c/b1c563c0b075caf2afce7609ac3f15e4s.jpg)](https://file.modx.pro/files/b/1/c/b1c563c0b075caf2afce7609ac3f15e4.png)
 
-More details of template expanding you may find in [Fenom documentation][4].
+See [Fenom extends documentation][4] for more on template inheritance.
 
 [2]: /en/components/pdotools/parser
 [3]: /en/components/minishop2/interface/settings

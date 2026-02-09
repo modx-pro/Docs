@@ -1,8 +1,12 @@
 # Notifications
 
-Although **FetchIt** doesn't have any dependencies, everything is prepared to plug in any off-the-shelf or your own library for displaying messages with minimal code.
+Although **FetchIt** has no required dependencies, it is set up so you can connect any ready-made or custom notification library with minimal code.
 
-<!--@include: ../../parts/notifier.tip.md-->
+::: tip
+
+As of version 1.1.0 and 3.1.0, system setting [`fetchit.frontend.default.notifier`](/en/components/fetchit/settings#fetchitfrontenddefaultnotifier) is available; when enabled, [Notyf](/en/components/fetchit/examples/notifications/notyf) notifications are shown.
+
+:::
 
 - [Notyf](/en/components/fetchit/examples/notifications/notyf)
 - [SweetAlert2](/en/components/fetchit/examples/notifications/sweetalert2)

@@ -1,15 +1,15 @@
 # iziToast
 
-In this section, we integrate an elegant and lightweight plugin for showing notifications [iziToast](https://izitoast.marcelodolza.com/).
+This section shows how to integrate the elegant, lightweight notification plugin [iziToast](https://izitoast.marcelodolza.com/).
 
-- Let's add the styles.
+- For simplicity, include the styles.
 
 ```html
 <!-- CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast@1/dist/css/iziToast.min.css">
 ```
 
-- And for a change, we can import the script directly from CDN and define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Import the script from CDN and set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```html
 <script type="module">
@@ -28,7 +28,7 @@ In this section, we integrate an elegant and lightweight plugin for showing noti
 </script>
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and access the FetchIt class directly:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
@@ -41,4 +41,4 @@ FetchIt.Message = {
 }
 ```
 
-Done! These are the simple steps to integrate **iziToast**.
+Done! With these steps you integrate **iziToast**.

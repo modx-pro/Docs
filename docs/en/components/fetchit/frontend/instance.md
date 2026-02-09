@@ -1,10 +1,10 @@
-# FetchIt Class Instance
+# FetchIt instance
 
-Below is the list of properties and methods of an instance of **FetchIt** class.
+Below is a list of **FetchIt** instance properties and methods.
 
 ## clearErrors()
 
-This method clears all errors in the form.
+Clears all form errors.
 
 - Type: `function (): undefined`
 - Example:
@@ -19,7 +19,7 @@ document.addEventListener('fetchit:after', (e) => {
 
 ## clearError()
 
-This method clears errors associated with a specific field.
+Clears errors for a specific field.
 
 - Type: `function (name: string): object`
 - Example:
@@ -34,7 +34,7 @@ document.addEventListener('fetchit:after', (e) => {
 
 ## setError()
 
-This method sets the invalidity status of a particular field by name. It may be convenient in cases of integrating validation on the front end.
+Marks a field as invalid by name and sets its error message. Useful when integrating front-end validation.
 
 - Type: `function (name: string, message: string): undefined`
 - Example:
@@ -44,9 +44,9 @@ document.addEventListener('fetchit:before', (e) => {
   e.preventDefault();
   const { fetchit } = e.detail;
 
-  // Validation
+  // Field validation
 
-  fetchit.setError('email', 'The email field has not been validated');
+  fetchit.setError('email', 'Email validation failed');
 });
 ```
 
@@ -54,18 +54,30 @@ document.addEventListener('fetchit:before', (e) => {
 
 ## disableFields()
 
-This method sets all form elements to the `disabled` state.
+Disables all form elements.
 
 - Type: `function (): undefined`
 
 ## enableFields()
 
-This method removes the `disabled` state from all form elements.
+Removes `disabled` from all form elements.
 
 - Type: `function (): undefined`
 
 ## getFields()
 
-This method returns an array of fields by name.
+Returns an array of elements for the given field name.
 
 - Type: `function (name: string): HTMLElement[]`
+
+<!-- ## getErrors()
+
+Returns an array of error wrapper elements for the given field name.
+
+- Type: `function (name: string): HTMLElement[]`
+
+## getCustomErrors()
+
+Returns an array of elements with `data-custom="*"` for the given field name.
+
+- Type: `function (name: string): HTMLElement[]` -->

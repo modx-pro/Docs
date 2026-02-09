@@ -1,7 +1,8 @@
-# MS2 Orders History
+# miniShop2 order history
 
-Snippet **OfficeMiniShop2** shows the miniShop2 orders history of a current user.
-Everything is built on ExtJS, which is very convenient. It is loaded from the installed MODX, and that is why it can look differently on different versions of MODX.
+The **OfficeMiniShop2** snippet outputs the current user's miniShop2 order history.
+
+It is built on ExtJS. It loads from the installed MODX, so it may look slightly different across MODX versions.
 
 [![](https://file.modx.pro/files/c/b/f/cbf808da0f481e1c746144a9549c61ccs.jpg)](https://file.modx.pro/files/c/b/f/cbf808da0f481e1c746144a9549c61cc.png)
 
@@ -9,29 +10,28 @@ Everything is built on ExtJS, which is very convenient. It is loaded from the in
 
 [![](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fds.jpg)](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fd.png)
 
-Orders history output settings work approximately the same as for miniShop2:
+Order table output is controlled by settings similar to miniShop2:
 
 [![](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baads.jpg)](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baad.png)
 
 [![](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531s.jpg)](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531.png)
 
-You can indicate your CSS file with the ExtJS structure.
+You can set your own CSS file for the ExtJS theme.
 
-Unlike miniShop2, you can add to the snippet 3 extra parameters:
+Unlike miniShop2, you can set 3 extra snippet parameters:
 
-- **allowRemove** - turn on the opportunity to delete orders with the "New" status
-- **allowRepeat** - turn on the opportunity to repeat an order.
-- **cartLink** - link to the cart with the order.
+- **allowRemove** — allow removing orders with status "New".
+- **allowRepeat** — allow repeating an order.
+- **cartLink** — link to the checkout cart.
 
-Work logic of the order repeat is the following:
+Repeat order flow:
 
-1. If repeat is allowed, there is a special icon in the orders table.
-2. When you click it, goods from the order appear in the session as if the user added them to the cart.
-3. Then, if parameter **cartLink** is not empty, the user is redirected to the indicated page of placing the order. They choose method of delivery, fill in or change address fields.
-4. If this parameter is empty, the order is made at once and everything is copied from the old one.
+1. If repeat is allowed, an icon appears in the order table.
+2. On click, order products are added to the session as if the user added them to the cart.
+3. If **cartLink** is set, the user is redirected to that checkout page to choose delivery, payment and address.
+4. If **cartLink** is empty, the order is created immediately, copying what can be copied from the old order.
 
-Notice that, if the order being copied was made long ago and since then your rules of placing orders have changed, making an order without a cart can give oneself an error.
-For example, now you require to write the address and there is no address in the old order - then there will be an error about not filling in the necessary fields.
+Note: if the copied order is old and your checkout rules have changed, creating an order without the cart may fail (e.g. address is now required but missing in the copied order).
 
 ```modx
 [[!officeMiniShop2?

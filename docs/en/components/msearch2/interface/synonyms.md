@@ -1,23 +1,20 @@
 # Synonyms
 
-Here you can indicate synonyms for your visitors’ queries.
+Here you define synonyms for user search queries.
 
-The system is easy: if there is a word in a query that is indicated here, its synonym is added to it.
-There can be as many synonyms as you want. Not only can they be added to the original word, they can also replace it.
+If a query contains a word listed here, the synonym is added (or can replace the original). You can have many synonyms; they can add to or replace the original word.
 
-This can help you to correct common misspellings in products’ names and so on.
+So you can fix common typos in product names or elsewhere.
 
-For example, if you have whiskas product, you can add following records to it:
+For example, for a product "whiskas" you can add:
 
 - wiskas
-- уискас
-- вискас
-- etc. – see your [queries][1]
+- whiskas (alternate spelling)
+- etc. — check your [queries][1]
 
 [![](https://file.modx.pro/files/b/4/1/b410ec7991a617845ec86913310527fcs.jpg)](https://file.modx.pro/files/b/4/1/b410ec7991a617845ec86913310527fc.png)
 
-You can know by what words search is done if you activate parameter
-**&showLog** of snippet [mSearch2][2].
+To see which words are actually used in search, enable **&showLog** in the [mSearch2][2] snippet.
 
 [1]: /en/components/msearch2/interface/queries
 [2]: /en/components/msearch2/snippets/msearch2

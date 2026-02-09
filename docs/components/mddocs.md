@@ -29,7 +29,7 @@ modstore: https://modstore.pro/packages/content/mddocs
 | mddocs_custom_css    |                                | Пользовательский файл стилей для настройки внешнего вида                                                                                                                                            |
 | mddocs_docs_page_id  | `1`                            | ID страницы для отображения документации                                                                                                                                                            |
 | mddocs_docs_path     | `{corePath}gitdocs/`           | Путь к документации по умолчанию относительно корня сайта                                                                                                                                           |
-| mddocs_git_token     | *<Генерируется при установке>* | Токен для принятия запроса webhook'ом на выполнение git pull                                                                                                                                        |
+| mddocs_git_token     | *`Генерируется при установке`* | Токен для принятия запроса webhook'ом на выполнение git pull                                                                                                                                        |
 | mddocs_lang_default  | `en`                           | Язык по умолчанию                                                                                                                                                                                   |
 | mddocs_lang_switch   | `{"ru":"РУС","en":"EN"}`       | JSON-массив соответствий названий каталогов отображаемым обозначениям языков                                                                                                                        |
 | mddocs_logo          |                                | Путь к изображению с логотипом                                                                                                                                                                      |
@@ -43,7 +43,7 @@ modstore: https://modstore.pro/packages/content/mddocs
 
 ## Подтягивание из git'a
 
-Для автоматического обновления документации используется webhook: `SITE_URL>/assets/components/mddocs/gitpull.php?token=<TOKEN>`
+Для автоматического обновления документации используется webhook: `&lt;SITE_URL&gt;/assets/components/mddocs/gitpull.php?token=&lt;TOKEN&gt;`
 
 В настройках git'a необходимо указать полный адрес webhook'a, включая токен для доступа.
 Ниже скрин на примере Github'a:

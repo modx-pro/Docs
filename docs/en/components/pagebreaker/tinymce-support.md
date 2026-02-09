@@ -1,36 +1,37 @@
-# TinyMCE Support
+# TinyMCE support
 
-A component as a unit goes with plugin **pagebreaker** for TinyMCE (TypoMCE), which is automatically installed and activated.
+The component includes a **pagebreaker** plugin for TinyMCE (TypoMCE) that installs and activates automatically.
 
 [![](https://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80ds.jpg)](https://file.modx.pro/files/1/0/7/107a1db721d445261fef7fd5d707e80d.png)
 
-Plugin adds 4 buttons to the toolbar.
+The plugin adds 4 buttons to the editor toolbar:
 
-- Manual burst. Specify a delimiter on the place of cursor.
-- Automatic burst through indicated quantity of characters.
-- Automatic burst after every 2000 characters.
-- Delimiter cleanup.
+- Manual break. Inserts a separator at the cursor.
+- Auto break by specified character count.
+- Auto break every 2000 characters.
+- Clear separators
 
-In addition, it shows the places where delimiters were specified.
+It also shows where separators are inserted.
 
-## Automatic burst
+## Auto break
 
-Auto burst functions by sections. At first text is divided by tags p, then content of each block is sampled and divided into pages.
+Auto break works by paragraphs. Text is split by `p` tags, then each block is measured and split into pages.
 
-E.g., you have 10 sections in text, each of them content 1500 characters. If you indicated to lay out this page every 2000 characters, then you will get 5 pages.
+Example: 10 paragraphs of 1500 characters each. With a 2000-character break you get 5 pages.
 
-- Page is laid out by 10 sections.
-- The first section is less than 2000 characters – it goes to the first page.
-- The second section + the first section = 3000 characters, it is over the limit, thus delimiter is put after adding the second section to the first page.
+- Page split into 10 paragraphs
+- First paragraph < 2000 — goes to page 1.
+- Second + first = 3000 — exceeds limit, so a separator is added after the second paragraph on page 1.
 
-Thus 10 sections will turn into 5 pages. If you do not like the burst of a document – you can delete all delimiters and indicate a new quantity of characters for auto burst.
+Thus 10 paragraphs become 5 pages.
+To change the break, delete all separators and set a new character count.
 
-Apparently, if there is no tags p in the text, auto burst wont function. However, using TinyMCE, sections are set by enter. IAC, you can put delimiters manually.
+If there are no `p` tags, auto break will not work. TinyMCE creates paragraphs on Enter. You can always place separators manually.
 
-## Installation and deletion
+## Install and remove
 
-Installation is fully automatic. PageBreaker copies its extention into editors, enables and adds buttons to the third row of buttons itself.
+Installation is fully automatic. PageBreaker copies its extension to editors, activates it and adds the buttons to the third row.
 
-Deleting a component, its extention for editors is also deleted together with all overpatching of settings.
+When the component is removed, its editor extension is removed as well, along with related settings.
 
-I.e. you do not need to do anything – everything is fully automatic.
+No manual steps required — everything is automated.

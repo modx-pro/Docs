@@ -1,6 +1,6 @@
-# Vanilla
+# Form with Vanilla
 
-In the [Vanilla](https://vanillaframework.io/) framework as well as in [Fomantic UI](/en/components/fetchit/examples/form/fomantic) we need to add the invalidation class to the parent element, but this is not a problem, we can use the `data-custom="*"` selectors and add them. Another thing to consider is that as part of the framework rules, validatable input fields must be wrapped in an element with the `p-form-validation` class:
+With the framework [Vanilla](https://vanillaframework.io/) as with [Fomantic UI](/en/components/fetchit/examples/form/fomantic) the invalid class must be applied to the parent element; use the `data-custom="*"` selectors. Note that framework rules require validated inputs to be wrapped in an element with class `p-form-validation`:
 
 ```html
 <form>
@@ -19,13 +19,15 @@ In the [Vanilla](https://vanillaframework.io/) framework as well as in [Fomantic
 </form>
 ```
 
-To prepare, you will need to do the following:
+To set it up:
 
-1. Add `data-custom="*"` attributes for parent elements and specifying the `is-error` value in the `fetchit.frontend.custom.invalid.class` system setting.
-2. Add `data-error="*"` attributes for elements that will be displayed with the error text.
-3. For FormIt compatibility, placeholders with values and errors must be specified.
+1. Add the `data-custom="*"` to parent elements and set system setting `fetchit.frontend.custom.invalid.class` to `is-error`.
+2. Add the `data-error="*"` to elements that will display error text.
+3. For FormIt compatibility add placeholders for values and errors.
 
-<!--@include: ../../parts/action.info.md-->
+::: info Important
+Markup validators complain about an empty `action`, so set the page URL there.
+:::
 
 ```modx
 <form> // [!code --]

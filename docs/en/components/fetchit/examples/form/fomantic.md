@@ -1,6 +1,6 @@
-# Fomantic-UI
+# Form with Fomantic-UI
 
-The example with the CSS framework [Fomantic-UI](https://fomantic-ui.com/) is more interesting, because the CSS invalid class should be added to the parent element, not the input field. There is a `frontend.custom.invalid.class` setting just for such cases:
+Example with the CSS framework [Fomantic-UI](https://fomantic-ui.com/) is more involved because the invalid-state class must be applied to the parent element, not the input field. For such cases use the setting `frontend.custom.invalid.class`:
 
 ```html
 <form class="ui form">
@@ -19,13 +19,15 @@ The example with the CSS framework [Fomantic-UI](https://fomantic-ui.com/) is mo
 </form>
 ```
 
-To prepare, you will need to do the following:
+To set it up:
 
-1. Add `data-custom="*"` attributes for parent elements and specifying the `error` value in the `fetchit.frontend.custom.invalid.class` system setting.
-2. Add `data-error="*"` attributes for elements that will be displayed with the error text.
-3. For FormIt compatibility, placeholders with values and errors must be specified.
+1. Add the `data-custom="*"` to parent elements and set system setting `fetchit.frontend.custom.invalid.class` to `error`.
+2. Add the `data-error="*"` to elements that will display error text.
+3. For FormIt compatibility add placeholders for values and errors.
 
-<!--@include: ../../parts/action.info.md-->
+::: info Important
+Markup validators complain about an empty `action`, so set the page URL there.
+:::
 
 ::: code-group
 
@@ -53,7 +55,7 @@ To prepare, you will need to do the following:
 </form>
 ```
 
-```modx [Finished markup]
+```modx [Final markup]
 <form action="[[~[[*id]]]]" class="ui form">
   <div class="field" data-custom="name">
     <label>Name</label>

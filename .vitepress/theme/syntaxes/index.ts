@@ -3,8 +3,8 @@ import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url)
 
-const modx = require('modx-tmlanguage')
-const fenomGrammar = require('fenom-tmlanguage')
+const modx = require('./modx.tmLanguage.json')
+const fenomGrammar = require('./fenom.tmLanguage.json')
 const smartyGrammar = require('@modix/smarty-tmlanguage/smarty.tmLanguage.json')
 
 const fenom = {

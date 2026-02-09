@@ -1,54 +1,57 @@
 ---
-name: PageBreaker
-description: Split your long text to pages
+title: PageBreaker
+description: Split a page into parts by a special tag
 logo: https://modstore.pro/assets/extras/pagebreaker/logo-lg.jpg
 author: bezumkin
-modstore: https://en.modstore.pro/packages/content/pagebreaker
+modstore: https://modstore.pro/packages/content/pagebreaker
 repository: https://github.com/modx-pro/PageBreaker
 
 items: [
   { text: 'Settings', link: 'settings' },
-  { text: 'TinyMCE Support', link: 'tinymce-support' },
+  { text: 'Support for TinyMCE', link: 'tinymce-support' },
 ]
 ---
 # PageBreaker
 
-Plugin to layout the content of a big page into several subpages.
+Plugin that splits long page content into multiple subpages.
 
-## Concept of operation
+## How it works
 
-Plugin seeks for definite delimiters in content of the page, on default `<!-- pagebreak -->` . If it finds any, it divides the page according to them and generate link for the next ones.
+The plugin looks for separators in the page content (default `<!-- pagebreak -->`). When found, it splits the page at those points and generates links to the next parts.
 
-When you click on such link MODX does not find a necessary page because it does not exist, it generates event *OnPageNotFound*.
-Plugin responses to this event, finds required piece of content and outputs it.
+When following such a link, MODX does not find a real page (it does not exist) and fires *OnPageNotFound*.
+The plugin handles this event, computes the requested content part and outputs it.
 
-Thus several "virtual" pages are resulted from one real page.
+So you get several "virtual" pages from one real page.
 
-## Demonstration
+## Demo
 
-Plugin activity can be seen on [demo-site][1].
-[![](https://file.modx.pro/files/0/e/d/0ed53550272ad3c7d3860d18a0697762s.jpg)](https://file.modx.pro/files/0/e/d/0ed53550272ad3c7d3860d18a0697762.png)
+See the plugin in action on the [demo site][1].
 
-## Facilities
+![Demo](https://file.modx.pro/files/0/e/d/0ed53550272ad3c7d3860d18a0697762.png)
 
-- Operates with cached resources.
-- Loads only when there r delimiters in content.
-- Delivered with plugin PageBreak and TinyMCE (TypoMCE) to do automatic layout split of the text.
-- Supports friendly urls
-- Supports common documents and containers
+## Features
+
+- Works with cached resources.
+- Runs only when the content has separators.
+- Includes a PageBreak plugin for TinyMCE (TypoMCE) for automatic text splitting.
+- Supports friendly URLs.
+- Supports regular documents and containers.
 
 ## Chunks
 
-Following chunks are used to format page-navigation:
+The following chunks are used for pagination:
 
-Имя                       | Описание                                         | Плейсхолдеры
---------------------------|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**tpl.PageBreaker.begin** | Reference to the first page                      | `[[+link]]` - reference to the page
-**tpl.PageBreaker.next**  | Reference to the next page, it can be empty.     | `[[+link]]` - reference to the page
-**tpl.PageBreaker.prev**  | Reference to the previous page, it can be empty. | `[[+link]]` - reference to the page
-**tpl.PageBreaker.outer** | Block with all references.                       | `[[+pb_link_prev]]` , `[[+pb_link_next]]` , `[[+pb_link_begin]]` - formatting the reference, `[[+pb_page]]` - number of a current page, `[[+pb_total]]` - general quantity
+| Name                       | Description                                      | Placeholders                                                                                                                                                             |
+|----------------------------|--------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **tpl.PageBreaker.begin**  | Link to the first page                           | `[[+link]]` — page link                                                                                                                                                  |
+| **tpl.PageBreaker.next**   | Link to the next page (may be empty)              | `[[+link]]` — page link                                                                                                                                                  |
+| **tpl.PageBreaker.prev**   | Link to the previous page (may be empty)         | `[[+link]]` — page link                                                                                                                                                  |
+| **tpl.PageBreaker.outer**  | Block with all links                              | `[[+pb_link_prev]]`, `[[+pb_link_next]]`, `[[+pb_link_begin]]` — links, `[[+pb_page]]` — current page number, `[[+pb_total]]` — total pages                              |
 
-If you are on the first or last page, references to the next or previous pages will not be generated. This is done so that you can check such situations with output filters and substitute a reference to the beginning of the document. It was done this way with standard chunk outer:
+On the first or last page, the previous or next link is not generated.
+This lets you handle those cases with [output filters][2] and put the link at the start of the document.
+That is how the standard outer chunk works:
 
 ```modx
 <div class="pagebreaker">
@@ -64,13 +67,13 @@ If you are on the first or last page, references to the next or previous pages w
 
 ## Ajax
 
-Plugin can operate in Ajax regime, it means to switch pages without restart.
+The plugin can work in Ajax mode (switch pages without reload).
 
-- For this you need to activate system setting **pagebreaker_ajax**
-- References to pages should have class `pb_link`. Check it if you changed standard chunks.
-- Tag `[[*content]]` should be wrapped in element with **#pagebreaker_content** (**pagebreaker_ajax_selector** can be changed in the settings).
+- Enable the [system setting][3] **pagebreaker_ajax**
+- Page links must have the class `pb_link`. Check if you changed the default chunks.
+- The `[[*content]]` tag must be wrapped in an element with **#pagebreaker_content** (can be changed in **pagebreaker_ajax_selector**).
 
-This way:
+Example:
 
 ```modx
 <div id="pagebreaker_content">
@@ -78,8 +81,11 @@ This way:
 </div>
 ```
 
-In Ajax regime plugin tried to operate through Javascript HistoryApi, so page address can switch with or without Ajax. There are no additional parameters in address line.
+In Ajax mode the plugin uses the JavaScript History API, so the URL updates as without Ajax.
+No extra parameters in the address bar.
 
-If page user has an old browser – hash should be enabled in url
+For older browsers, a hash in the URL is used.
 
 [1]: http://demo.modx.pro/pagebreaker
+[2]: /en/system/basics/output-filters
+[3]: /en/components/pagebreaker/settings

@@ -1,6 +1,6 @@
-# Form Layouts
+# Form markup
 
-Below is a list of the form markup of popular CSS frameworks.
+Below is a list of form markup examples for popular CSS frameworks.
 
 - [Bootstrap](/en/components/fetchit/examples/form/bootstrap)
 - [Bulma](/en/components/fetchit/examples/form/bulma)

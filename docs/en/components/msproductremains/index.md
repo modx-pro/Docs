@@ -1,24 +1,25 @@
 ---
-name: msProductRemains
-description: Stock-on-hand (product remains) account
+title: msProductRemains
+description: Component for tracking product stock by attributes
 logo: https://modstore.pro/assets/extras/msproductremains/logo-lg.jpg
 author: feschukov
-modstore: https://en.modstore.pro/packages/ecommerce/msproductremains
+modstore: https://modstore.pro/packages/ecommerce/msproductremains
 
 items: [
-  { text: 'Settings', link: 'settings' },
-  { text: 'Remains Tab', link: 'remains-tab' },
+  { text: 'Component settings', link: 'settings' },
+  { text: 'Remains tab', link: 'remains-tab' },
   { text: 'Remains page', link: 'remains-page' },
-  { text: 'Snippet getRemains', link: 'getremains' },
+  { text: 'getRemains snippet', link: 'getremains' },
   { text: 'Examples', link: 'examples' },
 ]
 
 dependencies: miniShop2
 ---
+
 # msProductRemains
 
-The component is intended for the accounting of warehouse product remains based on the properties specified in component settings. In general, several properties are used in the process. A product’s color and size are the default properties.
+The component tracks product stock by attributes configured in the component settings. You can track by multiple attributes. By default, stock is tracked by product color and size.
 
-While editing products, specify the number of product remains for each combination of product property values. Remains are edited in the “Remains” tab table by double-clicking the left mouse button on the number needed.
+When editing a product you need to set the remaining quantity for each combination of attribute values. Edit remains in the table under the "Remains" tab by double-clicking the value you want to change.
 
-After the order status becomes equal to the status specified in component settings, the amount of the product remains ordered by the customer will be reduced automatically by the amount in the customer's shopping cart.
+When the order status matches the status set in the component settings, the ordered quantities are automatically deducted from the product remains.

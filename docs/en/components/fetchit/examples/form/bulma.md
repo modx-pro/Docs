@@ -1,6 +1,6 @@
-# Bulma
+# Form with Bulma
 
-If your layout is implemented on the [Bulma](https://bulma.io/) framework, the markup most likely looks like this:
+If your layout uses the framework [Bulma](https://bulma.io/), the markup likely looks like this:
 
 ```html
 <form>
@@ -31,13 +31,15 @@ If your layout is implemented on the [Bulma](https://bulma.io/) framework, the m
 </form>
 ```
 
-To prepare, you will need to do the following:
+To set it up:
 
-1. Add `data-error="*"` attributes for elements that will be displayed with the error text.
-2. For FormIt compatibility, placeholders with values and errors must be specified.
-3. In Bulma, invalid status is specified by the `is-danger` css class, so you need to specify it in the `fetchit.frontend.input.invalid.class` system setting.
+1. Add the `data-error="*"` to elements that will display error text.
+2. For FormIt compatibility add placeholders for values and errors.
+3. In Bulma the invalid state uses the class `is-danger`, so set system setting `fetchit.frontend.input.invalid.class` to it.
 
-<!--@include: ../../parts/action.info.md-->
+::: info Important
+Markup validators complain about an empty `action`, so set the page URL there.
+:::
 
 ```modx
 <form> // [!code --]

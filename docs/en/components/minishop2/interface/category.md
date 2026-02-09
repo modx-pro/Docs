@@ -1,169 +1,146 @@
-# Category
+# Product category
 
-The category of goods is designed for convenient storage and control of miniShop2 goods.
+Product categories are for storing and managing miniShop2 products.
 
-This is [CRC][0] **msCategory**, which expands standard class of modResource.
-This enables category to load its own javascript and css files providing more convenient dealing with goods.
+Technically it is a [CRC][0] **msCategory** extending the standard modResource class.
+This lets the category load its own JavaScript and CSS for working with products.
 
-## Creation of a category
+## Creating a category
 
-There are two ways to create a new category:
+You can create a category in two ways:
 
-- To choose a required point in the resource tree context menu
+- Choose the option from the resource tree context menu
 
-[![](https://file.modx.pro/files/d/8/7/d87edd56ee056286ed8eb4575db6df6cs.jpg)](https://file.modx.pro/files/d/8/7/d87edd56ee056286ed8eb4575db6df6c.png)
+![Creating category - 1](https://file.modx.pro/files/d/8/7/d87edd56ee056286ed8eb4575db6df6c.png)
 
-- Or switch document type when creating regular resource
+- Or switch document type when creating a regular resource
 
-[![](https://file.modx.pro/files/c/b/c/cbc1e2f61632967c578cdfc22763ad93s.jpg)](https://file.modx.pro/files/c/b/c/cbc1e2f61632967c578cdfc22763ad93.png)
+![Creating category - 2](https://file.modx.pro/files/c/b/c/cbc1e2f61632967c578cdfc22763ad93.png)
 
-::: info Info
-Resource type may be further changed converting the category into regular document and vice versa
-:::
+- Resource type can be changed later, turning a category into a regular document and vice versa.
 
-When creating a category one may see plainly some difference from regular document:
+When creating a category you see some differences from a regular document:
 
-- "Content" (content) field is only presented in the first tab.
-- The text stated in system setting **ms2_category_content_default** must be immediately written in this field.
+- The "Content" (content) field is only on the first tab.
+- That field is pre-filled with text from system setting **ms2_category_content_default**.
 
-[![](https://file.modx.pro/files/0/e/0/0e0fa2e909480f5310381da4ed291552s.jpg)](https://file.modx.pro/files/0/e/0/0e0fa2e909480f5310381da4ed291552.png)
+![Creating category - 3](https://file.modx.pro/files/0/e/0/0e0fa2e909480f5310381da4ed291552.png)
 
-- Setting tab is relinked."Type of content" (content_type) and "Disposition of content" (content_dispo) fields are absent
-- "Container" (isfolder) parameter is hidden - all categories are bound to be containers.
-- There is the switch "Hide descendants in the tree" instead of it, which overlaps their own settings displaying in the menu.
+- The settings tab is reorganized: no "Content type" (content_type) or "Content disposition" (content_dispo).
+- The "Container" (isfolder) option is hidden — all categories are containers.
+- Instead there is a "Hide children in tree" toggle that overrides their own menu visibility.
 
-[![](https://file.modx.pro/files/5/4/a/54ad024a03e945a7017c06b93edce074s.jpg)](https://file.modx.pro/files/5/4/a/54ad024a03e945a7017c06b93edce074.png)
+![Creating category - 4](https://file.modx.pro/files/5/4/a/54ad024a03e945a7017c06b93edce074.png)
 
-After the category is created the page is reloaded. You may see the category changing panel.
+After creating the category the page reloads and you see the category edit panel.
 
-## Category change
+## Editing a category
 
-More difference is here.
+There are more differences here.
 
-### Control of goods
+### Product management
 
-The first tab is the table with the category goods.
+The first tab is the category product table.
 
-Buttons to create goods, to add a new category and to clear the basket with deleted resources are in the table title.
-All these functions are in the system resource tree. They are added to the table to make full screen regime mode more convenient.
-(when the resource tree is minimized).
+The table header has buttons to create a product, add a category, and clear deleted resources.
+The same actions exist in the resource tree; the table adds them for full-screen mode (when the tree is collapsed).
 
-Goods may be also searched by the following characteristics:
+Search works by these product fields:
 
-- If the whole number is stated, then **id** of goods register is searching .
-- If no, then fuzzy field match is searching.
-  - **pagetitle** - item name
-  - **longtitle** - extended name
-  - **description** - description
-  - **introtext** - introduction
-  - **article** - article of an item
-  - **made_in** - country of production
-  - Name of manufacturer (name tied to msVendor)
-  - Name of the goods category (pagetitle parent msCategory)
+- Integer: exact match on product **id**.
+- Otherwise: partial match on
+  - **pagetitle** — product title
+  - **longtitle** — long title
+  - **description** — description
+  - **introtext** — intro text
+  - **article** — product SKU
+  - **made_in** — country of manufacture
+  - Vendor name (name of linked msVendor)
+  - Category name (pagetitle of parent msCategory)
 
-If the system setting **ms2_category_show_nested_products** is turned in (by default), all included goods are  displayed up to 10 category depth.
-Search also considers this setting, permitting, for example,to enter catalog root category and find all goods of single subcategory by its name.
+If **ms2_category_show_nested_products** is on (default), products from nested categories up to 10 levels are shown.
+Search uses this setting too (e.g. search from the root category by a subcategory name).
 
-One may simply distinguish between direct descendants and enclosed goods of other categories - they are bold.
+Direct children of the category are shown in **bold**.
 
-[![](https://file.modx.pro/files/c/f/d/cfd7aedea1539f18cffb4b7077acbca0s.jpg)](https://file.modx.pro/files/c/f/d/cfd7aedea1539f18cffb4b7077acbca0.png)
+![Product management](https://file.modx.pro/files/c/f/d/cfd7aedea1539f18cffb4b7077acbca0.png)
 
-#### Grouped operations
+#### Bulk actions
 
-Operations for every product are listed in right-hand column. Using [[Shift]] or [[Ctrl]] [[⌘ Cmd]] you may select several lines at a time.
+Each product has an action list in the right column. You can select multiple rows with [[Shift]] or [[Ctrl]] [[⌘ Cmd]].
 
-Possible:
+You can:
 
-- to open a product on site in new window
-- to open a product to edit in this window ( one may click on the item name reference)
-- to copy a product
-- to publish \ to cancel item publishing
-- to delete \ to restore
-- to hide \ to show a product in the resource tree
+- open the product on the site in a new window
+- open the product for editing in this window (or click the product title link)
+- duplicate the product
+- publish / unpublish the product
+- delete / restore
+- hide / show in the resource tree
 
 #### Sorting
 
-Marked goods may be sorted by dragging.
-Simply mark one or several goods and drag to another. Menuindex of all this process participants will change.
-To sort correctly the goods must be of a single category.
+Selected products can be reordered by drag-and-drop.
+Select one or more products and drag onto another — menuindex of involved products is updated.
 
-#### Transfer to subcategory
+All products must be in the same category for correct sorting.
 
-If you are dragging a product to **another** category member, it will be **transferred** there.
-That is to say its field parent will change.
+#### Moving to a subcategory
 
-In such a manner one may swiftly change the embedded goods category, but only if any product is already displayed in it.
+If you drag a product onto a product from **another** category, it is **moved** there (parent changes).
 
-#### Prompt editing
+You can quickly change categories of nested products; this only works if at least one product from the target category is already shown.
 
-System setting **ms2_category_grid_fields** contains the set of accessible columns of the table.
-Most of them you may edit by double click on a required field.
-At the moment you may display the following columns:
+#### Quick edit
 
-Resource characteristics:
+Visible table columns are set in **ms2_category_grid_fields**.
+Most columns can be quick-edited by double-clicking.
+Available columns (at documentation time):
 
-- **id** - initial key for reading only
-- **pagetitle** - product title as editing reference. If a product is embedded with regard to current category, its id and subcategory name are displayed also.
-- **longtitle** - long title, may be edited as text
-- **description** - product description, may be edited as text
-- **alias** - aliased name of a product for friendly url, may be edited as text
-- **introtext** - introduction, may be edited
-- **content** - resource content,  may be edited as text
-- **template** - template selection from the drop down list
-- **createdby** - user selection from the drop down list
-- **createdon** - selection of date and time of resource creation
-- **editedby** - user selection from the drop down list
-- **editedon** - selection of date and time of resource editing
-- **deleted** - resource is marked for deletion: yes \ no.
-- **deletedon** - selection of date and time of resource deletion
-- **deletedby** - user selection from the drop down list
-- **published** - resource is published: yes \ no.
-- **publishedon** - date of publishing
-- **publishedby** - user selection from the drop down list
-- **menutitle** - may be edited as text
-- **menuindex** - integer - number of resource position in current category
-- **uri** - CNC reference on the resource,may be edited as text
-- **uri_override** - lockdown the reference: yes \ no
-- **show_in_tree** - to display this item on the resource tree:yes \ no
-- **hidemenu** - not display item in site menu:yes \ no
-- **richtext** - content editing connection stamp:yes \ no
-- **searchable** - stamp of item indexing for search:yes \ no
-- **cacheable** - stamp of item cache:yes \ no
+### Resource properties
 
-Characteristics of goods:
+- **id** — primary key, read-only
+- **pagetitle** — product name as link to edit; also shows id and subcategory name for nested products
+- **longtitle**, **description**, **alias**, **introtext**, **content** — editable text
+- **template** — template dropdown
+- **createdby**, **createdon**, **editedby**, **editedon** — creation/edit user and date
+- **deleted**, **deletedon**, **deletedby** — deletion
+- **published**, **publishedon**, **publishedby** — publication
+- **menutitle**, **menuindex** — menu
+- **uri**, **uri_override** — friendly URL
+- **show_in_tree** — show in resource tree: yes / no
+- **hidemenu** — hide from site menu: yes / no
+- **richtext**, **searchable**, **cacheable** — editor, search, cache
 
-- **new** - novelty stamp: yes \ no
-- **favorite** - exceptional stamp:yes \ no
-- **popular** -popular stamp:yes \ no
-- **article** - article, may be edited as text
-- **price** - price, number with up to 2 decimal places
-- **old_price** - previous price,  number with up to 2 decimal places
-- **weight** - weight, number with up to 3 decimal places
-- **image** - large scale product image
-- **thumb** - small scale product image
-- **vendor** - manufacturer selection from drop down list
-- **vendor_name** - manufacturer name, for reading only
-- **made_in** - country of production, may be edited as text
+### Product properties
 
-The fields with arrays of **color**, **size** and **tags** type values are not displayed in the table.
-You may change this and add your own fields  by [goods plugin system][1] expanding.
+- **new**, **favorite**, **popular** — flags: yes / no
+- **article** — SKU (text)
+- **price**, **old_price** — price (2 decimal places)
+- **weight** — weight (3 decimal places)
+- **image**, **thumb** — main and thumbnail image
+- **vendor**, **vendor_name** — vendor (dropdown / read-only)
+- **made_in** — country (text)
 
-### Goods options
+Fields that hold arrays (e.g. **color**, **size**, **tags**) are not shown in the table.
+You can change this or add fields via [product plugins][1].
 
-A table with additional characteristics of goods with categories assigned by [miniShop2 settings][2].
-You may add already created characteristics manually, or copy from another category.
+### Product options
 
-[![](https://file.modx.pro/files/b/d/7/bd729e2da9295e635ffe33e1926c1a3cs.jpg)](https://file.modx.pro/files/b/d/7/bd729e2da9295e635ffe33e1926c1a3c.png)
+Table of extra product properties assigned to the category in [miniShop2 settings][2].
+You can add existing options manually or copy from another category.
+
+![Product options](https://file.modx.pro/files/b/d/7/bd729e2da9295e635ffe33e1926c1a3c.png)
 
 From the action menu you can:
 
-- switch on/off goods characteristics
-- switch on/off mandatory requirement to fill in goods characteristics
-- delete this category characteristic
+- enable or disable product options
+- make an option required or optional
+- remove an option for this category
 
-Mandatory characteristics are bold.
-Swift editing of values by default is also available as well as characteristics sorting by dragging.
+Required options are shown in bold.
+Quick edit of default values and drag-and-drop sort are available.
 
 [0]: http://rtfm.modx.com/revolution/2.x/developing-in-modx/advanced-development/custom-resource-classes
-[1]: /components/minishop2/development/product-plugins
+[1]: /en/components/minishop2/development/product-plugins
 [2]: /en/components/minishop2/interface/settings

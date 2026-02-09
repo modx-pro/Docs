@@ -1,12 +1,12 @@
 # Validation with yup
 
-This section is devoted to an example of integrating the [yup](https://github.com/jquense/yup) library for additional validation of form data before sending it to the server. Let's imagine that we need to process a simple form with two fields, name and age.
+This section shows how to integrate the [yup](https://github.com/jquense/yup) library for extra validation of form data before submission. We will handle a simple form with two fields: name and age.
 
 <!--@include: ../../parts/validation.warning.md-->
 
-## Form layout
+## Form markup
 
-Nothing unusual, except for the `novalidate` attribute added to the form element. It is needed to disable the browser's built-in validation.
+Nothing special, except the `novalidate` attribute on the form element to disable built-in browser validation.
 
 ```modx
 <form action="[[~[[*id]]]]" method="post" novalidate>
@@ -18,13 +18,13 @@ Nothing unusual, except for the `novalidate` attribute added to the form element
     <input type="text" name="age" value="[[+fi.age]]" />
     <span data-error="age">[[+fi.error.age]]</span>
   </label>
-  <button>Can I?</button>
+  <button>Submit</button>
 </form>
 ```
 
-## Adding library
+## Including the library
 
-To keep the example simple, let's connect it via CDN and use import.
+For simplicity we will load it via CDN and use a module import.
 
 ```html
 <script type="module">
@@ -34,9 +34,9 @@ To keep the example simple, let's connect it via CDN and use import.
 
 ## Handler
 
-Let's get to the most important thing, adding a handler to the [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore) event which will validate the form data.
+Add a handler for the [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore) event to validate the form data.
 
-1. Let's add a handler to the [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore) event.
+1. Add a handler for [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore).
 
     ```html
     <script type="module">
@@ -48,7 +48,7 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
     </script>
     ```
 
-2. Get references to instances of classes [`FormData`](https://developer.mozilla.org/ru/docs/Web/API/FormData) and [`FetchIt`](/en/components/fetchit/frontend/instance).
+2. Get references to the [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) and [`FetchIt`](/en/components/fetchit/frontend/instance) instances.
 
     ```html
     <script type="module">
@@ -60,7 +60,7 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
     </script>
     ```
 
-3. Convert **formData** into a simple object.
+3. Convert **formData** to a plain object.
 
     ```html
     <script type="module">
@@ -73,12 +73,12 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
     </script>
     ```
 
-4. Let's create a scheme by which our form will be validated and immediately specify error messages.
+4. Define the schema for the form and set error messages.
 
     ::: details Localization
-    The **yup** library provides several ways to localise error texts. We have chosen the simplest one for our example.
+    **yup** offers several ways to localize error messages. We use the simplest for this example.
 
-    You can find out about all the features in [documentation](https://github.com/jquense/yup#error-message-customization).
+    See the [documentation](https://github.com/jquense/yup#error-message-customization) for more options.
     :::
 
     ```html
@@ -96,18 +96,18 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
           age: yup // [!code focus]
             .number() // [!code focus]
             .required('Enter your age') // [!code focus]
-            .min(18, 'You must be 18 years old') // [!code focus]
+            .min(18, 'You must be 18 or older') // [!code focus]
             .integer() // [!code focus]
-            .typeError('The field must be a number'), // [!code focus]
+            .typeError('Must be a number'), // [!code focus]
         }); // [!code focus]
       });
     </script>
     ```
 
-5. Let's call the synchronous validation method `validateSync()` in the `try..catch` block so that we can catch failed attempts.
+5. Call the synchronous validation method `validateSync()` inside a `try..catch` to handle validation failures.
 
-    ::: info INFO
-    The `abortEarly` parameter is responsible for aborting validation at the first failure. And we need to validate all fields, so we will specify `false`.
+    ::: info Info
+    The `abortEarly` option controls whether validation stops at the first failure. We set it to `false` so all fields are validated.
     :::
 
     ```html
@@ -125,9 +125,9 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
           age: yup
             .number()
             .required('Enter your age')
-            .min(18, 'You must be 18 years old')
+            .min(18, 'You must be 18 or older')
             .integer()
-            .typeError('The field must be a number'),
+            .typeError('Must be a number'),
         });
 
         try { // [!code focus]
@@ -139,7 +139,7 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
     </script>
     ```
 
-6. Now we are interested in the `catch` block, there we will catch all validation errors and use the [`setError()`](/en/components/fetchit/frontend/instance#seterror) method of the [`FetchIt`](/en/components/fetchit/frontend/instance) instance of the [`FetchIt`](/en/components/fetchit/frontend/instance) class to set the invalid state of the fields. Let's also call the `preventDefault()` event method to abort the form submission.
+6. In the `catch` block, handle validation errors: use [`setError()`](/en/components/fetchit/frontend/instance#seterror) on the [`FetchIt`](/en/components/fetchit/frontend/instance) instance to set invalid state for fields, and call `preventDefault()` on the event to stop form submission.
 
     ```html
     <script type="module">
@@ -156,9 +156,9 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
           age: yup
             .number()
             .required('Enter your age')
-            .min(18, 'You must be 18 years old')
+            .min(18, 'You must be 18 or older')
             .integer()
-            .typeError('The field must be a number'),
+            .typeError('Must be a number'),
         });
 
         try {
@@ -174,7 +174,7 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
     </script>
     ```
 
-7. Optionally you can show a popup error message. Examples of connecting popular libraries can be found [here](/en/components/fetchit/examples/notifications/).
+7. Optionally show a popup error message. For examples with popular notification libraries see [here](/en/components/fetchit/examples/notifications/).
 
     ```html
     <script type="module">
@@ -191,9 +191,9 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
           age: yup
             .number()
             .required('Enter your age')
-            .min(18, 'You must be 18 years old')
+            .min(18, 'You must be 18 or older')
             .integer()
-            .typeError('The field must be a number'),
+            .typeError('Must be a number'),
         });
 
         try {
@@ -205,15 +205,15 @@ Let's get to the most important thing, adding a handler to the [`fetchit:before`
             fetchit.setError(path, message);
           }
 
-          FetchIt.Message.error('There are items that require your attention'); // [!code focus]
+          FetchIt.Message.error('Please fix the errors in the form'); // [!code focus]
         }
       });
     </script>
     ```
 
-That's it! After these steps we will get validation using **yup** library, but remember, it is not safe on the client side. That's why you should use **FormIt** validation tools when calling the snippet, or if you use your own snippet, you should do it in it.
+That's it. You now have validation with **yup**. Remember that client-side validation is not secure, so use **FormIt** validation when calling the snippet, or perform validation in your own snippet as well.
 
-An example of a snippet call with **FormIt** validation:
+Example snippet call with **FormIt** validation:
 
 :::code-group
 
@@ -223,26 +223,26 @@ An example of a snippet call with **FormIt** validation:
   &hooks=`email,FormItSaveForm`
   &validate=`name:required,age:required:isNumber:minValue=^18^`
 
-  // Optional
+  // Optional parameters
   &snippet=`FormIt`
   &formName=`Form name`
-  &emailSubject=`Subject`
+  &emailSubject=`Email subject`
 ]]
 ```
 
 ```fenom
-{'!FetchIt' | snippet : [
+{'!FetchIt' | snippet: [
   'form' => 'form.tpl',
   'hooks' => 'email,FormItSaveForm',
   'validate' => 'name:required,age:required:isNumber:minValue=^18^',
 
-  // Optional
+  // Optional parameters
   'snippet' => 'FormIt',
   'formName' => 'Form name',
-  'emailSubject' => 'Subject',
+  'emailSubject' => 'Email subject',
 ]}
 ```
 
 :::
 
-A list of all **FormIt** validators can be found on the [documentation site](https://docs.modx.com/3.x/en/extras/formit/formit.validators) of the component.
+See the [FormIt validators documentation](https://docs.modx.com/3.x/en/extras/formit/formit.validators) for the full list.

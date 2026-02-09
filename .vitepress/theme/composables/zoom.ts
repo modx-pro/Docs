@@ -29,7 +29,28 @@ export async function createZoom(app: App, router: Router) {
   })
 
   lightbox.reload = () => {
+    const blocklist = [
+      'youtube.com',
+      'youtu.be',
+      'rutube.ru',
+      'vimeo.com',
+      'vk.com/video',
+      'dailymotion.com',
+      'ok.ru/video',
+    ]
     const elements = Array.from(document.querySelectorAll('.VPContent.has-sidebar .vp-doc img:not(.logo)'))
+      .filter(item => {
+        const target = item.parentElement instanceof HTMLAnchorElement ? item.parentElement : item
+
+        if (!(target instanceof HTMLImageElement) && !(target instanceof HTMLAnchorElement)) return false
+
+        try {
+          const url = new URL(target instanceof HTMLAnchorElement ? target.href : target.src, window.location.origin)
+          return !blocklist.some(domain => url.hostname.includes(domain) || url.href.includes(domain))
+        } catch {
+          return true // если невалидный url, не фильтруем
+        }
+      })
       .map((element, index) => {
         const target = element.parentElement instanceof HTMLAnchorElement ? element.parentElement : element
         target.addEventListener('click', (e) => {

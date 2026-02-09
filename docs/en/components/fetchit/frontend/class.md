@@ -1,24 +1,24 @@
-# FetchIt Class
+# Class FetchIt
 
-This class is responsible for form processing and is declared in a script that comes as part of the extra and which is registered in the `<head>` tag with the `defer` attribute, which allows you to defer its execution until the whole page is loaded. This allows the script not to prevent the page from loading.
+This class handles form processing and is defined in the component script that is registered in the `<head>` with the `defer` attribute, so it runs only after the page has loaded. That keeps the script from blocking page load.
 
-PageSpeed Insights will be happy :wink:.
+Load-speed tools like PageSpeed Insights will be happy. Hello, SEO folks :wink:.
 
 ## Class properties and methods
 
-A class has several static properties. Important! Class itself, not instances.
+The class has several static properties. Important: on the class itself, not on instances.
 
 ## FetchIt.forms
 
 - Type: `HTMLFormElement[]`
 
-This property stores an array of `HTMLFormElement` of all processed forms.
+Holds an array of all forms managed by FetchIt.
 
 ## FetchIt.instances
 
 - Type: `Map`
 
-This property will return the `Map` collection where instances of the `FetchIt` class are stored. The class can be accessed through a form.
+Returns a `Map` of `FetchIt` instances. You can get the instance for a form from this map.
 
 - Example:
 
@@ -31,21 +31,21 @@ const fetchit = FetchIt.instances.get(form);
 
 - Type: `object`
 
-This property is not declared, but all instances of the class will attempt to call its methods: `before`, `success`, `error`, `after` and `reset`. This is done to make it easy to embed the script in your layout. I.e. you can declare this property in your script, for example, like this:
+This property is not defined by default; all instances will try to call its methods: `before`, `success`, `error`, `after`, and `reset`. You can define it in your own script to integrate with your layout:
 
 ```js
 FetchIt.Message = {
   before() {
-    // Show a message before submitting the form
+    // Show message before form submission
   },
   success(message) {
-    // Show message if sent successfully
+    // Show message on successful submission
   },
   error(message) {
-    // Show a message in case of a sending error
+    // Show message on submission error
   },
   after(message) {
-    // Show a message either way
+    // Show message in any case
   },
   reset() {
     // Show message after form reset
@@ -53,35 +53,35 @@ FetchIt.Message = {
 }
 ```
 
-As you have already noticed, the `success`, `error` and `after` methods receive as an argument the message that will be returned by the called snippet.
+The `success`, `error`, and `after` methods receive the message returned by the snippet.
 
 ## FetchIt.sanitizeHTML()
 
 - Type: `function (str: string): string`
 
-This method returns a string cleared of HTML tags passed as a single argument.
+Class method that returns the given string with HTML tags stripped.
 
 ## FetchIt.create()
 
 - Type: `function (config: object): undefined`
 
-A factory method that creates instances of the FetchIt class. Each instance of the class is responsible for a different form.
+Factory method that creates FetchIt instances. Each instance is bound to one form.
 
 ## FetchIt.events
 
 - Type: `object`
 
-An object with events and their names. May be useful for prototype inheritance.
+Object mapping event names. Useful for prototype-based extensions.
 
-## Class access
+## Accessing the class
 
-::: warning WARNING
-Remember, to access this class, you must wait until the script in which it is declared is executed.
+::: warning Important!
+The class is available only after the script that defines it has run.
 :::
 
-If you have a file script, it is enough to specify the `defer` attribute when connecting it (Recall that the extra registers the script in the `<head>` tag).
+If you use an external script, load it with the `defer` attribute (the component registers its script in `<head>`).
 
-And in the case of an inline script, you need to wait for the script to execute, and this is possible in the `DOMContentLoaded` event handler. Example:
+For inline scripts, wait for the script to run, e.g. in a `DOMContentLoaded` handler:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,10 +1,10 @@
 # pdoSitemap
 
-pdoSitemap i a snippet that easily creates sitemaps for search engines (sitemap.xml). The snippet understands the parameters used by the snippet [GoogleSitemap][1] (by translation to the native parameters) and can therefore easily replace it.
+Fast snippet for generating a sitemap for search engines (sitemap.xml). Accepts parameters from [GoogleSitemap][1] snippet (converts them to its own) and can replace it.
 
-The main feature is a much higher processing speed compared to the snippet GoogleSitemap. The site [bezumkin.ru][2] with 1700 pages increased the generation speed of the sitemap by ***12 times*** from 8.4 seconds down to 0.7.
+Main advantage is much higher speed compared to alternatives. On [bezumkin.ru][2] with 1700 pages, generation time dropped to ***12x*** faster, from 8.4 sec to 0.7.
 
-By default is the check for user permissions disabled. This can easily be remedied by including the parameter **&checkPermissions** (Note: slows down the generation!):
+By default permission check for document access is disabled. You can enable it with the parameter **&checkPermissions** (Warning: slows execution!):
 
 ```modx
 [[!pdoSitemap?
@@ -12,62 +12,62 @@ By default is the check for user permissions disabled. This can easily be remedi
 ]]
 ```
 
-The sitemap generation is more effective if resources are excluded from the output rather than to explicit include resources that shall be visible (see examples below).
+Prefer excluding resources from the map via snippet parameters.
 
-## Options
+## Parameters
 
-*pdoSitemap* accepts all options for [pdoTools][3]. Here are some of them:
+*pdoSitemap* accepts all [pdoTools][3] parameters and some of its own:
 
-Parameter          | Default value                                 | Description
--------------------|-----------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------
-**&sitemapSchema** | `http://www.sitemaps.org/schemas/sitemap/0.9` | The scheme used for the sitemap.
-**&forceXML**      | `1`                                           | Force output as XML.
-**&priorityTV**    |                                               | An optional field that indicates the [priority][4] of the resource. The template variable stated here must also be added to the parameter **&includeTVs**
+| Parameter           | Default                                    | Description                                                                                                           |
+|--------------------|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| **&sitemapSchema** | `<http://www.sitemaps.org/schemas/sitemap/0.9>` | Sitemap schema.                                                                                                 |
+| **&forceXML**      | `1`                                             | Force output as XML.                                                                           |
+| **&priorityTV**    |                                                 | Extra field that stores [priority][4] of the document. Add it to the parameter **&includeTVs** |
 
 ### Templates
 
-* **&tpl**
+::: code-group
 
-  ```modx
-  @INLINE <url>\n\t
-  <loc>[[+url]]</loc>\n\t
-  <lastmod>[[+date]]</lastmod>\n\t
-  <changefreq>[[+update]]</changefreq>\n\t
-  <priority>[[+priority]]</priority>\n
-  </url>
-  ```
+```modx [&tpl]
+@INLINE <url>\n\t
+<loc>[[+url]]</loc>\n\t
+<lastmod>[[+date]]</lastmod>\n\t
+<changefreq>[[+update]]</changefreq>\n\t
+<priority>[[+priority]]</priority>\n
+</url>
+```
 
-* **&tplWrapper**
+```modx [&tplWrapper]
+@INLINE <?xml version=\"1.0\" encoding=\"[[++modx_charset]]\"?>\n<urlset xmlns=\"[[+schema]]\">\n[[+output]]\n</urlset>
+```
 
-  ```modx
-  @INLINE <?xml version=\"1.0\" encoding=\"[[++modx_charset]]\"?>\n<urlset xmlns=\"[[+schema]]\">\n[[+output]]\n</urlset>
-  ```
+:::
 
-[Priority][4] and [Change frequency][5] for the resource is mapped based on the date for the last modification of the document:
+Priority and [update frequency][5] for search engines are set from the document last-modified date:
 
-Time since the last update of the document     | Priority | Change frequency
------------------------------------------------|----------|-----------------
-Less than a day ago                            | `1.0`    | daily
-Over one day but less than a week ago          | `0.75`   | weekly
-More than a week ago but less than a month ago | `0.5`    | weekly
-More than a month ago                          | `0.25`   | monthly
+| Time since last update | Priority | Update frequency |
+|-------------------------------------------|-----------|--------------------|
+| Less than a day ago                         | 1.0       | daily              |
+| More than a day, less than a week          | 0.75      | weekly             |
+| More than a week, less than a month         | 0.5       | weekly             |
+| More than a month ago                        | 0.25      | monthly            |
 
-### Instructions how to create a sitemap.xml resource
+### How to create sitemap.xml
 
-1. Create a new document in the root of the site. On the ***Document*** tab, select an empty template. Enter the "Title" of the document (your choice) and set the "Resource Alias" to ***sitemap***. Mark the checkboxes "Hide From Menus" and "Published".
-2. Go to the ***Settings*** tab and select XML as the "Content Type".
-3. Remove the mark from the checkbox "Rich Text" and save the document.
-4. The "Content" of the document should only be a call to the snippet pdoSitemap (see the examples here below).
+1. Create a new document in the site root. On the ***Document*** tab choose an empty template, set any title, and alias ***sitemap***. Ensure "Published" and "Hide from menu" are set as needed.
+2. Go to ***Settings*** and set "Content type" to "XML".
+3. Uncheck "Use HTML editor" and save.
+4. In the resource content, call only the pdoSitemap snippet (see Examples below).
 
-### Examples
+## Examples
 
-To create a sitemap for the default context, this should be sufficient in the most cases:
+Standard sitemap output for the current context. In most cases that is enough:
 
 ```modx
 [[pdoSitemap]]
 ```
 
-Generate sitemap only from certain containers:
+Generate sitemap only from specific containers:
 
 ```modx
 [[pdoSitemap?
@@ -75,45 +75,34 @@ Generate sitemap only from certain containers:
 ]]
 ```
 
-The extend the example above to also exclude resources with id = 15 and 25, together with their descendants:
+Exclude resources with id 15 and 25, including their children:
 
 ```modx
 [[pdoSitemap?
-  &parents=`10,-15,-25`
+  &parents=`10, -15,-25`
 ]]
 ```
 
-Change the example above to exclude the resource with id = 25 but include its descendants:
-
-```modx
-[[pdoSitemap?
-  &resources=`-25`
-  &parents=`-15,10`
-]]
-```
-
-Add another context (catalog) to the example above (if web is the default context):
+Exclude id 15 with children and 25 without:
 
 ```modx
 [[pdoSitemap?
   &resources=`-25`
   &parents=`-15,10`
-  &context=`web,catalog`
 ]]
 ```
 
-This call forces the http schema of the URL:s to https:
+Add another context:
 
 ```modx
 [[pdoSitemap?
   &resources=`-25`
   &parents=`-15,10`
   &context=`web,catalog`
-  &scheme=`https`
 ]]
 ```
 
-This call shows the execution log (remember to change the content type of the resource to HTML):
+View the sitemap query log:
 
 ```modx
 [[pdoSitemap?
@@ -128,5 +117,5 @@ This call shows the execution log (remember to change the content type of the re
 [1]: http://rtfm.modx.com/extras/revo/googlesitemap
 [2]: http://bezumkin.ru/sitemap.xml
 [3]: /en/components/pdotools/general-properties
-[4]: http://www.sitemaps.org/protocol.html#prioritydef
-[5]: http://www.sitemaps.org/protocol.html#changefreqdef
+[4]: http://www.sitemaps.org/ru/protocol.html#prioritydef
+[5]: http://www.sitemaps.org/ru/protocol.html#changefreqdef

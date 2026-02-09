@@ -1,31 +1,32 @@
-# Installation
+# Setup
 
-Installing Formalicious requires the free Extra **FormIt** to function properly.
-FormIt is also maintained by Sterc and thus, should guarantee maximum compatibility between FormIt and Formalicious.
+Formalicious requires **FormIt** to be installed. The installer will try to install it automatically if needed.
 
-The MODX installer should install this automatically when installing Formalicious from a repository.
+FormIt is also developed by **Sterc**, so the add-ons are fully compatible.
 
-A custom manager page called **Formalicious** is installed within the **Extras** menu.
-Also a Template Variable and Element Category named **Formalicious** are created.
-The **Template Variable** should be assigned to all the templates you wish to use Formalicious forms on and a Snippet should be added to those templates.
+After installation, a new **Formalicious** item appears in the manager menu. A category and TV with the same name are created.
 
-To accomplish this, follow these steps:
+Assign the TV to all templates you will use for forms. The corresponding snippet must also be called in those templates.
 
-1. Click the **formalicious** TV
-2. Click **Template Access**
-3. Enable the checkmarks for the templates on which you want to use Formalicious-forms
-4. Save your changes
-5. Go to every template you just enabled
-6. In the field **Template code (HTML)**, add the following Snippet-call at the location where you want to show your forms: ``[[!renderForm? &form=`[[*formalicious]]`]]``. We recommend to add it just below the `[[*content]]` placeholder, because it enables your content-managers to add text above the form.
-7. An alternative would be to create a chunk called **form** where you add the above Snippet-call. Instruct your content-managers to add the chunk-code `[[$form]]` anywhere they want, so they have more flexibility regarding the location of their forms, e.g. in-between two paragraphs.
-8. Save your changes
+## Step-by-step
 
-## Inserting a form with ContentBlocks
+1. Click the **formalicious** TV.
+2. Click **Available for templates**.
+3. Select the templates you need.
+4. Save.
+5. Edit each selected template.
+6. In **Template code (HTML)**, add the snippet where the form should appear:
 
-If you also use [ContentBlocks][1], you can use a field to select a form to insert as well,
-instead of needing the template variable and form code in your template.
-This gives your content editors more control over what form is inserted at what position.
+    ```modx
+    [[!renderForm? &form=`[[*formalicious]]`]]
+    ```
 
-At Extras > ContentBlocks, create a new fie ld using the "Formalicious Form Selector" input type and customize the template as needed.
+    We recommend placing the form right after the `[[*content]]` placeholder so content managers can add text above it.
+7. Optionally create a chunk named **form** and put the snippet call there. Then content managers can use `[[$form]]` anywhere for more flexibility (e.g. between two paragraphs in the page content).
+8. Save.
 
-[1]: https://www.modmore.com/contentblocks/
+## Inserting a form via ContentBlocks
+
+If you use [ContentBlocks](https://www.modmore.com/contentblocks/), Formalicious adds its own input type, so you don't need the TV.
+
+Go to **Apps** > **ContentBlocks** and create a new field with the input type **Formalicious Form Selector**. Configure the output template if needed.

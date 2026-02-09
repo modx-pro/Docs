@@ -1,9 +1,9 @@
-# Remains Tab
+# Remains tab
 
-After the extra is enabled, a new “Remains” tab will appear in the miniShop2 product resource. It will contain a table for remains editing.
+After activating the component, a new "Remains" tab appears in the miniShop2 product resource. It contains a table for editing stock.
 
-[![](https://file.modx.pro/files/0/7/f/07fabf8b1eebd0e5ee0c48b5a5c4d6fas.jpg)](https://file.modx.pro/files/0/7/f/07fabf8b1eebd0e5ee0c48b5a5c4d6fa.png)
+![Remains tab](https://file.modx.pro/files/0/7/f/07fabf8b1eebd0e5ee0c48b5a5c4d6fa.png)
 
-To get a complete remains table, it is necessary to fill in products properties in advance (color and size by default) and save and update the remains table (or reload the page).
+To get a filled remains table, first fill in the product attributes (by default, color and size), save the product, then refresh the remains table (or reload the page).
 
-To edit remains, double-click the left mouse button on the number you want to change. Then a field for entering remains amounts will appear. Input a new remains amount, press Enter, and the new amount of remains will be saved in the database.
+To edit remains, double-click the value you want to change; an input field will appear. Enter the new quantity and press Enter to save it to the database.

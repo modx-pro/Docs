@@ -1,43 +1,81 @@
-# Snippet getRemains
+# getRemains snippet
 
-The snippet displays the number of product remains. It can show both a total amount of remains for each property and a number for a certain combination of product properties.
+Snippet for outputting remaining product quantity. Can output either total stock across all properties or for a specific product property combination.
 
-If you call the snippet without specifying one or several properties, it will display a total amount of remains for all combinations of properties.
+If called without specifying one or more properties, the result will be total stock across all property combinations.
 
 ## Parameters
 
-Name       | By default  | Description
------------|-------------|---------------
-**&id**    | Resource ID | Product ID.
-**&color** |             | Product color.
-**&size**  |             | Product size.
+| Name      | Default       | Description                                  |
+|-----------|---------------|----------------------------------------------|
+| **&id**   | `Resource ID` | Product ID                                   |
+| **&color**|               | Product color                                |
+| **&size** |               | Product size                                 |
+| **&return** | `data`      | Return number (data) or data array (json)    |
 
 ## Call options
 
-For a better and more precise calculation of remains, **the snippet should be called non-cached**.
+For correct and accurate stock calculation, **the snippet should be called uncached**.
 
-For a total number of remains on the product page:
+To get total stock on the product page:
 
 ```modx
 [[!getRemains]]
 ```
 
-For an amount of remains of a certain combination of properties:
+To get stock for a specific property combination:
 
 ```modx
 [[!getRemains?
-  &id=`[[+id]]`
+  &id=[[+id]]
   &color=`color`
   &size=`size`
 ]]
 ```
 
-Use standard MODX filter for call recording in a placeholder:
+To write the output to a placeholder, use the standard MODX filter:
 
 ```modx
 [[!getRemains:toPlaceholder=`remains`?
-  &id=`[[+id]]`
+  &id=[[+id]]
   &color=`color`
   &size=`size`
 ]]
+```
+
+## Stock data array
+
+When calling the snippet like this:
+
+```modx
+[[!getRemains? &return=`json`]]
+```
+
+the response will be a product stock data array, for example:
+
+```json
+[{
+  "id": 112,
+  "options": {
+    "color": "Red",
+    "size":"Small"
+  },
+  "remains": 56
+},
+{
+  "id": 113,
+  "options": {
+    "color": "Blue",
+    "size": "Large"
+  },
+  "remains": 0
+},
+{
+  "id": 114,
+  "options": {
+    "color": "Blue",
+    "size": "Small"
+  },
+  "remains": 75
+}]
 ```

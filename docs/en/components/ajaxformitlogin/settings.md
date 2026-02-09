@@ -1,0 +1,12 @@
+# System settings
+
+## Settings
+
+| Parameter                             | Default                                                 | Description                                                                                                                                                                                           |
+| ------------------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ajaxformitlogin_counter_id**       |                                                         | Yandex.Metrika counter ID. Set this for goal tracking to work.                                                                                                                                        |
+| **ajaxformitlogin_frontend_js**      | `[[+assetsUrl]]js/default.js`                            | Path to main JS. Supports placeholder `[[+assetsUrl]]`.                                                                                                                                               |
+| **ajaxformitlogin_metrics**          | `No`                                                    | Enable sending goals to Yandex.Metrika. With `Yes` and empty counter ID, goal tracking will not work.                                                                                                  |
+| **ajaxformitlogin_notify_classname** | `AflIziToast`                                           | Notification library handler class name.                                                                                                                                                              |
+| **ajaxformitlogin_notify_classpath** | `./aflizitoast.class.js`                                | Path to the handler class file, relative to the main JS class (default: `assets/components/ajaxformitlogin/js/modules/ajaxformitlogin.class.js`).                                                     |
+| **ajaxformitlogin_notify_js**        | `assets/components/ajaxformitlogin/js/message_settings.json` | Path to notification library settings file.                                                                                                                                                       |

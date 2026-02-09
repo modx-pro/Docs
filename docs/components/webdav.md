@@ -55,6 +55,6 @@ WebDAVMediaSource сетевой медиа источник для MODX Revolut
 
 ## Скачивание через посредника
 
-Если сервер WebDAV не дает прямого доступа к скачиванию файлов вы можете захотеть воспользоваться процессором-посредником.
-URL создается из: `http://yoursite.ru/assets/components/webdav/index.php?ctx=web&action=proxy&source=SOURCEID&src=path/file.ext`
+Если сервер WebDAV не даёт прямого доступа к скачиванию файлов вы можете захотеть воспользоваться процессором-посредником.
+URL создаётся из: `http://yoursite.ru/assets/components/webdav/index.php?ctx=web&action=proxy&source=SOURCEID&src=path/file.ext`
 Как видите в параметрах указываются sourceID и путь к файлу, но оно замкнуто для работы только с WebDAV источниками.
