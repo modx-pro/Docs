@@ -2,7 +2,7 @@
 title: ms3Pulse
 description: Дашборд продаж и аналитика для MiniShop3 — метрики, графики, экспорт и отчёты по расписанию
 logo: https://modstore.pro/assets/extras/ms3pulse/logo-lg.png
-author: modx-pro
+author: ibochkarev
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
