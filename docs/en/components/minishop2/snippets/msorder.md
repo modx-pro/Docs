@@ -10,7 +10,7 @@ Checkout form snippet.
 |-----------|---------|-------------|
 | **tpl** | `tpl.msOrder` | Output chunk |
 | **userFields** | | Associative array mapping order fields to user profile fields: "order_field" => "profile_field". |
-| **showLog** | | Show debug info. Only for users authorized in context "mgr". |
+| **showLog** | `false` | Show debug info. Only for users authorized in context "mgr". |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
@@ -18,10 +18,10 @@ Checkout form snippet.
 
 The snippet expects a [Fenom chunk][1]. It passes 5 variables:
 
-- **order** — order data from session: **delivery**, **payment**, **cost**
+- **order** — order data from session: **delivery**, **payment**, **cost**, **cart_cost**, **delivery_cost**, **discount_cost**
 - **deliveries** — available delivery methods
 - **payments** — payment methods
-- **form** — customer data: **email**, **receiver**, **phone**, **index**, **region**, **city**, **street**, **building**, **room**, and any **&userFields** mappings
+- **form** — customer data: **email**, **receiver**, **phone**, **index**, **country**, **region**, **city**, **street**, **building**, **room**, **entrance**, **floor**, **comment**, **text_address**, and any **&userFields** mappings
 - **errors** — form fields with validation errors
 
 ### Placeholders

@@ -12,7 +12,11 @@ Unlike [msOptions][1], this snippet simply outputs the list of [product options]
 | **product** | | Product id. If omitted, current resource id is used. |
 | **onlyOptions** | | Output only these options, comma-separated. |
 | **ignoreOptions** | | Options to exclude from output, comma-separated. |
+| **ignoreGroups** | | Groups whose options to exclude from output, comma-separated. |
 | **groups** | | Output only options from these groups (group name or category id, comma-separated). |
+| **sortGroups** | | Sort order of option groups. Accepts IDs or names. E.g. `22,23,24` or `Sizes,Electronics,Other`. |
+| **sortOptions** | | Sort order of options. Passed as a string, e.g. `size,color`. |
+| **sortOptionValues** | | Sort order of option values. E.g. `size:SORT_DESC:SORT_NUMERIC:100,color:SORT_ASC:SORT_STRING` |
 
 ## Output
 

@@ -16,6 +16,9 @@ The snippet works with a [Fenom chunk][1] and passes cart status from the user s
 
 - **total_count** — total number of items in the cart
 - **total_cost** — total cart cost
+- **total_weight** — total cart weight
+- **total_discount** — total cart discount
+- **total_positions** — number of positions in the cart
 
 These may differ if you use an extended cart class.
 

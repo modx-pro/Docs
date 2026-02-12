@@ -15,7 +15,7 @@ Required methods of **msOrderInterface**:
 - **set** - Overwrites order contents with the given array.
 - **submit** - Submits the order; it must already have delivery and required fields.
 - **clean** - Full order clear.
-- **getcost** - Gets delivery cost. The request is passed to `msDeliveryInterface`.
+- **getCost** - Gets delivery cost. The request is passed to `msDeliveryInterface`.
 
 ## How it works
 
@@ -85,24 +85,32 @@ switch ($modx->event->name) {
   case 'msOnBeforeRemoveFromOrder'; break; // receives $key with field name
   case 'msOnRemoveFromOrder'; break; // receives $key with field name
 
+  // Order field validation
+  case 'msOnBeforeValidateOrderValue'; break; // receives $key, $value and $order (msOrderHandler)
+  case 'msOnValidateOrderValue'; break; // receives $key, $value and $order (msOrderHandler)
+
   // Order submission
   case 'msOnSubmitOrder'; break; // optional $data array with overridable fields
 
   // Creating order
-  case 'msOnBeforeCreateOrder'; break; // receives ready $order object with all attached objects
-  case 'msOnCreateOrder'; break; // same
+  case 'msOnBeforeCreateOrder'; break; // receives $msOrder object and $order (msOrderHandler)
+  case 'msOnCreateOrder'; break; // receives $msOrder object and $order (msOrderHandler)
 
   // Clearing order
-  case 'msOnBeforeEmptyOrder'; break; // receives only $order object
-  case 'msOnEmptyOrder'; break; // receives only $order object
+  case 'msOnBeforeEmptyOrder'; break; // receives $order (msOrderHandler)
+  case 'msOnEmptyOrder'; break; // receives $order (msOrderHandler)
+
+  // Getting order cost
+  case 'msOnBeforeGetOrderCost'; break; // receives $order, $cart, $with_cart, $only_cost
+  case 'msOnGetOrderCost'; break; // receives $order, $cart, $with_cart, $only_cost, $cost, $delivery_cost
 
   // Order status change (payment, cancel, etc.)
-  case 'msOnBeforeChangeOrderStatus': break; // receives $order object and status id in $status
-  case 'msOnChangeOrderStatus': break; // receives $order object and status id in $status
+  case 'msOnBeforeChangeOrderStatus': break; // receives $order (msOrder), $status and $old_status
+  case 'msOnChangeOrderStatus': break; // receives $order (msOrder), $status and $old_status
 }
 ```
 
-All events also receive the `$order` object.
+All events receive the `$order` variable. In cart and order handler events (add, remove, validate, empty, getCost, submit) it is an `msOrderHandler` class instance. In status change events (`msOnChangeOrderStatus` etc.) it is an `msOrder` object.
 
 ## Example
 
