@@ -1,30 +1,31 @@
-# Remote Authorization
+# Remote authentication
 
-The idea is that two snippets - one on the client site and another on the server site - run at once to authorize the client through the server.
+The idea: two snippets run on the client site and the server site so that the client can log in via the server.
 
 ## officeRemoteServer
 
-this snippet runs on the server from which users come.
-The address to which this snippet is called for, should be indicated with the client - let it be `site.com/remote/login`, for example.
+This snippet runs on the server that users will log in through.
+The URL where this snippet is called must be set on the client — e.g. `site.com/remote/login`.
 
-When a client is directed to the server, it checks the authorization status. If we have a guest, they will be redirected to the login server page (if it is not indicated, then to the parent of document `site.com/remote/`).
-There you can use officeAuth, HybridAuth, Login — anything you like - in order to authorize the user.
+When the client visits the server, the server checks login status. If the user is a guest, they are redirected to the server login page (or the parent of the document at `site.com/remote/` if not set).
+There you can use officeAuth, HybridAuth, Login — anything that logs the user in.
 
-Right after the authorization the user should be sent back to `site.com/remote/login` — there the snippet will get information about them, save it to cache for 10 seconds, generate an authorization token and send the user with it to the address from which the user has come.
+Right after login the user must be sent back to `site.com/remote/login` — the snippet will get their info, cache it for 10 seconds, generate an auth token and send the user back to the URL they came from with that token.
 
-Name        | By default | Description
-------------|------------|--------------------------------------------------------------------------------------------------------------------------------------------------------
-**&hosts**  |            | List of domens (with commas), which are allowed to access the authorization page.
-**&key**    |            | Obligatory data encryption key for keeping personal information safe. The key has to be the same for the client and the server.
-**&authId** | `0`        | Id of the site page, for user's authorization. After a successful authorization the user has to be redirected back to the snippet "officeRemoteServer".
+| Name    | Default | Description                                                                                                                                                |
+|---------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **&hosts**  |         | Comma-separated list of domains allowed to access the auth page                                                                                            |
+| **&key**    |         | Required encryption key for the data. Must be the same on server and client                                                                                 |
+| **&authId** | `0`     | Resource ID of the server login page. After successful login the user must be redirected back to the "officeRemoteServer" snippet page                     |
 
-In the authorization snippet you have to indicate
+The auth snippet must have:
 
 ```modx
-&loginResourceId=`id страницы site.com/remote/login`
+&loginResourceId=`id of the page site.com/remote/login`
 ```
 
-That is, we have 2 pages on the server.
+So on the server you have two pages:
+
 `site.com/remote/` (id = 1)
 
 ```modx
@@ -43,35 +44,35 @@ That is, we have 2 pages on the server.
 ]]
 ```
 
-### officeRemoteAuth
+## officeRemoteAuth
 
-This snippet shows the login and logout forms.
+This snippet shows the login/logout form.
 
-There should be authorization link `site.com/remote/login` in the login form. The user starts authorizing after clicking it.
-If everything is alright, they will be authorized on the server and return to the client with the token, by which the client can get information about the user from the server.
+The login form must include a link to `site.com/remote/login`; when the user follows it, auth starts on the server.
+If all is well, they log in on the server and return to the client with a token; the client uses the token to get user data from the server.
 
-This information is encrypted by the indicated key **&key**, and after getting the data the user is created/updated and authorized on the client.
+That data is encrypted with **&key**. After receiving it, the user is created or updated and logged in on the client.
 
-When the user exits the client site, they exit the server site bu the same algorithm (only without any data exchange).
+On logout from the client, the same flow runs (without user data exchange) and the user is logged out on the server too.
 
-Most parameters coincide with those of [officeAuth][1] (chunks, groups, contexts, remembering, etc.), but there are also some unique ones:
+Most parameters match [officeAuth][1] (chunks, groups, contexts, remember, etc.); some are specific:
 
-Name                  | By default                 | Description
-----------------------|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&tplLogin**         | `tpl.Office.remote.login`  | This chunk will be shown to an anonymous user, i.e. to any guest.
-**&tplLogout**        | `tpl.Office.remote.logout` | This chunk will be shown to an authorized user.
-**&groups**           |                            | List of groups for a user registration, with commas. User's role in the group can be written after a colon. For example, ``&groups=`Users:1` `` will add a user to "Users" group with a "member" role.
-**&rememberme**       | `1`                        | Remembers a user for a long time. On by default.
-**&loginContext**     |                            | General context for authorization. By default - the current one.
-**&addContexts**      |                            | Additional contexts, with commas. For example, ``&addContexts=`web,ru,en` ``
-**&loginResourceId**  | `0`                        | Identifier of a resource to which the user will be sent after authorization. By default it is `0`, which updates the current page.
-**&logoutResourceId** | `0`                        | Identifier of a resource to which the user will be sent when the session is ended. By default it is `0`, which updates the current page.
-**&updateUser**       | `1`                        | Permission to update existing users with data from the remote server.
-**&createUser**       | `1`                        | Permission to create new users.
-**&remote**           |                            | Obligatory address of the remote server page with a call for snippet "officeAuthServer".
-**&key**              |                            | Obligatory data encryption key for keeping personal information safe. The key has to be the same for the client and the server.
+| Name                | Default                 | Description                                                                                                                                                |
+|---------------------|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **&tplLogin**       | `tpl.Office.remote.login`  | Chunk shown to anonymous users                                                                                                                             |
+| **&tplLogout**      | `tpl.Office.remote.logout` | Chunk shown to logged-in users                                                                                                                             |
+| **&groups**         |                         | List of groups for registration, comma-separated. Role via colon, e.g. `&groups=`Users:1`` adds user to "Users" with role "member"                         |
+| **&rememberme**     | `1`                     | Remember user for a long time. Default: on                                                                                                                  |
+| **&loginContext**   |                         | Main context for login. Default: current                                                                                                                    |
+| **&addContexts**    |                         | Extra contexts, comma-separated. E.g. `&addContexts=`web,ru,en``                                                                                           |
+| **&loginResourceId**  | `0`                   | Resource ID to redirect to after login. Default 0 = refresh current page                                                                                   |
+| **&logoutResourceId** | `0`                   | Resource ID to redirect to after logout. Default 0 = refresh current page                                                                                   |
+| **&updateUser**     | `1`                     | Allow updating existing users with data from the remote server                                                                                            |
+| **&createUser**     | `1`                     | Allow creating new users                                                                                                                                   |
+| **&remote**         |                         | Required URL of the page on the remote server with the "officeRemoteServer" snippet                                                                        |
+| **&key**            |                         | Required encryption key. Must be the same on server and client                                                                                             |
 
-On the client site the snippet can be called for like this:
+Example on the client:
 
 ```modx
 [[!officeRemoteAuth?

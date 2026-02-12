@@ -1,68 +1,66 @@
 ---
-name: Digital Signage
-description: Digital Signage is a MODX Extra by Sterc
+title: DigitalSignage
+description: Application for creating broadcasts on MODX
 logo: https://modstore.pro/assets/extras/digitalsignage/logo-lg.png
 author: Sterc
-modstore: https://en.modstore.pro/packages/other/digitalsignage
+modstore: https://modstore.pro/packages/other/digitalsignage
 modx: https://extras.modx.com/package/digitalsignage
 repository: https://github.com/Sterc/digitalsignage
 ---
-# Digital Signage
+# DigitalSignage
 
 ## Permissions
 
-The following permissions are added on installation, make sure you add this permissions to the correct policy templates.
+These permissions are created on install. Assign them to your access policies.
 
-| Permission                  | Description                                                                        |
-|-----------------------------|------------------------------------------------------------------------------------|
-| **digitalsignage**          | With this policy you can manage slides, broadcasts and media players.              |
-| **digitalsignage_settings** | With this policy you can manage slides, broadcasts, media players and slide types. |
+| Permission | Description |
+|------------|-------------|
+| **digitalsignage** | Access to manage slides, broadcasts, and media players. |
+| **digitalsignage_settings** | Access to manage slides, broadcasts, media players, and slide types. |
 
 ## System settings
 
-The following system settings are added on installation.
+Created on install:
 
-| Setting                                    | Description                                                     |
-|--------------------------------------------|-----------------------------------------------------------------|
-| **digitalsignage.context**                 | The key of the Digital Signage context.                         |
-| **digitalsignage.export_resource**         | The ID of `Home` resource within the Digital Signage context.   |
-| **digitalsignage.request_resource**        | The ID of `Export` resource within the Digital Signage context. |
-| **digitalsignage.templates**               | Comma delimited list of Digital Signage templates.              |
-| **digitalsignage.auto_create_sync**        | Automatically synchronize when no data is available.            |
-| **digitalsignage.media_source**            | The media source that is used for media files.                  |
-| **digitalsignage.request_param_broadcast** | GET-parameter to identify the broadcast.                        |
-| **digitalsignage.request_param_player**    | GET-parameter to identify the player.                           |
+| Setting | Description |
+|---------|-------------|
+| **digitalsignage.context** | Digital Signage context key. |
+| **digitalsignage.export_resource** | ID of the `Home` resource in the Digital Signage context. |
+| **digitalsignage.request_resource** | ID of the `Export` resource in the Digital Signage context. |
+| **digitalsignage.templates** | Comma-separated list of templates for broadcasts. |
+| **digitalsignage.auto_create_sync** | Enable auto-sync when data is missing. |
+| **digitalsignage.media_source** | Media source for file selection. |
+| **digitalsignage.request_param_broadcast** | GET parameter for broadcast ID. |
+| **digitalsignage.request_param_player** | GET parameter for player ID. |
 
 ## Resources
 
-You can find the following resources in the Digital Signage context.
+In the Digital Signage context you will find:
 
-| Resource   | Output after installation                                     |
-|------------|---------------------------------------------------------------|
-| **Home**   | `{"status":400,"message":"No player found with the key ''."}` |
-| **Export** | `{"slides":[]}`                                               |
+| Resource | Default output |
+|----------|----------------|
+| **Home** | `{"status":400,"message":"No player found with the key ''."}` |
+| **Export** | `{"slides":[]}` |
 
-## Assets
+## Scripts and styles
 
-You can find the CSS and Javascript assets within the `digitalsignage` folder in the root.
+CSS and JavaScript are installed in the `digitalsignage` directory in the site root.
 
-## Creating your first broadcast
+## Quick start
 
-1. Create a player within the Digital Signage component. Example:
+1. Create a player:
+   - **Name**: Living room
+   - **Description**: TV in the living room
+   - **Resolution**: 1920x1080
+   - **Type**: TV (optional)
 
-    1. **Name**: Hall
-    2. **Description**: Screen in the hall
-    3. **Resolution**: 1920x1080
-    4. **Type**: Television (not mandatory and can be whatever you want)
+2. Create slides in the second tab.
+3. Create a broadcast in the first tab:
+   - **Name**: General
+   - **Description**: Daily broadcast.
+   - **Template**: DigitalSignage
+   - **Ticker URL**: e.g. [https://modx.today/feed.xml](https://modx.today/feed.xml) (RSS feed)
 
-2. Create slide(s) within in the `Slides` tab.
-3. Create a broadcast within in the `Broadcasts` tab. Example:
-
-    3.1. **Name**: General
-    3.2. **Description**: General broadcast for every workday.
-    3.4. **Template**: DigitalSignage
-    3.5. **Ticker URL**: [https://modx.today/feed.xml](https://modx.today/feed.xml) (a RSS feed URL)
-
-4. Connect slides to your broadcast by right clicking the broadcast in the `Broadcasts` tab.
-5. Schedule your broadcast on the media player by right clicking the media player in the `Players` tab.
-6. Right click the media player and press `View player` to retrieve the player URL.
+4. Right-click the broadcast and attach slides.
+5. In the third tab, set the player schedule (right-click).
+6. Right-click the player and click "Attach player".

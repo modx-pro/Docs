@@ -104,6 +104,7 @@ title: Каталог товаров
 Карточка содержит две формы, переключаемые JavaScript-модулем `ProductCardUI`:
 
 **Состояние "Добавить"** — товара нет в корзине:
+
 ```html
 <form class="ms3-add-to-cart" data-cart-state="add">
     <button type="submit">В корзину</button>
@@ -111,6 +112,7 @@ title: Каталог товаров
 ```
 
 **Состояние "В корзине"** — товар уже добавлен:
+
 ```html
 <form class="ms3-cart-controls" data-cart-state="change">
     <button class="dec-qty">−</button>

@@ -42,7 +42,7 @@ switch ($modx->event->name) {
 
   // Создание заказа
   case 'PasOnBeforeCreateOrder'; break; // получает готовый объект $order со всеми прицепленными объектами
-  case 'PasOnCreateOrder'; break; // тоже самое
+  case 'PasOnCreateOrder'; break; // то же самое
 
   // Очистка заказа
   case 'PasOnBeforeEmptyOrder'; break; // получает только объект $order

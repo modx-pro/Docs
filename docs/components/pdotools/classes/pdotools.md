@@ -93,7 +93,7 @@ foreach ($users as $id) {
 Есть и более продвинутое кэширование, методами MODX:
 
 - **setCache**(mixed $data, array $options) - сохраняет данные `$data` в кэш, генерируя ключ из `$options`
-- **getCache**(array $options) - выдает данные, согласно `$options`
+- **getCache**(array $options) — выдаёт данные, согласно `$options`
 
 Здесь данные уже сохраняются на диск, время кэширования можно передавать в массиве параметров:
 

@@ -1,3 +1,3 @@
-::: tip Tip
-Another [pdoTools general parameters](/en/components/pdotools/general-properties) may be used.
+::: tip
+You can also use other [general pdoTools parameters](/en/components/pdotools/general-properties).
 :::

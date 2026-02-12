@@ -1,5 +1,6 @@
 ---
-name: FileAttach
+title: FileAttach
+description: Upload files to resources in the site manager
 logo: https://modstore.pro/assets/extras/fileattach/logo-lg.jpg
 author: 13hakta
 modstore: https://modstore.pro/packages/photos-and-files/fileattach
@@ -8,43 +9,42 @@ repository: https://github.com/13hakta/FileAttach
 ---
 # FileAttach
 
-Package to upload and attach files to resources in site manager.
+Module for uploading files to resources in the site manager.
 
-- Supports upload and download limitation by policies;
-- Has admin managing tool to control all uploaded files;
-- There is a media source for viewing uploaded files. It becomes available while package is globally registered during installation;
-- File list is kept in table
+- Access to upload and download can be restricted with access policies;
+- Administrative management of all uploaded files on the site;
+- A media source is available for browsing uploaded files (when the package is registered globally during installation);
+- File list is stored in a database table.
 
-For every file could be set description, privacy mode (accessibility by direct link), download count, SHA1 checksum.
+For each file you can set a description, privacy mode (direct link access), download count, and SHA1 checksum.
 
-Files are accessible to download by direct link. For "private" files long name is randomly generated, that is not matched to original filename.
-For "open" files original filename is preserved.
+Files can be downloaded via direct link. "Private" files get a long generated name that does not match the original filename. "Public" files keep their original name.
 
-Custom order may be set by enabling order column in editor and dragging selected rows to corresponding position.
+You can reorder files by dragging entries in the editor.
 
-Supports MySQL and SQLSrv DB schemes.
+Supports MySQL and SQLSrv.
 
-Component development is here: [https://github.com/13hakta/FileAttach](https://github.com/13hakta/FileAttach)
+Development: [https://github.com/13hakta/FileAttach](https://github.com/13hakta/FileAttach)
 
 ## Chunk FileAttachTpl
 
-Allows to customize view of file item output.
+Defines how file entries are rendered.
 
-| Name               | Description                                               |
-|--------------------|-----------------------------------------------------------|
-| **&description**   | Description                                               |
-| **&docid**         | Resource ID, where file uploaded                          |
-| **&download**      | Download count                                            |
-| **&hash**          | SHA1 checksum                                             |
-| **&id**            | File ID                                                   |
-| **&internal_name** | Internal name. File name in file system                   |
-| **&name**          | File name. When private=false internal_name equal to name |
-| **&path**          | Path in media source                                      |
-| **&private**       | Privacy flag                                              |
-| **&rank**          | Order in file list. May be used for custom sorting        |
-| **&size**          | File size in bytes                                        |
+| Name             | Description                                                |
+|------------------|------------------------------------------------------------|
+| **&description**  | Description                                                |
+| **&docid**        | Resource ID the file is attached to                        |
+| **&download**     | Download count                                             |
+| **&hash**         | SHA1 checksum                                              |
+| **&id**           | File ID                                                    |
+| **&internal_name**| Internal name (filename on the filesystem)                  |
+| **&name**         | File name (same as internal_name when private=no)          |
+| **&path**         | Path within the media source                              |
+| **&private**      | Whether the file is private                                |
+| **&rank**         | Sort order in the list                                     |
+| **&size**         | File size in bytes                                        |
 
-Initial chunk content:
+Default chunk content:
 
 ```modx
 <p>[[+description:notempty=`<strong>[[+description]]</strong><br/>`]]
@@ -55,81 +55,80 @@ Initial chunk content:
 
 ## Snippet FileAttach
 
-Outputs file list.
+Outputs the list of files.
 
-| Name                 | Default value   | Description                                                                                                                 |
-|----------------------|-----------------|-----------------------------------------------------------------------------------------------------------------------------|
-| **&limit**           | `0`             | The number of files to limit per page. Show all items if not set                                                            |
-| **&makeURL**         | `false`         | Generate URL for file download                                                                                              |
-| **&outputSeparator** |                 | A string to separate each row with.                                                                                         |
-| **&privateUrl**      | `false`         | Force private url. Allows to count downloads even with open files                                                           |
-| **&resource**        | `0`             | Show files for resource id                                                                                                  |
-| **&showSize**        | `false`         | Retrieve file size                                                                                                          |
-| **&sortBy**          | `name`          | The field to sort by.                                                                                                       |
-| **&sortDir**         | `ASC`           | The direction to sort by.                                                                                                   |
-| **&toPlaceholder**   | `false`         | If set, will output the content to the placeholder specified in this property, rather than outputting the content directly. |
-| **&tpl**             | `FileAttachTpl` | The chunk to use for each row of files.                                                                                     |
+| Name               | Default       | Description                                                                 |
+| ------------------ | ------------- | --------------------------------------------------------------------------- |
+| **&limit**         | `0`           | Max number of files to output (0 = all)                                     |
+| **&makeURL**       | `false`       | Generate download link for the file                                         |
+| **&outputSeparator**|               | Separator between output entries                                            |
+| **&privateUrl**    | `false`       | Force download via connector (counts downloads for public files too)         |
+| **&resource**      | `0`           | Resource ID to show files for (0 = current resource)                         |
+| **&showSize**      | `false`      | Include file size                                                           |
+| **&sortBy**        | `name`       | Sort by field                                                               |
+| **&sortDir**       | `ASC`        | Sort direction                                                              |
+| **&toPlaceholder** | `false`      | Store result in a placeholder instead of outputting                          |
+| **&tpl**           | `FileAttachTpl` | Chunk for each file row                                                  |
 
 ## Class FileItem
 
 ### Methods
 
-| Name             | Description                                         | Arguments         |
-|------------------|-----------------------------------------------------|-------------------|
-| **generateName** | Generate new filename                               | length (int) = 32 |
-| **getFullPath**  | Get full file path                                  |                   |
-| **getPath**      | Get file path relatively to media source root       |                   |
-| **getSize**      | Get file size                                       |                   |
-| **getUrl**       | Get file link                                       |                   |
-| **rename**       | Rename file                                         | name (str)        |
-| **sanitizeName** | Filter unacceptable symbol combination in file name | name (str)        |
-| **setPrivate**   | Set privacy mode                                    | private (bool)    |
+| Name           | Description                                                    | Parameters         |
+| -------------- | -------------------------------------------------------------- | ------------------ |
+| **generateName** | Generate a new file name                                     | length (int) = 32  |
+| **getFullPath**  | Get full path to the file                                    |                    |
+| **getPath**      | Get path relative to media source root                       |                    |
+| **getSize**      | Get file size                                                |                    |
+| **getUrl**       | Get file URL                                                 |                    |
+| **rename**       | Rename the file                                              | name (str)         |
+| **sanitizeName** | Sanitize invalid characters in the file name                 | name (str)         |
+| **setPrivate**   | Set privacy mode                                             | private (bool)      |
 
-## System options
+## System settings
 
-| Name             | Default value | Description                                       |
-|------------------|---------------|---------------------------------------------------|
-| **calchash**     | `false`       | Calculate file hash at upload                     |
-| **files_path**   |               | Path relative to media source root. Ends with "/" |
-| **mediasource**  | `1`           | Media source ID                                   |
-| **private**      | `false`       | Make file private at upload                       |
-| **put_docid**    | `false`       | Upload file in subfolder with resource ID         |
-| **templates**    |               | List of templates to activate module              |
-| **user_folders** | `false`       | Upload file in user ID subfolder                  |
+| Name           | Default | Description                                                                 |
+| -------------- | ------- | --------------------------------------------------------------------------- |
+| **calchash**   | `false` | Calculate SHA1 checksum on upload                                            |
+| **download**   | `true`  | Count downloads                                                              |
+| **files_path** | `Path`  | Path relative to media source root (must end with "/")                       |
+| **mediasource**| `1`     | Media source ID                                                              |
+| **private**    | `false` | Make files private by default on upload                                      |
+| **put_docid**  | `false` | Store files in a resource subfolder                                          |
+| **templates**  |         | Comma-separated list of document template IDs where the module is active   |
+| **user_folders**| `false`| Store files in a user subfolder                                              |
 
-## Connector for file download
+## Download connector
 
-Private file are downloaded through connector, what allows to hide direct link and and count downloads.
-It's available to download opened files through connector by calling snippet with **&privateUrl**=`1`, in this case connector will redirect to direct link.
+Private files are downloaded through the connector, which hides the direct file URL and counts downloads. You can also serve public files via the connector by setting **&privateUrl**=`1` in the snippet call; the connector will then redirect to the direct link.
 
-Connector link looks like: `MODX_ASSETS_URL/components/fileattach/connector.php?action=web/download&ctx=web&id=file_id`,
-where file_id - sequential file ID in DB table.
+Connector URL format: `MODX_ASSETS_URL/components/fileattach/connector.php?action=web/download&ctx=web&id=file_id`, where `file_id` is the file ID in the database.
 
 ## Access policies
 
-### Permissions list
+### Permissions
 
-| Name                     | Description                  |
-|--------------------------|------------------------------|
-| **fileattach.doclist**   | Manage files in resource     |
-| **fileattach.download**  | Permission to download files |
-| **fileattach.totallist** | Manage all files             |
+| Name                     | Description                          |
+| ------------------------ | ------------------------------------ |
+| **fileattach.doclist**   | Manage files in a document           |
+| **fileattach.download**  | Download files                       |
+| **fileattach.totallist** | Manage all files                     |
 
 ## Usage example
 
-In simple case just call snippet:
+Simple call:
 
 ```modx
 [[FileAttach]]
 ```
 
-To force download count it's needed to open files through private link:
+To count downloads for all files, use the private URL:
 
 ```modx
 [[FileAttach? &privateUrl=`1`]]
 ```
 
-Custom sorting:
+Sort by manual order:
 
 ```modx
 [[FileAttach? &sortby=`rank`]]
@@ -137,22 +136,26 @@ Custom sorting:
 
 ## Screenshots
 
-- File list in manager
+- File list in the manager
 
-  [![File list in manager](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1es.jpg)](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- TODO: 404 -->
+    ![File list in the manager](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- TODO: 404 -->
 
 - Media source tree
 
-[![Media source tree](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137s.jpg)](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137.jpg) <!-- TODO: 404 -->
+    ![Media source tree](http://modstore.pro/assets/uploadify/7/e/c/7ec6d5cfd2eda4b6beecacbb9dccf137.jpg) <!-- TODO: 404 -->
 
-- File editor
-  [![File editor](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66s.jpg)](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66.jpg) <!-- TODO: 404 -->
+- File editing
 
-- Editor in admin mode
-  [![Editor in admin mode](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dces.jpg)](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dce.jpg) <!-- TODO: 404 -->
+    ![File editing](http://modstore.pro/assets/uploadify/a/7/3/a73f632567a372e4798d4e8a46e6ed66.jpg) <!-- TODO: 404 -->
 
-- File list in frontend
-  [![File list in frontend](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1es.jpg)](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- TODO: 404 -->
+- File editing in admin mode
 
-- Upload dialog window
-  [![Upload dialog window](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512s.jpg)](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512.png) <!-- TODO: 404 -->
+    ![File editing in admin mode](http://modstore.pro/assets/uploadify/1/1/e/11e65bc91ab8d98697fa7131d1ef0dce.jpg) <!-- TODO: 404 -->
+
+- File list on the front-end
+
+    ![File list on the front-end](http://modstore.pro/assets/uploadify/7/d/0/7d0f1263e99423f3aafb4d4acfadab1e.png) <!-- TODO: 404 -->
+
+- Upload dialog
+
+    ![Upload dialog](http://modstore.pro/assets/uploadify/d/8/e/d8e762da9506a5a6b17bf895e7b9b512.png) <!-- TODO: 404 -->

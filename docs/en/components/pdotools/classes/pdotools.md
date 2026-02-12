@@ -1,139 +1,65 @@
 # pdoTools
 
-This class handles chunks and contains various service methods.
+Main component class inherited by others (except pdoParser, which extends modParser).
+
+## Initialization
 
 ```php
-$pdo = $modx->getService('pdoTools');
-$chunk = $pdo->getChunk('chunkName', array('with', 'values'));
+$pdoTools = $modx->getService('pdoTools');
 ```
 
-It can load chunks by various methods:
-
-1. Default method - as chunk from database. Just specify its name.
-2. `@INLINE` chunk that will be generated on the fly:
-3. `@FILE` chunk, that will be loaded from file. Due to security reasons you can use only files of types `tpl` and `html`. Files are loaded from directory specified in system setting **pdotools_elements_path**.
-
-    ```modx
-    [[!pdoResources?
-      &elementsPath=`/core/elements/`
-      &tpl=`@FILE chunks/file.tpl`
-    ]]
-    ```
-
-4. `@TEMPLATE`- chunk will be generated on the fly from template of resource. So, this one only for rows with filled field `template`. It is kind of replacement for snippet **renderResources**.
-
-**Every** pdoTools based snippet could load chunks this ways. pdoResources, getTickets, msProducts and so on.
-
-The only thing you must remember - is to be careful with `@INLINE` because if you will specify placeolders directly on page - they can be processed **before** snippet run. That is why pdoTools supports different tags for placeholders:
-
-```modx
-[[!pdoResources?
-  &parenets=`0`
-  &tpl=`@INLINE <p>{{+id}} - {{+pagetitle}}</p>`
-]]
-```
-
-This placeholders will pass to snippet unprocessed and than pdoTools will replace `{{}}` to `[[]]` with no harm to logic. Remember to use this syntax for all `@INLINE` chunks on MODX pages.
-
-When placeholders are passed into pdoTools it tries to parse it yourself. It can parse simple tags like:
-
-- `[[+tag]]`
-- `[[%lexicon]]`
-- `[[~id_for_link]]`
-- `[[~[[+id]]]]`
-
-But it will load MODX parser to process any nested snippets, chunks or output filters. So, any chunk with output filter will be **slower**.
-
-But how we can modify our data before processing? It is a simple - we need to use **&prepareSnippet**!
-
-```modx
-[[!pdoResources?
-  &parents=`0`
-  &tpl=`@INLINE <p>{{+id}} - {{+pagetitle}}</p>`
-  &prepareSnippet=`cookMyData`
-]]
-```
-
-Snippet `cookMyData` will receive `$row` variable with all selected fields of one row and must return string with it (because MODX snippets can`t return array).
-
-Let`s we just add some random string to every pagetitle of resource:
+This always returns the original pdoTools. To use a custom class, set path in system settings and init like:
 
 ```php
-<?php
-$row['pagetitle'] .= rand();
-
-return json_encode($row);
+$fqn = $modx->getOption('pdoTools.class', null, 'pdotools.pdotools', true);
+if ($pdoClass = $modx->loadClass($fqn, '', false, true)) {
+  $pdoTools = new $pdoClass($modx, $scriptProperties);
+}
+elseif ($pdoClass = $modx->loadClass($fqn, MODX_CORE_PATH . 'components/pdotools/model/', false, true)) {
+  $pdoTools = new $pdoClass($modx, $scriptProperties);
+}
+else {
+  $modx->log(modX::LOG_LEVEL_ERROR, 'Could not load pdoTools from "MODX_CORE_PATH/components/pdotools/model/".');
+  return false;
+}
+$pdoTools->addTime('pdoTools loaded');
 ```
 
-::: info Info
-You can use `json_encode()` or `serialize()` to return data
-:::
+All pdoTools snippets use this pattern, so you can override behavior with your own class.
 
-Now you know how we able to throw away **all** output filters and nested snippets from your chunks to make them faster.
-Of course, it is much faster to do some work in one snippet instead of parsing multiple snippets in chunks.
+## Logging
 
-Also you can use objects `$modx` and `$pdoTools` in prepareSnippet to cache data you need to work.
+- **addTime(string $message)** - add log entry
+- **getTime(bool $string [true])** - add final time, return formatted string or array
 
-pdoTools has methods `setStore()` and `getStore()`. For example, I want to highlight users of some groups in my comments (yes, it is the real task). So I call snippet with my prepareSnippet
+Use `&showLog=1` in snippets to view log.
 
-```modx
-[[!TicketComments?
-  &prepareSnippet=`prepareComments`
-]]
-```
+## Caching
 
-And there is my `prepareComments` snippet:
+- **setStore**(string $name, mixed $object, string $type ["data"]) - add to temp store
+- **getStore**(string $name, string $type ["data"]) - get or null
 
-```php
-<?php
-if (empty($row['createdby'])) {return json_encode($row);}
+Example: cache user lookups to avoid repeated DB calls. Data lives only for request; not written to disk.
 
-// If we do not have cached groups
-if (!$groups = $pdoTools->getStore('groups')) {
-  $tstart = microtime(true);
-  $q = $modx->newQuery('modUserGroupMember');
-  $q->innerJoin('modUserGroup', 'modUserGroup', 'modUserGroupMember.user_group = modUserGroup.id');
-  $q->select('modUserGroup.name, modUserGroupMember.member');
-  $q->where(array('modUserGroup.name:!=' => 'Users'));
-  if ($q->prepare() && $q->stmt->execute()) {
-    $modx->queryTime += microtime(true) - $tstart;
-    $modx->executedQueries++;
-    $groups = array();
-    while ($tmp = $q->stmt->fetch(PDO::FETCH_ASSOC)) {
-      $name = strtolower($tmp['name']);
-      if (!isset($groups[$name])) {
-        $groups[$name] = array($tmp['member']);
-      }
-      else {
-        $groups[$name][] = $tmp['member'];
-      }
-    }
-  }
-  foreach ($groups as & $v) {
-    $v = array_flip($v);
-  }
-  // Save groups to cache
-  $pdoTools->setStore('groups', $groups);
-}
+MODX cache (persisted):
 
-$class = '';
-if (!empty($row['blocked'])) {
-  $class = 'blocked';
-}
-elseif (isset($groups['administrator'][$row['createdby']])) {
-  $class = 'administrator';
-}
-$row['class'] = $class;
+- **setCache**(mixed $data, array $options) - save to cache
+- **getCache**(array $options) - retrieve from cache
 
-return json_encode($row);
-```
+## Utilities
 
-And now I can use `[[+class]]` in my chunk to highlight admins and blocked users. Using of "Store" methods of pdoTools allows me to cache the data only at run time without save to hdd. It is very fast and handy.
+- **makePlaceholders**(array $data, ...) - build placeholder arrays for templates
+- **buildTree**(array $resources) - build resource tree; used by [pdoMenu](/en/components/pdotools/snippets/pdomenu)
 
-It total:
+## Chunk handling
 
-1. You can load chunks by various ways.
-2. They will be processed so fast, how they simple are.
-3. It is much better to put all your template logic to `&prepareSnippet` instead of additional nested snippets or output filters calls in chunks.
+Main method: **getChunk()**. [pdoParser](/en/components/pdotools/classes/pdoparser) processes placeholders. Chunk types:
 
-Remember, **every** nested call in chunk costs you seconds of total time of page load. Logic must be in PHP, not in MODX tags.
+- @**INLINE**, @**CODE** - chunk from string
+- @**FILE** - chunk from file (html/tpl; path via **pdotools_elements_path**)
+- @**TEMPLATE** - chunk from site template
+- @**CHUNK** or plain name - chunk from DB
+
+Simple conditions via "fast placeholders" - html comments like `<!--pdotools_tag value if tag not empty-->`. Use **&nestedChunkPrefix** to change prefix. **&fastMode** - skip modParser; leftover tags are stripped.
+
+Since 2.0 pdoTools includes [Fenom](/en/components/pdotools/classes/pdoparser) for advanced logic in chunks.

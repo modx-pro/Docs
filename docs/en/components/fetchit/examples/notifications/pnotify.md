@@ -1,8 +1,8 @@
 # PNotify
 
-In this example, we will integrate the [PNotify](https://sciactive.com/pnotify/) library.
+This example shows how to integrate [PNotify](https://sciactive.com/pnotify/).
 
-- Let's add scripts and styles. For simplicity, let's do it via CDN.
+- Include the scripts and styles. For simplicity we use CDN.
 
 ```html
 <!-- JavaScript -->
@@ -13,7 +13,7 @@ In this example, we will integrate the [PNotify](https://sciactive.com/pnotify/)
 <link href="https://cdn.jsdelivr.net/npm/@pnotify/core@5/dist/BrightTheme.min.css" rel="stylesheet">
 ```
 
-- And let's define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and get direct access to the FetchIt class:
+- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
@@ -41,4 +41,4 @@ FetchIt.Message = {
 }
 ```
 
-Done! With these simple steps we have integrated **PNotify**.
+Done! With these steps you integrate **PNotify**.

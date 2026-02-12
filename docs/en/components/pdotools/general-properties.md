@@ -1,135 +1,100 @@
-# General parameters for snippets based on pdoTools / pdoFetch
+# General parameters
 
-## Sample resource parameters
+Parameters shared by pdoTools/pdoFetch-based snippets.
 
-These parameters define the derived objects.
+## Resource selection parameters
 
-Name                       | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | By default
----------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------
-**&class**                 | Class of a derived object                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `modResource`
-**&parents**               | List of parents to search the result, separated by commas. If you put 0, the sample is not limited. If parent id begins with a hyphen, it and its children are eliminated from the sample. If you have to limit the sample by **&depth** parameter in resource root, you should use **&parents=`+0`**                                                                                                                                                                                                                                                                                                                                  | Current resource
-**&depth**                 | Search depth of child resources from its parent                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `10`
-**&resources**             | List of resources to search the results, separated by commas. If resource id begins with a hyphen, this resource is eliminated from the sample.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-**&templates**             | List of templates to filter the results, separated by commas. If template id begins with a hyphen, resources with it are eliminated from the sample.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-**&context**               | Sample limitation by the resource context                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-**&where**                 | Extra parameter array of the sample coded in JSON                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-**&showHidden**            | Show resources hidden in menu                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `0`
-**&showUnpublished**       | Show unpublished resources                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `0`
-**&showDeleted**           | Show deleted resources                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `0`
-**&hideContainers**        | Exclude container resources, that is, resources with «isfolder = 1».                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | `0`
-**&hideUnsearchable**      | Exclude the resources hidden from the search                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-**&select**                | List of fields for sample, separated by commas. JSON can be indicated with the array, e.g. **{"modResource":"id,pagetitle,content"}**.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-**&leftJoin**              | Analog SQL of left join                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-**&rightJoin**             | Analog SQL of right join                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-**&innerJoin**             | Analog SQL of inner join                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-**&sortby**                | Any resource field for sorting, it includes TV parameter, if it is indicated in **&includeTVs** parameter. JSON line can be indicated with array for several fields. Indicate «**RAND()**» for random sorting                                                                                                                                                                                                                                                                                                                                                                                                                          | `pagetitle`
-**&sortdir**               | Sorting direction: descending or ascending                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `ASC`
-**&groupby**               | Indicate the field by which results are grouped                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-**&having**                | It is used to limit the sample of grouping lines by condition for the whole group, specified in **&groupby**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-**&limit**                 | Limitation of sample results. «0» can be used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          | `0`
-**&offset**                | Result skip from the beginning                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `0`
-**&first**                 | Number of the first iteration in output results                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `1`
-**&last**                  | Number of the last iteration in output results                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Automatic formula evaluation (total + first — 1)
-**&loadModels**            | List of components, which models should be downloaded for query building, they should be separated by commas, e.g. **&loadModels=`ms2gallery,msearch2`**.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-**&tvFilters**             | List of TV filters with delimiter AND and OR. Delimiter, indicated in **&tvFiltersOrDelimiter** is a logic condition OR and its conditions are grouped in the first place. You can define the list of values in each group, separated by **&tvFiltersAndDelimiter**. Search of values can be held in any specific TV, if it is («**myTV==value**») or any («**value**»). E.g. **&tvFilters=\`filter2==one,filter1==bar%&#124;&#124;filter1==foo\`**. Pay attention: filtration uses LIKE and “%” is metacharacter. Search is on values that physically located in the database, i.e. values from TV settings don’t get here on default |
-**&tvFiltersAndDelimiter** | Delimiter for conditions AND in **&tvFilters**.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `,`
-**&tvFiltersOrDelimiter**  | Delimiter for conditions OR in **&tvFilters**.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `||`
-**&sortbyTV**              | Additional field by which all the results should be sorted. It can be indicated directly in **&sortby**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-**&sortdirTV**             | Sorting direction on extra fiend indicated in &sortby. It can be indicated directly in **&sortby**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-**&checkPermissions**      | Indicate which permissions should be checked at the output of objects                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-**&disableConditions**     | It disables specific class modResource sample parameters                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+These define which objects are selected.
 
-### Template parameters
+| Name | Default | Description |
+| --- | --- | --- |
+| **&class** | `modResource` | Object class |
+| **&parents** | Current resource | Comma-separated parent IDs. Use 0 for no limit. Minus prefix excludes parent and children |
+| **&depth** | `10` | Depth of child resources |
+| **&resources** | | Comma-separated resource IDs. Minus prefix excludes |
+| **&templates** | | Comma-separated template IDs for filtering. Minus prefix excludes |
+| **&context** | | Limit by resource context |
+| **&where** | | JSON array of extra conditions |
+| **&showHidden** | `0` | Show menu-hidden resources |
+| **&showUnpublished** | `0` | Show unpublished |
+| **&showDeleted** | `0` | Show deleted |
+| **&hideContainers** | `0` | Exclude containers (isfolder=1) |
+| **&hideUnsearchable** | | Exclude search-hidden resources |
+| **&select** | | Comma-separated fields or JSON e.g. `{"modResource":"id,pagetitle,content"}` |
+| **&leftJoin**, **&rightJoin**, **&innerJoin** | | SQL join analogs |
+| **&joinSequence** | `innerJoin,leftJoin,rightJoin` | Join order |
+| **&sortby** | `pagetitle` | Sort field; TV if in &includeTVs; JSON for multi; RAND() for random |
+| **&sortdir** | `ASC` | Sort direction |
+| **&groupby** | | Group by field |
+| **&having** | | HAVING clause for grouped rows |
+| **&limit** | `0` | Result limit |
+| **&offset** | `0` | Skip count |
+| **&first** | `1` | First iteration index |
+| **&last** | total + first - 1 | Last iteration index |
+| **&loadModels** | | Comma-separated component models to load, e.g. ms2gallery,msearch2 |
+| **&tvFilters** | | TV filters with AND/OR. OR delimiter in &tvFiltersOrDelimiter. Example: filter2==one,filter1==bar%\|\|filter1==foo. Uses LIKE; % is wildcard. Search in DB values only, not TV defaults |
+| **&tvFiltersAndDelimiter** | `,` | AND delimiter |
+| **&tvFiltersOrDelimiter** | `\|\|` | OR delimiter |
+| **&sortbyTV**, **&sortdirTV**, **&sortbyTVType** | | TV sort; type: string, integer, decimal, datetime |
+| **&checkPermissions** | | Permissions to check |
+| **&disableConditions** | | Disable modResource-specific conditions |
+| **&fenomModifiers** | | Comma-separated modifier snippets for Fenom. See [section][1] |
 
-These parameters set up chunks which contain templates for output generation, i.e. they  are changed with the overview.
+## Template parameters
 
-Name                 | Description
----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&tpl**             | Chunk name for resource registration. If it not indicated, ‘field content of the source will be printed to the screen
-**&tplFirst**        | Chunk name for the first resource in the results
-**&tplLast**         | Chunk name for the last resource in the results
-**&tplOdd**          | Chunk name for every second resource
-**&tpl_N**           | Chunk name for N-resource, e.g. **&tpl_4=`tpl4th`** will set up template for 4th resource
-**&tpl_nN**          | Chunk name for N-resource, e.g. **&tpl_n4=`tplEvery4th`** will be applied for every 4th resource
-**&tplCondition**    | Resource field from which the value for selecting chunk will be obtained by the condition in **&conditionalTpls**.
-**&tplOperator**     | Optional operator for comparison of resource field in **&tplCondition** with array of values and chunks in **&conditionalTpls**.
-**&conditionalTpls** | JSON line with array which in keys has something which **&tplCondition** will be compared with, and values – chunks which will be used to output if the comparison is successful. Comparison operator is indicated in **&tplOperator**. Arrays without keys can be used for «**isempty**» operators
-**&outputSeparator** | Optional line for separation of the results
+Chunks for output layout.
 
-## Results parameters
+| Name | Description |
+| --- | --- |
+| **&tpl** | Chunk for resource row |
+| **&tplFirst** | Chunk for first row |
+| **&tplLast** | Chunk for last row |
+| **&tplOdd** | Chunk for even rows (odd = uneven; applies to even) |
+| **&tpl_N** | Chunk for Nth row, e.g. tpl_4 |
+| **&tpl_nN** | Chunk for every Nth row, e.g. tpl_n4 |
+| **&tplCondition** | Field for conditional chunk selection |
+| **&tplOperator** | Comparison operator |
+| **&conditionalTpls** | JSON: keys = compare values, values = chunk names |
+| **&outputSeparator** | Separator between results |
 
-These parameters define additionally what data and in what way it will be output.
+## Output parameters
 
-Name                        | Description                                                                                                                                                                                                                                                             | On default
-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------
-**&return**                 | It defines the way of result output. Chunks – gauging, data – output value fields, sql – output of SQL-demand, ids – symbols separated by commas                                                                                                                        | `chunks`
-**&fastMode**               | Fast more of chunk processing. All raw tags (conditions, snippets and so on) will be cut.                                                                                                                                                                               | `0`
-**&nestedChunkPrefix**      | Prefix for “fast placeholders”, included by **&fastMode** parameter                                                                                                                                                                                                     | `pdotools_`
-**&idx**                    | You can indicate the initial number of iteration for result output                                                                                                                                                                                                      |
-**&totalVar**               | Name of placeholders for saving the total number of results                                                                                                                                                                                                             | `total`
-**&includeContent**         | Include the field «*content*» to the output                                                                                                                                                                                                                             | `0`
-**&includeTVs**             | List of TV parameters for the output, separated by commas. E.g.: «**action,time**» will yield placeholders `[[+action]]` and `[[+time]]`.                                                                                                                               |
-**&includeTVList**          | Alias **&includeTVs**                                                                                                                                                                                                                                                   |
-**&prepareTVs**             | List of TV parameters that need to be processed before the output                                                                                                                                                                                                       | `1` means preparation for all TV included in **&includeTVs**
-**&processTVs**             | List of TV parameters that need to be processed before the output. If it is set in «1», all TV mentioned in «**&includeTVs**» will be processed                                                                                                                         |
-**&tvPrefix**               | Prefix for TV parameters                                                                                                                                                                                                                                                | `tv.`
-**&prepareSnippet**         | Indicate the snippet that accepts data before the output in chunk and can vary or add them                                                                                                                                                                              | `1`
-**&decodeJSON**             | Dissemble fields like JSON instead of outputting in line                                                                                                                                                                                                                |
-**&scheme**                 | Scheme of forming url is passed to modX::makeUrl()                                                                                                                                                                                                                      | `-1` (concerning site_url)
-**&useWeblinkUrl**          | Ensure the link subject to resource class                                                                                                                                                                                                                               |
-**&toSeparatePlaceholders** | If you indicate a word in this parameter, ALL the results will be specified in different placeholders that begin with this word and end with the serial number of the line from zero. E.g. indicating «myPl», you get placeholders `[[+myPl0]]`, `[[+myPl1]]` and so on |
-**&additionalPlaceholders** | Install additional placeholders                                                                                                                                                                                                                                         |
-**&cache_key**              | Cache key                                                                                                                                                                                                                                                               | Value of system setting *cache_resource_key* for resources (on default resource) or default
-**&cache_handler**          | Cache handler                                                                                                                                                                                                                                                           | Value of system setting *cache_resource_handler* or xPDOFileCache
-**&cache Time**             | Cache time                                                                                                                                                                                                                                                              | Value of system setting *cache_resource_expires* or 0 (eternal)
+| Name | Default | Description |
+| --- | --- | --- |
+| **&return** | `chunks` | Output mode (see below) |
+| **&fastMode** | `0` | Strip unprocessed tags |
+| **&nestedChunkPrefix** | `pdotools_` | Prefix for fast placeholders |
+| **&idx** | | Start iteration index |
+| **&totalVar** | `total` | Placeholder for total count |
+| **&includeContent** | `0` | Include content field |
+| **&includeTVs** | | Comma-separated TVs |
+| **&prepareTVs** | `1` | Prepare TV paths; 1 = all from &includeTVs |
+| **&processTVs** | | Process TVs per manager settings; 1 = all; slows |
+| **&tvPrefix** | `tv.` in pdoResources | TV prefix |
+| **&prepareSnippet** | `1` | Snippet to process data before chunk |
+| **&decodeJSON** | | Decode JSON fields |
+| **&scheme** | `-1` | URL scheme; see [modX::makeUrl][0]; `uri` = raw uri |
+| **&useWeblinkUrl** | | Generate URL by resource class |
+| **&toSeparatePlaceholders** | | Output each result to placeholder myPl0, myPl1... |
+| **&additionalPlaceholders** | | Extra placeholders |
+| **&cache_key**, **&cache_handler**, **&cacheTime** | | Cache options |
 
-## Fenom Parser parameters
+## Chunk call types
 
-These parameters define settings for the fenom parser.
+- **@INLINE** or **@CODE** - template is the string after prefix. MODX parses `[[+]]` before snippet; use <span v-pre>{{+}}</span> so pdoTools handles it.
+- **@FILE** - load from file. Path in **pdotools_elements_path**. Extensions .tpl, .html.
+- **@TEMPLATE** - use template by id or name. Empty = resource's own template.
+- **@CHUNK** - chunk from DB; same as plain name.
 
-Name                | Description                                                                                                                                              | By default
---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------
-**&fenomModifiers** | Comma separated list of snippets that could be used as [fenom modifier](https://github.com/fenom-template/fenom/blob/master/docs/en/syntax.md#modifiers) |
+See [parser section][1].
 
-## How to call chunks
+## Return values
 
-All chunks can have one of these prefixes:
+**&return** options: **chunks** (default), **sql** (raw SQL for debug), **data** (array; use pdoFetch::run() directly), **ids** (comma IDs), **json**, **serialize**.
 
-- **@INLINE** or **@CODE**. Code after this prefix will be used as template.
+::: warning
+Only **pdoResources** (and pdoPage) and **pdoUsers** support all &return values. **pdoMenu** and **pdoCrumbs** support chunks and data. Others mainly chunks.
+:::
 
-  ```modx
-  [[!pdoResources?
-    &tpl=`@INLINE <li>[[+pagetitle]]</li>`
-  ]]
-  ```
-
-  ::: info Info
-  Snippets, other chunks and output filters cannot be indicated in INLINE chunks, because parser MODX handle them in the first place, and snippet will not get what you wanted.
-  :::
-
-- **@FILE**. File content Is used instead of chunk from the database. Track to the file is indicated by system setting **pdotools_elements_path**. Name of the file have extension `.tpl` or `.html`.
-
-  ```modx
-  [[!pdoResources?
-    &tpl=`@FILE fileBasedRow.tpl`
-  ]]
-  ```
-
-- **@TEMPLATE**. Identifier or name of template is indicated. If it is empty – its own template will be used for every resource.
-
-  ```modx
-  [[!pdoResources?
-    &tpl=`@TEMPLATE 10`
-  ]]
-  ```
-
-- **@CHUNK**. Similarly to the indication of chunk names.
-
-  ```modx
-  [[!pdoResources?
-    &tpl=`@CHUNK tpl.Resource.row`
-  ]]
-  [[!pdoResources?
-    &tpl=`tpl.Resource.row`
-  ]]
-  ```
+[0]: https://docs.modx.com/current/en/extending-modx/modx-class/reference/modx.makeurl
+[1]: /en/components/pdotools/parser

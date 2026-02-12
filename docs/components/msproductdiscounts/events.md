@@ -133,7 +133,7 @@ switch($modx->event->name){
 
 :::
 
-#### mspdOnBeforeCheckCommonConditions - генерируется перед проверкой общих условий: количества в корзине, общей суммы, отступа и лимита.
+#### mspdOnBeforeCheckCommonConditions - генерируется перед проверкой общих условий: количества в корзине, общей суммы, отступа и лимита
 
 Доступные параметры:
 
@@ -156,7 +156,7 @@ switch($modx->event->name){
 
 :::
 
-#### mspdOnGetProductDataByIds - генерируется перед получение данных о товарах.
+#### mspdOnGetProductDataByIds - генерируется перед получение данных о товарах
 
 Доступные параметры:
 
@@ -176,7 +176,7 @@ switch($modx->event->name){
 
 :::
 
-#### mspdOnGetWebConfig - генерируется перед добавление JS на страницу.
+#### mspdOnGetWebConfig - генерируется перед добавление JS на страницу
 
 Доступные параметры:
 
@@ -196,7 +196,7 @@ switch($modx->event->name){
 
 :::
 
-#### mspdOnBeforeGetPromocode - генерируется перед получением данных промокода.
+#### mspdOnBeforeGetPromocode - генерируется перед получением данных промокода
 
 Доступные параметры:
 
@@ -218,7 +218,7 @@ switch($modx->event->name){
 }
 ```
 
-#### mspdOnGetPromocode - генерируется после получением данных промокода.
+#### mspdOnGetPromocode - генерируется после получением данных промокода
 
 Доступные параметры:
 
@@ -241,7 +241,7 @@ switch($modx->event->name){
 
 :::
 
-#### mspdOnBeforeGetDiscountPrice - генерируется перед получением цены со скидкой.
+#### mspdOnBeforeGetDiscountPrice - генерируется перед получением цены со скидкой
 
 Доступные параметры:
 

@@ -100,6 +100,7 @@ function getGuideSidebar(): DefaultTheme.SidebarItem[] {
         { text: 'Markdown', link: '/en/guide/markdown' },
         { text: 'VitePress Features', link: '/en/guide/vitepress' },
         { text: 'Frontmatter', link: '/en/guide/frontmatter' },
+        { text: 'Spell checking (cspell)', link: '/en/guide/cspell' },
       ],
     },
   ]
@@ -112,6 +113,7 @@ function getNav(): DefaultTheme.NavItem[] {
     { text: 'Markdown', link: '/en/guide/markdown' },
     { text: 'VitePress Features', link: '/en/guide/vitepress' },
     { text: 'Frontmatter', link: '/en/guide/frontmatter' },
+    { text: 'Spell checking (cspell)', link: '/en/guide/cspell' },
   ]
 
   if (process.env.SPONSOR_LINK) {

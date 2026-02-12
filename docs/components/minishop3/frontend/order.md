@@ -387,6 +387,7 @@ document.querySelectorAll('[data-address-id]').forEach(btn => {
 ### Обязательные поля
 
 По умолчанию обязательны:
+
 - `first_name` — Имя
 - `email` — Email
 - `phone` — Телефон

@@ -1,6 +1,6 @@
 ---
 title: MyFavorites
-description: избранное
+description: Избранное
 logo: https://modstore.pro/assets/extras/myfavorites/logo-lg.png
 author: prihod
 modstore: https://modstore.pro/packages/other/myfavorites

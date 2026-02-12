@@ -1,93 +1,88 @@
 # pdoMenu
 
-Menu generator snippet. It can replace Wayfinder, and allows more flexibility to specify properties.
+Menu generation snippet. Can replace Wayfinder and allows more flexible parameter specification.
 
-For example, it can build menus from several parents, showing them both together and as separate branches.
+For example, can build a menu from multiple parents at once, showing them together or as separate branches.
 
-Provides a substantial increase in speed, although only on first page view if the Wayfinder menu is cached.
+Significant speed gain only on first run, after that Wayfinder is not far behind, thanks to proper caching.
 
-If you never used Wayfinder before, it is a good idea to read the Wayfinder documentation, because pdoMenu reuses many of the Wayfinder concepts and settings. You can find the docs [here][1], or download the excellent (but 184 page) Wayfinder ebook from [this thread][2].
+## Parameters
 
-## Properties
+Default pdoMenu accepts [general pdoTools parameters][1] and some of its own:
 
-Name                    | Default                                            | Description
-------------------------|----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&parents**            | Current resource                                   | Comma-separated list of parents to search for results. If set to 0 will use all top-level resources. If the parent ID starts with a hyphen, it and its children are excluded from the result.
-**&level**              | `0` (no limit)                                     | The level(depth) of the generated menu.
-**&resources**          |                                                    | Comma-separated list of resources to add into the results. If the ID of the resource starts with a dash, this resource is excluded from the results.
-**&templates**          |                                                    | Comma-separated list of templates to filter results. If the template ID starts with a dash, resources using it are excluded from the results.
-**&where**              |                                                    | An array of additional parameters encoded as JSON.
-**&displayStart**       | `0`                                                | Include display of parent node. It is useful when you specify more than one «parents».
-**&context**            |                                                    | Specifying the Context of the resources to build the menu from.
-**&showHidden**         | `0`                                                | Show resources that are marked to be hidden in the menu.
-**&showUnpublished**    | `0`                                                | Show unpublished resources to everyone.
-**&previewUnpublished** | `0`                                                | Show unpublished resources only for logged-in Manager users with permission to view unpublished.
-**&hideSubMenus**       | `0`                                                | Hide inactive submenu branches.
-**&select**             |                                                    | Comma-separated list of fields to retrieve. You can specify a JSON string array, for example {"modResource":"id,pagetitle,content"}. By default, all fields of the modResource object are selected. You don't need this option if you want to use fields like `[[+introtext]]` because they are already available. This option should be used if you do not want to retrieve all fields, but only those which you specify.
-**&sortby**             | `menuindex`                                        | Any resource field for sorting, including TV option the property **&includeTVs** is set. A JSON string can be specified with an array of several fields, for example **{"tvname":"ASC", "pagetitle":"DESC"}**. To randomly select sorting use «RAND()».
-**&sortdir**            | `ASC`                                              | Sort Direction: Ascending or Descending. If parameters &sortby and &sortdir will be empty the sorting will be in the order of resources in &resources parameter.
-**&limit**              | `0`                                                | Limit the number of results. Can be set to «0» for no limit.
-**&offset**             | `0`                                                | Results skip from the beginning. It should be used with **&limit**
-**&checkPermissions**   |                                                    | Specify which user permissions to check when listing resources. If no permissions are specified, permissions will not be checked at all. For example, **&checkPermissions=`list`**
-**&countChildren**      | `0`                                                | Count of the number of children of each parent resource and output it to the placeholder `[[+children]]`. It makes additional queries to the database, so is 0 by default.
-**&setTotal**           | `0`                                                | Enable calculating all rows, which will also result in the "totalVar" placeholder being set.
-**&toPlaceholder**      |                                                    | If not empty, the snippet will save its output to a placeholder with the same name, instead of returning the generated menu.
-**&plPrefix**           | `wf.`                                              | Prefix for placeholders used in the template chunks
-**&showLog**            | `0`                                                | Show debugging details on the processing of the snippet. Only displayed to logged-in Manager users.
-**&fastMode**           | `0`                                                | Quick mode for processing chunks. All raw tags (output modifiers, snippets, etc.) are removed.
-**&cache**              | `0`                                                | Caching snippet results.
-**&cacheTime**          | `3600`                                             | Duration of the cache in seconds.
-**&scheme**             | `-1` (relative to site_url)                        | How the URL is generated, based on values valid for the modX::makeUrl() API.
-**&useWeblinkUrl**      | `1`                                                | When set to 1, the URL specified in a weblink resource will be output to the placeholder `[[+link]]` instead of the link to the weblink resource itself.
-**&rowIdPrefix**        |                                                    | If set, this parameter creates a unique ID for each item. The value will be rowIdPrefix + docId.
-**&hereId**             |                                                    | Define the current ID to use for the snippet. Use a value of `[[*id]]` if the template specified by **&tplHere** and **&tplParentRowActive** is not applied correctly to the menu item.
-**&includeTVs**         |                                                    | Define comma delimited list of TVs to include. For example, «action,time» will filled placeholders `[[+action]]` & `[[+time]]`
-**&prepareTVs**         | `1`, prepares all TVs specified in **&includeTVs** | Comma-separated list of media source-dependant TV values to be prepared before output.
-**&processTVs**         |                                                    | Comma-separated list of TVs that should be processed according to their output options. If set to «1», all TV listed in **&includeTVs** will be processed.
-**&tvPrefix**           |                                                    | Prefix TV property.
+| Name                | Default         | Description                                                                                                                                                                                                                                                                       |
+|-------------------------|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **&parents**            | Current resource       | List of parent ids for search, comma-separated. If you set **&parents=`0`** - the search is not limited. If a parent ID starts with a minus, it and its children are excluded from the results.                                                                            |
+| **&level**              | `0` (unlimited) | Depth of the menu.                                                                                                                                                                                                                                                    |
+| **&resources**          |                      | List of resources to output in results, comma-separated. If resource id starts with minus, resource is excluded from selection.                                                                                                                                              |
+| **&templates**          |                      | List of template ids to filter results, comma-separated. If template id starts with minus, resources with it are excluded from selection.                                                                                                                                          |
+| **&where**              |                      | JSON-encoded array of extra conditions.                                                                                                                                                                                                               |
+| **&displayStart**       | `0`                  | Include top-level menu nodes. Useful when specifying more than one «parents».                                                                                                                                                                                              |
+| **&context**            |                      | Limit results by resource context.                                                                                                                                                                                                                                     |
+| **&showHidden**         | `0`                  | Show resources hidden in menu.                                                                                                                                                                                                                                            |
+| **&showUnpublished**    | `0`                  | Show unpublished resources.                                                                                                                                                                                                                                           |
+| **&previewUnpublished** | `0`                  | Enable preview of unpublished resources, if the user has permission.                                                                                                                                                                                          |
+| **&hideSubMenus**       | `0`                  | Hide inactive menu branches.                                                                                                                                                                                                                                                |
+| **&select**             |                      | Comma-separated list of fields to select. You can specify JSON array string, e.g. **&select=`{"modResource":"id,pagetitle,content"}`**                                                                                                                                 |
+| **&sortby**             | `menuindex`          | Any resource field for sort, including TV, if it is listed in the parameter **&includeTVs**, e.g. **&sortby=`{"tvname":"ASC","pagetitle":"DESC"}`**. You can specify JSON array string. For random sort specify **&sortby=`RAND()`** |
+| **&sortdir**            | `ASC`                | Sort direction: descending or ascending. If you leave &sortby and &sortdir empty, sorting follows resource order in **&resources**.                                                                                                     |
+| **&limit**              | `0`                  | Max number of results.                                                                                                                                                                                                                                    |
+| **&offset**             | `0`                  | Number of results to skip. Must be used together with explicit **&limit**.                                                                                                                                                                                      |
+| **&checkPermissions**   |                      | Specify which permissions to check for user when outputting resources, e.g. **&checkPermissions=`list`**.                                                                                                                                                           |
+| **&countChildren**      | `0`                  | Exact count of child resources per category and output to placeholder `[[+children]]`. Makes extra database queries, so disabled by default.                                                                                                      |
+| **&toPlaceholder**      |                      | If not empty, snippet saves data to placeholder with this name instead of outputting.                                                                                                                                                                                 |
+| **&plPrefix**           | `wf.`                | Prefix for pagination placeholders.                                                                                                                                                                                                                                        |
+| **&showLog**            | `0`                  | Show extra snippet debug info. Only for users logged in to the "mgr" context.                                                                                                                                                                           |
+| **&fastMode**           | `0`                  | Fast chunk processing mode. All unprocessed tags (conditions, snippets, etc.) will be stripped.                                                                                                                                                                             |
+| **&cache**              | `0`                  | Snippet result caching.                                                                                                                                                                                                                                       |
+| **&cacheTime**          | `3600`               | Cache lifetime in seconds.                                                                                                                                                                                                                                           |
+| **&scheme**             | `-1`                 | URL scheme, passed to modX::makeUrl(), see [possible values here](https://docs.modx.com/current/en/extending-modx/modx-class/reference/modx.makeurl). Special type `uri` substitutes the resource uri value without calling the function.            |
+| **&useWeblinkUrl**      | `1`                  | Generate URL considering resource class.                                                                                                                                                                                                                                   |
+| **&rowIdPrefix**        |                      | Prefix for id="" when setting identifier in chunk.                                                                                                                                                                                                                           |
+| **&hereId**             |                      | Id of current resource for the generated menu. Only needed if the script detects it incorrectly, e.g. when outputting menu from chunk of another snippet.                                                                                                                 |
+| **&includeTVs**         |                      | List of TV parameters for selection, comma-separated. For example **&includeTVs=`action,time`** yields placeholders `[[+action]]` and `[[+time]]`.                                                                                                                                        |
+| **&prepareTVs**         |                      | List of TV names that use media source files, that need full paths generated. If set **&prepareTVs=`1`**, all TVs listed in **&includeTVs** will be prepared.                                                                                 |
+| **&processTVs**         |                      | List of TV names to process and output per Manager settings. If set **&processTVs=`1`**, all TVs listed in **&includeTVs** will be processed. Slows execution.                                                                |
+| **&tvPrefix**           |                      | Prefix for TV placeholders.                                                                                                                                                                                                                                                     |
 
-### Template Properties
+### Parameters templates
 
-These properties specify the chunks that contain the templates to format the parts of the generated menus.
+These parameters set chunks that contain templates for menu generation.
 
-As stated above, if you never used Wayfinder before, at least skim through the Wayfinder docs before using your own chunks, even though pdoMenu uses a slightly different chunk hierarchy.
+| Name                | Description                                                                                                                                                                                                                     |
+|-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **&tplOuter**           | Chunk for the whole menu block. Default: `@INLINE <ul [[+classes]]>[[+wrapper]]</ul>`                                                                                                                                 |
+| **&tpl**                | Chunk for each menu item. If not set, resource fields will be printed to screen. Default: `@INLINE <li [[+classes]]><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>`        |
+| **&tplHere**            | Chunk for the current menu item.                                                                                                                                                                                        |
+| **&tplStart**           | Chunk for the root item, when is enabled **&displayStart**. Default: `@INLINE <h2 [[+classes]]>[[+menutitle]]</h2>[[+wrapper]]`                                                                       |
+| **&tplParentRow**       | Chunk for a parent with children, that does not match `&tplCategoryFolder`. For example: `@INLINE <li class="submenu_wrap [[+classnames]]"><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>` |
+| **&tplParentRowHere**   | Chunk for the current document when it has children.                                                                                                                                                               |
+| **&tplParentRowActive** | Chunk for parents with children in the active menu branch.                                                                                                                                                                 |
+| **&tplCategoryFolder**  | Special chunk for category. Category is a parent with children that has empty template or `rel="category"` in `link_attributes` field.                                                             |
+| **&tplInner**           | Chunk for the whole submenu block. If empty - will use **&tplOuter**. For example: `@INLINE <ul class="submenu [[+classnames]]">[[+wrapper]]</ul>`                                                         |
+| **&tplInnerRow**        | Chunk for submenu item. For example: `@INLINE <li class="submenu_item [[+classnames]]"><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>`                                                         |
+| **&tplInnerHere**       | Chunk for active submenu item.                                                                                                                                                                                    |
 
-Even if you don't read the docs, make sure to include `[[+wrapper]]` in your chunks. Contrary to its name, it is a placeholder for wrapper content (it is similar to `[[*content]]` in your Resources). It will be replaced with your lower-level menu content. If you leave it out, parts of your menu or the whole menu will disappear without any error message.
+### CSS class parameters
 
-Name                    | Description
-------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&tplOuter**           | Chunk to wrap the entire menu block. default: `@INLINE <ul[[+classes]]>[[+wrapper]]</ul>`
-**&tpl**                | Chunk for processing each resource. If not specified, the contents of the resource fields will be printed to the screen. Default: `@INLINE <li[[+classes]]><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>`
-**&tplParentRow**       | Chunk for container item with children.
-**&tplParentRowHere**   | Chunk for current container item.
-**&tplHere**            | Chunk for the current resource
-**&tplInner**           | Chunk wrapper for submenu sections. If empty will use **&tplOuter**
-**&tplInnerRow**        | Chunk for submenu rows.
-**&tplInnerHere**       | Chunk for submenu current item.
-**&tplParentRowActive** | Chunk for active category.
-**&tplCategoryFolder**  | Special chunk for category resources. Category resources have isfolder = 1, and «(empty)» template or attribute «rel = category». Useful for creating top-level menu items that are not themselves active links.
-**&tplStart**           | Chunk for the parent resource, provided that **&displayStart** is also used. Default: `@INLINE <h2[[+classes]]>[[+menutitle]]</h2>[[+wrapper]]`
+These parameters set placeholder values `[[+classnames]]` and `[[+classes]]` for various menu elements. Placeholder `[[+classnames]]` outputs only the class name without **class=""** attribute, unlike `[[+classes]]`.
 
-### Properties for CSS classes
-
-These properties specify the value of the placeholder `[[+classes]]` and `[[+classnames]]` for the various parts of the menu.
-
-Name              | Description
-------------------|---------------------------------------------------------------------------------------------------------------
-**&firstClass**   | Class for the first menu item. Default: **first**
-**&lastClass**    | Class for the last menu item. Default: **last**
-**&hereClass**    | Class for the active menu item and its parents. Default: **active**
-**&parentClass**  | Class for parent items.
-**&rowClass**     | Class for each menu row.
-**&outerClass**   | Class for outer wrapper.
-**&innerClass**   | Class for inner submenu wrappers.
-**&levelClass**   | Class for each level of the menu. For example, if you specify «level», it will produce «level1», «level2» etc.
-**&selfClass**    | Class for the current document in the menu.
-**&webLinkClass** | Class for the weblink resources.
+| Name          | Description                                                                             |
+|-------------------|--------------------------------------------------------------------------------------|
+| **&firstClass**   | Class for first menu item. Default: **first**                               |
+| **&lastClass**    | Class for last menu item. Default: **last**                                 |
+| **&hereClass**    | Class for active menu item. Default: **active**                            |
+| **&parentClass**  | Menu category class.                                                                |
+| **&rowClass**     | Menu item class.                                                                   |
+| **&outerClass**   | Menu block wrapper class.                                                            |
+| **&innerClass**   | Submenu block wrapper class.                                                 |
+| **&levelClass**   | Menu level class. For example if you specify «level», then you get «level1», «level2», etc. |
+| **&selfClass**    | Current resource class in menu.                                                       |
+| **&webLinkClass** | Web link resource class.                                                                |
 
 ## Examples
 
-A simple top-level menu:
+Regular menu output from site root in one level:
 
 ```modx
 [[pdoMenu?
@@ -96,7 +91,7 @@ A simple top-level menu:
 ]]
 ```
 
-2-level menu with the exception of certain parents:
+Output with exclusion of certain parents and user permission check:
 
 ```modx
 [[pdoMenu?
@@ -106,7 +101,7 @@ A simple top-level menu:
 ]]
 ```
 
-Menu generated from two parents, showing the parents:
+Output menu from two parents with root nodes shown:
 
 ```modx
 [[pdoMenu?
@@ -115,17 +110,16 @@ Menu generated from two parents, showing the parents:
 ]]
 ```
 
-List all resources in one step:
+Output two levels of resources with nested count:
 
 ```modx
 [[pdoMenu?
   &parents=`0`
   &level=`2`
   &tplInner=`@INLINE [[+wrapper]]`
-  &tplParentRow=`@INLINE <li[[+classes]]><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a> ([[+children]])</li>[[+wrapper]]`
+  &tplParentRow=`@INLINE <li [[+classes]]><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a> ([[+children]])</li>[[+wrapper]]`
   &countChildren=`1`
 ]]
 ```
 
-[1]: https://rtfm.modx.com/extras/revo/wayfinder
-[2]: http://forums.modx.com/thread/?thread=34176&i=1&page=13
+[1]: /en/components/pdotools/general-properties

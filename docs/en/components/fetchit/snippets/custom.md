@@ -1,30 +1,30 @@
-# Processing with your own snippet
+# Custom snippet
 
-You can use your own snippet, instead of **FormIt**, which will do anything (even create pages on the site). The only requirement is that it must return a JSON array with keys:
+You can use your own snippet instead of **FormIt** to do whatever you need (e.g. create pages). The only requirement is that it must return a JSON object with these keys:
 
-| Property | Description                                                                                        |
-|----------|----------------------------------------------------------------------------------------------------|
-| status   | `1` or `0`, i.e. success or error                                                                  |
-| message  | snippet message, output if status = 0                                                              |
-| data     | array for fields with errors, where the keys are the field name and the value is the error message |
+| Property | Description                                                                 |
+|----------|-----------------------------------------------------------------------------|
+| status   | 1 or 0 (success or error)                                                   |
+| message  | Message about the snippet result; shown when status = 0                      |
+| data     | Object mapping field names to error messages for invalid fields              |
 
-For convenience, the `$FetchIt` variable with the extra class is passed into the snippet parameters so that you can call the `error` and `success` methods from it when it produces a response.
+For convenience, the snippet receives a `$FetchIt` parameter with the component class so you can call its `error` and `success` methods when returning a response.
 
-The simplest example of your snippet:
+Minimal custom snippet example:
 
 ```php
 <?php
 if (empty($_POST['name'])) {
-  return $FetchIt->error('Errors in the form', [
-    'name' => 'You didn\'t fill the name field'
+  return $FetchIt->error('Form errors', [
+    'name' => 'Please enter your name'
   ]);
 }
 else {
-  return $FetchIt->success('The form submitted successfully');
+  return $FetchIt->success('Validation passed');
 }
 ```
 
-This is how we call it:
+Call it like this:
 
 :::code-group
 
@@ -36,7 +36,7 @@ This is how we call it:
 ```
 
 ```fenom
-{'!FetchIt' | snippet : [
+{'!FetchIt' | snippet: [
   'snippet' => 'MySnippet',
   'form' => 'tpl.FetchIt.example',
 ]}
@@ -44,4 +44,4 @@ This is how we call it:
 
 :::
 
-This snippet doesn't do anything, it just returns the result of the name check.
+This snippet only validates the name field and returns the result.

@@ -1,19 +1,19 @@
-# Items filtration example
+# Product filtration example
 
-[miniShop2][1] can work with any column of product properties table, whereas [mSearch2][2] can receive any columns from tables and generate filters on the base of them.
+[miniShop2][1] works with any columns of the product properties table, and [mSearch2][2] can fetch any columns and build filters from them.
 
-Let us combine these 2 abilities and write a filter by product availability. We will also learn to add our own fields to product and build a special filter for it.
+Combining these, we can add a stock filter and learn how to add custom product fields and custom filters.
 
-## Product properties extension: new availability field
+## Extending product: new field availability
 
-First of all we read about [product extension miniShop2][3].
+First read about [extending miniShop2 products][3].
 
-Then we create new column **availability** INT(10) in table msProductData.
+Then add a new column **availability** INT(10) to the msProductData table.
 
-[![](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72s.jpg)](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72.png)
-[![](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492s.jpg)](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492.png)
+![](https://file.modx.pro/files/5/0/b/50b2b7853493cc3e400ffc7719ce7a72.png)
+![](https://file.modx.pro/files/6/2/6/6262c3163e205ef7f7bccce915014492.png)
 
-We add the new field in product model on the path: `/core/components/minishop2/plugins/availability/model/`
+Add the new field to the product model at `/core/components/minishop2/plugins/availability/model/`:
 
 ::: code-group
 
@@ -38,9 +38,7 @@ return array(
 
 :::
 
-[![](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4s.jpg)](https://file.modx.pro/files/8/0/0/800be6cb587629b2480883f9e0c69ce4.png)
-
-We add widgets ExtJS for this field to the admin space on the path: `/assets/components/minishop2/plugins/availability/`
+Add ExtJS widgets for this field in the manager at `/assets/components/minishop2/plugins/availability/`:
 
 ::: code-group
 
@@ -61,9 +59,7 @@ miniShop2.plugin.pluginname = {
 
 :::
 
-[![](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecfs.jpg)](https://file.modx.pro/files/9/0/a/90a03e1b6ab23fc57913f821e54bdecf.png)
-
-We join all this with an index file which will turn on the plugin on the path: `/core/components/minishop2/plugins/availability/`
+Register the plugin with an index file at `/core/components/minishop2/plugins/availability/`:
 
 ::: code-group
 
@@ -82,26 +78,13 @@ return array(
 
 :::
 
-[![](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009s.jpg)](https://file.modx.pro/files/d/e/0/de08c7b92662cf8f349a8761bb19e009.png)
+Add a lexicon entry, clear cache, and enable the new field in settings.
 
-We add record to lexicon:
+If it does not work, repeat the steps. When it works you will see the new column in the product grid.
 
-[![](https://file.modx.pro/files/d/b/c/dbc0d8f29d135e559ad052c244f335f0s.jpg)](https://file.modx.pro/files/d/b/c/dbc0d8f29d135e559ad052c244f335f0.png)
+## Adding a filter for the new field
 
-Then we clear the cache properly and try to turn on the new field in settings.
-
-[![](https://file.modx.pro/files/1/2/4/124a4466e092bd4340662c7783bc2be5s.jpg)](https://file.modx.pro/files/1/2/4/124a4466e092bd4340662c7783bc2be5.png)
-
-If it does not work, we will have to do all this for a second time. It worked for me at once, though:
-
-[![](https://file.modx.pro/files/a/9/7/a97179f499ce5eb0329c56860c005bb2s.jpg)](https://file.modx.pro/files/a/9/7/a97179f499ce5eb0329c56860c005bb2.png)
-[![](https://file.modx.pro/files/a/8/a/a8ad101ebe4d170ca92c7bfd1f563674s.jpg)](https://file.modx.pro/files/a/8/a/a8ad101ebe4d170ca92c7bfd1f563674.png)
-
-## Adding filter by the new field
-
-**availability** field is now as native a field of product as price, weight and all other fields msProductData.
-
-This means that we can turn it on very easily:
+**availability** is now a native product field like price and weight. Enable it simply:
 
 ```modx
 [[!mFilter?
@@ -109,8 +92,7 @@ This means that we can turn it on very easily:
 ]]
 ```
 
-Only this will show us checkboxes where different variants of product availability will be indicated by figures. 0, 5, 10, etc.
-Evidently, a slider with a range of prices will not suit here. It is a radio button that we need.
+This will show checkboxes with numeric availability values (0, 5, 10, etc.). A price slider does not fit here; radio buttons do:
 
 ```modx
 [[!mFilter?
@@ -120,56 +102,34 @@ Evidently, a slider with a range of prices will not suit here. It is a radio but
 ]]
 ```
 
-[![](https://file.modx.pro/files/0/5/d/05dc53a3bc715b00efa89be498b8b0f3s.jpg)](https://file.modx.pro/files/0/5/d/05dc53a3bc715b00efa89be498b8b0f3.png)
+Add the lexicon entry in mSearch2, clear cache, and refresh. Set availability on products and you will see the filter column.
 
-Упс! Добавляем запись в словари mSearch2, чистим кэш и обновляем:
+We need a custom filter method that outputs: in stock / out of stock.
 
-[![](https://file.modx.pro/files/7/2/4/72429ab995d21fd5447f74e21ee1d7c3s.jpg)](https://file.modx.pro/files/7/2/4/72429ab995d21fd5447f74e21ee1d7c3.png)
+## Extending the filter class
 
-We write availability into products, clear the cache and see something quite expectable - a column of values:
+Standard mSearch2 filters are in `/core/components/msearch2/model/msearch2/filters.class.php`. Extend it and set the new class in system settings.
 
-[![](https://file.modx.pro/files/3/7/6/376b75e579f656a1a2bef073f466cbe0s.jpg)](https://file.modx.pro/files/3/7/6/376b75e579f656a1a2bef073f466cbe0.png)
-
-We have to write our own method of filtration which will show whether a product is available or not.
-
-## Extending filtration class
-
-All standard filters mSearch2 are situated in file **/core/components/msearch2/model/msearch2/filters.class.php**.
-We have to inherit it, extend it and indicate new class in system settings.
-
-We create a new file in **/core/components/msearch2/custom/filters/custom.class.php** write in it:
+Create `/core/components/msearch2/custom/filters/custom.class.php`:
 
 ```php
 <?php
-
 class myCustomFilter extends mse2FiltersHandler {}
 ```
 
-[![](https://file.modx.pro/files/c/e/1/ce1b59d8e489e9ec87fa2f4b5b937d3fs.jpg)](https://file.modx.pro/files/c/e/1/ce1b59d8e489e9ec87fa2f4b5b937d3f.png)
+Set it in **mse2_filters_handler_class**. From then on mSearch2 uses your filter class; you can add or override methods.
 
-Then we indicate it in system setting **mse2_filters_handler_class**.
-[![](https://file.modx.pro/files/4/1/e/41ef22830e9c9d4a916ba02c79acfafds.jpg)](https://file.modx.pro/files/4/1/e/41ef22830e9c9d4a916ba02c79acfafd.png)
+Data is fetched with get**MethodName**Values(), filters are built with build**MethodName**Filter(), and filtering is done with filter**MethodName**. See filters.class.php for examples.
 
-From this moment on mSearch2 uses for work **your** filtration class, in which you can write new methods or redefine standard ones.
+## Adding the availability filter
 
-For getting data methods get**MethodName**Values() are used, for preparing filter — build**MethodName**Filter(), for filtration - filter**MethodName**. How these 3 types of methods work can be seen in filters.class.php.
-
-## Adding new availability filter
-
-We need to write our own methods of data preparation and filtration in order to divide all products into 2 arrays:
-
-- Field availability <= 0
-- Field availability > 0
-
-This means that all products are divided into groups 'available' or 'unavailable'.
-
-We write methods **buildAvailabilityFilter** and **filterAvailability**:
+We need buildAvailabilityFilter and filterAvailability to split products into "in stock" (availability > 0) and "out of stock" (availability <= 0).
 
 ```php
 <?php
 class myCustomFilter extends mse2FiltersHandler {
 
-  // We take standard buildBooleanFilter as a sample and change it a little
+  // Based on buildBooleanFilter
   public function buildAvailabilityFilter(array $values) {
     if (count($values) < 2 && empty($this->config['showEmptyFilters'])) {
       return array();
@@ -202,7 +162,7 @@ class myCustomFilter extends mse2FiltersHandler {
   }
 
 
-  // When it comes to proper filtration, we take filterNumber as a basis
+  // Filtering logic, based on filterNumber
   public function filterAvailability(array $requested, array $values, array $ids) {
     $matched = array();
 
@@ -230,14 +190,8 @@ class myCustomFilter extends mse2FiltersHandler {
 }
 ```
 
-[![](https://file.modx.pro/files/3/c/5/3c5f44865b879243f4f9ca2d7be16bd2s.jpg)](https://file.modx.pro/files/3/c/5/3c5f44865b879243f4f9ca2d7be16bd2.png)
-
-We add records **mse2_filter_availability_no** and **mse2_filter_availability_yes** into lexicon and get the filter needed:
-
-[![](https://file.modx.pro/files/4/e/b/4eb544d494a4a7e9b47fde7e938b6dd7s.jpg)](https://file.modx.pro/files/4/e/b/4eb544d494a4a7e9b47fde7e938b6dd7.png)
-
-Obviously, this can be supported by checkboxes, texts in dictionaries can be changed, etc. The principle remains as it is.
+Add lexicon keys **mse2_filter_availability_no** and **mse2_filter_availability_yes** and you get the desired filter. You can keep it as checkboxes, change texts, etc.; the idea stays the same.
 
 [1]: /en/components/minishop2/
 [2]: /en/components/msearch2/
-[3]: http://bezumkin.ru/modx/minishop2/classes/910/
+[3]: /en/components/minishop2/development/product-plugins

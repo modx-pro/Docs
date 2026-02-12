@@ -213,8 +213,8 @@ MiniShop3 включает два готовых чанка для вывода 
 
 [![](https://file.modx.pro/files/d/0/f/d0f58a2c70961d54036548714c0239c5.png)](https://file.modx.pro/files/d/0/f/d0f58a2c70961d54036548714c0239c5.png)
 
-
 Табличный вывод со всеми элементами управления:
+
 - Изображение товара
 - Название со ссылкой
 - Выбор опций (цвет, размер)
@@ -234,6 +234,7 @@ MiniShop3 включает два готовых чанка для вывода 
 [![](https://file.modx.pro/files/b/e/3/be30d2bee57c7d32dad132bc3e4727cc.png)](https://file.modx.pro/files/b/e/3/be30d2bee57c7d32dad132bc3e4727cc.png)
 
 Упрощённый вид для шапки сайта или сайдбара:
+
 - Компактный список товаров
 - Кнопка перехода на страницу корзины
 
@@ -268,7 +269,6 @@ core/components/minishop3/elements/templates/cart.tpl
 
 [![](https://file.modx.pro/files/0/9/9/0994afcf57549c2c6ace871886a8c3aa.png)](https://file.modx.pro/files/0/9/9/0994afcf57549c2c6ace871886a8c3aa.png)
 
-
 ### Использование
 
 1. Создайте новый шаблон в MODX (Элементы → Шаблоны)
@@ -282,9 +282,11 @@ core/components/minishop3/elements/templates/cart.tpl
 ### Настройка
 
 Шаблон использует системные настройки:
+
 - `ms3_order_page_id` — ID страницы оформления заказа (для кнопки «Оформить заказ»)
 
 Лексиконы:
+
 - `ms3_frontend_continue_shopping` — текст кнопки «Продолжить покупки»
 - `ms3_frontend_checkout` — текст кнопки «Оформить заказ»
 

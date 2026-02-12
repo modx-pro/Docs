@@ -1,22 +1,22 @@
-# Category Filtration
+# Category filtration
 
-A ready-made decision for filtration of product categories by daughter products. Parameters of products are shown in filters, whereas categories that contain those products are shown in results.
+Ready-made solution for filtering product categories by their products. Filters show product parameters; results show categories that contain those products.
 
-The work logic of mFilter2:
+mFilter2 logic:
 
-- The filter uses for search and output one snippet indicated in &elements. In case of working with products msProducts is usually indicated there.
-- There will be 2 calls for this snippet: preliminary selection and return of products suitable for id, and then their output for the user.
-- These 2 calls can be distinguished by parameter **returnIds**, which is sent.
+- The filter uses one snippet (in &element) for both fetching and output. For products that is usually msProducts.
+- That snippet is called twice: first to get matching product IDs, then to output them.
+- The two calls are distinguished by the **returnIds** parameter.
 
-You should not interfere in the process of id getting products because filter has to build filters from them. Only output of these products should be changed: they should be replaced by categories.
+Do not change how product IDs are obtained — the filter needs them to build filters. Only change the output so that categories are shown instead of products.
 
-We write new snippet **msProductsCategories**:
+Create a new snippet **msProductsCategories**:
 
 ```php
 <?php
-// It works only when we initiate product output rather than call for suitable ids
+// Only when outputting products, not when returning IDs
 if (empty($returnIds)) {
-  // We join the table of categories
+  // Join categories
   if (empty($innerJoin) || !$where = $modx->fromJSON($innerJoin)) {
     $innerJoin = array();
   }
@@ -24,24 +24,16 @@ if (empty($returnIds)) {
     'class' => 'msCategory',
   );
   $scriptProperties['innerJoin'] = $modx->toJSON($innerJoin);
-  // We group by category
   $scriptProperties['groupby'] = 'Category.id';
-  //We replace fields of products with fields of categories
   $scriptProperties['select'] = $modx->toJSON(array(
     'Category' => '*',
-    // Selection of fields of products can also be redefined for them to have prefixes,
-    // but I have commented on it, because Data fields are accessible as they are and, as for products, they are not needed
-    //'msProduct' => $modx->getSelectColumns('msProduct', 'msProduct', 'product.'),
-    //'Data' => $modx->getSelectColumns('msProductData', 'Data', 'data.'),
   ));
 }
 
-// We have added our own options. Then it should be the standard snippet that should work:
 return $modx->runSnippet('msProducts', $scriptProperties);
 ```
 
-As you see, everything works by standard parameters pdoTools and no special hacks are needed.
-You just have to indicate this new snippet when you summon mFilter2:
+Everything uses standard pdoTools parameters. Then use this snippet in mFilter2:
 
 ```modx
 [[!mFilter2?
@@ -65,4 +57,4 @@ You just have to indicate this new snippet when you summon mFilter2:
 ]]
 ```
 
-This decision does not change anything in the original component, therefore, it can be safely updated.
+This solution does not modify component source, so updates are safe.

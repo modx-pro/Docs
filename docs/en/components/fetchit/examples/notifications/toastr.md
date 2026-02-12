@@ -1,11 +1,11 @@
 # toastr
 
-[toastr](https://codeseven.github.io/toastr/) is a library for showing non-blocking notifications and this example will show how to integrate it.
+[toastr](https://codeseven.github.io/toastr/) is a library for displaying non-blocking notifications; this example shows how to integrate it.
 
-- As strange as it may sound, we will need to add jQuery as it is a dependency of the **toastr** library, then the script of the library itself and its styles.
+- As odd as it may sound, we need to load jQuery first, since it is a dependency of **toastr**, then the library script and its styles.
 
-:::warning WARNING
-Note that the **toastr** and **Bootstrap** framework selectors may conflict.
+:::warning Warning!
+Note that **toastr** and **Bootstrap** framework selectors may conflict.
 :::
 
 ```html
@@ -19,7 +19,7 @@ Note that the **toastr** and **Bootstrap** framework selectors may conflict.
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastr@2/build/toastr.min.css">
 ```
 
-- And let's define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+- Define the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 ```
 
-- Or in your file script with the `defer` attribute, then you don't need to put a handler on the `DOMContentLoaded` event and get direct access to the FetchIt class:
+- Or in your own script file with the `defer` attribute; then you do not need to wrap the handler in `DOMContentLoaded` and get direct access to the FetchIt class:
 
 ```js
 FetchIt.Message = {
@@ -47,4 +47,4 @@ FetchIt.Message = {
 }
 ```
 
-And that's it! But we don't recommend using this library in your project if it doesn't have jQuery. It's sacrilege to plug in a whole other library just for the sake of one notification library.
+That's it! We do not recommend using this library in your project if you do not already have jQuery. Connecting an entire other library just for notifications is excessive.

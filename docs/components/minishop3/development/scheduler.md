@@ -242,5 +242,6 @@ try {
 ### Ошибки в задачах
 
 Логи задач доступны в:
+
 - MODX Error Log (`core/cache/logs/error.log`)
 - Scheduler → Task Runs → выберите запуск → View Errors

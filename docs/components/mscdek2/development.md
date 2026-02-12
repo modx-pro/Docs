@@ -2,12 +2,12 @@
 
 ## Изменение стилей
 
-### Неправильный вариант:
+### Неправильный вариант
 
 1. Подключить свои стили ниже;
 2. Переопределить значения в них.
 
-### Правильный вариант:
+### Правильный вариант
 
 1. Скопировать стандартный файл;
 2. Переопределить нужные значения;
@@ -90,6 +90,7 @@ document.addEventListener('mscdek:status:get', e => {
 ```
 
 #### Добавим JS, который будет менять видимость кнопки при загрузке страницы и смене способа доставки
+
   :::info
   `3` в функции `toggleMapButton` это ID способа доставки до ПВЗ
   :::
@@ -136,16 +137,22 @@ document.addEventListener('click', e => {
 ```
 
 ## Вывод дополнительной информации о ПВЗ и подтверждение выбора кнопкой
+
 :::info
-Предполагается что на странице отсутствует блок 
+Предполагается что на странице отсутствует блок
+
 ```html:line-numbers
 <div class="hide" data-mscdek-list></div>
 ```
+
 а вместо него выведено скрытое поле
+
 ```html:line-numbers
 <input type="hidden" name="point">
 ```
+
 :::
+
 #### Добавим шаблон блока дополнительной информации о ПВЗ
 
 ```html:line-numbers
@@ -186,6 +193,7 @@ document.addEventListener('click', e => {
 ```
 
 #### Поместим блок с дополнительной информацией в блок с картой после её инициализации
+
 ```js:line-numbers
 document.addEventListener('mscdek:map:init', e => {
   const {mapBlock} = e.detail;
@@ -199,6 +207,7 @@ document.addEventListener('mscdek:map:init', e => {
 ```
 
 #### Выводим дополнительную информацию о ПВЗ
+
 ```js:line-numbers
 const showBaloon = (markerData) => {
   const baloon = document.querySelector('[data-pvz-details]');
@@ -223,6 +232,7 @@ document.addEventListener('mscdek:map:choose', e => {
 ```
 
 #### Добавляем обработчик подтверждения выбора ПВЗ
+
 ```js:line-numbers
 document.addEventListener('click', e => {
   if (e.target.closest('#select-pvz-btn')) {
@@ -246,6 +256,7 @@ document.addEventListener('click', e => {
 ```
 
 ## Изменить маркер для ПВЗ с чётным ID
+
 ```js:line-numbers
 document.addEventListener('mscdek:marker:create', e => {
   const {marker, markerData} = e.detail;  

@@ -1,0 +1,54 @@
+# Events
+
+The following events are available:
+
+- `rgOnBeforeGetEffectiveUrl`
+- `rgOnAfterGetEffectiveUrl` — resolve effective URL.
+  - `data`  — data object.
+  - `url`   — URL.
+  - `value` — resolved URL.
+  - `clear` — flag.
+
+## Examples
+
+Override `url` when protecting a product page from parsing:
+
+```php
+<?php
+
+if ($modx->event->name === 'rgOnAfterGetEffectiveUrl') {
+
+    if (!empty($value)) {
+      return;
+    }
+
+    $parts = parse_url($url);
+    $host = isset($parts['host']) ? $parts['host'] : '';
+
+    $return = false;
+    switch (true) {
+      case $host[0] !== 'm' AND preg_match("!aliexpress.!usi", $host):
+        $parts['host'] = 'm.' . $host;
+        $return = true;
+        break;
+    }
+
+
+    if ($return) {
+      if (!empty($parts['scheme'])) {
+        $value = $parts['scheme'] . '://' . $parts['host'];
+      } else {
+        $value = '//' . $parts['host'];
+      }
+      if (!empty($parts['path'])) {
+        $value .= $parts['path'];
+      }
+    }
+
+    if ($value) {
+      $modx->event->returnedValues['value'] = $value;
+    }
+
+}
+?>
+```

@@ -1,5 +1,6 @@
 ---
-name: Sendex
+title: Sendex
+description: Component for email newsletters. Written as a demo of MODX component development
 logo: https://modstore.pro/assets/extras/sendex/logo-lg.jpg
 author: modx-pro
 modstore: https://modstore.pro/packages/alerts-mailing/sendex
@@ -15,46 +16,44 @@ items: [
   },
 ]
 ---
-# Sendex
+# Sendex snippet
 
-It is a component to work with Email distribution.
+Component for email newsletters.
 
-Snippet is very simple, it lets users work with subscription on their own: to subscribe and unsubscribe.
+The snippet is simple: users can subscribe and unsubscribe.
 
-If a user is authorized, he/she just needs to press the button. If he/she is not, so he/she will need to confirm the email.
+If the user is logged in, one click is enough. If not, they must confirm their email.
 
-Also if an authorized user is already subscribed for distribution, he/she will be shown the button for the end of subscription. Anonyms will be able to unsubscribe by reference from the letter.
+If a logged-in user is already subscribed, an unsubscribe button is shown. Anonymous users can unsubscribe via the link in the email.
 
 ## Parameters
 
-Name                   | Description
------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&id**                | distribution identifier (number).
-**&showInactive**      | show/hide inactive distributions.
-**&msgClass**          | Class that will be displayed in the placeholder `[[+class]]` provided that the placeholder `[[+message]]` **is not empty**. The class is useful if you want to not initially show the block with messages in layout.
-**&tplActivate**       | chunk with formatting letter with subscribe activation.
-**&tplSubscribeAuth**  | chunk with form of newsletter subscription for authorized users.
-**&tplSubscribeGuest** | chunk with form of newsletter subscription for anonyms.
-**&tplUnsubscribe**    | chunk with form of the end of newsletter subscription.
+| Name               | Description                                                                                                                                                                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **&id**            | Newsletter ID.                                                                                                                                                                                              |
+| **&showInactive**  | Show or hide inactive newsletters.                                                                                                                                                                          |
+| **&msgClass**      | CSS class output in `[[+class]]` when `[[+message]]` is not empty. Use to hide the message block until needed.                                                                                                |
+| **&tplActivate**   | Chunk for the subscription activation email.                                                                                                                                                                 |
+| **&tplSubscribeAuth**  | Chunk for the subscribe form (logged-in users).                                                                                                                                                        |
+| **&tplSubscribeGuest** | Chunk for the subscribe form (guests).                                                                                                                                                                  |
+| **&tplUnsubscribe**    | Chunk for the unsubscribe form.                                                                                                                                                                          |
 
-## Snippet activation
+## Calling the snippet
 
-Snippet should be activated **uncached**, because it outputs different chunks depending on user authorization. It is necessary to create a distribution before the usage. See section interface.
+Call the snippet **uncached**, because output depends on whether the user is logged in.
+Create a newsletter first. See the Interface section.
 
 ```modx
 [[!Sendex? &id=`1`]]
 ```
 
-All messages for the user are displayed in the placeholder `[[+message]]`, in chunks with a form.
+All user messages are output in `[[+message]]` in the form chunks.
 
 ## History
 
-Component was written as a demonstration on paid courses of bezumkin.ru.
-All courses [are situated here][1] and you can buy the access to them, if you want.
+The component was written as a demo for paid courses on bezumkin.ru.
+Course materials [are here](http://bezumkin.ru/training/course1/).
 
-Initial code on [GitHub][2].
+Source code [on GitHub](https://github.com/bezumkin/Sendex).
 
-At this moment Sendex is being tested and brought to a stable state.
-
-[1]: http://bezumkin.ru/training/course1/
-[2]: https://github.com/bezumkin/Sendex
+Sendex is currently being tested and stabilized.

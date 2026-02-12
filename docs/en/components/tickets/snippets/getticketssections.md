@@ -1,34 +1,31 @@
 # getTicketsSections
 
-Outputs section list with tickets.
-
-::: tip TIP
-Snippet is caused uncashed
-:::
+Outputs a list of ticket sections.
+**The snippet must be called uncached.**
 
 ## Parameters
 
-Name                 | By default                 | Description
----------------------|----------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&depth**           | `0`                        | Search depth of the resources from every parent.
-**&fastMode**        | `0`                        | If activated - values from DB only will be fitted in the result chunk. All the unprocessed tags MODX, such as filters, snippet output and others - will be cut.
-**&includeContent**  | `0`                        | Chooses the field «content» from resources.
-**&includeTVs**      |                            | The list of TV parameters for the selection, with a comma. For example: «action,time» will give the placeholders `[[+action]]` and `[[+time]]`.
-**&limit**           | `10`                       | Limit of the result selection.
-**&offset**          | `0`                        | Result omission from the beginning of the selection.
-**&outputSeparator** |                            | Optional string for separation of the work result.
-**&parents**         |                            | List of the categories, with a comma, for search of the results.The selection is limited by the current parent by default. If 0 is set - the selection is not limited.
-**&resources**       |                            | The list of the resources, with a comma, for the result output. If resource id begins with a minus, this resource is excluded from the selection.
-**&showDeleted**     | `0`                        | Shows the deleted resources.
-**&showHidden**      | `0`                        | Shows resources hidden in the menu.
-**&showLog**         | `0`                        | Shows extra information about snippet’s work. For authorized in the «mgr» context only.
-**&showUnpublished** | `0`                        | Shows unpublished resources.
-**&sortby**          | `views`                    | Sorting of selection.
-**&sortdir**         | `DESC`                     | Direction od selection.
-**&toPlaceholder**   |                            | If it is not empty, snippet will save all the data in placeholder with the very name instead of displaying on the screen.
-**&tpl**             | `tpl.Tickets.sections.row` | Design chunk for every result.
-**&tvPrefix**        |                            | Prefix for TV placeholders, for example «tv.». The parameter is empty by default.
-**&where**           |                            | The string coded in JSON with extra conditions of selection.
+| Name               | Default                   | Description                                                                                                                                                           |
+|--------------------|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **&depth**        | `0`                       | Search depth from each parent.                                                                                                                                        |
+| **&fastMode**     | `0`                       | If enabled, only raw DB values are passed to the result chunk. All unprocessed MODX tags (filters, snippet calls, etc.) are stripped.                                  |
+| **&includeContent**| `0`                      | Include the "content" field of resources.                                                                                                                             |
+| **&includeTVs**   |                           | Comma-separated list of TV names to include. E.g. "action,time" gives placeholders `[[+action]]` and `[[+time]]`.                                                     |
+| **&limit**        | `10`                      | Maximum number of results.                                                                                                                                            |
+| **&offset**      | `0`                       | Number of results to skip.                                                                                                                                             |
+| **&outputSeparator**|                         | Optional string to separate results.                                                                                                                                  |
+| **&parents**      |                           | Comma-separated list of parent IDs. By default the search is limited to the current parent. Use 0 for no limit.                                                       |
+| **&resources**    |                           | Comma-separated list of resource IDs to include. Prefix an ID with a minus sign to exclude it.                                                                         |
+| **&showDeleted** | `0`                       | Include deleted resources.                                                                                                                                            |
+| **&showHidden**   | `0`                       | Include resources hidden in menu.                                                                                                                                    |
+| **&showLog**      | `0`                       | Show extra snippet debug info. Only for users logged in to the "mgr" context.                                                                                         |
+| **&showUnpublished**| `0`                     | Include unpublished resources.                                                                                                                                       |
+| **&sortby**       | `views`                   | Sort field.                                                                                                                                                           |
+| **&sortdir**      | `DESC`                    | Sort direction.                                                                                                                                                       |
+| **&toPlaceholder**|                           | If set, the snippet stores all data in a placeholder with this name instead of outputting.                                                                            |
+| **&tpl**          | `tpl.Tickets.sections.row`| Chunk for each result row.                                                                                                                                            |
+| **&tvPrefix**     |                           | Prefix for TV placeholders, e.g. "tv.". Empty by default.                                                                                                             |
+| **&where**        |                           | JSON-encoded string with extra conditions.                                                                                                                             |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
@@ -37,5 +34,5 @@ Name                 | By default                 | Description
 Simple call.
 
 ```modx
-[[!getTicketsSections]]
+[[!getTicketsSections?]]
 ```

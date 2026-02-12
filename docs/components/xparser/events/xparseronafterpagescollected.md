@@ -8,7 +8,6 @@
 
 ```$modx->event->returnedValues['rows'] = $rows;```
 
-
 ## Параметры
 
 - `xParser $xp` — экземпляр основного класса компонента,

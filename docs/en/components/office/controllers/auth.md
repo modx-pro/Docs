@@ -1,26 +1,26 @@
-# Authorization
+# Authentication
 
-This controller's parameters are very much like those of [HybridAuth][1].
+This controller's parameters are very similar to [HybridAuth][1].
 
-Name                   | By default                       | Description
------------------------|----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&tplLogin**          | `tpl.Office.auth.login`          | This chunk will be shown to an anonymous user, that is, to any guest.
-**&tplLogout**         | `tpl.Office.auth.logout`         | This chunk will be shown to an authorized user.
-**&tplActivate**       | `tpl.Office.auth.activate`       | Chunk for activation letter.
-**&tplRegister**       | `tpl.Office.auth.register`       | Chunk for registration letter.
-**&linkTTL**           | `600`                            | Time of life of a profile activation link in seconds.
-**&groups**            |                                  | List of groups for a user registration, with commas. User's role in the group can be written after a colon. For example, ``&groups=`Users:1` `` will add a user to "Users" group with a "member" role.
-**&rememberme**        | `1`                              | Remembers a user for a long time. On by default.
-**&loginContext**      |                                  | General context for authorization. By default - the current one.
-**&addContexts**       |                                  | Additional contexts, with commas. For example, ``&addContexts=`web,ru,en` ``
-**&loginResourceId**   | `0`                              | Identifier of a resource to which the user will be sent after authorization. By default it is 0, which updates the current page.
-**&logoutResourceId**  | `0`                              | Identifier of a resource to which the user will be sent when the session is ended. By default it is 0, which updates the current page.
-**&HybridAuth**        | `1`                              | Turn on integration with [HybridAuth][1], if it is installed.
-**&providers**         |                                  | List of providers of authorization [HybridAuth][1], with commas.
-**&providerTpl**       | `tpl.HybridAuth.provider`        | Chunk for output of the link to authorization or adding HybridAuth service to the account.
-**&activeProviderTpl** | `tpl.HybridAuth.provider.active` | Chunk for output of an icon of the added HybridAuth service.
+| Name               | Default                     | Description                                                                                                                                                                                    |
+| ------------------ | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **&tplLogin**      | `tpl.Office.auth.login`     | Chunk shown to anonymous users (guests).                                                                                                                                                        |
+| **&tplLogout**     | `tpl.Office.auth.logout`    | Chunk shown to logged-in users.                                                                                                                                                                |
+| **&tplActivate**   | `tpl.Office.auth.activate`  | Chunk for the activation email.                                                                                                                                                               |
+| **&tplRegister**    | `tpl.Office.auth.register`  | Chunk for the registration email.                                                                                                                                                              |
+| **&linkTTL**       | `600`                       | Profile activation link lifetime in seconds.                                                                                                                                                     |
+| **&groups**        |                             | Comma-separated list of groups for registration. You can specify user role with a colon. E.g. &groups=`Users:1` adds the user to group "Users" with role "member".                             |
+| **&rememberme**    | `1`                         | Remember user for a long time. Default: enabled.                                                                                                                                                |
+| **&loginContext**  |                             | Primary context for login. Default: current.                                                                                                                                                    |
+| **&addContexts**   |                             | Additional contexts, comma-separated. E.g. &addContexts=`web,ru,en`                                                                                                                            |
+| **&loginResourceId**  | `0`                      | Resource ID to redirect to after login. Default 0 = refresh current page.                                                                                                                      |
+| **&logoutResourceId** | `0`                      | Resource ID to redirect to after logout. Default 0 = refresh current page.                                                                                                                      |
+| **&HybridAuth**    | `1`                         | Enable integration with [HybridAuth][1] if installed.                                                                                                                                           |
+| **&providers**     |                             | Comma-separated list of [HybridAuth][1] auth providers.                                                                                                                                         |
+| **&providerTpl**   | `tpl.HybridAuth.provider`   | Chunk for HybridAuth login/bind link.                                                                                                                                                           |
+| **&activeProviderTpl** | `tpl.HybridAuth.provider.active` | Chunk for linked HybridAuth provider icon.                                                                                                                |
 
-Example of a call with registration into Users group and a redirect to the main page:
+Example: register in group Users and redirect to the home page:
 
 ```modx
 [[!OfficeAuth?
@@ -29,62 +29,52 @@ Example of a call with registration into Users group and a redirect to the main 
 ]]
 ```
 
-There is a detail in how the controller works: to generate authorized links it should have an id of the resource by default.
-This id is located in system setting **office_auth_page_id** and is filled in when you first call for snippet on the site.
+The controller needs a default resource ID to generate auth links. That ID is stored in system setting **office_auth_page_id** and is set on the first snippet call on the site.
 
-In the future, if you do not indicate **&loginResourceId**, it is this id that is used, and all links in the mail will be to this page.
+If you do not set **&loginResourceId**, this stored ID is used and all email links point to that page.
 
-## Authorization regime
+## Auth mode
 
-Authorization regime is written into system setting **office_auth_mode**.
-By default *email* is used for registration and password reset, but you can also turn on *phone* regime.
+Auth mode is set in system setting **office_auth_mode**.
+By default registration and password reset use *email*; you can switch to *phone*.
 
-After that you will have to choose the sms provider in system setting **office_sms_provider**.
-By default you can choose between [SmsRu][2] and [ByteHand][3].
+Then choose the SMS provider in **office_sms_provider**.
+By default [SmsRu][2] and [ByteHand][3] are available.
 
-For the work of providers the following system settins are used:
+Provider settings:
 
-- **office_sms_id** — identifier of the client on the service
-- **office_sms_key** — key of the client on the service, not needed for SmsRu.
-- **office_sms_from** — text designation of the sender, should be approved by the service.
+- **office_sms_id** — client id on the service.
+- **office_sms_key** — client key on the service (not needed for SmsRu).
+- **office_sms_from** — sender label; must be agreed with the service.
 
-Depending on the working regime fields **email** and **mobilephone** can be obligatory.
+Depending on mode, **email** or **mobilephone** is required for registration.
 
-### Forms' actions
+### Form actions
 
-The standard javascript is written so as to process all forms of authorization universally,
-distinguishing them by their indicated actions in hidden input:
+The default JavaScript handles all auth forms by the action in a hidden input:
 
 ```html
-<input type="hidden" name="action" value="auth/action"/>
+<input type="hidden" name="action" value="auth/action" />
 ```
 
-The following actions are possible:
+Possible actions:
 
-- **auth/formLogin** - standard authorization. If the password is not indicated, a reset letter will be sent.
-- **auth/formRegister** - new user registration
-- **auth/formAdd** - additional authorization into another account, for quick switching
-- **auth/sendLink** - sending link for password reset
+- **auth/formLogin** — normal login. If password is empty, an email with reset link is sent.
+- **auth/formRegister** — register new user
+- **auth/formAdd** — log in to another account (quick switch)
+- **auth/sendLink** — send password reset link
 
-Logging off an account is accessible by a simple downloading of a page with a parameter in the link.
+Logout is done by loading the page with: `https://your.site/?action=auth/logout`.
 
-```
-https://your.site/?action=auth/logout
-```
+To log out an account added via `auth/formAdd`, add `user_id`: `https://your.site/?action=auth/logout&user_id=15`.
 
-If you want to cancel authorization of an account which was added through `auth/formAdd`, you will have to add `user_id` to this link:
-
-```
-https://your.site/?action=auth/logout&user_id=15
-```
-
-Links like this are made by Office plugins, you can indicate them to any page.
+These URLs are handled by Office plugins and can be on any page.
 
 ### Adding a provider
 
-To add your own SMS provider you have to create a new class in core/components/office/model/sms/**myprovider**.class.php.
+To add your own SMS provider, create a class in core/components/office/model/sms/**myprovider**.class.php.
 
-It can be structured like that:
+Example structure:
 
 ```php
 <?php
@@ -95,56 +85,56 @@ class MyProvider {
   }
 
   function send($phone, $text) {
-    // We get system settings for work and send a message
+    // Read system settings and send the message
 
-    return true; // or the text of an error
+    return true; // or error message
   }
 }
 ```
 
-After that you can indicate *MyProvider* in setting office_sms_provider.
+Then set *MyProvider* in office_sms_provider.
 
-SMS provider can be also used for random sending of an SMS through API MODX:
+You can also use the SMS provider for custom sending via MODX API:
 
 ```php
 $provider = $modx->getOption('office_sms_provider');
 if ($service = $modx->getService($provider, $provider, MODX_CORE_PATH . 'components/office/model/sms/')) {
-  $send = $service->send('79234778899', 'Hi!');
+  $send = $service->send('79234778899', 'Hello!');
   return $send === true
-    ? 'Your message is sent!'
-    : 'Error in sending your message: ' . $send;
-  }
+    ? 'Message sent!'
+    : 'Send error: ' . $send;
+}
 ```
 
-The provider's class should definitely have method `send`.
+The provider class must have a `send` method.
 
 ## Additional fields
 
-Registration in Office requires only one field that should be filled - email, all other fields are additional.
-That is done so for purpose, to make a user register on your site as soon as possible and only then require his filling in the whole profile if you need it.
+Office registration only requires one field — email; everything else is optional.
+This keeps signup quick; you can require profile completion later if needed.
 
-Filling in big forms when registering can be very tiring, and for this reason Office tries not to force the user to write extra data.
+Long registration forms reduce conversions, so Office keeps the form minimal.
 
-However, if you want the user to give you some more information, you can make your own system plugin for that.
-For example, you can give the user choice in which group to register.
+To require extra fields, use a system plugin. For example, let the user choose a group:
 
-For this we add select in the registration form:
+Add a select to the registration form:
 
 ```html
-<label for="office-auth-register-group" class="col-md-3 control-label">Группа</label>
+<label for="office-auth-register-group" class="col-md-3 control-label">Group</label>
 <div class="col-md-8">
   <select name="group" class="form-control" id="office-auth-register-group">
-    <option value="users">Ordinary Users</option>
+    <option value="users">Regular users</option>
     <option value="admins">Administrators</option>
   </select>
 </div>
 ```
 
-And then we write our own plugin that will check which group is selected and add it to the user:
+Then a plugin that validates the group and adds the user to it:
 
 ```php
 <?php
-// Array of groups that are defined for registration beforehand saves you from data replacement in sending the form
+
+// Predefined groups prevent form tampering
 $groups = array(
   'admins' => 'Administrator',
   'users' => 'Users',
@@ -152,27 +142,26 @@ $groups = array(
 
 if ($modx->context->key != 'mgr') {
   switch ($modx->event->name) {
-    // Event before the user's registration
     case 'OnBeforeUserFormSave':
-      if (empty($_POST['group']) || !array_key_exists($_POST['group'], $groups)) {
-        // Error if group is not filled in or is not from the list
-        $modx->event->output('You should indicate the group of the user!');
+      if ($mode == 'new') {
+        if (empty($_POST['group']) || !array_key_exists($_POST['group'], $groups)) {
+          $modx->event->output('You must specify the user group!');
+        }
+        // $user->Profile->set('comment', 'Comment');
       }
-      // You can also add something to the profile
-      // $user->Profile->set('comment');
       break;
-    // Event after the user's registration
     case 'OnUserFormSave':
-      // Here we add the selected group
-      $user->joinGroup($groups[$_POST['group']]);
+      if ($mode == 'new') {
+        $user->joinGroup($groups[$_POST['group']]);
+      }
       break;
   }
 }
 ```
 
-Do not forget to turn on events **OnBeforeUserFormSave** and **OnUserFormSave**for the plugin.
-In this case you do not have to indicate parameter **&groups** for snippet OfficeAuth.
+Attach the plugin to **OnBeforeUserFormSave** and **OnUserFormSave**.
+In this case you can omit **&groups** in OfficeAuth.
 
-[1]: /components/hybridauth/snippets/hybridauth
+[1]: /en/components/hybridauth/snippets/hybridauth
 [2]: http://sms.ru
 [3]: http://bytehand.com

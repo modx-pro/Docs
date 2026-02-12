@@ -65,6 +65,7 @@ Content-Type: application/json
 Все ответы имеют единый формат:
 
 **Успех:**
+
 ```json
 {
   "success": true,
@@ -74,6 +75,7 @@ Content-Type: application/json
 ```
 
 **Ошибка:**
+
 ```json
 {
   "success": false,
@@ -646,12 +648,14 @@ GET /api/v1/health
 ### CORS
 
 Настраивается через системную настройку `ms3_cors_allowed_origins`:
+
 - `*` — разрешить все домены
 - `https://example.com,https://shop.example.com` — список доменов
 
 ### Rate Limiting
 
 Защита от DDoS через системные настройки:
+
 - `ms3_rate_limit_max_attempts` — максимум запросов (по умолчанию 60)
 - `ms3_rate_limit_decay_seconds` — период в секундах (по умолчанию 60)
 

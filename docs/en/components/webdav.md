@@ -1,53 +1,60 @@
 ---
-name: WebDAV
+title: WebDAV
+description: WebDAVMediaSource — network media source for MODX Revolution
 logo: https://modstore.pro/assets/extras/webdav/logo-lg.jpg
 author: 13hakta
 modstore: https://modstore.pro/packages/photos-and-files/webdav
 modx: https://extras.modx.com/package/webdav
 repository: https://github.com/13hakta/modx-WebDAV
 ---
-# WebDAVMediaSource
+# WebDAV
 
 WebDAVMediaSource is a network media source for MODX Revolution.
 
 Supported operations:
 
-- List directory
+- List directory contents
 - Upload files
 - Create file
 - Edit file
 - Delete directory/file
-- Drag&drop items in tree
-- Cache directory listing and file meta
-- Proxify download requests to remote storage
+- Drag and drop in tree
+- Cache directory contents and file metadata
+- Access resources via site proxy
 
-Supports MySQL and SQLSrv DB schemes. Works with WebDAV v1 protocol. Recently no locking is supported.
+Supports MySQL and SQLSrv schemas. Works with WebDAV v1. Locking is not supported.
 
 Tested with SabreDAV, CloudMe.com, Yandex Disk.
 
-## Options
+## Parameters
 
-| Name                 | Default value                                | Description                                                                                                                                                  |
-|----------------------|----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **allowedFileTypes** |                                              | If set, will restrict the files shown to only the specified extensions. Please specify in a comma-separated list, without the dots preceding the extensions. |
-| **authMethod**       |                                              | Authorization method: basic or digest. Select method supported on a server.                                                                                  |
-| **basePath**         |                                              | The file path to point the Source to.                                                                                                                        |
-| **baseUrl**          |                                              | The URL that this source can be accessed from. Ignored if proxified.                                                                                         |
-| **cached**           | `false`                                      | Cache directory listing and file meta.                                                                                                                       |
-| **cacheTime**        | `10`                                         | Hold cached data for period in minutes.                                                                                                                      |
-| **imageExtensions**  | `jpg,jpeg,png,gif`                           | A comma-separated list of file extensions to use as images. MODX will attempt to make thumbnails of files with these extensions.                             |
-| **login**            |                                              | Login name                                                                                                                                                   |
-| **password**         |                                              | Password                                                                                                                                                     |
-| **preview**          | `false`                                      | Generate thumbnails for images. May heavily load network traffic as it needs to get whole remote file. Enable with care.                                     |
-| **proxy**            | `false`                                      | Proxify download requests                                                                                                                                    |
-| **server**           |                                              | Server address. Specify as: http[s]://host[:port]                                                                                                            |
-| **skipFiles**        | `.svn,.git,_notes,nbproject,.idea,.DS_Store` | A comma-separated list. MODX will skip over and hide files and folders that match any of these.                                                              |
-| **thumbnailQuality** | `90`                                         | The quality of the rendered thumbnails, in a scale from 0-100.                                                                                               |
-| **thumbnailType**    | `png`                                        | The image type to render thumbnails as.                                                                                                                      |
-| **verifySSL**        | `true`                                       | Check host and peer for SSL certificate                                                                                                                      |
+| Name                  | Default                              | Description                                                                                                                                                    |
+| --------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **allowedFileTypes**  |                                      | If set, only files with these extensions. Comma-separated, no dot.                                                                                             |
+| **authMethod**        |                                      | Auth scheme: basic or digest. Use scheme supported by server                                                                                                   |
+| **basePath**          |                                      | Path to source files.                                                                                                                                          |
+| **baseUrl**           |                                      | URL for file access. Ignored if proxy is enabled.                                                                                                              |
+| **cached**            | `false`                              | Cache directory contents                                                                                                                                       |
+| **cacheTime**         | `10`                                 | Cache lifetime in minutes                                                                                                                                      |
+| **imageExtensions**   | `jpg,jpeg,png,gif`                   | Comma-separated image extensions. MODX creates thumbnails for these.                                                                                           |
+| **login**             |                                      | Username                                                                                                                                                       |
+| **password**          |                                      | Password                                                                                                                                                       |
+| **preview**           | `false`                              | Create image thumbnails. May load the network. Use with caution.                                                                                               |
+| **proxy**             | `false`                              | Access resources via site proxy if server is not publicly accessible                                                                                           |
+| **server**            |                                      | Server address as proto://host. Port after colon                                                                                                               |
+| **skipFiles**         | `.svn,.git,_notes,nbproject,.idea,.DS_Store` | Comma-separated. MODX skips files/folders matching these masks.                                                                                       |
+| **thumbnailQuality**  | `90`                                 | Thumbnail quality 0–100.                                                                                                                                       |
+| **thumbnailType**     | `png`                                | Image type for thumbnails.                                                                                                                                     |
+| **verifySSL**         | `true`                               | Verify SSL certificates                                                                                                                                        |
 
-## Permission security
+## Security policy
 
-| Name     | Description                 |
-|----------|-----------------------------|
+| Name   | Description                |
+| ------ | -------------------------- |
 | **load** | Ability to download objects |
+
+## Download via proxy
+
+If the WebDAV server does not allow direct download, use the proxy processor.
+URL format: `http://yoursite.ru/assets/components/webdav/index.php?ctx=web&action=proxy&source=SOURCEID&src=path/file.ext`
+Parameters include sourceID and file path. Works only with WebDAV sources.

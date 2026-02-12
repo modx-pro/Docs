@@ -5,23 +5,24 @@ lastUpdated: false
 
 ## Introduction
 
-We present to your attention the documentation for the [MODX Revolution](https://modx.com/) extras, open to everyone.
+This is documentation for [MODX Revolution](https://modx.com/) components, open to everyone.
 
-This is a free Open Source project hosted on [github](https://github.com/modx-pro/Docs).
-This placement allows everyone to supplement the "Documentation" pages, fork, clone the project, saving and modifying the documentation to their liking.
+It is a free Open Source project hosted on [GitHub](https://github.com/modx-pro/Docs).
+That allows anyone to contribute to the docs, fork the project, clone it, and change it to their liking.
 
 ## How it works
 
-"Documentation" is powered by [VitePress](https://vitepress.dev/) technology. These are static text files written in the simple markup md-language, with some "decorating" additions from VitePress and Front Matter.
-Unlike the strict md markup language, we get the ability to place emoji, highlight and focus on important code elements, add beautiful warning blocks, and much much more.
+The docs are built with [VitePress](https://vitepress.dev/). Content is static text in simple markdown, with VitePress enhancements.
+Compared to plain markdown, you get emoji, code highlighting and focus, colored warning blocks, and more.
 
-The documentation portal is linked to our [github repository](https://github.com/modx-pro/Docs). Propose your changes through a Pull Request and after approval they will be on the site.
+The site is tied to our [GitHub repository](https://github.com/modx-pro/Docs). Submit changes via Pull Request; once merged, they go live on the site.
 
-## Authors and participants
+## Authors and contributors
 
-The "Documentation" project belongs to the Russian-speaking MODX community represented by [MODX RSC](https://github.com/modx-pro), is developed and maintained on a voluntary basis. Each of the community members is an equal co-owner of the project and contributes as much as possible.
+The Documentation project is maintained by the MODX community ([MODX RSC](https://github.com/modx-pro)) on a voluntary basis.
+Every community member can contribute as an equal co-owner of the project.
 
 ## Financial support
 
-This service is an Open-Source project and its support and development depends on donations.
-Donations can allow the development team more time to work on the MODX community ecosystem.
+This service is an Open-Source project; its maintenance and development depend on donations.
+Donations help the team spend more time on the MODX community ecosystem.

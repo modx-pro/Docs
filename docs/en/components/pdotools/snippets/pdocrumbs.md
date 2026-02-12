@@ -1,54 +1,54 @@
 # pdoCrumbs
 
-Snippet for building breadcrumb-style navigation.
+Snippet for building breadcrumb navigation.
 
-Good substitute for [BreadCrumb][1] works with documents from any contexts and provides a number of options for selecting resources.
+Replaces [BreadCrumb][1] well, works with documents from any contexts and allows specifying various conditions for resource selection.
 
-Snippet has a very high speed, due to selecting only the specified elements from the database per request .
+Snippet has high performance by selecting all needed elements from the database in a single query.
 
-## Properties
+## Parameters
 
-Accepts all of the properties of [pdoTools] [2] and some others:
+Accepts all [pdoTools][2] parameters and some of its own:
 
-Property             | Default              | Description
----------------------|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&showLog**         | `0`                  | Show additional information on the work of the snippet . Only displayed to users logged in to the «mgr» context.
-**&from**            | `0`                  | Id of the resource from which to begin to build the breadcrumbs . This is usually the root of the site, which is "0".
-**&to**              |                      | Id of the resource with which end the breadcrumbs . By default, the id of the current page.
-**&exclude**         |                      | Comma-separated list of resource IDs that should be excluded from the output.
-**&toPlaceholder**   |                      | If not empty, the snippet will save all data to a placeholder with the same name , instead of displaying the output to the screen.
-**&outputSeparator** | `&nbsp;&rarr;&nbsp;` | The character to use as a separator between the crumbs.
-**&tpl**             |                      | Name of chunk for formatting the output. If not specified, the contents of the resource fields will be printed to the screen.
-**&tplCurrent**      |                      | Chunk for formatting the current resource's crumb in the navigation .
-**&tplMax**          |                      | Chunk which is added to the end of the results, if there are more than **&limit** crumbs.
-**&tplHome**         |                      | Chunk for formatting the link on the home page.
-**&tplWrapper**      |                      | Chunk for formatting the wrapper, to wrap all results. Provides one placeholder: `[[+output]]`. It does not work in conjunction with **&toSeparatePlaceholders**.
-**&wrapIfEmpty**     |                      | Output the chunk wrapper **&tplWrapper** even if there are no results.
-**&showCurrent**     | `1`                  | Display the current document in the navigation.
-**&showHome**        | `0`                  | Display a crumb for the home page.
-**&showAtHome**      | `1`                  | Show breadcrumbs on the home page.
-**&hideSingle**      | `0`                  | Do not display the result if it is only a single crumb.
-**&direction**       | `ltr`                | The direction of navigation: from left to right «ltr» or right to left «rtl», such as for Arabic.
+| Parameter             | Default | Description                                                                                                                                                 |
+|----------------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **&showLog**         | `0`          | Show extra snippet debug info. Only for users logged in to the "mgr" context.                                                      |
+| **&from**            | `0`          | Resource id from which to build breadcrumbs. Usually the site root, i.e. «0».                                                                    |
+| **&to**              |              | Resource id for which breadcrumbs are built. Default is current page id.                                                                   |
+| **&exclude**         |              | List of resource IDs to exclude from selection.                                                                                                  |
+| **&toPlaceholder**   |              | If set, the snippet stores all data in a placeholder with this name instead of outputting.                                                          |
+| **&outputSeparator** | `\n`         | Separator between crumbs                                                                                                                               |
+| **&tpl**             |              | Name chunk for displaying resource. If not set, resource fields will be printed to screen.                                                |
+| **&tplCurrent**      |              | Chunk for formatting current document in navigation.                                                                                                          |
+| **&tplMax**          |              | Chunk added at the start of results if there are more than **&limit**.                                                                           |
+| **&tplHome**         |              | Chunk for formatting link to home page.                                                                                                              |
+| **&tplWrapper**      |              | Wrapper chunk for all results. Accepts one placeholder: `[[+output]]`. Does not work with the parameter **&toSeparatePlaceholders**. |
+| **&wrapIfEmpty**     |              | Enables wrapper chunk output **&tplWrapper** even when no results.                                                                                  |
+| **&showCurrent**     | `1`          | Output current document in navigation.                                                                                                                   |
+| **&showHome**        | `0`          | Output link to home at start of navigation.                                                                                                           |
+| **&showAtHome**      | `1`          | Show breadcrumbs on the site home page.                                                                                                     |
+| **&hideSingle**      | `0`          | Don't output result if it is the only one.                                                                                                        |
+| **&direction**       | `ltr`        | Navigation direction: left to right «ltr» or right to left «rtl», e.g. for Arabic.                                                        |
 
-### Template Properties
+### Templates
 
-Template        | Default
-----------------|-----------------------------------------------------
-**&tpl**        | `@INLINE <a href="[[+link]]">[[+menutitle]]</a>`
-**&tplCurrent** | `@INLINE <span>[[+menutitle]]</span>`
-**&tplMax**     | `@INLINE <span>&nbsp;...&nbsp;</span>`
-**&tplHome**    |
-**&tplWrapper** | `@INLINE <div class="breadcrumbs">[[+output]]</div>`
+| Template          | Default                                              |
+|-----------------|-----------------------------------------------------------|
+| **&tpl**        | `@INLINE <li><a href="[[+link]]">[[+menutitle]]</a></li>` |
+| **&tplCurrent** | `@INLINE <li class="active">[[+menutitle]]</li>`          |
+| **&tplMax**     | `@INLINE <li class="disabled">&nbsp;...&nbsp;</li>`       |
+| **&tplHome**    |                                                           |
+| **&tplWrapper** | `@INLINE <ul class="breadcrumb">[[+output]]</ul>`         |
 
 ## Examples
 
-Generation of bread crumbs for the current page:
+Generate breadcrumbs for current page:
 
 ```modx
 [[pdoCrumbs]]
 ```
 
-Generation of a restricted number of items:
+Generate with limit on number of items:
 
 ```modx
 [[pdoCrumbs?
@@ -56,7 +56,7 @@ Generation of a restricted number of items:
 ]]
 ```
 
-Snippet works well when called from pdoResources. For example, here is a chunk:
+Snippet works well when called from pdoResources. For example, this chunk:
 
 ```modx
 <h3>[[+pagetitle]]</h3>
@@ -67,82 +67,59 @@ Snippet works well when called from pdoResources. For example, here is a chunk:
 ]]
 ```
 
-## Generating page headers
+Generate [Schema.org](http://Schema.org) microdata in JSON-LD format
 
-pdoCrumbs can be called inside another snippet, for example, to generate the header tag of your pages.
-
-Snippet Title:
-
-```php
-<?php
-// We define variables
-if (empty($separator)) {$separator = ' / ';}
-if (empty($titlefield)) {$titlefield = 'longtitle';}
-if (empty($parents_limit)) {$parents_limit = 3;}
-if (empty($tplPages)) {$tplPages = 'No. [[+page]] of [[+pageCount]]';}
-
-// Key and cache settings
-$cacheKey = $modx->resource->getCacheKey() . '/title_' . sha1(serialize($_REQUEST));
-$cacheOptions = array('cache_key' => 'resource');
-
-if (!$title = $modx->cacheManager->get($cacheKey, $cacheOptions)) {
-  // We learn the name of the page
-  $title = !empty($modx->resource->$titlefield)
-    ? $modx->resource->$titlefield
-    : $modx->resource->pagetitle;
-
-  // Add a search query, if there is one
-  if (!empty($_GET['query']) && strlen($_GET['query']) > 2) {
-    // We need to use a placeholder to avoid
-    $title .= ' «[[+mse2_query]]»';
-  }
-
-  // Adding pagination if indicated
-  if (!empty($_GET['page'])) {
-    $title .= $separator . str_replace('[[+page]]', intval($_GET['page']), $tplPages);
-  }
-
-  // Adding parents
-  $crumbs = $modx->runSnippet('pdoCrumbs', array(
-    'to' => $modx->resource->id,
-    'limit' => $parents_limit,
-    'outputSeparator' => $separator,
-    'showHome' => 0,
-    'showAtHome' => 0,
-    'showCurrent' => 0,
-    'direction' => 'rtl',
-    'tpl' => '@INLINE [[+menutitle]]',
-    'tplCurrent' => '@INLINE [[+menutitle]]',
-    'tplWrapper' => '@INLINE [[+output]]',
-    'tplMax' => ''
-  ));
-  if (!empty($crumbs)) {
-    $title = $title . $separator . $crumbs;
-  }
-
-  // By caching the results
-  $modx->cacheManager->set($cacheKey, $title, 0, $cacheOptions);
-}
-
-// return title
-return $title;
-```
-
-Call the snippet on the page
-
-```modx
-<title>[[Title]] / [[++site_name]] - my best website in the world</title>
+```fenom
+{'!pdoCrumbs' | snippet: [
+  'showHome' => 1,
+  'tplWrapper' => '@INLINE
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [ {$output} ]
+      }
+    </script>
+  ',
+  'tplHome' => '@INLINE
+    {
+      "@type": "ListItem",
+      "position": {$idx},
+      "item": {
+        "@id": "{$link}",
+        "name": "{$menutitle}"
+      }
+    },
+  ',
+  'tplCurrent' => '@INLINE
+    {
+      "@type": "ListItem",
+      "position": {$idx},
+      "item": {
+        "@id": "{$link}",
+        "name": "{$menutitle}"
+      }
+    }
+  ',
+  'tpl' => '@INLINE
+    {
+      "@type": "ListItem",
+      "position": {$idx},
+      "item": {
+        "@id": "{$link}",
+        "name": "{$menutitle}"
+      }
+    },
+  ',
+]}
 ```
 
 ## Demo
 
-Working Example [generate breadcrumbs in the search results] [3] mSearch2.
+Working example of [breadcrumb generation in search results][3] mSearch2.
 
-[![](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5s.jpg)](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
-
-Also the site [bezumkin.ru][4] uses dynamic titles.
+![Demo](https://file.modx.pro/files/a/f/4/af4033fffb71ad040e3ff2f6c01d9bf5.png)
 
 [1]: http://rtfm.modx.com/extras/revo/breadcrumb
 [2]: /en/components/pdotools/general-properties
-[3]: http://bezumkin.ru/search?query=pdotools
-[4]: http://bezumkin.ru/
+[3]: https://modx.pro/search?query=pdotools

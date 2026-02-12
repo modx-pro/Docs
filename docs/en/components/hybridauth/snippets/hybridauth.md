@@ -1,34 +1,34 @@
 # HybridAuth
 
-Snippet outputs formula for authorization on the site.
+Snippet outputs a sign-in form for the site.
 
 ## Parameters
 
-Name                   | Default value                    | Description
------------------------|----------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&activeProviderTpl** | `tpl.HybridAuth.provider.active` | chunk to output icons of a bound service.
-**&addContexts**       |                                  | additional contexts, separated by commas. E.g. **&addContexts=\`web,ru,en\`**
-**&groups**            |                                  | list of groups to register the user, separated by commas. User role can be indicated in the group with colon. E.g. &groups=`Users:1` will add user to group "Users" with role "member".
-**&loginContext**      | current context                  | main context for authorization. On default – current.
-**&loginResourceId**   | `0`                              | identifier of a resource on which user should be sent after end of the session. On default 0 renews the current page.
-**&loginTpl**          | `tpl.HybridAuth.login`           | this chunk will be pointed to an anonymous user, i.e. to any guest.
-**&logoutResourceId**  | `0`                              | resource identifier, where a user is sent after the end of the session. On default, 0 updates a current page.
-**&logoutTpl**         | `tpl.HybridAuth.logout`          | this chunk will be shown to an anonymous user.
-**&providerTpl**       | `tpl.HybridAuth.provider`        | chunk to output links for authorization, or binding of server to the account.
-**&providers**         | all available                    | list of providers for authorization, separated by commas. All available providers are here {core_path}components/hybridauth/model/hybridauth/lib/Providers/. For example, &providers=`Google,Twitter,Facebook`.
-**&rememberme**        | `1`                              | remembers users for a long time.
+| Name               | Default                     | Description                                                                                                                                                                                                        |
+|--------------------|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **&activeProviderTpl** | `tpl.HybridAuth.provider.active` | Chunk for the icon of the linked provider.                                                                                                                                                                    |
+| **&addContexts**       |                                  | Additional contexts, comma-separated. E.g. ``&addContexts=`web,ru,en` ``                                                                                                                                |
+| **&groups**            |                                  | List of groups for user registration, comma-separated. You can specify user role in the group with a colon. E.g. ``&groups=`Users:1` `` adds the user to group "Users" with role "member".                |
+| **&loginContext**      | `current context`                | Main context for authentication. Default is current.                                                                                                                                                      |
+| **&loginResourceId**   | `0`                              | Resource ID to redirect the user to after login. Default 0 refreshes the current page.                                                                                         |
+| **&loginTpl**          | `tpl.HybridAuth.login`           | This chunk is shown to anonymous users (guests).                                                                                                                                          |
+| **&logoutResourceId**  | `0`                              | Resource ID to redirect the user to after logout. Default 0 refreshes the current page.                                                                                   |
+| **&logoutTpl**         | `tpl.HybridAuth.logout`          | This chunk is shown to authenticated users.                                                                                                                                                           |
+| **&providerTpl**       | `tpl.HybridAuth.provider`        | Chunk for the sign-in or link-provider link.                                                                                                                                    |
+| **&providers**         | `all available`                  | List of auth providers, comma-separated. All available providers are in `{core_path}components/hybridauth/model/hybridauth/lib/Providers/`. E.g. ```&providers=`Google,Twitter,Facebook````. |
+| **&rememberme**        | `1`                              | Remember the user for a long time. Default is on.                                                                                                                                               |
 
-## Samples
+## Examples
 
-Snippet should be activated uncached, because it outputs different chunks depending on users authorization.
+Call the snippet uncached, because it outputs different chunks depending on authentication.
 
-On usual activation snippet will output all providers registered in the system.
+With a normal call the snippet shows all providers registered in the system:
 
 ```modx
 [[!HybridAuth]]
 ```
 
-They can be limited indicating them as a list, separated by commas:
+You can limit them with a comma-separated list:
 
 ```modx
 [[!HybridAuth?
@@ -36,7 +36,7 @@ They can be limited indicating them as a list, separated by commas:
 ]]
 ```
 
-Authorization in 2 contexts at once:
+Sign in to 2 contexts at once:
 
 ```modx
 [[!HybridAuth?
@@ -48,36 +48,36 @@ Authorization in 2 contexts at once:
 
 ## Provider settings
 
-Individual system setting with prefix **ha.keys.** is indicated for every provider of authorization:
+Each auth provider has its own system setting with the **ha.keys.** prefix:
 
 ![Provider settings](https://file.modx.pro/files/0/6/3/063adfe9b80ed7c6053b97e3818e0e0b.png)
 
-Value of setting is JSON array which content depends on the provider.
+The setting value is a JSON array; its contents depend on the provider.
 
-E.g. **id** and secret should be indicated for Google, but for Twitter – **key** and secret.
+For example, Google needs **id** and secret, while Twitter needs **key** and secret. Check what the provider gives you when you register.
 
-That is why pay attention to the settings which will be given to you during registration.
+### Provider registration links
 
-### Link for registration from providers
-
-Keys from providers need to be derived to work of the component, and it is not understandable at once where you should look for them. That’s is why there are some main links:
+You need to obtain keys from the provider. Main links:
 
 - [Yandex][1]
 - [Vkontakte][2]
 - [Twitter][3]
 - [Google][4]
 - [Facebook][5]
+- [Other providers][6]
 
 ### Contexts
 
-If you have several individual contexts on the website, you can authorize them through the same providers, but for different domains.
+If you have several independent contexts, you can use the same providers for different domains.
 
-For this you need to indicate keys directly in settings of the context, but not in general settings of the system.
+Put the keys in the context settings, not in global system settings.
 
-*For proper work of snippet it is better to include friendly url.*
+*Friendly URLs are recommended for the snippet to work correctly.*
 
-[1]: https://oauth.yandex.ru/client/new
-[2]: https://vk.com/editapp?act=create
-[3]: https://dev.twitter.com/apps/new
-[4]: https://dev.twitter.com/apps/new
-[5]: https://developers.facebook.com/apps
+[1]: /en/components/hybridauth/providers/yandex
+[2]: /en/components/hybridauth/providers/vkontakte
+[3]: /en/components/hybridauth/providers/twitter
+[4]: /en/components/hybridauth/providers/google
+[5]: /en/components/hybridauth/providers/facebook
+[6]: /en/components/hybridauth/providers/

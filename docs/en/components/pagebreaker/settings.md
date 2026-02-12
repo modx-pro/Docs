@@ -1,23 +1,23 @@
-# Settings
+# PageBreaker Settings
 
-Component PageBreaker operates with following system settings:
+PageBreaker uses the following system settings:
 
-Parameter                     | Value on default                | Description
-------------------------------|---------------------------------|------------------------------------------------------------------------------------------
-**pagebreaker_splitter**      | `<!-- pagebreak -->`            | Set of symbols to delimiter the text on subpages
-**pagebreaker_page_var**      | `p`                             | Variable that will be used for page generation
-**pagebreaker_frontend_js**   | `[[+assetsUrl]]js/default.js`   | Link to JavaScript to load it on the page. It operates only if **pagebreaker_ajax** is on
-**pagebreaker_frontend_css**  | `[[+assetsUrl]]css/default.css` | CSS formatting to load it on the page
-**pagebreaker_ajax**          | `false`                         | Ajax regime
-**pagebreaker_ajax_selector** | `#pagebreaker_content`          | CSS block selector with page content `[[*content]]`
+| Parameter                      | Default               | Description                                                                                           |
+|--------------------------------|-----------------------|--------------------------------------------------------------------------------------------------------|
+| **pagebreaker_splitter**       | `<!-- pagebreak -->`  | String used to split text into subpages                                                                |
+| **pagebreaker_page_var**       | `p`                   | Variable used in the page URL                                                                          |
+| **pagebreaker_frontend_js**    | `[[+assetsUrl]]js/default.js`   | Path to JavaScript to load. Only when **pagebreaker_ajax** is enabled                                 |
+| **pagebreaker_frontend_css**   | `[[+assetsUrl]]css/default.css` | Path to CSS to load                                                                                    |
+| **pagebreaker_ajax**           | `false`               | Ajax mode                                                                                              |
+| **pagebreaker_ajax_selector**  | `#pagebreaker_content` | CSS selector for the block containing `[[*content]]`                                                   |
 
-[![](https://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929s.jpg)](https://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929.png)
+![PageBreaker Settings](https://file.modx.pro/files/3/3/a/33aa6a26ab948732ec6dc0ab6de69929.png)
 
 ## Link generation
 
-These types of links will be generated, it depends on parameter **pagebreaker_splitter**:
+Depending on **pagebreaker_splitter**, links are generated as follows:
 
-Friendly urls **off**:
+Friendly URLs **disabled**:
 
 ```
 http://domain.com/?id=15
@@ -25,9 +25,9 @@ http://domain.com/?id=15&p=2
 http://domain.com/?id=15&p=5
 ```
 
-Friendly urls **on**:
+Friendly URLs **enabled**:
 
-- Document is a container  (*isfolder = 1*)
+- Container document (*isfolder = 1*)
 
   ```
   http://domain.com/page/
@@ -35,7 +35,7 @@ Friendly urls **on**:
   http://domain.com/page/p5.html
   ```
 
-- Common document
+- Regular document
 
   ```
   http://domain.com/page.html
@@ -43,7 +43,7 @@ Friendly urls **on**:
   http://domain.com/page-p5.html
   ```
 
-If friendly urls are on, system parameters also take part:
+With friendly URLs, these system settings also apply:
 
-- **friendly_alias_word_delimiter** - delimiter for common documents, on default `-`
-- **container_suffix** - delimiter for containers, on default `/`
+- **friendly_alias_word_delimiter** — delimiter for regular documents, default `-`
+- **container_suffix** — delimiter for containers, default `/`

@@ -60,6 +60,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ```
 
 Основные атрибуты схемы:
+
 - **package**: `MiniShop3\Model`
 - **baseClass**: `xPDO\Om\xPDOObject`
 - **platform**: `mysql`
@@ -348,6 +349,7 @@ class msProductData extends xPDOSimpleObject
 В MiniShop3 модели НЕ генерируются автоматически из XML-схемы через `buildModel()`. Они создаются и поддерживаются вручную в директории `src/Model/`.
 
 Это позволяет:
+
 - Добавлять кастомные методы в модели
 - Использовать полную типизацию PHP 8
 - Иметь полный контроль над кодом моделей

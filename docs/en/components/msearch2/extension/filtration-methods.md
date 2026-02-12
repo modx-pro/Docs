@@ -1,27 +1,25 @@
 # Filtration methods
 
-mFilter2 can filter information from any tables, you will just have to describe how it can be received.
+mFilter2 can filter data from any tables as long as you define how to get it.
 
-For you to do it there is a possibility to extend the filtration class, which is situated in `/core/components/msearch2/model/msearch2/filters.class.php`, with help of system setting **mse2_filters_handler_class**.
+You extend the filter class in `/core/components/msearch2/model/msearch2/filters.class.php` via the **mse2_filters_handler_class** system setting.
 
-To extend the standard class you will have to create a new file in directory `/core/components/msearch2/custom/filters/` with name `имя.class.php` and inherit **mse2FiltersHandler**.
+To extend the default class, create a new file in `/core/components/msearch2/custom/filters/` named `name.class.php` and extend **mse2FiltersHandler**.
 
 ```php
 <?php
 class myCustomFilter extends mse2FiltersHandler {
-  // Here you can redefine methods of the parent class or create your own ones
+  // Override parent methods or add your own
 }
 ```
 
-## Methods of filtration
+There are 3 method types:
 
-There are 3 types of methods:
+1. **Getting filter data** — methods **get`Name`Values**.
+2. **Building filters for output** — methods **build`Name`Filter**.
+3. **Applying the filter** — methods **filter`Name`**.
 
-1. Getting information for filtration - methods **get`Имя`Values**.
-2. Making filters for output - methods **build`Имя`Filter**.
-3. Filtration by parameter - methods **filter`Имя`**.
-
-These methods process values written in parameter **&filters**. For example:
+These methods handle values from the **&filters** parameter. Example:
 
 ```modx
 &filters=`
@@ -33,106 +31,82 @@ These methods process values written in parameter **&filters**. For example:
 `
 ```
 
-The first word is code word for the selection of data from tables. If it is **resource**, **getResourceValues** will be summoned, if it is **ms**, then get**Ms**Values will be summoned, etc.
+The first word is the method code for fetching data. **resource** calls **getResourceValues**, **ms** calls get**Ms**Values, etc.
 
-The second word is the field being selected. You can indicate more than one field for one table if they all are in it.
+The second word is the field to select. You can list several fields for one table if they exist.
 
-The third word is the name of the method that you are applying to filter construction and filtration itself.
-If it is **default**, then **Default**Filter and filter**Default** will be summoned, if it is **number**, then build**Number**Filter and filter**Number** will be summoned, etc.
+The third word is the method name for building and applying the filter. **default** calls build**Default**Filter and filter**Default**, **number** calls build**Number**Filter and filter**Number**, etc.
 
-This means that we will have standard methods of class filtration
+Standard filter class methods:
 
-Method                      | Name in **&filters** | What it does
-----------------------------|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------
-**getResourceValues**       | `resource`           | Selects data for the indicated fields of resource
-**getTvValues**             | `tv`                 | Selects data for the indicated tv parameters
-**getMsValues**             | `ms`                 | Selects data for the indicated fields of product MS2
-**getMsOptionValues**       | `msoption`           | Selects data from special JSON table of fields of product MS2
-**buildDefaultFilter**      | `default`            | Builds new filter (which consists of checkboxes) by default
-**buildNumberFilter**       | `number`             | Builds filter for numbers that can be shown as slider
-**buildVendorsFilter**      | `vendors`            | Builds filter in which names of producers of products MS2 operate as values. Can be applied only to **vendor** field `ms\|vendor:vendors`.
-**buildBooleanFilter**      | `boolean`            | Builds filter for zero values. Thanks to it 'yes' and 'no' answers will be shown instead of 0 and 1.
-**buildParentsFilter**      | `parents`            | Builds filter in which two parents of resource are selected and shown. Can be applied only to **parent** field `resource\|parent:parents`.
-**buildCategoriesFilter**   | `categories`         | Builds filter in which one parent of resource is selected and shown. Can be applied only to **parent** field `resource\|parent:categories`.
-**buildGrandParentsFilter** | `grandparents`       | Builds filter in which second parent of resource is selected and shown. Can be applied only to **parent** field `resource\|parent:grandparents`.
-**buildFullnameFilter**     | `fullname`           | Builds filter in which full user names are selected and shown. Can be applied only to user id, for example `resource\|createdby:fullname`.
-**buildYearFilter**         | `year`               | Builds filter that shows the year, for example ``resource\|createdon:year``.
-**filterDefault**           | `default`            | Regular filtration, works by default if there is no special method.
-**filterGrandParents**      | `grandparents`       | Special filtration by second parent (grandparent) of resource.
-**filterNumber**            | `number`             | Special filtration by range of number values.
-**filterYear**              | `year`               | Special filtration by date.
+| Method | Name in &filters | Description |
+|--------|------------------|-------------|
+| `getResourceValues` | `resource` | Fetches data for resource fields |
+| `getTvValues` | `tv` | Fetches data for TV parameters |
+| `getMsValues` | `ms` | Fetches data for MS2 product fields |
+| `getMsOptionValues` | `msoption` | Fetches data from MS2 product JSON options table |
+| `buildDefaultFilter` | `default` | Builds default checkbox filter |
+| `buildNumberFilter` | `number` | Builds numeric filter (e.g. slider) |
+| `buildVendorsFilter` | `vendors` | Filter by MS2 vendor names. Only for **vendor**: `ms|vendor:vendors` |
+| `buildBooleanFilter` | `boolean` | Boolean filter (Yes/No instead of 0/1) |
+| `buildParentsFilter` | `parents` | Filter by two parent levels. Only for **parent**: `resource|parent:parents` |
+| `buildCategoriesFilter` | `categories` | Filter by one parent. Only for **parent**: `resource|parent:categories` |
+| `buildGrandParentsFilter` | `grandparents` | Filter by second parent. Only for **parent**: `resource|parent:grandparents` |
+| `buildFullnameFilter` | `fullname` | Filter by user full name. Only for user id, e.g. `resource|createdby:fullname` |
+| `buildYearFilter` | `year` | Filter by year, e.g. `resource|createdon:year` |
+| `filterDefault` | `default` | Default filter logic |
+| `filterGrandParents` | `grandparents` | Filter by second parent |
+| `filterNumber` | `number` | Filter by numeric range |
+| `filterYear` | `year` | Filter by date |
 
-You can redefine any of these methods or create your own one.
+You can override any of these or add your own.
 
-## Returns
+## Return values
 
-The first type of methods should return the following array of values:
+**Type 1 (get*Values)** must return:
 
 ```php
 Array (
-  [FieldName 1] => array(
+  [FieldName1] => array(
     [Value1] => array(
-      [0] => id of a suitable resource
-      [1] => id of a suitable resource
-      [2] => id of a suitable resource
+      [0] => matching resource id
+      [1] => matching resource id
     ),
   ),
 )
 ```
 
-For example, we summon
-
-```modx
-&filters=`resource|parent:parents,resource|template:default`
-```
-
-and method getResourceValues returns approximately the following array:
+Example for `&filters=resource|parent:parents,resource|template:default`, getResourceValues returns:
 
 ```php
 Array (
   [parent] => array(
-    [0] => array(
-      [0] => 1
-      [1] => 2
-    )
-    [2] => array(
-      [0] => 5
-    )
-  )
+    [0] => array(0 => 1, 1 => 2),
+    [2] => array(0 => 5)
+  ),
   [template] => array(
-    [1] => array(
-      [0] => 1
-      [1] => 2
-      [2] => 3
-    ),
+    [1] => array(0 => 1, 1 => 2, 2 => 3),
   )
 )
 ```
 
-The second type of methods returns an array for filter output for the user. It looks like this:
+**Type 2 (build*Filter)** returns an array for displaying filters:
 
 ```php
 Array (
   [FilterName] => Array (
-    [title] => FilterName
-    [value] => value of filter position
-    [type] => extra field for filter type
+    [title] => Filter title
+    [value] => filter option value
+    [type] => optional filter type
     [resources] => Array (
-      [0] => id of a suitable resource
-      [1] => id of a suitable resource
-      [2] => id of a suitable resource
+      [0] => resource id
+      [1] => resource id
     )
   )
 )
 ```
 
-For example, we summon
-
-```modx
-&filters=`resource|parent:categories`
-```
-
-and method getResourceValues returns an array that looks approximately like this:
+Example for `&filters=resource|parent:categories`:
 
 ```php
 Array (
@@ -140,63 +114,43 @@ Array (
     [title] => Tickets
     [value] => 71
     [type] => parents
-    [resources] => Array (
-      [0] => 72
-      [1] => 73
-      [2] => 74
-    )
-  )
+    [resources] => Array (0 => 72, 1 => 73, 2 => 74)
+  ),
   [mSearch2] => Array (
     [title] => mSearch2
     [value] => 62
     [type] => parents
-    [resources] => Array (
-      [0] => 63
-      [1] => 64
-    )
+    [resources] => Array (0 => 63, 1 => 64)
   )
 )
 ```
 
-As for the third type of methods, it should take 3 arrays:
+**Type 3 (filter*)** receives 3 arrays:
 
-- Array with inquired values
-- Array of existing values, in which filter names are keys and suitable resources are values
-- Current array of results
+- Requested values
+- Available values (filter values => matching resource IDs)
+- Current result set (resource IDs still in the filter chain)
 
-For example, if we filter by parent, in the first array we will get ids of parents inquired:
+Example for parent filter. First array — requested parent IDs:
+
+```php
+Array (0 => 71)
+```
+
+Second — parents and their resources:
 
 ```php
 Array (
-  [0] => 71
+  [71] => Array (0 => 72, 1 => 73, 2 => 74)
 )
 ```
 
-In the second one we will get existing parents with their resources:
+Third — resource IDs still in the result:
 
 ```php
-Array (
-  [71] => Array (
-    [0] => 72
-    [1] => 73
-    [2] => 74
-  )
-)
+Array (0 => 72, 1 => 73, 2 => 74, 3 => 75, 4 => 76)
 ```
 
-And in the third one we will get ids of resources thatare still going through filtration and have not been excluded by other filters:
+Compare the first with the keys of the second and the values of the third, then return the array of resource IDs that pass. That array is passed to the next filter or to mFilter2 for output.
 
-```php
-Array (
-  [0] => 72
-  [1] => 73
-  [2] => 74
-  [3] => 75
-  [4] => 76
-)
-```
-
-We should compare the first array to keys from the second array and values from the third one and then return array of resources that have passed the test.
-This array will either hit another filter (if there is one) or be given to mFilter2 for output of filtrated resources.
-
-This means that the user will see only those results that have passed all filters.
+The user only sees results that pass all filters.

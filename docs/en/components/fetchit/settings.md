@@ -1,29 +1,29 @@
-# Settings
+# Component settings
 
-FetchIt has several settings for ease of use.
+The component registers several settings for convenience.
 
 ## `fetchit.frontend.js`
 
 - Default: `[[+assetsUrl]]js/default.min.js`
 
-The JavaScript file to include on the frontend.
+Path to the script that defines the form handler class.
 
 ## `fetchit.frontend.js.classname`
 
 - Default: `FetchIt`
 
-The JavaScript class name whose instance will be responsible for form processing.
+Name of the JS class whose instance handles form processing.
 
 ## `fetchit.frontend.input.invalid.class`
 
-CSS class that will be added to invalid input field.
+CSS class added to elements that fail validation.
 
 ## `fetchit.frontend.custom.invalid.class`
 
-CSS class that will be added to invalid custom element.
+CSS class added to custom elements whose key failed validation.
 
 ## `fetchit.frontend.default.notifier`
 
 - Default: `false`
 
-Load the default notification library.
+Enables or disables the default notification library.

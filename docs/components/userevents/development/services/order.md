@@ -42,7 +42,7 @@ switch ($modx->event->name) {
 
   // Создание заказа
   case 'UserEventsOnBeforeCreateOrder'; break; // получает готовый объект $order со всеми прицепленными объектами
-  case 'UserEventsOnCreateOrder'; break; // тоже самое
+  case 'UserEventsOnCreateOrder'; break; // то же самое
 
   // Очистка заказа
   case 'UserEventsOnBeforeEmptyOrder'; break; // получает только объект $order

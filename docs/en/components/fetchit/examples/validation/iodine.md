@@ -1,20 +1,20 @@
 # Validation with Iodine
 
-This section will present an example of how to implement client-side validation using the [Iodine](https://github.com/caneara/iodine) library. We will process a simple form with two fields, name and E-mail.
+This section shows how to implement client-side validation using the [Iodine](https://github.com/caneara/iodine) library. We will handle a simple form with two fields: name and email.
 
 <!--@include: ../../parts/validation.warning.md-->
 
-## Adding library
+## Including the library
 
-For simplicity of the example, let's connect it via CDN.
+For simplicity we will load it via CDN.
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@caneara/iodine@8/dist/iodine.min.umd.js" defer></script>
 ```
 
-## Form layout
+## Form markup
 
-Nothing unusual, except for the `novalidate` attribute added to the form element. It is needed to disable the browser's built-in validation.
+Nothing special, except the `novalidate` attribute on the form element to disable built-in browser validation.
 
 ```modx
 <form action="[[~[[*id]]]]" method="post" novalidate>
@@ -32,9 +32,9 @@ Nothing unusual, except for the `novalidate` attribute added to the form element
 
 ## Handler
 
-Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore`) event, where the validation will take place. We will explain it step by step.
+Add a handler for the [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore) event where validation will run. Step by step:
 
-1. Adding a handler to the [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore) event.
+1. Add a handler for [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore).
 
     ```js
     document.addEventListener('fetchit:before', (e) => {
@@ -42,7 +42,7 @@ Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/fr
     });
     ```
 
-2. Get references to instances of [`FormData`](https://developer.mozilla.org/ru/docs/Web/API/FormData) and [`FetchIt`](/en/components/fetchit/frontend/instance) classes.
+2. Get references to the [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) and [`FetchIt`](/en/components/fetchit/frontend/instance) instances.
 
     ```js
     document.addEventListener('fetchit:before', (e) => {
@@ -50,7 +50,7 @@ Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/fr
     });
     ```
 
-3. The **Iodine** library can validate a data group by passing it a prepared object with the field name as the key and the value as the value. To do this, we just need to turn an instance of **FormData** into a simple object.
+3. **Iodine** can validate a set of data if you pass it an object whose keys are field names and values are the corresponding values. Convert the **FormData** instance to a plain object.
 
     ```js
     document.addEventListener('fetchit:before', (e) => {
@@ -59,7 +59,7 @@ Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/fr
     });
     ```
 
-4. Let's prepare field validation rules.
+4. Define validation rules for the fields.
 
     ```js
     document.addEventListener('fetchit:before', (e) => {
@@ -72,7 +72,7 @@ Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/fr
     });
     ```
 
-5. Let's perform the validation by writing the result to a variable.
+5. Run validation and store the result.
 
     ```js
     document.addEventListener('fetchit:before', (e) => {
@@ -87,7 +87,7 @@ Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/fr
     });
     ```
 
-6. Let's write a condition that if the validation is successful, we terminate our handler with `return`. And then call the `preventDefault()` method of our event to stop sending the form.
+6. If validation succeeds, exit the handler with `return`. Otherwise call `preventDefault()` on the event to stop form submission.
 
     ```js
     document.addEventListener('fetchit:before', (e) => {
@@ -107,7 +107,7 @@ Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/fr
     });
     ```
 
-7. Next, we're going through our fields.
+7. Loop over the fields.
 
     ```js
     document.addEventListener('fetchit:before', (e) => {
@@ -131,7 +131,7 @@ Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/fr
     });
     ```
 
-8. If the field is valid (we are talking about the validation state of each field, not all of them), then we clear its errors using the [`clearError()`](/en/components/fetchit/frontend/instance#clearerror) method, otherwise we add an error to the field using the [`setError()`](/en/components/fetchit/frontend/instance#seterror) method.
+8. For each field: if it is valid, clear its error with [`clearError()`](/en/components/fetchit/frontend/instance#clearerror); otherwise set the error with [`setError()`](/en/components/fetchit/frontend/instance#seterror).
 
     ```js
     document.addEventListener('fetchit:before', (e) => {
@@ -160,9 +160,9 @@ Now we have to add a handler to the [`fetchit:before`](/en/components/fetchit/fr
     });
     ```
 
-Done! This is how we can add validation using the **Iodine** library, but remember, it is not secure on the client side. So when calling the snippet, you should use the validation tools of **FormIt** or if you use your own snippet, you should do it there as well.
+Done. You now have client-side validation with **Iodine**. Remember that client-side validation is not secure, so use **FormIt** validation when calling the snippet, or perform validation in your own snippet as well.
 
-An example of a snippet call with **FormIt** validation:
+Example snippet call with **FormIt** validation:
 
 :::code-group
 
@@ -174,7 +174,7 @@ An example of a snippet call with **FormIt** validation:
 ```
 
 ```fenom
-{'!FetchIt' | snippet : [
+{'!FetchIt' | snippet: [
   'form' => 'myForm.tpl',
   'validate' => 'name:required:minLength=^5^,email:required:email',
 ]}
@@ -182,4 +182,4 @@ An example of a snippet call with **FormIt** validation:
 
 :::
 
-A list of all **FormIt** validators can be found on the [documentation site](https://docs.modx.com/3.x/en/extras/formit/formit.validators) of the component.
+See the [FormIt validators documentation](https://docs.modx.com/3.x/en/extras/formit/formit.validators) for the full list.

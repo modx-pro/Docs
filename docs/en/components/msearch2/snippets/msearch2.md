@@ -1,92 +1,91 @@
 # mSearch2
 
-Snippet for search and output.
+Snippet for search and output of results.
 
-In the work [pdoTools][1] is used, so all basic options are available: TV connection, requirement reference in **&where**, **&select**, etc.
-Basically this snippet represents modified [pdoResources][2] with two distinctions:
+Uses pdoTools, so it supports TV, **&where**, **&select**, etc. In practice it is a modified [pdoResources][2] with two additions:
 
-- It uses search and add placeholder `[[+weight]]` with points for output.
-- Also it adds placeholder `[[+intro]]` with matches highlighted.
+- It uses search for results and adds placeholder `[[+weight]]` with relevance score.
+- It adds placeholder `[[+intro]]` with highlighted matches.
 
-Snippet is supposed to react to transferred request, so it is highly recommended to involve it uncaсhed.
+The snippet depends on the query from the request, so call it uncached.
 
-## Options
+## Parameters
 
-Name                 | By default         | Description
----------------------|--------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-**&tpl**             | `tpl.mSearch2.row` | Chunk layout for every outcome. Usual resource placeholders + `[[+weight]]` and `[[+intro]]`.
-**&returnIds**       | `false`            | To return id list of proper pages with a comma.
-**&showLog**         | `false`            | To show extra information on snippet work. For the authorized in «mgr» context only.
-**&limit**           | `10`               | Limit of the result selection.
-**&offset**          | `0`                | Result offset from the beginning of selection.
-**&depth**           | `10`               | In-depth search of resources for every parent.
-**&outputSeparator** | `\n`               | Optional string for separating results of work.
-**&toPlaceholder**   |                    | Unless it is empty, snippet will keep all data in placeholder with the name instead of displaying.
-**&parents**         |                    | List of categories with a comma for the output restriction.
-**&includeTVs**      |                    | TV options list for selection with a comma. For example: «action,time» will provide `[[+action]]` and `[[+time]]`.
-**&tvPrefix**        |                    | Prefix for TV placeholders, for example «tv.».
-**&where**           |                    | Additional selection options coded in JSON.
-**&showUnpublished** | `false`            | To show unpublished products.
-**&showDeleted**     | `false`            | To show remote resources.
-**&showHidden**      | `true`             | To show resources hidden in menu.
-**&hideContainers**  | `false`            | To hide resources-containers.
-**&introCutBefore**  | `50`               | Specify number of symbols for the output in placeholder `[[+intro]]` before the first coincidence in the text.
-**&introCutAfter**   | `250`              | Specify number of symbols for the output in placeholder `[[+intro]]` after the first coincidence in the text.
-**&htagOpen**        | `<b>`              | Opening tag for highlighting of the found results in `[[+intro]]`.
-**&htagClose**       | `</b>`             | Closing tag for highlighting of the found results in `[[+intro]]`.
-**&parentsVar**      | `parents`          | Variable name for extra filtration on parents. You can send it through *$_REQUEST*.
-**&queryVar**        | `query`            | Variable name for getting search request from $_REQUEST.
-**&tplWrapper**      |                    | Chunk-wrapper for wrapping all the results. Recognizes the placeholders:`[[+output]]`, `[[+total]]`, `[[+query]]` and `[[+parents]]`.
-**&wrapIfEmpty**     | `false`            | Includes chunk-wrapper output **&tplWrapper** even though there are no results.
-**&forceSearch**     | `true`             | Binding search for output. If there is no one - no output.
-**&minQuery**        | `3`                | Minimal length of the search query.
-**&fields**          |                    | System settings redefinition of weight for indexed fields with comma: **&fields=`pagetitle:5,content:3,comment:1,tv_mytvname:2`**. `mse2_index_fields` is used by default.
-**&showSearchLog**   | `false`            | To show detailed information on given points of resource search when inserting **&showLog**.
+| Name | Default | Description |
+|------|---------|-------------|
+| **&tpl** | `tpl.mSearch2.row` | Chunk for each result. Standard resource placeholders plus `[[+weight]]` and `[[+intro]]`. |
+| **&returnIds** | `false` | Return only comma-separated IDs of matching pages. |
+| **&showLog** | `false` | Show extra snippet debug info. Only for authenticated users in mgr context. |
+| **&limit** | `10` | Max results. |
+| **&offset** | `0` | Skip results from the start. |
+| **&depth** | `10` | Search depth from each parent. |
+| **&outputSeparator** | `\n` | Optional separator between results. |
+| **&toPlaceholder** | | If set, output is saved to this placeholder instead of printed. |
+| **&parents** | | Comma-separated parent IDs to limit results. |
+| **&includeTVs** | | Comma-separated TV names to load, e.g. "action,time" → `[[+action]]`, `[[+time]]`. |
+| **&tvPrefix** | | Prefix for TV placeholders, e.g. "tv.". |
+| **&where** | | Extra query conditions as JSON. |
+| **&showUnpublished** | `false` | Include unpublished resources. |
+| **&showDeleted** | `false` | Include deleted resources. |
+| **&showHidden** | `true` | Include menu-hidden resources. |
+| **&hideContainers** | `false` | Exclude container resources. |
+| **&introCutBefore** | `50` | Characters before first match in `[[+intro]]`. |
+| **&introCutAfter** | `250` | Characters after first match in `[[+intro]]`. |
+| **&htagOpen** | &lt;b&gt; | Opening tag for highlights in `[[+intro]]`. |
+| **&htagClose** | &lt;/b&gt; | Closing tag for highlights in `[[+intro]]`. |
+| **&parentsVar** | `parents` | Request variable name for parent filter. |
+| **&queryVar** | `query` | Request variable name for search query. |
+| **&tplWrapper** | | Wrapper chunk. Placeholders: `[[+output]]`, `[[+total]]`, `[[+query]]`, `[[+parents]]`. |
+| **&wrapIfEmpty** | `false` | Output wrapper chunk even when there are no results. |
+| **&forceSearch** | `true` | Require a search query; output nothing without it. |
+| **&minQuery** | `3` | Minimum query length. |
+| **&fields** | | Override indexed field weights, e.g. `pagetitle:5,content:3,comment:1`. Default: `mse2_index_fields`. |
+| **&showSearchLog** | `false` | Show detailed search scoring when **&showLog** is on. |
 
 ## Lexicons
 
-Snippet may display search errors messages which change in system dictionaries.
+Search error messages are in system lexicons:
 
-- **mse2_err_no_results** &rarr; "No results found".
-- **mse2_err_min_query** &rarr; "Search query is too short". That means the query is less than the **&minQuery** value.
-- **mse2_err_no_query** &rarr; "Search query is empty".
+- **mse2_err_no_results** → "No matching results".
+- **mse2_err_min_query** → "Search query too short" (shorter than **&minQuery**).
+- **mse2_err_no_query** → "Empty search query".
 
-There you can also find other records used in chunks and snippets by default.
+Other default chunk/snippet strings are there too.
 
-[![](https://file.modx.pro/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8cs.jpg)](https://file.modx.pro/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8c.png)
+![Lexicons](https://file.modx.pro/files/2/e/b/2eb17463d4da9ddaa25bb0f80f197d8c.png)
 
 ## Search form
 
-Snippet must have search query in the array $_REQUEST for it to work. It can be sent by simplest form:
+The snippet needs the search query in `$_REQUEST`. A simple form:
 
 ```modx
 <form action="/search.html" method="get">
   <input type="text" name="query" value="[[+mse2_query]]" />
-  <button type="submit">Искать!</button>
+  <button type="submit">Search!</button>
 </form>
 ```
 
-Note that the query should be referred under the same name as specified in the parameter **&queryVar**, *query* by default.
+The query must use the name from **&queryVar** (default *query*).
 
 ## Examples
 
-If empty action is specified, it is transferred to the current page.
+Empty action submits to the current page:
 
 ```modx
 <form action="" method="get">
   <input type="text" name="query" value="[[+mse2_query]]" />
-  <button type="submit">Искать!</button>
+  <button type="submit">Search!</button>
 </form>
 
 [[!mSearch2]]
 ```
 
-You can use pages breakdown via [pdoPage][3]. mSearch2 sets pdoTools automatically, so you have already got pdoPage.
+Pagination with [pdoPage][3]. mSearch2 installs pdoTools, so pdoPage is available:
 
 ```modx
 <form action="" method="get">
   <input type="text" name="query" value="[[+mse2_query]]" />
-  <button type="submit">Искать!</button>
+  <button type="submit">Search!</button>
 </form>
 
 [[!pdoPage?
@@ -96,7 +95,7 @@ You can use pages breakdown via [pdoPage][3]. mSearch2 sets pdoTools automatical
 [[!+page.nav]]
 ```
 
-Snippet can be caused along with [mSearchForm][4]
+With [mSearchForm][4]:
 
 ```modx
 [[!mSearchForm]]
@@ -108,7 +107,7 @@ Snippet can be caused along with [mSearchForm][4]
 [[!+page.nav]]
 ```
 
-You can also use **mSearch2** to search and output together with [msProducts][5]:
+Search and output products with [msProducts][5]:
 
 ```modx
 [[!pdoPage?
@@ -121,12 +120,10 @@ You can also use **mSearch2** to search and output together with [msProducts][5]
 [[!+page.nav]]
 ```
 
-`returnIds` parameter specifies **msProducts** - found products list for the output.
-And the `default` filter substitutes misssing id when nothing is found, otherwise **msProducts** will output every row at a time.
+`returnIds` gives **msProducts** the list of found product IDs. The `default` filter uses a non-existent ID when nothing is found so **msProducts** does not list all products.
 
-In that case you can use all the fields of the products in the chunk processing.
+You can use all product fields in the output chunk.
 
-[1]: /en/components/pdotools/
 [2]: /en/components/pdotools/snippets/pdoresources
 [3]: /en/components/pdotools/snippets/pdopage
 [4]: /en/components/msearch2/snippets/msearchform

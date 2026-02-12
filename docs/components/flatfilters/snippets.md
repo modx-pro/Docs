@@ -60,9 +60,11 @@
 Возвращает форму фильтрации.
 
 ### Пример использования
+
 :::danger
 Не смешивайте синтаксис при использовании компонента.
 :::
+
 ```fenom:line-numbers
 {set $pageLimit = 8}
 {set $configId = 1}
@@ -81,6 +83,7 @@
     'createdonTplOuter' => 'tpl.ffDateRange',
 ]}
 ```
+
 ```modx:line-numbers
 [[!ffGetFilterForm?
     &configId=1    

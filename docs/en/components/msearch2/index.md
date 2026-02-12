@@ -1,9 +1,9 @@
 ---
-name: mSearch2
-description: Morphological search and ajax filter
+title: mSearch2
+description: Morphological search and data filtering
 logo: https://modstore.pro/assets/extras/msearch2/logo-lg.jpg
 author: ilyautkin
-modstore: https://en.modstore.pro/packages/ecommerce/msearch2
+modstore: https://modstore.pro/packages/ecommerce/msearch2
 
 items: [
   {
@@ -15,10 +15,10 @@ items: [
     ],
   },
   {
-    text: 'Interface',
+    text: 'Administration',
     items: [
       { text: 'Search', link: 'interface/search', },
-      { text: 'Indexes', link: 'interface/indexes', },
+      { text: 'Indexing', link: 'interface/indexes', },
       { text: 'Queries', link: 'interface/queries', },
       { text: 'Synonyms', link: 'interface/synonyms', },
       { text: 'Dictionaries', link: 'interface/dictionaries', },
@@ -28,14 +28,14 @@ items: [
     text: 'Extension',
     items: [
       { text: 'Filtration methods', link: 'extension/filtration-methods', },
-      { text: 'Items filtration example', link: 'extension/filtration-product-example', },
+      { text: 'Product filtration example', link: 'extension/filtration-product-example', },
     ],
   },
   {
-    text: 'Generic solutions',
+    text: 'Solutions',
     items: [
       { text: 'Dependent filters', link: 'solutions/dependent-filters', },
-      { text: 'Category Filtration', link: 'solutions/category-filtration', },
+      { text: 'Category filtration', link: 'solutions/category-filtration', },
     ],
   },
 ]
@@ -44,6 +44,6 @@ items: [
 
 Morphological search and filtering.
 
-Works great with [miniShop2][1], implementing flexible output of products' catalogue with ajax filters.
+Works well with [miniShop2][1] for flexible product catalogs with ajax filters.
 
 [1]: /en/components/minishop2/
