@@ -15,7 +15,7 @@
 - **set** - Перезаписывает содержимое заказа полученным массивом.
 - **submit** - Оформление заказа, в нём уже должна быть доставка и обязательные поля.
 - **clean** - Полная очистка заказа.
-- **getcost** - Получение стоимости доставки. Запрос передаётся в `msDeliveryInterface`.
+- **getCost** - Получение стоимости доставки. Запрос передаётся в `msDeliveryInterface`.
 
 ## Алгоритм работы
 
@@ -85,24 +85,32 @@ switch ($modx->event->name) {
   case 'msOnBeforeRemoveFromOrder'; break; // получает $key с именем поля
   case 'msOnRemoveFromOrder'; break; // получает $key с именем поля
 
+  // Валидация полей заказа
+  case 'msOnBeforeValidateOrderValue'; break; // получает $key, $value и $order (msOrderHandler)
+  case 'msOnValidateOrderValue'; break; // получает $key, $value и $order (msOrderHandler)
+
   // Отправка заказа
   case 'msOnSubmitOrder'; break; // необязательный массив $data с переназначаемыми полями
 
   // Создание заказа
-  case 'msOnBeforeCreateOrder'; break; // получает готовый объект $order со всеми прицепленными объектами
-  case 'msOnCreateOrder'; break; // то же самое
+  case 'msOnBeforeCreateOrder'; break; // получает объект $msOrder и $order (msOrderHandler)
+  case 'msOnCreateOrder'; break; // получает объект $msOrder и $order (msOrderHandler)
 
   // Очистка заказа
-  case 'msOnBeforeEmptyOrder'; break; // получает только объект $order
-  case 'msOnEmptyOrder'; break; // получает только объект $order
+  case 'msOnBeforeEmptyOrder'; break; // получает $order (msOrderHandler)
+  case 'msOnEmptyOrder'; break; // получает $order (msOrderHandler)
+
+  // Получение стоимости заказа
+  case 'msOnBeforeGetOrderCost'; break; // получает $order, $cart, $with_cart, $only_cost
+  case 'msOnGetOrderCost'; break; // получает $order, $cart, $with_cart, $only_cost, $cost, $delivery_cost
 
   // Смена статуса заказа (оплата, отмена и т.д.)
-  case 'msOnBeforeChangeOrderStatus': break; // получает объект $order и id статуса в $status
-  case 'msOnChangeOrderStatus': break; // получает объект $order и id статуса в $status
+  case 'msOnBeforeChangeOrderStatus': break; // получает объект $order (msOrder), $status и $old_status
+  case 'msOnChangeOrderStatus': break; // получает объект $order (msOrder), $status и $old_status
 }
 ```
 
-Все события также получают объект `$order` с заказом.
+Все события получают переменную `$order`. В событиях корзины и заказа (add, remove, validate, empty, getCost, submit) это экземпляр класса `msOrderHandler`. В событиях смены статуса (`msOnChangeOrderStatus` и др.) — это объект `msOrder`.
 
 ## Пример
 
