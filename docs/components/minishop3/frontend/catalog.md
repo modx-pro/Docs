@@ -5,6 +5,7 @@ title: Каталог товаров
 
 Каталог — основная страница магазина, где выводится список товаров из категории. MiniShop3 предоставляет готовый шаблон и чанк карточки товара.
 
+[![](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6s.jpg)](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6.png)
 ## Структура каталога
 
 Каталог состоит из двух компонентов:
@@ -73,6 +74,8 @@ title: Каталог товаров
 
 **Имя чанка в БД:** `tpl.msProducts.row`
 
+[![](https://file.modx.pro/files/2/e/8/2e8fceaf20e53d57b44631b3fea62888s.jpg)](https://file.modx.pro/files/2/e/8/2e8fceaf20e53d57b44631b3fea62888.png)
+
 Карточка построена на Bootstrap 5 и включает:
 
 ### Элементы карточки
@@ -120,6 +123,8 @@ title: Каталог товаров
 ```
 
 Переключение происходит автоматически при событии `ms3:cart:updated`.
+
+[![](https://file.modx.pro/files/2/c/b/2cbef63bd61c6ee6e707163e52917a12s.jpg)](https://file.modx.pro/files/2/c/b/2cbef63bd61c6ee6e707163e52917a12.png)
 
 ### Микроразметка Schema.org
 

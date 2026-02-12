@@ -81,6 +81,10 @@ MiniShop3 использует библиотеку [Intervention Image](https:/
 - **Отражение** — по горизонтали/вертикали
 - **Масштабирование** — изменение размера
 
+[![](https://file.modx.pro/files/9/c/a/9caa72a7b355926f74132f2b61db90d1s.jpg)](https://file.modx.pro/files/9/c/a/9caa72a7b355926f74132f2b61db90d1.png)
+
+[![](https://file.modx.pro/files/e/9/a/e9ab2d93401728e0a90735592f690407s.jpg)](https://file.modx.pro/files/e/9/a/e9ab2d93401728e0a90735592f690407.png)
+
 ## Конфигурация миниатюр
 
 ### Где настраивается

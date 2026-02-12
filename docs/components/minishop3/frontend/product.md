@@ -5,6 +5,7 @@ title: Страница товара
 
 Страница товара — детальное представление одного продукта с галереей, ценой, опциями и формой добавления в корзину.
 
+[![](https://file.modx.pro/files/2/5/a/25aa24b8959c026826d65090b57111c8s.jpg)](https://file.modx.pro/files/2/5/a/25aa24b8959c026826d65090b57111c8.png)
 ## Структура страницы
 
 | Компонент | Файл | Назначение |
@@ -165,11 +166,11 @@ title: Страница товара
 Если у товара есть опции `color` или `size`, они выводятся в виде кнопок:
 
 ```fenom
-{if $color?}
+{if $_modx->resource.color?}
     <div class="option-group mb-3">
         <label class="form-label fw-semibold">Цвет:</label>
         <div class="d-flex flex-wrap gap-2">
-            {foreach $color as $colorOption}
+            {foreach $_modx->resource.color as $colorOption}
                 <button type="button" class="btn btn-outline-secondary btn-sm option-btn">
                     {$colorOption}
                 </button>
@@ -311,8 +312,8 @@ Bootstrap-табы для организации контента:
 | Производитель | `{$vendor_name}` |
 | Страна производства | `{$made_in}` |
 | Вес | `{$weight}` |
-| Доступные цвета | `{$color}` (массив) |
-| Доступные размеры | `{$size}` (массив) |
+| Доступные цвета | `{$_modx->resource.color}` (массив) |
+| Доступные размеры | `{$_modx->resource.size}` (массив) |
 
 ---
 
@@ -377,8 +378,8 @@ Bootstrap-табы для организации контента:
 
 | Плейсхолдер | Тип | Описание |
 |-------------|-----|----------|
-| `{$color}` | array | Массив доступных цветов |
-| `{$size}` | array | Массив доступных размеров |
+| `{$_modx->resource.color}` | array | Массив доступных цветов |
+| `{$_modx->resource.size}` | array | Массив доступных размеров |
 | `{$discount}` | int | Процент скидки (рассчитывается) |
 
 ## Кастомизация
