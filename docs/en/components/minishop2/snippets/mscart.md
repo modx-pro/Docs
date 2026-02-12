@@ -12,7 +12,7 @@ Snippet for outputting the customer cart.
 | **includeTVs** | | Comma-separated TV list. E.g. "action,time" gives placeholders `[[+action]]` and `[[+time]]`. |
 | **includeThumbs** | | Comma-separated thumbnail sizes. E.g. "120x90,360x240" gives `[[+120x90]]` and `[[+360x240]]`. Images must exist in the product gallery. |
 | **toPlaceholder** | | If set, snippet saves all data to a placeholder with this name instead of outputting. |
-| **showLog** | | Show debug info. Only for users authorized in context "mgr". |
+| **showLog** | `false` | Show debug info. Only for users authorized in context "mgr". |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
@@ -20,8 +20,8 @@ Snippet for outputting the customer cart.
 
 The snippet expects a Fenom chunk. It passes 2 variables:
 
-- **total** — cart totals: **count**, **cost**, **weight**
-- **products** — array of cart items, each with: **key**, **count**, **cost**, **id**, **pagetitle**, **uri**, and other product fields including options and vendor data.
+- **total** — cart totals: **count**, **cost**, **weight**, **discount**
+- **products** — array of cart items, each with: **key**, **count**, **price**, **old_price**, **cost** (total line cost: count × price), **weight**, **discount_price**, **discount_cost**, **id**, **pagetitle**, **uri**, **option.{name}** and other product fields including vendor data.
 
 ### Placeholders
 

@@ -2,53 +2,73 @@
 
 ## Available events
 
-- `msOnBeforeAddToCart`
+### Cart events
+
+- `msOnBeforeAddToCart` - before adding product to cart
   - `product` - *msProduct* object
   - `count` - product quantity
   - `options` - options array
   - `cart` - *cart* class instance
-- `msOnAddToCart` - adding product to cart
+- `msOnAddToCart` - after adding product to cart
   - `key` - product key
   - `cart` - *cart* class instance
-- `msOnBeforeChangeInCart`
-- `msOnChangeInCart` - changing product in cart
+- `msOnBeforeChangeInCart` - before changing product in cart
   - `key` - product key
   - `count` - product quantity
   - `cart` - *cart* class instance
-- `msOnBeforeRemoveFromCart`
-- `msOnRemoveFromCart` - removing product from cart
+- `msOnChangeInCart` - after changing product in cart
+  - `key` - product key
+  - `count` - product quantity
+  - `cart` - *cart* class instance
+- `msOnBeforeRemoveFromCart` - before removing product from cart
   - `key` - product key
   - `cart` - *cart* class instance
-- `msOnBeforeEmptyCart`
-- `msOnEmptyCart` - clearing cart
+- `msOnRemoveFromCart` - after removing product from cart
+  - `key` - product key
   - `cart` - *cart* class instance
-- `msOnGetStatusCart` - cart status
+- `msOnBeforeEmptyCart` - before clearing cart
+  - `cart` - *cart* class instance
+- `msOnEmptyCart` - after clearing cart
+  - `cart` - *cart* class instance
+- `msOnGetStatusCart` - getting cart status
   - `status` - status
   - `cart` - *cart* class instance
-- `msOnBeforeAddToOrder`
-- `msOnAddToOrder` - adding order field
+
+### Order events
+
+- `msOnBeforeAddToOrder` - before adding order field
   - `key` - field key
   - `value` - field value
-  - `order` - *order* class instance
-- `msOnBeforeValidateOrderValue`
-- `msOnValidateOrderValue` - order field validation
+  - `order` - *msOrderHandler* class instance
+- `msOnAddToOrder` - after adding order field
   - `key` - field key
   - `value` - field value
-  - `order` - *order* class instance
-- `msOnBeforeRemoveFromOrder`
-- `msOnRemoveFromOrder` - removing order field
+  - `order` - *msOrderHandler* class instance
+- `msOnBeforeValidateOrderValue` - before order field validation
   - `key` - field key
-  - `order` - *order* class instance
-- `msOnBeforeEmptyOrder`
-- `msOnEmptyOrder` - clearing order
-  - `order` - *order* class instance
-- `msOnBeforeGetOrderCost`
-  - `order` - *order* class instance
+  - `value` - field value
+  - `order` - *msOrderHandler* class instance
+- `msOnValidateOrderValue` - after order field validation
+  - `key` - field key
+  - `value` - field value
+  - `order` - *msOrderHandler* class instance
+- `msOnBeforeRemoveFromOrder` - before removing order field
+  - `key` - field key
+  - `order` - *msOrderHandler* class instance
+- `msOnRemoveFromOrder` - after removing order field
+  - `key` - field key
+  - `order` - *msOrderHandler* class instance
+- `msOnBeforeEmptyOrder` - before clearing order
+  - `order` - *msOrderHandler* class instance
+- `msOnEmptyOrder` - after clearing order
+  - `order` - *msOrderHandler* class instance
+- `msOnBeforeGetOrderCost` - before getting order cost
+  - `order` - *msOrderHandler* class instance
   - `cart` - *cart* class instance
   - `with_cart` - *include cart* flag
   - `only_cost` - *cost only* flag
-- `msOnGetOrderCost` - getting order cost
-  - `order` - *order* class instance
+- `msOnGetOrderCost` - after getting order cost
+  - `order` - *msOrderHandler* class instance
   - `cart` - *cart* class instance
   - `with_cart` - *include cart* flag
   - `only_cost` - *cost only* flag
@@ -56,43 +76,64 @@
   - `delivery_cost` - delivery cost
 - `msOnSubmitOrder` - order submission
   - `data` - order data
-  - `order` - *order* class instance
-- `msOnBeforeChangeOrderStatus`
-- `msOnChangeOrderStatus` - order status change
+  - `order` - *msOrderHandler* class instance
+- `msOnBeforeChangeOrderStatus` - before order status change
   - `order` - *msOrder* object
-  - `status` - status id
-- `msOnBeforeGetOrderCustomer`
-- `msOnGetOrderCustomer` - getting order customer
-  - `order` - *order* class instance
-  - `customer` - *modUser* object
-- `msOnBeforeCreateOrder`
-- `msOnCreateOrder` - creating order
-  - `order` - *order* class instance
+  - `status` - new status id
+  - `old_status` - current status id
+- `msOnChangeOrderStatus` - after order status change
+  - `order` - *msOrder* object
+  - `status` - new status id
+  - `old_status` - previous status id
+- `msOnBeforeGetOrderCustomer` - before getting order customer
+  - `order` - *msOrderHandler* class instance
+  - `customer` - `null` (customer not yet determined)
+- `msOnGetOrderCustomer` - after getting order customer
+  - `order` - *msOrderHandler* class instance
+  - `customer` - *modUser* object (or `null`)
+- `msOnBeforeCreateOrder` - before creating order
   - `msOrder` - *msOrder* object
-- `msOnBeforeUpdateOrder`
-- `msOnUpdateOrder` - updating order
+  - `order` - *msOrderHandler* class instance
+- `msOnCreateOrder` - after creating order
   - `msOrder` - *msOrder* object
-- `msOnBeforeSaveOrder`
-- `msOnSaveOrder` - saving order
+  - `order` - *msOrderHandler* class instance
+- `msOnBeforeMgrCreateOrder` - before creating order from the manager panel
+  - `object` - *msOrder* object
+- `msOnMgrCreateOrder` - after creating order from the manager panel
+  - `object` - *msOrder* object
+- `msOnBeforeUpdateOrder` - before updating order from the manager panel
+  - `object` - *msOrder* object
+- `msOnUpdateOrder` - after updating order from the manager panel
+  - `object` - *msOrder* object
+- `msOnBeforeSaveOrder` - before saving order (model)
+- `msOnSaveOrder` - after saving order (model)
   - `mode` - save mode new or upd
   - `object` - *msOrder* object
   - `msOrder` - *msOrder* object
   - `cacheFlag` - cache flag
-- `msOnBeforeRemoveOrder`
-- `msOnRemoveOrder` - removing order
+- `msOnBeforeRemoveOrder` - before removing order (model)
+- `msOnRemoveOrder` - after removing order (model)
   - `id` - record id
   - `object` - *msOrder* object
   - `msOrder` - *msOrder* object
   - `ancestors` - where array passed to the method
-- `msOnBeforeCreateOrderProduct`
-- `msOnCreateOrderProduct` - creating order product
-  - `msOrderProduct` - *msOrderProduct* object
-- `msOnBeforeUpdateOrderProduct`
-- `msOnUpdateOrderProduct` - updating order product
-  - `msOrderProduct` - *msOrderProduct* object
-- `msOnBeforeRemoveOrderProduct`
-- `msOnRemoveOrderProduct` - removing order product
-  - `msOrderProduct` - *msOrderProduct* object
+
+### Order product events
+
+- `msOnBeforeCreateOrderProduct` - before creating order product
+  - `object` - *msOrderProduct* object
+- `msOnCreateOrderProduct` - after creating order product
+  - `object` - *msOrderProduct* object
+- `msOnBeforeUpdateOrderProduct` - before updating order product
+  - `object` - *msOrderProduct* object
+- `msOnUpdateOrderProduct` - after updating order product
+  - `object` - *msOrderProduct* object
+- `msOnBeforeRemoveOrderProduct` - before removing order product
+  - `object` - *msOrderProduct* object
+- `msOnRemoveOrderProduct` - after removing order product
+  - `object` - *msOrderProduct* object
+
+### Product events
 
 - `msOnGetProductFields` - product output manipulation
   - `product` - *msProductData* object
@@ -105,6 +146,8 @@
   - `product` - *msProductData* object
   - `data` - product data
   - `weight` - product weight
+
+### Manager events
 
 - `msOnManagerCustomCssJs` - loading *minishop2* scripts
   - `controller` - *controller* class instance

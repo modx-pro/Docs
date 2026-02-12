@@ -13,6 +13,7 @@ By default these are `size`, `color`, and `tags`; you can add more by [extending
 | **tpl** | `tpl.msOptions` | Output chunk |
 | **product** | | Product id. If omitted, current resource id is used. |
 | **options** | | Comma-separated list of options to output. |
+| **sortOptionValues** | | Sort order of option values. E.g. `size:SORT_DESC:SORT_NUMERIC:100,color:SORT_ASC:SORT_STRING` |
 
 ## Output
 

@@ -2,53 +2,73 @@
 
 ## Доступны следующие события
 
-- `msOnBeforeAddToCart`
-  - `product` - объект  *msProduct*
+### События корзины
+
+- `msOnBeforeAddToCart` - перед добавлением продукта в корзину
+  - `product` - объект *msProduct*
   - `count` - кол-во продукта
   - `options` - массив опций
   - `cart` - экземпляр класса *корзина*
-- `msOnAddToCart` - добавление продукта корзины
+- `msOnAddToCart` - после добавления продукта в корзину
   - `key` - ключ продукта
   - `cart` - экземпляр класса *корзина*
-- `msOnBeforeChangeInCart`
-- `msOnChangeInCart` - изменение продукта корзины
+- `msOnBeforeChangeInCart` - перед изменением продукта в корзине
   - `key` - ключ продукта
   - `count` - кол-во продукта
   - `cart` - экземпляр класса *корзина*
-- `msOnBeforeRemoveFromCart`
-- `msOnRemoveFromCart` - удаление продукта корзины
+- `msOnChangeInCart` - после изменения продукта корзины
+  - `key` - ключ продукта
+  - `count` - кол-во продукта
+  - `cart` - экземпляр класса *корзина*
+- `msOnBeforeRemoveFromCart` - перед удалением продукта из корзины
   - `key` - ключ продукта
   - `cart` - экземпляр класса *корзина*
-- `msOnBeforeEmptyCart`
-- `msOnEmptyCart` - очистка корзины
+- `msOnRemoveFromCart` - после удаления продукта из корзины
+  - `key` - ключ продукта
   - `cart` - экземпляр класса *корзина*
-- `msOnGetStatusCart` - статус корзины
+- `msOnBeforeEmptyCart` - перед очисткой корзины
+  - `cart` - экземпляр класса *корзина*
+- `msOnEmptyCart` - после очистки корзины
+  - `cart` - экземпляр класса *корзина*
+- `msOnGetStatusCart` - получение статуса корзины
   - `status` - статус
   - `cart` - экземпляр класса *корзина*
-- `msOnBeforeAddToOrder`
-- `msOnAddToOrder` - добавление поля заказа
+
+### События заказа
+
+- `msOnBeforeAddToOrder` - перед добавлением поля заказа
   - `key` - ключ поля
   - `value` - значение поля
-  - `order` - экземпляр класса *заказ*
-- `msOnBeforeValidateOrderValue`
-- `msOnValidateOrderValue` - валидация поля заказа
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnAddToOrder` - после добавления поля заказа
   - `key` - ключ поля
   - `value` - значение поля
-  - `order` - экземпляр класса *заказ*
-- `msOnBeforeRemoveFromOrder`
-- `msOnRemoveFromOrder` - удаление поля заказа
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnBeforeValidateOrderValue` - перед валидацией поля заказа
   - `key` - ключ поля
-  - `order` - экземпляр класса *заказ*
-- `msOnBeforeEmptyOrder`
-- `msOnEmptyOrder` - очистка заказа
-  - `order` - экземпляр класса *заказ*
-- `msOnBeforeGetOrderCost`
-  - `order` - экземпляр класса *заказ*
+  - `value` - значение поля
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnValidateOrderValue` - после валидации поля заказа
+  - `key` - ключ поля
+  - `value` - значение поля
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnBeforeRemoveFromOrder` - перед удалением поля заказа
+  - `key` - ключ поля
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnRemoveFromOrder` - после удаления поля заказа
+  - `key` - ключ поля
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnBeforeEmptyOrder` - перед очисткой заказа
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnEmptyOrder` - после очистки заказа
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnBeforeGetOrderCost` - перед получением стоимости заказа
+  - `order` - экземпляр класса *msOrderHandler*
   - `cart` - экземпляр класса *корзина*
   - `with_cart` - флаг *с учетом корзины*
   - `only_cost` - флаг *только стоимость*
-- `msOnGetOrderCost` - получение стоимости заказа
-  - `order` - экземпляр класса *заказ*
+- `msOnGetOrderCost` - после получения стоимости заказа
+  - `order` - экземпляр класса *msOrderHandler*
   - `cart` - экземпляр класса *корзина*
   - `with_cart` - флаг *с учетом корзины*
   - `only_cost` - флаг *только стоимость*
@@ -56,43 +76,64 @@
   - `delivery_cost` - стоимость доставки
 - `msOnSubmitOrder` - оформление заказа
   - `data` - данные заказа
-  - `order` - экземпляр класса *заказ*
-- `msOnBeforeChangeOrderStatus`
-- `msOnChangeOrderStatus` - смена статуса заказа
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnBeforeChangeOrderStatus` - перед сменой статуса заказа
   - `order` - объект *msOrder*
-  - `status` - идентификатор статуса
-- `msOnBeforeGetOrderCustomer`
-- `msOnGetOrderCustomer` - получение пользователя заказа
-  - `order` - экземпляр класса *заказ*
-  - `customer` - объект *modUser*
-- `msOnBeforeCreateOrder`
-- `msOnCreateOrder` - создание заказа
-  - `order` - экземпляр класса *заказ*
+  - `status` - новый идентификатор статуса
+  - `old_status` - текущий идентификатор статуса
+- `msOnChangeOrderStatus` - после смены статуса заказа
+  - `order` - объект *msOrder*
+  - `status` - новый идентификатор статуса
+  - `old_status` - предыдущий идентификатор статуса
+- `msOnBeforeGetOrderCustomer` - перед получением пользователя заказа
+  - `order` - экземпляр класса *msOrderHandler*
+  - `customer` - `null` (пользователь ещё не определён)
+- `msOnGetOrderCustomer` - после получения пользователя заказа
+  - `order` - экземпляр класса *msOrderHandler*
+  - `customer` - объект *modUser* (или `null`)
+- `msOnBeforeCreateOrder` - перед созданием заказа
   - `msOrder` - объект *msOrder*
-- `msOnBeforeUpdateOrder`
-- `msOnUpdateOrder` - обновление заказа
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnCreateOrder` - после создания заказа
   - `msOrder` - объект *msOrder*
-- `msOnBeforeSaveOrder`
-- `msOnSaveOrder` - сохранение заказа
+  - `order` - экземпляр класса *msOrderHandler*
+- `msOnBeforeMgrCreateOrder` - перед созданием заказа из панели управления
+  - `object` - объект *msOrder*
+- `msOnMgrCreateOrder` - после создания заказа из панели управления
+  - `object` - объект *msOrder*
+- `msOnBeforeUpdateOrder` - перед обновлением заказа из панели управления
+  - `object` - объект *msOrder*
+- `msOnUpdateOrder` - после обновления заказа из панели управления
+  - `object` - объект *msOrder*
+- `msOnBeforeSaveOrder` - перед сохранением заказа (модель)
+- `msOnSaveOrder` - после сохранения заказа (модель)
   - `mode` - режим сохранения new или upd
   - `object` - объект *msOrder*
   - `msOrder` - объект *msOrder*
   - `cacheFlag` - флаг кеширования
-- `msOnBeforeRemoveOrder`
-- `msOnRemoveOrder` - удаление заказа
+- `msOnBeforeRemoveOrder` - перед удалением заказа (модель)
+- `msOnRemoveOrder` - после удаления заказа (модель)
   - `id` - id записи
   - `object` - объект *msOrder*
   - `msOrder` - объект *msOrder*
   - `ancestors` - массив where, переданный в метод
-- `msOnBeforeCreateOrderProduct`
-- `msOnCreateOrderProduct` - создание продукта заказа
-  - `msOrderProduct` - объект *msOrderProduct*
-- `msOnBeforeUpdateOrderProduct`
-- `msOnUpdateOrderProduct` - обновление продукта заказа
-  - `msOrderProduct` - объект *msOrderProduct*
-- `msOnBeforeRemoveOrderProduct`
-- `msOnRemoveOrderProduct` - удаление продукта заказа
-  - `msOrderProduct` - объект *msOrderProduct*
+
+### События продуктов заказа
+
+- `msOnBeforeCreateOrderProduct` - перед созданием продукта заказа
+  - `object` - объект *msOrderProduct*
+- `msOnCreateOrderProduct` - после создания продукта заказа
+  - `object` - объект *msOrderProduct*
+- `msOnBeforeUpdateOrderProduct` - перед обновлением продукта заказа
+  - `object` - объект *msOrderProduct*
+- `msOnUpdateOrderProduct` - после обновления продукта заказа
+  - `object` - объект *msOrderProduct*
+- `msOnBeforeRemoveOrderProduct` - перед удалением продукта заказа
+  - `object` - объект *msOrderProduct*
+- `msOnRemoveOrderProduct` - после удаления продукта заказа
+  - `object` - объект *msOrderProduct*
+
+### События товаров
 
 - `msOnGetProductFields` - манипуляции с товаром на вывод
   - `product` - объект *msProductData*
@@ -105,6 +146,8 @@
   - `product` - объект *msProductData*
   - `data` - данные продукта
   - `weight` - вес продукта
+
+### События менеджера
 
 - `msOnManagerCustomCssJs` - загрузка скриптов *minishop2*
   - `controller` - экземпляр класса *контроллер*

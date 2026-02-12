@@ -13,7 +13,9 @@ Used on the checkout page and for email notifications to customers.
 | **includeTVs** | | Comma-separated TV list. |
 | **includeThumbs** | | Comma-separated thumbnail sizes. |
 | **toPlaceholder** | | If set, save output to a placeholder instead of outputting. |
-| **showLog** | | Show debug info. Only for users authorized in context "mgr". |
+| **includeContent** | `false` | Include product "content" field in order items. |
+| **payStatus** | `1` | Expected payment status for displaying the payment link. |
+| **showLog** | `false` | Show debug info. Only for users authorized in context "mgr". |
 
 <!--@include: ../parts/tip-general-properties.md-->
 
@@ -27,7 +29,7 @@ The snippet expects a [Fenom chunk][2] and passes 7 variables:
 - **address** — delivery address from `msAddress`
 - **delivery** — selected delivery from `msDelivery`
 - **payment** — selected payment from `msPayment`
-- **total** — order totals: **cost**, **weight**, **delivery_cost**, **cart_cost**, **cart_weight**, **cart_count**
+- **total** — order totals: **cost**, **weight**, **delivery_cost**, **cart_cost**, **cart_weight**, **cart_count**, **cart_discount**
 
 Snippet parameters (e.g. **payment_link** in email chunks) are also available.
 

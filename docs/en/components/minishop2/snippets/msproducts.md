@@ -10,16 +10,16 @@ Snippet for outputting products.
 |-----------|---------|-------------|
 | **tpl** | `tpl.msProducts.row` | Chunk per result |
 | **limit** | `10` | Max results |
-| **offset** | | Skip first N results |
+| **offset** | `0` | Skip first N results |
 | **depth** | `10` | Search depth from each parent |
 | **sortby** | `id` | Sort field. For product fields use prefix "Data.", e.g. ``&sortby=`Data.price` `` |
-| **sortbyOptions** | | Options to sort by, e.g. "optionkey:integer,optionkey2:datetime" |
+| **sortbyOptions** | | Options to sort by, e.g. `optionkey:integer,optionkey2:datetime`. Available types: `string` (default), `integer` (`int`), `number` (`decimal`), `date`, `datetime` |
 | **sortdir** | `ASC` | Sort direction |
 | **toPlaceholder** | | If set, save output to a placeholder instead of outputting. |
 | **toSeparatePlaceholders** | | If set, each result goes to a placeholder named by this prefix + index (e.g. "myPl" → `[[+myPl0]]`, `[[+myPl1]]`). |
 | **parents** | | Comma-separated category ids. Default: current parent. Use 0 for no limit. |
 | **resources** | | Comma-separated product ids. Minus prefix excludes that id. |
-| **includeContent** | | Include product "content" field. |
+| **includeContent** | `false` | Include product "content" field. |
 | **includeTVs** | | Comma-separated TV list. |
 | **includeThumbs** | | Comma-separated thumbnail sizes (must exist in product gallery). |
 | **optionFilters** | | Option filters as JSON, e.g. {"optionkey:>":10} |
@@ -29,13 +29,14 @@ Snippet for outputting products.
 | **slave** | | Linked product id. Ignored if master is set. |
 | **tvPrefix** | | Prefix for TV placeholders, e.g. "tv." |
 | **outputSeparator** | `\n` | String between results. |
-| **returnIds** | | Return comma-separated product ids instead of chunk output. |
-| **showUnpublished** | | Include unpublished products. |
-| **showDeleted** | | Include deleted products. |
+| **return** | `data` | Output format. Values: `data` — rendered chunks, `ids` — product id string, `json` — JSON data |
+| **returnIds** | `false` | Return comma-separated product ids instead of chunk output. |
+| **showUnpublished** | `false` | Include unpublished products. |
+| **showDeleted** | `false` | Include deleted products. |
 | **showHidden** | `1` | Include products hidden from menu. |
 | **showZeroPrice** | `1` | Include zero-price products. |
 | **wrapIfEmpty** | `1` | Output wrapper chunk (tplWrapper) even when there are no results. |
-| **showLog** | | Show debug info. Only for users authorized in context "mgr". |
+| **showLog** | `false` | Show debug info. Only for users authorized in context "mgr". |
 
 <!--@include: ../parts/tip-general-properties.md-->
 

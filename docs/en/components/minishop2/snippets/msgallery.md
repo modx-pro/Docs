@@ -10,14 +10,15 @@ Snippet for outputting the product gallery.
 | ------------------ | ---------- | ---------------------------------------------------------------------------------------------------- |
 | **tpl**            | `tpl.msGallery` | Output chunk                                                                                    |
 | **product**        |            | Product id. If not set, uses the current resource id.                                                |
-| **limit**          |            | Maximum number of results                                                                             |
-| **offset**         |            | Number of results to skip                                                                           |
+| **limit**          | `0`        | Maximum number of results                                                                             |
+| **offset**         | `0`        | Number of results to skip                                                                           |
 | **sortby**         | `rank`     | Sort field                                                                                            |
 | **sortdir**        | `ASC`      | Sort direction                                                                                        |
 | **toPlaceholder**  |            | If set, snippet stores data in a placeholder with this name instead of outputting.                   |
 | **where**          |            | JSON-encoded string with extra conditions.                                                            |
 | **filetype**       |            | File types to select. Use "image" for images and extensions for others, e.g. "image,pdf,xls,doc".   |
-| **showLog**        |            | Show extra snippet debug info. Only for users logged in to context "mgr".                             |
+| **return**         | `tpl`      | Output format. `tpl` — render through chunk, `json` — return JSON data.                              |
+| **showLog**        | `false`    | Show extra snippet debug info. Only for users logged in to context "mgr".                             |
 
 <!--@include: ../parts/tip-general-properties.md-->
 

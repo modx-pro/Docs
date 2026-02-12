@@ -1,9 +1,14 @@
 # Оплата
 
-Платежных систем существует огромное количество, и у всех свои правила, поэтому интерфейс оплаты `msPaymentInterface` требует реализации всего двух методов: `send` и `receive`.
-То есть, для отправки и приёма платежа.
+Платежных систем существует огромное количество, и у всех свои правила. Интерфейс оплаты `msPaymentInterface` требует реализации 5 методов:
 
-В обоих методах требуется [объект заказа msOrder][1]. Вы должны получить его, проверить и отправить\принять платеж.
+- **send($order)** — Создание операции оплаты и отправка покупателя на оплату. Получает объект `msOrder`.
+- **receive($order)** — Приём и обработка платежа от платежной системы. Получает объект `msOrder`.
+- **getCost(msOrderInterface $order, msPayment $payment, $cost = 0.0)** — Расчёт добавочной стоимости оплаты (комиссии). Поддерживает абсолютные и процентные значения.
+- **success($message, $data, $placeholders)** — Формирование успешного ответа.
+- **error($message, $data, $placeholders)** — Формирование ответа об ошибке.
+
+Стандартный класс `msPaymentHandler` также имеет публичный метод **getOrderHash($order)** — генерирует MD5-хэш заказа для верификации (на основе id, num, cart_cost, delivery_cost и createdon).
 
 ## Создание операции и отправка на оплату
 
@@ -79,7 +84,6 @@ if ($payment = $this->modx->getObject('msPayment', array('id' => $order->get('pa
 
 Обратите внимание, что вы можете купить массу уже готовых методов оплаты на [modstore.pro][2].
 
-[1]: /components/minishop2/development/services/order
 [2]: https://modstore.pro/packages/integration/?resource|parent=1260
 [10]: https://github.com/bezumkin/miniShop2/blob/c384bddbedfc6b0cc0c7046a8ba2393979300cff/core/components/minishop2/custom/payment/paypal.class.php
 [11]: https://github.com/bezumkin/miniShop2/blob/c384bddbedfc6b0cc0c7046a8ba2393979300cff/core/components/minishop2/custom/payment/paypal.class.php#L103

@@ -5,11 +5,11 @@ This class is initialized by `miniShop2::initialize()` and must implement the `m
 Required interface methods:
 
 - **initialize** — Initializes the class in the context. Can load scripts and styles.
-- **add** — Adds a product to the cart; `id` parameter is required.
+- **add($id, $count = 1, $options = [])** — Adds a product to the cart. `id` is required, `count` and `options` are optional.
 - **remove** — Removes a product from the cart; `key` parameter is required
 - **change** — Changes product quantity in the cart; `key` and `count` are required
 - **clean** — Full cart clear
-- **status** — Returns cart status: total cost, weight and product count
+- **status** — Returns cart status: `total_count`, `total_cost`, `total_weight`, `total_discount`, `total_positions`
 - **get** — Returns the full cart contents
 - **set** — Overwrites cart contents with the given `cart` array
 
@@ -72,17 +72,22 @@ switch ($modx->event->name) {
   // Clear cart
   case 'msOnBeforeEmptyCart': break; // receives $cart
   case 'msOnEmptyCart': break; // receives $cart
+
+  // Cart status
+  case 'msOnGetStatusCart': break; // receives $status and $cart
 }
 ```
 
 All methods receive the **$cart** object — the msCartHandler class instance with all its methods.
 
-The `$key` variable is the cart item key, formed as:
+The `$key` variable is the cart item key. The formula depends on the `ms2_cart_product_key_fields` system setting (default: `id,options`):
 
 ```php
-md5($id . json_encode($data));
-// where $id is the product id and $data is the parameters array sent when adding
+'ms' . md5($id . json_encode($options));
+// where $id is the product id and $options is the options array sent when adding
 ```
+
+The key always has the `ms` prefix. Fields used for key generation can be changed via the `ms2_cart_product_key_fields` setting.
 
 The `$count` variable is the product quantity, a number.
 
@@ -97,7 +102,7 @@ case 'msOnBeforeAddToCart':
 ```
 
 You can do anything with the product, even save a new price with `$product->save();`.
-This event also has the `$data` array — extra parameters sent by the user when adding to cart.
+This event also has the `$options` array — extra parameters (options) sent by the user when adding to cart.
 It can contain color, size, or anything else. If you change it, the product will be added with a different `$key`.
 
 Now change the product price **after** adding. In this event we no longer have the product, only the cart and key:

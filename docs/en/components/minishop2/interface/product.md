@@ -45,6 +45,8 @@ Fields and order are set in **ms2_product_extra_fields**. Default fields:
 - **made_in** — country (text with hints)
 - **vendor** — vendor dropdown
 - **tags** — tags array (autolist)
+- **remains** — quantity in stock (integer)
+- **reserved** — quantity reserved (integer)
 - **new**, **popular**, **favorite** — flags: yes / no
 
 Available properties can only be changed via [product plugins][1].

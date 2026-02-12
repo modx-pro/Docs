@@ -1,9 +1,14 @@
 # Payment
 
-There are many payment systems, each with its own rules, so the `msPaymentInterface` payment interface only requires two methods: `send` and `receive`.
-That is, for sending and receiving a payment.
+There are many payment systems, each with its own rules. The `msPaymentInterface` payment interface requires 5 methods:
 
-Both methods receive the [msOrder order object][1]. You must get it, validate it and send or receive the payment.
+- **send($order)** — Creates a payment operation and sends the buyer to pay. Receives an `msOrder` object.
+- **receive($order)** — Receives and processes payment from the payment system. Receives an `msOrder` object.
+- **getCost(msOrderInterface $order, msPayment $payment, $cost = 0.0)** — Calculates additional payment cost (commission). Supports absolute and percentage values.
+- **success($message, $data, $placeholders)** — Formats a success response.
+- **error($message, $data, $placeholders)** — Formats an error response.
+
+The standard `msPaymentHandler` class also has a public method **getOrderHash($order)** — generates an MD5 hash of the order for verification (based on id, num, cart_cost, delivery_cost and createdon).
 
 ## Creating the operation and sending for payment
 
@@ -79,7 +84,6 @@ We went through the payment chain, where you can change any part for any payment
 
 Note that you can buy many ready-made payment methods on [modstore.pro][2].
 
-[1]: /en/components/minishop2/development/services/order
 [2]: https://modstore.pro/packages/integration/?resource|parent=1260
 [10]: https://github.com/bezumkin/miniShop2/blob/c384bddbedfc6b0cc0c7046a8ba2393979300cff/core/components/minishop2/custom/payment/paypal.class.php
 [11]: https://github.com/bezumkin/miniShop2/blob/c384bddbedfc6b0cc0c7046a8ba2393979300cff/core/components/minishop2/custom/payment/paypal.class.php#L103
