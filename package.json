@@ -36,7 +36,7 @@
     "fast-glob": "^3.3.2",
     "fenom-tmlanguage": "^1.0.0",
     "gray-matter": "^4.0.3",
-    "markdown-it": "^14.1.0",
+    "markdown-it": "^14.1.1",
     "markdown-it-kbd": "^2.2.2",
     "markdownlint": "^0.40.0",
     "markdownlint-cli": "^0.47.0",
