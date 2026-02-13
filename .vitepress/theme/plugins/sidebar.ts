@@ -1,5 +1,5 @@
 import type { DefaultTheme } from 'vitepress'
-import { normalize } from '../utils'
+import { normalize, ensureStartingSlash } from '../utils'
 import faqCategories from '../../../docs/faq/categories.json'
 
 import { readFileSync } from 'fs'
@@ -76,7 +76,7 @@ export default class DocsSidebar {
       items,
     } = data
 
-    const link = normalize(path.replace(/^docs/, ''))
+    const link = ensureStartingSlash(normalize(path.replace(/^docs/, '')))
 
     const output: DefaultTheme.SidebarItem = {
       text: title,
