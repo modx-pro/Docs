@@ -1,11 +1,13 @@
 ---
 title: Localizator
-description: Multilingual, SEO and automation
+description: Language versions and satellites without contexts — auto-translation of resource fields and lexicons, SEO
 author: modx-pro
 modstore: https://modstore.pro/packages/utilities/localizator
 repository: https://github.com/modx-pro/localizator
 
 items: [
+  { text: 'Quick start', link: 'quick-start' },
+  { text: 'System settings', link: 'settings' },
   { text: 'Snippet Localizator', link: 'snippet-localizator' },
   { text: 'Language switching', link: 'switch-languages' },
   { text: 'Events', link: 'events' },
@@ -17,55 +19,46 @@ items: [
 ---
 # Localizator
 
-Localizator lets you create language versions / satellites without contexts, with automatic translation of all resource fields (including TVs) and lexicons.
+Component for creating language versions and satellites without contexts: automatic translation of resource fields (including TVs and SEO), auto-translation of lexicons. Works via “localization” pseudo-contexts (e.g. site.com/ and site.com/en/).
 
-- Friendly URLs must be enabled
-- Requires pdoTools and MIGX
+## Features
 
-## Setup
+- **Language versions without contexts** — localization pseudo-contexts, one site with multiple languages
+- **“Localizator” tab on resources** — standard fields, SEO and TVs; button to translate into other languages
+- **Auto-translation** — Yandex, Google, DeepL or copy without translation
+- **pdoTools integration** — output localized resources via pdoResources, pdoMenu, etc. (via system setting `pdoFetch.class`)
+- **mFilter2** — handler for localization-aware filtering
+- **Events** — hooks on save/remove of localizations and languages, tab building
 
-Create "localization" pseudo-contexts (e.g. site.ru/en/ and ch.site.ru):
+## System requirements
 
-![pseudo-contexts](https://file.modx.pro/files/a/2/d/a2d8c479da8603723ac5b480e0e2408d.png)
+| Requirement | Description |
+|-------------|-------------|
+| MODX Revolution | 2.x / 3.x |
+| PHP | 7.4+ |
+| pdoTools | installed |
+| MIGX | installed |
+| Friendly URLs | enabled |
 
-Resources get a tab where you fill standard fields + SEO + TVs; a button then translates everything into other languages.
+## Dependencies
 
-![Localizator tab](https://file.modx.pro/files/1/5/2/152cc01c77ac4a8a5c923cb7204f678f.png)
-![Localization window](https://file.modx.pro/files/3/b/3/3b382b1f2be63655d70f844555369527.png)
+- **[pdoTools](/en/components/pdotools/)** — for fetching and outputting resources (pdoResources, pdoMenu, etc.)
+- **MIGX** — for working with multi-fields in localizations
 
-### System settings
+## Installation
 
-To use pdoTools snippets (pdoResources, pdoMenu) for localized resources, set `pdoFetch.class` to `pdotools.pdofetchlocalizator`.
+### Via ModStore
 
-All resource fields are replaced by localized values except `content`, which is output via `{$_modx->resource.localizator_content}`.
+1. [Connect the ModStore repository](https://modstore.pro/info/connection)
+2. Go to **Extras → Installer** and click **Download Extras**
+3. Ensure **pdoTools** and **MIGX** are installed
+4. Find **Localizator** in the list and click **Download**, then **Install**
+5. **Manage → Clear cache**
 
-For mFilter2, set `mse2_filters_handler_class` to `mse2LocalizatorFilter`.
+The package is available in the [modstore.pro](https://modstore.pro/) catalog.
 
-| Name                                    | Default                                                                                  | Description                                                                                                                                                                                                     |
-|----------------------------------------|------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **localizator_default_language**        | `No`                                                                                     | Default localization key                                                                                                                                                                                       |
-| **localizator_default_translator**       | `Yandex`                                                                                 | Translator for auto-translation                                                                                                                                                                                |
-| **localizator_key_yandex**              | `No`                                                                                     | API key for Yandex Translate, <https://translate.yandex.ru/developers/keys>                                                                                                                                     |
-| **localizator_translate_fields**        | `pagetitle` `longtitle` `menutitle` `seotitle` `keywords` `introtext` `description` `content` | Fields to translate when using auto-translate (including TVs)                                                                                                                                                   |
-| **localizator_translate_translated**    | `No`                                                                                     | When auto-translating, also translate EMPTY fields in existing localizations                                                                                                                                   |
-| **localizator_translate_translated_fields** | `No`                                                                                     | When auto-translating, overwrite all localization fields                                                                                                                                                      |
-| **localizator_tv_fields**               | `No`                                                                                     | TVs listed here are editable in localizations. Leave empty for all. Use minus prefix to exclude ('-image')                                                                                                    |
+### After installation
 
-## site.ru/en/ style setup
+Set `pdoFetch.class` so pdoTools snippets work with localizations, create languages in the Manager, and fill the “Localizator” tab on resources.
 
-### Apache2
-
-Add a rule in **.htaccess**
-
-```apache
-RewriteRule ^(ru|en)/assets(.*)$ assets$2 [L,QSA]
-```
-
-### NGINX
-
-```nginx
-location ~ ^/(ru|en) {
-  rewrite ^/(ru|en)/(favicon.ico|assets.*)$ /$2 redirect;
-  try_files $uri $uri/ @rewrite;
-}
-```
+See: [Quick start](quick-start) and [System settings](settings).

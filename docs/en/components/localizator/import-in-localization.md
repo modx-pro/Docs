@@ -1,3 +1,6 @@
+---
+title: Import in localization
+---
 # Import into localizations
 
 If you run an online store and need to tie product attribute import (TVs) into **MiniShop2** via **msImportExport**, here is one approach:

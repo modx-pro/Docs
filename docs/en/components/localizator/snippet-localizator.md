@@ -1,24 +1,27 @@
+---
+title: Snippet Localizator
+---
 # Snippet Localizator
 
-Outputs resources localized in Localizator.
+Outputs resources localized in Localizator. Works with pdoTools snippets (pdoResources, pdoMenu, pdoPage, etc.). Does not work with getImageList.
 
 ## Parameters
 
-Localizator works with pdoTools snippets. It does not work with getImageList.
-
-| Name            | Default      | Description                                                                                                                                      |
-|-----------------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| **snippet**      | `pdoResources` | Snippet to run                                                                                                                                   |
-| **class**       | `modResource`  | Object class                                                                                                                                     |
-| **localizator_key** | `No`        | Localization key (default: current)                                                                                                                                            |
-| **localizatorTVs**  | `No`        | List of localized TV names. If empty, TVs follow system setting **localizator_tv_fields**                                                        |
+| Name | Default | Description |
+|------|---------|-------------|
+| **snippet** | `pdoResources` | Snippet name to run |
+| **class** | `modResource` | Object class |
+| **localizator_key** | current | Localization key |
+| **localizatorTVs** | No | Comma-separated TV names for localized output. If empty, all TVs with “Available in localizations” enabled in TV settings are used; this parameter narrows or overrides the list |
 
 ## Examples
 
 ### Output via pdoMenu
 
+::: code-group
+
 ```fenom
-{'Localizator' | snippet: [
+{'Localizator' | snippet : [
   'snippet' => 'pdoMenu',
   'includeTVs' => 'img',
   'processTVs' => 'img',
@@ -27,12 +30,26 @@ Localizator works with pdoTools snippets. It does not work with getImageList.
 ]}
 ```
 
+```modx
+[[!Localizator?
+  &snippet=`pdoMenu`
+  &includeTVs=`img`
+  &processTVs=`img`
+  &parents=`0`
+  &level=`1`
+]]
+```
+
+:::
+
 ### Output resources via pdoPage
+
+::: code-group
 
 ```fenom
 <div id="pdopage">
   <div class="rows">
-    {'!pdoPage' | snippet: [
+    {'!pdoPage' | snippet : [
       'element' => 'Localizator',
       'parents' => 0,
       'ajaxMode' => 'default',
@@ -42,36 +59,74 @@ Localizator works with pdoTools snippets. It does not work with getImageList.
 </div>
 ```
 
+```modx
+<div id="pdopage">
+  <div class="rows">
+    [[!pdoPage?
+      &element=`Localizator`
+      &parents=`0`
+      &ajaxMode=`default`
+    ]]
+  </div>
+  [[+page.nav]]
+</div>
+```
+
+:::
+
 ### Output resources via mFilter2
 
+::: code-group
+
 ```fenom
-{'!mFilter2' | snippet: [
+{'!mFilter2' | snippet : [
   'element' => 'Localizator',
   'parents' => 0,
 ]}
 ```
 
-### Output products with mFilter2
+```modx
+[[!mFilter2?
+  &element=`Localizator`
+  &parents=`0`
+]]
+```
+
+:::
+
+### Output products via mFilter2
+
+::: code-group
 
 ```fenom
-{'!mFilter2' | snippet: [
+{'!mFilter2' | snippet : [
   'element' => 'Localizator',
   'snippet' => 'msProducts',
   'parents' => 0,
 ]}
 ```
 
-### Search and product listing with msProducts
+```modx
+[[!mFilter2?
+  &element=`Localizator`
+  &snippet=`msProducts`
+  &parents=`0`
+]]
+```
+
+:::
+
+### Search and product listing with mSearch2 and msProducts
 
 ```fenom
-{set $ids = '!mSearch2' | snippet: [
+{set $ids = '!mSearch2' | snippet : [
   'returnIds' => 1,
   'limit' => 0,
 ] ?:'99999'}
 
 <div id="pdopage">
   <div class="rows">
-    {'!pdoPage' | snippet: [
+    {'!pdoPage' | snippet : [
       'element' => 'Localizator',
       'snippet' => 'msProducts',
       'parents' => 0,
@@ -86,10 +141,10 @@ Localizator works with pdoTools snippets. It does not work with getImageList.
 </div>
 ```
 
-### Get and output `pagetitle` from another resource
+### Get and output pagetitle from another resource
 
 ```fenom
-{'pdoResources' | snippet: [
+{'pdoResources' | snippet : [
   'tpl' => '@INLINE {$pagetitle}',
   'class' => 'localizatorContent',
   'sortby' => 'id',
@@ -101,12 +156,12 @@ Localizator works with pdoTools snippets. It does not work with getImageList.
 ]}
 ```
 
-Where: `resource_id` — resource ID
+`resource_id` — resource ID.
 
 ### Get and output TV from another resource
 
 ```fenom
-{'pdoResources' | snippet: [
+{'pdoResources' | snippet : [
   'tpl' => '@INLINE {$value}',
   'class' => 'locTemplateVarResource',
   'sortby' => 'id',
@@ -119,26 +174,22 @@ Where: `resource_id` — resource ID
 ]}
 ```
 
-Where:
-
 - `tmplvarid` — TV ID
 - `contentid` — resource ID
 
-### Get and output TV using the locfield modifier
+### locfield modifier (Fenom)
 
 ```fenom
 {1 | locfield : 'tvname'}
 ```
 
-Where:
-
 - `1` — resource ID
 - `tvname` — TV name
 
-### Get and output MIGX values from another resource
+### Output MIGX values from another resource
 
 ```fenom
-{foreach ('!pdoResources' | snippet: [
+{foreach ('!pdoResources' | snippet : [
   'tpl' => '@INLINE {$value | toJSON}',
   'class' => 'locTemplateVarResource',
   'sortby' => 'id',
@@ -156,19 +207,16 @@ Where:
 {/foreach}
 ```
 
-### Usage with `clientconfig`
+### With clientconfig
 
-- Create two parameters, e.g.:
-    `work_clock_1_ru` and `work_clock_1_en`
-
-- Output where needed:
+Create parameters like `work_clock_1_ru`, `work_clock_1_en` and output by current language:
 
 ```fenom
 {var $key = ('localizator_key' | option)}
 {('work_clock_1_' ~ $key) | option}
 ```
 
-### Checking current localization and swapping logo
+### Logo by localization
 
 ```fenom
 <a class="header-logo" href="{'site_start' | config}" aria-label="{'site_name' | config}">
@@ -180,10 +228,10 @@ Where:
 </a>
 ```
 
-### Cart output msCart
+### msCart output
 
 ```fenom
-{'!Localizator' | snippet: [
+{'!Localizator' | snippet : [
   'snippet' => 'msCart',
   'class' => 'msProduct',
   'tpl' => '@FILE chunks/_checkout.cart.tpl',

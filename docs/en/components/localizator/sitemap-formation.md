@@ -1,3 +1,6 @@
+---
+title: Sitemap formation
+---
 # Sitemap formation
 
 ## Snippet sitemap.php
