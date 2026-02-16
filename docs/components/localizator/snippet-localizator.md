@@ -1,21 +1,24 @@
+---
+title: Сниппет Localizator
+---
 # Сниппет Localizator
 
-Предназначен для вывода переведенных в локализаторе ресурсов
+Предназначен для вывода переведённых в локализаторе ресурсов. Работает со сниппетами пакета pdoTools (pdoResources, pdoMenu, pdoPage и др.). Не работает с getImageList.
 
 ## Параметры
 
-Сниппет Localizator работает со сниппетами пакета pdoTools. Не работает с getImageList
-
-| Название            | По умолчанию   | Описание                                                                                                                                      |
-| ------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| **snippet**         | `pdoResources` | Имя сниппета для запуска                                                                                                                      |
-| **class**           | `modResource`  | Класс получаемого объекта                                                                                                                     |
-| **localizator_key** | `Нет`          | Ключ локализации, по умолчанию текущий                                                                                                        |
-| **localizatorTVs**  | `Нет`          | Список переведенных доп.полей. Если не заполнять, то будут подтягиваться поля в соответствии с системной настройкой **localizator_tv_fields** |
+| Название | По умолчанию | Описание |
+|----------|--------------|----------|
+| **snippet** | `pdoResources` | Имя сниппета для запуска |
+| **class** | `modResource` | Класс получаемого объекта |
+| **localizator_key** | текущий | Ключ локализации |
+| **localizatorTVs** | Нет | Список переведённых доп. полей (TV). Если не заполнять, подтягиваются все TV с включённой опцией «Доступен в локализациях» в настройках TV; параметр позволяет сузить или задать список |
 
 ## Примеры
 
 ### Вывод через pdoMenu
+
+::: code-group
 
 ```fenom
 {'Localizator' | snippet : [
@@ -27,7 +30,21 @@
 ]}
 ```
 
+```modx
+[[!Localizator?
+  &snippet=`pdoMenu`
+  &includeTVs=`img`
+  &processTVs=`img`
+  &parents=`0`
+  &level=`1`
+]]
+```
+
+:::
+
 ### Вывод ресурсов через pdoPage
+
+::: code-group
 
 ```fenom
 <div id="pdopage">
@@ -42,7 +59,24 @@
 </div>
 ```
 
+```modx
+<div id="pdopage">
+  <div class="rows">
+    [[!pdoPage?
+      &element=`Localizator`
+      &parents=`0`
+      &ajaxMode=`default`
+    ]]
+  </div>
+  [[+page.nav]]
+</div>
+```
+
+:::
+
 ### Вывод ресурсов через mFilter2
+
+::: code-group
 
 ```fenom
 {'!mFilter2' | snippet : [
@@ -51,7 +85,18 @@
 ]}
 ```
 
+```modx
+[[!mFilter2?
+  &element=`Localizator`
+  &parents=`0`
+]]
+```
+
+:::
+
 ### Вывод товаров через mFilter2
+
+::: code-group
 
 ```fenom
 {'!mFilter2' | snippet : [
@@ -61,7 +106,17 @@
 ]}
 ```
 
-### Использование для поиска и вывода товаров вместе с msProducts
+```modx
+[[!mFilter2?
+  &element=`Localizator`
+  &snippet=`msProducts`
+  &parents=`0`
+]]
+```
+
+:::
+
+### Поиск и вывод товаров с mSearch2 и msProducts
 
 ```fenom
 {set $ids = '!mSearch2' | snippet : [
@@ -86,7 +141,7 @@
 </div>
 ```
 
-### Получение и вывод `pagetitle` от другого ресурса
+### Получение и вывод pagetitle другого ресурса
 
 ```fenom
 {'pdoResources' | snippet : [
@@ -101,9 +156,9 @@
 ]}
 ```
 
-Где: `resource_id` - ID ресурса
+`resource_id` — ID ресурса.
 
-### Получение и вывод TV от другого ресурса
+### Получение и вывод TV другого ресурса
 
 ```fenom
 {'pdoResources' | snippet : [
@@ -119,23 +174,19 @@
 ]}
 ```
 
-Где:
+- `tmplvarid` — ID TV
+- `contentid` — ID ресурса
 
-- `tmplvarid` - ID TV поля
-- `contentid` - ID ресурса
-
-### Получение и вывод TV от другого ресурса помощью модификатора locfield
+### Модификатор locfield (Fenom)
 
 ```fenom
 {1 | locfield : 'tvname'}
 ```
 
-Где:
+- `1` — ID ресурса
+- `tvname` — имя TV
 
-- `1` - ID ресурса
-- `tvname` - Наименование TV поля
-
-### Получение и вывод значений MIGX от другого ресурса
+### Вывод значений MIGX от другого ресурса
 
 ```fenom
 {foreach ('!pdoResources' | snippet : [
@@ -156,19 +207,16 @@
 {/foreach}
 ```
 
-### Использование совместно с `clientconfig`
+### Совместно с clientconfig
 
-- Создаем два параметра, например:
-    `work_clock_1_ru` и `work_clock_1_en`
-
-- Выводим в нужном месте:
+Создайте параметры вида `work_clock_1_ru`, `work_clock_1_en` и выводите по текущему языку:
 
 ```fenom
 {var $key = ('localizator_key' | option)}
 {('work_clock_1_' ~ $key) | option}
 ```
 
-### Проверка отображаемой локализации и замена лого
+### Лого в зависимости от локализации
 
 ```fenom
 <a class="header-logo" href="{'site_start' | config}" aria-label="{'site_name' | config}">

@@ -1,3 +1,6 @@
+---
+title: Events
+---
 # Events
 
 The following events are available:

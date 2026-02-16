@@ -1,3 +1,6 @@
+---
+title: hreflang attribute
+---
 # hreflang attribute for multilingual sites
 
 For correct behavior, the localization **HTTP HOST** setting must end with `/`. Example:
