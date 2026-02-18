@@ -102,6 +102,16 @@ items: [
       { text: 'Scheduler', link: 'development/scheduler' },
       { text: 'Модели и схема БД', link: 'development/models' },
       { text: 'Сервисный слой', link: 'development/services' },
+      {
+        text: 'Backend API',
+        link: 'development/backend-api/',
+        items: [
+          { text: 'API товара', link: 'development/backend-api/product' },
+          { text: 'API заказа', link: 'development/backend-api/order' },
+          { text: 'API опций', link: 'development/backend-api/options' },
+          { text: 'API покупателя', link: 'development/backend-api/customer' },
+        ],
+      },
     ],
   },
 ]
