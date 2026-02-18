@@ -474,4 +474,4 @@ $customer = $factory->createFromOrderData([
 | `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer` | Поиск/создание при оформлении |
 | `msOnBeforeAddCustomerAddress` / `msOnAddCustomerAddress` | Добавление адреса |
 
-Подробное описание параметров событий — в разделе [События](../events/).
+Подробное описание параметров событий — в разделе [События](../events).
