@@ -1,5 +1,6 @@
 ---
 title: Platron
+description: Модуль оплаты Platron для miniShop2
 dependencies: miniShop2
 categories: payment
 ---

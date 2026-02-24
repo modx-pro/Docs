@@ -1,5 +1,6 @@
 ---
 title: ePochta
+description: Компонент для отправки SMS через API ePochta и валидации номера телефона
 ---
 # ePochta
 

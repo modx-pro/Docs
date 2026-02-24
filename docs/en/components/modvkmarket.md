@@ -1,5 +1,6 @@
 ---
 title: modVkMarket
+description: Component for syncing miniShop2 products with VKontakte market
 ---
 # modVkMarket
 

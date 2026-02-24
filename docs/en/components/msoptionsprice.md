@@ -1,5 +1,6 @@
 ---
 title: msOptionsPrice
+description: Component for setting additional product prices based on characteristics
 dependencies: miniShop2
 ---
 

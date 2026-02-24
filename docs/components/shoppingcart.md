@@ -1,5 +1,6 @@
 ---
 title: ShoppingCart
+description: Универсальный сниппет для создания корзины покупок с хранением данных в БД
 ---
 # ShoppingCart
 

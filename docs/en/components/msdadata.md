@@ -1,5 +1,6 @@
 ---
 title: msDaData
+description: Component for address and name autocomplete when placing orders in miniShop2 via DaData
 dependencies: miniShop2
 ---
 

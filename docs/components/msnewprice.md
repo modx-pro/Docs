@@ -1,5 +1,6 @@
 ---
 title: msNewPrice
+description: Компонент для управления новыми и акционными ценами товаров miniShop2
 dependencies: miniShop2
 ---
 

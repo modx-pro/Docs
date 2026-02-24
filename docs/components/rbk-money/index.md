@@ -1,5 +1,6 @@
 ---
 title: RBK Money
+description: Модуль оплаты RBK Money для miniShop2
 
 items: [
   { text: 'Выбор способа оплаты на сайте', link: 'choosing-payment-method' },

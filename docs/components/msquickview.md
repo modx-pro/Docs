@@ -1,5 +1,6 @@
 ---
 title: msQuickView
+description: Компонент для быстрого просмотра товара и виджета корзины с обновлением на лету
 dependencies: miniShop2
 ---
 

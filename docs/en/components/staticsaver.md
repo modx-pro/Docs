@@ -1,5 +1,6 @@
 ---
 title: StaticSaver
+description: Plugin for auto-setting file paths and sources when making elements static
 ---
 # StaticSaver
 

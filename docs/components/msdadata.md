@@ -1,5 +1,6 @@
 ---
 title: msDaData
+description: Компонент для автодополнения адреса и ФИО при оформлении заказа в miniShop2 через DaData
 dependencies: miniShop2
 ---
 
