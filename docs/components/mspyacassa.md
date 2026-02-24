@@ -1,5 +1,6 @@
 ---
 title: mspYaCassa
+description: Модуль оплаты Яндекс Кассы для miniShop2
 dependencies: miniShop2
 categories: payment
 ---

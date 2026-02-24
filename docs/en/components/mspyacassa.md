@@ -1,5 +1,6 @@
 ---
 title: mspYaCassa
+description: YooKassa (Yandex.Kassa) payment module for miniShop2
 dependencies: miniShop2
 categories: payment
 ---

@@ -1,5 +1,6 @@
 ---
 title: msYmarket
+description: Компонент для выгрузки каталога товаров miniShop2 в формате YML для Яндекс.Маркета
 dependencies: miniShop2
 ---
 
