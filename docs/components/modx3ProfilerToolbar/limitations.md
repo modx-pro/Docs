@@ -34,6 +34,6 @@ pdoTools-сниппеты (`msProducts`, `pdoResources`, `pdoPage`) **профи
 
 ### Для продакшена
 
-1. **Кешируйте pdoTools-сниппеты** где возможно: `&tplCache=`1``.
-2. **Используйте `&includeContent=`0``** если контент не нужен.
-3. **Оптимизируйте SQL** на основе отчётов тулбара — индексы, `&where` вместо `&where:=`.
+1. **Кешируйте pdoTools-сниппеты** где возможно: на примере pdoPage — ``&cache=`1` `` и ``&cacheTime=`3600` ``. Подробнее: [pdoTools — общие параметры](/components/pdotools/general-properties) и [pdoPage](/components/pdotools/snippets/pdopage).
+2. **Используйте ``&includeContent=`0` ``** если контент не нужен.
+3. **Оптимизируйте SQL** на основе отчётов тулбара — индексы, предпочитайте `&where` с JSON-строкой.

@@ -17,7 +17,7 @@ items: [
 
 ## Возможности
 
-- **Frontend Dev Toolbar** — панель в правом нижнем углу страницы: время, память, сниппеты, SQL; по клику — вкладки Overview, Slow Components, Timeline, SQL. Локализация (ru/en/uk).
+- **Frontend Dev Toolbar** — панель в правом нижнем углу страницы: время, память, сниппеты, SQL. По клику — вкладки Overview, Slow Components, Timeline, SQL. Локализация (ru/en/uk).
 - **MODX Pipeline** — учёт событий MODX (OnHandleRequest, OnLoadWebDocument, OnWebPagePrerender), сниппеты, чанки, плагины, SQL.
 - **Advisor** — подсказки по оптимизации: некэшированные сниппеты, N+1, медленные запросы, перегруз чанков.
 - **Production-safe** — sampling (1–100%), тулбар только при входе в Manager; накладные расходы < 5%.
