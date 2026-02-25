@@ -1,5 +1,6 @@
 ---
 title: ShoppingCart
+description: Universal snippet for building a shopping cart with database storage
 ---
 # ShoppingCart
 

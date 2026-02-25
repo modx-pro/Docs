@@ -1,5 +1,6 @@
 ---
 title: modVkMarket
+description: Компонент для синхронизации товаров miniShop2 с маркетом ВКонтакте
 ---
 # modVkMarket
 

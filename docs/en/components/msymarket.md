@@ -1,5 +1,6 @@
 ---
 title: msYmarket
+description: Component for exporting miniShop2 catalog to YML format for Yandex.Market
 dependencies: miniShop2
 ---
 

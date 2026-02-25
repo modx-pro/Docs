@@ -1,5 +1,6 @@
 ---
 title: msBuyNow
+description: Component for the "Buying now" widget — products added to cart recently
 dependencies: miniShop2
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: msNewPrice
+description: Component for managing new and promotional prices in miniShop2
 dependencies: miniShop2
 ---
 
