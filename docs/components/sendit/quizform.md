@@ -146,6 +146,7 @@
 ```
 
 :::
+
 ::: danger
 Для корректной работы необходимо в стилях определить класс **v_hidden** отвечающий за визуальное скрытие элементов, или указать его аналог в
 JavaScript конфигурации модуля.
@@ -153,21 +154,18 @@ JavaScript конфигурации модуля.
 
 ## Описание атрибутов
 
-* **data-qf-progress** - селектор блока-обёртки индикации прогресса, сам блок может отсутствовать;
-* **data-qf-progress-value** - селектор блока индикации прогресса, не требует значения;
-* **data-qf-item** - селектор шага формы, значение должно быть числом уникальным для данного опросника;
-* **data-qf-auto** - указывает на шаг формы, который необходимо автоматически переключить при получении ответа от пользователя, обязательно должен иметь значение 1;
-* **data-qf-next** - указывает на какой шаг перейти, используется при необходимости пропустить 1 или несколько шагов,
-  в качестве значения принимает значение атрибута *data-qf-item* целевого шага;
-* **data-qf-finish** - обозначает финальный блок, сам блок может отсутствовать;
-* **data-qf-btn** - обозначает кнопку управления, принимает значения
-  * **prev** - кнопка *"Назад"*, переключает на предыдущий шаг;
-  * **next** - кнопка *"Вперед"*, переключает на следующий шаг;
-  * **reset** - кнопка *"Начать сначала"*, сбрасывает прогресс;
-  * **send** - кнопка *"Отправить"*, отправляет данные на сервер;
-* **data-qf-pages** - обозначает блок вывода положения пользователя относительно общего кол-ва вопросов, сам блок может отсутствовать;
-* **data-qf-page** - обозначает блок вывода текущего шага;
-* **data-qf-total** - обозначает блок вывода общего количества шагов;
+| Атрибут | Описание |
+|---------|----------|
+| `data-qf-progress` | Блок-обёртка индикации прогресса, сам блок может отсутствовать |
+| `data-qf-progress-value` | Блок индикации прогресса, не требует значения |
+| `data-qf-item` | Шаг формы, значение должно быть числом уникальным для данного опросника |
+| `data-qf-auto` | Указывает на шаг формы, который необходимо автоматически переключить при получении ответа от пользователя, обязательно должен иметь значение `1` |
+| `data-qf-next` | Указывает на какой шаг перейти, используется при необходимости пропустить 1 или несколько шагов; в качестве значения принимает значение атрибута `data-qf-item` целевого шага |
+| `data-qf-finish` | Обозначает финальный блок, сам блок может отсутствовать |
+| `data-qf-btn` | Обозначает кнопку управления: `prev` — *"Назад"*, `next` — *"Вперед"*, `reset` — *"Начать сначала"*, `send` — *"Отправить"* |
+| `data-qf-pages` | Блок вывода положения пользователя относительно общего кол-ва вопросов, может отсутствовать |
+| `data-qf-page` | Блок вывода текущего шага |
+| `data-qf-total` | Блок вывода общего количества шагов |
 
 ## Порядок работы
 
@@ -236,39 +234,39 @@ JavaScript конфигурации модуля.
 
 ::: details Конфигурация по умолчанию
 
-```js:line-numbers{3-31}
-export default function returnConfigs() {
-  return {
-    QuizForm: {
-      pathToScripts: './modules/quizform.js',
-      rootSelector: '[data-si-form]',
-      rootKey: 'siForm',
-      autoKey: 'qfAuto',
-      itemSelector: '[data-qf-item]',
-      itemKey: 'qfItem',
-      itemCompleteSelector: '[data-qf-complete="1"]',
-      itemCompleteKey: 'qfComplete',
-      finishSelector: '[data-qf-finish]',
-      itemCurrentSelector: '[data-qf-item="${currentIndex}"]',
-      btnSelector: '[data-qf-btn]',
-      btnKey: 'qfBtn',
-      btnNextSelector: '[data-qf-btn="next"]',
-      btnPrevSelector: '[data-qf-btn="prev"]',
-      btnSendSelector: '[data-qf-btn="send"]',
-      btnResetSelector: '[data-qf-btn="reset"]',
-      nextIndexSelector: '[data-qf-next]',
-      nextIndexKey: 'qfNext',
-      progressSelector: '[data-qf-progress]',
-      currentQuestionSelector: '[data-qf-page]',
-      totalQuestionSelector: '[data-qf-total]',
-      pagesSelector: '[data-qf-pages]',
-      progressValueSelector: '[data-qf-progress-value]',
-      activeClass: 'active',
-      visabilityClass: 'v_hidden',
-      disabledClass: 'disabled',
-      sendEvent: 'si:send:finish',
-    },
-  }
+```js:line-numbers{3-33}
+export const ModulesConfig = {
+  QuizForm: {
+    className: 'QuizForm',
+    pathToScripts: '../modules/quizform.js',
+    formSelector: '[data-si-form]',
+    rootKey: 'siForm',
+    autoKey: 'qfAuto',
+    rootSelector: '[data-qf-item]',
+    itemKey: 'qfItem',
+    itemCompleteSelector: '[data-qf-complete="1"]',
+    itemCompleteKey: 'qfComplete',
+    finishSelector: '[data-qf-finish]',
+    itemCurrentSelector: '[data-qf-item="${currentIndex}"]',
+    btnSelector: '[data-qf-btn]',
+    btnKey: 'qfBtn',
+    btnNextSelector: '[data-qf-btn="next"]',
+    btnPrevSelector: '[data-qf-btn="prev"]',
+    btnSendSelector: '[data-qf-btn="send"]',
+    btnResetSelector: '[data-qf-btn="reset"]',
+    nextIndexSelector: '[data-qf-next]',
+    nextIndexKey: 'qfNext',
+    progressSelector: '[data-qf-progress]',
+    currentQuestionSelector: '[data-qf-page]',
+    totalQuestionSelector: '[data-qf-total]',
+    pagesSelector: '[data-qf-pages]',
+    progressValueSelector: '[data-qf-progress-value]',
+    activeClass: 'active',
+    visabilityClass: 'v_hidden',
+    disabledClass: 'disabled',
+    sendEvent: 'si:send:finish',
+    nosaveAttr: 'data-si-nosave'
+  },
 }
 ```
 
@@ -276,11 +274,11 @@ export default function returnConfigs() {
 
 |           Ключ            |               Описание               |                         Значение                          |
 |:-------------------------:|:------------------------------------:|:---------------------------------------------------------:|
-|      `pathToScripts`      |      **./modules/quizform.js**       | путь к модулю, указывается относительно файла *sendit.js* |
-|      `rootSelector`       |          **[data-si-form]**          |                      селектор формы                       |
+|      `pathToScripts`      |      **../modules/quizform.js**      | путь к модулю, указывается относительно файла *sendit.js* |
+|      `formSelector`       |          **[data-si-form]**          |                      селектор формы                       |
 |         `rootKey`         |              **siForm**              |          ключ свойства *dataset* с именем формы           |
 |         `autoKey`         |              **qfAuto**              |     ключ свойства *dataset* атрибута автопереключения     |
-|      `itemSelector`       |          **[data-qf-item]**          |               селектор элемента одного шага               |
+|      `rootSelector`       |          **[data-qf-item]**          |               селектор элемента одного шага               |
 |         `itemKey`         |              **qfItem**              |             ключ свойства *dataset* с ID шага             |
 |  `itemCompleteSelector`   |      **[data-qf-complete="1"]**      |            селектор элемента завершенного шага            |
 |     `itemCompleteKey`     |            **qfComplete**            |   ключ свойства *dataset* обозначающего наличие ответа    |
@@ -303,3 +301,4 @@ export default function returnConfigs() {
 |     `visabilityClass`     |             **v_hidden**             |                  класс скрытых элементов                  |
 |      `disabledClass`      |             **disabled**             |           класс не активных элементов (кнопки)            |
 |        `sendEvent`        |          **si:send:finish**          |                событие завершения отправки                |
+|       `nosaveAttr`        |          **data-si-nosave**          |   атрибут для исключения полей из сохранения данных       |

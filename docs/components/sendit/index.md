@@ -118,15 +118,15 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 
 |              Ключ              |                        Описание                         |                         Значение                         |
 |:------------------------------:|:-------------------------------------------------------:|:--------------------------------------------------------:|
-|      **si_frontend_css**       |                 Путь к основным стилям                  | `[\[+assetsUrl]]components/sendit/web/css/index.min.css` |
-|       **si_frontend_js**       |               Путь к основным JS скриптам               |   `[\[+assetsUrl]]components/sendit/web/js/sendit.js`    |
+|      **si_frontend_css**       |                 Путь к основным стилям                  | `[\[+assetsUrl]]components/sendit/css/web/index.css` |
+|       **si_frontend_js**       |               Путь к основным JS скриптам               |   `[\[+assetsUrl]]components/sendit/js/web/index.js`    |
 |     **si_js_config_path**      |              Путь к файлу JS конфигурации               |                    `./sendit.inc.js`                     |
-|        **si_uploaddir**        |                Путь для загрузки файлов                 |       `/assets/components/sendit/uploaded_files/`        |
-|     **si_path_to_presets**     |                     Путь к пресетам                     |     `/core/components/sendit/presets/sendit.inc.php`     |
+|        **si_uploaddir**        |                Путь для загрузки файлов                 | `[\[+assetsUrl]]components/sendit/uploaded_files/`  |
+|     **si_path_to_presets**     |       Путь к пресетам (относительно core_path)          |   `components/sendit/presets/sendit.inc.php`     |
 |        **si_send_goal**        |            Отправлять цели в Яндекс.Метрику             |                          *Нет*                           |
 |       **si_counter_id**        |                   ID счётчика метрики                   |                                                          |
 |      **si_default_email**      |          Адрес для отправки писем по умолчанию          |                                                          |
-|      **si_default_admin**      |             ID администратора по умолчанию              |                                                          |
+|      **si_default_admin**      |             ID администратора по умолчанию              |                           `1`                            |
 |    **si_default_emailtpl**     |                Чанк письма по умолчанию                 |                     `siDefaultEmail`                     |
 | **si_max_sending_per_session** | Максимальное количество отправок одной формы за сессию  |                           `2`                            |
 |  **si_pause_between_sending**  |           Пауза между отправками одной формы.           |                           `30`                           |
@@ -134,6 +134,7 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 |        **si_precision**        |      Точность округления процентов загрузки файлов      |                           `2`                            |
 |      **si_storage_time**       |  Время хранения загруженных файлов во временной папке   |                         `86400`                          |
 |       **si_allow_dirs**        | Список имен папок из которых можно удалять другие папки |                     `uploaded_files`                     |
+| **si_use_custom_session_id**   |   Использовать пользовательский ID сессии               |                          *Нет*                           |
 
 ## Параметры по умолчанию
 
@@ -165,122 +166,197 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 Компонент предоставляет возможность изменить некоторые параметры работы JavaScript.
 ::: details Конфигурация по умолчанию
 
-```js:line-numbers{3,22,29,47,76,89}
-export default function returnConfigs() {
-  return {
-    PaginationFactory: {
-      pathToScripts: './modules/paginationhandler.js',
-      sendEvent: 'si:send:finish',
-      rootSelector: '[data-pn-pagination]',
-      firstPageBtnSelector: '[data-pn-first]',
-      lastPageBtnSelector: '[data-pn-last]',
-      lastPageKey: 'pnLast',
-      prevPageBtnSelector: '[data-pn-prev]',
-      nextPageBtnSelector: '[data-pn-next]',
-      morePageBtnSelector: '[data-pn-more]',
-      resultBlockSelector: '[data-pn-result="${key}"]',
-      currentPageInputSelector: '[data-pn-current]',
-      totalPagesSelector: '[data-pn-total]',
-      limitSelector: '[data-pn-limit]',
-      typeKey: 'pnType',
-      hideClass: 'v_hidden',
-      presetKey: 'siPreset',
-      rootKey: 'pnPagination'
+```js:line-numbers{2,7,70,85,105,127,147,155}
+export const ModulesConfig = {
+  Helpers: {
+    className: 'Helpers',
+    pathToScripts: '../modules/helpers.js',
+    forceLoad: true
+  },
+  UserBehaviorTracker: {
+    className: 'UserBehaviorTracker',
+    pathToScripts: '../modules/userbehaviortracker.js',
+    debug: false,
+    forceLoad: true,
+    autoUpdateTime: 0,
+    maxEvents: 100,
+    minBotScoreAmount: 50,
+    cooldownMultiplier: 0.02,
+    cooldownTime: 5,
+    maxSum: 150,
+    weights: {
+      mouseMovements: 1,
+      clicks: 1,
+      keystrokes: 1,
+      scrolls: 1,
+      timing: 1,
+      behaviorPatterns: 1,
+      recentBehavior: 1
     },
-    SaveFormData: {
-      pathToScripts: './modules/saveformdata.js',
-      rootSelector: '[data-si-form]',
-      noSaveSelector: '[data-si-nosave]',
-      rootKey: 'siForm',
-      resetEvent: 'si:send:reset'
+    mouse: {
+      minMovements: 50,
+      straightLineThreshold: 0.7,
+      rightAngleThreshold: 0.3,
     },
-    Notify: {
-      pathToScripts: './modules/notify.js',
-      jsPath: 'assets/components/sendit/js/web/lib/izitoast/iziToast.min.js',
-      cssPath: 'assets/components/sendit/css/web/lib/izitoast/iziToast.min.css',
-      handlerClassName: 'iziToast',
-      toastSelector: '.iziToast',
-      typeSelectors: {
-        success: '.iziToast-color-green',
-        info: '.iziToast-color-blue',
-        error: '.iziToast-color-red',
-        warning: '.iziToast-color-yellow',
-      },
-      titleSelector: '.iziToast-title',
-      handlerOptions: {
-        timeout: 2500,
-        position: "topCenter"
-      }
+    clicks: {
+      minClicks: 3,
+      positionTolerance: 5,
+      samePositionThreshold: 0.6,
+      sameLocationThreshold: 0.5,
+      naturalVariationThreshold: 0.4,
+      naturalVariationInterval: 150,
+      stdDevThreshold: 30,
+      avgIntervalThreshold: 400,
+      highVarianceThreshold: 250,
+      minVarianceThreshold: 100,
     },
-    QuizForm: {
-      pathToScripts: './modules/quizform.js',
-      rootSelector: '[data-si-form]',
-      rootKey: 'siForm',
-      autoKey: 'qfAuto',
-      itemSelector: '[data-qf-item]',
-      itemKey: 'qfItem',
-      itemCompleteSelector: '[data-qf-complete="1"]',
-      itemCompleteKey: 'qfComplete',
-      finishSelector: '[data-qf-finish]',
-      itemCurrentSelector: '[data-qf-item="${currentIndex}"]',
-      btnSelector: '[data-qf-btn]',
-      btnKey: 'qfBtn',
-      btnNextSelector: '[data-qf-btn="next"]',
-      btnPrevSelector: '[data-qf-btn="prev"]',
-      btnSendSelector: '[data-qf-btn="send"]',
-      btnResetSelector: '[data-qf-btn="reset"]',
-      nextIndexSelector: '[data-qf-next]',
-      nextIndexKey: 'qfNext',
-      progressSelector: '[data-qf-progress]',
-      currentQuestionSelector: '[data-qf-page]',
-      totalQuestionSelector: '[data-qf-total]',
-      pagesSelector: '[data-qf-pages]',
-      progressValueSelector: '[data-qf-progress-value]',
-      activeClass: 'active',
-      visabilityClass: 'v_hidden',
-      disabledClass: 'disabled',
-      sendEvent: 'si:send:finish',
+    keystrokes: {
+      minKeystrokes: 5,
+      naturalVariationThreshold: 0.5,
+      naturalVariationInterval: 75,
+      stdDevThreshold: 30,
+      fastTypingThreshold: 100,
+      veryFastTypingThreshold: 50,
+      highVarianceThreshold: 50,
+      minVarianceThreshold: 40,
+      repeatedPatternMultiplier: 5
     },
-    Sending: {
-      pathToScripts: './modules/sending.js?v=3255345435',
-      rootSelector: '[data-si-form]',
-      rootKey: 'siForm',
-      presetKey: 'siPreset',
-      eventKey: 'siEvent',
-      goalKey: 'siGoal',
-      actionUrl: 'assets/components/sendit/action.php',
-      antiSpamEvent: 'keydown',
-      errorBlockSelector: '[data-si-error="${fieldName}"]',
-      eventSelector: '[data-si-event="${eventName}"]',
-      errorClass: 'si-error'
+    scrolls: {
+      minScrolls: 5,
+      stdDevThreshold: 5,
+      avgDistanceThreshold: 10,
     },
-    FileUploaderFactory: {
-      pathToScripts: './modules/fileuploader.js',
-      formSelector: '[data-si-form]',
-      progressSelector: '[data-fu-progress]',
-      rootSelector: '[data-fu-wrap]',
-      tplSelector: '[data-fu-tpl]',
-      dropzoneSelector: '[data-fu-dropzone]',
-      fileListSelector: '[data-fu-list]',
-      progressIdAttr: 'data-fu-id',
-      progressTextAttr: 'data-fu-text',
-      hideBlockSelector: '[data-fu-hide]',
-      presetSelector: '[data-si-preset]',
-      presetKey: 'siPreset',
-      sendEvent: 'si:send:after',
-      pathKey: 'fuPath',
-      pathAttr: 'data-fu-path',
-      actionUrl: 'assets/components/sendit/action.php',
-      hiddenClass: 'v_hidden',
-      progressClass: 'progress__line',
-      showTime: true
+    behavior: {
+      historySize: 30,
+      recentWindow: 10,
+      minTimeThreshold: 5000,
+      suspiciousPatternThreshold: 0.8,
+      humanLikePatternThreshold: 0.3,
+      maxInteractionsPerSecondThreshold: 100,
+      minInteractionsPerSecondThreshold: 10,
     }
-  }
+  },
+  Sending: {
+    forceLoad: true,
+    className: 'Sending',
+    pathToScripts: '../modules/sending.js',
+    rootSelector: '[data-si-form]',
+    presetSelector: '[data-si-preset]',
+    rootKey: 'siForm',
+    presetKey: 'siPreset',
+    eventKey: 'siEvent',
+    goalKey: 'siGoal',
+    actionUrl: '/assets/components/sendit/action.php',
+    errorBlockSelector: '[data-si-error="${fieldName}"]',
+    eventSelector: '[data-si-event="${eventName}"]',
+    errorClass: 'si-error'
+  },
+  Notify: {
+    forceLoad: true,
+    className: 'Notify',
+    pathToScripts: '../modules/notify.js',
+    jsPath: '/assets/components/sendit/js/web/lib/izitoast/iziToast.js',
+    cssPath: '/assets/components/sendit/css/web/lib/izitoast/iziToast.min.css',
+    handlerClassName: 'iziToast',
+    toastSelector: '.iziToast',
+    typeSelectors: {
+      success: '.iziToast-color-green',
+      info: '.iziToast-color-blue',
+      error: '.iziToast-color-red',
+      warning: '.iziToast-color-yellow',
+    },
+    titleSelector: '.iziToast-title',
+    handlerOptions: {
+      timeout: 2500,
+      position: 'topCenter'
+    }
+  },
+  FileUploaderFactory: {
+    className: 'FileUploaderFactory',
+    pathToScripts: '../modules/fileuploader.js',
+    formSelector: '[data-si-form]',
+    progressSelector: '[data-fu-progress]',
+    rootSelector: '[data-fu-wrap]',
+    tplSelector: '[data-fu-tpl]',
+    dropzoneSelector: '[data-fu-dropzone]',
+    fileListSelector: '[data-fu-list]',
+    progressIdAttr: 'data-fu-id',
+    progressTextAttr: 'data-fu-text',
+    hideBlockSelector: '[data-fu-hide]',
+    presetSelector: '[data-si-preset]',
+    presetKey: 'siPreset',
+    sendEvent: 'si:send:after',
+    pathKey: 'fuPath',
+    pathAttr: 'data-fu-path',
+    actionUrl: '/assets/components/sendit/action.php',
+    hiddenClass: 'v_hidden',
+    progressClass: 'progress__line',
+    showTime: true
+  },
+  PaginationFactory: {
+    className: 'PaginationFactory',
+    pathToScripts: '../modules/paginationhandler.js',
+    sendEvent: 'si:send:finish',
+    rootSelector: '[data-pn-pagination]',
+    firstPageBtnSelector: '[data-pn-first]',
+    lastPageBtnSelector: '[data-pn-last]',
+    lastPageKey: 'pnLast',
+    prevPageBtnSelector: '[data-pn-prev]',
+    nextPageBtnSelector: '[data-pn-next]',
+    morePageBtnSelector: '[data-pn-more]',
+    resultBlockSelector: '[data-pn-result="${key}"]',
+    currentPageInputSelector: '[data-pn-current]',
+    totalPagesSelector: '[data-pn-total]',
+    limitSelector: '[data-pn-limit]',
+    typeKey: 'pnType',
+    hideClass: 'v_hidden',
+    presetKey: 'siPreset',
+    rootKey: 'pnPagination'
+  },
+  SaveFormData: {
+    className: 'SaveFormData',
+    pathToScripts: '../modules/saveformdata.js',
+    rootSelector: '[data-si-form]',
+    noSaveSelector: '[data-si-nosave]',
+    rootKey: 'siForm',
+    resetEvent: 'si:send:reset'
+  },
+  QuizForm: {
+    className: 'QuizForm',
+    pathToScripts: '../modules/quizform.js',
+    formSelector: '[data-si-form]',
+    rootKey: 'siForm',
+    autoKey: 'qfAuto',
+    rootSelector: '[data-qf-item]',
+    itemKey: 'qfItem',
+    itemCompleteSelector: '[data-qf-complete="1"]',
+    itemCompleteKey: 'qfComplete',
+    finishSelector: '[data-qf-finish]',
+    itemCurrentSelector: '[data-qf-item="${currentIndex}"]',
+    btnSelector: '[data-qf-btn]',
+    btnKey: 'qfBtn',
+    btnNextSelector: '[data-qf-btn="next"]',
+    btnPrevSelector: '[data-qf-btn="prev"]',
+    btnSendSelector: '[data-qf-btn="send"]',
+    btnResetSelector: '[data-qf-btn="reset"]',
+    nextIndexSelector: '[data-qf-next]',
+    nextIndexKey: 'qfNext',
+    progressSelector: '[data-qf-progress]',
+    currentQuestionSelector: '[data-qf-page]',
+    totalQuestionSelector: '[data-qf-total]',
+    pagesSelector: '[data-qf-pages]',
+    progressValueSelector: '[data-qf-progress-value]',
+    activeClass: 'active',
+    visabilityClass: 'v_hidden',
+    disabledClass: 'disabled',
+    sendEvent: 'si:send:finish',
+    nosaveAttr: 'data-si-nosave'
+  },
 }
 ```
 
 :::
-Выделенные строки содержат имена модулей, которые будут импортированы при инициализации компонента. Если удалить конфигурацию модуля, он не будет загружен.
+Выделенные строки содержат имена модулей, которые будут импортированы при инициализации компонента. Модули с `forceLoad: true` загружаются всегда, остальные — только при наличии соответствующих элементов на странице. Если удалить конфигурацию модуля, он не будет загружен.
 И, конечно же, можно через эту же конфигурацию подключать свои модули, которые станут доступны в глобальном объекте **SendIt**. Подробнее о каждом модуле читайте в
 соответствующем разделе этой документации:
 

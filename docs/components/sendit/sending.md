@@ -29,18 +29,17 @@
 
 ## Описание атрибутов
 
-* **data-si-preset** - содержит название набора параметров(необязательный).
-* **data-si-event** - содержит название события, при котором будет произведена отправка(необязательный).
-* **data-si-nosave** - позволяет отменить сохранение введённых данных(необязательный).
-* **data-si-form** - содержит название формы; сам атрибут нужен, чтобы компонент мог работать с этой формой;
-  значение атрибута позволяет [сохранять введённые данные](https://docs.modx.pro/components/sendit/saveformdata)
-  и [редактировать параметры из админки](https://docs.modx.pro/components/sendit/development).
-* **data-si-error** - содержит имя валидируемого поля, указывает на элемент, в котором будет показан текст ошибки(необязательный); если не указан
-  ошибка будет выведена при помощи [всплывающих уведомлений](https://docs.modx.pro/components/sendit/notify).
+| Атрибут | Описание |
+|---------|----------|
+| `data-si-form` | Содержит название формы; сам атрибут нужен, чтобы компонент мог работать с этой формой; значение атрибута позволяет [сохранять введённые данные](https://docs.modx.pro/components/sendit/saveformdata) и [редактировать параметры из админки](https://docs.modx.pro/components/sendit/development) |
+| `data-si-preset` | Содержит название набора параметров (необязательный) |
+| `data-si-event` | Содержит название события, при котором будет произведена отправка (необязательный) |
+| `data-si-nosave` | Позволяет отменить сохранение введённых данных (необязательный) |
+| `data-si-error` | Содержит имя валидируемого поля, указывает на элемент, в котором будет показан текст ошибки (необязательный); если не указан — ошибка будет выведена при помощи [всплывающих уведомлений](https://docs.modx.pro/components/sendit/notify) |
 
 ## Пресеты
 
-Путь к файлу с пресетами указан в системной настройке **si_path_to_presets**. Путь следует указывать относительно **base_path** (**MODX_BASE_PATH**).
+Путь к файлу с пресетами указан в системной настройке **si_path_to_presets**. Путь следует указывать относительно **core_path** (**MODX_CORE_PATH**).
 Это подключаемый PHP файл, который должен возвращать массив вот такого формата:
 
 ```php:line-numbers
@@ -220,9 +219,32 @@ return [
 Из коробки компонент не поддерживает капчу, но вы можете добавить её проверку самостоятельно, иcпользуя [События](https://docs.modx.pro/components/sendit/events)
 :::
 
-Вместо этого перед отправкой есть проверка event.isTrusted, т.е. действие должно быть инициировано пользователем, а не с помощью функции dispatchEvent().
-Кроме того, по нажатию любой кнопки (можно изменить antiSpamEvent) в куки записывается значение свойства event.isTrusted,
-если значение равно false обработка запроса произведена не будет, пользователь получит уведомление (см. "Управление словарями", ключ *si_msg_antispam*).
+С версии 3.0.0 для защиты от ботов используется модуль **UserBehaviorTracker**, который анализирует поведение пользователя (движения мыши, клики, нажатия клавиш, скроллинг) и вычисляет вероятность того, что посетитель является ботом. Параметры анализа можно настроить в JS-конфигурации модуля (см. раздел [Начало работы](/components/sendit/index)).
+
+~~v2: перед отправкой проверялся event.isTrusted и по нажатию любой кнопки (antiSpamEvent) в куки записывалось значение свойства event.isTrusted.~~
+
+::: tip
+Если вам нужно выполнять программную (автоматическую) отправку формы, например по таймеру или в ответ на событие,
+`UserBehaviorTracker` может посчитать такую отправку подозрительной, так как пользователь не совершал характерных действий (движения мыши, клики и т.д.).
+
+Чтобы этого избежать, переопределите `isBot` в слушателе события `si:send:before`:
+
+```js
+document.addEventListener('si:send:before', (e) => {
+    const preset = e.detail.headers['X-SIPRESET'];
+    if (preset === 'auto_preset') {
+        e.detail.fetchOptions.body.set('isBot', '0');
+    }
+});
+```
+
+Для программной отправки используйте метод `sendRequest`:
+
+```js
+const form = document.querySelector('[data-si-form="auto_preset"]');
+SendIt.Sending.sendRequest(form, 'auto_preset');
+```
+:::
 
 Чтобы предотвратить доступ из вне, каждый запрос на сервер подписывается специальным токеном, это не полноценный CSRF-токен,
 так как живёт он до перезагрузки страницы и сгенерировать его достаточно просто. Однако этого должно быть достаточно для того, чтобы отвадить спамеров.
@@ -260,23 +282,23 @@ return [
 
 ::: details Конфигурация по умолчанию
 
-```js:line-numbers{3-31}
-export default function returnConfigs() {
-  return {
-    Sending: {
-      pathToScripts: './modules/sending.js?v=3255345435',
-      rootSelector: '[data-si-form]',
-      rootKey: 'siForm',
-      presetKey: 'siPreset',
-      eventKey: 'siEvent',
-      goalKey: 'siGoal',
-      actionUrl: 'assets/components/sendit/action.php',
-      antiSpamEvent: 'keydown',
-      errorBlockSelector: '[data-si-error="${fieldName}"]',
-      eventSelector: '[data-si-event="${eventName}"]',
-      errorClass: 'si-error'
-    },
-  }
+```js:line-numbers{3-16}
+export const ModulesConfig = {
+  Sending: {
+    forceLoad: true,
+    className: 'Sending',
+    pathToScripts: '../modules/sending.js',
+    rootSelector: '[data-si-form]',
+    presetSelector: '[data-si-preset]',
+    rootKey: 'siForm',
+    presetKey: 'siPreset',
+    eventKey: 'siEvent',
+    goalKey: 'siGoal',
+    actionUrl: '/assets/components/sendit/action.php',
+    errorBlockSelector: '[data-si-error="${fieldName}"]',
+    eventSelector: '[data-si-event="${eventName}"]',
+    errorClass: 'si-error'
+  },
 }
 ```
 
@@ -284,14 +306,14 @@ export default function returnConfigs() {
 
 |         Ключ         |                Описание                 |                               Значение                                |
 |:--------------------:|:---------------------------------------:|:---------------------------------------------------------------------:|
-|   `pathToScripts`    |        **./modules/sending.js**         |       путь к модулю, указывается относительно файла *sendit.js*       |
-|    `rootSelector`    |           **[data-si-form]**            |                            селектор формы                             |
-|      `rootKey`       |               **siForm**                |                ключ свойства *dataset* с именем формы                 |
-|     `presetKey`      |              **siPreset**               |           ключ свойства *dataset* атрибута с именем пресета           |
-|      `eventKey`      |               **siEvent**               | ключ свойства *dataset* атрибута с именем события для отправки данных |
-|      `goalKey`       |               **siGoal**                |    ключ свойства *dataset* с названиями целей разделённых запятыми    |
-|     `actionUrl`      | **assets/components/sendit/action.php** |                           путь к коннектору                           |
-|   `antiSpamEvent`    |               **keydown**               |                    имя события для защиты от спама                    |
-| `errorBlockSelector` |   **[data-si-error="${fieldName}"]**    |                     селектор блока вывода ошибок                      |
-|   `eventSelector`    |   **[data-si-event="${eventName}"]**    |                       селектор события отправки                       |
-|     `errorClass`     |              **si-error**               |                  класс, добавляемй полям с ошибками                   |
+|   `pathToScripts`    |        **../modules/sending.js**         |       путь к модулю, указывается относительно файла *sendit.js*       |
+|    `rootSelector`    |           **[data-si-form]**             |                            селектор формы                             |
+|   `presetSelector`   |          **[data-si-preset]**            |                          селектор пресета                             |
+|      `rootKey`       |               **siForm**                 |                ключ свойства *dataset* с именем формы                 |
+|     `presetKey`      |              **siPreset**                |           ключ свойства *dataset* атрибута с именем пресета           |
+|      `eventKey`      |               **siEvent**                | ключ свойства *dataset* атрибута с именем события для отправки данных |
+|      `goalKey`       |               **siGoal**                 |    ключ свойства *dataset* с названиями целей разделённых запятыми    |
+|     `actionUrl`      | **/assets/components/sendit/action.php** |                           путь к коннектору                           |
+| `errorBlockSelector` |   **[data-si-error="${fieldName}"]**     |                     селектор блока вывода ошибок                      |
+|   `eventSelector`    |   **[data-si-event="${eventName}"]**     |                       селектор события отправки                       |
+|     `errorClass`     |              **si-error**                |                  класс, добавляемый полям с ошибками                  |
