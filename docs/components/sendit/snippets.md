@@ -49,7 +49,7 @@
 
 ### Пример использования
 
-:::info
+::: info
 Вызывать сниппет следует на странице с ID равным значению параметра `activationResourceId`.
 :::
 
@@ -146,7 +146,7 @@
 
 ### Пример использования
 
-:::info
+::: info
 Вызывать сниппет следует на странице с ID равным значению параметра `activationResourceId`.
 :::
 
@@ -193,7 +193,7 @@
   'resultBlockSelector' => '[data-pn-result="one"]',
   'resultShowMethod' => 'insert',
   'hashParams' => '',
-  'totalVar' => 'total'
+  'totalVar' => 'total',
   'limit' => 6,
 
   'parents' => 7,

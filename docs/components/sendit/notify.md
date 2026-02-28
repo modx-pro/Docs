@@ -8,27 +8,27 @@
 ::: details Конфигурация по умолчанию
 
 ```js:line-numbers{3-20}
-export default function returnConfigs() {
-  return {
-    Notify: {
-      pathToScripts: './modules/notify.js',
-      jsPath: 'assets/components/sendit/web/js/lib/izitoast/iziToast.min.js',
-      cssPath: 'assets/components/sendit/web/css/lib/izitoast/iziToast.min.css',
-      handlerClassName: 'iziToast',
-      toastSelector: '.iziToast',
-      typeSelectors: {
-        success: '.iziToast-color-green',
-        info: '.iziToast-color-blue',
-        error: '.iziToast-color-red',
-        warning: '.iziToast-color-yellow',
-      },
-      titleSelector: '.iziToast-title',
-      handlerOptions: {
-        timeout: 2500,
-        position: "topCenter"
-      }
+export const ModulesConfig = {
+  Notify: {
+    forceLoad: true,
+    className: 'Notify',
+    pathToScripts: '../modules/notify.js',
+    jsPath: '/assets/components/sendit/js/web/lib/izitoast/iziToast.js',
+    cssPath: '/assets/components/sendit/css/web/lib/izitoast/iziToast.min.css',
+    handlerClassName: 'iziToast',
+    toastSelector: '.iziToast',
+    typeSelectors: {
+      success: '.iziToast-color-green',
+      info: '.iziToast-color-blue',
+      error: '.iziToast-color-red',
+      warning: '.iziToast-color-yellow',
     },
-  }
+    titleSelector: '.iziToast-title',
+    handlerOptions: {
+      timeout: 2500,
+      position: 'topCenter'
+    }
+  },
 }
 ```
 
@@ -36,9 +36,9 @@ export default function returnConfigs() {
 
 |        Ключ        |                              Описание                              |                         Значение                          |
 |:------------------:|:------------------------------------------------------------------:|:---------------------------------------------------------:|
-|  `pathToScripts`   |                      **./modules/notify.js**                       | путь к модулю, указывается относительно файла *sendit.js* |
-|      `jsPath`      |  **assets/components/sendit/web/js/lib/izitoast/iziToast.min.js**  |          путь к скриптам библиотеки уведомлений           |
-|     `cssPath`      | **assets/components/sendit/web/css/lib/izitoast/iziToast.min.css** |           путь к стилям библиотеки уведомлений            |
+|  `pathToScripts`   |                      **../modules/notify.js**                       | путь к модулю, указывается относительно файла *sendit.js* |
+|      `jsPath`      |  **/assets/components/sendit/js/web/lib/izitoast/iziToast.js**  |          путь к скриптам библиотеки уведомлений           |
+|     `cssPath`      | **/assets/components/sendit/css/web/lib/izitoast/iziToast.min.css** |           путь к стилям библиотеки уведомлений            |
 | `handlerClassName` |                            **iziToast**                            |             имя класса библиотеки уведомлений             |
 |  `toastSelector`   |                           **.iziToast**                            |                   селектор уведомления                    |
 |  `typeSelectors`   |                            ***объект***                            |          селекторы уведомлений конкретного типа           |
