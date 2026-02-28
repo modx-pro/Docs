@@ -1,8 +1,8 @@
 # Идентификация
 
 Идентификация пользователя, как и редактирование его данных, также предполагает отправку данных на сервер. Вот это неожиданность!:upside_down_face: А значит **SendIt**
-справится и с этим. Есть, конечно, нюанс: непосредственно для работы с пользователем используется отдельный класс **identification.class.php**,
-который подключается в хуке **Identification**, но он уже проверен в бою, так как взят из моего же компонента **~~AjaxFormitLogin~~** (устарел).
+справится и с этим. Есть, конечно, нюанс: непосредственно для работы с пользователем используется отдельный класс **SendIt\Auth\Identification**
+(v2: ~~identification.class.php~~), который подключается в хуке **Identification**, но он уже проверен в бою, так как взят из моего же компонента **~~AjaxFormitLogin~~** (устарел).
 В базовом варианте идентификация пользователей работает аналогично компоненту **Login**.
 
 ## Регистрация
@@ -48,8 +48,8 @@
 
 ```php:line-numbers
 'register' => [
+  'hooks' => 'Identification,FormItSaveForm,FormItAutoResponder',
   'method' => 'register',
-  'hooks' => 'Identification',
 
   'validate' => 'email:required,password:checkPassLength=^8^,password_confirm:passwordConfirm=^password^,politics:checkbox:required',
   'politics.vTextRequired' => 'Примите наши условия.',
@@ -58,9 +58,9 @@
 
   'fiarSubject' => 'Активация пользователя',
   'fiarFrom' => 'email@domain.ru',
-  'fiarTpl' => '@FILE chunks/emails/activateEmail.tpl',
+  // v2: '@FILE chunks/emails/activateEmail.tpl'
+  'fiarTpl' => 'siActivateEmail',
 
-  'usergroups' => 2,
   'usergroupsField' => '',
   'passwordField' => '',
   'usernameField' => 'email',
@@ -75,13 +75,13 @@
   'extends' => 'register',
   'successMessage' => 'Вы успешно зарегистрированы и будете перенаправлены в личный кабинет.',
   'redirectTo' => 5,
-  'redirectTimeout' => 3000
+  'redirectTimeout' => 3000,
 
   'moderate' => 0,
   'autoLogin' => 1,
   'rememberme' => 1,
   'authenticateContexts' => '',
-]
+],
 'register_with_activation' => [
   'extends' => 'register_with_autologin',
   'hooks' => 'Identification,FormItAutoResponder',
@@ -99,22 +99,27 @@
 
 :::
 
-* `method`: метод, который будет вызван в хуке *Identification*.
-* `usergroups`: список групп, в которые нужно добавить пользователя, разделенных запятыми.
-* `usergroupsField`: имя поля выбора группы.
-* `passwordField`: имя поля ввода пароля.
-* `usernameField`: имя поля ввода username.
-* `moderate`: 1 - требуется модерация и ручная разблокировка пользователя.
-* `activation`: 1 - требуется активация путем перехода по ссылке из письма, 0 - пользователь будет активирован сразу после регистрации.
-* `redirectTo`: ID ресурса или ссылка на страницу для переадресации.
-* `redirectTimeout`: задержка в милисекундах перед переадресацией.
-* `autoLogin`: 1 - пользователь будет авторизован сразу после регистрации, при условии, что не требуется модерация.
-* `rememberme`: позволяет запомнить авторизованного пользователя на данном устройстве.
-* `authenticateContexts`: список дополнительных контекстов для авторизации, разделенных запятыми.
-* `activationResourceId`: ID ресурса, где будет вызван сниппет [**ActivateUser**](https://docs.modx.pro/components/sendit/snippets#activateuser).
-* `activationUrlTime`: время жизни ссылки для активации в милисекундах.
-* `afterLoginRedirectId`: ID ресурса или ссылка на страницу для переадресации после успешной активации учётной записи.
-* остальные параметры ищите в [документации компонента **FormIt**](https://docs.modx.com/current/ru/extras/formit).
+| Параметр | Описание |
+|----------|----------|
+| `method` | Метод, который будет вызван в хуке *Identification* |
+| `usergroups` | Список групп, в которые нужно добавить пользователя, разделенных запятыми |
+| `usergroupsField` | Имя поля выбора группы |
+| `passwordField` | Имя поля ввода пароля |
+| `usernameField` | Имя поля ввода username |
+| `moderate` | `1` - требуется модерация и ручная разблокировка пользователя |
+| `activation` | `1` - требуется активация путем перехода по ссылке из письма, `0` - пользователь будет активирован сразу после регистрации |
+| `redirectTo` | ID ресурса или ссылка на страницу для переадресации |
+| `redirectTimeout` | Задержка в миллисекундах перед переадресацией |
+| `autoLogin` | `1` - пользователь будет авторизован сразу после регистрации, при условии, что не требуется модерация |
+| `rememberme` | Позволяет запомнить авторизованного пользователя на данном устройстве |
+| `authenticateContexts` | Список дополнительных контекстов для авторизации, разделенных запятыми |
+| `activationResourceId` | ID ресурса, где будет вызван сниппет [**ActivateUser**](https://docs.modx.pro/components/sendit/snippets#activateuser) |
+| `activationUrlTime` | Время жизни ссылки для активации в секундах |
+| `afterLoginRedirectId` | ID ресурса или ссылка на страницу для переадресации после успешной активации учётной записи |
+
+::: info
+Остальные параметры ищите в [документации компонента **FormIt**](https://docs.modx.com/current/ru/extras/formit).
+:::
 
 ::: tip
 Если пароль не указан - он будет сгенерирован автоматически и отправлен на почту пользователю.
@@ -164,10 +169,11 @@
 :::
 
 * `errorFieldName` - в этом параметре необходимо указать имя скрытого поля, в которое будет записан текст ошибки авторизации, если оставить пустым ошибка будет показана во
-  вплывающем сообщении.
-  ::: warning
-  Скрытое поле с именем из параметра `errorFieldName` необходимо добавить самостоятельно.
-  :::
+  всплывающем сообщении.
+
+::: warning
+Скрытое поле с именем из параметра `errorFieldName` необходимо добавить самостоятельно.
+:::
 
 ## Редактирование профиля
 
@@ -319,7 +325,8 @@
 
   'fiarSubject' => 'Восстановление пароля',
   'fiarFrom' => 'email@domain.ru',
-  'fiarTpl' => '@FILE chunks/emails/resetPassEmail.tpl',
+  // v2: '@FILE chunks/emails/resetPassEmail.tpl'
+  'fiarTpl' => 'siResetPassEmail',
 
   'email.vTextRequired' => 'Укажите email.',
   'email.vTextUserNotExists' => 'Пользователь не найден',

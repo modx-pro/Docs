@@ -23,17 +23,16 @@
 
 ::: details Конфигурация по умолчанию
 
-```js:line-numbers{3-12}
-export default function returnConfigs() {
-  return {
-    SaveFormData: {
-      pathToScripts: './modules/saveformdata.js',
-      rootSelector: '[data-si-form]',
-      noSaveSelector: '[data-si-nosave]',
-      rootKey: 'siForm',
-      resetEvent: 'si:send:reset'
-    },
-  }
+```js:line-numbers{3-10}
+export const ModulesConfig = {
+  SaveFormData: {
+    className: 'SaveFormData',
+    pathToScripts: '../modules/saveformdata.js',
+    rootSelector: '[data-si-form]',
+    noSaveSelector: '[data-si-nosave]',
+    rootKey: 'siForm',
+    resetEvent: 'si:send:reset'
+  },
 }
 ```
 
@@ -41,7 +40,7 @@ export default function returnConfigs() {
 
 |       Ключ       |           Описание            |                         Значение                          |
 |:----------------:|:-----------------------------:|:---------------------------------------------------------:|
-| `pathToScripts`  | **./modules/saveformdata.js** | путь к модулю, указывается относительно файла *sendit.js* |
+| `pathToScripts`  | **../modules/saveformdata.js** | путь к модулю, указывается относительно файла *sendit.js* |
 |  `rootSelector`  |      **[data-si-form]**       |                      селектор формы                       |
 | `noSaveSelector` |     **[data-si-nosave]**      |     селектор  для отключения сохранения данных формы      |
 |    `rootKey`     |          **siForm**           |          ключ свойства *dataset* с именем формы           |

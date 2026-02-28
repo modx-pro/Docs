@@ -21,7 +21,8 @@ document.addEventListener('si:init', (e) => {
         const url = 'assets/action.php';
         const headers = {};
         SendIt?.setComponentCookie('sitrusted', '1');
-        SendIt.Sending.send(target, url, headers, params);
+        // v2 (deprecated): SendIt.Sending.send(target, url, headers, params);
+        SendIt.Sending.fetch(target, url, headers, params);
     })
 });
 ```
@@ -37,8 +38,9 @@ document.addEventListener('si:init', (e) => {
     document.addEventListener('submit', (e) => {
         const target = e.target.closest('.js-my-form');
         if(!target) return;
-        const preset = target.dataset[Sendit.Sending.config.presetKey];
-        SendIt.Sending.prepareSendParams(target, preset);
+        const preset = target.dataset[SendIt.Sending.config.presetKey];
+        // v2 (deprecated): SendIt.Sending.prepareSendParams(target, preset);
+        SendIt.Sending.sendRequest(target, preset);
     })
 
 });
@@ -53,7 +55,8 @@ document.addEventListener('si:init', (e) => {
 ```js:line-numbers
 document.addEventListener('si:init', (e) => {
     SendIt?.setComponentCookie('sitrusted', '1');
-    SendIt?.Sending?.prepareSendParams(document, 'custom');
+    // v2 (deprecated): SendIt?.Sending?.prepareSendParams(document, 'custom');
+    SendIt?.Sending?.sendRequest(document, 'custom');
 })
 ```
 
@@ -950,12 +953,13 @@ document.addEventListener('si:send:before', (e) => {
     ```php:line-numbers
     switch($modx->event->name){
         case 'OnGetFormParams':
-            $resource = $modx->getObject('modResource', 10);
-            $forms = json_decode($resource->getTVValue('si_forms'),1);
+            // MODX 2: $modx->getObject('modResource', 10)
+            $resource = $modx->getObject(\MODX\Revolution\modResource::class, 10);
+            $forms = json_decode($resource->getTVValue('si_forms'), true);
             $params = [];
             foreach($forms as $form){
                 if($form['fid'] === $formName){
-                    $paramsRaw = json_decode($form['params'],1);
+                    $paramsRaw = json_decode($form['params'], true);
                     break;
                 }
 

@@ -4,8 +4,6 @@
 
 ### События SendIt
 
----
-
 #### OnGetFormParams - генерируется на этапе формирования списка параметров, позволяет полностью переписать параметры отправки формы, должен возвращать массив
 
 Доступные параметры:
@@ -50,6 +48,25 @@ switch ($modx->event->name){
 
 :::
 
+#### OnBeforeFileRemove - генерируется перед удалением загруженного файла
+
+Доступные параметры:
+
+* **$path** - путь к удаляемому файлу.
+* **$SendIt** - экземпляр класса-обработчика.
+
+::: details Пример плагина
+
+```php:line-numbers
+switch ($modx->event->name){
+  case 'OnBeforeFileRemove':
+    $modx->log(\modX::LOG_LEVEL_INFO, 'Удаляется файл: ' . $path);
+    break;
+}
+```
+
+:::
+
 #### OnCheckPossibilityWork - генерируется после проведения штатной проверки, перед проверкой результатов, позволяет изменить результаты проверки
 
 Доступные параметры:
@@ -63,11 +80,13 @@ switch ($modx->event->name){
 // добавляем ограничение на частоту отправок с одного IP
 switch($modx->event->name){
   case 'OnCheckPossibilityWork':
+    $sessionManager = new \SendIt\Session\SessionManager($modx);
     if (!$session = $modx->getObject('siSession', [
       'session_id' => $_SERVER['REMOTE_ADDR'],
       'class_name' => $formName
     ])) {
-      SendIt::setSession($modx, ['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
+      // v2 (deprecated): SendIt::setSession($modx, ['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
+      $sessionManager->set(['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
       $modx->event->returnedValues['result']['success'] = 1;
     } else{
       $createdon = strtotime($session->get('createdon')) + 360;
@@ -79,7 +98,8 @@ switch($modx->event->name){
         ];
       } else{
         $modx->event->returnedValues['result']['success'] = 1;
-        SendIt::setSession($modx, ['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
+        // v2 (deprecated): SendIt::setSession($modx, ['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
+        $sessionManager->set(['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
       }
     }
     break;
@@ -125,7 +145,8 @@ switch ($modx->event->name){
 switch ($modx->event->name){
   case 'OnBeforeReturnResponse':
     if ($_POST['email'] && in_array($presetName, ['auth', 'register'])){
-      $user = $modx->getObject('modUser', ['username' => $_POST['email']]);
+      // MODX 2: $modx->getObject('modUser', ['username' => $_POST['email']])
+      $user = $modx->getObject(\MODX\Revolution\modUser::class, ['username' => $_POST['email']]);
       if ($user && !$user->isMember('Designers')) {
         $SendIt->params['redirectUrl'] = $modx->makeUrl(54750, '', '', 'full');
       }
@@ -177,8 +198,6 @@ switch ($modx->event->name){
 :::
 
 ### События Identification
-
----
 
 #### siOnUserUpdate - генерируется после обновления данных пользователя с фронта
 
@@ -235,7 +254,7 @@ switch ($modx->event->name){
 
 ```php:line-numbers
 switch ($modx->event->name){
-  case 'OnWebLogin':
+  case 'OnUserActivate':
 
     break;
 }
@@ -247,13 +266,12 @@ switch ($modx->event->name){
 
 ### События SendIt
 
----
-
 #### si:init - инициализация компонента
 
 Событие возникает после загрузки всех модулей, указанных в JS конфигурации. Не имеет параметров. Не может быть отменено. Чтобы без проблем использовать все модули,
 подписывайте на это событие,
-так как после его срабатывания объект **Sendit** и его дочерние элементы точно доступны.
+так как после его срабатывания объект **SendIt** и его дочерние элементы точно доступны.
+
 ::: details Пример использования
 
 ```js:line-numbers
@@ -265,8 +283,6 @@ document.addEventListener('si:init', (e) => {
 :::
 
 ### События Отправки (Sending)
-
----
 
 #### si:send:before - перед отправкой
 
@@ -316,7 +332,8 @@ document.addEventListener('si:send:before', (e) => {
 * **result** - ответ сервера в формате JSON.
 * **headers** - заголовки запроса, можно изменить, удалить (с осторожностью), добавить свои данные.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -334,6 +351,7 @@ document.addEventListener('si:send:after', (e) => {
 #### si:send:success - обработка успешного ответа
 
 Событие возникает при получении успешного ответа от сервера и ДО срабатывания обработчика **success()**. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
+
 ::: details Передаваемые параметры
 
 * **target** - может быть формой, полем, кнопкой или всем документом.
@@ -365,6 +383,7 @@ document.addEventListener('si:send:success', (e) => {
 #### si:send:error - обработка ошибок
 
 Событие возникает при получении ответа от сервера с ошибками и ДО срабатывания обработчика **error()**. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
+
 ::: details Передаваемые параметры
 
 * **target** - может быть формой, полем, кнопкой или всем документом.
@@ -376,7 +395,8 @@ document.addEventListener('si:send:success', (e) => {
 * **result** - ответ сервера в формате JSON.
 * **headers** - заголовки запроса, можно изменить, удалить (с осторожностью), добавить свои данные.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -396,6 +416,7 @@ document.addEventListener('si:send:error', (e) => {
 #### si:send:finish - завершение отправки
 
 Событие возникает при получении ответа от сервера и ПОСЛЕ срабатывания обработчиков  **success()** и **error()**. Не может быть отменено.
+
 ::: details Передаваемые параметры
 
 * **target** - может быть формой, полем, кнопкой или всем документом.
@@ -407,7 +428,8 @@ document.addEventListener('si:send:error', (e) => {
 * **result** - ответ сервера в формате JSON.
 * **headers** - заголовки запроса, можно изменить, удалить (с осторожностью), добавить свои данные.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -432,7 +454,8 @@ document.addEventListener('si:send:finish', (e) => {
 
 * **target** - может быть формой, полем, кнопкой или всем документом.
 * **Sending** - объект класса *Sending* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -448,8 +471,6 @@ document.addEventListener('si:send:reset', (e) => {
 :::
 
 ### События Квиза (Quiz)
-
----
 
 #### si:quiz:change - изменение шага в опроснике
 
@@ -557,8 +578,6 @@ document.addEventListener('si:quiz:reset', (e) => {
 
 ### События Загрузки файлов (Fileuploader)
 
----
-
 #### fu:uploading:start - перед началом загрузки файлов
 
 Событие возникает перед началом загрузки файлов.
@@ -619,7 +638,8 @@ document.addEventListener('fu:uploading:end', (e) => {
 * **root** - элемент-обёртка для поля загрузки файлов.
 * **preview** - элемент превью.
 * **FileUploader** - объект класса *FileUploader* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -635,8 +655,6 @@ document.addEventListener('fu:preview:remove', (e) => {
 
 ### События Сохранения данных (Saveformdata)
 
----
-
 #### sf:save - перед сохранением данных
 
 Событие возникает ДО сохранения значения поля в localStorage. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
@@ -647,7 +665,8 @@ document.addEventListener('fu:preview:remove', (e) => {
 * **field** - поле, значение которого сохраняем.
 * **savedData** - массив сохраняемых данных.
 * **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -675,7 +694,8 @@ document.addEventListener('sf:save', (e) => {
 * **formFields** - коллекция элементов-полей.
 * **savedData** - массив сохраняемых данных.
 * **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -701,7 +721,8 @@ document.addEventListener('sf:set:before', (e) => {
 ::: details Передаваемые параметры
 
 * **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -726,7 +747,8 @@ document.addEventListener('sf:change', (e) => {
 * **formFields** - коллекция элементов-полей.
 * **savedData** - массив сохраняемых данных.
 * **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -749,7 +771,8 @@ document.addEventListener('sf:set:after', (e) => {
 * **root** - элемент-обёртка для поля загрузки файлов.
 * **formName** - ключ формы (значение атрибута **data-si-form**).
 * **SaveFormData** - объект класса *SaveFormData* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
@@ -766,8 +789,6 @@ document.addEventListener('sf:remove', (e) => {
 
 ### События Пагинации (Pagination)
 
----
-
 #### pn:handle:before - перед обработкой ответа сервера
 
 Событие возникает ПЕРЕД выводом результатов пагинации. Может быть отменено, что прервёт дальнейшее выполнение скрипта.
@@ -776,7 +797,8 @@ document.addEventListener('sf:remove', (e) => {
 
 * **result** - объект ответа сервера.
 * **PaginationHandler** - объект класса *PaginationHandler* для быстрого доступа к методам и свойства этого класса.
-  :::
+
+:::
 
 ::: details Пример использования
 
