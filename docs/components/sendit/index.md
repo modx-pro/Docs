@@ -120,7 +120,7 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 |:------------------------------:|:-------------------------------------------------------:|:--------------------------------------------------------:|
 |      **si_frontend_css**       |                 Путь к основным стилям                  | `[\[+assetsUrl]]components/sendit/css/web/index.css` |
 |       **si_frontend_js**       |               Путь к основным JS скриптам               |   `[\[+assetsUrl]]components/sendit/js/web/index.js`    |
-|     **si_js_config_path**      |              Путь к файлу JS конфигурации               |                    `./sendit.inc.js`                     |
+|     **si_js_config_path**      |              Путь к файлу JS конфигурации               |              `../configs/modules.inc.js`                  |
 |        **si_uploaddir**        |                Путь для загрузки файлов                 | `[\[+assetsUrl]]components/sendit/uploaded_files/`  |
 |     **si_path_to_presets**     |       Путь к пресетам (относительно core_path)          |   `components/sendit/presets/sendit.inc.php`     |
 |        **si_send_goal**        |            Отправлять цели в Яндекс.Метрику             |                          *Нет*                           |
