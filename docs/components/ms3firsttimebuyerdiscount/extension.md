@@ -18,16 +18,16 @@ $modx->services->add('ms3ftb_discount', function () use ($modx) {
 });
 ```
 
-Ваша реализация должна предоставлять метод `apply(array $scriptProperties): ?float` (и при необходимости остальные публичные методы, если вы вызываете их из своего кода).
+Реализация должна предоставлять минимум метод `apply(array $scriptProperties): ?float`; остальные публичные методы — по необходимости при вызове из своего кода.
 
 ## Наследование FtbDiscountService
 
 Сервис спроектирован так, чтобы ключевую логику можно было переопределить в наследнике:
 
 - **isEligible(int $userId, ?object $draft): bool** — изменить условия права на скидку (например, по группе пользователя или по полю черновика).
-- **getPaidOrdersCount(int $userId): int** — изменить способ подсчёта оплаченных заказов.
-- **getGuestContactFromDraft(?object $draft): array** — изменить извлечение email/phone гостя из черновика.
-- **getPaidOrdersCountByContact(string $email, string $phone): int** — изменить подсчёт оплаченных заказов для гостей по контактам.
+- **getPaidOrdersCount(int $userId, int $excludeOrderId = 0): int** — изменить способ подсчёта оплаченных заказов (с исключением текущего заказа).
+- **getGuestContactFromDraft(?object $draft): array** — изменить извлечение/нормализацию email/phone гостя из черновика.
+- **getPaidOrdersCountByContact(string $email, string $phone, int $excludeOrderId = 0): int** — изменить подсчёт оплаченных заказов для гостей.
 - **calculateDiscount(float $cost, string $type, float $value): float** — изменить формулу (например, минимум суммы заказа).
 
 Пример: скидка только для группы «Партнёр»:
@@ -44,7 +44,7 @@ class PartnerFtbService extends FtbDiscountService
         if (!parent::isEligible($userId, $draft)) {
             return false;
         }
-        $user = $this->modx->getObject(\modUser::class, $userId);
+        $user = $this->modx->getObject(\MODX\Revolution\modUser::class, $userId);
         if (!$user) {
             return false;
         }
@@ -95,6 +95,10 @@ $modx->log(modX::LOG_LEVEL_INFO, sprintf(
 ), '', 'ftb');
 // или отправить в CRM/аналитику по $params['user_id'], $params['discount_amount']
 ```
+
+## Константы и настройки
+
+В сервисе используются внутренние константы типов скидки: `percent`, `fixed`. Ключи настроек: `ftb_enabled`, `ftb_discount_type`, `ftb_discount_value`, `ftb_allow_combination`. Полный список и типы см. в [API](api#системные-настройки).
 
 ## Логирование
 
