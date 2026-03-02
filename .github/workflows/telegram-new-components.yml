@@ -1,0 +1,72 @@
+name: Telegram New Components
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - master
+    paths:
+      - "docs/components/**"
+
+jobs:
+  notify:
+    if: github.repository_owner == 'modx-pro'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect new components
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BEFORE_SHA="${{ github.event.before }}"
+          AFTER_SHA="${{ github.sha }}"
+
+          if [[ -z "$BEFORE_SHA" || "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+            BEFORE_SHA="$(git rev-parse "${AFTER_SHA}^" 2>/dev/null || true)"
+          fi
+
+          if [[ -z "$BEFORE_SHA" ]]; then
+            echo "has_new_components=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          COMPONENTS="$(git diff --name-status "$BEFORE_SHA" "$AFTER_SHA" -- docs/components \
+            | awk '$1 == "A" {print $2}' \
+            | sed -nE \
+              -e 's#^docs/components/([^/]+)/index\.md$#\1#p' \
+              -e 's#^docs/components/([^/]+)\.md$#\1#p' \
+            | grep -v '^index$' \
+            | sort -u || true)"
+
+          if [[ -z "$COMPONENTS" ]]; then
+            echo "has_new_components=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          MESSAGE="Добавлены новые компоненты в документацию:\n"
+          while IFS= read -r slug; do
+            [[ -z "$slug" ]] && continue
+            MESSAGE+="• <a href=\"https://docs.modx.pro/components/${slug}/\">${slug}</a>\n"
+          done <<< "$COMPONENTS"
+          MESSAGE+="\nCommit: <a href=\"${{ github.server_url }}/${{ github.repository }}/commit/${AFTER_SHA}\">${AFTER_SHA:0:7}</a>"
+
+          echo "has_new_components=true" >> "$GITHUB_OUTPUT"
+          {
+            echo "message<<EOF"
+            printf "%b\n" "$MESSAGE"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Send telegram notification
+        if: steps.detect.outputs.has_new_components == 'true'
+        uses: appleboy/telegram-action@master
+        with:
+          to: "-1001051277497"
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          format: html
+          message: ${{ steps.detect.outputs.message }}
