@@ -129,8 +129,6 @@ jobs:
             MESSAGE="Добавлены новые компоненты в документацию\n${MESSAGE#*$'\n'}"
           fi
 
-          MESSAGE+="\nCommit: <a href=\"${{ github.server_url }}/${{ github.repository }}/commit/${AFTER_SHA}\">${AFTER_SHA:0:7}</a>"
-
           echo "has_new_components=true" >> "$GITHUB_OUTPUT"
           {
             echo "message<<EOF"
