@@ -35,24 +35,100 @@ jobs:
             exit 0
           fi
 
-          COMPONENTS="$(git diff --name-status "$BEFORE_SHA" "$AFTER_SHA" -- docs/components \
-            | awk '$1 == "A" {print $2}' \
-            | sed -nE \
-              -e 's#^docs/components/([^/]+)/index\.md$#\1#p' \
-              -e 's#^docs/components/([^/]+)\.md$#\1#p' \
-            | grep -v '^index$' \
-            | sort -u || true)"
+          ADDED_COMPONENTS="$(
+            git diff --name-status "$BEFORE_SHA" "$AFTER_SHA" -- docs/components \
+              | awk '$1 == "A" {print $2}' \
+              | while IFS= read -r file; do
+                  slug=""
+                  if [[ "$file" =~ ^docs/components/([^/]+)/index\.md$ ]]; then
+                    slug="${BASH_REMATCH[1]}"
+                  elif [[ "$file" =~ ^docs/components/([^/]+)\.md$ ]]; then
+                    slug="${BASH_REMATCH[1]}"
+                  fi
+                  if [[ -n "$slug" && "$slug" != "index" ]]; then
+                    printf "%s|%s\n" "$slug" "$file"
+                  fi
+                done \
+              | awk -F'|' '!seen[$1]++' \
+              | sort -t'|' -k1,1 || true
+          )"
 
-          if [[ -z "$COMPONENTS" ]]; then
+          if [[ -z "$ADDED_COMPONENTS" ]]; then
             echo "has_new_components=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          MESSAGE="Добавлены новые компоненты в документацию:\n"
-          while IFS= read -r slug; do
+          trim_quotes() {
+            local value="$1"
+            value="${value%\"}"
+            value="${value#\"}"
+            value="${value%\'}"
+            value="${value#\'}"
+            printf "%s" "$value"
+          }
+
+          extract_frontmatter() {
+            local key="$1"
+            local file="$2"
+            awk -v key="$key" '
+              BEGIN { in_fm = 0 }
+              /^---[[:space:]]*$/ {
+                if (in_fm == 0) { in_fm = 1; next }
+                exit
+              }
+              in_fm == 1 {
+                line = $0
+                sub(/^[[:space:]]+/, "", line)
+                if (line ~ ("^" key ":[[:space:]]*")) {
+                  sub("^" key ":[[:space:]]*", "", line)
+                  print line
+                  exit
+                }
+              }
+            ' "$file"
+          }
+
+          escape_html() {
+            local text="$1"
+            text="${text//&/&amp;}"
+            text="${text//</&lt;}"
+            text="${text//>/&gt;}"
+            text="${text//\"/&quot;}"
+            printf "%s" "$text"
+          }
+
+          count=0
+          MESSAGE="Добавлен новый компонент в документацию\n"
+          while IFS='|' read -r slug file; do
             [[ -z "$slug" ]] && continue
-            MESSAGE+="• <a href=\"https://docs.modx.pro/components/${slug}/\">${slug}</a>\n"
-          done <<< "$COMPONENTS"
+            [[ -z "$file" ]] && continue
+
+            title="$(extract_frontmatter "title" "$file" || true)"
+            description="$(extract_frontmatter "description" "$file" || true)"
+            author="$(extract_frontmatter "author" "$file" || true)"
+
+            title="$(trim_quotes "$title")"
+            description="$(trim_quotes "$description")"
+            author="$(trim_quotes "$author")"
+
+            [[ -z "$title" ]] && title="$slug"
+            [[ -z "$description" ]] && description="Описание не указано"
+            [[ -z "$author" ]] && author="Автор не указан"
+
+            title="$(escape_html "$title")"
+            description="$(escape_html "$description")"
+            author="$(escape_html "$author")"
+
+            MESSAGE+="\n<b>${title}</b> — ${description}\n"
+            MESSAGE+="Автор: ${author}\n"
+            MESSAGE+="<a href=\"https://docs.modx.pro/components/${slug}/\">Открыть в документации</a>\n"
+            count=$((count + 1))
+          done <<< "$ADDED_COMPONENTS"
+
+          if [[ "$count" -gt 1 ]]; then
+            MESSAGE="Добавлены новые компоненты в документацию\n${MESSAGE#*$'\n'}"
+          fi
+
           MESSAGE+="\nCommit: <a href=\"${{ github.server_url }}/${{ github.repository }}/commit/${AFTER_SHA}\">${AFTER_SHA:0:7}</a>"
 
           echo "has_new_components=true" >> "$GITHUB_OUTPUT"
