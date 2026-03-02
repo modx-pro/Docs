@@ -1,5 +1,9 @@
 {
   "version": "0.2",
+  "import": [
+    "@cspell/dict-ru_ru/cspell-ext.json"
+  ],
+  "locale": "en-US,ru-RU",
   "language": "en,ru",
   "words": [
     "modstore",
