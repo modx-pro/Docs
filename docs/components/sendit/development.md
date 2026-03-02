@@ -76,6 +76,31 @@ document.addEventListener('si:send:after', (e) => {
 })
 ```
 
+## Отключение антиспам-защиты для отдельных форм
+
+С версии 3.1.0 антиспам-защита (PoW, поведенческая подпись) настраивается в пресете. Если для программных запросов или форм поиска защита не нужна — просто не указывайте параметры `usePoW` и `useBehaviorSign` в пресете:
+
+```php:line-numbers
+'search' => [
+    'hooks' => '',
+    'snippet' => 'searchSnippet',
+    // usePoW и useBehaviorSign не указаны — защита отключена
+],
+```
+
+Если пресет наследует другой пресет с включённой защитой, можно явно отключить её:
+
+```php:line-numbers
+'fast_form' => [
+    'extends' => 'default',
+    'usePoW' => 0, // [!code warning]
+    'useBehaviorSign' => 0, // [!code warning]
+    'validate' => 'name:required',
+],
+```
+
+Также можно управлять картой защиты через событие [**senditOnGetWebConfig**](https://docs.modx.pro/components/sendit/events#senditongetwebconfig).
+
 ## Свой сниппет для обработки данных
 
 ::: tip

@@ -43,7 +43,7 @@ dependencies: ['pdoTools', 'FormIt']
 
 1. Использует cookie и localStorage.
 2. Не требует вызова сниппетов для отправки формы.
-3. Есть защита от ботов и внешнего доступа.
+3. Трёхуровневая защита от ботов: Proof of Work, поведенческая подпись, анализ поведения.
 4. Можно корректировать работу с помощью событий.
 5. Отправка возможна на события change, input и click по кнопке.
 6. С версии 2.0.0 для хранения временных данных используется отдельная таблица **si_sessions**.
@@ -166,7 +166,7 @@ return $result['success'] ? $SendIt->success($msg, $data) : $SendIt->error($msg,
 Компонент предоставляет возможность изменить некоторые параметры работы JavaScript.
 ::: details Конфигурация по умолчанию
 
-```js:line-numbers{2,7,70,85,105,127,147,155}
+```js:line-numbers{2,7,70,74,79,84,104,124,146,166,174}
 export const ModulesConfig = {
   Helpers: {
     className: 'Helpers',
@@ -235,6 +235,16 @@ export const ModulesConfig = {
       maxInteractionsPerSecondThreshold: 100,
       minInteractionsPerSecondThreshold: 10,
     }
+  },
+  ProofOfWork: {
+    className: 'ProofOfWork',
+    pathToScripts: '../modules/proofofwork.js',
+    forceLoad: true
+  },
+  BehaviorSign: {
+    className: 'BehaviorSign',
+    pathToScripts: '../modules/behaviorsign.js',
+    forceLoad: true
   },
   Sending: {
     forceLoad: true,
