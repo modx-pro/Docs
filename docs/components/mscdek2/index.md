@@ -3,7 +3,7 @@ title: ms_CDEK2
 description: Компонент расчёта доставки в сервисе СДЭК.
 outline: [ 2,3 ]
 lastUpdated: true
-logo: https://mscdek2.art-sites.ru/assets/components/ms_cdek2/img/cdek.png
+logo: https://modstore.pro/assets/extras/ms_cdek2/logo.jpg
 modstore: https://modstore.pro/packages/delivery/ms-cdek2
 author: ShevArtV
 items: [
