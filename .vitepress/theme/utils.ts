@@ -105,11 +105,16 @@ export function getAuthor(author: string): Author | undefined {
     return
   }
 
-  if (!Object.prototype.hasOwnProperty.call(authors, author)) {
+  if (Object.prototype.hasOwnProperty.call(authors, author)) {
+    return authors[author]
+  }
+
+  const key = Object.keys(authors).find(k => k.toLowerCase() === author.toLowerCase())
+  if (!key) {
     return
   }
 
-  return authors[author]
+  return authors[key]
 }
 
 export function normalize(path) {

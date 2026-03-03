@@ -1,7 +1,7 @@
 ---
 title: xParser
 description: HTML content and RSS/XML feed parser
-logo: https://modstore.pro/assets/extras/xparser/logo-lg.png
+logo: https://modstore.pro/assets/extras/xparser/logo.png
 author: gvozdb
 modstore: https://modstore.pro/packages/import-and-export/xparser
 

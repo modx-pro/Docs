@@ -3,6 +3,8 @@ title: CrawlerDetect
 description: Определение веб-краулеров по User-Agent и защита форм от спама без CAPTCHA
 author: ibochkarev
 repository: https://github.com/Ibochkarev/CrawlerDetect
+logo: https://modstore.pro/assets/extras/crawlerdetect/logo.png
+modstore: https://modstore.pro/packages/utilities/crawlerdetect
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

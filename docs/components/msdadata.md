@@ -1,6 +1,8 @@
 ---
 title: msDaData
+description: Компонент для автодополнения адреса и ФИО при оформлении заказа в miniShop2 через DaData
 dependencies: miniShop2
+logo: https://modstore.pro/assets/extras/dadata/logo.jpg
 ---
 
 # msDaData

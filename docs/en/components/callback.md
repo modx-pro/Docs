@@ -1,6 +1,9 @@
 ---
 title: CallBack
+description: Component for displaying, processing, and logging callback requests
+
 ---
+
 # CallBack
 
 Component for displaying, processing, and logging callback requests.

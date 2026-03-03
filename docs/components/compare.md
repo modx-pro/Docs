@@ -1,6 +1,7 @@
 ---
 title: Compare для MODX 3 - Документация
 description: Документация компонента Compare - сравнение товаров MiniShop3 (MODX 3) по характеристикам
+logo: https://modstore.pro/assets/extras/compare/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/ecommerce/compare
 ---

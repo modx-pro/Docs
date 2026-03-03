@@ -1,7 +1,7 @@
 ---
 title: ms3Variants
 description: Компонент вариантов товаров для MiniShop3
-logo: https://modstore.pro/assets/extras/ms3variants/logo-lg.png
+logo: https://modstore.pro/assets/extras/ms3variants/logo.png
 author: biz87
 
 items: [

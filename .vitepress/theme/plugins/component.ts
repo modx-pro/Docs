@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import type { DefaultTheme, PageData, SiteConfig } from 'vitepress'
 import { ensureStartingSlash, getAuthor, normalize } from '../utils'
 
@@ -10,6 +11,33 @@ import { generateSidebarItem, getTitleFromContent } from './sidebar'
 
 import type { Author } from '../../../docs/authors'
 import { findPath } from '../utils'
+
+const LOGO_CACHE_VERSION = (
+  process.env.GITHUB_SHA?.slice(0, 8)
+  || process.env.CI_COMMIT_SHA?.slice(0, 8)
+  || ''
+)
+
+function withCacheBust(url: string): string {
+  const v = createHash('md5').update(`${url}|${LOGO_CACHE_VERSION}`).digest('hex').slice(0, 8)
+  return `${url}${url.includes('?') ? '&' : '?'}v=${v}`
+}
+
+function decodeHtmlEntities(str: string | undefined): string | undefined {
+  if (!str || typeof str !== 'string') return str
+  return str
+    .replace(/&mdash;/g, '—')
+    .replace(/&ndash;/g, '–')
+    .replace(/&hellip;/g, '…')
+    .replace(/&nbsp;/g, '\u00A0')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(parseInt(n, 10)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)))
+}
 
 export interface ComponentData {
   path: string
@@ -64,11 +92,11 @@ export const components: ComponentData[] = fg
       modstore,
       modx,
       repository,
-      title,
-      titleLower: title.toLowerCase(),
-      text: title,
-      description,
-      logo,
+      title: decodeHtmlEntities(title) ?? title,
+      titleLower: (decodeHtmlEntities(title) ?? title).toLowerCase(),
+      text: decodeHtmlEntities(title) ?? title,
+      description: decodeHtmlEntities(description) ?? description,
+      logo: logo ? withCacheBust(logo) : undefined,
       dependencies: Array.isArray(dependencies) ? dependencies : Array(dependencies),
       categories: Array.isArray(categories) ? categories : Array(categories),
     }
@@ -93,9 +121,10 @@ export default class DocsComponent {
     pageData.component = component
     pageData.breadcrumbs = findPath(pageData, siteConfig.userConfig)
 
-    pageData.title = !pageData.frontmatter.title && pageData.breadcrumbs.length
+    const rawTitle = !pageData.frontmatter.title && pageData.breadcrumbs.length
         ? pageData.breadcrumbs.map(item => item.text).reverse().join(siteConfig.userConfig.themeConfig.titleSeparator)
         : pageData.title
+    pageData.title = decodeHtmlEntities(rawTitle) ?? rawTitle
 
     if (
       component
@@ -103,6 +132,8 @@ export default class DocsComponent {
       && pageData.component.description
     ) {
       pageData.description = pageData.component.description
+    } else if (pageData.description) {
+      pageData.description = decodeHtmlEntities(pageData.description) ?? pageData.description
     }
 
     return pageData

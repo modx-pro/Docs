@@ -1,6 +1,8 @@
 ---
 title: msDellin
+description: Component for calculating delivery cost via Dellin transport company
 dependencies: miniShop2
+
 ---
 
 # msDellin

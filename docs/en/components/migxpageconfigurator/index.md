@@ -1,6 +1,7 @@
 ---
 title: MigxPageConfigurator
 description: Markup integration and content management
+
 author: shevartv
 modstore: https://modstore.pro/packages/utilities/migxpageconfigurator
 

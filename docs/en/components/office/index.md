@@ -1,7 +1,7 @@
 ---
 title: Office
 description: Universal customer personal cabinet
-logo: https://modstore.pro/assets/extras/office/logo-lg.png
+logo: https://modstore.pro/assets/extras/office/logo.png
 author: ilyautkin
 modstore: https://modstore.pro/packages/users/office
 

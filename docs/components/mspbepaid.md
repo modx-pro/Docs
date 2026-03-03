@@ -1,7 +1,7 @@
 ---
 title: mspBePaid
 description: Интеграция miniShop2 с платежной системой bePaid, Беларусь
-logo: https://modstore.pro/assets/extras/mspbepaid/logo-lg.png
+logo: https://modstore.pro/assets/extras/mspbepaid/logo.png
 author: alroniks
 modstore: https://modstore.pro/packages/payment-system/mspbepaid
 

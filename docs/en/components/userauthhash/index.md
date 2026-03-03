@@ -1,6 +1,7 @@
 ---
 title: UserAuthHash
 description: User login via link (hash) without entering username and password
+
 author: vgrish
 modstore: https://modstore.pro/packages/users/userauthhash
 

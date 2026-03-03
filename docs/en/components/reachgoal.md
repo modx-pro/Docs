@@ -1,7 +1,7 @@
 ---
 title: ReachGoal
 description: Manage goals (Yandex, Google) from the Manager
-logo: https://modstore.pro/assets/extras/reachgoal/logo-lg.png
+logo: https://modstore.pro/assets/extras/reachgoal/logo.png
 author: tventos
 modstore: https://modstore.pro/packages/ecommerce/reachgoal
 repository: https://github.com/tventos/modx-reachgoal

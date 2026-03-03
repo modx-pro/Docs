@@ -1,6 +1,8 @@
 ---
 title: msOptionsPrice
+description: Компонент для установки дополнительных цен к товару в зависимости от характеристик
 dependencies: miniShop2
+
 ---
 
 # msOptionsPrice

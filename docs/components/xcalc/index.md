@@ -1,7 +1,7 @@
 ---
 title: xCalc
 description: Универсальный конструктор калькуляторов
-logo: https://modstore.pro/assets/extras/xcalc/logo-lg.png
+logo: https://modstore.pro/assets/extras/xcalc/logo.png
 author: gvozdb
 modstore: https://modstore.pro/packages/other/xcalc
 

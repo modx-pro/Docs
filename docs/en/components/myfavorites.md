@@ -1,7 +1,7 @@
 ---
 title: MyFavorites
 description: Favorites
-logo: https://modstore.pro/assets/extras/myfavorites/logo-lg.png
+logo: https://modstore.pro/assets/extras/myfavorites/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/other/myfavorites
 ---

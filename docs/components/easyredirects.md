@@ -1,6 +1,7 @@
 ---
 title: easyRedirects
 description: Управляйте редиректами (с кодами 301, 302, 307, 308) на вашем сайте на базе MODX Revolution
+logo: https://modstore.pro/assets/extras/easyredirects/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/easyredirects
 repository: https://github.com/createit-ru/easyRedirects

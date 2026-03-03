@@ -86,7 +86,7 @@ This section lists properties that apply only to component docs. They can be set
 - Type: `string`
 
 ```yaml
-logo: https://modstore.pro/assets/extras/minishop2/logo-lg.png
+logo: https://modstore.pro/assets/extras/minishop2/logo.png
 ```
 
 URL of the component logo.

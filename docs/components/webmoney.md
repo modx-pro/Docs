@@ -1,5 +1,6 @@
 ---
 title: WebMoney
+description: Компонент для приёма оплаты через WebMoney в miniShop2
 dependencies: miniShop2
 categories: payment
 ---

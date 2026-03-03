@@ -1,7 +1,7 @@
 ---
 title: mdDocs
 description: Component that turns a fresh site into a documentation system
-logo: https://modstore.pro/assets/extras/mddocs/logo-lg.png
+logo: https://modstore.pro/assets/extras/mddocs/logo.png
 author: mvoevodskiy
 modstore: https://modstore.pro/packages/content/mddocs
 ---

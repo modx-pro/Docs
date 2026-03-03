@@ -1,6 +1,7 @@
 ---
 title: smartSessions
 description: Расширенное управление сессиями MODX
+
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/smartsessions
 
@@ -56,9 +57,9 @@ modstore: https://modstore.pro/packages/utilities/smartsessions
 SQL запрос для просмотра количества сессий, сгруппированных по user_agent, который позволит найти самые частотные User-Agent в вашей базе:
 
 ``` sql
-SELECT `user_agent`, COUNT(*) 
-FROM `modx_smart_sessions` 
-GROUP BY `user_agent` 
+SELECT `user_agent`, COUNT(*)
+FROM `modx_smart_sessions`
+GROUP BY `user_agent`
 ORDER BY `COUNT(*)` DESC
 ```
 

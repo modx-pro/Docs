@@ -1,5 +1,6 @@
 ---
 title: WebMoney
+description: Component for accepting payments via WebMoney in miniShop2
 dependencies: miniShop2
 categories: payment
 ---

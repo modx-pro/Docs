@@ -8,15 +8,33 @@ import DocsList from './DocsList.vue'
 
 const { page, theme, lang } = useData()
 
+const component = computed(() => {
+  if (!page.value?.component) {
+    return null
+  }
+
+  return {
+    ...page.value.component,
+    logo: page.value.component.logo || page.value.frontmatter.logo,
+    description: page.value.component.description || page.value.frontmatter.description,
+    modstore: page.value.component.modstore || page.value.frontmatter.modstore,
+    modx: page.value.component.modx || page.value.frontmatter.modx,
+    repository: page.value.component.repository || page.value.frontmatter.repository,
+  }
+})
+
 const links = computed<DefaultTheme.SidebarItem[]>(() => {
-  if (!page.value.component) {
+  if (!component.value) {
     return []
   }
 
   return links.value = ['modstore', 'modx', 'repository']
     .reduce((filtered, key) => {
-      if (Object.prototype.hasOwnProperty.call(page.value.component, key)) {
-        const link = page.value.component[key]
+      if (Object.prototype.hasOwnProperty.call(component.value, key)) {
+        const link = component.value[key]
+        if (typeof link !== 'string' || !link) {
+          return filtered
+        }
 
         filtered.push({
           text: link.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i)[1].split('.').slice(-2).join('.'),
@@ -43,10 +61,10 @@ const dependencies = computed<DefaultTheme.SidebarItem[]>(() => {
 })
 
 const show = computed<boolean>(() => {
-  return page.value?.component &&
+  return component.value &&
     (
-      page.value?.component.logo ||
-      page.value?.component.description ||
+      component.value.logo ||
+      component.value.description ||
       page.value?.component.dependencies.length ||
       links.value.length
     )
@@ -55,20 +73,20 @@ const show = computed<boolean>(() => {
 
 <template>
   <article v-if="show" class="DocsComponentWidget">
-    <figure v-if="page.component.logo" class="figure">
-      <VPImage :image="page.component.logo" :alt="page.component.title" class="image" />
+    <figure v-if="component?.logo" class="figure">
+      <VPImage :image="component.logo" :alt="component.title" class="image" />
     </figure>
     <div class="body">
-      <VPLink v-if="page.component.title" :href="page.component.link" class="title">
-        {{ page.component.title }}
+      <VPLink v-if="component?.title" :href="component.link" class="title">
+        {{ component.title }}
       </VPLink>
-      <div v-if="page.component.description" class="description">
-        {{ page.component.description }}
+      <div v-if="component?.description" class="description">
+        {{ component.description }}
       </div>
       <DocsList v-if="links.length" :items="links" class="list" />
     </div>
     <div v-if="dependencies.length" class="footer">
-      <span class="title">{{ lang === 'ru' ? 'Зависимости' : 'Dependencies' }}</span>
+      <span class="title">{{ lang.value === 'ru' ? 'Зависимости' : 'Dependencies' }}</span>
       <DocsList :items="dependencies" class="list" />
     </div>
   </article>

@@ -1,7 +1,9 @@
 ---
 title: Platron
+description: Platron payment module for miniShop2
 dependencies: miniShop2
 categories: payment
+logo: https://modstore.pro/assets/extras/mspplatron/logo.png
 ---
 
 # Platron
