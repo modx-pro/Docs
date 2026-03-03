@@ -17,7 +17,9 @@ const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
 
 function getComponentSlug(component: { path: string }): string {
-  const base = component.path.replace(/^docs(\/en)?\/components\//, '').split('/')[0] ?? ''
+  const base = component.path
+    .replace(/^(?:docs\/)?(?:en\/)?components\//, '')
+    .split('/')[0] ?? ''
   return base.replace(/\.md$/, '')
 }
 
