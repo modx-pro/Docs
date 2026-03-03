@@ -1,7 +1,7 @@
 ---
 title: ms2Gallery
 description: Enhanced miniShop2 gallery for resources of any type
-logo: https://modstore.pro/assets/extras/ms2gallery/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/ms2gallery/logo.jpg
 author: ilyautkin
 modstore: https://modstore.pro/packages/photos-and-files/ms2gallery
 

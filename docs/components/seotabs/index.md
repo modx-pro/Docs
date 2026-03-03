@@ -1,7 +1,7 @@
 ---
 title: SEOtabs
 description: Пакет для работы со вкладками товаров. Табы для вашего SEO
-logo: https://modstore.pro/assets/extras/seotabs/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/seotabs/logo.jpg
 modstore: https://modstore.pro/packages/ecommerce/seotabs
 
 items: [

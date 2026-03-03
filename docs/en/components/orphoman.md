@@ -1,7 +1,7 @@
 ---
 title: OrphoMan
 description: Detecting spelling errors in text
-logo: https://modstore.pro/assets/extras/orphoman/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/orphoman/logo.jpg
 author: sergant210
 modstore: https://modstore.pro/packages/content/orphoman
 modx: https://extras.modx.com/package/orphoman

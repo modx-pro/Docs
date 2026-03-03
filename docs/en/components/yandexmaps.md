@@ -1,7 +1,7 @@
 ---
 title: YandexMaps
 description: Create Yandex Map and place a list of objects on it
-logo: https://modstore.pro/assets/extras/yandexmaps/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/yandexmaps/logo.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/maps/yandexmaps
 modx: https://extras.modx.com/package/yandexmaps

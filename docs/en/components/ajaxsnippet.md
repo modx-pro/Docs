@@ -1,7 +1,7 @@
 ---
 title: AjaxSnippet
 description: Component to run snippets via Ajax. Lets you load news or comments after the main page
-logo: https://modstore.pro/assets/extras/ajaxsnippet/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/ajaxsnippet/logo.jpg
 modstore: https://modstore.pro/packages/utilities/ajaxsnippet
 ---
 # AjaxSnippet

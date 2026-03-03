@@ -1,7 +1,7 @@
 ---
 title: textAdvs
 description: Умная реклама в контенте страницы
-logo: https://modstore.pro/assets/extras/textadvs/logo-lg.png
+logo: https://modstore.pro/assets/extras/textadvs/logo.png
 author: gvozdb
 modstore: https://modstore.pro/packages/content/textadvs
 

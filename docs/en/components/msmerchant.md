@@ -1,7 +1,7 @@
 ---
 title: msMerchant
 description: Payment acceptance via "Unified Cash Desk" (WalletOne)
-logo: https://modstore.pro/assets/extras/msmerchant/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/msmerchant/logo.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/payment-system/msmerchant
 

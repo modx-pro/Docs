@@ -1,7 +1,7 @@
 ---
 title: FetchIt
 description: Легковесный компонент для обработки и отправки форм с помощью Fetch API
-logo: https://modstore.pro/assets/extras/fetchit/logo-lg.png
+logo: https://modstore.pro/assets/extras/fetchit/logo.png
 author: GulomovCreative
 modstore: https://modstore.pro/packages/utilities/fetchit
 modx: https://extras.modx.com/package/fetchit

@@ -1,7 +1,7 @@
 ---
 title: msCategoryOptions
 description: Функционал дополнительных опций в зависимости от категории товара
-logo: https://modstore.pro/assets/extras/mscategoryoptions/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/mscategoryoptions/logo.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/ecommerce/mscategoryoptions
 

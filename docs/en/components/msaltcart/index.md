@@ -3,7 +3,7 @@ title: msAltCart
 description: Dynamic cart for MiniShop2 with JS API.
 outline: [ 2,3 ]
 lastUpdated: true
-logo: https://msaltcart.art-sites.ru/assets/components/msaltcart/logo.jpg
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 modstore: https://modstore.pro/packages/integration/msaltcart
 repository: https://github.com/ShevArtV/msaltcart
 author: ShevArtV

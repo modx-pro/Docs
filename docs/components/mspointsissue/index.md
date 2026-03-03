@@ -1,7 +1,7 @@
 ---
 title: msPointsIssue
 description: Пункты выдачи заказов для miniShop2
-logo: https://modstore.pro/assets/extras/mspointsissue/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/mspointsissue/logo.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/delivery/mspointsissue
 

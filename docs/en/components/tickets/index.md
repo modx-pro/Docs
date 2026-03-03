@@ -1,7 +1,7 @@
 ---
 title: Tickets
 description: Component for creating and commenting user pages
-logo: https://modstore.pro/assets/extras/tickets/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/tickets/logo.jpg
 author: bezumkin
 modstore: https://modstore.pro/packages/users/tickets
 repository: https://github.com/modx-pro/Tickets

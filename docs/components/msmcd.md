@@ -1,7 +1,7 @@
 ---
 title: msMCD
 description: Динамическое обновление мини-корзины miniShop2
-logo: https://modstore.pro/assets/extras/msmcd/logo-md.png
+logo: https://modstore.pro/assets/extras/msmcd/logo.png
 author: modx-pro
 modstore: https://modstore.pro/packages/integration/msmcd
 repository: https://github.com/modx-pro/msMCD

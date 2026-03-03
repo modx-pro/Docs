@@ -1,7 +1,7 @@
 ---
 title: msDiscount
 description: Система скидок и одноразовые купоны для miniShop2
-logo: https://modstore.pro/assets/extras/msdiscount/logo-lg.png
+logo: https://modstore.pro/assets/extras/msdiscount/logo.png
 author: ilyautkin
 modstore: https://modstore.pro/packages/discounts/msdiscount
 

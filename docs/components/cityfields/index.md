@@ -1,7 +1,7 @@
 ---
 title: cityFields
 description: Компонент реализует на сайте мультигородность без контекстов
-logo: https://modstore.pro/assets/extras/cityfields/logo-lg.png
+logo: https://modstore.pro/assets/extras/cityfields/logo.png
 author: feschukov
 modstore: https://modstore.pro/packages/ecommerce/cityfields
 

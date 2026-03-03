@@ -1,7 +1,7 @@
 ---
 title: modDevTools
 description: Компонент для вывода кода используемых чанков и сниппетов на странице шаблона или чанка
-logo: https://modstore.pro/assets/extras/moddevtools/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/moddevtools/logo.jpg
 author: argnist
 modstore: https://modstore.pro/packages/utilities/moddevtools
 modx: https://extras.modx.com/package/moddevtools

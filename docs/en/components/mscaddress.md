@@ -1,7 +1,7 @@
 ---
 title: mscAddress
 description: User addresses for account and checkout
-logo: https://modstore.pro/assets/extras/mscaddress/logo-md.png
+logo: https://modstore.pro/assets/extras/mscaddress/logo.png
 author: modx-pro
 modstore: https://modstore.pro/packages/integration/mscaddress
 repository: https://github.com/modx-pro/mscAddress

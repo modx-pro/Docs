@@ -1,7 +1,7 @@
 ---
 title: ms2form
 description: Outputs a form for creating miniShop2 products by the user from the frontend
-logo: https://modstore.pro/assets/extras/ms2form/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/ms2form/logo.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/users/ms2form
 repository: https://github.com/me6iaton/ms2form

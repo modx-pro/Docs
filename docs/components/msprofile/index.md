@@ -1,7 +1,7 @@
 ---
 title: msProfile
 description: "Работа с профилями: оплата товаров с внутреннего счета пользователя"
-logo: https://modstore.pro/assets/extras/msprofile/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/msprofile/logo.jpg
 author: biz87
 modstore: https://modstore.pro/packages/users/msprofile
 repository: https://github.com/modx-pro/msProfile

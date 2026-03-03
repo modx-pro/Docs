@@ -1,7 +1,7 @@
 ---
 title: ordersUnformed
 description: Просмотр неоформленных корзин
-logo: https://modstore.pro/assets/extras/ordersunformed/logo-lg.jpeg
+logo: https://modstore.pro/assets/extras/ordersunformed/logo.jpeg
 modstore: https://modstore.pro/packages/integration/ordersunformed
 
 dependencies: miniShop2

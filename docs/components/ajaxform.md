@@ -1,7 +1,7 @@
 ---
 title: AjaxForm
 description: Отправка форм через Ajax. Использует FormIt, но можно указать и свой сниппет
-logo: https://modstore.pro/assets/extras/ajaxform/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/ajaxform/logo.jpg
 author: modx-pro
 modstore: https://modstore.pro/packages/utilities/ajaxform
 modx: https://modx.com/extras/package/ajaxform

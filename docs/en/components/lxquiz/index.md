@@ -1,7 +1,7 @@
 ---
 title: LxQuiz
 description: Quick integration of quizzes for logged-in users
-logo: https://modstore.pro/assets/extras/lxquiz/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/lxquiz/logo.jpg
 author: azernov
 modstore: https://modstore.pro/packages/users/lxquiz
 

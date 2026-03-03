@@ -1,6 +1,7 @@
 ---
 title: MigxPageConfigurator
 description: Интеграция вёрстки и управление контентом
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 author: shevartv
 modstore: https://modstore.pro/packages/utilities/migxpageconfigurator
 

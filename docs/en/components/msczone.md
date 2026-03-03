@@ -1,7 +1,7 @@
 ---
 title: mscZone
 description: Delivery cost by zones for minishop2
-logo: https://modstore.pro/assets/extras/msczone/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/msczone/logo.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/delivery/msczone
 

@@ -1,7 +1,7 @@
 ---
 title: Mapex2
 description: Яндекс.Карты с продвинутым редактором
-logo: https://modstore.pro/assets/extras/mapex2/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/mapex2/logo.jpg
 author: createit-ru
 modstore: https://modstore.pro/packages/maps/mapex2
 repository: https://github.com/createit-ru/Mapex2

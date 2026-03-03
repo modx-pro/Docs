@@ -1,7 +1,7 @@
 ---
 title: ViewsOnline
 description: Number of online users on the page
-logo: https://modstore.pro/assets/extras/viewsonline/logo-lg.png
+logo: https://modstore.pro/assets/extras/viewsonline/logo.png
 author: bazmaster
 modstore: https://modstore.pro/packages/users/viewsonline
 ---

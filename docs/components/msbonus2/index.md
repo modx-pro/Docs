@@ -1,7 +1,7 @@
 ---
 title: msBonus2
 description: Бонусная система для miniShop2
-logo: https://modstore.pro/assets/extras/msbonus2/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/msbonus2/logo.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/discounts/msbonus2
 

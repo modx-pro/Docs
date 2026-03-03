@@ -1,7 +1,7 @@
 ---
 title: Formalicious
 description: Add-on for powerful form generation, works with FormIt
-logo: https://modstore.pro/assets/extras/formalicious/logo-lg.png
+logo: https://modstore.pro/assets/extras/formalicious/logo.png
 author: Sterc
 modstore: https://modstore.pro/packages/users/formalicious
 modx: https://extras.modx.com/package/formalicious

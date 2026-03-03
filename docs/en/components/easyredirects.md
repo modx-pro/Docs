@@ -1,6 +1,7 @@
 ---
 title: easyRedirects
 description: Manage redirects (301, 302, 307, 308) on your MODX Revolution site
+logo: https://modstore.pro/assets/extras/easyredirects/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/easyredirects
 repository: https://github.com/createit-ru/easyRedirects

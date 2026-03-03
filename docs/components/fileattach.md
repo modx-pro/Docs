@@ -1,7 +1,7 @@
 ---
 title: FileAttach
 description: Позволяет загружать файлы к ресурсам в менеджере сайта
-logo: https://modstore.pro/assets/extras/fileattach/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/fileattach/logo.jpg
 author: 13hakta
 modstore: https://modstore.pro/packages/photos-and-files/fileattach
 modx: https://extras.modx.com/package/fileattach

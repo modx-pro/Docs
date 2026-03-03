@@ -1,7 +1,7 @@
 ---
 title: msProfile
 description: "Profile management: product payment from user's internal balance"
-logo: https://modstore.pro/assets/extras/msprofile/logo-lg.jpg
+logo: https://modstore.pro/assets/extras/msprofile/logo.jpg
 author: biz87
 modstore: https://modstore.pro/packages/users/msprofile
 repository: https://github.com/modx-pro/msProfile

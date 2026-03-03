@@ -1,7 +1,7 @@
 ---
 title: plAffiliates
 description: Branches, branch inventory, regionality, multilingualism, geolocation, SEO
-logo: https://modstore.pro/assets/extras/plaffiliates/logo-lg.png
+logo: https://modstore.pro/assets/extras/plaffiliates/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/other/plaffiliates
 ---

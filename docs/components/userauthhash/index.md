@@ -1,6 +1,7 @@
 ---
 title: UserAuthHash
 description: Авторизация пользователя по ссылке (хэш-коду) без ввода логина и пароля
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 author: vgrish
 modstore: https://modstore.pro/packages/users/userauthhash
 

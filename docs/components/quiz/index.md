@@ -1,7 +1,7 @@
 ---
 title: Quiz
 description: Конструктор квизов
-logo: https://modstore.pro/assets/extras/quiz/logo-lg.png
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 author: boshnik
 modstore: https://modstore.pro/packages/discounts/quiz
 

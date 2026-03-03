@@ -1,6 +1,7 @@
 ---
 title: smartSessions
 description: Расширенное управление сессиями MODX
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/smartsessions
 
