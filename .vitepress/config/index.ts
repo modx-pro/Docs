@@ -16,6 +16,12 @@ const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
 
+const OG_CACHE_VERSION = (
+  process.env.GITHUB_SHA?.slice(0, 8)
+  || process.env.CI_COMMIT_SHA?.slice(0, 8)
+  || ''
+)
+
 function getComponentSlug(component: { path: string }): string {
   const base = component.path
     .replace(/^(?:docs\/)?(?:en\/)?components\//, '')
@@ -23,9 +29,11 @@ function getComponentSlug(component: { path: string }): string {
   return base.replace(/\.md$/, '')
 }
 
-function getOgImageVersion(logo?: string): string {
-  const input = logo ?? 'default'
-  return createHash('md5').update(input).digest('hex').slice(0, 8)
+function getOgImageVersion(input: unknown): string {
+  const payload = typeof input === 'string'
+    ? input
+    : (JSON.stringify(input) ?? String(input))
+  return createHash('md5').update(payload).digest('hex').slice(0, 8)
 }
 
 export default defineConfigWithTheme<DocsTheme.Config>({
@@ -172,8 +180,14 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   transformHead({ pageData }: { pageData }) {
     const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
     const image = pageData?.component
-      ? SITE_HOST + 'og/' + getComponentSlug(pageData.component) + '.png?v=' + getOgImageVersion(pageData.component.logo)
-      : SITE_HOST + 'og-default.png'
+      ? SITE_HOST + 'og/' + getComponentSlug(pageData.component) + '.png?v=' + getOgImageVersion({
+          v: OG_CACHE_VERSION,
+          slug: getComponentSlug(pageData.component),
+          title: pageData.component.title,
+          description: pageData.component.description,
+          logo: pageData.component.logo,
+        })
+      : SITE_HOST + 'og-default.png?v=' + getOgImageVersion({ v: OG_CACHE_VERSION, type: 'default' })
     const type = pageData.component ? 'article' : 'website'
     const url = SITE_HOST + normalize(pageData.relativePath)
     const author = pageData?.component?.author?.modxpro
