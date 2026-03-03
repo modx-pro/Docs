@@ -1,7 +1,7 @@
 ---
 title: SEO Domains
 description: Add extra domains for the site without contexts, with Yandex Webmaster integration
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+logo: https://modstore.pro/assets/extras/seodomains/logo-lg.png
 author: tventos
 modstore: https://modstore.pro/packages/other/seodomains
 ---

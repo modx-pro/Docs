@@ -1,7 +1,7 @@
 ---
 title: msSetInCart
 description: Buying product sets in MiniShop2
-logo: https://modstore.pro/assets/extras/mssetincart/logo.jpg
+logo: https://modstore.pro/assets/extras/mssetincart/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/ecommerce/mssetincart
 

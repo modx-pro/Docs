@@ -3,7 +3,7 @@ title: SendIt
 description: Component for working with forms on the site, similar to AjaxForm.
 outline: [2,3]
 lastUpdated: true
-logo: https://modstore.pro/assets/extras/sendit/logo.jpg
+logo: https://sendit.art-sites.ru/assets/components/sendit/logo.jpg
 modstore: https://modstore.pro/packages/users/sendit
 repository: https://github.com/ShevArtV/sendit
 author: ShevArtV

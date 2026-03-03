@@ -3,7 +3,7 @@ title: ms_CDEK2
 description: CDEK delivery calculation component.
 outline: [ 2,3 ]
 lastUpdated: true
-logo: https://modstore.pro/assets/extras/ms_cdek2/logo.jpg
+logo: https://mscdek2.art-sites.ru/assets/components/ms_cdek2/img/cdek.png
 modstore: https://modstore.pro/packages/delivery/ms-cdek2
 author: ShevArtV
 items: [

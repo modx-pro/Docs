@@ -1,7 +1,7 @@
 ---
 title: mspWebPay
 description: Интеграция miniShop2 с платежной системой WebPay, Беларусь
-logo: https://modstore.pro/assets/extras/mspwebpay/logo.jpg
+logo: https://modstore.pro/assets/extras/mspwebpay/logo-lg.jpg
 author: alroniks
 modstore: https://modstore.pro/packages/payment-system/mspwebpay
 

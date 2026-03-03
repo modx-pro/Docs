@@ -1,7 +1,7 @@
 ---
 title: frontTabs
 description: Output a tabbed block on the site page
-logo: https://modstore.pro/assets/extras/fronttabs/logo.png
+logo: https://modstore.pro/assets/extras/fronttabs/logo-lg.png
 author: justenj
 modstore: https://modstore.pro/packages/other/fronttabs
 repository: https://github.com/justenj/frontTabs

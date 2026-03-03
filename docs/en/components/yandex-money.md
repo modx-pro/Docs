@@ -1,7 +1,7 @@
 ---
 title: Yandex.Money
 description: miniShop2 order payment method via Yandex.Money
-logo: https://modstore.pro/assets/extras/mspyandexmoney/logo.jpeg
+logo: https://modstore.pro/assets/extras/mspyandexmoney/logo-lg.jpeg
 modstore: https://modstore.pro/packages/payment-system/mspyandexmoney
 
 dependencies: miniShop2

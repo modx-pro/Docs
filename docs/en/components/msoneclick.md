@@ -1,7 +1,7 @@
 ---
 title: msOneClick
 description: One-click purchase via modal window
-logo: https://modstore.pro/assets/extras/msoneclick/logo.png
+logo: https://modstore.pro/assets/extras/msoneclick/logo-lg.png
 author: webnitros
 modstore: https://modstore.pro/packages/integration/msoneclick
 

@@ -1,7 +1,7 @@
 ---
 title: HybridAuth
 description: Authorization via social networks and other services
-logo: https://modstore.pro/assets/extras/hybridauth/logo.jpg
+logo: https://modstore.pro/assets/extras/hybridauth/logo-lg.jpg
 author: biz87
 modstore: https://modstore.pro/packages/users/hybridauth
 modx: https://extras.modx.com/package/hybridauth

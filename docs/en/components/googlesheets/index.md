@@ -1,7 +1,7 @@
 ---
 title: GoogleSheets
 description: Import and export products / resources / orders / users
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+logo: https://modstore.pro/assets/extras/googlesheets/logo-lg.jpg
 author: boshnik
 modstore: https://modstore.pro/packages/import-and-export/googlesheets
 

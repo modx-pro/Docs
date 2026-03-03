@@ -1,7 +1,7 @@
 ---
 title: Scheduler
 description: Scheduling deferred tasks
-logo: https://modstore.pro/assets/extras/scheduler/logo.png
+logo: https://modstore.pro/assets/extras/scheduler/logo-lg.png
 author: modx-pro
 modstore: https://modstore.pro/packages/utilities/scheduler
 

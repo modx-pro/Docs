@@ -1,7 +1,7 @@
 ---
 title: allGifts
 description: Import products from Gifts.ru and other services
-logo: https://modstore.pro/assets/extras/allgifts/logo.jpg
+logo: https://modstore.pro/assets/extras/allgifts/logo-lg.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/import-and-export/allgifts
 

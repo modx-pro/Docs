@@ -1,7 +1,7 @@
 ---
 title: pdoTools
 description: Fast retrieval of site pages and users
-logo: https://modstore.pro/assets/extras/pdotools/logo.jpg
+logo: https://modstore.pro/assets/extras/pdotools/logo-lg.jpg
 author: sergant210
 modstore: https://modstore.pro/packages/utilities/pdotools
 modx: https://extras.modx.com/package/pdotools

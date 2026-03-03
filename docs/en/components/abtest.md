@@ -1,7 +1,7 @@
 ---
 title: ABTest
 description: Test marketing hypotheses on the site
-logo: https://modstore.pro/assets/extras/abtest/logo.jpg
+logo: https://modstore.pro/assets/extras/abtest/logo-lg.jpg
 author: azernov
 modstore: https://modstore.pro/packages/other/abtest
 ---

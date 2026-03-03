@@ -1,7 +1,7 @@
 ---
 title: CurrencyRate
 description: Курсы иностранных валют с сайта Банка России
-logo: https://modstore.pro/assets/extras/currencyrate/logo.jpg
+logo: https://modstore.pro/assets/extras/currencyrate/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/other/currencyrate
 repository: https://github.com/vgrish/currencyrate

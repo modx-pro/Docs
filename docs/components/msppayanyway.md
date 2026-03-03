@@ -1,7 +1,7 @@
 ---
 title: mspPayAnyWay
 description: Интеграция с платежным сервисом PayAnyWay
-logo: https://modstore.pro/assets/extras/msppayanyway/logo.png
+logo: https://modstore.pro/assets/extras/msppayanyway/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/payment-system/msppayanyway
 

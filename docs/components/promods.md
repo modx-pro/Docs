@@ -1,7 +1,7 @@
 ---
 title: PromoDs
 description: Баннер вверху страницы
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+logo: https://modstore.pro/assets/extras/promods/logo-lg.png
 author: electrica
 modstore: https://modstore.pro/packages/discounts/promods
 ---

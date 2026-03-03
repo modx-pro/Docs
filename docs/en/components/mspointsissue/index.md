@@ -1,7 +1,7 @@
 ---
 title: msPointsIssue
 description: Pick-up points for miniShop2
-logo: https://modstore.pro/assets/extras/mspointsissue/logo.jpg
+logo: https://modstore.pro/assets/extras/mspointsissue/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/delivery/mspointsissue
 

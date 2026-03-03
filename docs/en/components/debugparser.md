@@ -1,7 +1,7 @@
 ---
 title: DebugParser
 description: Plugin to find site bottlenecks. Shows all processed tags and time spent
-logo: https://modstore.pro/assets/extras/debugparser/logo.jpg
+logo: https://modstore.pro/assets/extras/debugparser/logo-lg.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/utilities/debugparser
 modx: https://extras.modx.com/package/debugparser

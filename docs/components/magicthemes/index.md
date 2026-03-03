@@ -1,7 +1,7 @@
 ---
 title: MagicThemes
 description: Управление темами для MODX Revo - MagicThemes
-logo: https://modstore.pro/assets/extras/magicthemes/logo.png
+logo: https://modstore.pro/assets/extras/magicthemes/logo-lg.png
 author: Alexij2
 modstore: https://modstore.pro/packages/sites-themes/magicthemes
 repository: https://github.com/Alexij2/MagicThemes

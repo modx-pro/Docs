@@ -1,7 +1,7 @@
 ---
 title: allGifts
 description: Выгрузка товаров с Gifts.ru и других сервисов
-logo: https://modstore.pro/assets/extras/allgifts/logo.jpg
+logo: https://modstore.pro/assets/extras/allgifts/logo-lg.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/import-and-export/allgifts
 

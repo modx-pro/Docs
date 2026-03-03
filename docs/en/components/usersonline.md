@@ -1,7 +1,7 @@
 ---
 title: UsersOnline
 description: Online users list
-logo: https://modstore.pro/assets/extras/usersonline/logo.png
+logo: https://modstore.pro/assets/extras/usersonline/logo-lg.png
 author: mvoevodskiy
 modstore: https://modstore.pro/packages/users/usersonline
 modx: https://extras.modx.com/package/usersonline

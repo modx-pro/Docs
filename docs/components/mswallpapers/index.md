@@ -1,7 +1,7 @@
 ---
 title: msWallpapers
 description: Продвинутая форма для заказа обоев
-logo: https://modstore.pro/assets/extras/mswallpapers/logo.png
+logo: https://modstore.pro/assets/extras/mswallpapers/logo-lg.png
 author: gvozdb
 modstore: https://modstore.pro/packages/other/mswallpapers
 

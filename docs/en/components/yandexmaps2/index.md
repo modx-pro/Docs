@@ -1,7 +1,7 @@
 ---
 title: YandexMaps2
 description: Yandex Maps constructor for any objects, mFilter2 integration
-logo: https://modstore.pro/assets/extras/yandexmaps2/logo.png
+logo: https://modstore.pro/assets/extras/yandexmaps2/logo-lg.png
 author: gvozdb
 modstore: https://modstore.pro/packages/maps/yandexmaps2
 

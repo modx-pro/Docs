@@ -1,7 +1,7 @@
 ---
 title: TVTable
 description: Дополнительное поле в виде таблицы
-logo: https://modstore.pro/assets/extras/tvtable/logo.png
+logo: https://modstore.pro/assets/extras/tvtable/logo-lg.png
 author: wax100
 modstore: https://modstore.pro/packages/utilities/tvtable
 repository: https://github.com/wax100/TVTable

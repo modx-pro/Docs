@@ -1,7 +1,7 @@
 ---
 title: msGoodsLinks
 description: Navigation, internal linking
-logo: https://modstore.pro/assets/extras/msgoodslink/logo.png
+logo: https://modstore.pro/assets/extras/msgoodslink/logo-lg.png
 author: prihod
 modstore: https://modstore.pro/packages/other/msgoodslink
 ---

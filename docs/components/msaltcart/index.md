@@ -3,7 +3,7 @@ title: msAltCart
 description: Динамическая корзина для MiniShop2 с JS API.
 outline: [ 2,3 ]
 lastUpdated: true
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+logo: https://msaltcart.art-sites.ru/assets/components/msaltcart/logo.jpg
 modstore: https://modstore.pro/packages/integration/msaltcart
 repository: https://github.com/ShevArtV/msaltcart
 author: ShevArtV

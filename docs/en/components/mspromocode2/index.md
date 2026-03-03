@@ -1,7 +1,7 @@
 ---
 title: msPromoCode2
 description: Enhanced promo codes for miniShop2
-logo: https://modstore.pro/assets/extras/mspromocode2/logo.jpg
+logo: https://modstore.pro/assets/extras/mspromocode2/logo-lg.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/discounts/mspromocode2
 

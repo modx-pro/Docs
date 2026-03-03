@@ -1,7 +1,7 @@
 ---
 title: msProductRemains
 description: Component for tracking product stock by attributes
-logo: https://modstore.pro/assets/extras/msproductremains/logo.jpg
+logo: https://modstore.pro/assets/extras/msproductremains/logo-lg.jpg
 author: feschukov
 modstore: https://modstore.pro/packages/ecommerce/msproductremains
 

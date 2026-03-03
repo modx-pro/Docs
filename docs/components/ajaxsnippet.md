@@ -1,7 +1,7 @@
 ---
 title: AjaxSnippet
 description: Компонент, для запуска сниппетов через Ajax. Позволяет подгружать блоки новостей или комментариев после загрузки основной страницы
-logo: https://modstore.pro/assets/extras/ajaxsnippet/logo.jpg
+logo: https://modstore.pro/assets/extras/ajaxsnippet/logo-lg.jpg
 modstore: https://modstore.pro/packages/utilities/ajaxsnippet
 ---
 # AjaxSnippet

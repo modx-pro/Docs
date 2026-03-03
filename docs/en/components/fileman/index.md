@@ -1,7 +1,7 @@
 ---
 title: FileMan
 description: FileMan — component for MODX Revolution 3 to attach files to resources via the manager.
-logo: https://modstore.pro/assets/extras/fileman/logo.png
+logo: https://modstore.pro/assets/extras/fileman/logo-lg.png
 author: createit-ru
 modstore: https://modstore.pro/packages/photos-and-files/fileman
 repository: https://github.com/createit-ru/FileMan

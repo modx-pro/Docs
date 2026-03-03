@@ -1,7 +1,7 @@
 ---
 title: ZoomX
 description: Альтернативный вариант использования шаблонизаторов PHP
-logo: https://modstore.pro/assets/extras/zoomx/logo.png
+logo: https://modstore.pro/assets/extras/zoomx/logo-lg.png
 author: sergant210
 modstore: https://modstore.pro/packages/utilities/zoomx
 modx: https://modx.com/extras/package/zoomx

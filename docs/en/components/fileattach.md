@@ -1,7 +1,7 @@
 ---
 title: FileAttach
 description: Upload files to resources in the site manager
-logo: https://modstore.pro/assets/extras/fileattach/logo.jpg
+logo: https://modstore.pro/assets/extras/fileattach/logo-lg.jpg
 author: 13hakta
 modstore: https://modstore.pro/packages/photos-and-files/fileattach
 modx: https://extras.modx.com/package/fileattach

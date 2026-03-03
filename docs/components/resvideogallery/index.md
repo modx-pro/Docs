@@ -1,7 +1,7 @@
 ---
 title: ResVideoGallery
 description: Адаптивная видеогалерея с Ajax-подгрузкой
-logo: https://modstore.pro/assets/extras/resvideogallery/logo.png
+logo: https://modstore.pro/assets/extras/resvideogallery/logo-lg.png
 author: prihod
 modstore: https://modstore.pro/packages/photos-and-files/resvideogallery
 

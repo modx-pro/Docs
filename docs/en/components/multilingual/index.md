@@ -1,7 +1,7 @@
 ---
 title: multiLingual
 description: Multilingual sites without contexts
-logo: https://modstore.pro/assets/extras/multilingual/logo.jpg
+logo: https://modstore.pro/assets/extras/multilingual/logo-lg.jpg
 author: azernov
 modstore: https://modstore.pro/packages/other/multilingual
 

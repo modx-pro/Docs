@@ -1,7 +1,7 @@
 ---
 title: msAddLinked
 description: Добавление связанных товаров в виде опций с увеличением цены
-logo: https://modstore.pro/assets/extras/msaddlinked/logo.png
+logo: https://modstore.pro/assets/extras/msaddlinked/logo-lg.png
 author: mvoevodskiy
 modstore: https://modstore.pro/packages/integration/msaddlinked
 

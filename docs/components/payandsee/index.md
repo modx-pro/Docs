@@ -1,7 +1,7 @@
 ---
 title: PayAndSee
 description: Компонент реализует закрытые ресурсы на MODx
-logo: https://modstore.pro/assets/extras/payandsee/logo.jpg
+logo: https://modstore.pro/assets/extras/payandsee/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/ecommerce/payandsee
 

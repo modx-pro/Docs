@@ -18,7 +18,6 @@
     "dev": "vitepress dev",
     "build": "pnpm run generate:og && vitepress build",
     "generate:og": "node scripts/generate-og-images.mjs",
-    "sync:logos": "node scripts/sync-component-logos.mjs",
     "preview": "vitepress preview",
     "generate": "plop",
     "lint": "markdownlint **/*.md --disable MD045",

@@ -1,7 +1,7 @@
 ---
 title: msLiveInform
 description: Track and verify MiniShop2 store orders via LiveInform
-logo: https://modstore.pro/assets/extras/msliveinform/logo.png
+logo: https://modstore.pro/assets/extras/msliveinform/logo-lg.png
 author: vgrish
 modstore: https://modstore.pro/packages/delivery/msliveinform
 

@@ -1,7 +1,7 @@
 ---
 title: mscAddress
 description: Пользовательские адреса для личного кабинета и страницы оформления заказа
-logo: https://modstore.pro/assets/extras/mscaddress/logo.png
+logo: https://modstore.pro/assets/extras/mscaddress/logo-md.png
 author: modx-pro
 modstore: https://modstore.pro/packages/integration/mscaddress
 repository: https://github.com/modx-pro/mscAddress

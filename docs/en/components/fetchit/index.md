@@ -1,7 +1,7 @@
 ---
 title: FetchIt
 description: Lightweight component for form handling and submission using Fetch API
-logo: https://modstore.pro/assets/extras/fetchit/logo.png
+logo: https://modstore.pro/assets/extras/fetchit/logo-lg.png
 author: GulomovCreative
 modstore: https://modstore.pro/packages/utilities/fetchit
 modx: https://extras.modx.com/package/fetchit

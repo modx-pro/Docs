@@ -1,7 +1,7 @@
 ---
 title: msExtraFields
 description: Advanced product management
-logo: https://modstore.pro/assets/extras/msextrafields/logo.png
+logo: https://modstore.pro/assets/extras/msextrafields/logo-lg.png
 modstore: https://modstore.pro/packages/ecommerce/msextrafields
 
 items: [

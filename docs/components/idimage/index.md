@@ -1,7 +1,7 @@
 ---
 title: idimage
 description: Автоматически подбор похожие товаров по изображению
-logo: https://modstore.pro/assets/extras/idimage/logo.png
+logo: https://modstore.pro/assets/extras/idimage/logo-md.png
 author: webnitros
 modstore: https://modstore.pro/packages/ecommerce/idimage
 repository: https://github.com/astra-modx/idimage

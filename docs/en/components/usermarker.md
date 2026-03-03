@@ -1,7 +1,7 @@
 ---
 title: userMarker
 description: Adding labels and tags to resources
-logo: https://modstore.pro/assets/extras/usermarker/logo.png
+logo: https://modstore.pro/assets/extras/usermarker/logo-lg.png
 author: webnitros
 modstore: https://modstore.pro/packages/ecommerce/usermarker
 ---

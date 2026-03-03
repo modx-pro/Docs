@@ -1,7 +1,7 @@
 ---
 title: ajaxLogin
 description: User authentication via ajax
-logo: https://modstore.pro/assets/extras/ajaxlogin/logo.png
+logo: https://modstore.pro/assets/extras/ajaxlogin/logo-lg.png
 author: modx-pro
 modstore: https://modstore.pro/packages/users/ajaxlogin
 repository: https://github.com/modx-pro/ajaxLogin

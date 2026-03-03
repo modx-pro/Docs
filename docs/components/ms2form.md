@@ -1,7 +1,7 @@
 ---
 title: ms2form
 description: Выводит форму для создания продукта minishop2 пользователем из фронтэнда
-logo: https://modstore.pro/assets/extras/ms2form/logo.jpg
+logo: https://modstore.pro/assets/extras/ms2form/logo-lg.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/users/ms2form
 repository: https://github.com/me6iaton/ms2form

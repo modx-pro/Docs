@@ -1,7 +1,7 @@
 ---
 title: xCalc
 description: Universal calculator constructor
-logo: https://modstore.pro/assets/extras/xcalc/logo.png
+logo: https://modstore.pro/assets/extras/xcalc/logo-lg.png
 author: gvozdb
 modstore: https://modstore.pro/packages/other/xcalc
 

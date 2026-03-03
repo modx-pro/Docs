@@ -1,7 +1,7 @@
 ---
 title: CronTabManager
 description: Автоматически запуск скриптов по расписанию
-logo: https://modstore.pro/assets/extras/crontabmanager/logo.png
+logo: https://modstore.pro/assets/extras/crontabmanager/logo-md.png
 author: webnitros
 modstore: https://modstore.pro/packages/utilities/crontabmanager
 repository: https://github.com/astra-modx/modx-app-crontabmanager

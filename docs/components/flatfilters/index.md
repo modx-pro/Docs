@@ -3,7 +3,7 @@ title: FlatFilters
 description: Компонент для фильтрации любых данных.
 outline: [2,3]
 lastUpdated: true
-logo: https://modstore.pro/assets/extras/flatfilters/logo.jpg
+logo: https://flatfilters.art-sites.ru/assets/components/flatfilters/logo.jpg
 modstore: https://modstore.pro/packages/ecommerce/flatfilters
 repository: https://github.com/ShevArtV/flatfilters
 author: ShevArtV 

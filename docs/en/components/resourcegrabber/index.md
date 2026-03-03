@@ -1,7 +1,7 @@
 ---
 title: ResourceGrabber
 description: The component implements parsing data from a URL
-logo: https://modstore.pro/assets/extras/resourcegrabber/logo.png
+logo: https://modstore.pro/assets/extras/resourcegrabber/logo-lg.png
 author: vgrish
 modstore: https://modstore.pro/packages/import-and-export/resourcegrabber
 

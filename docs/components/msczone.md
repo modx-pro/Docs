@@ -1,7 +1,7 @@
 ---
 title: mscZone
 description: Расчет стоимости доставки для minishop2
-logo: https://modstore.pro/assets/extras/msczone/logo.jpg
+logo: https://modstore.pro/assets/extras/msczone/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/delivery/msczone
 

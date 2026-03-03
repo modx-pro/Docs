@@ -1,7 +1,7 @@
 ---
 title: msFavorites
 description: Creating favorites lists
-logo: https://modstore.pro/assets/extras/msfavorites/logo.jpg
+logo: https://modstore.pro/assets/extras/msfavorites/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/ecommerce/msfavorites
 

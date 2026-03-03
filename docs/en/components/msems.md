@@ -1,7 +1,7 @@
 ---
 title: msEMS
 description: EMS Russian Post delivery cost calculation
-logo: https://modstore.pro/assets/extras/msems/logo.jpeg
+logo: https://modstore.pro/assets/extras/msems/logo-lg.jpeg
 modstore: https://modstore.pro/packages/delivery/msems
 
 dependencies: miniShop2

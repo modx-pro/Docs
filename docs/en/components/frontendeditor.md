@@ -1,7 +1,7 @@
 ---
 title: Frontend Editor
 description: Edit content without opening the Manager
-logo: https://modstore.pro/assets/extras/frontendeditor/logo.png
+logo: https://modstore.pro/assets/extras/frontendeditor/logo-lg.png
 author: apnix
 modstore: https://modstore.pro/packages/content/frontendeditor
 modx: https://extras.modx.com/package/frontendeditor

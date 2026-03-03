@@ -1,7 +1,7 @@
 ---
 title: amoConnector
 description: Интеграция MODX с amoCRM нового поколения
-logo: https://modstore.pro/assets/extras/amoconnector/logo.png
+logo: https://modstore.pro/assets/extras/amoconnector/logo-lg.png
 author: biz87
 modstore: https://modstore.pro/packages/import-and-export/amoconnector
 

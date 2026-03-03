@@ -1,7 +1,7 @@
 ---
 title: NotFoundParamAlert
 description: Alerts on 404 pages with specified URL parameters
-logo: https://modstore.pro/assets/extras/notfoundparamalert/logo.png
+logo: https://modstore.pro/assets/extras/notfoundparamalert/logo-lg.png
 author: kudashevs
 modstore: https://modstore.pro/packages/alerts-mailing/notfoundparamalert
 modx: https://extras.modx.com/package/notfoundparamalert

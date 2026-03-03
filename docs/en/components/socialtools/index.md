@@ -1,7 +1,7 @@
 ---
 title: SocialTools
 description: "Social features for MODX: send and read messages, inbox and outbox"
-logo: https://modstore.pro/assets/extras/socialtools/logo.jpeg
+logo: https://modstore.pro/assets/extras/socialtools/logo-lg.jpeg
 author: Asanvery
 modstore: https://modstore.pro/packages/alerts-mailing/socialtools
 modx: https://extras.modx.com/package/socialtools
