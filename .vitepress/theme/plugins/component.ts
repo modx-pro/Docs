@@ -12,8 +12,14 @@ import { generateSidebarItem, getTitleFromContent } from './sidebar'
 import type { Author } from '../../../docs/authors'
 import { findPath } from '../utils'
 
+const LOGO_CACHE_VERSION = (
+  process.env.GITHUB_SHA?.slice(0, 8)
+  || process.env.CI_COMMIT_SHA?.slice(0, 8)
+  || ''
+)
+
 function withCacheBust(url: string): string {
-  const v = createHash('md5').update(url).digest('hex').slice(0, 8)
+  const v = createHash('md5').update(`${url}|${LOGO_CACHE_VERSION}`).digest('hex').slice(0, 8)
   return `${url}${url.includes('?') ? '&' : '?'}v=${v}`
 }
 
