@@ -86,7 +86,7 @@ editLink: false
 - Тип: `string`
 
 ```yaml
-logo: https://modstore.pro/assets/extras/minishop2/logo-lg.png
+logo: https://modstore.pro/assets/extras/minishop2/logo.png
 ```
 
 Ссылка на логотип компонента.

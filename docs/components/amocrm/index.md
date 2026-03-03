@@ -1,7 +1,7 @@
 ---
 title: amoCRM
 description: Интеграция с amoCRM
-logo: https://modstore.pro/assets/extras/amocrm/logo-lg.png
+logo: https://modstore.pro/assets/extras/amocrm/logo.png
 author: biz87
 modstore: https://modstore.pro/packages/import-and-export/amocrm
 

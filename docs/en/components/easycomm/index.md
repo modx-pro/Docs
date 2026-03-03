@@ -1,7 +1,7 @@
 ---
 title: easyComm
 description: Reviews, comments, Q&A modules and sections
-logo: https://modstore.pro/assets/extras/easycomm/logo-lg.png
+logo: https://modstore.pro/assets/extras/easycomm/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/easycomm
 

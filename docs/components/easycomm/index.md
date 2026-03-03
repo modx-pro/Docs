@@ -1,7 +1,7 @@
 ---
 title: easyComm для MODX &mdash; Документация
 description: Документация по компоненту easyComm для MODX &mdash; создание разделов с отзывами, комментариями, вопросами и ответами.
-logo: https://modstore.pro/assets/extras/easycomm/logo-lg.png
+logo: https://modstore.pro/assets/extras/easycomm/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/easycomm
 

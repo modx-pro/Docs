@@ -1,7 +1,7 @@
 ---
 title: MiniShop3
 description: Современный компонент интернет-магазина для MODX 3
-logo: https://modstore.pro/assets/extras/minishop3/logo-lg.png
+logo: https://modstore.pro/assets/extras/minishop3/logo.png
 author: biz87
 repository: https://github.com/modx-pro/MiniShop3
 

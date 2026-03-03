@@ -1,7 +1,7 @@
 ---
 title: msWallpapers
 description: Advanced wallpaper order form
-logo: https://modstore.pro/assets/extras/mswallpapers/logo-lg.png
+logo: https://modstore.pro/assets/extras/mswallpapers/logo.png
 author: gvozdb
 modstore: https://modstore.pro/packages/other/mswallpapers
 

@@ -1,7 +1,7 @@
 ---
 title: PromoDs
 description: Top page banner
-logo: https://modstore.pro/assets/extras/promods/logo-lg.png
+logo: https://modstore.pro/assets/extras/promods/logo.png
 author: electrica
 modstore: https://modstore.pro/packages/discounts/promods
 ---

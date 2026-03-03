@@ -1,7 +1,7 @@
 ---
 title: mSocial
 description: Постинг в Twitter
-logo: https://modstore.pro/assets/extras/msocial/logo-lg.png
+logo: https://modstore.pro/assets/extras/msocial/logo.png
 author: DevPastet
 modstore: https://modstore.pro/packages/alerts-mailing/msocial
 repository: https://github.com/DevPastet/mSocial

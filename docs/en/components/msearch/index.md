@@ -1,7 +1,7 @@
 ---
 title: mSearch
 description: Full-text search with morphological analysis for MODX 3
-logo: https://modstore.pro/assets/extras/msearch/logo-lg.png
+logo: https://modstore.pro/assets/extras/msearch/logo.png
 author: biz87
 repository: https://github.com/modx-pro/msearch
 
