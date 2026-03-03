@@ -1,7 +1,7 @@
 ---
 title: msMarketingStatuses
 description: Automatic order status management
-logo: https://modstore.pro/assets/components/extras/img/logo.png
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 author: gvozdb
 modstore: https://modstore.pro/packages/integration/msmarketingstatuses
 

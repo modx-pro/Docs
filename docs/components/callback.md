@@ -1,7 +1,9 @@
 ---
 title: CallBack
 description: Компонент для вывода, обработки и ведения журнала заявок на обратный звонок
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 ---
+
 # CallBack
 
 Компонент для вывода, обработки и ведения журнала заявок на обратный звонок.

@@ -1,7 +1,7 @@
 ---
 title: msMarketingStatuses
 description: Компонент позволяет настроить автоматическое управление статусами заказов.
-logo: https://modstore.pro/assets/components/extras/img/logo.png
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 author: gvozdb
 modstore: https://modstore.pro/packages/integration/msmarketingstatuses
 

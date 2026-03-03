@@ -1,6 +1,7 @@
 ---
 title: modVkMarket
 description: Компонент для синхронизации товаров miniShop2 с маркетом ВКонтакте
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 ---
 # modVkMarket
 

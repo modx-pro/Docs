@@ -2,6 +2,7 @@
 title: msBuyNow
 description: Component for the "Buying now" widget — products added to cart recently
 dependencies: miniShop2
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 ---
 
 # msBuyNow

@@ -2,6 +2,7 @@
 title: msOptionsPrice
 description: Component for setting additional product prices based on characteristics
 dependencies: miniShop2
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 ---
 
 # msOptionsPrice

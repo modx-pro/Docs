@@ -1,6 +1,7 @@
 ---
 title: RBK Money
 description: Модуль оплаты RBK Money для miniShop2
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 
 items: [
   { text: 'Выбор способа оплаты на сайте', link: 'choosing-payment-method' },

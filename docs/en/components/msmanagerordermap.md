@@ -1,7 +1,7 @@
 ---
 title: msManagerOrderMap
 description: Shows a map in the order manager, on the Address tab
-logo: https://modstore.pro/assets/components/extras/img/logo.png
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 author: webinmd
 modstore: https://modstore.pro/packages/integration/msmanagerordermap
 repository: https://github.com/webinmd/msManagerOrderMap

@@ -1,7 +1,7 @@
 ---
 title: msProductDiscounts
 description: Создание скидок на товары с широкими возможностями настройки
-logo: https://modstore.pro/assets/components/extras/img/logo.png
+logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 author: shevartv
 modstore: https://modstore.pro/packages/discounts/msproductdiscounts
 
