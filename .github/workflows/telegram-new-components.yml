@@ -2,20 +2,29 @@ name: Telegram New Components
 
 on:
   workflow_dispatch: {}
-  push:
-    branches:
-      - master
-    paths:
-      - "docs/components/**"
+  workflow_run:
+    workflows:
+      - Deploy
+    types:
+      - completed
 
 jobs:
   notify:
-    if: github.repository_owner == 'modx-pro'
+    if: |
+      github.repository_owner == 'modx-pro' &&
+      (
+        github.event_name != 'workflow_run' ||
+        (
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.head_branch == 'master'
+        )
+      )
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - name: Detect new components
         id: detect
@@ -23,11 +32,15 @@ jobs:
         run: |
           set -euo pipefail
 
-          BEFORE_SHA="${{ github.event.before }}"
-          AFTER_SHA="${{ github.sha }}"
-
-          if [[ -z "$BEFORE_SHA" || "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+            AFTER_SHA="${{ github.event.workflow_run.head_sha }}"
             BEFORE_SHA="$(git rev-parse "${AFTER_SHA}^" 2>/dev/null || true)"
+          else
+            AFTER_SHA="${{ github.sha }}"
+            BEFORE_SHA="${{ github.event.before }}"
+            if [[ -z "$BEFORE_SHA" || "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+              BEFORE_SHA="$(git rev-parse "${AFTER_SHA}^" 2>/dev/null || true)"
+            fi
           fi
 
           if [[ -z "$BEFORE_SHA" ]]; then
@@ -119,9 +132,15 @@ jobs:
             description="$(escape_html "$description")"
             author="$(escape_html "$author")"
 
+            if [[ "$file" =~ /index\.md$ ]]; then
+              doc_url="https://docs.modx.pro/components/${slug}/"
+            else
+              doc_url="https://docs.modx.pro/components/${slug}"
+            fi
+
             MESSAGE+="\n<b>${title}</b> — ${description}\n"
             MESSAGE+="Автор: ${author}\n"
-            MESSAGE+="<a href=\"https://docs.modx.pro/components/${slug}/\">Открыть в документации</a>\n"
+            MESSAGE+="<a href=\"${doc_url}\">Ознакомитися с документацией</a>\n"
             count=$((count + 1))
           done <<< "$ADDED_COMPONENTS"
 
