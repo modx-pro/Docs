@@ -2,7 +2,7 @@
 title: Modx3ProfilerToolbar
 description: Тулбар производительности для MODX 3 — метрики запроса, медленные компоненты, таймлайн и SQL без админки
 author: ibochkarev
-
+logo: https://modstore.pro/assets/extras/modx3profilertoolbar/logo.jpg
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },
