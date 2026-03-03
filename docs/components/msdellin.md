@@ -2,7 +2,7 @@
 title: msDellin
 description: Компонент для расчёта стоимости доставки через транспортную компанию «Деловые линии»
 dependencies: miniShop2
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+
 ---
 
 # msDellin

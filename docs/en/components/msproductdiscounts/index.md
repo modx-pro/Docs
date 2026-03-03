@@ -1,7 +1,7 @@
 ---
 title: msProductDiscounts
 description: Creating product discounts with extensive configuration options
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+
 author: shevartv
 modstore: https://modstore.pro/packages/discounts/msproductdiscounts
 

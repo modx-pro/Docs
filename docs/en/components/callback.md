@@ -1,7 +1,7 @@
 ---
 title: CallBack
 description: Component for displaying, processing, and logging callback requests
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+
 ---
 
 # CallBack

@@ -2,7 +2,7 @@
 title: msDellin
 description: Component for calculating delivery cost via Dellin transport company
 dependencies: miniShop2
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+
 ---
 
 # msDellin

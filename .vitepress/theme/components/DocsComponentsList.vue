@@ -61,7 +61,7 @@ const emptyText = computed(() => localeIndex.value === 'en'
       </div>
       <div v-if="components.length" class="list" :class="{ slim: search }">
         <VPLink v-for="component, index in components" :key="index" :href="component.link" class="component">
-          <VPImage :image="component.logo || 'https://modstore.pro/assets/components/extras/img/logo-share.png'" class="logo" loading="lazy" />
+          <VPImage :image="component.logo || '/placeholder-logo.png'" class="logo" loading="lazy" />
           <div class="body">
             <span class="name">{{ component.title }}</span>
             <p v-if="component.description" class="description">

@@ -1,7 +1,6 @@
 ---
 title: ePochta
 description: Component for sending SMS via ePochta API and phone number validation
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
 ---
 # ePochta
 

@@ -1,7 +1,7 @@
 ---
 title: modVkMarket
 description: Component for syncing miniShop2 products with VKontakte market
-logo: https://modstore.pro/assets/components/extras/img/logo-share.png
+
 ---
 # modVkMarket
 
