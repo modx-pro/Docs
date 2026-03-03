@@ -84,7 +84,59 @@ function normalizeMimeType(contentType) {
   if (base === 'image/png' || base === 'image/gif') return base
   // Satori does not support WebP; treat as unsupported and caller will use fallback
   if (base === 'image/webp') return null
+  if (base === 'image/svg+xml') return 'image/svg+xml'
+  if (base.startsWith('text/')) return null
   return 'image/png'
+}
+
+function detectMimeTypeFromBuffer(buf) {
+  if (!buf || buf.length < 4) return null
+
+  // PNG signature
+  if (
+    buf[0] === 0x89 &&
+    buf[1] === 0x50 &&
+    buf[2] === 0x4E &&
+    buf[3] === 0x47
+  ) {
+    return 'image/png'
+  }
+
+  // JPEG signature
+  if (
+    buf[0] === 0xFF &&
+    buf[1] === 0xD8 &&
+    buf[2] === 0xFF
+  ) {
+    return 'image/jpeg'
+  }
+
+  // GIF signature
+  if (
+    buf[0] === 0x47 &&
+    buf[1] === 0x49 &&
+    buf[2] === 0x46 &&
+    buf[3] === 0x38
+  ) {
+    return 'image/gif'
+  }
+
+  // WebP signature: RIFF....WEBP
+  if (
+    buf.length >= 12 &&
+    buf.toString('ascii', 0, 4) === 'RIFF' &&
+    buf.toString('ascii', 8, 12) === 'WEBP'
+  ) {
+    return 'image/webp'
+  }
+
+  // SVG (text payload)
+  const head = buf.subarray(0, Math.min(buf.length, 256)).toString('utf8').trimStart().toLowerCase()
+  if (head.startsWith('<svg') || head.startsWith('<?xml') || head.includes('<svg')) {
+    return 'image/svg+xml'
+  }
+
+  return null
 }
 
 async function fetchLogoDataUrl(url, retries = 2) {
@@ -96,10 +148,14 @@ async function fetchLogoDataUrl(url, retries = 2) {
         headers: { 'User-Agent': 'Docs-modxpro/1.0 (og-image-generator)' },
       })
       if (!res.ok) continue
-      const buf = await res.arrayBuffer()
-      const base64 = Buffer.from(buf).toString('base64')
-      const type = normalizeMimeType(res.headers.get('content-type'))
+      const buf = Buffer.from(await res.arrayBuffer())
+      const detectedType = detectMimeTypeFromBuffer(buf)
+      const headerType = normalizeMimeType(res.headers.get('content-type'))
+      const type = detectedType || headerType
       if (type === null) return null
+      if (type === 'image/webp') return null
+      if (!type.startsWith('image/')) return null
+      const base64 = buf.toString('base64')
       return `data:${type};base64,${base64}`
     } catch {
       // retry on next iteration
