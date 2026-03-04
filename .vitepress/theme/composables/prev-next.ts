@@ -1,11 +1,38 @@
 import { computed } from 'vue'
 import type { ComputedRef } from 'vue'
-import { useData } from 'vitepress'
+import { useData, useRoute } from 'vitepress'
 import { isActive } from 'vitepress/dist/client/shared'
 import { getFlatSideBarLinks } from 'vitepress/dist/client/theme-default/support/sidebar'
 
+function normalizePath(path: string = ''): string {
+  const normalized = path
+    .replace(/[?#].*$/, '')
+    .replace(/\/index(?:\.html?)?$/, '/')
+    .replace(/\.html$/, '')
+    .replace(/\/+$/, '')
+
+  return normalized || '/'
+}
+
+function getNeighbor(candidates: any[], index: number, step: -1 | 1, currentPath: string) {
+  let i = index + step
+
+  while (i >= 0 && i < candidates.length) {
+    const item = candidates[i]
+    const itemPath = normalizePath(item?.link || '')
+    if (item?.link && itemPath !== currentPath) {
+      return item
+    }
+
+    i += step
+  }
+
+  return undefined
+}
+
 export function usePrevNext(): ComputedRef {
   const { page, theme, frontmatter } = useData()
+  const route = useRoute()
 
   return computed(() => {
     const component = page.value.component
@@ -14,8 +41,29 @@ export function usePrevNext(): ComputedRef {
       return ''
     }
 
-    const candidates = getFlatSideBarLinks([component])
-    const index = candidates.findIndex((link) => isActive(page.value.relativePath, link.link))
+    const seen = new Set<string>()
+    const candidates = getFlatSideBarLinks([component]).filter((link) => {
+      if (!link?.link) {
+        return false
+      }
+
+      const normalized = normalizePath(link.link)
+      if (seen.has(normalized)) {
+        return false
+      }
+
+      seen.add(normalized)
+      return true
+    })
+
+    const currentPath = normalizePath(route.path)
+    let index = candidates.findIndex((link) => normalizePath(link.link) === currentPath)
+    if (index === -1) {
+      index = candidates.findIndex((link) => isActive(page.value.relativePath, link.link))
+    }
+
+    const prevLink = index === -1 ? undefined : getNeighbor(candidates, index, -1, currentPath)
+    const nextLink = index === -1 ? undefined : getNeighbor(candidates, index, 1, currentPath)
 
     const hidePrev =
       (theme.value.docFooter?.prev === false && !frontmatter.value.prev) ||
@@ -34,11 +82,11 @@ export function usePrevNext(): ComputedRef {
               : typeof frontmatter.value.prev === 'object'
                   ? frontmatter.value.prev.text
                   : undefined) ??
-                candidates[index - 1]?.docFooterText ??
-                candidates[index - 1]?.text,
+                prevLink?.docFooterText ??
+                prevLink?.text,
             link: (typeof frontmatter.value.prev === 'object'
               ? frontmatter.value.prev.link
-              : undefined) ?? candidates[index - 1]?.link
+              : undefined) ?? prevLink?.link
           },
       next: hideNext
         ? undefined
@@ -48,11 +96,11 @@ export function usePrevNext(): ComputedRef {
               : typeof frontmatter.value.next === 'object'
                   ? frontmatter.value.next.text
                   : undefined) ??
-                candidates[index + 1]?.docFooterText ??
-                candidates[index + 1]?.text,
+                nextLink?.docFooterText ??
+                nextLink?.text,
             link: (typeof frontmatter.value.next === 'object'
               ? frontmatter.value.next.link
-              : undefined) ?? candidates[index + 1]?.link
+              : undefined) ?? nextLink?.link
           },
     }
   })
