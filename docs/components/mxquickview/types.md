@@ -31,28 +31,28 @@ title: Типы рендера
 
 - Проверяется по `mxquickview_allowed_chunk`.
 - Рендер: `$modx->getChunk($name, $props)`.
-- В `$props` доступны поля ресурса, `msProductData`, `variants_*`.
+- В `$props` доступны поля ресурса, `msProductData`, `variants_*` (`has_variants=true|false`, `variants_html`, `variants_json`).
 
 ### Пример
 
 ::: code-group
 
-```html [Fenom]
-<button data-mxqv-click data-mxqv-mode="modal"
-  data-mxqv-action="chunk"
-  data-mxqv-element="mxqv_product"
-  data-mxqv-id="{$id}"
-  data-mxqv-title="{$pagetitle}">
-  mxQuickView
-</button>
-```
-
-```html [MODX]
+```modx
 <button data-mxqv-click data-mxqv-mode="modal"
   data-mxqv-action="chunk"
   data-mxqv-element="mxqv_product"
   data-mxqv-id="[[+id]]"
   data-mxqv-title="[[+pagetitle]]">
+  mxQuickView
+</button>
+```
+
+```fenom
+<button data-mxqv-click data-mxqv-mode="modal"
+  data-mxqv-action="chunk"
+  data-mxqv-element="mxqv_product"
+  data-mxqv-id="{$id}"
+  data-mxqv-title="{$pagetitle}">
   mxQuickView
 </button>
 ```
@@ -75,22 +75,22 @@ title: Типы рендера
 
 ::: code-group
 
-```html [Fenom]
-<button data-mxqv-click data-mxqv-mode="modal"
-  data-mxqv-action="snippet"
-  data-mxqv-element="msCart"
-  data-mxqv-id="{$id}"
-  data-mxqv-title="{$pagetitle}">
-  Корзина
-</button>
-```
-
-```html [MODX]
+```modx
 <button data-mxqv-click data-mxqv-mode="modal"
   data-mxqv-action="snippet"
   data-mxqv-element="msCart"
   data-mxqv-id="[[+id]]"
   data-mxqv-title="[[+pagetitle]]">
+  Корзина
+</button>
+```
+
+```fenom
+<button data-mxqv-click data-mxqv-mode="modal"
+  data-mxqv-action="snippet"
+  data-mxqv-element="msCart"
+  data-mxqv-id="{$id}"
+  data-mxqv-title="{$pagetitle}">
   Корзина
 </button>
 ```
@@ -105,29 +105,31 @@ title: Типы рендера
 
 ### Для разработчика
 
-- Проверяется по `mxquickview_allowed_template`, только если список непустой.
-- Рендер выполняется через `getChunk` по имени/ID, переданному в `element`.
+- Всегда проверяется по `mxquickview_allowed_template`.
+- Пустой `mxquickview_allowed_template` означает, что `template`-рендер запрещён.
+- `element` принимает ID шаблона или `templatename`.
+- Рендер выполняется как обработка ресурса через выбранный шаблон.
 
 ### Пример
 
 ::: code-group
 
-```html [Fenom]
-<button data-mxqv-click data-mxqv-mode="modal"
-  data-mxqv-action="template"
-  data-mxqv-element="12"
-  data-mxqv-id="{$id}"
-  data-mxqv-title="{$pagetitle}">
-  Шаблон
-</button>
-```
-
-```html [MODX]
+```modx
 <button data-mxqv-click data-mxqv-mode="modal"
   data-mxqv-action="template"
   data-mxqv-element="12"
   data-mxqv-id="[[+id]]"
   data-mxqv-title="[[+pagetitle]]">
+  Шаблон
+</button>
+```
+
+```fenom
+<button data-mxqv-click data-mxqv-mode="modal"
+  data-mxqv-action="template"
+  data-mxqv-element="12"
+  data-mxqv-id="{$id}"
+  data-mxqv-title="{$pagetitle}">
   Шаблон
 </button>
 ```
@@ -138,7 +140,7 @@ title: Типы рендера
 
 ## `modal`
 
-- Использует встроенную модалку из `mxQuickView.initialize`.
+- Использует режим из `modalLibrary` (`native`, `bootstrap`, `fancybox`) в `mxQuickView.initialize`.
 - Поддерживает заголовок (`data-mxqv-title`) и навигацию prev/next.
 
 ## `selector`

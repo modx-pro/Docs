@@ -6,8 +6,8 @@ title: Архитектура
 ## Обзор компонентов
 
 - **Сниппет инициализации**: `mxQuickView.initialize`
-  Подключает CSS/JS, публикует `window.mxqvConfig`, выводит HTML встроенной модалки.
-- **Frontend JS**: `assets/components/mxquickview/js/mxqv.js`
+  Подключает CSS/JS, публикует `window.mxqvConfig`, подготавливает режимы модалки `native/bootstrap/fancybox`.
+- **Frontend JS**: `assets/components/mxquickview/js/mxqv.min.js`
   Делегирование событий, AJAX-запросы к connector, отрисовка modal/selector, loop-навигация, ms3Variants-хелперы.
 - **Коннектор**: `assets/components/mxquickview/connector.php`
   Единая HTTP-точка входа для action `render`.
@@ -19,13 +19,15 @@ title: Архитектура
 ## Поток данных (высокоуровнево)
 
 1. Пользователь кликает/наводит на элемент с `data-mxqv-*`.
-2. `mxqv.js` формирует POST-запрос в `connector.php`.
+2. `mxqv.js` формирует POST-запрос в `connector.php` (`mode`, `data_action`, `element`, `id`, `context`, `output`, `modal_library`).
 3. Коннектор валидирует HTTP-метод и `action=render`, затем вызывает `Render::run(...)`.
-4. Процессор проверяет `id`, `element`, `data_action`.
-5. Процессор загружает ресурс, проверяет право просмотра и валидирует whitelist.
-6. Процессор рендерит HTML через `getChunk` или `runSnippet`.
-7. Коннектор возвращает JSON `{success, html|message}`.
-8. JS вставляет HTML в модалку или указанный selector-контейнер.
+4. Процессор:
+   - проверяет `id`, `element`, `data_action`;
+   - загружает ресурс и проверяет право просмотра;
+   - валидирует элемент по whitelist;
+   - рендерит HTML через `getChunk` или `runSnippet`.
+5. Коннектор возвращает JSON `{success, html|message}`.
+6. JS вставляет HTML в выбранную модалку (`native/bootstrap/fancybox`) или в указанный selector-контейнер.
 
 ## Плейсхолдеры рендера
 
@@ -40,13 +42,20 @@ title: Архитектура
 ## Безопасность
 
 - Коннектор обрабатывает только `POST`.
-- Проверяется наличие ресурса (`id`, `deleted=0`).
-- Проверяется контекст ресурса: если передан `context` и он не совпадает с `context_key` ресурса, возвращается `Access denied`.
-- Проверяется опубликованность и окно публикации (`published`, `pub_date`, `unpub_date`), исключение — пользователи с правом `view_unpublished`.
-- ACL проверяется через `checkPolicy('view') || checkPolicy('load') || hasPermission('view')`.
+- Проверяется наличие ресурса (`id`, `deleted=0`) и право `view/load`.
 - Для `chunk` и `snippet` whitelist обязателен.
-- Для `template` whitelist применяется только при непустом `mxquickview_allowed_template`.
+- Для `template` whitelist обязателен; пустой `mxquickview_allowed_template` блокирует template-рендер.
 
 ## Хранилище данных
 
 Компонент не создаёт собственные таблицы БД для quick view-логики: использует ресурсы MODX и (опционально) модели MiniShop3/ms3Variants.
+
+## Файлы и роли
+
+| Файл | Роль |
+| --- | --- |
+| `assets/components/mxquickview/connector.php` | Входная точка AJAX |
+| `core/components/mxquickview/src/Processors/Render.php` | Бизнес-логика рендера |
+| `core/components/mxquickview/elements/snippets/mxqv_initialize.php` | Подключение фронта и разметки модалки |
+| `assets/components/mxquickview/js/mxqv.min.js` | Поведение на клиенте (минифицирован) |
+| `assets/components/mxquickview/css/mxqv.min.css` | Стили модалки и карточки (минифицирован) |
