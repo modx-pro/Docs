@@ -15,33 +15,21 @@ title: Быстрый старт
 
 ::: code-group
 
-```fenom
-{'!mxQuickView.initialize'|snippet}
-```
-
 ```modx
 [[!mxQuickView.initialize]]
 ```
 
+```fenom
+{'!mxQuickView.initialize'|snippet}
+```
+
 :::
 
-## 3. Добавьте кнопку быстрого просмотра в карточке
+## 3. Добавьте кнопку быстрого просмотра
 
 ::: code-group
 
-```html [Fenom]
-<button type="button"
-  data-mxqv-click
-  data-mxqv-mode="modal"
-  data-mxqv-action="chunk"
-  data-mxqv-element="mxqv_product"
-  data-mxqv-id="{$id}"
-  data-mxqv-title="{$pagetitle}">
-  Быстрый просмотр
-</button>
-```
-
-```html [MODX]
+```modx
 <button type="button"
   data-mxqv-click
   data-mxqv-mode="modal"
@@ -53,21 +41,35 @@ title: Быстрый старт
 </button>
 ```
 
+```fenom
+<button type="button"
+  data-mxqv-click
+  data-mxqv-mode="modal"
+  data-mxqv-action="chunk"
+  data-mxqv-element="mxqv_product"
+  data-mxqv-id="{$id}"
+  data-mxqv-title="{$pagetitle}">
+  Быстрый просмотр
+</button>
+```
+
 :::
 
 ## 4. Проверьте whitelist
 
-В настройке `mxquickview_allowed_chunk` должен быть разрешён `mxqv_product` (или ваш кастомный чанк).
+- В `mxquickview_allowed_chunk` должен быть `mxqv_product` (или ваш чанк).
+- Для быстрого просмотра обычных ресурсов добавьте `mxqv_resource`.
+- Для `snippet`/`template` аналогично заполните `mxquickview_allowed_snippet` и `mxquickview_allowed_template`.
 
 ## 5. Проверьте результат
 
-- Клик по кнопке открывает модалку.
+- Клик по кнопке открывает quick view.
 - Контент приходит с `assets/components/mxquickview/connector.php`.
-- При ошибке в модалке показывается `message` из JSON.
+- При ошибке показывается `message` из JSON.
 
 ## Что дальше
 
 - [Системные настройки](settings)
-- [Типы рендера](types)
 - [Интеграция на сайт](integration)
+- [Типы рендера](types)
 - [API и интерфейсы](api)

@@ -7,9 +7,13 @@ title: Потоки
 
 1. Клик по элементу с `data-mxqv-click`.
 2. JS читает `mode`, `data_action`, `element`, `id`, `title`.
-3. Отправляется POST в `connector.php` (`action=render`).
-4. При успехе HTML вставляется в `.qv-modal__content-area`.
-5. Открывается встроенная модалка и диспатчится `mxqv:loaded`.
+3. Для `native/bootstrap` модалка открывается сразу (loading-состояние), затем отправляется POST в `connector.php` (`action=render`, включая `modal_library`).
+4. Для `fancybox` сначала выполняется POST, затем открывается Fancybox уже с полученным HTML.
+5. При успехе HTML вставляется в контейнер выбранного режима:
+   - `native` -> `#mxqv-modal-body .qv-modal__content-area`;
+   - `bootstrap` -> `#mxqv-bootstrap-modal-body .qv-modal__content-area`;
+   - `fancybox` -> текущий slide Fancybox.
+6. После вставки диспатчится `mxqv:loaded`.
 
 ## 2. Рендер по наведению (mouseover)
 
@@ -39,9 +43,11 @@ title: Потоки
 
 ## 6. ms3Variants внутри quick view
 
-1. Процессор подставляет `variants_html` и `variants_json` (если ms3Variants установлен).
-2. JS ищет `.qv-product[data-mxqv-variants="true"]`.
-3. По клику/выбору варианта обновляет цену, old price и изображение.
+1. Процессор для `msProduct` подставляет `has_variants`, `variants_html` и `variants_json` (если ms3Variants установлен).
+2. В чанке `variants_json` вставляется в `data-mxqv-variants-json` через `:htmlent`.
+3. JS ищет `.qv-product[data-mxqv-variants]` и обрабатывает только флаг `true|1|yes|on`.
+4. JS слушает `click` по `[data-variant-id]` и `change` на `select/input` в `.qv-product__variants`.
+5. При выборе варианта обновляет цену, old price и изображение.
 
 ## 7. Поток ошибок
 

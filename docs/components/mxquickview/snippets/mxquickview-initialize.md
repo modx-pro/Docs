@@ -3,35 +3,41 @@ title: mxQuickView.initialize
 ---
 # Сниппет mxQuickView.initialize
 
-Подключает фронтовые ресурсы `mxQuickView` и выводит разметку встроенной модалки.
+Подключает фронтовые ресурсы `mxQuickView`, настраивает `window.mxqvConfig` и выводит HTML контейнер(ы) модалки.
 
 ## Что делает
 
-- Подключает `css/mxqv.css` (если включён `frontCss`).
-- Публикует `window.mxqvConfig` (`connectorUrl`, `mouseoverDelay`, `modalSize`, `modalLibrary`).
-- Подключает `js/mxqv.js` (если включён `frontJs`).
-- Вставляет HTML контейнера модалки (`#mxqv-modal-backdrop`, `#mxqv-modal`).
+- Подключает `css/mxqv.min.css` (если не найден — fallback на `css/mxqv.css`).
+- Публикует `window.mxqvConfig` (`connectorUrl`, `mouseoverDelay`, `modalSize`, `modalLibrary`, `debug`, `loadingText`).
+- Подключает `js/mxqv.min.js` (если не найден — fallback на `js/mxqv.js`).
+- Всегда выводит контейнер нативной модалки (`#mxqv-modal-backdrop`, `#mxqv-modal`).
+- Для `modalLibrary=bootstrap` дополнительно выводит bootstrap-контейнер (`#mxqv-bootstrap-modal`) и подключает Bootstrap CSS/JS.
+- Для `modalLibrary=fancybox` подключает Fancybox CSS/JS.
 
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `frontCss` | из `mxquickview_front_css` | Подключать CSS (`1/0`) |
-| `frontJs` | из `mxquickview_front_js` | Подключать JS (`1/0`) |
 | `modalSize` | из `mxquickview_modal_size` | Размер модалки (`modal-sm`, `modal-lg`, `modal-xl`) |
 | `mouseoverDelay` | из `mxquickview_mouseover_delay` | Задержка hover-загрузки в мс |
-| `modalLibrary` | `native` | Режим для клиентского конфига |
+| `modalLibrary` | `native` | Режим модалки: `native`, `bootstrap`, `fancybox` (`bootstrap5` alias) |
+| `debug` | `0` | Диагностическое логирование в консоль (`[mxqv]`) |
+| `loadingText` | из лексикона `mxqv_loading` | Текст индикатора загрузки |
+| `fancyboxCss` | пусто | override CSS для Fancybox |
+| `fancyboxJs` | пусто | override JS для Fancybox |
+| `bootstrapCss` | пусто | override CSS для Bootstrap |
+| `bootstrapJs` | пусто | override JS для Bootstrap |
 
 ## Использование
 
 ::: code-group
 
-```fenom
-{'!mxQuickView.initialize'|snippet}
-```
-
 ```modx
 [[!mxQuickView.initialize]]
+```
+
+```fenom
+{'!mxQuickView.initialize'|snippet}
 ```
 
 :::
@@ -40,18 +46,22 @@ title: mxQuickView.initialize
 
 ::: code-group
 
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalSize' => 'modal-xl',
-  'mouseoverDelay' => 350
-]}
-```
-
 ```modx
 [[!mxQuickView.initialize?
+  &modalLibrary=`bootstrap`
   &modalSize=`modal-xl`
   &mouseoverDelay=`350`
+  &debug=`1`
 ]]
+```
+
+```fenom
+{'!mxQuickView.initialize'|snippet:[
+  'modalLibrary' => 'bootstrap',
+  'modalSize' => 'modal-xl',
+  'mouseoverDelay' => 350,
+  'debug' => 1
+]}
 ```
 
 :::
