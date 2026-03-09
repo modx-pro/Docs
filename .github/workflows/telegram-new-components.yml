@@ -140,7 +140,7 @@ jobs:
 
             MESSAGE+="\n<b>${title}</b> — ${description}\n"
             MESSAGE+="Автор: ${author}\n"
-            MESSAGE+="<a href=\"${doc_url}\">Ознакомитися с документацией</a>\n"
+            MESSAGE+="<a href=\"${doc_url}\">Ознакомиться с документацией</a>\n"
             count=$((count + 1))
           done <<< "$ADDED_COMPONENTS"
 
