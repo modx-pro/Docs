@@ -370,12 +370,16 @@ title: msProducts
 
 При `includeVendorFields`:
 
+- `{$vendor_position}` — Позиция
 - `{$vendor_name}` — Название
+- `{$vendor_resource_id}` — ID ресурса
 - `{$vendor_country}` — Страна
 - `{$vendor_logo}` — Логотип
 - `{$vendor_address}` — Адрес
 - `{$vendor_phone}` — Телефон
 - `{$vendor_email}` — Email
+- `{$vendor_description}` — Описание
+- `{$vendor_properties}` — Свойства
 
 ### Служебные
 
