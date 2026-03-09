@@ -41,9 +41,47 @@ title: История заказов
 | URL | Режим | Описание |
 |-----|-------|----------|
 | `/cabinet/orders/` | Список | Таблица заказов |
-| `/cabinet/orders/?order_id=15` | Детали | Информация о заказе #15 |
+| `/cabinet/orders/?order=550e8400-...` | Детали | Информация о заказе по UUID |
 | `/cabinet/orders/?status=2` | Фильтр | Заказы со статусом 2 |
 | `/cabinet/orders/?offset=20` | Пагинация | Вторая страница |
+
+::: info UUID в URL заказов
+Начиная с версии 1.6, ссылки на детали заказа используют UUID вместо числового ID. Это безопаснее: не раскрывает количество заказов и не позволяет перебирать чужие заказы подбором ID.
+
+Формат URL: `?order=550e8400-e29b-41d4-a716-446655440000`
+:::
+
+## Отмена заказа покупателем
+
+Покупатель может отменить заказ, если его текущий статус входит в список разрешённых (настройка `ms3_customer_cancel_allowed_statuses`).
+
+### Как это работает
+
+1. Сервер передаёт плейсхолдер `{$can_cancel}` для каждого заказа
+2. Кнопка «Отменить» отображается только при `{$can_cancel} = true`
+3. При нажатии — диалог подтверждения через `ms3Confirm`
+4. API вызов `POST /api/v1/customer/orders/{id}/cancel`
+5. Страница перезагружается после успешной отмены
+
+### Кнопка отмены в чанке
+
+```fenom
+{if $can_cancel}
+<button type="button"
+        class="btn btn-sm btn-outline-danger ms3-order-cancel"
+        data-order-id="{$id}"
+        data-confirm="{'ms3_customer_order_cancel_confirm' | lexicon}">
+    {'ms3_customer_order_cancel' | lexicon}
+</button>
+{/if}
+```
+
+### Системные настройки
+
+| Настройка | По умолчанию | Описание |
+|-----------|--------------|----------|
+| `ms3_customer_cancel_allowed_statuses` | `2,3` | ID статусов, при которых разрешена отмена |
+| `ms3_status_canceled` | `0` | ID статуса, в который переводится отменённый заказ |
 
 ## Плейсхолдеры списка заказов
 
@@ -57,18 +95,21 @@ title: История заказов
 | `{$statuses}` | array | Статусы для фильтра |
 | `{$pagination}` | array | Данные пагинации |
 | `{$customer}` | array | Данные покупателя |
+| `{$api_url}` | string | URL API для JS-операций |
 
 ### В чанке tpl.msCustomer.order.row
 
 | Плейсхолдер | Тип | Описание |
 |-------------|-----|----------|
 | `{$id}` | int | ID заказа |
+| `{$uuid}` | string | UUID заказа (для URL) |
 | `{$num}` | string | Номер заказа (MS-00015) |
 | `{$createdon_formatted}` | string | Дата создания |
 | `{$cost_formatted}` | string | Сумма заказа |
 | `{$status_id}` | int | ID статуса |
 | `{$status_name}` | string | Название статуса |
-| `{$status_color}` | string | Цвет статуса (HEX без #) |
+| `{$status_color}` | string | Цвет статуса (CSS-значение) |
+| `{$can_cancel}` | bool | Можно ли отменить заказ |
 
 ## Чанк списка заказов
 
@@ -77,7 +118,7 @@ title: История заказов
 {extends 'tpl.msCustomer.base'}
 
 {block 'content'}
-<div class="ms3-customer-orders">
+<div class="ms3-customer-orders" data-api-url="{$api_url|default:''}">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">{'ms3_customer_orders_title' | lexicon}</h5>
@@ -183,7 +224,8 @@ title: История заказов
 {* tpl.msCustomer.order.row *}
 <tr>
     <td>
-        <a href="?order_id={$id}" class="fw-semibold text-decoration-none">
+        <a href="{'ms3_customer_orders_page_id' | option | url}?order={$uuid}"
+           class="fw-semibold text-decoration-none">
             №{$num}
         </a>
     </td>
@@ -191,7 +233,7 @@ title: История заказов
         {$createdon_formatted}
     </td>
     <td>
-        <span class="badge" style="background-color: #{$status_color};">
+        <span class="badge" style="background-color: {$status_color};">
             {$status_name}
         </span>
     </td>
@@ -199,9 +241,22 @@ title: История заказов
         {$cost_formatted} {'ms3_frontend_currency' | lexicon}
     </td>
     <td class="text-end">
-        <a href="?order_id={$id}" class="btn btn-sm btn-outline-primary">
-            {'ms3_customer_order_view' | lexicon}
-        </a>
+        <div class="d-flex gap-2 justify-content-end" role="group">
+            <a href="{'ms3_customer_orders_page_id' | option | url}?order={$uuid}"
+               class="btn btn-sm btn-outline-primary"
+               title="{'ms3_customer_order_view' | lexicon}">
+                {'ms3_customer_order_view' | lexicon}
+            </a>
+            {if $can_cancel}
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger ms3-order-cancel"
+                    data-order-id="{$id}"
+                    data-confirm="{'ms3_customer_order_cancel_confirm' | lexicon}"
+                    title="{'ms3_customer_order_cancel' | lexicon}">
+                {'ms3_customer_order_cancel' | lexicon}
+            </button>
+            {/if}
+        </div>
     </td>
 </tr>
 ```
@@ -219,6 +274,7 @@ title: История заказов
 | `{$order.status_color}` | string | Цвет статуса |
 | `{$order.createdon_formatted}` | string | Дата создания |
 | `{$order.comment}` | string | Комментарий к заказу |
+| `{$order.can_cancel}` | bool | Можно ли отменить заказ |
 | `{$products}` | array | Товары заказа |
 | `{$delivery}` | array | Способ доставки |
 | `{$payment}` | array | Способ оплаты |
@@ -253,10 +309,11 @@ title: История заказов
 
 ```fenom
 {* tpl.msCustomer.order.details *}
-<div class="ms3-customer-order-details">
+<div class="ms3-customer-order-details" data-api-url="{$api_url|default:''}">
     {* Навигация назад *}
     <div class="mb-3">
-        <a href="?" class="btn btn-sm btn-outline-secondary">
+        <a href="{'ms3_customer_orders_page_id' | option | url}"
+           class="btn btn-sm btn-outline-secondary">
             ← {'ms3_customer_orders_back' | lexicon}
         </a>
     </div>
@@ -264,14 +321,24 @@ title: История заказов
     {* Информация о заказе *}
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h5 class="mb-0">
                     {'ms3_customer_order_title' | lexicon} №{$order.num}
                 </h5>
-                <span class="badge bg-light text-dark"
-                      style="color: #{$order.status_color} !important;">
-                    {$order.status_name}
-                </span>
+                <div class="d-flex align-items-center gap-2">
+                    {if $order.can_cancel}
+                    <button type="button"
+                            class="btn btn-sm btn-light ms3-order-cancel"
+                            data-order-id="{$order.id}"
+                            data-confirm="{'ms3_customer_order_cancel_confirm' | lexicon}">
+                        {'ms3_customer_order_cancel' | lexicon}
+                    </button>
+                    {/if}
+                    <span class="badge bg-light text-dark"
+                          style="color: {$order.status_color} !important;">
+                        {$order.status_name}
+                    </span>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -283,13 +350,13 @@ title: История заказов
 
             {* Таблица товаров *}
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle ms3-order-table">
                     <thead class="table-light">
                         <tr>
                             <th>{'ms3_cart_title' | lexicon}</th>
-                            <th class="text-center">{'ms3_cart_count' | lexicon}</th>
-                            <th class="text-end">{'ms3_cart_price' | lexicon}</th>
-                            <th class="text-end">{'ms3_cart_cost' | lexicon}</th>
+                            <th class="text-center col-count">{'ms3_cart_count' | lexicon}</th>
+                            <th class="text-end col-price">{'ms3_cart_price' | lexicon}</th>
+                            <th class="text-end col-cost">{'ms3_cart_cost' | lexicon}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -310,20 +377,21 @@ title: История заказов
                                 </div>
                                 {/if}
                             </td>
-                            <td class="text-center">
+                            <td class="text-center text-nowrap">
                                 <span class="badge bg-secondary">
                                     {$product.count} {'ms3_frontend_count_unit' | lexicon}
                                 </span>
                             </td>
-                            <td class="text-end">
+                            <td class="text-end text-nowrap">
                                 {if $product.old_price && $product.old_price > $product.price}
                                 <div class="text-decoration-line-through text-muted small">
                                     {$product.old_price}
                                 </div>
                                 {/if}
                                 <div class="fw-semibold">{$product.price}</div>
+                                <small class="text-muted">{'ms3_frontend_currency' | lexicon}</small>
                             </td>
-                            <td class="text-end fw-bold">
+                            <td class="text-end text-nowrap fw-bold">
                                 {$product.cost} {'ms3_frontend_currency' | lexicon}
                             </td>
                         </tr>
@@ -377,7 +445,17 @@ title: История заказов
                 <br>
                 {$address.street}
                 {if $address.building}, д. {$address.building}{/if}
+                {if $address.entrance}, п. {$address.entrance}{/if}
+                {if $address.floor}, эт. {$address.floor}{/if}
                 {if $address.room}, кв. {$address.room}{/if}
+                {if $address.metro}
+                <br>
+                <small class="text-muted">м. {$address.metro}</small>
+                {/if}
+                {if $address.text_address}
+                <br>
+                <small class="fst-italic text-muted">{$address.text_address}</small>
+                {/if}
             </p>
         </div>
     </div>
@@ -392,7 +470,7 @@ title: История заказов
                     <h6 class="mb-0">{'ms3_frontend_delivery_method' | lexicon}</h6>
                 </div>
                 <div class="card-body">
-                    <p class="mb-0">{$delivery.name}</p>
+                    <p class="mb-0">{$delivery.name | lexicon}</p>
                     {if $delivery.description}
                     <small class="text-muted">{$delivery.description}</small>
                     {/if}
@@ -408,7 +486,7 @@ title: История заказов
                     <h6 class="mb-0">{'ms3_frontend_payment_method' | lexicon}</h6>
                 </div>
                 <div class="card-body">
-                    <p class="mb-0">{$payment.name}</p>
+                    <p class="mb-0">{$payment.name | lexicon}</p>
                     {if $payment.description}
                     <small class="text-muted">{$payment.description}</small>
                     {/if}
@@ -463,20 +541,13 @@ title: История заказов
 ]
 ```
 
-::: tip Цвет статуса
-Цвет хранится в БД без символа `#`. При использовании в CSS добавляйте `#`:
-
-```fenom
-style="background-color: #{$status_color};"
-```
-
-:::
-
 ## Системные настройки
 
 | Настройка | Описание |
 |-----------|----------|
 | `ms3_customer_orders_page_id` | ID страницы заказов |
+| `ms3_customer_cancel_allowed_statuses` | ID статусов, при которых разрешена отмена (через запятую) |
+| `ms3_status_canceled` | ID статуса отменённого заказа |
 
 ## CSS-классы
 
@@ -485,3 +556,4 @@ style="background-color: #{$status_color};"
 | `.ms3-customer-orders` | Контейнер списка заказов |
 | `.ms3-customer-order-details` | Контейнер деталей |
 | `.ms3-order-table` | Таблица заказов |
+| `.ms3-order-cancel` | Кнопка отмены заказа |

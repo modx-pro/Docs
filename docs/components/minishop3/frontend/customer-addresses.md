@@ -92,7 +92,6 @@ title: Адреса доставки
 {extends 'tpl.msCustomer.base'}
 
 {block 'content'}
-<script src="{'assets_url' | option}components/minishop3/js/web/modules/customer-addresses.js"></script>
 <div class="ms3-customer-addresses">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -126,11 +125,12 @@ title: Адреса доставки
         </div>
     </div>
 </div>
-<script>
-new CustomerAddresses().init()
-</script>
 {/block}
 ```
+
+::: info Подключение JS
+Начиная с версии 1.6, отдельный скрипт `customer-addresses.js` не требуется. Управление адресами (set default, delete) встроено в `CustomerUI` и инициализируется автоматически через `ms3.js`.
+:::
 
 ## Чанк строки адреса
 
@@ -355,15 +355,13 @@ new CustomerAddresses().init()
 
 ## JavaScript API
 
-Страница использует класс `CustomerAddresses` для AJAX-операций:
+Управление адресами встроено в `CustomerUI` и работает автоматически через `ms3.js`.
 
-```javascript
-// Инициализация
-new CustomerAddresses().init()
+### API endpoints
 
-// API endpoints
-POST /api/v1/customer/address/set-default  // Установить по умолчанию
-POST /api/v1/customer/address/delete       // Удалить адрес
+```
+PUT    /api/v1/customer/addresses/{id}/set-default  // Установить по умолчанию
+DELETE /api/v1/customer/addresses/{id}               // Удалить адрес
 ```
 
 ### Кнопки действий
@@ -375,6 +373,23 @@ POST /api/v1/customer/address/delete       // Удалить адрес
 <!-- Удалить -->
 <button class="delete-address" data-address-id="5">✕</button>
 ```
+
+При удалении и установке по умолчанию отображается диалог подтверждения (`ms3Confirm`). Текст подтверждения берётся из data-атрибутов строки адреса:
+
+```html
+<div class="list-group-item"
+     data-confirm-set-default="{'ms3_customer_address_set_default_confirm' | lexicon}"
+     data-confirm-delete="{'ms3_customer_address_delete_confirm' | lexicon}">
+```
+
+### Хуки
+
+| Хук | Описание |
+|-----|----------|
+| `beforeSetDefaultAddress` | Перед установкой адреса по умолчанию |
+| `afterSetDefaultAddress` | После установки адреса по умолчанию |
+| `beforeDeleteAddress` | Перед удалением адреса |
+| `afterDeleteAddress` | После удаления адреса |
 
 ## Обработка форм
 
