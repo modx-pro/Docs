@@ -47,16 +47,20 @@ export default class DocsSidebar {
     items: DefaultTheme.SidebarItem[],
     path: string,
   ): DefaultTheme.SidebarItem[] {
-    items = items.map(({ text, link, items }) => {
+    items = items.map(({ text, link, items: subItems, docFooterText }) => {
       const item: DefaultTheme.SidebarItem = { text }
 
       if (link) {
         item.link = join(path, link).replace(/\\/g, '/')
       }
 
-      if (items) {
+      if (docFooterText) {
+        item.docFooterText = docFooterText
+      }
+
+      if (subItems) {
         item.collapsed = true
-        item.items = DocsSidebar.generateSidebarItem(items, path)
+        item.items = DocsSidebar.generateSidebarItem(subItems, path)
       }
 
       return item
