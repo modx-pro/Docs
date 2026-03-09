@@ -44,21 +44,21 @@ GET /api/v1/customer/token/get
 }
 ```
 
-### Использование токена
+### Хранение токена (httpOnly cookie)
 
-Токен передаётся в каждом запросе через параметр `ms3_token`:
+Начиная с версии 1.6, токен хранится в httpOnly cookie `ms3_token`. Сервер автоматически устанавливает cookie при получении/обновлении токена.
 
-```http
-POST /api/v1/cart/add?ms3_token=abc123def456...
-Content-Type: application/json
+::: info Безопасность
+httpOnly cookie недоступна из JavaScript, что защищает токен от XSS-атак. Браузер автоматически передаёт cookie при каждом запросе.
+:::
 
-{
-  "id": 123,
-  "count": 1
-}
-```
+**Порядок разрешения токена на сервере (TokenMiddleware):**
 
-Или через cookie `MS3TOKEN` (автоматически устанавливается JavaScript библиотекой).
+1. Заголовок `Authorization: Bearer {token}` (для мобильных приложений)
+2. Заголовок `HTTP_MS3TOKEN` (legacy)
+3. httpOnly cookie `ms3_token` (основной способ для веба)
+
+Cookie настраивается с учётом параметров MODX-сессии: `session_cookie_domain`, `session_cookie_path`, `session_cookie_secure`, `session_cookie_samesite`.
 
 ## Формат ответов
 
@@ -473,6 +473,7 @@ POST /api/v1/customer/register
 |----------|-----|--------------|----------|
 | `email` | string | Да | Email |
 | `password` | string | Да | Пароль |
+| `password_confirm` | string | Да | Подтверждение пароля |
 | `first_name` | string | Нет | Имя |
 | `last_name` | string | Нет | Фамилия |
 | `phone` | string | Нет | Телефон |
@@ -483,13 +484,32 @@ POST /api/v1/customer/register
 ```json
 {
   "success": true,
-  "data": {
-    "customer_id": 5,
-    "token": "new_token_abc123"
+  "object": {
+    "customer": {
+      "id": 5,
+      "email": "user@example.com",
+      "first_name": "Иван",
+      "last_name": "Петров",
+      "phone": "+79991234567",
+      "email_verified": false
+    },
+    "token": "abc123def456...",
+    "expires_at": "2026-03-16 12:34:56",
+    "email_verification_required": false,
+    "redirect_url": ""
   },
   "message": "Регистрация успешна"
 }
 ```
+
+::: warning Breaking change (v1.6)
+Формат ответа регистрации изменён:
+
+- **Было** (v1.5): `token` — объект `{token: "...", expires_at: "..."}`
+- **Стало** (v1.6): `token` — строка, `expires_at` вынесен на верхний уровень
+
+Кастомные темы, обращающиеся к `result.object.token.token`, нужно обновить на `result.object.token`.
+:::
 
 ### Авторизация
 
@@ -622,6 +642,58 @@ DELETE /api/v1/customer/addresses/{id}
 ```http
 PUT /api/v1/customer/addresses/{id}/set-default
 ```
+
+## Заказы клиента
+
+### Отмена заказа
+
+```http
+POST /api/v1/customer/orders/{id}/cancel
+```
+
+**Требует авторизации** (токен авторизованного клиента)
+
+Отменяет заказ покупателя, если текущий статус заказа входит в список разрешённых (`ms3_customer_cancel_allowed_statuses`).
+
+**Ответ (успех):**
+
+```json
+{
+  "success": true,
+  "message": "Заказ отменён",
+  "data": {
+    "order_id": 15,
+    "status_id": 5
+  }
+}
+```
+
+**Ответ (ошибка — статус не разрешён):**
+
+```json
+{
+  "success": false,
+  "message": "Заказ с текущим статусом не может быть отменён",
+  "code": 400
+}
+```
+
+**Ответ (ошибка — не найден):**
+
+```json
+{
+  "success": false,
+  "message": "Заказ не найден",
+  "code": 404
+}
+```
+
+**Связанные настройки:**
+
+| Настройка | Описание |
+|-----------|----------|
+| `ms3_customer_cancel_allowed_statuses` | ID статусов, при которых разрешена отмена (по умолчанию `2,3`) |
+| `ms3_status_canceled` | ID целевого статуса отмены |
 
 ## Health Check
 

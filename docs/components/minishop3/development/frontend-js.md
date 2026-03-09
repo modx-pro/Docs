@@ -12,9 +12,11 @@ MiniShop3 использует модульную архитектуру JavaScr
 **Ключевые особенности:**
 
 - Модульная структура (core, ui, modules)
-- REST API клиент с токенизацией
+- REST API клиент с httpOnly cookie токенизацией
 - Система хуков для расширения
+- Централизованные селекторы с переопределением
 - Автоматический рендеринг корзины
+- Promise-based диалоги подтверждения
 - События для интеграции
 
 ## Структура модулей
@@ -24,18 +26,21 @@ assets/components/minishop3/js/web/
 ├── core/                    # Ядро системы
 │   ├── ApiClient.js         # HTTP-клиент
 │   ├── TokenManager.js      # Управление токенами
+│   ├── Selectors.js         # Централизованные селекторы
 │   ├── CartAPI.js           # API корзины
 │   ├── OrderAPI.js          # API заказа
 │   └── CustomerAPI.js       # API покупателя
 ├── ui/                      # UI-обработчики
 │   ├── CartUI.js            # Интерфейс корзины
 │   ├── OrderUI.js           # Интерфейс заказа
-│   └── CustomerUI.js        # Интерфейс покупателя
+│   ├── CustomerUI.js        # Интерфейс покупателя (профиль, адреса, отмена заказов)
+│   ├── AuthUI.js            # Формы авторизации и регистрации
+│   ├── QuantityUI.js        # Кнопки +/- количества
+│   └── ProductCardUI.js     # Карточка товара
 ├── modules/                 # Вспомогательные модули
 │   ├── hooks.js             # Система хуков
 │   ├── message.js           # Уведомления
-│   ├── auth-forms.js        # Формы авторизации
-│   └── customer-addresses.js # Управление адресами
+│   └── confirm.js           # Promise-based диалог подтверждения
 ├── lib/                     # Библиотеки
 │   └── izitoast/            # Уведомления iziToast
 ├── ms3.js                   # Главный модуль
@@ -54,6 +59,8 @@ assets/components/minishop3/js/web/
     "[[+jsUrl]]web/lib/izitoast/iziToast.js",
     "[[+jsUrl]]web/modules/hooks.js",
     "[[+jsUrl]]web/modules/message.js",
+    "[[+jsUrl]]web/modules/confirm.js",
+    "[[+jsUrl]]web/core/Selectors.js",
     "[[+jsUrl]]web/core/ApiClient.js",
     "[[+jsUrl]]web/core/TokenManager.js",
     "[[+jsUrl]]web/core/CartAPI.js",
@@ -62,6 +69,9 @@ assets/components/minishop3/js/web/
     "[[+jsUrl]]web/ui/CartUI.js",
     "[[+jsUrl]]web/ui/OrderUI.js",
     "[[+jsUrl]]web/ui/CustomerUI.js",
+    "[[+jsUrl]]web/ui/AuthUI.js",
+    "[[+jsUrl]]web/ui/QuantityUI.js",
+    "[[+jsUrl]]web/ui/ProductCardUI.js",
     "[[+jsUrl]]web/ms3.js"
 ]
 ```
@@ -88,23 +98,79 @@ assets/components/minishop3/js/web/
 [
     "[[+jsUrl]]web/modules/hooks.js",
     "[[+jsUrl]]web/modules/message.js",
+    "[[+jsUrl]]web/modules/confirm.js",
+    "[[+jsUrl]]web/core/Selectors.js",
     "[[+jsUrl]]web/core/ApiClient.js",
     ...
 ]
+```
+
+## Селекторы
+
+### Модуль Selectors.js
+
+Централизованные CSS/data-* селекторы для всех UI-компонентов. Селекторы используют data-атрибуты как приоритетные с fallback на CSS-классы для обратной совместимости.
+
+```javascript
+// Дефолтные селекторы
+{
+  form: '[data-ms3-form], .ms3_form',
+  formOrder: '[data-ms3-form="order"], .ms3_order_form',
+  formCustomer: '[data-ms3-form="customer"], .ms3_customer_form',
+  cartOptions: '[data-ms3-cart-options], .ms3_cart_options',
+  qtyInput: '[data-ms3-qty="input"], .qty-input',
+  qtyInc: '[data-ms3-qty="inc"], .inc-qty',
+  qtyDec: '[data-ms3-qty="dec"], .dec-qty',
+  productCard: '[data-ms3-product-card], .ms3-product-card',
+  fieldError: '[data-ms3-error], .ms3_field_error',
+  orderCost: '#ms3_order_cost',
+  orderCartCost: '#ms3_order_cart_cost',
+  orderDeliveryCost: '#ms3_order_delivery_cost',
+  link: '.ms3_link',
+  orderCancel: '.ms3-order-cancel',
+  addressSetDefault: '.set-default-address',
+  addressDelete: '.delete-address',
+  authLoginForm: '#ms3-login-form',
+  authRegisterForm: '#ms3-register-form',
+  authForgotPassword: '#forgot-password-link'
+}
+```
+
+### Переопределение селекторов
+
+Через `ms3Config.selectors` можно частично переопределить селекторы — они сливаются с дефолтными:
+
+```javascript
+window.ms3Config = {
+  selectors: {
+    orderCancel: '.my-custom-cancel-btn',
+    form: '.my-form-class'
+  }
+}
+```
+
+### Использование в UI-классах
+
+Все UI-классы получают селекторы из `ms3.selectors`:
+
+```javascript
+// Внутри UI-класса
+const forms = document.querySelectorAll(this.selectors.form)
+const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 ```
 
 ## Главный объект ms3
 
 ### Инициализация
 
-Главный объект `ms3` инициализируется автоматически:
+Главный объект `ms3` инициализируется автоматически при загрузке `ms3.js`:
 
 ```javascript
 // assets/components/minishop3/js/web/ms3.js
 
 const ms3 = {
-  // Конфигурация (передаётся с сервера)
   config: {},
+  selectors: {},
 
   // Ядро
   tokenManager: null,
@@ -119,14 +185,17 @@ const ms3 = {
   cartUI: null,
   orderUI: null,
   customerUI: null,
+  authUI: null,
+  quantityUI: null,
+  productCardUI: null,
 
   // Утилиты
   hooks: null,
   message: null,
 
-  // Инициализация
   async init() {
     this.config = window.ms3Config || {}
+    this.selectors = getSelectors(this.config)
 
     // Хуки и сообщения
     this.hooks = window.ms3Hooks
@@ -146,14 +215,18 @@ const ms3 = {
     this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
     this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
     this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
+    this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
 
-    // Инициализация UI
+    // Инициализация
     this.cartUI.init()
     this.orderUI.init()
     this.customerUI.init()
+    this.authUI.init()
 
-    // Обработчики форм
     this.initFormHandler()
+
+    // Событие готовности
+    document.dispatchEvent(new CustomEvent('ms3:ready'))
   }
 }
 ```
@@ -165,8 +238,12 @@ const ms3 = {
 ```javascript
 window.ms3Config = {
   apiUrl: '/assets/components/minishop3/api.php',
-  token: 'abc123...',
   tokenName: 'ms3_token',
+
+  // Переопределение селекторов
+  selectors: {
+    orderCancel: '.my-cancel-button'
+  },
 
   // Конфигурация рендеринга
   render: {
@@ -178,11 +255,26 @@ window.ms3Config = {
 }
 ```
 
+### Событие готовности
+
+```javascript
+document.addEventListener('ms3:ready', () => {
+  // ms3 полностью инициализирован
+  console.log('ms3 ready', ms3.config)
+})
+```
+
 ## Ядро (Core)
 
 ### TokenManager
 
-Управление токенами авторизации с хранением в localStorage:
+Управление токенами авторизации. Токен хранится в httpOnly cookie `ms3_token`, которая устанавливается сервером автоматически.
+
+::: info httpOnly cookie
+Начиная с версии 1.6, токен хранится в httpOnly cookie вместо localStorage. Это значительно повышает безопасность — токен недоступен из JavaScript и защищён от XSS-атак.
+
+Cookie автоматически передаётся браузером при каждом запросе.
+:::
 
 ```javascript
 class TokenManager {
@@ -191,68 +283,27 @@ class TokenManager {
     this.tokenName = config.tokenName || 'ms3_token'
   }
 
-  // Получить токен
-  getToken() {
-    const data = localStorage.getItem(this.tokenName)
-    if (!data) return null
-
-    const { token, expires } = JSON.parse(data)
-    if (Date.now() > expires) {
-      this.removeToken()
-      return null
-    }
-    return token
-  }
-
-  // Сохранить токен
-  setToken(token, ttl = 86400) {
-    const data = {
-      token,
-      expires: Date.now() + (ttl * 1000)
-    }
-    localStorage.setItem(this.tokenName, JSON.stringify(data))
-  }
-
-  // Удалить токен
-  removeToken() {
-    localStorage.removeItem(this.tokenName)
-  }
-
-  // Проверить и получить токен
+  // Проверить наличие токена и получить при необходимости
   async ensureToken() {
-    let token = this.getToken()
-    if (!token) {
-      token = await this.fetchNewToken()
-    }
-    return token
+    // Токен в httpOnly cookie — JS не видит его напрямую.
+    // При отсутствии cookie запрашивает новый токен с сервера
+    return this.fetchNewToken()
   }
 
-  // Запросить новый токен
+  // Запросить новый токен (сервер установит httpOnly cookie)
   async fetchNewToken() {
-    const response = await fetch(`${this.config.apiUrl}?route=/api/v1/token`)
+    const response = await fetch(
+      `${this.config.apiUrl}?route=/api/v1/customer/token/get`
+    )
     const data = await response.json()
-    if (data.success && data.object?.token) {
-      this.setToken(data.object.token, data.object.ttl || 86400)
-      return data.object.token
-    }
-    return null
+    return data.success ? data.data?.token : null
   }
 }
 ```
 
-**Использование:**
-
-```javascript
-// Получить текущий токен
-const token = ms3.tokenManager.getToken()
-
-// Принудительно обновить
-await ms3.tokenManager.fetchNewToken()
-```
-
 ### ApiClient
 
-HTTP-клиент с автоматической подстановкой токена:
+HTTP-клиент. Токен передаётся автоматически через httpOnly cookie:
 
 ```javascript
 class ApiClient {
@@ -265,18 +316,13 @@ class ApiClient {
     const url = new URL(this.baseUrl, window.location.origin)
     url.searchParams.set('route', route)
 
-    const token = this.tokenManager.getToken()
-
     const options = {
       method,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
-      }
-    }
-
-    if (token) {
-      options.headers['Authorization'] = `Bearer ${token}`
+      },
+      credentials: 'same-origin'  // Включает httpOnly cookie
     }
 
     if (data && method !== 'GET') {
@@ -305,33 +351,28 @@ class CartAPI {
     this.api = apiClient
   }
 
-  // Получить корзину
   async get() {
     return this.api.get('/api/v1/cart/get')
   }
 
-  // Добавить товар
   async add(id, count = 1, options = {}, renderTokens = null) {
     return this.api.post('/api/v1/cart/add', {
       id, count, options, render: renderTokens
     })
   }
 
-  // Изменить количество
   async change(key, count, renderTokens = null) {
     return this.api.post('/api/v1/cart/change', {
       key, count, render: renderTokens
     })
   }
 
-  // Удалить товар
   async remove(key, renderTokens = null) {
     return this.api.post('/api/v1/cart/remove', {
       key, render: renderTokens
     })
   }
 
-  // Очистить корзину
   async clean(renderTokens = null) {
     return this.api.post('/api/v1/cart/clean', {
       render: renderTokens
@@ -363,27 +404,22 @@ class OrderAPI {
     this.api = apiClient
   }
 
-  // Добавить/обновить поле
   async add(key, value) {
     return this.api.post('/api/v1/order/add', { key, value })
   }
 
-  // Удалить поле
   async remove(key) {
     return this.api.post('/api/v1/order/remove', { key })
   }
 
-  // Очистить заказ
   async clean() {
     return this.api.post('/api/v1/order/clean')
   }
 
-  // Оформить заказ
   async submit() {
     return this.api.post('/api/v1/order/submit')
   }
 
-  // Получить текущий заказ
   async get() {
     return this.api.get('/api/v1/order/get')
   }
@@ -428,6 +464,26 @@ class CustomerAPI {
   // Удалить адрес
   async deleteAddress(id) {
     return this.api.delete(`/api/v1/customer/addresses/${id}`)
+  }
+
+  // Установить адрес по умолчанию
+  async setDefaultAddress(id) {
+    return this.api.put(`/api/v1/customer/addresses/${id}/set-default`)
+  }
+
+  // Авторизация
+  async login(data) {
+    return this.api.post('/api/v1/customer/login', data)
+  }
+
+  // Регистрация
+  async register(data) {
+    return this.api.post('/api/v1/customer/register', data)
+  }
+
+  // Отмена заказа
+  async cancelOrder(orderId) {
+    return this.api.post(`/api/v1/customer/orders/${orderId}/cancel`)
   }
 }
 ```
@@ -516,7 +572,7 @@ class CartUI {
 ```javascript
 class OrderUI {
   init() {
-    document.querySelectorAll('.ms3_order_form').forEach(form => {
+    document.querySelectorAll(this.selectors.formOrder).forEach(form => {
       this.initForm(form)
     })
   }
@@ -527,12 +583,10 @@ class OrderUI {
       const response = await this.handleAdd(input.name, input.value)
 
       if (response.success) {
-        // Обновить значение из ответа
         if (response.data?.[input.name] !== undefined) {
           input.value = response.data[input.name]
         }
       } else {
-        // Показать ошибку валидации
         input.classList.add('is-invalid')
       }
     })
@@ -560,18 +614,24 @@ class OrderUI {
 
 ### CustomerUI
 
-Обработчик интерфейса покупателя:
+Обработчик интерфейса покупателя. Управляет профилем, адресами и отменой заказов:
 
 ```javascript
 class CustomerUI {
   init() {
-    document.querySelectorAll('.ms3_customer_form').forEach(form => {
+    document.querySelectorAll(this.selectors.formCustomer).forEach(form => {
       this.initForm(form)
     })
+    this.initOrderCancel()
+    this.initAddressManagement()
   }
 
   // Обновление профиля
   async handleProfileUpdate(formData) {
+    const hookData = { formData }
+    await this.hooks.runHooks('beforeUpdateProfile', hookData)
+    if (hookData.cancel) return
+
     const data = {}
     for (const [key, value] of formData.entries()) {
       if (key === 'ms3_action') continue
@@ -580,19 +640,208 @@ class CustomerUI {
 
     const response = await this.customer.updateProfile(data)
 
+    await this.hooks.runHooks('afterUpdateProfile', { response })
+
     if (response.success) {
-      this.message.success('Профиль обновлён')
+      this.message.success(response.message)
       setTimeout(() => window.location.reload(), 1000)
     }
 
     return response
   }
 
-  // Создание адреса
-  async handleAddressCreate(formData) {
-    // Аналогичная логика
+  // Отмена заказа
+  initOrderCancel() {
+    document.querySelectorAll(this.selectors.orderCancel).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const orderId = btn.dataset.orderId
+        const confirmMessage = btn.dataset.confirm
+
+        // Диалог подтверждения с красной кнопкой
+        const confirmed = await ms3Confirm(confirmMessage, {
+          confirmClass: 'danger'
+        })
+        if (!confirmed) return
+
+        const hookData = { orderId }
+        await this.hooks.runHooks('beforeCancelOrder', hookData)
+        if (hookData.cancel) return
+
+        const response = await this.customer.cancelOrder(orderId)
+
+        await this.hooks.runHooks('afterCancelOrder', { orderId, response })
+
+        if (response.success) {
+          this.message.success(response.message)
+          window.location.reload()
+        } else {
+          this.message.error(response.message)
+        }
+      })
+    })
+  }
+
+  // Управление адресами
+  initAddressManagement() {
+    // Установить по умолчанию
+    document.querySelectorAll(this.selectors.addressSetDefault).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.addressId
+        const response = await this.customer.setDefaultAddress(id)
+        if (response.success) window.location.reload()
+      })
+    })
+
+    // Удалить адрес
+    document.querySelectorAll(this.selectors.addressDelete).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.addressId
+        const confirmed = await ms3Confirm(/* сообщение из data-confirm */)
+        if (!confirmed) return
+
+        const response = await this.customer.deleteAddress(id)
+        if (response.success) window.location.reload()
+      })
+    })
   }
 }
+```
+
+### AuthUI
+
+Обработчик форм авторизации и регистрации:
+
+```javascript
+class AuthUI {
+  constructor(customerAPI, hooks, message, config) {
+    this.customer = customerAPI
+    this.hooks = hooks
+    this.message = message
+    this.config = config
+  }
+
+  init() {
+    this.initLoginForm()
+    this.initRegisterForm()
+  }
+
+  // Авторизация
+  async handleLogin(formData) {
+    const hookData = { formData }
+    await this.hooks.runHooks('beforeLogin', hookData)
+    if (hookData.cancel) return
+
+    const response = await this.customer.login({
+      email: formData.get('email'),
+      password: formData.get('password')
+    })
+
+    await this.hooks.runHooks('afterLogin', { response })
+
+    if (response.success) {
+      this.message.success(response.message)
+      // Редирект на страницу профиля или текущую
+      window.location.href = response.data?.redirect_url || window.location.href
+    } else {
+      this.showFormErrors('login', response)
+    }
+  }
+
+  // Регистрация
+  async handleRegister(formData) {
+    const hookData = { formData }
+    await this.hooks.runHooks('beforeRegister', hookData)
+    if (hookData.cancel) return
+
+    const response = await this.customer.register({
+      email: formData.get('email'),
+      password: formData.get('password'),
+      password_confirm: formData.get('password_confirm'),
+      first_name: formData.get('first_name'),
+      last_name: formData.get('last_name'),
+      phone: formData.get('phone'),
+      privacy_accepted: formData.get('privacy_accepted') ? true : false
+    })
+
+    await this.hooks.runHooks('afterRegister', { response })
+
+    if (response.success) {
+      this.message.success(response.message)
+      window.location.href = response.data?.redirect_url || window.location.href
+    } else {
+      this.showFormErrors('register', response)
+    }
+  }
+}
+```
+
+**Чанк авторизации:** `tpl.msCustomer.unauthorized` — содержит формы входа и регистрации с табами (Bootstrap). Инлайн-скрипт экспортирует лексиконы в `window.ms3Lexicon`:
+
+```fenom
+<script>
+window.ms3Lexicon = window.ms3Lexicon || {};
+window.ms3Lexicon.ms3_customer_err_login_required = '{'ms3_customer_err_login_required' | lexicon}';
+window.ms3Lexicon.ms3_customer_login_success = '{'ms3_customer_login_success' | lexicon}';
+{* ... и другие ключи *}
+</script>
+```
+
+## Диалог подтверждения
+
+### Модуль confirm.js
+
+Promise-based диалог подтверждения с Bootstrap Modal и fallback на `window.confirm()`:
+
+```javascript
+// Глобальная функция
+async function ms3Confirm(message, options = {}) → Promise<boolean>
+```
+
+**Параметры options:**
+
+| Параметр | По умолчанию | Описание |
+|----------|--------------|----------|
+| `confirmText` | «Подтвердить» / «Confirm» | Текст кнопки подтверждения |
+| `cancelText` | «Отмена» / «Cancel» | Текст кнопки отмены |
+| `confirmClass` | `primary` | CSS-класс кнопки (primary, danger) |
+
+**Пример использования:**
+
+```javascript
+// Простое подтверждение
+const ok = await ms3Confirm('Вы уверены?')
+if (!ok) return
+
+// С красной кнопкой (для деструктивных действий)
+const ok = await ms3Confirm('Удалить адрес?', {
+  confirmClass: 'danger'
+})
+```
+
+### Автоматическая привязка
+
+i18n кнопок определяется по атрибуту `<html lang>`:
+
+- `lang="ru"` → «Подтвердить» / «Отмена»
+- Другие → «Confirm» / «Cancel»
+
+Текст кнопок можно переопределить через `window.ms3Lexicon`:
+
+```javascript
+window.ms3Lexicon.ms3_confirm_ok = 'Да, удалить'
+window.ms3Lexicon.ms3_confirm_cancel = 'Нет'
+```
+
+### Декларативная привязка
+
+Атрибут `data-ms3-confirm` на любом элементе автоматически показывает диалог перед действием:
+
+```html
+<button data-ms3-confirm="Удалить этот адрес?"
+        data-address-id="5"
+        class="delete-address">
+    Удалить
+</button>
 ```
 
 ## Система хуков
@@ -605,7 +854,6 @@ class CustomerUI {
 const ms3Hooks = {
   hooks: {},
 
-  // Добавить хук
   addHook(name, callback, priority = 10) {
     if (!this.hooks[name]) {
       this.hooks[name] = []
@@ -614,7 +862,6 @@ const ms3Hooks = {
     this.hooks[name].sort((a, b) => a.priority - b.priority)
   },
 
-  // Выполнить хуки
   async runHooks(name, data = {}) {
     if (!this.hooks[name]) return data
 
@@ -664,8 +911,25 @@ const ms3Hooks = {
 | `afterUpdateProfile` | После обновления профиля |
 | `beforeCreateAddress` | Перед созданием адреса |
 | `afterCreateAddress` | После создания адреса |
-| `beforeChangeAddressCustomer` | Перед сменой адреса |
-| `afterChangeAddressCustomer` | После смены адреса |
+| `beforeUpdateAddress` | Перед обновлением адреса |
+| `afterUpdateAddress` | После обновления адреса |
+| `beforeChangeAddressCustomer` | Перед сменой адреса в заказе |
+| `afterChangeAddressCustomer` | После смены адреса в заказе |
+| `beforeSetDefaultAddress` | Перед установкой адреса по умолчанию |
+| `afterSetDefaultAddress` | После установки адреса по умолчанию |
+| `beforeDeleteAddress` | Перед удалением адреса |
+| `afterDeleteAddress` | После удаления адреса |
+| `beforeCancelOrder` | Перед отменой заказа |
+| `afterCancelOrder` | После отмены заказа |
+
+#### Авторизация
+
+| Хук | Описание |
+|-----|----------|
+| `beforeLogin` | Перед авторизацией |
+| `afterLogin` | После авторизации |
+| `beforeRegister` | Перед регистрацией |
+| `afterRegister` | После регистрации |
 
 ### Примеры использования
 
@@ -673,14 +937,12 @@ const ms3Hooks = {
 
 ```javascript
 ms3Hooks.addHook('beforeAddCart', async (data) => {
-  // Проверка минимального количества
   if (data.count < 1) {
     ms3.message.error('Минимальное количество: 1')
     data.cancel = true
     return
   }
 
-  // Проверка обязательных опций
   if (!data.options.size) {
     ms3.message.warning('Выберите размер')
     data.cancel = true
@@ -693,7 +955,6 @@ ms3Hooks.addHook('beforeAddCart', async (data) => {
 
 ```javascript
 ms3Hooks.addHook('afterAddCart', async (data) => {
-  // Отправка в Google Analytics
   gtag('event', 'add_to_cart', {
     currency: 'RUB',
     items: [{
@@ -702,33 +963,26 @@ ms3Hooks.addHook('afterAddCart', async (data) => {
     }]
   })
 
-  // Яндекс.Метрика
   ym(COUNTER_ID, 'reachGoal', 'add_to_cart')
 })
 ```
 
-**Подтверждение очистки корзины:**
+**Дополнительная логика после отмены заказа:**
 
 ```javascript
-ms3Hooks.addHook('beforeCleanCart', async (data) => {
-  if (!confirm('Очистить корзину?')) {
-    data.cancel = true
+ms3Hooks.addHook('afterCancelOrder', async (data) => {
+  if (data.response.success) {
+    ym(COUNTER_ID, 'reachGoal', 'order_cancelled')
   }
 })
 ```
 
-**Обработка ошибок заказа:**
+**Дополнительная логика после регистрации:**
 
 ```javascript
-ms3Hooks.addHook('afterSubmitOrder', async (data) => {
-  if (!data.response.success) {
-    // Подсветить поля с ошибками
-    data.response.errors?.forEach(field => {
-      const input = document.querySelector(`[name="${field}"]`)
-      if (input) {
-        input.classList.add('is-invalid')
-      }
-    })
+ms3Hooks.addHook('afterRegister', async (data) => {
+  if (data.response.success) {
+    gtag('event', 'sign_up', { method: 'email' })
   }
 })
 ```
@@ -765,10 +1019,8 @@ const ms3Message = {
 **Замена на свою библиотеку:**
 
 ```javascript
-// Переопределение после загрузки ms3
 window.ms3Message = {
   show(type, message) {
-    // Ваша реализация
     Toastify({
       text: message,
       className: type,
@@ -787,11 +1039,15 @@ window.ms3Message = {
 ### Подписка на события
 
 ```javascript
+// ms3 инициализирован
+document.addEventListener('ms3:ready', () => {
+  console.log('ms3 готов к работе')
+})
+
 // Обновление корзины
 document.addEventListener('ms3:cart:updated', (e) => {
   console.log('Корзина обновлена:', e.detail)
 
-  // Обновить счётчик в шапке
   const counter = document.querySelector('.cart-counter')
   if (counter) {
     counter.textContent = e.detail.total_count || 0
@@ -803,7 +1059,7 @@ document.addEventListener('ms3:cart:updated', (e) => {
 
 ### Автоматическая обработка форм
 
-MiniShop3 автоматически обрабатывает формы с классом `.ms3_form` и атрибутами `data-ms3-entity` и `data-ms3-method`:
+MiniShop3 автоматически обрабатывает формы с классом `.ms3_form` (или `[data-ms3-form]`). Роутинг определяется по полю `ms3_action`:
 
 ```html
 <!-- Добавление в корзину -->
@@ -819,67 +1075,21 @@ MiniShop3 автоматически обрабатывает формы с кл
 </form>
 ```
 
-### Маршрутизация
-
-```javascript
-// Из ms3.js
-
-initFormHandler() {
-  document.querySelectorAll('.ms3_form').forEach(form => {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-
-      const entity = form.dataset.ms3Entity
-      const method = form.dataset.ms3Method
-      const formData = new FormData(form)
-
-      // Роутинг по entity/method
-      switch (`${entity}/${method}`) {
-        case 'cart/add':
-          await this.cartUI.handleAdd(
-            formData.get('id'),
-            formData.get('count'),
-            this.extractOptions(formData)
-          )
-          break
-
-        case 'order/submit':
-          await this.orderUI.handleSubmit()
-          break
-
-        case 'customer/profile':
-          await this.customerUI.handleProfileUpdate(formData)
-          break
-
-        // ...
-      }
-    })
-  })
-}
-```
-
 ## Расширение и кастомизация
 
 ### Замена API модуля
 
 ```javascript
-// Кастомный CartAPI с дополнительной логикой
 class CustomCartAPI extends CartAPI {
   async add(id, count, options, renderTokens) {
-    // Дополнительная логика перед добавлением
     console.log('Adding product:', id)
-
     const result = await super.add(id, count, options, renderTokens)
-
-    // Дополнительная логика после
     console.log('Product added:', result)
-
     return result
   }
 }
 
-// Замена после инициализации
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('ms3:ready', () => {
   ms3.cartAPI = new CustomCartAPI(ms3.apiClient)
   ms3.cartUI.cart = ms3.cartAPI
 })
@@ -888,22 +1098,15 @@ document.addEventListener('DOMContentLoaded', () => {
 ### Замена UI модуля
 
 ```javascript
-// Кастомный CartUI
 class CustomCartUI extends CartUI {
   async handleAdd(id, count, options) {
-    // Своя анимация перед добавлением
     document.body.classList.add('loading')
-
     await super.handleAdd(id, count, options)
-
     document.body.classList.remove('loading')
   }
 
-  // Переопределение рендеринга
   renderCart(renderData) {
     super.renderCart(renderData)
-
-    // Дополнительные действия после рендеринга
     this.animateCartUpdate()
   }
 
@@ -918,7 +1121,6 @@ class CustomCartUI extends CartUI {
 ### Добавление нового модуля
 
 ```javascript
-// Модуль избранного
 class FavoritesAPI {
   constructor(apiClient) {
     this.api = apiClient
@@ -937,8 +1139,7 @@ class FavoritesAPI {
   }
 }
 
-// Подключение
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('ms3:ready', () => {
   ms3.favoritesAPI = new FavoritesAPI(ms3.apiClient)
 })
 ```
@@ -952,60 +1153,13 @@ window.ms3Lexicon = {
   'ms3_frontend_currency': 'руб.',
   'ms3_frontend_add_to_cart': 'Добавить в корзину',
   'ms3_customer_login_success': 'Вы успешно вошли',
+  'ms3_confirm_ok': 'Подтвердить',
+  'ms3_confirm_cancel': 'Отмена',
   // ...
 }
 ```
 
-### Использование в коде
-
-```javascript
-// В модуле AuthForms
-getLexicon(key) {
-  if (window.ms3Lexicon?.[key]) {
-    return window.ms3Lexicon[key]
-  }
-
-  // Fallback значения
-  const fallbacks = {
-    'ms3_customer_err_login_required': 'Введите email и пароль',
-    'ms3_customer_login_success': 'Вы успешно вошли'
-  }
-
-  return fallbacks[key] || key
-}
-```
-
-## Дополнительные модули
-
-### AuthForms
-
-Обработка форм авторизации и регистрации:
-
-```javascript
-const authForms = new AuthForms({
-  apiUrl: '/assets/components/minishop3/api.php',
-  loginRoute: '/api/v1/customer/login',
-  registerRoute: '/api/v1/customer/register',
-  loginFormId: 'ms3-login-form',
-  registerFormId: 'ms3-register-form'
-})
-
-authForms.init()
-```
-
-### CustomerAddresses
-
-Управление адресами в личном кабинете:
-
-```javascript
-const customerAddresses = new CustomerAddresses({
-  apiUrl: '/assets/components/minishop3/api.php',
-  setDefaultSelector: '.set-default-address',
-  deleteSelector: '.delete-address'
-})
-
-customerAddresses.init()
-```
+### Дополнительные модули
 
 ### order-addresses.js
 
@@ -1029,14 +1183,6 @@ customerAddresses.init()
 - Современные браузеры (ES6+)
 - Без jQuery зависимости
 - Поддержка `fetch`, `Promise`, `async/await`
-
-### Полифиллы
-
-Для поддержки старых браузеров подключите полифиллы:
-
-```html
-<script src="https://polyfill.io/v3/polyfill.min.js?features=fetch,Promise"></script>
-```
 
 ## Связанные страницы
 
