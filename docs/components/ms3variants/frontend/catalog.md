@@ -100,13 +100,21 @@ title: Каталог товаров
 
 ### Модуль ProductCardUI
 
-В комплекте идёт JavaScript модуль для переключения вариантов в каталоге:
+В комплекте идёт JavaScript модуль `ProductCardUI.js`, который заменяет стандартный модуль MiniShop3 и добавляет поддержку вариантов в каталоге.
 
-```fenom
-<script src="{'assets_url' | option}components/ms3variants/js/web/ProductCardUI.js"></script>
+Для подключения замените стандартный `ProductCardUI.js` в системной настройке `ms3_frontend_assets`:
+
+```
+"[[+jsUrl]]web/ui/ProductCardUI.js"
 ```
 
-Модуль автоматически:
+на:
+
+```
+"/assets/components/ms3variants/js/web/ProductCardUI.js"
+```
+
+Модуль полностью совместим со стандартным — карточки без вариантов продолжат работать как раньше. Для карточек с вариантами модуль автоматически:
 - Обрабатывает изменение селектора `.ms3v-select`
 - Показывает/скрывает блоки `.ms3v-variant-block`
 - Переключает изображение в карточке товара

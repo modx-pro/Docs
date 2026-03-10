@@ -97,10 +97,7 @@ items: [
 ### 2. Вывод на странице товара
 
 ```fenom
-{'msProductVariants' | snippet : [
-    'tpl' => 'ms3_variants',
-    'tplRow' => 'ms3_variants_row'
-]}
+{'msProductVariants' | snippet}
 ```
 
 ### 3. Вывод в каталоге

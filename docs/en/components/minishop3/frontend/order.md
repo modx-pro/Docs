@@ -7,43 +7,17 @@ The checkout page is the final step of a purchase. MiniShop3 provides a ready-ma
 
 ## Page structure
 
-| Component | File | Purpose |
-|-----------|------|---------|
-| Page template | `elements/templates/order.tpl` | Page layout, msOrder snippet call |
-| Form chunk | `elements/chunks/ms3_order.tpl` | Checkout form |
+| Component | File | Chunk name in DB | Purpose |
+|-----------|------|------------------|---------|
+| Page template | `elements/templates/order.tpl` | — | Page layout, msOrder snippet call |
+| Form chunk | `elements/chunks/ms3_order.tpl` | `tpl.msOrder` | Checkout form |
 
-## Order page template
-
-**Path:** `core/components/minishop3/elements/templates/order.tpl`
-
-The template extends the base template and contains:
+### Snippet call
 
 ```fenom
-{extends 'file:templates/base.tpl'}
-{block 'pagecontent'}
-    <div class="container py-4">
-        {* Breadcrumbs *}
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="/">{'site_name' | option}</a>
-                </li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    {$_modx->resource.pagetitle}
-                </li>
-            </ol>
-        </nav>
-
-        <main>
-            <h1 class="mb-4">{$_modx->resource.pagetitle}</h1>
-
-            {* Order form *}
-            {'!msOrder' | snippet: [
-                'tpl' => 'tpl.msOrder'
-            ]}
-        </main>
-    </div>
-{/block}
+{'!msOrder' | snippet : [
+    'tpl' => 'tpl.msOrder'
+]}
 ```
 
 ::: warning Caching
@@ -52,265 +26,67 @@ The msOrder snippet must be called **uncached** (`!msOrder`), as it works with t
 
 ## Order form
 
-**Path:** `core/components/minishop3/elements/chunks/ms3_order.tpl`
-
-**Chunk name in DB:** `tpl.msOrder`
-
 The form contains the following sections:
 
-### Form sections
-
 | Section | Description |
-|--------|-------------|
-| Empty cart | Message and link to catalog |
-| Contact details | First name, last name, email, phone |
-| Delivery methods | Radio buttons with price and description |
-| Payment methods | Radio buttons with description |
-| Delivery address | City, street, building, apartment/office |
-| Saved addresses | Choice from previously used addresses (for logged-in users) |
-| Comment | Textarea for order notes |
-| Totals | Products cost, delivery, discount, total |
+|---------|-------------|
+| Empty cart | Message and link to catalog (if cart is empty) |
+| Contact details | First name, last name, email, phone, comment |
+| Payment methods | Radio buttons with logo and description |
+| Delivery methods | Radio buttons with logo and description |
+| Delivery address | Postal code, region, city, street, building, entrance, floor, apartment |
+| Saved addresses | Dropdown of previously saved addresses (for logged-in customers) |
+| Totals panel | Products cost, delivery cost, total, cancel and submit buttons |
 
-### Cart check
+### Placeholders
 
-At the beginning of the form, the presence of products is checked:
+The following data is available in the form chunk:
 
-```fenom
-{if $isCartEmpty}
-    <div class="alert alert-info">
-        <p>Your cart is empty.</p>
-        <a href="/" class="btn btn-primary">Back to catalog</a>
-    </div>
-{else}
-    {* Order form *}
-{/if}
-```
+| Placeholder | Type | Description |
+|-------------|------|-------------|
+| `$isCartEmpty` | bool | Cart is empty |
+| `$form` | array | Form field values (`$form.first_name`, `$form.email`, etc.) |
+| `$order` | array | Order data (`$order.cost`, `$order.delivery_cost`, `$order.cart_cost`) |
+| `$deliveries` | array | Delivery methods |
+| `$payments` | array | Payment methods |
+| `$addresses` | array | Customer's saved addresses |
+| `$isCustomerAuth` | bool | Customer is logged in |
 
-### Contact details
+### Delivery and payment relationship
 
-```fenom
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">Contact details</legend>
+Each delivery contains a `payments` array with IDs of available payment methods. JavaScript automatically filters payments when delivery changes.
 
-    <div class="row g-3">
-        <div class="col-md-6">
-            <label class="form-label">First name *</label>
-            <input type="text"
-                   class="form-control"
-                   name="first_name"
-                   value="{$form.first_name}"
-                   required>
-        </div>
+## Validation
 
-        <div class="col-md-6">
-            <label class="form-label">Last name</label>
-            <input type="text"
-                   class="form-control"
-                   name="last_name"
-                   value="{$form.last_name}">
-        </div>
+### How field validation works
 
-        <div class="col-md-6">
-            <label class="form-label">Email *</label>
-            <input type="email"
-                   class="form-control"
-                   name="email"
-                   value="{$form.email}"
-                   required>
-        </div>
+Required fields and validation rules are **configured per delivery method** in the admin panel. This allows, for example, requiring a full address for courier delivery but only an email for pickup.
 
-        <div class="col-md-6">
-            <label class="form-label">Phone *</label>
-            <input type="tel"
-                   class="form-control"
-                   name="phone"
-                   value="{$form.phone}"
-                   required>
-        </div>
-    </div>
-</fieldset>
-```
+Detailed documentation on setting up validation rules — in the [Delivery settings  → Order field validation](/en/components/minishop3/interface/settings/deliveries#order-field-validation) section.
 
-### Delivery methods
+### Validation process
 
-Deliveries are output from the `$deliveries` array:
+1. When a field value is set (`ms3.order.setField`) — the server validates it against the delivery rules
+2. When the order is submitted — the server checks that all required fields are filled
+3. On error — the frontend highlights the problematic fields
+
+### Error display
+
+Each form field contains an `.invalid-feedback` container. On validation error, JavaScript adds the `is-invalid` class to the field and the error text to the container:
 
 ```fenom
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">Delivery method</legend>
-
-    {foreach $deliveries as $delivery}
-        <div class="form-check mb-2">
-            <input class="form-check-input"
-                   type="radio"
-                   name="delivery_id"
-                   id="delivery_{$delivery.id}"
-                   value="{$delivery.id}"
-                   {if $order.delivery_id == $delivery.id}checked{/if}>
-            <label class="form-check-label" for="delivery_{$delivery.id}">
-                {if $delivery.logo}
-                    <img src="{$delivery.logo}" alt="" class="me-2" style="height: 24px;">
-                {/if}
-                <strong>{$delivery.name}</strong>
-                {if $delivery.price > 0}
-                    <span class="text-muted ms-2">+{$delivery.price}</span>
-                {else}
-                    <span class="text-success ms-2">Free</span>
-                {/if}
-                {if $delivery.description}
-                    <small class="d-block text-muted">{$delivery.description}</small>
-                {/if}
-            </label>
-        </div>
-    {/foreach}
-</fieldset>
+<input type="text" name="email" class="form-control"
+       value="{$form.email}">
+<div class="invalid-feedback"></div>
 ```
 
-### Payment methods
+### Checkbox validation
 
-Payments are filtered by selected delivery via JavaScript:
+For a required checkbox (e.g., terms agreement), use the `accepted` rule in the delivery settings. It validates that the value is `"yes"`, `"on"`, `"1"`, or `true`.
 
-```fenom
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">Payment method</legend>
-
-    {foreach $payments as $payment}
-        <div class="form-check mb-2">
-            <input class="form-check-input"
-                   type="radio"
-                   name="payment_id"
-                   id="payment_{$payment.id}"
-                   value="{$payment.id}"
-                   {if $order.payment_id == $payment.id}checked{/if}>
-            <label class="form-check-label" for="payment_{$payment.id}">
-                {if $payment.logo}
-                    <img src="{$payment.logo}" alt="" class="me-2" style="height: 24px;">
-                {/if}
-                <strong>{$payment.name}</strong>
-                {if $payment.description}
-                    <small class="d-block text-muted">{$payment.description}</small>
-                {/if}
-            </label>
-        </div>
-    {/foreach}
-</fieldset>
-```
-
-### Delivery address
-
-```fenom
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">Delivery address</legend>
-
-    <div class="row g-3">
-        <div class="col-12">
-            <label class="form-label">City</label>
-            <input type="text"
-                   class="form-control"
-                   name="city"
-                   value="{$form.city}">
-        </div>
-
-        <div class="col-12">
-            <label class="form-label">Street</label>
-            <input type="text"
-                   class="form-control"
-                   name="street"
-                   value="{$form.street}">
-        </div>
-
-        <div class="col-md-6">
-            <label class="form-label">Building</label>
-            <input type="text"
-                   class="form-control"
-                   name="building"
-                   value="{$form.building}">
-        </div>
-
-        <div class="col-md-6">
-            <label class="form-label">Apartment / office</label>
-            <input type="text"
-                   class="form-control"
-                   name="room"
-                   value="{$form.room}">
-        </div>
-    </div>
-</fieldset>
-```
-
-### Saved addresses
-
-For logged-in customers, a list of previously used addresses is displayed:
-
-```fenom
-{if $isCustomerAuth && $addresses}
-    <fieldset class="mb-4">
-        <legend class="h5 mb-3">Saved addresses</legend>
-
-        <div class="list-group">
-            {foreach $addresses as $address}
-                <button type="button"
-                        class="list-group-item list-group-item-action"
-                        data-address-id="{$address.id}"
-                        data-city="{$address.city}"
-                        data-street="{$address.street}"
-                        data-building="{$address.building}"
-                        data-room="{$address.room}">
-                    {$address.city}, {$address.street}, bld. {$address.building}
-                    {if $address.room}, apt. {$address.room}{/if}
-                </button>
-            {/foreach}
-        </div>
-    </fieldset>
-{/if}
-```
-
-When an address is clicked, JavaScript fills the form fields with the corresponding data.
-
-### Totals panel
-
-Right column with order totals:
-
-```fenom
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">Your order</h5>
-    </div>
-    <div class="card-body">
-        <dl class="row mb-0">
-            <dt class="col-7">Products:</dt>
-            <dd class="col-5 text-end">{$order.cart_cost}</dd>
-
-            <dt class="col-7">Delivery:</dt>
-            <dd class="col-5 text-end">{$order.delivery_cost}</dd>
-
-            {if $order.discount_cost != '0'}
-                <dt class="col-7 text-success">Discount:</dt>
-                <dd class="col-5 text-end text-success">−{$order.discount_cost}</dd>
-            {/if}
-        </dl>
-
-        <hr>
-
-        <div class="d-flex justify-content-between align-items-center">
-            <strong class="fs-5">Total:</strong>
-            <strong class="fs-4">{$order.cost}</strong>
-        </div>
-    </div>
-
-    <div class="card-footer">
-        <button type="submit" class="btn btn-primary btn-lg w-100">
-            Place order
-        </button>
-    </div>
-</div>
-```
-
-## JavaScript interaction
+## JavaScript API
 
 ### ms3.order object
-
-MiniShop3 provides a JavaScript API for working with the order:
 
 ```javascript
 // Place order
@@ -326,7 +102,7 @@ ms3.order.setPayment(paymentId);
 ms3.order.setField('city', 'Moscow');
 ```
 
-### Event handling
+### Events
 
 ```javascript
 // Before order submission
@@ -338,7 +114,6 @@ document.addEventListener('ms3:order:before-submit', (e) => {
 // After successful checkout
 document.addEventListener('ms3:order:success', (e) => {
     console.log('Order created:', e.detail.order_id);
-    // Automatic redirect to success page
     window.location.href = e.detail.redirect;
 });
 
@@ -358,74 +133,34 @@ document.addEventListener('ms3:order:payment-changed', (e) => {
 });
 ```
 
-### Address autofill
+## Server events
 
-Example of handling a click on a saved address:
+### Order field events
 
-```javascript
-document.querySelectorAll('[data-address-id]').forEach(btn => {
-    btn.addEventListener('click', function() {
-        // Fill form fields
-        document.querySelector('[name="city"]').value = this.dataset.city;
-        document.querySelector('[name="street"]').value = this.dataset.street;
-        document.querySelector('[name="building"]').value = this.dataset.building;
-        document.querySelector('[name="room"]').value = this.dataset.room;
+| Event | When | Parameters |
+|-------|------|------------|
+| `msOnBeforeAddToOrder` | Before adding a field | `key`, `value`, `draft` |
+| `msOnAddToOrder` | After adding a field | `key`, `value`, `draft` |
+| `msOnBeforeRemoveFromOrder` | Before removing a field | `key`, `draft` |
+| `msOnRemoveFromOrder` | After removing a field | `key`, `draft` |
 
-        // Update data on server
-        ms3.order.setField('city', this.dataset.city);
-        ms3.order.setField('street', this.dataset.street);
-        ms3.order.setField('building', this.dataset.building);
-        ms3.order.setField('room', this.dataset.room);
-    });
-});
-```
+### Validation events
 
-## Form validation
+| Event | When | Parameters |
+|-------|------|------------|
+| `msOnBeforeValidateOrderValue` | Before value validation | `key`, `value`, `orderData` |
+| `msOnValidateOrderValue` | Validation passed | `key`, `value` |
+| `msOnErrorValidateOrderValue` | Validation error | `key`, `value`, `error` |
 
-### Required fields
+### Checkout events
 
-By default, the following are required:
-
-- `first_name` — First name
-- `email` — Email
-- `phone` — Phone
-
-### Error display
-
-The `$errors` array contains the names of fields with errors:
-
-```fenom
-<input type="text"
-       name="email"
-       class="form-control {if 'email'|in:$errors}is-invalid{/if}"
-       value="{$form.email}">
-{if 'email'|in:$errors}
-    <div class="invalid-feedback">Enter a valid email</div>
-{/if}
-```
-
-## Delivery and payment relationship
-
-Each delivery contains a `payments` array with IDs of available payment methods:
-
-```fenom
-{foreach $deliveries as $delivery}
-    <input type="radio"
-           name="delivery_id"
-           value="{$delivery.id}"
-           data-payments="{$delivery.payments|json_encode}">
-{/foreach}
-```
-
-JavaScript uses this data to filter payments when delivery changes.
+| Event | When | Parameters |
+|-------|------|------------|
+| `msOnSubmitOrder` | Before checkout starts | `handler`, `draft`, `orderData`, `data` |
+| `msOnBeforeCreateOrder` | Before order creation | `handler`, `msOrder` |
+| `msOnCreateOrder` | After order creation | `handler`, `msOrder` |
 
 ## Customization
-
-### Changing the page template
-
-1. Copy `order.tpl` to your theme
-2. Change the layout and msOrder snippet parameters
-3. Assign the template to the checkout page
 
 ### Changing the order form
 
@@ -433,41 +168,49 @@ JavaScript uses this data to filter payments when delivery changes.
 2. Specify it in the call: `'tpl' => 'tpl.myOrder'`
 3. Use the available placeholders from the [msOrder documentation](/en/components/minishop3/snippets/msorder)
 
-### Adding fields
+### Adding custom fields
 
-To add custom fields:
+Custom fields (not part of the standard order model) are handled in two steps:
 
-1. Add the field to the form chunk
-2. Handle it in a plugin on the `msOnBeforeOrderCreate` event
-3. Save it in order properties or user profile
+**1. Validation** — via [delivery validation rules](/en/components/minishop3/interface/settings/deliveries#order-field-validation).
+
+Add the field in JSON mode of the delivery settings:
+
+```json
+{
+  "first_name": "required",
+  "email": "required|email",
+  "agree": "accepted"
+}
+```
+
+**2. Saving** — via a plugin, if the custom field value needs to be stored in the order.
+
+Standard fields (`first_name`, `email`, `city`, etc.) are saved automatically. Custom fields (not in the `msOrder` / `msOrderAddress` model) need to be saved to the order's `properties` via a plugin:
 
 ```php
-// Plugin to save custom field
 switch ($modx->event->name) {
-    case 'msOnBeforeOrderCreate':
-        $properties = $order->get('properties') ?: [];
-        $properties['custom_field'] = $_POST['custom_field'] ?? '';
-        $order->set('properties', $properties);
+    case 'msOnBeforeCreateOrder':
+        // $msOrder is available from event parameters
+        $address = $msOrder->Address;
+        if ($address) {
+            $properties = $msOrder->get('properties') ?: [];
+            $properties['agree'] = $address->get('properties')['agree'] ?? '';
+            $msOrder->set('properties', $properties);
+        }
         break;
 }
 ```
 
-## Responsive layout
+::: tip
+If a custom field is used only for validation (e.g., an "I agree to the terms" checkbox), saving it is not necessary — the `accepted` rule in the delivery settings is sufficient.
+:::
 
-The form uses Bootstrap 5 Grid with responsive columns:
+### Responsive layout
 
-| Screen | Form | Totals |
-|--------|------|--------|
-| < 992px | 12 columns (100%) | 12 columns (100%) |
-| ≥ 992px | 8 columns (~66%) | 4 columns (~33%) |
+The form uses Bootstrap 5 Grid:
 
-```html
-<div class="row">
-    <div class="col-lg-8">
-        {* Order form *}
-    </div>
-    <div class="col-lg-4">
-        {* Totals panel *}
-    </div>
-</div>
-```
+| Screen | Columns |
+|--------|---------|
+| < 992px | One section per row (100%) |
+| ≥ 992px | Two sections per row (50% + 50%) |

@@ -46,7 +46,8 @@ title: Страница товара
      data-variant-price="{$price}"
      data-variant-old-price="{$old_price}"
      data-variant-count="{$count}"
-     data-variant-sku="{$sku}">
+     data-variant-sku="{$sku}"
+     data-variant-weight="{$weight}">
 
     {* Изображение *}
     {if $image_url?}
@@ -81,29 +82,73 @@ title: Страница товара
 </div>
 ```
 
-## Интеграция с формой корзины
+## Обновление данных на странице
 
-Варианты должны находиться внутри формы добавления в корзину:
+При выборе варианта JavaScript автоматически обновляет элементы с `data-ms3v-*` атрибутами на странице:
+
+| Атрибут | Описание | Обновляемое значение |
+|---------|----------|---------------------|
+| `data-ms3v-price` | Текущая цена | Форматированная цена варианта |
+| `data-ms3v-old-price` | Старая цена | Показывается/скрывается автоматически |
+| `data-ms3v-sku` | Артикул | SKU варианта |
+| `data-ms3v-weight` | Вес | Показывается/скрывается автоматически |
+| `data-ms3v-stock` | Остаток | Количество на складе |
+| `data-ms3v-image` | Изображение | URL изображения варианта |
+| `data-ms3v-field="{поле}"` | Произвольное поле | Значение из данных варианта |
+
+### Пример разметки
+
+Добавьте эти атрибуты к элементам в шаблоне страницы товара:
 
 ```fenom
-<form method="post" class="ms3_form" data-ms-form>
+{* Артикул — всегда в DOM, обновляется при выборе варианта *}
+<span class="text-muted">Артикул: <strong data-ms3v-sku>{$article}</strong></span>
+
+{* Цена *}
+<div class="product-price">
+    <div data-ms3v-old-price
+         {if !$old_price || $old_price <= 0}style="display:none"{/if}>
+        {if $old_price? && $old_price > 0}{$old_price} ₽{/if}
+    </div>
+    <div data-ms3v-price>
+        {$price ?: 0} ₽
+    </div>
+</div>
+
+{* Вес *}
+<strong data-ms3v-weight>{$weight} кг</strong>
+```
+
+::: warning Элементы должны быть в DOM
+Элемент с `data-ms3v-old-price` должен всегда присутствовать в HTML (не внутри `{if}`). JS сам управляет его видимостью через `style.display`. Если элемент обёрнут в Fenom-условие и не отрендерен — JS не сможет его обновить.
+:::
+
+В комплекте идёт пример шаблона страницы товара с уже расставленными атрибутами:
+`core/components/ms3variants/elements/templates/product_variants.tpl`
+
+## Интеграция с формой корзины
+
+Сниппет вызывается рядом с формой корзины. При выборе варианта JS автоматически находит форму `.ms3_form` на странице и обновляет поле `options`:
+
+```fenom
+{* Варианты *}
+{'msProductVariants' | snippet}
+
+{* Форма добавления в корзину *}
+<form method="post" class="ms3_form" data-cart-state="add">
     <input type="hidden" name="id" value="{$_modx->resource.id}">
     <input type="hidden" name="count" value="1">
-    <input type="hidden" name="options" value="{}">
+    <input type="hidden" name="options" value="[]">
+    <input type="hidden" name="ms3_action" value="cart/add">
 
-    {* Варианты *}
-    {'msProductVariants' | snippet}
-
-    <button type="submit" name="ms3_action" value="cart/add">
-        В корзину
-    </button>
+    <button type="submit">В корзину</button>
 </form>
 ```
 
 При выборе варианта JavaScript автоматически:
 1. Заполняет скрытое поле `_variant_id`
-2. Обновляет поле `options` с данными варианта
-3. Обновляет отображаемую цену (если настроено)
+2. Обновляет поле `options` с `_variant_id` выбранного варианта
+3. Обновляет элементы с `data-ms3v-*` атрибутами
 
 ## JavaScript API
 
@@ -117,41 +162,65 @@ JavaScript инициализируется автоматически для э
 const variants = new ms3Variants({
     productId: 42,
     containerId: 'ms3variants-42',
+    priceFormat: {
+        decimals: 0,
+        decPoint: ',',
+        thousandsSep: ' ',
+        currency: '₽',
+        currencyPosition: 'after'
+    },
     onSelect: function(variantData) {
         console.log('Выбран вариант:', variantData);
     }
 });
 ```
 
+### Настройка формата цены
+
+Формат цены можно задать через data-атрибуты контейнера:
+
+```fenom
+<div data-ms3v-init
+     data-ms3v-product-id="{$product_id}"
+     data-ms3v-price-decimals="0"
+     data-ms3v-price-currency="₽"
+     data-ms3v-price-currency-position="after"
+     data-ms3v-price-thousands-sep=" "
+     data-ms3v-price-dec-point=",">
+```
+
 ### Методы
 
 ```javascript
-// Получить текущий выбранный вариант
-const current = variants.currentVariant;
+// Получить ID текущего выбранного варианта
+const currentId = variants.getSelectedVariant();
 
 // Выбрать вариант программно
-variants.selectVariant(variantId);
+variants.setVariant(variantId);
 
-// Получить данные варианта
-const data = variants.getVariantData(variantId);
+// Сбросить выбор
+variants.reset();
 ```
 
 ### События
 
-При выборе варианта генерируется событие:
+При выборе варианта генерируется событие `ms3variants:selected`:
 
 ```javascript
 document.addEventListener('ms3variants:selected', function(e) {
     console.log('Product ID:', e.detail.productId);
-    console.log('Variant ID:', e.detail.variantId);
+    console.log('Variant ID:', e.detail.id);
     console.log('Price:', e.detail.price);
-    console.log('Options:', e.detail.options);
+    console.log('Old price:', e.detail.old_price);
+    console.log('SKU:', e.detail.sku);
+    console.log('Count:', e.detail.count);
+    console.log('Weight:', e.detail.weight);
 });
 ```
 
 ## Интеграция с галереей
 
-При выборе варианта генерируется событие для переключения изображения в галерее:
+При выборе варианта с изображением генерируется событие `ms3variants:image-change`:
 
 ```javascript
 document.addEventListener('ms3variants:image-change', function(e) {
@@ -190,27 +259,6 @@ document.addEventListener('ms3variants:image-change', function(e) {
 
     // Ваш код переключения галереи
     myGallery.goToSlide(imageUrl);
-});
-```
-
-## Обновление цены на странице
-
-При выборе варианта можно обновлять цену:
-
-```javascript
-document.addEventListener('ms3variants:selected', function(e) {
-    const priceEl = document.querySelector('.product-price');
-    if (priceEl) {
-        priceEl.textContent = e.detail.price + ' ₽';
-    }
-
-    const oldPriceEl = document.querySelector('.product-old-price');
-    if (oldPriceEl && e.detail.oldPrice > 0) {
-        oldPriceEl.textContent = e.detail.oldPrice + ' ₽';
-        oldPriceEl.style.display = 'block';
-    } else if (oldPriceEl) {
-        oldPriceEl.style.display = 'none';
-    }
 });
 ```
 
