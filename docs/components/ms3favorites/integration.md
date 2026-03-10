@@ -200,7 +200,7 @@ title: Интеграция и кастомизация
 <button data-favorites-toggle data-id="123" data-list="gifts">В подарки</button>
 ```
 
-**Dropdown выбора списка** — чанк `tplFavoritesListSelector` или сниппет [ms3FavoritesLists](snippets/ms3FavoritesLists):
+**Dropdown выбора списка** — чанк `tplFavoritesListSelector` или сниппет [ms3FavoritesLists](snippets/ms3FavoritesLists). Ссылки на страницу списка формируются по настройке **ms3favorites.list_page** (по умолчанию `wishlist/`):
 
 ::: code-group
 ```modx
@@ -315,15 +315,22 @@ window.ms3fConfig.debug = true;       // логи в консоль
 
 ## PHP helper для получения ID
 
-Для гибкой логики (msProducts, кастомные фильтры) используйте функцию:
+Для гибкой логики (msProducts, кастомные фильтры) используйте функции:
 
 ```php
 require_once $modx->getOption('core_path') . 'components/ms3favorites/include/helpers.php';
+
+// Авторизованные и гости (при guest_db_enabled) — из БД
 $ids = ms3f_get_ids_for_current_user($modx, 'default', 'products', 'added_at_desc');
 $modx->setPlaceholder('favorites_ids', implode(',', $ids));
+
+// Гости при пустой БД — из cookie (если storage_type=cookie)
+$ids = ms3f_get_ids_from_cookie($modx, 'default', 'products');
 ```
 
-Параметры: `listName`, `resourceType`, `sortBy` (added_at_desc | added_at_asc). Для гостей при пустой БД используйте `ms3f_get_ids_from_cookie($modx, $listName, $resourceType)`.
+**ms3f_get_ids_for_current_user** — параметры: `listName`, `resourceType`, `sortBy` (`added_at_desc` | `added_at_asc`).
+
+**ms3f_get_ids_from_cookie** — для гостей, когда БД пуста и хранение в cookie. Параметры: `listName`, `resourceType`.
 
 ## Устранение неполадок
 

@@ -60,6 +60,8 @@ ms3Favorites — компонент реализует функционал со
 
 ## Установка
 
+Подробная инструкция с требованиями и шагами через ModStore — в [Быстром старте](quick-start).
+
 ### Через ModStore
 
 1. [Подключите репозиторий ModStore](https://modstore.pro/info/connection)

@@ -46,7 +46,8 @@ title: Подключение на сайте
 | `tplMs3fBtnWishlistBox` | Кнопка под шаблон: `li.wishlist`, `box-icon`, `icon-heart`, `tooltip` |
 | `tplMs3fCounter` | Счётчик избранного (сниппет `ms3FavoritesCounter`) |
 | `tplMs3fListsRow` | Строка списка избранного (сниппет `ms3FavoritesLists`) |
-| `tplMs3fListsWrapper` | Обёртка для списка списков ([[+output]]) |
+| `tplMs3fListsWrapper` | Обёртка для списка списков (`[[+output]]`) |
+| `tplMs3fLexiconScript` | Fenom-чанк лексикона (используется сниппетом `ms3fLexiconScript`) |
 
 ## data-атрибуты (страница /wishlist/)
 
@@ -59,6 +60,11 @@ title: Подключение на сайте
 | `data-favorites-clear` | button | Очистить текущий список |
 | `data-favorites-list-selector` | select | Dropdown выбора списка (чанк tplFavoritesListSelector) |
 | `data-favorites-comment` | textarea | Заметка к элементу (при comments_enabled) |
+| `data-favorites-toggle` | button | Кнопка добавления/удаления (атрибут `data-id`) |
+| `data-favorites-count` | span | Счётчик количества элементов |
+| `data-favorites-share` | button | Кнопка «Поделиться списком» (атрибут `data-list`) |
+| `data-favorites-page-container` | div | Контейнер страницы wishlist |
+| `data-favorites-mode="list"` | div | Режим удаления карточки при клике «Удалить» |
 
 Чанки можно переопределять своими (Fenom или MODX); параметры `tpl` и `emptyTpl` задаются в сниппете и при вызове `render()` в JS.
 

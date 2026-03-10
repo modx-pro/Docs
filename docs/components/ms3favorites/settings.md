@@ -26,7 +26,7 @@ title: Системные настройки
 - **default** — `max_items`, `storage_type` (фронт, блок вывода).
 - **sync** — `guest_db_enabled`, `guest_ttl_days` (хранение в БД, плагины).
 - **share** — `share_ttl_days` (публичные ссылки).
-- **features** — `comments_enabled`, `check_resource_availability`, `max_lists`.
+- **features** — `comments_enabled`, `check_resource_availability`, `max_lists`, `list_page`.
 
 ## Рекомендации
 
