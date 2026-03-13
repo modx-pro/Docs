@@ -2,13 +2,13 @@
 
 ## Purpose
 
-When connecting RetailCRM to an existing store, you already have registered users and orders. Uploading users improves RetailCRM analytics and shows purchase counts per customer.
+When you connect RetailCRM to an existing store, there are usually registered users and orders already. Uploading this data lets RetailCRM compute more accurate analytics and at least show how many purchases each customer has made.
 
-## Steps
+## Step-by-step
 
-1. modRetailCRM must be installed and configured (API key, site code, CRM URL). See presetup in the main docs.
+1. By this point modRetailCRM should be purchased, connected to the store, and configured (API key, site code, CRM URL). If not done yet, go back to the component presetup.
 
-2. If you have few users (e.g. under a hundred), run this in the MODX Console component:
+2. If you have relatively few users (e.g. under a hundred), you can run the following in the MODX Console component in the manager:
 
 ```php
 if (!$modRetailCrm = $modx->getService(
@@ -26,13 +26,14 @@ $limit = 50;
 $offset = 0;
 $q->limit($limit, $offset);
 $users = $modx->getIterator('modUser', $q);
+// Upload one by one
 foreach($users as $user) {
   $modRetailCrm->OnUserSave($user, 'new');
 }
 ```
 
-For large databases, run from a PHP script with MODX bootstrapped. See [MODX bootstrap](https://modx.pro/development/3163).
+That is all. For large databases it is more efficient to put this code in a separate PHP file and run it from the server console. Do not forget to bootstrap MODX at the start. If you are not sure how, see [this](https://modx.pro/development/3163).
 
-## Troubleshooting
+## Possible errors
 
-Check modRetailCRM system settings and enable **modretailcrm_log** to debug RetailCRM responses.
+If something goes wrong and the upload fails, first check that modRetailCRM system settings are filled, then debug the RetailCRM response. To do that, enable system setting **modretailcrm_log** after the RetailCRM request line.

@@ -1,10 +1,10 @@
 # Search for a product in RetailCRM
 
-Use the **storeProducts** method with three parameters:
+To search for products in the RetailCRM API use the **storeProducts** method, which takes three parameters:
 
-1. **Filter** — array (product ID, price, vendor, groups, tags, segments, etc.)
-2. **page** — page number (pagination). Up to 20 products per request.
-3. **limit** — number of products per request (max 20).
+1. **Filter** — required array of product data (ID, price, vendor, product groups, tags, segments, etc.)
+2. **page** — page number for pagination. If there are many results (at most 20 per request), use this to request further pages.
+3. **limit** — number of products returned per request (max 20).
 
 ## Search by site product ID (externalId)
 

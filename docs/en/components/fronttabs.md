@@ -32,7 +32,7 @@ Create TVs in the frontTabs category (or another of your choice) and output them
 | `[[++ft_frontend_css]]` | Path to the CSS file. Clear to load your own via the template. |
 | `[[++ft_frontend_js]]` | Path to the JS file. Clear to load your own via the template. |
 
-Create and configure TVs before use.
+TVs must be created and configured before use.
 
 ## Examples
 
@@ -50,9 +50,9 @@ Tab memory: when `rememberTab` is 1, the active tab is restored after reload. Th
 
 The component ships with default scripts and styles (like miniShop2). You can override them in the component system settings. Default chunks use Bootstrap 3.
 
-## Selectors
+## Selectors (important)
 
-For correct behavior when customizing chunks, use the default selectors or customize default.js:
+For correct behavior when customizing the default chunks, use the component’s built-in selectors, or define your own. To use your own selectors, customize the component’s default.js. Default selectors:
 
 - `#frontTabs .ft-tab` — tab button.
 - `#frontTabs .ft-content` — tab content.

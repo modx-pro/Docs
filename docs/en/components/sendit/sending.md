@@ -1,6 +1,8 @@
 # Sending data
 
-**SendIt** sends on 4 JavaScript events: *submit* (default if **data-si-event** not set), *change*, *input*, *click*. All can be used in one form.
+**SendIt** can send data on 4 JavaScript events: *submit* (used when **data-si-event** is not set), *change*, *input*, and *click*.
+All four can be used in a single form.
+Each event is optional; omit **data-si-event** to use the default *submit*.
 
 **Form example:**
 
@@ -28,15 +30,17 @@
 
 ## Attribute reference
 
-* **data-si-preset** - preset name (optional).
-* **data-si-event** - event that triggers send (optional).
-* **data-si-nosave** - disable saving entered data (optional).
-* **data-si-form** - form name; component uses this to work with form; enables [saving data](/en/components/sendit/saveformdata) and [admin params](/en/components/sendit/development).
-* **data-si-error** - validated field name; element for error text (optional); if omitted, errors show via [notifications](/en/components/sendit/notify).
+* **data-si-preset** — name of the parameter set (optional).
+* **data-si-event** — name of the event that triggers send (optional).
+* **data-si-nosave** — disables saving of entered data (optional).
+* **data-si-form** — form name; the attribute is required so the component can work with the form; its value is used for [saving entered data](/en/components/sendit/saveformdata) and [editing parameters from the admin](/en/components/sendit/development).
+* **data-si-error** — name of the validated field; points to the element where the error text will be shown (optional); if not set, errors are shown via [popup notifications](/en/components/sendit/notify).
 
 ## Presets
 
-Preset file path: **si_path_to_presets** system setting. Path relative to **MODX_BASE_PATH**. PHP file that returns array:
+The path to the preset file is set in system setting **si_path_to_presets**. The path is relative to **core_path** (**MODX_CORE_PATH**).
+The preset file is an includable PHP file that must return an array in this format.
+Keys of the array are preset names; values are parameter sets.
 
 ```php:line-numbers
 return [
@@ -47,10 +51,10 @@ return [
 ```
 
 ::: info
-Line 2 contains preset key for **data-si-preset** attribute.
+The highlighted line (no. 2) contains the preset key that you use in the **data-si-preset** attribute.
 :::
 
-Component supports all **FormIt** params. Full list in [FormIt docs](https://docs.modx.com/current/en/extras/formit). There are also SendIt-specific params for features like registration. You can add custom params; they are available in handler and JavaScript.
+The component supports all parameters available in **FormIt**. The full list is in the [FormIt documentation](https://docs.modx.com/current/en/extras/formit). There are also SendIt-specific parameters needed for certain features (e.g. registration). You can add custom parameters; they are available in the handler and in JavaScript.
 
 ```php:line-numbers
 return [
@@ -69,21 +73,22 @@ return [
 ]
 ```
 
-**onestepform** extends **default**; shared keys are overridden by **onestepform**. On success user sees "Form submitted!" not "Submitted!".
+In the example, preset **onestepform** has parameter `extends`, so it gets all parameters from **default**. If both presets have the same key, the value from **onestepform** wins — so on success the user sees ***Form submitted!*** instead of "Submitted!".
 
 ::: warning
-Extends is recursive; if **default** extends **third**, **third** params are added to **onestepform**.
+Inheritance is recursive: if **default** extends **third**, **third** parameters are also added to **onestepform**.
 :::
 
-Custom validators don't require manual `customValidators` param; it's auto-added from `validate`.
+If you use custom validators, you do not need to add the `customValidators` parameter manually; it is added automatically from the data in `validate`.
 
 ::: warning
-**checkbox** validator has no snippet. It marks *politics* as **input[type="checkbox"]**. **:checkbox:required** makes **politics** required. No extra handling needed.
+The **checkbox** validator is not implemented as a snippet and you do not need to create one. Its job is to mark the field named *politics* as **input[type="checkbox"]**. The combination **:checkbox:required** makes the **politics** field required. No extra steps (hidden fields, JS) are needed for checkbox validation.
 :::
 
 ## Send on "change" event
 
-Apply to whole form, group of fields, or single field. To send only some fields, group them:
+You can trigger send on change for the whole form (all fields), for a group of fields, or for a single field.
+If you do not need to send the entire form but only certain fields, group those fields as in the example below.
 
 ```html:line-numbers
 <form>
@@ -96,10 +101,10 @@ Apply to whole form, group of fields, or single field. To send only some fields,
 ```
 
 ::: info
-*code* and *phone* are sent when either changes.
+Fields *code* and *phone* are sent to the server when the user changes either of them.
 :::
 
-Single field:
+To send only one specific field on change, use:
 
 ```html:line-numbers
 <form>
@@ -109,7 +114,7 @@ Single field:
 </form>
 ```
 
-Whole form on any field change:
+Finally, you can send the whole form when any of its fields changes:
 
 ```html:line-numbers
 <form data-si-form data-si-preset="change_handler" data-si-event="change">
@@ -121,57 +126,139 @@ Whole form on any field change:
 
 ## Send on "input" event
 
-Works like change; use **data-si-event="input"**. Useful for autocomplete: send as user types, search server-side, show suggestions. **SendIt** handles change tracking and send; you handle search and display.
+::: info
+Sending on input works the same way as sending on change; use the attribute **data-si-event="input"**.
+:::
+
+When would you use it? Imagine the user must choose one option out of a thousand. A plain select is impractical. With **input** you can send data as the user types, run a search on the server over those values, and show suggestions. **SendIt** handles change tracking and sending; you implement the search and display of suggestions.
 
 ## Send on "click" event
 
-Example: verify phone by sending code. User enters phone → code sent → user enters code and clicks Confirm → verify → unlock Registration.
+To see how to use this, consider an example: you need to verify that the user’s phone number is real by sending them a code. You build a form like this:
 
 ```html:line-numbers
 <form data-si-form data-si-preset="register">
   <input name="phone" data-si-preset="send_code" data-si-event="change">
   <input name="code">
-  <button type="button" data-si-preset="check_code" data-si-event="click">Confirm</button>
+  <button type="button"
+  data-si-preset="check_code"
+  data-si-event="click">Confirm</button>
   <button type="submit" disabled>Register</button>
 </form>
 ```
 
-## Yandex Metrika goals
+It works as follows:
 
-Set **si_send_goal** to *Yes*, **si_counter_id** to counter id, and pass `goalName` in preset.
+1. The user enters their phone; the data is sent to the *send_code* preset handler, which sends the code and stores it in the session.
+2. The user receives the code, enters it in the field, and clicks *Confirm*; the data is sent again to the server, this time to the *check_code* handler.
+3. If verification succeeds, you can enable the *Register* button and complete registration.
+
+## Sending goals to Yandex.Metrika
+
+To have **SendIt** send goals to Yandex.Metrika, set system setting **si_send_goal** to *Yes*.
+Set the counter ID in **si_counter_id**.
+In the preset pass parameter `goalName` with the goal name.
 
 ::: warning
-Goal type must be **JavaScript event**.
+The goal must be of type **JavaScript event**.
 :::
 
 ::: info
-Ensure Metrika script is installed on site.
+Make sure the site has the current Metrika counter code installed.
 :::
 
 ## Bot and external access protection
 
 ::: info
-No built-in captcha; add your own via [Events](/en/components/sendit/events).
+The component does not include a captcha; you can add your own using [Events](/en/components/sendit/events).
 :::
 
-Before send, `event.isTrusted` is checked (must be user-initiated, not `dispatchEvent()`). On any button click (configurable via `antiSpamEvent`), `event.isTrusted` is stored in cookie; if false, request is rejected (see *si_msg_antispam* in dictionary).
+As of 3.1.0 the component uses **three-level antispam** configured per preset.
+You can enable one, two, or all three levels.
+Disabled levels are not run and do not affect performance.
 
-Each request is signed with a token (not full CSRF; lives until reload). Sufficient to deter spammers. For IP-based limits use a plugin (see [Events](/en/components/sendit/events)).
+### 1. Proof of Work (PoW)
 
-Settings for manual spam:
+Before each send the browser must solve a small computational task: find a nonce such that the SHA-256 hash of the challenge plus the nonce has a given number of leading zero bits. Mass submissions by bots or scripts become impractical because every send requires this work.
 
-* **si_max_sending_per_session** - max sends per form without reload.
-* **si_pause_between_sending** - pause between sends.
+**Preset parameters:**
+
+| Parameter | Type | Default | Description |
+|:---:|:---:|:---:|:---|
+| `usePoW` | int | `0` | `1` — enable, `0` — disable |
+| `powDifficulty` | int | `18` | Leading zero bits. Higher = slower. 18 ≈ 1–5 sec. |
+
+**Flow:** The plugin generates a `challenge` on page load (stored in session and cookie `sipowchallenge`). Before send, the JavaScript module `ProofOfWork` finds the nonce. The nonce is sent as `_pow_nonce`. The server verifies the hash. A new challenge is generated after a successful send. If verification fails, the form is not submitted.
+
+### 2. Behavior signature (BehaviorSign)
+
+Behavior analysis result is encrypted on the client with **AES-128-GCM** and decrypted on the server, so the client cannot forge it. The server only trusts the decrypted payload.
+
+**Preset parameters:**
+
+| Parameter | Type | Default | Description |
+|:---:|:---:|:---:|:---|
+| `useBehaviorSign` | int | `0` | `1` — enable, `0` — disable |
+| `maxBotScore` | int | `50` | Max allowed suspicion score (0–100) |
+| `minFillTime` | int | `3` | Min form fill time in seconds |
+
+**Server checks:** `isBot` must be `false`; `score` must not exceed `maxBotScore`; `powChallenge` must match the one issued; form fill time must be at least `minFillTime` seconds.
+
+### 3. Behavior analysis (UserBehaviorTracker)
+
+**UserBehaviorTracker** continuously analyzes behavior and computes a suspicion score (0–100). Metrics include signs of automation (webdriver, headless, small viewport), mouse movements, clicks, keystrokes, scrolling, and overall activity and form fill time. The module is configurable in JavaScript (see [Getting started](/en/components/sendit/index)). A high score or bot-like behavior can block the send even if PoW was solved.
+
+### Configuring protection in preset
+
+Protection is configured per preset. Use `extends` to inherit antispam settings from a base preset and override only what you need:
+
+```php:line-numbers
+return [
+    'default' => [
+        'validate' => 'name:required,email:email:required',
+        'usePoW' => 1,
+        'powDifficulty' => 18,
+        'useBehaviorSign' => 1,
+        'minFillTime' => 3,
+    ],
+    'simpleform' => [
+        'extends' => 'default',
+        'validate' => 'email:email:required,name:required',
+    ],
+    'search' => [
+        'hooks' => '',
+        'snippet' => 'searchSnippet',
+        // no antispam for search
+    ],
+];
+```
 
 ::: tip
-Since 2.0.0: **pauseBetweenSending** and **sendingPerSession** in snippet call.
+Enable antispam for forms that send email or register users.
+For search, pagination, or similar actions it is usually unnecessary and can be left off in a separate preset.
 :::
+
+If a preset has no `usePoW` or `useBehaviorSign`, the corresponding checks are skipped.
+The **search** preset in the example above has no antispam so that autocomplete and search remain fast.
+You can tune `powDifficulty` (e.g. 16–20) to balance security and user wait time.
+Higher values make the client work longer before send.
 
 ::: warning
-These apply only to forms with **FormItAutoResponder** or **email** hooks or **antispam** = 1.
+If `useBehaviorSign` is on but `usePoW` is off, challenge check in the signature is skipped. For strongest protection enable both.
 :::
 
-Use plugin on **OnCheckPossibilityWork** to exempt forms.
+### Protection map (protectionMap)
+
+The component builds a protection map from all presets and passes it to the frontend via `window.siConfig.protectionMap`.
+The frontend uses it to decide which checks to run before sending.
+Each preset key in the map holds the options (usePoW, useBehaviorSign, etc.) for that preset.
+Presets with no antispam options are still listed; the frontend skips checks for them.
+
+### External access protection
+
+Each request is signed with a token (not a full CSRF token; it lives until page reload). This is usually enough to deter simple spam.
+
+Additional settings: **si_max_sending_per_session** (max sends per form without reload), **si_pause_between_sending** (pause between sends). Since 2.0.0 you can use **pauseBetweenSending** and **sendingPerSession** in the snippet call. These apply only to forms with **FormItAutoResponder** or **email** hooks or **antispam** = 1. Use a plugin on **OnCheckPossibilityWork** to exempt forms.
 
 ## Server response handling
 

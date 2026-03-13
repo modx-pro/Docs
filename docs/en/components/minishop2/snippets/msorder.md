@@ -18,11 +18,32 @@ Checkout form snippet.
 
 The snippet expects a [Fenom chunk][1]. It passes 5 variables:
 
-- **order** — order data from session: **delivery**, **payment**, **cost**, **cart_cost**, **delivery_cost**, **discount_cost**
-- **deliveries** — available delivery methods
-- **payments** — payment methods
-- **form** — customer data: **email**, **receiver**, **phone**, **index**, **country**, **region**, **city**, **street**, **building**, **room**, **entrance**, **floor**, **comment**, **text_address**, and any **&userFields** mappings
-- **errors** — form fields with validation errors
+- **order** — order data from session:
+  - **delivery** — selected delivery ID
+  - **payment** — selected payment ID
+  - **cost** — total order cost
+  - **cart_cost** — cart total
+  - **delivery_cost** — delivery cost
+  - **discount_cost** — discount amount
+- **deliveries** — array of available delivery methods (each with id, name, description, price, weight_price, distance_price, requires, payments, etc.)
+- **payments** — array of payment methods (each with id, name, description, price, etc.)
+- **form** — filled customer data. May include:
+  - **email** — customer email
+  - **receiver** — receiver name
+  - **phone** — phone
+  - **index** — postal code
+  - **country** — country
+  - **region** — region
+  - **city** — city
+  - **street** — street
+  - **building** — building
+  - **entrance** — entrance
+  - **floor** — floor
+  - **room** — room
+  - **comment** — order comment
+  - **text_address** — address as text
+  - other fields set via **&userFields**
+- **errors** — array of form fields with validation errors
 
 ### Placeholders
 
@@ -37,10 +58,53 @@ To see all placeholders, use an empty chunk:
 ```php
 Array
 (
-    [order] => Array ( [cost] => 2 300, [cart_cost] => 2 300, [delivery_cost] => 0, [discount_cost] => 0 )
-    [form] => Array ( [receiver] => Ivan Ivanov, [email] => ivanov@example.com )
-    [deliveries] => Array ( [1] => Array ( [id] => 1, [name] => Pickup, ... ) )
-    [payments] => Array ( [1] => Array ( [id] => 1, [name] => Cash, ... ) )
+    [order] => Array
+        (
+            [cost] => 2300
+            [cart_cost] => 2300
+            [delivery_cost] => 0
+            [discount_cost] => 0
+        )
+
+    [form] => Array
+        (
+            [receiver] => Ivan Ivanov
+            [email] => ivanov@example.com
+        )
+
+    [deliveries] => Array
+        (
+            [1] => Array
+                (
+                    [id] => 1
+                    [name] => Pickup
+                    [description] =>
+                    [price] => 0
+                    [weight_price] => 0.00
+                    [distance_price] => 0.00
+                    [logo] =>
+                    [rank] => 0
+                    [active] => 1
+                    [requires] => email,receiver
+                    [free_delivery_amount] => 0.00
+                    [payments] => Array ( [0] => 1 )
+                )
+        )
+
+    [payments] => Array
+        (
+            [1] => Array
+                (
+                    [id] => 1
+                    [name] => Cash
+                    [description] =>
+                    [price] => 0
+                    [logo] =>
+                    [rank] => 0
+                    [active] => 1
+                )
+        )
+
     [errors] => Array ( )
 )
 ```
@@ -49,7 +113,7 @@ Array
 
 ## Checkout
 
-Use together with other snippets on the checkout page:
+Use this snippet together with others on the checkout page:
 
 ```modx
 [[!msCart]] <!-- Cart; hidden after order is created -->
@@ -61,7 +125,7 @@ Use together with other snippets on the checkout page:
 
 ## Examples
 
-Get receiver name from `username` instead of `fullname` for logged-in users:
+Use `username` instead of `fullname` for the receiver field when the user is logged in:
 
 ```modx
 [[!msOrder?

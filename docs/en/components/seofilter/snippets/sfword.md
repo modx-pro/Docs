@@ -1,28 +1,34 @@
 # sfWord
 
-Simple snippet for Value and Alias from Dictionary. Callable as modifier.
+A simple snippet for quickly getting **Value** and **Alias** from the Dictionary. It can also be called as a modifier.
 
-If value not found for given field id, it will be created. Use with care. Use when you need synonym and value regardless of page.
+If no value is found for the word with the given field id, it will be created. So use with care. It is useful wherever you need the synonym and value of a word regardless of page.
 
-Returns array (Fenom) by default; returns processed result if **tpl** passed.
+By default it returns an array (for use in Fenom), but it can return processed output if you pass the **tpl** parameter.
 
-For full links use [sfLink](/en/components/seofilter/snippets/sflink). For menu with counts and conditions use [sfMenu](/en/components/seofilter/snippets/sfmenu).
+If you need to build one or more full links with the correct URL, use snippet [sfLink](/en/components/seofilter/snippets/sflink).
+
+If you need to output many links (e.g. a full menu) with result counts and extra conditions, use [sfMenu](/en/components/seofilter/snippets/sfmenu).
 
 ## Parameters
 
+It accepts 2 to 3 parameters. By default none of them have values.
+
 | Parameter | Description | Example |
 | --- | --- | --- |
-| **&field_id** or **&options** | Required. Field ID from SeoFilter first tab. | 5 |
-| **&input** | Required. Original value (query) from resource field | `[[*color]]` |
-| **&tpl** | Optional. Result wrapper. pdoTools, INLINE chunks. | `@INLINE <a href="{$15 \| url}color-{$alias}">{$value}</a>` |
+| **&field_id** or **&options** | Required. Field ID from the first tab of SeoFilter. | 5 |
+| **&input** | Required. The original value (query) from the resource field. | `[[*color]]` |
+| **&tpl** | Optional. Used to process the result. Processed via pdoTools; INLINE chunks supported. | `@INLINE <a href="{$15 \| url}color-{$alias}">{$value}</a>` |
 
 ::: warning
-If value not found, it will be created in dictionary. Alias auto-created; declension if enabled.
+If no value is found for the given field, it will be created and written to the dictionary. The alias is created automatically and the word is declined if that option is enabled in settings.
 :::
 
 ## Examples
 
-1. Color links from miniShop2 in **tpl.msProducts.row** (13 = Color field id):
+All examples assume you know the page id, the rule that builds links, and that you are not using custom addresses for SEO pages.
+
+1. Generating color links from miniShop2 options in chunk **tpl.msProducts.row** (13 is the Color field id in SeoFilter):
 
 ```fenom
 {if $color | iterable?}
@@ -33,7 +39,7 @@ If value not found, it will be created in dictionary. Alias auto-created; declen
 {/if}
 ```
 
-2. Tag links in article catalog (TV: Auto-tag, comma separator):
+2. Building links in an article catalog on the demo site (TV type: Auto-tag, output with comma separator):
 
 ```fenom
 {if $tags?}
@@ -51,4 +57,4 @@ If value not found, it will be created in dictionary. Alias auto-created; declen
 [[!sfWord? &input=`[[*parent]]` &field_id=`12` &tpl=`@INLINE <a href="{9 | url}{$alias}">{$value}</a>`]]
 ```
 
-For complex links with field conditions use [sfLink](/en/components/seofilter/snippets/sflink).
+The snippet is simple to use and fast, and it can add new words from the frontend. For more complex links and any links that respect field conditions, use [sfLink](/en/components/seofilter/snippets/sflink).

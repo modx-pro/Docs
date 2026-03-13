@@ -1,0 +1,99 @@
+---
+title: API and interfaces
+---
+# API and interfaces
+
+## Snippet `ms3ProductSets`
+
+### Minimal call
+
+::: code-group
+
+```modx
+[[!ms3ProductSets?
+  &type=`buy_together`
+  &resource_id=`[[*id]]`
+]]
+```
+
+```fenom
+{'!ms3ProductSets' | snippet : [
+  'type' => 'buy_together',
+  'resource_id' => $_modx->resource.id
+]}
+```
+
+:::
+
+### Main parameters
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `type` | `buy_together` | Set type |
+| `resource_id` / `productId` | current resource | Base product |
+| `max_items` | `ms3productsets.max_items` | Limit 1..100 |
+| `category_id` | `0` | Category for auto mode |
+| `set_id` | `0` | VIP set number (for `type=vip`). 0 or omitted uses 1 — setting `ms3productsets.vip_set_1` |
+| `tpl` | `tplSetItem` | Card chunk |
+| `emptyTpl` | `tplSetEmpty` | Empty result chunk |
+| `hideIfEmpty` | `true` | `true` → empty string, `false` → output `emptyTpl`. Strings `"false"`, `"0"`, `"true"`, `"1"` handled |
+| `exclude_ids` | `''` | Excluded IDs (string or array) |
+| `tplWrapper` | `''` | Wrapper (receives `output`, `type`, `count`) |
+| `sortby` | `''` | Sort field (passed to msProducts). Omitted — order from set |
+| `sortdir` | `ASC` | Sort direction (only when `sortby` set) |
+| `showUnpublished` | `false` | Passed to msProducts |
+| `showHidden` | `false` | Passed to msProducts |
+| `showLog` | `false` | Passed to msProducts (debug log in manager context) |
+| `tvPrefix` | `''` | TV placeholder prefix (passed to msProducts) |
+| `includeTVs` | `''` | Comma-separated TV list (passed to msProducts) |
+| `includeThumbs` | `''` | Comma-separated thumb sizes (passed to msProducts) |
+| `return` | `data` | `data`, `ids`, `json` |
+| `toPlaceholder` | `''` | Write to placeholder |
+
+Snippet result also depends on `ms3productsets.cache_lifetime` and `ms3productsets.auto_recommendation`. Same for AJAX `action=get_set` — connector runs the snippet. See [System settings](/en/components/ms3productsets/settings).
+
+All types and fallback logic: [Set types](/en/components/ms3productsets/types).
+
+## Snippet `mspsLexiconScript`
+
+Exports:
+
+- `window.mspsLexicon`
+- `window.mspsConfig` (`maxItems`, `lang`)
+
+Include before `productsets.js`.
+
+## Connector `assets/components/ms3productsets/connector.php`
+
+### Front (`web`)
+
+| action | Method | Parameters | Response |
+| --- | --- | --- | --- |
+| `get_set` | POST | `type`, `resource_id`, `category_id`, `set_id`, `max_items`, `tpl`, `emptyTpl`, `hideIfEmpty` | HTML |
+| `add_to_cart` | POST | `product_id`, `count` | JSON `{success,message}` |
+
+### Manager (`mgr`, auth required)
+
+| action | Purpose | Main parameters |
+| --- | --- | --- |
+| `get_templates` | List set templates | — |
+| `save_template` | Create/update template | `id`, `name`, `type`, `related_product_ids`, `description`, `sortorder` |
+| `delete_template` | Delete template | `id` |
+| `apply_template` | Apply template to categories/products | `template_id`, `parent_id` or `parent_ids[]`, `product_ids` (optional), `replace` |
+| `unbind_template` | Unbind template from category | `template_id`, `parent_id` or `parent_ids[]` |
+| `get_resource_tree` | Category tree (no products) | `parent_id`, `context_key` |
+| `get_resources` | Product list for picker | `parent_id`, `template_id`, `query`, `limit` |
+
+## JS API (`window.ms3ProductSets`)
+
+| Method | Purpose |
+| --- | --- |
+| `render(selector, options)` | Render block via `action=get_set` |
+| `addToCart(productId, count)` | Add product to cart via `action=add_to_cart` |
+| `addAllToCart(buttonOrContainer)` | Add whole set to cart. Accepts DOM element (button with `data-add-set` or container) or CSS selector. Finds `[data-product-id]` and `[data-add-to-cart]`, calls `addToCart` for each ID, then toast and event `msps:cart:update`. |
+| `toast(message)` | Show frontend notification |
+
+Events after successful add:
+
+- `addToCart`: `msps:cart:update` with `detail: { product_id, count }`
+- `addAllToCart`: `msps:cart:update` with `detail: { product_ids }`

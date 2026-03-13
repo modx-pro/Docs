@@ -9,7 +9,7 @@ When creating miniShop2 products with xParser:
 
 1. In task configuration select section with type "Product category".
 2. In task fields create **resource | class_key** with default value: `msProduct`
-3. For fields like `tags`, `color`, `size` enable **Decode JSON string to array**. miniShop2 expects PHP arrays from the processor, so decode JSON for these fields. Example:
+3. For correct export of fields such as `tags`, `color`, `size`, when creating task fields use the **Decode JSON string to array** option. When creating products via the processor, miniShop2 expects PHP arrays for these fields, so JSON must be decoded to PHP. Example:
 
 ![Features](https://file.modx.pro/files/4/0/f/40ffc7e65359342dd91976e475c6bd38.png)
 

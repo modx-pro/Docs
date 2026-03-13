@@ -44,21 +44,21 @@ GET /api/v1/customer/token/get
 }
 ```
 
-### Using the token
+### Token storage (httpOnly cookie)
 
-The token is passed in every request via the `ms3_token` parameter:
+As of v1.6, the token is stored in an httpOnly cookie `ms3_token`. The server sets the cookie when the token is obtained or refreshed.
 
-```http
-POST /api/v1/cart/add?ms3_token=abc123def456...
-Content-Type: application/json
+::: info Security
+The httpOnly cookie is not accessible from JavaScript, which protects the token from XSS. The browser sends the cookie with every request.
+:::
 
-{
-  "id": 123,
-  "count": 1
-}
-```
+**Token resolution order on the server (TokenMiddleware):**
 
-Or via the `MS3TOKEN` cookie (set automatically by the JavaScript library).
+1. `Authorization: Bearer {token}` header (for mobile apps)
+2. `HTTP_MS3TOKEN` header (legacy)
+3. httpOnly cookie `ms3_token` (primary for web)
+
+The cookie is configured using MODX session parameters: `session_cookie_domain`, `session_cookie_path`, `session_cookie_secure`, `session_cookie_samesite`.
 
 ## Response format
 
@@ -473,6 +473,7 @@ POST /api/v1/customer/register
 |-----------|------|----------|-------------|
 | `email` | string | Yes | Email |
 | `password` | string | Yes | Password |
+| `password_confirm` | string | Yes | Password confirmation |
 | `first_name` | string | No | First name |
 | `last_name` | string | No | Last name |
 | `phone` | string | No | Phone |
@@ -483,13 +484,32 @@ POST /api/v1/customer/register
 ```json
 {
   "success": true,
-  "data": {
-    "customer_id": 5,
-    "token": "new_token_abc123"
+  "object": {
+    "customer": {
+      "id": 5,
+      "email": "user@example.com",
+      "first_name": "John",
+      "last_name": "Doe",
+      "phone": "+79991234567",
+      "email_verified": false
+    },
+    "token": "abc123def456...",
+    "expires_at": "2026-03-16 12:34:56",
+    "email_verification_required": false,
+    "redirect_url": ""
   },
   "message": "Registration successful"
 }
 ```
+
+::: warning Breaking change (v1.6)
+Registration response format changed:
+
+- **Before** (v1.5): `token` — object `{token: "...", expires_at: "..."}`
+- **After** (v1.6): `token` — string, `expires_at` at top level
+
+Custom themes that use `result.object.token.token` should switch to `result.object.token`.
+:::
 
 ### Login
 
@@ -622,6 +642,58 @@ DELETE /api/v1/customer/addresses/{id}
 ```http
 PUT /api/v1/customer/addresses/{id}/set-default
 ```
+
+## Customer orders
+
+### Cancel order
+
+```http
+POST /api/v1/customer/orders/{id}/cancel
+```
+
+**Requires authorization** (authenticated customer token)
+
+Cancels the customer's order if the current status is in the allowed list (`ms3_customer_cancel_allowed_statuses`).
+
+**Response (success):**
+
+```json
+{
+  "success": true,
+  "message": "Order canceled",
+  "data": {
+    "order_id": 15,
+    "status_id": 5
+  }
+}
+```
+
+**Response (error — status not allowed):**
+
+```json
+{
+  "success": false,
+  "message": "Order cannot be canceled in its current status",
+  "code": 400
+}
+```
+
+**Response (error — not found):**
+
+```json
+{
+  "success": false,
+  "message": "Order not found",
+  "code": 404
+}
+```
+
+**Related settings:**
+
+| Setting | Description |
+|---------|-------------|
+| `ms3_customer_cancel_allowed_statuses` | Status IDs for which cancellation is allowed (default `2,3`) |
+| `ms3_status_canceled` | Target status ID for canceled orders |
 
 ## Health Check
 

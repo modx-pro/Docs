@@ -21,7 +21,8 @@ document.addEventListener('si:init', (e) => {
         const url = 'assets/action.php';
         const headers = {};
         SendIt?.setComponentCookie('sitrusted', '1');
-        SendIt.Sending.send(target, url, headers, params);
+        // v2 (deprecated): SendIt.Sending.send(target, url, headers, params);
+        SendIt.Sending.fetch(target, url, headers, params);
     })
 });
 ```
@@ -37,15 +38,16 @@ document.addEventListener('si:init', (e) => {
     document.addEventListener('submit', (e) => {
         const target = e.target.closest('.js-my-form');
         if(!target) return;
-        const preset = target.dataset[Sendit.Sending.config.presetKey];
-        SendIt.Sending.prepareSendParams(target, preset);
+        const preset = target.dataset[SendIt.Sending.config.presetKey];
+        // v2 (deprecated): SendIt.Sending.prepareSendParams(target, preset);
+        SendIt.Sending.sendRequest(target, preset);
     })
 
 });
 ```
 
 ::: tip
-Preset key should be in **data-si-preset** attribute.
+The preset key is expected in the **data-si-preset** attribute.
 :::
 
 ## Send request WITHOUT form to standard connector
@@ -53,7 +55,8 @@ Preset key should be in **data-si-preset** attribute.
 ```js:line-numbers
 document.addEventListener('si:init', (e) => {
     SendIt?.setComponentCookie('sitrusted', '1');
-    SendIt?.Sending?.prepareSendParams(document, 'custom');
+    // v2 (deprecated): SendIt?.Sending?.prepareSendParams(document, 'custom');
+    SendIt?.Sending?.sendRequest(document, 'custom');
 })
 ```
 
@@ -61,7 +64,7 @@ document.addEventListener('si:init', (e) => {
 `custom` is the preset key you added to the preset file.
 :::
 
-To limit bot activity, when receiving response (if sending on load), set `sitrusted` to 0:
+To limit bot activity, when you receive the response (if sending on page load), set `sitrusted` to 0:
 
 ```js:line-numbers
 document.addEventListener('si:send:after', (e) => {
@@ -73,10 +76,35 @@ document.addEventListener('si:send:after', (e) => {
 })
 ```
 
+## Disabling antispam for individual forms
+
+As of 3.1.0, antispam (PoW, behavior signature) is configured per preset. If you do not need it for programmatic requests or search forms, simply omit `usePoW` and `useBehaviorSign` in the preset:
+
+```php:line-numbers
+'search' => [
+    'hooks' => '',
+    'snippet' => 'searchSnippet',
+    // usePoW and useBehaviorSign not set — protection disabled
+],
+```
+
+If the preset extends another with antispam enabled, you can disable it explicitly:
+
+```php:line-numbers
+'fast_form' => [
+    'extends' => 'default',
+    'usePoW' => 0, // [!code warning]
+    'useBehaviorSign' => 0, // [!code warning]
+    'validate' => 'name:required',
+],
+```
+
+You can also control the protection map via the [**senditOnGetWebConfig**](https://docs.modx.pro/en/components/sendit/events#senditongetwebconfig) event.
+
 ## Custom snippet for data processing
 
 ::: tip
-In your snippet preset params are available as variables; form data from $_POST, files from $_FILES.
+In your snippet, preset parameters are available as variables; form data from `$_POST`, files from `$_FILES`.
 :::
 
 ```php:line-numbers
@@ -88,12 +116,12 @@ if($flag){
 ```
 
 ::: tip
-Delegate field validation to **FormIt** by adding **validate** param to preset.
+You can delegate field validation to **FormIt** by adding the **validate** parameter to the preset.
 :::
 
-## Change file validation params from JavaScript
+## Changing file validation parameters from JavaScript
 
-Example: change max allowed file count for preset *upload_design* based on selected parent and size:
+In the example below, the maximum allowed number of files for the *upload_design* preset is changed based on the selected parent and size:
 
 ```js:line-numbers
 document.addEventListener('si:send:before', (e) => {
@@ -117,7 +145,7 @@ document.addEventListener('si:send:before', (e) => {
 ## Create form management interface in admin
 
 1. Install Migx.
-2. Create **validators** configuration
+2. Create **validators** configuration.
    ::: details Import this
 
    ```json
@@ -126,7 +154,7 @@ document.addEventListener('si:send:before', (e) => {
    ```
 
    :::
-3. Create **formfield** configuration
+3. Create **formfield** configuration.
    ::: details Import this
 
    ```json
@@ -134,7 +162,7 @@ document.addEventListener('si:send:before', (e) => {
    ```
 
    :::
-4. Create **list_double** configuration
+4. Create **list_double** configuration.
    ::: details Import this
 
    ```json
@@ -142,7 +170,7 @@ document.addEventListener('si:send:before', (e) => {
    ```
 
    :::
-5. Create **si_forms** configuration
+5. Create **si_forms** configuration.
    ::: details Import this
 
    ```json
@@ -150,19 +178,20 @@ document.addEventListener('si:send:before', (e) => {
    ```
 
    :::
-6. Create TV of type *migx* named *si_form* and attach to a template.
-7. Create plugin on **OnGetFormParams** to fetch form params and return array.
+6. Create a TV of type *migx* named *si_form* and attach it to a template.
+7. Create a plugin on **OnGetFormParams** that loads the form parameters and returns them as an array.
    ::: details Plugin example
 
     ```php:line-numbers
     switch($modx->event->name){
         case 'OnGetFormParams':
-            $resource = $modx->getObject('modResource', 10);
-            $forms = json_decode($resource->getTVValue('si_forms'),1);
+            // MODX 2: $modx->getObject('modResource', 10)
+            $resource = $modx->getObject(\MODX\Revolution\modResource::class, 10);
+            $forms = json_decode($resource->getTVValue('si_forms'), true);
             $params = [];
             foreach($forms as $form){
                 if($form['fid'] === $formName){
-                    $paramsRaw = json_decode($form['params'],1);
+                    $paramsRaw = json_decode($form['params'], true);
                     break;
                 }
 

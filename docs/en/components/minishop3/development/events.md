@@ -86,6 +86,19 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 | [msOnGetProductWeight](events/product#msongetproductweight) | Product weight modification |
 | [msOnGetProductFields](events/product#msongetproductfields) | Product fields modification |
 
+### msProducts snippet
+
+Events for integrating third-party packages (ms3Variants, msBrands, etc.) without modifying core code.
+
+| Event | Description |
+|-------|-------------|
+| [msOnProductsLoad](events/msproducts#msonproductsload) | After product list is loaded (bulk loading) |
+| [msOnProductPrepare](events/msproducts#msonproductprepare) | Preparing each product's data |
+
+::: tip usePackages parameter
+To enable data loading, pass the package name in the snippet parameter: `&usePackages='ms3Variants,msBrands'`
+:::
+
 ### Order products
 
 | Event | Description |
@@ -153,3 +166,5 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 | — | `msOnAddCustomerAddress` | New event |
 | — | `msOnBeforeSendNotification` | New event |
 | — | `msOnImportRow` | New event |
+| — | `msOnProductsLoad` | New event (third-party package integration) |
+| — | `msOnProductPrepare` | New event (third-party package integration) |

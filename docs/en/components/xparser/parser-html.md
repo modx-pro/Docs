@@ -1,52 +1,52 @@
 # HTML content parser + Combined tasks
 
-Read [RSS feed task setup](/en/components/xparser/parser-rss) first. Core component logic.
+Start by reading [RSS feed task setup][1]. That covers the core workflow.
 
 ## Task combining
 
-Since 1.2.0 component can combine tasks. Example: parse RSS feed and fully parse each entry. For this:
+Since 1.2.0 the component can combine tasks. For example: parse an RSS feed and fully parse each entry from the site. For that you:
 
-1. Create two tasks (first RSS, second HTML),
-2. Configure,
+1. Create a pair of tasks (first — RSS, second — HTML),
+2. Configure them,
 3. Run.
 
-Below: how to combine tasks.
+Below we go into how to combine tasks.
 
-## HTML parsing
+## HTML content parsing
 
-RSS feed has a default field array for MODX fields. In HTML we need to define fields and selectors for each. Example with **MODX.pro**:
+In an RSS feed you have a default set of fields that map to MODX. With HTML it is a bit more involved: you need to define the fields yourself and specify the selector for each. We'll use **MODX.pro** as an example.
 
 ## Adding tasks
 
-Example: run one task from another. Create 2 tasks:
+Example where one task triggers another. You need to create 2 tasks:
 
-### Primary task
+### Adding the primary task
 
-Primary = list of news items to parse.
+By primary we mean the list of news items to parse.
 
-Click "Add HTML task". On "General" tab fill:
+Click "Add HTML task". On the "General" tab fill in something like:
 
 ![Primary task](https://file.modx.pro/files/c/d/b/cdb54b4b49d9bdd467620fce36b1197a.png)
 
-Switch to "Configuration" tab:
+Switch to the "Configuration" tab and set:
 
-- Record selector (CSS-like syntax for now),
-- Start from Nth record,
+- Record selector (CSS-like syntax only for now),
+- Which record to start from,
 - How many records to parse,
-- Template for resources,
+- Template for created resources,
 - Context,
-- Parent container in context,
-- Download media.
+- Parent container in that context,
+- Whether to download media.
 
 ![Configuration](https://file.modx.pro/files/d/d/6/dd6ef85bd35de1981a93c157af687fbb.png)
 
-Save - task added.
+Click "Save" — the task is added.
 
-### Secondary task
+### Adding the secondary task
 
-Secondary = task for full article parsing. Set as child of first task.
+By secondary we mean the task that parses the full article. We will set it as the child of the first task.
 
-Click "Add HTML task". On "General" tab:
+Click "Add HTML task". On the "General" tab fill in something like:
 
 ![Secondary task](https://file.modx.pro/files/e/9/1/e91f7ffe1b781107e7c1dbf89628c44a.png)
 

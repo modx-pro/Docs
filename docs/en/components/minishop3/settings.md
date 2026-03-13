@@ -142,6 +142,18 @@ To view settings go to **System → System Settings** and select namespace **min
 | `ms3_customer_send_welcome_email` | `true` | Send welcome email |
 | `ms3_customer_require_privacy_consent` | `true` | Require privacy consent (GDPR) |
 
+### Order cancellation
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `ms3_customer_cancel_allowed_statuses` | `2,3` | Status IDs for which the customer can cancel the order (comma-separated). Default: new and paid |
+
+::: tip Order cancellation
+The customer sees the "Cancel order" button only for orders whose status is in this list. On cancel, the order is set to `ms3_status_canceled`.
+
+To disallow customer cancellations, leave this setting empty.
+:::
+
 ### modUser sync
 
 | Setting | Default | Description |
@@ -219,9 +231,25 @@ In `ms3_frontend_assets` you can use:
 
 ## Notifications
 
+### Email
+
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_telegram_bot_token` | | Telegram bot token for notifications |
+| `ms3_email_manager` | | Manager emails for notifications (comma-separated) |
+
+### Telegram
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `ms3_telegram_bot_token` | | Telegram bot token (get from [@BotFather](https://t.me/BotFather)) |
+| `ms3_telegram_manager_chat_id` | | Manager chat ID for notifications (get from [@userinfobot](https://t.me/userinfobot)) |
+
+::: tip Setting up the Telegram bot
+1. Create a bot via [@BotFather](https://t.me/BotFather) and get the token
+2. Send any message to the bot to start the chat
+3. Get your Chat ID via [@userinfobot](https://t.me/userinfobot)
+4. Set the token and Chat ID in system settings
+:::
 
 ## Usage examples
 

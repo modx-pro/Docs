@@ -149,4 +149,138 @@ In Fenom:
 
 ## Default chunk
 
-The default chunk `tpl.msGallery` uses Splide.js for the slider and GLightbox for full-size view. See the component templates for markup.
+The default chunk `tpl.msGallery` uses Splide.js for the slider and GLightbox for full-size view:
+
+```fenom
+{* tpl.msGallery *}
+{if $files?}
+    {* Splide Slider + GLightbox CSS/JS *}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/css/glightbox.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/js/glightbox.min.js"></script>
+
+    <div class="ms3-gallery">
+        <div class="splide ms3-gallery-main" id="ms3-gallery-main">
+            <div class="splide__track">
+                <ul class="splide__list">
+                    {foreach $files as $file}
+                        <li class="splide__slide">
+                            <a href="{$file['url']}"
+                               class="glightbox"
+                               data-gallery="ms3-product-gallery"
+                               data-title="{$file['name']}"
+                               data-description="{$file['description']}">
+                                <img src="{$file['medium'] ?: $file['url']}"
+                                     alt="{$file['description'] ?: $file['name']}"
+                                     loading="{$file@first ? 'eager' : 'lazy'}">
+                            </a>
+                        </li>
+                    {/foreach}
+                </ul>
+            </div>
+        </div>
+
+        {if ($files | length) > 1}
+            <div class="splide ms3-gallery-thumbs" id="ms3-gallery-thumbs">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        {foreach $files as $file}
+                            <li class="splide__slide">
+                                <img src="{$file['small'] ?: $file['medium'] ?: $file['url']}"
+                                     alt="{$file['description'] ?: $file['name']}">
+                            </li>
+                        {/foreach}
+                    </ul>
+                </div>
+            </div>
+        {/if}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var main = new Splide('#ms3-gallery-main', {
+                type: 'fade',
+                rewind: true,
+                pagination: false,
+                arrows: true,
+            });
+
+            var thumbsEl = document.getElementById('ms3-gallery-thumbs');
+            if (thumbsEl) {
+                var thumbs = new Splide('#ms3-gallery-thumbs', {
+                    fixedWidth: 100,
+                    fixedHeight: 80,
+                    gap: 10,
+                    rewind: true,
+                    pagination: false,
+                    arrows: false,
+                    isNavigation: true,
+                    focus: 'center',
+                });
+                main.sync(thumbs);
+                main.mount();
+                thumbs.mount();
+            } else {
+                main.mount();
+            }
+
+            GLightbox({ selector: '.glightbox', loop: true });
+        });
+    </script>
+{else}
+    <div class="ms3-gallery ms3-gallery-empty">
+        <img src="{'assets_url' | option}components/minishop3/img/web/ms3_medium.png" alt="">
+    </div>
+{/if}
+```
+
+## Simple chunk
+
+Minimal example without external libraries:
+
+```fenom
+{* tpl.msGallery.simple *}
+{if $files?}
+    <div class="product-gallery">
+        {foreach $files as $file}
+            <a href="{$file['url']}" target="_blank">
+                <img src="{$file['medium'] ?: $file['url']}"
+                     alt="{$file['name']}"
+                     loading="{$file@first ? 'eager' : 'lazy'}">
+            </a>
+        {/foreach}
+    </div>
+{/if}
+```
+
+## Working with video
+
+When the gallery contains video:
+
+```fenom
+{set $files = 'msGallery' | snippet}
+
+{foreach $files as $file}
+    {if $file['type'] == 'video'}
+        <video controls>
+            <source src="{$file['url']}" type="video/{$file['file'] | pathinfo: 'extension'}">
+        </video>
+    {else}
+        <img src="{$file['medium'] ?: $file['url']}" alt="{$file['name']}">
+    {/if}
+{/foreach}
+```
+
+## Filter by type
+
+```fenom
+{* Images only *}
+{'msGallery' | snippet: ['filetype' => 'image']}
+
+{* Video only *}
+{'msGallery' | snippet: ['filetype' => 'video']}
+
+{* Images and video *}
+{'msGallery' | snippet: ['filetype' => 'image,video']}
+```

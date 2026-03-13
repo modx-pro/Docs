@@ -6,13 +6,13 @@
 
 ---
 
-#### OnGetFormParams - fired when building param list; can fully override form send params; must return array
+#### OnGetFormParams - fired when building the parameter list; lets you fully override form send parameters; must return an array
 
-Params:
+Available parameters:
 
-* **$formName** - form key from **data-si-form**.
-* **$presetName** - preset key from **data-si-preset**.
-* **$SendIt** - handler instance.
+* **$formName** — form key from attribute **data-si-form**.
+* **$presetName** — preset key from attribute **data-si-preset**.
+* **$SendIt** — handler class instance.
 
 ::: details Plugin example
 
@@ -28,15 +28,15 @@ switch ($modx->event->name){
 
 :::
 
-#### OnBeforeFileValidate - fired before file group validation
+#### OnBeforeFileValidate - fired before validation of a file group starts
 
-Params:
+Available parameters:
 
-* **$formName** - form key from **data-si-form**.
-* **$presetName** - preset key from **data-si-preset**.
-* **$SendIt** - handler instance.
-* **$filesData** - file info array.
-* **$totalCount** - already uploaded file count.
+* **$formName** — form key from attribute **data-si-form**.
+* **$presetName** — preset key from attribute **data-si-preset**.
+* **$SendIt** — handler class instance.
+* **$filesData** — array of file information.
+* **$totalCount** — number of files the user has already uploaded.
 
 ::: details Plugin example
 
@@ -50,12 +50,31 @@ switch ($modx->event->name){
 
 :::
 
-#### OnCheckPossibilityWork - fired after standard check, before result check; can change results
+#### OnBeforeFileRemove - fired before an uploaded file is removed
 
-Params:
+Available parameters:
 
-* **$formName** - form or preset name.
-* **$result** - check result.
+* **$path** — path to the file being removed.
+* **$SendIt** — handler class instance.
+
+::: details Plugin example
+
+```php:line-numbers
+switch ($modx->event->name){
+  case 'OnBeforeFileRemove':
+    $modx->log(\modX::LOG_LEVEL_INFO, 'Removing file: ' . $path);
+    break;
+}
+```
+
+:::
+
+#### OnCheckPossibilityWork - fired after the standard check, before the result is applied; lets you change the check result
+
+Available parameters:
+
+* **$formName** — form or preset name.
+* **$result** — result of the check.
 
 ::: details Plugin example
 
@@ -63,11 +82,12 @@ Params:
 // limit send rate per IP
 switch($modx->event->name){
   case 'OnCheckPossibilityWork':
+    $sessionManager = new \SendIt\Session\SessionManager($modx);
     if (!$session = $modx->getObject('siSession', [
       'session_id' => $_SERVER['REMOTE_ADDR'],
       'class_name' => $formName
     ])) {
-      SendIt::setSession($modx, ['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
+      $sessionManager->set(['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
       $modx->event->returnedValues['result']['success'] = 1;
     } else{
       $createdon = strtotime($session->get('createdon')) + 360;
@@ -79,7 +99,7 @@ switch($modx->event->name){
         ];
       } else{
         $modx->event->returnedValues['result']['success'] = 1;
-        SendIt::setSession($modx, ['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
+        $sessionManager->set(['send' => 1], $_SERVER['REMOTE_ADDR'], $formName);
       }
     }
     break;
@@ -88,13 +108,13 @@ switch($modx->event->name){
 
 :::
 
-#### OnBeforePageRender - fired before hash check and snippet render
+#### OnBeforePageRender - fired before the hash is checked and the snippet render is called
 
-Params:
+Available parameters:
 
-* **$formName** - form key from **data-si-form**.
-* **$presetName** - preset key from **data-si-preset**.
-* **$SendIt** - handler instance.
+* **$formName** — form key from attribute **data-si-form**.
+* **$presetName** — preset key from attribute **data-si-preset**.
+* **$SendIt** — handler class instance.
 
 ::: details Plugin example
 
@@ -111,13 +131,13 @@ switch ($modx->event->name){
 
 :::
 
-#### OnBeforeReturnResponse - fired before response to frontend, regardless of snippet
+#### OnBeforeReturnResponse - fired before the response is sent to the frontend, regardless of which snippet you use
 
-Params:
+Available parameters:
 
-* **$formName** - form key from **data-si-form**.
-* **$presetName** - preset key from **data-si-preset**.
-* **$SendIt** - handler instance.
+* **$formName** — form key from attribute **data-si-form**.
+* **$presetName** — preset key from attribute **data-si-preset**.
+* **$SendIt** — handler class instance.
 
 ::: details Plugin example
 
@@ -125,7 +145,8 @@ Params:
 switch ($modx->event->name){
   case 'OnBeforeReturnResponse':
     if ($_POST['email'] && in_array($presetName, ['auth', 'register'])){
-      $user = $modx->getObject('modUser', ['username' => $_POST['email']]);
+      // MODX 2: $modx->getObject('modUser', ['username' => $_POST['email']])
+      $user = $modx->getObject(\MODX\Revolution\modUser::class, ['username' => $_POST['email']]);
       if ($user && !$user->isMember('Designers')) {
         $SendIt->params['redirectUrl'] = $modx->makeUrl(54750, '', '', 'full');
       }
@@ -136,12 +157,12 @@ switch ($modx->event->name){
 
 :::
 
-#### senditOnGetWebConfig - fired when building frontend config
+#### senditOnGetWebConfig - fired when building the frontend configuration
 
-Params:
+Available parameters:
 
-* **$webConfig** - config array.
-* **$object** - SendIt instance.
+* **$webConfig** — configuration parameter array, including `protectionMap` — the antispam protection map per preset (since 3.1.0).
+* **$object** — SendIt class instance.
 
 ::: details Plugin example
 
@@ -155,20 +176,37 @@ switch ($modx->event->name){
 
 :::
 
-#### senditOnSetValue - fired before assigning value to $_POST key
+::: tip
+Since 3.1.0 `webConfig` contains the `protectionMap` key — an array with the protection settings for each preset.
+You can change the protection map in this event, for example disable PoW for specific presets:
 
-Params:
+```php:line-numbers
+switch ($modx->event->name){
+  case 'senditOnGetWebConfig':
+    // Disable PoW for preset 'feedback'
+    if (isset($object->webConfig['protectionMap']['feedback'])) {
+        $object->webConfig['protectionMap']['feedback']['pow'] = false;
+    }
+    break;
+}
+```
 
-* **$key** - field name.
-* **$value** - original value.
-* **$SendIt** - SendIt instance.
+:::
+
+#### senditOnSetValue - fired before a new value is assigned to a key in $_POST
+
+Available parameters:
+
+* **$key** — field name.
+* **$value** — original value.
+* **$SendIt** — SendIt class instance.
 
 ::: details Plugin example
 
 ```php:line-numbers
 switch ($modx->event->name){
   case 'senditOnSetValue':
-    // set original value without checks
+    // set original value without any checks
     $SendIt->newValue = $value;
     break;
 }
@@ -180,13 +218,13 @@ switch ($modx->event->name){
 
 ---
 
-#### siOnUserUpdate - fired after user data update from frontend
+#### siOnUserUpdate - fired after user data is updated from the frontend
 
-Params:
+Available parameters:
 
-* **$user** - modUser object.
-* **$profile** - modUserProfile object.
-* **$data** - data array from frontend.
+* **$user** — modUser object.
+* **$profile** — modUserProfile object.
+* **$data** — array of values sent from the frontend.
 
 ::: details Plugin example
 
@@ -200,16 +238,16 @@ switch ($modx->event->name){
 
 :::
 
-#### OnWebLogin - fired on user login from frontend
+#### OnWebLogin - fired when the user logs in from the frontend
 
-Params:
+Available parameters:
 
-* **$user** - modUser object.
-* **$attributes** - **rememberme** param.
-* **$lifetime** - session lifetime.
-* **$loginContext** - login context.
-* **$addContexts** - additional auth contexts.
-* **$session_id** - session ID.
+* **$user** — modUser object.
+* **$attributes** — **rememberme** parameter.
+* **$lifetime** — session storage time.
+* **$loginContext** — context the user is logging into.
+* **$addContexts** — list of additional contexts for login.
+* **$session_id** — session ID.
 
 ::: details Plugin example
 
@@ -223,13 +261,13 @@ switch ($modx->event->name){
 
 :::
 
-#### OnUserActivate - fired on user activation from frontend
+#### OnUserActivate - fired when the user is activated from the frontend
 
-Params:
+Available parameters:
 
-* **$user** - modUser object.
-* **$profile** - modUserProfile object.
-* **$data** - data array from frontend.
+* **$user** — modUser object.
+* **$profile** — modUserProfile object.
+* **$data** — array of values sent from the frontend.
 
 ::: details Plugin example
 
@@ -249,9 +287,9 @@ switch ($modx->event->name){
 
 ---
 
-#### si:init - component init
+#### si:init - component initialization
 
-Fired after all modules from JS config are loaded. No params. Cannot be cancelled. Subscribe to this event to safely use all modules, as **SendIt** and its children are available after it fires.
+Fired after all modules listed in the JS config are loaded. Has no parameters. Cannot be cancelled. Subscribe to this event so you can use all modules without issues, since the **SendIt** object and its children are available only after it fires.
 ::: details Example
 
 ```js:line-numbers
@@ -268,15 +306,18 @@ document.addEventListener('si:init', (e) => {
 
 #### si:send:before - before send
 
-Fired before sending data. Can be cancelled to abort.
+Fired before data is sent to the server. Can be cancelled, which will stop further execution.
 
-::: details Params
+::: details Parameters
 
-* **target** - form, field, button or document.
-* **action** - action name (*send*, *validate_files*, *removeFile*).
-* **fetchOptions** - request params (url, method, body); can modify.
-* **headers** - request headers; can modify.
-* **Sending** - Sending class instance.
+* **target** — can be the form, a field, a button, or the document.
+* **action** — action name, used to tell different logic apart (e.g. run something only on form send, not on file upload); do not change; possible values:
+  * *send* — sending data;
+  * *validate_files* — file validation;
+  * *removeFile* — removing a file;
+* **fetchOptions** — request options (url, method, body); you can change, remove (with care), or add your own.
+* **headers** — request headers; you can change, remove (with care), or add your own.
+* **Sending** — instance of the *Sending* class for quick access to its methods and properties.
 :::
 
 ::: details Example
@@ -294,13 +335,17 @@ document.addEventListener('si:send:before', (e) => {
 
 :::
 
-#### si:send:after - after response
+#### si:send:after - after response received
 
-Fired after server response parsed as JSON. Can be cancelled to abort **success()** and **error()**.
+Fired right after the server response is received and parsed as JSON. Can be cancelled, which will stop further execution, i.e. the **success()** and **error()** methods will not run.
 
-::: details Params
+::: details Parameters
 
-* **target**, **action**, **result**, **headers**, **Sending**
+* **target** — can be the form, a field, a button, or the document.
+* **action** — action name (same as in si:send:before): *send*, *validate_files*, *removeFile*.
+* **result** — server response as JSON.
+* **headers** — request headers; you can change, remove (with care), or add your own.
+* **Sending** — instance of the *Sending* class for quick access to its methods and properties.
 :::
 
 ::: details Example
@@ -315,13 +360,17 @@ document.addEventListener('si:send:after', (e) => {
 
 :::
 
-#### si:send:success - success handler
+#### si:send:success - successful response handling
 
-Fired on success, before **success()** handler. Can be cancelled.
+Fired when a successful response is received from the server and before the **success()** handler runs. Can be cancelled, which will stop further execution.
 
-::: details Params
+::: details Parameters
 
-* **target**, **action**, **result**, **headers**, **Sending**
+* **target** — can be the form, a field, a button, or the document.
+* **action** — action name: *send*, *validate_files*, *removeFile*.
+* **result** — server response as JSON.
+* **headers** — request headers; you can change, remove (with care), or add your own.
+* **Sending** — instance of the *Sending* class for quick access to its methods and properties.
 :::
 
 ::: details Example
@@ -338,13 +387,17 @@ document.addEventListener('si:send:success', (e) => {
 
 :::
 
-#### si:send:error - error handler
+#### si:send:error - error handling
 
-Fired on error, before **error()** handler. Can be cancelled.
+Fired when the server returns an error response, before the **error()** handler runs. Can be cancelled, which will stop further execution.
 
-::: details Params
+::: details Parameters
 
-* **target**, **action**, **result**, **headers**, **Sending**
+* **target** — can be the form, a field, a button, or the document.
+* **action** — action name: *send*, *validate_files*, *removeFile*.
+* **result** — server response as JSON.
+* **headers** — request headers; you can change, remove (with care), or add your own.
+* **Sending** — instance of the *Sending* class for quick access to its methods and properties.
 :::
 
 ::: details Example
@@ -363,11 +416,15 @@ document.addEventListener('si:send:error', (e) => {
 
 #### si:send:finish - send complete
 
-Fired after **success()** and **error()**. Cannot be cancelled.
+Fired when the server response has been received and after the **success()** and **error()** handlers have run. Cannot be cancelled.
 
-::: details Params
+::: details Parameters
 
-* **target**, **action**, **result**, **headers**, **Sending**
+* **target** — can be the form, a field, a button, or the document.
+* **action** — action name: *send*, *validate_files*, *removeFile*.
+* **result** — server response as JSON.
+* **headers** — request headers.
+* **Sending** — instance of the *Sending* class for quick access to its methods and properties.
 :::
 
 ::: details Example
@@ -384,11 +441,12 @@ document.addEventListener('si:send:finish', (e) => {
 
 #### si:send:reset - form reset
 
-Fired at end of **success()** when **clearFieldsOnSuccess** set, or on **type="reset"** click. Can be cancelled.
+Fired at the end of **success()** when **clearFieldsOnSuccess** is set, or when a **type="reset"** button is clicked. Can be cancelled.
 
-::: details Params
+::: details Parameters
 
-* **target**, **Sending**
+* **target** — the form or element that triggered the reset.
+* **Sending** — instance of the *Sending* class.
 :::
 
 ::: details Example
@@ -403,26 +461,79 @@ document.addEventListener('si:send:reset', (e) => {
 
 :::
 
+#### si:send:reset:after - after form reset
+
+Fired AFTER the form has been reset (after `target.reset()` is called or the field value is cleared). Can be cancelled.
+
+::: details Parameters
+
+* **target** — can be the form or the field.
+* **Sending** — instance of the *Sending* class for quick access to its methods and properties.
+:::
+
+::: details Example
+
+```js:line-numbers
+document.addEventListener('si:send:reset:after', (e) => {
+    const {target, Sending} = e.detail;
+
+    target.querySelector('[name="phone"]')?.focus();
+})
+```
+
+:::
+
 ### Quiz events
 
 ---
 
+#### si:quiz:init - quiz initialization
+
+Fired when each quiz form is initialized, BEFORE the form is reset and the progress bar is set up. Cannot be cancelled.
+
+::: details Parameters
+
+* **items** — array of step elements.
+* **root** — form element.
+* **currentIndex** — index of the current step (from cookie or 1 by default).
+* **Quiz** — instance of the *Quiz* class for quick access to its methods and properties.
+:::
+
+::: details Example
+
+```js:line-numbers
+document.addEventListener('si:quiz:init', (e) => {
+    const {items, root, currentIndex, Quiz} = e.detail;
+
+    items.forEach((item, i) => {
+        item.dataset.stepNumber = i + 1;
+    });
+})
+```
+
+:::
+
 #### si:quiz:change - quiz step change
 
-Fired BEFORE step change. Can be cancelled.
+Fired BEFORE the step changes. Can be cancelled, which will stop further execution.
 
-::: details Params
+::: details Parameters
 
-* **isTrusted** - auto vs manual switch.
-* **btnReset**, **btnSend**, **btnNext**, **btnPrev** - button elements.
-* **root** - form element.
-* **nextIndex** - target step id (**data-qf-item**).
-* **items** - step elements.
-* **current** - current visible step.
-* **currentQuestion** - current step number display.
-* **totalQuestions** - total steps display.
-* **prevIndex**, **nextItem**, **dir** - direction (prev/next).
-* **Quiz** - Quiz class instance.
+* **isTrusted** — whether the switch was automatic or manual.
+* **btnReset** — form reset button element.
+* **btnSend** — form submit button element.
+* **btnNext** — next step button element.
+* **btnPrev** — previous step button element.
+* **root** — form element.
+* **nextIndex** — id of the step that will become visible (value of **data-qf-item**).
+* **items** — array of step elements.
+* **current** — currently visible step element.
+* **currentQuestion** — element that displays the current step number.
+* **totalQuestions** — element that displays the total number of steps.
+* **prevIndex** — id of the currently visible step that will become the previous one after the switch.
+* **nextItem** — step element that will become visible after the switch.
+* **dir** — direction of the switch (*prev* — back, *next* — forward).
+* **Quiz** — instance of the *Quiz* class for quick access to its methods and properties.
 :::
 
 ::: details Example
@@ -444,47 +555,154 @@ document.addEventListener('si:quiz:change', (e) => {
 
 :::
 
-#### si:quiz:progress - progress percent change
+#### si:quiz:progress - quiz progress percent change
 
-Fired AFTER progress percent is set. Cannot be cancelled.
+Fired AFTER the progress percent has been set. Cannot be cancelled.
 
-::: details Params
+::: details Parameters
 
-* **items**, **progressValue**, **progress**, **itemsComplete**, **total**, **root**, **complete**, **percent**, **Quiz**
+* **items** — array of step elements.
+* **progressValue** — progress bar DOM element.
+* **progress** — progress bar wrapper DOM element.
+* **itemsComplete** — array of completed step elements.
+* **total** — total number of steps.
+* **root** — form element.
+* **complete** — number of completed questions.
+* **percent** — percent of completed questions.
+* **Quiz** — instance of the *Quiz* class for quick access to its methods and properties.
 :::
 
-#### si:quiz:reset - quiz reset
+::: details Example
 
-Fired on quiz reset. Cannot prevent reset.
+```js:line-numbers
+document.addEventListener('si:quiz:progress', (e) => {
+    const {root, progressValue, items, progress, itemsComplete, total, percent, Quiz} = e.detail;
+})
+```
 
-::: details Params
+:::
 
-* **items**, **btns**, **progress**, **currentQuestion**, **totalQuestions**, **root**, **finishItem**, **pages**, **Quiz**
+#### si:quiz:reset - quiz reset to start
+
+Fired when the quiz is reset. The event cannot prevent the reset.
+
+::: details Parameters
+
+* **items** — array of step elements.
+* **btns** — list of button elements.
+* **progress** — progress indicator element.
+* **currentQuestion** — current question number element.
+* **totalQuestions** — total questions element.
+* **root** — root form element.
+* **finishItem** — last step element.
+* **pages** — wrapper element for step count display.
+* **Quiz** — instance of the *Quiz* class for quick access to its methods and properties.
+:::
+
+::: details Example
+
+```js:line-numbers
+document.addEventListener('si:quiz:reset', (e) => {
+    const {items, btns, progress, currentQuestion, totalQuestions, root, finishItem, pages, Quiz} = e.detail;
+
+    const steps = root.querySelectorAll('[data-qf-step]');
+    steps.length && steps.forEach(el => {
+        el.classList.remove('complete');
+        el.classList[el.dataset.qfStep !== '1' ? 'remove' : 'add']('active');
+    })
+})
+```
+
+:::
+
+### Notify events
+
+---
+
+#### si:notify:before - before notification is shown
+
+Fired AFTER notification parameters are built but BEFORE it is displayed. Cannot be cancelled.
+
+::: details Parameters
+
+* **options** — notification options object (`type`, `title`, `upd` and options from `handlerOptions`).
+* **Notify** — instance of the *Notify* class for quick access to its methods and properties.
+:::
+
+::: details Example
+
+```js:line-numbers
+document.addEventListener('si:notify:before', (e) => {
+    const {options, Notify} = e.detail;
+
+    if (options.type === 'error') {
+        options.position = 'bottomCenter';
+    }
+})
+```
+
 :::
 
 ### Fileuploader events
 
 ---
 
-#### fu:uploading:start - before file upload
+#### fu:uploading:start - before file upload starts
 
-::: details Params
+Fired before file upload starts.
 
-* **form**, **field**, **root**, **files**, **FileUploader**
+::: details Parameters
+
+* **form** — form element.
+* **field** — upload field element.
+* **root** — wrapper element for the upload field.
+* **files** — list of files to upload (FileList object).
+* **FileUploader** — instance of the *FileUploader* class for quick access to its methods and properties.
+:::
+
+::: details Example
+
+```js:line-numbers
+document.addEventListener('fu:uploading:start', (e) => {
+    const {root, form, field, files, FileUploader} = e.detail;
+})
+```
+
 :::
 
 #### fu:uploading:end - after all files uploaded
 
-::: details Params
+Fired after all files have finished uploading.
 
-* **form**, **field**, **root**, **files**, **FileUploader**
+::: details Parameters
+
+* **form** — form element.
+* **field** — upload field element.
+* **root** — wrapper element for the upload field.
+* **files** — list of files that were uploaded (FileList object).
+* **FileUploader** — instance of the *FileUploader* class for quick access to its methods and properties.
 :::
 
-#### fu:uploading:remove - after preview removal
+::: details Example
 
-::: details Params
+```js:line-numbers
+document.addEventListener('fu:uploading:end', (e) => {
+    const {root, form, field, files, FileUploader} = e.detail;
+})
+```
 
-* **path**, **root**, **preview**, **FileUploader**
+:::
+
+#### fu:uploading:remove - after file preview removed
+
+Fired after a file preview has been removed.
+
+::: details Parameters
+
+* **path** — path of the removed file.
+* **root** — wrapper element.
+* **preview** — preview element that was removed.
+* **FileUploader** — instance of the *FileUploader* class.
 :::
 
 ### SaveFormData events
@@ -493,11 +711,14 @@ Fired on quiz reset. Cannot prevent reset.
 
 #### sf:save - before saving to localStorage
 
-Can be cancelled.
+Fired before data is saved to localStorage. Can be cancelled.
 
-::: details Params
+::: details Parameters
 
-* **root**, **field**, **savedData**, **SaveFormData**
+* **root** — form or container element.
+* **field** — field that triggered the save (if any).
+* **savedData** — object that will be saved; you can modify it.
+* **SaveFormData** — instance of the *SaveFormData* class.
 :::
 
 ::: details Example
@@ -517,38 +738,46 @@ document.addEventListener('sf:save', (e) => {
 
 #### sf:set:before - before restoring saved data
 
-Can be cancelled.
+Fired before saved data is applied to the form. Can be cancelled.
 
-::: details Params
+::: details Parameters
 
-* **root**, **formFields**, **savedData**, **SaveFormData**
+* **root** — form or container element.
+* **formFields** — form field elements.
+* **savedData** — saved data object being restored.
+* **SaveFormData** — instance of the *SaveFormData* class.
 :::
 
 #### sf:change - after setting value in field
 
-Cannot be cancelled.
+Fired after a value has been set in a field. Cannot be cancelled.
 
-::: details Params
+::: details Parameters
 
-* **SaveFormData**
+* **SaveFormData** — instance of the *SaveFormData* class.
 :::
 
 #### sf:set:after - after all saved data set
 
-Cannot be cancelled.
+Fired after all saved data has been applied to the form. Cannot be cancelled.
 
-::: details Params
+::: details Parameters
 
-* **root**, **formFields**, **savedData**, **SaveFormData**
+* **root** — form or container element.
+* **formFields** — form field elements.
+* **savedData** — saved data object that was restored.
+* **SaveFormData** — instance of the *SaveFormData* class.
 :::
 
 #### sf:remove - before clearing saved data
 
-Can be cancelled.
+Fired before saved data for the form is cleared. Can be cancelled.
 
-::: details Params
+::: details Parameters
 
-* **root**, **formName**, **SaveFormData**
+* **root** — form or container element.
+* **formName** — form name (key) whose data is being cleared.
+* **SaveFormData** — instance of the *SaveFormData* class.
 :::
 
 ### Pagination events

@@ -93,7 +93,6 @@ The page has three modes via GET parameter `mode`:
 {extends 'tpl.msCustomer.base'}
 
 {block 'content'}
-<script src="{'assets_url' | option}components/minishop3/js/web/modules/customer-addresses.js"></script>
 <div class="ms3-customer-addresses">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -127,11 +126,12 @@ The page has three modes via GET parameter `mode`:
         </div>
     </div>
 </div>
-<script>
-new CustomerAddresses().init()
-</script>
 {/block}
 ```
+
+::: info JS inclusion
+As of v1.6, a separate `customer-addresses.js` script is not required. Address actions (set default, delete) are built into `CustomerUI` and initialize automatically via `ms3.js`.
+:::
 
 ## Address row chunk
 
@@ -160,10 +160,10 @@ new CustomerAddresses().init()
                 {$city}{if $region}, {$region}{/if}{if $country}, {$country}{/if}
             </p>
             <p class="mb-1 small">
-                {$street}{if $building}, {$building}{/if}
-                {if $entrance}, {$entrance}{/if}
-                {if $floor}, {$floor}{/if}
-                {if $room}, {$room}{/if}
+                {$street}{if $building}, bld. {$building}{/if}
+                {if $entrance}, ent. {$entrance}{/if}
+                {if $floor}, fl. {$floor}{/if}
+                {if $room}, apt. {$room}{/if}
             </p>
             {if $metro}
             <p class="mb-1 small text-muted">{$metro}</p>
@@ -356,15 +356,13 @@ new CustomerAddresses().init()
 
 ## JavaScript API
 
-The page uses the `CustomerAddresses` class for AJAX:
+Address actions are built into `CustomerUI` and work automatically via `ms3.js`.
 
-```javascript
-// Init
-new CustomerAddresses().init()
+### API endpoints
 
-// API endpoints
-POST /api/v1/customer/address/set-default  // Set default
-POST /api/v1/customer/address/delete       // Delete address
+```
+PUT    /api/v1/customer/addresses/{id}/set-default  // Set default
+DELETE /api/v1/customer/addresses/{id}              // Delete address
 ```
 
 ### Action buttons
@@ -376,6 +374,23 @@ POST /api/v1/customer/address/delete       // Delete address
 <!-- Delete -->
 <button class="delete-address" data-address-id="5">✕</button>
 ```
+
+Set default and delete show a confirmation dialog (`ms3Confirm`). The confirmation text is taken from the address row data attributes:
+
+```html
+<div class="list-group-item"
+     data-confirm-set-default="{'ms3_customer_address_set_default_confirm' | lexicon}"
+     data-confirm-delete="{'ms3_customer_address_delete_confirm' | lexicon}">
+```
+
+### Hooks
+
+| Hook | Description |
+|------|-------------|
+| `beforeSetDefaultAddress` | Before setting default address |
+| `afterSetDefaultAddress` | After setting default address |
+| `beforeDeleteAddress` | Before deleting address |
+| `afterDeleteAddress` | After deleting address |
 
 ## Form handling
 

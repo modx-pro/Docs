@@ -5,6 +5,8 @@ title: Checkout
 
 The checkout page is the final step of a purchase. MiniShop3 provides a ready-made page template and order form chunk with contact details, delivery and payment options.
 
+[![](https://file.modx.pro/files/5/2/e/52ee1eb19597215187ec2cac0010586as.jpg)](https://file.modx.pro/files/5/2/e/52ee1eb19597215187ec2cac0010586a.png)
+
 ## Page structure
 
 | Component | File | Chunk name in DB | Purpose |

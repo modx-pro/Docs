@@ -1,26 +1,34 @@
 # SweetAlert2
 
-[SweetAlert2](https://sweetalert2.github.io/) is one of the most popular notification libraries and has no dependencies. To integrate it:
+[SweetAlert2](https://sweetalert2.github.io/) is one of the most popular notification libraries and has no dependencies. To use it:
 
 - Include the library scripts and styles. For simplicity we use CDN:
 
 ```html
 <!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- CSS is included in the script -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.all.min.js"></script>
+<!-- CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.min.css">
 ```
 
-- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
+- Set the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      Swal.fire({ icon: 'success', title: 'Success', text: message });
+      Swal.fire({
+        icon: 'success',
+        title: message,
+        showConfirmButton: false,
+      });
     },
     error(message) {
-      Swal.fire({ icon: 'error', title: 'Error', text: message });
+      Swal.fire({
+        icon: 'error',
+        title: message,
+        showConfirmButton: false,
+      });
     },
   }
 });
@@ -31,12 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
 ```js
 FetchIt.Message = {
   success(message) {
-    Swal.fire({ icon: 'success', title: 'Success', text: message });
+    Swal.fire({
+      icon: 'success',
+      title: message,
+      showConfirmButton: false,
+    });
   },
   error(message) {
-    Swal.fire({ icon: 'error', title: 'Error', text: message });
+    Swal.fire({
+      icon: 'error',
+      title: message,
+      showConfirmButton: false,
+    });
   },
 }
 ```
 
-Done! You now have **SweetAlert2** notifications.
+You will now see **SweetAlert2** notifications.

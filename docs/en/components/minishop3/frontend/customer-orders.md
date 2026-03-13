@@ -42,9 +42,47 @@ Customer order history page. Shows all orders with status filter and pagination,
 | URL | Mode | Description |
 |-----|------|-------------|
 | `/cabinet/orders/` | List | Orders table |
-| `/cabinet/orders/?order_id=15` | Details | Order #15 info |
+| `/cabinet/orders/?order=550e8400-...` | Details | Order details by UUID |
 | `/cabinet/orders/?status=2` | Filter | Orders with status 2 |
 | `/cabinet/orders/?offset=20` | Pagination | Second page |
+
+::: info UUID in order URLs
+As of v1.6, order detail links use UUID instead of numeric ID. This is more secure: it does not expose order count and prevents guessing other customers' orders by ID.
+
+URL format: `?order=550e8400-e29b-41d4-a716-446655440000`
+:::
+
+## Customer order cancellation
+
+The customer can cancel an order if its current status is in the allowed list (setting `ms3_customer_cancel_allowed_statuses`).
+
+### How it works
+
+1. The server provides placeholder `{$can_cancel}` for each order
+2. The "Cancel" button is shown only when `{$can_cancel} = true`
+3. On click — confirmation dialog via `ms3Confirm`
+4. API call `POST /api/v1/customer/orders/{id}/cancel`
+5. Page reloads after successful cancellation
+
+### Cancel button in chunk
+
+```fenom
+{if $can_cancel}
+<button type="button"
+        class="btn btn-sm btn-outline-danger ms3-order-cancel"
+        data-order-id="{$id}"
+        data-confirm="{'ms3_customer_order_cancel_confirm' | lexicon}">
+    {'ms3_customer_order_cancel' | lexicon}
+</button>
+{/if}
+```
+
+### System settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `ms3_customer_cancel_allowed_statuses` | `2,3` | Status IDs for which cancellation is allowed |
+| `ms3_status_canceled` | `0` | Status ID assigned to canceled orders |
 
 ## Order list placeholders
 
@@ -78,7 +116,7 @@ Customer order history page. Shows all orders with status filter and pagination,
 {extends 'tpl.msCustomer.base'}
 
 {block 'content'}
-<div class="ms3-customer-orders">
+<div class="ms3-customer-orders" data-api-url="{$api_url|default:''}">
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">{'ms3_customer_orders_title' | lexicon}</h5>
@@ -184,7 +222,8 @@ Customer order history page. Shows all orders with status filter and pagination,
 {* tpl.msCustomer.order.row *}
 <tr>
     <td>
-        <a href="?order_id={$id}" class="fw-semibold text-decoration-none">
+        <a href="{'ms3_customer_orders_page_id' | option | url}?order={$uuid}"
+           class="fw-semibold text-decoration-none">
             №{$num}
         </a>
     </td>
@@ -192,7 +231,7 @@ Customer order history page. Shows all orders with status filter and pagination,
         {$createdon_formatted}
     </td>
     <td>
-        <span class="badge" style="background-color: #{$status_color};">
+        <span class="badge" style="background-color: {$status_color};">
             {$status_name}
         </span>
     </td>
@@ -200,9 +239,22 @@ Customer order history page. Shows all orders with status filter and pagination,
         {$cost_formatted} {'ms3_frontend_currency' | lexicon}
     </td>
     <td class="text-end">
-        <a href="?order_id={$id}" class="btn btn-sm btn-outline-primary">
-            {'ms3_customer_order_view' | lexicon}
-        </a>
+        <div class="d-flex gap-2 justify-content-end" role="group">
+            <a href="{'ms3_customer_orders_page_id' | option | url}?order={$uuid}"
+               class="btn btn-sm btn-outline-primary"
+               title="{'ms3_customer_order_view' | lexicon}">
+                {'ms3_customer_order_view' | lexicon}
+            </a>
+            {if $can_cancel}
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger ms3-order-cancel"
+                    data-order-id="{$id}"
+                    data-confirm="{'ms3_customer_order_cancel_confirm' | lexicon}"
+                    title="{'ms3_customer_order_cancel' | lexicon}">
+                {'ms3_customer_order_cancel' | lexicon}
+            </button>
+            {/if}
+        </div>
     </td>
 </tr>
 ```
@@ -220,6 +272,7 @@ Customer order history page. Shows all orders with status filter and pagination,
 | `{$order.status_color}` | string | Status color |
 | `{$order.createdon_formatted}` | string | Created date |
 | `{$order.comment}` | string | Order comment |
+| `{$order.can_cancel}` | bool | Whether the order can be canceled |
 | `{$products}` | array | Order products |
 | `{$delivery}` | array | Delivery method |
 | `{$payment}` | array | Payment method |
@@ -254,10 +307,11 @@ Customer order history page. Shows all orders with status filter and pagination,
 
 ```fenom
 {* tpl.msCustomer.order.details *}
-<div class="ms3-customer-order-details">
+<div class="ms3-customer-order-details" data-api-url="{$api_url|default:''}">
     {* Back navigation *}
     <div class="mb-3">
-        <a href="?" class="btn btn-sm btn-outline-secondary">
+        <a href="{'ms3_customer_orders_page_id' | option | url}"
+           class="btn btn-sm btn-outline-secondary">
             ← {'ms3_customer_orders_back' | lexicon}
         </a>
     </div>
@@ -265,14 +319,24 @@ Customer order history page. Shows all orders with status filter and pagination,
     {* Order info *}
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <h5 class="mb-0">
                     {'ms3_customer_order_title' | lexicon} №{$order.num}
                 </h5>
-                <span class="badge bg-light text-dark"
-                      style="color: #{$order.status_color} !important;">
-                    {$order.status_name}
-                </span>
+                <div class="d-flex align-items-center gap-2">
+                    {if $order.can_cancel}
+                    <button type="button"
+                            class="btn btn-sm btn-light ms3-order-cancel"
+                            data-order-id="{$order.id}"
+                            data-confirm="{'ms3_customer_order_cancel_confirm' | lexicon}">
+                        {'ms3_customer_order_cancel' | lexicon}
+                    </button>
+                    {/if}
+                    <span class="badge bg-light text-dark"
+                          style="color: {$order.status_color} !important;">
+                        {$order.status_name}
+                    </span>
+                </div>
             </div>
         </div>
         <div class="card-body">
@@ -288,9 +352,9 @@ Customer order history page. Shows all orders with status filter and pagination,
                     <thead class="table-light">
                         <tr>
                             <th>{'ms3_cart_title' | lexicon}</th>
-                            <th class="text-center">{'ms3_cart_count' | lexicon}</th>
-                            <th class="text-end">{'ms3_cart_price' | lexicon}</th>
-                            <th class="text-end">{'ms3_cart_cost' | lexicon}</th>
+                            <th class="text-center col-count">{'ms3_cart_count' | lexicon}</th>
+                            <th class="text-end col-price">{'ms3_cart_price' | lexicon}</th>
+                            <th class="text-end col-cost">{'ms3_cart_cost' | lexicon}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -311,20 +375,21 @@ Customer order history page. Shows all orders with status filter and pagination,
                                 </div>
                                 {/if}
                             </td>
-                            <td class="text-center">
+                            <td class="text-center text-nowrap">
                                 <span class="badge bg-secondary">
                                     {$product.count} {'ms3_frontend_count_unit' | lexicon}
                                 </span>
                             </td>
-                            <td class="text-end">
+                            <td class="text-end text-nowrap">
                                 {if $product.old_price && $product.old_price > $product.price}
                                 <div class="text-decoration-line-through text-muted small">
                                     {$product.old_price}
                                 </div>
                                 {/if}
                                 <div class="fw-semibold">{$product.price}</div>
+                                <small class="text-muted">{'ms3_frontend_currency' | lexicon}</small>
                             </td>
-                            <td class="text-end fw-bold">
+                            <td class="text-end text-nowrap fw-bold">
                                 {$product.cost} {'ms3_frontend_currency' | lexicon}
                             </td>
                         </tr>
@@ -377,8 +442,18 @@ Customer order history page. Shows all orders with status filter and pagination,
                 {if $address.country}, {$address.country}{/if}
                 <br>
                 {$address.street}
-                {if $address.building}, {$address.building}{/if}
-                {if $address.room}, {$address.room}{/if}
+                {if $address.building}, bld. {$address.building}{/if}
+                {if $address.entrance}, ent. {$address.entrance}{/if}
+                {if $address.floor}, fl. {$address.floor}{/if}
+                {if $address.room}, apt. {$address.room}{/if}
+                {if $address.metro}
+                <br>
+                <small class="text-muted">{$address.metro}</small>
+                {/if}
+                {if $address.text_address}
+                <br>
+                <small class="fst-italic text-muted">{$address.text_address}</small>
+                {/if}
             </p>
         </div>
     </div>
@@ -393,7 +468,7 @@ Customer order history page. Shows all orders with status filter and pagination,
                     <h6 class="mb-0">{'ms3_frontend_delivery_method' | lexicon}</h6>
                 </div>
                 <div class="card-body">
-                    <p class="mb-0">{$delivery.name}</p>
+                    <p class="mb-0">{$delivery.name | lexicon}</p>
                     {if $delivery.description}
                     <small class="text-muted">{$delivery.description}</small>
                     {/if}
@@ -409,7 +484,7 @@ Customer order history page. Shows all orders with status filter and pagination,
                     <h6 class="mb-0">{'ms3_frontend_payment_method' | lexicon}</h6>
                 </div>
                 <div class="card-body">
-                    <p class="mb-0">{$payment.name}</p>
+                    <p class="mb-0">{$payment.name | lexicon}</p>
                     {if $payment.description}
                     <small class="text-muted">{$payment.description}</small>
                     {/if}
@@ -478,6 +553,8 @@ style="background-color: #{$status_color};"
 | Setting | Description |
 |---------|-------------|
 | `ms3_customer_orders_page_id` | Orders page ID |
+| `ms3_customer_cancel_allowed_statuses` | Status IDs for which cancellation is allowed (comma-separated) |
+| `ms3_status_canceled` | Canceled order status ID |
 
 ## CSS classes
 
@@ -486,3 +563,4 @@ style="background-color: #{$status_color};"
 | `.ms3-customer-orders` | Order list container |
 | `.ms3-customer-order-details` | Order details container |
 | `.ms3-order-table` | Orders table |
+| `.ms3-order-cancel` | Cancel order button |

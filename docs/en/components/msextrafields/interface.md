@@ -5,43 +5,43 @@
 ### Creating
 
 Before working with products you need to define the properties.
-Do this in miniShop2 settings (Applications -> miniShop2 ->
-Settings -> Extra properties tab). Click "Create" and in the
+Do this in miniShop2 settings (Applications → miniShop2 →
+Settings → Extra properties tab). Click "Create" and in the
 dialog set **property name**, **type**, **context** (default "Not specified" means
-the property is visible in all contexts), and **description**—
-mainly for site managers, not the client.
+the property is visible in all contexts), and **description** —
+this information is mainly for site managers, not for the client.
 
 ![Creating](https://file.modx.pro/files/3/0/c/30c42aaaee12796644f243109c6d9fa2.png)
 
 ### Editing
 
-Edit common parameters by right-clicking and choosing **Edit**, or double-clicking the table cell. Changes save immediately. Main options:
+Edit common parameters by right-clicking (RMB) and choosing **Edit**, or by double-clicking (LMB) the table cell. Changes save immediately. Main options:
 
-**Groups** — properties are grouped when building client data. To create a group, type its name and press [[Ctrl]]+[[Enter]] or click elsewhere. Only one group per property. Existing groups can be chosen from the list.
+**Groups** — properties are grouped when building data in the client window. To create a group, type its name and press [[Ctrl]]+[[Enter]] or click in another row or elsewhere on the screen. If the group already exists, you can select it from the list. Only one group can be selected per property.
 
-**Chunk** — JSON-formatted chunk name used instead of the default. See "[chunk customization][snippet msExtraFields custom_chunks]".
+**Chunk** — name of a chunk in JSON format used instead of the default. See "[chunk customization][snippet msExtraFields custom_chunks]".
 
-**Name** — property name; changing it updates all usages.
+**Name** — property name; changing it updates all places where it is used.
 
-**Type** — list of configured property types, each with its own behavior and display in the manager and on the frontend. See "[Property types](/en/components/msextrafields/interface#property-types)". **Warning:** switching between incompatible types (e.g. "text" to "range") that are already used in products **can break the filter** on the frontend.
+**Type** — list of configured property types; each has its own behavior and display in the manager and on the frontend. See "[Property types](/en/components/msextrafields/interface#property-types)". **Note:** switching between very different types (e.g. "text" to "range") that were created earlier and are already used in products **can break or misbehave in the filter** on the frontend — use with care.
 
-**Value** — input type for this field (x-type changes with type). When you change type, values are not converted automatically.
+**Value** — input type for this field (x-type changes automatically with the selected type). When you change the property type, values are not converted automatically; adjust them manually if needed.
 
-**Unit of measure** — shown when viewing product(s) via the parseMeasure snippet from system setting ms2efs_product_custom_measure.
+**Unit of measure** — shown when viewing product(s) via the parseMeasure snippet based on system setting ms2efs_product_custom_measure.
 
-**Show in short** — when true, the property is shown by ``[[!msExtraFields? &display=`short`]]``; default chunk group is short, fallback is info.
+**Show in short** — when true, the property is shown by ``[[!msExtraFields? &display=`short`]]``; by default the chunk from the short group is used, and if not found the info group is used.
 
 **Filter** — when true, the property appears in mSearch2 filter.
 
-**Only in info** — in [msExtraFields][snippet msExtraFields], regardless of display (edit or short), the property is always shown as info. Use for read-only info on the product page or when the property does not affect price.
+**Only in info** — in snippet [msExtraFields][snippet msExtraFields], regardless of the **display** parameter (edit or short), the property is always shown in the info type. Use it when you want to show the property only as information to the client on the product page, or when the property does not affect the product price or is unique and fixed (e.g. a characteristic that does not change).
 
-**Active** — when false, the property is hidden in the filter and on the product page. In the manager it is shown with a red background.
+**Active** — when false, the property is not shown in the filter or on the product page to the client. In the manager on the product page such a property is shown with a red background.
 
 ![Editing](https://file.modx.pro/files/6/9/6/696a3fcf29088a5a82271018bf0a89a7.png)
 
 ### Deleting
 
-One record at a time via right-click and "Delete".
+Deletion is done one record at a time: right-click the row and choose "Delete".
 
 ## Property types
 
@@ -71,19 +71,19 @@ In the manager only digits and a decimal point are allowed. Save with [[Ctrl]]+[
 
 ### Range
 
-Two modes:
+Allows output of a range in two modes:
 
-- **Range** — data as n-n2, n3-n4, n5. Only digits, hyphen, comma, space. On the frontend the "Step" parameter splits the range. Client sees a slider.
+- **Range** — data in the form n-n2, n3-n4, n5. Only digits (including a decimal point), hyphen, comma and space are allowed. On the client the "Step" parameter is used to split the range into parts automatically.
 
-- **Values** — comma-separated quoted values, e.g. `"cold","cool","warm","hot"`. On the frontend they fill the slider scale evenly.
+- **Values** — values entered in sequence, in double quotes and separated by commas. Example: `"cold","cool","warm","hot"`. On the client all values fill the slider scale evenly.
 
-In the "**Properties**" field you can add JSON options, e.g. `{"prefix": "Age ", "max_postfix": "+"}`. See [Ion.RangeSlider](http://ionden.com/a/plugins/ion.rangeSlider/en.html).
+In the "**Properties**" field you can add your own parameters in JSON format without errors, e.g. `{"prefix": "Age ", "max_postfix": "+"}`. See the [Ion.RangeSlider](http://ionden.com/a/plugins/ion.rangeSlider/en.html) documentation for all options.
 
-In the filter the client sees a RangeSlider; elsewhere the set property value. On the product page it can be a numeric input (validated against the range) or a dropdown when type is "*Values*". Only one value can be selected from the range.
+In the filter the client sees a RangeSlider; in all other cases the set property value is shown. On the product page, depending on the range type, the value can be either an input (only numeric values allowed, validated against the range) or a dropdown when the type is "*Values*". In any case only one value from the range can be selected.
 
 ## Product category page
 
-Before describing this page, understand how properties are filled for products. Properties from parent categories inherit characteristics from the nearest parents, overriding previously declared ones. With a multi-level category structure: declare common properties at the top, category-specific ones at lower levels. Products in the deepest category receive properties from all parents. Product properties are not limited to those declared in categories. Below is a diagram of property inheritance.
+Before describing how this page works, you need to understand how properties are filled for a product. Properties that exist on parent categories (categories of the current product) inherit all characteristics from the nearest parents, overriding any declared earlier. So with a multi-level category structure you can declare common properties at the top levels, then only category-specific ones at lower levels; products in the deepest category then get properties from all parents. Product properties are not limited to those declared in categories. The diagram below shows property inheritance when changing their values inside a product.
 
 ![Product category page - 1](https://file.modx.pro/files/a/2/2/a22325554ea87a9a007f6fa2bd453541.png)
 

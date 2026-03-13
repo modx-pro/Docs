@@ -30,20 +30,25 @@ Filter output:
 
 *&suggestionsRadio is needed for select filters to work correctly.*
 
-Add a script that hides model options whose name **does not start with the selected brand**:
+Now add a script that hides car model options whose name **does not start with the selected brand**:
 
 ```js
 var modelFilter = {
+  // Our selectors
   options: {
     marka: '#mse2_tv\\|marka',
     model: '#mse2_tv\\|model',
   },
+  // Entry point
   initialize: function () {
     $this = this;
+    // Get elements and store as object properties
     this.marka = $(this.options['marka']);
     this.model = $(this.options['model']);
 
+    // Check URL params for selected brand
     var params = mSearch2.Hash.get();
+    // If none — disable model filter
     if (params['marka'] == undefined) {
       $this.disableModel();
     }
@@ -51,8 +56,10 @@ var modelFilter = {
       $this.enableModel();
     }
 
+    // Listen for brand change
     this.marka.find('select').on('change', function () {
       if ($(this).val() != '') {
+        // Set model to first "Select from list" option
         $this.model.find('option:first').attr('selected', true);
         $this.enableModel();
       }
@@ -62,16 +69,21 @@ var modelFilter = {
     })
   },
 
+  // Disable model filter
   disableModel: function () {
+    // Clear selection and disable all options with non-empty value
     $this.model.find('option[value!=""]').attr('selected', false).attr('disabled', true);
     $this.model.hide();
   },
 
+  // Enable model filter
   enableModel: function () {
     var marka = this.marka.find(':selected').text().replace(/\(.*?\)$/, '').replace(/\s+$/, '');
     var re = new RegExp('^' + marka);
+    // Walk options and check name
     $this.model.find('option').each(function() {
       var $this = $(this);
+      // Name doesn't match — disable this option
       if (!$this.text().match(re) && $this.prop('value') != '') {
         $this.attr('disabled', true);
         $this.hide();
@@ -85,6 +97,7 @@ var modelFilter = {
   },
 }
 
+// Run after DOM ready
 $(document).ready(function () {
   if ($('#mse2_mfilter').length > 0) {
     modelFilter.initialize();
@@ -92,8 +105,8 @@ $(document).ready(function () {
 });
 ```
 
-Include this script on the page; it does not conflict with the default mSearch2 script.
+Include this script on the page yourself; it does not conflict with the default mSearch2 script.
 
-Result (clickable GIF):
+Expected result (clickable GIF):
 
 ![Dependent filters](https://file.modx.pro/files/4/a/3/4a32ca06fe335d43de148c0faf640e04.gif)

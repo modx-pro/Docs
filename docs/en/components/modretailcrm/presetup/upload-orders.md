@@ -2,13 +2,13 @@
 
 ## Purpose
 
-When connecting RetailCRM to an existing store, you already have orders. Uploading them improves RetailCRM analytics and shows purchase history per customer.
+When you connect RetailCRM to an existing store, there are usually orders already in the system. Uploading this data lets RetailCRM compute more accurate analytics and at least show how many purchases each customer has made.
 
-## Steps
+## Step-by-step
 
-1. modRetailCRM must be installed and configured (API key, site code, CRM URL). See presetup in the main docs.
+1. By this point modRetailCRM should be purchased, connected to the store, and configured. By configuration we mean API key, site code, and CRM URL, since we use the component here. If not done yet, go back to the component presetup.
 
-2. If you have few orders (e.g. under a hundred), run this in the MODX Console component:
+2. If you have relatively few orders (e.g. under a hundred), you can run the following in the MODX Console component in the manager:
 
 ```php
 <?php
@@ -23,19 +23,22 @@ if (!$modRetailCrm = $modx->getService(
 }
 
 $q = $modx->newQuery('msOrder');
+// How many orders to send per batch
 $limit = 50;
+// How many to skip from the start
 $offset = 0;
 $q->limit($limit, $offset);
 $orders = $modx->getIterator('msOrder', $q);
+// Upload one by one
 foreach($orders as $msOrder) {
   $modRetailCrm->msOnCreateOrder($msOrder);
 }
 ```
 
-For large databases, move this into a PHP script and run from the server console. Bootstrap MODX at the start of the script. See [MODX bootstrap](https://modx.pro/development/3163).
+That is all. For large databases it is more efficient to put this code in a separate PHP file and run it from the server console. Do not forget to bootstrap MODX at the start of the file. If you are not sure how, see [this](https://modx.pro/development/3163).
 
-## Troubleshooting
+## Possible errors
 
-- Check modRetailCRM system settings.
-- Try a smaller batch (e.g. `$limit = 1`).
-- Enable **modretailcrm_log** and check MODX and RetailCRM responses.
+If something goes wrong and the upload fails, first check that modRetailCRM system settings are filled. Then try uploading fewer orders (e.g. set `$limit` to 1). If it still fails, enable error logging with system setting **modretailcrm_log**, run again and check the MODX error log.
+
+RetailCRM usually describes errors clearly, so that is often enough to see what is missing or what went wrong.

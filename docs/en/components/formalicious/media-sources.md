@@ -1,7 +1,8 @@
 # Media sources
 
-Formalicious sets one system setting, `formalicious.source`, default value `1` (default files source).
+Formalicious sets one system setting, `formalicious.source`, which equals `1`.
+That is the default file source.
 
-To choose attachments for auto-replies from another source, change this setting.
+If you want to choose attachments for auto-replies from another source, change this setting.
 
-You can see all media sources under **Media** > **File sources** in the main menu. The first column shows the source ID to use in `formalicious.source`.
+You can see all site media sources under **Media** > **File sources** in the main menu. The first column shows the source ID that you can set in `formalicious.source`.

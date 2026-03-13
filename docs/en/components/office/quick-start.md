@@ -52,7 +52,7 @@ In incognito you'll be asked to log in when accessing the account:
 
 [![](https://file.modx.pro/files/6/d/9/6d974b4865574dbbbdc49eb418e53069s.jpg)](https://file.modx.pro/files/6/d/9/6d974b4865574dbbbdc49eb418e53069.png)
 
-Call snippet **officeAuth** with **groups** so users are registered in Users, which has account access:
+Note: call snippet **officeAuth** with parameter **groups** so that users are registered in the Users group, which has access to the account:
 
 ```modx
 [[!officeAuth?
@@ -60,7 +60,7 @@ Call snippet **officeAuth** with **groups** so users are registered in Users, wh
 ]]
 ```
 
-For **HybridAuth** auth see [docs][1]. To disable it:
+It is straightforward once you get the idea. To set up auth via **HybridAuth** see [docs][1]. To disable it:
 
 ```modx
 [[!officeAuth?
@@ -69,17 +69,17 @@ For **HybridAuth** auth see [docs][1]. To disable it:
 ]]
 ```
 
-By default, HybridAuth cannot be used at registration. The user must first log in via email, then bind social networks in profile settings.
+By default, HybridAuth cannot be used at registration. The user must first log in via email, then bind social networks in profile settings. I prefer to configure it — it is more convenient for visitors.
 
-If a customer already placed an order with that email in miniShop2, they are already registered. They can reset the password, get it by email, log in and see their orders.
+All auth snippet parameters are on its page in the manager. If a customer already placed an order with that email in miniShop2, they are already in the system and cannot register again. They can reset the password, receive it by email, log in to the account and see all their orders.
 
-With this add-on you give all your customers access to their order history.
+So with this add-on you give **all** your customers access to their saved order history.
 
 ## Profile editing
 
-Main differences of **officeProfile**:
+Main differences of **officeProfile** from other profile-edit solutions:
 
-- Works fully via ajax.
+- It works entirely via ajax.
 - Lets you specify which profile fields can be filled.
 - Can require certain fields.
 - User can change username and email. For email change, an activation link is sent. Email changes only after the user clicks it.
@@ -87,19 +87,21 @@ Main differences of **officeProfile**:
 - User can upload/remove profile image via ajax. If none, [gravatar][2] is used.
 - User can bind social networks (if enabled) for quick login.
 
-All works out of the box.
+All of this works out of the box, no extra setup.
 
 [![](https://file.modx.pro/files/1/9/a/19ab435142d62ce938dcf4892b4dcf45s.jpg)](https://file.modx.pro/files/1/9/a/19ab435142d62ce938dcf4892b4dcf45.png)
+
+The snippet is called very simply:
 
 ```modx
 [[!officeProfile]]
 ```
 
-You can pass parameters: disable HybridAuth, redirect on logout (default: current url), avatar upload params, etc. See snippet parameters in the manager.
+You can pass extra parameters: disable HybridAuth, where to redirect on logout (default: current url), avatar upload options, etc. I won’t list them all here; you can see everything in its parameters in the manager.
 
 ## Order output
 
-Order history uses **officeMiniShop2**:
+Order history is output with snippet **officeMiniShop2**:
 
 [![](https://file.modx.pro/files/d/e/e/dee7bb2e05e4ca5f23188fba7b9d1064s.jpg)](https://file.modx.pro/files/d/e/e/dee7bb2e05e4ca5f23188fba7b9d1064.png)
 
@@ -107,17 +109,17 @@ Order history uses **officeMiniShop2**:
 
 [![](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fds.jpg)](https://file.modx.pro/files/9/7/d/97d83a9dad06a604428a859f391110fd.png)
 
-Built on ExtJS. Fields are set in system settings. You can change the look with custom CSS, but it's tedious.
+It is built on ExtJS and is very convenient. It is loaded from the installed MODX, so the look may vary slightly between MODX versions. Which fields to show is set in system settings. You can also fully change the ExtJS look with your own CSS file, but that is rather tedious — fair warning.
 
 [![](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baads.jpg)](https://file.modx.pro/files/6/f/2/6f2a563d97bbea76516b74dc9c80baad.png)
 
 [![](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531s.jpg)](https://file.modx.pro/files/c/a/1/ca1a88011b00b8c35f17a0858cb9e531.png)
 
-Default settings suit most stores; you may want to remove the "weight" field.
+Default settings suit most stores; you may only need to remove the "weight" field.
 
 ## Conclusion
 
-You now know how to set up auth, profile editing, and miniShop2 order output on your site.
+You now know how to set up auth, profile editing, and miniShop2 order history on your site in a simple way.
 
 [1]: /en/components/hybridauth/
 [2]: https://gravatar.com

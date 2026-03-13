@@ -13,9 +13,11 @@ MiniShop3 uses a modular JavaScript architecture without jQuery. All modules are
 **Features:**
 
 - Modular structure (core, ui, modules)
-- REST API client with token handling
+- REST API client with httpOnly cookie tokenization
 - Hook system for extension
+- Centralized selectors with override
 - Automatic cart rendering
+- Promise-based confirmation dialogs
 - Events for integration
 
 ## Module structure
@@ -25,18 +27,21 @@ assets/components/minishop3/js/web/
 ├── core/                    # Core
 │   ├── ApiClient.js         # HTTP client
 │   ├── TokenManager.js      # Token management
+│   ├── Selectors.js         # Centralized selectors
 │   ├── CartAPI.js           # Cart API
 │   ├── OrderAPI.js          # Order API
 │   └── CustomerAPI.js       # Customer API
 ├── ui/                      # UI handlers
 │   ├── CartUI.js            # Cart UI
 │   ├── OrderUI.js           # Order UI
-│   └── CustomerUI.js        # Customer UI
+│   ├── CustomerUI.js        # Customer UI (profile, addresses, order cancellation)
+│   ├── AuthUI.js            # Login and registration forms
+│   ├── QuantityUI.js        # Quantity +/- buttons
+│   └── ProductCardUI.js     # Product card
 ├── modules/                 # Helper modules
 │   ├── hooks.js             # Hook system
 │   ├── message.js           # Notifications
-│   ├── auth-forms.js        # Auth forms
-│   └── customer-addresses.js # Address management
+│   └── confirm.js           # Promise-based confirmation dialog
 ├── lib/                     # Libraries
 │   └── izitoast/            # iziToast notifications
 ├── ms3.js                   # Main module
@@ -55,6 +60,8 @@ Controls the order of CSS and JS assets:
     "[[+jsUrl]]web/lib/izitoast/iziToast.js",
     "[[+jsUrl]]web/modules/hooks.js",
     "[[+jsUrl]]web/modules/message.js",
+    "[[+jsUrl]]web/modules/confirm.js",
+    "[[+jsUrl]]web/core/Selectors.js",
     "[[+jsUrl]]web/core/ApiClient.js",
     "[[+jsUrl]]web/core/TokenManager.js",
     "[[+jsUrl]]web/core/CartAPI.js",
@@ -63,6 +70,9 @@ Controls the order of CSS and JS assets:
     "[[+jsUrl]]web/ui/CartUI.js",
     "[[+jsUrl]]web/ui/OrderUI.js",
     "[[+jsUrl]]web/ui/CustomerUI.js",
+    "[[+jsUrl]]web/ui/AuthUI.js",
+    "[[+jsUrl]]web/ui/QuantityUI.js",
+    "[[+jsUrl]]web/ui/ProductCardUI.js",
     "[[+jsUrl]]web/ms3.js"
 ]
 ```
@@ -89,23 +99,79 @@ Edit system setting `ms3_frontend_assets` to change or disable files.
 [
     "[[+jsUrl]]web/modules/hooks.js",
     "[[+jsUrl]]web/modules/message.js",
+    "[[+jsUrl]]web/modules/confirm.js",
+    "[[+jsUrl]]web/core/Selectors.js",
     "[[+jsUrl]]web/core/ApiClient.js",
     ...
 ]
+```
+
+## Selectors
+
+### Selectors.js module
+
+Centralized CSS/data-* selectors for all UI components. Selectors use data-attributes as primary with fallback to CSS classes for backward compatibility.
+
+```javascript
+// Default selectors
+{
+  form: '[data-ms3-form], .ms3_form',
+  formOrder: '[data-ms3-form="order"], .ms3_order_form',
+  formCustomer: '[data-ms3-form="customer"], .ms3_customer_form',
+  cartOptions: '[data-ms3-cart-options], .ms3_cart_options',
+  qtyInput: '[data-ms3-qty="input"], .qty-input',
+  qtyInc: '[data-ms3-qty="inc"], .inc-qty',
+  qtyDec: '[data-ms3-qty="dec"], .dec-qty',
+  productCard: '[data-ms3-product-card], .ms3-product-card',
+  fieldError: '[data-ms3-error], .ms3_field_error',
+  orderCost: '#ms3_order_cost',
+  orderCartCost: '#ms3_order_cart_cost',
+  orderDeliveryCost: '#ms3_order_delivery_cost',
+  link: '.ms3_link',
+  orderCancel: '.ms3-order-cancel',
+  addressSetDefault: '.set-default-address',
+  addressDelete: '.delete-address',
+  authLoginForm: '#ms3-login-form',
+  authRegisterForm: '#ms3-register-form',
+  authForgotPassword: '#forgot-password-link'
+}
+```
+
+### Overriding selectors
+
+Use `ms3Config.selectors` to override selectors — they are merged with defaults:
+
+```javascript
+window.ms3Config = {
+  selectors: {
+    orderCancel: '.my-custom-cancel-btn',
+    form: '.my-form-class'
+  }
+}
+```
+
+### Use in UI classes
+
+All UI classes get selectors from `ms3.selectors`:
+
+```javascript
+// Inside a UI class
+const forms = document.querySelectorAll(this.selectors.form)
+const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 ```
 
 ## Main object ms3
 
 ### Initialization
 
-The main `ms3` object is initialized automatically:
+The main `ms3` object is initialized automatically when `ms3.js` loads:
 
 ```javascript
 // assets/components/minishop3/js/web/ms3.js
 
 const ms3 = {
-  // Config (from server)
   config: {},
+  selectors: {},
 
   // Core
   tokenManager: null,
@@ -120,14 +186,17 @@ const ms3 = {
   cartUI: null,
   orderUI: null,
   customerUI: null,
+  authUI: null,
+  quantityUI: null,
+  productCardUI: null,
 
   // Utilities
   hooks: null,
   message: null,
 
-  // Init
   async init() {
     this.config = window.ms3Config || {}
+    this.selectors = getSelectors(this.config)
 
     // Hooks and messages
     this.hooks = window.ms3Hooks
@@ -147,14 +216,18 @@ const ms3 = {
     this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
     this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
     this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
+    this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
 
-    // Init UI
+    // Init
     this.cartUI.init()
     this.orderUI.init()
     this.customerUI.init()
+    this.authUI.init()
 
-    // Form handlers
     this.initFormHandler()
+
+    // Ready event
+    document.dispatchEvent(new CustomEvent('ms3:ready'))
   }
 }
 ```
@@ -166,8 +239,12 @@ Passed from the server via snippets:
 ```javascript
 window.ms3Config = {
   apiUrl: '/assets/components/minishop3/api.php',
-  token: 'abc123...',
   tokenName: 'ms3_token',
+
+  // Selector overrides
+  selectors: {
+    orderCancel: '.my-cancel-button'
+  },
 
   // Render config
   render: {
@@ -179,11 +256,26 @@ window.ms3Config = {
 }
 ```
 
+### Ready event
+
+```javascript
+document.addEventListener('ms3:ready', () => {
+  // ms3 is fully initialized
+  console.log('ms3 ready', ms3.config)
+})
+```
+
 ## Core
 
 ### TokenManager
 
-Auth token management with localStorage:
+Auth token management. The token is stored in the httpOnly cookie `ms3_token`, set by the server automatically.
+
+::: info httpOnly cookie
+As of version 1.6, the token is stored in an httpOnly cookie instead of localStorage. This improves security — the token is not accessible from JavaScript and is protected against XSS.
+
+The cookie is sent automatically by the browser with every request.
+:::
 
 ```javascript
 class TokenManager {
@@ -192,63 +284,25 @@ class TokenManager {
     this.tokenName = config.tokenName || 'ms3_token'
   }
 
-  getToken() {
-    const data = localStorage.getItem(this.tokenName)
-    if (!data) return null
-
-    const { token, expires } = JSON.parse(data)
-    if (Date.now() > expires) {
-      this.removeToken()
-      return null
-    }
-    return token
-  }
-
-  setToken(token, ttl = 86400) {
-    const data = {
-      token,
-      expires: Date.now() + (ttl * 1000)
-    }
-    localStorage.setItem(this.tokenName, JSON.stringify(data))
-  }
-
-  removeToken() {
-    localStorage.removeItem(this.tokenName)
-  }
-
   async ensureToken() {
-    let token = this.getToken()
-    if (!token) {
-      token = await this.fetchNewToken()
-    }
-    return token
+    // Token is in httpOnly cookie — JS cannot read it directly.
+    // If cookie is missing, requests a new token from the server
+    return this.fetchNewToken()
   }
 
   async fetchNewToken() {
-    const response = await fetch(`${this.config.apiUrl}?route=/api/v1/token`)
+    const response = await fetch(
+      `${this.config.apiUrl}?route=/api/v1/customer/token/get`
+    )
     const data = await response.json()
-    if (data.success && data.object?.token) {
-      this.setToken(data.object.token, data.object.ttl || 86400)
-      return data.object.token
-    }
-    return null
+    return data.success ? data.data?.token : null
   }
 }
 ```
 
-**Usage:**
-
-```javascript
-// Get current token
-const token = ms3.tokenManager.getToken()
-
-// Force refresh
-await ms3.tokenManager.fetchNewToken()
-```
-
 ### ApiClient
 
-HTTP client that adds the token automatically:
+HTTP client. The token is sent automatically via the httpOnly cookie:
 
 ```javascript
 class ApiClient {
@@ -261,18 +315,13 @@ class ApiClient {
     const url = new URL(this.baseUrl, window.location.origin)
     url.searchParams.set('route', route)
 
-    const token = this.tokenManager.getToken()
-
     const options = {
       method,
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
-      }
-    }
-
-    if (token) {
-      options.headers['Authorization'] = `Bearer ${token}`
+      },
+      credentials: 'same-origin'  // Sends httpOnly cookie
     }
 
     if (data && method !== 'GET') {
@@ -533,17 +582,24 @@ class OrderUI {
 
 ### CustomerUI
 
-Customer form handler:
+Customer form handler: profile, addresses and order cancellation:
 
 ```javascript
 class CustomerUI {
   init() {
-    document.querySelectorAll('.ms3_customer_form').forEach(form => {
+    document.querySelectorAll(this.selectors.formCustomer).forEach(form => {
       this.initForm(form)
     })
+    this.initOrderCancel()
+    this.initAddressManagement()
   }
 
+  // Profile update
   async handleProfileUpdate(formData) {
+    const hookData = { formData }
+    await this.hooks.runHooks('beforeUpdateProfile', hookData)
+    if (hookData.cancel) return
+
     const data = {}
     for (const [key, value] of formData.entries()) {
       if (key === 'ms3_action') continue
@@ -552,18 +608,204 @@ class CustomerUI {
 
     const response = await this.customer.updateProfile(data)
 
+    await this.hooks.runHooks('afterUpdateProfile', { response })
+
     if (response.success) {
-      this.message.success('Profile updated')
+      this.message.success(response.message)
       setTimeout(() => window.location.reload(), 1000)
     }
 
     return response
   }
 
-  async handleAddressCreate(formData) {
-    // Similar logic
+  // Order cancellation
+  initOrderCancel() {
+    document.querySelectorAll(this.selectors.orderCancel).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const orderId = btn.dataset.orderId
+        const confirmMessage = btn.dataset.confirm
+
+        const confirmed = await ms3Confirm(confirmMessage, {
+          confirmClass: 'danger'
+        })
+        if (!confirmed) return
+
+        const hookData = { orderId }
+        await this.hooks.runHooks('beforeCancelOrder', hookData)
+        if (hookData.cancel) return
+
+        const response = await this.customer.cancelOrder(orderId)
+
+        await this.hooks.runHooks('afterCancelOrder', { orderId, response })
+
+        if (response.success) {
+          this.message.success(response.message)
+          window.location.reload()
+        } else {
+          this.message.error(response.message)
+        }
+      })
+    })
+  }
+
+  // Address management
+  initAddressManagement() {
+    // Set default
+    document.querySelectorAll(this.selectors.addressSetDefault).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.addressId
+        const response = await this.customer.setDefaultAddress(id)
+        if (response.success) window.location.reload()
+      })
+    })
+
+    // Delete address
+    document.querySelectorAll(this.selectors.addressDelete).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.addressId
+        const confirmed = await ms3Confirm(btn.dataset.confirm)
+        if (!confirmed) return
+
+        const response = await this.customer.deleteAddress(id)
+        if (response.success) window.location.reload()
+      })
+    })
   }
 }
+```
+
+### AuthUI
+
+Login and registration form handler:
+
+```javascript
+class AuthUI {
+  constructor(customerAPI, hooks, message, config) {
+    this.customer = customerAPI
+    this.hooks = hooks
+    this.message = message
+    this.config = config
+  }
+
+  init() {
+    this.initLoginForm()
+    this.initRegisterForm()
+  }
+
+  async handleLogin(formData) {
+    const hookData = { formData }
+    await this.hooks.runHooks('beforeLogin', hookData)
+    if (hookData.cancel) return
+
+    const response = await this.customer.login({
+      email: formData.get('email'),
+      password: formData.get('password')
+    })
+
+    await this.hooks.runHooks('afterLogin', { response })
+
+    if (response.success) {
+      this.message.success(response.message)
+      window.location.href = response.data?.redirect_url || window.location.href
+    } else {
+      this.showFormErrors('login', response)
+    }
+  }
+
+  async handleRegister(formData) {
+    const hookData = { formData }
+    await this.hooks.runHooks('beforeRegister', hookData)
+    if (hookData.cancel) return
+
+    const response = await this.customer.register({
+      email: formData.get('email'),
+      password: formData.get('password'),
+      password_confirm: formData.get('password_confirm'),
+      first_name: formData.get('first_name'),
+      last_name: formData.get('last_name'),
+      phone: formData.get('phone'),
+      privacy_accepted: formData.get('privacy_accepted') ? true : false
+    })
+
+    await this.hooks.runHooks('afterRegister', { response })
+
+    if (response.success) {
+      this.message.success(response.message)
+      window.location.href = response.data?.redirect_url || window.location.href
+    } else {
+      this.showFormErrors('register', response)
+    }
+  }
+}
+```
+
+**Auth chunk:** `tpl.msCustomer.unauthorized` contains login and registration forms with tabs (Bootstrap). An inline script exports lexicon keys into `window.ms3Lexicon`:
+
+```fenom
+<script>
+window.ms3Lexicon = window.ms3Lexicon || {};
+window.ms3Lexicon.ms3_customer_err_login_required = '{'ms3_customer_err_login_required' | lexicon}';
+window.ms3Lexicon.ms3_customer_login_success = '{'ms3_customer_login_success' | lexicon}';
+{* ... and other keys *}
+</script>
+```
+
+## Confirmation dialog
+
+### confirm.js module
+
+Promise-based confirmation dialog using Bootstrap Modal with fallback to `window.confirm()`:
+
+```javascript
+// Global function
+async function ms3Confirm(message, options = {}) → Promise<boolean>
+```
+
+**options:**
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `confirmText` | "Confirm" / "Подтвердить" | Confirm button text |
+| `cancelText` | "Cancel" / "Отмена" | Cancel button text |
+| `confirmClass` | `primary` | Button CSS class (primary, danger) |
+
+**Example:**
+
+```javascript
+// Simple confirmation
+const ok = await ms3Confirm('Are you sure?')
+if (!ok) return
+
+// Red button (destructive action)
+const ok = await ms3Confirm('Delete this address?', {
+  confirmClass: 'danger'
+})
+```
+
+### i18n
+
+Button labels are chosen from `<html lang>`:
+
+- `lang="ru"` → "Подтвердить" / "Отмена"
+- Other → "Confirm" / "Cancel"
+
+Override via `window.ms3Lexicon`:
+
+```javascript
+window.ms3Lexicon.ms3_confirm_ok = 'Yes, delete'
+window.ms3Lexicon.ms3_confirm_cancel = 'No'
+```
+
+### Declarative binding
+
+`data-ms3-confirm` on any element shows the dialog before the default action:
+
+```html
+<button data-ms3-confirm="Delete this address?"
+        data-address-id="5"
+        class="delete-address">
+    Delete
+</button>
 ```
 
 ## Hook system
@@ -633,8 +875,25 @@ const ms3Hooks = {
 | `afterUpdateProfile` | After profile update |
 | `beforeCreateAddress` | Before creating address |
 | `afterCreateAddress` | After creating address |
-| `beforeChangeAddressCustomer` | Before changing address |
-| `afterChangeAddressCustomer` | After changing address |
+| `beforeUpdateAddress` | Before updating address |
+| `afterUpdateAddress` | After updating address |
+| `beforeChangeAddressCustomer` | Before changing address in order |
+| `afterChangeAddressCustomer` | After changing address in order |
+| `beforeSetDefaultAddress` | Before setting default address |
+| `afterSetDefaultAddress` | After setting default address |
+| `beforeDeleteAddress` | Before deleting address |
+| `afterDeleteAddress` | After deleting address |
+| `beforeCancelOrder` | Before cancelling order |
+| `afterCancelOrder` | After cancelling order |
+
+#### Authorization
+
+| Hook | Description |
+|-----|-------------|
+| `beforeLogin` | Before login |
+| `afterLogin` | After login |
+| `beforeRegister` | Before registration |
+| `afterRegister` | After registration |
 
 ### Examples
 
@@ -672,27 +931,22 @@ ms3Hooks.addHook('afterAddCart', async (data) => {
 })
 ```
 
-**Clear cart confirmation:**
+**After cancel order:**
 
 ```javascript
-ms3Hooks.addHook('beforeCleanCart', async (data) => {
-  if (!confirm('Clear cart?')) {
-    data.cancel = true
+ms3Hooks.addHook('afterCancelOrder', async (data) => {
+  if (data.response.success) {
+    ym(COUNTER_ID, 'reachGoal', 'order_cancelled')
   }
 })
 ```
 
-**Order error handling:**
+**After registration:**
 
 ```javascript
-ms3Hooks.addHook('afterSubmitOrder', async (data) => {
-  if (!data.response.success) {
-    data.response.errors?.forEach(field => {
-      const input = document.querySelector(`[name="${field}"]`)
-      if (input) {
-        input.classList.add('is-invalid')
-      }
-    })
+ms3Hooks.addHook('afterRegister', async (data) => {
+  if (data.response.success) {
+    gtag('event', 'sign_up', { method: 'email' })
   }
 })
 ```
@@ -765,18 +1019,20 @@ document.addEventListener('ms3:cart:updated', (e) => {
 
 ### Automatic form handling
 
-MiniShop3 handles forms with class `.ms3_form` and attributes `data-ms3-entity` and `data-ms3-method`:
+MiniShop3 automatically handles forms with class `.ms3_form` (or `[data-ms3-form]`). Routing is determined by the `ms3_action` field:
 
 ```html
 <!-- Add to cart -->
-<form class="ms3_form" data-ms3-entity="cart" data-ms3-method="add">
+<form class="ms3_form">
+  <input type="hidden" name="ms3_action" value="cart/add">
   <input type="hidden" name="id" value="123">
   <input type="number" name="count" value="1">
   <button type="submit">Add to cart</button>
 </form>
 
 <!-- Submit order -->
-<form class="ms3_form" data-ms3-entity="order" data-ms3-method="submit">
+<form class="ms3_form">
+  <input type="hidden" name="ms3_action" value="order/submit">
   <button type="submit">Checkout</button>
 </form>
 ```
@@ -902,6 +1158,8 @@ window.ms3Lexicon = {
   'ms3_frontend_currency': 'USD',
   'ms3_frontend_add_to_cart': 'Add to cart',
   'ms3_customer_login_success': 'You are logged in',
+  'ms3_confirm_ok': 'Confirm',
+  'ms3_confirm_cancel': 'Cancel',
   // ...
 }
 ```
@@ -909,7 +1167,7 @@ window.ms3Lexicon = {
 ### Usage in code
 
 ```javascript
-// In AuthForms
+// In UI modules (e.g. AuthUI, confirm.js)
 getLexicon(key) {
   if (window.ms3Lexicon?.[key]) {
     return window.ms3Lexicon[key]
@@ -924,37 +1182,7 @@ getLexicon(key) {
 }
 ```
 
-## Additional modules
-
-### AuthForms
-
-Auth and registration forms:
-
-```javascript
-const authForms = new AuthForms({
-  apiUrl: '/assets/components/minishop3/api.php',
-  loginRoute: '/api/v1/customer/login',
-  registerRoute: '/api/v1/customer/register',
-  loginFormId: 'ms3-login-form',
-  registerFormId: 'ms3-register-form'
-})
-
-authForms.init()
-```
-
-### CustomerAddresses
-
-Address management in account:
-
-```javascript
-const customerAddresses = new CustomerAddresses({
-  apiUrl: '/assets/components/minishop3/api.php',
-  setDefaultSelector: '.set-default-address',
-  deleteSelector: '.delete-address'
-})
-
-customerAddresses.init()
-```
+### Additional modules
 
 ### order-addresses.js
 
@@ -969,23 +1197,15 @@ Saved address selection on checkout:
 </select>
 ```
 
-The module fills the form when an address is selected.
+The module fills the form fields when an address is selected.
 
 ## Compatibility
 
 ### Requirements
 
 - Modern browsers (ES6+)
-- No jQuery
+- No jQuery dependency
 - `fetch`, `Promise`, `async/await` support
-
-### Polyfills
-
-For older browsers include polyfills:
-
-```html
-<script src="https://polyfill.io/v3/polyfill.min.js?features=fetch,Promise"></script>
-```
 
 ## Related pages
 

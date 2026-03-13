@@ -34,3 +34,49 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - run: pnpm run spellcheck
+
+  docs-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: node scripts/check-docs-sync.mjs
+
+  # Compare EN vs RU doc structure (##/### sections). Fails if EN has fewer sections — possible outdated translation.
+  docs-structure-sync:
+    runs-on: ubuntu-latest
+    continue-on-error: true  # Remove once baseline drift is fixed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: node scripts/check-docs-structure-sync.mjs
+
+  # Content/volume diff for selected paths: EN must be within threshold of RU (lines/words). Catches point edits not ported to EN.
+  docs-content-sync:
+    runs-on: ubuntu-latest
+    continue-on-error: true  # Remove once baseline volume drift is fixed on critical paths
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: node scripts/check-docs-content-sync.mjs
