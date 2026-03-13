@@ -8,14 +8,98 @@ modstore: https://modstore.pro/packages/ecommerce/simplefilters
 
 # simpleFilters
 
-Пакет устанавливается стандартным образом из [репозитория](https://modstore.pro/packages/ecommerce/simplefilters) через установщик MODX3.
+Простая фильтрация ресурсов MODX3 и товаров MiniShop3.
+
+## Основные свойства
+- Поддержка полей ресурсов, TV и MIGX полей, а также полей и опций товаров MiniShop3.
+- Работает как со стандартными таблицами MODX, так и с собственной индексной таблицей.
+- Поддерживает логику AND и OR.
+- Типы фильтров: чекбокс, радиокнопка, выпадающий список, слайдер для числовых значений (на основе [noUiSlider](https://refreshless.com/nouislider/)).
+- Настройка псевдонимов фильтров в URL.
+- Пагинация (постраничная и кнопкой «Загрузить ещё»).
+- Настраиваемая сортировка и выбор количества на страницу.
+- Системные события для тонкой настройки (тексты фильтров, значения, сортировка полей и т. д.).
 
 ## Системные настройки
 
 | Параметр | Описание | Значение по умолчанию |
 |:----------|:----------|-----------------------|
-| sf_css_path | Путь к JS-файлу относительно корня сайта | `{assets_url}components/simplefilters/js/web/default.min.js` |
+| sf_index_templates | Шаблоны ресурсов, поля которых нужно индексировать |  |
+| sf_index_fields | Поля ресурсов, которые нужно индексировать |  |
+| sf_index_fields | Путь к JS-файлу относительно корня сайта | `{assets_url}components/simplefilters/js/web/default.min.js` |
 | sf_css_path | Путь к CSS-файлу относительно корня сайта | `{assets_url}components/simplefilters/css/web/default.min.css` |
+
+
+## Начало работы
+
+### Индексирование полей и значений
+По умолчанию компонент работает с таблицей `modx_sf_index`, в которой должны содержаться значения полей для ресурсов, что ускоряет выборку.
+
+Для добавления данных нужно заполнить системные настройки `sf_index_templates` и `sf_index_fields`, где указать шаблоны ресурсов, участвующих в фильтрации и поля которые нужно индексировать, соответственно.
+
+Используются следующие префиксы:
+- Поле ресурса — **без префикса**
+- TV-параметр — **tv_**
+- MIGX-поле — **migx_**
+- Поле товара MiniShop3 — **ms_**
+- Опция товара MiniShop3 — **mso_**
+
+Например, у нас установлен MiniShop, шаблоны товаров 4 и 5 и нам нужно фильтровать по:
+- цене (поле товара **price**)
+- производителю (поле товара **vendor_id**)
+- новинке (поле товара **new**)
+- цвету (поле товара **color**)
+- материалу (опция товара **material**)
+- остатку (tv-параметр **inctock**)
+- полю «Высота» из MIGX-TV **chars*, у которого названия параметров указаны в поле `title`, а значения в `value`
+
+В `sf_index_templates` указываем `4,5`, а в `sf_index_fields` так:  
+```
+ms_price,ms_vendor_id,ms_new,ms_color,mso_material,tv_instock,migx_chars_Высота:title|value
+```
+
+Далее два варианта:   
+**1.** Запустить через консоль следующий скрипт:
+```php
+<?php
+$sf = $modx->getService('Simplefilters');
+$sf->updateIndexAll();
+```
+
+**2.** Вызвать один раз на любой странице сайта сниппет `simpleFiltersUpdate`, который идет в комплекте.
+
+#### Индексация при сохранении ресурса
+Происходит автоматически посредством плагина `simpleFilters` (висит на событии `onDocFormSave`).
+
+#### Индексация по расписанию
+Можно использовать [CronManager](https://docs.modx.com/current/en/extras/cronmanager/index) или [Scheduler](http://ttps//docs.modx.pro/components/scheduler/).  
+Просто добавьте сниппет `simpleFiltersUpdate` в задание и настройте периодичность запуска.
+
+#### Индексация после импорта
+Если используете [Impex3](https://modstore.pro/packages/import-and-export/impex3), создайте плагин на событие `OnImpexAterAllImport` с вышеуказанным скриптом:
+
+```php
+switch ($modx->event->name){
+    case 'OnImpexAterAllImport':
+        $sf = $modx->getService('Simplefilters');
+        $sf->updateIndexAll();
+    break;
+}
+```
+
+Если используете штатный импорт MiniShop3 из CSV, сделайте то же самое на `msOnAfterImport`:
+```php
+switch ($modx->event->name){
+    case 'msOnAfterImport':
+        $sf = $modx->getService('Simplefilters');
+        $sf->updateIndexAll();
+    break;
+}
+```
+
+### Работа без индекса
+Если ресурсов или полей немного или нет возможности обновлять индекс (по расписанию, после импорта и т. д), режим работы можно переключить на стандартные запросы к таблицам ресурсов, TV-парметров и т. д.  
+Для этого в вызове сниппета нужно указать ```&fromIndex=`0` ```
 
 ## Сниппет simpleFilters
 
@@ -29,6 +113,7 @@ modstore: https://modstore.pro/packages/ecommerce/simplefilters
 | **&resources** | Ресурсы для выборки. ID через запятую. | |
 | **&showUnpublished**| Вывод неопубликованных ресурсов | 0 |
 | **&templates** | Шаблоны ресурсов через запятую | |
+| **&fromIndex** | Выборка из индекса | 1 |
 | **&where** | Первоначальная выборка в JSON-формате | |
 | **&sortby** | Поле для сортировки | menuindex |
 | **&sortdir** | Направление сортировки | ASC |
@@ -38,8 +123,9 @@ modstore: https://modstore.pro/packages/ecommerce/simplefilters
 | **&msPrefix** | Префикс для полей товара miniShop3 | ms_ |
 | **&msoPrefix** | Префикс для опций товара miniShop3 | mso_ |
 | **&hideOne** | Скрывать фильтры с одним значением | 1 |
-| **&checkEmpty** | Просчитывать результат для каждого значения фильтра (усложняет выборку) | 0 |
+| **&checkEmpty** | Просчитывать результат для каждого значения фильтра, чтобы отключать неактивные | 0 |
 | **&filters** | Список фильтров в формате *поле1:тип_поля1,поле2:тип_поля2,поле3:тип_поля3* | |
+| **&aliases** | Псевдонимы фильтров для URL в формате *поле1==псевдоним1,поле2==псевдоним2,поле3==псевдоним3* | |
 | **&fseparator** | Разделитель значений фильтра в адресной строке | _ |
 | **&mode** | Режим работы: **and** — совпадение всех условий, **or** — совпадение хотя бы одного условия | or |
 | **Шаблонизация** | | |
@@ -77,7 +163,7 @@ modstore: https://modstore.pro/packages/ecommerce/simplefilters
 - Слайдер — **slider**
 - Радиокнопка — **radio**
 
-Пример указания списка фильтров:
+Пример указания списка фильтров и псевдонимов:
 
 ```
 &filters=`
@@ -89,9 +175,17 @@ modstore: https://modstore.pro/packages/ecommerce/simplefilters
     ms_color,
     ms_tags:select
 `
+&aliases=`
+    ms_vendor_id==brand,
+    ms_price==price,
+    tv_instock==instock,
+    migx_chars_Высота==height,
+    ms_color==color,
+    ms_tags==tags
+`
 ```
-
-MIGX-поля указываются в формате:
+### MIGX-поля
+Поля этого типа указываются в формате:
 
 ```
 migx_[имя tv]_[название параметра]:[тип фильтра]:[поле названия]|[поле значения]
@@ -123,6 +217,10 @@ migx_chars_Высота:slider:title|value
 ```
 migx_chars_Назначение:title|value
 ```
+В настройке индексации `sf_index_fields` всегда **без указания типа фильтра**:
+```
+migx_chars_Назначение:title|value,migx_chars_Высота:title|value
+```
 
 ---
 
@@ -150,6 +248,12 @@ migx_chars_Назначение:title|value
 &tplFilter_ms_tags=`чанк_для_блока`
 &tplFilterRow_ms_tags=`чанк_для_элемента`
 ```
+Если для параметра указан псевдоним, то используется он:
+```
+$aliases=`ms_tags==tag`
+&tplFilter_tag=`чанк_для_блока`
+&tplFilterRow_tag=`чанк_для_элемента`
+``` 
 
 Названия блоков фильтров задаются через лексиконы в формате **sf_filter_фильтр** (также можно менять в плагине).
 
@@ -181,4 +285,4 @@ document.addEventListener('sfilters', (e) => {
 | sfOnBeforeCreateFilter | Вызывается при создании блока фильтра. Например, можно изменить название блока, значения для слайдера и т. д. |
 | sfOnCheckResource | Вызывается при проверке ресурса на соответствие значению выбранного фильтра. Приходит id ресурса, название фильтра и значение. Чтобы ресурс добавился в выборку, должно возвращать `$data['result'] = true;` |
 
-В комплекте идёт плагин **simpleFilters** с примерами.
+Примеры обработки событий можно посмотреть в файле `core/components/simplefilters/docs/pluginExamples.md`.
