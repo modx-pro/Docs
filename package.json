@@ -16,7 +16,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vitepress dev",
-    "build": "pnpm run generate:og && vitepress build",
+    "build": "pnpm run generate:og && NODE_OPTIONS=--max-old-space-size=6144 vitepress build",
     "generate:og": "node scripts/generate-og-images.mjs",
     "preview": "vitepress preview",
     "generate": "plop",
