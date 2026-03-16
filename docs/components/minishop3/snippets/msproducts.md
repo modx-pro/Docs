@@ -366,6 +366,22 @@ title: msProducts
 - `{$tags}` — Теги (JSON)
 - `{$discount}` — Скидка в процентах (вычисляется автоматически)
 
+### Форматированные плейсхолдеры
+
+Плейсхолдеры с суффиксом `_formatted` содержат значение с символом валюты / единицей веса, отформатированное по настройкам `ms3_price_format`, `ms3_currency_symbol`, `ms3_currency_position` и `ms3_weight_unit`:
+
+- `{$price_formatted}` — Цена с валютой (например `1 234 ₽`)
+- `{$old_price_formatted}` — Старая цена с валютой
+- `{$cost_formatted}` — Стоимость с валютой
+- `{$old_cost_formatted}` — Старая стоимость с валютой
+- `{$weight_formatted}` — Вес с единицей (например `500 г`)
+- `{$discount_price_formatted}` — Скидка на единицу с валютой
+- `{$discount_cost_formatted}` — Скидка на позицию с валютой
+
+::: warning Breaking change (v1.7.0)
+`cost_formatted` теперь включает символ валюты. Кастомные чанки, добавляющие валюту вручную к `cost_formatted`, получат двойной символ.
+:::
+
 ### Поля производителя (Vendor)
 
 При `includeVendorFields`:

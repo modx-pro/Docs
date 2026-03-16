@@ -21,7 +21,6 @@ title: Системные настройки
 | Настройка | По умолчанию | Описание |
 |-----------|--------------|----------|
 | `ms3_template_category_default` | | Шаблон по умолчанию для новых категорий |
-| `ms3_category_grid_fields` | `id,menuindex,pagetitle,article,price,thumb,new,favorite,popular` | Видимые поля в таблице товаров категории |
 | `ms3_category_show_nested_products` | `true` | Показывать вложенные товары из подкатегорий |
 | `ms3_category_show_options` | `false` | Показывать опции товаров в таблице категории |
 | `ms3_category_remember_tabs` | `true` | Запоминать активную вкладку панели категории |
@@ -73,6 +72,7 @@ title: Системные настройки
 | `ms3_weight_snippet` | | Имя сниппета-модификатора веса |
 | `ms3_currency_symbol` | `₽` | Символ валюты (₽, $, €, £, ₴, ¥, ₸) |
 | `ms3_currency_position` | `after` | Позиция символа: `before` ($ 100) или `after` (100 ₽) |
+| `ms3_weight_unit` | `г` | Единица измерения веса (г, кг, lbs). Используется в `*_formatted` плейсхолдерах |
 
 ## Корзина
 

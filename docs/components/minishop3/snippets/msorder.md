@@ -75,10 +75,14 @@ title: msOrder
         'delivery_id' => 1,
         'payment_id' => 2,
         'comment' => '...',
-        'cost' => '5 300 ₽',          // Итого (форматировано)
-        'cart_cost' => '5 000 ₽',     // Стоимость товаров
-        'delivery_cost' => '300 ₽',   // Стоимость доставки
-        'discount_cost' => '0 ₽',     // Скидка
+        'cost' => 5300,                  // Итого (число)
+        'cost_formatted' => '5 300 ₽',  // Итого с валютой
+        'cart_cost' => 5000,             // Стоимость товаров
+        'cart_cost_formatted' => '5 000 ₽',
+        'delivery_cost' => 300,          // Стоимость доставки
+        'delivery_cost_formatted' => '300 ₽',
+        'discount_cost' => 0,            // Скидка
+        'discount_cost_formatted' => '0 ₽',
     ],
     'form' => [
         'first_name' => 'Иван',
