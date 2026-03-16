@@ -131,12 +131,16 @@ title: msOrderTotal
 | Поле | Описание |
 |------|----------|
 | `cost` | Итого к оплате (товары + доставка + комиссия оплаты) |
+| `cost_formatted` | Итого с символом валюты |
 | `cart_cost` | Стоимость товаров |
+| `cart_cost_formatted` | Стоимость товаров с валютой |
 | `delivery_cost` | Стоимость доставки |
+| `delivery_cost_formatted` | Стоимость доставки с валютой |
 | `payment_cost` | Комиссия за способ оплаты |
 | `total_count` | Общее количество товаров |
 | `total_cost` | Стоимость товаров (дубль `cart_cost`) |
 | `total_weight` | Общий вес |
+| `total_weight_formatted` | Общий вес с единицей измерения |
 | `total_discount` | Сумма скидки |
 | `total_positions` | Количество позиций (уникальных товаров) |
 

@@ -152,6 +152,13 @@ title: msCart
 - `{$product.old_price}` — Старая цена
 - `{$product.discount_price}` — Скидка на единицу
 - `{$product.discount_cost}` — Скидка на позицию (количество × скидка)
+- `{$product.price_formatted}` — Цена с валютой (например `1 234 ₽`)
+- `{$product.old_price_formatted}` — Старая цена с валютой
+- `{$product.cost_formatted}` — Стоимость позиции с валютой
+- `{$product.old_cost_formatted}` — Старая стоимость позиции с валютой
+- `{$product.weight_formatted}` — Вес с единицей (например `500 г`)
+- `{$product.discount_price_formatted}` — Скидка на единицу с валютой
+- `{$product.discount_cost_formatted}` — Скидка на позицию с валютой
 - `{$product.options}` — Массив опций
 - `{$product.option_*}` — Опции как отдельные поля (например `option_size`)
 - Все поля товара (`pagetitle`, `article`, `thumb` и т.д.)

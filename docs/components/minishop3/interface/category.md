@@ -67,23 +67,25 @@ title: Категория
 - Реактивные фильтры
 - Плавная анимация drag-and-drop
 
-### Системная настройка колонок
+### Настройка колонок
 
-Колонки таблицы настраиваются через `ms3_category_grid_fields`:
+Колонки таблицы настраиваются через интерфейс **Утилиты → Колонки гридов** (грид `category-products`).
 
-```
-id,pagetitle,article,price,weight,image
-```
+::: warning Устаревшая настройка
+Системная настройка `ms3_category_grid_fields` удалена начиная с версии 1.7.0. Используйте интерфейс [Колонки гридов](utilities/grid-columns).
+:::
 
-**Доступные поля:**
+### Inline-редактирование
 
-| Группа | Поля |
-|--------|------|
-| Ресурс | `id`, `pagetitle`, `longtitle`, `alias`, `menuindex`, `template`, `published`, `deleted` |
-| Товар | `article`, `price`, `old_price`, `weight`, `image`, `thumb` |
-| Флаги | `new`, `popular`, `favorite` |
-| Производитель | `vendor_id`, `vendor_name`, `made_in` |
-| Даты | `createdon`, `editedon`, `publishedon` |
+Двойной клик по ячейке позволяет редактировать значение прямо в таблице:
+
+| Тип редактора | Поля |
+|---------------|------|
+| `text` | `pagetitle`, `longtitle`, `article`, `made_in` |
+| `number` | `price`, `old_price`, `weight` |
+| `boolean` | `published`, `new`, `popular`, `favorite` |
+
+Настройка редактируемых полей — в [Утилиты → Колонки гридов](utilities/grid-columns) (параметры `editable` и `editType` у колонки).
 
 ## Настройка колонок таблицы
 
@@ -701,7 +703,6 @@ POST /api/mgr/categories/{id}/products/sort
 
 | Настройка | Описание | По умолчанию |
 |-----------|----------|--------------|
-| `ms3_category_grid_fields` | Видимые колонки таблицы | `id,pagetitle,article,price,weight,image` |
 | `ms3_category_show_nested_products` | Показывать вложенные товары | `false` |
 | `ms3_category_show_options` | Показывать опции категории | `true` |
 | `ms3_category_remember_tabs` | Запоминать активную вкладку | `true` |
