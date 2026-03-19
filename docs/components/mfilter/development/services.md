@@ -32,6 +32,9 @@ $urlRouter = $mfilter->getUrlRouter();
 | TemplateParser | `Services\Seo\TemplateParser` | Парсинг SEO-шаблонов |
 | WordFormsManager | `Services\Seo\WordFormsManager` | Управление словоформами |
 | ElementRunner | `Services\Element\ElementRunner` | Запуск element/paginator |
+| WarmupManager | `Services\Warmup\WarmupManager` | Управление прогревом кэша |
+| WarmupKeyBuilder | `Services\Warmup\WarmupKeyBuilder` | Построение ключей кэша |
+| SnippetCallParser | `Services\Warmup\SnippetCallParser` | Парсинг вызовов сниппетов |
 | Profiler | `Services\Profiler` | Профилирование запросов |
 
 ## Получение сервисов
