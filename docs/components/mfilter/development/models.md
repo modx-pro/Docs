@@ -14,6 +14,8 @@
 | `mfl_word_forms` | MflWordForm | Словоформы |
 | `mfl_page_configs` | MflPageConfig | Конфигурации страниц |
 | `mfl_cache` | MflCache | Кэш результатов |
+| `mfl_warmup_configs` | MflWarmupConfig | Конфигурации прогрева кэша |
+| `mfl_warmup_config_resources` | MflWarmupConfigResource | Привязки конфигураций к страницам |
 
 ## MflFilterSet
 
