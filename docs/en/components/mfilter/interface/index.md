@@ -11,6 +11,7 @@ The mFilter admin interface is under **Extras → mFilter**.
 | [URL patterns](patterns) | URL recognition rules |
 | [SEO templates](seo-templates) | Templates for metadata generation |
 | [Word forms](word-forms) | Word declension for SEO text |
+| [Cache warmup](warmup) | Filter cache warmup management |
 | [Maintenance](maintenance) | Reindexing, cache clearing |
 
 ## Layout

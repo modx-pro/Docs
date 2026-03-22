@@ -3,39 +3,38 @@ title: ms3FavoritesPage
 ---
 # Snippet ms3FavoritesPage
 
-The `/wishlist/` page — lists with tabs, filters, and “Add all to cart” button.
+The `/wishlist/` page — tabs (`default`, `gifts`, `plans`), toolbar (add all to cart, checkboxes, etc.), and a container for item cards.
 
-Modes: `usePdoPage=0` (default) — content is filled via JS from `localStorage`/cookie; `usePdoPage=1` — server output with pdoPage.
+**Card HTML:** the list is **not** built with PHP pagination. The inline script in chunk `tplFavoritesPage` calls `window.ms3Favorites.render()` using `localStorage`/cookie and DB sync (same as elsewhere).
 
-pdoPage works only for logged-in users (IDs from DB). For guests with empty DB, JS mode is used.
+**Server-side:** for each tab, IDs are resolved from the DB (logged-in user or guest `session_id` when `ms3favorites.guest_db_enabled`), ordered by **`sortBy`**; if the DB is empty for a guest, cookie IDs are used. The result fills **`tabCounts`** and the **`ms3f.total`** placeholder (sum of the three tabs) so tab labels are correct before/after JS runs.
+
+::: warning Parameter `usePdoPage` removed
+Current package builds **no longer** embed pdoPage in the page chunk. Snippet parameters **`usePdoPage`**, page **`limit`**, and **`pageVarKey`** are **gone**. For server-side pagination use a separate chain: **[ms3FavoritesIds](ms3FavoritesIds) → [pdoPage](/en/components/pdotools/snippets/pdopage) → [ms3Favorites](ms3Favorites)** (or `msProducts`) — see [Integration](../integration).
+:::
+
+**Extended toolbar (Catalog / Clear / Share):** `extendedToolbar=1` or `&tpl=tplFavoritesPageDemo` (same file as `tplFavoritesPage`).
 
 ## Parameters
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | **tpl** | Page wrapper chunk | `tplFavoritesPage` |
-| **itemTpl** | List item chunk | `tplFavoritesPageItem` |
-| **emptyTpl** | Empty state chunk | `tplFavoritesEmpty` |
-| **usePdoPage** | Server output via pdoPage (logged-in only) | `false` |
-| **limit** | Items per page | `12` |
-| **list** | Current list (or from `$_REQUEST['list']`) | `default` |
-| **pageVarKey** | URL page parameter name | `page` |
+| **extendedToolbar** | `1` — show Catalog, Clear list, Share | `false` (forced `true` when `tpl` is `tplFavoritesPageDemo`) |
+| **itemTpl** | Item chunk (for `render()`) | `tplFavoritesPageItem` |
+| **emptyTpl** | Empty-state chunk (for `render()`) | `tplFavoritesEmpty` |
+| **list** | Active list (or from `$_REQUEST['list']`) | `default` |
 | **resource_type** | Resource type | `products` |
-| **sortBy** | Sort: `added_at_desc`, `added_at_asc` | `added_at_desc` |
+| **sortBy** | ID order for tab counts: `added_at_desc`, `added_at_asc` | `added_at_desc` |
 
-## Chunk placeholders
+## Placeholders and chunk properties
 
-| Placeholder | Description |
-|-------------|-------------|
-| `[[+ms3f.total]]` | Total item count |
-| `[[+itemTpl]]` | Item chunk |
-| `[[+emptyTpl]]` | Empty state chunk |
-| `[[+pageItems]]` | List HTML (when usePdoPage) |
-| `[[+pageNav]]` | Pagination nav |
-| `[[+usePdoPageItems]]` | `1` — server output, `0` — JS |
-| `[[+list]]` | Current list |
-| `[[+resource_type]]` | Resource type |
-| `[[+tabCounts]]` | Tab count array (`default`, `gifts`, `plans`) |
+| Name | Description |
+|------|-------------|
+| `[[+ms3f.total]]` | Set via `$modx->setPlaceholder` — total items across `default` + `gifts` + `plans` (for use outside the page chunk) |
+| **Passed into chunk `tpl`:** `itemTpl`, `emptyTpl`, `list`, `resource_type`, `extendedToolbar`, **`tabCounts`** (array keys `default`, `gifts`, `plans`) |
+
+In the Fenom chunk: e.g. `{$tabCounts.default}`, `{$list}`, `{$resource_type}`.
 
 ## Examples
 
@@ -51,22 +50,40 @@ pdoPage works only for logged-in users (IDs from DB). For guests with empty DB, 
 ```
 :::
 
-**With pagination:**
+**Extended toolbar:**
+
+::: code-group
+```modx
+[[!ms3FavoritesPage? &extendedToolbar=`1`]]
+```
+
+```fenom
+{'!ms3FavoritesPage' | snippet : ['extendedToolbar' => 1]}
+```
+:::
+
+Same as `&tpl=tplFavoritesPageDemo`.
+
+**Another resource type and tab-count sort:**
 
 ::: code-group
 ```modx
 [[!ms3FavoritesPage?
-  &usePdoPage=`1`
-  &limit=`12`
+  &resource_type=`articles`
+  &sortBy=`added_at_asc`
 ]]
 ```
 
 ```fenom
 {'!ms3FavoritesPage' | snippet : [
-  'usePdoPage' => 1,
-  'limit' => 12
+  'resource_type' => 'articles',
+  'sortBy' => 'added_at_asc'
 ]}
 ```
 :::
 
-Guests with empty DB still see JS mode (data from localStorage).
+## Pagination
+
+Not via `ms3FavoritesPage`. Use a separate resource or block as in [Integration](../integration) (ms3FavoritesIds + pdoPage + ms3Favorites / msProducts).
+
+Guests with an empty DB still get list data from the browser after JS init; server-side tab totals may stay zero until DB or cookie data exists.

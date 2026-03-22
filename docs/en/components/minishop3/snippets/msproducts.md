@@ -369,6 +369,37 @@ With `includeVendorFields`:
 
 - `{$idx}` — index in the result set
 
+## Example chunk
+
+```fenom
+{* tpl.msProducts.row *}
+<div class="product-card">
+    <a href="{$uri}">
+        {if $thumb?}
+            <img src="{$thumb}" alt="{$pagetitle}" loading="lazy">
+        {/if}
+
+        <h3>{$pagetitle}</h3>
+
+        {if $old_price > $price}
+            <span class="old-price">{$old_price}</span>
+        {/if}
+
+        <span class="price">{$price}</span>
+
+        {if $new}
+            <span class="badge badge-new">New</span>
+        {/if}
+    </a>
+
+    <button type="button"
+            data-ms-action="cart/add"
+            data-id="{$id}">
+        Add to cart
+    </button>
+</div>
+```
+
 ## Integration with external packages
 
 The msProducts snippet supports integration with third-party packages (ms3Variants, msBrands, etc.) via the event system. This lets you extend product data without modifying MiniShop3 core.

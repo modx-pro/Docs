@@ -156,20 +156,7 @@ Always use `FIELD()` for sorting to keep the order in which items were added.
 ```
 :::
 
-**Merging multiple lists:**
-
-::: code-group
-```modx
-[[!ms3FavoritesIds? &list=`default` &toPlaceholder=`ids_default`]]
-[[!ms3FavoritesIds? &list=`gifts` &toPlaceholder=`ids_gifts`]]
-[[!ms3fMergeIds? &ids1=`[[+ids_default]]` &ids2=`[[+ids_gifts]]` &toPlaceholder=`all_ids`]]
-[[!+all_ids:notempty=`[[!msProducts?
-  &parents=`0`
-  &resources=`[[+all_ids]]`
-  &sortby=`FIELD(msProduct.id, [[+all_ids]])`
-  &tpl=`tplFavoritesItem`
-]]`]]
-```
+**Merging multiple lists** (union of IDs, unique):
 
 ```fenom
 {set $defaultIds = ms3f_get_ids_for_current_user($modx, 'default')}
@@ -184,11 +171,67 @@ Always use `FIELD()` for sorting to keep the order in which items were added.
 ]}
 {/if}
 ```
+
+::: tip MODX templates
+There is no built-in `ms3fMergeIds` snippet. Either use Fenom as above, or a tiny custom snippet that loads `helpers.php`, calls `ms3f_get_ids_for_current_user()` for each list, merges arrays, and sets a placeholder for `msProducts`.
 :::
 
-::: tip Snippet ms3fMergeIds
-For merging lists in MODX you need a simple snippet `ms3fMergeIds`: accepts `ids1`, `ids2`, `toPlaceholder`, merges IDs, removes duplicates, writes to placeholder. Or use the [PHP helper](#php-helper-for-getting-ids) in a custom snippet.
+## Pagination with pdoPage + ms3Favorites
+
+::: tip Not inside `ms3FavoritesPage`
+Snippet **[ms3FavoritesPage](snippets/ms3FavoritesPage)** does **not** call pdoPage. Use the pattern below (or `msProducts` + pdoPage) on a **dedicated** resource or block. The `/wishlist/` page from `ms3FavoritesPage` always fills the list via **`favorites.js`**.
 :::
+
+For server-side HTML from **ms3Favorites** (not msProducts), wrap it in [pdoPage](/en/components/pdotools/snippets/pdopage):
+
+::: code-group
+```modx
+[[!pdoPage?
+  &element=`ms3Favorites`
+  &ids=`[[+favorites_ids]]`
+  &list=`default`
+  &limit=`12`
+  &tpl=`tplFavoritesItem`
+  &emptyTpl=`tplFavoritesEmpty`
+  &totalVar=`page.total`
+  &pageNavVar=`page.nav`
+]]
+<nav class="pagination">[[!+page.nav]]</nav>
+```
+```fenom
+{'pdoPage' | snippet : [
+  'element' => 'ms3Favorites',
+  'ids' => $favoritesIdsCsv,
+  'list' => 'default',
+  'limit' => 12,
+  'tpl' => 'tplFavoritesItem',
+  'emptyTpl' => 'tplFavoritesEmpty',
+  'totalVar' => 'page.total',
+  'pageNavVar' => 'page.nav'
+]}
+<nav class="pagination">{$_modx->getPlaceholder('page.nav')}</nav>
+```
+:::
+
+`favorites_ids` must come from [ms3FavoritesIds](snippets/ms3FavoritesIds) or helpers (logged-in / guest DB). Guests with data only in localStorage still need the JS `render()` flow.
+
+## ms3FavoritesLists — parameters
+
+Snippet [ms3FavoritesLists](snippets/ms3FavoritesLists) outputs the current user’s named lists with counts (like MyFavorites.lists). For guests with an empty DB row set, cookie `ms3_favorites` is used when storage is **cookie**.
+
+| Property | Description | Default |
+|----------|-------------|---------|
+| **user** | MODX user ID; `0` = current user or guest (session / cookie) | 0 |
+| **resource_type** | `products`, `resources`, … | products |
+| **withItems** | `1` — pass comma IDs in `[[+ms3f_ids]]`; `0` — name + count only | 1 |
+| **limit** | Max lists; `0` = no limit | 0 |
+| **offset** | Skip from start | 0 |
+| **sortby** | `name` or `count` | name |
+| **sortdir** | `ASC` / `DESC` | ASC |
+| **tpl** | Row chunk | tplMs3fListsRow |
+| **tplWrapper** | Wrapper chunk (e.g. `<ul>`); empty = no wrapper | — |
+
+Row placeholders: `[[+ms3f_list_name]]`, `[[+ms3f_list_title]]`, `[[+ms3f_list_url]]`, `[[+ms3f_count]]`, `[[+ms3f_ids]]` (if `withItems=1`). URLs use `ms3favorites.list_page`.
 
 ## Multiple lists
 
@@ -254,7 +297,7 @@ Share URL: `/wishlist/share?token=xxx`
 
 ## Cart integration
 
-On /wishlist/ (chunk tplFavoritesPage) you have:
+On /wishlist/ (**chunk `tplFavoritesPage`**): cards are loaded by **`favorites.js`** (`render()` into the page container). The following controls are available once items are shown:
 
 - **Add all to cart** — `[data-favorites-add-all]`, adds all items in the current list
 - **Add selected** — `[data-favorites-add-selected]`, adds only checked items
@@ -289,11 +332,35 @@ document.addEventListener('ms3f:removed', function(e) {
 
 ```javascript
 window.ms3fConfig = window.ms3fConfig || {};
-window.ms3fConfig.onAdd = function(id, list) { /* ... */ };
-window.ms3fConfig.onRemove = function(id, list) { /* ... */ };
-window.ms3fConfig.showToast = false;  // disable default toast
-window.ms3fConfig.debug = true;       // log to console
+window.ms3fConfig.onAdd = function (id, list, resourceType) { /* ... */ };
+window.ms3fConfig.onRemove = function (id, list, resourceType) { /* ... */ };
+window.ms3fConfig.notify = function (variant, text) {
+  return false; // return true to skip ms3Message and iziToast
+};
+window.ms3fConfig.showToast = false;  // disable built-in toast chain entirely
+window.ms3fConfig.debug = true;       // console logs with prefix [ms3Favorites]
 ```
+
+With `debug: true` you will see sync, render, and connector steps — useful if the wishlist page stays empty (check for **page init** / **render** vs only **DOMContentLoaded**).
+
+## Notifications (iziToast, MiniShop3, custom)
+
+Toast flow (after add/remove):
+
+1. **`window.ms3fConfig.notify(variant, text)`** — if it returns **`true`**, nothing else runs (use for Notyf, Toastr, etc.).
+2. Else **`window.ms3Message.show`** (MiniShop3 frontend JS).
+3. Else global **`window.iziToast`**.
+4. Else **one-time** load of `iziToast.min.css` / `.js` from `ms3fConfig.iziToastBaseUrl` (default `assets/components/ms3favorites/vendor/izitoast/`).
+
+`ms3fLexiconScript` merges into existing `window.ms3fConfig` with `Object.assign`, so you can define `notify` **before** the snippet output, or in an inline script **after** the snippet but **before** `favorites.js`.
+
+The legacy `ms3favorites.use_minishop3_toast` setting is not used by the package.
+
+| `notify` argument | Meaning |
+|-------------------|---------|
+| `variant` | Usually `success`, `info`, `warning`, `error` |
+| `text` | Message string |
+| **Return** | Only **`true`** means “handled, stop chain” |
 
 ## Placeholder ms3f.total
 
@@ -332,13 +399,26 @@ $ids = ms3f_get_ids_from_cookie($modx, 'default', 'products');
 
 **ms3f_get_ids_from_cookie** — for guests when DB is empty and storage is cookie. Params: `listName`, `resourceType`.
 
+## mxQuickView and mFilter
+
+**mxQuickView:** the script listens for `mxqv:loaded` and `mxqv:open` and calls `updateButtonStates()` so buttons inside the modal work without extra code.
+
+**mFilter:** a `MutationObserver` watches `[data-mfilter-results]`, `.mfilter-results`, or `[data-mfilter-id]`. For a custom container set **`window.ms3fConfig.mfilterContainer`** (selector string) before `favorites.js`.
+
+## Popularity (“In N wishlists”)
+
+Snippet [ms3FavoritesPopularity](snippets/ms3FavoritesPopularity) or connector action **`get_popularity`** (POST `ids`, `resource_type`) — see the snippet page for examples.
+
 ## Troubleshooting
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `ms3Favorites is undefined` | favorites.js not loaded or loaded before lexicon | Check JS path and script order |
-| Counter not updating | `updateCounter()` not called | Ensure `save()` runs after add/remove |
-| Buttons not working in modal (mxQuickView) | Content loaded via AJAX | ms3Favorites listens to `mxqv:loaded`. Check load order |
-| Empty list after login | Sync failed | Check console for fetch errors |
-| Share not working | Logged-in only | `create_share` requires `user_id` |
-| Debug mode | Log to console | `window.ms3fConfig = { debug: true }` before loading `favorites.js` |
+| `ms3Favorites is undefined` | favorites.js not loaded or loaded before lexicon | Check JS path and order: **ms3fLexiconScript → CSS → favorites.js** |
+| Lexicon keys on screen | ms3fLexiconScript missing or escaped | Output snippet as raw HTML in Fenom if needed |
+| Counter not updating | Stale UI after custom AJAX | Call `ms3Favorites.updateCounter()` after your logic |
+| Buttons broken after mFilter refresh | Wrong observer target | Set `ms3fConfig.mfilterContainer` to your results wrapper |
+| Buttons broken in mxQuickView modal | Script order | Load mxQuickView before favorites.js; confirm `mxqv:loaded` fires |
+| Empty list after login | sync failed | Check Network tab for `connector.php` errors |
+| No toasts | Chain failed | Console: `[ms3Favorites] Toast`; set `iziToastBaseUrl` or preload iziToast / MS3 |
+| Share not working | Guest / not logged in | `create_share` needs a logged-in user |
+| Debug | Verbose logs | `window.ms3fConfig = { debug: true }` before `favorites.js` |

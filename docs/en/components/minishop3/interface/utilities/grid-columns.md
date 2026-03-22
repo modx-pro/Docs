@@ -14,6 +14,11 @@ The tool configures columns in admin grids (tables):
 - Configure sorting and filtering
 - Set column width
 - Add custom columns
+- Configure inline editing (for the `category-products` grid)
+
+::: info From version 1.7.0
+The system setting `ms3_category_grid_fields` was removed. Category product table columns are configured only here.
+:::
 
 ## Available grids
 
@@ -21,7 +26,7 @@ The tool configures columns in admin grids (tables):
 |------|-------------|
 | `customers` | Customer list |
 | `orders` | Order list |
-| `products` | Products in category (category-products) |
+| `category-products` | Products in category |
 | `order_products` | Products in order |
 | `vendors` | Vendor list |
 

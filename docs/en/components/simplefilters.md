@@ -8,57 +8,144 @@ modstore: https://modstore.pro/packages/ecommerce/simplefilters
 
 # simpleFilters
 
-The package is installed in the standard way from the [repository](https://modstore.pro/packages/ecommerce/simplefilters) via the MODX 3 installer.
+Simple filtering for MODX 3 resources and MiniShop3 products. Install from the [repository](https://modstore.pro/packages/ecommerce/simplefilters) via the MODX 3 package installer.
+
+## Main features
+
+- Resource fields, TVs, and MIGX fields; MiniShop3 product fields and options.
+- Works with standard MODX tables or a dedicated index table.
+- AND / OR logic.
+- Filter types: checkbox, radio, select, numeric slider (via [noUiSlider](https://refreshless.com/nouislider/)).
+- URL aliases for filters.
+- Pagination (paged and “load more”).
+- Sorting and page size options.
+- System events for fine-tuning (filter labels, values, field order, etc.).
 
 ## System settings
 
 | Parameter | Description | Default |
 |:----------|:------------|:--------|
-| sf_css_path | Path to JS file relative to site root | `{assets_url}components/simplefilters/js/web/default.min.js` |
+| sf_index_templates | Resource templates whose fields should be indexed | |
+| sf_index_fields | Resource fields to index | |
+| sf_js_path | Path to JS file relative to site root | `{assets_url}components/simplefilters/js/web/default.min.js` |
 | sf_css_path | Path to CSS file relative to site root | `{assets_url}components/simplefilters/css/web/default.min.css` |
+
+## Getting started
+
+### Indexing fields and values
+
+By default the component uses table `modx_sf_index` with precomputed field values for faster queries.
+
+Fill **sf_index_templates** and **sf_index_fields**: templates that participate in filtering and fields to index.
+
+Prefixes:
+
+- Resource field — **no prefix**
+- TV — **tv_**
+- MIGX field — **migx_**
+- MiniShop3 product field — **ms_**
+- MiniShop3 product option — **mso_**
+
+Example: MiniShop3 is installed, product templates 4 and 5, filter by price, vendor, “new”, color, material option, stock TV, and MIGX “Height” from TV **chars** (`title` / `value`):
+
+Set `sf_index_templates` to `4,5` and `sf_index_fields` to:
+
+```
+ms_price,ms_vendor_id,ms_new,ms_color,mso_material,tv_instock,migx_chars_Height:title|value
+```
+
+Then either:
+
+**1.** Run from console:
+
+```php
+<?php
+$sf = $modx->getService('Simplefilters');
+$sf->updateIndexAll();
+```
+
+**2.** Call snippet `simpleFiltersUpdate` once on any page (ships with the package).
+
+#### Index on resource save
+
+Automatic via plugin `simpleFilters` on `onDocFormSave`.
+
+#### Scheduled indexing
+
+Use [CronManager](https://docs.modx.com/current/en/extras/cronmanager/index) or [Scheduler](https://docs.modx.pro/components/scheduler/). Add snippet `simpleFiltersUpdate` to a task and set the schedule.
+
+#### Indexing after import
+
+With [Impex3](https://modstore.pro/packages/import-and-export/impex3), add a plugin on `OnImpexAterAllImport`:
+
+```php
+switch ($modx->event->name){
+    case 'OnImpexAterAllImport':
+        $sf = $modx->getService('Simplefilters');
+        $sf->updateIndexAll();
+    break;
+}
+```
+
+For the built-in MiniShop3 CSV import, do the same on `msOnAfterImport`:
+
+```php
+switch ($modx->event->name){
+    case 'msOnAfterImport':
+        $sf = $modx->getService('Simplefilters');
+        $sf->updateIndexAll();
+    break;
+}
+```
+
+### Working without the index
+
+If there are few resources/fields or you cannot maintain the index, switch to direct table queries by passing `&fromIndex=`0`` in the snippet call.
 
 ## simpleFilters snippet
 
-Outputs a resource list, filters, and loads all required scripts and styles.
+Outputs resources, filters, and loads scripts and styles.
 
 #### Parameters
 
 | Parameter | Description | Default |
 |:----------|:------------|:--------|
-| **&parents** | Parents for selection. Comma-separated IDs. | Current resource |
-| **&resources** | Resources for selection. Comma-separated IDs. | |
+| **&parents** | Parent IDs for selection, comma-separated | Current resource |
+| **&resources** | Resource IDs, comma-separated | |
 | **&showUnpublished** | Include unpublished resources | 0 |
-| **&templates** | Resource template IDs, comma-separated | |
-| **&where** | Initial selection in JSON format | |
+| **&templates** | Template IDs, comma-separated | |
+| **&fromIndex** | Read from index table | 1 |
+| **&where** | Initial selection (JSON) | |
 | **&sortby** | Sort field | menuindex |
 | **&sortdir** | Sort direction | ASC |
 | **&limit** | Items per page | 10 |
-| **&includeTVs** | TV names to include in output, comma-separated | |
-| **&tvPrefix** | Prefix for TV fields in resource chunk | tv_ |
+| **&includeTVs** | TVs to include in output, comma-separated | |
+| **&tvPrefix** | Prefix for TVs in resource chunk | tv_ |
 | **&msPrefix** | Prefix for MiniShop3 product fields | ms_ |
 | **&msoPrefix** | Prefix for MiniShop3 product options | mso_ |
 | **&hideOne** | Hide filters with a single value | 1 |
-| **&checkEmpty** | Compute result for each filter value (heavier query) | 0 |
-| **&filters** | Filter list as *field1:type1,field2:type2,field3:type3* | |
-| **&fseparator** | Filter value separator in URL | _ |
-| **&mode** | **and** — all conditions must match, **or** — at least one | or |
+| **&checkEmpty** | Evaluate each filter value to disable inactive options | 0 |
+| **&filters** | Filters as *field1:type1,field2:type2* | |
+| **&aliases** | URL aliases *field1==alias1,field2==alias2* | |
+| **&fseparator** | Separator for filter values in URL | _ |
+| **&mode** | **and** — all conditions, **or** — any condition | or |
 | **Templating** | | |
-| **&tpl** | Resource output chunk | |
-| **&tplWrapper** | Wrapper chunk for full output | sf_wrapper |
-| **&tplFilter** | Chunk for checkbox/radio filter block | sf_filter |
-| **&tplFilterRow** | Chunk for checkbox filter row | sf_filter_row |
-| **&tplFilterRadioRow** | Chunk for radio filter row | sf_filter_radio_row |
-| **&tplFilterSelect** | Chunk for select filter block | sf_filter_select |
-| **&tplFilterSelectRow** | Chunk for select option row | sf_filter_option_row |
-| **&tplFilterSlider** | Chunk for slider filter block | sf_filter_slider |
-| **&tplSelected** | Chunk for selected filter block | sf_selected_filter |
-| **&tplSelectedRow** | Chunk for selected filter row | sf_selected_row |
+| **&tpl** | Resource chunk | |
+| **&tplWrapper** | Full output wrapper | sf_wrapper |
+| **&tplFilter** | Checkbox/radio filter block | sf_filter |
+| **&tplFilterRow** | Checkbox row | sf_filter_row |
+| **&tplFilterRadioRow** | Radio row | sf_filter_radio_row |
+| **&tplFilterSelect** | Select block | sf_filter_select |
+| **&tplFilterSelectRow** | Select option row | sf_filter_option_row |
+| **&tplFilterSlider** | Slider block | sf_filter_slider |
+| **&tplSelected** | Selected filters block | sf_selected_filter |
+| **&tplSelectedRow** | Selected filter row | sf_selected_row |
 | **Pagination** | | |
-| **&tplPaginationWrapper** | Pagination wrapper chunk | sf_pagination |
-| **&tplPagination** | Page link chunk | sf_page |
-| **&tplPaginationFirst** | First page link chunk | sf_page_first |
-| **&tplPaginationLast** | Last page link chunk | sf_page_last |
-| **&tplMoreButton** | "Load more" button chunk | sf_morebutton |
+| **&tplPaginationWrapper** | Pagination wrapper | sf_pagination |
+| **&tplPagination** | Page link | sf_page |
+| **&tplPaginationFirst** | First page link | sf_page_first |
+| **&tplPaginationLast** | Last page link | sf_page_last |
+| **&tplMoreButton** | “Load more” button | sf_morebutton |
 
 ## Configuring filters
 
@@ -77,7 +164,7 @@ Types:
 - Slider — **slider**
 - Radio — **radio**
 
-Example filter list:
+Example filters and URL aliases:
 
 ```
 &filters=`
@@ -89,15 +176,25 @@ Example filter list:
     ms_color,
     ms_tags:select
 `
+&aliases=`
+    ms_vendor_id==brand,
+    ms_price==price,
+    tv_instock==instock,
+    migx_chars_Height==height,
+    ms_color==color,
+    ms_tags==tags
+`
 ```
 
-MIGX fields use the format:
+### MIGX fields
+
+Format:
 
 ```
 migx_[tv name]_[parameter name]:[filter type]:[label field]|[value field]
 ```
 
-For a MIGX TV **chars** with config:
+Example MIGX TV **chars**:
 
 ```json
 [{"fields":
@@ -108,16 +205,26 @@ For a MIGX TV **chars** with config:
 }]
 ```
 
-To create a slider filter for "Height":
+Example product values:
+
+![MIGX values](https://file.modx.pro/files/c/3/0/c304369a3e56435a47bf92102f858864.jpg)
+
+Slider for “Height”:
 
 ```
 migx_chars_Height:slider:title|value
 ```
 
-Checkbox filter for "Purpose":
+Checkboxes for “Purpose”:
 
 ```
 migx_chars_Purpose:title|value
+```
+
+In **sf_index_fields**, always **without** filter type:
+
+```
+migx_chars_Purpose:title|value,migx_chars_Height:title|value
 ```
 
 ---
@@ -136,16 +243,24 @@ Supports one parameter/value. Works only with resource and MiniShop3 product tab
 
 Default chunks use Fenom (requires [pdoTools](https://modstore.pro/packages/utilities/pdotools)); standard syntax is also supported.
 
-You can use custom chunks per filter via **&tplFilter_parameter** and **&tplFilterRow_parameter**.
+Use custom chunks per filter with **&tplFilter_field** and **&tplFilterRow_field**.
 
-Example for a custom filter by **ms_tags**:
+Example for **ms_tags**:
 
 ```
-&tplFilter_ms_tags=`your_block_chunk`
-&tplFilterRow_ms_tags=`your_row_chunk`
+&tplFilter_ms_tags=`block_chunk`
+&tplFilterRow_ms_tags=`row_chunk`
 ```
 
-Filter block labels are set via lexicon keys **sf_filter_filter_name** (or in the plugin).
+If an alias is set, use the alias name:
+
+```
+&aliases=`ms_tags==tag`
+&tplFilter_tag=`block_chunk`
+&tplFilterRow_tag=`row_chunk`
+```
+
+Block titles use lexicon keys **sf_filter_filter_name** (or the plugin).
 
 ## JavaScript
 
@@ -175,4 +290,4 @@ All events receive an array `$data`.
 | sfOnBeforeCreateFilter | Fired when a filter block is created. You can change block title, slider range, etc. |
 | sfOnCheckResource | Fired when checking a resource against a selected filter value. Receives resource id, filter name, value. To include the resource, set `$data['result'] = true;` |
 
-The **simpleFilters** plugin is included with examples.
+See `core/components/simplefilters/docs/pluginExamples.md` for event examples.

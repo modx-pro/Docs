@@ -37,9 +37,9 @@ Actions:
 |-------|---------|
 | `tplFavoritesItem` | Product card in Favorites list |
 | `tplFavoritesEmpty` | Empty state (no items) |
-| `tplFavoritesPage` | `/wishlist/` page (wrapper with tabs, cart buttons) |
+| `tplFavoritesPage` | `/wishlist/` page (tabs, toolbar; cards filled by `favorites.js` — no embedded pagination in the chunk) |
 | `tplFavoritesPageItem` | Item on `/wishlist/` (checkbox, note, remove button) |
-| `tplFavoritesPageDemo` | Demo: tabs + Catalog/Clear/Share buttons, `?list=` |
+| `tplFavoritesPageDemo` | Same file as `tplFavoritesPage`; use `&tpl=tplFavoritesPageDemo` or `&extendedToolbar=1` on the snippet to show the Catalog / Clear / Share panel |
 | `tplFavoritesListSelector` | List selector dropdown (`default`, `gifts`, `plans`) |
 | `tplFavoritesSharePage` | Share page (wrapper) |
 | `tplMs3fBtn` | Add/remove from favorites button (snippet `ms3FavoritesBtn`) |
@@ -86,11 +86,20 @@ Override in your theme (`:root` or block container):
 | `--ms3f-color` | Text color |
 | `--ms3f-price-color` | Price color |
 | `--ms3f-button-active` | Active button color (item in list) |
-| `--toast-bg` | Toast background |
-| `--toast-color` | Toast text |
-| `--toast-radius` | Toast radius |
 
-Example:
+## Notifications (toast)
+
+There is no built-in DOM toast in the package. The chain is:
+
+1. **`ms3fConfig.notify(variant, text)`** — if defined and returns **`true`**, the default chain is skipped (fully custom UI).
+2. **`window.ms3Message.show`** (MiniShop3) — if available.
+3. **iziToast** — if `iziToast` is already global; otherwise CSS/JS are loaded once from **`ms3fConfig.iziToastBaseUrl`** (set by `ms3fLexiconScript`).
+
+Disable built-in notifications: **`ms3fConfig.showToast = false`** before `favorites.js`.
+
+Customize appearance via the iziToast API after load, or via your own **`notify`** handler — not via component CSS variables.
+
+Example (cards only):
 
 ```css
 :root {

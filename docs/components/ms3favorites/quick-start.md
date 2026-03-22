@@ -82,7 +82,7 @@ title: Быстрый старт
 
 :::
 
-При клике товар добавляется или удаляется из списка. Toast-уведомление показывается автоматически.
+При клике товар добавляется или удаляется из списка. Уведомление показывается автоматически (iziToast / MiniShop3 `ms3Message` / свой `ms3fConfig.notify` — см. [Интеграция](integration)).
 
 ## Шаг 3: Счётчик Wishlist
 
@@ -176,28 +176,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 :::
 
-**Пагинация через pdoPage:**
-
-Для авторизованных пользователей — серверный вывод с разбивкой по страницам:
-
-::: code-group
-
-```modx
-[[!ms3FavoritesPage?
-  &usePdoPage=`1`
-  &limit=`12`
-]]
-```
-
-```fenom
-{'!ms3FavoritesPage' | snippet : [
-  'usePdoPage' => 1,
-  'limit' => 12
-]}
-```
-:::
-
-Гости при пустой БД по-прежнему видят JS-режим (данные из localStorage).
+**Пагинация:** у сниппета `ms3FavoritesPage` **нет** встроенного pdoPage — карточки на `/wishlist/` всегда подгружает `favorites.js`. Чтобы вывести избранное постранично на **отдельной** странице, используйте цепочку **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`) — примеры в [Интеграции и кастомизации](integration).
 
 ## Что дальше
 

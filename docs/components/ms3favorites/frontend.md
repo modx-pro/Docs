@@ -37,9 +37,9 @@ title: Подключение на сайте
 |------|------------|
 | `tplFavoritesItem` | Карточка товара в списке «Избранное» |
 | `tplFavoritesEmpty` | Пустое состояние (при отсутствии товаров) |
-| `tplFavoritesPage` | Страница `/wishlist/` (обёртка с табами, кнопками корзины) |
+| `tplFavoritesPage` | Страница `/wishlist/` (табы, тулбар; карточки заполняет `favorites.js`, встроенной пагинации нет) |
 | `tplFavoritesPageItem` | Элемент для страницы `/wishlist/` (checkbox, заметка, кнопка удаления) |
-| `tplFavoritesPageDemo` | Demo: табы + кнопки Каталог/Очистить/Поделиться, `?list=` |
+| `tplFavoritesPageDemo` | Тот же файл, что и `tplFavoritesPage`: при `&tpl=tplFavoritesPageDemo` или `&extendedToolbar=1` включается панель «Каталог / Очистить / Поделиться» |
 | `tplFavoritesListSelector` | Dropdown выбора списка (`default`, `gifts`, `plans`) |
 | `tplFavoritesSharePage` | Страница шаринга (обёртка) |
 | `tplMs3fBtn` | Кнопка добавления/удаления в избранное (сниппет `ms3FavoritesBtn`) |
@@ -86,9 +86,6 @@ title: Подключение на сайте
 | `--ms3f-color` | Цвет текста |
 | `--ms3f-price-color` | Цвет цены |
 | `--ms3f-button-active` | Цвет активной кнопки (товар в списке) |
-| `--toast-bg` | Фон toast-уведомления |
-| `--toast-color` | Текст toast |
-| `--toast-radius` | Скругление toast |
 
 Пример:
 
@@ -102,6 +99,18 @@ title: Подключение на сайте
   --ms3f-button-active: #e74c3c;
 }
 ```
+
+## Уведомления (toast)
+
+Вместо встроенного DOM-toast используется цепочка:
+
+1. **`ms3fConfig.notify(variant, text)`** — если функция задана и возвращает `true`, стандартный вывод не выполняется (полностью своё UI).
+2. **`window.ms3Message.show`** (MiniShop3) — если доступен.
+3. **iziToast** — если на странице уже есть глобальный `iziToast`; иначе скрипт и стили один раз подгружаются из `ms3fConfig.iziToastBaseUrl` (по умолчанию задаётся в `ms3fLexiconScript`).
+
+Отключить стандартные уведомления: `window.ms3fConfig.showToast = false` (до загрузки `favorites.js`).
+
+Кастомизация внешнего вида iziToast — через API библиотеки после загрузки или через свой `notify`.
 
 ## JavaScript API
 

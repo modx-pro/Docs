@@ -67,23 +67,25 @@ The product table is built with Vue 3 + PrimeVue for modern UX:
 - Reactive filters
 - Smooth drag-and-drop animation
 
-### Column system setting
+### Column configuration
 
-Table columns are configured via `ms3_category_grid_fields`:
+Table columns are configured in **Utilities → Grid columns** (grid `category-products`).
 
-```
-id,pagetitle,article,price,weight,image
-```
+::: warning Deprecated setting
+The system setting `ms3_category_grid_fields` was removed in 1.7.0. Use [Grid columns](utilities/grid-columns) instead.
+:::
 
-**Available fields:**
+### Inline editing
 
-| Group | Fields |
-|-------|--------|
-| Resource | `id`, `pagetitle`, `longtitle`, `alias`, `menuindex`, `template`, `published`, `deleted` |
-| Product | `article`, `price`, `old_price`, `weight`, `image`, `thumb` |
-| Flags | `new`, `popular`, `favorite` |
-| Vendor | `vendor_id`, `vendor_name`, `made_in` |
-| Dates | `createdon`, `editedon`, `publishedon` |
+Double-click a cell to edit in place:
+
+| Editor type | Fields |
+|-------------|--------|
+| `text` | `pagetitle`, `longtitle`, `article`, `made_in` |
+| `number` | `price`, `old_price`, `weight` |
+| `boolean` | `published`, `new`, `popular`, `favorite` |
+
+Editable fields are configured in [Utilities → Grid columns](utilities/grid-columns) (`editable` and `editType` on the column).
 
 ## Table column configuration
 

@@ -32,6 +32,9 @@ $urlRouter = $mfilter->getUrlRouter();
 | TemplateParser | `Services\Seo\TemplateParser` | SEO template parsing |
 | WordFormsManager | `Services\Seo\WordFormsManager` | Word forms management |
 | ElementRunner | `Services\Element\ElementRunner` | Running element/paginator |
+| WarmupManager | `Services\Warmup\WarmupManager` | Cache warmup management |
+| WarmupKeyBuilder | `Services\Warmup\WarmupKeyBuilder` | Cache key building |
+| SnippetCallParser | `Services\Warmup\SnippetCallParser` | Snippet call parsing |
 | Profiler | `Services\Profiler` | Query profiling |
 
 ## Getting services
@@ -66,6 +69,7 @@ $filterHandler = $mfilter->getFilterHandler();
 
 // Utilities
 $elementRunner = $mfilter->getElementRunner();
+$warmupManager = $mfilter->getWarmupManager();
 ```
 
 ## Filter

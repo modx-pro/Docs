@@ -114,6 +114,24 @@ Useful for:
 - Complex rules with regular expressions
 - Import/export of configuration
 
+### Custom validation fields
+
+Besides standard order and address fields, you can add arbitrary fields with validation rules — for example, an agreement checkbox:
+
+```json
+{
+  "phone": "required",
+  "email": "required|email",
+  "agreement": "required|accepted"
+}
+```
+
+Custom fields (`agreement` and others outside the standard set) are kept in the order draft between `order/add` and `order/submit`. When the order is created they are passed to `msOnBeforeCreateOrder` / `msOnCreateOrder` via `customFields`.
+
+::: tip Checkboxes
+On the frontend, checkboxes send `input.checked` (`'1'` or `'0'`), not the static `value` attribute. This is required for the `accepted` rule to work correctly.
+:::
+
 ### Fields available for validation
 
 #### Order fields
@@ -163,6 +181,8 @@ MiniShop3 uses [rakit/validation](https://github.com/rakit/validation) for valid
 | `email` | Valid email | `email` |
 | `url` | Valid URL | `url` |
 | `ip` | IP address (v4 or v6) | `ip` |
+| `ipv4` | IPv4 address | `ipv4` |
+| `ipv6` | IPv6 address | `ipv6` |
 | `numeric` | Numeric value | `numeric` |
 | `integer` | Integer | `integer` |
 | `boolean` | Boolean | `boolean` |
@@ -175,9 +195,10 @@ MiniShop3 uses [rakit/validation](https://github.com/rakit/validation) for valid
 |------|-------------|---------|
 | `alpha` | Letters only | `alpha` |
 | `alpha_num` | Letters and digits | `alpha_num` |
-| `min` | Minimum length or value | `min:3` |
-| `max` | Maximum length or value | `max:100` |
-| `regex` | Matches regular expression | `regex:/^[0-9]{6}$/` |
+| `alpha_dash` | Letters, digits, dash, underscore | `alpha_dash` |
+| `alpha_spaces` | Letters and spaces | `alpha_spaces` |
+| `uppercase` | Uppercase only | `uppercase` |
+| `lowercase` | Lowercase only | `lowercase` |
 
 #### Parameterized rules
 
@@ -187,8 +208,31 @@ MiniShop3 uses [rakit/validation](https://github.com/rakit/validation) for valid
 | `max` | Max string length or number value | `max:100` |
 | `between` | Value in range | `between:1,10` |
 | `digits` | Exact digit count | `digits:6` |
+| `digits_between` | Digit count in range | `digits_between:4,8` |
 | `in` | Value from list | `in:pickup,courier,post` |
-| `required_if` | Required if another field = value | `required_if:delivery,courier` |
+| `not_in` | Value not in list | `not_in:test,demo` |
+| `same` | Must match another field | `same:email_confirm` |
+| `different` | Must differ from another field | `different:old_password` |
+| `regex` | Matches regular expression | `regex:/^[0-9]{6}$/` |
+
+#### Date rules
+
+| Rule | Description | Syntax |
+|------|-------------|--------|
+| `date` | Valid date in format | `date:Y-m-d` |
+| `after` | Date after given | `after:2024-01-01` |
+| `before` | Date before given | `before:2025-12-31` |
+
+#### Conditional rules
+
+| Rule | Description | Syntax |
+|------|-------------|--------|
+| `required_if` | Required if another field equals value | `required_if:delivery,courier` |
+| `required_unless` | Required unless another field equals value | `required_unless:delivery,pickup` |
+| `required_with` | Required if another field is present | `required_with:phone` |
+| `required_without` | Required if another field is absent | `required_without:email` |
+| `required_with_all` | Required if all listed fields are present | `required_with_all:city,street` |
+| `required_without_all` | Required if none of the listed fields are present | `required_without_all:phone,email` |
 
 ### Example configurations
 
@@ -220,7 +264,7 @@ Minimum contact data:
 }
 ```
 
-#### Parcel delivery
+#### Postal delivery
 
 Postal code and full address required:
 
@@ -234,6 +278,18 @@ Postal code and full address required:
   "city": "required",
   "street": "required",
   "building": "required"
+}
+```
+
+#### Parcel locker
+
+Contact details only:
+
+```json
+{
+  "first_name": "required",
+  "phone": "required|regex:/^\\+?[0-9]{10,15}$/",
+  "email": "required|email"
 }
 ```
 

@@ -11,7 +11,7 @@ title: ms3FavoritesBtn
 |----------|----------|--------------|
 | **id** | ID ресурса/товара (обязательный) | `—` |
 | **list** | Идентификатор списка | `default` |
-| **resource_type** | Тип ресурсов: `products`, `resources` | `products` |
+| **resource_type** | Тип ресурсов: `products`, `resources`, `articles`, `pages`, `custom` | `products` |
 | **tpl** | Чанк кнопки | `tplMs3fBtn` |
 | **remove** | `1` — перезагрузка при удалении; или префикс id элемента (product-item) для удаления `#product-item-{id}` | `—` |
 | **label** | Метка для аналитики (передаётся в чанк) | `—` |

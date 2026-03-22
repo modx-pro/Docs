@@ -47,6 +47,28 @@ Held in memory during the request:
 
 Preloaded when parsing the URL to minimize DB queries.
 
+### 4. Warmup cache (DB)
+
+Stored in table `mfl_cache`. Created by the warmup system ahead of time, before the user visits the page.
+
+Three data types are cached:
+
+- **baseIds** — product IDs in the category (result of `ElementRunner::getIds()`)
+- **filter values** — values for building the filter form
+- **suggestions** — facet counts (number of products per value)
+
+**Key format:**
+
+```
+baseids_{resourceId}_{cacheKeyHash}
+filters_{resourceId}_{depth}
+suggestions_forids_{resourceId}_{filterHash}
+```
+
+Warmup configurations are stored in `mfl_warmup_configs` and `mfl_warmup_config_resources`.
+
+More: [Cache warmup](interface/warmup)
+
 ## System settings
 
 | Setting | Description | Default |
@@ -105,32 +127,53 @@ Cache is cleared automatically when:
 
 ### Manual invalidation when products change
 
-When updating products in bulk, clear the cache:
+After bulk product updates, cache is refreshed by the recurring `mfl_warmup` task.
+
+For an immediate refresh:
 
 ```php
-// After product import
 $mfilter = $modx->services->get('mfilter');
+
+// Clear cache
 $mfilter->clearCache();
+
+// Run warmup (if Scheduler is installed)
+$mfilter->getWarmupManager()->schedule(true);
 ```
 
 ## Scheduler (background tasks)
 
-With Scheduler installed, a cache rebuild task is available.
+With Scheduler installed, two tasks are available:
 
-### Running the task
+### mfl_rebuild_cache — rebuild cache
+
+Clears and rebuilds router and filter cache.
 
 ```php
 $mfilter = $modx->services->get('mfilter');
 $taskId = $mfilter->scheduleCacheRebuild();
 ```
 
-### Task parameters
-
 | Parameter | Description | Default |
 |----------|----------|--------------|
 | `clear_first` | Clear cache before rebuild | `true` |
 | `rebuild_router` | Rebuild router cache | `true` |
 | `rebuild_filters` | Rebuild filter cache | `true` |
+
+### mfl_warmup — cache warmup
+
+Warms baseIds, filter values, and facet counts for all active configurations. Recurring by default — runs every 50 minutes.
+
+```php
+$warmupManager = $mfilter->getWarmupManager();
+$runId = $warmupManager->schedule(true); // true = include facet counters
+```
+
+| Parameter | Description | Default |
+|----------|----------|--------------|
+| `warm_suggestions` | Warm facet counters and filter values | `true` |
+
+More: [Cache warmup](interface/warmup)
 
 ## Disabling cache
 
@@ -183,29 +226,29 @@ $files = glob($cachePath . '*');
 
 ### Large catalogs (10000+ products)
 
-- Use Scheduler for background rebuild
-- Schedule a cron job for off-peak hours:
+- Set up [cache warmup](interface/warmup) — create a configuration and bind catalog pages
+- The recurring `mfl_warmup` task will refresh cache automatically
+- Tune warmup interval and TTL to catalog size and update frequency
 
-```php
-// Scheduler task
-$mfilter->scheduleCacheRebuild();
+```
+# Example for a 200k-product catalog (warmup ~30 min)
+mfilter.cache_lifetime = 7200    # TTL 2 hours
+# task interval = 6000           # warmup every 100 min
 ```
 
 ### When products update often
 
-If products change frequently (prices, stock), lower TTL:
+The recurring warmup refreshes cache automatically. Maximum delay equals the warmup interval.
 
-```
-mfilter.cache_lifetime = 1800
-```
+For an immediate refresh after import — run `mfl_warmup` manually from the manager.
 
 ### When products rarely change
 
-Increase TTL for maximum performance:
+Increase TTL and warmup interval:
 
 ```
 mfilter.cache_lifetime = 86400
-mfilter.cache_router_lifetime = 604800
+# task interval = 43200  # warmup twice per day
 ```
 
 ## mfl_cache table structure

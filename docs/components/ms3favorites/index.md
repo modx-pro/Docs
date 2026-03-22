@@ -38,12 +38,13 @@ ms3Favorites — компонент реализует функционал со
 - **Гости в БД** — при `guest_db_enabled` список гостя сохраняется по session_id
 - **Несколько списков** — `default`, `gifts`, `plans` и др. (до `max_lists`)
 - **Шаринг списка** — публичная ссылка `/wishlist/share?token=xxx`, копирование чужого списка
-- **Страница /wishlist/** — серверный вывод с pdoPage или JS-режим
+- **Страница /wishlist/** — табы и контейнер от `ms3FavoritesPage`, карточки дорисовывает JS; счётчики табов и `ms3f.total` на сервере; пагинация отдельно (ms3FavoritesIds + pdoPage)
 - **Интеграция с корзиной** — «Добавить все в корзину», «Добавить выбранные»
 - **Популярность** — «У N пользователей в избранном»
 - **Типы ресурсов** — `products`, `resources`, `articles`, `pages`, `custom`
 - **Локализация** — MODX Lexicon (ru, en), на фронте — сниппет `ms3fLexiconScript`
 - **Кастомизация** — Fenom-чанки, BEM-классы (префикс `ms3f`), CSS-переменные
+- **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`, базовый URL в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`). Настройка `ms3favorites.use_minishop3_toast` удалена.
 
 ## Системные требования
 

@@ -21,7 +21,6 @@ To view settings go to **System → System Settings** and select namespace **min
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `ms3_template_category_default` | | Default template for new categories |
-| `ms3_category_grid_fields` | `id,menuindex,pagetitle,article,price,thumb,new,favorite,popular` | Visible fields in category product table |
 | `ms3_category_show_nested_products` | `true` | Show products from subcategories |
 | `ms3_category_show_options` | `false` | Show product options in category table |
 | `ms3_category_remember_tabs` | `true` | Remember active category tab |

@@ -1,7 +1,7 @@
 ---
 title: ms3Favorites
-description: Wishlists for MiniShop3 and other resources — browser storage, DB sync
-logo: https://modstore.pro/assets/extras/ms3favorites/logo.png
+description: 'Wishlists for MiniShop3 and other resources — browser storage, DB sync'
+logo: "https://modstore.pro/assets/extras/ms3favorites/logo.png"
 author: ibochkarev
 
 items: [
@@ -30,6 +30,12 @@ items: [
 
 ms3Favorites adds wishlists for [MiniShop3](/en/components/minishop3/) products and other resource types (`resources`, `articles`, `pages`, `custom`). Users save products for later. The list is stored in the browser (`localStorage` or `cookie`), with optional DB sync for logged-in users and guests (when `guest_db_enabled`).
 
+**v3.0.0:** `resource_type` for all entity kinds, `mode="list"` (hide whole card on remove), [mxQuickView](https://docs.modx.pro/en/components/mxquickview/) and [mFilter](/en/components/mfilter/) integration, guest rows in DB, popularity snippet, JS callbacks, **Add to cart** from the wishlist page.
+
+**Wishlist page (`ms3FavoritesPage`):** outputs tabs and shell only; **cards are rendered by `favorites.js`**. There is **no** embedded pdoPage in the snippet — use **ms3FavoritesIds + pdoPage** on a separate view if you need server pagination (see [ms3FavoritesPage](snippets/ms3FavoritesPage)).
+
+**Naming:** user-facing — **ms3Favorites**; in code (folders, snippets, lexicon) — **ms3favorites**.
+
 ## Features
 
 - **Wishlist block** — output by list of IDs (AJAX via connector or server-side snippet)
@@ -38,12 +44,13 @@ ms3Favorites adds wishlists for [MiniShop3](/en/components/minishop3/) products 
 - **Guests in DB** — when `guest_db_enabled`, guest list is stored by session_id
 - **Multiple lists** — `default`, `gifts`, `plans`, etc. (up to `max_lists`)
 - **List sharing** — public link `/wishlist/share?token=xxx`, copy someone else’s list
-- **Page /wishlist/** — server output with pdoPage or JS mode
+- **Page /wishlist/** — shell from `ms3FavoritesPage`, cards filled by JS; server tab counts and `ms3f.total`; pagination is a separate chain (ms3FavoritesIds + pdoPage)
 - **Cart integration** — “Add all to cart”, “Add selected”
 - **Popularity** — “In N users’ wishlists”
 - **Resource types** — `products`, `resources`, `articles`, `pages`, `custom`
 - **Localization** — MODX Lexicon (ru, en), frontend snippet `ms3fLexiconScript`
 - **Customization** — Fenom chunks, BEM classes (prefix `ms3f`), CSS variables
+- **Notifications** — chain: optional `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (lazy-loaded from `assets/components/ms3favorites/vendor/izitoast/`, base URL in `ms3fConfig.iziToastBaseUrl` from `ms3fLexiconScript`). The `ms3favorites.use_minishop3_toast` system setting is removed — see [Integration](integration)
 
 ## System requirements
 

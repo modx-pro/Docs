@@ -14,6 +14,8 @@ Tables and models of mFilter.
 | `mfl_word_forms` | MflWordForm | Word forms |
 | `mfl_page_configs` | MflPageConfig | Page configurations |
 | `mfl_cache` | MflCache | Result cache |
+| `mfl_warmup_configs` | MflWarmupConfig | Warmup configurations |
+| `mfl_warmup_config_resources` | MflWarmupConfigResource | Config to page bindings |
 
 ## MflFilterSet
 

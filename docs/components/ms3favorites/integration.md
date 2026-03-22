@@ -289,11 +289,18 @@ document.addEventListener('ms3f:removed', function(e) {
 
 ```javascript
 window.ms3fConfig = window.ms3fConfig || {};
-window.ms3fConfig.onAdd = function(id, list) { /* ... */ };
-window.ms3fConfig.onRemove = function(id, list) { /* ... */ };
-window.ms3fConfig.showToast = false;  // отключить стандартный toast
+window.ms3fConfig.onAdd = function (id, list, resourceType) { /* ... */ };
+window.ms3fConfig.onRemove = function (id, list, resourceType) { /* ... */ };
+// Полностью своё уведомление: вернуть true — встроенная цепочка не вызывается
+window.ms3fConfig.notify = function (variant, text) {
+  // variant: 'success' | 'error' | 'info' и т.д.
+  return false; // true — пропустить ms3Message и iziToast
+};
+window.ms3fConfig.showToast = false;  // отключить любые стандартные toast
 window.ms3fConfig.debug = true;       // логи в консоль
 ```
+
+Цепочка уведомлений по умолчанию: `notify` → `window.ms3Message.show` (MiniShop3) → iziToast (подгрузка из `ms3fConfig.iziToastBaseUrl`, задаётся в `ms3fLexiconScript`). Системная настройка `use_minishop3_toast` в пакете не используется.
 
 ## Плейсхолдер ms3f.total
 

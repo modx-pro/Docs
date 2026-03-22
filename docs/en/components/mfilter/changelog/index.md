@@ -4,8 +4,15 @@
 
 | Version | Date | Description |
 |---------|------|-------------|
+| [1.2.0](1.2.0) | 2026 | Filter cache warmup |
 | [1.1.0](1.1.0) | 2024 | New snippets, SEO improvements, refactoring |
 | 1.0.0-beta1 | 2024 | First public release |
+
+## mFilter 1.2.0
+
+Cache warmup subsystem for instant catalog page loads on first visit. **Cache warmup** manager tab, auto-created configurations, recurring Scheduler task, UTC timestamp fix.
+
+[More about 1.2.0 →](1.2.0)
 
 ## mFilter 1.1.0
 

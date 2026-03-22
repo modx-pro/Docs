@@ -48,6 +48,19 @@ MiniShop3 uses [Intervention Image](https://image.intervention.io/) v3 — a mod
 | AVIF | ✅ | ✅ | ~50% smaller (requires Imagick) |
 | HEIC | ✅ | ❌ | Converted on upload |
 
+## Management interface
+
+The product gallery is built with Vue 3 + PrimeVue and includes:
+
+- **Image grid** — drag-and-drop sort, search, and pagination
+- **Context menu** — right-click an image for quick actions (edit, delete, set as main)
+- **Toolbar** — Media Source selection, bulk actions (delete, regenerate thumbnails)
+- **Edit dialog** — change file name, description, alt text
+
+### Changing Media Source
+
+Selecting a file source in the toolbar switches Media Source without saving the whole product form. Uses the `Product\UpdateSource` processor.
+
 ## Image uploader
 
 ### Uppy technology
@@ -80,6 +93,10 @@ Before upload you can edit the image:
 - **Rotate** — 90° in any direction
 - **Flip** — horizontal/vertical
 - **Scale** — resize
+
+[![](https://file.modx.pro/files/9/c/a/9caa72a7b355926f74132f2b61db90d1s.jpg)](https://file.modx.pro/files/9/c/a/9caa72a7b355926f74132f2b61db90d1.png)
+
+[![](https://file.modx.pro/files/e/9/a/e9ab2d93401728e0a90735592f690407s.jpg)](https://file.modx.pro/files/e/9/a/e9ab2d93401728e0a90735592f690407.png)
 
 ## Thumbnail configuration
 

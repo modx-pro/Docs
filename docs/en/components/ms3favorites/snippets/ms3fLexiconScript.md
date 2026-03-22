@@ -59,3 +59,4 @@ If not loaded, `favorites.js` falls back to Russian strings. For a multilingual 
 | `resourceType` | Resource type |
 | `connectorUrl` | Connector URL |
 | `commentsEnabled` | Whether item notes are enabled |
+| `iziToastBaseUrl` | Base URL for vendor iziToast (lazy CSS/JS load) |

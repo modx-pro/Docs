@@ -59,3 +59,4 @@ maxItems и storageType берутся из системных настроек 
 | `resourceType` | Тип ресурсов |
 | `connectorUrl` | URL коннектора |
 | `commentsEnabled` | Включены ли заметки к элементам |
+| `iziToastBaseUrl` | Базовый URL каталога vendor iziToast (для ленивой загрузки CSS/JS) |

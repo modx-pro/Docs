@@ -3,7 +3,11 @@ title: Quick start
 ---
 # Quick start
 
-Step-by-step setup of the wishlist on a MiniShop3 site.
+Step-by-step setup of the wishlist on a MiniShop3 site, similar to [MyFavorites](https://docs.modx.pro/components/myfavorites): snippets for the button, counter, IDs, and list output without PHP in the template.
+
+**Snippet names:** `ms3FavoritesBtn`, `ms3FavoritesCounter`, `ms3FavoritesIds`, `ms3FavoritesLists`.
+
+Fenom examples below assume [pdoTools](/en/components/pdotools/) **3.x**.
 
 ## Installation
 
@@ -40,8 +44,8 @@ In the template (or shared head/footer), load **first** the lexicon, then CSS an
 
 ```fenom
 {'ms3fLexiconScript' | snippet}
-<link rel="stylesheet" href="{$_modx->getOption('assets_url')}components/ms3favorites/css/favorites.css">
-<script src="{$_modx->getOption('assets_url')}components/ms3favorites/js/favorites.js"></script>
+<link rel="stylesheet" href="{'assets_url' | config}components/ms3favorites/css/favorites.css">
+<script src="{'assets_url' | config}components/ms3favorites/js/favorites.js"></script>
 ```
 
 ```modx
@@ -51,7 +55,11 @@ In the template (or shared head/footer), load **first** the lexicon, then CSS an
 ```
 :::
 
-Without `ms3fLexiconScript` the script falls back to Russian strings; for a multilingual site the lexicon is required.
+::: tip Fenom and `auto_escape`
+If the page goes blank after adding these lines, check the MODX log for `ms3fLexiconScript` errors. With Fenom **auto_escape** enabled, output the snippet as raw HTML, e.g. `{raw ('ms3fLexiconScript' | snippet)}` (exact syntax depends on your Fenom version).
+:::
+
+Without `ms3fLexiconScript`, lexicon keys may show instead of translated strings; the JS still works with built-in Russian fallbacks.
 
 ## Step 2: Add to Wishlist button
 
@@ -82,17 +90,63 @@ In the product card chunk (e.g. inside msProducts output):
 
 :::
 
-On click the product is added or removed from the list. A toast notification is shown automatically.
+**Reload page after remove** (optional):
+
+::: code-group
+```modx
+[[!ms3FavoritesBtn? &id=`[[*id]]` &remove=`1`]]
+```
+```fenom
+{'!ms3FavoritesBtn' | snippet : ['id' => $_modx->resource.id, 'remove' => 1]}
+```
+:::
+
+**Wishlist-box layout** (`li.wishlist`, `box-icon`, `icon-heart`, tooltip) — chunk `tplMs3fBtnWishlistBox`:
+
+::: code-group
+```modx
+[[!ms3FavoritesBtn? &id=`[[*id]]` &tpl=`tplMs3fBtnWishlistBox`]]
+```
+```fenom
+{'!ms3FavoritesBtn' | snippet : ['id' => $_modx->resource.id, 'tpl' => 'tplMs3fBtnWishlistBox']}
+```
+:::
+
+**Remove a wrapper by ID prefix** (e.g. `#product-item-{id}`):
+
+::: code-group
+```modx
+<div id="product-item-[[+id]]">
+  ...
+  [[!ms3FavoritesBtn? &id=`[[+id]]` &remove=`product-item`]]
+</div>
+```
+```fenom
+<div id="product-item-{$id}">
+  ...
+  {'!ms3FavoritesBtn' | snippet : ['id' => $id, 'remove' => 'product-item']}
+</div>
+```
+:::
+
+Snippet parameters: `list`, `tpl`, `remove`, `classes`, `resource_type`, `label` — see [ms3FavoritesBtn](snippets/ms3FavoritesBtn).
+
+On click the product is added or removed from the list. A notification is shown automatically (iziToast / MiniShop3 `ms3Message` / your own `ms3fConfig.notify` — see [Integration](integration)).
 
 ## Step 3: Wishlist counter
 
-Where you need to show the number of items in the wishlist:
+**Client-side** (JS fills the value on load):
 
 ```html
-<span data-favorites-count style="display: none;">0</span>
+<a href="/wishlist/">
+  <span>Wishlist</span>
+  <span data-favorites-count style="display: none;">0</span>
+</a>
 ```
 
-Or with the server snippet [ms3FavoritesCounter](snippets/ms3FavoritesCounter):
+Limit the counter to one `resource_type` (e.g. only products): `<span data-favorites-count data-resource-type="products"></span>`.
+
+**Server snippet** [ms3FavoritesCounter](snippets/ms3FavoritesCounter):
 
 ::: code-group
 
@@ -105,6 +159,15 @@ Or with the server snippet [ms3FavoritesCounter](snippets/ms3FavoritesCounter):
 ```
 :::
 
+::: code-group
+```modx
+<a href="/wishlist/">Wishlist [[!ms3FavoritesCounter]]</a>
+```
+```fenom
+<a href="/wishlist/">Wishlist {'!ms3FavoritesCounter' | snippet}</a>
+```
+:::
+
 Total across all lists: `&list=all` / `['list' => 'all']`.
 
 The value is set on load (1–99 or 99+); the element is hidden when zero.
@@ -113,7 +176,7 @@ The value is set on load (1–99 or 99+); the element is hidden when zero.
 
 **Client-side render (JS):**
 
-The container is filled via JavaScript from localStorage/cookie:
+Use class `ms3f__list` for flex layout and horizontal scroll on small screens. The container is filled from localStorage/cookie via the connector:
 
 ```html
 <div id="wishlist-list" class="ms3f__list"></div>
@@ -125,6 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 ```
+
+Optional `render` options: `limit`, `tpl`, `emptyTpl`, `list`, `resource_type` — same names as for the [connector](frontend#connector-ajax).
 
 **Server output:**
 
@@ -161,6 +226,63 @@ Get favorite IDs into a placeholder — snippet [ms3FavoritesIds](snippets/ms3Fa
 
 :::
 
+### List of named lists (tabs / menu)
+
+Like [MyFavorites.lists](https://docs.modx.pro/components/myfavorites): snippet [ms3FavoritesLists](snippets/ms3FavoritesLists) outputs the user’s lists with counts. Links use [System setting](settings) `ms3favorites.list_page` (default `wishlist/`).
+
+::: code-group
+```modx
+[[!ms3FavoritesLists? &tplWrapper=`tplMs3fListsWrapper`]]
+```
+```fenom
+{'!ms3FavoritesLists' | snippet : ['tplWrapper' => 'tplMs3fListsWrapper']}
+```
+:::
+
+Without `tplWrapper` you get only rows from `tplMs3fListsRow`.
+
+### Custom paginated favorites (pdoPage + msProducts)
+
+Use this on a **separate** resource if you need server-side pagination — **not** the default `/wishlist/` output from `ms3FavoritesPage` (that page uses JS `render()` only). Flow: IDs → empty check → paged output and “Clear list”:
+
+::: code-group
+```modx
+[[!ms3FavoritesIds? &toPlaceholder=`myf.ids`]]
+[[!+myf.ids:is=`-0`:then=`
+  <p>[[%ms3favorites_empty]]</p>
+`:else=`
+  [[!pdoPage?
+    &element=`msProducts`
+    &parents=`0`
+    &limit=`12`
+    &resources=`[[!+myf.ids]]`
+    &sortby=`FIELD(msProduct.id, [[!+myf.ids]])`
+  ]]
+  <button type="button" class="btn btn-primary" data-favorites-clear>[[%ms3favorites_clear_list]]</button>
+  [[!+page.nav]]
+`]]
+```
+```fenom
+{'!ms3FavoritesIds' | snippet : ['toPlaceholder' => 'myf.ids']}
+{set $idsStr = $_modx->getPlaceholder('myf.ids')}
+{if $idsStr == '-0'}
+  <p>{$_modx->lexicon('ms3favorites_empty')}</p>
+{else}
+  {'pdoPage' | snippet : [
+    'element' => 'msProducts',
+    'parents' => 0,
+    'limit' => 12,
+    'resources' => $idsStr,
+    'sortby' => 'FIELD(msProduct.id, ' ~ $idsStr ~ ')'
+  ]}
+  <button type="button" class="btn btn-primary" data-favorites-clear>{$_modx->lexicon('ms3favorites_clear_list')}</button>
+  {$_modx->getPlaceholder('page.nav')}
+{/if}
+```
+:::
+
+If `ms3favorites_clear_list` is missing in lexicon, use plain text or add the key.
+
 ## Step 5: /wishlist/ page
 
 Create a resource with alias `wishlist`, a template that loads ms3fLexiconScript, favorites.css and favorites.js. In the content:
@@ -176,28 +298,31 @@ Create a resource with alias `wishlist`, a template that loads ms3fLexiconScript
 
 :::
 
-**Pagination with pdoPage:**
+**Pagination:** `ms3FavoritesPage` has **no** embedded pdoPage — cards on `/wishlist/` are always filled by `favorites.js`. For a **separate** paginated favorites view, use **ms3FavoritesIds → pdoPage → ms3Favorites** (or `msProducts`) — see [Integration](integration).
 
-For logged-in users — server output with paging:
+**Extended toolbar** (Catalog / Clear list / Share): pass `extendedToolbar` or use chunk alias `tplFavoritesPageDemo` — see [ms3FavoritesPage](snippets/ms3FavoritesPage).
 
-::: code-group
+## Styling (short)
 
-```modx
-[[!ms3FavoritesPage?
-  &usePdoPage=`1`
-  &limit=`12`
-]]
+Override [CSS variables](frontend#css-variables): `--ms3f-button-active`, `--ms3f-bg`, `--ms3f-border`, `--ms3f-color`, etc.
+
+```css
+:root {
+  --ms3f-button-active: #e74c3c;
+  --ms3f-bg: #fff;
+  --ms3f-color: #333;
+}
 ```
 
-```fenom
-{'!ms3FavoritesPage' | snippet : [
-  'usePdoPage' => 1,
-  'limit' => 12
-]}
-```
-:::
+## Guest DB cleanup (cron)
 
-Guests with no DB data still use JS mode (data from localStorage).
+To purge expired guest rows by `guest_ttl_days`, schedule:
+
+```bash
+php /path/to/site/core/components/ms3favorites/cli/cleanup_guests.php
+```
+
+The CLI script resolves MODX from `config.core.php` (walks up from `cli/`). If `guest_ttl_days = 0`, TTL cleanup is skipped.
 
 ## Next steps
 

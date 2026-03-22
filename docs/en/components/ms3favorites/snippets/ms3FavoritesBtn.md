@@ -11,7 +11,7 @@ Outputs the add/remove from favorites button. Shows “in favorites” / “not 
 |-----------|-------------|---------|
 | **id** | Resource/product ID (required) | — |
 | **list** | List identifier | `default` |
-| **resource_type** | Resource type: `products`, `resources` | `products` |
+| **resource_type** | Resource type: `products`, `resources`, `articles`, `pages`, `custom` | `products` |
 | **tpl** | Button chunk | `tplMs3fBtn` |
 | **remove** | `1` — reload on remove; or element id prefix (e.g. product-item) to remove `#product-item-{id}` | — |
 | **label** | Label for analytics (passed to chunk) | — |
