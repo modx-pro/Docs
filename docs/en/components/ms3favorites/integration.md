@@ -130,6 +130,58 @@ Always use `FIELD()` for sorting to keep the order in which items were added.
 | Pagination | ✅ pdoPage | ✅ pdoPage |
 | For guests | ✅ JS render | ❌ Logged-in only |
 
+### Catalog: pdoPage + msProducts, counter and button per row {#catalog-pdopage-row}
+
+Typical setup (like classic favorites extras docs): a **normal product catalog** with pagination, a **favorites button per row** (list `default`), and a **global counter** for that list. This is **not** the `/wishlist/` page (`ms3FavoritesPage`). Load `ms3fLexiconScript`, CSS and JS ([Quick start](quick-start)).
+
+Use [ms3FavoritesCounter](snippets/ms3FavoritesCounter) with `&list` and `&resource_type`: chunk `tplMs3fCounter` already includes `data-favorites-count`, so the value updates on add/remove.
+
+**Fenom** — the package ships chunk **`tplCatalogRowMs3f`** (copy and edit markup if needed):
+
+::: code-group
+```modx
+<p>Favorites [[!ms3FavoritesCounter? &list=`default` &resource_type=`products`]]</p>
+<div id="ms3f-catalog-pdopage">
+  <div class="rows">
+    [[!pdoPage?
+      &element=`msProducts`
+      &parents=`0`
+      &limit=`10`
+      &tpl=`tplCatalogRowMs3f`
+      &ajaxMode=`default`
+      &totalVar=`page.total`
+      &pageNavVar=`page.nav`
+    ]]
+  </div>
+  <nav class="pagination" aria-label="Pages">[[!+page.nav]]</nav>
+</div>
+```
+
+```fenom
+<p>Favorites {'!ms3FavoritesCounter' | snippet : ['list' => 'default', 'resource_type' => 'products']}</p>
+<div id="ms3f-catalog-pdopage">
+  <div class="rows">
+    {'!pdoPage' | snippet : [
+      'element' => 'msProducts',
+      'parents' => 0,
+      'limit' => 10,
+      'tpl' => 'tplCatalogRowMs3f',
+      'ajaxMode' => 'default',
+      'totalVar' => 'page.total',
+      'pageNavVar' => 'page.nav'
+    ]}
+  </div>
+  <nav class="pagination" aria-label="Pages">{$_modx->getPlaceholder('page.nav')}</nav>
+</div>
+```
+:::
+
+In **MODX** without Fenom in the row chunk, use `@INLINE` with `ms3FavoritesBtn` — see the component repo **docs/QUICK-START.md**.
+
+::: tip AJAX pagination (ajaxMode)
+After the next catalog page loads, call **`window.ms3Favorites.updateButtonStates()`** from your pdoPage callback (depends on pdoTools version) or disable AJAX and use full page reloads.
+:::
+
 **Filtering with msProducts** (discounted, in stock, by brand):
 
 ::: code-group
@@ -416,9 +468,11 @@ Snippet [ms3FavoritesPopularity](snippets/ms3FavoritesPopularity) or connector a
 | `ms3Favorites is undefined` | favorites.js not loaded or loaded before lexicon | Check JS path and order: **ms3fLexiconScript → CSS → favorites.js** |
 | Lexicon keys on screen | ms3fLexiconScript missing or escaped | Output snippet as raw HTML in Fenom if needed |
 | Counter not updating | Stale UI after custom AJAX | Call `ms3Favorites.updateCounter()` after your logic |
+| Wrong tab counts on /wishlist/ | `getAllLists()` without type merged all `resource_type` | Page sets `data-resource-type`; tab script uses `getAllLists(pageResourceType)` (current builds) |
 | Buttons broken after mFilter refresh | Wrong observer target | Set `ms3fConfig.mfilterContainer` to your results wrapper |
 | Buttons broken in mxQuickView modal | Script order | Load mxQuickView before favorites.js; confirm `mxqv:loaded` fires |
 | Empty list after login | sync failed | Check Network tab for `connector.php` errors |
+| Removed on /wishlist/ but still in DB | Old merge overwrote empty local with server | Current builds use **authoritative** sync + **`flushToServer()`** on explicit add/remove/clear; first page load still merges without authoritative (new device) |
 | No toasts | Chain failed | Console: `[ms3Favorites] Toast`; set `iziToastBaseUrl` or preload iziToast / MS3 |
 | Share not working | Guest / not logged in | `create_share` needs a logged-in user |
 | Debug | Verbose logs | `window.ms3fConfig = { debug: true }` before `favorites.js` |

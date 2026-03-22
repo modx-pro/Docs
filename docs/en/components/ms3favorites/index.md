@@ -50,6 +50,7 @@ ms3Favorites adds wishlists for [MiniShop3](/en/components/minishop3/) products 
 - **Resource types** — `products`, `resources`, `articles`, `pages`, `custom`
 - **Localization** — MODX Lexicon (ru, en), frontend snippet `ms3fLexiconScript`
 - **Customization** — Fenom chunks, BEM classes (prefix `ms3f`), CSS variables
+- **Catalog row** — chunk `tplCatalogRowMs3f` for a favorites button in each **pdoPage** + **msProducts** row ([integration](integration#catalog-pdopage-row))
 - **Notifications** — chain: optional `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (lazy-loaded from `assets/components/ms3favorites/vendor/izitoast/`, base URL in `ms3fConfig.iziToastBaseUrl` from `ms3fLexiconScript`). The `ms3favorites.use_minishop3_toast` system setting is removed — see [Integration](integration)
 
 ## System requirements

@@ -48,6 +48,7 @@ Actions:
 | `tplMs3fListsRow` | Favorites list row (snippet `ms3FavoritesLists`) |
 | `tplMs3fListsWrapper` | Wrapper for list of lists (`[[+output]]`) |
 | `tplMs3fLexiconScript` | Fenom lexicon chunk (used by snippet `ms3fLexiconScript`) |
+| `tplCatalogRowMs3f` | **Catalog** row (not the wishlist page): `ms3FavoritesBtn` + title; for **pdoPage** + **msProducts** — see [Integration](integration#catalog-pdopage-row) |
 
 ## data attributes (/wishlist/ page)
 
@@ -117,7 +118,7 @@ Example (cards only):
 ```javascript
 window.ms3Favorites = {
   getList(name),        // Get list IDs
-  getAllLists(),        // All lists {default:[], gifts:[]}
+  getAllLists(resourceType?), // All lists {default:[], gifts:[]}; omit arg for current resource_type
   add(id, list),        // Add item to list
   remove(id, list),     // Remove from list
   switchList(name),     // Switch active list

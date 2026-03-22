@@ -161,6 +161,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
 :::
 
+## Каталог: pdoPage + msProducts, счётчик и кнопка в строке
+
+Сценарий: **не** страница избранного, а обычный каталог с пагинацией; в строке — в список `default`, сверху — число элементов. Чанк пакета **`tplCatalogRowMs3f`** + подробности и AJAX — в [Интеграции](integration#catalog-pdopage-row).
+
+::: code-group
+```modx
+<p>В избранное [[!ms3FavoritesCounter? &list=`default` &resource_type=`products`]]</p>
+[[!pdoPage?
+  &element=`msProducts`
+  &parents=`0`
+  &limit=`10`
+  &tpl=`tplCatalogRowMs3f`
+  &totalVar=`page.total`
+  &pageNavVar=`page.nav`
+]]
+<nav class="pagination">[[!+page.nav]]</nav>
+```
+
+```fenom
+<p>В избранное {'!ms3FavoritesCounter' | snippet : ['list' => 'default', 'resource_type' => 'products']}</p>
+{'!pdoPage' | snippet : [
+  'element' => 'msProducts',
+  'parents' => 0,
+  'limit' => 10,
+  'tpl' => 'tplCatalogRowMs3f',
+  'totalVar' => 'page.total',
+  'pageNavVar' => 'page.nav'
+]}
+<nav class="pagination">{$_modx->getPlaceholder('page.nav')}</nav>
+```
+:::
+
 ## Шаг 5: Страница /wishlist/
 
 Создайте ресурс с alias `wishlist`, шаблоном с подключёнными ms3fLexiconScript, favorites.css и favorites.js. В контенте выведите:

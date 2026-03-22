@@ -130,6 +130,58 @@ title: Интеграция и кастомизация
 | Пагинация | ✅ pdoPage | ✅ pdoPage |
 | Для гостей | ✅ JS render | ❌ Только авторизованные |
 
+### Каталог: pdoPage + msProducts, счётчик и кнопка в строке {#catalog-pdopage-row}
+
+Типичный сценарий (как в примерах классических дополнений избранного): **обычный каталог** с пагинацией, в каждой строке — кнопка в список **`default`**, сверху — **общий счётчик** по этому списку. Это **не** страница `/wishlist/` (`ms3FavoritesPage`). Подключите `ms3fLexiconScript`, CSS и JS ([Быстрый старт](quick-start)).
+
+Счётчик удобно вывести [ms3FavoritesCounter](snippets/ms3FavoritesCounter) с `&list` и `&resource_type`: в чанке `tplMs3fCounter` уже есть `data-favorites-count`, число обновляется при add/remove.
+
+**Fenom** — в пакете есть чанк **`tplCatalogRowMs3f`** (при необходимости скопируйте и измените вёрстку):
+
+::: code-group
+```modx
+<p>В избранное [[!ms3FavoritesCounter? &list=`default` &resource_type=`products`]]</p>
+<div id="ms3f-catalog-pdopage">
+  <div class="rows">
+    [[!pdoPage?
+      &element=`msProducts`
+      &parents=`0`
+      &limit=`10`
+      &tpl=`tplCatalogRowMs3f`
+      &ajaxMode=`default`
+      &totalVar=`page.total`
+      &pageNavVar=`page.nav`
+    ]]
+  </div>
+  <nav class="pagination" aria-label="Страницы">[[!+page.nav]]</nav>
+</div>
+```
+
+```fenom
+<p>В избранное {'!ms3FavoritesCounter' | snippet : ['list' => 'default', 'resource_type' => 'products']}</p>
+<div id="ms3f-catalog-pdopage">
+  <div class="rows">
+    {'!pdoPage' | snippet : [
+      'element' => 'msProducts',
+      'parents' => 0,
+      'limit' => 10,
+      'tpl' => 'tplCatalogRowMs3f',
+      'ajaxMode' => 'default',
+      'totalVar' => 'page.total',
+      'pageNavVar' => 'page.nav'
+    ]}
+  </div>
+  <nav class="pagination" aria-label="Страницы">{$_modx->getPlaceholder('page.nav')}</nav>
+</div>
+```
+:::
+
+В **MODX** без Fenom в чанке строки можно использовать `@INLINE` с вызовом `ms3FavoritesBtn` — см. пакет **docs/QUICK-START.md** в репозитории компонента.
+
+::: tip AJAX-пагинация (ajaxMode)
+После подгрузки следующей страницы каталога вызовите **`window.ms3Favorites.updateButtonStates()`** в callback pdoPage (зависит от версии pdoTools) либо отключите AJAX и делайте полную перезагрузку страницы.
+:::
+
 **Фильтрация через msProducts** (товары со скидкой, в наличии, по бренду):
 
 ::: code-group
@@ -254,7 +306,7 @@ URL для шаринга: `/wishlist/share?token=xxx`
 
 ## Интеграция с корзиной
 
-На странице /wishlist/ (чанк tplFavoritesPage) доступны:
+На странице **/wishlist/** (**чанк `tplFavoritesPage`**): карточки подгружает **`favorites.js`** (`render()` в контейнер страницы). Доступны:
 
 - **Кнопка «Добавить все в корзину»** — `[data-favorites-add-all]`, добавляет все товары текущего списка
 - **Кнопка «Добавить выбранные»** — `[data-favorites-add-selected]`, добавляет только отмеченные checkbox
@@ -345,7 +397,9 @@ $ids = ms3f_get_ids_from_cookie($modx, 'default', 'products');
 |---------|---------|---------|
 | `ms3Favorites is undefined` | favorites.js не загружен или загружен до лексикона | Проверьте путь к JS и порядок скриптов |
 | Счётчик не обновляется | `updateCounter()` не вызывается | Убедитесь, что `save()` вызывается после add/remove |
+| Счётчики табов на /wishlist/ «левые» | `getAllLists()` без типа смешивал разные `resource_type` | На странице задан `data-resource-type`; используйте `getAllLists(pageResourceType)` (актуальные сборки) |
 | Кнопки не работают в модалке (mxQuickView) | Контент подгружен по AJAX | `ms3Favorites` подписан на `mxqv:loaded`. Проверьте порядок загрузки |
 | Пустой список после входа | Sync не выполнился | Проверьте консоль на ошибки fetch |
+| Удалили на /wishlist/, в БД осталось | Раньше пустой локальный список сливался с сервером при merge | В актуальных сборках при явных add/remove/clear используется **authoritative**-sync и **`flushToServer()`**; первый sync при загрузке без authoritative (новое устройство) |
 | Share не работает | Только для авторизованных | `create_share` требует `user_id` |
 | Debug-режим | Логи в консоль | `window.ms3fConfig = { debug: true }` до загрузки `favorites.js` |

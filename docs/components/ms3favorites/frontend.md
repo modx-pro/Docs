@@ -48,6 +48,7 @@ title: Подключение на сайте
 | `tplMs3fListsRow` | Строка списка избранного (сниппет `ms3FavoritesLists`) |
 | `tplMs3fListsWrapper` | Обёртка для списка списков (`[[+output]]`) |
 | `tplMs3fLexiconScript` | Fenom-чанк лексикона (используется сниппетом `ms3fLexiconScript`) |
+| `tplCatalogRowMs3f` | Строка **каталога** (не страница избранного): `ms3FavoritesBtn` + заголовок; для **pdoPage** + **msProducts** — см. [Интеграцию](integration#catalog-pdopage-row) |
 
 ## data-атрибуты (страница /wishlist/)
 
@@ -117,7 +118,7 @@ title: Подключение на сайте
 ```javascript
 window.ms3Favorites = {
   getList(name),        // Получить ID списка
-  getAllLists(),        // Все списки {default:[], gifts:[]}
+  getAllLists(resourceType?), // Все списки {default:[], gifts:[]}; без аргумента — текущий resource_type
   add(id, list),        // Добавить товар в список
   remove(id, list),     // Удалить из списка
   switchList(name),     // Переключить активный список

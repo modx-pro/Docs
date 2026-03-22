@@ -44,6 +44,7 @@ ms3Favorites — компонент реализует функционал со
 - **Типы ресурсов** — `products`, `resources`, `articles`, `pages`, `custom`
 - **Локализация** — MODX Lexicon (ru, en), на фронте — сниппет `ms3fLexiconScript`
 - **Кастомизация** — Fenom-чанки, BEM-классы (префикс `ms3f`), CSS-переменные
+- **Каталог** — чанк `tplCatalogRowMs3f` для строки с кнопкой избранного при **pdoPage** + **msProducts** ([интеграция](integration#catalog-pdopage-row))
 - **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`, базовый URL в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`). Настройка `ms3favorites.use_minishop3_toast` удалена.
 
 ## Системные требования

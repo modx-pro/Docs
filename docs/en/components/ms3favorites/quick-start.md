@@ -283,6 +283,38 @@ Use this on a **separate** resource if you need server-side pagination — **not
 
 If `ms3favorites_clear_list` is missing in lexicon, use plain text or add the key.
 
+### Catalog: pdoPage + msProducts, counter and row button
+
+**Not** the favorites page: a normal **catalog** with pagination, favorites button per row (list `default`), counter on top. Package chunk **`tplCatalogRowMs3f`**; full notes and AJAX — [Integration](integration#catalog-pdopage-row).
+
+::: code-group
+```modx
+<p>Favorites [[!ms3FavoritesCounter? &list=`default` &resource_type=`products`]]</p>
+[[!pdoPage?
+  &element=`msProducts`
+  &parents=`0`
+  &limit=`10`
+  &tpl=`tplCatalogRowMs3f`
+  &totalVar=`page.total`
+  &pageNavVar=`page.nav`
+]]
+<nav class="pagination">[[!+page.nav]]</nav>
+```
+
+```fenom
+<p>Favorites {'!ms3FavoritesCounter' | snippet : ['list' => 'default', 'resource_type' => 'products']}</p>
+{'!pdoPage' | snippet : [
+  'element' => 'msProducts',
+  'parents' => 0,
+  'limit' => 10,
+  'tpl' => 'tplCatalogRowMs3f',
+  'totalVar' => 'page.total',
+  'pageNavVar' => 'page.nav'
+]}
+<nav class="pagination">{$_modx->getPlaceholder('page.nav')}</nav>
+```
+:::
+
 ## Step 5: /wishlist/ page
 
 Create a resource with alias `wishlist`, a template that loads ms3fLexiconScript, favorites.css and favorites.js. In the content:

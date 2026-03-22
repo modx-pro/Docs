@@ -5,7 +5,7 @@ title: ms3FavoritesPage
 
 The `/wishlist/` page — tabs (`default`, `gifts`, `plans`), toolbar (add all to cart, checkboxes, etc.), and a container for item cards.
 
-**Card HTML:** the list is **not** built with PHP pagination. The inline script in chunk `tplFavoritesPage` calls `window.ms3Favorites.render()` using `localStorage`/cookie and DB sync (same as elsewhere).
+**Card HTML:** the list is **not** built with PHP pagination. The inline script in chunk `tplFavoritesPage` calls `window.ms3Favorites.render()` with **`limit: 100`** per tab, using `localStorage`/cookie and DB sync (same as elsewhere). For very long lists with real paging, use a **separate** pdoPage output (see below and [Integration](../integration)).
 
 **Server-side:** for each tab, IDs are resolved from the DB (logged-in user or guest `session_id` when `ms3favorites.guest_db_enabled`), ordered by **`sortBy`**; if the DB is empty for a guest, cookie IDs are used. The result fills **`tabCounts`** and the **`ms3f.total`** placeholder (sum of the three tabs) so tab labels are correct before/after JS runs.
 
