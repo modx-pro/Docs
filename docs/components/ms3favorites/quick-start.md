@@ -40,8 +40,8 @@ title: Быстрый старт
 
 ```fenom
 {'ms3fLexiconScript' | snippet}
-<link rel="stylesheet" href="{$_modx->getOption('assets_url')}components/ms3favorites/css/favorites.css">
-<script src="{$_modx->getOption('assets_url')}components/ms3favorites/js/favorites.js"></script>
+<link rel="stylesheet" href="{'assets_url' | config}components/ms3favorites/css/favorites.css">
+<script src="{'assets_url' | config}components/ms3favorites/js/favorites.js"></script>
 ```
 
 ```modx
