@@ -496,8 +496,8 @@ Requirement: each trigger inside must have its own `data-mxqv-action`, `data-mxq
 ### MiniShop3/ms3Variants docs
 
 - For variant data in lists/cards use `&includeThumbs` and ms3Variants in `usePackages` for `msProducts`/`pdoPage` (see docs.modx.pro).
-- ms3Variants component and snippets: <https://docs.modx.pro/components/ms3variants/>
-- MiniShop3 integration and `usePackages`: <https://docs.modx.pro/components/minishop3/development/product-tabs-integration>
+- ms3Variants component and snippets: <https://docs.modx.pro/en/components/ms3variants/>
+- MiniShop3 integration and `usePackages`: <https://docs.modx.pro/en/components/minishop3/development/product-tabs-integration>
 
 ## 10. Why the block may not work
 
