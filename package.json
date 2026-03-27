@@ -27,28 +27,28 @@
   },
   "devDependencies": {
     "@cspell/dict-ru_ru": "^2.3.2",
-    "@docsearch/css": "^4.6.0",
-    "@docsearch/js": "^4.6.0",
+    "@docsearch/css": "^4.6.2",
+    "@docsearch/js": "^4.6.2",
     "@modix/smarty-tmlanguage": "^1.1.0",
     "@types/markdown-it": "^14.1.2",
-    "@types/node": "^22.19.13",
+    "@types/node": "^22.19.15",
     "cspell": "^9.7.0",
-    "dotenv": "^16.6.1",
-    "fast-glob": "^3.3.2",
+    "dotenv": "^17.3.1",
+    "fast-glob": "^3.3.3",
     "fenom-tmlanguage": "^1.0.0",
     "gray-matter": "^4.0.3",
     "markdown-it": "^14.1.1",
     "markdown-it-kbd": "^3.0.2",
     "markdownlint": "^0.40.0",
-    "markdownlint-cli": "^0.47.0",
+    "markdownlint-cli": "^0.48.0",
     "react": "^18.3.1",
-    "satori": "^0.19.2",
+    "satori": "^0.26.0",
     "@resvg/resvg-js": "^2.6.2",
     "modx-tmlanguage": "^1.2.0",
     "plop": "^4.0.5",
     "transliteration": "^2.6.1",
     "vitepress": "^1.6.4",
-    "vue": "^3.5.29"
+    "vue": "^3.5.31"
   },
   "pnpm": {
     "peerDependencyRules": {
@@ -60,7 +60,7 @@
   "dependencies": {
     "@vueuse/core": "^14.2.1",
     "@xobotyi/scrollbar-width": "^1.9.5",
-    "glightbox": "^3.3.0",
+    "glightbox": "^3.3.1",
     "uuid": "^13.0.0"
   },
   "engines": {
