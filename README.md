@@ -13,7 +13,6 @@
 | Русская версия | [docs.modx.pro](https://docs.modx.pro/) |
 | English | [docs.modx.pro/en](https://docs.modx.pro/en/) |
 
----
 
 ## 📑 Содержание
 
@@ -23,8 +22,6 @@
 - [Локальная разработка](#local-dev)
 - [Советы контрибьюторам](#contributor-tips)
 - [Полезные ссылки](#useful-links)
-
----
 
 # Русский
 
@@ -76,8 +73,6 @@ The docs from this repo are published at [docs.modx.pro/en](https://docs.modx.pr
 
 See [Getting started](https://docs.modx.pro/en/guide/getting-started) on the documentation site.
 
----
-
 <h1 id="repo-layout">📁 Структура репозитория / Repository layout</h1>
 
 Краткая карта (главное для правок в текстах):
@@ -96,8 +91,6 @@ See [Getting started](https://docs.modx.pro/en/guide/getting-started) on the doc
 | [`scripts/`](./scripts/) | Вспомогательные скрипты (например, OG-изображения при сборке) |
 
 Новую документацию по компоненту удобно начать командой **`pnpm generate`** — интерактивный [Plop](https://plopjs.com/) предложит шаблон (одна или несколько страниц) и языки RU/EN.
-
----
 
 <h1 id="local-dev">🔧 Локальная разработка / Local development</h1>
 
@@ -119,11 +112,6 @@ pnpm dev
 | `pnpm spellcheck` | Проверка орфографии для `docs/**/*.md` **кроме** `docs/en/**` (отдельная проверка английского при необходимости — вручную или своими правилами) |
 | `pnpm generate` | Мастер создания заготовок документации (Plop) |
 
-> 🏗️ **CI и продакшен:** в репозитории организации [`modx-pro`](https://github.com/modx-pro) деплой на [docs.modx.pro](https://docs.modx.pro/) выполняется через GitHub Actions (ветка `master`, см. [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml)) — там сборка идёт через **Bun**. Для ежедневной правки текстов достаточно **pnpm** / npm / yarn локально, как выше.
-> **EN:** In the upstream `modx-pro` repo, production build/deploy uses **Bun** in CI; for local authoring, **pnpm** / npm / yarn is fine.
-
----
-
 <h1 id="contributor-tips">💡 Советы контрибьюторам / Contributor tips</h1>
 
 - ✅ **Мелкие PR** проще и быстрее ревьюить: одна тема (один компонент, один раздел) вместо «всего сразу».
@@ -132,7 +120,6 @@ pnpm dev
 - ✅ Скриншоты и схемы кладите в соответствующие папки рядом с документацией или в `docs/public/`, если так принято для вашего раздела — ориентируйтесь на существующие статьи.
 - ✅ Не знаете, с чего начать? Откройте [Issues][repository-issues] — там можно обсудить идею до большого объёма правок.
 
----
 
 <h1 id="useful-links">🔗 Полезные ссылки / Links</h1>
 
