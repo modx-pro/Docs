@@ -52,6 +52,10 @@ All records from this repository are hosted on the website [docs.modx.pro](http:
 
 All information can be found on the [Getting Started](https://docs.modx.pro/en/guide/getting-started) page of the [website](https://docs.modx.pro/en/).
 
-[repository]: https://github.com/modx-pro/Docs/
-[VitePress]: https://vitepress.dev
-[Markdown]: http://daringfireball.net/projects/markdown/syntax
+* [repository](https://github.com/modx-pro/Docs/)
+* [VitePress](https://vitepress.dev)
+* [Markdown](http://daringfireball.net/projects/markdown/syntax)
+
+<p align="center">
+  <a href="https://github.com/modx-pro/Docs/graphs/contributors"><img src="https://contrib.rocks/image?repo=modx-pro/Docs" alt="modx-pro/Docs contributors"></a>
+</p>
