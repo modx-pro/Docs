@@ -26,11 +26,17 @@ core/components/minishop3/
 │   ├── routes/
 │   │   ├── manager.php                    # Системные роуты Manager API
 │   │   └── web.php                        # Системные роуты Web API
+│   ├── ms3.routes.d/
+│   │   ├── manager/example-addon.php.dist # Пример для аддонов (Manager)
+│   │   └── web/example-addon.php.dist     # Пример для аддонов (Web)
 │   └── routes_manager.custom.example.php  # Пример кастомных роутов
 
 core/config/
 ├── ms3_routes_manager.custom.php          # Кастомные Manager роуты
-└── ms3_routes_web.custom.php              # Кастомные Web роуты
+├── ms3_routes_web.custom.php              # Кастомные Web роуты
+└── ms3.routes.d/                          # Модульные роуты аддонов
+    ├── manager/                           # Manager API фрагменты
+    └── web/                               # Web API фрагменты
 ```
 
 ## Базовое использование
@@ -619,6 +625,148 @@ $router->group('/api/mgr/promocodes', function($router) use ($modx) {
     new AuthMiddleware($modx, 'mgr')
 ]);
 ```
+
+## Модульные роуты для аддонов (`ms3.routes.d`)
+
+Файлы `ms3_routes_*.custom.php` подходят для ручной кастомизации, но **не для аддонов** — если два компонента пишут в один файл, при установке/удалении возникают конфликты.
+
+Для сторонних компонентов предусмотрена директория `core/config/ms3.routes.d/` — каждый аддон создаёт свой файл, конфликтов нет.
+
+::: tip Аналогия
+Паттерн повторяет `ms3.services.d/` для [сервисов](/components/minishop3/development/services).
+:::
+
+### Структура
+
+```
+core/config/ms3.routes.d/
+├── web/                          # Роуты Web API (api.php)
+│   ├── 50-mydelivery.php
+│   └── 50-mypayment.php
+└── manager/                      # Роуты Manager API (connector)
+    ├── 50-mydelivery.php
+    └── 50-myadmin.php
+```
+
+Файлы загружаются в **алфавитном порядке**. Используйте числовой префикс для управления приоритетом (`01-`, `50-`, `99-`).
+
+### Порядок загрузки
+
+**Web API (`api.php`):**
+
+1. `config/routes/web.php` — системные роуты
+2. `core/config/ms3_routes_web.custom.php` — ручные кастомизации
+3. `core/config/ms3.routes.d/web/*.php` — аддоны
+4. `build()` диспетчера
+
+**Manager API (`connector.php` → `Processors\Api\Router`):**
+
+1. `config/routes/manager.php` — системные роуты
+2. `core/config/ms3_routes_manager.custom.php` — ручные кастомизации
+3. `core/config/ms3.routes.d/manager/*.php` — аддоны
+4. `build()` диспетчера
+
+Каждый следующий уровень может переопределять роуты предыдущего по ключу `METHOD:PATTERN`.
+
+### Пример: Web API роуты аддона доставки
+
+```php
+<?php
+// core/config/ms3.routes.d/web/50-mydelivery.php
+
+use MiniShop3\Router\Response;
+use MiniShop3\Middleware\TokenMiddleware;
+
+$router->group('/api/v1/delivery/mydelivery', function ($router) use ($modx) {
+
+    $router->post('/calculate', function (array $vars, \MODX\Revolution\modX $modx) {
+        $input = json_decode(file_get_contents('php://input'), true) ?: [];
+        $cost = MyDelivery::calculate($input['address'] ?? '', $input['weight'] ?? 0);
+        return Response::success(['cost' => $cost]);
+    });
+
+    $router->get('/points', function (array $vars, \MODX\Revolution\modX $modx) {
+        $city = $vars['city'] ?? '';
+        $points = MyDelivery::getPickupPoints($city);
+        return Response::success(['points' => $points]);
+    });
+
+}, [new TokenMiddleware($modx)]);
+```
+
+### Пример: Manager API роуты аддона
+
+```php
+<?php
+// core/config/ms3.routes.d/manager/50-mydelivery.php
+
+use MiniShop3\Router\Middleware\AuthMiddleware;
+use MiniShop3\Router\Response;
+
+$router->group('/api/mgr/mydelivery', function ($router) use ($modx) {
+
+    $router->get('/settings', function (array $vars, \MODX\Revolution\modX $modx) {
+        return Response::success([
+            'api_key' => $modx->getOption('mydelivery_api_key'),
+            'enabled' => (bool) $modx->getOption('mydelivery_enabled'),
+        ]);
+    });
+
+    $router->put('/settings', function (array $vars, \MODX\Revolution\modX $modx) {
+        $data = json_decode(file_get_contents('php://input'), true) ?: [];
+        // Сохранение настроек...
+        return Response::success(['saved' => true]);
+    });
+
+}, [new AuthMiddleware($modx, 'mgr')]);
+```
+
+### Установка и удаление
+
+В resolver аддона:
+
+```php
+<?php
+// resolver при установке
+$routesDir = MODX_CORE_PATH . 'config/ms3.routes.d/';
+
+// Копируем файл роутов
+copy(
+    $source . 'routes/web.php',
+    $routesDir . 'web/50-mydelivery.php'
+);
+copy(
+    $source . 'routes/manager.php',
+    $routesDir . 'manager/50-mydelivery.php'
+);
+```
+
+```php
+<?php
+// resolver при удалении
+@unlink(MODX_CORE_PATH . 'config/ms3.routes.d/web/50-mydelivery.php');
+@unlink(MODX_CORE_PATH . 'config/ms3.routes.d/manager/50-mydelivery.php');
+```
+
+Каждый аддон удаляет только свой файл — другие аддоны не затрагиваются.
+
+### Обработка ошибок
+
+Если файл роутов содержит синтаксическую ошибку или выбрасывает исключение, он логируется и пропускается — **остальные файлы загружаются нормально**:
+
+```
+[MiniShop3 Router] Failed to load routes file /path/to/50-broken.php: syntax error...
+```
+
+### Custom-файл vs ms3.routes.d
+
+| | `ms3_routes_*.custom.php` | `ms3.routes.d/` |
+|---|---|---|
+| **Для кого** | Разработчик сайта | Авторы аддонов |
+| **Файлов** | Один на тип API | По файлу на аддон |
+| **Конфликты** | Возможны при нескольких аддонах | Нет |
+| **Install/uninstall** | Нужно редактировать вручную | Атомарный: создать/удалить файл |
+| **Создаётся** | При установке ms3 (example) | Аддон через resolver |
 
 ## Системные настройки
 
