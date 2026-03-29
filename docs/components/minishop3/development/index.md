@@ -16,4 +16,5 @@ title: Разработка
 - [JavaScript API](javascript) — Headless API для SPA (Vue, React, Vanilla JS)
 - [Frontend JavaScript](frontend-js) — полная документация включая UI-слой
 - [Интеграция вкладок товара](product-tabs-integration) — добавление вкладок на страницу товара
+- [Интеграция вкладок заказа](order-tabs-integration) — добавление вкладок на страницу заказа
 - [Backend API](backend-api/) — программный интерфейс для работы с сущностями из PHP-кода (товары, заказы, опции, покупатели)

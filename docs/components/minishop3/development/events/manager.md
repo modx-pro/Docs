@@ -111,6 +111,14 @@ switch ($modx->event->name) {
 }
 ```
 
+::: tip Plugin Registry
+Для добавления кастомных вкладок на страницы товара и заказа используйте Plugin Registry API:
+- [Интеграция вкладок товара](/components/minishop3/development/product-tabs-integration) — `MS3ProductTabsRegistry`
+- [Интеграция вкладок заказа](/components/minishop3/development/order-tabs-integration) — `MS3OrderTabsRegistry`
+
+Оба registry подключаются через это событие с проверкой `$page`.
+:::
+
 ---
 
 ## Расширение интерфейса ExtJS
