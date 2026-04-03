@@ -2,6 +2,7 @@
 title: mxEditorJs
 description: Block editor Editor.js for MODX 3 — content in blocks instead of TinyMCE/CKEditor
 author: ibochkarev
+logo: https://modstore.pro/assets/extras/mxeditorjs/logo.png
 dependencies: []
 
 items: [

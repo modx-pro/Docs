@@ -51,7 +51,7 @@ ms3ProductSets adds recommendation blocks to [MiniShop3](/en/components/minishop
 - **Site output** — **`ms3ProductSets`** snippet; optional AJAX via **`get_set`** and **`window.ms3ProductSets.render()`** ([API](/en/components/ms3productsets/api), [integration](/en/components/ms3productsets/integration))
 - **Cache** — TTL from **`ms3productsets.cache_lifetime`**; **`0`** disables cache ([system settings](/en/components/ms3productsets/settings))
 - **Cart** — buttons with **`data-add-to-cart`**, “add whole set” (**`data-add-set`**) via **`productsets.js`** and **`add_to_cart`** on the connector
-- **Manager UI** — **Components → Product sets** (VueTools + PrimeVue): templates, apply to categories, unbind ([manager guide](/en/components/ms3productsets/admin), [interface](/en/components/ms3productsets/interface/))
+- **Manager UI** — **Components → Product sets** (VueTools + PrimeVue): templates, apply to categories, unbind ([manager guide](/en/components/ms3productsets/admin), [interface](/en/components/ms3productsets/interface/index))
 - **Plugins** — sync TVs to the DB on product save, clean links when a resource is deleted ([architecture](/en/components/ms3productsets/architecture))
 - **Localization** — component lexicon; on the frontend use **`mspsLexiconScript`** (`window.mspsLexicon`, `window.mspsConfig`)
 
