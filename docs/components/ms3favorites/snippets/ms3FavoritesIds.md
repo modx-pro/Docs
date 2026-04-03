@@ -3,17 +3,17 @@ title: ms3FavoritesIds
 ---
 # Сниппет ms3FavoritesIds
 
-Возвращает ID элементов списка избранного. Данные берутся из БД по user_id или session_id (гости при включённом guest_db). При пустой БД — из cookie.
+Возвращает ID элементов списка избранного. Данные берутся из БД по `user_id` или `session_id` (гости при включённой настройке `guest_db_enabled`). При пустой БД — из `cookie`.
 
 ## Параметры
 
 | Параметр | Описание | По умолчанию |
 |----------|----------|--------------|
-| **list** | Идентификатор списка | default |
-| **resource_type** | Тип ресурсов: products, resources | products |
-| **return** | `str` — строка ID через запятую; `data` — массив | str |
+| **list** | Идентификатор списка | `default` |
+| **resource_type** | Тип ресурсов: `products`, `resources` | `products` |
+| **return** | `str` — строка ID через запятую; `data` — массив | `str` |
 | **toPlaceholder** | Имя плейсхолдера; если задано — результат в плейсхолдер, иначе вывод | — |
-| **sortBy** | Сортировка: `added_at_desc`, `added_at_asc` | added_at_desc |
+| **sortBy** | Сортировка: `added_at_desc`, `added_at_asc` | `added_at_desc` |
 
 ## Возвращаемое значение
 

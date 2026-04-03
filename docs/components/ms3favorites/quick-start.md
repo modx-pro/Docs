@@ -5,6 +5,10 @@ title: Быстрый старт
 
 Пошаговое подключение списка избранного (Wishlist) к сайту с MiniShop3.
 
+**Имена сниппетов:** `ms3FavoritesBtn`, `ms3FavoritesCounter`, `ms3FavoritesIds`, `ms3FavoritesLists`.
+
+Примеры на **Fenom** требуют [pdoTools](/components/pdotools/) **3.x**.
+
 ## Установка
 
 ### Требования
@@ -32,9 +36,9 @@ title: Быстрый старт
 
 ---
 
-## Шаг 1: Подключение лексикона, стилей и скрипта
+## Шаг 1: Лексикон, стили и скрипт
 
-В шаблоне (или в общем head/footer) подключите **сначала** лексикон, затем CSS и JS.
+В шаблоне (или общем head/footer) подключите **сначала** лексикон, затем CSS и JS.
 
 ::: code-group
 
@@ -51,11 +55,15 @@ title: Быстрый старт
 ```
 :::
 
-Без `ms3fLexiconScript` скрипт использует запасные русские фразы: для мультиязычного сайта подключение лексикона обязательно.
+::: tip Fenom и `auto_escape`
+Если после добавления строк страница пустая, проверьте лог MODX на ошибки `ms3fLexiconScript`. При включённом **auto_escape** в Fenom выводите сниппет как сырой HTML, например `{raw ('ms3fLexiconScript' | snippet)}` (точный синтаксис зависит от версии Fenom).
+:::
 
-## Шаг 2: Кнопка добавления в Wishlist
+Без `ms3fLexiconScript` могут отображаться ключи лексикона; JS при этом использует встроенные русские запасные фразы.
 
-Разместите кнопку в карточке товара — сниппет [ms3FavoritesBtn](snippets/ms3FavoritesBtn):
+## Шаг 2: Кнопка «В избранное»
+
+В карточке товара — сниппет [ms3FavoritesBtn](snippets/ms3FavoritesBtn):
 
 ::: code-group
 
@@ -68,7 +76,7 @@ title: Быстрый старт
 ```
 :::
 
-В чанке карточки товара (например в выводе msProducts):
+В чанке карточки (например в выводе msProducts):
 
 ::: code-group
 
@@ -79,20 +87,65 @@ title: Быстрый старт
 ```fenom
 {'!ms3FavoritesBtn' | snippet : ['id' => $id]}
 ```
-
 :::
 
-При клике товар добавляется или удаляется из списка. Уведомление показывается автоматически (iziToast / MiniShop3 `ms3Message` / свой `ms3fConfig.notify` — см. [Интеграция](integration)).
+**Перезагрузка страницы после удаления** (опционально):
 
-## Шаг 3: Счётчик Wishlist
+::: code-group
+```modx
+[[!ms3FavoritesBtn? &id=`[[*id]]` &remove=`1`]]
+```
+```fenom
+{'!ms3FavoritesBtn' | snippet : ['id' => $_modx->resource.id, 'remove' => 1]}
+```
+:::
 
-Где нужно показывать количество товаров в Wishlist:
+**Вёрстка wishlist-box** (`li.wishlist`, `box-icon`, `icon-heart`, tooltip) — чанк `tplMs3fBtnWishlistBox`:
+
+::: code-group
+```modx
+[[!ms3FavoritesBtn? &id=`[[*id]]` &tpl=`tplMs3fBtnWishlistBox`]]
+```
+```fenom
+{'!ms3FavoritesBtn' | snippet : ['id' => $_modx->resource.id, 'tpl' => 'tplMs3fBtnWishlistBox']}
+```
+:::
+
+**Удаление обёртки по префиксу ID** (например `#product-item-{id}`):
+
+::: code-group
+```modx
+<div id="product-item-[[+id]]">
+  ...
+  [[!ms3FavoritesBtn? &id=`[[+id]]` &remove=`product-item`]]
+</div>
+```
+```fenom
+<div id="product-item-{$id}">
+  ...
+  {'!ms3FavoritesBtn' | snippet : ['id' => $id, 'remove' => 'product-item']}
+</div>
+```
+:::
+
+Параметры сниппета: `list`, `tpl`, `remove`, `classes`, `resource_type`, `label` — см. [ms3FavoritesBtn](snippets/ms3FavoritesBtn).
+
+По клику товар добавляется или удаляется из списка. Уведомление показывается автоматически (iziToast / MiniShop3 `ms3Message` / свой `ms3fConfig.notify` — см. [Интеграцию](integration)).
+
+## Шаг 3: Счётчик избранного
+
+**На клиенте** (JS подставляет значение при загрузке):
 
 ```html
-<span data-favorites-count style="display: none;">0</span>
+<a href="/wishlist/">
+  <span>Избранное</span>
+  <span data-favorites-count style="display: none;">0</span>
+</a>
 ```
 
-Или серверным сниппетом [ms3FavoritesCounter](snippets/ms3FavoritesCounter):
+Ограничить счётчик одним `resource_type` (например только товары): `<span data-favorites-count data-resource-type="products"></span>`.
+
+**Серверный сниппет** [ms3FavoritesCounter](snippets/ms3FavoritesCounter):
 
 ::: code-group
 
@@ -105,15 +158,24 @@ title: Быстрый старт
 ```
 :::
 
+::: code-group
+```modx
+<a href="/wishlist/">Избранное [[!ms3FavoritesCounter]]</a>
+```
+```fenom
+<a href="/wishlist/">Избранное {'!ms3FavoritesCounter' | snippet}</a>
+```
+:::
+
 Сумма по всем спискам: `&list=all` / `['list' => 'all']`.
 
-Значение подставится при загрузке (1–99 или 99+): при нуле элемент скрыт.
+После загрузки страницы скрипт подставит в счётчик число от 1 до 99 или подпись «99+», если позиций больше. Если в избранном ничего нет, элемент остаётся скрытым.
 
-## Шаг 4: Блок Wishlist
+## Шаг 4: Блок избранного
 
 **Клиентский рендер (JS):**
 
-Контейнер заполняется через JavaScript из localStorage/cookie:
+Класс `ms3f__list` — flex и горизонтальный скролл на мобильных. Контейнер заполняется из **localStorage/cookie** через коннектор:
 
 ```html
 <div id="wishlist-list" class="ms3f__list"></div>
@@ -126,9 +188,11 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 ```
 
+Опции `render`: `limit`, `tpl`, `emptyTpl`, `list`, `resource_type` — те же имена, что у [коннектора](frontend#connector-ajax).
+
 **Серверный вывод:**
 
-Получить ID избранного в плейсхолдер — сниппет [ms3FavoritesIds](snippets/ms3FavoritesIds):
+Плейсхолдер с ID — сниппет [ms3FavoritesIds](snippets/ms3FavoritesIds):
 
 ::: code-group
 
@@ -161,9 +225,64 @@ document.addEventListener('DOMContentLoaded', function() {
 
 :::
 
-## Каталог: pdoPage + msProducts, счётчик и кнопка в строке
+### Перечень именованных списков (табы / меню)
 
-Сценарий: **не** страница избранного, а обычный каталог с пагинацией; в строке — в список `default`, сверху — число элементов. Чанк пакета **`tplCatalogRowMs3f`** + подробности и AJAX — в [Интеграции](integration#catalog-pdopage-row).
+Сниппет [ms3FavoritesLists](snippets/ms3FavoritesLists) выводит списки пользователя с количеством элементов. Ссылки формируются по [системной настройке](settings) `ms3favorites.list_page` (по умолчанию `wishlist/`).
+
+::: code-group
+```modx
+[[!ms3FavoritesLists? &tplWrapper=`tplMs3fListsWrapper`]]
+```
+```fenom
+{'!ms3FavoritesLists' | snippet : ['tplWrapper' => 'tplMs3fListsWrapper']}
+```
+:::
+
+Без `tplWrapper` выводятся только строки чанка `tplMs3fListsRow`.
+
+### Своя страница с пагинацией (pdoPage + msProducts)
+
+Отдельный ресурс, если нужен **свой** шаблон с постраничным выводом. На `/wishlist/` при **`serverList=1`** (по умолчанию) и **`resource_type=products`** пагинация уже встроена в **ms3FavoritesPage** (**pdoPage** + **msProducts**). Здесь: ID → проверка пустоты → вывод и кнопка «Очистить»:
+
+::: code-group
+```modx
+[[!ms3FavoritesIds? &toPlaceholder=`myf.ids`]]
+[[!+myf.ids:is=`-0`:then=`
+  <p>[[%ms3favorites_empty]]</p>
+`:else=`
+  [[!pdoPage?
+    &element=`msProducts`
+    &parents=`0`
+    &limit=`12`
+    &resources=`[[!+myf.ids]]`
+    &sortby=`FIELD(msProduct.id, [[!+myf.ids]])`
+  ]]
+  <button type="button" class="btn btn-primary" data-favorites-clear>[[%ms3favorites_clear_list]]</button>
+  [[!+page.nav]]
+`]]
+```
+```fenom
+{'!ms3FavoritesIds' | snippet : ['toPlaceholder' => 'myf.ids']}
+{set $idsStr = $_modx->getPlaceholder('myf.ids')}
+{if $idsStr == '-0'}
+  <p>{$_modx->lexicon('ms3favorites_empty')}</p>
+{else}
+  {'pdoPage' | snippet : [
+    'element' => 'msProducts',
+    'parents' => 0,
+    'limit' => 12,
+    'resources' => $idsStr,
+    'sortby' => 'FIELD(msProduct.id, ' ~ $idsStr ~ ')'
+  ]}
+  <button type="button" class="btn btn-primary" data-favorites-clear>{$_modx->lexicon('ms3favorites_clear_list')}</button>
+  {$_modx->getPlaceholder('page.nav')}
+{/if}
+```
+:::
+
+### Каталог: pdoPage + msProducts, счётчик и кнопка в строке
+
+Это **не** страница избранного, а обычный **каталог** с пагинацией: в строке вывода — список `default`, сверху — счётчик. Для строки каталога используйте чанк **`tplCatalogRowMs3f`**. AJAX и полный пример с `@INLINE` — в [Интеграции](integration#catalog-pdopage-row).
 
 ::: code-group
 ```modx
@@ -193,9 +312,54 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 :::
 
+### Пагинация: pdoPage + ms3Favorites
+
+Тот же **ms3FavoritesIds**, но **pdoPage** оборачивает сниппет **ms3Favorites** (не msProducts). Параметры **`page`**, **`offset`**, **`totalVar`** у **ms3Favorites** рассчитаны на работу с **pdoPage**. Подробнее — [Интеграция](integration).
+
+::: code-group
+```modx
+[[!ms3FavoritesIds? &toPlaceholder=`myf.ids` &list=`default`]]
+[[!+myf.ids:is=`-0`:then=`
+  <p>[[%ms3favorites_empty]]</p>
+`:else=`
+  [[!pdoPage?
+    &element=`ms3Favorites`
+    &ids=`[[!+myf.ids]]`
+    &list=`default`
+    &limit=`12`
+    &tpl=`tplFavoritesItem`
+    &emptyTpl=`tplFavoritesEmpty`
+    &totalVar=`page.total`
+    &pageNavVar=`page.nav`
+  ]]
+  [[!+page.nav]]
+`]]
+```
+
+```fenom
+{'!ms3FavoritesIds' | snippet : ['toPlaceholder' => 'myf.ids', 'list' => 'default']}
+{set $idsStr = $_modx->getPlaceholder('myf.ids')}
+{if $idsStr == '-0'}
+  <p>{'ms3favorites_empty' | lexicon}</p>
+{else}
+  {'!pdoPage' | snippet : [
+    'element' => 'ms3Favorites',
+    'ids' => $idsStr,
+    'list' => 'default',
+    'limit' => 12,
+    'tpl' => 'tplFavoritesItem',
+    'emptyTpl' => 'tplFavoritesEmpty',
+    'totalVar' => 'page.total',
+    'pageNavVar' => 'page.nav'
+  ]}
+  {$_modx->getPlaceholder('page.nav')}
+{/if}
+```
+:::
+
 ## Шаг 5: Страница /wishlist/
 
-Создайте ресурс с alias `wishlist`, шаблоном с подключёнными ms3fLexiconScript, favorites.css и favorites.js. В контенте выведите:
+Создайте ресурс с alias `wishlist` и шаблон, в котором подключены `ms3fLexiconScript`, `favorites.css` и `favorites.js`. В контенте:
 
 ::: code-group
 ```modx
@@ -208,11 +372,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
 :::
 
-**Пагинация:** у сниппета `ms3FavoritesPage` **нет** встроенного pdoPage — карточки на `/wishlist/` всегда подгружает `favorites.js`. Чтобы вывести избранное постранично на **отдельной** странице, используйте цепочку **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`) — примеры в [Интеграции и кастомизации](integration).
+**Поведение по умолчанию:** при **`resource_type=products`** и **`serverList=1`** (по умолчанию) карточки на `/wishlist/` выводятся **на сервере** в чанке (**pdoPage** + **msProducts**). При **`serverList=0`** список дорисовывает **`favorites.js`** (до 100 позиций на вкладку). Для других типов ресурсов список — через **JS** после sync. См. [Интеграцию](integration#wishlist-serverlist) и [ms3FavoritesPage](snippets/ms3FavoritesPage).
+
+Отдельная кастомная страница с пагинацией — **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`) — примеры выше и в [Интеграции](integration).
+
+**Расширенная панель** (Каталог / Очистить / Поделиться): `extendedToolbar` или чанк `tplFavoritesPageDemo` — см. [ms3FavoritesPage](snippets/ms3FavoritesPage).
+
+## Стилизация (кратко)
+
+Переопределите [CSS-переменные](frontend#css-variables): `--ms3f-button-active`, `--ms3f-bg`, `--ms3f-border`, `--ms3f-color` и др.
+
+```css
+:root {
+  --ms3f-button-active: #e74c3c;
+  --ms3f-bg: #fff;
+  --ms3f-color: #333;
+}
+```
+
+## Автоочистка гостей (cron)
+
+Чтобы по `guest_ttl_days` удалять устаревшие записи гостей, добавьте в cron:
+
+```bash
+php /полный/путь/к/сайту/core/components/ms3favorites/cli/cleanup_guests.php
+```
+
+Скрипт находит MODX через `config.core.php` (обход вверх от `cli/`). Если `guest_ttl_days = 0`, очистка по TTL не выполняется.
 
 ## Что дальше
 
-- [Системные настройки](settings) — лимит, тип хранилища, гости в БД
-- [Сниппеты](snippets/) — параметры `ms3Favorites`, `ms3FavoritesBtn`, `ms3FavoritesIds` и др.
-- [Подключение на сайте](frontend) — кастомизация чанков и стилей
-- [Интеграция и кастомизация](integration) — расширенные сценарии, `msProducts`, интеграция с корзиной
+- [Системные настройки](settings) — лимит, хранилище, гости в БД
+- [Сниппеты](snippets/) — параметры ms3Favorites, ms3FavoritesBtn, ms3FavoritesIds и др.
+- [Подключение на сайте](frontend) — чанки и стили
+- [Интеграция и кастомизация](integration) — сценарии, msProducts, корзина

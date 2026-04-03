@@ -35,7 +35,17 @@ title: Интеграция и кастомизация
 ```
 :::
 
-## Режим удаления mode="list"
+## Страница /wishlist/ и параметр serverList {#wishlist-serverlist}
+
+Сниппет [ms3FavoritesPage](snippets/ms3FavoritesPage) управляет тем, как выводятся **товары** на странице избранного:
+
+- **`resource_type=products`**, **`serverList=1`** (по умолчанию) — карточки собираются **на сервере** в чанке **tplFavoritesPage**: **pdoPage** + **msProducts**, сортировка `FIELD(msProduct.id,…)`, плейсхолдеры пагинации `ms3f.page.*`. **favorites.js** не вызывает `render` для этого списка; после синхронизации обновляются счётчики табов.
+- **`serverList=0`** и products — список дорисовывает **JS** (`render`, до 100 элементов на вкладку без серверной пагинации в чанке).
+- **`resource_type` ≠ products** — вывод списка через **JS** после sync; **serverList** не включает SSR.
+
+Отдельная кастомная страница с пагинацией — по-прежнему **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`), см. ниже и [Быстрый старт](quick-start).
+
+## Режим `data-favorites-mode="list"` (скрытие всей карточки)
 
 Для каталога, где при удалении из избранного нужно скрывать всю карточку товара:
 
@@ -176,7 +186,7 @@ title: Интеграция и кастомизация
 ```
 :::
 
-В **MODX** без Fenom в чанке строки можно использовать `@INLINE` с вызовом `ms3FavoritesBtn` — см. пакет **docs/QUICK-START.md** в репозитории компонента.
+В **MODX** без Fenom в чанке строки можно использовать `@INLINE` с вызовом `ms3FavoritesBtn` — полный пример в [Быстром старте](quick-start) (каталог).
 
 ::: tip AJAX-пагинация (ajaxMode)
 После подгрузки следующей страницы каталога вызовите **`window.ms3Favorites.updateButtonStates()`** в callback pdoPage (зависит от версии pdoTools) либо отключите AJAX и делайте полную перезагрузку страницы.
@@ -302,11 +312,11 @@ URL для шаринга: `/wishlist/share?token=xxx`
 **API коннектора:**
 - `create_share` — POST list=default → `{ success, token }` (только авторизованные)
 - `get_share` — POST token=xxx → `{ success, ids, list_name }`
-- `copy_share` — POST token=xxx, target_list=default → `{ success, ids }` (гости получают ids для localStorage)
+- **`copy_share`** — POST **`token=xxx`**, **`target_list=default`** → **`{ success, ids }`**. **Гости** получают **`ids`** для **localStorage**.
 
 ## Интеграция с корзиной
 
-На странице **/wishlist/** (**чанк `tplFavoritesPage`**): карточки подгружает **`favorites.js`** (`render()` в контейнер страницы). Доступны:
+На странице **/wishlist/** (**чанк `tplFavoritesPage`**): при **`resource_type=products`** и **`serverList=1`** (по умолчанию) товары выводятся **на сервере**; при **`serverList=0`** или другом типе ресурсов карточки подгружает **`favorites.js`** (`render()`). Доступны:
 
 - **Кнопка «Добавить все в корзину»** — `[data-favorites-add-all]`, добавляет все товары текущего списка
 - **Кнопка «Добавить выбранные»** — `[data-favorites-add-selected]`, добавляет только отмеченные checkbox
@@ -326,18 +336,27 @@ ms3Favorites.addSelectedToCart();   // Добавить выбранные (по
 
 ## Callbacks и события
 
+Актуально для `assets/components/ms3favorites/js/favorites.js`: события вешаются на **`document`**.
+
 **События DOM:**
 
+| Событие | Когда | `e.detail` |
+|---------|--------|------------|
+| **`ms3f:added`** | после `add()` | `id`, `list`, `resourceType`, `countInList`, `totalByType`, `totalAllTypes` |
+| **`ms3f:removed`** | после `remove()` | то же |
+| **`ms3f:listCleared`** | после `clearList()` | `list`, `resourceType`, `ids` (массив удалённых ID), `countInList`, `totalByType`, `totalAllTypes` |
+| **`ms3f:synced`** | после `flushToServer()` или после завершения начального `sync()` при загрузке страницы | не передаётся (`CustomEvent` без `detail`) |
+
 ```javascript
-document.addEventListener('ms3f:added', function(e) {
-  console.log('Добавлено:', e.detail.id, e.detail.list);
+document.addEventListener('ms3f:added', (e) => {
+  console.log(e.detail.id, e.detail.list, e.detail.resourceType);
 });
-document.addEventListener('ms3f:removed', function(e) {
-  console.log('Удалено:', e.detail.id, e.detail.list);
+document.addEventListener('ms3f:synced', () => {
+  // список синхронизирован с сервером
 });
 ```
 
-**Callback через ms3fConfig** (задать до загрузки favorites.js):
+**Колбэки `window.ms3fConfig`** (задать до загрузки `favorites.js`):
 
 ```javascript
 window.ms3fConfig = window.ms3fConfig || {};
@@ -349,10 +368,11 @@ window.ms3fConfig.notify = function (variant, text) {
   return false; // true — пропустить ms3Message и iziToast
 };
 window.ms3fConfig.showToast = false;  // отключить любые стандартные toast
-window.ms3fConfig.debug = true;       // логи в консоль
 ```
 
-Цепочка уведомлений по умолчанию: `notify` → `window.ms3Message.show` (MiniShop3) → iziToast (подгрузка из `ms3fConfig.iziToastBaseUrl`, задаётся в `ms3fLexiconScript`). Системная настройка `use_minishop3_toast` в пакете не используется.
+Отдельного флага **`debug`** в скрипте нет: для отладки смотрите вкладку **Network** (`connector.php`) и **`console.warn`** с префиксом **`[ms3Favorites]`** при сбоях iziToast.
+
+Цепочка уведомлений по умолчанию: `notify` → `window.ms3Message.show` (MiniShop3) → iziToast (подгрузка из `ms3fConfig.iziToastBaseUrl`, задаётся в `ms3fLexiconScript`).
 
 ## Плейсхолдер ms3f.total
 
@@ -402,4 +422,4 @@ $ids = ms3f_get_ids_from_cookie($modx, 'default', 'products');
 | Пустой список после входа | Sync не выполнился | Проверьте консоль на ошибки fetch |
 | Удалили на /wishlist/, в БД осталось | Раньше пустой локальный список сливался с сервером при merge | В актуальных сборках при явных add/remove/clear используется **authoritative**-sync и **`flushToServer()`**; первый sync при загрузке без authoritative (новое устройство) |
 | Share не работает | Только для авторизованных | `create_share` требует `user_id` |
-| Debug-режим | Логи в консоль | `window.ms3fConfig = { debug: true }` до загрузки `favorites.js` |
+| Нужна отладка сети / toasts | Нет встроенного `debug` | Network: `connector.php`; `console.warn` с `[ms3Favorites]` при ошибках iziToast |

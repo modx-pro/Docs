@@ -10,7 +10,7 @@ Outputs the current user’s favorites lists (or for user set via `user`) with i
 | Parameter | Description | Default |
 |-----------|-------------|---------|
 | **user** | MODX user ID; `0` — current logged-in user or guest | `0` |
-| **resource_type** | Resource type: `products`, `resources` | `products` |
+| **resource_type** | Resource type: `products`, `resources`, `articles`, … | `products` |
 | **withItems** | Pass ID string to chunk (`ms3f_ids`). `1` — yes, `0` — name and count only | `1` |
 | **limit** | Max lists in result; `0` — no limit | `0` |
 | **offset** | Skip lists from start | `0` |

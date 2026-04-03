@@ -28,14 +28,13 @@ Unknown `type` falls back to `buy_together`.
 | `set_id` | VIP set number (`vip_set_{set_id}`) | `0` |
 | `max_items` | Product limit (1–100) | `ms3productsets.max_items` |
 | `tpl` | Card chunk | `tplSetItem` |
-| `tplWrapper` | Block wrapper chunk | `tplSetWrapper` |
+| `tplWrapper` | Block wrapper chunk (`output`, `type`, `count`) | `''` (no wrapper; set a chunk name such as `tplSetWrapper`) |
 | `emptyTpl` | Empty result chunk | `tplSetEmpty` |
 | `hideIfEmpty` | `true`: empty string, `false`: `emptyTpl` | `true` |
 | `exclude_ids` | Product IDs to exclude | `''` |
 | `showUnpublished` | Passed to `msProducts` | `false` |
 | `showHidden` | Passed to `msProducts` | `false` |
 | `sortby` / `sortdir` | Output sort | order from set |
-| `showLog` | Passed to `msProducts` | `false` |
 | `tvPrefix`, `includeTVs`, `includeThumbs` | pdoTools/msProducts params | `''` |
 | `return` | Format: `data`, `ids`, `json` | `data` |
 | `toPlaceholder` | Write result to placeholder | `''` |
