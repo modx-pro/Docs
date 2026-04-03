@@ -8,7 +8,12 @@ The ms3ProductSets admin page is for managing templates and applying sets to cat
 ## Interface contents
 
 - **Set list**: ID, name, type, related product list
-- **Create/edit form**: name, type, related_product_ids, description, sortorder
+- **Create/edit form**
+  - `name`
+  - `type`
+  - `related_product_ids`
+  - `description`
+  - `sortorder`
 - **Apply to category**: choose template and one or more categories
 - **Replace option**: replace existing links of the chosen type before insert
 - **Unbind template**: remove links created by this template in the selected category

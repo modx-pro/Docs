@@ -51,4 +51,4 @@ Outputs the number of items in favorites. Used in header, menu, or Favorites ico
 <span data-favorites-count style="display: none;">0</span>
 ```
 
-JS will set the value on load (1–99 or 99+); the element is hidden when zero.
+After load the script sets the text to 1–99 or `99+` for larger counts; when the total is zero the element stays hidden.

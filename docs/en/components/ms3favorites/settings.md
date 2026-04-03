@@ -11,15 +11,15 @@ All settings use the `ms3favorites.` prefix and live in the **ms3favorites** nam
 
 | Setting | Description | Default | Notes |
 |---------|-------------|----------|--------|
-| `ms3favorites.max_items` | Maximum items in the Favorites block (localStorage/cookie and output) | `20` | 20–50 for most sites; max 100. Enforced in JS when ms3fLexiconScript is loaded. |
+| `ms3favorites.max_items` | Maximum items in the Favorites block (`localStorage`/`cookie` and output) | `20` | 20–50 for most sites; max 100. Enforced in JS when `ms3fLexiconScript` is loaded. |
 | `ms3favorites.storage_type` | Favorites storage type | `localStorage` | `localStorage` — data in browser until cleared; `cookie` — shared across subdomains, 30-day expiry. |
-| `ms3favorites.guest_db_enabled` | Save guest list in DB | `true` | Enable for server-side counter, correct **tab counts** on `/wishlist/`, and guest sync. Identified by session_id. |
+| `ms3favorites.guest_db_enabled` | Save guest list in DB | `true` | Enable for server-side counter, correct **tab counts** on `/wishlist/`, and guest sync. Identified by `session_id`. |
 | `ms3favorites.guest_ttl_days` | Guest record retention (days) | `30` | 0 — do not delete. Used by auto-cleanup (cron). |
 | `ms3favorites.share_ttl_days` | Share link validity (days) | `90` | 0 — no expiry. |
-| `ms3favorites.max_lists` | Maximum lists per user | `10` | Limit for named lists (default, gifts, plans, etc.). Max 20. |
-| `ms3favorites.comments_enabled` | Enable notes on items | `true` | Show textarea for notes in cards. When off, update_comment is rejected. |
-| `ms3favorites.check_resource_availability` | Check resource availability before adding | `false` | When on, only published and non-deleted resources are added (sync, copy_share). |
-| `ms3favorites.list_page` | List page URL (for ms3FavoritesLists) | `wishlist/` | Relative path for list links. |
+| `ms3favorites.max_lists` | Maximum lists per user | `10` | Limit for named lists (`default`, `gifts`, `plans`, etc.). Max 20. |
+| `ms3favorites.comments_enabled` | Enable notes on items | `true` | Show textarea for notes in cards. When off, `update_comment` is rejected. |
+| `ms3favorites.check_resource_availability` | Check resource availability before adding | `false` | When on, only published and non-deleted resources are added (`sync`, `copy_share`). |
+| `ms3favorites.list_page` | List page URL (for `ms3FavoritesLists`) | `wishlist/` | Relative path for list links. |
 
 ## Area in the MODX manager
 

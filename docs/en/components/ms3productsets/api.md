@@ -5,63 +5,68 @@ title: API and interfaces
 
 ## Snippet `ms3ProductSets`
 
-### Minimal call
-
-::: code-group
-
-```modx
-[[!ms3ProductSets?
-  &type=`buy_together`
-  &resource_id=`[[*id]]`
-]]
-```
-
-```fenom
-{'!ms3ProductSets' | snippet : [
-  'type' => 'buy_together',
-  'resource_id' => $_modx->resource.id
-]}
-```
-
-:::
-
-### Main parameters
+### Key parameters
 
 | Parameter | Default | Description |
 | --- | --- | --- |
 | `type` | `buy_together` | Set type |
-| `resource_id` / `productId` | current resource | Base product |
-| `max_items` | `ms3productsets.max_items` | Limit 1..100 |
-| `category_id` | `0` | Category for auto mode |
-| `set_id` | `0` | VIP set number (for `type=vip`). 0 or omitted uses 1 — setting `ms3productsets.vip_set_1` |
+| `resource_id` / `productId` | current resource | Base product ID |
+| `max_items` | `ms3productsets.max_items` | Limit (1..100) |
+| `category_id` | `0` | Category for auto pick |
+| `set_id` | `0` | VIP set number (for `type=vip`). 0 or omitted uses 1 — setting `ms3productsets.vip_set_1`. |
 | `tpl` | `tplSetItem` | Card chunk |
 | `emptyTpl` | `tplSetEmpty` | Empty result chunk |
-| `hideIfEmpty` | `true` | `true` → empty string, `false` → output `emptyTpl`. Strings `"false"`, `"0"`, `"true"`, `"1"` handled |
-| `exclude_ids` | `''` | Excluded IDs (string or array) |
-| `tplWrapper` | `''` | Wrapper (receives `output`, `type`, `count`) |
-| `sortby` | `''` | Sort field (passed to msProducts). Omitted — order from set |
-| `sortdir` | `ASC` | Sort direction (only when `sortby` set) |
-| `showUnpublished` | `false` | Passed to msProducts |
-| `showHidden` | `false` | Passed to msProducts |
-| `showLog` | `false` | Passed to msProducts (debug log in manager context) |
-| `tvPrefix` | `''` | TV placeholder prefix (passed to msProducts) |
-| `includeTVs` | `''` | Comma-separated TV list (passed to msProducts) |
-| `includeThumbs` | `''` | Comma-separated thumb sizes (passed to msProducts) |
+| `hideIfEmpty` | `true` | `true` -> empty string, `false` -> `emptyTpl` |
+| `exclude_ids` | `''` | Excluded IDs |
+| `tplWrapper` | `''` | Wrapper with placeholders `output`, `type`, `count` |
+| `sortby` / `sortdir` | `''` / `ASC` | If `sortby` is empty, set order is preserved |
+| `showUnpublished` | `false` | Passed to `msProducts` |
+| `showHidden` | `false` | Passed to `msProducts` |
+| `includeTVs`, `includeThumbs`, `tvPrefix` | `''` | Passed to `msProducts` |
 | `return` | `data` | `data`, `ids`, `json` |
-| `toPlaceholder` | `''` | Write to placeholder |
+| `toPlaceholder` | `''` | Write output to placeholder |
 
-Snippet result also depends on `ms3productsets.cache_lifetime` and `ms3productsets.auto_recommendation`. Same for AJAX `action=get_set` — connector runs the snippet. See [System settings](/en/components/ms3productsets/settings).
+### Supported `type` values
 
-All types and fallback logic: [Set types](/en/components/ms3productsets/types).
+`auto`, `vip`, `cross-sell`, `popcorn`, `also-bought`, `buy_together`, `similar`, `cart_suggestion`, `auto_sales`, `custom`.
+
+Per-type logic: [Set types](/en/components/ms3productsets/types).
+
+### Call examples
+
+::: code-group
+
+```fenom
+{'ms3ProductSets' | snippet : [
+  'type' => 'similar',
+  'resource_id' => $_modx->resource.id,
+  'max_items' => 6,
+  'tpl' => 'tplSetItem'
+]}
+```
+
+```modx
+[[!ms3ProductSets?
+  &type=`similar`
+  &resource_id=`[[*id]]`
+  &max_items=`6`
+  &tpl=`tplSetItem`
+]]
+```
+
+:::
 
 ## Snippet `mspsLexiconScript`
 
-Exports:
+Outputs:
 
-- `window.mspsLexicon`
-- `window.mspsConfig` (`maxItems`, `lang`)
+- `window.mspsLexicon` (keys for frontend messages);
+- `window.mspsConfig` (`maxItems`, `lang`).
 
-Include before `productsets.js`.
+Load before `productsets.js`.
+
+**Fenom:** `{'mspsLexiconScript' | snippet}`
+**MODX:** `[[!mspsLexiconScript]]`
 
 ## Connector `assets/components/ms3productsets/connector.php`
 
@@ -77,9 +82,9 @@ Include before `productsets.js`.
 | action | Purpose | Main parameters |
 | --- | --- | --- |
 | `get_templates` | List set templates | — |
-| `save_template` | Create/update template | `id`, `name`, `type`, `related_product_ids`, `description`, `sortorder` |
+| `save_template` | Create/update template | `id`, `name`, `type`, `related_product_ids`, `sortorder` |
 | `delete_template` | Delete template | `id` |
-| `apply_template` | Apply template to categories/products | `template_id`, `parent_id` or `parent_ids[]`, `product_ids` (optional), `replace` |
+| `apply_template` | Apply template to categories/products | `template_id`, `parent_id` or `parent_ids[]`, `replace` |
 | `unbind_template` | Unbind template from category | `template_id`, `parent_id` or `parent_ids[]` |
 | `get_resource_tree` | Category tree (no products) | `parent_id`, `context_key` |
 | `get_resources` | Product list for picker | `parent_id`, `template_id`, `query`, `limit` |
@@ -88,12 +93,19 @@ Include before `productsets.js`.
 
 | Method | Purpose |
 | --- | --- |
-| `render(selector, options)` | Render block via `action=get_set` |
-| `addToCart(productId, count)` | Add product to cart via `action=add_to_cart` |
-| `addAllToCart(buttonOrContainer)` | Add whole set to cart. Accepts DOM element (button with `data-add-set` or container) or CSS selector. Finds `[data-product-id]` and `[data-add-to-cart]`, calls `addToCart` for each ID, then toast and event `msps:cart:update`. |
-| `toast(message)` | Show frontend notification |
+| `render(selector, options)` | Render set block via `action=get_set` |
+| `addToCart(productId, count)` | Add product via `action=add_to_cart` |
+| `addAllToCart(buttonOrContainer)` | Add whole set. DOM element (button with `data-add-set` or container) or CSS selector. Finds `[data-product-id]` and `[data-add-to-cart]`, calls `addToCart` for each, then toast and `msps:cart:update`. |
+| `toast(message)` | Show frontend toast |
 
 Events after successful add:
 
 - `addToCart`: `msps:cart:update` with `detail: { product_id, count }`
 - `addAllToCart`: `msps:cart:update` with `detail: { product_ids }`
+
+## Plugins
+
+| Plugin | Event | Purpose |
+| --- | --- | --- |
+| `ms3productsets_sync_tv` | `OnDocFormSave` | Sync set TVs into `ms3_product_sets` |
+| `ms3productsets_on_resource_delete` | `OnResourceDelete` | Clean links for deleted resource |

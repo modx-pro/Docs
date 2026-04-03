@@ -3,17 +3,17 @@ title: ms3FavoritesIds
 ---
 # Snippet ms3FavoritesIds
 
-Returns IDs of items in the favorites list. Data is taken from the DB by user_id or session_id (guests when guest_db is enabled). When DB is empty — from cookie.
+Returns IDs of items in the favorites list. Data is taken from the DB by `user_id` or `session_id` (guests when `guest_db_enabled` is on). When the DB is empty — from `cookie`.
 
 ## Parameters
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| **list** | List identifier | default |
-| **resource_type** | Resource type: products, resources | products |
-| **return** | `str` — comma-separated IDs; `data` — array | str |
+| **list** | List identifier | `default` |
+| **resource_type** | Resource type: `products`, `resources` | `products` |
+| **return** | `str` — comma-separated IDs; `data` — array | `str` |
 | **toPlaceholder** | Placeholder name; if set — result to placeholder, otherwise output | — |
-| **sortBy** | Sort: `added_at_desc`, `added_at_asc` | added_at_desc |
+| **sortBy** | Sort: `added_at_desc`, `added_at_asc` | `added_at_desc` |
 
 ## Return value
 

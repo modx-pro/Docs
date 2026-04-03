@@ -38,14 +38,14 @@ ms3Favorites — компонент реализует функционал со
 - **Гости в БД** — при `guest_db_enabled` список гостя сохраняется по session_id
 - **Несколько списков** — `default`, `gifts`, `plans` и др. (до `max_lists`)
 - **Шаринг списка** — публичная ссылка `/wishlist/share?token=xxx`, копирование чужого списка
-- **Страница /wishlist/** — табы и контейнер от `ms3FavoritesPage`, карточки дорисовывает JS; счётчики табов и `ms3f.total` на сервере; пагинация отдельно (ms3FavoritesIds + pdoPage)
+- **Страница /wishlist/** — `ms3FavoritesPage`: табы и оболочка; для **`resource_type=products`** при **`serverList=1`** (по умолчанию) список товаров выводится **на сервере** в чанке (**pdoPage** + **msProducts**); при **`serverList=0`** карточки дорисовывает **favorites.js** (до 100 позиций на вкладку). Для других типов ресурсов список по-прежнему через `JS` после `sync`. Отдельная серверная пагинация — цепочка `ms3FavoritesIds` → `pdoPage` → `ms3Favorites` (или `msProducts`)
 - **Интеграция с корзиной** — «Добавить все в корзину», «Добавить выбранные»
 - **Популярность** — «У N пользователей в избранном»
 - **Типы ресурсов** — `products`, `resources`, `articles`, `pages`, `custom`
 - **Локализация** — MODX Lexicon (ru, en), на фронте — сниппет `ms3fLexiconScript`
 - **Кастомизация** — Fenom-чанки, BEM-классы (префикс `ms3f`), CSS-переменные
 - **Каталог** — чанк `tplCatalogRowMs3f` для строки с кнопкой избранного при **pdoPage** + **msProducts** ([интеграция](integration#catalog-pdopage-row))
-- **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`, базовый URL в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`). Настройка `ms3favorites.use_minishop3_toast` удалена.
+- **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`, базовый URL в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`).
 
 ## Системные требования
 
@@ -58,7 +58,7 @@ ms3Favorites — компонент реализует функционал со
 ### Зависимости
 
 - **[MiniShop3](/components/minishop3/)** — товары и категории
-- **[pdoTools](/components/pdotools/) 3.0.0+** — для сниппетов (pdoPage, Fenom)
+- **[pdoTools](/components/pdotools/) 3.0.0+**
 
 ## Установка
 
@@ -85,6 +85,6 @@ ms3Favorites — компонент реализует функционал со
 | Термин | Описание |
 |--------|----------|
 | **Wishlist** | Список избранных товаров (по умолчанию — `default`) |
-| **Синхронизация** | Перенос списка из localStorage в БД при входе пользователя |
+| **Синхронизация** | Перенос списка из `localStorage` в БД при входе пользователя |
 | **Шаринг** | Публичная ссылка на список по токену |
 | **Популярность** | Количество пользователей, добавивших ресурс в избранное |

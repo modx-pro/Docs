@@ -26,16 +26,15 @@ title: ms3ProductSets
 | `resource_id` / `productId` | ID товара (контекстный ресурс) | текущий ресурс |
 | `category_id` | ID категории для авто-режима | `0` |
 | `set_id` | Номер VIP-набора (`vip_set_{set_id}`) | `0` |
-| `max_items` | Лимит товаров (1-100) | `ms3productsets.max_items` |
+| `max_items` | Лимит товаров (1–100) | `ms3productsets.max_items` |
 | `tpl` | Чанк карточки | `tplSetItem` |
-| `tplWrapper` | Чанк-обёртка блока | `tplSetWrapper` |
+| `tplWrapper` | Чанк-обёртка блока (`output`, `type`, `count`) | `''` (без обёртки; задайте имя чанка, например `tplSetWrapper`) |
 | `emptyTpl` | Чанк пустого результата | `tplSetEmpty` |
 | `hideIfEmpty` | `true`: вернуть пустую строку, `false`: вернуть `emptyTpl` | `true` |
 | `exclude_ids` | ID товаров для исключения | `''` |
 | `showUnpublished` | Проброс в `msProducts` | `false` |
 | `showHidden` | Проброс в `msProducts` | `false` |
 | `sortby` / `sortdir` | Сортировка вывода | порядок из подборки |
-| `showLog` | Проброс в `msProducts` | `false` |
 | `tvPrefix`, `includeTVs`, `includeThumbs` | Параметры pdoTools/msProducts | `''` |
 | `return` | Формат: `data`, `ids`, `json` | `data` |
 | `toPlaceholder` | Записать результат в плейсхолдер | `''` |

@@ -3,7 +3,7 @@ title: Quick start
 ---
 # Quick start
 
-Step-by-step setup of the wishlist on a MiniShop3 site, similar to [MyFavorites](https://docs.modx.pro/components/myfavorites): snippets for the button, counter, IDs, and list output without PHP in the template.
+Step-by-step integration of the wishlist with a MiniShop3 site.
 
 **Snippet names:** `ms3FavoritesBtn`, `ms3FavoritesCounter`, `ms3FavoritesIds`, `ms3FavoritesLists`.
 
@@ -170,13 +170,13 @@ Limit the counter to one `resource_type` (e.g. only products): `<span data-favor
 
 Total across all lists: `&list=all` / `['list' => 'all']`.
 
-The value is set on load (1–99 or 99+); the element is hidden when zero.
+After load the script sets the counter to a number from 1 to 99, or to `99+` when there are more items. When the total is zero the element stays hidden.
 
 ## Step 4: Wishlist block
 
 **Client-side render (JS):**
 
-Use class `ms3f__list` for flex layout and horizontal scroll on small screens. The container is filled from localStorage/cookie via the connector:
+Use class `ms3f__list` for flex layout and horizontal scroll on small screens. The container is filled from **localStorage/cookie** via the connector:
 
 ```html
 <div id="wishlist-list" class="ms3f__list"></div>
@@ -228,7 +228,7 @@ Get favorite IDs into a placeholder — snippet [ms3FavoritesIds](snippets/ms3Fa
 
 ### List of named lists (tabs / menu)
 
-Like [MyFavorites.lists](https://docs.modx.pro/components/myfavorites): snippet [ms3FavoritesLists](snippets/ms3FavoritesLists) outputs the user’s lists with counts. Links use [System setting](settings) `ms3favorites.list_page` (default `wishlist/`).
+Snippet [ms3FavoritesLists](snippets/ms3FavoritesLists) outputs the user’s lists with counts. Links use [System setting](settings) `ms3favorites.list_page` (default `wishlist/`).
 
 ::: code-group
 ```modx
@@ -243,7 +243,7 @@ Without `tplWrapper` you get only rows from `tplMs3fListsRow`.
 
 ### Custom paginated favorites (pdoPage + msProducts)
 
-Use this on a **separate** resource if you need server-side pagination — **not** the default `/wishlist/` output from `ms3FavoritesPage` (that page uses JS `render()` only). Flow: IDs → empty check → paged output and “Clear list”:
+Use this on a **separate** resource if you need a **custom** paginated layout. On `/wishlist/`, **`ms3FavoritesPage`** already uses **pdoPage** + **msProducts** when **`serverList=1`** (default) and **`resource_type=products`**. Flow: IDs → empty check → paged output and “Clear list”:
 
 ::: code-group
 ```modx
@@ -281,11 +281,9 @@ Use this on a **separate** resource if you need server-side pagination — **not
 ```
 :::
 
-If `ms3favorites_clear_list` is missing in lexicon, use plain text or add the key.
-
 ### Catalog: pdoPage + msProducts, counter and row button
 
-**Not** the favorites page: a normal **catalog** with pagination, favorites button per row (list `default`), counter on top. Package chunk **`tplCatalogRowMs3f`**; full notes and AJAX — [Integration](integration#catalog-pdopage-row).
+**Not** the favorites page: a normal **catalog** with pagination. Each row uses list `default` and includes the favorites control; the counter sits above the listing. Use package chunk **`tplCatalogRowMs3f`**. Full notes and AJAX — [Integration](integration#catalog-pdopage-row).
 
 ::: code-group
 ```modx
@@ -315,9 +313,54 @@ If `ms3favorites_clear_list` is missing in lexicon, use plain text or add the ke
 ```
 :::
 
+### Pagination: pdoPage + ms3Favorites
+
+Same **ms3FavoritesIds** flow, but **pdoPage** wraps snippet **ms3Favorites** instead of **msProducts**. Parameters **`page`**, **`offset`**, **`totalVar`** on **ms3Favorites** work with **pdoPage**. Details — [Integration](integration).
+
+::: code-group
+```modx
+[[!ms3FavoritesIds? &toPlaceholder=`myf.ids` &list=`default`]]
+[[!+myf.ids:is=`-0`:then=`
+  <p>[[%ms3favorites_empty]]</p>
+`:else=`
+  [[!pdoPage?
+    &element=`ms3Favorites`
+    &ids=`[[!+myf.ids]]`
+    &list=`default`
+    &limit=`12`
+    &tpl=`tplFavoritesItem`
+    &emptyTpl=`tplFavoritesEmpty`
+    &totalVar=`page.total`
+    &pageNavVar=`page.nav`
+  ]]
+  [[!+page.nav]]
+`]]
+```
+
+```fenom
+{'!ms3FavoritesIds' | snippet : ['toPlaceholder' => 'myf.ids', 'list' => 'default']}
+{set $idsStr = $_modx->getPlaceholder('myf.ids')}
+{if $idsStr == '-0'}
+  <p>{'ms3favorites_empty' | lexicon}</p>
+{else}
+  {'!pdoPage' | snippet : [
+    'element' => 'ms3Favorites',
+    'ids' => $idsStr,
+    'list' => 'default',
+    'limit' => 12,
+    'tpl' => 'tplFavoritesItem',
+    'emptyTpl' => 'tplFavoritesEmpty',
+    'totalVar' => 'page.total',
+    'pageNavVar' => 'page.nav'
+  ]}
+  {$_modx->getPlaceholder('page.nav')}
+{/if}
+```
+:::
+
 ## Step 5: /wishlist/ page
 
-Create a resource with alias `wishlist`, a template that loads ms3fLexiconScript, favorites.css and favorites.js. In the content:
+Create a resource with alias `wishlist`, a template that loads `ms3fLexiconScript`, `favorites.css`, and `favorites.js`. In the content:
 
 ::: code-group
 ```modx
@@ -330,7 +373,9 @@ Create a resource with alias `wishlist`, a template that loads ms3fLexiconScript
 
 :::
 
-**Pagination:** `ms3FavoritesPage` has **no** embedded pdoPage — cards on `/wishlist/` are always filled by `favorites.js`. For a **separate** paginated favorites view, use **ms3FavoritesIds → pdoPage → ms3Favorites** (or `msProducts`) — see [Integration](integration).
+**Default behavior:** with **`resource_type=products`** and **`serverList=1`** (default), product cards on `/wishlist/` are rendered **server-side** in the chunk (**pdoPage** + **msProducts**). With **`serverList=0`**, **`favorites.js`** fills the list (up to 100 items per tab). For other resource types the list is always **JS** after sync. See [Integration](integration#wishlist-serverlist) and [ms3FavoritesPage](snippets/ms3FavoritesPage).
+
+For a **separate** paginated favorites page (custom template), use **ms3FavoritesIds → pdoPage → ms3Favorites** (or `msProducts`) — examples above and in [Integration](integration).
 
 **Extended toolbar** (Catalog / Clear list / Share): pass `extendedToolbar` or use chunk alias `tplFavoritesPageDemo` — see [ms3FavoritesPage](snippets/ms3FavoritesPage).
 

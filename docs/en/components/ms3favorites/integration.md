@@ -35,7 +35,17 @@ By default MiniShop3 products are used (`resource_type=products`). Also supporte
 ```
 :::
 
-## Remove mode mode="list"
+## /wishlist/ page and `serverList` {#wishlist-serverlist}
+
+[ms3FavoritesPage](snippets/ms3FavoritesPage) controls how **products** are rendered on the wishlist page:
+
+- **`resource_type=products`**, **`serverList=1`** (default) — cards are built **server-side** in chunk **tplFavoritesPage**: **pdoPage** + **msProducts**, `FIELD(msProduct.id,…)` sort, `ms3f.page.*` pagination placeholders. **`favorites.js` does not `render`** that list; after sync only tab counters refresh.
+- **`serverList=0`** and products — **JS** fills the list (`render`, up to 100 items per tab, no in-chunk server paging).
+- **`resource_type` ≠ products** — list still comes from **JS** after sync; **serverList** does not enable SSR.
+
+A separate custom paginated page — still **ms3FavoritesIds → pdoPage → ms3Favorites** (or `msProducts`), see below and [Quick start](quick-start).
+
+## `data-favorites-mode="list"` (hide whole card)
 
 For a catalog where removing from favorites should hide the whole product card:
 
@@ -176,7 +186,7 @@ Use [ms3FavoritesCounter](snippets/ms3FavoritesCounter) with `&list` and `&resou
 ```
 :::
 
-In **MODX** without Fenom in the row chunk, use `@INLINE` with `ms3FavoritesBtn` — see the component repo **docs/QUICK-START.md**.
+In **MODX** without Fenom in the row chunk, use `@INLINE` with `ms3FavoritesBtn` — see [Quick start](quick-start) (catalog) and the package **docs/INTEGRATION.md** in the ms3Favorites repo.
 
 ::: tip AJAX pagination (ajaxMode)
 After the next catalog page loads, call **`window.ms3Favorites.updateButtonStates()`** from your pdoPage callback (depends on pdoTools version) or disable AJAX and use full page reloads.
@@ -269,7 +279,7 @@ For server-side HTML from **ms3Favorites** (not msProducts), wrap it in [pdoPage
 
 ## ms3FavoritesLists — parameters
 
-Snippet [ms3FavoritesLists](snippets/ms3FavoritesLists) outputs the current user’s named lists with counts (like MyFavorites.lists). For guests with an empty DB row set, cookie `ms3_favorites` is used when storage is **cookie**.
+Snippet [ms3FavoritesLists](snippets/ms3FavoritesLists) outputs the current user’s named lists with counts. For guests with an empty DB row set, cookie `ms3_favorites` is used when storage is **cookie**.
 
 | Property | Description | Default |
 |----------|-------------|---------|
@@ -345,11 +355,11 @@ Share URL: `/wishlist/share?token=xxx`
 **Connector API:**
 - `create_share` — POST list=default → `{ success, token }` (logged-in only)
 - `get_share` — POST token=xxx → `{ success, ids, list_name }`
-- `copy_share` — POST token=xxx, target_list=default → `{ success, ids }` (guests get ids for localStorage)
+- **`copy_share`** — POST **`token=xxx`**, **`target_list=default`** → **`{ success, ids }`**. **Guests** receive **`ids`** for **localStorage**.
 
 ## Cart integration
 
-On /wishlist/ (**chunk `tplFavoritesPage`**): cards are loaded by **`favorites.js`** (`render()` into the page container). The following controls are available once items are shown:
+On /wishlist/ (**chunk `tplFavoritesPage`**): with **`resource_type=products`** and **`serverList=1`** (default), products are **server-rendered**; with **`serverList=0`** or another resource type, cards are loaded by **`favorites.js`** (`render()`). The following controls are available once items are shown:
 
 - **Add all to cart** — `[data-favorites-add-all]`, adds all items in the current list
 - **Add selected** — `[data-favorites-add-selected]`, adds only checked items
@@ -369,18 +379,27 @@ ms3Favorites.addSelectedToCart();   // Add selected (by checkbox)
 
 ## Callbacks and events
 
+From `assets/components/ms3favorites/js/favorites.js`: events fire on **`document`**.
+
 **DOM events:**
 
+| Event | When | `e.detail` |
+|-------|------|------------|
+| **`ms3f:added`** | after `add()` | `id`, `list`, `resourceType`, `countInList`, `totalByType`, `totalAllTypes` |
+| **`ms3f:removed`** | after `remove()` | same shape |
+| **`ms3f:listCleared`** | after `clearList()` | `list`, `resourceType`, `ids` (removed id array), `countInList`, `totalByType`, `totalAllTypes` |
+| **`ms3f:synced`** | after `flushToServer()` or initial page-load `sync()` completes | none (`CustomEvent` without `detail`) |
+
 ```javascript
-document.addEventListener('ms3f:added', function(e) {
-  console.log('Added:', e.detail.id, e.detail.list);
+document.addEventListener('ms3f:added', (e) => {
+  console.log(e.detail.id, e.detail.list, e.detail.resourceType);
 });
-document.addEventListener('ms3f:removed', function(e) {
-  console.log('Removed:', e.detail.id, e.detail.list);
+document.addEventListener('ms3f:synced', () => {
+  // synced with server
 });
 ```
 
-**Callback via ms3fConfig** (set before loading favorites.js):
+**`window.ms3fConfig` callbacks** (set before loading favorites.js):
 
 ```javascript
 window.ms3fConfig = window.ms3fConfig || {};
@@ -390,10 +409,9 @@ window.ms3fConfig.notify = function (variant, text) {
   return false; // return true to skip ms3Message and iziToast
 };
 window.ms3fConfig.showToast = false;  // disable built-in toast chain entirely
-window.ms3fConfig.debug = true;       // console logs with prefix [ms3Favorites]
 ```
 
-With `debug: true` you will see sync, render, and connector steps — useful if the wishlist page stays empty (check for **page init** / **render** vs only **DOMContentLoaded**).
+There is **no** `ms3fConfig.debug` flag in the script. Use the **Network** tab (`connector.php`) and **`console.warn`** lines prefixed **`[ms3Favorites]`** when iziToast fails to load or run.
 
 ## Notifications (iziToast, MiniShop3, custom)
 
@@ -405,8 +423,6 @@ Toast flow (after add/remove):
 4. Else **one-time** load of `iziToast.min.css` / `.js` from `ms3fConfig.iziToastBaseUrl` (default `assets/components/ms3favorites/vendor/izitoast/`).
 
 `ms3fLexiconScript` merges into existing `window.ms3fConfig` with `Object.assign`, so you can define `notify` **before** the snippet output, or in an inline script **after** the snippet but **before** `favorites.js`.
-
-The legacy `ms3favorites.use_minishop3_toast` setting is not used by the package.
 
 | `notify` argument | Meaning |
 |-------------------|---------|
@@ -475,4 +491,4 @@ Snippet [ms3FavoritesPopularity](snippets/ms3FavoritesPopularity) or connector a
 | Removed on /wishlist/ but still in DB | Old merge overwrote empty local with server | Current builds use **authoritative** sync + **`flushToServer()`** on explicit add/remove/clear; first page load still merges without authoritative (new device) |
 | No toasts | Chain failed | Console: `[ms3Favorites] Toast`; set `iziToastBaseUrl` or preload iziToast / MS3 |
 | Share not working | Guest / not logged in | `create_share` needs a logged-in user |
-| Debug | Verbose logs | `window.ms3fConfig = { debug: true }` before `favorites.js` |
+| Need deeper debugging | No built-in `debug` flag | Network: `connector.php`; `console.warn` with `[ms3Favorites]` on iziToast issues |

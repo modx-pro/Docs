@@ -3,63 +3,66 @@ title: Flows
 ---
 # Flows
 
-## 1. Set block render on frontend
+## 1. Render a set block on the frontend
 
-1. Template calls `[[!ms3ProductSets? ... ]]`.
-2. Snippet validates parameters (`type`, `limit`, `resource_id`).
-3. Gets product IDs via `msps_get_products_by_type` (respects `cache_lifetime` — cache key type+params — and `auto_recommendation`).
-4. If result is empty: returns `''` or `emptyTpl`.
-5. If IDs exist: with `return=ids` returns CSV IDs; otherwise calls `msProducts` and renders cards.
-6. With `tplWrapper` wraps final HTML.
-7. With `toPlaceholder` stores result in placeholder.
+1. Template calls the snippet: **MODX** — `[[!ms3ProductSets? ... ]]`, **Fenom** — `{'ms3ProductSets' | snippet : [ ... ]}`.
+2. Snippet validates and normalizes parameters (`type`, `max_items`, `resource_id`, `category_id`, …).
+3. Product IDs come from `msps_get_products_by_type`.
+4. If the result is empty:
+   - returns `''` or `emptyTpl`.
+5. If IDs exist:
+   - with `return=ids` returns CSV of IDs;
+   - else calls `msProducts` and renders cards.
+6. With `tplWrapper`, wraps the final HTML.
+7. With `toPlaceholder`, stores output in a placeholder.
 
 ## 2. AJAX render via JS API
 
 1. `window.ms3ProductSets.render('#selector', options)`.
-2. JS sends POST `action=get_set` to `connector.php`.
-3. Connector runs snippet `ms3ProductSets` with POST params (same `cache_lifetime` and `auto_recommendation`).
-4. HTML is inserted into container; empty response hides container.
+2. JS POSTs `action=get_set` to `connector.php`.
+3. Connector runs snippet `ms3ProductSets` with POST params.
+4. HTML is injected into the container; empty response hides the container.
 
-## 3. Add to cart from set card
+## 3. Add to cart from a set card
 
-1. Click on element with `data-add-to-cart`.
-2. JS sends POST `action=add_to_cart` with `product_id`, `count`.
-3. Connector calls `msCartAdd` (if miniShop3 available).
+1. Click on an element with `data-add-to-cart`.
+2. JS POSTs `action=add_to_cart` with `product_id`, `count`.
+3. Connector calls `msCartAdd` (if miniShop3 is available).
 4. Returns JSON `{success,message}`.
-5. JS shows toast and dispatches `msps:cart:update` on success.
+5. JS shows a toast and dispatches `msps:cart:update` on success.
 
-## 4. Create set template (admin)
+## 4. Create a set template (manager)
 
 1. UI sends `save_template`.
 2. Connector validates `name` and `related_product_ids`.
-3. `msps_save_template` does INSERT/UPDATE in `ms3_product_set_templates`.
-4. UI refreshes template list.
+3. `msps_save_template` INSERT/UPDATE in `ms3_product_set_templates`.
+4. UI refreshes the template list.
 
-## 5. Apply template to category
+## 5. Apply template to a category
 
 1. UI sends `apply_template` (`template_id`, `parent_id/parent_ids`, `replace`).
-2. Category is recursively expanded to all `msProduct`.
+2. Category expands recursively to all `msProduct` resources.
 3. For each product, links are created in `ms3_product_sets`.
 4. UI receives `applied` (number of inserted links).
 
-## 6. Unbind template from category
+## 6. Unbind template from a category
 
 1. UI sends `unbind_template`.
-2. Connector gets template `type` and `name`.
-3. Deletes only records matching `type + template_name`.
-4. TV links and other templates are left unchanged.
+2. Connector resolves template `type` and `name`.
+3. Deletes only rows matching `type + template_name`.
+4. TV links and other templates are untouched.
 
-## 7. Add whole set to cart
+## 7. Add entire set to cart
 
-1. Click button with `data-add-set` (in tplSetVIP or tplSetWrapper).
-2. JS finds container from button (`.msps__vip-set`, `.msps__wrapper` or `[data-set-type]`).
+1. Click a button with `data-add-set` (in tplSetVIP or tplSetWrapper).
+2. JS finds the container from the button (`.msps__vip-set`, `.msps__wrapper` or `[data-set-type]`).
 3. Collects product IDs from `[data-product-id]` and `[data-add-to-cart]`.
-4. Calls `addToCart(productId, 1)` for each ID in sequence.
-5. Shows toast `set_added` and dispatches `msps:cart:update` with `detail: { product_ids }`.
+4. Calls `addToCart(productId, 1)` for each ID in order.
+5. Shows toast `set_added` and dispatches `msps:cart:update` with `product_ids`.
 
-## 8. TV sync on product save
+## 8. TV sync when saving a product
 
 1. Plugin `OnDocFormSave` runs.
-2. If product template has set TVs, sync runs.
-3. **When TV has value:** all records of that type for the product are removed, new links from TV value are inserted.
-4. **When TV is empty:** only records **without** `template_name` (from TV) are removed; template links (with `template_name`) are kept.
+2. If the product template has set TVs, sync runs.
+3. **Empty TV:** only rows without `template_name` (from TV) are removed; template-based links keep `template_name`.
+4. **Non-empty TV:** all rows of that type for the product are removed, new links are inserted from the TV value.
