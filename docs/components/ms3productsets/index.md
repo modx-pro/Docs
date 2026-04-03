@@ -51,7 +51,7 @@ ms3ProductSets — компонент для [MiniShop3](/components/minishop3/)
 - **Вывод на сайте** — сниппет **`ms3ProductSets`**, опционально AJAX через коннектор **`get_set`** и **`window.ms3ProductSets.render()`** ([API](api), [интеграция](integration))
 - **Кеш** — TTL задаётся **`ms3productsets.cache_lifetime`**; при **`0`** кеш отключён ([системные настройки](settings))
 - **Корзина** — кнопки с **`data-add-to-cart`**, «добавить весь набор» (**`data-add-set`**) через **`productsets.js`** и коннектор **`add_to_cart`**
-- **Админка** — раздел **Компоненты → Подборки товаров** (VueTools + PrimeVue): шаблоны, применение к категориям, отвязка ([админка](admin), [интерфейс](interface))
+- **Админка** — раздел **Компоненты → Подборки товаров** (VueTools + PrimeVue): шаблоны, применение к категориям, отвязка ([админка](admin), [интерфейс](interface/))
 - **Плагины** — синхронизация TV в БД при сохранении товара, очистка связей при удалении ресурса ([архитектура](architecture))
 - **Локализация** — лексикон компонента, на фронте — сниппет **`mspsLexiconScript`** (`window.mspsLexicon`, `window.mspsConfig`)
 
