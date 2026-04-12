@@ -153,10 +153,13 @@ seo_max_filters = 3             → noindex если активно больше
     "[[+jsUrl]]web/modules/hooks.js",
     "[[+jsUrl]]web/mfilter.headless.js",
     "[[+jsUrl]]web/ui/FilterUI.js",
+    "[[+jsUrl]]web/ui/SelectedFilters.js",
     "[[+jsUrl]]web/mfilter.slider.js",
     "[[+jsUrl]]web/mfilter.js"
 ]
 ```
+
+При обновлении пакета список обновляется автоматически, если в нём нет сторонних файлов. Если вы добавляли свои файлы — обновите список вручную или перенесите кастомные подключения в плагин.
 
 ### Отключение автоподключения
 

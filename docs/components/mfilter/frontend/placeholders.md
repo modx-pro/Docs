@@ -140,6 +140,18 @@
 
 ## Плейсхолдеры результатов (mFilter)
 
+### tplOuter
+
+| Переменная | Описание |
+|------------|----------|
+| `{$rows}` | HTML всех товаров/ресурсов |
+| `{$pagination}` | HTML пагинации |
+| `{$total}` | Количество результатов |
+| `{$page}` | Текущая страница |
+| `{$pageCount}` | Всего страниц |
+| `{$limit}` | Элементов на странице |
+| `{$hash}` | Хэш конфигурации |
+
 ### Глобальные (устанавливаются в MODX)
 
 ```html
@@ -188,7 +200,8 @@ const config = JSON.parse(
 
 ```javascript
 // После инициализации
-const total = window.mFilter?.getInstance()?.getState().total;
+const instance = window.MFilterUI.get('mfilter-form');
+const total = instance?.state.total;
 ```
 
 ## Примеры

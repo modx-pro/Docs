@@ -8,6 +8,7 @@
 |--------|----------|
 | [Шаблоны](templates) | Чанки и разметка |
 | [Плейсхолдеры](placeholders) | Переменные для шаблонов |
+| [Пагинация](pagination) | Режимы, шаблоны, кнопка "Показать ещё" |
 
 ## Обзор
 
@@ -94,6 +95,7 @@ mFilter использует Fenom для шаблонизации. Основн
 | Атрибут | Элемент | Описание |
 |---------|---------|----------|
 | `data-mfilter-pagination` | div | Контейнер пагинации |
+| `data-mfilter-pagination-mode` | form | Режим пагинации: `links` (по умолчанию), `loadmore`, `infinite` |
 | `data-mfilter-total` | span | Количество результатов |
 | `data-mfilter-filter` | fieldset | Блок фильтра |
 | `data-mfilter-key` | input | Ключ фильтра |
@@ -117,7 +119,83 @@ mFilter использует Fenom для шаблонизации. Основн
 | `mfilter-value` | Значение фильтра |
 | `mfilter-value--selected` | Выбранное значение |
 | `mfilter-value--disabled` | Недоступное значение |
+| `mfilter-item-empty` | Значение с count=0 |
 | `mfilter-count` | Счётчик товаров |
+
+## Suggestions (подсказки)
+
+После применения фильтра сервер возвращает `suggestions` — количество товаров для каждого значения фильтра. На основе этих данных JS обновляет UI:
+
+### Checkbox/radio
+
+- Элемент `.mfilter-count` обновляется числом
+- Контейнер `.mfilter-item` получает класс `mfilter-item-empty` при count=0
+
+### Select
+
+- `<option>` с count=0 получают атрибут `disabled` (серые, нельзя выбрать)
+- `<option>` с count>0 — `disabled` снимается
+- Пустой `<option value="">` (placeholder) не блокируется
+
+### Range (числовые)
+
+- Обновляются доступные min/max через `data-available-min`, `data-available-max`
+- Слайдер (если есть) обновляет диапазон
+
+## JS API
+
+### Глобальный объект
+
+```javascript
+// Получить экземпляр фильтра
+const instance = window.MFilterUI.get('mfilter-form');
+
+// Состояние
+instance.state.filters   // активные фильтры
+instance.state.page      // текущая страница
+instance.state.pageCount // всего страниц
+instance.state.total     // всего результатов
+instance.state.sort      // текущая сортировка
+instance.state.limit     // лимит на странице
+```
+
+### События
+
+```javascript
+document.addEventListener('mfilter:ui:ready', function(e) {
+    const instance = e.detail.instances.values().next().value;
+
+    instance.on('success', function(data) {
+        console.log('Фильтр применён', data.response);
+    });
+
+    instance.on('change', function(data) {
+        console.log('Поле изменено', data.field);
+    });
+});
+```
+
+| Событие | Описание |
+|---------|----------|
+| `init` | Экземпляр инициализирован |
+| `change` | Изменено поле формы |
+| `beforeSubmit` | Перед отправкой запроса (можно отменить через `cancel: true`) |
+| `success` | Ответ получен. `data.append = true` — для loadMore |
+| `error` | Ошибка запроса |
+| `afterSubmit` | После завершения запроса (всегда) |
+| `seoUpdate` | SEO-данные обновлены |
+
+### Методы
+
+```javascript
+instance.submit()                    // Применить фильтры
+instance.reset()                     // Сбросить всё
+instance.loadMore()                  // Загрузить следующую страницу
+instance.setFilter('color', ['red']) // Установить фильтр
+instance.removeFilter('color')       // Убрать фильтр
+instance.goToPage(3)                 // Перейти на страницу
+instance.syncFormWithState()         // Синхронизировать форму с state
+```
 
 ## Шаблоны по умолчанию
 
