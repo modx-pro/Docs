@@ -38,6 +38,7 @@ items: [
     items: [
       { text: 'Шаблоны', link: 'frontend/templates' },
       { text: 'Плейсхолдеры', link: 'frontend/placeholders' },
+      { text: 'Пагинация', link: 'frontend/pagination' },
     ],
   },
   {
