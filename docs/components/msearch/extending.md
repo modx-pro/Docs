@@ -422,6 +422,7 @@ $msearch = $modx->services->get('msearch');
 $results = $msearch->search('купить смартфон', [
     'limit' => 20,
     'offset' => 0,
+    'contexts' => ['web'],  // фильтрация по контекстам (опционально)
 ]);
 
 $results->getTotal();      // общее количество

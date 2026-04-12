@@ -21,6 +21,8 @@
 | `[[+query]]` | Текущий поисковый запрос (экранированный) |
 | `[[+action]]` | URL страницы для отправки формы |
 | `[[+autocomplete]]` | `true` или `false` — включено ли автодополнение |
+| `[[+ctx]]` | Ключ текущего контекста MODX |
+| `[[+connectorUrl]]` | URL публичного API (`api.php`) |
 
 ## Примеры
 
@@ -68,33 +70,46 @@
 Чанк `mSearch.form`:
 
 ```fenom
-<form action="{$action}" method="get" class="msearch-form" data-autocomplete="{$autocomplete}">
-    <input type="text" name="mse_query" value="{$query}" placeholder="{'mse_search_placeholder' | lexicon}" />
-    <button type="submit">{'mse_search_button' | lexicon}</button>
+<form action="{$action}" method="get" class="mse-form" data-msearch-form
+      data-ctx="{$ctx}"
+      data-connector-url="{$connectorUrl}"
+      data-autocomplete="{$autocomplete}">
+    <input type="text" name="mse_query" value="{$query}" placeholder="{'mse_search_placeholder' | lexicon}" class="mse-input" autocomplete="off">
+    <button type="submit" class="mse-button">{'mse_search_button' | lexicon}</button>
 </form>
 ```
 
+Атрибут `data-msearch-form` — маркер для автоматической инициализации JavaScript UI.
+
 ## Автодополнение
 
-При включённом параметре `autocomplete` сниппет регистрирует JavaScript файл, который добавляет функционал подсказок при вводе.
+При включённом параметре `autocomplete` сниппет регистрирует набор JavaScript файлов слоёной архитектуры:
+
+1. `core/ApiClient.js` — HTTP-клиент
+2. `core/SearchAPI.js` — фасад поискового API
+3. `modules/hooks.js` — система хуков
+4. `msearch.headless.js` — headless точка входа (`window.msearch`)
+5. `ui/SearchUI.js` — UI-слой с автокомплитом
+6. `msearch.js` — автоинициализация по `[data-msearch-form]`
+
+Также в страницу добавляется inline-скрипт с конфигурацией `window.msearchConfig`, содержащей URL API и ключ контекста.
 
 ### Принцип работы
 
-1. Пользователь начинает вводить запрос
-2. JavaScript отправляет AJAX-запрос на сервер
-3. Сервер ищет совпадения в истории запросов
-4. Пользователю показывается список подсказок
+1. Пользователь начинает вводить запрос (минимум 2 символа)
+2. JavaScript отправляет запрос на `api.php?route=/search/suggest`
+3. Сервер выполняет поиск с морфологическим анализом
+4. Пользователю показывается dropdown со ссылками на ресурсы
 
 ### Настройка стилей
 
-Скрипты и стили указываются в системных настройках:
+CSS указывается в системной настройке:
 
 | Настройка | По умолчанию | Описание |
 |-----------|--------------|----------|
 | `mse_frontend_css` | `[[++assets_url]]components/msearch/css/web/msearch.css` | CSS файл |
-| `mse_frontend_js` | `[[++assets_url]]components/msearch/js/web/msearch.js` | JavaScript файл |
 
-Если вы хотите изменить стили или скрипты, скопируйте файлы в другое место и укажите новые пути в настройках — это защитит изменения при обновлении.
+Если вы хотите изменить стили, скопируйте файл в другое место и укажите новый путь в настройке — это защитит изменения при обновлении.
 
 ## Кастомизация формы
 
@@ -169,6 +184,6 @@
 | Переменная запроса | Настраиваемая (`queryVar`) | Фиксированная `mse_query` |
 | Вызов сниппета | `element` параметр | Не поддерживается |
 
-::: tip Упрощённая архитектура
-mSearch использует упрощённый подход к автодополнению — подсказки берутся только из истории запросов. Для более сложных сценариев используйте AJAX с вызовом сниппета mSearch.
+::: tip Headless-режим
+Для интеграции с React, Vue или кастомным фронтендом можно использовать headless-режим без UI-слоя. Подробнее см. [JavaScript API](/components/msearch/javascript-api).
 :::

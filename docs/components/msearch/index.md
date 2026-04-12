@@ -23,6 +23,7 @@ items: [
       { text: 'Словари', link: 'interface/dictionaries' },
     ],
   },
+  { text: 'JavaScript API', link: 'javascript-api' },
   { text: 'Расширение компонента', link: 'extending' },
 ]
 ---
@@ -40,6 +41,10 @@ items: [
 - **Отложенная индексация** — фоновая индексация через [Scheduler](/components/scheduler/)
 - **Vue-интерфейс** — современная админ-панель на Vue 3 + PrimeVue
 - **Автодополнение** — подсказки при вводе запроса
+- **Публичный API** — REST endpoint для AJAX-поиска и интеграций
+- **Headless-режим** — JavaScript API (`window.msearch`) для React/Vue/кастомных решений
+- **Система хуков** — расширение поведения поиска через `msearchHooks`
+- **Мульти-контекст** — фильтрация результатов по контекстам MODX
 
 ## Системные требования
 
@@ -128,6 +133,7 @@ mse_index_fields = pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 |-----------|--------------|----------|
 | `mse_frontend_css` | `[[++assets_url]]components/msearch/css/web/msearch.css` | URL CSS файла |
 | `mse_frontend_js` | `[[++assets_url]]components/msearch/js/web/msearch.js` | URL JS файла |
+| `mse_cors_origin` | *(пусто)* | Разрешённый Origin для CORS на публичном API. Если пусто — разрешены only same-origin запросы |
 
 ## Плейсхолдеры
 
