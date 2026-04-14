@@ -126,6 +126,15 @@ title: msCart
         'cost' => 7500,                  // Общая стоимость
         'discount' => 0,                 // Сумма скидок
         'positions' => 3,                // Количество позиций
+        'cost_formatted' => '7 500 ₽',  // Стоимость с валютой
+        'weight_formatted' => '2.5 кг',  // Вес с единицей
+    ],
+    'status' => [
+        'total_count' => 5,              // Количество из Cart::get()
+        'total_cost' => 7500,            // Стоимость из Cart::get()
+        'total_weight' => 2500,          // Вес из Cart::get()
+        'total_discount' => 0,           // Скидка из Cart::get()
+        'total_positions' => 3,          // Позиции из Cart::get()
     ],
 ]
 ```
@@ -171,6 +180,22 @@ title: msCart
 - `{$total.weight}` — Общий вес
 - `{$total.cost}` — Общая стоимость
 - `{$total.discount}` — Сумма скидок
+- `{$total.cost_formatted}` — Стоимость с символом валюты
+- `{$total.weight_formatted}` — Вес с единицей измерения
+
+::: tip Синхронизация с плагинами
+Если плагин на событие `msOnGetStatusCart` изменяет агрегаты в `status` (например, пересчитывает скидку или добавляет стоимость доставки), сниппет автоматически синхронизирует `total` с данными `status`. Поля `total.cost`, `total.count`, `total.weight`, `total.discount`, `total.positions` будут соответствовать значениям из `status`, а не простой сумме по строкам корзины.
+:::
+
+### Статус корзины
+
+Начиная с **v1.9.0**, в чанке и при `return=data` доступен массив `status` — данные из `Cart::get()` после обработки плагинами:
+
+- `{$status.total_cost}` — Итоговая стоимость (с учётом плагинов)
+- `{$status.total_count}` — Количество товаров
+- `{$status.total_weight}` — Общий вес
+- `{$status.total_discount}` — Сумма скидок
+- `{$status.total_positions}` — Количество позиций
 
 ## Пример чанка
 

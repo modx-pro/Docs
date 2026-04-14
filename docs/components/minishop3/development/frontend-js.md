@@ -556,6 +556,26 @@ class CartUI {
     setTimeout(() => this.init(), 100)
   }
 
+  // Очистка корзины
+  async handleClean() {
+    const hookData = {}
+    await this.hooks.runHooks('beforeCleanCart', hookData)
+
+    if (hookData.cancel) return
+
+    const renderTokens = this.getRenderTokens()
+    const response = await this.cart.clean(renderTokens)
+
+    await this.hooks.runHooks('afterCleanCart', { response })
+
+    if (response.success) {
+      if (response.data?.render) {
+        this.renderCart(response.data.render)
+      }
+      this.dispatchCartUpdated(response.data)
+    }
+  }
+
   // Событие обновления корзины
   dispatchCartUpdated(data) {
     document.dispatchEvent(new CustomEvent('ms3:cart:updated', {
@@ -564,6 +584,34 @@ class CartUI {
   }
 }
 ```
+
+::: tip Очистка корзины из внешнего скрипта
+При вызове `cartAPI.clean()` напрямую — выполняется только API-запрос без рендеринга и без события `ms3:cart:updated`. Для полного обновления интерфейса (мини-корзина, счётчики, карточки товаров) используйте `cartUI.handleClean()`:
+
+```javascript
+// ❌ Неправильно — API-вызов без обновления UI
+await ms3.cartAPI.clean()
+
+// ✅ Правильно — полный цикл: API + рендеринг + событие
+await ms3.cartUI.handleClean()
+```
+
+**Пример: очистка корзины после успешной отправки формы (FetchIt):**
+
+```javascript
+document.addEventListener('fetchit:success', async (e) => {
+    const { form, response } = e.detail
+    if (!form || form.id !== 'cart-modal-form') return
+    if (!response?.success || !ms3) return
+
+    try {
+        await ms3.cartUI.handleClean()
+    } catch (err) {
+        console.error('Cart clean error:', err)
+    }
+})
+```
+:::
 
 ### OrderUI
 
