@@ -232,6 +232,10 @@ await ms3.cartAPI.remove('ms5d41d8cd98f00b204e9800998ecf8427e')
 await ms3.cartAPI.clean()
 ```
 
+::: warning Только API-вызов
+`cartAPI.clean()` — это headless метод, он только отправляет запрос к серверу. Мини-корзина, счётчики и карточки товаров **не обновятся** автоматически. Для полного обновления UI используйте `ms3.cartUI.handleClean()` — он вызовет API, отрендерит HTML и выбросит событие `ms3:cart:updated`. Подробнее — в разделе [Frontend JavaScript](frontend-js#cartui).
+:::
+
 ## OrderAPI
 
 API для работы с заказом.
