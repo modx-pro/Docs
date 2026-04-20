@@ -7,8 +7,8 @@ title: FAQ и траблшутинг
 
 ## Методы доставки не появляются
 
-1. Заполнены **`msrussianpost2_sender_index`** и **`msrussianpost2_object_codes`**.
-2. На странице заказа порядок вывода: **`msrpLexiconScript`** → **`msRussianPost2`** → чанки статуса и методов (сниппеты **некэшированные**: Fenom `{'…' | snippet}`, теги `[[!…]]`).
+1. Заполнены **`msrussianpost_sender_index`** и **`msrussianpost_object_codes`**.
+2. На странице заказа порядок вывода: **`msrpLexiconScript`** → **`msRussianPost`** → чанки статуса и методов (сниппеты **некэшированные**: Fenom `{'…' | snippet}`, теги `[[!…]]`).
 3. Есть поле индекса получателя (**6 цифр**): `name="index"`, `data-msrp-index` или свой селектор в параметре сниппета.
 4. В консоли и во вкладке **Network** нет ошибок; запрос к `connector.php` возвращает JSON с **`success: true`**.
 
@@ -16,21 +16,21 @@ title: FAQ и траблшутинг
 
 ## В логе: `Failed to load delivery controller for delivery ID=…`
 
-У доставки в поле **class** должно быть полное имя **`msrussianpost2\Delivery\RussianPostDelivery`**. Класс должен наследовать контроллер доставки MiniShop3.
+У доставки в поле **class** должно быть полное имя **`msrussianpost\Delivery\RussianPostDelivery`**. Класс должен наследовать контроллер доставки MiniShop3.
 
-Включите плагин **msRussianPost2 Autoload** (`OnMODXInit`): он подгружает файл класса до обращения MS3. Если контроллер не загрузился, стоимость доставки может остаться **0**, а событие **`msOnGetDeliveryCost`** не вызовется — плагин **Delivery** в этом случае не сработает.
+Включите плагин **msRussianPost Autoload** (`OnMODXInit`): он подгружает файл класса до обращения MS3. Если контроллер не загрузился, стоимость доставки может остаться **0**, а событие **`msOnGetDeliveryCost`** не вызовется — плагин **Delivery** в этом случае не сработает.
 
 Подробнее — в [Интеграция → Плагины](integration#плагины).
 
 ## В менеджере MS3 не видно выбранного типа отправления
 
-Нужен плагин **msRussianPost2 Order tariff** (события **`msOnSubmitOrder`**, **`msOnBeforeCreateOrder`**, **`msOnCreateOrder`**): он переносит выбор из сессии (в т.ч. после `action=select_method` в коннекторе) в **`ms3_orders.properties`**. Убедитесь, что плагин **опубликован** и подписан на все три события после обновления пакета.
+Нужен плагин **msRussianPost Order tariff** (события **`msOnSubmitOrder`**, **`msOnBeforeCreateOrder`**, **`msOnCreateOrder`**): он переносит выбор из сессии (в т.ч. после `action=select_method` в коннекторе) в **`ms3_orders.properties`**. Убедитесь, что плагин **опубликован** и подписан на все три события после обновления пакета.
 
 На чекауте актуальный **`russianpost.js`** после отрисовки методов вызывает сохранение выбора, чтобы пользователь успел до «Оформить» без обязательного ручного `change` на радиокнопке.
 
 ## Нет подсказок адреса / города (как в старом msRussianPost)
 
-В **msRussianPost2** нет встроенного DaData. Установите **msDadata2**, настройте токен в его системных настройках, выведите **`[[!msDadata2AddressSuggest]]`** **до** `msrpLexiconScript` и `msRussianPost2`. После выбора подсказки срабатывает **`msdadata2:order-address-updated`** — виджет Почты России пересчитывает тарифы. Пошагово — [Подключение на сайте → msDadata2](frontend#msdadata2); техническая связка с **`ms3Hooks`** — [Интеграция с хуками MiniShop3](integration#интеграция-с-хуками-minishop3).
+В **msRussianPost** нет встроенного DaData. Установите **mxDadata**, настройте токен в его системных настройках, выведите **`[[!mxDadataAddressSuggest]]`** **до** `msrpLexiconScript` и `msRussianPost`. После выбора подсказки срабатывает **`mxdadata:order-address-updated`** — виджет Почты России пересчитывает тарифы. Пошагово — [Подключение на сайте → mxDadata](frontend#mxdadata); техническая связка с **`ms3Hooks`** — [Интеграция с хуками MiniShop3](integration#интеграция-с-хуками-minishop3).
 
 ## Кэш
 
@@ -44,5 +44,5 @@ title: FAQ и траблшутинг
 
 - [Системные настройки](settings) — API, вес, коды объектов
 - [Админка в MODX](admin-ui) — тестовый расчёт, журнал, справочник
-- [Подключение на сайте → msDadata2](frontend#msdadata2) — автокомплит адреса
+- [Подключение на сайте → mxDadata](frontend#mxdadata) — автокомплит адреса
 - [Интеграция](integration) — режимы API, события
