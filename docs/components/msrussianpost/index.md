@@ -1,7 +1,7 @@
 ---
-title: msRussianPost2
+title: msRussianPost
 description: Расчёт доставки Почтой России для MODX 3 и MiniShop3
-logo: https://modstore.pro/assets/extras/msrussianpost2/logo.png
+logo: https://modstore.pro/assets/extras/msrussianpost/logo.png
 author: ibochkarev
 
 items:
@@ -14,8 +14,8 @@ items:
   - text: Сниппеты
     link: snippets
     items:
-      - text: msRussianPost2
-        link: snippets/msRussianPost2
+      - text: msRussianPost
+        link: snippets/msRussianPost
       - text: msrpLexiconScript
         link: snippets/msrpLexiconScript
   - text: Подключение на сайте
@@ -25,19 +25,19 @@ items:
   - text: FAQ и траблшутинг
     link: faq
 ---
-# msRussianPost2
+# msRussianPost
 
-**msRussianPost2** — дополнение для расчёта стоимости и сроков доставки **Почтой России** в связке **[MODX Revolution 3](https://modx.com/)** и **[MiniShop3](/components/minishop3/)**. Используются два API: публичный (`tariff.pochta.ru`) и персональный (`otpravka.pochta.ru`).
+**msRussianPost** — дополнение для расчёта стоимости и сроков доставки **Почтой России** в связке **[MODX Revolution 3](https://modx.com/)** и **[MiniShop3](/components/minishop3/)**. Используются два API: публичный (`tariff.pochta.ru`) и персональный (`otpravka.pochta.ru`).
 
 ## Возможности
 
-- **Интеграция с доставками MiniShop3** — класс `msrussianpost2\Delivery\RussianPostDelivery`, привязка виджета к доставке через настройку `delivery_id` (или авто по классу в БД)
+- **Интеграция с доставками MiniShop3** — класс `msrussianpost\Delivery\RussianPostDelivery`, привязка виджета к доставке через настройку `delivery_id` (или авто по классу в БД)
 - **Виджет на оформлении заказа** — ввод индекса, список методов с ценой и сроком. Показ и скрытие при смене способа доставки (обёртка `.msrp__wrapper` или `[data-msrp-widget]`)
-- **Плагины** — **msRussianPost2 Autoload** (`OnMODXInit`) подключает класс доставки; **msRussianPost2 Delivery** (`msOnGetDeliveryCost`) подставляет стоимость выбранного метода; **msRussianPost2 Order tariff** (`msOnSubmitOrder`, `msOnBeforeCreateOrder`, `msOnCreateOrder`) сохраняет код тарифа в свойствах заказа для карточки в менеджере MiniShop3
+- **Плагины** — **msRussianPost Autoload** (`OnMODXInit`) подключает класс доставки; **msRussianPost Delivery** (`msOnGetDeliveryCost`) подставляет стоимость выбранного метода; **msRussianPost Order tariff** (`msOnSubmitOrder`, `msOnBeforeCreateOrder`, `msOnCreateOrder`) сохраняет код тарифа в свойствах заказа для карточки в менеджере MiniShop3
 - **Кэш ответов API** — настраиваемый TTL, очистка из панели компонента в MODX
 - **Админ-панель (Vue 3)** — раздел **Extras → Почта России**: тестовый расчёт, журнал запросов к API, справочник кодов объектов, очистка кэша (нужен [VueTools](https://docs.modx.pro/components/vuetools/)) — см. [Админка в MODX](admin-ui)
 - **Фронтенд** — ES-модульный скрипт без jQuery, хуки `ms3Hooks`, кастомные DOM-события
-- **Локализация** — лексиконы MODX (ru, en, uk). Для JavaScript сначала подключайте сниппет `msrpLexiconScript`, затем `msRussianPost2`
+- **Локализация** — лексиконы MODX (ru, en, uk). Для JavaScript сначала подключайте сниппет `msrpLexiconScript`, затем `msRussianPost`
 - **Кастомизация** — Fenom-чанки `tplRussianPostStatus`, `tplRussianPostMethods`, BEM-префикс `msrp__`, CSS-переменные
 
 ## Системные требования
@@ -60,13 +60,13 @@ items:
 ### Через ModStore
 
 1. [Подключите репозиторий ModStore](https://modstore.pro/info/connection), если ещё не подключён
-2. **Extras → Installer → Download Extras** — найдите **msRussianPost2**, установите пакет
+2. **Extras → Installer → Download Extras** — найдите **msRussianPost**, установите пакет
 3. Убедитесь, что установлен **MiniShop3**. Установите **VueTools** отдельно, если нужен раздел **Extras → Почта России** в панели управления MODX
 4. **Настройки → Очистить кэш**
 
 ### После установки
 
-Создайте способ доставки с классом `msrussianpost2\Delivery\RussianPostDelivery`, укажите `delivery_id` и индекс отправителя, вставьте блок виджета в чанк заказа (лексикон → сниппет → чанки). См. [Быстрый старт](quick-start) и [Подключение на сайте](frontend).
+Создайте способ доставки с классом `msrussianpost\Delivery\RussianPostDelivery`, укажите `delivery_id` и индекс отправителя, вставьте блок виджета в чанк заказа (лексикон → сниппет → чанки). См. [Быстрый старт](quick-start) и [Подключение на сайте](frontend).
 
 ## Термины
 

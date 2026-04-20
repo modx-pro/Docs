@@ -5,7 +5,7 @@ title: msrpLexiconScript
 
 Выводит встроенный тег **`script`** с объектом **`window.msrpLexicon`**: строки интерфейса виджета на языке текущего контекста сайта в MODX.
 
-Подключается лексикон **`msrussianpost2:default`**. Ключи в JavaScript совпадают с именами записей лексикона (префикс `msrussianpost_`).
+Подключается лексикон **`msrussianpost:default`**. Ключи в JavaScript совпадают с именами записей лексикона (префикс `msrussianpost_`).
 
 ## Параметры
 
@@ -13,7 +13,7 @@ title: msrpLexiconScript
 
 ## Порядок вызова
 
-Вызывать **строго перед** [msRussianPost2](msRussianPost2) и до загрузки `russianpost.js`, чтобы при инициализации скрипта объект `window.msrpLexicon` уже существовал.
+Вызывать **строго перед** [msRussianPost](msRussianPost) и до загрузки `russianpost.js`, чтобы при инициализации скрипта объект `window.msrpLexicon` уже существовал.
 
 ## Пример
 
@@ -21,12 +21,12 @@ title: msrpLexiconScript
 
 ```modx
 [[!msrpLexiconScript]]
-[[!msRussianPost2]]
+[[!msRussianPost]]
 ```
 
 ```fenom
 {'msrpLexiconScript' | snippet}
-{'msRussianPost2' | snippet}
+{'msRussianPost' | snippet}
 ```
 
 :::
