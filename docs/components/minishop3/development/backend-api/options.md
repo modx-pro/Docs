@@ -355,42 +355,57 @@ $categoryService->batchInsertOptions($productIds, 'color', 'Red');
 $categoryService->removeFromCategories($optionId, [5, 12, 18]);
 ```
 
-## Процессоры
+## REST API
 
-### Управление опциями (Settings\Option)
+::: info Начиная с v1.10.0-beta1
+Legacy-процессоры `Processors/Settings/Option/*` и `Processors/Category/Option/*` полностью удалены вместе с ExtJS UI (22 файла, ~2600 строк). Все операции идут через два REST-контроллера: `OptionsController` и `CategoryOptionsController`.
+:::
 
-| Процессор | Описание |
-|-----------|----------|
-| `Settings\Option\Create` | Создание опции. Нормализует ключ, проверяет уникальность |
-| `Settings\Option\Get` | Получение опции с привязанными категориями |
-| `Settings\Option\GetList` | Список опций с фильтрацией по ключу, названию, категории |
-| `Settings\Option\Update` | Обновление. Поддерживает переименование ключа и пересинхронизацию категорий |
-| `Settings\Option\Remove` | Удаление (каскадно удаляет msCategoryOption и msProductOption) |
-| `Settings\Option\Assign` | Назначение опции одной категории |
-| `Settings\Option\Duplicate` | Дублирование опции с опциональным копированием категорий и значений |
-| `Settings\Option\GetCategories` | Список MODX-категорий, в которых есть опции |
-| `Settings\Option\GetTypes` | Список доступных типов опций |
-| `Settings\Option\GetNodes` | Дерево категорий с отметками назначения |
-| `Settings\Option\Multiple` | Массовые операции |
+### Управление опциями — `/api/mgr/options/*`
 
-### Опции в категории (Category\Option)
+Контроллер `MiniShop3\Controllers\Api\Manager\OptionsController`, permission `mssetting_save`.
 
-| Процессор | Описание |
-|-----------|----------|
-| `Category\Option\Add` | Добавление опции в категорию |
-| `Category\Option\GetList` | Список опций категории с данными из msOption |
-| `Category\Option\Update` | Обновление параметров привязки (active, required, value) |
-| `Category\Option\UpdateFromGrid` | Inline-обновление из грида |
-| `Category\Option\Activate` | Активация опции в категории |
-| `Category\Option\Deactivate` | Деактивация |
-| `Category\Option\Required` | Пометить как обязательную |
-| `Category\Option\Unrequired` | Снять обязательность |
-| `Category\Option\Remove` | Удаление из категории (с умным каскадом) |
-| `Category\Option\Duplicate` | Копирование опций из одной категории в другую |
-| `Category\Option\Multiple` | Массовые операции |
+| Метод | Путь | Описание |
+|---|---|---|
+| `GET` | `/api/mgr/options` | Список опций с фильтрами: `query`, `modcategory_id`, `category_id`, `categories[]` |
+| `GET` | `/api/mgr/options/{id}` | Деталь опции + карта привязанных категорий |
+| `POST` | `/api/mgr/options` | Создать: нормализует `key`, проверяет уникальность, привязывает к категориям |
+| `PUT` | `/api/mgr/options/{id}` | Partial update; при смене `key` пересинхронизирует `msProductOption` через `OptionSyncService::updateOptionKey` |
+| `DELETE` | `/api/mgr/options/{id}` | Удалить (cascade через lifecycle `msOption::remove` → `msCategoryOption` → `msProductOption`) |
+| `DELETE` | `/api/mgr/options/bulk` | Массовое удаление: `ids[]` |
+| `POST` | `/api/mgr/options/bulk/assign` | Назначить `options[]` к `categories[]` |
+| `GET` | `/api/mgr/options/types` | Список типов с локализованными названиями |
+| `GET` | `/api/mgr/options/tree` | Дерево категорий MODX (только `class_key = msCategory`), lazy по `parent`. Флаг `checked` для категорий, где опция уже назначена (если передан `option_id`) |
+| `GET` | `/api/mgr/options/modcategories` | Плоский список `modCategory` для фильтра «Группа» |
+| `GET` | `/api/mgr/options/suggestions` | Уникальные значения `msProductOption.value` по `key` для автодополнения `comboOptions` на карточке товара |
 
-### Автодополнение значений
+### Опции категории — `/api/mgr/categories/{category_id}/options/*`
 
-| Процессор | Описание |
-|-----------|----------|
-| `Product\GetOptions` | Автодополнение значений для конкретного ключа опции в форме товара |
+Контроллер `MiniShop3\Controllers\Api\Manager\CategoryOptionsController`, permission `mscategory_save`.
+
+| Метод | Путь | Описание |
+|---|---|---|
+| `GET` | `` | Опции, привязанные к категории. Каждая строка отдаёт `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
+| `POST` | `` | Привязать опцию к категории: `option_id`, `value`, `active`, `required`, `caption`, `description` |
+| `PUT` | `/{option_id}` | Partial update связки: `value`, `active`, `required`, `position`, `caption`, `description` |
+| `DELETE` | `/{option_id}` | Удалить связку. Значения у товаров удаляются только если опция не активна ни в одной другой категории товара |
+| `POST` | `/sort` | Сохранить новый порядок (`option_ids[]`) |
+| `POST` | `/bulk` | Массовые действия: `activate` / `deactivate` / `require` / `unrequire` / `remove` для `option_ids[]` |
+| `POST` | `/duplicate` | Скопировать связки из `category_from`; существующие в текущей категории пропускаются |
+
+### Schema API — `msOptionType::getSchema()`
+
+::: info Начиная с v1.10.0-beta1
+:::
+
+Каждый класс типа в `Controllers/Options/Types/` теперь умеет отдавать декларативное описание своего поля вместо ExtJS JS-строки:
+
+```php
+abstract class msOptionType
+{
+    abstract public function getField($field);        // legacy — возвращает JS-строку для ExtJS
+    public function getSchema(array $field): array;   // новое — массив для Vue renderer
+}
+```
+
+`OptionLoaderService::getFieldsForProduct()` прикрепляет `schema` к каждому `option_fields` ряду рядом с legacy `ext_field`. Карточка товара на Vue читает `schema`, legacy `ext_field` остаётся для обратной совместимости (но в ядре больше нигде не используется).

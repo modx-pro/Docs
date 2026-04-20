@@ -72,14 +72,19 @@ title: Товар
 
 Дополнительные категории товара. Товар может принадлежать нескольким категориям помимо основной (`parent`).
 
-### Опции
+### Опции товара
 
-Значения опций товара (если настроены в [Настройки → Опции](settings/options)):
+Значения опций товара (настроенных в [Настройки → Опции](settings/options)).
 
-- Цвета
-- Размеры
-- Материалы
-- Любые кастомные опции
+::: info Начиная с v1.10.0-beta1
+Вкладка полностью на Vue. Универсальный компонент `ProductOptionField` поддерживает все 10 типов опций: `textfield`, `numberfield`, `textarea`, `checkbox`, `comboBoolean`, `combobox`, `comboMultiple`, `comboColors` (+ цветовой квадрат рядом с значением), `comboOptions` (PrimeVue `InputChips` — ввод произвольных тегов с подсказками из ранее использованных значений), `datefield`.
+:::
+
+Опции группируются по `modcategory_id` (категория MODX у `msOption`) и показываются в вертикальных табах слева. Если группа одна — таб не показывается, поля идут списком.
+
+**Per-category caption / description.** Если у связки «опция ↔ категория» задан свой `caption` (см. [Настройки → Опции](settings/options#per-category-caption-description-override)), в форме товара отображается именно он — это тот же override, что уходит на витрину.
+
+**Сохранение.** Значения попадают в POST как `options-{key}` (single) или `options-{key}` с JSON-массивом (multi). Процессор `Processors\Product\Update::beforeSet` собирает всё в ключ `options`, `Utils::decodeOptionValue()` разворачивает JSON-массив, `afterSave` вызывает `OptionSyncService::saveProductOptions($productId, $options, removeOther: true)` — ключи, отсутствующие в POST, из `msProductOption` удаляются.
 
 ## Архитектура секций и полей
 
