@@ -69,6 +69,7 @@ items: [
       { text: 'Сортировка значений', link: 'cookbook/filter-values-sorting' },
       { text: 'Внешние фильтры', link: 'cookbook/external-filters' },
       { text: 'Свой тип фильтра', link: 'cookbook/custom-filter-type' },
+      { text: 'Фильтры на странице поиска', link: 'cookbook/search-results-integration' },
     ],
   },
 ]
