@@ -11,8 +11,8 @@ title: Системные настройки
 
 | Настройка | По умолчанию | Описание |
 |-----------|--------------|----------|
-| `ms3_services` | JSON | Массив с зарегистрированными классами для корзины, заказа, доставки и оплаты. Используется для расширения функциональности сторонними компонентами |
-| `ms3_plugins` | `[]` | Массив с зарегистрированными плагинами расширения объектов модели магазина |
+| `ms3_services_config` | `{core_path}/config/ms3.services.php` | Путь к PHP-файлу с кастомной регистрацией сервисов. Возвращает массив `[service_id => ClassName]`, переопределяющий классы по умолчанию (корзина, заказ, доставка, оплата и т.д.) |
+| `ms3_services_addons_dir` | `{core_path}/config/ms3.services.d/` | Папка с файлами-фрагментами регистрации сервисов от сторонних компонентов. Каждый аддон кладёт свой `*.php`, они загружаются в алфавитном порядке после основного конфига |
 | `ms3_chunks_categories` | | ID категорий через запятую для списка чанков |
 | `ms3_use_scheduler` | `false` | Использовать компонент [Scheduler](/components/scheduler/) для фоновых задач |
 
@@ -23,9 +23,9 @@ title: Системные настройки
 | `ms3_template_category_default` | | Шаблон по умолчанию для новых категорий |
 | `ms3_category_show_nested_products` | `true` | Показывать вложенные товары из подкатегорий |
 | `ms3_category_show_options` | `false` | Показывать опции товаров в таблице категории |
-| `ms3_category_remember_tabs` | `true` | Запоминать активную вкладку панели категории |
 | `ms3_category_id_as_alias` | `false` | Использовать ID категории как псевдоним URL |
 | `ms3_category_content_default` | | Содержимое для новых категорий (вызов сниппета вывода товаров) |
+| `ms3_category_products_default_rows` | `20` | Количество строк на странице в таблице товаров категории |
 | `mgr_tree_icon_mscategory` | `icon icon-barcode` | CSS-класс иконки категории в дереве ресурсов |
 
 ## Товар
@@ -72,7 +72,7 @@ title: Системные настройки
 | `ms3_weight_snippet` | | Имя сниппета-модификатора веса |
 | `ms3_currency_symbol` | `₽` | Символ валюты (₽, $, €, £, ₴, ¥, ₸) |
 | `ms3_currency_position` | `after` | Позиция символа: `before` ($ 100) или `after` (100 ₽) |
-| `ms3_weight_unit` | `г` | Единица измерения веса (г, кг, lbs). Используется в `*_formatted` плейсхолдерах |
+| `ms3_weight_unit` | `kg` | Единица измерения веса (например `kg`, `г`, `lbs`, `oz`). Используется в `*_formatted` плейсхолдерах |
 
 ## Корзина
 
@@ -101,12 +101,9 @@ title: Системные настройки
 
 ### Поля в админке
 
-| Настройка | По умолчанию | Описание |
-|-----------|--------------|----------|
-| `ms3_order_grid_fields` | `id,num,customer,status,cost,weight,delivery,payment,createdon,updatedon,comment` | Поля в таблице заказов |
-| `ms3_order_address_fields` | `first_name,last_name,email,phone,index,country,region,city,metro,street,building,entrance,floor,room,comment,text_address` | Поля адреса доставки |
-| `ms3_order_product_fields` | `product_pagetitle,vendor_name,product_article,weight,price,count,cost` | Поля таблицы товаров в заказе |
-| `ms3_order_product_options` | `size,color` | Редактируемые опции товара в заказе |
+::: info Поля заказа, адреса и таблицы товаров
+Раньше конфигурировались системными настройками `ms3_order_grid_fields`, `ms3_order_address_fields`, `ms3_order_product_fields`, `ms3_order_product_options`. Теперь управление идёт через **Утилиты → Поля моделей** (таблицы `ms3_model_fields` и `ms3_model_field_sections`, модели `msOrder` / `msOrderAddress`) и **Утилиты → Настройки гридов** (`ms3_grid_fields`) — системные настройки не читаются и удалены из документации.
+:::
 
 ## Статусы заказов
 
@@ -242,13 +239,11 @@ title: Системные настройки
 | Настройка | По умолчанию | Описание |
 |-----------|--------------|----------|
 | `ms3_telegram_bot_token` | | Токен Telegram бота (получить у [@BotFather](https://t.me/BotFather)) |
-| `ms3_telegram_manager_chat_id` | | Chat ID менеджера для уведомлений (получить у [@userinfobot](https://t.me/userinfobot)) |
 
 ::: tip Настройка Telegram бота
 1. Создайте бота через [@BotFather](https://t.me/BotFather) и получите токен
-2. Напишите боту любое сообщение, чтобы инициировать чат
-3. Узнайте свой Chat ID через [@userinfobot](https://t.me/userinfobot)
-4. Укажите токен и Chat ID в настройках
+2. Укажите токен в системной настройке `ms3_telegram_bot_token`
+3. Chat ID получателя задаётся **для каждого получателя отдельно** в **Утилиты → Уведомления** (модель `msNotificationConfig`, поле `recipient_value`). Узнать свой Chat ID можно через [@userinfobot](https://t.me/userinfobot).
 :::
 
 ## Примеры использования
