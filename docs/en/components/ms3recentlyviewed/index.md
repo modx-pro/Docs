@@ -36,12 +36,13 @@ Component for [MiniShop3](/en/components/minishop3/): "Recently viewed products"
 
 ## Features
 
-- **Recently viewed block** — output by list of IDs (AJAX via connector or server-side snippet)
+- **Recently viewed block** — output by list of IDs: client **JS** (`render()`), server snippet with **`fromDB`**, or **`ids`** from placeholder / cookie (see [Quick start](quick-start))
 - **Browser storage** — localStorage (default) or cookie, no registration
 - **DB sync** — for logged-in users: on login, data from localStorage is moved to the DB
 - **Auto-sync on login** — anonymous views from localStorage are moved to the DB on first visit after login
 - **Monthly archiving** — setting `archive_enabled` (on by default): aggregation into summary table, smaller main table
-- **Bot exclusion** — setting `block_bots`: crawler views (Googlebot, Yandex, etc.) are not stored in the DB
+- **Bot exclusion** — `block_bots` + `block_bots_detector` (**crawler_detect** — CrawlerDetect library, or **regex** as fallback)
+- **Server output with cookie** — plugin **ms3recentlyviewedViewedIdsPlaceholder** (`OnWebPageInit`, priority **-5**): placeholder **`[[+viewedIds]]`** from the `ms3_recently_viewed` cookie when **`ms3recentlyviewed.storage_type` = `cookie`** (Fenom: `{$_modx->getPlaceholder('viewedIds')}`; a `$viewedIds` variable is not set automatically)
 - **"Similar to viewed" snippet** — products from the same categories (ms3recentlyviewedSimilar)
 - **Manager** — dashboard (KPIs, top products), view history with filters, CSV export (BOM UTF-8, GET support in connector-mgr for file download)
 - **Localization** — MODX Lexicon (ru, en), frontend snippet ms3rvLexiconScript

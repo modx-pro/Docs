@@ -17,18 +17,18 @@ title: Системные настройки
 | `ms3recentlyviewed.ttl_days` | Срок хранения записей в БД (дней) | `90` | 30–365 дней. Учитывается при автоочистке и архивировании. |
 | `ms3recentlyviewed.auto_cleanup_enabled` | Автоматическая очистка старых записей | `true` | Удаляет просмотры старше TTL. Запускается раз в день при посещении сайта (плагин OnWebPageInit). |
 | `ms3recentlyviewed.archive_enabled` | Месячное архивирование | `true` | Агрегирует данные за прошедший месяц в `ms3recentlyviewed_monthly` и удаляет детальные записи. Снижает размер таблицы. По умолчанию включено. |
-| `ms3recentlyviewed.block_bots` | Исключать поисковых ботов | `true` | Не сохранять просмотры от краулеров (Googlebot, Yandex, Bing и др.) в БД. Определение по User-Agent. |
+| `ms3recentlyviewed.block_bots` | Исключать поисковых ботов | `true` | Не сохранять просмотры от краулеров в БД. |
+| `ms3recentlyviewed.block_bots_detector` | Метод определения ботов | `crawler_detect` | `crawler_detect` — библиотека **jaybizzle/crawler-detect** (поставляется с пакетом, точнее). `regex` — встроенный regex-фолбэк, если vendor недоступен. |
 | `ms3recentlyviewed.track_anonymous` | Учёт просмотров анонимных пользователей | `true` | Сохранять просмотры гостей в БД. Идентификация по сессии. Требует включённой синхронизации. |
-| `ms3recentlyviewed.test_ids` | ID товаров через запятую для тестовой страницы в админке | 1,2,3 | Опционально. |
 
 ## Области настроек
 
-- **default** — `max_items`, `storage_type`, `test_ids` (фронт, блок вывода).
-- **sync** — `sync_enabled`, `ttl_days`, `auto_cleanup_enabled`, `archive_enabled`, `block_bots`, `track_anonymous` (хранение в БД, плагины).
+- **default** — `max_items`, `storage_type` (фронт, лимит и тип хранилища в браузере).
+- **sync** — `sync_enabled`, `ttl_days`, `auto_cleanup_enabled`, `archive_enabled`, `block_bots`, `block_bots_detector`, `track_anonymous` (БД, боты, анонимы).
 
 ## Рекомендации
 
 - **max_items:** 20–50 для большинства сайтов; учитывается в JS при наличии ms3rvLexiconScript.
 - **storage_type:** `cookie` — если нужен общий список для поддоменов (срок cookie 30 дней).
 - **archive_enabled:** по умолчанию включено; при большом объёме просмотров уменьшает размер основной таблицы.
-- **block_bots:** по умолчанию включено — просмотры от краулеров не попадают в БД.
+- **block_bots / block_bots_detector:** по умолчанию боты отфильтровываются через **CrawlerDetect**; при отсутствии vendor используется режим `regex`.
