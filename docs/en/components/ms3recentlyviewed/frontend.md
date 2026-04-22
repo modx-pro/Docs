@@ -7,13 +7,17 @@ Lexicon, styles and scripts setup is described in [Quick start](/en/components/m
 
 ## Integration check: empty stats in admin
 
-Stats and history in admin come from the `ms3recentlyviewed_items` table. Records are written when sync is enabled — for **logged-in** and **anonymous** (guest) users. Anonymous users are identified by session; guest tracking is controlled by `ms3recentlyviewed.track_anonymous`. Views from search bots are not stored when `ms3recentlyviewed.block_bots` is enabled (on by default).
+Stats and history in admin come from the `ms3recentlyviewed_items` table. Records are written when sync is enabled — for **logged-in** and **anonymous** (guest) users. Anonymous users are identified by session; guest tracking is controlled by `ms3recentlyviewed.track_anonymous`. Bot views are not stored when **`ms3recentlyviewed.block_bots`** is on; detection method: **`ms3recentlyviewed.block_bots_detector`** — **`crawler_detect`** (jaybizzle/crawler-detect in vendor) or **`regex`** as fallback.
 
 **Checklist:** lexicon and viewed.js are loaded on every product page; product page has `data-viewed-product-id` on `<body>` or `window.ms3rvCurrentProductId`; `ms3recentlyviewed.sync_enabled` = Yes; for logged-in users — user is authenticated in **web** context (not only in manager). The `fromDB` option works only for users logged in on the frontend (web context).
 
+### `viewedIds` placeholder (cookie)
+
+Plugin **ms3recentlyviewedViewedIdsPlaceholder** (event **OnWebPageInit**, priority **-5**): if **`ms3recentlyviewed.storage_type` = `cookie`** and limit &gt; 0, the **`viewedIds`** placeholder is filled from the `ms3_recently_viewed` cookie. The name is **reserved** — do not override. Fenom: `{$_modx->getPlaceholder('viewedIds')}`.
+
 ## Connector (AJAX)
 
-**URL:** `assets/components/ms3recentlyviewed/connector.php`  
+**URL:** `assets/components/ms3recentlyviewed/connector.php`
 **Method:** POST.
 
 Actions:
