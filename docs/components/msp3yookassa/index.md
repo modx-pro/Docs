@@ -14,11 +14,11 @@ items: [
 
 # msp3YooKassa
 
-Дополнение подключает платёжный шлюз **[ЮKassa](https://yookassa.ru/)** к [MiniShop3](/components/minishop3/) на MODX Revolution 3.x: создание платежа через [REST API](https://yookassa.ru/developers/api), редирект покупателя на оплату (сценарий **redirect**), приём [HTTP-уведомлений](https://yookassa.ru/developers/using-api/webhooks) и опциональная передача данных [чека по 54-ФЗ](https://yookassa.ru/developers/payment-acceptance/receipts/basics).
+**msp3YooKassa** подключает **[ЮKassa](https://yookassa.ru/)** к [MiniShop3](/components/minishop3/) в MODX Revolution 3.x: [REST API](https://yookassa.ru/developers/api), сценарий **redirect** на оплату, [входящие уведомления](https://yookassa.ru/developers/using-api/webhooks) и по желанию [чек по 54-ФЗ](https://yookassa.ru/developers/payment-acceptance/receipts/basics) в одном запросе с созданием платежа.
 
-По смыслу близко к дополнению **[mspYooKassa для miniShop2](https://modstore.pro/packages/payment-system/mspyookassa)** на ModStore, но **msp3YooKassa** рассчитан на **MiniShop3 / MODX 3**: другие классы оплаты, настройки в пространстве имён `msp3yookassa` и **другой URL для уведомлений** (`…/msp3yookassa/webhook.php`, а не `…/mspyookassa/notification.php`).
+**msp3YooKassa** ориентирован на **MiniShop3** в MODX 3: классы оплаты, пространство имён `msp3yookassa`, для HTTP-уведомлений — путь `…/assets/components/msp3yookassa/webhook.php`.
 
-**Пошаговая инструкция:** [Быстрый старт](quick-start).
+С чего начать: [Быстрый старт](quick-start).
 
 ## Возможности
 
@@ -35,27 +35,28 @@ items: [
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | актуальная ветка под MODX 3 |
+| pdoTools | 3.x |
 
 ### Зависимости
 
-- **[MiniShop3](/components/minishop3/)** — заказы, способы оплаты, статусы (`ms3_status_paid`, `ms3_status_canceled` и др.).
+- [MiniShop3](/components/minishop3/) — заказы, способы оплаты, статусы (`ms3_status_paid`, `ms3_status_canceled` и т.д.).
 
 ## Регистрация в ЮKassa и ключи API
 
 Чтобы принимать оплату, нужен магазин в [личном кабинете ЮKassa](https://yookassa.ru/my). После подключения в разделе настроек магазина возьмите:
 
-- **Идентификатор магазина** (`shopId`) — в дополнении: настройка [`msp3yookassa.shop_id`](settings).
-- **Секретный ключ** — в дополнении: [`msp3yookassa.secret_key`](settings) (в старой документации к [mspYooKassa для MS2](https://modstore.pro/packages/payment-system/mspyookassa) он мог фигурировать как «пароль магазина»; в API ЮKassa используется пара **Shop ID + Secret Key**, см. [формат взаимодействия с API](https://yookassa.ru/developers/using-api/interaction-format)).
+- **Идентификатор магазина** (`shopId`) — в дополнении: настройка [`msp3yookassa_shop_id`](settings).
+- **Секретный ключ** — в дополнении: [`msp3yookassa_secret_key`](settings). В старых текстах про API магазина ключ иногда называют «пароль магазина». В актуальном API ЮKassa используется пара **Shop ID + Secret Key** (см. [формат взаимодействия с API](https://yookassa.ru/developers/using-api/interaction-format)).
 
-Запросы к API выполняются **с вашего сервера**; компонент использует официальный PHP SDK (`yoomoney/yookassa-sdk-php`), см. [SDK ЮKassa](https://yookassa.ru/developers/using-api/using-sdks).
+Запросы к API выполняются **с вашего сервера**. Компонент использует официальный PHP SDK (`yoomoney/yookassa-sdk-php`), см. [SDK ЮKassa](https://yookassa.ru/developers/using-api/using-sdks).
 
-Быстрый обзор жизненного цикла платежа — в [руководстве «Быстрый старт»](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start): создание платежа, `confirmation.type = redirect`, ожидание статуса `succeeded`. Логика msp3YooKassa этому соответствует (см. [интеграцию](integration)).
+У ЮKassa это же описано в [коротком руководстве](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start): создание платежа, `confirmation.type = redirect`, затем `succeeded`. У msp3YooKassa тот же порядок, детали — в [интеграции](integration).
 
 ## Установка
 
-1. Установите пакет через **Управление пакетами** или загрузите транспорт в `core/packages/` и выполните установку.
+1. Установите пакет через **Управление пакетами**.
 2. Убедитесь, что установлен **MiniShop3**.
-3. В **Системные настройки → пространство имён `msp3yookassa`** задайте [параметры магазина](settings) (`shop_id`, `secret_key`).
+3. В **Системные настройки → пространство имён `msp3yookassa`** задайте [параметры магазина](settings) (`msp3yookassa_shop_id`, `msp3yookassa_secret_key`).
 4. **Очистите кэш** сайта.
 
 После установки резолвер создаёт два способа оплаты в MiniShop3 (если их ещё нет):
@@ -75,24 +76,12 @@ items: [
 https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 ```
 
-Без корректного webhook статусы заказов в MODX не будут синхронизироваться с фактом оплаты или отмены в ЮKassa.
-
-Подробнее: [Интеграция и сценарии](integration).
+Если URL в кабинете неверный или сервер обрывает POST, в MODX заказ может остаться неоплаченным, хотя в ЮKassa платёж уже прошёл. Подробнее: [интеграция](integration).
 
 ## Документация по разделам
 
 - [Быстрый старт](quick-start) — установка, ключи, webhook, способ оплаты, тест, чеки.
-- [Системные настройки](settings) — `shop_id`, ключ, чеки, URL возврата, отладка.
+- [Системные настройки](settings) — `msp3yookassa_shop_id`, `msp3yookassa_secret_key`, чеки, URL возврата, `msp3yookassa_debug`.
 - [Интеграция и сценарии](integration) — поток оплаты, двухстадийный режим, вызов Capture, событие для позиций чека, ограничения.
 
-## Сборка транспорта (для разработчиков)
-
-Из корня репозитория дополнения:
-
-```bash
-php _build/build.php
-```
-
-Скачать готовый пакет: открыть в браузере `_build/build.php?download=1` (при работающем сайте в окружении сборки).
-
-Лицензия пакета: GPL v2 or later.
+Лицензия: GPLv2 и новее.

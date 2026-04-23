@@ -14,11 +14,11 @@ items: [
 
 # msp3YooKassa
 
-This extra integrates **[YooKassa](https://yookassa.ru/)** with [MiniShop3](/en/components/minishop3/) on MODX Revolution 3.x: payments via the [REST API](https://yookassa.ru/developers/api), **redirect** confirmation, [HTTP notifications (webhooks)](https://yookassa.ru/developers/using-api/webhooks), and optional [54-FZ receipt](https://yookassa.ru/developers/payment-acceptance/receipts/basics) data in the create-payment call.
+**msp3YooKassa** connects **[YooKassa](https://yookassa.ru/)** to [MiniShop3](/en/components/minishop3/) on MODX 3: [REST API](https://yookassa.ru/developers/api), **redirect** checkout, [incoming webhooks](https://yookassa.ru/developers/using-api/webhooks), and optional [54-FZ receipt](https://yookassa.ru/developers/payment-acceptance/receipts/basics) data in the same `createPayment` call.
 
-It is conceptually similar to **[mspYooKassa for miniShop2](https://modstore.pro/packages/payment-system/mspyookassa)** on ModStore, but **msp3YooKassa** targets **MiniShop3 / MODX 3**: different payment classes, the `msp3yookassa` settings namespace, and a **different notification URL** (`…/msp3yookassa/webhook.php`, not `…/mspyookassa/notification.php`).
+The extra targets **MiniShop3** (payment classes, `msp3yookassa` settings namespace, HTTP notification URL `…/assets/components/msp3yookassa/webhook.php`).
 
-**Step-by-step guide:** [Quick start](quick-start).
+Start here: [Quick start](quick-start).
 
 ## Features
 
@@ -35,6 +35,7 @@ It is conceptually similar to **[mspYooKassa for miniShop2](https://modstore.pro
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | current MODX 3 branch |
+| pdoTools | 3.x |
 
 ### Dependencies
 
@@ -44,18 +45,18 @@ It is conceptually similar to **[mspYooKassa for miniShop2](https://modstore.pro
 
 You need a store in the [YooKassa merchant profile](https://yookassa.ru/my). Use:
 
-- **Shop ID** — [`msp3yookassa.shop_id`](settings).
-- **Secret key** — [`msp3yookassa.secret_key`](settings) (older MS2 docs may say “shop password”; the current API uses **Shop ID + Secret key**, see [interaction format](https://yookassa.ru/developers/using-api/interaction-format)).
+- **Shop ID** — [`msp3yookassa_shop_id`](settings).
+- **Secret key** — [`msp3yookassa_secret_key`](settings). Older merchant-API writeups may say “shop password”. YooKassa’s current API uses **Shop ID + Secret key** (see [interaction format](https://yookassa.ru/developers/using-api/interaction-format)).
 
-Requests are made **from your server**; the extra ships with the official PHP SDK (`yoomoney/yookassa-sdk-php`), see [YooKassa SDKs](https://yookassa.ru/developers/using-api/using-sdks).
+Requests are made **from your server**. The extra ships with the official PHP SDK (`yoomoney/yookassa-sdk-php`), see [YooKassa SDKs](https://yookassa.ru/developers/using-api/using-sdks).
 
-End-to-end flow: [Quick start](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start) — create payment, `confirmation.type = redirect`, wait for `succeeded`. msp3YooKassa follows the same model (see [Integration](integration)).
+YooKassa describes the same sequence in [their quick start](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start). msp3YooKassa matches it. Details: [Integration](integration).
 
 ## Installation
 
-1. Install via **Package Management** or upload the transport to `core/packages/` and install.
+1. Install via **Package Management**.
 2. Ensure **MiniShop3** is installed.
-3. Under **System Settings → namespace `msp3yookassa`**, set [credentials](settings) (`shop_id`, `secret_key`).
+3. Under **System Settings → namespace `msp3yookassa`**, set [credentials](settings) (`msp3yookassa_shop_id`, `msp3yookassa_secret_key`).
 4. **Clear the site cache**.
 
 The install resolver creates two MiniShop3 payment methods (if missing):
@@ -75,14 +76,12 @@ In the YooKassa dashboard: **Settings → HTTP notifications**, set the URL to:
 https://your-domain.com/assets/components/msp3yookassa/webhook.php
 ```
 
-Without a working webhook, MODX order statuses will not track paid/cancelled state from YooKassa.
-
-More detail: [Integration](integration).
+If the URL is wrong or the server blocks POST, the order in MODX may stay unpaid even after YooKassa shows a successful payment. See [Integration](integration).
 
 ## Documentation sections
 
 - [Quick start](quick-start) — install, keys, webhook, payment method, test, receipts.
-- [System settings](settings) — keys, receipts, return URLs, debug.
+- [System settings](settings) — `msp3yookassa_shop_id`, `msp3yookassa_secret_key`, receipts, return URLs, `msp3yookassa_debug`.
 - [Integration](integration) — payment flow, two-stage behaviour, Capture processor, receipt hook, notes.
 
 ## Building the transport (developers)
@@ -95,4 +94,6 @@ php _build/build.php
 
 Download the package: open `_build/build.php?download=1` in a browser (with the site available in the build environment).
 
-Package license: GPL v2 or later.
+In `_build/config.inc.php`, the **`encrypt`** flag: when `true`, plugin packaging may use encryption via the [modstore.pro](https://modstore.pro/info/api) API (common for paid extras on ModStore). Keep it `false` for local builds without modstore.
+
+License: GPL version 2 or later.

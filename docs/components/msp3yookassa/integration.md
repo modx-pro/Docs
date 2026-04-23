@@ -5,11 +5,11 @@ description: Webhook, одно- и двухстадийная оплата, пр
 
 # Интеграция msp3YooKassa
 
-Первичное подключение без деталей API: [Быстрый старт](quick-start).
+Нужны только шаги без разбора API — смотрите [Быстрый старт](quick-start).
 
-Ниже — привязка к официальной документации ЮKassa и к коду **msp3YooKassa** (создание платежа, `return_url`, webhook, чеки). Общая модель совпадает с [описанием сценария на ModStore для mspYooKassa](https://modstore.pro/packages/payment-system/mspyookassa), но пути файлов, настройки и классы относятся к **MiniShop3**.
+Ниже сопоставлены шаги из [документации ЮKassa](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start) и реализация в **msp3YooKassa** (платёж, `return_url`, webhook, чеки) для **MiniShop3**.
 
-## Соответствие документации API ЮKassa
+## Шаги из API ЮKassa и код msp3YooKassa
 
 | Шаг по [Quick start](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start) | Реализация в msp3YooKassa |
 |--------------------------------------------------------------------------------------------------------|---------------------------|
@@ -18,11 +18,11 @@ description: Webhook, одно- и двухстадийная оплата, пр
 | Редирект на `confirmation_url` | Ответ обработчика оплаты с `redirect` / `payment_link` для фронтенда MS3 |
 | Дождаться `succeeded` / обработать отмену | В первую очередь [HTTP-уведомления](https://yookassa.ru/developers/using-api/webhooks) → `webhook.php` → `WebhookHandler` |
 
-Подтверждение оплаты пользователем на стороне ЮKassa для сценария **redirect** описано в разделе [«Процесс платежа»](https://yookassa.ru/developers/payment-acceptance/getting-started/payment-process#user-confirmation). [Одностадийные и двухстадийные платежи](https://yookassa.ru/developers/payment-acceptance/getting-started/payment-process#capture-and-cancel) в API задаются параметром `capture` (`true` в `YooKassaPayment`, `false` в `YooKassaTwoStagePayment`).
+Как пользователь подтверждает оплату при **redirect**, разобрано в [«Процесс платежа»](https://yookassa.ru/developers/payment-acceptance/getting-started/payment-process#user-confirmation). [Одно- и двухстадийный](https://yookassa.ru/developers/payment-acceptance/getting-started/payment-process#capture-and-cancel) режим — это `capture`: `true` в `YooKassaPayment`, `false` в `YooKassaTwoStagePayment`.
 
 ## Настройка HTTP-уведомлений (webhook)
 
-В кабинете ЮKassa: **Интеграция → HTTP-уведомления** (формулировка может отличаться в интерфейсе; актуальный раздел см. в [документации по вебхукам](https://yookassa.ru/developers/using-api/webhooks)).
+В кабинете ЮKassa: **Интеграция → HTTP-уведомления** (в интерфейсе формулировка может отличаться, см. [документацию по вебхукам](https://yookassa.ru/developers/using-api/webhooks)).
 
 Укажите URL **вашего** сайта:
 
@@ -30,27 +30,25 @@ description: Webhook, одно- и двухстадийная оплата, пр
 https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 ```
 
-Обработчик принимает JSON-тело уведомления, разбирает объект платежа и обновляет заказ в MODX. Имеет смысл подписаться на события, связанные с изменением платежа (в т.ч. переход в `succeeded` / `canceled`), в соответствии с рекомендациями кабинета. Дополнительно изучите разделы о [проверке уведомлений](https://yookassa.ru/developers/using-api/webhooks) — при необходимости доработайте `webhook.php` под вашу политику безопасности.
-
 ## Тестовый магазин и проверка оплаты
 
-ЮKassa позволяет отладить интеграцию **без реальных списаний**: используйте [тестовый магазин и тестовые ключи](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing) (идентификатор и секретный ключ с префиксом `test_`). Подставьте их в настройки `msp3yookassa.shop_id` и `msp3yookassa.secret_key`.
+ЮKassa позволяет отладить интеграцию **без реальных списаний**: используйте [тестовый магазин и тестовые ключи](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing) (идентификатор и секретный ключ с префиксом `test_`). Подставьте их в настройки `msp3yookassa_shop_id` и `msp3yookassa_secret_key`.
 
-Для оплаты картой в тесте используйте [тестовые банковские карты](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing#test-bank-card) из документации (срок действия — любая будущая дата, CVC и 3-D Secure — по указаниям в справке). **Реальные карты в тестовом магазине использовать нельзя.**
+Для оплаты картой в тесте — [номера тестовых карт](https://yookassa.ru/developers/using-api/testing#test-bank-card) (срок, CVC и 3‑D Secure — по справке ЮKassa). **В тестовом магазине нельзя платить обычной картой.**
 
 После перехода в боевой режим замените ключи на **боевые** из профиля реального магазина, как описано в [«Быстром старте»](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start).
 
 ## Чеки 54-ФЗ
 
-Если вы обязаны передавать данные для чека, включите [`msp3yookassa.payment_receipt`](settings) и задайте [`msp3yookassa.vat_code`](settings). В запрос создания платежа передаётся объект `receipt` (позиции из состава заказа, доставка при `delivery_cost > 0`, email покупателя). Основы формата — в [документации по чекам](https://yookassa.ru/developers/payment-acceptance/receipts/basics).
+Если вы обязаны передавать данные для чека, включите [`msp3yookassa_payment_receipt`](settings) и задайте [`msp3yookassa_vat_code`](settings). В запрос создания платежа передаётся объект `receipt` (позиции из состава заказа, доставка при `delivery_cost > 0`, email покупателя). Основы формата — в [документации по чекам](https://yookassa.ru/developers/payment-acceptance/receipts/basics).
 
-В тестовом магазине можно включить **режим проверки чеков** в настройках онлайн-кассы в кабинете: ЮKassa имитирует взаимодействие с ОФД без реальной фискализации — удобно проверить, что дополнение передаёт корректную структуру (см. разделы о тестировании в [документации по приёму платежей](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing)).
+В кабинете тестового магазина можно включить **проверку чеков**: до ОФД данные не доходят, но по ответу ЮKassa видно, что структура запроса верная (подробнее — [тестирование](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing)).
 
 В коде чека фиксирован **`tax_system_code`: 1** (общая СНО в терминах API). При необходимости другой системы налогообложения расширяйте логику через событие или форк `ReceiptBuilder`.
 
 ## Способы оплаты для покупателя
 
-Конкретный набор (карты, **СБП**, кошелёк и т.д.) пользователь выбирает **на стороне ЮKassa** после перехода по `confirmation_url`. Дополнение не внедряет виджет или отдельную форму ввода карты на сайте — используется сценарий **redirect**, как в [примере Quick start](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start).
+Карта, **СБП** или кошелёк покупатель выбирает уже **на стороне ЮKassa** после перехода по `confirmation_url`. Виджет на сайте не встраиваем — только **redirect**, как в [базовом примере](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start).
 
 ## Поток одностадийной оплаты
 
@@ -60,21 +58,21 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 4. `WebhookHandler` находит заказ по `metadata.order_id` / `order_num`, сверяет `order_hash`, при статусе **`succeeded`** выставляет заказу `status_id = ms3_status_paid`.
 5. Возврат пользователя на сайт идёт на `success_url` или страницу благодарности MiniShop3.
 
-Источник истины по факту оплаты — **webhook**, а не только редирект браузера.
+Факт оплаты для магазина фиксируйте по **webhook**, а не по одному только возврату браузера на сайт.
 
 ## Webhook
 
 - **URL:** `https://<домен>/assets/components/msp3yookassa/webhook.php`
-- Тело запроса — JSON события ЮKassa (`event`, `object` с `status`, `id`, `metadata`).
+- **Метод:** со стороны ЮKassa — **POST**, тело запроса — JSON события (`event`, `object` с `status`, `id`, `metadata`).
 - Обрабатываются статусы:
-  - **`succeeded`** — заказ переводится в статус оплачен (`ms3_status_paid`), в `properties` обновляется `yookassa_payment_id`.
-  - **`canceled`** — заказ переводится в статус отмены (`ms3_status_canceled`).
-- Другие статусы (например, промежуточные) логируются при включённом `msp3yookassa.debug` и не меняют заказ.
+  - **`succeeded`** — заказу ставится `ms3_status_paid`, в `properties` пишется `yookassa_payment_id`.
+  - **`canceled`** — заказу ставится `ms3_status_canceled`.
+- Другие статусы (например, промежуточные) логируются при включённом `msp3yookassa_debug` и не меняют заказ.
 - Повторные уведомления обрабатываются идемпотентно: если заказ уже в `ms3_status_paid`, статус не дублируется.
 
 ### Безопасность
 
-Сверка `order_hash` в metadata с `getOrderHash()` активного платёжного класса ЮKassa снижает риск подмены уведомления. Рекомендуется настроить в кабинете ЮKassa проверку подлинности уведомлений по [документации ЮKassa](https://yookassa.ru/developers/using-api/webhooks) (при необходимости доработать точку входа `webhook.php` под проверку подписи, если вы её включаете).
+`order_hash` в `metadata` сверяется с `getOrderHash()` у обработчика — это защита от чужого JSON с подставным заказом. Про подпись и прочие проверки — в [справочнике по вебхукам](https://yookassa.ru/developers/using-api/webhooks). При появлении требований с вашей стороны правьте `webhook.php` под них.
 
 ## Двухстадийная оплата
 
@@ -86,7 +84,7 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 - **Подтверждение списания** выполняется вызовом API capture (см. ниже) — после успеха процессор выставляет заказу `ms3_status_paid`.
 - **Отмена** холда в ЮKassa приводит к уведомлению **`canceled`** — заказ получает `ms3_status_canceled`.
 
-Спланируйте бизнес-процесс: например, ручное подтверждение менеджером после проверки заказа.
+Решите заранее, кто подтверждает списание: например, менеджер в MODX после просмотра заказа или ваш скрипт по событию.
 
 ## Процессор Capture (подтверждение холда)
 
@@ -95,9 +93,9 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 
 **Условия:**
 
-- у заказа способ оплаты — именно `Msp3YooKassa\Payment\YooKassaTwoStagePayment`;
-- в `properties` заказа есть `yookassa_payment_id`;
-- в настройках заданы `shop_id` и `secret_key`.
+- у заказа способ оплаты — именно `Msp3YooKassa\Payment\YooKassaTwoStagePayment`.
+- в `properties` заказа есть `yookassa_payment_id`.
+- в настройках заданы `msp3yookassa_shop_id` и `msp3yookassa_secret_key`.
 
 **Параметр:** `order_id` — числовой ID заказа MiniShop3.
 
@@ -122,20 +120,18 @@ if ($response->isError()) {
 
 ## Событие для позиций чека
 
-Перед добавлением позиции товара в чек вызывается системное событие:
+Перед добавлением позиции товара в чек вызывается системное событие MODX с именем **`mspYooKassaOnPreparePaymentReceiptItem`** (так оно задано в коде пакета — подключайте плагин на нём, если нужно менять позиции).
 
-- **`mspYooKassaOnPreparePaymentReceiptItem`**
+Передаваемые поля: `order`, `orderProduct`, `item` (массив позиции по контракту ЮKassa, изменяемый по ссылке).
 
-Передаваемые поля: `order`, `orderProduct`, `item` (массив позиции по контракту ЮKassa; можно изменять по ссылке).
-
-Используйте для уточнения `description`, `vat_code`, `payment_subject` / `payment_mode` под вашу учётную политику.
+Нужны свои `description`, `vat_code`, `payment_subject` / `payment_mode` — правьте `item` в плагине на этом событии.
 
 ## Ограничения и заметки
 
 - Валюта платежа в коде зафиксирована как **RUB**.
 - Минимальная сумма заказа для создания платежа — не менее **0.01** условных единиц.
 - Ключ идемпотентности при `createPayment` — UUID заказа или уникальный префикс, чтобы повторное оформление не плодило дубли при сбоях.
-- Для работы SDK в точках входа подключается `vendor/autoload.php` компонента; при сборке пакета зависимости Composer должны попадать в транспорт.
+- Для работы SDK в точках входа подключается `vendor/autoload.php` компонента. При сборке пакета зависимости Composer должны попадать в транспорт.
 
 ## Связанные разделы документации
 

@@ -4,7 +4,7 @@ title: Быстрый старт
 
 # Быстрый старт
 
-Пошаговое подключение приёма оплаты через ЮKassa к сайту с MiniShop3.
+Как включить приём оплаты через ЮKassa на сайте с MiniShop3.
 
 ## Требования
 
@@ -13,7 +13,8 @@ title: Быстрый старт
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | установлен |
-| Аккаунт ЮKassa | магазин в [личном кабинете](https://yookassa.ru/my) (для проверки — [тестовый магазин](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing)) |
+| pdoTools | 3.x |
+| Аккаунт ЮKassa | [Личный кабинет](https://yookassa.ru/my). Для проверки без боевых денег — **тестовый магазин** (отдельные `shop_id` и ключ с префиксом `test_`), см. [тестовую среду](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing) и [тестовые карты](https://yookassa.ru/developers/using-api/testing#test-bank-card) |
 
 ## Шаг 1: Установка пакета
 
@@ -22,14 +23,14 @@ title: Быстрый старт
 3. Установите **msp3YooKassa** (загрузка с ModStore).
 4. **Управление → Очистить кэш**.
 
-После установки должен появиться плагин **msp3yookassa_bootstrap** (событие `OnMODXInit`) — он подгружает автозагрузку для классов оплаты. Проверьте, что плагин **включён**.
+После установки должен появиться плагин **msp3yookassa_bootstrap** (событие `OnMODXInit`): он подключает автозагрузку классов оплаты. Убедитесь, что плагин не отключён.
 
 ## Шаг 2: Ключи магазина в MODX
 
 1. **Настройки → Системные настройки**, фильтр по пространству имён **`msp3yookassa`**.
 2. Заполните:
-   - **`msp3yookassa.shop_id`** — идентификатор магазина из кабинета ЮKassa;
-   - **`msp3yookassa.secret_key`** — секретный ключ (для теста — ключ с префиксом `test_`).
+   - **`msp3yookassa_shop_id`** — идентификатор магазина из кабинета ЮKassa.
+   - **`msp3yookassa_secret_key`** — секретный ключ (для теста — ключ с префиксом `test_`).
 
 Подробнее: [Системные настройки](settings).
 
@@ -39,13 +40,11 @@ title: Быстрый старт
 
 1. Войдите в [личный кабинет ЮKassa](https://yookassa.ru/my).
 2. Откройте настройки **HTTP-уведомлений** (интеграция / уведомления — см. [документацию](https://yookassa.ru/developers/using-api/webhooks)).
-3. Укажите URL **с вашим доменом и HTTPS**:
+3. Укажите URL **с вашим доменом и HTTPS** (только путь msp3YooKassa ниже):
 
 ```text
 https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 ```
-
-4. Сохраните. При необходимости включите отладку: **`msp3yookassa.debug`** = «Да» и смотрите лог MODX.
 
 ## Шаг 4: Способ оплаты в MiniShop3
 
@@ -63,24 +62,26 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 ## Шаг 5: Проверка оплаты
 
 1. Оформите тестовый заказ на сумму не меньше **0,01** ₽.
-2. Выберите ЮKassa и перейдите на оплату — должен открыться хост ЮKassa (редирект).
-3. Оплатите [тестовой картой](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing#test-bank-card), если используете тестовые ключи.
+2. Выберите ЮKassa и перейдите к оплате — откроется страница ЮKassa (редирект).
+3. При тестовых ключах платите [тестовой картой](https://yookassa.ru/developers/using-api/testing#test-bank-card). **Боевые карты в тестовом магазине не проходят** — так задано в правилах ЮKassa.
 4. После успеха в MODX у заказа должен выставиться статус из **`ms3_status_paid`** (часто это ID `3` — проверьте в настройках MiniShop3).
 
-Если статус не меняется — чаще всего не приходит webhook (URL, HTTPS, файрвол) или неверные ключи.
+Статус не сменился — чаще всего не доходит webhook (URL, HTTPS, фаервол) или в MODX указаны не те ключи.
 
 ## Шаг 6: Чеки 54-ФЗ (опционально)
 
 Если нужно передавать данные чека в запрос создания платежа:
 
-1. Включите **`msp3yookassa.payment_receipt`** = «Да».
-2. Укажите **`msp3yookassa.vat_code`** (код НДС по справочнику ЮKassa).
+1. Включите **`msp3yookassa_payment_receipt`** = «Да».
+2. Укажите **`msp3yookassa_vat_code`** (коды 1–10 — см. [таблицу в настройках](settings)).
 3. Убедитесь, что у заказа есть **email** покупателя (`properties.email` заказа или email профиля пользователя).
 
-Иначе чек в запрос не попадёт. Подробнее: [Системные настройки](settings), [Интеграция](integration).
+В тестовом магазине в кабинете можно включить **проверку чеков**: касса и ОФД имитируются, на руки чек не уйдёт — так и задумано для отладки. Перед приёмом реальных платежей сверьте настройки кассы уже в **рабочем** магазине.
+
+Без email в заказе чек в запрос не подставится. Детали: [настройки](settings), [интеграция](integration).
 
 ## Что дальше
 
-- [Системные настройки](settings) — `success_url`, `fail_url`, отладка, НДС
-- [Интеграция и сценарии](integration) — webhook, двухстадийная оплата, процессор Capture, событие `mspYooKassaOnPreparePaymentReceiptItem`
+- [Системные настройки](settings) — `msp3yookassa_success_url`, `msp3yookassa_fail_url`, `msp3yookassa_debug`, НДС
+- [Интеграция и сценарии](integration) — webhook, двухстадийная оплата, процессор Capture, событие для строк чека
 - [MiniShop3 — оформление заказа](/components/minishop3/frontend/order) — сниппет заказа и сценарий оплаты на сайте

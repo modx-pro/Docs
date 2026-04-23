@@ -5,16 +5,16 @@ description: YooKassa credentials, 54-FZ receipts, return URLs, debug
 
 # msp3YooKassa system settings
 
-Short setup path: [Quick start](quick-start).
+Install order: [Quick start](quick-start).
 
-All settings live in the **`msp3yookassa`** namespace (`msp3yookassa.<key>`).
+All settings use the **`msp3yookassa`** namespace. In `modSystemSetting` and in `getOption()`, the **key** is **underscore-separated**: `msp3yookassa_shop_id`, `msp3yookassa_secret_key`, etc. Older dotted names (`msp3yookassa.shop_id`) are migrated on package upgrade. Below are the current keys.
 
 ## Required
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `msp3yookassa.shop_id` | text | **Shop ID** from the [merchant profile](https://yookassa.ru/my). For a [test shop](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing), use the test shop ID from the dashboard. |
-| `msp3yookassa.secret_key` | password | **Secret key** (do not confuse with legacy “shop password” wording in older [mspYooKassa MS2](https://modstore.pro/packages/payment-system/mspyookassa) docs). For testing, use a `test_` key. |
+| `msp3yookassa_shop_id` | text | **Shop ID** from the [merchant profile](https://yookassa.ru/my). For a [test shop](https://yookassa.ru/developers/payment-acceptance/testing-and-going-live/testing), use the test shop ID from the dashboard. |
+| `msp3yookassa_secret_key` | password | **Secret key** (older merchant-API material may use “shop password” wording). YooKassa’s API uses **Shop ID + Secret key**. For testing, use a `test_` key. |
 
 Without both values, payment creation fails with “Payment is not configured”. How keys are sent to the API: [interaction format](https://yookassa.ru/developers/using-api/interaction-format).
 
@@ -22,23 +22,38 @@ Without both values, payment creation fails with “Payment is not configured”
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `msp3yookassa.success_url` | URL | After **successful** payment. Empty — MiniShop3 thanks page (`ms3_order_redirect_thanks_id`) with `msorder=<uuid>`. |
-| `msp3yookassa.fail_url` | URL | After **failed** payment. Empty — thanks page with `payment_fail=1`. |
+| `msp3yookassa_success_url` | URL | After **successful** payment. Empty — MiniShop3 thanks page (`ms3_order_redirect_thanks_id`) with `msorder=<uuid>`. |
+| `msp3yookassa_fail_url` | URL | After **failed** payment. Empty — thanks page with `payment_fail=1`. |
 
 ## Fiscalization (54-FZ)
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `msp3yookassa.payment_receipt` | yes/no | Send a `receipt` object in `createPayment`. |
-| `msp3yookassa.vat_code` | list | VAT code for receipt lines: **1** — no VAT; **2** — 0%; **3** — 10%; **4** — 20%; **5** — 10/110; **6** — 20/120; **7** — 5%; **8** — 7%; **9** — 5/105; **10** — 7/107 (YooKassa reference). |
+| `msp3yookassa_payment_receipt` | yes/no | Send a `receipt` object in `createPayment`. |
+| `msp3yookassa_vat_code` | list | VAT code for receipt lines per YooKassa (codes **1–10**, see [receipt basics](https://yookassa.ru/developers/payment-acceptance/receipts/basics)). |
 
-A valid customer **email** is required: from `properties.email` on the order or from `modUserProfile.email`. If no email is found, no receipt is attached.
+VAT codes (`vat_code`):
+
+| Code | Meaning |
+|------|---------|
+| 1 | No VAT |
+| 2 | VAT 0% |
+| 3 | VAT 10% |
+| 4 | VAT 20% |
+| 5 | Calculated VAT 10/110 |
+| 6 | Calculated VAT 20/120 |
+| 7 | VAT 5% |
+| 8 | VAT 7% |
+| 9 | Calculated VAT 5/105 |
+| 10 | Calculated VAT 7/107 |
+
+The customer must have an **email** in the order (`properties.email` or the user profile). With no address, the receipt block is not sent.
 
 ## Service
 
 | Key | Type | Description |
 |-----|------|-------------|
-| `msp3yookassa.debug` | yes/no | Write debug messages to the MODX log (`LOG_LEVEL_DEBUG`). |
+| `msp3yookassa_debug` | yes/no | Write debug messages to the MODX log (`LOG_LEVEL_DEBUG`). |
 
 ## Related MiniShop3 settings
 
