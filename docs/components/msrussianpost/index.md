@@ -35,7 +35,7 @@ items:
 - **Виджет на оформлении заказа** — ввод индекса, список методов с ценой и сроком. Показ и скрытие при смене способа доставки (обёртка `.msrp__wrapper` или `[data-msrp-widget]`)
 - **Плагины** — **msRussianPost Autoload** (`OnMODXInit`) подключает класс доставки; **msRussianPost Delivery** (`msOnGetDeliveryCost`) подставляет стоимость выбранного метода; **msRussianPost Order tariff** (`msOnSubmitOrder`, `msOnBeforeCreateOrder`, `msOnCreateOrder`) сохраняет код тарифа в свойствах заказа для карточки в менеджере MiniShop3
 - **Кэш ответов API** — настраиваемый TTL, очистка из панели компонента в MODX
-- **Админ-панель (Vue 3)** — раздел **Extras → Почта России**: тестовый расчёт, журнал запросов к API, справочник кодов объектов, очистка кэша (нужен [VueTools](https://docs.modx.pro/components/vuetools/)) — см. [Админка в MODX](admin-ui)
+- **Админ-панель (Vue 3, PrimeVue 4)** — раздел **Extras → Почта России**: тестовый расчёт, журнал запросов к API, справочник кодов объектов, очистка кэша (нужен [VueTools](https://docs.modx.pro/components/vuetools/)) — см. [Админка в MODX](admin-ui)
 - **Фронтенд** — ES-модульный скрипт без jQuery, хуки `ms3Hooks`, кастомные DOM-события
 - **Локализация** — лексиконы MODX (ru, en, uk). Для JavaScript сначала подключайте сниппет `msrpLexiconScript`, затем `msRussianPost`
 - **Кастомизация** — Fenom-чанки `tplRussianPostStatus`, `tplRussianPostMethods`, BEM-префикс `msrp__`, CSS-переменные

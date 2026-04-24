@@ -15,7 +15,7 @@ description: Webhook, одно- и двухстадийная оплата, пр
 |--------------------------------------------------------------------------------------------------------|---------------------------|
 | Создать платеж (`POST /v3/payments`), указать `amount`, `capture`, `confirmation.type = redirect`, `return_url` | `YooKassaPayment::send()` — `createPayment()` через SDK, `confirmation.return_url` из метода `getReturnUrl()` (настраиваемые [`success_url` / `fail_url`](/components/msp3yookassa/settings) или страница благодарности MS3) |
 | [Ключ идемпотентности](https://yookassa.ru/developers/using-api/interaction-format#idempotence) | UUID заказа или уникальный префикс (`idempotenceKey`) |
-| Редирект на `confirmation_url` | Ответ обработчика оплаты с `redirect` / `payment_link` для фронтенда MS3 |
+| Редирект на `confirmation_url` | Ответ обработчика оплаты с `redirect` / `payment_link` и идентификаторами заказа (см. [ответ `send()`](#ответ-send-и-фронтенд)) |
 | Дождаться `succeeded` / обработать отмену | В первую очередь [HTTP-уведомления](https://yookassa.ru/developers/using-api/webhooks) → `webhook.php` → `WebhookHandler` |
 
 Как пользователь подтверждает оплату при **redirect**, разобрано в [«Процесс платежа»](https://yookassa.ru/developers/payment-acceptance/getting-started/payment-process#user-confirmation). [Одно- и двухстадийный](https://yookassa.ru/developers/payment-acceptance/getting-started/payment-process#capture-and-cancel) режим — это `capture`: `true` в `YooKassaPayment`, `false` в `YooKassaTwoStagePayment`.
@@ -49,6 +49,22 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 ## Способы оплаты для покупателя
 
 Карта, **СБП** или кошелёк покупатель выбирает уже **на стороне ЮKassa** после перехода по `confirmation_url`. Виджет на сайте не встраиваем — только **redirect**, как в [базовом примере](https://yookassa.ru/developers/payment-acceptance/getting-started/quick-start).
+
+## Ответ `send()` и фронтенд {#ответ-send-и-фронтенд}
+
+После успешного `createPayment` и **сохранения заказа** с `yookassa_payment_id` в `properties` успешный JSON от MS3 (и полезная нагрузка для кастомного фронтенда) включает в том числе:
+
+| Поле | Смысл |
+|------|--------|
+| `redirect` / `payment_link` | URL страницы оплаты ЮKassa |
+| `payment_id` | Идентификатор платежа в API ЮKassa |
+| `order_id` | Числовой ID заказа MiniShop3 |
+| `order_num` | Номер заказа (строка) |
+| `msorder` | UUID заказа (как в `return_url` и ссылке «спасибо») |
+
+Если сохранить заказ с `yookassa_payment_id` **не удалось**, возвращается ошибка с текстом вроде «Could not save order after payment creation» — повторяйте попытку или проверьте целостность заказа; платёж в ЮKassa при этом уже мог быть создан (разбирайте в кабинете ЮKassa).
+
+Штатные сообщения отладки в лог MODX (в т.ч. тело запроса к API с меткой `YooKassa createPayment request`) пишутся **только** при `msp3yookassa_debug` = «Да».
 
 ## Поток одностадийной оплаты
 
@@ -96,6 +112,8 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 - у заказа способ оплаты — именно `Msp3YooKassa\Payment\YooKassaTwoStagePayment`.
 - в `properties` заказа есть `yookassa_payment_id`.
 - в настройках заданы `msp3yookassa_shop_id` и `msp3yookassa_secret_key`.
+
+Строка в лог MODX при неудачном capture пишется **только** при включённом `msp3yookassa_debug`; текст ошибки по-прежнему возвращается в ответе процессора менеджеру.
 
 **Параметр:** `order_id` — числовой ID заказа MiniShop3.
 
