@@ -4,7 +4,7 @@ title: mxDadataForm
 
 # Сниппет mxDadataForm
 
-Один сниппет, **`dadata-form.js`**: несколько полей внутри контейнера с конфигом **JSON**. Без jQuery. Типы: **ADDRESS**, **NAME**, **EMAIL**, **BANK**, **PARTY**; **GEOLOCATE** (кнопка геолокации); **VERSION_INFO** (вывод версии API).
+Один сниппет, **`dadata-form.js`**: несколько полей внутри контейнера с конфигом **JSON**. Без jQuery. Типы: **ADDRESS**, **NAME**, **EMAIL**, **BANK**, **PARTY**, **GEOLOCATE** (кнопка геолокации), **VERSION_INFO** (вывод версии API).
 
 ## Параметры
 

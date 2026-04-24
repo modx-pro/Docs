@@ -13,7 +13,7 @@ description: Публичные релизы mxDadata для MODX
 
 **Добавлено**
 
-- Интеграция с DaData: Suggest, Clean, Party/FindById; `DadataClient`, кэш, rate limit, логи в БД
+- Интеграция с DaData: Suggest, Clean, Party/FindById, `DadataClient`, кэш, rate limit, логи в БД
 - Плагин MiniShop3: `OrderValidator`, `AddressMapper`, события `msOnBeforeCreateOrder`, `msOnSubmitOrder`, плейсхолдеры `OnWebPageInit`
 - `connector-web.php`, `connector.php`, сниппеты и JS витрины, универсальная форма `mxDadataForm`
 - Админка на Vue: дашборд, API, кэш, логи, Party, настройки MiniShop3
@@ -25,4 +25,4 @@ description: Публичные релизы mxDadata для MODX
 
 **Зависимости**
 
-- MODX 3.x, MiniShop3 3.x, VueTools для раздела в менеджере; опционально Scheduler для ротации логов
+- MODX 3.x, MiniShop3 3.x, VueTools для раздела в менеджере. Опционально Scheduler для ротации логов

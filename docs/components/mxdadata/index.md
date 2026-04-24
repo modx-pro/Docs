@@ -51,17 +51,17 @@ items:
 
 - **Token** DaData используется для Suggest и запросов с витрины через **`connector-web.php`** (запросы ограничены по действиям и rate limit). В HTML/шаблон не подставляйте **Secret** вручную.
 - **Secret** храните только в системных настройках MODX: он нужен для **Clean** и **Party** на **сервере** (плагин заказа, менеджер). В JavaScript бандлы компонента Secret **не** передают.
-- Сетевой доступ к DaData с сервера — по HTTPS; ключи в БД MODX защищайте [политиками доступа](https://docs.modx.com/3.x/en/building-sites/client-proofing) к настройкам.
+- Сетевой доступ к DaData с сервера — по HTTPS. Ключи в БД MODX защищайте [политиками доступа](https://docs.modx.com/3.x/en/building-sites/client-proofing) к настройкам.
 
 ## Тарифы, баланс и лимиты DaData
 
-- Условия и стоимость — в [кабинете DaData](https://dadata.ru/pricing/); **баланс** и **статистика** запросов удобно смотреть в **Extras → mxDadata → Dashboard** (как и **Логи**).
-- Сайт расходует квоту на каждую подсказку/валидацию; **RateLimiter** в компоненте (`mxdadata_throttle_rpm`) снижает риск всплесков и 429. При **исчерпанном балансе** ответы API дают отказ — см. [FAQ → 429](faq#429-лимиты-и-баланс-dadata) и [Логи](admin-ui).
+- Условия и стоимость — в [кабинете DaData](https://dadata.ru/pricing/). **Баланс** и **статистика** запросов удобно смотреть в **Extras → mxDadata → Dashboard** (как и **Логи**).
+- Сайт расходует квоту на каждую подсказку и валидацию. **RateLimiter** в компоненте (`mxdadata_throttle_rpm`) снижает риск всплесков и 429. При **исчерпанном балансе** ответы API дают отказ — см. [FAQ → 429](faq#429-лимиты-и-баланс-dadata) и [Логи](admin-ui).
 
 ## Возможности
 
 - **Suggest на витрине** — сниппеты `mxDadataAddressSuggest`, `mxDadataPartySuggest`, универсальная форма `mxDadataForm` (JSON-конфиг полей) через публичный коннектор `assets/components/mxdadata/connector-web.php`
-- **Плагин MiniShop3** — события `msOnBeforeCreateOrder`, `msOnSubmitOrder`: валидация телефона и email (Clean), нормализация адреса, обязательный FIAS/индекс, блокировка заказа при ошибках; плюс `OnWebPageInit` — плейсхолдеры веб-контекста для шаблонов
+- **Плагин MiniShop3** — на `msOnBeforeCreateOrder` и `msOnSubmitOrder`: валидация телефона и email (Clean), нормализация адреса, обязательный FIAS/индекс, блокировка заказа при ошибках. Дополнительно **`OnWebPageInit`** подставляет плейсхолдеры веб-контекста в шаблоны
 - **Админ-панель (Vue)** — **Extras → mxDadata**: дашборд (статус API, баланс), настройки API, вкладка MiniShop3, кэш, логи, тест Party по ИНН (нужен [VueTools](https://docs.modx.pro/components/vuetools/))
 - **Кэш** — таблица `mxdadata_cache`, настраиваемый TTL, очистка из админки
 - **Логи** — таблица `mxdadata_log`, фильтры, просмотр request/response, ротация по расписанию (опционально пакет **Scheduler**)
@@ -94,13 +94,13 @@ items:
 
 С чего начать: [Быстрый старт](quick-start).
 
-[История изменений](changelog) на сайте документации; полный changelog в поставке: `core/components/mxdadata/docs/changelog.txt`.
+[История изменений](changelog) — на сайте документации. Полный changelog в поставке: `core/components/mxdadata/docs/changelog.txt`.
 
 ## Термины
 
 | Термин | Описание |
 |--------|----------|
-| **Token / Secret** | Ключи DaData: Token — в основном Suggest; Secret — Clean и Party |
+| **Token / Secret** | Ключи DaData: **Token** — в основном Suggest, **Secret** — Clean и Party |
 | **connector-web.php** | Публичный коннектор для AJAX-подсказок с витрины (ограничение частоты, кэш) |
 | **connector.php** | Коннектор для менеджерских процессоров (MODX) |
 | **Party** | API организаций по ИНН (реквизиты, адрес) |
@@ -117,4 +117,4 @@ items:
 - [FAQ](faq) — частые проблемы, 429, чек-лист перед продом
 - [История изменений](changelog) — публичные релизы
 
-Расширенные JSON-примеры для **mxDadataForm** — [Интеграция](integration#универсальная-форма-mxdadataform) и [сниппет](snippets/mxDadataForm); руководство по админке — [Админка в MODX](admin-ui).
+Расширенные JSON-примеры для **mxDadataForm** — [Интеграция](integration#универсальная-форма-mxdadataform) и [сниппет](snippets/mxDadataForm). Руководство по админке — [Админка в MODX](admin-ui).

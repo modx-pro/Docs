@@ -31,7 +31,7 @@ flowchart TD
   AM --> AD[модель Address MS3]
 ```
 
-Кратко текстом, если диаграммы не отображаются: **витрина** — запросы из JS/сниппета в `connector-web.php`, затем ограничение частоты, кэш в `mxdadata_cache`, при промахе — HTTP к Suggest/Party. **Заказ** — плагин на `msOnBeforeCreateOrder` / `msOnSubmitOrder` вызывает `OrderValidator` и сервисы Clean/Party; при успехе `AddressMapper` обновляет поля адреса.
+Кратко текстом, если диаграммы не отображаются: **витрина** — запросы из JS/сниппета в `connector-web.php`, затем ограничение частоты, кэш в `mxdadata_cache`, при промахе — HTTP к Suggest/Party. **Заказ** — плагин на `msOnBeforeCreateOrder` / `msOnSubmitOrder` вызывает `OrderValidator` и сервисы Clean/Party, а при успехе `AddressMapper` обновляет поля адреса.
 
 ## Плагин mxDadata
 
@@ -47,7 +47,7 @@ flowchart TD
 
 Класс **`OrderValidator`** использует **Clean** (телефон, email, адрес) и при необходимости **Party**, карту полей **`AddressMapper`**.
 
-- При **`mxdadata_block_order_on_error`** = «Да» и ошибках валидации в **output** события передаётся сообщение; заказ не создаётся
+- При **`mxdadata_block_order_on_error`** = «Да» и ошибках валидации в **output** события передаётся сообщение — заказ не создаётся
 - Сообщения для обязательного FIAS / индекса — из лексикона (`mxdadata_fias_required`, `mxdadata_index_required` и т.д.)
 - Успешная нормализация **обновляет** объект `Address` заказа перед сохранением
 
@@ -78,9 +78,9 @@ flowchart TD
 
 | Тип | Назначение |
 |-----|------------|
-| **ADDRESS** | Подсказка адреса; для `subject` задают соответствие полям ответа DaData; поддерживаются `bounds`, `from_bound`, `to_bound`, `locations`, `restrict_value`, `params`, `count`, связь **`master`** с «главным» полем |
+| **ADDRESS** | Подсказка адреса. В `subject` задают соответствие полям ответа DaData. Поддерживаются `bounds`, `from_bound`, `to_bound`, `locations`, `restrict_value`, `params`, `count`, связь **`master`** с «главным» полем |
 | **NAME**, **EMAIL**, **BANK**, **PARTY** | Подсказки по имени, почте, банку, организации (через `connector-web.php`) |
-| **GEOLOCATE** | В конфиге элемент должен быть **кнопкой**; в объекте: `latInput`, `lonInput` (id/name полей широты/долготы), `fillTarget` — куда подставить выбранный адрес; опционально `radius_meters`, `count` |
+| **GEOLOCATE** | В конфиге элемент — **кнопка**. В объекте: `latInput`, `lonInput` (id/name полей широты/долготы), `fillTarget` (куда подставить выбранный адрес), опционально `radius_meters`, `count` |
 | **VERSION_INFO** | Элемент с `id` (например `div`/`pre`) — в него выводится ответ `Tools/Version` (версия API DaData) |
 
 Допустимые **`action`** в `connector-web.php` для веб-части: `Suggest/Address`, `Suggest/Party`, `Suggest/Name`, `Suggest/Email`, `Suggest/Bank`, `Party/FindById`, `Geolocate/Address`, `Tools/Version` (см. коннектор в пакете). Сложные схемы с вложенным `subject` и несколькими полями удобно задавать через **`suggestionsChunk`** с чанком, содержащим только JSON.

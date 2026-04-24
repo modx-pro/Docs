@@ -12,14 +12,14 @@ title: FAQ
 2. **`mxdadata_enabled`** = «Да».
 3. Сниппет вызван **некэшированно** (`[[!…]]` или Fenom `!snippet`).
 4. Селектор поля совпадает с разметкой: задайте **`input`** для адреса / **`innInput`** для ИНН.
-5. Во вкладке **Network** запросы к `connector-web.php` возвращают JSON без 403/500; **баланс** DaData не исчерпан.
+5. Во вкладке **Network** запросы к `connector-web.php` возвращают JSON без 403/500, а **баланс** DaData не исчерпан.
 6. Поле для подсказки **уже в DOM** в момент инициализации скрипта (порядок сниппетов и AJAX-вставка формы).
 
 ## 429, лимиты и баланс DaData {#429-лимиты-и-баланс-dadata}
 
 - **HTTP 429** (Too Many Requests) — превышен лимит запросов **к DaData** или **внутренняя** защита: увеличьте [`mxdadata_throttle_rpm`](/components/mxdadata/settings#основные) только осознанно, проверьте, что с одной страницы не срабатывают лишние вызовы (дубли сниппетов, автокомплит в цикле).
-- **Баланс** — в [личном кабинете](https://dadata.ru/profile/#info) и на **Dashboard** в **Extras → mxDadata**; исчерпание квоты DaData тоже даёт отказы — смотрите **Network** и [Логи](admin-ui).
-- Рост нагрузки: кэш в `mxdadata_cache` снижает повторы; при пиках трафика согласуйте тариф с [условиями DaData](https://dadata.ru/pricing/).
+- **Баланс** — в [личном кабинете](https://dadata.ru/profile/#info) и на **Dashboard** в **Extras → mxDadata**. Исчерпание квоты DaData тоже даёт отказы — смотрите **Network** и [Логи](admin-ui).
+- Рост нагрузки: кэш в `mxdadata_cache` снижает повторы. При пиках трафика согласуйте тариф с [условиями DaData](https://dadata.ru/pricing/).
 
 ## «Payment is not configured» / ошибки не о том
 
@@ -35,13 +35,13 @@ title: FAQ
 
 ## Логи раздуваются
 
-В **Extras → mxDadata → Логи** доступны фильтры по типу запроса, статусу и дате; просмотр пары request/response в модальном окне; **ротация** удаляет записи старше **N** дней согласно **`mxdadata_log_retention_days`**.
+В **Extras → mxDadata → Логи** доступны фильтры по типу запроса, статусу и дате, просмотр пары request/response в модальном окне и **ротация** записей старше **N** дней (по **`mxdadata_log_retention_days`**).
 
-В проде держите **`mxdadata_log_level`** = `error` или `warning`; ротацию настройте вручную или через **Scheduler**, если пакет установлен. Срок хранения уменьшайте по **`mxdadata_log_retention_days`**, если таблица растёт.
+В проде держите **`mxdadata_log_level`** = `error` или `warning`. Ротацию настройте вручную или через **Scheduler**, если пакет установлен. Срок хранения уменьшайте по **`mxdadata_log_retention_days`**, если таблица растёт.
 
 ## Нужна универсальная форма без MS3
 
-Сниппет **`mxDadataForm`** с **`suggestions`** или **`suggestionsChunk`** — см. [mxDadataForm](snippets/mxDadataForm). В Fenom для большого JSON удобнее **чанк** с чистым JSON, чем длинный inline; при шаблонах с `{extends}` / `{block}` чаще передают **`suggestionsChunk`**, чтобы JSON не «терялся» при рендере.
+Сниппет **`mxDadataForm`** с **`suggestions`** или **`suggestionsChunk`** — см. [mxDadataForm](snippets/mxDadataForm). В Fenom для большого JSON удобнее **чанк** с чистым JSON, чем длинный inline. В шаблонах с `{extends}` / `{block}` чаще передают **`suggestionsChunk`**, чтобы JSON не «терялся» при рендере.
 
 ## Нужен список полей `name` и демо
 
@@ -51,8 +51,8 @@ title: FAQ
 
 1. **HTTPS** на витрине и в менеджере.
 2. Ключи DaData **боевого** кабинета, **Extras → mxDadata** — **Тест соединения** успешен.
-3. [`mxdadata_debug_mode`](settings#основные) = «Нет»; в URL нет постоянного `?mxdadata_debug=1` для гостей.
-4. **Логи:** [`mxdadata_log_level`](settings#основные) = `error` или `warning`; [ротация](admin-ui) и при необходимости **Scheduler** настроены.
+3. [`mxdadata_debug_mode`](settings#основные) = «Нет», в URL нет постоянного `?mxdadata_debug=1` для гостей.
+4. **Логи:** [`mxdadata_log_level`](settings#основные) = `error` или `warning`, [ротация](admin-ui) и при необходимости **Scheduler** настроены.
 5. Смоук-оформление: подсказка → заказ в админке с ожидаемым **FIAS/индексом** (если включена строгая проверка).
 6. [Интеграция](integration) с [msRussianPost](frontend#порядок-с-msrussianpost): порядок сниппетов и пересчёт доставки.
 

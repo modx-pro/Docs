@@ -33,7 +33,7 @@ title: Системные настройки
 | `mxdadata_throttle_rpm` | число | `60` | Лимит запросов в минуту (защита квоты DaData) |
 | `mxdadata_log_level` | список | `warning` | Уровни: `error`, `warning`, `debug` |
 | `mxdadata_debug_mode` | да/нет | Нет | Режим разработки: детальнее в лог и на витрине (в т.ч. детали ошибок в connector) |
-| `mxdadata_log_retention_days` | число | `90` | Хранение записей логов, дней; используется при ротации |
+| `mxdadata_log_retention_days` | число | `90` | Хранение записей логов (дней), используется при ротации |
 
 ## MiniShop3 {#minishop3}
 

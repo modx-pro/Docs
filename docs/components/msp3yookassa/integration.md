@@ -62,7 +62,7 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 | `order_num` | Номер заказа (строка) |
 | `msorder` | UUID заказа (как в `return_url` и ссылке «спасибо») |
 
-Если сохранить заказ с `yookassa_payment_id` **не удалось**, возвращается ошибка с текстом вроде «Could not save order after payment creation» — повторяйте попытку или проверьте целостность заказа; платёж в ЮKassa при этом уже мог быть создан (разбирайте в кабинете ЮKassa).
+Если сохранить заказ с `yookassa_payment_id` **не удалось**, возвращается ошибка с текстом вроде «Could not save order after payment creation» — повторяйте попытку или проверьте целостность заказа. Платёж в ЮKassa при этом уже мог быть создан (разбирайте в кабинете ЮKassa).
 
 Штатные сообщения отладки в лог MODX (в т.ч. тело запроса к API с меткой `YooKassa createPayment request`) пишутся **только** при `msp3yookassa_debug` = «Да».
 
@@ -113,7 +113,7 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 - в `properties` заказа есть `yookassa_payment_id`.
 - в настройках заданы `msp3yookassa_shop_id` и `msp3yookassa_secret_key`.
 
-Строка в лог MODX при неудачном capture пишется **только** при включённом `msp3yookassa_debug`; текст ошибки по-прежнему возвращается в ответе процессора менеджеру.
+Строка в лог MODX при неудачном capture пишется **только** при включённом `msp3yookassa_debug`. Текст ошибки по-прежнему возвращается в ответе процессора менеджеру.
 
 **Параметр:** `order_id` — числовой ID заказа MiniShop3.
 

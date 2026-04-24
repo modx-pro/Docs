@@ -55,7 +55,7 @@ title: mxDadataAddressSuggest
 
 ## Поведение
 
-- Скрипт регистрируется в конец страницы; инициализация после `DOMContentLoaded` и готовности `window.mxDadataAddressSuggest`
+- Скрипт регистрируется в конец страницы. Инициализация — после `DOMContentLoaded` и готовности `window.mxDadataAddressSuggest`
 - Отладка в консоли: `mxdadata_debug_mode`, `?mxdadata_debug=1`, `localStorage mxdadata_web_debug = 1` — см. [Интеграция → отладка](/components/mxdadata/integration#отладка-на-витрине)
 
 ## См. также
