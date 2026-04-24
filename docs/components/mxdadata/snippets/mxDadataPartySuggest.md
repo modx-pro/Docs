@@ -36,7 +36,7 @@ title: mxDadataPartySuggest
 ```fenom
 {'!mxDadataPartySuggest' | snippet : [
     'innInput' => '[name="address_inn"]',
-    'connectorUrl' => $.modx.config.assets_url ~ 'components/mxdadata/connector-web.php',
+    'connectorUrl' => 'assets_url' | config ~ 'components/mxdadata/connector-web.php',
 ]}
 ```
 

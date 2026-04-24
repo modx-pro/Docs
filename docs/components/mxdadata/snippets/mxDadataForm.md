@@ -52,7 +52,7 @@ title: mxDadataForm
 {'!mxDadataForm' | snippet : [
     'selector' => '#dadata-form',
     'suggestionsChunk' => 'chunk.mxdadata.demoFormSug',
-    'connectorUrl' => $.modx.config.assets_url ~ 'components/mxdadata/connector-web.php',
+    'connectorUrl' => 'assets_url' | config ~ 'components/mxdadata/connector-web.php',
 ]}
 ```
 

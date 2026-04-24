@@ -36,7 +36,7 @@ title: mxDadataAddressSuggest
 ```fenom
 {'!mxDadataAddressSuggest' | snippet : [
     'input' => '[name="address_text_address"]',
-    'connectorUrl' => $.modx.config.assets_url ~ 'components/mxdadata/connector-web.php',
+    'connectorUrl' => 'assets_url' | config ~ 'components/mxdadata/connector-web.php',
 ]}
 ```
 

@@ -22,19 +22,19 @@ title: Подключение на сайте
 
 | `name` (форма) | Поле модели | Описание | Автозаполнение |
 |----------------|------------|----------|----------------|
-| `address_first_name` | first_name | Имя | — |
-| `address_last_name` | last_name | Фамилия | — |
-| `address_phone` | phone | Телефон | — |
-| `address_email` | email | Email | — |
-| `address_text_address` | text_address | Адрес (основное поле для подсказок) | Да |
-| `address` | text_address | То же, альтернативное имя | Да |
-| `address_fias_id` | fias_id | Код ФИАС (часто скрытое) | Да |
-| `address_city` | city | Город | Да |
-| `address_region` | region | Регион | Да |
-| `address_index` | index | Почтовый индекс | Да |
-| `address_street` | street | Улица | Да |
-| `address_building` | building | Дом | Да |
-| `address_room` | room | Квартира / офис | Да |
+| `address_first_name` | `first_name` | Имя | — |
+| `address_last_name` | `last_name` | Фамилия | — |
+| `address_phone` | `phone` | Телефон | — |
+| `address_email` | `email` | Email | — |
+| `address_text_address` | `text_address` | Адрес (основное поле для подсказок) | Да |
+| `address` | `text_address` | То же, альтернативное имя | Да |
+| `address_fias_id` | `fias_id` | Код ФИАС (часто скрытое) | Да |
+| `address_city` | `city` | Город | Да |
+| `address_region` | `region` | Регион | Да |
+| `address_index` | `index` | Почтовый индекс | Да |
+| `address_street` | `street` | Улица | Да |
+| `address_building` | `building` | Дом | Да |
+| `address_room` | `room` | Квартира / офис | Да |
 
 ### Реквизиты юрлица (Party, ИНН)
 

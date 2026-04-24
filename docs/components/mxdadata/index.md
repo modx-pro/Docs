@@ -29,8 +29,6 @@ items:
     link: developer
   - text: FAQ
     link: faq
-  - text: История изменений
-    link: changelog
 ---
 
 # mxDadata
@@ -50,7 +48,7 @@ items:
 ## Безопасность ключей
 
 - **Token** DaData используется для Suggest и запросов с витрины через **`connector-web.php`** (запросы ограничены по действиям и rate limit). В HTML/шаблон не подставляйте **Secret** вручную.
-- **Secret** храните только в системных настройках MODX: он нужен для **Clean** и **Party** на **сервере** (плагин заказа, менеджер). В JavaScript бандлы компонента Secret **не** передают.
+- **Secret** храните только в системных настройках MODX: он нужен для **Clean** и **Party** на **сервере** (плагин заказа, менеджер).
 - Сетевой доступ к DaData с сервера — по HTTPS. Ключи в БД MODX защищайте [политиками доступа](https://docs.modx.com/3.x/en/building-sites/client-proofing) к настройкам.
 
 ## Тарифы, баланс и лимиты DaData
@@ -94,8 +92,6 @@ items:
 
 С чего начать: [Быстрый старт](quick-start).
 
-[История изменений](changelog) — на сайте документации. Полный changelog в поставке: `core/components/mxdadata/docs/changelog.txt`.
-
 ## Термины
 
 | Термин | Описание |
@@ -113,8 +109,7 @@ items:
 - [Сниппеты](snippets/index) — адрес, ИНН, универсальная форма
 - [Подключение на сайте](frontend) — порядок вывода с [msRussianPost](/components/msrussianpost/), событие `mxdadata:order-address-updated`
 - [Интеграция и сценарии](integration) — события плагина, валидация, кэш, схемы потоков
-- [Для разработчиков](developer) — структура пакета, плейсхолдеры, сборка Vue, smoke-тесты, API DaData
-- [FAQ](faq) — частые проблемы, 429, чек-лист перед продом
-- [История изменений](changelog) — публичные релизы
+- [Для разработчиков](developer) — плейсхолдеры, API DaData
+- [FAQ](faq) — частые проблемы, 429
 
 Расширенные JSON-примеры для **mxDadataForm** — [Интеграция](integration#универсальная-форма-mxdadataform) и [сниппет](snippets/mxDadataForm). Руководство по админке — [Админка в MODX](admin-ui).
