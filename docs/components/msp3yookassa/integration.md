@@ -74,6 +74,23 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 4. `WebhookHandler` находит заказ по `metadata.order_id` / `order_num`, сверяет `order_hash`, при статусе **`succeeded`** выставляет заказу `status_id = ms3_status_paid`.
 5. Возврат пользователя на сайт идёт на `success_url` или страницу благодарности MiniShop3.
 
+```mermaid
+sequenceDiagram
+  autonumber
+  participant C as Клиент
+  participant S as MS3, YooKassaPayment
+  participant Y as API ЮKassa
+  participant W as webhook.php, WebhookHandler
+  C->>S: оформить заказ, выбрать оплату
+  S->>Y: createPayment (capture: true)
+  Y-->>S: yookassa_payment_id, confirmation_url
+  S-->>C: redirect
+  C->>Y: оплата в интерфейсе ЮKassa
+  Y->>W: HTTP-уведомление, status succeeded
+  W->>S: заказ → ms3_status_paid
+  C->>S: return на success_url
+```
+
 Факт оплаты для магазина фиксируйте по **webhook**, а не по одному только возврату браузера на сайт.
 
 ## Webhook
@@ -93,6 +110,15 @@ https://ваш-домен.ru/assets/components/msp3yookassa/webhook.php
 ## Двухстадийная оплата
 
 Способ оплаты **«Оплата через ЮKassa (двухстадийная)»** (`YooKassaTwoStagePayment`) создаёт платеж с **`capture: false`**: средства блокируются до подтверждения (capture) или отмены.
+
+```mermaid
+flowchart LR
+  A[createPayment<br/>capture: false] --> B[hold / ожидание]
+  B --> C[CaptureProcessor<br/>подтверждение списания]
+  C --> P[ms3_status_paid]
+  B --> N[уведомление canceled]
+  N --> X[ms3_status_canceled]
+```
 
 ### Поведение статусов в MODX
 

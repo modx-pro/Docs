@@ -72,6 +72,17 @@ flowchart TD
 
 После обновления адреса по подсказке (и связанного `order/set`) диспатчится **`mxdadata:order-address-updated`** на `document`. Его обрабатывает, в частности, [msRussianPost](/components/msrussianpost/) для пересчёта тарифов.
 
+```mermaid
+sequenceDiagram
+  autonumber
+  participant M as "mxDadata: подсказка"
+  participant D as document
+  participant R as msRussianPost
+  M->>D: mxdadata:order-address-updated
+  D->>R: обработчик
+  R->>R: recalculate() при доставке ПР
+```
+
 ## Универсальная форма mxDadataForm {#универсальная-форма-mxdadataform}
 
 Сниппет **`mxDadataForm`** читает JSON: ключи — `id` или `name` полей **внутри** контейнера `selector`. Типы полей (`type`):

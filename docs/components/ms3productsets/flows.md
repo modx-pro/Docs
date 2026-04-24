@@ -3,6 +3,34 @@ title: Потоки
 ---
 # Потоки (flows)
 
+## Схемы потоков
+
+Серверный вывод сниппетом (обзор):
+
+```mermaid
+flowchart TD
+  T[Ресурс / шаблон] --> S[сниппет ms3ProductSets]
+  S --> F[нормализация параметров]
+  F --> G[msps_get_products_by_type]
+  G --> DB[(ms3_product_sets, авто-типы)]
+  G -->|список ID| MP[msProducts, чанки]
+  MP --> OUT[HTML / toPlaceholder / return=ids / emptyTpl]
+```
+
+AJAX-рендер с фронтенда:
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant P as productsets.js
+  participant C as connector.php
+  participant SN as ms3ProductSets
+  P->>C: POST action=get_set
+  C->>SN: параметры из POST
+  SN-->>C: HTML
+  C-->>P: вставка в селектор
+```
+
 ## 1. Рендер блока подборки на фронте
 
 1. Шаблон вызывает сниппет: **MODX** — `[[!ms3ProductSets? ... ]]`, **Fenom** — `{'ms3ProductSets' | snippet : [ ... ]}`.

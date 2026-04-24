@@ -13,7 +13,7 @@ items:
   - text: Системные настройки
     link: settings
   - text: Сниппеты
-    link: snippets
+    link: snippets/index
     items:
       - text: mxDadataAddressSuggest
         link: snippets/mxDadataAddressSuggest
@@ -110,7 +110,7 @@ items:
 - [Быстрый старт](quick-start) — ключи, плагин, сниппеты в чанке заказа
 - [Админка в MODX](admin-ui) — вкладки, дашборд, логи, Party
 - [Системные настройки](settings) — API, кэш, throttling, MiniShop3
-- [Сниппеты](snippets/) — адрес, ИНН, универсальная форма
+- [Сниппеты](snippets/index) — адрес, ИНН, универсальная форма
 - [Подключение на сайте](frontend) — порядок вывода с [msRussianPost](/components/msrussianpost/), событие `mxdadata:order-address-updated`
 - [Интеграция и сценарии](integration) — события плагина, валидация, кэш, схемы потоков
 - [Для разработчиков](developer) — структура пакета, плейсхолдеры, сборка Vue, smoke-тесты, API DaData
