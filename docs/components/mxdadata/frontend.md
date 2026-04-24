@@ -76,4 +76,4 @@ title: Подключение на сайте
 
 При **auto_escape** выводите сниппеты как **сырой HTML** (`|raw` / `{raw …}`), чтобы не экранировались `<script>`.
 
-Примеры синтаксиса MODX и Fenom — в [сниппетах](snippets) и в [mxDadataForm](snippets/mxDadataForm).
+Примеры синтаксиса MODX и Fenom — в [сниппетах](snippets/) и в [mxDadataForm](snippets/mxDadataForm).

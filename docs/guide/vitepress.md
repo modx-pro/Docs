@@ -533,6 +533,28 @@ const line3 = 'Третья строка кода'
 
 :::
 
+## Диаграммы Mermaid
+
+Для схем подключён [vitepress-plugin-mermaid](https://github.com/emersonbottero/vitepress-plugin-mermaid) и [Mermaid](https://mermaid.js.org/). Оформляйте диаграмму как обычный fenced-блок с языком `mermaid` (как [в документации Mermaid](https://mermaid.js.org/intro/)):
+
+**Пример:**
+
+````markdown
+```mermaid
+flowchart LR
+  A[Старт] --> B[Конец]
+```
+````
+
+**Вывод:**
+
+```mermaid
+flowchart LR
+  A[Старт] --> B[Конец]
+```
+
+В тёмной теме стиль подхватывается автоматически. Блоки с `mmd` вместо `mermaid` тоже обрабатываются плагином (см. доку пакета).
+
 ## Элементы ввода с клавиатуры `<kbd>`
 
 Для того, чтобы указать элементы ввода с клавиатуры, например сочетания клавиш, оберните их в двойные квадратные скобки.

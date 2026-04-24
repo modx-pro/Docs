@@ -105,7 +105,7 @@ title: Быстрый старт
 ## Что дальше
 
 - [Системные настройки](settings) — кэш, throttling, логи
-- [Сниппеты](snippets) — параметры `input`, `innInput`, `suggestions`
+- [Сниппеты](snippets/) — параметры `input`, `innInput`, `suggestions`
 - [Админка в MODX](admin-ui) — журнал, кэш, тест Party
 - [Интеграция](integration) — плагин, валидация, связь с доставками
 - [Для разработчиков](developer) — структура пакета, сборка Vue, тесты
