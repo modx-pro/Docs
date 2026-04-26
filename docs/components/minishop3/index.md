@@ -30,6 +30,7 @@ items: [
       { text: 'Категория', link: 'interface/category' },
       { text: 'Товар', link: 'interface/product' },
       { text: 'Галерея', link: 'interface/gallery' },
+      { text: 'Центр уведомлений', link: 'interface/notifications' },
       {
         text: 'Настройки',
         link: 'interface/settings',
