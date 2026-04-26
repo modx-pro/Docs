@@ -1,7 +1,7 @@
 ---
 title: ms3RecentlyViewed
 description: 'Блок «Недавно просмотренные товары» для MiniShop3 — хранение в браузере или БД, похожие товары, админка'
-logo: "https://modstore.pro/assets/extras/ms3recentlyviewed/logo.png"
+logo: "https://modstore.pro/assets/extras/ms3recentlyviewed/logo.png?v=1"
 author: ibochkarev
 
 items: [

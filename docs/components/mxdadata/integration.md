@@ -91,10 +91,12 @@ sequenceDiagram
 |-----|------------|
 | **ADDRESS** | Подсказка адреса. В `subject` задают соответствие полям ответа DaData. Поддерживаются `bounds`, `from_bound`, `to_bound`, `locations`, `restrict_value`, `params`, `count`, связь **`master`** с «главным» полем |
 | **NAME**, **EMAIL**, **BANK**, **PARTY** | Подсказки по имени, почте, банку, организации (через `connector-web.php`) |
-| **GEOLOCATE** | В конфиге элемент — **кнопка**. В объекте: `latInput`, `lonInput` (id/name полей широты/долготы), `fillTarget` (куда подставить выбранный адрес), опционально `radius_meters`, `count` |
+| **GEOLOCATE** | В конфиге элемент — **кнопка**. В объекте: `latInput`, `lonInput` (id/name полей широты/долготы), `fillTarget` (куда подставить выбранный адрес), опционально `radius_meters`, `count`. По ответу геолокации: **первый** найденный адрес сразу подставляется в `fillTarget`. Если вариантов несколько, список остаётся для ручного выбора. |
 | **VERSION_INFO** | Элемент с `id` (например `div`/`pre`) — в него выводится ответ `Tools/Version` (версия API DaData) |
 
 Допустимые **`action`** в `connector-web.php` для веб-части: `Suggest/Address`, `Suggest/Party`, `Suggest/Name`, `Suggest/Email`, `Suggest/Bank`, `Party/FindById`, `Geolocate/Address`, `Tools/Version` (см. коннектор в пакете). Сложные схемы с вложенным `subject` и несколькими полями удобно задавать через **`suggestionsChunk`** с чанком, содержащим только JSON.
+
+Если **`suggestionsChunk`** задан, сниппет сначала читает JSON из чанка MODX (`$modx->getChunk()`). Когда в БД чанк пустой или в теле невалидный JSON, используется **файл** в пакете: `core/components/mxdadata/elements/chunks/<имя_чанка>.tpl` (тот же путь, что и у статического чанка в репозитории). Это помогает, когда конфиг в репозитории есть, а запись в БД ещё не перенесена.
 
 ## Связанные компоненты
 

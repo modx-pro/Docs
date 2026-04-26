@@ -33,7 +33,7 @@ items:
 
 # mxDadata
 
-**mxDadata** — дополнение для интеграции **[DaData](https://dadata.ru/)** с **[MiniShop3](/components/minishop3/)** на **[MODX Revolution 3](https://modx.com/)**: подсказки адреса и организаций на чекауте, нормализация и проверка данных через **Clean** и **Party** API, кэш и журнал запросов в панели управления.
+**mxDadata** — дополнение для интеграции **[DaData](https://dadata.ru/)** с **[MiniShop3](/components/minishop3/)** на **[MODX Revolution 3](https://modx.com/)**: подсказки адреса и организаций на чекауте, нормализация и проверка данных через **Clean** и **Party** API, кэш и журнал запросов в панели управления. Актуальная версия пакета в поставке — **1.0.0-pl**. Полный список изменений — в файле `core/components/mxdadata/docs/changelog.txt` в составе компонента.
 
 ## Минимальный путь к подсказкам на витрине
 
