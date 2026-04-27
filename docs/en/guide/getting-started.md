@@ -27,7 +27,7 @@ Select the required file for editing in the `docs/components/` directory.
 ## Recommended way to make changes to the documentation
 
 ::: info INFO
-For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as an npm or yarn package manager installed on your computer.
+For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as **pnpm**, npm, or yarn installed on your computer.
 Knowledge and skills of working with Vue are not required.
 :::
 
@@ -56,6 +56,11 @@ Link to step by step instructions
 
     ::: code-group
 
+    ```shell [pnpm]
+    pnpm install
+    pnpm dev
+    ```
+
     ```shell [npm]
     npm install
     npm run dev
@@ -82,15 +87,15 @@ Link to step by step instructions
 All documentation is located in the `docs` directory.
 
 ```
-📦docs
- ┣ 📂components     - extras documentation
- ┣ 📂faq            - ready-made solutions, blanks for frequently encountered tasks
- ┣ 📂guide          - documentation for documentation
- ┣ 📂system         - MODX documentation
- ┣ 📂en             - English language documentation
- ┃ ┣ 📂components
- ┣ 📂public         - logos, images used within the project
- ┗ 📜authors.json   - list of authors
+??docs
+ ? ??components     - extras documentation
+ ? ??faq            - ready-made solutions, blanks for frequently encountered tasks
+ ? ??guide          - documentation for documentation
+ ? ??system         - MODX documentation
+ ? ??en             - English language documentation
+ ? ? ??components
+ ? ??public         - logos, images used within the project
+ ? ??authors.json   - list of authors
 ```
 
 The documentation for extras in the `docs/components` directory is organized as follows:
@@ -116,6 +121,10 @@ For those who want to add new documentation of the extra to the project, the [pl
 
 1. After installing the dependencies, you need to enter the following command in the terminal:
     ::: code-group
+
+    ```sh [pnpm]
+    pnpm run generate
+    ```
 
     ```sh [npm]
     npm run generate
@@ -149,7 +158,7 @@ For those who want to add new documentation of the extra to the project, the [pl
     ```ansi
     [2;36m[0m[0;2m[0;36m?[0m Choose language [0;36mEnglish[0m
     [0;36m?[0m Choose documentation template [0;36mMulti-page documentation[0m
-    [0;36m?[0m Enter the component name[0m │
+    [0;36m?[0m Enter the component name[0m ?
     ```
 
 5. Finally, you will need to select the language versions of the documentation. By using the [[&uarr;]] and [[&darr;]] keys and pressing the [[Space]] you can mark the languages you need. Then press the [[Enter]] button.
@@ -170,7 +179,7 @@ For those who want to add new documentation of the extra to the project, the [pl
     [0;36m?[0m Choose documentation template [0;36mMulti-page documentation[0m
     [0;36m?[0m Enter the component name [0;36mmyFirstComponent[0m
     [0;36m?[0m Select the language versions of the documentation [0;36mEnglish[0m
-    [0;32m✔  +![0m 8 files added
+    [0;32m?  +![0m 8 files added
     -> \docs\components\myfirstcomponent\events.md
     -> \docs\components\myfirstcomponent\index.md
     -> \docs\components\myfirstcomponent\quick-start.md
@@ -184,6 +193,34 @@ For those who want to add new documentation of the extra to the project, the [pl
     ::: tip TIP
     Of course, you can change the structure, add or change files and directories, the script is intended only for quick deployment of the template structure of the documentation of extra.
     :::
+
+## Useful commands
+
+From the repository root after `pnpm install` / `npm install`:
+
+| Command | Purpose |
+| --- | --- |
+| `pnpm dev` | Local preview with hot reload (default port is printed by Vite, often `5173`) |
+| `pnpm build` | Production build (heavy; Node may need extra memory, see `package.json` scripts) |
+| `pnpm preview` | Preview the built static output |
+| `pnpm run lint` | Markdown checks ([markdownlint](https://github.com/DavidAnson/markdownlint)) |
+| `pnpm run spellcheck` | Spell check for `docs/**/*.md` (excluding `docs/en/` in the default script) |
+
+More on markup and pages: [Markdown](/en/guide/markdown), [VitePress](/en/guide/vitepress), [Frontmatter](/en/guide/frontmatter).
+
+## FAQ
+
+::: details Dev server won�t start or build fails
+
+Use **Node.js 20+** (`package.json` has `"engines": { "node": ">=20" }`). Try removing `node_modules` and reinstalling with `pnpm install`.
+
+:::
+
+::: details Where to edit this guide
+
+Russian guide sources live in [`docs/guide/`](https://github.com/modx-pro/Docs/tree/master/docs/guide). English mirrors are in [`docs/en/guide/`](https://github.com/modx-pro/Docs/tree/master/docs/en/guide).
+
+:::
 
 [plop]: https://github.com/plopjs/plop
 [repository]: https://github.com/modx-pro/Docs
