@@ -4,7 +4,7 @@ lastUpdated: false
 <!-- markdownlint-disable MD049 MD050  -->
 # Quick markdown reference
 
-Content adapted from [here](https://htmlacademy.ru/blog/html/markdown).
+Content adapted from [HTML Academy: Markdown](https://htmlacademy.ru/blog/html/markdown).
 
 Markdown is a simple, fast way to format text. It’s used when HTML isn’t available and you want readable, lightly structured text (headings, lists, images, links).
 
@@ -157,3 +157,70 @@ We also added MODX and Fenom syntax highlighting. You won’t find this in the o
   'includeThumbs' => '120x90,360x270',
 ]}
 ```
+
+## Horizontal rule
+
+Three or more hyphens, asterisks, or underscores on their own line:
+
+```markdown
+---
+```
+
+## Strikethrough (GFM)
+
+Wrap text with two tildes:
+
+**Example:**
+
+```markdown
+~~Deprecated parameter~~ Use `&newParam` instead.
+```
+
+**Output:**
+
+~~Deprecated parameter~~ Use `&newParam` instead.
+
+## Task lists
+
+Useful for install or review checklists:
+
+**Example:**
+
+```markdown
+- [x] Install the package
+- [ ] Configure system settings
+- [ ] Test on a staging copy
+```
+
+**Output:**
+
+* [x] Install the package
+* [ ] Configure system settings
+* [ ] Test on a staging copy
+
+## Autolinks
+
+Angle brackets for bare URLs:
+
+```markdown
+<https://modx.com>
+```
+
+## Escaping
+
+Use a backslash when you need literal `*` or `_`: `\*not italic\*`.
+
+## Tables (quick reference)
+
+Separate columns with `|`. The separator row sets alignment: `:---` left, `:---:` center, `---:` right.
+
+```markdown
+| Parameter | Type   | Default |
+|:----------|:------:|--------:|
+| `parents` | number | `0`     |
+```
+
+## Next steps
+
+* Advanced features (callouts, line highlighting, tabs, diagrams): [VitePress features](/en/guide/vitepress) and [Mermaid diagrams](/en/guide/mermaid).
+* Page metadata: [Frontmatter](/en/guide/frontmatter).

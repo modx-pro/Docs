@@ -76,7 +76,7 @@ items:
 ### Зависимости
 
 - **[MiniShop3](/components/minishop3/)** — адрес заказа, события оформления
-- **[VueTools](https://docs.modx.pro/components/vuetools/)** — раздел **Extras → mxDadata** в менеджере. Для подсказок на странице заказа VueTools **не обязателен**: достаточно токена DaData в системных настройках и сниппетов в чанке
+- **[VueTools](https://docs.modx.pro/components/vuetools/)** — раздел **Extras → mxDadata** в менеджере.
 
 ### Опционально
 
@@ -85,7 +85,7 @@ items:
 ## Установка
 
 1. Установите пакет через **Extras → Installer** (транспорт с ModStore или локальная сборка `php _build/build.php` из исходников)
-2. Убедитесь, что установлены **MiniShop3** и при необходимости **VueTools**
+2. Убедитесь, что установлены **MiniShop3**
 3. Зарегистрируйтесь на [dadata.ru](https://dadata.ru/), в [профиле](https://dadata.ru/profile/#info) скопируйте **API Token** и **Secret**
 4. **Extras → mxDadata** (вкладка **API**) — вставьте ключи, **Тест соединения**, **Сохранить**
 5. **Настройки → Очистить кэш**

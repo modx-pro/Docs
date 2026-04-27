@@ -15,7 +15,19 @@ description: Page description
 ---
 ```
 
+The `---` block must start on **line 1** of the file (no text or spaces before it). Inside, use [YAML](https://yaml.org/) syntax: `key: value` pairs, nesting with spaces, lists with `-`.
+
 ## Common properties
+
+Quick reference:
+
+| Property | Type | Default | Purpose |
+| --- | --- | --- | --- |
+| `title` | string | First `#` heading | Tab / page title |
+| `description` | string | — | Meta description, list cards |
+| `outline` | number / `[from,to]` / `deep` / `false` | `deep` | Right-hand TOC |
+| `lastUpdated` | boolean | `true` | “Last updated” block |
+| `editLink` | boolean | `true` | “Suggest changes” link |
 
 Below is the main set of properties that help you present your documentation to readers.
 
@@ -264,6 +276,38 @@ Currently there is one category, `payment`, used to list payment modules on the 
 ```yaml
 categories: payment
 ```
+
+## Full example for a component
+
+Example skeleton for a multi-page component `index.md` (omit fields you do not need):
+
+```yaml
+---
+title: Component name
+description: Short summary of what the extra does.
+logo: https://example.com/logo.png
+modstore: https://modstore.pro/packages/...
+modx: https://modx.com/extras/package/...
+repository: https://github.com/...
+author: github-login
+dependencies:
+  - miniShop2
+categories: payment
+outline: [2, 3]
+lastUpdated: true
+items:
+  - text: Quick start
+    link: quick-start
+  - text: Settings
+    link: settings
+---
+```
+
+## YAML notes
+
+- Wrap strings that contain `:`, quotes, or special characters in **single** or **double** quotes: `description: 'Version 2.0: API changes'`.
+- Multi-line strings can use `|` or `>` ([YAML multiline](https://yaml-multiline.info/)).
+- For `items`, the indented list form (as above) is usually easier to maintain than one long JSON-like line.
 
 [modstore.pro]: https://modstore.pro
 [modx.com]: https://modx.com/extras

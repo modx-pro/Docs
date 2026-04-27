@@ -28,7 +28,7 @@ VitePress также поставляет инструменты, украшаю
 
 ::: info
 Для рекомендуемого способа работы вам потребуются навыки работы с основными git командами (clone, fetch, add, commit, push),
-а также установленный на компьютере менеджер пакетов npm или yarn.
+а также установленный на компьютере менеджер пакетов **pnpm**, npm или yarn.
 Знания и навыки работы с VUE не требуются.
 :::
 
@@ -56,6 +56,11 @@ VitePress также поставляет инструменты, украшаю
 5. Если вы хотите предварительно просмотреть вносимые изменения локально на компьютере (рекомендуется), установите необходимые зависимости.
 
     ::: code-group
+
+    ```shell [pnpm]
+    pnpm install
+    pnpm dev
+    ```
 
     ```shell [npm]
     npm install
@@ -118,6 +123,10 @@ VitePress также поставляет инструменты, украшаю
 
 1. После установки зависимостей, вам нужно ввести в терминале след. команду:
     ::: code-group
+
+    ```sh [pnpm]
+    pnpm run generate
+    ```
 
     ```sh [npm]
     npm run generate
@@ -186,6 +195,34 @@ VitePress также поставляет инструменты, украшаю
     ::: tip
     Конечно же вы можете изменять структуру, добавлять или изменять файлы и папки по своему усмотрению, скрипт предназначен лишь для быстрого развёртывания шаблонной структуры.
     :::
+
+## Полезные команды
+
+Из корня репозитория после `pnpm install` / `npm install`:
+
+| Команда | Назначение |
+| --- | --- |
+| `pnpm dev` | Локальный предпросмотр с hot reload (по умолчанию порт из вывода VitePress, часто `5173`) |
+| `pnpm build` | Production-сборка сайта (тяжёлая; нужен достаточный объём памяти для Node) |
+| `pnpm preview` | Просмотр уже собранного статического вывода |
+| `pnpm run lint` | Проверка Markdown ([markdownlint](https://github.com/DavidAnson/markdownlint)) |
+| `pnpm run spellcheck` | Орфография по `docs/**/*.md` (кроме `docs/en/`) |
+
+Подробнее про разметку и возможности страниц — в [гайде по Markdown](/guide/markdown), [VitePress](/guide/vitepress) и [Frontmatter](/guide/frontmatter).
+
+## Частые вопросы
+
+::: details Локальный сервер не стартует или падает сборка
+
+Убедитесь, что установлен **Node.js 20+** (в `package.json` указано `"engines": { "node": ">=20" }`). Очистка и переустановка зависимостей: удалите `node_modules` и при необходимости lock-файл, затем снова `pnpm install`.
+
+:::
+
+::: details Где править «эту страницу гайда»
+
+Исходники русского гайда — каталог [`docs/guide/`](https://github.com/modx-pro/Docs/tree/master/docs/guide) в репозитории. Англоязычные зеркала — в [`docs/en/guide/`](https://github.com/modx-pro/Docs/tree/master/docs/en/guide).
+
+:::
 
 [plop]: https://github.com/plopjs/plop
 [repository]: https://github.com/modx-pro/Docs

@@ -12,6 +12,20 @@ You can always see the full, up-to-date list of features at <https://vitepress.d
 
 Let's look at each of them in more detail.
 
+::: tip Other guide pages
+**Basics:** [Markdown](/en/guide/markdown) · **Page metadata:** [Frontmatter](/en/guide/frontmatter) · **Diagrams:** [Mermaid](/en/guide/mermaid) · **Spelling:** [cspell](/en/guide/cspell) · **Repo & PRs:** [Getting Started](/en/guide/getting-started) · **About:** [About](/en/guide/about)
+:::
+
+## Internal links
+
+Link to other docs using a **path from the site root** (works in dev and production):
+
+```markdown
+See [Markdown](/en/guide/markdown) and [an extra](/en/components/ajaxform).
+```
+
+Add `#...` for heading anchors: [Mermaid on this page](/en/guide/vitepress#mermaid-diagrams). Prefer [explicit heading anchors](#my-anchor) for stable URLs.
+
 ## Heading links
 
 Headings automatically become anchor links like `guide/vitepress#heading-links`.
@@ -532,6 +546,12 @@ You can also give each tab a custom title, for example to show file or chunk nam
 ```
 
 :::
+
+## Mermaid diagrams {#mermaid-diagrams}
+
+Flowcharts, sequence diagrams, and more are rendered via [vitepress-plugin-mermaid](https://github.com/emersonbottero/vitepress-plugin-mermaid) and [Mermaid](https://mermaid.js.org/). Use a fenced code block with the `mermaid` language tag (see [Mermaid docs](https://mermaid.js.org/intro/)). The `mmd` tag is supported as well.
+
+**Step-by-step examples** (flowcharts, sequence diagrams, tips): **[Mermaid diagrams](/en/guide/mermaid)**.
 
 ## Keyboard input `<kbd>`
 

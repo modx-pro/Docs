@@ -12,6 +12,20 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 
 Рассмотрим подробнее каждую из них.
 
+::: tip Другие страницы гайда
+**База:** [Markdown](/guide/markdown) · **Мета страницы:** [Frontmatter](/guide/frontmatter) · **Схемы:** [Mermaid](/guide/mermaid) · **Орфография:** [cspell](/guide/cspell) · **Репозиторий и PR:** [Начало работы](/guide/getting-started) · **О проекте:** [О проекте](/guide/about)
+:::
+
+## Внутренние ссылки
+
+Ссылки на другие страницы документации задавайте **абсолютным путём от корня сайта** (так работает и предпросмотр, и продакшен):
+
+```markdown
+См. [разметку Markdown](/guide/markdown) и [документ компонента](/components/ajaxform).
+```
+
+Для якоря к заголовку на той же или другой странице добавьте `#...`: [Mermaid в VitePress](/guide/vitepress#mermaid-diagrams). Стабильные URL лучше получать через [явный анкор в заголовке](#my-anchor).
+
 ## Заголовки-ссылки
 
 Заголовки автоматически становятся ссылками-якорями вида `guide/vitepress#zagolovkissylki` .
@@ -533,27 +547,11 @@ const line3 = 'Третья строка кода'
 
 :::
 
-## Диаграммы Mermaid
+## Диаграммы Mermaid {#mermaid-diagrams}
 
-Для схем подключён [vitepress-plugin-mermaid](https://github.com/emersonbottero/vitepress-plugin-mermaid) и [Mermaid](https://mermaid.js.org/). Оформляйте диаграмму как обычный fenced-блок с языком `mermaid` (как [в документации Mermaid](https://mermaid.js.org/intro/)):
+Для схем подключены [vitepress-plugin-mermaid](https://github.com/emersonbottero/vitepress-plugin-mermaid) и [Mermaid](https://mermaid.js.org/). Оформляйте диаграмму как fenced-блок с языком `mermaid` (см. [документацию Mermaid](https://mermaid.js.org/intro/)). Блоки с меткой `mmd` обрабатываются так же.
 
-**Пример:**
-
-````markdown
-```mermaid
-flowchart LR
-  A[Старт] --> B[Конец]
-```
-````
-
-**Вывод:**
-
-```mermaid
-flowchart LR
-  A[Старт] --> B[Конец]
-```
-
-В тёмной теме стиль подхватывается автоматически. Блоки с `mmd` вместо `mermaid` тоже обрабатываются плагином (см. доку пакета).
+**Пошаговые примеры** (блок-схемы, sequence, советы): отдельная страница **[Диаграммы Mermaid](/guide/mermaid)**.
 
 ## Элементы ввода с клавиатуры `<kbd>`
 
