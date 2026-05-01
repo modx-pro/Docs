@@ -375,7 +375,6 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `addressData` | `array` | Данные адреса |
 
 ### Прерывание операции
@@ -435,7 +434,6 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `addressData` | `array` | Данные адреса |
 | `msCustomerAddress` | `msCustomerAddress` | Созданный объект адреса |
 
@@ -526,3 +524,59 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+---
+
+## msOnBeforeGetOrderUser
+
+Вызывается **перед** разрешением системного пользователя MODX (`modUser`) для заказа. Срабатывает в `OrderUserResolver` при сабмите заказа, когда системная настройка `ms3_order_register_user_on_submit` включена.
+
+::: tip Чем `modUser` отличается от `msCustomer`
+`modUser` — это системный пользователь MODX (логин, пароль, профиль). `msCustomer` — отдельная сущность покупателя магазина (имя, телефон, токен сессии). Резолвер `modUser` нужен для регистрации заказчика в системе авторизации MODX, а не для управления его покупательским профилем.
+:::
+
+### Параметры
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя |
+| `user` | `\MODX\Revolution\modUser` \| `null` | Текущий вариант пользователя — на входе обычно `null` |
+| `orderData` | `array` | Снимок полей заказа (адресные `address_email`, `address_phone`, `address_first_name` и т. д.) |
+
+### Подмена пользователя
+
+Плагин может вернуть готового `modUser` через `returnedValues['user']`, чтобы обойти стандартный поиск/создание:
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeGetOrderUser':
+        $orderData = $scriptProperties['orderData'];
+
+        // Кастомный поиск по внешнему ID, например из CRM
+        if (!empty($orderData['address_external_id'])) {
+            $found = $modx->getObject(
+                \MODX\Revolution\modUser::class,
+                ['username' => 'crm_' . $orderData['address_external_id']]
+            );
+
+            if ($found) {
+                $modx->event->returnedValues = ['user' => $found];
+            }
+        }
+        break;
+}
+```
+
+---
+
+## msOnGetOrderUser
+
+Вызывается **после** разрешения пользователя для заказа.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя |
+| `user` | `\MODX\Revolution\modUser` \| `null` | Финальный пользователь (или `null`, если разрешить не удалось) |

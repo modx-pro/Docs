@@ -13,8 +13,9 @@ title: События стоимости
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cart` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
+| `draft` | `msOrder` \| `null` | Черновик заказа (может быть `null`, если корзина пуста) |
 
 ### Прерывание операции
 
@@ -41,8 +42,9 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cart` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
+| `draft` | `msOrder` \| `null` | Черновик заказа |
 | `cost` | `float` | Рассчитанная стоимость |
 
 ### Модификация данных
@@ -121,9 +123,9 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `storageController` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
-| `orderController` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `draft` | `msOrder` | Черновик заказа |
 
 ### Прерывание операции
 
@@ -147,9 +149,9 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `storageController` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
-| `orderController` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `draft` | `msOrder` | Черновик заказа |
 | `cost` | `float` | Рассчитанная стоимость доставки |
 
 ### Модификация данных
@@ -245,9 +247,9 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `storageController` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
-| `orderController` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `draft` | `msOrder` | Черновик заказа |
 
 ---
 
@@ -259,9 +261,9 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `storageController` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
-| `orderController` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `draft` | `msOrder` | Черновик заказа |
 | `cost` | `float` | Рассчитанная комиссия |
 
 ### Модификация данных
