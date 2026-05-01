@@ -13,9 +13,9 @@ title: События заказа
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Значение поля |
+| `draft` | `msOrder` \| `null` | Текущий черновик заказа (может отсутствовать на самом первом шаге) |
 
 ### Прерывание операции
 
@@ -69,9 +69,9 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Валидированное значение |
+| `draft` | `msOrder` \| `null` | Текущий черновик заказа |
 
 ### Пример использования
 
@@ -81,16 +81,17 @@ switch ($modx->event->name) {
     case 'msOnAddToOrder':
         $key = $scriptProperties['key'];
         $value = $scriptProperties['value'];
+        /** @var \MiniShop3\Model\msOrder|null $draft */
+        $draft = $scriptProperties['draft'];
 
         // Логирование изменений
         $modx->log(modX::LOG_LEVEL_INFO,
             "[Order] Поле {$key} установлено: {$value}"
         );
 
-        // При выборе доставки — автовыбор первого способа оплаты
-        if ($key === 'delivery_id' && !empty($value)) {
-            $controller = $scriptProperties['controller'];
-            // Логика автовыбора оплаты...
+        // При выборе доставки — обновить связанные поля черновика
+        if ($key === 'delivery_id' && !empty($value) && $draft) {
+            // ... через сервисы MS3 при необходимости
         }
         break;
 }
@@ -106,9 +107,9 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Значение для валидации |
+| `orderData` | `array` | Снимок текущих полей заказа (доступ к смежным значениям, например к `delivery_id` при валидации `payment_id`) |
 
 ### Модификация данных
 
@@ -140,7 +141,6 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Валидированное значение |
 
@@ -174,7 +174,6 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Невалидное значение |
 | `error` | `array` | Массив ошибок `['field' => 'сообщение']` |
@@ -230,8 +229,8 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
 | `key` | `string` | Ключ удаляемого поля |
+| `draft` | `msOrder` | Текущий черновик заказа |
 
 ### Прерывание операции
 
@@ -261,8 +260,8 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
 | `key` | `string` | Ключ удалённого поля |
+| `draft` | `msOrder` | Текущий черновик заказа |
 
 ### Пример использования
 
@@ -271,11 +270,12 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnRemoveFromOrder':
         $key = $scriptProperties['key'];
+        /** @var \MiniShop3\Model\msOrder $draft */
+        $draft = $scriptProperties['draft'];
 
         // При удалении способа доставки — сбросить способ оплаты
         if ($key === 'delivery_id') {
-            $controller = $scriptProperties['controller'];
-            // Сброс оплаты...
+            // ... через сервисы MS3 при необходимости
         }
         break;
 }
@@ -285,14 +285,16 @@ switch ($modx->event->name) {
 
 ## msOnSubmitOrder
 
-Вызывается при **отправке** заказа (нажатие кнопки "Оформить"). Позволяет проверить данные и добавить дополнительную информацию.
+Вызывается при **отправке** заказа (нажатие кнопки «Оформить»). Позволяет проверить данные и добавить дополнительную информацию.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
-| `data` | `array` | Дополнительные данные из формы |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Обработчик сабмита заказа |
+| `draft` | `msOrder` | Черновик заказа на момент отправки |
+| `orderData` | `array` | Снимок текущих полей заказа (включая адресные) |
+| `data` | `array` | Дополнительные данные, переданные в сабмит-запрос |
 
 ### Прерывание операции
 
@@ -300,12 +302,12 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnSubmitOrder':
-        $controller = $scriptProperties['controller'];
-        $data = $scriptProperties['data'];
+        /** @var \MiniShop3\Model\msOrder $draft */
+        $draft = $scriptProperties['draft'];
+        $orderData = $scriptProperties['orderData'];
 
         // Проверка минимальной суммы заказа
-        $response = $controller->getCost();
-        if ($response['success'] && $response['data']['cart_cost'] < 1000) {
+        if (($draft->get('cart_cost') ?? 0) < 1000) {
             $modx->event->output('Минимальная сумма заказа — 1000 ₽');
             return;
         }
@@ -322,6 +324,8 @@ switch ($modx->event->name) {
 
 ### Модификация данных
 
+Через `returnedValues` можно отдать дополнительные поля заказа в ключе `data` — они будут применены к черновику обычной цепочкой `add()` ещё до создания заказа.
+
 ```php
 <?php
 switch ($modx->event->name) {
@@ -330,7 +334,7 @@ switch ($modx->event->name) {
 
         $values = &$modx->event->returnedValues;
 
-        // Добавить UTM-метки из сессии
+        // Добавить UTM-метки из сессии в дополнительные данные сабмита
         if (!empty($_SESSION['utm'])) {
             $data['properties']['utm'] = $_SESSION['utm'];
             $values['data'] = $data;
@@ -347,14 +351,21 @@ switch ($modx->event->name) {
 
 ## msOnBeforeCreateOrder
 
-Вызывается **перед** финальным созданием заказа (присвоением статуса "Новый").
+Вызывается **перед** финальным созданием заказа (присвоением статуса «Новый»). Срабатывает в двух сценариях — при сабмите заказа покупателем (`OrderSubmitHandler`) и при финализации черновика менеджером в админке (`OrderFinalizeService`).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
-| `msOrder` | `msOrder` | Объект заказа |
+| `msOrder` | `msOrder` | Объект заказа (присутствует всегда) |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только при сабмите с фронтенда |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только при финализации из админки |
+| `from_manager` | `bool` | Только при финализации из админки — всегда `true` |
+| `customFields` | `array` | Только при сабмите с фронтенда — кастомные валидированные поля из `properties._validated` |
+
+::: tip Различение сценариев
+Удобный способ понять, откуда пришёл вызов — проверить наличие ключа: `if (!empty($scriptProperties['from_manager']))` — менеджерский путь, иначе — фронтенд.
+:::
 
 ### Прерывание операции
 
@@ -401,14 +412,17 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Вызывается **после** успешного создания заказа.
+Вызывается **после** успешного создания заказа. Парный к `msOnBeforeCreateOrder` — срабатывает в тех же двух сценариях (сабмит покупателя / финализация менеджером) и принимает тот же набор параметров.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
 |----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
-| `msOrder` | `msOrder` | Созданный заказ |
+| `msOrder` | `msOrder` | Созданный заказ (присутствует всегда) |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только при сабмите с фронтенда |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только при финализации из админки |
+| `from_manager` | `bool` | Только при финализации из админки — всегда `true` |
+| `customFields` | `array` | Только при сабмите с фронтенда |
 
 ### Пример использования
 
@@ -485,3 +499,35 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+---
+
+## msOnBeforeMgrCreateOrder
+
+Вызывается **перед** финализацией заказа из админки (когда менеджер превращает черновик в полноценный заказ — кнопка «Оформить» в карточке заказа в админке). Это менеджерский аналог `msOnSubmitOrder`.
+
+::: tip Связка с msOnBeforeCreateOrder
+После `msOnBeforeMgrCreateOrder` всё равно срабатывает универсальное `msOnBeforeCreateOrder` с теми же тремя параметрами. Используйте `msOnBeforeMgrCreateOrder`, если нужна специфика менеджерского пути; используйте `msOnBeforeCreateOrder`, если хотите единую логику и для фронтенда, и для админки.
+:::
+
+### Параметры
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Сервис финализации заказа |
+| `msOrder` | `msOrder` | Финализируемый заказ |
+| `from_manager` | `bool` | Всегда `true` |
+
+---
+
+## msOnMgrCreateOrder
+
+Вызывается **после** успешной финализации заказа из админки. Парный к `msOnBeforeMgrCreateOrder`.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+|----------|-----|----------|
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Сервис финализации заказа |
+| `msOrder` | `msOrder` | Финализированный заказ (статус уже изменён на «Новый») |
+| `from_manager` | `bool` | Всегда `true` |
