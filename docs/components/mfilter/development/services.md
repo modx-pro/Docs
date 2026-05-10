@@ -128,6 +128,41 @@ foreach ($result['items'] as $item) {
 }
 ```
 
+## FilterHandler
+
+Низкоуровневая прослойка между `Filter` и xPDO/SQL. Полезна, если строите свою AJAX/headless-обвязку и хотите вызывать конкретные шаги без обёртки `Filter::apply()`.
+
+```php
+$handler = $mfilter->getFilterHandler();
+
+// Применить фильтры к существующему xPDOQuery
+$query = $handler->buildQuery($query, $filters, $configs);
+
+// Узнать, какие таблицы были присоединены при последнем buildQuery
+// (нужно для последующих манипуляций с запросом)
+$joined = $handler->getJoinedTables(): array;
+
+// Получить значения фильтров для рендера формы
+$data = $handler->getFiltersData(int $resourceId, array $context = []): array;
+
+// Cross-filter suggestions (counts с учётом активных фильтров)
+$counts = $handler->getSuggestions(int $resourceId, array $appliedFilters, array $context = []): array;
+
+// Только ID отфильтрованных товаров (без пагинации, без сортировки)
+$ids = $handler->getFilteredIds(int $resourceId, array $filters): array;
+
+// Только количество — самый дешёвый способ
+$total = $handler->getFilteredCount(int $resourceId, array $filters): int;
+
+// Конфигурация набора и конкретного фильтра
+$pageConfig = $handler->getPageConfig(int $resourceId): ?PageConfigData;
+$filterConfig = $handler->getFilterConfig(int $resourceId, string $filterKey): ?array;
+
+// Нормализация входных параметров (ключи с | и т.п.)
+$normalized = $handler->normalizeParams(array $params, int $resourceId = 0): array;
+$normalizedFilters = $handler->normalizeFilters(array $filters): array;
+```
+
 ## SlugManager
 
 SEO-алиасы значений фильтров. Кэширует значения в памяти на время запроса.
@@ -179,6 +214,35 @@ $slug = $slugManager->getOrCreate('vendor_id', 'Apple Inc.', 'product', 'ru');
 // Обратный лукап (используется в SlugParser при парсинге URL)
 $value = $slugManager->findValue('vendor_id', 'apple-inc', 'ru');
 // 'Apple Inc.'
+```
+
+## SlugParser
+
+Распознавание SEO-сегментов URL (`vendor_id--apple`, `price_1000-5000`, `sort_price-asc`) → массив фильтров и технических параметров. Используется внутри `UrlRouter`, но публично доступен для своих целей.
+
+```php
+$parser = $mfilter->getSlugParser();
+
+// Полный парсинг URI
+$result = $parser->parse('catalog/electronics/vendor_id--apple/sort--price-asc/');
+// [
+//   'filters' => ['vendor_id' => ['Apple Inc.']],
+//   'tech' => ['sort' => ['field' => 'price', 'dir' => 'asc']],
+//   'unrecognized' => [],
+// ]
+
+// Парсинг одного сегмента
+$segment = $parser->parseSegment('vendor_id--apple', $strict = true);
+
+// Распознавание и парсинг технических параметров (sort/page/limit/tpl)
+$tech = $parser->parseTechParam('sort--price-asc');
+$isTech = $parser->isTechParam('sort--price-asc'): bool;
+
+// Поиск базового ресурса по URI (с учётом базы каталога)
+$base = $parser->findBaseResource('catalog/electronics/'): ?array;
+// ['id' => 12, 'uri' => 'catalog/electronics/']
+
+$parser->clearCache(): void;
 ```
 
 ## UrlBuilder
@@ -241,6 +305,58 @@ $seo = $seoBuilder->build($resourceId, $filters);
 //   'canonical' => 'https://example.com/catalog/vendor_id--apple/',
 //   'noindex' => false,
 // ]
+```
+
+## TemplateParser
+
+Парсер плейсхолдеров SEO-шаблонов (`mfl_seo_templates`). Поддерживает `{$filters.vendor_id}`, `{$filters.color|gen}` (склонение через WordFormsManager), `{$resource.pagetitle}`, фильтры Fenom.
+
+```php
+$parser = $mfilter->getTemplateParser();
+
+// Подставить значения в шаблон
+$h1 = $parser->parse('Купить {$filters.vendor_id} в Москве', [
+    'filters' => ['vendor_id' => 'Apple'],
+    'resource' => $modx->resource->toArray(),
+]);
+// 'Купить Apple в Москве'
+
+// Валидация шаблона на этапе сохранения (синтаксические ошибки)
+$errors = $parser->validate($templateString): array;
+
+// Извлечь плейсхолдеры из шаблона (для UI-подсказок)
+$placeholders = $parser->extractPlaceholders($templateString): array;
+// ['filters.vendor_id', 'resource.pagetitle']
+```
+
+## WordFormsManager
+
+Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#словоформы).
+
+```php
+$wm = $mfilter->getWordFormsManager();
+
+// Получить все формы для слова
+$forms = $wm->get('телефон'): ?array;
+// ['nom' => 'телефон', 'gen' => 'телефона', 'dat' => 'телефону', ...]
+
+// Автогенерация (правила русского языка локально или Morpher API при $useApi = true)
+$forms = $wm->generate('Apple', $useApi = false): ?array;
+
+// Сохранить вручную
+$wm->save('телефон', [
+    'gen' => 'телефона',
+    'dat' => 'телефону',
+    // ...
+]): bool;
+
+// Bulk-генерация для всех значений из mfl_slugs
+$stats = $wm->generateAll($useApi = false): array;
+// ['total' => 150, 'generated' => 142, 'failed' => 8]
+
+// Прелоад в память (для горячих циклов)
+$wm->preload(): void;
+$wm->clearCache(): void;
 ```
 
 ## FilterSetManager
@@ -308,6 +424,15 @@ $stats = $builder->buildForProducts([123, 456, 789]);
 
 // Удалить из индекса (при удалении товаров)
 $builder->removeProducts([123, 456]);
+
+// Инкрементальный sync по editedon (используется задачей mfl_sync_facet_index)
+// Без аргумента — берёт last_sync_at из MflCache.
+$stats = $builder->syncByEditedon();
+// ['synced' => N, 'removed' => N, 'until' => ts, 'chunks' => N, 'duration_ms' => N]
+
+// Helper: стоит ли индексировать ресурс с этим class_key.
+// При установленном MS3 → только msProduct. Без MS3 → всегда true.
+$builder->shouldIndexClassKey($resource->get('class_key'));
 ```
 
 ### Прогресс-callback
@@ -317,6 +442,18 @@ $builder->buildAll(function ($filterKey, $rowsInserted) use ($modx) {
     $modx->log(modX::LOG_LEVEL_ERROR, "Indexed {$rowsInserted} rows for {$filterKey}");
 });
 ```
+
+### Использование в своих импортёрах
+
+```php
+// После batch-импорта одной пачкой — точечная пересборка
+$updatedIds = [/* IDs, что трогали */];
+if (!empty($updatedIds)) {
+    $builder->buildForProducts($updatedIds);
+}
+```
+
+Подробнее с паттернами: [Cookbook: Синхронизация индекса фасетов](/components/mfilter/cookbook/facet-index-sync).
 
 ## FacetIndexReader
 
@@ -472,6 +609,39 @@ $config['jsUrl'];      // /assets/components/mfilter/js/
 $config['cachePath'];  // core/cache/mfilter/
 $config['apiUrl'];     // /assets/components/mfilter/api.php
 ```
+
+## Profiler
+
+Лёгкий профайлер для замера времени операций. Все методы статические, нет инстанса. Включается системной настройкой `mfilter.debug_profiler` или вручную из своего кода.
+
+```php
+use MFilter\Services\Profiler;
+
+// Включить/выключить
+Profiler::enable();
+Profiler::disable();
+Profiler::isEnabled(): bool;
+
+// Замер участка кода
+Profiler::start('myOperation');
+// ... код ...
+$ms = Profiler::stop('myOperation'): float; // длительность в мс
+
+// Записать готовое значение (если уже посчитали где-то ещё)
+Profiler::record('externalCall', $milliseconds);
+
+// Получить результаты
+$results = Profiler::getResults(): array;
+// ['operation' => ['total_ms' => 45.2, 'count' => 3, 'avg_ms' => 15.07], ...]
+
+// Краткий summary-текст для логов
+echo Profiler::getSummary();
+
+// Сброс (например, между AJAX-запросами в долгоживущем CLI-процессе)
+Profiler::reset();
+```
+
+При включённом профайлере замеры автоматически попадают в JSON-ответ AJAX (секция `profiler`). На SSR-страницах добавляются как `<script>window.__mfilterProfiler=...</script>` в конце вывода — для клиентской отладки.
 
 ## Хелперы фасада
 

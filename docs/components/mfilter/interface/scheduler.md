@@ -14,6 +14,7 @@ Scheduler — опциональная зависимость. Без него m
 
 | Reference | Recurring | Интервал | Назначение |
 |-----------|-----------|----------|------------|
+| [`mfl_sync_facet_index`](#mfl-sync-facet-index) | да | +5 минут | Инкрементальный sync индекса фасетов по `editedon` |
 | [`mfl_rebuild_facet_index`](#mfl-rebuild-facet-index) | нет | — | Полная пересборка индекса фасетов |
 | [`mfl_warmup`](#mfl-warmup) | да | +50 минут | Прогрев baseIds для AJAX *(legacy)* |
 | [`mfl_generate_sitemap`](#mfl-generate-sitemap) | да | +1 день | Генерация XML sitemap |
@@ -21,6 +22,34 @@ Scheduler — опциональная зависимость. Без него m
 | [`mfl_reindex_slugs`](#mfl-reindex-slugs) | нет | — | Пересоздание SEO-алиасов значений |
 | [`mfl_generate_word_forms`](#mfl-generate-word-forms) | нет | — | Генерация словоформ для SEO |
 | [`mfl_rebuild_cache`](#mfl-rebuild-cache) | нет | — | Перестройка кэша роутера и фильтров |
+
+## mfl_sync_facet_index
+
+**С версии 1.4.1.** Инкрементальный sync индекса фасетов: находит товары, которые изменились с момента последнего запуска (`editedon > last_sync_at`), и пересобирает индекс точечно для них.
+
+**Recurring:** да, **+5 minutes**.
+
+**Что закрывает:**
+- Прямые `$resource->save()` без процессора (плагин не получает `OnDocFormSave`, sync догоняет за 5 минут)
+- Импорты, которые пишут в `msProductData` напрямую через `INSERT/UPDATE` с `editedon=NOW()`
+- TV-правки через программный API
+
+**Что НЕ закрывает:**
+- Прямой SQL без обновления `editedon`
+- `DELETE FROM modx_site_content` (нет `editedon` у удалённых строк)
+- Для этих случаев — ручной запуск `mfl_rebuild_facet_index` или восстановление через `editedon=NOW()` в импортёре
+
+**Стоимость:** на простаивающем сайте — миллисекунды (нет работы, лог пустой). На активном — пересобирает только дельту, обычно десятки/сотни товаров батчами по 5000 ID.
+
+**Состояние** хранится в `mfl_cache` под ключом `facet_index.last_sync_at` (UNIX timestamp). При первом запуске задача не пытается пересобирать весь каталог — просто фиксирует текущее время как baseline.
+
+```php
+// Ручной вызов (если нужно вне расписания)
+$mfilter->getFacetIndexBuilder()->syncByEditedon();
+// ['synced' => N, 'removed' => N, 'until' => ts, 'chunks' => N, 'duration_ms' => N]
+```
+
+Подробнее про сценарии и паттерны: [Cookbook: Синхронизация индекса фасетов](/components/mfilter/cookbook/facet-index-sync).
 
 ## mfl_rebuild_facet_index
 
@@ -218,6 +247,7 @@ $taskId = $mfilter->scheduleCacheRebuild();
 
 | Задача | Поведение без Scheduler |
 |--------|-------------------------|
+| `mfl_sync_facet_index` | Не работает. Прямые `$resource->save()` и SQL-импорты не отражаются в индексе автоматически — нужен ручной rebuild |
 | `mfl_rebuild_facet_index` | Сборка через UI кнопку «Пересобрать сейчас» (синхронно) |
 | `mfl_warmup` | AJAX-режим без прогрева кэша → первый запрос дольше |
 | `mfl_generate_sitemap` | Sitemap не обновляется автоматически |
