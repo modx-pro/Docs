@@ -24,6 +24,8 @@ items: [
     ],
   },
   { text: 'JavaScript API', link: 'javascript-api' },
+  { text: 'Системные настройки', link: 'system-settings' },
+  { text: 'Плагин и события', link: 'plugin-and-events' },
   { text: 'Расширение компонента', link: 'extending' },
 ]
 ---
@@ -107,33 +109,9 @@ mse_index_fields = pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 
 ## Системные настройки
 
-Все настройки имеют префикс `mse_` и находятся в пространстве имён `msearch`.
+Все настройки имеют префикс `mse_` и находятся в пространстве имён `msearch`. Сгруппированы по областям **Индексация**, **Поиск**, **Фронтенд**.
 
-### Индексация
-
-| Настройка | По умолчанию | Описание |
-|-----------|--------------|----------|
-| `mse_index_fields` | `pagetitle:3,longtitle:2,description:2,introtext:2,content:1` | Поля для индексации с весами |
-| `mse_index_min_word_length` | `3` | Минимальная длина слова для индексации |
-| `mse_index_split_words` | `#\s\|[,.:;!?"'«»„"()\[\]{}<>]#u` | Регулярное выражение для разделения текста на слова |
-| `mse_use_scheduler` | `false` | Использовать Scheduler для отложенной индексации |
-
-### Поиск
-
-| Настройка | По умолчанию | Описание |
-|-----------|--------------|----------|
-| `mse_search_exact_match_bonus` | `10` | Бонус за точное совпадение запроса в тексте |
-| `mse_search_like_match_bonus` | `3` | Бонус за LIKE-совпадение |
-| `mse_search_all_words_bonus` | `5` | Бонус если все слова запроса найдены |
-| `mse_search_split_words` | `#\s+#u` | Регулярное выражение для разделения запроса |
-
-### Фронтенд
-
-| Настройка | По умолчанию | Описание |
-|-----------|--------------|----------|
-| `mse_frontend_css` | `[[++assets_url]]components/msearch/css/web/msearch.css` | URL CSS файла |
-| `mse_frontend_js` | `[[++assets_url]]components/msearch/js/web/msearch.js` | URL JS файла |
-| `mse_cors_origin` | *(пусто)* | Разрешённый Origin для CORS на публичном API. Если пусто — разрешены only same-origin запросы |
+Полное описание всех настроек с дефолтами и use-cases — на отдельной странице [Системные настройки](/components/msearch/system-settings).
 
 ## Плейсхолдеры
 
