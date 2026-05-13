@@ -1,31 +1,35 @@
 # Расширение компонента
 
-mSearch позволяет индексировать не только ресурсы MODX, но и любые другие объекты — комментарии, товары, пользователей и т.д. Для этого используется система адаптеров.
+mSearch индексирует не только ресурсы MODX, но и любые xPDO-объекты — комментарии, товары, пользователей, чужие модели. Каждый тип объекта обслуживается своим **адаптером**, реализующим `ContentAdapterInterface`.
 
 ## Архитектура
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                     Indexer                         │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐ │
-│  │ Resource    │  │ Comment     │  │ Product     │ │
-│  │ Adapter     │  │ Adapter     │  │ Adapter     │ │
-│  └─────────────┘  └─────────────┘  └─────────────┘ │
-└─────────────────────────────────────────────────────┘
-                         ▼
-┌─────────────────────────────────────────────────────┐
-│              Таблицы индекса                        │
-│  mse_words (resource, field, word, class_key)       │
-│  mse_intro (resource, intro, class_key)             │
-└─────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                          Indexer                             │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐   │
+│   │ Resource     │  │ MsProduct    │  │ Custom           │   │
+│   │ Adapter      │  │ Adapter      │  │ Adapter          │   │
+│   │ priority 0   │  │ priority 10  │  │ priority N       │   │
+│   └──────────────┘  └──────────────┘  └──────────────────┘   │
+└──────────────────────────────────────────────────────────────┘
+                          ▼
+┌──────────────────────────────────────────────────────────────┐
+│                    Таблицы индекса                           │
+│   mse_words (resource, field, word, count, class_key)        │
+│   mse_intro (resource, intro, class_key)                     │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 Каждый адаптер:
 
-- Определяет, какие классы объектов он поддерживает
-- Указывает поля для индексации и их веса
-- Извлекает текст из полей объекта
-- Предоставляет выборку объектов для пакетной индексации
+- Декларирует, какие классы объектов поддерживает (`supports()`).
+- Возвращает идентификатор типа для маршрутизации шаблонов (`getType()`).
+- Указывает поля для индексации и их веса (`getIndexableFields()`).
+- Извлекает текст из полей объекта (`extractContent()`).
+- Выдаёт объекты для пакетной индексации (`getObjects()`, `getTotal()`).
+- Формирует плейсхолдеры для рендера в подсказках и результатах (`getDisplayData()`).
+- Возвращает имена дефолтных чанков (`getDefaultSuggestTpl()`, `getDefaultResultTpl()`).
 
 ## Интерфейс ContentAdapterInterface
 
@@ -42,8 +46,13 @@ interface ContentAdapterInterface
     public function supports(string $className): bool;
 
     /**
-     * Возвращает массив полей для индексации с весами
-     * @return array<string, int> [field => weight]
+     * Короткий идентификатор типа (например, "resource", "product")
+     * Используется в маршрутизации чанков подсказок
+     */
+    public function getType(): string;
+
+    /**
+     * Поля для индексации с весами: [field => weight]
      */
     public function getIndexableFields(): array;
 
@@ -53,100 +62,109 @@ interface ContentAdapterInterface
     public function extractContent(object $object, string $field): string;
 
     /**
-     * Возвращает объекты для пакетной индексации
-     * @return iterable<object>
+     * Итератор объектов для пакетной индексации
      */
     public function getObjects(array $criteria, int $limit, int $offset): iterable;
 
     /**
-     * Возвращает общее количество объектов
+     * Общее количество объектов
      */
     public function getTotal(array $criteria = []): int;
 
     /**
-     * Возвращает приоритет адаптера (выше = раньше проверяется)
+     * Приоритет адаптера (выше = выбирается раньше при совпадении supports)
      */
     public function getPriority(): int;
+
+    /**
+     * Батч-загрузка плейсхолдеров для рендера подсказок/результатов.
+     *
+     * Возвращает [id => array_of_placeholders]. Адаптер сам подсвечивает
+     * нужные поля при непустом $query, дополняет данные computed-полями
+     * (url, type, idx).
+     *
+     * $options может содержать `element` (имя внешнего сниппета-загрузчика)
+     * и `elementProperties` — адаптер сам решает, использовать их или нет.
+     */
+    public function getDisplayData(array $ids, string $query = '', array $options = []): array;
+
+    /**
+     * Имя дефолтного чанка для строки подсказки автокомплита
+     */
+    public function getDefaultSuggestTpl(): string;
+
+    /**
+     * Имя дефолтного чанка для строки полной выдачи поиска
+     */
+    public function getDefaultResultTpl(): string;
 }
 ```
 
 ## Базовый класс AbstractAdapter
 
-Для удобства наследуйтесь от `AbstractAdapter`:
+Для удобства наследуйтесь от `AbstractAdapter` — он реализует разумные дефолты и предоставляет полезные helper-методы.
+
+### Дефолтные реализации
+
+| Метод | Поведение по умолчанию |
+|-------|------------------------|
+| `getPriority()` | `0` |
+| `getType()` | Имя класса в lowercase без суффикса `Adapter` |
+| `getDisplayData()` | Пустой массив (адаптер не участвует в рендере) |
+| `getDefaultSuggestTpl()` | `'mSearch.suggest.row'` |
+| `getDefaultResultTpl()` | `'mSearch.row'` |
+
+### Helper-методы
+
+| Метод | Назначение |
+|-------|------------|
+| `cleanText(string $text)` | Удаляет HTML-теги, декодирует HTML-entities, нормализует пробелы |
+| `parseFieldWeights(string $fields)` | Парсит строку формата `field1:3,field2:1` в `[field => weight]` |
+| `extractTvContent(object $object, string $tvName)` | Извлекает значение TV — поддерживает скаляры и JSON (MIGX) |
+| `flattenArray(array $array)` | Превращает многомерный массив в строку из его строковых leaf-значений |
+| `loadIntros(int[] $ids)` | Батч-загрузка `mse_intro` по списку ID |
+| `loadViaElement(string $element, int[] $ids, array $extraProps = [])` | Вызов внешнего сниппета (`runSnippet`) с проверкой существования и валидацией JSON-ответа. Ключи `resources` и `return` всегда переопределяются |
+| `highlight(string $text, string $query, array $options = [])` | Обёртка над `MSearch::highlight()` — возвращает HTML-safe строку (escape + `<mark>`) |
+
+### Конструктор
+
+```php
+public function __construct(
+    \MODX\Revolution\modX $modx,
+    \MSearch\MSearch $msearch,
+    array $config = []
+)
+```
+
+## Регистрация адаптера через `mseOnRegisterAdapters`
+
+Адаптер регистрируется в Indexer на старте — через подписку на событие:
+
+| Параметр события | Тип | Описание |
+|------------------|-----|----------|
+| `indexer` | `Indexer` | Сервис индексатора. На нём вызывается `addAdapter()` |
 
 ```php
 <?php
+// Плагин на событие mseOnRegisterAdapters
+/** @var MSearch\Services\Indexer\IndexerInterface $indexer */
+$indexer = $scriptProperties['indexer'];
 
-namespace MSearch\Adapters;
-
-abstract class AbstractAdapter implements ContentAdapterInterface
-{
-    protected \MODX\Revolution\modX $modx;
-    protected \MSearch\MSearch $msearch;
-
-    public function __construct(\MODX\Revolution\modX $modx, \MSearch\MSearch $msearch)
-    {
-        $this->modx = $modx;
-        $this->msearch = $msearch;
-    }
-
-    /**
-     * Очистка HTML и нормализация пробелов
-     */
-    protected function cleanText(string $text): string
-    {
-        $text = strip_tags($text);
-        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
-        $text = preg_replace('/\s+/', ' ', $text);
-        return trim($text);
-    }
-
-    /**
-     * Рекурсивное извлечение текста из JSON (MIGX и др.)
-     */
-    protected function flattenJson(mixed $data): string
-    {
-        if (is_string($data)) {
-            $decoded = json_decode($data, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $this->flattenJson($decoded);
-            }
-            return $data;
-        }
-
-        if (is_array($data)) {
-            $texts = [];
-            foreach ($data as $value) {
-                $texts[] = $this->flattenJson($value);
-            }
-            return implode(' ', array_filter($texts));
-        }
-
-        return '';
-    }
-
-    public function getPriority(): int
-    {
-        return 0;
-    }
+if (class_exists(\MyApp\Model\Article::class)) {
+    $indexer->addAdapter(new \MyApp\Adapters\ArticleAdapter(
+        $modx,
+        $modx->services->get('msearch')
+    ));
 }
 ```
 
-## Событие mseOnRegisterAdapters
+Подробное описание всех событий — см. [Плагин и события](/components/msearch/plugin-and-events).
 
-Для регистрации адаптеров используется событие `mseOnRegisterAdapters`, которое вызывается при инициализации Indexer.
+## Пример: адаптер для комментариев Tickets
 
-**Параметры события:**
+Допустим, у вас есть модель `Tickets\Model\TicketComment` и вы хотите индексировать тексты комментариев.
 
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `indexer` | `Indexer` | Экземпляр индексатора |
-
-## Пример: Адаптер для комментариев
-
-Допустим, у вас есть компонент с комментариями (модель `TicketComment`) и вы хотите их индексировать.
-
-### Шаг 1: Создайте класс адаптера
+### Шаг 1. Класс адаптера
 
 Файл: `core/components/tickets/src/Adapters/TicketCommentAdapter.php`
 
@@ -156,49 +174,46 @@ abstract class AbstractAdapter implements ContentAdapterInterface
 namespace Tickets\Adapters;
 
 use MSearch\Adapters\AbstractAdapter;
+use Tickets\Model\TicketComment;
 
 class TicketCommentAdapter extends AbstractAdapter
 {
-    /**
-     * Поддерживаемый класс
-     */
-    public function supports(string $className): bool
+    public function getType(): string
     {
-        return is_a($className, 'TicketComment', true);
+        return 'comment';
     }
 
-    /**
-     * Поля для индексации с весами
-     */
+    public function getPriority(): int
+    {
+        return 10;
+    }
+
+    public function supports(string $className): bool
+    {
+        if (!class_exists(TicketComment::class)) {
+            return false;
+        }
+        return $className === TicketComment::class
+            || is_subclass_of($className, TicketComment::class);
+    }
+
     public function getIndexableFields(): array
     {
         return [
-            'text' => 1,      // текст комментария
-            'name' => 2,      // имя автора (выше вес для поиска по авторам)
-            'email' => 1,     // email автора
+            'text' => 1,
+            'name' => 2,
         ];
     }
 
-    /**
-     * Извлечение текста из поля
-     */
     public function extractContent(object $object, string $field): string
     {
         $value = $object->get($field);
-
-        if ($field === 'text') {
-            return $this->cleanText($value ?? '');
-        }
-
-        return $value ?? '';
+        return $value === null ? '' : $this->cleanText((string) $value);
     }
 
-    /**
-     * Выборка комментариев для индексации
-     */
     public function getObjects(array $criteria, int $limit, int $offset): iterable
     {
-        $c = $this->modx->newQuery('TicketComment');
+        $c = $this->modx->newQuery(TicketComment::class);
         $c->where([
             'published' => true,
             'deleted' => false,
@@ -206,79 +221,97 @@ class TicketCommentAdapter extends AbstractAdapter
         $c->sortby('id', 'ASC');
         $c->limit($limit, $offset);
 
-        return $this->modx->getIterator('TicketComment', $c);
+        return $this->modx->getIterator(TicketComment::class, $c);
     }
 
-    /**
-     * Общее количество комментариев
-     */
     public function getTotal(array $criteria = []): int
     {
-        return $this->modx->getCount('TicketComment', [
+        return $this->modx->getCount(TicketComment::class, [
             'published' => true,
             'deleted' => false,
         ]);
     }
 
-    /**
-     * Приоритет выше стандартного ResourceAdapter (0)
-     */
-    public function getPriority(): int
+    public function getDisplayData(array $ids, string $query = '', array $options = []): array
     {
-        return 10;
+        if (empty($ids)) {
+            return [];
+        }
+
+        // Батч-загрузка комментариев через raw PDO для скорости
+        $table = $this->modx->getTableName(TicketComment::class);
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $sql = "SELECT id, text, name, createdon, ticket_id FROM {$table}
+                WHERE id IN ({$placeholders}) AND published = 1 AND deleted = 0";
+
+        $rows = [];
+        $stmt = $this->modx->prepare($sql);
+        if ($stmt && $stmt->execute(array_values($ids))) {
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $rows[(int) $row['id']] = $row;
+            }
+            $stmt->closeCursor();
+        }
+
+        $result = [];
+        foreach ($ids as $id) {
+            if (!isset($rows[$id])) {
+                continue;
+            }
+            $row = $rows[$id];
+            $ticketUrl = $this->modx->makeUrl((int) $row['ticket_id'], '', '', 'full');
+
+            $result[$id] = [
+                'id' => (int) $id,
+                'type' => $this->getType(),
+                'url' => $ticketUrl . '#comment-' . $id,
+                'text' => $this->highlight((string) $row['text'], $query, ['ellipsisLength' => 150]),
+                'name' => $this->highlight((string) $row['name'], $query),
+                'name_raw' => (string) $row['name'],
+                'createdon' => $row['createdon'],
+            ];
+        }
+
+        return $result;
+    }
+
+    public function getDefaultSuggestTpl(): string
+    {
+        return 'mSearch.suggest.comment';
+    }
+
+    public function getDefaultResultTpl(): string
+    {
+        return 'mSearch.row.comment';
     }
 }
 ```
 
-### Шаг 2: Создайте плагин для регистрации
+### Шаг 2. Плагин для регистрации
 
-**Плагин:** `TicketsMSearchAdapter`
-**События:** `mseOnRegisterAdapters`
+Создайте MODX-плагин с подпиской на `mseOnRegisterAdapters`:
 
 ```php
 <?php
-/**
- * Регистрация адаптера комментариев в mSearch
- *
- * @event mseOnRegisterAdapters
- */
+/** @var MSearch\Services\Indexer\IndexerInterface $indexer */
+$indexer = $scriptProperties['indexer'];
 
-switch ($modx->event->name) {
-    case 'mseOnRegisterAdapters':
-        /** @var \MSearch\Services\Indexer\Indexer $indexer */
-        $indexer = $modx->event->params['indexer'];
-
-        /** @var \MSearch\MSearch $msearch */
-        $msearch = $modx->services->get('msearch');
-
-        // Проверяем, что Tickets установлен
-        $ticketsPath = MODX_CORE_PATH . 'components/tickets/';
-        if (!is_dir($ticketsPath)) {
-            return;
-        }
-
-        // Регистрируем адаптер
-        $indexer->addAdapter(
-            new \Tickets\Adapters\TicketCommentAdapter($modx, $msearch)
-        );
-        break;
+if (!class_exists(\Tickets\Model\TicketComment::class)) {
+    return;
 }
+
+$indexer->addAdapter(new \Tickets\Adapters\TicketCommentAdapter(
+    $modx,
+    $modx->services->get('msearch')
+));
 ```
 
-### Шаг 3: Автоиндексация при сохранении
+### Шаг 3. Автоиндексация при сохранении
 
-**Плагин:** `TicketsAutoIndex`
-**События:** `OnTicketCommentSave`, `OnTicketCommentRemove`
+Создайте плагин с подпиской на события Tickets (имена могут отличаться в зависимости от версии компонента):
 
 ```php
 <?php
-/**
- * Автоиндексация комментариев
- *
- * @event OnTicketCommentSave
- * @event OnTicketCommentRemove
- */
-
 if (!$modx->services->has('msearch')) {
     return;
 }
@@ -288,8 +321,8 @@ $msearch = $modx->services->get('msearch');
 
 switch ($modx->event->name) {
     case 'OnTicketCommentSave':
-        /** @var TicketComment $comment */
-        $comment = $modx->event->params['object'];
+        /** @var \Tickets\Model\TicketComment $comment */
+        $comment = $scriptProperties['object'];
 
         if ($comment->get('published') && !$comment->get('deleted')) {
             $msearch->index($comment->get('id'));
@@ -299,94 +332,95 @@ switch ($modx->event->name) {
         break;
 
     case 'OnTicketCommentRemove':
-        /** @var TicketComment $comment */
-        $comment = $modx->event->params['object'];
+        $comment = $scriptProperties['object'];
         $msearch->removeFromIndex($comment->get('id'));
         break;
 }
 ```
 
-## Пример: Адаптер для товаров miniShop2
+### Шаг 4. Чанк подсказки
+
+Дефолтное имя из адаптера — `mSearch.suggest.comment`. Создайте чанк в админке:
+
+```fenom
+<a href="{$url}" class="mse-suggest-item mse-suggest-item--comment">
+    <span class="mse-suggest-body">
+        <span class="mse-suggest-title">{$name}</span>
+        <span class="mse-suggest-text">{$text}</span>
+        <span class="mse-suggest-date">{$createdon | date : 'd.m.Y'}</span>
+    </span>
+</a>
+```
+
+Поскольку плейсхолдеры формирует ваш адаптер, вы вольны выбрать любые имена — главное, чтобы они совпадали в `getDisplayData()` и в чанке.
+
+## Пример: расширение MsProductAdapter
+
+Встроенный `MsProductAdapter` для miniShop3 уже регистрируется автоматически при `class_exists(\MiniShop3\Model\msProduct::class)`. Если нужно изменить поведение (например, добавить свои поля или другую логику загрузки) — наследуйтесь и поставьте свой адаптер с приоритетом выше:
 
 ```php
 <?php
 
-namespace MiniShop2\Adapters;
+namespace MyApp\Adapters;
 
-use MSearch\Adapters\AbstractAdapter;
+use MSearch\Adapters\MsProductAdapter;
 
-class msProductAdapter extends AbstractAdapter
+class MyProductAdapter extends MsProductAdapter
 {
-    public function supports(string $className): bool
+    public function getPriority(): int
     {
-        return is_a($className, 'msProduct', true);
+        return 20; // выше встроенного (10)
     }
 
     public function getIndexableFields(): array
     {
-        return [
-            'pagetitle' => 5,
-            'longtitle' => 3,
-            'description' => 2,
-            'introtext' => 2,
-            'content' => 1,
-            'article' => 4,      // артикул — важное поле
-            'vendor_name' => 2,  // название производителя
-        ];
+        return array_merge(parent::getIndexableFields(), [
+            'tv_bundle_keywords' => 4,
+            'tv_seo_text' => 2,
+        ]);
     }
 
     public function extractContent(object $object, string $field): string
     {
-        // Название производителя из связанной таблицы
-        if ($field === 'vendor_name') {
-            $vendorId = $object->get('vendor');
-            if ($vendorId) {
-                $vendor = $this->modx->getObject('msVendor', $vendorId);
-                return $vendor ? $vendor->get('name') : '';
-            }
-            return '';
-        }
-
-        // Артикул из msProductData
-        if ($field === 'article') {
-            $data = $object->getOne('Data');
-            return $data ? $data->get('article') ?? '' : '';
-        }
-
-        // Стандартные поля
-        return $this->cleanText($object->get($field) ?? '');
-    }
-
-    public function getObjects(array $criteria, int $limit, int $offset): iterable
-    {
-        $c = $this->modx->newQuery('msProduct');
-        $c->where([
-            'published' => true,
-            'deleted' => false,
-            'searchable' => true,
-            'class_key' => 'msProduct',
-        ]);
-        $c->limit($limit, $offset);
-
-        return $this->modx->getIterator('msProduct', $c);
-    }
-
-    public function getTotal(array $criteria = []): int
-    {
-        return $this->modx->getCount('msProduct', [
-            'published' => true,
-            'deleted' => false,
-            'searchable' => true,
-            'class_key' => 'msProduct',
-        ]);
-    }
-
-    public function getPriority(): int
-    {
-        return 20;
+        // Делегируем стандартную обработку TV-полей родителю
+        return parent::extractContent($object, $field);
     }
 }
 ```
+
+Регистрируется тем же путём — через плагин на `mseOnRegisterAdapters`.
+
+## Интеграция через внешний сниппет (element)
+
+В сниппете `mSearchForm` можно указать `&element=msProducts` — в этом случае адаптер вместо собственного SQL загружает данные через указанный сниппет. Это даёт доступ ко всем событиям сниппета (например, плагинам скидок miniShop3) и кастомному форматированию.
+
+В адаптере поддержка element-интеграции реализуется через helper `loadViaElement()`:
+
+```php
+public function getDisplayData(array $ids, string $query = '', array $options = []): array
+{
+    $element = (string) ($options['element'] ?? '');
+    $elementProps = is_array($options['elementProperties'] ?? null)
+        ? $options['elementProperties']
+        : [];
+
+    $rows = $element !== ''
+        ? $this->loadViaElement($element, $ids, $elementProps)
+        : $this->loadNatively($ids);
+
+    if (empty($rows)) {
+        return [];
+    }
+
+    return $this->enrich($rows, $ids, $query);
+}
+```
+
+Адаптер сам решает, поддерживает ли он указанный `element` — если нет, можно игнорировать `$options['element']` и всегда идти нативным путём.
+
+::: warning Безопасность
+`$element` приходит из конфигурации сниппета `mSearchForm`, хранящейся в кэше MODX. Никогда не передавайте в `loadViaElement()` значение, пришедшее напрямую от клиента — `runSnippet()` исполнит указанный сниппет, и в случае произвольного имени это становится RCE.
+:::
 
 ## Программное использование
 
@@ -394,9 +428,10 @@ class msProductAdapter extends AbstractAdapter
 
 ```php
 <?php
+/** @var \MSearch\MSearch $msearch */
 $msearch = $modx->services->get('msearch');
 
-// Индексировать один объект
+// Один объект
 $msearch->index($objectId);
 
 // Пакетная индексация
@@ -413,25 +448,39 @@ $msearch->removeFromIndex($objectId);
 $msearch->clearIndex();
 ```
 
-### Поиск
+### Поиск и работа с ResultSet
 
 ```php
 <?php
+/** @var \MSearch\MSearch $msearch */
 $msearch = $modx->services->get('msearch');
 
 $results = $msearch->search('купить смартфон', [
     'limit' => 20,
     'offset' => 0,
-    'contexts' => ['web'],  // фильтрация по контекстам (опционально)
+    'contexts' => ['web'],
 ]);
 
-$results->getTotal();      // общее количество
-$results->getIds();        // массив ID
-$results->toArray();       // [id => weight]
-$results->isEmpty();       // нет результатов?
+$results->getTotal();        // общее количество
+$results->getIds();          // массив ID в порядке релевантности
+$results->toArray();         // [id => weight]
+$results->isEmpty();         // нет результатов?
+
+// Класс ресурса по ID (mSearch 1.3.0+)
+$results->getClassKey(123);  // 'MODX\Revolution\modResource' / 'MiniShop3\Model\msProduct' / ...
+
+// Все классы разом
+$results->getClasses();      // [id => class_key]
+
+// Группировка по классу — для маршрутизации по адаптерам
+$grouped = $results->groupByClass();
+// [
+//     'MODX\Revolution\modResource' => [12, 34, 56],
+//     'MiniShop3\Model\msProduct' => [78, 90],
+// ]
 
 foreach ($results as $id => $weight) {
-    $resource = $modx->getObject('modResource', $id);
+    // итерация в порядке релевантности
 }
 ```
 
@@ -439,6 +488,7 @@ foreach ($results as $id => $weight) {
 
 ```php
 <?php
+/** @var \MSearch\MSearch $msearch */
 $msearch = $modx->services->get('msearch');
 
 $highlighted = $msearch->highlight($text, $query, [
@@ -448,19 +498,39 @@ $highlighted = $msearch->highlight($text, $query, [
 ]);
 ```
 
+::: tip HTML-safe by default
+С версии 1.3.0 `Highlighter` экранирует входной текст через `htmlspecialchars` **до** оборачивания совпадений в `<mark>`. Результат можно безопасно вставлять в DOM через `innerHTML` или выводить в чанк без дополнительного `|escape`.
+:::
+
 ## Приоритет адаптеров
 
-Адаптеры проверяются в порядке приоритета (от большего к меньшему). Первый адаптер, вернувший `true` в `supports()`, будет использован.
+Адаптеры сортируются по приоритету (`getPriority()`) — больше значение = ближе к началу. При индексации каждого объекта `Indexer::getAdapter()` возвращает **первый** адаптер, у которого `supports($className)` вернул `true`.
 
 ```
-msProductAdapter (priority: 20)     ← проверяется первым
-TicketCommentAdapter (priority: 10)
-ResourceAdapter (priority: 0)       ← проверяется последним
+MyProductAdapter   (priority 20)   ← проверяется первым
+MsProductAdapter   (priority 10)
+TicketCommentAdapter (priority 10)
+ResourceAdapter    (priority 0)    ← фолбэк для всего modResource-родственного
 ```
+
+Адаптер `ResourceAdapter` имеет приоритет `0` и `supports(modResource::class || is_subclass_of)` — он подхватывает любого потомка `modResource`, для которого не нашлось специализированного адаптера. Это значит, что для добавления своего адаптера достаточно поставить ему приоритет `> 0`.
 
 ## Поле class_key
 
-Индекс хранит `class_key` для каждой записи, что позволяет:
+Таблицы индекса `mse_words` и `mse_intro` хранят `class_key` каждой записи. За счёт этого:
 
-- Индексировать объекты разных типов в одних таблицах
-- Фильтровать результаты по типу при необходимости
+- В одних таблицах сосуществуют ресурсы, товары, комментарии и любые другие модели.
+- При поиске `Searcher` возвращает `ResultSet`, в котором каждому ID сопоставлен `class_key`.
+- `SearchController` группирует результаты по `class_key` и для каждой группы вызывает свой адаптер с собственным `getDisplayData()` и шаблоном строки.
+- Маршрутизация чанков подсказок прозрачна для пользователя сниппета — товары рисуются `mSearch.suggest.product`, обычные ресурсы — `mSearch.suggest.row`.
+
+## Соглашения по неймингу чанков
+
+Дефолтные имена встроенных адаптеров:
+
+| Адаптер | Suggest | Result |
+|---------|---------|--------|
+| `ResourceAdapter` | `mSearch.suggest.row` | `mSearch.row` |
+| `MsProductAdapter` | `mSearch.suggest.row` | `mSearch.row` |
+
+В версии 1.3.0 все встроенные адаптеры используют **один общий** чанк `mSearch.suggest.row`, который ветвится по плейсхолдеру `{$type}` (`product` / `resource`). Свой адаптер может задать собственное имя через `getDefaultSuggestTpl()` — например `mSearch.suggest.comment` для комментариев.
