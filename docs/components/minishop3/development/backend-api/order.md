@@ -184,6 +184,44 @@ $result = $calculator->getTotalCost($draft, $orderData, $token);
 
 Каждый метод вызывает пару событий `msOnBefore...` / `msOn...`, позволяющих плагинам модифицировать стоимость.
 
+### Пересчёт стоимости в админке — `POST /api/mgr/orders/{id}/recalculate-cost`
+
+Появился в 1.11.0 (#212). Сервис `ManagerOrderCostRecalculator` пересчитывает `cart_cost`, `weight`, `delivery_cost`, итоговый `cost` по сохранённым позициям заказа и текущим `delivery_id` / `payment_id` без побочных эффектов на других полях.
+
+Тело запроса:
+
+```json
+{
+  "mode": "auto",
+  "manual_delivery_cost": 500.0
+}
+```
+
+Режимы (`mode`):
+
+| Режим | Поведение |
+|---|---|
+| `auto` (по умолчанию) | Пересчитывает только для `DefaultDelivery` / `DefaultPayment` (по полям `price`, `weight_price`, `free_delivery_amount`, проценты). Для кастомных handler'ов возвращает warning `delivery_manual_required` / `payment_manual_required` и сохраняет прежнюю `delivery_cost` / комиссию 0 — не дёргает внешние API. |
+| `manual` | Использует переданный `manual_delivery_cost`. Комиссия оплаты считается по полю автоматом. |
+| `force_provider` | Явно вызывает `loadController()` → `getCost()` и `loadHandler()` → `getCost()` в `try/catch`. При сбое — warning `delivery_provider_error` / `payment_provider_error`, прежние значения сохраняются. |
+
+Ответ содержит данные заказа (как `GET /api/mgr/orders/{id}`) плюс:
+
+```json
+{
+  "breakdown": {
+    "cart_cost": 5000.0,
+    "weight": 1.5,
+    "delivery_cost": 300.0,
+    "payment_cost": 150.0,
+    "cost": 5450.0
+  },
+  "warnings": ["delivery_manual_required"]
+}
+```
+
+Применяет общий guard `OrderService::clampComputedTotal()` — итог не может уйти ниже нуля. Скидки/наценки доставки и оплаты (отрицательные `price`, см. 1.11.0) обрабатываются через `MiniShop3\Utils\PriceAdjustment`.
+
 ## Оформление заказа (OrderSubmitHandler)
 
 `OrderSubmitHandler` выполняет полный цикл оформления: валидация → создание клиента → расчёт стоимости → генерация номера → смена статуса → вызов оплаты.

@@ -273,6 +273,17 @@ $result = $verification->resendVerificationEmail($customer);
 
 Настройка `ms3_email_verification_token_ttl` (по умолчанию 86400) — время жизни токена верификации в секундах.
 
+### Web API endpoint'ы покупателя — `/api/v1/customer/*`
+
+Web API контроллер `CustomerProfileController`. Ниже — endpoint'ы, появившиеся в 1.10.x / 1.11.0 для интеграции с витриной.
+
+| Метод | Путь | Описание |
+|---|---|---|
+| `POST` | `/api/v1/customer/add` | Быстрое обновление полей профиля. Принимает `key` + `value` (одиночное поле). С 1.11.0 разрешены все колонки `msCustomer` из xPDO-карты (включая Object Extension) — исключения в denylist (`id`, `user_id`, `token`, `password`, `email_verified_at`, статусы, агрегаты, служебные даты). Для `first_name`, `last_name`, `email`, `phone` применяется Rakit-валидация; для остальных значение нормализуется по `phptype` метаданных. При смене email сбрасывается `email_verified_at`. |
+| `POST` | `/api/v1/customer/changeAddress` | Выбор сохранённого адреса в черновике заказа. Принимает `address_hash`. |
+| `GET` | `/api/v1/customer/email/verify` | Подтверждение email по токену из письма. Параметры: `token`, `html=1` (HTML-редирект вместо JSON), `format=json`. По умолчанию редирект на сайт с `ms3_email_verified=1|0`. Кастомный URL подстановки — настройка `ms3_email_verification_url`; URL успешного подтверждения — `ms3_email_verification_success_url`. |
+| `POST` | `/api/v1/customer/email/resend-verification` | Повторная отправка письма верификации текущему авторизованному покупателю. На уровне сервиса защита от спама (5 минут между отправками). |
+
 ## Ограничение частоты запросов (RateLimiter)
 
 Сервис для защиты от brute-force атак. Использует кеш MODX.
