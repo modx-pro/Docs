@@ -869,6 +869,11 @@ const rewrites: Record<string, string> = {
   'utilityi/teleport/rasshirenie':                        'system/utilities/teleport/',
   'utilityi/teleport/ispolzovanie':                       'system/utilities/teleport/usage',
   'utilityi/teleport/rasshirenie/shablonyi-izvlecheniya': 'system/utilities/teleport/extension/extract-templates',
+
+  'components/msfastorder/installation': 'components/msfastorder/quick-start',
+  'components/msfastorder/configuration': 'components/msfastorder/settings',
+  'components/msfastorder/usage': 'components/msfastorder/snippets/index',
+  'components/msfastorder/troubleshooting': 'components/msfastorder/faq',
 }
 
 export { rewrites }

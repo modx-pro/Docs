@@ -77,6 +77,16 @@ The list is filled **automatically** when a product page is opened. Pass the cur
 
 ## Step 4: “Recently viewed” block
 
+### Choosing how to render
+
+| Scenario | When to use |
+|----------|-------------|
+| **JS `render()`** | Default: **`localStorage`**, shared template. The server on a normal GET **cannot** read localStorage — without JS the list is empty. |
+| **Snippet with `fromDB`** | Logged-in user in the **web** context and DB sync on — IDs come from the server table. |
+| **Snippet with `ids` + cookie** | You need **server** HTML for guests: set **`ms3recentlyviewed.storage_type` = `cookie`**, plugin **ms3recentlyviewedViewedIdsPlaceholder** sets placeholder **`viewedIds`**, pass `ids` from **`[[+viewedIds]]`** or `{$_modx->getPlaceholder('viewedIds')}` in Fenom. The name **`viewedIds` is reserved** — do not override it. |
+
+### Client-side (JS)
+
 Container and render call (same for Fenom and MODX):
 
 ```html
@@ -91,6 +101,50 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 
 The script will request the list from the connector and output HTML. When there are no items the block is hidden.
+
+**Current package conveniences:** class **`row`** may be **added automatically** to **`.ms3rv__list`** (Bootstrap); if **`#ms3-recently-viewed`** and **`#ms3-similar`** exist, the script may **auto-call render** on `DOMContentLoaded`. Still load `viewed.css` in the template; if missing, JS may inject styles.
+
+### Server output: cookie and `viewedIds` placeholder
+
+With **`storage_type` = `cookie`**, the plugin fills the placeholder; server-side “Recently viewed” list:
+
+::: code-group
+
+```fenom
+{'ms3recentlyviewed' | snippet : [
+  'ids' => $_modx->getPlaceholder('viewedIds'),
+  'tpl' => 'tplViewedItem',
+  'emptyTpl' => 'tplViewedEmpty'
+]}
+```
+
+```modx
+[[!ms3recentlyviewed?
+  &ids=`[[+viewedIds]]`
+  &tpl=`tplViewedItem`
+  &emptyTpl=`tplViewedEmpty`
+]]
+```
+
+:::
+
+### Server output: from DB only (`fromDB`)
+
+For **logged-in** users (**web** context, sync on) you can omit `ids`:
+
+::: code-group
+
+```fenom
+{'ms3recentlyviewed' | snippet : ['fromDB' => true]}
+```
+
+```modx
+[[!ms3recentlyviewed?
+  &fromDB=`1`
+]]
+```
+
+:::
 
 ## Step 5: Viewed count (optional)
 
@@ -110,9 +164,10 @@ Below recently viewed you can output products from the same categories. Server o
 
 ```fenom
 {'ms3recentlyviewedSimilar' | snippet : [
-  'ids' => $viewedIds,
+  'ids' => $_modx->getPlaceholder('viewedIds'),
   'limit' => 8,
-  'tpl' => 'tplViewedItem'
+  'depth' => 2,
+  'tpl' => 'tplSimilarItem'
 ]}
 ```
 
@@ -120,13 +175,14 @@ Below recently viewed you can output products from the same categories. Server o
 [[!ms3recentlyviewedSimilar?
   &ids=`[[+viewedIds]]`
   &limit=`8`
-  &tpl=`tplViewedItem`
+  &depth=`2`
+  &tpl=`tplSimilarItem`
 ]]
 ```
 
 :::
 
-See: [Snippet ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Frontend setup](frontend).
+With **localStorage** only, “Similar” is easier via **JS** `renderSimilar()` or passing `ids` from the front; placeholder **`viewedIds`** is **empty** when `storage_type` = `localStorage`. See: [Snippet ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Frontend setup](frontend).
 
 ## Next steps
 

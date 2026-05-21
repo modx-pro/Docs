@@ -14,7 +14,10 @@ title: ms3recentlyviewedSimilar
 | **ids** | ID просмотренных товаров через запятую | — |
 | **tpl** | Чанк карточки товара | tplSimilarItem |
 | **limit** | Макс. количество в выборке | 10 |
-| **depth** | Глубина поиска по категориям (уровни вложенности) | 1 |
+| **depth** | Глубина поиска по категориям (уровни вложенности) | **2** (в логике сниппета глубина не опускается ниже 2 при выборке по категориям) |
+| **fromDB** | Загрузить ID просмотренных из БД для авторизованного (вместо **ids**) | false |
+
+Параметр **fromDB** повторяет идею сниппета `ms3recentlyviewed`: при включённой синхронизации и авторизации в контексте **web** подставляются ID из таблицы. Для гостей возможен демо-fallback ID (см. код пакета), если включена соответствующая опция.
 
 ## Примеры
 
@@ -22,9 +25,10 @@ title: ms3recentlyviewedSimilar
 
 ```fenom
 {'ms3recentlyviewedSimilar' | snippet : [
-  'ids' => $viewedIds,
+  'ids' => $_modx->getPlaceholder('viewedIds'),
   'limit' => 8,
-  'tpl' => 'tplViewedItem'
+  'depth' => 2,
+  'tpl' => 'tplSimilarItem'
 ]}
 ```
 
@@ -32,12 +36,13 @@ title: ms3recentlyviewedSimilar
 [[!ms3recentlyviewedSimilar?
   &ids=`[[+viewedIds]]`
   &limit=`8`
-  &tpl=`tplViewedItem`
+  &depth=`2`
+  &tpl=`tplSimilarItem`
 ]]
 ```
 
 :::
 
-Если у просмотренных товаров нет категорий или в этих категориях нет других товаров, сниппет возвращает пустую строку.
+Если по категориям ничего не найдено, сниппет может **перейти к fallback** (например, выборка по всему каталогу с увеличенной глубиной) — см. changelog пакета.
 
 Через коннектор (AJAX): POST с `action=similar`, параметры `ids`, опционально `limit`, `tpl`, `depth`.

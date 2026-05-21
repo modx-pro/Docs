@@ -7,13 +7,17 @@ title: Подключение на сайте
 
 ## Проверка интеграции: пустая статистика в админке
 
-Статистика и история в админке берутся из таблицы `ms3recentlyviewed_items`. Записи попадают туда при включённой синхронизации — для **авторизованных** и **анонимных** (гостей) пользователей. Анонимные идентифицируются по сессии; учёт гостей включается настройкой `ms3recentlyviewed.track_anonymous`. Просмотры от поисковых ботов не сохраняются при включённой настройке `ms3recentlyviewed.block_bots` (она включена по умолчанию).
+Статистика и история в админке берутся из таблицы `ms3recentlyviewed_items`. Записи попадают туда при включённой синхронизации — для **авторизованных** и **анонимных** (гостей) пользователей. Анонимные идентифицируются по сессии; учёт гостей включается настройкой `ms3recentlyviewed.track_anonymous`. Просмотры от поисковых ботов не сохраняются при **`ms3recentlyviewed.block_bots` = Да**; способ определения ботов задаётся **`ms3recentlyviewed.block_bots_detector`**: **`crawler_detect`** (библиотека jaybizzle/crawler-detect в vendor) или **`regex`** как запасной вариант.
 
 **Чек-лист:** лексикон и viewed.js подключены на каждой странице товара; на странице товара задан `data-viewed-product-id` на `<body>` или `window.ms3rvCurrentProductId`; `ms3recentlyviewed.sync_enabled` = Да; для авторизованных — пользователь авторизован в контексте **web** (не только в админке). Блок `fromDB` работает только для пользователей, авторизованных на фронте (контекст web).
 
+### Плейсхолдер `viewedIds` (cookie)
+
+Плагин **ms3recentlyviewedViewedIdsPlaceholder** (событие **OnWebPageInit**, приоритет **-5**): если **`ms3recentlyviewed.storage_type` = `cookie`** и лимит > 0, в плейсхолдер **`viewedIds`** подставляется строка ID из куки `ms3_recently_viewed`. Имя **зарезервировано** — не переопределяйте его своим кодом. В Fenom: `{$_modx->getPlaceholder('viewedIds')}` (переменная `$viewedIds` в шаблоне сама не появляется).
+
 ## Коннектор (AJAX)
 
-**URL:** `assets/components/ms3recentlyviewed/connector.php`  
+**URL:** `assets/components/ms3recentlyviewed/connector.php`
 **Метод:** POST.
 
 Действия:

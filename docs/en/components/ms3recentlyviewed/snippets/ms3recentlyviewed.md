@@ -17,7 +17,7 @@ Internally it calls msProducts (pdoTools); the addon automatically sets the `par
 | **limit** | Max items in result | from setting ms3recentlyviewed.max_items (20) |
 | **fromDB** | Load IDs from DB for logged-in user (when sync_enabled) | false |
 
-**ids** is passed from outside (template, placeholder) or omitted when **fromDB=true** — then the snippet loads the list from DB.
+**ids** is passed from outside (template, placeholder **`[[+viewedIds]]`**) or omitted when **fromDB=true** — then the snippet loads the list from DB. For guests with **`storage_type` = `cookie`**, the **ms3recentlyviewedViewedIdsPlaceholder** plugin sets the placeholder; in Fenom use **`$_modx->getPlaceholder('viewedIds')`**, not a non-existent `$viewedIds` variable.
 
 ## Examples
 
@@ -25,7 +25,7 @@ Internally it calls msProducts (pdoTools); the addon automatically sets the `par
 
 ```fenom
 {'ms3recentlyviewed' | snippet : [
-  'ids' => $viewedIds,
+  'ids' => $_modx->getPlaceholder('viewedIds'),
   'tpl' => 'tplViewedItem',
   'emptyTpl' => 'tplViewedEmpty'
 ]}
@@ -43,8 +43,18 @@ Internally it calls msProducts (pdoTools); the addon automatically sets the `par
 
 **From DB for logged-in user:**
 
+::: code-group
+
 ```fenom
 {'ms3recentlyviewed' | snippet : ['fromDB' => true]}
 ```
+
+```modx
+[[!ms3recentlyviewed?
+  &fromDB=`1`
+]]
+```
+
+:::
 
 When there are no products, the snippet returns an empty string or `emptyTpl` content — the template can hide the block when the result is empty.

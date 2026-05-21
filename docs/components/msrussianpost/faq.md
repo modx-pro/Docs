@@ -10,7 +10,7 @@ title: FAQ и траблшутинг
 1. Заполнены **`msrussianpost_sender_index`** и **`msrussianpost_object_codes`**.
 2. На странице заказа порядок вывода: **`msrpLexiconScript`** → **`msRussianPost`** → чанки статуса и методов (сниппеты **некэшированные**: Fenom `{'…' | snippet}`, теги `[[!…]]`).
 3. Есть поле индекса получателя (**6 цифр**): `name="index"`, `data-msrp-index` или свой селектор в параметре сниппета.
-4. В консоли и во вкладке **Network** нет ошибок; запрос к `connector.php` возвращает JSON с **`success: true`**.
+4. В консоли и во вкладке **Network** нет ошибок, а запрос к `connector.php` возвращает JSON с **`success: true`**.
 
 См. также [Быстрый старт](quick-start) (блок «Шаг 3: Виджет в чанке заказа») и [Интеграция → отладка](integration#отладка).
 
@@ -30,7 +30,7 @@ title: FAQ и траблшутинг
 
 ## Нет подсказок адреса / города (как в старом msRussianPost)
 
-В **msRussianPost** нет встроенного DaData. Установите **mxDadata**, настройте токен в его системных настройках, выведите **`[[!mxDadataAddressSuggest]]`** **до** `msrpLexiconScript` и `msRussianPost`. После выбора подсказки срабатывает **`mxdadata:order-address-updated`** — виджет Почты России пересчитывает тарифы. Пошагово — [Подключение на сайте → mxDadata](frontend#mxdadata); техническая связка с **`ms3Hooks`** — [Интеграция с хуками MiniShop3](integration#интеграция-с-хуками-minishop3).
+В **msRussianPost** нет встроенного DaData. Установите **mxDadata**, настройте токен в его системных настройках, выведите **`[[!mxDadataAddressSuggest]]`** **до** `msrpLexiconScript` и `msRussianPost`. После выбора подсказки срабатывает **`mxdadata:order-address-updated`** — виджет Почты России пересчитывает тарифы. Пошагово — [Подключение на сайте → mxDadata](frontend#mxdadata). Техническая связка с **`ms3Hooks`** — [Интеграция с хуками MiniShop3](integration#интеграция-с-хуками-minishop3).
 
 ## Кэш
 

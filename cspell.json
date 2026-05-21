@@ -200,7 +200,22 @@
     "toastr",
     "notyf",
     "iodine",
-    "yup"
+    "yup",
+    "ibochkarev",
+    "yookassa",
+    "mspyookassa",
+    "msp3yookassa",
+    "yoomoney",
+    "холдирование",
+    "резолвер",
+    "Резолвер",
+    "фронтенда",
+    "фронтенду",
+    "вебхукам",
+    "форк",
+    "логируются",
+    "сниппет",
+    "файрвол"
   ],
   "ignorePaths": [
     "node_modules",

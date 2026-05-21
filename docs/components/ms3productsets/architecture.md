@@ -22,6 +22,19 @@ title: Архитектура
 
 ## Таблицы БД
 
+Связь шаблонов массового применения с строками выдачи (логическая, `template_name` в строках ссылается на имя шаблона):
+
+```mermaid
+flowchart TB
+  subgraph T["ms3_product_set_templates"]
+    t["name, type, related_product_ids, …"]
+  end
+  subgraph S["ms3_product_sets"]
+    r["product_id, related_product_id, type, sortorder, template_name"]
+  end
+  T -.->|apply_template| S
+```
+
 ### `ms3_product_sets`
 
 Связи для выдачи подборок.

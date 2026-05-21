@@ -3,7 +3,7 @@ title: CdekIntegrate
 description: Интеграция заказов СДЭК для MiniShop3 — создание, отслеживание, накладные, вебхуки.
 outline: [ 2,3 ]
 lastUpdated: true
-logo: https://modx3.art-sites.ru/assets/components/mscdek/img/cdek.png
+logo: https://modstore.pro/assets/extras/cdekintegrate/logo.jpg
 author: ShevArtV
 items: [
   { text: 'Начало работы', link: 'index' },

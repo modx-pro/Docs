@@ -77,6 +77,16 @@ title: Быстрый старт
 
 ## Шаг 4: Блок «Недавно просмотренные»
 
+### Как выбрать способ вывода
+
+| Сценарий | Когда использовать |
+|----------|-------------------|
+| **JS `render()`** | По умолчанию: **`localStorage`**, гости и общий шаблон. Сервер при обычном GET **не видит** localStorage — без JS список на странице не собрать. |
+| **Сниппет с `fromDB`** | Авторизованный пользователь в контексте **web**, синхронизация в БД включена — ID берутся из таблицы на сервере. |
+| **Сниппет с `ids` + cookie** | Нужен **серверный** HTML для гостей: **`ms3recentlyviewed.storage_type` = `cookie`**, плагин **ms3recentlyviewedViewedIdsPlaceholder** задаёт плейсхолдер **`viewedIds`**, в сниппет передаётся `ids` из **`[[+viewedIds]]`** или `{$_modx->getPlaceholder('viewedIds')}` в Fenom. Имя **`viewedIds`** зарезервировано — не перекрывайте его своими плагинами. |
+
+### Клиентский вывод (JS)
+
 Контейнер и вызов рендера (одинаково для Fenom и MODX):
 
 ```html
@@ -91,6 +101,50 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 
 Скрипт запросит список у коннектора и выведет HTML. При отсутствии товаров блок не отображается.
+
+**Удобства в актуальной версии пакета:** к контейнеру **`.ms3rv__list`** при необходимости **автоматически добавляется класс `row`** (Bootstrap); при наличии в DOM **`#ms3-recently-viewed`** и **`#ms3-similar`** скрипт может **сам вызвать рендер** на `DOMContentLoaded`. Явное подключение `viewed.css` в шаблоне по-прежнему рекомендуется; при отсутствии ссылки JS может подтянуть стили сам.
+
+### Серверный вывод: cookie и плейсхолдер `viewedIds`
+
+При **`storage_type` = `cookie`** плейсхолдер заполняет плагин; список «Недавно просмотренные» на сервере:
+
+::: code-group
+
+```fenom
+{'ms3recentlyviewed' | snippet : [
+  'ids' => $_modx->getPlaceholder('viewedIds'),
+  'tpl' => 'tplViewedItem',
+  'emptyTpl' => 'tplViewedEmpty'
+]}
+```
+
+```modx
+[[!ms3recentlyviewed?
+  &ids=`[[+viewedIds]]`
+  &tpl=`tplViewedItem`
+  &emptyTpl=`tplViewedEmpty`
+]]
+```
+
+:::
+
+### Серверный вывод: только из БД (`fromDB`)
+
+Для **авторизованного** пользователя (контекст **web**, синхронизация включена) можно не передавать `ids`:
+
+::: code-group
+
+```fenom
+{'ms3recentlyviewed' | snippet : ['fromDB' => true]}
+```
+
+```modx
+[[!ms3recentlyviewed?
+  &fromDB=`1`
+]]
+```
+
+:::
 
 ## Шаг 5: Счётчик просмотренных (опционально)
 
@@ -110,9 +164,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ```fenom
 {'ms3recentlyviewedSimilar' | snippet : [
-  'ids' => $viewedIds,
+  'ids' => $_modx->getPlaceholder('viewedIds'),
   'limit' => 8,
-  'tpl' => 'tplViewedItem'
+  'depth' => 2,
+  'tpl' => 'tplSimilarItem'
 ]}
 ```
 
@@ -120,13 +175,14 @@ document.addEventListener('DOMContentLoaded', function() {
 [[!ms3recentlyviewedSimilar?
   &ids=`[[+viewedIds]]`
   &limit=`8`
-  &tpl=`tplViewedItem`
+  &depth=`2`
+  &tpl=`tplSimilarItem`
 ]]
 ```
 
 :::
 
-Подробнее: [Сниппет ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Подключение на сайте](frontend).
+Если используете только **localStorage**, для «Похожих» удобнее **JS** `renderSimilar()` или передача `ids` с фронта; плейсхолдер **`viewedIds`** при `storage_type` = `localStorage` **пустой**. Подробнее: [Сниппет ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Подключение на сайте](frontend).
 
 ## Что дальше
 

@@ -20,6 +20,18 @@ title: Интеграция и кастомизация
 2. При заданных ключах сначала вызывается otpravka **по каждому коду** объекта. При ошибке (429, 401, 5xx, невалидный JSON) для конкретного кода этот код пропускается и **добирается** через публичный API.
 3. В итоговый список методов попадают варианты из успешных ответов API. Покупатель видит максимально полный набор вариантов, пока доступен публичный API.
 
+```mermaid
+flowchart TD
+  M{api_mode?}
+  M -->|tariff| P[Публичный API tariff.pochta.ru]
+  M -->|otpravka| K{Ключ и токен<br/>otpravka заданы?}
+  K -->|нет| P
+  K -->|да| O[Запрос otpravka<br/>по коду объекта]
+  O -->|успех| L[Варианты в итоговый список]
+  O -->|ошибка: 4xx, 5xx, 429, невалидный JSON| P
+  P --> L
+```
+
 Подробнее о полях API — в официальной документации Почты России.
 
 ## Кастомные DOM-события
@@ -58,6 +70,20 @@ document.addEventListener('msrussianpost:calculated', function (e) {
 В штатном бандле MiniShop3 виджет также учитывает **`ms3:order:delivery-change`** (в стоковом JS событие может не диспатчиться — детали в исходниках `russianpost.js` и в `developer-guide` репозитория дополнения).
 
 Убедитесь, что на странице заказа подключён основной JS MiniShop3. Если форма кастомная и **`ms3Hooks`** недоступен, пересчёт вызывайте вручную через **`window.msRussianPost.recalculate()`** (см. [Подключение на сайте](frontend)).
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant MX as mxDadata: подсказка адреса
+  participant MS3 as MiniShop3 order/set
+  participant D as document
+  participant RP as russianpost.js
+  MX->>MS3: обновление полей заказа
+  MX->>D: mxdadata:order-address-updated
+  D->>RP: слушатель события
+  Note over RP,MS3: доставка «Почта России» активна
+  RP->>RP: recalculate() если нет afterAddOrder
+```
 
 ## Отладка {#отладка}
 

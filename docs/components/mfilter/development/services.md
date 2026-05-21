@@ -1,296 +1,682 @@
 # Сервисы
 
-PHP-сервисы mFilter и возможности их кастомизации.
+PHP-сервисы mFilter, их API и точки расширения.
 
 ## Архитектура
 
-mFilter использует сервис-ориентированную архитектуру с lazy-loading:
+mFilter использует service locator с lazy-loading. Главный класс `MFilter` — фасад с геттерами по каждому сервису. Сервисы создаются по первому обращению и переиспользуются в рамках запроса.
 
 ```php
-// Главный класс — фасад для доступа к сервисам
+/** @var \MFilter\MFilter $mfilter */
 $mfilter = $modx->services->get('mfilter');
 
-// Получение сервисов через геттеры
 $filter = $mfilter->getFilter();
 $slugManager = $mfilter->getSlugManager();
 $urlRouter = $mfilter->getUrlRouter();
 ```
 
-## Список сервисов
+## Полный список сервисов
 
-| Сервис | Класс | Описание |
-|--------|-------|----------|
-| Filter | `Services\Filter\Filter` | Основная логика фильтрации |
-| FilterConfig | `Services\Filter\FilterConfig` | Конфигурация фильтров страницы |
-| FilterSetManager | `Services\FilterSet\FilterSetManager` | Управление наборами фильтров |
-| SlugManager | `Services\Slug\SlugManager` | Управление слагами |
-| SlugParser | `Services\Slug\SlugParser` | Парсинг SEO URL |
-| SlugGenerator | `Services\Slug\SlugGenerator` | Генерация слагов |
-| UrlRouter | `Services\Router\UrlRouter` | Роутинг URL |
-| UrlBuilder | `Services\Router\UrlBuilder` | Построение URL |
-| SeoBuilder | `Services\Seo\SeoBuilder` | Генерация SEO-данных |
-| TemplateParser | `Services\Seo\TemplateParser` | Парсинг SEO-шаблонов |
-| WordFormsManager | `Services\Seo\WordFormsManager` | Управление словоформами |
-| ElementRunner | `Services\Element\ElementRunner` | Запуск element/paginator |
-| WarmupManager | `Services\Warmup\WarmupManager` | Управление прогревом кэша |
-| WarmupKeyBuilder | `Services\Warmup\WarmupKeyBuilder` | Построение ключей кэша |
-| SnippetCallParser | `Services\Warmup\SnippetCallParser` | Парсинг вызовов сниппетов |
-| Profiler | `Services\Profiler` | Профилирование запросов |
+| Сервис | Класс | Геттер | Описание |
+|--------|-------|--------|----------|
+| Filter | `Services\Filter\Filter` | `getFilter()` | Применение фильтров, выборка результатов |
+| FilterConfig | `Services\Filter\FilterConfig` | `getFilterConfig()` | Доступ к конфигурации фильтров страницы |
+| FilterSetManager | `Services\FilterSet\FilterSetManager` | `getFilterSetManager()` | Управление наборами фильтров |
+| RequestIdsRegistry | `Services\Filter\RequestIdsRegistry` | `getRequestIdsRegistry()` | Регистрация больших списков ID для JOIN-замены `IN(...)` |
+| SlugManager | `Services\Slug\SlugManager` | `getSlugManager()` | SEO-алиасы значений фильтров |
+| SlugParser | `Services\Slug\SlugParser` | `getSlugParser()` | Парсинг SEO-сегментов URL |
+| SlugGenerator | `Services\Slug\SlugGenerator` | `getSlugGenerator()` | Генерация slug-строк из значений |
+| UrlRouter | `Services\Router\UrlRouter` | `getUrlRouter()` | Роутинг URL → ID ресурса |
+| UrlBuilder | `Services\Router\UrlBuilder` | `getUrlBuilder()` | Построение SEO URL |
+| SeoBuilder | `Services\Seo\SeoBuilder` | `getSeoBuilder()` | Генерация title/h1/description |
+| TemplateParser | `Services\Seo\TemplateParser` | `getTemplateParser()` | Парсинг плейсхолдеров SEO-шаблонов |
+| WordFormsManager | `Services\Seo\WordFormsManager` | `getWordFormsManager()` | Словоформы для склонений |
+| TvIndexer | `Services\Tv\TvIndexer` | `getTvIndexer()` | Денормализованный индекс TV-значений |
+| FacetIndexBuilder | `Services\Facet\FacetIndexBuilder` | `getFacetIndexBuilder()` | Сборка индекса фасетов из источников (1.4.0+) |
+| FacetIndexReader | `Services\Facet\FacetIndexReader` | `getFacetIndexReader()` | Чтение индекса фасетов в FilterType (1.4.0+) |
+| ElementRunner | `Services\Element\ElementRunner` | `getElementRunner()` | Запуск element/paginator-сниппетов |
+| WarmupManager | `Services\Warmup\WarmupManager` | `getWarmupManager()` | Прогрев baseIds для AJAX *(legacy с 1.4.0)* |
+| WarmupKeyBuilder | `Services\Warmup\WarmupKeyBuilder` | — | Построение ключей кэша для прогрева |
+| SnippetCallParser | `Services\Warmup\SnippetCallParser` | — | Парсинг вызовов сниппетов из шаблонов |
+| Profiler | `Services\Profiler` | — *(статический)* | Профилирование запросов |
+| FilterHandler | `Handlers\FilterHandler` | `getFilterHandler()` | Высокоуровневая обработка фильтров (используется внутри Filter) |
+| SourceHandler | `Handlers\SourceHandler` | `getSourceHandler()` | Получение значений из источников (option/product/tv/resource) |
+| FilterTypesRegistry | `Handlers\FilterTypesRegistry` | `getFilterTypesRegistry()` | Реестр типов фильтров |
+| SourceRegistry | `Handlers\Sources\SourceRegistry` | `getSourceRegistry()` | Реестр источников данных |
 
-## Получение сервисов
-
-```php
-/** @var MFilter\MFilter $mfilter */
-$mfilter = $modx->services->get('mfilter');
-
-// Фильтрация
-$filter = $mfilter->getFilter();
-$filterConfig = $mfilter->getFilterConfig();
-$filterSetManager = $mfilter->getFilterSetService();
-
-// Слаги
-$slugManager = $mfilter->getSlugManager();
-$slugParser = $mfilter->getSlugParser();
-$slugGenerator = $mfilter->getSlugGenerator();
-
-// Роутинг
-$urlRouter = $mfilter->getUrlRouter();
-$urlBuilder = $mfilter->getUrlBuilder();
-
-// SEO
-$seoBuilder = $mfilter->getSeoBuilder();
-$templateParser = $mfilter->getTemplateParser();
-$wordFormsManager = $mfilter->getWordFormsManager();
-
-// Handlers
-$filterTypesRegistry = $mfilter->getFilterTypeRegistry();
-$sourceRegistry = $mfilter->getSourceRegistry();
-$filterHandler = $mfilter->getFilterHandler();
-
-// Утилиты
-$elementRunner = $mfilter->getElementRunner();
-```
+::: tip
+`getMSearch()` возвращает экземпляр компонента mSearch, если он установлен, иначе `null`. Удобно для опциональной интеграции.
+:::
 
 ## Filter
 
 Основной сервис фильтрации.
 
-### Методы
+### Сигнатуры
 
 ```php
 $filter = $mfilter->getFilter();
 
-// Применить фильтры
-$result = $filter->apply($resourceId, $filters, $options);
-// $result = ['ids' => [...], 'total' => 150, 'suggestions' => [...]]
+// Полная фильтрация с пагинацией и сортировкой
+$result = $filter->apply(int $resourceId, array $filters, array $options = []): array;
 
-// Получить suggestions (counts)
-$suggestions = $filter->getSuggestions($resourceId, $filters);
+// Фильтрация внешнего списка ID (используется в element/paginator-режиме mFilter сниппета)
+$ids = $filter->applyToIds(int $resourceId, array $ids, array $filters, array $options = []): array;
 
-// Применить к массиву ID
-$filteredIds = $filter->applyToIds($ids, $filters);
+// Расчёт фильтров и значений для страницы
+$filters = $filter->getFilters(int $resourceId, array $options = []): array;
 
-// Получить suggestions для массива ID
-$suggestions = $filter->getSuggestionsForIds($ids, $filters, $resourceId);
+// То же, но для внешнего списка ID
+$filters = $filter->getFiltersForIds(int $resourceId, array $ids, array $options = []): array;
+
+// Cross-filter suggestions: counts с учётом активных фильтров
+$suggestions = $filter->getSuggestions(int $resourceId, array $appliedFilters, array $options = []): array;
+$suggestions = $filter->getSuggestionsForIds(int $resourceId, array $allIds, array $appliedFilters, array $options = []): array;
 ```
 
-### Пример использования
+### Структура результата `apply()`
+
+```php
+[
+    'success' => true,
+    'items' => [
+        ['id' => 12, 'pagetitle' => '...', 'price' => 19990, ...],
+        // ...
+    ],
+    'meta' => [
+        'total' => 1234,
+        'limit' => 24,
+        'offset' => 0,
+        'page' => 1,
+        'totalPages' => 52,
+        'sortBy' => 'price',
+        'sortDir' => 'ASC',
+    ],
+    'filters' => [/* применённые фильтры */],
+]
+```
+
+### Параметры `$options`
+
+| Ключ | По умолчанию | Описание |
+|------|--------------|----------|
+| `limit` | `mfilter.default_limit` (20) | Размер страницы |
+| `offset` | 0 | Смещение |
+| `sortBy` | `menuindex` | Поле сортировки |
+| `sortDir` | `ASC` | Направление |
+| `parents` | `[$resourceId]` | Корневые ресурсы для обхода |
+| `depth` | 10 | Глубина обхода |
+
+### Пример
 
 ```php
 $filter = $mfilter->getFilter();
 
 $result = $filter->apply(5, [
-    'vendor' => ['apple', 'samsung'],
-    'price' => ['min' => 10000, 'max' => 50000]
+    'vendor_id' => ['12'],
+    'price' => ['10000', '50000'], // [min, max] для number-фильтра
 ], [
-    'sort' => 'price',
-    'sortdir' => 'ASC',
+    'sortBy' => 'price',
+    'sortDir' => 'ASC',
     'limit' => 24,
-    'offset' => 0
+    'offset' => 0,
 ]);
 
-// $result['ids'] — массив ID товаров
-// $result['total'] — общее количество
-// $result['suggestions'] — counts для фильтров
+echo "Найдено: {$result['meta']['total']}\n";
+foreach ($result['items'] as $item) {
+    echo "{$item['pagetitle']}\n";
+}
+```
+
+## FilterHandler
+
+Низкоуровневая прослойка между `Filter` и xPDO/SQL. Полезна, если строите свою AJAX/headless-обвязку и хотите вызывать конкретные шаги без обёртки `Filter::apply()`.
+
+```php
+$handler = $mfilter->getFilterHandler();
+
+// Применить фильтры к существующему xPDOQuery
+$query = $handler->buildQuery($query, $filters, $configs);
+
+// Узнать, какие таблицы были присоединены при последнем buildQuery
+// (нужно для последующих манипуляций с запросом)
+$joined = $handler->getJoinedTables(): array;
+
+// Получить значения фильтров для рендера формы
+$data = $handler->getFiltersData(int $resourceId, array $context = []): array;
+
+// Cross-filter suggestions (counts с учётом активных фильтров)
+$counts = $handler->getSuggestions(int $resourceId, array $appliedFilters, array $context = []): array;
+
+// Только ID отфильтрованных товаров (без пагинации, без сортировки)
+$ids = $handler->getFilteredIds(int $resourceId, array $filters): array;
+
+// Только количество — самый дешёвый способ
+$total = $handler->getFilteredCount(int $resourceId, array $filters): int;
+
+// Конфигурация набора и конкретного фильтра
+$pageConfig = $handler->getPageConfig(int $resourceId): ?PageConfigData;
+$filterConfig = $handler->getFilterConfig(int $resourceId, string $filterKey): ?array;
+
+// Нормализация входных параметров (ключи с | и т.п.)
+$normalized = $handler->normalizeParams(array $params, int $resourceId = 0): array;
+$normalizedFilters = $handler->normalizeFilters(array $filters): array;
 ```
 
 ## SlugManager
 
-Управление слагами (SEO-алиасами значений фильтров).
+SEO-алиасы значений фильтров. Кэширует значения в памяти на время запроса.
 
-### Методы
+### Сигнатуры
 
 ```php
 $slugManager = $mfilter->getSlugManager();
 
-// Получить или создать слаг
-$slug = $slugManager->getOrCreate('vendor', 'Apple Inc.');
-// 'apple-inc'
+// Главный метод: получить slug или создать, если ещё нет
+$slug = $slugManager->getOrCreate(
+    string $filterKey,
+    string $value,
+    string $source,                  // 'option', 'product', 'tv', 'resource', 'vendor'
+    ?string $cultureKey = null
+): string;
 
-// Получить значение по слагу
-$value = $slugManager->getValue('vendor', 'apple-inc');
-// 'Apple Inc.'
+// Найти существующий slug по значению
+$slug = $slugManager->findSlug(string $filterKey, string $value, ?string $cultureKey = null): ?string;
+
+// Найти значение по slug
+$value = $slugManager->findValue(string $filterKey, string $slug, ?string $cultureKey = null): ?string;
+
+// Полная запись по slug (без привязки к filterKey)
+$record = $slugManager->findBySlug(string $slug, ?string $cultureKey = null): ?array;
 
 // Проверить существование
-$exists = $slugManager->hasSlug('vendor', 'apple-inc');
+$exists = $slugManager->hasSlug(string $filterKey, string $slug, ?string $cultureKey = null): bool;
+
+// Прелоад в память (минимизация запросов в горячих циклах)
+$slugManager->preloadForFilters(array $filterKeys, ?string $cultureKey = null): void;
+
+// Сохранить вручную (с защитой от перезаписи кастомных)
+$slugManager->save(string $filterKey, string $value, string $slug, string $source, ?string $cultureKey = null, bool $respectCustom = true): bool;
+
+// Сброс in-memory кэша
+$slugManager->clearCache(): void;
+```
+
+### Пример
+
+```php
+$slugManager = $mfilter->getSlugManager();
+
+// Стандартный путь
+$slug = $slugManager->getOrCreate('vendor_id', 'Apple Inc.', 'product', 'ru');
+// 'apple-inc'
+
+// Обратный лукап (используется в SlugParser при парсинге URL)
+$value = $slugManager->findValue('vendor_id', 'apple-inc', 'ru');
+// 'Apple Inc.'
+```
+
+## SlugParser
+
+Распознавание SEO-сегментов URL (`vendor_id--apple`, `price_1000-5000`, `sort_price-asc`) → массив фильтров и технических параметров. Используется внутри `UrlRouter`, но публично доступен для своих целей.
+
+```php
+$parser = $mfilter->getSlugParser();
+
+// Полный парсинг URI
+$result = $parser->parse('catalog/electronics/vendor_id--apple/sort--price-asc/');
+// [
+//   'filters' => ['vendor_id' => ['Apple Inc.']],
+//   'tech' => ['sort' => ['field' => 'price', 'dir' => 'asc']],
+//   'unrecognized' => [],
+// ]
+
+// Парсинг одного сегмента
+$segment = $parser->parseSegment('vendor_id--apple', $strict = true);
+
+// Распознавание и парсинг технических параметров (sort/page/limit/tpl)
+$tech = $parser->parseTechParam('sort--price-asc');
+$isTech = $parser->isTechParam('sort--price-asc'): bool;
+
+// Поиск базового ресурса по URI (с учётом базы каталога)
+$base = $parser->findBaseResource('catalog/electronics/'): ?array;
+// ['id' => 12, 'uri' => 'catalog/electronics/']
+
+$parser->clearCache(): void;
 ```
 
 ## UrlBuilder
 
-Построение SEO-friendly URL.
-
-### Методы
+Построение SEO URL из набора активных фильтров.
 
 ```php
 $urlBuilder = $mfilter->getUrlBuilder();
 
-// Установить базовый URI
 $urlBuilder->setBaseUri('/catalog/electronics/');
 
-// Построить URL
-$url = $urlBuilder->build(
-    ['vendor' => ['apple'], 'color' => ['black']],
-    ['sort' => 'price-asc', 'page' => 2]
-);
-// '/catalog/electronics/vendor_apple/color_black/sort_price-asc/page_2/'
+// Простой URL
+$url = $urlBuilder->build([
+    'vendor_id' => ['apple'],
+    'color' => ['black'],
+], [
+    'sort' => 'price-asc',
+    'page' => 2,
+]);
+// '/catalog/electronics/vendor_id--apple/color--black/sort--price-asc/page--2/'
 
-// Построить canonical
-$canonical = $urlBuilder->buildCanonical($filters, $techParams);
+// Canonical URL (без сортировки/пагинации)
+$canonical = $urlBuilder->buildCanonical($filters);
+```
+
+## UrlRouter
+
+Распознавание SEO URL → ID ресурса.
+
+```php
+$router = $mfilter->getUrlRouter();
+
+// Парсинг входящего URI
+$result = $router->process('/catalog/electronics/vendor_id--apple/');
+// [
+//   'resource_id' => 12,
+//   'filters' => ['vendor_id' => ['Apple Inc.']],
+//   'tech' => [...],
+//   'base_uri' => 'catalog/electronics/',
+//   'filter_uri' => 'vendor_id--apple/',
+// ]
+
+// Сброс кэша роутера
+$router->clearCache();
 ```
 
 ## SeoBuilder
 
-Генерация SEO-данных на основе шаблонов.
-
-### Методы
+Генерация SEO-метаданных по шаблонам из `mfl_seo_templates`.
 
 ```php
 $seoBuilder = $mfilter->getSeoBuilder();
 
-$seoData = $seoBuilder->build($resourceId, $filters);
+$seo = $seoBuilder->build($resourceId, $filters);
 // [
-//     'title' => 'Apple iPhone — купить в Москве',
-//     'h1' => 'Apple iPhone',
-//     'description' => 'Купить Apple iPhone...',
-//     'text' => 'Текст для страницы...',
-//     'canonical' => '/catalog/',
-//     'noindex' => false
+//   'h1' => 'Apple iPhone в Москве',
+//   'title' => 'Apple iPhone — купить в Москве | Каталог',
+//   'description' => 'Купить Apple iPhone...',
+//   'text' => '...',
+//   'canonical' => 'https://example.com/catalog/vendor_id--apple/',
+//   'noindex' => false,
 // ]
 ```
 
-## FilterTypeRegistry
+## TemplateParser
 
-Реестр типов фильтров.
-
-### Методы
+Парсер плейсхолдеров SEO-шаблонов (`mfl_seo_templates`). Поддерживает `{$filters.vendor_id}`, `{$filters.color|gen}` (склонение через WordFormsManager), `{$resource.pagetitle}`, фильтры Fenom.
 
 ```php
-$registry = $mfilter->getFilterTypeRegistry();
+$parser = $mfilter->getTemplateParser();
+
+// Подставить значения в шаблон
+$h1 = $parser->parse('Купить {$filters.vendor_id} в Москве', [
+    'filters' => ['vendor_id' => 'Apple'],
+    'resource' => $modx->resource->toArray(),
+]);
+// 'Купить Apple в Москве'
+
+// Валидация шаблона на этапе сохранения (синтаксические ошибки)
+$errors = $parser->validate($templateString): array;
+
+// Извлечь плейсхолдеры из шаблона (для UI-подсказок)
+$placeholders = $parser->extractPlaceholders($templateString): array;
+// ['filters.vendor_id', 'resource.pagetitle']
+```
+
+## WordFormsManager
+
+Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#словоформы).
+
+```php
+$wm = $mfilter->getWordFormsManager();
+
+// Получить все формы для слова
+$forms = $wm->get('телефон'): ?array;
+// ['nom' => 'телефон', 'gen' => 'телефона', 'dat' => 'телефону', ...]
+
+// Автогенерация (правила русского языка локально или Morpher API при $useApi = true)
+$forms = $wm->generate('Apple', $useApi = false): ?array;
+
+// Сохранить вручную
+$wm->save('телефон', [
+    'gen' => 'телефона',
+    'dat' => 'телефону',
+    // ...
+]): bool;
+
+// Bulk-генерация для всех значений из mfl_slugs
+$stats = $wm->generateAll($useApi = false): array;
+// ['total' => 150, 'generated' => 142, 'failed' => 8]
+
+// Прелоад в память (для горячих циклов)
+$wm->preload(): void;
+$wm->clearCache(): void;
+```
+
+## FilterSetManager
+
+Управление наборами фильтров и их привязками.
+
+```php
+$mgr = $mfilter->getFilterSetManager();
+
+// Получить набор для ресурса (с учётом наследования)
+$set = $mgr->getForResource(int $resourceId): ?array;
+
+// Только ID набора (быстрее)
+$id = $mgr->getFilterSetIdForResource(int $resourceId): ?int;
+
+// Все активные наборы
+$all = $mgr->getAll(bool $activeOnly = true): array;
+```
+
+## TvIndexer
+
+Заполнение и поддержка таблицы `mfl_tv_index`. Вызывается автоматически при сохранении ресурсов с TV (если `mfilter.tv_index_on_save = true`).
+
+```php
+$indexer = $mfilter->getTvIndexer();
+
+// Переиндексировать TV для конкретного ресурса
+$rows = $indexer->indexResource(int $resourceId, ?array $tvNames = null): int;
+
+// Полная переиндексация (опционально по списку TV / списку родителей)
+$stats = $indexer->indexAll(?array $tvNames = null, ?array $parentIds = null): array;
+
+// Удалить TV-индекс ресурса
+$indexer->removeResource(int $resourceId): int;
+
+// Очистить индекс по TV
+$indexer->clearIndexForTvs(array $tvNames): int;
+
+// Очистить весь индекс
+$indexer->clearAll(): bool;
+
+// Парсинг параметров элементов TV (listbox/checkbox/radio)
+$options = $indexer->parseTvOptions(string $elements, string $type = ''): array;
+
+// Статистика
+$stats = $indexer->getStats(): array;
+```
+
+## FacetIndexBuilder
+
+Сборка индекса фасетов (`mfl_facet_index_text` / `mfl_facet_index_num`) из источников.
+
+```php
+$builder = $mfilter->getFacetIndexBuilder();
+
+// Полная пересборка (TRUNCATE + INSERT...SELECT по каждому ключу)
+$stats = $builder->buildAll(?callable $progress = null): array;
+// ['filters' => 8, 'text_rows' => 450320, 'num_rows' => 12845, 'duration_ms' => 8432]
+
+// Пересборка только указанных ключей (вызывается при сохранении набора)
+$stats = $builder->rebuildKeys(['color', 'size']);
+
+// Инкрементальная пересборка для конкретных товаров
+$stats = $builder->buildForProducts([123, 456, 789]);
+
+// Удалить из индекса (при удалении товаров)
+$builder->removeProducts([123, 456]);
+
+// Инкрементальный sync по editedon (используется задачей mfl_sync_facet_index)
+// Без аргумента — берёт last_sync_at из MflCache.
+$stats = $builder->syncByEditedon();
+// ['synced' => N, 'removed' => N, 'until' => ts, 'chunks' => N, 'duration_ms' => N]
+
+// Helper: стоит ли индексировать ресурс с этим class_key.
+// При установленном MS3 → только msProduct. Без MS3 → всегда true.
+$builder->shouldIndexClassKey($resource->get('class_key'));
+```
+
+### Прогресс-callback
+
+```php
+$builder->buildAll(function ($filterKey, $rowsInserted) use ($modx) {
+    $modx->log(modX::LOG_LEVEL_ERROR, "Indexed {$rowsInserted} rows for {$filterKey}");
+});
+```
+
+### Использование в своих импортёрах
+
+```php
+// После batch-импорта одной пачкой — точечная пересборка
+$updatedIds = [/* IDs, что трогали */];
+if (!empty($updatedIds)) {
+    $builder->buildForProducts($updatedIds);
+}
+```
+
+Подробнее с паттернами: [Cookbook: Синхронизация индекса фасетов](/components/mfilter/cookbook/facet-index-sync).
+
+## FacetIndexReader
+
+Чтение из индекса фасетов. Используется внутри `FilterType` для прозрачного переключения между индексом и старым путём.
+
+```php
+$reader = $mfilter->getFacetIndexReader();
+
+// Проверка наличия ключа в индексе (per-request кэш)
+$reader->hasIndexedTextKey('color'): bool;
+$reader->hasIndexedNumKey('price'): bool;
+
+// Текстовые значения с counts (с опциональным ограничением scope)
+$values = $reader->getTextValues('color', $productIds);
+// [['value' => 'красный', 'count' => 124], ...]
+
+// Batch-чтение для нескольких ключей в одном GROUP BY
+$batch = $reader->batchGetTextValues(['color', 'size', 'made_in'], $productIds);
+// ['color' => [...], 'size' => [...], 'made_in' => [...]]
+
+// Min/max для числового фильтра
+$range = $reader->getNumRange('price', $productIds);
+// ['min' => 1990.0, 'max' => 89990.0, 'count' => 1234]
+
+// Сброс per-request кэша списка ключей (вызывается builder'ом после rebuild)
+$reader->clearKeyCache(): void;
+```
+
+### Использование в кастомном FilterType
+
+```php
+public function buildQuery($query, string $filterKey, array $values, array $config)
+{
+    $reader = $this->mfilter->getFacetIndexReader();
+
+    if ($reader->hasIndexedTextKey($filterKey)) {
+        return $this->buildFacetIndexQuery($query, $filterKey, $values, $config);
+    }
+
+    // Иначе — старый путь через JOIN к источнику
+}
+```
+
+Подробнее: [Свой тип фильтра](/components/mfilter/cookbook/custom-filter-type).
+
+## RequestIdsRegistry
+
+Регистрация больших списков ID в таблице `mfl_request_ids` для замены `IN(30000)` на `JOIN`.
+
+```php
+$registry = $mfilter->getRequestIdsRegistry();
+
+// Стоит ли использовать registry для этого списка?
+// (для маленьких списков накладные расходы INSERT'а перевешивают выигрыш JOIN)
+if ($registry->isUseful($productIds)) {
+    $runId = $registry->register($productIds);
+
+    // Получить SQL-кусок для JOIN
+    $joinSql = $registry->joinSql($runId, 'foreignAlias', 'product_id');
+    $sql = "SELECT ... FROM source o {$joinSql} WHERE ...";
+}
+
+// Очистка stale-строк (вызывается cron-задачей mfl_cleanup_request_ids)
+$deleted = $registry->pruneStale(): int;
+```
+
+Все строки автоматически удаляются деструктором по окончании запроса.
+
+## ElementRunner
+
+Запуск внешних сниппетов (msProducts, pdoResources) из mFilter.
+
+```php
+$runner = $mfilter->getElementRunner();
+
+// Получить список ID через element-сниппет
+$ids = $runner->getIds(string $element, array $params): array;
+
+// Запустить paginator (пакетный рендеринг страницы)
+$html = $runner->runPaginator(string $paginator, string $element, array $pageIds, array $params): string;
+```
+
+## WarmupManager
+
+::: warning Legacy с 1.4.0
+Используется только для прогрева baseIds в AJAX-режиме. Основная фильтрация теперь идёт через индекс фасетов.
+:::
+
+```php
+$wm = $mfilter->getWarmupManager();
+
+// Прогреть все активные конфигурации
+$result = $wm->warmAll(bool $warmSuggestions = true): array;
+
+// Поставить в очередь Scheduler
+$runId = $wm->schedule(bool $warmSuggestions = true): ?int;
+
+// Авто-создание конфигурации при первом вызове mFilter
+$wm->autoCreateConfig(int $resourceId, string $element, array $params): void;
+
+// Получить кэшированный baseIds (используется в mFilter сниппете)
+$ids = $wm->getCachedBaseIds(int $resourceId, string $cacheKeyHash): ?array;
+```
+
+## Реестры
+
+### FilterTypesRegistry
+
+Реестр типов фильтров (`default`, `number`, `vendors`, `colors`, `boolean`, `parents`, `date`, `month`, `year`, `day`).
+
+```php
+$registry = $mfilter->getFilterTypesRegistry();
 
 // Получить тип
-$type = $registry->get('number');
+$type = $registry->getForKey('color', $config); // FilterTypeInterface
 
-// Зарегистрировать свой тип
-$registry->register('mytype', new MyFilterType($modx));
+// Зарегистрировать свой тип (только из OnMFilterInit!)
+$registry->register('mytype', new MyFilterType($modx, $mfilter));
 
 // Проверить существование
-$exists = $registry->has('mytype');
-
-// Получить все типы
-$types = $registry->all();
+$registry->has('mytype'): bool;
 ```
 
-## Замена сервисов через DI
+### SourceRegistry
 
-Можно заменить стандартные сервисы своими реализациями.
-
-### Файл конфигурации
-
-Создайте файл `core/components/mfilter/config/services.php`:
+Реестр источников данных. Сторонние источники добавляются для нестандартных моделей (например, ваша таблица `myShop_items`).
 
 ```php
-<?php
-return [
-    'slugManager' => MyNamespace\MySlugManager::class,
-    'filter' => MyNamespace\MyFilter::class,
-];
+$registry = $mfilter->getSourceRegistry();
+
+// Регистрация (только из OnMFilterInit, имя берётся из $source->getName())
+$registry->register(new MyProductsSource($modx, $mfilter));
+
+// Получить
+$source = $registry->get('myproducts'); // SourceInterface
 ```
 
-### Пример кастомного сервиса
+Регистрация делается на событии [`OnMFilterInit`](events#onmfilterinit). Подробнее: [Свой тип фильтра](/components/mfilter/cookbook/custom-filter-type), [Внешние фильтры](/components/mfilter/cookbook/external-filters).
 
-```php
-<?php
-namespace MyNamespace;
-
-use MFilter\Services\Slug\SlugManager;
-
-class MySlugManager extends SlugManager
-{
-    /**
-     * Кастомная генерация слага
-     */
-    public function generateSlug(string $value): string
-    {
-        // Своя логика
-        $slug = parent::generateSlug($value);
-
-        // Например, добавить префикс
-        return 'my-' . $slug;
-    }
-}
-```
-
-### Интерфейсы
-
-При замене сервисов рекомендуется реализовывать интерфейсы:
-
-| Интерфейс | Описание |
-|-----------|----------|
-| `SlugManagerInterface` | Контракт для SlugManager |
-| `FilterInterface` | Контракт для Filter |
-
-```php
-<?php
-namespace MyNamespace;
-
-use MFilter\Services\Slug\SlugManagerInterface;
-
-class MySlugManager implements SlugManagerInterface
-{
-    public function getOrCreate(string $key, string $value): string { }
-    public function getValue(string $key, string $slug): ?string { }
-    public function hasSlug(string $key, string $slug): bool { }
-    // ...
-}
-```
-
-## Конфигурация MFilter
+## Конфигурация
 
 ```php
 $mfilter = $modx->services->get('mfilter');
 
-// Доступ к конфигурации
 $config = $mfilter->config;
 
-// Пути
-$config['corePath']      // core/components/mfilter/
-$config['assetsPath']    // assets/components/mfilter/
-$config['assetsUrl']     // /assets/components/mfilter/
-$config['cachePath']     // core/cache/mfilter/
-$config['apiUrl']        // /assets/components/mfilter/api.php
+// Пути и URL
+$config['corePath'];   // core/components/mfilter/
+$config['assetsPath']; // assets/components/mfilter/
+$config['assetsUrl'];  // /assets/components/mfilter/
+$config['cssUrl'];     // /assets/components/mfilter/css/
+$config['jsUrl'];      // /assets/components/mfilter/js/
+$config['cachePath'];  // core/cache/mfilter/
+$config['apiUrl'];     // /assets/components/mfilter/api.php
 ```
 
-## Хелперы
+## Profiler
 
-### Инвалидация кэша
+Лёгкий профайлер для замера времени операций. Все методы статические, нет инстанса. Включается системной настройкой `mfilter.debug_profiler` или вручную из своего кода.
 
 ```php
-$mfilter->invalidatePageCache($resourceId);
+use MFilter\Services\Profiler;
+
+// Включить/выключить
+Profiler::enable();
+Profiler::disable();
+Profiler::isEnabled(): bool;
+
+// Замер участка кода
+Profiler::start('myOperation');
+// ... код ...
+$ms = Profiler::stop('myOperation'): float; // длительность в мс
+
+// Записать готовое значение (если уже посчитали где-то ещё)
+Profiler::record('externalCall', $milliseconds);
+
+// Получить результаты
+$results = Profiler::getResults(): array;
+// ['operation' => ['total_ms' => 45.2, 'count' => 3, 'avg_ms' => 15.07], ...]
+
+// Краткий summary-текст для логов
+echo Profiler::getSummary();
+
+// Сброс (например, между AJAX-запросами в долгоживущем CLI-процессе)
+Profiler::reset();
+```
+
+При включённом профайлере замеры автоматически попадают в JSON-ответ AJAX (секция `profiler`). На SSR-страницах добавляются как `<script>window.__mfilterProfiler=...</script>` в конце вывода — для клиентской отладки.
+
+## Хелперы фасада
+
+```php
+// Полная очистка кэша mFilter (MflCache + router cache)
+$mfilter->clearCache();
+
+// Перестроить router cache (filter_pages.cache.php)
 $mfilter->rebuildRouterCache();
+
+// Инвалидировать кэш конкретной страницы
+$mfilter->invalidatePageCache(int $resourceId);
+
+// Зарегистрировать CSS/JS на фронтенде
+$mfilter->registerFrontend(string $contextKey);
 ```
 
-### Регистрация фронтенда
+## Расширение
+
+В mFilter **нет container'а с DI-overrides** — сервисы создаются внутри фасада через `new`. Расширение сервисов делается на уровне типов фильтров и источников через `OnMFilterInit`:
 
 ```php
-$mfilter->registerFrontend($context);
+// Плагин на OnMFilterInit
+if ($modx->event->name !== 'OnMFilterInit') return;
+
+/** @var \MFilter\MFilter $mfilter */
+$mfilter = $modx->event->params['mfilter'];
+
+// 1. Свой тип фильтра
+$mfilter->getFilterTypesRegistry()->register('mytype', new MyFilterType($modx, $mfilter));
+
+// 2. Свой источник данных
+$mfilter->getSourceRegistry()->register(new MySource($modx, $mfilter));
 ```
+
+Для подмены поведения встроенных сервисов (Filter, SlugManager, ...) — наследуйте класс и переопределите нужные методы, после чего вызывайте свой класс **напрямую** в своём коде. Глобальной подмены через config-файл нет.
+
+Подробнее: [События](events), [Свой тип фильтра](/components/mfilter/cookbook/custom-filter-type), [Внешние фильтры](/components/mfilter/cookbook/external-filters).

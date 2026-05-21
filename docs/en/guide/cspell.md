@@ -15,6 +15,13 @@ From the repo root:
 
 After installing dependencies (`pnpm install`), these commands work without extra setup.
 
+### Check a single file or folder
+
+```shell
+npx cspell "docs/components/ajaxform.md" --no-progress
+npx cspell "docs/en/guide/**/*.md" --no-progress
+```
+
 ## Configuration
 
 Config file: **`cspell.json`** in the project root.
@@ -28,5 +35,18 @@ This reduces false positives on package names, tags, and paths.
 ## Adding words
 
 If cspell flags a valid word (e.g. a new component name or term), add it to the **`words`** array in `cspell.json`. Use lowercase; cspell matches case-insensitively.
+
+**Example `cspell.json` fragment:**
+
+```json
+{
+  "words": ["minishop2", "pdotools"]
+}
+```
+
+- **`words`** — project dictionary: package names, hooks, rare abbreviations.
+- **`ignorePaths`** — skip whole paths. Prefer adding a term to `words` instead of disabling large folders without a good reason.
+
+The default `spellcheck` script skips `docs/en/`; run cspell with an explicit path when you want to check English files.
 
 For more options see the [cspell docs](https://cspell.org/docs/configuration/).

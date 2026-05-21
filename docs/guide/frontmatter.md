@@ -15,7 +15,19 @@ description: Описание страницы
 ---
 ```
 
+Блок `---` должен начинаться **с первой строки файла** (без текста и пробелов перед ним). Внутри — синтаксис [YAML](https://yaml.org/): пары `ключ: значение`, вложенность пробелами, списки через `-`.
+
 ## Общие свойства
+
+Краткая сводка:
+
+| Свойство | Тип | Значение по умолчанию | Назначение |
+| --- | --- | --- | --- |
+| `title` | string | Первый `#` заголовок | Заголовок вкладки и страницы |
+| `description` | string | — | Мета description, карточки в списках |
+| `outline` | number / `[from,to]` / `deep` / `false` | `deep` | Оглавление справа |
+| `lastUpdated` | boolean | `true` | Блок «Последнее обновление» |
+| `editLink` | boolean | `true` | Ссылка «Предложить изменения» |
 
 Ниже список основных свойств которые помогут вам лучше представить читателю вашу документацию.
 
@@ -266,6 +278,38 @@ dependencies:
 ```yaml
 categories: payment
 ```
+
+## Полный пример для компонента
+
+Ниже — условный каркас для `index.md` многостраничного компонента (поля можно опускать, если не нужны):
+
+```yaml
+---
+title: Имя компонента
+description: Кратко: что делает дополнение.
+logo: https://example.com/logo.png
+modstore: https://modstore.pro/packages/...
+modx: https://modx.com/extras/package/...
+repository: https://github.com/...
+author: github-login
+dependencies:
+  - miniShop2
+categories: payment
+outline: [2, 3]
+lastUpdated: true
+items:
+  - text: Быстрый старт
+    link: quick-start
+  - text: Настройки
+    link: settings
+---
+```
+
+## Заметки по YAML
+
+- Строки с двоеточием, кавычками или спецсимволами надёжнее брать в **одинарные** или **двойные** кавычки: `description: 'Версия 2.0: обновление API'`.
+- Многострочный текст допускается через `|` или `>` ([YAML multiline](https://yaml-multiline.info/)).
+- Для `items` удобнее форма со списком и отступами (как в примере выше), чем одна длинная строка в стиле JSON.
 
 [modstore.pro]: https://modstore.pro
 [modx.com]: https://modx.com/extras

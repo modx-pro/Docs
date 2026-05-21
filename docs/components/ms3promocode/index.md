@@ -1,6 +1,7 @@
 ---
 title: ms3PromoCode
 description: Промо-коды для MiniShop3 с гибкими правилами, генерацией по маске и интеграцией в позиции заказа
+logo: https://modstore.pro/assets/extras/ms3promocode/logo.png
 author: biz87
 
 items: [

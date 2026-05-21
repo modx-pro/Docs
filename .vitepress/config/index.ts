@@ -8,6 +8,7 @@ import { addPlugins } from '../theme/plugins/markdown'
 import { components, prepareData } from '../theme/plugins/component'
 import { slugify } from 'transliteration'
 import { fileURLToPath, URL } from 'node:url'
+import { withMermaid } from 'vitepress-plugin-mermaid'
 import { modhost, modstore, modxpro, telegram } from '../../docs/icons'
 import { coreMembers } from '../../docs/authors'
 import { normalize } from '../theme/utils'
@@ -36,9 +37,15 @@ function getOgImageVersion(input: unknown): string {
   return createHash('md5').update(payload).digest('hex').slice(0, 8)
 }
 
-export default defineConfigWithTheme<DocsTheme.Config>({
+export default withMermaid(
+  defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
   cleanUrls: true,
+
+  mermaid: {
+    securityLevel: 'loose',
+    startOnLoad: false,
+  },
 
   title: SITE_TITLE,
   titleTemplate: ':title' + SITE_TITLE_SEPARATOR + SITE_TITLE,
@@ -224,6 +231,9 @@ export default defineConfigWithTheme<DocsTheme.Config>({
   },
 
   vite: {
+    ssr: {
+      noExternal: ['mermaid'],
+    },
     resolve: {
       alias: [
         'VPSidebar',
@@ -244,3 +254,4 @@ export default defineConfigWithTheme<DocsTheme.Config>({
     hostname: SITE_HOST,
   },
 })
+)
