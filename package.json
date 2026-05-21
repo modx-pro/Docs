@@ -42,7 +42,7 @@
     "markdown-it-kbd": "^3.0.2",
     "markdownlint": "^0.40.0",
     "markdownlint-cli": "^0.48.0",
-    "mermaid": "^11.14.0",
+    "mermaid": "^11.15.0",
     "modx-tmlanguage": "^1.2.0",
     "plop": "^4.0.5",
     "react": "^18.3.1",
