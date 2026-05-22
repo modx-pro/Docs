@@ -12,7 +12,7 @@ title: ms3FavoritesIds
 | **list** | Идентификатор списка | `default` |
 | **resource_type** | Тип ресурсов: `products`, `resources` | `products` |
 | **return** | `str` — строка ID через запятую; `data` — массив | `str` |
-| **toPlaceholder** | Имя плейсхолдера; если задано — результат в плейсхолдер, иначе вывод | — |
+| **toPlaceholder** | Имя плейсхолдера. Если задано — результат в плейсхолдер, иначе вывод | — |
 | **sortBy** | Сортировка: `added_at_desc`, `added_at_asc` | `added_at_desc` |
 
 ## Возвращаемое значение

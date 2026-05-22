@@ -26,7 +26,7 @@ description: Ключи mspricetiers_* — включение, корзина, m
 
 ### mspricetiers_apply_on_product_page
 
-При **Нет** сниппет `msPriceTiers` может вернуть пустой вывод; JS не обновляет цену на странице.
+При **Нет** сниппет `msPriceTiers` может вернуть пустой вывод. JS не обновляет цену на странице.
 
 ## Интеграция
 
@@ -40,7 +40,7 @@ description: Ключи mspricetiers_* — включение, корзина, m
 
 | Ключ | По умолчанию | Описание |
 |------|--------------|----------|
-| `mspricetiers_allowed_origins` | пусто | Разрешённые Origin для AJAX (через запятую); пусто — текущий хост |
+| `mspricetiers_allowed_origins` | пусто | Разрешённые Origin для AJAX (через запятую). Пусто — текущий хост |
 
 ## Группы пользователей
 
@@ -92,7 +92,7 @@ description: Ключи mspricetiers_* — включение, корзина, m
 
 :::
 
-Условие `mspricetiers_enabled` в MODX-тегах — через TV или отдельный сниппет; в Fenom удобнее фильтр `option`.
+Условие `mspricetiers_enabled` в MODX-тегах — через TV или отдельный сниппет. В Fenom удобнее фильтр `option`.
 
 ## Рекомендуемые профили
 

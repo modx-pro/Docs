@@ -38,7 +38,7 @@ ms3Favorites — компонент реализует функционал со
 - **Гости в БД** — при `guest_db_enabled` список гостя сохраняется по session_id
 - **Несколько списков** — `default`, `gifts`, `plans` и др. (до `max_lists`)
 - **Шаринг списка** — публичная ссылка `/wishlist/share?token=xxx`, копирование чужого списка
-- **Страница /wishlist/** — `ms3FavoritesPage`: табы и оболочка; для **`resource_type=products`** при **`serverList=1`** (по умолчанию) список товаров выводится **на сервере** в чанке (**pdoPage** + **msProducts**); при **`serverList=0`** карточки дорисовывает **favorites.js** (до 100 позиций на вкладку). Для других типов ресурсов список по-прежнему через `JS` после `sync`. Отдельная серверная пагинация — цепочка `ms3FavoritesIds` → `pdoPage` → `ms3Favorites` (или `msProducts`)
+- **Страница /wishlist/** — сниппет `ms3FavoritesPage`: табы и оболочка. Для товаров (`resource_type=products`) при `serverList=1` (по умолчанию) список выводится на сервере через **pdoPage** + **msProducts**. При `serverList=0` карточки дорисовывает **favorites.js** (до 100 позиций на вкладку). Для других типов ресурсов список подгружается через JS после sync. Отдельная пагинация: **ms3FavoritesIds** → **pdoPage** → **ms3Favorites** (или **msProducts**)
 - **Интеграция с корзиной** — «Добавить все в корзину», «Добавить выбранные»
 - **Популярность** — «У N пользователей в избранном»
 - **Типы ресурсов** — `products`, `resources`, `articles`, `pages`, `custom`
@@ -46,7 +46,7 @@ ms3Favorites — компонент реализует функционал со
 - **Кастомизация** — Fenom-чанки, BEM-классы (префикс `ms3f`), CSS-переменные
 - **Каталог** — чанк `tplCatalogRowMs3f` для строки с кнопкой избранного при **pdoPage** + **msProducts** ([интеграция](integration#catalog-pdopage-row))
 - **Автоподключение CSS/JS** — плагин `ms3fFrontend` (OnLoadWebDocument): список файлов в `ms3favorites.frontend_assets`, inline `ms3fLexicon` / `ms3fConfig` через `register_global_config` (как `ms3_frontend_assets` в MiniShop3)
-- **AJAX-каталог** — публичный API `window.ms3Favorites.refresh()` после подмены HTMLю Автоподписка на `mfilter:contentLoaded`, опции `ms3fConfig.refreshEvents` и fallback MutationObserver
+- **AJAX-каталог** — публичный API `window.ms3Favorites.refresh()` после подмены HTML. Есть автоподписка на `mfilter:contentLoaded`, опция `ms3fConfig.refreshEvents` и запасной MutationObserver
 - **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`, базовый URL в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`).
 
 ## Системные требования

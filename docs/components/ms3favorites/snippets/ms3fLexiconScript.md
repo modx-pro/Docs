@@ -5,7 +5,7 @@ title: ms3fLexiconScript
 
 Добавляет на страницу inline-скрипт с лексиконом и конфигом для фронтенда. В `window.ms3fLexicon` и `window.ms3fConfig` подставляются язык сайта, `maxItems`, `storageType`, `connectorUrl`, `siteUrl` и др.
 
-**По умолчанию** конфиг выводит плагин **ms3fFrontend** при включённой настройке [ms3favorites.register_global_config](settings) — сниппет в шаблоне **не обязателен**.
+**По умолчанию** конфиг выводит плагин **ms3fFrontend** при включённой настройке [ms3favorites.register_global_config](../settings) — сниппет в шаблоне **не обязателен**.
 
 Подключайте сниппет **вручную**, если `register_global_config = Нет`, плагин отключён или нужны кастомные `cultureKey` / `resource_type` до загрузки страницы. В этом случае выводите **до** `favorites.js`.
 

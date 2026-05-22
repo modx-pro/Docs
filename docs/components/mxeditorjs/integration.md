@@ -19,7 +19,7 @@ title: Интеграция
 2. В настройках TV включите **Использовать визуальный редактор** (richtext).
 3. При `which_editor` = **mxEditorJs** в этом TV будет тот же блочный редактор.
 
-Контент TV хранится в sidecar-таблице `mxeditorjs_tv_content` в формате Editor.js; при выводе на сайте используется сгенерированный HTML (как и для основного контента).
+Контент TV хранится в sidecar-таблице `mxeditorjs_tv_content` в формате Editor.js. При выводе на сайте используется сгенерированный HTML (как и для основного контента).
 
 ## Вывод на сайте
 
@@ -42,16 +42,16 @@ title: Интеграция
 
 :::
 
-Дополнительные TV с Editor.js выводятся через плейсхолдеры TV (например `[[*my_richtext_tv]]` или через Fenom). Рендер JSON → HTML выполняется компонентом при сохранении; на фронте всегда приходит готовый HTML.
+Дополнительные TV с Editor.js выводятся через плейсхолдеры TV (например `[[*my_richtext_tv]]` или через Fenom). Рендер JSON → HTML выполняется компонентом при сохранении. На фронте всегда приходит готовый HTML.
 
 ## Миграция HTML → Editor.js
 
 Если у вас уже есть ресурсы с HTML в поле контента, можно конвертировать их в формат Editor.js.
 
 1. Через Connector: действие **content/migrate** с параметрами `resource_id`, при необходимости `dry_run=1` (предпросмотр), затем `confirmed=1` для перезаписи.
-2. В ответе при `dry_run` приходит `preview` (блоки) и `blocks_count`; при успешной миграции — `migrated`, `blocks_count`, `overwritten`.
+2. В ответе при `dry_run` приходит `preview` (блоки) и `blocks_count`. При успешной миграции — `migrated`, `blocks_count`, `overwritten`.
 
-После миграции при открытии ресурса в менеджере контент отображается в блочном редакторе; на сайте по-прежнему выводится HTML из `modResource.content`, обновлённый при миграции.
+После миграции при открытии ресурса в менеджере контент отображается в блочном редакторе. На сайте по-прежнему выводится HTML из `modResource.content`, обновлённый при миграции.
 
 ## Профили и инструменты
 
@@ -59,9 +59,19 @@ title: Интеграция
 
 ## Медиа и пресеты
 
-- Загрузка изображений и файлов идёт в Media Source из настроек **mxeditorjs.image_mediasource** и **mxeditorjs.file_mediasource**.
-- Путь загрузки настраивается в **mxeditorjs.image_upload_path** (шаблон с `{resource_id}`).
+- Загрузка **изображений** и блока **Gallery** — Media Source **mxeditorjs.image_mediasource**, путь **mxeditorjs.image_upload_path** (шаблон с `{resource_id}`).
+- Загрузка **файлов-вложений** (Attaches) — **mxeditorjs.file_mediasource** и отдельный путь **mxeditorjs.file_upload_path**.
+- Лимит числа картинок в одном блоке Gallery — **mxeditorjs.gallery_max_count** (`0` = без лимита).
 - CSS-классы для изображений и ссылок задаются в пресетах (**mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets** и др.) — см. [Системные настройки](settings).
+
+## Галерея на фронте
+
+HTML-снимок блока Gallery генерируется при сохранении (`HtmlRenderer`). Разметка:
+
+- `<figure class="mxeditorjs-gallery mxeditorjs-gallery--fit">` — сетка (режим **Fit**)
+- `<figure class="mxeditorjs-gallery mxeditorjs-gallery--slider">` — горизонтальный скролл (режим **Slider**)
+
+Базовые стили подключаются в менеджере вместе с `mxeditorjs.css` (`gallery-front.css`). На сайте они применяются к HTML из `[[*content]]` автоматически, если тема не переопределяет классы. При необходимости скопируйте правила из `assets/components/mxeditorjs/css/gallery-front.css` в CSS темы.
 
 ## Что дальше
 

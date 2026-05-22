@@ -52,9 +52,9 @@ title: Интеграция и кастомизация
 
 Сниппет [ms3FavoritesPage](snippets/ms3FavoritesPage) управляет тем, как выводятся **товары** на странице избранного:
 
-- **`resource_type=products`**, **`serverList=1`** (по умолчанию) — карточки собираются **на сервере** в чанке **tplFavoritesPage**: **pdoPage** + **msProducts**, сортировка `FIELD(msProduct.id,…)`, плейсхолдеры пагинации `ms3f.page.*`. **favorites.js** не вызывает `render` для этого списка; после синхронизации обновляются счётчики табов.
+- **`resource_type=products`**, **`serverList=1`** (по умолчанию) — карточки собираются **на сервере** в чанке **tplFavoritesPage** через **pdoPage** + **msProducts**. Сортировка `FIELD(msProduct.id,…)`, пагинация в плейсхолдерах `ms3f.page.*`. **favorites.js** для этого списка `render` не вызывает. После sync обновляются счётчики табов.
 - **`serverList=0`** и products — список дорисовывает **JS** (`render`, до 100 элементов на вкладку без серверной пагинации в чанке).
-- **`resource_type` ≠ products** — вывод списка через **JS** после sync; **serverList** не включает SSR.
+- **`resource_type` ≠ products** — вывод списка через **JS** после sync. **serverList** SSR не включает.
 
 Отдельная кастомная страница с пагинацией — по-прежнему **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`), см. ниже и [Быстрый старт](quick-start).
 
@@ -329,7 +329,7 @@ URL для шаринга: `/wishlist/share?token=xxx`
 
 ## Интеграция с корзиной
 
-На странице **/wishlist/** (**чанк `tplFavoritesPage`**): при **`resource_type=products`** и **`serverList=1`** (по умолчанию) товары выводятся **на сервере**; при **`serverList=0`** или другом типе ресурсов карточки подгружает **`favorites.js`** (`render()`). Доступны:
+На странице **/wishlist/** (чанк `tplFavoritesPage`) при **`resource_type=products`** и **`serverList=1`** (по умолчанию) товары выводятся **на сервере**. При **`serverList=0`** или другом типе ресурсов карточки подгружает **`favorites.js`** (`render()`). Доступны:
 
 - **Кнопка «Добавить все в корзину»** — `[data-favorites-add-all]`, добавляет все товары текущего списка
 - **Кнопка «Добавить выбранные»** — `[data-favorites-add-selected]`, добавляет только отмеченные checkbox
@@ -433,10 +433,10 @@ $ids = ms3f_get_ids_from_cookie($modx, 'default', 'products');
 |---------|---------|---------|
 | `ms3Favorites is undefined` | favorites.js не загружен | Проверьте плагин **ms3fFrontend**, настройку **frontend_assets** или ручной путь к JS |
 | Счётчик не обновляется | `updateCounter()` не вызывается | Убедитесь, что `save()` вызывается после add/remove |
-| Счётчики табов на /wishlist/ «левые» | `getAllLists()` без типа смешивал разные `resource_type` | На странице задан `data-resource-type`; используйте `getAllLists(pageResourceType)` (актуальные сборки) |
+| Счётчики табов на /wishlist/ «левые» | `getAllLists()` без типа смешивал разные `resource_type` | На странице задан `data-resource-type`. Используйте `getAllLists(pageResourceType)` (актуальные сборки) |
 | Кнопки не работают в модалке (mxQuickView) | Контент подгружен по AJAX | `ms3Favorites` подписан на `mxqv:loaded` / `mxqv:open` и вызывает `refresh()` |
 | Кнопки не работают после фильтров (mFilter) | DOM обновлён, состояние кнопок не синхронизировано | Вызовите `window.ms3Favorites.refresh()` после AJAX или полагайтесь на автоподписку `mfilter:contentLoaded` / MutationObserver (`ms3fConfig.mfilterContainer`, `mfilterMutationFallback = false` для отключения) |
 | Пустой список после входа | Sync не выполнился | Проверьте консоль на ошибки fetch |
-| Удалили на /wishlist/, в БД осталось | Раньше пустой локальный список сливался с сервером при merge | В актуальных сборках при явных add/remove/clear используется **authoritative**-sync и **`flushToServer()`**; первый sync при загрузке без authoritative (новое устройство) |
+| Удалили на /wishlist/, в БД осталось | Раньше пустой локальный список сливался с сервером при merge | В актуальных сборках при явных add/remove/clear используется **authoritative**-sync и **`flushToServer()`**. Первый sync при загрузке без authoritative (новое устройство) |
 | Share не работает | Только для авторизованных | `create_share` требует `user_id` |
-| Нужна отладка сети / toasts | Нет встроенного `debug` | Network: `connector.php`; `console.warn` с `[ms3Favorites]` при ошибках iziToast |
+| Нужна отладка сети / toasts | Нет встроенного `debug` | Network: `connector.php`. В консоли — `console.warn` с `[ms3Favorites]` при ошибках iziToast |
