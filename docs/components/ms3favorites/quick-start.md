@@ -32,26 +32,28 @@ title: Быстрый старт
 
 ### После установки
 
-Подключите лексикон, CSS и JS на сайте, разместите кнопку в карточке товара и выведите блок избранного. Подробнее — ниже.
+По умолчанию CSS/JS и inline-конфиг подключаются плагином **ms3fFrontend** — достаточно разместить кнопку в карточке товара и вывести блок избранного. Подробнее — ниже.
 
 ---
 
 ## Шаг 1: Лексикон, стили и скрипт
 
-В шаблоне (или общем head/footer) подключите **сначала** лексикон, затем CSS и JS.
+**По умолчанию** достаточно включённого плагина **ms3fFrontend**: CSS/JS из настройки [ms3favorites.frontend_assets](settings) (`favorites.min.css`, `favorites.min.js`), лексикон и `window.ms3fConfig` — через **register_global_config** (как `ms3_frontend_assets` / `ms3_register_global_config` в MiniShop3). Ручные теги в шаблоне **не нужны**.
+
+**Ручной режим** — если плагин отключён, `register_global_config = Нет` или нужен полный контроль в шаблоне. Подключите **сначала** лексикон, затем CSS и JS:
 
 ::: code-group
 
 ```fenom
 {'ms3fLexiconScript' | snippet}
-<link rel="stylesheet" href="{'assets_url' | config}components/ms3favorites/css/favorites.css">
-<script src="{'assets_url' | config}components/ms3favorites/js/favorites.js"></script>
+<link rel="stylesheet" href="{'assets_url' | config}components/ms3favorites/css/favorites.min.css">
+<script src="{'assets_url' | config}components/ms3favorites/js/favorites.min.js" defer></script>
 ```
 
 ```modx
 [[!ms3fLexiconScript]]
-<link rel="stylesheet" href="[[++assets_url]]components/ms3favorites/css/favorites.css">
-<script src="[[++assets_url]]components/ms3favorites/js/favorites.js"></script>
+<link rel="stylesheet" href="[[++assets_url]]components/ms3favorites/css/favorites.min.css">
+<script src="[[++assets_url]]components/ms3favorites/js/favorites.min.js" defer></script>
 ```
 :::
 
@@ -59,7 +61,7 @@ title: Быстрый старт
 Если после добавления строк страница пустая, проверьте лог MODX на ошибки `ms3fLexiconScript`. При включённом **auto_escape** в Fenom выводите сниппет как сырой HTML, например `{raw ('ms3fLexiconScript' | snippet)}` (точный синтаксис зависит от версии Fenom).
 :::
 
-Без `ms3fLexiconScript` могут отображаться ключи лексикона; JS при этом использует встроенные русские запасные фразы.
+Без лексикона (ни автоматически через плагин, ни сниппетом) могут отображаться ключи лексикона; JS при этом использует встроенные русские запасные фразы.
 
 ## Шаг 2: Кнопка «В избранное»
 
@@ -359,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ## Шаг 5: Страница /wishlist/
 
-Создайте ресурс с alias `wishlist` и шаблон, в котором подключены `ms3fLexiconScript`, `favorites.css` и `favorites.js`. В контенте:
+Создайте ресурс с alias `wishlist` и шаблон с включённым плагином **ms3fFrontend** (или ручным подключением из шага 1). В контенте:
 
 ::: code-group
 ```modx

@@ -5,9 +5,22 @@ title: Интеграция и кастомизация
 
 Расширенные сценарии подключения и настройки внешнего вида.
 
+## Автоподключение CSS/JS (плагин ms3fFrontend)
+
+По умолчанию CSS, JS и inline `ms3fLexicon` / `ms3fConfig` подключаются плагином **ms3fFrontend** на событии `OnLoadWebDocument` — по тому же принципу, что `ms3_frontend_assets` в MiniShop3.
+
+**Система → Настройки → ms3favorites → frontend:**
+
+| Настройка | Назначение |
+|-----------|------------|
+| **frontend_assets** | JSON-массив путей с `[[+cssUrl]]`, `[[+jsUrl]]`, `[[+assetsUrl]]`. CSS — в `<head>`, JS — с `defer`, `?v=filemtime`. |
+| **register_global_config** | Inline `window.ms3fLexicon` и `window.ms3fConfig` перед `favorites.js`. |
+
+Подробнее — [Системные настройки](settings) и [Быстрый старт](quick-start).
+
 ## Типы ресурсов (resource_type)
 
-По умолчанию используется тип товаров MiniShop3 (`resource_type=products`). Поддерживаются также `resources`, `articles`, `pages`, `custom`. Тип задаётся в `ms3fLexiconScript` и при необходимости переопределяется на элементах через `data-resource-type`.
+По умолчанию используется тип товаров MiniShop3 (`resource_type=products`). Поддерживаются также `resources`, `articles`, `pages`, `custom`. Тип задаётся в `window.ms3fConfig` (плагин **ms3fFrontend** или `ms3fLexiconScript`) и при необходимости переопределяется на элементах через `data-resource-type`.
 
 **Тип по умолчанию (глобально):**
 
@@ -142,7 +155,7 @@ title: Интеграция и кастомизация
 
 ### Каталог: pdoPage + msProducts, счётчик и кнопка в строке {#catalog-pdopage-row}
 
-Типичный сценарий (как в примерах классических дополнений избранного): **обычный каталог** с пагинацией, в каждой строке — кнопка в список **`default`**, сверху — **общий счётчик** по этому списку. Это **не** страница `/wishlist/` (`ms3FavoritesPage`). Подключите `ms3fLexiconScript`, CSS и JS ([Быстрый старт](quick-start)).
+Типичный сценарий (как в примерах классических дополнений избранного): **обычный каталог** с пагинацией, в каждой строке — кнопка в список **`default`**, сверху — **общий счётчик** по этому списку. Это **не** страница `/wishlist/` (`ms3FavoritesPage`). По умолчанию CSS/JS подключает плагин **ms3fFrontend** ([Быстрый старт](quick-start)).
 
 Счётчик удобно вывести [ms3FavoritesCounter](snippets/ms3FavoritesCounter) с `&list` и `&resource_type`: в чанке `tplMs3fCounter` уже есть `data-favorites-count`, число обновляется при add/remove.
 
@@ -189,7 +202,7 @@ title: Интеграция и кастомизация
 В **MODX** без Fenom в чанке строки можно использовать `@INLINE` с вызовом `ms3FavoritesBtn` — полный пример в [Быстром старте](quick-start) (каталог).
 
 ::: tip AJAX-пагинация (ajaxMode)
-После подгрузки следующей страницы каталога вызовите **`window.ms3Favorites.updateButtonStates()`** в callback pdoPage (зависит от версии pdoTools) либо отключите AJAX и делайте полную перезагрузку страницы.
+После подгрузки следующей страницы каталога вызовите **`window.ms3Favorites.refresh()`** в callback pdoPage (событие/хук зависят от версии pdoTools). По умолчанию ms3Favorites также слушает **`mfilter:contentLoaded`** и использует fallback **MutationObserver** — см. [Подключение на сайте](frontend). Либо отключите AJAX и делайте полную перезагрузку страницы.
 :::
 
 **Фильтрация через msProducts** (товары со скидкой, в наличии, по бренду):
@@ -356,12 +369,15 @@ document.addEventListener('ms3f:synced', () => {
 });
 ```
 
-**Колбэки `window.ms3fConfig`** (задать до загрузки `favorites.js`):
+**Колбэки `window.ms3fConfig`** (задать до загрузки `favorites.js` или в inline-скрипте плагина):
 
 ```javascript
 window.ms3fConfig = window.ms3fConfig || {};
 window.ms3fConfig.onAdd = function (id, list, resourceType) { /* ... */ };
 window.ms3fConfig.onRemove = function (id, list, resourceType) { /* ... */ };
+window.ms3fConfig.refreshEvents = ['myCatalog:loaded']; // доп. события для refresh() после AJAX
+window.ms3fConfig.mfilterContainer = '.my-products'; // кастомный контейнер для MutationObserver
+window.ms3fConfig.mfilterMutationFallback = false; // отключить fallback Observer
 // Полностью своё уведомление: вернуть true — встроенная цепочка не вызывается
 window.ms3fConfig.notify = function (variant, text) {
   // variant: 'success' | 'error' | 'info' и т.д.
@@ -415,10 +431,11 @@ $ids = ms3f_get_ids_from_cookie($modx, 'default', 'products');
 
 | Симптом | Причина | Решение |
 |---------|---------|---------|
-| `ms3Favorites is undefined` | favorites.js не загружен или загружен до лексикона | Проверьте путь к JS и порядок скриптов |
+| `ms3Favorites is undefined` | favorites.js не загружен | Проверьте плагин **ms3fFrontend**, настройку **frontend_assets** или ручной путь к JS |
 | Счётчик не обновляется | `updateCounter()` не вызывается | Убедитесь, что `save()` вызывается после add/remove |
 | Счётчики табов на /wishlist/ «левые» | `getAllLists()` без типа смешивал разные `resource_type` | На странице задан `data-resource-type`; используйте `getAllLists(pageResourceType)` (актуальные сборки) |
-| Кнопки не работают в модалке (mxQuickView) | Контент подгружен по AJAX | `ms3Favorites` подписан на `mxqv:loaded`. Проверьте порядок загрузки |
+| Кнопки не работают в модалке (mxQuickView) | Контент подгружен по AJAX | `ms3Favorites` подписан на `mxqv:loaded` / `mxqv:open` и вызывает `refresh()` |
+| Кнопки не работают после фильтров (mFilter) | DOM обновлён, состояние кнопок не синхронизировано | Вызовите `window.ms3Favorites.refresh()` после AJAX или полагайтесь на автоподписку `mfilter:contentLoaded` / MutationObserver (`ms3fConfig.mfilterContainer`, `mfilterMutationFallback = false` для отключения) |
 | Пустой список после входа | Sync не выполнился | Проверьте консоль на ошибки fetch |
 | Удалили на /wishlist/, в БД осталось | Раньше пустой локальный список сливался с сервером при merge | В актуальных сборках при явных add/remove/clear используется **authoritative**-sync и **`flushToServer()`**; первый sync при загрузке без authoritative (новое устройство) |
 | Share не работает | Только для авторизованных | `create_share` требует `user_id` |

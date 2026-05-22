@@ -3,9 +3,11 @@ title: ms3fLexiconScript
 ---
 # Сниппет ms3fLexiconScript
 
-Добавляет на страницу скрипт с лексиконом и конфигом для фронтенда. В `window.ms3fLexicon` и `window.ms3fConfig` подставляются язык сайта, `maxItems`, `storageType`, `connectorUrl` и др.
+Добавляет на страницу inline-скрипт с лексиконом и конфигом для фронтенда. В `window.ms3fLexicon` и `window.ms3fConfig` подставляются язык сайта, `maxItems`, `storageType`, `connectorUrl`, `siteUrl` и др.
 
-Подключать **до** скрипта `favorites.js`, чтобы JS использовал правильные строки и лимит.
+**По умолчанию** конфиг выводит плагин **ms3fFrontend** при включённой настройке [ms3favorites.register_global_config](settings) — сниппет в шаблоне **не обязателен**.
+
+Подключайте сниппет **вручную**, если `register_global_config = Нет`, плагин отключён или нужны кастомные `cultureKey` / `resource_type` до загрузки страницы. В этом случае выводите **до** `favorites.js`.
 
 Использует Fenom-чанк **tplMs3fLexiconScript**.
 
@@ -17,6 +19,8 @@ title: ms3fLexiconScript
 | **resource_type** | Тип ресурсов по умолчанию | `products` |
 
 maxItems и storageType берутся из системных настроек `ms3favorites.max_items`, `ms3favorites.storage_type`.
+
+При **register_global_config = Да** (по умолчанию) сниппет в шаблоне не нужен — конфиг выводит плагин. Без лексикона (ни плагином, ни сниппетом) JS использует запасные русские фразы.
 
 ## Использование
 
@@ -57,6 +61,10 @@ maxItems и storageType берутся из системных настроек 
 | `cultureKey` | Язык |
 | `maxLists` | Макс. количество списков |
 | `resourceType` | Тип ресурсов |
-| `connectorUrl` | URL коннектора |
+| `connectorUrl` | URL коннектора (с учётом поддиректории сайта) |
+| `siteUrl` | Базовый URL сайта из `site_url` (для шаринга и fallback URL) |
 | `commentsEnabled` | Включены ли заметки к элементам |
 | `iziToastBaseUrl` | Базовый URL каталога vendor iziToast (для ленивой загрузки CSS/JS) |
+| `mfilterContainer` | Кастомный селектор контейнера mFilter для MutationObserver (опционально) |
+| `refreshEvents` | Дополнительные DOM-события для вызова `refresh()` после AJAX (массив строк) |
+| `mfilterMutationFallback` | Включить fallback MutationObserver (по умолчанию `true`; `false` — отключить) |

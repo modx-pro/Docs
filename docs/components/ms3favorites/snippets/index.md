@@ -13,4 +13,4 @@ title: Сниппеты
 - [ms3FavoritesLists](ms3FavoritesLists) — список списков избранного с количеством
 - [ms3FavoritesPopularity](ms3FavoritesPopularity) — «У N пользователей в избранном»
 - [ms3FavoritesShare](ms3FavoritesShare) — страница шаринга по токену
-- [ms3fLexiconScript](ms3fLexiconScript) — лексикон и конфиг для JS. Подключать **до** `favorites.js`
+- [ms3fLexiconScript](ms3fLexiconScript) — лексикон и конфиг для JS. По умолчанию выводит плагин **ms3fFrontend**; вручную — при `register_global_config = Нет`

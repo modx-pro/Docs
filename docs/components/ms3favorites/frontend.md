@@ -3,7 +3,7 @@ title: Подключение на сайте
 ---
 # Подключение на сайте
 
-Подробное описание подключения лексикона, стилей и скриптов — в [Быстром старте](quick-start). Ниже — коннектор, кастомизация и чанки.
+CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подключаются плагином **ms3fFrontend** — см. [Системные настройки](settings) (`frontend_assets`, `register_global_config`). Ручное подключение и кастомизация — в [Быстром старте](quick-start). Ниже — коннектор, чанки, JavaScript API и интеграции.
 
 ## Проверка интеграции
 
@@ -11,7 +11,7 @@ title: Подключение на сайте
 
 **Чек-лист перед проверкой**
 
-- На каждой странице карточки товара подключены лексикон и скрипт `favorites.js`.
+- Плагин **ms3fFrontend** включён (или в шаблоне вручную подключены лексикон и `favorites.min.js`).
 - У кнопки избранного заданы атрибуты `data-favorites-toggle` и `data-id`.
 - При работе гостей с БД в системных настройках включено `ms3favorites.guest_db_enabled` (**Да**).
 - Авторизованный пользователь открывает сайт в контексте **web** (сессия совпадает с фронтом каталога).
@@ -34,7 +34,7 @@ title: Подключение на сайте
 - **get_popularity** — маппинг id→count (JSON). POST `ids`, `resource_type`
 - **clear** — очистка списка (JSON). POST `list`, `resource_type`
 
-**Ответ:** HTML списка; при отсутствии товаров — emptyTpl. Для действий (actions) — JSON. Если заданы `window.MODX_ASSETS_URL` или `window.MODX_BASE_URL`, JS сам формирует URL коннектора.
+**Ответ:** HTML списка; при отсутствии товаров — emptyTpl. Для действий (actions) — JSON. Сниппет **ms3fLexiconScript** (или плагин **ms3fFrontend** при `register_global_config = Да`) передаёт в `window.ms3fConfig` готовые `connectorUrl` и `siteUrl` (с учётом поддиректории MODX). Без них JS может собрать URL из `window.MODX_ASSETS_URL`, `window.MODX_BASE_URL` или `MODX.config.base_url`.
 
 ## Чанки
 
@@ -78,7 +78,7 @@ title: Подключение на сайте
 
 ## Стили и BEM
 
-Классы с префиксом **ms3f** (BEM): `ms3f__list`, `ms3f__item` и др. Файл стилей: `assets/components/ms3favorites/css/favorites.css`. Карточки по умолчанию используют Bootstrap (`ms3-product-card`, `product-image-wrapper`); для корректного отображения подключите Bootstrap и при необходимости стили каталога.
+Классы с префиксом **ms3f** (BEM): `ms3f__list`, `ms3f__item` и др. Файлы стилей: `assets/components/ms3favorites/css/favorites.min.css` (по умолчанию) или `favorites.css`. Карточки по умолчанию используют Bootstrap (`ms3-product-card`, `product-image-wrapper`); для корректного отображения подключите Bootstrap и при необходимости стили каталога.
 
 На мобильных устройствах — горизонтальный скролл списка (`.ms3f__list`).
 
@@ -139,6 +139,7 @@ window.ms3Favorites = {
   render(selector, options), // selector: строка (querySelector) или DOM-элемент с id → регистрируется как #id; options: list, tpl, emptyTpl, limit, resource_type или resourceType
   updateCounter(),
   updateButtonStates(),
+  refresh(), // публичный API после AJAX-подмены карточек: счётчики + состояние кнопок [data-favorites-toggle]
 
   sync(options?), // для каждого типа: POST action=sync с локальными списками, ответ сервера записывается в storage; authoritative: true — флаг «локальное состояние — источник правды» (см. flushToServer)
   flushToServer(), // обёртка: sync({ authoritative: true }) и событие ms3f:synced
@@ -163,8 +164,33 @@ window.ms3Favorites = {
 };
 ```
 
-## Интеграция mxQuickView и mFilter
+## Интеграция mxQuickView, mFilter и AJAX-каталога
 
-**mxQuickView:** ms3Favorites подписывается на события `mxqv:loaded` и `mxqv:open`. После загрузки контента в модальное окно вызывается `updateButtonStates()` — кнопки избранного работают без дополнительной настройки.
+**Публичный API:** после подмены HTML карточек вызовите `window.ms3Favorites.refresh()`. Метод обновляет счётчики и состояние кнопок `[data-favorites-toggle]` в новом DOM.
 
-**mFilter:** При наличии контейнера результатов (`[data-mfilter-results]`, `.mfilter-results` или `[data-mfilter-id]`) `ms3Favorites` использует `MutationObserver` и вызывает `updateButtonStates()` при обновлении DOM. Для кастомного селектора задайте `window.ms3fConfig.mfilterContainer` до загрузки `favorites.js`.
+**mxQuickView:** ms3Favorites подписывается на `mxqv:loaded` и `mxqv:open` и вызывает `refresh()` автоматически.
+
+**mFilter:** по умолчанию подписка на `mfilter:contentLoaded`. Дополнительные события — через `ms3fConfig.refreshEvents` (массив строк).
+
+Пример для каталога с MiniShop3 и mFilter (при необходимости синхронизировать и MiniShop3):
+
+```html
+<script>
+document.addEventListener('mfilter:contentLoaded', () => {
+  window.ms3?.refresh?.();
+  window.ms3Favorites?.refresh?.();
+});
+</script>
+```
+
+Для своего AJAX-компонента подпишитесь на его событие после замены HTML и вызовите `window.ms3Favorites.refresh()`.
+
+**Fallback MutationObserver:** если компонент не диспатчит события, ms3Favorites следит за контейнером результатов (`[data-mfilter-results]`, `.mfilter-results`, `[data-mfilter-id]`) и вызывает `refresh()`. Кастомный селектор: `ms3fConfig.mfilterContainer`. Отключить: `ms3fConfig.mfilterMutationFallback = false`.
+
+```html
+<script>
+window.ms3fConfig = window.ms3fConfig || {};
+window.ms3fConfig.mfilterContainer = '.my-products';
+window.ms3fConfig.refreshEvents = ['myCatalog:loaded'];
+</script>
+```

@@ -42,9 +42,11 @@ ms3Favorites — компонент реализует функционал со
 - **Интеграция с корзиной** — «Добавить все в корзину», «Добавить выбранные»
 - **Популярность** — «У N пользователей в избранном»
 - **Типы ресурсов** — `products`, `resources`, `articles`, `pages`, `custom`
-- **Локализация** — MODX Lexicon (ru, en), на фронте — сниппет `ms3fLexiconScript`
+- **Локализация** — MODX Lexicon (ru, en). На фронте — inline через плагин **ms3fFrontend** или сниппет `ms3fLexiconScript`
 - **Кастомизация** — Fenom-чанки, BEM-классы (префикс `ms3f`), CSS-переменные
 - **Каталог** — чанк `tplCatalogRowMs3f` для строки с кнопкой избранного при **pdoPage** + **msProducts** ([интеграция](integration#catalog-pdopage-row))
+- **Автоподключение CSS/JS** — плагин `ms3fFrontend` (OnLoadWebDocument): список файлов в `ms3favorites.frontend_assets`, inline `ms3fLexicon` / `ms3fConfig` через `register_global_config` (как `ms3_frontend_assets` в MiniShop3)
+- **AJAX-каталог** — публичный API `window.ms3Favorites.refresh()` после подмены HTMLю Автоподписка на `mfilter:contentLoaded`, опции `ms3fConfig.refreshEvents` и fallback MutationObserver
 - **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`, базовый URL в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`).
 
 ## Системные требования
@@ -76,7 +78,7 @@ ms3Favorites — компонент реализует функционал со
 
 ### После установки
 
-Подключите лексикон, CSS и JS на сайте, разместите кнопку в карточке товара и выведите блок избранного.
+По умолчанию CSS/JS и inline-конфиг подключаются плагином **ms3fFrontend** — достаточно разместить кнопку в карточке товара и вывести блок избранного. Ручное подключение в шаблоне нужно только при отключённом плагине или `register_global_config = Нет`.
 
 Подробнее: [Быстрый старт](quick-start) и [Подключение на сайте](frontend).
 
