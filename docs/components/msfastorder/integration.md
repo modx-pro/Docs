@@ -311,7 +311,7 @@ sequenceDiagram
 
 ## Интеграция с AjaxForm
 
-Форма в модалке собирается в **msfo.js** и отправляется на `connector.php` (`order/create`). Оборачивать её в `[[!AjaxForm]]` не нужно: у AjaxForm другой сценарий — серверный чанк формы и сниппет-обработчик ([AjaxForm](/components/ajaxform/)).
+Форма в модалке собирается в **msfo.js** и отправляется на `connector.php` (`order/create`). Оборачивать её в `[[!AjaxForm]]` не нужно: у AjaxForm другой сценарий — серверный чанк формы и сниппет-обработчик ([AjaxForm](/components/ajaxform)).
 
 На одной странице msFastOrder и AjaxForm **не конфликтуют**: быстрый заказ живёт отдельно, AjaxForm — для ваших обычных форм (обратная связь, подписка и т.п.).
 
