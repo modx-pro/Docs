@@ -1,6 +1,6 @@
 ---
 title: Сниппет msFastOrder
-description: Кнопка быстрого заказа, подключение assets и CSRF
+description: Кнопка быстрого заказа и подключение assets
 ---
 
 # Сниппет msFastOrder
@@ -15,16 +15,20 @@ flowchart LR
   B -->|нет| Z[пустая строка]
   B -->|да| C[чанк кнопки]
   C --> D[msfo.min.css/js]
-  D --> E[CSRF в сессии]
+  D --> E[page_active + CSRF через плагин]
 ```
 
 1. Проверяет, что ресурс с `id` — товар MiniShop3 (`msProduct` + `Data`).
 2. Рендерит чанк кнопки (`tplBtn`, по умолчанию `msfo_button`).
 3. Устанавливает флаг `msfastorder.page_active` для плагина `msfastorder_web`.
 4. Подключает `msfo.min.css` и `msfo.min.js` с версией по `mtime` файла.
-5. Создаёт CSRF-токен в сессии (`ClientConfig::ensureCsrfToken`).
 
-Плагин **`msfastorder_web`** перед отдачей страницы подставляет актуальный `window.msfoConfig` (в т.ч. свежий `csrfToken`).
+**CSRF и `window.msfoConfig`** обеспечивает плагин **`msfastorder_web`**:
+
+- `OnLoadWebPageCache` — `ClientConfig::ensureCsrfToken()` (токен в сессии);
+- `OnWebPagePrerender` — `refreshClientConfig()` (актуальный `csrfToken` и настройки в HTML).
+
+Сниппет **не** создаёт CSRF сам — только помечает страницу активной и подключает assets.
 
 ## Параметры
 

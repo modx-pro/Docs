@@ -26,7 +26,7 @@ flowchart TD
 - Параметр `&id` указывает на несуществующий или не товарный ресурс.
 - Сниппет вызван **кэшированно** — используйте `[[!msFastOrder]]` / `{'!msFastOrder' | snippet}`.
 
-**Проверка:** в элементе сниппет выполняется на странице товара MS3; в HTML есть разметка кнопки с `data-msfo-trigger`.
+**Проверка:** сниппет должен выполняться на странице товара MS3. В HTML должна быть разметка кнопки с `data-msfo-trigger`.
 
 ## Модалка не открывается
 
@@ -73,9 +73,9 @@ Connector вернул **HTML** (PHP-ошибка), а не JSON.
 | Симптом | Что проверить |
 |---------|----------------|
 | Поле пустое | `msfastorder_method=MS`, активные payment/delivery ID |
-| Ссылка на «Спасибо», нужна ЮKassa | В `msfastorder_payment_id` — способ с классом YooKassa; установлен [msp3YooKassa](/components/msp3yookassa/) |
+| Ссылка на «Спасибо», нужна ЮKassa | В `msfastorder_payment_id` — способ с классом YooKassa. Установлен [msp3YooKassa](/components/msp3yookassa/) |
 | Статус заказа не «оплачен» | Webhook ЮKassa и ключи msp3YooKassa |
-| Нет кнопки «Оплатить» | `payment_link` в ответе; не ломайте `renderSuccess` без кнопки |
+| Нет кнопки «Оплатить» | `payment_link` в ответе. Не ломайте `renderSuccess` без кнопки |
 
 Пошагово: [Интеграция → ЮKassa](integration#оплата-через-юkassa-msp3yookassa).
 

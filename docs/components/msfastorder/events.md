@@ -48,7 +48,7 @@ flowchart TB
 4. *(пользователь отправляет форму)*
 5. `form:submit` — перед AJAX
 6. `order:success` или `order:error` — ответ connector
-7. При успехе: разметка success в модалке; опционально редирект
+7. При успехе — разметка success в модалке и опциональный редирект
 8. `modal:beforeClose` → `modal:close` — при закрытии
 
 После `order:success` в режиме MS вызывается `MiniShop3Integration.reinitCart()` и событие `ms3:cart:updated`.

@@ -183,8 +183,8 @@ ms3Variants по умолчанию пишет выбранный вариант
 
 1. Откройте страницу товара в браузере (не в режиме предпросмотра с устаревшим кэшем).
 2. В исходном коде страницы должны быть:
-   - `msfo.min.css`, `msfo.min.js`;
-   - блок `<script>window.msfoConfig = …</script>` с `csrfToken` и `connectorUrl`.
+   - `msfo.min.css` и `msfo.min.js`
+   - блок `<script>window.msfoConfig = …</script>` с `csrfToken` и `connectorUrl`
 3. Нажмите кнопку быстрого заказа — откроется модалка с формой.
 4. Заполните **ФИО** и **телефон**, отправьте заказ.
 5. **Режим MS:** заказ в **MiniShop3 → Заказы**, строка в таблице `msfastorder_logs`.

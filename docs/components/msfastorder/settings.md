@@ -57,12 +57,12 @@ flowchart TD
 | `msfastorder_modal_library` | текст | `native` | Модалка: `native`, `bootstrap`, `fancybox` |
 | `msfastorder_connector_url` | текст | `/assets/components/msfastorder/connector.php` | URL AJAX (только POST) |
 | `msfastorder_assets_url` | текст | `/assets/components/msfastorder/` | База для `css/msfo.min.css` и `js/msfo.min.js` |
-| `msfastorder_copy_count` | да/нет | Да | В транспорте: копировать количество со страницы. **В JS копирование выполняется всегда** — см. [Подключение на сайте](frontend#количество-и-итого) |
-| `msfastorder_generate_email` | да/нет | Да | В транспорте: автогенерация email. В **MS** при пустом email PHP вызывает `generateEmail()` **независимо** от этой настройки |
-| `msfastorder_frontend_css` | текст | *(пусто)* | Зарезервировано под свой CSS; стандартный сниппет подключает `msfo.min.css` |
-| `msfastorder_frontend_js` | текст | *(пусто)* | Зарезервировано под свой JS; стандартный сниппет подключает `msfo.min.js` |
+| `msfastorder_copy_count` | да/нет | Да | Задумано для копирования количества со страницы. **В JS 1.0.0 копирование выполняется всегда** — см. [Подключение на сайте](frontend#количество-и-итого) |
+| `msfastorder_generate_email` | да/нет | Да | Задумано для автогенерации email. В **MS** при пустом email PHP вызывает `generateEmail()` **независимо** от этой настройки |
+| `msfastorder_frontend_css` | текст | *(пусто)* | Зарезервировано под свой CSS. Стандартный сниппет подключает `msfo.min.css` |
+| `msfastorder_frontend_js` | текст | *(пусто)* | Зарезервировано под свой JS. Стандартный сниппет подключает `msfo.min.js` |
 
-Для `bootstrap` на странице нужен Bootstrap 5 Modal. Для `fancybox` — Fancybox 4/5; подключайте `msfo.min.css` **после** CSS Fancybox.
+Для `bootstrap` на странице нужен Bootstrap 5 Modal. Для `fancybox` — Fancybox 4/5. Подключайте `msfo.min.css` **после** CSS Fancybox.
 
 ## Телефон и префикс страны
 
@@ -76,7 +76,7 @@ flowchart TD
 
 | Ключ | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `msfastorder_debug` | да/нет | Нет | В JSON-ответах connector при ошибках добавляется `debug`; доступен `action=rate-limit/reset` |
+| `msfastorder_debug` | да/нет | Нет | В JSON-ответах connector при ошибках добавляется `debug`. Доступен `action=rate-limit/reset` |
 | `msfastorder_rate_limit_attempts` | число | `5` | Лимит запросов `order/create` с одного IP за окно |
 | `msfastorder_rate_limit_window` | число | `300` | Длина окна в секундах (5 минут) |
 

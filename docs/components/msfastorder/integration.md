@@ -311,14 +311,45 @@ sequenceDiagram
 
 ## Интеграция с AjaxForm
 
-Если вы используете AjaxForm для валидации, можно отключить стандартную валидацию:
+Форма в модалке собирается в **msfo.js** и отправляется на `connector.php` (`order/create`). Оборачивать её в `[[!AjaxForm]]` не нужно: у AjaxForm другой сценарий — серверный чанк формы и сниппет-обработчик ([AjaxForm](/components/ajaxform/)).
+
+На одной странице msFastOrder и AjaxForm **не конфликтуют**: быстрый заказ живёт отдельно, AjaxForm — для ваших обычных форм (обратная связь, подписка и т.п.).
+
+Если на сайте уже подключён AjaxForm, можно использовать его всплывающие сообщения для быстрого заказа и добавить свои проверки до отправки:
 
 ```javascript
-window.msfoConfig = {
-    ...window.msfoConfig,
-    skipValidation: true
-};
+// Уведомления AjaxForm вместо/в дополнение к разметке в модалке
+document.addEventListener('msfo:order:success', function (e) {
+  if (typeof AjaxForm === 'undefined') return;
+  const msg = e.detail?.message || 'Заказ принят';
+  AjaxForm.Message.success(msg);
+});
+
+document.addEventListener('msfo:order:error', function (e) {
+  if (typeof AjaxForm === 'undefined') return;
+  AjaxForm.Message.error(e.detail?.message || 'Ошибка оформления', 1);
+});
+
+// Дополнительная проверка полей после открытия модалки
+document.addEventListener('msfo:modal:loaded', function () {
+  const form = document.querySelector('.msfo-form');
+  if (!form || form.dataset.msfoExtraValidate) return;
+  form.dataset.msfoExtraValidate = '1';
+
+  form.addEventListener('submit', function (ev) {
+    const agreement = form.querySelector('[name="agreement"]');
+    if (agreement && !agreement.checked) {
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      if (typeof AjaxForm !== 'undefined') {
+        AjaxForm.Message.error('Подтвердите согласие на обработку данных', 1);
+      }
+    }
+  }, true);
+});
 ```
+
+Чекбокс `agreement` добавьте в форму в обработчике `msfo:modal:loaded` (см. [События JavaScript → modal:loaded](events#modal-loaded)). Серверная проверка без создания заказа — action `order/validate` ([AJAX API](api#order-validate)).
 
 ## Интеграция с Google Analytics
 

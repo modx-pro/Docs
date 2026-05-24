@@ -9,7 +9,7 @@ description: Обзор сниппетов msFastOrder для витрины
 
 | Сниппет | Назначение |
 |---------|------------|
-| [msFastOrder](msFastOrder) | Кнопка быстрого заказа + подключение `msfo.min.css` / `msfo.min.js` + CSRF в сессии |
+| [msFastOrder](msFastOrder) | Кнопка быстрого заказа + `msfo.min.css` / `msfo.min.js` (CSRF — плагин `msfastorder_web`) |
 | [msFastOrderClientConfig](msFastOrderClientConfig) | Только вывод `window.msfoConfig` (без кнопки) |
 
 ## Где выводить

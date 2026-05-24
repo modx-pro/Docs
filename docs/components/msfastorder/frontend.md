@@ -218,7 +218,7 @@ sequenceDiagram
 4. **`MiniShop3Integration.copyFromProductPage(productId)`** — с страницы берутся `count` (класс `msfastorder-count-{id}` или `input[name="count"]`) и `options` (форма `.ms3variants-product-{id}`).
 5. HTML формы собирается **`renderForm()`**, модалка открывается (`modal:beforeOpen` → `modal:open`).
 6. На форму вешается **`FormHandler`** (маска телефона, submit, success).
-7. Событие **`modal:loaded`** — `{ productId, product }`; удобная точка для правки DOM формы.
+7. Событие **`modal:loaded`** — `{ productId, product }`. Удобная точка для правки DOM формы.
 
 Полный список событий: [События JavaScript](events).
 
@@ -310,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 ```
 
-**Открытие с карточки в каталоге** — `productId` из data-атрибута строки; на странице списка желательно поле `count` с классом `msfastorder-count-{id}` для каждого товара (см. [Быстрый старт](quick-start#шаг-5-рекомендуемая-разметка-варианты-и-количество)).
+**Открытие с карточки в каталоге** — `productId` из data-атрибута строки. На странице списка желательно поле `count` с классом `msfastorder-count-{id}` для каждого товара (см. [Быстрый старт](quick-start#шаг-5-рекомендуемая-разметка-варианты-и-количество)).
 
 **Смена библиотеки модалки на лету** (если на странице есть Bootstrap 5 или Fancybox):
 

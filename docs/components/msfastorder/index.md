@@ -42,7 +42,7 @@ items: [
 
 # msFastOrder
 
-**msFastOrder** — дополнение для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): оформление заказа «в один клик» с карточки товара через модальное окно, без перехода в корзину..
+**msFastOrder** — дополнение для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): оформление заказа «в один клик» с карточки товара через модальное окно, без перехода в корзину.
 
 С чего начать: [Быстрый старт](quick-start).
 
@@ -189,4 +189,4 @@ sequenceDiagram
 
 ## Лицензия
 
-MIT — `core/components/msfastorder/docs/license.txt`.
+GPL v2 — `core/components/msfastorder/docs/license.txt`.
