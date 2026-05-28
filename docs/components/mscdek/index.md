@@ -106,13 +106,44 @@ dependencies: [ 'MiniShop3' ]
 
 ## Вывод карты со списком ПВЗ
 
-1. [Получите ключ](https://developer.tech.yandex.ru/) для JavaScript API и HTTP Геокодер;
-2. Установите полученный ключ в системную настройку `mscdek_main_yandex_map_api_key`;
-3. В шаблон с формой оформления заказа вставьте код
+Начиная с версии 3.1.0 поддерживаются два провайдера карт. Выбор задаётся системной настройкой `mscdek_main_map_provider`:
+
+| Значение | Провайдер | Ключ |
+|---|---|---|
+| `osm` *(по умолчанию)* | OpenStreetMap + Leaflet 1.9.4 | не требуется |
+| `yandex` | Яндекс.Карты JS API v3 | обязателен |
+
+### Вариант 1. OpenStreetMap (по умолчанию)
+
+1. Убедитесь, что `mscdek_main_map_provider` имеет значение `osm` (так и стоит после чистой установки).
+2. В шаблон с формой оформления заказа вставьте код:
 
 ```html:line-numbers
 <div class="hide" data-mscdek-map></div>
 ```
+
+::: info
+Leaflet и плагин leaflet.markercluster подтягиваются с публичного CDN (`cdn.jsdelivr.net`) автоматически — никаких дополнительных подключений в шаблоне делать не нужно.
+:::
+
+::: warning
+Карта рендерится на бесплатных тайлах `tile.openstreetmap.org`. Согласно [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/), высоконагруженное коммерческое использование с этих тайлов не приветствуется. При росте трафика стоит подключить свой кеш/прокси тайлов или платный тайл-сервис.
+:::
+
+### Вариант 2. Яндекс.Карты
+
+1. [Получите ключ](https://developer.tech.yandex.ru/) для JavaScript API и HTTP Геокодер.
+2. В системной настройке `mscdek_main_map_provider` укажите `yandex`.
+3. Установите полученный ключ в системную настройку `mscdek_main_map_api_key`.
+4. В шаблон с формой оформления заказа вставьте тот же код:
+
+```html:line-numbers
+<div class="hide" data-mscdek-map></div>
+```
+
+::: info
+До версии 3.1.0 ключ Яндекс.Карт хранился в `mscdek_main_yandex_map_api_key`. При обновлении пакета значение автоматически переносится в `mscdek_main_map_api_key`, а `mscdek_main_map_provider` выставляется в `yandex`. Если до этого ключа не было — `mscdek_main_map_provider` останется `osm`. Старая настройка удаляется.
+:::
 
 ## Подсказки при вводе адреса
 
