@@ -222,7 +222,19 @@ pagetitle;gallery;gallery;gallery
 - Путь указан относительно корня сайта
 - Права на чтение файлов
 
+При программной загрузке в галерею используйте процессор `MiniShop3\Processors\Gallery\Upload` (см. [API товара](../../development/backend-api/product#изображения-галерея)).
+
 ## Программное использование
+
+### Процессоры импорта
+
+| Процессор | Назначение |
+|-----------|------------|
+| `MiniShop3\Processors\Utilities\Import\Fields` | Список полей для сопоставления |
+| `MiniShop3\Processors\Utilities\Import\Upload` | Загрузка CSV |
+| `MiniShop3\Processors\Utilities\Import\Preview` | Предпросмотр |
+| `MiniShop3\Processors\Utilities\Import\Import` | Запуск импорта |
+| `MiniShop3\Processors\Utilities\Import\Progress` | Прогресс |
 
 ### API Endpoint
 
