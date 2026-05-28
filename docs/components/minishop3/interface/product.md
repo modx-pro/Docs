@@ -84,7 +84,7 @@ title: Товар
 
 **Per-category caption / description.** Если у связки «опция ↔ категория» задан свой `caption` (см. [Настройки → Опции](settings/options#per-category-caption-description-override)), в форме товара отображается именно он — это тот же override, что уходит на витрину.
 
-**Сохранение.** Значения попадают в POST как `options-{key}` (single) или `options-{key}` с JSON-массивом (multi). Процессор `Processors\Product\Update::beforeSet` собирает всё в ключ `options`, `Utils::decodeOptionValue()` разворачивает JSON-массив, `afterSave` вызывает `OptionSyncService::saveProductOptions($productId, $options, removeOther: true)` — ключи, отсутствующие в POST, из `msProductOption` удаляются.
+**Сохранение.** Значения попадают в POST как `options-{key}` (single) или `options-{key}` с JSON-массивом (multi). Процессор `MiniShop3\Processors\Product\Update` в `beforeSet` собирает всё в ключ `options`, `Utils::decodeOptionValue()` разворачивает JSON-массив, `afterSave` вызывает `OptionSyncService::saveProductOptions($productId, $options, removeOther: true)` — ключи, отсутствующие в POST, из `msProductOption` удаляются.
 
 ## Архитектура секций и полей
 

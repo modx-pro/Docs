@@ -78,6 +78,10 @@ large:  720x540
 
 ## Техническая информация
 
+### Процессор
+
+Утилита вызывает `MiniShop3\Processors\Utilities\Gallery\Update` (через manager API или `$modx->runProcessor()` с полным именем класса).
+
 ### API Endpoint
 
 ```

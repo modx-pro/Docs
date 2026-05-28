@@ -259,7 +259,7 @@ core/components/minishop3/
 ├── src/
 │   ├── Controllers/        # Бизнес-логика (Cart, Order, Customer)
 │   ├── Model/              # xPDO модели
-│   ├── Processors/         # AJAX процессоры
+│   ├── Processors/         # AJAX процессоры (namespace MiniShop3\Processors\*)
 │   ├── Services/           # Сервисы (Format, AuthManager...)
 │   ├── Notifications/      # Система уведомлений
 │   ├── Router/             # Маршрутизатор API
