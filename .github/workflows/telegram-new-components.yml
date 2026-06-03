@@ -1,7 +1,12 @@
 name: Telegram New Components
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      component:
+        description: 'Slug компонента для ручного уведомления (через запятую — несколько, напр. mspricetiers)'
+        required: false
+        type: string
   workflow_run:
     workflows:
       - Deploy
@@ -29,47 +34,10 @@ jobs:
       - name: Detect new components
         id: detect
         shell: bash
+        env:
+          MANUAL_COMPONENTS: ${{ github.event_name == 'workflow_dispatch' && inputs.component || '' }}
         run: |
           set -euo pipefail
-
-          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
-            AFTER_SHA="${{ github.event.workflow_run.head_sha }}"
-            BEFORE_SHA="$(git rev-parse "${AFTER_SHA}^" 2>/dev/null || true)"
-          else
-            AFTER_SHA="${{ github.sha }}"
-            BEFORE_SHA="${{ github.event.before }}"
-            if [[ -z "$BEFORE_SHA" || "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
-              BEFORE_SHA="$(git rev-parse "${AFTER_SHA}^" 2>/dev/null || true)"
-            fi
-          fi
-
-          if [[ -z "$BEFORE_SHA" ]]; then
-            echo "has_new_components=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          ADDED_COMPONENTS="$(
-            git diff --name-status "$BEFORE_SHA" "$AFTER_SHA" -- docs/components \
-              | awk '$1 == "A" {print $2}' \
-              | while IFS= read -r file; do
-                  slug=""
-                  if [[ "$file" =~ ^docs/components/([^/]+)/index\.md$ ]]; then
-                    slug="${BASH_REMATCH[1]}"
-                  elif [[ "$file" =~ ^docs/components/([^/]+)\.md$ ]]; then
-                    slug="${BASH_REMATCH[1]}"
-                  fi
-                  if [[ -n "$slug" && "$slug" != "index" ]]; then
-                    printf "%s|%s\n" "$slug" "$file"
-                  fi
-                done \
-              | awk -F'|' '!seen[$1]++' \
-              | sort -t'|' -k1,1 || true
-          )"
-
-          if [[ -z "$ADDED_COMPONENTS" ]]; then
-            echo "has_new_components=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
 
           trim_quotes() {
             local value="$1"
@@ -109,6 +77,74 @@ jobs:
             text="${text//\"/&quot;}"
             printf "%s" "$text"
           }
+
+          resolve_component_file() {
+            local slug="$1"
+            if [[ -f "docs/components/${slug}/index.md" ]]; then
+              printf "docs/components/%s/index.md" "$slug"
+            elif [[ -f "docs/components/${slug}.md" ]]; then
+              printf "docs/components/%s.md" "$slug"
+            else
+              return 1
+            fi
+          }
+
+          ADDED_COMPONENTS=""
+
+          if [[ -n "$MANUAL_COMPONENTS" ]]; then
+            IFS=',' read -ra SLUGS <<< "$MANUAL_COMPONENTS"
+            for raw_slug in "${SLUGS[@]}"; do
+              slug="$(printf "%s" "$raw_slug" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')"
+              [[ -z "$slug" ]] && continue
+
+              file="$(resolve_component_file "$slug" || true)"
+              if [[ -z "$file" ]]; then
+                echo "::error::Документация компонента не найдена: ${slug} (ожидается docs/components/${slug}/index.md)"
+                exit 1
+              fi
+
+              ADDED_COMPONENTS+="${slug}|${file}"$'\n'
+            done
+          else
+            if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+              AFTER_SHA="${{ github.event.workflow_run.head_sha }}"
+              BEFORE_SHA="$(git rev-parse "${AFTER_SHA}^" 2>/dev/null || true)"
+            else
+              AFTER_SHA="${{ github.sha }}"
+              BEFORE_SHA="${{ github.event.before }}"
+              if [[ -z "$BEFORE_SHA" || "$BEFORE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+                BEFORE_SHA="$(git rev-parse "${AFTER_SHA}^" 2>/dev/null || true)"
+              fi
+            fi
+
+            if [[ -z "$BEFORE_SHA" ]]; then
+              echo "has_new_components=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            ADDED_COMPONENTS="$(
+              git diff --name-status "$BEFORE_SHA" "$AFTER_SHA" -- docs/components \
+                | awk '$1 == "A" {print $2}' \
+                | while IFS= read -r file; do
+                    slug=""
+                    if [[ "$file" =~ ^docs/components/([^/]+)/index\.md$ ]]; then
+                      slug="${BASH_REMATCH[1]}"
+                    elif [[ "$file" =~ ^docs/components/([^/]+)\.md$ ]]; then
+                      slug="${BASH_REMATCH[1]}"
+                    fi
+                    if [[ -n "$slug" && "$slug" != "index" ]]; then
+                      printf "%s|%s\n" "$slug" "$file"
+                    fi
+                  done \
+                | awk -F'|' '!seen[$1]++' \
+                | sort -t'|' -k1,1 || true
+            )"
+          fi
+
+          if [[ -z "$ADDED_COMPONENTS" ]]; then
+            echo "has_new_components=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
 
           count=0
           MESSAGE="Добавлен новый компонент в документацию\n"
