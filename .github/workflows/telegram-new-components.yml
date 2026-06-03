@@ -146,8 +146,11 @@ jobs:
             exit 0
           fi
 
+          notifications_file="${RUNNER_TEMP}/telegram-notifications.json"
+          printf "[" > "$notifications_file"
+          first=1
           count=0
-          MESSAGE="Добавлен новый компонент в документацию\n"
+
           while IFS='|' read -r slug file; do
             [[ -z "$slug" ]] && continue
             [[ -z "$file" ]] && continue
@@ -155,18 +158,20 @@ jobs:
             title="$(extract_frontmatter "title" "$file" || true)"
             description="$(extract_frontmatter "description" "$file" || true)"
             author="$(extract_frontmatter "author" "$file" || true)"
+            logo="$(extract_frontmatter "logo" "$file" || true)"
 
             title="$(trim_quotes "$title")"
             description="$(trim_quotes "$description")"
             author="$(trim_quotes "$author")"
+            logo="$(trim_quotes "$logo")"
 
             [[ -z "$title" ]] && title="$slug"
             [[ -z "$description" ]] && description="Описание не указано"
             [[ -z "$author" ]] && author="Автор не указан"
 
-            title="$(escape_html "$title")"
-            description="$(escape_html "$description")"
-            author="$(escape_html "$author")"
+            title_html="$(escape_html "$title")"
+            description_html="$(escape_html "$description")"
+            author_html="$(escape_html "$author")"
 
             if [[ "$file" =~ /index\.md$ ]]; then
               doc_url="https://docs.modx.pro/components/${slug}/"
@@ -174,28 +179,91 @@ jobs:
               doc_url="https://docs.modx.pro/components/${slug}"
             fi
 
-            MESSAGE+="\n<b>${title}</b> — ${description}\n"
-            MESSAGE+="Автор: ${author}\n"
-            MESSAGE+="<a href=\"${doc_url}\">Ознакомиться с документацией</a>\n"
+            message=$'Добавлен новый компонент в документацию\n\n'
+            message+="<b>${title_html}</b> — ${description_html}"$'\n'
+            message+="Автор: ${author_html}"$'\n'
+            message+="<a href=\"${doc_url}\">Ознакомиться с документацией</a>"
+
+            if [[ "$first" -eq 0 ]]; then
+              printf "," >> "$notifications_file"
+            fi
+            first=0
+
+            jq -n \
+              --arg message "$message" \
+              --arg logo "$logo" \
+              '{message: $message, logo: (if ($logo | length) > 0 then $logo else null end)}' \
+              >> "$notifications_file"
+
             count=$((count + 1))
           done <<< "$ADDED_COMPONENTS"
 
-          if [[ "$count" -gt 1 ]]; then
-            MESSAGE="Добавлены новые компоненты в документацию\n${MESSAGE#*$'\n'}"
-          fi
+          printf "\n]" >> "$notifications_file"
 
           echo "has_new_components=true" >> "$GITHUB_OUTPUT"
-          {
-            echo "message<<EOF"
-            printf "%b\n" "$MESSAGE"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          echo "notifications_file=${notifications_file}" >> "$GITHUB_OUTPUT"
+          echo "notifications_count=${count}" >> "$GITHUB_OUTPUT"
 
-      - name: Send telegram notification
+      - name: Send telegram notifications
         if: steps.detect.outputs.has_new_components == 'true'
-        uses: appleboy/telegram-action@master
-        with:
-          to: "-1001051277497"
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          format: html
-          message: ${{ steps.detect.outputs.message }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: "-1001051277497"
+          NOTIFICATIONS_FILE: ${{ steps.detect.outputs.notifications_file }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          send_message() {
+            local payload="$1"
+            local response http_code body
+
+            response="$(curl -sS -w "\n%{http_code}" \
+              -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              -H "Content-Type: application/json" \
+              -d "$payload")"
+            http_code="${response##*$'\n'}"
+            body="${response%$'\n'*}"
+
+            if [[ "$http_code" != "200" ]] || ! jq -e '.ok == true' <<< "$body" >/dev/null; then
+              echo "::error::Telegram sendMessage failed (HTTP ${http_code}): ${body}"
+              exit 1
+            fi
+          }
+
+          send_photo() {
+            local payload="$1"
+            local response http_code body
+
+            response="$(curl -sS -w "\n%{http_code}" \
+              -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto" \
+              -H "Content-Type: application/json" \
+              -d "$payload")"
+            http_code="${response##*$'\n'}"
+            body="${response%$'\n'*}"
+
+            if [[ "$http_code" != "200" ]] || ! jq -e '.ok == true' <<< "$body" >/dev/null; then
+              echo "::error::Telegram sendPhoto failed (HTTP ${http_code}): ${body}"
+              exit 1
+            fi
+          }
+
+          while IFS= read -r item; do
+            message="$(jq -r '.message' <<< "$item")"
+            logo="$(jq -r '.logo // empty' <<< "$item")"
+
+            if [[ -n "$logo" ]]; then
+              payload="$(jq -n \
+                --arg chat_id "$TELEGRAM_CHAT_ID" \
+                --arg photo "$logo" \
+                --arg caption "$message" \
+                '{chat_id: $chat_id, photo: $photo, caption: $caption, parse_mode: "HTML"}')"
+              send_photo "$payload"
+            else
+              payload="$(jq -n \
+                --arg chat_id "$TELEGRAM_CHAT_ID" \
+                --arg text "$message" \
+                '{chat_id: $chat_id, text: $text, parse_mode: "HTML"}')"
+              send_message "$payload"
+            fi
+          done < <(jq -c '.[]' "$NOTIFICATIONS_FILE")
