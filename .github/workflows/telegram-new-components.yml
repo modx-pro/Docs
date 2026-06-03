@@ -103,6 +103,14 @@ jobs:
             fi
           }
 
+          resolve_logo_file() {
+            local slug="$1"
+
+            if [[ -f "docs/public/og/${slug}.png" ]]; then
+              printf "docs/public/og/%s.png" "$slug"
+            fi
+          }
+
           ADDED_COMPONENTS=""
 
           if [[ -n "$MANUAL_COMPONENTS" ]]; then
@@ -178,6 +186,7 @@ jobs:
             description="$(trim_quotes "$description")"
             author="$(trim_quotes "$author")"
             logo="$(trim_quotes "$logo")"
+            logo_file="$(resolve_logo_file "$slug" || true)"
             logo="$(resolve_logo_url "$slug" "$logo" || true)"
 
             [[ -z "$title" ]] && title="$slug"
@@ -207,7 +216,12 @@ jobs:
             jq -n \
               --arg message "$message" \
               --arg logo "$logo" \
-              '{message: $message, logo: (if ($logo | length) > 0 then $logo else null end)}' \
+              --arg logo_file "$logo_file" \
+              '{
+                message: $message,
+                logo: (if ($logo | length) > 0 then $logo else null end),
+                logo_file: (if ($logo_file | length) > 0 then $logo_file else null end)
+              }' \
               >> "$notifications_file"
 
             count=$((count + 1))
@@ -246,41 +260,60 @@ jobs:
             fi
           }
 
-          send_photo() {
-            local payload="$1"
+          send_photo_file() {
+            local photo_file="$1"
+            local caption="$2"
             local response http_code body
 
             response="$(curl -sS -w "\n%{http_code}" \
               -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto" \
-              -H "Content-Type: application/json" \
-              -d "$payload")"
+              -F "chat_id=${TELEGRAM_CHAT_ID}" \
+              -F "photo=@${photo_file}" \
+              -F "caption=${caption}" \
+              -F "parse_mode=HTML")"
             http_code="${response##*$'\n'}"
             body="${response%$'\n'*}"
 
             if [[ "$http_code" != "200" ]] || ! jq -e '.ok == true' <<< "$body" >/dev/null; then
-              echo "::warning::Telegram sendPhoto failed (HTTP ${http_code}): ${body}" >&2
+              echo "::warning::Telegram sendPhoto (file) failed (HTTP ${http_code}): ${body}" >&2
               return 1
             fi
+          }
+
+          send_photo_url() {
+            local photo_url="$1"
+            local caption="$2"
+            local tmp_file response http_code body
+
+            tmp_file="$(mktemp --suffix=.png)"
+            if ! curl -fsSL "$photo_url" -o "$tmp_file"; then
+              echo "::warning::Не удалось скачать логотип: ${photo_url}" >&2
+              rm -f "$tmp_file"
+              return 1
+            fi
+
+            if send_photo_file "$tmp_file" "$caption"; then
+              rm -f "$tmp_file"
+              return 0
+            fi
+
+            rm -f "$tmp_file"
+            return 1
           }
 
           while IFS= read -r item; do
             message="$(jq -r '.message' <<< "$item")"
             logo="$(jq -r '.logo // empty' <<< "$item")"
+            logo_file="$(jq -r '.logo_file // empty' <<< "$item")"
+            sent=false
 
-            if [[ -n "$logo" ]]; then
-              payload="$(jq -n \
-                --arg chat_id "$TELEGRAM_CHAT_ID" \
-                --arg photo "$logo" \
-                --arg caption "$message" \
-                '{chat_id: $chat_id, photo: $photo, caption: $caption, parse_mode: "HTML"}')"
-              if ! send_photo "$payload"; then
-                payload="$(jq -n \
-                  --arg chat_id "$TELEGRAM_CHAT_ID" \
-                  --arg text "$message" \
-                  '{chat_id: $chat_id, text: $text, parse_mode: "HTML"}')"
-                send_message "$payload"
-              fi
-            else
+            if [[ -n "$logo_file" && -f "$logo_file" ]]; then
+              send_photo_file "$logo_file" "$message" && sent=true || true
+            elif [[ -n "$logo" ]]; then
+              send_photo_url "$logo" "$message" && sent=true || true
+            fi
+
+            if [[ "$sent" == "false" ]]; then
               payload="$(jq -n \
                 --arg chat_id "$TELEGRAM_CHAT_ID" \
                 --arg text "$message" \
