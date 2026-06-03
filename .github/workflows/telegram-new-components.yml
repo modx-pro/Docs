@@ -89,6 +89,20 @@ jobs:
             fi
           }
 
+          resolve_logo_url() {
+            local slug="$1"
+            local frontmatter_logo="$2"
+
+            if [[ -f "docs/public/og/${slug}.png" ]]; then
+              printf "https://docs.modx.pro/og/%s.png" "$slug"
+              return 0
+            fi
+
+            if [[ -n "$frontmatter_logo" ]]; then
+              printf "%s" "$frontmatter_logo"
+            fi
+          }
+
           ADDED_COMPONENTS=""
 
           if [[ -n "$MANUAL_COMPONENTS" ]]; then
@@ -164,6 +178,7 @@ jobs:
             description="$(trim_quotes "$description")"
             author="$(trim_quotes "$author")"
             logo="$(trim_quotes "$logo")"
+            logo="$(resolve_logo_url "$slug" "$logo" || true)"
 
             [[ -z "$title" ]] && title="$slug"
             [[ -z "$description" ]] && description="Описание не указано"
@@ -243,8 +258,8 @@ jobs:
             body="${response%$'\n'*}"
 
             if [[ "$http_code" != "200" ]] || ! jq -e '.ok == true' <<< "$body" >/dev/null; then
-              echo "::error::Telegram sendPhoto failed (HTTP ${http_code}): ${body}"
-              exit 1
+              echo "::warning::Telegram sendPhoto failed (HTTP ${http_code}): ${body}" >&2
+              return 1
             fi
           }
 
@@ -258,7 +273,13 @@ jobs:
                 --arg photo "$logo" \
                 --arg caption "$message" \
                 '{chat_id: $chat_id, photo: $photo, caption: $caption, parse_mode: "HTML"}')"
-              send_photo "$payload"
+              if ! send_photo "$payload"; then
+                payload="$(jq -n \
+                  --arg chat_id "$TELEGRAM_CHAT_ID" \
+                  --arg text "$message" \
+                  '{chat_id: $chat_id, text: $text, parse_mode: "HTML"}')"
+                send_message "$payload"
+              fi
             else
               payload="$(jq -n \
                 --arg chat_id "$TELEGRAM_CHAT_ID" \
