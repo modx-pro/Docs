@@ -4,18 +4,39 @@
 
 ## Встроенные типы
 
-| Тип | Класс | Описание |
-|-----|-------|----------|
-| `default` | DefaultFilterType | Стандартный (checkbox/radio) |
-| `number` | NumberFilterType | Числовой диапазон |
-| `boolean` | BooleanFilterType | Да/Нет переключатель |
-| `date` | DateFilterType | Диапазон дат |
-| `day` | DayFilterType | Фильтр по дням |
-| `month` | MonthFilterType | Фильтр по месяцам |
-| `year` | YearFilterType | Фильтр по годам |
-| `vendors` | VendorsFilterType | Производители MS3 |
-| `parents` | ParentsFilterType | Родительские категории |
-| `colors` | ColorsFilterType | Цвета с HEX-кодами |
+| Тип | Класс | Описание | Требует MS3 |
+|-----|-------|----------|-------------|
+| `default` | DefaultFilterType | Стандартный (checkbox/radio) | — |
+| `number` | NumberFilterType | Числовой диапазон | — |
+| `boolean` | BooleanFilterType | Да/Нет переключатель | — |
+| `parents` | ParentsFilterType | Родительские категории (универсально, class-agnostic) | — |
+| `ms3_categories` | MS3CategoriesFilterType | Категории товаров MS3 с поддержкой `msCategoryMember` | ✅ |
+| `date` | DateFilterType | Диапазон дат | — |
+| `day` | DayFilterType | Фильтр по дням | — |
+| `month` | MonthFilterType | Фильтр по месяцам | — |
+| `year` | YearFilterType | Фильтр по годам | — |
+| `vendors` | VendorsFilterType | Производители MS3 | ✅ |
+| `colors` | ColorsFilterType | Цвета с HEX-кодами | ✅ |
+
+Типы с пометкой ✅ появляются в выпадашке админки только когда установлен MiniShop3.
+
+## `parents` vs `ms3_categories`
+
+Оба типа показывают список категорий из выборки, но по-разному.
+
+**`parents`** — class-agnostic. Для каждого ресурса из выборки читает `modResource.parent`, агрегирует и показывает. Никакого знания о MS3. Подходит для любого MODX-каталога: чистый modResource, Tickets и т. д.
+
+**`ms3_categories`** — MS3-aware. Делает две дополнительные вещи:
+
+1. **Ограничивает выборку до `class_key = msProduct`.** Это важно на MS3-каталогах, где в baseIds могут попадать ресурсы с `class_key = msCategory` и `isfolder = 0` (пустые подкатегории). `parents` не различает классы и читает у них `parent`, из-за чего в фильтре появляется фантомная категория-«дедушка». `ms3_categories` этого не делает.
+2. **Учитывает `msCategoryMember`** — товары, привязанные к категории через «Дополнительные категории» в MS3, попадают в counter этой категории.
+
+**Когда какой использовать:**
+
+- MS3-каталог → `ms3_categories`
+- Каталог без MS3 (modResource как товары, Tickets и т. п.) → `parents`
+
+**Миграция с `parents` на `ms3_categories`** (для MS3-сайтов, где раньше был `parents`): в админке mFilter → FilterSet → у фильтра категорий смените тип «Родители (категории)» → «Категории товаров (MS3)». SEO URL не сломаются — слаги ключуются по `filter_key`, который при смене типа не меняется.
 
 ## Создание своего типа
 

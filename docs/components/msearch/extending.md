@@ -354,6 +354,32 @@ switch ($modx->event->name) {
 
 Поскольку плейсхолдеры формирует ваш адаптер, вы вольны выбрать любые имена — главное, чтобы они совпадали в `getDisplayData()` и в чанке.
 
+### Плейсхолдеры от MsProductAdapter
+
+Встроенный `MsProductAdapter` формирует следующий набор плейсхолдеров для рендера подсказок и результатов поиска:
+
+| Плейсхолдер | Тип | Описание |
+|-------------|-----|----------|
+| `id` | int | id ресурса |
+| `type` | string | `'product'` |
+| `url` | string | полный URL товара |
+| `pagetitle` | string | заголовок с подсветкой |
+| `pagetitle_raw` | string | заголовок без подсветки (для атрибутов) |
+| `longtitle` / `description` / `intro` | string | то же с подсветкой; есть `*_raw` версии |
+| `article` / `article_raw` | string | артикул с/без подсветки |
+| `price` | float или string | сырая цена. С новой miniShop3 (PR [#269](https://github.com/modx-pro/MiniShop3/pull/269)) — всегда float, независимо от `formatPrices`. На более старой miniShop3 при `formatPrices=1` была строкой с валютой |
+| `old_price` | float или string | то же для старой цены |
+| `price_formatted` | string или пусто | строка с валютой и локалью — формирует msProducts при `formatPrices=1` (только новый контракт PR #269) |
+| `old_price_formatted` | string или пусто | то же для старой цены |
+| `price_display` | string | **готовая строка** для прямого вывода в чанк. Адаптер сам выбирает источник в порядке предпочтения: `price_formatted` → `number_format(price)` → строковое представление. Никогда не пустая, если цена была. |
+| `old_price_display` | string | то же для старой цены |
+| `has_discount` | bool | `true`, если есть скидка. Определяется через поле `discount` от msProducts; для native SQL — через сравнение `old_price > price` |
+| `thumb` / `image` | string | URL обложки / основной картинки |
+
+::: tip Что использовать в чанке
+Для прямого вывода — `{$price_display}` / `{$old_price_display}`. Они всегда строки, безопасные для рендера. Для арифметики или сравнений — `{$price}` / `{$old_price}` (с новой miniShop3 — числа).
+:::
+
 ## Пример: расширение MsProductAdapter
 
 Встроенный `MsProductAdapter` для miniShop3 уже регистрируется автоматически при `class_exists(\MiniShop3\Model\msProduct::class)`. Если нужно изменить поведение (например, добавить свои поля или другую логику загрузки) — наследуйтесь и поставьте свой адаптер с приоритетом выше:
@@ -459,6 +485,7 @@ $results = $msearch->search('купить смартфон', [
     'limit' => 20,
     'offset' => 0,
     'contexts' => ['web'],
+    'class_keys' => ['MiniShop3\\Model\\msProduct'],  // опционально: фильтр по классам, 1.3.1+
 ]);
 
 $results->getTotal();        // общее количество
