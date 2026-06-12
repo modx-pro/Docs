@@ -43,7 +43,6 @@ All attributes use the prefix data-mpc-
 2. `copy` — used with `data-mpc-section` when this section is a copy of a section from another template; value should be the original section file name.
 3. `symbol` — used with `data-mpc-snippet` or `data-mpc-parse` when the call must run at pre-parse stage; values: `{` or `##`; default `##`.
 4. `form` — used with `data-mpc-chunk` to replace the chunk with a call to snippet `AjaxFormitLogin`.
-5. `preset` — used with `data-mpc-form` or `data-mpc-snippet`; for snippets you can pass preset via `|`; value is the parameter array key; for forms — parameters of snippet `AjaxFormitLogin`.
 6. `cond` — used with `data-mpc-item` to output Migx field items by condition; value is a condition using `$i` (iteration index) or `$l` (last iteration); with nested Migx, variables get indices by level; only comparison operators encoded with urlencode() are allowed (phpQuery limitation).
 7. `static` — used with `data-mpc-section` when the section is static (same on all pages).
 8. `name` — used with `data-mpc-section` or `data-mpc-form` for a human-readable section or form name.
