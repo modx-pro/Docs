@@ -53,7 +53,7 @@ flowchart TB
 |---------|----------|
 | Сервис `mscurrency` | В `$modx->services` / через `msc_get_service()` |
 | Сниппеты | `msCurrency`, `msCurrencyPrice`, `msCurrencyPrices`, `msCurrencyCart`, `msCurrencyGetOrder`, `mscLexiconScript` |
-| Плагины | `mscurrency_frontend`, `mscurrency_product_price`, `mscurrency_cart_display` и др. — включены |
+| Плагины | `mscurrency_frontend`, `mscurrency_product_price`, `mscurrency_cart_display`, `mscurrency_detect` (GeoIP, опц.) и др. — включены |
 | Таблицы | `msc_currency`, `msc_providers`, `msc_provider_links` |
 | Базовая валюта | RUB (если справочник пуст — создаётся резолвером) |
 | Меню MS3 | **Валюты (msCurrency)** |
@@ -61,7 +61,7 @@ flowchart TB
 ## Шаг 2: Курсы валют
 
 1. **MiniShop3 → Валюты (msCurrency)**.
-2. На вкладке **Валюты** проверьте RUB (базовая), USD, EUR — при необходимости включите **Активна**.
+2. На вкладке **Дашборд курсов** или **Валюты** проверьте RUB (базовая), USD, EUR — при необходимости включите **Активна**.
 3. На вкладке **Поставщики курсов** включите **ЦБ РФ** (по умолчанию уже активен).
 4. Нажмите **Синхронизировать курсы**.
 

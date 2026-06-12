@@ -3,7 +3,7 @@ title: msCurrency
 description: Мультивалютность для MiniShop3
 author: ibochkarev
 logo: https://modstore.pro/assets/extras/mscurrency/logo.png
-modstore: https://modstore.pro/packages/integration/mscurrency
+modstore: https://modstore.pro/packages/ecommerce/mscurrency
 dependencies: miniShop3
 categories: minishop3
 
@@ -73,13 +73,17 @@ items: [
 | CRUD валют, cron, connector | [Управление валютами](manager) |
 | `mscOnGetPrice`, `mscOnToggleCurrency` | [События MODX](events) |
 | Фильтр по цене в валюте пользователя | [mFilter](mfilter) |
+| GeoIP, AJAX без reload | [Интеграция](integration), [Настройки](settings) |
 | Диагностика | [FAQ](faq) |
 
 ## Возможности
 
-- **Справочник валют** — базовая валюта, коэффициент, поле `val` (курс × коэффициент)
-- **Поставщики курсов** — ЦБ РФ, НБУ, НБРБ, НБК и свои классы. Cron: `sync_rates.php`
-- **Переключатель на витрине** — плейсхолдеры `msc.*` / `msmc.*`, AJAX через connector
+- **Справочник валют** — базовая валюта, коэффициент, поле `val` (курс × коэффициент), округление цены per currency (`price_rounding`, в т.ч. `to_99`)
+- **Поставщики курсов** — ЦБ РФ, ECB (EUR), НБУ, НБРБ, НБК и свои классы. Cron: `sync_rates.php`
+- **Дашборд курсов** — KPI, журнал sync, Δ курса, устаревшие котировки (`mscurrency_stale_rate_days`)
+- **Переключатель на витрине** — чанки `tpl.msCurrency` (ссылки), `tpl.msCurrencySelect` (`<select>`), `tpl.msCurrencyCompact` (компактный вид); плейсхолдеры `msc.*` / `msmc.*`
+- **AJAX-смена валюты** (opt-in, `mscurrency_ajax_switch`) — обновление `[data-msc-price]` без reload
+- **GeoIP** (opt-in) — автовыбор валюты по стране, плагин `mscurrency_detect`
 - **Цена товара в отдельной валюте** — поля `currency_id`, `msc_price`, `msc_old_price` в карточке MS3
 - **Режим заказа** — суммы в базовой валюте или в валюте покупателя (`mscurrency_order_price_mode`)
 - **Снимок валюты в заказе** — `properties.msc` (и дубль `msmc`) при оформлении
@@ -119,7 +123,7 @@ items: [
 
 - namespace `mscurrency`
 - сниппеты `msCurrency`, `msCurrencyPrice`, `msCurrencyPrices`, `msCurrencyCart`, `msCurrencyGetOrder`, `mscLexiconScript`
-- чанки `tpl.msCurrency`, `tpl.msCurrencyPrices`
+- чанки `tpl.msCurrency`, `tpl.msCurrencySelect`, `tpl.msCurrencyCompact`, `tpl.msCurrencyPrices`
 - плагины категории msCurrency
 - таблицы `msc_currency`, `msc_providers`, `msc_provider_links`
 - файл `core/config/ms3.services.d/50-mscurrency.php`
