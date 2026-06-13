@@ -154,7 +154,7 @@ php core/components/mscurrency/cron/course.php
 
 Пример crontab (два раза в день):
 
-```cron
+```bash
 0 8,20 * * * /usr/bin/php /path/to/modx/core/components/mscurrency/cron/sync_rates.php
 ```
 
