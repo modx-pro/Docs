@@ -17,4 +17,5 @@ yarn-error.log*
 
 package-lock.json
 CLAUDE.md
+AGENTS.md
 .claude/
