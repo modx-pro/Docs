@@ -15,12 +15,40 @@ assets/components/bannerpro/api.php
 
 ## Включение
 
-1. Откройте **Системные настройки → bannerpro**.
-2. Установите `bannerpro_api_enabled = Да`.
-3. Скопируйте `bannerpro_api_key`.
-4. Передавайте ключ в заголовке `Authorization`.
+1. Откройте **Система → Настройки системы** и отфильтруйте namespace **`bannerpro`**.
+2. Установите **`bannerpro_api_enabled`** = **Да**.
+3. Скопируйте значение **`bannerpro_api_key`** (см. [Ключ API](#ключ-api)).
+4. Отправляйте только **GET**-запросы с заголовком **`Authorization: Bearer …`**.
 
-Resolver генерирует `bannerpro_api_key` при установке или обновлении, если поле пустое.
+## Ключ API
+
+В примерах `curl` плейсхолдер **`YOUR_API_KEY`** — значение системной настройки **`bannerpro_api_key`**. Это не ключ MODX-менеджера и не токен внешнего сервиса.
+
+### Где посмотреть
+
+| Способ | Путь |
+| --- | --- |
+| Менеджер | **Система → Настройки системы** → namespace `bannerpro` → **REST API ключ** |
+| База | Таблица `modx_system_settings` (префикс может отличаться), ключ `bannerpro_api_key` |
+
+### Как появляется ключ
+
+При установке или обновлении пакета resolver записывает случайную строку из **32 hex-символов**, если поле было пустым. Можно задать свой токен: сохраните новое значение в настройке и используйте его в заголовке.
+
+После смены ключа очистите кэш MODX (`php clear_cache.php` или **Управление → Очистить кэш**), если старое значение ещё отдаётся из кэша настроек.
+
+### Пример запроса
+
+Подставьте ключ из настройки **без** префикса `Bearer` в переменную. Префикс `Bearer` указывают только в HTTP-заголовке:
+
+```bash
+API_KEY="вставьте_значение_bannerpro_api_key"
+
+curl -s -H "Authorization: Bearer ${API_KEY}" \
+  "https://example.com/assets/components/bannerpro/api.php?path=/ads&limit=10"
+```
+
+Ответ `401 unauthorized` означает неверный или пустой ключ. `503 api disabled` — выключен `bannerpro_api_enabled`.
 
 ## Аутентификация
 
@@ -95,7 +123,7 @@ curl -s -H "Authorization: Bearer YOUR_API_KEY" \
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `period` | string | `all`, `today`, `this_month`, `last_month`, `this_year` |
+| `period` | string | `all`, `today`, `this_month`, `last_month`, `this_year`. Алиасы: `overall`, `thismonth`, `lastmonth`, `thisyear` |
 | `position` | int | ID позиции, `0` означает все |
 | `limit` | int | Лимит для `top_ads`, по умолчанию 10 |
 

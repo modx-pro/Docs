@@ -83,7 +83,7 @@ Cookie связывает клик по баннеру с заказом MiniSho
 | `bannerpro_api_enabled` | combo-boolean | `false` | Включает read-only REST API |
 | `bannerpro_api_key` | textfield | пусто | Bearer-токен для `api.php` |
 
-Resolver генерирует `bannerpro_api_key` при установке или обновлении, если поле пустое.
+**REST API ключ** — секрет для заголовка `Authorization: Bearer …` в `api.php`. Смотрите в **Система → Настройки системы** (namespace `bannerpro`, подпись «REST API ключ»). Resolver создаёт 32-символьный hex при установке или обновлении, если поле пустое. Эндпоинты и примеры `curl`: [REST API](development/rest-api#ключ-api).
 
 Точка входа:
 

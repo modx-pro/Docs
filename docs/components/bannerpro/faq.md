@@ -178,6 +178,14 @@ assets/components/bannerpro/js/mgr/vue-dist/bannerpro-admin.min.js
 
 Для Метрики укажите `bannerpro_analytics_ym_counter`. Для GA4 через GTM создайте триггер на событие `bannerpro_click` или `bannerpro_impression`.
 
+## Где взять ключ REST API?
+
+1. **Система → Настройки системы** → namespace `bannerpro` → **`bannerpro_api_key`** (подпись «REST API ключ»).
+2. Включите **`bannerpro_api_enabled`** = Да.
+3. В `curl` подставьте значение настройки: `-H "Authorization: Bearer <ключ>"`.
+
+Ключ не связан с логином менеджера. При пустом поле обновите пакет или задайте токен вручную. Подробнее: [REST API](development/rest-api#ключ-api).
+
 ## REST API возвращает 401
 
 Передайте ключ в заголовке:
@@ -186,7 +194,7 @@ assets/components/bannerpro/js/mgr/vue-dist/bannerpro-admin.min.js
 Authorization: Bearer YOUR_API_KEY
 ```
 
-Сверьте значение с `bannerpro_api_key`.
+Сверьте значение с `bannerpro_api_key`. См. [Где взять ключ REST API?](#где-взять-ключ-rest-api).
 
 ## REST API возвращает 503
 
