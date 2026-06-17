@@ -2,20 +2,33 @@
 
 ## Доступ к сервису
 
-В MODX 3 сервис зарегистрирован в DI-контейнере при загрузке namespace `mxlogger`
-(`bootstrap.php`). Берётся так:
+Способ получить сервис — единственное, что различается между версиями. Дальше API
+полностью одинаков.
 
-```php
+::: code-group
+
+```php [MODX 3]
+// сервис зарегистрирован в DI-контейнере при загрузке namespace mxlogger (bootstrap.php)
 /** @var \MxLogger\MxLogger $mxl */
 $mxl = $modx->services->get('mxlogger');
 ```
 
-`getService()` и `extension_packages` (как в MODX 2) — не нужны.
+```php [MODX 2]
+// сервис зарегистрирован в extension_packages — доступен сразу как свойство $modx
+/** @var \mxLogger $mxl */
+$mxl = $modx->mxlogger;
+// либо явно (например, в standalone-скрипте):
+$mxl = $modx->getService('mxlogger', 'mxLogger', MODX_CORE_PATH . 'components/mxlogger/model/mxlogger/');
+```
+
+:::
 
 ## Запись лога
 
 ```php
-$mxl->log($tags, $level, $message, array $context = [], array $options = []): ?\MxLogger\Model\MxLoggerLog
+// MODX 3: возвращает ?\MxLogger\Model\MxLoggerLog
+// MODX 2: возвращает ?mxLoggerLog
+$mxl->log($tags, $level, $message, array $context = [], array $options = []);
 ```
 
 Шорткаты по уровням (то же самое, уровень подставлен):
@@ -90,8 +103,8 @@ $p2  = $mxl->process(['cart', 'purchase'], $uid);
 ## Что пишется автоматически
 
 - **Источник вызова** — class / function / file / line. Движок пропускает
-  диспетчерские кадры фреймворка (в т.ч. namespaced MODX 3:
-  `MODX\Revolution\modScript::process`, `*::invokeEvent`, `include`/`eval`),
+  диспетчерские кадры фреймворка (`*::invokeEvent`, `mod*::process`,
+  `include`/`eval` — в MODX 3 классы namespaced: `MODX\Revolution\modScript::process`),
   поэтому «Источник» указывает на реальный вызывающий код.
 - **Трассировка** (при режиме `full`) — стэк вызовов + параметры метода-источника;
   объекты сворачиваются в `object(Класс)`, с лимитами глубины/длины/числа

@@ -7,12 +7,23 @@
 
 ## Прямое использование
 
-```php
+::: code-group
+
+```php [MODX 3]
 $mxl = $modx->services->get('mxlogger');
 $mxl->info('mypackage', 'Импорт начат', ['rows' => $count]);
 // ... ваша логика ...
 $mxl->error('mypackage', 'Импорт упал', ['row' => $i, 'error' => $e->getMessage()]);
 ```
+
+```php [MODX 2]
+$mxl = $modx->mxlogger;
+$mxl->info('mypackage', 'Импорт начат', ['rows' => $count]);
+// ... ваша логика ...
+$mxl->error('mypackage', 'Импорт упал', ['row' => $i, 'error' => $e->getMessage()]);
+```
+
+:::
 
 Тэгайте своим именем пакета (или именами фич) — тогда в гриде по тэгу видите весь
 ход своей функциональности.
@@ -45,12 +56,18 @@ class Logger
     private function resolve()
     {
         if ($this->mxl !== false) { return $this->mxl; }
-        return $this->mxl = $this->modx->services->has('mxlogger')
-            ? $this->modx->services->get('mxlogger')
-            : null;
+        // MODX 3 — DI-контейнер
+        if (isset($this->modx->services) && $this->modx->services->has('mxlogger')) {
+            return $this->mxl = $this->modx->services->get('mxlogger');
+        }
+        // MODX 2 — сервис из extension_packages
+        return $this->mxl = $this->modx->mxlogger ?? null;
     }
 }
 ```
+
+> `\modX` в typehint работает в обеих версиях: MODX 3 регистрирует legacy-алиас
+> класса `MODX\Revolution\modX`.
 
 `skip_classes` принимает точное имя класса или префикс пространства имён со `\` на
 конце (`'MyPackage\\Log\\'`) — надёжнее жёсткого `skip=N`, не зависит от числа кадров
@@ -68,18 +85,22 @@ $uid = $p->getUid();              // сохраните и передайте д
 $mxl->info('import', 'Шаг 2', $ctx, ['process_uid' => $uid]);
 ```
 
-## Готовый плагин логирования miniShop3
+## Готовый плагин логирования магазина
 
-В комплекте — плагин `mxLoggerMiniShop3` (static), логирующий события корзины и
-заказа miniShop3:
+В комплекте — static-плагин, логирующий события корзины и заказа miniShop:
 
-- корзина (`msOnAddToCart`/`ChangeInCart`/`RemoveFromCart`/`EmptyCart`) — тэг `cart`;
-- заказ (`msOnAddToOrder`/`RemoveFromOrder`/`BeforeCreateOrder`/`CreateOrder`/
-  `SubmitOrder`/`ChangeOrderStatus`) — тэг `order`;
+- **MODX 2** — `mxLoggerMiniShop2` (события miniShop2);
+- **MODX 3** — `mxLoggerMiniShop3` (события miniShop3).
+
+Логируемое одинаково по смыслу:
+
+- корзина (`msOnAddToCart` / изменение / удаление / очистка) — тэг `cart`;
+- заказ (добавление / создание / submit / смена статуса) — тэг `order`;
 - сквозной тэг `purchase`, воронка `process_uid` по сессии.
 
 Параметры аргументов метода в trace не пишутся (`trace=caller`) — чтобы при
-`capture_mode=full` не утекали ПДн/токен заказа. Требует установленного miniShop3.
+`capture_mode=full` не утекали ПДн/токен заказа. Требует установленного miniShop
+соответствующей версии.
 
 > Свой плагин-логгер чужих событий пишите так же: возвращайте из плагина **пусто** —
-> ms3 трактует непустой возврат как ошибку и прерывает действие.
+> miniShop трактует непустой возврат как ошибку и прерывает действие.
