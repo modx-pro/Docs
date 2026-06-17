@@ -33,6 +33,17 @@ php core/components/migxpageconfigurator/console/mpc.php settings apply
 `Parse error: syntax error, unexpected '['` — значит обёртка запустилась под PHP < 5.4. Выставьте `MPC_PHP` на php-7.4+.
 :::
 
+::: tip CLI в MODX 3
+В версии для **MODX Revolution 3** код требует **PHP 8.1+** — указывайте php-8.2:
+
+```bash
+export MPC_PHP=/usr/local/php/php-8.2/bin/php
+./console/mpc cut all
+```
+
+Отдельные старые скрипты (`mgr_tpl.php`, `mgr_elems.php`, `clear_cache.php`) в MODX 3 убраны — все операции выполняются через единую обёртку `mpc` (`cut`, `configs`, `cache clear` и т. д.).
+:::
+
 ## Группы и команды
 
 | Команда | Что делает |

@@ -68,6 +68,22 @@
 | `mpc_download_extensions` | `jpg, png, …` | какие расширения скачивать |
 | `mpc_mime_to_ext_path` | `components/migxpageconfigurator/elements/media/mime_to_ext.json` | карта MIME → расширение (для скачанных без расширения) |
 
+::: tip Настройки обрезки в MODX 3
+В версии для **MODX Revolution 3** обрезка работает «на лету» через Glide (см. [Работа с медиа](media)), поэтому набор настроек другой:
+
+| Настройка | По умолчанию | Назначение |
+|-----------|--------------|------------|
+| `mpc_thumb_enabled` | `Да` | включить генерацию миниатюр (заменяет `mpc_thumb_snippet`) |
+| `mpc_common_thumb_params` | `fit=crop&fm=webp&q=90` | параметры обрезки в синтаксисе Glide |
+| `mpc_glide_signing_key` | *(генерируется при установке)* | секретный ключ подписи адресов миниатюр (защита от подбора размеров) |
+| `mpc_thumb_cache_path` | `assets/components/migxpageconfigurator/cache/thumbs/` | публичная папка кеша готовых миниатюр |
+| `mpc_thumb_driver` | `gd` | движок обработки картинок: `gd` или `imagick` |
+| `mpc_thumb_max_pixels` | `16777216` | потолок площади миниатюры (ширина×высота) — доп. защита |
+| `mpc_thumb_gc_ttl` | `2592000` | время жизни файла кеша в секундах (старше — удаляются при чистке) |
+
+Настройка `mpc_thumb_snippet` в MODX 3 **не используется** (миниатюрщик-сниппет убран).
+:::
+
 ## Контакты
 
 Подробно — в разделе [Работа с контактами](contacts).
