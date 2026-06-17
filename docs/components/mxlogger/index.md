@@ -1,6 +1,6 @@
 ---
 title: mxLogger
-description: Логирование процессов с тэгами для MODX 3 — тэги, воронки, контекст, менеджерный грид, алерты.
+description: Логирование процессов с тэгами для MODX Revolution 2 и 3 — тэги, воронки, контекст, менеджерный грид, алерты.
 outline: [ 2,3 ]
 lastUpdated: true
 logo: https://modx3.art-sites.ru/assets/components/mxlogger/logo.png
@@ -19,14 +19,17 @@ items: [
 
 # mxLogger
 
-Логирование процессов с тэгами для **MODX Revolution 3**. Записи с тэгами и
+Логирование процессов с тэгами для **MODX Revolution 2 и 3**. Записи с тэгами и
 контекстом складываются в отдельную таблицу `mxlogger_log`, с автозахватом источника
-вызова, пользователя, сессии, ip и времени. Просмотр — менеджерный грид (Vue 3) или
+вызова, пользователя, сессии, ip и времени. Просмотр — менеджерный грид или
 автономный просмотрщик в обход MODX.
 
-::: warning
-Документация актуальна для версии 1.0.0 и выше (MODX 3). Версия под MODX 2 —
-отдельная ветка.
+::: info Одна документация на обе версии
+Пакет выходит в двух версиях — под **MODX 2** и под **MODX 3**. Это по сути один
+компонент: API, тэги, воронки, настройки, события и standalone-просмотрщик
+**идентичны**. Различия — точечные (доступ к сервису, имена классов, требования,
+технология грида, плагин магазина) и по тексту помечены блоками
+«В MODX 2 / В MODX 3».
 :::
 
 ## Зачем
@@ -46,25 +49,27 @@ items: [
 
 ## Требования
 
-- MODX Revolution 3.x
-- PHP 8.1+
-- MySQL 5.6+ / MariaDB на InnoDB (FULLTEXT-индекс по тэгам; таблица в utf8mb4)
-- расширения PHP: PDO, mbstring, json
-- miniShop3 — опционально, для готового плагина логирования корзины/заказа
+| | MODX 2 | MODX 3 |
+| --- | --- | --- |
+| MODX Revolution | 2.8.x | 3.x |
+| PHP | 7.4+ | 8.1+ |
+| СУБД | MySQL 5.6+ / MariaDB на InnoDB (FULLTEXT-индекс по тэгам; таблица в utf8mb4) | то же |
+| расширения PHP | PDO, mbstring, json | то же |
+| плагин магазина (опц.) | miniShop2 | miniShop3 |
 
 ## Установка
 
 Установите пакет через «Управление пакетами». Автоматически создаются: таблица логов
 (utf8mb4), namespace `mxlogger`, меню «Компоненты → mxLogger», системные настройки,
-сниппет `mxLogger`, плагины `mxLoggerRotate` (ротация) и `mxLoggerMiniShop3`
-(логирование miniShop3).
+сниппет `mxLogger`, плагины `mxLoggerRotate` (ротация) и плагин логирования магазина
+(`mxLoggerMiniShop2` в версии под MODX 2 / `mxLoggerMiniShop3` под MODX 3).
 
 ## Быстрый старт
 
-Сервис в MODX 3 берётся из DI-контейнера — `getService()`/`extension_packages` не
-нужны:
+::: code-group
 
-```php
+```php [MODX 3]
+// сервис берётся из DI-контейнера
 $mxl = $modx->services->get('mxlogger');
 
 $mxl->info('purchase', 'Корзина создана', ['cart_id' => $id]);
@@ -75,6 +80,21 @@ $p = $mxl->process(['cart', 'purchase']);
 $p->info('Старт оплаты', ['order' => 42]);
 $p->error('Платёж отклонён', ['code' => 'declined']);
 ```
+
+```php [MODX 2]
+// сервис зарегистрирован в extension_packages — доступен сразу как $modx->mxlogger
+$mxl = $modx->mxlogger;
+
+$mxl->info('purchase', 'Корзина создана', ['cart_id' => $id]);
+$mxl->error('payment', 'Платёж отклонён', ['code' => 'declined']);
+
+// воронка одной операции — общий process_uid на все записи:
+$p = $mxl->process(['cart', 'purchase']);
+$p->info('Старт оплаты', ['order' => 42]);
+$p->error('Платёж отклонён', ['code' => 'declined']);
+```
+
+:::
 
 Просмотр логов: менеджер → **Компоненты → mxLogger**.
 
