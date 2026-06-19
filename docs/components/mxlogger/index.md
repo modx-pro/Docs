@@ -55,7 +55,16 @@ items: [
 | PHP | 7.4+ | 8.1+ |
 | СУБД | MySQL 5.6+ / MariaDB на InnoDB (FULLTEXT-индекс по тэгам; таблица в utf8mb4) | то же |
 | расширения PHP | PDO, mbstring, json | то же |
+| пакет интерфейса | — | **[VueTools](https://modstore.pro/packages/development/vuetools)** (обязателен) |
 | плагин магазина (опц.) | miniShop2 | miniShop3 |
+
+::: warning Зависимость MODX 3: VueTools
+Менеджерный грид версии под **MODX 3** построен на Vue 3 + PrimeVue и берёт этот
+стек из общего пакета **[VueTools](https://modstore.pro/packages/development/vuetools)**
+(через ES Module Import Map) — он **обязателен**. Без установленного VueTools страница
+журнала покажет сообщение о необходимости его установить. В версии под **MODX 2**
+(грид на ExtJS) VueTools не нужен.
+:::
 
 ## Установка
 
@@ -63,6 +72,11 @@ items: [
 (utf8mb4), namespace `mxlogger`, меню «Компоненты → mxLogger», системные настройки,
 сниппет `mxLogger`, плагины `mxLoggerRotate` (ротация) и плагин логирования магазина
 (`mxLoggerMiniShop2` в версии под MODX 2 / `mxLoggerMiniShop3` под MODX 3).
+
+::: tip MODX 3
+Перед установкой убедитесь, что установлен пакет **VueTools** — он поставляет общий
+Vue/PrimeVue для менеджерного грида.
+:::
 
 ## Быстрый старт
 
