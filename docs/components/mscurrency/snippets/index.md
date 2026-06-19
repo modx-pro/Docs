@@ -7,7 +7,7 @@ description: Обзор сниппетов msCurrency для витрины Mini
 
 | Сниппет | Назначение |
 |---------|------------|
-| [msCurrency](msCurrency) | Переключатель валют. Пустой `tpl` — таблица плейсхолдеров |
+| [msCurrency](msCurrency) | Переключатель: `tpl.msCurrency`, `tpl.msCurrencySelect`, `tpl.msCurrencyCompact`, `compact=1` |
 | [msCurrencyPrice](msCurrencyPrice) | Одна цена в выбранной валюте: `price`, `pid`, `cid`, `course`, `format` |
 | [msCurrencyPrices](msCurrencyPrices) | Цены по всем активным валютам: `price`, `old_price`, `pid`, `symbol`, `tpl` |
 | [msCurrencyCart](msCurrencyCart) | Как `ms3_cart` + `tpl` с `[[+currency]]` / `[[+output]]` |
@@ -17,14 +17,16 @@ description: Обзор сниппетов msCurrency для витрины Mini
 ## Порядок на типовой странице
 
 1. **msCurrency** — в шапке или на карточке (один раз на странице достаточно).
-2. **msCurrencyPrice** или стандартные плейсхолдеры MS3 (если включён `mscurrency_product_price`).
+2. **msCurrencyPrice** с `pid` (обязательно при `mscurrency_ajax_switch=1`) или стандартные плейсхолдеры MS3 (если включён `mscurrency_product_price`).
 3. В корзине и оформлении — **msCurrencyCart** / **msCurrencyGetOrder** при `mscurrency_order_price_mode=user`. В строке позиции достаточно `price_formatted` / `old_price_formatted` MS3.
 
 ## Таблица соответствий (MODX / Fenom)
 
 | Назначение | MODX | Fenom |
 |------------|------|-------|
-| Переключатель | `[[!msCurrency? &tpl=`tpl.msCurrency`]]` | `{'!msCurrency' \| snippet : ['tpl' => 'tpl.msCurrency']}` |
+| Переключатель (select) | `[[!msCurrency? &tpl=`tpl.msCurrencySelect`]]` | `{'!msCurrency' \| snippet : ['tpl' => 'tpl.msCurrencySelect']}` |
+| Переключатель (компакт) | `[[!msCurrency? &compact=`1`]]` | `{'!msCurrency' \| snippet : ['compact' => 1]}` |
+| Переключатель (ссылки) | `[[!msCurrency? &tpl=`tpl.msCurrency`]]` | `{'!msCurrency' \| snippet : ['tpl' => 'tpl.msCurrency']}` |
 | Цена | `[[!msCurrencyPrice? &price=`100`]]` | `{'!msCurrencyPrice' \| snippet : ['price' => 100]}` |
 | Цена + товар | `[[!msCurrencyPrice? &pid=`123`]]` | `{'!msCurrencyPrice' \| snippet : ['pid' => 123]}` |
 | Код валюты | `[[!+msc.code]]` | `{$_modx->getPlaceholder('msc.code')}` |
