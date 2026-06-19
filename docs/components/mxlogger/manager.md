@@ -6,8 +6,9 @@
 
 ::: info Технология грида
 
-- **MODX 3** — грид на Vue 3 + PrimeVue.
-- **MODX 2** — CMP-грид на ExtJS (MODExt).
+- **MODX 3** — грид на Vue 3 + PrimeVue; стек берётся из пакета
+  **[VueTools](https://modstore.pro/packages/development/vuetools)** (обязателен).
+- **MODX 2** — CMP-грид на ExtJS (MODExt), без внешних зависимостей.
 
 Набор фильтров, колонок и действий — одинаковый.
 :::
