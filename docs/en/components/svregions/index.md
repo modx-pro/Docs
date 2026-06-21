@@ -1,3 +1,10 @@
+---
+title: SVRegions
+description: Regional data for multiple domains and subdomains in a single MODX installation
+logo: /components/svregions/screenshots/logo.webp
+author: rumata-estor
+---
+
 # SVRegions
 
 **SVRegions** detects the current region by domain or subdomain and exposes the associated data through MODX placeholders.
