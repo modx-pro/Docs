@@ -361,4 +361,4 @@ To remove all data permanently, delete the SVRegions table separately after crea
 
 ## Author
 
-Alexander Larin (Palochkin)
+Alexander Palochkin
