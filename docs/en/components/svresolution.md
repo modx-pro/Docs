@@ -121,7 +121,7 @@ For version 1.0.4, the following requirements are specified:
 
 ## Author
 
-Alexander Larin (Palochkin)
+Alexander Palochkin
 
 ## License
 
