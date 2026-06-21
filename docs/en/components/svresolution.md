@@ -1,3 +1,10 @@
+---
+title: SVResolution
+description: A helper indicator for the current Bootstrap breakpoint and browser viewport width
+logo: /components/svresolution/screenshots/logo.webp
+author: rumata-estor
+---
+
 # SVResolution
 
 **SVResolution** is a helper Extra for MODX Revolution that helps during responsive layout development with Bootstrap.
