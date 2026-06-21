@@ -1,3 +1,14 @@
+---
+title: SVRegions
+description: Региональные данные для нескольких доменов и поддоменов в одной установке MODX
+logo: /components/svregions/screenshots/logo.webp
+author: rumata-estor
+---
+
+# SVRegions
+
+SVRegions определяет регион по текущему домену или поддомену...saadsSVRegions определяет регион по текущему домену или поддомену и выводит связанные с ним данные через плейсхолдеры MODX.
+
 # SVRegions
 
 SVRegions определяет регион по текущему домену или поддомену и выводит связанные с ним данные через плейсхолдеры MODX.
