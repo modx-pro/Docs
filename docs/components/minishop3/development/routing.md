@@ -417,6 +417,57 @@ $router->get('/api/mgr/endpoint', $handler, [
 | GET | `/sections/{page_key}` | Получить секции |
 | PUT | `/sections/{page_key}` | Обновить секции |
 
+#### Конфигурация гридов (`/grid-config`)
+
+CRUD для конфига колонок административных гридов. Все запросы требуют право `mssetting_save`.
+
+| Метод | Роут | Описание |
+|-------|------|----------|
+| GET | `/{grid_key}` | Получить конфигурацию грида |
+| PUT | `/{grid_key}` | Обновить конфигурацию грида |
+| POST | `/{grid_key}/field` | Добавить колонку |
+| PUT | `/{grid_key}/field/{field_name}` | Обновить колонку |
+| DELETE | `/{grid_key}/field/{field_name}` | Удалить колонку |
+
+**Известные `grid_key`:** `orders`, `customers`, `vendors`, `deliveries`, `payments`, `category-products`, `extra-fields`, `model-fields`, `notifications`, `option-groups`.
+
+##### Ответ `GET /grid-config/{grid_key}`
+
+```json
+{
+  "columns": [
+    { "name": "id", "label": "ID", "type": "model", "visible": true, ... }
+  ],
+  "direct_filter_keys": ["query", "status_id", "delivery_id", ...],
+  "editor_references": [
+    { "key": "vendors", "path": "/api/mgr/references/vendors" }
+  ]
+}
+```
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| `columns` | `array` | Колонки грида с конфигурацией (тип, видимость, фильтрация, редактор) |
+| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные — отправлять с префиксом. Источник истины — backend; фронт читает массив отсюда. Появилось в MiniShop3 1.12.0 ([PR #317](https://github.com/modx-pro/MiniShop3/pull/317)) — закрывает дублирование между фронтом и контроллерами. |
+| `editor_references` | `array<{key,path}>` | **Только для `grid_key=category-products`.** Whitelist допустимых reference-ключей для combo-редактора inline-edit. Каждая запись — пара ключа и пути к API-эндпойнту справочника. Используется UI настройки колонок для select dropdown. Появилось в MiniShop3 1.12.0 ([PR #157](https://github.com/modx-pro/MiniShop3/pull/157)). |
+
+##### Контракт фильтров (`direct_filter_keys`)
+
+Фронт-код решает, как сериализовать значение фильтра:
+
+```js
+// Псевдокод composable useGridFilterParams
+function addFilterParam(params, key, value) {
+    if (directFilterKeys.has(key)) {
+        params[key] = value         // direct: ?status_id=2
+    } else {
+        params['filter_' + key] = value   // prefixed: ?filter_customer_name=...
+    }
+}
+```
+
+Это значит — добавляя новый прямой фильтр на бекенде, **обязательно** дописать его ключ в `DIRECT_FILTER_KEYS`-константу соответствующего контроллера. Иначе фронт отправит его с префиксом и фильтрация не сработает.
+
 #### Заказы (`/orders`)
 
 | Метод | Роут | Описание | Право |
