@@ -34,7 +34,7 @@ MPC_PHP=/usr/local/php/php-8.2/bin/php ./console/mpc cut all --upd
 ### Способ 1. Обёртка `console/mpc` (рекомендуется)
 
 ```sh
-./console/mpc cut <файл.tpl|all> [--upd] [--ctx=web] [--dry-run]
+./console/mpc cut <файл.tpl|all> [--upd] [--ctx=web] [--dry-run] [--theme=<имя>]
 ```
 
 Обёртка лежит в `core/components/migxpageconfigurator/console/`. Она сама находит php; если на сервере нужная версия php лежит по нестандартному пути — укажите его явно через переменную окружения `MPC_PHP`:
@@ -70,6 +70,14 @@ export MPC_PHP=/путь/к/нужному/php
 ```sh
 ./console/mpc cut all --ctx=en
 ```
+
+**Нарезать вёрстку темы** — флаг `--theme`:
+
+```sh
+./console/mpc cut services.tpl --theme=bento
+```
+
+В этом режиме вход берётся из подпапки темы, результат пишется туда же, а контент (значения полей, переводы, медиа) не трогается — он общий для всех тем. Подробно — в разделе [Темизация](themes).
 
 ### Способ 2. Скрипт `mgr_tpl.php` (легаси)
 
