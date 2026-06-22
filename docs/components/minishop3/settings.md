@@ -171,6 +171,8 @@ title: Системные настройки
 | `ms3_customer_api_token_ttl` | `86400` | Время жизни API токена (секунды, 24 часа) |
 | `ms3_password_reset_token_ttl` | `3600` | Время жизни токена сброса пароля (секунды, 1 час) |
 | `ms3_email_verification_token_ttl` | `86400` | Время жизни токена верификации email (секунды, 24 часа) |
+| `ms3_email_verification_url` | | Кастомный URL для письма подтверждения email. Если пусто — ссылка ведёт на Web API `api.php?route=…/email/verify&token=…&html=1` |
+| `ms3_email_verification_success_url` | | URL, на который редиректит после успешного подтверждения email. Если пусто — возвращается на сайт с `?ms3_email_verified=1` |
 | `ms3_snippet_token_secret` | (автогенерация) | Секретный ключ для токенов сниппетов |
 | `ms3_snippet_cache_ttl` | `3600` | Время кеширования параметров сниппетов (секунды) |
 | `ms3_payment_secret` | | Секретный ключ для платёжных уведомлений |

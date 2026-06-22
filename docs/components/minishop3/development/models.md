@@ -190,6 +190,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | Модель | Таблица | Описание |
 |--------|---------|----------|
 | `msOption` | `ms3_options` | Справочник опций |
+| `msOptionGroup` | `ms3_option_groups` | Группы опций (заменили использование `modCategory` для группировки, начиная с 1.11.0) |
 
 ### Конфигурация полей (NEW в MiniShop3)
 

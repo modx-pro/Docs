@@ -375,9 +375,24 @@ Legacy-процессоры `Processors/Settings/Option/*` и `Processors/Catego
 | `DELETE` | `/api/mgr/options/bulk` | Массовое удаление: `ids[]` |
 | `POST` | `/api/mgr/options/bulk/assign` | Назначить `options[]` к `categories[]` |
 | `GET` | `/api/mgr/options/types` | Список типов с локализованными названиями |
-| `GET` | `/api/mgr/options/tree` | Дерево категорий MODX (только `class_key = msCategory`), lazy по `parent`. Флаг `checked` для категорий, где опция уже назначена (если передан `option_id`) |
-| `GET` | `/api/mgr/options/modcategories` | Плоский список `modCategory` для фильтра «Группа» |
+| `GET` | `/api/mgr/options/tree` | Дерево ресурсов для привязки опции к категориям товаров (с 1.11.0 — `msCategory` как выбираемые узлы + `modResource`/`modDocument`/`modWebLink` с `isfolder=1` как навигационные, флаг `selectable: bool` в ответе для каждого узла). lazy по `parent`. Флаг `checked` для категорий, где опция уже назначена (если передан `option_id`) |
 | `GET` | `/api/mgr/options/suggestions` | Уникальные значения `msProductOption.value` по `key` для автодополнения `comboOptions` на карточке товара |
+
+> С 1.11.0 эндпойнт `GET /api/mgr/options/modcategories` удалён. Группировка опций теперь использует `msOptionGroup` — см. раздел «Группы опций» ниже.
+
+### Группы опций — `/api/mgr/option-groups/*`
+
+Контроллер `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Появились в 1.11.0 — заменяют группировку через `modCategory` (#10).
+
+| Метод | Путь | Описание |
+|---|---|---|
+| `GET` | `` | Список групп. Параметры: `start`, `limit` (`0` = всё), `query` (поиск по `name` / `description`). В ответе — массив групп c `options_count` (число опций в группе). |
+| `GET` | `/{id}` | Одна группа + `options_count` |
+| `POST` | `` | Создать группу: `name` (обязательное), `description`, `sort_order` |
+| `PUT` | `/{id}` | Обновить: `name`, `description`, `sort_order` |
+| `DELETE` | `/{id}` | Удалить группу. Опции в ней не удаляются — у них обнуляется `option_group_id` (попадают в «Без группы») |
+| `PUT` | `/positions` | Сохранить новый порядок: либо `positions: { id: position, ... }`, либо `ids: [id, id, ...]` (упорядоченный список) |
+| `DELETE` | `/bulk` | Массовое удаление: `ids[]`. Опции отвязываются (не удаляются), затем группы удаляются |
 
 ### Опции категории — `/api/mgr/categories/{category_id}/options/*`
 
