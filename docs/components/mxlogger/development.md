@@ -10,6 +10,7 @@
 | --- | --- | --- |
 | Сервис | класс `mxLogger` (+ `mxLoggerProcess`), `model/mxlogger/mxlogger.class.php` | `MxLogger\MxLogger` (+ `MxLogger\MxLoggerProcess`), PSR-4 |
 | Регистрация сервиса | JSON-настройка `extension_packages` → `$modx->mxlogger` | DI-контейнер в `bootstrap.php` (`$modx->services->add('mxlogger', …)`) |
+| Фасад `$modx->mxl` (1.2.0) | плагин `mxLoggerFacade` на `OnMODXInit` | строка в `bootstrap.php` (`$modx->mxl = …`) |
 | Модель | `mxLoggerLog` (xPDO 2), ручные мапы `model/mxlogger/mysql/*.map.inc.php` + `schema.xml` | `MxLogger\Model\MxLoggerLog` (xPDO 3), `schema/mxlogger.mysql.schema.xml`, version 3.0 |
 | Менеджер | CMP-контроллер (ExtJS/MODExt) | контроллер `controllers/logs.class.php` + Vue-бандл |
 | Плагин магазина | `mxLoggerMiniShop2` (static) | `mxLoggerMiniShop3` (static) |
