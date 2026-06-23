@@ -108,7 +108,7 @@ title: msProductOptions
         'caption' => 'Цвет',
         'value' => ['Красный', 'Синий'],
         'category' => 'main',
-        'category_name' => 'Основные характеристики',
+        'group_name' => 'Основные характеристики',
         'type' => 'combo-options',
         'properties' => [...]
     ],
@@ -116,13 +116,13 @@ title: msProductOptions
         'caption' => 'Размер',
         'value' => 'M',
         'category' => 'main',
-        'category_name' => 'Основные характеристики'
+        'group_name' => 'Основные характеристики'
     ],
     'weight' => [
         'caption' => 'Вес',
         'value' => '250 г',
         'category' => 'specs',
-        'category_name' => 'Характеристики'
+        'group_name' => 'Характеристики'
     ]
 ]
 ```
@@ -144,7 +144,7 @@ title: msProductOptions
 | `{$option.caption}` | Название опции (человекочитаемое) |
 | `{$option.value}` | Значение (строка или массив) |
 | `{$option.category}` | Ключ группы опций |
-| `{$option.category_name}` | Название группы |
+| `{$option.group_name}` | Название группы |
 | `{$option.type}` | Тип поля (textfield, combo-options и т.д.) |
 | `{$option.properties}` | Дополнительные свойства опции |
 
@@ -212,7 +212,7 @@ title: msProductOptions
 
     {* Группируем опции по категориям *}
     {foreach $options as $option}
-        {set $cat = $option.category_name ?: 'Основные'}
+        {set $cat = $option.group_name ?: 'Основные'}
         {set $grouped[$cat][] = $option}
     {/foreach}
 

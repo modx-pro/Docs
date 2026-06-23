@@ -172,9 +172,32 @@ switch ($modx->event->name) {
 | Параметр | Тип | Описание |
 |----------|-----|----------|
 | `notification` | `NotificationInterface` | Объект уведомления |
-| `recipient` | `array` | Данные получателя |
+| `recipient` | `array` | Данные получателя — см. структуру ниже |
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
 | `channels` | `string[]` | Список каналов отправки (например, `['email', 'telegram']`) |
+
+### Структура `recipient`
+
+Для **customer** (начиная с MiniShop3 1.12.0) `recipient` собирается в `OrderStatusService::getCustomerRecipient()` со следующим приоритетом источников:
+
+1. **`msOrderAddress`** заказа — email/phone из формы оформления **именно этого** заказа.
+2. **`msCustomer`** — fallback по email/phone + источник для `telegram_chat_id` и payload `customer`.
+3. **`modUserProfile`** — последний fallback для email/phone/telegram, когда первые два пусты.
+
+Резолвленные `email`/`phone` дополнительно зеркалятся в `recipient['customer']['email']`/`['phone']` для плагинов, читающих контакт оттуда.
+
+| Ключ | Тип | Источник | Описание |
+|------|-----|----------|----------|
+| `type` | `string` | — | `customer` или `manager` (дублирует `recipientType`) |
+| `email` | `string\|null` | address → customer → profile | Резолвленный email получателя |
+| `phone` | `string\|null` | address → customer → profile | Резолвленный телефон |
+| `telegram_chat_id` | `string\|null` | `customer.extended` → profile | ID чата Telegram, если задан |
+| `address` | `array` | `msOrderAddress->toArray()` | Полный адрес заказа (доступен только для customer-получателя) |
+| `customer` | `array` | `msCustomer->toArray()` | Объект клиента (доступен только для customer-получателя); поля `email`/`phone` уже синхронизированы с резолвленными значениями |
+
+:::tip Зачем разделять адрес и клиента
+До 1.12.0 уведомления слались по контактам из `msCustomer`, которые могли отличаться от контактов конкретного заказа (например, если в одной сессии оформили два заказа с разными email — оба уходили на email из msCustomer). См. [issue #218](https://github.com/modx-pro/MiniShop3/issues/218) / [PR #320](https://github.com/modx-pro/MiniShop3/pull/320).
+:::
 
 ### Прерывание операции
 
@@ -241,7 +264,7 @@ switch ($modx->event->name) {
 | Параметр | Тип | Описание |
 |----------|-----|----------|
 | `notification` | `NotificationInterface` | Объект уведомления |
-| `recipient` | `array` | Данные получателя |
+| `recipient` | `array` | Данные получателя — см. [структуру recipient](#структура-recipient) выше |
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
 | `results` | `array<string,bool>` | Результат отправки по каналам, например `['email' => true, 'telegram' => false]` |
 
