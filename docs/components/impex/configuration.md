@@ -81,6 +81,7 @@ array('Название колонки', 'ID или имя поля в базе'
 
 ### $impex_config['content_default']
 Значения по умолчанию при импорте и экспорте:
+
 ```
 $impex_config['content_default'] = [
     [ 'template',6 ], // ID шаблона ресурса
