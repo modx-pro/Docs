@@ -1,119 +1,148 @@
-При установке пакета создаются следующие системные события:
+---
+title: События плагинов
+---
 
-### OnImpexBeforeResourceExport
-Вызывается перед экспортом ресурса. Доступные переменные:
-```
-$config_name - имя файла конфигурации
-$id - ID ресурса
-$field - имя поля
-$type - тип поля
-$value - значение
+# События плагинов
+
+При установке пакета создаются системные события. Подключите плагин и обработайте нужные case в `switch ($modx->event->name)`.
+
+## OnImpexBeforeResourceExport
+
+Перед экспортом поля ресурса.
+
+Переменные:
+
+```text
+$config_name — имя файла конфигурации
+$id          — ID ресурса
+$field       — имя поля
+$type        — тип поля
+$value       — значение
 ```
 
-Пример использования (присоединяет к заголовку страницы ее ID):
-```
+Пример: добавить ID к заголовку при экспорте.
+
+```php
 <?php
-switch ($modx->event->name){
+switch ($modx->event->name) {
     case 'OnImpexBeforeResourceExport':
-        if($field == 'pagetitle') $value = $value.'-'.$id;
+        if ($field == 'pagetitle') {
+            $value = $value . '-' . $id;
+        }
         $modx->event->returnedValues['value'] = $value;
-    break;
+        break;
 }
 ```
 
-### OnImpexBeforeResourceImport
-Вызывается перед импортом ресурса. Доступные переменные:
+## OnImpexBeforeResourceImport
 
+Перед импортом ресурса.
+
+Переменные:
+
+```text
+$config_name — имя файла конфигурации
+$config       — массив полей из конфигурации
+$data         — массив данных ресурса из файла
 ```
-$config_name - имя файла конфигурации
-$config - массив полей из конфигурации
-$data - массив данных ресурса из файла
-```
-Пример использования (пропишем конкретному товару значение TV, которого нет в конфиге и файле):
-```
+
+Пример: добавить TV, которого нет в конфиге и файле.
+
+```php
 <?php
-switch ($modx->event->name){
-    case 'OnImpexBeforeResourceExport':
-        if($data[1] == 'Продукт1'){
-                $config[] = ['Вес без упаковки', 3 , 'tv'];
-                $data[] = '125';
-            }
-            $output = [
-                'config' => $config,
-                'data' => $data
-            ];
-            $modx->event->returnedValues['output'] = $output;
-    break;
+switch ($modx->event->name) {
+    case 'OnImpexBeforeResourceImport':
+        if ($data[1] == 'Продукт1') {
+            $config[] = ['Вес без упаковки', 3, 'tv'];
+            $data[] = '125';
+        }
+        $modx->event->returnedValues['output'] = [
+            'config' => $config,
+            'data' => $data,
+        ];
+        break;
 }
 ```
 
 ## OnImpexBeforeSetParentProduct
-Вызывается перед получением родительской категории. Доступны:
+
+Перед определением родительской категории.
+
+Переменные:
+
+```text
+$config_name       — имя файла конфигурации
+$category           — строка категорий из файла
+$category_id_field  — значение category_id_field из конфига
 ```
-$config_name - имя файла конфигурации
-$category - строка категорий из файла
-$category_id_field - значение параметра конфигурации category_id_field (идентификатор для определения категории)
-```
-Плагин должен вернуть цепочку категорий через разделитель ||:
-```
+
+Плагин возвращает цепочку категорий через `||`:
+
+```php
 <?php
-switch ($modx->event->name){
+switch ($modx->event->name) {
     case 'OnImpexBeforeSetParentProduct':
-        if($category_id_field != ''){
+        if ($category_id_field != '') {
             $categories = 'Категория1||Категория2||Категория3';
             $modx->event->returnedValues['categories'] = $categories;
         }
-    break;
+        break;
 }
 ```
 
 ## OnImpexBeforeFieldImport
-Вызывается перед импортом поля ресурса. Доступные переменные такие же как при экспорте:
-```
-$config_name - имя файла конфигурации
-$id - ID ресурса
-$field - имя поля
-$type - тип поля
-$value - значение
-```
+
+Перед импортом одного поля. Те же переменные, что при экспорте: `$config_name`, `$id`, `$field`, `$type`, `$value`.
 
 ## OnImpexAfterResourceImport
-Вызывается после импорта ресурса. Доступны:
+
+После импорта ресурса.
+
+Переменные:
+
+```text
+$config_name — имя файла конфигурации
+$id          — ID импортированного ресурса
+$data        — поля и значения из файла
 ```
-$config_name - имя файла конфигурации.
-$id - ID импортированного ресурса.
-$data - поля/значения импортированного ресурса.
-```
-Пример использования:
-```
+
+Пример: задать alias по ID.
+
+```php
 <?php
-switch ($modx->event->name){
+switch ($modx->event->name) {
     case 'OnImpexAfterResourceImport':
-        if($resource = $modx->getObject('modResource', $id)){
-            $resource->set('alias', 'resource-'.$id);
+        if ($resource = $modx->getObject('modResource', $id)) {
+            $resource->set('alias', 'resource-' . $id);
             $resource->save();
         }
-    break;
+        break;
 }
 ```
 
 ## OnImpexAterAllImport
-Вызывается после импорта всех ресурсов. Доступны:
-```
-$config_name - имя файла конфигурации.
-$ids - массив ID всех импортированных ресурсов.
-```
-Пример использования:
 
-```<?php
-switch ($modx->event->name){
+После импорта всех ресурсов (опечатка в имени события сохранена в коде пакета).
+
+Переменные:
+
+```text
+$config_name — имя файла конфигурации
+$ids         — массив ID импортированных ресурсов
+```
+
+Пример: опубликовать все импортированные ресурсы.
+
+```php
+<?php
+switch ($modx->event->name) {
     case 'OnImpexAterAllImport':
-        foreach($ids as $id){
-            if($resource = $modx->getObject('modResource', $id)){
+        foreach ($ids as $id) {
+            if ($resource = $modx->getObject('modResource', $id)) {
                 $resource->set('published', 1);
                 $resource->save();
             }
         }
-    break;
+        break;
 }
 ```
