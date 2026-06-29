@@ -264,6 +264,33 @@ document.addEventListener('ms3:ready', () => {
 })
 ```
 
+### Публичный refresh API (с 1.11.0)
+
+`window.ms3.refresh()` — единая точка для интеграции со сторонними AJAX-компонентами (mFilter, mSearch2, кастомный AJAX, бесконечный скролл), которые заменяют DOM каталога. После замены вызовите этот метод — MS3 ре-привязывает состояние своих UI-модулей (`ProductCardUI.updateAllCards()`, `QuantityUI.reinit()`) к новой разметке.
+
+```javascript
+// Универсальный паттерн для любого AJAX-компонента:
+fetch('/catalog/page/2')
+  .then(/* ... заменить DOM каталога ... */)
+  .then(() => window.ms3?.refresh?.())  // optional chaining safe на странице без MS3
+
+// mFilter:
+document.addEventListener('mfilter:contentLoaded', () => {
+  window.ms3?.refresh?.()
+})
+
+// mSearch2:
+document.addEventListener('mse2_load.response', () => {
+  window.ms3?.refresh?.()
+})
+```
+
+Эквивалентный вариант через DOM-событие — `document.dispatchEvent(new CustomEvent('ms3:refresh'))`. Listener зарегистрирован один раз на module scope, повторные `init()` его не дублируют.
+
+**Важно:** MS3 **не** слушает специфические события сторонних компонентов (`mfilter:contentLoaded`, `mse2_load.response` и т.п.). Связь односторонняя: сторонний компонент → MS3. Это сделано чтобы не плодить зависимости MS3 от каждого совместимого компонента.
+
+Аргумент `detail` зарезервирован для будущего scoped-refresh (`ms3.refresh({ scope: container })`) — сейчас не используется, но включён в сигнатуру, чтобы будущие изменения не ломали API.
+
 ## Ядро (Core)
 
 ### TokenManager

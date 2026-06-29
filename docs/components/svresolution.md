@@ -1,3 +1,10 @@
+---
+title: SVResolution
+description: Служебный индикатор Bootstrap-брейкпоинта и ширины окна браузера
+logo: /components/svresolution/screenshots/logo.webp
+author: rumata-estor
+---
+
 # SVResolution
 
 **SVResolution** — служебное дополнение для MODX Revolution, которое помогает при адаптивной вёрстке сайтов на Bootstrap.
@@ -114,7 +121,7 @@ MODX_CORE_PATH=/path/to/modx/core/ php _build/build.transport.php
 
 ## Автор
 
-Александр Ларин (Палочкин)
+Александр Палочкин
 
 ## Лицензия
 

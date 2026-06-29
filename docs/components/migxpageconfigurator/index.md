@@ -17,6 +17,7 @@ items: [
   { text: 'Лексиконы и мультиязычность', link: 'lexicons' },
   { text: 'Статические секции', link: 'static-sections' },
   { text: 'Копирование секций', link: 'copy-sections' },
+  { text: 'Темизация', link: 'themes' },
   { text: 'Аудит правок и трекаемые поля', link: 'audit' },
   { text: 'Создание и обновление элементов', link: 'elements' },
   { text: 'Справочник типов полей', link: 'field-types' },
