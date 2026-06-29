@@ -1,6 +1,6 @@
 ---
 title: BannerPro
-description: "Управление баннерами в MODX 3: позиции, ротация, клики и показы, Vue-админка"
+description: "Управление баннерами в MODX 3: позиции, ротация, UTM, webhook, A/B split, клики и показы, Vue-админка"
 author: ibochkarev
 dependencies: [pdoTools, VueTools]
 
@@ -35,6 +35,7 @@ items: [
     items: [
       { text: 'MiniShop3', link: 'minishop3' },
       { text: 'Внешняя аналитика', link: 'analytics' },
+      { text: 'FormIt', link: 'formit' },
     ],
   },
   {
@@ -51,7 +52,7 @@ items: [
 
 # BannerPro
 
-**BannerPro** выводит баннеры по позициям через сниппет `BannerPro`, считает клики по URL `/{bannerpro_click}/{adposition}` и по желанию фиксирует показы через `impression.js`. Админка работает на Vue 3 и PrimeVue через пакет **VueTools**.
+**BannerPro** выводит баннеры по позициям через сниппет `BannerPro`, считает клики по URL `/{bannerpro_click}/{adposition}` и фиксирует показы через `impression.js`, если включён учёт. Админка на Vue 3 и PrimeVue через **VueTools**.
 
 Namespace настроек: **`bannerpro`**. Основные таблицы: `bannerpro_ads`, `bannerpro_positions`, `bannerpro_ads_positions`, `bannerpro_clicks`, `bannerpro_impressions`.
 
@@ -69,13 +70,18 @@ Namespace настроек: **`bannerpro`**. Основные таблицы: `b
 
 ## Возможности
 
-- **Позиции**: создавайте слоты `sidebar`, `header`, `shop-product-sidebar` и выводите их по имени или ID.
-- **Типы баннеров**: используйте изображение или HTML-код. HTML-баннер с URL компонент оборачивает в ссылку клика.
-- **Ротация**: сортируйте по `RAND()`, `idx` или `weighted`. Вес задайте на связи баннер + позиция.
+- **Позиции**: слоты `sidebar`, `header`, `shop-product-sidebar`; вывод по имени или ID.
+- **Типы баннеров**: изображение или HTML. При заполненном URL HTML оборачивается в ссылку клика.
+- **Ротация**: `RAND()`, `idx`, `weighted`, A/B split (`sortby=ab`).
+- **Таргетинг**: расписание `show_hours`, метки, привязка к ресурсу или родителю, лимиты `max_clicks` / `max_impressions`.
+- **Контекст**: поле `context_key` у позиции и параметр `&context=` в сниппете.
+- **UTM**: query-параметры при клике из системных настроек или вкладки «Настройки» админки.
+- **Webhook**: POST JSON на внешний URL при клике и при показе, подпись HMAC.
+- **Фильтр ботов**: исключение ботов из статистики через CrawlerDetect.
 - **Учёт кликов**: плагин `BannerProClickout` перехватывает `OnPageNotFound`, пишет клик и делает redirect на URL баннера.
 - **Учёт показов**: настройка `bannerpro_track_impressions` подключает `impression.js` и pixel URL.
-- **Статистика**: вкладка админки показывает клики, показы, CTR, заказы MiniShop3 и рефереры.
-- **REST API**: read-only endpoint `assets/components/bannerpro/api.php` отдаёт баннеры, позиции и статистику.
+- **Статистика**: вкладка админки показывает клики, показы, CTR, конверсии MS3, воронку и сравнение периодов.
+- **REST API**: read-only endpoint `assets/components/bannerpro/api.php` отдаёт баннеры, позиции и статистику с `conversions`.
 
 ## Минимальный путь
 
@@ -129,15 +135,6 @@ flowchart LR
 | Посмотреть параметры сниппета | [Сниппет BannerPro](snippets/BannerPro) |
 | Выводить баннеры в MiniShop3 | [MiniShop3](minishop3) |
 | Отправлять события в GA4, Matomo или Метрику | [Внешняя аналитика](analytics) |
+| Связать баннер с формой FormIt | [FormIt](formit) |
 | Подключить REST API | [REST API](development/rest-api) |
 | Найти причину пустого вывода | [FAQ](faq) |
-
-## Документация по разделам
-
-- [Быстрый старт](quick-start): позиция, баннер, вызов сниппета, проверка клика.
-- [Системные настройки](settings): кэш, клики, показы, аналитика, REST API, ACL.
-- [Админка](manager): вкладки, поля баннера, права доступа, статистика.
-- [Интеграция](integration): чанки, ротация, лимиты, retention, debug.
-- [Сниппеты](snippets/index): обзор и ссылка на параметры `BannerPro`.
-- [MiniShop3](minishop3): `productId`, `product_*`, cookie `bannerpro_click_id`.
-- [Для разработчика](development/events): события MODX и connector actions.

@@ -41,6 +41,7 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 | `active = 1` | Скрывает выключенные баннеры, если не задан `showInactive` |
 | `byAdPosition` | Берёт только баннеры, привязанные к позиции |
 | `position` / `positions` / `positionName` | Фильтрует позиции |
+| `context_key` | Фильтрует позиции по контексту MODX (текущий или `&context=`) |
 | `max_clicks` / `max_impressions` | Скрывает баннер при достижении лимита |
 
 Лимит кликов и показов не меняет поле `active`. Баннер просто перестаёт попадать в выборку.
@@ -52,6 +53,7 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 | `RAND()` | Случайный порядок, значение по умолчанию |
 | `idx` | Порядок связи баннер + позиция |
 | `weighted` | Взвешенная ротация через `RAND() * weight` |
+| `ab` | Sticky A/B 50/50 при ровно двух баннерах в слоте |
 | поле `byAd` | Сортировка по полю баннера |
 
 Фиксированный порядок:
@@ -104,6 +106,103 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 
 Вес задайте в админке на связи баннер + позиция.
 
+## A/B split
+
+При `sortby=ab` компонент делает sticky split 50/50 между **ровно двумя** баннерами в одной позиции (после фильтров расписания, лимитов и таргетинга):
+
+::: code-group
+
+```fenom
+{'!BannerPro' | snippet : [
+  'positionName' => 'hero',
+  'sortby' => 'ab',
+  'limit' => 1
+]}
+```
+
+```modx
+[[!BannerPro?
+  &positionName=`hero`
+  &sortby=`ab`
+  &limit=`1`
+]]
+```
+
+:::
+
+| Поведение | Описание |
+| --- | --- |
+| Первый визит | Случайный выбор одного из двух баннеров |
+| Повторные визиты | Тот же баннер по cookie `bannerpro_ab_{positionId}` |
+| Не 2 баннера | A/B не применяется, выводятся все подходящие |
+| Кэш сниппета | Отключён (как для `RAND()` и `weighted`) |
+| TTL cookie | `bannerpro_ab_ttl` (дней, по умолчанию 30) |
+
+## Контекст MODX
+
+Позиция может иметь поле `context_key` (`web`, `mgr`, …). Пустое значение означает все контексты.
+
+Сниппет фильтрует позиции по текущему контексту. Явный override:
+
+::: code-group
+
+```fenom
+{'!BannerPro' | snippet : [
+  'positionName' => 'sidebar',
+  'context' => 'web',
+  'tpl' => 'byAd'
+]}
+```
+
+```modx
+[[!BannerPro?
+  &positionName=`sidebar`
+  &context=`web`
+  &tpl=`byAd`
+]]
+```
+
+:::
+
+Ключ кэша учитывает effective context. Два вызова с разным `context` на одной странице не делят один кэш.
+
+## Таргетинг
+
+В админке на баннере задают ограничения показа. Сниппет применяет их автоматически:
+
+| Механизм | Поле / параметр | Что делает |
+| --- | --- | --- |
+| Расписание | `show_hours` | Дни недели и часы показа в рамках `start` / `end` |
+| Страница | `target_resource_id` | Баннер только на указанном ресурсе |
+| Раздел | `target_parent_id` | Баннер на дочерних страницах раздела |
+| Метки | `&tags=`, `tagsMode` | Фильтр по JSON-меткам баннера |
+
+Таргетинг по странице/разделу в админке: либо конкретный ресурс, либо дочерние страницы раздела, не оба сразу.
+
+Фильтр по меткам в вызове:
+
+::: code-group
+
+```fenom
+{'!BannerPro' | snippet : [
+  'positionName' => 'sidebar',
+  'tags' => 'sale,promo',
+  'tpl' => 'byAd'
+]}
+```
+
+```modx
+[[!BannerPro?
+  &positionName=`sidebar`
+  &tags=`sale,promo`
+  &tpl=`byAd`
+]]
+```
+
+:::
+
+При `&tags=` баннер без меток не попадёт в выборку.
+
 ## Кэш HTML
 
 `BannerPro` кэширует готовый HTML, если включена настройка `bannerpro_cache` и вызов подходит для кэша.
@@ -112,6 +211,7 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 
 - `sortby=RAND()`
 - `sortby=weighted`
+- `sortby=ab`
 - `&cache=0`
 - `&toSeparatePlaceholders`
 - `&showLog=1` и активная сессия `mgr`
@@ -140,7 +240,7 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 
 :::
 
-Ключ кэша учитывает контекст, культуру, сортировку, параметры вызова и часовой bucket. Это помогает обновлять баннеры с датами `start` и `end`.
+Ключ кэша учитывает контекст, культуру, сортировку, параметры вызова и часовой bucket. Кэш сбрасывается при смене периода показа (`start` / `end`).
 
 ## Чанки
 
@@ -151,14 +251,14 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 | `byAd` | Баннер-изображение со ссылкой клика |
 | `byHtml` | HTML-баннер |
 
-Базовый чанк:
+В чанке `byAd` и `byHtml` ссылку клика берите из `click_url` (clickout + UTM при включённых настройках):
 
 ::: code-group
 
 ```fenom
 <article class="banner" data-banner-id="{$id}" data-adposition="{$adposition}">
   <a class="banner__link"
-     href="{$_modx->config.bannerpro_click}/{$adposition}"
+     href="{$click_url|escape:'html'}"
      {if $description}title="{$description|escape}"{/if}>
     {if $image}
       <img class="banner__image" src="{$image}" alt="{$name|escape}" loading="lazy" />
@@ -170,11 +270,11 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 ```
 
 ```modx
-<p>
-  <a href="[[++bannerpro_click]]/[[+adposition]]" data-bannerpro-adposition="[[+adposition]]" data-bannerpro-ad-id="[[+id]]">
-    <img src="[[+image]]" alt="[[+name]]" title="[[+description]]" />
+<article class="banner" data-banner-id="[[+id]]" data-adposition="[[+adposition]]">
+  <a class="banner__link" href="[[+click_url]]" title="[[+description]]">
+    <img class="banner__image" src="[[+image]]" alt="[[+name]]" loading="lazy" />
   </a>
-</p>
+</article>
 ```
 
 :::
@@ -205,7 +305,7 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 
 Поток клика:
 
-1. Посетитель открывает ссылку `/{bannerpro_click}/{adposition}`.
+1. Посетитель открывает ссылку из `click_url` → `/{bannerpro_click}/{adposition}`.
 2. MODX не находит ресурс и вызывает `OnPageNotFound`.
 3. `BannerProClickout` ищет связь `byAdPosition` по `adposition`.
 4. Компонент пишет клик в `bannerpro_clicks`.
@@ -219,24 +319,30 @@ URL баннера поддерживает плейсхолдеры из query 
 ::: code-group
 
 ```fenom
-<a href="{$_modx->config.bannerpro_click}/{$adposition}?page_id={$_modx->resource.id}&utm_source=sidebar">
+<a href="{$click_url|escape:'html'}?page_id={$_modx->resource.id}">
   <img src="{$image}" alt="{$name|escape}" />
 </a>
 ```
 
 ```modx
-<a href="[[++bannerpro_click]]/[[+adposition]]?page_id=[[*id]]&utm_source=sidebar">
+<a href="[[+click_url]]?page_id=[[*id]]">
   <img src="[[+image]]" alt="[[+name]]" />
 </a>
 ```
 
 :::
 
+### UTM на redirect
+
+Настройки `bannerpro_utm_*` добавляют UTM к URL редиректа при клике. См. [Системные настройки](settings#utm-при-клике). UTM из настроек не перезаписывают уже существующие query-параметры в URL баннера.
+
 Если в админке URL равен `https://shop.example/sale?utm_campaign=[[+utm_source]]`, компонент подставит `sidebar`.
 
 ## Показы
 
 Для показов включите настройку `bannerpro_track_impressions`.
+
+При `bannerpro_impression_lazy = 1` (по умолчанию) `impression.js` подключается через IntersectionObserver, а не блокирующим `<script>` в head.
 
 После включения сниппет:
 

@@ -78,7 +78,30 @@ document.addEventListener('bannerpro:impression', function (event) {
 })
 ```
 
-Если `analytics.js` загрузился после `impression.js`, показы попадают в `window.bannerproImpressionQueue` и обрабатываются при инициализации моста.
+Если `analytics.js` загрузился после `impression.js`, показы попадают в `window.bannerproImpressionQueue` и обрабатываются при инициализации моста без двойного учёта в GA4/Matomo/Метрике.
+
+## QA без реальных счётчиков
+
+Демо-страница: ресурс `bannerpro-test.html`, шаблон `core/elements/templates/demo/bannerpro_test.tpl`, секция **19**.
+
+Подготовка из корня MODX:
+
+```bash
+php core/elements/demo/seed_bannerpro_demo.php
+php clear_cache.php
+```
+
+Сидер включает `bannerpro_analytics_enabled=1`, плагин **BannerProAnalytics**, демо-позиции и баннеры.
+
+На стенде подключаются `analytics-mock.js` (стабы `dataLayer`, `_paq`, `ym()`) и `analytics.js`. Кнопки **Симулировать показ/клик** вызывают `bannerproAnalytics.trackImpression/Click`.
+
+::: warning
+На демо-странице шаблон может подключать `analytics.js` даже при выключенном плагине (пометка «стенд»). На продакшене используйте только плагин + `bannerpro_analytics_enabled`.
+:::
+
+### Ловушка Fenom `{extends}`
+
+Если демо-шаблон наследует layout через `{extends 'layout.tpl'}`, убедитесь, что блок с баннерами не перекрывается родительским шаблоном. Иначе события аналитики не сработают на видимых баннерах.
 
 ## Свой серверный плагин
 
@@ -89,6 +112,10 @@ if ($modx->event->name === 'OnBannerProClick') {
     $modx->log(modX::LOG_LEVEL_INFO, 'Banner click: ' . $scriptProperties['ad_name']);
 }
 ```
+
+## Webhook как альтернатива
+
+Для внешней аналитики без клиентских счётчиков настройте [webhook при клике и показе](settings#webhook-при-клике). Сервер отправит POST JSON на ваш endpoint.
 
 ## Диагностика
 
