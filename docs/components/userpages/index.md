@@ -37,3 +37,7 @@ items: [
 | **up_css_url** | Путь к основному CSS-файлу относительно корня сайта | `{assets_url}components/userpages/js/default.css` |
 | **up_js_url** | Путь к основному JS-файлу относительно корня сайта | `{assets_url}components/userpages/js/default.js` |
 | **up_notifications** | Скрипт для всплывающих уведомлений.<br>Поддерживаются [Notyf](https://carlosroso.com/notyf/) и [SweetAlert2](https://modstore.pro/packages/alerts-mailing/sweetalert2) (требуется установка), а также можно указать `miniShop3`, `FetchIt` или `AjaxForm` для использования уведомлений этих компонентов (если они установлены). | Notyf |
+
+## Пример формы
+
+![](https://demo.rpa-design.ru/media/userpages/all.jpg)  
