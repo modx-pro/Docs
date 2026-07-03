@@ -113,12 +113,6 @@ description: Типовые вопросы по msReviews — product_id, мод
 
 На боевом сайте выберите один способ: сборка по частям, **`msReviewsHub`** или **`msReviewsTabbed`** + форма + schema. См. [Интеграция](integration).
 
-## Нужен ли pdoPage у msReviews / msQuestions?
-
-Нет. Оборачивайте сниппет в **`!pdoPage`**, задайте `pageVarKey`, `pageNavVar`, `totalVar`. Сниппет распознаёт вызов из pdoPage и выводит только карточки без шапки. Параметр **`pdoPage`** у дочернего сниппета убрали из менеджера; старый `&pdoPage=`1`` на прямом вызове всё ещё работает.
-
-Примеры для отзывов и Q&A: [Интеграция — пагинация](integration#пагинация-pdopage).
-
 ## Фильтры отзывов не меняют список
 
 1. Плагин **msReviews Storefront cache** включён (Extras → Плагины).

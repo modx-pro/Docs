@@ -42,11 +42,7 @@ description: Сборка блоков msReviews на карточке, ката
 
 ## Пагинация (pdoPage)
 
-Нужен **pdoTools**. Обёртка `pdoPage` передаёт дочернему сниппету `limit`, `offset` и `totalVar`. Сниппеты **`msReviews`**, **`msQuestions`**, **`msReviewsLatest`**, **`msQuestionsLatest`** распознают вызов из pdoPage (через `setTotal` от pdoTools) и выводят **только карточки**, без шапки списка.
-
-Параметр **`pdoPage`** у дочернего сниппета не передавайте: в менеджере его убрали. Старый `&pdoPage=`1`` на прямом вызове сниппета всё ещё работает.
-
-Сводку **`msRatingSummary`** ставьте **над** обёрткой pdoPage. Прямой `[[!msReviews? …]]` без pdoPage даёт полный список с шапкой.
+Нужен **pdoTools**. Оборачивайте **`msReviews`**, **`msQuestions`**, **`msReviewsLatest`**, **`msQuestionsLatest`** в `!pdoPage` с `pageVarKey`, `pageNavVar`, `totalVar`. Внутри обёртки сниппет выводит только карточки, без шапки списка.
 
 ::: code-group
 
