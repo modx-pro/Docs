@@ -122,7 +122,7 @@ description: Типовые вопросы по msReviews — product_id, мод
 ## Фильтры отзывов не меняют список
 
 1. Плагин **msReviews Storefront cache** включён (Extras → Плагины).
-2. На PDP стоит standalone **`msReviews`** с `showHeading=1`, а не только Hub без `applyRequestFilters=1`.
+2. На странице товара стоит отдельный **`msReviews`** с `showHeading=1`, а не только Hub без `applyRequestFilters=1`.
 3. **`msReviewsFilters`** вызван перед списком на той же странице.
 
 См. [Интеграция — фильтры](integration#фильтры-списка-отзывов), [events — Resource cache](events#resource-cache-и-фильтры).

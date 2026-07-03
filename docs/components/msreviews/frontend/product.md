@@ -5,9 +5,9 @@ description: Блок отзывов на карточке — сборка по
 
 # Страница товара
 
-На PDP **`product_id`** — id ресурса товара (часто `[[*id]]` / `$_modx->resource.id`).
+На странице товара **`product_id`** — id ресурса товара (часто `[[*id]]` / `$_modx->resource.id`).
 
-<!-- ![Блок отзывов на PDP](/components/msreviews/screenshots/storefront-pdp.png) -->
+<!-- ![Блок отзывов на странице товара](/components/msreviews/screenshots/storefront-pdp.png) -->
 
 ## Способ A — сборка по частям
 

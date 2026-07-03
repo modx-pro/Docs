@@ -26,7 +26,7 @@ description: Сборка блоков msReviews на карточке, ката
 ## Verified purchase
 
 1. Плагин **msReviews Order status** → очередь при статусах из **`msreviews_request_order_statuses`**.
-2. Письмо со ссылкой на PDP: `?msr_token=…&msr_product_id=…`.
+2. Письмо со ссылкой на страницу товара: `?msr_token=…&msr_product_id=…`.
 3. **`msReviewForm`** на той же странице с тем же `product_id`.
 4. Настройки: [Verified в settings](settings#verified-purchase).
 

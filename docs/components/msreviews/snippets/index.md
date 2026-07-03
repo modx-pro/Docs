@@ -5,7 +5,7 @@ description: Обзор 17 сниппетов msReviews для витрины Mi
 
 # Сниппеты msReviews
 
-Компонент поставляет 17 сниппетов для карточки, каталога, главной и готовых блоков (Hub, вкладки, фильтры). На PDP **`product_id`** совпадает с id ресурса MS3 (`[[*id]]`).
+Компонент поставляет 17 сниппетов для карточки, каталога, главной и готовых блоков (Hub, вкладки, фильтры). На странице товара **`product_id`** совпадает с id ресурса MS3 (`[[*id]]`).
 
 Порядок вызова на карточке и три способа собрать блок: [Интеграция](../integration).
 
@@ -15,12 +15,12 @@ description: Обзор 17 сниппетов msReviews для витрины Mi
 | --- | --- |
 | [msReviewsLexiconScript](msReviewsLexiconScript) | `window.msrLexicon` для JS форм и engagement |
 | [msRatingSummary](msRatingSummary) | Сводка рейтинга (`full` / `aggregate`, `tplRatingCatalog`) |
-| [msReviews](msReviews) | Список отзывов на PDP, фильтры, pdoPage |
+| [msReviews](msReviews) | Список отзывов на странице товара, фильтры, pdoPage |
 | [msReviewForm](msReviewForm) | Форма отзыва |
 | [msQuestions](msQuestions) | Список Q&A |
 | [msQuestionForm](msQuestionForm) | Форма вопроса |
 | [msQnaBlock](msQnaBlock) | Список + форма Q&A одним вызовом |
-| [msReviewSchema](msReviewSchema) | JSON-LD Product + Review (один раз на PDP) |
+| [msReviewSchema](msReviewSchema) | JSON-LD Product + Review (один раз на странице товара) |
 | [msReviewsLatest](msReviewsLatest) | Последние отзывы (главная, лендинг) |
 | [msTopRatedProducts](msTopRatedProducts) | Топ товаров по рейтингу |
 | [msQuestionsLatest](msQuestionsLatest) | Последние вопросы с ответами (FAQ) |
@@ -47,7 +47,7 @@ description: Обзор 17 сниппетов msReviews для витрины Mi
 
 | Контекст | MODX | Fenom |
 | --- | --- | --- |
-| ID товара на PDP | `[[*id]]` | `$_modx->resource.id` |
+| ID товара на странице товара | `[[*id]]` | `$_modx->resource.id` |
 | ID в чанке msProducts | `[[+id]]` | `$id` |
 | Некэшированный вызов | `[[!Snippet? ...]]` | `{'!Snippet' \| snippet : [...]}` |
 | JSON-LD без экранирования | `[[!msReviewSchema? ...]]` | `{raw ('!msReviewSchema' \| snippet : [...])}` |

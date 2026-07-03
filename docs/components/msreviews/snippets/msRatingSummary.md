@@ -1,6 +1,6 @@
 ---
 title: msRatingSummary
-description: Сводка рейтинга товара — полная на PDP и компактная в каталоге
+description: Сводка рейтинга товара — полная на странице товара и компактная в каталоге
 ---
 
 # Сниппет msRatingSummary
@@ -9,7 +9,7 @@ description: Сводка рейтинга товара — полная на PD
 
 ## Назначение
 
-- **PDP** — полная сводка над списком отзывов (`summaryMode=full`, чанк `tplRatingSummary`).
+- **Страница товара** — полная сводка над списком отзывов (`summaryMode=full`, чанк `tplRatingSummary`).
 - **Каталог** — одна строка в карточке товара (`summaryMode=aggregate`, чанк `tplRatingCatalog`).
 
 ## Где вызывать
@@ -80,7 +80,7 @@ flowchart TB
   msProducts --> rating
 ```
 
-## Полная сводка на PDP
+## Полная сводка на странице товара
 
 ::: code-group
 

@@ -27,7 +27,7 @@ description: Лексикон window.msrLexicon для JS витрины msRevie
 
 Параметров нет.
 
-## Базовый вызов на PDP
+## Базовый вызов на странице товара
 
 ::: code-group
 

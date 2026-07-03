@@ -119,7 +119,7 @@ description: Ключи msreviews_* — модерация, медиа, пись
 
 1. Заказ переходит в статус из **`msreviews_request_order_statuses`** → запись в очередь.
 2. Письмо со ссылкой **`?msr_token=…&msr_product_id=…`**.
-3. Покупатель открывает PDP, **`msReviewForm`** подхватывает токен.
+3. Покупатель открывает страницу товара, **`msReviewForm`** подхватывает токен.
 4. При **`msreviews_auto_publish_verified=1`** verified может опубликоваться сразу.
 5. При **`msreviews_reject_on_cancel`** и списке **`msreviews_cancelled_order_status_ids`** отменённый заказ не даёт verified.
 

@@ -31,7 +31,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 
 | Чанк | Назначение |
 | --- | --- |
-| `tplRatingSummary` | Полная сводка на PDP |
+| `tplRatingSummary` | Полная сводка на странице товара |
 | `tplRatingCatalog` | Компактная строка в каталоге |
 | `tplRatingBadge` | Микро-бейдж (`msRatingBadge`) |
 
@@ -85,7 +85,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 | `--msr-fg` / `--msr-muted` | `#1a1a1a` / `rgba(0,0,0,0.55)` | Текст и meta |
 | `--msr-rating-star` | `#d97706` | Заполненные звёзды |
 | `--msr-accent` | `#0b5bd3` | Кнопка, фокус |
-| `--msr-section-gap` | `1.5rem` | Между секциями PDP |
+| `--msr-section-gap` | `1.5rem` | Между секциями на странице товара |
 | `--msr-qna-stack-gap` | `1.25rem` | Между Q&A и формой |
 | `--msr-msg-ok` / `--msr-msg-err` | `#0a7a0a` / `#a40000` | Сообщения формы |
 

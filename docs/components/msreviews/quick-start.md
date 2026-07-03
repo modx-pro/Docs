@@ -89,7 +89,7 @@ flowchart TB
 
 Порядок вызовов и альтернативы (`msReviewsHub`, вкладки): [Страница товара](frontend/product).
 
-<!-- ![Блок отзывов на PDP](/components/msreviews/screenshots/storefront-pdp.png) -->
+<!-- ![Блок отзывов на странице товара](/components/msreviews/screenshots/storefront-pdp.png) -->
 
 ### Fenom и JSON-LD
 

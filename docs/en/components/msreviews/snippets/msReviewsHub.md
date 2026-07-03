@@ -32,7 +32,7 @@ description: Готовый блок отзывов на карточке тов
 | `product_id` | id ресурса | ID товара MS3 |
 | `sections` | `summary,reviews,form,qna,schema` | CSV порядка секций |
 | `anchorNav` | `1` | Якорная навигация по секциям |
-| `showStats` | `1` | Статистика в списке. На PDP часто `0` при секции summary |
+| `showStats` | `1` | Статистика в списке. На странице товара часто `0` при секции summary |
 | `formPosition` | *(настройка)* | Порядок Q&A внутри секции `qna` |
 | `hideEmpty` | `0` | Скрыть пустые секции (кроме `schema`) |
 | `applyRequestFilters` | `0` | `1` — inner `msReviews` читает GET `msr_*` (нужно для [msReviewsFilters](msReviewsFilters) рядом с Hub) |

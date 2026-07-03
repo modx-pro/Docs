@@ -99,7 +99,7 @@ items:
 
 | Нужно | Документ |
 | --- | --- |
-| Установить и вывести блок на PDP | [Быстрый старт](quick-start) |
+| Установить и вывести блок на странице товара | [Быстрый старт](quick-start) |
 | Все ключи `msreviews_*` | [Системные настройки](settings) |
 | Как собрать блок на карточке | [Интеграция](integration) |
 | Карточка товара | [Страница товара](frontend/product) |
@@ -151,7 +151,7 @@ items:
 
 | Термин | Описание |
 | --- | --- |
-| **product_id** | ID товара MS3 (`ms3_product.id`), на PDP обычно совпадает с id ресурса |
+| **product_id** | ID товара MS3 (`ms3_product.id`), на странице товара обычно совпадает с id ресурса |
 | **display_avg** | Рейтинг для сортировки топа (алгоритм Wilson или среднее) |
 | **verified** | Отзыв с подтверждённой покупкой по токену заказа |
 | **Готовые блоки** | `msReviewsHub`, `msReviewsTabbed`, `msReviewsFilters` — вместо ручной сборки по частям |
@@ -165,7 +165,7 @@ flowchart LR
   status[Статус из msreviews_request_order_statuses]
   queue[Очередь писем]
   email[Письмо с токеном]
-  form[msReviewForm на PDP]
+  form[msReviewForm на странице товара]
   mod[Модерация CMP]
   pub[Опубликован на витрине]
   order --> status --> queue --> email --> form --> mod --> pub
