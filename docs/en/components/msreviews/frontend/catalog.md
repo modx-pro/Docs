@@ -1,7 +1,9 @@
 ---
 title: Каталог и главная
-description: Рейтинг в msProducts, виджеты Latest, TopRated, QuestionsLatest, prefetch
+description: 'Рейтинг в msProducts, виджеты Latest, TopRated, QuestionsLatest, prefetch'
 ---
+<!-- TODO: translate from docs/components/msreviews/frontend/catalog.md -->
+
 
 # Каталог и главная
 
@@ -121,7 +123,7 @@ CSS попадёт в блок head через стандартный вывод
 
 ### msRatingBadge
 
-Ещё компактнее: [msRatingBadge](../snippets/msRatingBadge).
+Ещё компактнее: [msRatingBadge](snippets/msRatingBadge).
 
 ::: code-group
 
@@ -137,7 +139,7 @@ CSS попадёт в блок head через стандартный вывод
 
 ### Prefetch агрегатов (N+1)
 
-В кастомном PHP (сниппет, плагин) перед циклом карточек вызовите **`msr_prefetch_aggregates($modx, $productIds)`** из `core/components/msreviews/include/helpers.php`. См. [Prefetch в events](../events#prefetch-агрегатов).
+В кастомном PHP (сниппет, плагин) перед циклом карточек вызовите **`msr_prefetch_aggregates($modx, $productIds)`** из `core/components/msreviews/include/helpers.php`. См. [Prefetch в events](events#prefetch-агрегатов).
 
 ## Главная и лендинги
 
@@ -186,13 +188,13 @@ CSS попадёт в блок head через стандартный вывод
 
 Детали параметров:
 
-- [msReviewsLatest](../snippets/msReviewsLatest)
-- [msTopRatedProducts](../snippets/msTopRatedProducts)
-- [msQuestionsLatest](../snippets/msQuestionsLatest)
+- [msReviewsLatest](snippets/msReviewsLatest)
+- [msTopRatedProducts](snippets/msTopRatedProducts)
+- [msQuestionsLatest](snippets/msQuestionsLatest)
 
 JSON-LD на главной **не выводится**.
 
 ## См. также
 
-- [msRatingSummary](../snippets/msRatingSummary)
-- [Интеграция](../integration)
+- [msRatingSummary](snippets/msRatingSummary)
+- [Интеграция](integration)

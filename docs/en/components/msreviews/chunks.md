@@ -1,7 +1,9 @@
 ---
 title: Чанки
-description: Шаблоны msReviews — отзывы, формы, рейтинг, Q&A, email, готовые блоки
+description: 'Шаблоны msReviews — отзывы, формы, рейтинг, Q&A, email, готовые блоки'
 ---
+<!-- TODO: translate from docs/components/msreviews/chunks.md -->
+
 
 # Чанки
 
@@ -77,7 +79,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 
 Файл `assets/components/msreviews/css/reviews.css`. Переопределение на `:root` или родителе карточки товара.
 
-**Каталог:** подключение стилей в шаблоне страницы или автоподключение сниппетом — [Каталог — reviews.css](frontend/catalog#подключение-reviewscss-в-каталоге), [msRatingSummary](snippets/msRatingSummary#подключение-reviewscss).
+**Каталог:** подключение стилей в шаблоне страницы или автоподключение сниппетом — [Каталог — reviews.css](../frontend/catalog#подключение-reviewscss-в-каталоге), [msRatingSummary](../snippets/msRatingSummary#подключение-reviewscss).
 
 | Переменная | По умолчанию | Назначение |
 | --- | --- | --- |

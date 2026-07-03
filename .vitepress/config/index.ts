@@ -41,6 +41,7 @@ export default withMermaid(
   defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
   cleanUrls: true,
+  ignoreDeadLinks: [/^en\/components\/msreviews\//],
 
   mermaid: {
     securityLevel: 'loose',

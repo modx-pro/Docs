@@ -79,7 +79,7 @@ description: Блок отзывов на карточке — сборка по
 
 ## Способ B — msReviewsHub
 
-Весь блок summary → reviews → form → qna → schema одним вызовом. См. [msReviewsHub](../snippets/msReviewsHub).
+Весь блок summary → reviews → form → qna → schema одним вызовом. См. [msReviewsHub](snippets/msReviewsHub).
 
 ::: code-group
 
@@ -107,7 +107,7 @@ description: Блок отзывов на карточке — сборка по
 
 ## Способ C — вкладки (msReviewsTabbed)
 
-Вкладки «Отзывы / Вопросы». Форму отзыва и **`msReviewSchema`** выводите **отдельно**. См. [msReviewsTabbed](../snippets/msReviewsTabbed).
+Вкладки «Отзывы / Вопросы». Форму отзыва и **`msReviewSchema`** выводите **отдельно**. См. [msReviewsTabbed](snippets/msReviewsTabbed).
 
 ::: code-group
 
@@ -143,6 +143,6 @@ description: Блок отзывов на карточке — сборка по
 
 ## См. также
 
-- [Интеграция](../integration)
-- [msReviewForm](../snippets/msReviewForm)
-- [msReviewSchema](../snippets/msReviewSchema)
+- [Интеграция](integration)
+- [msReviewForm](snippets/msReviewForm)
+- [msReviewSchema](snippets/msReviewSchema)
