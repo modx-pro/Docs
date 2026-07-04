@@ -1,6 +1,6 @@
 ---
 title: simpleFilters
-description: Простая фильтрация ресурсов для MODX3.
+description: Простая фильтрация ресурсов для MODX3 с настройкой ЧПУ.
 logo: https://modstore.pro/assets/extras/simplefilters/logo-md.png
 author: Romanov Pavel
 modstore: https://modstore.pro/packages/ecommerce/simplefilters
