@@ -28,12 +28,14 @@ items: [
 ## Системные настройки
 
 | Параметр | Описание | Значение по умолчанию |
-|:----------|:----------|-----------------------|
-| sf_index_templates | Шаблоны ресурсов, поля которых нужно индексировать |  |
-| sf_index_fields | Поля ресурсов, которые нужно индексировать |  |
-| sf_index_fields | Путь к JS-файлу относительно корня сайта | `{assets_url}components/simplefilters/js/web/default.min.js` |
-| sf_css_path | Путь к CSS-файлу относительно корня сайта | `{assets_url}components/simplefilters/css/web/default.min.css` |
-
+|:----------|:----------|:-----------------------|
+| **sf_index_templates** | Шаблоны ресурсов, поля которых нужно индексировать |  |
+| **sf_index_fields** | Поля ресурсов, которые нужно индексировать |  |
+| **sf_index_fields** | Путь к JS-файлу относительно корня сайта | `{assets_url}components/simplefilters/js/web/default.min.js` |
+| **sf_css_path** | Путь к CSS-файлу относительно корня сайта | `{assets_url}components/simplefilters/css/web/default.min.css` |
+| **sf_seopages_aliases** | Алиасы фильтров для формирования SEO-страниц (должны соответствовать псевдонимам в параметре **aliases** сниппета **simpleFilters**) в JSON:<br><pre>{"ms_vendor_id":"brand", "ms_color":"color"}</pre> |  |
+| **sf_seopages_ids** | ID страниц для SEO-ссылок (отдельные страницы).<br>Укажите через запятую ID страниц с вызовом сниппета **simpleFilters**, на которых используются SEO-ссылки |  |
+| **sf_seopages_tpls** | ID шаблонов страниц для SEO-ссылок (например, категории).<br>Укажите через запятую ID шаблонов, где вызывается сниппет **simpleFilters** и на которых используются SEO-ссылки |  |
 
 ## Начало работы
 
