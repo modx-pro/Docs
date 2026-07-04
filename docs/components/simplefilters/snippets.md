@@ -159,7 +159,7 @@ $aliases=`ms_tags==tag`
 
 # simpleFiltersSiteMap
 
-Сниппет добавляет ссылки на SEO-страницы в карту сайта.
+Сниппет добавляет ссылки на SEO-страницы в карту сайта.<br>
 Пример использования с [pdoSitemap](https://docs.modx.pro/components/pdotools/snippets/pdositemap):
 
 ```
