@@ -7,18 +7,23 @@ description: Обзор сниппетов msPriceTiers для витрины Mi
 
 | Сниппет | Назначение |
 |---------|------------|
-| [msPriceTiers.initialize](msPriceTiersInitialize) | CSS, JS, `window.msPriceTiersConfig` — вызывать **один раз** на странице |
+| [msPriceTiers.initialize](msPriceTiersInitialize) | CSS, JS, `window.msPriceTiersConfig` — **один раз** на странице |
 | [msPriceTiers](msPriceTiers) | HTML таблицы порогов для товара |
-| [msPriceTiersProgress](msPriceTiersProgress) | Прогресс-бар «до следующей скидки» (товар или корзина) |
+| [msPriceTiersProgress](msPriceTiersProgress) | Прогресс «до следующей скидки» (товар, корзина, сумма заказа) |
 
-Служебный `msPriceTiers.demoProductId` — ID первого товара с порогами (демо/QA), на витрине обычно не нужен.
+Служебные (QA/разработка, на витрине не нужны): `msPriceTiers.demoProductId`, `msPriceTiers.testContext`, `msPriceTiers.versionedAsset`.
 
 ## Порядок на странице товара
 
 1. `msPriceTiers.initialize` — в начале шаблона или перед блоком цены.
 2. Разметка формы с `mspricetiers-form` и `mspricetiers-quantity`.
 3. `msPriceTiers` — таблица порогов.
-4. Опционально `msPriceTiersProgress`.
+4. `msPriceTiersProgress` — прогресс на странице товара.
+
+## Порядок на странице корзины
+
+1. `msPriceTiers.initialize`.
+2. `msPriceTiersProgress` с `cart=1` и/или `cartSum=1` внутри `[data-mspt-live]`.
 
 ## Кэширование
 

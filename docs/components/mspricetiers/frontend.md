@@ -1,6 +1,6 @@
 ---
 title: Подключение на сайте
-description: CSS-классы, JavaScript API, ms3Variants, темы через CSS-переменные
+description: CSS-классы, JavaScript API, data-mspt-live, ms3Variants, темы через CSS-переменные
 ---
 
 # Подключение на сайте
@@ -15,8 +15,8 @@ description: CSS-классы, JavaScript API, ms3Variants, темы через 
 | Поле количества | `mspricetiers-quantity` | Слушатель `input` / `change` |
 | Таблица | `mspricetiers-table-wrapper` | Обёртка из чанка |
 | Строка порога | `mspricetiers-row` | `data-count-from`, `data-price` |
-| Текущая цена | `mspricetiers-cost` | Обновляется из JS (опционально в теме) |
-| Старая цена | `mspricetiers-old-cost` | Зачёркнутая цена |
+| Текущая цена | `mspricetiers-cost` | Обновляется из JS |
+| Старая цена | `mspricetiers-old-cost` | Зачёркнутая цена из MS3 |
 
 Пример формы — [Быстрый старт](quick-start#шаг-5-разметка-количества).
 
@@ -35,6 +35,9 @@ sequenceDiagram
   JS->>JS: обновляет .mspricetiers-cost
   U->>MS: cart/add
   MS->>MS: msOnGetProductPrice → tier
+  MS->>JS: ms3:cart:updated
+  JS->>API: action=sections
+  API-->>JS: progress_cart, progress_cart_sum
 ```
 
 ## JavaScript API
@@ -54,13 +57,45 @@ const result = await msPriceTiers.fetchPrice(123, 10, 5);
 
 Запрос: `POST` на `assets/components/mspricetiers/js/web/connector.php`, `action=price`. Подробнее: [AJAX API](api).
 
-### Событие ms3variants:selected
+### fetchSections(productId, quantity, options)
 
-При включённой [интеграции с ms3Variants](integration#ms3variants) скрипт сам пересчитывает цену после выбора варианта. Вручную:
+Возвращает HTML-секции для обновления без перезагрузки. Параметры `options`: `cartItems`, `cartSubtotal`.
+
+```javascript
+const sections = await msPriceTiers.fetchSections(123, 10, {
+  cartSubtotal: 15000,
+});
+// sections.table, sections.progress_cart, sections.progress_cart_sum, …
+```
+
+## Live-секции (`data-mspt-live`)
+
+Обёрните сниппет в контейнер с атрибутом:
+
+| Значение | Секция |
+|----------|--------|
+| `progress-cart` | Прогресс по количеству в корзине |
+| `progress-cart-sum` | Прогресс до следующего порога по сумме корзины |
+
+После **`ms3:cart:updated`** (MiniShop3 после добавления, изменения или удаления позиции) `mspricetiers.js` вызывает `action=sections` и подменяет `innerHTML` найденных блоков.
+
+На карточке товара при смене количества JS обновляет **цену** (`.mspricetiers-cost`) и подсказку у поля количества. Таблицу или бейдж без перезагрузки перерисуйте через `fetchSections` в своём коде или на QA-странице пакета.
+
+## События в браузере
+
+| Событие | Источник | Назначение |
+|---------|----------|------------|
+| `ms3variants:selected` | [ms3Variants](/components/ms3variants/) | Пересчёт цены при смене варианта |
+| `ms3:cart:updated` | MiniShop3 CartUI | Обновление блоков `data-mspt-live` |
+| `mspricetiers:cart:updated` | mspricetiers.js | После обновления прогресса корзины (кастомные слушатели) |
+
+При **`mspricetiers_integrate_ms3variants`** = Да слушатель `ms3variants:selected` встроен в `mspricetiers.js`.
+
+Ручной вызов после смены варианта:
 
 ```javascript
 document.addEventListener('ms3variants:selected', (event) => {
-  const { productId, id, price } = event.detail;
+  const { productId, id } = event.detail;
   msPriceTiers.fetchPrice(productId, msPriceTiers.getQuantity(), id);
 });
 ```
@@ -91,7 +126,17 @@ document.addEventListener('ms3variants:selected', (event) => {
 
 ## Конфигурация в браузере
 
-`window.msPriceTiersConfig` (из сниппета initialize) содержит URL connector, флаги `applyOnProductPage`, `integrateMs3variants`, строки лексикона для JS.
+`window.msPriceTiersConfig` (из сниппета initialize):
+
+| Поле | Описание |
+|------|----------|
+| `assetsUrl` | URL assets компонента |
+| `connectorUrl` | `…/js/web/connector.php` |
+| `enabled` | `mspricetiers_enabled` |
+| `applyOnProductPage` | `mspricetiers_apply_on_product_page` |
+| `quantityHintEnabled` | `mspricetiers_progress_bar_enabled` |
+| `numberLocale` | `ru-RU` / `en-US` из `cultureKey` |
+| `messages.*` | Шаблоны подсказок прогресс-бара (`untilNext`, `savings`, `currency`, …) |
 
 ## См. также
 
