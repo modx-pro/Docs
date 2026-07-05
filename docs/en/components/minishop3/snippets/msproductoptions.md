@@ -3,7 +3,7 @@ title: msProductOptions
 ---
 # msProductOptions
 
-Snippet for outputting all or filtered product options with full metadata (categories, types).
+Extended snippet for outputting all or filtered product options with full information for each (metadata, categories, types).
 
 ## Parameters
 
@@ -11,23 +11,23 @@ Snippet for outputting all or filtered product options with full metadata (categ
 |-----------|---------|-------------|
 | **product** | current resource | Product ID |
 | **tpl** | `tpl.msProductOptions` | Layout chunk |
-| **onlyOptions** | | Comma-separated options to show only |
-| **ignoreOptions** | | Comma-separated options to ignore |
-| **groups** | | Show only options from these groups |
-| **ignoreGroups** | | Ignore these groups |
-| **sortOptions** | | Comma-separated option sort order |
-| **sortGroups** | | Comma-separated group sort order |
-| **sortOptionValues** | | Sort values within options (see [msOptions](msoptions#option-value-sorting)) |
-| **return** | `tpl` | Format: `tpl`, `data`, `array` |
+| **onlyOptions** | | Output only the specified options (comma-separated) |
+| **ignoreOptions** | | Ignore the specified options |
+| **groups** | | Output only options from the specified groups |
+| **ignoreGroups** | | Ignore the specified groups |
+| **sortOptions** | | Option sort order (comma-separated) |
+| **sortGroups** | | Group sort order (comma-separated) |
+| **sortOptionValues** | | Sort values within options (see [msOptions](msoptions#sorting-option-values)) |
+| **return** | `tpl` | Output format: `tpl`, `data`, `array` |
 
 ::: tip Auto sort
-If `onlyOptions` is set but not `sortOptions`, options are sorted in the order given in `onlyOptions`.
+If `onlyOptions` is set but `sortOptions` is not, options are automatically sorted in the order given in `onlyOptions`.
 :::
 
 ### Deprecated parameters
 
 ::: warning Backward compatibility
-Parameter `&input` is deprecated. Use `&product`.
+The `&input` parameter is deprecated. Use `&product`.
 :::
 
 ## Examples
@@ -38,7 +38,7 @@ Parameter `&input` is deprecated. Use `&product`.
 {'msProductOptions' | snippet}
 ```
 
-### For specific product
+### For a specific product
 
 ```fenom
 {'msProductOptions' | snippet: [
@@ -74,7 +74,7 @@ Parameter `&input` is deprecated. Use `&product`.
 
 ```fenom
 {'msProductOptions' | snippet: [
-    'sortGroups' => 'Main,Dimensions,Extra',
+    'sortGroups' => 'Main,Dimensions,Additional',
     'sortOptions' => 'weight,dimensions,material,color'
 ]}
 ```
@@ -100,7 +100,7 @@ Parameter `&input` is deprecated. Use `&product`.
 
 ## Data structure
 
-With `return=data` or `return=array` an associative array is returned, keyed by option name:
+With `return=data` or `return=array`, an associative array is returned where the key is the option name:
 
 ```php
 [
@@ -108,7 +108,7 @@ With `return=data` or `return=array` an associative array is returned, keyed by 
         'caption' => 'Color',
         'value' => ['Red', 'Blue'],
         'category' => 'main',
-        'category_name' => 'Main specs',
+        'group_name' => 'Main specs',
         'type' => 'combo-options',
         'properties' => [...]
     ],
@@ -116,19 +116,19 @@ With `return=data` or `return=array` an associative array is returned, keyed by 
         'caption' => 'Size',
         'value' => 'M',
         'category' => 'main',
-        'category_name' => 'Main specs'
+        'group_name' => 'Main specs'
     ],
     'weight' => [
         'caption' => 'Weight',
         'value' => '250 g',
         'category' => 'specs',
-        'category_name' => 'Specs'
+        'group_name' => 'Specs'
     ]
 ]
 ```
 
 ::: info Option key
-The option name (`color`, `size`, `weight`) is the array key, not a field inside the option. Use `{foreach $options as $key => $option}` to access it.
+The option name (`color`, `size`, `weight`) is the array key, not a field inside the option. To access it, use `{foreach $options as $key => $option}`.
 :::
 
 ## Placeholders in chunk
@@ -144,7 +144,7 @@ The option name (`color`, `size`, `weight`) is the array key, not a field inside
 | `{$option.caption}` | Option label (human-readable) |
 | `{$option.value}` | Value (string or array) |
 | `{$option.category}` | Option group key |
-| `{$option.category_name}` | Group name |
+| `{$option.group_name}` | Group name |
 | `{$option.type}` | Field type (textfield, combo-options, etc.) |
 | `{$option.properties}` | Additional option properties |
 
@@ -212,7 +212,7 @@ The default chunk `tpl.msProductOptions` outputs options as rows:
 
     {* Group options by category *}
     {foreach $options as $option}
-        {set $cat = $option.category_name ?: 'Main'}
+        {set $cat = $option.group_name ?: 'Main'}
         {set $grouped[$cat][] = $option}
     {/foreach}
 
@@ -241,7 +241,7 @@ The default chunk `tpl.msProductOptions` outputs options as rows:
 
 ## Selecting options when adding to cart
 
-When options are selectable (e.g. color and size):
+When options are selectable (for example, color and size):
 
 ```fenom
 <form class="product-form">
@@ -274,12 +274,12 @@ When options are selectable (e.g. color and size):
 
 ## When to use
 
-| Use msProductOptions | Use [msOptions](msoptions) instead |
-|----------------------|-------------------------------------|
-| You need ALL product options | Only 2–3 specific options |
-| You need metadata (groups, types) | Speed is critical |
+| Suitable | Not suitable |
+|----------|--------------|
+| You need ALL product options | Only 2–3 specific options needed |
+| Metadata is required | Maximum speed matters |
 | Filtering by groups | Simple fixed list |
-| Flexible sorting | |
+| Flexible sorting is required | |
 | Options are built dynamically | |
 
 For simple output of specific options without metadata, use [msOptions](msoptions).

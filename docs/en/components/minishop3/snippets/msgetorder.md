@@ -3,16 +3,16 @@ title: msGetOrder
 ---
 # msGetOrder
 
-Snippet for displaying order information. Used on the "Thank you" page or in the customer account.
+Snippet for displaying order information. Used on the thank-you page or in the customer account.
 
 ## Parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+|----------|--------------|----------|
 | **id** | | Order ID or UUID (takes precedence over GET) |
 | **tpl** | `tpl.msGetOrder` | Order layout chunk |
 | **includeThumbs** | | Comma-separated product image thumbnails |
-| **includeContent** | `false` | Include product content field |
+| **includeContent** | `false` | Include product `content` field |
 | **payStatus** | `1` | Statuses for showing payment link (comma-separated) |
 | **toPlaceholder** | | Save result to placeholder |
 | **showLog** | `false` | Show execution log |
@@ -50,7 +50,7 @@ The order is shown if any of the following is true:
 ### With product thumbnails
 
 ```fenom
-{'msGetOrder' | snippet: [
+{'msGetOrder' | snippet : [
     'includeThumbs' => 'small'
 ]}
 ```
@@ -58,7 +58,7 @@ The order is shown if any of the following is true:
 ### Specific order by ID
 
 ```fenom
-{'msGetOrder' | snippet: [
+{'msGetOrder' | snippet : [
     'id' => 15,
     'includeThumbs' => 'small,medium'
 ]}
@@ -67,7 +67,7 @@ The order is shown if any of the following is true:
 ### Order by UUID
 
 ```fenom
-{'msGetOrder' | snippet: [
+{'msGetOrder' | snippet : [
     'id' => 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
 ]}
 ```
@@ -75,7 +75,7 @@ The order is shown if any of the following is true:
 ### To placeholder
 
 ```fenom
-{'msGetOrder' | snippet: [
+{'msGetOrder' | snippet : [
     'toPlaceholder' => 'orderHtml'
 ]}
 
@@ -91,7 +91,7 @@ The order is shown if any of the following is true:
 The chunk receives the following objects:
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+|-------------|-----|----------|
 | `{$order}` | array | Order data |
 | `{$products}` | array | Order products array |
 | `{$address}` | array | Delivery address |
@@ -103,7 +103,7 @@ The chunk receives the following objects:
 ### order object
 
 | Field | Description |
-|-------|-------------|
+|------|----------|
 | `{$order.id}` | Order ID |
 | `{$order.num}` | Formatted number (MS-00015) |
 | `{$order.uuid}` | Order UUID |
@@ -123,22 +123,22 @@ The chunk receives the following objects:
 ### address object
 
 | Field | Description |
-|-------|-------------|
-| `{$address.receiver}` | Receiver name |
+|------|----------|
+| `{$address.receiver}` | Receiver full name |
 | `{$address.phone}` | Phone |
 | `{$address.email}` | Email |
 | `{$address.index}` | Postal code |
 | `{$address.country}` | Country |
-| `{$address.region}` | Region |
+| `{$address.region}` | Region/state |
 | `{$address.city}` | City |
 | `{$address.street}` | Street |
 | `{$address.building}` | Building |
-| `{$address.room}` | Room/office |
+| `{$address.room}` | Apartment/office |
 
 ### delivery object
 
 | Field | Description |
-|-------|-------------|
+|------|----------|
 | `{$delivery.id}` | Delivery ID |
 | `{$delivery.name}` | Name |
 | `{$delivery.description}` | Description |
@@ -148,7 +148,7 @@ The chunk receives the following objects:
 ### payment object
 
 | Field | Description |
-|-------|-------------|
+|------|----------|
 | `{$payment.id}` | Payment ID |
 | `{$payment.name}` | Name |
 | `{$payment.description}` | Description |
@@ -157,7 +157,7 @@ The chunk receives the following objects:
 ### total object
 
 | Field | Description |
-|-------|-------------|
+|------|----------|
 | `{$total.cost}` | Total cost (formatted) |
 | `{$total.cart_cost}` | Cart cost (formatted) |
 | `{$total.delivery_cost}` | Delivery cost (formatted) |
@@ -169,20 +169,20 @@ The chunk receives the following objects:
 
 ```fenom
 {foreach $products as $product}
-    {$product.name} — {$product.count} × {$product.price}
+    {$product.name} — {$product.count} pcs. × {$product.price}
 {/foreach}
 ```
 
 For each product:
 
 | Field | Description |
-|-------|-------------|
+|------|----------|
 | `{$product.id}` | Product resource ID |
 | `{$product.product_id}` | Product ID |
-| `{$product.order_product_id}` | Order item ID |
+| `{$product.order_product_id}` | Order line ID |
 | `{$product.name}` | Name |
 | `{$product.pagetitle}` | Resource title |
-| `{$product.article}` | Article/SKU |
+| `{$product.article}` | SKU |
 | `{$product.count}` | Quantity |
 | `{$product.price}` | Price (formatted) |
 | `{$product.old_price}` | Old price (formatted) |
@@ -239,7 +239,7 @@ The default chunk `tpl.msGetOrder` uses Bootstrap 5:
                                         {$product.name}
                                     {/if}
                                     {if $product.options?}
-                                        <div class="small text-muted">{$product.options | join: '; '}</div>
+                                        <div class="small text-muted">{$product.options | join : '; '}</div>
                                     {/if}
                                 </div>
                             </div>
@@ -355,7 +355,7 @@ The payment link `{$payment_link}` is available when:
 3. The handler returns a link via `getPaymentLink()`
 
 ```fenom
-{'msGetOrder' | snippet: [
+{'msGetOrder' | snippet : [
     'payStatus' => '1,2,3'  {* Show link for statuses 1, 2, 3 *}
 ]}
 ```
@@ -371,7 +371,7 @@ Typical use on the page after checkout:
         <p class="lead">We will contact you shortly.</p>
     </div>
 
-    {'msGetOrder' | snippet: [
+    {'msGetOrder' | snippet : [
         'includeThumbs' => 'small'
     ]}
 

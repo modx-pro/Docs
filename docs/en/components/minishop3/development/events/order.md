@@ -457,3 +457,35 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+---
+
+## msOnBeforeMgrCreateOrder
+
+Fired **before** finalizing an order from the manager (when the manager turns a draft into a full order — the «Submit» button on the order page). This is the manager counterpart of `msOnSubmitOrder`.
+
+::: tip Relation to msOnBeforeCreateOrder
+After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same three parameters. Use `msOnBeforeMgrCreateOrder` for manager-specific logic; use `msOnBeforeCreateOrder` for shared logic on both frontend and manager.
+:::
+
+### Parameters
+
+| Parameter | Type | Description |
+|----------|-----|----------|
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Order finalization service |
+| `msOrder` | `msOrder` | Order being finalized |
+| `from_manager` | `bool` | Always `true` |
+
+---
+
+## msOnMgrCreateOrder
+
+Fired **after** successful order finalization from the manager. Pair to `msOnBeforeMgrCreateOrder`.
+
+### Parameters
+
+| Parameter | Type | Description |
+|----------|-----|----------|
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Order finalization service |
+| `msOrder` | `msOrder` | Finalized order (status already changed to «New») |
+| `from_manager` | `bool` | Always `true` |

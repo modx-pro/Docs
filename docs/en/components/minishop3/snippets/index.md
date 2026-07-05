@@ -3,7 +3,7 @@ title: Snippets
 ---
 # MiniShop3 snippets
 
-MiniShop3 provides snippets for building an online store on the frontend. All snippets work via pdoTools and support the Fenom templating engine.
+MiniShop3 provides a set of snippets for building the store frontend. All snippets work through pdoTools and support the Fenom template engine.
 
 ## Snippet overview
 
@@ -15,24 +15,24 @@ MiniShop3 provides snippets for building an online store on the frontend. All sn
 | [msGetOrder](msgetorder) | Order information |
 | [msGallery](msgallery) | Product image gallery |
 | [msOptions](msoptions) | Options for product filtering |
-| [msProductOptions](msproductoptions) | Product specifications |
+| [msProductOptions](msproductoptions) | Specific product characteristics |
 | [msCustomer](mscustomer) | Customer account |
-| [msOrderTotal](msordertotal) | Order total |
+| [msOrderTotal](msordertotal) | Order total summary |
 
 ## General principles
 
 ### Calling snippets
 
-All snippets can be called via Fenom:
+You can call all snippets via Fenom:
 
 ```fenom
-{'msProducts' | snippet: [
+{'msProducts' | snippet : [
     'parents' => 5,
     'limit' => 10
 ]}
 ```
 
-Or standard MODX syntax:
+Or via standard MODX syntax:
 
 ```modx
 [[!msProducts?
@@ -42,26 +42,26 @@ Or standard MODX syntax:
 ```
 
 ::: tip Caching
-Snippets that work with user session (`msCart`, `msOrder`, `msCustomer`) must be called **uncached** (with `!`).
+Snippets that use the user session (`msCart`, `msOrder`, `msCustomer`) must be called **uncached** (with `!`).
 :::
 
 ### return parameter
 
-Most snippets support `return` to set output format:
+Most snippets support the `return` parameter that defines the output format:
 
 | Value | Description |
 |-------|-------------|
-| `tpl` | Process via chunk (default) |
-| `data` | Return data array |
-| `json` | Return JSON string |
-| `ids` | Comma-separated IDs only |
+| `tpl` | Process through a chunk (default) |
+| `data` | Return a data array |
+| `json` | Return a JSON string |
+| `ids` | Record IDs only, comma-separated |
 
 ### toPlaceholder parameter
 
-Save result to a placeholder instead of direct output:
+Instead of direct output, you can save the result to a placeholder:
 
 ```fenom
-{'msProducts' | snippet: [
+{'msProducts' | snippet : [
     'toPlaceholder' => 'products'
 ]}
 
@@ -71,7 +71,7 @@ Save result to a placeholder instead of direct output:
 
 ## Default chunks
 
-MiniShop3 installs a set of default chunks:
+MiniShop3 ships with a set of ready-made chunks:
 
 | Snippet | Default chunk |
 |---------|---------------|
@@ -83,4 +83,4 @@ MiniShop3 installs a set of default chunks:
 | msOptions | `tpl.msOptions` |
 | msProductOptions | `tpl.msProductOptions` |
 
-Override by creating your own chunks or setting the `tpl` parameter.
+You can override chunks by creating your own or specifying another chunk in the `tpl` parameter.

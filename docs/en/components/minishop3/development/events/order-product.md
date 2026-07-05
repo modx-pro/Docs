@@ -243,3 +243,58 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+---
+
+## Full example: stock management
+
+```php
+<?php
+/**
+ * Plugin: Product stock management
+ * Events: msOnCreateOrderProduct, msOnUpdateOrderProduct, msOnRemoveOrderProduct
+ */
+
+switch ($modx->event->name) {
+
+    case 'msOnCreateOrderProduct':
+        $orderProduct = $scriptProperties['msOrderProduct'];
+        updateStock($modx, $orderProduct->get('product_id'), -$orderProduct->get('count'));
+        break;
+
+    case 'msOnUpdateOrderProduct':
+        $orderProduct = $scriptProperties['msOrderProduct'];
+        $diff = $orderProduct->get('count') - ($orderProduct->getPrevious('count') ?? 0);
+        if ($diff != 0) {
+            updateStock($modx, $orderProduct->get('product_id'), -$diff);
+        }
+        break;
+
+    case 'msOnRemoveOrderProduct':
+        $orderProduct = $scriptProperties['msOrderProduct'];
+        updateStock($modx, $orderProduct->get('product_id'), $orderProduct->get('count'));
+        break;
+}
+
+/**
+ * Update product stock
+ */
+function updateStock($modx, $productId, $delta) {
+    $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
+    if ($msProduct) {
+        $remains = $msProduct->get('remains') ?? 0;
+        $newRemains = max(0, $remains + $delta);
+        $msProduct->set('remains', $newRemains);
+        $msProduct->save();
+
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Stock] Product #%d: %d %s %d = %d',
+            $productId,
+            $remains,
+            $delta >= 0 ? '+' : '-',
+            abs($delta),
+            $newRemains
+        ));
+    }
+}
+```

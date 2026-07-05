@@ -3,7 +3,7 @@ title: msOptions
 ---
 # msOptions
 
-Snippet for outputting specific product options. When you know which options you need, use this snippet for best performance.
+Simple snippet for outputting specific product options. When you know in advance which options you need, use this snippet for best performance.
 
 ## Parameters
 
@@ -25,18 +25,18 @@ These parameters are deprecated and will be removed in future versions:
 
 ## Examples
 
-### Output color and size for current product
+### Output color and size for the current product
 
 ```fenom
-{'msOptions' | snippet: [
+{'msOptions' | snippet : [
     'options' => 'color,size'
 ]}
 ```
 
-### For specific product
+### For a specific product
 
 ```fenom
-{'msOptions' | snippet: [
+{'msOptions' | snippet : [
     'product' => 123,
     'options' => 'color,size,material'
 ]}
@@ -45,7 +45,7 @@ These parameters are deprecated and will be removed in future versions:
 ### Uncached call
 
 ```fenom
-{'!msOptions' | snippet: [
+{'!msOptions' | snippet : [
     'options' => 'color,size'
 ]}
 ```
@@ -53,7 +53,7 @@ These parameters are deprecated and will be removed in future versions:
 ### Custom chunk
 
 ```fenom
-{'msOptions' | snippet: [
+{'msOptions' | snippet : [
     'options' => 'color,size',
     'tpl' => 'myOptionsChunk'
 ]}
@@ -62,15 +62,15 @@ These parameters are deprecated and will be removed in future versions:
 ### With value sorting
 
 ```fenom
-{'msOptions' | snippet: [
+{'msOptions' | snippet : [
     'options' => 'color,size',
     'sortOptionValues' => 'size:SORT_ASC:SORT_STRING:M'
 ]}
 ```
 
-## Option value sorting
+## Sorting option values
 
-The `sortOptionValues` parameter sorts values within each option.
+The `sortOptionValues` parameter lets you sort values within each option.
 
 ### Format
 
@@ -83,7 +83,7 @@ option_name:direction:type:first_value
 | option_name | Option key to sort | `color`, `size`, etc. |
 | direction | Sort direction | `SORT_ASC`, `SORT_DESC` |
 | type | Sort type | `SORT_STRING`, `SORT_NUMERIC`, `SORT_NATURAL` |
-| first_value | (optional) Value to put first | Any value from the list |
+| first_value | Value to put first (optional) | Any value from the list |
 
 ### Sorting examples
 
@@ -151,7 +151,7 @@ Simple list output example:
             <div class="option">
                 <strong>{$key}:</strong>
                 {if $values is iterable}
-                    {$values | join: ', '}
+                    {$values | join : ', '}
                 {else}
                     {$values}
                 {/if}
@@ -163,20 +163,20 @@ Simple list output example:
 
 ## When to use
 
-| Use msOptions | Use msProductOptions instead |
-|---------------|------------------------------|
+| Suitable | Not suitable |
+|----------|--------------|
 | Only specific options needed | Need ALL product options |
-| No metadata needed | Filter by groups |
-| Best performance | Need option labels, categories |
+| No metadata required | Filter by groups |
+| Best performance | Need option names and categories |
 
 ## Comparison with msProductOptions
 
 | Criteria | msOptions | msProductOptions |
 |----------|-----------|------------------|
 | **Speed** | Faster | Slower |
-| **Filtering** | Option list only | Groups, options, sort |
+| **Filtering** | Option list only | Groups, options, sorting |
 | **Metadata** | None | Full (category, type) |
 | **Flexibility** | Simple | Advanced |
 | **Use case** | Fixed list | Dynamic list |
 
-For option metadata (categories, types, labels) use [msProductOptions](msproductoptions).
+If you need option metadata (categories, types, descriptions), use [msProductOptions](msproductoptions).

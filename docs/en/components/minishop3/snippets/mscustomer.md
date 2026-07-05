@@ -3,7 +3,7 @@ title: msCustomer
 ---
 # msCustomer
 
-Snippet for the customer account (profile, addresses, orders).
+Snippet for displaying the customer account.
 
 ::: warning Caching
 The snippet uses the user session and must be called **uncached** (`!msCustomer`).
@@ -11,72 +11,72 @@ The snippet uses the user session and must be called **uncached** (`!msCustomer`
 
 ## How it works
 
-The snippet is driven by the **`service`** parameter. Different values show different account pages with different data and behavior.
+The snippet is driven by the **`service`** parameter. Different values render different account pages with different data and behavior.
 
 ### profile — Customer profile
 
-Edit profile: name, email, phone. Shows email and phone verification status.
+Edit personal data: name, email, phone. Shows email and phone verification status.
 
 ```fenom
-{'!msCustomer' | snippet: [
+{'!msCustomer' | snippet : [
     'service' => 'profile'
 ]}
 ```
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+|----------|--------------|----------|
 | **tpl** | `tpl.msCustomer.profile` | Profile chunk |
 
-See: [Customer profile](/en/components/minishop3/frontend/customer-profile)
+See also: [Customer profile](/en/components/minishop3/frontend/customer-profile)
 
 ---
 
 ### addresses — Address management
 
-List of saved delivery addresses: create, edit, delete, set default.
+List of saved delivery addresses with create, edit, delete, and set-default options.
 
 ```fenom
-{'!msCustomer' | snippet: [
+{'!msCustomer' | snippet : [
     'service' => 'addresses'
 ]}
 ```
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+|----------|--------------|----------|
 | **tpl** | `tpl.msCustomer.addresses` | Address list chunk |
 | **addressTpl** | `tpl.msCustomer.address.row` | Address row chunk |
 | **formTpl** | `tpl.msCustomer.address.form` | Address form chunk |
 
-See: [Customer addresses](/en/components/minishop3/frontend/customer-addresses)
+See also: [Customer addresses](/en/components/minishop3/frontend/customer-addresses)
 
 ---
 
 ### orders — Order history
 
-List of customer orders with status filter and pagination. Click an order for details.
+List of all customer orders with status filter and pagination. Click an order for details.
 
 ```fenom
-{'!msCustomer' | snippet: [
+{'!msCustomer' | snippet : [
     'service' => 'orders',
     'limit' => 10
 ]}
 ```
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+|----------|--------------|----------|
 | **tpl** | `tpl.msCustomer.orders` | Order list chunk |
 | **orderTpl** | `tpl.msCustomer.order.row` | Order row chunk |
 | **detailTpl** | `tpl.msCustomer.order.details` | Order details chunk |
 | **limit** | `20` | Orders per page |
 
-See: [Customer orders](/en/components/minishop3/frontend/customer-orders)
+See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
 
 ---
 
 ## Common parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+|----------|--------------|----------|
 | **service** | `profile` | Service: `profile`, `addresses`, `orders` |
 | **return** | `tpl` | Format: `tpl` (HTML), `data` (array) |
 | **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Chunk for unauthorized users |
@@ -84,7 +84,7 @@ See: [Customer orders](/en/components/minishop3/frontend/customer-orders)
 ## Get data without rendering
 
 ```fenom
-{set $profile = '!msCustomer' | snippet: [
+{set $profile = '!msCustomer' | snippet : [
     'service' => 'profile',
     'return' => 'data'
 ]}
@@ -101,28 +101,28 @@ See: [Customer orders](/en/components/minishop3/frontend/customer-orders)
 ### For service=orders
 
 | Parameter | Description |
-|-----------|-------------|
-| `order` | Order UUID for details (as of v1.6; was `order_id`) |
+|----------|----------|
+| `order_id` | Order ID for details view |
 | `status` | Filter by status ID |
 | `offset` | Pagination offset |
 
 ```
-/cabinet/orders/?order=550e8400-...  — order details
-/cabinet/orders/?status=2            — orders with status 2
-/cabinet/orders/?offset=20           — second page
+/cabinet/?order_id=15      — order #15 details
+/cabinet/?status=2         — orders with status 2
+/cabinet/?offset=20        — second page
 ```
 
 ### For service=addresses
 
 | Parameter | Description |
-|-----------|-------------|
-| `mode` | Mode: `list`, `create`, `edit` |
+|----------|----------|
+| `mode` | Mode: `list`, `edit`, `create` |
 | `id` | Address ID to edit |
 
 ```
-/cabinet/addresses/                    — address list
-/cabinet/addresses/?mode=create        — create address
-/cabinet/addresses/?mode=edit&id=5     — edit address #5
+/cabinet/addresses/              — address list
+/cabinet/addresses/?mode=create  — create address
+/cabinet/addresses/?mode=edit&id=5  — edit address #5
 ```
 
 ### Logout
@@ -165,7 +165,6 @@ See: [Customer orders](/en/components/minishop3/frontend/customer-orders)
     'orders' => [
         [
             'id' => 15,
-            'uuid' => '550e8400-e29b-41d4-a716-446655440000',
             'num' => 'MS-00015',
             'createdon' => '2024-01-15 10:30:00',
             'createdon_formatted' => '15.01.2024 10:30',
@@ -174,7 +173,6 @@ See: [Customer orders](/en/components/minishop3/frontend/customer-orders)
             'status_id' => 2,
             'status_name' => 'Paid',
             'status_color' => '008000',
-            'can_cancel' => true,
             // ... other msOrder fields
         ],
         // ...
@@ -203,7 +201,7 @@ See: [Customer orders](/en/components/minishop3/frontend/customer-orders)
 
 ### service=orders (return=data) — order details
 
-When GET parameter `order` (UUID) is present:
+When GET parameter `order_id` is present:
 
 ```php
 [
@@ -216,7 +214,6 @@ When GET parameter `order` (UUID) is present:
         'status_color' => '008000',
         'createdon_formatted' => '15.01.2024 10:30',
         'comment' => 'Call before delivery',
-        'can_cancel' => true,
         // ... other msOrder fields
     ],
     'products' => [
@@ -235,16 +232,16 @@ When GET parameter `order` (UUID) is present:
     ],
     'delivery' => [
         'id' => 1,
-        'name' => 'Courier',
-        'description' => '1-2 business days',
+        'name' => 'Courier delivery',
+        'description' => 'Delivery within 1-2 days',
     ],
     'payment' => [
         'id' => 2,
-        'name' => 'Card',
+        'name' => 'Bank card',
     ],
     'address' => [
         'city' => 'Moscow',
-        'street' => 'Main St',
+        'street' => 'Sample St',
         'building' => '15',
         'room' => '42',
         // ... other address fields
@@ -271,12 +268,12 @@ When GET parameter `order` (UUID) is present:
 
 ## Chunk architecture
 
-Customer chunks use **inheritance** via a base layout:
+Customer account chunks use **inheritance** via a base layout:
 
 ```
 tpl.msCustomer.base          — base layout (sidebar + content)
 ├── tpl.msCustomer.profile   — extends base, profile block
-├── tpl.msCustomer.orders   — extends base, order list block
+├── tpl.msCustomer.orders    — extends base, order list block
 └── tpl.msCustomer.addresses — extends base, addresses block
 ```
 
@@ -386,7 +383,7 @@ Chunk `tpl.msCustomer.base` contains:
 ### tpl.msCustomer.profile
 
 | Placeholder | Description |
-|-------------|-------------|
+|-------------|----------|
 | `{$customer}` | Customer data (array) |
 | `{$customer.id}` | Customer ID |
 | `{$customer.email}` | Email |
@@ -403,32 +400,29 @@ Chunk `tpl.msCustomer.base` contains:
 ### tpl.msCustomer.orders
 
 | Placeholder | Description |
-|-------------|-------------|
+|-------------|----------|
 | `{$orders}` | Rendered order rows (HTML) |
-| `{$orders_count}` | Orders on page |
-| `{$total}` | Total orders |
+| `{$orders_count}` | Orders on current page |
+| `{$total}` | Total order count |
 | `{$statuses}` | Status list for filter |
 | `{$pagination}` | Pagination data |
 | `{$customer}` | Customer data |
-| `{$api_url}` | API URL for JS |
 
 ### tpl.msCustomer.order.row
 
 | Placeholder | Description |
-|-------------|-------------|
+|-------------|----------|
 | `{$id}` | Order ID |
-| `{$uuid}` | Order UUID (for URL) |
 | `{$num}` | Order number (MS-00015) |
 | `{$createdon_formatted}` | Created date |
 | `{$cost_formatted}` | Order total |
 | `{$status_name}` | Status name |
 | `{$status_color}` | Status color |
-| `{$can_cancel}` | Whether order can be canceled |
 
 ### tpl.msCustomer.order.details
 
 | Placeholder | Description |
-|-------------|-------------|
+|-------------|----------|
 | `{$order}` | Order data |
 | `{$products}` | Order products array |
 | `{$delivery}` | Delivery method |
@@ -440,30 +434,30 @@ Chunk `tpl.msCustomer.base` contains:
 ## System settings
 
 | Setting | Description |
-|---------|-------------|
+|-----------|----------|
 | `ms3_customer_login_page_id` | Login page ID |
 | `ms3_customer_register_page_id` | Registration page ID |
 
-## Example cabinet page
+## Example account page
 
 Create three resources with the same template but different snippet calls:
 
 ### Profile (/cabinet/profile/)
 
 ```fenom
-{'!msCustomer' | snippet: ['service' => 'profile']}
+{'!msCustomer' | snippet : ['service' => 'profile']}
 ```
 
 ### Orders (/cabinet/orders/)
 
 ```fenom
-{'!msCustomer' | snippet: ['service' => 'orders']}
+{'!msCustomer' | snippet : ['service' => 'orders']}
 ```
 
 ### Addresses (/cabinet/addresses/)
 
 ```fenom
-{'!msCustomer' | snippet: ['service' => 'addresses']}
+{'!msCustomer' | snippet : ['service' => 'addresses']}
 ```
 
 ## Form handling
@@ -480,12 +474,12 @@ Profile and address forms are submitted via POST with `ms3_action`:
 Available actions:
 
 | Action | Description |
-|--------|-------------|
+|----------|----------|
 | `customer/update-profile` | Update profile |
-| `customer/address-create` | Create address |
-| `customer/address-update` | Update address |
-| `customer/delete-address` | Delete address (via API) |
-| `customer/set-default-address` | Set default address (via API) |
+| `customer/create-address` | Create address |
+| `customer/update-address` | Update address |
+| `customer/delete-address` | Delete address |
+| `customer/set-default-address` | Set default address |
 
 ## CSS classes
 

@@ -91,4 +91,4 @@ MS3ActionRegistry.register('myAction', async (data, gridId) => {
 });
 ```
 
-See also: [Category — Adding actions](category#adding-actions-to-column)
+See also: [Category — Adding actions](category#adding-actions-to-the-column)

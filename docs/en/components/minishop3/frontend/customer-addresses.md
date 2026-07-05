@@ -1,25 +1,24 @@
 ---
 title: Delivery addresses
-description: Customer address management page
 ---
 # Delivery addresses
 
-Page for managing customer delivery addresses. Create, edit, delete addresses and set a default.
+Page for managing customer delivery addresses. Lets customers create, edit, delete addresses, and set a default address.
 
 ## Page structure
 
-| Component | Chunk | Purpose |
-|-----------|------|----------|
-| Base layout | `tpl.msCustomer.base` | Wrapper with sidebar |
+| Component | File | Purpose |
+|-----------|------|---------|
+| Base layout | `tpl.msCustomer.base` | Common wrapper with sidebar |
 | Sidebar | `tpl.msCustomer.sidebar` | Account navigation |
 | Address list | `tpl.msCustomer.addresses` | List container |
-| Address row | `tpl.msCustomer.address.row` | Single address row |
+| Address row | `tpl.msCustomer.address.row` | Single address in the list |
 | Address form | `tpl.msCustomer.address.form` | Create/edit form |
 
 ## Snippet call
 
 ```fenom
-{'!msCustomer' | snippet: [
+{'!msCustomer' | snippet : [
     'service' => 'addresses'
 ]}
 ```
@@ -35,9 +34,9 @@ Page for managing customer delivery addresses. Create, edit, delete addresses an
 | **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Chunk for guests |
 | **return** | `tpl` | Format: `tpl` or `data` |
 
-## Modes
+## Operating modes
 
-The page has three modes via GET parameter `mode`:
+The page works in three modes via the GET parameter `mode`:
 
 | URL | Mode | Description |
 |-----|------|-------------|
@@ -50,9 +49,9 @@ The page has three modes via GET parameter `mode`:
 ### In tpl.msCustomer.addresses (list)
 
 | Placeholder | Type | Description |
-|-------------|-----|-------------|
+|-------------|------|-------------|
 | `{$addresses}` | string | Rendered address rows (HTML) |
-| `{$addresses_count}` | int | Address count |
+| `{$addresses_count}` | int | Number of addresses |
 | `{$customer}` | array | Customer data |
 | `{$success}` | string | Success message |
 | `{$error}` | string | Error message |
@@ -60,7 +59,7 @@ The page has three modes via GET parameter `mode`:
 ### In tpl.msCustomer.address.row
 
 | Placeholder | Type | Description |
-|-------------|-----|-------------|
+|-------------|------|-------------|
 | `{$id}` | int | Address ID |
 | `{$name}` | string | Address name |
 | `{$display_name}` | string | Auto-generated name |
@@ -73,14 +72,14 @@ The page has three modes via GET parameter `mode`:
 | `{$building}` | string | Building |
 | `{$entrance}` | string | Entrance |
 | `{$floor}` | string | Floor |
-| `{$room}` | string | Apartment/office |
+| `{$room}` | string | Apartment |
 | `{$metro}` | string | Metro station |
 | `{$text_address}` | string | Address comment |
 
 ### In tpl.msCustomer.address.form
 
 | Placeholder | Type | Description |
-|-------------|-----|-------------|
+|-------------|------|-------------|
 | `{$mode}` | string | Mode: `create` or `edit` |
 | `{$address}` | array | Address data (when editing) |
 | `{$errors}` | array | Validation errors |
@@ -129,8 +128,8 @@ The page has three modes via GET parameter `mode`:
 {/block}
 ```
 
-::: info JS inclusion
-As of v1.6, a separate `customer-addresses.js` script is not required. Address actions (set default, delete) are built into `CustomerUI` and initialize automatically via `ms3.js`.
+::: info JavaScript
+Since version 1.6, a separate `customer-addresses.js` script is not required. Address management (set default, delete) is built into `CustomerUI` and initializes automatically via `ms3.js`.
 :::
 
 ## Address row chunk
@@ -166,7 +165,7 @@ As of v1.6, a separate `customer-addresses.js` script is not required. Address a
                 {if $room}, apt. {$room}{/if}
             </p>
             {if $metro}
-            <p class="mb-1 small text-muted">{$metro}</p>
+            <p class="mb-1 small text-muted">Metro {$metro}</p>
             {/if}
         </div>
         <div class="btn-group btn-group-sm ms-3" role="group">
@@ -307,7 +306,7 @@ As of v1.6, a separate `customer-addresses.js` script is not required. Address a
                                value="{$address.floor}">
                     </div>
 
-                    {* Room *}
+                    {* Apartment *}
                     <div class="col-md-3 mb-3">
                         <label for="room" class="form-label">
                             {'ms3_customer_room' | lexicon}
@@ -356,26 +355,26 @@ As of v1.6, a separate `customer-addresses.js` script is not required. Address a
 
 ## JavaScript API
 
-Address actions are built into `CustomerUI` and work automatically via `ms3.js`.
+Address management is built into `CustomerUI` and works automatically via `ms3.js`.
 
 ### API endpoints
 
 ```
-PUT    /api/v1/customer/addresses/{id}/set-default  // Set default
-DELETE /api/v1/customer/addresses/{id}              // Delete address
+PUT    /api/v1/customer/addresses/{id}/set-default  // Set as default
+DELETE /api/v1/customer/addresses/{id}               // Delete address
 ```
 
 ### Action buttons
 
 ```html
-<!-- Set default -->
+<!-- Set as default -->
 <button class="set-default-address" data-address-id="5">★</button>
 
 <!-- Delete -->
 <button class="delete-address" data-address-id="5">✕</button>
 ```
 
-Set default and delete show a confirmation dialog (`ms3Confirm`). The confirmation text is taken from the address row data attributes:
+On delete and set-default, a confirmation dialog is shown (`ms3Confirm`). Confirmation text comes from data attributes on the address row:
 
 ```html
 <div class="list-group-item"
@@ -386,7 +385,7 @@ Set default and delete show a confirmation dialog (`ms3Confirm`). The confirmati
 ### Hooks
 
 | Hook | Description |
-|------|-------------|
+|-----|----------|
 | `beforeSetDefaultAddress` | Before setting default address |
 | `afterSetDefaultAddress` | After setting default address |
 | `beforeDeleteAddress` | Before deleting address |
@@ -395,14 +394,14 @@ Set default and delete show a confirmation dialog (`ms3Confirm`). The confirmati
 ## Form handling
 
 | Action | ms3_action | Description |
-|--------|------------|-------------|
-| Create | `customer/address-create` | Create address |
+|----------|------------|----------|
+| Create | `customer/address-create` | Create new address |
 | Edit | `customer/address-update` | Update address |
 
 ## Address fields
 
 | Field | Required | Description |
-|------|----------|-------------|
+|------|--------------|----------|
 | `name` | No | Address name (Home, Office) |
 | `index` | No | Postal code |
 | `country` | No | Country |
@@ -426,8 +425,8 @@ Set default and delete show a confirmation dialog (`ms3Confirm`). The confirmati
 
 | Class | Element |
 |-------|---------|
-| `.ms3-customer-addresses` | Address list container |
+| `.ms3-customer-addresses` | List container |
 | `.ms3-customer-address-form` | Form container |
 | `.ms3-address-form` | Address form |
-| `.set-default-address` | Set default button |
+| `.set-default-address` | "Set default" button |
 | `.delete-address` | Delete button |

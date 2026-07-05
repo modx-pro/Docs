@@ -5,6 +5,8 @@ title: Cart
 
 The shopping cart is a key part of an online store. MiniShop3 provides a flexible system for displaying the cart anywhere on the site.
 
+[![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
+
 ## Multiple carts on a page
 
 MiniShop3 allows **any number of carts** on a single page. Each cart can have its own template and update automatically when content changes.
@@ -16,7 +18,7 @@ The key parameter is `selector`. It specifies the CSS selector of the wrapper el
 ```fenom
 {* Mini-cart in the site header *}
 <div id="header-mini-cart">
-    {'!msCart' | snippet: [
+    {'!msCart' | snippet : [
         'tpl' => 'tpl.msMiniCart',
         'selector' => '#header-mini-cart',
         'includeThumbs' => 'small'
@@ -25,7 +27,7 @@ The key parameter is `selector`. It specifies the CSS selector of the wrapper el
 
 {* Main cart on the page *}
 <div id="main-cart">
-    {'!msCart' | snippet: [
+    {'!msCart' | snippet : [
         'tpl' => 'tpl.msCart',
         'selector' => '#main-cart',
         'includeThumbs' => 'medium'
@@ -48,14 +50,14 @@ Cart behavior on the frontend is provided by a set of JavaScript modules:
 | `js/web/ms3.js` | Main `ms3` object, initialization of all modules |
 | `js/web/core/CartAPI.js` | API client for cart operations (add, remove, change, clean) |
 | `js/web/ui/CartUI.js` | UI handlers: +/- buttons, remove, HTML auto-update |
-| `js/web/core/TokenManager.js` | Cart auth token management |
+| `js/web/core/TokenManager.js` | Cart authorization token management |
 | `js/web/core/ApiClient.js` | HTTP client for server requests |
 
 ### Loading scripts
 
-Scripts are loaded automatically by the MiniShop3 plugin on pages where the cart or checkout snippets are called.
+Scripts are loaded automatically by the MiniShop3 plugin on pages where cart or checkout snippets are called.
 
-To load manually:
+For manual loading:
 
 ```html
 <script src="/assets/components/minishop3/js/web/ms3.min.js"></script>
@@ -63,7 +65,7 @@ To load manually:
 
 ### Ready event
 
-After initialization, MiniShop3 fires:
+After initialization, MiniShop3 fires an event:
 
 ```javascript
 document.addEventListener('ms3:ready', function() {
@@ -84,46 +86,46 @@ document.addEventListener('ms3:cart:updated', function(e) {
 
 ## Cart contents and available fields
 
-### Base product fields in the cart
+### Basic product fields in the cart
 
-Each product in the cart has:
+Each cart item contains:
 
 | Field | Description |
 |-------|-------------|
-| `product_key` | Unique key of the cart line |
+| `product_key` | Unique cart line key |
 | `product_id` | Product ID (MODX resource) |
 | `count` | Quantity |
-| `price` | Price per unit |
+| `price` | Unit price |
 | `cost` | Line total (price × count) |
-| `weight` | Weight per unit |
+| `weight` | Unit weight |
 | `old_price` | Old price (if discounted) |
-| `discount_price` | Discount per unit |
-| `discount_cost` | Discount for the line |
+| `discount_price` | Unit discount amount |
+| `discount_cost` | Line discount amount |
 | `pagetitle` | Product name |
 | `article` | SKU |
-| `options` | Array of selected options |
+| `options` | Selected options array |
 
 ### Totals
 
 | Field | Description |
 |-------|-------------|
-| `total.count` | Total quantity of products |
+| `total.count` | Total item quantity |
 | `total.positions` | Number of lines (unique products) |
 | `total.cost` | Total cost |
 | `total.weight` | Total weight |
-| `total.discount` | Total discounts |
+| `total.discount` | Total discount amount |
 
 ### Adding images
 
-To show product images, use the `includeThumbs` parameter:
+To output product images, use the `includeThumbs` parameter:
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'includeThumbs' => 'small'
 ]}
 ```
 
-In the chunk you get the `thumb` field:
+The chunk will have the `thumb` field available:
 
 ```fenom
 {foreach $products as $product}
@@ -136,7 +138,7 @@ In the chunk you get the `thumb` field:
 For multiple sizes:
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'includeThumbs' => 'small,medium,large'
 ]}
 
@@ -150,12 +152,12 @@ For multiple sizes:
 To output product TV fields, use the `includeTVs` parameter:
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'includeTVs' => 'brand,material,country'
 ]}
 ```
 
-In the chunk TVs are available directly:
+In the chunk, TVs are available directly:
 
 ```fenom
 {foreach $products as $product}
@@ -165,9 +167,9 @@ In the chunk TVs are available directly:
 {/foreach}
 ```
 
-### Product options
+### Adding product options
 
-Options chosen when adding to cart are available in two ways:
+Options selected when adding a product to the cart are available in two ways:
 
 **1. `options` array:**
 
@@ -179,7 +181,7 @@ Options chosen when adding to cart are available in two ways:
 {/if}
 ```
 
-**2. Separate fields with `option_` prefix:**
+**2. Separate fields with the `option_` prefix:**
 
 ```fenom
 {if $product.option_size?}
@@ -192,7 +194,7 @@ Options chosen when adding to cart are available in two ways:
 
 ### Vendor data
 
-If a product has a vendor, its data is available with the `vendor.` prefix:
+If the product has a vendor, vendor data is available with the `vendor.` prefix:
 
 ```fenom
 {if $product.vendor.name?}
@@ -205,23 +207,23 @@ If a product has a vendor, its data is available with the `vendor.` prefix:
 
 ## Built-in chunks
 
-MiniShop3 includes two chunks for the cart:
+MiniShop3 includes two ready-made chunks for cart output:
 
 ### tpl.msCart — full cart
 
 [![](https://file.modx.pro/files/d/0/f/d0f58a2c70961d54036548714c0239c5.png)](https://file.modx.pro/files/d/0/f/d0f58a2c70961d54036548714c0239c5.png)
 
-Table layout with all controls:
+Tabular output with all controls:
 
 - Product image
 - Name with link
 - Option selection (color, size)
-- Quantity +/- buttons
-- Remove product
+- Quantity change buttons (+/-)
+- Remove item
 - Total row
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'tpl' => 'tpl.msCart',
     'includeThumbs' => 'small'
 ]}
@@ -231,57 +233,57 @@ Table layout with all controls:
 
 [![](https://file.modx.pro/files/b/e/3/be30d2bee57c7d32dad132bc3e4727cc.png)](https://file.modx.pro/files/b/e/3/be30d2bee57c7d32dad132bc3e4727cc.png)
 
-Simplified view for header or sidebar:
+Compact view for the site header or sidebar:
 
 - Compact product list
-- Link to cart page
+- Button to go to the cart page
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'tpl' => 'tpl.msMiniCart',
     'includeThumbs' => 'small'
 ]}
 ```
 
 ::: info Customization
-Copy the default chunk and create your own with the desired name. Then set it in the `tpl` parameter. Default chunks use Bootstrap 5, but you can adapt the markup to any CSS framework.
+Copy the default chunk and create your own with the desired name. Then specify it in the `tpl` parameter. Default chunks use Bootstrap 5, but you can adapt the markup to any CSS framework.
 :::
 
 ## Demo cart page template
 
-MiniShop3 ships with a demo cart page template:
+MiniShop3 ships with a ready-made demo cart page template:
 
 ```
 core/components/minishop3/elements/templates/cart.tpl
 ```
 
-The template shows the recommended cart page structure and includes:
+The template demonstrates the recommended cart page structure and includes:
 
 - **Breadcrumbs** — site navigation
 - **Page title** — with icon and description from `introtext`
-- **msCart snippet call** — with `selector` for auto-update
-- **Action buttons** — "Continue shopping" and "Checkout" (hidden when cart is empty)
-- **Benefits block** — delivery, warranty, payment info
-- **CSS** — cart styling and responsiveness
-- **JavaScript** — button visibility based on cart state
+- **msCart snippet call** — with the `selector` parameter for auto-update
+- **Action buttons** — "Continue shopping" and "Checkout" (hidden automatically when the cart is empty)
+- **Benefits block** — delivery, warranty, and payment information
+- **CSS styles** — cart styling and responsiveness
+- **JavaScript** — button visibility logic based on cart state
 
 [![](https://file.modx.pro/files/0/9/9/0994afcf57549c2c6ace871886a8c3aa.png)](https://file.modx.pro/files/0/9/9/0994afcf57549c2c6ace871886a8c3aa.png)
 
 ### Usage
 
 1. Create a new template in MODX (Elements → Templates)
-2. Copy the contents of `cart.tpl` or set the path to the file
+2. Copy the contents of `cart.tpl` or point to the file path
 3. Assign the template to the cart page
 
 ::: tip Inheritance
-The demo template uses Fenom inheritance (`{extends 'file:templates/base.tpl'}`). Ensure the base template exists, or replace with your own structure.
+The demo template uses Fenom inheritance (`{extends 'file:templates/base.tpl'}`). Make sure the base template exists, or replace it with your own structure.
 :::
 
-### Settings
+### Configuration
 
 The template uses system settings:
 
-- `ms3_order_page_id` — Checkout page ID (for the "Checkout" button)
+- `ms3_order_page_id` — checkout page ID (for the "Checkout" button)
 
 Lexicons:
 
@@ -290,7 +292,7 @@ Lexicons:
 
 ## Forms and actions
 
-For cart forms use the class `ms3_form` and hidden field `ms3_action`:
+For cart forms, use the `ms3_form` class and the hidden `ms3_action` field:
 
 ```html
 {* Change quantity *}
@@ -301,7 +303,7 @@ For cart forms use the class `ms3_form` and hidden field `ms3_action`:
     <button type="submit">Update</button>
 </form>
 
-{* Remove product *}
+{* Remove item *}
 <form class="ms3_form">
     <input type="hidden" name="product_key" value="{$product.product_key}">
     <input type="hidden" name="ms3_action" value="cart/remove">
@@ -317,7 +319,7 @@ For cart forms use the class `ms3_form` and hidden field `ms3_action`:
 
 ## Programmatic control
 
-JavaScript API for the cart:
+JavaScript API for working with the cart:
 
 ```javascript
 // Add product
@@ -333,10 +335,10 @@ await ms3.cartUI.handleRemove(productKey);
 await ms3.cartUI.handleClean();
 ```
 
-Low-level API (no UI auto-update):
+Low-level API (without UI auto-update):
 
 ```javascript
-// Direct API calls
+// Direct API requests
 const result = await ms3.cartAPI.add(productId, count, options);
 const result = await ms3.cartAPI.change(productKey, count);
 const result = await ms3.cartAPI.remove(productKey);

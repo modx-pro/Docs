@@ -27,11 +27,17 @@ core/components/minishop3/
 │   ├── routes/
 │   │   ├── manager.php                    # Manager API system routes
 │   │   └── web.php                        # Web API system routes
+│   ├── ms3.routes.d/
+│   │   ├── manager/example-addon.php.dist # Addon example (Manager)
+│   │   └── web/example-addon.php.dist     # Addon example (Web)
 │   └── routes_manager.custom.example.php  # Custom routes example
 
 core/config/
 ├── ms3_routes_manager.custom.php          # Custom Manager routes
-└── ms3_routes_web.custom.php              # Custom Web routes
+├── ms3_routes_web.custom.php              # Custom Web routes
+└── ms3.routes.d/                          # Modular addon routes
+    ├── manager/                           # Manager API fragments
+    └── web/                               # Web API fragments
 ```
 
 ## Basic usage
@@ -412,6 +418,57 @@ If middleware returns a `Response`, the rest of the middleware and the handler a
 | GET | `/sections/{page_key}` | Get sections |
 | PUT | `/sections/{page_key}` | Update sections |
 
+#### Grid config (`/grid-config`)
+
+CRUD for admin grid column configuration. All requests require permission `mssetting_save`.
+
+| Method | Route | Description |
+|-------|------|-------------|
+| GET | `/{grid_key}` | Get grid configuration |
+| PUT | `/{grid_key}` | Update grid configuration |
+| POST | `/{grid_key}/field` | Add column |
+| PUT | `/{grid_key}/field/{field_name}` | Update column |
+| DELETE | `/{grid_key}/field/{field_name}` | Delete column |
+
+**Known `grid_key` values:** `orders`, `customers`, `vendors`, `deliveries`, `payments`, `category-products`, `extra-fields`, `model-fields`, `notifications`, `option-groups`.
+
+##### `GET /grid-config/{grid_key}` response
+
+```json
+{
+  "columns": [
+    { "name": "id", "label": "ID", "type": "model", "visible": true, ... }
+  ],
+  "direct_filter_keys": ["query", "status_id", "delivery_id", ...],
+  "editor_references": [
+    { "key": "vendors", "path": "/api/mgr/references/vendors" }
+  ]
+}
+```
+
+| Field | Type | Description |
+|------|-----|----------|
+| `columns` | `array` | Grid columns with configuration (type, visibility, filtering, editor) |
+| `direct_filter_keys` | `string[]` | Filter keys the controller expects as **direct** request parameters (no `filter_` prefix). Others must be sent with the prefix. Source of truth is the backend; the frontend reads the array from here. Added in MiniShop3 1.12.0 ([PR #317](https://github.com/modx-pro/MiniShop3/pull/317)) — removes duplication between frontend and controllers. |
+| `editor_references` | `array<{key,path}>` | **Only for `grid_key=category-products`.** Whitelist of allowed reference keys for inline-edit combo editor. Each entry is a key/path pair to a reference API endpoint. Used by the column settings UI for select dropdown. Added in MiniShop3 1.12.0 ([PR #157](https://github.com/modx-pro/MiniShop3/pull/157)). |
+
+##### Filter contract (`direct_filter_keys`)
+
+Frontend code decides how to serialize a filter value:
+
+```js
+// Pseudocode: composable useGridFilterParams
+function addFilterParam(params, key, value) {
+    if (directFilterKeys.has(key)) {
+        params[key] = value         // direct: ?status_id=2
+    } else {
+        params['filter_' + key] = value   // prefixed: ?filter_customer_name=...
+    }
+}
+```
+
+When adding a new direct filter on the backend, **always** add its key to the `DIRECT_FILTER_KEYS` constant in the corresponding controller. Otherwise the frontend sends it with a prefix and filtering will not work.
+
 #### Orders (`/orders`)
 
 | Method | Route | Description | Permission |
@@ -620,6 +677,148 @@ $router->group('/api/mgr/promocodes', function($router) use ($modx) {
     new AuthMiddleware($modx, 'mgr')
 ]);
 ```
+
+## Modular addon routes (`ms3.routes.d`)
+
+`ms3_routes_*.custom.php` files suit manual customization but **not addons** — if two components write to the same file, install/uninstall conflicts occur.
+
+Third-party components use the `core/config/ms3.routes.d/` directory — each addon creates its own file, so there are no conflicts.
+
+::: tip Analogy
+The pattern mirrors `ms3.services.d/` for [services](/en/components/minishop3/development/services).
+:::
+
+### Structure
+
+```
+core/config/ms3.routes.d/
+├── web/                          # Web API routes (api.php)
+│   ├── 50-mydelivery.php
+│   └── 50-mypayment.php
+└── manager/                      # Manager API routes (connector)
+    ├── 50-mydelivery.php
+    └── 50-myadmin.php
+```
+
+Files load in **alphabetical order**. Use a numeric prefix to control priority (`01-`, `50-`, `99-`).
+
+### Load order
+
+**Web API (`api.php`):**
+
+1. `config/routes/web.php` — system routes
+2. `core/config/ms3_routes_web.custom.php` — manual customizations
+3. `core/config/ms3.routes.d/web/*.php` — addons
+4. Dispatcher `build()`
+
+**Manager API (`connector.php` → `Processors\Api\Router`):**
+
+1. `config/routes/manager.php` — system routes
+2. `core/config/ms3_routes_manager.custom.php` — manual customizations
+3. `core/config/ms3.routes.d/manager/*.php` — addons
+4. Dispatcher `build()`
+
+Each subsequent level can override routes from the previous level by `METHOD:PATTERN` key.
+
+### Example: delivery addon Web API routes
+
+```php
+<?php
+// core/config/ms3.routes.d/web/50-mydelivery.php
+
+use MiniShop3\Router\Response;
+use MiniShop3\Middleware\TokenMiddleware;
+
+$router->group('/api/v1/delivery/mydelivery', function ($router) use ($modx) {
+
+    $router->post('/calculate', function (array $vars, \MODX\Revolution\modX $modx) {
+        $input = json_decode(file_get_contents('php://input'), true) ?: [];
+        $cost = MyDelivery::calculate($input['address'] ?? '', $input['weight'] ?? 0);
+        return Response::success(['cost' => $cost]);
+    });
+
+    $router->get('/points', function (array $vars, \MODX\Revolution\modX $modx) {
+        $city = $vars['city'] ?? '';
+        $points = MyDelivery::getPickupPoints($city);
+        return Response::success(['points' => $points]);
+    });
+
+}, [new TokenMiddleware($modx)]);
+```
+
+### Example: addon Manager API routes
+
+```php
+<?php
+// core/config/ms3.routes.d/manager/50-mydelivery.php
+
+use MiniShop3\Router\Middleware\AuthMiddleware;
+use MiniShop3\Router\Response;
+
+$router->group('/api/mgr/mydelivery', function ($router) use ($modx) {
+
+    $router->get('/settings', function (array $vars, \MODX\Revolution\modX $modx) {
+        return Response::success([
+            'api_key' => $modx->getOption('mydelivery_api_key'),
+            'enabled' => (bool) $modx->getOption('mydelivery_enabled'),
+        ]);
+    });
+
+    $router->put('/settings', function (array $vars, \MODX\Revolution\modX $modx) {
+        $data = json_decode(file_get_contents('php://input'), true) ?: [];
+        // Save settings...
+        return Response::success(['saved' => true]);
+    });
+
+}, [new AuthMiddleware($modx, 'mgr')]);
+```
+
+### Install and uninstall
+
+In the addon resolver:
+
+```php
+<?php
+// resolver on install
+$routesDir = MODX_CORE_PATH . 'config/ms3.routes.d/';
+
+// Copy route files
+copy(
+    $source . 'routes/web.php',
+    $routesDir . 'web/50-mydelivery.php'
+);
+copy(
+    $source . 'routes/manager.php',
+    $routesDir . 'manager/50-mydelivery.php'
+);
+```
+
+```php
+<?php
+// resolver on uninstall
+@unlink(MODX_CORE_PATH . 'config/ms3.routes.d/web/50-mydelivery.php');
+@unlink(MODX_CORE_PATH . 'config/ms3.routes.d/manager/50-mydelivery.php');
+```
+
+Each addon removes only its own file — other addons are unaffected.
+
+### Error handling
+
+If a route file has a syntax error or throws an exception, it is logged and skipped — **other files load normally**:
+
+```
+[MiniShop3 Router] Failed to load routes file /path/to/50-broken.php: syntax error...
+```
+
+### Custom file vs ms3.routes.d
+
+| | `ms3_routes_*.custom.php` | `ms3.routes.d/` |
+|---|---|---|
+| **For** | Site developer | Addon authors |
+| **Files** | One per API type | One file per addon |
+| **Conflicts** | Possible with multiple addons | None |
+| **Install/uninstall** | Manual editing required | Atomic: create/delete file |
+| **Created by** | On ms3 install (example) | Addon via resolver |
 
 ## System settings
 
