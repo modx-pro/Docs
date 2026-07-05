@@ -355,42 +355,72 @@ $categoryService->batchInsertOptions($productIds, 'color', 'Red');
 $categoryService->removeFromCategories($optionId, [5, 12, 18]);
 ```
 
-## Processors
+## REST API
 
-### Option management (Settings\Option)
+::: info Since v1.10.0-beta1
+Legacy processors `Processors/Settings/Option/*` and `Processors/Category/Option/*` were fully removed together with the ExtJS UI (22 files, ~2600 lines). All operations go through two REST controllers: `OptionsController` and `CategoryOptionsController`.
+:::
 
-| Processor | Description |
-|-----------|-------------|
-| `Settings\Option\Create` | Create option. Normalizes key, checks uniqueness |
-| `Settings\Option\Get` | Get option with linked categories |
-| `Settings\Option\GetList` | List options with filter by key, caption, category |
-| `Settings\Option\Update` | Update. Supports key rename and category resync |
-| `Settings\Option\Remove` | Remove (cascade deletes msCategoryOption and msProductOption) |
-| `Settings\Option\Assign` | Assign option to one category |
-| `Settings\Option\Duplicate` | Duplicate option with optional copy of categories and values |
-| `Settings\Option\GetCategories` | List MODX categories that have options |
-| `Settings\Option\GetTypes` | List available option types |
-| `Settings\Option\GetNodes` | Category tree with assignment flags |
-| `Settings\Option\Multiple` | Bulk operations |
+### Option management — `/api/mgr/options/*`
 
-### Category options (Category\Option)
+Controller `MiniShop3\Controllers\Api\Manager\OptionsController`, permission `mssetting_save`.
 
-| Processor | Description |
-|-----------|-------------|
-| `Category\Option\Add` | Add option to category |
-| `Category\Option\GetList` | List category options with msOption data |
-| `Category\Option\Update` | Update link (active, required, value) |
-| `Category\Option\UpdateFromGrid` | Inline update from grid |
-| `Category\Option\Activate` | Activate option in category |
-| `Category\Option\Deactivate` | Deactivate |
-| `Category\Option\Required` | Mark as required |
-| `Category\Option\Unrequired` | Unmark required |
-| `Category\Option\Remove` | Remove from category (smart cascade) |
-| `Category\Option\Duplicate` | Copy options from one category to another |
-| `Category\Option\Multiple` | Bulk operations |
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/api/mgr/options` | List options with filters: `query`, `modcategory_id`, `category_id`, `categories[]` |
+| `GET` | `/api/mgr/options/{id}` | Option detail + linked categories map |
+| `POST` | `/api/mgr/options` | Create: normalizes `key`, checks uniqueness, links to categories |
+| `PUT` | `/api/mgr/options/{id}` | Partial update; on `key` change resyncs `msProductOption` via `OptionSyncService::updateOptionKey` |
+| `DELETE` | `/api/mgr/options/{id}` | Delete (cascade via lifecycle `msOption::remove` → `msCategoryOption` → `msProductOption`) |
+| `DELETE` | `/api/mgr/options/bulk` | Bulk delete: `ids[]` |
+| `POST` | `/api/mgr/options/bulk/assign` | Assign `options[]` to `categories[]` |
+| `GET` | `/api/mgr/options/types` | Type list with localized names |
+| `GET` | `/api/mgr/options/tree` | Resource tree for linking options to product categories (since 1.11.0 — `msCategory` as selectable nodes + `modResource`/`modDocument`/`modWebLink` with `isfolder=1` as navigation, `selectable: bool` flag per node). Lazy by `parent`. `checked` flag for categories where the option is already assigned (if `option_id` is passed) |
+| `GET` | `/api/mgr/options/suggestions` | Unique `msProductOption.value` values by `key` for `comboOptions` autocomplete on the product card |
 
-### Value autocomplete
+> Since 1.11.0 the `GET /api/mgr/options/modcategories` endpoint was removed. Option grouping now uses `msOptionGroup` — see «Option groups» below.
 
-| Processor | Description |
-|-----------|-------------|
-| `Product\GetOptions` | Autocomplete values for an option key in the product form |
+### Option groups — `/api/mgr/option-groups/*`
+
+Controller `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Added in 1.11.0 — replace grouping via `modCategory` (#10).
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `` | Group list. Params: `start`, `limit` (`0` = all), `query` (search by `name` / `description`). Response: groups with `options_count`. |
+| `GET` | `/{id}` | One group + `options_count` |
+| `POST` | `` | Create group: `name` (required), `description`, `sort_order` |
+| `PUT` | `/{id}` | Update: `name`, `description`, `sort_order` |
+| `DELETE` | `/{id}` | Delete group. Options are not deleted — `option_group_id` is cleared (moved to «No group») |
+| `PUT` | `/positions` | Save new order: either `positions: { id: position, ... }` or `ids: [id, id, ...]` (ordered list) |
+| `DELETE` | `/bulk` | Bulk delete: `ids[]`. Options are unlinked (not deleted), then groups are removed |
+
+### Category options — `/api/mgr/categories/{category_id}/options/*`
+
+Controller `MiniShop3\Controllers\Api\Manager\CategoryOptionsController`, permission `mscategory_save`.
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `` | Options linked to the category. Each row returns `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
+| `POST` | `` | Link option to category: `option_id`, `value`, `active`, `required`, `caption`, `description` |
+| `PUT` | `/{option_id}` | Partial update of link: `value`, `active`, `required`, `position`, `caption`, `description` |
+| `DELETE` | `/{option_id}` | Remove link. Product values are deleted only if the option is not active in any other product category |
+| `POST` | `/sort` | Save new order (`option_ids[]`) |
+| `POST` | `/bulk` | Bulk actions: `activate` / `deactivate` / `require` / `unrequire` / `remove` for `option_ids[]` |
+| `POST` | `/duplicate` | Copy links from `category_from`; existing in current category are skipped |
+
+### Schema API — `msOptionType::getSchema()`
+
+::: info Since v1.10.0-beta1
+:::
+
+Each type class in `Controllers/Options/Types/` can return a declarative field description instead of an ExtJS JS string:
+
+```php
+abstract class msOptionType
+{
+    abstract public function getField($field);        // legacy — returns JS string for ExtJS
+    public function getSchema(array $field): array;   // new — array for Vue renderer
+}
+```
+
+`OptionLoaderService::getFieldsForProduct()` attaches `schema` to each `option_fields` row alongside legacy `ext_field`. The Vue product card reads `schema`; legacy `ext_field` remains for backward compatibility (but is no longer used in core).

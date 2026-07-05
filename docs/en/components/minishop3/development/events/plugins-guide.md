@@ -365,6 +365,66 @@ switch ($modx->event->name) {
 }
 ```
 
+## Common mistakes
+
+### 1. Forgot return after output()
+
+```php
+// Wrong — execution continues
+if ($error) {
+    $modx->event->output('Error');
+}
+// This runs even on error
+doSomething();
+
+// Correct
+if ($error) {
+    $modx->event->output('Error');
+    return;
+}
+```
+
+### 2. Not using a reference for returnedValues
+
+```php
+// Wrong
+$values = $modx->event->returnedValues;
+$values['count'] = 10; // Changes are lost
+
+// Correct
+$values = &$modx->event->returnedValues;
+$values['count'] = 10;
+```
+
+### 3. Wrong event type for aborting
+
+```php
+// msOnAddToCart — event AFTER add
+// Aborting here does not stop the add (product already added)
+case 'msOnAddToCart':
+    $modx->event->output('Error'); // Useless
+    break;
+
+// msOnBeforeAddToCart — event BEFORE add
+case 'msOnBeforeAddToCart':
+    $modx->event->output('Error'); // Stops the add
+    break;
+```
+
+### 4. Forgot break in switch
+
+```php
+switch ($modx->event->name) {
+    case 'msOnBeforeAddToCart':
+        // code
+        // Forgot break — next case runs too!
+
+    case 'msOnAddToCart':
+        // This also runs for msOnBeforeAddToCart
+        break;
+}
+```
+
 ## Full plugin example
 
 ```php

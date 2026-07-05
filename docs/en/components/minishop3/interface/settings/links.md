@@ -3,7 +3,7 @@ title: Product links
 ---
 # Product links
 
-Product link type management is available via **Extras → MiniShop3 → Settings → Links**.
+Product relationship types are managed via **Extras → MiniShop3 → Settings → Links**.
 
 ## Purpose
 
@@ -13,7 +13,7 @@ Links define relationships between products:
 - **Related products** — add-ons to the purchase
 - **Bundles** — products sold together
 - **Upsell** — higher-priced alternatives
-- **Cross-sell** — additional products to sell
+- **Cross-sell** — products for additional sales
 
 ## Link type fields
 
@@ -30,31 +30,31 @@ Links define relationships between products:
 | `similar` | Similar products | Alternatives for comparison |
 | `related` | Related | Accessories, consumables |
 | `upsell` | Upsell | Premium versions |
-| `crosssell` | Cross-sell | Add-ons in cart |
+| `crosssell` | Cross-sell | Cart add-ons |
 
-## Creating product links
+## Creating links between products
 
-### Via interface
+### Via the interface
 
 1. Open the product card
 2. Go to the **Links** tab
 3. Select link type
-4. Add linked products via search
+4. Add related products via search
 
 ### Via API
 
 ```php
-// Create link
+// Create a link
 $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
 $link->fromArray([
     'link_id' => 1,        // Link type ID (e.g. "similar")
-    'master' => 10,        // Main product ID
-    'slave' => 20,         // Linked product ID
+    'master' => 10,        // Master product ID
+    'slave' => 20,         // Related product ID
 ]);
 $link->save();
 ```
 
-## Outputting linked products
+## Displaying related products
 
 ### msProducts snippet with link parameter
 
@@ -68,13 +68,13 @@ $link->save();
 ])}
 ```
 
-### Output in product card
+### On the product page
 
 ```fenom
 {* Related products *}
 <div class="related-products">
     <h3>Frequently bought together</h3>
-    {'msProducts' | snippet: [
+    {'msProducts' | snippet : [
         'link' => 2,
         'master' => $id,
         'tpl' => 'tpl.msRelated.row',
@@ -85,7 +85,7 @@ $link->save();
 {* Similar products *}
 <div class="similar-products">
     <h3>Similar products</h3>
-    {'msProducts' | snippet: [
+    {'msProducts' | snippet : [
         'link' => 1,
         'master' => $id,
         'tpl' => 'tpl.msSimilar.row',
@@ -98,15 +98,15 @@ $link->save();
 
 By default a link is one-way: product A is linked to B, but not vice versa.
 
-For bidirectional links, create the reverse link in code:
+For bidirectional links create the reverse link programmatically:
 
 ```php
 // Create bidirectional link
-$linkTypeId = 1;
+$linkTypeId = 1; // Link type ID
 $productA = 10;
 $productB = 20;
 
-// Direct: A → B
+// Forward: A → B
 $link1 = $modx->newObject(\MiniShop3\Model\msProductLink::class);
 $link1->fromArray([
     'link_id' => $linkTypeId,
@@ -125,9 +125,9 @@ $link2->fromArray([
 $link2->save();
 ```
 
-## Using in cart
+## Use in the cart
 
-The `crosssell` link type is useful in the cart:
+`crosssell` links work well in the cart:
 
 ```fenom
 {* In cart chunk *}
@@ -138,8 +138,8 @@ The `crosssell` link type is useful in the cart:
 
 {* Cross-sell products *}
 <div class="cart-crosssell">
-    <h4>You might also like</h4>
-    {'msProducts' | snippet: [
+    <h4>Recommended add-ons</h4>
+    {'msProducts' | snippet : [
         'link' => 4,
         'master' => $cartProductIds | join : ',',
         'tpl' => 'tpl.msCrosssell.row',
@@ -154,12 +154,14 @@ The `crosssell` link type is useful in the cart:
 
 ```php
 <?php
-// Plugin on msOnProductSave event
+// Plugin on msOnProductSave
 switch ($modx->event->name) {
     case 'msOnProductSave':
+        // Auto-create links to products in the same category
         $product = $modx->getOption('product', $scriptProperties);
         $categoryId = $product->get('parent');
 
+        // Products in the same category
         $siblings = $modx->getCollection(\MiniShop3\Model\msProduct::class, [
             'parent' => $categoryId,
             'id:!=' => $product->get('id'),
@@ -167,6 +169,7 @@ switch ($modx->event->name) {
         ]);
 
         foreach ($siblings as $sibling) {
+            // Check if link already exists
             $existing = $modx->getObject(\MiniShop3\Model\msProductLink::class, [
                 'link_id' => 1,
                 'master' => $product->get('id'),

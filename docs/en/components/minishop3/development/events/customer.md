@@ -526,3 +526,59 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+---
+
+## msOnBeforeGetOrderUser
+
+Fired **before** resolving the MODX system user (`modUser`) for the order. Runs in `OrderUserResolver` on order submit when system setting `ms3_order_register_user_on_submit` is enabled.
+
+::: tip How `modUser` differs from `msCustomer`
+`modUser` is the MODX system user (login, password, profile). `msCustomer` is a separate store customer entity (name, phone, session token). The `modUser` resolver registers the customer in MODX auth, not in the store customer profile.
+:::
+
+### Parameters
+
+| Parameter | Type | Description |
+|----------|-----|----------|
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service |
+| `user` | `\MODX\Revolution\modUser` \| `null` | Current user candidate — usually `null` on input |
+| `orderData` | `array` | Snapshot of order fields (address `address_email`, `address_phone`, `address_first_name`, etc.) |
+
+### Substituting the user
+
+A plugin can return a ready `modUser` via `returnedValues['user']` to bypass default lookup/creation:
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeGetOrderUser':
+        $orderData = $scriptProperties['orderData'];
+
+        // Custom lookup by external ID, e.g. from CRM
+        if (!empty($orderData['address_external_id'])) {
+            $found = $modx->getObject(
+                \MODX\Revolution\modUser::class,
+                ['username' => 'crm_' . $orderData['address_external_id']]
+            );
+
+            if ($found) {
+                $modx->event->returnedValues = ['user' => $found];
+            }
+        }
+        break;
+}
+```
+
+---
+
+## msOnGetOrderUser
+
+Fired **after** resolving the user for the order.
+
+### Parameters
+
+| Parameter | Type | Description |
+|----------|-----|----------|
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service |
+| `user` | `\MODX\Revolution\modUser` \| `null` | Final user (or `null` if resolution failed) |

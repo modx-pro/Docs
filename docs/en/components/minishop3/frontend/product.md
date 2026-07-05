@@ -3,7 +3,9 @@ title: Product page
 ---
 # Product page
 
-The product page is a detailed view of a single product with gallery, price, options, and add-to-cart form.
+The product page shows a single product in detail: gallery, price, options, and add-to-cart form.
+
+[![](https://file.modx.pro/files/2/5/a/25aa24b8959c026826d65090b57111c8s.jpg)](https://file.modx.pro/files/2/5/a/25aa24b8959c026826d65090b57111c8.png)
 
 ## Page structure
 
@@ -11,7 +13,7 @@ The product page is a detailed view of a single product with gallery, price, opt
 |-----------|------|---------|
 | Page template | `elements/templates/product.tpl` | Product page layout |
 | Gallery | `tpl.msGallery` | Image slider with lightbox |
-| Product options | `tpl.msProductOptions` | Product specifications output |
+| Product options | `tpl.msProductOptions` | Product attributes output |
 
 ## Page template
 
@@ -35,7 +37,7 @@ The template extends the base template (`base.tpl`) and contains the following s
 
 ### Breadcrumbs
 
-Navigation chain from home to the current product:
+Navigation trail from home to the current product:
 
 ```fenom
 <nav aria-label="breadcrumb" class="mb-4">
@@ -77,10 +79,10 @@ The gallery uses [Splide](https://splidejs.com/) for the slider and [GLightbox](
 
 | Placeholder | Type | Description |
 |-------------|------|-------------|
-| `{$files}` | array | Array of product images |
+| `{$files}` | array | Product image array |
 | `{$file['url']}` | string | Full image URL |
 | `{$file['small']}` | string | Thumbnail URL (small) |
-| `{$file['medium']}` | string | Medium size URL |
+| `{$file['medium']}` | string | Medium size URL (medium) |
 | `{$file['name']}` | string | File name |
 | `{$file['description']}` | string | Image description |
 
@@ -88,11 +90,11 @@ See also: [msGallery](/en/components/minishop3/snippets/msgallery)
 
 ---
 
-### Product info
+### Product information
 
-Right column with product data includes:
+The right column with product data includes:
 
-#### Vendor and title
+#### Vendor and name
 
 ```fenom
 {if $vendor_name?}
@@ -125,20 +127,20 @@ Right column with product data includes:
 | Badge | Condition | Style |
 |-------|-----------|-------|
 | NEW | `{$new?}` | `badge bg-primary` |
-| BEST SELLER | `{$popular?}` | `badge bg-warning text-dark` |
+| BESTSELLER | `{$popular?}` | `badge bg-warning text-dark` |
 | RECOMMENDED | `{$favorite?}` | `badge bg-danger` |
 
 ---
 
 ### Price block
 
-Price is in a separate block with background:
+Price is shown in a separate block with background:
 
 ```fenom
 <div class="product-price mb-4 p-4 bg-light rounded">
     {if $old_price? && $old_price > 0}
         <div class="old-price text-muted text-decoration-line-through mb-2">
-            {$old_price}
+            {$old_price} ₽
         </div>
 
         {if $discount?}
@@ -149,27 +151,27 @@ Price is in a separate block with background:
     {/if}
 
     <div class="current-price display-4 fw-bold text-primary">
-        {$price ?: 0}
+        {$price ?: 0} ₽
     </div>
 </div>
 ```
 
 ::: tip Discount calculation
-Discount percentage is calculated automatically by the msProducts snippet when `old_price` is present. Formula: `(old_price - price) / old_price * 100`
+The discount percentage is calculated automatically by the msProducts snippet when `old_price` is set. Formula: `(old_price - price) / old_price * 100`
 :::
 
 ---
 
 ### Product options
 
-If the product has `color` or `size` options, they are output as buttons:
+If the product has `color` or `size` options, they are rendered as buttons:
 
 ```fenom
-{if $color?}
+{if $_modx->resource.color?}
     <div class="option-group mb-3">
         <label class="form-label fw-semibold">Color:</label>
         <div class="d-flex flex-wrap gap-2">
-            {foreach $color as $colorOption}
+            {foreach $_modx->resource.color as $colorOption}
                 <button type="button" class="btn btn-outline-secondary btn-sm option-btn">
                     {$colorOption}
                 </button>
@@ -213,7 +215,7 @@ Shown when the product is not in the cart:
 
 #### "In cart" state
 
-Shown when the product is already added:
+Shown when the product is already in the cart:
 
 ```fenom
 <form method="post" class="ms3_form product-cart-controls-hidden" data-cart-state="change">
@@ -237,11 +239,11 @@ Shown when the product is already added:
 </form>
 ```
 
-Switching happens automatically via the JavaScript `ProductCardUI` module on the `ms3:cart:updated` event.
+Switching happens automatically through the `ProductCardUI` JavaScript module on the `ms3:cart:updated` event.
 
 ---
 
-### Additional info
+### Additional information
 
 Block with icons for weight, country of origin, and delivery:
 
@@ -264,7 +266,7 @@ Block with icons for weight, country of origin, and delivery:
 
 ---
 
-### Info tabs
+### Information tabs
 
 Bootstrap tabs for organizing content:
 
@@ -272,7 +274,7 @@ Bootstrap tabs for organizing content:
 |-----|---------|
 | **Description** | Full description from `{$_modx->resource.description}` |
 | **Specifications** | Product properties table |
-| **Delivery** | Delivery methods info |
+| **Delivery** | Delivery methods information |
 
 ```fenom
 <ul class="nav nav-tabs mb-4" role="tablist">
@@ -311,8 +313,8 @@ Filled automatically from product fields:
 | Vendor | `{$vendor_name}` |
 | Country of origin | `{$made_in}` |
 | Weight | `{$weight}` |
-| Available colors | `{$color}` (array) |
-| Available sizes | `{$size}` (array) |
+| Available colors | `{$_modx->resource.color}` (array) |
+| Available sizes | `{$_modx->resource.size}` (array) |
 
 ---
 
@@ -324,7 +326,7 @@ Block with products from the same category:
 <div class="related-products mt-5">
     <h3 class="mb-4">Related products</h3>
     <div class="row">
-        {'!msProducts' | snippet: [
+        {'!msProducts' | snippet : [
             'tpl' => 'tpl.msProducts.row',
             'parents' => $_modx->resource.parent,
             'resources' => '-' ~ $_modx->resource.id,
@@ -339,19 +341,19 @@ Block with products from the same category:
 | Parameter | Value | Purpose |
 |-----------|-------|---------|
 | `parents` | Parent category ID | Products from the same category |
-| `resources` | `-ID` of current product | Exclude current product |
+| `resources` | `-` current product ID | Exclude the current product |
 | `limit` | `4` | Show 4 products |
 
 ## Product placeholders
 
-All fields from msProduct and msProductData tables are available on the product page:
+The product page exposes all fields from the msProduct and msProductData tables:
 
 ### Main fields
 
 | Placeholder | Type | Description |
 |-------------|------|-------------|
 | `{$_modx->resource.id}` | int | Product resource ID |
-| `{$_modx->resource.pagetitle}` | string | Product title |
+| `{$_modx->resource.pagetitle}` | string | Product name |
 | `{$_modx->resource.introtext}` | string | Short description |
 | `{$_modx->resource.description}` | string | Full description |
 | `{$_modx->resource.parent}` | int | Parent category ID |
@@ -377,17 +379,17 @@ All fields from msProduct and msProductData tables are available on the product 
 
 | Placeholder | Type | Description |
 |-------------|------|-------------|
-| `{$color}` | array | Available colors |
-| `{$size}` | array | Available sizes |
+| `{$_modx->resource.color}` | array | Available colors |
+| `{$_modx->resource.size}` | array | Available sizes |
 | `{$discount}` | int | Discount percentage (calculated) |
 
 ## Customization
 
-### Creating your own template
+### Creating a custom template
 
 1. Copy `product.tpl` to your theme folder
-2. Make the desired changes
-3. Assign the template to products in the manager
+2. Make the required changes
+3. Assign the template to products in the Manager
 
 ### Changing the gallery
 
@@ -399,7 +401,7 @@ Create your own chunk and specify it in the call:
 ]}
 ```
 
-### Adding your own tabs
+### Adding custom tabs
 
 Extend the tabs block in the template:
 
@@ -411,7 +413,7 @@ Extend the tabs block in the template:
 </li>
 
 <div class="tab-pane fade" id="reviews">
-    {'!msProductReviews' | snippet: ['product' => $_modx->resource.id]}
+    {'!msProductReviews' | snippet : ['product' => $_modx->resource.id]}
 </div>
 ```
 
@@ -419,17 +421,17 @@ Extend the tabs block in the template:
 
 | Class | Element |
 |-------|---------|
-| `.product-info` | Product info container |
+| `.product-info` | Product information container |
 | `.product-price` | Price block |
 | `.product-options` | Options container |
 | `.option-group` | Option group (color, size) |
 | `.option-btn` | Option selection button |
-| `.product-meta` | Additional info |
+| `.product-meta` | Additional information |
 | `.product-tabs` | Tabs container |
 | `.related-products` | Related products block |
 | `.ms3-gallery` | Gallery container |
 | `.ms3-gallery-main` | Main slider |
-| `.ms3-gallery-thumbs` | Thumbnails slider |
+| `.ms3-gallery-thumbs` | Thumbnail slider |
 
 ## Dependencies
 
@@ -441,4 +443,4 @@ The template uses the following libraries:
 | Splide | 4.1.4 | Gallery slider |
 | GLightbox | 3.3.0 | Image lightbox |
 
-Libraries are loaded via CDN. For production, using local copies is recommended.
+Libraries are loaded via CDN. For production, use local copies.

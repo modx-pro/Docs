@@ -3,20 +3,20 @@ title: Payment methods
 ---
 # Payment methods
 
-Payment method management is available via **Extras → MiniShop3 → Settings → Payments**.
+Payment methods are managed via **Extras → MiniShop3 → Settings → Payments**.
 
 ## Payment fields
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `name` | string | Payment method name |
-| `description` | text | Description for customer |
-| `price` | string | Surcharge (fixed or percent) |
+| `description` | text | Description for the customer |
+| `price` | string | Surcharge for the payment method (amount or percent) |
 | `logo` | string | Image path |
 | `position` | int | Sort order |
 | `active` | bool | Active |
 | `class` | string | PHP payment handler class |
-| `properties` | JSON | Extra settings |
+| `properties` | JSON | Additional settings |
 
 ## Payment surcharge
 
@@ -25,17 +25,17 @@ The `price` field adds a surcharge for using the payment method:
 - **Fixed amount:** `100` — adds 100 to the total
 - **Percent:** `3%` — adds 3% of the order total
 
-Useful to cover payment gateway fees.
+Useful to offset payment system fees.
 
-## Delivery association
+## Delivery linkage
 
 Payment methods are linked to delivery methods. Configure this in the delivery card by selecting available payment methods.
 
 Typical scenarios:
 
-- **Pickup** — cash, card on receipt
+- **Pickup** — cash, card on delivery
 - **Courier** — cash, card, online
-- **Mail** — cash on delivery, online
+- **Post** — cash on delivery, online payment
 
 ## Payment handlers
 
@@ -47,7 +47,7 @@ Typical scenarios:
 
 ### Creating a handler
 
-To integrate with a payment system, create a handler class:
+To integrate a payment system, create a handler class:
 
 ```php
 <?php
@@ -69,7 +69,7 @@ class YooKassaPayment implements PaymentProviderInterface
     }
 
     /**
-     * Send to payment
+     * Redirect to payment
      * Called on order submit with online payment
      */
     public function send(msOrder $order): array
@@ -78,6 +78,7 @@ class YooKassaPayment implements PaymentProviderInterface
         $shopId = $properties['shop_id'] ?? '';
         $secretKey = $properties['secret_key'] ?? '';
 
+        // Create payment in YooKassa
         $client = new \YooKassa\Client();
         $client->setAuth($shopId, $secretKey);
 
@@ -98,6 +99,7 @@ class YooKassaPayment implements PaymentProviderInterface
             ],
         ], uniqid('', true));
 
+        // Save payment ID on the order
         $order->set('payment_link', $payment->getConfirmation()->getConfirmationUrl());
         $order->save();
 
@@ -108,10 +110,11 @@ class YooKassaPayment implements PaymentProviderInterface
     }
 
     /**
-     * Receive payment notification (webhook)
+     * Payment notification (webhook)
      */
     public function receive(msOrder $order): array
     {
+        // Handle webhook from payment system
         $source = file_get_contents('php://input');
         $data = json_decode($source, true);
 
@@ -129,7 +132,7 @@ class YooKassaPayment implements PaymentProviderInterface
     }
 
     /**
-     * Calculate payment cost (fee)
+     * Payment cost calculation (fee)
      */
     public function getCost(msOrder $order, float $cost): float
     {
@@ -145,15 +148,15 @@ class YooKassaPayment implements PaymentProviderInterface
 }
 ```
 
-### Registering the handler
+### Registering a handler
 
-Specify the class in the payment method card `class` field:
+Set the class in the payment method `class` field:
 
 ```
 MyComponent\Payment\YooKassaPayment
 ```
 
-### Extra settings
+### Additional settings
 
 The `properties` field stores JSON with payment system settings:
 
@@ -167,17 +170,17 @@ The `properties` field stores JSON with payment system settings:
 }
 ```
 
-These are available in the handler via `$this->payment->get('properties')`.
+These settings are available in the handler via `$this->payment->get('properties')`.
 
 ## Webhook for payment systems
 
-To receive payment notifications use the URL:
+To receive payment notifications use:
 
 ```
 https://yoursite.com/assets/components/minishop3/payment/handler.php?payment_id=1&order_id=123
 ```
 
-Or configure a route in the Web API for modern integrations.
+Or configure a route in Web API for modern integrations.
 
 ## API
 
@@ -203,7 +206,7 @@ GET /api/v1/order/payments?delivery_id=1
     {
       "id": 2,
       "name": "Online card",
-      "description": "Visa, MasterCard",
+      "description": "Visa, MasterCard, MIR",
       "price": "0",
       "logo": "/assets/images/cards.png"
     }

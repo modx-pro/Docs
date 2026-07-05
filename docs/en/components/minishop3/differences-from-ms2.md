@@ -1,15 +1,14 @@
 ---
 title: Differences from miniShop2
-description: Migration and compatibility guide for miniShop2 developers
 ---
 # Differences from miniShop2
 
-This guide helps developers familiar with miniShop2 get up to speed with MiniShop3 and understand the main changes.
+This guide helps developers familiar with miniShop2 get up to speed with MiniShop3 and understand the key changes.
 
 ## System requirements
 
 | Requirement | miniShop2 | MiniShop3 |
-|------------|-----------|-----------|
+|-------------|-----------|-----------|
 | MODX | 2.3+ | **3.0.0+** |
 | PHP | 7.0+ | **8.1+** |
 | MySQL | 5.5+ | 5.7+ / MariaDB 10.3+ |
@@ -19,7 +18,7 @@ This guide helps developers familiar with miniShop2 get up to speed with MiniSho
 
 ### Namespaces
 
-miniShop2 used classes without namespaces. In MiniShop3 all classes live in the `MiniShop3\` namespace:
+miniShop2 used classes without namespaces. In MiniShop3, all classes live in the `MiniShop3\` namespace:
 
 ```php
 // miniShop2
@@ -37,9 +36,9 @@ $product = $modx->getObject(msProduct::class, $id);
 $order = $modx->getObject(msOrder::class, $id);
 ```
 
-### Service container
+### Service Container
 
-MiniShop3 uses the MODX 3 DI container for services:
+MiniShop3 uses the MODX 3 DI container to register services:
 
 ```php
 // miniShop2
@@ -55,18 +54,18 @@ $order = $modx->services->get('ms3_order');
 
 ### Database migrations
 
-miniShop2 managed the DB schema via xPDO schema and the build process. MiniShop3 uses **Phinx** for versioned migrations:
+miniShop2 managed the database schema via xPDO schema and the build process. MiniShop3 uses **Phinx** for versioned migrations:
 
 ```bash
 # Run migrations
 php vendor/bin/phinx migrate -c phinx.php
 ```
 
-Migrations run automatically when the component is installed.
+Migrations run automatically during component installation.
 
 ## System settings
 
-All system settings are renamed from `ms2_` to `ms3_`:
+All system settings were renamed from `ms2_` to `ms3_`:
 
 | miniShop2 | MiniShop3 |
 |-----------|-----------|
@@ -85,15 +84,15 @@ MiniShop3 adds many new settings:
 
 **API and security:**
 
-- `ms3_cors_allowed_origins` — allowed CORS origins
+- `ms3_cors_allowed_origins` — allowed CORS domains
 - `ms3_api_debug` — API debug mode
 - `ms3_rate_limit_max_attempts` — API request limit
-- `ms3_customer_token_ttl` — customer token TTL
+- `ms3_customer_token_ttl` — customer token lifetime
 
 **Customers (new entity):**
 
-- `ms3_customer_auto_register_on_order` — auto-register on order
-- `ms3_customer_auto_login_after_register` — auto-login after register
+- `ms3_customer_auto_register_on_order` — auto-register on checkout
+- `ms3_customer_auto_login_after_register` — auto-login after registration
 - `ms3_customer_require_email_verification` — email verification
 - `ms3_customer_sync_enabled` — sync with modUser
 
@@ -138,16 +137,16 @@ POST /api/v1/customer/token/get
 GET  /api/v1/customer/addresses
 ```
 
-### API authorization
+### API authentication
 
 ```javascript
-// miniShop2 — no auth
+// miniShop2 — no authentication
 $.post('/assets/components/minishop2/action.php', {
     action: 'cart/add',
     id: 123
 });
 
-// MiniShop3 — token auth
+// MiniShop3 — token authentication
 const token = getCookie('MS3TOKEN');
 fetch('/api/v1/cart/add', {
     method: 'POST',
@@ -193,7 +192,7 @@ ms3.hooks.add('afterAddToCart', function({ response }) {
 ms3.hooks.remove('afterAddToCart', 'my_hook');
 ```
 
-### MiniShop3 hooks mapping
+### MiniShop3 hook list
 
 | miniShop2 Callback | MiniShop3 Hook |
 |--------------------|----------------|
@@ -214,7 +213,7 @@ ms3.hooks.remove('afterAddToCart', 'my_hook');
     </button>
 </form>
 
-<!-- MiniShop3 — declarative -->
+<!-- MiniShop3 — declarative approach -->
 <button type="button"
         data-ms-action="cart/add"
         data-id="123"
@@ -225,7 +224,7 @@ ms3.hooks.remove('afterAddToCart', 'my_hook');
 
 ## Plugin events
 
-Most event names are unchanged, but parameters differ:
+Most events kept their names, but the passed parameters changed:
 
 ```php
 // miniShop2
@@ -247,15 +246,15 @@ switch ($modx->event->name) {
 
 - `msOnCustomerCreate` — customer created
 - `msOnCustomerUpdate` — customer updated
-- `msOnCustomerLogin` — customer login
+- `msOnCustomerLogin` — customer logged in
 - `msOnBeforeAPIRequest` — before API request
 - `msOnAfterAPIRequest` — after API request
 
 ## Snippets
 
-### Snippet names (compatibility)
+### Snippet names (compatibility preserved)
 
-Snippet names are unchanged:
+All snippets kept their names:
 
 - `msProducts`
 - `msCart`
@@ -278,8 +277,8 @@ Snippet names are unchanged:
 
 {* MiniShop3 *}
 {set $cart = '!msOrderTotal' | snippet}
-<a href="{15 | url}"> {* Cart page ID *}
-    {$cart.count} items, {$cart.cost}
+<a href="{15 | url}"> {* cart page ID *}
+    {$cart.count} items for {$cart.cost} rub.
 </a>
 ```
 
@@ -300,7 +299,7 @@ Chunk names changed for consistency:
 
 ### New entity: msCustomer
 
-MiniShop3 introduces a separate entity for store customers:
+MiniShop3 introduces a separate store customer entity:
 
 ```php
 // miniShop2 — customer = modUser
@@ -315,7 +314,7 @@ use MiniShop3\Model\msCustomerAddress;
 $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 $addresses = $customer->getMany('Addresses');
 
-// Link to modUser (optional)
+// Optional link to modUser
 $modUser = $customer->getOne('User');
 ```
 
@@ -332,7 +331,7 @@ foreach ($addresses as $address) {
 }
 ```
 
-## Migrating from miniShop2
+## Migration from miniShop2
 
 ### Step 1: Upgrade MODX to 3.x
 
@@ -340,7 +339,7 @@ MiniShop3 runs only on MODX 3. Migrate MODX first.
 
 ### Step 2: Install MiniShop3
 
-Install MiniShop3 via the MODX package manager or download a transport from [GitHub](https://github.com/modx-pro/MiniShop3/releases).
+Install MiniShop3 via the MODX package manager or upload a transport package from [GitHub](https://github.com/modx-pro/MiniShop3/releases).
 
 ### Step 3: Update system settings
 
@@ -377,16 +376,16 @@ Replace data attributes and classes:
 
 ## Backward compatibility
 
-MiniShop3 keeps compatibility at these levels:
+MiniShop3 maintains compatibility at the level of:
 
 ✅ **Compatible:**
 
 - Snippet names
-- Placeholder structure in chunks
+- Chunk placeholder structure
 - Main snippet parameters
 - Most plugin events
 
-❌ **Incompatible:**
+❌ **Not compatible:**
 
 - System settings (ms2_ → ms3_)
 - JavaScript API (miniShop2 → ms3)

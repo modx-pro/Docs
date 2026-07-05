@@ -3,63 +3,63 @@ title: Product fields
 ---
 # Utilities: Product fields
 
-Configuring field display on the "Product data" tab in the product card.
+Configure field display on the "Product data" tab in the product card.
 
 ## Purpose
 
 This tool lets you:
 
 - Enable and disable field visibility
-- Group fields by sections
-- Change field order
+- Group fields into sections
+- Change field display order
 - Create and edit sections
-- Configure each field
+- Configure each field's parameters
 
 ## Interface
 
 ### Sections
 
-Left panel lists sections with drag-and-drop reorder.
+The left panel lists sections with drag-and-drop sorting.
 
 **Section actions:**
 
-- **Add** — create section
-- **Edit** — change section params
-- **Delete** — delete section (fields move to "No section")
+- **Add** — create a new section
+- **Edit** — change section parameters
+- **Delete** — delete a section (fields move to "No section")
 - **Drag** — reorder sections
 
 ### Fields
 
-Right panel shows fields of the selected section.
+The right panel shows fields for the selected section.
 
-**Shown:**
+**Displayed info:**
 
 - Field name (key)
 - Label
 - Widget type (xtype)
-- Visibility
+- Visibility status
 
 **Field actions:**
 
-- **Edit** — field parameters
-- **Drag** — reorder within section
+- **Edit** — configure field parameters
+- **Drag** — reorder within the section
 
 ## Section management
 
 ### Creating a section
 
-1. Click **"Add section"**
+1. Click **Add section**
 2. Fill the form:
 
 | Field | Description | Required |
 |-------|-------------|----------|
-| Section key | Unique ID (Latin) | Yes |
-| Lexicon key | Key for translated name | No |
-| Label | Display name | No |
-| Hidden | Section not shown in card | No |
+| Section key | Unique identifier (Latin) | Yes |
+| Lexicon key | Key for translated title | No |
+| Title | Display name | No |
+| Hidden | Section hidden in product card | No |
 
 ::: tip Lexicon
-If a lexicon key is set, the name comes from locale files for multi-language interface.
+If a lexicon key is set, the title comes from localization files. This supports multiple manager languages automatically.
 :::
 
 ### Editing a section
@@ -69,7 +69,7 @@ Click the edit icon next to the section name or double-click the section.
 ### Deleting a section
 
 ::: warning Note
-When a section is deleted, its fields move to "No section". Fields are not deleted.
+When a section is deleted, all its fields move to "No section". Fields are not deleted.
 :::
 
 ## Field management
@@ -78,53 +78,55 @@ When a section is deleted, its fields move to "No section". Fields are not delet
 
 Click a field to open the edit dialog.
 
-**Parameters:**
+**Available parameters:**
 
 | Parameter | Description |
 |-----------|-------------|
-| Label | Display name |
-| Description | Hint under field |
-| Section | Section for the field |
+| Title (label) | Display label |
+| Description | Hint below the field |
+| Section | Section the field belongs to |
 | Widget type (xtype) | Form element type |
-| Visible | Show in card |
-| Order | Position in section |
+| Visibility | Show/hide in product card |
+| Order | Position in the section field list |
 
 ### Widget types (xtype)
 
 | Type | Description |
 |------|-------------|
 | `textfield` | Single-line text |
-| `numberfield` | Number |
-| `textarea` | Multi-line text |
+| `numberfield` | Number field |
+| `textarea` | Multiline text |
 | `xcheckbox` | Checkbox |
-| `ms3-combo-vendor` | Vendor selection |
+| `ms3-combo-vendor` | Vendor picker |
 | `ms3-combo-autocomplete` | Autocomplete from list |
-| `ms3-combo-options` | Product option selection |
+| `ms3-combo-options` | Pick from product options |
 
 ### Moving fields
 
-- **Within section** — drag up/down
-- **Between sections** — change section in edit dialog
+Fields can be moved:
+
+- **Within a section** — drag up/down
+- **Between sections** — change section in the edit dialog
 
 ## Default sections
 
-Default sections:
+By default these sections exist:
 
-| Key | Label | Description |
+| Key | Title | Description |
 |-----|-------|-------------|
 | `main` | Main data | SKU, price, weight, etc. |
-| `availability` | Stock | Stock, statuses |
-| `content` | Content | Description, specs |
+| `availability` | Availability | Stock, flags |
+| `content` | Content | Description, attributes |
 
 ## Saving changes
 
 - Changes save **automatically** when dragging
-- When editing field/section click **"Save"**
-- **Reload the page** to see changes in the product card
+- When editing a field/section click **Save**
+- **Reload the product page** to see changes in the product card
 
-## API Endpoints
+## API endpoints
 
-### Get field config
+### Get field configuration
 
 ```
 GET /api/mgr/config/page-fields/product_data
@@ -156,7 +158,7 @@ GET /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 ```
 
-### Save field config
+### Save field configuration
 
 ```
 PUT /api/mgr/config/page-fields/product_data
@@ -186,7 +188,7 @@ POST /api/mgr/config/sections/product_data
 {
   "section_key": "custom",
   "lexicon_key": "ms3_section_custom",
-  "label": "Extra",
+  "label": "Additional",
   "hidden": false,
   "sort_order": 100
 }
@@ -194,28 +196,28 @@ POST /api/mgr/config/sections/product_data
 
 ## Configuration examples
 
-### Hiding unused fields
+### Hiding unneeded fields
 
-For a clothing store, hide `color` and `size` when using options:
+For a clothing store using options for color and size separately:
 
 1. Open field `color`
-2. Uncheck "Visible"
+2. Uncheck **Visibility**
 3. Save
 4. Repeat for `size`
 
-### Creating "SEO" section
+### Creating an "SEO" section
 
 1. Click "Add section"
 2. Fill:
    - Key: `seo`
-   - Label: `SEO`
-3. Move fields `metatitle`, `metadescription` into the new section
+   - Title: `SEO`
+3. Move `metatitle`, `metadescription` into the new section
 
-### Changing section order
+### Section order
 
-Drag sections into the desired order, e.g.:
+Drag sections to the desired order. For example:
 
 1. Main data
 2. Prices
-3. Stock
+3. Availability
 4. SEO
