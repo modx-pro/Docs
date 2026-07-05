@@ -1,6 +1,6 @@
 ---
 title: BannerPro
-description: "Управление баннерами в MODX 3: позиции, ротация, UTM, webhook, A/B split, клики и показы, Vue-админка"
+description: "Управление баннерами в MODX 3: позиции, ротация, UTM, webhook, A/B-деление, клики и показы, Vue-админка"
 author: ibochkarev
 dependencies: [pdoTools, VueTools]
 
@@ -52,43 +52,43 @@ items: [
 
 # BannerPro
 
-**BannerPro** выводит баннеры по позициям через сниппет `BannerPro`, считает клики по URL `/{bannerpro_click}/{adposition}` и фиксирует показы через `impression.js`, если включён учёт. Админка на Vue 3 и PrimeVue через **VueTools**.
+**BannerPro** выводит баннеры по позициям через сниппет `BannerPro`, считает клики по URL `/{bannerpro_click}/{adposition}` и фиксирует показы через `impression.js`, если включён учёт. Админка на Vue 3 и PrimeVue через **VueTools** (пакет **4.6.0-pl**).
 
-Namespace настроек: **`bannerpro`**. Основные таблицы: `bannerpro_ads`, `bannerpro_positions`, `bannerpro_ads_positions`, `bannerpro_clicks`, `bannerpro_impressions`.
+Namespace настроек: **`bannerpro`**. Таблицы: `bannerpro_ads`, `bannerpro_positions`, `bannerpro_ads_positions`, `bannerpro_clicks`, `bannerpro_impressions`.
 
-С чего начать: [Быстрый старт](quick-start).
+[Быстрый старт](quick-start).
 
 ## Требования
 
 | Компонент | Версия | Роль |
 | --- | --- | --- |
 | MODX Revolution | 3.0+ | Платформа |
-| PHP | 8.2+ | Runtime |
+| PHP | 8.2+ | Сервер |
 | pdoTools | 2.1+ | Выборка и рендер сниппета `BannerPro` |
 | VueTools | актуальная | Vue 3 и PrimeVue в админке |
 | MiniShop3 | опционально | Привязка баннера к товару и атрибуция заказа |
 
 ## Возможности
 
-- **Позиции**: слоты `sidebar`, `header`, `shop-product-sidebar`; вывод по имени или ID.
+- **Позиции**: слоты `sidebar`, `header`, `shop-product-sidebar`. Вывод по имени или ID.
 - **Типы баннеров**: изображение или HTML. При заполненном URL HTML оборачивается в ссылку клика.
-- **Ротация**: `RAND()`, `idx`, `weighted`, A/B split (`sortby=ab`).
+- **Ротация**: `RAND()`, `idx`, `weighted`, A/B-деление (`sortby=ab`).
 - **Таргетинг**: расписание `show_hours`, метки, привязка к ресурсу или родителю, лимиты `max_clicks` / `max_impressions`.
-- **Контекст**: поле `context_key` у позиции и параметр `&context=` в сниппете.
+- **Контекст**: поле `context_key` у позиции. Сниппет фильтрует по текущему контексту MODX.
 - **UTM**: query-параметры при клике из системных настроек или вкладки «Настройки» админки.
 - **Webhook**: POST JSON на внешний URL при клике и при показе, подпись HMAC.
 - **Фильтр ботов**: исключение ботов из статистики через CrawlerDetect.
-- **Учёт кликов**: плагин `BannerProClickout` перехватывает `OnPageNotFound`, пишет клик и делает redirect на URL баннера.
+- **Учёт кликов**: плагин `BannerProClickout` на `OnPageNotFound` пишет клик и перенаправляет на URL баннера.
 - **Учёт показов**: настройка `bannerpro_track_impressions` подключает `impression.js` и pixel URL.
 - **Статистика**: вкладка админки показывает клики, показы, CTR, конверсии MS3, воронку и сравнение периодов.
-- **REST API**: read-only endpoint `assets/components/bannerpro/api.php` отдаёт баннеры, позиции и статистику с `conversions`.
+- **REST API**: `assets/components/bannerpro/api.php` отдаёт баннеры, позиции и статистику (только чтение).
 
 ## Минимальный путь
 
 1. Установите **BannerPro**, **pdoTools** и **VueTools**.
-1. Откройте **Компоненты → BannerPro → Позиции** и создайте позицию `sidebar`.
-1. Создайте баннер, задайте URL, изображение или HTML и привяжите его к позиции.
-1. В шаблоне сайта вызовите сниппет:
+2. Откройте **Компоненты → BannerPro → Позиции** и создайте позицию `sidebar`.
+3. Создайте баннер, задайте URL, изображение или HTML и привяжите его к позиции.
+4. В шаблоне сайта вызовите сниппет:
 
 ::: code-group
 
@@ -110,7 +110,7 @@ Namespace настроек: **`bannerpro`**. Основные таблицы: `b
 
 :::
 
-1. Откройте страницу и проверьте ссылку `bannerclick/{adposition}`.
+5. Откройте страницу и проверьте ссылку `bannerclick/{adposition}`.
 
 ## Поток клика
 
@@ -121,7 +121,7 @@ flowchart LR
   NotFound --> Clickout[BannerProClickout]
   Clickout --> ClickRow[bannerpro_clicks]
   Clickout --> Event[OnBannerProClick]
-  Clickout --> Redirect[Redirect на URL баннера]
+  Clickout --> Redirect[Перенаправление на URL баннера]
 ```
 
 ## Быстрые ссылки

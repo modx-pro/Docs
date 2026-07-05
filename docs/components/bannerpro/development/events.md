@@ -11,12 +11,12 @@ BannerPro вызывает события после клика и после ф
 
 | Событие | Где вызывается | Когда |
 | --- | --- | --- |
-| `OnBannerProClick` | `bannerpro_invoke_click_event()` | После обработки клика, перед redirect |
+| `OnBannerProClick` | `bannerpro_invoke_click_event()` | После обработки клика, перед перенаправлением |
 | `OnBannerProImpression` | `bannerpro_invoke_impression_event()` | После pixel-запроса показа |
 
 Код событий лежит в `core/components/bannerpro/include/events.php`.
 
-## Payload
+## Поля события
 
 | Ключ | Тип | Описание |
 | --- | --- | --- |
@@ -66,15 +66,15 @@ $modx->log(
 
 Подпись: заголовок `X-BannerPro-Signature` (HMAC-SHA256 от тела), если задан `bannerpro_webhook_secret`.
 
-Компонент шлёт webhook клика после `OnBannerProClick`, до редиректа. Timeout 2 с, ошибки не блокируют переход. Webhook показа: fire-and-forget после `OnBannerProImpression`, ответ `204` не ждёт завершения запроса.
+Компонент шлёт webhook клика после `OnBannerProClick`, до редиректа. Timeout 2 с, ошибки не блокируют переход. Webhook показа отправляется без ожидания ответа после `OnBannerProImpression`.
 
 URL проверяется на SSRF: запрещены `localhost`, loopback и private/reserved IP в hostname.
 
-### Payload клика
+### JSON клика
 
 `event`, `ad_id`, `position_id`, `adposition`, `referrer`, `ip`, `click_id`, `timestamp` (ISO8601), `redirect_url`, `recorded`, `duplicate`.
 
-### Payload показа
+### JSON показа
 
 `event`, `ad_id`, `position_id`, `adposition`, `ip`, `timestamp` (ISO8601), `recorded`, `duplicate`.
 
