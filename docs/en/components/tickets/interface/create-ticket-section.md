@@ -58,7 +58,7 @@ The **Section settings** tab (`properties.tickets`) controls **new** tickets in 
 | Disable Jevix | skip HTML filtering for new tickets |
 | Process MODX tags | allow MODX tags in new ticket content |
 
-`OnPageNotFound` uses the URI pattern for short section URLs. See [Frontend](frontend).
+`OnPageNotFound` uses the URI pattern for short section URLs. See [Frontend](/en/components/tickets/frontend).
 
 ### Ratings
 
