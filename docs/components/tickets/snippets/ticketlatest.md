@@ -1,8 +1,8 @@
 # TicketLatest
 
-Выводит ленту последних созданных и\\или прокомментированных тикетов.
+Лента последних тикетов или комментариев с опциональным кэшем.
 
-**Сниппет вызывается не кэшированным.*
+**Вызывайте некэшированным.**
 
 ## Параметры
 
@@ -36,24 +36,50 @@
 
 ## Примеры
 
-- Вывод последних тикетов
+### Последние тикеты
 
-    ```modx
-    [[!TicketLatest?
-      &limit=`5`
-      &fastMode=`1`
-      &action=`tickets`
-      &tpl=`tpl.Tickets.ticket.latest`
-    ]]
-    ```
+::: code-group
 
-- Вывод последних комментариев
+```fenom
+{'!TicketLatest' | snippet : [
+  'limit' => 5,
+  'fastMode' => 1,
+  'action' => 'tickets',
+  'tpl' => 'tpl.Tickets.ticket.latest',
+]}
+```
 
-    ```modx
-    [[!TicketLatest?
-      &limit=`5`
-      &fastMode=`1`
-      &action=`comments`
-      &tpl=`tpl.Tickets.comment.latest`
-    ]]
-    ```
+```modx
+[[!TicketLatest?
+  &limit=`5`
+  &fastMode=`1`
+  &action=`tickets`
+  &tpl=`tpl.Tickets.ticket.latest`
+]]
+```
+
+:::
+
+### Последние комментарии
+
+::: code-group
+
+```fenom
+{'!TicketLatest' | snippet : [
+  'limit' => 5,
+  'fastMode' => 1,
+  'action' => 'comments',
+  'tpl' => 'tpl.Tickets.comment.latest',
+]}
+```
+
+```modx
+[[!TicketLatest?
+  &limit=`5`
+  &fastMode=`1`
+  &action=`comments`
+  &tpl=`tpl.Tickets.comment.latest`
+]]
+```
+
+:::

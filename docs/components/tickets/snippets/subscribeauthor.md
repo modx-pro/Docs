@@ -12,14 +12,37 @@
 
 ## Примеры
 
-- Вызов сниппета для каждого элемента в списке тикетов, например в чанке tpl.Tickets.list.row
+### В чанке списка тикетов
 
-    ```modx
-    [[!subscribeAuthor? &createdby=`[[!+createdby]]`]]
-    ```
+В `tpl.Tickets.list.row` у строки уже есть плейсхолдер `createdby`:
 
-- Вызов сниппета в карточке автора (в которой ID юзера передан в переменную +author.id )
+::: code-group
 
-    ```modx
-    [[!subscribeAuthor? &createdby=`[[!+author.id]]` &TicketsInit=`1`]]
-    ```
+```fenom
+{'!subscribeAuthor' | snippet : ['createdby' => $createdby]}
+```
+
+```modx
+[[!subscribeAuthor? &createdby=`[[+createdby]]`]]
+```
+
+:::
+
+### Карточка автора
+
+На странице, где передан `author.id`, подключите скрипты Tickets:
+
+::: code-group
+
+```fenom
+{'!subscribeAuthor' | snippet : [
+  'createdby' => $author.id,
+  'TicketsInit' => 1,
+]}
+```
+
+```modx
+[[!subscribeAuthor? &createdby=`[[+author.id]]` &TicketsInit=`1`]]
+```
+
+:::
