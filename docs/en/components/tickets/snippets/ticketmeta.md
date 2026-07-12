@@ -1,29 +1,61 @@
 # TicketMeta
 
-Outputs information about the current ticket and allows voting for the ticket on its page.
+Ticket meta on the page: author, dates, views, voting, favorites. Since 1.4.0 also works with regular MODX resources.
 
-::: tip
-Since version 1.4.0 the snippet can be used with any MODX resources.
-:::
+## Parameters
 
-## Snippet call parameters
+| Name | Default | Description |
+| --- | --- | --- |
+| **&tpl** | `tpl.Tickets.meta` | Meta block chunk |
+| **&tplFile** | `tpl.Tickets.meta.file` | File row in the list |
+| **&getUser** | `1` | Load author profile |
+| **&getFiles** | `1` | Output uploaded files |
+| **&unusedFiles** | `1` | Only files not linked in `content` |
+| **&thread** | | Comment thread name for counters; default `resource-{id}` |
+| **&id** | current resource | Resource ID when not on the ticket page |
 
-| Name        | Default       | Description                                                                 |
-| ----------- | ------------- | --------------------------------------------------------------------------- |
-| **&getSection** | `1`        | Make an extra DB query to fetch the parent section?                         |
-| **&getUser**    | `1`        | Make an extra DB query to fetch the author profile?                         |
-| **&tpl**        | `tpl.Tickets.meta` | Chunk for ticket info display.                                        |
+`getSection` is not in snippet properties; the section is loaded in code when class is `Ticket`.
 
-## Call examples
+## Examples
 
-- Standard snippet call
+### Default
+
+::: code-group
+
+```fenom
+{'!TicketMeta' | snippet}
+```
 
 ```modx
 [[!TicketMeta]]
 ```
 
-- To see all available standard placeholders
+:::
+
+### Placeholders without a chunk
+
+::: code-group
+
+```fenom
+{'!TicketMeta' | snippet : ['tpl' => '']}
+```
 
 ```modx
 [[!TicketMeta? &tpl=``]]
 ```
+
+:::
+
+### Meta for another resource
+
+::: code-group
+
+```fenom
+{'!TicketMeta' | snippet : ['id' => 42]}
+```
+
+```modx
+[[!TicketMeta? &id=`42`]]
+```
+
+:::

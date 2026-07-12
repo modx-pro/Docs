@@ -1,6 +1,6 @@
 # User permissions setup
 
-For all Tickets features to work, users must be in a group with the appropriate permissions.
+Frontend users need a group with `TicketUserPolicy` in the `web` context. Full key list: [Policies and permissions](permissions).
 
 ## Creating a user group and setting access
 
@@ -31,6 +31,6 @@ In the group edit form, open the **Context Access** tab and click **Add context*
 
 ![Creating a user group and setting access - 6](https://file.modx.pro/files/4/c/1/4c19746ecf47a8cd9784cd3b42f1371f.png)
 
-Access is set; add new users to this group as needed. You can use any auth component; we recommend [HybridAuth][1]
+Add new users to the Member group (or your own). [HybridAuth][1] works well for on-site registration.
 
 [1]: /en/components/hybridauth/snippets/hybridauth
