@@ -55,7 +55,8 @@ Multiple threads on one page: set different `&thread=` values. Each wraps in `<d
 | **&tplFiles** | `tpl.Tickets.comment.form.files` | File uploader block |
 | **&tplFile** | `tpl.Tickets.form.file` | File row |
 | **&tplImage** | `tpl.Tickets.form.image` | Image row |
-| **&validate** | | FormIt rules; see [TicketFormit](/en/components/tickets/ticketformit) |
+| **&validate** | | FormIt rules for field `text`; see [TicketFormit](/en/components/tickets/ticketformit) |
+| **&customValidators** | | FormIt validator snippets |
 
 List snippets link comment counts to `#first_unread` or `#comments` since 1.14.0.
 

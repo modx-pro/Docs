@@ -7,15 +7,19 @@ modstore: https://modstore.pro/packages/users/tickets
 repository: https://github.com/modx-pro/Tickets
 
 items: [
+  { text: 'Быстрый старт', link: 'quick-start' },
   {
     text: 'Интерфейс',
     items: [
       { text: 'Создание раздела с Тикетами', link: 'interface/create-ticket-section' },
       { text: 'Создание тикета', link: 'interface/create-ticket' },
       { text: 'Настройка прав пользователей', link: 'interface/setup-permissions' },
+      { text: 'Политики и права', link: 'interface/permissions' },
     ],
   },
   { text: 'Системные настройки', link: 'settings' },
+  { text: 'Чанки', link: 'chunks' },
+  { text: 'Фронтенд и AJAX', link: 'frontend' },
   {
     text: 'Сниппеты',
     items: [
@@ -31,6 +35,7 @@ items: [
     ],
   },
   { text: 'TicketFormit', link: 'ticketformit' },
+  { text: 'FAQ', link: 'faq' },
 ]
 ---
 # Tickets
@@ -52,12 +57,14 @@ items: [
 
 ## Быстрый старт
 
-1. Создайте [раздел с тикетами](interface/create-ticket-section).
-2. Настройте [права пользователей](interface/setup-permissions) (`TicketUserPolicy`).
-3. Проверьте [системные настройки](settings) namespace `tickets`.
-4. Выведите на сайте `getTickets`, `TicketMeta`, `TicketComments` или `TicketForm`.
+Пошагово: [Быстрый старт](quick-start).
+
+1. [Раздел с тикетами](interface/create-ticket-section) и [права](interface/setup-permissions).
+2. [Системные настройки](settings) namespace `tickets`.
+3. Шаблоны с `getTickets`, `TicketMeta`, `TicketComments` или `TicketForm`.
 
 ## Зависимости
 
 - [pdoTools](/components/pdotools/) — выборки в сниппетах списков.
 - [FormIt](/components/formit/) — опционально, для `&validate` в [TicketFormit](ticketformit).
+- **PHP 8+** (в 1.14 — правки под 8.2).

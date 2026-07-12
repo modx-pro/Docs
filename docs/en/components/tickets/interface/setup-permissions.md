@@ -1,6 +1,6 @@
 # User permissions setup
 
-Frontend users need a group with `TicketUserPolicy` in the `web` context.
+Frontend users need a group with `TicketUserPolicy` in the `web` context. Full key list: [Policies and permissions](permissions).
 
 ## Creating a user group and setting access
 

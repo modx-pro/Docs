@@ -7,15 +7,19 @@ modstore: https://modstore.pro/packages/users/tickets
 repository: https://github.com/modx-pro/Tickets
 
 items: [
+  { text: 'Quick start', link: 'quick-start' },
   {
     text: 'Interface',
     items: [
       { text: 'Creating a ticket section', link: 'interface/create-ticket-section' },
       { text: 'Creating a ticket', link: 'interface/create-ticket' },
       { text: 'User permissions setup', link: 'interface/setup-permissions' },
+      { text: 'Policies and permissions', link: 'interface/permissions' },
     ],
   },
   { text: 'System settings', link: 'settings' },
+  { text: 'Chunks', link: 'chunks' },
+  { text: 'Frontend and AJAX', link: 'frontend' },
   {
     text: 'Snippets',
     items: [
@@ -31,6 +35,7 @@ items: [
     ],
   },
   { text: 'TicketFormit', link: 'ticketformit' },
+  { text: 'FAQ', link: 'faq' },
 ]
 ---
 # Tickets
@@ -52,12 +57,14 @@ Component for user pages (tickets) and comments. Current package version: **1.14
 
 ## Quick start
 
-1. Create a [ticket section](interface/create-ticket-section).
-2. Set up [user permissions](interface/setup-permissions) (`TicketUserPolicy`).
-3. Review [system settings](settings) in namespace `tickets`.
-4. Add `getTickets`, `TicketMeta`, `TicketComments`, or `TicketForm` to templates.
+Step by step: [Quick start](quick-start).
+
+1. [Ticket section](interface/create-ticket-section) and [permissions](interface/setup-permissions).
+2. [System settings](settings) in namespace `tickets`.
+3. Templates with `getTickets`, `TicketMeta`, `TicketComments`, or `TicketForm`.
 
 ## Dependencies
 
 - [pdoTools](/en/components/pdotools/) for list snippets.
 - [FormIt](/en/components/formit/) optional for `&validate` in [TicketFormit](ticketformit).
+- **PHP 8+** (1.14 includes 8.2 fixes).

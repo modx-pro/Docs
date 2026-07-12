@@ -35,6 +35,7 @@
 | **&tplFile** | `tpl.Tickets.form.file` | Строка файла |
 | **&tplImage** | `tpl.Tickets.form.image` | Строка изображения |
 | **&validate** | | Правила FormIt; см. [TicketFormit](/components/tickets/ticketformit) |
+| **&customValidators** | | Имена сниппетов-валидаторов FormIt через запятую |
 
 Список секций в форме фильтруется политикой `section_add_children` на ресурсе. Параметра для смены этой проверки в сниппете нет.
 

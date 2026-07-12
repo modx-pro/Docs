@@ -56,3 +56,17 @@ Open **System Settings** and filter by namespace `tickets`. DB key format: `tick
 | `tickets_mail_queue` | boolean | `0` | Mail queue; if `1`, add `core/components/tickets/cron/mail_queue.php` to cron |
 | `tickets_mail_bcc` | text | `1` | Admin user IDs for BCC, comma-separated |
 | `tickets_mail_bcc_level` | number | `2` | `0` off, `1` tickets only, `2` tickets and comments |
+
+## Tickets Files media source
+
+Install creates **Tickets Files** (`assets/images/tickets/`). Set its ID in `tickets_source_default`.
+
+Source properties (not system settings):
+
+| Property | Default | Description |
+| --- | --- | --- |
+| `thumbnails` | JSON `thumb` 120×90 | image thumbnails |
+| `maxUploadWidth` | `1920` | max width |
+| `maxUploadHeight` | `1080` | max height |
+| `maxUploadSize` | bytes | max file size |
+| `imageExtensions` | `jpg,jpeg,png,gif` | allowed extensions |

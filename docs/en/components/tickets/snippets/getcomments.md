@@ -11,17 +11,23 @@ Comment list from the database via pdoFetch. For feeds, widgets, and thread filt
 | **&tpl** | `tpl.Tickets.comment.list.row` | Single comment chunk |
 | **&tplCommentDeleted** | `tpl.Tickets.comment.one.deleted` | Deleted comment |
 | **&threads** | | Thread IDs, comma-separated; `-id` excludes |
+| **&comments** | | Comment IDs, comma-separated; `-id` excludes |
 | **&parents** | | Parent section/ticket IDs to pick threads |
 | **&resources** | | Ticket IDs to pick threads |
 | **&depth** | `10` | Depth when filtering by `parents` |
+| **&limit** | `10` | Limit (pdoFetch) |
+| **&offset** | `0` | Offset |
+| **&user** | | Author user IDs or usernames |
 | **&sortby** | `createdon` | Sort field |
 | **&sortdir** | `DESC` | Sort direction |
 | **&includeContent** | `0` | Ticket and section `content` fields |
+| **&fastMode** | `1` | DB values only |
 | **&showUnpublished** | `0` | Unpublished comments |
 | **&showDeleted** | `0` | Deleted comments |
 | **&where** | | Extra JSON conditions |
 | **&outputSeparator** | newline | Row separator |
 | **&toPlaceholder** | | Placeholder instead of output |
+| **&tplWrapper** | | Wrapper with `output` placeholder |
 | **&showLog** | `0` | Log for `mgr` |
 
 <!--@include: ../parts/tip-general-properties.md-->

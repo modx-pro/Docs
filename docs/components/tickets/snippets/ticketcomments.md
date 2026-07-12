@@ -55,7 +55,8 @@
 | **&tplFiles** | `tpl.Tickets.comment.form.files` | Блок загрузчика файлов |
 | **&tplFile** | `tpl.Tickets.form.file` | Строка файла |
 | **&tplImage** | `tpl.Tickets.form.image` | Строка изображения |
-| **&validate** | | Правила FormIt; см. [TicketFormit](/components/tickets/ticketformit) |
+| **&validate** | | Правила FormIt для поля `text`; см. [TicketFormit](/components/tickets/ticketformit) |
+| **&customValidators** | | Сниппеты-валидаторы FormIt |
 
 Счётчик комментариев в списках тикетов ведёт на `#first_unread` или `#comments` (с 1.14.0).
 

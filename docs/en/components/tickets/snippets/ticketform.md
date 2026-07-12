@@ -35,6 +35,7 @@ Edit mode: `&tid=` or `?tid=` in the URL. Delete/restore uses `Tickets::deleteTi
 | **&tplFile** | `tpl.Tickets.form.file` | File row |
 | **&tplImage** | `tpl.Tickets.form.image` | Image row |
 | **&validate** | | FormIt rules; see [TicketFormit](/en/components/tickets/ticketformit) |
+| **&customValidators** | | FormIt validator snippet names, comma-separated |
 
 The section list is filtered by `section_add_children` on the resource. The snippet has no parameter to change that check.
 

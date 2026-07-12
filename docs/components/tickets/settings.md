@@ -56,3 +56,17 @@ description: Ключи namespace tickets в MODX
 | `tickets_mail_queue` | boolean | `0` | Очередь писем; при `1` добавьте в cron `core/components/tickets/cron/mail_queue.php` |
 | `tickets_mail_bcc` | text | `1` | ID администраторов через запятую для BCC |
 | `tickets_mail_bcc_level` | number | `2` | `0` — выкл., `1` — только тикеты, `2` — тикеты и комментарии |
+
+## Источник медиа Tickets Files
+
+При установке создаётся источник **Tickets Files** (`assets/images/tickets/`). Его ID укажите в `tickets_source_default`.
+
+Параметры источника (не системные настройки):
+
+| Параметр | По умолчанию | Описание |
+| --- | --- | --- |
+| `thumbnails` | JSON `thumb` 120×90 | превью загруженных изображений |
+| `maxUploadWidth` | `1920` | сжатие по ширине |
+| `maxUploadHeight` | `1080` | сжатие по высоте |
+| `maxUploadSize` | байты | лимит размера файла |
+| `imageExtensions` | `jpg,jpeg,png,gif` | допустимые расширения |

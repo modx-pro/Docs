@@ -7,7 +7,7 @@ Outputs a form to subscribe to an author. Subscription is only available to logg
 | Name | Default | Description |
 | --- | --- | --- |
 | **&createdby** | `0` | Required author user ID |
-| **&tpl** | `tpl.Tickets.author.subscribe` | Subscription form chunk |
+| **&tpl** | `tpl.Tickets.author.subscribe` | Form chunk; `@INLINE` and `@FILE` allowed |
 | **&TicketsInit** | `0` | Set `1` to load Tickets frontend scripts on custom pages |
 
 ## Examples

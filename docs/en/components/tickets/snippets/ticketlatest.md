@@ -8,7 +8,7 @@ Feed of latest tickets or comments with optional cache.
 
 | Name | Default | Description |
 | --- | --- | --- |
-| **&action** | `Comments` | Mode: `Comments` or `Tickets` |
+| **&action** | `comments` | Mode: `comments` or `tickets` (case insensitive) |
 | **&cacheKey** | | Cache key; empty disables caching |
 | **&cacheTime** | `1800` | Cache lifetime in seconds |
 | **&depth** | `10` | Search depth from each parent |
