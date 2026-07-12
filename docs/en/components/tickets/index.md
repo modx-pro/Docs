@@ -66,5 +66,5 @@ Step by step: [Quick start](quick-start).
 ## Dependencies
 
 - [pdoTools](/en/components/pdotools/) for list snippets.
-- [FormIt](/en/components/formit/) optional for `&validate` in [TicketFormit](ticketformit).
+- [FormIt](https://docs.modx.com/current/en/extras/formit) optional for `&validate` in [TicketFormit](ticketformit).
 - **PHP 8+** (1.14 includes 8.2 fixes).

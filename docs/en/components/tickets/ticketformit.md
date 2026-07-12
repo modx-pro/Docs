@@ -5,7 +5,7 @@ With FormIt installed, validation works in `TicketForm` and `TicketComments` via
 ## Rules
 
 - Errors render in `<span class="error"></span>` next to the field or in `#field_name-error`
-- FormIt rules: [FormIt docs](/en/components/formit/)
+- FormIt rules: [FormIt docs](https://docs.modx.com/current/en/extras/formit)
 - For comments, validate field `text`
 
 Field markup:
