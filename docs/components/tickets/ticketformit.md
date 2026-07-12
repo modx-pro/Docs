@@ -5,7 +5,7 @@
 ## Правила
 
 - Ошибки выводятся в `<span class="error"></span>` рядом с полем или в `#имя_поля-error`
-- Правила FormIt: [документация FormIt](/components/formit/)
+- Правила FormIt: [документация FormIt](https://docs.modx.com/current/ru/extras/formit)
 - Для комментариев валидируется поле `text`
 
 Разметка поля:

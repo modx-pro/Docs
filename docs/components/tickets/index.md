@@ -66,5 +66,5 @@ items: [
 ## Зависимости
 
 - [pdoTools](/components/pdotools/) — выборки в сниппетах списков.
-- [FormIt](/components/formit/) — опционально, для `&validate` в [TicketFormit](ticketformit).
+- [FormIt](https://docs.modx.com/current/ru/extras/formit) — опционально, для `&validate` в [TicketFormit](ticketformit).
 - **PHP 8+** (в 1.14 — правки под 8.2).
