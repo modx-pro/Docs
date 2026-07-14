@@ -25,7 +25,7 @@ Aggregates store `object_class` as `msProduct` (whatever you passed in `class` /
 ```fenom
 {'!Reactions' | snippet : [
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'set'     => 'github',
     'context' => 'web',
 ]}
@@ -35,6 +35,8 @@ Aggregates store `object_class` as `msProduct` (whatever you passed in `class` /
 
 👍/👎 only:
 
+::: code-group
+
 ```modx
 [[!Reactions?
     &class=`msProduct`
@@ -42,6 +44,16 @@ Aggregates store `object_class` as `msProduct` (whatever you passed in `class` /
     &set=`updown`
 ]]
 ```
+
+```fenom
+{'!Reactions' | snippet : [
+    'class'  => 'msProduct',
+    'object' => $_modx->resource.id,
+    'set'    => 'updown',
+]}
+```
+
+:::
 
 ## Counter in the catalog
 
@@ -58,7 +70,7 @@ Aggregates store `object_class` as `msProduct` (whatever you passed in `class` /
 ```fenom
 {'!ReactionsCount' | snippet : [
     'class'  => 'msProduct',
-    'object' => $product.id,
+    'object' => $id,
     'format' => '👍 {LIKES}',
 ]}
 ```
@@ -71,7 +83,7 @@ Use `msProducts` with `leftJoin`.
 
 ::: code-group
 
-```json
+```modx
 [[!msProducts?
     &parents=`10`
     &limit=`12`
@@ -82,7 +94,7 @@ Use `msProducts` with `leftJoin`.
 ]]
 ```
 
-```json
+```fenom
 {'!msProducts' | snippet : [
     'parents' => 10,
     'limit' => 12,
@@ -189,7 +201,7 @@ Products usually live in the `web` context. If the catalog uses a separate conte
 ```fenom
 {'!Reactions' | snippet : [
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'context' => 'catalog',
     'set'     => 'updown',
 ]}
@@ -214,7 +226,7 @@ Only when the product has like/dislike votes. In Fenom use `{raw …}`:
 ```fenom
 {raw ('!ReactionsSchema' | snippet : [
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'context' => 'web',
 ])}
 ```

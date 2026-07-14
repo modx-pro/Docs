@@ -14,7 +14,7 @@ title: Интеграция с Collections
 ```
 
 ```fenom
-{'!Reactions' | snippet : ['set' => 'github', 'object' => $_modx->resource.id]}
+{'!Reactions' | snippet : ['set' => 'github']}
 ```
 
 :::
@@ -51,7 +51,7 @@ title: Интеграция с Collections
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`[[*id]]`
     &depth=`1`
@@ -62,7 +62,7 @@ title: Интеграция с Collections
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => $_modx->resource.id,
     'depth' => 1,

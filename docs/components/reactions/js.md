@@ -40,7 +40,7 @@ title: JavaScript-виджет
 | `data-object-id` | да | ID объекта (целое число > 0) |
 | `data-set` | нет | Ключ набора, по умолчанию `updown` |
 | `data-context` | нет | Контекст, по умолчанию `web` |
-| `data-csrf` | нет | CSRF-токен; если пустой, виджет запросит сам |
+| `data-csrf` | нет | CSRF-токен. Если пустой, виджет запросит сам |
 | `data-api` | нет* | URL API. В SSR сниппета заполняется из `[[+api_url]]`. Без атрибута: `Reactions.config.api`, иначе путь от `reactions.js` (same-origin) |
 | `data-types` | нет | Имена типов через запятую. Атрибут отсутствует → каталог `data-set`. Пустая строка → 0 кнопок. Лишние имена вне набора игнорируются |
 | `data-exclusive` | нет | `1` если набор exclusive (SSR из сниппета) |
@@ -95,7 +95,7 @@ Override (CDN или нестандартный путь к `api.php`):
 
 или на конкретном виджете: `data-api="[[++assets_url]]components/reactions/api.php"`.
 
-Сниппет `Reactions` заполняет обязательные data-атрибуты через чанк `tpl.Reactions.outer`. При кастомном чанке сохраните класс `reactions-widget` и корректные data-атрибуты; `data-api` не обязателен.
+Сниппет `Reactions` заполняет обязательные data-атрибуты через чанк `tpl.Reactions.outer`. При кастомном чанке сохраните класс `reactions-widget` и корректные data-атрибуты. `data-api` не обязателен.
 
 ## Ручная инициализация
 
@@ -135,7 +135,7 @@ Reactions.init(container);
 
 ## Exclusive и синхронизация
 
-Сервер считает режим exclusive, если набор `exclusive` **или** выключен `reactions_allow_multiple`. Сниппет пишет это в `data-exclusive` / `data-allow-multiple`; виджет зеркалит ту же логику: при exclusive другая кнопка снимает предыдущую (optimistic UI).
+Сервер считает режим exclusive, если набор `exclusive` **или** выключен `reactions_allow_multiple`. Сниппет пишет это в `data-exclusive` / `data-allow-multiple`. Виджет зеркалит ту же логику: при exclusive другая кнопка снимает предыдущую (optimistic UI).
 
 Несколько виджетов на один объект (`class_key` + `object_id` + `context`) синхронизируются событием `reactions:updated` на `document` после успешного POST/DELETE.
 
@@ -148,16 +148,25 @@ Reactions.init(container);
 
 Escape и клик снаружи закрывают popover. Сниппет:
 
+::: code-group
+
 ```modx
 [[!Reactions? &set=`github` &layout=`picker`]]
 [[!Reactions? &set=`full` &layout=`bar`]]
 ```
 
+```fenom
+{'!Reactions' | snippet : ['set' => 'github', 'layout' => 'picker']}
+{'!Reactions' | snippet : ['set' => 'full', 'layout' => 'bar']}
+```
+
+:::
+
 ## Доступность
 
 - Контейнер: `role="group"`, `aria-label="Reactions"`.
 - Кнопки реакций: `aria-pressed`, `aria-label` с именем типа и счётчиком.
-- Picker: кнопка `+` с `aria-expanded` / `aria-haspopup`; popover закрывается по Escape и клику снаружи.
+- Picker: кнопка `+` с `aria-expanded` / `aria-haspopup`. Popover закрывается по Escape и клику снаружи.
 - Ошибки: `role="alert"`.
 - Клавиатура: Enter и Space активируют кнопку.
 

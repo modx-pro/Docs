@@ -23,7 +23,7 @@ Open: **System → System Settings**, filter `reactions`.
 
 | Value | Behavior |
 | --- | --- |
-| `auth_only` | Logged-in users only; guests get an error |
+| `auth_only` | Logged-in users only. Guests get an error |
 | `ip` | Fingerprint from IP hash |
 | `ip_cookie` | Cookie `reactions_fid` (32 hex), 1 year |
 | `session` | Fingerprint from PHP session ID |

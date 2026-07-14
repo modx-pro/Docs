@@ -82,7 +82,7 @@ php core/components/reactions/cli.php export --class-key=modResource --object-id
 | `--class-key` | Filter by class |
 | `--object-id` | Filter by ID |
 | `--context` | Filter by context |
-| `--file` | File path; without it, output goes to stdout |
+| `--file` | File path. Without it, output goes to stdout |
 
 File format:
 

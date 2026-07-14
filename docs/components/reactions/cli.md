@@ -81,7 +81,7 @@ php core/components/reactions/cli.php export --class-key=modResource --object-id
 | `--class-key` | Фильтр по классу |
 | `--object-id` | Фильтр по ID |
 | `--context` | Фильтр по контексту |
-| `--file` | Путь к файлу; без него вывод в stdout |
+| `--file` | Путь к файлу. Без него вывод в stdout |
 
 Формат файла:
 

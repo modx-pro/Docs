@@ -53,23 +53,23 @@ Universal reactions for [MODX Revolution 3](https://modx.com/). From a simple li
 
 The component is headless: no manager UI. You configure it via system settings, REST API, and CLI.
 
-Source: [modx-pro/Reactions](https://github.com/Ibochkarev/Reactions) (MIT).
+Source: [Ibochkarev/Reactions](https://github.com/Ibochkarev/Reactions) (MIT).
 
 ## Features
 
 - Three built-in sets: `updown`, `github`, `full` (24 types)
-- Compact picker for `github` / `full` (`layout=auto`): chips + `+` button; `layout=bar` for the full strip
+- Compact picker for `github` / `full` (`layout=auto`): chips + `+` button. `layout=bar` for the full strip
 - Custom types and sets via CLI or admin API
-- Reactions on any object (`class` / `class_key`; DB field `object_class`)
-- Click again to remove; in an exclusive set another reaction replaces the previous one
+- Reactions on any object (`class` / `class_key`, DB field `object_class`)
+- Click again to remove. In an exclusive set another reaction replaces the previous one
 - Identity strategies: `auth_only`, `ip`, `ip_cookie`, `session`
-- Tops for day / week / month / year / all time; trending with a Reddit-style score
+- Tops for day / week / month / year / all time. Trending with a Reddit-style score
 - Rate limit, bot blocking, CSRF, Origin check
 - MODX events, webhooks (Telegram, Discord, Slack), author notifications
 
 ## Requirements
 
-| | |
+| Requirement | Version |
 | --- | --- |
 | MODX Revolution | 3.0+ |
 | PHP | 8.2–8.4 |
@@ -92,7 +92,7 @@ php _build/build.php
 
 ## Short path
 
-1. Load CSS/JS and call `[[!Reactions]]` — [Quick start](quick-start).
+1. Load CSS/JS and call the **Reactions** snippet — [Quick start](quick-start).
 2. Change the set or identity strategy if needed — [System settings](settings).
 3. For the storefront: [miniShop3](integrations/minishop3), [pdoTools](integrations/pdotools), [SEO](integrations/seo).
 
@@ -102,7 +102,7 @@ php _build/build.php
 | --- | --- | --- |
 | `updown` | 👍 `like`, 👎 `dislike` | Mutually exclusive (`exclusive`) |
 | `github` | 👍 👎 ❤️ 😂 😮 😢 😡 🎉 | Multiple reactions at once |
-| `full` | `github` + 🚀👀🔥👏🤔🥳⭐🍺✨💯🙏💪😎😍😕🙌 | 24 types; subset via `reactions_full_types` |
+| `full` | `github` + 🚀👀🔥👏🤔🥳⭐🍺✨💯🙏💪😎😍😕🙌 | 24 types. Subset via `reactions_full_types` |
 
 Custom types and sets: [CLI](cli) or [admin API](api#admin).
 

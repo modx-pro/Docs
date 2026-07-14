@@ -25,7 +25,7 @@ title: Интеграция с pdoTools
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`0`
     &depth=`10`
@@ -37,7 +37,7 @@ title: Интеграция с pdoTools
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => 0,
     'depth' => 10,
@@ -55,7 +55,7 @@ title: Интеграция с pdoTools
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`5`
     &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
@@ -65,7 +65,7 @@ title: Интеграция с pdoTools
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => 5,
     'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
@@ -81,7 +81,7 @@ title: Интеграция с pdoTools
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`0`
     &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
@@ -91,7 +91,7 @@ title: Интеграция с pdoTools
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => 0,
     'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
@@ -145,7 +145,7 @@ title: Интеграция с pdoTools
 
 ::: code-group
 
-```json
+```modx
 [[!pdoPage?
     &element=`pdoResources`
     &parents=`0`
@@ -157,7 +157,7 @@ title: Интеграция с pdoTools
 [[!+page.nav]]
 ```
 
-```json
+```fenom
 {'!pdoPage' | snippet : [
     'element' => 'pdoResources',
     'parents' => 0,
@@ -171,7 +171,19 @@ title: Интеграция с pdoTools
 
 :::
 
-В Fenom-шаблоне строки (если результаты в `$results`):
+В шаблоне строки списка (чанк `tpl` / цикл `$results`):
+
+::: code-group
+
+```modx
+<article>
+    <h2><a href="[[~[[+id]]]]">[[+pagetitle]]</a></h2>
+    [[!ReactionsCount?
+        &object=`[[+id]]`
+        &format=`👍 {LIKES}`
+    ]]
+</article>
+```
 
 ```fenom
 {foreach $results as $row}
@@ -185,11 +197,13 @@ title: Интеграция с pdoTools
 {/foreach}
 ```
 
+:::
+
 ## Фильтр: только объекты с реакциями
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`0`
     &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
@@ -199,7 +213,7 @@ title: Интеграция с pdoTools
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => 0,
     'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',

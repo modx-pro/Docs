@@ -31,7 +31,7 @@ Reactions вызывает системные события при измене
 2. IdentityResolver (fingerprint / user_id)
 3. BotDetector + ReactionBan + RateLimiter
 4. Существование объекта (короткий class_key → FQCN/STI + object_id)
-5. Тип активен; тип ∈ набор (set); для set=full — reactions_full_types
+5. Тип активен. Тип ∈ набор (set). Для set=full — reactions_full_types
 6. OnBeforeReaction  ← можно cancel
 7. Транзакция БД (insert / update / delete)
 8. OnAfterReaction
@@ -62,7 +62,7 @@ Reactions вызывает системные события при измене
 | `objectId` | `int` | ID объекта |
 | `typeName` | `string` | Имя типа (`like`, `fire`…) |
 | `context` | `string` | Контекст MODX |
-| `setKey` | `string` | Ключ набора; может быть пустым до резолва default |
+| `setKey` | `string` | Ключ набора. Может быть пустым до резолва default |
 | `allowMultiple` | `bool` | Флаг из настройки на момент запроса |
 
 `Reactions\Dto\VisitorIdentity` (readonly):
@@ -114,7 +114,7 @@ $modx->event->returnedValues['cancel'] = true;
 | `action` | Типичный сценарий |
 | --- | --- |
 | `added` | Первая реакция этого типа (или новая после снятия) |
-| `removed` | Toggle снял реакцию; или явный DELETE |
+| `removed` | Toggle снял реакцию или явный DELETE |
 | `changed` | Exclusive: был `dislike`, стал `like` без отдельного remove в ответе клиенту |
 
 Для `changed` срабатывают `OnAfterReaction` + `OnReactionChanged` (не `OnReactionRemoved`).
@@ -289,7 +289,7 @@ $resource->setTVValue('likes_mirror', $tv);
 | --- | --- |
 | Плагин `OnBeforeReaction` + `cancel` | HTTP `403`, реакция не пишется, webhook не уходит |
 | Успешный `react` | События → recount → webhook `reaction.*` → опционально message автору |
-| Widget | Не видит события напрямую; видит JSON `data.action` / `counts` |
+| Widget | Не видит события напрямую. Видит JSON `data.action` / `counts` |
 
 Подпись webhook payload: см. [webhooks.md](webhooks). Имена событий там с префиксом `reaction.` (`reaction.added`), в MODX — без префикса (`OnAfterReaction` + `action=added`).
 
@@ -319,4 +319,4 @@ $resource->setTVValue('likes_mirror', $tv);
 - Не бросайте необработанные исключения из after-хуков: они могут превратиться в `500` после уже закоммиченной транзакции.
 - Не делайте долгий HTTP/email синхронно в after — используйте webhook или очередь.
 - Не полагайтесь на «multiselect» по имени набора: multi только при `!exclusive` **и** `reactions_allow_multiple`.
-- Для фильтров UI (`&types=`) помните: API режет только `reactions_full_types` для `set=full`; точечный запрет других типов — через `OnBeforeReaction`.
+- Для фильтров UI (`&types=`) помните: API режет только `reactions_full_types` для `set=full`. Точечный запрет других типов — через `OnBeforeReaction`.

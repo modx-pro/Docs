@@ -11,7 +11,7 @@ title: Сниппет Reactions
 | --- | --- | --- |
 | `set` | из `reactions_default_set` | Ключ набора реакций (`updown`, `github`, `full` или свой) |
 | `types` | *(пусто)* | Подмножество имён типов через запятую (пересечение с набором). Для `full` иначе берётся `reactions_full_types` |
-| `layout` | `auto` | `auto` — picker если типов больше 3, иначе bar; `picker` — чипы + popover; `bar` — все кнопки в ряд |
+| `layout` | `auto` | `auto` — picker если типов больше 3, иначе bar. `picker` — чипы + popover. `bar` — все кнопки в ряд |
 | `class` | `modResource` | `class_key` объекта в xPDO |
 | `object` | ID текущего ресурса | ID объекта |
 | `context` | ключ текущего контекста | Контекст MODX (`web`, `mgr` и т.д.) |
@@ -52,7 +52,7 @@ title: Сниппет Reactions
 
 Кратко по наборам:
 
-- `updown` (2) — `like`, `dislike`; exclusive.
+- `updown` (2) — `like`, `dislike`. Exclusive.
 - `github` (8) — `like`, `dislike`, `love`, `funny`, `wow`, `sad`, `angry`, `hooray`.
 - `full` (24) — все строки таблицы выше.
 
@@ -62,7 +62,7 @@ title: Сниппет Reactions
 like,love,fire,star,clap,rocket,heart_eyes
 ```
 
-Собственные типы добавляются через [CLI](../cli) или [admin API](../api#admin) и подключаются к набору; в эту таблицу они не входят.
+Собственные типы добавляются через [CLI](../cli) или [admin API](../api#admin) и подключаются к набору. В эту таблицу они не входят.
 
 ## Плейсхолдеры чанка кнопки (`tpl`)
 
@@ -79,9 +79,9 @@ like,love,fire,star,clap,rocket,heart_eyes
 | --- | --- |
 | `[[+output]]` | HTML всех кнопок |
 | `[[+total]]` | Сумма всех реакций |
-| `[[+api_url]]` | URL API; стандартный outer пишет в `data-api`. JS также умеет вывести API из пути `reactions.js` или `Reactions.config.api` |
+| `[[+api_url]]` | URL API. Стандартный outer пишет в `data-api`. JS также умеет вывести API из пути `reactions.js` или `Reactions.config.api` |
 | `[[+csrf]]` | CSRF-токен для AJAX |
-| `[[+class_key]]` | Класс объекта (как в API; в БД — `object_class`) |
+| `[[+class_key]]` | Класс объекта (как в API, в БД — `object_class`) |
 | `[[+object_id]]` | ID объекта |
 | `[[+set]]` | Ключ набора |
 | `[[+context]]` | Контекст |
@@ -106,11 +106,7 @@ like,love,fire,star,clap,rocket,heart_eyes
 ```
 
 ```fenom
-{'!Reactions' | snippet : [
-    'class'   => 'modResource',
-    'object'  => $_modx->resource.id,
-    'context' => $_modx->context.key,
-]}
+{'!Reactions' | snippet}
 ```
 
 :::
@@ -153,6 +149,7 @@ like,love,fire,star,clap,rocket,heart_eyes
 
 ```fenom
 {'!Reactions' | snippet : ['set' => 'github']}
+{'!Reactions' | snippet : ['set' => 'github', 'layout' => 'picker']}
 {'!Reactions' | snippet : ['set' => 'github', 'layout' => 'bar']}
 ```
 
@@ -169,11 +166,12 @@ like,love,fire,star,clap,rocket,heart_eyes
 
 ```fenom
 {'!Reactions' | snippet : ['set' => 'full']}
+{'!Reactions' | snippet : ['set' => 'full', 'layout' => 'bar']}
 ```
 
 :::
 
-Без `&types=` для `full` берётся системная `reactions_full_types`; пустая настройка → все 24 типа в popover.
+Без `&types=` для `full` берётся системная `reactions_full_types`. Пустая настройка — все 24 типа в popover.
 
 ### Подмножество через `&types=` на `full`
 
@@ -199,7 +197,7 @@ like,love,fire,star,clap,rocket,heart_eyes
 
 ### Отсев неизвестных имён в `&types=`
 
-`not_a_type` отбрасывается; остаются типы из набора.
+`not_a_type` отбрасывается. Остаются типы из набора.
 
 ::: code-group
 
@@ -262,7 +260,7 @@ like,love,fire,star,clap,rocket,heart_eyes
 {'!Reactions' | snippet : [
     'set'     => 'github',
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'context' => 'web',
 ]}
 ```
@@ -271,6 +269,8 @@ like,love,fire,star,clap,rocket,heart_eyes
 
 То же с exclusive:
 
+::: code-group
+
 ```modx
 [[!Reactions?
     &set=`updown`
@@ -278,6 +278,16 @@ like,love,fire,star,clap,rocket,heart_eyes
     &object=`[[+id]]`
 ]]
 ```
+
+```fenom
+{'!Reactions' | snippet : [
+    'set'    => 'updown',
+    'class'  => 'msProduct',
+    'object' => $id,
+]}
+```
+
+:::
 
 ### Комментарий Tickets
 
@@ -296,7 +306,7 @@ like,love,fire,star,clap,rocket,heart_eyes
 ```fenom
 {'!Reactions' | snippet : [
     'class'  => 'TicketComment',
-    'object' => $comment.id,
+    'object' => $id,
     'set'    => 'updown',
 ]}
 ```

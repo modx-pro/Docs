@@ -25,7 +25,7 @@ title: Интеграция с miniShop3
 ```fenom
 {'!Reactions' | snippet : [
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'set'     => 'github',
     'context' => 'web',
 ]}
@@ -35,6 +35,8 @@ title: Интеграция с miniShop3
 
 Только 👍/👎:
 
+::: code-group
+
 ```modx
 [[!Reactions?
     &class=`msProduct`
@@ -42,6 +44,16 @@ title: Интеграция с miniShop3
     &set=`updown`
 ]]
 ```
+
+```fenom
+{'!Reactions' | snippet : [
+    'class'  => 'msProduct',
+    'object' => $_modx->resource.id,
+    'set'    => 'updown',
+]}
+```
+
+:::
 
 ## Счётчик в каталоге
 
@@ -58,7 +70,7 @@ title: Интеграция с miniShop3
 ```fenom
 {'!ReactionsCount' | snippet : [
     'class'  => 'msProduct',
-    'object' => $product.id,
+    'object' => $id,
     'format' => '👍 {LIKES}',
 ]}
 ```
@@ -71,7 +83,7 @@ title: Интеграция с miniShop3
 
 ::: code-group
 
-```json
+```modx
 [[!msProducts?
     &parents=`10`
     &limit=`12`
@@ -82,7 +94,7 @@ title: Интеграция с miniShop3
 ]]
 ```
 
-```json
+```fenom
 {'!msProducts' | snippet : [
     'parents' => 10,
     'limit' => 12,
@@ -189,7 +201,7 @@ title: Интеграция с miniShop3
 ```fenom
 {'!Reactions' | snippet : [
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'context' => 'catalog',
     'set'     => 'updown',
 ]}
@@ -214,7 +226,7 @@ title: Интеграция с miniShop3
 ```fenom
 {raw ('!ReactionsSchema' | snippet : [
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'context' => 'web',
 ])}
 ```

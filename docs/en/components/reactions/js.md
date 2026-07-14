@@ -41,7 +41,7 @@ The script finds elements with the `.reactions-widget` class and mounts a widget
 | `data-object-id` | yes | Object ID (integer > 0) |
 | `data-set` | no | Set key, default `updown` |
 | `data-context` | no | Context, default `web` |
-| `data-csrf` | no | CSRF token; if empty, the widget requests one |
+| `data-csrf` | no | CSRF token. If empty, the widget requests one |
 | `data-api` | no* | API URL. In snippet SSR filled from `[[+api_url]]`. Without the attribute: `Reactions.config.api`, otherwise a path derived from `reactions.js` (same-origin) |
 | `data-types` | no | Type names, comma-separated. Attribute missing → catalog from `data-set`. Empty string → 0 buttons. Extra names outside the set are ignored |
 | `data-exclusive` | no | `1` when the set is exclusive (SSR from the snippet) |
@@ -96,7 +96,7 @@ Override (CDN or non-standard path to `api.php`):
 
 or on a specific widget: `data-api="[[++assets_url]]components/reactions/api.php"`.
 
-The `Reactions` snippet fills required data attributes via the `tpl.Reactions.outer` chunk. With a custom chunk, keep the `reactions-widget` class and correct data attributes; `data-api` is optional.
+The `Reactions` snippet fills required data attributes via the `tpl.Reactions.outer` chunk. With a custom chunk, keep the `reactions-widget` class and correct data attributes. `data-api` is optional.
 
 ## Manual init
 
@@ -136,7 +136,7 @@ For custom sets, server validation still works through the API, but JS renders b
 
 ## Exclusive and sync
 
-The server treats the mode as exclusive when the set is `exclusive` **or** `reactions_allow_multiple` is off. The snippet writes this into `data-exclusive` / `data-allow-multiple`; the widget mirrors the same logic: under exclusive, another button clears the previous one (optimistic UI).
+The server treats the mode as exclusive when the set is `exclusive` **or** `reactions_allow_multiple` is off. The snippet writes this into `data-exclusive` / `data-allow-multiple`. The widget mirrors the same logic: under exclusive, another button clears the previous one (optimistic UI).
 
 Several widgets for the same object (`class_key` + `object_id` + `context`) sync via the `reactions:updated` event on `document` after a successful POST/DELETE.
 
@@ -149,16 +149,25 @@ Several widgets for the same object (`class_key` + `object_id` + `context`) sync
 
 Escape and outside click close the popover. Snippet:
 
+::: code-group
+
 ```modx
 [[!Reactions? &set=`github` &layout=`picker`]]
 [[!Reactions? &set=`full` &layout=`bar`]]
 ```
 
+```fenom
+{'!Reactions' | snippet : ['set' => 'github', 'layout' => 'picker']}
+{'!Reactions' | snippet : ['set' => 'full', 'layout' => 'bar']}
+```
+
+:::
+
 ## Accessibility
 
 - Container: `role="group"`, `aria-label="Reactions"`.
 - Reaction buttons: `aria-pressed`, `aria-label` with type name and count.
-- Picker: `+` button with `aria-expanded` / `aria-haspopup`; popover closes on Escape and outside click.
+- Picker: `+` button with `aria-expanded` / `aria-haspopup`. Popover closes on Escape and outside click.
 - Errors: `role="alert"`.
 - Keyboard: Enter and Space activate the button.
 

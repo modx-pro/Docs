@@ -39,10 +39,7 @@ Text counters without buttons, for cards, lists, and meta rows.
 ```
 
 ```fenom
-{'!ReactionsCount' | snippet : [
-    'class'  => 'modResource',
-    'object' => $_modx->resource.id,
-]}
+{'!ReactionsCount' | snippet}
 ```
 
 :::
@@ -156,7 +153,7 @@ Zero and missing types print as `0`.
 ```fenom
 {'!ReactionsCount' | snippet : [
     'class'  => 'msProduct',
-    'object' => $product.id,
+    'object' => $_modx->resource.id,
     'format' => 'Товар: 👍 {LIKES} · всего {TOTAL}',
 ]}
 ```
@@ -204,7 +201,7 @@ Not verified on MODX 3. Call:
 ```fenom
 {'!ReactionsCount' | snippet : [
     'class'  => 'TicketComment',
-    'object' => $comment.id,
+    'object' => $id,
     'format' => '{LIKES}',
 ]}
 ```

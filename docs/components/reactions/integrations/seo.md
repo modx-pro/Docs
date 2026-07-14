@@ -69,6 +69,18 @@ JSON-LD появляется только при ненулевых `like`/`up` 
 
 Нет like/dislike → сниппет возвращает пустую строку (удобно в условии шаблона):
 
+::: code-group
+
+```modx
+[[!ReactionsSchema?
+    &class=`modResource`
+    &object=`999999001`
+    &context=`web`
+    &toPlaceholder=`rx.schema`
+]]
+[[+rx.schema:notempty=`[[+rx.schema]]`]]
+```
+
 ```fenom
 {set $schema = '!ReactionsSchema' | snippet : [
     'class'   => 'modResource',
@@ -77,6 +89,8 @@ JSON-LD появляется только при ненулевых `like`/`up` 
 ]}
 {if $schema}{raw $schema}{/if}
 ```
+
+:::
 
 ### Товар miniShop3
 
@@ -93,7 +107,7 @@ JSON-LD появляется только при ненулевых `like`/`up` 
 ```fenom
 {raw ('!ReactionsSchema' | snippet : [
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'context' => 'web',
 ])}
 ```

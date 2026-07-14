@@ -18,7 +18,7 @@ In the template or via `registerClientScript` / `registerClientCSS`.
 <script src="[[++assets_url]]components/reactions/js/web/reactions.js" defer></script>
 ```
 
-```html
+```fenom
 <link rel="stylesheet" href="{'assets_url' | config}components/reactions/js/web/reactions.css">
 <script src="{'assets_url' | config}components/reactions/js/web/reactions.js" defer></script>
 ```
@@ -40,15 +40,9 @@ On a resource page (`github` set). With `layout=auto` (default) the widget draws
 ```
 
 ```fenom
-{'!Reactions' | snippet : [
-    'set' => 'github',
-    'object' => $_modx->resource.id,
-]}
-{'!Reactions' | snippet : [
-    'set' => 'github',
-    'layout' => 'bar',
-    'object' => $_modx->resource.id,
-]}
+{'!Reactions' | snippet : ['set' => 'github']}
+{'!Reactions' | snippet : ['set' => 'updown']}
+{'!Reactions' | snippet : ['set' => 'github', 'layout' => 'bar']}
 ```
 
 :::

@@ -69,6 +69,18 @@ In `<head>` or before `</body>`:
 
 No like/dislike → the snippet returns an empty string (handy in a template condition):
 
+::: code-group
+
+```modx
+[[!ReactionsSchema?
+    &class=`modResource`
+    &object=`999999001`
+    &context=`web`
+    &toPlaceholder=`rx.schema`
+]]
+[[+rx.schema:notempty=`[[+rx.schema]]`]]
+```
+
 ```fenom
 {set $schema = '!ReactionsSchema' | snippet : [
     'class'   => 'modResource',
@@ -77,6 +89,8 @@ No like/dislike → the snippet returns an empty string (handy in a template con
 ]}
 {if $schema}{raw $schema}{/if}
 ```
+
+:::
 
 ### miniShop3 product
 
@@ -93,7 +107,7 @@ No like/dislike → the snippet returns an empty string (handy in a template con
 ```fenom
 {raw ('!ReactionsSchema' | snippet : [
     'class'   => 'msProduct',
-    'object'  => $product.id,
+    'object'  => $_modx->resource.id,
     'context' => 'web',
 ])}
 ```

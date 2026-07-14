@@ -131,17 +131,41 @@ title: Сниппет TopRated
 
 ### Контекст `web`
 
+::: code-group
+
 ```modx
 [[!TopRated? &period=`all` &context=`web` &limit=`20`]]
 ```
+
+```fenom
+{'!TopRated' | snippet : [
+    'period'  => 'all',
+    'context' => 'web',
+    'limit'   => 20,
+]}
+```
+
+:::
 
 ### Комментарии Tickets
 
 На MODX 3 не проверено:
 
+::: code-group
+
 ```modx
 [[!TopRated? &class=`TicketComment` &period=`week` &limit=`3`]]
 ```
+
+```fenom
+{'!TopRated' | snippet : [
+    'class'  => 'TicketComment',
+    'period' => 'week',
+    'limit'  => 3,
+]}
+```
+
+:::
 
 ## TopLiked vs TopRated
 

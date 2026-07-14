@@ -12,7 +12,7 @@ title: Сниппет TopLiked
 | `class` | `modResource` | `class_key` объектов в выборке |
 | `period` | `all` | Период: `day`, `week`, `month`, `year`, `all` |
 | `limit` | `10` | Максимум элементов |
-| `context` | *(пусто)* | Фильтр по контексту; пустое значение — все контексты |
+| `context` | *(пусто)* | Фильтр по контексту. Пустое значение — все контексты |
 | `tpl` | `tpl.Reactions.top` | Чанк одной строки списка |
 | `toPlaceholder` | *(пусто)* | Имя плейсхолдера вместо прямого вывода |
 
@@ -197,6 +197,18 @@ title: Сниппет TopLiked
 
 На MODX 3 не проверено:
 
+::: code-group
+
 ```modx
 [[!TopLiked? &class=`TicketComment` &period=`month` &limit=`5`]]
 ```
+
+```fenom
+{'!TopLiked' | snippet : [
+    'class'  => 'TicketComment',
+    'period' => 'month',
+    'limit'  => 5,
+]}
+```
+
+:::

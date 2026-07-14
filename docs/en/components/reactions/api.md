@@ -63,7 +63,7 @@ Error:
 | `not_found` | 404 | Unknown action / object / type / set |
 | `method_not_allowed` | 405 | Wrong HTTP method for the endpoint |
 | `forbidden` | 403 | CSRF/Origin/nonce, ban, bot, type outside set/`full_types`, cancelled by plugin |
-| `auth_required` | 401 | Admin without `reactions_manage`; `auth_only` strategy for a guest |
+| `auth_required` | 401 | Admin without `reactions_manage`. `auth_only` strategy for a guest |
 | `rate_limit` | 429 | Exceeded `reactions_rate_limit` |
 | `internal_error` | 500 | Uncaught exception (details in `error.log`) |
 | `save_failed` | 500 | Admin: failed to save the object |
@@ -118,7 +118,7 @@ Counters for an object and the list of reaction types for the current visitor (b
 | --- | --- | --- |
 | `class_key` | yes | Object class (`modResource`, `msProduct`, `TicketComment`…) |
 | `object_id` | yes | Object ID (> 0) |
-| `context` | no | Context; default `web` |
+| `context` | no | Context. Default `web` |
 
 ```bash
 curl -b cookies.txt \
@@ -160,12 +160,12 @@ Add a reaction. A repeated POST of the same type usually **removes** it (toggle)
 | Field | Required | Description |
 | --- | --- | --- |
 | `csrf` | yes | Token from `GET csrf` |
-| `nonce` | yes | One-time string (32 hex recommended); TTL 300 s, at most ~50 active in the session |
+| `nonce` | yes | One-time string (32 hex recommended). TTL 300 s, at most ~50 active in the session |
 | `class_key` | yes | Object class |
 | `object_id` | yes | ID |
 | `type` | yes | Type name (`like`, `love`, `fire`…) |
 | `context` | no | Default `web` |
-| `set` | no | Set key for type validation; empty → `reactions_default_set` |
+| `set` | no | Set key for type validation. Empty → `reactions_default_set` |
 
 ### Server checks (order)
 
@@ -174,7 +174,7 @@ Add a reaction. A repeated POST of the same type usually **removes** it (toggle)
 3. Nonce has not been used yet.
 4. Identity + anti-bot + ban + rate limit.
 5. Object exists: a short `class_key` (e.g. `msProduct`) resolves to FQCN / STI, then a check by `object_id`.
-6. Type is active; belongs to set `set`.
+6. Type is active and belongs to set `set`.
 7. For `set=full`: type is in `reactions_full_types` when that setting is not empty.
 8. `OnBeforeReaction` (can cancel).
 
@@ -255,7 +255,7 @@ curl -s -b cookies.txt \
   }"
 ```
 
-In the response `action` is usually `removed`. After removal the package still fires events, recalculates the aggregate, and (when enabled) the webhook; author notification is not sent for DELETE.
+In the response `action` is usually `removed`. After removal the package still fires events, recalculates the aggregate, and (when enabled) the webhook. Author notification is not sent for DELETE.
 
 ---
 
@@ -268,7 +268,7 @@ Top objects by aggregates (or a recount over raw reactions for a period when `pe
 | `class_key` | `modResource` | Object class |
 | `sort` | `likes` | `likes`, `rating`, `total` |
 | `period` | `all` | `day`, `week`, `month`, `year`, `all` |
-| `context` | *(empty)* | Context filter; empty means all |
+| `context` | *(empty)* | Context filter. Empty means all |
 | `limit` | `20` | 1–100 |
 | `offset` | `0` | Offset |
 
@@ -499,7 +499,7 @@ curl -b mgr-cookies.txt \
 
 Or: `{ "user_id": 42, "reason": "abuse", "csrf": "…", "nonce": "…" }`.
 
-`expires_at` is a Unix timestamp; omit it for a permanent ban.
+`expires_at` is a Unix timestamp. Omit it for a permanent ban.
 
 ### GET admin/stats
 
@@ -542,9 +542,9 @@ curl -b mgr-cookies.txt \
 
 | Mechanism | Details |
 | --- | --- |
-| CSRF | Session token; required for POST/DELETE (public `react` and admin mutations) |
-| Nonce | One-time, TTL 300 s; replay protection |
-| Origin | Compare host of `Origin` or `Referer` with host of `site_url`; no headers → reject |
+| CSRF | Session token. Required for POST/DELETE (public `react` and admin mutations) |
+| Nonce | One-time, TTL 300 s. Replay protection |
+| Origin | Compare host of `Origin` or `Referer` with host of `site_url`. No headers → reject |
 | Rate limit | `reactions_rate_limit` / `reactions_rate_limit_window` per fingerprint |
 | Bots | `reactions_block_bots` + User-Agent detector |
 | Bans | `ReactionBan` table by IP-hash / user_id |

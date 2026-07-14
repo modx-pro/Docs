@@ -53,23 +53,23 @@ items: [
 
 Компонент headless: менеджерского интерфейса нет. Управление через системные настройки, REST API и CLI.
 
-Исходники: [modx-pro/Reactions](https://github.com/Ibochkarev/Reactions) (MIT).
+Исходники: [Ibochkarev/Reactions](https://github.com/Ibochkarev/Reactions) (MIT).
 
 ## Возможности
 
 - Три встроенных набора: `updown`, `github`, `full` (24 типа)
-- Compact picker для `github` / `full` (`layout=auto`): чипы + кнопка `+`; `layout=bar` — полная полоса
+- Compact picker для `github` / `full` (`layout=auto`): чипы + кнопка `+`. `layout=bar` — полная полоса
 - Свои типы и наборы через CLI или admin API
-- Реакции на любой объект (`class` / `class_key`; в БД — `object_class`)
-- Повторное нажатие снимает реакцию; в exclusive-наборе другая реакция заменяет предыдущую
+- Реакции на любой объект (`class` / `class_key`, в БД — `object_class`)
+- Повторное нажатие снимает реакцию. В exclusive-наборе другая реакция заменяет предыдущую
 - Стратегии идентификации: `auth_only`, `ip`, `ip_cookie`, `session`
-- Топы за день / неделю / месяц / год / всё время; trending по формуле Reddit
+- Топы за день / неделю / месяц / год / всё время. Trending по формуле Reddit
 - Rate limit, блок ботов, CSRF, Origin check
 - События MODX, webhooks (Telegram, Discord, Slack), уведомления автору
 
 ## Требования
 
-| | |
+| Требование | Версия |
 | --- | --- |
 | MODX Revolution | 3.0+ |
 | PHP | 8.2–8.4 |
@@ -92,7 +92,7 @@ php _build/build.php
 
 ## Быстрый путь
 
-1. Подключите CSS/JS и вызовите `[[!Reactions]]` — [Быстрый старт](quick-start).
+1. Подключите CSS/JS и вызовите сниппет **Reactions** — [Быстрый старт](quick-start).
 2. При необходимости смените набор и стратегию идентификации — [Системные настройки](settings).
 3. Для витрины: [miniShop3](integrations/minishop3), [pdoTools](integrations/pdotools), [SEO](integrations/seo).
 
@@ -102,7 +102,7 @@ php _build/build.php
 | --- | --- | --- |
 | `updown` | 👍 `like`, 👎 `dislike` | Взаимоисключающие (`exclusive`) |
 | `github` | 👍 👎 ❤️ 😂 😮 😢 😡 🎉 | Несколько реакций одновременно |
-| `full` | `github` + 🚀👀🔥👏🤔🥳⭐🍺✨💯🙏💪😎😍😕🙌 | 24 типа; подмножество через `reactions_full_types` |
+| `full` | `github` + 🚀👀🔥👏🤔🥳⭐🍺✨💯🙏💪😎😍😕🙌 | 24 типа. Подмножество через `reactions_full_types` |
 
 Свои типы и наборы: [CLI](cli) или [admin API](api#admin).
 

@@ -25,7 +25,7 @@ The `reactions_aggregates` table stores precomputed metrics:
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`0`
     &depth=`10`
@@ -37,7 +37,7 @@ The `reactions_aggregates` table stores precomputed metrics:
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => 0,
     'depth' => 10,
@@ -55,7 +55,7 @@ The `reactions_aggregates` table stores precomputed metrics:
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`5`
     &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
@@ -65,7 +65,7 @@ The `reactions_aggregates` table stores precomputed metrics:
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => 5,
     'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
@@ -81,7 +81,7 @@ The `reactions_aggregates` table stores precomputed metrics:
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`0`
     &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
@@ -91,7 +91,7 @@ The `reactions_aggregates` table stores precomputed metrics:
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => 0,
     'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
@@ -145,7 +145,7 @@ Or via a placeholder:
 
 ::: code-group
 
-```json
+```modx
 [[!pdoPage?
     &element=`pdoResources`
     &parents=`0`
@@ -157,7 +157,7 @@ Or via a placeholder:
 [[!+page.nav]]
 ```
 
-```json
+```fenom
 {'!pdoPage' | snippet : [
     'element' => 'pdoResources',
     'parents' => 0,
@@ -171,7 +171,19 @@ Or via a placeholder:
 
 :::
 
-In a Fenom row template (when results are in `$results`):
+In a list row template (chunk `tpl` / `$results` loop):
+
+::: code-group
+
+```modx
+<article>
+    <h2><a href="[[~[[+id]]]]">[[+pagetitle]]</a></h2>
+    [[!ReactionsCount?
+        &object=`[[+id]]`
+        &format=`👍 {LIKES}`
+    ]]
+</article>
+```
 
 ```fenom
 {foreach $results as $row}
@@ -185,11 +197,13 @@ In a Fenom row template (when results are in `$results`):
 {/foreach}
 ```
 
+:::
+
 ## Filter: only objects with reactions
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`0`
     &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
@@ -199,7 +213,7 @@ In a Fenom row template (when results are in `$results`):
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => 0,
     'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',

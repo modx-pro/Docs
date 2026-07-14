@@ -131,17 +131,41 @@ Sorted by `rating` (= likes − dislikes). Same periods as `TopLiked`: `day` / `
 
 ### `web` context
 
+::: code-group
+
 ```modx
 [[!TopRated? &period=`all` &context=`web` &limit=`20`]]
 ```
+
+```fenom
+{'!TopRated' | snippet : [
+    'period'  => 'all',
+    'context' => 'web',
+    'limit'   => 20,
+]}
+```
+
+:::
 
 ### Tickets comments
 
 Not verified on MODX 3:
 
+::: code-group
+
 ```modx
 [[!TopRated? &class=`TicketComment` &period=`week` &limit=`3`]]
 ```
+
+```fenom
+{'!TopRated' | snippet : [
+    'class'  => 'TicketComment',
+    'period' => 'week',
+    'limit'  => 3,
+]}
+```
+
+:::
 
 ## TopLiked vs TopRated
 

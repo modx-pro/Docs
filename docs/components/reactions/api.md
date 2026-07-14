@@ -62,7 +62,7 @@ GET  /assets/components/reactions/api.php?action=admin/types
 | `not_found` | 404 | Неизвестный action / объект / тип / набор |
 | `method_not_allowed` | 405 | Неверный HTTP-метод для endpoint |
 | `forbidden` | 403 | CSRF/Origin/nonce, бан, бот, тип вне набора/`full_types`, отмена плагином |
-| `auth_required` | 401 | Admin без `reactions_manage`; стратегия `auth_only` для гостя |
+| `auth_required` | 401 | Admin без `reactions_manage`. Стратегия `auth_only` для гостя |
 | `rate_limit` | 429 | Превышен `reactions_rate_limit` |
 | `internal_error` | 500 | Непойманное исключение (детали в `error.log`) |
 | `save_failed` | 500 | Admin: не удалось сохранить объект |
@@ -117,7 +117,7 @@ JS-виджет делает этот запрос сам, если `data-csrf` 
 | --- | --- | --- |
 | `class_key` | да | Класс объекта (`modResource`, `msProduct`, `TicketComment`…) |
 | `object_id` | да | ID объекта (> 0) |
-| `context` | нет | Контекст; по умолчанию `web` |
+| `context` | нет | Контекст. По умолчанию `web` |
 
 ```bash
 curl -b cookies.txt \
@@ -159,12 +159,12 @@ curl -b cookies.txt \
 | Поле | Обязательное | Описание |
 | --- | --- | --- |
 | `csrf` | да | Токен из `GET csrf` |
-| `nonce` | да | Одноразовая строка (рекомендуется 32 hex); TTL 300 с, не более ~50 активных в сессии |
+| `nonce` | да | Одноразовая строка (рекомендуется 32 hex). TTL 300 с, не более ~50 активных в сессии |
 | `class_key` | да | Класс объекта |
 | `object_id` | да | ID |
 | `type` | да | Имя типа (`like`, `love`, `fire`…) |
 | `context` | нет | По умолчанию `web` |
-| `set` | нет | Ключ набора для валидации типа; пусто → `reactions_default_set` |
+| `set` | нет | Ключ набора для валидации типа. Пусто → `reactions_default_set` |
 
 ### Проверки сервера (порядок)
 
@@ -173,7 +173,7 @@ curl -b cookies.txt \
 3. Nonce ещё не использован.
 4. Identity + антибот + бан + rate limit.
 5. Объект существует: короткий `class_key` (например `msProduct`) резолвится в FQCN / STI, затем проверка по `object_id`.
-6. Тип активен; входит в набор `set`.
+6. Тип активен и входит в набор `set`.
 7. Для `set=full`: тип в `reactions_full_types`, если настройка не пуста.
 8. `OnBeforeReaction` (можно отменить).
 
@@ -254,7 +254,7 @@ curl -s -b cookies.txt \
   }"
 ```
 
-В ответе `action` обычно `removed`. После снятия тоже вызываются события, пересчёт агрегата и (при включении) webhook; уведомление автору для DELETE не шлётся.
+В ответе `action` обычно `removed`. После снятия тоже вызываются события, пересчёт агрегата и (при включении) webhook. Уведомление автору для DELETE не шлётся.
 
 ---
 
@@ -267,7 +267,7 @@ curl -s -b cookies.txt \
 | `class_key` | `modResource` | Класс объектов |
 | `sort` | `likes` | `likes`, `rating`, `total` |
 | `period` | `all` | `day`, `week`, `month`, `year`, `all` |
-| `context` | *(пусто)* | Фильтр по контексту; пусто — все |
+| `context` | *(пусто)* | Фильтр по контексту. Пусто — все |
 | `limit` | `20` | 1–100 |
 | `offset` | `0` | Смещение |
 
@@ -498,7 +498,7 @@ curl -b mgr-cookies.txt \
 
 Или: `{ "user_id": 42, "reason": "abuse", "csrf": "…", "nonce": "…" }`.
 
-`expires_at` — Unix timestamp; можно опустить для бессрочного бана.
+`expires_at` — Unix timestamp. Можно опустить для бессрочного бана.
 
 ### GET admin/stats
 
@@ -541,9 +541,9 @@ curl -b mgr-cookies.txt \
 
 | Механизм | Детали |
 | --- | --- |
-| CSRF | Сессионный токен; обязателен для POST/DELETE (публичный `react` и admin-мутации) |
-| Nonce | Одноразовый, TTL 300 с; защита от replay |
-| Origin | Сравнение host `Origin` или `Referer` с host `site_url`; без заголовков — отказ |
+| CSRF | Сессионный токен. Обязателен для POST/DELETE (публичный `react` и admin-мутации) |
+| Nonce | Одноразовый, TTL 300 с. Защита от replay |
+| Origin | Сравнение host `Origin` или `Referer` с host `site_url`. Без заголовков — отказ |
 | Rate limit | `reactions_rate_limit` / `reactions_rate_limit_window` на fingerprint |
 | Боты | `reactions_block_bots` + детектор User-Agent |
 | Баны | Таблица `ReactionBan` по IP-hash / user_id |

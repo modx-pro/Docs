@@ -21,9 +21,10 @@ The component API is generic: any object with `class_key` + `object_id`. For com
 ```
 
 ```fenom
+<div class="comment-body">{$text}</div>
 {'!Reactions' | snippet : [
     'class'  => 'TicketComment',
-    'object' => $comment.id,
+    'object' => $id,
     'set'    => 'updown',
 ]}
 ```
@@ -45,7 +46,7 @@ The component API is generic: any object with `class_key` + `object_id`. For com
 ```fenom
 {'!ReactionsCount' | snippet : [
     'class'  => 'TicketComment',
-    'object' => $comment.id,
+    'object' => $id,
     'format' => '👍 {LIKES}',
 ]}
 ```
@@ -63,11 +64,7 @@ Tickets stores tickets as MODX resources. For reactions on the ticket page:
 ```
 
 ```fenom
-{'!Reactions' | snippet : [
-    'class'  => 'modResource',
-    'object' => $_modx->resource.id,
-    'set'    => 'github',
-]}
+{'!Reactions' | snippet : ['set' => 'github']}
 ```
 
 :::
@@ -160,7 +157,7 @@ Tickets comments usually render in the `web` context. The JS widget sends `conte
 ```fenom
 {'!Reactions' | snippet : [
     'class'   => 'TicketComment',
-    'object'  => $comment.id,
+    'object'  => $id,
     'set'     => 'updown',
     'context' => 'web',
 ]}

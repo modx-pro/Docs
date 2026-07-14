@@ -14,7 +14,7 @@ Reactions on Collections resources work the same as on plain `modResource`. Coll
 ```
 
 ```fenom
-{'!Reactions' | snippet : ['set' => 'github', 'object' => $_modx->resource.id]}
+{'!Reactions' | snippet : ['set' => 'github']}
 ```
 
 :::
@@ -51,7 +51,7 @@ Use pdoResources with a `leftJoin` on `ReactionAggregate`.
 
 ::: code-group
 
-```json
+```modx
 [[!pdoResources?
     &parents=`[[*id]]`
     &depth=`1`
@@ -62,7 +62,7 @@ Use pdoResources with a `leftJoin` on `ReactionAggregate`.
 ]]
 ```
 
-```json
+```fenom
 {'!pdoResources' | snippet : [
     'parents' => $_modx->resource.id,
     'depth' => 1,

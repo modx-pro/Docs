@@ -155,17 +155,39 @@ trending_score = sign × order + age
 
 ### Контекст `web`
 
+::: code-group
+
 ```modx
 [[!Trending? &context=`web` &limit=`12`]]
 ```
+
+```fenom
+{'!Trending' | snippet : [
+    'context' => 'web',
+    'limit'   => 12,
+]}
+```
+
+:::
 
 ### Комментарии Tickets
 
 На MODX 3 не проверено:
 
+::: code-group
+
 ```modx
 [[!Trending? &class=`TicketComment` &limit=`5`]]
 ```
+
+```fenom
+{'!Trending' | snippet : [
+    'class' => 'TicketComment',
+    'limit' => 5,
+]}
+```
+
+:::
 
 ## Обновление trending_score
 

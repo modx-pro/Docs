@@ -12,7 +12,7 @@ Lists objects with the highest like counts. Sorted by the `likes` field in the a
 | `class` | `modResource` | `class_key` of objects in the selection |
 | `period` | `all` | Period: `day`, `week`, `month`, `year`, `all` |
 | `limit` | `10` | Maximum items |
-| `context` | *(empty)* | Context filter; empty value means all contexts |
+| `context` | *(empty)* | Context filter. Empty value means all contexts |
 | `tpl` | `tpl.Reactions.top` | Chunk for one list row |
 | `toPlaceholder` | *(empty)* | Placeholder name instead of direct output |
 
@@ -119,7 +119,7 @@ Same call, only `period` changes:
 
 :::
 
-Row title and URI come from `ObjectLookup` / the STI resource; short `msProduct` is fine.
+Row title and URI come from `ObjectLookup` / the STI resource. Short `msProduct` is fine.
 
 ### `web` context filter
 
@@ -197,6 +197,18 @@ Row title and URI come from `ObjectLookup` / the STI resource; short `msProduct`
 
 Not verified on MODX 3:
 
+::: code-group
+
 ```modx
 [[!TopLiked? &class=`TicketComment` &period=`month` &limit=`5`]]
 ```
+
+```fenom
+{'!TopLiked' | snippet : [
+    'class'  => 'TicketComment',
+    'period' => 'month',
+    'limit'  => 5,
+]}
+```
+
+:::

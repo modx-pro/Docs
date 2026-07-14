@@ -155,17 +155,39 @@ The `period` parameter does not narrow the window for trending sort: the score a
 
 ### `web` context
 
+::: code-group
+
 ```modx
 [[!Trending? &context=`web` &limit=`12`]]
 ```
+
+```fenom
+{'!Trending' | snippet : [
+    'context' => 'web',
+    'limit'   => 12,
+]}
+```
+
+:::
 
 ### Tickets comments
 
 Not verified on MODX 3:
 
+::: code-group
+
 ```modx
 [[!Trending? &class=`TicketComment` &limit=`5`]]
 ```
+
+```fenom
+{'!Trending' | snippet : [
+    'class' => 'TicketComment',
+    'limit' => 5,
+]}
+```
+
+:::
 
 ## Updating trending_score
 

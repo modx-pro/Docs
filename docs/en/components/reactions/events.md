@@ -32,7 +32,7 @@ Typical path for `POST`/`DELETE` `action=react`:
 2. IdentityResolver (fingerprint / user_id)
 3. BotDetector + ReactionBan + RateLimiter
 4. Object exists (short class_key → FQCN/STI + object_id)
-5. Type active; type ∈ set; for set=full — reactions_full_types
+5. Type active. Type ∈ set. For set=full — reactions_full_types
 6. OnBeforeReaction  ← can cancel
 7. DB transaction (insert / update / delete)
 8. OnAfterReaction
@@ -63,7 +63,7 @@ Parameters arrive in the plugin `$scriptProperties` and as local variables in pl
 | `objectId` | `int` | Object ID |
 | `typeName` | `string` | Type name (`like`, `fire`…) |
 | `context` | `string` | MODX context |
-| `setKey` | `string` | Set key; may be empty until default resolve |
+| `setKey` | `string` | Set key. May be empty until default resolve |
 | `allowMultiple` | `bool` | Flag from the setting at request time |
 
 `Reactions\Dto\VisitorIdentity` (readonly):
@@ -115,7 +115,7 @@ The service throws `ReactionNotAllowed` → API responds `403` / `code: forbidde
 | `action` | Typical scenario |
 | --- | --- |
 | `added` | First reaction of this type (or a new one after removal) |
-| `removed` | Toggle cleared the reaction; or an explicit DELETE |
+| `removed` | Toggle cleared the reaction, or an explicit DELETE |
 | `changed` | Exclusive: was `dislike`, became `like` without a separate remove in the client response |
 
 For `changed`, `OnAfterReaction` + `OnReactionChanged` fire (not `OnReactionRemoved`).
@@ -290,9 +290,9 @@ Watch races under load — more reliable to read the aggregate after recount (de
 | --- | --- |
 | Plugin `OnBeforeReaction` + `cancel` | HTTP `403`, reaction not written, webhook not sent |
 | Successful `react` | Events → recount → webhook `reaction.*` → optional author message |
-| Widget | Does not see events directly; sees JSON `data.action` / `counts` |
+| Widget | Does not see events directly. Sees JSON `data.action` / `counts` |
 
-Webhook payload signature: see [Webhooks](webhooks). Event names there use the `reaction.` prefix (`reaction.added`); in MODX they have no prefix (`OnAfterReaction` + `action=added`).
+Webhook payload signature: see [Webhooks](webhooks). Event names there use the `reaction.` prefix (`reaction.added`). In MODX they have no prefix (`OnAfterReaction` + `action=added`).
 
 ---
 
@@ -320,4 +320,4 @@ Webhook payload signature: see [Webhooks](webhooks). Event names there use the `
 - Do not throw unhandled exceptions from after-hooks: they can become `500` after a committed transaction.
 - Do not run long HTTP/email synchronously in after — use a webhook or a queue.
 - Do not rely on “multiselect” by set name: multi only when `!exclusive` **and** `reactions_allow_multiple`.
-- For UI filters (`&types=`): the API only cuts `reactions_full_types` for `set=full`; block other types via `OnBeforeReaction`.
+- For UI filters (`&types=`): the API only cuts `reactions_full_types` for `set=full`. Block other types via `OnBeforeReaction`.
