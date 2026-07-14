@@ -1,273 +1,323 @@
 # Плейсхолдеры
 
-Все доступные плейсхолдеры mFilter.
+Справочник по всем плейсхолдерам и переменным, которые mFilter выставляет в MODX и чанки.
+
+## Синтаксис
+
+MODX-плейсхолдер `mfilter.something` доступен из шаблона тремя способами:
+
+- **MODX-тег:** `[[+mfilter.something]]`
+- **Fenom (`pdoTools`), через массив `$_pls`:** `{$_pls['mfilter.something']}`
+- **Внутри Fenom-чанков `pdoTools`** (`getChunk`/`parseChunk`) — как обычная переменная: `{$something}` (только если она была передана в `parseChunk` явно, см. секции по чанкам ниже).
+
+::: warning
+Записи вида `{$mfilter.something}` (dot-notation через переменную `$mfilter`) **не работают** — такой переменной в Fenom-scope нет. Используйте `$_pls['mfilter.something']`.
+:::
 
 ## Глобальные плейсхолдеры
 
-Устанавливаются на страницу и доступны везде.
+Устанавливаются плагином `mfilter` при `OnHandleRequest` для страницы каталога с активными фильтрами, и/или сниппетом `mFilter` во время рендера. Доступны в шаблоне ресурса и любом чанке, вызванном ниже по цепочке.
 
-### Основные
+### Активные фильтры и URL
 
-| Плейсхолдер | Описание |
-|-------------|----------|
-| `[[+mfilter.total]]` | Общее количество результатов |
-| `[[+mfilter.page]]` | Текущая страница |
-| `[[+mfilter.pages]]` | Всего страниц |
-| `[[+mfilter.limit]]` | Элементов на странице |
-| `[[+mfilter.offset]]` | Смещение |
+| Плейсхолдер | Тип | Описание |
+|-------------|-----|----------|
+| `mfilter.filters` | array | Активные фильтры: `['brand' => ['apple'], 'color' => ['red']]` |
+| `mfilter.activeFilters` | array | Синоним `mfilter.filters` |
+| `mfilter.base_uri` | string | URI страницы каталога без сегмента фильтров (`/catalog/`) |
+| `mfilter.filter_uri` | string | Сегмент фильтров, добавляемый после `base_uri` (`brand--apple/color--red/`) |
+| `mfilter.baseIds` | array | ID товаров текущей выборки (устанавливается сниппетом `mFilter`) |
 
-### URL и навигация
+### Сортировка и пагинация
 
-| Плейсхолдер | Описание |
-|-------------|----------|
-| `[[+mfilter.url]]` | Текущий URL с фильтрами |
-| `[[+mfilter.canonical]]` | Canonical URL |
-| `[[+mfilter.baseUrl]]` | Базовый URL без фильтров |
-
-### Активные фильтры
-
-| Плейсхолдер | Описание |
-|-------------|----------|
-| `[[+mfilter.hasFilters]]` | Есть ли активные фильтры (1/0) |
-| `[[+mfilter.activeFilters]]` | JSON активных фильтров |
-| `[[+mfilter.filterCount]]` | Количество активных фильтров |
+| Плейсхолдер | Тип | Описание |
+|-------------|-----|----------|
+| `mfilter.sort` | string | Текущая сортировка: `"pagetitle-asc"`, `"price-desc"` |
+| `mfilter.sortBy` | string | Только поле: `"pagetitle"`, `"price"` |
+| `mfilter.sortDir` | string | Только направление: `"asc"` / `"desc"` |
+| `mfilter.limit` | int | Текущий лимит на странице |
+| `mfilter.defaultLimit` | int | Дефолтный лимит из настроек (для сравнения) |
+| `mfilter.page` | int | Текущая страница |
+| `mfilter.tpl` | string | Активный шаблон карточки (`"tpl1"`, `"tpl2"`) |
 
 ### SEO
 
-| Плейсхолдер | Описание |
-|-------------|----------|
-| `[[+mfilter.seo.title]]` | SEO title |
-| `[[+mfilter.seo.h1]]` | SEO H1 |
-| `[[+mfilter.seo.description]]` | Meta description |
-| `[[+mfilter.seo.text]]` | SEO текст |
-| `[[+mfilter.seo.noindex]]` | Флаг noindex (1/0) |
+Устанавливаются, когда есть хотя бы один активный фильтр. На нефильтрованных страницах — пустые (`noindex` — `false`).
 
-## Fenom-переменные
+| Плейсхолдер | Тип | Описание |
+|-------------|-----|----------|
+| `mfilter.seo.title` | string | SEO title из SEO Templates |
+| `mfilter.seo.h1` | string | SEO H1 |
+| `mfilter.seo.description` | string | SEO meta description |
+| `mfilter.seo.canonical` | string | Canonical URL (при `noindex` указывает на страницу без фильтров) |
+| `mfilter.seo.noindex` | bool | Флаг noindex (см. [Системные настройки](../settings.md#seo-оптимизация)) |
+| `mfilter.seo.text` | string | Произвольный SEO-текст из SEO Templates |
 
-В Fenom-шаблонах доступен объект `$mfilter`.
+### Прочее
 
-### Доступ к данным
+| Плейсхолдер | Тип | Описание |
+|-------------|-----|----------|
+| `mfilter.hash` | string | Хэш конфигурации формы (для валидации AJAX) |
+| `mfilter.results` | string | HTML отрендеренных карточек (только при `&toPlaceholders=1` в сниппете `mFilter`) |
+| `mfilter.pagination` | string | HTML пагинации (только при `&toPlaceholders=1`) |
+
+::: warning `toPlaceholders=1`
+Использование `&toPlaceholders=1` в вызове сниппета `mFilter` разбивает вывод на `mfilter.results` и `mfilter.pagination` **без оборачивающего** `tplOuter`-чанка. Теряются `data-mfilter-results`, `data-page-count` и вся SSR-инициализация — фронтенд-JS не сможет её подхватить. Используйте обычный вывод сниппета и оборачивающий чанк `tplOuter`.
+:::
+
+## Использование в шаблоне ресурса
+
+### SEO-теги в `<head>`
 
 ```html
-{* Количество *}
-{$mfilter.total}
+<title>{$_pls['mfilter.seo.title'] ?: $_modx->resource.pagetitle}</title>
+<meta name="description" content="{$_pls['mfilter.seo.description'] ?: $_modx->resource.description}">
 
-{* SEO *}
-{$mfilter.seo.title}
-{$mfilter.seo.h1}
-
-{* Активные фильтры *}
-{if $mfilter.hasFilters}
-    <div class="active-filters">
-        {foreach $mfilter.filters as $key => $values}
-            {$key}: {$values|join:', '}
-        {/foreach}
-    </div>
+{if $_pls['mfilter.seo.canonical']}
+    <link rel="canonical" href="{$_pls['mfilter.seo.canonical']}">
 {/if}
 
-{* URL *}
-{$mfilter.url}
-{$mfilter.canonical}
+{if $_pls['mfilter.seo.noindex']}
+    <meta name="robots" content="noindex, nofollow">
+{/if}
 ```
 
-## Плейсхолдеры формы (mFilterForm)
+Логика фолбэков: если фильтров нет, `mfilter.seo.*` пусты, и `?:` возвращает стандартное значение ресурса.
 
-### tplOuter
-
-| Переменная | Описание |
-|------------|----------|
-| `{$filters}` | Скомпилированный HTML всех фильтров |
-| `{$hash}` | Хэш конфигурации для AJAX |
-| `{$resource_id}` | ID текущего ресурса |
-| `{$total}` | Количество результатов |
-| `{$config}` | Массив конфигурации |
-
-### tplFilter.outer
-
-| Переменная | Описание |
-|------------|----------|
-| `{$key}` | Ключ фильтра (vendor, color...) |
-| `{$label}` | Название фильтра |
-| `{$type}` | Тип фильтра (default, number...) |
-| `{$content}` | HTML значений фильтра |
-| `{$selected}` | Есть ли выбранные значения |
-| `{$config}` | Конфигурация фильтра |
-
-### tplFilter.default / tplFilter.colors
-
-| Переменная | Описание |
-|------------|----------|
-| `{$key}` | Ключ фильтра |
-| `{$values}` | Массив значений |
-| `{$values[].value}` | Значение |
-| `{$values[].label}` | Отображаемый текст |
-| `{$values[].count}` | Количество товаров |
-| `{$values[].selected}` | Выбрано ли |
-| `{$values[].disabled}` | Недоступно ли |
-| `{$values[].hex}` | HEX цвета (для colors) |
-
-### tplFilter.number
-
-| Переменная | Описание |
-|------------|----------|
-| `{$key}` | Ключ фильтра |
-| `{$min}` | Минимальное значение |
-| `{$max}` | Максимальное значение |
-| `{$step}` | Шаг |
-| `{$selected.min}` | Выбранный минимум |
-| `{$selected.max}` | Выбранный максимум |
-
-### tplFilter.boolean
-
-| Переменная | Описание |
-|------------|----------|
-| `{$key}` | Ключ фильтра |
-| `{$label}` | Название |
-| `{$selected}` | Выбрано ли (true/false) |
-| `{$count}` | Количество товаров |
-
-### tplValue.default
-
-| Переменная | Описание |
-|------------|----------|
-| `{$key}` | Ключ фильтра |
-| `{$value}` | Значение |
-| `{$label}` | Отображаемый текст |
-| `{$count}` | Количество |
-| `{$selected}` | Выбрано |
-| `{$disabled}` | Недоступно |
-| `{$showCount}` | Показывать счётчик |
-
-## Плейсхолдеры результатов (mFilter)
-
-### tplOuter
-
-| Переменная | Описание |
-|------------|----------|
-| `{$rows}` | HTML всех товаров/ресурсов |
-| `{$pagination}` | HTML пагинации |
-| `{$total}` | Количество результатов |
-| `{$page}` | Текущая страница |
-| `{$pageCount}` | Всего страниц |
-| `{$limit}` | Элементов на странице |
-| `{$hash}` | Хэш конфигурации |
-
-### Глобальные (устанавливаются в MODX)
+### H1 и SEO-текст в теле страницы
 
 ```html
-{* В шаблоне страницы *}
-<h1>{$mfilter.seo.h1 ?: $pagetitle}</h1>
+<h1>{$_pls['mfilter.seo.h1'] ?: $_modx->resource.pagetitle}</h1>
 
-<div class="catalog-info">
-    Найдено товаров: {$mfilter.total}
-</div>
-
-{if $mfilter.seo.text}
+{if $_pls['mfilter.seo.text']}
     <div class="seo-text">
-        {$mfilter.seo.text}
+        {$_pls['mfilter.seo.text']}
     </div>
 {/if}
 ```
-
-### В шаблоне товара (tpl)
-
-Стандартные плейсхолдеры element (msProducts, pdoResources):
-
-```html
-{* @FILE chunks/product.card.tpl *}
-<div class="product-card" data-id="{$id}">
-    <img src="{$image}" alt="{$pagetitle}">
-    <h3>{$pagetitle}</h3>
-    <div class="price">{$price|number:0} ₽</div>
-</div>
-```
-
-## Использование в JavaScript
-
-### Получение данных через data-атрибуты
-
-```html
-<div data-mfilter-config='{$config|json_encode}'></div>
-```
-
-```javascript
-const config = JSON.parse(
-    document.querySelector('[data-mfilter-config]').dataset.mfilterConfig
-);
-```
-
-### Глобальный объект
-
-```javascript
-// После инициализации
-const instance = window.MFilterUI.get('mfilter-form');
-const total = instance?.state.total;
-```
-
-## Примеры
 
 ### Хлебные крошки с фильтрами
 
 ```html
 <nav class="breadcrumbs">
-    <a href="/">Главная</a> /
-    <a href="{$mfilter.baseUrl}">{$pagetitle}</a>
-    {if $mfilter.hasFilters}
-        / <span>{$mfilter.seo.h1}</span>
+    <a href="/">Главная</a>
+    /
+    <a href="{$_pls['mfilter.base_uri'] ?: $_modx->makeUrl($_modx->resource.id)}">
+        {$_modx->resource.pagetitle}
+    </a>
+    {if $_pls['mfilter.seo.h1']}
+        / <span>{$_pls['mfilter.seo.h1']}</span>
     {/if}
 </nav>
 ```
 
-### Блок «Выбрано»
+### Проверка «есть ли активные фильтры»
+
+Отдельного плейсхолдера `hasFilters` нет — проверяйте сам массив:
 
 ```html
-{if $mfilter.hasFilters}
-    <div class="selected-filters">
-        <span>Выбрано:</span>
-        {foreach $mfilter.activeFilters as $key => $filter}
-            {foreach $filter.values as $v}
-                <span class="tag">
-                    {$v.label}
-                    <a href="{$v.removeUrl}">×</a>
-                </span>
-            {/foreach}
-        {/foreach}
-        <a href="{$mfilter.baseUrl}" class="clear-all">Сбросить всё</a>
-    </div>
+{if $_pls['mfilter.filters']}
+    <a href="{$_pls['mfilter.base_uri']}" class="reset-all">Сбросить все фильтры</a>
 {/if}
 ```
 
-### Мета-теги
+### Условная сортировка/лимит в UI-контролах
 
 ```html
-<head>
-    {if $mfilter.seo.title}
-        <title>{$mfilter.seo.title}</title>
-    {else}
-        <title>{$pagetitle} | {$site_name}</title>
-    {/if}
+<select data-mfilter-sort>
+    <option value="pagetitle-asc" {if $_pls['mfilter.sort'] == 'pagetitle-asc'}selected{/if}>А-Я</option>
+    <option value="price-asc" {if $_pls['mfilter.sort'] == 'price-asc'}selected{/if}>Сначала дешевле</option>
+</select>
 
-    {if $mfilter.seo.description}
-        <meta name="description" content="{$mfilter.seo.description}">
-    {/if}
-
-    {if $mfilter.seo.noindex}
-        <meta name="robots" content="noindex, follow">
-    {/if}
-
-    <link rel="canonical" href="{$mfilter.canonical}">
-</head>
+<select data-mfilter-limit>
+    <option value="12" {if $_pls['mfilter.limit'] == 12}selected{/if}>12</option>
+    <option value="24" {if $_pls['mfilter.limit'] == 24}selected{/if}>24</option>
+</select>
 ```
+
+## Переменные внутри чанков
+
+При рендере своих чанков `pdoTools` передаёт им данные напрямую как Fenom-переменные (не через `$_pls`).
+
+### Чанки `mFilter` (карточки товаров)
+
+`tplOuter` (обёртка результатов):
+
+| Переменная | Описание |
+|------------|----------|
+| `$rows` | HTML всех карточек товаров |
+| `$pagination` | HTML пагинации |
+| `$total` | Количество найденных товаров |
+| `$page` | Текущая страница |
+| `$pageCount` | Всего страниц |
+| `$limit` | Товаров на странице |
+| `$hash` | Хэш конфигурации формы |
+
+`tpl1`, `tpl2` и другие (карточка одного товара) — обычные `pdoResources`/`msProducts`-переменные ресурса:
+
+```html
+<div class="product-card" data-id="{$id}">
+    <img src="{$image}" alt="{$pagetitle}">
+    <h3>{$pagetitle}</h3>
+    <div class="price">{$price | number:0} ₽</div>
+</div>
+```
+
+### Чанки `mFilterForm` (форма фильтров)
+
+`tplOuter`:
+
+| Переменная | Описание |
+|------------|----------|
+| `$filters` | HTML всех фильтров, объединённых через `tplFilter.outer` |
+| `$hash` | Хэш конфигурации формы (для AJAX) |
+| `$resourceId` | ID текущего ресурса каталога |
+
+`tplFilter` (обёртка одного фильтра):
+
+| Переменная | Описание |
+|------------|----------|
+| `$key` | Ключ фильтра (`vendor`, `color`, `price`…) |
+| `$label` | Название фильтра |
+| `$type` | Тип: `default`, `number`, `boolean`, `parents`, `ms3_categories`, `colors`, `vendors`, `date`… |
+| `$items` | HTML значений фильтра |
+| `$activeCount` | Сколько значений этого фильтра выбрано |
+
+`tplItem` (одно значение — checkbox/radio):
+
+| Переменная | Описание |
+|------------|----------|
+| `$key` | Ключ фильтра |
+| `$value` | Значение |
+| `$slug` | Слаг для URL |
+| `$label` | Отображаемый текст |
+| `$count` | Количество товаров |
+| `$active` | Значение выбрано (bool) |
+| `$disabled` | Значение недоступно (нет товаров при текущих остальных фильтрах) |
+| `$multiple` | Множественный выбор (checkbox vs radio) |
+
+`tplBoolean` (переключатель да/нет):
+
+| Переменная | Описание |
+|------------|----------|
+| `$key`, `$value`, `$label`, `$count`, `$active` | Как в `tplItem` |
+
+`tplColor` (цветовой свотч):
+
+| Переменная | Описание |
+|------------|----------|
+| `$key`, `$value`, `$label`, `$active` | Как в `tplItem` |
+| `$hex` | HEX-код цвета |
+
+`tplSlider` (range-фильтр):
+
+| Переменная | Описание |
+|------------|----------|
+| `$key` | Ключ фильтра |
+| `$label` | Название |
+| `$min`, `$max` | Доступный диапазон в текущей выборке |
+| `$minValue`, `$maxValue` | Выбранные пользователем значения |
+| `$step` | Шаг |
+| `$prefix`, `$suffix` | Префикс/суффикс единицы измерения |
+
+### Чанки `mFilterSelected` (блок «Выбрано»)
+
+`tplOuter`:
+
+| Переменная | Описание |
+|------------|----------|
+| `$items` | HTML всех выбранных значений |
+| `$total` | Общее количество выбранных значений |
+
+`tplGroup` (группа значений одного фильтра):
+
+| Переменная | Описание |
+|------------|----------|
+| `$key`, `$label` | Ключ и название фильтра |
+| `$items` | HTML значений внутри группы |
+
+`tplItem` (одна chip):
+
+| Переменная | Описание |
+|------------|----------|
+| `$key` | Ключ фильтра |
+| `$value` | Значение (машиночитаемое) |
+| `$valueLabel` | Отображаемый текст |
+
+`tplReset` (кнопка «сбросить всё»):
+
+| Переменная | Описание |
+|------------|----------|
+| `$url` | URL страницы без фильтров |
+
+## Использование в JavaScript
+
+Есть два пути.
+
+### Через `window.mFilter` (клиентский API)
+
+```javascript
+const instance = window.mFilter.getInstance();
+
+instance.state.filters;      // текущие фильтры
+instance.state.sort;         // сортировка
+instance.state.limit;        // лимит
+instance.setFilter('brand', ['apple']);
+instance.submit();
+```
+
+Полный список методов — в [JS API](../development/js-api.md).
+
+### Через события
+
+```javascript
+document.addEventListener('mfilter:success', function (e) {
+    console.log(e.detail.filters, e.detail.total, e.detail.seo);
+});
+```
+
+`e.detail.seo` содержит те же данные, что попадают в `mfilter.seo.*` плейсхолдеры при SSR. Полный список событий — в [Events](../development/events.md).
+
+## Примеры
 
 ### Пустые результаты
 
 ```html
-{if $mfilter.total == 0}
+{if $total == 0}
     <div class="empty-results">
         <p>По вашему запросу ничего не найдено.</p>
-        {if $mfilter.hasFilters}
-            <p>Попробуйте <a href="{$mfilter.baseUrl}">сбросить фильтры</a>.</p>
+        {if $_pls['mfilter.filters']}
+            <p>Попробуйте <a href="{$_pls['mfilter.base_uri']}">сбросить фильтры</a>.</p>
         {/if}
     </div>
 {/if}
+```
+
+`$total` — из `tplOuter` чанка `mFilter`. `mfilter.filters` — глобальный плейсхолдер.
+
+### Условная канонизация
+
+Если у фильтрованной страницы `noindex`, canonical указывает на исходный ресурс (без фильтров). Иначе — на текущий URL.
+
+```html
+{if $_pls['mfilter.seo.canonical']}
+    <link rel="canonical" href="{$_pls['mfilter.seo.canonical']}">
+{else}
+    <link rel="canonical" href="{$_modx->makeUrl($_modx->resource.id, '', '', 'full')}">
+{/if}
+```
+
+### Логирование фильтрации в аналитику
+
+```html
+<script>
+document.addEventListener('mfilter:success', function (e) {
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'filter_apply', {
+            filter_count: Object.keys(e.detail.filters).length,
+            total: e.detail.total,
+        });
+    }
+});
+</script>
 ```
