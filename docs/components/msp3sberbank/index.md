@@ -4,6 +4,8 @@ description: "Приём оплаты через Сбербанк для MiniSho
 author: ibochkarev
 dependencies: miniShop3
 categories: minishop3
+logo: https://modstore.pro/assets/extras/msp3sberbank/logo.png
+modstore: https://modstore.pro/packages/payment-system/msp3sberbank
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
