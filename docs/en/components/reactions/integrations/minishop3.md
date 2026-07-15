@@ -79,7 +79,7 @@ Aggregates store `object_class` as `msProduct` (whatever you passed in `class` /
 
 ## Sort the catalog by popularity
 
-Use `msProducts` with `leftJoin`.
+Use `msProducts` with `leftJoin`. Because msProducts uses `GROUP BY msProduct.id`, sort with `MAX(Aggregate.likes)`, not `Aggregate.likes` (see [pdoTools](pdotools)).
 
 ::: code-group
 
@@ -87,19 +87,25 @@ Use `msProducts` with `leftJoin`.
 [[!msProducts?
     &parents=`10`
     &limit=`12`
-    &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = msProduct.id AND Aggregate.object_class = 'msProduct'"}}`
-    &sortby=`Aggregate.likes`
+    &leftJoin=`{"Aggregate":{"class":"Reactions\\\\Model\\\\ReactionAggregate","on":"Aggregate.object_id = msProduct.id AND Aggregate.object_class = 'msProduct'"}}`
+    &sortby=`MAX(Aggregate.likes)`
     &sortdir=`DESC`
     &tpl=`tpl.msProduct.card`
 ]]
 ```
 
 ```fenom
+{set $rxProductJoin = [
+    'Aggregate' => [
+        'class' => 'Reactions\Model\ReactionAggregate',
+        'on' => "Aggregate.object_id = msProduct.id AND Aggregate.object_class = 'msProduct'",
+    ],
+]}
 {'!msProducts' | snippet : [
     'parents' => 10,
     'limit' => 12,
-    'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = msProduct.id AND Aggregate.object_class = \'msProduct\'"}}',
-    'sortby' => 'Aggregate.likes',
+    'leftJoin' => $rxProductJoin,
+    'sortby' => 'MAX(Aggregate.likes)',
     'sortdir' => 'DESC',
     'tpl' => 'tpl.msProduct.card',
 ]}

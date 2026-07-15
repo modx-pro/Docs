@@ -138,7 +138,9 @@ For custom sets, server validation still works through the API, but JS renders b
 
 The server treats the mode as exclusive when the set is `exclusive` **or** `reactions_allow_multiple` is off. The snippet writes this into `data-exclusive` / `data-allow-multiple`. The widget mirrors the same logic: under exclusive, another button clears the previous one (optimistic UI).
 
-Several widgets for the same object (`class_key` + `object_id` + `context`) sync via the `reactions:updated` event on `document` after a successful POST/DELETE.
+Several widgets for the same object (`class_key` + `object_id` + `context`) sync via the `reactions:updated` event on `window` after a successful POST/DELETE.
+
+The same event updates sibling `.reactions-count` nodes (`ReactionsCount` snippet) for that object — no page reload.
 
 ## Layout: bar and picker
 

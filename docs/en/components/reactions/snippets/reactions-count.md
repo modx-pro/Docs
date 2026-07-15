@@ -28,6 +28,20 @@ Text counters without buttons, for cards, lists, and meta rows.
 | `{PCT_DOWN}` | Dislike share of the total, 0–100 |
 | `{like}`, `{love}`, `{funny}`… | Count for that type. No data → `0`, not a raw `{love}` |
 
+## Live updates
+
+The snippet wraps the text in:
+
+```html
+<span class="reactions-count"
+  data-class-key="…"
+  data-object-id="…"
+  data-context="…"
+  data-format="👍 {LIKES} · Σ {TOTAL}">…</span>
+```
+
+When you click the Reactions widget for the same object (`class` + `object` + `context`), JS recalculates the string from `data-format` (`reactions:updated` event). Requires `reactions.js` on the page.
+
 ## Examples
 
 ### Default: `{TOTAL}` only

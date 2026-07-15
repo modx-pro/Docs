@@ -137,7 +137,9 @@ Reactions.init(container);
 
 Сервер считает режим exclusive, если набор `exclusive` **или** выключен `reactions_allow_multiple`. Сниппет пишет это в `data-exclusive` / `data-allow-multiple`. Виджет зеркалит ту же логику: при exclusive другая кнопка снимает предыдущую (optimistic UI).
 
-Несколько виджетов на один объект (`class_key` + `object_id` + `context`) синхронизируются событием `reactions:updated` на `document` после успешного POST/DELETE.
+Несколько виджетов на один объект (`class_key` + `object_id` + `context`) синхронизируются событием `reactions:updated` на `window` после успешного POST/DELETE.
+
+То же событие обновляет соседние `.reactions-count` (вывод сниппета `ReactionsCount`) с тем же объектом — без F5.
 
 ## Layout: bar и picker
 
