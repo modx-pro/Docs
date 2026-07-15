@@ -283,14 +283,18 @@ SEO-данные попадают в MODX-плейсхолдеры `mfilter.seo.
 {/if}
 
 {if $_pls['mfilter.seo.noindex']}
-    <meta name="robots" content="noindex, nofollow">
+    <meta name="robots" content="noindex, follow">
 {/if}
 
-<h1>{$_pls['mfilter.seo.h1'] ?: $_modx->resource.pagetitle}</h1>
+<h1 data-mfilter-h1>{$_pls['mfilter.seo.h1'] ?: $_modx->resource.pagetitle}</h1>
 
-{if $_pls['mfilter.seo.text']}
-    <div class="seo-text">{$_pls['mfilter.seo.text']}</div>
-{/if}
+<div data-mfilter-seo-text{if !$_pls['mfilter.seo.text']} style="display:none"{/if}>
+    {$_pls['mfilter.seo.text']}
+</div>
 ```
 
 Логика фолбэков: если фильтров нет, `mfilter.seo.*` пустые, и `?:` возвращает стандартное значение ресурса (`pagetitle`/`description`). Как только фильтры применены — SEO-шаблон подставляет свой title/H1/description.
+
+::: warning Маркеры для AJAX
+Атрибуты `data-mfilter-h1` и `data-mfilter-seo-text` (или классы `mfilter-h1` / `mfilter-seo-text`) **обязательны**: без них JS не найдёт элементы при AJAX-фильтрации, и они обновятся только после `F5`. Меты `title`, `description`, `canonical`, `robots` в `<head>` JS обновляет по стандартным селекторам — маркеры не нужны.
+:::
