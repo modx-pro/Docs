@@ -55,7 +55,7 @@ Use pdoResources with a `leftJoin` on `ReactionAggregate`.
 [[!pdoResources?
     &parents=`[[*id]]`
     &depth=`1`
-    &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
+    &leftJoin=`{"Aggregate":{"class":"Reactions\\\\Model\\\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
     &sortby=`Aggregate.likes`
     &sortdir=`DESC`
     &tpl=`@INLINE <li><a href="[[+uri]]">[[+pagetitle]]</a> — [[!ReactionsCount? &object=`[[+id]]` &format=`{LIKES}`]]</li>`
@@ -66,7 +66,12 @@ Use pdoResources with a `leftJoin` on `ReactionAggregate`.
 {'!pdoResources' | snippet : [
     'parents' => $_modx->resource.id,
     'depth' => 1,
-    'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
+    'leftJoin' => [
+        'Aggregate' => [
+            'class' => 'Reactions\Model\ReactionAggregate',
+            'on' => "Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'",
+        ],
+    ],
     'sortby' => 'Aggregate.likes',
     'sortdir' => 'DESC',
     'tpl' => '@INLINE <li><a href="[[+uri]]">[[+pagetitle]]</a> — [[!ReactionsCount? &object=`[[+id]]` &format=`{LIKES}`]]</li>',
@@ -116,7 +121,7 @@ On a “Popular in this section” page:
 [[!pdoResources?
     &parents=`[[*id]]`
     &depth=`2`
-    &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
+    &leftJoin=`{"Aggregate":{"class":"Reactions\\\\Model\\\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
     &sortby=`Aggregate.trending_score`
     &sortdir=`DESC`
     &limit=`6`
@@ -129,7 +134,12 @@ On a “Popular in this section” page:
 {'!pdoResources' | snippet : [
     'parents' => $_modx->resource.id,
     'depth' => 2,
-    'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
+    'leftJoin' => [
+        'Aggregate' => [
+            'class' => 'Reactions\Model\ReactionAggregate',
+            'on' => "Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'",
+        ],
+    ],
     'sortby' => 'Aggregate.trending_score',
     'sortdir' => 'DESC',
     'limit' => 6,

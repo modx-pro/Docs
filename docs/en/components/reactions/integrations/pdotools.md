@@ -5,6 +5,28 @@ title: pdoTools integration
 
 Sort and list resources, products, and other objects by reactions with a `leftJoin` on the `ReactionAggregate` model.
 
+## leftJoin: JSON and Fenom
+
+pdoTools accepts `leftJoin` as an **array** or a JSON string. In JSON, escape the model class as `"Reactions\\Model\\ReactionAggregate"` (two `\` characters before `Model` in the final string).
+
+| Approach | Example |
+| --- | --- |
+| MODX tag | `"class":"Reactions\\\\Model\\\\ReactionAggregate"` — **four** `\` in the template, two remain in JSON |
+| Fenom | array `'class' => 'Reactions\Model\ReactionAggregate'` — preferred, no JSON |
+| PHP / snippet | `'class' => ReactionAggregate::class` or a join array |
+
+If the JSON is invalid, `json_decode` in msProducts/pdoResources silently skips the join. Then the log shows:
+
+`Unknown column 'Aggregate.likes' in 'order clause'`
+
+### msProducts and ONLY_FULL_GROUP_BY
+
+`msProducts` always groups by `msProduct.id`. On MySQL with `ONLY_FULL_GROUP_BY` you cannot sort by plain `Aggregate.likes` — use an aggregate:
+
+`&sortby=`MAX(Aggregate.likes)`` or `'sortby' => 'MAX(Aggregate.likes)'`
+
+For `pdoResources` without `GROUP BY`, `Aggregate.likes` is enough.
+
 ## ReactionAggregate model
 
 The `reactions_aggregates` table stores precomputed metrics:
@@ -30,7 +52,7 @@ The `reactions_aggregates` table stores precomputed metrics:
     &parents=`0`
     &depth=`10`
     &limit=`12`
-    &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource' AND Aggregate.context = 'web'"}}`
+    &leftJoin=`{"Aggregate":{"class":"Reactions\\\\Model\\\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource' AND Aggregate.context = 'web'"}}`
     &sortby=`Aggregate.likes`
     &sortdir=`DESC`
     &tpl=`tpl.article.card`
@@ -42,7 +64,12 @@ The `reactions_aggregates` table stores precomputed metrics:
     'parents' => 0,
     'depth' => 10,
     'limit' => 12,
-    'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\' AND Aggregate.context = \'web\'"}}',
+    'leftJoin' => [
+        'Aggregate' => [
+            'class' => 'Reactions\Model\ReactionAggregate',
+            'on' => "Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource' AND Aggregate.context = 'web'",
+        ],
+    ],
     'sortby' => 'Aggregate.likes',
     'sortdir' => 'DESC',
     'tpl' => 'tpl.article.card',
@@ -58,7 +85,7 @@ The `reactions_aggregates` table stores precomputed metrics:
 ```modx
 [[!pdoResources?
     &parents=`5`
-    &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
+    &leftJoin=`{"Aggregate":{"class":"Reactions\\\\Model\\\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
     &sortby=`Aggregate.rating`
     &sortdir=`DESC`
     &limit=`10`
@@ -68,7 +95,12 @@ The `reactions_aggregates` table stores precomputed metrics:
 ```fenom
 {'!pdoResources' | snippet : [
     'parents' => 5,
-    'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
+    'leftJoin' => [
+        'Aggregate' => [
+            'class' => 'Reactions\Model\ReactionAggregate',
+            'on' => "Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'",
+        ],
+    ],
     'sortby' => 'Aggregate.rating',
     'sortdir' => 'DESC',
     'limit' => 10,
@@ -84,7 +116,7 @@ The `reactions_aggregates` table stores precomputed metrics:
 ```modx
 [[!pdoResources?
     &parents=`0`
-    &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
+    &leftJoin=`{"Aggregate":{"class":"Reactions\\\\Model\\\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
     &sortby=`Aggregate.trending_score`
     &sortdir=`DESC`
     &limit=`8`
@@ -94,7 +126,12 @@ The `reactions_aggregates` table stores precomputed metrics:
 ```fenom
 {'!pdoResources' | snippet : [
     'parents' => 0,
-    'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
+    'leftJoin' => [
+        'Aggregate' => [
+            'class' => 'Reactions\Model\ReactionAggregate',
+            'on' => "Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'",
+        ],
+    ],
     'sortby' => 'Aggregate.trending_score',
     'sortdir' => 'DESC',
     'limit' => 8,
@@ -149,7 +186,7 @@ Or via a placeholder:
 [[!pdoPage?
     &element=`pdoResources`
     &parents=`0`
-    &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
+    &leftJoin=`{"Aggregate":{"class":"Reactions\\\\Model\\\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
     &sortby=`Aggregate.likes`
     &sortdir=`DESC`
     &tpl=`tpl.article.card`
@@ -161,7 +198,12 @@ Or via a placeholder:
 {'!pdoPage' | snippet : [
     'element' => 'pdoResources',
     'parents' => 0,
-    'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
+    'leftJoin' => [
+        'Aggregate' => [
+            'class' => 'Reactions\Model\ReactionAggregate',
+            'on' => "Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'",
+        ],
+    ],
     'sortby' => 'Aggregate.likes',
     'sortdir' => 'DESC',
     'tpl' => 'tpl.article.card',
@@ -206,7 +248,7 @@ In a list row template (chunk `tpl` / `$results` loop):
 ```modx
 [[!pdoResources?
     &parents=`0`
-    &leftJoin=`{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
+    &leftJoin=`{"Aggregate":{"class":"Reactions\\\\Model\\\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'"}}`
     &where=`{"Aggregate.likes:>":0}`
     &sortby=`Aggregate.likes`
     &sortdir=`DESC`
@@ -216,7 +258,12 @@ In a list row template (chunk `tpl` / `$results` loop):
 ```fenom
 {'!pdoResources' | snippet : [
     'parents' => 0,
-    'leftJoin' => '{"Aggregate":{"class":"Reactions\\Model\\ReactionAggregate","on":"Aggregate.object_id = modResource.id AND Aggregate.object_class = \'modResource\'"}}',
+    'leftJoin' => [
+        'Aggregate' => [
+            'class' => 'Reactions\Model\ReactionAggregate',
+            'on' => "Aggregate.object_id = modResource.id AND Aggregate.object_class = 'modResource'",
+        ],
+    ],
     'where' => '{"Aggregate.likes:>":0}',
     'sortby' => 'Aggregate.likes',
     'sortdir' => 'DESC',

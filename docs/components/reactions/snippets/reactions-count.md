@@ -28,6 +28,20 @@ title: Сниппет ReactionsCount
 | `{PCT_DOWN}` | Доля дизлайков от общего, 0–100 |
 | `{like}`, `{love}`, `{funny}`… | Счётчик типа. Нет данных → `0`, не сырой `{love}` |
 
+## Live-обновление
+
+Сниппет оборачивает текст в:
+
+```html
+<span class="reactions-count"
+  data-class-key="…"
+  data-object-id="…"
+  data-context="…"
+  data-format="👍 {LIKES} · Σ {TOTAL}">…</span>
+```
+
+При клике по виджету Reactions на том же объекте (`class` + `object` + `context`) JS пересчитывает строку по `data-format` (событие `reactions:updated`). Нужен подключённый `reactions.js`.
+
 ## Примеры
 
 ### По умолчанию: только `{TOTAL}`
