@@ -78,23 +78,34 @@ MODX-плейсхолдер `mfilter.something` доступен из шабло
 {/if}
 
 {if $_pls['mfilter.seo.noindex']}
-    <meta name="robots" content="noindex, nofollow">
+    <meta name="robots" content="noindex, follow">
 {/if}
 ```
 
 Логика фолбэков: если фильтров нет, `mfilter.seo.*` пусты, и `?:` возвращает стандартное значение ресурса.
 
+::: tip Почему `noindex, follow`, а не `noindex, nofollow`
+JS-часть при AJAX-обновлении фильтров всегда выставляет `content="noindex, follow"` — это лучше для SEO, чем `nofollow` (link equity со страницы каталога с фильтрами продолжает распределяться по товарам). Чтобы SSR-разметка не рассогласовывалась с AJAX-состоянием, в шаблоне тоже указывайте `follow`.
+:::
+
 ### H1 и SEO-текст в теле страницы
 
-```html
-<h1>{$_pls['mfilter.seo.h1'] ?: $_modx->resource.pagetitle}</h1>
+::: warning Обязательные маркеры для AJAX
+`<h1>` и контейнер SEO-текста нужно **явно пометить** атрибутом или классом — иначе JS не найдёт их при AJAX-фильтрации и они обновятся только после `F5`. У страницы может быть несколько `<h1>` (hero, sidebar), поэтому просто «первый h1» не подходит.
 
-{if $_pls['mfilter.seo.text']}
-    <div class="seo-text">
-        {$_pls['mfilter.seo.text']}
-    </div>
-{/if}
+- `<h1>` — атрибут `data-mfilter-h1` или класс `mfilter-h1`
+- SEO-текст — атрибут `data-mfilter-seo-text` или класс `mfilter-seo-text`
+:::
+
+```html
+<h1 data-mfilter-h1>{$_pls['mfilter.seo.h1'] ?: $_modx->resource.pagetitle}</h1>
+
+<div data-mfilter-seo-text{if !$_pls['mfilter.seo.text']} style="display:none"{/if}>
+    {$_pls['mfilter.seo.text']}
+</div>
 ```
+
+При AJAX-фильтрации JS сам управляет `display` контейнера SEO-текста (скрывает при пустом значении, показывает при заполненном), поэтому inline-`display:none` при пустом SSR-значении — только чтобы контейнер не мелькал до первой фильтрации.
 
 ### Хлебные крошки с фильтрами
 
