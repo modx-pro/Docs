@@ -526,6 +526,7 @@ Abstract example with 3 settings changed; no other limits. Cart:
 * Products include/exclude with all modifications. Products from other categories not added if categories included.
 * For modification-specific discount, discount info shown only if modification id provided.
 * Options/Properties exclude only by exact value in settings. E.g. exclude option `width`=10: product with width=20 passes. For inclusion you can set comparison; product must have option value, else fails. `0` is valid.
+* Since `2.1.19-rc` you can add several inclusion conditions for Options/Properties and all of them are checked: conditions are grouped by key — within one key any matching value is enough (OR), while conditions on different keys must all match (AND). E.g. `color = red` and `color = green` allow the discount for both red and green products, while `color = red` and `width = 10` — only for red products with width `10`. Earlier versions checked only the first inclusion condition. Among other things, this allows restricting a discount to several contexts via the `context_key` property.
 
 ## Maximum order amount
 
