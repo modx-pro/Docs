@@ -536,6 +536,12 @@ You can limit discount by minimum order amount; even if other conditions met, di
 
 Defined by `mspd_many_behaviour`. Default `3` = apply all matching discounts by priority. Value `2` = apply one discount with smallest absolute value. Value `1` = opposite (apply 40% not 50%). Value `0` = apply discount with highest priority; if equal, by id.
 
+Each discount also has an "Apply type" field (used with `mspd_many_behaviour` = `3`):
+
+* "On general terms" — the discount participates in the common application order;
+* "Only this discount" — if a product matches such a discount, only it is applied;
+* "All except this one" — since `2.1.20-rc` such a discount is applied after the others and only to products that did **not actually receive** a discount in the current cart recalculation (earlier it was dropped whenever the product had any other matching discounts, even if they gave it no benefit). Handy for promo codes: the code benefits only products left without a sale and does not stack with it on the same product. In product card previews such a discount does not stack with others.
+
 ## Promo name and resource
 
 You can set resource with promo description. Limit to one resource via `mspd_root_resource_ids` to avoid searching all. Promo name fills automatically but can be edited.
