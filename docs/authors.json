@@ -153,6 +153,7 @@
       "ru": "Антон Мамрашев"
     }
   },
+  "Mishiko23": "Mishiko23",
   "modx-pro": "MODX RSC",
   "mvoevodskiy": {
     "modstore": "https://modstore.pro/authors/mvoevodskiy",
@@ -171,6 +172,13 @@
   "prihod": {
     "modstore": "https://modstore.pro/authors/prihod",
     "name": "Prihod"
+  },
+  "rumata-estor": {
+    "modstore": "https://modstore.pro/authors/rumataestor",
+    "name": {
+      "ru": "Александр Палочкин",
+      "en": "Alexander Palochkin"
+    }
   },
   "sergant210": {
     "modstore": "https://modstore.pro/authors/sergant",

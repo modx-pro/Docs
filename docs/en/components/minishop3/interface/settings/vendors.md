@@ -3,15 +3,15 @@ title: Vendors
 ---
 # Vendors
 
-Vendor (brand) management is available via **Extras → MiniShop3 → Settings → Vendors**.
+Vendors (brands) are managed via **Extras → MiniShop3 → Settings → Vendors**.
 
 ## Purpose
 
 The vendor directory lets you:
 
 - Link products to brands
-- Show vendor info on the product page
-- Filter catalog by vendor
+- Show vendor information on the product page
+- Filter the catalog by vendor
 - Create brand pages
 
 ## Vendor fields
@@ -27,27 +27,27 @@ The vendor directory lets you:
 | `email` | string | Email |
 | `description` | text | Description |
 | `position` | int | Sort order |
-| `properties` | JSON | Extra properties |
+| `properties` | JSON | Additional properties |
 
-## Resource association
+## Resource linkage
 
 The `resource_id` field links a vendor to a MODX resource. Useful for:
 
 - SEO brand pages
-- Outputting products of a vendor
-- Detailed brand info
+- Catalog of products from a specific vendor
+- Detailed brand information
 
-When `resource_id` is set, snippets can get the vendor page URL.
+When `resource_id` is set, snippets can resolve the vendor page URL.
 
 ## Usage
 
-### Assigning vendor to product
+### Assigning a vendor to a product
 
-The vendor is set in the product card in the **Vendor** field. A product can have only one vendor.
+Set the vendor in the product card in the **Vendor** field. A product can have only one vendor.
 
 ### Output in snippets
 
-The `msProducts` snippet exposes vendor placeholders:
+In `msProducts` these vendor placeholders are available:
 
 ```fenom
 {if $vendor_name?}
@@ -63,7 +63,7 @@ The `msProducts` snippet exposes vendor placeholders:
 {/if}
 ```
 
-### Filtering by vendor
+### Filter by vendor
 
 ```fenom
 {$_modx->runSnippet('msProducts', [
@@ -75,11 +75,11 @@ The `msProducts` snippet exposes vendor placeholders:
 
 ### Vendor list
 
-To output a vendor list use a direct query or custom snippet:
+To list vendors use a direct query or a custom snippet:
 
 ```php
 <?php
-// msVendors snippet
+// Snippet msVendors
 $vendors = $modx->getCollection(\MiniShop3\Model\msVendor::class, [
     'position:>' => 0
 ]);
@@ -92,7 +92,30 @@ foreach ($vendors as $vendor) {
 return $output;
 ```
 
-## Extra properties
+## Extra fields {#extra-fields}
+
+::: info Starting with v1.9.0
+Vendors support custom fields created via **Utilities → Extra fields**.
+:::
+
+To add a custom vendor field:
+
+1. Go to **Extras → MiniShop3 → Utilities → Extra fields**
+2. Select model **msVendor** in the dropdown
+3. Click **Create field** and set key, type (`textfield`, `numberfield`, `checkbox`, `textarea`, etc.)
+
+The field appears in the vendor edit form. All 13+ `DynamicField` types are supported, including:
+
+- `textfield` — text field
+- `numberfield` — number field
+- `textarea` — multiline text
+- `checkbox` — checkbox
+- `file` / `image` — file picker via FileBrowser
+- `combobox` — dropdown
+
+Extra field values are saved and returned via API together with standard vendor fields.
+
+## Additional properties
 
 The `properties` field stores arbitrary JSON data:
 
@@ -108,7 +131,7 @@ The `properties` field stores arbitrary JSON data:
 }
 ```
 
-Access in chunk:
+In a chunk:
 
 ```fenom
 {if $properties.website?}
@@ -116,6 +139,6 @@ Access in chunk:
 {/if}
 ```
 
-## Importing vendors
+## Vendor import
 
-When importing products from CSV, vendors are created automatically if the `vendor` column is present. The system looks up a vendor by name and creates a new one if not found.
+When importing products from CSV, vendors are created automatically if the `vendor` column is present. The system looks up an existing vendor by name and creates a new one if missing.

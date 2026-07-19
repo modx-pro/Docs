@@ -3,11 +3,11 @@ title: Extra fields
 ---
 # Utilities: Extra fields
 
-Creating new fields to extend MiniShop3 standard models.
+Create new fields to extend standard MiniShop3 models.
 
 ## Purpose
 
-The tool lets you add custom fields to data models without editing source code. Fields are stored in the database and shown in the interface automatically.
+Add custom fields to data models without editing source code. Fields are stored in the database and appear automatically in the interface.
 
 ## Supported models
 
@@ -27,7 +27,7 @@ Choose a model from the dropdown at the top of the page.
 
 ### Step 2: Add field
 
-Click **"Add field"** and fill the form.
+Click **Add field** and fill the form.
 
 ### Field parameters
 
@@ -35,10 +35,10 @@ Click **"Add field"** and fill the form.
 
 | Parameter | Description | Required |
 |-----------|-------------|----------|
-| Key (key) | Unique field name (Latin, snake_case) | Yes |
-| Label (label) | Display name | Yes |
-| Description | Hint for user | No |
-| Active | Field is used | Yes |
+| Key | Unique field name (Latin, snake_case) | Yes |
+| Label | Display name | Yes |
+| Description | User hint | No |
+| Active | Field in use | Yes |
 
 ::: warning Field key
 The key must be unique within the model. Use Latin letters and underscores. Examples: `wholesale_price`, `external_id`, `custom_field`.
@@ -50,11 +50,11 @@ The key must be unique within the model. Use Latin letters and underscores. Exam
 |------|-------------|-----|
 | `textfield` | Text field | Strings, SKUs |
 | `numberfield` | Number field | Prices, quantities |
-| `textarea` | Multi-line field | Descriptions |
+| `textarea` | Multiline field | Descriptions |
 | `xcheckbox` | Checkbox | Yes/No |
-| `ms3-combo-vendor` | Vendor selection | Vendor relation |
-| `ms3-combo-autocomplete` | Autocomplete | List selection |
-| `ms3-combo-options` | Option selection | Product variants |
+| `ms3-combo-vendor` | Vendor picker | Link to vendor |
+| `ms3-combo-autocomplete` | Autocomplete | Pick from list |
+| `ms3-combo-options` | Option picker | Product variants |
 
 #### Database type (dbtype)
 
@@ -63,8 +63,8 @@ The key must be unique within the model. Use Latin letters and underscores. Exam
 | `varchar` | Variable-length string | Text up to 255 chars |
 | `text` | Long text | Descriptions, HTML |
 | `int` | Integer | IDs, quantities |
-| `decimal` | Decimal number | Prices with decimals |
-| `tinyint` | Small integer (0-255) | Flags, ratings |
+| `decimal` | Decimal | Prices with cents |
+| `tinyint` | Small integer (0–255) | Flags, ratings |
 | `datetime` | Date and time | 2024-01-15 12:30:00 |
 | `timestamp` | Timestamp | Unix timestamp |
 | `json` | JSON data | Arrays, objects |
@@ -73,7 +73,7 @@ The key must be unique within the model. Use Latin letters and underscores. Exam
 
 For `varchar` and `decimal`:
 
-- `varchar` — maximum string length (default 255)
+- `varchar` — max string length (default 255)
 - `decimal` — format `10,2` means 10 digits total, 2 after decimal
 
 #### PHP type (phptype)
@@ -102,7 +102,7 @@ For `varchar` and `decimal`:
 | Type | Description | When to use |
 |------|-------------|-------------|
 | `NONE` | No index | Rarely used fields |
-| `INDEX` | Regular index | Search/sort fields |
+| `INDEX` | Regular index | Search and sort fields |
 | `UNIQUE` | Unique index | Unique values |
 | `FULLTEXT` | Full-text index | Text search |
 
@@ -121,11 +121,11 @@ Default: NULL
 Index: NONE
 ```
 
-### External ID (1C)
+### External ID (ERP)
 
 ```
 Key: external_id
-Label: 1C ID
+Label: ERP ID
 xtype: textfield
 dbtype: varchar
 Precision: 50
@@ -134,7 +134,7 @@ Default: NULL
 Index: UNIQUE
 ```
 
-### Delivery days
+### Delivery lead time
 
 ```
 Key: delivery_days
@@ -160,33 +160,33 @@ Index: NONE
 
 ## Editing a field
 
-Click the field row in the table to open the edit dialog.
+Click a row in the table to open the edit dialog.
 
 ::: warning Limitations
-Some parameters cannot be changed after creation:
+Some parameters cannot change after creation:
 
 - Field key
 - Database type (dbtype)
 
-To change these, delete the field and create a new one.
+To change these, delete the field and create it again.
 :::
 
 ## Deleting a field
 
-1. Click the delete icon on the field row
+1. Click delete on the row
 2. Confirm in the dialog
 
 ::: danger Warning
 Deleting a field **permanently** removes:
 
-- Field definition from schema
-- Column from database table
-- All data in that field for all records
+- Field definition from the schema
+- Column from the database table
+- All data for that field on all records
 :::
 
-## Using in code
+## Use in code
 
-### Getting value
+### Getting a value
 
 ```php
 // Get product
@@ -199,7 +199,7 @@ $data = $product->getOne('Data');
 $wholesalePrice = $data->get('wholesale_price');
 ```
 
-### Saving value
+### Saving a value
 
 ```php
 $data = $product->getOne('Data');
@@ -216,9 +216,9 @@ $data->save();
 {/if}
 ```
 
-## API Endpoints
+## API endpoints
 
-### List model fields
+### Model field list
 
 ```
 GET /api/mgr/extra-fields?class=MiniShop3\Model\msProductData
@@ -262,13 +262,13 @@ DELETE /api/mgr/extra-fields/{id}
 
 ## Migrations
 
-When creating a field:
+When a field is created the system automatically:
 
-1. A record is added to the field config table
-2. A column is added to the model table (ALTER TABLE)
-3. An index is created (if specified)
+1. Creates a record in the field configuration table
+2. Adds a column to the model table (ALTER TABLE)
+3. Creates an index (if specified)
 
-When deleting a field:
+When a field is deleted:
 
-1. Config record is removed
-2. Column is dropped from the database table
+1. Removes the configuration record
+2. Drops the column from the database table

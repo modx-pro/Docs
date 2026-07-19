@@ -1,7 +1,8 @@
 # getTicketsSections
 
 Выводит список секций с тикетами.
-**Сниппет вызывается не кэшированным.*
+
+**Вызывайте некэшированным.**
 
 ## Параметры
 
@@ -31,8 +32,40 @@
 
 ## Примеры
 
-Простой вызов.
+### Простой вызов
+
+::: code-group
+
+```fenom
+{'!getTicketsSections' | snippet}
+```
 
 ```modx
 [[!getTicketsSections?]]
 ```
+
+:::
+
+### Сортировка по просмотрам
+
+::: code-group
+
+```fenom
+{'!getTicketsSections' | snippet : [
+  'parents' => 0,
+  'limit' => 20,
+  'sortby' => 'views',
+  'sortdir' => 'DESC',
+]}
+```
+
+```modx
+[[!getTicketsSections?
+  &parents=`0`
+  &limit=`20`
+  &sortby=`views`
+  &sortdir=`DESC`
+]]
+```
+
+:::

@@ -5,7 +5,7 @@ description: Установка msPriceTiers и первые оптовые по
 
 # Быстрый старт
 
-Как за 15 минут включить оптовые цены на странице товара.
+Установка и первые оптовые пороги на карточке товара за ~15 минут.
 
 ```mermaid
 flowchart TB
@@ -17,7 +17,7 @@ flowchart TB
   end
   subgraph admin [Админка]
     B1[Товар → вкладка Оптовые цены]
-    B2[Порог: от 10 шт — 900 ₽]
+    B2["Порог: от 10 шт — 900 ₽ или −15%"]
     B1 --> B2
   end
   subgraph site [Витрина]
@@ -35,8 +35,8 @@ flowchart TB
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | установлен |
-| pdoTools | 3.x (для примеров Fenom) |
-| VueTools | для вкладки «Оптовые цены» в MS3 |
+| pdoTools | 3.x (Fenom-чанки) |
+| VueTools | вкладка «Оптовые цены» в MS3 |
 
 ## Шаг 1: Установка пакета
 
@@ -54,8 +54,9 @@ flowchart TB
 | Сервис `mspricetiers` | В `$modx->services` |
 | Сниппеты | `msPriceTiers`, `msPriceTiers.initialize`, `msPriceTiersProgress` |
 | Плагин `mspricetiers_events` | Включён, подписка на события MS3 |
-| Таблицы | `mspricetiers_product_tier`, шаблоны, категорийные пороги |
-| Вкладка на товаре | «Оптовые цены» (при установленном VueTools) |
+| Таблицы | `mspricetiers_product_tier`, пороги категории и корзины, шаблоны |
+| Вкладка на товаре | «Оптовые цены» (при VueTools) |
+| Extras → msPriceTiers | Пороги по сумме корзины, массовые операции |
 
 ## Шаг 2: Системные настройки
 
@@ -68,6 +69,7 @@ flowchart TB
 | `mspricetiers_enabled` | Да |
 | `mspricetiers_apply_on_product_page` | Да |
 | `mspricetiers_apply_in_cart` | Да |
+| `mspricetiers_cart_tiers_enabled` | Да, если нужны пороги по сумме корзины |
 | `mspricetiers_integrate_ms3variants` | Да, если используете [ms3Variants](/components/ms3variants/) |
 
 Полный список: [Системные настройки](settings).
@@ -76,10 +78,10 @@ flowchart TB
 
 1. **Мини-магазин → Товары** — откройте товар.
 2. Вкладка **«Оптовые цены»** → **+ Добавить**.
-3. Пример: **Количество от** `10`, **Цена** `900`, **Старая цена** `1000`, **Порядок** `0`.
+3. Пример: **Количество от** `10`, режим **Фикс. цена ₽** → **Цена** `900`; или режим **Скидка %** → `15`.
 4. Сохраните.
 
-Подробнее: [Управление порогами](manager).
+Зачёркнутая цена на витрине — из карточки товара MS3, не из формы порога. Подробнее: [Управление порогами](manager).
 
 ## Шаг 4: Сниппеты на карточке товара
 
@@ -88,7 +90,6 @@ flowchart TB
 ::: code-group
 
 ```fenom
-{* Подключение CSS/JS и конфигурации *}
 {'!msPriceTiers.initialize' | snippet}
 
 <section class="price-tiers">
@@ -145,9 +146,9 @@ flowchart TB
 | Открыть карточку товара | Таблица порогов видна |
 | Увеличить количество до 10+ | Цена на странице меняется |
 | Добавить в корзину 10+ шт. | В корзине цена по порогу |
-| Вкладка не появилась | Установить VueTools, жёсткое обновление страницы (Cmd+Shift+R) |
+| Вкладка не появилась | Установить VueTools, жёсткое обновление (Cmd+Shift+R) |
 
-Опционально — прогресс-бар:
+Прогресс-бар до следующего порога:
 
 ::: code-group
 
@@ -163,10 +164,12 @@ flowchart TB
 
 :::
 
-Требует `mspricetiers_progress_bar_enabled` = Да. См. [Сниппет msPriceTiersProgress](snippets/msPriceTiersProgress).
+Нужен `mspricetiers_progress_bar_enabled` = Да. См. [Сниппет msPriceTiersProgress](snippets/msPriceTiersProgress).
+
+Прогресс по сумме корзины и обновление без перезагрузки — [Интеграция](integration#корзина).
 
 ## Дальше
 
-- [Интеграция](integration) — корзина, каталог, категории
-- [Подключение на сайте](frontend) — JS API и стили
+- [Интеграция](integration) — корзина, пороги по сумме, каталог
+- [Подключение на сайте](frontend) — JS API, `data-mspt-live`
 - [FAQ](faq) — если таблица пустая или цена не меняется

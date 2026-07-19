@@ -1,37 +1,34 @@
 # Интеграция с FormIt
 
-При наличии установленного компонента FormIt возможно использовать валидацию входных данных по тем же правилам.
-*Компонент FormIt не находится в зависимостях компонента Tickets. При необходимости использования этого функционала Вы должны установить FormIt самостоятельно.*
+При установленном FormIt валидация работает в `TicketForm` и `TicketComments` через параметры `&validate` и `&customValidators`. FormIt в зависимости пакета нет.
 
-## Правила использования
+## Правила
 
-Валидация доступна для сниппетов TicketForm (создание/редактирование тикета), TicketComments (написание комментария).
-Валидация будет использоваться при указании полей в параметре сниппета validate.
-Возможно указание собственных валидаторов через параметр customValidators и собственных текстов для ошибки.
-Все существующие правила валидации FormIt можно найти на официальной странице документации компонента.
+- Ошибки выводятся в `<span class="error"></span>` рядом с полем или в `#имя_поля-error`
+- Правила FormIt: [документация FormIt](https://docs.modx.com/current/ru/extras/formit)
+- Для комментариев валидируется поле `text`
 
-Для вывода сообщения об ошибке в одном div-е с проверяемый полем должен находится элемент `<span class="error"></span>` для вывода ошибки
+Разметка поля:
+
+::: code-group
+
+```fenom
+<label for="ticket-pagetitle">{$_modx->lexicon('ticket_pagetitle')}</label>
+<input type="text" name="pagetitle" id="ticket-pagetitle" />
+<span class="error"></span>
+```
 
 ```modx
-<div class="form-group">
-  <label for="ticket-pagetitle">[[%ticket_pagetitle]]</label>
-  <input type="text" class="form-control" placeholder="[[%ticket_pagetitle]]" name="pagetitle" value=""
-      maxlength="50" id="ticket-pagetitle"/>
-  <span class="error"></span>
-</div>
+<label for="ticket-pagetitle">[[%ticket_pagetitle]]</label>
+<input type="text" name="pagetitle" id="ticket-pagetitle" />
+<span class="error"></span>
 ```
 
-Либо элемент может находиться в произвольной месте HTML-разметки с уникальным id вида **имя_поля-error**
+:::
 
-```html
-<span class="error" id="content-error"></span>
-```
+## Пользовательский валидатор
 
-## Примеры использования
-
-- Использование пользовательского валидатора для цензурирования
-
-Создаётся сниппет с именем **mycensore**
+Сниппет **mycensore**:
 
 ```php
 <?php
@@ -43,29 +40,52 @@ if (!$success) {
 return (bool)$success;
 ```
 
-Сниппет TicketForm вызывается с параметрами. В чанке tpl.myTicket для формы добавлены например собственные поля date, email, username, которые также валидируются стандартными правилами из FormIt.
+### TicketForm
+
+::: code-group
 
 ```fenom
-{'!TicketForm' | snippet: [
+{'!TicketForm' | snippet : [
   'customValidators' => 'mycensore',
-  'validate' => 'date:required:isDate=^%m/%d/%Y^,
-      email:email:required,
-      username:required:islowercase,
-      pagetitle:required:contains=^Hello^,
-      content:minLength=^50^:mycensore',
+  'validate' => 'pagetitle:required:minLength=^3^,content:minLength=^50^:mycensore',
   'content.vTextMinLength' => 'Содержимое заявки должно быть не короче 50 знаков',
   'tplFormCreate' => 'tpl.myTicket',
 ]}
 ```
 
-- Цензурирование пользовательских комментариев
+```modx
+[[!TicketForm?
+  &customValidators=`mycensore`
+  &validate=`pagetitle:required:minLength=^3^,content:minLength=^50^:mycensore`
+  &content.vTextMinLength=`Содержимое заявки должно быть не короче 50 знаков`
+  &tplFormCreate=`tpl.myTicket`
+]]
+```
 
-    ```fenom
-    {'!TicketComments' | snippet: [
-      'allowGuest' => 1,
-      'autoPublishGuest' => 0,
-      'customValidators' => 'mycensore',
-      'validate' => 'text:minLength=^20^:mycensore',
-      'text.vTextMinLength' => 'Комментарий должен быть не короче 20 знаков',
-    ]}
-    ```
+:::
+
+### TicketComments
+
+::: code-group
+
+```fenom
+{'!TicketComments' | snippet : [
+  'allowGuest' => 1,
+  'autoPublishGuest' => 0,
+  'customValidators' => 'mycensore',
+  'validate' => 'text:minLength=^20^:mycensore',
+  'text.vTextMinLength' => 'Комментарий должен быть не короче 20 знаков',
+]}
+```
+
+```modx
+[[!TicketComments?
+  &allowGuest=`1`
+  &autoPublishGuest=`0`
+  &customValidators=`mycensore`
+  &validate=`text:minLength=^20^:mycensore`
+  &text.vTextMinLength=`Комментарий должен быть не короче 20 знаков`
+]]
+```
+
+:::

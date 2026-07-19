@@ -4,22 +4,45 @@ Outputs a form to subscribe to an author. Subscription is only available to logg
 
 ## Parameters
 
-| Name             | Default                         | Description                                                                                                                                                           |
-|------------------|----------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **&createdby**  | `0`                              | Required. ID of the author (user) to subscribe to via the form.                                                                                                       |
-| **&tpl**        | `tpl.Tickets.author.subscribe`   | Chunk for the subscription form.                                                                                                                                      |
-| **&TicketsInit**| `0`                              | Set to "1" to load the subscription form and initialize Tickets frontend scripts on any page (e.g. author profile, user cabinet).                                     |
+| Name | Default | Description |
+| --- | --- | --- |
+| **&createdby** | `0` | Required author user ID |
+| **&tpl** | `tpl.Tickets.author.subscribe` | Form chunk; `@INLINE` and `@FILE` allowed |
+| **&TicketsInit** | `0` | Set `1` to load Tickets frontend scripts on custom pages |
 
 ## Examples
 
-- Call the snippet for each item in the ticket list, e.g. in chunk tpl.Tickets.list.row
+### In a ticket list chunk
 
-    ```modx
-    [[!subscribeAuthor? &createdby=`[[!+createdby]]`]]
-    ```
+`tpl.Tickets.list.row` already has a `createdby` placeholder:
 
-- Call the snippet on the author profile page (user ID in placeholder +author.id)
+::: code-group
 
-    ```modx
-    [[!subscribeAuthor? &createdby=`[[!+author.id]]` &TicketsInit=`1`]]
-    ```
+```fenom
+{'!subscribeAuthor' | snippet : ['createdby' => $createdby]}
+```
+
+```modx
+[[!subscribeAuthor? &createdby=`[[+createdby]]`]]
+```
+
+:::
+
+### Author profile page
+
+When `author.id` is available, enable Tickets frontend scripts:
+
+::: code-group
+
+```fenom
+{'!subscribeAuthor' | snippet : [
+  'createdby' => $author.id,
+  'TicketsInit' => 1,
+]}
+```
+
+```modx
+[[!subscribeAuthor? &createdby=`[[+author.id]]` &TicketsInit=`1`]]
+```
+
+:::
