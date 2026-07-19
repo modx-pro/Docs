@@ -187,6 +187,36 @@ title: msProducts
 ]}
 ```
 
+### Вывод опций в чанке (`includeOptions`)
+
+```fenom
+{'msProducts' | snippet : [
+    'parents' => 0,
+    'includeOptions' => 'cf_volume,cf_performance_m3h,color',
+    'tpl' => '@INLINE
+        <div class="product-card">
+            <h3>{$pagetitle}</h3>
+
+            {if ?$cf_volume}
+                <p>Объём: <strong>{$cf_volume.0}</strong> л</p>
+            {/if}
+
+            {if ?$cf_performance_m3h}
+                <p>Производительность: <strong>{$cf_performance_m3h.0}</strong> м³/ч</p>
+            {/if}
+
+            {if ?$color}
+                <p>Цвет:
+                    {foreach $color as $c}{$c}{if !$c@last}, {/if}{/foreach}
+                </p>
+            {/if}
+        </div>
+    '
+]}
+```
+
+Полное описание структуры и всех паттернов доступа — в разделе [Опции товара (при `includeOptions`)](#опции-товара-при-includeoptions).
+
 ### Связанные товары
 
 Связи товаров позволяют выводить аксессуары, сопутствующие товары, аналоги и т.д.
@@ -365,6 +395,60 @@ title: msProducts
 - `{$size}` — Размер (JSON)
 - `{$tags}` — Теги (JSON)
 - `{$discount}` — Скидка в процентах (вычисляется автоматически)
+
+### Опции товара (при `includeOptions`)
+
+Каждое значение опции возвращается сниппетом как **массив** (даже когда у товара всего одно значение по этому ключу), потому что в базе одна и та же опция может иметь несколько значений на товар (multi-value типы `comboMultiple`, `comboColors`, `comboOptions`).
+
+Структура после `array_merge` в `row`:
+
+```php
+[
+    'cf_volume'           => ['500'],
+    'cf_processing_volume'=> ['750'],
+    'color'               => ['красный', 'синий'],   // multi-value
+]
+```
+
+`pdoTools::makePlaceholders()` разворачивает такие массивы в **dot-notation**-плейсхолдеры для legacy MODX-чанков: `[[+cf_volume.0]]`, `[[+color.0]]`, `[[+color.1]]`. Плоского плейсхолдера `[[+cf_volume]]` (без индекса) **не создаётся**.
+
+#### Как выводить в Fenom-чанке
+
+**Одно значение (типичный случай):**
+
+```fenom
+{$cf_volume.0}
+```
+
+**Список через запятую (multi-value):**
+
+```fenom
+{foreach $color as $v}
+    {$v}{if !$v@last}, {/if}
+{/foreach}
+```
+
+**С проверкой существования — опция может отсутствовать у конкретного товара:**
+
+```fenom
+{if ?$cf_volume}
+    Объём: <strong>{$cf_volume.0}</strong> л
+{/if}
+```
+
+#### Как выводить в legacy MODX-чанке
+
+```html
+<div>Объём: [[+cf_volume.0]] л</div>
+```
+
+::: warning Плоский плейсхолдер `{$cf_volume}` без индекса
+Если написать в Fenom `{$cf_volume}` — на выходе будет строка `Array` и notice в логе PHP (штатное поведение при `echo` от массива). Всегда обращайтесь по индексу или итерируйтесь через `foreach`.
+:::
+
+::: tip Ключи опций
+Список ключей `msOption.key` описан в разделе «Опции» админки. У сниппета в чанке доступны только те ключи, которые перечислены в параметре `includeOptions` (через запятую, без пробелов после разделителя).
+:::
 
 ### Форматированные плейсхолдеры
 
