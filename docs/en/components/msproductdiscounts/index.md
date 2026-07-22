@@ -56,6 +56,7 @@ dependencies: [ 'miniShop2', 'SendIt' ]
 | **mspd_info_tpl**              | `DiscountInfoTpl`                   | discount display in product card and preview. |
 | **mspd_round_precision**       | `1`                                 | price rounding precision after discount. |
 | **mspd_show_for_all**          | `Yes`                                | show discounts in product card even when cart empty. |
+| **mspd_show_discount_info** | `Yes` | whether to render the promo description (`mspd_info_tpl`) for discounts whose `Promo description` setting is left at `Default`. |
 | **mspd_status_cancel**         | `4`                                 | to recalc promo code usage on order cancel                                                                                                                                   |
 | **mspd_status_new**            | `1`                                 | to recalc promo code usage on order creation                                                                                                                                 |
 | **mspd_min_discount_price**    | `0`                                 | limit minimum discounted price. |
@@ -541,6 +542,30 @@ Each discount also has an "Apply type" field (used with `mspd_many_behaviour` = 
 * "On general terms" — the discount participates in the common application order;
 * "Only this discount" — if a product matches such a discount, only it is applied;
 * "All except this one" — since `2.1.20-rc` such a discount is applied after the others and only to products that did **not actually receive** a discount in the current cart recalculation (earlier it was dropped whenever the product had any other matching discounts, even if they gave it no benefit). Handy for promo codes: the code benefits only products left without a sale and does not stack with it on the same product. In product card previews such a discount does not stack with others.
+* "Stacks with others" — since `2.1.22-rc` such a discount survives exclusive filtering: if a product matches an "Only this discount" discount, the stacking one is still applied on top of it. Application order in the cart: regular discounts → "All except this one" → "Stacks with others". Thanks to that order the stacking discount does not steal products from "All except this one" — a product is still considered "without a discount" if it only received a stacking one. The math is a cascade from the current price: `1000` with a `10%` main discount and a `5%` stacking one gives `855`, not `850`.
+
+## Discount visibility in the catalog and on the product page
+
+Since `2.2.0-rc` every discount has three visibility settings: `Show in catalog`, `Show in product card` and `Promo description`. Each accepts one of three values:
+
+* `Default` — behaviour is defined by the system settings, as before: `mspd_show_for_all` and `mspd_check_common_conditions_on_show` for the price, `mspd_show_discount_info` for the promo description;
+* `Show` — the discount takes part in the displayed price calculation **regardless of the cart**: the discounted price and the crossed-out old price are visible even when the cart is empty and the common conditions of the discount (minimum amount, quantity) are not met yet;
+* `Hide` — the discount is excluded from display entirely, including when `mspd_show_for_all` is `Yes`.
+
+Before these settings, display was controlled by the system settings only, so it was impossible to enable display for one promo and keep it off for the rest. A typical case: the "Weekly products" promo shows the old and the new price in the catalog, while the "−20% on the second item" discount is not shown in the product list because its price depends on the cart contents.
+
+The settings affect **display only**. The cart still calculates the actual discounts by the common rules, so for a discount hidden in the catalog the cart price may differ from the one shown in the product list.
+
+The catalog and the product page are told apart by the `data-mspd-scope` attribute: the value `product` on the product wrapper or on any of its ancestors means the product page, anything else (and a missing attribute) means the catalog. Templates without this attribute work as before — the request is treated as a catalog one.
+
+```html
+<!-- product page: the "Show in product card" setting applies here -->
+<div data-mspd-scope="product">
+    <form method="post" class="ms2_form" data-mspd-product="p-{$id}">
+        ...
+    </form>
+</div>
+```
 
 ## Promo name and resource
 
