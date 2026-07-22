@@ -36,6 +36,7 @@ items: [
     text: 'История версий',
     link: 'changelog/',
     items: [
+      { text: '2.8.1-pl', link: 'changelog/2.8.1-pl' },
       { text: '2.8.0-pl', link: 'changelog/2.8.0-pl' },
       { text: '2.7.1-pl', link: 'changelog/2.7.1-pl' },
       { text: '2.7.0-pl', link: 'changelog/2.7.0-pl' },
