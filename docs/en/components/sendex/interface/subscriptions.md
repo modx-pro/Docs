@@ -73,7 +73,7 @@ Context menu → **Remove**. Calls `unSubscribe` with source `mgr` and fires uns
 
 The **Export** button on the subscribers tab downloads CSV via the manager connector (not a public URL). Requires `edit_document`.
 
-Export columns: [`sendex_export_fields`](settings#settings-from-the-package). Hide the button: [`sendex_hide_export_button`](settings#settings-from-the-package).
+Export columns: [`sendex_export_fields`](../settings#settings-from-the-package). Hide the button: [`sendex_hide_export_button`](../settings#settings-from-the-package).
 
 ## Permissions
 
