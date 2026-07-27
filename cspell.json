@@ -628,7 +628,15 @@
     "чанком",
     "редиректом",
     "sxqueuesender",
-    "strpos"
+    "strpos",
+    "mobiledetect",
+    "mobiledetectlib",
+    "vasily",
+    "naumkin",
+    "парсятся",
+    "парсинге",
+    "парсинга",
+    "парсится"
   ],
   "ignorePaths": [
     "node_modules",
