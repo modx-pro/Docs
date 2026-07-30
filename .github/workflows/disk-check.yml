@@ -18,34 +18,27 @@ jobs:
           script: |
             set +e
             echo '=== df -h ==='
-            df -h
+            df -h /
             echo
-            echo '=== /var breakdown ==='
-            du -xhd1 /var 2>/dev/null | sort -hr | head -30
+            echo '=== $HOME breakdown ==='
+            du -xhd1 "$HOME" 2>/dev/null | sort -hr
             echo
-            echo '=== /var/www ==='
-            du -xhd2 /var/www 2>/dev/null | sort -hr | head -40
+            echo '=== www ==='
+            du -xhd1 "$HOME/www" 2>/dev/null | sort -hr | head -40
             echo
-            echo '=== /home ==='
-            du -xhd2 /home 2>/dev/null | sort -hr | head -30
+            echo '=== logs (top files) ==='
+            du -xhd1 "$HOME/logs" 2>/dev/null | sort -hr | head -20
+            ls -lahS "$HOME/logs" 2>/dev/null | head -30
             echo
-            echo '=== largest dirs under / ==='
-            du -xhd1 / 2>/dev/null | sort -hr | head -20
+            echo '=== tmp ==='
+            du -sh "$HOME/tmp" 2>/dev/null
+            ls -lahS "$HOME/tmp" 2>/dev/null | head -20
             echo
-            echo '=== journal ==='
-            journalctl --disk-usage 2>/dev/null || true
+            echo '=== other /var/www (names only; sizes may be inaccessible) ==='
+            ls -la /var/www 2>/dev/null
             echo
-            echo '=== docker ==='
-            docker system df 2>/dev/null || echo 'no docker'
+            echo '=== can sudo? ==='
+            sudo -n true 2>&1 | head -5
             echo
-            echo '=== apt/dpkg caches ==='
-            du -sh /var/cache/apt /var/lib/apt /var/lib/dpkg 2>/dev/null
-            echo
-            echo '=== large files >200M ==='
-            find / -xdev -type f -size +200M 2>/dev/null | head -40
-            echo
-            echo '=== deleted but open (need root) ==='
-            lsof 2>/dev/null | awk '/deleted/ {print}' | head -20 || true
-            echo
-            echo '=== whoami / id ==='
-            whoami; id; pwd; ls -la ~
+            echo '=== reserved blocks ==='
+            tune2fs -l /dev/vda1 2>/dev/null | rg -i 'reserved|block count|free' || echo 'no tune2fs'
