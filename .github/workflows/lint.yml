@@ -13,7 +13,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v6
       - uses: reviewdog/action-markdownlint@v0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -24,7 +24,7 @@ jobs:
   spellcheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -38,7 +38,7 @@ jobs:
   docs-sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true  # Remove once baseline drift is fixed
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           version: 9
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true  # Remove once baseline volume drift is fixed on critical paths
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v4
         with:
           version: 9
