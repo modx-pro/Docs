@@ -60,7 +60,7 @@ return [
 
     // Провайдеры эндпоинтов (MxApi\Core\Provider\ProviderInterface).
     'providers' => [
-        // 'MsOrderBridge\\MxApi\\OrdersProvider',
+        // 'MyReviews\\Api\\Provider',
     ],
 
     // Дополнительные промежуточные обработчики запроса.
@@ -68,13 +68,13 @@ return [
 
     // Проектные эндпоинты; класс вне автозагрузки пакета — укажите file.
     'endpoints' => [
-        // ['class' => 'SgApi\\Endpoint\\OrdersExportEndpoint',
-        //  'file' => MODX_CORE_PATH . 'components/sgapi/src/Endpoint/OrdersExportEndpoint.php'],
+        // ['class' => 'MyReviews\\Api\\Endpoint\\ReviewsStatsEndpoint',
+        //  'file' => MODX_CORE_PATH . 'components/myreviews/src/Endpoint/ReviewsStatsEndpoint.php'],
     ],
 
     // Алиасы исторических маршрутов: путь => идентификатор эндпоинта.
     'route_aliases' => [
-        // '/v1/orders/export' => 'orders.export',
+        // '/v1/reviews' => 'reviews.list',
     ],
 ];
 ```
