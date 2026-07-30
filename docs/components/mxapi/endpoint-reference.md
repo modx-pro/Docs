@@ -61,8 +61,8 @@ lastUpdated: true
 
 | Ключ | Смысл |
 | --- | --- |
-| `processor` | Путь процессора, например `mgr/review/getlist` |
-| `processors_path` | Каталог процессоров пакета |
+| `processor` | MODX 2 — путь процессора, например `mgr/review/getlist`; MODX 3 — полное имя класса, `MyPackage\Processors\Mgr\Review\GetList::class` |
+| `processors_path` | Каталог процессоров пакета. Только MODX 2: в тройке класс находит автозагрузчик |
 | `field_map` | Переименование параметров: `['product' => 'product_id']` — наружу первое, в процессор второе |
 | `properties` | Фиксированные свойства процессора; добавляются **последними**, клиент их не перебьёт |
 

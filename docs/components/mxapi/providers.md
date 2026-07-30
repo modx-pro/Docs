@@ -72,8 +72,8 @@ class ReviewsListEndpoint extends ProcessorEndpoint
             'modx_context' => 'mgr',
 
             // Реализация — наружу не отдаётся
-            'processor' => 'mgr/review/getlist',
-            'processors_path' => MODX_CORE_PATH . 'components/myreviews/processors/',
+            'processor' => 'mgr/review/getlist',                                      // MODX 3: MyReviews\Processors\Mgr\Review\GetList::class
+            'processors_path' => MODX_CORE_PATH . 'components/myreviews/processors/', // MODX 3: не нужен
             'field_map' => ['product' => 'product_id'],
             'properties' => ['combo' => false],
 
@@ -138,8 +138,8 @@ class ReviewsListEndpoint extends ProcessorEndpoint
 
 | Ключ | Что задаёт |
 | --- | --- |
-| `processor` | Путь процессора относительно `processors_path` — то, что обычно передают в `$modx->runProcessor()` |
-| `processors_path` | Каталог процессоров вашего пакета. Без него MODX ищет процессор в ядре и не находит — типичная причина `processor_error` с пустым сообщением |
+| `processor` | То, что обычно передают в `$modx->runProcessor()`: в MODX 2 — путь процессора относительно `processors_path`, в MODX 3 — **полное имя класса** процессора |
+| `processors_path` | **Только MODX 2**: каталог процессоров вашего пакета. Без него MODX ищет процессор в ядре и не находит — типичная причина `processor_error` с пустым сообщением. В MODX 3 ключ не нужен: класс находит автозагрузчик |
 | `field_map` | Переименование параметров на границе API: `['product' => 'product_id']` значит «снаружи параметр называется `product`, в процессор он уйдёт как `product_id`». Нужен, чтобы публичный контракт не наследовал имена полей вашей схемы: переименуете колонку — поправите одну строку в карте, а у интегратора ничего не сломается |
 | `properties` | Фиксированные свойства процессора, которые клиент задать не может. Добавляются **последними**, поэтому перебить их запросом нельзя. Сюда кладут то, что должно быть постоянным: в примере `combo => false`, чтобы процессор не переключался в режим выпадающего списка |
 
@@ -156,6 +156,10 @@ class ReviewsListEndpoint extends ProcessorEndpoint
 :::
 
 ### Что вы получаете даром
+
+:::info Версия для MODX 3
+Процессор адресуется **полным именем класса** — `MyReviews\\Processors\\Mgr\\Review\\GetList::class`. Короткое имя или путь в тройке не резолвятся: `runProcessor()` отвечает «Requested processor not found», а mxApi возвращает `processor_error`. Ключ `processors_path` при этом не нужен вовсе.
+:::
 
 Больше ничего писать не нужно — `handle()` реализован в базовом классе. Что он делает за вас:
 
