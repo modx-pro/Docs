@@ -8,7 +8,7 @@ Snippet for outputting a product image gallery.
 ## Parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+|----------|--------------|----------|
 | **product** | current resource | Product ID |
 | **tpl** | `tpl.msGallery` | Gallery layout chunk |
 | **limit** | `0` | Number of images (0 = all) |
@@ -17,7 +17,7 @@ Snippet for outputting a product image gallery.
 | **sortdir** | `ASC` | Sort direction |
 | **where** | | JSON extra conditions |
 | **filetype** | | File type filter (comma-separated) |
-| **thumbnails** | | Thumbnail size filter (comma-separated) |
+| **thumbnails** | | Thumbnail filter by name (comma-separated) |
 | **showInactive** | `false` | Show inactive files |
 | **toPlaceholder** | | Save result to placeholder |
 | **showLog** | `false` | Show execution log |
@@ -28,7 +28,7 @@ Snippet for outputting a product image gallery.
 ### Basic output
 
 ```fenom
-{'msGallery' | snippet: [
+{'msGallery' | snippet : [
     'return' => 'tpl'
 ]}
 ```
@@ -36,7 +36,7 @@ Snippet for outputting a product image gallery.
 ### For specific product
 
 ```fenom
-{'msGallery' | snippet: [
+{'msGallery' | snippet : [
     'product' => 15,
     'return' => 'tpl'
 ]}
@@ -45,25 +45,25 @@ Snippet for outputting a product image gallery.
 ### First 5 images
 
 ```fenom
-{'msGallery' | snippet: [
+{'msGallery' | snippet : [
     'limit' => 5,
     'return' => 'tpl'
 ]}
 ```
 
-### Images only (no video/docs)
+### Images only (no video or documents)
 
 ```fenom
-{'msGallery' | snippet: [
+{'msGallery' | snippet : [
     'filetype' => 'image',
     'return' => 'tpl'
 ]}
 ```
 
-### Specific thumbnails
+### Specific thumbnails only
 
 ```fenom
-{'msGallery' | snippet: [
+{'msGallery' | snippet : [
     'thumbnails' => 'small,medium',
     'return' => 'tpl'
 ]}
@@ -72,7 +72,7 @@ Snippet for outputting a product image gallery.
 ### Sort by name
 
 ```fenom
-{'msGallery' | snippet: [
+{'msGallery' | snippet : [
     'sortby' => 'name',
     'sortdir' => 'ASC',
     'return' => 'tpl'
@@ -105,7 +105,7 @@ Passed to the chunk:
 ### File fields
 
 | Field | Description |
-|-------|-------------|
+|------|----------|
 | `{$file['id']}` | File ID |
 | `{$file['product_id']}` | Product ID |
 | `{$file['name']}` | File name |
@@ -125,7 +125,7 @@ Passed to the chunk:
 Thumbnails are added as extra fields named by folder:
 
 | Field | Description |
-|-------|-------------|
+|------|----------|
 | `{$file['small']}` | Small thumbnail URL |
 | `{$file['medium']}` | Medium thumbnail URL |
 | `{$file['large']}` | Large thumbnail URL |
@@ -136,7 +136,7 @@ Thumbnail names depend on product media source settings. Default: `small`, `medi
 
 ### Loop variables
 
-In Fenom:
+In Fenom, iteration variables are available:
 
 ```fenom
 {foreach $files as $file}
@@ -161,6 +161,7 @@ The default chunk `tpl.msGallery` uses Splide.js for the slider and GLightbox fo
     <script src="https://cdn.jsdelivr.net/npm/glightbox@3.3.0/dist/js/glightbox.min.js"></script>
 
     <div class="ms3-gallery">
+        {* Main slider *}
         <div class="splide ms3-gallery-main" id="ms3-gallery-main">
             <div class="splide__track">
                 <ul class="splide__list">
@@ -181,6 +182,7 @@ The default chunk `tpl.msGallery` uses Splide.js for the slider and GLightbox fo
             </div>
         </div>
 
+        {* Thumbnail slider *}
         {if ($files | length) > 1}
             <div class="splide ms3-gallery-thumbs" id="ms3-gallery-thumbs">
                 <div class="splide__track">
@@ -264,7 +266,7 @@ When the gallery contains video:
 {foreach $files as $file}
     {if $file['type'] == 'video'}
         <video controls>
-            <source src="{$file['url']}" type="video/{$file['file'] | pathinfo: 'extension'}">
+            <source src="{$file['url']}" type="video/{$file['file'] | pathinfo : 'extension'}">
         </video>
     {else}
         <img src="{$file['medium'] ?: $file['url']}" alt="{$file['name']}">
@@ -276,11 +278,11 @@ When the gallery contains video:
 
 ```fenom
 {* Images only *}
-{'msGallery' | snippet: ['filetype' => 'image']}
+{'msGallery' | snippet : ['filetype' => 'image']}
 
 {* Video only *}
-{'msGallery' | snippet: ['filetype' => 'video']}
+{'msGallery' | snippet : ['filetype' => 'video']}
 
 {* Images and video *}
-{'msGallery' | snippet: ['filetype' => 'image,video']}
+{'msGallery' | snippet : ['filetype' => 'image,video']}
 ```

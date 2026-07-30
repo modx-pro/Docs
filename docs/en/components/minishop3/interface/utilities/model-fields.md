@@ -3,15 +3,15 @@ title: Model fields
 ---
 # Utilities: Model fields
 
-Managing existing model fields from the database.
+Manage existing model fields from the database.
 
 ## Purpose
 
-The tool manages fields registered in the `ms3_product_fields` table:
+Manage fields registered in `ms3_product_fields`:
 
 - View all model fields
 - Edit display settings
-- Bind fields to sections
+- Assign fields to sections
 - Configure widgets (xtype)
 - Manage field sections
 
@@ -20,9 +20,9 @@ The tool manages fields registered in the `ms3_product_fields` table:
 | Aspect | Model fields | Extra fields |
 |--------|--------------|--------------|
 | Source | Existing DB fields | New fields |
-| Creating columns | No | Yes (ALTER TABLE) |
-| Delete | Config only | Full removal |
-| Use | Display config | Schema extension |
+| Column creation | No | Yes (ALTER TABLE) |
+| Deletion | From configuration only | Full removal |
+| Use | Display configuration | Schema extension |
 
 ## Interface
 
@@ -41,8 +41,8 @@ Left panel lists sections for the selected model.
 
 **Section actions:**
 
-- Add section
-- Edit section
+- Add new section
+- Edit existing
 - Delete section
 - Reorder (drag-and-drop)
 
@@ -55,9 +55,9 @@ Right side shows fields and settings:
 | Name | System field name |
 | Label | Display name |
 | Type (xtype) | Widget type |
-| Section | Section |
-| Visible | Show field |
-| Width | Grid width (3-12) |
+| Section | Section assignment |
+| Visibility | Show field |
+| Width | Grid width (3–12) |
 
 ## Editing a field
 
@@ -67,10 +67,10 @@ Click a row to open the edit dialog.
 
 | Parameter | Description |
 |-----------|-------------|
-| Label | Display name |
-| Description | Hint under input |
-| Section | Group for the field |
-| Visible | Show in form |
+| Label | Display field name |
+| Description | Hint below input |
+| Section | Group where the field appears |
+| Visibility | Show in form |
 
 ### Widget type (xtype)
 
@@ -78,26 +78,26 @@ Click a row to open the edit dialog.
 |------|-------------|
 | `textfield` | Text field |
 | `numberfield` | Number field |
-| `textarea` | Multi-line field |
+| `textarea` | Multiline field |
 | `combo` | Dropdown |
 | `datefield` | Date picker |
 | `checkbox` | Checkbox |
 
 ### Grid width
 
-12-column grid:
+Uses a 12-column grid:
 
 | Value | Width | Description |
 |-------|-------|-------------|
-| 3 | 25% | Quarter |
-| 4 | 33% | Third |
-| 6 | 50% | Half |
+| 3 | 25% | Quarter row |
+| 4 | 33% | Third row |
+| 6 | 50% | Half row |
 | 8 | 67% | Two thirds |
 | 12 | 100% | Full row |
 
-### Combo data source
+### Data source for combo
 
-For `combo` type use JSON config:
+For `combo` type set JSON configuration:
 
 ```json
 {
@@ -130,7 +130,7 @@ Or load from API:
 |-------|-------------|
 | Key | Unique identifier |
 | Label | Display name |
-| Order | Position in list |
+| Order | Position in section list |
 
 ### Editing a section
 
@@ -139,14 +139,14 @@ Click the edit icon next to the section name.
 ### Deleting a section
 
 ::: warning Note
-When a section is deleted, its fields move to "No section". Fields are not deleted.
+Deleting a section does not delete fields; they move to "No section".
 :::
 
 ### Section order
 
-Drag sections to reorder.
+Drag sections to change display order.
 
-## Examples
+## Usage examples
 
 ### Grouping price fields
 
@@ -154,7 +154,7 @@ Drag sections to reorder.
    - Key: `prices`
    - Label: `Prices`
 
-2. Move fields into it:
+2. Move fields into the section:
    - `price` → Prices
    - `old_price` → Prices
    - `wholesale_price` → Prices (if added)
@@ -173,15 +173,15 @@ For compact layout:
 
 ### Hiding technical fields
 
-Commonly hidden:
+Fields often hidden:
 
 - `id` — auto-generated
 - `createdon` — technical dates
-- `source` — if using a single source
+- `source` — when using a single media source
 
-## API Endpoints
+## API endpoints
 
-### List models
+### Model list
 
 ```
 GET /api/mgr/model-fields/models
@@ -201,7 +201,7 @@ GET /api/mgr/model-fields/models
 }
 ```
 
-### List model fields
+### Model field list
 
 ```
 GET /api/mgr/model-fields?model=msProductData
@@ -255,7 +255,7 @@ POST /api/mgr/model-fields/sections
 DELETE /api/mgr/model-fields/sections/{id}
 ```
 
-## Relation to config
+## Configuration impact
 
 Changes here affect:
 
@@ -264,8 +264,8 @@ Changes here affect:
 3. **Import** — fields available for mapping
 4. **API** — object serialization
 
-To see changes you may need to:
+To apply changes in the UI you may need:
 
-- Reload the page
-- Clear browser cache
-- Clear MODX cache
+- Page reload
+- Browser cache clear
+- MODX cache clear

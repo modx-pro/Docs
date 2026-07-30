@@ -50,7 +50,24 @@ Resource system settings:
 - Template
 - Publication (date, status)
 - Indexing and caching
-- **Category options** — product options for this category
+- **Category options** — configure product options in this category (see below)
+
+### Category options
+
+::: info From v1.10.0-beta1
+The tab is fully Vue (`CategoryOptionsTab` component). The legacy ExtJS grid and `Processors/Category/Option/*` processors were removed.
+:::
+
+Grid of options linked to this category, with:
+
+- **Drag-and-drop sorting** — order (`position`) is saved in one POST on drop (`/api/mgr/categories/{id}/options/sort`)
+- **Inline editing** on double-click:
+  - `Default value` — used as the default in the product form
+  - `Name (for category)` — per-category override of the global `caption` (empty = use global)
+- **"Global" column** (read-only) — shows `caption` from `msOption` for comparison with the override
+- **Bulk actions** (checkbox selection): Activate / Deactivate / Make required / Remove required / Delete
+- **"Add option" button** — dialog to pick an existing option with fields: default value, active, required, caption/description override
+- **"Copy options from category" button** — copies all links from another category (skips duplicates). After copy, `msCategoryOption::afterSave` automatically applies options to all products in the current category.
 
 ### Resource groups
 
@@ -289,7 +306,7 @@ To show order status as a colored badge you need 3 fields:
 Colors in the `msOrderStatus` table are stored in HEX format without `#` (e.g. `FF5733`). The system adds `#` when rendering.
 :::
 
-## Adding actions to column
+## Adding actions to the column
 
 ### Action configuration
 
@@ -367,6 +384,7 @@ Register a custom action via `MS3ActionRegistry`:
 // Plugin: Add to favorites
 document.addEventListener('DOMContentLoaded', () => {
   if (window.MS3ActionRegistry) {
+    // Register handler
     MS3ActionRegistry.register('addToFavorites', async (data, gridId) => {
       const response = await fetch('/assets/components/mycomponent/api.php', {
         method: 'POST',
@@ -380,6 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const result = await response.json()
 
       if (result.success) {
+        // Show notification
         if (window.PrimeVue) {
           // Use PrimeVue Toast
         } else {
@@ -410,6 +429,7 @@ Adding the action to the column config:
 ```javascript
 // Hook before product delete
 MS3ActionRegistry.registerBeforeHook('delete', async (data, gridId) => {
+  // Check conditions
   if (data.orders_count > 0) {
     alert('Cannot delete product with orders!')
     return false  // Cancel action
@@ -424,7 +444,7 @@ MS3ActionRegistry.registerAfterHook('publish', async (data, result, gridId) => {
 })
 ```
 
-## Adding filters
+## Adding a filter
 
 ### Filter structure
 
@@ -700,7 +720,6 @@ POST /api/mgr/categories/{id}/products/sort
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| `ms3_category_grid_fields` | Visible table columns | `id,pagetitle,article,price,weight,image` |
 | `ms3_category_show_nested_products` | Show nested products | `false` |
 | `ms3_category_show_options` | Show category options | `true` |
 | `ms3_category_remember_tabs` | Remember active tab | `true` |

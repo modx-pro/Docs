@@ -42,3 +42,26 @@ After creating the ticket section you can create tickets. Click **Create ticket*
 ![Legacy interface](https://file.modx.pro/files/b/8/9/b8908dabf777ae1840b3e192d7e5ad24.png)
 
 ![New interface](https://file.modx.pro/files/d/e/d/ded68f80ceb298388483dcf2299489cc.png)
+
+## Section settings
+
+The **Section settings** tab (`properties.tickets`) controls **new** tickets in this section.
+
+### Child tickets
+
+| Field | Description |
+| --- | --- |
+| Child template | template for new tickets; fallback `tickets_default_template` |
+| URI pattern | `%y`, `%m`, `%d`, `%alias`, `%id`, `%ext` |
+| Show in tree | `show_in_tree` for new tickets |
+| Hide in menu | `hidemenu` for new tickets |
+| Disable Jevix | skip HTML filtering for new tickets |
+| Process MODX tags | allow MODX tags in new ticket content |
+
+`OnPageNotFound` uses the URI pattern for short section URLs. See [Frontend](/en/components/tickets/frontend).
+
+### Ratings
+
+Points for ticket, comment, view, vote, and star actions in the section. Exposed as `ratings` in `getComments` and ticket meta.
+
+Full policy keys: [Policies and permissions](permissions).

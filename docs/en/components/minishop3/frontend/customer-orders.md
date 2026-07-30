@@ -1,25 +1,24 @@
 ---
 title: Order history
-description: Customer order history page
 ---
 # Order history
 
-Customer order history page. Shows all orders with status filter and pagination, plus full details for a single order.
+Customer order history page. Shows all orders with status filtering and pagination, plus detailed information for a specific order.
 
 ## Page structure
 
-| Component | Chunk | Purpose |
-|-----------|------|----------|
-| Base layout | `tpl.msCustomer.base` | Wrapper with sidebar |
+| Component | File | Purpose |
+|-----------|------|---------|
+| Base layout | `tpl.msCustomer.base` | Common wrapper with sidebar |
 | Sidebar | `tpl.msCustomer.sidebar` | Account navigation |
 | Order list | `tpl.msCustomer.orders` | Orders table |
-| Order row | `tpl.msCustomer.order.row` | Single order row |
-| Order details | `tpl.msCustomer.order.details` | Full order info |
+| Order row | `tpl.msCustomer.order.row` | Single order in the list |
+| Order details | `tpl.msCustomer.order.details` | Full order information |
 
 ## Snippet call
 
 ```fenom
-{'!msCustomer' | snippet: [
+{'!msCustomer' | snippet : [
     'service' => 'orders',
     'limit' => 20
 ]}
@@ -37,17 +36,17 @@ Customer order history page. Shows all orders with status filter and pagination,
 | **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Chunk for guests |
 | **return** | `tpl` | Format: `tpl` or `data` |
 
-## Modes
+## Operating modes
 
 | URL | Mode | Description |
 |-----|------|-------------|
 | `/cabinet/orders/` | List | Orders table |
-| `/cabinet/orders/?order=550e8400-...` | Details | Order details by UUID |
+| `/cabinet/orders/?order=550e8400-...` | Details | Order information by UUID |
 | `/cabinet/orders/?status=2` | Filter | Orders with status 2 |
 | `/cabinet/orders/?offset=20` | Pagination | Second page |
 
 ::: info UUID in order URLs
-As of v1.6, order detail links use UUID instead of numeric ID. This is more secure: it does not expose order count and prevents guessing other customers' orders by ID.
+Since version 1.6, order detail links use UUID instead of numeric ID. This is safer: it does not expose order count and prevents guessing other customers' orders by ID.
 
 URL format: `?order=550e8400-e29b-41d4-a716-446655440000`
 :::
@@ -58,7 +57,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 
 ### How it works
 
-1. The server provides placeholder `{$can_cancel}` for each order
+1. The server passes the `{$can_cancel}` placeholder for each order
 2. The "Cancel" button is shown only when `{$can_cancel} = true`
 3. On click — confirmation dialog via `ms3Confirm`
 4. API call `POST /api/v1/customer/orders/{id}/cancel`
@@ -80,34 +79,37 @@ The customer can cancel an order if its current status is in the allowed list (s
 ### System settings
 
 | Setting | Default | Description |
-|---------|---------|-------------|
-| `ms3_customer_cancel_allowed_statuses` | `2,3` | Status IDs for which cancellation is allowed |
-| `ms3_status_canceled` | `0` | Status ID assigned to canceled orders |
+|-----------|--------------|-------------|
+| `ms3_customer_cancel_allowed_statuses` | `2,3` | Status IDs that allow cancellation |
+| `ms3_status_canceled` | `0` | Status ID for a canceled order |
 
 ## Order list placeholders
 
 ### In tpl.msCustomer.orders
 
 | Placeholder | Type | Description |
-|-------------|-----|-------------|
+|-------------|------|-------------|
 | `{$orders}` | string | Rendered order rows (HTML) |
-| `{$orders_count}` | int | Orders on page |
+| `{$orders_count}` | int | Orders on the page |
 | `{$total}` | int | Total orders |
-| `{$statuses}` | array | Statuses for filter |
+| `{$statuses}` | array | Statuses for filtering |
 | `{$pagination}` | array | Pagination data |
 | `{$customer}` | array | Customer data |
+| `{$api_url}` | string | API URL for JS operations |
 
 ### In tpl.msCustomer.order.row
 
 | Placeholder | Type | Description |
-|-------------|-----|-------------|
+|-------------|------|-------------|
 | `{$id}` | int | Order ID |
+| `{$uuid}` | string | Order UUID (for URL) |
 | `{$num}` | string | Order number (MS-00015) |
 | `{$createdon_formatted}` | string | Created date |
 | `{$cost_formatted}` | string | Order total |
 | `{$status_id}` | int | Status ID |
 | `{$status_name}` | string | Status name |
-| `{$status_color}` | string | Status color (HEX without #) |
+| `{$status_color}` | string | Status color (CSS value) |
+| `{$can_cancel}` | bool | Whether the order can be canceled |
 
 ## Order list chunk
 
@@ -264,7 +266,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 ### In tpl.msCustomer.order.details
 
 | Placeholder | Type | Description |
-|-------------|-----|-------------|
+|-------------|------|-------------|
 | `{$order}` | array | Order data |
 | `{$order.id}` | int | Order ID |
 | `{$order.num}` | string | Order number |
@@ -282,7 +284,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 
 ### Product in order ({$products})
 
-| Name | Description |
+| Field | Description |
 |------|----------|
 | `{$product.product_id}` | Product ID |
 | `{$product.pagetitle}` | Name |
@@ -290,13 +292,13 @@ The customer can cancel an order if its current status is in the allowed list (s
 | `{$product.count}` | Quantity |
 | `{$product.price}` | Price (formatted) |
 | `{$product.old_price}` | Old price |
-| `{$product.cost}` | Total (formatted) |
+| `{$product.cost}` | Line total (formatted) |
 | `{$product.weight}` | Weight |
 | `{$product.options}` | Product options (array) |
 
 ### Totals ({$total})
 
-| Name | Description |
+| Field | Description |
 |------|----------|
 | `{$total.cost}` | Total to pay |
 | `{$total.cart_cost}` | Products cost |
@@ -316,7 +318,7 @@ The customer can cancel an order if its current status is in the allowed list (s
         </a>
     </div>
 
-    {* Order info *}
+    {* Order information *}
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-primary text-white">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -348,7 +350,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 
             {* Products table *}
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle ms3-order-table">
                     <thead class="table-light">
                         <tr>
                             <th>{'ms3_cart_title' | lexicon}</th>
@@ -448,7 +450,7 @@ The customer can cancel an order if its current status is in the allowed list (s
                 {if $address.room}, apt. {$address.room}{/if}
                 {if $address.metro}
                 <br>
-                <small class="text-muted">{$address.metro}</small>
+                <small class="text-muted">Metro {$address.metro}</small>
                 {/if}
                 {if $address.text_address}
                 <br>
@@ -522,10 +524,10 @@ The customer can cancel an order if its current status is in the allowed list (s
         ['num' => 2, 'offset' => 20, 'active' => false],
         ['num' => 3, 'offset' => 40, 'active' => false],
     ],
-    'has_prev' => false,     // Has previous
-    'has_next' => true,      // Has next
-    'prev_offset' => 0,      // Previous offset
-    'next_offset' => 20,     // Next offset
+    'has_prev' => false,     // Has previous page
+    'has_next' => true,      // Has next page
+    'prev_offset' => 0,      // Previous page offset
+    'next_offset' => 20,     // Next page offset
 ]
 ```
 
@@ -539,21 +541,12 @@ The customer can cancel an order if its current status is in the allowed list (s
 ]
 ```
 
-::: tip Status color
-Color is stored in the DB without `#`. In CSS add `#`:
-
-```fenom
-style="background-color: #{$status_color};"
-```
-
-:::
-
 ## System settings
 
 | Setting | Description |
 |---------|-------------|
 | `ms3_customer_orders_page_id` | Orders page ID |
-| `ms3_customer_cancel_allowed_statuses` | Status IDs for which cancellation is allowed (comma-separated) |
+| `ms3_customer_cancel_allowed_statuses` | Status IDs that allow cancellation (comma-separated) |
 | `ms3_status_canceled` | Canceled order status ID |
 
 ## CSS classes

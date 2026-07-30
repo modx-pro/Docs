@@ -3,7 +3,7 @@ title: msCart
 ---
 # msCart
 
-Snippet for displaying the shopping cart. Shows cart items with quantity change and remove options.
+Snippet for displaying the shopping cart. Shows cart items with options to change quantity and remove lines.
 
 ::: warning Caching
 The snippet uses the user session and must be called **uncached**.
@@ -12,26 +12,27 @@ The snippet uses the user session and must be called **uncached**.
 ## Parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+|----------|--------------|----------|
 | **tpl** | `tpl.msCart` | Cart layout chunk |
 | **selector** | | CSS selector for auto-updating cart HTML |
-| **includeTVs** | | Comma-separated TV parameters for products |
+| **includeTVs** | | Comma-separated product TV parameters |
 | **includeThumbs** | | Comma-separated thumbnail sizes |
-| **includeContent** | | Include product `content` in query |
+| **includeContent** | | Include product `content` field in query |
 | **toPlaceholder** | | Save result to placeholder |
 | **showLog** | `false` | Show execution log (managers only) |
 | **return** | `tpl` | Output format: `tpl` or `data` |
 | **customer_token** | | Customer token (default from session) |
+| **hideOnThanks** | `false` | When `1` / `true`, the snippet returns an empty string on the thank-you page (detected by URL parameter `?msorder=...`). By default (`false`) the cart renders as usual — a mini cart in the shared layout keeps working. Before 1.11.0, empty output on the thanks page was the default and could not be disabled (#249). |
 
 ### pdoTools parameters
 
 The snippet inherits pdoTools parameters:
 
 | Parameter | Description |
-|-----------|-------------|
+|----------|----------|
 | **where** | Extra query conditions (JSON) |
 | **leftJoin** | Extra JOINs (JSON) |
-| **select** | Extra fields (JSON) |
+| **select** | Extra fields for query (JSON) |
 | **sortby** | Sort field (default `msProduct.id`) |
 | **sortdir** | Sort direction (default `ASC`) |
 
@@ -46,7 +47,7 @@ The snippet inherits pdoTools parameters:
 ### With thumbnails
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'includeThumbs' => 'small'
 ]}
 ```
@@ -54,7 +55,7 @@ The snippet inherits pdoTools parameters:
 ### Multiple thumbnail sizes
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'includeThumbs' => 'small,medium'
 ]}
 ```
@@ -62,69 +63,79 @@ The snippet inherits pdoTools parameters:
 ### With TV parameters
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'includeTVs' => 'my_tv,another_tv'
 ]}
 ```
 
-### Auto-update into element
+### Auto-update into a target element
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'selector' => '#header-mini-cart'
 ]}
 ```
 
-When the cart changes, JavaScript re-renders and updates `#header-mini-cart`.
+When the cart changes, JavaScript re-renders the HTML and updates the `#header-mini-cart` element.
 
 ### Get data as array
 
 ```fenom
-{var $cart = '!msCart' | snippet: ['return' => 'data']}
+{var $cart = '!msCart' | snippet : ['return' => 'data']}
 {$cart.total.cost}
 ```
 
 ### Output to placeholder
 
 ```fenom
-{'!msCart' | snippet: [
+{'!msCart' | snippet : [
     'toPlaceholder' => 'cart'
 ]}
 
-{* Use *}
+{* Usage *}
 {$_modx->getPlaceholder('cart')}
 ```
 
 ## Cart data structure
 
-With `return=data` the snippet returns:
+With `return=data` the snippet returns an array:
 
 ```php
 [
     'products' => [
         [
-            'key' => 'abc123',           // Line key
+            'key' => 'abc123',           // Unique line key
             'id' => 15,                  // Product ID
-            'product_id' => 15,
-            'count' => 2,
-            'price' => 1500,
-            'weight' => 500,
-            'options' => ['size' => 'M'],
-            'option_size' => 'M',
-            'pagetitle' => 'T-shirt',
-            'article' => 'ART-001',
-            'old_price' => 2000,
-            'discount_price' => 500,
-            'discount_cost' => 1000,
+            'product_id' => 15,          // Product ID (duplicate)
+            'count' => 2,                // Quantity
+            'price' => 1500,             // Unit price
+            'weight' => 500,             // Unit weight
+            'options' => ['size' => 'M'], // Selected options
+            'option_size' => 'M',        // Options as separate fields
+            'pagetitle' => 'T-shirt',    // Product title
+            'article' => 'ART-001',      // SKU
+            'old_price' => 2000,         // Old price
+            'discount_price' => 500,     // Discount per unit
+            'discount_cost' => 1000,     // Line discount
             // ... other product fields
         ],
+        // ...
     ],
     'total' => [
-        'count' => 5,
-        'weight' => 2500,
-        'cost' => 7500,
-        'discount' => 0,
-        'positions' => 3,
+        'count' => 5,                    // Total quantity
+        'weight' => 2500,                // Total weight
+        'cost' => 7500,                  // Total cost
+        'discount' => 0,                 // Total discount
+        'positions' => 3,                // Number of lines
+        'cost_formatted' => '7 500 ₽',  // Cost with currency
+        'weight_formatted' => '2.5 kg',  // Weight with unit
+    ],
+    'status' => [
+        'total_count' => 5,              // Quantity from Cart::get()
+        'total_cost' => 7500,            // Cost from Cart::get()
+        'total_weight' => 2500,          // Weight from Cart::get()
+        'total_discount' => 0,           // Discount from Cart::get()
+        'total_positions' => 3,          // Lines from Cart::get()
     ],
 ]
 ```
@@ -133,36 +144,59 @@ With `return=data` the snippet returns:
 
 ### Cart products
 
-Loop over products:
+Loop over products in the chunk:
 
 ```fenom
 {foreach $products as $product}
-    {$product.pagetitle} — {$product.count} × {$product.price}
+    {$product.pagetitle} — {$product.count} pcs. × {$product.price}
 {/foreach}
 ```
 
 For each product:
 
-- `{$product.key}` — Line key
+- `{$product.key}` — Unique line key
 - `{$product.id}` — Product ID
 - `{$product.count}` — Quantity
 - `{$product.price}` — Unit price
 - `{$product.weight}` — Unit weight
 - `{$product.old_price}` — Old price
-- `{$product.discount_price}` — Unit discount
-- `{$product.discount_cost}` — Line discount
+- `{$product.discount_price}` — Discount per unit
+- `{$product.discount_cost}` — Line discount (quantity × discount)
+- `{$product.price_formatted}` — Price with currency (e.g. `1 234 ₽`)
+- `{$product.old_price_formatted}` — Old price with currency
+- `{$product.cost_formatted}` — Line cost with currency
+- `{$product.old_cost_formatted}` — Old line cost with currency
+- `{$product.weight_formatted}` — Weight with unit (e.g. `500 g`)
+- `{$product.discount_price_formatted}` — Discount per unit with currency
+- `{$product.discount_cost_formatted}` — Line discount with currency
 - `{$product.options}` — Options array
-- `{$product.option_*}` — Option fields (e.g. `option_size`)
+- `{$product.option_*}` — Options as separate fields (e.g. `option_size`)
 - All product fields (`pagetitle`, `article`, `thumb`, etc.)
-- Vendor fields with prefix `vendor.` (`vendor.name`, `vendor.logo`, etc.)
+- All vendor fields with prefix `vendor.` (`vendor.name`, `vendor.logo`, etc.)
 
 ### Totals
 
 - `{$total.count}` — Total quantity
-- `{$total.positions}` — Number of lines
+- `{$total.positions}` — Number of lines (unique products)
 - `{$total.weight}` — Total weight
 - `{$total.cost}` — Total cost
 - `{$total.discount}` — Total discount
+- `{$total.cost_formatted}` — Cost with currency symbol
+- `{$total.weight_formatted}` — Weight with unit
+
+::: tip Sync with plugins
+If a plugin on `msOnGetStatusCart` changes aggregates in `status` (for example, recalculates discount or adds delivery cost), the snippet automatically syncs `total` with `status` data. Fields `total.cost`, `total.count`, `total.weight`, `total.discount`, and `total.positions` match values from `status`, not a simple sum of cart lines.
+:::
+
+### Cart status
+
+Since **v1.9.0**, the chunk and `return=data` expose a `status` array — data from `Cart::get()` after plugin processing:
+
+- `{$status.total_cost}` — Final cost (after plugins)
+- `{$status.total_count}` — Product quantity
+- `{$status.total_weight}` — Total weight
+- `{$status.total_discount}` — Total discount
+- `{$status.total_positions}` — Number of lines
 
 ## Example chunk
 
@@ -188,6 +222,7 @@ For each product:
                                 <img src="{$product.thumb}" alt="{$product.pagetitle}" width="60">
                             {/if}
                             <a href="{$product.id | resource : 'uri'}">{$product.pagetitle}</a>
+
                             {if $product.options?}
                                 <small>
                                     {foreach $product.options as $key => $value}
@@ -230,6 +265,7 @@ For each product:
                 </tr>
             </tfoot>
         </table>
+
         <a href="{'ms3_order_page' | option}" class="btn btn-primary">
             Checkout
         </a>
@@ -239,9 +275,9 @@ For each product:
 </div>
 ```
 
-## JavaScript
+## JavaScript interaction
 
-Cart updates via MiniShop3 JavaScript API:
+The cart is updated via the MiniShop3 JavaScript API:
 
 ```javascript
 // Add product
@@ -259,7 +295,7 @@ ms3.cart.clean();
 
 ### Events
 
-Cart changes fire:
+Cart changes fire an event:
 
 ```javascript
 document.addEventListener('ms3:cart:updated', function(e) {
@@ -269,7 +305,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 
 ### Data attributes
 
-Use data attributes for automatic behavior:
+Use data attributes for automatic interaction:
 
 ```html
 <!-- Add to cart -->

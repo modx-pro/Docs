@@ -15,6 +15,7 @@
 | `year` | YearFilterType | Фильтр по годам |
 | `vendors` | VendorsFilterType | Производители MS3 |
 | `parents` | ParentsFilterType | Родительские категории |
+| `ms3_categories` | MS3CategoriesFilterType | Категории товаров MS3 (с поддержкой вторичных категорий `msCategoryMember`) |
 | `colors` | ColorsFilterType | Цвета с HEX-кодами |
 
 ## Создание своего типа

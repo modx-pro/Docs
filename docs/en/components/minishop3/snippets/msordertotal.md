@@ -3,17 +3,17 @@ title: msOrderTotal
 ---
 # msOrderTotal
 
-Snippet for cart and order totals. Used for the mini-cart in the site header with automatic refresh when the cart changes.
+Snippet for cart and order totals. Used for the header mini-cart with automatic refresh when the cart changes.
 
 ::: warning Caching
-The snippet works with the user session and must be called **uncached** (`!msOrderTotal`).
+The snippet uses the user session and must be called **uncached** (`!msOrderTotal`).
 :::
 
 ## Parameters
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| **tpl** | `tpl.msOrderTotal` | Output chunk |
+| **tpl** | `tpl.msOrderTotal` | Layout chunk |
 | **return** | `tpl` | Format: `data` (array), `tpl` (chunk output) |
 | **selector** | (auto) | CSS selector for the container used for auto-update |
 
@@ -30,9 +30,9 @@ The component ships with a ready-made chunk `tpl.msOrderTotal`:
 </span>
 ```
 
-The chunk comes with CSS in `default.css`.
+The chunk comes with CSS styles in `default.css`.
 
-## Auto-update of widgets
+## Widget auto-update
 
 The snippet automatically registers for refresh when the cart changes. When products are added, removed, or updated, the widget **re-renders** with current data.
 
@@ -89,7 +89,7 @@ Each widget updates independently with its own chunk.
 {'!msOrderTotal' | snippet}
 ```
 
-Outputs the count and total in the styled widget.
+Outputs the item count and total in the styled widget.
 
 ### Get data without rendering
 
@@ -97,7 +97,7 @@ Outputs the count and total in the styled widget.
 {set $total = '!msOrderTotal' | snippet : ['return' => 'data']}
 
 {if $total.total_count > 0}
-    In cart: {$total.total_count} items, {$total.cart_cost} total
+    In cart: {$total.total_count} items for {$total.cart_cost}
 {/if}
 ```
 
@@ -119,24 +119,28 @@ With `return=data` auto-update does not run — data is fetched once on page loa
 <a href="/cart/" class="header-cart-link">
     {'!msOrderTotal' | snippet : [
         'tpl' => '@INLINE <span class="cart-count">{$total_count}</span>
-                  <span class="cart-sum">{$cart_cost}</span>'
+                  <span class="cart-sum">{$cart_cost} ₽</span>'
     ]}
 </a>
 ```
 
 ## Data structure
 
-The snippet returns an array with cart/order totals:
+The snippet returns an array with cart and order totals:
 
 | Field | Description |
 |-------|-------------|
 | `cost` | Total to pay (products + delivery + payment fee) |
+| `cost_formatted` | Total with currency symbol |
 | `cart_cost` | Products cost |
+| `cart_cost_formatted` | Products cost with currency |
 | `delivery_cost` | Delivery cost |
+| `delivery_cost_formatted` | Delivery cost with currency |
 | `payment_cost` | Payment method fee |
 | `total_count` | Total item count |
 | `total_cost` | Products cost (same as `cart_cost`) |
 | `total_weight` | Total weight |
+| `total_weight_formatted` | Total weight with unit |
 | `total_discount` | Discount amount |
 | `total_positions` | Number of lines (unique products) |
 
@@ -154,7 +158,8 @@ The snippet returns an array with cart/order totals:
 ]
 ```
 
-::: tip cost vs cart_cost
+::: tip Difference between cost and cart_cost
+
 - `cart_cost` — cost of products in the cart only
 - `cost` — final amount to pay: products + delivery + payment fee
 :::
@@ -189,7 +194,7 @@ The default chunk uses BEM-style classes:
 
 ### Built-in styles
 
-From `default.css`:
+Styles from `default.css`:
 
 ```css
 .ms3-order-total {
@@ -250,7 +255,7 @@ From `default.css`:
                     </svg>
                     {if $total_count > 0}
                         <span class="header-cart__badge">{$total_count}</span>
-                        <span class="header-cart__sum">{$cart_cost}</span>
+                        <span class="header-cart__sum">{$cart_cost} ₽</span>
                     {/if}
                 </a>
             '
@@ -271,7 +276,7 @@ From `default.css`:
 
 ## Deprecated data attributes
 
-::: warning Deprecated
+::: warning Deprecated approach
 The attributes `data-ms-cart-count`, `data-ms-cart-cost` are still supported for backward compatibility, but auto-update via the `selector` parameter is recommended.
 :::
 
@@ -282,4 +287,4 @@ For compatibility with older code you can use:
 <span data-ms-cart-cost>0</span>
 ```
 
-MiniShop3 JavaScript will update these elements when the cart changes, but without full chunk re-render.
+MiniShop3 JavaScript updates these elements when the cart changes, but without full chunk re-render.

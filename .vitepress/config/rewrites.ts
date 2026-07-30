@@ -62,7 +62,7 @@ const rewrites: Record<string, string> = {
 
   'en/components/sendex':                       'en/components/sendex/',
   'en/components/sendex/interface':             'en/components/sendex/',
-  'en/components/sendex/snippet':               'en/components/sendex/',
+  'en/components/sendex/snippet':               'en/components/sendex/snippets/sendex',
   'en/components/sendex/interface/email-queue': 'en/components/sendex/interface/queue',
 
   'en/components/staticsaver/plugin': 'en/components/staticsaver',
@@ -714,7 +714,7 @@ const rewrites: Record<string, string> = {
 
   'komponentyi/sendex':                         'components/sendex/',
   'komponentyi/sendex/interfejs':               'components/sendex/',
-  'komponentyi/sendex/snippet':                 'components/sendex/',
+  'komponentyi/sendex/snippet':                 'components/sendex/snippets/sendex',
   'komponentyi/sendex/interfejs/ochered-pisem': 'components/sendex/interface/queue',
   'komponentyi/sendex/interfejs/podpiski':      'components/sendex/interface/subscriptions',
 

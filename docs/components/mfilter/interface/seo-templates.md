@@ -270,24 +270,31 @@ $seoData = $seoBuilder->build($resourceId, $filters);
 
 ## Вывод на фронтенде
 
+SEO-данные попадают в MODX-плейсхолдеры `mfilter.seo.*`. В Fenom доступ к ним — через массив `$_pls`. Плейсхолдеры устанавливаются плагином на каждой странице фильтрации, а на нефильтрованных страницах — это пустые строки (кроме `noindex` — `false`).
+
+Вставьте в шаблон ресурса каталога (`<head>` и `<body>`):
+
 ```html
-{if $mfilter.seo.title}
-    <title>{$mfilter.seo.title}</title>
+<title>{$_pls['mfilter.seo.title'] ?: $_modx->resource.pagetitle}</title>
+<meta name="description" content="{$_pls['mfilter.seo.description'] ?: $_modx->resource.description}">
+
+{if $_pls['mfilter.seo.canonical']}
+    <link rel="canonical" href="{$_pls['mfilter.seo.canonical']}">
 {/if}
 
-{if $mfilter.seo.h1}
-    <h1>{$mfilter.seo.h1}</h1>
-{/if}
-
-{if $mfilter.seo.description}
-    <meta name="description" content="{$mfilter.seo.description}">
-{/if}
-
-{if $mfilter.seo.noindex}
+{if $_pls['mfilter.seo.noindex']}
     <meta name="robots" content="noindex, follow">
 {/if}
 
-{if $mfilter.seo.text}
-    <div class="seo-text">{$mfilter.seo.text}</div>
-{/if}
+<h1 data-mfilter-h1>{$_pls['mfilter.seo.h1'] ?: $_modx->resource.pagetitle}</h1>
+
+<div data-mfilter-seo-text{if !$_pls['mfilter.seo.text']} style="display:none"{/if}>
+    {$_pls['mfilter.seo.text']}
+</div>
 ```
+
+Логика фолбэков: если фильтров нет, `mfilter.seo.*` пустые, и `?:` возвращает стандартное значение ресурса (`pagetitle`/`description`). Как только фильтры применены — SEO-шаблон подставляет свой title/H1/description.
+
+::: warning Маркеры для AJAX
+Атрибуты `data-mfilter-h1` и `data-mfilter-seo-text` (или классы `mfilter-h1` / `mfilter-seo-text`) **обязательны**: без них JS не найдёт элементы при AJAX-фильтрации, и они обновятся только после `F5`. Меты `title`, `description`, `canonical`, `robots` в `<head>` JS обновляет по стандартным селекторам — маркеры не нужны.
+:::

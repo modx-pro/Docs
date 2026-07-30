@@ -5,6 +5,8 @@ title: Product catalog
 
 The catalog is the main store page that displays a list of products from a category. MiniShop3 provides a ready-made template and product card chunk.
 
+[![](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6s.jpg)](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6.png)
+
 ## Catalog structure
 
 The catalog consists of two components:
@@ -35,7 +37,7 @@ The template extends the base template (`base.tpl`) and contains:
 
             {* Product grid *}
             <div class="row">
-                {'!msProducts' | snippet: [
+                {'!msProducts' | snippet : [
                     'tpl' => 'tpl.msProducts.row',
                     'includeThumbs' => 'small,medium',
                     'includeVendorFields' => 'name,logo',
@@ -72,6 +74,8 @@ See the full parameter list in the [msProducts](/en/components/minishop3/snippet
 **Path:** `core/components/minishop3/elements/chunks/ms3_products_row.tpl`
 
 **Chunk name in DB:** `tpl.msProducts.row`
+
+[![](https://file.modx.pro/files/2/e/8/2e8fceaf20e53d57b44631b3fea62888s.jpg)](https://file.modx.pro/files/2/e/8/2e8fceaf20e53d57b44631b3fea62888.png)
 
 The card is built on Bootstrap 5 and includes:
 
@@ -120,6 +124,8 @@ The card contains two forms, toggled by the `ProductCardUI` JavaScript module:
 ```
 
 Switching happens automatically on the `ms3:cart:updated` event.
+
+[![](https://file.modx.pro/files/2/c/b/2cbef63bd61c6ee6e707163e52917a12s.jpg)](https://file.modx.pro/files/2/c/b/2cbef63bd61c6ee6e707163e52917a12.png)
 
 ### Schema.org microdata
 
@@ -172,7 +178,7 @@ Cards use Bootstrap Grid with responsive classes:
 To filter products, use the mFilter2 component or add `where` and `optionFilters` parameters:
 
 ```fenom
-{'!msProducts' | snippet: [
+{'!msProducts' | snippet : [
     'tpl' => 'tpl.msProducts.row',
     'where' => ['Data.vendor_id' => 5],
     'optionFilters' => ['color' => 'red']
@@ -184,7 +190,7 @@ To filter products, use the mFilter2 component or add `where` and `optionFilters
 For paged navigation, wrap the call in pdoPage:
 
 ```fenom
-{'!pdoPage' | snippet: [
+{'!pdoPage' | snippet : [
     'element' => 'msProducts',
     'tpl' => 'tpl.msProducts.row',
     'limit' => 12

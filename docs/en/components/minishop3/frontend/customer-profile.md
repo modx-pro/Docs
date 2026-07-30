@@ -1,23 +1,22 @@
 ---
 title: Customer profile
-description: Profile page in customer account
 ---
 # Customer profile
 
-The profile page lets customers view and edit their personal data. It is part of the MiniShop3 customer account.
+The profile page lets the customer view and edit personal data. It is part of the MiniShop3 customer account.
 
 ## Page structure
 
-| Component | Chunk | Purpose |
-|-----------|------|----------|
-| Base layout | `tpl.msCustomer.base` | Wrapper with sidebar |
+| Component | File | Purpose |
+|-----------|------|---------|
+| Base layout | `tpl.msCustomer.base` | Common wrapper with sidebar |
 | Sidebar | `tpl.msCustomer.sidebar` | Account navigation |
 | Profile | `tpl.msCustomer.profile` | Edit form |
 
 ## Snippet call
 
 ```fenom
-{'!msCustomer' | snippet: [
+{'!msCustomer' | snippet : [
     'service' => 'profile'
 ]}
 ```
@@ -31,7 +30,7 @@ The profile page lets customers view and edit their personal data. It is part of
 | **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Chunk for guests |
 | **return** | `tpl` | Format: `tpl` or `data` |
 
-## Chunk structure
+## Chunk architecture
 
 Customer account chunks use inheritance:
 
@@ -47,7 +46,7 @@ tpl.msCustomer.base          — base layout
 ### In tpl.msCustomer.profile
 
 | Placeholder | Type | Description |
-|-------------|-----|-------------|
+|-------------|------|-------------|
 | `{$customer}` | array | Customer data |
 | `{$customer.id}` | int | Customer ID |
 | `{$customer.email}` | string | Email |
@@ -59,7 +58,7 @@ tpl.msCustomer.base          — base layout
 | `{$phone_verified}` | bool | Phone verified |
 | `{$phone_verified_at}` | string | Phone verification date |
 | `{$errors}` | array | Validation errors |
-| `{$success}` | bool | Save success |
+| `{$success}` | bool | Save succeeded |
 
 ## Profile chunk
 
@@ -117,7 +116,7 @@ tpl.msCustomer.base          — base layout
                     </div>
                 </div>
 
-                {* Email with verification *}
+                {* Email with verification status *}
                 <div class="mb-3">
                     <label for="email" class="form-label">
                         {'ms3_customer_email' | lexicon} <span class="text-danger">*</span>
@@ -180,7 +179,7 @@ tpl.msCustomer.base          — base layout
 The profile shows email verification status:
 
 - **Verified** — green badge with checkmark
-- **Not verified** — button to resend verification email
+- **Not verified** — button to send confirmation email
 
 ```fenom
 {if $email_verified}
@@ -210,11 +209,11 @@ The form is submitted via POST with action `customer/update-profile`:
 </form>
 ```
 
-MiniShop3 JavaScript intercepts forms with class `ms3_form` and submits via API.
+MiniShop3 JavaScript intercepts form submission for forms with the `ms3_form` class and processes it through the API.
 
 ## Error display
 
-Validation errors are in `{$errors}`:
+Validation errors are passed in the `{$errors}` array:
 
 ```fenom
 <input type="text"
@@ -237,7 +236,7 @@ Validation errors are in `{$errors}`:
 ### Custom profile chunk
 
 ```fenom
-{'!msCustomer' | snippet: [
+{'!msCustomer' | snippet : [
     'service' => 'profile',
     'tpl' => 'tpl.myProfile'
 ]}
@@ -247,9 +246,9 @@ Validation errors are in `{$errors}`:
 
 To add extra profile fields:
 
-1. Add fields to msCustomer model (via migration)
+1. Add fields to the msCustomer model (via migration)
 2. Add fields to the profile chunk
-3. Handle new fields in the API endpoint
+3. Handle the new fields in the API endpoint
 
 ## CSS classes
 

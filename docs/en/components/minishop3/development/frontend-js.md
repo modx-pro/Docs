@@ -265,6 +265,33 @@ document.addEventListener('ms3:ready', () => {
 })
 ```
 
+### Public refresh API (since 1.11.0)
+
+`window.ms3.refresh()` is the single entry point for integrating with third-party AJAX components (mFilter, mSearch2, custom AJAX, infinite scroll) that replace catalog DOM. After replacing markup, call this method — MS3 rebinds its UI modules (`ProductCardUI.updateAllCards()`, `QuantityUI.reinit()`) to the new DOM.
+
+```javascript
+// Universal pattern for any AJAX component:
+fetch('/catalog/page/2')
+  .then(/* ... replace catalog DOM ... */)
+  .then(() => window.ms3?.refresh?.())  // optional chaining safe on pages without MS3
+
+// mFilter:
+document.addEventListener('mfilter:contentLoaded', () => {
+  window.ms3?.refresh?.()
+})
+
+// mSearch2:
+document.addEventListener('mse2_load.response', () => {
+  window.ms3?.refresh?.()
+})
+```
+
+The equivalent via DOM event is `document.dispatchEvent(new CustomEvent('ms3:refresh'))`. The listener is registered once at module scope; repeated `init()` calls do not duplicate it.
+
+**Important:** MS3 does **not** listen to third-party component events (`mfilter:contentLoaded`, `mse2_load.response`, etc.). The link is one-way: third-party component → MS3. This avoids coupling MS3 to every compatible component.
+
+The `detail` argument is reserved for future scoped refresh (`ms3.refresh({ scope: container })`) — unused for now, but included in the signature so future changes do not break the API.
+
 ## Core
 
 ### TokenManager

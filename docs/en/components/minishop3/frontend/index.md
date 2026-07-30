@@ -22,7 +22,7 @@ items:
 ---
 # Frontend interface
 
-Description of the MiniShop3 user interface on the site.
+MiniShop3 user interface on the site.
 
 ## Sections
 
