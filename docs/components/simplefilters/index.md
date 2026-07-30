@@ -121,5 +121,5 @@ sf.submit();
 ```js
 document.addEventListener('sfilters', (e) => {
     // console.log(e);
-};
+});
 ```
