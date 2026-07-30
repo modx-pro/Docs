@@ -78,16 +78,37 @@ class ReviewsListEndpoint extends ProcessorEndpoint
             'properties' => ['combo' => false],
 
             'parameters' => [
-                ['name' => 'limit', 'type' => 'integer', 'default' => 20],
-                ['name' => 'offset', 'type' => 'integer', 'default' => 0],
-                ['name' => 'product', 'type' => 'integer', 'description' => 'ID товара'],
-                ['name' => 'status', 'type' => 'string',
-                 'enum' => ['new', 'approved', 'rejected']],
+                [
+                    'name' => 'limit',
+                    'type' => 'integer',
+                    'default' => 20,
+                    'description' => 'Сколько отзывов вернуть за раз; потолок — настройка mxapi.max_limit.',
+                ],
+                [
+                    'name' => 'offset',
+                    'type' => 'integer',
+                    'default' => 0,
+                    'description' => 'Смещение от начала выборки.',
+                ],
+                [
+                    'name' => 'product',
+                    'type' => 'integer',
+                    'description' => 'ID товара: вернуть отзывы только о нём.',
+                    'example' => 42,
+                ],
+                [
+                    'name' => 'status',
+                    'type' => 'string',
+                    'enum' => ['new', 'approved', 'rejected'],
+                    'description' => 'Состояние модерации: new — не проверен, approved — опубликован, rejected — отклонён.',
+                ],
             ],
         ];
     }
 }
 ```
+
+**Описания параметров — не украшение.** Из них строятся карточка эндпоинта в админке и спецификация OpenAPI, которую вы отдадите интегратору: это единственный текст, по которому он поймёт, что означает `status=new` и в чём измеряется `limit`. Правило простое: если по имени параметра нельзя догадаться о допустимых значениях и единицах — пишите `description`, а для нетривиальных значений добавляйте `example`.
 
 Больше ничего писать не нужно — `handle()` реализован в базовом классе. Что он делает за вас:
 
@@ -130,8 +151,14 @@ class ReviewsStatsEndpoint extends AbstractEndpoint
             'permission' => 'mxapi_reviews_read',
             'modx_context' => 'mgr',
             'parameters' => [
-                ['name' => 'product', 'type' => 'integer', 'required' => true,
-                 'in' => 'query', 'description' => 'ID товара'],
+                [
+                    'name' => 'product',
+                    'in' => 'query',
+                    'type' => 'integer',
+                    'required' => true,
+                    'description' => 'ID товара, по которому считается статистика.',
+                    'example' => 42,
+                ],
             ],
             'response_description' => 'count — число одобренных отзывов, rating — средняя оценка.',
         ];
