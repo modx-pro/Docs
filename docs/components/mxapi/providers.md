@@ -1,6 +1,6 @@
 ---
 title: Свой эндпоинт в mxApi — пошагово
-description: Как добавить собственный эндпоинт в mxApi на MODX 2 — от решения о scope и правах до провайдера, регистрации плагином, прав в политике и проверки вызовом.
+description: Как добавить собственный эндпоинт в mxApi — от решения о scope и правах до провайдера, регистрации плагином, прав в политике и проверки вызовом.
 outline: [2, 3]
 lastUpdated: true
 ---
@@ -40,7 +40,7 @@ core/components/myreviews/
 │   ├── Provider.php                    ← шаг 3
 │   └── bootstrap.php                   ← шаг 4
 ├── elements/plugins/plugin.myreviewsapi.php   ← шаг 4
-└── processors/mgr/review/getlist.class.php    (уже есть в пакете)
+└── processors/mgr/review/getlist.class.php    (уже есть в пакете; в MODX 3 — src/Processors/Mgr/Review/GetList.php)
 ```
 
 ## Шаг 1. Эндпоинт поверх процессора
@@ -167,7 +167,7 @@ class ReviewsListEndpoint extends ProcessorEndpoint
 - превращает ошибку процессора в `processor_error` с полевыми ошибками в `details.errors`.
 
 ::: warning Ошибка списочного процессора умеет притворяться успехом
-`modProcessorResponse::isError()` проверяет ключ `success` только когда тело — массив, а списочные процессоры отдают JSON-строку. mxApi поэтому судит по декодированному `success` и лишь при его отсутствии полагается на `isError()`. Если поверх процессоров пишете что-то своё — учтите это же.
+`isError()` у ответа процессора проверяет ключ `success` только когда тело — массив, а списочные процессоры отдают JSON-строку. mxApi поэтому судит по декодированному `success` и лишь при его отсутствии полагается на `isError()`. Если поверх процессоров пишете что-то своё — учтите это же. Поведение одинаково в обеих линиях (`modProcessorResponse` в MODX 2, `MODX\Revolution\Processors\ProcessorResponse` в MODX 3).
 :::
 
 ## Шаг 2. Эндпоинт со своей логикой
@@ -313,6 +313,12 @@ require_once $dir . 'Provider.php';
 
 return 'MyReviews\\Api\\Provider';
 ```
+
+:::info Версия для MODX 3
+В тройке классы пакета обычно уже автозагружаются composer'ом — из `bootstrap.php` компонента, который MODX подключает по namespace. Тогда отдельный загрузчик не нужен, и плагин сразу возвращает имя класса провайдера строкой.
+
+Возвращать **строку, а не объект**, нужно в обеих линиях: `modSystemEvent::output()` склеивает значения обработчиков в строку, и объект туда передать нельзя.
+:::
 
 Сам плагин (`elements/plugins/plugin.myreviewsapi.php`, событие `mxApiOnRegisterEndpoints`):
 
