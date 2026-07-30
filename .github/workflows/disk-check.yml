@@ -17,28 +17,19 @@ jobs:
           command_timeout: 15m
           script: |
             set +e
-            echo '=== df -h ==='
-            df -h /
+            echo '=== file.modx.pro ==='
+            du -xhd1 "$HOME/www/file.modx.pro" 2>/dev/null | sort -hr | head -30
             echo
-            echo '=== $HOME breakdown ==='
-            du -xhd1 "$HOME" 2>/dev/null | sort -hr
+            echo '=== file.modx.pro deep ==='
+            du -xhd2 "$HOME/www/file.modx.pro" 2>/dev/null | sort -hr | head -40
             echo
-            echo '=== www ==='
-            du -xhd1 "$HOME/www" 2>/dev/null | sort -hr | head -40
+            echo '=== modx.pro ==='
+            du -xhd1 "$HOME/www/modx.pro" 2>/dev/null | sort -hr | head -20
             echo
-            echo '=== logs (top files) ==='
-            du -xhd1 "$HOME/logs" 2>/dev/null | sort -hr | head -20
-            ls -lahS "$HOME/logs" 2>/dev/null | head -30
+            echo '=== docs.modx.pro ==='
+            du -xhd1 "$HOME/www/docs.modx.pro" 2>/dev/null | sort -hr | head -20
             echo
-            echo '=== tmp ==='
-            du -sh "$HOME/tmp" 2>/dev/null
-            ls -lahS "$HOME/tmp" 2>/dev/null | head -20
-            echo
-            echo '=== other /var/www (names only; sizes may be inaccessible) ==='
-            ls -la /var/www 2>/dev/null
-            echo
-            echo '=== can sudo? ==='
-            sudo -n true 2>&1 | head -5
-            echo
-            echo '=== reserved blocks ==='
-            tune2fs -l /dev/vda1 2>/dev/null | rg -i 'reserved|block count|free' || echo 'no tune2fs'
+            echo '=== log writability ==='
+            touch "$HOME/logs/_write_test" 2>&1
+            rm -f "$HOME/logs/_write_test" 2>&1
+            ls -ld "$HOME/logs"
