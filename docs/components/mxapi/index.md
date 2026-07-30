@@ -27,7 +27,8 @@ items: [
     link: 'settings',
     items: [
       { text: 'Системные настройки', link: 'settings' },
-      { text: 'Свои эндпоинты', link: 'providers' },
+      { text: 'Свой эндпоинт: пошагово', link: 'providers' },
+      { text: 'Справочник эндпоинта', link: 'endpoint-reference' },
     ],
   },
 ]
@@ -102,7 +103,7 @@ location ^~ /mxapi/ {
 
 Правила добавляются в `.htaccess` в корне сайта **выше штатных правил MODX** (тех, что заканчиваются перенаправлением на `index.php`): иначе MODX перехватит запрос раньше и ответит страницей 404 сайта.
 
-```apacheconf
+```apache
 RewriteEngine On
 
 # Заголовок Authorization до PHP: при mod_php и CGI Apache его не передаёт,
@@ -122,7 +123,7 @@ RewriteRule ^mxapi/(.*)$ assets/components/mxapi/index.php [QSA,L]
 
 Вместо строки с `E=HTTP_AUTHORIZATION` на Apache 2.4.13+ с PHP-FPM или CGI можно включить передачу заголовка директивой (в конфигурации сервера или в том же `.htaccess`, если это разрешено `AllowOverride`):
 
-```apacheconf
+```apache
 CGIPassAuth On
 ```
 
@@ -158,4 +159,5 @@ curl -i 'https://site.ru/mxapi/v1/meta/endpoints'
 
 - [Быстрый старт](quick-start) — от установки до первого успешного вызова.
 - [Токены и аутентификация](auth) — два способа выпуска токена и клиенты интеграций.
-- [Свои эндпоинты](providers) — как пакету или сайту добавить собственные маршруты.
+- [Свой эндпоинт: пошагово](providers) — как пакету или сайту добавить собственные маршруты, от решения о scope до проверки вызовом.
+- [Справочник эндпоинта](endpoint-reference) — все ключи описания, типы параметров, хуки и события.

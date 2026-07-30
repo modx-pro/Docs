@@ -1,172 +1,398 @@
 ---
-title: Свои эндпоинты в mxApi
-description: Как пакет или код сайта добавляет собственные маршруты в mxApi — провайдеры, эндпоинт поверх процессора MODX, контексты, хуки, права и scope, системные события.
+title: Свой эндпоинт в mxApi — пошагово
+description: Как добавить собственный эндпоинт в mxApi на MODX 2 — от решения о scope и правах до провайдера, регистрации плагином, прав в политике и проверки вызовом.
 outline: [2, 3]
 lastUpdated: true
 ---
 
-# Свои эндпоинты
+# Свой эндпоинт: пошагово
 
-Ядро mxApi не знает ни про miniShop2, ни про конкретный сайт. Эндпоинты поставляют **провайдеры** — так пакет расширяется без правок mxApi.
+Ядро mxApi не знает ни про miniShop2, ни про конкретный сайт. Эндпоинты поставляют **провайдеры** — так пакет или код сайта добавляет свои маршруты, не правя mxApi.
 
-## Провайдер
+Пройдём весь путь на сквозном примере: пакет `myreviews` с отзывами о товарах, у которого нужно открыть наружу список отзывов и статистику. К концу страницы получится рабочий API `/mxapi/v1/reviews`.
 
-```php
-use MxApi\Core\Config;
-use MxApi\Core\Platform\PlatformInterface;
-use MxApi\Core\Provider\ProviderInterface;
+Полный справочник по ключам описания и типам параметров — [Справочник эндпоинта](endpoint-reference). Живой образец, на который можно смотреть целиком, — провайдер msOrderBridge (21 эндпоинт).
 
-class OrdersProvider implements ProviderInterface
-{
-    public function getId()
-    {
-        // Показывается в каталоге: видно, чей это эндпоинт.
-        return 'msorderbridge';
-    }
+## Шаг 0. Что решить до кода
 
-    public function isAvailable(PlatformInterface $platform)
-    {
-        // Провайдер сам решает, применим ли он на этом сайте.
-        return class_exists('msOrderBridge');
-    }
+Пять решений, которые определяют весь остальной код. Принимать их лучше сразу: переделывать потом дороже, а `scope` и путь — это публичный контракт, который у интегратора уже прописан в настройках.
 
-    public function getEndpoints(PlatformInterface $platform, Config $config)
-    {
-        return array(new OrdersListEndpoint());
-    }
-}
+| Решение | Для примера | Как выбирать |
+| --- | --- | --- |
+| **Путь** | `/reviews`, `/reviews/stats` | Относительно префикса (`mxapi.route_prefix`), сам префикс в пути **не пишется** |
+| **scope** | `reviews.read`, `reviews.write` | Группа «домен + операция», **не** один scope на эндпоинт. Ориентир: msOrderBridge — 21 эндпоинт и 4 scope |
+| **Право MODX** | `mxapi_reviews_read`, `mxapi_reviews_write` | Живёт в namespace `mxapi` (его проверяет ядро mxApi), поэтому и префикс `mxapi_` |
+| **Контекст MODX** | `mgr` | Где обязан выполняться эндпоинт: права процессоров принадлежат политике контекста |
+| **Поверх процессора или своя логика** | оба | Есть процессор — берите `ProcessorEndpoint`. Своя логика — только когда процессора нет |
+
+::: tip Почему «поверх процессора» — предпочтительный путь
+Процессоры MODX уже проверяют права, валидируют поля, бросают события и инвалидируют кэш. Прямая запись в базу в обход процессора всё это теряет молча — данные лягут, а события не сработают.
+:::
+
+Файлы примера разложим так:
+
+```
+core/components/myreviews/
+├── src/
+│   ├── Endpoint/
+│   │   ├── ReviewsListEndpoint.php     ← шаг 1
+│   │   └── ReviewsStatsEndpoint.php    ← шаг 2
+│   ├── Provider.php                    ← шаг 3
+│   └── bootstrap.php                   ← шаг 4
+├── elements/plugins/plugin.myreviewsapi.php   ← шаг 4
+└── processors/mgr/review/getlist.class.php    (уже есть в пакете)
 ```
 
-Регистрация — по одному способу на каждый случай:
+## Шаг 1. Эндпоинт поверх процессора
 
-- **пакет** — обработчик события `mxApiOnRegisterEndpoints`: возвращает имя класса, готовый объект провайдера или их список. Плагин ставит и снимает сам пакет, поэтому владение списком однозначно, а отключить провайдера можно, отключив плагин в админке;
-- **код сайта** — ключ `providers` в `core/config/mxapi.php` (там же `middleware` для своих промежуточных обработчиков). Файл лежит в репозитории проекта, значит состав API едет вместе с кодом.
-
-Системных настроек `mxapi.providers` и `mxapi.middleware` **нет намеренно**: имя класса в базе означало бы, что состав API зависит от дампа БД и молча разъезжается с кодом при переносе между стендом и продом.
-
-Исключение внутри провайдера не роняет API: mxApi пишет ошибку в журнал и продолжает с остальными эндпоинтами.
-
-## Эндпоинт поверх процессора
-
-Большинство эндпоинтов — обёртки над процессорами MODX. Процессоры уже проверяют права, валидируют поля и бросают события, поэтому прямые записи в базу в обход них недопустимы.
+Самый частый случай: процессор в пакете уже есть, нужно выставить его наружу.
 
 ```php
+<?php
+
+namespace MyReviews\Api\Endpoint;
+
 use MxApi\Core\Endpoint\ProcessorEndpoint;
 
-class OrdersListEndpoint extends ProcessorEndpoint
+class ReviewsListEndpoint extends ProcessorEndpoint
 {
     protected function describe()
     {
         return array(
-            'id' => 'ms2.orders.list',
-            'title' => 'Список заказов',
-            'path' => '/orders',
+            'id' => 'reviews.list',              // ключ реестра, он же id в каталоге
+            'title' => 'Список отзывов',
+            'description' => 'Отзывы о товарах с фильтром по товару и статусу.',
+            'path' => '/reviews',                // без префикса /mxapi/v1
             'methods' => array('GET'),
+            'provider' => 'myreviews',           // видно в каталоге: чей эндпоинт
 
             // Доступ
-            'scope' => 'orders.read',
-            'permission' => 'mxapi_ms2_orders_read',
+            'scope' => 'reviews.read',
+            'permission' => 'mxapi_reviews_read',
+            'modx_context' => 'mgr',
 
-            // Реализация (в публичный каталог и OpenAPI не попадает)
-            'processor' => 'mgr/orders/getlist',
-            'processors_path' => MODX_CORE_PATH . 'components/minishop2/processors/',
-            'field_map' => array('customer' => 'user_id'),
+            // Реализация — наружу не отдаётся
+            'processor' => 'mgr/review/getlist',
+            'processors_path' => MODX_CORE_PATH . 'components/myreviews/processors/',
+            'field_map' => array('product' => 'product_id'),
             'properties' => array('combo' => false),
 
             'parameters' => array(
                 array('name' => 'limit', 'type' => 'integer', 'default' => 20),
                 array('name' => 'offset', 'type' => 'integer', 'default' => 0),
-                array('name' => 'status', 'type' => 'integer'),
+                array('name' => 'product', 'type' => 'integer',
+                      'description' => 'ID товара'),
+                array('name' => 'status', 'type' => 'string',
+                      'enum' => array('new', 'approved', 'rejected')),
             ),
         );
     }
 }
 ```
 
-Что делает базовый класс:
+Больше ничего писать не нужно — `handle()` реализован в базовом классе. Что он делает за вас:
 
-- **ограничивает вход** — в процессор уходят только объявленные параметры и фиксированные `properties`. Клиент не дошлёт произвольное свойство и не изменит поведение процессора;
-- **приводит типы** по декларации и отвечает `invalid_parameter` на мусор;
-- переименовывает `offset` в `start` (публичный контракт против соглашения процессоров MODX) и удерживает `limit` в границах `mxapi.max_limit`;
+- **ограничивает вход**: в процессор уходят только объявленные параметры и фиксированные `properties`. Клиент не дошлёт `combo=1` и не изменит поведение процессора;
+- **приводит типы** по декларации и отвечает `invalid_parameter` на мусор, `missing_parameter` — на пропущенный обязательный;
+- **переименовывает** `offset` → `start` (публичный контракт против соглашения процессоров MODX) и удерживает `limit` в границах `mxapi.max_limit`. Пагинация включается самим фактом объявления параметра `limit`;
+- **переименовывает поля** по `field_map`: наружу `product`, в процессор `product_id`;
 - разворачивает списочный ответ в `data` + `meta.total`;
 - превращает ошибку процессора в `processor_error` с полевыми ошибками в `details.errors`.
 
-::: warning Ошибка списочного процессора может притвориться успехом
-`modProcessorResponse::isError()` проверяет ключ `success` только когда тело — массив, а списочные процессоры отдают JSON-строку. mxApi поэтому судит по декодированному `success` и лишь при его отсутствии полагается на `isError()`. Если пишете свой транспорт поверх процессоров — учтите это же.
+::: warning Ошибка списочного процессора умеет притворяться успехом
+`modProcessorResponse::isError()` проверяет ключ `success` только когда тело — массив, а списочные процессоры отдают JSON-строку. mxApi поэтому судит по декодированному `success` и лишь при его отсутствии полагается на `isError()`. Если поверх процессоров пишете что-то своё — учтите это же.
 :::
 
-## Контекст MODX
+## Шаг 2. Эндпоинт со своей логикой
 
-Права процессоров проверяются политикой **контекста**: `modX::hasPermission()` — это `$modx->context->checkPolicy()`, а ACL пользователя загружаются под ключ текущего контекста. Поэтому эндпоинт объявляет, где он работает:
-
-```php
-'modx_context' => 'mgr',                                       // управляющие процессоры
-'modx_context' => 'web',                                       // фронтовые операции
-'modx_context' => EndpointMetadata::MODX_CONTEXT_FROM_REQUEST, // мультисайт
-''                                                             // безразличен
-```
-
-Что делает ядро:
-
-- переключает платформу в объявленный контекст **до** проверки права эндпоинта — проверять в одном контексте, а выполнять в другом нельзя;
-- для `MODX_CONTEXT_FROM_REQUEST` берёт контекст из заголовка `X-MxApi-Context` (или параметра `mxapi_context` — имя намеренно не `context`, потому что у процессора заказов miniShop2 так называется фильтр по контексту заказа), но только если включена настройка `mxapi.allow_request_context`; иначе отвечает `context_not_allowed`;
-- сверяет контекст с полем `contexts` клиента интеграции: пустое поле = разрешён только `mxapi.context`, `*` = любой. Токены по логину и паролю ограничены правами самого пользователя в этом контексте;
-- пишет контекст в журнал вызовов.
-
-Поле `contexts` у клиента заполняется явно: `["mgr"]` для админских интеграций, `["shop","web"]` для мультисайта. В форме админки его нет — правится в таблице `modx_mxapi_client`, см. [Токены → Поля клиента](auth#polya-klienta).
-
-## Хуки вокруг процессора
-
-`ProcessorEndpoint` даёт точки расширения, чтобы провайдеру не приходилось копировать `handle()`:
+Процессора нет — например, нужна агрегатная статистика. Тогда наследуемся от `AbstractEndpoint` и пишем `handle()` сами.
 
 ```php
-protected function beforeRun(array &$properties, EndpointContext $context)
-{
-    // Лексиконы, рантайм-настройки, доп. свойства процессора.
-}
+<?php
 
-protected function transformPayload(array $payload, EndpointContext $context)
-{
-    // Доменная нормализация ответа: ядру эти правила знать нельзя.
-    return $payload;
-}
+namespace MyReviews\Api\Endpoint;
 
-protected function extraMeta(array $payload)
+use MxApi\Core\Endpoint\AbstractEndpoint;
+use MxApi\Core\Endpoint\EndpointContext;
+use MxApi\Core\Http\Request;
+use MxApi\Core\Http\Response;
+
+class ReviewsStatsEndpoint extends AbstractEndpoint
 {
-    // Агрегаты по всей выборке (например суммы и количество заказов за период)
-    // уходят в meta и не смешиваются с data.
-    return array();
+    protected function describe()
+    {
+        return array(
+            'id' => 'reviews.stats',
+            'title' => 'Статистика отзывов',
+            'path' => '/reviews/stats',
+            'methods' => array('GET'),
+            'provider' => 'myreviews',
+            'scope' => 'reviews.read',
+            'permission' => 'mxapi_reviews_read',
+            'modx_context' => 'mgr',
+            'parameters' => array(
+                array('name' => 'product', 'type' => 'integer', 'required' => true,
+                      'in' => 'query', 'description' => 'ID товара'),
+            ),
+            'response_description' => 'count — число одобренных отзывов, rating — средняя оценка.',
+        );
+    }
+
+    public function handle(Request $request, EndpointContext $context)
+    {
+        // Только объявленные параметры, уже приведённые к типам.
+        $params = $this->readParams($request);
+
+        /** @var \MxApi\Platform\Modx2\Modx2Platform $platform */
+        $platform = $context->getPlatform();
+        $modx = $platform->getModx();
+
+        $query = $modx->newQuery('myReviewsReview');
+        $query->where(array('product_id' => $params['product'], 'status' => 'approved'));
+        $query->select(array('COUNT(*) AS count', 'AVG(rating) AS rating'));
+
+        $row = array();
+        if ($query->prepare() && $query->stmt->execute()) {
+            $row = $query->stmt->fetch(\PDO::FETCH_ASSOC) ?: array();
+        }
+
+        return Response::success(array(
+            'count' => (int)($row['count'] ?? 0),
+            'rating' => round((float)($row['rating'] ?? 0), 2),
+        ));
+    }
 }
 ```
 
-## Права и scope
+Что здесь важно:
 
-Каждый эндпоинт объявляет `scope` (что просит клиент при выпуске токена) и `permission` (право MODX в namespace `mxapi`). Соответствие берётся из метаданных, отдельного списка внутри аутентификации нет.
+- **`readParams()` — единственный правильный способ читать вход.** Он отдаёт только объявленные параметры, приведённые к типам, и сам бросает `missing_parameter`/`invalid_parameter`. Читать `$_GET` или `$request->getParam()` напрямую — значит потерять валидацию и пустить в код то, чего в паспорте эндпоинта нет.
+- **`getModx()` — платформенно-зависимый вызов.** Ядро mxApi про `modX` не знает намеренно (это позволяет тому же коду работать на MODX 3), но эндпоинт **вашего** пакета вправе знать свою платформу. Просто помните: код с `getModx()` при переносе на MODX 3 придётся править, а `ProcessorEndpoint` — нет.
+- **Ответ собирается через `Response::success($data, $meta)`** — конверт `success`/`data`/`meta` формирует ядро, руками его собирать не надо. Для ошибок бросайте `ApiException` с готовым кодом, а не возвращайте `success: false`.
+- Постраничная выборка своими силами — `readPaging($params, $context->getConfig())`: вернёт `limit` и `offset` уже с учётом `default_limit` и `max_limit`.
 
-Новое право нужно завести в шаблоне политики `mxapiTemplate` — резолвером своего пакета либо вручную в админке; иначе non-sudo получит `insufficient_permission`. Подробнее — [Права доступа](permissions).
+## Шаг 3. Провайдер
 
-## Видимость в каталоге
-
-Эндпоинт провайдера попадает в `/meta/endpoints` и OpenAPI по настройке `mxapi.catalog_filter` — [Режимы видимости](catalog#catalog-filter). Это влияет лишь на видимость: доступ всегда решают scope и право.
-
-Эндпоинт, завязанный на сессию, корзину или черновик заказа, помечается как служебный:
+Провайдер — список эндпоинтов и ответ на вопрос «применим ли я на этом сайте».
 
 ```php
-'context' => EndpointMetadata::CONTEXT_INTERNAL,
+<?php
+
+namespace MyReviews\Api;
+
+use MyReviews\Api\Endpoint\ReviewsListEndpoint;
+use MyReviews\Api\Endpoint\ReviewsStatsEndpoint;
+use MxApi\Core\Config;
+use MxApi\Core\Platform\PlatformInterface;
+use MxApi\Core\Provider\ProviderInterface;
+
+class Provider implements ProviderInterface
+{
+    public function getId()
+    {
+        // Показывается в каталоге и в поле provider эндпоинтов.
+        return 'myreviews';
+    }
+
+    public function isAvailable(PlatformInterface $platform)
+    {
+        // Провайдер сам решает, применим ли он здесь: своих эндпоинтов не должно
+        // быть на сайте, где пакет не установлен или отключён.
+        return class_exists('myReviews');
+    }
+
+    public function getEndpoints(PlatformInterface $platform, Config $config)
+    {
+        return array(
+            new ReviewsListEndpoint(),
+            new ReviewsStatsEndpoint(),
+        );
+    }
+}
 ```
 
-Такой эндпоинт не попадает в публичный каталог и в OpenAPI ни при каком режиме: иначе интегратор примет его за часть контракта.
+Исключение внутри провайдера **не роняет API**: mxApi пишет ошибку в журнал и продолжает с остальными эндпоинтами. Это касается и `getEndpoints()` — сломанный сторонний пакет не должен гасить чужие интеграции.
 
-## Системные события
+## Шаг 4. Регистрация
 
-| Событие | Когда |
+Способ зависит от того, чей это код.
+
+### Пакет — плагин на `mxApiOnRegisterEndpoints`
+
+Плагин ставит и снимает сам пакет, поэтому владение списком однозначно, а отключить провайдера можно, отключив плагин в админке.
+
+MODX 2 не автозагружает классы пакета, поэтому файлы подключает отдельный загрузчик — `src/bootstrap.php`:
+
+```php
+<?php
+/**
+ * Вызывается из плагина на mxApiOnRegisterEndpoints: к этому моменту
+ * автозагрузка mxApi уже подключена, значит классы MxApi\* доступны.
+ */
+
+$dir = __DIR__ . '/';
+
+require_once $dir . 'Endpoint/ReviewsListEndpoint.php';
+require_once $dir . 'Endpoint/ReviewsStatsEndpoint.php';
+require_once $dir . 'Provider.php';
+
+return 'MyReviews\\Api\\Provider';
+```
+
+Сам плагин (`elements/plugins/plugin.myreviewsapi.php`, событие `mxApiOnRegisterEndpoints`):
+
+```php
+<?php
+/** @var modX $modx */
+
+if ($modx->event->name !== 'mxApiOnRegisterEndpoints') {
+    return;
+}
+
+$corePath = $modx->getOption(
+    'myreviews.core_path',
+    null,
+    $modx->getOption('core_path') . 'components/myreviews/'
+);
+
+$bootstrap = $corePath . 'src/bootstrap.php';
+if (!is_readable($bootstrap)) {
+    $modx->log(modX::LOG_LEVEL_ERROR, '[myreviews] Не найден загрузчик провайдера: ' . $bootstrap);
+
+    return;
+}
+
+$modx->event->output(include $bootstrap);
+```
+
+::: danger Возвращайте имя класса строкой, а не объект
+`modSystemEvent::output()` **склеивает** значения обработчиков в строку. Объект провайдера туда передавать нельзя — он превратится в мусор (в лучшем случае — в фатальную ошибку конвертации в строку). Ядро mxApi принимает и имя класса, и готовый объект — но из плагина всегда уходит строка с полным именем класса, включая namespace.
+:::
+
+### Код сайта — `core/config/mxapi.php`
+
+Если эндпоинты принадлежат не пакету, а конкретному сайту, провайдер объявляется в конфиге проекта — файл лежит в репозитории, значит состав API едет вместе с кодом:
+
+```php
+return [
+    'providers' => [
+        'MyReviews\\Api\\Provider',
+    ],
+
+    // Либо отдельные эндпоинты без провайдера; класс вне автозагрузки — укажите file.
+    'endpoints' => [
+        ['class' => 'MyReviews\\Api\\Endpoint\\ReviewsStatsEndpoint',
+         'file' => MODX_CORE_PATH . 'components/myreviews/src/Endpoint/ReviewsStatsEndpoint.php'],
+    ],
+];
+```
+
+Системных настроек `mxapi.providers` и `mxapi.middleware` **нет намеренно**: имя класса в базе означало бы, что состав API зависит от дампа БД и молча разъезжается с кодом при переносе между стендом и продом, а правка настройки в админке начинала бы влиять на то, какие классы инстанцирует ядро.
+
+## Шаг 5. Права в политике
+
+Права эндпоинтов живут в namespace `mxapi`, потому что проверяет их ядро mxApi. Значит, ваши `mxapi_reviews_*` добавляются в **чужой** шаблон политики — `mxapiTemplate`, созданный пакетом mxApi.
+
+Пропустить этот шаг нельзя: mxApi считает незаведённое право отсутствующим (fail-closed) и ответит `insufficient_permission` даже при корректно выданном доступе.
+
+Резолвер пакета (`_build`/`modxbuilder`, по образцу msOrderBridge):
+
+```php
+<?php
+/** @var xPDOTransport $transport */
+
+if ($transport->xpdo) {
+    /** @var modX $modx */
+    $modx =& $transport->xpdo;
+
+    $permissions = array(
+        'mxapi_reviews_read' => 'myReviews: чтение отзывов',
+        'mxapi_reviews_write' => 'myReviews: модерация отзывов',
+    );
+
+    switch ($options[xPDOTransport::PACKAGE_ACTION]) {
+        case xPDOTransport::ACTION_INSTALL:
+        case xPDOTransport::ACTION_UPGRADE:
+            $template = $modx->getObject('modAccessPolicyTemplate', array('name' => 'mxapiTemplate'));
+            if (!$template) {
+                // Шаблон создаёт mxApi. Нет шаблона — mxApi не установлен.
+                $modx->log(modX::LOG_LEVEL_ERROR,
+                    '[myreviews] Шаблон mxapiTemplate не найден — сначала установите mxApi.');
+
+                return true;
+            }
+
+            foreach ($permissions as $name => $description) {
+                $exists = $modx->getObject('modAccessPermission', array(
+                    'template' => (int)$template->get('id'),
+                    'name' => $name,
+                ));
+                if ($exists) {
+                    continue;
+                }
+
+                $permission = $modx->newObject('modAccessPermission');
+                $permission->fromArray(array(
+                    'template' => (int)$template->get('id'),
+                    'name' => $name,
+                    'description' => $description,
+                    'value' => true,
+                ));
+                $permission->save();
+            }
+            break;
+    }
+}
+
+return true;
+```
+
+Дальше права надо **добавить в политику** `mxapiDefault` (или свою на базе шаблона) и убедиться, что она выдана нужной группе через **Access Controls → Namespace Access**. Пакет никому ничего не назначает — [Права доступа](permissions).
+
+Без резолвера то же самое делается руками: **Управление правами → Шаблоны политик → mxapiTemplate** → добавить права, затем **Политики доступа → mxapiDefault** → включить их.
+
+## Шаг 6. Проверка
+
+1. **Эндпоинт появился в реестре.** Откройте **Компоненты → mxApi**: в каталоге должны быть `reviews.list` и `reviews.stats` с источником `myreviews`. Нет — смотрите «Частые ошибки» ниже.
+2. **Право видно в политике.** Управление правами → `mxapiTemplate` → `mxapi_reviews_read` на месте, политика выдана группе пользователя интеграции.
+3. **Токен со свежим scope:**
+
+   ```bash
+   curl -X POST 'https://site.ru/mxapi/v1/auth/token' \
+     -H 'Content-Type: application/json' \
+     -d '{"grant_type":"password","username":"api_user","password":"…","scope":"reviews.read"}'
+   ```
+
+   Ответ `invalid_scope` означает, что эндпоинт с таким scope в реестре не появился — то есть провайдер не зарегистрировался (шаг 4). `insufficient_permission` — что право не заведено или не выдано (шаг 5).
+
+4. **Вызов:**
+
+   ```bash
+   curl 'https://site.ru/mxapi/v1/reviews?limit=5&status=approved' \
+     -H 'Authorization: Bearer <token>'
+
+   curl 'https://site.ru/mxapi/v1/reviews/stats?product=42' \
+     -H 'Authorization: Bearer <token>'
+   ```
+
+5. **Контракт для интегратора:** `GET /meta/openapi` — ваши эндпоинты должны быть в спецификации со всеми параметрами. Если их там нет, а в админке они видны — проверьте `mxapi.catalog_filter` и не помечен ли эндпоинт служебным ([Каталог](catalog)).
+
+## Частые ошибки
+
+| Симптом | Причина |
 | --- | --- |
-| `mxApiOnRegisterEndpoints` | сборка реестра: обработчик возвращает провайдера (объект или имя класса) |
-| `mxApiOnBeforeRequest` | запрос принят, до маршрутизации |
-| `mxApiOnBeforeEndpointRun` | эндпоинт найден, права проверены, до вызова |
-| `mxApiOnAfterEndpointRun` | сразу после вызова эндпоинта |
-| `mxApiOnResponse` | перед отправкой ответа |
+| Эндпоинтов нет в каталоге, в логе MODX тихо | Плагин не сработал: он **не подхватывается, пока не сброшен кэш** `eventMap`. Очистите кэш сайта после установки плагина |
+| В логе «Провайдер не найден: …» | Класс не подключён (bootstrap не вызван или путь неверен) либо опечатка в namespace |
+| В логе «Класс не реализует ProviderInterface» | Плагин вернул объект вместо строки (`modSystemEvent::output()` склеил его в строку) или класс не имплементирует интерфейс |
+| `invalid_scope` при выпуске токена | Ни один эндпоинт в реестре не объявляет такой scope — провайдер не зарегистрировался или scope написан с опечаткой |
+| `insufficient_permission` у non-sudo | Право не заведено в `mxapiTemplate`, не включено в политику, политика не выдана группе, либо в политике нет обязательного права `load` |
+| `route_not_found` при видимом в каталоге эндпоинте | В `path` попал префикс (`/mxapi/v1/reviews` вместо `/reviews`) |
+| `method_not_allowed` | Путь совпал, метод — нет: проверьте `methods` в описании |
+| `processor_error` с пустым сообщением | Процессор не найден по `processors_path` либо упал до валидации |
+| Параметр «не доезжает» до процессора | Он не объявлен в `parameters` — незаявленный вход отбрасывается намеренно |
 
-## Промежуточные обработчики
+## Дальше
 
-Свой обработчик реализует `MxApi\Core\Middleware\MiddlewareInterface` и подключается ключом `middleware` в `core/config/mxapi.php`. Встроенные — лимит частоты и идемпотентность — подключены всегда и выполняются первыми: лимит отсекает лавину до любой работы с базой, и только потом проверяется повтор по ключу идемпотентности.
+- [Справочник эндпоинта](endpoint-reference) — все ключи описания, типы параметров, хуки, события, middleware.
+- [Права доступа](permissions) — политики, `load`, контексты MODX.
+- [Каталог и OpenAPI](catalog) — видимость эндпоинта и служебные маршруты.
