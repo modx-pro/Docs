@@ -58,12 +58,12 @@ class ReviewsListEndpoint extends ProcessorEndpoint
 {
     protected function describe()
     {
-        return array(
+        return [
             'id' => 'reviews.list',              // ключ реестра, он же id в каталоге
             'title' => 'Список отзывов',
             'description' => 'Отзывы о товарах с фильтром по товару и статусу.',
             'path' => '/reviews',                // без префикса /mxapi/v1
-            'methods' => array('GET'),
+            'methods' => ['GET'],
             'provider' => 'myreviews',           // видно в каталоге: чей эндпоинт
 
             // Доступ
@@ -74,18 +74,17 @@ class ReviewsListEndpoint extends ProcessorEndpoint
             // Реализация — наружу не отдаётся
             'processor' => 'mgr/review/getlist',
             'processors_path' => MODX_CORE_PATH . 'components/myreviews/processors/',
-            'field_map' => array('product' => 'product_id'),
-            'properties' => array('combo' => false),
+            'field_map' => ['product' => 'product_id'],
+            'properties' => ['combo' => false],
 
-            'parameters' => array(
-                array('name' => 'limit', 'type' => 'integer', 'default' => 20),
-                array('name' => 'offset', 'type' => 'integer', 'default' => 0),
-                array('name' => 'product', 'type' => 'integer',
-                      'description' => 'ID товара'),
-                array('name' => 'status', 'type' => 'string',
-                      'enum' => array('new', 'approved', 'rejected')),
-            ),
-        );
+            'parameters' => [
+                ['name' => 'limit', 'type' => 'integer', 'default' => 20],
+                ['name' => 'offset', 'type' => 'integer', 'default' => 0],
+                ['name' => 'product', 'type' => 'integer', 'description' => 'ID товара'],
+                ['name' => 'status', 'type' => 'string',
+                 'enum' => ['new', 'approved', 'rejected']],
+            ],
+        ];
     }
 }
 ```
@@ -121,21 +120,21 @@ class ReviewsStatsEndpoint extends AbstractEndpoint
 {
     protected function describe()
     {
-        return array(
+        return [
             'id' => 'reviews.stats',
             'title' => 'Статистика отзывов',
             'path' => '/reviews/stats',
-            'methods' => array('GET'),
+            'methods' => ['GET'],
             'provider' => 'myreviews',
             'scope' => 'reviews.read',
             'permission' => 'mxapi_reviews_read',
             'modx_context' => 'mgr',
-            'parameters' => array(
-                array('name' => 'product', 'type' => 'integer', 'required' => true,
-                      'in' => 'query', 'description' => 'ID товара'),
-            ),
+            'parameters' => [
+                ['name' => 'product', 'type' => 'integer', 'required' => true,
+                 'in' => 'query', 'description' => 'ID товара'],
+            ],
             'response_description' => 'count — число одобренных отзывов, rating — средняя оценка.',
-        );
+        ];
     }
 
     public function handle(Request $request, EndpointContext $context)
@@ -148,18 +147,18 @@ class ReviewsStatsEndpoint extends AbstractEndpoint
         $modx = $platform->getModx();
 
         $query = $modx->newQuery('myReviewsReview');
-        $query->where(array('product_id' => $params['product'], 'status' => 'approved'));
-        $query->select(array('COUNT(*) AS count', 'AVG(rating) AS rating'));
+        $query->where(['product_id' => $params['product'], 'status' => 'approved']);
+        $query->select(['COUNT(*) AS count', 'AVG(rating) AS rating']);
 
-        $row = array();
+        $row = [];
         if ($query->prepare() && $query->stmt->execute()) {
-            $row = $query->stmt->fetch(\PDO::FETCH_ASSOC) ?: array();
+            $row = $query->stmt->fetch(\PDO::FETCH_ASSOC) ?: [];
         }
 
-        return Response::success(array(
+        return Response::success([
             'count' => (int)($row['count'] ?? 0),
             'rating' => round((float)($row['rating'] ?? 0), 2),
-        ));
+        ]);
     }
 }
 ```
@@ -203,10 +202,10 @@ class Provider implements ProviderInterface
 
     public function getEndpoints(PlatformInterface $platform, Config $config)
     {
-        return array(
+        return [
             new ReviewsListEndpoint(),
             new ReviewsStatsEndpoint(),
-        );
+        ];
     }
 }
 ```
@@ -305,15 +304,15 @@ if ($transport->xpdo) {
     /** @var modX $modx */
     $modx =& $transport->xpdo;
 
-    $permissions = array(
+    $permissions = [
         'mxapi_reviews_read' => 'myReviews: чтение отзывов',
         'mxapi_reviews_write' => 'myReviews: модерация отзывов',
-    );
+    ];
 
     switch ($options[xPDOTransport::PACKAGE_ACTION]) {
         case xPDOTransport::ACTION_INSTALL:
         case xPDOTransport::ACTION_UPGRADE:
-            $template = $modx->getObject('modAccessPolicyTemplate', array('name' => 'mxapiTemplate'));
+            $template = $modx->getObject('modAccessPolicyTemplate', ['name' => 'mxapiTemplate']);
             if (!$template) {
                 // Шаблон создаёт mxApi. Нет шаблона — mxApi не установлен.
                 $modx->log(modX::LOG_LEVEL_ERROR,
@@ -323,21 +322,21 @@ if ($transport->xpdo) {
             }
 
             foreach ($permissions as $name => $description) {
-                $exists = $modx->getObject('modAccessPermission', array(
+                $exists = $modx->getObject('modAccessPermission', [
                     'template' => (int)$template->get('id'),
                     'name' => $name,
-                ));
+                ]);
                 if ($exists) {
                     continue;
                 }
 
                 $permission = $modx->newObject('modAccessPermission');
-                $permission->fromArray(array(
+                $permission->fromArray([
                     'template' => (int)$template->get('id'),
                     'name' => $name,
                     'description' => $description,
                     'value' => true,
-                ));
+                ]);
                 $permission->save();
             }
             break;
