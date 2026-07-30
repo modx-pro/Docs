@@ -1,0 +1,38 @@
+name: Disk check (deploy host)
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  disk-check:
+    if: github.repository_owner == 'modx-pro'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check remote disk
+        uses: appleboy/ssh-action@v1.2.2
+        env:
+          REMOTE_TARGET: ${{ secrets.REMOTE_TARGET }}
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: REMOTE_TARGET
+          script: |
+            set -e
+            echo '=== df -h ==='
+            df -h
+            echo
+            echo '=== df -i ==='
+            df -i
+            echo
+            echo "=== target: $REMOTE_TARGET ==="
+            if [ -n "$REMOTE_TARGET" ]; then
+              du -sh "$REMOTE_TARGET" 2>/dev/null || true
+              du -xhd1 "$REMOTE_TARGET" 2>/dev/null | sort -hr | head -30 || true
+            fi
+            echo
+            echo '=== home top ==='
+            du -xhd1 "$HOME" 2>/dev/null | sort -hr | head -20 || true
+            echo
+            echo '=== / top (if readable) ==='
+            du -xhd1 / 2>/dev/null | sort -hr | head -20 || true
