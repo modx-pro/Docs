@@ -154,6 +154,20 @@
 {'!PasswordReset' | snippet: []}
 ```
 
+Чтобы показать новый пароль пользователю на странице активации:
+
+```fenom:line-numbers
+{set $resetResult = '!PasswordReset' | snippet: []}
+
+{if $resetResult}
+  <p>Пароль изменён.</p>
+
+  {if $resetResult.extended.temp_password}
+    <p>Новый пароль: <strong>{$resetResult.extended.temp_password}</strong></p>
+  {/if}
+{/if}
+```
+
 ## Pagination
 
 ### Назначение
