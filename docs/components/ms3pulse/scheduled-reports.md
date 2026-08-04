@@ -3,46 +3,51 @@ title: Отчёты по расписанию
 ---
 # Отчёты по расписанию
 
-Настройка автоматической отправки CSV-отчёта на email по расписанию через [Scheduler](/components/scheduler/).
+Автоматическая отправка CSV на email через [Scheduler](/components/scheduler/).
 
 ## Системные настройки
 
-В **Управление → Системные настройки** (пространство **ms3pulse**):
+**Управление → Системные настройки** → пространство **ms3pulse**:
 
 | Настройка | Описание |
 |-----------|----------|
-| `ms3pulse_scheduled_export_enabled` | Включить отправку отчётов. |
+| `ms3pulse_scheduled_export_enabled` | Включить отправку. |
 | `ms3pulse_scheduled_export_email` | Email получателя. |
-| `ms3pulse_scheduled_export_period_days` | За сколько дней формировать отчёт (выручка по дням). |
-| `ms3pulse_scheduled_export_token` | Опционально: токен для вызова по URL (внешний cron). |
+| `ms3pulse_scheduled_export_period_days` | За сколько дней собрать выручку по дням (по умолчанию 7). |
+| `ms3pulse_scheduled_export_token` | Токен для вызова по URL без сессии manager. |
 
 Подробнее: [Системные настройки](settings).
 
-## Создание задачи в Scheduler
+## Задача Scheduler
 
-1. Перейдите в **Extras → Scheduler** (или раздел, где управляются задачи).
-2. Создайте новую задачу.
-3. Укажите:
-   - **Namespace:** `ms3pulse`
-   - **Processor:** `Dashboard/SendScheduledReport`
-   - **Расписание** — например, ежедневно в 08:00.
+При установке или обновлении ms3Pulse регистрирует задачу с reference **`ms3pulse_scheduled_report`**, если Scheduler установлен. Расписание задаёте вручную.
 
-<!-- SCREENSHOT: Задача Scheduler с процессором SendScheduledReport -->
-<!-- ![Задача Scheduler — SendScheduledReport](/components/ms3pulse/screenshots/scheduler-task.png) -->
+1. **Extras → Scheduler** (или раздел задач в вашей сборке).
+2. Найдите или создайте задачу с процессором **`Dashboard/SendScheduledReport`**, namespace **`ms3pulse`**.
+3. Задайте расписание, например ежедневно в 08:00.
 
-## Логика отправки
+## Что отправляется
 
-1. Задача запускает процессор `Dashboard/SendScheduledReport`.
-2. Процессор проверяет настройку `ms3pulse_scheduled_export_enabled`; при выключенной отправке задача завершается без отправки.
-3. Формируется CSV типа **выручка по дням** за последние `ms3pulse_scheduled_export_period_days` дней.
-4. Письмо отправляется на `ms3pulse_scheduled_export_email` через почту MODX (modPHPMailer) или fallback `mail()`.
-5. Тема и тело письма задаются в лексиконах компонента.
+1. Процессор проверяет `ms3pulse_scheduled_export_enabled`.
+2. Формирует CSV **выручка по дням** за последние N дней (`scheduled_export_period_days`). Фильтр статусов не применяется.
+3. Отправляет письмо на `scheduled_export_email` через почту MODX.
 
-## Вызов по URL (внешний cron)
+## Вызов по URL (cron)
 
-Если задан `ms3pulse_scheduled_export_token`, процессор можно вызывать по URL (например, с другого сервера по cron), передав токен для проверки. Точный формат вызова уточняйте в коде процессора и документации пакета.
+Если задан `ms3pulse_scheduled_export_token`:
+
+```text
+https://ваш-сайт/assets/components/ms3pulse/connector.php?action=Dashboard/SendScheduledReport&token=ВАШ_ТОКЕН
+```
+
+Пример cron (ежедневно в 08:00):
+
+```bash
+0 8 * * * curl -fsS 'https://ваш-сайт/assets/components/ms3pulse/connector.php?action=Dashboard/SendScheduledReport&token=ВАШ_ТОКЕН' >/dev/null
+```
 
 ## Устранение проблем
 
-- **Письмо не приходит** — проверьте настройки почты MODX (`mail_*`), логи, что задача Scheduler реально выполняется (cron или встроенный планировщик).
-- **Вложение пустое или ошибка** — убедитесь, что за указанный период есть заказы; проверьте логи процессора и права на запись во временные файлы.
+- **Письмо не приходит** — настройки `mail_*` в MODX, папка «Спам», логи Scheduler.
+- **Пустое вложение** — нет заказов за указанный период.
+- **Задача не создалась** — установите Scheduler и переустановите ms3Pulse или создайте задачу вручную.
