@@ -3,24 +3,53 @@ title: Подборки товаров
 ---
 # Подборки товаров
 
-Страница админки `ms3ProductSets` предназначена для управления шаблонами и массового применения подборок к категориям.
+Одна страница manager без вкладок: справочник типов, таблица шаблонов, блок применения к категории. Запросы идут в `assets/components/ms3productsets/connector.php`.
 
-## Что есть в интерфейсе
+![Обзор](/components/ms3productsets/screenshots/page-overview.png)
 
-- **Список подборок**: ID, название, тип, список связанных товаров
-- **Форма создания/редактирования**
-  - `name`
-  - `type`
-  - `related_product_ids`
-  - `description`
-  - `sortorder`
-- **Применение к категории**: выбор шаблона и одной/нескольких категорий
-- **Опция replace**: замена существующих связей выбранного типа перед вставкой
-- **Отвязка шаблона**: удаление связей, созданных этим шаблоном в выбранной категории
+## Элементы интерфейса
 
-## Типы шаблонов
+| Зона | Класс / элемент | Действие |
+|------|-----------------|----------|
+| Заголовок | `.ms3productsets-admin__header` | Название и intro |
+| Типы | `.ms3productsets-admin__card-types` | Badge + описание типов |
+| Список | `.ms3productsets-admin__card-templates` | DataTable, **Новая подборка** |
+| Диалог | `.ms3productsets-admin-dialog` | CRUD шаблона |
+| Применение | `.ms3productsets-admin__card-apply` | Select, TreeSelect, checkbox, кнопки |
 
-В интерфейсе админки доступны только типы для шаблонов:
+![Типы](/components/ms3productsets/screenshots/types-section.png)
+
+![Таблица](/components/ms3productsets/screenshots/template-list.png)
+
+![Применение](/components/ms3productsets/screenshots/apply-category.png)
+
+## Поля шаблона
+
+| Поле | Ключ API | Обязательное |
+|------|----------|--------------|
+| Название | `name` | да |
+| Тип | `type` | да |
+| ID товаров | `related_product_ids` | да (≥1) |
+| Описание | `description` | нет |
+| Порядок | `sortorder` | нет |
+
+![Форма](/components/ms3productsets/screenshots/template-dialog-new.png)
+
+## Connector (manager)
+
+| action | Назначение |
+|--------|------------|
+| `get_templates` | Список шаблонов |
+| `save_template` | Создание / обновление |
+| `delete_template` | Удаление по id |
+| `apply_template` | Массовое применение |
+| `unbind_template` | Отвязка по категории |
+| `get_resource_tree` | Дерево для TreeSelect |
+| `get_resources` | Список товаров для MultiSelect |
+
+Требуется авторизованный пользователь manager.
+
+## Типы в шаблонах
 
 - `buy_together`
 - `similar`
@@ -28,20 +57,10 @@ title: Подборки товаров
 - `cart_suggestion`
 - `vip`
 
-Типы `auto`, `auto_sales`, `also-bought`, `cross-sell`, `custom` в админке не выбираются — они используются только в вызове сниппета (авто-рекомендации без шаблона).
+`auto`, `auto_sales`, `also-bought`, `cross-sell`, `custom` — только в сниппете.
 
-## Массовое применение
+## Ограничения
 
-При применении шаблона:
-
-1. Компонент собирает товары из выбранной категории и вложенных подкатегорий
-2. Для каждого товара создаёт связи в `ms3_product_sets`
-3. В поле `template_name` фиксируется имя шаблона
-
-Если `replace=true`, существующие связи этого типа для товаров категории удаляются перед вставкой.
-
-## Ограничения и поведение
-
-- Для открытия страницы нужен пакет **VueTools**
-- Запросы интерфейса идут в `assets/components/ms3productsets/connector.php`
-- Для manager-операций требуется авторизованный пользователь `mgr`
+- Без **VueTools** страница покажет предупреждение вместо UI.
+- Право MODX **`view`** для доступа к CMP.
+- Редактирование шаблона не обновляет уже применённые связи без повторного **Применить**.
