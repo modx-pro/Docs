@@ -64,7 +64,7 @@ Product link configuration:
 
 | Link type | Description |
 |-----------|-------------|
-| Related | Accessories, components |
+| Complementary | Accessories, components |
 | Similar | Similar products |
 | Recommended | Personal recommendations |
 
@@ -72,14 +72,19 @@ Product link configuration:
 
 Additional product categories. A product can belong to several categories besides the main one (`parent`).
 
-### Options
+### Product options
 
-Product option values (if configured in [Settings → Options](settings/options)):
+Product option values (configured in [Settings → Options](settings/options)).
 
-- Colors
-- Sizes
-- Materials
-- Any custom options
+::: info From v1.10.0-beta1
+The tab is fully Vue. The universal `ProductOptionField` component supports all 10 option types: `textfield`, `numberfield`, `textarea`, `checkbox`, `comboBoolean`, `combobox`, `comboMultiple`, `comboColors` (+ color square next to the value), `comboOptions` (PrimeVue `InputChips` — enter arbitrary tags with suggestions from previously used values), `datefield`.
+:::
+
+Options are grouped by `modcategory_id` (MODX category on `msOption`) and shown in vertical tabs on the left. If there is only one group, the tab is hidden and fields are listed directly.
+
+**Per-category caption / description.** If the option ↔ category link has its own `caption` (see [Settings → Options](settings/options#per-category-caption-description-override)), the product form shows that caption — the same override used on the storefront.
+
+**Saving.** Values are sent in POST as `options-{key}` (single) or `options-{key}` with a JSON array (multi). The `MiniShop3\Processors\Product\Update` processor collects everything into the `options` key in `beforeSet`, `Utils::decodeOptionValue()` expands JSON arrays, and `afterSave` calls `OptionSyncService::saveProductOptions($productId, $options, removeOther: true)` — keys missing from POST are removed from `msProductOption`.
 
 ## Section and field architecture
 
@@ -89,7 +94,7 @@ Field configuration is stored in the database:
 
 | Table | Description |
 |-------|-------------|
-| `ms3_page_sections` | Page sections |
+| `ms3_page_sections` | Page sections (containers) |
 | `ms3_product_fields` | Product fields with settings |
 
 ### msPageSection model

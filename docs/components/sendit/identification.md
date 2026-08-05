@@ -301,6 +301,25 @@
 
 Комбинация этих параметров позволяет после восстановления пароля сразу авторизовать пользователя и отправить на любую страницу сайта.
 
+Чтобы показать новый пароль на странице активации, сохраните результат вызова **PasswordReset** без кэша в переменную и выведите поле `extended.temp_password`.
+Если включён редирект через `afterLoginRedirectId`, пользователь сразу уйдёт на другую страницу и не увидит этот блок.
+
+::: details Страница активации
+
+```fenom:line-numbers
+{set $resetResult = '!PasswordReset' | snippet: []}
+
+{if $resetResult}
+  <p>Пароль изменён.</p>
+
+  {if $resetResult.extended.temp_password}
+    <p>Новый пароль: <strong>{$resetResult.extended.temp_password}</strong></p>
+  {/if}
+{/if}
+```
+
+:::
+
 ::: details Форма
 
 ```html:line-numbers

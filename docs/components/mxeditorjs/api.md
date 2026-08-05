@@ -5,14 +5,28 @@ title: API и интерфейсы
 
 ## Коннектор `assets/components/mxeditorjs/connector.php`
 
-Все запросы к коннектору выполняются с авторизацией в менеджере MODX. Ответы — JSON. Операции записи требуют права `save_document`.
+Все запросы к коннектору выполняются с авторизацией в менеджере MODX. Ответы — JSON, `Content-Type: application/json`.
+
+**Обычное сохранение ресурса** идёт через POST формы и `OnBeforeDocFormSave`, **не** через connector. `content/save` — для AJAX и интеграций.
+
+### Права по action
+
+| Action | `save_document` |
+| --- | --- |
+| `content/get` | Нет |
+| `content/save` | Да |
+| `content/migrate` (без `dry_run`) | Да |
+| `content/migrate` (`dry_run=1`) | Нет |
+| `media/upload`, `media/uploadFile` | Да |
+| `media/browse` | Нет |
+| `link/search` | Нет |
 
 ### Аутентификация
 
-Неавторизованные запросы возвращают:
+Неавторизованный запрос: HTTP **200**, тело JSON (текст из лексикона, ru/en):
 
 ```json
-{ "success": false, "message": "Permission denied" }
+{ "success": false, "message": "Доступ запрещён." }
 ```
 
 ---

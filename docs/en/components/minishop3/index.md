@@ -30,6 +30,7 @@ items: [
       { text: 'Category', link: 'interface/category' },
       { text: 'Product', link: 'interface/product' },
       { text: 'Gallery', link: 'interface/gallery' },
+      { text: 'Notification center', link: 'interface/notifications' },
       {
         text: 'Settings',
         link: 'interface/settings',
@@ -48,7 +49,7 @@ items: [
           { text: 'Gallery', link: 'interface/utilities/gallery' },
           { text: 'Import', link: 'interface/utilities/import' },
           { text: 'Product fields', link: 'interface/utilities/product-fields' },
-          { text: 'TV fields', link: 'interface/utilities/extra-fields' },
+          { text: 'Extra fields', link: 'interface/utilities/extra-fields' },
           { text: 'Grid columns', link: 'interface/utilities/grid-columns' },
           { text: 'Model fields', link: 'interface/utilities/model-fields' },
         ],
@@ -102,6 +103,16 @@ items: [
       { text: 'Scheduler', link: 'development/scheduler' },
       { text: 'Models and database schema', link: 'development/models' },
       { text: 'Service layer', link: 'development/services' },
+      {
+        text: 'Backend API',
+        link: 'development/backend-api/',
+        items: [
+          { text: 'Product API', link: 'development/backend-api/product' },
+          { text: 'Order API', link: 'development/backend-api/order' },
+          { text: 'Options API', link: 'development/backend-api/options' },
+          { text: 'Customer API', link: 'development/backend-api/customer' },
+        ],
+      },
     ],
   },
 ]
@@ -248,7 +259,7 @@ core/components/minishop3/
 ├── src/
 │   ├── Controllers/        # Business logic (Cart, Order, Customer)
 │   ├── Model/              # xPDO models
-│   ├── Processors/         # AJAX processors
+│   ├── Processors/         # AJAX processors (namespace MiniShop3\Processors\*)
 │   ├── Services/           # Services (Format, AuthManager...)
 │   ├── Notifications/      # Notification system
 │   ├── Router/             # API router

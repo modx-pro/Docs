@@ -543,33 +543,32 @@ Vendors are managed via processors `Settings\Vendor\*`:
 
 ## Product processors
 
-Full list of product-related processors:
+Full list of product-related processors (`core/components/minishop3/src/Processors/Product/`):
 
 | Processor | Description |
 |-----------|----------|
-| `Product\Create` | Create product |
-| `Product\Update` | Update product |
-| `Product\UpdateFromGrid` | Update from grid (inline edit) |
-| `Product\Delete` | Mark for deletion |
-| `Product\Undelete` | Unmark deletion |
-| `Product\Get` | Get product |
-| `Product\GetList` | List products |
-| `Product\GetOptions` | Get product options |
-| `Product\Publish` | Publish |
-| `Product\Unpublish` | Unpublish |
-| `Product\Show` | Show in tree |
-| `Product\Hide` | Hide from tree |
-| `Product\Sort` | Sort |
-| `Product\Multiple` | Bulk operations |
-| `Product\Autocomplete` | Autocomplete (product search) |
-| `Product\Category` | Product categories |
+| `MiniShop3\Processors\Product\Create` | Create product |
+| `MiniShop3\Processors\Product\Update` | Update product |
+| `MiniShop3\Processors\Product\UpdateFromGrid` | Update from grid (inline edit) |
+| `MiniShop3\Processors\Product\Delete` | Mark for deletion |
+| `MiniShop3\Processors\Product\Undelete` | Unmark deletion |
+| `MiniShop3\Processors\Product\Get` | Get product |
+| `MiniShop3\Processors\Product\GetList` | List products |
+| `MiniShop3\Processors\Product\GetOptions` | Get product options |
+| `MiniShop3\Processors\Product\Publish` | Publish |
+| `MiniShop3\Processors\Product\Unpublish` | Unpublish |
+| `MiniShop3\Processors\Product\Show` | Show in tree |
+| `MiniShop3\Processors\Product\Hide` | Hide from tree |
+| `MiniShop3\Processors\Product\Sort` | Sort |
+| `MiniShop3\Processors\Product\Multiple` | Bulk operations |
+| `MiniShop3\Processors\Product\Autocomplete` | Autocomplete (product search) |
+| `MiniShop3\Processors\Product\Category` | Product categories |
+| `MiniShop3\Processors\Product\UpdateSource` | Change product media source |
 
-### Calling processors
-
-All are called via `$modx->runProcessor()` with the path:
+### Calling from PHP
 
 ```php
-$response = $modx->runProcessor('Product\\GetList', [
+$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\GetList', [
     'parent' => 5,
     'limit' => 20,
     'sort' => 'price',

@@ -7,7 +7,7 @@ Configuring columns in MiniShop3 admin tables.
 
 ## Purpose
 
-The tool configures columns in admin grids (tables):
+Main tool for configuring columns in MiniShop3 admin tables:
 
 - Enable and disable columns
 - Change column order
@@ -90,7 +90,7 @@ Shows current column configuration:
 
 ## Column types
 
-### Model
+### Model (model field)
 
 Standard column showing a field value.
 
@@ -100,7 +100,7 @@ Field: email
 Label: Email
 ```
 
-### Template
+### Template (template)
 
 Column with HTML template.
 
@@ -111,7 +111,7 @@ Template: <a href="mailto:{email}">{email}</a>
 
 Variables — current row fields in curly braces.
 
-### Relation
+### Relation (relation)
 
 Data from related table.
 
@@ -133,7 +133,7 @@ Foreign key: customer_id
 Aggregation: COUNT
 ```
 
-### Computed
+### Computed (computed)
 
 Value computed on server by a custom class.
 
@@ -142,7 +142,7 @@ Type: computed
 Class: MyComponent\Columns\TotalSpentColumn
 ```
 
-### Image
+### Image (image)
 
 Image thumbnail.
 
@@ -151,7 +151,7 @@ Type: image
 Field: image
 ```
 
-### Boolean
+### Boolean (boolean)
 
 Yes/No flag with icon.
 
@@ -160,7 +160,7 @@ Type: boolean
 Field: active
 ```
 
-### Actions
+### Actions (actions)
 
 Column with action buttons. Supports built-in and custom handlers.
 
@@ -212,7 +212,7 @@ Column with action buttons. Supports built-in and custom handlers.
 | `addresses` | Manage addresses (customers) |
 | `refresh` | Refresh grid |
 
-## Examples
+## Configuration examples
 
 ### Hide column
 
@@ -358,6 +358,7 @@ Registers a hook that runs **before** the action.
 
 ```javascript
 MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
+  // Return false to cancel the action
   if (data.is_system) {
     context.toast.add({
       severity: 'warn',
@@ -377,6 +378,7 @@ Registers a hook that runs **after** the action.
 ```javascript
 MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
   console.log('Record deleted:', data.id)
+  // Send analytics, log, etc.
 })
 ```
 
@@ -397,12 +399,16 @@ MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
 **Step 1. Register handler** (in MODX plugin or custom JS):
 
 ```javascript
+// File: assets/components/mycomponent/js/customer-actions.js
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Wait for registry to load
   if (!window.MS3ActionRegistry) {
     console.error('MS3ActionRegistry not available')
     return
   }
 
+  // Register "Block" action
   MS3ActionRegistry.register('blockCustomer', async (data, context) => {
     try {
       const response = await fetch('/assets/components/minishop3/connector.php', {
@@ -424,7 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
           detail: `Customer ${data.email} blocked`,
           life: 3000
         })
-        context.refresh()
+        context.refresh() // Refresh grid
       } else {
         throw new Error(result.message)
       }
@@ -438,6 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
+  // Register "Unblock" action
   MS3ActionRegistry.register('unblockCustomer', async (data, context) => {
     const response = await fetch('/assets/components/minishop3/connector.php', {
       method: 'POST',
@@ -462,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-**Step 2. Load script** via MODX plugin:
+**Step 2. Load the script** via MODX plugin:
 
 ```php
 <?php
@@ -471,6 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 if ($modx->event->name !== 'OnManagerPageBeforeRender') return;
 
+// Customers page only
 $controller = $modx->controller ?? null;
 if (!$controller || strpos(get_class($controller), 'Customers') === false) return;
 
@@ -566,20 +574,22 @@ MS3ActionRegistry.register('sendNotification', async (data, context) => {
 
 #### Example 4: Conditional button visibility
 
-Use `disabledField` in column config:
+Use a function for `disabled`:
 
-```json
+```javascript
+// In column config
 {
   "name": "unblock",
   "handler": "unblockCustomer",
   "icon": "pi-unlock",
   "label": "Unblock",
   "severity": "success",
-  "disabledField": "active"
+  // Button disabled when customer is not blocked
+  "disabledField": "active"  // disabled when active = true
 }
 ```
 
-Or:
+Or check via a data field:
 
 ```json
 {
@@ -588,7 +598,7 @@ Or:
   "icon": "pi-ban",
   "label": "Block",
   "severity": "danger",
-  "disabledField": "blocked"
+  "disabledField": "blocked"  // disabled when blocked = true
 }
 ```
 
@@ -598,6 +608,7 @@ Or:
 
 ```javascript
 MS3ActionRegistry.registerAfterHook('delete', async (data, context, result) => {
+  // Send to audit system
   await fetch('/api/audit/log', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -616,6 +627,7 @@ MS3ActionRegistry.registerAfterHook('delete', async (data, context, result) => {
 
 ```javascript
 MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
+  // Prevent deleting records with status "paid"
   if (context.gridId === 'orders' && data.status === 2) {
     context.toast.add({
       severity: 'error',
@@ -623,15 +635,15 @@ MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
       detail: 'Cannot delete paid order',
       life: 5000
     })
-    return false
+    return false // Cancel action
   }
-  return true
+  return true // Continue
 })
 ```
 
 ### Available icons
 
-Icons from [PrimeIcons](https://primevue.org/icons). Common ones:
+Uses icons from [PrimeIcons](https://primevue.org/icons). Popular choices:
 
 | Icon | Class | Use |
 |------|-------|-----|

@@ -13,44 +13,44 @@ The utilities section provides tools for bulk operations and MiniShop3 component
 
 | Tab | Description |
 |-----|-------------|
-| [Gallery](utilities/gallery) | Bulk thumbnail regeneration |
+| [Gallery](utilities/gallery) | Bulk thumbnail regeneration for images |
 | [Import](utilities/import) | Product import from CSV files |
-| [Product fields](utilities/product-fields) | Field display configuration in product card |
+| [Product fields](utilities/product-fields) | Product card field display configuration |
 | [Extra fields](utilities/extra-fields) | Creating new fields for models |
 | [Grid columns](utilities/grid-columns) | Table column configuration |
 | [Model fields](utilities/model-fields) | Database model field management |
 
-## Overview
+## Feature overview
 
 ### Gallery
 
 Tool for bulk regeneration of product image thumbnails. Useful after:
 
-- Changing thumbnail settings in system settings
+- Changing preview settings in system settings
 - Site migration
 - Bulk image updates
 
 ### Import
 
-Step-by-step wizard for importing products from CSV with:
+Step-by-step wizard for importing products from CSV files with:
 
 - Automatic file encoding detection
 - Visual column-to-field mapping
-- Debug mode for first-row preview
-- [Scheduler](/en/components/scheduler/) integration for large files
+- Debug mode to verify the first row
+- Integration with [Scheduler](/en/components/scheduler/) for large files
 
 ### Product fields
 
-Configuration of fields on the "Product data" tab:
+Configure field display on the "Product data" tab:
 
 - Enable/disable fields
-- Grouping by sections
-- Display order
-- Section creation and management
+- Group by sections
+- Change display order
+- Create and manage sections
 
 ### Extra fields
 
-Creating new fields to extend models:
+Create new fields to extend models:
 
 - msProductData — products
 - msVendor — vendors
@@ -60,7 +60,7 @@ Creating new fields to extend models:
 
 ### Grid columns
 
-Configuration of columns in admin tables:
+Configure columns in admin tables:
 
 - Column visibility
 - Sorting and filtering
@@ -69,9 +69,9 @@ Configuration of columns in admin tables:
 
 ### Model fields
 
-Management of existing model fields:
+Manage existing model fields:
 
-- Field settings editing
-- Section binding
-- Widget (xtype) configuration
-- Section management
+- Edit field settings
+- Assign to sections
+- Configure widgets (xtype)
+- Manage sections

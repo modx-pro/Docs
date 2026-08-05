@@ -133,7 +133,9 @@ Password reset activator snippet.
 
 ### Result
 
-Returns array of user data for whom password was reset.
+Returns array of user data for whom password was reset. The generated temporary
+password is available in `extended.temp_password`; the MODX `password` field is
+stored separately as a hash.
 
 ### Example
 
@@ -142,7 +144,14 @@ Call snippet on page with ID equal to `activationResourceId` parameter.
 :::
 
 ```fenom:line-numbers
-{'!PasswordReset' | snippet: []}
+{set $resetUser = '!PasswordReset' | snippet: []}
+
+{if $resetUser}
+  <p>Password changed.</p>
+  {if $resetUser.extended.temp_password}
+    <p>New password: <strong>{$resetUser.extended.temp_password}</strong></p>
+  {/if}
+{/if}
 ```
 
 ## Pagination

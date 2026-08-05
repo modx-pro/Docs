@@ -5,7 +5,7 @@ description: Подключение CSS, JS и конфигурации msPriceT
 
 # Сниппет msPriceTiers.initialize
 
-Регистрирует фронтенд-ресурсы и создаёт **`window.msPriceTiersConfig`** (URL connector, флаги, лексикон).
+Регистрирует фронтенд-ресурсы и создаёт **`window.msPriceTiersConfig`**.
 
 ## Параметры
 
@@ -27,16 +27,34 @@ description: Подключение CSS, JS и конфигурации msPriceT
 
 ## Что подключается
 
-- `assets/components/mspricetiers/css/mspricetiers.css` (или min)
-- `assets/components/mspricetiers/js/mspricetiers.js` (или min)
-- Глобальный объект **`msPriceTiers`** с методом `fetchPrice()` и подпиской на `ms3variants:selected`
+- `assets/components/mspricetiers/js/web/mspricetiers.css` (cache bust `?v=filemtime`)
+- `assets/components/mspricetiers/js/web/mspricetiers.js`
+- Скрипт инициализации **`window.msPriceTiersConfig`**
+- Глобальный объект **`msPriceTiers`** с `fetchPrice()`, `fetchSections()`, подписками на события
+
+## msPriceTiersConfig
+
+| Поле | Описание |
+|------|----------|
+| `assetsUrl` | Базовый URL assets |
+| `connectorUrl` | Web connector |
+| `enabled` | `mspricetiers_enabled` |
+| `applyOnProductPage` | `mspricetiers_apply_on_product_page` |
+| `quantityHintEnabled` | `mspricetiers_progress_bar_enabled` |
+| `numberLocale` | `ru-RU` / `en-US` |
+| `messages.untilNext` | Шаблон подсказки «ещё N шт.» (`{count}`) |
+| `messages.tierPrice` | Шаблон цены на пороге |
+| `messages.maxDiscount` | Максимальная скидка достигнута |
+| `messages.savings` | Префикс экономии |
+| `messages.currency` | Символ валюты из lexicon |
 
 ## Где вызывать
 
-- Шаблон **msProduct** — обязательно, если нужна динамическая цена.
-- Шаблон **категории** — если на листинге планируется AJAX-цена или таблицы порогов в карточках.
+- Шаблон **msProduct** — если нужна динамическая цена.
+- Шаблон **корзины** — для прогресса с `data-mspt-live`.
+- Шаблон **категории** — если на листинге AJAX-цена или таблицы в карточках.
 
-Без этого сниппета [msPriceTiers](msPriceTiers) выведет только статичный HTML без пересчёта при смене количества.
+Без этого сниппета [msPriceTiers](msPriceTiers) выведет статичный HTML без пересчёта при смене количества.
 
 ## См. также
 

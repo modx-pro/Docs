@@ -3,10 +3,10 @@ title: msOrder
 ---
 # msOrder
 
-Snippet for the checkout form. Shows customer fields, delivery and payment methods.
+Snippet for the checkout form. Shows customer fields, delivery methods, and payment methods.
 
 ::: warning Caching
-The snippet uses the user session and must be called **uncached** (`!msOrder`).
+The snippet uses the user session and must be called **uncached**.
 :::
 
 ## Parameters
@@ -30,7 +30,7 @@ The snippet uses the user session and must be called **uncached** (`!msOrder`).
 {'!msOrder' | snippet}
 ```
 
-### Customer fields mapping (msCustomer)
+### Customer field mapping (msCustomer)
 
 When sync is disabled (`ms3_customer_sync_enabled = false`), data is taken from msCustomer:
 
@@ -40,7 +40,7 @@ When sync is disabled (`ms3_customer_sync_enabled = false`), data is taken from 
 ]}
 ```
 
-### MODX profile fields mapping (modUserProfile)
+### MODX profile field mapping (modUserProfile)
 
 When sync is enabled (`ms3_customer_sync_enabled = true`), data is taken from modUserProfile:
 
@@ -50,11 +50,12 @@ When sync is enabled (`ms3_customer_sync_enabled = true`), data is taken from mo
 ]}
 ```
 
-::: tip Data source
+::: tip Choosing data source
+
 - `ms3_customer_sync_enabled = false` (default): use `customerFields` and msCustomer data
 - `ms3_customer_sync_enabled = true`: use `userFields` and modUserProfile data
 
-Only one source is active at a time, depending on the setting.
+Data sources are mutually exclusive — only one is active depending on the setting.
 :::
 
 ### Get data
@@ -75,10 +76,14 @@ With `return=data` the snippet returns an array:
         'delivery_id' => 1,
         'payment_id' => 2,
         'comment' => '...',
-        'cost' => '5 300',           // Total (formatted)
-        'cart_cost' => '5 000',      // Products cost
-        'delivery_cost' => '300',    // Delivery cost
-        'discount_cost' => '0',      // Discount
+        'cost' => 5300,                  // Total (number)
+        'cost_formatted' => '5 300 ₽',  // Total with currency
+        'cart_cost' => 5000,             // Products cost
+        'cart_cost_formatted' => '5 000 ₽',
+        'delivery_cost' => 300,          // Delivery cost
+        'delivery_cost_formatted' => '300 ₽',
+        'discount_cost' => 0,            // Discount
+        'discount_cost_formatted' => '0 ₽',
     ],
     'form' => [
         'first_name' => 'John',
@@ -111,7 +116,7 @@ With `return=data` the snippet returns an array:
         ],
         // ...
     ],
-    'addresses' => [                 // Saved addresses (when includeCustomerAddresses)
+    'addresses' => [                  // Saved addresses (when includeCustomerAddresses)
         [
             'id' => 1,
             'city' => 'New York',
@@ -119,9 +124,9 @@ With `return=data` the snippet returns an array:
             // ...
         ],
     ],
-    'errors' => [],                  // Fields with validation errors
-    'isCustomerAuth' => true,       // Whether customer is logged in
-    'isCartEmpty' => false,          // Whether cart is empty
+    'errors' => [],                   // Fields with validation errors
+    'isCustomerAuth' => true,         // Whether customer is logged in
+    'isCartEmpty' => false,           // Whether cart is empty
 ]
 ```
 
@@ -312,7 +317,7 @@ With `return=data` the snippet returns an array:
 {/if}
 ```
 
-## JavaScript API
+## JavaScript interaction
 
 ```javascript
 // Submit order
@@ -341,6 +346,7 @@ document.addEventListener('ms3:order:before-submit', (e) => {
 // After successful submit
 document.addEventListener('ms3:order:success', (e) => {
     console.log('Order created:', e.detail.order_id);
+    // Redirect to success page
     window.location.href = e.detail.redirect;
 });
 

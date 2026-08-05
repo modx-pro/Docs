@@ -3,17 +3,17 @@ title: System settings
 ---
 # System settings
 
-All MiniShop3 system settings use the prefix `ms3_` and are in the `minishop3` namespace.
+All MiniShop3 system settings use the `ms3_` prefix and live in the `minishop3` namespace.
 
-To view settings go to **System → System Settings** and select namespace **minishop3**.
+To view settings, go to **System → System Settings** and select the **minishop3** namespace.
 
-## Main settings
+## General settings
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_services` | JSON | Array of registered classes for cart, order, delivery, payment. Used to extend functionality via third-party components |
-| `ms3_plugins` | `[]` | Array of registered plugins extending store model objects |
-| `ms3_chunks_categories` | | Comma-separated category IDs for chunk list |
+| `ms3_services_config` | `{core_path}/config/ms3.services.php` | Path to the PHP file with custom service registration. Returns an array `[service_id => ClassName]` that overrides default classes (cart, order, delivery, payment, etc.) |
+| `ms3_services_addons_dir` | `{core_path}/config/ms3.services.d/` | Folder with service registration fragments from third-party components. Each add-on adds its own `*.php`; files load in alphabetical order after the main config |
+| `ms3_chunks_categories` | | Comma-separated category IDs for the chunk list |
 | `ms3_use_scheduler` | `false` | Use [Scheduler](/en/components/scheduler/) for background tasks |
 
 ## Product category
@@ -21,12 +21,12 @@ To view settings go to **System → System Settings** and select namespace **min
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `ms3_template_category_default` | | Default template for new categories |
-| `ms3_category_show_nested_products` | `true` | Show products from subcategories |
-| `ms3_category_show_options` | `false` | Show product options in category table |
-| `ms3_category_remember_tabs` | `true` | Remember active category tab |
+| `ms3_category_show_nested_products` | `true` | Show nested products from subcategories |
+| `ms3_category_show_options` | `false` | Show product options in the category table |
 | `ms3_category_id_as_alias` | `false` | Use category ID as URL alias |
-| `ms3_category_content_default` | | Default content for new categories (snippet call for products) |
-| `mgr_tree_icon_mscategory` | `icon icon-barcode` | CSS class for category icon in resource tree |
+| `ms3_category_content_default` | | Default content for new categories (product listing snippet call) |
+| `ms3_category_products_default_rows` | `20` | Rows per page in the category product table |
+| `mgr_tree_icon_mscategory` | `icon icon-barcode` | CSS class for the category icon in the resource tree |
 
 ## Product
 
@@ -35,28 +35,28 @@ To view settings go to **System → System Settings** and select namespace **min
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `ms3_template_product_default` | | Default template for new products |
-| `ms3_product_main_fields` | `pagetitle,longtitle,description,introtext,content` | Main fields on product panel |
+| `ms3_product_main_fields` | `pagetitle,longtitle,description,introtext,content` | Main fields on the product panel |
 | `ms3_product_extra_fields` | `price,old_price,article,weight,color,size,vendor_id,made_in,tags,new,popular,favorite` | Extra product fields |
-| `ms3_product_show_in_tree_default` | `false` | Show new products in resource tree |
+| `ms3_product_show_in_tree_default` | `false` | Show new products in the resource tree |
 | `ms3_product_id_as_alias` | `false` | Use product ID as URL alias |
-| `ms3_product_remember_tabs` | `true` | Remember active product tab |
-| `mgr_tree_icon_msproduct` | `icon icon-tag` | CSS class for product icon in resource tree |
+| `ms3_product_remember_tabs` | `true` | Remember the active product panel tab |
+| `mgr_tree_icon_msproduct` | `icon icon-tag` | CSS class for the product icon in the resource tree |
 
 ### Product tabs
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_product_tab_extra` | `true` | Show product data tab |
-| `ms3_product_tab_gallery` | `true` | Show gallery tab |
-| `ms3_product_tab_links` | `true` | Show product links tab |
-| `ms3_product_tab_options` | `true` | Show options tab |
-| `ms3_product_tab_categories` | `true` | Show categories tab |
+| `ms3_product_tab_extra` | `true` | Show the product properties tab |
+| `ms3_product_tab_gallery` | `true` | Show the gallery tab |
+| `ms3_product_tab_links` | `true` | Show the product links tab |
+| `ms3_product_tab_options` | `true` | Show the options tab |
+| `ms3_product_tab_categories` | `true` | Show the categories tab |
 
 ### Gallery
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_product_source_default` | `0` | Default file source ID for gallery |
+| `ms3_product_source_default` | `0` | Default media source ID for the gallery |
 | `ms3_product_thumbnail_default` | `{assets_url}components/minishop3/img/mgr/ms3_small.png` | Placeholder image path |
 | `ms3_product_thumbnail_size` | `small` | Default thumbnail size |
 
@@ -64,62 +64,60 @@ To view settings go to **System → System Settings** and select namespace **min
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_price_format` | `[2, ".", " "]` | Price format: [decimals, decimal separator, thousands separator] |
-| `ms3_weight_format` | `[3, ".", " "]` | Weight format: [decimals, decimal separator, thousands separator] |
-| `ms3_price_format_no_zeros` | `true` | Remove trailing zeros in prices (15.00 → 15) |
-| `ms3_weight_format_no_zeros` | `true` | Remove trailing zeros in weight |
-| `ms3_price_snippet` | | Snippet name for price modifier |
-| `ms3_weight_snippet` | | Snippet name for weight modifier |
+| `ms3_price_format` | `[2, ".", " "]` | Price format: [decimal places, decimal separator, thousands separator] |
+| `ms3_weight_format` | `[3, ".", " "]` | Weight format: [decimal places, decimal separator, thousands separator] |
+| `ms3_price_format_no_zeros` | `true` | Strip trailing zeros in prices (15.00 → 15) |
+| `ms3_weight_format_no_zeros` | `true` | Strip trailing zeros in weight |
+| `ms3_price_snippet` | | Price modifier snippet name |
+| `ms3_weight_snippet` | | Weight modifier snippet name |
 | `ms3_currency_symbol` | `₽` | Currency symbol (₽, $, €, £, ₴, ¥, ₸) |
 | `ms3_currency_position` | `after` | Symbol position: `before` ($ 100) or `after` (100 ₽) |
+| `ms3_weight_unit` | `kg` | Weight unit (e.g. `kg`, `г`, `lbs`, `oz`). Used in `*_formatted` placeholders |
 
 ## Cart
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_cart_context` | `false` | Use single cart for all contexts |
-| `ms3_cart_max_count` | `1000` | Maximum items in cart |
+| `ms3_cart_context` | `false` | Use a single cart across all contexts |
+| `ms3_cart_max_count` | `1000` | Maximum number of items in the cart |
 
 ## Orders
 
-### General
+### General settings
 
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `ms3_order_format_num` | `ym` | Order number format (date() format) |
-| `ms3_order_format_num_separator` | `/` | Separator in order number |
-| `ms3_date_format` | `d.m.y H:M` | Date format in manager |
-| `ms3_order_user_groups` | | User groups for customer registration (comma-separated) |
-| `ms3_order_show_drafts` | `true` | Show drafts in order list |
-| `ms3_order_redirect_thanks_id` | `1` | "Thank you" page ID |
-| `ms3_order_success_page_id` | `0` | Successful payment page ID |
+| `ms3_order_format_num_separator` | `/` | Separator in the order number |
+| `ms3_date_format` | `d.m.y H:M` | Date format in the Manager |
+| `ms3_order_user_groups` | | Groups for customer registration (comma-separated) |
+| `ms3_order_show_drafts` | `true` | Show drafts in the order list |
+| `ms3_order_redirect_thanks_id` | `1` | ID of the "Thank you for your order" page |
+| `ms3_order_success_page_id` | `0` | ID of the successful payment page |
 | `ms3_order_register_user_on_submit` | `false` | Create modUser on checkout |
-| `ms3_email_manager` | | Manager emails for notifications (comma-separated) |
-| `ms3_delete_drafts_after` | | Delete old drafts (strtotime: `-1 year`, `-2 weeks`) |
+| `ms3_email_manager` | | Manager email addresses for notifications (comma-separated) |
+| `ms3_delete_drafts_after` | | Delete old drafts (strtotime format: `-1 year`, `-2 weeks`) |
 | `ms3_order_log_actions` | `status,products,field,address` | Logged order actions |
 
 ### Manager fields
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `ms3_order_grid_fields` | `id,num,customer,status,cost,weight,delivery,payment,createdon,updatedon,comment` | Order table fields |
-| `ms3_order_address_fields` | `first_name,last_name,email,phone,index,country,region,city,metro,street,building,entrance,floor,room,comment,text_address` | Delivery address fields |
-| `ms3_order_product_fields` | `product_pagetitle,vendor_name,product_article,weight,price,count,cost` | Order product table fields |
-| `ms3_order_product_options` | `size,color` | Editable product options in order |
+::: info Order, address, and product table fields
+These used to be configured via `ms3_order_grid_fields`, `ms3_order_address_fields`, `ms3_order_product_fields`, and `ms3_order_product_options`. They are now managed in **Utilities → Model fields** (tables `ms3_model_fields` and `ms3_model_field_sections`, models `msOrder` / `msOrderAddress`) and **Utilities → Grid settings** (`ms3_grid_fields`). The system settings are no longer read and are removed from the documentation.
+:::
 
 ## Order statuses
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_status_draft` | `1` | "Draft" status ID |
-| `ms3_status_new` | `0` | New order status ID (set by migration) |
-| `ms3_status_paid` | `0` | Paid order status ID |
-| `ms3_status_canceled` | `0` | Canceled order status ID |
+| `ms3_status_draft` | `1` | ID of the "Draft" status |
+| `ms3_status_new` | `0` | ID of the new order status (set by migration) |
+| `ms3_status_paid` | `0` | ID of the paid order status |
+| `ms3_status_canceled` | `0` | ID of the canceled order status |
 | `ms3_status_for_stat` | `2,3` | Status IDs for completed order statistics |
 
 ## Customers
 
-### Account pages
+### Customer account pages
 
 | Setting | Default | Description |
 |---------|---------|-------------|
@@ -128,29 +126,29 @@ To view settings go to **System → System Settings** and select namespace **min
 | `ms3_customer_profile_page_id` | `0` | Profile page ID |
 | `ms3_customer_addresses_page_id` | `0` | Addresses page ID |
 | `ms3_customer_orders_page_id` | `0` | Order history page ID |
-| `ms3_customer_redirect_after_login` | `0` | Redirect page after login (0 = stay) |
+| `ms3_customer_redirect_after_login` | `0` | Page ID to redirect to after login (0 = stay) |
 
-### Auth and registration
+### Authentication and registration
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_customer_auto_register_on_order` | `true` | Auto-register customer on order |
-| `ms3_customer_auto_login_on_order` | `true` | Auto-login after order |
-| `ms3_customer_auto_login_after_register` | `true` | Auto-login after registration |
+| `ms3_customer_auto_register_on_order` | `true` | Automatically register the customer on checkout |
+| `ms3_customer_auto_login_on_order` | `true` | Automatically log in after checkout |
+| `ms3_customer_auto_login_after_register` | `true` | Automatically log in after registration |
 | `ms3_customer_require_email_verification` | `false` | Require email verification |
 | `ms3_customer_send_welcome_email` | `true` | Send welcome email |
-| `ms3_customer_require_privacy_consent` | `true` | Require privacy consent (GDPR) |
+| `ms3_customer_require_privacy_consent` | `true` | Require data processing consent (GDPR) |
 
 ### Order cancellation
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_customer_cancel_allowed_statuses` | `2,3` | Status IDs for which the customer can cancel the order (comma-separated). Default: new and paid |
+| `ms3_customer_cancel_allowed_statuses` | `2,3` | Status IDs where the customer can cancel an order (comma-separated). Default: new and paid |
 
-::: tip Order cancellation
-The customer sees the "Cancel order" button only for orders whose status is in this list. On cancel, the order is set to `ms3_status_canceled`.
+::: tip Order cancellation settings
+The customer sees the "Cancel order" button only for orders with a status from this list. On cancel, the order moves to `ms3_status_canceled`.
 
-To disallow customer cancellations, leave this setting empty.
+To disable customer cancellation, leave this setting empty.
 :::
 
 ### modUser sync
@@ -158,10 +156,10 @@ To disallow customer cancellations, leave this setting empty.
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `ms3_customer_sync_enabled` | `false` | Enable msCustomer ↔ modUser sync |
-| `ms3_customer_sync_create_moduser` | `false` | Create modUser on msCustomer registration |
+| `ms3_customer_sync_create_moduser` | `false` | Create modUser when msCustomer registers |
 | `ms3_customer_sync_delete_with_user` | `false` | Delete msCustomer when modUser is deleted |
-| `ms3_customer_sync_user_group` | `0` | User group ID for new modUser |
-| `ms3_customer_duplicate_fields` | `["email", "phone"]` | JSON array of fields for duplicate check |
+| `ms3_customer_sync_user_group` | `0` | Group ID for new modUser accounts |
+| `ms3_customer_duplicate_fields` | `["email", "phone"]` | JSON array of fields for duplicate checks |
 
 ## Security
 
@@ -169,19 +167,21 @@ To disallow customer cancellations, leave this setting empty.
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_customer_token_ttl` | `86400` | Customer token TTL (seconds, 24 hours) |
-| `ms3_customer_api_token_ttl` | `86400` | API token TTL (seconds, 24 hours) |
-| `ms3_password_reset_token_ttl` | `3600` | Password reset token TTL (seconds, 1 hour) |
-| `ms3_email_verification_token_ttl` | `86400` | Email verification token TTL (seconds, 24 hours) |
-| `ms3_snippet_token_secret` | (auto) | Secret for snippet tokens |
-| `ms3_snippet_cache_ttl` | `3600` | Snippet parameter cache TTL (seconds) |
-| `ms3_payment_secret` | | Secret for payment notifications |
+| `ms3_customer_token_ttl` | `86400` | Customer token lifetime (seconds, 24 hours) |
+| `ms3_customer_api_token_ttl` | `86400` | API token lifetime (seconds, 24 hours) |
+| `ms3_password_reset_token_ttl` | `3600` | Password reset token lifetime (seconds, 1 hour) |
+| `ms3_email_verification_token_ttl` | `86400` | Email verification token lifetime (seconds, 24 hours) |
+| `ms3_email_verification_url` | | Custom URL for the verification email. If empty, the link points to Web API `api.php?route=…/email/verify&token=…&html=1` |
+| `ms3_email_verification_success_url` | | URL to redirect to after successful email verification. If empty, returns to the site with `?ms3_email_verified=1` |
+| `ms3_snippet_token_secret` | (auto-generated) | Secret key for snippet tokens |
+| `ms3_snippet_cache_ttl` | `3600` | Snippet parameter cache lifetime (seconds) |
+| `ms3_payment_secret` | | Secret key for payment notifications |
 
 ### Brute-force protection
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_customer_max_login_attempts` | `5` | Max failed login attempts |
+| `ms3_customer_max_login_attempts` | `5` | Maximum failed login attempts |
 | `ms3_customer_block_duration` | `300` | Block duration (seconds, 5 minutes) |
 
 ### Password requirements
@@ -189,30 +189,30 @@ To disallow customer cancellations, leave this setting empty.
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `ms3_password_min_length` | `8` | Minimum password length |
-| `ms3_password_require_uppercase` | `false` | Require uppercase |
-| `ms3_password_require_number` | `false` | Require digit |
-| `ms3_password_require_special` | `false` | Require special character |
+| `ms3_password_require_uppercase` | `false` | Require uppercase letters |
+| `ms3_password_require_number` | `false` | Require numbers |
+| `ms3_password_require_special` | `false` | Require special characters |
 
 ## API
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_api_debug` | `false` | API debug mode (verbose logging) |
-| `ms3_cors_allowed_origins` | `*` | CORS allowed origins (comma or `*`) |
-| `ms3_rate_limit_max_attempts` | `60` | Max requests per period |
+| `ms3_api_debug` | `false` | API debug mode (extended logging) |
+| `ms3_cors_allowed_origins` | `*` | Allowed CORS domains (comma-separated or `*`) |
+| `ms3_rate_limit_max_attempts` | `60` | Maximum requests per period |
 | `ms3_rate_limit_decay_seconds` | `60` | Rate limit period (seconds) |
 
-## Frontend
+## Site (Frontend)
 
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `ms3_token_name` | `ms3_token` | Token name for visitor identification |
-| `ms3_register_global_config` | `true` | Register `ms3Config` in DOM |
+| `ms3_register_global_config` | `true` | Register `ms3Config` in the DOM |
 | `ms3_frontend_assets` | JSON array | List of CSS/JS files to load |
 
 ### Path placeholders
 
-In `ms3_frontend_assets` you can use:
+In `ms3_frontend_assets`, these placeholders are available:
 
 - `[[+assetsUrl]]` — `assets/components/minishop3/`
 - `[[+jsUrl]]` — `assets/components/minishop3/js/`
@@ -222,11 +222,11 @@ In `ms3_frontend_assets` you can use:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_utility_import_fields` | `pagetitle,parent,price,article` | Import fields |
+| `ms3_utility_import_fields` | `pagetitle,parent,price,article` | Fields for import |
 | `ms3_utility_import_fields_delimiter` | `;` | CSV column delimiter |
-| `ms3_import_sync_limit` | `300` | Sync import row limit |
-| `ms3_import_preview_rows` | `5` | Preview rows |
-| `ms3_import_upload_path` | `assets/import/` | Import file upload path |
+| `ms3_import_sync_limit` | `300` | Synchronous import limit (rows) |
+| `ms3_import_preview_rows` | `5` | Preview row count |
+| `ms3_import_upload_path` | `assets/import/` | Upload path for import files |
 
 ## Notifications
 
@@ -234,32 +234,30 @@ In `ms3_frontend_assets` you can use:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `ms3_email_manager` | | Manager emails for notifications (comma-separated) |
+| `ms3_email_manager` | | Manager email addresses for notifications (comma-separated) |
 
 ### Telegram
 
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `ms3_telegram_bot_token` | | Telegram bot token (get from [@BotFather](https://t.me/BotFather)) |
-| `ms3_telegram_manager_chat_id` | | Manager chat ID for notifications (get from [@userinfobot](https://t.me/userinfobot)) |
 
-::: tip Setting up the Telegram bot
+::: tip Telegram bot setup
 1. Create a bot via [@BotFather](https://t.me/BotFather) and get the token
-2. Send any message to the bot to start the chat
-3. Get your Chat ID via [@userinfobot](https://t.me/userinfobot)
-4. Set the token and Chat ID in system settings
+2. Set the token in `ms3_telegram_bot_token`
+3. Each recipient's chat ID is set separately in **Utilities → Notifications** (`msNotificationConfig`, field `recipient_value`). Get your chat ID from [@userinfobot](https://t.me/userinfobot).
 :::
 
 ## Usage examples
 
-### Get setting in PHP
+### Getting a setting in PHP
 
 ```php
 $priceFormat = $modx->getOption('ms3_price_format');
 $currencySymbol = $modx->getOption('ms3_currency_symbol');
 ```
 
-### Get setting in Fenom
+### Getting a setting in Fenom
 
 ```fenom
 {* Currency symbol *}
@@ -271,7 +269,7 @@ $currencySymbol = $modx->getOption('ms3_currency_symbol');
 
 ### Price format
 
-`ms3_price_format` accepts a JSON array:
+The `ms3_price_format` setting accepts a JSON array:
 
 ```json
 [2, ".", " "]
@@ -285,7 +283,7 @@ Result: `1 234.56`
 
 ### Price modifier
 
-Create a snippet to modify price dynamically:
+Create a snippet for dynamic price changes:
 
 ```php
 <?php
@@ -294,7 +292,7 @@ Create a snippet to modify price dynamically:
 
 $price = $product->get('price');
 
-// 10% discount for a category
+// Apply 10% discount for a specific category
 if ($product->get('parent') == 5) {
     $price = $price * 0.9;
 }

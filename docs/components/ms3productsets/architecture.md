@@ -70,19 +70,32 @@ flowchart TB
 
 ## Логика по типам
 
+Общий порядок: ручные связи из `ms3_product_sets` → при пустоте авто (если `ms3productsets.auto_recommendation` = 1) → `exclude_ids` и лимит через `msps_apply_set_filters`.
+
 - `vip`: ручная подборка `type=vip`; fallback на `ms3productsets.vip_set_{set_id}`.
-- `auto_sales`: SQL по `ms3_order_product + ms3_order` (статусы `2,4,5`), fallback на `similar`.
-- `similar`: товары из той же категории (`parent`), исключая текущий/`exclude_ids`.
-- `buy_together`, `cart_suggestion`: авто по категории через `msps_get_auto_recommendations`.
-- `popcorn`: авто по категории; если пусто, fallback на случайные товары каталога.
-- `auto`, `also-bought`, `cross-sell`, `custom`: авто по категории.
+- `auto_sales`: таблица, иначе co-purchase из заказов (`msps_get_auto_sales`: товары из тех же заказов, что и текущий; статусы `2,4,5`), иначе `similar`.
+- `buy_together`, `also-bought`, `cross-sell`: таблица, иначе `auto_sales`, иначе авто по категории (`msps_get_auto_recommendations`).
+- `similar`: таблица, иначе `msps_get_similar_products` (та же категория, shuffle).
+- `cart_suggestion`: таблица, иначе авто по категории / `category_id`.
+- `popcorn`: таблица, иначе категория текущего товара, иначе авто с `resource_id=0`.
+- `auto`, `custom`: таблица с соответствующим `type`, иначе авто по категории.
+
+Ручная подборка из таблицы тоже проходит через `exclude_ids`.
+
+## Кеш подборок
+
+При `ms3productsets.cache_lifetime` > 0 результат `msps_get_products_by_type` кешируется.
+
+Ключ: `ms3productsets/sets/{generation}/{md5(...)}`, где `generation` — счётчик `msps_get_cache_generation()`. Сброс (`msps_bump_cache_generation`) при сохранении/удалении шаблона, apply/unbind, sync TV, cleanup.
+
+Параметры в md5: `type`, `resource_id`, `category_id`, `set_id`, `limit`, отсортированные `exclude_ids`.
 
 ## Поток данных TV -> таблица
 
 1. Админ заполняет TV-поля (`ms3productsets_*`) у товара.
 2. `OnDocFormSave` проверяет наличие этих TV на шаблоне ресурса.
 3. `msps_sync_product_sets_from_tv`:
-   - если TV **заполнен** — удаляются все связи данного типа у товара, затем вставляются новые `related_product_id` с `sortorder` из TV;
+   - если TV **заполнен** — удаляются TV-записи (пустой `template_name`), вставляются новые `related_product_id` с `sortorder` из TV;
    - если TV **пуст** — удаляются только записи **без** `template_name`, чтобы не затереть связи, созданные массовым применением шаблонов к категориям.
 
 ## Поток массового применения шаблона
@@ -91,4 +104,4 @@ flowchart TB
 2. Категории разворачиваются рекурсивно до товаров (`msProduct`).
 3. Шаблон читается из `ms3_product_set_templates`.
 4. В `ms3_product_sets` вставляются связи с `template_name`.
-5. При `replace=true` сначала удаляются все связи данного `type` у выбранных товаров.
+5. При `replace=true` удаляются связи с тем же `type` и `template_name`, что у применяемого шаблона (не все связи типа и не TV).

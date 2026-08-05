@@ -3,37 +3,37 @@ title: Delivery methods
 ---
 # Delivery methods
 
-Delivery method management is available via **Extras → MiniShop3 → Settings → Deliveries**.
+Delivery methods are managed via **Extras → MiniShop3 → Settings → Deliveries**.
 
 ## Delivery fields
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `name` | string | Delivery method name |
-| `description` | text | Description for customer |
+| `description` | text | Description for the customer |
 | `price` | number | Base delivery cost |
-| `weight_price` | float | Cost per weight unit |
-| `distance_price` | float | Cost per distance unit |
-| `free_delivery_amount` | float | Order amount for free delivery |
+| `weight_price` | float | Cost per unit of weight |
+| `distance_price` | float | Cost per unit of distance |
+| `free_delivery_amount` | float | Order total for free delivery |
 | `logo` | string | Image path |
 | `position` | int | Sort order |
 | `active` | bool | Active |
 | `class` | string | PHP handler class |
 | `validation_rules` | JSON | Field validation rules |
 
-## Payment association
+## Payment linkage
 
-Each delivery method can be linked to specific payment methods. This allows:
+Each delivery method can be linked to specific payment methods. This allows you to:
 
-- Restricting cash payment to pickup only
-- Allowing online payment for courier delivery
-- Configuring specific combinations for different regions
+- Restrict cash payment to pickup only
+- Allow online payment for courier delivery
+- Configure specific combinations for different regions
 
-When the customer selects a delivery method, the list of available payment methods is filtered automatically.
+When the customer selects delivery, the list of available payment methods is filtered automatically.
 
 ## Cost calculation
 
-Delivery cost is calculated as:
+Delivery cost is calculated with:
 
 ```
 Total cost = price + (weight_price × weight) + (distance_price × distance)
@@ -43,7 +43,7 @@ If the order total exceeds `free_delivery_amount`, delivery cost = 0.
 
 ### Custom calculation
 
-For complex logic, create your own handler class:
+For complex logic, create a custom handler class:
 
 ```php
 <?php
@@ -57,11 +57,12 @@ class CustomDelivery implements DeliveryProviderInterface
 {
     public function getCost(msDelivery $delivery, msOrder $order, float $cost): float
     {
+        // Your calculation logic
         $cartCost = $order->get('cart_cost');
         $weight = $order->get('weight');
 
         if ($cartCost > 10000) {
-            return 0; // Free over 10000
+            return 0; // Free from 10000
         }
 
         if ($weight > 5000) {
@@ -73,15 +74,15 @@ class CustomDelivery implements DeliveryProviderInterface
 }
 ```
 
-Specify the class in the `class` field: `MyComponent\Delivery\CustomDelivery`
+Set the class in `class`: `MyComponent\Delivery\CustomDelivery`
 
 ## Order field validation
 
-MiniShop3 lets you configure required fields and validation rules per delivery method. For example, courier delivery can require a full address, while pickup may require only a phone number.
+MiniShop3 lets you configure required fields and validation rules for each delivery method. For example, courier delivery can require a full address, while pickup can require only a phone number.
 
 ### Visual builder
 
-The validation settings interface has two modes:
+The validation setup interface offers two modes:
 
 #### Visual mode
 
@@ -90,13 +91,13 @@ Intuitive rule builder:
 1. Click **Add field**
 2. Select a field from the list (grouped: Order, Address)
 3. Add validation rules for the field
-4. For rules with parameters, enter the value
+4. For rules with parameters, set the value
 
-Rules are shown as chips that can be removed by clicking the cross.
+Rules appear as tags (chips) you can remove with the close icon.
 
 #### JSON mode
 
-A switch lets you edit JSON manually:
+A toggle switches to manual JSON editing:
 
 ```json
 {
@@ -116,7 +117,7 @@ Useful for:
 
 ### Custom validation fields
 
-Besides standard order and address fields, you can add arbitrary fields with validation rules — for example, an agreement checkbox:
+Besides standard order and address fields, you can add arbitrary fields with validation rules. For example, an agreement checkbox:
 
 ```json
 {
@@ -126,13 +127,13 @@ Besides standard order and address fields, you can add arbitrary fields with val
 }
 ```
 
-Custom fields (`agreement` and others outside the standard set) are kept in the order draft between `order/add` and `order/submit`. When the order is created they are passed to `msOnBeforeCreateOrder` / `msOnCreateOrder` via `customFields`.
+Custom fields (`agreement` and others outside the standard set) are stored in the order draft between `order/add` and `order/submit` steps. When the order is created they are passed to `msOnBeforeCreateOrder` / `msOnCreateOrder` via the `customFields` parameter.
 
 ::: tip Checkboxes
-On the frontend, checkboxes send `input.checked` (`'1'` or `'0'`), not the static `value` attribute. This is required for the `accepted` rule to work correctly.
+On the frontend, checkboxes send `input.checked` (`'1'` or `'0'`), not a static `value` attribute. This ensures the `accepted` rule works correctly.
 :::
 
-### Fields available for validation
+### Available validation fields
 
 #### Order fields
 
@@ -163,7 +164,7 @@ On the frontend, checkboxes send `input.checked` (`'1'` or `'0'`), not the stati
 
 ### Validation rules
 
-MiniShop3 uses [rakit/validation](https://github.com/rakit/validation) for validation.
+MiniShop3 uses the [rakit/validation](https://github.com/rakit/validation) library.
 
 #### Basic rules
 
@@ -171,7 +172,7 @@ MiniShop3 uses [rakit/validation](https://github.com/rakit/validation) for valid
 |------|-------------|---------|
 | `required` | Required field | `required` |
 | `nullable` | Field may be null | `nullable` |
-| `present` | Field must be present (even if empty) | `present` |
+| `present` | Field must be present (even empty) | `present` |
 | `accepted` | Value must be "yes", "on", "1", true | `accepted` |
 
 #### Data types
@@ -200,19 +201,19 @@ MiniShop3 uses [rakit/validation](https://github.com/rakit/validation) for valid
 | `uppercase` | Uppercase only | `uppercase` |
 | `lowercase` | Lowercase only | `lowercase` |
 
-#### Parameterized rules
+#### Rules with parameters
 
 | Rule | Description | Syntax |
 |------|-------------|--------|
-| `min` | Min string length or number value | `min:3` |
-| `max` | Max string length or number value | `max:100` |
+| `min` | Min string length or numeric value | `min:3` |
+| `max` | Max string length or numeric value | `max:100` |
 | `between` | Value in range | `between:1,10` |
 | `digits` | Exact digit count | `digits:6` |
 | `digits_between` | Digit count in range | `digits_between:4,8` |
 | `in` | Value from list | `in:pickup,courier,post` |
-| `not_in` | Value not in list | `not_in:test,demo` |
-| `same` | Must match another field | `same:email_confirm` |
-| `different` | Must differ from another field | `different:old_password` |
+| `not_in` | Value NOT from list | `not_in:test,demo` |
+| `same` | Matches another field | `same:email_confirm` |
+| `different` | Differs from another field | `different:old_password` |
 | `regex` | Matches regular expression | `regex:/^[0-9]{6}$/` |
 
 #### Date rules
@@ -220,21 +221,21 @@ MiniShop3 uses [rakit/validation](https://github.com/rakit/validation) for valid
 | Rule | Description | Syntax |
 |------|-------------|--------|
 | `date` | Valid date in format | `date:Y-m-d` |
-| `after` | Date after given | `after:2024-01-01` |
-| `before` | Date before given | `before:2025-12-31` |
+| `after` | Date after specified | `after:2024-01-01` |
+| `before` | Date before specified | `before:2025-12-31` |
 
 #### Conditional rules
 
 | Rule | Description | Syntax |
 |------|-------------|--------|
 | `required_if` | Required if another field equals value | `required_if:delivery,courier` |
-| `required_unless` | Required unless another field equals value | `required_unless:delivery,pickup` |
-| `required_with` | Required if another field is present | `required_with:phone` |
-| `required_without` | Required if another field is absent | `required_without:email` |
-| `required_with_all` | Required if all listed fields are present | `required_with_all:city,street` |
-| `required_without_all` | Required if none of the listed fields are present | `required_without_all:phone,email` |
+| `required_unless` | Required if another field ≠ value | `required_unless:delivery,pickup` |
+| `required_with` | Required if another field is set | `required_with:phone` |
+| `required_without` | Required if another field is NOT set | `required_without:email` |
+| `required_with_all` | Required if ALL fields are set | `required_with_all:city,street` |
+| `required_without_all` | Required if NONE of the fields are set | `required_without_all:phone,email` |
 
-### Example configurations
+### Configuration examples
 
 #### Courier delivery
 
@@ -281,9 +282,9 @@ Postal code and full address required:
 }
 ```
 
-#### Parcel locker
+#### Parcel locker delivery
 
-Contact details only:
+Contact data only:
 
 ```json
 {
@@ -295,7 +296,7 @@ Contact details only:
 
 ### Combining rules
 
-Rules are combined with `|`:
+Combine rules with `|`:
 
 ```json
 {
@@ -307,11 +308,11 @@ Rules are combined with `|`:
 
 ### Error messages
 
-The validator generates error messages in the interface language. The user sees clear messages such as:
+The validator generates error messages in the interface language. The user sees messages such as:
 
-- "Email field is required"
-- "Phone field must be at least 10 characters"
-- "Index field must be 6 digits"
+- "The Email field is required"
+- "The Phone field must be at least 10 characters"
+- "The Index field must be 6 digits"
 
 ## API
 

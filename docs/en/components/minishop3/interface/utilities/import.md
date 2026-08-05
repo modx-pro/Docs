@@ -7,13 +7,13 @@ Step-by-step wizard for importing products from CSV files.
 
 ## Purpose
 
-Import lets you create and update products in bulk from a CSV file. Supported:
+Import lets you bulk create and update products from CSV data. Supported:
 
 - Automatic encoding detection (UTF-8, Windows-1251, KOI8-R)
 - Visual column-to-field mapping
-- Updating existing products by key field
-- Import of TV fields and product options
-- Image upload to gallery
+- Update existing products by key field
+- Import TV fields and product options
+- Upload images to the gallery
 
 ## Step-by-step process
 
@@ -45,7 +45,7 @@ After upload you see:
 - Warning for large files
 
 ::: info Encoding
-Windows-1251 files are converted to UTF-8 on processing.
+Windows-1251 files are converted to UTF-8 during processing.
 :::
 
 ### Step 2: Field mapping
@@ -65,18 +65,18 @@ Map each CSV column to a product field.
 | B: "Category" | → | parent | 5 |
 | C: "Price" | → | price | 99990 |
 
-::: tip Auto mapping
-Columns are auto-mapped by header names. E.g. column "name" maps to `pagetitle`.
+::: tip Auto-mapping
+The system maps columns by header names automatically. For example, column "name" maps to `pagetitle`.
 :::
 
 **Update settings:**
 
 | Parameter | Description |
 |-----------|-------------|
-| Update existing | If product found by key — update it |
-| Search key | Field used to find duplicates |
+| Update existing | If a product is found by key — update it |
+| Lookup key | Field to find duplicates |
 
-Search keys:
+Available lookup keys:
 
 - `article` — SKU (recommended)
 - `pagetitle` — name
@@ -94,11 +94,11 @@ Search keys:
 
 | Mode | Description |
 |------|-------------|
-| Sync | Import runs immediately, wait for completion |
-| Async | Task added to [Scheduler](/en/components/scheduler/) (for large files) |
+| Synchronous | Import runs immediately, wait for completion |
+| Asynchronous | Task queued in [Scheduler](/en/components/scheduler/) (for large files) |
 
 ::: warning Large files
-For files over 300 rows use async mode via [Scheduler](/en/components/scheduler/).
+For files over 300 rows use asynchronous mode via [Scheduler](/en/components/scheduler/).
 :::
 
 **Debug mode:**
@@ -106,7 +106,7 @@ For files over 300 rows use async mode via [Scheduler](/en/components/scheduler/
 - Processes only the first row
 - Useful to verify mapping
 
-**Import result:**
+**Import results:**
 
 ```
 Import complete!
@@ -119,13 +119,13 @@ Import complete!
 
 ## Available fields
 
-### Resource fields
+### Main resource fields
 
 | Field | Description |
 |-------|-------------|
 | `pagetitle` | Product name (required) |
 | `longtitle` | Extended title |
-| `description` | Meta description |
+| `description` | Description (meta) |
 | `introtext` | Intro text |
 | `content` | Main content |
 | `alias` | URL alias |
@@ -156,13 +156,13 @@ Import complete!
 
 | Field | Description |
 |-------|-------------|
-| `gallery` | Image path (relative to root) |
+| `gallery` | Image path (relative to site root) |
 | `tv.{name}` | TV field by name (e.g. `tv.brand`) |
 | `option.{key}` | Product option (e.g. `option.color`) |
 
-## CSV format
+## CSV file format
 
-### Example
+### Example structure
 
 ```csv
 pagetitle;parent;article;price;old_price;vendor;gallery
@@ -173,14 +173,14 @@ Samsung Galaxy S24;5;SGS24;89990;99990;Samsung;assets/import/galaxy.jpg
 ### Recommendations
 
 - Use semicolon (`;`) as delimiter
-- First row = column headers
-- Quote text that contains delimiter
-- Empty cell = empty value
-- Gallery path relative to site root
+- First row — column headers
+- Quote text that contains delimiters
+- Leave cells empty for missing values
+- For gallery use path relative to site root
 
-### Multiple images
+### Multiple values
 
-Add several `gallery` columns:
+For multiple images add several `gallery` columns:
 
 ```csv
 pagetitle;gallery;gallery;gallery
@@ -189,11 +189,11 @@ Product;img/1.jpg;img/2.jpg;img/3.jpg
 
 ## Troubleshooting
 
-### "Required field not specified"
+### "Required field not specified" error
 
 **Cause:** `pagetitle` or `parent` not mapped.
 
-**Fix:** Go back to step 2 and map required fields.
+**Fix:** Return to step 2 and map required fields.
 
 ### Products not created
 
@@ -201,30 +201,42 @@ Product;img/1.jpg;img/2.jpg;img/3.jpg
 
 - Invalid `parent` (category ID)
 - No permission to create resources
-- Validation errors
+- Data validation errors
 
 **Fix:** Enable debug mode and check MODX logs.
 
 ### Wrong encoding
 
-**Symptom:** Cyrillic or other chars display incorrectly.
+**Symptom:** Cyrillic displays incorrectly.
 
 **Fix:**
 
-- Save file as UTF-8 without BOM
+- Save the file as UTF-8 without BOM
 - Or ensure detected encoding matches the file
 
-### Images not loading
+### Images not uploaded
 
 **Check:**
 
-- Files exist at the given path
+- Files exist at the specified path
 - Path is relative to site root
 - Read permissions on files
 
+For programmatic gallery upload use processor `MiniShop3\Processors\Gallery\Upload` (see [Product API](../../development/backend-api/product#gallery-images)).
+
 ## Programmatic use
 
-### API Endpoint
+### Import processors
+
+| Processor | Purpose |
+|-----------|---------|
+| `MiniShop3\Processors\Utilities\Import\Fields` | Field list for mapping |
+| `MiniShop3\Processors\Utilities\Import\Upload` | CSV upload |
+| `MiniShop3\Processors\Utilities\Import\Preview` | Preview |
+| `MiniShop3\Processors\Utilities\Import\Import` | Run import |
+| `MiniShop3\Processors\Utilities\Import\Progress` | Progress |
+
+### API endpoint
 
 ```
 POST /api/mgr/import/start
@@ -247,8 +259,8 @@ POST /api/mgr/import/start
 
 ### Import events
 
-Use [import events](../../development/events/import) to extend:
+To extend functionality use [import events](../../development/events/import):
 
 - `msOnBeforeImport` — before import starts
-- `msOnImportRow` — for each row
+- `msOnImportRow` — on each row
 - `msOnAfterImport` — after import completes

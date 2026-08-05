@@ -6,7 +6,6 @@ Place screenshots in this folder with the names listed below. The docs reference
 
 | File | Description (what the screenshot should show) |
 |------|----------------------------------------|
-| `menu-ms3pulse.png` | Menu item "Components → ms3Pulse" |
 | `dashboard-overview.png` | Main dashboard — Overview tab |
 | `filters-panel.png` | Filters panel with period and statuses (expanded) |
 | `tab-dynamics.png` | Dynamics tab with charts |
@@ -23,7 +22,6 @@ Place screenshots in this folder with the names listed below. The docs reference
 | `chart-types-examples.png` | Examples of several chart types |
 | `export-csv-button.png` | CSV export button on a table |
 | `export-chart-menu.png` | Chart card menu with PNG export option |
-| `scheduler-task.png` | Scheduler task with SendScheduledReport processor |
 | `permissions-policy.png` | Access control — policy with ms3pulse_view |
 
 Remove this README after adding images or keep for reference.

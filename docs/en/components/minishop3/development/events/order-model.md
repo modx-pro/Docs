@@ -20,9 +20,11 @@ Fired **before** saving the order object (xPDO `save()`).
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrder` | `msOrder` | Order object |
+|----------|-----|----------|
 | `mode` | `string` | Mode: `new` or `upd` |
+| `object` | `msOrder` | Order object (MS2-style alias) |
+| `msOrder` | `msOrder` | Order object (MS3-style; same record) |
+| `cacheFlag` | `bool` \| `int` \| `null` | Cache flag passed to `save()` |
 
 ### Example
 
@@ -77,9 +79,11 @@ Fired **after** successfully saving the order object.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrder` | `msOrder` | Saved order object |
+|----------|-----|----------|
 | `mode` | `string` | Mode: `new` or `upd` |
+| `object` | `msOrder` | Saved order object (MS2-style alias) |
+| `msOrder` | `msOrder` | Saved order object (MS3-style; same record) |
+| `cacheFlag` | `bool` \| `int` \| `null` | Cache flag passed to `save()` |
 
 ### Example
 
@@ -112,8 +116,11 @@ Fired **before** removing the order object.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrder` | `msOrder` | Order object to remove |
+|----------|-----|----------|
+| `id` | `int` | ID of the order being removed |
+| `object` | `msOrder` | Order object (MS2-style alias) |
+| `msOrder` | `msOrder` | Order object (MS3-style; same record) |
+| `ancestors` | `array` | Dependent objects array passed to xPDO `remove()` |
 
 ### Example
 
@@ -152,8 +159,11 @@ Fired **after** removing the order object.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrder` | `msOrder` | Removed order object |
+|----------|-----|----------|
+| `id` | `int` | ID of the removed order |
+| `object` | `msOrder` | Removed order object (MS2-style alias) |
+| `msOrder` | `msOrder` | Removed order object (MS3-style; same record) |
+| `ancestors` | `array` | Dependent objects array passed to xPDO `remove()` |
 
 ### Example
 
@@ -179,12 +189,14 @@ switch ($modx->event->name) {
 
 ## msOnBeforeUpdateOrder
 
-Fired **before** updating the order via the manager processor.
+::: warning Reserved event
+In the current MS3 implementation the event is registered but **not invoked separately**. Any order update goes through `xPDO::save()`, so listen to `msOnBeforeSaveOrder` with `$mode === 'upd'` for the same semantics.
+:::
 
-### Parameters
+### Parameters (planned)
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+|----------|-----|----------|
 | `msOrder` | `msOrder` | Order object |
 | `mode` | `string` | Mode: `upd` |
 
@@ -213,12 +225,14 @@ switch ($modx->event->name) {
 
 ## msOnUpdateOrder
 
-Fired **after** updating the order via the manager processor.
+::: warning Reserved event
+In the current MS3 implementation the event is registered but **not invoked separately**. Use `msOnSaveOrder` with `$mode === 'upd'`.
+:::
 
-### Parameters
+### Parameters (planned)
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+|----------|-----|----------|
 | `msOrder` | `msOrder` | Updated order object |
 | `mode` | `string` | Mode: `upd` |
 
@@ -238,6 +252,74 @@ switch ($modx->event->name) {
 
         // Sync with CRM
         // $crm->updateOrder($order->toArray());
+        break;
+}
+```
+
+---
+
+## Full example: order change audit
+
+```php
+<?php
+/**
+ * Plugin: Order change audit
+ * Events: msOnBeforeSaveOrder, msOnSaveOrder, msOnRemoveOrder
+ */
+
+switch ($modx->event->name) {
+
+    case 'msOnBeforeSaveOrder':
+        $order = $scriptProperties['msOrder'];
+        $mode = $scriptProperties['mode'];
+
+        if ($mode === 'upd') {
+            // Save state before changes for comparison
+            $modx->eventData['orderAudit'] = [
+                'before' => $order->toArray(),
+                'dirty' => $order->getDirty(),
+            ];
+        }
+        break;
+
+    case 'msOnSaveOrder':
+        $order = $scriptProperties['msOrder'];
+        $mode = $scriptProperties['mode'];
+
+        $auditData = $modx->eventData['orderAudit'] ?? null;
+
+        $audit = $modx->newObject('msOrderAudit', [
+            'order_id' => $order->get('id'),
+            'user_id' => $modx->user->get('id') ?: 0,
+            'action' => $mode === 'new' ? 'create' : 'update',
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+            'createdon' => date('Y-m-d H:i:s'),
+        ]);
+
+        if ($mode === 'new') {
+            $audit->set('changes', json_encode(['action' => 'create']));
+        } else {
+            $audit->set('changes', json_encode($auditData['dirty'] ?? []));
+        }
+
+        $audit->save();
+        break;
+
+    case 'msOnRemoveOrder':
+        $order = $scriptProperties['msOrder'];
+
+        $audit = $modx->newObject('msOrderAudit', [
+            'order_id' => $order->get('id'),
+            'user_id' => $modx->user->get('id') ?: 0,
+            'action' => 'delete',
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? '',
+            'createdon' => date('Y-m-d H:i:s'),
+            'changes' => json_encode([
+                'order_num' => $order->get('num'),
+                'cost' => $order->get('cost'),
+            ]),
+        ]);
+        $audit->save();
         break;
 }
 ```
