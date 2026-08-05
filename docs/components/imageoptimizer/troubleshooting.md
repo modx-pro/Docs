@@ -14,7 +14,7 @@ title: Решение проблем
 
 ### Шаги
 
-1. **Админка** — **Очередь → Обработать очередь** (нужно `imageoptimizer_run`). За клик обрабатывается до `cron_limit` задач; для большой очереди нажимайте несколько раз или настройте cron.
+1. **Админка** — **Обработать очередь** (нужно `imageoptimizer_run`). С 1.0.4 кнопка крутит батчи до `pending = 0`. При необходимости **Остановить** и продолжить позже.
 2. **Cron** — строка в crontab указывает на правильный PHP и путь:
 
    ```bash
@@ -31,7 +31,11 @@ title: Решение проблем
 5. **Зависшие processing** — **Сбросить зависшие** или дождитесь cron (`stuck_minutes`).
 6. **Энкодеры** — вкладка **Server**: WebP должен быть «Доступен».
 7. **enabled** — `imageoptimizer_enabled=1`.
-8. **409 worker_busy** — другой cron или **Обработать** уже работает; подождите или снимите lock.
+8. **409 worker_busy** — cron или **Обработать** уже работает. UI повторяет до 3 раз. Подождите или снимите lock.
+
+### Лимит времени PHP в админке
+
+Если появилось «Достигнут лимит времени PHP» — остаток обработает cron или повторный клик **Обработать очередь**. Для больших каталогов настройте cron и не держите вкладку открытой.
 
 ### Ошибка «Unable to create cache directory»
 
@@ -53,6 +57,7 @@ chmod 775 core/cache/imageoptimizer
 5. Нет skip: класс из `skip_classes`, `skip_src_pattern`, `data-imageoptimizer-skip`
 6. **Кэш:** очистите кэш MODX; при `html_cache=1` сбросьте HTML-кэш ImageOptimizer
 7. Страница не больше `max_html_size` (1 МБ по умолчанию)
+8. Страница открыта не под авторизованным пользователем (HTML-кэш inject для них отключён)
 
 ### Проверка HTML
 
@@ -60,9 +65,13 @@ chmod 775 core/cache/imageoptimizer
 curl -s 'https://example.com/page.html' | grep -E '<picture|\.webp'
 ```
 
+Для страницы с авторизацией откройте её в режиме инкогнито или под гостевой сессией.
+
 ### Путь в `src` не попадает в media source
 
 Inject ищет файл на диске и сопоставляет его с **Filesystem** media source. Если сопоставление не удалось, `<picture>` не строится.
+
+На MODX 3 используется fallback `sources.modMediaSource` при резолве source. Убедитесь, что установлена актуальная версия пакета.
 
 Проверьте:
 
@@ -73,6 +82,18 @@ Inject ищет файл на диске и сопоставляет его с *
 5. Нет skip: класс из `skip_classes`, подстрока `thumb3x` в URL, `data-imageoptimizer-skip`
 
 Подробнее про skip: [Авто-inject и picture](frontend#условия-пропуска).
+
+## Кириллица и HTML-сущности после inject
+
+### Симптомы
+
+Текст на странице показывает `&#1044;` вместо «Д», или появился `<!--?xml encoding="UTF-8"-->`.
+
+### Решение
+
+1. Обновите до **1.0.4+** (фикс в `html_parser.php`, `IMAGEOPTIMIZER_HTML_SERIALIZE_REV = 4`)
+2. Очистите HTML-кэш: **Очистить кэш** MODX или **Очистить варианты** в админке
+3. Проверьте `<meta charset="UTF-8">` в шаблоне
 
 ## Статус skipped в очереди
 
@@ -108,7 +129,7 @@ Inject ищет файл на диске и сопоставляет его с *
 
 1. Hard refresh (`Cmd+Shift+R`)
 2. DevTools → Network → `connector.php` — статус и тело ответа
-3. Убедитесь, что в HTML менеджера задан `window.imageoptimizerConfig.connectorUrl` (откройте **Компоненты → ImageOptimizer**, hard refresh)
+3. Убедитесь, что в HTML менеджера задан `window.imageoptimizerConfig.connectorUrl` (откройте **Пакеты → ImageOptimizer**, hard refresh)
 4. Проверьте права и modAuth (401 → HTML страница mgr)
 
 ## Rebuild показывает 0 файлов для каталога
