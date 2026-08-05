@@ -14,7 +14,8 @@ title: ms3ProductSets
 - `auto_sales`
 - `vip`
 - `auto`
-- `also-bought`, `cross-sell`, `custom` (обрабатываются как авто-режим)
+- `also-bought`, `cross-sell` — как `buy_together` (co-purchase → авто по категории)
+- `custom` — как `auto`
 
 Если передан неизвестный `type`, используется `buy_together`.
 

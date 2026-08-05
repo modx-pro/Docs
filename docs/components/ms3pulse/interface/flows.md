@@ -3,7 +3,7 @@ title: Сценарии (flows)
 ---
 # Пользовательские сценарии
 
-Справочник действий в ms3Pulse. Скриншоты — [screenshots/README.md](../screenshots/README.md).
+Справочник действий в ms3Pulse.
 
 ## Карта приложения
 

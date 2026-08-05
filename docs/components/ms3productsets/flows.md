@@ -53,27 +53,26 @@ sequenceDiagram
 3. Коннектор запускает сниппет `ms3ProductSets` с параметрами из POST.
 4. HTML вставляется в контейнер; пустой ответ скрывает контейнер.
 
-## 3. Добавление в корзину из карточки подборки
+## 3. Добавление в корзину из карточки подборки / «весь набор»
 
-1. Клик по элементу с `data-add-to-cart`.
-2. JS отправляет POST `action=add_to_cart` с `product_id`, `count`.
-3. Коннектор вызывает `msCartAdd` (если miniShop3 доступен).
-4. Возвращает JSON `{success,message}`.
-5. JS показывает toast и диспатчит `msps:cart:update` при успехе.
+1. Клик по `data-add-to-cart` или «Добавить весь набор» (`data-add-set`).
+2. Если на странице есть `window.ms3Config.actionUrl`, запрос идёт в **MiniShop3 Web API**: `POST` на `api.php?route=/api/v1/cart/add` с JSON `{ id, count, options }` и `credentials: 'same-origin'`.
+3. Иначе fallback: POST в коннектор `action=add_to_cart` — сервис `ms3`, токен из cookie `ms3_token`, вызов `Cart::add()`.
+4. При успехе: уведомление **iziToast** (success/error), `msps:cart:update`, при ответе API — `ms3:cart:updated` с `detail.data` для обновления карточек MS3.
 
 ## 4. Создание шаблона подборки (админка)
 
 1. UI отправляет `save_template`.
-2. Коннектор валидирует `name` и `related_product_ids`.
-3. `msps_save_template` делает INSERT/UPDATE в `ms3_product_set_templates`.
-4. UI обновляет список шаблонов.
+2. Коннектор проверяет имя, тип (`MSPS_ADMIN_TEMPLATE_TYPES`), непустой список существующих `msProduct`.
+3. `msps_save_template` — INSERT/UPDATE в `ms3_product_set_templates`. При переименовании шаблона обновляет `template_name` и `type` в уже применённых связях.
+4. `msps_bump_cache_generation`, UI перезагружает список.
 
 ## 5. Применение шаблона к категории
 
 1. UI отправляет `apply_template` (`template_id`, `parent_id/parent_ids`, `replace`).
 2. Категория рекурсивно разворачивается до всех `msProduct`.
 3. Для каждого товара создаются связи в `ms3_product_sets`.
-4. UI получает `applied` (кол-во вставленных связей).
+4. UI получает `applied` — число строк, реально добавленных через `INSERT IGNORE` (без учёта дублей и self-link).
 
 ## 6. Отвязка шаблона от категории
 
@@ -88,11 +87,13 @@ sequenceDiagram
 2. JS находит контейнер от кнопки (`.msps__vip-set`, `.msps__wrapper` или `[data-set-type]`).
 3. Собирает ID товаров из `[data-product-id]` и `[data-add-to-cart]`.
 4. Последовательно вызывает `addToCart(productId, 1)` для каждого ID.
-5. Показывает toast `set_added` и диспатчит `msps:cart:update` с `product_ids`.
+5. Показывает iziToast `set_added` / ошибку и диспатчит `msps:cart:update` с `product_ids`.
 
 ## 8. Синхронизация TV при сохранении товара
 
 1. Срабатывает плагин `OnDocFormSave`.
 2. Если у шаблона товара есть TV подборок, запускается синхронизация.
-3. **При пустом TV:** удаляются только записи без `template_name` (созданные из TV); связи из шаблонов (с заполненным `template_name`) сохраняются.
-4. **При заполненном TV:** удаляются все записи данного типа для товара, вставляются новые связи из значения TV.
+3. Синхронизация только для `msProduct`.
+4. **При пустом TV:** удаляются записи с пустым `template_name` для этого типа. Связи из шаблонов сохраняются.
+5. **При заполненном TV:** удаляются TV-записи (пустой `template_name`), вставляются новые ID из TV (с валидацией `msProduct`).
+6. После sync — `msps_bump_cache_generation`.

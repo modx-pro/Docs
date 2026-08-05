@@ -55,7 +55,7 @@ ms3ProductSets выводит блоки рекомендаций в MiniShop3: 
 - **TV на товаре** — пять полей `ms3productsets_*`, синхронизация в БД при сохранении
 - **Сайт** — сниппет `ms3ProductSets`, AJAX через `productsets.js` ([интеграция](integration))
 - **Кеш** — `ms3productsets.cache_lifetime` ([настройки](settings))
-- **Корзина** — `data-add-to-cart`, VIP «добавить весь набор» через connector `add_to_cart`
+- **Корзина** — `data-add-to-cart`, VIP «добавить весь набор»; при наличии `ms3Config.actionUrl` — MiniShop3 Web API, иначе connector `add_to_cart`
 
 ## Системные требования
 
