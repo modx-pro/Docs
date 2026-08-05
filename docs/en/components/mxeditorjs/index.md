@@ -3,18 +3,25 @@ title: mxEditorJs
 description: Block editor Editor.js for MODX 3 — content in blocks instead of TinyMCE/CKEditor
 author: ibochkarev
 logo: https://modstore.pro/assets/extras/mxeditorjs/logo.png
+modstore: https://modstore.pro/packages/content/mxeditorjs
+repository: https://github.com/Ibochkarev/mxEditorJs
 dependencies: []
 
 items: [
   { text: 'Getting started', link: 'quick-start', items: [
     { text: 'Quick start', link: 'quick-start' },
     { text: 'System settings', link: 'settings' },
+    { text: 'Editor guide', link: 'user-guide' },
   ]},
   { text: 'Integration', link: 'integration', items: [
-    { text: 'Enabling and usage', link: 'integration' },
+    { text: 'TVs, migration, frontend', link: 'integration' },
+    { text: 'FAQ', link: 'faq' },
   ]},
   { text: 'For developers', link: 'api', items: [
     { text: 'API and interfaces', link: 'api' },
+    { text: 'Flows', link: 'flows' },
+    { text: 'Architecture', link: 'architecture' },
+    { text: 'Troubleshooting', link: 'troubleshooting' },
   ]},
 ]
 ---
@@ -27,21 +34,27 @@ Block content editor for MODX 3 based on [Editor.js](https://editorjs.io/). Repl
 | Need | Document |
 | --- | --- |
 | Enable editor in 3 steps | [Quick start](quick-start) |
+| Blocks, media, embed | [Editor guide](user-guide) |
 | Configure tool profiles and media | [System settings](settings) |
 | Connector API, PHP classes, data formats | [API](api) |
-| Working with TV and HTML → Editor.js migration | [Integration](integration) |
+| TVs, HTML → Editor.js migration | [Integration](integration) |
+| Common editor questions | [FAQ](faq) |
+| Save flow, sidecar, connector | [Flows](flows) |
 
 ## Who reads what
 
-- **Content editor:** [Quick start](quick-start) → using the UI (blocks, images, links) — see the component repo docs.
-- **Administrator:** [System settings](settings) → profiles, media, presets.
-- **Developer:** [API](api) → Connector, PHP, JS; [Integration](integration) → TV, migration.
+- **Content editor:** [Editor guide](user-guide)
+- **Administrator:** [System settings](settings), [FAQ](faq)
+- **Developer:** [API](api), [Flows](flows), [Architecture](architecture), [Troubleshooting](troubleshooting)
+
+Package: **1.1.0-beta2**. [modstore.pro](https://modstore.pro/packages/content/mxeditorjs), [GitHub](https://github.com/Ibochkarev/mxEditorJs). Changelog in the package repo: `core/components/mxeditorjs/docs/changelog.txt`.
 
 ## Features
 
-- **Block editor** — 13 block types: paragraph, header, list, checklist, quote, table, code, raw HTML, embed, image, attachment, delimiter, warning
+- **Block editor** — 14 block types: paragraph, header, list, checklist, quote, table, code, raw HTML, embed, image, **gallery**, attachment, delimiter, warning
 - **TV support** — editor in main resource content and in Template Variables of type `textarea` with richtext option
-- **Media upload** — drag-and-drop images and files via MODX Media Sources
+- **Media upload** — drag-and-drop images and files via MODX Media Sources. Separate paths for images and attachments (Attaches)
+- **Gallery** — multiple images in one block, sorting, fit and slider modes, upload and Browse via Media Source (same as Image)
 - **File browser** — browse Media Source directories
 - **Link autocomplete** — MODX resource search when inserting links
 - **HTML → Editor.js migration** — convert existing HTML content
@@ -59,7 +72,7 @@ mxEditorJs builds the editor from the following block and inline tools, block tu
 | Plugin | Description | Links |
 | --- | --- | --- |
 | **@editorjs/paragraph** | Basic text block | [npm](https://www.npmjs.com/package/@editorjs/paragraph) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
-| **@editorjs/header** | Headings H1–H6 | [npm](https://www.npmjs.com/package/@editorjs/header) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
+| **@editorjs/header** | Headings H2–H5 | [npm](https://www.npmjs.com/package/@editorjs/header) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
 | **@editorjs/list** | Bullet and numbered lists | [npm](https://www.npmjs.com/package/@editorjs/list) · [awesome](https://github.com/editor-js/awesome-editorjs#lists) |
 | **@editorjs/checklist** | Checklist with checkboxes | [npm](https://www.npmjs.com/package/@editorjs/checklist) · [awesome](https://github.com/editor-js/awesome-editorjs#lists) |
 | **@editorjs/quote** | Quote | [npm](https://www.npmjs.com/package/@editorjs/quote) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
@@ -71,6 +84,7 @@ mxEditorJs builds the editor from the following block and inline tools, block tu
 | **@editorjs/delimiter** | Delimiter | [npm](https://www.npmjs.com/package/@editorjs/delimiter) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
 | **@editorjs/warning** | Warning block | [npm](https://www.npmjs.com/package/@editorjs/warning) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
 | **Image** (custom) | Image with MODX Media Source upload and browser | Part of mxEditorJs (`ImageTool.ts`), similar to [@editorjs/image](https://github.com/editor-js/awesome-editorjs#media--embed) |
+| **Gallery** (custom) | Image gallery on `@kiberpro/editorjs-gallery`: sorting, fit/slider modes | Part of mxEditorJs (`GalleryTool.ts`) |
 
 ### Inline tools
 
@@ -123,7 +137,7 @@ Or install a transport package manually: download `mxeditorjs-*.transport.zip`, 
 
 ```bash
 cd /path/to/modx/Extras/
-git clone <repo-url> mxEditorJs
+git clone https://github.com/Ibochkarev/mxEditorJs mxEditorJs
 cd mxEditorJs
 npm install
 npm run build
@@ -147,7 +161,10 @@ All settings are in the **mxeditorjs** namespace.
 | `mxeditorjs.enabled` | `true` | Enable/disable editor |
 | `mxeditorjs.profile` | `default` | Active tool profile |
 | `mxeditorjs.enabled_tools` | — | Override profile: comma-separated tool list |
-| `mxeditorjs.image_mediasource` | `1` | Media Source ID for images |
+| `mxeditorjs.image_mediasource` | `1` | Media Source ID for images and gallery |
+| `mxeditorjs.image_upload_path` | `images/resources/{resource_id}/` | Image upload path (Image, Gallery) |
+| `mxeditorjs.file_upload_path` | `files/resources/{resource_id}/` | Attachment upload path (Attaches) |
+| `mxeditorjs.gallery_max_count` | `0` | Max images in Gallery block (`0` = no limit) |
 | `mxeditorjs.max_upload_size` | `5242880` (5 MB) | Max upload size (bytes) |
 
 Full list: [System settings](settings).
