@@ -11,7 +11,15 @@ title: Интеграция
 2. Убедитесь, что **mxeditorjs.enabled** = **Да** (пространство имён `mxeditorjs`).
 3. Откройте ресурс — в поле контента отображается блочный редактор.
 
-Редактор подключается плагином к событию `OnDocFormPrerender` и инициализируется при появлении поля контента (или TV с richtext). Сохранение обрабатывается при отправке формы редактирования ресурса через Connector API (`content/save`).
+Редактор подключается плагином на `OnDocFormPrerender` и инициализируется при появлении поля контента (или TV с richtext).
+
+**Сохранение через форму ресурса** (основной путь):
+
+1. Editor.js отдаёт JSON и HTML (клиент `renderPreviewHtml`) в textarea и hidden fields
+2. MODX сохраняет HTML в `modResource.content` / TV
+3. Плагин на `OnBeforeDocFormSave` пишет JSON в sidecar
+
+Connector `content/save` форма **не вызывает**. Он нужен для AJAX и кастомных интеграций. Подробнее: [Потоки](flows).
 
 ## Использование в Template Variables
 
@@ -42,7 +50,7 @@ title: Интеграция
 
 :::
 
-Дополнительные TV с Editor.js выводятся через плейсхолдеры TV (например `[[*my_richtext_tv]]` или через Fenom). Рендер JSON → HTML выполняется компонентом при сохранении. На фронте всегда приходит готовый HTML.
+Дополнительные TV с Editor.js выводятся через плейсхолдеры TV (например `[[*my_richtext_tv]]` или через Fenom). HTML попадает в textarea TV при сохранении. На фронте всегда готовый HTML.
 
 ## Миграция HTML → Editor.js
 
@@ -62,18 +70,33 @@ title: Интеграция
 - Загрузка **изображений** и блока **Gallery** — Media Source **mxeditorjs.image_mediasource**, путь **mxeditorjs.image_upload_path** (шаблон с `{resource_id}`).
 - Загрузка **файлов-вложений** (Attaches) — **mxeditorjs.file_mediasource** и отдельный путь **mxeditorjs.file_upload_path**.
 - Лимит числа картинок в одном блоке Gallery — **mxeditorjs.gallery_max_count** (`0` = без лимита).
-- CSS-классы для изображений и ссылок задаются в пресетах (**mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets** и др.) — см. [Системные настройки](settings).
+- CSS-классы для изображений и ссылок задаются в пресетах (**mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets** и др.). Пресеты Image в UI редактора **не добавляют** класс к `<img>` в HTML-снимке — см. [Системные настройки](settings).
 
 ## Галерея на фронте
 
-HTML-снимок блока Gallery генерируется при сохранении (`HtmlRenderer`). Разметка:
+HTML-снимок блока Gallery генерируется при сохранении (клиент `renderPreviewHtml` или сервер `HtmlRenderer` при `content/save`). Разметка:
 
 - `<figure class="mxeditorjs-gallery mxeditorjs-gallery--fit">` — сетка (режим **Fit**)
 - `<figure class="mxeditorjs-gallery mxeditorjs-gallery--slider">` — горизонтальный скролл (режим **Slider**)
 
-Базовые стили подключаются в менеджере вместе с `mxeditorjs.css` (`gallery-front.css`). На сайте они применяются к HTML из `[[*content]]` автоматически, если тема не переопределяет классы. При необходимости скопируйте правила из `assets/components/mxeditorjs/css/gallery-front.css` в CSS темы.
+Файл `gallery-front.css` подключает **только manager** (превью в форме ресурса). На витрине CSS **не грузится** автоматически.
+
+Подключите стили в шаблоне или теме:
+
+```html
+<link rel="stylesheet" href="/assets/components/mxeditorjs/css/gallery-front.css">
+```
+
+Либо скопируйте правила из `assets/components/mxeditorjs/css/gallery-front.css` в CSS темы.
+
+## Embed на фронте
+
+Блок embed выводит `<div class="mxeditorjs-embed"><iframe ...></iframe></div>`. RuTube и другие сервисы `@editorjs/embed` настраиваются в `mxeditorjs.ts` (секция `services`), отдельной системной настройки нет. Кастомный сервис добавляет разработчик в исходниках — см. [Архитектура](architecture).
 
 ## Что дальше
 
-- [API](api) — эндпоинты коннектора, PHP-классы, форматы данных
-- [Системные настройки](settings) — все параметры компонента
+- [Руководство редактора](user-guide) — блоки, embed, TV
+- [Потоки](flows) — save flow, sidecar, connector
+- [API](api) — эндпоинты коннектора, PHP-классы
+- [Системные настройки](settings) — профили, медиа, пресеты
+- [FAQ](faq) — типовые вопросы

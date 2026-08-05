@@ -11,24 +11,32 @@ How to enable mxEditorJs in MODX, use it in TVs, and output content on the site.
 2. Ensure **mxeditorjs.enabled** = **Yes** (namespace `mxeditorjs`).
 3. Open a resource — the content field shows the block editor.
 
-The editor is loaded by a plugin on `OnDocFormPrerender` and initializes when the content field (or a richtext TV) appears. Saving is handled on resource form submit via the Connector API (`content/save`).
+The plugin hooks `OnDocFormPrerender` and initializes when the content field (or richtext TV) appears.
+
+**Save via resource form** (primary path):
+
+1. Editor.js sends JSON and HTML (client `renderPreviewHtml`) to textarea and hidden fields
+2. MODX saves HTML to `modResource.content` / TV
+3. Plugin on `OnBeforeDocFormSave` writes JSON to sidecar
+
+The form does **not** call connector `content/save`. Use that for AJAX and custom integrations. Details: [Flows](flows).
 
 ## Using in Template Variables
 
 1. Create a TV of type **Text (multiline)** (textarea).
 2. In the TV settings, enable **Use visual editor** (richtext).
-3. With `which_editor` = **mxEditorJs**, this TV will use the same block editor.
+3. With `which_editor` = **mxEditorJs**, this TV uses the same block editor.
 
-TV content is stored in the sidecar table `mxeditorjs_tv_content` in Editor.js format; on the frontend the generated HTML is used (same as for main content).
+TV content is stored in `mxeditorjs_tv_content` as Editor.js JSON. Frontend output uses generated HTML (same as main content).
 
 ## Output on the site
 
-After saving with mxEditorJs, resource content (main `content` field) is stored in two forms:
+After saving, main resource content exists in two forms:
 
-- **JSON** — in the sidecar for the editor (loaded into Editor.js when the form is opened again).
-- **HTML** — in `modResource.content` (used for frontend output).
+- **JSON** — sidecar for the editor (loaded on next form open)
+- **HTML** — `modResource.content` for the frontend
 
-In the template, output content as usual:
+In the template:
 
 ::: code-group
 
@@ -42,28 +50,53 @@ In the template, output content as usual:
 
 :::
 
-TVs that use Editor.js are output via TV placeholders (e.g. `[[*my_richtext_tv]]` or Fenom). JSON → HTML rendering is done by the component on save; the frontend always receives ready HTML.
+Editor.js TVs use TV placeholders (e.g. `[[*my_richtext_tv]]` or Fenom). HTML lands in the TV textarea on save. Frontend always receives ready HTML.
 
 ## HTML → Editor.js migration
 
-If you already have resources with HTML in the content field, you can convert them to Editor.js format.
+Convert existing HTML in the content field to Editor.js:
 
-1. Via Connector: action **content/migrate** with `resource_id`, optionally `dry_run=1` (preview), then `confirmed=1` to overwrite.
-2. With `dry_run` the response includes `preview` (blocks) and `blocks_count`; on success — `migrated`, `blocks_count`, `overwritten`.
+1. Connector action **content/migrate** with `resource_id`, optionally `dry_run=1` (preview), then `confirmed=1` to overwrite
+2. With `dry_run` the response includes `preview` (blocks) and `blocks_count`. On success — `migrated`, `blocks_count`, `overwritten`
 
-After migration, opening the resource in the manager shows the block editor; the site still outputs HTML from `modResource.content`, updated during migration.
+After migration the manager shows the block editor. The site still outputs HTML from `modResource.content`, updated during migration.
 
 ## Profiles and tools
 
-The set of blocks (paragraph, header, list, image, etc.) is defined by **mxeditorjs.profile** or **mxeditorjs.enabled_tools**. See [System settings](settings).
+Block set (paragraph, header, list, image, etc.) is defined by **mxeditorjs.profile** or **mxeditorjs.enabled_tools**. See [System settings](settings).
 
 ## Media and presets
 
-- Image and file uploads go to the Media Source from **mxeditorjs.image_mediasource** and **mxeditorjs.file_mediasource**.
-- Upload path is set in **mxeditorjs.image_upload_path** (template with `{resource_id}`).
-- CSS classes for images and links are set in presets (**mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets**, etc.) — see [System settings](settings).
+- **Images** and **Gallery** — **mxeditorjs.image_mediasource**, path **mxeditorjs.image_upload_path** (template with `{resource_id}`)
+- **Attaches** — **mxeditorjs.file_mediasource**, path **mxeditorjs.file_upload_path**
+- Gallery image limit — **mxeditorjs.gallery_max_count** (`0` = no limit)
+- CSS presets (**mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets**, etc.). Image presets in the editor UI **do not** add a class to `<img>` in the HTML snapshot — see [System settings](settings)
+
+## Gallery on the frontend
+
+Gallery HTML is generated on save (client `renderPreviewHtml` or server `HtmlRenderer` on `content/save`). Markup:
+
+- `<figure class="mxeditorjs-gallery mxeditorjs-gallery--fit">` — grid (**Fit**)
+- `<figure class="mxeditorjs-gallery mxeditorjs-gallery--slider">` — horizontal scroll (**Slider**)
+
+`gallery-front.css` loads **only in the manager** (form preview). The frontend does **not** load it automatically.
+
+Add styles in template or theme:
+
+```html
+<link rel="stylesheet" href="/assets/components/mxeditorjs/css/gallery-front.css">
+```
+
+Or copy rules from `assets/components/mxeditorjs/css/gallery-front.css` into theme CSS.
+
+## Embed on the frontend
+
+Embed blocks output `<div class="mxeditorjs-embed"><iframe ...></iframe></div>`. RuTube and other `@editorjs/embed` services are configured in `mxeditorjs.ts` (`services` section), not via system settings. Custom services are added in source — see [Architecture](architecture).
 
 ## Next steps
 
-- [API](api) — connector endpoints, PHP classes, data formats
-- [System settings](settings) — all component parameters
+- [Editor guide](user-guide) — blocks, embed, TVs
+- [Flows](flows) — save flow, sidecar, connector
+- [API](api) — connector endpoints, PHP classes
+- [System settings](settings) — profiles, media, presets
+- [FAQ](faq) — common questions
