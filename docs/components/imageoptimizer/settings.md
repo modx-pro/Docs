@@ -6,7 +6,9 @@ title: Системные настройки
 
 Ключи в namespace `imageoptimizer`. В БД: `imageoptimizer_{name}`.
 
-**Где изменить:** **Компоненты → ImageOptimizer → Настройки** или **Система → Системные настройки** (фильтр `imageoptimizer`).
+**Где изменить:** **Пакеты → ImageOptimizer → Настройки** или **Система → Системные настройки** (фильтр `imageoptimizer`).
+
+![Вкладка «Настройки → Общие»](/components/imageoptimizer/screenshots/settings.png)
 
 ## Общие
 
@@ -46,7 +48,7 @@ title: Системные настройки
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `imageoptimizer_cron_limit` | number | `200` | Задач за один запуск `cron/convert.php` или кнопки **Обработать очередь** |
+| `imageoptimizer_cron_limit` | number | `200` | Задач за один батч: `cron/convert.php`, один HTTP-запрос `queue/process` и шаг цикла **Обработать очередь** в UI |
 | `imageoptimizer_stuck_minutes` | number | `30` | Сброс `processing` → `pending`, если дольше N минут |
 | `imageoptimizer_retention_days` | number | `30` | `cron/prune.php` удаляет `done` старше N дней; `0` = не чистить |
 
