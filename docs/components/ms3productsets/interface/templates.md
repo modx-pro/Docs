@@ -3,7 +3,7 @@ title: Подборки товаров
 ---
 # Подборки товаров
 
-Одна страница manager без вкладок: справочник типов, таблица шаблонов, блок применения к категории. Запросы идут в `assets/components/ms3productsets/connector.php`.
+Страница manager с двумя вкладками: **Список подборок** (таблица + справочник типов) и **Применение** (массовое копирование шаблона в категорию). Запросы идут в `assets/components/ms3productsets/connector.php`.
 
 ![Обзор](/components/ms3productsets/screenshots/page-overview.png)
 
@@ -11,11 +11,12 @@ title: Подборки товаров
 
 | Зона | Класс / элемент | Действие |
 |------|-----------------|----------|
-| Заголовок | `.ms3productsets-admin__header` | Название и intro |
-| Типы | `.ms3productsets-admin__card-types` | Badge + описание типов |
-| Список | `.ms3productsets-admin__card-templates` | DataTable, **Новая подборка** |
+| Заголовок | `.ms3productsets-header` | Название и intro |
+| Вкладки | `.ms3productsets-tabs` | **Список подборок** / **Применение** |
+| Список | `.ms3productsets-view__primary` | DataTable, **Новая подборка** |
+| Типы | `.ms3productsets-view__reference` | Справочник типов (первая вкладка) |
 | Диалог | `.ms3productsets-admin-dialog` | CRUD шаблона |
-| Применение | `.ms3productsets-admin__card-apply` | Select, TreeSelect, checkbox, кнопки |
+| Применение | вкладка **Применение** | Select, TreeSelect, checkbox, кнопки |
 
 ![Типы](/components/ms3productsets/screenshots/types-section.png)
 
@@ -33,6 +34,8 @@ title: Подборки товаров
 | Описание | `description` | нет |
 | Порядок | `sortorder` | нет |
 
+MultiSelect подгружает товары через `get_resources`. Выбранные ID, которых нет в текущей выборке, догружаются через `ids[]`.
+
 ![Форма](/components/ms3productsets/screenshots/template-dialog-new.png)
 
 ## Connector (manager)
@@ -41,11 +44,11 @@ title: Подборки товаров
 |--------|------------|
 | `get_templates` | Список шаблонов |
 | `save_template` | Создание / обновление |
-| `delete_template` | Удаление по id |
+| `delete_template` | Удаление шаблона и связей с его `template_name` |
 | `apply_template` | Массовое применение |
 | `unbind_template` | Отвязка по категории |
 | `get_resource_tree` | Дерево для TreeSelect |
-| `get_resources` | Список товаров для MultiSelect |
+| `get_resources` | Список товаров для MultiSelect (`ids[]` для догрузки выбранных) |
 
 Требуется авторизованный пользователь manager.
 
