@@ -31,6 +31,80 @@ description: "Вывод BannerPro на сайте: чанки, ротация, 
 
 `positionName` принимает одно имя или список через запятую: `sidebar,footer`. Если вы передали `position`, сниппет игнорирует `positionName`.
 
+## Типовые места на сайте
+
+| Место | Имя позиции | Типичный вызов |
+| --- | --- | --- |
+| Шапка / hero | `header` | `limit=1`, `sortby=RAND()` или `ab` |
+| Боковая колонка | `sidebar` | `sortby=idx`, `tplWrapper` |
+| Подвал | `footer` | `limit=3` |
+| Карточка товара MS3 | `shop-product-sidebar` | `productId` текущего ресурса |
+| HTML / AdSense | `sidebar-html` | тип HTML, `tplHtml` |
+
+Пример layout с тремя слотами:
+
+::: code-group
+
+```fenom
+<header>
+  {'!BannerPro' | snippet : [
+    'positionName' => 'header',
+    'tpl' => 'byAd',
+    'limit' => 1
+  ]}
+</header>
+
+<aside>
+  {'!BannerPro' | snippet : [
+    'positionName' => 'sidebar',
+    'tpl' => 'byAd',
+    'sortby' => 'idx',
+    'sortdir' => 'ASC',
+    'tplWrapper' => '@INLINE <div class="sidebar-banners">{$output}</div>'
+  ]}
+</aside>
+
+<footer>
+  {'!BannerPro' | snippet : [
+    'positionName' => 'footer',
+    'tpl' => 'byAd',
+    'limit' => 3
+  ]}
+</footer>
+```
+
+```modx
+<header>
+[[!BannerPro?
+  &positionName=`header`
+  &tpl=`byAd`
+  &limit=`1`
+]]
+</header>
+
+<aside>
+[[!BannerPro?
+  &positionName=`sidebar`
+  &tpl=`byAd`
+  &sortby=`idx`
+  &sortdir=`ASC`
+  &tplWrapper=`@INLINE <div class="sidebar-banners">[[+output]]</div>`
+]]
+</aside>
+
+<footer>
+[[!BannerPro?
+  &positionName=`footer`
+  &tpl=`byAd`
+  &limit=`3`
+]]
+</footer>
+```
+
+:::
+
+Экраны создания позиций и баннеров: [Админка](manager). Карточка товара: [MiniShop3](minishop3).
+
 ## Выборка
 
 Сниппет всегда добавляет базовые условия:

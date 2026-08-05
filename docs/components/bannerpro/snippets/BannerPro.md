@@ -37,15 +37,16 @@ description: "Параметры сниппета BannerPro, плейсхолд�
 | `positions` | string | пусто | Несколько ID через запятую |
 | `positionName` | string | пусто | Имя позиции или список имён через запятую |
 | `positionKey` | string | пусто | Синоним `positionName` (то же поведение) |
-| `context` | string | текущий | Фильтр позиций по `context_key`. `*` = текущий контекст |
+| `context` | string | текущий | Фильтр позиций по `context_key`. Пусто или `*` = текущий контекст MODX |
 | `productId` | int | пусто | ID товара MiniShop3 |
-| `tags` | string | пусто | Метки через запятую для фильтра баннеров |
-| `tagsMode` | string | `any` | `any` или `all` для сопоставления меток |
+| `tags` | string | пусто | Метки через запятую. Если параметр задан, баннеры без меток не попадут в выборку |
+| `tagsMode` | string | `any` | `any` (хотя бы одна метка) или `all` (все перечисленные) |
 | `resource` | int | пусто | ID ресурса для таргетинга (явная подстановка) |
 | `parent` | int | пусто | ID родителя для таргетинга по разделу |
 | `showInactive` | bool | `false` | Показывает баннеры с `active = 0` |
-| `sortby` | string | `RAND()` | `RAND()`, `idx`, `weighted`, `ab` или поле `byAd` |
-| `tpl` | string | `byAd` | Чанк для одного баннера |
+| `sortby` | string | `RAND()` | `RAND()`, `idx` / `index`, `weighted`, `ab` или поле `byAd` |
+| `outputSeparator` | string | `\n` | Разделитель между HTML баннеров в итоговой строке |
+| `tpl` | string | `byAd` | Чанк для одного баннера. Без чанка сниппет выводит сырые поля в `<pre>` |
 | `cache` | bool | пусто | Переопределяет `bannerpro_cache` для вызова |
 | `cacheLifetime` | int | пусто | Переопределяет `bannerpro_cache_lifetime` |
 
@@ -66,6 +67,17 @@ description: "Параметры сниппета BannerPro, плейсхолд�
 | `tplHtmlOdd` | Чанк нечётных html-баннеров |
 
 Для `type=html` сниппет использует `byHtml`, если не задан `tplHtml`.
+
+При `sortby=weighted` направление сортировки принудительно `DESC` (вес задаётся в связи баннер + позиция, поле `weight`).
+
+## Чанки в пакете
+
+| Чанк | Назначение |
+| --- | --- |
+| `byAd` | Изображение в ссылке `[[+click_url]]` с атрибутами `data-bannerpro-*` |
+| `byHtml` | Вывод `[[+html]]`. Если у баннера задан URL, ядро оборачивает HTML в ссылку клика |
+
+Для продакшена удобнее `@FILE`-чанки на Fenom. Примеры разметки: [Интеграция](../integration#чанки).
 
 ## Параметры pdoTools
 
@@ -96,7 +108,9 @@ description: "Параметры сниппета BannerPro, плейсхолд�
 | `name` | Название баннера |
 | `url` | URL перехода после клика |
 | `click_url` | Готовый URL учёта клика (`/{bannerpro_click}/{adposition}` + UTM при включённых настройках) |
+| `click_url_abs` | Абсолютный `click_url` (`site_url` + путь клика) |
 | `type` | `image` или `html` |
+| `tags` | Метки баннера строкой через запятую |
 | `image` | Полный URL изображения |
 | `html` | HTML-код баннера |
 | `source` | ID Media Source |
@@ -105,6 +119,7 @@ description: "Параметры сниппета BannerPro, плейсхолд�
 | `start`, `end` | Даты показа |
 | `adposition` | ID связи `bannerpro_ads_positions` |
 | `ad` | ID баннера в связи |
+| `position_id` | ID позиции (`bannerpro_positions.id`) |
 | `position_name` | Имя позиции |
 | `idx` | Номер строки в выдаче |
 | `weight` | Вес связи баннер + позиция |
@@ -289,6 +304,7 @@ description: "Параметры сниппета BannerPro, плейсхолд�
 {'!BannerPro' | snippet : [
   'positionName' => 'sidebar',
   'tags' => 'sale,promo',
+  'tagsMode' => 'any',
   'tpl' => 'byAd'
 ]}
 ```
@@ -297,11 +313,62 @@ description: "Параметры сниппета BannerPro, плейсхолд�
 [[!BannerPro?
   &positionName=`sidebar`
   &tags=`sale,promo`
+  &tagsMode=`any`
   &tpl=`byAd`
 ]]
 ```
 
 :::
+
+### Взвешенная ротация
+
+::: code-group
+
+```fenom
+{'!BannerPro' | snippet : [
+  'positionName' => 'sidebar',
+  'sortby' => 'weighted',
+  'limit' => 1,
+  'tpl' => 'byAd'
+]}
+```
+
+```modx
+[[!BannerPro?
+  &positionName=`sidebar`
+  &sortby=`weighted`
+  &limit=`1`
+  &tpl=`byAd`
+]]
+```
+
+:::
+
+### Отдельный плейсхолдер на каждый баннер
+
+::: code-group
+
+```fenom
+{'!BannerPro' | snippet : [
+  'positionName' => 'sidebar',
+  'tpl' => 'byAd',
+  'toSeparatePlaceholders' => 'banner'
+]}
+{$_modx->getPlaceholder('banner0')}
+```
+
+```modx
+[[!BannerPro?
+  &positionName=`sidebar`
+  &tpl=`byAd`
+  &toSeparatePlaceholders=`banner`
+]]
+[[+banner0]]
+```
+
+:::
+
+`toSeparatePlaceholders` несовместим с `tplWrapper` и отключает кэш HTML сниппета.
 
 ## Пример чанка
 

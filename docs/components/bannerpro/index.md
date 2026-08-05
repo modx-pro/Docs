@@ -1,7 +1,9 @@
 ---
 title: BannerPro
-description: "Управление баннерами в MODX 3: позиции, ротация, UTM, webhook, A/B-деление, клики и показы, Vue-админка"
+description: "BannerPro: баннеры в MODX 3, позиции, UTM, webhook, A/B, REST API, Vue-админка"
 author: ibochkarev
+logo: https://modstore.pro/assets/extras/bannerpro/logo-md.png
+modstore: https://modstore.pro/packages/photos-and-files/bannerpro
 dependencies: [pdoTools, VueTools]
 
 items: [
@@ -26,7 +28,7 @@ items: [
     text: 'Админка',
     link: 'manager',
     items: [
-      { text: 'Баннеры, позиции, статистика', link: 'manager' },
+      { text: 'Экраны и действия', link: 'manager' },
     ],
   },
   {
@@ -52,9 +54,11 @@ items: [
 
 # BannerPro
 
-**BannerPro** выводит баннеры по позициям через сниппет `BannerPro`, считает клики по URL `/{bannerpro_click}/{adposition}` и фиксирует показы через `impression.js`, если включён учёт. Админка на Vue 3 и PrimeVue через **VueTools** (пакет **4.6.0-pl**).
+**BannerPro** выводит баннеры по позициям через сниппет `BannerPro`, считает клики по URL `/{bannerpro_click}/{adposition}` и фиксирует показы через `impression.js`, если включён учёт. Админка на Vue 3 и PrimeVue через **VueTools**.
 
 Namespace настроек: **`bannerpro`**. Таблицы: `bannerpro_ads`, `bannerpro_positions`, `bannerpro_ads_positions`, `bannerpro_clicks`, `bannerpro_impressions`.
+
+![Админка BannerPro](/components/bannerpro/screenshots/page-overview.png)
 
 [Быстрый старт](quick-start).
 
@@ -67,6 +71,7 @@ Namespace настроек: **`bannerpro`**. Таблицы: `bannerpro_ads`, `b
 | pdoTools | 2.1+ | Выборка и рендер сниппета `BannerPro` |
 | VueTools | актуальная | Vue 3 и PrimeVue в админке |
 | MiniShop3 | опционально | Привязка баннера к товару и атрибуция заказа |
+| CrawlerDetect | опционально | Фильтр ботов при `bannerpro_filter_bots` |
 
 ## Возможности
 
@@ -80,15 +85,17 @@ Namespace настроек: **`bannerpro`**. Таблицы: `bannerpro_ads`, `b
 - **Фильтр ботов**: исключение ботов из статистики через CrawlerDetect.
 - **Учёт кликов**: плагин `BannerProClickout` на `OnPageNotFound` пишет клик и перенаправляет на URL баннера.
 - **Учёт показов**: настройка `bannerpro_track_impressions` подключает `impression.js` и pixel URL.
-- **Статистика**: вкладка админки показывает клики, показы, CTR, конверсии MS3, воронку и сравнение периодов.
-- **REST API**: `assets/components/bannerpro/api.php` отдаёт баннеры, позиции и статистику (только чтение).
+- **Админка**: пять вкладок (Баннеры, Позиции, Статистика, Журнал, Настройки), чеклист первой настройки, bulk-операции, режим «только статистика».
+- **Статистика**: клики, показы, CTR, заказы MS3, CVR, воронка и сравнение с прошлой неделей.
+- **REST API v1.1**: `assets/components/bannerpro/api.php`. Баннеры, позиции, статистика, audit, шаблоны. Опционально POST/PATCH баннеров.
 
 ## Минимальный путь
 
 1. Установите **BannerPro**, **pdoTools** и **VueTools**.
 2. Откройте **Компоненты → BannerPro → Позиции** и создайте позицию `sidebar`.
 3. Создайте баннер, задайте URL, изображение или HTML и привяжите его к позиции.
-4. В шаблоне сайта вызовите сниппет:
+4. В шаблоне сайта вызовите сниппет `BannerPro` с `positionName=sidebar`.
+5. Откройте страницу и проверьте ссылку `bannerclick/{adposition}`.
 
 ::: code-group
 
@@ -110,8 +117,6 @@ Namespace настроек: **`bannerpro`**. Таблицы: `bannerpro_ads`, `b
 
 :::
 
-5. Откройте страницу и проверьте ссылку `bannerclick/{adposition}`.
-
 ## Поток клика
 
 ```mermaid
@@ -130,7 +135,7 @@ flowchart LR
 | --- | --- |
 | Установить и вывести первый баннер | [Быстрый старт](quick-start) |
 | Проверить все ключи `bannerpro_*` | [Системные настройки](settings) |
-| Настроить баннеры и позиции | [Админка](manager) |
+| Разобрать экраны админки | [Админка](manager) |
 | Разобрать кэш, ротацию, клики и показы | [Интеграция](integration) |
 | Посмотреть параметры сниппета | [Сниппет BannerPro](snippets/BannerPro) |
 | Выводить баннеры в MiniShop3 | [MiniShop3](minishop3) |

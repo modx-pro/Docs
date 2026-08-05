@@ -98,11 +98,12 @@ document.addEventListener('bannerpro:impression', function (event) {
 | Шаблоны | `ad_templates_getlist` |
 | Позиции | `positions_getlist`, `positions_create`, `positions_update`, `positions_remove`, `positions_duplicate` |
 | Связи | `adpositions_getlist`, `adpositions_add`, `adpositions_remove`, `adpositions_sort`, `adpositions_update_weight` |
-| Статистика | `stats_summary`, `stats_by_day`, `stats_by_weekday`, `stats_top_ads`, `stats_export`, `stats_purge`, `stats_compare`, `clicks_getreferrers` |
+| Статистика | `stats_summary`, `stats_by_day`, `stats_top_ads`, `stats_export`, `stats_purge`, `stats_compare`, `clicks_getreferrers` |
 | Журнал | `audit_getlist` |
 | Метки | `tags_suggest` |
-| Настройки | `settings_integrations_get`, `settings_integrations_update` |
+| Настройки | `settings_utm_get`, `settings_utm_update`, `settings_integrations_get`, `settings_integrations_update` |
 | MiniShop3 | `resource_getlist` |
+| Media | `media_sources_getlist` |
 
 Connector требует сессию `mgr`. Мутации проверяют `bannerpro_save`, `bannerpro_remove` или `bannerpro_stats`.
 

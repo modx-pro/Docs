@@ -34,6 +34,8 @@ BannerPro работает без MiniShop3. Если магазин устан�
 
 В форме баннера поле **Товар (MiniShop3)**: MultiSelect с серверным поиском (`class_key = msProduct`).
 
+![Пикер товара в форме баннера](/components/bannerpro/screenshots/ms3-product-picker.png)
+
 | Значение | Поведение |
 | --- | --- |
 | `0` или пусто | Баннер глобальный |

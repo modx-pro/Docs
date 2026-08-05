@@ -7,6 +7,10 @@ description: "Настройки BannerPro: кэш, клики, показы, UT
 
 Все настройки лежат в namespace **`bannerpro`**. Ключ в `modSystemSetting` и `getOption()` пишется с префиксом `bannerpro_`.
 
+![Системные настройки — bannerpro](/components/bannerpro/screenshots/settings-namespace.png)
+
+Часть ключей (UTM, webhook, A/B TTL) редактируется и во вкладке **Компоненты → BannerPro → Настройки** через connector actions `settings_utm_*` и `settings_integrations_*`. Остальные ключи — только здесь.
+
 ## Кэш
 
 | Ключ | Тип | По умолчанию | Описание |
@@ -91,16 +95,21 @@ Cookie связывает клик по баннеру с заказом MiniSho
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `bannerpro_api_enabled` | combo-boolean | `false` | Включает REST API (только чтение) |
+| `bannerpro_api_enabled` | combo-boolean | `false` | Включает REST API v1.1 |
 | `bannerpro_api_key` | textfield | пусто | Bearer-токен для `api.php` |
+| `bannerpro_api_write_enabled` | combo-boolean | `false` | POST/PATCH баннеров через REST |
+| `bannerpro_api_cors_origin` | textfield | пусто | CORS: `*`, origin или список через запятую |
+| `bannerpro_api_rate_limit` | numberfield | `0` | Запросов в минуту на ключ (`0` = без лимита) |
 
-**REST API ключ**: секрет для заголовка `Authorization: Bearer …` в `api.php`. Смотрите в **Система → Настройки системы** (namespace `bannerpro`, подпись «REST API ключ»). Resolver создаёт 32-символьный hex при установке или обновлении, если поле пустое. Эндпоинты и примеры `curl`: [REST API](development/rest-api#ключ-api).
+**REST API ключ**: секрет для `Authorization: Bearer …` в `api.php`. Смотрите в **Система → Настройки системы** (namespace `bannerpro`, подпись «REST API ключ»). Resolver создаёт 32 hex-символа при установке или обновлении, если поле пустое.
 
 Точка входа:
 
 ```text
 assets/components/bannerpro/api.php
 ```
+
+Чтение: баннеры, позиции, статистика, audit, шаблоны. Запись (если включена): POST/PATCH `/ads`, POST `/ads/from-template`. Позиции через REST не создают и не удаляют. Маршруты и примеры: [REST API](development/rest-api).
 
 ## UTM при клике
 
@@ -202,5 +211,5 @@ URL должен быть `http://` или `https://`. Запрещены `local
 
 - [Интеграция](integration): кэш, ротация, A/B, таргетинг, клики и показы.
 - [Внешняя аналитика](analytics): GA4, Matomo, Яндекс Метрика.
-- [REST API](development/rest-api): Bearer-токен и GET-маршруты.
+- [REST API](development/rest-api): Bearer-токен, CORS, rate limit, write.
 - [Админка](manager): вкладка «Настройки» для UTM, webhook и A/B.

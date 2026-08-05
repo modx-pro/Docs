@@ -23,3 +23,7 @@ AGENTS.md
 # Playwright: локальные пути, пароли, команды съёмки
 docs/components/ms3pulse/screenshots/README.md
 docs/components/ms3productsets/screenshots/README.md
+docs/components/bannerpro/screenshots/README.md
+scripts/capture-bannerpro-screenshots.mjs
+scripts/copy-browser-screenshot.sh
+scripts/save-cdp-png.mjs

@@ -2,6 +2,8 @@
 title: BannerPro
 description: "Banner management for MODX 3: positions, rotation, clicks, impressions, and Vue manager UI"
 author: ibochkarev
+logo: https://modstore.pro/assets/extras/bannerpro/logo-md.png
+modstore: https://modstore.pro/packages/photos-and-files/bannerpro
 dependencies: [pdoTools, VueTools]
 
 items: [
