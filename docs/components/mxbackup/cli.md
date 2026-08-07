@@ -1,6 +1,6 @@
 ---
 title: CLI и cron
-description: Командная строка mxBackup — команды backup, dry-run, validate-config, list-profiles, cleanup, restore-check и restore, параметры запуска, коды возврата и примеры заданий cron.
+description: Командная строка mxBackup — команды backup, dry-run, validate-config, list-profiles, cleanup, remote-list, remote-check, restore-check и restore, параметры запуска, коды возврата и примеры заданий cron.
 outline: [2, 3]
 lastUpdated: true
 ---
@@ -27,6 +27,8 @@ php core/components/mxbackup/cli/mxbackup.php <команда> [параметр
 | `validate-config` | Проверяет конфигурацию, окружение, каталог хранения и доступность базы. В линии для MODX 3 та же проверка доступна кнопкой «Проверить конфигурацию» в менеджере |
 | `list-profiles` | Печатает доступные профили и их режимы |
 | `cleanup` | Применяет правила хранения к каталогу архивов |
+| `remote-list` | Показывает архивы профиля в [удалённом хранилище](remote-storage.md) |
+| `remote-check` | Проверяет доступ к хранилищу: чтение, а с `--write` — запись и удаление |
 | `restore-check` | Проверяет архив и выдаёт код подтверждения |
 | `restore` | Восстанавливает файлы и/или базу данных |
 | `help` | Краткая справка (также `-h`, `--help`) |
@@ -47,6 +49,8 @@ php core/components/mxbackup/cli/mxbackup.php <команда> [параметр
 | `--dry-run` | Тот же эффект, что и команда `dry-run` |
 | `--verbose` | Печатает журнал MODX в консоль |
 | `--archive=/absolute/path/backup.zip` | Архив для `restore-check` и `restore` |
+| `--from-remote=имя-архива.zip` | Взять архив из удалённого хранилища вместо локального пути |
+| `--write` | Для `remote-check`: проверить не только чтение, но и запись |
 | `--scope=all\|files\|database` | Что именно восстанавливать |
 | `--checksum=SHA256` | Ожидаемая контрольная сумма архива |
 | `--confirm=TOKEN` | Код подтверждения из `restore-check` |
