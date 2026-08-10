@@ -16,7 +16,7 @@ mxBackup — это одни и те же значения, вкладка пр�
 
 | Ключ | Значение по умолчанию | Назначение |
 | --- | --- | --- |
-| `mxbackup.storage_path` | пусто | Абсолютный путь к каталогу архивов вне webroot. Пусто — каталог `backups` рядом с корнем сайта. |
+| `mxbackup.storage_path` | пусто | Общий каталог архивов вне webroot. Профиль может задать собственный путь; пустое поле профиля наследует это значение. Если пусты оба — каталог `backups` рядом с корнем сайта. |
 | `mxbackup.config_dir` | `{core_path}config/mxbackup/profiles/` | Каталог PHP-файлов профилей. Допустим плейсхолдер `{core_path}`; относительный путь считается от `core/`. |
 | `mxbackup.config_path` | пусто | Необязательный общий PHP-файл дополнительных настроек. Пусто — пакет проверит `core/config/mxbackup.php`. |
 | `mxbackup.default_profile` | `prod` | Профиль, который используется без явного `--profile`. |
@@ -117,6 +117,7 @@ return [
     'prod' => [
       'mode' => 'prod',
       'format' => 'tar.gz',
+      'storage_path' => '/home/site/backups/prod',
       'files' => [
         'include' => ['*'],
         'exclude' => ['core/cache/', 'core/packages/', 'assets/cache/'],
