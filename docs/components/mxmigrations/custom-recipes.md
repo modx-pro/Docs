@@ -13,18 +13,24 @@ PHP-файл, который не должен зависеть от дальн�
 
 ## Структура
 
-Пусть классы проекта загружаются Composer:
+Собственные шаблоны — PHP-классы. Перед регистрацией провайдера эти классы нужно
+подключить. Composer для этого не обязателен.
+
+Например, файлы компонента расположены так:
 
 ```text
 core/components/site/
 ├── config/migrations.php
+├── config/migrations-autoload.php
 ├── migrations/
 ├── src/Migrations/RecipeProvider.php
 ├── src/Migrations/SeedWarehouseRecipe.php
 └── vendor/autoload.php
 ```
 
-В конфиге подключите autoload и провайдер:
+### Через Composer
+
+Если проект использует Composer, укажите его `autoload.php`:
 
 ```php
 return [
@@ -35,6 +41,33 @@ return [
     'recipe_providers' => [Site\Migrations\RecipeProvider::class],
 ];
 ```
+
+### Без автозагрузчика
+
+Создайте обычный PHP-файл `config/migrations-autoload.php`, который подключит
+классы в порядке их зависимостей:
+
+```php
+<?php
+
+require_once __DIR__ . '/../src/Migrations/SeedWarehouseRecipe.php';
+require_once __DIR__ . '/../src/Migrations/RecipeProvider.php';
+```
+
+В конфиге передайте путь к этому файлу вместо Composer:
+
+```php
+return [
+    'id' => 'site',
+    'modx_root' => dirname(__DIR__, 4),
+    'migrations_path' => __DIR__ . '/../migrations',
+    'autoload' => [__DIR__ . '/migrations-autoload.php'],
+    'recipe_providers' => [Site\Migrations\RecipeProvider::class],
+];
+```
+
+mxMigrations выполнит каждый файл из `autoload` через `require_once`, а затем
+создаст классы из `recipe_providers`.
 
 ## Класс шаблона
 

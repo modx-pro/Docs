@@ -100,22 +100,33 @@ return [
 Они используются, только если разработчик написал собственный шаблон отдельным
 PHP-классом:
 
-- `autoload` указывает файл, который умеет загружать PHP-классы проекта. Обычно
-  это созданный Composer файл `vendor/autoload.php`;
+- `autoload` перечисляет PHP-файлы, которые нужно подключить через
+  `require_once` перед созданием провайдеров;
 - `recipe_providers` перечисляет классы, которые передают эти шаблоны
   mxMigrations.
 
-Например, компонент `Site` хранит классы в своём `src/` и использует Composer:
+С Composer достаточно подключить его автозагрузчик:
 
 ```php
 'autoload' => [__DIR__ . '/../vendor/autoload.php'],
 'recipe_providers' => [Site\Migrations\RecipeProvider::class],
 ```
 
-Сначала mxMigrations подключит `vendor/autoload.php`, затем создаст
-`RecipeProvider` и получит из него шаблоны. Если файл или класс не найден,
-команда остановится до работы с миграциями. Пошаговый пример кода — в разделе
-[Собственные шаблоны](custom-recipes).
+Без Composer можно подключить обычный PHP-файл:
+
+```php
+// config/migrations-autoload.php
+require_once __DIR__ . '/../src/Migrations/SeedWarehouseRecipe.php';
+require_once __DIR__ . '/../src/Migrations/RecipeProvider.php';
+```
+
+```php
+'autoload' => [__DIR__ . '/migrations-autoload.php'],
+'recipe_providers' => [Site\Migrations\RecipeProvider::class],
+```
+
+Если файл или класс не найден, команда остановится до работы с миграциями.
+Полный пример — в разделе [Собственные шаблоны](custom-recipes).
 
 ## Где хранить конфиг
 
