@@ -25,6 +25,7 @@ core/components/site/
 ├── migrations/
 ├── src/Migrations/RecipeProvider.php
 ├── src/Migrations/SeedWarehouseRecipe.php
+├── src/Migrations/templates/seed-warehouse.php.tpl
 └── vendor/autoload.php
 ```
 
@@ -81,6 +82,7 @@ mxMigrations выполнит каждый файл из `autoload` через `
 
 namespace Site\Migrations;
 
+use MxMigrations\Recipe\FileTemplate;
 use MxMigrations\Recipe\MigrationRecipeInterface;
 
 final class SeedWarehouseRecipe implements MigrationRecipeInterface
@@ -107,34 +109,13 @@ final class SeedWarehouseRecipe implements MigrationRecipeInterface
             throw new \InvalidArgumentException('Укажите --warehouse=CODE.');
         }
 
-        $code = var_export($warehouse, true);
-
-        return <<<PHP
-<?php
-
-/**
- * {$migrationName} — добавить склад {$warehouse}.
- */
-
-return function (modX \$modx): void {
-    \$code = {$code};
-    \$warehouse = \$modx->getObject('SiteWarehouse', ['code' => \$code]);
-
-    if (\$warehouse) {
-        echo 'Склад уже существует.' . PHP_EOL;
-        return;
-    }
-
-    \$warehouse = \$modx->newObject('SiteWarehouse');
-    \$warehouse->set('code', \$code);
-
-    if (!\$warehouse->save()) {
-        throw new RuntimeException('Не удалось создать склад ' . \$code . '.');
-    }
-
-    echo 'Склад создан.' . PHP_EOL;
-};
-PHP;
+        return FileTemplate::render(
+            __DIR__ . '/templates/seed-warehouse.php.tpl',
+            [
+                'migration_name' => $migrationName,
+                'warehouse' => var_export($warehouse, true),
+            ]
+        );
     }
 }
 ```
@@ -142,6 +123,43 @@ PHP;
 `render()` получает имя будущего файла и все CLI-параметры, кроме служебных
 `recipe`, `apply` и `config`. Метод обязан проверять входные данные до
 возврата кода.
+
+## Файл миграции
+
+В `src/Migrations/templates/seed-warehouse.php.tpl` лежит обычный читаемый PHP с
+плейсхолдерами `{{name}}`:
+
+```php
+<?php
+
+/**
+ * {{migration_name}} — добавить склад.
+ */
+
+return function (modX $modx): void {
+    $code = {{warehouse}};
+    $warehouse = $modx->getObject('SiteWarehouse', ['code' => $code]);
+
+    if ($warehouse) {
+        echo 'Склад уже существует.' . PHP_EOL;
+        return;
+    }
+
+    $warehouse = $modx->newObject('SiteWarehouse');
+    $warehouse->set('code', $code);
+
+    if (!$warehouse->save()) {
+        throw new RuntimeException('Не удалось создать склад ' . $code . '.');
+    }
+
+    echo 'Склад создан.' . PHP_EOL;
+};
+```
+
+`FileTemplate` только читает файл и заменяет плейсхолдеры. Он не выполняет PHP.
+Если значение не передано или в массиве есть лишний ключ, генерация остановится
+с ошибкой. Значения для PHP-кода нужно заранее преобразовать через `var_export`,
+как в примере с `warehouse`.
 
 ## Провайдер
 
