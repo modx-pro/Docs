@@ -71,7 +71,7 @@ php vendor/bin/phinx migrate -c phinx.php
 | --- | --- |
 | `ms2_template_product_default` | `ms3_template_product_default` |
 | `ms2_template_category_default` | `ms3_template_category_default` |
-| `ms2_category_grid_fields` | `ms3_category_grid_fields` |
+| `ms2_category_grid_fields` | **Удалено.** Колонки грида категории: **Утилиты → Поля таблиц** (`ms3_grid_fields`, `grid_key=category-products`) + **Утилиты → Поля моделей** |
 | `ms2_product_extra_fields` | `ms3_product_extra_fields` |
 | `ms2_frontend_js` | `ms3_frontend_assets` |
 | `ms2_frontend_css` | (объединено в `ms3_frontend_assets`) |
@@ -92,6 +92,7 @@ MiniShop3 добавляет множество новых настроек:
 **Клиенты (новая сущность):**
 
 - `ms3_customer_auto_register_on_order` — авторегистрация при заказе
+- `ms3_customer_auto_login_on_order` — автовход после оформления заказа (не только после регистрации)
 - `ms3_customer_auto_login_after_register` — автовход после регистрации
 - `ms3_customer_require_email_verification` — верификация email
 - `ms3_customer_sync_enabled` — синхронизация с modUser
@@ -110,9 +111,11 @@ MiniShop3 добавляет множество новых настроек:
 /assets/components/minishop2/action.php
 
 // MiniShop3 — раздельные endpoint'ы
-/assets/components/minishop3/connector.php  // Manager API
-/assets/components/minishop3/api.php        // Web API (v1)
+/assets/components/minishop3/connector.php  // Manager API (MODX-сессия)
+/assets/components/minishop3/api.php        // Web API (/api/v1/, токен MS3TOKEN)
 ```
+
+Manager API обслуживает Vue-админку (заказы, клиенты, утилиты). Processors в `core/components/minishop3/src/Processors/` остаются для ExtJS-панелей ресурса (категория, товар). Кастомные web-маршруты: `core/config/ms3_routes_web.custom.php`, фрагменты аддонов: `core/config/ms3.routes.d/web/*.php`.
 
 ### Web API (новое в MiniShop3)
 
@@ -123,18 +126,30 @@ MiniShop3 даёт REST API для headless:
 POST /api/v1/cart/add
 POST /api/v1/cart/remove
 POST /api/v1/cart/change
+POST /api/v1/cart/change-option   // смена опции позиции (#219)
 GET  /api/v1/cart/get
 POST /api/v1/cart/clean
 
 // Заказ
 GET  /api/v1/order/get
 POST /api/v1/order/add
+POST /api/v1/order/set
 POST /api/v1/order/submit
 GET  /api/v1/order/cost
+GET  /api/v1/order/delivery/validation-rules
+GET  /api/v1/order/delivery/required-fields
 
 // Клиент
-POST /api/v1/customer/token/get
+POST /api/v1/customer/login
+POST /api/v1/customer/register
+POST /api/v1/customer/logout
+POST /api/v1/customer/forgot-password
+POST /api/v1/customer/reset-password
+GET  /api/v1/customer/token/get
 GET  /api/v1/customer/addresses
+
+// Каталог (без токена)
+GET  /api/v1/product/list
 ```
 
 ### Авторизация API
@@ -200,8 +215,11 @@ ms3.hooks.remove('afterAddToCart', 'my_hook');
 | `Cart.add.response.success` | `afterAddToCart` |
 | `Cart.remove.response.success` | `afterRemoveFromCart` |
 | `Cart.change.response.success` | `afterChangeCart` |
+| `Cart.change-option.response.success` | *(новое)* смена опции в корзине |
 | `Order.submit.before` | `beforeSubmitOrder` |
 | `Order.submit.response.success` | `afterSubmitOrder` |
+
+После AJAX-запросов срабатывает hook `afterSendRequest`, который по умолчанию вызывает `ms3.cartUI.init()` для обновления UI корзины.
 
 ### Data-атрибуты
 
@@ -271,16 +289,28 @@ switch ($modx->event->name) {
 
 ### msMiniCart → msOrderTotal
 
+Параметр `formatPrices` удалён (#242). Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`.
+
 ```fenom
 {* miniShop2 *}
 {'!msMiniCart' | snippet}
 
-{* MiniShop3 *}
-{set $cart = '!msOrderTotal' | snippet}
-<a href="{15 | url}"> {* ID страницы корзины *}
-    {$cart.count} товаров на {$cart.cost} руб.
+{* MiniShop3 — чанк tpl.msOrderTotal по умолчанию *}
+{'!msOrderTotal' | snippet}
+
+{* или массив для своей разметки *}
+{set $cart = '!msOrderTotal' | snippet : ['return' => 'data']}
+<a href="{'ms3_cart_page_id' | option | url}">
+    {$cart.total_positions} на {$cart.total_cost_formatted}
 </a>
 ```
+
+### Плейсхолдеры цен (#242)
+
+| miniShop2 | MiniShop3 |
+| --- | --- |
+| `{$product.price}` часто уже с валютой | `{$product.price}` — float, `{$product.price_formatted}` — строка |
+| `formatPrices=1` у сниппетов | Удалено. Всегда float + `*_formatted` |
 
 ## Чанки
 
@@ -314,9 +344,11 @@ use MiniShop3\Model\msCustomerAddress;
 $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 $addresses = $customer->getMany('Addresses');
 
-// Связь с modUser (опционально)
+// Связь с modUser (опционально, ms3_customer_sync_enabled)
 $modUser = $customer->getOne('User');
 ```
+
+Покупатель авторизуется через `msCustomer` и cookie `MS3TOKEN`, не через стандартный modUser Login (если не включена синхронизация).
 
 ### Адреса клиентов
 
@@ -378,9 +410,11 @@ ms3.cart.add(id);
 
 ### Шаг 8: Чанки и плейсхолдеры
 
-- Цены: сырые float + `*_formatted` (с 1.11).
-- Опции: `group_name` вместо `category_name`.
-- Корзина на thanks: при необходимости `hideOnThanks=1` у `msCart`.
+- Цены: сырые float + `*_formatted` (с 1.11, breaking #242). Уберите `formatPrices` из вызовов.
+- Опции: `group_name` вместо MS2 `category_name`. Группы опций — `msOptionGroup`, не `modCategory`.
+- Превью товара: поле `preview_file_id` в `msProductData` (галерея «Сделать превью»), не только `thumb`/`image`.
+- Доп. категории: `msCategoryMember` и scope `CategoryProductScope` у `msProducts` (#481).
+- Корзина на thanks: `msCart` по умолчанию **не** скрывается на `?msorder=` (#249). Для старого поведения — `hideOnThanks=1`. `msOrder` на thanks всегда пустой.
 
 ```html
 <!-- Было -->
@@ -397,6 +431,16 @@ ms3.cart.add(id);
 2. Корзина → оформление → thanks.
 3. ЛК: вход, адреса, заказы.
 4. Менеджер: заказы, клиенты, опции.
+
+## Админка
+
+| Область | miniShop2 | MiniShop3 |
+| --- | --- | --- |
+| Заказы, клиенты, утилиты | ExtJS | Vue 3 + PrimeVue (Manager API) |
+| Редактор категории/товара в дереве ресурсов | ExtJS | ExtJS + Vue-грид товаров категории |
+| Колонки таблиц | Системные настройки `ms2_*_grid_fields` | **Утилиты → Поля таблиц** (`ms3_grid_fields`) |
+
+События плагинов из Vue CRUD (заказы, клиенты) не стреляют так же, как при изменении через processors ресурса. Для кастомизации админки ориентируйтесь на [События](/components/minishop3/development/events) и Manager API.
 
 ## Обратная совместимость
 

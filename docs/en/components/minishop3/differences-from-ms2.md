@@ -71,7 +71,7 @@ All system settings were renamed from `ms2_` to `ms3_`:
 | --- | --- |
 | `ms2_template_product_default` | `ms3_template_product_default` |
 | `ms2_template_category_default` | `ms3_template_category_default` |
-| `ms2_category_grid_fields` | `ms3_category_grid_fields` |
+| `ms2_category_grid_fields` | **Removed.** Category grid columns: **Utilities → Table fields** (`ms3_grid_fields`, `grid_key=category-products`) + **Utilities → Model fields** |
 | `ms2_product_extra_fields` | `ms3_product_extra_fields` |
 | `ms2_frontend_js` | `ms3_frontend_assets` |
 | `ms2_frontend_css` | (merged into `ms3_frontend_assets`) |
@@ -92,6 +92,7 @@ MiniShop3 adds many new settings:
 **Customers (new entity):**
 
 - `ms3_customer_auto_register_on_order` — auto-register on checkout
+- `ms3_customer_auto_login_on_order` — auto-login after checkout (not only after registration)
 - `ms3_customer_auto_login_after_register` — auto-login after registration
 - `ms3_customer_require_email_verification` — email verification
 - `ms3_customer_sync_enabled` — sync with modUser
@@ -110,9 +111,11 @@ MiniShop3 adds many new settings:
 /assets/components/minishop2/action.php
 
 // MiniShop3 — separate endpoints
-/assets/components/minishop3/connector.php  // Manager API
-/assets/components/minishop3/api.php        // Web API (v1)
+/assets/components/minishop3/connector.php  // Manager API (MODX session)
+/assets/components/minishop3/api.php        // Web API (/api/v1/, MS3TOKEN)
 ```
+
+The Manager API powers the Vue admin (orders, customers, utilities). Processors under `core/components/minishop3/src/Processors/` remain for ExtJS resource panels (category, product). Custom web routes: `core/config/ms3_routes_web.custom.php`, add-on fragments: `core/config/ms3.routes.d/web/*.php`.
 
 ### Web API (new in MiniShop3)
 
@@ -123,18 +126,30 @@ MiniShop3 ships a REST API for headless work:
 POST /api/v1/cart/add
 POST /api/v1/cart/remove
 POST /api/v1/cart/change
+POST /api/v1/cart/change-option   // change line option (#219)
 GET  /api/v1/cart/get
 POST /api/v1/cart/clean
 
 // Order
 GET  /api/v1/order/get
 POST /api/v1/order/add
+POST /api/v1/order/set
 POST /api/v1/order/submit
 GET  /api/v1/order/cost
+GET  /api/v1/order/delivery/validation-rules
+GET  /api/v1/order/delivery/required-fields
 
 // Customer
-POST /api/v1/customer/token/get
+POST /api/v1/customer/login
+POST /api/v1/customer/register
+POST /api/v1/customer/logout
+POST /api/v1/customer/forgot-password
+POST /api/v1/customer/reset-password
+GET  /api/v1/customer/token/get
 GET  /api/v1/customer/addresses
+
+// Catalog (no token)
+GET  /api/v1/product/list
 ```
 
 ### API authentication
@@ -200,8 +215,11 @@ ms3.hooks.remove('afterAddToCart', 'my_hook');
 | `Cart.add.response.success` | `afterAddToCart` |
 | `Cart.remove.response.success` | `afterRemoveFromCart` |
 | `Cart.change.response.success` | `afterChangeCart` |
+| `Cart.change-option.response.success` | *(new)* cart line option change |
 | `Order.submit.before` | `beforeSubmitOrder` |
 | `Order.submit.response.success` | `afterSubmitOrder` |
+
+After AJAX requests the `afterSendRequest` hook runs and by default calls `ms3.cartUI.init()` to rebind cart UI.
 
 ### Data attributes
 
@@ -271,16 +289,28 @@ All snippets kept their names:
 
 ### msMiniCart → msOrderTotal
 
+The `formatPrices` parameter was removed (#242). Numeric placeholders are `float`; use `*_formatted` for display.
+
 ```fenom
 {* miniShop2 *}
 {'!msMiniCart' | snippet}
 
-{* MiniShop3 *}
-{set $cart = '!msOrderTotal' | snippet}
-<a href="{15 | url}"> {* cart page ID *}
-    {$cart.count} items for {$cart.cost} rub.
+{* MiniShop3 — default chunk tpl.msOrderTotal *}
+{'!msOrderTotal' | snippet}
+
+{* or an array for custom markup *}
+{set $cart = '!msOrderTotal' | snippet : ['return' => 'data']}
+<a href="{'ms3_cart_page_id' | option | url}">
+    {$cart.total_positions} for {$cart.total_cost_formatted}
 </a>
 ```
+
+### Price placeholders (#242)
+
+| miniShop2 | MiniShop3 |
+| --- | --- |
+| `{$product.price}` often included currency | `{$product.price}` — float, `{$product.price_formatted}` — string |
+| `formatPrices=1` on snippets | Removed. Always float + `*_formatted` |
 
 ## Chunks
 
@@ -314,9 +344,11 @@ use MiniShop3\Model\msCustomerAddress;
 $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 $addresses = $customer->getMany('Addresses');
 
-// Optional link to modUser
+// Optional link to modUser (ms3_customer_sync_enabled)
 $modUser = $customer->getOne('User');
 ```
+
+Customers sign in via `msCustomer` and the `MS3TOKEN` cookie, not standard modUser Login (unless sync is enabled).
 
 ### Customer addresses
 
@@ -378,9 +410,11 @@ Rewrite event subscriptions for MS3 (names and signatures differ). See [Events](
 
 ### Step 8: Chunks and placeholders
 
-- Prices: raw floats + `*_formatted` (since 1.11).
-- Options: `group_name` instead of `category_name`.
-- Cart on thanks: set `hideOnThanks=1` on `msCart` if needed.
+- Prices: raw floats + `*_formatted` (since 1.11, breaking #242). Remove `formatPrices` from snippet calls.
+- Options: `group_name` instead of MS2 `category_name`. Option groups use `msOptionGroup`, not `modCategory`.
+- Product preview: `preview_file_id` on `msProductData` (gallery “Set preview”), not only `thumb`/`image`.
+- Extra categories: `msCategoryMember` and `CategoryProductScope` on `msProducts` (#481).
+- Cart on thanks: `msCart` is **not** hidden on `?msorder=` by default (#249). For old behavior use `hideOnThanks=1`. `msOrder` is always empty on thanks.
 
 ```html
 <!-- Before -->
@@ -397,6 +431,16 @@ Rewrite event subscriptions for MS3 (names and signatures differ). See [Events](
 2. Cart → checkout → thanks.
 3. Account: login, addresses, orders.
 4. Manager: orders, customers, options.
+
+## Manager UI
+
+| Area | miniShop2 | MiniShop3 |
+| --- | --- | --- |
+| Orders, customers, utilities | ExtJS | Vue 3 + PrimeVue (Manager API) |
+| Category/product editor in the tree | ExtJS | ExtJS + Vue category products grid |
+| Table columns | System settings `ms2_*_grid_fields` | **Utilities → Table fields** (`ms3_grid_fields`) |
+
+Plugin events from Vue CRUD (orders, customers) do not fire the same way as resource processor changes. For admin customization see [Events](/en/components/minishop3/development/events) and the Manager API.
 
 ## Backward compatibility
 

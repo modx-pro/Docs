@@ -11,8 +11,8 @@ To view settings, go to **System → System Settings** and select the **minishop
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `ms3_services_config` | `{core_path}/config/ms3.services.php` | Path to the PHP file with custom service registration. Returns an array `[service_id => ClassName]` that overrides default classes (cart, order, delivery, payment, etc.) |
-| `ms3_services_addons_dir` | `{core_path}/config/ms3.services.d/` | Folder with service registration fragments from third-party components. Each add-on adds its own `*.php`; files load in alphabetical order after the main config |
+| `ms3_services_config` | *(not in transport)* | Optional system setting: path to `ms3.services.php`. If unset, `ServiceRegistry` looks for `{core_path}config/ms3.services.php`. The file returns `[service_id => ClassName]` and overrides default classes |
+| `ms3_services_addons_dir` | *(not in transport)* | Optional system setting: folder with service registration fragments. Default `{core_path}config/ms3.services.d/`. `*.php` files load in alphabetical order after the main config |
 | `ms3_chunks_categories` | | Comma-separated category IDs for the chunk list |
 | `ms3_use_scheduler` | `false` | Use [Scheduler](/en/components/scheduler/) for background tasks |
 
@@ -24,8 +24,8 @@ To view settings, go to **System → System Settings** and select the **minishop
 | `ms3_category_show_nested_products` | `true` | Show nested products from subcategories |
 | `ms3_category_show_options` | `false` | Show product options in the category table |
 | `ms3_category_id_as_alias` | `false` | Use category ID as URL alias |
-| `ms3_category_content_default` | | Default content for new categories (product listing snippet call) |
-| `ms3_category_products_default_rows` | `20` | Rows per page in the category product table |
+| `ms3_category_content_default` | *(not in transport)* | Default content for new categories (snippet call). Read by the category panel JS on create. Add the key manually if you need auto-filled `content` |
+| `ms3_category_products_default_rows` | `20` *(code fallback)* | Rows per page in the category product table. Not in transport, but `category/update` reads it via `getOption(..., 20)` |
 | `mgr_tree_icon_mscategory` | `icon icon-barcode` | CSS class for the category icon in the resource tree |
 
 ## Product
@@ -80,6 +80,8 @@ To view settings, go to **System → System Settings** and select the **minishop
 | --- | --- | --- |
 | `ms3_cart_context` | `false` | Use a single cart across all contexts |
 | `ms3_cart_max_count` | `1000` | Maximum number of items in the cart |
+| `ms3_cart_page_id` | `0` | Cart page ID. Used for “Go to cart” in the mini cart and JS redirects |
+| `ms3_order_page_id` | `0` | Checkout page ID. Used for the “Checkout” link from the cart |
 
 ## Orders
 
@@ -91,7 +93,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 | `ms3_order_format_num_separator` | `/` | Separator in the order number |
 | `ms3_date_format` | `d.m.y H:M` | Date format in the Manager |
 | `ms3_order_user_groups` | | Groups for customer registration (comma-separated) |
-| `ms3_order_show_drafts` | `true` | Show drafts in the order list |
+| `ms3_order_show_drafts` | `false` | Show drafts in the Manager order list |
 | `ms3_order_redirect_thanks_id` | `1` | ID of the "Thank you for your order" page |
 | `ms3_order_success_page_id` | `0` | ID of the successful payment page |
 | `ms3_order_register_user_on_submit` | `false` | Create modUser on checkout |
@@ -109,11 +111,15 @@ These used to be configured via `ms3_order_grid_fields`, `ms3_order_address_fiel
 
 | Setting | Default | Description |
 | --- | --- | --- |
-| `ms3_status_draft` | `1` | ID of the "Draft" status |
-| `ms3_status_new` | `0` | ID of the new order status (set by migration) |
-| `ms3_status_paid` | `0` | ID of the paid order status |
-| `ms3_status_canceled` | `0` | ID of the canceled order status |
+| `ms3_status_draft` | `1` | ID of the “Draft” status |
+| `ms3_status_new` | `2` | ID of the new order status after submit |
+| `ms3_status_paid` | `3` | ID of the paid order status |
+| `ms3_status_canceled` | `5` | ID of the canceled order status |
 | `ms3_status_for_stat` | `2,3` | Status IDs for completed order statistics |
+
+::: tip Statuses after install
+The `seed_order_statuses` migration creates five rows in `ms3_order_statuses` (ids 1–5: draft, new, paid, sent, canceled) and updates `ms3_status_new`, `ms3_status_paid`, and `ms3_status_canceled` to match. If you changed or deleted statuses manually, verify ids under **Settings → Statuses** against these keys.
+:::
 
 ## Customers
 
@@ -167,7 +173,7 @@ Off by default. The account runs on `msCustomer` and the MS3 token. Enable sync 
 | --- | --- | --- |
 | `ms3_customer_sync_enabled` | `false` | Enable msCustomer ↔ modUser sync |
 | `ms3_customer_sync_create_moduser` | `false` | Create modUser when msCustomer registers |
-| `ms3_customer_sync_delete_with_user` | `false` | Delete msCustomer when modUser is deleted |
+| `ms3_customer_sync_delete_with_user` | `false` *(not in transport)* | Delete msCustomer when modUser is deleted. Read by the `minishop3.php` plugin; create the key manually if needed |
 | `ms3_customer_sync_user_group` | `0` | Group ID for new modUser accounts |
 | `ms3_customer_duplicate_fields` | `["email", "phone"]` | JSON array of fields for duplicate checks |
 
@@ -233,7 +239,9 @@ Rate limit applies to all `/api/v1/*`. Counter store: `ms3_rate_limit_store` = `
 | --- | --- | --- |
 | `ms3_token_name` | `ms3_token` | Token name for visitor identification |
 | `ms3_register_global_config` | `true` | Register `ms3Config` in the DOM |
-| `ms3_frontend_assets` | JSON array | List of CSS/JS files to load |
+| `ms3_frontend_assets` | JSON array | Storefront CSS/JS list (`hooks.js`, `CartAPI.js`, `CartUI.js`, `ms3.js`, etc.) |
+
+`order-addresses.js` is **not** in the default list. Include it separately if checkout needs the saved-address UI.
 
 ### Path placeholders
 
@@ -266,12 +274,17 @@ In `ms3_frontend_assets`, these placeholders are available:
 | Setting | Default | Description |
 | --- | --- | --- |
 | `ms3_telegram_bot_token` | | Telegram bot token (get from [@BotFather](https://t.me/BotFather)) |
+| `ms3_telegram_manager` | | CSV manager chat IDs for status-change notifications. Read by `OrderStatusService` alongside **Utilities → Notifications** |
 
 ::: tip Telegram bot setup
 
 1. Create a bot via [@BotFather](https://t.me/BotFather) and get the token
 2. Set the token in `ms3_telegram_bot_token`
-3. Each recipient's chat ID is set separately in **Utilities → Notifications** (`msNotificationConfig`, field `recipient_value`). Get your chat ID from [@userinfobot](https://t.me/userinfobot).
+3. Configure recipients either way:
+   - **Utilities → Notifications** — Telegram channel, `recipient_value` = chat ID (recommended since 1.11+)
+   - `ms3_telegram_manager` — CSV chat IDs for legacy status-change delivery
+
+Get your chat ID from [@userinfobot](https://t.me/userinfobot).
 
 :::
 

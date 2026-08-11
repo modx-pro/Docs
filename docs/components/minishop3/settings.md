@@ -11,8 +11,8 @@ title: Системные настройки
 
 | Настройка | По умолчанию | Описание |
 | --- | --- | --- |
-| `ms3_services_config` | `{core_path}/config/ms3.services.php` | Путь к PHP-файлу с кастомной регистрацией сервисов. Возвращает массив `[service_id => ClassName]`, переопределяющий классы по умолчанию (корзина, заказ, доставка, оплата и т.д.) |
-| `ms3_services_addons_dir` | `{core_path}/config/ms3.services.d/` | Папка с файлами-фрагментами регистрации сервисов от сторонних компонентов. Каждый аддон кладёт свой `*.php`, они загружаются в алфавитном порядке после основного конфига |
+| `ms3_services_config` | *(не в transport)* | Опциональная системная настройка: путь к `ms3.services.php`. Если ключ не задан, `ServiceRegistry` ищет файл в `{core_path}config/ms3.services.php`. Файл возвращает массив `[service_id => ClassName]` и переопределяет классы по умолчанию |
+| `ms3_services_addons_dir` | *(не в transport)* | Опциональная системная настройка: папка с фрагментами регистрации сервисов. По умолчанию `{core_path}config/ms3.services.d/`. Файлы `*.php` загружаются в алфавитном порядке после основного конфига |
 | `ms3_chunks_categories` | | ID категорий через запятую для списка чанков |
 | `ms3_use_scheduler` | `false` | Использовать компонент [Scheduler](/components/scheduler/) для фоновых задач |
 
@@ -24,8 +24,8 @@ title: Системные настройки
 | `ms3_category_show_nested_products` | `true` | Показывать вложенные товары из подкатегорий |
 | `ms3_category_show_options` | `false` | Показывать опции товаров в таблице категории |
 | `ms3_category_id_as_alias` | `false` | Использовать ID категории как псевдоним URL |
-| `ms3_category_content_default` | | Содержимое для новых категорий (вызов сниппета вывода товаров) |
-| `ms3_category_products_default_rows` | `20` | Количество строк на странице в таблице товаров категории |
+| `ms3_category_content_default` | *(не в transport)* | Содержимое для новых категорий (вызов сниппета). Читается JS панели категории при создании ресурса. Создайте ключ вручную, если нужен автоматически заполненный `content` |
+| `ms3_category_products_default_rows` | `20` *(fallback в коде)* | Строк на странице в таблице товаров категории. Ключ не входит в transport, но контроллер `category/update` читает его через `getOption(..., 20)` |
 | `mgr_tree_icon_mscategory` | `icon icon-barcode` | CSS-класс иконки категории в дереве ресурсов |
 
 ## Товар
@@ -80,6 +80,8 @@ title: Системные настройки
 | --- | --- | --- |
 | `ms3_cart_context` | `false` | Использовать единую корзину для всех контекстов |
 | `ms3_cart_max_count` | `1000` | Максимальное количество товаров в корзине |
+| `ms3_cart_page_id` | `0` | ID страницы корзины. Ссылка «Перейти в корзину» в блоке корзины и редиректы JS |
+| `ms3_order_page_id` | `0` | ID страницы оформления. Ссылка «Оформить заказ» из корзины |
 
 ## Заказы
 
@@ -91,7 +93,7 @@ title: Системные настройки
 | `ms3_order_format_num_separator` | `/` | Разделитель в номере заказа |
 | `ms3_date_format` | `d.m.y H:M` | Формат дат в админке |
 | `ms3_order_user_groups` | | Группы для регистрации покупателей (через запятую) |
-| `ms3_order_show_drafts` | `true` | Показывать черновики в списке заказов |
+| `ms3_order_show_drafts` | `false` | Показывать черновики в списке заказов в админке |
 | `ms3_order_redirect_thanks_id` | `1` | ID страницы "Спасибо за заказ" |
 | `ms3_order_success_page_id` | `0` | ID страницы успешной оплаты |
 | `ms3_order_register_user_on_submit` | `false` | Создавать modUser при оформлении заказа |
@@ -109,11 +111,15 @@ title: Системные настройки
 
 | Настройка | По умолчанию | Описание |
 | --- | --- | --- |
-| `ms3_status_draft` | `1` | ID статуса "Черновик" |
-| `ms3_status_new` | `0` | ID статуса нового заказа (устанавливается миграцией) |
-| `ms3_status_paid` | `0` | ID статуса оплаченного заказа |
-| `ms3_status_canceled` | `0` | ID статуса отменённого заказа |
+| `ms3_status_draft` | `1` | ID статуса «Черновик» |
+| `ms3_status_new` | `2` | ID статуса нового заказа после submit |
+| `ms3_status_paid` | `3` | ID статуса оплаченного заказа |
+| `ms3_status_canceled` | `5` | ID статуса отменённого заказа |
 | `ms3_status_for_stat` | `2,3` | ID статусов для статистики выполненных заказов |
+
+::: tip Статусы после установки
+Миграция `seed_order_statuses` создаёт пять записей в `ms3_order_statuses` (id 1–5: черновик, новый, оплачен, отправлен, отменён) и обновляет `ms3_status_new`, `ms3_status_paid`, `ms3_status_canceled` по фактическим id. Если вы меняли или удаляли статусы вручную, сверьте id в **Настройки → Статусы** с этими ключами.
+:::
 
 ## Клиенты
 
@@ -167,7 +173,7 @@ title: Системные настройки
 | --- | --- | --- |
 | `ms3_customer_sync_enabled` | `false` | Включить синхронизацию msCustomer ↔ modUser |
 | `ms3_customer_sync_create_moduser` | `false` | Создавать modUser при регистрации msCustomer |
-| `ms3_customer_sync_delete_with_user` | `false` | Удалять msCustomer при удалении modUser |
+| `ms3_customer_sync_delete_with_user` | `false` *(не в transport)* | Удалять msCustomer при удалении modUser. Ключ читается плагином `minishop3.php`, при необходимости создайте вручную |
 | `ms3_customer_sync_user_group` | `0` | ID группы для новых modUser |
 | `ms3_customer_duplicate_fields` | `["email", "phone"]` | JSON-массив полей для проверки дубликатов |
 
@@ -233,7 +239,9 @@ Rate limit режет все `/api/v1/*`. Хранилище счётчиков:
 | --- | --- | --- |
 | `ms3_token_name` | `ms3_token` | Имя токена для идентификации посетителя |
 | `ms3_register_global_config` | `true` | Регистрировать `ms3Config` в DOM |
-| `ms3_frontend_assets` | JSON-массив | Список подключаемых CSS/JS файлов |
+| `ms3_frontend_assets` | JSON-массив | Список подключаемых CSS/JS файлов витрины (`hooks.js`, `CartAPI.js`, `CartUI.js`, `ms3.js` и др.) |
+
+`order-addresses.js` в дефолтный список **не входит**. Подключайте отдельно, если на оформлении нужен UI сохранённых адресов клиента.
 
 ### Плейсхолдеры для путей
 
@@ -266,12 +274,17 @@ Rate limit режет все `/api/v1/*`. Хранилище счётчиков:
 | Настройка | По умолчанию | Описание |
 | --- | --- | --- |
 | `ms3_telegram_bot_token` | | Токен Telegram бота (получить у [@BotFather](https://t.me/BotFather)) |
+| `ms3_telegram_manager` | | CSV chat ID менеджеров для уведомлений о смене статуса. Читается `OrderStatusService` параллельно с **Утилиты → Уведомления** |
 
 ::: tip Настройка Telegram бота
 
 1. Создайте бота через [@BotFather](https://t.me/BotFather) и получите токен
-2. Укажите токен в системной настройке `ms3_telegram_bot_token`
-3. Chat ID получателя задаётся **для каждого получателя отдельно** в **Утилиты → Уведомления** (модель `msNotificationConfig`, поле `recipient_value`). Узнать свой Chat ID можно через [@userinfobot](https://t.me/userinfobot).
+2. Укажите токен в `ms3_telegram_bot_token`
+3. Получателей задайте одним из способов:
+   - **Утилиты → Уведомления** — канал Telegram, `recipient_value` = chat ID (рекомендуется с 1.11+)
+   - `ms3_telegram_manager` — CSV chat ID для legacy-рассылки при смене статуса
+
+Chat ID можно узнать через [@userinfobot](https://t.me/userinfobot).
 
 :::
 
