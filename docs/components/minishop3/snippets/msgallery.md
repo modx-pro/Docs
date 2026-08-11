@@ -19,6 +19,7 @@ title: msGallery
 | **filetype** | | Фильтр по типу файла (через запятую) |
 | **thumbnails** | | Фильтр превью по именам (через запятую) |
 | **showInactive** | `false` | Показывать неактивные файлы |
+| **extensionsDir** | `components/minishop3/img/mgr/extensions/` | Путь к иконкам типов файлов (от `assets/`) для не-image |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
 | **showLog** | `false` | Показать лог выполнения |
 | **return** | `data` | Формат: `data`, `tpl`, `json`, `sql` |
@@ -114,6 +115,7 @@ title: msGallery
 | `{$file['path']}` | Путь к файлу |
 | `{$file['file']}` | Имя файла на диске |
 | `{$file['type']}` | Тип файла (image, video, document и т.д.) |
+| `{$file['thumbnail']}` | URL иконки типа (для не-image, из `extensionsDir`) |
 | `{$file['createdon']}` | Дата добавления |
 | `{$file['createdby']}` | ID пользователя |
 | `{$file['position']}` | Позиция в галерее |

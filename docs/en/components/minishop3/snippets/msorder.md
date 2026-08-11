@@ -9,6 +9,10 @@ Snippet for the checkout form. Shows customer fields, delivery methods, and paym
 The snippet uses the user session and must be called **uncached**.
 :::
 
+::: info Thank-you page
+If the URL contains GET parameter `msorder` (redirect after checkout), the snippet returns an **empty string**. On the same page use [msGetOrder](msgetorder). Do not show checkout and order details together without a URL condition.
+:::
+
 ## Parameters
 
 | Parameter | Default | Description |
@@ -16,7 +20,7 @@ The snippet uses the user session and must be called **uncached**.
 | **tpl** | `tpl.msOrder` | Order form chunk |
 | **userFields** | | Mapping of MODX profile fields (modUserProfile) to order fields (JSON). Used when `ms3_customer_sync_enabled = true` |
 | **customerFields** | | Mapping of customer fields (msCustomer) to order fields (JSON). Used when `ms3_customer_sync_enabled = false` |
-| **includeDeliveryFields** | `id` | Comma-separated delivery fields (`*` = all) |
+| **includeDeliveryFields** | `id` | Comma-separated delivery fields (`*` = all). `id` is always included |
 | **includePaymentFields** | `*` | Comma-separated payment fields (`*` = all) |
 | **includeCustomerAddresses** | `true` | Load saved customer addresses |
 | **showLog** | `false` | Show execution log |
@@ -181,10 +185,12 @@ With `return=data` the snippet returns an array:
 
 ### Totals
 
-- `{$order.cart_cost}` — Products cost
-- `{$order.delivery_cost}` — Delivery cost
-- `{$order.discount_cost}` — Discount
-- `{$order.cost}` — Total to pay
+- `{$order.cart_cost}` — Products cost (number)
+- `{$order.delivery_cost}` — Delivery cost (number)
+- `{$order.discount_cost}` — Discount (number)
+- `{$order.cost}` — Total to pay (number)
+- `{$order.cart_cost_formatted}`, `{$order.delivery_cost_formatted}`, `{$order.discount_cost_formatted}`, `{$order.cost_formatted}` — same amounts with currency
+- `{$order.currency_symbol}` — Currency symbol from MS3 settings
 
 ## Example chunk
 

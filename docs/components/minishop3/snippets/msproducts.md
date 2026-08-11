@@ -34,8 +34,8 @@ title: msProducts
 | **master** | | ID товара-мастера (вывести товары, связанные с ним) |
 | **slave** | | ID товара-слейва (вывести товары, для которых он связан) |
 
-::: warning Важно: parents=0
-При использовании параметра `link` для связанных товаров **обязательно** указывайте `parents => 0`, чтобы отключить фильтрацию по категориям. Иначе будут выведены только связанные товары из той же категории.
+::: info Фильтр по категориям при link
+При `link` сниппет сам выставляет `parents => 0` и `depth => 0`, чтобы связанные товары искались по всему каталогу. Явно указывать `parents => 0` не обязательно.
 :::
 
 ### Фильтрация
@@ -58,8 +58,8 @@ title: msProducts
 | **includeThumbs** | | Превью изображений через запятую |
 | **includeVendorFields** | `*` | Поля производителя (`*` = все) |
 | **includeOptions** | | Опции товара для включения (через запятую) |
-| **formatPrices** | `false` | Форматировать цены через `$ms3->format->price()` |
-| **withCurrency** | `false` | Добавить символ валюты (работает с `formatPrices`) |
+| **tvPrefix** | | Префикс для TV-плейсхолдеров (pdoTools) |
+| **withCurrency** | `false` | Добавить символ валюты в `price_formatted` и `old_price_formatted` |
 | **usePackages** | | Внешние пакеты через запятую (см. [Интеграция](#интеграция-с-внешними-пакетами)) |
 
 ### Вывод
@@ -73,7 +73,17 @@ title: msProducts
 | **outputSeparator** | `\n` | Разделитель между товарами |
 | **tplWrapper** | | Чанк-обёртка для всего вывода |
 | **wrapIfEmpty** | `true` | Использовать обёртку при пустом результате |
-| **showLog** | `false` | Показать лог выполнения |
+| **showLog** | `false` | Показать лог выполнения (только менеджер в mgr-контексте) |
+
+### Область категорий (#481)
+
+pdoTools фильтрует товары по `parent`, но не учитывает дополнительные категории из `msCategoryMember`. Сниппет подключает `CategoryProductScopeService`: при `parents` не равном `0` строит `WHERE` по основной и дополнительным категориям и сбрасывает `parents` в `0`, чтобы pdoTools не отсеял товары из связанных категорий.
+
+### Вывод `return=data`
+
+При `return=data` (значение по умолчанию) сниппет **не** возвращает массив PHP. Для каждой строки выбирается чанк (`tpl` или из `@FILE`) и результат склеивается через `outputSeparator`. Для массива используйте Fenom `{set $rows = 'msProducts' | snippet : ['return' => 'json']}` и `json_decode`, либо `return=ids`.
+
+При `showLog=1` и сессии менеджера лог pdoTools доступен в плейсхолдере `msProducts.log`.
 
 ## Псевдонимы таблиц
 
@@ -368,19 +378,13 @@ title: msProducts
 
 ### Форматированные плейсхолдеры
 
-Плейсхолдеры с суффиксом `_formatted` содержат значение с символом валюты / единицей веса, отформатированное по настройкам `ms3_price_format`, `ms3_currency_symbol`, `ms3_currency_position` и `ms3_weight_unit`:
+Числовые `{$price}`, `{$old_price}`, `{$weight}` — для расчётов. Для вывода на сайте — `*_formatted` по настройкам `ms3_price_format`, `ms3_currency_symbol`, `ms3_currency_position`, `ms3_weight_unit`:
 
-- `{$price_formatted}` — Цена с валютой (например `1 234 ₽`)
-- `{$old_price_formatted}` — Старая цена с валютой
-- `{$cost_formatted}` — Стоимость с валютой
-- `{$old_cost_formatted}` — Старая стоимость с валютой
+- `{$price_formatted}` — Цена (с валютой при `withCurrency => true`)
+- `{$old_price_formatted}` — Старая цена
 - `{$weight_formatted}` — Вес с единицей (например `500 г`)
-- `{$discount_price_formatted}` — Скидка на единицу с валютой
-- `{$discount_cost_formatted}` — Скидка на позицию с валютой
 
-::: warning Breaking change (v1.7.0)
-`cost_formatted` теперь включает символ валюты. Кастомные чанки, добавляющие валюту вручную к `cost_formatted`, получат двойной символ.
-:::
+Параметр `formatPrices` удалён в v1.7.0 (#242).
 
 ### Поля производителя (Vendor)
 

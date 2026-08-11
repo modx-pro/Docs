@@ -9,6 +9,10 @@ title: msOrder
 Сниппет работает с сессией пользователя и должен вызываться **некэшированно**.
 :::
 
+::: info Страница «Спасибо за заказ»
+Если в URL есть GET-параметр `msorder` (редирект после оформления), сниппет возвращает **пустую строку**. На той же странице выводите [msGetOrder](msgetorder). Форму checkout и детали заказа не совмещайте без условия по URL.
+:::
+
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
@@ -16,7 +20,7 @@ title: msOrder
 | **tpl** | `tpl.msOrder` | Чанк формы заказа |
 | **userFields** | | Маппинг полей профиля MODX (modUserProfile) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = true` |
 | **customerFields** | | Маппинг полей клиента (msCustomer) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = false` |
-| **includeDeliveryFields** | `id` | Поля доставки через запятую (`*` = все) |
+| **includeDeliveryFields** | `id` | Поля доставки через запятую (`*` = все). В выборку всегда попадает `id` |
 | **includePaymentFields** | `*` | Поля оплаты через запятую (`*` = все) |
 | **includeCustomerAddresses** | `true` | Загружать сохранённые адреса покупателя |
 | **showLog** | `false` | Показать лог выполнения |
@@ -181,10 +185,12 @@ title: msOrder
 
 ### Итоги
 
-- `{$order.cart_cost}` — Стоимость товаров
-- `{$order.delivery_cost}` — Стоимость доставки
-- `{$order.discount_cost}` — Скидка
-- `{$order.cost}` — Итого к оплате
+- `{$order.cart_cost}` — Стоимость товаров (число)
+- `{$order.delivery_cost}` — Стоимость доставки (число)
+- `{$order.discount_cost}` — Скидка (число)
+- `{$order.cost}` — Итого к оплате (число)
+- `{$order.cart_cost_formatted}`, `{$order.delivery_cost_formatted}`, `{$order.discount_cost_formatted}`, `{$order.cost_formatted}` — те же суммы с валютой
+- `{$order.currency_symbol}` — Символ валюты из настроек MS3
 
 ## Пример чанка
 

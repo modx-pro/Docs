@@ -137,11 +137,14 @@ The snippet returns an array with cart and order totals:
 | `delivery_cost` | Delivery cost |
 | `delivery_cost_formatted` | Delivery cost with currency |
 | `payment_cost` | Payment method fee |
+| `payment_cost_formatted` | Fee with currency |
 | `total_count` | Total item count |
 | `total_cost` | Products cost (same as `cart_cost`) |
+| `total_cost_formatted` | Products cost with currency |
 | `total_weight` | Total weight |
 | `total_weight_formatted` | Total weight with unit |
 | `total_discount` | Discount amount |
+| `total_discount_formatted` | Discount with currency |
 | `total_positions` | Number of lines (unique products) |
 
 ```php
@@ -166,7 +169,10 @@ The snippet returns an array with cart and order totals:
 
 ## Placeholders in chunk
 
-With `return=tpl`, all fields are passed to the chunk as placeholders:
+With `return=tpl`, all fields are passed to the chunk as placeholders. For display use `*_formatted`:
+
+- `{$cost_formatted}`, `{$cart_cost_formatted}`, `{$delivery_cost_formatted}`, `{$payment_cost_formatted}`
+- `{$total_cost_formatted}`, `{$total_discount_formatted}`, `{$total_weight_formatted}`
 
 ```fenom
 {* tpl.myMiniCart *}
@@ -174,7 +180,7 @@ With `return=tpl`, all fields are passed to the chunk as placeholders:
     {if $total_count > 0}
         <a href="/cart/" class="mini-cart-link">
             <span class="mini-cart-count">{$total_count}</span>
-            <span class="mini-cart-cost">{$cart_cost}</span>
+            <span class="mini-cart-cost">{$cost_formatted}</span>
         </a>
     {else}
         <span class="mini-cart-empty">Cart is empty</span>

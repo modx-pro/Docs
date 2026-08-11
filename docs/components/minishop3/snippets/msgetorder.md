@@ -13,9 +13,12 @@ title: msGetOrder
 | **tpl** | `tpl.msGetOrder` | Чанк оформления заказа |
 | **includeThumbs** | | Превью изображений товаров через запятую |
 | **includeContent** | `false` | Включить поле content товаров |
+| **includeTVs** | | TV товаров через запятую (pdoTools, `joinTVsTo` = `msProduct`) |
 | **payStatus** | `1` | Статусы для показа ссылки оплаты (через запятую) |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
 | **showLog** | `false` | Показать лог выполнения |
+
+Сниппет **не** поддерживает `return`: результат — HTML чанка или плейсхолдер через `toPlaceholder`. Дополнительные `where`, `leftJoin`, `select` из pdoTools можно передать как JSON-параметры.
 
 ## Определение заказа
 
@@ -26,7 +29,7 @@ title: msGetOrder
 3. Пустой результат, если заказ не найден
 
 ::: tip UUID доступ
-Можно передать UUID заказа (36 символов) вместо числового ID. Это полезно для публичных ссылок без авторизации.
+UUID заказа (36 символов) вместо числового ID удобен для публичных ссылок. При обращении по UUID проверка прав **не выполняется** — заказ виден любому, у кого есть ссылка. Для ЛК используйте числовой ID или авторизацию покупателя.
 :::
 
 ## Проверка доступа
@@ -34,10 +37,10 @@ title: msGetOrder
 Заказ будет показан если выполняется любое из условий:
 
 - Заказ находится в сессии пользователя (`$_SESSION['ms3']['orders']`)
-- `user_id` заказа совпадает с текущим пользователем
+- `user_id` заказа совпадает с текущим пользователем MODX
 - `customer_id` заказа совпадает с текущим customer (по токену)
 - Пользователь авторизован в админке (mgr context)
-- Доступ по UUID заказа
+- Запрос по UUID (36 символов) — **без проверки владельца**
 
 ## Примеры
 
@@ -158,12 +161,16 @@ title: msGetOrder
 
 | Поле | Описание |
 | --- | --- |
-| `{$total.cost}` | Общая стоимость (форматировано) |
-| `{$total.cart_cost}` | Стоимость товаров (форматировано) |
-| `{$total.delivery_cost}` | Стоимость доставки (форматировано) |
-| `{$total.weight}` | Общий вес (форматировано) |
+| `{$total.cost}` | Итого к оплате (число) |
+| `{$total.cost_formatted}` | Итого с валютой |
+| `{$total.cart_cost}` | Стоимость товаров (число) |
+| `{$total.cart_cost_formatted}` | Стоимость товаров с валютой |
+| `{$total.delivery_cost}` | Стоимость доставки (число) |
+| `{$total.delivery_cost_formatted}` | Доставка с валютой |
+| `{$total.weight}` / `{$total.cart_weight}` | Общий вес (число) |
+| `{$total.weight_formatted}` | Вес с единицей |
 | `{$total.cart_count}` | Количество товаров |
-| `{$total.cart_discount}` | Сумма скидки |
+| `{$total.cart_discount}` | Сумма скидки (число) |
 
 ### Массив products
 
@@ -184,15 +191,16 @@ title: msGetOrder
 | `{$product.pagetitle}` | Заголовок ресурса |
 | `{$product.article}` | Артикул |
 | `{$product.count}` | Количество |
-| `{$product.price}` | Цена (форматировано) |
-| `{$product.old_price}` | Старая цена (форматировано) |
-| `{$product.cost}` | Сумма (форматировано) |
-| `{$product.weight}` | Вес (форматировано) |
-| `{$product.discount_price}` | Скидка на единицу |
-| `{$product.discount_cost}` | Скидка на позицию |
-| `{$product.options}` | Опции товара (массив) |
+| `{$product.price}` | Цена за единицу (число) |
+| `{$product.old_price}` | Старая цена (число) |
+| `{$product.cost}` | Сумма по строке (число) |
+| `{$product.weight}` | Вес (число) |
+| `{$product.discount_price}` | Скидка на единицу (число) |
+| `{$product.discount_cost}` | Скидка на позицию (число) |
+| `{$product.price_formatted}`, `{$product.cost_formatted}`, `{$product.weight_formatted}` и др. | Форматированный вывод с валютой/единицей |
+| `{$product.options}` | Опции позиции заказа (массив) |
+| `{$product.option.color}` | Значение опции как отдельное поле (`option.{ключ}`) |
 | `{$product.thumb}` | Превью (если includeThumbs) |
-| `{$product.small}` | Превью small (если includeThumbs) |
 
 ## Чанк по умолчанию
 

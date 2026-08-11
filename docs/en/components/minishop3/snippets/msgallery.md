@@ -19,6 +19,7 @@ Snippet for outputting a product image gallery.
 | **filetype** | | File type filter (comma-separated) |
 | **thumbnails** | | Thumbnail filter by name (comma-separated) |
 | **showInactive** | `false` | Show inactive files |
+| **extensionsDir** | `components/minishop3/img/mgr/extensions/` | Path to file-type icons (from `assets/`) for non-image files |
 | **toPlaceholder** | | Save result to placeholder |
 | **showLog** | `false` | Show execution log |
 | **return** | `data` | Format: `data`, `tpl`, `json`, `sql` |
@@ -114,6 +115,7 @@ Passed to the chunk:
 | `{$file['path']}` | File path |
 | `{$file['file']}` | Filename on disk |
 | `{$file['type']}` | File type (image, video, document, etc.) |
+| `{$file['thumbnail']}` | Type icon URL (non-image files, from `extensionsDir`) |
 | `{$file['createdon']}` | Created date |
 | `{$file['createdby']}` | User ID |
 | `{$file['position']}` | Position in gallery |

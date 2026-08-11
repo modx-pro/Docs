@@ -13,8 +13,8 @@ title: msProductOptions
 | **tpl** | `tpl.msProductOptions` | Чанк оформления |
 | **onlyOptions** | | Вывести только указанные опции (через запятую) |
 | **ignoreOptions** | | Игнорировать указанные опции |
-| **groups** | | Вывести только опции из указанных групп |
-| **ignoreGroups** | | Игнорировать указанные группы |
+| **groups** | | Только опции из групп (`group_name` из msOptionGroup, через запятую) |
+| **ignoreGroups** | | Исключить группы (`group_name`) |
 | **sortOptions** | | Порядок сортировки опций (через запятую) |
 | **sortGroups** | | Порядок сортировки групп (через запятую) |
 | **sortOptionValues** | | Сортировка значений внутри опций (см. [msOptions](msoptions#сортировка-значений-опций)) |
@@ -23,6 +23,8 @@ title: msProductOptions
 ::: tip Автосортировка
 Если указан `onlyOptions`, но не указан `sortOptions`, то опции автоматически сортируются в порядке, указанном в `onlyOptions`.
 :::
+
+Опции с пустым значением (`value`) **не попадают** в вывод. Параметры `groups` / `ignoreGroups` сравнивают строку `group_name` из msOptionGroup (регистр учитывается).
 
 ### Deprecated параметры
 

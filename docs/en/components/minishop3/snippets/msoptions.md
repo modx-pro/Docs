@@ -14,6 +14,8 @@ Simple snippet for outputting specific product options. When you know in advance
 | **tpl** | `tpl.msOptions` | Layout chunk |
 | **sortOptionValues** | | Sort option values (see below) |
 
+Options with an empty first value are not included in the chunk `$options` array.
+
 ### Deprecated parameters
 
 ::: warning Backward compatibility

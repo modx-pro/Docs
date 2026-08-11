@@ -13,8 +13,8 @@ Extended snippet for outputting all or filtered product options with full inform
 | **tpl** | `tpl.msProductOptions` | Layout chunk |
 | **onlyOptions** | | Output only the specified options (comma-separated) |
 | **ignoreOptions** | | Ignore the specified options |
-| **groups** | | Output only options from the specified groups |
-| **ignoreGroups** | | Ignore the specified groups |
+| **groups** | | Only options from groups (`group_name` from msOptionGroup, comma-separated) |
+| **ignoreGroups** | | Exclude groups (`group_name`) |
 | **sortOptions** | | Option sort order (comma-separated) |
 | **sortGroups** | | Group sort order (comma-separated) |
 | **sortOptionValues** | | Sort values within options (see [msOptions](msoptions#sorting-option-values)) |
@@ -23,6 +23,8 @@ Extended snippet for outputting all or filtered product options with full inform
 ::: tip Auto sort
 If `onlyOptions` is set but `sortOptions` is not, options are automatically sorted in the order given in `onlyOptions`.
 :::
+
+Options with an empty `value` are **not** included in the output. Parameters `groups` / `ignoreGroups` match the `group_name` string from msOptionGroup (case-sensitive).
 
 ### Deprecated parameters
 

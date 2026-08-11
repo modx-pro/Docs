@@ -198,6 +198,26 @@ title: msCart
 - `{$status.total_discount}` — Сумма скидок
 - `{$status.total_positions}` — Количество позиций
 
+| `total.*` | Источник после синхронизации |
+| --- | --- |
+| `total.count` | `status.total_count` |
+| `total.cost` | `status.total_cost` |
+| `total.weight` | `status.total_weight` |
+| `total.discount` | `status.total_discount` |
+| `total.positions` | `status.total_positions` |
+
+## Автообновление HTML
+
+Сниппет регистрируется через `registerSnippet()` для перерисовки при изменении корзины (как [msOrderTotal](msordertotal)). Укажите `selector`, если на странице несколько блоков корзины:
+
+```fenom
+<div id="sidebar-cart">
+    {'!msCart' | snippet : [
+        'selector' => '#sidebar-cart'
+    ]}
+</div>
+```
+
 ## Пример чанка
 
 ```fenom

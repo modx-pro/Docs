@@ -13,9 +13,12 @@ Snippet for displaying order information. Used on the thank-you page or in the c
 | **tpl** | `tpl.msGetOrder` | Order layout chunk |
 | **includeThumbs** | | Comma-separated product image thumbnails |
 | **includeContent** | `false` | Include product `content` field |
+| **includeTVs** | | Comma-separated product TVs (pdoTools, `joinTVsTo` = `msProduct`) |
 | **payStatus** | `1` | Statuses for showing payment link (comma-separated) |
 | **toPlaceholder** | | Save result to placeholder |
 | **showLog** | `false` | Show execution log |
+
+The snippet does **not** support `return`: output is chunk HTML or a placeholder via `toPlaceholder`. Extra pdoTools `where`, `leftJoin`, `select` can be passed as JSON parameters.
 
 ## Order resolution
 
@@ -26,7 +29,7 @@ The snippet resolves the order in this order:
 3. Empty result if order not found
 
 ::: tip UUID access
-You can pass the order UUID (36 characters) instead of numeric ID. Useful for public links without login.
+Order UUID (36 characters) instead of numeric ID is useful for public links. With UUID, **access control is skipped** — anyone with the link can view the order. In the account area use numeric ID or customer login.
 :::
 
 ## Access check
@@ -34,10 +37,10 @@ You can pass the order UUID (36 characters) instead of numeric ID. Useful for pu
 The order is shown if any of the following is true:
 
 - Order is in user session (`$_SESSION['ms3']['orders']`)
-- Order `user_id` matches current user
+- Order `user_id` matches current MODX user
 - Order `customer_id` matches current customer (by token)
 - User is logged in to manager (mgr context)
-- Access via order UUID
+- Request by UUID (36 characters) — **no owner check**
 
 ## Examples
 
@@ -158,12 +161,16 @@ The chunk receives the following objects:
 
 | Field | Description |
 | --- | --- |
-| `{$total.cost}` | Total cost (formatted) |
-| `{$total.cart_cost}` | Cart cost (formatted) |
-| `{$total.delivery_cost}` | Delivery cost (formatted) |
-| `{$total.weight}` | Total weight (formatted) |
+| `{$total.cost}` | Total to pay (number) |
+| `{$total.cost_formatted}` | Total with currency |
+| `{$total.cart_cost}` | Cart cost (number) |
+| `{$total.cart_cost_formatted}` | Cart cost with currency |
+| `{$total.delivery_cost}` | Delivery cost (number) |
+| `{$total.delivery_cost_formatted}` | Delivery with currency |
+| `{$total.weight}` / `{$total.cart_weight}` | Total weight (number) |
+| `{$total.weight_formatted}` | Weight with unit |
 | `{$total.cart_count}` | Product count |
-| `{$total.cart_discount}` | Discount amount |
+| `{$total.cart_discount}` | Discount amount (number) |
 
 ### products array
 
@@ -184,15 +191,16 @@ For each product:
 | `{$product.pagetitle}` | Resource title |
 | `{$product.article}` | SKU |
 | `{$product.count}` | Quantity |
-| `{$product.price}` | Price (formatted) |
-| `{$product.old_price}` | Old price (formatted) |
-| `{$product.cost}` | Line total (formatted) |
-| `{$product.weight}` | Weight (formatted) |
-| `{$product.discount_price}` | Discount per unit |
-| `{$product.discount_cost}` | Line discount |
-| `{$product.options}` | Product options (array) |
+| `{$product.price}` | Unit price (number) |
+| `{$product.old_price}` | Old price (number) |
+| `{$product.cost}` | Line total (number) |
+| `{$product.weight}` | Weight (number) |
+| `{$product.discount_price}` | Discount per unit (number) |
+| `{$product.discount_cost}` | Line discount (number) |
+| `{$product.price_formatted}`, `{$product.cost_formatted}`, `{$product.weight_formatted}`, etc. | Formatted output with currency/unit |
+| `{$product.options}` | Order line options (array) |
+| `{$product.option.color}` | Option value as a separate field (`option.{key}`) |
 | `{$product.thumb}` | Thumbnail (if includeThumbs) |
-| `{$product.small}` | Small thumbnail (if includeThumbs) |
 
 ## Default chunk
 
