@@ -6,7 +6,7 @@ description: Список заказов в менеджере, черновик
 
 Откройте **Extras → MiniShop3 → Заказы**. Слева грид всех заказов, по клику открывается карточка (Vue 3 + PrimeVue).
 
-![Список заказов](/components/minishop3/screenshots/mgr-orders.png)
+<!-- ![Список заказов](/components/minishop3/screenshots/mgr-orders.png) -->
 
 ## Список
 
@@ -30,7 +30,7 @@ description: Список заказов в менеджере, черновик
 
 Карточка `OrderView` держит вкладки: состав, покупатель, доставка и оплата, комментарии, плюс вкладки аддонов, если вы их зарегистрировали.
 
-![Карточка заказа](/components/minishop3/screenshots/mgr-order.png)
+<!-- ![Карточка заказа](/components/minishop3/screenshots/mgr-order.png) -->
 
 ### Статус
 

@@ -20,7 +20,7 @@ Two tabs:
 1. **Options:** category tree on the left, options grid on the right.
 2. **Option groups:** CRUD and drag-and-drop sort for `msOptionGroup` (since v1.11).
 
-![Option groups](/components/minishop3/screenshots/mgr-option-groups.png)
+<!-- ![Option groups](/components/minishop3/screenshots/mgr-option-groups.png) -->
 
 ### Options tab
 

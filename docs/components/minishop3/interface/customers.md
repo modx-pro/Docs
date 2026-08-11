@@ -6,7 +6,7 @@ description: Справочник покупателей msCustomer в мене�
 
 Откройте **Extras → MiniShop3 → Клиенты**. Здесь грид `CustomersGrid` и диалоги правки профиля и адресов.
 
-![Клиенты](/components/minishop3/screenshots/mgr-customers.png)
+<!-- ![Клиенты](/components/minishop3/screenshots/mgr-customers.png) -->
 
 ## Список
 

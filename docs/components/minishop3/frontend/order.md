@@ -5,7 +5,7 @@ title: Оформление заказа
 
 Последний шаг покупки: контакты, доставка, оплата, адрес. Шаблон и чанк формы уже есть в пакете.
 
-![Оформление заказа](/components/minishop3/screenshots/fe-checkout.png)
+<!-- ![Оформление заказа](/components/minishop3/screenshots/fe-checkout.png) -->
 
 ## Структура страницы
 
