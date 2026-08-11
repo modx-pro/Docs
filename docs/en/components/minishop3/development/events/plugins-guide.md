@@ -166,6 +166,71 @@ $values = $modx->event->returnedValues;
 $values['count'] = 5;
 ```
 
+## Utils::invokeEvent and EventGate
+
+Most cart, order, cost and customer events go through `MiniShop3\Utils\Utils::invokeEvent()`, not raw `$modx->invokeEvent()`. Core clears `returnedValues` before the call and normalizes the response:
+
+| Response field | Meaning |
+| --- | --- |
+| `success` | `true` when no plugin returned non-empty `output` |
+| `message` | Plugin `output` strings joined with `<br/>` |
+| `data` | Original `$scriptProperties` shallow-merged with `returnedValues` |
+| `values` | Raw merged `returnedValues` from all plugins |
+
+Shallow merge: if two plugins set `returnedValues['count']`, the plugin with **higher** priority wins (MODX runs plugins in ascending priority order; later plugins overwrite keys).
+
+### Two ways to change data
+
+1. **By reference** in `$scriptProperties` (legacy MS2, still works where params are passed with `&`).
+2. **`returnedValues`** — preferred contract since 1.11+ (issue [#219](https://github.com/modx-pro/MiniShop3/issues/219)).
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeAddToCart':
+        $values = &$modx->event->returnedValues;
+        $values['count'] = min(99, (int) $scriptProperties['count']);
+        break;
+}
+```
+
+Callers read `$response['data']['count']` after merge.
+
+### Abort: output, false and cancel
+
+| Signal | Where | Effect |
+| --- | --- | --- |
+| `$modx->event->output('text')` | `Utils::invokeEvent` | `success = false`, text in `message` |
+| `return false` from plugin | import, notifications, some raw calls | `EventGate::isCancelled()` → operation aborted |
+| `return 'cancel'` | same | import counts the row as **skipped** |
+
+```php
+<?php
+case 'msOnImportRow':
+    if (empty($scriptProperties['data']['price'])) {
+        return 'cancel';
+    }
+    break;
+```
+
+::: warning After hooks in Vue order manager
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` run **after** save/remove. An after-plugin error is logged only; the HTTP response stays success. Veto belongs in `msOnBefore*`. See [Order product events](order-product).
+:::
+
+### Named returnedValues channels (import, msProducts, notifications)
+
+Some events apply `EventGate::applyReturnedArray()` per key instead of a global merge:
+
+| Event | `returnedValues` key | Behavior |
+| --- | --- | --- |
+| `msOnBeforeImport` | `params` | list → replace; assoc → `array_replace` |
+| `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | same |
+| `msOnProductsLoad` | `rows` | same |
+| `msOnProductPrepare` | `row` | same |
+| `msOnBeforeSendNotification` | `recipient`, `channels` | same; list `channels` replaces the channel list |
+
+Import / msProducts / notifications use `EventGate::invokeRaw()`, not `Utils::invokeEvent()`.
+
 ## Passing data between plugins
 
 Use `$modx->eventData` to pass data between plugins of the same event or between events in one request.

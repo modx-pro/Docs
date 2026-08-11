@@ -32,6 +32,27 @@ title: События сниппета msProducts
 | `usePackages` | `array` | Список запрошенных пакетов `['ms3Variants', 'msBrands']` |
 | `scriptProperties` | `array` | Все параметры вызова сниппета |
 
+После события строки списка обновляются из `returnedValues['rows']` (`EventGate::applyReturnedArray`). List в `rows` заменяет весь массив товаров, assoc-пatch отдельной строки — через `msOnProductPrepare`.
+
+### returnedValues
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnProductsLoad':
+        $values = &$modx->event->returnedValues;
+        // Пример: пометить все товары без цены
+        $rows = $scriptProperties['rows'];
+        foreach ($rows as $i => $row) {
+            if (empty($row['price'])) {
+                $rows[$i]['price_hidden'] = true;
+            }
+        }
+        $values['rows'] = $rows;
+        break;
+}
+```
+
 ### Базовый пример
 
 ```php
@@ -102,6 +123,19 @@ switch ($modx->event->name) {
 | `row` | `array` (ссылка) | Данные товара, можно модифицировать |
 | `productId` | `int` | ID товара |
 | `idx` | `int` | Порядковый номер товара в выборке |
+
+После события строка обновляется из `returnedValues['row']` (patch или list-замена, как в import).
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnProductPrepare':
+        $modx->event->returnedValues = [
+            'row' => ['badge' => 'sale'],
+        ];
+        break;
+}
+```
 
 ### Базовый пример
 

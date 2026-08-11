@@ -32,6 +32,25 @@ Fired after the product list is loaded from the database, before processing. Int
 | `usePackages` | `array` | Requested packages `['ms3Variants', 'msBrands']` |
 | `scriptProperties` | `array` | All snippet call parameters |
 
+After the event, rows are updated from `returnedValues['rows']` via `EventGate::applyReturnedArray`.
+
+### returnedValues
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnProductsLoad':
+        $rows = $scriptProperties['rows'];
+        foreach ($rows as $i => $row) {
+            if (empty($row['price'])) {
+                $rows[$i]['price_hidden'] = true;
+            }
+        }
+        $modx->event->returnedValues = ['rows' => $rows];
+        break;
+}
+```
+
 ### Basic example
 
 ```php
@@ -102,6 +121,17 @@ Fired when preparing each product for output. Used to attach data loaded in `msO
 | `row` | `array` (reference) | Product data, can be modified |
 | `productId` | `int` | Product ID |
 | `idx` | `int` | Index of the product in the result set |
+
+After the event, the row is updated from `returnedValues['row']`.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnProductPrepare':
+        $modx->event->returnedValues = ['row' => ['badge' => 'sale']];
+        break;
+}
+```
 
 ### Basic example
 

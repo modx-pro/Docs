@@ -88,6 +88,21 @@ switch ($modx->event->name) {
 }
 ```
 
+### returnedValues for params
+
+Patch import options via `returnedValues['params']` (assoc → `array_replace`, list → full replace):
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeImport':
+        $modx->event->returnedValues = [
+            'params' => ['key' => 'article', 'delimiter' => ';'],
+        ];
+        break;
+}
+```
+
 ---
 
 ## msOnAfterImport
@@ -159,6 +174,8 @@ Fired when processing **each row** of the CSV. Lets you modify data or skip the 
 | `optionData` | `array` (by reference) | Product option data |
 | `gallery` | `array` (by reference) | Gallery image paths |
 
+Core applies `EventGate::applyReturnedArray()` for `data`, `tvData`, `optionData`, `gallery`. A list in `returnedValues` **replaces** the channel; assoc patches fields.
+
 ### Skipping a row
 
 ```php
@@ -182,6 +199,20 @@ switch ($modx->event->name) {
         if (in_array($data['parent'], $excludedParents)) {
             return 'cancel';
         }
+        break;
+}
+```
+
+### returnedValues instead of by-ref only
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnImportRow':
+        $modx->event->returnedValues = [
+            'data' => ['vendor_id' => 1, 'template' => 5],
+            'optionData' => ['color' => $scriptProperties['csv'][10] ?? ''],
+        ];
         break;
 }
 ```

@@ -158,60 +158,52 @@ Fired **before** sending a notification. Lets you modify data or cancel sending.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `notification` | `NotificationInterface` | Notification object |
-| `channel` | `ChannelInterface` | Send channel |
-| `recipient` | `array` | Recipient data |
+| `notification` | `Notification` | Notification instance |
+| `recipient` | `array` (by reference) | Recipient payload |
+| `recipientType` | `string` | `customer` or `manager` |
+| `channels` | `string[]` (by reference) | Channel names, e.g. `['email', 'telegram']` |
 
 ### Aborting the operation
 
 If the plugin returns non-empty output, sending is cancelled:
 
+Use `return false` or `return 'cancel'`. The event uses `EventGate::invokeRaw()`.
+
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeSendNotification':
-        $notification = $scriptProperties['notification'];
         $recipient = $scriptProperties['recipient'];
-        $channel = $scriptProperties['channel'];
 
         // Disallow sending at night
         $hour = (int)date('G');
         if ($hour >= 23 || $hour < 8) {
-            $modx->event->output('Notification sending is paused');
-            return;
+            return false;
         }
 
         // Block temporary emails
-        if (isset($recipient['email'])) {
-            $blockedDomains = ['tempmail.com', 'throwaway.com'];
+        if (!empty($recipient['email'])) {
             $domain = substr($recipient['email'], strpos($recipient['email'], '@') + 1);
-            if (in_array($domain, $blockedDomains)) {
-                $modx->event->output('Blocked email domain');
-                return;
+            if (in_array($domain, ['tempmail.com', 'throwaway.com'], true)) {
+                return 'cancel';
             }
         }
         break;
 }
 ```
 
-### Modifying data
+### Modifying via returnedValues
 
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeSendNotification':
-        $notification = $scriptProperties['notification'];
-        $recipient = $scriptProperties['recipient'];
-
-        // Add data to notification
-        $context = $notification->getContext();
-        $context['custom_field'] = 'value';
-        $context['sent_at'] = date('Y-m-d H:i:s');
-
-        // Change recipient
-        if ($recipient['type'] === 'manager' && empty($recipient['email'])) {
-            $recipient['email'] = 'default-manager@example.com';
-        }
+        $values = &$modx->event->returnedValues;
+        $values['recipient'] = array_replace(
+            $scriptProperties['recipient'],
+            ['email' => 'ops@example.com']
+        );
+        $values['channels'] = ['email'];
         break;
 }
 ```

@@ -18,17 +18,23 @@ Fired when MiniShop3 manager pages load. Lets you add your own CSS and JavaScrip
 
 ### Available pages
 
-| page value | Description |
-| --- | --- |
-| `product_create` | Create product |
-| `product_update` | Edit product |
-| `category_create` | Create category |
-| `category_update` | Edit category |
-| `orders` | Order list |
-| `order` | Order card |
-| `customers` | Customer list |
-| `settings` | Component settings |
-| `notifications` | Notification management |
+`page` is set in each controller's `loadCustomCssJs()`:
+
+| `page` | Screen | Controller file |
+| --- | --- | --- |
+| `product_create` | Create product | `controllers/product/create.class.php` |
+| `product_update` | Edit product | `controllers/product/update.class.php` |
+| `category_create` | Create category | `controllers/category/create.class.php` |
+| `category_update` | Edit category | `controllers/category/update.class.php` |
+| `orders` | Order list (Vue) | `controllers/mgr/orders.class.php` |
+| `order` | Order card | `controllers/mgr/order.class.php` |
+| `customers` | Customer list (Vue) | `controllers/mgr/customers.class.php` |
+| `settings` | Component settings | `controllers/mgr/settings.class.php` |
+| `notifications` | Notifications | `controllers/mgr/notifications.class.php` |
+
+::: info Vue pages
+`orders` and `customers` mount Vue apps. Attach assets with `addJavascript` / `addVueModule` the same way as on ExtJS product pages.
+:::
 
 ### Adding files
 

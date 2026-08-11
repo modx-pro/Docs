@@ -205,54 +205,46 @@ switch ($modx->event->name) {
 
 ### Прерывание операции
 
-Если плагин возвращает непустой вывод, отправка будет отменена:
+Отмена отправки — `return false` или `return 'cancel'`. Событие идёт через `EventGate::invokeRaw()`, не через `Utils::invokeEvent`.
 
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeSendNotification':
-        $notification = $scriptProperties['notification'];
         $recipient = $scriptProperties['recipient'];
-        $channel = $scriptProperties['channel'];
 
-        // Запретить отправку ночью
-        $hour = (int)date('G');
+        $hour = (int) date('G');
         if ($hour >= 23 || $hour < 8) {
-            $modx->event->output('Отправка уведомлений приостановлена');
-            return;
+            return false;
         }
 
-        // Запретить отправку на временные email
-        if (isset($recipient['email'])) {
-            $blockedDomains = ['tempmail.com', 'throwaway.com'];
+        if (!empty($recipient['email'])) {
             $domain = substr($recipient['email'], strpos($recipient['email'], '@') + 1);
-            if (in_array($domain, $blockedDomains)) {
-                $modx->event->output('Заблокированный домен email');
-                return;
+            if (in_array($domain, ['tempmail.com', 'throwaway.com'], true)) {
+                return 'cancel';
             }
         }
         break;
 }
 ```
 
-### Модификация данных
+### Модификация через returnedValues
+
+Параллельно работает мутация `$recipient` / `$channels` по ссылке. Явный контракт — ключи в `returnedValues`:
 
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeSendNotification':
-        $notification = $scriptProperties['notification'];
-        $recipient = $scriptProperties['recipient'];
+        $values = &$modx->event->returnedValues;
 
-        // Добавить данные к уведомлению
-        $context = $notification->getContext();
-        $context['custom_field'] = 'value';
-        $context['sent_at'] = date('Y-m-d H:i:s');
+        $values['recipient'] = array_replace(
+            $scriptProperties['recipient'],
+            ['email' => 'ops@example.com']
+        );
 
-        // Изменить получателя
-        if ($recipient['type'] === 'manager' && empty($recipient['email'])) {
-            $recipient['email'] = 'default-manager@example.com';
-        }
+        // list заменяет список каналов целиком
+        $values['channels'] = ['email'];
         break;
 }
 ```
@@ -279,25 +271,18 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnAfterSendNotification':
         $notification = $scriptProperties['notification'];
-        $channel = $scriptProperties['channel'];
         $recipient = $scriptProperties['recipient'];
-        $success = $scriptProperties['success'];
-        $error = $scriptProperties['error'];
+        $results = $scriptProperties['results']; // ['email' => true, 'telegram' => false]
 
-        // Логирование
-        if ($success) {
-            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                '[Notification] Отправлено: %s → %s (%s)',
-                get_class($notification),
-                $recipient['email'] ?? $recipient['phone'] ?? 'unknown',
-                get_class($channel)
-            ));
-        } else {
-            $modx->log(modX::LOG_LEVEL_ERROR, sprintf(
-                '[Notification] Ошибка: %s → %s: %s',
-                get_class($notification),
-                $recipient['email'] ?? $recipient['phone'] ?? 'unknown',
-                $error
+        foreach ($results as $channelName => $success) {
+            $contact = $recipient['email'] ?? $recipient['phone'] ?? 'unknown';
+            $level = $success ? modX::LOG_LEVEL_INFO : modX::LOG_LEVEL_ERROR;
+            $modx->log($level, sprintf(
+                '[Notification] %s → %s (%s): %s',
+                $notification::class,
+                $contact,
+                $channelName,
+                $success ? 'ok' : 'fail'
             ));
         }
         break;
@@ -310,21 +295,11 @@ switch ($modx->event->name) {
 <?php
 switch ($modx->event->name) {
     case 'msOnAfterSendNotification':
-        $success = $scriptProperties['success'];
+        $results = $scriptProperties['results'];
 
-        if (!$success) {
-            $notification = $scriptProperties['notification'];
-            $recipient = $scriptProperties['recipient'];
-
-            // Добавить в очередь для повторной отправки
-            $queue = $modx->newObject('msNotificationQueue', [
-                'notification_class' => get_class($notification),
-                'notification_data' => json_encode($notification->getContext()),
-                'recipient' => json_encode($recipient),
-                'retry_count' => 0,
-                'scheduled_at' => date('Y-m-d H:i:s', strtotime('+5 minutes')),
-            ]);
-            $queue->save();
+        if (in_array(false, $results, true)) {
+            // Ваша очередь повторов — в пакете нет msNotificationQueue
+            $modx->log(modX::LOG_LEVEL_WARN, '[Notification] Partial failure: ' . json_encode($results));
         }
         break;
 }
@@ -344,6 +319,8 @@ switch ($modx->event->name) {
 
 ### Регистрация кастомного канала
 
+`NotificationManager::registerChannel()` принимает объект `ChannelInterface`, не callback.
+
 ```php
 <?php
 switch ($modx->event->name) {
@@ -351,15 +328,7 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Notifications\NotificationManager $manager */
         $manager = $scriptProperties['manager'];
 
-        // Регистрация Telegram канала
-        $manager->registerChannel('telegram', function($modx) {
-            return new MyTelegramChannel($modx);
-        });
-
-        // Регистрация Push канала
-        $manager->registerChannel('push', function($modx) {
-            return new MyPushChannel($modx);
-        });
+        $manager->registerChannel(new MyComponent\Notifications\SmsChannel($modx));
         break;
 }
 ```
@@ -370,46 +339,34 @@ switch ($modx->event->name) {
 <?php
 namespace MyComponent\Notifications;
 
-use MiniShop3\Notifications\Channels\ChannelInterface;
-use MiniShop3\Notifications\NotificationInterface;
+use MiniShop3\Model\msOrder;
+use MiniShop3\Notifications\ChannelInterface;
+use MiniShop3\Notifications\Notification;
 use MODX\Revolution\modX;
 
-class TelegramChannel implements ChannelInterface
+class SmsChannel implements ChannelInterface
 {
-    protected modX $modx;
-    protected string $botToken;
+    public function __construct(protected modX $modx) {}
 
-    public function __construct(modX $modx)
+    public function getName(): string
     {
-        $this->modx = $modx;
-        $this->botToken = $modx->getOption('my_telegram_bot_token');
+        return 'sms';
     }
 
-    public function send(NotificationInterface $notification, array $recipient): bool
+    public function isAvailable(): bool
     {
-        $chatId = $recipient['telegram_id'] ?? null;
-        if (!$chatId) {
+        return (bool) $this->modx->getOption('my_sms_api_key');
+    }
+
+    public function send(Notification $notification, array $recipient, msOrder $order): bool
+    {
+        $phone = $recipient['phone'] ?? null;
+        if (!$phone) {
             return false;
         }
 
-        $message = $notification->toTelegram($recipient);
-
-        $url = "https://api.telegram.org/bot{$this->botToken}/sendMessage";
-        $data = [
-            'chat_id' => $chatId,
-            'text' => $message,
-            'parse_mode' => 'HTML',
-        ];
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $result = curl_exec($ch);
-        curl_close($ch);
-
-        return json_decode($result, true)['ok'] ?? false;
+        // Вызов вашего SMS API
+        return true;
     }
 }
 ```
@@ -438,38 +395,24 @@ switch ($modx->event->name) {
 
     case 'msOnAfterSendNotification':
         $notification = $scriptProperties['notification'];
-        $channel = $scriptProperties['channel'];
         $recipient = $scriptProperties['recipient'];
-        $success = $scriptProperties['success'];
-        $error = $scriptProperties['error'];
+        $results = $scriptProperties['results'];
 
         $startTime = $modx->eventData['notification_start'] ?? microtime(true);
         $duration = round((microtime(true) - $startTime) * 1000, 2);
 
-        // Сохраняем статистику
-        $stats = $modx->newObject('msNotificationStats', [
-            'notification_type' => get_class($notification),
-            'channel' => get_class($channel),
-            'recipient_type' => $recipient['type'] ?? 'unknown',
-            'success' => $success ? 1 : 0,
-            'error' => $error,
-            'duration_ms' => $duration,
-            'createdon' => date('Y-m-d H:i:s'),
-        ]);
-        $stats->save();
-
-        // Алерт при большом количестве ошибок
-        if (!$success) {
-            $errorCount = $modx->getCount('msNotificationStats', [
-                'success' => 0,
-                'createdon:>=' => date('Y-m-d H:i:s', strtotime('-1 hour')),
-            ]);
-
-            if ($errorCount > 10) {
-                $modx->log(modX::LOG_LEVEL_ERROR,
-                    "[Notifications] ALERT: {$errorCount} ошибок за последний час!"
-                );
-            }
+        foreach ($results as $channelName => $success) {
+            $modx->log(
+                $success ? modX::LOG_LEVEL_INFO : modX::LOG_LEVEL_ERROR,
+                sprintf(
+                    '[Notification] %s → %s (%s): %s in %sms',
+                    $notification::class,
+                    $recipient['email'] ?? $recipient['phone'] ?? 'unknown',
+                    $channelName,
+                    $success ? 'ok' : 'fail',
+                    $duration
+                )
+            );
         }
         break;
 }
