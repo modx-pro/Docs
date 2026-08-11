@@ -8,7 +8,7 @@ Snippet for outputting a product image gallery.
 ## Parameters
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **product** | current resource | Product ID |
 | **tpl** | `tpl.msGallery` | Gallery layout chunk |
 | **limit** | `0` | Number of images (0 = all) |
@@ -98,14 +98,14 @@ By default the snippet returns a data array (`return=data`). Use `return=tpl` fo
 Passed to the chunk:
 
 | Placeholder | Description |
-|-------------|-------------|
+| --- | --- |
 | `{$files}` | Gallery file array |
 | `{$scriptProperties}` | Snippet call parameters |
 
 ### File fields
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$file['id']}` | File ID |
 | `{$file['product_id']}` | Product ID |
 | `{$file['name']}` | File name |
@@ -125,7 +125,7 @@ Passed to the chunk:
 Thumbnails are added as extra fields named by folder:
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$file['small']}` | Small thumbnail URL |
 | `{$file['medium']}` | Medium thumbnail URL |
 | `{$file['large']}` | Large thumbnail URL |

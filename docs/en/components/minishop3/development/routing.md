@@ -11,7 +11,7 @@ MiniShop3 uses [FastRoute](https://github.com/nikic/FastRoute) for API request r
 ### Two API types
 
 | Parameter | Manager API | Web API |
-|----------|-------------|---------|
+| --- | --- | --- |
 | **Prefix** | `/api/mgr/*` | `/api/v1/*` |
 | **Purpose** | MODX manager | Store frontend |
 | **Entry point** | `connector.php` | `assets/.../api.php` |
@@ -192,7 +192,7 @@ Response::error($message, $statusCode, $errors);
 ### HTTP status codes
 
 | Code | Description | Usage |
-|-----|-------------|--------|
+| --- | --- | --- |
 | 200 | OK | Successful request |
 | 400 | Bad Request | Validation error |
 | 401 | Unauthorized | Not authenticated |
@@ -403,14 +403,14 @@ If middleware returns a `Response`, the rest of the middleware and the handler a
 #### General
 
 | Method | Route | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | GET | `/health` | API health check |
 | GET | `/user/info` | Current user info |
 
 #### Config (`/config`)
 
 | Method | Route | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | GET | `/page-fields/{page_key}` | Get page fields |
 | GET | `/page-fields/{page_key}/all` | All page fields |
 | PUT | `/page-fields/{page_key}` | Update fields |
@@ -423,7 +423,7 @@ If middleware returns a `Response`, the rest of the middleware and the handler a
 CRUD for admin grid column configuration. All requests require permission `mssetting_save`.
 
 | Method | Route | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | GET | `/{grid_key}` | Get grid configuration |
 | PUT | `/{grid_key}` | Update grid configuration |
 | POST | `/{grid_key}/field` | Add column |
@@ -447,7 +447,7 @@ CRUD for admin grid column configuration. All requests require permission `msset
 ```
 
 | Field | Type | Description |
-|------|-----|----------|
+| --- | --- | --- |
 | `columns` | `array` | Grid columns with configuration (type, visibility, filtering, editor) |
 | `direct_filter_keys` | `string[]` | Filter keys the controller expects as **direct** request parameters (no `filter_` prefix). Others must be sent with the prefix. Source of truth is the backend; the frontend reads the array from here. Added in MiniShop3 1.12.0 ([PR #317](https://github.com/modx-pro/MiniShop3/pull/317)) — removes duplication between frontend and controllers. |
 | `editor_references` | `array<{key,path}>` | **Only for `grid_key=category-products`.** Whitelist of allowed reference keys for inline-edit combo editor. Each entry is a key/path pair to a reference API endpoint. Used by the column settings UI for select dropdown. Added in MiniShop3 1.12.0 ([PR #157](https://github.com/modx-pro/MiniShop3/pull/157)). |
@@ -472,7 +472,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 #### Orders (`/orders`)
 
 | Method | Route | Description | Permission |
-|-------|------|-------------|------------|
+| --- | --- | --- | --- |
 | GET | `` | List orders | `msorder_list` |
 | POST | `` | Create order | `msorder_list` |
 | GET | `/filters` | Filter config | `msorder_list` |
@@ -489,7 +489,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 #### Customers (`/customers`)
 
 | Method | Route | Description | Permission |
-|-------|------|-------------|------------|
+| --- | --- | --- | --- |
 | GET | `` | List customers | `view_document` |
 | GET | `/{id}` | Get customer | `view_document` |
 | PUT | `/{id}` | Update customer | `view_document` |
@@ -506,7 +506,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 #### Notifications (`/notifications`)
 
 | Method | Route | Description | Permission |
-|-------|------|-------------|------------|
+| --- | --- | --- | --- |
 | GET | `/references` | Form references | `mssetting_save` |
 | GET | `` | List notifications | `mssetting_save` |
 | GET | `/{id}` | Get notification | `mssetting_save` |
@@ -517,7 +517,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 #### Import (`/import`)
 
 | Method | Route | Description | Permission |
-|-------|------|-------------|------------|
+| --- | --- | --- | --- |
 | GET | `/fields` | Mapping fields | `msproduct_save` |
 | POST | `/upload` | Upload CSV | `msproduct_save` |
 | POST | `/preview` | Preview | `msproduct_save` |
@@ -529,7 +529,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 #### Cart (`/cart`)
 
 | Method | Route | Description | Token |
-|-------|------|-------------|-------|
+| --- | --- | --- | --- |
 | GET | `/get` | Get cart | Optional |
 | POST | `/add` | Add product | Required |
 | POST | `/change` | Change quantity | Required |
@@ -539,7 +539,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 #### Order (`/order`)
 
 | Method | Route | Description | Token |
-|-------|------|-------------|-------|
+| --- | --- | --- | --- |
 | GET | `/get` | Get order | Required |
 | POST | `/add` | Add data | Required |
 | POST | `/set` | Set fields | Required |
@@ -552,7 +552,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 #### Customer (`/customer`)
 
 | Method | Route | Description | Token |
-|-------|------|-------------|-------|
+| --- | --- | --- | --- |
 | POST | `/login` | Login | No |
 | POST | `/register` | Register | No |
 | GET | `/token/get` | Get token | No |
@@ -565,7 +565,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 #### General
 
 | Method | Route | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | GET | `/health` | Health check |
 
 ## Customizing routes
@@ -813,7 +813,7 @@ If a route file has a syntax error or throws an exception, it is logged and skip
 ### Custom file vs ms3.routes.d
 
 | | `ms3_routes_*.custom.php` | `ms3.routes.d/` |
-|---|---|---|
+| --- | --- | --- |
 | **For** | Site developer | Addon authors |
 | **Files** | One per API type | One file per addon |
 | **Conflicts** | Possible with multiple addons | None |
@@ -823,7 +823,7 @@ If a route file has a syntax error or throws an exception, it is logged and skip
 ## System settings
 
 | Setting | Default | Description |
-|-----------|--------------|-------------|
+| --- | --- | --- |
 | `ms3_cors_allowed_origins` | `["*"]` | CORS allowed origins |
 | `ms3_rate_limit_max_attempts` | `60` | Request limit |
 | `ms3_rate_limit_decay_seconds` | `60` | Limit window (seconds) |

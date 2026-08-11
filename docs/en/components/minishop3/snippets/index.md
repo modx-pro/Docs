@@ -8,7 +8,7 @@ MiniShop3 provides a set of snippets for building the store frontend. All snippe
 ## Snippet overview
 
 | Snippet | Purpose |
-|---------|---------|
+| --- | --- |
 | [msProducts](msproducts) | Product list with filtering and sorting |
 | [msCart](mscart) | Shopping cart display |
 | [msOrder](msorder) | Checkout form |
@@ -50,7 +50,7 @@ Snippets that use the user session (`msCart`, `msOrder`, `msCustomer`) must be c
 Most snippets support the `return` parameter that defines the output format:
 
 | Value | Description |
-|-------|-------------|
+| --- | --- |
 | `tpl` | Process through a chunk (default) |
 | `data` | Return a data array |
 | `json` | Return a JSON string |
@@ -74,7 +74,7 @@ Instead of direct output, you can save the result to a placeholder:
 MiniShop3 ships with a set of ready-made chunks:
 
 | Snippet | Default chunk |
-|---------|---------------|
+| --- | --- |
 | msProducts | `tpl.msProducts.row` |
 | msCart | `tpl.msCart` |
 | msOrder | `tpl.msOrder` |

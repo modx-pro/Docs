@@ -8,7 +8,7 @@ MiniShop3 предоставляет REST API для интеграции с ф�
 ## Точки входа
 
 | Назначение | URL | Авторизация |
-|------------|-----|-------------|
+| --- | --- | --- |
 | Web API (фронтенд) | `/assets/components/minishop3/api.php` | Токен MS3TOKEN |
 | Manager API (админка) | `/assets/components/minishop3/connector.php` | Сессия MODX |
 
@@ -21,6 +21,58 @@ MiniShop3 предоставляет REST API для интеграции с ф�
 ```
 
 Все запросы передают маршрут через параметр `route`.
+
+## Карта эндпоинтов
+
+Источник: `config/routes/web.php`. Группа `/api/v1` всегда проходит CORS, rate limit и ServiceCheck.
+
+| Метод | Путь | Токен |
+| --- | --- | --- |
+| `POST` | `/cart/add` | гостевой |
+| `POST` | `/cart/remove` | гостевой |
+| `POST` | `/cart/change` | гостевой |
+| `POST` | `/cart/change-option` | гостевой |
+| `GET` | `/cart/get` | гостевой |
+| `POST` | `/cart/clean` | гостевой |
+| `GET` | `/order/get` | гостевой |
+| `POST` | `/order/add` | гостевой |
+| `POST` | `/order/set` | гостевой |
+| `POST` | `/order/remove` | гостевой |
+| `POST` | `/order/submit` | гостевой |
+| `POST` | `/order/clean` | гостевой |
+| `GET` | `/order/cost` | гостевой |
+| `GET` | `/order/cost/cart` | гостевой |
+| `GET` | `/order/cost/delivery` | гостевой |
+| `GET` | `/order/cost/payment` | гостевой |
+| `POST` | `/order/address/set` | гостевой |
+| `POST` | `/order/address/clean` | гостевой |
+| `GET` | `/order/delivery/validation-rules` | гостевой |
+| `GET` | `/order/delivery/required-fields` | гостевой |
+| `POST` | `/customer/login` | нет |
+| `POST` | `/customer/register` | нет |
+| `POST` | `/customer/logout` | авторизованный |
+| `POST` | `/customer/forgot-password` | нет |
+| `POST` | `/customer/reset-password` | нет |
+| `POST` | `/customer/add` | авторизованный |
+| `GET` | `/customer/token/get` | нет |
+| `GET` | `/customer/addresses` | авторизованный |
+| `GET` | `/customer/addresses/{id}` | авторизованный |
+| `POST` | `/customer/addresses` | авторизованный |
+| `PUT` | `/customer/addresses/{id}` | авторизованный |
+| `DELETE` | `/customer/addresses/{id}` | авторизованный |
+| `PUT` | `/customer/addresses/{id}/set-default` | авторизованный |
+| `PUT` | `/customer/profile` | авторизованный |
+| `POST` | `/customer/changeAddress` | гостевой |
+| `POST` | `/customer/email/resend-verification` | авторизованный |
+| `GET` | `/customer/email/verify` | нет |
+| `GET` | `/customer/orders` | авторизованный |
+| `GET` | `/customer/orders/{id}` | авторизованный |
+| `POST` | `/customer/orders/{id}/cancel` | авторизованный |
+| `GET` | `/product/get/{id}` | нет |
+| `GET` | `/product/list` | нет |
+| `GET` | `/health` | нет |
+
+«Гостевой» токен: `GET /customer/token/get` (корзина и черновик заказа). «Авторизованный»: после `login` / `register`.
 
 ## Авторизация
 
@@ -95,7 +147,7 @@ POST /api/v1/cart/add
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `id` | int | Да | ID товара |
 | `count` | int | Нет | Количество (по умолчанию 1) |
 | `options` | object | Нет | Опции товара (цвет, размер и т.д.) |
@@ -158,7 +210,7 @@ POST /api/v1/cart/change
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `product_key` | string | Да | Уникальный ключ товара в корзине |
 | `count` | int | Да | Новое количество |
 
@@ -180,8 +232,35 @@ POST /api/v1/cart/remove
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `product_key` | string | Да | Уникальный ключ товара |
+
+### Изменить опции товара
+
+```http
+POST /api/v1/cart/change-option
+```
+
+Меняет опции позиции в корзине (ключ позиции может измениться).
+
+**Параметры:**
+
+| Параметр | Тип | Обязательный | Описание |
+| --- | --- | --- | --- |
+| `product_key` | string | Да | Ключ позиции в корзине |
+| `options` | object | Да | Новые опции (непустой объект) |
+
+**Пример:**
+
+```json
+{
+  "product_key": "123_a1b2c3d4",
+  "options": {
+    "color": "red",
+    "size": "L"
+  }
+}
+```
 
 ### Получить корзину
 
@@ -251,14 +330,14 @@ POST /api/v1/order/add
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `key` | string | Да | Имя поля |
 | `value` | mixed | Да | Значение |
 
 **Доступные поля:**
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `email` | Email клиента |
 | `phone` | Телефон |
 | `first_name` | Имя |
@@ -291,7 +370,7 @@ POST /api/v1/order/set
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `fields` | object | Да | Объект с полями |
 
 **Пример:**
@@ -316,7 +395,7 @@ POST /api/v1/order/remove
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `key` | string | Да | Имя поля |
 
 ### Оформить заказ
@@ -413,7 +492,7 @@ POST /api/v1/order/address/set
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `address_hash` | string | Да | MD5 хеш адреса |
 
 ### Очистить адрес
@@ -470,14 +549,15 @@ POST /api/v1/customer/register
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `email` | string | Да | Email |
 | `password` | string | Да | Пароль |
-| `password_confirm` | string | Да | Подтверждение пароля |
 | `first_name` | string | Нет | Имя |
 | `last_name` | string | Нет | Фамилия |
 | `phone` | string | Нет | Телефон |
 | `privacy_accepted` | bool | Зависит от настроек | Согласие на обработку данных |
+
+Контроллер передаёт в процессор только эти поля. `password_confirm` в Web API регистрации не используется (нужен для `reset-password`).
 
 **Ответ:**
 
@@ -520,7 +600,7 @@ POST /api/v1/customer/login
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `email` | string | Да | Email |
 | `password` | string | Да | Пароль |
 
@@ -541,21 +621,82 @@ POST /api/v1/customer/login
 }
 ```
 
+### Выход
+
+```http
+POST /api/v1/customer/logout
+```
+
+Требует авторизованного токена. Завершает сессию покупателя.
+
+### Восстановление пароля
+
+```http
+POST /api/v1/customer/forgot-password
+```
+
+Токен не нужен. Rate limit по email (1 запрос / 5 минут).
+
+| Параметр | Тип | Обязательный | Описание |
+| --- | --- | --- | --- |
+| `email` | string | Да | Email покупателя |
+
+Ответ всегда успешен с точки зрения UX (не раскрывает, есть ли аккаунт), письмо уходит только если клиент найден.
+
+### Сброс пароля
+
+```http
+POST /api/v1/customer/reset-password
+```
+
+Токен не нужен (токен сброса приходит в письме).
+
+| Параметр | Тип | Обязательный | Описание |
+| --- | --- | --- | --- |
+| `token` | string | Да | Токен из письма |
+| `password` | string | Да | Новый пароль |
+| `password_confirm` | string | Да | Подтверждение пароля |
+
 ### Обновить профиль
 
 ```http
 PUT /api/v1/customer/profile
 ```
 
-**Требует авторизации** (токен авторизованного клиента)
+Требует авторизации (токен авторизованного клиента).
 
 **Параметры:**
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `first_name` | string | Имя |
 | `last_name` | string | Фамилия |
 | `phone` | string | Телефон |
+
+### Быстрое обновление поля профиля
+
+```http
+POST /api/v1/customer/add
+```
+
+Требует авторизации. Обновляет одно поле `msCustomer` (`key` + `value`). Разрешены editable-ключи из xPDO-карты (с denylist служебных полей). Для `email` при смене сбрасывается `email_verified_at`.
+
+| Параметр | Тип | Обязательный | Описание |
+| --- | --- | --- | --- |
+| `key` | string | Да | Имя поля |
+| `value` | mixed | Да | Новое значение |
+
+### Выбрать сохранённый адрес в черновике
+
+```http
+POST /api/v1/customer/changeAddress
+```
+
+Нужен гостевой токен. Аналог `POST /order/address/set`: в черновик подставляется адрес по `address_hash` (допускается legacy-поле `value`).
+
+| Параметр | Тип | Обязательный | Описание |
+| --- | --- | --- | --- |
+| `address_hash` | string | Да | Hash адреса покупателя |
 
 ### Верификация email
 
@@ -569,7 +710,7 @@ GET /api/v1/customer/email/verify?token=verification_token
 POST /api/v1/customer/email/resend-verification
 ```
 
-**Требует авторизации**
+Требует авторизации.
 
 ## Адреса клиента
 
@@ -615,7 +756,7 @@ POST /api/v1/customer/addresses
 **Параметры:**
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `city` | string | Город |
 | `street` | string | Улица |
 | `building` | string | Дом |
@@ -645,15 +786,56 @@ PUT /api/v1/customer/addresses/{id}/set-default
 
 ## Заказы клиента
 
+Нужен токен **авторизованного** покупателя. Черновики в списке и карточке не отдаются.
+
+### Список заказов
+
+```http
+GET /api/v1/customer/orders?limit=20&offset=0&status=2
+```
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `limit` | int | Размер страницы (по умолчанию 20, максимум 100) |
+| `offset` | int | Смещение |
+| `status` | int | Фильтр по `status_id`. Черновик и невалидные ID игнорируются |
+
+**Ответ `data`:**
+
+```json
+{
+  "orders": [
+    {
+      "id": 15,
+      "uuid": "...",
+      "num": "2603/1",
+      "cost": 3500,
+      "status_id": 2,
+      "status_name": "Новый",
+      "can_cancel": true
+    }
+  ],
+  "total": 1,
+  "limit": 20,
+  "offset": 0
+}
+```
+
+### Карточка заказа
+
+```http
+GET /api/v1/customer/orders/{id}
+```
+
+Возвращает заказ покупателя с позициями и связанными сущностями. `404`, если заказ чужой, не найден или черновик.
+
 ### Отмена заказа
 
 ```http
 POST /api/v1/customer/orders/{id}/cancel
 ```
 
-**Требует авторизации** (токен авторизованного клиента)
-
-Отменяет заказ покупателя, если текущий статус заказа входит в список разрешённых (`ms3_customer_cancel_allowed_statuses`).
+Отменяет заказ, если текущий статус входит в `ms3_customer_cancel_allowed_statuses`.
 
 **Ответ (успех):**
 
@@ -668,32 +850,60 @@ POST /api/v1/customer/orders/{id}/cancel
 }
 ```
 
-**Ответ (ошибка — статус не разрешён):**
-
-```json
-{
-  "success": false,
-  "message": "Заказ с текущим статусом не может быть отменён",
-  "code": 400
-}
-```
-
-**Ответ (ошибка — не найден):**
-
-```json
-{
-  "success": false,
-  "message": "Заказ не найден",
-  "code": 404
-}
-```
+Ошибки: `400` (статус не разрешён), `404` (не найден), `401` (нет авторизации).
 
 **Связанные настройки:**
 
 | Настройка | Описание |
-|-----------|----------|
+| --- | --- |
 | `ms3_customer_cancel_allowed_statuses` | ID статусов, при которых разрешена отмена (по умолчанию `2,3`) |
 | `ms3_status_canceled` | ID целевого статуса отмены |
+
+## Каталог товаров
+
+Публичные эндпоинты. **Токен не нужен.** Отдаются только опубликованные, неудалённые товары без `hidemenu` в запрошенном (или текущем) контексте. Поля ответа allowlist: ресурс + `msProductData` (+ опции/контент по флагам).
+
+### Один товар
+
+```http
+GET /api/v1/product/get/{id}
+```
+
+| Параметр пути | Описание |
+| --- | --- |
+| `id` | ID ресурса товара |
+
+`400` без id, `404` если товар не найден или не публичный.
+
+### Список товаров
+
+```http
+GET /api/v1/product/list?parent=5&limit=20&page=1&sort=price&dir=ASC
+```
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `parent` / `category` | int | ID родительской категории (основной parent ресурса) |
+| `limit` | int | По умолчанию 20, максимум 100 |
+| `offset` | int | Смещение. Альтернатива: `page` (с 1) |
+| `page` | int | Номер страницы, если `offset` не задан |
+| `sort` | string | `id`, `pagetitle`, `menuindex`, `createdon`, `publishedon`, `price`, `article` |
+| `dir` / `sortdir` | string | `ASC` или `DESC` |
+| `query` | string | Поиск по `pagetitle` / `article` |
+| `context` | string | Ключ контекста MODX |
+| `include_options` | 0 / 1 | Включить опции (по умолчанию 0) |
+| `include_content` | 0 / 1 | Включить `content` (по умолчанию 0) |
+
+**Ответ `data`:**
+
+```json
+{
+  "items": [ { "id": 10, "pagetitle": "Товар", "price": 1500 } ],
+  "total": 42,
+  "limit": 20,
+  "offset": 0
+}
+```
 
 ## Health Check
 
@@ -726,10 +936,15 @@ GET /api/v1/health
 
 ### Rate Limiting
 
-Защита от DDoS через системные настройки:
+Защита от злоупотреблений через системные настройки:
 
 - `ms3_rate_limit_max_attempts` — максимум запросов (по умолчанию 60)
 - `ms3_rate_limit_decay_seconds` — период в секундах (по умолчанию 60)
+- `ms3_rate_limit_store` — хранилище счётчиков: `file`, `redis`, `memcached` (по умолчанию `file`)
+- `ms3_rate_limit_storage_path` — каталог для `file` (пусто = системный temp)
+- `ms3_rate_limit_redis_dsn` — DSN Redis (если задан, перекрывает host/port)
+- `ms3_rate_limit_redis_host` / `ms3_rate_limit_redis_port` / `ms3_rate_limit_redis_password` / `ms3_rate_limit_redis_database`
+- `ms3_rate_limit_memcached_servers` — серверы Memcached (по умолчанию `127.0.0.1:11211`)
 
 При превышении лимита возвращается:
 
@@ -833,7 +1048,7 @@ ms3.hooks.add('afterAddToCart', ({response}) => {
 ## Коды ошибок
 
 | Код | Описание |
-|-----|----------|
+| --- | --- |
 | 400 | Неверный запрос (отсутствуют параметры, ошибка валидации) |
 | 401 | Требуется токен авторизации |
 | 403 | Доступ запрещён |

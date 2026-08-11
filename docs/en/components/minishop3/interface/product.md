@@ -22,7 +22,7 @@ The product edit page (`msProduct`) combines standard MODX functionality with e-
 Standard MODX tab with main resource fields:
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `pagetitle` | Product name |
 | `longtitle` | Extended title |
 | `description` | Meta description |
@@ -38,7 +38,7 @@ Tab with product fields grouped by sections. Uses a Vue 3 component for flexible
 **Default sections:**
 
 | Section | Fields |
-|---------|--------|
+| --- | --- |
 | Main data | `article`, `price`, `old_price`, `weight` |
 | Stock | `remains`, `new`, `popular`, `favorite` |
 | Specifications | `color`, `size`, `vendor`, `made_in`, `tags` |
@@ -63,7 +63,7 @@ See also: [Product gallery](gallery)
 Product link configuration:
 
 | Link type | Description |
-|-----------|-------------|
+| --- | --- |
 | Complementary | Accessories, components |
 | Similar | Similar products |
 | Recommended | Personal recommendations |
@@ -93,7 +93,7 @@ Options are grouped by `modcategory_id` (MODX category on `msOption`) and shown 
 Field configuration is stored in the database:
 
 | Table | Description |
-|-------|-------------|
+| --- | --- |
 | `ms3_page_sections` | Page sections (containers) |
 | `ms3_product_fields` | Product fields with settings |
 
@@ -104,7 +104,7 @@ A section is a container for grouping fields.
 **Model fields:**
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `id` | int | Section ID |
 | `page_key` | string | Page key (`product_data`) |
 | `section_key` | string | Unique section key |
@@ -120,7 +120,7 @@ Product field with display settings.
 **Model fields:**
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `id` | int | Field ID |
 | `name` | string | System name |
 | `label` | string | Display name |
@@ -215,7 +215,7 @@ New fields are added via [Utilities → Extra fields](utilities/extra-fields). T
 4. Configure:
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | Label | Display name |
 | Description | Hint under field |
 | Section | Section membership |
@@ -265,7 +265,7 @@ The field remains in the database but is not shown on the product card.
 ### Standard
 
 | Type | Description | Use |
-|------|-------------|-----|
+| --- | --- | --- |
 | `textfield` | Single-line text | SKU, name |
 | `numberfield` | Number | Price, weight |
 | `textarea` | Multi-line | Description |
@@ -274,7 +274,7 @@ The field remains in the database but is not shown on the product card.
 ### MiniShop3 comboboxes
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `ms3-combo-vendor` | Vendor selection |
 | `ms3-combo-category` | Category selection |
 | `ms3-combo-autocomplete` | Autocomplete from list |
@@ -283,7 +283,7 @@ The field remains in the database but is not shown on the product card.
 ### Extended
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `modx-combo-browser` | File selection via Media Browser |
 | `datefield` | Date picker |
 | `timefield` | Time picker |
@@ -292,7 +292,7 @@ The field remains in the database but is not shown on the product card.
 ## System settings
 
 | Setting | Description | Default |
-|---------|-------------|---------|
+| --- | --- | --- |
 | `ms3_product_tab_extra` | Show data tab | `true` |
 | `ms3_product_tab_gallery` | Show gallery tab | `true` |
 | `ms3_product_tab_links` | Show links tab | `true` |
@@ -405,7 +405,7 @@ $_lang['ms3_section_seo'] = 'SEO';
 $_lang['ms3_section_seo'] = 'SEO';
 ```
 
-3. Move fields `longtitle` and `description` into the SEO section
+1. Move fields `longtitle` and `description` into the SEO section
 
 ### Hiding unused fields
 

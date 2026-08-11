@@ -80,7 +80,7 @@ Controls the order of CSS and JS assets:
 **Placeholders:**
 
 | Placeholder | Value |
-|-------------|--------|
+| --- | --- |
 | `[[+cssUrl]]` | `assets/components/minishop3/css/` |
 | `[[+jsUrl]]` | `assets/components/minishop3/js/` |
 
@@ -791,7 +791,7 @@ async function ms3Confirm(message, options = {}) → Promise<boolean>
 **options:**
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | `confirmText` | "Confirm" / "Подтвердить" | Confirm button text |
 | `cancelText` | "Cancel" / "Отмена" | Cancel button text |
 | `confirmClass` | `primary` | Button CSS class (primary, danger) |
@@ -871,7 +871,7 @@ const ms3Hooks = {
 #### Cart
 
 | Hook | Description |
-|-----|-------------|
+| --- | --- |
 | `beforeAddCart` | Before adding product |
 | `afterAddCart` | After adding product |
 | `beforeChangeCart` | Before changing quantity |
@@ -884,7 +884,7 @@ const ms3Hooks = {
 #### Order
 
 | Hook | Description |
-|-----|-------------|
+| --- | --- |
 | `beforeAddOrder` | Before saving field |
 | `afterAddOrder` | After saving field |
 | `beforeSubmitOrder` | Before submit |
@@ -895,7 +895,7 @@ const ms3Hooks = {
 #### Customer
 
 | Hook | Description |
-|-----|-------------|
+| --- | --- |
 | `beforeAddCustomer` | Before saving data |
 | `afterAddCustomer` | After saving data |
 | `beforeUpdateProfile` | Before profile update |
@@ -916,7 +916,7 @@ const ms3Hooks = {
 #### Authorization
 
 | Hook | Description |
-|-----|-------------|
+| --- | --- |
 | `beforeLogin` | Before login |
 | `afterLogin` | After login |
 | `beforeRegister` | Before registration |

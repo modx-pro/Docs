@@ -72,7 +72,7 @@ Main schema attributes:
 ### Products
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msProduct` | `site_content` | Product (extends modResource) |
 | `msProductData` | `ms3_products` | Product data (price, article, weight) |
 | `msProductFile` | `ms3_product_files` | Product gallery files |
@@ -83,7 +83,7 @@ Main schema attributes:
 #### msProductData — main fields
 
 | Field | Type | Description |
-|------|-----|-------------|
+| --- | --- | --- |
 | `id` | int | ID (matches resource ID) |
 | `article` | varchar(50) | Article/SKU |
 | `price` | decimal(12,2) | Price |
@@ -104,7 +104,7 @@ Main schema attributes:
 ### Categories
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msCategory` | `site_content` | Category (extends modResource) |
 | `msCategoryMember` | `ms3_product_categories` | Product–category relation |
 | `msCategoryOption` | `ms3_category_options` | Category options |
@@ -112,7 +112,7 @@ Main schema attributes:
 ### Orders
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msOrder` | `ms3_orders` | Order |
 | `msOrderAddress` | `ms3_order_addresses` | Order delivery address |
 | `msOrderProduct` | `ms3_order_products` | Order line items |
@@ -122,7 +122,7 @@ Main schema attributes:
 #### msOrder — main fields
 
 | Field | Type | Description |
-|------|-----|-------------|
+| --- | --- | --- |
 | `id` | int | Order ID |
 | `user_id` | int | MODX user ID |
 | `customer_id` | int | msCustomer ID |
@@ -144,7 +144,7 @@ Main schema attributes:
 ### Customers (NEW in MiniShop3)
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msCustomer` | `ms3_customers` | Store customer |
 | `msCustomerAddress` | `ms3_customer_addresses` | Saved customer addresses |
 | `msCustomerToken` | `ms3_customer_tokens` | Auth tokens |
@@ -152,7 +152,7 @@ Main schema attributes:
 #### msCustomer — main fields
 
 | Field | Type | Description |
-|------|-----|-------------|
+| --- | --- | --- |
 | `id` | int | Customer ID |
 | `user_id` | int | Linked modUser ID (optional) |
 | `first_name` | varchar(191) | First name |
@@ -175,7 +175,7 @@ In miniShop2 customer = modUser. In MiniShop3 customer is a separate entity msCu
 ### Delivery and payment
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msDelivery` | `ms3_deliveries` | Delivery methods |
 | `msPayment` | `ms3_payments` | Payment methods |
 | `msDeliveryMember` | `ms3_delivery_payments` | Delivery–payment link |
@@ -183,19 +183,19 @@ In miniShop2 customer = modUser. In MiniShop3 customer is a separate entity msCu
 ### Vendors
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msVendor` | `ms3_vendors` | Product vendors |
 
 ### Options
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msOption` | `ms3_options` | Option catalog |
 
 ### Field configuration (NEW in MiniShop3)
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Model field settings |
 | `msModelFieldSection` | `ms3_model_field_sections` | Field sections |
 | `msProductField` | `ms3_product_fields` | Product fields (legacy) |
@@ -205,7 +205,7 @@ In miniShop2 customer = modUser. In MiniShop3 customer is a separate entity msCu
 ### Notifications
 
 | Model | Table | Description |
-|--------|---------|-------------|
+| --- | --- | --- |
 | `msNotificationConfig` | `ms3_notification_configs` | Notification configuration |
 
 ## Working with models

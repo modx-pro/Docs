@@ -3,51 +3,53 @@ title: Payment methods
 ---
 # Payment methods
 
-Payment methods are managed via **Extras → MiniShop3 → Settings → Payments**.
+Managed via **Extras → MiniShop3 → Settings → Payments**.
+
+## For the store owner
+
+1. Create a payment method: name, description, logo, active flag.
+2. Link it to the needed [deliveries](/en/components/minishop3/interface/settings/deliveries). Without a link the customer cannot pick the pair on the storefront.
+3. For pay-on-delivery leave the `class` field empty. The order simply stores the selected `payment_id`.
+4. For online payment install a payment extra from the catalog (for example [msp3YooKassa](/en/components/msp3yookassa/), [mspTBank](/en/components/msptbank/), [msp3Sberbank](/en/components/msp3sberbank/)) and set the handler class in `class` as in that package's docs.
+5. Check the post-payment redirect: `ms3_order_success_page_id` and the Thanks page with `msGetOrder`.
+
+Surcharge in the `price` field:
+
+- `100`: fixed amount added to the order
+- `3%`: percent of the total
 
 ## Payment fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Payment method name |
 | `description` | text | Description for the customer |
-| `price` | string | Surcharge for the payment method (amount or percent) |
+| `price` | string | Surcharge (amount or percent) |
 | `logo` | string | Image path |
 | `position` | int | Sort order |
 | `active` | bool | Active |
 | `class` | string | PHP payment handler class |
-| `properties` | JSON | Additional settings |
-
-## Payment surcharge
-
-The `price` field adds a surcharge for using the payment method:
-
-- **Fixed amount:** `100` — adds 100 to the total
-- **Percent:** `3%` — adds 3% of the order total
-
-Useful to offset payment system fees.
+| `properties` | JSON | Handler settings |
 
 ## Delivery linkage
 
-Payment methods are linked to delivery methods. Configure this in the delivery card by selecting available payment methods.
+Edit links on the delivery card. Typical sets:
 
-Typical scenarios:
-
-- **Pickup** — cash, card on delivery
-- **Courier** — cash, card, online
-- **Post** — cash on delivery, online payment
+- Pickup: cash, card on delivery
+- Courier: cash, card, online
+- Post: cash on delivery, online
 
 ## Payment handlers
 
 ### Built-in handlers
 
 | Class | Description |
-|-------|-------------|
-| — | Base handler (no online payment) |
+| --- | --- |
+| (empty) | No online payment, only records the method |
 
 ### Creating a handler
 
-To integrate a payment system, create a handler class:
+A payment extra implements `PaymentProviderInterface` and registers the class on the payment method. The sketch below is for your own package. Prefer documented extras for production; do not ship this skeleton as-is.
 
 ```php
 <?php

@@ -10,7 +10,7 @@ title: События уведомлений
 MiniShop3 включает два канала уведомлений из коробки:
 
 | Канал | Класс | Описание |
-|-------|-------|----------|
+| --- | --- | --- |
 | `email` | `EmailChannel` | Отправка через MODX modMail |
 | `telegram` | `TelegramChannel` | Отправка через Telegram Bot API |
 
@@ -21,6 +21,7 @@ MiniShop3 включает два канала уведомлений из ко�
 ### Telegram канал
 
 Отправляет сообщения через Telegram Bot API. Требует настройки:
+
 - `ms3_telegram_bot_token` — токен бота
 - `ms3_telegram_manager_chat_id` — Chat ID получателя
 
@@ -31,6 +32,7 @@ Telegram-бот не может инициировать диалог с пол�
 ### Реализация уведомлений клиентам через Telegram
 
 Для отправки Telegram-уведомлений клиентам необходимо:
+
 1. Получить согласие клиента на получение уведомлений
 2. Привязать Telegram-аккаунт клиента к его профилю в магазине
 3. Сохранить Chat ID клиента
@@ -96,8 +98,10 @@ if ($message && str_starts_with($message['text'], '/start ')) {
 ```php
 <?php
 /**
+
  * Плагин: Telegram уведомления клиентам
  * События: msOnChangeOrderStatus
+
  */
 
 switch ($modx->event->name) {
@@ -170,7 +174,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `notification` | `NotificationInterface` | Объект уведомления |
 | `recipient` | `array` | Данные получателя — см. структуру ниже |
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
@@ -186,14 +190,14 @@ switch ($modx->event->name) {
 
 Резолвленные `email`/`phone` дополнительно зеркалятся в `recipient['customer']['email']`/`['phone']` для плагинов, читающих контакт оттуда.
 
-| Ключ | Тип | Источник | Описание |
-|------|-----|----------|----------|
-| `type` | `string` | — | `customer` или `manager` (дублирует `recipientType`) |
-| `email` | `string\|null` | address → customer → profile | Резолвленный email получателя |
-| `phone` | `string\|null` | address → customer → profile | Резолвленный телефон |
-| `telegram_chat_id` | `string\|null` | `customer.extended` → profile | ID чата Telegram, если задан |
-| `address` | `array` | `msOrderAddress->toArray()` | Полный адрес заказа (доступен только для customer-получателя) |
-| `customer` | `array` | `msCustomer->toArray()` | Объект клиента (доступен только для customer-получателя); поля `email`/`phone` уже синхронизированы с резолвленными значениями |
+| Ключ | Тип | Источник | Описание | |
+| --- | --- | --- | --- | --- |
+| `type` | `string` | — | `customer` или `manager` (дублирует `recipientType`) | |
+| `email` | `string\ | null` | address → customer → profile | Резолвленный email получателя |
+| `phone` | `string\ | null` | address → customer → profile | Резолвленный телефон |
+| `telegram_chat_id` | `string\ | null` | `customer.extended` → profile | ID чата Telegram, если задан |
+| `address` | `array` | `msOrderAddress->toArray()` | Полный адрес заказа (доступен только для customer-получателя) | |
+| `customer` | `array` | `msCustomer->toArray()` | Объект клиента (доступен только для customer-получателя); поля `email`/`phone` уже синхронизированы с резолвленными значениями | |
 
 :::tip Зачем разделять адрес и клиента
 До 1.12.0 уведомления слались по контактам из `msCustomer`, которые могли отличаться от контактов конкретного заказа (например, если в одной сессии оформили два заказа с разными email — оба уходили на email из msCustomer). См. [issue #218](https://github.com/modx-pro/MiniShop3/issues/218) / [PR #320](https://github.com/modx-pro/MiniShop3/pull/320).
@@ -262,7 +266,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `notification` | `NotificationInterface` | Объект уведомления |
 | `recipient` | `array` | Данные получателя — см. [структуру recipient](#структура-recipient) выше |
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
@@ -335,7 +339,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `manager` | `NotificationManager` | Менеджер уведомлений |
 
 ### Регистрация кастомного канала
@@ -417,8 +421,10 @@ class TelegramChannel implements ChannelInterface
 ```php
 <?php
 /**
+
  * Плагин: Аналитика уведомлений
  * События: msOnBeforeSendNotification, msOnAfterSendNotification
+
  */
 
 switch ($modx->event->name) {

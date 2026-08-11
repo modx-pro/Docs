@@ -8,7 +8,7 @@ title: Отличия от miniShop2
 ## Системные требования
 
 | Требование | miniShop2 | MiniShop3 |
-|------------|-----------|-----------|
+| --- | --- | --- |
 | MODX | 2.3+ | **3.0.0+** |
 | PHP | 7.0+ | **8.1+** |
 | MySQL | 5.5+ | 5.7+ / MariaDB 10.3+ |
@@ -68,7 +68,7 @@ php vendor/bin/phinx migrate -c phinx.php
 Все системные настройки переименованы с `ms2_` на `ms3_`:
 
 | miniShop2 | MiniShop3 |
-|-----------|-----------|
+| --- | --- |
 | `ms2_template_product_default` | `ms3_template_product_default` |
 | `ms2_template_category_default` | `ms3_template_category_default` |
 | `ms2_category_grid_fields` | `ms3_category_grid_fields` |
@@ -116,7 +116,7 @@ MiniShop3 добавляет множество новых настроек:
 
 ### Web API (новое в MiniShop3)
 
-MiniShop3 предоставляет полноценный REST API для headless-интеграций:
+MiniShop3 даёт REST API для headless:
 
 ```javascript
 // Корзина
@@ -195,7 +195,7 @@ ms3.hooks.remove('afterAddToCart', 'my_hook');
 ### Список hooks MiniShop3
 
 | miniShop2 Callback | MiniShop3 Hook |
-|--------------------|----------------|
+| --- | --- |
 | `Cart.add.before` | `beforeAddToCart` |
 | `Cart.add.response.success` | `afterAddToCart` |
 | `Cart.remove.response.success` | `afterRemoveFromCart` |
@@ -287,7 +287,7 @@ switch ($modx->event->name) {
 Имена чанков изменены для консистентности:
 
 | miniShop2 | MiniShop3 |
-|-----------|-----------|
+| --- | --- |
 | `tpl.msProducts.row` | `tpl.msProducts.row` (без изменений) |
 | `tpl.msCart` | `tpl.msCart` (без изменений) |
 | `tpl.msOrder` | `tpl.msOrder` (без изменений) |
@@ -333,21 +333,36 @@ foreach ($addresses as $address) {
 
 ## Миграция с miniShop2
 
-### Шаг 1: Обновите MODX до версии 3.x
+Это runbook по данным и коду. Параллельный MS2 и MS3 на одной БД не предполагается: сначала MODX 3, потом MS3, потом перенос.
 
-MiniShop3 работает только на MODX 3. Сначала выполните миграцию MODX.
+### Шаг 1: MODX 3
 
-### Шаг 2: Установите MiniShop3
+Обновите сайт до MODX 3.x. MS3 на MODX 2 не ставится.
 
-Установите MiniShop3 через менеджер пакетов MODX или загрузите транспортный пакет с [GitHub](https://github.com/modx-pro/MiniShop3/releases).
+### Шаг 2: Бэкап
 
-### Шаг 3: Обновите системные настройки
+Снимите дамп БД и файлов. Зафиксируйте ID категорий, товаров, статусов, доставок и оплат MS2.
 
-Переименуйте настройки с `ms2_` на `ms3_` или создайте новые.
+### Шаг 3: Установите MiniShop3
 
-### Шаг 4: Обновите JavaScript
+Через менеджер пакетов или транспорт с [GitHub Releases](https://github.com/modx-pro/MiniShop3/releases). Дождитесь Phinx-миграций.
 
-Замените вызовы `miniShop2` на `ms3`:
+### Шаг 4: Данные каталога и заказов
+
+Готового «одной кнопкой» мигратора MS2→MS3 в пакете нет. Типовой путь:
+
+1. Экспорт товаров/категорий в CSV (или свой скрипт по таблицам `ms2_*`).
+2. Импорт в MS3 через [Утилиты → Импорт](/components/minishop3/interface/utilities/import) или API.
+3. Опции: ключи `option_*`, группы после 1.11 живут в `msOptionGroup` (не `modCategory`).
+4. Заказы и покупателей переносите отдельным скриптом или оставьте архив MS2 read-only.
+
+Сверьте `class_key` ресурсов: категории `msCategory`, товары `msProduct`.
+
+### Шаг 5: Системные настройки
+
+Ключи `ms2_*` в MS3 не читаются. Заведите `ms3_*` (page_id, статусы, валюта). Старые значения из MS2 перенесите вручную.
+
+### Шаг 6: JavaScript витрины
 
 ```javascript
 // Было
@@ -357,13 +372,15 @@ miniShop2.Cart.add(id);
 ms3.cart.add(id);
 ```
 
-### Шаг 5: Обновите плагины
+### Шаг 7: Плагины
 
-Проверьте и обновите плагины, использующие события miniShop2.
+Перепишите подписки на события MS3 (имена и сигнатуры отличаются). См. [События](/components/minishop3/development/events).
 
-### Шаг 6: Обновите шаблоны
+### Шаг 8: Чанки и плейсхолдеры
 
-Замените data-атрибуты и классы:
+- Цены: сырые float + `*_formatted` (с 1.11).
+- Опции: `group_name` вместо `category_name`.
+- Корзина на thanks: при необходимости `hideOnThanks=1` у `msCart`.
 
 ```html
 <!-- Было -->
@@ -373,6 +390,13 @@ ms3.cart.add(id);
 <!-- Стало -->
 <button data-ms-action="cart/add" data-id="{$id}">
 ```
+
+### Шаг 9: Проверка
+
+1. Каталог и карточка товара.
+2. Корзина → оформление → thanks.
+3. ЛК: вход, адреса, заказы.
+4. Менеджер: заказы, клиенты, опции.
 
 ## Обратная совместимость
 

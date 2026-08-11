@@ -18,7 +18,7 @@ Manage fields registered in `ms3_product_fields`:
 ## Difference from "Extra fields"
 
 | Aspect | Model fields | Extra fields |
-|--------|--------------|--------------|
+| --- | --- | --- |
 | Source | Existing DB fields | New fields |
 | Column creation | No | Yes (ALTER TABLE) |
 | Deletion | From configuration only | Full removal |
@@ -51,7 +51,7 @@ Left panel lists sections for the selected model.
 Right side shows fields and settings:
 
 | Column | Description |
-|--------|-------------|
+| --- | --- |
 | Name | System field name |
 | Label | Display name |
 | Type (xtype) | Widget type |
@@ -66,7 +66,7 @@ Click a row to open the edit dialog.
 ### Basic parameters
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | Label | Display field name |
 | Description | Hint below input |
 | Section | Group where the field appears |
@@ -75,7 +75,7 @@ Click a row to open the edit dialog.
 ### Widget type (xtype)
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `textfield` | Text field |
 | `numberfield` | Number field |
 | `textarea` | Multiline field |
@@ -88,7 +88,7 @@ Click a row to open the edit dialog.
 Uses a 12-column grid:
 
 | Value | Width | Description |
-|-------|-------|-------------|
+| --- | --- | --- |
 | 3 | 25% | Quarter row |
 | 4 | 33% | Third row |
 | 6 | 50% | Half row |
@@ -127,7 +127,7 @@ Or load from API:
 2. Fill the form:
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | Key | Unique identifier |
 | Label | Display name |
 | Order | Position in section list |
@@ -164,7 +164,7 @@ Drag sections to change display order.
 For compact layout:
 
 | Field | Width |
-|-------|-------|
+| --- | --- |
 | article | 6 (50%) |
 | price | 3 (25%) |
 | old_price | 3 (25%) |

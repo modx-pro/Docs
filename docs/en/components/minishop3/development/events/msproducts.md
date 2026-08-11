@@ -7,12 +7,15 @@ Events for integrating third-party packages (ms3Variants, msBrands, etc.) into t
 
 ::: tip usePackages parameter
 To enable a package's data loading, pass its name in the snippet parameter:
+
 ```fenom
 {'msProducts' | snippet : [
     'parents' => 0,
     'usePackages' => 'ms3Variants,msBrands'
 ]}
+
 ```
+
 Plugins check for their package in this parameter and load data only when needed.
 :::
 
@@ -23,7 +26,7 @@ Fired after the product list is loaded from the database, before processing. Int
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `rows` | `array` (reference) | Product rows, can be modified |
 | `productIds` | `array` | Array of product IDs `[1, 2, 3, ...]` |
 | `usePackages` | `array` | Requested packages `['ms3Variants', 'msBrands']` |
@@ -53,6 +56,7 @@ switch ($modx->event->name) {
         ];
         break;
 }
+
 ```
 
 ### Example: loading product variants (ms3Variants)
@@ -82,6 +86,7 @@ switch ($modx->event->name) {
         ];
         break;
 }
+
 ```
 
 ---
@@ -93,7 +98,7 @@ Fired when preparing each product for output. Used to attach data loaded in `msO
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `row` | `array` (reference) | Product data, can be modified |
 | `productId` | `int` | Product ID |
 | `idx` | `int` | Index of the product in the result set |
@@ -119,6 +124,7 @@ switch ($modx->event->name) {
         }
         break;
 }
+
 ```
 
 ### Example: attaching variants (ms3Variants)
@@ -149,6 +155,7 @@ switch ($modx->event->name) {
         }
         break;
 }
+
 ```
 
 ---
@@ -225,6 +232,7 @@ switch ($modx->event->name) {
         $row['has_badges'] = !empty($badges);
         break;
 }
+
 ```
 
 ### Using in template
@@ -235,6 +243,7 @@ switch ($modx->event->name) {
     'usePackages' => 'msBadges',
     'tpl' => 'tpl.msProducts.badges'
 ]}
+
 ```
 
 **Chunk tpl.msProducts.badges:**
@@ -254,6 +263,7 @@ switch ($modx->event->name) {
     <h3>{$pagetitle}</h3>
     <div class="price">{$price} руб.</div>
 </div>
+
 ```
 
 ---
@@ -272,6 +282,7 @@ $modx->eventData['myPackage'] = [
 // In msOnProductPrepare — read
 $dataMap = $modx->eventData['myPackage']['dataMap'] ?? null;
 $settings = $modx->eventData['myPackage']['settings'] ?? [];
+
 ```
 
 ::: warning Data isolation
@@ -290,6 +301,8 @@ Events are designed for optimal performance:
 This avoids the N+1 query problem:
 
 ```
+
 ❌ Without bulk loading: 1 query for list + N queries for variants = O(N+1)
 ✅ With bulk loading:     1 query for list + 1 query for all variants = O(2)
+
 ```

@@ -8,7 +8,7 @@ Delivery methods are managed via **Extras → MiniShop3 → Settings → Deliver
 ## Delivery fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Delivery method name |
 | `description` | text | Description for the customer |
 | `price` | number | Base delivery cost |
@@ -138,13 +138,13 @@ On the frontend, checkboxes send `input.checked` (`'1'` or `'0'`), not a static 
 #### Order fields
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `order_comment` | Order comment |
 
 #### Address fields
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `first_name` | First name |
 | `last_name` | Last name |
 | `phone` | Phone |
@@ -169,7 +169,7 @@ MiniShop3 uses the [rakit/validation](https://github.com/rakit/validation) libra
 #### Basic rules
 
 | Rule | Description | Example |
-|------|-------------|---------|
+| --- | --- | --- |
 | `required` | Required field | `required` |
 | `nullable` | Field may be null | `nullable` |
 | `present` | Field must be present (even empty) | `present` |
@@ -178,7 +178,7 @@ MiniShop3 uses the [rakit/validation](https://github.com/rakit/validation) libra
 #### Data types
 
 | Rule | Description | Example |
-|------|-------------|---------|
+| --- | --- | --- |
 | `email` | Valid email | `email` |
 | `url` | Valid URL | `url` |
 | `ip` | IP address (v4 or v6) | `ip` |
@@ -193,7 +193,7 @@ MiniShop3 uses the [rakit/validation](https://github.com/rakit/validation) libra
 #### String rules
 
 | Rule | Description | Example |
-|------|-------------|---------|
+| --- | --- | --- |
 | `alpha` | Letters only | `alpha` |
 | `alpha_num` | Letters and digits | `alpha_num` |
 | `alpha_dash` | Letters, digits, dash, underscore | `alpha_dash` |
@@ -204,7 +204,7 @@ MiniShop3 uses the [rakit/validation](https://github.com/rakit/validation) libra
 #### Rules with parameters
 
 | Rule | Description | Syntax |
-|------|-------------|--------|
+| --- | --- | --- |
 | `min` | Min string length or numeric value | `min:3` |
 | `max` | Max string length or numeric value | `max:100` |
 | `between` | Value in range | `between:1,10` |
@@ -219,7 +219,7 @@ MiniShop3 uses the [rakit/validation](https://github.com/rakit/validation) libra
 #### Date rules
 
 | Rule | Description | Syntax |
-|------|-------------|--------|
+| --- | --- | --- |
 | `date` | Valid date in format | `date:Y-m-d` |
 | `after` | Date after specified | `after:2024-01-01` |
 | `before` | Date before specified | `before:2025-12-31` |
@@ -227,7 +227,7 @@ MiniShop3 uses the [rakit/validation](https://github.com/rakit/validation) libra
 #### Conditional rules
 
 | Rule | Description | Syntax |
-|------|-------------|--------|
+| --- | --- | --- |
 | `required_if` | Required if another field equals value | `required_if:delivery,courier` |
 | `required_unless` | Required if another field ≠ value | `required_unless:delivery,pickup` |
 | `required_with` | Required if another field is set | `required_with:phone` |

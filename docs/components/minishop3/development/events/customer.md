@@ -11,10 +11,10 @@ title: События покупателя
 
 ### Параметры
 
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
-| `msCustomer` | `msCustomer\|null` | Объект покупателя (может быть null) |
+| Параметр | Тип | Описание | |
+| --- | --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа | |
+| `msCustomer` | `msCustomer\ | null` | Объект покупателя (может быть null) |
 
 ### Прерывание операции
 
@@ -39,10 +39,10 @@ switch ($modx->event->name) {
 
 ### Параметры
 
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
-| `msCustomer` | `msCustomer\|null` | Объект покупателя |
+| Параметр | Тип | Описание | |
+| --- | --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа | |
+| `msCustomer` | `msCustomer\ | null` | Объект покупателя |
 
 ### Пример использования
 
@@ -73,7 +73,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Значение поля |
@@ -134,7 +134,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Сохранённое значение |
@@ -174,7 +174,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Значение для валидации |
@@ -207,7 +207,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Валидированное значение |
@@ -245,7 +245,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Невалидное значение |
@@ -279,7 +279,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `customerData` | `array` | Данные для создания |
 
@@ -333,7 +333,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Контроллер покупателя |
 | `customerData` | `array` | Данные покупателя |
 | `msCustomer` | `msCustomer` | Созданный объект покупателя |
@@ -374,7 +374,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `addressData` | `array` | Данные адреса |
 
 ### Прерывание операции
@@ -433,7 +433,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `addressData` | `array` | Данные адреса |
 | `msCustomerAddress` | `msCustomerAddress` | Созданный объект адреса |
 
@@ -537,11 +537,11 @@ switch ($modx->event->name) {
 
 ### Параметры
 
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя |
-| `user` | `\MODX\Revolution\modUser` \| `null` | Текущий вариант пользователя — на входе обычно `null` |
-| `orderData` | `array` | Снимок полей заказа (адресные `address_email`, `address_phone`, `address_first_name` и т. д.) |
+| Параметр | Тип | Описание | |
+| --- | --- | --- | --- |
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя | |
+| `user` | `\MODX\Revolution\modUser` \ | `null` | Текущий вариант пользователя — на входе обычно `null` |
+| `orderData` | `array` | Снимок полей заказа (адресные `address_email`, `address_phone`, `address_first_name` и т. д.) | |
 
 ### Подмена пользователя
 
@@ -576,7 +576,7 @@ switch ($modx->event->name) {
 
 ### Параметры
 
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя |
-| `user` | `\MODX\Revolution\modUser` \| `null` | Финальный пользователь (или `null`, если разрешить не удалось) |
+| Параметр | Тип | Описание | |
+| --- | --- | --- | --- |
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя | |
+| `user` | `\MODX\Revolution\modUser` \ | `null` | Финальный пользователь (или `null`, если разрешить не удалось) |

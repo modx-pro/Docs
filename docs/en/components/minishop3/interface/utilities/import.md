@@ -7,13 +7,13 @@ Step-by-step wizard for importing products from CSV files.
 
 ## Purpose
 
-Import lets you bulk create and update products from CSV data. Supported:
+Bulk create and update products from CSV:
 
 - Automatic encoding detection (UTF-8, Windows-1251, KOI8-R)
-- Visual column-to-field mapping
-- Update existing products by key field
-- Import TV fields and product options
-- Upload images to the gallery
+- Column-to-product-field mapping
+- Update by key field
+- TV fields, options (`option_*`), images into the gallery
+- Active **extra fields** (`msExtraField`) for `msProduct` / `msProductData`
 
 ## Step-by-step process
 
@@ -28,7 +28,7 @@ Import lets you bulk create and update products from CSV data. Supported:
 **Settings:**
 
 | Parameter | Description | Default |
-|-----------|-------------|---------|
+| --- | --- | --- |
 | Delimiter | Column separator | `;` |
 | Skip header | First row is column names | Yes |
 
@@ -40,9 +40,9 @@ Import lets you bulk create and update products from CSV data. Supported:
 
 After upload you see:
 
-- Row count
-- Detected encoding
-- Warning for large files
+- row count
+- detected encoding
+- a warning if the file is large
 
 ::: info Encoding
 Windows-1251 files are converted to UTF-8 during processing.
@@ -60,7 +60,7 @@ Map each CSV column to a product field.
 **Mapping table:**
 
 | CSV column | → | Product field | Preview |
-|------------|---|---------------|---------|
+| --- | --- | --- | --- |
 | A: "Name" | → | pagetitle | iPhone 15 |
 | B: "Category" | → | parent | 5 |
 | C: "Price" | → | price | 99990 |
@@ -72,7 +72,7 @@ The system maps columns by header names automatically. For example, column "name
 **Update settings:**
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | Update existing | If a product is found by key — update it |
 | Lookup key | Field to find duplicates |
 
@@ -81,6 +81,19 @@ Available lookup keys:
 - `article` — SKU (recommended)
 - `pagetitle` — name
 - `id` — resource ID
+
+### Extra fields and Object Extension
+
+The mapping column list comes from `GET /api/mgr/import/fields`:
+
+1. Static catalog `config/import-fields.php` (resource, `msProductData`, options).
+2. Active `msExtraField` rows for models `msProduct` and `msProductData` whose column already exists in the DB (`column_exists`).
+
+Widget type `ms3-repeater` is **excluded** from import: repeater JSON rows are not mapped via CSV. Simple extra fields (`varchar`, `int`, `decimal`, `text`, …) and key-value (if the column exists) appear in the UI as regular product fields.
+
+Reserved names from the static catalog cannot be overridden by an extra field key.
+
+Options still use the `option_` prefix in CSV or an explicit mapping to an option key.
 
 ### Step 3: Import
 
@@ -93,9 +106,9 @@ Available lookup keys:
 **Import modes:**
 
 | Mode | Description |
-|------|-------------|
-| Synchronous | Import runs immediately, wait for completion |
-| Asynchronous | Task queued in [Scheduler](/en/components/scheduler/) (for large files) |
+| --- | --- |
+| Synchronous | Import runs immediately, you wait for the response |
+| Asynchronous | The task goes to [Scheduler](/en/components/scheduler/) (large files) |
 
 ::: warning Large files
 For files over 300 rows use asynchronous mode via [Scheduler](/en/components/scheduler/).
@@ -122,7 +135,7 @@ Import complete!
 ### Main resource fields
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `pagetitle` | Product name (required) |
 | `longtitle` | Extended title |
 | `description` | Description (meta) |
@@ -138,7 +151,7 @@ Import complete!
 ### Product fields (msProductData)
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `article` | SKU |
 | `price` | Price |
 | `old_price` | Old price |
@@ -155,7 +168,7 @@ Import complete!
 ### Special fields
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `gallery` | Image path (relative to site root) |
 | `tv.{name}` | TV field by name (e.g. `tv.brand`) |
 | `option.{key}` | Product option (e.g. `option.color`) |
@@ -229,7 +242,7 @@ For programmatic gallery upload use processor `MiniShop3\Processors\Gallery\Uplo
 ### Import processors
 
 | Processor | Purpose |
-|-----------|---------|
+| --- | --- |
 | `MiniShop3\Processors\Utilities\Import\Fields` | Field list for mapping |
 | `MiniShop3\Processors\Utilities\Import\Upload` | CSV upload |
 | `MiniShop3\Processors\Utilities\Import\Preview` | Preview |

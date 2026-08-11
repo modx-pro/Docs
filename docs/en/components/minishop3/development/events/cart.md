@@ -12,7 +12,7 @@ Fired **before** getting cart contents.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `draft` | `msOrder` | Order draft (cart) |
 
@@ -46,7 +46,7 @@ Fired **after** getting cart contents. Lets you modify data before it is returne
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `draft` | `msOrder` | Order draft (cart) |
 | `data` | `array` | Cart products array |
@@ -85,7 +85,7 @@ Fired **before** adding a product to the cart. Lets you validate or modify add p
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `msProduct` | `msProduct` | Product object |
 | `count` | `int` | Quantity |
@@ -149,7 +149,7 @@ Fired **after** successfully adding a product to the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `msProduct` | `msProduct` | Product object |
 | `count` | `int` | Quantity added |
@@ -190,7 +190,7 @@ Fired **before** changing product quantity in the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `product_key` | `string` | Unique product key in cart |
 | `count` | `int` | New quantity |
@@ -239,7 +239,7 @@ Fired **after** changing product quantity in the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `product_key` | `string` | Unique product key |
 | `count` | `int` | New quantity |
@@ -269,7 +269,7 @@ Fired **before** changing product options in the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `product_key` | `string` | Unique product key |
 | `options` | `array` | New options |
@@ -300,7 +300,7 @@ Fired **after** changing product options in the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `old_product_key` | `string` | Old product key |
 | `product_key` | `string` | New product key (may change) |
@@ -334,7 +334,7 @@ Fired **before** removing a product from the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `product_key` | `string` | Unique product key |
 
@@ -365,7 +365,7 @@ Fired **after** removing a product from the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `product_key` | `string` | Removed product key |
 
@@ -396,7 +396,7 @@ Fired **before** fully clearing the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 
 ### Aborting the operation
@@ -424,7 +424,7 @@ Fired **after** fully clearing the cart.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 
 ### Example
@@ -450,7 +450,7 @@ Fired when calculating cart status (totals). Lets you modify the totals.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `status` | `array` | Cart totals array |
 

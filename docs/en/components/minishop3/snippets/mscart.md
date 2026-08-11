@@ -12,7 +12,7 @@ The snippet uses the user session and must be called **uncached**.
 ## Parameters
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCart` | Cart layout chunk |
 | **selector** | | CSS selector for auto-updating cart HTML |
 | **includeTVs** | | Comma-separated product TV parameters |
@@ -29,7 +29,7 @@ The snippet uses the user session and must be called **uncached**.
 The snippet inherits pdoTools parameters:
 
 | Parameter | Description |
-|----------|----------|
+| --- | --- |
 | **where** | Extra query conditions (JSON) |
 | **leftJoin** | Extra JOINs (JSON) |
 | **select** | Extra fields for query (JSON) |

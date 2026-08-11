@@ -10,7 +10,7 @@ Store settings are available via **Extras → MiniShop3 → Settings**.
 The section includes the following tabs:
 
 | Tab | Description |
-|-----|-------------|
+| --- | --- |
 | [Delivery methods](settings/deliveries) | Delivery method setup, cost, validation |
 | [Payment methods](settings/payments) | Payment system setup |
 | [Vendors](settings/vendors) | Product vendor directory |

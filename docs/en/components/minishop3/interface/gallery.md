@@ -24,7 +24,7 @@ MiniShop3 uses [Intervention Image](https://image.intervention.io/) v3 — a mod
 **Advantages over legacy phpThumb:**
 
 | Feature | phpThumb | Intervention Image |
-|---------|----------|---------------------|
+| --- | --- | --- |
 | Generation speed | 800ms | **250ms** (3× faster) |
 | Memory usage | 45MB | **28MB** (-38%) |
 | WebP support | Partial | **Full** |
@@ -40,7 +40,7 @@ MiniShop3 uses [Intervention Image](https://image.intervention.io/) v3 — a mod
 ### Supported formats
 
 | Format | Read | Write | Note |
-|--------|------|-------|------|
+| --- | --- | --- | --- |
 | JPEG | ✅ | ✅ | Primary format |
 | PNG | ✅ | ✅ | With transparency |
 | GIF | ✅ | ✅ | Animation (first frame only) |
@@ -79,7 +79,7 @@ The image uploader is built on [Uppy](https://uppy.io/) — a modern file upload
 ### Uploader parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | `maxFileSize` | 10 MB | Maximum file size |
 | `maxWidth` | 1920 px | Maximum width |
 | `maxHeight` | 1080 px | Maximum height |
@@ -140,7 +140,7 @@ Thumbnail configuration is stored in **Media Source**:
 ### Thumbnail parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `width` | int | Width in pixels |
 | `height` | int | Height in pixels |
 | `quality` | int | Compression quality (0-100) |
@@ -214,7 +214,7 @@ Image is scaled preserving aspect ratio; may be smaller than the given size.
 For `cover` and `crop` modes:
 
 | Position | Description |
-|----------|-------------|
+| --- | --- |
 | `center` | Center (default) |
 | `top` | Top |
 | `bottom` | Bottom |
@@ -394,7 +394,7 @@ Maximum quality for large stores.
 ### Processing effects
 
 | Parameter | Description | Values |
-|-----------|-------------|--------|
+| --- | --- | --- |
 | `sharpen` | Sharpness | 0-100 |
 | `blur` | Blur | 0-100 |
 | `brightness` | Brightness | -100 to +100 |
@@ -434,14 +434,14 @@ Maximum quality for large stores.
 ```
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | `progressive` | Progressive JPEG (faster perceived load) |
 | `strip_exif` | Remove EXIF data (saves 20-50 KB) |
 
 ## Quality recommendations
 
 | Image type | WebP | JPEG | Comment |
-|------------|------|------|---------|
+| --- | --- | --- | --- |
 | Thumbnails (≤200px) | 75-80% | 85% | Artifacts not visible |
 | Cards (200-400px) | 80-85% | 85-88% | Optimal balance |
 | Gallery (400-1000px) | 85% | 88-90% | Details matter |

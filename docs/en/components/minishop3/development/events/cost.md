@@ -12,7 +12,7 @@ Fired **before** calculating cart cost.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `cart` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 
@@ -40,7 +40,7 @@ Fired **after** calculating cart cost. Lets you modify the total.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `cart` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `cost` | `float` | Calculated cost |
@@ -120,7 +120,7 @@ Fired **before** calculating delivery cost.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `storageController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `orderController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
@@ -146,7 +146,7 @@ Fired **after** calculating delivery cost. Lets you modify the cost.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `storageController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `orderController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
@@ -244,7 +244,7 @@ Fired **before** calculating payment method fee.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `storageController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `orderController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
@@ -258,7 +258,7 @@ Fired **after** calculating payment method fee. Lets you modify the fee.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `storageController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
 | `orderController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
@@ -312,6 +312,77 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+---
+
+## msOnBeforeGetOrderCost
+
+Fired **before** the order total is assembled in `OrderCostCalculator`. After this hook, core calculates cart / delivery / payment cost and composes the breakdown.
+
+### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Cost calculator |
+| `cart` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
+| `draft` | `msOrder` \| `null` | Order draft |
+| `with_cart` | `bool` | Always `true` in the current call path |
+| `only_cost` | `bool` | “Amount only” mode (no UI side effects) |
+
+Abort with `$modx->event->output('...')` — the calculator returns an error.
+
+---
+
+## msOnGetOrderCost
+
+Fired **after** breakdown compose. Override any of the four amounts via `returnedValues`; core recomposes the final `cost`.
+
+### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Cost calculator |
+| `cart` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
+| `draft` | `msOrder` \| `null` | Order draft |
+| `with_cart` | `bool` | Cart-included calculation flag |
+| `only_cost` | `bool` | “Amount only” mode |
+| `cost` | `float` | Total before plugin overrides |
+| `cart_cost` | `float` | Products subtotal |
+| `delivery_cost` | `float` | Delivery |
+| `payment_cost` | `float` | Payment fee |
+
+### Override the total
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnGetOrderCost':
+        $values = &$modx->event->returnedValues;
+        $cartCost = (float) $scriptProperties['cart_cost'];
+        $deliveryCost = (float) $scriptProperties['delivery_cost'];
+        $paymentCost = (float) $scriptProperties['payment_cost'];
+
+        // Fixed discount on the whole order (not cart-only)
+        if ($cartCost >= 5000) {
+            $values['cart_cost'] = max(0, $cartCost - 500);
+        }
+
+        // Free delivery for large orders
+        if (($values['cart_cost'] ?? $cartCost) >= 3000) {
+            $values['delivery_cost'] = 0;
+        }
+
+        // You may set cost explicitly; otherwise core recomputes from the three parts
+        // $values['cost'] = ($values['cart_cost'] ?? $cartCost)
+        //     + ($values['delivery_cost'] ?? $deliveryCost)
+        //     + ($values['payment_cost'] ?? $paymentCost);
+        break;
+}
+```
+
+::: tip Partial vs total events
+For a products-only discount prefer `msOnGetCartCost`. For a rule that must touch cart + delivery + payment together, use `msOnGetOrderCost`.
+:::
 
 ---
 

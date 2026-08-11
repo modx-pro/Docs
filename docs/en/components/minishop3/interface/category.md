@@ -22,7 +22,7 @@ The category edit page (`msCategory`) extends standard MODX functionality with p
 Main category tab — product table with:
 
 | Feature | Description |
-|---------|-------------|
+| --- | --- |
 | Drag-and-drop | Sort products by dragging |
 | Filters | Search, published status, custom filters |
 | Bulk operations | Publish, unpublish, delete |
@@ -34,7 +34,7 @@ Main category tab — product table with:
 Standard MODX tab with resource fields:
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `pagetitle` | Category name |
 | `longtitle` | Extended title |
 | `description` | Meta description |
@@ -97,7 +97,7 @@ The system setting `ms3_category_grid_fields` was removed in 1.7.0. Use [Grid co
 Double-click a cell to edit in place:
 
 | Editor type | Fields |
-|-------------|--------|
+| --- | --- |
 | `text` | `pagetitle`, `longtitle`, `article`, `made_in` |
 | `number` | `price`, `old_price`, `weight` |
 | `boolean` | `published`, `new`, `popular`, `favorite` |
@@ -200,7 +200,7 @@ return [
 ### Column types
 
 | Type | Description | Example |
-|------|-------------|---------|
+| --- | --- | --- |
 | `text` | Text (default) | Title, SKU |
 | `number` | Number | Stock |
 | `price` | Formatted price | 1,234.56 |
@@ -233,7 +233,7 @@ The `relation` type loads data from related tables (JOIN):
 **Relation parameters:**
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | `table` | xPDO model class (e.g. `msOrderStatus`) |
 | `foreignKey` | Field in main table for the relation |
 | `displayField` | Field from related table to display |
@@ -259,7 +259,7 @@ The `badge` type shows a colored tag (PrimeVue Tag) using data from other column
 ]
 ```
 
-**Example: Order status with color**
+#### Example: order status with color
 
 To show order status as a colored badge you need 3 fields:
 
@@ -363,7 +363,7 @@ Actions are configured in a column with type `actions`:
 ### Action parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Unique identifier |
 | `handler` | string | Handler name (view, edit, delete, publish, duplicate) |
 | `icon` | string | PrimeIcons icon (pi-*) |
@@ -532,7 +532,7 @@ return [
 ### Filter parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `type` | string | Filter type: `text`, `select`, `datepicker`, `daterange` |
 | `label` | string | Lexicon key for label |
 | `placeholder` | string | Lexicon key for placeholder |
@@ -603,7 +603,7 @@ foreach ($dataNumericFields as $field) {
 
 ### Adding a custom filter
 
-**Step 1: Add filter to config**
+#### Step 1: add filter to config
 
 ```php
 // core/components/minishop3/custom/filters/category-products.php
@@ -630,7 +630,7 @@ return [
 ];
 ```
 
-**Step 2: Handle filter on server**
+#### Step 2: handle filter on server
 
 Create a plugin to handle the custom filter:
 
@@ -665,7 +665,7 @@ if (!empty($params['price_range'])) {
 ### Available operations
 
 | Operation | Description |
-|-----------|-------------|
+| --- | --- |
 | Publish | Publish selected products |
 | Unpublish | Unpublish selected products |
 | Delete | Mark as deleted |
@@ -719,7 +719,7 @@ POST /api/mgr/categories/{id}/products/sort
 ## System settings
 
 | Setting | Description | Default |
-|---------|-------------|---------|
+| --- | --- | --- |
 | `ms3_category_show_nested_products` | Show nested products | `false` |
 | `ms3_category_show_options` | Show category options | `true` |
 | `ms3_category_remember_tabs` | Remember active tab | `true` |
@@ -757,7 +757,7 @@ GET /api/mgr/categories/{id}/products
 **Parameters:**
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | `start` | Offset (pagination) |
 | `limit` | Number of records |
 | `sort` | Sort field |

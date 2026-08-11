@@ -8,7 +8,7 @@ Extended snippet for outputting all or filtered product options with full inform
 ## Parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **product** | current resource | Product ID |
 | **tpl** | `tpl.msProductOptions` | Layout chunk |
 | **onlyOptions** | | Output only the specified options (comma-separated) |
@@ -134,13 +134,13 @@ The option name (`color`, `size`, `weight`) is the array key, not a field inside
 ## Placeholders in chunk
 
 | Placeholder | Description |
-|-------------|-------------|
+| --- | --- |
 | `{$options}` | Associative array of product options |
 
 ### Fields per option
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `{$option.caption}` | Option label (human-readable) |
 | `{$option.value}` | Value (string or array) |
 | `{$option.category}` | Option group key |
@@ -275,7 +275,7 @@ When options are selectable (for example, color and size):
 ## When to use
 
 | Suitable | Not suitable |
-|----------|--------------|
+| --- | --- |
 | You need ALL product options | Only 2–3 specific options needed |
 | Metadata is required | Maximum speed matters |
 | Filtering by groups | Simple fixed list |

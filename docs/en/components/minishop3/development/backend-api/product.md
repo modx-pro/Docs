@@ -102,7 +102,7 @@ $price = $productData->get('price');
 `msProductData::get()` supports virtual keys that load related data from the DB:
 
 | Key | Type | Description |
-|------|-----|----------|
+| --- | --- | --- |
 | `categories` | `array` | Additional category IDs |
 | `options` | `array` | Options: `['color' => ['Red'], 'size' => ['L']]` |
 | `links` | `array` | Links: `['master' => [...], 'slave' => [...]]` |
@@ -158,7 +158,7 @@ $updated = $service->updateProductData($productId, [
 ### msProductData fields
 
 | Field | DB type | PHP type | Default | Description |
-|------|----------|---------|--------------|----------|
+| --- | --- | --- | --- | --- |
 | `article` | varchar(50) | string | null | SKU |
 | `price` | decimal(12,2) | float | 0.0 | Price |
 | `old_price` | decimal(12,2) | float | 0.0 | Old price |
@@ -332,7 +332,7 @@ $imageService->removeProductCatalog($productData);
 ### Gallery processors
 
 | Processor | Description |
-|-----------|----------|
+| --- | --- |
 | `Gallery\Upload` | Upload image (file, URL, path) |
 | `Gallery\GetList` | List product images |
 | `Gallery\Update` | Update image description |
@@ -494,7 +494,7 @@ Vendors are in model `msVendor` (table `ms3_vendors`). Product link is `vendor_i
 ### msVendor fields
 
 | Field | Type | Description |
-|------|-----|----------|
+| --- | --- | --- |
 | `name` | varchar(100) | Name |
 | `resource_id` | int | Related resource ID (vendor page) |
 | `country` | varchar(100) | Country |
@@ -533,7 +533,7 @@ echo $vendor->get('name');  // "Samsung"
 Vendors are managed via processors `Settings\Vendor\*`:
 
 | Processor | Description |
-|-----------|----------|
+| --- | --- |
 | `Settings\Vendor\Create` | Create |
 | `Settings\Vendor\Get` | Get |
 | `Settings\Vendor\GetList` | List |
@@ -546,7 +546,7 @@ Vendors are managed via processors `Settings\Vendor\*`:
 Full list of product-related processors (`core/components/minishop3/src/Processors/Product/`):
 
 | Processor | Description |
-|-----------|----------|
+| --- | --- |
 | `MiniShop3\Processors\Product\Create` | Create product |
 | `MiniShop3\Processors\Product\Update` | Update product |
 | `MiniShop3\Processors\Product\UpdateFromGrid` | Update from grid (inline edit) |

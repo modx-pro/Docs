@@ -12,7 +12,7 @@ The utilities section provides tools for bulk operations and MiniShop3 component
 ## Tabs
 
 | Tab | Description |
-|-----|-------------|
+| --- | --- |
 | [Gallery](utilities/gallery) | Bulk thumbnail regeneration for images |
 | [Import](utilities/import) | Product import from CSV files |
 | [Product fields](utilities/product-fields) | Product card field display configuration |

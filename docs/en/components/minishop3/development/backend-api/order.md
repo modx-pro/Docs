@@ -42,21 +42,25 @@ $result = $ms3->order->submit();
 
 // Clear draft
 $ms3->order->clean();
+
 ```
 
 ::: info Initialization
 Before using the controller you must initialize with the client token:
+
 ```php
 $ms3->order->initialize($token);
 $ms3->order->initDraft();
+
 ```
+
 In REST API and snippet context this is done automatically.
 :::
 
 ### Controller methods
 
 | Method | Description |
-|-------|----------|
+| --- | --- |
 | `initialize($token, $config)` | Initialize with client token |
 | `initDraft()` | Load existing draft |
 | `get()` | Order data (fields + address) |
@@ -119,6 +123,7 @@ $draftManager->clean($draft);
 
 // Delete draft (with products and address)
 $draftManager->deleteDraft($draft);
+
 ```
 
 ## Fields and validation (OrderFieldManager)
@@ -138,6 +143,7 @@ $fieldManager->remove($draft, $orderData, 'email');
 // Validate without saving
 $result = $fieldManager->validate($orderData, 'phone', '+79991234567');
 // ['success' => true] or ['success' => false, 'message' => 'Error']
+
 ```
 
 ### Validation rules
@@ -157,6 +163,7 @@ $required = $fieldManager->getDeliveryRequiredFields($deliveryId);
 $fieldManager->setValidationRules([
     'company_name' => 'required|min:3',
 ]);
+
 ```
 
 ## Cost calculation (OrderCostCalculator)
@@ -179,6 +186,7 @@ $result = $calculator->getPaymentCost($draft, $orderData, $token);
 // Total cost
 $result = $calculator->getTotalCost($draft, $orderData, $token);
 // ['cost' => 5450.00, 'cart_cost' => 5000.00, 'delivery_cost' => 300.00, 'payment_cost' => 150.00]
+
 ```
 
 Each method fires `msOnBefore...` / `msOn...` events so plugins can modify costs.
@@ -201,6 +209,7 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 //     ],
 //     'message' => 'Order submitted successfully'
 // ]
+
 ```
 
 ### Submit steps
@@ -225,6 +234,7 @@ $num = $submitHandler->getNewOrderNum();
 // "26/02-15" — format is configurable:
 // ms3_order_format_num — date format (default 'ym')
 // ms3_order_format_num_separator — separator (default '/')
+
 ```
 
 ## Status management (OrderStatusService)
@@ -239,12 +249,13 @@ $result = $statusService->change($orderId, $newStatusId);
 
 // Change status without notifications
 $result = $statusService->change($orderId, $newStatusId, true);
+
 ```
 
 ### Status constraints
 
 | Status property | Behavior |
-|------------------|-----------|
+| --- | --- |
 | `final = true` | Cannot change to another status |
 | `fixed = true` | Can only switch to status with higher `position` |
 
@@ -262,7 +273,7 @@ Products in an order are stored in model `msOrderProduct` (table `ms3_order_prod
 ### msOrderProduct fields
 
 | Field | Type | Description |
-|------|-----|----------|
+| --- | --- | --- |
 | `product_id` | integer | Product ID (msProduct) |
 | `order_id` | integer | Order ID |
 | `product_key` | string | Unique line key (e.g. `123_a1b2c3d4`) |
@@ -303,6 +314,7 @@ $item->save();
 
 // Recalculate order totals after changing products
 $order->updateProducts();
+
 ```
 
 ::: warning Recalculating totals
@@ -316,7 +328,7 @@ Each order has one related `msOrderAddress` (table `ms3_order_addresses`).
 ### msOrderAddress fields
 
 | Field | Type | Description |
-|------|-----|----------|
+| --- | --- | --- |
 | `order_id` | integer | Order ID |
 | `first_name` | string | First name |
 | `last_name` | string | Last name |
@@ -351,6 +363,7 @@ echo $address->get('street');     // "Lenina"
 // Update
 $address->set('city', 'Saint Petersburg');
 $address->save();
+
 ```
 
 ### OrderAddressManager
@@ -368,6 +381,7 @@ $result = $addressManager->cleanCustomerAddress($draft, $orderData);
 
 // Save order address to customer addresses
 $savedAddress = $addressManager->saveToCustomerAddresses($customerId, $orderData);
+
 ```
 
 ## Order log (OrderLogService)
@@ -401,12 +415,13 @@ $entries = $logService->getEntries($orderId, false, 50);
 if ($logService->shouldLog('status')) {
     // ...
 }
+
 ```
 
 ### Action types
 
 | Constant | Value | Description |
-|-----------|----------|----------|
+| --- | --- | --- |
 | `msOrderLog::ACTION_STATUS` | `status` | Status change |
 | `msOrderLog::ACTION_PAYMENT` | `payment` | Payment change |
 | `msOrderLog::ACTION_PRODUCTS` | `products` | Products change |
@@ -429,6 +444,7 @@ $result = $finalizeService->finalize($orderId, [
     'create_customer' => true,       // Create msCustomer
     'force_create_customer' => false, // Create even if duplicate
 ]);
+
 ```
 
 Finalize runs the same steps as `submit` but for manager context: you can skip steps and it works with an existing order (not a draft).
@@ -456,6 +472,7 @@ $user = $userResolver->createUser([
     'last_name' => 'Doe',
     'phone' => '+79991234567',
 ]);
+
 ```
 
 Setting `ms3_order_user_groups` defines groups for new users (format: `group_id:role_id`, comma-separated).
@@ -463,7 +480,7 @@ Setting `ms3_order_user_groups` defines groups for new users (format: `group_id:
 ## msOrder fields
 
 | Field | Type | Default | Description |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `user_id` | integer | 0 | MODX user ID |
 | `customer_id` | integer | 0 | Customer ID (msCustomer) |
 | `token` | string | — | Client session token |
@@ -485,7 +502,7 @@ Setting `ms3_order_user_groups` defines groups for new users (format: `group_id:
 ### msOrder relations
 
 | Relation | Model | Type | Description |
-|-------|--------|-----|----------|
+| --- | --- | --- | --- |
 | `Address` | msOrderAddress | composite (one) | Order address |
 | `Products` | msOrderProduct | composite (many) | Order products |
 | `Log` | msOrderLog | composite (many) | Change log |
@@ -502,7 +519,7 @@ Composite relations are deleted with the order (address, products, log). Aggrega
 ## Events
 
 | Event | When fired |
-|---------|-----------------|
+| --- | --- |
 | `msOnBeforeSaveOrder` / `msOnSaveOrder` | Order save |
 | `msOnBeforeRemoveOrder` / `msOnRemoveOrder` | Order remove |
 | `msOnBeforeGetCartCost` / `msOnGetCartCost` | Cart cost calculation |

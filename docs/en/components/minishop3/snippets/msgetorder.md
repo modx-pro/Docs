@@ -8,7 +8,7 @@ Snippet for displaying order information. Used on the thank-you page or in the c
 ## Parameters
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **id** | | Order ID or UUID (takes precedence over GET) |
 | **tpl** | `tpl.msGetOrder` | Order layout chunk |
 | **includeThumbs** | | Comma-separated product image thumbnails |
@@ -91,7 +91,7 @@ The order is shown if any of the following is true:
 The chunk receives the following objects:
 
 | Placeholder | Type | Description |
-|-------------|-----|----------|
+| --- | --- | --- |
 | `{$order}` | array | Order data |
 | `{$products}` | array | Order products array |
 | `{$address}` | array | Delivery address |
@@ -103,7 +103,7 @@ The chunk receives the following objects:
 ### order object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$order.id}` | Order ID |
 | `{$order.num}` | Formatted number (MS-00015) |
 | `{$order.uuid}` | Order UUID |
@@ -123,7 +123,7 @@ The chunk receives the following objects:
 ### address object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$address.receiver}` | Receiver full name |
 | `{$address.phone}` | Phone |
 | `{$address.email}` | Email |
@@ -138,7 +138,7 @@ The chunk receives the following objects:
 ### delivery object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$delivery.id}` | Delivery ID |
 | `{$delivery.name}` | Name |
 | `{$delivery.description}` | Description |
@@ -148,7 +148,7 @@ The chunk receives the following objects:
 ### payment object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$payment.id}` | Payment ID |
 | `{$payment.name}` | Name |
 | `{$payment.description}` | Description |
@@ -157,7 +157,7 @@ The chunk receives the following objects:
 ### total object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$total.cost}` | Total cost (formatted) |
 | `{$total.cart_cost}` | Cart cost (formatted) |
 | `{$total.delivery_cost}` | Delivery cost (formatted) |
@@ -176,7 +176,7 @@ The chunk receives the following objects:
 For each product:
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$product.id}` | Product resource ID |
 | `{$product.product_id}` | Product ID |
 | `{$product.order_product_id}` | Order line ID |

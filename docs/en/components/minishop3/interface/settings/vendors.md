@@ -17,7 +17,7 @@ The vendor directory lets you:
 ## Vendor fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Vendor name |
 | `resource_id` | int | Resource ID — vendor page |
 | `country` | string | Vendor country |

@@ -12,7 +12,7 @@ title: События стоимости
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cart` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
 | `draft` | `msOrder` \| `null` | Черновик заказа (может быть `null`, если корзина пуста) |
@@ -41,7 +41,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cart` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
 | `draft` | `msOrder` \| `null` | Черновик заказа |
@@ -122,7 +122,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
 | `draft` | `msOrder` | Черновик заказа |
@@ -148,7 +148,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
 | `draft` | `msOrder` | Черновик заказа |
@@ -246,7 +246,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
 | `draft` | `msOrder` | Черновик заказа |
@@ -260,7 +260,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Сервис-калькулятор стоимости |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
 | `draft` | `msOrder` | Черновик заказа |
@@ -314,6 +314,77 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+---
+
+## msOnBeforeGetOrderCost
+
+Вызывается **перед** сборкой итога заказа в `OrderCostCalculator`: после этого ядро считает cart / delivery / payment cost и склеивает breakdown.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Калькулятор |
+| `cart` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
+| `draft` | `msOrder` \| `null` | Черновик |
+| `with_cart` | `bool` | Всегда `true` в текущем вызове |
+| `only_cost` | `bool` | Режим «только сумма» (без побочных эффектов UI) |
+
+Прерывание: `$modx->event->output('...')` — калькулятор вернёт ошибку.
+
+---
+
+## msOnGetOrderCost
+
+Вызывается **после** compose breakdown. Через `returnedValues` можно подменить любую из четырёх сумм; ядро заново соберёт итоговый `cost`.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Калькулятор |
+| `cart` | `\MiniShop3\Controllers\Cart\Cart` | Контроллер корзины |
+| `draft` | `msOrder` \| `null` | Черновик |
+| `with_cart` | `bool` | Флаг расчёта с корзиной |
+| `only_cost` | `bool` | Режим «только сумма» |
+| `cost` | `float` | Итог до правок плагина |
+| `cart_cost` | `float` | Сумма товаров |
+| `delivery_cost` | `float` | Доставка |
+| `payment_cost` | `float` | Комиссия оплаты |
+
+### Модификация итога
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnGetOrderCost':
+        $values = &$modx->event->returnedValues;
+        $cartCost = (float) $scriptProperties['cart_cost'];
+        $deliveryCost = (float) $scriptProperties['delivery_cost'];
+        $paymentCost = (float) $scriptProperties['payment_cost'];
+
+        // Фиксированная скидка на весь заказ (не только на корзину)
+        if ($cartCost >= 5000) {
+            $values['cart_cost'] = max(0, $cartCost - 500);
+        }
+
+        // Бесплатная доставка при крупном заказе
+        if (($values['cart_cost'] ?? $cartCost) >= 3000) {
+            $values['delivery_cost'] = 0;
+        }
+
+        // cost можно задать явно; иначе ядро пересчитает из трёх частей
+        // $values['cost'] = ($values['cart_cost'] ?? $cartCost)
+        //     + ($values['delivery_cost'] ?? $deliveryCost)
+        //     + ($values['payment_cost'] ?? $paymentCost);
+        break;
+}
+```
+
+::: tip Частичные vs итоговые события
+Для скидки только на товары удобнее `msOnGetCartCost`. Для правила «пересчитать всё сразу» (корзина + доставка + оплата) используйте `msOnGetOrderCost`.
+:::
 
 ---
 

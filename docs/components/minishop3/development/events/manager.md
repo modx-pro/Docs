@@ -12,14 +12,14 @@ title: События админки
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `controller` | `object` | Объект контроллера страницы |
 | `page` | `string` | Идентификатор страницы |
 
 ### Доступные страницы
 
 | Значение page | Описание |
-|---------------|----------|
+| --- | --- |
 | `product_create` | Создание товара |
 | `product_update` | Редактирование товара |
 | `category_create` | Создание категории |
@@ -113,6 +113,7 @@ switch ($modx->event->name) {
 
 ::: tip Plugin Registry
 Для добавления кастомных вкладок на страницы товара и заказа используйте Plugin Registry API:
+
 - [Интеграция вкладок товара](/components/minishop3/development/product-tabs-integration) — `MS3ProductTabsRegistry`
 - [Интеграция вкладок заказа](/components/minishop3/development/order-tabs-integration) — `MS3OrderTabsRegistry`
 
@@ -263,8 +264,10 @@ Ext.onReady(function() {
 ```php
 <?php
 /**
+
  * Плагин: Расширение карточки товара
  * События: msOnManagerCustomCssJs
+
  */
 
 switch ($modx->event->name) {

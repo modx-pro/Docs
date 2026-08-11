@@ -12,14 +12,14 @@ Fired when MiniShop3 manager pages load. Lets you add your own CSS and JavaScrip
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `object` | Page controller object |
 | `page` | `string` | Page identifier |
 
 ### Available pages
 
 | page value | Description |
-|------------|-------------|
+| --- | --- |
 | `product_create` | Create product |
 | `product_update` | Edit product |
 | `category_create` | Create category |

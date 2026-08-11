@@ -41,7 +41,7 @@ class ProductService
 ### Benefits
 
 | Aspect | Fat models | Service layer |
-|--------|------------|---------------|
+| --- | --- | --- |
 | Testing | Hard to mock | Easy to isolate |
 | Reuse | Tied to ORM | Independent services |
 | Extension | Inheritance | Replace via DI |
@@ -120,7 +120,7 @@ This avoids conflicts with other MODX components.
 Controllers are high-level services for main store entities.
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_cart` | `Controllers\Cart\Cart` | Cart management |
 | `ms3_order` | `Controllers\Order\Order` | Checkout |
 | `ms3_customer` | `Controllers\Customer\Customer` | Customer handling |
@@ -142,7 +142,7 @@ $customer = $ms3->customer->getFields();
 ### Product services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_product_data_service` | `Services\Product\ProductDataService` | Product data |
 | `ms3_product_image` | `Services\Product\ProductImageService` | Product images |
 
@@ -154,7 +154,7 @@ $imageService = $modx->services->get('ms3_product_image');
 ### Customer services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_auth_manager` | `Services\Customer\AuthManager` | Authentication |
 | `ms3_register_service` | `Services\Customer\RegisterService` | Registration |
 | `ms3_email_verification_service` | `Services\Customer\EmailVerificationService` | Email verification |
@@ -186,7 +186,7 @@ The `Order.php` controller is a **facade** — it keeps all public methods for b
 :::
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_order_service` | `Services\Order\OrderService` | Order business logic |
 | `ms3_order_draft_manager` | `Services\Order\OrderDraftManager` | Order draft CRUD |
 | `ms3_order_cost_calculator` | `Services\Order\OrderCostCalculator` | Cost calculation |
@@ -223,7 +223,7 @@ The `Cart.php` controller is also a **facade**. It uses `OrderDraftManager` for 
 :::
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_cart_item_manager` | `Services\Cart\CartItemManager` | Cart item CRUD, validation, totals |
 
 ```php
@@ -251,27 +251,27 @@ OrderFieldManager   — order fields (Order-specific)
 ### Delivery and payment services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_delivery_service` | `Services\Delivery\DeliveryService` | Delivery methods |
 | `ms3_payment_service` | `Services\Payment\PaymentService` | Payment methods |
 
 ### Category services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_category_service` | `Services\Category\CategoryService` | Categories |
 | `ms3_category_option_service` | `Services\Category\CategoryOptionService` | Category options |
 
 ### Option services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_option_service` | `Services\Option\OptionService` | EAV option system |
 
 ### Config services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_config_manager` | `Services\ConfigManager` | Config management |
 | `ms3_field_config_manager` | `Services\FieldConfigManager` | Field config |
 | `ms3_config_service` | `Services\ConfigService` | Config facade |
@@ -280,14 +280,14 @@ OrderFieldManager   — order fields (Order-specific)
 ### Notification services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_notifications` | `Notifications\NotificationManager` | Notification hub |
 | `ms3_notification_config` | `Services\Notification\NotificationConfigService` | Notification config |
 
 ### Utilities
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_token_service` | `Services\TokenService` | Token operations |
 | `ms3_image` | `Services\ImageService` | Image handling (Intervention Image) |
 | `ms3_vendor_service` | `Services\Vendor\VendorService` | Vendors |
@@ -597,7 +597,7 @@ $authManager->registerProvider(new TelegramAuthProvider($modx));
 ## System settings
 
 | Setting | Default | Description |
-|-----------|--------------|-------------|
+| --- | --- | --- |
 | `ms3_services_config` | `core/config/ms3.services.php` | Main config path |
 | `ms3_services_addons_dir` | `core/config/ms3.services.d/` | Addon config directory |
 

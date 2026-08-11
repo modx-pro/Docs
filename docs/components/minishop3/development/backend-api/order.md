@@ -43,21 +43,25 @@ $result = $ms3->order->submit();
 
 // Очистить черновик
 $ms3->order->clean();
+
 ```
 
 ::: info Инициализация
 Перед использованием контроллера необходима инициализация с токеном клиента:
+
 ```php
 $ms3->order->initialize($token);
 $ms3->order->initDraft();
+
 ```
+
 В контексте REST API и сниппетов это происходит автоматически.
 :::
 
 ### Методы контроллера
 
 | Метод | Описание |
-|-------|----------|
+| --- | --- |
 | `initialize($token, $config)` | Инициализация с токеном клиента |
 | `initDraft()` | Загрузка существующего черновика |
 | `get()` | Данные заказа (поля + адрес) |
@@ -120,6 +124,7 @@ $draftManager->clean($draft);
 
 // Удалить черновик полностью (с товарами и адресом)
 $draftManager->deleteDraft($draft);
+
 ```
 
 ## Поля и валидация (OrderFieldManager)
@@ -139,6 +144,7 @@ $fieldManager->remove($draft, $orderData, 'email');
 // Валидация без сохранения
 $result = $fieldManager->validate($orderData, 'phone', '+79991234567');
 // ['success' => true] или ['success' => false, 'message' => 'Ошибка']
+
 ```
 
 ### Правила валидации
@@ -158,6 +164,7 @@ $required = $fieldManager->getDeliveryRequiredFields($deliveryId);
 $fieldManager->setValidationRules([
     'company_name' => 'required|min:3',
 ]);
+
 ```
 
 ## Расчёт стоимости (OrderCostCalculator)
@@ -180,6 +187,7 @@ $result = $calculator->getPaymentCost($draft, $orderData, $token);
 // Полная стоимость
 $result = $calculator->getTotalCost($draft, $orderData, $token);
 // ['cost' => 5450.00, 'cart_cost' => 5000.00, 'delivery_cost' => 300.00, 'payment_cost' => 150.00]
+
 ```
 
 Каждый метод вызывает пару событий `msOnBefore...` / `msOn...`, позволяющих плагинам модифицировать стоимость.
@@ -195,12 +203,13 @@ $result = $calculator->getTotalCost($draft, $orderData, $token);
   "mode": "auto",
   "manual_delivery_cost": 500.0
 }
+
 ```
 
 Режимы (`mode`):
 
 | Режим | Поведение |
-|---|---|
+| --- | --- |
 | `auto` (по умолчанию) | Пересчитывает только для `DefaultDelivery` / `DefaultPayment` (по полям `price`, `weight_price`, `free_delivery_amount`, проценты). Для кастомных handler'ов возвращает warning `delivery_manual_required` / `payment_manual_required` и сохраняет прежнюю `delivery_cost` / комиссию 0 — не дёргает внешние API. |
 | `manual` | Использует переданный `manual_delivery_cost`. Комиссия оплаты считается по полю автоматом. |
 | `force_provider` | Явно вызывает `loadController()` → `getCost()` и `loadHandler()` → `getCost()` в `try/catch`. При сбое — warning `delivery_provider_error` / `payment_provider_error`, прежние значения сохраняются. |
@@ -218,6 +227,7 @@ $result = $calculator->getTotalCost($draft, $orderData, $token);
   },
   "warnings": ["delivery_manual_required"]
 }
+
 ```
 
 Применяет общий guard `OrderService::clampComputedTotal()` — итог не может уйти ниже нуля. Скидки/наценки доставки и оплаты (отрицательные `price`, см. 1.11.0) обрабатываются через `MiniShop3\Utils\PriceAdjustment`.
@@ -240,6 +250,7 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 //     ],
 //     'message' => 'Заказ успешно оформлен'
 // ]
+
 ```
 
 ### Порядок действий при оформлении
@@ -264,6 +275,7 @@ $num = $submitHandler->getNewOrderNum();
 // "26/02-15" — формат настраивается:
 // ms3_order_format_num — формат даты (по умолчанию 'ym')
 // ms3_order_format_num_separator — разделитель (по умолчанию '/')
+
 ```
 
 ## Управление статусами (OrderStatusService)
@@ -278,12 +290,13 @@ $result = $statusService->change($orderId, $newStatusId);
 
 // Сменить статус без уведомлений
 $result = $statusService->change($orderId, $newStatusId, true);
+
 ```
 
 ### Ограничения статусов
 
 | Свойство статуса | Поведение |
-|------------------|-----------|
+| --- | --- |
 | `final = true` | Нельзя сменить на другой статус |
 | `fixed = true` | Можно переключить только на статус с большей `position` |
 
@@ -301,7 +314,7 @@ $result = $statusService->change($orderId, $newStatusId, true);
 ### Поля msOrderProduct
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `product_id` | integer | ID товара (msProduct) |
 | `order_id` | integer | ID заказа |
 | `product_key` | string | Уникальный ключ позиции (напр. `123_a1b2c3d4`) |
@@ -342,6 +355,7 @@ $item->save();
 
 // Пересчитать итоги заказа после изменения позиций
 $order->updateProducts();
+
 ```
 
 ::: warning Пересчёт итогов
@@ -355,7 +369,7 @@ $order->updateProducts();
 ### Поля msOrderAddress
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `order_id` | integer | ID заказа |
 | `first_name` | string | Имя |
 | `last_name` | string | Фамилия |
@@ -390,6 +404,7 @@ echo $address->get('street');     // "Ленина"
 // Обновление
 $address->set('city', 'Санкт-Петербург');
 $address->save();
+
 ```
 
 ### OrderAddressManager
@@ -407,6 +422,7 @@ $result = $addressManager->cleanCustomerAddress($draft, $orderData);
 
 // Сохранить адрес заказа в адреса клиента
 $savedAddress = $addressManager->saveToCustomerAddresses($customerId, $orderData);
+
 ```
 
 ## Журнал заказа (OrderLogService)
@@ -440,12 +456,13 @@ $entries = $logService->getEntries($orderId, false, 50);
 if ($logService->shouldLog('status')) {
     // ...
 }
+
 ```
 
 ### Типы действий
 
 | Константа | Значение | Описание |
-|-----------|----------|----------|
+| --- | --- | --- |
 | `msOrderLog::ACTION_STATUS` | `status` | Смена статуса |
 | `msOrderLog::ACTION_PAYMENT` | `payment` | Изменение оплаты |
 | `msOrderLog::ACTION_PRODUCTS` | `products` | Изменение позиций |
@@ -468,6 +485,7 @@ $result = $finalizeService->finalize($orderId, [
     'create_customer' => true,       // Создать msCustomer
     'force_create_customer' => false, // Создать даже при дубликате
 ]);
+
 ```
 
 Финализация выполняет те же шаги, что и `submit`, но адаптирована для контекста менеджера: позволяет пропускать отдельные этапы и работает с уже существующим заказом (не черновиком).
@@ -495,6 +513,7 @@ $user = $userResolver->createUser([
     'last_name' => 'Иванов',
     'phone' => '+79991234567',
 ]);
+
 ```
 
 Настройка `ms3_order_user_groups` определяет группы для новых пользователей (формат: `group_id:role_id`, через запятую).
@@ -502,7 +521,7 @@ $user = $userResolver->createUser([
 ## Поля msOrder
 
 | Поле | Тип | По умолчанию | Описание |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `user_id` | integer | 0 | ID пользователя MODX |
 | `customer_id` | integer | 0 | ID клиента (msCustomer) |
 | `token` | string | — | Токен сессии клиента |
@@ -524,7 +543,7 @@ $user = $userResolver->createUser([
 ### Связи msOrder
 
 | Связь | Модель | Тип | Описание |
-|-------|--------|-----|----------|
+| --- | --- | --- | --- |
 | `Address` | msOrderAddress | composite (one) | Адрес заказа |
 | `Products` | msOrderProduct | composite (many) | Позиции заказа |
 | `Log` | msOrderLog | composite (many) | Журнал изменений |
@@ -541,7 +560,7 @@ Composite-связи удаляются каскадно при удалении
 ## События
 
 | Событие | Когда вызывается |
-|---------|-----------------|
+| --- | --- |
 | `msOnBeforeSaveOrder` / `msOnSaveOrder` | Сохранение заказа |
 | `msOnBeforeRemoveOrder` / `msOnRemoveOrder` | Удаление заказа |
 | `msOnBeforeGetCartCost` / `msOnGetCartCost` | Расчёт стоимости корзины |

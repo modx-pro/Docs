@@ -10,7 +10,7 @@ Snippet for outputting a list of products. Based on pdoTools and supports all of
 ### Main
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **tpl** | `tpl.msProducts.row` | Chunk for each product |
 | **limit** | `10` | Number of products per page |
 | **offset** | `0` | Skip this many products |
@@ -21,7 +21,7 @@ Snippet for outputting a list of products. Based on pdoTools and supports all of
 ### Sorting
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **sortby** | `id` | Sort field |
 | **sortdir** | `ASC` | Direction: `ASC` or `DESC` |
 | **sortbyOptions** | | Sort by product option (see below) |
@@ -29,7 +29,7 @@ Snippet for outputting a list of products. Based on pdoTools and supports all of
 ### Related products
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **link** | | Link type ID (from `ms3_links` table) |
 | **master** | | Master product ID (output products linked to it) |
 | **slave** | | Slave product ID (output products it is linked to) |
@@ -41,7 +41,7 @@ When using the `link` parameter for related products, you **must** set `parents 
 ### Filtering
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **where** | | JSON with extra conditions |
 | **optionFilters** | | JSON filters by product options |
 | **showZeroPrice** | `true` | Show zero-price products |
@@ -52,7 +52,7 @@ When using the `link` parameter for related products, you **must** set `parents 
 ### Extra data
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **includeContent** | `false` | Include the `content` field |
 | **includeTVs** | | Comma-separated TV list |
 | **includeThumbs** | | Comma-separated thumbnail sizes |
@@ -65,7 +65,7 @@ When using the `link` parameter for related products, you **must** set `parents 
 ### Output
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **return** | `data` | Format: `data`, `json`, `ids`, `sql` |
 | **returnIds** | `false` | Return only product IDs |
 | **toPlaceholder** | | Save result to a placeholder |
@@ -82,7 +82,7 @@ The msProducts snippet automatically joins related product tables. Fields from t
 ### Tables and their fields
 
 | Table | Alias | Fields |
-|-------|-------|--------|
+| --- | --- | --- |
 | msProduct | — (not needed) | id, pagetitle, longtitle, alias, uri, parent, createdon, publishedon, template... |
 | msProductData | `Data` | price, old_price, article, weight, vendor_id, new, popular, favorite, color, size, tags... |
 | msVendor | `Vendor` | name, country, logo, address, phone, email (with `includeVendorFields`) |
@@ -90,7 +90,7 @@ The msProducts snippet automatically joins related product tables. Fields from t
 ### Dynamic aliases
 
 | Alias | When available | Description |
-|-------|----------------|-------------|
+| --- | --- | --- |
 | `Link` | With `link` + `master`/`slave` | Product links table |
 | `{size}` | With `includeThumbs` | Thumbnails. Alias = size name (small, medium...) |
 | `{option}` | With `optionFilters` / `sortbyOptions` | Product options. Alias = option key (color, size...) |
@@ -220,7 +220,7 @@ The `master` parameter specifies the product for which linked items are searched
 MiniShop3 includes these link types by default:
 
 | ID | Name |
-|----|------|
+| --- | --- |
 | 1 | Recommended (Related) |
 | 2 | Accessories |
 | 3 | Alternatives |
@@ -242,7 +242,7 @@ Create new link types under **Settings → Link types**.
 **Supported types for `sortbyOptions`:**
 
 | Type | Example | When to use |
-|------|---------|-------------|
+| --- | --- | --- |
 | `number` / `decimal` | `weight:number` | Decimals: price, weight, volume |
 | `int` / `integer` | `quantity:int` | Integers: quantity, rating, age |
 | `date` / `datetime` | `release_date:date` | Dates: release date, arrival date |
@@ -461,7 +461,7 @@ Without `usePackages`, external package data is not loaded — this saves resour
 Each package adds its own placeholders. For example, ms3Variants adds:
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$has_variants}` | bool | Whether the product has variants |
 | `{$variants_count}` | int | Number of variants |
 | `{$variants_json}` | string | JSON array for JavaScript |

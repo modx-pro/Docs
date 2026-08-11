@@ -12,7 +12,7 @@ The catalog is the main store page that displays a list of products from a categ
 The catalog consists of two components:
 
 | Component | File | Purpose |
-|-----------|------|---------|
+| --- | --- | --- |
 | Category template | `elements/templates/catalog.tpl` | Page layout, msProducts snippet call |
 | Product card chunk | `elements/chunks/ms3_products_row.tpl` | Appearance of a single product in the grid |
 
@@ -57,7 +57,7 @@ The template extends the base template (`base.tpl`) and contains:
 ### Key call parameters
 
 | Parameter | Value | Purpose |
-|-----------|-------|---------|
+| --- | --- | --- |
 | `tpl` | `tpl.msProducts.row` | Product card chunk |
 | `includeThumbs` | `small,medium` | Load image thumbnails |
 | `includeVendorFields` | `name,logo` | Include vendor data |
@@ -93,7 +93,7 @@ The card is built on Bootstrap 5 and includes:
 The card automatically shows badges based on product data:
 
 | Badge | Condition | Position |
-|-------|-----------|----------|
+| --- | --- | --- |
 | In stock / On order | `{$weight > 0}` | Top left |
 | Discount (-XX%) | `{$discount > 0}` | Top right |
 | NEW | `{$new}` | Top right |
@@ -154,7 +154,7 @@ Cards use Bootstrap Grid with responsive classes:
 ```
 
 | Screen | Products per row |
-|--------|-------------------|
+| --- | --- |
 | < 576px (mobile) | 1 |
 | ≥ 576px (sm) | 2 |
 | ≥ 768px (md) | 3 |

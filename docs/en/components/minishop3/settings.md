@@ -10,7 +10,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 ## General settings
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_services_config` | `{core_path}/config/ms3.services.php` | Path to the PHP file with custom service registration. Returns an array `[service_id => ClassName]` that overrides default classes (cart, order, delivery, payment, etc.) |
 | `ms3_services_addons_dir` | `{core_path}/config/ms3.services.d/` | Folder with service registration fragments from third-party components. Each add-on adds its own `*.php`; files load in alphabetical order after the main config |
 | `ms3_chunks_categories` | | Comma-separated category IDs for the chunk list |
@@ -19,7 +19,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 ## Product category
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_template_category_default` | | Default template for new categories |
 | `ms3_category_show_nested_products` | `true` | Show nested products from subcategories |
 | `ms3_category_show_options` | `false` | Show product options in the category table |
@@ -33,7 +33,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 ### Main fields
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_template_product_default` | | Default template for new products |
 | `ms3_product_main_fields` | `pagetitle,longtitle,description,introtext,content` | Main fields on the product panel |
 | `ms3_product_extra_fields` | `price,old_price,article,weight,color,size,vendor_id,made_in,tags,new,popular,favorite` | Extra product fields |
@@ -45,7 +45,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 ### Product tabs
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_product_tab_extra` | `true` | Show the product properties tab |
 | `ms3_product_tab_gallery` | `true` | Show the gallery tab |
 | `ms3_product_tab_links` | `true` | Show the product links tab |
@@ -55,7 +55,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 ### Gallery
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_product_source_default` | `0` | Default media source ID for the gallery |
 | `ms3_product_thumbnail_default` | `{assets_url}components/minishop3/img/mgr/ms3_small.png` | Placeholder image path |
 | `ms3_product_thumbnail_size` | `small` | Default thumbnail size |
@@ -63,7 +63,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 ### Price and weight formatting
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_price_format` | `[2, ".", " "]` | Price format: [decimal places, decimal separator, thousands separator] |
 | `ms3_weight_format` | `[3, ".", " "]` | Weight format: [decimal places, decimal separator, thousands separator] |
 | `ms3_price_format_no_zeros` | `true` | Strip trailing zeros in prices (15.00 → 15) |
@@ -77,7 +77,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 ## Cart
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_cart_context` | `false` | Use a single cart across all contexts |
 | `ms3_cart_max_count` | `1000` | Maximum number of items in the cart |
 
@@ -86,7 +86,7 @@ To view settings, go to **System → System Settings** and select the **minishop
 ### General settings
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_order_format_num` | `ym` | Order number format (date() format) |
 | `ms3_order_format_num_separator` | `/` | Separator in the order number |
 | `ms3_date_format` | `d.m.y H:M` | Date format in the Manager |
@@ -108,7 +108,7 @@ These used to be configured via `ms3_order_grid_fields`, `ms3_order_address_fiel
 ## Order statuses
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_status_draft` | `1` | ID of the "Draft" status |
 | `ms3_status_new` | `0` | ID of the new order status (set by migration) |
 | `ms3_status_paid` | `0` | ID of the paid order status |
@@ -117,10 +117,14 @@ These used to be configured via `ms3_order_grid_fields`, `ms3_order_address_fiel
 
 ## Customers
 
+Account pages and registration behavior. Storefront: [Login and registration](/en/components/minishop3/frontend/customer-auth).
+
+`login_page_id` / `register_page_id` set URLs in links. Forms are rendered by default via `msCustomer` and `unauthorizedTpl`. The package has no separate “login only” chunks.
+
 ### Customer account pages
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_customer_login_page_id` | `0` | Login page ID |
 | `ms3_customer_register_page_id` | `0` | Registration page ID |
 | `ms3_customer_profile_page_id` | `0` | Profile page ID |
@@ -130,8 +134,12 @@ These used to be configured via `ms3_order_grid_fields`, `ms3_order_address_fiel
 
 ### Authentication and registration
 
+`auto_register_on_order` / `auto_login_on_order`: on submit a guest can become an `msCustomer` without the account form. Turn them off if you create accounts only manually.
+
+`require_email_verification`: email with a link to `GET /api/v1/customer/email/verify`. Until the email is confirmed, some account flows may require a resend.
+
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_customer_auto_register_on_order` | `true` | Automatically register the customer on checkout |
 | `ms3_customer_auto_login_on_order` | `true` | Automatically log in after checkout |
 | `ms3_customer_auto_login_after_register` | `true` | Automatically log in after registration |
@@ -142,7 +150,7 @@ These used to be configured via `ms3_order_grid_fields`, `ms3_order_address_fiel
 ### Order cancellation
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_customer_cancel_allowed_statuses` | `2,3` | Status IDs where the customer can cancel an order (comma-separated). Default: new and paid |
 
 ::: tip Order cancellation settings
@@ -153,8 +161,10 @@ To disable customer cancellation, leave this setting empty.
 
 ### modUser sync
 
+Off by default. The account runs on `msCustomer` and the MS3 token. Enable sync if you need MODX groups, ACL, or shared sessions with other components.
+
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_customer_sync_enabled` | `false` | Enable msCustomer ↔ modUser sync |
 | `ms3_customer_sync_create_moduser` | `false` | Create modUser when msCustomer registers |
 | `ms3_customer_sync_delete_with_user` | `false` | Delete msCustomer when modUser is deleted |
@@ -166,7 +176,7 @@ To disable customer cancellation, leave this setting empty.
 ### Tokens
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_customer_token_ttl` | `86400` | Customer token lifetime (seconds, 24 hours) |
 | `ms3_customer_api_token_ttl` | `86400` | API token lifetime (seconds, 24 hours) |
 | `ms3_password_reset_token_ttl` | `3600` | Password reset token lifetime (seconds, 1 hour) |
@@ -180,14 +190,14 @@ To disable customer cancellation, leave this setting empty.
 ### Brute-force protection
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_customer_max_login_attempts` | `5` | Maximum failed login attempts |
 | `ms3_customer_block_duration` | `300` | Block duration (seconds, 5 minutes) |
 
 ### Password requirements
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_password_min_length` | `8` | Minimum password length |
 | `ms3_password_require_uppercase` | `false` | Require uppercase letters |
 | `ms3_password_require_number` | `false` | Require numbers |
@@ -195,17 +205,31 @@ To disable customer cancellation, leave this setting empty.
 
 ## API
 
+Web API (`api.php`): CORS, rate limit, debug. Endpoint map: [REST API](/en/components/minishop3/development/api).
+
+`ms3_cors_allowed_origins`: `*` or a comma-separated origin list. For a cookie token from another domain set exact origins, not `*`.
+
+Rate limit applies to all `/api/v1/*`. Counter store: `ms3_rate_limit_store` = `file` | `redis` | `memcached` (if those keys exist in your build). On a single server `file` is enough.
+
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_api_debug` | `false` | API debug mode (extended logging) |
 | `ms3_cors_allowed_origins` | `*` | Allowed CORS domains (comma-separated or `*`) |
 | `ms3_rate_limit_max_attempts` | `60` | Maximum requests per period |
 | `ms3_rate_limit_decay_seconds` | `60` | Rate limit period (seconds) |
+| `ms3_rate_limit_store` | `file` | Counter store: `file`, `redis`, `memcached` |
+| `ms3_rate_limit_storage_path` | `-` | Directory for `file` (empty = system temp) |
+| `ms3_rate_limit_redis_dsn` | `-` | Redis DSN (overrides host/port when set) |
+| `ms3_rate_limit_redis_host` | `127.0.0.1` | Redis host |
+| `ms3_rate_limit_redis_port` | `6379` | Redis port |
+| `ms3_rate_limit_redis_password` | `-` | Redis password |
+| `ms3_rate_limit_redis_database` | `0` | Redis DB index |
+| `ms3_rate_limit_memcached_servers` | `-` | Memcached server list |
 
 ## Site (Frontend)
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_token_name` | `ms3_token` | Token name for visitor identification |
 | `ms3_register_global_config` | `true` | Register `ms3Config` in the DOM |
 | `ms3_frontend_assets` | JSON array | List of CSS/JS files to load |
@@ -221,7 +245,7 @@ In `ms3_frontend_assets`, these placeholders are available:
 ## Import
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_utility_import_fields` | `pagetitle,parent,price,article` | Fields for import |
 | `ms3_utility_import_fields_delimiter` | `;` | CSV column delimiter |
 | `ms3_import_sync_limit` | `300` | Synchronous import limit (rows) |
@@ -233,19 +257,21 @@ In `ms3_frontend_assets`, these placeholders are available:
 ### Email
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_email_manager` | | Manager email addresses for notifications (comma-separated) |
 
 ### Telegram
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_telegram_bot_token` | | Telegram bot token (get from [@BotFather](https://t.me/BotFather)) |
 
 ::: tip Telegram bot setup
+
 1. Create a bot via [@BotFather](https://t.me/BotFather) and get the token
 2. Set the token in `ms3_telegram_bot_token`
 3. Each recipient's chat ID is set separately in **Utilities → Notifications** (`msNotificationConfig`, field `recipient_value`). Get your chat ID from [@userinfobot](https://t.me/userinfobot).
+
 :::
 
 ## Usage examples

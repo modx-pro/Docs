@@ -188,7 +188,7 @@ $deleted = $authManager->cleanupExpiredTokens();
 ### Типы токенов
 
 | Тип | Константа | Описание | Одноразовый |
-|-----|-----------|----------|-------------|
+| --- | --- | --- | --- |
 | `api` | `msCustomerToken::TYPE_API` | Токен API-сессии | Нет |
 | `refresh` | `msCustomerToken::TYPE_REFRESH` | Токен обновления сессии | Нет |
 | `magic_link` | `msCustomerToken::TYPE_MAGIC_LINK` | Ссылка для входа без пароля | Да |
@@ -244,7 +244,7 @@ $result = $registerService->validatePassword('weak');
 ```
 
 | Настройка | По умолчанию | Описание |
-|-----------|--------------|----------|
+| --- | --- | --- |
 | `ms3_password_min_length` | 8 | Минимальная длина |
 | `ms3_password_require_uppercase` | false | Требовать заглавную букву |
 | `ms3_password_require_number` | false | Требовать цифру |
@@ -278,10 +278,10 @@ $result = $verification->resendVerificationEmail($customer);
 Web API контроллер `CustomerProfileController`. Ниже — endpoint'ы, появившиеся в 1.10.x / 1.11.0 для интеграции с витриной.
 
 | Метод | Путь | Описание |
-|---|---|---|
+| --- | --- | --- |
 | `POST` | `/api/v1/customer/add` | Быстрое обновление полей профиля. Принимает `key` + `value` (одиночное поле). С 1.11.0 разрешены все колонки `msCustomer` из xPDO-карты (включая Object Extension) — исключения в denylist (`id`, `user_id`, `token`, `password`, `email_verified_at`, статусы, агрегаты, служебные даты). Для `first_name`, `last_name`, `email`, `phone` применяется Rakit-валидация; для остальных значение нормализуется по `phptype` метаданных. При смене email сбрасывается `email_verified_at`. |
 | `POST` | `/api/v1/customer/changeAddress` | Выбор сохранённого адреса в черновике заказа. Принимает `address_hash`. |
-| `GET` | `/api/v1/customer/email/verify` | Подтверждение email по токену из письма. Параметры: `token`, `html=1` (HTML-редирект вместо JSON), `format=json`. По умолчанию редирект на сайт с `ms3_email_verified=1|0`. Кастомный URL подстановки — настройка `ms3_email_verification_url`; URL успешного подтверждения — `ms3_email_verification_success_url`. |
+| `GET` | `/api/v1/customer/email/verify` | Подтверждение email по токену из письма. Параметры: `token`, `html=1` (HTML-редирект вместо JSON), `format=json`. По умолчанию редирект на сайт с `ms3_email_verified=1\|0`. Кастомный URL подстановки — настройка `ms3_email_verification_url`; URL успешного подтверждения — `ms3_email_verification_success_url`. |
 | `POST` | `/api/v1/customer/email/resend-verification` | Повторная отправка письма верификации текущему авторизованному покупателю. На уровне сервиса защита от спама (5 минут между отправками). |
 
 ## Ограничение частоты запросов (RateLimiter)
@@ -376,7 +376,7 @@ $checker->setCheckFields(['email']);  // только по email
 ### Нормализация при сравнении
 
 | Поле | Нормализация |
-|------|-------------|
+| --- | --- |
 | `email` | Приведение к нижнему регистру |
 | `phone` | Извлечение только цифр (минимум 7) |
 | Остальные | Обрезка пробелов |
@@ -401,7 +401,7 @@ $customer = $factory->createFromOrderData([
 ## Поля msCustomer
 
 | Поле | Тип | По умолчанию | Описание |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `user_id` | integer | 0 | ID пользователя MODX (опционально) |
 | `first_name` | string | '' | Имя |
 | `last_name` | string | '' | Фамилия |
@@ -426,7 +426,7 @@ $customer = $factory->createFromOrderData([
 ## Поля msCustomerAddress
 
 | Поле | Тип | По умолчанию | Описание |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `customer_id` | integer | 0 | ID покупателя |
 | `hash` | string | null | MD5-хеш адреса (дедупликация) |
 | `name` | string | null | Название (автогенерация из город/улица) |
@@ -446,7 +446,7 @@ $customer = $factory->createFromOrderData([
 ## Поля msCustomerToken
 
 | Поле | Тип | По умолчанию | Описание |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `customer_id` | integer | 0 | ID покупателя |
 | `token` | string | '' | Строка токена (128 символов, unique) |
 | `type` | enum | 'api' | Тип: api, refresh, magic_link, email_verification |
@@ -457,7 +457,7 @@ $customer = $factory->createFromOrderData([
 ## Системные настройки
 
 | Настройка | По умолчанию | Описание |
-|-----------|--------------|----------|
+| --- | --- | --- |
 | `ms3_customer_max_login_attempts` | 5 | Попыток входа до блокировки |
 | `ms3_customer_block_duration` | 3600 | Длительность блокировки (секунды) |
 | `ms3_customer_api_token_ttl` | 86400 | Время жизни API-токена (секунды) |
@@ -477,7 +477,7 @@ $customer = $factory->createFromOrderData([
 ## События
 
 | Событие | Когда вызывается |
-|---------|-----------------|
+| --- | --- |
 | `msOnBeforeCreateCustomer` / `msOnCreateCustomer` | Создание покупателя |
 | `msOnBeforeUpdateCustomer` / `msOnUpdateCustomer` | Обновление из админки |
 | `msOnBeforeAddToCustomer` / `msOnAddToCustomer` | Изменение поля через контроллер |

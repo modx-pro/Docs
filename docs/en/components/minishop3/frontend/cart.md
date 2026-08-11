@@ -46,7 +46,7 @@ When the snippet is called with the `selector` parameter, MiniShop3 registers a 
 Cart behavior on the frontend is provided by a set of JavaScript modules:
 
 | File | Purpose |
-|------|---------|
+| --- | --- |
 | `js/web/ms3.js` | Main `ms3` object, initialization of all modules |
 | `js/web/core/CartAPI.js` | API client for cart operations (add, remove, change, clean) |
 | `js/web/ui/CartUI.js` | UI handlers: +/- buttons, remove, HTML auto-update |
@@ -91,7 +91,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 Each cart item contains:
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `product_key` | Unique cart line key |
 | `product_id` | Product ID (MODX resource) |
 | `count` | Quantity |
@@ -108,7 +108,7 @@ Each cart item contains:
 ### Totals
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `total.count` | Total item quantity |
 | `total.positions` | Number of lines (unique products) |
 | `total.cost` | Total cost |

@@ -16,7 +16,7 @@ Fired **before** import starts. Lets you validate parameters or cancel import.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `file` | `string` | Path to import file |
 | `params` | `array` (by reference) | Import parameters |
 
@@ -97,7 +97,7 @@ Fired **after** import completes. Lets you run post-processing or send notificat
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `stats` | `array` | Import statistics |
 
 **stats structure:**
@@ -151,7 +151,7 @@ Fired when processing **each row** of the CSV. Lets you modify data or skip the 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `row` | `int` | Current row number |
 | `csv` | `array` | Raw CSV row data |
 | `data` | `array` (by reference) | Data for create/update |

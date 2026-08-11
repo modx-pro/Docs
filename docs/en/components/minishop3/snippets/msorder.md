@@ -12,7 +12,7 @@ The snippet uses the user session and must be called **uncached**.
 ## Parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **tpl** | `tpl.msOrder` | Order form chunk |
 | **userFields** | | Mapping of MODX profile fields (modUserProfile) to order fields (JSON). Used when `ms3_customer_sync_enabled = true` |
 | **customerFields** | | Mapping of customer fields (msCustomer) to order fields (JSON). Used when `ms3_customer_sync_enabled = false` |

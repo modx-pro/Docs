@@ -10,7 +10,7 @@ Events for the notification system: sending, modifying, registering channels.
 MiniShop3 includes two notification channels out of the box:
 
 | Channel | Class | Description |
-|---------|-------|-------------|
+| --- | --- | --- |
 | `email` | `EmailChannel` | Sends via MODX modMail |
 | `telegram` | `TelegramChannel` | Sends via Telegram Bot API |
 
@@ -21,6 +21,7 @@ Uses standard MODX modMail. Templates are configured via chunks.
 ### Telegram channel
 
 Sends messages via Telegram Bot API. Requires settings:
+
 - `ms3_telegram_bot_token` — bot token
 - `ms3_telegram_manager_chat_id` — recipient Chat ID
 
@@ -31,6 +32,7 @@ A Telegram bot cannot start a conversation with a user. The user must send the f
 ### Sending Telegram notifications to customers
 
 To send Telegram notifications to customers you need to:
+
 1. Get customer consent for notifications
 2. Link the customer’s Telegram account to their store profile
 3. Store the customer’s Chat ID
@@ -93,8 +95,10 @@ if ($message && str_starts_with($message['text'], '/start ')) {
 ```php
 <?php
 /**
+
  * Plugin: Telegram notifications to customers
  * Events: msOnChangeOrderStatus
+
  */
 
 switch ($modx->event->name) {
@@ -153,7 +157,7 @@ Fired **before** sending a notification. Lets you modify data or cancel sending.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `notification` | `NotificationInterface` | Notification object |
 | `channel` | `ChannelInterface` | Send channel |
 | `recipient` | `array` | Recipient data |
@@ -220,13 +224,13 @@ Fired **after** sending a notification (success or failure).
 
 ### Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `notification` | `NotificationInterface` | Notification object |
-| `channel` | `ChannelInterface` | Channel |
-| `recipient` | `array` | Recipient data |
-| `success` | `bool` | Send result |
-| `error` | `string\|null` | Error message (if any) |
+| Parameter | Type | Description | |
+| --- | --- | --- | --- |
+| `notification` | `NotificationInterface` | Notification object | |
+| `channel` | `ChannelInterface` | Channel | |
+| `recipient` | `array` | Recipient data | |
+| `success` | `bool` | Send result | |
+| `error` | `string\ | null` | Error message (if any) |
 
 ### Example
 
@@ -295,7 +299,7 @@ Fired when registering notification channels. Lets you add custom channels.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `manager` | `NotificationManager` | Notification manager |
 
 ### Registering a custom channel
@@ -373,8 +377,10 @@ class TelegramChannel implements ChannelInterface
 ```php
 <?php
 /**
+
  * Plugin: Notification analytics
  * Events: msOnBeforeSendNotification, msOnAfterSendNotification
+
  */
 
 switch ($modx->event->name) {

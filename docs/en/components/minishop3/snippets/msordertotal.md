@@ -12,7 +12,7 @@ The snippet uses the user session and must be called **uncached** (`!msOrderTota
 ## Parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **tpl** | `tpl.msOrderTotal` | Layout chunk |
 | **return** | `tpl` | Format: `data` (array), `tpl` (chunk output) |
 | **selector** | (auto) | CSS selector for the container used for auto-update |
@@ -129,7 +129,7 @@ With `return=data` auto-update does not run — data is fetched once on page loa
 The snippet returns an array with cart and order totals:
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `cost` | Total to pay (products + delivery + payment fee) |
 | `cost_formatted` | Total with currency symbol |
 | `cart_cost` | Products cost |
@@ -187,7 +187,7 @@ With `return=tpl`, all fields are passed to the chunk as placeholders:
 The default chunk uses BEM-style classes:
 
 | Class | Description |
-|-------|-------------|
+| --- | --- |
 | `.ms3-order-total` | Widget container |
 | `.ms3-order-total__count` | Item count |
 | `.ms3-order-total__cost` | Order total |
@@ -267,7 +267,7 @@ Styles from `default.css`:
 ## Difference from msCart
 
 | msOrderTotal | msCart |
-|--------------|--------|
+| --- | --- |
 | Totals only | Full cart with products |
 | Lightweight, fast | Loads all product data |
 | For header mini-cart | For cart page |

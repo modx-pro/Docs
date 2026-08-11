@@ -12,7 +12,7 @@ title: msOrder
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msOrder` | Чанк формы заказа |
 | **userFields** | | Маппинг полей профиля MODX (modUserProfile) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = true` |
 | **customerFields** | | Маппинг полей клиента (msCustomer) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = false` |
@@ -51,6 +51,7 @@ title: msOrder
 ```
 
 ::: tip Выбор источника данных
+
 - `ms3_customer_sync_enabled = false` (по умолчанию): используется `customerFields` и данные msCustomer
 - `ms3_customer_sync_enabled = true`: используется `userFields` и данные modUserProfile
 

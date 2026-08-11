@@ -52,7 +52,7 @@ The right panel shows fields for the selected section.
 2. Fill the form:
 
 | Field | Description | Required |
-|-------|-------------|----------|
+| --- | --- | --- |
 | Section key | Unique identifier (Latin) | Yes |
 | Lexicon key | Key for translated title | No |
 | Title | Display name | No |
@@ -81,7 +81,7 @@ Click a field to open the edit dialog.
 **Available parameters:**
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | Title (label) | Display label |
 | Description | Hint below the field |
 | Section | Section the field belongs to |
@@ -92,7 +92,7 @@ Click a field to open the edit dialog.
 ### Widget types (xtype)
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `textfield` | Single-line text |
 | `numberfield` | Number field |
 | `textarea` | Multiline text |
@@ -113,7 +113,7 @@ Fields can be moved:
 By default these sections exist:
 
 | Key | Title | Description |
-|-----|-------|-------------|
+| --- | --- | --- |
 | `main` | Main data | SKU, price, weight, etc. |
 | `availability` | Availability | Stock, flags |
 | `content` | Content | Description, attributes |

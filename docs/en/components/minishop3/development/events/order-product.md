@@ -16,7 +16,7 @@ Fired **before** adding a product to the order (via manager).
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Order product object |
 | `mode` | `string` | Mode: `new` |
 
@@ -54,7 +54,7 @@ Fired **after** adding a product to the order.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Created product object |
 | `mode` | `string` | Mode: `new` |
 
@@ -95,7 +95,7 @@ Fired **before** updating a product in the order.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Order product object |
 | `mode` | `string` | Mode: `upd` |
 
@@ -137,7 +137,7 @@ Fired **after** updating a product in the order.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Updated product object |
 | `mode` | `string` | Mode: `upd` |
 
@@ -183,7 +183,7 @@ Fired **before** removing a product from the order.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Product object to remove |
 
 ### Aborting the operation
@@ -213,7 +213,7 @@ Fired **after** removing a product from the order.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Removed product object |
 
 ### Example
