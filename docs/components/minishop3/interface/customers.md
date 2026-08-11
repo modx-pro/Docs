@@ -6,8 +6,6 @@ description: Справочник покупателей msCustomer в мене�
 
 Откройте **Extras → MiniShop3 → Клиенты**. Здесь грид `CustomersGrid` и диалоги правки профиля и адресов.
 
-![Клиенты](/components/minishop3/screenshots/mgr-customers.png)
-
 ## Список
 
 В строках видны email, имя, телефон, даты и флаги верификации (если колонки включены в конфигурации грида). Поиск и пагинация идут через `/api/mgr/customers`. Массовое удаление: `DELETE /api/mgr/customers/bulk` (право `msorder_remove`).

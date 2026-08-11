@@ -90,8 +90,6 @@ Usually the thanks page needs only `msGetOrder` plus `msOrderTotal` in the heade
 
 **System settings** → namespace `minishop3` (search `page_id`):
 
-![page_id settings](/components/minishop3/screenshots/mgr-system-settings.png)
-
 | Setting | What to set |
 | --- | --- |
 | `ms3_cart_page_id` | Cart ID |
@@ -128,8 +126,6 @@ Storefront entry point: `assets/components/minishop3/api.php`, route prefix `/ap
 2. In the category: **Add product**, product template, save.
 3. **Product properties** tab: SKU, price, weight, image.
 4. Mark **Published**.
-
-![Category](/components/minishop3/screenshots/mgr-category-products.png)
 
 ## Delivery and payment
 

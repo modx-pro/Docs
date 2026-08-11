@@ -6,8 +6,6 @@ description: Manager order list, drafts, statuses, and cost recalculation
 
 Open **Extras → MiniShop3 → Orders**. On the left is the grid of all orders; a click opens the card (Vue 3 + PrimeVue).
 
-![Orders list](/components/minishop3/screenshots/mgr-orders.png)
-
 ## List
 
 The `OrdersGrid` grid filters and sorts rows. Search covers number, email, phone, and other columns from the grid config. A click on a row opens the card.
@@ -29,8 +27,6 @@ Scheduler cleans old drafts by `ms3_delete_drafts_after`. See [Scheduler](/en/co
 ## Card
 
 The `OrderView` card holds tabs: items, customer, delivery and payment, comments, plus addon tabs if you registered them.
-
-![Order card](/components/minishop3/screenshots/mgr-order.png)
 
 ### Status
 

@@ -90,8 +90,6 @@ description: Установка MiniShop3, служебные страницы, 
 
 **Системные настройки** → namespace `minishop3` (поиск `page_id`):
 
-![Настройки page_id](/components/minishop3/screenshots/mgr-system-settings.png)
-
 | Настройка | Что указать |
 | --- | --- |
 | `ms3_cart_page_id` | ID корзины |
@@ -128,8 +126,6 @@ description: Установка MiniShop3, служебные страницы, 
 2. В категории: **Добавить товар**, шаблон товара, сохранить.
 3. Вкладка **Свойства товара**: артикул, цена, вес, изображение.
 4. Отметьте **Опубликовано**.
-
-![Категория](/components/minishop3/screenshots/mgr-category-products.png)
 
 ## Доставка и оплата
 

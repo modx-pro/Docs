@@ -5,8 +5,6 @@ title: Checkout
 
 Last purchase step: contacts, delivery, payment, address. The package ships a page template and form chunk.
 
-![Checkout](/components/minishop3/screenshots/fe-checkout.png)
-
 ## Page structure
 
 | Component | File | Chunk name in DB | Purpose |

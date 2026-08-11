@@ -6,8 +6,6 @@ description: msCustomer directory in the MiniShop3 Manager
 
 Open **Extras → MiniShop3 → Customers**. Here you get the `CustomersGrid` grid and dialogs to edit the profile and addresses.
 
-![Customers](/components/minishop3/screenshots/mgr-customers.png)
-
 ## List
 
 Rows show email, name, phone, dates, and verification flags (if those columns are enabled in the grid config). Search and pagination go through `/api/mgr/customers`. Bulk delete: `DELETE /api/mgr/customers/bulk` (permission `msorder_remove`).

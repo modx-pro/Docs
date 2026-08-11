@@ -20,8 +20,6 @@ Two tabs:
 1. **Options:** category tree on the left, options grid on the right.
 2. **Option groups:** CRUD and drag-and-drop sort for `msOptionGroup` (since v1.11).
 
-![Option groups](/components/minishop3/screenshots/mgr-option-groups.png)
-
 ### Options tab
 
 - **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select children. Context menu: refresh branch, expand or collapse, select or clear selection on the branch. Search by name is available.
