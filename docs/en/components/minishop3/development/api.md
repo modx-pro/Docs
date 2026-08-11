@@ -8,7 +8,7 @@ MiniShop3 provides a REST API for integration with the frontend and external sys
 ## Entry points
 
 | Purpose | URL | Authorization |
-|---------|-----|---------------|
+| --- | --- | --- |
 | Web API (frontend) | `/assets/components/minishop3/api.php` | MS3TOKEN token |
 | Manager API (manager) | `/assets/components/minishop3/connector.php` | MODX session |
 
@@ -21,6 +21,58 @@ This documentation describes the **Web API** for the frontend.
 ```
 
 All requests pass the route via the `route` parameter.
+
+## Endpoint map
+
+Source: `config/routes/web.php`. The `/api/v1` group always runs CORS, rate limit, and ServiceCheck.
+
+| Method | Path | Token |
+| --- | --- | --- |
+| `POST` | `/cart/add` | guest |
+| `POST` | `/cart/remove` | guest |
+| `POST` | `/cart/change` | guest |
+| `POST` | `/cart/change-option` | guest |
+| `GET` | `/cart/get` | guest |
+| `POST` | `/cart/clean` | guest |
+| `GET` | `/order/get` | guest |
+| `POST` | `/order/add` | guest |
+| `POST` | `/order/set` | guest |
+| `POST` | `/order/remove` | guest |
+| `POST` | `/order/submit` | guest |
+| `POST` | `/order/clean` | guest |
+| `GET` | `/order/cost` | guest |
+| `GET` | `/order/cost/cart` | guest |
+| `GET` | `/order/cost/delivery` | guest |
+| `GET` | `/order/cost/payment` | guest |
+| `POST` | `/order/address/set` | guest |
+| `POST` | `/order/address/clean` | guest |
+| `GET` | `/order/delivery/validation-rules` | guest |
+| `GET` | `/order/delivery/required-fields` | guest |
+| `POST` | `/customer/login` | none |
+| `POST` | `/customer/register` | none |
+| `POST` | `/customer/logout` | authorized |
+| `POST` | `/customer/forgot-password` | none |
+| `POST` | `/customer/reset-password` | none |
+| `POST` | `/customer/add` | authorized |
+| `GET` | `/customer/token/get` | none |
+| `GET` | `/customer/addresses` | authorized |
+| `GET` | `/customer/addresses/{id}` | authorized |
+| `POST` | `/customer/addresses` | authorized |
+| `PUT` | `/customer/addresses/{id}` | authorized |
+| `DELETE` | `/customer/addresses/{id}` | authorized |
+| `PUT` | `/customer/addresses/{id}/set-default` | authorized |
+| `PUT` | `/customer/profile` | authorized |
+| `POST` | `/customer/changeAddress` | guest |
+| `POST` | `/customer/email/resend-verification` | authorized |
+| `GET` | `/customer/email/verify` | none |
+| `GET` | `/customer/orders` | authorized |
+| `GET` | `/customer/orders/{id}` | authorized |
+| `POST` | `/customer/orders/{id}/cancel` | authorized |
+| `GET` | `/product/get/{id}` | none |
+| `GET` | `/product/list` | none |
+| `GET` | `/health` | none |
+
+“Guest” token: `GET /customer/token/get` (cart and order draft). “Authorized”: after `login` / `register`.
 
 ## Authorization
 
@@ -95,7 +147,7 @@ POST /api/v1/cart/add
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `id` | int | Yes | Product ID |
 | `count` | int | No | Quantity (default 1) |
 | `options` | object | No | Product options (color, size, etc.) |
@@ -158,7 +210,7 @@ POST /api/v1/cart/change
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `product_key` | string | Yes | Unique product key in cart |
 | `count` | int | Yes | New quantity |
 
@@ -180,8 +232,35 @@ POST /api/v1/cart/remove
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `product_key` | string | Yes | Unique product key |
+
+### Change product options
+
+```http
+POST /api/v1/cart/change-option
+```
+
+Updates options of a cart line (the line key may change).
+
+**Parameters:**
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `product_key` | string | Yes | Cart line key |
+| `options` | object | Yes | New options (non-empty object) |
+
+**Example:**
+
+```json
+{
+  "product_key": "123_a1b2c3d4",
+  "options": {
+    "color": "red",
+    "size": "L"
+  }
+}
+```
 
 ### Get cart
 
@@ -251,14 +330,14 @@ POST /api/v1/order/add
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `key` | string | Yes | Field name |
 | `value` | mixed | Yes | Value |
 
 **Available fields:**
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `email` | Customer email |
 | `phone` | Phone |
 | `first_name` | First name |
@@ -291,7 +370,7 @@ POST /api/v1/order/set
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `fields` | object | Yes | Object with fields |
 
 **Example:**
@@ -316,7 +395,7 @@ POST /api/v1/order/remove
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `key` | string | Yes | Field name |
 
 ### Submit order
@@ -413,7 +492,7 @@ POST /api/v1/order/address/set
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `address_hash` | string | Yes | Address MD5 hash |
 
 ### Clear address
@@ -470,14 +549,15 @@ POST /api/v1/customer/register
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `email` | string | Yes | Email |
 | `password` | string | Yes | Password |
-| `password_confirm` | string | Yes | Password confirmation |
 | `first_name` | string | No | First name |
 | `last_name` | string | No | Last name |
 | `phone` | string | No | Phone |
 | `privacy_accepted` | bool | Depends on settings | Data processing consent |
+
+The controller passes only these fields to the processor. `password_confirm` is not used for Web API registration (it is required for `reset-password`).
 
 **Response:**
 
@@ -520,7 +600,7 @@ POST /api/v1/customer/login
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `email` | string | Yes | Email |
 | `password` | string | Yes | Password |
 
@@ -541,21 +621,82 @@ POST /api/v1/customer/login
 }
 ```
 
+### Logout
+
+```http
+POST /api/v1/customer/logout
+```
+
+Requires an authorized token. Ends the customer session.
+
+### Forgot password
+
+```http
+POST /api/v1/customer/forgot-password
+```
+
+No token required. Rate limit per email (1 request / 5 minutes).
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `email` | string | Yes | Customer email |
+
+The response stays success-shaped for UX (does not reveal whether the account exists). Email is sent only if the customer exists.
+
+### Reset password
+
+```http
+POST /api/v1/customer/reset-password
+```
+
+No auth token required (reset token comes from the email).
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `token` | string | Yes | Token from email |
+| `password` | string | Yes | New password |
+| `password_confirm` | string | Yes | Password confirmation |
+
 ### Update profile
 
 ```http
 PUT /api/v1/customer/profile
 ```
 
-**Requires authorization** (authenticated customer token)
+Requires authorization (authenticated customer token).
 
 **Parameters:**
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `first_name` | string | First name |
 | `last_name` | string | Last name |
 | `phone` | string | Phone |
+
+### Quick profile field update
+
+```http
+POST /api/v1/customer/add
+```
+
+Requires authorization. Updates one `msCustomer` field (`key` + `value`). Allowed editable keys come from the xPDO map (with a denylist of system fields). Changing `email` resets `email_verified_at`.
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `key` | string | Yes | Field name |
+| `value` | mixed | Yes | New value |
+
+### Select saved address in draft
+
+```http
+POST /api/v1/customer/changeAddress
+```
+
+Requires a guest token. Same as `POST /order/address/set`: applies an address by `address_hash` (legacy `value` is also accepted).
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `address_hash` | string | Yes | Customer address hash |
 
 ### Email verification
 
@@ -569,7 +710,7 @@ GET /api/v1/customer/email/verify?token=verification_token
 POST /api/v1/customer/email/resend-verification
 ```
 
-**Requires authorization**
+Requires authorization.
 
 ## Customer addresses
 
@@ -615,7 +756,7 @@ POST /api/v1/customer/addresses
 **Parameters:**
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `city` | string | City |
 | `street` | string | Street |
 | `building` | string | Building |
@@ -645,15 +786,56 @@ PUT /api/v1/customer/addresses/{id}/set-default
 
 ## Customer orders
 
+Requires an **authorized** customer token. Drafts are not returned in the list or detail.
+
+### Order list
+
+```http
+GET /api/v1/customer/orders?limit=20&offset=0&status=2
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `limit` | int | Page size (default 20, max 100) |
+| `offset` | int | Offset |
+| `status` | int | Filter by `status_id`. Draft and invalid IDs are ignored |
+
+**Response `data`:**
+
+```json
+{
+  "orders": [
+    {
+      "id": 15,
+      "uuid": "...",
+      "num": "2603/1",
+      "cost": 3500,
+      "status_id": 2,
+      "status_name": "New",
+      "can_cancel": true
+    }
+  ],
+  "total": 1,
+  "limit": 20,
+  "offset": 0
+}
+```
+
+### Order detail
+
+```http
+GET /api/v1/customer/orders/{id}
+```
+
+Returns the customer order with products and related entities. `404` if the order belongs to someone else, is missing, or is a draft.
+
 ### Cancel order
 
 ```http
 POST /api/v1/customer/orders/{id}/cancel
 ```
 
-**Requires authorization** (authenticated customer token)
-
-Cancels the customer's order if the current status is in the allowed list (`ms3_customer_cancel_allowed_statuses`).
+Cancels the order if the current status is in `ms3_customer_cancel_allowed_statuses`.
 
 **Response (success):**
 
@@ -668,32 +850,62 @@ Cancels the customer's order if the current status is in the allowed list (`ms3_
 }
 ```
 
-**Response (error — status not allowed):**
-
-```json
-{
-  "success": false,
-  "message": "Order cannot be canceled in its current status",
-  "code": 400
-}
-```
-
-**Response (error — not found):**
-
-```json
-{
-  "success": false,
-  "message": "Order not found",
-  "code": 404
-}
-```
+Errors: `400` (status not allowed), `404` (not found), `401` (unauthorized).
 
 **Related settings:**
 
 | Setting | Description |
-|---------|-------------|
+| --- | --- |
 | `ms3_customer_cancel_allowed_statuses` | Status IDs for which cancellation is allowed (default `2,3`) |
 | `ms3_status_canceled` | Target status ID for canceled orders |
+
+## Product catalog
+
+Public endpoints. **No token required.** Only published, non-deleted, non-`hidemenu` products in the requested (or current) context are returned.
+
+`ProductCatalogService` builds the response and **trims** it with an allowlist of resource and `msProductData` fields. A plugin on `msOnGetProductFields` can change values of existing keys but cannot add arbitrary fields to the catalog JSON. For a headless storefront without msProducts see also [Catalog](/en/components/minishop3/frontend/catalog).
+
+### Single product
+
+```http
+GET /api/v1/product/get/{id}
+```
+
+| Path parameter | Description |
+| --- | --- |
+| `id` | Product resource ID |
+
+`400` without id, `404` if the product is missing or not public.
+
+### Product list
+
+```http
+GET /api/v1/product/list?parent=5&limit=20&page=1&sort=price&dir=ASC
+```
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `parent` / `category` | int | Parent category ID (resource primary parent) |
+| `limit` | int | Default 20, max 100 |
+| `offset` | int | Offset. Alternative: `page` (from 1) |
+| `page` | int | Page number when `offset` is omitted |
+| `sort` | string | `id`, `pagetitle`, `menuindex`, `createdon`, `publishedon`, `price`, `article` |
+| `dir` / `sortdir` | string | `ASC` or `DESC` |
+| `query` | string | Search by `pagetitle` / `article` |
+| `context` | string | MODX context key |
+| `include_options` | 0 / 1 | Include options (default 0) |
+| `include_content` | 0 / 1 | Include `content` (default 0) |
+
+**Response `data`:**
+
+```json
+{
+  "items": [ { "id": 10, "pagetitle": "Product", "price": 1500 } ],
+  "total": 42,
+  "limit": 20,
+  "offset": 0
+}
+```
 
 ## Health Check
 
@@ -726,10 +938,15 @@ Configured via system setting `ms3_cors_allowed_origins`:
 
 ### Rate Limiting
 
-DDoS protection via system settings:
+Abuse protection via system settings:
 
 - `ms3_rate_limit_max_attempts` — max requests (default 60)
 - `ms3_rate_limit_decay_seconds` — period in seconds (default 60)
+- `ms3_rate_limit_store` — counter store: `file`, `redis`, `memcached` (default `file`)
+- `ms3_rate_limit_storage_path` — directory for `file` (empty = system temp)
+- `ms3_rate_limit_redis_dsn` — Redis DSN (overrides host/port when set)
+- `ms3_rate_limit_redis_host` / `ms3_rate_limit_redis_port` / `ms3_rate_limit_redis_password` / `ms3_rate_limit_redis_database`
+- `ms3_rate_limit_memcached_servers` — Memcached servers (default `127.0.0.1:11211`)
 
 When limit is exceeded:
 
@@ -833,7 +1050,7 @@ See [Frontend JavaScript](frontend-js) for details.
 ## Error codes
 
 | Code | Description |
-|------|-------------|
+| --- | --- |
 | 400 | Bad request (missing parameters, validation error) |
 | 401 | Authorization token required |
 | 403 | Access denied |

@@ -10,7 +10,7 @@ Snippet for outputting a list of products. Based on pdoTools and supports all of
 ### Main
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **tpl** | `tpl.msProducts.row` | Chunk for each product |
 | **limit** | `10` | Number of products per page |
 | **offset** | `0` | Skip this many products |
@@ -21,7 +21,7 @@ Snippet for outputting a list of products. Based on pdoTools and supports all of
 ### Sorting
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **sortby** | `id` | Sort field |
 | **sortdir** | `ASC` | Direction: `ASC` or `DESC` |
 | **sortbyOptions** | | Sort by product option (see below) |
@@ -29,19 +29,19 @@ Snippet for outputting a list of products. Based on pdoTools and supports all of
 ### Related products
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **link** | | Link type ID (from `ms3_links` table) |
 | **master** | | Master product ID (output products linked to it) |
 | **slave** | | Slave product ID (output products it is linked to) |
 
-::: warning Important: parents=0
-When using the `link` parameter for related products, you **must** set `parents => 0` to disable category filtering. Otherwise only related products from the same category are returned.
+::: info Category filter with link
+When `link` is set, the snippet automatically sets `parents => 0` and `depth => 0` so linked products are searched across the whole catalog. You do not need to pass `parents => 0` explicitly.
 :::
 
 ### Filtering
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **where** | | JSON with extra conditions |
 | **optionFilters** | | JSON filters by product options |
 | **showZeroPrice** | `true` | Show zero-price products |
@@ -52,20 +52,20 @@ When using the `link` parameter for related products, you **must** set `parents 
 ### Extra data
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **includeContent** | `false` | Include the `content` field |
 | **includeTVs** | | Comma-separated TV list |
 | **includeThumbs** | | Comma-separated thumbnail sizes |
 | **includeVendorFields** | `*` | Vendor fields (`*` = all) |
 | **includeOptions** | | Comma-separated product options to include |
-| **formatPrices** | `false` | Format prices via `$ms3->format->price()` |
-| **withCurrency** | `false` | Add currency symbol (works with `formatPrices`) |
+| **tvPrefix** | | Prefix for TV placeholders (pdoTools) |
+| **withCurrency** | `false` | Add currency symbol to `price_formatted` and `old_price_formatted` |
 | **usePackages** | | Comma-separated external packages (see [Integration](#integration-with-external-packages)) |
 
 ### Output
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **return** | `data` | Format: `data`, `json`, `ids`, `sql` |
 | **returnIds** | `false` | Return only product IDs |
 | **toPlaceholder** | | Save result to a placeholder |
@@ -73,7 +73,17 @@ When using the `link` parameter for related products, you **must** set `parents 
 | **outputSeparator** | `\n` | Separator between products |
 | **tplWrapper** | | Wrapper chunk for the full output |
 | **wrapIfEmpty** | `true` | Use wrapper when result is empty |
-| **showLog** | `false` | Show execution log |
+| **showLog** | `false` | Show execution log (managers in mgr context only) |
+
+### Category scope (#481)
+
+pdoTools filters products by `parent` but ignores extra categories from `msCategoryMember`. The snippet uses `CategoryProductScopeService`: when `parents` is not `0`, it builds a `WHERE` for primary and extra categories and resets `parents` to `0` so pdoTools does not drop products from linked categories.
+
+### Output with `return=data`
+
+With `return=data` (the default) the snippet does **not** return a PHP array. For each row it picks a chunk (`tpl` or `@FILE`) and joins the result with `outputSeparator`. For an array use Fenom `{set $rows = 'msProducts' | snippet : ['return' => 'json']}` and `json_decode`, or `return=ids`.
+
+With `showLog=1` and a manager session, the pdoTools log is available in the `msProducts.log` placeholder.
 
 ## Table aliases
 
@@ -82,7 +92,7 @@ The msProducts snippet automatically joins related product tables. Fields from t
 ### Tables and their fields
 
 | Table | Alias | Fields |
-|-------|-------|--------|
+| --- | --- | --- |
 | msProduct | — (not needed) | id, pagetitle, longtitle, alias, uri, parent, createdon, publishedon, template... |
 | msProductData | `Data` | price, old_price, article, weight, vendor_id, new, popular, favorite, color, size, tags... |
 | msVendor | `Vendor` | name, country, logo, address, phone, email (with `includeVendorFields`) |
@@ -90,7 +100,7 @@ The msProducts snippet automatically joins related product tables. Fields from t
 ### Dynamic aliases
 
 | Alias | When available | Description |
-|-------|----------------|-------------|
+| --- | --- | --- |
 | `Link` | With `link` + `master`/`slave` | Product links table |
 | `{size}` | With `includeThumbs` | Thumbnails. Alias = size name (small, medium...) |
 | `{option}` | With `optionFilters` / `sortbyOptions` | Product options. Alias = option key (color, size...) |
@@ -220,7 +230,7 @@ The `master` parameter specifies the product for which linked items are searched
 MiniShop3 includes these link types by default:
 
 | ID | Name |
-|----|------|
+| --- | --- |
 | 1 | Recommended (Related) |
 | 2 | Accessories |
 | 3 | Alternatives |
@@ -242,7 +252,7 @@ Create new link types under **Settings → Link types**.
 **Supported types for `sortbyOptions`:**
 
 | Type | Example | When to use |
-|------|---------|-------------|
+| --- | --- | --- |
 | `number` / `decimal` | `weight:number` | Decimals: price, weight, volume |
 | `int` / `integer` | `quantity:int` | Integers: quantity, rating, age |
 | `date` / `datetime` | `release_date:date` | Dates: release date, arrival date |
@@ -368,19 +378,13 @@ In the `tpl` chunk all product fields are available:
 
 ### Formatted placeholders
 
-Placeholders with the `_formatted` suffix include the currency symbol or weight unit, formatted per `ms3_price_format`, `ms3_currency_symbol`, `ms3_currency_position`, and `ms3_weight_unit`:
+Numeric `{$price}`, `{$old_price}`, `{$weight}` are for calculations. For display use `*_formatted` per `ms3_price_format`, `ms3_currency_symbol`, `ms3_currency_position`, `ms3_weight_unit`:
 
-- `{$price_formatted}` — price with currency (e.g. `1 234 ₽`)
-- `{$old_price_formatted}` — old price with currency
-- `{$cost_formatted}` — cost with currency
-- `{$old_cost_formatted}` — old cost with currency
+- `{$price_formatted}` — price (with currency when `withCurrency => true`)
+- `{$old_price_formatted}` — old price
 - `{$weight_formatted}` — weight with unit (e.g. `500 g`)
-- `{$discount_price_formatted}` — unit discount with currency
-- `{$discount_cost_formatted}` — line discount with currency
 
-::: warning Breaking change (v1.7.0)
-`cost_formatted` now includes the currency symbol. Custom chunks that append currency manually to `cost_formatted` will show the symbol twice.
-:::
+The `formatPrices` parameter was removed in v1.7.0 (#242).
 
 ### Vendor fields (Vendor)
 
@@ -461,7 +465,7 @@ Without `usePackages`, external package data is not loaded — this saves resour
 Each package adds its own placeholders. For example, ms3Variants adds:
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$has_variants}` | bool | Whether the product has variants |
 | `{$variants_count}` | int | Number of variants |
 | `{$variants_json}` | string | JSON array for JavaScript |

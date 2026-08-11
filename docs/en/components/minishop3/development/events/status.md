@@ -12,7 +12,7 @@ Fired **before** changing order status. Lets you validate or cancel the change.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msOrder` | `msOrder` | Order object |
 | `old_status` | `int` | Current status ID |
 | `status` | `int` | New status ID |
@@ -72,7 +72,7 @@ Fired **after** successful order status change.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msOrder` | `msOrder` | Order object |
 | `old_status` | `int` | Previous status ID |
 | `status` | `int` | New status ID |

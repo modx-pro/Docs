@@ -12,7 +12,7 @@ The snippet uses the user session and must be called **uncached**.
 ## Parameters
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCart` | Cart layout chunk |
 | **selector** | | CSS selector for auto-updating cart HTML |
 | **includeTVs** | | Comma-separated product TV parameters |
@@ -29,7 +29,7 @@ The snippet uses the user session and must be called **uncached**.
 The snippet inherits pdoTools parameters:
 
 | Parameter | Description |
-|----------|----------|
+| --- | --- |
 | **where** | Extra query conditions (JSON) |
 | **leftJoin** | Extra JOINs (JSON) |
 | **select** | Extra fields for query (JSON) |
@@ -197,6 +197,26 @@ Since **v1.9.0**, the chunk and `return=data` expose a `status` array — data f
 - `{$status.total_weight}` — Total weight
 - `{$status.total_discount}` — Total discount
 - `{$status.total_positions}` — Number of lines
+
+| `total.*` | Source after sync |
+| --- | --- |
+| `total.count` | `status.total_count` |
+| `total.cost` | `status.total_cost` |
+| `total.weight` | `status.total_weight` |
+| `total.discount` | `status.total_discount` |
+| `total.positions` | `status.total_positions` |
+
+## Auto-update HTML
+
+The snippet registers via `registerSnippet()` for re-render on cart changes (same as [msOrderTotal](msordertotal)). Set `selector` when multiple cart blocks are on the page:
+
+```fenom
+<div id="sidebar-cart">
+    {'!msCart' | snippet : [
+        'selector' => '#sidebar-cart'
+    ]}
+</div>
+```
 
 ## Example chunk
 

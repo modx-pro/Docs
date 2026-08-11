@@ -10,7 +10,7 @@ The product page shows a single product in detail: gallery, price, options, and 
 ## Page structure
 
 | Component | File | Purpose |
-|-----------|------|---------|
+| --- | --- | --- |
 | Page template | `elements/templates/product.tpl` | Product page layout |
 | Gallery | `tpl.msGallery` | Image slider with lightbox |
 | Product options | `tpl.msProductOptions` | Product attributes output |
@@ -78,7 +78,7 @@ The gallery uses [Splide](https://splidejs.com/) for the slider and [GLightbox](
 #### Placeholders in tpl.msGallery
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$files}` | array | Product image array |
 | `{$file['url']}` | string | Full image URL |
 | `{$file['small']}` | string | Thumbnail URL (small) |
@@ -125,7 +125,7 @@ The right column with product data includes:
 #### Product badges
 
 | Badge | Condition | Style |
-|-------|-----------|-------|
+| --- | --- | --- |
 | NEW | `{$new?}` | `badge bg-primary` |
 | BESTSELLER | `{$popular?}` | `badge bg-warning text-dark` |
 | RECOMMENDED | `{$favorite?}` | `badge bg-danger` |
@@ -271,7 +271,7 @@ Block with icons for weight, country of origin, and delivery:
 Bootstrap tabs for organizing content:
 
 | Tab | Content |
-|-----|---------|
+| --- | --- |
 | **Description** | Full description from `{$_modx->resource.description}` |
 | **Specifications** | Product properties table |
 | **Delivery** | Delivery methods information |
@@ -308,7 +308,7 @@ Bootstrap tabs for organizing content:
 Filled automatically from product fields:
 
 | Field | Placeholder |
-|-------|-------------|
+| --- | --- |
 | SKU | `{$article}` |
 | Vendor | `{$vendor_name}` |
 | Country of origin | `{$made_in}` |
@@ -339,7 +339,7 @@ Block with products from the same category:
 ```
 
 | Parameter | Value | Purpose |
-|-----------|-------|---------|
+| --- | --- | --- |
 | `parents` | Parent category ID | Products from the same category |
 | `resources` | `-` current product ID | Exclude the current product |
 | `limit` | `4` | Show 4 products |
@@ -351,7 +351,7 @@ The product page exposes all fields from the msProduct and msProductData tables:
 ### Main fields
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$_modx->resource.id}` | int | Product resource ID |
 | `{$_modx->resource.pagetitle}` | string | Product name |
 | `{$_modx->resource.introtext}` | string | Short description |
@@ -362,7 +362,7 @@ The product page exposes all fields from the msProduct and msProductData tables:
 ### msProductData fields
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$article}` | string | SKU |
 | `{$price}` | float | Price |
 | `{$old_price}` | float | Old price |
@@ -378,7 +378,7 @@ The product page exposes all fields from the msProduct and msProductData tables:
 ### Product options
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$_modx->resource.color}` | array | Available colors |
 | `{$_modx->resource.size}` | array | Available sizes |
 | `{$discount}` | int | Discount percentage (calculated) |
@@ -420,7 +420,7 @@ Extend the tabs block in the template:
 ## CSS classes
 
 | Class | Element |
-|-------|---------|
+| --- | --- |
 | `.product-info` | Product information container |
 | `.product-price` | Price block |
 | `.product-options` | Options container |
@@ -438,7 +438,7 @@ Extend the tabs block in the template:
 The template uses the following libraries:
 
 | Library | Version | Purpose |
-|---------|---------|---------|
+| --- | --- | --- |
 | Bootstrap 5 | 5.3.3 | CSS framework |
 | Splide | 4.1.4 | Gallery slider |
 | GLightbox | 3.3.0 | Image lightbox |

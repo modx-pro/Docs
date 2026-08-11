@@ -41,7 +41,7 @@ class ProductService
 ### Benefits
 
 | Aspect | Fat models | Service layer |
-|--------|------------|---------------|
+| --- | --- | --- |
 | Testing | Hard to mock | Easy to isolate |
 | Reuse | Tied to ORM | Independent services |
 | Extension | Inheritance | Replace via DI |
@@ -120,7 +120,7 @@ This avoids conflicts with other MODX components.
 Controllers are high-level services for main store entities.
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_cart` | `Controllers\Cart\Cart` | Cart management |
 | `ms3_order` | `Controllers\Order\Order` | Checkout |
 | `ms3_customer` | `Controllers\Customer\Customer` | Customer handling |
@@ -142,9 +142,13 @@ $customer = $ms3->customer->getFields();
 ### Product services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
+| `ms3_product_service` | `Services\Product\ProductService` | Resource-to-product conversion, duplicates, `OnDocFormSave` |
 | `ms3_product_data_service` | `Services\Product\ProductDataService` | Product data |
-| `ms3_product_image` | `Services\Product\ProductImageService` | Product images |
+| `ms3_product_image` | `Services\Product\ProductImageService` | Images, preview (`preview_file_id`) |
+| `ms3_product_catalog` | `Services\Product\ProductCatalogService` | Headless catalog Web API (field allowlist) |
+| `ms3_product_import` | `Services\Product\Import\ProductImportService` | CSV import |
+| `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Product category tree in manager |
 
 ```php
 $productService = $modx->services->get('ms3_product_data_service');
@@ -154,13 +158,16 @@ $imageService = $modx->services->get('ms3_product_image');
 ### Customer services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_auth_manager` | `Services\Customer\AuthManager` | Authentication |
 | `ms3_register_service` | `Services\Customer\RegisterService` | Registration |
 | `ms3_email_verification_service` | `Services\Customer\EmailVerificationService` | Email verification |
-| `ms3_sms_verification_service` | `Services\Customer\SmsVerificationService` | SMS verification |
+| `ms3_sms_verification_service` | `Services\Customer\SmsVerificationService` | SMS stub (method always returns error until a provider is implemented) |
 | `ms3_rate_limiter` | `Services\Customer\RateLimiter` | Rate limiting |
 | `ms3_customer_address_manager` | `Services\Customer\CustomerAddressManager` | Address management |
+| `ms3_customer_field_manager` | `Services\Customer\CustomerFieldManager` | Customer profile fields |
+| `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Customer orders on storefront |
+| `ms3_customer_order_resolver` | `Services\Customer\CustomerOrderResolver` | Bind order to customer on submit |
 | `ms3_customer_duplicate_checker` | `Services\CustomerDuplicateChecker` | Duplicate check |
 | `ms3_customer_factory` | `Services\CustomerFactory` | Customer factory |
 
@@ -186,7 +193,7 @@ The `Order.php` controller is a **facade** — it keeps all public methods for b
 :::
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_order_service` | `Services\Order\OrderService` | Order business logic |
 | `ms3_order_draft_manager` | `Services\Order\OrderDraftManager` | Order draft CRUD |
 | `ms3_order_cost_calculator` | `Services\Order\OrderCostCalculator` | Cost calculation |
@@ -197,6 +204,8 @@ The `Order.php` controller is a **facade** — it keeps all public methods for b
 | `ms3_order_log` | `Services\Order\OrderLogService` | Order change log |
 | `ms3_order_status` | `Services\Order\OrderStatusService` | Status change + notifications |
 | `ms3_order_finalize` | `Services\Order\OrderFinalizeService` | Order finalization (validation, customer creation) |
+| `ms3_order_number_generator` | `Services\Order\OrderNumberGenerator` | Order numbering |
+| `ms3_manager_order_cost_recalculator` | `Services\Order\ManagerOrderCostRecalculator` | Recalculate in order card (mgr) |
 
 ```php
 // Get services directly
@@ -223,8 +232,9 @@ The `Cart.php` controller is also a **facade**. It uses `OrderDraftManager` for 
 :::
 
 | Key | Class | Purpose |
-|------|-------|---------|
-| `ms3_cart_item_manager` | `Services\Cart\CartItemManager` | Cart item CRUD, validation, totals |
+| --- | --- | --- |
+| `ms3_cart_item_manager` | `Services\Cart\CartItemManager` | Line CRUD, totals |
+| `ms3_cart_mutation_handler` | `Services\Cart\CartMutationHandler` | Cart Web API: add/change/remove/change-option + `msOn*Cart` events |
 
 ```php
 $itemManager = $modx->services->get('ms3_cart_item_manager');
@@ -251,43 +261,47 @@ OrderFieldManager   — order fields (Order-specific)
 ### Delivery and payment services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_delivery_service` | `Services\Delivery\DeliveryService` | Delivery methods |
 | `ms3_payment_service` | `Services\Payment\PaymentService` | Payment methods |
+| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | Payment URL for emails and `msGetOrder` (statuses from `ms3_payment_link_statuses` / `payStatus`) |
 
 ### Category services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_category_service` | `Services\Category\CategoryService` | Categories |
 | `ms3_category_option_service` | `Services\Category\CategoryOptionService` | Category options |
+| `ms3_category_product_scope` | `Services\Category\CategoryProductScopeService` | Additional product categories for msProducts (#481) |
+| `ms3_category_products_list` | `Services\Category\CategoryProductsListService` | Category product grid |
 
 ### Option services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_option_service` | `Services\Option\OptionService` | EAV option system |
+| `ms3_option_loader` | `Services\Option\OptionLoaderService` | Load options with `CaptionOverlayResolver` |
 
 ### Config services
 
 | Key | Class | Purpose |
-|------|-------|---------|
-| `ms3_config_manager` | `Services\ConfigManager` | Config management |
-| `ms3_field_config_manager` | `Services\FieldConfigManager` | Field config |
+| --- | --- | --- |
 | `ms3_config_service` | `Services\ConfigService` | Config facade |
+| `ms3_field_config_manager` | `Services\FieldConfigManager` | Field config |
 | `ms3_grid_config` | `Services\GridConfigService` | Grid config |
+| `ms3_filter_config` | `Services\FilterConfigManager` | Grid filters |
 
 ### Notification services
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_notifications` | `Notifications\NotificationManager` | Notification hub |
 | `ms3_notification_config` | `Services\Notification\NotificationConfigService` | Notification config |
 
 ### Utilities
 
 | Key | Class | Purpose |
-|------|-------|---------|
+| --- | --- | --- |
 | `ms3_token_service` | `Services\TokenService` | Token operations |
 | `ms3_image` | `Services\ImageService` | Image handling (Intervention Image) |
 | `ms3_vendor_service` | `Services\Vendor\VendorService` | Vendors |
@@ -597,7 +611,7 @@ $authManager->registerProvider(new TelegramAuthProvider($modx));
 ## System settings
 
 | Setting | Default | Description |
-|-----------|--------------|-------------|
+| --- | --- | --- |
 | `ms3_services_config` | `core/config/ms3.services.php` | Main config path |
 | `ms3_services_addons_dir` | `core/config/ms3.services.d/` | Addon config directory |
 

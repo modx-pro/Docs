@@ -34,7 +34,7 @@ MiniShop3 registers these tasks on install:
 Cleans up expired customer auth tokens.
 
 | Parameter | Value |
-|----------|--------|
+| --- | --- |
 | **Type** | Recurring |
 | **Interval** | 1 week |
 | **File** | `elements/tasks/cleanupTokens.php` |
@@ -46,7 +46,7 @@ Removes rows from `ms3_customer_tokens` where the token has expired. Prevents st
 Cleans up old order drafts.
 
 | Parameter | Value |
-|----------|--------|
+| --- | --- |
 | **Type** | Recurring |
 | **Interval** | 1 day |
 | **File** | `elements/tasks/cleanupDrafts.php` |
@@ -75,7 +75,7 @@ The setting accepts any value valid for PHP `strtotime()`: `-1 day`, `-2 weeks`,
 Background product import from CSV.
 
 | Parameter | Value |
-|----------|--------|
+| --- | --- |
 | **Type** | One-time |
 | **Interval** | — |
 | **File** | `elements/tasks/csvImport.php` |
@@ -97,7 +97,7 @@ $scriptProperties = [
 Deferred notification sending.
 
 | Parameter | Value |
-|----------|--------|
+| --- | --- |
 | **Type** | One-time |
 | **Interval** | — |
 | **File** | `elements/tasks/sendNotification.php` |
@@ -222,7 +222,7 @@ try {
 ## Related settings
 
 | Setting | Default | Description |
-|-----------|--------------|-------------|
+| --- | --- | --- |
 | `ms3_use_scheduler` | `false` | Enable Scheduler integration |
 | `ms3_delete_drafts_after` | | Draft retention period (strtotime format) |
 | `ms3_import_sync_limit` | `300` | Sync import row limit |

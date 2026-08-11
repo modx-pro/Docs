@@ -5,6 +5,10 @@ title: Vendor events
 
 Events for tracking vendor (brand) operations.
 
+::: warning Vue settings vs processors
+Vendor CRUD in the admin (**Extras → MiniShop3 → Vendors**) goes through `VendorsController` (Manager API) **without** `$modx->invokeEvent`. The events below fire only when legacy processors `MiniShop3\Processors\Settings\Vendor\*` are called (`runProcessor`, old connector). To intercept changes from Vue, use post-save hooks via your own REST middleware or by extending the controller in an addon.
+:::
+
 ## msOnBeforeVendorCreate
 
 Fired **before** creating a vendor.
@@ -12,7 +16,7 @@ Fired **before** creating a vendor.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Vendor object |
 | `mode` | `string` | Mode: `new` |
 
@@ -46,7 +50,7 @@ Fired **after** creating a vendor.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Created vendor object |
 | `mode` | `string` | Mode: `new` |
 
@@ -78,7 +82,7 @@ Fired **before** updating a vendor.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Vendor object |
 | `mode` | `string` | Mode: `upd` |
 
@@ -107,7 +111,7 @@ Fired **after** updating a vendor.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Updated vendor object |
 | `mode` | `string` | Mode: `upd` |
 
@@ -141,7 +145,7 @@ Fired **before** deleting a vendor.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Vendor object to delete |
 
 ### Aborting the operation
@@ -176,7 +180,7 @@ Fired **after** deleting a vendor.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Deleted vendor object |
 
 ### Example

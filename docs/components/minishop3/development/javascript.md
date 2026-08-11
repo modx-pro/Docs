@@ -93,7 +93,7 @@ const response = await ms3.cartAPI.add(123, 2, { color: 'red' })
 При стандартном подключении доступны:
 
 | Объект | Описание |
-|--------|----------|
+| --- | --- |
 | `window.ms3` | Главный объект со всеми модулями |
 | `window.ms3Hooks` | Система хуков |
 | `window.ms3Message` | Уведомления (если подключён UI) |
@@ -160,7 +160,7 @@ const response = await ms3.cartAPI.get()
 Добавить товар в корзину.
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `id` | number | ID товара (обязательный) |
 | `count` | number | Количество (по умолчанию 1) |
 | `options` | object | Опции товара (цвет, размер и т.д.) |
@@ -203,7 +203,7 @@ await ms3.cartAPI.add(123, 1, { color: 'red', size: 'L' })
 Изменить количество товара.
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `productKey` | string | Уникальный ключ товара в корзине |
 | `count` | number | Новое количество |
 | `render` | array | Токены для рендеринга |
@@ -420,7 +420,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Корзина
 
 | Хук | Контекст | Описание |
-|-----|----------|----------|
+| --- | --- | --- |
 | `beforeAddCart` | `{ id, count, options }` | Перед добавлением товара |
 | `afterAddCart` | `{ id, count, options, response }` | После добавления товара |
 | `beforeChangeCart` | `{ productKey, count }` | Перед изменением количества |
@@ -433,7 +433,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Заказ
 
 | Хук | Контекст | Описание |
-|-----|----------|----------|
+| --- | --- | --- |
 | `beforeAddOrder` | `{ key, value }` | Перед сохранением поля |
 | `afterAddOrder` | `{ key, value, response }` | После сохранения поля |
 | `beforeSubmitOrder` | `{}` | Перед оформлением |
@@ -444,7 +444,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Покупатель
 
 | Хук | Контекст | Описание |
-|-----|----------|----------|
+| --- | --- | --- |
 | `beforeAddCustomer` | `{ key, value }` | Перед сохранением данных |
 | `afterAddCustomer` | `{ key, value, response }` | После сохранения данных |
 | `beforeUpdateProfile` | `{ data }` | Перед обновлением профиля |
@@ -503,7 +503,7 @@ ms3Hooks.addHook('beforeCleanCart', async (ctx) => {
 ### Список событий
 
 | Событие | Описание | detail |
-|---------|----------|--------|
+| --- | --- | --- |
 | `ms3:ready` | ms3 инициализирован | — |
 | `ms3:cart:updated` | Корзина обновлена | `{ cart, status }` |
 

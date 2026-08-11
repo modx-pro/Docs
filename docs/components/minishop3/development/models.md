@@ -71,7 +71,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Товары
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msProduct` | `site_content` | Товар (расширяет modResource) |
 | `msProductData` | `ms3_products` | Данные товара (цена, артикул, вес) |
 | `msProductFile` | `ms3_product_files` | Файлы галереи товара |
@@ -82,7 +82,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 #### msProductData — основные поля
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `id` | int | ID (совпадает с ID ресурса) |
 | `article` | varchar(50) | Артикул |
 | `price` | decimal(12,2) | Цена |
@@ -103,7 +103,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Категории
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msCategory` | `site_content` | Категория (расширяет modResource) |
 | `msCategoryMember` | `ms3_product_categories` | Связь товар-категория |
 | `msCategoryOption` | `ms3_category_options` | Опции категории |
@@ -111,7 +111,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Заказы
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msOrder` | `ms3_orders` | Заказ |
 | `msOrderAddress` | `ms3_order_addresses` | Адрес доставки заказа |
 | `msOrderProduct` | `ms3_order_products` | Товары в заказе |
@@ -121,7 +121,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 #### msOrder — основные поля
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `id` | int | ID заказа |
 | `user_id` | int | ID пользователя MODX |
 | `customer_id` | int | ID клиента msCustomer |
@@ -143,7 +143,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Клиенты (NEW в MiniShop3)
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msCustomer` | `ms3_customers` | Клиент магазина |
 | `msCustomerAddress` | `ms3_customer_addresses` | Сохранённые адреса клиента |
 | `msCustomerToken` | `ms3_customer_tokens` | Токены авторизации |
@@ -151,7 +151,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 #### msCustomer — основные поля
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `id` | int | ID клиента |
 | `user_id` | int | ID связанного modUser (опционально) |
 | `first_name` | varchar(191) | Имя |
@@ -174,7 +174,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Доставка и оплата
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msDelivery` | `ms3_deliveries` | Способы доставки |
 | `msPayment` | `ms3_payments` | Способы оплаты |
 | `msDeliveryMember` | `ms3_delivery_payments` | Связь доставка-оплата |
@@ -182,20 +182,20 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Производители
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msVendor` | `ms3_vendors` | Производители товаров |
 
 ### Опции
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msOption` | `ms3_options` | Справочник опций |
 | `msOptionGroup` | `ms3_option_groups` | Группы опций (заменили использование `modCategory` для группировки, начиная с 1.11.0) |
 
 ### Конфигурация полей (NEW в MiniShop3)
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Настройки полей моделей |
 | `msModelFieldSection` | `ms3_model_field_sections` | Секции полей |
 | `msProductField` | `ms3_product_fields` | Поля товара (legacy) |
@@ -205,7 +205,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Уведомления
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msNotificationConfig` | `ms3_notification_configs` | Конфигурация уведомлений |
 
 ## Примеры работы с моделями

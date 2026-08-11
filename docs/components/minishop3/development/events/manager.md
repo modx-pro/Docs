@@ -12,23 +12,29 @@ title: События админки
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `controller` | `object` | Объект контроллера страницы |
 | `page` | `string` | Идентификатор страницы |
 
 ### Доступные страницы
 
-| Значение page | Описание |
-|---------------|----------|
-| `product_create` | Создание товара |
-| `product_update` | Редактирование товара |
-| `category_create` | Создание категории |
-| `category_update` | Редактирование категории |
-| `orders` | Список заказов |
-| `order` | Карточка заказа |
-| `customers` | Список покупателей |
-| `settings` | Настройки компонента |
-| `notifications` | Управление уведомлениями |
+Значение `page` задаётся в `loadCustomCssJs()` контроллера MODX. Источник в пакете:
+
+| Значение `page` | Экран | Файл контроллера |
+| --- | --- | --- |
+| `product_create` | Создание товара | `controllers/product/create.class.php` |
+| `product_update` | Редактирование товара | `controllers/product/update.class.php` |
+| `category_create` | Создание категории | `controllers/category/create.class.php` |
+| `category_update` | Редактирование категории | `controllers/category/update.class.php` |
+| `orders` | Список заказов (Vue) | `controllers/mgr/orders.class.php` |
+| `order` | Карточка заказа | `controllers/mgr/order.class.php` |
+| `customers` | Список покупателей (Vue) | `controllers/mgr/customers.class.php` |
+| `settings` | Настройки компонента | `controllers/mgr/settings.class.php` |
+| `notifications` | Управление уведомлениями | `controllers/mgr/notifications.class.php` |
+
+::: info Vue-страницы
+`orders` и `customers` монтируют Vue-приложение (`orders.min.js` / customers). Подключайте скрипты через `addJavascript` / `addVueModule` так же, как для ExtJS-страниц товара.
+:::
 
 ### Подключение файлов
 
@@ -113,6 +119,7 @@ switch ($modx->event->name) {
 
 ::: tip Plugin Registry
 Для добавления кастомных вкладок на страницы товара и заказа используйте Plugin Registry API:
+
 - [Интеграция вкладок товара](/components/minishop3/development/product-tabs-integration) — `MS3ProductTabsRegistry`
 - [Интеграция вкладок заказа](/components/minishop3/development/order-tabs-integration) — `MS3OrderTabsRegistry`
 
@@ -263,8 +270,10 @@ Ext.onReady(function() {
 ```php
 <?php
 /**
+
  * Плагин: Расширение карточки товара
  * События: msOnManagerCustomCssJs
+
  */
 
 switch ($modx->event->name) {

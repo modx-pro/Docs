@@ -8,14 +8,17 @@ Snippet for displaying order information. Used on the thank-you page or in the c
 ## Parameters
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **id** | | Order ID or UUID (takes precedence over GET) |
 | **tpl** | `tpl.msGetOrder` | Order layout chunk |
 | **includeThumbs** | | Comma-separated product image thumbnails |
 | **includeContent** | `false` | Include product `content` field |
+| **includeTVs** | | Comma-separated product TVs (pdoTools, `joinTVsTo` = `msProduct`) |
 | **payStatus** | `1` | Statuses for showing payment link (comma-separated) |
 | **toPlaceholder** | | Save result to placeholder |
 | **showLog** | `false` | Show execution log |
+
+The snippet does **not** support `return`: output is chunk HTML or a placeholder via `toPlaceholder`. Extra pdoTools `where`, `leftJoin`, `select` can be passed as JSON parameters.
 
 ## Order resolution
 
@@ -26,7 +29,7 @@ The snippet resolves the order in this order:
 3. Empty result if order not found
 
 ::: tip UUID access
-You can pass the order UUID (36 characters) instead of numeric ID. Useful for public links without login.
+Order UUID (36 characters) instead of numeric ID is useful for public links. With UUID, **access control is skipped** — anyone with the link can view the order. In the account area use numeric ID or customer login.
 :::
 
 ## Access check
@@ -34,10 +37,10 @@ You can pass the order UUID (36 characters) instead of numeric ID. Useful for pu
 The order is shown if any of the following is true:
 
 - Order is in user session (`$_SESSION['ms3']['orders']`)
-- Order `user_id` matches current user
+- Order `user_id` matches current MODX user
 - Order `customer_id` matches current customer (by token)
 - User is logged in to manager (mgr context)
-- Access via order UUID
+- Request by UUID (36 characters) — **no owner check**
 
 ## Examples
 
@@ -91,7 +94,7 @@ The order is shown if any of the following is true:
 The chunk receives the following objects:
 
 | Placeholder | Type | Description |
-|-------------|-----|----------|
+| --- | --- | --- |
 | `{$order}` | array | Order data |
 | `{$products}` | array | Order products array |
 | `{$address}` | array | Delivery address |
@@ -103,7 +106,7 @@ The chunk receives the following objects:
 ### order object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$order.id}` | Order ID |
 | `{$order.num}` | Formatted number (MS-00015) |
 | `{$order.uuid}` | Order UUID |
@@ -123,7 +126,7 @@ The chunk receives the following objects:
 ### address object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$address.receiver}` | Receiver full name |
 | `{$address.phone}` | Phone |
 | `{$address.email}` | Email |
@@ -138,7 +141,7 @@ The chunk receives the following objects:
 ### delivery object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$delivery.id}` | Delivery ID |
 | `{$delivery.name}` | Name |
 | `{$delivery.description}` | Description |
@@ -148,7 +151,7 @@ The chunk receives the following objects:
 ### payment object
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$payment.id}` | Payment ID |
 | `{$payment.name}` | Name |
 | `{$payment.description}` | Description |
@@ -157,13 +160,17 @@ The chunk receives the following objects:
 ### total object
 
 | Field | Description |
-|------|----------|
-| `{$total.cost}` | Total cost (formatted) |
-| `{$total.cart_cost}` | Cart cost (formatted) |
-| `{$total.delivery_cost}` | Delivery cost (formatted) |
-| `{$total.weight}` | Total weight (formatted) |
+| --- | --- |
+| `{$total.cost}` | Total to pay (number) |
+| `{$total.cost_formatted}` | Total with currency |
+| `{$total.cart_cost}` | Cart cost (number) |
+| `{$total.cart_cost_formatted}` | Cart cost with currency |
+| `{$total.delivery_cost}` | Delivery cost (number) |
+| `{$total.delivery_cost_formatted}` | Delivery with currency |
+| `{$total.weight}` / `{$total.cart_weight}` | Total weight (number) |
+| `{$total.weight_formatted}` | Weight with unit |
 | `{$total.cart_count}` | Product count |
-| `{$total.cart_discount}` | Discount amount |
+| `{$total.cart_discount}` | Discount amount (number) |
 
 ### products array
 
@@ -176,7 +183,7 @@ The chunk receives the following objects:
 For each product:
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$product.id}` | Product resource ID |
 | `{$product.product_id}` | Product ID |
 | `{$product.order_product_id}` | Order line ID |
@@ -184,15 +191,16 @@ For each product:
 | `{$product.pagetitle}` | Resource title |
 | `{$product.article}` | SKU |
 | `{$product.count}` | Quantity |
-| `{$product.price}` | Price (formatted) |
-| `{$product.old_price}` | Old price (formatted) |
-| `{$product.cost}` | Line total (formatted) |
-| `{$product.weight}` | Weight (formatted) |
-| `{$product.discount_price}` | Discount per unit |
-| `{$product.discount_cost}` | Line discount |
-| `{$product.options}` | Product options (array) |
+| `{$product.price}` | Unit price (number) |
+| `{$product.old_price}` | Old price (number) |
+| `{$product.cost}` | Line total (number) |
+| `{$product.weight}` | Weight (number) |
+| `{$product.discount_price}` | Discount per unit (number) |
+| `{$product.discount_cost}` | Line discount (number) |
+| `{$product.price_formatted}`, `{$product.cost_formatted}`, `{$product.weight_formatted}`, etc. | Formatted output with currency/unit |
+| `{$product.options}` | Order line options (array) |
+| `{$product.option.color}` | Option value as a separate field (`option.{key}`) |
 | `{$product.thumb}` | Thumbnail (if includeThumbs) |
-| `{$product.small}` | Small thumbnail (if includeThumbs) |
 
 ## Default chunk
 
@@ -350,9 +358,9 @@ The default chunk `tpl.msGetOrder` uses Bootstrap 5:
 
 The payment link `{$payment_link}` is available when:
 
-1. The payment method has a handler class (`class`) set
-2. Order status is in the `payStatus` list (default `1`)
-3. The handler returns a link via `getPaymentLink()`
+1. The payment method has a handler class (`class`) with a method that returns a URL
+2. Order status is in the allowed list: snippet parameter `payStatus` (CSV) or system setting `ms3_payment_link_statuses` (fallback — `ms3_status_new`)
+3. The order is not final and not in “paid” status — logic in `PaymentLinkResolver::isStatusEligibleForPaymentLink()`
 
 ```fenom
 {'msGetOrder' | snippet : [

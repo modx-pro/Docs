@@ -8,11 +8,13 @@ Simple snippet for outputting specific product options. When you know in advance
 ## Parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **product** | current resource | Product ID |
 | **options** | | Comma-separated option list |
 | **tpl** | `tpl.msOptions` | Layout chunk |
 | **sortOptionValues** | | Sort option values (see below) |
+
+Options with an empty first value are not included in the chunk `$options` array.
 
 ### Deprecated parameters
 
@@ -79,7 +81,7 @@ option_name:direction:type:first_value
 ```
 
 | Part | Description | Values |
-|------|-------------|--------|
+| --- | --- | --- |
 | option_name | Option key to sort | `color`, `size`, etc. |
 | direction | Sort direction | `SORT_ASC`, `SORT_DESC` |
 | type | Sort type | `SORT_STRING`, `SORT_NUMERIC`, `SORT_NATURAL` |
@@ -101,7 +103,7 @@ option_name:direction:type:first_value
 ## Placeholders in chunk
 
 | Placeholder | Description |
-|-------------|-------------|
+| --- | --- |
 | `{$id}` | Product ID |
 | `{$options}` | Array of options and their values |
 
@@ -164,7 +166,7 @@ Simple list output example:
 ## When to use
 
 | Suitable | Not suitable |
-|----------|--------------|
+| --- | --- |
 | Only specific options needed | Need ALL product options |
 | No metadata required | Filter by groups |
 | Best performance | Need option names and categories |
@@ -172,7 +174,7 @@ Simple list output example:
 ## Comparison with msProductOptions
 
 | Criteria | msOptions | msProductOptions |
-|----------|-----------|------------------|
+| --- | --- | --- |
 | **Speed** | Faster | Slower |
 | **Filtering** | Option list only | Groups, options, sorting |
 | **Metadata** | None | Full (category, type) |

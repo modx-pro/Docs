@@ -40,7 +40,7 @@ Registers a new tab.
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
+| --- | --- | --- | --- |
 | `key` | string | Yes | Unique tab identifier |
 | `title` | string | Yes | Tab title (shown in tab) |
 | `type` | string | No | Tab type: `'vue'` or `'extjs'` (default `'vue'`) |
@@ -208,7 +208,7 @@ public function loadCustomCssJs()
 Built-in tabs use these positions:
 
 | Tab | Position |
-|-----|----------|
+| --- | --- |
 | Properties | 0 |
 | Gallery | 1 |
 | Categories | 2 |

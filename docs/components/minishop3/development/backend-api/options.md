@@ -147,7 +147,7 @@ $category = $optionService->getCategory(); // OptionCategoryService — кате
 ### Поля msOption
 
 | Поле | Тип | По умолчанию | Описание |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `key` | varchar(191) | '' | Уникальный ключ (латиница, цифры, дефис, подчёркивание) |
 | `caption` | varchar(191) | '' | Отображаемое название |
 | `description` | text | null | Описание |
@@ -159,6 +159,7 @@ $category = $optionService->getCategory(); // OptionCategoryService — кате
 ### Валидация ключа
 
 Ключ опции должен:
+
 - Содержать только латинские буквы, цифры, дефис, подчёркивание
 - Не начинаться с цифры или пробела
 - Не совпадать с зарезервированными именами полей (`id`, `type`, `price`, `weight`, `image`, `published` и другие поля `modResource`)
@@ -192,7 +193,7 @@ $options = $modx->getIterator(msOption::class);
 ### Поля msCategoryOption
 
 | Поле | Тип | По умолчанию | Описание |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `option_id` | integer | 0 | ID опции (часть PK) |
 | `category_id` | integer | 0 | ID категории (часть PK) |
 | `position` | integer | 0 | Порядок сортировки |
@@ -249,7 +250,7 @@ $link->remove();
 ### Поля msProductOption
 
 | Поле | Тип | По умолчанию | Описание |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `product_id` | integer | null | ID товара |
 | `key` | varchar(191) | null | Ключ опции |
 | `value` | text | '' | Значение |
@@ -366,7 +367,7 @@ Legacy-процессоры `Processors/Settings/Option/*` и `Processors/Catego
 Контроллер `MiniShop3\Controllers\Api\Manager\OptionsController`, permission `mssetting_save`.
 
 | Метод | Путь | Описание |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `/api/mgr/options` | Список опций с фильтрами: `query`, `modcategory_id`, `category_id`, `categories[]` |
 | `GET` | `/api/mgr/options/{id}` | Деталь опции + карта привязанных категорий |
 | `POST` | `/api/mgr/options` | Создать: нормализует `key`, проверяет уникальность, привязывает к категориям |
@@ -385,7 +386,7 @@ Legacy-процессоры `Processors/Settings/Option/*` и `Processors/Catego
 Контроллер `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Появились в 1.11.0 — заменяют группировку через `modCategory` (#10).
 
 | Метод | Путь | Описание |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `` | Список групп. Параметры: `start`, `limit` (`0` = всё), `query` (поиск по `name` / `description`). В ответе — массив групп c `options_count` (число опций в группе). |
 | `GET` | `/{id}` | Одна группа + `options_count` |
 | `POST` | `` | Создать группу: `name` (обязательное), `description`, `sort_order` |
@@ -399,7 +400,7 @@ Legacy-процессоры `Processors/Settings/Option/*` и `Processors/Catego
 Контроллер `MiniShop3\Controllers\Api\Manager\CategoryOptionsController`, permission `mscategory_save`.
 
 | Метод | Путь | Описание |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `` | Опции, привязанные к категории. Каждая строка отдаёт `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
 | `POST` | `` | Привязать опцию к категории: `option_id`, `value`, `active`, `required`, `caption`, `description` |
 | `PUT` | `/{option_id}` | Partial update связки: `value`, `active`, `required`, `position`, `caption`, `description` |

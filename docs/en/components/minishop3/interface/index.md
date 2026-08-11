@@ -14,7 +14,7 @@ Overview of the MiniShop3 administrative interface in the MODX manager.
 ### Resource pages
 
 | Page | Description |
-|------|-------------|
+| --- | --- |
 | [Category](category) | Edit product category with product table |
 | [Product](product) | Edit product card |
 | [Gallery](gallery) | Product image management |
@@ -24,7 +24,7 @@ Overview of the MiniShop3 administrative interface in the MODX manager.
 **Menu:** Applications → MiniShop3 → Settings
 
 | Tab | Description |
-|-----|-------------|
+| --- | --- |
 | [Deliveries](settings/deliveries) | Delivery methods |
 | [Payments](settings/payments) | Payment methods |
 | [Vendors](settings/vendors) | Vendor directory |
@@ -38,7 +38,7 @@ See also: [Settings](settings)
 **Menu:** Applications → MiniShop3 → Utilities
 
 | Tab | Description |
-|-----|-------------|
+| --- | --- |
 | [Gallery](utilities/gallery) | Thumbnail regeneration |
 | [Import](utilities/import) | CSV product import |
 | [Product fields](utilities/product-fields) | Product card field configuration |
@@ -53,7 +53,7 @@ See also: [Utilities](utilities)
 The MiniShop3 admin interface is built on two technologies:
 
 | Technology | Use |
-|------------|-----|
+| --- | --- |
 | **ExtJS 3.4** | Main panels (orders, customers, ExtJS forms) |
 | **Vue 3 + PrimeVue** | Modern components (category tables, settings, utilities) |
 

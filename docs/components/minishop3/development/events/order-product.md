@@ -3,22 +3,29 @@ title: События товаров в заказе
 ---
 # События товаров в заказе
 
-События для управления товарами внутри заказа: добавление, обновление, удаление.
+События для позиций заказа: добавление, обновление, удаление строки.
 
 ::: info Контекст
-Эти события вызываются при операциях с товарами через процессоры админки, а не через контроллер корзины. Для событий добавления в корзину см. [События корзины](cart).
+С 1.12 позиции в админке меняет **Manager API** (`OrdersController`: `POST/PUT/DELETE …/orders/{id}/products/…`), не legacy-процессоры. Параметры включают `msOrder` и `msOrderProduct`.
+
+Для корзины на витрине см. [События корзины](cart).
+:::
+
+::: warning After-хуки не откатывают БД
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` вызываются **после** `save()` / `remove()`. Если after-плагин вернёт `output`, ядро только пишет предупреждение в лог — клиент Vue по-прежнему получит успех. Проверки и veto — в парных `msOnBefore*`.
 :::
 
 ## msOnBeforeCreateOrderProduct
 
-Вызывается **перед** добавлением товара в заказ (через админку).
+Вызывается **перед** сохранением новой позиции в заказе (Manager API).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Объект товара заказа |
-| `mode` | `string` | Режим: `new` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Новая строка (ещё не в БД) |
+| `msOrder` | `msOrder` | Родительский заказ |
+| `mode` | `int` | `modSystemEvent::MODE_NEW` |
 
 ### Прерывание операции
 
@@ -49,14 +56,15 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrderProduct
 
-Вызывается **после** добавления товара в заказ.
+Вызывается **после** успешного `save()` позиции. Ошибка плагина не откатывает строку в БД (см. предупреждение выше).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Созданный объект товара |
-| `mode` | `string` | Режим: `new` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Сохранённая строка |
+| `msOrder` | `msOrder` | Заказ |
+| `mode` | `int` | `modSystemEvent::MODE_NEW` |
 
 ### Пример использования
 
@@ -90,14 +98,15 @@ switch ($modx->event->name) {
 
 ## msOnBeforeUpdateOrderProduct
 
-Вызывается **перед** обновлением товара в заказе.
+Вызывается **перед** `save()` изменённой позиции.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Объект товара заказа |
-| `mode` | `string` | Режим: `upd` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Строка с новыми значениями полей |
+| `msOrder` | `msOrder` | Заказ |
+| `mode` | `int` | `modSystemEvent::MODE_UPD` |
 
 ### Прерывание операции
 
@@ -132,14 +141,15 @@ switch ($modx->event->name) {
 
 ## msOnUpdateOrderProduct
 
-Вызывается **после** обновления товара в заказе.
+Вызывается **после** успешного `save()`. Ошибка плагина не откатывает изменения в БД.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Обновлённый объект товара |
-| `mode` | `string` | Режим: `upd` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Обновлённая строка |
+| `msOrder` | `msOrder` | Заказ |
+| `mode` | `int` | `modSystemEvent::MODE_UPD` |
 
 ### Пример использования
 
@@ -178,13 +188,15 @@ switch ($modx->event->name) {
 
 ## msOnBeforeRemoveOrderProduct
 
-Вызывается **перед** удалением товара из заказа.
+Вызывается **перед** `remove()` позиции. Последнюю строку заказа API не даёт удалить (HTTP 400 до события).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Объект товара для удаления |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Строка для удаления |
+| `msOrder` | `msOrder` | Заказ |
+| `id` | `int` | ID строки `msOrderProduct` |
 
 ### Прерывание операции
 
@@ -193,10 +205,11 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnBeforeRemoveOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
-        $order = $orderProduct->getOne('Order');
+        /** @var \MiniShop3\Model\msOrder $order */
+        $order = $scriptProperties['msOrder'];
 
-        // Запретить удаление товаров из оплаченных заказов
-        if ($order && $order->get('payment_status') === 'paid') {
+        // Запретить удаление из заказов в финальном статусе (пример)
+        if ($order && (int) $order->get('status_id') === 2) {
             $modx->event->output('Нельзя удалять товары из оплаченного заказа');
             return;
         }
@@ -208,13 +221,15 @@ switch ($modx->event->name) {
 
 ## msOnRemoveOrderProduct
 
-Вызывается **после** удаления товара из заказа.
+Вызывается **после** успешного `remove()`. Ошибка плагина не восстанавливает строку.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Удалённый объект товара |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Удалённый объект (ещё в памяти xPDO) |
+| `msOrder` | `msOrder` | Заказ |
+| `id` | `int` | ID удалённой строки |
 
 ### Пример использования
 

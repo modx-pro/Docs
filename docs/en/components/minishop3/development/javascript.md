@@ -93,7 +93,7 @@ const response = await ms3.cartAPI.add(123, 2, { color: 'red' })
 With standard loading the following are available:
 
 | Object | Description |
-|--------|----------|
+| --- | --- |
 | `window.ms3` | Main object with all modules |
 | `window.ms3Hooks` | Hook system |
 | `window.ms3Message` | Notifications (if UI loaded) |
@@ -160,7 +160,7 @@ const response = await ms3.cartAPI.get()
 Add product to cart.
 
 | Parameter | Type | Description |
-|----------|------|-------------|
+| --- | --- | --- |
 | `id` | number | Product ID (required) |
 | `count` | number | Quantity (default 1) |
 | `options` | object | Product options (color, size, etc.) |
@@ -203,7 +203,7 @@ The `render` parameter lets you get ready HTML from the server. Tokens must be r
 Change product quantity.
 
 | Parameter | Type | Description |
-|----------|------|-------------|
+| --- | --- | --- |
 | `productKey` | string | Unique product key in cart |
 | `count` | number | New quantity |
 | `render` | array | Tokens for rendering |
@@ -416,7 +416,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Cart
 
 | Hook | Context | Description |
-|-----|----------|----------|
+| --- | --- | --- |
 | `beforeAddCart` | `{ id, count, options }` | Before adding product |
 | `afterAddCart` | `{ id, count, options, response }` | After adding product |
 | `beforeChangeCart` | `{ productKey, count }` | Before changing quantity |
@@ -429,7 +429,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Order
 
 | Hook | Context | Description |
-|------|---------|-------------|
+| --- | --- | --- |
 | `beforeAddOrder` | `{ key, value }` | Before saving field |
 | `afterAddOrder` | `{ key, value, response }` | After saving field |
 | `beforeSubmitOrder` | `{}` | Before submit |
@@ -440,7 +440,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Customer
 
 | Hook | Context | Description |
-|------|---------|-------------|
+| --- | --- | --- |
 | `beforeAddCustomer` | `{ key, value }` | Before saving data |
 | `afterAddCustomer` | `{ key, value, response }` | After saving data |
 | `beforeUpdateProfile` | `{ data }` | Before updating profile |
@@ -499,7 +499,7 @@ ms3Hooks.addHook('beforeCleanCart', async (ctx) => {
 ### Event list
 
 | Event | Description | detail |
-|-------|-------------|--------|
+| --- | --- | --- |
 | `ms3:ready` | ms3 initialized | — |
 | `ms3:cart:updated` | Cart updated | `{ cart, status }` |
 

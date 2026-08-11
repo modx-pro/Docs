@@ -1,14 +1,15 @@
 ---
 title: Quick start
+description: Install MiniShop3, service pages, first product, and a test order
 ---
 # Quick start
 
-This guide helps you set up MiniShop3 quickly and create your first products.
+Install the package, create service pages, add a product, and place a test order on the storefront.
 
 ## System requirements
 
 | Requirement | Version |
-|-------------|---------|
+| --- | --- |
 | MODX Revolution | 3.0.0+ |
 | PHP | 8.1+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
@@ -16,113 +17,143 @@ This guide helps you set up MiniShop3 quickly and create your first products.
 
 ### Dependencies
 
-- **pdoTools 3.x** — for snippets and the Fenom template engine
-- **[VueTools](/en/components/vuetools/)** — Vue 3 and PrimeVue for the Manager interface
-- **[Scheduler](/en/components/scheduler/)** *(optional)* — for background tasks (import, notifications, cleanup)
+| Package | Why |
+| --- | --- |
+| **pdoTools 3.x** | Snippets and Fenom |
+| **[VueTools](/en/components/vuetools/)** | Vue 3 and PrimeVue in the Manager |
+| **[Scheduler](/en/components/scheduler/)** (optional) | Background: import, notifications, draft cleanup |
 
 ## Installation
 
-### Via MODX package manager
+1. [Connect the modstore.pro repository](https://modstore.pro/info/connection).
+2. Open **Packages → Installer**, Modstore.pro provider, **Download Extras**.
+3. Download and install in order: **pdoTools**, **VueTools**, then **MiniShop3**. Install **Scheduler** if you need background tasks.
 
-1. [Connect our repository](https://modstore.pro/info/connection)
-2. Go to **Packages → Installer**
-3. Select the Modstore.pro provider, click **Download Extras**
-4. Find **pdoTools**, **VueTools**, **Scheduler**, and **MiniShop3** in the catalog, one by one
-5. For each package, click **Download** and **Install**
+Other install methods: [main page](index).
 
-More installation methods are on the [main documentation page](index).
+### What installation creates
 
-## What happens during installation
+1. Tables via Phinx (catalog, orders, customers, `ms3_grid_fields`, etc.).
+2. Snippets, plugins, chunks.
+3. System settings with the `ms3_` prefix.
+4. Five order statuses (ids 1–5: draft, new, paid, sent, canceled). Keys `ms3_status_new` / `paid` / `canceled` get ids 2, 3, 5.
+5. “Self pickup” delivery (id 1) and “Cash” payment (id 1) linked in `ms3_delivery_payments`.
+6. Scheduler tasks (`ms3_cleanup_tokens`, `ms3_cleanup_drafts`) — active after you enable `ms3_use_scheduler`.
 
-MiniShop3 automatically:
+After install, open **System → System Settings → minishop3** and verify `ms3_status_*` if you changed statuses manually.
 
-1. ✅ Creates database tables via Phinx migrations
-2. ✅ Registers snippets, plugins, and chunks
-3. ✅ Installs system settings with the `ms3_` prefix
-4. ✅ Creates default order statuses
-5. ✅ Creates delivery and payment methods
+## Service pages
 
-## Initial setup
+Create resources and call snippets **uncached**.
 
-### 1. Store service pages
+| Page | Snippet | Example |
+| --- | --- | --- |
+| Cart | `msCart` | `{'!msCart' \| snippet}` |
+| Checkout | `msOrder` | `{'!msOrder' \| snippet}` |
+| Thanks / order | `msGetOrder` | `{'!msGetOrder' \| snippet}` |
+| Header mini cart | `msOrderTotal` | `{'!msOrderTotal' \| snippet}` |
+| Account (profile) | `msCustomer` | `service=profile` |
+| Order history | `msCustomer` | `service=orders` |
+| Addresses | `msCustomer` | `service=addresses` |
 
-Create the following pages:
+A guest on any `msCustomer` page sees login and registration forms (`tpl.msCustomer.unauthorized`). Details: [Login and registration](frontend/customer-auth).
 
-1. **Cart** — place the `msCart` snippet
-2. **Checkout** — place the `msOrder` snippet
-3. **Order placed** — place the `msGetOrder` snippet
-4. **Customer account** — place the `msCustomer` snippet with the `profile` service
-5. **Customer orders** — place the `msCustomer` snippet with the `orders` service
-6. **Customer addresses** — place the `msCustomer` snippet with the `addresses` service
+Ready templates live in `core/components/minishop3/elements/templates/`:
 
-Template examples for each page are in `/core/components/minishop3/elements/templates/`.
-For a quick start, copy the template markup as-is and adjust it to your design.
+- `catalog.tpl`, `product.tpl`, `cart.tpl`, `order.tpl`, `thanks.tpl`, `customer.tpl`
 
-### 2. System settings
+Copy the markup into your MODX templates and adapt it to your design.
 
-Go to **System Settings** and find settings in the `minishop3` namespace (you can search for `page_id`):
+### “Thanks” page
 
-[![](https://file.modx.pro/files/e/b/4/eb4bfa6a1a38faf46638bad136138b72s.jpg)](https://file.modx.pro/files/e/b/4/eb4bfa6a1a38faf46638bad136138b72.png)
+On URLs with `?msorder=`:
 
-| Setting | Description |
-|---------|-------------|
-| `ms3_cart_page_id` | ID of the cart page |
-| `ms3_order_page_id` | ID of the checkout page |
-| `ms3_order_success_page_id` | ID of the page the customer is redirected to after successful payment |
-| `ms3_order_redirect_thanks_id` | ID of the "Thank you for your order" page |
-| `ms3_customer_login_page_id` | ID of the customer login page (usually the same as the profile page) |
-| `ms3_customer_register_page_id` | ID of the customer registration page (usually the same as the profile page) |
-| `ms3_customer_profile_page_id` | ID of the customer profile page |
-| `ms3_customer_orders_page_id` | ID of the customer order history page |
+- `msOrder` returns an empty string so checkout does not render twice.
+- `msGetOrder` shows order details (UUID or numeric id in the query).
+- `msCart` **renders by default** (mini cart in the layout keeps working). Pass `hideOnThanks=1` to hide a specific cart call.
 
-The full settings list is on the [System settings](settings) page.
+Usually the thanks page needs only `msGetOrder` plus `msOrderTotal` in the header.
 
-### 3. Creating categories
+::: code-group
 
-1. Go to **Resources**
-2. Create a new resource with **Resource Type** = `Product category`
-3. Fill in the title, choose a template, and save
+```fenom
+{'!msCart' | snippet}
+```
 
-[![](https://file.modx.pro/files/e/b/7/eb75082fda3e16c578f90bf622dc1f56s.jpg)](https://file.modx.pro/files/e/b/7/eb75082fda3e16c578f90bf622dc1f56.png)
+```modx
+[[!msCart]]
+```
 
-### 4. Creating products
+:::
 
-1. In the category, click **Add product**
-2. Enter the title, choose a template, and save
-3. After saving, fill in the **Product properties** tab:
-   - SKU
-   - Price
-   - Weight (optional)
-   - Image
-4. Save the product and check **Published**
+## System settings page_id
 
-## Templates
+**System settings** → namespace `minishop3` (search `page_id`):
 
-For a quick start, the package includes ready-made templates you can copy entirely and then edit to match your design.
-Available templates:
+![page_id settings](/components/minishop3/screenshots/mgr-system-settings.png)
 
-- `core/components/minishop3/elements/templates/catalog.tpl` — Catalog
-- `core/components/minishop3/elements/templates/product.tpl` — Product page
-- `core/components/minishop3/elements/templates/cart.tpl` — Cart
-- `core/components/minishop3/elements/templates/order.tpl` — Checkout
-- `core/components/minishop3/elements/templates/thanks.tpl` — Thank you page
-- `core/components/minishop3/elements/templates/customer.tpl` — Customer account
+| Setting | What to set |
+| --- | --- |
+| `ms3_cart_page_id` | Cart ID |
+| `ms3_order_page_id` | Checkout ID |
+| `ms3_order_redirect_thanks_id` | “Thanks” page ID |
+| `ms3_order_success_page_id` | Redirect after successful payment |
+| `ms3_customer_profile_page_id` | Profile |
+| `ms3_customer_orders_page_id` | Order history |
+| `ms3_customer_addresses_page_id` | Addresses |
+| `ms3_customer_login_page_id` | Usually the same as profile |
+| `ms3_customer_register_page_id` | Usually the same as profile |
 
-## Checkout
+Full list: [System settings](settings).
 
-For checkout to work, make sure **Settings** has at least one payment method and one delivery method.
+`ms3_cart_page_id` and `ms3_order_page_id` drive “Go to cart” and “Checkout” links in storefront JS. Submit still redirects via `ms3_order_redirect_thanks_id` without them.
 
-[![](https://file.modx.pro/files/e/c/8/ec8465a41233991c2ec0cd62d3ac6d25s.jpg)](https://file.modx.pro/files/e/c/8/ec8465a41233991c2ec0cd62d3ac6d25.png)
+## Scheduler (optional)
 
-Finally, check that the delivery method you use lists the required fields for your case. Usually phone, first name, last name, and sometimes email.
+For background CSV import, queued notifications, and draft cleanup:
 
-[![](https://file.modx.pro/files/3/d/e/3de8bb7a8a195fe8e406319b80ef44d4s.jpg)](https://file.modx.pro/files/3/d/e/3de8bb7a8a195fe8e406319b80ef44d4.png)
+1. Install [Scheduler](/en/components/scheduler/) and configure cron.
+2. Enable `ms3_use_scheduler`.
+3. Optionally set `ms3_delete_drafts_after` (e.g. `-2 weeks`).
+
+Details: [Scheduler integration](development/scheduler).
+
+## Web API (headless)
+
+Storefront entry point: `assets/components/minishop3/api.php`, route prefix `/api/v1/`. Public catalog: `GET /api/v1/product/list`. Full map: [REST API](development/api).
+
+## Category and product
+
+1. **Resources** → new resource, type **Product category**, catalog template, save.
+2. In the category: **Add product**, product template, save.
+3. **Product properties** tab: SKU, price, weight, image.
+4. Mark **Published**.
+
+![Category](/components/minishop3/screenshots/mgr-category-products.png)
+
+## Delivery and payment
+
+In **Extras → MiniShop3 → Settings** confirm at least one active delivery and one payment method. After install the resolver creates “Self pickup” (id 1) and “Cash” (id 1) with `first_name`, `last_name`, `email` rules for pickup.
+
+Without a delivery↔payment link, storefront checkout fails with a pair error.
+
+## First test order
+
+1. Open the category on the storefront, add a product to the cart.
+2. Go to the cart, then checkout.
+3. Fill required fields for the selected delivery.
+4. Choose a payment compatible with that delivery.
+5. Submit the order. The “Thanks” page with `msGetOrder` should open.
+6. In the Manager under **Orders** the order appears with status “New” (not a draft). Drafts are visible only when `ms3_order_show_drafts=1`.
+
+A guest order can create an `msCustomer` if `ms3_customer_auto_register_on_order` and `ms3_customer_auto_login_on_order` are on.
+
+Online payment comes from a separate payment extra (YooKassa, Sberbank, and so on). A base MS3 method with an empty `class` only records the payment choice. See [Payment methods](interface/settings/payments).
 
 ## Next steps
 
-- [Snippets](snippets/) — full snippet reference
-- [Manager interface](interface/) — Manager UI overview
-- [Frontend interface](frontend/) — site UI, templates, and chunks
-- [Frontend JavaScript](development/frontend-js) — using JS on your site
-- [REST API](development/api) — API integration
-- [Events](development/events) — extending via plugins
+- [Login and registration](frontend/customer-auth)
+- [Checkout](frontend/order)
+- [Orders in the Manager](interface/orders)
+- [Snippets](snippets/)
+- [REST API](development/api)

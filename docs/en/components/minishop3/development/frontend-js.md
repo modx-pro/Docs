@@ -80,7 +80,7 @@ Controls the order of CSS and JS assets:
 **Placeholders:**
 
 | Placeholder | Value |
-|-------------|--------|
+| --- | --- |
 | `[[+cssUrl]]` | `assets/components/minishop3/css/` |
 | `[[+jsUrl]]` | `assets/components/minishop3/js/` |
 
@@ -791,7 +791,7 @@ async function ms3Confirm(message, options = {}) → Promise<boolean>
 **options:**
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | `confirmText` | "Confirm" / "Подтвердить" | Confirm button text |
 | `cancelText` | "Cancel" / "Отмена" | Cancel button text |
 | `confirmClass` | `primary` | Button CSS class (primary, danger) |
@@ -871,7 +871,7 @@ const ms3Hooks = {
 #### Cart
 
 | Hook | Description |
-|-----|-------------|
+| --- | --- |
 | `beforeAddCart` | Before adding product |
 | `afterAddCart` | After adding product |
 | `beforeChangeCart` | Before changing quantity |
@@ -884,7 +884,7 @@ const ms3Hooks = {
 #### Order
 
 | Hook | Description |
-|-----|-------------|
+| --- | --- |
 | `beforeAddOrder` | Before saving field |
 | `afterAddOrder` | After saving field |
 | `beforeSubmitOrder` | Before submit |
@@ -895,7 +895,7 @@ const ms3Hooks = {
 #### Customer
 
 | Hook | Description |
-|-----|-------------|
+| --- | --- |
 | `beforeAddCustomer` | Before saving data |
 | `afterAddCustomer` | After saving data |
 | `beforeUpdateProfile` | Before profile update |
@@ -916,7 +916,7 @@ const ms3Hooks = {
 #### Authorization
 
 | Hook | Description |
-|-----|-------------|
+| --- | --- |
 | `beforeLogin` | Before login |
 | `afterLogin` | After login |
 | `beforeRegister` | Before registration |
@@ -1213,7 +1213,7 @@ getLexicon(key) {
 
 ### order-addresses.js
 
-Saved address selection on checkout:
+Saved address selection on checkout. The module is **not** included in the `ms3_frontend_assets` JSON: the `msOrder` snippet loads it via `regClientStartupScript`.
 
 ```html
 <select id="saved_address_id">
@@ -1224,7 +1224,15 @@ Saved address selection on checkout:
 </select>
 ```
 
-The module fills the form fields when an address is selected.
+The module fills the form fields when an address is selected. Details: [Checkout](/en/components/minishop3/frontend/order).
+
+### Built-in afterSendRequest hook
+
+`hooks.js` registers `afterSendRequest`: after any API request, ~100 ms later `cartUI.init()` runs to re-bind handlers on the updated DOM. Keep this in mind for custom partial cart updates.
+
+### change-option
+
+Change line options: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Hooks: `beforeChangeOptionCart` / `afterChangeOptionCart` (if wired in your build).
 
 ## Compatibility
 

@@ -40,7 +40,7 @@ class ProductService
 ### Преимущества
 
 | Аспект | Толстые модели | Сервисный слой |
-|--------|---------------|----------------|
+| --- | --- | --- |
 | Тестирование | Сложно мокать | Легко изолировать |
 | Переиспользование | Привязано к ORM | Независимые сервисы |
 | Расширение | Наследование | Замена через DI |
@@ -119,7 +119,7 @@ $service2 = $modx->services->get('ms3_order_service');
 Контроллеры — это высокоуровневые сервисы, управляющие основными сущностями магазина.
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
 | `ms3_cart` | `Controllers\Cart\Cart` | Управление корзиной |
 | `ms3_order` | `Controllers\Order\Order` | Оформление заказа |
 | `ms3_customer` | `Controllers\Customer\Customer` | Работа с покупателем |
@@ -141,9 +141,13 @@ $customer = $ms3->customer->getFields();
 ### Сервисы товаров (Product)
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
+| `ms3_product_service` | `Services\Product\ProductService` | Конвертация ресурса в товар, дубликаты, `OnDocFormSave` |
 | `ms3_product_data_service` | `Services\Product\ProductDataService` | Работа с данными товара |
-| `ms3_product_image` | `Services\Product\ProductImageService` | Обработка изображений товара |
+| `ms3_product_image` | `Services\Product\ProductImageService` | Изображения, превью (`preview_file_id`) |
+| `ms3_product_catalog` | `Services\Product\ProductCatalogService` | Headless каталог Web API (allowlist полей) |
+| `ms3_product_import` | `Services\Product\Import\ProductImportService` | Импорт CSV |
+| `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Дерево категорий товара в менеджере |
 
 ```php
 $productService = $modx->services->get('ms3_product_data_service');
@@ -153,13 +157,16 @@ $imageService = $modx->services->get('ms3_product_image');
 ### Сервисы покупателя (Customer)
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
 | `ms3_auth_manager` | `Services\Customer\AuthManager` | Аутентификация |
 | `ms3_register_service` | `Services\Customer\RegisterService` | Регистрация |
 | `ms3_email_verification_service` | `Services\Customer\EmailVerificationService` | Верификация email |
-| `ms3_sms_verification_service` | `Services\Customer\SmsVerificationService` | Верификация по SMS |
+| `ms3_sms_verification_service` | `Services\Customer\SmsVerificationService` | Заглушка SMS (метод всегда возвращает ошибку до реализации провайдера) |
 | `ms3_rate_limiter` | `Services\Customer\RateLimiter` | Ограничение частоты запросов |
 | `ms3_customer_address_manager` | `Services\Customer\CustomerAddressManager` | Управление адресами покупателя |
+| `ms3_customer_field_manager` | `Services\Customer\CustomerFieldManager` | Поля профиля покупателя |
+| `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Заказы покупателя на витрине |
+| `ms3_customer_order_resolver` | `Services\Customer\CustomerOrderResolver` | Привязка заказа к customer при submit |
 | `ms3_customer_duplicate_checker` | `Services\CustomerDuplicateChecker` | Проверка дубликатов |
 | `ms3_customer_factory` | `Services\CustomerFactory` | Фабрика покупателей |
 
@@ -185,7 +192,7 @@ $authManager->registerProvider(new SmsAuthProvider($modx));
 :::
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
 | `ms3_order_service` | `Services\Order\OrderService` | Общая бизнес-логика заказов |
 | `ms3_order_draft_manager` | `Services\Order\OrderDraftManager` | CRUD черновиков заказов |
 | `ms3_order_cost_calculator` | `Services\Order\OrderCostCalculator` | Расчёт стоимости |
@@ -196,6 +203,8 @@ $authManager->registerProvider(new SmsAuthProvider($modx));
 | `ms3_order_log` | `Services\Order\OrderLogService` | Логирование изменений заказа |
 | `ms3_order_status` | `Services\Order\OrderStatusService` | Смена статуса + уведомления |
 | `ms3_order_finalize` | `Services\Order\OrderFinalizeService` | Финализация заказа (валидация, создание клиента) |
+| `ms3_order_number_generator` | `Services\Order\OrderNumberGenerator` | Нумерация заказов |
+| `ms3_manager_order_cost_recalculator` | `Services\Order\ManagerOrderCostRecalculator` | Пересчёт в карточке заказа (mgr) |
 
 ```php
 // Получение сервисов напрямую
@@ -222,8 +231,9 @@ $logService->addEntry($order, 'status_changed', ['old' => 1, 'new' => 2]);
 :::
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
-| `ms3_cart_item_manager` | `Services\Cart\CartItemManager` | CRUD товаров в корзине, валидация, расчёт итогов |
+| --- | --- | --- |
+| `ms3_cart_item_manager` | `Services\Cart\CartItemManager` | CRUD позиций, расчёт итогов |
+| `ms3_cart_mutation_handler` | `Services\Cart\CartMutationHandler` | Web API корзины: add/change/remove/change-option + события `msOn*Cart` |
 
 ```php
 $itemManager = $modx->services->get('ms3_cart_item_manager');
@@ -250,43 +260,47 @@ OrderFieldManager    — поля заказа (Order-specific)
 ### Сервисы доставки и оплаты
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
 | `ms3_delivery_service` | `Services\Delivery\DeliveryService` | Способы доставки |
 | `ms3_payment_service` | `Services\Payment\PaymentService` | Способы оплаты |
+| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты для писем и `msGetOrder` (статусы из `ms3_payment_link_statuses` / `payStatus`) |
 
 ### Сервисы категорий (Category)
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
 | `ms3_category_service` | `Services\Category\CategoryService` | Работа с категориями |
 | `ms3_category_option_service` | `Services\Category\CategoryOptionService` | Опции категорий |
+| `ms3_category_product_scope` | `Services\Category\CategoryProductScopeService` | Доп. категории товара для msProducts (#481) |
+| `ms3_category_products_list` | `Services\Category\CategoryProductsListService` | Грид товаров категории |
 
 ### Сервисы опций (Option)
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
 | `ms3_option_service` | `Services\Option\OptionService` | EAV система опций |
+| `ms3_option_loader` | `Services\Option\OptionLoaderService` | Загрузка опций с `CaptionOverlayResolver` |
 
 ### Сервисы конфигурации
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
-| `ms3_config_manager` | `Services\ConfigManager` | Управление конфигурацией |
+| --- | --- | --- |
+| `ms3_config_service` | `Services\ConfigService` | Фасад конфигурации |
 | `ms3_field_config_manager` | `Services\FieldConfigManager` | Конфигурация полей |
-| `ms3_config_service` | `Services\ConfigService` | Фасад над менеджерами |
 | `ms3_grid_config` | `Services\GridConfigService` | Конфигурация гридов |
+| `ms3_filter_config` | `Services\FilterConfigManager` | Фильтры гридов |
 
 ### Сервисы уведомлений
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
 | `ms3_notifications` | `Notifications\NotificationManager` | Центр уведомлений |
 | `ms3_notification_config` | `Services\Notification\NotificationConfigService` | Конфигурация уведомлений |
 
 ### Утилиты
 
 | Ключ | Класс | Назначение |
-|------|-------|------------|
+| --- | --- | --- |
 | `ms3_token_service` | `Services\TokenService` | Операции с токенами |
 | `ms3_image` | `Services\ImageService` | Обработка изображений (Intervention Image) |
 | `ms3_vendor_service` | `Services\Vendor\VendorService` | Работа с производителями |
@@ -597,7 +611,7 @@ $authManager->registerProvider(new TelegramAuthProvider($modx));
 ## Системные настройки
 
 | Настройка | По умолчанию | Описание |
-|-----------|--------------|----------|
+| --- | --- | --- |
 | `ms3_services_config` | `core/config/ms3.services.php` | Путь к основному конфигу |
 | `ms3_services_addons_dir` | `core/config/ms3.services.d/` | Директория конфигов компонентов |
 

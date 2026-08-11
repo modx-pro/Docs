@@ -122,7 +122,7 @@ $price = $productData->get('price');
 Метод `get()` у `msProductData` поддерживает виртуальные ключи, которые загружают связанные данные из БД:
 
 | Ключ | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `categories` | `array` | Массив ID дополнительных категорий |
 | `options` | `array` | Опции: `['color' => ['Red'], 'size' => ['L']]` |
 | `links` | `array` | Связи: `['master' => [...], 'slave' => [...]]` |
@@ -178,7 +178,7 @@ $updated = $service->updateProductData($productId, [
 ### Поля msProductData
 
 | Поле | Тип в БД | PHP-тип | По умолчанию | Описание |
-|------|----------|---------|--------------|----------|
+| --- | --- | --- | --- | --- |
 | `article` | varchar(50) | string | null | Артикул |
 | `price` | decimal(12,2) | float | 0.0 | Цена |
 | `old_price` | decimal(12,2) | float | 0.0 | Старая цена |
@@ -354,7 +354,7 @@ $imageService->removeProductCatalog($productData);
 ### Процессоры галереи
 
 | Процессор | Описание |
-|-----------|----------|
+| --- | --- |
 | `MiniShop3\Processors\Gallery\Upload` | Загрузка изображения (файл, URL, путь) |
 | `MiniShop3\Processors\Gallery\GetList` | Список изображений товара |
 | `MiniShop3\Processors\Gallery\Update` | Обновление описания изображения |
@@ -364,6 +364,9 @@ $imageService->removeProductCatalog($productData);
 | `MiniShop3\Processors\Gallery\Multiple` | Массовые операции (удаление нескольких) |
 | `MiniShop3\Processors\Gallery\Generate` | Генерация миниатюр для одного изображения |
 | `MiniShop3\Processors\Gallery\GenerateAll` | Генерация миниатюр для всех изображений товара |
+| `MiniShop3\Processors\Gallery\SetPreview` | Назначить главное изображение (`preview_file_id` в `msProductData`) |
+
+Дерево категорий товара в менеджере: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
 
 ## Дополнительные категории
 
@@ -516,7 +519,7 @@ $links = $productData->get('links');
 ### Поля msVendor
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `name` | varchar(100) | Название |
 | `resource_id` | int | ID связанного ресурса (страница производителя) |
 | `country` | varchar(100) | Страна |
@@ -555,7 +558,7 @@ echo $vendor->get('name');  // "Samsung"
 Управление производителями через процессоры `MiniShop3\Processors\Settings\Vendor\*`:
 
 | Процессор | Описание |
-|-----------|----------|
+| --- | --- |
 | `MiniShop3\Processors\Settings\Vendor\Create` | Создание |
 | `MiniShop3\Processors\Settings\Vendor\Get` | Получение |
 | `MiniShop3\Processors\Settings\Vendor\GetList` | Список |
@@ -568,7 +571,7 @@ echo $vendor->get('name');  // "Samsung"
 Полный список процессоров для работы с товарами (каталог `core/components/minishop3/src/Processors/Product/`):
 
 | Процессор | Описание |
-|-----------|----------|
+| --- | --- |
 | `MiniShop3\Processors\Product\Create` | Создание товара |
 | `MiniShop3\Processors\Product\Update` | Обновление товара |
 | `MiniShop3\Processors\Product\UpdateFromGrid` | Обновление из таблицы (inline-редактирование) |

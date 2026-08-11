@@ -8,7 +8,7 @@ title: Отличия от miniShop2
 ## Системные требования
 
 | Требование | miniShop2 | MiniShop3 |
-|------------|-----------|-----------|
+| --- | --- | --- |
 | MODX | 2.3+ | **3.0.0+** |
 | PHP | 7.0+ | **8.1+** |
 | MySQL | 5.5+ | 5.7+ / MariaDB 10.3+ |
@@ -68,10 +68,10 @@ php vendor/bin/phinx migrate -c phinx.php
 Все системные настройки переименованы с `ms2_` на `ms3_`:
 
 | miniShop2 | MiniShop3 |
-|-----------|-----------|
+| --- | --- |
 | `ms2_template_product_default` | `ms3_template_product_default` |
 | `ms2_template_category_default` | `ms3_template_category_default` |
-| `ms2_category_grid_fields` | `ms3_category_grid_fields` |
+| `ms2_category_grid_fields` | **Удалено.** Колонки грида категории: **Утилиты → Поля таблиц** (`ms3_grid_fields`, `grid_key=category-products`) + **Утилиты → Поля моделей** |
 | `ms2_product_extra_fields` | `ms3_product_extra_fields` |
 | `ms2_frontend_js` | `ms3_frontend_assets` |
 | `ms2_frontend_css` | (объединено в `ms3_frontend_assets`) |
@@ -92,6 +92,7 @@ MiniShop3 добавляет множество новых настроек:
 **Клиенты (новая сущность):**
 
 - `ms3_customer_auto_register_on_order` — авторегистрация при заказе
+- `ms3_customer_auto_login_on_order` — автовход после оформления заказа (не только после регистрации)
 - `ms3_customer_auto_login_after_register` — автовход после регистрации
 - `ms3_customer_require_email_verification` — верификация email
 - `ms3_customer_sync_enabled` — синхронизация с modUser
@@ -110,31 +111,45 @@ MiniShop3 добавляет множество новых настроек:
 /assets/components/minishop2/action.php
 
 // MiniShop3 — раздельные endpoint'ы
-/assets/components/minishop3/connector.php  // Manager API
-/assets/components/minishop3/api.php        // Web API (v1)
+/assets/components/minishop3/connector.php  // Manager API (MODX-сессия)
+/assets/components/minishop3/api.php        // Web API (/api/v1/, токен MS3TOKEN)
 ```
+
+Manager API обслуживает Vue-админку (заказы, клиенты, утилиты). Processors в `core/components/minishop3/src/Processors/` остаются для ExtJS-панелей ресурса (категория, товар). Кастомные web-маршруты: `core/config/ms3_routes_web.custom.php`, фрагменты аддонов: `core/config/ms3.routes.d/web/*.php`.
 
 ### Web API (новое в MiniShop3)
 
-MiniShop3 предоставляет полноценный REST API для headless-интеграций:
+MiniShop3 даёт REST API для headless:
 
 ```javascript
 // Корзина
 POST /api/v1/cart/add
 POST /api/v1/cart/remove
 POST /api/v1/cart/change
+POST /api/v1/cart/change-option   // смена опции позиции (#219)
 GET  /api/v1/cart/get
 POST /api/v1/cart/clean
 
 // Заказ
 GET  /api/v1/order/get
 POST /api/v1/order/add
+POST /api/v1/order/set
 POST /api/v1/order/submit
 GET  /api/v1/order/cost
+GET  /api/v1/order/delivery/validation-rules
+GET  /api/v1/order/delivery/required-fields
 
 // Клиент
-POST /api/v1/customer/token/get
+POST /api/v1/customer/login
+POST /api/v1/customer/register
+POST /api/v1/customer/logout
+POST /api/v1/customer/forgot-password
+POST /api/v1/customer/reset-password
+GET  /api/v1/customer/token/get
 GET  /api/v1/customer/addresses
+
+// Каталог (без токена)
+GET  /api/v1/product/list
 ```
 
 ### Авторизация API
@@ -195,13 +210,16 @@ ms3.hooks.remove('afterAddToCart', 'my_hook');
 ### Список hooks MiniShop3
 
 | miniShop2 Callback | MiniShop3 Hook |
-|--------------------|----------------|
+| --- | --- |
 | `Cart.add.before` | `beforeAddToCart` |
 | `Cart.add.response.success` | `afterAddToCart` |
 | `Cart.remove.response.success` | `afterRemoveFromCart` |
 | `Cart.change.response.success` | `afterChangeCart` |
+| `Cart.change-option.response.success` | *(новое)* смена опции в корзине |
 | `Order.submit.before` | `beforeSubmitOrder` |
 | `Order.submit.response.success` | `afterSubmitOrder` |
+
+После AJAX-запросов срабатывает hook `afterSendRequest`, который по умолчанию вызывает `ms3.cartUI.init()` для обновления UI корзины.
 
 ### Data-атрибуты
 
@@ -271,23 +289,35 @@ switch ($modx->event->name) {
 
 ### msMiniCart → msOrderTotal
 
+Параметр `formatPrices` удалён (#242). Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`.
+
 ```fenom
 {* miniShop2 *}
 {'!msMiniCart' | snippet}
 
-{* MiniShop3 *}
-{set $cart = '!msOrderTotal' | snippet}
-<a href="{15 | url}"> {* ID страницы корзины *}
-    {$cart.count} товаров на {$cart.cost} руб.
+{* MiniShop3 — чанк tpl.msOrderTotal по умолчанию *}
+{'!msOrderTotal' | snippet}
+
+{* или массив для своей разметки *}
+{set $cart = '!msOrderTotal' | snippet : ['return' => 'data']}
+<a href="{'ms3_cart_page_id' | option | url}">
+    {$cart.total_positions} на {$cart.total_cost_formatted}
 </a>
 ```
+
+### Плейсхолдеры цен (#242)
+
+| miniShop2 | MiniShop3 |
+| --- | --- |
+| `{$product.price}` часто уже с валютой | `{$product.price}` — float, `{$product.price_formatted}` — строка |
+| `formatPrices=1` у сниппетов | Удалено. Всегда float + `*_formatted` |
 
 ## Чанки
 
 Имена чанков изменены для консистентности:
 
 | miniShop2 | MiniShop3 |
-|-----------|-----------|
+| --- | --- |
 | `tpl.msProducts.row` | `tpl.msProducts.row` (без изменений) |
 | `tpl.msCart` | `tpl.msCart` (без изменений) |
 | `tpl.msOrder` | `tpl.msOrder` (без изменений) |
@@ -314,9 +344,11 @@ use MiniShop3\Model\msCustomerAddress;
 $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 $addresses = $customer->getMany('Addresses');
 
-// Связь с modUser (опционально)
+// Связь с modUser (опционально, ms3_customer_sync_enabled)
 $modUser = $customer->getOne('User');
 ```
+
+Покупатель авторизуется через `msCustomer` и cookie `MS3TOKEN`, не через стандартный modUser Login (если не включена синхронизация).
 
 ### Адреса клиентов
 
@@ -333,21 +365,36 @@ foreach ($addresses as $address) {
 
 ## Миграция с miniShop2
 
-### Шаг 1: Обновите MODX до версии 3.x
+Это runbook по данным и коду. Параллельный MS2 и MS3 на одной БД не предполагается: сначала MODX 3, потом MS3, потом перенос.
 
-MiniShop3 работает только на MODX 3. Сначала выполните миграцию MODX.
+### Шаг 1: MODX 3
 
-### Шаг 2: Установите MiniShop3
+Обновите сайт до MODX 3.x. MS3 на MODX 2 не ставится.
 
-Установите MiniShop3 через менеджер пакетов MODX или загрузите транспортный пакет с [GitHub](https://github.com/modx-pro/MiniShop3/releases).
+### Шаг 2: Бэкап
 
-### Шаг 3: Обновите системные настройки
+Снимите дамп БД и файлов. Зафиксируйте ID категорий, товаров, статусов, доставок и оплат MS2.
 
-Переименуйте настройки с `ms2_` на `ms3_` или создайте новые.
+### Шаг 3: Установите MiniShop3
 
-### Шаг 4: Обновите JavaScript
+Через менеджер пакетов или транспорт с [GitHub Releases](https://github.com/modx-pro/MiniShop3/releases). Дождитесь Phinx-миграций.
 
-Замените вызовы `miniShop2` на `ms3`:
+### Шаг 4: Данные каталога и заказов
+
+Готового «одной кнопкой» мигратора MS2→MS3 в пакете нет. Типовой путь:
+
+1. Экспорт товаров/категорий в CSV (или свой скрипт по таблицам `ms2_*`).
+2. Импорт в MS3 через [Утилиты → Импорт](/components/minishop3/interface/utilities/import) или API.
+3. Опции: ключи `option_*`, группы после 1.11 живут в `msOptionGroup` (не `modCategory`).
+4. Заказы и покупателей переносите отдельным скриптом или оставьте архив MS2 read-only.
+
+Сверьте `class_key` ресурсов: категории `msCategory`, товары `msProduct`.
+
+### Шаг 5: Системные настройки
+
+Ключи `ms2_*` в MS3 не читаются. Заведите `ms3_*` (page_id, статусы, валюта). Старые значения из MS2 перенесите вручную.
+
+### Шаг 6: JavaScript витрины
 
 ```javascript
 // Было
@@ -357,13 +404,17 @@ miniShop2.Cart.add(id);
 ms3.cart.add(id);
 ```
 
-### Шаг 5: Обновите плагины
+### Шаг 7: Плагины
 
-Проверьте и обновите плагины, использующие события miniShop2.
+Перепишите подписки на события MS3 (имена и сигнатуры отличаются). См. [События](/components/minishop3/development/events).
 
-### Шаг 6: Обновите шаблоны
+### Шаг 8: Чанки и плейсхолдеры
 
-Замените data-атрибуты и классы:
+- Цены: сырые float + `*_formatted` (с 1.11, breaking #242). Уберите `formatPrices` из вызовов.
+- Опции: `group_name` вместо MS2 `category_name`. Группы опций — `msOptionGroup`, не `modCategory`.
+- Превью товара: поле `preview_file_id` в `msProductData` (галерея «Сделать превью»), не только `thumb`/`image`.
+- Доп. категории: `msCategoryMember` и scope `CategoryProductScope` у `msProducts` (#481).
+- Корзина на thanks: `msCart` по умолчанию **не** скрывается на `?msorder=` (#249). Для старого поведения — `hideOnThanks=1`. `msOrder` на thanks всегда пустой.
 
 ```html
 <!-- Было -->
@@ -373,6 +424,23 @@ ms3.cart.add(id);
 <!-- Стало -->
 <button data-ms-action="cart/add" data-id="{$id}">
 ```
+
+### Шаг 9: Проверка
+
+1. Каталог и карточка товара.
+2. Корзина → оформление → thanks.
+3. ЛК: вход, адреса, заказы.
+4. Менеджер: заказы, клиенты, опции.
+
+## Админка
+
+| Область | miniShop2 | MiniShop3 |
+| --- | --- | --- |
+| Заказы, клиенты, утилиты | ExtJS | Vue 3 + PrimeVue (Manager API) |
+| Редактор категории/товара в дереве ресурсов | ExtJS | ExtJS + Vue-грид товаров категории |
+| Колонки таблиц | Системные настройки `ms2_*_grid_fields` | **Утилиты → Поля таблиц** (`ms3_grid_fields`) |
+
+События плагинов из Vue CRUD (заказы, клиенты) не стреляют так же, как при изменении через processors ресурса. Для кастомизации админки ориентируйтесь на [События](/components/minishop3/development/events) и Manager API.
 
 ## Обратная совместимость
 

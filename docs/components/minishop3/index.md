@@ -27,6 +27,8 @@ items: [
   {
     text: 'Интерфейс админки',
     items: [
+      { text: 'Заказы', link: 'interface/orders' },
+      { text: 'Клиенты', link: 'interface/customers' },
       { text: 'Категория', link: 'interface/category' },
       { text: 'Товар', link: 'interface/product' },
       { text: 'Галерея', link: 'interface/gallery' },
@@ -67,6 +69,7 @@ items: [
       {
         text: 'Личный кабинет',
         items: [
+          { text: 'Вход и регистрация', link: 'frontend/customer-auth' },
           { text: 'Профиль покупателя', link: 'frontend/customer-profile' },
           { text: 'Адреса доставки', link: 'frontend/customer-addresses' },
           { text: 'История заказов', link: 'frontend/customer-orders' },
@@ -93,6 +96,7 @@ items: [
           { text: 'Производитель', link: 'development/events/vendor' },
           { text: 'Уведомления', link: 'development/events/notifications' },
           { text: 'Импорт', link: 'development/events/import' },
+          { text: 'msProducts', link: 'development/events/msproducts' },
           { text: 'Менеджер', link: 'development/events/manager' },
         ],
       },
@@ -100,6 +104,8 @@ items: [
       { text: 'API Router', link: 'development/routing' },
       { text: 'JavaScript API', link: 'development/javascript' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
+      { text: 'Вкладки товара', link: 'development/product-tabs-integration' },
+      { text: 'Вкладки заказа', link: 'development/order-tabs-integration' },
       { text: 'Scheduler', link: 'development/scheduler' },
       { text: 'Модели и схема БД', link: 'development/models' },
       { text: 'Сервисный слой', link: 'development/services' },
@@ -150,7 +156,7 @@ MiniShop3 сохраняет обратную совместимость с mini
 ## Системные требования
 
 | Требование | Версия |
-|------------|--------|
+| --- | --- |
 | MODX Revolution | 3.0.0+ |
 | PHP | 8.1+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
@@ -170,7 +176,7 @@ MiniShop3 использует Vue 3 для современного интер�
 MiniShop3 использует следующие PHP библиотеки (включены в пакет):
 
 | Библиотека | Версия | Назначение |
-|------------|--------|------------|
+| --- | --- | --- |
 | [nikic/fast-route](https://github.com/nikic/FastRoute) | ^1.3 | Маршрутизация REST API |
 | [rakit/validation](https://github.com/rakit/validation) | ^1.4 | Валидация данных форм и API |
 | [intervention/image](https://image.intervention.io/) | ^3.0 | Обработка изображений (ресайз, водяные знаки) |

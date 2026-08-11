@@ -23,7 +23,7 @@ The system setting `ms3_category_grid_fields` was removed. Category product tabl
 ## Available grids
 
 | Grid | Description |
-|------|-------------|
+| --- | --- |
 | `customers` | Customer list |
 | `orders` | Order list |
 | `category-products` | Products in category |
@@ -41,7 +41,7 @@ Select a grid from the dropdown at the top of the page.
 Shows current column configuration:
 
 | Column | Description |
-|--------|-------------|
+| --- | --- |
 | Name | System field name |
 | Label | Display header |
 | Visible | Show column |
@@ -61,7 +61,7 @@ Shows current column configuration:
 ### Basic
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | Field name | Model field name or alias |
 | Label | Column header |
 | Visible | Show column |
@@ -72,14 +72,14 @@ Shows current column configuration:
 ### Sizes
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | Width | Width in px or % |
 | Min width | Minimum width when resizing |
 
 ### Column type
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `model` | Field from data model |
 | `template` | Template column (HTML) |
 | `relation` | Data from related table |
@@ -118,7 +118,7 @@ Data from related table.
 **Relation parameters:**
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | Table | Related table name |
 | Foreign key | Link field |
 | Display field | Field to show |
@@ -190,7 +190,7 @@ Column with action buttons. Supports built-in and custom handlers.
 **Action parameters:**
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Unique action name |
 | `handler` | string | Handler name from registry |
 | `icon` | string | PrimeIcons icon (without `pi-` prefix) |
@@ -205,7 +205,7 @@ Column with action buttons. Supports built-in and custom handlers.
 **Built-in handlers:**
 
 | Handler | Description |
-|---------|-------------|
+| --- | --- |
 | `edit` | Open record for edit |
 | `delete` | Delete record |
 | `view` | View record |
@@ -336,7 +336,7 @@ Registers a new action handler.
 **Parameters:**
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Action name |
 | `handler` | function | Handler `(data, context) => void` |
 | `options.override` | boolean | Allow overwriting existing handler |
@@ -385,7 +385,7 @@ MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
 #### Other methods
 
 | Method | Description |
-|--------|-------------|
+| --- | --- |
 | `has(name)` | Check if handler exists |
 | `get(name)` | Get handler |
 | `unregister(name)` | Remove handler (except built-in) |
@@ -646,7 +646,7 @@ MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
 Uses icons from [PrimeIcons](https://primevue.org/icons). Popular choices:
 
 | Icon | Class | Use |
-|------|-------|-----|
+| --- | --- | --- |
 | ✏️ | `pi-pencil` | Edit |
 | 🗑️ | `pi-trash` | Delete |
 | 👁️ | `pi-eye` | View |

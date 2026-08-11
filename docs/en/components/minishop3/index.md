@@ -27,6 +27,8 @@ items: [
   {
     text: 'Manager interface',
     items: [
+      { text: 'Orders', link: 'interface/orders' },
+      { text: 'Customers', link: 'interface/customers' },
       { text: 'Category', link: 'interface/category' },
       { text: 'Product', link: 'interface/product' },
       { text: 'Gallery', link: 'interface/gallery' },
@@ -67,6 +69,7 @@ items: [
       {
         text: 'Customer account',
         items: [
+          { text: 'Login and registration', link: 'frontend/customer-auth' },
           { text: 'Customer profile', link: 'frontend/customer-profile' },
           { text: 'Shipping addresses', link: 'frontend/customer-addresses' },
           { text: 'Order history', link: 'frontend/customer-orders' },
@@ -93,6 +96,7 @@ items: [
           { text: 'Vendor', link: 'development/events/vendor' },
           { text: 'Notifications', link: 'development/events/notifications' },
           { text: 'Import', link: 'development/events/import' },
+          { text: 'msProducts', link: 'development/events/msproducts' },
           { text: 'Manager', link: 'development/events/manager' },
         ],
       },
@@ -100,6 +104,8 @@ items: [
       { text: 'API Router', link: 'development/routing' },
       { text: 'JavaScript API', link: 'development/javascript' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
+      { text: 'Product tabs', link: 'development/product-tabs-integration' },
+      { text: 'Order tabs', link: 'development/order-tabs-integration' },
       { text: 'Scheduler', link: 'development/scheduler' },
       { text: 'Models and database schema', link: 'development/models' },
       { text: 'Service layer', link: 'development/services' },
@@ -150,7 +156,7 @@ MiniShop3 maintains backward compatibility with miniShop2 at the level of:
 ## System requirements
 
 | Requirement | Version |
-|-------------|---------|
+| --- | --- |
 | MODX Revolution | 3.0.0+ |
 | PHP | 8.1+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
@@ -170,7 +176,7 @@ MiniShop3 uses Vue 3 for the modern Manager interface. The **[VueTools](/en/comp
 MiniShop3 uses the following PHP libraries (included in the package):
 
 | Library | Version | Purpose |
-|---------|---------|---------|
+| --- | --- | --- |
 | [nikic/fast-route](https://github.com/nikic/FastRoute) | ^1.3 | REST API routing |
 | [rakit/validation](https://github.com/rakit/validation) | ^1.4 | Form and API data validation |
 | [intervention/image](https://image.intervention.io/) | ^3.0 | Image processing (resize, watermarks) |

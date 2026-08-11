@@ -12,7 +12,7 @@ title: msOrderTotal
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msOrderTotal` | Чанк оформления |
 | **return** | `tpl` | Формат: `data` (массив), `tpl` (рендеринг чанка) |
 | **selector** | (авто) | CSS-селектор контейнера для автообновления |
@@ -129,7 +129,7 @@ title: msOrderTotal
 Сниппет возвращает массив с итогами корзины и заказа:
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `cost` | Итого к оплате (товары + доставка + комиссия оплаты) |
 | `cost_formatted` | Итого с символом валюты |
 | `cart_cost` | Стоимость товаров |
@@ -137,11 +137,14 @@ title: msOrderTotal
 | `delivery_cost` | Стоимость доставки |
 | `delivery_cost_formatted` | Стоимость доставки с валютой |
 | `payment_cost` | Комиссия за способ оплаты |
+| `payment_cost_formatted` | Комиссия с валютой |
 | `total_count` | Общее количество товаров |
 | `total_cost` | Стоимость товаров (дубль `cart_cost`) |
+| `total_cost_formatted` | Стоимость товаров с валютой |
 | `total_weight` | Общий вес |
 | `total_weight_formatted` | Общий вес с единицей измерения |
 | `total_discount` | Сумма скидки |
+| `total_discount_formatted` | Скидка с валютой |
 | `total_positions` | Количество позиций (уникальных товаров) |
 
 ```php
@@ -166,7 +169,10 @@ title: msOrderTotal
 
 ## Плейсхолдеры в чанке
 
-При использовании `return=tpl` в чанк передаются все поля как плейсхолдеры:
+При использовании `return=tpl` в чанк передаются все поля как плейсхолдеры. Для вывода сумм на сайте используйте `*_formatted`:
+
+- `{$cost_formatted}`, `{$cart_cost_formatted}`, `{$delivery_cost_formatted}`, `{$payment_cost_formatted}`
+- `{$total_cost_formatted}`, `{$total_discount_formatted}`, `{$total_weight_formatted}`
 
 ```fenom
 {* tpl.myMiniCart *}
@@ -174,7 +180,7 @@ title: msOrderTotal
     {if $total_count > 0}
         <a href="/cart/" class="mini-cart-link">
             <span class="mini-cart-count">{$total_count}</span>
-            <span class="mini-cart-cost">{$cart_cost}</span> руб.
+            <span class="mini-cart-cost">{$cost_formatted}</span>
         </a>
     {else}
         <span class="mini-cart-empty">Корзина пуста</span>
@@ -187,7 +193,7 @@ title: msOrderTotal
 Дефолтный чанк использует BEM-именование:
 
 | Класс | Описание |
-|-------|----------|
+| --- | --- |
 | `.ms3-order-total` | Контейнер виджета |
 | `.ms3-order-total__count` | Счётчик количества товаров |
 | `.ms3-order-total__cost` | Сумма заказа |
@@ -267,7 +273,7 @@ title: msOrderTotal
 ## Отличие от msCart
 
 | msOrderTotal | msCart |
-|--------------|--------|
+| --- | --- |
 | Только итоговые данные | Полная корзина с товарами |
 | Лёгкий, быстрый | Загружает данные всех товаров |
 | Для мини-корзины в шапке | Для страницы корзины |

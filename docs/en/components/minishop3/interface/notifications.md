@@ -22,7 +22,7 @@ Each notification is a separate record. You can configure multiple notifications
 ## Notification fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `event` | string | Event type: order status change, order creation |
 | `status_id` | int | Order status ID. Only for "status change" events. Empty = trigger on any status |
 | `recipient_type` | string | Recipient: `customer` or `manager` |
@@ -38,7 +38,7 @@ Each notification is a separate record. You can configure multiple notifications
 The current version supports:
 
 | Event | ID | When it fires |
-|-------|----|---------------|
+| --- | --- | --- |
 | Order created | `order_created` | Customer places an order (frontend) or manager finalizes a draft |
 | Order status changed | `order_status_changed` | Order moves from one status to another |
 
@@ -120,7 +120,7 @@ You can configure any number of records for one event. The `position` field defi
 Typical setup for a new order:
 
 | Position | Event | Status | Recipient | Channel | Subject / Template |
-|----------|-------|--------|-----------|---------|-------------------|
+| --- | --- | --- | --- | --- | --- |
 | 1 | `order_created` | — | customer | email | "Thank you for order #{$num}" / `tpl.msEmail.order.thanks` |
 | 2 | `order_created` | — | manager | email | "New order #{$num}" / `tpl.msEmail.order.new.manager` |
 | 3 | `order_created` | — | manager | telegram | — / `tpl.msTelegram.order.new` |

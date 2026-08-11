@@ -3,14 +3,14 @@ title: Checkout
 ---
 # Checkout
 
-The checkout page is the final step of a purchase. MiniShop3 provides a ready-made template and order form chunk with contact details, delivery, and payment selection.
+Last purchase step: contacts, delivery, payment, address. The package ships a page template and form chunk.
 
-[![](https://file.modx.pro/files/5/2/e/52ee1eb19597215187ec2cac0010586as.jpg)](https://file.modx.pro/files/5/2/e/52ee1eb19597215187ec2cac0010586a.png)
+![Checkout](/components/minishop3/screenshots/fe-checkout.png)
 
 ## Page structure
 
 | Component | File | Chunk name in DB | Purpose |
-|-----------|------|------------------|---------|
+| --- | --- | --- | --- |
 | Page template | `elements/templates/order.tpl` | — | Page layout, msOrder call |
 | Form chunk | `elements/chunks/ms3_order.tpl` | `tpl.msOrder` | Checkout form |
 
@@ -31,7 +31,7 @@ The msOrder snippet must be called **uncached** (`!msOrder`) because it works wi
 The form contains the following sections:
 
 | Section | Description |
-|---------|-------------|
+| --- | --- |
 | Empty cart | Message and link to the catalog (if the cart is empty) |
 | Contact details | First name, last name, email, phone, comment |
 | Payment methods | Radio buttons with logo and description |
@@ -45,7 +45,7 @@ The form contains the following sections:
 The form chunk exposes the following data:
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `$isCartEmpty` | bool | Cart is empty |
 | `$form` | array | Form field values (`$form.first_name`, `$form.email`, etc.) |
 | `$order` | array | Order data (`$order.cost`, `$order.delivery_cost`, `$order.cart_cost`) |
@@ -56,35 +56,63 @@ The form chunk exposes the following data:
 
 ### Delivery and payment linkage
 
-Each delivery method contains a `payments` array with IDs of available payment methods. JavaScript automatically filters payment options when delivery changes.
+Each delivery includes a `payments` array with IDs of allowed payment methods. On delivery change, JS hides incompatible payments. Links are set in the Manager on the delivery card (`msDeliveryMember`).
+
+If the pair is invalid, submit or Manager finalize returns an error.
+
+## Guest and authenticated customer
+
+| Mode | What happens |
+| --- | --- |
+| Guest | Fills contacts manually. No saved addresses |
+| Authenticated | Form shows an address list. Contacts can come from the profile |
+
+### Auto-registration on checkout
+
+Keys:
+
+- `ms3_customer_auto_register_on_order` (on by default)
+- `ms3_customer_auto_login_on_order` (on by default)
+
+On submit, a guest with a valid email can get an `msCustomer` row and session without a separate registration. Turn the keys off if accounts are created only via the account form.
+
+Separately: `ms3_order_register_user_on_submit` creates a `modUser` on checkout (off by default). That is not the same as `msCustomer`.
+
+Manual login and registration: [Login and registration](/en/components/minishop3/frontend/customer-auth).
 
 ## Validation
 
 ### How field validation works
 
-Required fields and validation rules are **configured per delivery method** in the Manager. For example, you can require a full address for courier delivery but only email for pickup.
+Required fields and rules are set **per delivery method** in the Manager. Courier needs an address; pickup often needs only phone and email.
 
-Detailed documentation on setting up validation rules — in [Delivery settings → Order field validation](/en/components/minishop3/interface/settings/deliveries#order-field-validation).
+Rule setup: [Deliveries → Validation](/en/components/minishop3/interface/settings/deliveries#order-field-validation).
 
 ### Validation process
 
-1. When a field value is added (`ms3.order.setField`) — the server validates it against delivery rules
-2. On order submission — the server checks that all required fields are filled
-3. On error — the frontend highlights invalid fields
+1. On delivery change `OrderUI` calls `GET /api/v1/order/delivery/validation-rules` and `GET /api/v1/order/delivery/required-fields`, hides extra fields, and updates `required`.
+2. On `ms3.order.setField` the server checks the field against the current delivery rules.
+3. On submit the server checks all required fields.
+4. On error JS adds `is-invalid` and text in `.invalid-feedback`.
 
-### Error display
+### Saved addresses
 
-Each form field contains an `.invalid-feedback` container. On validation error, JavaScript adds the `is-invalid` class to the field and puts the error text in the container:
+The `msOrder` snippet loads `order-addresses.js` (not part of `ms3_frontend_assets`). In the chunk — `<select id="saved_address_id">` with `<option data-address='{"city":"..."}'>`: selecting an option fills the form fields automatically.
 
-```fenom
-<input type="text" name="email" class="form-control"
-       value="{$form.email}">
-<div class="invalid-feedback"></div>
-```
+Two API paths:
 
-### Checkbox validation
+| Scenario | Endpoint |
+| --- | --- |
+| Checkout: apply address to draft | `POST /api/v1/order/address/set` |
+| Pick address from list (AuthUI / msCustomer) | `POST /api/v1/customer/changeAddress` |
 
-For a required checkbox (for example, agreement to terms), use the `accepted` rule in delivery settings. It checks that the value equals `"yes"`, `"on"`, `"1"`, or `true`.
+Clear address fields: `POST /api/v1/order/address/clean`.
+
+### Custom fields (`_validated`)
+
+Fields outside the order model (for example a consent checkbox `agreement`) go into the draft and are stored in `msOrder.properties['_validated']`. On order-create events they are available as `customFields`.
+
+On the storefront the checkbox must send `input.checked` (`1` / `0`), not a static `value`. For consent use the `accepted` rule on the delivery.
 
 ## JavaScript API
 
@@ -140,7 +168,7 @@ document.addEventListener('ms3:order:payment-changed', (e) => {
 ### Order field events
 
 | Event | When | Parameters |
-|-------|------|------------|
+| --- | --- | --- |
 | `msOnBeforeAddToOrder` | Before adding a field | `key`, `value`, `draft` |
 | `msOnAddToOrder` | After adding a field | `key`, `value`, `draft` |
 | `msOnBeforeRemoveFromOrder` | Before removing a field | `key`, `draft` |
@@ -149,7 +177,7 @@ document.addEventListener('ms3:order:payment-changed', (e) => {
 ### Validation events
 
 | Event | When | Parameters |
-|-------|------|------------|
+| --- | --- | --- |
 | `msOnBeforeValidateOrderValue` | Before value validation | `key`, `value`, `orderData` |
 | `msOnValidateOrderValue` | Validation passed | `key`, `value` |
 | `msOnErrorValidateOrderValue` | Validation error | `key`, `value`, `error` |
@@ -157,7 +185,7 @@ document.addEventListener('ms3:order:payment-changed', (e) => {
 ### Checkout events
 
 | Event | When | Parameters |
-|-------|------|------------|
+| --- | --- | --- |
 | `msOnSubmitOrder` | Before checkout starts | `handler`, `draft`, `orderData`, `data` |
 | `msOnBeforeCreateOrder` | Before order creation | `handler`, `msOrder` |
 | `msOnCreateOrder` | After order creation | `handler`, `msOrder` |
@@ -172,11 +200,9 @@ document.addEventListener('ms3:order:payment-changed', (e) => {
 
 ### Adding custom fields
 
-Custom fields (not part of the standard order model) are handled in two steps:
+Fields outside the order model take two steps.
 
-**1. Validation** — via [delivery validation rules](/en/components/minishop3/interface/settings/deliveries#order-field-validation).
-
-Add the field in JSON mode in delivery settings:
+**1. Validation.** Add rules in [delivery settings](/en/components/minishop3/interface/settings/deliveries#order-field-validation):
 
 ```json
 {
@@ -186,9 +212,7 @@ Add the field in JSON mode in delivery settings:
 }
 ```
 
-**2. Saving** — via a plugin, if the custom field value must be stored on the order.
-
-Standard fields (`first_name`, `email`, `city`, etc.) are saved automatically. Custom fields (not from the `msOrder` / `msOrderAddress` model) must be saved to order `properties` via a plugin:
+**2. Saving.** Standard fields (`first_name`, `email`, `city`, etc.) write themselves. Put foreign keys (not from `msOrder` / `msOrderAddress`) into order `properties` with a plugin if you need them after checkout:
 
 ```php
 switch ($modx->event->name) {
@@ -205,7 +229,7 @@ switch ($modx->event->name) {
 ```
 
 ::: tip
-If a custom field is used only for validation (for example, an "I agree to the terms" checkbox), you do not have to save it — the `accepted` rule in delivery settings is enough.
+An “I agree to the terms” checkbox often needs validation only. Then the `accepted` rule on the delivery is enough. You do not have to write it into the order.
 :::
 
 ### Responsive layout
@@ -213,6 +237,6 @@ If a custom field is used only for validation (for example, an "I agree to the t
 The form uses Bootstrap 5 Grid:
 
 | Screen | Columns |
-|-------|---------|
+| --- | --- |
 | < 992px | One section per row (100%) |
 | ≥ 992px | Two sections per row (50% + 50%) |

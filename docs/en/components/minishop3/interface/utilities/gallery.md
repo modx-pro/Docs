@@ -46,7 +46,7 @@ Size settings are defined in MODX system settings:
 ### Processing parameters
 
 | Parameter | Description | Default |
-|-----------|-------------|---------|
+| --- | --- | --- |
 | Products per step | Products processed per iteration | 10 |
 
 ::: warning Recommendations

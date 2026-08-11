@@ -7,12 +7,15 @@ title: События сниппета msProducts
 
 ::: tip Параметр usePackages
 Для активации загрузки данных внешнего пакета укажите его имя в параметре сниппета:
+
 ```fenom
 {'msProducts' | snippet : [
     'parents' => 0,
     'usePackages' => 'ms3Variants,msBrands'
 ]}
+
 ```
+
 Плагины проверяют наличие своего пакета в этом параметре и загружают данные только при необходимости.
 :::
 
@@ -23,11 +26,32 @@ title: События сниппета msProducts
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `rows` | `array` (ссылка) | Массив товаров, можно модифицировать |
 | `productIds` | `array` | Массив ID товаров `[1, 2, 3, ...]` |
 | `usePackages` | `array` | Список запрошенных пакетов `['ms3Variants', 'msBrands']` |
 | `scriptProperties` | `array` | Все параметры вызова сниппета |
+
+После события строки списка обновляются из `returnedValues['rows']` (`EventGate::applyReturnedArray`). List в `rows` заменяет весь массив товаров, assoc-пatch отдельной строки — через `msOnProductPrepare`.
+
+### returnedValues
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnProductsLoad':
+        $values = &$modx->event->returnedValues;
+        // Пример: пометить все товары без цены
+        $rows = $scriptProperties['rows'];
+        foreach ($rows as $i => $row) {
+            if (empty($row['price'])) {
+                $rows[$i]['price_hidden'] = true;
+            }
+        }
+        $values['rows'] = $rows;
+        break;
+}
+```
 
 ### Базовый пример
 
@@ -53,6 +77,7 @@ switch ($modx->event->name) {
         ];
         break;
 }
+
 ```
 
 ### Пример: загрузка вариантов товаров (ms3Variants)
@@ -82,6 +107,7 @@ switch ($modx->event->name) {
         ];
         break;
 }
+
 ```
 
 ---
@@ -93,10 +119,23 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `row` | `array` (ссылка) | Данные товара, можно модифицировать |
 | `productId` | `int` | ID товара |
 | `idx` | `int` | Порядковый номер товара в выборке |
+
+После события строка обновляется из `returnedValues['row']` (patch или list-замена, как в import).
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnProductPrepare':
+        $modx->event->returnedValues = [
+            'row' => ['badge' => 'sale'],
+        ];
+        break;
+}
+```
 
 ### Базовый пример
 
@@ -119,6 +158,7 @@ switch ($modx->event->name) {
         }
         break;
 }
+
 ```
 
 ### Пример: присоединение вариантов (ms3Variants)
@@ -149,6 +189,7 @@ switch ($modx->event->name) {
         }
         break;
 }
+
 ```
 
 ---
@@ -225,6 +266,7 @@ switch ($modx->event->name) {
         $row['has_badges'] = !empty($badges);
         break;
 }
+
 ```
 
 ### Использование в шаблоне
@@ -235,6 +277,7 @@ switch ($modx->event->name) {
     'usePackages' => 'msBadges',
     'tpl' => 'tpl.msProducts.badges'
 ]}
+
 ```
 
 **Чанк tpl.msProducts.badges:**
@@ -254,6 +297,7 @@ switch ($modx->event->name) {
     <h3>{$pagetitle}</h3>
     <div class="price">{$price} руб.</div>
 </div>
+
 ```
 
 ---
@@ -272,6 +316,7 @@ $modx->eventData['myPackage'] = [
 // В msOnProductPrepare — читаем
 $dataMap = $modx->eventData['myPackage']['dataMap'] ?? null;
 $settings = $modx->eventData['myPackage']['settings'] ?? [];
+
 ```
 
 ::: warning Изоляция данных
@@ -290,6 +335,8 @@ $settings = $modx->eventData['myPackage']['settings'] ?? [];
 Это позволяет избежать проблемы N+1 запросов:
 
 ```
+
 ❌ Без bulk-загрузки: 1 запрос на список + N запросов на варианты = O(N+1)
 ✅ С bulk-загрузкой:  1 запрос на список + 1 запрос на все варианты = O(2)
+
 ```

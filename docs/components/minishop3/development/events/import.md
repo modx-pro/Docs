@@ -16,7 +16,7 @@ title: События импорта
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `file` | `string` | Путь к файлу импорта |
 | `params` | `array` (по ссылке) | Параметры импорта |
 
@@ -88,6 +88,21 @@ switch ($modx->event->name) {
 }
 ```
 
+### returnedValues для params
+
+Параметры импорта можно патчить через `returnedValues['params']` (assoc → `array_replace`, list → полная замена):
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeImport':
+        $modx->event->returnedValues = [
+            'params' => ['key' => 'article', 'delimiter' => ';'],
+        ];
+        break;
+}
+```
+
 ---
 
 ## msOnAfterImport
@@ -97,7 +112,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `stats` | `array` | Статистика импорта |
 
 **Структура stats:**
@@ -176,13 +191,15 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `row` | `int` | Номер текущей строки |
 | `csv` | `array` | Сырые данные строки CSV |
 | `data` | `array` (по ссылке) | Данные для создания/обновления ресурса |
 | `tvData` | `array` (по ссылке) | Данные для TV-полей |
 | `optionData` | `array` (по ссылке) | Данные для опций товара |
 | `gallery` | `array` (по ссылке) | Пути к изображениям галереи |
+
+Ядро после события применяет `EventGate::applyReturnedArray()` для ключей `data`, `tvData`, `optionData`, `gallery`. List-массив в `returnedValues` **заменяет** канал целиком, assoc — патчит поля.
 
 ### Прерывание строки (пропуск)
 
@@ -247,6 +264,26 @@ switch ($modx->event->name) {
         if (!empty($csv[10])) { // 10-я колонка = цвет
             $optionData['color'] = $csv[10];
         }
+        break;
+}
+```
+
+### returnedValues вместо только by-ref
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnImportRow':
+        $modx->event->returnedValues = [
+            'data' => [
+                'vendor_id' => 1,
+                'template' => 5,
+            ],
+            'optionData' => [
+                'color' => $scriptProperties['csv'][10] ?? '',
+            ],
+            // 'gallery' => ['assets/gallery/sku-001.jpg'], // list — замена всей галереи
+        ];
         break;
 }
 ```

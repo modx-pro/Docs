@@ -46,7 +46,7 @@ MiniShop3 позволяет размещать **неограниченное �
 Работа корзины на фронтенде обеспечивается набором JavaScript-модулей:
 
 | Файл | Назначение |
-|------|------------|
+| --- | --- |
 | `js/web/ms3.js` | Главный объект `ms3`, инициализация всех модулей |
 | `js/web/core/CartAPI.js` | API-клиент для операций с корзиной (add, remove, change, clean) |
 | `js/web/ui/CartUI.js` | UI-обработчики: кнопки +/-, удаление, автообновление HTML |
@@ -84,6 +84,10 @@ document.addEventListener('ms3:cart:updated', function(e) {
 });
 ```
 
+### Смена опций в корзине
+
+Если у позиции есть опции (размер, цвет), смена комбинации идёт через `POST /api/v1/cart/change-option` (тело: `key`, `options`). На сервере `CartMutationHandler` пересчитывает ключ позиции и вызывает события `msOnBeforeChangeOptionInCart` / `msOnChangeOptionInCart`. В JS: `ms3.cart.changeOption(key, options)` (см. [Frontend JavaScript](/components/minishop3/development/frontend-js)).
+
 ## Состав корзины и доступные поля
 
 ### Базовые поля товара в корзине
@@ -91,7 +95,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 Каждый товар в корзине содержит:
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `product_key` | Уникальный ключ позиции в корзине |
 | `product_id` | ID товара (ресурса MODX) |
 | `count` | Количество |
@@ -108,7 +112,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 ### Итоговые значения
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `total.count` | Общее количество товаров |
 | `total.positions` | Количество позиций (уникальных товаров) |
 | `total.cost` | Общая стоимость |
