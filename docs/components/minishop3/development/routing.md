@@ -259,9 +259,12 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 **Основные права MiniShop3:**
 
 - `msproduct_save` — создание/редактирование товаров
-- `mssetting_save` — управление настройками
-- `msorder_list` — просмотр заказов
-- `msorder_save` — редактирование заказов
+- `mssetting_save` — управление настройками (доставки, оплаты, производители, уведомления)
+- `view_document` — чтение категорий и гридов товаров в категории
+- `msorder_list` — список заказов и клиентов, адреса клиента (GET)
+- `msorder_view` — просмотр карточки клиента
+- `msorder_save` — изменение заказов и клиентов, мутации позиций заказа
+- `msorder_remove` — удаление заказов, клиентов, массовое удаление
 
 #### TokenMiddleware
 
@@ -470,33 +473,53 @@ function addFilterParam(params, key, value) {
 
 #### Заказы (`/orders`)
 
-| Метод | Роут | Описание | Право |
-| --- | --- | --- | --- |
-| GET | `` | Список заказов | `msorder_list` |
-| POST | `` | Создать заказ | `msorder_list` |
-| GET | `/filters` | Конфигурация фильтров | `msorder_list` |
-| GET | `/{id}` | Получить заказ | `msorder_list` |
-| PUT | `/{id}` | Обновить заказ | `msorder_list` |
-| DELETE | `/{id}` | Удалить заказ | `msorder_list` |
-| GET | `/{id}/products` | Товары заказа | `msorder_list` |
-| POST | `/{id}/products` | Добавить товар | `msorder_list` |
-| PUT | `/{id}/products/{product_id}` | Обновить товар | `msorder_list` |
-| DELETE | `/{id}/products/{product_id}` | Удалить товар | `msorder_list` |
-| GET | `/{id}/logs` | История изменений | `msorder_list` |
-| DELETE | `/bulk` | Массовое удаление | `msorder_list` |
+Чтение и запись разделены на две группы middleware (#377).
+
+**Чтение** — право `msorder_list`:
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| GET | `` | Список заказов |
+| GET | `/filters` | Конфигурация фильтров |
+| GET | `/stats` | Агрегаты для дашборда и фильтров |
+| GET | `/{id}` | Получить заказ |
+| GET | `/{id}/products` | Товары заказа |
+| GET | `/{id}/logs` | История изменений |
+
+**Запись** — право `msorder_save`:
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| POST | `` | Создать заказ из менеджера |
+| DELETE | `/bulk` | Массовое удаление |
+| POST | `/{id}/finalize` | Финализация черновика |
+| POST | `/{id}/recalculate-cost` | Пересчёт стоимости |
+| PUT | `/{id}` | Обновить заказ |
+| DELETE | `/{id}` | Удалить заказ |
+| POST | `/{id}/products` | Добавить товар |
+| PUT | `/{id}/products/{product_id}` | Обновить позицию |
+| DELETE | `/{id}/products/{product_id}` | Удалить позицию |
+
+**Справочники для форм заказа** (без отдельного PermissionMiddleware, сессия mgr):
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| GET | `/statuses-dropdown` | Статусы с переводами |
+| GET | `/deliveries-active` | Активные доставки для select |
 
 #### Покупатели (`/customers`)
 
 | Метод | Роут | Описание | Право |
 | --- | --- | --- | --- |
-| GET | `` | Список покупателей | `view_document` |
-| GET | `/{id}` | Получить покупателя | `view_document` |
-| PUT | `/{id}` | Обновить покупателя | `view_document` |
-| DELETE | `/{id}` | Удалить покупателя | `view_document` |
-| GET | `/{id}/addresses` | Адреса покупателя | `view_document` |
-| POST | `/{id}/addresses` | Добавить адрес | `view_document` |
-| PUT | `/{id}/addresses/{address_id}` | Обновить адрес | `view_document` |
-| DELETE | `/{id}/addresses/{address_id}` | Удалить адрес | `view_document` |
+| GET | `` | Список покупателей | `msorder_list` |
+| DELETE | `/bulk` | Массовое удаление | `msorder_remove` |
+| GET | `/{id}` | Получить покупателя | `msorder_view` |
+| PUT | `/{id}` | Обновить покупателя | `msorder_save` |
+| DELETE | `/{id}` | Удалить покупателя | `msorder_remove` |
+| GET | `/{id}/addresses` | Адреса покупателя | `msorder_list` |
+| POST | `/{id}/addresses` | Добавить адрес | `msorder_save` |
+| PUT | `/{id}/addresses/{address_id}` | Обновить адрес | `msorder_save` |
+| DELETE | `/{id}/addresses/{address_id}` | Удалить адрес | `msorder_remove` |
 
 #### Настройки магазина
 
@@ -532,6 +555,7 @@ function addFilterParam(params, key, value) {
 | GET | `/get` | Получить корзину | Опционально |
 | POST | `/add` | Добавить товар | Обязательно |
 | POST | `/change` | Изменить количество | Обязательно |
+| POST | `/change-option` | Сменить опции позиции | Обязательно |
 | POST | `/remove` | Удалить товар | Обязательно |
 | POST | `/clean` | Очистить корзину | Обязательно |
 
@@ -542,11 +566,17 @@ function addFilterParam(params, key, value) {
 | GET | `/get` | Получить заказ | Обязательно |
 | POST | `/add` | Добавить данные | Обязательно |
 | POST | `/set` | Установить поля | Обязательно |
+| POST | `/remove` | Удалить поле | Обязательно |
 | POST | `/submit` | Оформить заказ | Обязательно |
+| POST | `/clean` | Очистить черновик | Обязательно |
 | GET | `/cost` | Полная стоимость | Обязательно |
 | GET | `/cost/cart` | Стоимость товаров | Обязательно |
 | GET | `/cost/delivery` | Стоимость доставки | Обязательно |
-| POST | `/address/set` | Установить адрес | Обязательно |
+| GET | `/cost/payment` | Комиссия оплаты | Обязательно |
+| POST | `/address/set` | Применить сохранённый адрес | Обязательно |
+| POST | `/address/clean` | Сбросить адресные поля | Обязательно |
+| GET | `/delivery/validation-rules` | Правила валидации доставки | Обязательно |
+| GET | `/delivery/required-fields` | Обязательные поля доставки | Обязательно |
 
 #### Покупатель (`/customer`)
 
@@ -554,7 +584,12 @@ function addFilterParam(params, key, value) {
 | --- | --- | --- | --- |
 | POST | `/login` | Авторизация | Нет |
 | POST | `/register` | Регистрация | Нет |
+| POST | `/logout` | Выход | Обязательно |
+| POST | `/forgot-password` | Запрос сброса пароля | Нет |
+| POST | `/reset-password` | Смена пароля по токену | Нет |
 | GET | `/token/get` | Получить токен | Нет |
+| POST | `/add` | Обновить поле профиля | Обязательно |
+| POST | `/changeAddress` | Выбрать адрес на checkout | Обязательно |
 | PUT | `/profile` | Обновить профиль | Обязательно |
 | GET | `/addresses` | Список адресов | Обязательно |
 | POST | `/addresses` | Добавить адрес | Обязательно |

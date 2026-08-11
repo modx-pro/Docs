@@ -1213,7 +1213,7 @@ getLexicon(key) {
 
 ### order-addresses.js
 
-Saved address selection on checkout:
+Saved address selection on checkout. The module is **not** included in the `ms3_frontend_assets` JSON: the `msOrder` snippet loads it via `regClientStartupScript`.
 
 ```html
 <select id="saved_address_id">
@@ -1224,7 +1224,15 @@ Saved address selection on checkout:
 </select>
 ```
 
-The module fills the form fields when an address is selected.
+The module fills the form fields when an address is selected. Details: [Checkout](/en/components/minishop3/frontend/order).
+
+### Built-in afterSendRequest hook
+
+`hooks.js` registers `afterSendRequest`: after any API request, ~100 ms later `cartUI.init()` runs to re-bind handlers on the updated DOM. Keep this in mind for custom partial cart updates.
+
+### change-option
+
+Change line options: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Hooks: `beforeChangeOptionCart` / `afterChangeOptionCart` (if wired in your build).
 
 ## Compatibility
 

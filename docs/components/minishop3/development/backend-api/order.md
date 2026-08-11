@@ -576,4 +576,17 @@ Composite-связи удаляются каскадно при удалении
 | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Поиск/создание пользователя |
 | `msOnBeforeFinalizeOrder` / `msOnFinalizeOrder` | Финализация из менеджера |
 
+## Manager REST API
+
+Эндпоинты для Vue-интерфейса заказов (сессия mgr, см. [routing](../routing)):
+
+| Метод | Путь | Описание |
+| --- | --- | --- |
+| GET | `/api/mgr/orders/stats` | Агрегаты для фильтров и дашборда |
+| POST | `/api/mgr/orders` | Создание заказа из менеджера |
+| POST | `/api/mgr/orders/{id}/finalize` | Финализация черновика |
+| POST | `/api/mgr/orders/{id}/recalculate-cost` | Пересчёт через `ManagerOrderCostRecalculator` |
+
+Создание и финализация из mgr проходят через `OrderFinalizeService` и события `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`.
+
 Подробное описание параметров событий — в разделе [События](../events).

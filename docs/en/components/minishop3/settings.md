@@ -186,6 +186,7 @@ Off by default. The account runs on `msCustomer` and the MS3 token. Enable sync 
 | `ms3_snippet_token_secret` | (auto-generated) | Secret key for snippet tokens |
 | `ms3_snippet_cache_ttl` | `3600` | Snippet parameter cache lifetime (seconds) |
 | `ms3_payment_secret` | | Secret key for payment notifications |
+| `ms3_payment_link_statuses` | (empty → `ms3_status_new`) | CSV status IDs for which `PaymentLinkResolver` returns the payment URL in emails and msGetOrder |
 
 ### Brute-force protection
 

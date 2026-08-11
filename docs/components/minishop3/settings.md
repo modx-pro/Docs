@@ -186,6 +186,7 @@ title: Системные настройки
 | `ms3_snippet_token_secret` | (автогенерация) | Секретный ключ для токенов сниппетов |
 | `ms3_snippet_cache_ttl` | `3600` | Время кеширования параметров сниппетов (секунды) |
 | `ms3_payment_secret` | | Секретный ключ для платёжных уведомлений |
+| `ms3_payment_link_statuses` | (пусто → `ms3_status_new`) | CSV ID статусов, при которых `PaymentLinkResolver` отдаёт URL оплаты в письмах и msGetOrder |
 
 ### Защита от брутфорса
 

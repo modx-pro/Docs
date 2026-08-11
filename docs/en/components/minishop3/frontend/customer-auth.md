@@ -60,6 +60,14 @@ Class `AuthUI` (`assets/components/minishop3/js/web/ui/AuthUI.js`) listens for s
 
 On success the script redirects via `ms3_customer_redirect_after_login` or reloads the page. The server puts the token in the httpOnly cookie `ms3_token`. Response format: [REST API](/en/components/minishop3/development/api).
 
+### Auth providers
+
+`AuthManager::registerProvider()` lets you add a custom login method (OAuth, SMS, etc.) in PHP. The stock storefront uses only the password provider via `AuthUI`. Provider registration example: [Customer Backend API](/en/components/minishop3/development/backend-api/customer).
+
+::: warning SMS verification
+The package's `SmsVerificationService` is a **stub**: `sendVerificationCode()` logs a warning and returns an error. SMS login is not available out of the box until you connect your own provider.
+:::
+
 ## Password reset
 
 The Web API already has:

@@ -342,6 +342,9 @@ $imageService->removeProductCatalog($productData);
 | `Gallery\Multiple` | Bulk operations (remove several) |
 | `Gallery\Generate` | Generate thumbnails for one image |
 | `Gallery\GenerateAll` | Generate thumbnails for all product images |
+| `MiniShop3\Processors\Gallery\SetPreview` | Set main image (`preview_file_id` in `msProductData`) |
+
+Product category tree in the manager: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
 
 ## Additional categories
 

@@ -364,6 +364,9 @@ $imageService->removeProductCatalog($productData);
 | `MiniShop3\Processors\Gallery\Multiple` | Массовые операции (удаление нескольких) |
 | `MiniShop3\Processors\Gallery\Generate` | Генерация миниатюр для одного изображения |
 | `MiniShop3\Processors\Gallery\GenerateAll` | Генерация миниатюр для всех изображений товара |
+| `MiniShop3\Processors\Gallery\SetPreview` | Назначить главное изображение (`preview_file_id` в `msProductData`) |
+
+Дерево категорий товара в менеджере: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
 
 ## Дополнительные категории
 

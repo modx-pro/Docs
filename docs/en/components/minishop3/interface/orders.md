@@ -12,6 +12,12 @@ Open **Extras → MiniShop3 → Orders**. On the left is the grid of all orders;
 
 The `OrdersGrid` grid filters and sorts rows. Search covers number, email, phone, and other columns from the grid config. A click on a row opens the card.
 
+Filter summary (status counts, totals) loads separately: `GET /api/mgr/orders/stats` with the same query parameters as the list.
+
+### Create order from manager
+
+The “Create order” button calls `POST /api/mgr/orders` — an empty or partially filled order without the storefront. Then add lines and finalize. Events: `msOnBeforeMgrCreateOrder`, `msOnMgrCreateOrder`.
+
 ### Drafts
 
 Until the customer clicks Submit on the storefront, the DB holds an order with draft status (`ms3_status_draft`). System setting `ms3_order_show_drafts` controls whether drafts appear in the grid by default.
@@ -48,7 +54,9 @@ Pick a pair you linked on the delivery card. Otherwise save or finalize returns 
 
 ## Permissions and API
 
-All operations go through Manager API `/api/mgr/orders/*` under a MODX session. Route skeleton: [API Router](/en/components/minishop3/development/routing).
+All operations go through Manager API `/api/mgr/orders/*` under a MODX session. Read — permission `msorder_list`, changes — `msorder_save`. Route skeleton: [API Router](/en/components/minishop3/development/routing).
+
+Order line events (`msOnBeforeCreateOrderProduct`, etc.) when adding lines from the card: [Order product events](/en/components/minishop3/development/events/order-product).
 
 ## See also
 

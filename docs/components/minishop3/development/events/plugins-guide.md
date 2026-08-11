@@ -5,6 +5,20 @@ title: Работа с плагинами
 
 Руководство по созданию плагинов для событий MiniShop3: получение параметров, возврат данных, прерывание операций, передача данных между плагинами.
 
+## Плагин компонента (MODX-события)
+
+Пакет ставит системный плагин `minishop3.php` на события ядра MODX (не путать с `msOn*`):
+
+| MODX-событие | Назначение |
+| --- | --- |
+| `OnMODXInit` | Регистрация сервисов, namespace |
+| `OnLoadWebDocument` | Подключение фронтенд-assets, `registerFrontend()` |
+| `OnDocFormSave` | Конвертация ресурса в товар через `ProductService::handleConversion()` |
+| `OnBeforeUserFormSave` / `OnUserSave` | Sync `msCustomer` ↔ `modUser` при `ms3_customer_sync_enabled` |
+| `OnUserRemove` | Очистка связанных данных покупателя |
+
+Для бизнес-логики корзины и заказов подписывайтесь на события из раздела [События](../events).
+
 ## Базовая структура плагина
 
 ```php

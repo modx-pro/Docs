@@ -5,6 +5,20 @@ title: Working with plugins
 
 Guide to creating MiniShop3 event plugins: getting parameters, returning data, aborting operations, passing data between plugins.
 
+## Component plugin (MODX events)
+
+The package ships a system plugin `minishop3.php` on core MODX events (not to be confused with `msOn*`):
+
+| MODX event | Purpose |
+| --- | --- |
+| `OnMODXInit` | Service registration, namespace |
+| `OnLoadWebDocument` | Frontend assets, `registerFrontend()` |
+| `OnDocFormSave` | Resource-to-product conversion via `ProductService::handleConversion()` |
+| `OnBeforeUserFormSave` / `OnUserSave` | Sync `msCustomer` ↔ `modUser` when `ms3_customer_sync_enabled` |
+| `OnUserRemove` | Cleanup of related customer data |
+
+For cart and order business logic, subscribe to events from the [events hub](../events).
+
 ## Basic plugin structure
 
 ```php

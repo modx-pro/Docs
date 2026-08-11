@@ -232,3 +232,13 @@ GET /api/v1/order/cost/payment?payment_id=2
   }
 }
 ```
+
+## Ссылка на оплату (`payment_link`)
+
+На странице «спасибо» и в письмах URL оплаты формирует `PaymentLinkResolver` (`ms3_payment_link_resolver`):
+
+- в **msGetOrder** — параметр `payStatus` (CSV статусов);
+- в **уведомлениях** — настройка `ms3_payment_link_statuses`, если пуста — fallback на `ms3_status_new`;
+- ссылка **не** показывается для финальных статусов и статуса «оплачен».
+
+Обработчик способа оплаты должен вернуть URL из метода оплаты (см. пример `send()` выше). Подробнее: [msGetOrder](/components/minishop3/snippets/msgetorder#ссылка-на-оплату).

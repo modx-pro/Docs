@@ -232,3 +232,13 @@ GET /api/v1/order/cost/payment?payment_id=2
   }
 }
 ```
+
+## Payment link (`payment_link`)
+
+Thank-you page and emails get the payment URL from `PaymentLinkResolver` (`ms3_payment_link_resolver`):
+
+- in **msGetOrder** — snippet parameter `payStatus` (CSV of status IDs);
+- in **notifications** — setting `ms3_payment_link_statuses`, empty falls back to `ms3_status_new`;
+- link is **hidden** for final statuses and the paid status.
+
+The payment handler must return a URL from its payment method (see the `send()` example above). Details: [msGetOrder](/en/components/minishop3/snippets/msgetorder#payment-link).

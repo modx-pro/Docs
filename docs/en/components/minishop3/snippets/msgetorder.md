@@ -358,9 +358,9 @@ The default chunk `tpl.msGetOrder` uses Bootstrap 5:
 
 The payment link `{$payment_link}` is available when:
 
-1. The payment method has a handler class (`class`) set
-2. Order status is in the `payStatus` list (default `1`)
-3. The handler returns a link via `getPaymentLink()`
+1. The payment method has a handler class (`class`) with a method that returns a URL
+2. Order status is in the allowed list: snippet parameter `payStatus` (CSV) or system setting `ms3_payment_link_statuses` (fallback — `ms3_status_new`)
+3. The order is not final and not in “paid” status — logic in `PaymentLinkResolver::isStatusEligibleForPaymentLink()`
 
 ```fenom
 {'msGetOrder' | snippet : [

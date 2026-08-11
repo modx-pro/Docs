@@ -1279,7 +1279,7 @@ window.ms3Lexicon = {
 
 ### order-addresses.js
 
-Выбор сохранённого адреса при оформлении заказа:
+Выбор сохранённого адреса при оформлении заказа. Модуль **не** входит в JSON `ms3_frontend_assets`: его подключает сниппет `msOrder` через `regClientStartupScript`.
 
 ```html
 <select id="saved_address_id">
@@ -1291,7 +1291,15 @@ window.ms3Lexicon = {
 
 ```
 
-Модуль автоматически заполняет поля формы при выборе адреса.
+Модуль автоматически заполняет поля формы при выборе адреса. Подробнее: [Оформление заказа](/components/minishop3/frontend/order).
+
+### Встроенный хук afterSendRequest
+
+В `hooks.js` зарегистрирован `afterSendRequest`: после любого API-запроса через ~100 ms вызывается `cartUI.init()` для перевешивания обработчиков на обновлённый DOM. Учитывайте это при кастомных partial-обновлениях корзины.
+
+### change-option
+
+Смена опций позиции: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Хуки: `beforeChangeOptionCart` / `afterChangeOptionCart` (если подключены в вашей сборке).
 
 ## Совместимость
 

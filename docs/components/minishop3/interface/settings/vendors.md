@@ -5,6 +5,10 @@ title: Производители
 
 Управление производителями (брендами) доступно через **Extras → MiniShop3 → Настройки → Производители**.
 
+::: warning События msOnVendor*
+CRUD в этом разделе идёт через Manager API (`VendorsController`), **без** вызова процессоров `Processors/Settings/Vendor/*`. Плагины на `msOnBeforeVendorCreate` и аналоги срабатывают только при legacy `runProcessor()`. Подробнее: [События производителей](/components/minishop3/development/events/vendor).
+:::
+
 ## Назначение
 
 Справочник производителей позволяет:

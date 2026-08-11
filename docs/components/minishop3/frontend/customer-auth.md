@@ -60,6 +60,14 @@ description: Формы входа и регистрации покупател�
 
 После успеха скрипт редиректит по `ms3_customer_redirect_after_login` или обновляет страницу. Сервер кладёт токен в httpOnly cookie `ms3_token`. Формат ответов: [REST API](/components/minishop3/development/api).
 
+### Провайдеры входа
+
+`AuthManager::registerProvider()` позволяет добавить свой способ входа (OAuth, SMS и т.д.) в PHP. Штатная витрина использует только password-провайдер через `AuthUI`. Пример регистрации провайдера: [Backend API покупателя](/components/minishop3/development/backend-api/customer).
+
+::: warning SMS-верификация
+Сервис `SmsVerificationService` в пакете — **заглушка**: `sendVerificationCode()` логирует предупреждение и возвращает ошибку. SMS-логин из коробки нет, пока вы не подключите свой провайдер.
+:::
+
 ## Восстановление пароля
 
 В Web API уже есть:

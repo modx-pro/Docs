@@ -799,6 +799,14 @@ GET /api/mgr/categories/{id}/products/filters
 }
 ```
 
+### Inline product data editing
+
+```
+PUT /api/mgr/categories/{id}/products/{productId}/data
+```
+
+JSON body — `msProductData` fields (price, article, etc.) from the category grid without opening the product card (#455). Controller: `CategoryProductsController::updateProductData()`.
+
 ## Related pages
 
 - [Utilities: Grid columns](utilities/grid-columns) — table column configuration

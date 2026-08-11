@@ -90,9 +90,23 @@ title: Оформление заказа
 
 ### Процесс валидации
 
-1. При `ms3.order.setField` сервер проверяет поле по правилам текущей доставки.
-2. При submit сервер проверяет все обязательные поля.
-3. При ошибке JS вешает `is-invalid` и текст в `.invalid-feedback`.
+1. При смене доставки `OrderUI` запрашивает `GET /api/v1/order/delivery/validation-rules` и `GET /api/v1/order/delivery/required-fields`, скрывает лишние поля и обновляет `required`.
+2. При `ms3.order.setField` сервер проверяет поле по правилам текущей доставки.
+3. При submit сервер проверяет все обязательные поля.
+4. При ошибке JS вешает `is-invalid` и текст в `.invalid-feedback`.
+
+### Сохранённые адреса
+
+Сниппет `msOrder` подключает `order-addresses.js` (не входит в `ms3_frontend_assets`). В чанке — `<select id="saved_address_id">` с `<option data-address='{"city":"..."}'>`: при выборе поля формы заполняются автоматически.
+
+Два API-пути:
+
+| Сценарий | Эндпоинт |
+| --- | --- |
+| Checkout: применить адрес к черновику | `POST /api/v1/order/address/set` |
+| Выбор адреса из списка (AuthUI / msCustomer) | `POST /api/v1/customer/changeAddress` |
+
+Сброс адресных полей: `POST /api/v1/order/address/clean`.
 
 ### Кастомные поля (`_validated`)
 

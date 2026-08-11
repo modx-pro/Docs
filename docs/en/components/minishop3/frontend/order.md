@@ -90,9 +90,23 @@ Rule setup: [Deliveries → Validation](/en/components/minishop3/interface/setti
 
 ### Validation process
 
-1. On `ms3.order.setField` the server checks the field against the current delivery rules.
-2. On submit the server checks all required fields.
-3. On error JS adds `is-invalid` and text in `.invalid-feedback`.
+1. On delivery change `OrderUI` calls `GET /api/v1/order/delivery/validation-rules` and `GET /api/v1/order/delivery/required-fields`, hides extra fields, and updates `required`.
+2. On `ms3.order.setField` the server checks the field against the current delivery rules.
+3. On submit the server checks all required fields.
+4. On error JS adds `is-invalid` and text in `.invalid-feedback`.
+
+### Saved addresses
+
+The `msOrder` snippet loads `order-addresses.js` (not part of `ms3_frontend_assets`). In the chunk — `<select id="saved_address_id">` with `<option data-address='{"city":"..."}'>`: selecting an option fills the form fields automatically.
+
+Two API paths:
+
+| Scenario | Endpoint |
+| --- | --- |
+| Checkout: apply address to draft | `POST /api/v1/order/address/set` |
+| Pick address from list (AuthUI / msCustomer) | `POST /api/v1/customer/changeAddress` |
+
+Clear address fields: `POST /api/v1/order/address/clean`.
 
 ### Custom fields (`_validated`)
 

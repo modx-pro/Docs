@@ -5,6 +5,10 @@ title: Vendor events
 
 Events for tracking vendor (brand) operations.
 
+::: warning Vue settings vs processors
+Vendor CRUD in the admin (**Extras → MiniShop3 → Vendors**) goes through `VendorsController` (Manager API) **without** `$modx->invokeEvent`. The events below fire only when legacy processors `MiniShop3\Processors\Settings\Vendor\*` are called (`runProcessor`, old connector). To intercept changes from Vue, use post-save hooks via your own REST middleware or by extending the controller in an addon.
+:::
+
 ## msOnBeforeVendorCreate
 
 Fired **before** creating a vendor.

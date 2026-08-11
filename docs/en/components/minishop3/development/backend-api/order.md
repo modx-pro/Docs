@@ -535,4 +535,17 @@ Composite relations are deleted with the order (address, products, log). Aggrega
 | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Find/create user |
 | `msOnBeforeFinalizeOrder` / `msOnFinalizeOrder` | Finalize from manager |
 
+## Manager REST API
+
+Endpoints for the Vue orders UI (mgr session, see [routing](../routing)):
+
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/api/mgr/orders/stats` | Aggregates for filters and dashboard |
+| POST | `/api/mgr/orders` | Create order from manager |
+| POST | `/api/mgr/orders/{id}/finalize` | Finalize draft |
+| POST | `/api/mgr/orders/{id}/recalculate-cost` | Recalculate via `ManagerOrderCostRecalculator` |
+
+Create and finalize from mgr go through `OrderFinalizeService` and events `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`.
+
 Event parameter details: [Events](../events).

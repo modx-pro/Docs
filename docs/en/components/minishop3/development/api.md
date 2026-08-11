@@ -861,7 +861,9 @@ Errors: `400` (status not allowed), `404` (not found), `401` (unauthorized).
 
 ## Product catalog
 
-Public endpoints. **No token required.** Only published, non-deleted, non-`hidemenu` products in the requested (or current) context are returned. Response fields are allowlisted: resource + `msProductData` (+ options/content by flags).
+Public endpoints. **No token required.** Only published, non-deleted, non-`hidemenu` products in the requested (or current) context are returned.
+
+`ProductCatalogService` builds the response and **trims** it with an allowlist of resource and `msProductData` fields. A plugin on `msOnGetProductFields` can change values of existing keys but cannot add arbitrary fields to the catalog JSON. For a headless storefront without msProducts see also [Catalog](/en/components/minishop3/frontend/catalog).
 
 ### Single product
 

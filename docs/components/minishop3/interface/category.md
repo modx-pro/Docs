@@ -799,6 +799,14 @@ GET /api/mgr/categories/{id}/products/filters
 }
 ```
 
+### Inline-редактирование данных товара
+
+```
+PUT /api/mgr/categories/{id}/products/{productId}/data
+```
+
+Тело JSON — поля `msProductData` (цена, артикул и т.д.) из грида категории без открытия карточки товара (#455). Контроллер: `CategoryProductsController::updateProductData()`.
+
 ## Связанные страницы
 
 - [Утилиты: Колонки гридов](utilities/grid-columns) — настройка колонок таблицы
