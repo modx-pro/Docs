@@ -1,12 +1,18 @@
 # Скриншоты MiniShop3
 
-Положите PNG в эту папку, затем добавьте в markdown строку вида:
+Положите PNG в эту папку, затем раскомментируйте строку в markdown:
+
+```md
+<!-- ![Подпись](/components/minishop3/screenshots/имя-файла.png) -->
+```
+
+→
 
 ```md
 ![Подпись](/components/minishop3/screenshots/имя-файла.png)
 ```
 
-Без файла VitePress падает на `pnpm build` (`Rollup failed to resolve import`). Не оставляйте ссылки-заглушки.
+Активная ссылка без файла ломает `pnpm build` (`Rollup failed to resolve import`). Заглушки держите в HTML-комментарии.
 
 | Файл | Что снять | Страница |
 | --- | --- | --- |

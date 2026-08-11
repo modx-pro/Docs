@@ -1,12 +1,18 @@
 # MiniShop3 screenshots
 
-Put PNG files in this folder, then add a markdown line:
+Put PNG files in this folder, then uncomment the markdown line:
+
+```md
+<!-- ![Caption](/components/minishop3/screenshots/filename.png) -->
+```
+
+→
 
 ```md
 ![Caption](/components/minishop3/screenshots/filename.png)
 ```
 
-Without the file, VitePress fails on `pnpm build` (`Rollup failed to resolve import`). Do not leave stub image links.
+An active link without the file breaks `pnpm build` (`Rollup failed to resolve import`). Keep stubs in an HTML comment.
 
 | File | What to capture | Page |
 | --- | --- | --- |
