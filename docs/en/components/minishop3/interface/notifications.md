@@ -154,7 +154,7 @@ Filters apply on **Apply** and reset on **Clear**.
 Check: system setting `ms3_email_from`, MODX SMTP settings, MODX error log (channel send errors are logged with `[ms3] Notification error`), **Enabled** status on the record in the Notification center.
 
 **Notification went to the customer's old email, not the one from the order form.**
-Known behavior due to the current channel implementation. See issue [#218](https://github.com/modx-pro/MiniShop3/issues/218) and related architecture audit [#219](https://github.com/modx-pro/MiniShop3/issues/219).
+Known behavior in the current channel implementation: the message may go to `msCustomer` contacts instead of the email from the order form.
 
 **I want a custom delivery channel (for example, push to a mobile app).**
 You need a plugin on `msOnRegisterNotificationChannels` that registers a channel class implementing `ChannelInterface`. See [notification events](../development/events/notifications.md).

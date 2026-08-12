@@ -210,7 +210,7 @@ Shallow-merge: если два плагина вернули `returnedValues['co
 ### Два способа изменить данные
 
 1. **По ссылке** в `$scriptProperties` (legacy MS2, по-прежнему работает там, где параметры переданы с `&`).
-2. **`returnedValues`** — предпочтительный контракт с 1.11+ (issue [#219](https://github.com/modx-pro/MiniShop3/issues/219)).
+2. **`returnedValues`** — предпочтительный контракт с 1.11+.
 
 ```php
 <?php

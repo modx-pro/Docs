@@ -22,7 +22,7 @@ title: msCart
 | **showLog** | `false` | Показать лог выполнения (только для менеджеров) |
 | **return** | `tpl` | Формат вывода: `tpl` или `data` |
 | **customer_token** | | Токен клиента (по умолчанию берётся из сессии) |
-| **hideOnThanks** | `false` | При `1` / `true` сниппет возвращает пустую строку на странице «спасибо» (детектируется по параметру URL `?msorder=...`). По умолчанию (`false`) корзина рендерится как обычно — мини-корзина в общем layout продолжает работать. До 1.11.0 поведение «пустая строка на thanks» было дефолтным и неотключаемым (#249). |
+| **hideOnThanks** | `false` | При `1` / `true` сниппет возвращает пустую строку на странице «спасибо» (детектируется по параметру URL `?msorder=...`). По умолчанию (`false`) корзина рендерится как обычно — мини-корзина в общем layout продолжает работать. До 1.11.0 поведение «пустая строка на thanks» было дефолтным и неотключаемым. |
 
 ### Параметры pdoTools
 
@@ -154,7 +154,7 @@ title: msCart
 
 Для каждого товара доступны:
 
-- `{$product.key}` — Уникальный ключ позиции
+- `{$product.product_key}` — Уникальный ключ позиции
 - `{$product.id}` — ID товара
 - `{$product.count}` — Количество
 - `{$product.price}` — Цена за единицу
@@ -236,7 +236,7 @@ title: msCart
             </thead>
             <tbody>
                 {foreach $products as $product}
-                    <tr data-ms-cart-item="{$product.key}">
+                    <tr data-ms-cart-item="{$product.product_key}">
                         <td>
                             {if $product.thumb?}
                                 <img src="{$product.thumb}" alt="{$product.pagetitle}" width="60">
@@ -263,13 +263,13 @@ title: msCart
                                    value="{$product.count}"
                                    min="1"
                                    data-ms-action="cart/change"
-                                   data-key="{$product.key}">
+                                   data-key="{$product.product_key}">
                         </td>
                         <td>{$product.count * $product.price} руб.</td>
                         <td>
                             <button type="button"
                                     data-ms-action="cart/remove"
-                                    data-key="{$product.key}">
+                                    data-key="{$product.product_key}">
                                 ✕
                             </button>
                         </td>
@@ -301,16 +301,16 @@ title: msCart
 
 ```javascript
 // Добавить товар
-ms3.cart.add(productId, count, options);
+await ms3.cartAPI.add(productId, count, options)
 
 // Изменить количество
-ms3.cart.change(key, count);
+await ms3.cartAPI.change(productKey, count)
 
 // Удалить товар
-ms3.cart.remove(key);
+await ms3.cartAPI.remove(productKey)
 
-// Очистить корзину
-ms3.cart.clean();
+// Очистить корзину (только API; для UI — ms3.cartUI.handleClean())
+await ms3.cartAPI.clean()
 ```
 
 ### События

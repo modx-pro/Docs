@@ -452,8 +452,8 @@ CRUD for admin grid column configuration. All requests require permission `msset
 | Field | Type | Description |
 | --- | --- | --- |
 | `columns` | `array` | Grid columns with configuration (type, visibility, filtering, editor) |
-| `direct_filter_keys` | `string[]` | Filter keys the controller expects as **direct** request parameters (no `filter_` prefix). Others must be sent with the prefix. Source of truth is the backend; the frontend reads the array from here. Added in MiniShop3 1.12.0 ([PR #317](https://github.com/modx-pro/MiniShop3/pull/317)) — removes duplication between frontend and controllers. |
-| `editor_references` | `array<{key,path}>` | **Only for `grid_key=category-products`.** Whitelist of allowed reference keys for inline-edit combo editor. Each entry is a key/path pair to a reference API endpoint. Used by the column settings UI for select dropdown. Added in MiniShop3 1.12.0 ([PR #157](https://github.com/modx-pro/MiniShop3/pull/157)). |
+| `direct_filter_keys` | `string[]` | Filter keys the controller expects as **direct** request parameters (no `filter_` prefix). Others must be sent with the prefix. Source of truth is the backend; the frontend reads the array from here. Added in MiniShop3 1.12.0 — removes duplication between frontend and controllers. |
+| `editor_references` | `array<{key,path}>` | **Only for `grid_key=category-products`.** Whitelist of allowed reference keys for inline-edit combo editor. Each entry is a key/path pair to a reference API endpoint. Used by the column settings UI for select dropdown. Added in MiniShop3 1.12.0. |
 
 ##### Filter contract (`direct_filter_keys`)
 
@@ -474,7 +474,7 @@ When adding a new direct filter on the backend, **always** add its key to the `D
 
 #### Orders (`/orders`)
 
-Read and write are split into two middleware groups (#377).
+Read and write are split into two middleware groups.
 
 **Read** — permission `msorder_list`:
 
@@ -525,6 +525,19 @@ Read and write are split into two middleware groups (#377).
 #### Store settings
 
 **Deliveries (`/deliveries`)**, **Payments (`/payments`)**, **Vendors (`/vendors`)**, **Statuses (`/statuses`)**, **Links (`/links`)** — CRUD with permission `mssetting_save`.
+
+#### Product data (`/product-data`)
+
+“Categories” and “Links” tabs on the product card (Vue). Permission `msproduct_save` / mgr session:
+
+| Method | Route | Description |
+| --- | --- | --- |
+| GET | `/{id}/categories/tree` | Category tree (`ms3_product_category_tree`) |
+| GET | `/{id}/links` | Link list |
+| POST | `/{id}/links` | Add link `{ slave, link }` |
+| DELETE | `/{id}/links` | Remove link `{ link, master, slave }` |
+| GET | `/references/link-types` | `msLink` types (references group) |
+| GET | `/references/products` | Product autocomplete |
 
 #### Notifications (`/notifications`)
 

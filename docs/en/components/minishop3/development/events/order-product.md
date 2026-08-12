@@ -41,8 +41,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            if ($count > $remains) {
+            $stock = $msProduct->get('stock') ?? 0;
+            if ($count > $stock) {
                 $modx->event->output('Not enough stock');
                 return;
             }
@@ -78,8 +78,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', max(0, $remains - $count));
+            $stock = $msProduct->get('stock') ?? 0;
+            $msProduct->set('stock', max(0, $stock - $count));
             $msProduct->save();
         }
 
@@ -123,8 +123,8 @@ switch ($modx->event->name) {
 
             $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
             if ($msProduct) {
-                $remains = $msProduct->get('remains') ?? 0;
-                if ($diff > $remains) {
+                $stock = $msProduct->get('stock') ?? 0;
+                if ($diff > $stock) {
                     $modx->event->output('Not enough stock to increase quantity');
                     return;
                 }
@@ -165,8 +165,8 @@ switch ($modx->event->name) {
 
             $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
             if ($msProduct) {
-                $remains = $msProduct->get('remains') ?? 0;
-                $msProduct->set('remains', $remains - $diff);
+                $stock = $msProduct->get('stock') ?? 0;
+                $msProduct->set('stock', $stock - $diff);
                 $msProduct->save();
             }
         }
@@ -232,8 +232,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', $remains + $count);
+            $stock = $msProduct->get('stock') ?? 0;
+            $msProduct->set('stock', $stock + $count);
             $msProduct->save();
         }
         break;
@@ -261,7 +261,7 @@ switch ($modx->event->name) {
         $count = $orderProduct->get('count');
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-        if ($msProduct && $count > ($msProduct->get('remains') ?? 0)) {
+        if ($msProduct && $count > ($msProduct->get('stock') ?? 0)) {
             $modx->event->output('Insufficient stock');
             return;
         }

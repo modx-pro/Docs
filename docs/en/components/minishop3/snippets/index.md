@@ -70,7 +70,7 @@ Common values:
 | `json` | JSON string (msProducts, msGallery) |
 | `ids` | Comma-separated IDs (msProducts) |
 
-### Numbers and `*_formatted` (#242)
+### Numbers and `*_formatted`
 
 Price and weight placeholders in chunks are **numbers** (`float`). Use `*_formatted` fields for display. The `formatPrices` parameter was removed as a no-op.
 

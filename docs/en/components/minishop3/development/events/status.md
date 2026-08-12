@@ -162,8 +162,8 @@ switch ($modx->event->name) {
             foreach ($order->getMany('Products') as $product) {
                 $msProduct = $product->getOne('Product');
                 if ($msProduct) {
-                    $remains = $msProduct->get('remains') ?? 0;
-                    $msProduct->set('remains', $remains + $product->get('count'));
+                    $stock = $msProduct->get('stock') ?? 0;
+                    $msProduct->set('stock', $stock + $product->get('count'));
                     $msProduct->save();
                 }
             }
@@ -266,8 +266,8 @@ switch ($modx->event->name) {
                 foreach ($order->getMany('Products') as $product) {
                     $msProduct = $product->getOne('Product');
                     if ($msProduct) {
-                        $remains = $msProduct->get('remains') ?? 0;
-                        $msProduct->set('remains', max(0, $remains - $product->get('count')));
+                        $stock = $msProduct->get('stock') ?? 0;
+                        $msProduct->set('stock', max(0, $stock - $product->get('count')));
                         $msProduct->save();
                     }
                 }
@@ -287,8 +287,8 @@ switch ($modx->event->name) {
                 foreach ($order->getMany('Products') as $product) {
                     $msProduct = $product->getOne('Product');
                     if ($msProduct) {
-                        $remains = $msProduct->get('remains') ?? 0;
-                        $msProduct->set('remains', $remains + $product->get('count'));
+                        $stock = $msProduct->get('stock') ?? 0;
+                        $msProduct->set('stock', $stock + $product->get('count'));
                         $msProduct->save();
                     }
                 }

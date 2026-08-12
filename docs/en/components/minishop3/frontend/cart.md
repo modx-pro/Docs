@@ -86,7 +86,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 
 ### Changing options in the cart
 
-If a line has options (size, color), changing the combination goes through `POST /api/v1/cart/change-option` (body: `key`, `options`). On the server `CartMutationHandler` recalculates the line key and fires `msOnBeforeChangeOptionInCart` / `msOnChangeOptionInCart`. In JS: `ms3.cart.changeOption(key, options)` (see [Frontend JavaScript](/en/components/minishop3/development/frontend-js)).
+If a line has options (size, color), changing the combination goes through `POST /api/v1/cart/change-option` (body: `key`, `options`). On the server `CartMutationHandler` recalculates the line key and fires `msOnBeforeChangeOptionInCart` / `msOnChangeOptionInCart`. In JS: `ms3.cartAPI.changeOption(key, options)` (see [Frontend JavaScript](/en/components/minishop3/development/frontend-js)).
 
 ## Cart contents and available fields
 

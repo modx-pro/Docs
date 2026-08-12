@@ -183,11 +183,11 @@ switch ($modx->event->name) {
             );
         }
 
-        $remains = $data['remains'] ?? 0;
-        if ($remains <= 0) {
+        $stock = $data['stock'] ?? 0;
+        if ($stock <= 0) {
             $data['availability'] = 'out_of_stock';
             $data['availability_text'] = 'Out of stock';
-        } elseif ($remains < 5) {
+        } elseif ($stock < 5) {
             $data['availability'] = 'low_stock';
             $data['availability_text'] = 'Low stock';
         } else {

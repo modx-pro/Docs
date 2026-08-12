@@ -13,6 +13,7 @@ The section includes the following tabs:
 | --- | --- |
 | [Delivery methods](settings/deliveries) | Delivery method setup, cost, validation |
 | [Payment methods](settings/payments) | Payment system setup |
+| Statuses | Order statuses (`#tab-statuses`) |
 | [Vendors](settings/vendors) | Product vendor directory |
 | [Product links](settings/links) | Product relationship types |
 | [Options](settings/options) | EAV system for extra attributes |

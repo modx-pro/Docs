@@ -16,16 +16,16 @@ ExtJS TabPanel (top level)
 ├── Document (MODX system tab)
 ├── Product (Vue ProductTabs)
 │   ├── Properties (Vue)
-│   ├── Gallery (ExtJS + Vue uploader)
-│   ├── Categories (ExtJS)
-│   ├── Links (ExtJS)
-│   ├── Options (ExtJS)
+│   ├── Gallery (Vue)
+│   ├── Categories (Vue ProductCategoriesTab)
+│   ├── Links (Vue ProductLinksTab)
+│   ├── Product options (Vue)
 │   └── [Your tabs]
 ├── Page Settings (MODX system tab)
 └── Access Permissions (MODX system tab)
 ```
 
-The "Product" tab contains the Vue component `ProductTabs` with PrimeVue TabView, which manages the nested tabs.
+The "Product" tab is the Vue component `ProductTabs` (PrimeVue TabView). Categories and links are Vue as well, not ExtJS.
 
 ## Plugin Registry API
 

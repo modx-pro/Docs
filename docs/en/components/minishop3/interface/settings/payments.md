@@ -174,47 +174,23 @@ The `properties` field stores JSON with payment system settings:
 
 These settings are available in the handler via `$this->payment->get('properties')`.
 
-## Webhook for payment systems
+## Payment notifications (webhook / callback)
 
-To receive payment notifications use:
+MiniShop3 core has **no** ready-made `payment/handler.php`. The payment extra sets the notification URL (for example `webhook.php` / `callback.php` under `assets/components/{ns}/`). See the gateway docs ([msp3YooKassa](/en/components/msp3yookassa/), [mspTBank](/en/components/msptbank/), etc.).
 
-```
-https://yoursite.com/assets/components/minishop3/payment/handler.php?payment_id=1&order_id=123
-```
-
-Or configure a route in Web API for modern integrations.
+The payment class implements `send()` / notification handling and changes the order status. The payment link in emails and `msGetOrder` is built via `PaymentLinkResolver`.
 
 ## API
 
-### Get available payment methods
+### Deliveries and payments in the order draft
+
+There is **no** separate `GET /api/v1/order/payments`. Storefront delivery/payment lists are rendered by `msOrder`. Draft:
 
 ```
-GET /api/v1/order/payments?delivery_id=1
+GET /api/v1/order/get
 ```
 
-**Response:**
-
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "name": "Cash on delivery",
-      "description": "Pay the courier",
-      "price": "0",
-      "logo": ""
-    },
-    {
-      "id": 2,
-      "name": "Online card",
-      "description": "Visa, MasterCard, MIR",
-      "price": "0",
-      "logo": "/assets/images/cards.png"
-    }
-  ]
-}
-```
+`data.order` holds order fields, including `delivery_id` / `payment_id` and `address_*`. Change method: `POST /api/v1/order/add` or `POST /api/v1/order/set` with keys `payment_id` / `delivery_id`.
 
 ### Payment cost
 
@@ -232,6 +208,8 @@ GET /api/v1/order/cost/payment?payment_id=2
   }
 }
 ```
+
+Full totals (cart + delivery + payment): `GET /api/v1/order/cost`. Web API map: [REST API](/en/components/minishop3/development/api).
 
 ## Payment link (`payment_link`)
 

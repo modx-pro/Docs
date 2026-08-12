@@ -383,7 +383,7 @@ Legacy-процессоры `Processors/Settings/Option/*` и `Processors/Catego
 
 ### Группы опций — `/api/mgr/option-groups/*`
 
-Контроллер `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Появились в 1.11.0 — заменяют группировку через `modCategory` (#10).
+Контроллер `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Появились в 1.11.0 — заменяют группировку через `modCategory`.
 
 | Метод | Путь | Описание |
 | --- | --- | --- |

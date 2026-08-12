@@ -10,17 +10,27 @@ Headless API для программного взаимодействия с Min
 
 MiniShop3 использует двухуровневую архитектуру:
 
-```
-┌─────────────────────────────────────────────────┐
-│                    ms3.js                        │  ← Точка входа, автоинициализация
-├─────────────────────────────────────────────────┤
-│                  UI Layer                        │  ← DOM-привязки для SSR
-│     CartUI.js │ OrderUI.js │ CustomerUI.js      │
-├─────────────────────────────────────────────────┤
-│                 API Core                         │  ← Headless ядро
-│  ApiClient.js │ TokenManager.js │ hooks.js      │
-│  CartAPI.js │ OrderAPI.js │ CustomerAPI.js      │
-└─────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  ms3["ms3.js — точка входа, автоинициализация"]
+
+  subgraph ui ["UI Layer — DOM-привязки для SSR"]
+    CartUI[CartUI.js]
+    OrderUI[OrderUI.js]
+    CustomerUI[CustomerUI.js]
+  end
+
+  subgraph core ["API Core — headless ядро"]
+    ApiClient[ApiClient.js]
+    TokenManager[TokenManager.js]
+    Hooks[hooks.js]
+    CartAPI[CartAPI.js]
+    OrderAPI[OrderAPI.js]
+    CustomerAPI[CustomerAPI.js]
+  end
+
+  ms3 --> ui
+  ui --> core
 ```
 
 ### API Core (Headless)
@@ -249,14 +259,16 @@ API для работы с заказом.
 ```javascript
 const response = await ms3.orderAPI.get()
 
-// response.data:
+// response.data.order (фрагмент):
 {
-  receiver: "Иван Иванов",
-  email: "ivan@example.com",
-  phone: "+79991234567",
-  delivery: 1,
-  payment: 2,
-  comment: "Позвонить перед доставкой"
+  delivery_id: 1,
+  payment_id: 2,
+  order_comment: "Позвонить перед доставкой",
+  address_first_name: "Иван",
+  address_last_name: "Иванов",
+  address_email: "ivan@example.com",
+  address_phone: "+79991234567",
+  address_comment: ""
 }
 ```
 
@@ -265,12 +277,13 @@ const response = await ms3.orderAPI.get()
 Сохранить поле заказа.
 
 ```javascript
-await ms3.orderAPI.add('receiver', 'Иван Иванов')
+await ms3.orderAPI.add('first_name', 'Иван')
 await ms3.orderAPI.add('email', 'ivan@example.com')
 await ms3.orderAPI.add('phone', '+79991234567')
-await ms3.orderAPI.add('delivery', 1)
-await ms3.orderAPI.add('payment', 2)
-await ms3.orderAPI.add('comment', 'Позвонить перед доставкой')
+await ms3.orderAPI.add('delivery_id', 1)
+await ms3.orderAPI.add('payment_id', 2)
+await ms3.orderAPI.add('order_comment', 'Позвонить перед доставкой')
+// комментарий к адресу: await ms3.orderAPI.add('comment', '…')
 ```
 
 :::info Автосохранение
@@ -282,7 +295,7 @@ await ms3.orderAPI.add('comment', 'Позвонить перед доставк�
 Удалить поле заказа.
 
 ```javascript
-await ms3.orderAPI.remove('comment')
+await ms3.orderAPI.remove('order_comment')
 ```
 
 #### clean()
@@ -314,7 +327,7 @@ if (response.success) {
     success: false,
     message: "Заполните обязательные поля",
     data: {
-      errors: ["receiver", "email", "phone"]
+      errors: ["first_name", "email", "phone"]
     }
   }
 }

@@ -3,16 +3,18 @@ title: REST API
 ---
 # REST API
 
-MiniShop3 предоставляет REST API для интеграции с фронтендом и внешними системами.
+Web API MiniShop3 (`api.php`) обслуживает витрину и headless-клиенты: корзина, checkout, ЛК покупателя, публичный каталог. Manager API (`connector.php`) — отдельно, под сессией MODX для Vue-админки.
+
+Источник роутов витрины: `core/components/minishop3/config/routes/web.php`. Свои роуты: `core/config/ms3_routes_web.custom.php`, фрагменты аддонов: `core/config/ms3.routes.d/web/*.php`.
 
 ## Точки входа
 
 | Назначение | URL | Авторизация |
 | --- | --- | --- |
-| Web API (фронтенд) | `/assets/components/minishop3/api.php` | Токен MS3TOKEN |
+| Web API (витрина / headless) | `/assets/components/minishop3/api.php` | Токен: cookie `ms3_token`, `Authorization: Bearer`, legacy `MS3TOKEN` |
 | Manager API (админка) | `/assets/components/minishop3/connector.php` | Сессия MODX |
 
-Эта документация описывает **Web API** для фронтенда.
+Эта страница описывает **Web API**. Manager REST: [Backend API](/components/minishop3/development/backend-api/), [Маршрутизация](/components/minishop3/development/routing).
 
 ## Базовый URL
 
@@ -20,7 +22,7 @@ MiniShop3 предоставляет REST API для интеграции с ф�
 /assets/components/minishop3/api.php?route=/api/v1/{endpoint}
 ```
 
-Все запросы передают маршрут через параметр `route`.
+Все запросы передают маршрут через параметр `route`. Для cookie-токена указывайте `credentials: 'include'`. CORS и rate limit настраиваются ключами `ms3_cors_*` и `ms3_rate_limit_*` ([Системные настройки](/components/minishop3/settings#api)).
 
 ## Карта эндпоинтов
 
@@ -73,6 +75,8 @@ MiniShop3 предоставляет REST API для интеграции с ф�
 | `GET` | `/health` | нет |
 
 «Гостевой» токен: `GET /customer/token/get` (корзина и черновик заказа). «Авторизованный»: после `login` / `register`.
+
+Программное создание заказа без сессии (extras/cron) — **не** Web HTTP. См. [ProgrammaticOrderService](/components/minishop3/development/backend-api/order#программное-создание-заказа-programmaticorderservice).
 
 ## Авторизация
 
@@ -306,20 +310,26 @@ GET /api/v1/order/get
   "success": true,
   "data": {
     "order": {
-      "email": "user@example.com",
-      "phone": "+7 999 123-45-67",
-      "first_name": "Иван",
-      "delivery": 1,
-      "payment": 1,
+      "id": 0,
+      "delivery_id": 1,
+      "payment_id": 1,
+      "order_comment": "",
+      "cart_cost": 1500,
+      "delivery_cost": 300,
+      "cost": 1800,
+      "address_email": "user@example.com",
+      "address_phone": "+79991234567",
+      "address_first_name": "Иван",
+      "address_last_name": "Иванов",
       "address_city": "Москва",
       "address_street": "Ленина",
-      "comment": ""
-    },
-    "deliveries": [...],
-    "payments": [...]
+      "address_comment": ""
+    }
   }
 }
 ```
+
+В `data` только объект `order` (поля `msOrder` + адрес с префиксом `address_`). Списки способов доставки и оплаты этот эндпоинт не отдаёт.
 
 ### Добавить/обновить поле
 
@@ -338,19 +348,22 @@ POST /api/v1/order/add
 
 | Поле | Описание |
 | --- | --- |
-| `email` | Email клиента |
-| `phone` | Телефон |
-| `first_name` | Имя |
-| `last_name` | Фамилия |
-| `delivery` | ID способа доставки |
-| `payment` | ID способа оплаты |
-| `comment` | Комментарий к заказу |
+| `email` | Email (пишется в адрес) |
+| `phone` | Телефон (адрес) |
+| `first_name` | Имя (адрес) |
+| `last_name` | Фамилия (адрес) |
+| `delivery_id` | ID способа доставки |
+| `payment_id` | ID способа оплаты |
+| `order_comment` | Комментарий к заказу (`msOrder`) |
+| `comment` | Комментарий к адресу (`msOrderAddress`) |
 | `city` | Город |
 | `street` | Улица |
 | `building` | Дом |
 | `room` | Квартира/офис |
 | `index` | Индекс |
 | `address_hash` | Хеш сохранённого адреса |
+
+В `add` / `set` ключи адреса — без префикса (`city`, `first_name`). В ответе `order/get` те же поля приходят как `address_city`, `address_first_name`.
 
 **Пример:**
 
@@ -381,10 +394,26 @@ POST /api/v1/order/set
     "email": "user@example.com",
     "phone": "+79991234567",
     "first_name": "Иван",
-    "delivery": 1
+    "delivery_id": 1,
+    "payment_id": 2,
+    "order_comment": "Позвоните перед доставкой"
   }
 }
 ```
+
+При ошибке хотя бы одного поля ответ `success: false`, сообщение `ms3_order_err_validation`, в `data`:
+
+```json
+{
+  "order": { },
+  "errors": {
+    "email": "…",
+    "delivery_id": "…"
+  }
+}
+```
+
+Каждое поле по-прежнему проходит через `add()` и события `msOnBeforeAddToOrder` / `msOnAddToOrder`. `set()` только агрегирует ошибки.
 
 ### Удалить поле
 
@@ -612,6 +641,7 @@ POST /api/v1/customer/login
   "data": {
     "customer_id": 5,
     "token": "session_token_xyz789",
+    "expires_at": "2026-08-19 12:00:00",
     "customer": {
       "id": 5,
       "email": "user@example.com",
@@ -620,6 +650,31 @@ POST /api/v1/customer/login
   }
 }
 ```
+
+::: warning Ротация токена
+После `login` / `register` / успешного `email/verify` сервер всегда выдаёт **новый** API-токен (`AuthManager::establishCustomerSession`). Старый гостевой или предыдущий cookie `ms3_token` отзывается. Черновик корзины переносится на новый токен (`transferDraftToToken` / `bindDraftToCustomer`), затем `session_regenerate_id(true)`.
+
+Headless-клиент обязан сохранить новый `token` / `expires_at` из ответа. На витрине с httpOnly cookie браузер получает обновление cookie сам.
+
+```javascript
+const res = await fetch('/api/v1/customer/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'ms3-token': guestToken, // текущий гостевой токен
+  },
+  body: JSON.stringify({ email, password }),
+})
+const json = await res.json()
+if (!json.success) throw new Error(json.message)
+
+// Обязательно подменить токен во всех следующих запросах
+const { token, expires_at, customer_id } = json.data
+localStorage.setItem('ms3_token', token)
+localStorage.setItem('ms3_token_expires', expires_at)
+```
+
+:::
 
 ### Выход
 
@@ -1034,15 +1089,15 @@ MiniShop3 предоставляет JavaScript библиотеку для ра
 
 ```javascript
 // Добавить в корзину
-ms3.cart.add(123, 2, {color: 'red'});
+await ms3.cartAPI.add(123, 2, { color: 'red' })
 
 // Оформить заказ
-ms3.order.submit();
+const result = await ms3.orderAPI.submit()
 
-// Обработка ответов через hooks
-ms3.hooks.add('afterAddToCart', ({response}) => {
-    console.log('Товар добавлен', response.data);
-});
+// Хуки
+ms3Hooks.addHook('afterAddCart', async ({ response }) => {
+  console.log('Товар добавлен', response.data)
+})
 ```
 
 Подробнее в разделе [Frontend JavaScript](frontend-js).

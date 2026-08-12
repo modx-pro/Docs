@@ -79,7 +79,7 @@ With `return=data` the snippet returns an array:
     'order' => [
         'delivery_id' => 1,
         'payment_id' => 2,
-        'comment' => '...',
+        'order_comment' => '...',
         'cost' => 5300,                  // Total (number)
         'cost_formatted' => '5 300 ₽',  // Total with currency
         'cart_cost' => 5000,             // Products cost
@@ -158,7 +158,7 @@ With `return=data` the snippet returns an array:
 {foreach $deliveries as $delivery}
     <label>
         <input type="radio"
-               name="delivery"
+               name="delivery_id"
                value="{$delivery.id}"
                {if $order.delivery_id == $delivery.id}checked{/if}>
         {$delivery.name}
@@ -175,7 +175,7 @@ With `return=data` the snippet returns an array:
 {foreach $payments as $payment}
     <label>
         <input type="radio"
-               name="payment"
+               name="payment_id"
                value="{$payment.id}"
                {if $order.payment_id == $payment.id}checked{/if}>
         {$payment.name}
@@ -301,7 +301,7 @@ With `return=data` the snippet returns an array:
     {* Comment *}
     <fieldset>
         <legend>Order comment</legend>
-        <textarea name="comment" rows="3">{$order.comment}</textarea>
+        <textarea name="order_comment" rows="3">{$order.order_comment}</textarea>
     </fieldset>
 
     {* Total *}
@@ -325,39 +325,34 @@ With `return=data` the snippet returns an array:
 
 ## JavaScript interaction
 
-```javascript
-// Submit order
-ms3.order.submit();
-
-// Update delivery method
-ms3.order.setDelivery(deliveryId);
-
-// Update payment method
-ms3.order.setPayment(paymentId);
-
-// Update field
-ms3.order.setField(name, value);
-```
-
-## Events
-
-Order submission triggers events:
+The form uses `OrderUI` + `ms3.orderAPI`. There is no public `ms3.order` object.
 
 ```javascript
-// Before submit
-document.addEventListener('ms3:order:before-submit', (e) => {
-    console.log('Order data:', e.detail);
-});
+// Draft fields
+await ms3.orderAPI.add('delivery_id', deliveryId)
+await ms3.orderAPI.add('payment_id', paymentId)
+await ms3.orderAPI.add('city', 'Moscow')
+await ms3.orderAPI.add('order_comment', 'Call before delivery')
 
-// After successful submit
-document.addEventListener('ms3:order:success', (e) => {
-    console.log('Order created:', e.detail.order_id);
-    // Redirect to success page
-    window.location.href = e.detail.redirect;
-});
-
-// On error
-document.addEventListener('ms3:order:error', (e) => {
-    console.error('Error:', e.detail.message);
-});
+// Submit
+const response = await ms3.orderAPI.submit()
+if (response.success) {
+  window.location.href = response.data.redirect
+}
 ```
+
+Hooks (needs `hooks.js` in `ms3_frontend_assets`):
+
+```javascript
+ms3Hooks.addHook('beforeSubmitOrder', async (data) => {
+  // data.formData — form FormData
+})
+
+ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
+  if (response.success) {
+    console.log('Order:', response.data.order_id)
+  }
+})
+```
+
+Details: [JavaScript API](/en/components/minishop3/development/javascript), [Frontend JS](/en/components/minishop3/development/frontend-js).

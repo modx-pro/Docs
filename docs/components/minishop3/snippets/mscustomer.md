@@ -213,7 +213,7 @@ title: msCustomer
         'status_name' => 'Оплачен',
         'status_color' => '008000',
         'createdon_formatted' => '15.01.2024 10:30',
-        'comment' => 'Позвонить перед доставкой',
+        'order_comment' => 'Позвонить перед доставкой',
         // ... другие поля msOrder
     ],
     'products' => [

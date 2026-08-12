@@ -58,7 +58,7 @@ description: Формы входа и регистрации покупател�
 | Регистрация | `handleRegister` | `POST /api/v1/customer/register` |
 | Выход | из ЛК / API | `POST /api/v1/customer/logout` |
 
-После успеха скрипт редиректит по `ms3_customer_redirect_after_login` или обновляет страницу. Сервер кладёт токен в httpOnly cookie `ms3_token`. Формат ответов: [REST API](/components/minishop3/development/api).
+После успеха скрипт редиректит по `ms3_customer_redirect_after_login` или обновляет страницу. Сервер кладёт **новый** токен в httpOnly cookie `ms3_token` (ротация против token fixation): старый гостевой токен отзывается, черновик корзины переносится на сессию покупателя. Формат ответов: [REST API](/components/minishop3/development/api).
 
 ### Провайдеры входа
 

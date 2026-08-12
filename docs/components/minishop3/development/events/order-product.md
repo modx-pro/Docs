@@ -42,8 +42,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            if ($count > $remains) {
+            $stock = $msProduct->get('stock') ?? 0;
+            if ($count > $stock) {
                 $modx->event->output('Недостаточно товара на складе');
                 return;
             }
@@ -80,8 +80,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', max(0, $remains - $count));
+            $stock = $msProduct->get('stock') ?? 0;
+            $msProduct->set('stock', max(0, $stock - $count));
             $msProduct->save();
         }
 
@@ -126,8 +126,8 @@ switch ($modx->event->name) {
 
             $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
             if ($msProduct) {
-                $remains = $msProduct->get('remains') ?? 0;
-                if ($diff > $remains) {
+                $stock = $msProduct->get('stock') ?? 0;
+                if ($diff > $stock) {
                     $modx->event->output('Недостаточно товара для увеличения количества');
                     return;
                 }
@@ -168,8 +168,8 @@ switch ($modx->event->name) {
 
             $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
             if ($msProduct) {
-                $remains = $msProduct->get('remains') ?? 0;
-                $msProduct->set('remains', $remains - $diff);
+                $stock = $msProduct->get('stock') ?? 0;
+                $msProduct->set('stock', $stock - $diff);
                 $msProduct->save();
 
                 $modx->log(modX::LOG_LEVEL_INFO, sprintf(
@@ -245,8 +245,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', $remains + $count);
+            $stock = $msProduct->get('stock') ?? 0;
+            $msProduct->set('stock', $stock + $count);
             $msProduct->save();
         }
 
@@ -297,18 +297,18 @@ switch ($modx->event->name) {
 function updateStock($modx, $productId, $delta) {
     $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
     if ($msProduct) {
-        $remains = $msProduct->get('remains') ?? 0;
-        $newRemains = max(0, $remains + $delta);
-        $msProduct->set('remains', $newRemains);
+        $stock = $msProduct->get('stock') ?? 0;
+        $newStock = max(0, $stock + $delta);
+        $msProduct->set('stock', $newStock);
         $msProduct->save();
 
         $modx->log(modX::LOG_LEVEL_INFO, sprintf(
             '[Stock] Товар #%d: %d %s %d = %d',
             $productId,
-            $remains,
+            $stock,
             $delta >= 0 ? '+' : '-',
             abs($delta),
-            $newRemains
+            $newStock
         ));
     }
 }

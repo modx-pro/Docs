@@ -40,7 +40,7 @@ Tab with product fields grouped by sections. Uses a Vue 3 component for flexible
 | Section | Fields |
 | --- | --- |
 | Main data | `article`, `price`, `old_price`, `weight` |
-| Stock | `remains`, `new`, `popular`, `favorite` |
+| Stock | `stock`, `new`, `popular`, `favorite` |
 | Specifications | `color`, `size`, `vendor`, `made_in`, `tags` |
 
 ::: tip Configuration
@@ -60,17 +60,21 @@ See also: [Product gallery](gallery)
 
 ### Links
 
-Product link configuration:
+Vue tab `ProductLinksTab`. CRUD via Manager API (permission `msproduct_save`):
 
-| Link type | Description |
+| Method | Path |
 | --- | --- |
-| Complementary | Accessories, components |
-| Similar | Similar products |
-| Recommended | Personal recommendations |
+| `GET` | `/api/mgr/product-data/{id}/links` |
+| `POST` | `/api/mgr/product-data/{id}/links` — body `{ slave, link }` |
+| `DELETE` | `/api/mgr/product-data/{id}/links` — body `{ link, master, slave }` (batch `ids[]` not supported) |
+| `GET` | `/api/mgr/references/link-types` |
+| `GET` | `/api/mgr/references/products` |
+
+Link types from the `msLink` directory: `one_to_many`, `many_to_one`, `one_to_one`, `many_to_many`. Configure types: [Settings → Links](settings/links).
 
 ### Categories
 
-Additional product categories. A product can belong to several categories besides the main one (`parent`).
+Vue tab `ProductCategoriesTab`. Tree: `GET /api/mgr/product-data/{id}/categories/tree` (service `ms3_product_category_tree`). Selected ids go in the resource POST as hidden `name="categories"` (JSON). The parent category (`parent`) is locked in the tree. A product can belong to several extra categories via `msCategoryMember`.
 
 ### Product options
 
@@ -80,7 +84,7 @@ Product option values (configured in [Settings → Options](settings/options)).
 The tab is fully Vue. The universal `ProductOptionField` component supports all 10 option types: `textfield`, `numberfield`, `textarea`, `checkbox`, `comboBoolean`, `combobox`, `comboMultiple`, `comboColors` (+ color square next to the value), `comboOptions` (PrimeVue `InputChips` — enter arbitrary tags with suggestions from previously used values), `datefield`.
 :::
 
-Options are grouped by `modcategory_id` (MODX category on `msOption`) and shown in vertical tabs on the left. If there is only one group, the tab is hidden and fields are listed directly.
+Options are grouped by `option_group_id` (`msOptionGroup`) and shown in vertical tabs on the left. If there is only one group, the tab is hidden and fields are listed directly.
 
 **Per-category caption / description.** If the option ↔ category link has its own `caption` (see [Settings → Options](settings/options#per-category-caption-description-override)), the product form shows that caption — the same override used on the storefront.
 

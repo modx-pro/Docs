@@ -182,7 +182,7 @@ return [
 
 ```php
 [
-    'name' => 'remains',
+    'name' => 'stock',
     'label' => 'Остаток',
     'visible' => true,
     'sortable' => true,
@@ -805,7 +805,7 @@ GET /api/mgr/categories/{id}/products/filters
 PUT /api/mgr/categories/{id}/products/{productId}/data
 ```
 
-Тело JSON — поля `msProductData` (цена, артикул и т.д.) из грида категории без открытия карточки товара (#455). Контроллер: `CategoryProductsController::updateProductData()`.
+Тело JSON — поля `msProductData` (цена, артикул и т.д.) из грида категории без открытия карточки товара. Контроллер: `CategoryProductsController::updateProductData()`.
 
 ## Связанные страницы
 

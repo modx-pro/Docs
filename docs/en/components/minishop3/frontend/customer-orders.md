@@ -273,7 +273,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 | `{$order.status_name}` | string | Status name |
 | `{$order.status_color}` | string | Status color |
 | `{$order.createdon_formatted}` | string | Created date |
-| `{$order.comment}` | string | Order comment |
+| `{$order.order_comment}` | string | Order comment |
 | `{$order.can_cancel}` | bool | Whether the order can be canceled |
 | `{$products}` | array | Order products |
 | `{$delivery}` | array | Delivery method |
@@ -497,13 +497,13 @@ The customer can cancel an order if its current status is in the allowed list (s
     </div>
 
     {* Comment *}
-    {if $order.comment}
+    {if $order.order_comment}
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
             <h6 class="mb-0">{'ms3_frontend_comment' | lexicon}</h6>
         </div>
         <div class="card-body">
-            <p class="mb-0">{$order.comment}</p>
+            <p class="mb-0">{$order.order_comment}</p>
         </div>
     </div>
     {/if}

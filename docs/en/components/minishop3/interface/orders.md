@@ -4,7 +4,7 @@ description: Manager order list, drafts, statuses, and cost recalculation
 ---
 # Orders
 
-Open **Extras → MiniShop3 → Orders**. On the left is the grid of all orders; a click opens the card (Vue 3 + PrimeVue).
+Open **Extras → MiniShop3 → Orders**. On the left is the grid of all orders; a click opens the card.
 
 <!-- ![Orders list](/components/minishop3/screenshots/mgr-orders.png) -->
 

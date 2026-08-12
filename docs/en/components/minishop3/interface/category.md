@@ -182,7 +182,7 @@ return [
 
 ```php
 [
-    'name' => 'remains',
+    'name' => 'stock',
     'label' => 'Stock',
     'visible' => true,
     'sortable' => true,
@@ -805,7 +805,7 @@ GET /api/mgr/categories/{id}/products/filters
 PUT /api/mgr/categories/{id}/products/{productId}/data
 ```
 
-JSON body — `msProductData` fields (price, article, etc.) from the category grid without opening the product card (#455). Controller: `CategoryProductsController::updateProductData()`.
+JSON body — `msProductData` fields (price, article, etc.) from the category grid without opening the product card. Controller: `CategoryProductsController::updateProductData()`.
 
 ## Related pages
 

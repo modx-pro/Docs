@@ -169,7 +169,7 @@ For compact layout:
 | price | 3 (25%) |
 | old_price | 3 (25%) |
 | weight | 4 (33%) |
-| remains | 4 (33%) |
+| stock | 4 (33%) |
 
 ### Hiding technical fields
 

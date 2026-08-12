@@ -91,7 +91,7 @@ Rule setup: [Deliveries → Validation](/en/components/minishop3/interface/setti
 ### Validation process
 
 1. On delivery change `OrderUI` calls `GET /api/v1/order/delivery/validation-rules` and `GET /api/v1/order/delivery/required-fields`, hides extra fields, and updates `required`.
-2. On `ms3.order.setField` the server checks the field against the current delivery rules.
+2. On `ms3.orderAPI.add(key, value)` the server checks the field against the current delivery rules.
 3. On submit the server checks all required fields.
 4. On error JS adds `is-invalid` and text in `.invalid-feedback`.
 
@@ -116,52 +116,48 @@ On the storefront the checkbox must send `input.checked` (`1` / `0`), not a stat
 
 ## JavaScript API
 
-### ms3.order object
+Public facade is `ms3.orderAPI` (not `ms3.order`). The UI form calls it through `OrderUI`.
 
 ```javascript
 // Submit order
-ms3.order.submit();
+const response = await ms3.orderAPI.submit()
+if (response.success) {
+  window.location.href = response.data.redirect
+}
 
-// Update delivery method
-ms3.order.setDelivery(deliveryId);
+// Delivery / payment method
+await ms3.orderAPI.add('delivery_id', deliveryId)
+await ms3.orderAPI.add('payment_id', paymentId)
 
-// Update payment method
-ms3.order.setPayment(paymentId);
-
-// Update form field
-ms3.order.setField('city', 'Moscow');
+// Address and order fields
+await ms3.orderAPI.add('city', 'Moscow')
+await ms3.orderAPI.add('order_comment', 'Call before delivery')
+// address.comment (address comment): await ms3.orderAPI.add('comment', '…')
 ```
 
-### Events
+### Hooks
+
+There are no `ms3:order:*` DOM events. Use hooks:
 
 ```javascript
-// Before order submission
-document.addEventListener('ms3:order:before-submit', (e) => {
-    console.log('Order data:', e.detail);
-    // Cancel submission: e.preventDefault()
-});
+ms3Hooks.addHook('beforeSubmitOrder', async (data) => {
+  // you can change data.formData
+})
 
-// After successful checkout
-document.addEventListener('ms3:order:success', (e) => {
-    console.log('Order created:', e.detail.order_id);
-    window.location.href = e.detail.redirect;
-});
+ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
+  if (response.success) {
+    console.log('order_id:', response.data.order_id)
+  }
+})
 
-// On checkout error
-document.addEventListener('ms3:order:error', (e) => {
-    console.error('Errors:', e.detail.errors);
-});
-
-// On delivery method change
-document.addEventListener('ms3:order:delivery-changed', (e) => {
-    console.log('Delivery selected:', e.detail.delivery_id);
-});
-
-// On payment method change
-document.addEventListener('ms3:order:payment-changed', (e) => {
-    console.log('Payment selected:', e.detail.payment_id);
-});
+ms3Hooks.addHook('afterAddOrder', async ({ key, value, response }) => {
+  if (key === 'delivery_id') {
+    console.log('Delivery:', value)
+  }
+})
 ```
+
+See [Frontend JS — hooks](/en/components/minishop3/development/frontend-js).
 
 ## Server events
 

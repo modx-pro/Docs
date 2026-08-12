@@ -138,6 +138,7 @@ Main schema attributes:
 | `payment_id` | int | Payment method ID |
 | `context` | varchar(100) | MODX context |
 | `order_comment` | text | Order comment |
+| `idempotency_key` | varchar | Idempotency key (programmatic orders) |
 | `createdon` | datetime | Created at |
 | `updatedon` | datetime | Updated at |
 
@@ -297,26 +298,24 @@ miniShop2 used "fat models" — model classes contained a lot of business logic:
 
 In MiniShop3 business logic lives in the **service layer** (`src/Services/`, `src/Controllers/`):
 
-```
-miniShop2:
-┌─────────────────────────────────┐
-│           msOrder               │
-│  - validation                   │
-│  - cost calculation             │
-│  - status change                │
-│  - notifications                │
-│  - database access              │
-└─────────────────────────────────┘
+### miniShop2 — fat model
 
-MiniShop3:
-┌─────────────────┐     ┌─────────────────────┐
-│    msOrder      │◄────│  OrderController    │
-│  - database     │     │  - business logic   │
-│  - relations    │     └─────────────────────┘
-│  - service      │     ┌─────────────────────┐
-│    calls        │◄────│  NotificationManager│
-└─────────────────┘     │  - notifications    │
-                        └─────────────────────┘
+```mermaid
+flowchart TB
+  msOrder["msOrder"]
+  msOrder --- V[validation]
+  msOrder --- C[cost calculation]
+  msOrder --- S[status change]
+  msOrder --- N[notifications]
+  msOrder --- D[database access]
+```
+
+### MiniShop3 — model + services
+
+```mermaid
+flowchart LR
+  OrderController["OrderController — business logic"] --> msOrder["msOrder — DB, relations, service calls"]
+  NotificationManager["NotificationManager — notifications"] --> msOrder
 ```
 
 ### Pragmatic approach
@@ -451,27 +450,25 @@ class CreateCustomersTable extends AbstractMigration
 
 ## Relation diagram
 
-```
-┌─────────────┐       ┌─────────────────┐
-│  msProduct  │──1:1──│  msProductData  │
-│ (modResource)│       │  (ms3_products) │
-└──────┬──────┘       └────────┬────────┘
-       │                       │
-       │ 1:N                   │ 1:N
-       ▼                       ▼
-┌──────────────┐       ┌────────────────┐
-│msProductOption│       │ msProductFile  │
-└──────────────┘       └────────────────┘
+### Product
 
-┌─────────────┐       ┌─────────────────┐
-│   msOrder   │──1:1──│ msOrderAddress  │
-└──────┬──────┘       └─────────────────┘
-       │
-       ├──1:N──▶ msOrderProduct
-       │
-       ├──N:1──▶ msCustomer ──1:N──▶ msCustomerAddress
-       │
-       ├──N:1──▶ msDelivery
-       │
-       └──N:1──▶ msPayment
+`msProduct` (extends `modResource`) and `msProductData` (table `ms3_products`)
+
+```mermaid
+erDiagram
+  msProduct ||--|| msProductData : "1:1"
+  msProduct ||--o{ msProductOption : "1:N"
+  msProductData ||--o{ msProductFile : "1:N"
+```
+
+### Order
+
+```mermaid
+erDiagram
+  msOrder ||--|| msOrderAddress : "1:1"
+  msOrder ||--o{ msOrderProduct : "1:N"
+  msOrder }o--|| msCustomer : "N:1"
+  msCustomer ||--o{ msCustomerAddress : "1:N"
+  msOrder }o--|| msDelivery : "N:1"
+  msOrder }o--|| msPayment : "N:1"
 ```

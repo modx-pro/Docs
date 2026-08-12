@@ -3,16 +3,18 @@ title: REST API
 ---
 # REST API
 
-MiniShop3 provides a REST API for integration with the frontend and external systems.
+MiniShop3 Web API (`api.php`) serves the storefront and headless clients: cart, checkout, customer account, public catalog. Manager API (`connector.php`) is separate, under a MODX session for the Vue admin.
+
+Storefront route source: `core/components/minishop3/config/routes/web.php`. Custom: `core/config/ms3_routes_web.custom.php`, add-on fragments: `core/config/ms3.routes.d/web/*.php`.
 
 ## Entry points
 
 | Purpose | URL | Authorization |
 | --- | --- | --- |
-| Web API (frontend) | `/assets/components/minishop3/api.php` | MS3TOKEN token |
+| Web API (storefront / headless) | `/assets/components/minishop3/api.php` | Token: `ms3_token` cookie, `Authorization: Bearer`, legacy `MS3TOKEN` |
 | Manager API (manager) | `/assets/components/minishop3/connector.php` | MODX session |
 
-This documentation describes the **Web API** for the frontend.
+This page documents the **Web API**. Manager REST: [Backend API](/en/components/minishop3/development/backend-api/), [Routing](/en/components/minishop3/development/routing).
 
 ## Base URL
 
@@ -20,7 +22,7 @@ This documentation describes the **Web API** for the frontend.
 /assets/components/minishop3/api.php?route=/api/v1/{endpoint}
 ```
 
-All requests pass the route via the `route` parameter.
+All requests pass the route via the `route` parameter. For cookie tokens use `credentials: 'include'`. CORS and rate limit use `ms3_cors_*` and `ms3_rate_limit_*` ([System settings](/en/components/minishop3/settings#api)).
 
 ## Endpoint map
 
@@ -73,6 +75,8 @@ Source: `config/routes/web.php`. The `/api/v1` group always runs CORS, rate limi
 | `GET` | `/health` | none |
 
 “Guest” token: `GET /customer/token/get` (cart and order draft). “Authorized”: after `login` / `register`.
+
+Programmatic order creation without an HTTP session (extras/cron) is **not** Web HTTP. See [ProgrammaticOrderService](/en/components/minishop3/development/backend-api/order#programmatic-order-creation-programmaticorderservice).
 
 ## Authorization
 
@@ -306,20 +310,26 @@ GET /api/v1/order/get
   "success": true,
   "data": {
     "order": {
-      "email": "user@example.com",
-      "phone": "+7 999 123-45-67",
-      "first_name": "John",
-      "delivery": 1,
-      "payment": 1,
+      "id": 0,
+      "delivery_id": 1,
+      "payment_id": 1,
+      "order_comment": "",
+      "cart_cost": 1500,
+      "delivery_cost": 300,
+      "cost": 1800,
+      "address_email": "user@example.com",
+      "address_phone": "+79991234567",
+      "address_first_name": "John",
+      "address_last_name": "Doe",
       "address_city": "Moscow",
       "address_street": "Main St",
-      "comment": ""
-    },
-    "deliveries": [...],
-    "payments": [...]
+      "address_comment": ""
+    }
   }
 }
 ```
+
+`data` contains only the `order` object (`msOrder` fields + address with `address_` prefix). This endpoint does not return delivery or payment method lists.
 
 ### Add/update field
 
@@ -338,19 +348,22 @@ POST /api/v1/order/add
 
 | Field | Description |
 | --- | --- |
-| `email` | Customer email |
-| `phone` | Phone |
-| `first_name` | First name |
-| `last_name` | Last name |
-| `delivery` | Delivery method ID |
-| `payment` | Payment method ID |
-| `comment` | Order comment |
+| `email` | Email (written to address) |
+| `phone` | Phone (address) |
+| `first_name` | First name (address) |
+| `last_name` | Last name (address) |
+| `delivery_id` | Delivery method ID |
+| `payment_id` | Payment method ID |
+| `order_comment` | Order comment (`msOrder`) |
+| `comment` | Address comment (`msOrderAddress`) |
 | `city` | City |
 | `street` | Street |
 | `building` | Building |
 | `room` | Apartment/office |
 | `index` | Postal code |
 | `address_hash` | Saved address hash |
+
+In `add` / `set`, address keys have no prefix (`city`, `first_name`). In the `order/get` response the same fields arrive as `address_city`, `address_first_name`.
 
 **Example:**
 
@@ -381,10 +394,26 @@ POST /api/v1/order/set
     "email": "user@example.com",
     "phone": "+79991234567",
     "first_name": "John",
-    "delivery": 1
+    "delivery_id": 1,
+    "payment_id": 2,
+    "order_comment": "Call before delivery"
   }
 }
 ```
+
+If any field fails, the response is `success: false`, message `ms3_order_err_validation`, and `data`:
+
+```json
+{
+  "order": { },
+  "errors": {
+    "email": "…",
+    "delivery_id": "…"
+  }
+}
+```
+
+Each field still goes through `add()` and events `msOnBeforeAddToOrder` / `msOnAddToOrder`. `set()` only aggregates errors.
 
 ### Remove field
 
@@ -612,6 +641,7 @@ POST /api/v1/customer/login
   "data": {
     "customer_id": 5,
     "token": "session_token_xyz789",
+    "expires_at": "2026-08-19 12:00:00",
     "customer": {
       "id": 5,
       "email": "user@example.com",
@@ -620,6 +650,31 @@ POST /api/v1/customer/login
   }
 }
 ```
+
+::: warning Token rotation
+After `login` / `register` / successful `email/verify`, the server always issues a **new** API token (`AuthManager::establishCustomerSession`). The old guest or previous `ms3_token` cookie is revoked. The cart draft moves to the new token (`transferDraftToToken` / `bindDraftToCustomer`), then `session_regenerate_id(true)`.
+
+A headless client must persist the new `token` / `expires_at` from the response. On a storefront with an httpOnly cookie, the browser updates the cookie itself.
+
+```javascript
+const res = await fetch('/api/v1/customer/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'ms3-token': guestToken, // current guest token
+  },
+  body: JSON.stringify({ email, password }),
+})
+const json = await res.json()
+if (!json.success) throw new Error(json.message)
+
+// Replace the token for all subsequent requests
+const { token, expires_at, customer_id } = json.data
+localStorage.setItem('ms3_token', token)
+localStorage.setItem('ms3_token_expires', expires_at)
+```
+
+:::
 
 ### Logout
 
@@ -1034,15 +1089,15 @@ MiniShop3 provides a JavaScript library for working with the API:
 
 ```javascript
 // Add to cart
-ms3.cart.add(123, 2, {color: 'red'});
+await ms3.cartAPI.add(123, 2, { color: 'red' })
 
 // Submit order
-ms3.order.submit();
+const result = await ms3.orderAPI.submit()
 
-// Handle responses via hooks
-ms3.hooks.add('afterAddToCart', ({response}) => {
-    console.log('Product added', response.data);
-});
+// Hooks
+ms3Hooks.addHook('afterAddCart', async ({ response }) => {
+  console.log('Product added', response.data)
+})
 ```
 
 See [Frontend JavaScript](frontend-js) for details.

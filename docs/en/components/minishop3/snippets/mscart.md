@@ -22,7 +22,7 @@ The snippet uses the user session and must be called **uncached**.
 | **showLog** | `false` | Show execution log (managers only) |
 | **return** | `tpl` | Output format: `tpl` or `data` |
 | **customer_token** | | Customer token (default from session) |
-| **hideOnThanks** | `false` | When `1` / `true`, the snippet returns an empty string on the thank-you page (detected by URL parameter `?msorder=...`). By default (`false`) the cart renders as usual — a mini cart in the shared layout keeps working. Before 1.11.0, empty output on the thanks page was the default and could not be disabled (#249). |
+| **hideOnThanks** | `false` | When `1` / `true`, the snippet returns an empty string on the thank-you page (detected by URL parameter `?msorder=...`). By default (`false`) the cart renders as usual — a mini cart in the shared layout keeps working. Before 1.11.0, empty output on the thanks page was the default and could not be disabled. |
 
 ### pdoTools parameters
 
@@ -154,7 +154,7 @@ Loop over products in the chunk:
 
 For each product:
 
-- `{$product.key}` — Unique line key
+- `{$product.product_key}` — Unique line key
 - `{$product.id}` — Product ID
 - `{$product.count}` — Quantity
 - `{$product.price}` — Unit price
@@ -236,7 +236,7 @@ The snippet registers via `registerSnippet()` for re-render on cart changes (sam
             </thead>
             <tbody>
                 {foreach $products as $product}
-                    <tr data-ms-cart-item="{$product.key}">
+                    <tr data-ms-cart-item="{$product.product_key}">
                         <td>
                             {if $product.thumb?}
                                 <img src="{$product.thumb}" alt="{$product.pagetitle}" width="60">
@@ -263,13 +263,13 @@ The snippet registers via `registerSnippet()` for re-render on cart changes (sam
                                    value="{$product.count}"
                                    min="1"
                                    data-ms-action="cart/change"
-                                   data-key="{$product.key}">
+                                   data-key="{$product.product_key}">
                         </td>
                         <td>{$product.count * $product.price}</td>
                         <td>
                             <button type="button"
                                     data-ms-action="cart/remove"
-                                    data-key="{$product.key}">
+                                    data-key="{$product.product_key}">
                                 ✕
                             </button>
                         </td>
@@ -301,16 +301,16 @@ The cart is updated via the MiniShop3 JavaScript API:
 
 ```javascript
 // Add product
-ms3.cart.add(productId, count, options);
+await ms3.cartAPI.add(productId, count, options)
 
 // Change quantity
-ms3.cart.change(key, count);
+await ms3.cartAPI.change(productKey, count)
 
 // Remove product
-ms3.cart.remove(key);
+await ms3.cartAPI.remove(productKey)
 
-// Clear cart
-ms3.cart.clean();
+// Clear cart (API only; for UI use ms3.cartUI.handleClean())
+await ms3.cartAPI.clean()
 ```
 
 ### Events
