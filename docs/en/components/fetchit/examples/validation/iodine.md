@@ -1,6 +1,6 @@
 ---
 title: Validation with Iodine
-description: FetchIt client-side validation with Iodine and fetchit:before
+description: "FetchIt client-side validation with Iodine and fetchit:before"
 ---
 
 # Validation with Iodine

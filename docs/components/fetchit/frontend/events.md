@@ -1,6 +1,6 @@
 ---
 title: События
-description: fetchit:before, after, success, error, reset: cancelable и порядок
+description: "fetchit:before, after, success, error, reset: cancelable и порядок"
 ---
 
 # События

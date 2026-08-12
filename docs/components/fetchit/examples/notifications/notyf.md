@@ -1,6 +1,6 @@
 ---
 title: Notyf
-description: Уведомления Notyf для FetchIt: системная настройка или ручной CDN
+description: "Уведомления Notyf для FetchIt: системная настройка или ручной CDN"
 ---
 
 # Notyf
