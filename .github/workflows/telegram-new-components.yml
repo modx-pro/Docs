@@ -1,10 +1,17 @@
+# Уведомление в Telegram о новых компонентах после Deploy на master.
+#
+# Ручной запуск (один или несколько slug через запятую):
+#   gh workflow run telegram-new-components.yml -f component=mspricetiers
+#   gh workflow run telegram-new-components.yml -f component=mspricetiers,mscurrency
+#
+# Либо Actions → Telegram New Components → Run workflow → поле component.
 name: Telegram New Components
 
 on:
   workflow_dispatch:
     inputs:
       component:
-        description: 'Slug компонента для ручного уведомления (через запятую — несколько, напр. mspricetiers)'
+        description: 'Slug компонента (через запятую — несколько), напр. mspricetiers'
         required: false
         type: string
   workflow_run:
