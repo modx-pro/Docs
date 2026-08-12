@@ -1,6 +1,6 @@
 ---
 title: Валидация с помощью yup
-description: Клиентская валидация FetchIt через yup и событие fetchit:before
+description: "Клиентская валидация FetchIt через yup и событие fetchit:before"
 ---
 
 # Валидация с помощью yup

@@ -1,6 +1,6 @@
 ---
 title: Форма на Pico.css
-description: FetchIt и Pico.css: aria-invalid, data-error и сообщения формы
+description: "FetchIt и Pico.css: aria-invalid, data-error и сообщения формы"
 ---
 
 # Форма на Pico.css

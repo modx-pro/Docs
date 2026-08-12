@@ -1,6 +1,6 @@
 ---
 title: Validation
-description: FetchIt client-side validation via fetchit:before with Iodine and yup
+description: "FetchIt client-side validation via fetchit:before with Iodine and yup"
 ---
 
 # Validation

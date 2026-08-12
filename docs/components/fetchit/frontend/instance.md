@@ -1,6 +1,6 @@
 ---
 title: Экземпляр класса FetchIt
-description: Методы экземпляра: ошибки полей, сообщения формы, disable/enable
+description: "Методы экземпляра: ошибки полей, сообщения формы, disable/enable"
 ---
 
 # Экземпляр класса FetchIt
