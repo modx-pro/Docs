@@ -29,6 +29,7 @@ items: [
       { text: 'Системные настройки', link: 'settings' },
       { text: 'Свой эндпоинт: пошагово', link: 'providers' },
       { text: 'Справочник эндпоинта', link: 'endpoint-reference' },
+      { text: 'Контракт и совместимость', link: 'contract' },
     ],
   },
 ]
@@ -92,7 +93,7 @@ items: [
 | **Права и политика** | Шаблон политики `mxapiTemplate`, политика `mxapiDefault` и права `mxapi_*`. Группам политика **не назначается** — доступ выдаётся вручную, см. [Права доступа](permissions) |
 | **Меню** | **Компоненты → mxApi** — каталог эндпоинтов и выгрузка OpenAPI |
 | **Плагин** | `mxApiUserClients` — вкладка «mxApi» на странице правки пользователя |
-| **События** | `mxApiOnRegisterEndpoints`, `mxApiOnBeforeRequest`, `mxApiOnBeforeEndpointRun`, `mxApiOnAfterEndpointRun`, `mxApiOnResponse` |
+| **События** | `mxApiOnRegisterEndpoints`, `mxApiOnRegisterMiddleware`, `mxApiOnBeforeRequest`, `mxApiOnBeforeEndpointRun`, `mxApiOnAfterEndpointRun`, `mxApiOnResponse` |
 
 Таблицы при удалении пакета **не дропаются**: в них боевые учётки и аудит.
 
@@ -172,3 +173,4 @@ curl -i 'https://site.ru/mxapi/v1/meta/endpoints'
 - [Токены и аутентификация](auth) — два способа выпуска токена и клиенты интеграций.
 - [Свой эндпоинт: пошагово](providers) — как пакету или сайту добавить собственные маршруты, от решения о scope до проверки вызовом.
 - [Справочник эндпоинта](endpoint-reference) — все ключи описания, типы параметров, хуки и события.
+- [Контракт и совместимость](contract) — на что провайдеру можно опираться, правила версий и судьба линии для MODX 2.
