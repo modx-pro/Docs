@@ -40,7 +40,7 @@ title: Товар
 | Секция | Поля |
 | --- | --- |
 | Основные данные | `article`, `price`, `old_price`, `weight` |
-| Наличие | `remains`, `new`, `popular`, `favorite` |
+| Наличие | `stock`, `new`, `popular`, `favorite` |
 | Характеристики | `color`, `size`, `vendor`, `made_in`, `tags` |
 
 ::: tip Настройка
@@ -60,17 +60,21 @@ title: Товар
 
 ### Связи
 
-Настройка связей между товарами:
+Vue-вкладка `ProductLinksTab`. CRUD через Manager API (право `msproduct_save`):
 
-| Тип связи | Описание |
+| Метод | Путь |
 | --- | --- |
-| Сопутствующие | Аксессуары, комплектующие |
-| Похожие | Аналогичные товары |
-| Рекомендуемые | Персональные рекомендации |
+| `GET` | `/api/mgr/product-data/{id}/links` |
+| `POST` | `/api/mgr/product-data/{id}/links` — body `{ slave, link }` |
+| `DELETE` | `/api/mgr/product-data/{id}/links` — body `{ link, master, slave }` (batch `ids[]` не поддерживается) |
+| `GET` | `/api/mgr/references/link-types` |
+| `GET` | `/api/mgr/references/products` |
+
+Типы связей из справочника `msLink`: `one_to_many`, `many_to_one`, `one_to_one`, `many_to_many`. Настройка типов: [Настройки → Связи](settings/links).
 
 ### Категории
 
-Дополнительные категории товара. Товар может принадлежать нескольким категориям помимо основной (`parent`).
+Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-data/{id}/categories/tree` (сервис `ms3_product_category_tree`). Выбранные id уходят в resource POST как hidden `name="categories"` (JSON). Родительская категория (`parent`) в дереве заблокирована. Товар может состоять в нескольких доп. категориях через `msCategoryMember`.
 
 ### Опции товара
 
@@ -80,7 +84,7 @@ title: Товар
 Вкладка полностью на Vue. Универсальный компонент `ProductOptionField` поддерживает все 10 типов опций: `textfield`, `numberfield`, `textarea`, `checkbox`, `comboBoolean`, `combobox`, `comboMultiple`, `comboColors` (+ цветовой квадрат рядом с значением), `comboOptions` (PrimeVue `InputChips` — ввод произвольных тегов с подсказками из ранее использованных значений), `datefield`.
 :::
 
-Опции группируются по `modcategory_id` (категория MODX у `msOption`) и показываются в вертикальных табах слева. Если группа одна — таб не показывается, поля идут списком.
+Опции группируются по `option_group_id` (`msOptionGroup`) и показываются в вертикальных табах слева. Если группа одна — таб не показывается, поля идут списком.
 
 **Per-category caption / description.** Если у связки «опция ↔ категория» задан свой `caption` (см. [Настройки → Опции](settings/options#per-category-caption-description-override)), в форме товара отображается именно он — это тот же override, что уходит на витрину.
 

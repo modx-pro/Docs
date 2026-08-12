@@ -14,7 +14,7 @@ Snippet for displaying order information. Used on the thank-you page or in the c
 | **includeThumbs** | | Comma-separated product image thumbnails |
 | **includeContent** | `false` | Include product `content` field |
 | **includeTVs** | | Comma-separated product TVs (pdoTools, `joinTVsTo` = `msProduct`) |
-| **payStatus** | `1` | Statuses for showing payment link (comma-separated) |
+| **payStatus** | `1` | CSV of status IDs for which to show `payment_link`. Default `1` = draft; after checkout the order is usually in `ms3_status_new` (often `2`) — set the needed IDs explicitly |
 | **toPlaceholder** | | Save result to placeholder |
 | **showLog** | `false` | Show execution log |
 
@@ -111,25 +111,27 @@ The chunk receives the following objects:
 | `{$order.num}` | Formatted number (MS-00015) |
 | `{$order.uuid}` | Order UUID |
 | `{$order.status_id}` | Status ID |
-| `{$order.status_name}` | Status name |
-| `{$order.status_color}` | Status color |
 | `{$order.cost}` | Total cost |
 | `{$order.cart_cost}` | Cart cost |
 | `{$order.delivery_cost}` | Delivery cost |
 | `{$order.weight}` | Total weight |
 | `{$order.createdon}` | Created date |
 | `{$order.updatedon}` | Updated date |
-| `{$order.comment}` | Order comment |
+| `{$order.order_comment}` | Order comment |
 | `{$order.user_id}` | MODX user ID |
 | `{$order.customer_id}` | Customer ID |
+
+`msGetOrder` returns `$msOrder->toArray()`: there are no `status_name` / `status_color` fields on the object (unlike account `msCustomer`). Take the status name from the Status relation or a separate query.
 
 ### address object
 
 | Field | Description |
 | --- | --- |
-| `{$address.receiver}` | Receiver full name |
+| `{$address.first_name}` | First name |
+| `{$address.last_name}` | Last name |
 | `{$address.phone}` | Phone |
 | `{$address.email}` | Email |
+| `{$address.comment}` | Address comment |
 | `{$address.index}` | Postal code |
 | `{$address.country}` | Country |
 | `{$address.region}` | Region/state |
@@ -212,7 +214,7 @@ The default chunk `tpl.msGetOrder` uses Bootstrap 5:
     <div class="card-header bg-primary text-white">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Order #{$order.num}</h5>
-            <span class="badge bg-light text-dark">{$order.status_name ?: 'New'}</span>
+            <span class="badge bg-light text-dark">{$order.status_id}</span>
         </div>
     </div>
     <div class="card-body">
@@ -308,15 +310,15 @@ The default chunk `tpl.msGetOrder` uses Bootstrap 5:
 </div>
 
 {* Contact details *}
-{if $address.receiver || $address.phone}
+{if $address.first_name || $address.phone}
     <div class="card bg-light">
         <div class="card-body">
             <h6>Contact details</h6>
             <div class="row g-3">
-                {if $address.receiver?}
+                {if $address.first_name?}
                     <div class="col-md-6">
                         <small class="text-muted">Receiver</small>
-                        <div class="fw-semibold">{$address.receiver}</div>
+                        <div class="fw-semibold">{$address.first_name} {$address.last_name}</div>
                     </div>
                 {/if}
                 {if $address.phone?}
@@ -342,10 +344,10 @@ The default chunk `tpl.msGetOrder` uses Bootstrap 5:
                         </div>
                     </div>
                 {/if}
-                {if $order.comment?}
+                {if $order.order_comment?}
                     <div class="col-12">
                         <small class="text-muted">Comment</small>
-                        <div>{$order.comment}</div>
+                        <div>{$order.order_comment}</div>
                     </div>
                 {/if}
             </div>
@@ -364,7 +366,7 @@ The payment link `{$payment_link}` is available when:
 
 ```fenom
 {'msGetOrder' | snippet : [
-    'payStatus' => '1,2,3'  {* Show link for statuses 1, 2, 3 *}
+    'payStatus' => '2,3'  {* after submit status is usually ms3_status_new (2) *}
 ]}
 ```
 

@@ -149,6 +149,7 @@ $customer = $ms3->customer->getFields();
 | `ms3_product_catalog` | `Services\Product\ProductCatalogService` | Headless catalog Web API (field allowlist) |
 | `ms3_product_import` | `Services\Product\Import\ProductImportService` | CSV import |
 | `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Product category tree in manager |
+| `ms3_product_link_service` | `Services\Product\ProductLinkService` | Product links (mgr Vue tab) |
 
 ```php
 $productService = $modx->services->get('ms3_product_data_service');
@@ -204,6 +205,7 @@ The `Order.php` controller is a **facade** — it keeps all public methods for b
 | `ms3_order_log` | `Services\Order\OrderLogService` | Order change log |
 | `ms3_order_status` | `Services\Order\OrderStatusService` | Status change + notifications |
 | `ms3_order_finalize` | `Services\Order\OrderFinalizeService` | Order finalization (validation, customer creation) |
+| `ms3_programmatic_order` | `Services\Order\ProgrammaticOrderService` | Order creation without HTTP session for extras/cron (`idempotency_key`) |
 | `ms3_order_number_generator` | `Services\Order\OrderNumberGenerator` | Order numbering |
 | `ms3_manager_order_cost_recalculator` | `Services\Order\ManagerOrderCostRecalculator` | Recalculate in order card (mgr) |
 
@@ -217,12 +219,18 @@ $submitHandler = $modx->services->get('ms3_order_submit_handler');
 $draft = $draftManager->getOrCreateDraft($token, 'web');
 $draftManager->attachCustomer($draft, $customerId);
 
-// Calculate cost
-$cost = $costCalculator->calculate($order);
+// Calculate cost (needs orderData from toArray and token)
+$orderData = $draftManager->toArray($draft);
+$total = $costCalculator->getTotalCost($draft, $orderData, $token);
+// ['cost' => …, 'cart_cost' => …, 'delivery_cost' => …, 'payment_cost' => …]
 
 // Logging
 $logService = $modx->services->get('ms3_order_log');
-$logService->addEntry($order, 'status_changed', ['old' => 1, 'new' => 2]);
+$logService->addEntry(
+    (int) $draft->get('id'),
+    \MiniShop3\Model\msOrderLog::ACTION_STATUS,
+    ['old' => 1, 'new' => 2]
+);
 ```
 
 ### Cart services
@@ -245,8 +253,10 @@ $result = $itemManager->addItem($draft, $productId, $count, $options);
 // Change quantity
 $itemManager->updateItemCount($draft, $key, $newCount);
 
-// Calculate cart totals
-$status = $itemManager->calculateStatus($draft);
+// Calculate cart totals (expects an items array, not the draft)
+$items = $itemManager->loadItems($draft);
+$status = $itemManager->calculateStatus($items);
+// total_count, total_cost, total_weight, total_discount, total_positions
 ```
 
 **Cart vs Order responsibility:**
@@ -272,7 +282,7 @@ OrderFieldManager   — order fields (Order-specific)
 | --- | --- | --- |
 | `ms3_category_service` | `Services\Category\CategoryService` | Categories |
 | `ms3_category_option_service` | `Services\Category\CategoryOptionService` | Category options |
-| `ms3_category_product_scope` | `Services\Category\CategoryProductScopeService` | Additional product categories for msProducts (#481) |
+| `ms3_category_product_scope` | `Services\Category\CategoryProductScopeService` | Additional product categories for msProducts |
 | `ms3_category_products_list` | `Services\Category\CategoryProductsListService` | Category product grid |
 
 ### Option services
@@ -360,24 +370,24 @@ return [
 <?php
 namespace MyProject\Services;
 
+use MiniShop3\Model\msOrder;
 use MiniShop3\Services\Order\OrderSubmitHandler;
 
 class CRMOrderSubmitHandler extends OrderSubmitHandler
 {
     public function submit(
-        \MiniShop3\Model\msOrder $draft,
+        msOrder $draft,
         array $orderData,
-        ?\MiniShop3\Model\msCustomer $customer
+        string $token,
+        string $ctx = 'web',
+        array $submitData = []
     ): array {
-        // Custom logic BEFORE submit
         $this->validateWithCRM($orderData);
 
-        // Call parent
-        $result = parent::submit($draft, $orderData, $customer);
+        $result = parent::submit($draft, $orderData, $token, $ctx, $submitData);
 
-        // Custom logic AFTER success
         if ($result['success']) {
-            $this->syncOrderToCRM($result['data']['order_id']);
+            $this->syncOrderToCRM((int) $result['data']['order_id']);
         }
 
         return $result;
@@ -387,6 +397,33 @@ class CRMOrderSubmitHandler extends OrderSubmitHandler
     {
         // Send to CRM
     }
+}
+```
+
+**Programmatic order example (cron / extra):**
+
+```php
+use MiniShop3\Services\Order\OrderOrigin;
+
+$orders = $modx->services->get('ms3_programmatic_order');
+
+$result = $orders->create([
+    'idempotency_key' => 'crm-invoice-10042',
+    'products' => [
+        ['product_id' => 15, 'count' => 2],
+    ],
+    'delivery_id' => 1,
+    'payment_id' => 1,
+    'address' => [
+        'first_name' => 'John',
+        'email' => 'user@example.com',
+        'phone' => '+79991234567',
+    ],
+    'origin' => OrderOrigin::INTEGRATION,
+]);
+
+if (!$result['success']) {
+    $modx->log(modX::LOG_LEVEL_ERROR, '[CRM] ' . $result['message']);
 }
 ```
 

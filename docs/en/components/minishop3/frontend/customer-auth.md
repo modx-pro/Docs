@@ -58,7 +58,7 @@ Class `AuthUI` (`assets/components/minishop3/js/web/ui/AuthUI.js`) listens for s
 | Register | `handleRegister` | `POST /api/v1/customer/register` |
 | Logout | from account / API | `POST /api/v1/customer/logout` |
 
-On success the script redirects via `ms3_customer_redirect_after_login` or reloads the page. The server puts the token in the httpOnly cookie `ms3_token`. Response format: [REST API](/en/components/minishop3/development/api).
+On success the script redirects via `ms3_customer_redirect_after_login` or reloads the page. The server puts a **new** token in the httpOnly cookie `ms3_token` (rotation against token fixation): the old guest token is revoked, the cart draft moves to the customer session. Response format: [REST API](/en/components/minishop3/development/api).
 
 ### Auth providers
 

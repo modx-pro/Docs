@@ -451,8 +451,8 @@ CRUD для конфига колонок административных гр�
 | Поле | Тип | Описание |
 | --- | --- | --- |
 | `columns` | `array` | Колонки грида с конфигурацией (тип, видимость, фильтрация, редактор) |
-| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные — отправлять с префиксом. Источник истины — backend; фронт читает массив отсюда. Появилось в MiniShop3 1.12.0 ([PR #317](https://github.com/modx-pro/MiniShop3/pull/317)) — закрывает дублирование между фронтом и контроллерами. |
-| `editor_references` | `array<{key,path}>` | **Только для `grid_key=category-products`.** Whitelist допустимых reference-ключей для combo-редактора inline-edit. Каждая запись — пара ключа и пути к API-эндпойнту справочника. Используется UI настройки колонок для select dropdown. Появилось в MiniShop3 1.12.0 ([PR #157](https://github.com/modx-pro/MiniShop3/pull/157)). |
+| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные — отправлять с префиксом. Источник истины — backend; фронт читает массив отсюда. Появилось в MiniShop3 1.12.0 — закрывает дублирование между фронтом и контроллерами. |
+| `editor_references` | `array<{key,path}>` | **Только для `grid_key=category-products`.** Whitelist допустимых reference-ключей для combo-редактора inline-edit. Каждая запись — пара ключа и пути к API-эндпойнту справочника. Используется UI настройки колонок для select dropdown. Появилось в MiniShop3 1.12.0. |
 
 ##### Контракт фильтров (`direct_filter_keys`)
 
@@ -473,7 +473,7 @@ function addFilterParam(params, key, value) {
 
 #### Заказы (`/orders`)
 
-Чтение и запись разделены на две группы middleware (#377).
+Чтение и запись разделены на две группы middleware.
 
 **Чтение** — право `msorder_list`:
 
@@ -524,6 +524,19 @@ function addFilterParam(params, key, value) {
 #### Настройки магазина
 
 **Доставки (`/deliveries`)**, **Оплаты (`/payments`)**, **Производители (`/vendors`)**, **Статусы (`/statuses`)**, **Связи (`/links`)** — CRUD операции с правом `mssetting_save`.
+
+#### Данные товара (`/product-data`)
+
+Вкладки «Категории» и «Связи» на карточке товара (Vue). Право `msproduct_save` / сессия mgr:
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| GET | `/{id}/categories/tree` | Дерево категорий (`ms3_product_category_tree`) |
+| GET | `/{id}/links` | Список связей |
+| POST | `/{id}/links` | Добавить связь `{ slave, link }` |
+| DELETE | `/{id}/links` | Удалить связь `{ link, master, slave }` |
+| GET | `/references/link-types` | Типы `msLink` (группа references) |
+| GET | `/references/products` | Autocomplete товаров |
 
 #### Уведомления (`/notifications`)
 

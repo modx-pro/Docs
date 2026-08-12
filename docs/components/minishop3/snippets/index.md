@@ -70,7 +70,7 @@ MiniShop3 предоставляет набор сниппетов для пос
 | `json` | JSON-строка (msProducts, msGallery) |
 | `ids` | ID через запятую (msProducts) |
 
-### Числа и `*_formatted` (#242)
+### Числа и `*_formatted`
 
 Плейсхолдеры цен и веса в чанках — **числа** (`float`). Для вывода на сайте используйте поля `*_formatted`. Параметр `formatPrices` удалён как no-op.
 

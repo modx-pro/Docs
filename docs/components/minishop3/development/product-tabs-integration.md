@@ -12,22 +12,20 @@ MiniShop3 предоставляет API для добавления собст�
 Страница редактирования товара использует гибридную архитектуру:
 
 ```
-
 ExtJS TabPanel (верхний уровень)
 ├── Document (системная вкладка MODX)
 ├── Товар (Vue ProductTabs)
 │   ├── Свойства (Vue)
 │   ├── Галерея (Vue)
-│   ├── Категории (ExtJS)
-│   ├── Связи (ExtJS)
-│   ├── Опции товара (Vue — с v1.10.0-beta1)
+│   ├── Категории (Vue ProductCategoriesTab)
+│   ├── Связи (Vue ProductLinksTab)
+│   ├── Опции товара (Vue)
 │   └── [Ваши вкладки]
 ├── Page Settings (системная вкладка MODX)
 └── Access Permissions (системная вкладка MODX)
-
 ```
 
-Вкладка "Товар" содержит Vue компонент `ProductTabs` с PrimeVue TabView, который управляет вложенными вкладками.
+Вкладка «Товар» — Vue-компонент `ProductTabs` (PrimeVue TabView). Категории и связи тоже Vue, не ExtJS.
 
 ## Plugin Registry API
 

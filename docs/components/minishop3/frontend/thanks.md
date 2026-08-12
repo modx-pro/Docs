@@ -141,14 +141,15 @@ UUID-ссылки можно безопасно отправлять по email 
 | --- | --- |
 | `ms3.page_id.thanks` | ID ресурса страницы "Спасибо за заказ" |
 
-При оформлении заказа происходит редирект:
+При оформлении заказа происходит редирект (после `orderAPI.submit` / hook `afterSubmitOrder`):
 
 ```javascript
-// После успешного оформления
-document.addEventListener('ms3:order:success', (e) => {
-    window.location.href = e.detail.redirect;
-    // redirect = /thanks/?msorder=15
-});
+ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
+  if (response.success && response.data.redirect) {
+    window.location.href = response.data.redirect
+    // например /thanks/?msorder=15
+  }
+})
 ```
 
 ## Кастомизация

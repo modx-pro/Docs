@@ -106,72 +106,117 @@ MiniShop3 adds many new settings:
 
 ### Entry points
 
-```php
+```text
 // miniShop2 — single action.php
 /assets/components/minishop2/action.php
 
 // MiniShop3 — separate endpoints
 /assets/components/minishop3/connector.php  // Manager API (MODX session)
-/assets/components/minishop3/api.php        // Web API (/api/v1/, MS3TOKEN)
+/assets/components/minishop3/api.php        // Web API: ?route=/api/v1/...
 ```
 
 The Manager API powers the Vue admin (orders, customers, utilities). Processors under `core/components/minishop3/src/Processors/` remain for ExtJS resource panels (category, product). Custom web routes: `core/config/ms3_routes_web.custom.php`, add-on fragments: `core/config/ms3.routes.d/web/*.php`.
 
+Full map and request bodies: [REST API](/en/components/minishop3/development/api). Route source: `config/routes/web.php`.
+
 ### Web API (new in MiniShop3)
 
-MiniShop3 ships a REST API for headless work:
+Entry point `api.php`, prefix `/api/v1`. The whole group has CORS, rate limit, and `ServiceCheck`. Token is required for cart, order draft, and account; catalog and some auth endpoints are public.
 
-```javascript
-// Cart
+```http
+# Cart (guest token)
 POST /api/v1/cart/add
 POST /api/v1/cart/remove
 POST /api/v1/cart/change
-POST /api/v1/cart/change-option   // change line option (#219)
+POST /api/v1/cart/change-option
 GET  /api/v1/cart/get
 POST /api/v1/cart/clean
 
-// Order
+# Order / checkout (guest token)
 GET  /api/v1/order/get
 POST /api/v1/order/add
 POST /api/v1/order/set
+POST /api/v1/order/remove
 POST /api/v1/order/submit
+POST /api/v1/order/clean
 GET  /api/v1/order/cost
+GET  /api/v1/order/cost/cart
+GET  /api/v1/order/cost/delivery
+GET  /api/v1/order/cost/payment
+POST /api/v1/order/address/set
+POST /api/v1/order/address/clean
 GET  /api/v1/order/delivery/validation-rules
 GET  /api/v1/order/delivery/required-fields
 
-// Customer
+# Customer: public
+GET  /api/v1/customer/token/get
 POST /api/v1/customer/login
 POST /api/v1/customer/register
-POST /api/v1/customer/logout
 POST /api/v1/customer/forgot-password
 POST /api/v1/customer/reset-password
-GET  /api/v1/customer/token/get
-GET  /api/v1/customer/addresses
+GET  /api/v1/customer/email/verify
 
-// Catalog (no token)
+# Customer: token required (account)
+POST /api/v1/customer/logout
+POST /api/v1/customer/add
+PUT  /api/v1/customer/profile
+POST /api/v1/customer/changeAddress
+POST /api/v1/customer/email/resend-verification
+GET  /api/v1/customer/addresses
+GET  /api/v1/customer/addresses/{id}
+POST /api/v1/customer/addresses
+PUT  /api/v1/customer/addresses/{id}
+DELETE /api/v1/customer/addresses/{id}
+PUT  /api/v1/customer/addresses/{id}/set-default
+GET  /api/v1/customer/orders
+GET  /api/v1/customer/orders/{id}
+POST /api/v1/customer/orders/{id}/cancel
+
+# Catalog (no token)
+GET  /api/v1/product/get/{id}
 GET  /api/v1/product/list
+
+# Health
+GET  /api/v1/health
 ```
+
+There is no separate `GET /api/v1/order/payments`. Storefront delivery and payment lists come from the `msOrder` snippet (server-side render). Draft: `GET /api/v1/order/get` returns only order/address fields (`delivery_id`, `payment_id`, `address_*`).
 
 ### API authentication
 
 ```javascript
-// miniShop2 — no authentication
+// miniShop2 — no token
 $.post('/assets/components/minishop2/action.php', {
     action: 'cart/add',
     id: 123
 });
 
-// MiniShop3 — token authentication
-const token = getCookie('MS3TOKEN');
-fetch('/api/v1/cart/add', {
+// MiniShop3 — get a token first, then send credentials
+const base = '/assets/components/minishop3/api.php';
+
+await fetch(`${base}?route=/api/v1/customer/token/get`, {
+    credentials: 'include'
+});
+
+await fetch(`${base}?route=/api/v1/cart/add`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: 123, count: 1 })
+});
+
+// Headless / mobile without cookie:
+await fetch(`${base}?route=/api/v1/cart/add`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
-        'X-MS3-Token': token
+        'Authorization': 'Bearer ' + token
     },
     body: JSON.stringify({ id: 123, count: 1 })
 });
 ```
+
+Token resolution order (`TokenMiddleware`): `Authorization: Bearer` → `MS3TOKEN` header (legacy) → cookie / `ms3_token` in the request. On the storefront since 1.6 the token usually lives in the httpOnly cookie `ms3_token`.
 
 ## JavaScript API
 
@@ -184,8 +229,8 @@ miniShop2.Order.submit();
 miniShop2Config.actionUrl;
 
 // MiniShop3
-ms3.cart.add(123);
-ms3.order.submit();
+await ms3.cartAPI.add(123, 1);
+await ms3.orderAPI.submit();
 ms3Config.apiUrl;
 ```
 
@@ -200,22 +245,20 @@ miniShop2.Callbacks.add('Cart.add.response.success', 'my_callback', function(res
 miniShop2.Callbacks.remove('Cart.add.response.success', 'my_callback');
 
 // MiniShop3 — hooks
-ms3.hooks.add('afterAddToCart', function({ response }) {
+ms3Hooks.addHook('afterAddCart', async ({ response }) => {
     console.log('Product added', response);
 });
-
-ms3.hooks.remove('afterAddToCart', 'my_hook');
 ```
 
 ### MiniShop3 hook list
 
 | miniShop2 Callback | MiniShop3 Hook |
 | --- | --- |
-| `Cart.add.before` | `beforeAddToCart` |
-| `Cart.add.response.success` | `afterAddToCart` |
-| `Cart.remove.response.success` | `afterRemoveFromCart` |
+| `Cart.add.before` | `beforeAddCart` |
+| `Cart.add.response.success` | `afterAddCart` |
+| `Cart.remove.response.success` | `afterRemoveCart` |
 | `Cart.change.response.success` | `afterChangeCart` |
-| `Cart.change-option.response.success` | *(new)* cart line option change |
+| `Cart.change-option.response.success` | `afterChangeOptionCart` |
 | `Order.submit.before` | `beforeSubmitOrder` |
 | `Order.submit.response.success` | `afterSubmitOrder` |
 
@@ -289,7 +332,7 @@ All snippets kept their names:
 
 ### msMiniCart → msOrderTotal
 
-The `formatPrices` parameter was removed (#242). Numeric placeholders are `float`; use `*_formatted` for display.
+The `formatPrices` parameter was removed. Numeric placeholders are `float`; use `*_formatted` for display.
 
 ```fenom
 {* miniShop2 *}
@@ -305,7 +348,7 @@ The `formatPrices` parameter was removed (#242). Numeric placeholders are `float
 </a>
 ```
 
-### Price placeholders (#242)
+### Price placeholders
 
 | miniShop2 | MiniShop3 |
 | --- | --- |
@@ -348,7 +391,7 @@ $addresses = $customer->getMany('Addresses');
 $modUser = $customer->getOne('User');
 ```
 
-Customers sign in via `msCustomer` and the `MS3TOKEN` cookie, not standard modUser Login (unless sync is enabled).
+Customers sign in via `msCustomer` and the `ms3_token` cookie, not standard modUser Login (unless sync is enabled).
 
 ### Customer addresses
 
@@ -401,7 +444,7 @@ MS3 does not read `ms2_*` keys. Create `ms3_*` (page_id, statuses, currency). Co
 miniShop2.Cart.add(id);
 
 // After
-ms3.cart.add(id);
+await ms3.cartAPI.add(id, 1);
 ```
 
 ### Step 7: Plugins
@@ -410,11 +453,16 @@ Rewrite event subscriptions for MS3 (names and signatures differ). See [Events](
 
 ### Step 8: Chunks and placeholders
 
-- Prices: raw floats + `*_formatted` (since 1.11, breaking #242). Remove `formatPrices` from snippet calls.
+- Prices: raw floats + `*_formatted` (since 1.11, breaking). Remove `formatPrices` from snippet calls.
+- Contacts: `first_name` / `last_name`, not `receiver`.
+- Order comment: `order_comment`. The `comment` field belongs to the address.
+- Product stock: `stock` (CSV import accepts `remains` as an alias).
+- Cart: line key `product_key`, not `key`.
+- Delivery/payment in the form: `delivery_id` / `payment_id`.
 - Options: `group_name` instead of MS2 `category_name`. Option groups use `msOptionGroup`, not `modCategory`.
 - Product preview: `preview_file_id` on `msProductData` (gallery “Set preview”), not only `thumb`/`image`.
-- Extra categories: `msCategoryMember` and `CategoryProductScope` on `msProducts` (#481).
-- Cart on thanks: `msCart` is **not** hidden on `?msorder=` by default (#249). For old behavior use `hideOnThanks=1`. `msOrder` is always empty on thanks.
+- Extra categories: `msCategoryMember` and `CategoryProductScope` on `msProducts`.
+- Cart on thanks: `msCart` is **not** hidden on `?msorder=` by default. For old behavior use `hideOnThanks=1`. `msOrder` is always empty on thanks.
 
 ```html
 <!-- Before -->
@@ -436,8 +484,8 @@ Rewrite event subscriptions for MS3 (names and signatures differ). See [Events](
 
 | Area | miniShop2 | MiniShop3 |
 | --- | --- | --- |
-| Orders, customers, utilities | ExtJS | Vue 3 + PrimeVue (Manager API) |
-| Category/product editor in the tree | ExtJS | ExtJS + Vue category products grid |
+| Orders, customers, notifications, settings | ExtJS | Vue 3 + PrimeVue without Ext wrapper (Manager API) |
+| Category/product editor in the tree | ExtJS | ExtJS shell + Vue tabs (incl. Categories/Links) |
 | Table columns | System settings `ms2_*_grid_fields` | **Utilities → Table fields** (`ms3_grid_fields`) |
 
 Plugin events from Vue CRUD (orders, customers) do not fire the same way as resource processor changes. For admin customization see [Events](/en/components/minishop3/development/events) and the Manager API.
@@ -449,13 +497,13 @@ MiniShop3 maintains compatibility at the level of:
 ✅ **Compatible:**
 
 - Snippet names
-- Chunk placeholder structure
 - Main snippet parameters
-- Most plugin events
+- Most plugin events (with new params signatures)
 
-❌ **Not compatible:**
+❌ **Not compatible / renamed:**
 
 - System settings (`ms2_` → `ms3_`)
-- JavaScript API (miniShop2 → ms3)
-- PHP classes (require namespaces)
-- API entry points (action.php → api.php)
+- JavaScript API (`miniShop2` → `ms3` / `orderAPI` / hooks)
+- PHP classes (namespaces)
+- API entry points (`action.php` → `api.php`)
+- Several placeholders (`receiver` → `first_name`/`last_name`, order `comment` → `order_comment`, `remains` → `stock`)

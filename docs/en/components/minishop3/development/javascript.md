@@ -10,17 +10,27 @@ Headless API for programmatic interaction with MiniShop3 without DOM binding.
 
 MiniShop3 uses a two-layer architecture:
 
-```
-┌─────────────────────────────────────────────────┐
-│                    ms3.js                        │  ← Entry point, auto-init
-├─────────────────────────────────────────────────┤
-│                  UI Layer                        │  ← DOM bindings for SSR
-│     CartUI.js │ OrderUI.js │ CustomerUI.js      │
-├─────────────────────────────────────────────────┤
-│                 API Core                         │  ← Headless core
-│  ApiClient.js │ TokenManager.js │ hooks.js      │
-│  CartAPI.js │ OrderAPI.js │ CustomerAPI.js      │
-└─────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  ms3["ms3.js — entry point, auto-init"]
+
+  subgraph ui ["UI Layer — DOM bindings for SSR"]
+    CartUI[CartUI.js]
+    OrderUI[OrderUI.js]
+    CustomerUI[CustomerUI.js]
+  end
+
+  subgraph core ["API Core — headless core"]
+    ApiClient[ApiClient.js]
+    TokenManager[TokenManager.js]
+    Hooks[hooks.js]
+    CartAPI[CartAPI.js]
+    OrderAPI[OrderAPI.js]
+    CustomerAPI[CustomerAPI.js]
+  end
+
+  ms3 --> ui
+  ui --> core
 ```
 
 ### API Core (Headless)
@@ -245,14 +255,16 @@ Get current order (session data).
 ```javascript
 const response = await ms3.orderAPI.get()
 
-// response.data:
+// response.data.order (fragment):
 {
-  receiver: "John Doe",
-  email: "ivan@example.com",
-  phone: "+79991234567",
-  delivery: 1,
-  payment: 2,
-  comment: "Call before delivery"
+  delivery_id: 1,
+  payment_id: 2,
+  order_comment: "Call before delivery",
+  address_first_name: "John",
+  address_last_name: "Doe",
+  address_email: "ivan@example.com",
+  address_phone: "+79991234567",
+  address_comment: ""
 }
 ```
 
@@ -261,12 +273,13 @@ const response = await ms3.orderAPI.get()
 Save order field.
 
 ```javascript
-await ms3.orderAPI.add('receiver', 'John Doe')
+await ms3.orderAPI.add('first_name', 'John')
 await ms3.orderAPI.add('email', 'ivan@example.com')
 await ms3.orderAPI.add('phone', '+79991234567')
-await ms3.orderAPI.add('delivery', 1)
-await ms3.orderAPI.add('payment', 2)
-await ms3.orderAPI.add('comment', 'Call before delivery')
+await ms3.orderAPI.add('delivery_id', 1)
+await ms3.orderAPI.add('payment_id', 2)
+await ms3.orderAPI.add('order_comment', 'Call before delivery')
+// address comment: await ms3.orderAPI.add('comment', '…')
 ```
 
 :::info Auto-save
@@ -278,7 +291,7 @@ Each `add()` call saves the value on the server. Data is not lost on page reload
 Remove order field.
 
 ```javascript
-await ms3.orderAPI.remove('comment')
+await ms3.orderAPI.remove('order_comment')
 ```
 
 #### clean()
@@ -310,7 +323,7 @@ if (response.success) {
     success: false,
     message: "Fill required fields",
     data: {
-      errors: ["receiver", "email", "phone"]
+      errors: ["first_name", "email", "phone"]
     }
   }
 }

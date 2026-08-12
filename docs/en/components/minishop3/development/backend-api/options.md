@@ -383,7 +383,7 @@ Controller `MiniShop3\Controllers\Api\Manager\OptionsController`, permission `ms
 
 ### Option groups — `/api/mgr/option-groups/*`
 
-Controller `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Added in 1.11.0 — replace grouping via `modCategory` (#10).
+Controller `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Added in 1.11.0 — replace grouping via `modCategory`.
 
 | Method | Path | Description |
 | --- | --- | --- |

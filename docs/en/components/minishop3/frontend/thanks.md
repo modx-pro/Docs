@@ -141,14 +141,15 @@ After checkout, the customer is redirected to the thank-you page. The page URL i
 | --- | --- |
 | `ms3.page_id.thanks` | Resource ID of the "Thank you" page |
 
-On checkout, redirect happens as follows:
+On checkout, redirect happens (after `orderAPI.submit` / hook `afterSubmitOrder`):
 
 ```javascript
-// After successful checkout
-document.addEventListener('ms3:order:success', (e) => {
-    window.location.href = e.detail.redirect;
-    // redirect = /thanks/?msorder=15
-});
+ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
+  if (response.success && response.data.redirect) {
+    window.location.href = response.data.redirect
+    // e.g. /thanks/?msorder=15
+  }
+})
 ```
 
 ## Customization

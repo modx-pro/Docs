@@ -273,7 +273,7 @@ title: История заказов
 | `{$order.status_name}` | string | Название статуса |
 | `{$order.status_color}` | string | Цвет статуса |
 | `{$order.createdon_formatted}` | string | Дата создания |
-| `{$order.comment}` | string | Комментарий к заказу |
+| `{$order.order_comment}` | string | Комментарий к заказу |
 | `{$order.can_cancel}` | bool | Можно ли отменить заказ |
 | `{$products}` | array | Товары заказа |
 | `{$delivery}` | array | Способ доставки |
@@ -497,13 +497,13 @@ title: История заказов
     </div>
 
     {* Комментарий *}
-    {if $order.comment}
+    {if $order.order_comment}
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
             <h6 class="mb-0">{'ms3_frontend_comment' | lexicon}</h6>
         </div>
         <div class="card-body">
-            <p class="mb-0">{$order.comment}</p>
+            <p class="mb-0">{$order.order_comment}</p>
         </div>
     </div>
     {/if}

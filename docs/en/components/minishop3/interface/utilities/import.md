@@ -158,7 +158,7 @@ Import complete!
 | `weight` | Weight |
 | `color` | Color |
 | `size` | Size |
-| `remains` | Stock |
+| `stock` | Stock (`remains` — CSV alias) |
 | `vendor` | Vendor (name or ID) |
 | `made_in` | Country of origin |
 | `new` | New (0/1) |

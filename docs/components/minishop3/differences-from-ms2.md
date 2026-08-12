@@ -106,72 +106,117 @@ MiniShop3 добавляет множество новых настроек:
 
 ### Точка входа
 
-```php
+```text
 // miniShop2 — единый action.php
 /assets/components/minishop2/action.php
 
 // MiniShop3 — раздельные endpoint'ы
-/assets/components/minishop3/connector.php  // Manager API (MODX-сессия)
-/assets/components/minishop3/api.php        // Web API (/api/v1/, токен MS3TOKEN)
+/assets/components/minishop3/connector.php  // Manager API (сессия MODX)
+/assets/components/minishop3/api.php        // Web API: ?route=/api/v1/...
 ```
 
 Manager API обслуживает Vue-админку (заказы, клиенты, утилиты). Processors в `core/components/minishop3/src/Processors/` остаются для ExtJS-панелей ресурса (категория, товар). Кастомные web-маршруты: `core/config/ms3_routes_web.custom.php`, фрагменты аддонов: `core/config/ms3.routes.d/web/*.php`.
 
+Полная карта и тела запросов: [REST API](/components/minishop3/development/api). Источник роутов: `config/routes/web.php`.
+
 ### Web API (новое в MiniShop3)
 
-MiniShop3 даёт REST API для headless:
+Точка входа `api.php`, префикс `/api/v1`. На всю группу висят CORS, rate limit и `ServiceCheck`. Токен нужен для корзины, черновика заказа и ЛК; каталог и часть auth-эндпоинтов публичные.
 
-```javascript
-// Корзина
+```http
+# Корзина (гостевой токен)
 POST /api/v1/cart/add
 POST /api/v1/cart/remove
 POST /api/v1/cart/change
-POST /api/v1/cart/change-option   // смена опции позиции (#219)
+POST /api/v1/cart/change-option
 GET  /api/v1/cart/get
 POST /api/v1/cart/clean
 
-// Заказ
+# Заказ / checkout (гостевой токен)
 GET  /api/v1/order/get
 POST /api/v1/order/add
 POST /api/v1/order/set
+POST /api/v1/order/remove
 POST /api/v1/order/submit
+POST /api/v1/order/clean
 GET  /api/v1/order/cost
+GET  /api/v1/order/cost/cart
+GET  /api/v1/order/cost/delivery
+GET  /api/v1/order/cost/payment
+POST /api/v1/order/address/set
+POST /api/v1/order/address/clean
 GET  /api/v1/order/delivery/validation-rules
 GET  /api/v1/order/delivery/required-fields
 
-// Клиент
+# Клиент: публичные
+GET  /api/v1/customer/token/get
 POST /api/v1/customer/login
 POST /api/v1/customer/register
-POST /api/v1/customer/logout
 POST /api/v1/customer/forgot-password
 POST /api/v1/customer/reset-password
-GET  /api/v1/customer/token/get
-GET  /api/v1/customer/addresses
+GET  /api/v1/customer/email/verify
 
-// Каталог (без токена)
+# Клиент: с токеном (ЛК)
+POST /api/v1/customer/logout
+POST /api/v1/customer/add
+PUT  /api/v1/customer/profile
+POST /api/v1/customer/changeAddress
+POST /api/v1/customer/email/resend-verification
+GET  /api/v1/customer/addresses
+GET  /api/v1/customer/addresses/{id}
+POST /api/v1/customer/addresses
+PUT  /api/v1/customer/addresses/{id}
+DELETE /api/v1/customer/addresses/{id}
+PUT  /api/v1/customer/addresses/{id}/set-default
+GET  /api/v1/customer/orders
+GET  /api/v1/customer/orders/{id}
+POST /api/v1/customer/orders/{id}/cancel
+
+# Каталог (без токена)
+GET  /api/v1/product/get/{id}
 GET  /api/v1/product/list
+
+# Health
+GET  /api/v1/health
 ```
+
+Отдельного `GET /api/v1/order/payments` нет. Список доставок и оплат на витрине отдаёт сниппет `msOrder` (серверный рендер). Черновик: `GET /api/v1/order/get` — только поля заказа/адреса (`delivery_id`, `payment_id`, `address_*`).
 
 ### Авторизация API
 
 ```javascript
-// miniShop2 — без авторизации
+// miniShop2 — без токена
 $.post('/assets/components/minishop2/action.php', {
     action: 'cart/add',
     id: 123
 });
 
-// MiniShop3 — токенная авторизация
-const token = getCookie('MS3TOKEN');
-fetch('/api/v1/cart/add', {
+// MiniShop3 — сначала токен, потом запросы с credentials
+const base = '/assets/components/minishop3/api.php';
+
+await fetch(`${base}?route=/api/v1/customer/token/get`, {
+    credentials: 'include'
+});
+
+await fetch(`${base}?route=/api/v1/cart/add`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: 123, count: 1 })
+});
+
+// Headless / мобильный клиент без cookie:
+await fetch(`${base}?route=/api/v1/cart/add`, {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
-        'X-MS3-Token': token
+        'Authorization': 'Bearer ' + token
     },
     body: JSON.stringify({ id: 123, count: 1 })
 });
 ```
+
+Порядок разрешения токена на сервере (`TokenMiddleware`): `Authorization: Bearer` → заголовок `MS3TOKEN` (legacy) → cookie / `ms3_token` в запросе. На витрине с 1.6 токен обычно живёт в httpOnly cookie `ms3_token`.
 
 ## JavaScript API
 
@@ -184,8 +229,8 @@ miniShop2.Order.submit();
 miniShop2Config.actionUrl;
 
 // MiniShop3
-ms3.cart.add(123);
-ms3.order.submit();
+await ms3.cartAPI.add(123, 1);
+await ms3.orderAPI.submit();
 ms3Config.apiUrl;
 ```
 
@@ -200,22 +245,20 @@ miniShop2.Callbacks.add('Cart.add.response.success', 'my_callback', function(res
 miniShop2.Callbacks.remove('Cart.add.response.success', 'my_callback');
 
 // MiniShop3 — hooks
-ms3.hooks.add('afterAddToCart', function({ response }) {
+ms3Hooks.addHook('afterAddCart', async ({ response }) => {
     console.log('Товар добавлен', response);
 });
-
-ms3.hooks.remove('afterAddToCart', 'my_hook');
 ```
 
 ### Список hooks MiniShop3
 
 | miniShop2 Callback | MiniShop3 Hook |
 | --- | --- |
-| `Cart.add.before` | `beforeAddToCart` |
-| `Cart.add.response.success` | `afterAddToCart` |
-| `Cart.remove.response.success` | `afterRemoveFromCart` |
+| `Cart.add.before` | `beforeAddCart` |
+| `Cart.add.response.success` | `afterAddCart` |
+| `Cart.remove.response.success` | `afterRemoveCart` |
 | `Cart.change.response.success` | `afterChangeCart` |
-| `Cart.change-option.response.success` | *(новое)* смена опции в корзине |
+| `Cart.change-option.response.success` | `afterChangeOptionCart` |
 | `Order.submit.before` | `beforeSubmitOrder` |
 | `Order.submit.response.success` | `afterSubmitOrder` |
 
@@ -289,7 +332,7 @@ switch ($modx->event->name) {
 
 ### msMiniCart → msOrderTotal
 
-Параметр `formatPrices` удалён (#242). Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`.
+Параметр `formatPrices` удалён. Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`.
 
 ```fenom
 {* miniShop2 *}
@@ -305,7 +348,7 @@ switch ($modx->event->name) {
 </a>
 ```
 
-### Плейсхолдеры цен (#242)
+### Плейсхолдеры цен
 
 | miniShop2 | MiniShop3 |
 | --- | --- |
@@ -348,7 +391,7 @@ $addresses = $customer->getMany('Addresses');
 $modUser = $customer->getOne('User');
 ```
 
-Покупатель авторизуется через `msCustomer` и cookie `MS3TOKEN`, не через стандартный modUser Login (если не включена синхронизация).
+Покупатель авторизуется через `msCustomer` и cookie `ms3_token`, не через стандартный modUser Login (если не включена синхронизация).
 
 ### Адреса клиентов
 
@@ -401,7 +444,7 @@ foreach ($addresses as $address) {
 miniShop2.Cart.add(id);
 
 // Стало
-ms3.cart.add(id);
+await ms3.cartAPI.add(id, 1);
 ```
 
 ### Шаг 7: Плагины
@@ -410,11 +453,16 @@ ms3.cart.add(id);
 
 ### Шаг 8: Чанки и плейсхолдеры
 
-- Цены: сырые float + `*_formatted` (с 1.11, breaking #242). Уберите `formatPrices` из вызовов.
+- Цены: сырые float + `*_formatted` (с 1.11, breaking). Уберите `formatPrices` из вызовов.
+- Контакты: `first_name` / `last_name`, не `receiver`.
+- Комментарий заказа: `order_comment`. Поле `comment` — у адреса.
+- Остаток товара: `stock` (в CSV-импорте `remains` — alias).
+- Корзина: ключ позиции `product_key`, не `key`.
+- Доставка/оплата в форме: `delivery_id` / `payment_id`.
 - Опции: `group_name` вместо MS2 `category_name`. Группы опций — `msOptionGroup`, не `modCategory`.
 - Превью товара: поле `preview_file_id` в `msProductData` (галерея «Сделать превью»), не только `thumb`/`image`.
-- Доп. категории: `msCategoryMember` и scope `CategoryProductScope` у `msProducts` (#481).
-- Корзина на thanks: `msCart` по умолчанию **не** скрывается на `?msorder=` (#249). Для старого поведения — `hideOnThanks=1`. `msOrder` на thanks всегда пустой.
+- Доп. категории: `msCategoryMember` и scope `CategoryProductScope` у `msProducts`.
+- Корзина на thanks: `msCart` по умолчанию **не** скрывается на `?msorder=`. Для старого поведения — `hideOnThanks=1`. `msOrder` на thanks всегда пустой.
 
 ```html
 <!-- Было -->
@@ -436,8 +484,8 @@ ms3.cart.add(id);
 
 | Область | miniShop2 | MiniShop3 |
 | --- | --- | --- |
-| Заказы, клиенты, утилиты | ExtJS | Vue 3 + PrimeVue (Manager API) |
-| Редактор категории/товара в дереве ресурсов | ExtJS | ExtJS + Vue-грид товаров категории |
+| Заказы, клиенты, уведомления, настройки | ExtJS | Vue 3 + PrimeVue без Ext-обёртки (Manager API) |
+| Редактор категории/товара в дереве | ExtJS | ExtJS shell + Vue вкладки (в т.ч. Категории/Связи) |
 | Колонки таблиц | Системные настройки `ms2_*_grid_fields` | **Утилиты → Поля таблиц** (`ms3_grid_fields`) |
 
 События плагинов из Vue CRUD (заказы, клиенты) не стреляют так же, как при изменении через processors ресурса. Для кастомизации админки ориентируйтесь на [События](/components/minishop3/development/events) и Manager API.
@@ -449,13 +497,13 @@ MiniShop3 сохраняет совместимость на уровне:
 ✅ **Совместимо:**
 
 - Имена сниппетов
-- Структура плейсхолдеров в чанках
 - Основные параметры сниппетов
-- Большинство событий плагинов
+- Большинство событий плагинов (с новыми сигнатурами params)
 
-❌ **Несовместимо:**
+❌ **Несовместимо / переименовано:**
 
-- Системные настройки (ms2_→ ms3_)
-- JavaScript API (miniShop2 → ms3)
-- PHP классы (требуют namespaces)
-- Точки входа API (action.php → api.php)
+- Системные настройки (`ms2_` → `ms3_`)
+- JavaScript API (`miniShop2` → `ms3` / `orderAPI` / hooks)
+- PHP-классы (namespaces)
+- Точки входа API (`action.php` → `api.php`)
+- Ряд плейсхолдеров (`receiver` → `first_name`/`last_name`, `comment` заказа → `order_comment`, `remains` → `stock`)

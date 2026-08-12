@@ -140,7 +140,7 @@ MiniShop3 is designed specifically for MODX Revolution 3.x and takes full advant
 
 ### Improved architecture
 
-- **REST API** — full-featured API for headless integrations
+- **REST API** — Web API `api.php` (`/api/v1/*`) for storefront and headless: cart, order, account, public catalog. [Docs](/en/components/minishop3/development/api)
 - **Service Container** — dependencies via MODX DI container
 - **Vue 3 + PrimeVue** — modern Manager UI via [VueTools](/en/components/vuetools/)
 - **Modern frontend** — no jQuery, native JavaScript
@@ -150,8 +150,9 @@ MiniShop3 is designed specifically for MODX Revolution 3.x and takes full advant
 MiniShop3 maintains backward compatibility with miniShop2 at the level of:
 
 - Snippet names (`msProducts`, `msCart`, `msOrder`, etc.)
-- Chunk and placeholder structure
-- Snippet parameters
+- Main snippet parameters
+
+Model fields and placeholders differ: no `receiver`, order comment is `order_comment`, stock is `stock`, cart line key is `product_key`. Details: [Differences from miniShop2](/en/components/minishop3/differences-from-ms2).
 
 ## System requirements
 
@@ -283,7 +284,7 @@ assets/components/minishop3/
 ├── api.php                 # REST API entry point
 ├── connector.php           # Manager AJAX connector
 ├── js/
-│   ├── mgr/                # Manager JavaScript (ExtJS)
+│   ├── mgr/                # Manager JS (Vue bundles + legacy Ext resource)
 │   └── web/                # Site JavaScript (native JS)
 ├── css/
 │   ├── mgr/                # Manager styles

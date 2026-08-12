@@ -196,7 +196,7 @@ Shallow merge: if two plugins set `returnedValues['count']`, the plugin with **h
 ### Two ways to change data
 
 1. **By reference** in `$scriptProperties` (legacy MS2, still works where params are passed with `&`).
-2. **`returnedValues`** — preferred contract since 1.11+ (issue [#219](https://github.com/modx-pro/MiniShop3/issues/219)).
+2. **`returnedValues`** — preferred contract since 1.11+.
 
 ```php
 <?php

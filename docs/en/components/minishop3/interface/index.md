@@ -50,14 +50,14 @@ See also: [Utilities](utilities)
 
 ## Technologies
 
-The MiniShop3 admin interface is built on two technologies:
-
 | Technology | Use |
 | --- | --- |
-| **ExtJS 3.4** | Main panels (orders, customers, ExtJS forms) |
-| **Vue 3 + PrimeVue** | Modern components (category tables, settings, utilities) |
+| **Vue 3 + PrimeVue** | Orders, customers, notifications, settings (`settings.min.js`), utilities, product tabs |
+| **ExtJS 3.4** | Category/product resource shell in the MODX tree (Document / Settings / Access); product grids and “Product” tabs are Vue |
 
-Vue components are integrated into ExtJS via mount points and require the [VueTools](/en/components/vuetools/) package.
+Settings deep links: `#tab-deliveries`, `#tab-payments`, `#tab-statuses`, `#tab-vendors`, `#tab-links`, `#tab-options`.
+
+Requires the [VueTools](/en/components/vuetools/) package.
 
 ## Extending the interface
 

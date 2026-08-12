@@ -33,8 +33,10 @@ $result = $ms3->order->add('email', 'user@example.com');
 $result = $ms3->order->set([
     'email' => 'user@example.com',
     'phone' => '+79991234567',
-    'delivery' => 1,
-    'payment' => 1,
+    'first_name' => 'Иван',
+    'delivery_id' => 1,
+    'payment_id' => 1,
+    'order_comment' => 'Позвоните перед доставкой',
 ]);
 
 // Оформить заказ
@@ -194,7 +196,7 @@ $result = $calculator->getTotalCost($draft, $orderData, $token);
 
 ### Пересчёт стоимости в админке — `POST /api/mgr/orders/{id}/recalculate-cost`
 
-Появился в 1.11.0 (#212). Сервис `ManagerOrderCostRecalculator` пересчитывает `cart_cost`, `weight`, `delivery_cost`, итоговый `cost` по сохранённым позициям заказа и текущим `delivery_id` / `payment_id` без побочных эффектов на других полях.
+Появился в 1.11.0. Сервис `ManagerOrderCostRecalculator` пересчитывает `cart_cost`, `weight`, `delivery_cost`, итоговый `cost` по сохранённым позициям заказа и текущим `delivery_id` / `payment_id` без побочных эффектов на других полях.
 
 Тело запроса:
 
@@ -231,6 +233,36 @@ $result = $calculator->getTotalCost($draft, $orderData, $token);
 ```
 
 Применяет общий guard `OrderService::clampComputedTotal()` — итог не может уйти ниже нуля. Скидки/наценки доставки и оплаты (отрицательные `price`, см. 1.11.0) обрабатываются через `MiniShop3\Utils\PriceAdjustment`.
+
+Пример вызова из JS (карточка заказа в mgr):
+
+```javascript
+const response = await fetch(`/api/mgr/orders/${orderId}/recalculate-cost`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'modAuth': MODx.modxConfig.auth, // или актуальный mgr-auth заголовок
+  },
+  body: JSON.stringify({
+    mode: 'manual',
+    manual_delivery_cost: 500,
+  }),
+})
+const json = await response.json()
+// json.data.breakdown — cart_cost / delivery_cost / payment_cost / cost
+// json.data.warnings — например delivery_manual_required
+```
+
+Через HTTP (REST mgr API):
+
+```bash
+curl -X POST 'https://example.com/api/mgr/orders/42/recalculate-cost' \
+  -H 'Content-Type: application/json' \
+  -H 'Cookie: …' \
+  -d '{"mode":"auto"}'
+```
+
+См. также [routing](/components/minishop3/development/routing).
 
 ## Оформление заказа (OrderSubmitHandler)
 
@@ -476,19 +508,82 @@ if ($logService->shouldLog('status')) {
 `OrderFinalizeService` используется для оформления заказов, созданных менеджером в админке.
 
 ```php
+use MiniShop3\Services\Order\OrderOrigin;
+
 $finalizeService = $modx->services->get('ms3_order_finalize');
 
 $result = $finalizeService->finalize($orderId, [
-    'skip_validation' => false,      // Пропустить валидацию полей
-    'skip_notifications' => false,   // Пропустить уведомления
-    'skip_payment' => true,          // Пропустить вызов оплаты
-    'create_customer' => true,       // Создать msCustomer
-    'force_create_customer' => false, // Создать даже при дубликате
+    'skip_validation' => false,
+    'skip_notifications' => false,
+    'create_customer' => true,
+    'force_create_customer' => false,
+    'origin' => OrderOrigin::MANAGER, // по умолчанию; для CRM — OrderOrigin::INTEGRATION
 ]);
-
 ```
 
-Финализация выполняет те же шаги, что и `submit`, но адаптирована для контекста менеджера: позволяет пропускать отдельные этапы и работает с уже существующим заказом (не черновиком).
+Финализация допускает `skip_*` и работает с уже существующим черновиком. Вызова платёжного gateway здесь нет (в отличие от storefront `submit`).
+
+Параметр `origin` (`OrderOrigin`): `manager` (по умолчанию), `storefront`, `integration`. При `manager` дополнительно вызываются `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`. Ключ `from_manager` в событиях = `true` только для `origin=manager`.
+
+## Программное создание заказа (ProgrammaticOrderService)
+
+API без HTTP-сессии для extras, cron и интеграций. Это **не** Web API: в `routes/web.php` отдельного эндпоинта нет.
+
+| | |
+| --- | --- |
+| DI | `ms3_programmatic_order` |
+| Класс | `MiniShop3\Services\Order\ProgrammaticOrderService` |
+| Черновик | `OrderDraftManager::createSessionlessDraft()` (без PHP-сессии и cart token) |
+| Финализация | `OrderFinalizeService::finalize(..., origin=integration)` |
+| Идемпотентность | колонка `ms3_orders.idempotency_key` (unique, nullable) |
+
+```php
+use MiniShop3\Services\Order\OrderOrigin;
+
+$orders = $modx->services->get('ms3_programmatic_order');
+
+$result = $orders->create([
+    'idempotency_key' => 'crm-invoice-10042', // обязательно
+    'products' => [
+        ['product_id' => 15, 'count' => 2],
+        // или снимок без ресурса:
+        // ['name' => 'Услуга', 'price' => 500, 'count' => 1, 'weight' => 0, 'options' => []],
+    ],
+    'customer_id' => 0,
+    'delivery_id' => 1,
+    'payment_id' => 1,
+    'address' => [
+        'first_name' => 'Иван',
+        'email' => 'user@example.com',
+        'phone' => '+79991234567',
+    ],
+    'order_comment' => 'Из CRM',
+    'context' => 'web',
+    'origin' => OrderOrigin::INTEGRATION,
+    // 'delivery_cost' => 300, // → cost_mode=manual при finalize
+    // 'skip_notifications' => true,
+    // 'skip_validation' => false,
+    // 'properties' => ['source' => 'crm'],
+]);
+
+if (!$result['success']) {
+    // Частые message:
+    // ms3_order_err_idempotency_key_required
+    // ms3_order_err_products_required
+    // ms3_order_err_programmatic_create
+    // либо ошибки finalize / валидации
+    return $result;
+}
+
+// Успех: data = { order_id, uuid, num, status_id }
+// Повтор того же idempotency_key:
+//   уже оформленный заказ → success + ms3_order_programmatic_idempotent
+//   черновик со статусом draft → повторная финализация
+```
+
+События: `msOnBeforeCreateOrder` / `msOnCreateOrder` с `origin=integration` и **без** `from_manager`. События `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` **не** вызываются.
+
+Отличие от `POST /api/mgr/orders` (менеджер создаёт пустой/частичный заказ в UI) и от storefront `POST /api/v1/order/submit` (нужны токен и корзина).
 
 ## Разрешение пользователей (OrderUserResolver)
 
@@ -538,7 +633,8 @@ $user = $userResolver->createUser([
 | `payment_id` | integer | 0 | ID способа оплаты |
 | `context` | string | 'web' | Контекст MODX |
 | `order_comment` | string | null | Комментарий к заказу |
-| `properties` | json | null | Дополнительные свойства |
+| `idempotency_key` | string | null | Ключ идемпотентности (программные заказы, unique) |
+| `properties` | json | null | Дополнительные свойства (в т.ч. `origin` для интеграций) |
 
 ### Связи msOrder
 
@@ -574,7 +670,7 @@ Composite-связи удаляются каскадно при удалении
 | `msOnBeforeCreateOrder` / `msOnCreateOrder` | Создание заказа |
 | `msOnBeforeChangeOrderStatus` / `msOnChangeOrderStatus` | Смена статуса |
 | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Поиск/создание пользователя |
-| `msOnBeforeFinalizeOrder` / `msOnFinalizeOrder` | Финализация из менеджера |
+| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Финализация из менеджера (только `origin=manager`) |
 
 ## Manager REST API
 

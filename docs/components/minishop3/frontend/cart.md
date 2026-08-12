@@ -86,7 +86,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 
 ### Смена опций в корзине
 
-Если у позиции есть опции (размер, цвет), смена комбинации идёт через `POST /api/v1/cart/change-option` (тело: `key`, `options`). На сервере `CartMutationHandler` пересчитывает ключ позиции и вызывает события `msOnBeforeChangeOptionInCart` / `msOnChangeOptionInCart`. В JS: `ms3.cart.changeOption(key, options)` (см. [Frontend JavaScript](/components/minishop3/development/frontend-js)).
+Если у позиции есть опции (размер, цвет), смена комбинации идёт через `POST /api/v1/cart/change-option` (тело: `key`, `options`). На сервере `CartMutationHandler` пересчитывает ключ позиции и вызывает события `msOnBeforeChangeOptionInCart` / `msOnChangeOptionInCart`. В JS: `ms3.cartAPI.changeOption(key, options)` (см. [Frontend JavaScript](/components/minishop3/development/frontend-js)).
 
 ## Состав корзины и доступные поля
 

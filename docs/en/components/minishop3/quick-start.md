@@ -120,7 +120,18 @@ Details: [Scheduler integration](development/scheduler).
 
 ## Web API (headless)
 
-Storefront entry point: `assets/components/minishop3/api.php`, route prefix `/api/v1/`. Public catalog: `GET /api/v1/product/list`. Full map: [REST API](development/api).
+Entry point: `/assets/components/minishop3/api.php?route=/api/v1/...`.
+
+| Scenario | Endpoint |
+| --- | --- |
+| Guest token | `GET /api/v1/customer/token/get` |
+| Catalog without token | `GET /api/v1/product/list`, `GET /api/v1/product/get/{id}` |
+| Cart | `/api/v1/cart/*` |
+| Checkout | `/api/v1/order/*` |
+| Account | `/api/v1/customer/*` (login, addresses, orders) |
+| Health | `GET /api/v1/health` |
+
+The `/api/v1` group has CORS and rate limit. Full map: [REST API](development/api).
 
 ## Category and product
 

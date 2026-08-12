@@ -120,7 +120,18 @@ description: Установка MiniShop3, служебные страницы, 
 
 ## Web API (headless)
 
-Точка входа витрины: `assets/components/minishop3/api.php`, префикс маршрутов `/api/v1/`. Публичный каталог: `GET /api/v1/product/list`. Карта эндпоинтов: [REST API](development/api).
+Точка входа: `/assets/components/minishop3/api.php?route=/api/v1/...`.
+
+| Сценарий | Эндпоинт |
+| --- | --- |
+| Токен гостя | `GET /api/v1/customer/token/get` |
+| Каталог без токена | `GET /api/v1/product/list`, `GET /api/v1/product/get/{id}` |
+| Корзина | `/api/v1/cart/*` |
+| Checkout | `/api/v1/order/*` |
+| ЛК | `/api/v1/customer/*` (login, addresses, orders) |
+| Health | `GET /api/v1/health` |
+
+На группу `/api/v1` действуют CORS и rate limit. Полная карта: [REST API](development/api).
 
 ## Категория и товар
 

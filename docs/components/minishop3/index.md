@@ -140,7 +140,7 @@ MiniShop3 разработан специально для MODX Revolution 3.x �
 
 ### Улучшенная архитектура
 
-- **REST API** — полноценный API для headless-интеграций
+- **REST API** — Web API `api.php` (`/api/v1/*`) для витрины и headless: корзина, заказ, ЛК, публичный каталог. [Документация](/components/minishop3/development/api)
 - **Service Container** — зависимости через DI-контейнер MODX
 - **Vue 3 + PrimeVue** — современный интерфейс админки через [VueTools](/components/vuetools/)
 - **Современный фронтенд** — без jQuery, нативный JavaScript
@@ -150,8 +150,9 @@ MiniShop3 разработан специально для MODX Revolution 3.x �
 MiniShop3 сохраняет обратную совместимость с miniShop2 на уровне:
 
 - Имена сниппетов (`msProducts`, `msCart`, `msOrder` и др.)
-- Структура чанков и плейсхолдеров
-- Параметры сниппетов
+- Основные параметры сниппетов
+
+Поля моделей и плейсхолдеры отличаются: нет `receiver`, комментарий заказа — `order_comment`, остаток — `stock`, ключ позиции корзины — `product_key`. Подробнее: [Отличия от miniShop2](/components/minishop3/differences-from-ms2).
 
 ## Системные требования
 
@@ -283,7 +284,7 @@ assets/components/minishop3/
 ├── api.php                 # Точка входа REST API
 ├── connector.php           # AJAX коннектор админки
 ├── js/
-│   ├── mgr/                # JavaScript админки (ExtJS)
+│   ├── mgr/                # JS админки (Vue bundles + legacy Ext resource)
 │   └── web/                # JavaScript сайта (нативный JS)
 ├── css/
 │   ├── mgr/                # Стили админки

@@ -14,7 +14,7 @@ title: msGetOrder
 | **includeThumbs** | | Превью изображений товаров через запятую |
 | **includeContent** | `false` | Включить поле content товаров |
 | **includeTVs** | | TV товаров через запятую (pdoTools, `joinTVsTo` = `msProduct`) |
-| **payStatus** | `1` | Статусы для показа ссылки оплаты (через запятую) |
+| **payStatus** | `1` | CSV ID статусов, для которых показывать `payment_link`. Дефолт `1` = черновик; после оформления заказ обычно в `ms3_status_new` (часто `2`) — укажите нужные ID явно |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
 | **showLog** | `false` | Показать лог выполнения |
 
@@ -111,25 +111,27 @@ UUID заказа (36 символов) вместо числового ID уд�
 | `{$order.num}` | Форматированный номер (MS-00015) |
 | `{$order.uuid}` | UUID заказа |
 | `{$order.status_id}` | ID статуса |
-| `{$order.status_name}` | Название статуса |
-| `{$order.status_color}` | Цвет статуса |
 | `{$order.cost}` | Общая стоимость |
 | `{$order.cart_cost}` | Стоимость товаров |
 | `{$order.delivery_cost}` | Стоимость доставки |
 | `{$order.weight}` | Общий вес |
 | `{$order.createdon}` | Дата создания |
 | `{$order.updatedon}` | Дата обновления |
-| `{$order.comment}` | Комментарий к заказу |
+| `{$order.order_comment}` | Комментарий к заказу |
 | `{$order.user_id}` | ID пользователя MODX |
 | `{$order.customer_id}` | ID покупателя |
+
+`msGetOrder` отдаёт `$msOrder->toArray()`: полей `status_name` / `status_color` в объекте нет (в отличие от ЛК `msCustomer`). Название статуса берите из связи Status или отдельным запросом.
 
 ### Объект address
 
 | Поле | Описание |
 | --- | --- |
-| `{$address.receiver}` | ФИО получателя |
+| `{$address.first_name}` | Имя |
+| `{$address.last_name}` | Фамилия |
 | `{$address.phone}` | Телефон |
 | `{$address.email}` | Email |
+| `{$address.comment}` | Комментарий к адресу |
 | `{$address.index}` | Почтовый индекс |
 | `{$address.country}` | Страна |
 | `{$address.region}` | Регион/область |
@@ -212,7 +214,7 @@ UUID заказа (36 символов) вместо числового ID уд�
     <div class="card-header bg-primary text-white">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Заказ №{$order.num}</h5>
-            <span class="badge bg-light text-dark">{$order.status_name ?: 'Новый'}</span>
+            <span class="badge bg-light text-dark">{$order.status_id}</span>
         </div>
     </div>
     <div class="card-body">
@@ -308,15 +310,15 @@ UUID заказа (36 символов) вместо числового ID уд�
 </div>
 
 {* Контактные данные *}
-{if $address.receiver || $address.phone}
+{if $address.first_name || $address.phone}
     <div class="card bg-light">
         <div class="card-body">
             <h6>Контактные данные</h6>
             <div class="row g-3">
-                {if $address.receiver?}
+                {if $address.first_name?}
                     <div class="col-md-6">
                         <small class="text-muted">Получатель</small>
-                        <div class="fw-semibold">{$address.receiver}</div>
+                        <div class="fw-semibold">{$address.first_name} {$address.last_name}</div>
                     </div>
                 {/if}
                 {if $address.phone?}
@@ -342,10 +344,10 @@ UUID заказа (36 символов) вместо числового ID уд�
                         </div>
                     </div>
                 {/if}
-                {if $order.comment?}
+                {if $order.order_comment?}
                     <div class="col-12">
                         <small class="text-muted">Комментарий</small>
-                        <div>{$order.comment}</div>
+                        <div>{$order.order_comment}</div>
                     </div>
                 {/if}
             </div>
@@ -364,7 +366,7 @@ UUID заказа (36 символов) вместо числового ID уд�
 
 ```fenom
 {'msGetOrder' | snippet : [
-    'payStatus' => '1,2,3'  {* Показывать ссылку для статусов 1, 2, 3 *}
+    'payStatus' => '2,3'  {* обычно после submit статус = ms3_status_new (2) *}
 ]}
 ```
 

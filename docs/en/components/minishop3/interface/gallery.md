@@ -63,7 +63,7 @@ Selecting a file source in the toolbar switches Media Source without saving the 
 
 ### Main image (preview)
 
-The “Set as main” action in the context menu does **not** change `position` in the gallery. It calls processor `MiniShop3\Processors\Gallery\SetPreview`, which writes `preview_file_id` to `msProductData`. Method `ProductImageService::setProductPreview()` links the file to the product card (#130). Drag-and-drop sort and storefront preview are separate mechanisms.
+The “Set as main” action in the context menu does **not** change `position` in the gallery. It calls processor `MiniShop3\Processors\Gallery\SetPreview`, which writes `preview_file_id` to `msProductData`. Method `ProductImageService::setProductPreview()` links the file to the product card. Drag-and-drop sort and storefront preview are separate mechanisms.
 
 ## Image uploader
 

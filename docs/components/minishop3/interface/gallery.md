@@ -63,7 +63,7 @@ MiniShop3 использует библиотеку [Intervention Image](https:/
 
 ### Главное изображение (превью)
 
-Действие «Сделать главным» в контекстном меню **не меняет** `position` в галерее. Вызывается процессор `MiniShop3\Processors\Gallery\SetPreview`, который пишет `preview_file_id` в `msProductData`. Метод `ProductImageService::setProductPreview()` связывает файл с карточкой товара (#130). Сортировка drag-and-drop и превью для витрины — разные механизмы.
+Действие «Сделать главным» в контекстном меню **не меняет** `position` в галерее. Вызывается процессор `MiniShop3\Processors\Gallery\SetPreview`, который пишет `preview_file_id` в `msProductData`. Метод `ProductImageService::setProductPreview()` связывает файл с карточкой товара. Сортировка drag-and-drop и превью для витрины — разные механизмы.
 
 ## Загрузчик изображений
 

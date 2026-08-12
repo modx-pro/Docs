@@ -174,47 +174,23 @@ MyComponent\Payment\YooKassaPayment
 
 Эти настройки доступны в обработчике через `$this->payment->get('properties')`.
 
-## Webhook для платёжных систем
+## Уведомления об оплате (webhook / callback)
 
-Для приёма уведомлений об оплате используйте URL:
+В ядре MiniShop3 **нет** готового `payment/handler.php`. URL уведомлений задаёт платёжный extra (например `webhook.php` / `callback.php` в `assets/components/{ns}/`). Смотрите документацию конкретного шлюза ([msp3YooKassa](/components/msp3yookassa/), [mspTBank](/components/msptbank/) и т.д.).
 
-```
-https://yoursite.com/assets/components/minishop3/payment/handler.php?payment_id=1&order_id=123
-```
-
-Или настройте роут в Web API для современных интеграций.
+Класс оплаты реализует `send()` / приём уведомления и меняет статус заказа. Ссылка на оплату в письмах и `msGetOrder` строится через `PaymentLinkResolver`.
 
 ## API
 
-### Получение доступных способов оплаты
+### Доставки и оплаты в черновике заказа
+
+Отдельного `GET /api/v1/order/payments` **нет**. Список доставок/оплат на витрине рендерит `msOrder`. Черновик:
 
 ```
-GET /api/v1/order/payments?delivery_id=1
+GET /api/v1/order/get
 ```
 
-**Ответ:**
-
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "name": "Наличными при получении",
-      "description": "Оплата курьеру",
-      "price": "0",
-      "logo": ""
-    },
-    {
-      "id": 2,
-      "name": "Онлайн картой",
-      "description": "Visa, MasterCard, МИР",
-      "price": "0",
-      "logo": "/assets/images/cards.png"
-    }
-  ]
-}
-```
+В `data.order` — поля заказа, в том числе `delivery_id` / `payment_id` и `address_*`. Смена способа: `POST /api/v1/order/add` или `POST /api/v1/order/set` с ключами `payment_id` / `delivery_id`.
 
 ### Стоимость оплаты
 
@@ -232,6 +208,8 @@ GET /api/v1/order/cost/payment?payment_id=2
   }
 }
 ```
+
+Полный расчёт (корзина + доставка + оплата): `GET /api/v1/order/cost`. Карта Web API: [REST API](/components/minishop3/development/api).
 
 ## Ссылка на оплату (`payment_link`)
 

@@ -213,7 +213,7 @@ When GET parameter `order_id` is present:
         'status_name' => 'Paid',
         'status_color' => '008000',
         'createdon_formatted' => '15.01.2024 10:30',
-        'comment' => 'Call before delivery',
+        'order_comment' => 'Call before delivery',
         // ... other msOrder fields
     ],
     'products' => [

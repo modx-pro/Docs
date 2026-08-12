@@ -75,7 +75,7 @@ When `link` is set, the snippet automatically sets `parents => 0` and `depth => 
 | **wrapIfEmpty** | `true` | Use wrapper when result is empty |
 | **showLog** | `false` | Show execution log (managers in mgr context only) |
 
-### Category scope (#481)
+### Category scope
 
 pdoTools filters products by `parent` but ignores extra categories from `msCategoryMember`. The snippet uses `CategoryProductScopeService`: when `parents` is not `0`, it builds a `WHERE` for primary and extra categories and resets `parents` to `0` so pdoTools does not drop products from linked categories.
 
@@ -384,7 +384,7 @@ Numeric `{$price}`, `{$old_price}`, `{$weight}` are for calculations. For displa
 - `{$old_price_formatted}` — old price
 - `{$weight_formatted}` — weight with unit (e.g. `500 g`)
 
-The `formatPrices` parameter was removed in v1.7.0 (#242).
+The `formatPrices` parameter was removed in v1.7.0.
 
 ### Vendor fields (Vendor)
 

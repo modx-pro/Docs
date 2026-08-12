@@ -137,6 +137,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `payment_id` | int | ID способа оплаты |
 | `context` | varchar(100) | Контекст MODX |
 | `order_comment` | text | Комментарий к заказу |
+| `idempotency_key` | varchar | Ключ идемпотентности (программные заказы) |
 | `createdon` | datetime | Дата создания |
 | `updatedon` | datetime | Дата обновления |
 
@@ -297,26 +298,24 @@ foreach ($modx->getIterator(msOrder::class, ['status_id' => 2]) as $order) {
 
 В MiniShop3 бизнес-логика вынесена в **сервисный слой** (`src/Services/`, `src/Controllers/`):
 
-```
-miniShop2:
-┌─────────────────────────────────┐
-│           msOrder               │
-│  - валидация                    │
-│  - расчёт стоимости             │
-│  - смена статуса                │
-│  - отправка уведомлений         │
-│  - работа с БД                  │
-└─────────────────────────────────┘
+### miniShop2 — толстая модель
 
-MiniShop3:
-┌─────────────────┐     ┌─────────────────────┐
-│    msOrder      │◄────│  OrderController    │
-│  - работа с БД  │     │  - бизнес-логика    │
-│  - связи        │     └─────────────────────┘
-│  - вызов        │     ┌─────────────────────┐
-│    сервисов     │◄────│  NotificationManager│
-└─────────────────┘     │  - уведомления      │
-                        └─────────────────────┘
+```mermaid
+flowchart TB
+  msOrder["msOrder"]
+  msOrder --- V[валидация]
+  msOrder --- C[расчёт стоимости]
+  msOrder --- S[смена статуса]
+  msOrder --- N[отправка уведомлений]
+  msOrder --- D[работа с БД]
+```
+
+### MiniShop3 — модель + сервисы
+
+```mermaid
+flowchart LR
+  OrderController["OrderController — бизнес-логика"] --> msOrder["msOrder — БД, связи, вызов сервисов"]
+  NotificationManager["NotificationManager — уведомления"] --> msOrder
 ```
 
 ### Прагматичный подход
@@ -451,27 +450,25 @@ class CreateCustomersTable extends AbstractMigration
 
 ## Диаграмма связей
 
-```
-┌─────────────┐       ┌─────────────────┐
-│  msProduct  │──1:1──│  msProductData  │
-│ (modResource)│       │  (ms3_products) │
-└──────┬──────┘       └────────┬────────┘
-       │                       │
-       │ 1:N                   │ 1:N
-       ▼                       ▼
-┌──────────────┐       ┌────────────────┐
-│msProductOption│       │ msProductFile  │
-└──────────────┘       └────────────────┘
+### Товар
 
-┌─────────────┐       ┌─────────────────┐
-│   msOrder   │──1:1──│ msOrderAddress  │
-└──────┬──────┘       └─────────────────┘
-       │
-       ├──1:N──▶ msOrderProduct
-       │
-       ├──N:1──▶ msCustomer ──1:N──▶ msCustomerAddress
-       │
-       ├──N:1──▶ msDelivery
-       │
-       └──N:1──▶ msPayment
+`msProduct` (extends `modResource`) и `msProductData` (таблица `ms3_products`)
+
+```mermaid
+erDiagram
+  msProduct ||--|| msProductData : "1:1"
+  msProduct ||--o{ msProductOption : "1:N"
+  msProductData ||--o{ msProductFile : "1:N"
+```
+
+### Заказ
+
+```mermaid
+erDiagram
+  msOrder ||--|| msOrderAddress : "1:1"
+  msOrder ||--o{ msOrderProduct : "1:N"
+  msOrder }o--|| msCustomer : "N:1"
+  msCustomer ||--o{ msCustomerAddress : "1:N"
+  msOrder }o--|| msDelivery : "N:1"
+  msOrder }o--|| msPayment : "N:1"
 ```

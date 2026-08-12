@@ -91,7 +91,7 @@ title: Оформление заказа
 ### Процесс валидации
 
 1. При смене доставки `OrderUI` запрашивает `GET /api/v1/order/delivery/validation-rules` и `GET /api/v1/order/delivery/required-fields`, скрывает лишние поля и обновляет `required`.
-2. При `ms3.order.setField` сервер проверяет поле по правилам текущей доставки.
+2. При `ms3.orderAPI.add(key, value)` сервер проверяет поле по правилам текущей доставки.
 3. При submit сервер проверяет все обязательные поля.
 4. При ошибке JS вешает `is-invalid` и текст в `.invalid-feedback`.
 
@@ -116,52 +116,48 @@ title: Оформление заказа
 
 ## JavaScript API
 
-### Объект ms3.order
+Публичный фасад — `ms3.orderAPI` (не `ms3.order`). UI-форма дергает его через `OrderUI`.
 
 ```javascript
 // Оформить заказ
-ms3.order.submit();
+const response = await ms3.orderAPI.submit()
+if (response.success) {
+  window.location.href = response.data.redirect
+}
 
-// Обновить способ доставки
-ms3.order.setDelivery(deliveryId);
+// Способ доставки / оплаты
+await ms3.orderAPI.add('delivery_id', deliveryId)
+await ms3.orderAPI.add('payment_id', paymentId)
 
-// Обновить способ оплаты
-ms3.order.setPayment(paymentId);
-
-// Обновить поле формы
-ms3.order.setField('city', 'Москва');
+// Поля адреса и заказа
+await ms3.orderAPI.add('city', 'Москва')
+await ms3.orderAPI.add('order_comment', 'Позвонить перед доставкой')
+// address.comment (комментарий к адресу): await ms3.orderAPI.add('comment', '…')
 ```
 
-### События
+### Хуки
+
+DOM-событий `ms3:order:*` нет. Используйте hooks:
 
 ```javascript
-// Перед отправкой заказа
-document.addEventListener('ms3:order:before-submit', (e) => {
-    console.log('Данные заказа:', e.detail);
-    // Можно отменить отправку: e.preventDefault()
-});
+ms3Hooks.addHook('beforeSubmitOrder', async (data) => {
+  // можно изменить data.formData
+})
 
-// После успешного оформления
-document.addEventListener('ms3:order:success', (e) => {
-    console.log('Заказ создан:', e.detail.order_id);
-    window.location.href = e.detail.redirect;
-});
+ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
+  if (response.success) {
+    console.log('order_id:', response.data.order_id)
+  }
+})
 
-// При ошибке оформления
-document.addEventListener('ms3:order:error', (e) => {
-    console.error('Ошибки:', e.detail.errors);
-});
-
-// При изменении способа доставки
-document.addEventListener('ms3:order:delivery-changed', (e) => {
-    console.log('Выбрана доставка:', e.detail.delivery_id);
-});
-
-// При изменении способа оплаты
-document.addEventListener('ms3:order:payment-changed', (e) => {
-    console.log('Выбрана оплата:', e.detail.payment_id);
-});
+ms3Hooks.addHook('afterAddOrder', async ({ key, value, response }) => {
+  if (key === 'delivery_id') {
+    console.log('Доставка:', value)
+  }
+})
 ```
+
+См. [Frontend JS — хуки](/components/minishop3/development/frontend-js).
 
 ## Серверные события
 
