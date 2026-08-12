@@ -1,12 +1,17 @@
+---
+title: NOTY
+description: Уведомления NOTY для FetchIt через CDN и FetchIt.Message
+---
+
 # NOTY
 
-Этот раздел содержит информацию о том, как подключить библиотеку уведомлений [NOTY](https://ned.im/noty/).
+[NOTY](https://ned.im/noty/): тосты на чистом JS.
 
 :::danger Внимание!
-На данный момент библиотека NOTY не поддерживается его автором и указана как **DEPRECATED**.
+Автор больше не поддерживает NOTY. Пакет помечен как deprecated.
 :::
 
-- Сперва нам необходимо подключить скрипт и стили библиотеки, для примера воспользуемся CDN.
+## Подключение через CDN
 
 ```html
 <!-- JavaScript -->
@@ -17,7 +22,7 @@
 <link href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta-deprecated/lib/themes/mint.min.css" rel="stylesheet">
 ```
 
-- И определим свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
+Задайте [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,10 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }).show()
     },
   }
-});
+})
 ```
 
-- Или в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
 FetchIt.Message = {
@@ -57,4 +62,4 @@ FetchIt.Message = {
 }
 ```
 
-Готово! Вот такими простыми действиями мы можем подключить **NOTY**.
+Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

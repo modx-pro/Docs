@@ -1,12 +1,17 @@
+---
+title: NOTY
+description: NOTY notifications for FetchIt via CDN and FetchIt.Message
+---
+
 # NOTY
 
-This section describes how to integrate the [NOTY](https://ned.im/noty/) notification library.
+[NOTY](https://ned.im/noty/): toasts in plain JS.
 
-:::danger Warning!
-At this time the NOTY library is not maintained by its author and is marked **DEPRECATED**.
+:::danger Warning
+The author no longer maintains NOTY. The package is marked deprecated.
 :::
 
-- First include the library script and styles; for example via CDN.
+## CDN setup
 
 ```html
 <!-- JavaScript -->
@@ -17,7 +22,7 @@ At this time the NOTY library is not maintained by its author and is marked **DE
 <link href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta-deprecated/lib/themes/mint.min.css" rel="stylesheet">
 ```
 
-- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
+Set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,10 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }).show()
     },
   }
-});
+})
 ```
 
-- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
+In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
 
 ```js
 FetchIt.Message = {
@@ -57,4 +62,4 @@ FetchIt.Message = {
 }
 ```
 
-Done! With these steps you integrate **NOTY**.
+Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).

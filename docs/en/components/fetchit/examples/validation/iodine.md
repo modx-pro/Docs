@@ -1,20 +1,27 @@
+---
+title: Validation with Iodine
+description: FetchIt client-side validation with Iodine and fetchit:before
+---
+
 # Validation with Iodine
 
-This section shows how to implement client-side validation using the [Iodine](https://github.com/caneara/iodine) library. We will handle a simple form with two fields: name and email.
+Client-side validation for a two-field form with [Iodine](https://github.com/caneara/iodine) and [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore).
 
 <!--@include: ../../parts/validation.warning.md-->
 
-## Including the library
+## Setup
 
-For simplicity we will load it via CDN.
+CDN:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@caneara/iodine@8/dist/iodine.min.umd.js" defer></script>
 ```
 
-## Form markup
+## Markup
 
-Nothing special, except the `novalidate` attribute on the form element to disable built-in browser validation.
+`novalidate` disables built-in browser validation. For AJAX, add `[data-success]` and `[data-validation-error]` ([selectors](/en/components/fetchit/selectors)).
+
+::: code-group
 
 ```modx
 <form action="[[~[[*id]]]]" method="post" novalidate>
@@ -26,155 +33,74 @@ Nothing special, except the `novalidate` attribute on the form element to disabl
     <input type="email" name="email" value="[[+fi.email]]" />
     <span data-error="email">[[+fi.error.email]]</span>
   </label>
-  <button>Submit</button>
+  <div role="alert" data-success style="display: none;"></div>
+  <div role="alert" data-validation-error style="display: none;"></div>
+  <button type="submit">Submit</button>
 </form>
 ```
 
+```fenom
+<form action="{$_modx->resource.id | url}" method="post" novalidate>
+  <label> Name
+    <input type="text" name="name" value="{$_modx->getPlaceholder('fi.name')}" />
+    <span data-error="name">{$_modx->getPlaceholder('fi.error.name')}</span>
+  </label>
+  <label> E-mail
+    <input type="email" name="email" value="{$_modx->getPlaceholder('fi.email')}" />
+    <span data-error="email">{$_modx->getPlaceholder('fi.error.email')}</span>
+  </label>
+  <div role="alert" data-success style="display: none;"></div>
+  <div role="alert" data-validation-error style="display: none;"></div>
+  <button type="submit">Submit</button>
+</form>
+```
+
+:::
+
 ## Handler
 
-Add a handler for the [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore) event where validation will run. Step by step:
+`Iodine.assert` takes a fields object and rules. On failure, call `preventDefault`, then `setError` / `clearError`:
 
-1. Add a handler for [`fetchit:before`](/en/components/fetchit/frontend/events#fetchitbefore).
+```js
+document.addEventListener('fetchit:before', (e) => {
+  const { formData, fetchit } = e.detail
+  const fields = Object.fromEntries(formData.entries())
+  const rules = {
+    name: ['required', 'minLength:5'],
+    email: ['required', 'email'],
+  }
 
-    ```js
-    document.addEventListener('fetchit:before', (e) => {
+  const validation = Iodine.assert(fields, rules)
+  if (validation.valid) {
+    return
+  }
 
-    });
-    ```
+  e.preventDefault()
 
-2. Get references to the [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) and [`FetchIt`](/en/components/fetchit/frontend/instance) instances.
+  for (const [name, field] of Object.entries(validation.fields)) {
+    if (field.valid) {
+      fetchit.clearError(name)
+      continue
+    }
 
-    ```js
-    document.addEventListener('fetchit:before', (e) => {
-      const { formData, fetchit } = e.detail; // [!code focus]
-    });
-    ```
+    fetchit.setError(name, field.error)
+  }
+})
+```
 
-3. **Iodine** can validate a set of data if you pass it an object whose keys are field names and values are the corresponding values. Convert the **FormData** instance to a plain object.
+Keep server-side checks in FormIt (or your own snippet):
 
-    ```js
-    document.addEventListener('fetchit:before', (e) => {
-      const { formData, fetchit } = e.detail;
-      const fields = Object.fromEntries(formData.entries()); // [!code focus]
-    });
-    ```
-
-4. Define validation rules for the fields.
-
-    ```js
-    document.addEventListener('fetchit:before', (e) => {
-      const { formData, fetchit } = e.detail;
-      const fields = Object.fromEntries(formData.entries());
-      const rules = { // [!code focus]
-        name: ['required', 'minLength:5'], // [!code focus]
-        email: ['required', 'email'], // [!code focus]
-      }; // [!code focus]
-    });
-    ```
-
-5. Run validation and store the result.
-
-    ```js
-    document.addEventListener('fetchit:before', (e) => {
-      const { formData, fetchit } = e.detail;
-      const fields = Object.fromEntries(formData.entries());
-      const rules = {
-        name: ['required', 'minLength:5'],
-        email: ['required', 'email'],
-      };
-
-      const validation = Iodine.assert(fields, rules); // [!code focus]
-    });
-    ```
-
-6. If validation succeeds, exit the handler with `return`. Otherwise call `preventDefault()` on the event to stop form submission.
-
-    ```js
-    document.addEventListener('fetchit:before', (e) => {
-      const { formData, fetchit } = e.detail;
-      const fields = Object.fromEntries(formData.entries());
-      const rules = {
-        name: ['required', 'minLength:5'],
-        email: ['required', 'email'],
-      };
-
-      const validation = Iodine.assert(fields, rules);
-      if (validation.valid) { // [!code focus]
-        return; // [!code focus]
-      } // [!code focus]
-
-      e.preventDefault(); // [!code focus]
-    });
-    ```
-
-7. Loop over the fields.
-
-    ```js
-    document.addEventListener('fetchit:before', (e) => {
-      const { formData, fetchit } = e.detail;
-      const fields = Object.fromEntries(formData.entries());
-      const rules = {
-        name: ['required', 'minLength:5'],
-        email: ['required', 'email'],
-      };
-
-      const validation = Iodine.assert(fields, rules);
-      if (validation.valid) {
-        return;
-      }
-
-      e.preventDefault();
-
-      for (const [ name, field ] of Object.entries(validation.fields)) { // [!code focus]
-          // [!code focus]
-      } // [!code focus]
-    });
-    ```
-
-8. For each field: if it is valid, clear its error with [`clearError()`](/en/components/fetchit/frontend/instance#clearerror); otherwise set the error with [`setError()`](/en/components/fetchit/frontend/instance#seterror).
-
-    ```js
-    document.addEventListener('fetchit:before', (e) => {
-      const { formData, fetchit } = e.detail;
-      const fields = Object.fromEntries(formData.entries());
-      const rules = {
-        name: ['required', 'minLength:5'],
-        email: ['required', 'email'],
-      };
-
-      const validation = Iodine.assert(fields, rules);
-      if (validation.valid) {
-        return;
-      }
-
-      e.preventDefault();
-
-      for (const [ name, field ] of Object.entries(validation.fields)) {
-        if (field.valid) { // [!code focus]
-          fetchit.clearError(name); // [!code focus]
-          continue; // [!code focus]
-        } // [!code focus]
-
-        fetchit.setError(name, field.error); // [!code focus]
-      }
-    });
-    ```
-
-Done. You now have client-side validation with **Iodine**. Remember that client-side validation is not secure, so use **FormIt** validation when calling the snippet, or perform validation in your own snippet as well.
-
-Example snippet call with **FormIt** validation:
-
-:::code-group
+::: code-group
 
 ```modx
 [[!FetchIt?
-  &form=`myForm.tpl`,
+  &form=`myForm.tpl`
   &validate=`name:required:minLength=^5^,email:required:email`
 ]]
 ```
 
 ```fenom
-{'!FetchIt' | snippet: [
+{'!FetchIt' | snippet : [
   'form' => 'myForm.tpl',
   'validate' => 'name:required:minLength=^5^,email:required:email',
 ]}
@@ -182,4 +108,4 @@ Example snippet call with **FormIt** validation:
 
 :::
 
-See the [FormIt validators documentation](https://docs.modx.com/3.x/en/extras/formit/formit.validators) for the full list.
+FormIt validators: [FormIt documentation](https://docs.modx.com/3.x/en/extras/formit/formit.validators).

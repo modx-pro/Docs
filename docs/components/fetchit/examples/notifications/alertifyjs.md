@@ -1,8 +1,13 @@
+---
+title: AlertifyJS
+description: Уведомления AlertifyJS для FetchIt через CDN и FetchIt.Message
+---
+
 # AlertifyJS
 
-В данном разделе мы покажем как подключить фреймворк [AlertifyJS](https://alertifyjs.com/) для показа сообщений.
+[AlertifyJS](https://alertifyjs.com/): диалоги и тосты на чистом JS.
 
-- Сперва вам необходимо подключить скрипт и стили фреймворка, для примера воспользуемся CDN.
+## Подключение через CDN
 
 ```html
 <!-- JavaScript -->
@@ -14,32 +19,32 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1/build/css/themes/default.min.css"/>
 ```
 
-- И определить свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
+Задайте [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      alertify.success(message);
+      alertify.success(message)
     },
     error(message) {
-      alertify.error(message);
+      alertify.error(message)
     },
   }
-});
+})
 ```
 
-- Либо в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    alertify.success(message);
+    alertify.success(message)
   },
   error(message) {
-    alertify.error(message);
+    alertify.error(message)
   },
 }
 ```
 
-Готово! Вот такими нехитрыми действиями, мы подключили фреймворк **AlertifyJS**.
+Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

@@ -1,37 +1,29 @@
-# Class FetchIt
+# FetchIt class
 
-This class handles form processing and is defined in the component script that is registered in the `<head>` with the `defer` attribute, so it runs only after the page has loaded. That keeps the script from blocking page load.
-
-Load-speed tools like PageSpeed Insights will be happy. Hello, SEO folks :wink:.
-
-## Class properties and methods
-
-The class has several static properties. Important: on the class itself, not on instances.
+The global class is declared in the component script. The plugin puts the file in `<head>` with `defer` so it does not block parsing (~5 KB minified).
 
 ## FetchIt.forms
 
 - Type: `HTMLFormElement[]`
 
-Holds an array of all forms managed by FetchIt.
+All forms that have an instance.
 
 ## FetchIt.instances
 
 - Type: `Map`
 
-Returns a `Map` of `FetchIt` instances. You can get the instance for a form from this map.
-
-- Example:
+Key: form element. Value: instance.
 
 ```js
-const form = document.querySelector('#form');
-const fetchit = FetchIt.instances.get(form);
+const form = document.querySelector('#form')
+const fetchit = FetchIt.instances.get(form)
 ```
 
 ## FetchIt.Message
 
-- Type: `object`
+- Type: `object` (not defined by default)
 
-This property is not defined by default; all instances will try to call its methods: `before`, `success`, `error`, `after`, and `reset`. You can define it in your own script to integrate with your layout:
+Instances call these methods when they exist: `before`, `success`, `error`, `after`, `reset`. That is how you wire toasts without touching the core.
 
 ```js
 FetchIt.Message = {
@@ -53,38 +45,36 @@ FetchIt.Message = {
 }
 ```
 
-The `success`, `error`, and `after` methods receive the message returned by the snippet.
+`success`, `error`, and `after` receive the `message` string from the server response.
 
-## FetchIt.sanitizeHTML()
+If `fetchit.frontend.default.notifier` is on and you have not set `Message` yet, the first `create()` installs a Notyf wrapper from the package.
 
-- Type: `function (str: string): string`
+Ready-made examples: [notifications](/en/components/fetchit/examples/notifications/).
 
-Class method that returns the given string with HTML tags stripped.
+## FetchIt.sanitizeHTML(str)
 
-## FetchIt.create()
+Strips HTML tags from a string. Used by `setError` and `setFormMessage`.
 
-- Type: `function (config: object): undefined`
+## FetchIt.hasErrorMessage(message)
 
-Factory method that creates FetchIt instances. Each instance is bound to one form.
+`true` if the message is non-empty after sanitize and trim. Empty and whitespace-only server errors are not drawn on fields.
+
+## FetchIt.create(config)
+
+Instance factory. The snippet inline script calls it for each form on the page. You rarely need it by hand.
 
 ## FetchIt.events
 
-- Type: `object`
+Event names (`before`, `success`, …). Handy when extending via inheritance.
 
-Object mapping event names. Useful for prototype-based extensions.
+## When the class is available
 
-## Accessing the class
+The file script with `defer` runs after the document is parsed. By the time your `defer` file runs, `FetchIt` is already available if your tag comes after the component script.
 
-::: warning Important!
-The class is available only after the script that defines it has run.
-:::
-
-If you use an external script, load it with the `defer` attribute (the component registers its script in `<head>`).
-
-For inline scripts, wait for the script to run, e.g. in a `DOMContentLoaded` handler:
+Inline without `defer`:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
-  console.log(FetchIt);
-});
+  console.log(typeof FetchIt)
+})
 ```

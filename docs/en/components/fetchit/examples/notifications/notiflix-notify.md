@@ -1,39 +1,46 @@
+---
+title: Notiflix.Notify
+description: Notiflix.Notify notifications for FetchIt via CDN and FetchIt.Message
+---
+
 # Notiflix.Notify
 
-This section shows how to integrate the [Notiflix](https://notiflix.github.io/) library (pure JavaScript) and its [Notify](https://notiflix.github.io/notify) tool.
+[Notiflix](https://notiflix.github.io/) is a plain JS UI toolkit. For toasts, use the [Notify](https://notiflix.github.io/notify) module.
 
-- For variety we import the script and styles from CDN and set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
+## CDN setup
+
+Script and [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) via ESM:
 
 ```html
 <script type="module">
-  import Notiflix from 'https://cdn.jsdelivr.net/npm/notiflix@3/+esm';
+  import Notiflix from 'https://cdn.jsdelivr.net/npm/notiflix@3/+esm'
 
   document.addEventListener('DOMContentLoaded', () => {
     FetchIt.Message = {
       success(message) {
-        Notiflix.Notify.success(message);
+        Notiflix.Notify.success(message)
       },
       error(message) {
-        Notiflix.Notify.failure(message);
+        Notiflix.Notify.failure(message)
       },
     }
-  });
+  })
 </script>
 ```
 
-- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
+In a separate module with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
 
 ```js
-import Notiflix from 'https://cdn.jsdelivr.net/npm/notiflix@3/+esm';
+import Notiflix from 'https://cdn.jsdelivr.net/npm/notiflix@3/+esm'
 
 FetchIt.Message = {
   success(message) {
-    Notiflix.Notify.success(message);
+    Notiflix.Notify.success(message)
   },
   error(message) {
-    Notiflix.Notify.failure(message);
+    Notiflix.Notify.failure(message)
   },
 }
 ```
 
-Done! With these steps we integrate **Notiflix.Notify**.
+Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).

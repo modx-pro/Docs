@@ -1,14 +1,23 @@
+---
+title: jGrowl
+description: Уведомления jGrowl для FetchIt через CDN и FetchIt.Message
+---
+
 # jGrowl
 
-Ну и куда же мы без [jGrowl](https://github.com/stanlemon/jGrowl) который шёл в виде зависимости **AjaxForm**. В данном разделе содержится информация о том как подключить данный плагин.
+[jGrowl](https://github.com/stanlemon/jGrowl): jQuery-плагин для тостов. Раньше шёл в составе AjaxForm.
 
-- Для того, чтобы **jGrowl** работал, нам нужно подключить и сам **jQuery**, а потом скрипт самой библиотеки и его стили. Также определяем стили для разных типов уведомлений.
+Библиотека требует jQuery.
+
+## Подключение через CDN
+
+Сначала jQuery, затем jGrowl. Для типов success/error задайте темы в CSS:
 
 ```html
 <!-- jQuery -->
 <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" defer></script>
 
-<!-- Javascript -->
+<!-- JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/jgrowl@1/jquery.jgrowl.min.js" defer></script>
 
 <!-- CSS -->
@@ -19,32 +28,32 @@
 </style>
 ```
 
-- Далее, определим свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
+Задайте [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      $.jGrowl(message, { theme: 'custom-success' });
+      $.jGrowl(message, { theme: 'custom-success' })
     },
     error(message) {
-      $.jGrowl(message, { theme: 'custom-error' });
+      $.jGrowl(message, { theme: 'custom-error' })
     },
   }
-});
+})
 ```
 
-- Либо в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    $.jGrowl(message, { theme: 'custom-success' });
+    $.jGrowl(message, { theme: 'custom-success' })
   },
   error(message) {
-    $.jGrowl(message, { theme: 'custom-error' });
+    $.jGrowl(message, { theme: 'custom-error' })
   },
 }
 ```
 
-Вот и всё! Но мы не рекомендуем использовать в своём проекте данную библиотеку если в нём нет jQuery. Только ради одного плагина уведомлений подключать целую другую нелогично и ресурсозатратно.
+Без jQuery на сайте jGrowl не имеет смысла: подключайте его только если jQuery уже используется. Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

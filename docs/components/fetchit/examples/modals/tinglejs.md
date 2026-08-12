@@ -1,32 +1,40 @@
+---
+title: Модальные окна tingle.js
+description: Открытие tingle.js после успешной отправки FetchIt
+---
+
 # Модальные окна tingle.js
 
-В данном разделе разберём пример работы с модальными окнами [tingle.js](https://tingle.robinparisi.com/).
+Открыть окно [tingle.js](https://tingle.robinparisi.com/) после успешной отправки.
 
-## Открытие модального окна
+## Через событие
 
-Если у вас есть задача открыть модальное окно после успешной отправки формы, то её можно решить двумя способами:
+```js
+const successModal = new tingle.modal()
 
-1. С помощью события [`fetchit:success`](/components/fetchit/frontend/events#fetchitsuccess).
+document.addEventListener('fetchit:success', ({ detail: { response: { message } } }) => {
+  successModal.setContent(message)
+  successModal.open()
+})
+```
 
-    ```js
-    const successModal = new tingle.modal();
+## Через FetchIt.Message
 
-    document.addEventListener('fetchit:success', ({ detail: { response: { message } } }) => {
-      successModal.setContent(message);
-      successModal.open();
-    });
-    ```
+Если тосты вам не нужны, то же окно можно повесить на `success`:
 
-2. С помощью [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage).
+```js
+const successModal = new tingle.modal()
 
-    ```js
-    const successModal = new tingle.modal();
+FetchIt.Message = {
+  success(message) {
+    successModal.setContent(message)
+    successModal.open()
+  },
+  error(message) {
+    // свой UI ошибки или тост
+    console.error(message)
+  },
+}
+```
 
-    FetchIt.Message = {
-      // ...
-      success (message) {
-        successModal.setContent(message);
-        successModal.open();
-      },
-    }
-    ```
+Контент из `message` лучше экранировать, если в ответе может быть HTML.

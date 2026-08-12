@@ -1,6 +1,6 @@
 ---
 title: FetchIt
-description: Lightweight component for form handling and submission using Fetch API
+description: Lightweight AJAX form submission in MODX via the Fetch API on top of FormIt or a custom snippet
 logo: https://modstore.pro/assets/extras/fetchit/logo.png
 author: GulomovCreative
 modstore: https://modstore.pro/packages/utilities/fetchit
@@ -94,36 +94,25 @@ items:
 
 # FetchIt
 
-MODX Revolution component for form submission using the Fetch API.
+MODX Revolution component: submit HTML forms through the Fetch API without a page reload. By default it drives [FormIt](https://github.com/Sterc/FormIt). You can plug in your own snippet instead.
 
-## Introduction
+## Why
 
-**MODX Revolution** has [FormIt](https://github.com/Sterc/FormIt) for form submission and handling, but it uses the browser’s default method (page reload). Modern sites often need forms handled “on the fly”. **FetchIt** uses **FormIt** on the server but lets you use your own script as well.
+FormIt alone answers with a normal POST and a full reload. FetchIt keeps FormIt (or your code) on the server and adds a client layer: FormData, a JSON response, field errors, optional toasts, and events.
 
-## Advantages
+[AjaxForm](https://github.com/modx-pro/AjaxForm) covers a similar job. The server side is close. On the front end FetchIt differs:
 
-[AjaxForm](https://github.com/modx-pro/AjaxForm) is similar (FetchIt’s server side is almost the same), but **FetchIt** has several advantages:
-
-### No dependencies
-
-**FetchIt** has no dependencies. **AjaxForm** has three: the large [jQuery](https://github.com/jquery/jquery) library and plugins [jquery-form](https://github.com/jquery-form/form/) and [jGrowl](https://github.com/stanlemon/jGrowl).
-
-The last one is easy to override (notification methods), but the other two are harder to replace.
-
-### Modern code
-
-The minified script is about 5 KB and the snippet registers it with the `defer` attribute so it does not block page load.
-
-### Ease of use
-
-Integrating your markup, adding popup messages and modals is straightforward.
+- no required jQuery or jquery-form;
+- minified script about 5 KB, loaded with `defer`;
+- you wire notifications yourself or turn on built-in Notyf (`fetchit.frontend.default.notifier`).
 
 ## Installation
 
-The component is free and can be installed via the Package Manager from:
+Via Package Manager:
 
-- [modstore.pro](https://modstore.pro/packages/utilities/fetchit)
-  - [How to add this repository](https://modstore.pro/faq)
-- Official [modx.com](https://modx.com/extras/package/fetchit) repository
+- [modstore.pro](https://modstore.pro/packages/utilities/fetchit) ([how to connect the repository](https://modstore.pro/faq))
+- [extras.modx.com](https://extras.modx.com/package/fetchit)
 
-Or build the package from the component repo on [GitHub](https://github.com/GulomovCreative/FetchIt)
+Or build a transport package from [GitHub](https://github.com/GulomovCreative/FetchIt).
+
+Next: [Quick start](/en/components/fetchit/quick-start).

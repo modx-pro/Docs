@@ -1,8 +1,13 @@
+---
+title: Toastify JS
+description: Уведомления Toastify JS для FetchIt через CDN и FetchIt.Message
+---
+
 # Toastify JS
 
-[Toastify JS](https://apvarun.github.io/toastify-js/) легковесная библиотека для показа уведомлений в браузере и в данном примере мы покажем как её подключить.
+[Toastify JS](https://apvarun.github.io/toastify-js/): лёгкие тосты на чистом JS.
 
-- Сперва нам необходимо подключить скрипт и стили библиотеки, для примера воспользуемся CDN.
+## Подключение через CDN
 
 ```html
 <!-- JavaScript -->
@@ -12,32 +17,32 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.css">
 ```
 
-- И определим свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
+Задайте [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      Toastify({ text: message }).showToast();
+      Toastify({ text: message }).showToast()
     },
     error(message) {
-      Toastify({ text: message }).showToast();
+      Toastify({ text: message }).showToast()
     },
   }
-});
+})
 ```
 
-- Либо в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    Toastify({ text: message }).showToast();
+    Toastify({ text: message }).showToast()
   },
   error(message) {
-    Toastify({ text: message }).showToast();
+    Toastify({ text: message }).showToast()
   },
 }
 ```
 
-Замечательно! Вот таким простым способом, мы можем подключить библиотеку **Toastify JS**.
+Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

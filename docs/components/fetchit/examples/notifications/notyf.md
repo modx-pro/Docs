@@ -1,47 +1,57 @@
+---
+title: Notyf
+description: Уведомления Notyf для FetchIt: системная настройка или ручной CDN
+---
+
 # Notyf
 
-Еще одна минималистичная библиотека уведомлений на чистом JavaScript у которой много преимуществ. Давайте подключим [Notyf](https://carlosroso.com/notyf/).
+[Notyf](https://carlosroso.com/notyf/): лёгкие тосты на чистом JS. В FetchIt два пути.
 
-- Сперва вам необходимо подключить скрипт и стили библиотеки, для примера воспользуемся CDN.
+## Через настройку компонента
+
+Включите `fetchit.frontend.default.notifier`. Плагин подключит CSS/JS Notyf из `assets/components/fetchit/lib/` и при первом `FetchIt.create()` выставит `FetchIt.Message`, если вы сами его ещё не определили.
+
+Дополнительный CDN и ручной `FetchIt.Message` тогда не нужны: иначе получите два набора скриптов.
+
+## Вручную через CDN
+
+Подключите библиотеку сами и задайте `FetchIt.Message`:
 
 ```html
-<!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js" defer></script>
-
 <!-- CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js" defer></script>
 ```
-
-- Создадим экземпляр класса уведомлений и определим свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
-  const notyf = new Notyf();
+  const notyf = new Notyf()
 
   FetchIt.Message = {
     success(message) {
-      notyf.success(message);
+      notyf.success(message)
     },
     error(message) {
-      notyf.error(message);
+      notyf.error(message)
     },
   }
-});
+})
 ```
 
-- Либо в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
-const notyf = new Notyf();
+const notyf = new Notyf()
 
 FetchIt.Message = {
   success(message) {
-    notyf.success(message);
+    notyf.success(message)
   },
   error(message) {
-    notyf.error(message);
+    notyf.error(message)
   },
 }
 ```
 
-Вуаля! Вот таким простым способом, мы можем подключить библиотеку **Notyf**.
+Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

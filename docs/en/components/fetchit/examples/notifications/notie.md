@@ -1,8 +1,13 @@
+---
+title: Notie
+description: Notie notifications for FetchIt via CDN and FetchIt.Message
+---
+
 # Notie
 
-This section helps you integrate the minimal [Notie](https://jaredreich.com/notie/) module for notifications, input and selection on JavaScript. Let's integrate it.
+[Notie](https://jaredreich.com/notie/): minimal alerts in plain JS.
 
-- First include the module script and styles; for example via CDN.
+## CDN setup
 
 ```html
 <!-- JavaScript -->
@@ -12,7 +17,7 @@ This section helps you integrate the minimal [Notie](https://jaredreich.com/noti
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notie@4/dist/notie.min.css">
 ```
 
-- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
+Set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,19 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
       notie.alert({
         type: 'success',
         text: message,
-      });
+      })
     },
     error(message) {
       notie.alert({
         type: 'error',
         text: message,
-      });
+      })
     },
   }
-});
+})
 ```
 
-- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
+In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
 
 ```js
 FetchIt.Message = {
@@ -41,15 +46,15 @@ FetchIt.Message = {
     notie.alert({
       type: 'success',
       text: message,
-    });
+    })
   },
   error(message) {
     notie.alert({
       type: 'error',
       text: message,
-    });
+    })
   },
 }
 ```
 
-Done! With these steps you integrate the **Notie** module.
+Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).
