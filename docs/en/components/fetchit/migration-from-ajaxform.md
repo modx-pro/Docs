@@ -1,6 +1,6 @@
 ---
 title: Migration from AjaxForm
-description: Moving from AjaxForm to FetchIt: selectors, JSON success, events without jQuery
+description: "Moving from AjaxForm to FetchIt: selectors, JSON success, events without jQuery"
 ---
 
 # Migration from AjaxForm

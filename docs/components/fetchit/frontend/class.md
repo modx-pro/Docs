@@ -1,6 +1,6 @@
 ---
 title: Класс FetchIt
-description: Статические свойства FetchIt: forms, instances, Message, create, sanitizeHTML
+description: "Статические свойства FetchIt: forms, instances, Message, create, sanitizeHTML"
 ---
 
 # Класс FetchIt

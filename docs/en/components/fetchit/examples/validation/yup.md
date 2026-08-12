@@ -1,6 +1,6 @@
 ---
 title: Validation with yup
-description: FetchIt client-side validation with yup and fetchit:before
+description: "FetchIt client-side validation with yup and fetchit:before"
 ---
 
 # Validation with yup

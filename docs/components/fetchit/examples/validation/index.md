@@ -1,6 +1,6 @@
 ---
 title: Валидация
-description: Клиентская валидация FetchIt через fetchit:before с Iodine и yup
+description: "Клиентская валидация FetchIt через fetchit:before с Iodine и yup"
 ---
 
 # Валидация

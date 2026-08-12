@@ -1,6 +1,6 @@
 ---
 title: Миграция с AjaxForm
-description: Переход с AjaxForm на FetchIt: селекторы, JSON success, события без jQuery
+description: "Переход с AjaxForm на FetchIt: селекторы, JSON success, события без jQuery"
 ---
 
 # Миграция с AjaxForm

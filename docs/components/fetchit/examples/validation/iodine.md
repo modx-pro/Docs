@@ -1,6 +1,6 @@
 ---
 title: Валидация с помощью Iodine
-description: Клиентская валидация FetchIt через Iodine и событие fetchit:before
+description: "Клиентская валидация FetchIt через Iodine и событие fetchit:before"
 ---
 
 # Валидация с помощью Iodine
