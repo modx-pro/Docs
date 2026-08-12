@@ -1,17 +1,29 @@
+---
+title: Модальные окна Micromodal.js
+description: Закрытие Micromodal.js после успешной отправки FetchIt
+---
+
 # Модальные окна Micromodal.js
 
-В данном разделе разберём несколько примеров с модальными окнами [Micromodal.js](https://micromodal.vercel.app/).
+Закрыть окно [Micromodal.js](https://micromodal.vercel.app/) после успеха.
 
-## Закрытие модального окна
-
-Если ваша форма находится в модальном окне и вы бы хотели закрыть её после успешной отправки формы, то для решения задачи надо воспользоваться событием [`fetchit:success`](/components/fetchit/frontend/events#fetchitsuccess).
+Форма лежит внутри модалки. В [`fetchit:success`](/components/fetchit/frontend/events#fetchitsuccess) берёте `form` и закрываете нужный id:
 
 ```js
-document.addEventListener('fetchit:success', ({ detail }) => {
-  const { form } = detail;
+document.addEventListener('fetchit:success', ({ detail: { form } }) => {
+  const modal = form.closest('[data-micromodal-close], .modal, [id^="modal-"]')
+  const modalId = modal?.id || 'modal-1'
 
-  // Определите ID нужного окна относительно формы
-
-  MicroModal.close('modal-id');
-});
+  MicroModal.close(modalId)
+})
 ```
+
+Если id окна известен заранее:
+
+```js
+document.addEventListener('fetchit:success', () => {
+  MicroModal.close('modal-1')
+})
+```
+
+Подставьте свой id из разметки Micromodal (`id` корневого диалога).

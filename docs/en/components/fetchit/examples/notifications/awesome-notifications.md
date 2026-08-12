@@ -1,8 +1,13 @@
+---
+title: Awesome Notifications
+description: Awesome Notifications for FetchIt via CDN and FetchIt.Message
+---
+
 # Awesome Notifications
 
-This section shows how to integrate the lightweight library [Awesome Notifications](https://f3oall.github.io/awesome-notifications/).
+[Awesome Notifications](https://f3oall.github.io/awesome-notifications/): lightweight toasts in plain JS.
 
-- Add the scripts and styles. For simplicity we use CDN.
+## CDN setup
 
 ```html
 <!-- JavaScript -->
@@ -12,36 +17,36 @@ This section shows how to integrate the lightweight library [Awesome Notificatio
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/awesome-notifications@3/dist/style.min.css">
 ```
 
-- Create an instance of the notification class and set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
+Create an instance and set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
-  const notifier = new AWN();
+  const notifier = new AWN()
 
   FetchIt.Message = {
     success(message) {
-      notifier.success(message);
+      notifier.success(message)
     },
     error(message) {
-      notifier.alert(message);
+      notifier.alert(message)
     },
   }
-});
+})
 ```
 
-- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
+In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
 
 ```js
-const notifier = new AWN();
+const notifier = new AWN()
 
 FetchIt.Message = {
   success(message) {
-    notifier.success(message);
+    notifier.success(message)
   },
   error(message) {
-    notifier.alert(message);
+    notifier.alert(message)
   },
 }
 ```
 
-Done! This is how you integrate **Awesome Notifications**.
+Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).

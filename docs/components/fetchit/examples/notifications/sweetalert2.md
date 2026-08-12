@@ -1,8 +1,13 @@
+---
+title: SweetAlert2
+description: Уведомления SweetAlert2 для FetchIt через CDN и FetchIt.Message
+---
+
 # SweetAlert2
 
-[SweetAlert2](https://sweetalert2.github.io/) это одна из самых популярных библиотек уведомлений у которой нет зависимостей. Для её подключения нам необходимо проделать следующие действия.
+[SweetAlert2](https://sweetalert2.github.io/): модальные алерты и тосты без зависимостей.
 
-- Подключим скрипты и стили библиотеки. Для простоты примера сделаем это через CDN.
+## Подключение через CDN
 
 ```html
 <!-- JavaScript -->
@@ -11,7 +16,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.min.css">
 ```
 
-- И определим свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
+Задайте [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,20 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
         icon: 'success',
         title: message,
         showConfirmButton: false,
-      });
+      })
     },
     error(message) {
       Swal.fire({
         icon: 'error',
         title: message,
         showConfirmButton: false,
-      });
+      })
     },
   }
-});
+})
 ```
 
-- Либо в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
 FetchIt.Message = {
@@ -43,16 +48,16 @@ FetchIt.Message = {
       icon: 'success',
       title: message,
       showConfirmButton: false,
-    });
+    })
   },
   error(message) {
     Swal.fire({
       icon: 'error',
       title: message,
       showConfirmButton: false,
-    });
+    })
   },
 }
 ```
 
-Отлично! Теперь у нас будут отображаться красивые уведомления **SweetAlert2**.
+Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

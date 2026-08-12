@@ -1,8 +1,13 @@
+---
+title: PNotify
+description: PNotify notifications for FetchIt via CDN and FetchIt.Message
+---
+
 # PNotify
 
-This example shows how to integrate [PNotify](https://sciactive.com/pnotify/).
+[PNotify](https://sciactive.com/pnotify/): flexible notifications in plain JS.
 
-- Include the scripts and styles. For simplicity we use CDN.
+## CDN setup
 
 ```html
 <!-- JavaScript -->
@@ -13,32 +18,32 @@ This example shows how to integrate [PNotify](https://sciactive.com/pnotify/).
 <link href="https://cdn.jsdelivr.net/npm/@pnotify/core@5/dist/BrightTheme.min.css" rel="stylesheet">
 ```
 
-- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
+Set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      PNotify.success({ title: message });
+      PNotify.success({ title: message })
     },
     error(message) {
-      PNotify.error({ title: message });
+      PNotify.error({ title: message })
     },
   }
-});
+})
 ```
 
-- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
+In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    PNotify.success({ title: message });
+    PNotify.success({ title: message })
   },
   error(message) {
-    PNotify.error({ title: message });
+    PNotify.error({ title: message })
   },
 }
 ```
 
-Done! With these steps you integrate **PNotify**.
+Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).

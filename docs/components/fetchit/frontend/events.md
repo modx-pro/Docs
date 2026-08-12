@@ -1,62 +1,78 @@
+---
+title: События
+description: fetchit:before, after, success, error, reset: cancelable и порядок
+---
+
 # События
 
-Экземпляр класса генерирует события, которые могут быть полезны разработчикам. С их помощью вы сможете реализовать разные задачи и сценарии.
+События вешаются на `document`. В `detail` почти всегда есть `form` и `fetchit`. При ответе сервера добавляются `response` и `formData`.
 
-Больше примеров вы сможете найти в разделах:
+Примеры в разделах [форм](/components/fetchit/examples/form/), [уведомлений](/components/fetchit/examples/notifications/), [модальных окон](/components/fetchit/examples/modals/), [валидации](/components/fetchit/examples/validation/).
 
-- [Примеры разметок форм](/components/fetchit/examples/form/)
-- [Примеры всплывающих сообщений](/components/fetchit/examples/notifications/)
-- [Примеры модальных окон](/components/fetchit/examples/modals/)
-- [Примеры дополнительной валидации](/components/fetchit/examples/validation/)
+| Событие | Cancelable | Когда |
+| --- | --- | --- |
+| `fetchit:before` | да | до `fetch`, после сборки FormData |
+| `fetchit:after` | да | сразу после JSON-ответа, до разбора success/error |
+| `fetchit:success` | нет | `response.success === true` |
+| `fetchit:error` | да | `response.success === false`, до/во время показа полевых ошибок |
+| `fetchit:reset` | нет | нативный `reset` формы |
+
+Порядок на submit: `Message.before` → `fetchit:before` → запрос → `Message.after` → `fetchit:after` → при ошибке `Message.error` + `fetchit:error` + `setError` / `setFormMessage('validation')` → при успехе `setFormMessage('success')` + `Message.success` + `fetchit:success` → `grecaptcha.reset()` если есть → опционально `form.reset()`.
+
+`preventDefault` на `fetchit:after` останавливает разбор success/error и полевые сообщения. У `fetchit:success` флаг `cancelable` не стоит. `preventDefault` на него не влияет.
 
 ## fetchit:before
 
-- Аргументы: `(form <HTMLFormElement>, formData <FormData>, fetchit <FetchIt>)`
-
-Самое раннее событие, которое вызывается до отправки формы. Удобен в случаях, если вам нужно добавить поле и/или валидации данных на стороне клиента. При желании может прервать отправку формы.
+Добавить поля или остановить отправку:
 
 ```js
 document.addEventListener('fetchit:before', (e) => {
-  const { form, formData } = e.detail;
+  const { formData, fetchit } = e.detail
 
-  formData.set('newField', 'Значение нового поля'); // Добавляем новое поле
+  formData.set('utm_source', 'landing')
 
-  if (formData.get('name')?.length < 3) {
-    e.preventDefault(); // Отменяем отправку формы
+  if ((formData.get('name') || '').length < 3) {
+    fetchit.setError('name', 'Слишком короткое имя')
+    e.preventDefault()
   }
 })
 ```
 
 ## fetchit:after
 
-- Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
-
-Событие вызывается после отправки формы и получения ответа от сервера. Нужно для исключительных случаев, когда вам необходимо реализовать функционал вне зависимости от статуса ответа.
+Любой ответ сервера:
 
 ```js
 document.addEventListener('fetchit:after', (e) => {
-  const { response } = e.detail;
-
-  console.log(response.success); // true|false
-  console.log(response.message); // Сообщение от сервера
-  console.log(response.data); // Данные от сервера
+  const { response } = e.detail
+  console.log(response.success, response.message, response.data)
 })
 ```
 
 ## fetchit:success
 
-- Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
+Успешная отправка. Удобно закрыть модальное окно или отправить метрику:
 
-Данное событие будет вызвано, если в ответе сервера поле `success` будет `true` и соответственно необходим для выполнения кода при успешной отправке формы.
+```js
+document.addEventListener('fetchit:success', (e) => {
+  const { form, response } = e.detail
+  if (form.id === 'callback') {
+    console.log(response.message)
+  }
+})
+```
 
 ## fetchit:error
 
-- Аргументы: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
+Ошибка валидации или логики сниппета. В `response.data` лежит карта поле → сообщение.
 
-Данное событие будет вызвано, если в ответе сервера поле `success` будет `false` и нужно для обработки ошибок.
+```js
+document.addEventListener('fetchit:error', (e) => {
+  const { response } = e.detail
+  console.warn(response.data)
+})
+```
 
 ## fetchit:reset
 
-- Аргументы: `(form <HTMLFormElement>, fetchit <FetchIt>)`
-
-Данное событие будет вызвано, при сброса формы. Может быть полезен в случаях когда необходимо скрыть кастомные сообщения или ошибки.
+Сброс формы (кнопка reset или `clearFieldsOnSuccess`). Скрыть кастомный UI поверх стандартной очистки.

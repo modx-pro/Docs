@@ -1,12 +1,13 @@
+---
+title: Всплывающие сообщения
+description: Подключение библиотек уведомлений к FetchIt.Message
+---
+
 # Всплывающие сообщения
 
-Хоть и **FetchIt** не имеет никаких зависимостей, всё подготовлено для того, чтобы с помощью минимального кода подключить любую готовую или вашу собственную библиотеку для показа сообщений.
+Ядро FetchIt не тянет jQuery. Тосты подключаете сами через [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) или включаете встроенный Notyf настройкой [`fetchit.frontend.default.notifier`](/components/fetchit/settings#fetchitfrontenddefaultnotifier).
 
-::: tip
-
-С версии 1.1.0 и 3.1.0 доступна системная настройка [`fetchit.frontend.default.notifier`](/components/fetchit/settings#fetchitfrontenddefaultnotifier) при включении которой будут отображаться всплывающие уведомления [Notyf](/components/fetchit/examples/notifications/notyf).
-
-:::
+Блоки `[data-success]` и `[data-validation-error]` в форме работают отдельно от тостов ([селекторы](/components/fetchit/selectors)).
 
 - [Notyf](/components/fetchit/examples/notifications/notyf)
 - [SweetAlert2](/components/fetchit/examples/notifications/sweetalert2)

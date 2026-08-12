@@ -1,6 +1,11 @@
+---
+title: Форма на Bulma
+description: Разметка FetchIt под Bulma с is-danger и сообщениями формы
+---
+
 # Форма на Bulma
 
-Если ваша вёрстка реализована на фреймворке [Bulma](https://bulma.io/), то разметка скорее всего выглядит таким образом:
+Пример на [Bulma](https://bulma.io/):
 
 ```html
 <form>
@@ -31,15 +36,18 @@
 </form>
 ```
 
-Для подготовки вам необходимо сделать следующее:
+Что сделать:
 
-1. Добавить атрибуты `data-error="*"` для элементов которые будут отображены с текстом ошибки.
-2. Для совместимости работы с FormIt нужно указать плейсхолдеры со значениями и ошибками.
-3. В Bulma невалидный статус указывается классом `is-danger`, поэтому вам необходимо в системной настройке `fetchit.frontend.input.invalid.class` указать её.
+1. Добавить `data-error` для текста ошибки поля.
+2. Добавить `[data-success]` и `[data-validation-error]` для AJAX-сообщений формы.
+3. Проставить плейсхолдеры FormIt.
+4. В `fetchit.frontend.input.invalid.class` указать `is-danger`.
 
-::: info Важно
-Валидаторы разметки до сих пор ругаются на пустой атрибут `action`, поэтому в нём необходимо указывать ссылку на страницу.
+::: info
+В `action` укажите URL страницы.
 :::
+
+::: code-group
 
 ```modx
 <form> // [!code --]
@@ -64,6 +72,9 @@
     <p class="help is-danger" data-error="email">[[+fi.error.email]]</p> // [!code ++]
   </div>
 
+  <div class="notification is-success" role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div class="notification is-danger" role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+
   <div class="field is-grouped">
     <div class="control">
       <button type="submit" class="button is-link">Submit</button>
@@ -74,3 +85,42 @@
   </div>
 </form>
 ```
+
+```fenom
+<form> // [!code --]
+<form action="{$_modx->resource.id | url}" method="post"> // [!code ++]
+  <div class="field">
+    <label class="label">Username</label>
+    <div class="control">
+      <input class="input" type="text" name="name" value=""> // [!code --]
+      <input class="input" type="text" name="name" value="{$_modx->getPlaceholder('fi.name')}"> // [!code ++]
+    </div>
+    <p class="help is-danger"></p> // [!code --]
+    <p class="help is-danger" data-error="name">{$_modx->getPlaceholder('fi.error.name')}</p> // [!code ++]
+  </div>
+
+  <div class="field">
+    <label class="label">Email</label>
+    <div class="control">
+      <input class="input" type="email" name="email" value=""> // [!code --]
+      <input class="input" type="email" name="email" value="{$_modx->getPlaceholder('fi.email')}"> // [!code ++]
+    </div>
+    <p class="help is-danger"></p> // [!code --]
+    <p class="help is-danger" data-error="email">{$_modx->getPlaceholder('fi.error.email')}</p> // [!code ++]
+  </div>
+
+  <div class="notification is-success" role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div class="notification is-danger" role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+
+  <div class="field is-grouped">
+    <div class="control">
+      <button type="submit" class="button is-link">Submit</button>
+    </div>
+    <div class="control">
+      <button type="reset" class="button is-link is-light">Cancel</button>
+    </div>
+  </div>
+</form>
+```
+
+:::
