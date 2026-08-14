@@ -16,16 +16,27 @@ title: События покупателя
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа | |
 | `msCustomer` | `msCustomer\ | null` | Объект покупателя (может быть null) |
 
-### Прерывание операции
+::: warning Отмена не блокирует оформление заказа
+Привязка `msCustomer` к заказу опциональна — `OrderSubmitHandler` продолжает оформление, даже если клиент не был создан/найден (данные остаются в `msOrderAddress`). Отмена этого события через `output()` не «запрещает checkout для неавторизованных» — она лишь оставляет заказ без привязанного `msCustomer`.
+:::
+
+### Подмена клиента
+
+Плагин может вернуть готовый `msCustomer` через `returnedValues['msCustomer']` — например, для кастомного резолва по внешнему ID:
 
 ```php
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeGetOrderCustomer':
-        // Запретить оформление для неавторизованных
-        if (!$modx->user->isAuthenticated()) {
-            $modx->event->output('Для оформления заказа необходимо авторизоваться');
-            return;
+        // На входе msCustomer обычно null — резолвим сами по внешнему признаку
+        $externalId = $_SESSION['crm_customer_id'] ?? null;
+        if ($externalId) {
+            $found = $modx->getObject(\MiniShop3\Model\msCustomer::class, [
+                'external_id' => $externalId,
+            ]);
+            if ($found) {
+                $modx->event->returnedValues = ['msCustomer' => $found];
+            }
         }
         break;
 }
@@ -36,6 +47,10 @@ switch ($modx->event->name) {
 ## msOnGetOrderCustomer
 
 Вызывается **после** получения покупателя для заказа.
+
+::: warning Ошибка плагина отменяет уже найденную привязку
+Хотя событие называется «после», отмена через `output()` здесь всё ещё имеет эффект: `customer_id` не будет проставлен заказу, даже если `msCustomer` к этому моменту уже создан/найден и, возможно, залогинен через сессию.
+:::
 
 ### Параметры
 
@@ -131,6 +146,10 @@ switch ($modx->event->name) {
 
 Вызывается **после** добавления поля покупателю.
 
+::: warning Ошибка плагина возвращает клиенту error, хотя поле уже сохранено
+`msCustomer->save()` вызывается **до** этого события. Если обработчик отменит его через `output()`, `add()` вернёт ошибку вызывающей стороне — но поле в БД уже сохранено. Состояние API-ответа и БД могут разойтись.
+:::
+
 ### Параметры
 
 | Параметр | Тип | Описание |
@@ -179,6 +198,26 @@ switch ($modx->event->name) {
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Значение для валидации |
 
+### Прерывание операции
+
+Ошибка плагина здесь превращается в ошибку валидации самого поля:
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeValidateCustomerValue':
+        $key = $scriptProperties['key'];
+        $value = $scriptProperties['value'];
+
+        // Кастомное правило до штатной валидации
+        if ($key === 'inn' && !empty($value) && !preg_match('/^\d{10,12}$/', $value)) {
+            $modx->event->output('ИНН должен содержать 10 или 12 цифр');
+            return;
+        }
+        break;
+}
+```
+
 ### Модификация данных
 
 ```php
@@ -203,6 +242,10 @@ switch ($modx->event->name) {
 ## msOnValidateCustomerValue
 
 Вызывается **после** успешной валидации значения поля.
+
+::: warning Может отменить уже пройденную валидацию
+Несмотря на «после успешной валидации» — ошибка плагина здесь (`output()`) всё ещё превращается в ошибку валидации поля, точно так же, как в `msOnBeforeValidateCustomerValue`.
+:::
 
 ### Параметры
 
@@ -251,7 +294,9 @@ switch ($modx->event->name) {
 | `value` | `mixed` | Невалидное значение |
 | `errors` | `array` | Массив ошибок |
 
-### Пример использования
+### Замена набора ошибок
+
+Плагин может полностью заменить массив ошибок через `returnedValues['errors']`, либо свернуть его в одно сообщение, отменив событие через `output()`:
 
 ```php
 <?php
@@ -266,6 +311,13 @@ switch ($modx->event->name) {
             $key,
             json_encode($errors)
         ));
+
+        // Заменить набор ошибок своим (иначе используется исходный $errors)
+        if ($key === 'phone') {
+            $modx->event->returnedValues = [
+                'errors' => [$key => 'Укажите телефон в формате +7XXXXXXXXXX'],
+            ];
+        }
         break;
 }
 ```
@@ -450,6 +502,93 @@ switch ($modx->event->name) {
             $address->get('id'),
             $address->get('customer_id'),
             $address->get('name')
+        ));
+        break;
+}
+```
+
+---
+
+## msOnBeforeUpdateCustomer
+
+::: warning Процессор не используется в MS3
+Событие зарегистрировано в реестре (`_build/elements/events.php`) и корректно вызывается процессором `MiniShop3\Processors\Customer\Update` (наследует MODX `UpdateProcessor`), но на данный момент **ни один встроенный admin UI или Web API MS3 не вызывает `Customer/Update`** — ни один грид или контроллер не делает `$modx->runProcessor('Customer/Update', [...])`. Событие существует как точка расширения: кастомная интеграция может вызвать процессор напрямую, и оно отработает штатно.
+:::
+
+Вызывается **перед** сохранением существующего покупателя — стандартный `fireBeforeSaveEvent()` из MODX `UpdateProcessor`.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `mode` | `string` | Всегда `modSystemEvent::MODE_UPD` (`'upd'`) |
+| `data` | `array` | Поля `msCustomer` — уже НОВЫЕ значения (`$object->toArray()`) |
+| `id` | `int` | ID сохраняемого покупателя |
+| `msCustomer` | `msCustomer` | Ссылка на объект покупателя |
+| `object` | `msCustomer` | Та же ссылка, что и `msCustomer` (MS2-style алиас) |
+
+::: tip Возврат значения, а не `$modx->event->output()`
+В отличие от событий `Customer/*` выше (они построены на `Utils::invokeEvent()` и читают `output()`/`returnedValues`), это событие — часть стандартного MODX `UpdateProcessor` и читает **непосредственно возвращаемое значение** обработчика. Верните непустую строку или непустой массив сообщений, чтобы отменить сохранение.
+:::
+
+### Прерывание операции
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeUpdateCustomer':
+        $data = $scriptProperties['data'];
+        $id = $scriptProperties['id'];
+
+        // Запретить смену email на уже занятый другим покупателем
+        if (!empty($data['email'])) {
+            $existing = $modx->getObject(\MiniShop3\Model\msCustomer::class, [
+                'email' => $data['email'],
+                'id:!=' => $id,
+            ]);
+
+            if ($existing) {
+                return 'Email уже используется другим покупателем';
+            }
+        }
+        break;
+}
+```
+
+---
+
+## msOnUpdateCustomer
+
+::: warning Процессор не используется в MS3
+Как и `msOnBeforeUpdateCustomer` — событие зарегистрировано и корректно вызывается процессором `MiniShop3\Processors\Customer\Update`, но пока не вызывается ни из одного встроенного UI/API MS3. Подробности — в предупреждении выше.
+:::
+
+Вызывается **после** успешного сохранения покупателя (`fireAfterSaveEvent()`). Только уведомление — возвращаемое значение игнорируется, сохранение уже выполнено.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `mode` | `string` | Всегда `modSystemEvent::MODE_UPD` (`'upd'`) |
+| `id` | `int` | ID сохранённого покупателя |
+| `msCustomer` | `msCustomer` | Ссылка на сохранённый объект покупателя |
+| `object` | `msCustomer` | Та же ссылка, что и `msCustomer` (MS2-style алиас) |
+
+Обратите внимание: в отличие от `msOnBeforeUpdateCustomer`, здесь **нет** ключа `data` — снимок полей передаётся только в Before-событии.
+
+### Пример использования
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnUpdateCustomer':
+        /** @var \MiniShop3\Model\msCustomer $customer */
+        $customer = $scriptProperties['msCustomer'];
+
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Customer] Покупатель #%d обновлён: %s',
+            $customer->get('id'),
+            $customer->get('email')
         ));
         break;
 }

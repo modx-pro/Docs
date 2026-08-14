@@ -23,7 +23,7 @@ MiniShop3 включает два канала уведомлений из ко�
 Отправляет сообщения через Telegram Bot API. Требует настройки:
 
 - `ms3_telegram_bot_token` — токен бота
-- `ms3_telegram_manager_chat_id` — Chat ID получателя
+- `ms3_telegram_manager` — Chat ID менеджеров (через запятую)
 
 ::: warning Ограничение Telegram
 Telegram-бот не может инициировать диалог с пользователем. Клиент должен сам написать боту первое сообщение. Поэтому Telegram-уведомления работают только для менеджеров, которые заранее настроили Chat ID.
@@ -175,7 +175,7 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `notification` | `NotificationInterface` | Объект уведомления |
+| `notification` | `Notification` | Объект уведомления (абстрактный класс, конкретный подкласс — например `StatusChangedNotification`) |
 | `recipient` | `array` | Данные получателя — см. структуру ниже |
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
 | `channels` | `string[]` | Список каналов отправки (например, `['email', 'telegram']`) |
@@ -205,7 +205,7 @@ switch ($modx->event->name) {
 
 ### Прерывание операции
 
-Отмена отправки — `return false` или `return 'cancel'`. Событие идёт через `EventGate::invokeRaw()`, не через `Utils::invokeEvent`.
+Отмена отправки — `return false` или `return 'cancel'`, а также классический `$modx->event->output(...)` (тоже трактуется как отмена). Событие идёт через `EventGate::invokeRaw()`, не через `Utils::invokeEvent`.
 
 ```php
 <?php
@@ -259,7 +259,7 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `notification` | `NotificationInterface` | Объект уведомления |
+| `notification` | `Notification` | Объект уведомления (абстрактный класс, конкретный подкласс — например `StatusChangedNotification`) |
 | `recipient` | `array` | Данные получателя — см. [структуру recipient](#структура-recipient) выше |
 | `recipientType` | `string` | Тип получателя: `customer` или `manager` |
 | `results` | `array<string,bool>` | Результат отправки по каналам, например `['email' => true, 'telegram' => false]` |
@@ -356,6 +356,11 @@ class SmsChannel implements ChannelInterface
     public function isAvailable(): bool
     {
         return (bool) $this->modx->getOption('my_sms_api_key');
+    }
+
+    public function getRequirements(): array
+    {
+        return ['my_sms_api_key'];
     }
 
     public function send(Notification $notification, array $recipient, msOrder $order): bool

@@ -316,7 +316,7 @@ switch ($modx->event->name) {
 
 ## msOnEmptyOrder
 
-Вызывается **после** очистки полей черновика. Ошибка плагина (`output`) откатывает успех операции на стороне вызывающего кода.
+Вызывается **после** очистки полей черновика — поля адреса и заказа к этому моменту уже обнулены и сохранены в БД. Ошибка плагина (`output`) переворачивает флаг успеха, который получит вызывающий код, но **не откатывает** уже сохранённые изменения — БД остаётся очищенной независимо от результата события.
 
 ### Параметры
 
@@ -398,7 +398,7 @@ switch ($modx->event->name) {
 
 1. Сабмит на витрине — `OrderSubmitHandler` (в params **нет** `origin` / `from_manager`; есть `handler`, `customFields`)
 2. Финализация в админке — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
-3. Программное создание — `ProgrammaticOrderService` → `finalize` (`origin=integration`, без `from_manager`, `service`)
+3. Программное создание — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
 
 ### Параметры
 
@@ -406,9 +406,9 @@ switch ($modx->event->name) {
 | --- | --- | --- |
 | `msOrder` | `msOrder` | Объект заказа (всегда) |
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только сабмит с витрины |
-| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Менеджер или integration |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только finalize-пути (менеджер / integration) |
 | `origin` | `string` | Только finalize-пути: `manager` \| `integration` (константы `OrderOrigin`) |
-| `from_manager` | `bool` | Только при `origin=manager` |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true` при `origin=manager`, `false` при `origin=integration`); отсутствует только на витринном сабмите |
 | `customFields` | `array` | Только витрина — поля из `properties._validated` |
 
 ::: tip Различение сценариев
@@ -486,7 +486,7 @@ switch ($modx->event->name) {
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только витрина |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Менеджер или integration |
 | `origin` | `string` | Только finalize-пути |
-| `from_manager` | `bool` | Только менеджер |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true`/`false`), отсутствует только на витрине |
 | `customFields` | `array` | Только витрина |
 
 ### Пример использования
@@ -575,7 +575,7 @@ switch ($modx->event->name) {
 Вызывается **перед** финализацией заказа из админки (когда менеджер превращает черновик в полноценный заказ — кнопка «Оформить» в карточке заказа в админке). Это менеджерский аналог `msOnSubmitOrder`.
 
 ::: tip Связка с msOnBeforeCreateOrder
-После `msOnBeforeMgrCreateOrder` всё равно срабатывает универсальное `msOnBeforeCreateOrder` с теми же тремя параметрами. Используйте `msOnBeforeMgrCreateOrder`, если нужна специфика менеджерского пути; используйте `msOnBeforeCreateOrder`, если хотите единую логику и для фронтенда, и для админки.
+После `msOnBeforeMgrCreateOrder` всё равно срабатывает универсальное `msOnBeforeCreateOrder` с теми же четырьмя параметрами (`service`, `msOrder`, `origin`, `from_manager`). Используйте `msOnBeforeMgrCreateOrder`, если нужна специфика менеджерского пути; используйте `msOnBeforeCreateOrder`, если хотите единую логику и для фронтенда, и для админки.
 :::
 
 ### Параметры
