@@ -91,6 +91,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `weight` | decimal(13,3) | Вес |
 | `image` | varchar(255) | Основное изображение |
 | `thumb` | varchar(255) | Превью изображения |
+| `preview_file_id` | int | ID файла галереи для главного превью (без смены порядка галереи) |
 | `vendor_id` | int | ID производителя |
 | `made_in` | varchar(100) | Страна производства |
 | `new` | tinyint(1) | Флаг «Новинка» |

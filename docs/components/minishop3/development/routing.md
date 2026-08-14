@@ -280,13 +280,15 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-**Публичные роуты** (не требуют токен):
+**Публичные роуты** (без токена, без авто-минта гостевого токена):
 
-- `/api/v1/cart/get`
 - `/api/v1/product/get`
 - `/api/v1/product/list`
 - `/api/v1/customer/token/get`
+- `/api/v1/customer/logout`
 - `/api/v1/health`
+
+Остальные роуты (например `/api/v1/cart/get`) при отсутствии токена **авто-минтят гостевой токен**, а не отклоняют запрос.
 
 #### CorsMiddleware
 
@@ -608,6 +610,9 @@ function addFilterParam(params, key, value) {
 | POST | `/addresses` | Добавить адрес | Обязательно |
 | PUT | `/addresses/{id}` | Обновить адрес | Обязательно |
 | DELETE | `/addresses/{id}` | Удалить адрес | Обязательно |
+| GET | `/orders` | Список заказов клиента | Обязательно |
+| GET | `/orders/{id}` | Карточка заказа клиента | Обязательно |
+| POST | `/orders/{id}/cancel` | Отмена заказа клиента | Обязательно |
 
 #### Общие
 

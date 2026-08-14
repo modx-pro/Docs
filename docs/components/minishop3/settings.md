@@ -214,14 +214,14 @@ title: Системные настройки
 
 Web API (`api.php`): CORS, rate limit, отладка. Карта эндпоинтов: [REST API](/components/minishop3/development/api).
 
-`ms3_cors_allowed_origins`: `*` или список origin через запятую. Для cookie-токена с другого домена укажите точные origin, не `*`.
+`ms3_cors_allowed_origins`: по умолчанию **пусто** — cross-origin запрещён, работает только same-origin. Значение `*` разрешает любой origin (без credentials); для cookie-токена с другого домена перечислите точные origin через запятую, не `*`.
 
 Rate limit режет все `/api/v1/*`. Хранилище счётчиков: `ms3_rate_limit_store` = `file` | `redis` | `memcached` (если ключи есть в вашей сборке). На одном сервере хватает `file`.
 
 | Настройка | По умолчанию | Описание |
 | --- | --- | --- |
 | `ms3_api_debug` | `false` | Режим отладки API (расширенное логирование) |
-| `ms3_cors_allowed_origins` | `*` | Разрешённые домены для CORS (через запятую или `*`) |
+| `ms3_cors_allowed_origins` | `-` | Разрешённые origin для CORS: пусто = только same-origin, `*` = любой (без credentials), либо список через запятую |
 | `ms3_rate_limit_max_attempts` | `60` | Максимум запросов за период |
 | `ms3_rate_limit_decay_seconds` | `60` | Период лимита запросов (секунды) |
 | `ms3_rate_limit_store` | `file` | Хранилище счётчиков: `file`, `redis`, `memcached` |
@@ -231,7 +231,7 @@ Rate limit режет все `/api/v1/*`. Хранилище счётчиков:
 | `ms3_rate_limit_redis_port` | `6379` | Порт Redis |
 | `ms3_rate_limit_redis_password` | `-` | Пароль Redis |
 | `ms3_rate_limit_redis_database` | `0` | Номер БД Redis |
-| `ms3_rate_limit_memcached_servers` | `-` | Список серверов Memcached |
+| `ms3_rate_limit_memcached_servers` | `127.0.0.1:11211` | Список серверов Memcached |
 
 ## Сайт (Frontend)
 
