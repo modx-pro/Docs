@@ -13,6 +13,10 @@ title: Системные настройки
 | --- | --- | --- |
 | `ms3_services_config` | *(не в transport)* | Опциональная системная настройка: путь к `ms3.services.php`. Если ключ не задан, `ServiceRegistry` ищет файл в `{core_path}config/ms3.services.php`. Файл возвращает массив `[service_id => ClassName]` и переопределяет классы по умолчанию |
 | `ms3_services_addons_dir` | *(не в transport)* | Опциональная системная настройка: папка с фрагментами регистрации сервисов. По умолчанию `{core_path}config/ms3.services.d/`. Файлы `*.php` загружаются в алфавитном порядке после основного конфига |
+| `ms3_assets_url` | *(не в transport)* | Опциональное переопределение базового assets URL компонента. По умолчанию `{assets_url}components/minishop3/` |
+| `ms3_action_url` | *(не в transport)* | Опциональное переопределение базового URL Web API. По умолчанию `{ms3_assets_url}api.php` |
+| `ms3_core_path` | *(не в transport)* | Опциональное переопределение пути к core-директории компонента. По умолчанию `{core_path}components/minishop3/` |
+| `ms3_version` | *(не в transport)* | Опциональное переопределение версии в ответе эндпоинта `/health` (mgr и web API). Не создаётся автоматически, поэтому по умолчанию отдаётся `1.0.0` |
 | `ms3_chunks_categories` | | ID категорий через запятую для списка чанков |
 | `ms3_use_scheduler` | `false` | Использовать компонент [Scheduler](/components/scheduler/) для фоновых задач |
 
