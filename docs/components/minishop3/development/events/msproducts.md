@@ -27,7 +27,7 @@ title: События сниппета msProducts
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `rows` | `array` (ссылка) | Массив товаров, можно модифицировать |
+| `rows` | `array` | Массив товаров. Изменения применяются только через `returnedValues['rows']` — PHP-ссылка на этом уровне не сохраняется (см. ниже) |
 | `productIds` | `array` | Массив ID товаров `[1, 2, 3, ...]` |
 | `usePackages` | `array` | Список запрошенных пакетов `['ms3Variants', 'msBrands']` |
 | `scriptProperties` | `array` | Все параметры вызова сниппета |
@@ -120,7 +120,7 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `row` | `array` (ссылка) | Данные товара, можно модифицировать |
+| `row` | `array` | Данные товара. Изменения применяются только через `returnedValues['row']` — PHP-ссылка на этом уровне не сохраняется (см. ниже) |
 | `productId` | `int` | ID товара |
 | `idx` | `int` | Порядковый номер товара в выборке |
 
@@ -137,6 +137,10 @@ switch ($modx->event->name) {
 }
 ```
 
+::: warning Мутация `$scriptProperties['row']` по ссылке не работает
+Хотя `row` помечен как «ссылка» на стороне вызова (`EventGate::invokeRaw(..., ['row' => &$rows[$k], ...])`), PHP-ссылка не переживает merge-конвейер MODX-ядра (`modElement::getProperties()` → `modX::invokeEvent()`, оба используют `array_merge()`, который разыменовывает ссылки). Прямое изменение `$scriptProperties['row']['field'] = ...` внутри плагина **не доходит** до шаблона — нужно обязательно выставлять `$modx->event->returnedValues['row']`, как показано ниже.
+:::
+
 ### Базовый пример
 
 ```php
@@ -150,11 +154,13 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
 
-        // Присоединяем данные к товару
+        // Присоединяем данные к товару — только через returnedValues,
+        // прямая мутация $scriptProperties['row'] по ссылке до шаблона не доходит
         if (isset($myData[$productId])) {
-            $row['my_field'] = $myData[$productId];
+            $modx->event->returnedValues = [
+                'row' => ['my_field' => $myData[$productId]],
+            ];
         }
         break;
 }
@@ -174,19 +180,25 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
 
+        // Присоединяем варианты — только через returnedValues (см. предупреждение выше)
         if (isset($variantsMap[$productId])) {
-            $row['variants'] = $variantsMap[$productId];
-            $row['variants_count'] = count($variantsMap[$productId]);
-            $row['variants_json'] = json_encode($variantsMap[$productId]);
-            $row['has_variants'] = true;
+            $row = [
+                'variants' => $variantsMap[$productId],
+                'variants_count' => count($variantsMap[$productId]),
+                'variants_json' => json_encode($variantsMap[$productId]),
+                'has_variants' => true,
+            ];
         } else {
-            $row['variants'] = [];
-            $row['variants_count'] = 0;
-            $row['variants_json'] = '[]';
-            $row['has_variants'] = false;
+            $row = [
+                'variants' => [],
+                'variants_count' => 0,
+                'variants_json' => '[]',
+                'has_variants' => false,
+            ];
         }
+
+        $modx->event->returnedValues = ['row' => $row];
         break;
 }
 
@@ -238,7 +250,7 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
+        $row = $scriptProperties['row']; // читаем, не мутируем — для записи нужен returnedValues
 
         $badges = [];
 
@@ -261,9 +273,13 @@ switch ($modx->event->name) {
             ];
         }
 
-        $row['badges'] = $badges;
-        $row['badges_json'] = json_encode($badges);
-        $row['has_badges'] = !empty($badges);
+        $modx->event->returnedValues = [
+            'row' => [
+                'badges' => $badges,
+                'badges_json' => json_encode($badges),
+                'has_badges' => !empty($badges),
+            ],
+        ];
         break;
 }
 

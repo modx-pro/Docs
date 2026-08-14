@@ -11,6 +11,10 @@ title: События товаров в заказе
 Для корзины на витрине см. [События корзины](cart).
 :::
 
+::: info Второй источник msOnBeforeCreateOrderProduct / msOnCreateOrderProduct
+Помимо Manager API, эта пара событий вызывается ещё и из `OrderDraftManager` — при программном создании заказа без сессии (`ProgrammaticOrderService`, sessionless API для интеграций/cron). В этом канале в параметрах события есть **дополнительный ключ `origin`** (значение `'integration'` по умолчанию), которого нет у вызова из Manager API.
+:::
+
 ::: warning After-хуки не откатывают БД
 `msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` вызываются **после** `save()` / `remove()`. Если after-плагин вернёт `output`, ядро только пишет предупреждение в лог — клиент Vue по-прежнему получит успех. Проверки и veto — в парных `msOnBefore*`.
 :::
@@ -24,8 +28,9 @@ title: События товаров в заказе
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Новая строка (ещё не в БД) |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
 | `msOrder` | `msOrder` | Родительский заказ |
-| `mode` | `int` | `modSystemEvent::MODE_NEW` |
+| `mode` | `string` | `modSystemEvent::MODE_NEW` (значение `'new'`) |
 
 ### Прерывание операции
 
@@ -63,8 +68,9 @@ switch ($modx->event->name) {
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Сохранённая строка |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
 | `msOrder` | `msOrder` | Заказ |
-| `mode` | `int` | `modSystemEvent::MODE_NEW` |
+| `mode` | `string` | `modSystemEvent::MODE_NEW` (значение `'new'`) |
 
 ### Пример использования
 
@@ -104,9 +110,10 @@ switch ($modx->event->name) {
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `msOrderProduct` | `msOrderProduct` | Строка с новыми значениями полей |
+| `msOrderProduct` | `msOrderProduct` | Строка с новыми значениями полей (объект уже мутирован — старых значений в параметрах события нет) |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
 | `msOrder` | `msOrder` | Заказ |
-| `mode` | `int` | `modSystemEvent::MODE_UPD` |
+| `mode` | `string` | `modSystemEvent::MODE_UPD` (значение `'upd'`) |
 
 ### Прерывание операции
 
@@ -116,21 +123,18 @@ switch ($modx->event->name) {
     case 'msOnBeforeUpdateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
+        // Объект уже несёт НОВОЕ значение count — старое значение среди
+        // параметров события недоступно (в БД ещё не сохранено).
         $newCount = $orderProduct->get('count');
-        $oldCount = $orderProduct->getPrevious('count');
+        $productId = $orderProduct->get('product_id');
 
-        // Если увеличиваем количество — проверяем остатки
-        if ($newCount > $oldCount) {
-            $diff = $newCount - $oldCount;
-            $productId = $orderProduct->get('product_id');
-
-            $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-            if ($msProduct) {
-                $stock = $msProduct->get('stock') ?? 0;
-                if ($diff > $stock) {
-                    $modx->event->output('Недостаточно товара для увеличения количества');
-                    return;
-                }
+        // Проверяем, хватает ли остатка на итоговое количество
+        $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
+        if ($msProduct) {
+            $stock = $msProduct->get('stock') ?? 0;
+            if ($newCount > $stock) {
+                $modx->event->output('Недостаточно товара для указанного количества');
+                return;
             }
         }
         break;
@@ -148,8 +152,9 @@ switch ($modx->event->name) {
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Обновлённая строка |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
 | `msOrder` | `msOrder` | Заказ |
-| `mode` | `int` | `modSystemEvent::MODE_UPD` |
+| `mode` | `string` | `modSystemEvent::MODE_UPD` (значение `'upd'`) |
 
 ### Пример использования
 
@@ -159,27 +164,17 @@ switch ($modx->event->name) {
     case 'msOnUpdateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
-        $newCount = $orderProduct->get('count');
-        $oldCount = $orderProduct->getPrevious('count');
+        // Событие не передаёт значение count "до" изменения (снимка старой
+        // строки в параметрах нет) — синхронизируем внешнюю систему
+        // с ТЕКУЩИМ (уже сохранённым) состоянием строки.
+        $productId = $orderProduct->get('product_id');
+        $count = $orderProduct->get('count');
 
-        if ($newCount != $oldCount) {
-            $diff = $newCount - $oldCount;
-            $productId = $orderProduct->get('product_id');
-
-            $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-            if ($msProduct) {
-                $stock = $msProduct->get('stock') ?? 0;
-                $msProduct->set('stock', $stock - $diff);
-                $msProduct->save();
-
-                $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                    '[OrderProduct] Изменено кол-во товара #%d: %d → %d',
-                    $productId,
-                    $oldCount,
-                    $newCount
-                ));
-            }
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[OrderProduct] Товар #%d в заказе, текущее количество: %d',
+            $productId,
+            $count
+        ));
         break;
 }
 ```
@@ -195,6 +190,7 @@ switch ($modx->event->name) {
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Строка для удаления |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
 | `msOrder` | `msOrder` | Заказ |
 | `id` | `int` | ID строки `msOrderProduct` |
 
@@ -228,6 +224,7 @@ switch ($modx->event->name) {
 | Параметр | Тип | Описание |
 | --- | --- | --- |
 | `msOrderProduct` | `msOrderProduct` | Удалённый объект (ещё в памяти xPDO) |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
 | `msOrder` | `msOrder` | Заказ |
 | `id` | `int` | ID удалённой строки |
 
@@ -278,11 +275,14 @@ switch ($modx->event->name) {
         break;
 
     case 'msOnUpdateOrderProduct':
+        // Событие не передаёт count "до" изменения — инкрементальный расчёт
+        // остатка тут невозможен, только create/remove меняют резерв напрямую.
         $orderProduct = $scriptProperties['msOrderProduct'];
-        $diff = $orderProduct->get('count') - ($orderProduct->getPrevious('count') ?? 0);
-        if ($diff != 0) {
-            updateStock($modx, $orderProduct->get('product_id'), -$diff);
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Stock] Изменена строка заказа, товар #%d, текущее количество: %d',
+            $orderProduct->get('product_id'),
+            $orderProduct->get('count')
+        ));
         break;
 
     case 'msOnRemoveOrderProduct':

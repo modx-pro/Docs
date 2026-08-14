@@ -31,9 +31,10 @@ title: События админки
 | `customers` | Список покупателей (Vue) | `controllers/mgr/customers.class.php` |
 | `settings` | Настройки компонента | `controllers/mgr/settings.class.php` |
 | `notifications` | Управление уведомлениями | `controllers/mgr/notifications.class.php` |
+| `utilities` | Утилиты | `controllers/mgr/utilities.class.php` |
 
 ::: info Vue-страницы
-`orders` и `customers` монтируют Vue-приложение (`orders.min.js` / customers). Подключайте скрипты через `addJavascript` / `addVueModule` так же, как для ExtJS-страниц товара.
+Ext-less Vue-страницы (собственный `addVueModule`, без ExtJS-обёрток): `orders`, `order`, `customers`, `settings`, `notifications`, `utilities`. ExtJS-страницы (обычный `addJavascript`/`addCss`): `product_create`, `product_update`, `category_create`, `category_update`.
 :::
 
 ### Подключение файлов
