@@ -38,6 +38,12 @@ Change `status_id` in the form. Save goes as `PUT /api/mgr/orders/{id}`. A statu
 
 Turn a draft into a real order with the finalize button: `POST /api/mgr/orders/{id}/finalize`. That is not the same path as storefront submit.
 
+### Order extra fields
+
+Create custom order columns via [extra fields](/en/components/minishop3/manager/examples/order-custom-field). The **Additional order fields** section on the card loads active fields for class `MiniShop3\Model\msOrder`. Save uses `PUT /api/mgr/orders/{id}` with the field key at the top level of the JSON body.
+
+<!-- ![Additional order fields section on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
+
 ### Cost recalculation
 
 On the summary of a saved order, click recalculate. Request:

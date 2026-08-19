@@ -46,6 +46,8 @@ See also: [Settings](settings)
 | [Grid columns](utilities/grid-columns) | Table configuration |
 | [Model fields](utilities/model-fields) | Database model fields |
 
+Step-by-step field and grid scenarios: [Manager cookbooks](/en/components/minishop3/manager/).
+
 See also: [Utilities](utilities)
 
 ## Technologies

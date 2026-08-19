@@ -44,7 +44,7 @@ Tab with product fields grouped by sections. Uses a Vue 3 component for flexible
 | Specifications | `color`, `size`, `vendor`, `made_in`, `tags` |
 
 ::: tip Configuration
-Sections and fields are configured via [Utilities → Product fields](utilities/product-fields).
+Sections and fields: [Utilities → Product fields](utilities/product-fields). New DB column: [Extra fields cookbook](/en/components/minishop3/manager/extra-fields/cookbook), example [Wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ### Gallery

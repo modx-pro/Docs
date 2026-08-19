@@ -71,7 +71,7 @@ All system settings were renamed from `ms2_` to `ms3_`:
 | --- | --- |
 | `ms2_template_product_default` | `ms3_template_product_default` |
 | `ms2_template_category_default` | `ms3_template_category_default` |
-| `ms2_category_grid_fields` | **Removed.** Category grid columns: **Utilities → Table fields** (`ms3_grid_fields`, `grid_key=category-products`) + **Utilities → Model fields** |
+| `ms2_category_grid_fields` | **Removed.** Category grid columns: **Utilities → Grid columns** (`ms3_grid_fields`, `grid_key=category-products`) and **Model fields** if needed |
 | `ms2_product_extra_fields` | `ms3_product_extra_fields` |
 | `ms2_frontend_js` | `ms3_frontend_assets` |
 | `ms2_frontend_css` | (merged into `ms3_frontend_assets`) |
@@ -486,7 +486,7 @@ Rewrite event subscriptions for MS3 (names and signatures differ). See [Events](
 | --- | --- | --- |
 | Orders, customers, notifications, settings | ExtJS | Vue 3 + PrimeVue without Ext wrapper (Manager API) |
 | Category/product editor in the tree | ExtJS | ExtJS shell + Vue tabs (incl. Categories/Links) |
-| Table columns | System settings `ms2_*_grid_fields` | **Utilities → Table fields** (`ms3_grid_fields`) |
+| Table columns | System settings `ms2_*_grid_fields` | **Utilities → Grid columns** (`ms3_grid_fields`) |
 
 Plugin events from Vue CRUD (orders, customers) do not fire the same way as resource processor changes. For admin customization see [Events](/en/components/minishop3/development/events) and the Manager API.
 

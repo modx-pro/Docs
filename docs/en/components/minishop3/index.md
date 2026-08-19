@@ -59,6 +59,19 @@ items: [
     ],
   },
   {
+    text: 'Manager cookbooks',
+    link: 'manager/',
+    items: [
+      { text: 'Overview', link: 'manager/' },
+      { text: 'Custom order field', link: 'manager/examples/order-custom-field' },
+      { text: 'Custom product field', link: 'manager/examples/product-extra-field' },
+      { text: 'Extra fields', link: 'manager/extra-fields/cookbook' },
+      { text: 'Model fields', link: 'manager/model-fields/cookbook' },
+      { text: 'Product fields', link: 'manager/product-fields/cookbook' },
+      { text: 'Grid columns', link: 'manager/grid-config/cookbook' },
+    ],
+  },
+  {
     text: 'Frontend interface',
     items: [
       { text: 'Catalog', link: 'frontend/catalog' },

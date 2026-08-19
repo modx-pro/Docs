@@ -7,13 +7,21 @@ title: Поля модели
 
 ## Назначение
 
-Инструмент позволяет управлять полями, зарегистрированными в таблице `ms3_product_fields`:
+Инструмент управляет полями из таблицы `ms3_model_fields` (конфигурация отображения существующих колонок моделей):
 
-- Просмотр всех полей модели
-- Редактирование настроек отображения
-- Привязка полей к секциям
-- Настройка виджетов (xtype)
-- Управление секциями полей
+::: info Не путать с page-fields
+[Поля товара](/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) настраивают только вкладку «Данные» на карточке товара. [Дополнительные поля](/components/minishop3/interface/utilities/extra-fields) создают новые колонки в БД. Cookbook: [Поля модели](/components/minishop3/manager/model-fields/cookbook).
+:::
+
+<!-- ![Утилита «Поля модели»](/components/minishop3/screenshots/mgr-model-fields.png) -->
+
+Через этот раздел вы:
+
+- просматриваете поля модели
+- редактируете настройки отображения
+- привязываете поля к секциям
+- настраиваете виджеты (xtype)
+- управляете секциями полей
 
 ## Отличие от "Дополнительных полей"
 
@@ -34,6 +42,7 @@ title: Поля модели
 - msVendor — производители
 - msOrder — заказы
 - msOrderAddress — адреса
+- msOrderProduct — позиции в заказе
 
 ### Панель секций
 
@@ -229,7 +238,7 @@ PUT /api/mgr/model-fields/{id}
 ### Секции модели
 
 ```
-GET /api/mgr/model-fields/sections?model=msProductData
+GET /api/mgr/model-fields/sections/msProductData
 ```
 
 ### Создание секции

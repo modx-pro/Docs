@@ -44,7 +44,7 @@ title: Товар
 | Характеристики | `color`, `size`, `vendor`, `made_in`, `tags` |
 
 ::: tip Настройка
-Секции и поля настраиваются через [Утилиты → Поля товара](utilities/product-fields).
+Секции и поля: [Утилиты → Поля товара](utilities/product-fields). Новое поле в БД: [Cookbook extra fields](/components/minishop3/manager/extra-fields/cookbook), пример [Оптовая цена](/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ### Галерея

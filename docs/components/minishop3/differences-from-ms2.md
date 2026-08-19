@@ -71,7 +71,7 @@ php vendor/bin/phinx migrate -c phinx.php
 | --- | --- |
 | `ms2_template_product_default` | `ms3_template_product_default` |
 | `ms2_template_category_default` | `ms3_template_category_default` |
-| `ms2_category_grid_fields` | **Удалено.** Колонки грида категории: **Утилиты → Поля таблиц** (`ms3_grid_fields`, `grid_key=category-products`) + **Утилиты → Поля моделей** |
+| `ms2_category_grid_fields` | **Удалено.** Колонки грида категории: **Утилиты → Колонки гридов** (`ms3_grid_fields`, `grid_key=category-products`) и при необходимости **Поля модели** |
 | `ms2_product_extra_fields` | `ms3_product_extra_fields` |
 | `ms2_frontend_js` | `ms3_frontend_assets` |
 | `ms2_frontend_css` | (объединено в `ms3_frontend_assets`) |
@@ -486,7 +486,7 @@ await ms3.cartAPI.add(id, 1);
 | --- | --- | --- |
 | Заказы, клиенты, уведомления, настройки | ExtJS | Vue 3 + PrimeVue без Ext-обёртки (Manager API) |
 | Редактор категории/товара в дереве | ExtJS | ExtJS shell + Vue вкладки (в т.ч. Категории/Связи) |
-| Колонки таблиц | Системные настройки `ms2_*_grid_fields` | **Утилиты → Поля таблиц** (`ms3_grid_fields`) |
+| Колонки таблиц | Системные настройки `ms2_*_grid_fields` | **Утилиты → Колонки гридов** (`ms3_grid_fields`) |
 
 События плагинов из Vue CRUD (заказы, клиенты) не стреляют так же, как при изменении через processors ресурса. Для кастомизации админки ориентируйтесь на [События](/components/minishop3/development/events) и Manager API.
 

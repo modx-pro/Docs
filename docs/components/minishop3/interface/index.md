@@ -46,6 +46,8 @@ title: Интерфейс админки
 | [Колонки гридов](utilities/grid-columns) | Настройка таблиц |
 | [Поля модели](utilities/model-fields) | Поля моделей БД |
 
+Пошаговые сценарии полей и гридов: [Cookbook менеджера](/components/minishop3/manager/).
+
 Подробнее: [Утилиты](utilities)
 
 ## Технологии

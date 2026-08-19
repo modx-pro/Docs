@@ -9,6 +9,12 @@ title: Колонки гридов
 
 Основной инструмент настройки колонок в административных таблицах MiniShop3:
 
+::: tip Cookbook
+Пошаговые примеры badge-колонки в заказах и inline-edit в категории: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
+:::
+
+<!-- ![Утилита «Колонки гридов»](/components/minishop3/screenshots/mgr-grid-columns.png) -->
+
 - Включать и отключать колонки
 - Изменять порядок колонок
 - Настраивать сортировку и фильтрацию
@@ -83,9 +89,14 @@ title: Колонки гридов
 | `model` | Поле из модели данных |
 | `template` | Шаблонная колонка (HTML) |
 | `relation` | Данные из связанной таблицы |
+| `badge` | Цветная метка (`source_field`, `color_field`) |
+| `option` | Значение опции товара (грид `category-products`) |
 | `computed` | Вычисляемое значение |
 | `image` | Отображение изображения |
 | `boolean` | Флаг да/нет |
+| `price` | Денежное значение (`displayConfig`: валюта, decimals) |
+| `weight` | Вес (`displayConfig`: unit, decimals) |
+| `datetime` | Дата и время (`displayConfig`: format) |
 | `actions` | Колонка действий |
 
 ## Типы колонок
@@ -110,6 +121,25 @@ title: Колонки гридов
 ```
 
 Доступные переменные — поля текущей записи в фигурных скобках.
+
+### Badge (Метка)
+
+Цветная метка по тексту и HEX-цвету из других полей строки. В гриде `orders` колонка `order_status` берёт подпись из `status_name` и цвет из `status_color`.
+
+```
+Тип: badge
+source_field: status_name
+color_field: status_color
+```
+
+### Option (Опция товара)
+
+Колонка опции в гриде `category-products`. В конфиге укажите `option.key` (ключ опции из `msOption`).
+
+```
+Тип: option
+option.key: color
+```
 
 ### Relation (Связь)
 
@@ -159,6 +189,41 @@ title: Колонки гридов
 Тип: boolean
 Имя поля: active
 ```
+
+### Price (Цена)
+
+Форматирование числового поля как цены. Параметры в JSON **displayConfig**:
+
+| Ключ | Описание |
+| --- | --- |
+| `decimals` | Знаков после запятой |
+| `currency` | Символ валюты |
+| `currency_position` | `before` или `after` |
+| `thousands_separator` | Разделитель тысяч |
+
+```
+Тип: price
+Имя поля: price
+displayConfig: {"decimals":2,"currency":"₽","currency_position":"after","thousands_separator":" "}
+```
+
+### Weight (Вес)
+
+```
+Тип: weight
+Имя поля: weight
+displayConfig: {"decimals":2,"unit":"кг","unit_position":"after"}
+```
+
+### Datetime (Дата и время)
+
+```
+Тип: datetime
+Имя поля: createdon
+displayConfig: {"format":"dd.MM.yyyy HH:mm"}
+```
+
+Формат — шаблон PrimeVue date formatter (`dd`, `MM`, `yyyy`, `HH`, `mm`).
 
 ### Actions (Действия)
 
@@ -269,22 +334,26 @@ GET /api/mgr/grid-config/{grid_name}
         "width": 60,
         "type": "model"
       }
-    ]
+    ],
+    "direct_filter_keys": ["query", "status_id"],
+    "editor_references": []
   }
 }
 ```
 
+Поле `editor_references` заполняется только для `grid_key=category-products`.
+
 ### Сохранение конфигурации
 
 ```
-PUT /api/mgr/grid-config/{grid_name}
+PUT /api/mgr/grid-config/{grid_key}
 ```
 
 **Тело запроса:**
 
 ```json
 {
-  "columns": [
+  "fields": [
     {
       "name": "id",
       "label": "ID",
@@ -293,17 +362,23 @@ PUT /api/mgr/grid-config/{grid_name}
       "filterable": false,
       "frozen": true,
       "width": 60,
-      "sort_order": 0
+      "type": "model"
     }
   ]
 }
 ```
 
-### Сброс к умолчаниям
+::: warning Права
+`GET /api/mgr/grid-config/{grid_key}` требует `view_document`. Запись (`PUT`, `POST`, `DELETE` колонки) — `mssetting_save`.
+:::
+
+### Удаление колонки
 
 ```
-DELETE /api/mgr/grid-config/{grid_name}
+DELETE /api/mgr/grid-config/{grid_key}/{field_name}
 ```
+
+Системные колонки (`is_system`) удалить нельзя.
 
 ## Системные колонки
 

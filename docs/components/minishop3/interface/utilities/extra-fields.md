@@ -5,6 +5,12 @@ title: Дополнительные поля
 
 Свои колонки к моделям MiniShop3 без правки ядра. Поле пишется в БД и появляется в формах менеджера.
 
+::: tip Cookbook
+Пошаговые кейсы (заказ, repeater, key-value): [Cookbook дополнительных полей](/components/minishop3/manager/extra-fields/cookbook). Примеры: [поле в заказе](/components/minishop3/manager/examples/order-custom-field), [оптовая цена у товара](/components/minishop3/manager/examples/product-extra-field).
+:::
+
+<!-- ![Утилита «Дополнительные поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+
 ## Назначение
 
 Создаёте ключ, тип виджета и тип колонки. После применения миграции колонки поле доступно в карточке модели и (для товара) в импорте CSV.
@@ -52,6 +58,7 @@ title: Дополнительные поля
 | `numberfield` | Числовое поле | Цены, количества |
 | `textarea` | Многострочное поле | Описания |
 | `xcheckbox` | Флажок | Да/Нет |
+| `ms3-combo-select` | Выпадающий список (фикс. options) | Статусы, типы доставки |
 | `ms3-combo-vendor` | Выбор производителя | Связь с производителем |
 | `ms3-combo-autocomplete` | Автодополнение | Выбор из списка |
 | `ms3-combo-options` | Выбор опции | Варианты товара |

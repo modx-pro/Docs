@@ -3,17 +3,21 @@ title: Product fields
 ---
 # Utilities: Product fields
 
-Configure field display on the "Product data" tab in the product card.
+Configure fields on the **Data** tab in the product card.
+
+::: tip Cookbook
+Sections, hiding fields, extra fields link: [Product fields cookbook](/en/components/minishop3/manager/product-fields/cookbook). End-to-end example: [Wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
+:::
 
 ## Purpose
 
-This tool lets you:
+This utility controls **layout** on the Data tab:
 
-- Enable and disable field visibility
-- Group fields into sections
-- Change field display order
-- Create and edit sections
-- Configure each field's parameters
+- field visibility and order
+- section groups
+- labels and widget xtypes
+
+Create new columns in `ms3_product_data` via [Extra fields](/en/components/minishop3/interface/utilities/extra-fields). After POST extra field, a row appears here automatically.
 
 ## Interface
 

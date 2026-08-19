@@ -102,7 +102,9 @@ title: Категория
 | `number` | `price`, `old_price`, `weight` |
 | `boolean` | `published`, `new`, `popular`, `favorite` |
 
-Настройка редактируемых полей — в [Утилиты → Колонки гридов](utilities/grid-columns) (параметры `editable` и `editType` у колонки).
+Настройка в **Утилиты → Колонки гридов**, грид `category-products`: включите `editable`, задайте `editor_type` (`text`, `number`, `select`, `combo`). Пошагово: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
+
+Подробнее: [Колонки гридов](utilities/grid-columns).
 
 ## Настройка колонок таблицы
 
@@ -112,8 +114,6 @@ title: Категория
 2. Выберите грид **category-products**
 3. Настройте видимость, порядок, ширину колонок
 4. Сохраните
-
-Подробнее: [Утилиты: Колонки гридов](utilities/grid-columns)
 
 ### Через PHP конфигурацию
 

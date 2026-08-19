@@ -102,7 +102,9 @@ Double-click a cell to edit in place:
 | `number` | `price`, `old_price`, `weight` |
 | `boolean` | `published`, `new`, `popular`, `favorite` |
 
-Editable fields are configured in [Utilities → Grid columns](utilities/grid-columns) (`editable` and `editType` on the column).
+Configure in **Utilities → Grid columns**, grid **category-products**: enable **editable**, set **editor_type** (`text`, `number`, `select`, `combo`). Step-by-step: [Grid columns cookbook](/en/components/minishop3/manager/grid-config/cookbook).
+
+See also: [Utilities: Grid columns](utilities/grid-columns).
 
 ## Table column configuration
 
@@ -112,8 +114,6 @@ Editable fields are configured in [Utilities → Grid columns](utilities/grid-co
 2. Select the **category-products** grid
 3. Configure visibility, order, column width
 4. Save
-
-See also: [Utilities: Grid columns](utilities/grid-columns)
 
 ### Via PHP configuration
 

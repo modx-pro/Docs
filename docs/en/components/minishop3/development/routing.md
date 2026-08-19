@@ -423,17 +423,17 @@ If middleware returns a `Response`, the rest of the middleware and the handler a
 
 #### Grid config (`/grid-config`)
 
-CRUD for admin grid column configuration. All requests require permission `mssetting_save`.
+CRUD for admin grid column configuration. Read: `view_document`, write: `mssetting_save`.
 
 | Method | Route | Description |
 | --- | --- | --- |
 | GET | `/{grid_key}` | Get grid configuration |
-| PUT | `/{grid_key}` | Update grid configuration |
+| PUT | `/{grid_key}` | Update grid configuration (body: `fields`) |
 | POST | `/{grid_key}/field` | Add column |
 | PUT | `/{grid_key}/field/{field_name}` | Update column |
-| DELETE | `/{grid_key}/field/{field_name}` | Delete column |
+| DELETE | `/{grid_key}/{field_name}` | Delete column |
 
-**Known `grid_key` values:** `orders`, `customers`, `vendors`, `deliveries`, `payments`, `category-products`, `extra-fields`, `model-fields`, `notifications`, `option-groups`.
+**Known `grid_key` values in MS3 1.13:** `orders`, `order_products`, `customers`, `vendors`, `category-products`.
 
 ##### `GET /grid-config/{grid_key}` response
 
