@@ -15,7 +15,8 @@ description: End-to-end — extra field на заказе и сохранени�
 
 - MiniShop3 1.13.x
 - Право `mssetting_save` (создание extra field)
-- Право `msorder_view` / редактирование заказа
+- Право `msorder_list` (чтение карточки)
+- Право `msorder_save` (сохранение заказа)
 
 ## Шаг 1. Создайте extra field
 
@@ -86,8 +87,8 @@ Extra field **создаёт колонку** в БД. [Поля модели](/
 | --- | --- | --- |
 | GET | `/api/mgr/extra-fields?class=MiniShop3\Model\msOrder` | `mssetting_save` |
 | POST | `/api/mgr/extra-fields` | `mssetting_save` |
-| PUT | `/api/mgr/orders/{id}` | `msorder_view` + редактирование |
-| GET | `/api/mgr/orders/{id}` | `msorder_view` |
+| PUT | `/api/mgr/orders/{id}` | `msorder_save` |
+| GET | `/api/mgr/orders/{id}` | `msorder_list` |
 
 **POST /api/mgr/extra-fields** (фрагмент):
 

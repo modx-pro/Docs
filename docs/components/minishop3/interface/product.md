@@ -155,36 +155,27 @@ Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-d
    - **Название** — отображаемое название
 4. Сохраните
 
-**Через API:**
+**Через API** (1.13.x: отдельного POST нет; UI добавляет секцию локально и сохраняет список):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
 ```json
 {
-  "section_key": "seo",
-  "lexicon_key": "ms3_section_seo",
-  "label": "SEO",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "seo",
+      "lexicon_key": "ms3_section_seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
 
-**Через PHP:**
-
-```php
-$section = $modx->newObject('MiniShop3\\Model\\msPageSection');
-$section->fromArray([
-    'page_key' => 'product_data',
-    'section_key' => 'seo',
-    'lexicon_key' => 'ms3_section_seo',
-    'label' => 'SEO',
-    'hidden' => false,
-    'sort_order' => 100
-]);
-$section->save();
-```
+Право записи: `mssetting_save`.
 
 ### Редактирование секции
 
@@ -347,10 +338,24 @@ GET /api/mgr/config/page-fields/product_data
 }
 ```
 
-**Сохранить поле:**
+**Сохранить поля** (тело — массив `fields`):
 
 ```
 PUT /api/mgr/config/page-fields/product_data
+```
+
+```json
+{
+  "fields": [
+    {
+      "name": "article",
+      "label": "Артикул",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
+}
 ```
 
 ### Секции
@@ -361,22 +366,29 @@ PUT /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 ```
 
-**Создать секцию:**
+**Сохранить секции** (создание и порядок — через bulk PUT):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
-**Обновить секцию:**
+```json
+{
+  "sections": [
+    {
+      "section_key": "seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
+}
+```
+
+**Удалить секцию** (по `section_key`, не по id):
 
 ```
-PUT /api/mgr/config/sections/product_data/{id}
-```
-
-**Удалить секцию:**
-
-```
-DELETE /api/mgr/config/sections/product_data/{id}
+DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
 ### Данные товара

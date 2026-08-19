@@ -152,14 +152,18 @@ POST /api/mgr/grid-config/orders/field
 
 ## Кейс: computed-колонка
 
-Тип **computed** вызывает PHP-класс колонки на сервере:
+Тип **computed** вызывает PHP-класс на сервере. В config обязателен **`computed.className`**:
 
-```
-Тип: computed
-Класс: MyVendor\Ms3\Columns\MarginColumn
+```json
+{
+  "type": "computed",
+  "computed": {
+    "className": "MyVendor\\Ms3\\Columns\\MarginColumn"
+  }
+}
 ```
 
-Класс должен быть в autoload MODX. Для простого форматирования цены или даты достаточно типов **price** / **datetime**.
+Класс должен быть в autoload MODX и реализовывать `ComputedFieldInterface`. Для простого форматирования цены или даты достаточно типов **price** / **datetime**.
 
 ## API appendix
 

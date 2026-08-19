@@ -165,11 +165,15 @@ option.key: color
 
 ### Computed (Вычисляемое)
 
-Значение вычисляется на сервере специальным классом.
+Значение вычисляется на сервере. В JSON config обязателен ключ **`computed.className`** (класс реализует `ComputedFieldInterface`):
 
-```
-Тип: computed
-Класс: MyComponent\Columns\TotalSpentColumn
+```json
+{
+  "type": "computed",
+  "computed": {
+    "className": "MyComponent\\Columns\\TotalSpentColumn"
+  }
+}
 ```
 
 ### Image (Изображение)

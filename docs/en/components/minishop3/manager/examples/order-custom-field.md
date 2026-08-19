@@ -15,7 +15,8 @@ A manager enters an internal order comment. The value is stored in the `ms3_orde
 
 - MiniShop3 1.13.x
 - Permission `mssetting_save` (create extra field)
-- Permission `msorder_view` / order edit access
+- Permission `msorder_list` (read order card)
+- Permission `msorder_save` (save order)
 
 ## Step 1. Create the extra field
 
@@ -86,8 +87,8 @@ An extra field **creates a DB column**. [Model fields](/en/components/minishop3/
 | --- | --- | --- |
 | GET | `/api/mgr/extra-fields?class=MiniShop3\Model\msOrder` | `mssetting_save` |
 | POST | `/api/mgr/extra-fields` | `mssetting_save` |
-| PUT | `/api/mgr/orders/{id}` | `msorder_view` + edit |
-| GET | `/api/mgr/orders/{id}` | `msorder_view` |
+| PUT | `/api/mgr/orders/{id}` | `msorder_save` |
+| GET | `/api/mgr/orders/{id}` | `msorder_list` |
 
 **POST /api/mgr/extra-fields** (fragment):
 

@@ -152,14 +152,18 @@ Types **price**, **weight**, and **datetime** format model column values without
 
 ## Case: computed column
 
-Type **computed** calls a PHP column class on the server:
+Type **computed** calls a PHP class on the server. Config must include **`computed.className`**:
 
-```
-Type: computed
-Class: MyVendor\Ms3\Columns\MarginColumn
+```json
+{
+  "type": "computed",
+  "computed": {
+    "className": "MyVendor\\Ms3\\Columns\\MarginColumn"
+  }
+}
 ```
 
-The class must be in MODX autoload. For simple price or date formatting use **price** / **datetime** instead.
+The class must be in MODX autoload and implement `ComputedFieldInterface`. For simple price or date formatting use **price** / **datetime** instead.
 
 ## API appendix
 

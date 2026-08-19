@@ -57,22 +57,42 @@ description: Секции, visible и page_key product_data на вкладке 
 GET /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 PUT /api/mgr/config/page-fields/product_data
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
+DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
-Пример PUT поля:
+GET доступен любой сессии менеджера. Запись: `mssetting_save`. `POST /config/sections/...` в 1.13.x нет.
+
+Пример PUT полей (массив **`fields`**):
 
 ```json
 {
-  "name": "wholesale_price",
-  "label": "Оптовая цена",
-  "section": 2,
-  "visible": true,
-  "sort_order": 10
+  "fields": [
+    {
+      "name": "wholesale_price",
+      "label": "Оптовая цена",
+      "section": 2,
+      "visible": true,
+      "sort_order": 10
+    }
+  ]
 }
 ```
 
-Запись: `mssetting_save`.
+Пример PUT секций:
+
+```json
+{
+  "sections": [
+    {
+      "section_key": "prices",
+      "label": "Цены",
+      "hidden": false,
+      "sort_order": 10
+    }
+  ]
+}
+```
 
 ## Troubleshooting
 

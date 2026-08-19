@@ -40,7 +40,9 @@ Turn a draft into a real order with the finalize button: `POST /api/mgr/orders/{
 
 ### Order extra fields
 
-Create custom order columns via [extra fields](/en/components/minishop3/manager/examples/order-custom-field). The **Additional order fields** section on the card loads active fields for class `MiniShop3\Model\msOrder`. Save uses `PUT /api/mgr/orders/{id}` with the field key at the top level of the JSON body.
+Create custom order columns via [extra fields](/en/components/minishop3/manager/examples/order-custom-field). In the DB and on POST the class is `MiniShop3\Model\msOrder`. In 1.13.x the order card requests `GET /api/mgr/extra-fields?class=msOrder` (short alias): the filter is exact, so the section can be empty even when the field was created correctly. Details and workaround are in the example troubleshooting.
+
+Save: `PUT /api/mgr/orders/{id}` with the field key at the top level of the JSON body (`msorder_save`). Extra-field metadata loads only with `mssetting_save`.
 
 <!-- ![Additional order fields section on the order card](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
 

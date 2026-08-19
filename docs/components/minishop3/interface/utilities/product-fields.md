@@ -164,41 +164,59 @@ GET /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 ```
 
-### Сохранение конфигурации поля
+### Сохранение конфигурации полей
 
 ```
 PUT /api/mgr/config/page-fields/product_data
 ```
 
-**Тело запроса:**
+Право записи: `mssetting_save`. Чтение (GET) доступно любой сессии менеджера без `mssetting_save`.
+
+**Тело запроса** — массив **`fields`** (не одно поле):
 
 ```json
 {
-  "name": "article",
-  "label": "Артикул товара",
-  "section": 1,
-  "visible": true,
-  "sort_order": 0
+  "fields": [
+    {
+      "name": "article",
+      "label": "Артикул товара",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
 }
 ```
 
-### Создание секции
+### Сохранение секций
+
+Новую секцию UI добавляет локально, затем сохраняет весь список:
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
-
-**Тело запроса:**
 
 ```json
 {
-  "section_key": "custom",
-  "lexicon_key": "ms3_section_custom",
-  "label": "Дополнительно",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "custom",
+      "lexicon_key": "ms3_section_custom",
+      "label": "Дополнительно",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
+
+### Удаление секции
+
+```
+DELETE /api/mgr/config/sections/product_data/{section_key}
+```
+
+Базовые секции удалить нельзя. `POST /config/sections/...` в 1.13.x нет.
 
 ## Примеры настройки
 

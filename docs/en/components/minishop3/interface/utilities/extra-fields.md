@@ -17,13 +17,26 @@ You create a key, widget type, and column type. After the column migration appli
 
 ## Supported models
 
-| Model | Description |
-| --- | --- |
-| `msProductData` | Product data |
-| `msVendor` | Vendor |
-| `msOrder` | Order |
-| `msOrderAddress` | Delivery address |
-| `msCategory` | Category |
+In the UI you pick a short name; the DB and POST store the full `MiniShop3\Model\...` class.
+
+| Short name | Class in API / DB | Description |
+| --- | --- | --- |
+| `msProduct` | `MiniShop3\Model\msProduct` | Product resource |
+| `msProductData` | `MiniShop3\Model\msProductData` | Product data |
+| `msCategory` | `MiniShop3\Model\msCategory` | Category |
+| `msVendor` | `MiniShop3\Model\msVendor` | Vendor |
+| `msOption` | `MiniShop3\Model\msOption` | Option |
+| `msLink` | `MiniShop3\Model\msLink` | Link type |
+| `msOrder` | `MiniShop3\Model\msOrder` | Order |
+| `msOrderAddress` | `MiniShop3\Model\msOrderAddress` | Delivery address |
+| `msOrderProduct` | `MiniShop3\Model\msOrderProduct` | Order line |
+| `msOrderStatus` | `MiniShop3\Model\msOrderStatus` | Order status |
+| `msCustomer` | `MiniShop3\Model\msCustomer` | Customer |
+| `msCustomerAddress` | `MiniShop3\Model\msCustomerAddress` | Customer address |
+| `msDelivery` | `MiniShop3\Model\msDelivery` | Delivery |
+| `msPayment` | `MiniShop3\Model\msPayment` | Payment |
+
+Extra-fields CRUD requires `mssetting_save`. The order card also calls `GET /extra-fields` on load: without that permission widget metadata will not load (column values still arrive in `GET /orders/{id}`).
 
 ## Creating a field
 

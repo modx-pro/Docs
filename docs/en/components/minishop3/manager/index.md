@@ -37,7 +37,7 @@ List columns are separate: [Grid columns](/en/components/minishop3/interface/uti
 | CRUD extra fields, model fields, product fields | `mssetting_save` |
 | PUT grid-config (order, column types) | `mssetting_save` |
 | GET grid-config, order and category lists | `view_document` |
-| Order card | `msorder_view` and order edit permission |
+| Order card | read `msorder_list`, write `msorder_save` |
 
 ## Cookbooks
 

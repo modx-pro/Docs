@@ -415,12 +415,12 @@ $router->get('/api/mgr/endpoint', $handler, [
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
-| GET | `/page-fields/{page_key}` | Получить поля страницы |
+| GET | `/page-fields/{page_key}` | Получить поля страницы (без `mssetting_save`) |
 | GET | `/page-fields/{page_key}/all` | Все поля страницы |
-| PUT | `/page-fields/{page_key}` | Обновить поля |
-| DELETE | `/page-fields/{page_key}/{field_name}` | Удалить переопределение поля |
+| PUT | `/page-fields/{page_key}` | Обновить поля (тело: `{ "fields": [...] }`, нужно `mssetting_save`) |
 | GET | `/sections/{page_key}` | Получить секции |
-| PUT | `/sections/{page_key}` | Обновить секции |
+| PUT | `/sections/{page_key}` | Обновить секции (тело: `{ "sections": [...] }`) |
+| DELETE | `/sections/{page_key}/{section_key}` | Удалить секцию по ключу |
 
 #### Конфигурация гридов (`/grid-config`)
 

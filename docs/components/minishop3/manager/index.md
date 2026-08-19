@@ -37,7 +37,7 @@ flowchart TD
 | CRUD extra fields, model fields, product fields | `mssetting_save` |
 | PUT grid-config (порядок, типы колонок) | `mssetting_save` |
 | GET grid-config, списки заказов и категорий | `view_document` |
-| Карточка заказа | `msorder_view` и право редактирования заказа |
+| Карточка заказа | чтение `msorder_list`, запись `msorder_save` |
 
 ## Cookbooks
 

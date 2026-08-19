@@ -170,35 +170,53 @@ GET /api/mgr/config/sections/product_data
 PUT /api/mgr/config/page-fields/product_data
 ```
 
-**Request body:**
+Write permission: `mssetting_save`. GET works for any manager session without `mssetting_save`.
+
+**Request body** — a **`fields`** array (not a single field):
 
 ```json
 {
-  "name": "article",
-  "label": "Product SKU",
-  "section": 1,
-  "visible": true,
-  "sort_order": 0
+  "fields": [
+    {
+      "name": "article",
+      "label": "Product SKU",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
 }
 ```
 
-### Create section
+### Save sections
+
+The UI adds a section locally, then saves the full list:
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
-
-**Request body:**
 
 ```json
 {
-  "section_key": "custom",
-  "lexicon_key": "ms3_section_custom",
-  "label": "Additional",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "custom",
+      "lexicon_key": "ms3_section_custom",
+      "label": "Additional",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
+
+### Delete section
+
+```
+DELETE /api/mgr/config/sections/product_data/{section_key}
+```
+
+Base sections cannot be deleted. There is no `POST /config/sections/...` in 1.13.x.
 
 ## Configuration examples
 

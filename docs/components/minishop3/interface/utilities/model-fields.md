@@ -252,7 +252,7 @@ POST /api/mgr/model-fields/sections
 ```json
 {
   "model": "msProductData",
-  "key": "prices",
+  "section_key": "prices",
   "label": "Цены",
   "sort_order": 10
 }

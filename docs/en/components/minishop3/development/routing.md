@@ -414,12 +414,12 @@ If middleware returns a `Response`, the rest of the middleware and the handler a
 
 | Method | Route | Description |
 | --- | --- | --- |
-| GET | `/page-fields/{page_key}` | Get page fields |
+| GET | `/page-fields/{page_key}` | Get page fields (no `mssetting_save`) |
 | GET | `/page-fields/{page_key}/all` | All page fields |
-| PUT | `/page-fields/{page_key}` | Update fields |
-| DELETE | `/page-fields/{page_key}/{field_name}` | Remove field override |
+| PUT | `/page-fields/{page_key}` | Update fields (body: `{ "fields": [...] }`, needs `mssetting_save`) |
 | GET | `/sections/{page_key}` | Get sections |
-| PUT | `/sections/{page_key}` | Update sections |
+| PUT | `/sections/{page_key}` | Update sections (body: `{ "sections": [...] }`) |
+| DELETE | `/sections/{page_key}/{section_key}` | Delete section by key |
 
 #### Grid config (`/grid-config`)
 

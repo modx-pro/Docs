@@ -57,22 +57,42 @@ When size and color use options:
 GET /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 PUT /api/mgr/config/page-fields/product_data
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
+DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
-Example PUT:
+GET is available to any manager session. Writes require `mssetting_save`. There is no `POST /config/sections/...` in 1.13.x.
+
+Example PUT fields (**`fields`** array):
 
 ```json
 {
-  "name": "wholesale_price",
-  "label": "Wholesale price",
-  "section": 2,
-  "visible": true,
-  "sort_order": 10
+  "fields": [
+    {
+      "name": "wholesale_price",
+      "label": "Wholesale price",
+      "section": 2,
+      "visible": true,
+      "sort_order": 10
+    }
+  ]
 }
 ```
 
-Writes require `mssetting_save`.
+Example PUT sections:
+
+```json
+{
+  "sections": [
+    {
+      "section_key": "prices",
+      "label": "Prices",
+      "hidden": false,
+      "sort_order": 10
+    }
+  ]
+}
+```
 
 ## Troubleshooting
 

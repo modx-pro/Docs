@@ -155,36 +155,27 @@ Product field with display settings.
    - **Label** — display name
 4. Save
 
-**Via API:**
+**Via API** (1.13.x: no separate POST; the UI adds a section locally and saves the list):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
 ```json
 {
-  "section_key": "seo",
-  "lexicon_key": "ms3_section_seo",
-  "label": "SEO",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "seo",
+      "lexicon_key": "ms3_section_seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
 
-**Via PHP:**
-
-```php
-$section = $modx->newObject('MiniShop3\\Model\\msPageSection');
-$section->fromArray([
-    'page_key' => 'product_data',
-    'section_key' => 'seo',
-    'lexicon_key' => 'ms3_section_seo',
-    'label' => 'SEO',
-    'hidden' => false,
-    'sort_order' => 100
-]);
-$section->save();
-```
+Write permission: `mssetting_save`.
 
 ### Editing a section
 
@@ -347,10 +338,24 @@ GET /api/mgr/config/page-fields/product_data
 }
 ```
 
-**Save field:**
+**Save fields** (body is a `fields` array):
 
 ```
 PUT /api/mgr/config/page-fields/product_data
+```
+
+```json
+{
+  "fields": [
+    {
+      "name": "article",
+      "label": "SKU",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
+}
 ```
 
 ### Sections
@@ -361,22 +366,29 @@ PUT /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 ```
 
-**Create section:**
+**Save sections** (create and reorder via bulk PUT):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
-**Update section:**
+```json
+{
+  "sections": [
+    {
+      "section_key": "seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
+}
+```
+
+**Delete section** (by `section_key`, not id):
 
 ```
-PUT /api/mgr/config/sections/product_data/{id}
-```
-
-**Delete section:**
-
-```
-DELETE /api/mgr/config/sections/product_data/{id}
+DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
 ### Product data

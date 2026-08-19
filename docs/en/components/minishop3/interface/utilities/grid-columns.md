@@ -165,11 +165,15 @@ Aggregation: COUNT
 
 ### Computed (computed)
 
-Value computed on server by a custom class.
+Value is computed on the server. JSON config must include **`computed.className`** (class implements `ComputedFieldInterface`):
 
-```
-Type: computed
-Class: MyComponent\Columns\TotalSpentColumn
+```json
+{
+  "type": "computed",
+  "computed": {
+    "className": "MyComponent\\Columns\\TotalSpentColumn"
+  }
+}
 ```
 
 ### Image (image)

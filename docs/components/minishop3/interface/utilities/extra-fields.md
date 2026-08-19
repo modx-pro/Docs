@@ -17,13 +17,26 @@ title: Дополнительные поля
 
 ## Поддерживаемые модели
 
-| Модель | Описание |
-| --- | --- |
-| `msProductData` | Данные товара |
-| `msVendor` | Производитель |
-| `msOrder` | Заказ |
-| `msOrderAddress` | Адрес доставки |
-| `msCategory` | Категория |
+В UI выбираете короткое имя; в БД и POST сохраняется полное `MiniShop3\Model\...`.
+
+| Короткое имя | Класс в API / БД | Описание |
+| --- | --- | --- |
+| `msProduct` | `MiniShop3\Model\msProduct` | Ресурс товара |
+| `msProductData` | `MiniShop3\Model\msProductData` | Данные товара |
+| `msCategory` | `MiniShop3\Model\msCategory` | Категория |
+| `msVendor` | `MiniShop3\Model\msVendor` | Производитель |
+| `msOption` | `MiniShop3\Model\msOption` | Опция |
+| `msLink` | `MiniShop3\Model\msLink` | Тип связи |
+| `msOrder` | `MiniShop3\Model\msOrder` | Заказ |
+| `msOrderAddress` | `MiniShop3\Model\msOrderAddress` | Адрес доставки |
+| `msOrderProduct` | `MiniShop3\Model\msOrderProduct` | Позиция заказа |
+| `msOrderStatus` | `MiniShop3\Model\msOrderStatus` | Статус заказа |
+| `msCustomer` | `MiniShop3\Model\msCustomer` | Покупатель |
+| `msCustomerAddress` | `MiniShop3\Model\msCustomerAddress` | Адрес покупателя |
+| `msDelivery` | `MiniShop3\Model\msDelivery` | Доставка |
+| `msPayment` | `MiniShop3\Model\msPayment` | Оплата |
+
+CRUD extra-fields требует `mssetting_save`. Карточка заказа тоже вызывает `GET /extra-fields` при загрузке: без этого права метаданные виджетов не подтянутся (значения колонок в `GET /orders/{id}` всё равно приходят).
 
 ## Создание поля
 
