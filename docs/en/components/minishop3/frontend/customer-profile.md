@@ -3,6 +3,8 @@ title: Customer profile
 ---
 # Customer profile
 
+<!-- ![Account: profile](/components/minishop3/screenshots/fe-customer-profile.png) -->
+
 An authenticated customer edits name, email, phone and sees email verification status. The page is built with `msCustomer` and `service=profile`.
 
 A guest on the same page sees [login and registration](/en/components/minishop3/frontend/customer-auth).

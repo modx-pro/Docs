@@ -3,6 +3,8 @@ title: Payment methods
 ---
 # Payment methods
 
+<!-- ![Settings → Payments](/components/minishop3/screenshots/mgr-payments.png) -->
+
 Managed via **Extras → MiniShop3 → Settings → Payments**.
 
 ## For the store owner

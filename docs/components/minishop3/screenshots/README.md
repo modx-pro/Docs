@@ -25,7 +25,9 @@
 | `mgr-option-groups.png` | DnD список групп опций (`msOptionGroup`) | [interface/settings/options.md](../interface/settings/options.md) |
 | `mgr-notifications.png` | **Уведомления**: конфиги каналов | [interface/notifications.md](../interface/notifications.md) |
 | `mgr-import.png` | **Утилиты → Импорт** (маппинг, extra fields) | [interface/utilities/import.md](../interface/utilities/import.md) |
-| `mgr-extra-fields.png` | **Утилиты → Дополнительные поля** (в т.ч. repeater / key-value) | [interface/utilities/extra-fields.md](../interface/utilities/extra-fields.md), [manager/extra-fields/cookbook.md](../manager/extra-fields/cookbook.md) |
+| `mgr-extra-fields.png` | **Утилиты → Дополнительные поля** (в т.ч. repeater / key-value) | [interface/utilities/extra-fields.md](../interface/utilities/extra-fields.md), [manager/extra-fields/cookbook.md](../manager/extra-fields/cookbook.md), [manager/examples/product-extra-field.md](../manager/examples/product-extra-field.md) |
+| `mgr-product-fields.png` | **Утилиты → Поля товара** (секции, visible) | [interface/utilities/product-fields.md](../interface/utilities/product-fields.md), [manager/product-fields/cookbook.md](../manager/product-fields/cookbook.md), [manager/examples/product-extra-field.md](../manager/examples/product-extra-field.md) |
+| `mgr-product-data.png` | Вкладка **Данные** на карточке товара | [manager/examples/product-extra-field.md](../manager/examples/product-extra-field.md) |
 | `mgr-grid-columns.png` | **Утилиты → Колонки гридов** | [interface/utilities/grid-columns.md](../interface/utilities/grid-columns.md), [manager/grid-config/cookbook.md](../manager/grid-config/cookbook.md) |
 | `mgr-order-extra-field.png` | Карточка заказа: секция дополнительных полей | [manager/examples/order-custom-field.md](../manager/examples/order-custom-field.md) |
 | `mgr-model-fields.png` | **Утилиты → Поля модели** (секции, visible) | [interface/utilities/model-fields.md](../interface/utilities/model-fields.md), [manager/model-fields/cookbook.md](../manager/model-fields/cookbook.md) |

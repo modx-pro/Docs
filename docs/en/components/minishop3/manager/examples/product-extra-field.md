@@ -19,6 +19,8 @@ Managers enter a wholesale price on the **Data** tab. The value lives in `ms3_pr
 
 ## Step 1. Create extra field
 
+<!-- ![Utilities → Extra fields](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+
 1. **Extras → MiniShop3 → Utilities → Extra fields**.
 2. Class **msProductData (Product data)**.
 3. **Create field**:
@@ -41,6 +43,10 @@ The UI stores class as `MiniShop3\Model\msProductData`. Use the same value in PO
 
 ## Step 2. Layout on the Data tab
 
+<!-- ![Utilities → Product fields](/components/minishop3/screenshots/mgr-product-fields.png) -->
+
+<!-- ![Product Data tab](/components/minishop3/screenshots/mgr-product-data.png) -->
+
 1. **Utilities → Product fields**.
 2. Find **Wholesale price** (or move it from “No section”).
 3. Place it in **Main data** or create a **Prices** section.
@@ -50,6 +56,8 @@ The UI stores class as `MiniShop3\Model\msProductData`. Use the same value in PO
 See [Product fields cookbook](/en/components/minishop3/manager/product-fields/cookbook).
 
 ## Step 3. Category grid column (optional)
+
+<!-- ![Inline edit in category products grid](/components/minishop3/screenshots/mgr-category-products.png) -->
 
 1. **Utilities → Grid columns** → grid **category-products**.
 2. Add column `wholesale_price`, type **price**.

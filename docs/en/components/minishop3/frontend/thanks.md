@@ -5,6 +5,8 @@ title: Thank you
 
 The thank-you page is shown after a successful checkout. It displays order details and next steps for the customer.
 
+<!-- ![Thank you page](/components/minishop3/screenshots/fe-thanks.png) -->
+
 [![](https://file.modx.pro/files/e/9/3/e936fc08c9cbf5e83cae96910ae66fd7s.jpg)](https://file.modx.pro/files/e/9/3/e936fc08c9cbf5e83cae96910ae66fd7.png)
 
 ## Page structure

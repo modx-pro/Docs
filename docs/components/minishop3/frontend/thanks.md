@@ -5,6 +5,8 @@ title: Спасибо за заказ
 
 Страница благодарности отображается после успешного оформления заказа. Показывает детали заказа и дальнейшие действия для покупателя.
 
+<!-- ![Страница «Спасибо за заказ»](/components/minishop3/screenshots/fe-thanks.png) -->
+
 [![](https://file.modx.pro/files/e/9/3/e936fc08c9cbf5e83cae96910ae66fd7s.jpg)](https://file.modx.pro/files/e/9/3/e936fc08c9cbf5e83cae96910ae66fd7.png)
 
 ## Структура страницы

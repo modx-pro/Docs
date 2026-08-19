@@ -3,6 +3,8 @@ title: Product fields
 ---
 # Utilities: Product fields
 
+<!-- ![Utilities → Product fields](/components/minishop3/screenshots/mgr-product-fields.png) -->
+
 Configure fields on the **Data** tab in the product card.
 
 ::: tip Cookbook

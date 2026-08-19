@@ -5,6 +5,8 @@ title: Корзина
 
 Корзина покупок — ключевой элемент интернет-магазина. MiniShop3 предоставляет гибкую систему для отображения корзины в любом месте сайта.
 
+<!-- ![Корзина на витрине](/components/minishop3/screenshots/fe-cart.png) -->
+
 [![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
 
 ## Множественные корзины на странице

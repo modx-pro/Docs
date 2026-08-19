@@ -3,6 +3,8 @@ title: Поля товара
 ---
 # Утилиты: Поля товара
 
+<!-- ![Утилита «Поля товара»](/components/minishop3/screenshots/mgr-product-fields.png) -->
+
 Настройка полей на вкладке **Данные** в карточке товара.
 
 ::: tip Cookbook

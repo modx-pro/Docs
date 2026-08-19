@@ -20,6 +20,8 @@ UI опций на Vue 3 + PrimeVue. Старые ExtJS-окна и процес
 1. **Опции:** дерево категорий слева, грид опций справа.
 2. **Группы опций:** CRUD и drag-and-drop сортировка `msOptionGroup` (с v1.11).
 
+<!-- ![Справочник опций](/components/minishop3/screenshots/mgr-options.png) -->
+
 <!-- ![Группы опций](/components/minishop3/screenshots/mgr-option-groups.png) -->
 
 ### Вкладка «Опции»

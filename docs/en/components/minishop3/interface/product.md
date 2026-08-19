@@ -74,6 +74,8 @@ Link types from the `msLink` directory: `one_to_many`, `many_to_one`, `one_to_on
 
 ### Categories
 
+<!-- ![Product Categories tab](/components/minishop3/screenshots/mgr-product-categories.png) -->
+
 Vue tab `ProductCategoriesTab`. Tree: `GET /api/mgr/product-data/{id}/categories/tree` (service `ms3_product_category_tree`). Selected ids go in the resource POST as hidden `name="categories"` (JSON). The parent category (`parent`) is locked in the tree. A product can belong to several extra categories via `msCategoryMember`.
 
 ### Product options

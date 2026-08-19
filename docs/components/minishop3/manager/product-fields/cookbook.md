@@ -5,6 +5,8 @@ description: Секции, visible и page_key product_data на вкладке 
 
 # Cookbook полей товара
 
+<!-- ![Утилита «Поля товара»](/components/minishop3/screenshots/mgr-product-fields.png) -->
+
 **Поля товара** задают раскладку вкладки **Данные** на карточке товара. Колонку в БД создают через [extra fields](/components/minishop3/manager/extra-fields/cookbook).
 
 Справочник: [Поля товара](/components/minishop3/interface/utilities/product-fields).

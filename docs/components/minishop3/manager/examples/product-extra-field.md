@@ -19,6 +19,8 @@ description: End-to-end — extra field на msProductData, раскладка �
 
 ## Шаг 1. Создайте extra field
 
+<!-- ![Утилита «Дополнительные поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
+
 1. **Extras → MiniShop3 → Утилиты → Дополнительные поля**.
 2. Класс **msProductData (Данные товара)**.
 3. **Создать поле**:
@@ -41,6 +43,10 @@ description: End-to-end — extra field на msProductData, раскладка �
 
 ## Шаг 2. Раскладка на вкладке «Данные»
 
+<!-- ![Утилита «Поля товара»](/components/minishop3/screenshots/mgr-product-fields.png) -->
+
+<!-- ![Вкладка «Данные» на карточке товара](/components/minishop3/screenshots/mgr-product-data.png) -->
+
 1. **Утилиты → Поля товара**.
 2. Найдите **Оптовая цена** (или перенесите из «Без секции»).
 3. Положите поле в секцию **Основные данные** или создайте секцию **Цены**.
@@ -50,6 +56,8 @@ description: End-to-end — extra field на msProductData, раскладка �
 Подробнее: [Cookbook полей товара](/components/minishop3/manager/product-fields/cookbook).
 
 ## Шаг 3. Колонка в таблице категории (опционально)
+
+<!-- ![Inline-edit в таблице товаров категории](/components/minishop3/screenshots/mgr-category-products.png) -->
 
 1. **Утилиты → Колонки гридов** → грид **category-products**.
 2. Добавьте колонку `wholesale_price`, тип **price**.

@@ -3,6 +3,8 @@ title: Способы оплаты
 ---
 # Способы оплаты
 
+<!-- ![Настройки → Оплаты](/components/minishop3/screenshots/mgr-payments.png) -->
+
 Управление: **Extras → MiniShop3 → Настройки → Оплаты**.
 
 ## Для владельца магазина

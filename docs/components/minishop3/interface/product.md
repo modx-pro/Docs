@@ -74,6 +74,8 @@ Vue-вкладка `ProductLinksTab`. CRUD через Manager API (право `m
 
 ### Категории
 
+<!-- ![Вкладка «Категории» на карточке товара](/components/minishop3/screenshots/mgr-product-categories.png) -->
+
 Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-data/{id}/categories/tree` (сервис `ms3_product_category_tree`). Выбранные id уходят в resource POST как hidden `name="categories"` (JSON). Родительская категория (`parent`) в дереве заблокирована. Товар может состоять в нескольких доп. категориях через `msCategoryMember`.
 
 ### Опции товара

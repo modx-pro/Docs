@@ -5,6 +5,8 @@ description: Sections, visibility, and page_key product_data on the Data tab
 
 # Product fields cookbook
 
+<!-- ![Utilities → Product fields](/components/minishop3/screenshots/mgr-product-fields.png) -->
+
 **Product fields** control layout of the **Data** tab on the product card. Create DB columns via [extra fields](/en/components/minishop3/manager/extra-fields/cookbook).
 
 Reference: [Product fields](/en/components/minishop3/interface/utilities/product-fields).
