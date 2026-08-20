@@ -6,7 +6,7 @@ description: msCustomer directory in the MiniShop3 Manager
 
 Open **Extras → MiniShop3 → Customers**. Here you get the `CustomersGrid` grid and dialogs to edit the profile and addresses.
 
-<!-- ![Customers](/components/minishop3/screenshots/mgr-customers.png) -->
+![Customers](/components/minishop3/screenshots/mgr-customers.png)
 
 ## List
 

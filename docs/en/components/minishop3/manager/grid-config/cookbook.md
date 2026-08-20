@@ -75,7 +75,7 @@ POST /api/mgr/grid-config/orders/field
 }
 ```
 
-<!-- ![Status badge in the orders list](/components/minishop3/screenshots/mgr-orders.png) -->
+![Status badge in the orders list](/components/minishop3/screenshots/mgr-orders.png)
 
 ## Case: relation with aggregation (customers)
 

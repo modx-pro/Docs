@@ -75,7 +75,7 @@ POST /api/mgr/grid-config/orders/field
 }
 ```
 
-<!-- ![Badge статуса в списке заказов](/components/minishop3/screenshots/mgr-orders.png) -->
+![Badge статуса в списке заказов](/components/minishop3/screenshots/mgr-orders.png)
 
 ## Кейс: relation с агрегацией (customers)
 

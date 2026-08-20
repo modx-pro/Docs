@@ -6,7 +6,7 @@ description: Список заказов в менеджере, черновик
 
 Откройте **Extras → MiniShop3 → Заказы**. Слева грид всех заказов, по клику открывается карточка.
 
-<!-- ![Список заказов](/components/minishop3/screenshots/mgr-orders.png) -->
+![Список заказов](/components/minishop3/screenshots/mgr-orders.png)
 
 ## Список
 
