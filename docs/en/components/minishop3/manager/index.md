@@ -7,7 +7,7 @@ description: Step-by-step guides for extra fields, model fields, and grid column
 
 Short scenarios for integrators: configure fields and grid columns in the MS3 1.13.x Vue manager without patching PHP core.
 
-API reference and full xtype lists live under [Utilities](/en/components/minishop3/interface/utilities/). Cookbooks explain **when** to use each tool and how to finish the task in the UI.
+API reference and full xtype lists live under [Utilities](/en/components/minishop3/interface/utilities). Cookbooks explain **when** to use each tool and how to finish the task in the UI.
 
 ## Which tool to use
 

@@ -7,7 +7,7 @@ description: Пошаговые кейсы по extra fields, полям мод�
 
 Краткие сценарии для integrator-а: поля и колонки в Vue-менеджере MS3 1.13.x без правки PHP ядра.
 
-Справочники API и xtype лежат в [Утилитах](/components/minishop3/interface/utilities/). Cookbook показывает, **когда** какой инструмент брать и как довести задачу до результата в UI.
+Справочники API и xtype лежат в [Утилитах](/components/minishop3/interface/utilities). Cookbook показывает, **когда** какой инструмент брать и как довести задачу до результата в UI.
 
 ## Когда что выбирать
 
