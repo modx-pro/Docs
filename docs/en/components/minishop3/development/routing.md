@@ -414,26 +414,26 @@ If middleware returns a `Response`, the rest of the middleware and the handler a
 
 | Method | Route | Description |
 | --- | --- | --- |
-| GET | `/page-fields/{page_key}` | Get page fields |
+| GET | `/page-fields/{page_key}` | Get page fields (no `mssetting_save`) |
 | GET | `/page-fields/{page_key}/all` | All page fields |
-| PUT | `/page-fields/{page_key}` | Update fields |
-| DELETE | `/page-fields/{page_key}/{field_name}` | Remove field override |
+| PUT | `/page-fields/{page_key}` | Update fields (body: `{ "fields": [...] }`, needs `mssetting_save`) |
 | GET | `/sections/{page_key}` | Get sections |
-| PUT | `/sections/{page_key}` | Update sections |
+| PUT | `/sections/{page_key}` | Update sections (body: `{ "sections": [...] }`) |
+| DELETE | `/sections/{page_key}/{section_key}` | Delete section by key |
 
 #### Grid config (`/grid-config`)
 
-CRUD for admin grid column configuration. All requests require permission `mssetting_save`.
+CRUD for admin grid column configuration. Read: `view_document`, write: `mssetting_save`.
 
 | Method | Route | Description |
 | --- | --- | --- |
 | GET | `/{grid_key}` | Get grid configuration |
-| PUT | `/{grid_key}` | Update grid configuration |
+| PUT | `/{grid_key}` | Update grid configuration (body: `fields`) |
 | POST | `/{grid_key}/field` | Add column |
 | PUT | `/{grid_key}/field/{field_name}` | Update column |
-| DELETE | `/{grid_key}/field/{field_name}` | Delete column |
+| DELETE | `/{grid_key}/{field_name}` | Delete column |
 
-**Known `grid_key` values:** `orders`, `customers`, `vendors`, `deliveries`, `payments`, `category-products`, `extra-fields`, `model-fields`, `notifications`, `option-groups`.
+**Known `grid_key` values in MS3 1.13:** `orders`, `order_products`, `customers`, `vendors`, `category-products`.
 
 ##### `GET /grid-config/{grid_key}` response
 

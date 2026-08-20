@@ -7,13 +7,21 @@ Manage existing model fields from the database.
 
 ## Purpose
 
-Manage fields registered in `ms3_product_fields`:
+Manage fields from `ms3_model_fields` (display config for existing model columns):
 
-- View all model fields
-- Edit display settings
-- Assign fields to sections
-- Configure widgets (xtype)
-- Manage field sections
+::: info Not page-fields
+[Product fields](/en/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) control only the product “Data” tab. [Extra fields](/en/components/minishop3/interface/utilities/extra-fields) create new DB columns. Cookbook: [Model fields](/en/components/minishop3/manager/model-fields/cookbook).
+:::
+
+<!-- ![Model fields utility](/components/minishop3/screenshots/mgr-model-fields.png) -->
+
+From this utility you can:
+
+- view all model fields
+- edit display settings
+- assign fields to sections
+- configure widgets (xtype)
+- manage field sections
 
 ## Difference from "Extra fields"
 
@@ -34,6 +42,7 @@ Model filter at the top:
 - msVendor — vendors
 - msOrder — orders
 - msOrderAddress — addresses
+- msOrderProduct — order line items
 
 ### Sections panel
 
@@ -229,7 +238,7 @@ PUT /api/mgr/model-fields/{id}
 ### Model sections
 
 ```
-GET /api/mgr/model-fields/sections?model=msProductData
+GET /api/mgr/model-fields/sections/msProductData
 ```
 
 ### Create section
@@ -243,7 +252,7 @@ POST /api/mgr/model-fields/sections
 ```json
 {
   "model": "msProductData",
-  "key": "prices",
+  "section_key": "prices",
   "label": "Prices",
   "sort_order": 10
 }

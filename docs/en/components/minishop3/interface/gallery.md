@@ -3,6 +3,8 @@ title: Product gallery
 ---
 # Product gallery
 
+<!-- ![Product gallery tab](/components/minishop3/screenshots/mgr-product-gallery.png) -->
+
 Product image management system in MiniShop3.
 
 ## Overview

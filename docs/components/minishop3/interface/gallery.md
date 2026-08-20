@@ -3,6 +3,8 @@ title: Галерея товара
 ---
 # Галерея товара
 
+<!-- ![Вкладка галереи на товаре](/components/minishop3/screenshots/mgr-product-gallery.png) -->
+
 Система управления изображениями товаров в MiniShop3.
 
 ## Обзор

@@ -9,6 +9,12 @@ Configuring columns in MiniShop3 admin tables.
 
 Main tool for configuring columns in MiniShop3 admin tables:
 
+::: tip Cookbook
+Badge column in orders and inline edit in category: [Grid columns cookbook](/en/components/minishop3/manager/grid-config/cookbook).
+:::
+
+<!-- ![Grid columns utility](/components/minishop3/screenshots/mgr-grid-columns.png) -->
+
 - Enable and disable columns
 - Change column order
 - Configure sorting and filtering
@@ -83,9 +89,14 @@ Shows current column configuration:
 | `model` | Field from data model |
 | `template` | Template column (HTML) |
 | `relation` | Data from related table |
+| `badge` | Colored label (`source_field`, `color_field`) |
+| `option` | Product option value (`category-products` grid) |
 | `computed` | Computed value |
 | `image` | Image display |
 | `boolean` | Yes/No flag |
+| `price` | Money value (`displayConfig`: currency, decimals) |
+| `weight` | Weight (`displayConfig`: unit, decimals) |
+| `datetime` | Date and time (`displayConfig`: format) |
 | `actions` | Actions column |
 
 ## Column types
@@ -111,6 +122,25 @@ Template: <a href="mailto:{email}">{email}</a>
 
 Variables — current row fields in curly braces.
 
+### Badge
+
+Colored label from text and HEX in other row fields. In `orders`, column `order_status` uses `status_name` and `status_color`.
+
+```
+Type: badge
+source_field: status_name
+color_field: status_color
+```
+
+### Option (product option)
+
+Option column in `category-products`. Set `option.key` (key from `msOption`).
+
+```
+Type: option
+option.key: color
+```
+
 ### Relation (relation)
 
 Data from related table.
@@ -135,11 +165,15 @@ Aggregation: COUNT
 
 ### Computed (computed)
 
-Value computed on server by a custom class.
+Value is computed on the server. JSON config must include **`computed.className`** (class implements `ComputedFieldInterface`):
 
-```
-Type: computed
-Class: MyComponent\Columns\TotalSpentColumn
+```json
+{
+  "type": "computed",
+  "computed": {
+    "className": "MyComponent\\Columns\\TotalSpentColumn"
+  }
+}
 ```
 
 ### Image (image)
@@ -159,6 +193,41 @@ Yes/No flag with icon.
 Type: boolean
 Field: active
 ```
+
+### Price (price)
+
+Formats a numeric field as money. Parameters in **displayConfig** JSON:
+
+| Key | Description |
+| --- | --- |
+| `decimals` | Decimal places |
+| `currency` | Currency symbol |
+| `currency_position` | `before` or `after` |
+| `thousands_separator` | Thousands separator |
+
+```
+Type: price
+Field: price
+displayConfig: {"decimals":2,"currency":"₽","currency_position":"after","thousands_separator":" "}
+```
+
+### Weight (weight)
+
+```
+Type: weight
+Field: weight
+displayConfig: {"decimals":2,"unit":"kg","unit_position":"after"}
+```
+
+### Datetime (datetime)
+
+```
+Type: datetime
+Field: createdon
+displayConfig: {"format":"dd.MM.yyyy HH:mm"}
+```
+
+Format follows PrimeVue date formatter tokens (`dd`, `MM`, `yyyy`, `HH`, `mm`).
 
 ### Actions (actions)
 
@@ -269,22 +338,26 @@ GET /api/mgr/grid-config/{grid_name}
         "width": 60,
         "type": "model"
       }
-    ]
+    ],
+    "direct_filter_keys": ["query", "status_id"],
+    "editor_references": []
   }
 }
 ```
 
+`editor_references` is populated only for `grid_key=category-products`.
+
 ### Save config
 
 ```
-PUT /api/mgr/grid-config/{grid_name}
+PUT /api/mgr/grid-config/{grid_key}
 ```
 
 **Request body:**
 
 ```json
 {
-  "columns": [
+  "fields": [
     {
       "name": "id",
       "label": "ID",
@@ -293,17 +366,23 @@ PUT /api/mgr/grid-config/{grid_name}
       "filterable": false,
       "frozen": true,
       "width": 60,
-      "sort_order": 0
+      "type": "model"
     }
   ]
 }
 ```
 
-### Reset to default
+::: warning Permissions
+`GET /api/mgr/grid-config/{grid_key}` requires `view_document`. Writes (`PUT`, `POST`, column `DELETE`) require `mssetting_save`.
+:::
+
+### Delete column
 
 ```
-DELETE /api/mgr/grid-config/{grid_name}
+DELETE /api/mgr/grid-config/{grid_key}/{field_name}
 ```
+
+System columns (`is_system`) cannot be deleted.
 
 ## System columns
 

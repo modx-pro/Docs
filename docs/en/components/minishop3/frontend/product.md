@@ -5,6 +5,8 @@ title: Product page
 
 The product page shows a single product in detail: gallery, price, options, and add-to-cart form.
 
+<!-- ![Storefront product page](/components/minishop3/screenshots/fe-product.png) -->
+
 [![](https://file.modx.pro/files/2/5/a/25aa24b8959c026826d65090b57111c8s.jpg)](https://file.modx.pro/files/2/5/a/25aa24b8959c026826d65090b57111c8.png)
 
 ## Page structure

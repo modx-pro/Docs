@@ -44,7 +44,7 @@ title: Товар
 | Характеристики | `color`, `size`, `vendor`, `made_in`, `tags` |
 
 ::: tip Настройка
-Секции и поля настраиваются через [Утилиты → Поля товара](utilities/product-fields).
+Секции и поля: [Утилиты → Поля товара](utilities/product-fields). Новое поле в БД: [Cookbook extra fields](/components/minishop3/manager/extra-fields/cookbook), пример [Оптовая цена](/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ### Галерея
@@ -73,6 +73,8 @@ Vue-вкладка `ProductLinksTab`. CRUD через Manager API (право `m
 Типы связей из справочника `msLink`: `one_to_many`, `many_to_one`, `one_to_one`, `many_to_many`. Настройка типов: [Настройки → Связи](settings/links).
 
 ### Категории
+
+<!-- ![Вкладка «Категории» на карточке товара](/components/minishop3/screenshots/mgr-product-categories.png) -->
 
 Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-data/{id}/categories/tree` (сервис `ms3_product_category_tree`). Выбранные id уходят в resource POST как hidden `name="categories"` (JSON). Родительская категория (`parent`) в дереве заблокирована. Товар может состоять в нескольких доп. категориях через `msCategoryMember`.
 
@@ -153,36 +155,27 @@ Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-d
    - **Название** — отображаемое название
 4. Сохраните
 
-**Через API:**
+**Через API** (1.13.x: отдельного POST нет; UI добавляет секцию локально и сохраняет список):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
 ```json
 {
-  "section_key": "seo",
-  "lexicon_key": "ms3_section_seo",
-  "label": "SEO",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "seo",
+      "lexicon_key": "ms3_section_seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
 
-**Через PHP:**
-
-```php
-$section = $modx->newObject('MiniShop3\\Model\\msPageSection');
-$section->fromArray([
-    'page_key' => 'product_data',
-    'section_key' => 'seo',
-    'lexicon_key' => 'ms3_section_seo',
-    'label' => 'SEO',
-    'hidden' => false,
-    'sort_order' => 100
-]);
-$section->save();
-```
+Право записи: `mssetting_save`.
 
 ### Редактирование секции
 
@@ -345,10 +338,24 @@ GET /api/mgr/config/page-fields/product_data
 }
 ```
 
-**Сохранить поле:**
+**Сохранить поля** (тело — массив `fields`):
 
 ```
 PUT /api/mgr/config/page-fields/product_data
+```
+
+```json
+{
+  "fields": [
+    {
+      "name": "article",
+      "label": "Артикул",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
+}
 ```
 
 ### Секции
@@ -359,22 +366,29 @@ PUT /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 ```
 
-**Создать секцию:**
+**Сохранить секции** (создание и порядок — через bulk PUT):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
-**Обновить секцию:**
+```json
+{
+  "sections": [
+    {
+      "section_key": "seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
+}
+```
+
+**Удалить секцию** (по `section_key`, не по id):
 
 ```
-PUT /api/mgr/config/sections/product_data/{id}
-```
-
-**Удалить секцию:**
-
-```
-DELETE /api/mgr/config/sections/product_data/{id}
+DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
 ### Данные товара

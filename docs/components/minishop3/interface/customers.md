@@ -12,7 +12,7 @@ description: Справочник покупателей msCustomer в мене�
 
 В строках видны email, имя, телефон, даты и флаги верификации (если колонки включены в конфигурации грида). Поиск и пагинация идут через `/api/mgr/customers`. Массовое удаление: `DELETE /api/mgr/customers/bulk` (право `msorder_remove`).
 
-Права совпадают с заказами: список — `msorder_list`, карточка — `msorder_view`, правка — `msorder_save`, удаление — `msorder_remove`.
+Права клиентов (не путать с заказами): список — `msorder_list`, **карточка клиента** — `msorder_view`, правка — `msorder_save`, удаление — `msorder_remove`. Карточка **заказа** читается с `msorder_list`, пишется с `msorder_save`.
 
 ## Профиль
 

@@ -38,6 +38,14 @@ description: Список заказов в менеджере, черновик
 
 Черновик в «настоящий» заказ переводите кнопкой финализации: `POST /api/mgr/orders/{id}/finalize`. Это не тот же путь, что submit на витрине.
 
+### Дополнительные поля заказа
+
+Свои колонки на заказе создают через [extra fields](/components/minishop3/manager/examples/order-custom-field). В БД и при POST класс — `MiniShop3\Model\msOrder`. Карточка заказа в 1.13.x запрашивает `GET /api/mgr/extra-fields?class=msOrder` (короткий алиас): фильтр точный, поэтому секция может быть пустой при корректно созданном поле. Подробности и workaround — в troubleshooting примера.
+
+Сохранение: `PUT /api/mgr/orders/{id}` ключом поля на верхнем уровне JSON (`msorder_save`). Метаданные extra fields грузятся только с правом `mssetting_save`.
+
+<!-- ![Секция дополнительных полей на карточке заказа](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
+
 ### Пересчёт стоимости
 
 На сводке сохранённого заказа нажмите пересчёт. Запрос:

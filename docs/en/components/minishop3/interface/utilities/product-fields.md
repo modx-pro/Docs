@@ -3,17 +3,23 @@ title: Product fields
 ---
 # Utilities: Product fields
 
-Configure field display on the "Product data" tab in the product card.
+<!-- ![Utilities → Product fields](/components/minishop3/screenshots/mgr-product-fields.png) -->
+
+Configure fields on the **Data** tab in the product card.
+
+::: tip Cookbook
+Sections, hiding fields, extra fields link: [Product fields cookbook](/en/components/minishop3/manager/product-fields/cookbook). End-to-end example: [Wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
+:::
 
 ## Purpose
 
-This tool lets you:
+This utility controls **layout** on the Data tab:
 
-- Enable and disable field visibility
-- Group fields into sections
-- Change field display order
-- Create and edit sections
-- Configure each field's parameters
+- field visibility and order
+- section groups
+- labels and widget xtypes
+
+Create new columns in `ms3_product_data` via [Extra fields](/en/components/minishop3/interface/utilities/extra-fields). After POST extra field, a row appears here automatically.
 
 ## Interface
 
@@ -164,35 +170,53 @@ GET /api/mgr/config/sections/product_data
 PUT /api/mgr/config/page-fields/product_data
 ```
 
-**Request body:**
+Write permission: `mssetting_save`. GET works for any manager session without `mssetting_save`.
+
+**Request body** — a **`fields`** array (not a single field):
 
 ```json
 {
-  "name": "article",
-  "label": "Product SKU",
-  "section": 1,
-  "visible": true,
-  "sort_order": 0
+  "fields": [
+    {
+      "name": "article",
+      "label": "Product SKU",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
 }
 ```
 
-### Create section
+### Save sections
+
+The UI adds a section locally, then saves the full list:
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
-
-**Request body:**
 
 ```json
 {
-  "section_key": "custom",
-  "lexicon_key": "ms3_section_custom",
-  "label": "Additional",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "custom",
+      "lexicon_key": "ms3_section_custom",
+      "label": "Additional",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
+
+### Delete section
+
+```
+DELETE /api/mgr/config/sections/product_data/{section_key}
+```
+
+Base sections cannot be deleted. There is no `POST /config/sections/...` in 1.13.x.
 
 ## Configuration examples
 

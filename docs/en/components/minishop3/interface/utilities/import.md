@@ -3,6 +3,8 @@ title: Import
 ---
 # Utilities: Import
 
+<!-- ![Utilities → Import](/components/minishop3/screenshots/mgr-import.png) -->
+
 Step-by-step wizard for importing products from CSV files.
 
 ## Purpose

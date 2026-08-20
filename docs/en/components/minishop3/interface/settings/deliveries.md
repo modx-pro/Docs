@@ -3,6 +3,8 @@ title: Delivery methods
 ---
 # Delivery methods
 
+<!-- ![Settings → Deliveries](/components/minishop3/screenshots/mgr-deliveries.png) -->
+
 Delivery methods are managed via **Extras → MiniShop3 → Settings → Deliveries**.
 
 ## Delivery fields

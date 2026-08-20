@@ -59,6 +59,19 @@ items: [
     ],
   },
   {
+    text: 'Cookbook менеджера',
+    link: 'manager/',
+    items: [
+      { text: 'Обзор', link: 'manager/' },
+      { text: 'Поле в заказе', link: 'manager/examples/order-custom-field' },
+      { text: 'Поле у товара', link: 'manager/examples/product-extra-field' },
+      { text: 'Дополнительные поля', link: 'manager/extra-fields/cookbook' },
+      { text: 'Поля модели', link: 'manager/model-fields/cookbook' },
+      { text: 'Поля товара', link: 'manager/product-fields/cookbook' },
+      { text: 'Колонки грида', link: 'manager/grid-config/cookbook' },
+    ],
+  },
+  {
     text: 'Интерфейс фронтенда',
     items: [
       { text: 'Каталог', link: 'frontend/catalog' },

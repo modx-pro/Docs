@@ -415,26 +415,26 @@ $router->get('/api/mgr/endpoint', $handler, [
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
-| GET | `/page-fields/{page_key}` | Получить поля страницы |
+| GET | `/page-fields/{page_key}` | Получить поля страницы (без `mssetting_save`) |
 | GET | `/page-fields/{page_key}/all` | Все поля страницы |
-| PUT | `/page-fields/{page_key}` | Обновить поля |
-| DELETE | `/page-fields/{page_key}/{field_name}` | Удалить переопределение поля |
+| PUT | `/page-fields/{page_key}` | Обновить поля (тело: `{ "fields": [...] }`, нужно `mssetting_save`) |
 | GET | `/sections/{page_key}` | Получить секции |
-| PUT | `/sections/{page_key}` | Обновить секции |
+| PUT | `/sections/{page_key}` | Обновить секции (тело: `{ "sections": [...] }`) |
+| DELETE | `/sections/{page_key}/{section_key}` | Удалить секцию по ключу |
 
 #### Конфигурация гридов (`/grid-config`)
 
-CRUD для конфига колонок административных гридов. Все запросы требуют право `mssetting_save`.
+CRUD для конфига колонок административных гридов. Чтение — `view_document`, запись — `mssetting_save`.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
 | GET | `/{grid_key}` | Получить конфигурацию грида |
-| PUT | `/{grid_key}` | Обновить конфигурацию грида |
+| PUT | `/{grid_key}` | Обновить конфигурацию грида (тело: `fields`) |
 | POST | `/{grid_key}/field` | Добавить колонку |
 | PUT | `/{grid_key}/field/{field_name}` | Обновить колонку |
-| DELETE | `/{grid_key}/field/{field_name}` | Удалить колонку |
+| DELETE | `/{grid_key}/{field_name}` | Удалить колонку |
 
-**Известные `grid_key`:** `orders`, `customers`, `vendors`, `deliveries`, `payments`, `category-products`, `extra-fields`, `model-fields`, `notifications`, `option-groups`.
+**Известные `grid_key` в MS3 1.13:** `orders`, `order_products`, `customers`, `vendors`, `category-products`.
 
 ##### Ответ `GET /grid-config/{grid_key}`
 

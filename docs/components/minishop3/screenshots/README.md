@@ -16,7 +16,7 @@
 
 | Файл | Что снять | Страница |
 | --- | --- | --- |
-| `mgr-orders.png` | **Extras → MiniShop3 → Заказы**: список, переключатель черновиков | [interface/orders.md](../interface/orders.md) |
+| `mgr-orders.png` | **Extras → MiniShop3 → Заказы**: список, переключатель черновиков, badge статуса | [interface/orders.md](../interface/orders.md), [manager/grid-config/cookbook.md](../manager/grid-config/cookbook.md) |
 | `mgr-order.png` | Карточка заказа (вкладки, пересчёт стоимости) | [interface/orders.md](../interface/orders.md) |
 | `mgr-customers.png` | **Extras → MiniShop3 → Клиенты** | [interface/customers.md](../interface/customers.md) |
 | `mgr-deliveries.png` | **Настройки → Доставки** | [interface/settings/deliveries.md](../interface/settings/deliveries.md) |
@@ -25,9 +25,13 @@
 | `mgr-option-groups.png` | DnD список групп опций (`msOptionGroup`) | [interface/settings/options.md](../interface/settings/options.md) |
 | `mgr-notifications.png` | **Уведомления**: конфиги каналов | [interface/notifications.md](../interface/notifications.md) |
 | `mgr-import.png` | **Утилиты → Импорт** (маппинг, extra fields) | [interface/utilities/import.md](../interface/utilities/import.md) |
-| `mgr-extra-fields.png` | **Утилиты → Дополнительные поля** (в т.ч. repeater / key-value) | [interface/utilities/extra-fields.md](../interface/utilities/extra-fields.md) |
-| `mgr-grid-columns.png` | **Утилиты → Колонки гридов** | [interface/utilities/grid-columns.md](../interface/utilities/grid-columns.md) |
-| `mgr-category-products.png` | Таблица товаров на ресурсе категории (колонки-опции) | [interface/category.md](../interface/category.md), [quick-start.md](../quick-start.md) |
+| `mgr-extra-fields.png` | **Утилиты → Дополнительные поля** (в т.ч. repeater / key-value) | [interface/utilities/extra-fields.md](../interface/utilities/extra-fields.md), [manager/extra-fields/cookbook.md](../manager/extra-fields/cookbook.md), [manager/examples/order-custom-field.md](../manager/examples/order-custom-field.md), [manager/examples/product-extra-field.md](../manager/examples/product-extra-field.md) |
+| `mgr-product-fields.png` | **Утилиты → Поля товара** (секции, visible) | [interface/utilities/product-fields.md](../interface/utilities/product-fields.md), [manager/product-fields/cookbook.md](../manager/product-fields/cookbook.md), [manager/examples/product-extra-field.md](../manager/examples/product-extra-field.md) |
+| `mgr-product-data.png` | Вкладка **Данные** на карточке товара | [manager/examples/product-extra-field.md](../manager/examples/product-extra-field.md) |
+| `mgr-grid-columns.png` | **Утилиты → Колонки гридов** | [interface/utilities/grid-columns.md](../interface/utilities/grid-columns.md), [manager/grid-config/cookbook.md](../manager/grid-config/cookbook.md) |
+| `mgr-order-extra-field.png` | Карточка заказа: секция дополнительных полей | [interface/orders.md](../interface/orders.md), [manager/examples/order-custom-field.md](../manager/examples/order-custom-field.md), [manager/extra-fields/cookbook.md](../manager/extra-fields/cookbook.md) |
+| `mgr-model-fields.png` | **Утилиты → Поля модели** (секции, visible) | [interface/utilities/model-fields.md](../interface/utilities/model-fields.md), [manager/model-fields/cookbook.md](../manager/model-fields/cookbook.md) |
+| `mgr-category-products.png` | Таблица товаров на ресурсе категории (колонки-опции, inline-edit) | [interface/category.md](../interface/category.md), [quick-start.md](../quick-start.md), [manager/grid-config/cookbook.md](../manager/grid-config/cookbook.md), [manager/examples/product-extra-field.md](../manager/examples/product-extra-field.md) |
 | `mgr-product-gallery.png` | Вкладка галереи на товаре | [interface/gallery.md](../interface/gallery.md) |
 | `mgr-product-categories.png` | Вкладка **Категории** на карточке товара | [interface/product.md](../interface/product.md) |
 | `mgr-system-settings.png` | System Settings → namespace minishop3 | [quick-start.md](../quick-start.md) |

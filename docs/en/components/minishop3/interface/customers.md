@@ -12,7 +12,7 @@ Open **Extras → MiniShop3 → Customers**. Here you get the `CustomersGrid` gr
 
 Rows show email, name, phone, dates, and verification flags (if those columns are enabled in the grid config). Search and pagination go through `/api/mgr/customers`. Bulk delete: `DELETE /api/mgr/customers/bulk` (permission `msorder_remove`).
 
-Permissions match orders: list — `msorder_list`, card — `msorder_view`, edit — `msorder_save`, delete — `msorder_remove`.
+Customer permissions (do not confuse with orders): list — `msorder_list`, **customer card** — `msorder_view`, edit — `msorder_save`, delete — `msorder_remove`. The **order** card is read with `msorder_list` and written with `msorder_save`.
 
 ## Profile
 

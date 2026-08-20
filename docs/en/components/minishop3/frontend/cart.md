@@ -5,6 +5,8 @@ title: Cart
 
 The shopping cart is a key part of an online store. MiniShop3 provides a flexible system for displaying the cart anywhere on the site.
 
+<!-- ![Storefront cart](/components/minishop3/screenshots/fe-cart.png) -->
+
 [![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
 
 ## Multiple carts on a page

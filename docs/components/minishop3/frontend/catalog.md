@@ -7,6 +7,8 @@ title: Каталог товаров
 
 Для SPA или мобильного клиента без msProducts используйте публичный Web API `GET /api/v1/product/list` — ответ проходит через `ProductCatalogService` с allowlist полей. См. [REST API: каталог](/components/minishop3/development/api#каталог-товаров).
 
+<!-- ![Каталог на витрине](/components/minishop3/screenshots/fe-catalog.png) -->
+
 [![](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6s.jpg)](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6.png)
 
 ## Структура каталога

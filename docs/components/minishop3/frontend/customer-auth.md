@@ -4,6 +4,8 @@ description: Формы входа и регистрации покупател�
 ---
 # Вход и регистрация
 
+<!-- ![ЛК: вход и регистрация](/components/minishop3/screenshots/fe-customer-auth.png) -->
+
 Откройте страницу ЛК без сессии. Вы увидите чанк `tpl.msCustomer.unauthorized`: вкладки «Вход» и «Регистрация». Любой вызов `msCustomer` для гостя отдаёт тот же чанк.
 
 В пакете нет отдельных шаблонов «только вход» и «только регистрация». Ключи `ms3_customer_login_page_id` и `ms3_customer_register_page_id` задают URL для ссылок и редиректов. На эти ресурсы обычно вешают тот же `msCustomer` (часто `service=profile`).

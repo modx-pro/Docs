@@ -4,6 +4,8 @@ description: Customer login and registration forms, AuthUI, password reset, and 
 ---
 # Login and registration
 
+<!-- ![Account: login and registration](/components/minishop3/screenshots/fe-customer-auth.png) -->
+
 Open an account page without a session. You see the `tpl.msCustomer.unauthorized` chunk: Login and Register tabs. Any `msCustomer` call for a guest returns the same chunk.
 
 The package has no separate “login only” or “register only” templates. Keys `ms3_customer_login_page_id` and `ms3_customer_register_page_id` set URLs for links and redirects. Those resources usually run the same `msCustomer` call (often `service=profile`).

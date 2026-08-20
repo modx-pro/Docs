@@ -44,7 +44,7 @@ Tab with product fields grouped by sections. Uses a Vue 3 component for flexible
 | Specifications | `color`, `size`, `vendor`, `made_in`, `tags` |
 
 ::: tip Configuration
-Sections and fields are configured via [Utilities → Product fields](utilities/product-fields).
+Sections and fields: [Utilities → Product fields](utilities/product-fields). New DB column: [Extra fields cookbook](/en/components/minishop3/manager/extra-fields/cookbook), example [Wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ### Gallery
@@ -73,6 +73,8 @@ Vue tab `ProductLinksTab`. CRUD via Manager API (permission `msproduct_save`):
 Link types from the `msLink` directory: `one_to_many`, `many_to_one`, `one_to_one`, `many_to_many`. Configure types: [Settings → Links](settings/links).
 
 ### Categories
+
+<!-- ![Product Categories tab](/components/minishop3/screenshots/mgr-product-categories.png) -->
 
 Vue tab `ProductCategoriesTab`. Tree: `GET /api/mgr/product-data/{id}/categories/tree` (service `ms3_product_category_tree`). Selected ids go in the resource POST as hidden `name="categories"` (JSON). The parent category (`parent`) is locked in the tree. A product can belong to several extra categories via `msCategoryMember`.
 
@@ -153,36 +155,27 @@ Product field with display settings.
    - **Label** — display name
 4. Save
 
-**Via API:**
+**Via API** (1.13.x: no separate POST; the UI adds a section locally and saves the list):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
 ```json
 {
-  "section_key": "seo",
-  "lexicon_key": "ms3_section_seo",
-  "label": "SEO",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "seo",
+      "lexicon_key": "ms3_section_seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
 
-**Via PHP:**
-
-```php
-$section = $modx->newObject('MiniShop3\\Model\\msPageSection');
-$section->fromArray([
-    'page_key' => 'product_data',
-    'section_key' => 'seo',
-    'lexicon_key' => 'ms3_section_seo',
-    'label' => 'SEO',
-    'hidden' => false,
-    'sort_order' => 100
-]);
-$section->save();
-```
+Write permission: `mssetting_save`.
 
 ### Editing a section
 
@@ -345,10 +338,24 @@ GET /api/mgr/config/page-fields/product_data
 }
 ```
 
-**Save field:**
+**Save fields** (body is a `fields` array):
 
 ```
 PUT /api/mgr/config/page-fields/product_data
+```
+
+```json
+{
+  "fields": [
+    {
+      "name": "article",
+      "label": "SKU",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
+}
 ```
 
 ### Sections
@@ -359,22 +366,29 @@ PUT /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 ```
 
-**Create section:**
+**Save sections** (create and reorder via bulk PUT):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
-**Update section:**
+```json
+{
+  "sections": [
+    {
+      "section_key": "seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
+}
+```
+
+**Delete section** (by `section_key`, not id):
 
 ```
-PUT /api/mgr/config/sections/product_data/{id}
-```
-
-**Delete section:**
-
-```
-DELETE /api/mgr/config/sections/product_data/{id}
+DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
 ### Product data

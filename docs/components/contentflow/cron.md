@@ -31,7 +31,7 @@ ContentFlow выключен.
 
 Рекомендуемая периодичность — раз в минуту:
 
-```cron
+```bash
 * * * * * /usr/bin/php /absolute/path/to/modx/core/components/contentflow/cli/cron.php
 ```
 

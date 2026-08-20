@@ -3,6 +3,8 @@ title: Notification center
 ---
 # Notification center
 
+<!-- ![Notification center](/components/minishop3/screenshots/mgr-notifications.png) -->
+
 Order event notifications are managed via **Extras → MiniShop3 → Notifications**.
 
 Here you configure which notifications to send, to whom, through which channels (email, Telegram, etc.), and with which template when an order is created or its status changes.
