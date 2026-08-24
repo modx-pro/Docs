@@ -1,0 +1,101 @@
+---
+title: "embeddedTable"
+description: "Конфиг table_key limit filters без строк таблицы в data"
+---
+
+# Поле embeddedTable
+
+Слой: **Pro**.
+
+<!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.png) -->
+
+## Зачем этот тип
+
+- Строки грузит сниппет PageBuilderTableRows на фронте
+- filters limit use_context utm в объекте data
+- Подходит для catalog-scale data
+
+## Когда использовать
+
+- Products grid из Collections table
+- Любая зарегистрированная table_key
+- Когда строк слишком много для field table
+
+## Советы
+
+- В chunk `[[!PageBuilderTableRows? &table_key=`...`]]`
+- Статические 5–10 строк оставьте [table](table)
+
+## Похожие типы
+
+- [table](table) для inline rows в секции
+- [combo](combo) если нужен только один id из таблицы
+
+## Настройка
+
+```json
+{
+  "name": "table",
+  "type": "embeddedTable",
+  "label": "Таблица",
+  "table_key": "products",
+  "tab": "Контент",
+  "width": 100,
+  "active": true
+}
+```
+
+## Значение
+
+Объект `{ table_key, limit, filters, … }`.
+
+## Вывод в section.data
+
+Ключ `table` в `section.data` — конфиг выборки (строки таблицы не входят в data):
+
+```json
+{
+  "table": {
+    "table_key": "products",
+    "limit": 10,
+    "filters": {
+      "category": "phones"
+    },
+    "use_context": true,
+    "context_column": "context_key",
+    "use_utm": false,
+    "utm": {}
+  }
+}
+```
+
+- Строки на фронте: сниппет `PageBuilderTableRows` с тем же `table_key`.
+
+## Пример в chunk
+
+```html
+[[!PageBuilderTableRows? &table_key=`products` &limit=`10`]]
+```
+
+## Общие свойства
+
+Для полей с `name`, которые сохраняются в `section.data`:
+
+| Ключ | Тип | Роль | CMP |
+| --- | --- | --- | --- |
+| `tab` | string | Подзаголовок группы в инспекторе | да |
+| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `description` | string | Подсказка под подписью | да |
+| `default` | any | Начальное значение новой секции | да |
+| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+
+- Дополнительно: `table_key`, `limit`, `filters`, `use_context`, `utm`.
+
+Подробнее: [обзор полей](overview#общие-свойства-поля).
+
+## Дальше
+
+- [Справочник типов](types)
+- [Обзор полей](overview)
+- [Pro в менеджере](../integration)
