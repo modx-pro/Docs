@@ -1079,7 +1079,22 @@
     "мигратора",
     "продакшен",
     "токене",
-    "финализацию"
+    "финализацию",
+    "msyandexdelivery",
+    "msyd",
+    "msyandex",
+    "authproxy",
+    "dostavka",
+    "nddwidget",
+    "stationid",
+    "offerid",
+    "requestid",
+    "otherday",
+    "габарит",
+    "габариты",
+    "постамат",
+    "постаматы",
+    "чекауте"
   ],
   "ignorePaths": [
     "node_modules",
