@@ -9,6 +9,12 @@ title: Колонки гридов
 
 Основной инструмент настройки колонок в административных таблицах MiniShop3:
 
+::: tip Cookbook
+Пошаговые примеры badge-колонки в заказах и inline-edit в категории: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
+:::
+
+<!-- ![Утилита «Колонки гридов»](/components/minishop3/screenshots/mgr-grid-columns.png) -->
+
 - Включать и отключать колонки
 - Изменять порядок колонок
 - Настраивать сортировку и фильтрацию
@@ -23,7 +29,7 @@ title: Колонки гридов
 ## Доступные гриды
 
 | Грид | Описание |
-|------|----------|
+| --- | --- |
 | `customers` | Список покупателей |
 | `orders` | Список заказов |
 | `category-products` | Список товаров в категории |
@@ -41,7 +47,7 @@ title: Колонки гридов
 Отображает текущую конфигурацию колонок:
 
 | Колонка | Описание |
-|---------|----------|
+| --- | --- |
 | Имя | Системное имя поля |
 | Название | Отображаемый заголовок |
 | Видимость | Показывать ли колонку |
@@ -61,7 +67,7 @@ title: Колонки гридов
 ### Основные
 
 | Параметр | Описание |
-|----------|----------|
+| --- | --- |
 | Имя поля | Имя поля из модели или алиас |
 | Название | Заголовок колонки |
 | Видимость | Отображать колонку |
@@ -72,20 +78,25 @@ title: Колонки гридов
 ### Размеры
 
 | Параметр | Описание |
-|----------|----------|
+| --- | --- |
 | Ширина | Ширина в пикселях или % |
 | Мин. ширина | Минимальная ширина при изменении размера |
 
 ### Тип колонки
 
 | Тип | Описание |
-|-----|----------|
+| --- | --- |
 | `model` | Поле из модели данных |
 | `template` | Шаблонная колонка (HTML) |
 | `relation` | Данные из связанной таблицы |
+| `badge` | Цветная метка (`source_field`, `color_field`) |
+| `option` | Значение опции товара (грид `category-products`) |
 | `computed` | Вычисляемое значение |
 | `image` | Отображение изображения |
 | `boolean` | Флаг да/нет |
+| `price` | Денежное значение (`displayConfig`: валюта, decimals) |
+| `weight` | Вес (`displayConfig`: unit, decimals) |
+| `datetime` | Дата и время (`displayConfig`: format) |
 | `actions` | Колонка действий |
 
 ## Типы колонок
@@ -111,6 +122,25 @@ title: Колонки гридов
 
 Доступные переменные — поля текущей записи в фигурных скобках.
 
+### Badge (Метка)
+
+Цветная метка по тексту и HEX-цвету из других полей строки. В гриде `orders` колонка `order_status` берёт подпись из `status_name` и цвет из `status_color`.
+
+```
+Тип: badge
+source_field: status_name
+color_field: status_color
+```
+
+### Option (Опция товара)
+
+Колонка опции в гриде `category-products`. В конфиге укажите `option.key` (ключ опции из `msOption`).
+
+```
+Тип: option
+option.key: color
+```
+
 ### Relation (Связь)
 
 Данные из связанной таблицы.
@@ -118,7 +148,7 @@ title: Колонки гридов
 **Параметры связи:**
 
 | Параметр | Описание |
-|----------|----------|
+| --- | --- |
 | Таблица | Имя связанной таблицы |
 | Внешний ключ | Поле для связи |
 | Отображаемое поле | Какое поле показывать |
@@ -135,11 +165,15 @@ title: Колонки гридов
 
 ### Computed (Вычисляемое)
 
-Значение вычисляется на сервере специальным классом.
+Значение вычисляется на сервере. В JSON config обязателен ключ **`computed.className`** (класс реализует `ComputedFieldInterface`):
 
-```
-Тип: computed
-Класс: MyComponent\Columns\TotalSpentColumn
+```json
+{
+  "type": "computed",
+  "computed": {
+    "className": "MyComponent\\Columns\\TotalSpentColumn"
+  }
+}
 ```
 
 ### Image (Изображение)
@@ -159,6 +193,41 @@ title: Колонки гридов
 Тип: boolean
 Имя поля: active
 ```
+
+### Price (Цена)
+
+Форматирование числового поля как цены. Параметры в JSON **displayConfig**:
+
+| Ключ | Описание |
+| --- | --- |
+| `decimals` | Знаков после запятой |
+| `currency` | Символ валюты |
+| `currency_position` | `before` или `after` |
+| `thousands_separator` | Разделитель тысяч |
+
+```
+Тип: price
+Имя поля: price
+displayConfig: {"decimals":2,"currency":"₽","currency_position":"after","thousands_separator":" "}
+```
+
+### Weight (Вес)
+
+```
+Тип: weight
+Имя поля: weight
+displayConfig: {"decimals":2,"unit":"кг","unit_position":"after"}
+```
+
+### Datetime (Дата и время)
+
+```
+Тип: datetime
+Имя поля: createdon
+displayConfig: {"format":"dd.MM.yyyy HH:mm"}
+```
+
+Формат — шаблон PrimeVue date formatter (`dd`, `MM`, `yyyy`, `HH`, `mm`).
 
 ### Actions (Действия)
 
@@ -190,7 +259,7 @@ title: Колонки гридов
 **Параметры действия:**
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `name` | string | Уникальное имя действия |
 | `handler` | string | Имя обработчика из реестра |
 | `icon` | string | Иконка PrimeIcons (без `pi-` префикса) |
@@ -205,7 +274,7 @@ title: Колонки гридов
 **Встроенные обработчики:**
 
 | Обработчик | Описание |
-|------------|----------|
+| --- | --- |
 | `edit` | Открыть запись на редактирование |
 | `delete` | Удалить запись |
 | `view` | Просмотр записи |
@@ -269,22 +338,26 @@ GET /api/mgr/grid-config/{grid_name}
         "width": 60,
         "type": "model"
       }
-    ]
+    ],
+    "direct_filter_keys": ["query", "status_id"],
+    "editor_references": []
   }
 }
 ```
 
+Поле `editor_references` заполняется только для `grid_key=category-products`.
+
 ### Сохранение конфигурации
 
 ```
-PUT /api/mgr/grid-config/{grid_name}
+PUT /api/mgr/grid-config/{grid_key}
 ```
 
 **Тело запроса:**
 
 ```json
 {
-  "columns": [
+  "fields": [
     {
       "name": "id",
       "label": "ID",
@@ -293,17 +366,23 @@ PUT /api/mgr/grid-config/{grid_name}
       "filterable": false,
       "frozen": true,
       "width": 60,
-      "sort_order": 0
+      "type": "model"
     }
   ]
 }
 ```
 
-### Сброс к умолчаниям
+::: warning Права
+`GET /api/mgr/grid-config/{grid_key}` требует `view_document`. Запись (`PUT`, `POST`, `DELETE` колонки) — `mssetting_save`.
+:::
+
+### Удаление колонки
 
 ```
-DELETE /api/mgr/grid-config/{grid_name}
+DELETE /api/mgr/grid-config/{grid_key}/{field_name}
 ```
+
+Системные колонки (`is_system`) удалить нельзя.
 
 ## Системные колонки
 
@@ -336,7 +415,7 @@ MiniShop3 предоставляет глобальный реестр дейс�
 **Параметры:**
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `name` | string | Имя действия |
 | `handler` | function | Функция-обработчик `(data, context) => void` |
 | `options.override` | boolean | Разрешить перезапись существующего обработчика |
@@ -385,7 +464,7 @@ MS3ActionRegistry.registerAfterHook('delete', (data, context, result) => {
 #### Другие методы
 
 | Метод | Описание |
-|-------|----------|
+| --- | --- |
 | `has(name)` | Проверить наличие обработчика |
 | `get(name)` | Получить обработчик |
 | `unregister(name)` | Удалить обработчик (кроме встроенных) |
@@ -647,7 +726,7 @@ MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
 Используются иконки [PrimeIcons](https://primevue.org/icons). Популярные:
 
 | Иконка | Класс | Назначение |
-|--------|-------|------------|
+| --- | --- | --- |
 | ✏️ | `pi-pencil` | Редактирование |
 | 🗑️ | `pi-trash` | Удаление |
 | 👁️ | `pi-eye` | Просмотр |

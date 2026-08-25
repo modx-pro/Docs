@@ -32,8 +32,10 @@ $result = $ms3->order->add('email', 'user@example.com');
 $result = $ms3->order->set([
     'email' => 'user@example.com',
     'phone' => '+79991234567',
-    'delivery' => 1,
-    'payment' => 1,
+    'first_name' => 'John',
+    'delivery_id' => 1,
+    'payment_id' => 1,
+    'order_comment' => 'Call before delivery',
 ]);
 
 // Submit order
@@ -42,21 +44,25 @@ $result = $ms3->order->submit();
 
 // Clear draft
 $ms3->order->clean();
+
 ```
 
 ::: info Initialization
 Before using the controller you must initialize with the client token:
+
 ```php
 $ms3->order->initialize($token);
 $ms3->order->initDraft();
+
 ```
+
 In REST API and snippet context this is done automatically.
 :::
 
 ### Controller methods
 
 | Method | Description |
-|-------|----------|
+| --- | --- |
 | `initialize($token, $config)` | Initialize with client token |
 | `initDraft()` | Load existing draft |
 | `get()` | Order data (fields + address) |
@@ -119,6 +125,7 @@ $draftManager->clean($draft);
 
 // Delete draft (with products and address)
 $draftManager->deleteDraft($draft);
+
 ```
 
 ## Fields and validation (OrderFieldManager)
@@ -138,6 +145,7 @@ $fieldManager->remove($draft, $orderData, 'email');
 // Validate without saving
 $result = $fieldManager->validate($orderData, 'phone', '+79991234567');
 // ['success' => true] or ['success' => false, 'message' => 'Error']
+
 ```
 
 ### Validation rules
@@ -157,6 +165,7 @@ $required = $fieldManager->getDeliveryRequiredFields($deliveryId);
 $fieldManager->setValidationRules([
     'company_name' => 'required|min:3',
 ]);
+
 ```
 
 ## Cost calculation (OrderCostCalculator)
@@ -179,9 +188,80 @@ $result = $calculator->getPaymentCost($draft, $orderData, $token);
 // Total cost
 $result = $calculator->getTotalCost($draft, $orderData, $token);
 // ['cost' => 5450.00, 'cart_cost' => 5000.00, 'delivery_cost' => 300.00, 'payment_cost' => 150.00]
+
 ```
 
 Each method fires `msOnBefore...` / `msOn...` events so plugins can modify costs.
+
+### Manager cost recalculation — `POST /api/mgr/orders/{id}/recalculate-cost`
+
+Added in 1.11.0. Service `ManagerOrderCostRecalculator` recalculates `cart_cost`, `weight`, `delivery_cost`, and total `cost` from saved order lines and current `delivery_id` / `payment_id` without side effects on other fields.
+
+Request body:
+
+```json
+{
+  "mode": "auto",
+  "manual_delivery_cost": 500.0
+}
+
+```
+
+Modes (`mode`):
+
+| Mode | Behavior |
+| --- | --- |
+| `auto` (default) | Recalculates only for `DefaultDelivery` / `DefaultPayment` (via `price`, `weight_price`, `free_delivery_amount`, percentages). For custom handlers returns warning `delivery_manual_required` / `payment_manual_required` and keeps the previous `delivery_cost` / fee 0 — does not call external APIs. |
+| `manual` | Uses the provided `manual_delivery_cost`. Payment fee is still calculated automatically from the field. |
+| `force_provider` | Explicitly calls `loadController()` → `getCost()` and `loadHandler()` → `getCost()` in `try/catch`. On failure — warning `delivery_provider_error` / `payment_provider_error`, previous values kept. |
+
+Response includes order data (same as `GET /api/mgr/orders/{id}`) plus:
+
+```json
+{
+  "breakdown": {
+    "cart_cost": 5000.0,
+    "weight": 1.5,
+    "delivery_cost": 300.0,
+    "payment_cost": 150.0,
+    "cost": 5450.0
+  },
+  "warnings": ["delivery_manual_required"]
+}
+
+```
+
+Applies the shared guard `OrderService::clampComputedTotal()` — total cannot go below zero. Delivery and payment discounts/markups (negative `price`, see 1.11.0) go through `MiniShop3\Utils\PriceAdjustment`.
+
+Example call from JS (order card in mgr):
+
+```javascript
+const response = await fetch(`/api/mgr/orders/${orderId}/recalculate-cost`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'modAuth': MODx.modxConfig.auth, // or the current mgr-auth header
+  },
+  body: JSON.stringify({
+    mode: 'manual',
+    manual_delivery_cost: 500,
+  }),
+})
+const json = await response.json()
+// json.data.breakdown — cart_cost / delivery_cost / payment_cost / cost
+// json.data.warnings — e.g. delivery_manual_required
+```
+
+Via HTTP (REST mgr API):
+
+```bash
+curl -X POST 'https://example.com/api/mgr/orders/42/recalculate-cost' \
+  -H 'Content-Type: application/json' \
+  -H 'Cookie: …' \
+  -d '{"mode":"auto"}'
+```
+
+See also [routing](/en/components/minishop3/development/routing).
 
 ## Order submit (OrderSubmitHandler)
 
@@ -201,6 +281,7 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 //     ],
 //     'message' => 'Order submitted successfully'
 // ]
+
 ```
 
 ### Submit steps
@@ -225,6 +306,7 @@ $num = $submitHandler->getNewOrderNum();
 // "26/02-15" — format is configurable:
 // ms3_order_format_num — date format (default 'ym')
 // ms3_order_format_num_separator — separator (default '/')
+
 ```
 
 ## Status management (OrderStatusService)
@@ -239,12 +321,13 @@ $result = $statusService->change($orderId, $newStatusId);
 
 // Change status without notifications
 $result = $statusService->change($orderId, $newStatusId, true);
+
 ```
 
 ### Status constraints
 
 | Status property | Behavior |
-|------------------|-----------|
+| --- | --- |
 | `final = true` | Cannot change to another status |
 | `fixed = true` | Can only switch to status with higher `position` |
 
@@ -262,7 +345,7 @@ Products in an order are stored in model `msOrderProduct` (table `ms3_order_prod
 ### msOrderProduct fields
 
 | Field | Type | Description |
-|------|-----|----------|
+| --- | --- | --- |
 | `product_id` | integer | Product ID (msProduct) |
 | `order_id` | integer | Order ID |
 | `product_key` | string | Unique line key (e.g. `123_a1b2c3d4`) |
@@ -303,6 +386,7 @@ $item->save();
 
 // Recalculate order totals after changing products
 $order->updateProducts();
+
 ```
 
 ::: warning Recalculating totals
@@ -316,7 +400,7 @@ Each order has one related `msOrderAddress` (table `ms3_order_addresses`).
 ### msOrderAddress fields
 
 | Field | Type | Description |
-|------|-----|----------|
+| --- | --- | --- |
 | `order_id` | integer | Order ID |
 | `first_name` | string | First name |
 | `last_name` | string | Last name |
@@ -351,6 +435,7 @@ echo $address->get('street');     // "Lenina"
 // Update
 $address->set('city', 'Saint Petersburg');
 $address->save();
+
 ```
 
 ### OrderAddressManager
@@ -368,6 +453,7 @@ $result = $addressManager->cleanCustomerAddress($draft, $orderData);
 
 // Save order address to customer addresses
 $savedAddress = $addressManager->saveToCustomerAddresses($customerId, $orderData);
+
 ```
 
 ## Order log (OrderLogService)
@@ -401,12 +487,13 @@ $entries = $logService->getEntries($orderId, false, 50);
 if ($logService->shouldLog('status')) {
     // ...
 }
+
 ```
 
 ### Action types
 
 | Constant | Value | Description |
-|-----------|----------|----------|
+| --- | --- | --- |
 | `msOrderLog::ACTION_STATUS` | `status` | Status change |
 | `msOrderLog::ACTION_PAYMENT` | `payment` | Payment change |
 | `msOrderLog::ACTION_PRODUCTS` | `products` | Products change |
@@ -420,18 +507,82 @@ Setting `ms3_order_log_actions` controls which actions are logged (default: `sta
 `OrderFinalizeService` is used to finalize orders created in the manager.
 
 ```php
+use MiniShop3\Services\Order\OrderOrigin;
+
 $finalizeService = $modx->services->get('ms3_order_finalize');
 
 $result = $finalizeService->finalize($orderId, [
-    'skip_validation' => false,      // Skip field validation
-    'skip_notifications' => false,   // Skip notifications
-    'skip_payment' => true,          // Skip payment call
-    'create_customer' => true,       // Create msCustomer
-    'force_create_customer' => false, // Create even if duplicate
+    'skip_validation' => false,
+    'skip_notifications' => false,
+    'create_customer' => true,
+    'force_create_customer' => false,
+    'origin' => OrderOrigin::MANAGER, // default; for CRM use OrderOrigin::INTEGRATION
 ]);
 ```
 
-Finalize runs the same steps as `submit` but for manager context: you can skip steps and it works with an existing order (not a draft).
+Finalize allows `skip_*` and works with an existing draft. There is no payment gateway call here (unlike storefront `submit`).
+
+The `origin` parameter (`OrderOrigin`): `manager` (default), `storefront`, `integration`. With `manager`, `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` also fire. The `from_manager` key in events is `true` only for `origin=manager`.
+
+## Programmatic order creation (ProgrammaticOrderService)
+
+API without an HTTP session for extras, cron, and integrations. This is **not** HTTP Web API: `routes/web.php` has no dedicated endpoint.
+
+| | |
+| --- | --- |
+| DI | `ms3_programmatic_order` |
+| Class | `MiniShop3\Services\Order\ProgrammaticOrderService` |
+| Draft | `OrderDraftManager::createSessionlessDraft()` (no PHP session or cart token) |
+| Finalization | `OrderFinalizeService::finalize(..., origin=integration)` |
+| Idempotency | column `ms3_orders.idempotency_key` (unique, nullable) |
+
+```php
+use MiniShop3\Services\Order\OrderOrigin;
+
+$orders = $modx->services->get('ms3_programmatic_order');
+
+$result = $orders->create([
+    'idempotency_key' => 'crm-invoice-10042', // required
+    'products' => [
+        ['product_id' => 15, 'count' => 2],
+        // or a snapshot without a resource:
+        // ['name' => 'Service', 'price' => 500, 'count' => 1, 'weight' => 0, 'options' => []],
+    ],
+    'customer_id' => 0,
+    'delivery_id' => 1,
+    'payment_id' => 1,
+    'address' => [
+        'first_name' => 'John',
+        'email' => 'user@example.com',
+        'phone' => '+79991234567',
+    ],
+    'order_comment' => 'From CRM',
+    'context' => 'web',
+    'origin' => OrderOrigin::INTEGRATION,
+    // 'delivery_cost' => 300, // → cost_mode=manual on finalize
+    // 'skip_notifications' => true,
+    // 'skip_validation' => false,
+    // 'properties' => ['source' => 'crm'],
+]);
+
+if (!$result['success']) {
+    // Common messages:
+    // ms3_order_err_idempotency_key_required
+    // ms3_order_err_products_required
+    // ms3_order_err_programmatic_create
+    // or finalize / validation errors
+    return $result;
+}
+
+// Success: data = { order_id, uuid, num, status_id }
+// Same idempotency_key again:
+//   already finalized order → success + ms3_order_programmatic_idempotent
+//   draft with draft status → finalize again
+```
+
+Events: `msOnBeforeCreateOrder` / `msOnCreateOrder` with `origin=integration` and **without** `from_manager`. Events `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` are **not** fired.
+
+Differs from `POST /api/mgr/orders` (manager creates an empty/partial order in the UI) and from storefront `POST /api/v1/order/submit` (needs token and cart).
 
 ## User resolution (OrderUserResolver)
 
@@ -456,6 +607,7 @@ $user = $userResolver->createUser([
     'last_name' => 'Doe',
     'phone' => '+79991234567',
 ]);
+
 ```
 
 Setting `ms3_order_user_groups` defines groups for new users (format: `group_id:role_id`, comma-separated).
@@ -463,7 +615,7 @@ Setting `ms3_order_user_groups` defines groups for new users (format: `group_id:
 ## msOrder fields
 
 | Field | Type | Default | Description |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `user_id` | integer | 0 | MODX user ID |
 | `customer_id` | integer | 0 | Customer ID (msCustomer) |
 | `token` | string | — | Client session token |
@@ -480,12 +632,13 @@ Setting `ms3_order_user_groups` defines groups for new users (format: `group_id:
 | `payment_id` | integer | 0 | Payment method ID |
 | `context` | string | 'web' | MODX context |
 | `order_comment` | string | null | Order comment |
-| `properties` | json | null | Extra properties |
+| `idempotency_key` | string | null | Idempotency key (programmatic orders, unique) |
+| `properties` | json | null | Extra properties (incl. `origin` for integrations) |
 
 ### msOrder relations
 
 | Relation | Model | Type | Description |
-|-------|--------|-----|----------|
+| --- | --- | --- | --- |
 | `Address` | msOrderAddress | composite (one) | Order address |
 | `Products` | msOrderProduct | composite (many) | Order products |
 | `Log` | msOrderLog | composite (many) | Change log |
@@ -502,7 +655,7 @@ Composite relations are deleted with the order (address, products, log). Aggrega
 ## Events
 
 | Event | When fired |
-|---------|-----------------|
+| --- | --- |
 | `msOnBeforeSaveOrder` / `msOnSaveOrder` | Order save |
 | `msOnBeforeRemoveOrder` / `msOnRemoveOrder` | Order remove |
 | `msOnBeforeGetCartCost` / `msOnGetCartCost` | Cart cost calculation |
@@ -516,6 +669,19 @@ Composite relations are deleted with the order (address, products, log). Aggrega
 | `msOnBeforeCreateOrder` / `msOnCreateOrder` | Order creation |
 | `msOnBeforeChangeOrderStatus` / `msOnChangeOrderStatus` | Status change |
 | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Find/create user |
-| `msOnBeforeFinalizeOrder` / `msOnFinalizeOrder` | Finalize from manager |
+| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Finalize from manager (only `origin=manager`) |
+
+## Manager REST API
+
+Endpoints for the Vue orders UI (mgr session, see [routing](../routing)):
+
+| Method | Path | Description |
+| --- | --- | --- |
+| GET | `/api/mgr/orders/stats` | Aggregates for filters and dashboard |
+| POST | `/api/mgr/orders` | Create order from manager |
+| POST | `/api/mgr/orders/{id}/finalize` | Finalize draft |
+| POST | `/api/mgr/orders/{id}/recalculate-cost` | Recalculate via `ManagerOrderCostRecalculator` |
+
+Create and finalize from mgr go through `OrderFinalizeService` and events `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`.
 
 Event parameter details: [Events](../events).

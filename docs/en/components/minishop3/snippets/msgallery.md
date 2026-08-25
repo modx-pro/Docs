@@ -8,7 +8,7 @@ Snippet for outputting a product image gallery.
 ## Parameters
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **product** | current resource | Product ID |
 | **tpl** | `tpl.msGallery` | Gallery layout chunk |
 | **limit** | `0` | Number of images (0 = all) |
@@ -19,6 +19,7 @@ Snippet for outputting a product image gallery.
 | **filetype** | | File type filter (comma-separated) |
 | **thumbnails** | | Thumbnail filter by name (comma-separated) |
 | **showInactive** | `false` | Show inactive files |
+| **extensionsDir** | `components/minishop3/img/mgr/extensions/` | Path to file-type icons (from `assets/`) for non-image files |
 | **toPlaceholder** | | Save result to placeholder |
 | **showLog** | `false` | Show execution log |
 | **return** | `data` | Format: `data`, `tpl`, `json`, `sql` |
@@ -98,14 +99,14 @@ By default the snippet returns a data array (`return=data`). Use `return=tpl` fo
 Passed to the chunk:
 
 | Placeholder | Description |
-|-------------|-------------|
+| --- | --- |
 | `{$files}` | Gallery file array |
 | `{$scriptProperties}` | Snippet call parameters |
 
 ### File fields
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$file['id']}` | File ID |
 | `{$file['product_id']}` | Product ID |
 | `{$file['name']}` | File name |
@@ -114,6 +115,7 @@ Passed to the chunk:
 | `{$file['path']}` | File path |
 | `{$file['file']}` | Filename on disk |
 | `{$file['type']}` | File type (image, video, document, etc.) |
+| `{$file['thumbnail']}` | Type icon URL (non-image files, from `extensionsDir`) |
 | `{$file['createdon']}` | Created date |
 | `{$file['createdby']}` | User ID |
 | `{$file['position']}` | Position in gallery |
@@ -125,7 +127,7 @@ Passed to the chunk:
 Thumbnails are added as extra fields named by folder:
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$file['small']}` | Small thumbnail URL |
 | `{$file['medium']}` | Medium thumbnail URL |
 | `{$file['large']}` | Large thumbnail URL |

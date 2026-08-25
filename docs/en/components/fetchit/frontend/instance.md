@@ -1,83 +1,76 @@
 # FetchIt instance
 
-Below is a list of **FetchIt** instance properties and methods.
+Access: `FetchIt.instances.get(formElement)`. In events the instance is in `e.detail.fetchit`.
+
+Properties:
+
+| Property | Description |
+| --- | --- |
+| `form` | `HTMLFormElement` |
+| `config` | Config from `FetchIt.create()` (actionUrl, pageId, classes, clearFieldsOnSuccess) |
 
 ## clearErrors()
 
-Clears all form errors.
-
-- Type: `function (): undefined`
-- Example:
+Clears errors from all fields.
 
 ```js
 document.addEventListener('fetchit:after', (e) => {
-  e.preventDefault();
-  const { fetchit } = e.detail;
-  fetchit.clearErrors();
-});
+  e.detail.fetchit.clearErrors()
+})
 ```
 
-## clearError()
+## clearError(name)
 
-Clears errors for a specific field.
-
-- Type: `function (name: string): object`
-- Example:
+Clears errors for one field. Returns `{ fields, errors, customErrors }`.
 
 ```js
-document.addEventListener('fetchit:after', (e) => {
-  e.preventDefault();
-  const { fetchit } = e.detail;
-  const { fields, errors, customErrors } = fetchit.clearError('password');
-});
+const { fields, errors, customErrors } = fetchit.clearError('password')
 ```
 
-## setError()
+## setError(name, message)
 
-Marks a field as invalid by name and sets its error message. Useful when integrating front-end validation.
-
-- Type: `function (name: string, message: string): undefined`
-- Example:
+Marks a field invalid: classes, `aria-invalid`, text in `[data-error]`. The message goes through `sanitizeHTML`. An empty/whitespace string is ignored.
 
 ```js
 document.addEventListener('fetchit:before', (e) => {
-  e.preventDefault();
-  const { fetchit } = e.detail;
-
-  // Field validation
-
-  fetchit.setError('email', 'Email validation failed');
-});
+  const { formData, fetchit } = e.detail
+  if (!formData.get('email')) {
+    fetchit.setError('email', 'Enter an email')
+    e.preventDefault()
+  }
+})
 ```
 
 <!--@include: ../parts/validation.warning.md-->
 
-## disableFields()
+## setFormMessage(type, message)
 
-Disables all form elements.
+Shows a form-level message.
 
-- Type: `function (): undefined`
+- `type`: `'success'` → `[data-success]`, otherwise → `[data-validation-error]`
+- the paired block is hidden
 
-## enableFields()
+```js
+fetchit.setFormMessage('success', 'Done')
+fetchit.setFormMessage('validation', 'Check the fields')
+```
 
-Removes `disabled` from all form elements.
+## clearFormMessages()
 
-- Type: `function (): undefined`
+Hides and clears `[data-success]` and `[data-validation-error]`.
 
-## getFields()
+## disableFields() / enableFields()
 
-Returns an array of elements for the given field name.
+During the request the script calls `disable` / `enable` itself. You can call them manually.
 
-- Type: `function (name: string): HTMLElement[]`
+## getFields(name)
 
-<!-- ## getErrors()
+Array of fields with `name` or `name[]`.
 
-Returns an array of error wrapper elements for the given field name.
+## getErrors(name)
 
-- Type: `function (name: string): HTMLElement[]`
+Elements `[data-error="name"]` and `[data-error="name[]"]`.
 
-## getCustomErrors()
+## getCustomErrors(name)
 
-Returns an array of elements with `data-custom="*"` for the given field name.
-
-- Type: `function (name: string): HTMLElement[]` -->
+Elements `[data-custom="name"]`.

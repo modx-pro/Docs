@@ -3,12 +3,16 @@ title: Customer profile
 ---
 # Customer profile
 
-The profile page lets the customer view and edit personal data. It is part of the MiniShop3 customer account.
+<!-- ![Account: profile](/components/minishop3/screenshots/fe-customer-profile.png) -->
+
+An authenticated customer edits name, email, phone and sees email verification status. The page is built with `msCustomer` and `service=profile`.
+
+A guest on the same page sees [login and registration](/en/components/minishop3/frontend/customer-auth).
 
 ## Page structure
 
 | Component | File | Purpose |
-|-----------|------|---------|
+| --- | --- | --- |
 | Base layout | `tpl.msCustomer.base` | Common wrapper with sidebar |
 | Sidebar | `tpl.msCustomer.sidebar` | Account navigation |
 | Profile | `tpl.msCustomer.profile` | Edit form |
@@ -24,7 +28,7 @@ The profile page lets the customer view and edit personal data. It is part of th
 ### Parameters
 
 | Parameter | Default | Description |
-|----------|---------|-------------|
+| --- | --- | --- |
 | **service** | `profile` | Service type |
 | **tpl** | `tpl.msCustomer.profile` | Profile chunk |
 | **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Chunk for guests |
@@ -35,10 +39,10 @@ The profile page lets the customer view and edit personal data. It is part of th
 Customer account chunks use inheritance:
 
 ```
-tpl.msCustomer.base          — base layout
-├── {include 'tpl.msCustomer.sidebar'}  — sidebar
-└── {block 'content'}        — content area
-    └── tpl.msCustomer.profile — profile form
+tpl.msCustomer.base          # base layout
+├── {include 'tpl.msCustomer.sidebar'}  # sidebar
+└── {block 'content'}        # content area
+    └── tpl.msCustomer.profile # profile form
 ```
 
 ## Placeholders
@@ -46,7 +50,7 @@ tpl.msCustomer.base          — base layout
 ### In tpl.msCustomer.profile
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$customer}` | array | Customer data |
 | `{$customer.id}` | int | Customer ID |
 | `{$customer.email}` | string | Email |
@@ -176,10 +180,10 @@ tpl.msCustomer.base          — base layout
 
 ## Email verification
 
-The profile shows email verification status:
+The profile shows whether email is verified:
 
-- **Verified** — green badge with checkmark
-- **Not verified** — button to send confirmation email
+- **Verified:** green badge with checkmark
+- **Not verified:** button to send the email again
 
 ```fenom
 {if $email_verified}
@@ -211,9 +215,9 @@ The form is submitted via POST with action `customer/update-profile`:
 
 MiniShop3 JavaScript intercepts form submission for forms with the `ms3_form` class and processes it through the API.
 
-## Error display
+## Errors
 
-Validation errors are passed in the `{$errors}` array:
+The `{$errors}` array arrives after failed validation:
 
 ```fenom
 <input type="text"
@@ -228,7 +232,7 @@ Validation errors are passed in the `{$errors}` array:
 ## System settings
 
 | Setting | Description |
-|---------|-------------|
+| --- | --- |
 | `ms3_customer_profile_page_id` | Profile page ID |
 
 ## Customization
@@ -253,7 +257,7 @@ To add extra profile fields:
 ## CSS classes
 
 | Class | Element |
-|-------|---------|
+| --- | --- |
 | `.ms3-customer-profile` | Profile container |
 | `.ms3-customer-profile-form` | Profile form |
 | `.ms3_form` | MiniShop3 form (for JS) |

@@ -3,22 +3,29 @@ title: Order product events
 ---
 # Order product events
 
-Events for managing products inside an order: add, update, remove.
+Events for order line items: add, update, remove.
 
 ::: info Context
-These events are fired when working with products via manager processors, not the cart controller. For cart add events see [Cart events](cart).
+Since 1.12 the manager edits lines via **Manager API** (`OrdersController`: `POST/PUT/DELETE …/orders/{id}/products/…`), not legacy processors. Parameters include `msOrder` and `msOrderProduct`.
+
+For storefront cart events see [Cart events](cart).
+:::
+
+::: warning After hooks do not roll back DB
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` run **after** `save()` / `remove()`. If an after-plugin returns `output`, core logs a warning only — the Vue client still gets success. Validation and veto belong in matching `msOnBefore*`.
 :::
 
 ## msOnBeforeCreateOrderProduct
 
-Fired **before** adding a product to the order (via manager).
+Fired **before** persisting a new line (Manager API).
 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrderProduct` | `msOrderProduct` | Order product object |
-| `mode` | `string` | Mode: `new` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | New line (not in DB yet) |
+| `msOrder` | `msOrder` | Parent order |
+| `mode` | `int` | `modSystemEvent::MODE_NEW` |
 
 ### Aborting the operation
 
@@ -29,15 +36,14 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrderProduct $orderProduct */
         $orderProduct = $scriptProperties['msOrderProduct'];
 
-        // Check stock
         $productId = $orderProduct->get('product_id');
         $count = $orderProduct->get('count');
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            if ($count > $remains) {
-                $modx->event->output('Insufficient product in stock');
+            $stock = $msProduct->get('stock') ?? 0;
+            if ($count > $stock) {
+                $modx->event->output('Not enough stock');
                 return;
             }
         }
@@ -49,14 +55,15 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrderProduct
 
-Fired **after** adding a product to the order.
+Fired **after** successful `save()`. A plugin error does not roll back the row.
 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrderProduct` | `msOrderProduct` | Created product object |
-| `mode` | `string` | Mode: `new` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Saved line |
+| `msOrder` | `msOrder` | Order |
+| `mode` | `int` | `modSystemEvent::MODE_NEW` |
 
 ### Example
 
@@ -66,19 +73,18 @@ switch ($modx->event->name) {
     case 'msOnCreateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
-        // Reserve product
         $productId = $orderProduct->get('product_id');
         $count = $orderProduct->get('count');
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', max(0, $remains - $count));
+            $stock = $msProduct->get('stock') ?? 0;
+            $msProduct->set('stock', max(0, $stock - $count));
             $msProduct->save();
         }
 
         $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[OrderProduct] Added product #%d to order, qty: %d',
+            '[OrderProduct] Added product #%d, qty: %d',
             $productId,
             $count
         ));
@@ -90,14 +96,15 @@ switch ($modx->event->name) {
 
 ## msOnBeforeUpdateOrderProduct
 
-Fired **before** updating a product in the order.
+Fired **before** `save()` on an updated line.
 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrderProduct` | `msOrderProduct` | Order product object |
-| `mode` | `string` | Mode: `upd` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Line with new field values |
+| `msOrder` | `msOrder` | Order |
+| `mode` | `int` | `modSystemEvent::MODE_UPD` |
 
 ### Aborting the operation
 
@@ -110,16 +117,15 @@ switch ($modx->event->name) {
         $newCount = $orderProduct->get('count');
         $oldCount = $orderProduct->getPrevious('count');
 
-        // If increasing quantity — check stock
         if ($newCount > $oldCount) {
             $diff = $newCount - $oldCount;
             $productId = $orderProduct->get('product_id');
 
             $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
             if ($msProduct) {
-                $remains = $msProduct->get('remains') ?? 0;
-                if ($diff > $remains) {
-                    $modx->event->output('Insufficient product to increase quantity');
+                $stock = $msProduct->get('stock') ?? 0;
+                if ($diff > $stock) {
+                    $modx->event->output('Not enough stock to increase quantity');
                     return;
                 }
             }
@@ -132,14 +138,15 @@ switch ($modx->event->name) {
 
 ## msOnUpdateOrderProduct
 
-Fired **after** updating a product in the order.
+Fired **after** successful `save()`. A plugin error does not roll back changes.
 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrderProduct` | `msOrderProduct` | Updated product object |
-| `mode` | `string` | Mode: `upd` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Updated line |
+| `msOrder` | `msOrder` | Order |
+| `mode` | `int` | `modSystemEvent::MODE_UPD` |
 
 ### Example
 
@@ -158,16 +165,9 @@ switch ($modx->event->name) {
 
             $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
             if ($msProduct) {
-                $remains = $msProduct->get('remains') ?? 0;
-                $msProduct->set('remains', $remains - $diff);
+                $stock = $msProduct->get('stock') ?? 0;
+                $msProduct->set('stock', $stock - $diff);
                 $msProduct->save();
-
-                $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                    '[OrderProduct] Product #%d qty changed: %d → %d',
-                    $productId,
-                    $oldCount,
-                    $newCount
-                ));
             }
         }
         break;
@@ -178,13 +178,15 @@ switch ($modx->event->name) {
 
 ## msOnBeforeRemoveOrderProduct
 
-Fired **before** removing a product from the order.
+Fired **before** `remove()`. API rejects deleting the last line (HTTP 400 before the event).
 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrderProduct` | `msOrderProduct` | Product object to remove |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Line to remove |
+| `msOrder` | `msOrder` | Order |
+| `id` | `int` | `msOrderProduct` id |
 
 ### Aborting the operation
 
@@ -192,12 +194,11 @@ Fired **before** removing a product from the order.
 <?php
 switch ($modx->event->name) {
     case 'msOnBeforeRemoveOrderProduct':
-        $orderProduct = $scriptProperties['msOrderProduct'];
-        $order = $orderProduct->getOne('Order');
+        /** @var \MiniShop3\Model\msOrder $order */
+        $order = $scriptProperties['msOrder'];
 
-        // Disallow removing products from paid orders
-        if ($order && $order->get('payment_status') === 'paid') {
-            $modx->event->output('Cannot remove products from paid order');
+        if ($order && (int) $order->get('status_id') === 2) {
+            $modx->event->output('Cannot remove lines from a finalized order');
             return;
         }
         break;
@@ -208,13 +209,15 @@ switch ($modx->event->name) {
 
 ## msOnRemoveOrderProduct
 
-Fired **after** removing a product from the order.
+Fired **after** successful `remove()`. A plugin error does not restore the row.
 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `msOrderProduct` | `msOrderProduct` | Removed product object |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Removed line (still in xPDO memory) |
+| `msOrder` | `msOrder` | Order |
+| `id` | `int` | Removed line id |
 
 ### Example
 
@@ -224,77 +227,66 @@ switch ($modx->event->name) {
     case 'msOnRemoveOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
-        // Return product to stock
         $productId = $orderProduct->get('product_id');
         $count = $orderProduct->get('count');
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', $remains + $count);
+            $stock = $msProduct->get('stock') ?? 0;
+            $msProduct->set('stock', $stock + $count);
             $msProduct->save();
         }
-
-        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[OrderProduct] Removed product #%d from order, returned: %d',
-            $productId,
-            $count
-        ));
         break;
 }
 ```
 
 ---
 
-## Full example: stock management
+## Full example: stock control
 
 ```php
 <?php
 /**
- * Plugin: Product stock management
- * Events: msOnCreateOrderProduct, msOnUpdateOrderProduct, msOnRemoveOrderProduct
+ * Plugin: Order line stock control
+ * Events: msOnBeforeCreateOrderProduct, msOnBeforeUpdateOrderProduct,
+ *         msOnCreateOrderProduct, msOnUpdateOrderProduct, msOnRemoveOrderProduct
  */
 
 switch ($modx->event->name) {
 
-    case 'msOnCreateOrderProduct':
+    case 'msOnBeforeCreateOrderProduct':
+    case 'msOnBeforeUpdateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
-        updateStock($modx, $orderProduct->get('product_id'), -$orderProduct->get('count'));
+        $productId = $orderProduct->get('product_id');
+        $count = $orderProduct->get('count');
+
+        $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
+        if ($msProduct && $count > ($msProduct->get('stock') ?? 0)) {
+            $modx->event->output('Insufficient stock');
+            return;
+        }
+        break;
+
+    case 'msOnCreateOrderProduct':
+    case 'msOnRemoveOrderProduct':
+        // Adjust stock after persistence (after errors are logged only)
+        adjustStock($modx, $scriptProperties['msOrderProduct'], $modx->event->name);
         break;
 
     case 'msOnUpdateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
-        $diff = $orderProduct->get('count') - ($orderProduct->getPrevious('count') ?? 0);
-        if ($diff != 0) {
-            updateStock($modx, $orderProduct->get('product_id'), -$diff);
+        $diff = $orderProduct->get('count') - $orderProduct->getPrevious('count');
+        if ($diff !== 0) {
+            adjustStockDelta($modx, $orderProduct->get('product_id'), -$diff);
         }
-        break;
-
-    case 'msOnRemoveOrderProduct':
-        $orderProduct = $scriptProperties['msOrderProduct'];
-        updateStock($modx, $orderProduct->get('product_id'), $orderProduct->get('count'));
         break;
 }
 
-/**
- * Update product stock
- */
-function updateStock($modx, $productId, $delta) {
-    $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-    if ($msProduct) {
-        $remains = $msProduct->get('remains') ?? 0;
-        $newRemains = max(0, $remains + $delta);
-        $msProduct->set('remains', $newRemains);
-        $msProduct->save();
+function adjustStock($modx, $orderProduct, $eventName) {
+    // ...
+}
 
-        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-            '[Stock] Product #%d: %d %s %d = %d',
-            $productId,
-            $remains,
-            $delta >= 0 ? '+' : '-',
-            abs($delta),
-            $newRemains
-        ));
-    }
+function adjustStockDelta($modx, $productId, $delta) {
+    // ...
 }
 ```

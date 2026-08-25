@@ -1,6 +1,11 @@
+---
+title: Форма на Pico.css
+description: "FetchIt и Pico.css: aria-invalid, data-error и сообщения формы"
+---
+
 # Форма на Pico.css
 
-С фреймворком [Pico.css](https://picocss.com/) всё намного проще, т.к. состоянием невалидности управляет атрибут `aria-invalid`, а наш компонент его добавляет автоматически. Разберём небольшой пример.
+[Pico.css](https://picocss.com/) стилизует невалидное поле по `aria-invalid`. FetchIt ставит этот атрибут сам. Класс invalid в настройке для Pico обычно не нужен.
 
 ```html
 <form>
@@ -16,18 +21,21 @@
 </form>
 ```
 
-Для подготовки нам всего лишь необходимо сделать следующее:
+Что сделать:
 
-1. Добавить текстовые элементы с атрибутами `data-error="*"` которые будут отображены с текстом ошибки.
-2. Для совместимости работы с FormIt нужно указать плейсхолдеры со значениями и ошибками.
+1. Добавить элементы с `data-error` для текста ошибки.
+2. Добавить `[data-success]` и `[data-validation-error]` для AJAX.
+3. Проставить плейсхолдеры FormIt.
 
-::: info Важно
-Валидаторы разметки до сих пор ругаются на пустой атрибут `action`, поэтому в нём необходимо указывать ссылку на страницу.
+::: info
+В `action` укажите URL страницы.
 :::
+
+::: code-group
 
 ```modx
 <form> // [!code --]
-<form action="[[~[[*id]]]]"> // [!code ++]
+<form action="[[~[[*id]]]]" method="post"> // [!code ++]
   <label>
     Name
     <input type="text" name="name"> // [!code --]
@@ -40,6 +48,31 @@
     <input type="email" name="email" value="[[+fi.email]]"> // [!code ++]
     <small data-error="email">[[+fi.error.email]]</small> // [!code ++]
   </label>
+  <div role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div role="alert" data-validation-error style="display: none;"></div> // [!code ++]
   <button type="submit">Submit</button>
 </form>
 ```
+
+```fenom
+<form> // [!code --]
+<form action="{$_modx->resource.id | url}" method="post"> // [!code ++]
+  <label>
+    Name
+    <input type="text" name="name"> // [!code --]
+    <input type="text" name="name" value="{$_modx->getPlaceholder('fi.name')}"> // [!code ++]
+    <small data-error="name">{$_modx->getPlaceholder('fi.error.name')}</small> // [!code ++]
+  </label>
+  <label>
+    Email
+    <input type="email" name="email"> // [!code --]
+    <input type="email" name="email" value="{$_modx->getPlaceholder('fi.email')}"> // [!code ++]
+    <small data-error="email">{$_modx->getPlaceholder('fi.error.email')}</small> // [!code ++]
+  </label>
+  <div role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+  <button type="submit">Submit</button>
+</form>
+```
+
+:::

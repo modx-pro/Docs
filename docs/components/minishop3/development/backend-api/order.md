@@ -33,8 +33,10 @@ $result = $ms3->order->add('email', 'user@example.com');
 $result = $ms3->order->set([
     'email' => 'user@example.com',
     'phone' => '+79991234567',
-    'delivery' => 1,
-    'payment' => 1,
+    'first_name' => 'Иван',
+    'delivery_id' => 1,
+    'payment_id' => 1,
+    'order_comment' => 'Позвоните перед доставкой',
 ]);
 
 // Оформить заказ
@@ -43,21 +45,25 @@ $result = $ms3->order->submit();
 
 // Очистить черновик
 $ms3->order->clean();
+
 ```
 
 ::: info Инициализация
 Перед использованием контроллера необходима инициализация с токеном клиента:
+
 ```php
 $ms3->order->initialize($token);
 $ms3->order->initDraft();
+
 ```
+
 В контексте REST API и сниппетов это происходит автоматически.
 :::
 
 ### Методы контроллера
 
 | Метод | Описание |
-|-------|----------|
+| --- | --- |
 | `initialize($token, $config)` | Инициализация с токеном клиента |
 | `initDraft()` | Загрузка существующего черновика |
 | `get()` | Данные заказа (поля + адрес) |
@@ -120,6 +126,7 @@ $draftManager->clean($draft);
 
 // Удалить черновик полностью (с товарами и адресом)
 $draftManager->deleteDraft($draft);
+
 ```
 
 ## Поля и валидация (OrderFieldManager)
@@ -139,6 +146,7 @@ $fieldManager->remove($draft, $orderData, 'email');
 // Валидация без сохранения
 $result = $fieldManager->validate($orderData, 'phone', '+79991234567');
 // ['success' => true] или ['success' => false, 'message' => 'Ошибка']
+
 ```
 
 ### Правила валидации
@@ -158,6 +166,7 @@ $required = $fieldManager->getDeliveryRequiredFields($deliveryId);
 $fieldManager->setValidationRules([
     'company_name' => 'required|min:3',
 ]);
+
 ```
 
 ## Расчёт стоимости (OrderCostCalculator)
@@ -180,13 +189,14 @@ $result = $calculator->getPaymentCost($draft, $orderData, $token);
 // Полная стоимость
 $result = $calculator->getTotalCost($draft, $orderData, $token);
 // ['cost' => 5450.00, 'cart_cost' => 5000.00, 'delivery_cost' => 300.00, 'payment_cost' => 150.00]
+
 ```
 
 Каждый метод вызывает пару событий `msOnBefore...` / `msOn...`, позволяющих плагинам модифицировать стоимость.
 
 ### Пересчёт стоимости в админке — `POST /api/mgr/orders/{id}/recalculate-cost`
 
-Появился в 1.11.0 (#212). Сервис `ManagerOrderCostRecalculator` пересчитывает `cart_cost`, `weight`, `delivery_cost`, итоговый `cost` по сохранённым позициям заказа и текущим `delivery_id` / `payment_id` без побочных эффектов на других полях.
+Появился в 1.11.0. Сервис `ManagerOrderCostRecalculator` пересчитывает `cart_cost`, `weight`, `delivery_cost`, итоговый `cost` по сохранённым позициям заказа и текущим `delivery_id` / `payment_id` без побочных эффектов на других полях.
 
 Тело запроса:
 
@@ -195,12 +205,13 @@ $result = $calculator->getTotalCost($draft, $orderData, $token);
   "mode": "auto",
   "manual_delivery_cost": 500.0
 }
+
 ```
 
 Режимы (`mode`):
 
 | Режим | Поведение |
-|---|---|
+| --- | --- |
 | `auto` (по умолчанию) | Пересчитывает только для `DefaultDelivery` / `DefaultPayment` (по полям `price`, `weight_price`, `free_delivery_amount`, проценты). Для кастомных handler'ов возвращает warning `delivery_manual_required` / `payment_manual_required` и сохраняет прежнюю `delivery_cost` / комиссию 0 — не дёргает внешние API. |
 | `manual` | Использует переданный `manual_delivery_cost`. Комиссия оплаты считается по полю автоматом. |
 | `force_provider` | Явно вызывает `loadController()` → `getCost()` и `loadHandler()` → `getCost()` в `try/catch`. При сбое — warning `delivery_provider_error` / `payment_provider_error`, прежние значения сохраняются. |
@@ -218,9 +229,40 @@ $result = $calculator->getTotalCost($draft, $orderData, $token);
   },
   "warnings": ["delivery_manual_required"]
 }
+
 ```
 
 Применяет общий guard `OrderService::clampComputedTotal()` — итог не может уйти ниже нуля. Скидки/наценки доставки и оплаты (отрицательные `price`, см. 1.11.0) обрабатываются через `MiniShop3\Utils\PriceAdjustment`.
+
+Пример вызова из JS (карточка заказа в mgr):
+
+```javascript
+const response = await fetch(`/api/mgr/orders/${orderId}/recalculate-cost`, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'modAuth': MODx.modxConfig.auth, // или актуальный mgr-auth заголовок
+  },
+  body: JSON.stringify({
+    mode: 'manual',
+    manual_delivery_cost: 500,
+  }),
+})
+const json = await response.json()
+// json.data.breakdown — cart_cost / delivery_cost / payment_cost / cost
+// json.data.warnings — например delivery_manual_required
+```
+
+Через HTTP (REST mgr API):
+
+```bash
+curl -X POST 'https://example.com/api/mgr/orders/42/recalculate-cost' \
+  -H 'Content-Type: application/json' \
+  -H 'Cookie: …' \
+  -d '{"mode":"auto"}'
+```
+
+См. также [routing](/components/minishop3/development/routing).
 
 ## Оформление заказа (OrderSubmitHandler)
 
@@ -240,6 +282,7 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 //     ],
 //     'message' => 'Заказ успешно оформлен'
 // ]
+
 ```
 
 ### Порядок действий при оформлении
@@ -264,6 +307,7 @@ $num = $submitHandler->getNewOrderNum();
 // "26/02-15" — формат настраивается:
 // ms3_order_format_num — формат даты (по умолчанию 'ym')
 // ms3_order_format_num_separator — разделитель (по умолчанию '/')
+
 ```
 
 ## Управление статусами (OrderStatusService)
@@ -278,12 +322,13 @@ $result = $statusService->change($orderId, $newStatusId);
 
 // Сменить статус без уведомлений
 $result = $statusService->change($orderId, $newStatusId, true);
+
 ```
 
 ### Ограничения статусов
 
 | Свойство статуса | Поведение |
-|------------------|-----------|
+| --- | --- |
 | `final = true` | Нельзя сменить на другой статус |
 | `fixed = true` | Можно переключить только на статус с большей `position` |
 
@@ -301,7 +346,7 @@ $result = $statusService->change($orderId, $newStatusId, true);
 ### Поля msOrderProduct
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `product_id` | integer | ID товара (msProduct) |
 | `order_id` | integer | ID заказа |
 | `product_key` | string | Уникальный ключ позиции (напр. `123_a1b2c3d4`) |
@@ -342,6 +387,7 @@ $item->save();
 
 // Пересчитать итоги заказа после изменения позиций
 $order->updateProducts();
+
 ```
 
 ::: warning Пересчёт итогов
@@ -355,7 +401,7 @@ $order->updateProducts();
 ### Поля msOrderAddress
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `order_id` | integer | ID заказа |
 | `first_name` | string | Имя |
 | `last_name` | string | Фамилия |
@@ -390,6 +436,7 @@ echo $address->get('street');     // "Ленина"
 // Обновление
 $address->set('city', 'Санкт-Петербург');
 $address->save();
+
 ```
 
 ### OrderAddressManager
@@ -407,6 +454,7 @@ $result = $addressManager->cleanCustomerAddress($draft, $orderData);
 
 // Сохранить адрес заказа в адреса клиента
 $savedAddress = $addressManager->saveToCustomerAddresses($customerId, $orderData);
+
 ```
 
 ## Журнал заказа (OrderLogService)
@@ -440,12 +488,13 @@ $entries = $logService->getEntries($orderId, false, 50);
 if ($logService->shouldLog('status')) {
     // ...
 }
+
 ```
 
 ### Типы действий
 
 | Константа | Значение | Описание |
-|-----------|----------|----------|
+| --- | --- | --- |
 | `msOrderLog::ACTION_STATUS` | `status` | Смена статуса |
 | `msOrderLog::ACTION_PAYMENT` | `payment` | Изменение оплаты |
 | `msOrderLog::ACTION_PRODUCTS` | `products` | Изменение позиций |
@@ -459,18 +508,82 @@ if ($logService->shouldLog('status')) {
 `OrderFinalizeService` используется для оформления заказов, созданных менеджером в админке.
 
 ```php
+use MiniShop3\Services\Order\OrderOrigin;
+
 $finalizeService = $modx->services->get('ms3_order_finalize');
 
 $result = $finalizeService->finalize($orderId, [
-    'skip_validation' => false,      // Пропустить валидацию полей
-    'skip_notifications' => false,   // Пропустить уведомления
-    'skip_payment' => true,          // Пропустить вызов оплаты
-    'create_customer' => true,       // Создать msCustomer
-    'force_create_customer' => false, // Создать даже при дубликате
+    'skip_validation' => false,
+    'skip_notifications' => false,
+    'create_customer' => true,
+    'force_create_customer' => false,
+    'origin' => OrderOrigin::MANAGER, // по умолчанию; для CRM — OrderOrigin::INTEGRATION
 ]);
 ```
 
-Финализация выполняет те же шаги, что и `submit`, но адаптирована для контекста менеджера: позволяет пропускать отдельные этапы и работает с уже существующим заказом (не черновиком).
+Финализация допускает `skip_*` и работает с уже существующим черновиком. Вызова платёжного gateway здесь нет (в отличие от storefront `submit`).
+
+Параметр `origin` (`OrderOrigin`): `manager` (по умолчанию), `storefront`, `integration`. При `manager` дополнительно вызываются `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`. Ключ `from_manager` в событиях = `true` только для `origin=manager`.
+
+## Программное создание заказа (ProgrammaticOrderService)
+
+API без HTTP-сессии для extras, cron и интеграций. Это **не** Web API: в `routes/web.php` отдельного эндпоинта нет.
+
+| | |
+| --- | --- |
+| DI | `ms3_programmatic_order` |
+| Класс | `MiniShop3\Services\Order\ProgrammaticOrderService` |
+| Черновик | `OrderDraftManager::createSessionlessDraft()` (без PHP-сессии и cart token) |
+| Финализация | `OrderFinalizeService::finalize(..., origin=integration)` |
+| Идемпотентность | колонка `ms3_orders.idempotency_key` (unique, nullable) |
+
+```php
+use MiniShop3\Services\Order\OrderOrigin;
+
+$orders = $modx->services->get('ms3_programmatic_order');
+
+$result = $orders->create([
+    'idempotency_key' => 'crm-invoice-10042', // обязательно
+    'products' => [
+        ['product_id' => 15, 'count' => 2],
+        // или снимок без ресурса:
+        // ['name' => 'Услуга', 'price' => 500, 'count' => 1, 'weight' => 0, 'options' => []],
+    ],
+    'customer_id' => 0,
+    'delivery_id' => 1,
+    'payment_id' => 1,
+    'address' => [
+        'first_name' => 'Иван',
+        'email' => 'user@example.com',
+        'phone' => '+79991234567',
+    ],
+    'order_comment' => 'Из CRM',
+    'context' => 'web',
+    'origin' => OrderOrigin::INTEGRATION,
+    // 'delivery_cost' => 300, // → cost_mode=manual при finalize
+    // 'skip_notifications' => true,
+    // 'skip_validation' => false,
+    // 'properties' => ['source' => 'crm'],
+]);
+
+if (!$result['success']) {
+    // Частые message:
+    // ms3_order_err_idempotency_key_required
+    // ms3_order_err_products_required
+    // ms3_order_err_programmatic_create
+    // либо ошибки finalize / валидации
+    return $result;
+}
+
+// Успех: data = { order_id, uuid, num, status_id }
+// Повтор того же idempotency_key:
+//   уже оформленный заказ → success + ms3_order_programmatic_idempotent
+//   черновик со статусом draft → повторная финализация
+```
+
+События: `msOnBeforeCreateOrder` / `msOnCreateOrder` с `origin=integration` и **без** `from_manager`. События `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` **не** вызываются.
+
+Отличие от `POST /api/mgr/orders` (менеджер создаёт пустой/частичный заказ в UI) и от storefront `POST /api/v1/order/submit` (нужны токен и корзина).
 
 ## Разрешение пользователей (OrderUserResolver)
 
@@ -495,6 +608,7 @@ $user = $userResolver->createUser([
     'last_name' => 'Иванов',
     'phone' => '+79991234567',
 ]);
+
 ```
 
 Настройка `ms3_order_user_groups` определяет группы для новых пользователей (формат: `group_id:role_id`, через запятую).
@@ -502,7 +616,7 @@ $user = $userResolver->createUser([
 ## Поля msOrder
 
 | Поле | Тип | По умолчанию | Описание |
-|------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `user_id` | integer | 0 | ID пользователя MODX |
 | `customer_id` | integer | 0 | ID клиента (msCustomer) |
 | `token` | string | — | Токен сессии клиента |
@@ -519,12 +633,13 @@ $user = $userResolver->createUser([
 | `payment_id` | integer | 0 | ID способа оплаты |
 | `context` | string | 'web' | Контекст MODX |
 | `order_comment` | string | null | Комментарий к заказу |
-| `properties` | json | null | Дополнительные свойства |
+| `idempotency_key` | string | null | Ключ идемпотентности (программные заказы, unique) |
+| `properties` | json | null | Дополнительные свойства (в т.ч. `origin` для интеграций) |
 
 ### Связи msOrder
 
 | Связь | Модель | Тип | Описание |
-|-------|--------|-----|----------|
+| --- | --- | --- | --- |
 | `Address` | msOrderAddress | composite (one) | Адрес заказа |
 | `Products` | msOrderProduct | composite (many) | Позиции заказа |
 | `Log` | msOrderLog | composite (many) | Журнал изменений |
@@ -541,7 +656,7 @@ Composite-связи удаляются каскадно при удалении
 ## События
 
 | Событие | Когда вызывается |
-|---------|-----------------|
+| --- | --- |
 | `msOnBeforeSaveOrder` / `msOnSaveOrder` | Сохранение заказа |
 | `msOnBeforeRemoveOrder` / `msOnRemoveOrder` | Удаление заказа |
 | `msOnBeforeGetCartCost` / `msOnGetCartCost` | Расчёт стоимости корзины |
@@ -555,6 +670,19 @@ Composite-связи удаляются каскадно при удалении
 | `msOnBeforeCreateOrder` / `msOnCreateOrder` | Создание заказа |
 | `msOnBeforeChangeOrderStatus` / `msOnChangeOrderStatus` | Смена статуса |
 | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Поиск/создание пользователя |
-| `msOnBeforeFinalizeOrder` / `msOnFinalizeOrder` | Финализация из менеджера |
+| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Финализация из менеджера (только `origin=manager`) |
+
+## Manager REST API
+
+Эндпоинты для Vue-интерфейса заказов (сессия mgr, см. [routing](../routing)):
+
+| Метод | Путь | Описание |
+| --- | --- | --- |
+| GET | `/api/mgr/orders/stats` | Агрегаты для фильтров и дашборда |
+| POST | `/api/mgr/orders` | Создание заказа из менеджера |
+| POST | `/api/mgr/orders/{id}/finalize` | Финализация черновика |
+| POST | `/api/mgr/orders/{id}/recalculate-cost` | Пересчёт через `ManagerOrderCostRecalculator` |
+
+Создание и финализация из mgr проходят через `OrderFinalizeService` и события `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`.
 
 Подробное описание параметров событий — в разделе [События](../events).

@@ -3,6 +3,8 @@ title: Notification center
 ---
 # Notification center
 
+<!-- ![Notification center](/components/minishop3/screenshots/mgr-notifications.png) -->
+
 Order event notifications are managed via **Extras → MiniShop3 → Notifications**.
 
 Here you configure which notifications to send, to whom, through which channels (email, Telegram, etc.), and with which template when an order is created or its status changes.
@@ -22,7 +24,7 @@ Each notification is a separate record. You can configure multiple notifications
 ## Notification fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `event` | string | Event type: order status change, order creation |
 | `status_id` | int | Order status ID. Only for "status change" events. Empty = trigger on any status |
 | `recipient_type` | string | Recipient: `customer` or `manager` |
@@ -38,7 +40,7 @@ Each notification is a separate record. You can configure multiple notifications
 The current version supports:
 
 | Event | ID | When it fires |
-|-------|----|---------------|
+| --- | --- | --- |
 | Order created | `order_created` | Customer places an order (frontend) or manager finalizes a draft |
 | Order status changed | `order_status_changed` | Order moves from one status to another |
 
@@ -120,7 +122,7 @@ You can configure any number of records for one event. The `position` field defi
 Typical setup for a new order:
 
 | Position | Event | Status | Recipient | Channel | Subject / Template |
-|----------|-------|--------|-----------|---------|-------------------|
+| --- | --- | --- | --- | --- | --- |
 | 1 | `order_created` | — | customer | email | "Thank you for order #{$num}" / `tpl.msEmail.order.thanks` |
 | 2 | `order_created` | — | manager | email | "New order #{$num}" / `tpl.msEmail.order.new.manager` |
 | 3 | `order_created` | — | manager | telegram | — / `tpl.msTelegram.order.new` |
@@ -154,7 +156,7 @@ Filters apply on **Apply** and reset on **Clear**.
 Check: system setting `ms3_email_from`, MODX SMTP settings, MODX error log (channel send errors are logged with `[ms3] Notification error`), **Enabled** status on the record in the Notification center.
 
 **Notification went to the customer's old email, not the one from the order form.**
-Known behavior due to the current channel implementation. See issue [#218](https://github.com/modx-pro/MiniShop3/issues/218) and related architecture audit [#219](https://github.com/modx-pro/MiniShop3/issues/219).
+Known behavior in the current channel implementation: the message may go to `msCustomer` contacts instead of the email from the order form.
 
 **I want a custom delivery channel (for example, push to a mobile app).**
 You need a plugin on `msOnRegisterNotificationChannels` that registers a channel class implementing `ChannelInterface`. See [notification events](../development/events/notifications.md).

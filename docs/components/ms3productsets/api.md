@@ -60,10 +60,11 @@ title: API и интерфейсы
 
 Выводит:
 
+- при `ms3productsets.izitoast_include` = Да — теги `<link>` и `<script>` для [iziToast](https://github.com/marcosmoura/iziToast) по путям из `ms3productsets.izitoast_css` / `ms3productsets.izitoast_js` (по умолчанию файлы MiniShop3);
 - `window.mspsLexicon` (ключи для фронтовых сообщений);
-- `window.mspsConfig` (`maxItems`, `lang`).
+- `window.mspsConfig`: `maxItems`, `lang`, `toastTimeout` (мс), `toastPosition` (iziToast, напр. `topRight`).
 
-Подключать перед `productsets.js`.
+Подключать перед `productsets.js`. Если автоподключение iziToast выключено, загрузите CSS и JS вручную — см. [Интеграция на сайт](integration).
 
 **Fenom:** `{'mspsLexiconScript' | snippet}`
 **MODX:** `[[!mspsLexiconScript]]`
@@ -82,12 +83,12 @@ title: API и интерфейсы
 | action | Назначение | Основные параметры |
 | --- | --- | --- |
 | `get_templates` | Список шаблонов подборок | — |
-| `save_template` | Создать/обновить шаблон | `id`, `name`, `type`, `related_product_ids`, `sortorder` |
-| `delete_template` | Удалить шаблон | `id` |
-| `apply_template` | Применить шаблон к категориям/товарам | `template_id`, `parent_id` или `parent_ids[]`, `replace` |
+| `save_template` | Создать/обновить шаблон | `id`, `name`, `type`, `related_product_ids`, `description`, `sortorder`. Ошибки: `invalid_type`, `template_not_found`, `name_required`, `related_ids_required` |
+| `delete_template` | Удалить шаблон и связи с его `template_name` | `id` |
+| `apply_template` | Применить шаблон к категориям/товарам | `template_id`, `parent_id` или `parent_ids[]`, `replace`. Ответ: `{ success, applied }`. При `replace=true` удаляются только строки с тем же `template_name`, что у шаблона |
 | `unbind_template` | Отвязать шаблон от категории | `template_id`, `parent_id` или `parent_ids[]` |
 | `get_resource_tree` | Дерево категорий (без товаров) | `parent_id`, `context_key` |
-| `get_resources` | Список товаров для пикера | `parent_id`, `template_id`, `query`, `limit` |
+| `get_resources` | Список товаров для пикера | `parent_id`, `template_id`, `query`, `limit`, **`ids[]`** — загрузка выбранных ID по списку |
 
 ## JS API (`window.ms3ProductSets`)
 
@@ -95,8 +96,8 @@ title: API и интерфейсы
 | --- | --- |
 | `render(selector, options)` | Рендер блока подборки через `action=get_set` |
 | `addToCart(productId, count)` | Добавление товара в корзину через `action=add_to_cart` |
-| `addAllToCart(buttonOrContainer)` | Добавление всего набора в корзину. Принимает DOM-элемент (кнопку с `data-add-set` или контейнер) либо CSS-селектор. Ищет `[data-product-id]` и `[data-add-to-cart]` в контейнере, последовательно вызывает `addToCart` для каждого, затем toast и событие `msps:cart:update`. |
-| `toast(message)` | Показ frontend-уведомления |
+| `addAllToCart(buttonOrContainer)` | Добавление всего набора в корзину. Принимает DOM-элемент (кнопку с `data-add-set` или контейнер) либо CSS-селектор. Ищет `data-msps-product-ids` / `[data-product-id]` / скрытые `input[name="id"]`, последовательно вызывает `addToCart`, затем **iziToast** и событие `msps:cart:update`. |
+| `toast(message, kind)` | Уведомление **iziToast**: `kind` — `'success'` (по умолчанию) или `'error'`. Требуется подключённый на странице iziToast. |
 
 События после успешного добавления:
 

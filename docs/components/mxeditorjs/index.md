@@ -3,18 +3,25 @@ title: mxEditorJs
 description: Блочный редактор Editor.js для MODX 3 — контент блоками вместо TinyMCE/CKEditor
 author: ibochkarev
 logo: https://modstore.pro/assets/extras/mxeditorjs/logo.png
+modstore: https://modstore.pro/packages/content/mxeditorjs
+repository: https://github.com/Ibochkarev/mxEditorJs
 dependencies: []
 
 items: [
   { text: 'Начало работы', link: 'quick-start', items: [
     { text: 'Быстрый старт', link: 'quick-start' },
     { text: 'Системные настройки', link: 'settings' },
+    { text: 'Руководство редактора', link: 'user-guide' },
   ]},
   { text: 'Интеграция', link: 'integration', items: [
-    { text: 'Включение и использование', link: 'integration' },
+    { text: 'TV, миграция, фронт', link: 'integration' },
+    { text: 'FAQ', link: 'faq' },
   ]},
   { text: 'Для разработчика', link: 'api', items: [
     { text: 'API и интерфейсы', link: 'api' },
+    { text: 'Потоки', link: 'flows' },
+    { text: 'Архитектура', link: 'architecture' },
+    { text: 'Решение проблем', link: 'troubleshooting' },
   ]},
 ]
 ---
@@ -27,15 +34,20 @@ items: [
 | Нужно | Документ |
 | --- | --- |
 | Включить редактор за 3 шага | [Быстрый старт](quick-start) |
+| Работа с блоками, медиа, embed | [Руководство редактора](user-guide) |
 | Настроить профили инструментов и медиа | [Системные настройки](settings) |
 | Connector API, PHP-классы, форматы данных | [API](api) |
-| Работа с TV и миграция HTML → Editor.js | [Интеграция](integration) |
+| TV, миграция HTML → Editor.js | [Интеграция](integration) |
+| Типовые вопросы редакторов | [FAQ](faq) |
+| Save flow, sidecar, connector | [Потоки](flows) |
 
 ## Кому что читать
 
-- **Редактору контента:** [Быстрый старт](quick-start) → работа в интерфейсе (блоки, картинки, ссылки) — см. руководство в репозитории компонента.
-- **Администратору:** [Системные настройки](settings) → профили, медиа, пресеты.
-- **Разработчику:** [API](api) → Connector, PHP, JS. [Интеграция](integration) → TV, миграция.
+- **Редактору контента:** [Руководство редактора](user-guide)
+- **Администратору:** [Системные настройки](settings), [FAQ](faq)
+- **Разработчику:** [API](api), [Потоки](flows), [Архитектура](architecture), [Решение проблем](troubleshooting)
+
+Пакет: **1.1.0-beta2**. [modstore.pro](https://modstore.pro/packages/content/mxeditorjs), [GitHub](https://github.com/Ibochkarev/mxEditorJs). Changelog — в репозитории пакета: `core/components/mxeditorjs/docs/changelog.txt`.
 
 ## Возможности
 
@@ -60,7 +72,7 @@ mxEditorJs собирает редактор из следующих блоко�
 | Плагин | Описание | Ссылки |
 | --- | --- | --- |
 | **@editorjs/paragraph** | Базовый текстовый блок | [npm](https://www.npmjs.com/package/@editorjs/paragraph) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
-| **@editorjs/header** | Заголовки H1–H6 | [npm](https://www.npmjs.com/package/@editorjs/header) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
+| **@editorjs/header** | Заголовки H2–H5 | [npm](https://www.npmjs.com/package/@editorjs/header) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
 | **@editorjs/list** | Маркированные и нумерованные списки | [npm](https://www.npmjs.com/package/@editorjs/list) · [awesome](https://github.com/editor-js/awesome-editorjs#lists) |
 | **@editorjs/checklist** | Чеклист с галочками | [npm](https://www.npmjs.com/package/@editorjs/checklist) · [awesome](https://github.com/editor-js/awesome-editorjs#lists) |
 | **@editorjs/quote** | Цитата | [npm](https://www.npmjs.com/package/@editorjs/quote) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
@@ -125,7 +137,7 @@ mxEditorJs собирает редактор из следующих блоко�
 
 ```bash
 cd /path/to/modx/Extras/
-git clone <repo-url> mxEditorJs
+git clone https://github.com/Ibochkarev/mxEditorJs mxEditorJs
 cd mxEditorJs
 npm install
 npm run build

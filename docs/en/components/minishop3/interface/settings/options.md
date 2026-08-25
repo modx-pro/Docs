@@ -3,39 +3,53 @@ title: Product options
 ---
 # Product options
 
-Options are managed via **Extras → MiniShop3 → Settings → Options**.
+Open **Extras → MiniShop3 → Settings → Options**.
 
 ::: info Starting with v1.10.0-beta1
-The options management interface is fully on Vue 3 + PrimeVue. ExtJS windows and grids were removed together with all `Processors/Settings/Option/*` and `Processors/Category/Option/*` processors. All operations go through REST API `/api/mgr/options/*` and `/api/mgr/categories/{id}/options/*`.
+Options UI is on Vue 3 + PrimeVue. Old ExtJS windows and processors `Processors/Settings/Option/*`, `Processors/Category/Option/*` are removed. All operations go through `/api/mgr/options/*` and `/api/mgr/categories/{id}/options/*`.
 :::
 
 ## Purpose
 
-Options are an EAV (Entity-Attribute-Value) system for extra product attributes. Add arbitrary properties without changing the database schema:
-
-- Color, size, material
-- Technical specifications
-- Package contents
-- Any custom properties
+Options store product attributes (EAV): color, size, material, any custom keys. You do not touch core MODX tables for this.
 
 ## Interface
 
-The page has two columns:
+Two tabs:
 
-- **Left** — MODX category tree (only resources with `class_key = msCategory`). Category checkboxes are **independent** (checking a parent does not cascade to children and vice versa). Context menu (right-click on a node): refresh branch, expand/collapse subtree, "Select all" / "Clear selection" recursively on the branch. Category name search is available.
-- **Right** — options grid (PrimeVue DataTable). Toolbar filters: categories selected in the tree + "Group (modCategory)". Bulk actions — assign selected options to multiple categories at once, delete.
+1. **Options:** category tree on the left, options grid on the right.
+2. **Option groups:** CRUD and drag-and-drop sort for `msOptionGroup` (since v1.11).
 
-Create and edit open in a dialog: form on the left (key, caption, description, type, group, unit), category tree on the right for binding. For `combobox` / `comboMultiple` / `comboColors` a value editor with drag-drop sorting appears; for `comboColors` — built-in `ColorPicker` next to the hex field.
+<!-- ![Options directory](/components/minishop3/screenshots/mgr-options.png) -->
+
+<!-- ![Option groups](/components/minishop3/screenshots/mgr-option-groups.png) -->
+
+### Options tab
+
+- **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select children. Context menu: refresh branch, expand or collapse, select or clear selection on the branch. Search by name is available.
+- **Right:** options grid. Filters: selected categories + group (`option_group_id`). Bulk actions: assign options to categories, delete.
+
+Create and edit dialog: form on the left (key, caption, description, type, `msOptionGroup` group, unit), category tree on the right for binding. For `combobox` / `comboMultiple` / `comboColors` there is a value editor with drag-drop. For `comboColors`, a `ColorPicker` sits next to the hex field.
+
+### Option groups tab
+
+Groups live in table `ms3_option_groups` (`name`, `description`, `sort_order`). This is not `modCategory`: unrelated categories from other packages no longer clutter the list.
+
+Option field: `option_group_id` (nullable). Deleting a group unlinks options (`option_group_id = NULL`) and does not delete the options themselves.
+
+::: warning Breaking (v1.11)
+Previously the group used `msOption.modcategory_id` and `modCategory`. A Phinx migration moves data into `msOptionGroup`. In chunks replace `{$option.category_name}` / `{$option.category}` with `{$option.group_name}`. Endpoint `/api/mgr/options/modcategories` was removed. Use `/api/mgr/option-groups`.
+:::
 
 ## Option fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `key` | string | Unique option key (Latin letters, digits, `_`, `-`) |
 | `caption` | string | Display name |
 | `description` | text | Option description |
 | `measure_unit` | string | Unit of measure (pcs, kg, cm) |
-| `modcategory_id` | int | Group (MODX category) for UI grouping. Optional |
+| `option_group_id` | int / null | `msOptionGroup` group. Optional |
 | `type` | string | Value type (see below) |
 | `properties` | JSON | Extra settings (for list-based types) |
 
@@ -44,7 +58,7 @@ Create and edit open in a dialog: form on the left (key, caption, description, t
 Type is stored in `msOption.type` as `lowerCamelCase`. All 10 supported types:
 
 | type | Description | Value editor in settings | UI on product card |
-|------|-------------|--------------------------|-------------------|
+| --- | --- | --- | --- |
 | `textfield` | Single-line text | — | InputText |
 | `textarea` | Multiline text | — | Textarea |
 | `numberfield` | Number | — | InputNumber |
@@ -93,9 +107,14 @@ Options appear only on products in bound categories. Binding options:
 The "option ↔ category" link (`msCategoryOption`) has its own `caption` and `description`.
 :::
 
-If an option should have a different label in a category than globally — set an override in the category options grid (inline edit on "Caption (for category)") or in the "Add option" dialog. Empty means "use global". Non-empty — shown in the manager (product form in that category) and on the storefront via `OptionLoaderService::loadForProduct` / `loadForProducts`.
+If an option should have a different label in a category than globally — set an override
+in the category options grid (inline edit on "Caption (for category)") or in the
+"Add option" dialog. Empty means "use global". Non-empty —
+shown in the manager (product form in that category) and on the storefront via
+`OptionLoaderService::loadForProduct` / `loadForProducts`.
 
-**Conflict resolution when a product is in multiple categories:** if the product belongs to several categories and each has its own override, resolution order:
+**Conflict resolution when a product is in multiple categories:** if the product belongs to several
+categories and each has its own override, resolution order:
 
 1. Product parent category (`msProduct.parent`)
 2. Lower `msCategoryOption.position`
@@ -124,7 +143,8 @@ $optionService->addOptionToCategory(
 ## Product option values
 
 Values are stored in `ms3_product_options` (`product_id`, `key`, `value`).
-For multi-value types (`comboMultiple`, `comboColors`, `comboOptions`) — multiple rows with the same `key` per product.
+For multi-value types (`comboMultiple`, `comboColors`, `comboOptions`) — multiple rows
+with the same `key` per product.
 
 ### Adding a value
 
@@ -227,23 +247,27 @@ All UI operations use these endpoints (manager API, `/assets/components/minishop
 ### Options
 
 | Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/api/mgr/options` | Option list. Params: `start`, `limit`, `modcategory_id`, `category_id`, `categories[]` |
+| --- | --- | --- |
+| `GET` | `/api/mgr/options` | List. Params: `start`, `limit`, `option_group_id` (`0` = no group), `category_id`, `categories[]` |
 | `GET` | `/api/mgr/options/{id}` | Detail + `categories` map |
-| `POST` | `/api/mgr/options` | Create (`key`, `caption`, `type`, `properties`, `categories`, …) |
+| `POST` | `/api/mgr/options` | Create (`key`, `caption`, `type`, `option_group_id`, `properties`, `categories`, …) |
 | `PUT` | `/api/mgr/options/{id}` | Update (partial) |
-| `DELETE` | `/api/mgr/options/{id}` | Delete option (cascade product values via model hook) |
+| `DELETE` | `/api/mgr/options/{id}` | Delete option (cascade product values) |
 | `DELETE` | `/api/mgr/options/bulk` | Bulk delete (`ids[]`) |
 | `POST` | `/api/mgr/options/bulk/assign` | Assign `options[]` to `categories[]` |
-| `GET` | `/api/mgr/options/types` | Available types (localized names) |
-| `GET` | `/api/mgr/options/tree` | MODX category tree (only `class_key = msCategory`). Lazy by `parent` |
-| `GET` | `/api/mgr/options/modcategories` | Flat `modCategory` list for "Group" filter |
-| `GET` | `/api/mgr/options/suggestions` | Unique values by `key` for `comboOptions` autocomplete (`key`, `query`, `limit`) |
+| `GET` | `/api/mgr/options/types` | Type list |
+| `GET` | `/api/mgr/options/tree` | `msCategory` category tree (lazy by `parent`) |
+| `GET` | `/api/mgr/options/suggestions` | Unique values for `comboOptions` (`key`, `query`, `limit`) |
+| `GET` | `/api/mgr/option-groups` | Group list |
+| `POST` | `/api/mgr/option-groups` | Create group |
+| `GET` / `PUT` / `DELETE` | `/api/mgr/option-groups/{id}` | Read, update, delete |
+| `PUT` | `/api/mgr/option-groups/positions` | Order after DnD |
+| `DELETE` | `/api/mgr/option-groups/bulk` | Bulk delete |
 
 ### Category bindings
 
 | Method | Path | Description |
-|--------|------|-------------|
+| --- | --- | --- |
 | `GET` | `/api/mgr/categories/{category_id}/options` | Options bound to category (with `global_caption`/`global_description` + `category_caption`/`category_description` override) |
 | `POST` | `/api/mgr/categories/{category_id}/options` | Add option to category (`option_id`, `value`, `active`, `required`, `caption`, `description`) |
 | `PUT` | `/api/mgr/categories/{category_id}/options/{option_id}` | Partial update of binding (value / active / required / position / caption / description) |
@@ -257,8 +281,8 @@ All UI operations use these endpoints (manager API, `/assets/components/minishop
 When importing products from CSV, options are created automatically from columns with the `option_` prefix:
 
 | pagetitle | price | option_color | option_size |
-|-----------|-------|--------------|-------------|
-| T-shirt  | 1500  | Red          | L           |
-| T-shirt  | 1500  | Blue         | M           |
+| --- | --- | --- | --- |
+| T-shirt | 1500 | Red | L |
+| T-shirt | 1500 | Blue | M |
 
 Options `color` and `size` are created automatically if missing. By default they are created as `textfield` — change the type later in the UI.

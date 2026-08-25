@@ -1,6 +1,11 @@
+---
+title: Form markup
+description: FetchIt form examples for popular CSS frameworks
+---
+
 # Form markup
 
-Below is a list of form markup examples for popular CSS frameworks.
+Examples for CSS frameworks. Every form needs `[data-error]`. For AJAX, add `[data-success]` and `[data-validation-error]` ([selectors](/en/components/fetchit/selectors)).
 
 - [Bootstrap](/en/components/fetchit/examples/form/bootstrap)
 - [Bulma](/en/components/fetchit/examples/form/bulma)

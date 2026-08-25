@@ -18,3 +18,15 @@ title: Разработка
 - [Интеграция вкладок товара](product-tabs-integration) — добавление вкладок на страницу товара
 - [Интеграция вкладок заказа](order-tabs-integration) — добавление вкладок на страницу заказа
 - [Backend API](backend-api/) — программный интерфейс для работы с сущностями из PHP-кода (товары, заказы, опции, покупатели)
+
+## Manager API и процессоры
+
+С **1.10+** большинство экранов менеджера ходит в **Manager REST API** (`Controllers\Api\Manager\*` через FastRoute). Старые **процессоры** (`MiniShop3\Processors\*`) остаются для:
+
+- legacy connector / `runProcessor()` из PHP;
+- утилит, где контроллер явно вызывает процессор (`RunsMs3Processors`: импорт, массовое обновление галереи);
+- части настроек, где события ещё привязаны к processor lifecycle.
+
+Vue-CRUD (производители, доставки, оплаты и т.д.) **не** вызывает `Processors/Settings/Vendor/*` — плагины на `msOnVendorCreate` из админки не сработают. См. [События производителей](events/vendor).
+
+Headless витрина — **Web API** (`/api/v1/*`), не процессоры.

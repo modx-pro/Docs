@@ -1,83 +1,81 @@
+---
+title: Экземпляр класса FetchIt
+description: "Методы экземпляра: ошибки полей, сообщения формы, disable/enable"
+---
+
 # Экземпляр класса FetchIt
 
-Ниже представлен список свойств и методов экземпляра класса **FetchIt**.
+Доступ: `FetchIt.instances.get(formElement)`. В событиях экземпляр лежит в `e.detail.fetchit`.
+
+Свойства:
+
+| Свойство | Описание |
+| --- | --- |
+| `form` | `HTMLFormElement` |
+| `config` | Конфиг из `FetchIt.create()` (actionUrl, pageId, классы, clearFieldsOnSuccess) |
 
 ## clearErrors()
 
-Данный метод очищает все ошибки формы.
-
-- Тип: `function (): undefined`
-- Пример:
+Снимает ошибки со всех полей.
 
 ```js
 document.addEventListener('fetchit:after', (e) => {
-  e.preventDefault();
-  const { fetchit } = e.detail;
-  fetchit.clearErrors();
-});
+  e.detail.fetchit.clearErrors()
+})
 ```
 
-## clearError()
+## clearError(name)
 
-Данный метод очищает ошибки связанные с конкретным полем.
-
-- Тип: `function (name: string): object`
-- Пример:
+Очищает ошибки одного поля. Возвращает `{ fields, errors, customErrors }`.
 
 ```js
-document.addEventListener('fetchit:after', (e) => {
-  e.preventDefault();
-  const { fetchit } = e.detail;
-  const { fields, errors, customErrors } = fetchit.clearError('password');
-});
+const { fields, errors, customErrors } = fetchit.clearError('password')
 ```
 
-## setError()
+## setError(name, message)
 
-Данный метод устанавливает состояние невалидности конкретному полю по названию. Может быть удобным в случаях интеграции валидации на фронте.
-
-- Тип: `function (name: string, message: string): undefined`
-- Пример:
+Помечает поле невалидным: классы, `aria-invalid`, текст в `[data-error]`. Сообщение проходит через `sanitizeHTML`. Пустая/пробельная строка игнорируется.
 
 ```js
 document.addEventListener('fetchit:before', (e) => {
-  e.preventDefault();
-  const { fetchit } = e.detail;
-
-  // Валидация поля
-
-  fetchit.setError('email', 'Поле email не прошла валидацию');
-});
+  const { formData, fetchit } = e.detail
+  if (!formData.get('email')) {
+    fetchit.setError('email', 'Укажите email')
+    e.preventDefault()
+  }
+})
 ```
 
-<!--@include: ../parts/validation.warning.md-->
+<!--@include: ./parts/validation.warning.md-->
 
-## disableFields()
+## setFormMessage(type, message)
 
-Данный метод устанавливает все элементы формы в состояние `disabled`.
+Показывает сообщение уровня формы.
 
-- Тип: `function (): undefined`
+- `type`: `'success'` → `[data-success]`, иначе → `[data-validation-error]`
+- парный блок скрывается
 
-## enableFields()
+```js
+fetchit.setFormMessage('success', 'Готово')
+fetchit.setFormMessage('validation', 'Проверьте поля')
+```
 
-Данный метод убирает состояние `disabled` со всех элементов формы.
+## clearFormMessages()
 
-- Тип: `function (): undefined`
+Скрывает и очищает `[data-success]` и `[data-validation-error]`.
 
-## getFields()
+## disableFields() / enableFields()
 
-Данный метод возвращает массив полей по названию.
+На время запроса скрипт сам вызывает `disable` / `enable`. Можно вызвать вручную.
 
-- Тип: `function (name: string): HTMLElement[]`
+## getFields(name)
 
-<!-- ## getErrors()
+Массив полей с `name` или `name[]`.
 
-Данный метод возвращает массив элементов-обёртков ошибок по названию поля.
+## getErrors(name)
 
-- Тип: `function (name: string): HTMLElement[]`
+Элементы `[data-error="name"]` и `[data-error="name[]"]`.
 
-## getCustomErrors()
+## getCustomErrors(name)
 
-Данный метод возвращает массив элементов у которых есть `data-custom="*"` по названию поля.
-
-- Тип: `function (name: string): HTMLElement[]` -->
+Элементы `[data-custom="name"]`.

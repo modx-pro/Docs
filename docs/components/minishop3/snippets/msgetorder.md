@@ -8,14 +8,17 @@ title: msGetOrder
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **id** | | ID или UUID заказа (приоритетнее GET) |
 | **tpl** | `tpl.msGetOrder` | Чанк оформления заказа |
 | **includeThumbs** | | Превью изображений товаров через запятую |
 | **includeContent** | `false` | Включить поле content товаров |
-| **payStatus** | `1` | Статусы для показа ссылки оплаты (через запятую) |
+| **includeTVs** | | TV товаров через запятую (pdoTools, `joinTVsTo` = `msProduct`) |
+| **payStatus** | `1` | CSV ID статусов, для которых показывать `payment_link`. Дефолт `1` = черновик; после оформления заказ обычно в `ms3_status_new` (часто `2`) — укажите нужные ID явно |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
 | **showLog** | `false` | Показать лог выполнения |
+
+Сниппет **не** поддерживает `return`: результат — HTML чанка или плейсхолдер через `toPlaceholder`. Дополнительные `where`, `leftJoin`, `select` из pdoTools можно передать как JSON-параметры.
 
 ## Определение заказа
 
@@ -26,7 +29,7 @@ title: msGetOrder
 3. Пустой результат, если заказ не найден
 
 ::: tip UUID доступ
-Можно передать UUID заказа (36 символов) вместо числового ID. Это полезно для публичных ссылок без авторизации.
+UUID заказа (36 символов) вместо числового ID удобен для публичных ссылок. При обращении по UUID проверка прав **не выполняется** — заказ виден любому, у кого есть ссылка. Для ЛК используйте числовой ID или авторизацию покупателя.
 :::
 
 ## Проверка доступа
@@ -34,10 +37,10 @@ title: msGetOrder
 Заказ будет показан если выполняется любое из условий:
 
 - Заказ находится в сессии пользователя (`$_SESSION['ms3']['orders']`)
-- `user_id` заказа совпадает с текущим пользователем
+- `user_id` заказа совпадает с текущим пользователем MODX
 - `customer_id` заказа совпадает с текущим customer (по токену)
 - Пользователь авторизован в админке (mgr context)
-- Доступ по UUID заказа
+- Запрос по UUID (36 символов) — **без проверки владельца**
 
 ## Примеры
 
@@ -91,7 +94,7 @@ title: msGetOrder
 В чанк передаются следующие объекты:
 
 | Плейсхолдер | Тип | Описание |
-|-------------|-----|----------|
+| --- | --- | --- |
 | `{$order}` | array | Данные заказа |
 | `{$products}` | array | Массив товаров заказа |
 | `{$address}` | array | Адрес доставки |
@@ -103,30 +106,32 @@ title: msGetOrder
 ### Объект order
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `{$order.id}` | ID заказа |
 | `{$order.num}` | Форматированный номер (MS-00015) |
 | `{$order.uuid}` | UUID заказа |
 | `{$order.status_id}` | ID статуса |
-| `{$order.status_name}` | Название статуса |
-| `{$order.status_color}` | Цвет статуса |
 | `{$order.cost}` | Общая стоимость |
 | `{$order.cart_cost}` | Стоимость товаров |
 | `{$order.delivery_cost}` | Стоимость доставки |
 | `{$order.weight}` | Общий вес |
 | `{$order.createdon}` | Дата создания |
 | `{$order.updatedon}` | Дата обновления |
-| `{$order.comment}` | Комментарий к заказу |
+| `{$order.order_comment}` | Комментарий к заказу |
 | `{$order.user_id}` | ID пользователя MODX |
 | `{$order.customer_id}` | ID покупателя |
+
+`msGetOrder` отдаёт `$msOrder->toArray()`: полей `status_name` / `status_color` в объекте нет (в отличие от ЛК `msCustomer`). Название статуса берите из связи Status или отдельным запросом.
 
 ### Объект address
 
 | Поле | Описание |
-|------|----------|
-| `{$address.receiver}` | ФИО получателя |
+| --- | --- |
+| `{$address.first_name}` | Имя |
+| `{$address.last_name}` | Фамилия |
 | `{$address.phone}` | Телефон |
 | `{$address.email}` | Email |
+| `{$address.comment}` | Комментарий к адресу |
 | `{$address.index}` | Почтовый индекс |
 | `{$address.country}` | Страна |
 | `{$address.region}` | Регион/область |
@@ -138,7 +143,7 @@ title: msGetOrder
 ### Объект delivery
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `{$delivery.id}` | ID доставки |
 | `{$delivery.name}` | Название |
 | `{$delivery.description}` | Описание |
@@ -148,7 +153,7 @@ title: msGetOrder
 ### Объект payment
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `{$payment.id}` | ID оплаты |
 | `{$payment.name}` | Название |
 | `{$payment.description}` | Описание |
@@ -157,13 +162,17 @@ title: msGetOrder
 ### Объект total
 
 | Поле | Описание |
-|------|----------|
-| `{$total.cost}` | Общая стоимость (форматировано) |
-| `{$total.cart_cost}` | Стоимость товаров (форматировано) |
-| `{$total.delivery_cost}` | Стоимость доставки (форматировано) |
-| `{$total.weight}` | Общий вес (форматировано) |
+| --- | --- |
+| `{$total.cost}` | Итого к оплате (число) |
+| `{$total.cost_formatted}` | Итого с валютой |
+| `{$total.cart_cost}` | Стоимость товаров (число) |
+| `{$total.cart_cost_formatted}` | Стоимость товаров с валютой |
+| `{$total.delivery_cost}` | Стоимость доставки (число) |
+| `{$total.delivery_cost_formatted}` | Доставка с валютой |
+| `{$total.weight}` / `{$total.cart_weight}` | Общий вес (число) |
+| `{$total.weight_formatted}` | Вес с единицей |
 | `{$total.cart_count}` | Количество товаров |
-| `{$total.cart_discount}` | Сумма скидки |
+| `{$total.cart_discount}` | Сумма скидки (число) |
 
 ### Массив products
 
@@ -176,7 +185,7 @@ title: msGetOrder
 Для каждого товара:
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `{$product.id}` | ID ресурса товара |
 | `{$product.product_id}` | ID товара |
 | `{$product.order_product_id}` | ID записи в заказе |
@@ -184,15 +193,16 @@ title: msGetOrder
 | `{$product.pagetitle}` | Заголовок ресурса |
 | `{$product.article}` | Артикул |
 | `{$product.count}` | Количество |
-| `{$product.price}` | Цена (форматировано) |
-| `{$product.old_price}` | Старая цена (форматировано) |
-| `{$product.cost}` | Сумма (форматировано) |
-| `{$product.weight}` | Вес (форматировано) |
-| `{$product.discount_price}` | Скидка на единицу |
-| `{$product.discount_cost}` | Скидка на позицию |
-| `{$product.options}` | Опции товара (массив) |
+| `{$product.price}` | Цена за единицу (число) |
+| `{$product.old_price}` | Старая цена (число) |
+| `{$product.cost}` | Сумма по строке (число) |
+| `{$product.weight}` | Вес (число) |
+| `{$product.discount_price}` | Скидка на единицу (число) |
+| `{$product.discount_cost}` | Скидка на позицию (число) |
+| `{$product.price_formatted}`, `{$product.cost_formatted}`, `{$product.weight_formatted}` и др. | Форматированный вывод с валютой/единицей |
+| `{$product.options}` | Опции позиции заказа (массив) |
+| `{$product.option.color}` | Значение опции как отдельное поле (`option.{ключ}`) |
 | `{$product.thumb}` | Превью (если includeThumbs) |
-| `{$product.small}` | Превью small (если includeThumbs) |
 
 ## Чанк по умолчанию
 
@@ -204,7 +214,7 @@ title: msGetOrder
     <div class="card-header bg-primary text-white">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Заказ №{$order.num}</h5>
-            <span class="badge bg-light text-dark">{$order.status_name ?: 'Новый'}</span>
+            <span class="badge bg-light text-dark">{$order.status_id}</span>
         </div>
     </div>
     <div class="card-body">
@@ -300,15 +310,15 @@ title: msGetOrder
 </div>
 
 {* Контактные данные *}
-{if $address.receiver || $address.phone}
+{if $address.first_name || $address.phone}
     <div class="card bg-light">
         <div class="card-body">
             <h6>Контактные данные</h6>
             <div class="row g-3">
-                {if $address.receiver?}
+                {if $address.first_name?}
                     <div class="col-md-6">
                         <small class="text-muted">Получатель</small>
-                        <div class="fw-semibold">{$address.receiver}</div>
+                        <div class="fw-semibold">{$address.first_name} {$address.last_name}</div>
                     </div>
                 {/if}
                 {if $address.phone?}
@@ -334,10 +344,10 @@ title: msGetOrder
                         </div>
                     </div>
                 {/if}
-                {if $order.comment?}
+                {if $order.order_comment?}
                     <div class="col-12">
                         <small class="text-muted">Комментарий</small>
-                        <div>{$order.comment}</div>
+                        <div>{$order.order_comment}</div>
                     </div>
                 {/if}
             </div>
@@ -350,13 +360,13 @@ title: msGetOrder
 
 Ссылка на оплату `{$payment_link}` появляется если:
 
-1. У способа оплаты указан класс обработчика (`class`)
-2. Статус заказа входит в список `payStatus` (по умолчанию `1`)
-3. Обработчик возвращает ссылку через метод `getPaymentLink()`
+1. У способа оплаты указан класс обработчика (`class`) с методом, возвращающим URL
+2. Статус заказа входит в список допустимых: параметр сниппета `payStatus` (CSV) или системная настройка `ms3_payment_link_statuses` (fallback — `ms3_status_new`)
+3. Заказ не финальный и не в статусе «оплачен» — логика `PaymentLinkResolver::isStatusEligibleForPaymentLink()`
 
 ```fenom
 {'msGetOrder' | snippet : [
-    'payStatus' => '1,2,3'  {* Показывать ссылку для статусов 1, 2, 3 *}
+    'payStatus' => '2,3'  {* обычно после submit статус = ms3_status_new (2) *}
 ]}
 ```
 

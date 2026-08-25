@@ -1,24 +1,27 @@
+---
+title: Migration from AjaxForm
+description: "Moving from AjaxForm to FetchIt: selectors, JSON success, events without jQuery"
+---
+
 # Migration from AjaxForm
 
-This section describes how to migrate from **AjaxForm** to **FetchIt**.
+Checklist for replacing AjaxForm with FetchIt: styles, toasts, snippet call, markup, custom handler, and JS events.
 
 ## Styles
 
-**FetchIt** does not register any styles. Your layout should already define styles for invalid field state and add them to the system settings [`fetchit.frontend.input.invalid.class`](/en/components/fetchit/settings#fetchitfrontendinputinvalidclass) and [`fetchit.frontend.custom.invalid.class`](/en/components/fetchit/settings#fetchitfrontendcustominvalidclass).
+FetchIt does not load CSS. Set invalid-field classes in [`fetchit.frontend.input.invalid.class`](/en/components/fetchit/settings#fetchitfrontendinputinvalidclass) and, if needed, [`fetchit.frontend.custom.invalid.class`](/en/components/fetchit/settings#fetchitfrontendcustominvalidclass). Keep the styles in your site theme.
 
 ## Notifications
 
-Unlike **AjaxForm**, which bundles **jGrowl**, FetchIt lets you add any notification library or your own with a few lines of code.
+AjaxForm ships jGrowl. In FetchIt toasts are optional: enable Notyf (`fetchit.frontend.default.notifier`) or plug in your own library.
 
-This documentation has a section on integrating popular (and other) libraries.
-
-[Notification examples](/en/components/fetchit/examples/notifications/).
+[Examples](/en/components/fetchit/examples/notifications/).
 
 ## Snippet call
 
-The **FetchIt** snippet keeps the main parameters the same; some have been moved to [system settings](/en/components/fetchit/settings).
+Main parameters (`form`, `snippet`, `actionUrl`, `clearFieldsOnSuccess`) stay the same. The JS path and class name moved to [system settings](/en/components/fetchit/settings). Parameters `frontend_css` and `formSelector` are gone.
 
-:::code-group
+::: code-group
 
 ```modx
 [[!FetchIt?
@@ -34,7 +37,7 @@ The **FetchIt** snippet keeps the main parameters the same; some have been moved
 ```
 
 ```fenom
-{'!FetchIt' | snippet: [
+{'!FetchIt' | snippet : [
   'form' => 'chunk name',
   'snippet' => 'FormIt',
   'actionUrl' => '[[+assetsUrl]]action.php',
@@ -50,7 +53,13 @@ The **FetchIt** snippet keeps the main parameters the same; some have been moved
 
 ## Form markup
 
-The form structure is the same; only the [selectors](/en/components/fetchit/selectors) changed. Below is the form chunk that ships with **AjaxForm** and the required changes:
+Error selectors: use `[data-error="name"]` instead of `.error_name`. The `ajax_form` class is not needed: the snippet adds `data-fetchit`.
+
+From **1.1.3**, for AJAX add `[data-success]` and `[data-validation-error]` (see [selectors](/en/components/fetchit/selectors)). With AjaxForm, `[[+fi.successMessage]]` after a reload was often enough.
+
+AjaxForm chunk → FetchIt:
+
+::: code-group
 
 ```modx
 <form action="[[~[[*id]]]]" method="post" class="ajax_form"> // [!code --]
@@ -83,6 +92,9 @@ The form structure is the same; only the [selectors](/en/components/fetchit/sele
     </div>
   </div>
 
+  <div role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+
   <div class="form-group">
     <div class="controls">
       <button type="reset" class="btn btn-default">Reset</button>
@@ -92,9 +104,58 @@ The form structure is the same; only the [selectors](/en/components/fetchit/sele
 </form>
 ```
 
+```fenom
+<form action="{$_modx->resource.id | url}" method="post" class="ajax_form"> // [!code --]
+<form action="{$_modx->resource.id | url}" method="post"> // [!code ++]
+
+  <div class="form-group">
+    <label class="control-label">Name</label>
+    <div class="controls">
+      <input type="text" name="name" value="{$_modx->getPlaceholder('fi.name')}" class="form-control"/>
+      <span class="error_name">{$_modx->getPlaceholder('fi.error.name')}</span> // [!code --]
+      <span data-error="name">{$_modx->getPlaceholder('fi.error.name')}</span> // [!code ++]
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label">Email</label>
+    <div class="controls">
+      <input type="email" name="email" value="{$_modx->getPlaceholder('fi.email')}" class="form-control"/>
+      <span class="error_email">{$_modx->getPlaceholder('fi.error.email')}</span> // [!code --]
+      <span data-error="email">{$_modx->getPlaceholder('fi.error.email')}</span> // [!code ++]
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label">Message</label>
+    <div class="controls">
+      <textarea name="message" class="form-control" rows="5">{$_modx->getPlaceholder('fi.message')}</textarea>
+      <span class="error_message">{$_modx->getPlaceholder('fi.error.message')}</span> // [!code --]
+      <span data-error="message">{$_modx->getPlaceholder('fi.error.message')}</span> // [!code ++]
+    </div>
+  </div>
+
+  <div role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+
+  <div class="form-group">
+    <div class="controls">
+      <button type="reset" class="btn btn-default">Reset</button>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
+</form>
+```
+
+:::
+
+## Custom snippet instead of FormIt
+
+AjaxForm expected JSON with key `status` (0/1). FetchIt expects `success` (bool). From 1.1.3 the component object is not passed in `$scriptProperties`: get it via `getService`. Example: [custom snippet](/en/components/fetchit/snippets/custom).
+
 ## Client-side validation
 
-If you had client-side validation like this:
+Before (jQuery + AjaxForm):
 
 ```js
 $(document).on('submit', '.ajax_form', function() {
@@ -103,68 +164,52 @@ $(document).on('submit', '.ajax_form', function() {
 });
 ```
 
-Rewrite it as:
+After:
 
 ```js
 document.addEventListener('fetchit:before', (e) => {
-  const { form, fetchit } = e.detail; // Get form and FetchIt instance
+  const { form, fetchit } = e.detail
 
   // Validation code
 
   // If validation failed
-  fetchit.setError('field_name', 'Error message'); // Optional
-  e.preventDefault();
-
-  // If passed, we can do nothing
-});
+  fetchit.setError('field_name', 'Error message') // optional
+  e.preventDefault()
+})
 ```
 
 <!--@include: ./parts/validation.warning.md-->
 
 ## Event `af_complete`
 
-**AjaxForm** has one event that fires after the server response. The equivalent is [`fetchit:after`](/en/components/fetchit/frontend/events#fetchitafter).
-
-::: info Remember
-[`fetchit:after`](/en/components/fetchit/frontend/events#fetchitafter) fires in all cases after the server response, regardless of status.
-
-To run code based on status, use [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) and [`fetchit:error`](/en/components/fetchit/frontend/events#fetchiterror).
-:::
+AjaxForm has one event after the server response. Equivalent: [`fetchit:after`](/en/components/fetchit/frontend/events#fetchitafter). It fires on both success and error. For branching use [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) and [`fetchit:error`](/en/components/fetchit/frontend/events#fetchiterror).
 
 Before:
 
 ```js
 $(document).on('af_complete', function(event, response) {
-  var form = response.form;
-  // If form has a specific id
+  var form = response.form
   if (form.attr('id') == 'my_form_3') {
-    // Hide it!
-    form.hide();
-  }
-  // Otherwise log the response
-  else {
+    form.hide()
+  } else {
     console.log(response)
   }
-});
+})
 ```
 
 After:
 
 ```js
 document.addEventListener('fetchit:after', (e) => {
-  const { form, response } = e.detail;
-  // If form has a specific id
+  const { form, response } = e.detail
   if (form.getAttribute('id') === 'my_form_3') {
-    // Hide it!
-    form.style.display = 'none';
+    form.style.display = 'none'
+  } else {
+    console.log(response)
   }
-  // Otherwise log the response
-  else {
-    console.log(response);
-  }
-});
+})
 ```
 
-:::warning Note
-**FetchIt** events do not use **jQuery** objects, so **form** does not have **attr()** or **hide()**. Use native DOM APIs.
+::: warning
+`detail.form` is a native `HTMLFormElement`, not a jQuery object. It has no `attr()` or `hide()` methods.
 :::

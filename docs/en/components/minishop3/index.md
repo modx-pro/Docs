@@ -27,6 +27,8 @@ items: [
   {
     text: 'Manager interface',
     items: [
+      { text: 'Orders', link: 'interface/orders' },
+      { text: 'Customers', link: 'interface/customers' },
       { text: 'Category', link: 'interface/category' },
       { text: 'Product', link: 'interface/product' },
       { text: 'Gallery', link: 'interface/gallery' },
@@ -57,6 +59,19 @@ items: [
     ],
   },
   {
+    text: 'Manager cookbooks',
+    link: 'manager/',
+    items: [
+      { text: 'Overview', link: 'manager/' },
+      { text: 'Custom order field', link: 'manager/examples/order-custom-field' },
+      { text: 'Custom product field', link: 'manager/examples/product-extra-field' },
+      { text: 'Extra fields', link: 'manager/extra-fields/cookbook' },
+      { text: 'Model fields', link: 'manager/model-fields/cookbook' },
+      { text: 'Product fields', link: 'manager/product-fields/cookbook' },
+      { text: 'Grid columns', link: 'manager/grid-config/cookbook' },
+    ],
+  },
+  {
     text: 'Frontend interface',
     items: [
       { text: 'Catalog', link: 'frontend/catalog' },
@@ -67,6 +82,7 @@ items: [
       {
         text: 'Customer account',
         items: [
+          { text: 'Login and registration', link: 'frontend/customer-auth' },
           { text: 'Customer profile', link: 'frontend/customer-profile' },
           { text: 'Shipping addresses', link: 'frontend/customer-addresses' },
           { text: 'Order history', link: 'frontend/customer-orders' },
@@ -93,6 +109,7 @@ items: [
           { text: 'Vendor', link: 'development/events/vendor' },
           { text: 'Notifications', link: 'development/events/notifications' },
           { text: 'Import', link: 'development/events/import' },
+          { text: 'msProducts', link: 'development/events/msproducts' },
           { text: 'Manager', link: 'development/events/manager' },
         ],
       },
@@ -100,6 +117,8 @@ items: [
       { text: 'API Router', link: 'development/routing' },
       { text: 'JavaScript API', link: 'development/javascript' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
+      { text: 'Product tabs', link: 'development/product-tabs-integration' },
+      { text: 'Order tabs', link: 'development/order-tabs-integration' },
       { text: 'Scheduler', link: 'development/scheduler' },
       { text: 'Models and database schema', link: 'development/models' },
       { text: 'Service layer', link: 'development/services' },
@@ -134,7 +153,7 @@ MiniShop3 is designed specifically for MODX Revolution 3.x and takes full advant
 
 ### Improved architecture
 
-- **REST API** — full-featured API for headless integrations
+- **REST API** — Web API `api.php` (`/api/v1/*`) for storefront and headless: cart, order, account, public catalog. [Docs](/en/components/minishop3/development/api)
 - **Service Container** — dependencies via MODX DI container
 - **Vue 3 + PrimeVue** — modern Manager UI via [VueTools](/en/components/vuetools/)
 - **Modern frontend** — no jQuery, native JavaScript
@@ -144,13 +163,14 @@ MiniShop3 is designed specifically for MODX Revolution 3.x and takes full advant
 MiniShop3 maintains backward compatibility with miniShop2 at the level of:
 
 - Snippet names (`msProducts`, `msCart`, `msOrder`, etc.)
-- Chunk and placeholder structure
-- Snippet parameters
+- Main snippet parameters
+
+Model fields and placeholders differ: no `receiver`, order comment is `order_comment`, stock is `stock`, cart line key is `product_key`. Details: [Differences from miniShop2](/en/components/minishop3/differences-from-ms2).
 
 ## System requirements
 
 | Requirement | Version |
-|-------------|---------|
+| --- | --- |
 | MODX Revolution | 3.0.0+ |
 | PHP | 8.1+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
@@ -170,7 +190,7 @@ MiniShop3 uses Vue 3 for the modern Manager interface. The **[VueTools](/en/comp
 MiniShop3 uses the following PHP libraries (included in the package):
 
 | Library | Version | Purpose |
-|---------|---------|---------|
+| --- | --- | --- |
 | [nikic/fast-route](https://github.com/nikic/FastRoute) | ^1.3 | REST API routing |
 | [rakit/validation](https://github.com/rakit/validation) | ^1.4 | Form and API data validation |
 | [intervention/image](https://image.intervention.io/) | ^3.0 | Image processing (resize, watermarks) |
@@ -277,7 +297,7 @@ assets/components/minishop3/
 ├── api.php                 # REST API entry point
 ├── connector.php           # Manager AJAX connector
 ├── js/
-│   ├── mgr/                # Manager JavaScript (ExtJS)
+│   ├── mgr/                # Manager JS (Vue bundles + legacy Ext resource)
 │   └── web/                # Site JavaScript (native JS)
 ├── css/
 │   ├── mgr/                # Manager styles

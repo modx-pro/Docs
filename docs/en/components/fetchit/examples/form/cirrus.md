@@ -1,6 +1,11 @@
-# Form with Cirrus CSS
+---
+title: Cirrus CSS form
+description: FetchIt for Cirrus with input-error text-danger and form messages
+---
 
-In [Cirrus CSS](https://cirrus-ui.netlify.app/) the invalid state uses two classes: `input-error` and `text-danger`. FetchIt supports this.
+# Cirrus CSS form
+
+In [Cirrus CSS](https://cirrus-ui.netlify.app/), invalid fields need two classes: `input-error` and `text-danger`. Set both in `fetchit.frontend.input.invalid.class`, separated by a space.
 
 ```html
 <form>
@@ -27,15 +32,18 @@ In [Cirrus CSS](https://cirrus-ui.netlify.app/) the invalid state uses two class
 </form>
 ```
 
-To set it up:
+Steps:
 
-1. Add the `data-error="*"` to elements that will display error text.
-2. For FormIt compatibility add placeholders for values and errors.
-3. In Cirrus CSS the invalid state uses two classes `input-error` and `text-danger`, so set them in system setting `fetchit.frontend.input.invalid.class` separated by a space.
+1. Add `data-error` for error text.
+2. Add `[data-success]` and `[data-validation-error]` for AJAX.
+3. Add FormIt placeholders.
+4. Set `fetchit.frontend.input.invalid.class` to `input-error text-danger`.
 
-::: info Important
-Markup validators complain about an empty `action`, so set the page URL there.
+::: info
+Set `action` to the page URL.
 :::
+
+::: code-group
 
 ```modx
 <form> // [!code --]
@@ -58,6 +66,12 @@ Markup validators complain about an empty `action`, so set the page URL there.
       <small class="text-danger" data-error="email">[[+fi.error.email]]</small> // [!code ++]
     </div>
   </div>
+  <div class="row"> // [!code ++]
+    <div class="col-12"> // [!code ++]
+      <div class="toast toast--success" role="alert" data-success style="display: none;"></div> // [!code ++]
+      <div class="toast toast--error" role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+    </div> // [!code ++]
+  </div> // [!code ++]
   <div class="row">
     <div class="col-12">
       <input type="submit" class="btn-primary">
@@ -66,3 +80,41 @@ Markup validators complain about an empty `action`, so set the page URL there.
   </div>
 </form>
 ```
+
+```fenom
+<form> // [!code --]
+<form action="{$_modx->resource.id | url}" method="post"> // [!code ++]
+  <div class="row">
+    <div class="col-12">
+      <label>Name</label>
+      <input type="text" name="name" value=""> // [!code --]
+      <input type="text" name="name" value="{$_modx->getPlaceholder('fi.name')}"> // [!code ++]
+      <small class="text-danger"></small> // [!code --]
+      <small class="text-danger" data-error="name">{$_modx->getPlaceholder('fi.error.name')}</small> // [!code ++]
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <label>Email</label>
+      <input type="email" name="email" value=""> // [!code --]
+      <input type="email" name="email" value="{$_modx->getPlaceholder('fi.email')}"> // [!code ++]
+      <small class="text-danger"></small> // [!code --]
+      <small class="text-danger" data-error="email">{$_modx->getPlaceholder('fi.error.email')}</small> // [!code ++]
+    </div>
+  </div>
+  <div class="row"> // [!code ++]
+    <div class="col-12"> // [!code ++]
+      <div class="toast toast--success" role="alert" data-success style="display: none;"></div> // [!code ++]
+      <div class="toast toast--error" role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+    </div> // [!code ++]
+  </div> // [!code ++]
+  <div class="row">
+    <div class="col-12">
+      <input type="submit" class="btn-primary">
+      <input type="reset" class="btn-default">
+    </div>
+  </div>
+</form>
+```
+
+:::

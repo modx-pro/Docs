@@ -1,8 +1,13 @@
+---
+title: AlertifyJS
+description: AlertifyJS notifications for FetchIt via CDN and FetchIt.Message
+---
+
 # AlertifyJS
 
-This section shows how to integrate [AlertifyJS](https://alertifyjs.com/) for displaying messages.
+[AlertifyJS](https://alertifyjs.com/): dialogs and toasts in plain JS.
 
-- First include the framework script and styles; for example via CDN:
+## CDN setup
 
 ```html
 <!-- JavaScript -->
@@ -14,32 +19,32 @@ This section shows how to integrate [AlertifyJS](https://alertifyjs.com/) for di
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1/build/css/themes/default.min.css"/>
 ```
 
-- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
+Set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      alertify.success(message);
+      alertify.success(message)
     },
     error(message) {
-      alertify.error(message);
+      alertify.error(message)
     },
   }
-});
+})
 ```
 
-- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
+In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    alertify.success(message);
+    alertify.success(message)
   },
   error(message) {
-    alertify.error(message);
+    alertify.error(message)
   },
 }
 ```
 
-Done! With these steps you integrate **AlertifyJS**.
+Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).

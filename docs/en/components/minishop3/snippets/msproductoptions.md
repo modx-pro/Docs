@@ -8,13 +8,13 @@ Extended snippet for outputting all or filtered product options with full inform
 ## Parameters
 
 | Parameter | Default | Description |
-|-----------|---------|-------------|
+| --- | --- | --- |
 | **product** | current resource | Product ID |
 | **tpl** | `tpl.msProductOptions` | Layout chunk |
 | **onlyOptions** | | Output only the specified options (comma-separated) |
 | **ignoreOptions** | | Ignore the specified options |
-| **groups** | | Output only options from the specified groups |
-| **ignoreGroups** | | Ignore the specified groups |
+| **groups** | | Only options from groups (`group_name` from msOptionGroup, comma-separated) |
+| **ignoreGroups** | | Exclude groups (`group_name`) |
 | **sortOptions** | | Option sort order (comma-separated) |
 | **sortGroups** | | Group sort order (comma-separated) |
 | **sortOptionValues** | | Sort values within options (see [msOptions](msoptions#sorting-option-values)) |
@@ -23,6 +23,8 @@ Extended snippet for outputting all or filtered product options with full inform
 ::: tip Auto sort
 If `onlyOptions` is set but `sortOptions` is not, options are automatically sorted in the order given in `onlyOptions`.
 :::
+
+Options with an empty `value` are **not** included in the output. Parameters `groups` / `ignoreGroups` match the `group_name` string from msOptionGroup (case-sensitive).
 
 ### Deprecated parameters
 
@@ -134,13 +136,13 @@ The option name (`color`, `size`, `weight`) is the array key, not a field inside
 ## Placeholders in chunk
 
 | Placeholder | Description |
-|-------------|-------------|
+| --- | --- |
 | `{$options}` | Associative array of product options |
 
 ### Fields per option
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `{$option.caption}` | Option label (human-readable) |
 | `{$option.value}` | Value (string or array) |
 | `{$option.category}` | Option group key |
@@ -275,7 +277,7 @@ When options are selectable (for example, color and size):
 ## When to use
 
 | Suitable | Not suitable |
-|----------|--------------|
+| --- | --- |
 | You need ALL product options | Only 2–3 specific options needed |
 | Metadata is required | Maximum speed matters |
 | Filtering by groups | Simple fixed list |

@@ -12,7 +12,7 @@ title: События заказа
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Значение поля |
 | `draft` | `msOrder` \| `null` | Текущий черновик заказа (может отсутствовать на самом первом шаге) |
@@ -68,7 +68,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Валидированное значение |
 | `draft` | `msOrder` \| `null` | Текущий черновик заказа |
@@ -106,7 +106,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Значение для валидации |
 | `orderData` | `array` | Снимок текущих полей заказа (доступ к смежным значениям, например к `delivery_id` при валидации `payment_id`) |
@@ -140,7 +140,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Валидированное значение |
 
@@ -173,7 +173,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `key` | `string` | Ключ поля |
 | `value` | `mixed` | Невалидное значение |
 | `error` | `array` | Массив ошибок `['field' => 'сообщение']` |
@@ -228,7 +228,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `key` | `string` | Ключ удаляемого поля |
 | `draft` | `msOrder` | Текущий черновик заказа |
 
@@ -259,7 +259,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `key` | `string` | Ключ удалённого поля |
 | `draft` | `msOrder` | Текущий черновик заказа |
 
@@ -283,6 +283,49 @@ switch ($modx->event->name) {
 
 ---
 
+## msOnBeforeEmptyOrder
+
+Вызывается **перед** очисткой черновика заказа (`OrderDraftManager::clean`, API/контроллер `order/clean`). Плагин может прервать очистку через `$modx->event->output(...)`.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `draft` | `msOrder` | Черновик, который сейчас очищают |
+
+### Что остаётся после очистки
+
+Ядро обнуляет поля адреса и заказа, кроме служебных: у адреса — `id`, `order_id`, `user_id`, `createdon`; у заказа — `id`, `user_id`, `token`, `status_id`, `createdon`.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeEmptyOrder':
+        /** @var \MiniShop3\Model\msOrder $draft */
+        $draft = $scriptProperties['draft'];
+
+        if ($draft->get('delivery_id') && /* ваш флаг «заказ в логистике» */) {
+            $modx->event->output('Черновик нельзя очистить: доставка уже зарезервирована');
+            return;
+        }
+        break;
+}
+```
+
+---
+
+## msOnEmptyOrder
+
+Вызывается **после** очистки полей черновика — поля адреса и заказа к этому моменту уже обнулены и сохранены в БД. Ошибка плагина (`output`) переворачивает флаг успеха, который получит вызывающий код, но **не откатывает** уже сохранённые изменения — БД остаётся очищенной независимо от результата события.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `draft` | `msOrder` | Черновик уже с обнулёнными полями |
+
+---
+
 ## msOnSubmitOrder
 
 Вызывается при **отправке** заказа (нажатие кнопки «Оформить»). Позволяет проверить данные и добавить дополнительную информацию.
@@ -290,7 +333,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Обработчик сабмита заказа |
 | `draft` | `msOrder` | Черновик заказа на момент отправки |
 | `orderData` | `array` | Снимок текущих полей заказа (включая адресные) |
@@ -351,20 +394,38 @@ switch ($modx->event->name) {
 
 ## msOnBeforeCreateOrder
 
-Вызывается **перед** финальным созданием заказа (присвоением статуса «Новый»). Срабатывает в двух сценариях — при сабмите заказа покупателем (`OrderSubmitHandler`) и при финализации черновика менеджером в админке (`OrderFinalizeService`).
+Вызывается **перед** финальным созданием заказа (присвоением статуса «Новый»). Три сценария:
+
+1. Сабмит на витрине — `OrderSubmitHandler` (в params **нет** `origin` / `from_manager`; есть `handler`, `customFields`)
+2. Финализация в админке — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
+3. Программное создание — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrder` | `msOrder` | Объект заказа (присутствует всегда) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только при сабмите с фронтенда |
-| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только при финализации из админки |
-| `from_manager` | `bool` | Только при финализации из админки — всегда `true` |
-| `customFields` | `array` | Только при сабмите с фронтенда — кастомные валидированные поля из `properties._validated` |
+| --- | --- | --- |
+| `msOrder` | `msOrder` | Объект заказа (всегда) |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только сабмит с витрины |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только finalize-пути (менеджер / integration) |
+| `origin` | `string` | Только finalize-пути: `manager` \| `integration` (константы `OrderOrigin`) |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true` при `origin=manager`, `false` при `origin=integration`); отсутствует только на витринном сабмите |
+| `customFields` | `array` | Только витрина — поля из `properties._validated` |
 
 ::: tip Различение сценариев
-Удобный способ понять, откуда пришёл вызов — проверить наличие ключа: `if (!empty($scriptProperties['from_manager']))` — менеджерский путь, иначе — фронтенд.
+
+```php
+$origin = $scriptProperties['origin'] ?? null;
+$fromManager = !empty($scriptProperties['from_manager']);
+
+if ($fromManager) {
+    // карточка заказа в mgr
+} elseif ($origin === \MiniShop3\Services\Order\OrderOrigin::INTEGRATION) {
+    // ProgrammaticOrderService / cron
+} elseif (!empty($scriptProperties['handler'])) {
+    // витрина
+}
+```
+
 :::
 
 ### Прерывание операции
@@ -376,11 +437,14 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrder $order */
         $order = $scriptProperties['msOrder'];
 
-        // Проверка наличия товаров на складе
+        // Проверка остатка на складе (поле msProductData.stock, доступно через msProduct::get)
         foreach ($order->getMany('Products') as $product) {
             $msProduct = $product->getOne('Product');
-            $remains = $msProduct->get('remains') ?? 0;
-            if ($product->get('count') > $remains) {
+            if (!$msProduct) {
+                continue;
+            }
+            $stock = (float) ($msProduct->get('stock') ?? 0);
+            if ($product->get('count') > $stock) {
                 $modx->event->output(sprintf(
                     'Товар "%s" недоступен в нужном количестве',
                     $msProduct->get('pagetitle')
@@ -412,17 +476,18 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Вызывается **после** успешного создания заказа. Парный к `msOnBeforeCreateOrder` — срабатывает в тех же двух сценариях (сабмит покупателя / финализация менеджером) и принимает тот же набор параметров.
+Вызывается **после** успешного создания заказа. Парный к `msOnBeforeCreateOrder` — те же три сценария и тот же набор параметров (на витрине без `origin`).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrder` | `msOrder` | Созданный заказ (присутствует всегда) |
-| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только при сабмите с фронтенда |
-| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Только при финализации из админки |
-| `from_manager` | `bool` | Только при финализации из админки — всегда `true` |
-| `customFields` | `array` | Только при сабмите с фронтенда |
+| --- | --- | --- |
+| `msOrder` | `msOrder` | Созданный заказ (всегда) |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Только витрина |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Менеджер или integration |
+| `origin` | `string` | Только finalize-пути |
+| `from_manager` | `bool` | Присутствует на обоих finalize-путях (`true`/`false`), отсутствует только на витрине |
+| `customFields` | `array` | Только витрина |
 
 ### Пример использования
 
@@ -446,8 +511,11 @@ switch ($modx->event->name) {
         // Уменьшение остатков на складе
         foreach ($order->getMany('Products') as $product) {
             $msProduct = $product->getOne('Product');
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', max(0, $remains - $product->get('count')));
+            if (!$msProduct) {
+                continue;
+            }
+            $stock = (float) ($msProduct->get('stock') ?? 0);
+            $msProduct->set('stock', max(0, $stock - $product->get('count')));
             $msProduct->save();
         }
 
@@ -507,15 +575,16 @@ switch ($modx->event->name) {
 Вызывается **перед** финализацией заказа из админки (когда менеджер превращает черновик в полноценный заказ — кнопка «Оформить» в карточке заказа в админке). Это менеджерский аналог `msOnSubmitOrder`.
 
 ::: tip Связка с msOnBeforeCreateOrder
-После `msOnBeforeMgrCreateOrder` всё равно срабатывает универсальное `msOnBeforeCreateOrder` с теми же тремя параметрами. Используйте `msOnBeforeMgrCreateOrder`, если нужна специфика менеджерского пути; используйте `msOnBeforeCreateOrder`, если хотите единую логику и для фронтенда, и для админки.
+После `msOnBeforeMgrCreateOrder` всё равно срабатывает универсальное `msOnBeforeCreateOrder` с теми же четырьмя параметрами (`service`, `msOrder`, `origin`, `from_manager`). Используйте `msOnBeforeMgrCreateOrder`, если нужна специфика менеджерского пути; используйте `msOnBeforeCreateOrder`, если хотите единую логику и для фронтенда, и для админки.
 :::
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Сервис финализации заказа |
 | `msOrder` | `msOrder` | Финализируемый заказ |
+| `origin` | `string` | `manager` |
 | `from_manager` | `bool` | Всегда `true` |
 
 ---
@@ -527,7 +596,8 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Сервис финализации заказа |
 | `msOrder` | `msOrder` | Финализированный заказ (статус уже изменён на «Новый») |
+| `origin` | `string` | `manager` |
 | `from_manager` | `bool` | Всегда `true` |

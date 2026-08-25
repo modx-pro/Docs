@@ -1,6 +1,11 @@
-# Form with Pico.css
+---
+title: Pico.css form
+description: FetchIt and Pico.css with aria-invalid, data-error, and form messages
+---
 
-With the framework [Pico.css](https://picocss.com/) it is simpler because the invalid state is controlled by the attribute `aria-invalid`, and our component adds it automatically. Here is a short example.
+# Pico.css form
+
+[Pico.css](https://picocss.com/) styles invalid fields via `aria-invalid`. FetchIt sets this attribute automatically. You usually do not need an invalid class in settings for Pico.
 
 ```html
 <form>
@@ -16,18 +21,21 @@ With the framework [Pico.css](https://picocss.com/) it is simpler because the in
 </form>
 ```
 
-To set it up:
+Steps:
 
-1. Add text elements with the `data-error="*"` that will display error text.
-2. For FormIt compatibility add placeholders for values and errors.
+1. Add elements with `data-error` for error text.
+2. Add `[data-success]` and `[data-validation-error]` for AJAX.
+3. Add FormIt placeholders.
 
-::: info Important
-Markup validators complain about an empty `action`, so set the page URL there.
+::: info
+Set `action` to the page URL.
 :::
+
+::: code-group
 
 ```modx
 <form> // [!code --]
-<form action="[[~[[*id]]]]"> // [!code ++]
+<form action="[[~[[*id]]]]" method="post"> // [!code ++]
   <label>
     Name
     <input type="text" name="name"> // [!code --]
@@ -40,6 +48,31 @@ Markup validators complain about an empty `action`, so set the page URL there.
     <input type="email" name="email" value="[[+fi.email]]"> // [!code ++]
     <small data-error="email">[[+fi.error.email]]</small> // [!code ++]
   </label>
+  <div role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div role="alert" data-validation-error style="display: none;"></div> // [!code ++]
   <button type="submit">Submit</button>
 </form>
 ```
+
+```fenom
+<form> // [!code --]
+<form action="{$_modx->resource.id | url}" method="post"> // [!code ++]
+  <label>
+    Name
+    <input type="text" name="name"> // [!code --]
+    <input type="text" name="name" value="{$_modx->getPlaceholder('fi.name')}"> // [!code ++]
+    <small data-error="name">{$_modx->getPlaceholder('fi.error.name')}</small> // [!code ++]
+  </label>
+  <label>
+    Email
+    <input type="email" name="email"> // [!code --]
+    <input type="email" name="email" value="{$_modx->getPlaceholder('fi.email')}"> // [!code ++]
+    <small data-error="email">{$_modx->getPlaceholder('fi.error.email')}</small> // [!code ++]
+  </label>
+  <div role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+  <button type="submit">Submit</button>
+</form>
+```
+
+:::

@@ -147,7 +147,7 @@ Option definition is stored in table `ms3_options`.
 ### msOption fields
 
 | Field | Type | Default | Description |
-|-------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `key` | varchar(191) | '' | Unique key (letters, digits, hyphen, underscore) |
 | `caption` | varchar(191) | '' | Display name |
 | `description` | text | null | Description |
@@ -159,6 +159,7 @@ Option definition is stored in table `ms3_options`.
 ### Key validation
 
 Option key must:
+
 - Contain only Latin letters, digits, hyphen, underscore
 - Not start with a digit or space
 - Not match reserved field names (`id`, `type`, `price`, `weight`, `image`, `published`, and other `modResource` fields)
@@ -192,7 +193,7 @@ Option–category link. Table `ms3_category_options`.
 ### msCategoryOption fields
 
 | Field | Type | Default | Description |
-|-------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `option_id` | integer | 0 | Option ID (part of PK) |
 | `category_id` | integer | 0 | Category ID (part of PK) |
 | `position` | integer | 0 | Sort order |
@@ -249,7 +250,7 @@ Option value for a product. Table `ms3_product_options`. One row per value. For 
 ### msProductOption fields
 
 | Field | Type | Default | Description |
-|-------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `product_id` | integer | null | Product ID |
 | `key` | varchar(191) | null | Option key |
 | `value` | text | '' | Value |
@@ -366,7 +367,7 @@ Legacy processors `Processors/Settings/Option/*` and `Processors/Category/Option
 Controller `MiniShop3\Controllers\Api\Manager\OptionsController`, permission `mssetting_save`.
 
 | Method | Path | Description |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `/api/mgr/options` | List options with filters: `query`, `modcategory_id`, `category_id`, `categories[]` |
 | `GET` | `/api/mgr/options/{id}` | Option detail + linked categories map |
 | `POST` | `/api/mgr/options` | Create: normalizes `key`, checks uniqueness, links to categories |
@@ -382,10 +383,10 @@ Controller `MiniShop3\Controllers\Api\Manager\OptionsController`, permission `ms
 
 ### Option groups — `/api/mgr/option-groups/*`
 
-Controller `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Added in 1.11.0 — replace grouping via `modCategory` (#10).
+Controller `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permission `mssetting_save`. Added in 1.11.0 — replace grouping via `modCategory`.
 
 | Method | Path | Description |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `` | Group list. Params: `start`, `limit` (`0` = all), `query` (search by `name` / `description`). Response: groups with `options_count`. |
 | `GET` | `/{id}` | One group + `options_count` |
 | `POST` | `` | Create group: `name` (required), `description`, `sort_order` |
@@ -399,7 +400,7 @@ Controller `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permissio
 Controller `MiniShop3\Controllers\Api\Manager\CategoryOptionsController`, permission `mscategory_save`.
 
 | Method | Path | Description |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `` | Options linked to the category. Each row returns `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
 | `POST` | `` | Link option to category: `option_id`, `value`, `active`, `required`, `caption`, `description` |
 | `PUT` | `/{option_id}` | Partial update of link: `value`, `active`, `required`, `position`, `caption`, `description` |

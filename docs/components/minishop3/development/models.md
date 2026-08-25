@@ -71,7 +71,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Товары
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msProduct` | `site_content` | Товар (расширяет modResource) |
 | `msProductData` | `ms3_products` | Данные товара (цена, артикул, вес) |
 | `msProductFile` | `ms3_product_files` | Файлы галереи товара |
@@ -82,7 +82,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 #### msProductData — основные поля
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `id` | int | ID (совпадает с ID ресурса) |
 | `article` | varchar(50) | Артикул |
 | `price` | decimal(12,2) | Цена |
@@ -91,6 +91,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `weight` | decimal(13,3) | Вес |
 | `image` | varchar(255) | Основное изображение |
 | `thumb` | varchar(255) | Превью изображения |
+| `preview_file_id` | int | ID файла галереи для главного превью (без смены порядка галереи) |
 | `vendor_id` | int | ID производителя |
 | `made_in` | varchar(100) | Страна производства |
 | `new` | tinyint(1) | Флаг «Новинка» |
@@ -103,7 +104,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Категории
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msCategory` | `site_content` | Категория (расширяет modResource) |
 | `msCategoryMember` | `ms3_product_categories` | Связь товар-категория |
 | `msCategoryOption` | `ms3_category_options` | Опции категории |
@@ -111,7 +112,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Заказы
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msOrder` | `ms3_orders` | Заказ |
 | `msOrderAddress` | `ms3_order_addresses` | Адрес доставки заказа |
 | `msOrderProduct` | `ms3_order_products` | Товары в заказе |
@@ -121,7 +122,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 #### msOrder — основные поля
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `id` | int | ID заказа |
 | `user_id` | int | ID пользователя MODX |
 | `customer_id` | int | ID клиента msCustomer |
@@ -137,13 +138,14 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `payment_id` | int | ID способа оплаты |
 | `context` | varchar(100) | Контекст MODX |
 | `order_comment` | text | Комментарий к заказу |
+| `idempotency_key` | varchar | Ключ идемпотентности (программные заказы) |
 | `createdon` | datetime | Дата создания |
 | `updatedon` | datetime | Дата обновления |
 
 ### Клиенты (NEW в MiniShop3)
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msCustomer` | `ms3_customers` | Клиент магазина |
 | `msCustomerAddress` | `ms3_customer_addresses` | Сохранённые адреса клиента |
 | `msCustomerToken` | `ms3_customer_tokens` | Токены авторизации |
@@ -151,7 +153,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 #### msCustomer — основные поля
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `id` | int | ID клиента |
 | `user_id` | int | ID связанного modUser (опционально) |
 | `first_name` | varchar(191) | Имя |
@@ -174,7 +176,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Доставка и оплата
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msDelivery` | `ms3_deliveries` | Способы доставки |
 | `msPayment` | `ms3_payments` | Способы оплаты |
 | `msDeliveryMember` | `ms3_delivery_payments` | Связь доставка-оплата |
@@ -182,20 +184,20 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Производители
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msVendor` | `ms3_vendors` | Производители товаров |
 
 ### Опции
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msOption` | `ms3_options` | Справочник опций |
 | `msOptionGroup` | `ms3_option_groups` | Группы опций (заменили использование `modCategory` для группировки, начиная с 1.11.0) |
 
 ### Конфигурация полей (NEW в MiniShop3)
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Настройки полей моделей |
 | `msModelFieldSection` | `ms3_model_field_sections` | Секции полей |
 | `msProductField` | `ms3_product_fields` | Поля товара (legacy) |
@@ -205,7 +207,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 ### Уведомления
 
 | Модель | Таблица | Описание |
-|--------|---------|----------|
+| --- | --- | --- |
 | `msNotificationConfig` | `ms3_notification_configs` | Конфигурация уведомлений |
 
 ## Примеры работы с моделями
@@ -297,26 +299,24 @@ foreach ($modx->getIterator(msOrder::class, ['status_id' => 2]) as $order) {
 
 В MiniShop3 бизнес-логика вынесена в **сервисный слой** (`src/Services/`, `src/Controllers/`):
 
-```
-miniShop2:
-┌─────────────────────────────────┐
-│           msOrder               │
-│  - валидация                    │
-│  - расчёт стоимости             │
-│  - смена статуса                │
-│  - отправка уведомлений         │
-│  - работа с БД                  │
-└─────────────────────────────────┘
+### miniShop2 — толстая модель
 
-MiniShop3:
-┌─────────────────┐     ┌─────────────────────┐
-│    msOrder      │◄────│  OrderController    │
-│  - работа с БД  │     │  - бизнес-логика    │
-│  - связи        │     └─────────────────────┘
-│  - вызов        │     ┌─────────────────────┐
-│    сервисов     │◄────│  NotificationManager│
-└─────────────────┘     │  - уведомления      │
-                        └─────────────────────┘
+```mermaid
+flowchart TB
+  msOrder["msOrder"]
+  msOrder --- V[валидация]
+  msOrder --- C[расчёт стоимости]
+  msOrder --- S[смена статуса]
+  msOrder --- N[отправка уведомлений]
+  msOrder --- D[работа с БД]
+```
+
+### MiniShop3 — модель + сервисы
+
+```mermaid
+flowchart LR
+  OrderController["OrderController — бизнес-логика"] --> msOrder["msOrder — БД, связи, вызов сервисов"]
+  NotificationManager["NotificationManager — уведомления"] --> msOrder
 ```
 
 ### Прагматичный подход
@@ -451,27 +451,25 @@ class CreateCustomersTable extends AbstractMigration
 
 ## Диаграмма связей
 
-```
-┌─────────────┐       ┌─────────────────┐
-│  msProduct  │──1:1──│  msProductData  │
-│ (modResource)│       │  (ms3_products) │
-└──────┬──────┘       └────────┬────────┘
-       │                       │
-       │ 1:N                   │ 1:N
-       ▼                       ▼
-┌──────────────┐       ┌────────────────┐
-│msProductOption│       │ msProductFile  │
-└──────────────┘       └────────────────┘
+### Товар
 
-┌─────────────┐       ┌─────────────────┐
-│   msOrder   │──1:1──│ msOrderAddress  │
-└──────┬──────┘       └─────────────────┘
-       │
-       ├──1:N──▶ msOrderProduct
-       │
-       ├──N:1──▶ msCustomer ──1:N──▶ msCustomerAddress
-       │
-       ├──N:1──▶ msDelivery
-       │
-       └──N:1──▶ msPayment
+`msProduct` (extends `modResource`) и `msProductData` (таблица `ms3_products`)
+
+```mermaid
+erDiagram
+  msProduct ||--|| msProductData : "1:1"
+  msProduct ||--o{ msProductOption : "1:N"
+  msProductData ||--o{ msProductFile : "1:N"
+```
+
+### Заказ
+
+```mermaid
+erDiagram
+  msOrder ||--|| msOrderAddress : "1:1"
+  msOrder ||--o{ msOrderProduct : "1:N"
+  msOrder }o--|| msCustomer : "N:1"
+  msCustomer ||--o{ msCustomerAddress : "1:N"
+  msOrder }o--|| msDelivery : "N:1"
+  msOrder }o--|| msPayment : "N:1"
 ```

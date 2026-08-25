@@ -1,12 +1,13 @@
-# Notifications
+---
+title: Toast notifications
+description: Connect notification libraries to FetchIt.Message
+---
 
-Although **FetchIt** has no required dependencies, it is set up so you can connect any ready-made or custom notification library with minimal code.
+# Toast notifications
 
-::: tip
+FetchIt core does not include jQuery. Wire toasts yourself via [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) or enable built-in Notyf with [`fetchit.frontend.default.notifier`](/en/components/fetchit/settings#fetchitfrontenddefaultnotifier).
 
-As of version 1.1.0 and 3.1.0, system setting [`fetchit.frontend.default.notifier`](/en/components/fetchit/settings#fetchitfrontenddefaultnotifier) is available; when enabled, [Notyf](/en/components/fetchit/examples/notifications/notyf) notifications are shown.
-
-:::
+Form blocks `[data-success]` and `[data-validation-error]` work separately from toasts ([selectors](/en/components/fetchit/selectors)).
 
 - [Notyf](/en/components/fetchit/examples/notifications/notyf)
 - [SweetAlert2](/en/components/fetchit/examples/notifications/sweetalert2)

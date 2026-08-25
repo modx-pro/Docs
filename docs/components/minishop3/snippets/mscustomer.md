@@ -24,7 +24,7 @@ title: msCustomer
 ```
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCustomer.profile` | Чанк профиля |
 
 Подробнее: [Профиль покупателя](/components/minishop3/frontend/customer-profile)
@@ -42,7 +42,7 @@ title: msCustomer
 ```
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCustomer.addresses` | Чанк списка адресов |
 | **addressTpl** | `tpl.msCustomer.address.row` | Чанк строки адреса |
 | **formTpl** | `tpl.msCustomer.address.form` | Чанк формы адреса |
@@ -63,7 +63,7 @@ title: msCustomer
 ```
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCustomer.orders` | Чанк списка заказов |
 | **orderTpl** | `tpl.msCustomer.order.row` | Чанк строки заказа |
 | **detailTpl** | `tpl.msCustomer.order.details` | Чанк деталей заказа |
@@ -76,7 +76,7 @@ title: msCustomer
 ## Общие параметры
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **service** | `profile` | Сервис: `profile`, `addresses`, `orders` |
 | **return** | `tpl` | Формат: `tpl` (HTML), `data` (массив) |
 | **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Чанк для неавторизованных |
@@ -101,7 +101,7 @@ title: msCustomer
 ### Для service=orders
 
 | Параметр | Описание |
-|----------|----------|
+| --- | --- |
 | `order_id` | ID заказа для просмотра деталей |
 | `status` | Фильтр по ID статуса |
 | `offset` | Смещение для пагинации |
@@ -115,7 +115,7 @@ title: msCustomer
 ### Для service=addresses
 
 | Параметр | Описание |
-|----------|----------|
+| --- | --- |
 | `mode` | Режим: `list`, `edit`, `create` |
 | `id` | ID адреса для редактирования |
 
@@ -213,7 +213,7 @@ title: msCustomer
         'status_name' => 'Оплачен',
         'status_color' => '008000',
         'createdon_formatted' => '15.01.2024 10:30',
-        'comment' => 'Позвонить перед доставкой',
+        'order_comment' => 'Позвонить перед доставкой',
         // ... другие поля msOrder
     ],
     'products' => [
@@ -383,7 +383,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 ### tpl.msCustomer.profile
 
 | Плейсхолдер | Описание |
-|-------------|----------|
+| --- | --- |
 | `{$customer}` | Данные покупателя (массив) |
 | `{$customer.id}` | ID покупателя |
 | `{$customer.email}` | Email |
@@ -400,7 +400,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 ### tpl.msCustomer.orders
 
 | Плейсхолдер | Описание |
-|-------------|----------|
+| --- | --- |
 | `{$orders}` | Отрендеренные строки заказов (HTML) |
 | `{$orders_count}` | Количество заказов на странице |
 | `{$total}` | Общее количество заказов |
@@ -411,7 +411,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 ### tpl.msCustomer.order.row
 
 | Плейсхолдер | Описание |
-|-------------|----------|
+| --- | --- |
 | `{$id}` | ID заказа |
 | `{$num}` | Номер заказа (MS-00015) |
 | `{$createdon_formatted}` | Дата создания |
@@ -422,7 +422,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 ### tpl.msCustomer.order.details
 
 | Плейсхолдер | Описание |
-|-------------|----------|
+| --- | --- |
 | `{$order}` | Данные заказа |
 | `{$products}` | Массив товаров заказа |
 | `{$delivery}` | Способ доставки |
@@ -434,7 +434,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 ## Системные настройки
 
 | Настройка | Описание |
-|-----------|----------|
+| --- | --- |
 | `ms3_customer_login_page_id` | ID страницы входа |
 | `ms3_customer_register_page_id` | ID страницы регистрации |
 
@@ -474,7 +474,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 Доступные действия:
 
 | Действие | Описание |
-|----------|----------|
+| --- | --- |
 | `customer/update-profile` | Обновление профиля |
 | `customer/create-address` | Создание адреса |
 | `customer/update-address` | Обновление адреса |
@@ -486,7 +486,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 Основные классы для стилизации:
 
 | Класс | Элемент |
-|-------|---------|
+| --- | --- |
 | `.ms3-customer-account` | Контейнер личного кабинета |
 | `.ms3-customer-profile` | Блок профиля |
 | `.ms3-customer-orders` | Блок заказов |

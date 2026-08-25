@@ -19,10 +19,12 @@ title: Категория
 
 ### Товары
 
+<!-- ![Таблица товаров категории](/components/minishop3/screenshots/mgr-category-products.png) -->
+
 Главная вкладка категории — таблица товаров с возможностями:
 
 | Функция | Описание |
-|---------|----------|
+| --- | --- |
 | Drag-and-drop | Сортировка товаров перетаскиванием |
 | Фильтры | Поиск, публикация, кастомные фильтры |
 | Массовые операции | Публикация, снятие с публикации, удаление |
@@ -34,7 +36,7 @@ title: Категория
 Стандартная вкладка MODX с полями ресурса:
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `pagetitle` | Название категории |
 | `longtitle` | Расширенный заголовок |
 | `description` | Meta description |
@@ -97,12 +99,14 @@ title: Категория
 Двойной клик по ячейке позволяет редактировать значение прямо в таблице:
 
 | Тип редактора | Поля |
-|---------------|------|
+| --- | --- |
 | `text` | `pagetitle`, `longtitle`, `article`, `made_in` |
 | `number` | `price`, `old_price`, `weight` |
 | `boolean` | `published`, `new`, `popular`, `favorite` |
 
-Настройка редактируемых полей — в [Утилиты → Колонки гридов](utilities/grid-columns) (параметры `editable` и `editType` у колонки).
+Настройка в **Утилиты → Колонки гридов**, грид `category-products`: включите `editable`, задайте `editor_type` (`text`, `number`, `select`, `combo`). Пошагово: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
+
+Подробнее: [Колонки гридов](utilities/grid-columns).
 
 ## Настройка колонок таблицы
 
@@ -113,197 +117,70 @@ title: Категория
 3. Настройте видимость, порядок, ширину колонок
 4. Сохраните
 
-Подробнее: [Утилиты: Колонки гридов](utilities/grid-columns)
+### Через API и утилиту
 
-### Через PHP конфигурацию
+В 1.13.x PHP-файла `core/components/minishop3/custom/grids/category-products.php` **нет**. Колонки хранятся в `ms3_grid_fields` и настраиваются через:
 
-Создайте файл кастомной конфигурации:
+- **Утилиты → Колонки гридов** (`grid_key=category-products`)
+- Manager API `/api/mgr/grid-config/category-products` (см. [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook))
 
-```php
-// core/components/minishop3/custom/grids/category-products.php
+Пример добавления колонки через API:
 
-return [
-    [
-        'name' => 'id',
-        'label' => 'ID',
-        'visible' => true,
-        'sortable' => true,
-        'width' => '60px',
-        'isSystem' => true,
-    ],
-    [
-        'name' => 'thumb',
-        'label' => 'Изображение',
-        'visible' => true,
-        'type' => 'image',
-        'width' => '60px',
-    ],
-    [
-        'name' => 'pagetitle',
-        'label' => 'Название',
-        'visible' => true,
-        'sortable' => true,
-        'filterable' => true,
-        'minWidth' => '200px',
-        'type' => 'template',
-        'template' => '<span class="product-id">({id})</span> <a href="?a=resource/update&id={id}">{pagetitle}</a>',
-    ],
-    [
-        'name' => 'article',
-        'label' => 'Артикул',
-        'visible' => true,
-        'sortable' => true,
-        'filterable' => true,
-        'width' => '100px',
-    ],
-    [
-        'name' => 'price',
-        'label' => 'Цена',
-        'visible' => true,
-        'sortable' => true,
-        'type' => 'price',
-        'width' => '100px',
-    ],
-    [
-        'name' => 'actions',
-        'label' => 'Действия',
-        'visible' => true,
-        'isSystem' => true,
-        'frozen' => true,
-        'width' => '140px',
-        'type' => 'actions',
-    ],
-];
+```http
+POST /api/mgr/grid-config/category-products/field
 ```
 
-### Добавление кастомной колонки
-
-**Пример: добавление колонки "Остаток":**
-
-```php
-[
-    'name' => 'remains',
-    'label' => 'Остаток',
-    'visible' => true,
-    'sortable' => true,
-    'width' => '80px',
-    'type' => 'number',
-    // Редактирование в таблице
-    'editable' => true,
-    'editor' => [
-        'xtype' => 'numberfield',
-        'minValue' => 0,
-    ],
-]
+```json
+{
+  "field_name": "stock",
+  "label": "Остаток",
+  "type": "model",
+  "visible": true,
+  "sortable": true,
+  "editable": true,
+  "editor_type": "number",
+  "config": {}
+}
 ```
+
+Inline-edit: флаги **`editable`**, **`editor_type`** (`text`, `number`, `select`, `combo`), опционально **`editor_options`**. Право на запись ячейки: `msproduct_save` (`PUT /api/mgr/categories/{id}/products/{productId}/data`).
 
 ### Типы колонок
 
 | Тип | Описание | Пример |
-|-----|----------|--------|
-| `text` | Текст (по умолчанию) | Название, артикул |
-| `number` | Число | Остаток |
-| `price` | Цена с форматированием | 1 234,56 |
-| `weight` | Вес с форматированием | 0,5 кг |
-| `boolean` | Да/Нет тег | Опубликован |
-| `image` | Миниатюра изображения | Фото товара |
-| `template` | Кастомный HTML-шаблон | Ссылка на товар |
+| --- | --- | --- |
+| `model` | Поле модели | Название, артикул |
+| `price` | Цена с `displayConfig` | 1 234,56 ₽ |
+| `weight` | Вес с `displayConfig` | 0,5 кг |
+| `boolean` | Да/Нет | Опубликован |
+| `image` | Миниатюра | Фото товара |
+| `template` | HTML-шаблон | Ссылка на товар |
 | `actions` | Кнопки действий | Редактировать, удалить |
-| `relation` | Поле из связанной таблицы | Название статуса |
-| `badge` | Цветная метка (Tag) | Статус заказа с цветом |
+| `relation` | Связанная таблица | Название статуса |
+| `badge` | Цветная метка | Статус с цветом |
+| `option` | Опция товара | `option.key` |
+| `computed` | PHP-класс колонки | `computed.className` |
 
-### Relation-поля (связи с другими таблицами)
+Полный справочник: [Колонки гридов](utilities/grid-columns).
 
-Тип `relation` позволяет подтягивать данные из связанных таблиц (JOIN):
+### Relation и badge
 
-```php
-[
-    'name' => 'status_name',
-    'label' => 'Статус',
-    'type' => 'relation',
-    'visible' => false,  // Скрытое поле-источник для badge
-    'relation' => [
-        'table' => 'msOrderStatus',       // Класс модели или таблица
-        'foreignKey' => 'status_id',      // Поле связи в основной таблице
-        'displayField' => 'name',         // Поле для отображения
-    ],
-]
+Relation подтягивает JOIN. Для badge в гриде `orders` скрытые relation-колонки дают текст и HEX, видимая колонка — тип **`badge`** с полями на **верхнем уровне** config (не внутри `computed`):
+
+```json
+{
+  "type": "badge",
+  "source_field": "status_name",
+  "color_field": "status_color"
+}
 ```
 
-**Параметры relation:**
+Для типа **`computed`** в config обязателен ключ **`computed.className`** (класс должен реализовать `ComputedFieldInterface`).
 
-| Параметр | Описание |
-|----------|----------|
-| `table` | Класс xPDO модели (например `msOrderStatus`) |
-| `foreignKey` | Поле в основной таблице для связи |
-| `displayField` | Поле из связанной таблицы для отображения |
+В `category-products` aggregation у relation **не поддерживается**.
 
-::: info Оптимизация
-При добавлении нескольких relation-полей к одной таблице система автоматически группирует их в один JOIN. Например, `status_name` и `status_color` используют один JOIN к `msOrderStatus`.
-:::
-
-### Badge-поля (цветные метки)
-
-Тип `badge` отображает цветную метку (PrimeVue Tag), используя данные из других колонок:
-
-```php
-[
-    'name' => 'status',
-    'label' => 'Статус',
-    'type' => 'badge',
-    'visible' => true,
-    'computed' => [
-        'source_field' => 'status_name',   // Колонка-источник текста
-        'color_field' => 'status_color',   // Колонка-источник цвета
-    ],
-]
-```
-
-**Пример: Статус заказа с цветом**
-
-Для отображения статуса заказа с цветной меткой нужно создать 3 поля:
-
-```php
-// 1. Скрытое relation поле для названия статуса
-[
-    'name' => 'status_name',
-    'type' => 'relation',
-    'visible' => false,
-    'relation' => [
-        'table' => 'msOrderStatus',
-        'foreignKey' => 'status_id',
-        'displayField' => 'name',
-    ],
-],
-
-// 2. Скрытое relation поле для цвета статуса
-[
-    'name' => 'status_color',
-    'type' => 'relation',
-    'visible' => false,
-    'relation' => [
-        'table' => 'msOrderStatus',
-        'foreignKey' => 'status_id',
-        'displayField' => 'color',
-    ],
-],
-
-// 3. Видимое badge поле, использующее данные из relation полей
-[
-    'name' => 'status',
-    'label' => 'Статус',
-    'type' => 'badge',
-    'visible' => true,
-    'sortable' => true,
-    'computed' => [
-        'source_field' => 'status_name',
-        'color_field' => 'status_color',
-    ],
-],
-```
-
-::: tip Цвета в базе данных
-Цвета в таблице `msOrderStatus` хранятся в HEX формате без `#` (например `FF5733`). Система автоматически добавляет `#` при рендеринге.
+::: tip Цвета статусов
+В `msOrderStatus` цвет часто хранится HEX без `#`. UI добавляет `#` при рендере badge.
 :::
 
 ## Добавление действий в колонку
@@ -363,7 +240,7 @@ return [
 ### Параметры действия
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `name` | string | Уникальный идентификатор |
 | `handler` | string | Имя обработчика (view, edit, delete, publish, duplicate) |
 | `icon` | string | Иконка PrimeIcons (pi-*) |
@@ -378,69 +255,57 @@ return [
 
 ### Кастомные действия через JavaScript
 
-Регистрация кастомного действия через `MS3ActionRegistry`:
+Регистрация через `MS3ActionRegistry`. Второй аргумент — **`context`**, не `gridId`:
 
 ```javascript
-// Плагин: Добавление в избранное
 document.addEventListener('DOMContentLoaded', () => {
-  if (window.MS3ActionRegistry) {
-    // Регистрация обработчика
-    MS3ActionRegistry.register('addToFavorites', async (data, gridId) => {
-      const response = await fetch('/assets/components/mycomponent/api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'addToFavorites',
-          product_id: data.id
-        })
+  if (!window.MS3ActionRegistry) return
+
+  MS3ActionRegistry.register('addToFavorites', async (data, context) => {
+    const response = await fetch('/assets/components/mycomponent/api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'addToFavorites',
+        product_id: data.id
       })
-
-      const result = await response.json()
-
-      if (result.success) {
-        // Показать уведомление
-        if (window.PrimeVue) {
-          // Используем Toast из PrimeVue
-        } else {
-          alert('Товар добавлен в избранное')
-        }
-        return { success: true, refresh: true }
-      }
-
-      return { success: false, message: result.message }
     })
-  }
+
+    const result = await response.json()
+
+    if (result.success) {
+      return { success: true, refresh: true }
+    }
+
+    return { success: false, message: result.message }
+  })
 })
 ```
 
-Добавление действия в конфигурацию колонки:
+Действие добавьте в config колонки `actions` через **Утилиты → Колонки гридов** или PUT grid-config:
 
-```php
-[
-    'name' => 'addToFavorites',
-    'handler' => 'addToFavorites',  // Имя зарегистрированного обработчика
-    'icon' => 'pi-heart',
-    'label' => 'Добавить в избранное',
-]
+```json
+{
+  "name": "addToFavorites",
+  "handler": "addToFavorites",
+  "icon": "pi-heart",
+  "label": "Добавить в избранное"
+}
 ```
 
 ### Хуки для стандартных действий
 
 ```javascript
 // Хук перед удалением товара
-MS3ActionRegistry.registerBeforeHook('delete', async (data, gridId) => {
-  // Проверка условий
+MS3ActionRegistry.registerBeforeHook('delete', async (data, context) => {
   if (data.orders_count > 0) {
-    alert('Нельзя удалить товар с заказами!')
-    return false  // Отменить действие
+    return false
   }
-  return true  // Продолжить
+  return true
 })
 
-// Хук после публикации
-MS3ActionRegistry.registerAfterHook('publish', async (data, result, gridId) => {
+MS3ActionRegistry.registerAfterHook('publish', async (data, result, context) => {
   console.log(`Товар ${data.id} опубликован:`, result)
-  // Отправка уведомления, обновление кэша и т.д.
 })
 ```
 
@@ -532,7 +397,7 @@ return [
 ### Параметры фильтра
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `type` | string | Тип фильтра: `text`, `select`, `datepicker`, `daterange` |
 | `label` | string | Ключ лексикона для подписи |
 | `placeholder` | string | Ключ лексикона для placeholder |
@@ -603,7 +468,7 @@ foreach ($dataNumericFields as $field) {
 
 ### Добавление кастомного фильтра
 
-**Шаг 1: Добавьте фильтр в конфигурацию**
+#### Шаг 1: добавьте фильтр в конфигурацию
 
 ```php
 // core/components/minishop3/custom/filters/category-products.php
@@ -630,7 +495,7 @@ return [
 ];
 ```
 
-**Шаг 2: Обработайте фильтр на сервере**
+#### Шаг 2: обработайте фильтр на сервере
 
 Создайте плагин для обработки кастомного фильтра:
 
@@ -665,7 +530,7 @@ if (!empty($params['price_range'])) {
 ### Доступные операции
 
 | Операция | Описание |
-|----------|----------|
+| --- | --- |
 | Публикация | Опубликовать выбранные товары |
 | Снятие с публикации | Снять с публикации выбранные товары |
 | Удаление | Пометить как удалённые |
@@ -719,7 +584,7 @@ POST /api/mgr/categories/{id}/products/sort
 ## Системные настройки
 
 | Настройка | Описание | По умолчанию |
-|-----------|----------|--------------|
+| --- | --- | --- |
 | `ms3_category_show_nested_products` | Показывать вложенные товары | `false` |
 | `ms3_category_show_options` | Показывать опции категории | `true` |
 | `ms3_category_remember_tabs` | Запоминать активную вкладку | `true` |
@@ -757,7 +622,7 @@ GET /api/mgr/categories/{id}/products
 **Параметры:**
 
 | Параметр | Описание |
-|----------|----------|
+| --- | --- |
 | `start` | Смещение (пагинация) |
 | `limit` | Количество записей |
 | `sort` | Поле сортировки |
@@ -798,6 +663,14 @@ GET /api/mgr/categories/{id}/products/filters
   }
 }
 ```
+
+### Inline-редактирование данных товара
+
+```
+PUT /api/mgr/categories/{id}/products/{productId}/data
+```
+
+Тело JSON — поля `msProductData` (цена, артикул и т.д.) из грида категории без открытия карточки товара. Контроллер: `CategoryProductsController::updateProductData()`.
 
 ## Связанные страницы
 

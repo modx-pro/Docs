@@ -22,7 +22,7 @@ title: Товар
 Стандартная вкладка MODX с основными полями ресурса:
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `pagetitle` | Название товара |
 | `longtitle` | Расширенный заголовок |
 | `description` | Meta description |
@@ -38,13 +38,13 @@ title: Товар
 **Стандартные секции:**
 
 | Секция | Поля |
-|--------|------|
+| --- | --- |
 | Основные данные | `article`, `price`, `old_price`, `weight` |
-| Наличие | `remains`, `new`, `popular`, `favorite` |
+| Наличие | `stock`, `new`, `popular`, `favorite` |
 | Характеристики | `color`, `size`, `vendor`, `made_in`, `tags` |
 
 ::: tip Настройка
-Секции и поля настраиваются через [Утилиты → Поля товара](utilities/product-fields).
+Секции и поля: [Утилиты → Поля товара](utilities/product-fields). Новое поле в БД: [Cookbook extra fields](/components/minishop3/manager/extra-fields/cookbook), пример [Оптовая цена](/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ### Галерея
@@ -60,17 +60,23 @@ title: Товар
 
 ### Связи
 
-Настройка связей между товарами:
+Vue-вкладка `ProductLinksTab`. CRUD через Manager API (право `msproduct_save`):
 
-| Тип связи | Описание |
-|-----------|----------|
-| Сопутствующие | Аксессуары, комплектующие |
-| Похожие | Аналогичные товары |
-| Рекомендуемые | Персональные рекомендации |
+| Метод | Путь |
+| --- | --- |
+| `GET` | `/api/mgr/product-data/{id}/links` |
+| `POST` | `/api/mgr/product-data/{id}/links` — body `{ slave, link }` |
+| `DELETE` | `/api/mgr/product-data/{id}/links` — body `{ link, master, slave }` (batch `ids[]` не поддерживается) |
+| `GET` | `/api/mgr/references/link-types` |
+| `GET` | `/api/mgr/references/products` |
+
+Типы связей из справочника `msLink`: `one_to_many`, `many_to_one`, `one_to_one`, `many_to_many`. Настройка типов: [Настройки → Связи](settings/links).
 
 ### Категории
 
-Дополнительные категории товара. Товар может принадлежать нескольким категориям помимо основной (`parent`).
+<!-- ![Вкладка «Категории» на карточке товара](/components/minishop3/screenshots/mgr-product-categories.png) -->
+
+Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-data/{id}/categories/tree` (сервис `ms3_product_category_tree`). Выбранные id уходят в resource POST как hidden `name="categories"` (JSON). Родительская категория (`parent`) в дереве заблокирована. Товар может состоять в нескольких доп. категориях через `msCategoryMember`.
 
 ### Опции товара
 
@@ -80,7 +86,7 @@ title: Товар
 Вкладка полностью на Vue. Универсальный компонент `ProductOptionField` поддерживает все 10 типов опций: `textfield`, `numberfield`, `textarea`, `checkbox`, `comboBoolean`, `combobox`, `comboMultiple`, `comboColors` (+ цветовой квадрат рядом с значением), `comboOptions` (PrimeVue `InputChips` — ввод произвольных тегов с подсказками из ранее использованных значений), `datefield`.
 :::
 
-Опции группируются по `modcategory_id` (категория MODX у `msOption`) и показываются в вертикальных табах слева. Если группа одна — таб не показывается, поля идут списком.
+Опции группируются по `option_group_id` (`msOptionGroup`) и показываются в вертикальных табах слева. Если группа одна — таб не показывается, поля идут списком.
 
 **Per-category caption / description.** Если у связки «опция ↔ категория» задан свой `caption` (см. [Настройки → Опции](settings/options#per-category-caption-description-override)), в форме товара отображается именно он — это тот же override, что уходит на витрину.
 
@@ -93,7 +99,7 @@ title: Товар
 Конфигурация полей хранится в базе данных:
 
 | Таблица | Описание |
-|---------|----------|
+| --- | --- |
 | `ms3_page_sections` | Секции (разделы) страницы |
 | `ms3_product_fields` | Поля товара с настройками |
 
@@ -104,7 +110,7 @@ title: Товар
 **Поля модели:**
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `id` | int | ID секции |
 | `page_key` | string | Ключ страницы (`product_data`) |
 | `section_key` | string | Уникальный ключ секции |
@@ -120,7 +126,7 @@ title: Товар
 **Поля модели:**
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `id` | int | ID поля |
 | `name` | string | Системное имя поля |
 | `label` | string | Отображаемое название |
@@ -149,36 +155,27 @@ title: Товар
    - **Название** — отображаемое название
 4. Сохраните
 
-**Через API:**
+**Через API** (1.13.x: отдельного POST нет; UI добавляет секцию локально и сохраняет список):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
 ```json
 {
-  "section_key": "seo",
-  "lexicon_key": "ms3_section_seo",
-  "label": "SEO",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "seo",
+      "lexicon_key": "ms3_section_seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
 
-**Через PHP:**
-
-```php
-$section = $modx->newObject('MiniShop3\\Model\\msPageSection');
-$section->fromArray([
-    'page_key' => 'product_data',
-    'section_key' => 'seo',
-    'lexicon_key' => 'ms3_section_seo',
-    'label' => 'SEO',
-    'hidden' => false,
-    'sort_order' => 100
-]);
-$section->save();
-```
+Право записи: `mssetting_save`.
 
 ### Редактирование секции
 
@@ -215,7 +212,7 @@ $section->save();
 4. Настройте параметры:
 
 | Параметр | Описание |
-|----------|----------|
+| --- | --- |
 | Название | Отображаемый label |
 | Описание | Подсказка под полем |
 | Секция | Принадлежность к секции |
@@ -265,7 +262,7 @@ PUT /api/mgr/config/page-fields/product_data
 ### Стандартные
 
 | Тип | Описание | Использование |
-|-----|----------|---------------|
+| --- | --- | --- |
 | `textfield` | Однострочное текстовое поле | Артикул, название |
 | `numberfield` | Числовое поле | Цена, вес |
 | `textarea` | Многострочное поле | Описание |
@@ -274,7 +271,7 @@ PUT /api/mgr/config/page-fields/product_data
 ### Комбобоксы MiniShop3
 
 | Тип | Описание |
-|-----|----------|
+| --- | --- |
 | `ms3-combo-vendor` | Выбор производителя |
 | `ms3-combo-category` | Выбор категории |
 | `ms3-combo-autocomplete` | Автодополнение из списка |
@@ -283,7 +280,7 @@ PUT /api/mgr/config/page-fields/product_data
 ### Расширенные
 
 | Тип | Описание |
-|-----|----------|
+| --- | --- |
 | `modx-combo-browser` | Выбор файла через Media Browser |
 | `datefield` | Выбор даты |
 | `timefield` | Выбор времени |
@@ -292,7 +289,7 @@ PUT /api/mgr/config/page-fields/product_data
 ## Системные настройки
 
 | Настройка | Описание | По умолчанию |
-|-----------|----------|--------------|
+| --- | --- | --- |
 | `ms3_product_tab_extra` | Показывать вкладку данных | `true` |
 | `ms3_product_tab_gallery` | Показывать вкладку галереи | `true` |
 | `ms3_product_tab_links` | Показывать вкладку связей | `true` |
@@ -341,10 +338,24 @@ GET /api/mgr/config/page-fields/product_data
 }
 ```
 
-**Сохранить поле:**
+**Сохранить поля** (тело — массив `fields`):
 
 ```
 PUT /api/mgr/config/page-fields/product_data
+```
+
+```json
+{
+  "fields": [
+    {
+      "name": "article",
+      "label": "Артикул",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
+}
 ```
 
 ### Секции
@@ -355,22 +366,29 @@ PUT /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 ```
 
-**Создать секцию:**
+**Сохранить секции** (создание и порядок — через bulk PUT):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
-**Обновить секцию:**
+```json
+{
+  "sections": [
+    {
+      "section_key": "seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
+}
+```
+
+**Удалить секцию** (по `section_key`, не по id):
 
 ```
-PUT /api/mgr/config/sections/product_data/{id}
-```
-
-**Удалить секцию:**
-
-```
-DELETE /api/mgr/config/sections/product_data/{id}
+DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
 ### Данные товара
@@ -405,7 +423,7 @@ $_lang['ms3_section_seo'] = 'SEO';
 $_lang['ms3_section_seo'] = 'SEO';
 ```
 
-3. Переместите поля `longtitle` и `description` в секцию SEO
+1. Переместите поля `longtitle` и `description` в секцию SEO
 
 ### Скрытие ненужных полей
 

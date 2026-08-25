@@ -1,6 +1,11 @@
+---
+title: Форма на Vanilla
+description: Разметка FetchIt под Vanilla Framework с data-custom и is-error
+---
+
 # Форма на Vanilla
 
-В фреймворке [Vanilla](https://vanillaframework.io/) также как и в [Fomantic UI](/components/fetchit/examples/form/fomantic) нужно добавлять класс невалидности родительскому элементу, но это не проблема, мы можем воспользоваться селекторами `data-custom="*"` и добавим их. Еще нужно учитывать, что в рамках правил фреймворка, валидируемые поля ввода должны быть обёрнуты в элемент с классом `p-form-validation`:
+В [Vanilla Framework](https://vanillaframework.io/), как и в [Fomantic UI](/components/fetchit/examples/form/fomantic), класс ошибки вешают на родителя. Для этого есть `[data-custom]`. Поля ввода по правилам Vanilla оборачивают в элемент с классом `p-form-validation`:
 
 ```html
 <form>
@@ -19,15 +24,18 @@
 </form>
 ```
 
-Для подготовки нам всего лишь необходимо сделать следующее:
+Что сделать:
 
-1. Добавить атрибуты `data-custom="*"` для родительских элементов и указав в системной настройке `fetchit.frontend.custom.invalid.class` значение `is-error`.
-2. Добавить атрибуты `data-error="*"` для элементов которые будут отображены с текстом ошибки.
-3. Для совместимости работы с FormIt нужно указать плейсхолдеры со значениями и ошибками.
+1. Повесить `data-custom` на обёртки полей и в `fetchit.frontend.custom.invalid.class` указать `is-error`.
+2. Добавить `data-error` для текста ошибки поля.
+3. Добавить `[data-success]` и `[data-validation-error]` для AJAX-сообщений формы.
+4. Проставить плейсхолдеры FormIt.
 
-::: info Важно
-Валидаторы разметки до сих пор ругаются на пустой атрибут `action`, поэтому в нём необходимо указывать ссылку на страницу.
+::: info
+Валидаторы разметки ругаются на пустой `action`. Укажите ссылку на страницу.
 :::
+
+::: code-group
 
 ```modx
 <form> // [!code --]
@@ -48,7 +56,37 @@
     <p class="p-form-validation__message"></p> // [!code --]
     <p class="p-form-validation__message" data-error="email">[[+fi.error.email]]</p> // [!code ++]
   </div>
+  <div role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div role="alert" data-validation-error style="display: none;"></div> // [!code ++]
   <button type="submit" class="p-button--positive">Submit</button>
   <button type="reset" class="p-button">Reset</button>
 </form>
 ```
+
+```fenom
+<form> // [!code --]
+<form action="{$_modx->resource.id | url}" method="post"> // [!code ++]
+  <div class="p-form-validation"> // [!code --]
+  <div class="p-form-validation" data-custom="name"> // [!code ++]
+    <label>Name</label>
+    <input class="p-form-validation__input" type="text" name="name" value=""> // [!code --]
+    <input class="p-form-validation__input" type="text" name="name" value="{$_modx->getPlaceholder('fi.name')}"> // [!code ++]
+    <p class="p-form-validation__message"></p> // [!code --]
+    <p class="p-form-validation__message" data-error="name">{$_modx->getPlaceholder('fi.error.name')}</p> // [!code ++]
+  </div>
+  <div class="p-form-validation"> // [!code --]
+  <div class="p-form-validation" data-custom="email"> // [!code ++]
+    <label>Email</label>
+    <input class="p-form-validation__input" type="email" name="email" value=""> // [!code --]
+    <input class="p-form-validation__input" type="email" name="email" value="{$_modx->getPlaceholder('fi.email')}"> // [!code ++]
+    <p class="p-form-validation__message"></p> // [!code --]
+    <p class="p-form-validation__message" data-error="email">{$_modx->getPlaceholder('fi.error.email')}</p> // [!code ++]
+  </div>
+  <div role="alert" data-success style="display: none;"></div> // [!code ++]
+  <div role="alert" data-validation-error style="display: none;"></div> // [!code ++]
+  <button type="submit" class="p-button--positive">Submit</button>
+  <button type="reset" class="p-button">Reset</button>
+</form>
+```
+
+:::

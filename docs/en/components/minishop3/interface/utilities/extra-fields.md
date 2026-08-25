@@ -3,21 +3,40 @@ title: Extra fields
 ---
 # Utilities: Extra fields
 
-Create new fields to extend standard MiniShop3 models.
+Custom columns on MiniShop3 models without editing the core. The field is written to the DB and appears in Manager forms.
+
+::: tip Cookbook
+Step-by-step cases (order, repeater, key-value): [Extra fields cookbook](/en/components/minishop3/manager/extra-fields/cookbook). Examples: [order field](/en/components/minishop3/manager/examples/order-custom-field), [product wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
+:::
+
+<!-- ![Extra fields utility](/components/minishop3/screenshots/mgr-extra-fields.png) -->
 
 ## Purpose
 
-Add custom fields to data models without editing source code. Fields are stored in the database and appear automatically in the interface.
+You create a key, widget type, and column type. After the column migration applies, the field is available on the model card and (for products) in CSV import.
 
 ## Supported models
 
-| Model | Description |
-|-------|-------------|
-| `msProductData` | Product data |
-| `msVendor` | Vendor |
-| `msOrder` | Order |
-| `msOrderAddress` | Delivery address |
-| `msCategory` | Category |
+In the UI you pick a short name; the DB and POST store the full `MiniShop3\Model\...` class.
+
+| Short name | Class in API / DB | Description |
+| --- | --- | --- |
+| `msProduct` | `MiniShop3\Model\msProduct` | Product resource |
+| `msProductData` | `MiniShop3\Model\msProductData` | Product data |
+| `msCategory` | `MiniShop3\Model\msCategory` | Category |
+| `msVendor` | `MiniShop3\Model\msVendor` | Vendor |
+| `msOption` | `MiniShop3\Model\msOption` | Option |
+| `msLink` | `MiniShop3\Model\msLink` | Link type |
+| `msOrder` | `MiniShop3\Model\msOrder` | Order |
+| `msOrderAddress` | `MiniShop3\Model\msOrderAddress` | Delivery address |
+| `msOrderProduct` | `MiniShop3\Model\msOrderProduct` | Order line |
+| `msOrderStatus` | `MiniShop3\Model\msOrderStatus` | Order status |
+| `msCustomer` | `MiniShop3\Model\msCustomer` | Customer |
+| `msCustomerAddress` | `MiniShop3\Model\msCustomerAddress` | Customer address |
+| `msDelivery` | `MiniShop3\Model\msDelivery` | Delivery |
+| `msPayment` | `MiniShop3\Model\msPayment` | Payment |
+
+Extra-fields CRUD requires `mssetting_save`. The order card also calls `GET /extra-fields` on load: without that permission widget metadata will not load (column values still arrive in `GET /orders/{id}`).
 
 ## Creating a field
 
@@ -34,7 +53,7 @@ Click **Add field** and fill the form.
 #### Basic
 
 | Parameter | Description | Required |
-|-----------|-------------|----------|
+| --- | --- | --- |
 | Key | Unique field name (Latin, snake_case) | Yes |
 | Label | Display name | Yes |
 | Description | User hint | No |
@@ -47,19 +66,57 @@ The key must be unique within the model. Use Latin letters and underscores. Exam
 #### Widget type (xtype)
 
 | Type | Description | Use |
-|------|-------------|-----|
+| --- | --- | --- |
 | `textfield` | Text field | Strings, SKUs |
 | `numberfield` | Number field | Prices, quantities |
 | `textarea` | Multiline field | Descriptions |
 | `xcheckbox` | Checkbox | Yes/No |
+| `ms3-combo-select` | Fixed select | Status, delivery type |
 | `ms3-combo-vendor` | Vendor picker | Link to vendor |
 | `ms3-combo-autocomplete` | Autocomplete | Pick from list |
 | `ms3-combo-options` | Option picker | Product variants |
+| `ms3-repeater` | Row table (JSON) | Specs, list characteristics |
+| `ms3-key-value` | Key → value (JSON) | Named property set |
+
+### Repeater (`ms3-repeater`)
+
+Since v1.12. In `properties` / widget config set `repeater_config`:
+
+```json
+{
+  "columns": [
+    { "key": "name", "label": "Name" },
+    { "key": "qty", "label": "Qty", "type": "number" }
+  ],
+  "minRows": 0,
+  "maxRows": 50,
+  "sortable": true,
+  "rankField": "rank"
+}
+```
+
+In the DB the column is usually `json`. Repeater is not included in CSV import.
+
+### Key-value (`ms3-key-value`)
+
+Config `key_value_config`:
+
+```json
+{
+  "mode": "fixed",
+  "keys": [
+    { "key": "width", "label": "Width", "valueType": "number", "required": false },
+    { "key": "material", "label": "Material", "valueType": "string", "required": true }
+  ]
+}
+```
+
+`mode`: `fixed` (only defined keys) or `free` (customer/manager adds pairs).
 
 #### Database type (dbtype)
 
 | Type | Description | Example values |
-|------|-------------|----------------|
+| --- | --- | --- |
 | `varchar` | Variable-length string | Text up to 255 chars |
 | `text` | Long text | Descriptions, HTML |
 | `int` | Integer | IDs, quantities |
@@ -79,7 +136,7 @@ For `varchar` and `decimal`:
 #### PHP type (phptype)
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `string` | String |
 | `integer` | Integer |
 | `float` | Float |
@@ -91,7 +148,7 @@ For `varchar` and `decimal`:
 #### Default value
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `NULL` | Empty value |
 | `CURRENT_TIMESTAMP` | Current time (for datetime) |
 | `USER_DEFINED` | Set manually |
@@ -100,7 +157,7 @@ For `varchar` and `decimal`:
 #### Indexing
 
 | Type | Description | When to use |
-|------|-------------|-------------|
+| --- | --- | --- |
 | `NONE` | No index | Rarely used fields |
 | `INDEX` | Regular index | Search and sort fields |
 | `UNIQUE` | Unique index | Unique values |

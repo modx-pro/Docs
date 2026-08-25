@@ -33,7 +33,7 @@ items: [
 ## Возможности
 
 - **Статические варианты:** файлы `{basename}.{width}.webp` рядом с оригиналом в media source
-- **Очередь:** таблица `imageoptimizer_queue`, обработка из админки, CLI или cron
+- **Очередь:** таблица `imageoptimizer_queue`, обработка из админки (батчи до нуля, **Остановить**), CLI или cron
 - **Авто-inject:** `<picture>` + WebP/AVIF `srcset` на выходе HTML-страницы
 - **Upload hook:** постановка в очередь при загрузке в File Manager
 - **Vue-админка:** очередь, настройки, проверка энкодеров на сервере
@@ -67,7 +67,7 @@ items: [
 4. Убедитесь, что плагин **ImageOptimizer** включён.
 5. **Настройки → Очистить кэш**.
 
-После install resolver создаёт namespace `imageoptimizer`, таблицу очереди, права доступа, пункт меню **Компоненты → ImageOptimizer** и системные настройки `imageoptimizer_*`.
+После install resolver создаёт namespace `imageoptimizer`, таблицу очереди, права доступа, пункт меню **Пакеты → ImageOptimizer** и системные настройки `imageoptimizer_*`.
 
 ::: details Сборка transport из исходников
 Для разработчиков пакета: [README на GitHub](https://github.com/Ibochkarev/ImageOptimizer#сборка) (`npm run build:mgr`, `php _build/build.php`).
@@ -75,11 +75,13 @@ items: [
 
 ## Минимальный путь после установки
 
-1. Откройте **Компоненты → ImageOptimizer** → вкладка **Server**: хотя бы один WebP-энкодер «Доступен».
+1. Откройте **Пакеты → ImageOptimizer** → вкладка **Server**: хотя бы один WebP-энкодер «Доступен».
 2. Добавьте cron или обрабатывайте очередь вручную — [Быстрый старт](quick-start).
 3. Загрузите JPEG в File Manager или сделайте rebuild каталога.
 4. Нажмите **Обработать очередь**, дождитесь статуса `done`.
 5. Откройте страницу с `<img src="assets/...">` и проверьте `<picture>` в исходном коде.
+
+![Вкладка «Обзор» ImageOptimizer](/components/imageoptimizer/screenshots/overview.png)
 
 ## Быстрые ссылки
 
@@ -127,7 +129,7 @@ flowchart TB
 | **Breakpoint** | Целевая ширина из `imageoptimizer_breakpoints`, например `768` → `photo.768.webp` |
 | **Очередь** | Строки в `imageoptimizer_queue`: path, format, width, status |
 | **Inject** | Подмена `<img>` на `<picture>` в HTML перед отдачей страницы |
-| **Worker** | `imageoptimizer_process_queue`: конвертация pending-задач (cron, CLI, кнопка в админке) |
+| **Worker** | `queue/process`, `cli/convert.php`, `cron/convert.php`: конвертация pending-задач |
 
 ## Репозиторий
 

@@ -188,7 +188,7 @@ $deleted = $authManager->cleanupExpiredTokens();
 ### Token types
 
 | Type | Constant | Description | One-time |
-|------|----------|-------------|----------|
+| --- | --- | --- | --- |
 | `api` | `msCustomerToken::TYPE_API` | API session token | No |
 | `refresh` | `msCustomerToken::TYPE_REFRESH` | Session refresh token | No |
 | `magic_link` | `msCustomerToken::TYPE_MAGIC_LINK` | Passwordless login link | Yes |
@@ -244,7 +244,7 @@ $result = $registerService->validatePassword('weak');
 ```
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_password_min_length` | 8 | Min length |
 | `ms3_password_require_uppercase` | false | Require uppercase |
 | `ms3_password_require_number` | false | Require digit |
@@ -365,7 +365,7 @@ Setting `ms3_customer_duplicate_fields` (JSON) defines which fields to check. De
 ### Normalization when comparing
 
 | Field | Normalization |
-|-------|---------------|
+| --- | --- |
 | `email` | Lowercase |
 | `phone` | Digits only (min 7) |
 | Others | Trim whitespace |
@@ -390,7 +390,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 ## msCustomer fields
 
 | Field | Type | Default | Description |
-|-------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `user_id` | integer | 0 | MODX user ID (optional) |
 | `first_name` | string | '' | First name |
 | `last_name` | string | '' | Last name |
@@ -415,7 +415,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 ## msCustomerAddress fields
 
 | Field | Type | Default | Description |
-|-------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `customer_id` | integer | 0 | Customer ID |
 | `hash` | string | null | MD5 address hash (deduplication) |
 | `name` | string | null | Label (auto from city/street) |
@@ -435,7 +435,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 ## msCustomerToken fields
 
 | Field | Type | Default | Description |
-|-------|------|---------|-------------|
+| --- | --- | --- | --- |
 | `customer_id` | integer | 0 | Customer ID |
 | `token` | string | '' | Token string (128 chars, unique) |
 | `type` | enum | 'api' | Type: api, refresh, magic_link, email_verification |
@@ -446,7 +446,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 ## System settings
 
 | Setting | Default | Description |
-|---------|---------|-------------|
+| --- | --- | --- |
 | `ms3_customer_max_login_attempts` | 5 | Login attempts before block |
 | `ms3_customer_block_duration` | 3600 | Block duration (seconds) |
 | `ms3_customer_api_token_ttl` | 86400 | API token TTL (seconds) |
@@ -466,7 +466,7 @@ If `ms3_customer_sync_create_moduser` = true, also creates `modUser` + `modUserP
 ## Events
 
 | Event | When fired |
-|-------|------------|
+| --- | --- |
 | `msOnBeforeCreateCustomer` / `msOnCreateCustomer` | Customer creation |
 | `msOnBeforeUpdateCustomer` / `msOnUpdateCustomer` | Update from manager |
 | `msOnBeforeAddToCustomer` / `msOnAddToCustomer` | Field change via controller |

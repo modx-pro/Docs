@@ -51,7 +51,9 @@ Thumb3x генерирует on-the-fly URL с сегментом `thumb3x`. Ima
 
 ## MODX 3 Media Sources
 
-Поддерживаются только **Filesystem** sources. Inject перебирает все filesystem sources и ищет, в какой из них лежит файл по пути из `src`.
+Поддерживаются только **Filesystem** sources. Inject перебирает filesystem sources и ищет, в какой из них лежит файл по пути из `src`.
+
+На MODX 3 используется fallback `sources.modMediaSource` при резолве source для inject.
 
 S3 / FTP без локального пути: preflight `NonFilesystemSource`, задачи в очереди получают `skipped`.
 
@@ -61,11 +63,13 @@ S3 / FTP без локального пути: preflight `NonFilesystemSource`, 
 
 ## Проверка в менеджере
 
-Вкладка **Compatibility** в админке ImageOptimizer:
+**Пакеты → ImageOptimizer** → вкладка **Compatibility**:
 
 - статус VueTools
 - подсказки по Thumb3x / MS3
 - версии связанных extras (если установлены)
+
+![Вкладка «Compatibility»](/components/imageoptimizer/screenshots/compatibility.png)
 
 ## Связанные разделы
 

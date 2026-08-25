@@ -10,6 +10,18 @@ title: Интеграция на сайт
 
 ## 1. Подключение ресурсов (обязательно)
 
+Уведомления корзины используют **[iziToast](https://github.com/marcosmoura/iziToast)**. Пути к локальным CSS и JS задаются **системными настройками** компонента `ms3productsets` (относительно `[[++assets_url]]` или полный URL):
+
+| Настройка | Назначение |
+|-----------|------------|
+| `ms3productsets.izitoast_include` | Включить вывод `<link>` и `<script>` для iziToast **внутри** сниппета `mspsLexiconScript`. По умолчанию **Да**. |
+| `ms3productsets.izitoast_css` | Путь к CSS. По умолчанию файл из **MiniShop3**: `components/minishop3/css/web/lib/izitoast/iziToast.min.css`. Пустое значение — тег не выводится. |
+| `ms3productsets.izitoast_js` | Путь к JS. По умолчанию: `components/minishop3/js/web/lib/izitoast/iziToast.js`. Пустое — тег не выводится. |
+
+Если iziToast уже подключает ваш шаблон (например, общая вёрстка MiniShop3), выключите `ms3productsets.izitoast_include`, чтобы не дублировать библиотеку.
+
+В пакете дублируются те же файлы в `assets/components/ms3productsets/vendor/izitoast/` — укажите их в настройках, если нужен вариант без опоры на пути MS3.
+
 В шаблоне (или общем head/footer) подключите **сначала** лексикон, затем CSS и JS.
 
 ::: code-group
@@ -27,6 +39,10 @@ title: Интеграция на сайт
 ```
 
 :::
+
+Порядок важен: **mspsLexiconScript** (при включённой настройке — сначала iziToast, затем `window.mspsLexicon` / `window.mspsConfig`) **→ productsets.css → productsets.js**. При отсутствии `iziToast` на странице в консоли будет предупреждение, уведомления не покажутся.
+
+Переопределение через `window.mspsConfig` (до вызова `mspsLexiconScript` или в объекте, который мержится со сниппетом): `toastTimeout` (мс), `toastPosition` (например `topRight`, `bottomCenter` — см. документацию iziToast).
 
 ## 2. Блок в карточке товара: «С этим товаром покупают»
 

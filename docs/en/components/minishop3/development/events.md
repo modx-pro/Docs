@@ -14,7 +14,7 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 ### Cart
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeGetCart](events/cart#msonbeforegetcart) | Before getting cart |
 | [msOnGetCart](events/cart#msongetcart) | After getting cart |
 | [msOnBeforeAddToCart](events/cart#msonbeforeaddtocart) | Before adding product |
@@ -32,7 +32,7 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 ### Order
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeAddToOrder](events/order#msonbeforeaddtoorder) | Before adding field to order |
 | [msOnAddToOrder](events/order#msonaddtoorder) | After adding field |
 | [msOnBeforeValidateOrderValue](events/order#msonbeforevalidateordervalue) | Before field validation |
@@ -40,34 +40,42 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 | [msOnErrorValidateOrderValue](events/order#msonerrorvalidateordervalue) | Validation error |
 | [msOnBeforeRemoveFromOrder](events/order#msonbeforeremovefromorder) | Before removing field |
 | [msOnRemoveFromOrder](events/order#msonremovefromorder) | After removing field |
-| [msOnSubmitOrder](events/order#msonsubmitorder) | Order submission |
+| [msOnBeforeEmptyOrder](events/order#msonbeforeemptyorder) | Before clearing order draft |
+| [msOnEmptyOrder](events/order#msonemptyorder) | After clearing order draft |
+| [msOnSubmitOrder](events/order#msonsubmitorder) | Storefront order submit |
+| [msOnBeforeMgrCreateOrder](events/order#msonbeforemgrcreateorder) | Before manager finalization |
+| [msOnMgrCreateOrder](events/order#msonmgrcreateorder) | After manager finalization |
 | [msOnBeforeCreateOrder](events/order#msonbeforecreateorder) | Before creating order |
 | [msOnCreateOrder](events/order#msoncreateorder) | After creating order |
 
 ### Cost
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeGetCartCost](events/cost#msonbeforegetcartcost) | Before cart cost calculation |
 | [msOnGetCartCost](events/cost#msongetcartcost) | After cart cost calculation |
 | [msOnBeforeGetDeliveryCost](events/cost#msonbeforegetdeliverycost) | Before delivery cost calculation |
 | [msOnGetDeliveryCost](events/cost#msongetdeliverycost) | After delivery cost calculation |
 | [msOnBeforeGetPaymentCost](events/cost#msonbeforegetpaymentcost) | Before payment fee calculation |
 | [msOnGetPaymentCost](events/cost#msongetpaymentcost) | After payment fee calculation |
+| [msOnBeforeGetOrderCost](events/cost#msonbeforegetordercost) | Before order total (cart + delivery + payment) |
+| [msOnGetOrderCost](events/cost#msongetordercost) | After total: override `cost` / `cart_cost` / `delivery_cost` / `payment_cost` |
 
 ### Order status
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeChangeOrderStatus](events/status#msonbeforechangeorderstatus) | Before status change |
 | [msOnChangeOrderStatus](events/status#msonchangeorderstatus) | After status change |
 
 ### Customer
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeGetOrderCustomer](events/customer#msonbeforegetordercustomer) | Before getting customer |
 | [msOnGetOrderCustomer](events/customer#msongetordercustomer) | After getting customer |
+| [msOnBeforeGetOrderUser](events/customer#msonbeforegetorderuser) | Before resolving `modUser` on submit |
+| [msOnGetOrderUser](events/customer#msongetorderuser) | After resolving `modUser` |
 | [msOnBeforeAddToCustomer](events/customer#msonbeforeaddtocustomer) | Before adding field |
 | [msOnAddToCustomer](events/customer#msonaddtocustomer) | After adding field |
 | [msOnBeforeValidateCustomerValue](events/customer#msonbeforevalidatecustomervalue) | Before field validation |
@@ -81,7 +89,7 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 ### Products (catalog)
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnGetProductPrice](events/product#msongetproductprice) | Product price modification |
 | [msOnGetProductWeight](events/product#msongetproductweight) | Product weight modification |
 | [msOnGetProductFields](events/product#msongetproductfields) | Product fields modification |
@@ -91,7 +99,7 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 Events for integrating third-party packages (ms3Variants, msBrands, etc.) without modifying core code.
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnProductsLoad](events/msproducts#msonproductsload) | After product list is loaded (bulk loading) |
 | [msOnProductPrepare](events/msproducts#msonproductprepare) | Preparing each product's data |
 
@@ -102,7 +110,7 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 ### Order products
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeCreateOrderProduct](events/order-product#msonbeforecreateorderproduct) | Before adding product to order |
 | [msOnCreateOrderProduct](events/order-product#msoncreateorderproduct) | After adding product |
 | [msOnBeforeUpdateOrderProduct](events/order-product#msonbeforeupdateorderproduct) | Before updating product |
@@ -113,7 +121,7 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 ### Order model (xPDO)
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeSaveOrder](events/order-model#msonbeforesaveorder) | Before save (xPDO) |
 | [msOnSaveOrder](events/order-model#msonsaveorder) | After save (xPDO) |
 | [msOnBeforeRemoveOrder](events/order-model#msonbeforeremoveorder) | Before remove (xPDO) |
@@ -124,7 +132,7 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 ### Notifications
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeSendNotification](events/notifications#msonbeforesendnotification) | Before sending notification |
 | [msOnAfterSendNotification](events/notifications#msonaftersendnotification) | After sending notification |
 | [msOnRegisterNotificationChannels](events/notifications#msonregisternotificationchannels) | Channel registration |
@@ -132,7 +140,7 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 ### Vendors
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeVendorCreate](events/vendor#msonbeforevendorcreate) | Before creating vendor |
 | [msOnVendorCreate](events/vendor#msonvendorcreate) | After creating |
 | [msOnBeforeVendorUpdate](events/vendor#msonbeforevendorupdate) | Before updating |
@@ -143,7 +151,7 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 ### Import
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnBeforeImport](events/import#msonbeforeimport) | Before import start |
 | [msOnAfterImport](events/import#msonafterimport) | After import complete |
 | [msOnImportRow](events/import#msonimportrow) | When processing a row |
@@ -151,20 +159,34 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 ### Manager
 
 | Event | Description |
-|-------|-------------|
+| --- | --- |
 | [msOnManagerCustomCssJs](events/manager#msonmanagercustomcssjs) | Loading scripts and styles |
 
 ## Changes from miniShop2
 
 | miniShop2 | MiniShop3 | Changes |
-|-----------|-----------|---------|
+| --- | --- | --- |
 | `product` | `msProduct` | Parameter renamed |
-| `msOnGetOrderCost` | Split into 3 events | `msOnGetCartCost`, `msOnGetDeliveryCost`, `msOnGetPaymentCost` |
-| — | `controller` | New parameter in all controller events |
+| `msOnGetOrderCost` | Kept + 3 partials | Also `msOnGetCartCost`, `msOnGetDeliveryCost`, `msOnGetPaymentCost`. Override the total in `msOnGetOrderCost` |
+| — | `controller` | Parameter on many controller events |
+| — | `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Draft cleanup |
+| — | `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Manager finalization |
+| — | `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | `modUser` on submit |
 | — | `msOnBeforeValidateCustomerValue` | New event |
 | — | `msOnCreateCustomer` | New event |
 | — | `msOnAddCustomerAddress` | New event |
 | — | `msOnBeforeSendNotification` | New event |
 | — | `msOnImportRow` | New event |
-| — | `msOnProductsLoad` | New event (third-party package integration) |
-| — | `msOnProductPrepare` | New event (third-party package integration) |
+| — | `msOnProductsLoad` | Third-party package integration |
+| — | `msOnProductPrepare` | Third-party package integration |
+
+### Call chains (where to look in code)
+
+| Action | Events in order |
+| --- | --- |
+| Clear draft (`order/clean`) | `msOnBeforeEmptyOrder` → field reset → `msOnEmptyOrder` |
+| Storefront total | cart/delivery/payment cost → `msOnBeforeGetOrderCost` → compose → `msOnGetOrderCost` (return any of the 4 amounts) |
+| Storefront submit | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
+| Manager finalize | `msOnBeforeMgrCreateOrder` → `msOnBeforeCreateOrder` → `msOnCreateOrder` → `msOnMgrCreateOrder` |
+
+Registry source: `_build/elements/events.php` (all names above are registered in MODX).

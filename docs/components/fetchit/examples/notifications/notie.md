@@ -1,8 +1,13 @@
+---
+title: Notie
+description: Уведомления Notie для FetchIt через CDN и FetchIt.Message
+---
+
 # Notie
 
-Этот раздел поможет вам подключить минималистичный модуль для показа уведомлений, ввода и выбора данных на javascript [Notie](https://jaredreich.com/notie/). Давайте подключим его.
+[Notie](https://jaredreich.com/notie/): простые алерты на чистом JS.
 
-- Сперва вам необходимо подключить скрипт и стили модуля, для примера воспользуемся CDN.
+## Подключение через CDN
 
 ```html
 <!-- JavaScript -->
@@ -12,7 +17,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notie@4/dist/notie.min.css">
 ```
 
-- И определим свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
+Задайте [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,19 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
       notie.alert({
         type: 'success',
         text: message,
-      });
+      })
     },
     error(message) {
       notie.alert({
         type: 'error',
         text: message,
-      });
+      })
     },
   }
-});
+})
 ```
 
-- Либо в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
 FetchIt.Message = {
@@ -41,15 +46,15 @@ FetchIt.Message = {
     notie.alert({
       type: 'success',
       text: message,
-    });
+    })
   },
   error(message) {
     notie.alert({
       type: 'error',
       text: message,
-    });
+    })
   },
 }
 ```
 
-Вуаля! Вот таким простым способом, мы можем подключить модуль **Notie**.
+Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

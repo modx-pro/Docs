@@ -5,6 +5,8 @@ title: Cart
 
 The shopping cart is a key part of an online store. MiniShop3 provides a flexible system for displaying the cart anywhere on the site.
 
+<!-- ![Storefront cart](/components/minishop3/screenshots/fe-cart.png) -->
+
 [![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
 
 ## Multiple carts on a page
@@ -46,7 +48,7 @@ When the snippet is called with the `selector` parameter, MiniShop3 registers a 
 Cart behavior on the frontend is provided by a set of JavaScript modules:
 
 | File | Purpose |
-|------|---------|
+| --- | --- |
 | `js/web/ms3.js` | Main `ms3` object, initialization of all modules |
 | `js/web/core/CartAPI.js` | API client for cart operations (add, remove, change, clean) |
 | `js/web/ui/CartUI.js` | UI handlers: +/- buttons, remove, HTML auto-update |
@@ -84,6 +86,10 @@ document.addEventListener('ms3:cart:updated', function(e) {
 });
 ```
 
+### Changing options in the cart
+
+If a line has options (size, color), changing the combination goes through `POST /api/v1/cart/change-option` (body: `key`, `options`). On the server `CartMutationHandler` recalculates the line key and fires `msOnBeforeChangeOptionInCart` / `msOnChangeOptionInCart`. In JS: `ms3.cartAPI.changeOption(key, options)` (see [Frontend JavaScript](/en/components/minishop3/development/frontend-js)).
+
 ## Cart contents and available fields
 
 ### Basic product fields in the cart
@@ -91,7 +97,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 Each cart item contains:
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `product_key` | Unique cart line key |
 | `product_id` | Product ID (MODX resource) |
 | `count` | Quantity |
@@ -108,7 +114,7 @@ Each cart item contains:
 ### Totals
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `total.count` | Total item quantity |
 | `total.positions` | Number of lines (unique products) |
 | `total.cost` | Total cost |

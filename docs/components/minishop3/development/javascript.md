@@ -10,17 +10,27 @@ Headless API для программного взаимодействия с Min
 
 MiniShop3 использует двухуровневую архитектуру:
 
-```
-┌─────────────────────────────────────────────────┐
-│                    ms3.js                        │  ← Точка входа, автоинициализация
-├─────────────────────────────────────────────────┤
-│                  UI Layer                        │  ← DOM-привязки для SSR
-│     CartUI.js │ OrderUI.js │ CustomerUI.js      │
-├─────────────────────────────────────────────────┤
-│                 API Core                         │  ← Headless ядро
-│  ApiClient.js │ TokenManager.js │ hooks.js      │
-│  CartAPI.js │ OrderAPI.js │ CustomerAPI.js      │
-└─────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+  ms3["ms3.js — точка входа, автоинициализация"]
+
+  subgraph ui ["UI Layer — DOM-привязки для SSR"]
+    CartUI[CartUI.js]
+    OrderUI[OrderUI.js]
+    CustomerUI[CustomerUI.js]
+  end
+
+  subgraph core ["API Core — headless ядро"]
+    ApiClient[ApiClient.js]
+    TokenManager[TokenManager.js]
+    Hooks[hooks.js]
+    CartAPI[CartAPI.js]
+    OrderAPI[OrderAPI.js]
+    CustomerAPI[CustomerAPI.js]
+  end
+
+  ms3 --> ui
+  ui --> core
 ```
 
 ### API Core (Headless)
@@ -93,7 +103,7 @@ const response = await ms3.cartAPI.add(123, 2, { color: 'red' })
 При стандартном подключении доступны:
 
 | Объект | Описание |
-|--------|----------|
+| --- | --- |
 | `window.ms3` | Главный объект со всеми модулями |
 | `window.ms3Hooks` | Система хуков |
 | `window.ms3Message` | Уведомления (если подключён UI) |
@@ -160,7 +170,7 @@ const response = await ms3.cartAPI.get()
 Добавить товар в корзину.
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `id` | number | ID товара (обязательный) |
 | `count` | number | Количество (по умолчанию 1) |
 | `options` | object | Опции товара (цвет, размер и т.д.) |
@@ -203,7 +213,7 @@ await ms3.cartAPI.add(123, 1, { color: 'red', size: 'L' })
 Изменить количество товара.
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `productKey` | string | Уникальный ключ товара в корзине |
 | `count` | number | Новое количество |
 | `render` | array | Токены для рендеринга |
@@ -249,14 +259,16 @@ API для работы с заказом.
 ```javascript
 const response = await ms3.orderAPI.get()
 
-// response.data:
+// response.data.order (фрагмент):
 {
-  receiver: "Иван Иванов",
-  email: "ivan@example.com",
-  phone: "+79991234567",
-  delivery: 1,
-  payment: 2,
-  comment: "Позвонить перед доставкой"
+  delivery_id: 1,
+  payment_id: 2,
+  order_comment: "Позвонить перед доставкой",
+  address_first_name: "Иван",
+  address_last_name: "Иванов",
+  address_email: "ivan@example.com",
+  address_phone: "+79991234567",
+  address_comment: ""
 }
 ```
 
@@ -265,12 +277,13 @@ const response = await ms3.orderAPI.get()
 Сохранить поле заказа.
 
 ```javascript
-await ms3.orderAPI.add('receiver', 'Иван Иванов')
+await ms3.orderAPI.add('first_name', 'Иван')
 await ms3.orderAPI.add('email', 'ivan@example.com')
 await ms3.orderAPI.add('phone', '+79991234567')
-await ms3.orderAPI.add('delivery', 1)
-await ms3.orderAPI.add('payment', 2)
-await ms3.orderAPI.add('comment', 'Позвонить перед доставкой')
+await ms3.orderAPI.add('delivery_id', 1)
+await ms3.orderAPI.add('payment_id', 2)
+await ms3.orderAPI.add('order_comment', 'Позвонить перед доставкой')
+// комментарий к адресу: await ms3.orderAPI.add('comment', '…')
 ```
 
 :::info Автосохранение
@@ -282,7 +295,7 @@ await ms3.orderAPI.add('comment', 'Позвонить перед доставк�
 Удалить поле заказа.
 
 ```javascript
-await ms3.orderAPI.remove('comment')
+await ms3.orderAPI.remove('order_comment')
 ```
 
 #### clean()
@@ -314,7 +327,7 @@ if (response.success) {
     success: false,
     message: "Заполните обязательные поля",
     data: {
-      errors: ["receiver", "email", "phone"]
+      errors: ["first_name", "email", "phone"]
     }
   }
 }
@@ -420,7 +433,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Корзина
 
 | Хук | Контекст | Описание |
-|-----|----------|----------|
+| --- | --- | --- |
 | `beforeAddCart` | `{ id, count, options }` | Перед добавлением товара |
 | `afterAddCart` | `{ id, count, options, response }` | После добавления товара |
 | `beforeChangeCart` | `{ productKey, count }` | Перед изменением количества |
@@ -433,7 +446,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Заказ
 
 | Хук | Контекст | Описание |
-|-----|----------|----------|
+| --- | --- | --- |
 | `beforeAddOrder` | `{ key, value }` | Перед сохранением поля |
 | `afterAddOrder` | `{ key, value, response }` | После сохранения поля |
 | `beforeSubmitOrder` | `{}` | Перед оформлением |
@@ -444,7 +457,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 #### Покупатель
 
 | Хук | Контекст | Описание |
-|-----|----------|----------|
+| --- | --- | --- |
 | `beforeAddCustomer` | `{ key, value }` | Перед сохранением данных |
 | `afterAddCustomer` | `{ key, value, response }` | После сохранения данных |
 | `beforeUpdateProfile` | `{ data }` | Перед обновлением профиля |
@@ -503,7 +516,7 @@ ms3Hooks.addHook('beforeCleanCart', async (ctx) => {
 ### Список событий
 
 | Событие | Описание | detail |
-|---------|----------|--------|
+| --- | --- | --- |
 | `ms3:ready` | ms3 инициализирован | — |
 | `ms3:cart:updated` | Корзина обновлена | `{ cart, status }` |
 

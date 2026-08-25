@@ -1,62 +1,73 @@
 # Events
 
-The instance emits events that you can use to implement custom behavior.
+Events are attached to `document`. `detail` almost always has `form` and `fetchit`. After a server response it also has `response` and `formData`.
 
-More examples:
+Examples in [forms](/en/components/fetchit/examples/form/), [notifications](/en/components/fetchit/examples/notifications/), [modals](/en/components/fetchit/examples/modals/), [validation](/en/components/fetchit/examples/validation/).
 
-- [Form examples](/en/components/fetchit/examples/form/)
-- [Notification examples](/en/components/fetchit/examples/notifications/)
-- [Modal examples](/en/components/fetchit/examples/modals/)
-- [Validation examples](/en/components/fetchit/examples/validation/)
+| Event | Cancelable | When |
+| --- | --- | --- |
+| `fetchit:before` | yes | before `fetch`, after FormData is built |
+| `fetchit:after` | yes | right after the JSON response, before success/error handling |
+| `fetchit:success` | no | `response.success === true` |
+| `fetchit:error` | yes | `response.success === false`, before/during field error display |
+| `fetchit:reset` | no | native form `reset` |
+
+Order on submit: `Message.before` → `fetchit:before` → request → `Message.after` → `fetchit:after` → on error `Message.error` + `fetchit:error` + `setError` / `setFormMessage('validation')` → on success `setFormMessage('success')` + `Message.success` + `fetchit:success` → `grecaptcha.reset()` if present → optionally `form.reset()`.
+
+`preventDefault` on `fetchit:after` stops success/error handling and field messages. `fetchit:success` is not cancelable: `preventDefault` has no effect on it.
 
 ## fetchit:before
 
-- Arguments: `(form <HTMLFormElement>, formData <FormData>, fetchit <FetchIt>)`
-
-Fired before the form is submitted. Use it to add fields and/or run client-side validation. You can call `preventDefault()` to cancel submission.
+Add fields or stop submission:
 
 ```js
 document.addEventListener('fetchit:before', (e) => {
-  const { form, formData } = e.detail;
+  const { formData, fetchit } = e.detail
 
-  formData.set('newField', 'New field value'); // Add a field
+  formData.set('utm_source', 'landing')
 
-  if (formData.get('name')?.length < 3) {
-    e.preventDefault(); // Cancel form submission
+  if ((formData.get('name') || '').length < 3) {
+    fetchit.setError('name', 'Name is too short')
+    e.preventDefault()
   }
 })
 ```
 
 ## fetchit:after
 
-- Arguments: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
-
-Fired after the form is submitted and the server response is received. Use it when you need to run code regardless of response status.
+Any server response:
 
 ```js
 document.addEventListener('fetchit:after', (e) => {
-  const { response } = e.detail;
-
-  console.log(response.success); // true|false
-  console.log(response.message); // Server message
-  console.log(response.data); // Server data
+  const { response } = e.detail
+  console.log(response.success, response.message, response.data)
 })
 ```
 
 ## fetchit:success
 
-- Arguments: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
+Successful submit. Handy to close a modal or send a metric:
 
-Fired when the server response has `success: true`. Use it for code that runs only on successful submission.
+```js
+document.addEventListener('fetchit:success', (e) => {
+  const { form, response } = e.detail
+  if (form.id === 'callback') {
+    console.log(response.message)
+  }
+})
+```
 
 ## fetchit:error
 
-- Arguments: `(form <HTMLFormElement>, formData <FormData>, response <object>, fetchit <FetchIt>)`
+Validation or snippet logic error. `response.data` is a field → message map.
 
-Fired when the server response has `success: false`. Use it to handle errors.
+```js
+document.addEventListener('fetchit:error', (e) => {
+  const { response } = e.detail
+  console.warn(response.data)
+})
+```
 
 ## fetchit:reset
 
-- Arguments: `(form <HTMLFormElement>, fetchit <FetchIt>)`
-
-Fired when the form is reset. Useful to hide custom messages or error state.
+Form reset (reset button or `clearFieldsOnSuccess`). Hide custom UI on top of the standard clear.

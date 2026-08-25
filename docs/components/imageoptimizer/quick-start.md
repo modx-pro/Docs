@@ -21,17 +21,17 @@ title: Быстрый старт
 2. Проверьте, что плагин **ImageOptimizer** активен.
 3. **Настройки → Очистить кэш**.
 
-<!-- SCREENSHOT: Пункт меню Компоненты → ImageOptimizer -->
-<!-- ![Пункт меню «Компоненты → ImageOptimizer»](/components/imageoptimizer/screenshots/menu-imageoptimizer.png) -->
+Откройте **Пакеты → ImageOptimizer** в менеджере MODX.
+
+![Пункт меню «Пакеты → ImageOptimizer»](/components/imageoptimizer/screenshots/menu-imageoptimizer.png)
 
 ## Шаг 3: Проверьте сервер
 
-Откройте **Компоненты → ImageOptimizer** → вкладка **Server**.
+Откройте **Пакеты → ImageOptimizer** → вкладка **Server**.
 
 На карточках WebP хотя бы один энкодер в статусе **Доступен** (GD, Imagick или `cwebp`). Если все «Не найдены», см. [Решение проблем](troubleshooting#энкодеры-не-найдены-на-valet--herd-macos).
 
-<!-- SCREENSHOT: Вкладка Server — карточки энкодеров -->
-<!-- ![Вкладка «Server» — готовность WebP-энкодеров](/components/imageoptimizer/screenshots/server.png) -->
+![Вкладка «Server» — готовность WebP-энкодеров](/components/imageoptimizer/screenshots/server.png)
 
 По умолчанию уже включены:
 
@@ -53,7 +53,7 @@ Worker не стартует сам после upload. Добавьте в cront
 0 3 * * * php /path/to/site/core/components/imageoptimizer/cron/prune.php
 ```
 
-Подробнее: [CLI и cron](cli).
+Команду для cron можно скопировать на вкладке **Server**. Подробнее: [CLI и cron](cli).
 
 ## Шаг 5: Конвертируйте изображения
 
@@ -61,7 +61,9 @@ Worker не стартует сам после upload. Добавьте в cront
 
 Загрузите JPEG или PNG в **File Manager**. В **ImageOptimizer → Очередь** появятся задачи со статусом `pending`.
 
-Нажмите **Обработать очередь** или дождитесь cron. После `done` на диске лежат файлы вида `photo.768.webp`, `photo.jpg.webp`.
+Нажмите **Обработать очередь** или дождитесь cron. С 1.0.4 одна кнопка обрабатывает батчи до `pending = 0` (можно **Остановить**). После `done` на диске лежат файлы вида `photo.768.webp`, `photo.jpg.webp`.
+
+![Вкладка «Обзор» — статистика и «Обработать очередь»](/components/imageoptimizer/screenshots/overview.png)
 
 ### Существующий каталог
 
@@ -69,6 +71,8 @@ Worker не стартует сам после upload. Добавьте в cront
 2. **Media source** — обычно `1` (Filesystem)
 3. **Path** — каталог относительно корня source, например `assets/images/catalog` или `images/resources` для MS3
 4. **Запустить**, затем **Обработать очередь**
+
+![Диалог «Пересобрать очередь»](/components/imageoptimizer/screenshots/queue-rebuild.png)
 
 Через CLI:
 
