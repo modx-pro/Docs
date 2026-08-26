@@ -1,7 +1,7 @@
 ---
 title: msYandexDelivery
 description: Доставка через Yandex Delivery Platform API (other-day) для MiniShop3 — расчёт, ПВЗ, заявки в менеджере
-author: modx-pro
+author: ibochkarev
 dependencies: [miniShop3, VueTools]
 categories: minishop3
 logo: https://modstore.pro/assets/extras/msyandexdelivery/logo-md.png
