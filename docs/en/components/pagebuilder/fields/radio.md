@@ -5,7 +5,7 @@ description: "Single value from options shown as radio buttons"
 
 # Field radio
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![radio](/components/pagebuilder/screenshots/fields/radio.png) -->
 

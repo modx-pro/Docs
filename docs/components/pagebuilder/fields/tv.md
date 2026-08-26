@@ -5,7 +5,7 @@ description: "Объект id name caption выбранного MODX TV"
 
 # Поле tv
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![tv](/components/pagebuilder/screenshots/fields/tv.png) -->
 

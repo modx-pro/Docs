@@ -5,7 +5,7 @@ description: "Single id from a custom table row via optionsSource table"
 
 # Field tablecombo
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![tablecombo](/components/pagebuilder/screenshots/fields/tablecombo.png) -->
 

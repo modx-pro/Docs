@@ -5,7 +5,7 @@ description: "Object name of selected modChunk for Fenom include"
 
 # Field chunk
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![chunk](/components/pagebuilder/screenshots/fields/chunk.png) -->
 

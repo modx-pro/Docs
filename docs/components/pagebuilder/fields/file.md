@@ -5,7 +5,7 @@ description: "Media-объект файла после enrich при save draft"
 
 # Поле file
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![file](/components/pagebuilder/screenshots/fields/file.png) -->
 

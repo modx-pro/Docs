@@ -5,7 +5,7 @@ description: "Id array from a custom table via MultiSelect"
 
 # Field tablemulticombo
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.png) -->
 

@@ -5,7 +5,7 @@ description: "Массив id строк custom table через MultiSelect"
 
 # Поле tablemulticombo
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.png) -->
 

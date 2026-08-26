@@ -5,7 +5,7 @@ description: "HTML-строка из привычного richtext MODX"
 
 # Поле richtext
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![richtext](/components/pagebuilder/screenshots/fields/richtext.png) -->
 

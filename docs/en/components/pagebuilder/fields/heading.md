@@ -5,7 +5,7 @@ description: "Decorative field group heading with no section data key"
 
 # Field heading
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![heading](/components/pagebuilder/screenshots/fields/heading.png) -->
 

@@ -5,7 +5,7 @@ description: "File media object after enrich on save draft"
 
 # Field file
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![file](/components/pagebuilder/screenshots/fields/file.png) -->
 

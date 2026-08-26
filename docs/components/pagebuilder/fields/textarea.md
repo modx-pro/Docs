@@ -5,7 +5,7 @@ description: "Многострочный plain-текст без HTML"
 
 # Поле textarea
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![textarea](/components/pagebuilder/screenshots/fields/textarea.png) -->
 

@@ -5,7 +5,7 @@ description: "Amount number with currency symbol from currency setting"
 
 # Field currency
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![currency](/components/pagebuilder/screenshots/fields/currency.png) -->
 

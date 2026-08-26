@@ -5,7 +5,7 @@ description: "Массив пар ключ–значение без typed colum
 
 # Поле keyvalue
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.png) -->
 

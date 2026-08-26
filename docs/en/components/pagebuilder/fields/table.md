@@ -5,7 +5,7 @@ description: "Row array by columns with typed cells"
 
 # Field table
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![table](/components/pagebuilder/screenshots/fields/table.png) -->
 

@@ -5,7 +5,7 @@ description: "Одно значение из options с радиокнопкам
 
 # Поле radio
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![radio](/components/pagebuilder/screenshots/fields/radio.png) -->
 

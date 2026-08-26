@@ -5,7 +5,7 @@ description: "Число для счётчиков, лимитов и поряд
 
 # Поле number
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![number](/components/pagebuilder/screenshots/fields/number.png) -->
 

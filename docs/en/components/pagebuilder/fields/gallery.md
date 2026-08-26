@@ -5,7 +5,7 @@ description: "Array of image media objects with enrich metadata"
 
 # Field gallery
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![gallery](/components/pagebuilder/screenshots/fields/gallery.png) -->
 

@@ -5,7 +5,7 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 # Поле slug
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![slug](/components/pagebuilder/screenshots/fields/slug.png) -->
 

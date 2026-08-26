@@ -5,7 +5,7 @@ description: "Массив объектов с nested fields и служебны
 
 # Поле repeater
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.png) -->
 

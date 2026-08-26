@@ -5,7 +5,7 @@ description: "Array of key value pairs without typed columns"
 
 # Field keyvalue
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.png) -->
 

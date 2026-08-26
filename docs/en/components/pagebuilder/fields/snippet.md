@@ -5,7 +5,7 @@ description: "Object name of selected modSnippet for chunk call"
 
 # Field snippet
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.png) -->
 

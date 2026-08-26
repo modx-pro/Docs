@@ -5,7 +5,7 @@ description: "Группа вложенных полей с плоскими к�
 
 # Поле fieldset
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![fieldset](/components/pagebuilder/screenshots/fields/fieldset.png) -->
 

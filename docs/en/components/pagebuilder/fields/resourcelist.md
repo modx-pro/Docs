@@ -5,7 +5,7 @@ description: "relation alias with same picker modal and id pagetitle object"
 
 # Field resourcelist
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.png) -->
 

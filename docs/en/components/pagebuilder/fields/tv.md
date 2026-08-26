@@ -5,7 +5,7 @@ description: "Object id name caption of selected MODX TV"
 
 # Field tv
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![tv](/components/pagebuilder/screenshots/fields/tv.png) -->
 

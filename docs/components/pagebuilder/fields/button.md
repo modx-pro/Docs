@@ -5,7 +5,7 @@ description: "Объект CTA: label, url и target"
 
 # Поле button
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![button](/components/pagebuilder/screenshots/fields/button.png) -->
 

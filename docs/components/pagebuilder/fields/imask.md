@@ -5,7 +5,7 @@ description: "Строка с маской ввода IMask в инспекто�
 
 # Поле imask
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![imask](/components/pagebuilder/screenshots/fields/imask.png) -->
 

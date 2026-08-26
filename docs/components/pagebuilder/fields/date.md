@@ -5,7 +5,7 @@ description: "Дата в формате ISO без времени суток"
 
 # Поле date
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![date](/components/pagebuilder/screenshots/fields/date.png) -->
 

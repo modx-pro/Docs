@@ -5,7 +5,7 @@ description: "Объект name выбранного modSnippet для вызо�
 
 # Поле snippet
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.png) -->
 

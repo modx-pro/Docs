@@ -5,7 +5,7 @@ description: "Read-only string still shown in the inspector"
 
 # Field readonly
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![readonly](/components/pagebuilder/screenshots/fields/readonly.png) -->
 

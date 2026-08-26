@@ -5,7 +5,7 @@ description: "Single-line text for titles and short labels"
 
 # Field text
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![text](/components/pagebuilder/screenshots/fields/text.png) -->
 

@@ -5,7 +5,7 @@ description: "Строка scalar с подсказкой xtype без ExtJS в�
 
 # Поле xtype
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![xtype](/components/pagebuilder/screenshots/fields/xtype.png) -->
 

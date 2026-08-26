@@ -5,7 +5,7 @@ description: "Hex or rgba color string from a color picker"
 
 # Field color
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![color](/components/pagebuilder/screenshots/fields/color.png) -->
 

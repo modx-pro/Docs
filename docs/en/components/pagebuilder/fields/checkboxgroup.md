@@ -5,7 +5,7 @@ description: "Array of values from static options for multiple flags"
 
 # Field checkboxgroup
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![checkboxgroup](/components/pagebuilder/screenshots/fields/checkboxgroup.png) -->
 

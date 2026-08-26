@@ -5,7 +5,7 @@ description: "ISO date without time of day"
 
 # Field date
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![date](/components/pagebuilder/screenshots/fields/date.png) -->
 

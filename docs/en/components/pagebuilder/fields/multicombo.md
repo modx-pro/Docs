@@ -5,7 +5,7 @@ description: "Value array from xPDO optionsSource via MultiSelect with search"
 
 # Field multicombo
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.png) -->
 

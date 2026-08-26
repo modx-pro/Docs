@@ -5,7 +5,7 @@ description: "Одно значение из preset options с образцам�
 
 # Поле colorpalette
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![colorpalette](/components/pagebuilder/screenshots/fields/colorpalette.png) -->
 

@@ -5,7 +5,7 @@ description: "Маркер блока showWhen: в данные секции н�
 
 # Поле dependent
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![dependent](/components/pagebuilder/screenshots/fields/dependent.png) -->
 

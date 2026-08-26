@@ -5,7 +5,7 @@ description: "Single object with nested field keys not an array"
 
 # Field jsongrid
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![jsongrid](/components/pagebuilder/screenshots/fields/jsongrid.png) -->
 

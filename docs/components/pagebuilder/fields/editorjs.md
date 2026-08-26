@@ -5,7 +5,7 @@ description: "Объект json и готовый html из Editor.js"
 
 # Поле editorjs
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.png) -->
 

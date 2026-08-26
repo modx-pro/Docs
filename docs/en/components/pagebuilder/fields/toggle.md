@@ -5,7 +5,7 @@ description: "Boolean via PrimeVue switch in the inspector"
 
 # Field toggle
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![toggle](/components/pagebuilder/screenshots/fields/toggle.png) -->
 

@@ -5,7 +5,7 @@ description: "Объект name выбранного modChunk для include в 
 
 # Поле chunk
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![chunk](/components/pagebuilder/screenshots/fields/chunk.png) -->
 

@@ -5,7 +5,7 @@ description: "CTA object: label, url, and target"
 
 # Field button
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![button](/components/pagebuilder/screenshots/fields/button.png) -->
 

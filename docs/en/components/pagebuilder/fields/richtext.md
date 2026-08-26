@@ -5,7 +5,7 @@ description: "HTML string from the familiar MODX richtext editor"
 
 # Field richtext
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![richtext](/components/pagebuilder/screenshots/fields/richtext.png) -->
 

@@ -5,7 +5,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 # Поле combo
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![combo](/components/pagebuilder/screenshots/fields/combo.png) -->
 

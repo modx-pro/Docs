@@ -5,7 +5,7 @@ description: "Multi-line plain text without HTML"
 
 # Field textarea
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![textarea](/components/pagebuilder/screenshots/fields/textarea.png) -->
 

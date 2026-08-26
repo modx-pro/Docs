@@ -5,7 +5,7 @@ description: "Конфиг table_key limit filters без строк табли�
 
 # Поле embeddedTable
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.png) -->
 

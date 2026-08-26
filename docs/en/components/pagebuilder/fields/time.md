@@ -5,7 +5,7 @@ description: "Time of day without a calendar date"
 
 # Field time
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![time](/components/pagebuilder/screenshots/fields/time.png) -->
 

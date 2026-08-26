@@ -5,7 +5,7 @@ description: "Строка URL с базовой проверкой формат
 
 # Поле url
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![url](/components/pagebuilder/screenshots/fields/url.png) -->
 

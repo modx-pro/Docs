@@ -5,7 +5,7 @@ description: "Map point with enrich embed_url and watch_url"
 
 # Field map
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![map](/components/pagebuilder/screenshots/fields/map.png) -->
 

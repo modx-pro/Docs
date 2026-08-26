@@ -5,7 +5,7 @@ description: "URL string with basic format checks in the inspector"
 
 # Field url
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![url](/components/pagebuilder/screenshots/fields/url.png) -->
 

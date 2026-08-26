@@ -5,7 +5,7 @@ description: "Array of values from static options with PrimeVue MultiSelect"
 
 # Field multiselect
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.png) -->
 

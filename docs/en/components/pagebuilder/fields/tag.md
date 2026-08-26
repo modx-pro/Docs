@@ -5,7 +5,7 @@ description: "String tag array with chip UI in inspector"
 
 # Field tag
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![tag](/components/pagebuilder/screenshots/fields/tag.png) -->
 

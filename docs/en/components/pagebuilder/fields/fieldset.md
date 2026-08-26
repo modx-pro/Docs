@@ -5,7 +5,7 @@ description: "Nested field group with flat keys in section data"
 
 # Field fieldset
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![fieldset](/components/pagebuilder/screenshots/fields/fieldset.png) -->
 

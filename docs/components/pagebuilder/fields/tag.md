@@ -5,7 +5,7 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 # Поле tag
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![tag](/components/pagebuilder/screenshots/fields/tag.png) -->
 

@@ -5,7 +5,7 @@ description: "String with IMask input pattern in inspector"
 
 # Field imask
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![imask](/components/pagebuilder/screenshots/fields/imask.png) -->
 

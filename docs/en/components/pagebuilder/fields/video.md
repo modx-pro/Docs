@@ -5,7 +5,7 @@ description: "Video object with enrich embed_url provider and watch_url"
 
 # Field video
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![video](/components/pagebuilder/screenshots/fields/video.png) -->
 

@@ -5,7 +5,7 @@ description: "Hidden string: stored in section data, not shown in the inspector"
 
 # Field hidden
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![hidden](/components/pagebuilder/screenshots/fields/hidden.png) -->
 

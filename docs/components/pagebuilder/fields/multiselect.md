@@ -5,7 +5,7 @@ description: "Массив значений из статического спи
 
 # Поле multiselect
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.png) -->
 

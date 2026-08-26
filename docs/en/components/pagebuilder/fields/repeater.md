@@ -5,7 +5,7 @@ description: "Array of objects with nested fields and service _rowId"
 
 # Field repeater
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.png) -->
 

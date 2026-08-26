@@ -5,7 +5,7 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 # Поле video
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![video](/components/pagebuilder/screenshots/fields/video.png) -->
 

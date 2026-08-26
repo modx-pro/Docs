@@ -5,7 +5,7 @@ description: "Строка цвета hex или rgba из color picker"
 
 # Поле color
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![color](/components/pagebuilder/screenshots/fields/color.png) -->
 

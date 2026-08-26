@@ -5,7 +5,7 @@ description: "Массив значений из xPDO optionsSource через M
 
 # Поле multicombo
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.png) -->
 

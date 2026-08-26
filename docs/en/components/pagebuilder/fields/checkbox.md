@@ -5,7 +5,7 @@ description: "Single boolean flag: true or false"
 
 # Field checkbox
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![checkbox](/components/pagebuilder/screenshots/fields/checkbox.png) -->
 

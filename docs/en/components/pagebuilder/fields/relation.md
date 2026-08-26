@@ -5,7 +5,7 @@ description: "Single MODX resource as id and pagetitle object from picker modal"
 
 # Field relation
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![relation](/components/pagebuilder/screenshots/fields/relation.png) -->
 

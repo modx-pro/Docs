@@ -5,7 +5,7 @@ description: "Source code string with Ace highlighting in the inspector"
 
 # Field ace
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![ace](/components/pagebuilder/screenshots/fields/ace.png) -->
 

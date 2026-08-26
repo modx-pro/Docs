@@ -5,7 +5,7 @@ description: "Строка исходного кода с подсветкой A
 
 # Поле ace
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![ace](/components/pagebuilder/screenshots/fields/ace.png) -->
 

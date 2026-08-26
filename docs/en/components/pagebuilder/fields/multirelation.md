@@ -5,7 +5,7 @@ description: "Array of resources with id and pagetitle from picker modal"
 
 # Field multirelation
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![multirelation](/components/pagebuilder/screenshots/fields/multirelation.png) -->
 

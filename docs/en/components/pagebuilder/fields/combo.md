@@ -5,7 +5,7 @@ description: "Single value from xPDO optionsSource via Select with search"
 
 # Field combo
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![combo](/components/pagebuilder/screenshots/fields/combo.png) -->
 

@@ -5,7 +5,7 @@ description: "Одно значение из статического масси
 
 # Поле select
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![select](/components/pagebuilder/screenshots/fields/select.png) -->
 

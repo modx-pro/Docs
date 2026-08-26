@@ -5,7 +5,7 @@ description: "Slug string, often auto-generated from sourceField"
 
 # Field slug
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![slug](/components/pagebuilder/screenshots/fields/slug.png) -->
 

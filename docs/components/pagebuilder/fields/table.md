@@ -5,7 +5,7 @@ description: "Массив строк по columns с типизированны
 
 # Поле table
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![table](/components/pagebuilder/screenshots/fields/table.png) -->
 

@@ -5,7 +5,7 @@ description: "Массив media-объектов изображений с enri
 
 # Поле gallery
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![gallery](/components/pagebuilder/screenshots/fields/gallery.png) -->
 

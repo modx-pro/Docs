@@ -5,7 +5,7 @@ description: "Декоративный подзаголовок группы п�
 
 # Поле heading
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![heading](/components/pagebuilder/screenshots/fields/heading.png) -->
 

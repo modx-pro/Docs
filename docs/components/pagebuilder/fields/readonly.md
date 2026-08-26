@@ -5,7 +5,7 @@ description: "Строка только для чтения с отображе�
 
 # Поле readonly
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![readonly](/components/pagebuilder/screenshots/fields/readonly.png) -->
 

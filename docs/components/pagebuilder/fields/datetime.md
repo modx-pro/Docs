@@ -5,7 +5,7 @@ description: "Дата и время в одном значении"
 
 # Поле datetime
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![datetime](/components/pagebuilder/screenshots/fields/datetime.png) -->
 

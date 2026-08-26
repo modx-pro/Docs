@@ -5,7 +5,7 @@ description: "Editor.js object with json and rendered html"
 
 # Field editorjs
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.png) -->
 

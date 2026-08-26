@@ -5,7 +5,7 @@ description: "showWhen block marker: not written to section data"
 
 # Field dependent
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![dependent](/components/pagebuilder/screenshots/fields/dependent.png) -->
 

@@ -5,7 +5,7 @@ description: "table_key limit filters config without table rows in data"
 
 # Field embeddedTable
 
-Layer: **Pro**.
+Version: **Pro**.
 
 <!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.png) -->
 

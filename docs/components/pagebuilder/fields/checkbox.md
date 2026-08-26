@@ -5,7 +5,7 @@ description: "Один boolean-флаг: true или false"
 
 # Поле checkbox
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![checkbox](/components/pagebuilder/screenshots/fields/checkbox.png) -->
 

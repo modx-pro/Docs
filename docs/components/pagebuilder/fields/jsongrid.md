@@ -5,7 +5,7 @@ description: "Один объект с ключами nested fields не мас�
 
 # Поле jsongrid
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![jsongrid](/components/pagebuilder/screenshots/fields/jsongrid.png) -->
 

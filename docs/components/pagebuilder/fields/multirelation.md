@@ -5,7 +5,7 @@ description: "Массив ресурсов с id и pagetitle из модаль
 
 # Поле multirelation
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![multirelation](/components/pagebuilder/screenshots/fields/multirelation.png) -->
 

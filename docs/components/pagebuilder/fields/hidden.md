@@ -5,7 +5,7 @@ description: "Скрытая строка: есть в данных секции
 
 # Поле hidden
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![hidden](/components/pagebuilder/screenshots/fields/hidden.png) -->
 

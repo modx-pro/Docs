@@ -5,7 +5,7 @@ description: "Single value from a static options array"
 
 # Field select
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![select](/components/pagebuilder/screenshots/fields/select.png) -->
 

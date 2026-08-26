@@ -5,7 +5,7 @@ description: "Alias relation с тем же модальным picker и объ�
 
 # Поле resourcelist
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.png) -->
 

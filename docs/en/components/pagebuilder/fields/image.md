@@ -5,7 +5,7 @@ description: "Image media object with alt and enrich metadata"
 
 # Field image
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![image](/components/pagebuilder/screenshots/fields/image.png) -->
 

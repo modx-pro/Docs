@@ -5,7 +5,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 # Поле map
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![map](/components/pagebuilder/screenshots/fields/map.png) -->
 

@@ -5,7 +5,7 @@ description: "Время суток без календарной даты"
 
 # Поле time
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![time](/components/pagebuilder/screenshots/fields/time.png) -->
 

@@ -5,7 +5,7 @@ description: "Одно id строки custom table через optionsSource tab
 
 # Поле tablecombo
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![tablecombo](/components/pagebuilder/screenshots/fields/tablecombo.png) -->
 

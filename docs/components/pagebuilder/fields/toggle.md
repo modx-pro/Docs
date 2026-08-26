@@ -5,7 +5,7 @@ description: "Boolean через switch PrimeVue в инспекторе"
 
 # Поле toggle
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![toggle](/components/pagebuilder/screenshots/fields/toggle.png) -->
 

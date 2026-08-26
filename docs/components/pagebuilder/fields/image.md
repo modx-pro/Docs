@@ -5,7 +5,7 @@ description: "Media-объект изображения с alt и enrich metadat
 
 # Поле image
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![image](/components/pagebuilder/screenshots/fields/image.png) -->
 

@@ -5,7 +5,7 @@ description: "Boolean yes/no in classic MODX TV style"
 
 # Field yesno
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![yesno](/components/pagebuilder/screenshots/fields/yesno.png) -->
 

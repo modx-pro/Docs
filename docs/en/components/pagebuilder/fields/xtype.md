@@ -5,7 +5,7 @@ description: "Scalar string with xtype hint without MODX ExtJS widget"
 
 # Field xtype
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![xtype](/components/pagebuilder/screenshots/fields/xtype.png) -->
 

@@ -5,7 +5,7 @@ description: "Однострочный текст для заголовков и
 
 # Поле text
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![text](/components/pagebuilder/screenshots/fields/text.png) -->
 

@@ -5,7 +5,7 @@ description: "Number for counters, limits, and order"
 
 # Field number
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![number](/components/pagebuilder/screenshots/fields/number.png) -->
 

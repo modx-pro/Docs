@@ -5,7 +5,7 @@ description: "Date and time in one value"
 
 # Field datetime
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![datetime](/components/pagebuilder/screenshots/fields/datetime.png) -->
 

@@ -5,7 +5,7 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 
 # Поле relation
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![relation](/components/pagebuilder/screenshots/fields/relation.png) -->
 

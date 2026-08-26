@@ -5,7 +5,7 @@ description: "Число суммы с символом валюты из нас
 
 # Поле currency
 
-Слой: **Pro**.
+Версия: **Pro**.
 
 <!-- ![currency](/components/pagebuilder/screenshots/fields/currency.png) -->
 

@@ -5,7 +5,7 @@ description: "Boolean да/нет в стиле классического MODX 
 
 # Поле yesno
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![yesno](/components/pagebuilder/screenshots/fields/yesno.png) -->
 

@@ -5,7 +5,7 @@ description: "Массив значений из статического спи
 
 # Поле checkboxgroup
 
-Слой: **Free**.
+Версия: **Free**.
 
 <!-- ![checkboxgroup](/components/pagebuilder/screenshots/fields/checkboxgroup.png) -->
 

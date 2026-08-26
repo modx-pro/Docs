@@ -5,7 +5,7 @@ description: "Single value from preset options with color swatches"
 
 # Field colorpalette
 
-Layer: **Free**.
+Version: **Free**.
 
 <!-- ![colorpalette](/components/pagebuilder/screenshots/fields/colorpalette.png) -->
 
