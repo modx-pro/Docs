@@ -9,9 +9,11 @@ Renders HTML for product bundles. Put it in the product template or anywhere you
 
 ## Selection order
 
-1. `bundle` > 0 — one bundle by ID. If it is inactive and `activeOnly=1`, the result is empty.
-2. Else `product` > 0 — bundles that include that product.
-3. Otherwise `emptyTpl` is returned.
+1. `bundle` > 0 — one bundle by ID. Inactive with `activeOnly=1`, or a `context_key` that does not match the current request context → empty.
+2. Else non-empty `bundles` — bundles by ID list (order as in the parameter). IDs from another context are skipped.
+3. Else `list=all` — all bundles in the **current context** (by `sortorder`).
+4. Else `product` > 0 — bundles that include the product in the current context.
+5. Otherwise `emptyTpl`.
 
 With `msbundles_stock_behavior=hide` and unavailable required stock, the card is omitted. `block` and `message` keep the card with `--blocked` / `--warning` modifiers.
 
@@ -21,8 +23,10 @@ With no bundle image and `imageFallback=1`, the first product thumb is used.
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `product` | `0` | Product resource ID. Bundles that include it |
+| `product` | `0` | Product resource ID. Bundles that include it in the current context |
 | `bundle` | `0` | Single bundle ID (instead of `product`) |
+| `bundles` | — | Comma-separated IDs: `5,8,12` |
+| `list` | — | `all` — all bundles in the current context (by `sortorder`) |
 | `tpl` | `tplMsBundlesItem` | Card chunk |
 | `wrapperTpl` | `tplMsBundlesList` | List wrapper |
 | `emptyTpl` | `tplMsBundlesEmpty` | Empty result |
@@ -78,6 +82,48 @@ Single bundle by ID:
 [[!msBundles?
   &bundle=`5`
   &tpl=`tplMsBundlesItem`
+  &wrapperTpl=`tplMsBundlesList`
+]]
+```
+
+:::
+
+Several bundles on a landing page:
+
+::: code-group
+
+```fenom
+{'!msBundles' | snippet : [
+  'bundles' => '5,8,12',
+  'wrapperTpl' => 'tplMsBundlesList',
+  'tpl' => 'tplMsBundlesItem'
+]}
+```
+
+```modx
+[[!msBundles?
+  &bundles=`5,8,12`
+  &wrapperTpl=`tplMsBundlesList`
+  &tpl=`tplMsBundlesItem`
+]]
+```
+
+:::
+
+All active bundles in the current context:
+
+::: code-group
+
+```fenom
+{'!msBundles' | snippet : [
+  'list' => 'all',
+  'wrapperTpl' => 'tplMsBundlesList'
+]}
+```
+
+```modx
+[[!msBundles?
+  &list=`all`
   &wrapperTpl=`tplMsBundlesList`
 ]]
 ```
