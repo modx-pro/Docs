@@ -1,6 +1,6 @@
 ---
 title: Quick start
-description: Install msYandexDelivery, set Base URL, token, station, and verify checkout
+description: Install msYandexDelivery, set Base URL, token, warehouse, and verify checkout
 ---
 
 # Quick start
@@ -11,11 +11,9 @@ description: Install msYandexDelivery, set Base URL, token, station, and verify 
 2. Install **msYandexDelivery**.
 3. Clear the MODX cache.
 
-The resolver creates table `msyandex_requests`, namespace settings `msyandexdelivery`, and two delivery methods (door / pickup).
+The resolver creates table `msyandex_requests`, settings in namespace `msyandexdelivery`, and two delivery methods (door / PVZ). The component menu opens system settings only. There is no separate CMP.
 
 ## Step 2. Base URL and API access
-
-The API host is **not** hard-coded. Set `msyandexdelivery_base_url` yourself (no trailing `/`, no path). Current hosts: [API access](https://yandex.com/support/delivery-profile/ru/api/other-day/access).
 
 Examples:
 
@@ -24,7 +22,7 @@ Examples:
 | Test | `https://b2b.taxi.tst.yandex.net` |
 | Production | `https://b2b-authproxy.taxi.yandex.net` |
 
-`msyandexdelivery_environment` (`test` / `prod`) only drives UI hints. It does **not** select the host.
+`msyandexdelivery_environment` (`test` / `prod`) only affects UI hints. It does **not** choose the host.
 
 Fill in:
 
@@ -32,21 +30,12 @@ Fill in:
 | --- | --- |
 | `msyandexdelivery_base_url` | Platform API host (required) |
 | `msyandexdelivery_oauth_token` | Bearer token |
-| `msyandexdelivery_platform_station_id` | Sender station (point A) |
+| `msyandexdelivery_platform_station_id` | Sender warehouse ID (point A) |
 | `msyandexdelivery_enabled` | `Yes` |
 
-Test installs may ship with public token and warehouse A from Yandex docs. Replace them before production.
+For the PVZ map, set `msyandexdelivery_widget_geo_id` (for example `213` for Moscow) or leave it empty so the city comes from the order address.
 
-## Step 3. CMP checks
-
-Open the **msYandexDelivery** menu item (VueTools required).
-
-1. **Test connection** — ping the API with current settings.
-2. **Test calculate** — door quote (Moscow address on test) or pickup with a known `platform_station_id`.
-
-With `msyandexdelivery_log_enabled`, the log is `core/cache/msyandexdelivery_requests.log` (secrets redacted).
-
-## Step 4. Checkout
+## Step 3. Checkout
 
 In the order form chunk:
 
@@ -68,10 +57,15 @@ In the order form chunk:
 
 Enable **Яндекс Доставка — до двери** and **Яндекс Доставка — ПВЗ** in MiniShop3.
 
-Verify:
+Check:
 
-1. Door tariff → address → calculate → select.
-2. Pickup tariff → map → choose point → price on the order.
-3. Manager order tab: **Create** → **Confirm** → **Refresh status**.
+1. Door tariff → address in the MS3 form → Calculate → price in the widget.
+2. PVZ tariff → map → pick a point → price in the widget.
+3. New order: `delivery_cost` is close to `properties.msyandexdelivery.price`.
+4. Manager order tab: **Create** → **Confirm** → **Refresh status**. Cancel when needed.
+
+![Yandex Delivery tab on the order card](/components/msyandexdelivery/screenshots/mgr-order-tab.png)
+
+With `msyandexdelivery_log_enabled`, logs go to `core/cache/msyandexdelivery_requests.log` without secrets.
 
 UI details: [Checkout](checkout). Request lifecycle: [Requests and manager](integration).

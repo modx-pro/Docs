@@ -11,11 +11,9 @@ description: Установка msYandexDelivery, Base URL, токен, скла
 2. Установите пакет **msYandexDelivery**.
 3. Очистите кэш MODX.
 
-Resolver создаст таблицу `msyandex_requests`, настройки namespace `msyandexdelivery` и два способа доставки («до двери» / «ПВЗ»).
+Resolver создаст таблицу `msyandex_requests`, настройки namespace `msyandexdelivery` и два способа доставки («до двери» / «ПВЗ»). Меню компонента открывает только системные настройки. Отдельного CMP нет.
 
 ## Шаг 2. Base URL и доступ к API
-
-Host API **не зашит** в код. Укажите `msyandexdelivery_base_url` сами (без `/` в конце и без path). Актуальные значения: [доступ к API](https://yandex.com/support/delivery-profile/ru/api/other-day/access).
 
 Ориентиры:
 
@@ -35,18 +33,9 @@ Host API **не зашит** в код. Укажите `msyandexdelivery_base_ur
 | `msyandexdelivery_platform_station_id` | ID склада отправителя (точка A) |
 | `msyandexdelivery_enabled` | `Да` |
 
-В тестовой поставке токен и склад A могут совпадать с публичными значениями из доки Яндекса. Перед prod замените их на боевые.
+Для карты ПВЗ задайте `msyandexdelivery_widget_geo_id` (например `213` для Москвы) или оставьте пустым: город возьмётся из адреса заказа.
 
-## Шаг 3. Проверка в CMP
-
-Откройте пункт меню **msYandexDelivery** (нужен VueTools).
-
-1. **Test connection** — ping API с текущими настройками.
-2. **Test calculate** — расчёт до двери (адрес в Москве для test) или ПВЗ с известным `platform_station_id`.
-
-При `msyandexdelivery_log_enabled` журнал пишется в `core/cache/msyandexdelivery_requests.log` без секретов.
-
-## Шаг 4. Чекаут
+## Шаг 3. Чекаут
 
 В чанк оформления заказа добавьте:
 
@@ -70,8 +59,13 @@ Host API **не зашит** в код. Укажите `msyandexdelivery_base_ur
 
 Проверьте:
 
-1. Тариф «до двери» → адрес → расчёт → выбор.
-2. Тариф «ПВЗ» → карта → выбор точки → цена в заказе.
-3. В менеджере на вкладке заказа: **Create** → **Confirm** → **Refresh status**.
+1. Тариф «до двери» → адрес в форме MS3 → «Рассчитать» → цена в виджете.
+2. Тариф «ПВЗ» → карта → выбор точки → цена в виджете.
+3. Новый заказ: `delivery_cost` близок к `properties.msyandexdelivery.price`.
+4. В менеджере на вкладке заказа: **Create** → **Confirm** → **Refresh status**. При необходимости **Отменить**.
+
+![Вкладка Yandex Delivery на карточке заказа](/components/msyandexdelivery/screenshots/mgr-order-tab.png)
+
+При `msyandexdelivery_log_enabled` журнал пишется в `core/cache/msyandexdelivery_requests.log` без секретов.
 
 Подробности UI: [Чекаут](checkout). Жизненный цикл заявки: [Заявки и менеджер](integration).

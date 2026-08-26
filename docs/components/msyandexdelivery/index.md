@@ -15,20 +15,24 @@ items: [
 
 # msYandexDelivery
 
-**msYandexDelivery** подключает [Yandex Delivery Platform API](https://yandex.com/support/delivery-profile/ru/api/other-day/) («Доставка по России», other-day) к [MiniShop3](/components/minishop3/) на MODX 3. Покупатель считает стоимость и выбирает доставку до двери или ПВЗ на чекауте. Менеджер создаёт и подтверждает заявку в Яндексе и обновляет статус опросом API.
+![Вкладка Yandex Delivery на карточке заказа](/components/msyandexdelivery/screenshots/mgr-order-tab.png)
 
-Пространство имён: **`msyandexdelivery`**. Класс доставки: `msyandexdelivery\Delivery\YandexDelivery`. Webhook статусов **нет**. Статус обновляется опросом через `request/info`.
+**msYandexDelivery** подключает [Yandex Delivery Platform API](https://yandex.com/support/delivery-profile/ru/api/other-day/) («Доставка по России», other-day) к [MiniShop3](/components/minishop3/) на MODX 3. Покупатель считает стоимость и выбирает доставку до двери или ПВЗ на чекауте. Менеджер создаёт и подтверждает заявку в Яндексе, обновляет статус опросом API и при необходимости отменяет заявку.
+
+Пространство имён: **`msyandexdelivery`**. Класс доставки: `msyandexdelivery\Delivery\YandexDelivery`. Webhook статусов **нет**. Статус обновляется опросом `request/info` (кнопка на вкладке заказа, Scheduler или cron).
 
 С чего начать: [Быстрый старт](quick-start).
 
 ## Возможности
 
-- Расчёт стоимости через `pricing-calculator` (тарифы `time_interval` и `self_pickup`).
-- Официальный виджет ПВЗ v2 на чекауте (`widget-pvz.dostavka.yandex.net`).
-- Сохранение выбора в `msOrder.properties.msyandexdelivery` и таблице `msyandex_requests`.
-- Подстановка стоимости через `msOnGetDeliveryCost` и `YandexDelivery::getCost()`.
-- CMP на VueTools: тест соединения, тест расчёта, журнал HTTP.
-- Вкладка заказа MiniShop3: create → confirm → refresh status.
+- Расчёт стоимости через `pricing-calculator` (тарифы `time_interval` и `self_pickup`)
+- Официальный виджет ПВЗ v2 на чекауте (`widget-pvz.dostavka.yandex.net`)
+- Сохранение выбора в `msOrder.properties.msyandexdelivery` и таблице `msyandex_requests`
+- Подстановка стоимости через `msOnGetDeliveryCost` и `YandexDelivery::getCost()` (синхронизация `delivery_cost` из цены опции)
+- Вкладка заказа MiniShop3 на VueTools: create → confirm → refresh → cancel
+- Пакетный опрос статусов через Scheduler или `connector.php?action=sync_statuses`
+
+Отдельного CMP у пакета нет. Меню ведёт только в системные настройки namespace `msyandexdelivery`.
 
 ## Требования
 
@@ -37,7 +41,7 @@ items: [
 | MODX Revolution | >= 3.0.3 |
 | PHP | >= 8.2 |
 | MiniShop3 | >= 1.0.0 |
-| VueTools | для CMP и вкладки заказа |
+| VueTools | для вкладки заказа |
 
 ## Способы доставки при установке
 
@@ -65,8 +69,8 @@ ID записываются в `msyandexdelivery_delivery_id` (через зап
 
 | Страница | Содержание |
 | --- | --- |
-| [Быстрый старт](quick-start) | Ключи API, тест, чекаут |
+| [Быстрый старт](quick-start) | Ключи API, чекаут, проверка заказа |
 | [Системные настройки](settings) | Все ключи `msyandexdelivery_*` |
 | [Чекаут и сниппеты](checkout) | `msYandexDelivery`, `msydLexiconScript`, виджет |
-| [Заявки и менеджер](integration) | Create / Confirm / Refresh, connector |
+| [Заявки и менеджер](integration) | Create / Confirm / Refresh / Cancel, опрос статусов |
 | [FAQ](faq) | Частые ошибки и ограничения |

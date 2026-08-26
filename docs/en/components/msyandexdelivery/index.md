@@ -15,20 +15,24 @@ items: [
 
 # msYandexDelivery
 
-**msYandexDelivery** connects the [Yandex Delivery Platform API](https://yandex.com/support/delivery-profile/ru/api/other-day/) (Russia other-day delivery) to [MiniShop3](/components/minishop3/) on MODX 3. Shoppers get a rate and choose door delivery or a pickup point at checkout. Managers create and confirm Yandex requests and refresh status by polling the API.
+![Yandex Delivery tab on the order card](/components/msyandexdelivery/screenshots/mgr-order-tab.png)
 
-Namespace: **`msyandexdelivery`**. Delivery class: `msyandexdelivery\Delivery\YandexDelivery`. There is **no** status webhook. Refresh uses `request/info`.
+**msYandexDelivery** connects the [Yandex Delivery Platform API](https://yandex.com/support/delivery-profile/ru/api/other-day/) (Russia other-day delivery) to [MiniShop3](/components/minishop3/) on MODX 3. Shoppers get a rate and choose door delivery or a pickup point at checkout. Managers create and confirm Yandex requests, refresh status by polling the API, and cancel when needed.
+
+Namespace: **`msyandexdelivery`**. Delivery class: `msyandexdelivery\Delivery\YandexDelivery`. There is **no** status webhook. Refresh uses `request/info` (order tab button, Scheduler, or cron).
 
 Start here: [Quick start](quick-start).
 
 ## Features
 
-- Rate quotes via `pricing-calculator` (`time_interval` and `self_pickup`).
-- Official pickup-point widget v2 (`widget-pvz.dostavka.yandex.net`).
-- Selection stored in `msOrder.properties.msyandexdelivery` and table `msyandex_requests`.
-- Cost injected through `msOnGetDeliveryCost` and `YandexDelivery::getCost()`.
-- VueTools CMP: connection test, calculate test, HTTP log.
-- MiniShop3 order tab: create → confirm → refresh status.
+- Rate quotes via `pricing-calculator` (`time_interval` and `self_pickup`)
+- Official pickup-point widget v2 (`widget-pvz.dostavka.yandex.net`)
+- Selection stored in `msOrder.properties.msyandexdelivery` and table `msyandex_requests`
+- Cost injected through `msOnGetDeliveryCost` and `YandexDelivery::getCost()` (`delivery_cost` syncs from option price)
+- MiniShop3 order tab on VueTools: create → confirm → refresh → cancel
+- Batch status polling via Scheduler or `connector.php?action=sync_statuses`
+
+There is no separate CMP. The menu only opens system settings for namespace `msyandexdelivery`.
 
 ## Requirements
 
@@ -37,7 +41,7 @@ Start here: [Quick start](quick-start).
 | MODX Revolution | >= 3.0.3 |
 | PHP | >= 8.2 |
 | MiniShop3 | >= 1.0.0 |
-| VueTools | for CMP and order tab |
+| VueTools | for the order tab |
 
 ## Delivery methods on install
 
@@ -65,8 +69,8 @@ If the transport uses EncryptedVehicle, add the [modstore.pro](https://modstore.
 
 | Page | Content |
 | --- | --- |
-| [Quick start](quick-start) | API keys, test, checkout |
+| [Quick start](quick-start) | API keys, checkout, order check |
 | [System settings](settings) | All `msyandexdelivery_*` keys |
 | [Checkout and snippets](checkout) | `msYandexDelivery`, `msydLexiconScript`, widget |
-| [Requests and manager](integration) | Create / Confirm / Refresh, connector |
+| [Requests and manager](integration) | Create / Confirm / Refresh / Cancel, status polling |
 | [FAQ](faq) | Common errors and limits |
