@@ -1,6 +1,6 @@
 ---
 title: PageBuilder
-description: Visual section builder for MODX 3 — draft and publish without overwriting resource content
+description: Visual section builder for MODX 3. Draft and publish without overwriting resource content
 author: ibochkarev
 dependencies: [VueTools, pdoTools]
 categories: utilities
@@ -11,7 +11,13 @@ items: [
   { text: 'System settings', link: 'settings' },
   { text: 'Snippets', link: 'snippets' },
   { text: 'Frontend output', link: 'frontend' },
+  { text: 'Design system', link: 'design-system' },
   { text: 'Manager and events', link: 'integration' },
+  { text: 'Workflow', link: 'workflow' },
+  { text: 'CMP', link: 'cmp' },
+  { text: 'PageBuilder Pro', link: 'pro' },
+  { text: 'Agent API', link: 'agent-api' },
+  { text: 'Developer', link: 'developer' },
   {
     text: 'Fields',
     link: 'fields/overview',
@@ -29,6 +35,7 @@ items: [
           { text: 'url', link: 'fields/url' },
           { text: 'slug', link: 'fields/slug' },
           { text: 'select', link: 'fields/select' },
+          { text: 'multiselect', link: 'fields/multiselect' },
           { text: 'radio', link: 'fields/radio' },
           { text: 'checkbox', link: 'fields/checkbox' },
           { text: 'checkboxgroup', link: 'fields/checkboxgroup' },
@@ -41,9 +48,12 @@ items: [
           { text: 'colorpalette', link: 'fields/colorpalette' },
           { text: 'file', link: 'fields/file' },
           { text: 'image', link: 'fields/image' },
+          { text: 'video', link: 'fields/video' },
           { text: 'button', link: 'fields/button' },
+          { text: 'resourcelist', link: 'fields/resourcelist' },
           { text: 'hidden', link: 'fields/hidden' },
           { text: 'readonly', link: 'fields/readonly' },
+          { text: 'xtype', link: 'fields/xtype' },
           { text: 'heading', link: 'fields/heading' },
           { text: 'repeater', link: 'fields/repeater' },
           { text: 'editorjs', link: 'fields/editorjs' },
@@ -52,11 +62,8 @@ items: [
       {
         text: 'Pro',
         items: [
-          { text: 'multiselect', link: 'fields/multiselect' },
           { text: 'relation', link: 'fields/relation' },
           { text: 'multirelation', link: 'fields/multirelation' },
-          { text: 'resourcelist', link: 'fields/resourcelist' },
-          { text: 'video', link: 'fields/video' },
           { text: 'gallery', link: 'fields/gallery' },
           { text: 'map', link: 'fields/map' },
           { text: 'table', link: 'fields/table' },
@@ -71,7 +78,6 @@ items: [
           { text: 'tablemulticombo', link: 'fields/tablemulticombo' },
           { text: 'fieldset', link: 'fields/fieldset' },
           { text: 'dependent', link: 'fields/dependent' },
-          { text: 'xtype', link: 'fields/xtype' },
           { text: 'tv', link: 'fields/tv' },
           { text: 'chunk', link: 'fields/chunk' },
           { text: 'snippet', link: 'fields/snippet' },
@@ -138,17 +144,17 @@ items: [
 
 <!-- ![Sections tab on a resource](/components/pagebuilder/screenshots/mgr-sections-tab.png) -->
 
-PageBuilder stores page structure in the sidecar table `pb_pages`: draft (`draft_json`) and published version (`published_json`). The editor does not touch `modResource.content`. On the frontend, the `PageBuilder` snippet renders sections.
+PageBuilder stores page structure in a separate table `pb_pages` tied to the resource: draft (`draft_json`) and published version (`published_json`). The editor does not touch `modResource.content`. On the site, the `PageBuilder` snippet renders sections.
 
 ## Features
 
-- **Sections tab** — VueTools + PrimeVue on the resource form or in the CMP
-- **Draft and publish** — separate revisions, draft preview via signed token
-- **11 built-in sections (Free)** — hero, richtext, gallery, faq, cta, and more
-- **PageBuilder Pro** — section library, versions, presets, extended catalog (commerce, forms, maps)
-- **Resource data tables** — tabular data on a resource, `data_table` section and `PageBuilderTableRows` snippet
-- **UTM and contexts** — section visibility rules by UTM and MODX context
-- **`pbOn*` events** — register section types, save/publish/render hooks
+- Sections tab: VueTools and PrimeVue on the resource form or in the CMP
+- Draft and publish: separate revisions, draft preview via signed token
+- 11 built-in sections (Free): hero, richtext, gallery, faq, cta, and more
+- PageBuilder Pro: section library, versions, presets, extended catalog (commerce, forms, maps)
+- Tabular resource data: **Tables** tab on a resource, `data_table` section, `PageBuilderTableRows` snippet
+- UTM and contexts: section visibility rules by UTM and MODX context
+- `pbOn*` events: register section types, save/publish/render hooks
 
 ## Requirements
 
@@ -178,7 +184,13 @@ MODX namespace: `pagebuilder`.
 - [`pagebuilder_*` settings](settings)
 - [Snippets](snippets)
 - [Template and CSS on the site](frontend)
+- [Design system](design-system)
 - [Permissions, CMP, events](integration)
+- [Editor workflow](workflow)
+- [CMP: Blocks, UTM, Collections](cmp)
+- [PageBuilder Pro](pro)
+- [Agent API](agent-api)
+- [Developer](developer)
 - [Inspector fields](fields/overview)
 - [Section blocks](sections/)
 

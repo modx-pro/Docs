@@ -11,20 +11,17 @@ description: "Массив пар ключ–значение без typed colum
 
 ## Зачем этот тип
 
-- Проще table для одной text-колонки value
-- keyLabel и valueLabel настраивают подписи
-- Свободное число строк без schema columns
+Проще [table](table) для одной text-колонки value. `keyLabel` и `valueLabel` настраивают подписи. Произвольное число строк без schema columns.
 
 ## Когда использовать
 
-- Meta attributes, params, simple specs
-- Custom props для chunk
-- Список «название — значение» без типов ячеек
+- Meta-атрибуты, params, простые specs
+- Кастомные props для chunk
+- Список «название: значение» без типов ячеек
 
 ## Советы
 
-- Typed cells или image в ячейке → [table](table)
-- Одна flat map иногда удобнее repeater из двух text
+Typed cells или image в ячейке: [table](table). Одна плоская map иногда удобнее repeater из двух text.
 
 ## Похожие типы
 
@@ -50,9 +47,9 @@ description: "Массив пар ключ–значение без typed colum
 
 Массив `{ key, value }`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `meta` в `section.data` — массив пар:
+Ключ `meta` в данных секции: массив пар:
 
 ```json
 {
@@ -83,7 +80,7 @@ description: "Массив пар ключ–значение без typed colum
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -91,7 +88,7 @@ description: "Массив пар ключ–значение без typed colum
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно: `keyLabel`, `valueLabel` (или `key_label` / `value_label`).

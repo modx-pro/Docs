@@ -1,6 +1,6 @@
 ---
 title: "table"
-description: "Массив строк по columns с typed ячейками в section.data"
+description: "Массив строк по columns с типизированными ячейками"
 ---
 
 # Поле table
@@ -11,24 +11,21 @@ description: "Массив строк по columns с typed ячейками в 
 
 ## Зачем этот тип
 
-- Колонки text number image color date tag currency url
-- Все строки хранятся в data секции
-- Редактор правит grid в инспекторе
+Колонки text, number, image, color, date, tag, currency, url. Все строки хранятся в data секции, редактор правит grid в инспекторе.
 
 ## Когда использовать
 
 - Таблица характеристик продукта
 - Сравнительная matrix с картинками в ячейках
-- Spec rows когда строк немного и они в секции
+- Строки характеристик, когда их немного и они живут в секции
 
 ## Советы
 
-- columns задаёт name label type для каждой колонки
-- Большие data sets из БД это [embeddedTable](embeddedTable)
+`columns` задаёт name, label, type для каждой колонки. Большие выборки из БД: [embeddedTable](embeddedTable).
 
 ## Похожие типы
 
-- [keyvalue](keyvalue) для простых пар key value
+- [keyvalue](keyvalue) для простых пар ключ/значение
 - [embeddedTable](embeddedTable) для table_key и runtime rows
 
 ## Настройка
@@ -60,9 +57,9 @@ description: "Массив строк по columns с typed ячейками в 
 
 Массив строк-объектов по `columns[].name`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `specs` в `section.data` — массив строк по `columns[].name`:
+Ключ `specs` в данных секции: массив строк по `columns[].name`:
 
 ```json
 {
@@ -114,7 +111,7 @@ description: "Массив строк по columns с typed ячейками в 
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -122,7 +119,7 @@ description: "Массив строк по columns с typed ячейками в 
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно: `columns[]` с `name`, `label`, `type` (text, number, image, color, …).

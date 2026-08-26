@@ -11,20 +11,17 @@ description: "Boolean да/нет в стиле классического MODX 
 
 ## Зачем этот тип
 
-- Привычный UX редакторам MODX
-- Boolean в section.data
-- Компактнее radio для простого да/нет
+Привычный UX редакторам MODX: boolean в данных секции. Компактнее [radio](radio) для простого да/нет.
 
 ## Когда использовать
 
 - «Опубликовано», «Показать на главной»
-- showWhen со значением true или false
-- Legacy-схемы, где уже использовался yesno TV
+- `showWhen` со значением `true` или `false`
+- Legacy-схемы с yesno TV
 
 ## Советы
 
-- Switch UI возьмите [toggle](toggle)
-- Несколько опций из списка не сюда, нужен [select](select)
+Switch UI: [toggle](toggle). Несколько опций из списка: [select](select), не yesno.
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Boolean да/нет в стиле классического MODX 
 
 Булево.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `visible` в `section.data`:
+Ключ `visible` в данных секции:
 
 ```json
 {
@@ -70,7 +67,7 @@ description: "Boolean да/нет в стиле классического MODX 
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -78,7 +75,7 @@ description: "Boolean да/нет в стиле классического MODX 
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

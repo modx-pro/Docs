@@ -1,6 +1,6 @@
 ---
 title: "fieldset"
-description: "Группа nested fields с плоскими ключами в section.data"
+description: "Группа вложенных полей с плоскими ключами в данных секции"
 ---
 
 # Поле fieldset
@@ -11,24 +11,21 @@ description: "Группа nested fields с плоскими ключами в s
 
 ## Зачем этот тип
 
-- Legend в инспекторе без ключа fieldset в data
-- Вложенные name уникальны в пределах секции
-- Организация длинных форм Pro
+Legend в инспекторе без ключа fieldset в data. Вложенные `name` уникальны в пределах секции. Организация длинных форм Pro.
 
 ## Когда использовать
 
-- Блок SEO title description в одной группе
-- Settings overlay отдельно от content
-- CMP readability для 15+ полей
+- Блок SEO title/description в одной группе
+- Настройки overlay отдельно от content
+- Читаемость CMP при 15+ полях
 
 ## Советы
 
-- Только подзаголовок без nested это [heading](heading)
-- В chunk обращайтесь к flat keys seo_title не seo.title
+Только подзаголовок без nested: [heading](heading). В chunk обращайтесь к плоским ключам `seo_title`, не `seo.title`.
 
 ## Похожие типы
 
-- [heading](heading) декоративный divider (Free)
+- [heading](heading) декоративный разделитель (Free)
 - [repeater](repeater) для массива объектов (Free)
 
 ## Настройка
@@ -50,11 +47,11 @@ description: "Группа nested fields с плоскими ключами в s
 
 ## Значение
 
-Плоские ключи вложенных полей в `section.data`.
+Плоские ключи вложенных полей в данных секции.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `seo` в schema не попадает в `section.data`. Вложенные поля — плоские ключи:
+Ключ `seo` в schema не попадает в данные секции. Вложенные поля: плоские ключи:
 
 ```json
 {
@@ -72,7 +69,7 @@ description: "Группа nested fields с плоскими ключами в s
 
 ## Общие свойства
 
-У `fieldset` нет собственного ключа в `section.data`. Вложенные поля — **плоские** ключи рядом с остальными полями секции.
+У `fieldset` нет собственного ключа в данных секции. Вложенные поля: **плоские** ключи рядом с остальными полями секции.
 
 | Ключ | Роль |
 | --- | --- |

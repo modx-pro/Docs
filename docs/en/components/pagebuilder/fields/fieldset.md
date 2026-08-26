@@ -1,6 +1,6 @@
 ---
 title: "fieldset"
-description: "Nested field group with flat keys in section.data"
+description: "Nested field group with flat keys in section data"
 ---
 
 # Field fieldset
@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Inspector legend without fieldset key in data
-- Nested names unique within section
-- Pro organization for long forms
+Inspector legend without fieldset key in data. Nested names unique within section. Pro organization for long forms.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Heading only without nested is [heading](heading)
-- Chunk uses flat keys seo_title not seo.title
+Heading only without nested is [heading](heading). Chunk uses flat keys seo_title not seo.title.
 
 ## Similar types
 
@@ -50,11 +47,11 @@ Layer: **Pro**.
 
 ## Value
 
-Плоские ключи вложенных полей в `section.data`.
+Flat keys of nested fields in the section data.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `seo` в schema не попадает в `section.data`. Вложенные поля — плоские ключи:
+The `seo` key in the schema is not stored in the section data. Nested fields are flat keys:
 
 ```json
 {
@@ -62,9 +59,9 @@ Layer: **Pro**.
 }
 ```
 
-- Имена вложенных полей должны быть уникальны в пределах секции.
+- Nested field names must be unique within the section.
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {$seo_title|escape}
@@ -72,18 +69,18 @@ Layer: **Pro**.
 
 ## Common properties
 
-У `fieldset` нет собственного ключа в `section.data`. Вложенные поля — **плоские** ключи рядом с остальными полями секции.
+`fieldset` has no own key in the section data. Nested fields are **flat** keys alongside other section fields.
 
-| Ключ | Роль |
+| Key | Role |
 | --- | --- |
-| `label` | Заголовок группы (legend) |
-| `fields` | Вложенная схема |
-| `tab` / `width` | Группировка в инспекторе |
+| `label` | Group title (legend) |
+| `fields` | Nested schema |
+| `tab` / `width` | Inspector grouping |
 
-У вложенных полей работают обычные meta-ключи (`tab`, `width`, `default`, …).
+Nested fields support the usual meta keys (`tab`, `width`, `default`, …).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

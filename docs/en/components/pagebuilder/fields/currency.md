@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Inspector formatter, not plain number
-- Pro responsive like number and text
-- Separates money from counters and percents
+Inspector formatter, not plain number. Pro responsive like number and text. Separates money from counters and percents.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- currency key in schema sets ISO or symbol config
-- Discount percent is [number](number), not currency
+Currency key in schema sets ISO or symbol config. Discount percent is [number](number), not currency.
 
 ## Similar types
 
@@ -37,11 +34,11 @@ Layer: **Pro**.
 {
   "name": "price",
   "type": "currency",
-  "label": "Цена",
+  "label": "Price",
   "currency": "RUB",
   "min": 0,
   "max": 999999,
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -49,11 +46,11 @@ Layer: **Pro**.
 
 ## Value
 
-Число или `null`.
+Number or `null`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `price` в `section.data` (число или `null`):
+Key `price` in the section data (number or `null`):
 
 ```json
 {
@@ -61,7 +58,7 @@ Layer: **Pro**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {if $price !== null}<span class="price">{$price} ₽</span>{/if}
@@ -69,27 +66,27 @@ Layer: **Pro**.
 
 ## Notes
 
-Валюта: `currency`. Лимиты как у `number`. Pro: `responsive`.
+Currency: `currency`. Limits same as `number`. Pro: `responsive`.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): with `responsive: true`, the section data uses `desktop`, `tablet`, `mobile` keys instead of a scalar.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

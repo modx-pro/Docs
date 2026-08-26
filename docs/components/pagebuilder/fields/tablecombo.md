@@ -11,20 +11,17 @@ description: "Одно id строки custom table через optionsSource tab
 
 ## Зачем этот тип
 
-- Select с поиском по строкам embedded/custom table
-- Альтернатива combo, когда источник не xPDO-класс
-- Требует Pro и capability `advanced-fields`
+Select с поиском по строкам embedded/custom table. Альтернатива [combo](combo), когда источник не xPDO-класс. Требует Pro и capability `advanced-fields`.
 
 ## Когда использовать
 
-- Выбор строки бренда или вендора из таблицы MS
+- Строка бренда или вендора из таблицы MS
 - id из колонки Collections
 - Динамический pick, когда modResource не подходит
 
 ## Советы
 
-- Picker modResource → [relation](relation) или [combo](combo)
-- Несколько id → [tablemulticombo](tablemulticombo)
+Picker modResource: [relation](relation) или [combo](combo). Несколько id: [tablemulticombo](tablemulticombo).
 
 ## Похожие типы
 
@@ -53,9 +50,9 @@ description: "Одно id строки custom table через optionsSource tab
 
 Значение `valueField`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `template` в `section.data` — значение `valueField` из `optionsSource`:
+Ключ `template` в данных секции: значение `valueField` из `optionsSource`:
 
 ```json
 {
@@ -71,7 +68,7 @@ description: "Одно id строки custom table через optionsSource tab
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -79,7 +76,7 @@ description: "Одно id строки custom table через optionsSource tab
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

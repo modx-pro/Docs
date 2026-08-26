@@ -12,13 +12,14 @@ description: CMP PageBuilder, права, модель данных, событ�
 
 В CMP:
 
-- список ресурсов с секциями;
-- переход к редактору секций;
-- **Типы секций** (Pro + право `pagebuilder_manage_types`);
+- список ресурсов с секциями
+- переход к редактору секций
+- **Типы секций** (право `pagebuilder_manage_types`): UI-типы, скрытие и восстановление встроенных JSON-типов
 
 <!-- ![Типы секций в CMP](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
 
-- настройки Collections-вкладок при включённых `pagebuilder_collections_*`.
+- **Basket** (Pro, capability `basket`): глобальная корзина удалённых секций и строк таблиц
+- настройки Collections-вкладок при включённых `pagebuilder_collections_*`
 
 Редактор на форме ресурса и в CMP использует один Vue-бандл через **VueTools**. Connector:
 
@@ -37,23 +38,17 @@ description: CMP PageBuilder, права, модель данных, событ�
 
 `modResource.content` PageBuilder не перезаписывает. SEO-поля ресурса (pagetitle, description) используются как обычно.
 
-Корзина секций синхронизируется с `pb_basket_items`. Отдельного события `pbOn*` для корзины нет: plugin на `pbOnAfterSave` может читать `record.draft.trash`.
+Корзина на странице хранит удалённые секции в `document.trash`. При сохранении черновика плагин синхронизирует индекс `pb_basket_items`. Отдельного события `pbOn*` для корзины нет: plugin на `pbOnAfterSave` может читать `record.draft.trash`. Глобальное восстановление и окончательное удаление выполняют Pro-процессоры `mgr/basket/*`.
 
-Resource **data tables** хранятся в отдельных таблицах `pb_*` (MVP вкладка «Таблицы»).
+Табличные данные ресурса хранятся в отдельных таблицах `pb_*` (вкладка «Таблицы»).
 
 <!-- ![Вкладка «Таблицы» на ресурсе](/components/pagebuilder/screenshots/mgr-resource-tables.png) -->
 
 ## PageBuilder Pro
 
-Transport `pagebuilderpro` добавляет:
+Transport `pagebuilderpro` добавляет библиотеку, версии, пресеты, responsive-поля, 20 расширенных типов полей, глобальную корзину CMP и [Agent API](agent-api).
 
-- расширенный каталог секций (forms, maps, commerce, tabs и др.);
-- библиотеку секций, версии, пресеты;
-- дополнительные processors в connector.
-
-Pro проверяет лицензию через feature providers (`pbOnRegisterFeatureProviders`). Секции с `requires: pro` в JSON-определении недоступны без Pro.
-
-Commerce-секции (`products_grid`, `categories_row` и др.) требуют установленный **miniShop3**.
+Подробно: [PageBuilder Pro](pro). Commerce-секции требуют **miniShop3**.
 
 ## События
 
@@ -63,8 +58,8 @@ Commerce-секции (`products_grid`, `categories_row` и др.) требую�
 
 | Событие | Данные |
 | --- | --- |
-| `pbOnRegisterSectionDefinitions` | `registry` — `SectionRegistry`, добавление custom типов |
-| `pbOnRegisterFeatureProviders` | `registry` — `FeatureProviderRegistry` |
+| `pbOnRegisterSectionDefinitions` | `registry`: `SectionRegistry`, добавление своих типов |
+| `pbOnRegisterFeatureProviders` | `registry`: `FeatureProviderRegistry` |
 
 ### Жизненный цикл страницы
 
@@ -75,7 +70,7 @@ Commerce-секции (`products_grid`, `categories_row` и др.) требую�
 | `pbOnBeforeUnpublish` / `pbOnAfterUnpublish` | Снятие с публикации |
 | `pbOnBeforeTrash` / `pbOnAfterTrash` | Удаление секций в корзину |
 
-В `pbOnAfterSave` и аналогах: `changes` — `DocumentChangeSet` (added/removed/trashed/restored section ids).
+В `pbOnAfterSave` и аналогах поле `changes` содержит `DocumentChangeSet` (added, removed, trashed, restored section ids).
 
 ### Копирование
 
@@ -89,22 +84,22 @@ Commerce-секции (`products_grid`, `categories_row` и др.) требую�
 | Событие | Назначение |
 | --- | --- |
 | `pbOnBeforeGetList` / `pbOnAfterGetList` | Список в каталоге |
-| `pbOnFieldValues` | `FieldValuesBag` — подстановка значений полей |
-| `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied` — проверка depends (pro, minishop3) |
+| `pbOnFieldValues` | `FieldValuesBag`: подстановка значений полей |
+| `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: проверка depends (pro, minishop3) |
 
-### Resource data tables
+### Табличные данные ресурса
 
 | Событие | Когда |
 | --- | --- |
-| `pbOnBeforeTableGetList` | Фильтрация строк (`criteria` by ref) |
-| `pbOnTableRowSave` | Перед сохранением строки (`data` by ref) |
+| `pbOnBeforeTableGetList` | Фильтрация строк (`criteria` передаётся по ссылке) |
+| `pbOnTableRowSave` | Перед сохранением строки (`data` передаётся по ссылке) |
 
 ### Рендер на фронте
 
 | Событие | Данные |
 | --- | --- |
 | `pbOnBeforeRenderDocument` | `resourceId`, `document`, `pipeline`, `options` |
-| `pbOnBeforeRenderSection` | `index`, `pipeline` — мутация секции перед chunk |
+| `pbOnBeforeRenderSection` | `index`, `pipeline`: мутация секции перед chunk |
 | `pbOnGetValues` | При `return_values=1` у сниппета |
 
 Пример регистрации секции в plugin:
@@ -120,7 +115,7 @@ switch ($modx->event->name) {
 }
 ```
 
-Custom JSON-определения должны соответствовать схеме built-in секций (поля, chunk, category).
+Свои JSON-определения должны соответствовать схеме встроенных секций: поля, chunk, category.
 
 ## Mermaid: save → publish → frontend
 
@@ -136,6 +131,11 @@ flowchart LR
 
 ## Связанные страницы
 
+- [Рабочий процесс](workflow)
+- [CMP](cmp)
+- [PageBuilder Pro](pro)
+- [Agent API](agent-api)
+- [Разработчик](developer)
 - [Быстрый старт](quick-start)
 - [Каталог секций](sections/)
 - [FAQ](faq)

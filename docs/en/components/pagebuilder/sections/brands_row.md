@@ -13,24 +13,24 @@ Like **Logo cloud**, but can pull vendors from a catalog category automatically.
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## Why a brands row
 
 - Manual list or vendors from MS3 category
 - Links into brand filter URLs
 - Tighter than product grid for logos only
 
-## When to use
+## Catalog scenarios
 
-- **Store homepage** — brands in category
-- **Brands page** — manual list
-- **Filter promo** — link to vendor
+- Store homepage: brands in category
+- Brands page: manual list
+- Filter promo: link to vendor
 
 ## Page examples
 
 - Catalog: [Categories row](categories_row) → [Brands row](brands_row) → [Products grid](products_grid)
 - Homepage: [Brands row](brands_row) → [Testimonials](testimonials)
 
-## Inspector tips
+## Brand source
 
 **Source**: manual repeater or **Category vendors**. For category_vendors, set **Parent category**.
 
@@ -85,13 +85,13 @@ Each row:
 
 `pb-brands-row`.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "source": "manual",
   "parent": 101,
   "limit": 6,
@@ -108,7 +108,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
         "height": 1080,
         "type": "image"
       },
-      "name": "Иван Петров",
+      "name": "Jane Doe",
       "url": "https://example.com/brand"
     }
   ]
@@ -147,7 +147,7 @@ Fenom chunk `pagebuilderpro_brands_row`:
         {/foreach}
       </div>
     {else}
-      <p class="pb-brands-row__empty">Добавьте бренды вручную или выберите категорию с вендорами.</p>
+      <p class="pb-brands-row__empty">Add brands manually or select a category with vendors.</p>
     {/if}
   </div>
 </section>

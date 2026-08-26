@@ -1,6 +1,6 @@
 ---
 title: "button"
-description: "Объект label, url и target для CTA в section.data"
+description: "Объект CTA: label, url и target"
 ---
 
 # Поле button
@@ -11,20 +11,17 @@ description: "Объект label, url и target для CTA в section.data"
 
 ## Зачем этот тип
 
-- Три связанных свойства в одном поле
-- UTM-плейсхолдеры в url
-- Готовый объект для `<a>` в chunk
+Три связанных свойства в одном поле: label, url, target. UTM-плейсхолдеры в url. Готовый объект для `<a>` в chunk.
 
 ## Когда использовать
 
 - Основная кнопка hero или CTA
-- Secondary link с target _blank
+- Secondary link с target `_blank`
 - Пара текст + ссылка без двух отдельных полей
 
 ## Советы
 
-- Только URL без label достаточно [url](url)
-- Несколько кнопок оформите repeater с nested button или text+url
+Только URL без label: [url](url). Несколько кнопок: repeater с nested button или text+url.
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Объект label, url и target для CTA в section.data"
 
 Объект `{ label, url, target }`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `cta` в `section.data`:
+Ключ `cta` в данных секции:
 
 ```json
 {
@@ -70,7 +67,7 @@ description: "Объект label, url и target для CTA в section.data"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -78,7 +75,7 @@ description: "Объект label, url и target для CTA в section.data"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно: UTM-плейсхолдеры в `url`.

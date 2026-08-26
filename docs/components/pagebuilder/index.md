@@ -1,6 +1,6 @@
 ---
 title: PageBuilder
-description: Визуальный конструктор секций для MODX 3 — черновик и публикация без перезаписи content ресурса
+description: "Визуальный конструктор секций для MODX 3: черновик и публикация без перезаписи content ресурса"
 author: ibochkarev
 dependencies: [VueTools, pdoTools]
 categories: utilities
@@ -11,7 +11,13 @@ items: [
   { text: 'Системные настройки', link: 'settings' },
   { text: 'Сниппеты', link: 'snippets' },
   { text: 'Вывод на сайте', link: 'frontend' },
+  { text: 'Дизайн-система', link: 'design-system' },
   { text: 'Менеджер и события', link: 'integration' },
+  { text: 'Рабочий процесс', link: 'workflow' },
+  { text: 'CMP', link: 'cmp' },
+  { text: 'PageBuilder Pro', link: 'pro' },
+  { text: 'Agent API', link: 'agent-api' },
+  { text: 'Разработчик', link: 'developer' },
   {
     text: 'Поля',
     link: 'fields/overview',
@@ -29,6 +35,7 @@ items: [
           { text: 'url', link: 'fields/url' },
           { text: 'slug', link: 'fields/slug' },
           { text: 'select', link: 'fields/select' },
+          { text: 'multiselect', link: 'fields/multiselect' },
           { text: 'radio', link: 'fields/radio' },
           { text: 'checkbox', link: 'fields/checkbox' },
           { text: 'checkboxgroup', link: 'fields/checkboxgroup' },
@@ -41,9 +48,12 @@ items: [
           { text: 'colorpalette', link: 'fields/colorpalette' },
           { text: 'file', link: 'fields/file' },
           { text: 'image', link: 'fields/image' },
+          { text: 'video', link: 'fields/video' },
           { text: 'button', link: 'fields/button' },
+          { text: 'resourcelist', link: 'fields/resourcelist' },
           { text: 'hidden', link: 'fields/hidden' },
           { text: 'readonly', link: 'fields/readonly' },
+          { text: 'xtype', link: 'fields/xtype' },
           { text: 'heading', link: 'fields/heading' },
           { text: 'repeater', link: 'fields/repeater' },
           { text: 'editorjs', link: 'fields/editorjs' },
@@ -52,11 +62,8 @@ items: [
       {
         text: 'Pro',
         items: [
-          { text: 'multiselect', link: 'fields/multiselect' },
           { text: 'relation', link: 'fields/relation' },
           { text: 'multirelation', link: 'fields/multirelation' },
-          { text: 'resourcelist', link: 'fields/resourcelist' },
-          { text: 'video', link: 'fields/video' },
           { text: 'gallery', link: 'fields/gallery' },
           { text: 'map', link: 'fields/map' },
           { text: 'table', link: 'fields/table' },
@@ -71,7 +78,6 @@ items: [
           { text: 'tablemulticombo', link: 'fields/tablemulticombo' },
           { text: 'fieldset', link: 'fields/fieldset' },
           { text: 'dependent', link: 'fields/dependent' },
-          { text: 'xtype', link: 'fields/xtype' },
           { text: 'tv', link: 'fields/tv' },
           { text: 'chunk', link: 'fields/chunk' },
           { text: 'snippet', link: 'fields/snippet' },
@@ -138,17 +144,17 @@ items: [
 
 <!-- ![Редактор секций на ресурсе](/components/pagebuilder/screenshots/mgr-sections-tab.png) -->
 
-PageBuilder хранит структуру страницы в sidecar-таблице `pb_pages`: черновик (`draft_json`) и опубликованная версия (`published_json`). Поле `modResource.content` редактор не трогает. На фронте секции выводит сниппет `PageBuilder`.
+PageBuilder хранит структуру страницы в отдельной таблице `pb_pages`, привязанной к ресурсу: черновик (`draft_json`) и опубликованная версия (`published_json`). Поле `modResource.content` редактор не трогает. На сайте секции выводит сниппет `PageBuilder`.
 
 ## Возможности
 
-- **Редактор во вкладке «Секции»** — VueTools + PrimeVue в форме ресурса или в CMP
-- **Черновик и публикация** — отдельные ревизии, превью черновика по подписанному токену
-- **11 встроенных секций (Free)** — hero, richtext, gallery, faq, cta и др.
-- **PageBuilder Pro** — библиотека секций, версии, пресеты, расширенный каталог (commerce, формы, карты)
-- **Resource data tables** — табличные данные на ресурсе, секция `data_table` и сниппет `PageBuilderTableRows`
-- **UTM и контексты** — правила видимости секций по UTM и контексту MODX
-- **События `pbOn*`** — регистрация типов секций, хуки save/publish/render
+- Редактор во вкладке «Секции»: VueTools и PrimeVue на форме ресурса или в CMP
+- Черновик и публикация: отдельные ревизии, превью черновика по подписанному токену
+- 11 встроенных секций (Free): hero, richtext, gallery, faq, cta и др.
+- PageBuilder Pro: библиотека секций, версии, пресеты, расширенный каталог (commerce, формы, карты)
+- Табличные данные ресурса: вкладка «Таблицы», секция `data_table`, сниппет `PageBuilderTableRows`
+- UTM и контексты: правила видимости секций по UTM и контексту MODX
+- События `pbOn*`: регистрация типов секций, хуки save, publish, render
 
 ## Системные требования
 
@@ -178,7 +184,13 @@ Namespace в MODX: `pagebuilder`.
 - [Настройки `pagebuilder_*`](settings)
 - [Сниппеты](snippets)
 - [Шаблон и CSS на сайте](frontend)
+- [Дизайн-система](design-system)
 - [Права, CMP, события](integration)
+- [Рабочий процесс редактора](workflow)
+- [CMP: Blocks, UTM, Collections](cmp)
+- [PageBuilder Pro](pro)
+- [Agent API](agent-api)
+- [Разработчик](developer)
 - [Поля инспектора](fields/overview)
 - [Блоки секций](sections/)
 

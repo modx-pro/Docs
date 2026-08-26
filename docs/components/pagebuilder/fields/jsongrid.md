@@ -11,25 +11,22 @@ description: "Один объект с ключами nested fields не мас�
 
 ## Зачем этот тип
 
-- fields schema как у repeater но single row object
-- Компактнее repeater из одной строки
-- Pro для fixed-shape config block
+Схема `fields` как у repeater, но один объект, не массив. Компактнее repeater из одной строки. Pro для config block фиксированной формы.
 
 ## Когда использовать
 
-- SEO object title description in one field
-- Overlay settings bundle
-- Single row table without array foreach
+- SEO title/description в одном поле
+- Набор настроек overlay
+- Одна строка таблицы без `foreach` по массиву
 
 ## Советы
 
-- Список строк это [repeater](repeater)
-- Flat keys без wrapper object это [fieldset](fieldset)
+Список строк: [repeater](repeater). Плоские ключи без wrapper-объекта: [fieldset](fieldset).
 
 ## Похожие типы
 
 - [repeater](repeater) для массива (Free)
-- [fieldset](fieldset) для flat nested keys (Pro)
+- [fieldset](fieldset) для плоских вложенных ключей (Pro)
 
 ## Настройка
 
@@ -55,9 +52,9 @@ description: "Один объект с ключами nested fields не мас�
 
 Объект с ключами вложенных полей.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `row` в `section.data` — один объект с ключами вложенных полей:
+Ключ `row` в данных секции: один объект с ключами вложенных полей:
 
 ```json
 {
@@ -78,7 +75,7 @@ description: "Один объект с ключами nested fields не мас�
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -86,10 +83,10 @@ description: "Один объект с ключами nested fields не мас�
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: `fields[]` — одна строка = один объект в data (не массив).
+- Дополнительно: `fields[]`: одна строка = один объект в data (не массив).
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

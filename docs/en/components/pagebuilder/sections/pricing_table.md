@@ -13,24 +13,24 @@ Price table for subscriptions and service tiers. Each plan has a name, price, bi
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Why a pricing table
 
 - Multiple plans in one section
 - Feature list as plain text, one line per item
 - Price and button per plan
 
-## When to use
+## Typical pages
 
-- **SaaS** — three tiers on pricing page
-- **Services** — Starter / Business / Enterprise packages
-- **Landing** — block before the lead form
+- SaaS: three tiers on pricing page
+- Services: Starter / Business / Enterprise packages
+- Landing: block before the lead form
 
 ## Page examples
 
 - SaaS: [Features](features) → [Pricing](pricing_table) → [FAQ](faq) → [CTA](cta)
 - Services: [Cards](cards) → [Pricing](pricing_table) → [Contact form](contact_form)
 
-## Inspector tips
+## Pricing repeater
 
 **Plans** repeater. **Features** is plain text, **one line per feature**. Set the plan button via row button fields.
 
@@ -79,25 +79,25 @@ Each row:
 
 `pb-pricing` with plan cards.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
-      "name": "Иван Петров",
+      "name": "Jane Doe",
       "price": 990,
-      "period": "в месяц",
-      "description": "Короткое описание блока для первого экрана.",
-      "features": "Безлимитные проекты\nПриоритетная поддержка\nAPI-доступ",
-      "button_label": "Подробнее",
+      "period": "per month",
+      "description": "Short block description for the first screen.",
+      "features": "Unlimited projects\nPriority support\nAPI access",
+      "button_label": "Learn more",
       "button_url": "https://example.com/action",
       "highlighted": true,
-      "badge": "Текст"
+      "badge": "Text"
     }
   ]
 }

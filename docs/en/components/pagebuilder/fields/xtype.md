@@ -5,15 +5,13 @@ description: "Scalar string with xtype hint without MODX ExtJS widget"
 
 # Field xtype
 
-Layer: **Pro**.
+Layer: **Free**.
 
 <!-- ![xtype](/components/pagebuilder/screenshots/fields/xtype.png) -->
 
 ## Why this type
 
-- Legacy xtype key for schema migration
-- Inspector renders plain InputText
-- Pro semantic alias over text when needed
+Legacy xtype key for schema migration. Inspector renders plain InputText. Semantic alias for text when the schema still uses key xtype.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- UI does not mount Ext modx-combo
-- New schemas use native [text](text) or [combo](combo)
+UI does not mount Ext modx-combo. New schemas use native [text](text) or [combo](combo).
 
 ## Similar types
 
@@ -39,7 +36,7 @@ Layer: **Pro**.
   "type": "xtype",
   "label": "Ext",
   "xtype": "modx-combo",
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -47,11 +44,11 @@ Layer: **Pro**.
 
 ## Value
 
-Строка.
+String.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `ext` в `section.data`:
+Key `ext` in the section data:
 
 ```json
 {
@@ -59,7 +56,7 @@ Layer: **Pro**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {$ext|escape}
@@ -67,25 +64,25 @@ Layer: **Pro**.
 
 ## Notes
 
-В инспекторе обычный `InputText`. `xtype` только подсказка, ExtJS-виджет MODX не подключается.
+The inspector renders plain `InputText`. `xtype` is only a hint; MODX does not mount an ExtJS widget.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Manager and events](../integration)

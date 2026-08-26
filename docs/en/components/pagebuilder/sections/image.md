@@ -9,24 +9,24 @@ One frame across the content column. Use for an illustration, screenshot, or ban
 
 <!-- ![Image](/components/pagebuilder/screenshots/sections/image.png) -->
 
-## Why this section
+## When one frame is enough
 
 - Single photo with alt and caption, no repeater
 - Faster than [Gallery](gallery) for one frame
 - Same image partial as other package sections
 
-## When to use
+## Typical placement
 
-- **Between paragraphs** in a long article
-- **UI screenshot** in product copy
-- **Office or team photo** without a grid
+- Between paragraphs in a long article
+- UI screenshot in product copy
+- Office or team photo without a grid
 
 ## Page examples
 
 - Article: [Rich text](richtext) → [Image](image) → [Rich text](richtext)
 - Case study: [Hero](hero) → [Image](image) → [Stats](stats)
 
-## Inspector tips
+## Image and alt
 
 **Image** is required. **Alt text** helps SEO and screen readers. **Caption** renders below the image.
 
@@ -65,7 +65,7 @@ Type [text](../fields/text#output-in-section-data). Optional.
 
 `pb-image` with the image partial.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
@@ -81,8 +81,8 @@ Example payload after save. Media, video, and map values may be enriched on outp
     "height": 1080,
     "type": "image"
   },
-  "alt": "Описание изображения для скринридеров",
-  "caption": "Подпись под изображением"
+  "alt": "Image description for screen readers",
+  "caption": "Caption under the image"
 }
 ```
 

@@ -11,25 +11,22 @@ description: "Число суммы с символом валюты из нас
 
 ## Зачем этот тип
 
-- Formatter в инспекторе, не plain number
-- Pro responsive как у number и text
-- Отделяет деньги от счётчиков и процентов
+Форматирование суммы в инспекторе, не простой number. Pro responsive как у number и text. Отделяет деньги от счётчиков и процентов.
 
 ## Когда использовать
 
-- Цена в custom секции без MS3
-- Old price и price в promo
-- Donation amount field
+- Цена в custom-секции без MS3
+- Старая и новая цена в promo
+- Поле суммы пожертвования
 
 ## Советы
 
-- Ключ currency в schema задаёт ISO или symbol config
-- Процент скидки это [number](number), не currency
+Ключ `currency` в schema задаёт ISO или symbol config. Процент скидки: [number](number), не currency.
 
 ## Похожие типы
 
-- [number](number) для non-money numeric
-- [imask](imask) для formatted string без decimal type
+- [number](number) для чисел без валюты
+- [imask](imask) для форматированной строки без decimal type
 
 ## Настройка
 
@@ -51,9 +48,9 @@ description: "Число суммы с символом валюты из нас
 
 Число или `null`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `price` в `section.data` (число или `null`):
+Ключ `price` в данных секции (число или `null`):
 
 ```json
 {
@@ -73,7 +70,7 @@ description: "Число суммы с символом валюты из нас
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -81,10 +78,10 @@ description: "Число суммы с символом валюты из нас
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): при `responsive: true` в данных секции: ключи `desktop`, `tablet`, `mobile` вместо скаляра.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

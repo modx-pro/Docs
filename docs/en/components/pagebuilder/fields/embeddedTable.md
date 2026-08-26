@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Rows load via PageBuilderTableRows snippet on front
-- filters limit use_context utm in data object
-- Fits catalog-scale data
+Rows load via PageBuilderTableRows snippet on front. Filters limit use_context utm in data object. Fits catalog-scale data.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Chunk `[[!PageBuilderTableRows? &table_key=`...`]]`
-- Static 5–10 rows stay in [table](table)
+Chunk `[[!PageBuilderTableRows? &table_key=`...`]]`. Static 5–10 rows stay in [table](table).
 
 ## Similar types
 
@@ -37,9 +34,9 @@ Layer: **Pro**.
 {
   "name": "table",
   "type": "embeddedTable",
-  "label": "Таблица",
+  "label": "Table",
   "table_key": "products",
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -47,11 +44,11 @@ Layer: **Pro**.
 
 ## Value
 
-Объект `{ table_key, limit, filters, … }`.
+Object `{ table_key, limit, filters, … }`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `table` в `section.data` — конфиг выборки (строки таблицы не входят в data):
+Key `table` in the section data: query config (table rows are not stored in data):
 
 ```json
 {
@@ -69,9 +66,9 @@ Layer: **Pro**.
 }
 ```
 
-- Строки на фронте: сниппет `PageBuilderTableRows` с тем же `table_key`.
+- Rows on the frontend: `PageBuilderTableRows` snippet with the same `table_key`.
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 [[!PageBuilderTableRows? &table_key=`products` &limit=`10`]]
@@ -79,23 +76,23 @@ Layer: **Pro**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `table_key`, `limit`, `filters`, `use_context`, `utm`.
+- Also: `table_key`, `limit`, `filters`, `use_context`, `utm`.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

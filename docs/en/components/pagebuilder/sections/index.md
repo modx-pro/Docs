@@ -5,15 +5,15 @@ description: "Built-in PageBuilder section blocks (Free and Pro)"
 
 # Section catalog
 
-Built-in blocks for assembling pages in the MODX manager. Pick a section type, fill fields in the inspector, and reorder blocks on the resource.
+Built-in blocks for pages in the MODX manager: pick a type, fill fields in the inspector, reorder blocks on the resource.
 
-Each section page lists **Why this section**, **When to use**, **Page examples** (typical section order), and **Similar sections** for comparison.
+Each section has its own page: why to use the block, where to place it, example section order on a page, and similar alternatives.
 
-Section `key` is used in the PageBuilder snippet and document JSON. Register custom types via CMP (Pro) or a plugin on `pbOnRegisterSectionDefinitions`.
+The `key` is passed to the PageBuilder snippet and document JSON. Register custom types via CMP (Pro) or a plugin on `pbOnRegisterSectionDefinitions`.
 
 <!-- ![Section catalog in the manager](/components/pagebuilder/screenshots/mgr-section-catalog.png) -->
 
-## Free — content and layout (9)
+## Free: content and layout (9)
 
 | key | Section | Category | requires |
 | --- | --- | --- | --- |
@@ -27,7 +27,7 @@ Section `key` is used in the PageBuilder snippet and document JSON. Register cus
 | `stats` | [Stats](stats) | social proof | — |
 | `testimonials` | [Testimonials](testimonials) | social proof | — |
 
-## Free — utility (2)
+## Free: utility (2)
 
 | key | Section | requires |
 | --- | --- | --- |
@@ -62,9 +62,9 @@ Section `key` is used in the PageBuilder snippet and document JSON. Register cus
 | `team` | [Team](team) | social proof | pro |
 | `video` | [Video](video) | media | pro |
 
-Commerce sections need **miniShop3**. `SectionRequirementChecker` filters the catalog; override via `pbOnCheckSectionRequirement`.
+Commerce sections require **miniShop3**. Without the package, `SectionRequirementChecker` removes them from the catalog. Override the check via `pbOnCheckSectionRequirement`.
 
-Product sections (`products_grid`, `product_spotlight`, `promo_banner`) render via **msProducts**. Categories use **pdoResources** (`msCategory`).
+Product sections (`products_grid`, `product_spotlight`, `promo_banner`) are rendered by **msProducts**. Categories are rendered by **pdoResources** with class `msCategory`.
 
 ## Related pages
 

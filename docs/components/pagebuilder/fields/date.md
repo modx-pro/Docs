@@ -1,6 +1,6 @@
 ---
 title: "date"
-description: "Дата ISO в section.data без времени суток"
+description: "Дата в формате ISO без времени суток"
 ---
 
 # Поле date
@@ -11,9 +11,7 @@ description: "Дата ISO в section.data без времени суток"
 
 ## Зачем этот тип
 
-- Календарь PrimeVue, не ручной ввод text
-- Отдельно от time и datetime
-- Предсказуемый формат для сортировки и Fenom
+Календарь PrimeVue, не ручной ввод text. Отдельно от time и datetime. Предсказуемый формат для сортировки и Fenom.
 
 ## Когда использовать
 
@@ -23,8 +21,7 @@ description: "Дата ISO в section.data без времени суток"
 
 ## Советы
 
-- Нужны часы возьмите [time](time) или [datetime](datetime)
-- Не смешивайте timezone logic в chunk без явного контракта
+Нужны часы: [time](time) или [datetime](datetime). Timezone logic в chunk без явного контракта не смешивайте.
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Дата ISO в section.data без времени суток"
 
 Строка `YYYY-MM-DD`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `starts_at` в `section.data` (`YYYY-MM-DD`):
+Ключ `starts_at` в данных секции (`YYYY-MM-DD`):
 
 ```json
 {
@@ -66,7 +63,7 @@ description: "Дата ISO в section.data без времени суток"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -74,7 +71,7 @@ description: "Дата ISO в section.data без времени суток"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

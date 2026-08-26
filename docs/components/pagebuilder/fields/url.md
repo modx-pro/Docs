@@ -11,20 +11,17 @@ description: "Строка URL с базовой проверкой формат
 
 ## Зачем этот тип
 
-- Отдельный тип вместо text для ссылок
-- Pro: `responsive` для разных URL по breakpoint
-- Поддержка UTM-плейсхолдеров в связке с button
+Отдельный тип для ссылок вместо text. В Pro доступен `responsive` для разных URL по breakpoint. Поддерживает UTM-плейсхолдеры в связке с [button](button).
 
 ## Когда использовать
 
 - Ссылка кнопки, внешний ресурс, якорь
-- href для карточки или логотипа партнёра
-- Fallback, когда не нужен объект button
+- `href` для карточки или логотипа партнёра
+- Fallback, когда объект button не нужен
 
 ## Советы
 
-- Кнопка с label и target удобнее в [button](button)
-- Внутренние страницы MODX чаще через [relation](relation) или [resourcelist](resourcelist) (Pro)
+Кнопка с label и target: [button](button). Внутренние страницы MODX чаще через [relation](relation) или [resourcelist](resourcelist).
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Строка URL с базовой проверкой формат
 
 Строка URL.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `link` в `section.data`:
+Ключ `link` в данных секции:
 
 ```json
 {
@@ -70,7 +67,7 @@ Pro: `responsive`.
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -78,10 +75,10 @@ Pro: `responsive`.
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): при `responsive: true` в данных секции: ключи `desktop`, `tablet`, `mobile` вместо скаляра.
 
 - Дополнительно: `showWhen`, UTM-плейсхолдеры `\{\{utm:key\}\}` в строке URL.
 

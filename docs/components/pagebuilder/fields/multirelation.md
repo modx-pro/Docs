@@ -11,25 +11,22 @@ description: "Массив ресурсов с id и pagetitle из модаль
 
 ## Зачем этот тип
 
-- Порядок строк сохраняется для curated lists
-- Тот же модальный поиск, что у relation
-- Основа секций curated_products и похожих
+Порядок строк сохраняется для curated-списков. Тот же модальный поиск, что у [relation](relation). Основа секций curated_products и похожих.
 
 ## Когда использовать
 
 - Подборка товаров по точному списку SKU
-- Связанные статьи или case studies
+- Связанные статьи или кейсы
 - Несколько внутренних ссылок с title
 
 ## Советы
 
-- Один ресурс достаточно → [relation](relation)
-- Статический список id без picker возможен через combo, но без pagetitle enrich
+Один ресурс: [relation](relation). Статический список id без модального picker возможен через combo, но без pagetitle enrich.
 
 ## Похожие типы
 
 - [relation](relation) для одного ресурса
-- [resourcelist](resourcelist) при alias naming в схеме
+- [resourcelist](resourcelist) при alias-именовании в схеме
 
 ## Настройка
 
@@ -48,9 +45,9 @@ description: "Массив ресурсов с id и pagetitle из модаль
 
 Массив ресурсов.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `products` в `section.data` — массив ресурсов:
+Ключ `products` в данных секции: массив ресурсов:
 
 ```json
 {
@@ -77,7 +74,7 @@ description: "Массив ресурсов с id и pagetitle из модаль
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -85,7 +82,7 @@ description: "Массив ресурсов с id и pagetitle из модаль
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

@@ -5,15 +5,15 @@ description: "Встроенные блоки секций PageBuilder Free и P
 
 # Каталог секций
 
-Встроенные блоки для сборки страниц в менеджере MODX. Выберите тип секции, заполните поля в инспекторе и меняйте порядок блоков на ресурсе.
+Встроенные блоки для страниц в менеджере MODX: выберите тип, заполните поля в инспекторе, переставляйте блоки на ресурсе.
 
-На странице каждой секции: **Зачем эта секция**, **Где применять**, **Примеры страниц** (типичный порядок блоков) и **Похожие секции** для выбора альтернативы.
+У каждой секции своя страница: зачем брать блок, где его ставить, примеры порядка секций на странице и похожие альтернативы.
 
-Ключ секции (`key`) используется в сниппете PageBuilder и в JSON документа. Свои типы добавляют через CMP (Pro) или плагин на `pbOnRegisterSectionDefinitions`.
+Ключ (`key`) попадает в сниппет PageBuilder и в JSON документа. Свои типы добавляют через CMP (Pro) или плагин на `pbOnRegisterSectionDefinitions`.
 
 <!-- ![Каталог секций в менеджере](/components/pagebuilder/screenshots/mgr-section-catalog.png) -->
 
-## Free — контент и layout (9)
+## Free: контент и layout (9)
 
 | key | Секция | Категория | Требования |
 | --- | --- | --- | --- |
@@ -27,7 +27,7 @@ description: "Встроенные блоки секций PageBuilder Free и P
 | `stats` | [Цифры и факты](stats) | доверие | — |
 | `testimonials` | [Отзывы клиентов](testimonials) | доверие | — |
 
-## Free — utility (2)
+## Free: utility (2)
 
 | key | Секция | Требования |
 | --- | --- | --- |
@@ -62,9 +62,9 @@ description: "Встроенные блоки секций PageBuilder Free и P
 | `team` | [Команда](team) | доверие | pro |
 | `video` | [Видео](video) | медиа | pro |
 
-Commerce-секции требуют **miniShop3**. `SectionRequirementChecker` фильтрует каталог. Переопределение через `pbOnCheckSectionRequirement`.
+Commerce-секции требуют **miniShop3**. Без пакета `SectionRequirementChecker` уберёт их из каталога. Проверку переопределяют через `pbOnCheckSectionRequirement`.
 
-Товарные секции (`products_grid`, `product_spotlight`, `promo_banner`) рендерятся через **msProducts**. Категории через **pdoResources** (`msCategory`).
+Товарные секции (`products_grid`, `product_spotlight`, `promo_banner`) рендерит **msProducts**. Категории рендерит **pdoResources** с классом `msCategory`.
 
 ## Связанные страницы
 

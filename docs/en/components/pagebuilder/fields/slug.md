@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Normalized URL segment, not free-form text
-- `sourceField` copies a title on first save
-- Pro: responsive map excludes alt, caption, slug names
+Normalized URL segment, not free-form text. `sourceField` copies a title on first save. Pro: responsive map excludes alt, caption, slug names.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Store full URLs in [url](url), not slug
-- Slug is excluded from the responsive map by default
+Store full URLs in [url](url), not slug. Slug is excluded from the responsive map by default.
 
 ## Similar types
 
@@ -40,7 +37,7 @@ Layer: **Free**.
   "label": "Slug",
   "sourceField": "title",
   "separator": "-",
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -48,19 +45,19 @@ Layer: **Free**.
 
 ## Value
 
-Строка slug.
+Slug string.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `slug` в `section.data`:
+Key `slug` in the section data:
 
 ```json
 {
-  "slug": "zagolovok-sekcii"
+  "slug": "section-title"
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <span class="slug">{$slug|escape}</span>
@@ -68,26 +65,26 @@ Layer: **Free**.
 
 ## Notes
 
-Источник: `sourceField`, `slugSource` или алиас `from`. Разделитель: `separator`.
+Source: `sourceField`, `slugSource`, or alias `from`. Separator: `separator`.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): with `responsive: true`, the section data uses `desktop`, `tablet`, `mobile` keys instead of a scalar.
 
-- Дополнительно: `sourceField` / `from`, `separator`. Responsive для имени `slug` отключён.
+- Also: `sourceField` / `from`, `separator`. Responsive is disabled for field name `slug`.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

@@ -13,24 +13,24 @@ Responsive iframe from a video link. Common hosts are supported; `VideoEmbedReso
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## URL instead of embed code
 
 - Paste URL instead of embed HTML in richtext
 - `VideoEmbedResolver` builds iframe for YouTube, Vimeo, Rutube
 - Responsive wrapper in chunk
 
-## When to use
+## Typical placement
 
-- **Product overview** on the homepage
-- **How-to** on support
-- **Promo clip** on a landing page
+- Product overview on the homepage
+- How-to on support
+- Promo clip on a landing page
 
 ## Page examples
 
 - Product: [Hero](hero) → [Video](video) → [Features](features)
 - Tutorial: [Rich text](richtext) → [Video](video) → [FAQ](faq)
 
-## Inspector tips
+## Video URL
 
 Paste the full **Video URL** from the browser bar, not embed HTML. Section title is optional.
 
@@ -65,13 +65,13 @@ Type [video](../fields/video#output-in-section-data). Required. Video URL. Site 
 
 Iframe inside `pb-video`. Aspect ratio comes from theme CSS.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "video": {
     "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
     "embed_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
@@ -99,7 +99,7 @@ Fenom chunk `pagebuilderpro_video`:
         <iframe src="{$video_embed_url|escape}" title="{$title|default:'Video'|escape}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
     {elseif $video_watch_url}
-      <p><a class="pb-button" href="{$video_watch_url|escape}">Смотреть видео</a></p>
+      <p><a class="pb-button" href="{$video_watch_url|escape}">Watch video</a></p>
     {/if}
   </div>
 </section>

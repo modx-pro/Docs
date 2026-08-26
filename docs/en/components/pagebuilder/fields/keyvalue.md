@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Simpler than table for single text value column
-- keyLabel and valueLabel customize captions
-- Free row count without column schema
+Simpler than table for single text value column. KeyLabel and valueLabel customize captions. Free row count without column schema.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Typed cells or image in cell need [table](table)
-- Single flat map sometimes beats repeater of two text fields
+Typed cells or image in cell need [table](table). Single flat map sometimes beats repeater of two text fields.
 
 ## Similar types
 
@@ -37,10 +34,10 @@ Layer: **Pro**.
 {
   "name": "meta",
   "type": "keyvalue",
-  "label": "Мета",
-  "keyLabel": "Параметр",
-  "valueLabel": "Значение",
-  "tab": "Контент",
+  "label": "Meta",
+  "keyLabel": "Parameter",
+  "valueLabel": "Value",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -48,11 +45,11 @@ Layer: **Pro**.
 
 ## Value
 
-Массив `{ key, value }`.
+Array of `{ key, value }`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `meta` в `section.data` — массив пар:
+Key `meta` in the section data: array of pairs:
 
 ```json
 {
@@ -69,7 +66,7 @@ Layer: **Pro**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {foreach $meta as $row}
@@ -79,27 +76,27 @@ Layer: **Pro**.
 
 ## Notes
 
-Подписи колонок: `keyLabel`, `valueLabel` (или `key_label` / `value_label`).
+Column labels: `keyLabel`, `valueLabel` (or `key_label` / `value_label`).
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `keyLabel`, `valueLabel` (или `key_label` / `value_label`).
+- Also: `keyLabel`, `valueLabel` (or `key_label` / `value_label`).
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

@@ -11,9 +11,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 ## Зачем этот тип
 
-- Координаты и адрес для contact_map секций
-- enrich строит embed и ссылку на карты
-- Плоские map_* при type=map или имени с map
+Координаты и адрес для секций contact_map. Enrich строит embed и ссылку на карты. Плоские `map_*` при `type=map` или имени с «map».
 
 ## Когда использовать
 
@@ -23,8 +21,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 ## Советы
 
-- Несколько точек оформите repeater с text lat lng или custom
-- embed выводите из enrich, не собирайте URL вручную
+Несколько точек: repeater с text lat/lng или custom. Embed выводите из enrich, URL не собирайте вручную.
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 Объект `{ lat, lng, zoom, provider }`; enrich: `embed_url` в объекте и плоский `map_embed_url`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `location` в `section.data` после save enrich (`MapEmbedResolver`):
+Ключ `location` в данных секции после save enrich (`MapEmbedResolver`):
 
 ```json
 {
@@ -69,7 +66,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 ```
 
 - Плоские `map_embed_url`, `map_provider`, `map_watch_url` дублируют embed первого map-поля (приоритет у ключа `location`).
-- Провайдер по умолчанию `yandex`; `osm` — OpenStreetMap.
+- Провайдер по умолчанию `yandex`; `osm`: OpenStreetMap.
 
 ## Пример в chunk
 
@@ -79,7 +76,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -87,10 +84,10 @@ description: "Точка на карте с enrich embed_url и watch_url"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: enrich добавляет `embed_url`, `watch_url` и плоские `map_*` в `section.data`.
+- Дополнительно: enrich добавляет `embed_url`, `watch_url` и плоские `map_*` в данных секции.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

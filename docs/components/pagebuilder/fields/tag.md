@@ -11,20 +11,17 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 ## Зачем этот тип
 
-- Свободный ввод без static options
-- Pro advanced-fields
-- Удобен для фильтров и labels на карточках
+Свободный ввод строк без static `options`. Pro advanced-fields. Удобен для фильтров и меток на карточках.
 
 ## Когда использовать
 
-- Hashtags статьи, tech stack badges
-- Filter facets на landing
-- keywords для SEO block в секции
+- Хештеги статьи, бейджи стека технологий
+- Фасеты фильтра на landing
+- Ключевые слова для SEO-блока в секции
 
 ## Советы
 
-- Fixed enum лучше [multiselect](multiselect) или [checkboxgroup](checkboxgroup)
-- Значения строки, не объекты
+Фиксированный enum: [multiselect](multiselect) или [checkboxgroup](checkboxgroup). Значения строки, не объекты.
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 Массив строк.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `labels` в `section.data` — массив строк:
+Ключ `labels` в данных секции: массив строк:
 
 ```json
 {
@@ -71,7 +68,7 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -79,7 +76,7 @@ description: "Массив строк tags с chip UI в инспекторе"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

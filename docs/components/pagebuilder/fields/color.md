@@ -11,25 +11,22 @@ description: "Строка цвета hex или rgba из color picker"
 
 ## Зачем этот тип
 
-- Picker вместо ручного ввода в text
-- Подходит для фона секции и accent
-- Значение строка, в chunk в CSS inline или variable
+Color picker вместо ручного ввода в text. Подходит для фона секции и акцентного цвета. Значение строка, в chunk в CSS inline или variable.
 
 ## Когда использовать
 
 - Цвет фона hero, overlay, кнопки
-- Accent border или badge
+- Акцентная рамка или badge
 - Когда палитра не фиксирована заранее
 
 ## Советы
 
-- Фиксированный brand-набор удобнее [colorpalette](colorpalette)
-- Проверяйте контраст текста на выбранном фоне в chunk
+Фиксированный brand-набор: [colorpalette](colorpalette). Проверяйте контраст текста на выбранном фоне в chunk.
 
 ## Похожие типы
 
 - [colorpalette](colorpalette) для options из JSON
-- [select](select) если цвета зашиты как named theme
+- [select](select) если цвета зашиты как именованная тема
 
 ## Настройка
 
@@ -48,9 +45,9 @@ description: "Строка цвета hex или rgba из color picker"
 
 HEX-строка.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `accent` в `section.data` (HEX):
+Ключ `accent` в данных секции (HEX):
 
 ```json
 {
@@ -66,7 +63,7 @@ HEX-строка.
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -74,7 +71,7 @@ HEX-строка.
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

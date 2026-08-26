@@ -11,20 +11,17 @@ description: "Boolean через switch PrimeVue в инспекторе"
 
 ## Зачем этот тип
 
-- Наглядный on/off без radio или checkbox
-- То же boolean в data, что у yesno
-- Хорошо для частых переключений режима
+Наглядный on/off без radio или checkbox. То же boolean в data, что у [yesno](yesno). Удобен для частых переключений режима.
 
 ## Когда использовать
 
-- Включить overlay, autoplay, dark mode секции
-- showWhen по boolean соседнего поля
-- Быстрый флаг без текста «Да/Нет»
+- Overlay, autoplay, dark mode секции
+- `showWhen` по boolean соседнего поля
+- Быстрый флаг без подписи «Да/Нет»
 
 ## Советы
 
-- Классический MODX yes/no возьмите [yesno](yesno)
-- Значение всё равно boolean, не строка
+Классический MODX yes/no: [yesno](yesno). Значение всё равно boolean, не строка.
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Boolean через switch PrimeVue в инспекторе"
 
 Булево.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `enabled` в `section.data`:
+Ключ `enabled` в данных секции:
 
 ```json
 {
@@ -66,7 +63,7 @@ description: "Boolean через switch PrimeVue в инспекторе"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -74,7 +71,7 @@ description: "Boolean через switch PrimeVue в инспекторе"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

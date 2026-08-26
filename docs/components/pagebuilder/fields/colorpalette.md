@@ -11,24 +11,21 @@ description: "Одно значение из preset options с образцам�
 
 ## Зачем этот тип
 
-- Редактор выбирает из brand-палитры, не любой hex
-- Статический список options как у select, с UI swatch
-- Меньше «случайных» цветов на проде
+Редактор выбирает из brand-палитры, не любой hex. Статический список options как у select, с UI swatch. Меньше «случайных» цветов на проде.
 
 ## Когда использовать
 
-- Theme token primary / secondary / muted
+- Токены темы primary / secondary / muted
 - Фон секции из design system
 - Ограниченный набор для white-label
 
 ## Советы
 
-- Произвольный hex нужен [color](color)
-- В data сохраняется ключ option, не CSS напрямую
+Произвольный hex: [color](color). В data сохраняется ключ option, не CSS напрямую.
 
 ## Похожие типы
 
-- [color](color) для свободного picker
+- [color](color) для свободного color picker
 - [select](select) без визуальных swatch
 
 ## Настройка
@@ -52,9 +49,9 @@ description: "Одно значение из preset options с образцам�
 
 HEX-строка.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `theme` в `section.data` (HEX):
+Ключ `theme` в данных секции (HEX):
 
 ```json
 {
@@ -74,7 +71,7 @@ HEX-строка.
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -82,7 +79,7 @@ HEX-строка.
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно: `swatches` или `options` со цветами.

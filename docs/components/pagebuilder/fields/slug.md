@@ -11,9 +11,7 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 ## Зачем этот тип
 
-- Нормализация сегмента URL, не произвольный text
-- `sourceField` подтягивает заголовок при первом save
-- Pro: `responsive` исключён для имён alt, caption, slug
+Нормализация сегмента URL, не произвольный text. `sourceField` подтягивает заголовок при первом save. Pro: `responsive` исключён для имён alt, caption, slug.
 
 ## Когда использовать
 
@@ -23,8 +21,7 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 ## Советы
 
-- Полный URL храните в [url](url), не в slug
-- Slug не попадает в responsive map по умолчанию
+Полный URL: [url](url), не slug. Slug не попадает в responsive map по умолчанию.
 
 ## Похожие типы
 
@@ -50,9 +47,9 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 Строка slug.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `slug` в `section.data`:
+Ключ `slug` в данных секции:
 
 ```json
 {
@@ -72,7 +69,7 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -80,10 +77,10 @@ description: "Строка ЧПУ, часто с автогенерацией и
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): при `responsive: true` в данных секции: ключи `desktop`, `tablet`, `mobile` вместо скаляра.
 
 - Дополнительно: `sourceField` / `from`, `separator`. Responsive для имени `slug` отключён.
 

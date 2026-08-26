@@ -28,18 +28,20 @@ Published sections render through Fenom chunks in `core/components/pagebuilder/e
 
 By default the snippet registers:
 
-- `pagebuilder-sections.css` — base Free section styles
-- with Pro and interactive sections — `pagebuilder-sections.js` (tabs, carousel)
+- `pagebuilder-sections.css` for base Free section styles
+- `pagebuilder-sections.js` with Pro and interactive sections (tabs, carousel)
 
 Disable globally: `pagebuilder_load_frontend_css = 0`. Per call: `&load_css=`0``.
 
 Page wrapper `<div class="pb-page">` is controlled by `wrap_page` (defaults to the same as `load_css`).
 
+Tokens, BEM, and Fenom shell: [Design system](design-system).
+
 ## HTML cache
 
 `use_cache=1` (default) caches final HTML in MODX. After publishing sections, clear site cache or call with `use_cache=0` temporarily.
 
-Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run only on **cache miss**.
+Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run only on cache miss (when HTML is not cached yet).
 
 ## Section filter
 
@@ -89,5 +91,6 @@ Token is signed with `pagebuilder_preview_secret`. The iframe loads template CSS
 ## Related pages
 
 - [Snippets](snippets)
+- [Design system](design-system)
 - [Section catalog](sections/)
 - [Render events](integration#frontend-render)

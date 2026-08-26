@@ -1,6 +1,6 @@
 ---
 title: "date"
-description: "ISO date in section.data without time of day"
+description: "ISO date without time of day"
 ---
 
 # Field date
@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- PrimeVue calendar, not manual text entry
-- Separate from time and datetime
-- Predictable format for sorting and Fenom
+PrimeVue calendar, not manual text entry. Separate from time and datetime. Predictable format for sorting and Fenom.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Hours need [time](time) or [datetime](datetime)
-- Do not mix timezone logic in the chunk without a clear contract
+Hours need [time](time) or [datetime](datetime). Do not mix timezone logic in the chunk without a clear contract.
 
 ## Similar types
 
@@ -37,8 +34,8 @@ Layer: **Free**.
 {
   "name": "starts_at",
   "type": "date",
-  "label": "Дата",
-  "tab": "Контент",
+  "label": "Date",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,11 +43,11 @@ Layer: **Free**.
 
 ## Value
 
-Строка `YYYY-MM-DD`.
+`YYYY-MM-DD` string.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `starts_at` в `section.data` (`YYYY-MM-DD`):
+Key `starts_at` in the section data (`YYYY-MM-DD`):
 
 ```json
 {
@@ -58,7 +55,7 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <time datetime="{$starts_at|escape}">{$starts_at|escape}</time>
@@ -66,18 +63,18 @@ Layer: **Free**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

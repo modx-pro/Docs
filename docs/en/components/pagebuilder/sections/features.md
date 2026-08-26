@@ -13,24 +13,24 @@ A "why us" block: each item has an icon (URL or class), title, and body text. Ri
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## How Features beats cards
 
 - Icon, title, and body per cell
 - Stronger visual than [Cards](cards) on product landings
 - Icon via URL or theme CSS class
 
-## When to use
+## Typical landings
 
-- **Product landing** — key capabilities
-- **Alternatives** without a comparison table
-- **Block after hero** on a SaaS site
+- Product landing: key capabilities
+- Alternatives without a comparison table
+- Block after hero on a SaaS site
 
 ## Page examples
 
 - SaaS: [Hero](hero) → [Features](features) → [Stats](stats) → [Pricing](pricing_table)
 - Product: [Features](features) → [Video](video) → [CTA](cta)
 
-## Inspector tips
+## Features repeater
 
 **Features** repeater: **Icon**, **Title**, **Description**. Icon can be an SVG/PNG URL or a theme CSS class.
 
@@ -73,13 +73,13 @@ Each row:
 
 `pb-features` with icons and text.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
@@ -93,8 +93,8 @@ Example payload after save. Media, video, and map values may be enriched on outp
         "height": 1080,
         "type": "image"
       },
-      "title": "Заголовок секции",
-      "text": "Дополнительный текст под заголовком."
+      "title": "Section title",
+      "text": "Supporting text under the title."
     }
   ]
 }

@@ -5,26 +5,23 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 # Поле video
 
-Слой: **Pro**.
+Слой: **Free**.
 
 <!-- ![video](/components/pagebuilder/screenshots/fields/video.png) -->
 
 ## Зачем этот тип
 
-- YouTube, Vimeo и upload в одном поле
-- enrich на save draft заполняет embed и provider
-- Плоские video_* при type=video или имени с video
+YouTube, Vimeo и upload в одном поле. При save enrich заполняет `embed_url`, `provider`, `watch_url`. Плоские `video_*` появляются при `type=video` или имени поля с «video».
 
 ## Когда использовать
 
-- Hero background video или блок demo
-- Embed на landing product
-- Один ролик с poster и caption
+- Фоновое видео в hero или demo-блок
+- Embed на product landing
+- Один ролик с poster и подписью
 
 ## Советы
 
-- В chunk используйте enrich поля, не только raw url
-- Галерея кадров это [gallery](gallery), не video
+В chunk выводите enrich-поля, не только raw `url`. Галерея кадров: [gallery](gallery), не video.
 
 ## Похожие типы
 
@@ -46,11 +43,11 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 ## Значение
 
-Объект `{ url, poster }`. `poster` — media-объект как у `image`. Enrich добавляет `embed_url`, `provider`, `watch_url`.
+Объект `{ url, poster }`. `poster`: media-объект как у `image`. Enrich добавляет `embed_url`, `provider`, `watch_url`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `video` в `section.data` после save enrich (`SectionFieldEnricher` + `VideoEmbedResolver`):
+Ключ `video` в данных секции после save enrich (`SectionFieldEnricher` + `VideoEmbedResolver`):
 
 ```json
 {
@@ -90,11 +87,11 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 ## Примечание
 
-Плоские `video_embed_url` / `video_provider` / `video_watch_url` — только для секции `type=video` или имени поля с «video».
+Плоские `video_embed_url` / `video_provider` / `video_watch_url`: только для секции `type=video` или имени поля с «video».
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -102,10 +99,10 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: `poster` — вложенный media-объект. Enrich: `embed_url`, `provider`, `watch_url`.
+- Дополнительно: `poster`: вложенный media-объект. Enrich: `embed_url`, `provider`, `watch_url`.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 
@@ -113,4 +110,4 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 - [Справочник типов](types)
 - [Обзор полей](overview)
-- [Pro в менеджере](../integration)
+- [Менеджер и события](../integration)

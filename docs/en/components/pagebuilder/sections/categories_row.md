@@ -13,24 +13,24 @@ Catalog navigation: child categories of a parent with thumbnail and link.
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## Why a categories row
 
 - Subcategories from msCategory via pdoResources
 - Catalog navigation without hand-built menus
 - Thumbnails and links from resources
 
-## When to use
+## Catalog navigation
 
-- **Catalog homepage** — top sections
-- **Parent category page** — subcategories
-- **Landing** — department showcase
+- Catalog homepage: top sections
+- Parent category page: subcategories
+- Landing: department showcase
 
 ## Page examples
 
 - Catalog: [Hero](hero) → [Categories row](categories_row) → [Products grid](products_grid)
 - Homepage: [Categories row](categories_row) → [Promo banner](promo_banner)
 
-## Inspector tips
+## Parent and limit
 
 **Parent category** and **Limit**. Resources must be msCategory.
 
@@ -69,13 +69,13 @@ Type [number](../fields/number#output-in-section-data). Optional.
 
 Horizontal `pb-categories-row`.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "parent": 101,
   "limit": 6
 }
@@ -107,7 +107,7 @@ Fenom chunk `pagebuilderpro_categories_row`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">В этой категории нет подразделов.</p>
+      <p class="pb-listing__empty">No subcategories in this category.</p>
     {/if}
   </div>
 </section>

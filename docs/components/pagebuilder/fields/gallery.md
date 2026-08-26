@@ -11,20 +11,17 @@ description: "Массив media-объектов изображений с enri
 
 ## Зачем этот тип
 
-- Несколько фото с alt и caption в repeater-like UI
-- enrich как у image на каждый кадр
-- Pro advanced-fields
+Несколько фото с alt и caption в repeater-like UI. Enrich как у [image](image) на каждый кадр. Pro advanced-fields.
 
 ## Когда использовать
 
 - Слайды без отдельной carousel-секции
 - Набор screenshots продукта
-- Portfolio grid source data
+- Источник данных для сетки portfolio
 
 ## Советы
 
-- Один кадр достаточно [image](image)
-- В chunk перебирайте массив и `{$slide.url}`
+Один кадр: [image](image). В chunk перебирайте массив и `{$slide.url}`.
 
 ## Похожие типы
 
@@ -49,9 +46,9 @@ description: "Массив media-объектов изображений с enri
 
 Массив media-объектов (изображения, видео, pdf и др.).
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `shots` в `section.data` — массив media-объектов после enrich:
+Ключ `shots` в данных секции: массив media-объектов после enrich:
 
 ```json
 {
@@ -91,7 +88,7 @@ description: "Массив media-объектов изображений с enri
 }
 ```
 
-- `groups` — строка или массив, если включено в schema поля.
+- `groups`: строка или массив, если включено в schema поля.
 
 ## Пример в chunk
 
@@ -103,7 +100,7 @@ description: "Массив media-объектов изображений с enri
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -111,10 +108,10 @@ description: "Массив media-объектов изображений с enri
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: `groups: true` — группы у элементов галереи.
+- Дополнительно: `groups: true`: группы у элементов галереи.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

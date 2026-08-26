@@ -13,24 +13,24 @@ Same slides as **Gallery**, one per view with navigation. Optional autoplay.
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Carousel instead of grid
 
 - Saves vertical space on mobile
 - Optional autoplay
 - Same slide fields as [Gallery](gallery)
 
-## When to use
+## Where it fits
 
-- **Homepage banners**
-- **Portfolio** — large work previews
-- **Product photos** — angles on a landing page
+- Homepage banners
+- Portfolio: large work previews
+- Product photos: angles on a landing page
 
 ## Page examples
 
 - Homepage: [Hero](hero) → [Carousel](gallery_carousel) banners → [Products grid](products_grid)
 - Portfolio: [Rich text](richtext) → [Carousel](gallery_carousel) → [CTA](cta)
 
-## Inspector tips
+## Slides and autoplay
 
 **Slides** repeater like Gallery. **Autoplay** enables a timer; load `pagebuilder-sections.js` on the front end.
 
@@ -77,13 +77,13 @@ Each row:
 
 `pb-carousel` with image partials.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "autoplay": false,
   "items": [
     {
@@ -98,8 +98,8 @@ Example payload after save. Media, video, and map values may be enriched on outp
         "height": 1080,
         "type": "image"
       },
-      "alt": "Описание изображения для скринридеров",
-      "caption": "Подпись под изображением"
+      "alt": "Image description for screen readers",
+      "caption": "Caption under the image"
     }
   ]
 }

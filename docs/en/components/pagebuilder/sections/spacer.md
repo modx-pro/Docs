@@ -9,24 +9,24 @@ An empty section with fixed height. Use it when neighboring blocks feel cramped.
 
 <!-- ![Spacer](/components/pagebuilder/screenshots/sections/spacer.png) -->
 
-## Why this section
+## Why an empty section
 
 - Page rhythm without empty divs in templates
 - Four heights out of the box (`sm`–`xl`)
 - Section order stays clean when editors change content
 
-## When to use
+## Where it helps
 
-- **After hero** — separate the first screen from body content
-- **After a dense grid** of cards or gallery
-- **Before footer** — space after the last CTA
+- After hero: separate the first screen from body content
+- After a dense grid of cards or gallery
+- Before footer: space after the last CTA
 
 ## Page examples
 
 - [Hero](hero) → [Spacer](spacer) → [Cards](cards)
 - Dense [Gallery](gallery) → [Spacer](spacer) → [CTA](cta)
 
-## Inspector tips
+## Choosing size
 
 Pick **Size** (`sm`, `md`, `lg`, `xl`). No other fields.
 
@@ -57,7 +57,7 @@ Type [select](../fields/select#output-in-section-data). Required. Dropdown with 
 
 `pb-spacer` with a size modifier.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 

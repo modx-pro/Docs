@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Database list: modResource, modTemplate, and other whitelist classes
-- Loaded via `mgr/field/options` and `pbOnFieldValues`
-- Dropdown search without a relation modal
+Database list: modResource, modTemplate, and other whitelist classes. Loaded via `mgr/field/options` and `pbOnFieldValues`. Dropdown search without a relation modal.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Resource with pagetitle in data → [relation](relation)
-- Multiple values → [multicombo](multicombo)
+Resource with pagetitle in data → [relation](relation). Multiple values → [multicombo](multicombo).
 
 ## Similar types
 
@@ -37,11 +34,11 @@ Layer: **Pro**.
 {
   "name": "related",
   "type": "combo",
-  "label": "Связанная",
+  "label": "Related",
   "optionsSource": {
     "class": "modResource"
   },
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -49,11 +46,11 @@ Layer: **Pro**.
 
 ## Value
 
-Выбранное значение (строка или id).
+Selected value (string or id).
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `related` в `section.data` — строка или id из `optionsSource`:
+Key `related` in the section data: string or id from `optionsSource`:
 
 ```json
 {
@@ -61,7 +58,7 @@ Layer: **Pro**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {$related|escape}
@@ -69,21 +66,21 @@ Layer: **Pro**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

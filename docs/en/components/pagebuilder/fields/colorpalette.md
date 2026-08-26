@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Editors pick brand palette, not any hex
-- Static options like select with swatch UI
-- Fewer random colors in production
+Editors pick brand palette, not any hex. Static options like select with swatch UI. Fewer random colors in production.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Arbitrary hex needs [color](color)
-- Stored value is option key, not raw CSS
+Arbitrary hex needs [color](color). Stored value is option key, not raw CSS.
 
 ## Similar types
 
@@ -37,12 +34,12 @@ Layer: **Free**.
 {
   "name": "theme",
   "type": "colorpalette",
-  "label": "Цвет",
+  "label": "Color",
   "swatches": [
     "#111827",
     "#c2410c"
   ],
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -50,11 +47,11 @@ Layer: **Free**.
 
 ## Value
 
-HEX-строка.
+HEX string.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `theme` в `section.data` (HEX):
+Key `theme` in the section data (HEX):
 
 ```json
 {
@@ -62,7 +59,7 @@ HEX-строка.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <span style="color: {$theme|escape}">…</span>
@@ -70,24 +67,24 @@ HEX-строка.
 
 ## Notes
 
-В CMP: `optionsText` (как у select); при сохранении пишутся `options` и `swatches`.
+In CMP: `optionsText` (same as select); on save both `options` and `swatches` are written.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `swatches` или `options` со цветами.
+- Also: `swatches` or `options` with colors.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

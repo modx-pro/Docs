@@ -1,6 +1,6 @@
 ---
 title: "Структурированный контент"
-description: "Текст через Editor.js — заголовки, списки, цитаты, медиа. Слой Pro."
+description: "Текст через Editor.js: заголовки, списки, цитаты, медиа. Слой Pro."
 ---
 
 # Структурированный контент
@@ -13,24 +13,24 @@ description: "Текст через Editor.js — заголовки, списк
 Требуется PageBuilder Pro.
 :::
 
-## Зачем эта секция
+## Editor.js вместо richtext
 
 - Editor.js: заголовки, списки, цитаты без ручного HTML
-- JSON в `section.data`, HTML на выводе chunk
+- JSON в данных секции, HTML на выводе chunk
 - Удобнее richtext для длинных материалов
 
-## Где применять
+## Длинные материалы
 
-- **Статья блога** внутри page builder
-- **Лонгрид** на лендинге
-- **Новость** с богатой вёрсткой без ручного HTML
+- В статье блога внутри page builder
+- В лонгриде на лендинге
+- В новости с богатой вёрсткой без ручного HTML
 
 ## Примеры страниц
 
 - Блог-пост на page builder: [Hero](hero) → [Structured content](structured_content) → [CTA](cta)
 - Новость: [Structured content](structured_content) → [Галерея](gallery)
 
-## Что заполнить
+## Поле editorjs
 
 Поле **editorjs** сохраняет JSON блоков. На выводе chunk превращает его в HTML внутри `.pb-richtext__content`.
 
@@ -65,7 +65,7 @@ description: "Текст через Editor.js — заголовки, списк
 
 HTML из поля `editorjs` в обёртке `.pb-richtext__content`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
 Пример JSON после сохранения секции. Для media, video и map значения на выводе могут быть обогащены:
 

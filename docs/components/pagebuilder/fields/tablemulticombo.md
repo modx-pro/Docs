@@ -11,9 +11,7 @@ description: "Массив id строк custom table через MultiSelect"
 
 ## Зачем этот тип
 
-- Несколько id из того же table source
-- Парный тип к [tablecombo](tablecombo)
-- В data только id, без inline-строк
+Несколько id из того же table source. Парный тип к [tablecombo](tablecombo). В data только id, без inline-строк.
 
 ## Когда использовать
 
@@ -23,8 +21,7 @@ description: "Массив id строк custom table через MultiSelect"
 
 ## Советы
 
-- Объекты с pagetitle → [multirelation](multirelation)
-- Статический список → [multiselect](multiselect)
+Объекты с pagetitle: [multirelation](multirelation). Статический список: [multiselect](multiselect).
 
 ## Похожие типы
 
@@ -51,9 +48,9 @@ description: "Массив id строк custom table через MultiSelect"
 
 Массив id.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `templates` в `section.data` — массив значений:
+Ключ `templates` в данных секции: массив значений:
 
 ```json
 {
@@ -74,7 +71,7 @@ description: "Массив id строк custom table через MultiSelect"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -82,7 +79,7 @@ description: "Массив id строк custom table через MultiSelect"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

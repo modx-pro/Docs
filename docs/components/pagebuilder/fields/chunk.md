@@ -11,25 +11,22 @@ description: "Объект name выбранного modChunk для include в 
 
 ## Зачем этот тип
 
-- Picker chunk по name без ручного ввода
-- `{include file="file:chunks/{$chunk.name}.tpl"}` pattern
-- Pro для dynamic partial sections
+Выбор chunk по name без ручного ввода. Паттерн `{include file="file:chunks/{$chunk.name}.tpl"}`. Pro для секций с динамическими partial.
 
 ## Когда использовать
 
-- Редактор выбирает variant chunk layout
-- A/B partial swap в custom секции
-- Dev-curated list of allowed chunks
+- Редактор выбирает вариант layout чанка
+- A/B подмена partial в custom-секции
+- Список разрешённых chunks, заданный разработчиком
 
 ## Советы
 
-- Snippet call это [snippet](snippet) type
-- Static chunk name можно [text](text) если list closed
+Вызов сниппета: [snippet](snippet). Закрытый список имён: [text](text).
 
 ## Похожие типы
 
-- [snippet](snippet) для modSnippet name
-- [combo](combo) optionsSource modChunk для id-style pick
+- [snippet](snippet) для имени modSnippet
+- [combo](combo) с optionsSource modChunk для выбора по id
 
 ## Настройка
 
@@ -48,9 +45,9 @@ description: "Объект name выбранного modChunk для include в 
 
 Объект `{ name }`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `chunk` в `section.data`:
+Ключ `chunk` в данных секции:
 
 ```json
 {
@@ -68,7 +65,7 @@ description: "Объект name выбранного modChunk для include в 
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -76,7 +73,7 @@ description: "Объект name выбранного modChunk для include в 
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

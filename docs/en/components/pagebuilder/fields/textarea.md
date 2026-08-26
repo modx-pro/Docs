@@ -1,6 +1,6 @@
 ---
 title: "textarea"
-description: "Multi-line plain text without HTML in section.data"
+description: "Multi-line plain text without HTML"
 ---
 
 # Field textarea
@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Several lines with no accidental HTML markup
-- Better than text for descriptions and quotes
-- Simpler than richtext when formatting is optional
+Several lines with no accidental HTML markup. Better than text for descriptions and quotes. Simpler than richtext when formatting is optional.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Long formatted copy belongs in [richtext](richtext) or [editorjs](editorjs)
-- Pro: `responsive` behaves like text
+Long formatted copy belongs in [richtext](richtext) or [editorjs](editorjs). Pro: `responsive` behaves like text.
 
 ## Similar types
 
@@ -37,9 +34,9 @@ Layer: **Free**.
 {
   "name": "intro",
   "type": "textarea",
-  "label": "Вводный текст",
+  "label": "Intro text",
   "rows": 6,
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -47,19 +44,19 @@ Layer: **Free**.
 
 ## Value
 
-Многострочная строка.
+Multi-line string.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `intro` в `section.data`:
+Key `intro` in the section data:
 
 ```json
 {
-  "intro": "Первый абзац.\nВторой абзац."
+  "intro": "First paragraph.\nSecond paragraph."
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {if $intro}
@@ -69,24 +66,24 @@ Layer: **Free**.
 
 ## Notes
 
-Высота: `rows` или `height` в schema. Pro: `responsive`.
+Height: `rows` or `height` in schema. Pro: `responsive`.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): with `responsive: true`, the section data uses `desktop`, `tablet`, `mobile` keys instead of a scalar.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

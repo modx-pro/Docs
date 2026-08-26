@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Editors see value but cannot edit
-- Same scalar in data as text
-- Fits SKU, id, sync from external system
+Editors see value but cannot edit. Same scalar in data as text. Fits SKU, id, sync from external system.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Fully hidden value use [hidden](hidden)
-- Editable copy is [text](text)
+Fully hidden value use [hidden](hidden). Editable copy is [text](text).
 
 ## Similar types
 
@@ -38,7 +35,7 @@ Layer: **Free**.
   "name": "sku",
   "type": "readonly",
   "label": "SKU",
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,11 +43,11 @@ Layer: **Free**.
 
 ## Value
 
-Строка только для чтения.
+Read-only string.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `sku` в `section.data`:
+Key `sku` in the section data:
 
 ```json
 {
@@ -58,7 +55,7 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <span class="sku">{$sku|escape}</span>
@@ -66,18 +63,18 @@ Layer: **Free**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

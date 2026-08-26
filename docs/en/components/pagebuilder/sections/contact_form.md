@@ -13,24 +13,24 @@ Build fields in the inspector (text, email, tel, etc.), set a **Form key** for y
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## What the PageBuilder form adds
 
 - Field set in a repeater, not hard-coded HTML
 - `form_key` ties the block to your handler (AjaxForm, snippet)
 - Success message and redirect live in the inspector
 
-## When to use
+## Typical placement
 
-- **Lead form** on a landing page
-- **Feedback** on contacts
-- **Lead magnet** — email gate for a PDF
+- Lead form on a landing page
+- Feedback on contacts
+- Lead magnet: email gate for a PDF
 
 ## Page examples
 
 - Landing: [Hero](hero) → [Features](features) → [Contact form](contact_form)
 - Contacts: [Contact with map](contact_map) → [Contact form](contact_form)
 
-## Inspector tips
+## form_key and fields
 
 **Form key** must match your site handler (snippet, AjaxForm). **Fields** repeater sets name, type, required per row.
 
@@ -94,26 +94,26 @@ Type [url](../fields/url#output-in-section-data). Optional.
 
 `pb-contact-form`. Submit via `pbForm` / `pbFetch` on the front end.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
-  "intro": "Краткое вступление перед основным содержимым.",
+  "title": "Section title",
+  "intro": "Short intro before the main content.",
   "form_key": "contact",
   "fields": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
-      "name": "Иван Петров",
-      "label": "Довольных клиентов",
+      "name": "Jane Doe",
+      "label": "Happy customers",
       "type": "text",
       "required": true
     }
   ],
-  "submit_label": "Отправить",
-  "success_message": "Спасибо! Мы свяжемся с вами в ближайшее время.",
+  "submit_label": "Submit",
+  "success_message": "Thank you! We will contact you shortly.",
   "redirect_url": "https://example.com/thanks"
 }
 ```
@@ -135,15 +135,15 @@ Fenom chunk `pagebuilderpro_contact_form`:
     {/if}
 
     {if !$formit_available}
-      <p class="pb-contact-form__fallback" role="status">Форма временно недоступна. Установите FormIt или ajaxForm.</p>
+      <p class="pb-contact-form__fallback" role="status">The form is temporarily unavailable. Install FormIt or ajaxForm.</p>
     {elseif $status == 'success'}
       <div class="pb-contact-form__success" role="status">
-        <p>{$success_message|default:'Спасибо! Мы свяжемся с вами в ближайшее время.'|escape}</p>
+        <p>{$success_message|default:'Thank you! We will contact you shortly.'|escape}</p>
       </div>
     {else}
       {if $status == 'error'}
         <div class="pb-contact-form__summary" role="alert">
-          <p>Проверьте обязательные поля и попробуйте снова.</p>
+          <p>Check the required fields and try again.</p>
         </div>
       {/if}
       <form class="pb-contact-form__form" method="post" action="">
@@ -183,14 +183,14 @@ Fenom chunk `pagebuilderpro_contact_form`:
               {/if}
               {if $ferror}
                 <p class="pb-contact-form__error" id="pb-{$formKey|escape}-{$fname|escape}-error">
-                  {if $ferror == 'email'}Введите корректный email.{else}Поле обязательно.{/if}
+                  {if $ferror == 'email'}Enter a valid email address.{else}This field is required.{/if}
                 </p>
               {/if}
             </div>
           {/foreach}
         </div>
         <button class="pb-button pb-contact-form__submit" type="submit">
-          {$submit_label|default:'Отправить'|escape}
+          {$submit_label|default:'Submit'|escape}
         </button>
       </form>
     {/if}

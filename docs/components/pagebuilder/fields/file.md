@@ -11,9 +11,7 @@ description: "Media-объект файла после enrich при save draft"
 
 ## Зачем этот тип
 
-- Enrich добавляет filename, extension, size, url
-- Подходит для PDF, архивов, не только картинок
-- Тот же media pipeline, что у image
+Enrich добавляет filename, extension, size, url. Подходит для PDF, архивов, не только картинок. Тот же media pipeline, что у [image](image).
 
 ## Когда использовать
 
@@ -23,8 +21,7 @@ description: "Media-объект файла после enrich при save draft"
 
 ## Советы
 
-- В chunk используйте `{$file.url}`, не сырой path
-- Только изображения чаще через [image](image)
+В chunk используйте `{$file.url}`, не сырой path. Только изображения чаще через [image](image).
 
 ## Похожие типы
 
@@ -49,9 +46,9 @@ description: "Media-объект файла после enrich при save draft"
 
 Объект media: `url`, `size`, `title`, `name`, `filename`, `extension`, `type` и др. Legacy-строка при чтении оборачивается в `{ url }`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `pdf` в `section.data` после save enrich (`MediaFieldEnricher`):
+Ключ `pdf` в данных секции после save enrich (`MediaFieldEnricher`):
 
 ```json
 {
@@ -79,7 +76,7 @@ description: "Media-объект файла после enrich при save draft"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -87,7 +84,7 @@ description: "Media-объект файла после enrich при save draft"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно в schema: media-объект, enrich при save.

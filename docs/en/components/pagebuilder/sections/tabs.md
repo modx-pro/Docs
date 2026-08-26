@@ -13,24 +13,24 @@ Split long content into tabs: shipping, payment, specs. Each tab body is richtex
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Tabs instead of a wall of text
 
 - Long content without endless vertical scroll
 - Each tab has an anchor for deep links
 - Richtext inside panels
 
-## When to use
+## Typical pages
 
-- **Product page** — description / specs / reviews
-- **Service** — steps, scope, FAQ
-- **Docs** on one page
+- Product page: description / specs / reviews
+- Service: steps, scope, FAQ
+- Docs on one page
 
 ## Page examples
 
 - Product: [Spotlight](product_spotlight) → [Tabs](tabs): description | specs | shipping
 - Service: [Features](features) → [Tabs](tabs) → [FAQ](faq)
 
-## Inspector tips
+## Tab repeater
 
 **Tabs** repeater: **Tab label**, **Anchor** (Latin slug), **Content**. Front-end switching uses `pagebuilder-sections.js`.
 
@@ -73,19 +73,19 @@ Each row:
 
 `pb-tabs` with panels. Include section JS in your template.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
-      "label": "Довольных клиентов",
+      "label": "Happy customers",
       "anchor": "tab-delivery",
-      "content": "<p>Текст страницы с <strong>форматированием</strong>.</p>"
+      "content": "<p>Page text with <strong>formatting</strong>.</p>"
     }
   ]
 }

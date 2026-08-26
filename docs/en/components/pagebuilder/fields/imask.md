@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Phone, tax id, card pattern without validate-only
-- mask or preset in schema
-- Pro advanced-fields
+Phone, tax id, card pattern without validate-only. Mask or preset in schema. Pro advanced-fields.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Plain numeric use [number](number)
-- Value is string with mask literals per preset
+Plain numeric use [number](number). Value is string with mask literals per preset.
 
 ## Similar types
 
@@ -37,12 +34,12 @@ Layer: **Pro**.
 {
   "name": "phone",
   "type": "imask",
-  "label": "Телефон",
+  "label": "Phone",
   "mask": "+7 (000) 000-00-00",
   "maskOptions": {
     "lazy": false
   },
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -50,11 +47,11 @@ Layer: **Pro**.
 
 ## Value
 
-Строка по маске.
+Masked string.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `phone` в `section.data` — строка по маске:
+Key `phone` in the section data: masked string:
 
 ```json
 {
@@ -62,7 +59,7 @@ Layer: **Pro**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <a href="tel:{$phone|escape}">{$phone|escape}</a>
@@ -70,27 +67,27 @@ Layer: **Pro**.
 
 ## Notes
 
-Короткая маска: `mask`. Полный конфиг IMask: `maskOptions` (object или JSON-строка).
+Short mask: `mask`. Full IMask config: `maskOptions` (object or JSON string).
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `mask` или `maskOptions` (JSON IMask).
+- Also: `mask` or `maskOptions` (IMask JSON).
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

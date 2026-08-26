@@ -1,6 +1,6 @@
 ---
 title: "Rich text"
-description: "Free-form HTML text from the visual editor in the inspector"
+description: "HTML string from the familiar MODX richtext editor"
 ---
 
 # Rich text
@@ -9,24 +9,24 @@ A text block between other sections. The editor works like MODX richtext: paragr
 
 <!-- ![Rich text](/components/pagebuilder/screenshots/sections/richtext.png) -->
 
-## Why this section
+## When richtext is enough
 
 - Familiar MODX richtext, no separate TV per paragraph
 - Drops between any sections in any order
 - HTML lands in `section.data.content` for Fenom output
 
-## When to use
+## Scenarios
 
-- **Article or news post** — main page body
-- **Service description** between hero and features
-- **Legal copy**, instructions, any content without custom markup
+- Article or news post: main page body
+- Service description between hero and features
+- Legal copy, instructions, any content without custom markup
 
 ## Page examples
 
 - Article: [Hero](hero) → [Rich text](richtext) → [Image](image) → [Rich text](richtext)
 - About: [Hero](hero) → [Rich text](richtext) → [Team](team) → [CTA](cta)
 
-## Inspector tips
+## Content field
 
 Content lives in **Content**. For long structured pages, consider **Structured content** (Editor.js, Pro).
 
@@ -57,13 +57,13 @@ Type [richtext](../fields/richtext#output-in-section-data). Required.
 
 `pb-richtext` wrapper with HTML from `content`.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "content": "<p>Текст страницы с <strong>форматированием</strong>.</p>"
+  "content": "<p>Page text with <strong>formatting</strong>.</p>"
 }
 ```
 

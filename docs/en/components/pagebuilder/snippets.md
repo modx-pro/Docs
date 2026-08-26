@@ -46,7 +46,7 @@ With `return_values=1`, event `pbOnGetValues` fires.
 
 ## PageBuilderResource
 
-Same render, but **`resource_id` is required** — sections from another resource (e.g. block on home from a child page).
+Same render, but **`resource_id` is required**: sections from another resource (for example a block on the home page from a child page).
 
 | Parameter | Type | Description |
 | --- | --- | --- |

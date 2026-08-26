@@ -13,24 +13,24 @@ Data lives in CMP or the resource **Tables** tab; the section only renders a cho
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Why a CMP table
 
 - One CMP table, many sections can share a `table_key`
 - Update price list without editing every page
 - Row limit per section
 
-## When to use
+## Typical data
 
-- **Service price list**
-- **Event schedule**
-- **Pickup points** from one data source
+- Service price list
+- Event schedule
+- Pickup points from one data source
 
 ## Page examples
 
 - Services: [Hero](hero) → [Data table](data_table) price list → [FAQ](faq)
 - Event: [Data table](data_table) schedule → [Contact form](contact_form)
 
-## Inspector tips
+## table_key and limit
 
 In **Table**, set `table_key` from CMP and a row **Limit**. Edit data outside the section inspector.
 
@@ -69,14 +69,14 @@ Type [embeddedTable](../fields/embeddedTable#output-in-section-data). Required. 
 
 `pb-data-table` HTML table.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
-  "intro": "Краткое вступление перед основным содержимым.",
+  "title": "Section title",
+  "intro": "Short intro before the main content.",
   "table": {
     "table_key": "prices",
     "limit": 10

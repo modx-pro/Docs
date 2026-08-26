@@ -11,13 +11,13 @@ Layer: **Free**.
 
 ## Why this type
 
-- List lives in section JSON, no xPDO query
-- Compact than radio for long lists
-- Stored value is option value, not label
+- Options live in section JSON, no xPDO query
+- Takes less space than radio for long lists
+- Stored value is the option `value`, not the label
 
 ## When to use
 
-- Size, theme, alignment, layout preset
+- Size, theme, alignment, or layout preset
 - Five to twenty fixed choices without search
 - Enum-like section settings
 
@@ -29,7 +29,7 @@ Layer: **Free**.
 ## Similar types
 
 - [radio](radio) for a short on-screen list
-- [multiselect](multiselect) for multiple static picks (Pro)
+- [multiselect](multiselect) for multiple static picks
 
 ## Schema
 
@@ -37,7 +37,7 @@ Layer: **Free**.
 {
   "name": "size",
   "type": "select",
-  "label": "Размер",
+  "label": "Size",
   "options": [
     {
       "label": "S",
@@ -48,7 +48,7 @@ Layer: **Free**.
       "value": "lg"
     }
   ],
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -56,11 +56,11 @@ Layer: **Free**.
 
 ## Value
 
-Строка: `value` выбранной опции.
+String: selected option `value`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `size` в `section.data` — строка `value` выбранной опции:
+Key `size` in the section data: the selected option `value` string:
 
 ```json
 {
@@ -68,7 +68,7 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {switch $size}
@@ -80,24 +80,24 @@ Layer: **Free**.
 
 ## Notes
 
-Динамический список: `optionsSource` → processor `mgr/field/options`.
+Dynamic list: `optionsSource` → processor `mgr/field/options`.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `options` или `optionsSource`.
+- Also: `options` or `optionsSource`.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

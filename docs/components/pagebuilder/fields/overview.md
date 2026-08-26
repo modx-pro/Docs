@@ -1,13 +1,13 @@
 ---
 title: "Обзор полей"
-description: "Схема полей в JSON секции, виджеты инспектора и вывод в section.data"
+description: "Схема полей в JSON секции, виджеты инспектора и данные после сохранения"
 ---
 
 # Обзор полей
 
-Поля описывают, что редактор заполняет в секции. Схема лежит в JSON типа (`core/components/pagebuilder/sections/{key}.json`) или собирается в CMP.
+Поля задают, что редактор заполняет в секции. Схему хранят в JSON типа (`core/components/pagebuilder/sections/{key}.json`) или собирают в CMP.
 
-У каждого из 50 типов своя страница в [справочнике](types): JSON **Настройка** (с meta-ключами), значение в `section.data`, блок **Вывод** (JSON после save) и пример для Fenom/HTML.
+В [справочнике](types) 50 типов. У каждого своя страница: JSON **Настройка**, блок **Данные секции** (как поле выглядит после сохранения) и пример для Fenom или HTML. В chunk значения приходят из `section.data`.
 
 <!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
 
@@ -24,7 +24,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 | Свойство | Роль |
 | --- | --- |
-| `name` | Ключ в `section.data` |
+| `name` | Ключ в данных секции |
 | `type` | Виджет и валидация |
 | `label` | Подпись в инспекторе |
 | `required` | Обязательно при **publish** (черновик сохраняется) |
@@ -38,26 +38,26 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 ## Общие свойства поля
 
-Для полей с `name`, которые попадают в `section.data` (не `heading` / `dependent`):
+Для полей с `name`, которые попадают в данные секции (не `heading` / `dependent`):
 
 | Ключ | Тип | Инспектор | CMP |
 | --- | --- | --- | --- |
 | `tab` | string | Поля с одним `tab` группируются под подзаголовком | да |
 | `width` | 25–100 | Ширина колонки в % (flex-строка), по умолчанию 100 | да |
 | `description` | string | Текст под подписью поля | да |
-| `default` | any | Начальное значение, если в `section.data` пусто | да |
+| `default` | any | Начальное значение, если в данных секции пусто | да |
 | `active` | bool | `false` скрывает поле в инспекторе | да |
 | `required` | bool | Пустое значение блокирует publish (`SectionValidator`) | да |
 
 **Декоративные типы** (`heading`, `dependent`): в data не пишутся. Доступны `tab`, `width`, `label`.
 
-**Fieldset (Pro):** собственного ключа в data нет. Вложенные `fields` — плоские ключи в `section.data`. См. [fieldset.md](fieldset).
+**Fieldset (Pro):** собственного ключа в data нет. Вложенные `fields` попадают в данные секции как плоские ключи. См. [fieldset.md](fieldset).
 
 Остальные ключи схемы (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) CMP не затирает: `sectionTypeForm.ts` сохраняет их в passthrough `extra`.
 
 ### Pro: responsive
 
-На типах `text`, `textarea`, `url`, `number`, `currency`, `richtext`, `slug` при `responsive: true` (или уже сохранённой карте breakpoints) в `section.data`:
+На типах `text`, `textarea`, `url`, `number`, `currency`, `richtext`, `slug` при `responsive: true` (или уже сохранённой карте breakpoints) в данных секции:
 
 ```json
 {
@@ -69,7 +69,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). На фронте — `readResponsiveValue()` / capability `responsive`.
+Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). На фронте читайте значения через `readResponsiveValue()` или capability `responsive`.
 
 ### Пример meta в JSON
 
@@ -102,7 +102,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-В `section.data` — массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Подробнее: [repeater.md](repeater).
+В данных секции лежит массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Подробнее: [repeater.md](repeater).
 
 ## showWhen
 
@@ -115,7 +115,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Условие сравнивает поле `showWhen.field` со значением `showWhen.value`. Массив в `value` означает «любое из». Код: `fieldVisibility.ts`. Ещё примеры: [types.md](types#составные-сценарии).
+Поле видно, если `showWhen.field` совпало с `showWhen.value`. Массив в `value` значит «любое из значений». Код: `fieldVisibility.ts`. Ещё примеры: [types.md](types#составные-сценарии).
 
 ## optionsSource
 
@@ -125,11 +125,11 @@ Whitelist классов в `FieldOptionsService` (`modResource`, `modTemplate`,
 
 `SectionRenderer` передаёт `section.data` в chunk как плейсхолдеры. Дополнительно в properties: `id`, `type`, `settings`.
 
-При **save draft** `SectionFieldEnricher` дополняет:
+При сохранении черновика `SectionFieldEnricher` дополняет:
 
-- **image / file / gallery** — media-объекты (`filename`, `extension`, `width`, `height`, `size`, `type`, …)
-- **video** — `embed_url`, `provider`, `watch_url`; плоские `video_*` при `type=video` или имени поля с `video`
-- **map** — `embed_url`, `watch_url`; плоские `map_*`
+- **image / file / gallery**: media-объекты (`filename`, `extension`, `width`, `height`, `size`, `type`, …)
+- **video**: `embed_url`, `provider`, `watch_url`. Плоские `video_*` при `type=video` или имени поля с `video`
+- **map**: `embed_url`, `watch_url`. Плоские `map_*`
 
 В chunk для media используйте `{$photo.url}`, не голую строку path. См. [image.md](image), [video.md](video).
 

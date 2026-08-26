@@ -1,6 +1,6 @@
 ---
 title: System settings
-description: pagebuilder namespace keys — paths, preview, resource tabs, and Collections
+description: "pagebuilder namespace keys: paths, preview, resource tabs, and Collections"
 ---
 # System settings
 
@@ -28,7 +28,7 @@ On install or upgrade, transport adds missing keys. Existing values are not over
 | `pagebuilder_resource_tab_enabled` | boolean | `0` | “Sections” tab on the resource form |
 | `pagebuilder_resource_tab_parents` | text | empty | Parent IDs comma-separated. Empty when enabled = all resources |
 | `pagebuilder_resource_tab_index` | number | `-1` | “Sections” tab position: `0` first, `1` second, `-1` last |
-| `pagebuilder_resource_tables_tab_enabled` | boolean | `0` | “Tables” tab (resource data tables) |
+| `pagebuilder_resource_tables_tab_enabled` | boolean | `0` | “Tables” tab (tabular resource data) |
 | `pagebuilder_resource_tables_tab_index` | number | `-1` | “Tables” tab position |
 
 ## Collections (CMP)
@@ -38,7 +38,27 @@ On install or upgrade, transport adds missing keys. Existing values are not over
 | `pagebuilder_collections_enabled` | boolean | `0` | Dynamic multi-tab from CMP Collections |
 | `pagebuilder_collections_modx_bridge_enabled` | boolean | `0` | Tab type `modx_collections` |
 
-Enable only if you use Collections and configured tab config in the PageBuilder CMP.
+Enable only if you use Collections and configured tab config in the PageBuilder CMP. Details: [CMP → Collections](cmp#collections).
+
+## Tabular resource data
+
+Resource **Tables** tab (`pagebuilder_resource_tables_tab_enabled`) or tab type `table` in Collections.
+
+| Processor | Purpose |
+| --- | --- |
+| `mgr/datatable/list` | Resource tables |
+| `mgr/datatable/rows/list` | Rows: `search`, `page`, `limit`, `filters` |
+| `mgr/datatable/rows/save` / `remove` | Row CRUD |
+
+Column filter JSON: `{ "price": { "op": "gte", "value": "10" } }`. Operators: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`.
+
+On the front: `PageBuilderTableRows` snippet, [data_table](sections/data_table) section. Details: [Developer](developer#resource-data-tables).
+
+## Editor
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `pagebuilder_fake_enabled` | boolean | `0` | **Fake** button in the section inspector: fills fields with deterministic demo data (`mgr/section/fake`) |
 
 ## Snippet relation
 

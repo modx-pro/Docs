@@ -1,6 +1,6 @@
 ---
 title: "Structured content"
-description: "Editor.js content — headings, lists, quotes, media (Pro)"
+description: "Editor.js content: headings, lists, quotes, media (Pro)"
 ---
 
 # Structured content
@@ -13,24 +13,24 @@ Alternative to **Rich text** for long reads. Block editor: H2–H4, lists, quote
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Editor.js instead of richtext
 
 - Editor.js blocks: headings, lists, quotes without hand HTML
-- JSON in `section.data`, HTML from chunk on output
+- JSON in the section data, HTML from chunk on output
 - Better than richtext for long posts
 
-## When to use
+## Long-form content
 
-- **Blog post** inside page builder
-- **Longread** on a landing page
-- **News** with rich layout without hand-written HTML
+- Blog post inside page builder
+- Longread on a landing page
+- News with rich layout without hand-written HTML
 
 ## Page examples
 
 - Blog post in page builder: [Hero](hero) → [Structured content](structured_content) → [CTA](cta)
 - News: [Structured content](structured_content) → [Gallery](gallery)
 
-## Inspector tips
+## Editor.js field
 
 **editorjs** stores block JSON. The chunk renders HTML inside `.pb-richtext__content`.
 
@@ -65,16 +65,16 @@ Type [editorjs](../fields/editorjs#output-in-section-data). Required. Block edit
 
 HTML from `editorjs` inside `.pb-richtext__content`.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "body": {
     "json": {},
-    "html": "<p>Структурированный контент Editor.js</p>"
+    "html": "<p>Structured Editor.js content</p>"
   }
 }
 ```

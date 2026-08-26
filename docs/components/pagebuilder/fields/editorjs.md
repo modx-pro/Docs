@@ -1,6 +1,6 @@
 ---
 title: "editorjs"
-description: "Объект json и html из Editor.js в section.data"
+description: "Объект json и готовый html из Editor.js"
 ---
 
 # Поле editorjs
@@ -11,20 +11,17 @@ description: "Объект json и html из Editor.js в section.data"
 
 ## Зачем этот тип
 
-- Блочный контент с заголовками, списками, embed
-- html готов для chunk, json для кастомного рендера
-- Структура предсказуемее произвольного HTML
+Блочный контент с заголовками, списками, embed. `html` готов для chunk, `json` для кастомного рендера. Структура предсказуемее произвольного HTML.
 
 ## Когда использовать
 
 - Длинная статья или landing с блоками
 - Контент, который потом парсят по json
-- Альтернатива richtext для block-first UX
+- Альтернатива richtext, когда редактор работает блоками
 
 ## Советы
 
-- В chunk обычно `{$body.html}`, не raw json
-- Простой HTML без блоков быстрее в [richtext](richtext)
+В chunk обычно `{$body.html}`, не сырой json. Простой HTML без блоков быстрее в [richtext](richtext).
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Объект json и html из Editor.js в section.data"
 
 Объект `{ json, html }`; на фронте обычно `html`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `body` в `section.data`:
+Ключ `body` в данных секции:
 
 ```json
 {
@@ -72,7 +69,7 @@ description: "Объект json и html из Editor.js в section.data"
 }
 ```
 
-- В chunk обычно используют `html`; `json` — сырой Editor.js.
+- В chunk обычно используют `html`; `json`: сырой Editor.js.
 
 ## Пример в chunk
 
@@ -82,7 +79,7 @@ description: "Объект json и html из Editor.js в section.data"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -90,7 +87,7 @@ description: "Объект json и html из Editor.js в section.data"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно: в data `{ json, html }`; в chunk обычно `{$field.html}`.

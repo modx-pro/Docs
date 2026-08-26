@@ -9,24 +9,24 @@ Social proof: client quote, name, role, and avatar. Multiple testimonials render
 
 <!-- ![Testimonials](/components/pagebuilder/screenshots/sections/testimonials.png) -->
 
-## Why this section
+## What testimonials add
 
 - Quote, name, and photo in one card
 - Multiple reviews without a custom snippet
 - Pairs well with stats and CTA blocks
 
-## When to use
+## Typical placement
 
-- **Homepage** — trust block after product copy
-- **Landing page** — reviews before the lead form
-- **About page**
+- Homepage: trust block after product copy
+- Landing page: reviews before the lead form
+- About page
 
 ## Page examples
 
 - SaaS: [Features](features) → [Testimonials](testimonials) → [Pricing](pricing_table)
 - Services: [Cards](cards) → [Testimonials](testimonials) → [Contact form](contact_form)
 
-## Inspector tips
+## Fields in the inspector
 
 **Testimonials** repeater: **Quote**, **Name**, **Role**, **Photo**. Photo is optional but helps trust.
 
@@ -70,19 +70,19 @@ Each row:
 
 `pb-testimonials` grid: blockquote, author line, avatar partial.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
-      "quote": "Отличный сервис, рекомендую коллегам.",
-      "name": "Иван Петров",
-      "role": "Директор, ООО Пример",
+      "quote": "Great service, I recommend it to colleagues.",
+      "name": "Jane Doe",
+      "role": "Director, Example LLC",
       "avatar": {
         "url": "assets/images/example.jpg",
         "id": 12,

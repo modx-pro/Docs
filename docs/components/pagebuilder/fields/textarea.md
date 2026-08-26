@@ -1,6 +1,6 @@
 ---
 title: "textarea"
-description: "Многострочный plain-текст без HTML в section.data"
+description: "Многострочный plain-текст без HTML"
 ---
 
 # Поле textarea
@@ -11,20 +11,17 @@ description: "Многострочный plain-текст без HTML в section
 
 ## Зачем этот тип
 
-- Несколько строк без риска случайной HTML-разметки
-- Легче text для описаний и цитат
-- Проще richtext, когда форматирование не нужно
+Несколько строк без риска случайной HTML-разметки. Проще [text](text) для описаний и цитат, легче [richtext](richtext), когда форматирование не нужно.
 
 ## Когда использовать
 
 - Анонс, лид, короткое описание без списков
-- Текст FAQ-ответа, если HTML не нужен
+- Ответ FAQ без HTML
 - Комментарий или служебная заметка редактора
 
 ## Советы
 
-- Длинный форматированный текст лучше в [richtext](richtext) или [editorjs](editorjs)
-- Pro: `responsive` работает так же, как у text
+Длинный форматированный текст: [richtext](richtext) или [editorjs](editorjs). Pro: `responsive` как у text.
 
 ## Похожие типы
 
@@ -49,9 +46,9 @@ description: "Многострочный plain-текст без HTML в section
 
 Многострочная строка.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `intro` в `section.data`:
+Ключ `intro` в данных секции:
 
 ```json
 {
@@ -73,7 +70,7 @@ description: "Многострочный plain-текст без HTML в section
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -81,10 +78,10 @@ description: "Многострочный plain-текст без HTML в section
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): при `responsive: true` в данных секции: ключи `desktop`, `tablet`, `mobile` вместо скаляра.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

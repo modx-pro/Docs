@@ -5,7 +5,7 @@ description: "Встраивание ролика по URL (YouTube, Vimeo, Rutu
 
 # Видео
 
-Responsive iframe по ссылке на ролик. Поддерживаются популярные хостинги; URL разбирает `VideoEmbedResolver`.
+Responsive iframe по ссылке на ролик. Поддерживаются популярные хостинги. URL разбирает `VideoEmbedResolver`.
 
 <!-- ![Видео](/components/pagebuilder/screenshots/sections/video.png) -->
 
@@ -13,24 +13,24 @@ Responsive iframe по ссылке на ролик. Поддерживаютс�
 Требуется PageBuilder Pro.
 :::
 
-## Зачем эта секция
+## URL вместо embed-кода
 
 - URL вместо embed-кода в richtext
 - `VideoEmbedResolver` подставляет iframe под YouTube, Vimeo, Rutube
 - Responsive-обёртка в chunk
 
-## Где применять
+## Типичные места
 
-- **Обзор продукта** на главной
-- **Инструкция** на странице поддержки
-- **Промо-ролик** на лендинге
+- В обзоре продукта на главной
+- В инструкции на странице поддержки
+- Для промо-ролика на лендинге
 
 ## Примеры страниц
 
 - Продукт: [Hero](hero) → [Видео](video) → [Features](features)
 - Обучение: [Текст](richtext) → [Видео](video) → [FAQ](faq)
 
-## Что заполнить
+## URL видео
 
 Вставьте полный **URL видео** из адресной строки браузера, не embed-код. Заголовок секции необязателен.
 
@@ -59,13 +59,13 @@ Responsive iframe по ссылке на ролик. Поддерживаютс�
 
 ### URL видео (`video`)
 
-Тип [video](../fields/video#vyvod-v-section-data). Обязательное. URL ролика. На сайте — embed через VideoEmbedResolver.
+Тип [video](../fields/video#vyvod-v-section-data). Обязательное. URL ролика. На сайте. embed через VideoEmbedResolver.
 
 ## Что видит посетитель
 
 Iframe в блоке `pb-video`. Соотношение сторон сохраняется в CSS темы.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
 Пример JSON после сохранения секции. Для media, video и map значения на выводе могут быть обогащены:
 

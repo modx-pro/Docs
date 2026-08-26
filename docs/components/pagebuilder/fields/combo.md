@@ -11,9 +11,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 ## Зачем этот тип
 
-- Список из БД: modResource, modTemplate и другие классы из whitelist
-- Загрузка через `mgr/field/options` и событие `pbOnFieldValues`
-- Поиск в выпадающем списке без модального окна relation
+Список из БД: modResource, modTemplate и другие классы из whitelist. Загрузка через `mgr/field/options` и событие `pbOnFieldValues`. Поиск в выпадающем списке без модального окна relation.
 
 ## Когда использовать
 
@@ -23,8 +21,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 ## Советы
 
-- Нужен ресурс с pagetitle в data → [relation](relation)
-- Несколько значений → [multicombo](multicombo)
+Нужен ресурс с pagetitle в data: [relation](relation). Несколько значений: [multicombo](multicombo).
 
 ## Похожие типы
 
@@ -51,9 +48,9 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 Выбранное значение (строка или id).
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `related` в `section.data` — строка или id из `optionsSource`:
+Ключ `related` в данных секции: строка или id из `optionsSource`:
 
 ```json
 {
@@ -69,7 +66,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -77,7 +74,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

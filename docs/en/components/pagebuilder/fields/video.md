@@ -5,15 +5,13 @@ description: "Video object with enrich embed_url provider and watch_url"
 
 # Field video
 
-Layer: **Pro**.
+Layer: **Free**.
 
 <!-- ![video](/components/pagebuilder/screenshots/fields/video.png) -->
 
 ## Why this type
 
-- YouTube, Vimeo, and upload in one field
-- save draft enrich fills embed and provider
-- Flat video_* when type=video or name contains video
+YouTube, Vimeo, and upload in one field. Save draft enrich fills embed and provider. Flat video_* when type=video or name contains video.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Chunk should use enrich fields, not raw url only
-- Frame gallery is [gallery](gallery), not video
+Chunk should use enrich fields, not raw url only. Frame gallery is [gallery](gallery), not video.
 
 ## Similar types
 
@@ -37,8 +34,8 @@ Layer: **Pro**.
 {
   "name": "video",
   "type": "video",
-  "label": "Видео",
-  "tab": "Контент",
+  "label": "Video",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,11 +43,11 @@ Layer: **Pro**.
 
 ## Value
 
-Объект `{ url, poster }`. `poster` — media-объект как у `image`. Enrich добавляет `embed_url`, `provider`, `watch_url`.
+Object `{ url, poster }`. `poster` is a media object like `image`. Enrich adds `embed_url`, `provider`, and `watch_url`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `video` в `section.data` после save enrich (`SectionFieldEnricher` + `VideoEmbedResolver`):
+Key `video` in the section data after save enrich (`SectionFieldEnricher` + `VideoEmbedResolver`):
 
 ```json
 {
@@ -79,9 +76,9 @@ Layer: **Pro**.
 }
 ```
 
-- Плоские `video_embed_url`, `video_provider`, `video_watch_url` добавляются, если имя поля содержит `video` или секция имеет `type=video`.
+- Flat `video_embed_url`, `video_provider`, and `video_watch_url` are added when the field name contains `video` or the section has `type=video`.
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <iframe src="{$video.embed_url|escape}" title="Video"></iframe>
@@ -90,27 +87,27 @@ Layer: **Pro**.
 
 ## Notes
 
-Плоские `video_embed_url` / `video_provider` / `video_watch_url` — только для секции `type=video` или имени поля с «video».
+Flat `video_embed_url` / `video_provider` / `video_watch_url` apply only when the section has `type=video` or the field name contains "video".
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `poster` — вложенный media-объект. Enrich: `embed_url`, `provider`, `watch_url`.
+- Also: `poster`: nested media object. Enrich: `embed_url`, `provider`, `watch_url`.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Manager and events](../integration)

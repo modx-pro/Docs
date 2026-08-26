@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Familiar UX for MODX editors
-- Boolean in section.data
-- Compact than radio for simple yes/no
+Familiar UX for MODX editors. Boolean in the section data. Compact than radio for simple yes/no.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Switch UI use [toggle](toggle)
-- Multiple labeled options need [select](select), not yesno
+Switch UI use [toggle](toggle). Multiple labeled options need [select](select), not yesno.
 
 ## Similar types
 
@@ -37,8 +34,8 @@ Layer: **Free**.
 {
   "name": "visible",
   "type": "yesno",
-  "label": "Показывать",
-  "tab": "Контент",
+  "label": "Show",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,11 +43,11 @@ Layer: **Free**.
 
 ## Value
 
-Булево.
+Boolean.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `visible` в `section.data`:
+Key `visible` in the section data:
 
 ```json
 {
@@ -58,7 +55,7 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {if $visible}<div class="block">…</div>{/if}
@@ -66,22 +63,22 @@ Layer: **Free**.
 
 ## Notes
 
-Алиасы: `boolean`, `listyesno`, `list_yes_no`.
+Aliases: `boolean`, `listyesno`, `list_yes_no`.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

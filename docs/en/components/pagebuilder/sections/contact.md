@@ -9,24 +9,24 @@ Simple contact block: clickable phone and email (`tel:` / `mailto:`), optional s
 
 <!-- ![Contact](/components/pagebuilder/screenshots/sections/contact.png) -->
 
-## Why this section
+## What the contact block adds
 
 - Phone and email tap-to-call on mobile
 - No form when direct contact is enough
 - Smaller footprint than [Contact with map](contact_map)
 
-## When to use
+## Where to place
 
-- **Landing footer** — how to reach you
-- **Contact page** when you do not need a map
-- **Next to a form** — alternate contact channel
+- Landing footer: how to reach you
+- Contact page when you do not need a map
+- Next to a form: alternate contact channel
 
 ## Page examples
 
 - Landing: … → [CTA](cta) → [Contact](contact)
 - Service one-pager: [FAQ](faq) → [Contact](contact)
 
-## Inspector tips
+## Minimum for output
 
 Fill at least **Phone** or **Email**. The button behaves like the CTA section.
 
@@ -77,17 +77,17 @@ Type [url](../fields/url#output-in-section-data). Optional.
 
 `pb-contact` with tel:/mailto: links and optional CTA button.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
-  "text": "Дополнительный текст под заголовком.",
+  "title": "Section title",
+  "text": "Supporting text under the title.",
   "phone": "+7 (999) 123-45-67",
   "email": "hello@example.com",
-  "button_label": "Подробнее",
+  "button_label": "Learn more",
   "button_url": "https://example.com/action"
 }
 ```

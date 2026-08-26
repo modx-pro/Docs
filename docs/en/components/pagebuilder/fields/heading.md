@@ -1,6 +1,6 @@
 ---
 title: "heading"
-description: "Decorative field group heading with no section.data key"
+description: "Decorative field group heading with no section data key"
 ---
 
 # Field heading
@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Breaks long inspector into blocks
-- No key in section.data
-- tab and width work like normal fields
+Breaks long inspector into blocks. No key in the section data. Tab and width work like normal fields.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- name can be technical, e.g. `_h`
-- Nested fields with legend use [fieldset](fieldset) (Pro)
+Name can be technical, e.g. `_h`. Nested fields with legend use [fieldset](fieldset) (Pro).
 
 ## Similar types
 
@@ -37,35 +34,35 @@ Layer: **Free**.
 {
   "name": "_h",
   "type": "heading",
-  "label": "Группа полей",
-  "tab": "Контент",
+  "label": "Field group",
+  "tab": "Content",
   "width": 100
 }
 ```
 
 ## Value
 
-Не попадает в `section.data`.
+Not stored in the section data.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-В `section.data` не сохраняется.
+Not stored in the section data.
 
-## Chunk example в chunk
+## Chunk example
 
-Не используется в chunk.
+Not used in the chunk.
 
 ## Common properties
 
-Значение в `section.data` **не сохраняется**.
+The value is **not** stored in the section data.
 
-| Ключ | Роль | CMP |
+| Key | Role | CMP |
 | --- | --- | --- |
-| `tab` | Группа в инспекторе | да |
-| `width` | Ширина подписи, 25–100 (%) | да |
-| `label` | Текст подзаголовка / маркера | да |
+| `tab` | Group in the inspector | yes |
+| `width` | Label width, 25–100 (%) | yes |
+| `label` | Subtitle / marker text | yes |
 
-См. [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

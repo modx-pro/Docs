@@ -5,26 +5,23 @@ description: "Массив значений из статического спи
 
 # Поле multiselect
 
-Слой: **Pro**.
+Слой: **Free**.
 
 <!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.png) -->
 
 ## Зачем этот тип
 
-- Несколько options с поиском в выпадающем списке
-- Pro capability advanced-fields
-- Тот же массив options, что у select
+Несколько значений из статического `options` с поиском в выпадающем списке. Тот же контракт options, что у [select](select).
 
 ## Когда использовать
 
-- Несколько theme tags из фиксированного списка
-- Feature flags из enum без checkboxgroup
+- Несколько theme-тегов из фиксированного списка
+- Флаги из enum без [checkboxgroup](checkboxgroup)
 - Несколько значений без xPDO
 
 ## Советы
 
-- Динамический список из БД → [multicombo](multicombo) или [tablemulticombo](tablemulticombo)
-- Короткий список на экране оставьте [checkboxgroup](checkboxgroup)
+Динамический список из БД: [multicombo](multicombo) или [tablemulticombo](tablemulticombo). Короткий список на экране: [checkboxgroup](checkboxgroup).
 
 ## Похожие типы
 
@@ -49,9 +46,9 @@ description: "Массив значений из статического спи
 
 Массив значений.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `roles` в `section.data` — массив значений:
+Ключ `roles` в данных секции: массив значений:
 
 ```json
 {
@@ -72,7 +69,7 @@ description: "Массив значений из статического спи
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -80,7 +77,7 @@ description: "Массив значений из статического спи
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
@@ -89,4 +86,4 @@ description: "Массив значений из статического спи
 
 - [Справочник типов](types)
 - [Обзор полей](overview)
-- [Pro в менеджере](../integration)
+- [Менеджер и события](../integration)

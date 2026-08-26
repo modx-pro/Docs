@@ -11,25 +11,22 @@ description: "Строка с маской ввода IMask в инспекто�
 
 ## Зачем этот тип
 
-- Телефон, ИНН, card pattern без post-validation только
-- mask или preset в schema
-- Pro advanced-fields
+Телефон, ИНН, шаблон карты: маска на вводе, не только post-validation. `mask` или preset в schema. Pro advanced-fields.
 
 ## Когда использовать
 
-- Телефон в contact_form fields
+- Телефон в полях contact_form
 - SKU или serial с фиксированным форматом
-- Promo code pattern
+- Шаблон промокода
 
 ## Советы
 
-- Чистое число без маски возьмите [number](number)
-- Значение строка с literal chars маски по preset
+Чистое число без маски: [number](number). Значение строка с символами маски по preset.
 
 ## Похожие типы
 
 - [text](text) без ограничения формата
-- [url](url) для ссылок, не phone mask
+- [url](url) для ссылок, не телефонной маски
 
 ## Настройка
 
@@ -52,9 +49,9 @@ description: "Строка с маской ввода IMask в инспекто�
 
 Строка по маске.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `phone` в `section.data` — строка по маске:
+Ключ `phone` в данных секции: строка по маске:
 
 ```json
 {
@@ -74,7 +71,7 @@ description: "Строка с маской ввода IMask в инспекто�
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -82,7 +79,7 @@ description: "Строка с маской ввода IMask в инспекто�
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно: `mask` или `maskOptions` (JSON IMask).

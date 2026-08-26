@@ -9,17 +9,17 @@ The first block below the site header. Visitors see a title, short text, and a l
 
 <!-- ![Hero](/components/pagebuilder/screenshots/sections/hero.png) -->
 
-## Why this section
+## Why you need a hero
 
 - Editors change title, text, and button without editing Fenom
 - Background and alignment come from inspector fields, not template CSS
 - Chunk `pagebuilder_hero` ships with `pb-hero` markup
 
-## When to use
+## Where to place
 
-- **Homepage** — main offer and primary action (catalog, promo)
-- **Landing page** for a service, course, or event
-- **Promo page** with a single call to action: sign up, download, request a quote
+- Homepage: main offer and primary action (catalog, promo)
+- Landing page for a service, course, or event
+- Promo page with a single call to action: sign up, download, request a quote
 
 ## Page examples
 
@@ -27,7 +27,7 @@ The first block below the site header. Visitors see a title, short text, and a l
 - Store: [Hero](hero) → [Products grid](products_grid) → [Testimonials](testimonials) → [Contact](contact)
 - Service: [Hero](hero) → [Cards](cards) → [FAQ](faq) → [Contact form](contact_form)
 
-## Inspector tips
+## Minimum for output
 
 **Title** is required. The button renders only when both **Button label** and **Button URL** are set. **Alignment** switches text between left and center.
 
@@ -78,15 +78,15 @@ Type [select](../fields/select#output-in-section-data). Optional. Dropdown with 
 
 Renders `pb-hero` with title, description, CTA link (`pb-button`), and optional background via the image partial.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
-  "description": "Короткое описание блока для первого экрана.",
-  "button_label": "Подробнее",
+  "title": "Section title",
+  "description": "Short block description for the first screen.",
+  "button_label": "Learn more",
   "button_url": "https://example.com/action",
   "background": {
     "url": "assets/images/example.jpg",

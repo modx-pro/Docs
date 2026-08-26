@@ -11,9 +11,7 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 
 ## Зачем этот тип
 
-- Модальный picker с поиском, не ручной id
-- searchAction для ms3 и кастомных connector
-- В data только id и pagetitle, не весь resource
+Модальный picker с поиском, не ручной id. `searchAction` для ms3 и кастомных connector. В data только `id` и `pagetitle`, не весь resource.
 
 ## Когда использовать
 
@@ -23,13 +21,12 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 
 ## Советы
 
-- Несколько ресурсов → [multirelation](multirelation)
-- Только id из xPDO-класса без модалки → [combo](combo)
+Несколько ресурсов: [multirelation](multirelation). Только id из xPDO без модалки: [combo](combo).
 
 ## Похожие типы
 
 - [multirelation](multirelation) для списка ресурсов
-- [resourcelist](resourcelist) — alias того же picker UX
+- [resourcelist](resourcelist): alias того же модального picker
 
 ## Настройка
 
@@ -49,9 +46,9 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 
 Объект `{ id, pagetitle, … }`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `product` в `section.data` (picker сохраняет только выбранное):
+Ключ `product` в данных секции (picker сохраняет только выбранное):
 
 ```json
 {
@@ -74,7 +71,7 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -82,7 +79,7 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно: `searchAction` для кастомного connector (напр. ms3).

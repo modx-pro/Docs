@@ -5,30 +5,27 @@ description: "Alias relation с тем же модальным picker и объ�
 
 # Поле resourcelist
 
-Слой: **Pro**.
+Слой: **Free**.
 
 <!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.png) -->
 
 ## Зачем этот тип
 
-- Семантика «выбор страницы» в label CMP
-- Поведение и data как у relation
-- searchAction и модальный поиск из коробки
+Семантика «выбор страницы» в label CMP. Поведение и data совпадают с [relation](relation): `searchAction` и модальный поиск из коробки.
 
 ## Когда использовать
 
-- Поле page или blog_parent в секции
-- Когда имя типа должно читаться редакторам как список страниц
-- Legacy-схемы с type resourcelist
+- Поле `page` или `blog_parent` в секции
+- Когда тип в схеме должен читаться редакторам как «список страниц»
+- Legacy-схемы с `type: resourcelist`
 
 ## Советы
 
-- Функционально эквивалент [relation](relation)
-- Массив страниц → [multirelation](multirelation)
+Функционально эквивалент [relation](relation). Несколько страниц: [multirelation](multirelation).
 
 ## Похожие типы
 
-- [relation](relation) — тот же picker
+- [relation](relation): тот же picker
 - [multirelation](multirelation) для нескольких страниц
 
 ## Настройка
@@ -48,9 +45,9 @@ description: "Alias relation с тем же модальным picker и объ�
 
 Как у `relation`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `page` в `section.data` (picker сохраняет только выбранное):
+Ключ `page` в данных секции (picker сохраняет только выбранное):
 
 ```json
 {
@@ -73,7 +70,7 @@ description: "Alias relation с тем же модальным picker и объ�
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -81,7 +78,7 @@ description: "Alias relation с тем же модальным picker и объ�
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
@@ -90,4 +87,4 @@ description: "Alias relation с тем же модальным picker и объ�
 
 - [Справочник типов](types)
 - [Обзор полей](overview)
-- [Pro в менеджере](../integration)
+- [Менеджер и события](../integration)

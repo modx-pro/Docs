@@ -9,24 +9,24 @@ A flexible grid: each card has a title and short text. No icons or buttons, just
 
 <!-- ![Cards](/components/pagebuilder/screenshots/sections/cards.png) -->
 
-## Why this section
+## When to use cards
 
 - Flexible grid without icons or prices
 - Works for services, steps, short points
 - Free layer, no Pro required
 
-## When to use
+## Scenarios
 
-- **Services** — three to six offerings
-- **Process steps** or roadmap
-- **Simple benefits** without the Pro Features icons
+- Services: three to six offerings
+- Process steps or roadmap
+- Simple benefits without the Pro Features icons
 
 ## Page examples
 
 - Services: [Hero](hero) → [Cards](cards) → [FAQ](faq) → [CTA](cta)
 - Process: [Rich text](richtext) → [Cards](cards) → [Testimonials](testimonials)
 
-## Inspector tips
+## How to fill the repeater
 
 **Cards** repeater: **Title** and **Text** per row. Reorder rows in the inspector.
 
@@ -68,18 +68,18 @@ Each row:
 
 `pb-cards` grid with title + text items.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
-      "title": "Заголовок секции",
-      "text": "Дополнительный текст под заголовком."
+      "title": "Section title",
+      "text": "Supporting text under the title."
     }
   ]
 }

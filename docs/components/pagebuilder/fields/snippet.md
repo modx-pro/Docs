@@ -11,20 +11,17 @@ description: "Объект name выбранного modSnippet для вызо�
 
 ## Зачем этот тип
 
-- Picker snippet name для `[[!{$snippet.name}]]`
-- Pro dynamic processor hook in section
-- Отделяет snippet call от chunk include
+Выбор имени сниппета для `[[!{$snippet.name}]]`. Pro: динамический hook processor в секции. Отделяет вызов сниппета от include chunk.
 
 ## Когда использовать
 
 - Секция делегирует render сниппету
-- Editor picks from allowed snippets list
-- Wrapper around legacy MODX snippet
+- Редактор выбирает из разрешённого списка сниппетов
+- Обёртка вокруг legacy MODX snippet
 
 ## Советы
 
-- Partial template include это [chunk](chunk)
-- Params snippet задаются отдельными полями или static in chunk
+Include partial-шаблона: [chunk](chunk). Параметры сниппета задаются отдельными полями или статически в chunk.
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Объект name выбранного modSnippet для вызо�
 
 Объект `{ name }`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `snippet` в `section.data`:
+Ключ `snippet` в данных секции:
 
 ```json
 {
@@ -68,7 +65,7 @@ description: "Объект name выбранного modSnippet для вызо�
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -76,7 +73,7 @@ description: "Объект name выбранного modSnippet для вызо�
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

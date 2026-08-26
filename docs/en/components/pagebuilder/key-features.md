@@ -1,19 +1,19 @@
 ---
 title: Key features
-description: PageBuilder section builder for MODX 3 — editor, draft, catalog, Pro, tables, and UTM
+description: PageBuilder section builder for MODX 3. Editor, draft, catalog, Pro, tables, and UTM
 ---
 
 # Key features
 
-PageBuilder stores a page as a set of **sections** in the sidecar table `pb_pages`. Editors assemble landings in the **Sections** tab; developers extend type catalog, fields, and output via chunks and `pbOn*` events. The component does not overwrite `modResource.content`.
+PageBuilder stores a page as a set of **sections** in a separate table `pb_pages`. Editors assemble landings and inner pages in the **Sections** tab. Developers extend the type catalog, fields, and output via chunks and `pbOn*` events. The component does not overwrite `modResource.content`.
 
 ## Who it is for
 
 | Role | What you get |
 | --- | --- |
 | **Editor** | Drag-and-drop sections, field inspector, draft, preview, publish without editing the template |
-| **Junior developer** | 34 built-in sections, 50 field types, JSON schema and Fenom in chunks without custom Vue |
-| **Senior developer** | Events, custom types, resource data tables, UTM, miniShop3 and Collections integration |
+| **Beginner developer** | 34 built-in sections, 50 field types, JSON schema and Fenom in chunks without custom Vue |
+| **Experienced developer** | Events, custom section types, tabular resource data, UTM, miniShop3 and Collections integration |
 
 ## Page builder
 
@@ -36,11 +36,11 @@ On the site, `[[!PageBuilder]]` renders published sections only.
 | **Free** | 11 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [faq](sections/faq), [cta](sections/cta) |
 | **Pro** | 23 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
 
-Each section has a catalog page: why use it, where it fits, inspector fields, related sections.
+Each section has a catalog page: what the block is for, where to use it, what to fill in the inspector, and related sections.
 
 ### 4. Inspector and 50 field types
 
-Field schema lives in section JSON. **26 Free types** (text, repeater, editorjs, image…) and **24 Pro** (relation, gallery, combo, embeddedTable…). Every type has a reference page with **Why**, **When to use**, and **Tips**.
+Field schema lives in section JSON: **30 Free types** (text, repeater, editorjs, image, multiselect, video…) and **20 Pro** (relation, gallery, combo, embeddedTable…). Each type has a reference page with **Why**, **When to use**, and **Tips** sections.
 
 See [Fields overview](fields/overview) and [Field types reference](fields/types).
 
@@ -48,21 +48,22 @@ See [Fields overview](fields/overview) and [Field types reference](fields/types)
 
 The `pagebuilderpro` transport adds capabilities and extends the editor:
 
-- **Section library** — save a block, insert on another resource, edit linked copy
-- **Versions** — document snapshots, diff, rollback
-- **Presets** — ready-made section sets for typical landings
-- **Responsive fields** — different values for desktop / tablet / mobile
-- **Advanced fields** — relation, map, table, dependent, and more
+- Section library: save a block, insert on another resource, edit linked copy
+- Versions: document snapshots, diff, rollback
+- Presets: ready-made section sets for typical landings
+- Breakpoint fields: different values for desktop, tablet, and mobile
+- Advanced fields: 20 types in the CMP (relation, map, table, dependent, and more; capability `advanced-fields`)
+- Global CMP basket: restore or purge deleted sections and table rows (capability `basket`)
 
 Commerce sections (`products_grid`, `curated_products`…) require [miniShop3](/en/components/minishop3/).
 
-See [Manager and events → PageBuilder Pro](integration#pagebuilder-pro).
+Details: [PageBuilder Pro](pro). [Agent API](agent-api) for scripts and agents.
 
 ## Data and integrations
 
-### 5. Resource data tables
+### 5. Tabular resource data
 
-The resource **Tables** tab stores rows in `pb_*` (filters, pagination, CSV/JSON import, row trash). The [data_table](sections/data_table) section and `PageBuilderTableRows` snippet render data on the front. The [embeddedTable](fields/embeddedTable) field loads a table by `table_key` without inline rows in JSON.
+The resource **Tables** tab stores rows in `pb_*`: filters, pagination, CSV/JSON import, row basket. The [data_table](sections/data_table) section and `PageBuilderTableRows` snippet render data on the site. The [embeddedTable](fields/embeddedTable) field loads a table by `table_key` without inline rows in document JSON.
 
 ### 6. UTM and contexts
 
@@ -72,15 +73,15 @@ UTM registry in CMP, section visibility rules by tags and MODX context. `\{\{utm
 
 With `pagebuilder_collections_*` enabled, Collections tabs with iframe appear on the resource form alongside the section editor.
 
-### 8. Trash and undo
+### 8. Basket and undo
 
-Per-page section trash, global CMP basket, undo/redo in the editor. Copy sections between resources without hand-editing JSON.
+Per-page basket is in Free. Global CMP basket is in PageBuilder Pro (capability `basket`). Undo and redo in the editor. Copy sections between resources without hand-editing JSON.
 
 ## Front-end output
 
 ### 9. Fenom and section chunks
 
-Each section renders through a chunk with Fenom (pdoTools). Field data is in `section.data`. MODX and Fenom examples are on field pages and in [Frontend output](frontend).
+Each section renders through a chunk with Fenom (pdoTools). Field data is in the section data. MODX and Fenom examples are on field pages and in [Frontend output](frontend).
 
 ### 10. Snippets
 
@@ -96,7 +97,7 @@ Full parameter list: [Snippets](snippets).
 
 ### 11. `pbOn*` events
 
-Plugins hook save, publish, render, section type registration, and Pro providers. Extension point without forking core.
+Plugins hook save, publish, render, section type registration, and Pro providers. Extend PageBuilder without forking core.
 
 Event list: [Manager and events → Events](integration#events).
 

@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Chunk picker by name without typing
-- `{include file="file:chunks/{$chunk.name}.tpl"}` pattern
-- Pro for dynamic partial sections
+Chunk picker by name without typing. `{include file="file:chunks/{$chunk.name}.tpl"}` pattern. Pro for dynamic partial sections.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Snippet call is [snippet](snippet) type
-- Static chunk name can be [text](text) if list is closed
+Snippet call is [snippet](snippet) type. Static chunk name can be [text](text) if list is closed.
 
 ## Similar types
 
@@ -38,7 +35,7 @@ Layer: **Pro**.
   "name": "chunk",
   "type": "chunk",
   "label": "Chunk",
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,11 +43,11 @@ Layer: **Pro**.
 
 ## Value
 
-Объект `{ name }`.
+Object `{ name }`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `chunk` в `section.data`:
+Key `chunk` in the section data:
 
 ```json
 {
@@ -60,7 +57,7 @@ Layer: **Pro**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {include file="file:chunks/{$chunk.name}.tpl"}
@@ -68,21 +65,21 @@ Layer: **Pro**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

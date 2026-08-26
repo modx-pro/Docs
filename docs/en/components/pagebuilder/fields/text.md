@@ -1,6 +1,6 @@
 ---
 title: "text"
-description: "Single-line string in section.data for titles and short labels"
+description: "Single-line text for titles and short labels"
 ---
 
 # Field text
@@ -11,20 +11,20 @@ Layer: **Free**.
 
 ## Why this type
 
-- Simplest scalar, predictable in Fenom and validation
-- Pro: `responsive` for desktop / tablet / mobile
-- Avoids an HTML editor when you only need one line
+- One string in the section data, predictable in Fenom and validation
+- Pro supports `responsive` for desktop, tablet, and mobile
+- Title or label without a full WYSIWYG editor
 
 ## When to use
 
-- Section title, subtitle, button label
-- Short alt or caption next to image
+- Section title, subtitle, or button label
+- Short alt or caption next to an image
 - Any value that fits on one line
 
 ## Tips
 
-- Use [textarea](textarea) for multi-line plain text
-- Do not store HTML in text, pick [richtext](richtext) or [editorjs](editorjs)
+- Multi-line plain text belongs in [textarea](textarea)
+- HTML goes in [richtext](richtext) or [editorjs](editorjs), not in text
 
 ## Similar types
 
@@ -37,10 +37,10 @@ Layer: **Free**.
 {
   "name": "title",
   "type": "text",
-  "label": "Заголовок",
-  "tab": "Контент",
+  "label": "Title",
+  "tab": "Content",
   "width": 100,
-  "description": "Подсказка под полем",
+  "description": "Hint under the field",
   "default": "",
   "required": true,
   "active": true
@@ -49,19 +49,19 @@ Layer: **Free**.
 
 ## Value
 
-Строка в `section.data.title`.
+String. In the example below the key is `title`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `title` в `section.data`:
+Key `title` in the section data:
 
 ```json
 {
-  "title": "Заголовок секции"
+  "title": "Section title"
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {$title|escape}
@@ -73,20 +73,20 @@ Pro: `field.responsive` (desktop / tablet / mobile).
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): with `responsive: true`, the section data uses `desktop`, `tablet`, `mobile` keys instead of a scalar.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

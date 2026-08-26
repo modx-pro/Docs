@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Select with search over embedded/custom table rows
-- combo alternative when the source is not an xPDO class
-- Requires Pro and `advanced-fields` capability
+Select with search over embedded/custom table rows. Combo alternative when the source is not an xPDO class. Requires Pro and `advanced-fields` capability.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- modResource picker → [relation](relation) or [combo](combo)
-- Multiple ids → [tablemulticombo](tablemulticombo)
+ModResource picker → [relation](relation) or [combo](combo). Multiple ids → [tablemulticombo](tablemulticombo).
 
 ## Similar types
 
@@ -37,13 +34,13 @@ Layer: **Pro**.
 {
   "name": "template",
   "type": "tablecombo",
-  "label": "Шаблон",
+  "label": "Template",
   "optionsSource": {
     "class": "modTemplate",
     "valueField": "id",
     "labelField": "templatename"
   },
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -51,11 +48,11 @@ Layer: **Pro**.
 
 ## Value
 
-Значение `valueField`.
+`valueField` value.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `template` в `section.data` — значение `valueField` из `optionsSource`:
+Key `template` in the section data: `valueField` from `optionsSource`:
 
 ```json
 {
@@ -63,7 +60,7 @@ Layer: **Pro**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {if $template}{$template}{/if}
@@ -71,21 +68,21 @@ Layer: **Pro**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

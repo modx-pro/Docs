@@ -9,24 +9,24 @@ A frequently asked questions block. Each row is a question title and answer text
 
 <!-- ![FAQ](/components/pagebuilder/screenshots/sections/faq.png) -->
 
-## Why this section
+## Why FAQ in PageBuilder
 
 - Questions edit as a repeater list, reorder by drag
 - Answers can be richtext with links and lists
 - One block handles common objections on a landing page
 
-## When to use
+## Typical pages
 
-- **Support** or knowledge base page
-- **Landing page** — objections before the form
-- **Product page** — shipping, warranty, care
+- Support or knowledge base page
+- Landing page: objections before the form
+- Product page: shipping, warranty, care
 
 ## Page examples
 
 - Landing: [Hero](hero) → [Features](features) → [FAQ](faq) → [Contact form](contact_form)
 - Product: [Rich text](richtext) → [FAQ](faq) → [Related products](related_products)
 
-## Inspector tips
+## Repeater structure
 
 **Questions** repeater: **Question** and **Answer** per row. Row order matches front-end order.
 
@@ -68,18 +68,18 @@ Each row:
 
 `pb-faq` with a question list. Markup supports accordion via `pagebuilder-sections.js` or a static list in your theme.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
-      "question": "Как оформить заказ?",
-      "answer": "<p>Добавьте товар в корзину и перейдите к оформлению.</p>"
+      "question": "How do I place an order?",
+      "answer": "<p>Add a product to the cart and proceed to checkout.</p>"
     }
   ]
 }

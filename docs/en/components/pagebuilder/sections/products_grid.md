@@ -13,26 +13,26 @@ Classic store grid: cards with image, price, badges, and add to cart. Products f
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## Storefront without a snippet
 
 - msProducts inside chunk: prices and cart from miniShop3
 - Editor changes category and limit
 - No separate snippet call on the page
 
-## When to use
+## Typical placement
 
-- **Store homepage** — category bestsellers or new items
-- **Collection landing** — one product line
-- **Promo page** — sale items in a category
+- Store homepage: category bestsellers or new items
+- Collection landing: one product line
+- Promo page: sale items in a category
 
 ## Page examples
 
 - Store homepage: [Hero](hero) → [Categories row](categories_row) → [Products grid](products_grid)
 - Collection: [Promo banner](promo_banner) → [Products grid](products_grid) → [Brands row](brands_row)
 
-## Inspector tips
+## Category and sort
 
-**Parent category** — msCategory. **Limit** and **Sort** like msProducts. Requires miniShop3.
+**Parent category**: msCategory. **Limit** and **Sort** like msProducts. Requires miniShop3.
 
 ## Similar sections
 
@@ -73,13 +73,13 @@ Type [select](../fields/select#output-in-section-data). Optional. Dropdown with 
 
 `pb-products-grid` via msProducts.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "parent": 101,
   "limit": 6,
   "sortby": "menuindex"
@@ -117,7 +117,7 @@ Fenom chunk `pagebuilderpro_products_grid`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">В этой категории пока нет товаров.</p>
+      <p class="pb-listing__empty">No products in this category yet.</p>
     {/if}
   </div>
 </section>

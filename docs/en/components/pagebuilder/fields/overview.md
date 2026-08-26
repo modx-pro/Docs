@@ -1,13 +1,13 @@
 ---
 title: "Fields overview"
-description: "Field schema in section JSON, inspector widgets, and section.data output"
+description: "Field schema in section JSON, inspector widgets, and saved section data"
 ---
 
 # Fields overview
 
-Поля описывают, что редактор заполняет в секции. Схема лежит в JSON типа (`core/components/pagebuilder/sections/{key}.json`) или собирается в CMP.
+Fields define what the editor fills in for a section. The schema lives in the section type JSON (`core/components/pagebuilder/sections/{key}.json`) or in CMP.
 
-У каждого из 50 типов своя страница в [справочнике](types): JSON **Настройка** (с meta-ключами), значение в `section.data`, блок **Вывод** (JSON после save) и пример для Fenom/HTML.
+In the [reference](types) there are 50 types. Each has its own page: JSON **Schema**, a **Section data** block (how the field looks after save), and a Fenom or HTML example. In a chunk, values come from `section.data`.
 
 <!-- ![Section inspector](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
 
@@ -17,77 +17,77 @@ description: "Field schema in section JSON, inspector widgets, and section.data 
 {
   "name": "title",
   "type": "text",
-  "label": "Заголовок",
+  "label": "Title",
   "required": true
 }
 ```
 
-| Свойство | Роль |
+| Property | Role |
 | --- | --- |
-| `name` | Ключ в `section.data` |
-| `type` | Виджет и валидация |
-| `label` | Подпись в инспекторе |
-| `required` | Обязательно при **publish** (черновик сохраняется) |
-| `options` | Статический список (select, radio, checkboxgroup, colorpalette) |
-| `optionsSource` | Динамический список из xPDO-класса |
-| `searchAction` | Connector для picker relation, напр. `mgr/ms3/products/search` |
-| `showWhen` | Условная видимость соседнего поля |
-| `fields` | Вложенная схема repeater, fieldset, jsongrid |
+| `name` | Key in the section data |
+| `type` | Widget and validation |
+| `label` | Label in the inspector |
+| `required` | Required on **publish** (draft still saves) |
+| `options` | Static list (select, radio, checkboxgroup, colorpalette) |
+| `optionsSource` | Dynamic list from an xPDO class |
+| `searchAction` | Connector for relation picker, e.g. `mgr/ms3/products/search` |
+| `showWhen` | Conditional visibility of a sibling field |
+| `fields` | Nested schema for repeater, fieldset, jsongrid |
 
-Полный цикл на примере `richtext`: [richtext.md](richtext).
+Full cycle on the `richtext` example: [richtext.md](richtext).
 
-## Common properties поля
+## Common field properties
 
-Для полей с `name`, которые попадают в `section.data` (не `heading` / `dependent`):
+For fields with `name` that are stored in the section data (not `heading` / `dependent`):
 
-| Ключ | Тип | Инспектор | CMP |
+| Key | Type | Inspector | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Поля с одним `tab` группируются под подзаголовком | да |
-| `width` | 25–100 | Ширина колонки в % (flex-строка), по умолчанию 100 | да |
-| `description` | string | Текст под подписью поля | да |
-| `default` | any | Начальное значение, если в `section.data` пусто | да |
-| `active` | bool | `false` скрывает поле в инспекторе | да |
-| `required` | bool | Пустое значение блокирует publish (`SectionValidator`) | да |
+| `tab` | string | Fields with the same `tab` are grouped under a subtitle | yes |
+| `width` | 25–100 | Column width in % (flex row), default 100 | yes |
+| `description` | string | Hint under the field label | yes |
+| `default` | any | Initial value when `section.data` is empty | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Empty value blocks publish (`SectionValidator`) | yes |
 
-**Декоративные типы** (`heading`, `dependent`): в data не пишутся. Доступны `tab`, `width`, `label`.
+**Decorative types** (`heading`, `dependent`): not written to data. `tab`, `width`, and `label` are available.
 
-**Fieldset (Pro):** собственного ключа в data нет. Вложенные `fields` — плоские ключи в `section.data`. См. [fieldset.md](fieldset).
+**Fieldset (Pro):** no own key in data. Nested `fields` become flat keys in the section data. See [fieldset.md](fieldset).
 
-Остальные ключи схемы (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) CMP не затирает: `sectionTypeForm.ts` сохраняет их в passthrough `extra`.
+Other schema keys (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) are not stripped by CMP: `sectionTypeForm.ts` keeps them in passthrough `extra`.
 
 ### Pro: responsive
 
-На типах `text`, `textarea`, `url`, `number`, `currency`, `richtext`, `slug` при `responsive: true` (или уже сохранённой карте breakpoints) в `section.data`:
+On `text`, `textarea`, `url`, `number`, `currency`, `richtext`, and `slug` with `responsive: true` (or an already saved breakpoint map), `section.data` holds:
 
 ```json
 {
   "title": {
-    "desktop": "Заголовок",
-    "tablet": "Заголовок (планшет)",
-    "mobile": "Заголовок (моб.)"
+    "desktop": "Title",
+    "tablet": "Title (tablet)",
+    "mobile": "Title (mobile)"
   }
 }
 ```
 
-Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). На фронте — `readResponsiveValue()` / capability `responsive`.
+Names `alt`, `caption`, and `slug` are excluded from responsive (`responsiveValues.ts`). On the frontend use `readResponsiveValue()` or capability `responsive`.
 
-### Chunk example meta в JSON
+### Meta example in JSON
 
 ```json
 {
   "name": "title",
   "type": "text",
-  "label": "Заголовок",
-  "tab": "Контент",
+  "label": "Title",
+  "tab": "Content",
   "width": 50,
-  "description": "Подсказка под полем",
+  "description": "Hint under the field",
   "default": "",
   "active": true,
   "required": true
 }
 ```
 
-Живые примеры: секция `_qa_field_matrix`, блок «Meta parity».
+Live examples: section `_qa_field_matrix`, block "Meta parity".
 
 ## Repeater
 
@@ -95,14 +95,14 @@ description: "Field schema in section JSON, inspector widgets, and section.data 
 {
   "name": "items",
   "type": "repeater",
-  "label": "Элементы",
+  "label": "Items",
   "fields": [
-    { "name": "title", "type": "text", "label": "Заголовок" }
+    { "name": "title", "type": "text", "label": "Title" }
   ]
 }
 ```
 
-В `section.data` — массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Подробнее: [repeater.md](repeater).
+In the section data this is an array of objects. Each row has a service `_rowId`. In a chunk: `{foreach $items as $item}` and `{$item.title|escape}`. Details: [repeater.md](repeater).
 
 ## showWhen
 
@@ -110,30 +110,30 @@ description: "Field schema in section JSON, inspector widgets, and section.data 
 {
   "name": "extra_url",
   "type": "url",
-  "label": "Доп. ссылка",
+  "label": "Extra link",
   "showWhen": { "field": "show_extra", "value": true }
 }
 ```
 
-Условие сравнивает поле `showWhen.field` со значением `showWhen.value`. Массив в `value` означает «любое из». Код: `fieldVisibility.ts`. Ещё примеры: [types.md](types#составные-сценарии).
+The field is visible when `showWhen.field` matches `showWhen.value`. An array in `value` means any of. Code: `fieldVisibility.ts`. More examples: [types.md](types#sostavnye-stsenarii).
 
 ## optionsSource
 
-Whitelist классов в `FieldOptionsService` (`modResource`, `modTemplate`, `modChunk`, …). Processor: `mgr/field/options`. Event: `pbOnFieldValues`.
+Class whitelist in `FieldOptionsService` (`modResource`, `modTemplate`, `modChunk`, …). Processor: `mgr/field/options`. Hook: `pbOnFieldValues`.
 
 ## Frontend and enrich
 
-`SectionRenderer` передаёт `section.data` в chunk как плейсхолдеры. Дополнительно в properties: `id`, `type`, `settings`.
+`SectionRenderer` passes `section.data` to the chunk as placeholders. Also in properties: `id`, `type`, `settings`.
 
-При **save draft** `SectionFieldEnricher` дополняет:
+On draft save, `SectionFieldEnricher` adds:
 
-- **image / file / gallery** — media-объекты (`filename`, `extension`, `width`, `height`, `size`, `type`, …)
-- **video** — `embed_url`, `provider`, `watch_url`; плоские `video_*` при `type=video` или имени поля с `video`
-- **map** — `embed_url`, `watch_url`; плоские `map_*`
+- **image / file / gallery**: media objects (`filename`, `extension`, `width`, `height`, `size`, `type`, …)
+- **video**: `embed_url`, `provider`, `watch_url`. Flat `video_*` when `type=video` or the field name contains `video`
+- **map**: `embed_url`, `watch_url`. Flat `map_*`
 
-В chunk для media используйте `{$photo.url}`, не голую строку path. См. [image.md](image), [video.md](video).
+In a chunk for media use `{$photo.url}`, not a bare path string. See [image.md](image), [video.md](video).
 
 ## See also
 
 - [Field types reference](types)
-- [Manager and events](../integration)
+- [Inspector](../integration)

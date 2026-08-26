@@ -12,19 +12,19 @@ Layer: **Free**.
 ## Why this type
 
 - Any nested field schema per row
-- _rowId stable for Vue keys and anchors
-- Free way to build cards, FAQ, slides lists
+- `_rowId` stays stable for Vue keys and anchors
+- Free way to build card, FAQ, or slide lists
 
 ## When to use
 
-- Card items, FAQ questions, slides
-- Any "add row" list in a section
-- Nested image + text without custom JSON type
+- Card items, FAQ questions, or slides
+- Any "add row" list inside a section
+- Nested image and text without a custom JSON type
 
 ## Tips
 
-- In chunk `{foreach}` and `{$item._rowId|escape}` when needed
-- Single object without list is [jsongrid](jsongrid) (Pro)
+- In the chunk use `{foreach}` and `{$item._rowId|escape}` when needed
+- A single object without a list fits [jsongrid](jsongrid) (Pro)
 
 ## Similar types
 
@@ -37,15 +37,15 @@ Layer: **Free**.
 {
   "name": "items",
   "type": "repeater",
-  "label": "Элементы",
+  "label": "Items",
   "fields": [
     {
       "name": "title",
       "type": "text",
-      "label": "Заголовок"
+      "label": "Title"
     }
   ],
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -53,28 +53,28 @@ Layer: **Free**.
 
 ## Value
 
-Массив объектов; у строк есть `_rowId`.
+Array of objects; each row has `_rowId`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `items` в `section.data` — массив строк; у каждой строки стабильный `_rowId`:
+Key `items` in the section data: an array of rows; each row has a stable `_rowId`:
 
 ```json
 {
   "items": [
     {
       "_rowId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      "title": "Пункт 1"
+      "title": "Item 1"
     },
     {
       "_rowId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
-      "title": "Пункт 2"
+      "title": "Item 2"
     }
   ]
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {foreach $items as $item}
@@ -86,20 +86,20 @@ Layer: **Free**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `fields[]` — схема строк; в data у каждой строки `_rowId`.
+- Also: `fields[]` is the row schema; each row in data has `_rowId`.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

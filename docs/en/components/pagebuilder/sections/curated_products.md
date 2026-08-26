@@ -13,24 +13,24 @@ Unlike **Products grid**, no single category: you pick exact product IDs in mult
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## How it differs from the grid
 
 - Exact SKU list, order follows multirelation
 - Not tied to one category
 - Same card markup as grid
 
-## When to use
+## Curated scenarios
 
-- **"Recommended"** on homepage
-- **New arrivals** — manual list without category filter
-- **Bundle** on a landing page
+- "Recommended" on homepage
+- New arrivals: manual list without category filter
+- Bundle on a landing page
 
 ## Page examples
 
 - Homepage: [Curated products](curated_products) “Staff picks” → [Products grid](products_grid) catalog
 - Landing: [Hero](hero) → [Curated products](curated_products) → [CTA](cta)
 
-## Inspector tips
+## Product multirelation
 
 **Products** multirelation: selection order is kept. Limit is the number of picked items.
 
@@ -69,19 +69,19 @@ Type [textarea](../fields/textarea#output-in-section-data). Optional.
 
 `pb-curated-products` grid from multirelation IDs.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "products": [
     201,
     202,
     203
   ],
-  "intro": "Краткое вступление перед основным содержимым."
+  "intro": "Short intro before the main content."
 }
 ```
 
@@ -117,7 +117,7 @@ Fenom chunk `pagebuilderpro_curated_products`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">Выберите товары в инспекторе секции.</p>
+      <p class="pb-listing__empty">Select products in the section inspector.</p>
     {/if}
   </div>
 </section>

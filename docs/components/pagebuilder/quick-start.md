@@ -15,7 +15,7 @@ description: Установка PageBuilder, права, вкладка «Сек
 После установки очистите кеш MODX. В **Пакеты** должен появиться namespace `pagebuilder`.
 
 ::: tip Pro
-Transport `pagebuilderpro` подтягивает Free как зависимость. Ставить `pagebuilder` отдельно не нужно.
+Достаточно установить `pagebuilderpro`: ядро Free (`pagebuilder`) ставится вместе с ним. Отдельно Free ставить не нужно.
 :::
 
 ## 2. Выдайте права
@@ -36,7 +36,7 @@ Transport `pagebuilderpro` подтягивает Free как зависимос
 | `pagebuilder_resource_tab_enabled` | `1` |
 | `pagebuilder_resource_tab_parents` | пусто = все ресурсы, или ID родителей через запятую |
 
-Позицию вкладки задаёт `pagebuilder_resource_tab_index` (`0` — первая, `-1` — последняя).
+Позицию вкладки задаёт `pagebuilder_resource_tab_index` (`0` первая, `-1` последняя).
 
 <!-- ![Вкладка «Секции» на ресурсе](/components/pagebuilder/screenshots/mgr-sections-tab.png) -->
 
@@ -69,7 +69,9 @@ Transport `pagebuilderpro` подтягивает Free как зависимос
 1. Откройте ресурс → вкладка **Секции**.
 2. Добавьте секцию (например Hero), заполните поля.
 3. Нажмите **Сохранить** (черновик).
-4. Нажмите **Опубликовать** — версия попадёт в `published_json`.
+4. Нажмите **Опубликовать**. Версия попадёт в `published_json`.
+
+При `pagebuilder_fake_enabled = 1` в инспекторе появляется кнопка **Fake**: заполняет поля демо-данными для быстрой проверки вёрстки.
 
 <!-- ![Превью черновика](/components/pagebuilder/screenshots/mgr-section-preview.png) -->
 
@@ -83,9 +85,9 @@ Transport `pagebuilderpro` подтягивает Free как зависимос
 
 Если блок пустой:
 
-- секции не опубликованы;
-- у сниппета нет прав на ресурс;
-- в шаблоне закэширован вызов без `!` — используйте `[[!PageBuilder]]`.
+- секции не опубликованы
+- у сниппета нет прав на ресурс
+- в шаблоне закэширован вызов без `!`. Используйте `[[!PageBuilder]]`
 
 ## Дальше
 

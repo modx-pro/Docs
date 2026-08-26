@@ -5,7 +5,7 @@ description: "Comparison table for selected miniShop3 products (Pro)"
 
 # Product comparison
 
-Pick several products in the inspector — the site renders a spec table with one column per product.
+Pick several products in the inspector: the site renders a spec table with one column per product.
 
 <!-- ![Product comparison](/components/pagebuilder/screenshots/sections/product_comparison.png) -->
 
@@ -13,24 +13,24 @@ Pick several products in the inspector — the site renders a spec table with on
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## Comparison in PageBuilder
 
 - Multiple SKUs in one spec table
 - Optional highlight for differing cells
 - Pick products in inspector, not query strings
 
-## When to use
+## Where to show
 
-- **Compare page** in catalog
-- **B2B** alternative picker
-- **Landing** — two or three SKUs side by side
+- Compare page in catalog
+- B2B alternative picker
+- Landing: two or three SKUs side by side
 
 ## Page examples
 
 - Compare page: [Hero](hero) → [Product comparison](product_comparison) → [CTA](cta)
 - B2B: [Spec table](spec_table) + [Product comparison](product_comparison) for a line
 
-## Inspector tips
+## Products and highlight
 
 **Products** repeater or multirelation. **Highlight differences** marks differing values.
 
@@ -69,13 +69,13 @@ Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle.
 
 `pb-product-comparison` table.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "products": [
     201,
     202,
@@ -119,7 +119,7 @@ Fenom chunk `pagebuilderpro_product_comparison`:
         </div>
       </div>
     {else}
-      <p class="pb-listing__empty">Выберите от 2 до 4 товаров для сравнения.</p>
+      <p class="pb-listing__empty">Select 2 to 4 products to compare.</p>
     {/if}
   </div>
 </section>

@@ -13,24 +13,24 @@ Two-column table for technical data. Optional title and intro above the table.
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Specs in a table
 
 - Parameter/value rows, not buried in prose
 - Optional intro and section title
 - `table` field edits in the inspector
 
-## When to use
+## Typical pages
 
-- **Product page** — weight, size, material
-- **Equipment page** — specs
-- **Single product** spec sheet
+- Product page: weight, size, material
+- Equipment page: specs
+- Single product spec sheet
 
 ## Page examples
 
 - Product copy: [Tabs](tabs) → “Specs” tab = [Spec table](spec_table)
 - Equipment: [Hero](hero) → [Spec table](spec_table) → [CTA](cta)
 
-## Inspector tips
+## Spec table
 
 **Specifications** table field: parameter and value columns. **Striped rows** enables zebra styling.
 
@@ -80,14 +80,14 @@ Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle.
 
 HTML table `pb-spec-table`.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
-  "intro": "Краткое вступление перед основным содержимым.",
+  "title": "Section title",
+  "intro": "Short intro before the main content.",
   "striped": true
 }
 ```
@@ -111,8 +111,8 @@ Fenom chunk `pagebuilderpro_spec_table`:
         <table class="pb-spec-table__table">
           <thead>
             <tr>
-              <th scope="col">Параметр</th>
-              <th scope="col">Значение</th>
+              <th scope="col">Parameter</th>
+              <th scope="col">Value</th>
             </tr>
           </thead>
           <tbody>
@@ -126,7 +126,7 @@ Fenom chunk `pagebuilderpro_spec_table`:
         </table>
       </div>
     {else}
-      <p class="pb-spec-table__empty">Добавьте строки характеристик в инспекторе.</p>
+      <p class="pb-spec-table__empty">Add specification rows in the inspector.</p>
     {/if}
   </div>
 </section>

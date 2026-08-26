@@ -11,25 +11,25 @@ description: "Media-объект изображения с alt и enrich metadat
 
 ## Зачем этот тип
 
-- width, height, extension после enrich
-- Alt и caption в схеме секции
-- Один кадр без repeater gallery
+- После enrich в объекте есть width, height, extension
+- Alt и caption задаёте в схеме секции
+- Один кадр, без repeater и gallery
 
 ## Когда использовать
 
-- Hero background, card thumb, author photo
-- OG-style preview в секции
+- Фон hero, превью карточки, фото автора
+- Превью в стиле OG внутри секции
 - Логотип партнёра с alt
 
 ## Советы
 
-- Несколько кадров возьмите [gallery](gallery) (Pro)
-- В chunk `{$photo.url}`, не строка path
+- Несколько кадров: [gallery](gallery) (Pro)
+- В chunk берите `{$photo.url}`, не строку path
 
 ## Похожие типы
 
 - [gallery](gallery) для набора изображений (Pro)
-- [file](file) для non-image assets
+- [file](file) для любых файлов, не только изображений
 
 ## Настройка
 
@@ -49,9 +49,9 @@ description: "Media-объект изображения с alt и enrich metadat
 
 Media-объект. Кнопка Info редактирует width, height, title. При выборе из браузера подтягиваются size и имя файла.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `photo` в `section.data` после save enrich:
+Ключ `photo` в данных секции после save enrich:
 
 ```json
 {
@@ -81,7 +81,7 @@ Media-объект. Кнопка Info редактирует width, height, titl
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |

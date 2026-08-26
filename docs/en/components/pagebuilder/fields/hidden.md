@@ -1,6 +1,6 @@
 ---
 title: "hidden"
-description: "String in section.data with no visible inspector field"
+description: "Hidden string: stored in section data, not shown in the inspector"
 ---
 
 # Field hidden
@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Value saves and reaches the chunk
-- No UI space for editors
-- default set in JSON or CMP
+Value saves and reaches the chunk. No UI space for editors. Default set in JSON or CMP.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Editors need to see value use [readonly](readonly)
-- `active: false` hides any type, hidden is for data-only semantics
+Editors need to see value use [readonly](readonly). `active: false` hides any type, hidden is for data-only semantics.
 
 ## Similar types
 
@@ -38,18 +35,18 @@ Layer: **Free**.
   "name": "token",
   "type": "hidden",
   "label": "Token",
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100
 }
 ```
 
 ## Value
 
-Строка в `section.data`, в форме не показывается визуально.
+String in the section data, not shown visually in the form.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `token` в `section.data`:
+Key `token` in the section data:
 
 ```json
 {
@@ -57,7 +54,7 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <input type="hidden" name="token" value="{$token|escape}">
@@ -65,20 +62,20 @@ Layer: **Free**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Поле скрыто в UI; `active: false` тоже скрывает любое поле.
+- The field is hidden in the UI; `active: false` also hides any field type.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

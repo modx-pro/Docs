@@ -1,17 +1,17 @@
 ---
 title: FAQ
-description: Common PageBuilder issues — editor, permissions, cache, Pro, migration
+description: "Common PageBuilder issues: editor, permissions, cache, Pro, migration"
 ---
 # FAQ
 
 ## Sections editor tab does not appear
 
-1. **VueTools** 1.1.2+ is installed and cache is cleared.
-2. `pagebuilder_resource_tab_enabled = 1`.
-3. Resource matches `pagebuilder_resource_tab_parents` (or parent list is empty).
-4. User has `pagebuilder_view` and `view` policy on the resource.
+1. Install **VueTools** 1.1.2+ and clear the cache.
+2. Set `pagebuilder_resource_tab_enabled = 1`.
+3. Check that the resource matches `pagebuilder_resource_tab_parents` (empty parent list means all resources).
+4. Grant the user `pagebuilder_view` and the `view` policy on the resource.
 
-Check the browser console for VueTools load errors.
+Open the browser console: VueTools load errors appear on the **Sections** tab.
 
 ## Empty on site, sections exist in manager
 
@@ -51,4 +51,4 @@ User is not logged into the manager or lacks `pagebuilder_view` / `pagebuilder_s
 
 ## Where are logs
 
-Enable MODX debug logging (`core/cache/logs/`). VueTools errors may appear in the browser console on the Sections tab.
+Enable debug logging for `pagebuilder` via standard MODX log (`core/cache/logs/`). VueTools writes errors to the browser console on the **Sections** tab.

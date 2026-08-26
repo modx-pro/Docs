@@ -1,22 +1,20 @@
 ---
-title: "types reference"
+title: "Field types reference"
 description: "All 50 PageBuilder inspector field types (Free and Pro)"
 ---
 
 # Field types reference
 
-Inspector: `SectionInspectorFields.vue` → `SectionFieldInput.vue` и вложенные компоненты. Алиасы типов нормализует `normalizeFieldType()` в `fieldDefaults.ts`.
+30 types in Free and 20 in Pro. Pro is enabled with capability `advanced-fields`. Each type page has **Why this type**, **When to use**, **Tips**, **Similar types**, JSON **Schema**, a **Section data** block, a Fenom example, and **Common properties**.
 
-50 типов: 26 Free и 24 Pro в CMP (Pro включается capability `advanced-fields`). У каждого типа своя страница: JSON **Настройка** (с `tab`, `width`, …), блок **Вывод** (JSON в `section.data`), пример Fenom/HTML, **Общие свойства**.
-
-Общие meta-ключи (`tab`, `width`, `description`, `default`, `active`): [обзор](overview#общие-свойства-поля).
+Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview](overview#obshchie-svoystva-polya).
 
 <!-- ![Field types in inspector](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
 
 ## Free
 
 | type | Layer | Page | Output and example |
-| --- | --- | --- |
+| --- | --- | --- | --- |
 | `text` | Free | [text](text) | [JSON and Fenom](text#output-in-section-data) |
 | `textarea` | Free | [textarea](textarea) | [JSON and Fenom](textarea#output-in-section-data) |
 | `richtext` | Free | [richtext](richtext) | [JSON and Fenom](richtext#output-in-section-data) |
@@ -25,6 +23,7 @@ Inspector: `SectionInspectorFields.vue` → `SectionFieldInput.vue` и влож�
 | `url` | Free | [url](url) | [JSON and Fenom](url#output-in-section-data) |
 | `slug` | Free | [slug](slug) | [JSON and Fenom](slug#output-in-section-data) |
 | `select` | Free | [select](select) | [JSON and Fenom](select#output-in-section-data) |
+| `multiselect` | Free | [multiselect](multiselect) | [JSON and Fenom](multiselect#output-in-section-data) |
 | `radio` | Free | [radio](radio) | [JSON and Fenom](radio#output-in-section-data) |
 | `checkbox` | Free | [checkbox](checkbox) | [JSON and Fenom](checkbox#output-in-section-data) |
 | `checkboxgroup` | Free | [checkboxgroup](checkboxgroup) | [JSON and Fenom](checkboxgroup#output-in-section-data) |
@@ -37,9 +36,12 @@ Inspector: `SectionInspectorFields.vue` → `SectionFieldInput.vue` и влож�
 | `colorpalette` | Free | [colorpalette](colorpalette) | [JSON and Fenom](colorpalette#output-in-section-data) |
 | `file` | Free | [file](file) | [JSON and Fenom](file#output-in-section-data) |
 | `image` | Free | [image](image) | [JSON and Fenom](image#output-in-section-data) |
+| `video` | Free | [video](video) | [JSON and Fenom](video#output-in-section-data) |
 | `button` | Free | [button](button) | [JSON and Fenom](button#output-in-section-data) |
+| `resourcelist` | Free | [resourcelist](resourcelist) | [JSON and Fenom](resourcelist#output-in-section-data) |
 | `hidden` | Free | [hidden](hidden) | [JSON and Fenom](hidden#output-in-section-data) |
 | `readonly` | Free | [readonly](readonly) | [JSON and Fenom](readonly#output-in-section-data) |
+| `xtype` | Free | [xtype](xtype) | [JSON and Fenom](xtype#output-in-section-data) |
 | `heading` | Free | [heading](heading) | [JSON and Fenom](heading#output-in-section-data) |
 | `repeater` | Free | [repeater](repeater) | [JSON and Fenom](repeater#output-in-section-data) |
 | `editorjs` | Free | [editorjs](editorjs) | [JSON and Fenom](editorjs#output-in-section-data) |
@@ -47,12 +49,9 @@ Inspector: `SectionInspectorFields.vue` → `SectionFieldInput.vue` и влож�
 ## Pro
 
 | type | Layer | Page | Output and example |
-| --- | --- | --- |
-| `multiselect` | Pro | [multiselect](multiselect) | [JSON and Fenom](multiselect#output-in-section-data) |
+| --- | --- | --- | --- |
 | `relation` | Pro | [relation](relation) | [JSON and Fenom](relation#output-in-section-data) |
 | `multirelation` | Pro | [multirelation](multirelation) | [JSON and Fenom](multirelation#output-in-section-data) |
-| `resourcelist` | Pro | [resourcelist](resourcelist) | [JSON and Fenom](resourcelist#output-in-section-data) |
-| `video` | Pro | [video](video) | [JSON and Fenom](video#output-in-section-data) |
 | `gallery` | Pro | [gallery](gallery) | [JSON and Fenom](gallery#output-in-section-data) |
 | `map` | Pro | [map](map) | [JSON and Fenom](map#output-in-section-data) |
 | `table` | Pro | [table](table) | [JSON and Fenom](table#output-in-section-data) |
@@ -67,7 +66,6 @@ Inspector: `SectionInspectorFields.vue` → `SectionFieldInput.vue` и влож�
 | `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | [JSON and Fenom](tablemulticombo#output-in-section-data) |
 | `fieldset` | Pro | [fieldset](fieldset) | [JSON and Fenom](fieldset#output-in-section-data) |
 | `dependent` | Pro | [dependent](dependent) | [JSON and Fenom](dependent#output-in-section-data) |
-| `xtype` | Pro | [xtype](xtype) | [JSON and Fenom](xtype#output-in-section-data) |
 | `tv` | Pro | [tv](tv) | [JSON and Fenom](tv#output-in-section-data) |
 | `chunk` | Pro | [chunk](chunk) | [JSON and Fenom](chunk#output-in-section-data) |
 | `snippet` | Pro | [snippet](snippet) | [JSON and Fenom](snippet#output-in-section-data) |
@@ -77,18 +75,18 @@ Inspector: `SectionInspectorFields.vue` → `SectionFieldInput.vue` и влож�
 
 ### showWhen
 
-The field is visible when another field matches `value` (не `equals`).
+The field is visible when another field matches `value` (not `equals`).
 
 ```json
 {
   "name": "extra_url",
   "type": "url",
-  "label": "Доп. ссылка",
+  "label": "Extra link",
   "showWhen": { "field": "show_extra", "value": true }
 }
 ```
 
-Реализация: `fieldVisibility.ts`.
+Implementation: `fieldVisibility.ts`.
 
 ### optionsSource
 
@@ -96,7 +94,7 @@ The field is visible when another field matches `value` (не `equals`).
 {
   "name": "template",
   "type": "tablecombo",
-  "label": "Шаблон",
+  "label": "Template",
   "optionsSource": {
     "class": "modTemplate",
     "valueField": "id",
@@ -106,17 +104,17 @@ The field is visible when another field matches `value` (не `equals`).
 }
 ```
 
-Processor: `mgr/field/options`. Event: `pbOnFieldValues`.
+Processor: `mgr/field/options`. Hook: `pbOnFieldValues`.
 
-### Таблицы ресурса
+### Resource tables
 
-Use the resource **Tables** tab or Collections tab type `table`. Field `embeddedTable` stores `table_key` and query options. See [settings](../settings) and [integration](../integration).
+Use the resource **Tables** tab or Collections tab type `table`. Field `embeddedTable` stores `table_key` and query options. See [table settings](../settings) and [CMP](../integration).
 
 ## Aliases
 
-Полный список в `FIELD_TYPE_ALIASES` (`fieldDefaults.ts`). Частые: `relationship` → `relation`, `resources` → `resourcelist`, `boolean` / `listyesno` → `yesno`, `onlyreading` → `readonly`, `colorpicker` → `color`, `editor_js` → `editorjs`.
+Full list in `FIELD_TYPE_ALIASES` (`fieldDefaults.ts`). Common: `relationship` → `relation`, `resources` → `resourcelist`, `boolean` / `listyesno` → `yesno`, `onlyreading` → `readonly`, `colorpicker` → `color`, `editor_js` → `editorjs`.
 
 ## See also
 
 - [Fields overview](overview)
-- [Manager and events](../integration)
+- [Inspector](../integration)

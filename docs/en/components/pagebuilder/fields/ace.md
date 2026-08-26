@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Full control over HTML, CSS, or JSON
-- Mode via `mode` (html, css, javascript, json)
-- No WYSIWYG when you need exact markup
+Full control over HTML, CSS, or JSON. Mode via `mode` (html, css, javascript, json). No WYSIWYG when you need exact markup.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Content editors usually prefer [richtext](richtext)
-- Do not escape HTML in the chunk when you output markup intentionally
+Content editors usually prefer [richtext](richtext). Do not escape HTML in the chunk when you output markup intentionally.
 
 ## Similar types
 
@@ -37,9 +34,9 @@ Layer: **Free**.
 {
   "name": "markup",
   "type": "ace",
-  "label": "Разметка",
+  "label": "Markup",
   "mode": "html",
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -47,11 +44,11 @@ Layer: **Free**.
 
 ## Value
 
-Строка с исходным кодом.
+Source code string.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `markup` в `section.data`:
+Key `markup` in the section data:
 
 ```json
 {
@@ -59,7 +56,7 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {$markup}
@@ -67,18 +64,18 @@ Layer: **Free**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

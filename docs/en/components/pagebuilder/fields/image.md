@@ -11,20 +11,20 @@ Layer: **Free**.
 
 ## Why this type
 
-- width, height, extension after enrich
-- Alt and caption in section schema
-- Single frame without gallery repeater
+- After enrich, the object includes width, height, and extension
+- Alt and caption live in the section schema
+- One frame without a gallery repeater
 
 ## When to use
 
-- Hero background, card thumb, author photo
-- OG-style preview in section
-- Partner logo with alt
+- Hero background, card thumbnail, author photo
+- OG-style preview inside a section
+- Partner logo with alt text
 
 ## Tips
 
-- Multiple frames use [gallery](gallery) (Pro)
-- In chunk `{$photo.url}`, not path string
+- Multiple frames: use [gallery](gallery) (Pro)
+- In the chunk use `{$photo.url}`, not a bare path string
 
 ## Similar types
 
@@ -37,21 +37,21 @@ Layer: **Free**.
 {
   "name": "photo",
   "type": "image",
-  "label": "Изображение",
-  "description": "Рекомендуемый размер 1920×1080",
+  "label": "Image",
+  "description": "Recommended size 1920×1080",
   "width": 50,
-  "tab": "Контент",
+  "tab": "Content",
   "active": true
 }
 ```
 
 ## Value
 
-Media-объект. Кнопка Info редактирует width, height, title. При выборе из браузера подтягиваются size и имя файла.
+Media object. The Info button edits width, height, and title. Picking from the browser fills size and filename.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `photo` в `section.data` после save enrich:
+Key `photo` in the section data after save enrich:
 
 ```json
 {
@@ -71,9 +71,9 @@ Media-объект. Кнопка Info редактирует width, height, titl
 }
 ```
 
-- Поля `width`, `height`, `size` дополняются с диска, если файл доступен MODX.
+- Fields `width`, `height`, and `size` are filled from disk when MODX can access the file.
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <img src="{$photo.url|escape}" width="{$photo.width}" height="{$photo.height}" alt="{$photo.title|escape}">
@@ -81,20 +81,20 @@ Media-объект. Кнопка Info редактирует width, height, titl
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно в schema: нет `responsive`. Значение — media-объект, enrich при save.
+- Also in schema: no `responsive`. Value is a media object, enrich on save.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

@@ -1,6 +1,6 @@
 ---
 title: "text"
-description: "Однострочная строка в section.data для заголовков и коротких подписей"
+description: "Однострочный текст для заголовков и коротких подписей"
 ---
 
 # Поле text
@@ -11,20 +11,20 @@ description: "Однострочная строка в section.data для за�
 
 ## Зачем этот тип
 
-- Самый простой скаляр, предсказуем в Fenom и валидации
-- Pro: `responsive` для desktop / tablet / mobile
-- Не тянет HTML-редактор там, где нужен один заголовок
+- Одна строка в данных секции, без сюрпризов в Fenom и валидации
+- В Pro можно включить `responsive` (desktop, tablet, mobile)
+- Заголовок или подпись без лишнего WYSIWYG
 
 ## Когда использовать
 
-- Заголовок секции, подзаголовок, метка кнопки
-- Короткий alt или подпись рядом с изображением
-- Любое поле длиной до одной строки
+- Заголовок секции, подзаголовок, текст кнопки
+- Короткий alt или подпись к изображению
+- Любое значение, которое умещается в одну строку
 
 ## Советы
 
-- Для многострочного текста возьмите [textarea](textarea)
-- Не используйте text для HTML, возьмите [richtext](richtext) или [editorjs](editorjs)
+- Абзацы без разметки берите в [textarea](textarea)
+- HTML пишите через [richtext](richtext) или [editorjs](editorjs), не через text
 
 ## Похожие типы
 
@@ -49,11 +49,11 @@ description: "Однострочная строка в section.data для за�
 
 ## Значение
 
-Строка в `section.data.title`.
+Строка. В примере ниже ключ `title`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `title` в `section.data`:
+Ключ `title` в данных секции:
 
 ```json
 {
@@ -73,7 +73,7 @@ Pro: `field.responsive` (desktop / tablet / mobile).
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -84,7 +84,7 @@ Pro: `field.responsive` (desktop / tablet / mobile).
 | `active` | bool | `false` — скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): при `responsive: true` в данных секции — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

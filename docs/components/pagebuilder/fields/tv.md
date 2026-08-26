@@ -11,25 +11,22 @@ description: "Объект id name caption выбранного MODX TV"
 
 ## Зачем этот тип
 
-- Picker template variable для hybrid chunk
-- Вывод `[[*{$tv.name}]]` на фронте
-- Pro bridge между PB секцией и resource TV
+Выбор template variable для гибридного chunk: на фронте `[[*{$tv.name}]]`. Pro-мост между секцией PB и TV ресурса.
 
 ## Когда использовать
 
 - Секция читает TV ресурса по выбору редактора
-- Shared hero image TV across templates
-- Dev tooling pick which TV to expose
+- Общая TV hero-image для нескольких шаблонов
+- Dev: выбор, какую TV отдать в секцию
 
 ## Советы
 
-- Значение TV не дублируется в section.data
-- Inline upload в секции это [image](image) или [file](file)
+Значение TV в данных секции не дублируется. Загрузка файла в секции: [image](image) или [file](file).
 
 ## Похожие типы
 
-- [chunk](chunk) pick chunk by name
-- [relation](relation) pick resource not TV
+- [chunk](chunk) для выбора чанка по name
+- [relation](relation) для ресурса, не TV
 
 ## Настройка
 
@@ -48,9 +45,9 @@ description: "Объект id name caption выбранного MODX TV"
 
 Объект `{ id, name, caption }`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `tv` в `section.data`:
+Ключ `tv` в данных секции:
 
 ```json
 {
@@ -70,7 +67,7 @@ description: "Объект id name caption выбранного MODX TV"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -78,7 +75,7 @@ description: "Объект id name caption выбранного MODX TV"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Modal picker with search, not manual id
-- searchAction for ms3 and custom connectors
-- Data stores id and pagetitle, not full resource
+Modal picker with search, not manual id. SearchAction for ms3 and custom connectors. Data stores id and pagetitle, not full resource.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Multiple resources use [multirelation](multirelation)
-- xPDO class id without modal is [combo](combo)
+Multiple resources use [multirelation](multirelation). XPDO class id without modal is [combo](combo).
 
 ## Similar types
 
@@ -37,9 +34,9 @@ Layer: **Pro**.
 {
   "name": "product",
   "type": "relation",
-  "label": "Товар",
+  "label": "Product",
   "searchAction": "mgr/ms3/products/search",
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -47,24 +44,24 @@ Layer: **Pro**.
 
 ## Value
 
-Объект `{ id, pagetitle, … }`.
+Object `{ id, pagetitle, … }`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `product` в `section.data` (picker сохраняет только выбранное):
+Key `product` in the section data (picker stores only the selection):
 
 ```json
 {
   "product": {
     "id": 42,
-    "pagetitle": "О компании"
+    "pagetitle": "About us"
   }
 }
 ```
 
-- Поиск в менеджере может показывать `uri` и `context_key`, но в data пишутся `id` и `pagetitle`.
+- Manager search may show `uri` and `context_key`, but data stores `id` and `pagetitle`.
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {if $product.id}
@@ -74,23 +71,23 @@ Layer: **Pro**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `searchAction` для кастомного connector (напр. ms3).
+- Also: `searchAction` for a custom connector (e.g. ms3).
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

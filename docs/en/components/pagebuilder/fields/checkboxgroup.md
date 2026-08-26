@@ -11,24 +11,21 @@ Layer: **Free**.
 
 ## Why this type
 
-- Multiple picks from one options list
-- Data is an array of value strings, not objects
-- Alternative to multiselect for short lists without search
+Multiple picks from one options list. Data is an array of value strings, not objects. Alternative to multiselect for short lists without search.
 
 ## When to use
 
 - Filter tags, icon set, feature flags
 - "Which columns to show" from a fixed set
-- Multi pick without Pro multiselect
+- Multi pick without multiselect
 
 ## Tips
 
-- A single flag fits [checkbox](checkbox)
-- Long searchable lists need [multiselect](multiselect) (Pro)
+A single flag fits [checkbox](checkbox). Long searchable lists need [multiselect](multiselect).
 
 ## Similar types
 
-- [multiselect](multiselect) for PrimeVue multi with filter (Pro)
+- [multiselect](multiselect) for PrimeVue multi with filter
 - [tag](tag) for free-form strings (Pro)
 
 ## Schema
@@ -37,18 +34,18 @@ Layer: **Free**.
 {
   "name": "tags",
   "type": "checkboxgroup",
-  "label": "Теги",
+  "label": "Tags",
   "options": [
     {
-      "label": "Новинка",
+      "label": "New",
       "value": "new"
     },
     {
-      "label": "Хит",
+      "label": "Bestseller",
       "value": "hit"
     }
   ],
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -56,11 +53,11 @@ Layer: **Free**.
 
 ## Value
 
-Массив строк (`value` отмеченных опций).
+Array of strings (`value` of checked options).
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `tags` в `section.data` — массив `value` отмеченных опций:
+Key `tags` in the section data: array of checked option `value`s:
 
 ```json
 {
@@ -71,7 +68,7 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {foreach $tags as $tag}
@@ -81,22 +78,22 @@ Layer: **Free**.
 
 ## Notes
 
-Опции из `options` или `optionsSource`, как у select.
+Options from `options` or `optionsSource`, same as select.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

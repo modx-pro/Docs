@@ -13,24 +13,24 @@ Same data as **Products grid**, in a carousel. Fits narrow layouts with many SKU
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## Carousel instead of grid
 
 - Same products as grid, in carousel form
 - Saves homepage height
 - Optional autoplay
 
-## When to use
+## Typical placement
 
-- **Homepage** — bestsellers
-- **Product page** — cross-sell (if not using **Related products**)
-- **Landing** — category picks
+- Homepage: bestsellers
+- Product page: cross-sell (if not using **Related products**)
+- Landing: category picks
 
 ## Page examples
 
 - Homepage: [Products carousel](products_carousel) bestsellers → [Products grid](products_grid) new arrivals
 - Product: [Related](related_products) + [Carousel](products_carousel) cross-sell
 
-## Inspector tips
+## Category and autoplay
 
 Category and limit like the grid. **Autoplay** and section JS on the front end.
 
@@ -77,13 +77,13 @@ Type [select](../fields/select#output-in-section-data). Optional. Dropdown with 
 
 `pb-products-carousel` via msProducts.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "parent": 101,
   "limit": 6,
   "autoplay": false,
@@ -134,7 +134,7 @@ Fenom chunk `pagebuilderpro_products_carousel`:
         </div>
       </div>
     {else}
-      <p class="pb-listing__empty">В этой категории пока нет товаров для карусели.</p>
+      <p class="pb-listing__empty">No products for the carousel in this category yet.</p>
     {/if}
   </div>
 </section>

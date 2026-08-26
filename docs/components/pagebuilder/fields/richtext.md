@@ -1,6 +1,6 @@
 ---
 title: "richtext"
-description: "HTML-строка из привычного richtext MODX в section.data"
+description: "HTML-строка из привычного richtext MODX"
 ---
 
 # Поле richtext
@@ -11,25 +11,25 @@ description: "HTML-строка из привычного richtext MODX в secti
 
 ## Зачем этот тип
 
-- WYSIWYG как в ресурсе MODX, без отдельного TV
+- Тот же WYSIWYG, что у ресурса MODX, без отдельного TV
 - Ссылки, списки и базовое форматирование из коробки
-- В chunk выводится готовый HTML без парсинга блоков
+- В chunk отдаёт готовый HTML, парсить блоки не нужно
 
 ## Когда использовать
 
-- Основной текст секции с абзацами и ссылками
-- Ответ FAQ с жирным текстом и списками
-- Любой контент, где редактор не пишет разметку руками
+- Основной текст секции: абзацы, ссылки
+- Ответ FAQ с выделением и списками
+- Контент, где редактор не пишет разметку вручную
 
 ## Советы
 
-- Для блочного контента Editor.js возьмите [editorjs](editorjs)
-- Для сырого HTML/CSS возьмите [ace](ace)
+- Блочная вёрстка Editor.js: [editorjs](editorjs)
+- Сырой HTML или CSS: [ace](ace)
 
 ## Похожие типы
 
 - [editorjs](editorjs) для структурированных блоков с json и html
-- [textarea](textarea) для plain-текста без тегов
+- [textarea](textarea) для простого текста без тегов
 
 ## Настройка
 
@@ -48,9 +48,9 @@ description: "HTML-строка из привычного richtext MODX в secti
 
 HTML-строка.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `content` в `section.data`:
+Ключ `content` в данных секции:
 
 ```json
 {
@@ -70,7 +70,7 @@ Pro: `responsive`.
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -81,7 +81,7 @@ Pro: `responsive`.
 | `active` | bool | `false` — скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): при `responsive: true` в данных секции — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

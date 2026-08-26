@@ -13,26 +13,26 @@ Automatic article feed: set blog parent, limit, and sort. Intros and thumbnails 
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## What the blog feed adds
 
 - Feed from child resources, no hand-rolled pdo in templates
 - Limit and sort in inspector
 - Intro and thumbnail toggles
 
-## When to use
+## Where to place
 
-- **Blog homepage** — latest posts
-- **Site homepage** — "From the blog" block
-- **Landing** — three recent articles
+- Blog homepage: latest posts
+- Site homepage: "From the blog" block
+- Landing: three recent articles
 
 ## Page examples
 
 - Homepage: [Hero](hero) → [Blog posts](blog_posts) → [CTA](cta)
 - Blog section: [Blog posts](blog_posts) → [Contact](contact)
 
-## Inspector tips
+## Parent and limit
 
-**Blog parent** — resource ID or picker. **Limit**, **Sort**, **Show intro** / **image** flags.
+**Blog parent**: resource ID or picker. **Limit**, **Sort**, **Show intro** / **image** flags.
 
 ## Similar sections
 
@@ -85,13 +85,13 @@ Type [select](../fields/select#output-in-section-data). Optional. Dropdown with 
 
 `pb-blog-posts` with article cards.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "parent": 101,
   "limit": 6,
   "show_intro": true,

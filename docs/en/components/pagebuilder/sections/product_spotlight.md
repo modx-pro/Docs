@@ -13,24 +13,24 @@ Store hero or "product of the week": large image, price, description, add to car
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## One product, large
 
 - One SKU large: gallery, price, cart
 - “Product of the week” without custom template
 - msProducts by resource relation
 
-## When to use
+## Promo scenarios
 
-- **Homepage** — featured SKU
-- **Brand landing** — flagship item
-- **Promo page** — sale item
+- Homepage: featured SKU
+- Brand landing: flagship item
+- Promo page: sale item
 
 ## Page examples
 
 - Store homepage: [Product spotlight](product_spotlight) → [Products carousel](products_carousel)
 - Sale: [Promo banner](promo_banner) → [Product spotlight](product_spotlight)
 
-## Inspector tips
+## Product relation
 
 **Product** relation to a miniShop3 resource. Other section fields set the block title.
 
@@ -65,13 +65,13 @@ Type [relation](../fields/relation#output-in-section-data). Required. Pick one M
 
 Two-column `pb-product-spotlight` via msProducts.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "product": 201
 }
 ```
@@ -103,7 +103,7 @@ Fenom chunk `pagebuilderpro_product_spotlight`:
     {if $listing}
       {$listing}
     {else}
-      <p class="pb-listing__empty">Товар не выбран или недоступен.</p>
+      <p class="pb-listing__empty">Product not selected or unavailable.</p>
     {/if}
   </div>
 </section>

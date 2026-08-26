@@ -1,6 +1,6 @@
 ---
 title: "checkbox"
-description: "Single boolean flag true or false in section.data"
+description: "Single boolean flag: true or false"
 ---
 
 # Field checkbox
@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Explicit checkbox for one option
-- Boolean value, not string "1"/"0"
-- Pairs with showWhen for conditional fields
+Explicit checkbox for one option. Boolean value, not string "1"/"0". Pairs with showWhen for conditional fields.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Multiple independent flags use [checkboxgroup](checkboxgroup)
-- Visible on/off switch fits [toggle](toggle) better
+Multiple independent flags use [checkboxgroup](checkboxgroup). Visible on/off switch fits [toggle](toggle) better.
 
 ## Similar types
 
@@ -37,8 +34,8 @@ Layer: **Free**.
 {
   "name": "featured",
   "type": "checkbox",
-  "label": "Избранное",
-  "tab": "Контент",
+  "label": "Featured",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,11 +43,11 @@ Layer: **Free**.
 
 ## Value
 
-Булево.
+Boolean.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `featured` в `section.data`:
+Key `featured` in the section data:
 
 ```json
 {
@@ -58,26 +55,26 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
-{if $featured}<span class="badge">Избранное</span>{/if}
+{if $featured}<span class="badge">Featured</span>{/if}
 ```
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

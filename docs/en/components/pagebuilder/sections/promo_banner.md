@@ -13,26 +13,26 @@ Wide promo block: title, text, CTA, background, and optional miniShop3 product c
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## Promo between storefronts
 
 - Copy, background, CTA like hero but compact
 - Optional miniShop3 product tie-in
 - Seasonal promos between showcases
 
-## When to use
+## Promo scenarios
 
-- **Seasonal sale** on homepage
-- **New arrival** linking to product page
-- **Banner between** catalog sections
+- Seasonal sale on homepage
+- New arrival linking to product page
+- Banner between catalog sections
 
 ## Page examples
 
 - Homepage: [Products grid](products_grid) → [Promo banner](promo_banner) → [Products carousel](products_carousel)
 - Sale: [Hero](hero) → [Promo banner](promo_banner) → [Curated products](curated_products)
 
-## Inspector tips
+## Copy, button, product
 
-Set copy and button. **Product** is optional — chunk may render a mini card.
+Set copy and button. **Product** is optional: chunk may render a mini card.
 
 ## Similar sections
 
@@ -81,15 +81,15 @@ Type [relation](../fields/relation#output-in-section-data). Optional. Pick one M
 
 `pb-promo-banner` with CTA and optional product.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
-  "text": "Дополнительный текст под заголовком.",
-  "button_label": "Подробнее",
+  "title": "Section title",
+  "text": "Supporting text under the title.",
+  "button_label": "Learn more",
   "button_url": "https://example.com/action",
   "background": {
     "url": "assets/images/example.jpg",

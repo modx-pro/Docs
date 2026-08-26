@@ -1,6 +1,6 @@
 ---
 title: "editorjs"
-description: "Editor.js object with json and html in section.data"
+description: "Editor.js object with json and rendered html"
 ---
 
 # Field editorjs
@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Block content with headings, lists, embeds
-- html ready for chunk, json for custom render
-- Structure safer than free-form HTML
+Block content with headings, lists, embeds. Html ready for chunk, json for custom render. Structure safer than free-form HTML.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Chunk usually `{$body.html}`, not raw json
-- Simple HTML without blocks is faster in [richtext](richtext)
+Chunk usually `{$body.html}`, not raw json. Simple HTML without blocks is faster in [richtext](richtext).
 
 ## Similar types
 
@@ -37,8 +34,8 @@ Layer: **Free**.
 {
   "name": "body",
   "type": "editorjs",
-  "label": "Контент",
-  "tab": "Контент",
+  "label": "Content",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,11 +43,11 @@ Layer: **Free**.
 
 ## Value
 
-Объект `{ json, html }`; на фронте обычно `html`.
+Object `{ json, html }`; on the frontend use `html`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `body` в `section.data`:
+Key `body` in the section data:
 
 ```json
 {
@@ -61,20 +58,20 @@ Layer: **Free**.
         {
           "type": "paragraph",
           "data": {
-            "text": "Текст блока"
+            "text": "Block text"
           }
         }
       ],
       "version": "2.29.0"
     },
-    "html": "<p>Текст блока</p>"
+    "html": "<p>Block text</p>"
   }
 }
 ```
 
-- В chunk обычно используют `html`; `json` — сырой Editor.js.
+- In a chunk use `html`; `json` is raw Editor.js.
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <div class="pb-richtext__content">{$body.html}</div>
@@ -82,20 +79,20 @@ Layer: **Free**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: в data `{ json, html }`; в chunk обычно `{$field.html}`.
+- Also: data holds `{ json, html }`; in a chunk use `{$field.html}`.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

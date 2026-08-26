@@ -13,24 +13,24 @@ Team block: photo, name, role, and short bio. Multiple members render in a grid.
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Team vs testimonials
 
 - Photo and role in a consistent card
 - Repeater adds people without template edits
 - Separate from [Testimonials](testimonials) (staff vs clients)
 
-## When to use
+## Typical placement
 
-- **About page**
-- **Agency landing** — people behind the project
-- **Conference** — speakers
+- About page
+- Agency landing: people behind the project
+- Conference: speakers
 
 ## Page examples
 
 - About: [Hero](hero) → [Rich text](richtext) → [Team](team) → [CTA](cta)
 - Event: [Team](team) → [FAQ](faq) → [Contact with map](contact_map)
 
-## Inspector tips
+## Team member repeater
 
 **Members** repeater. **Photo** for avatar; bio is textarea or richtext per section JSON.
 
@@ -74,13 +74,13 @@ Each row:
 
 `pb-team` grid with photos and text.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
@@ -94,9 +94,9 @@ Example payload after save. Media, video, and map values may be enriched on outp
         "height": 1080,
         "type": "image"
       },
-      "name": "Иван Петров",
-      "role": "Директор, ООО Пример",
-      "bio": "15 лет в отрасли, ведёт ключевые проекты компании."
+      "name": "Jane Doe",
+      "role": "Director, Example LLC",
+      "bio": "15 years in the industry, leads the company's key projects."
     }
   ]
 }

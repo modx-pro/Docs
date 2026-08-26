@@ -1,6 +1,6 @@
 ---
 title: "dependent"
-description: "showWhen block marker with no section.data entry"
+description: "showWhen block marker: not written to section data"
 ---
 
 # Field dependent
@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Type hidden in inspector fieldVisibility false
-- Documents conditional field group
-- Neighbors controlled by showWhen on other fields
+Type hidden in inspector fieldVisibility false. Documents conditional field group. Neighbors controlled by showWhen on other fields.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- Condition lives on visible fields via showWhen
-- Decorative title without logic is [heading](heading)
+Condition lives on visible fields via showWhen. Decorative title without logic is [heading](heading).
 
 ## Similar types
 
@@ -37,42 +34,42 @@ Layer: **Pro**.
 {
   "name": "_dep",
   "type": "dependent",
-  "label": "Зависимые поля",
-  "tab": "Контент",
+  "label": "Dependent fields",
+  "tab": "Content",
   "width": 100
 }
 ```
 
 ## Value
 
-Не сохраняется.
+Not stored.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-В `section.data` не сохраняется.
+Not stored in the section data.
 
-## Chunk example в chunk
+## Chunk example
 
-Не используется в chunk.
+Not used in the chunk.
 
 ## Notes
 
-Сам тип в инспекторе не рисуется (`fieldVisibility` возвращает false). Соседние поля управляют видимостью через `showWhen`.
+The type itself is not rendered in the inspector (`fieldVisibility` returns false). Sibling fields control visibility via `showWhen`.
 
 ## Common properties
 
-Значение в `section.data` **не сохраняется**.
+The value is **not** stored in the section data.
 
-| Ключ | Роль | CMP |
+| Key | Role | CMP |
 | --- | --- | --- |
-| `tab` | Группа в инспекторе | да |
-| `width` | Ширина подписи, 25–100 (%) | да |
-| `label` | Текст подзаголовка / маркера | да |
+| `tab` | Group in the inspector | yes |
+| `width` | Label width, 25–100 (%) | yes |
+| `label` | Subtitle / marker text | yes |
 
-См. [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

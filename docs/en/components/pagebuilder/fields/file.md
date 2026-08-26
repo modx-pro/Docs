@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Enrich adds filename, extension, size, url
-- Fits PDF, archives, not only images
-- Same media pipeline as image
+Enrich adds filename, extension, size, url. Fits PDF, archives, not only images. Same media pipeline as image.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- In chunk use `{$file.url}`, not raw path
-- Photos alone often use [image](image)
+In chunk use `{$file.url}`, not raw path. Photos alone often use [image](image).
 
 ## Similar types
 
@@ -37,9 +34,9 @@ Layer: **Free**.
 {
   "name": "pdf",
   "type": "file",
-  "label": "Файл",
-  "description": "PDF или другой документ",
-  "tab": "Контент",
+  "label": "File",
+  "description": "PDF or another document",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -47,11 +44,11 @@ Layer: **Free**.
 
 ## Value
 
-Объект media: `url`, `size`, `title`, `name`, `filename`, `extension`, `type` и др. Legacy-строка при чтении оборачивается в `{ url }`.
+Media object: `url`, `size`, `title`, `name`, `filename`, `extension`, `type`, and more. A legacy string on read is wrapped as `{ url }`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `pdf` в `section.data` после save enrich (`MediaFieldEnricher`):
+Key `pdf` in the section data after save enrich (`MediaFieldEnricher`):
 
 ```json
 {
@@ -69,9 +66,9 @@ Layer: **Free**.
 }
 ```
 
-- Legacy-строка URL при чтении нормализуется в `{ url }`.
+- A legacy URL string is normalized to `{ url }` on read.
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <a href="{$pdf.url|escape}" download="{$pdf.title|escape}">{$pdf.title|escape}</a>
@@ -79,20 +76,20 @@ Layer: **Free**.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно в schema: media-объект, enrich при save.
+- Also in schema: media object, enrich on save.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

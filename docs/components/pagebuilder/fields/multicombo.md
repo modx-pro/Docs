@@ -11,9 +11,7 @@ description: "Массив значений из xPDO optionsSource через M
 
 ## Зачем этот тип
 
-- Несколько id из одного xPDO-класса
-- Тот же контракт `optionsSource`, что у combo
-- Скаляры id, без объектов pagetitle как у relation
+Несколько id из одного xPDO-класса. Тот же контракт `optionsSource`, что у [combo](combo). Скаляры id, без объектов pagetitle как у relation.
 
 ## Когда использовать
 
@@ -23,8 +21,7 @@ description: "Массив значений из xPDO optionsSource через M
 
 ## Советы
 
-- Объекты ресурса с заголовком → [multirelation](multirelation)
-- Фиксированный список → [multiselect](multiselect)
+Объекты ресурса с заголовком: [multirelation](multirelation). Фиксированный список: [multiselect](multiselect).
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Массив значений из xPDO optionsSource через M
 
 Массив значений.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `ids` в `section.data` — массив значений:
+Ключ `ids` в данных секции: массив значений:
 
 ```json
 {
@@ -71,7 +68,7 @@ description: "Массив значений из xPDO optionsSource через M
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -79,7 +76,7 @@ description: "Массив значений из xPDO optionsSource через M
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

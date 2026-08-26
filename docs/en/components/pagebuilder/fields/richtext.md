@@ -1,6 +1,6 @@
 ---
 title: "richtext"
-description: "HTML string from the familiar MODX richtext editor in section.data"
+description: "HTML string from the familiar MODX richtext editor"
 ---
 
 # Field richtext
@@ -11,19 +11,19 @@ Layer: **Free**.
 
 ## Why this type
 
-- WYSIWYG like a MODX resource field, no extra TV
-- Links, lists, and basic formatting out of the box
-- Chunk outputs ready HTML without block parsing
+- Same WYSIWYG as a MODX resource field, no separate TV
+- Links, lists, and basic formatting built in
+- Chunk outputs ready HTML; no block parsing
 
 ## When to use
 
 - Main section copy with paragraphs and links
-- FAQ answer with bold text and lists
-- Any content where editors should not hand-write markup
+- FAQ answers with bold text and lists
+- Content where editors should not write markup by hand
 
 ## Tips
 
-- Structured Editor.js blocks need [editorjs](editorjs)
+- Editor.js blocks need [editorjs](editorjs)
 - Raw HTML or CSS belongs in [ace](ace)
 
 ## Similar types
@@ -37,8 +37,8 @@ Layer: **Free**.
 {
   "name": "content",
   "type": "richtext",
-  "label": "Текст",
-  "tab": "Контент",
+  "label": "Text",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,19 +46,19 @@ Layer: **Free**.
 
 ## Value
 
-HTML-строка.
+HTML string.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `content` в `section.data`:
+Key `content` in the section data:
 
 ```json
 {
-  "content": "<p>Текст с <strong>разметкой</strong>.</p>"
+  "content": "<p>Text with <strong>markup</strong>.</p>"
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
 <div class="pb-richtext__content">{$content}</div>
@@ -70,20 +70,20 @@ Pro: `responsive`.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): with `responsive: true`, the section data uses `desktop`, `tablet`, `mobile` keys instead of a scalar.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 

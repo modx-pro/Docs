@@ -1,6 +1,6 @@
 ---
 title: "table"
-description: "Row array by columns with typed cells in section.data"
+description: "Row array by columns with typed cells"
 ---
 
 # Field table
@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Columns text number image color date tag currency url
-- All rows stored in section data
-- Editors edit grid in inspector
+Columns text number image color date tag currency url. All rows stored in section data. Editors edit grid in inspector.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Pro**.
 
 ## Tips
 
-- columns sets name label type per column
-- Large DB-backed sets use [embeddedTable](embeddedTable)
+Columns sets name label type per column. Large DB-backed sets use [embeddedTable](embeddedTable).
 
 ## Similar types
 
@@ -37,20 +34,20 @@ Layer: **Pro**.
 {
   "name": "specs",
   "type": "table",
-  "label": "Характеристики",
+  "label": "Specifications",
   "columns": [
     {
       "name": "key",
-      "label": "Ключ",
+      "label": "Key",
       "type": "text"
     },
     {
       "name": "value",
-      "label": "Значение",
+      "label": "Value",
       "type": "text"
     }
   ],
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -58,25 +55,25 @@ Layer: **Pro**.
 
 ## Value
 
-Массив строк-объектов по `columns[].name`.
+Array of row objects keyed by `columns[].name`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `specs` в `section.data` — массив строк по `columns[].name`:
+Key `specs` in the section data: array of rows keyed by `columns[].name`:
 
 ```json
 {
   "specs": [
     {
-      "key": "Вес",
-      "value": "1.2 кг"
+      "key": "Weight",
+      "value": "1.2 kg"
     },
     {
-      "key": "Цвет",
+      "key": "Color",
       "value": "#111827"
     },
     {
-      "key": "Фото",
+      "key": "Photo",
       "value": {
         "url": "assets/images/hero.jpg",
         "id": 12,
@@ -95,9 +92,9 @@ Layer: **Pro**.
 }
 ```
 
-- Ячейки с `type: image` хранят media-объект, как у поля `image`.
+- Cells with `type: image` store a media object, same as the `image` field.
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {foreach $specs as $row}
@@ -110,27 +107,27 @@ Layer: **Pro**.
 
 ## Notes
 
-Колонки в CMP: `columnsText` (`name|Подпись|type`). Типы ячеек: text, number, image, color, date, tag, currency, url.
+Columns in CMP: `columnsText` (`name|Label|type`). Cell types: text, number, image, color, date, tag, currency, url.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: `columns[]` с `name`, `label`, `type` (text, number, image, color, …).
+- Also: `columns[]` with `name`, `label`, `type` (text, number, image, color, …).
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

@@ -13,24 +13,24 @@ A map pin from coordinates or address. `MapEmbedResolver` builds the iframe; def
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Standalone map
 
 - Coordinates in map field, resolver builds iframe
 - Yandex Maps by default, provider swappable in package code
 - Separate from contact copy
 
-## When to use
+## Scenarios
 
-- **Contacts** — office or showroom
-- **Delivery** — coverage anchor point
-- **Event** — venue
+- Contacts: office or showroom
+- Delivery: coverage anchor point
+- Event: venue
 
 ## Page examples
 
 - Contacts: [Contact](contact) → [Map](map)
 - Branch: [Hero](hero) → [Map](map) → [FAQ](faq)
 
-## Inspector tips
+## Map point
 
 **Location** map field: coordinates and zoom. Section title is optional.
 
@@ -65,13 +65,13 @@ Type [map](../fields/map#output-in-section-data). Required. Map pin. Site output
 
 Iframe inside `pb-map`.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "location": {
     "lat": 55.751244,
     "lng": 37.618423,
@@ -101,7 +101,7 @@ Fenom chunk `pagebuilderpro_map`:
         ></iframe>
       </div>
     {elseif $map_watch_url}
-      <p><a class="pb-button" href="{$map_watch_url|escape}">Открыть карту</a></p>
+      <p><a class="pb-button" href="{$map_watch_url|escape}">Open map</a></p>
     {/if}
   </div>
 </section>

@@ -13,24 +13,24 @@ Combines **Contact** and **Map**: contacts and CTA beside the map iframe.
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Why combine contacts and map
 
 - Phone, email, and map in one viewport
 - Fewer sections than Contact + Map separately
 - One chunk for a standard contact page
 
-## When to use
+## Where to place
 
-- **Contact page** — full block
-- **Landing footer** with address
-- **Branch page**
+- Contact page: full block
+- Landing footer with address
+- Branch page
 
 ## Page examples
 
 - Contact page: [Hero](hero) → [Contact map](contact_map) → [FAQ](faq)
 - Landing: [CTA](cta) → [Contact map](contact_map)
 
-## Inspector tips
+## Contacts and map point
 
 Fill contact fields and **Location** on the map. One block instead of two sections.
 
@@ -85,14 +85,14 @@ Type [url](../fields/url#output-in-section-data). Optional.
 
 `pb-contact-map`: contacts + map iframe.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
-  "text": "Дополнительный текст под заголовком.",
+  "title": "Section title",
+  "text": "Supporting text under the title.",
   "phone": "+7 (999) 123-45-67",
   "email": "hello@example.com",
   "location": {
@@ -100,7 +100,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
     "lng": 37.618423,
     "embed_url": "https://yandex.ru/map-widget/v1/..."
   },
-  "button_label": "Подробнее",
+  "button_label": "Learn more",
   "button_url": "https://example.com/action"
 }
 ```

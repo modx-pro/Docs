@@ -11,20 +11,17 @@ description: "Конфиг table_key limit filters без строк табли�
 
 ## Зачем этот тип
 
-- Строки грузит сниппет PageBuilderTableRows на фронте
-- filters limit use_context utm в объекте data
-- Подходит для catalog-scale data
+Строки грузит сниппет PageBuilderTableRows на фронте. В data объект с `table_key`, `limit`, `filters`, `use_context`, `utm`. Подходит для catalog-scale data.
 
 ## Когда использовать
 
 - Products grid из Collections table
-- Любая зарегистрированная table_key
-- Когда строк слишком много для field table
+- Любая зарегистрированная `table_key`
+- Когда строк слишком много для field [table](table)
 
 ## Советы
 
-- В chunk `[[!PageBuilderTableRows? &table_key=`...`]]`
-- Статические 5–10 строк оставьте [table](table)
+В chunk: `[[!PageBuilderTableRows? &table_key=`...`]]`. Статические 5–10 строк: [table](table).
 
 ## Похожие типы
 
@@ -49,9 +46,9 @@ description: "Конфиг table_key limit filters без строк табли�
 
 Объект `{ table_key, limit, filters, … }`.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `table` в `section.data` — конфиг выборки (строки таблицы не входят в data):
+Ключ `table` в данных секции: конфиг выборки (строки таблицы не входят в data):
 
 ```json
 {
@@ -79,7 +76,7 @@ description: "Конфиг table_key limit filters без строк табли�
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -87,7 +84,7 @@ description: "Конфиг table_key limit filters без строк табли�
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 - Дополнительно: `table_key`, `limit`, `filters`, `use_context`, `utm`.

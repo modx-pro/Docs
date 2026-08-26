@@ -1,6 +1,6 @@
 ---
 title: "Stats"
-description: "Row of metrics — large value with a label underneath"
+description: "Row of metrics with a large value and label underneath"
 ---
 
 # Stats
@@ -9,24 +9,24 @@ Several KPIs in a row or grid: years in business, client count, and similar figu
 
 <!-- ![Stats](/components/pagebuilder/screenshots/sections/stats.png) -->
 
-## Why this section
+## Why show numbers
 
 - Numbers scan fast, no table needed
 - KPI updates by editor, not by redeploying templates
 - value/label pairs are predictable in Fenom
 
-## When to use
+## Typical placement
 
-- **Homepage** — company KPIs
-- **B2B landing** — scale, coverage, SLA
-- **About page** — facts instead of long copy
+- Homepage: company KPIs
+- B2B landing: scale, coverage, SLA
+- About page: facts instead of long copy
 
 ## Page examples
 
 - B2B: [Hero](hero) → [Stats](stats) → [Features](features) → [CTA](cta)
 - Agency: [Stats](stats) → [Testimonials](testimonials) → [Logos](logos)
 
-## Inspector tips
+## Metrics repeater
 
 **Metrics** repeater: **Value** and **Label** per row. Three or four items usually work best.
 
@@ -68,18 +68,18 @@ Each row:
 
 `pb-stats` grid with value / label pairs.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
       "value": "1200+",
-      "label": "Довольных клиентов"
+      "label": "Happy customers"
     }
   ]
 }

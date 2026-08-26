@@ -11,9 +11,7 @@ Layer: **Pro**.
 
 ## Why this type
 
-- Coordinates and address for contact_map sections
-- enrich builds embed and maps link
-- Flat map_* when type=map or name contains map
+Coordinates and address for contact_map sections. Enrich builds embed and maps link. Flat map_* when type=map or name contains map.
 
 ## When to use
 
@@ -23,12 +21,11 @@ Layer: **Pro**.
 
 ## Tips
 
-- Multiple points use repeater with lat lng text or custom
-- Output embed from enrich, do not hand-build URL
+Multiple points use repeater with lat lng text or custom. Output embed from enrich, do not hand-build URL.
 
 ## Similar types
 
-- [textarea](textarea) for address without coordinates
+- [text](textarea) for address without coordinates
 - [url](url) for manual maps.google link
 
 ## Schema
@@ -37,8 +34,8 @@ Layer: **Pro**.
 {
   "name": "location",
   "type": "map",
-  "label": "Карта",
-  "tab": "Контент",
+  "label": "Map",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -46,11 +43,11 @@ Layer: **Pro**.
 
 ## Value
 
-Объект `{ lat, lng, zoom, provider }`; enrich: `embed_url` в объекте и плоский `map_embed_url`.
+Object `{ lat, lng, zoom, provider }`; enrich adds `embed_url` on the object and flat `map_embed_url`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `location` в `section.data` после save enrich (`MapEmbedResolver`):
+Key `location` in the section data after save enrich (`MapEmbedResolver`):
 
 ```json
 {
@@ -68,34 +65,34 @@ Layer: **Pro**.
 }
 ```
 
-- Плоские `map_embed_url`, `map_provider`, `map_watch_url` дублируют embed первого map-поля (приоритет у ключа `location`).
-- Провайдер по умолчанию `yandex`; `osm` — OpenStreetMap.
+- Flat `map_embed_url`, `map_provider`, and `map_watch_url` duplicate the embed of the first map field (priority for key `location`).
+- Default provider `yandex`; `osm` is OpenStreetMap.
 
-## Chunk example в chunk
+## Chunk example
 
 ```html
-<iframe src="{$location.embed_url|default($map_embed_url)|escape}" title="Карта"></iframe>
+<iframe src="{$location.embed_url|default($map_embed_url)|escape}" title="Map"></iframe>
 ```
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-- Дополнительно: enrich добавляет `embed_url`, `watch_url` и плоские `map_*` в `section.data`.
+- Also: enrich adds `embed_url`, `watch_url`, and flat `map_*` to `section.data`.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
 - [Field types reference](types)
 - [Fields overview](overview)
-- [Pro в менеджере](../integration)
+- [Pro in manager](../integration)

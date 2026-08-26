@@ -13,24 +13,24 @@ On a product page, shows other SKUs from the same (or chosen) category except th
 Requires PageBuilder Pro and miniShop3.
 :::
 
-## Why this section
+## Cross-sell on product page
 
 - Excludes current product from picks
 - Product page context, no extra snippet
 - Category and limit in inspector
 
-## When to use
+## Typical placement
 
-- **Product page** — "You may also like"
-- **Cart** — upsell
-- **Thank-you page**
+- Product page: "You may also like"
+- Cart: upsell
+- Thank-you page
 
 ## Page examples
 
 - Product template (MS3): … → [Related products](related_products) → [FAQ](faq)
 - Cart: [Related products](related_products) “Add to order”
 
-## Inspector tips
+## Category and exclude
 
 **Category**, **Exclude product** (current), **Limit**. Best on product resource context.
 
@@ -77,13 +77,13 @@ Type [select](../fields/select#output-in-section-data). Optional. Dropdown with 
 
 `pb-related-products` grid via msProducts.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "parent": 101,
   "product": 201,
   "limit": 6,
@@ -124,7 +124,7 @@ Fenom chunk `pagebuilderpro_related_products`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">Подходящих товаров пока нет.</p>
+      <p class="pb-listing__empty">No matching products yet.</p>
     {/if}
   </div>
 </section>

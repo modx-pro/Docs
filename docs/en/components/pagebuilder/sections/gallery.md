@@ -9,24 +9,24 @@ Several photos or screenshots in one section. Each image has its own alt text an
 
 <!-- ![Gallery](/components/pagebuilder/screenshots/sections/gallery.png) -->
 
-## Why this section
+## What the gallery adds
 
 - Several images in one section, each with alt and caption
 - Inspector repeater: new row equals new slide on the site
 - Grid markup lives in the chunk, not hand-built columns
 
-## When to use
+## Where it fits
 
-- **Portfolio** of work or projects
-- **Product photos** — multiple angles without a carousel
-- **Case study** or report with illustrations
+- Portfolio of work or projects
+- Product photos: multiple angles without a carousel
+- Case study or report with illustrations
 
 ## Page examples
 
 - Portfolio: [Hero](hero) → [Gallery](gallery) → [CTA](cta)
 - Product (no MS3): [Rich text](richtext) → [Gallery](gallery) → [FAQ](faq)
 
-## Inspector tips
+## Slides and alt
 
 Add rows in the **Slides** repeater with an **Image** each. Fill alt text for accessibility and SEO.
 
@@ -69,13 +69,13 @@ Each row:
 
 `pb-gallery` grid. Each slide uses `pagebuilder_partial_image`.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
@@ -89,8 +89,8 @@ Example payload after save. Media, video, and map values may be enriched on outp
         "height": 1080,
         "type": "image"
       },
-      "alt": "Описание изображения для скринридеров",
-      "caption": "Подпись под изображением"
+      "alt": "Image description for screen readers",
+      "caption": "Caption under the image"
     }
   ]
 }

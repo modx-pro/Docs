@@ -12,13 +12,14 @@ Manager component: **Components → PageBuilder** (namespace `pagebuilder`, cont
 
 In the CMP:
 
-- list of resources with sections;
-- open section editor;
-- **Section types** (Pro + `pagebuilder_manage_types`);
+- list of resources with sections
+- open section editor
+- **Section types** (permission `pagebuilder_manage_types`): UI types, hide/restore built-in JSON types
 
 <!-- ![Section types in CMP](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
 
-- Collections tab settings when `pagebuilder_collections_*` are enabled.
+- **Basket** (Pro, capability `basket`): global basket for deleted sections and table rows
+- Collections tab settings when `pagebuilder_collections_*` are enabled
 
 The editor on the resource form and in the CMP shares one Vue bundle via **VueTools**. Connector:
 
@@ -37,23 +38,17 @@ Main page record: table `pb_pages` (prefix `modx_pb_`).
 
 PageBuilder does not overwrite `modResource.content`. Resource SEO fields (pagetitle, description) work as usual.
 
-Trashed sections sync to `pb_basket_items`. There is no dedicated basket `pbOn*` event: a plugin on `pbOnAfterSave` can read `record.draft.trash`.
+Per-page basket stores deleted sections in `document.trash`. On draft save, the plugin syncs the index in `pb_basket_items`. There is no dedicated basket `pbOn*` event: a plugin on `pbOnAfterSave` can read `record.draft.trash`. Global restore and permanent delete run through Pro processors `mgr/basket/*`.
 
-Resource **data tables** live in separate `pb_*` tables (MVP “Tables” tab).
+Resource **data tables** live in separate `pb_*` tables (“Tables” tab).
 
 <!-- ![Tables tab on a resource](/components/pagebuilder/screenshots/mgr-resource-tables.png) -->
 
 ## PageBuilder Pro
 
-Transport `pagebuilderpro` adds:
+Transport `pagebuilderpro` adds library, versions, presets, responsive fields, 20 advanced field types, global CMP basket, and [Agent API](agent-api).
 
-- extended section catalog (forms, maps, commerce, tabs, etc.);
-- section library, versions, presets;
-- extra connector processors.
-
-Pro checks license via feature providers (`pbOnRegisterFeatureProviders`). Sections with `requires: pro` in the JSON definition need Pro.
-
-Commerce sections (`products_grid`, `categories_row`, etc.) require **miniShop3**.
+Details: [PageBuilder Pro](pro). Commerce sections require **miniShop3**.
 
 ## Events
 
@@ -63,8 +58,8 @@ Subscribe a plugin under **System → Events** or via static plugin in transport
 
 | Event | Data |
 | --- | --- |
-| `pbOnRegisterSectionDefinitions` | `registry` — `SectionRegistry`, add custom types |
-| `pbOnRegisterFeatureProviders` | `registry` — `FeatureProviderRegistry` |
+| `pbOnRegisterSectionDefinitions` | `registry` (`SectionRegistry`): add custom types |
+| `pbOnRegisterFeatureProviders` | `registry` (`FeatureProviderRegistry`) |
 
 ### Page lifecycle
 
@@ -73,7 +68,7 @@ Subscribe a plugin under **System → Events** or via static plugin in transport
 | `pbOnBeforeSave` / `pbOnAfterSave` | Draft (`mode=draft`) |
 | `pbOnBeforePublish` / `pbOnAfterPublish` | Publish |
 | `pbOnBeforeUnpublish` / `pbOnAfterUnpublish` | Unpublish |
-| `pbOnBeforeTrash` / `pbOnAfterTrash` | Move sections to trash |
+| `pbOnBeforeTrash` / `pbOnAfterTrash` | Move sections to the basket |
 
 In `pbOnAfterSave` and similar: `changes` is `DocumentChangeSet` (added/removed/trashed/restored section ids).
 
@@ -89,10 +84,10 @@ In `pbOnAfterSave` and similar: `changes` is `DocumentChangeSet` (added/removed/
 | Event | Purpose |
 | --- | --- |
 | `pbOnBeforeGetList` / `pbOnAfterGetList` | Catalog list |
-| `pbOnFieldValues` | `FieldValuesBag` — field value substitution |
-| `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied` — check depends (pro, minishop3) |
+| `pbOnFieldValues` | `FieldValuesBag`: field value substitution |
+| `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: check depends (pro, minishop3) |
 
-### Resource data tables
+### Tabular resource data
 
 | Event | When |
 | --- | --- |
@@ -104,7 +99,7 @@ In `pbOnAfterSave` and similar: `changes` is `DocumentChangeSet` (added/removed/
 | Event | Data |
 | --- | --- |
 | `pbOnBeforeRenderDocument` | `resourceId`, `document`, `pipeline`, `options` |
-| `pbOnBeforeRenderSection` | `index`, `pipeline` — mutate section before chunk |
+| `pbOnBeforeRenderSection` | `index`, `pipeline`: mutate section before chunk |
 | `pbOnGetValues` | When snippet `return_values=1` |
 
 Example: register a section in a plugin:
@@ -136,6 +131,11 @@ flowchart LR
 
 ## Related pages
 
+- [Workflow](workflow)
+- [CMP](cmp)
+- [PageBuilder Pro](pro)
+- [Agent API](agent-api)
+- [Developer](developer)
 - [Quick start](quick-start)
 - [Section catalog](sections/)
 - [FAQ](faq)

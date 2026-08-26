@@ -9,24 +9,24 @@ A short accent block in the middle or at the end of the page. Title, supporting 
 
 <!-- ![Call to action](/components/pagebuilder/screenshots/sections/cta.png) -->
 
-## Why this section
+## Why a separate CTA
 
 - Few fields: title, text, one button
 - Closes the funnel without repeating hero
 - `pb-cta` class ships with the package theme
 
-## When to use
+## Which pages
 
-- **End of landing** before the footer
-- **Newsletter** or demo signup
-- **Link to catalog** or pricing page
+- End of landing before the footer
+- Newsletter or demo signup
+- Link to catalog or pricing page
 
 ## Page examples
 
 - Landing: … → [Testimonials](testimonials) → [CTA](cta) → [Contact](contact)
 - Blog: [Blog posts](blog_posts) → [CTA](cta) for newsletter
 
-## Inspector tips
+## Required fields
 
 The button is hidden without a URL. Set both label and link.
 
@@ -69,15 +69,15 @@ Type [url](../fields/url#output-in-section-data). Required.
 
 `pb-cta` with a `pb-button` link.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
-  "text": "Дополнительный текст под заголовком.",
-  "button_label": "Подробнее",
+  "title": "Section title",
+  "text": "Supporting text under the title.",
+  "button_label": "Learn more",
   "button_url": "https://example.com/action"
 }
 ```

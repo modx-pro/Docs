@@ -5,31 +5,28 @@ description: "Строка scalar с подсказкой xtype без ExtJS в�
 
 # Поле xtype
 
-Слой: **Pro**.
+Слой: **Free**.
 
 <!-- ![xtype](/components/pagebuilder/screenshots/fields/xtype.png) -->
 
 ## Зачем этот тип
 
-- Legacy key xtype для миграции схем
-- В инспекторе обычный InputText
-- Pro когда нужен semantic alias text
+Legacy-ключ `xtype` для миграции старых схем. В инспекторе обычный `InputText`: ExtJS-виджет MODX не подключается. Семантический алиас для [text](text), если в JSON остался тип `xtype`.
 
 ## Когда использовать
 
 - Поля из старых MODX form configs
-- Placeholder для future widget
-- Dev-only semantic type name
+- Заготовка под будущий виджет
+- Только dev: имя типа в схеме без смены контракта
 
 ## Советы
 
-- Реальный UI не подключает Ext modx-combo
-- Новые схемы берите нативный [text](text) или [combo](combo)
+Реальный UI не тянет Ext modx-combo. В новых схемах берите [text](text) или [combo](combo).
 
 ## Похожие типы
 
 - [text](text) для новых scalar полей
-- [combo](combo) для dynamic select behavior
+- [combo](combo) для динамического select из БД
 
 ## Настройка
 
@@ -49,9 +46,9 @@ description: "Строка scalar с подсказкой xtype без ExtJS в�
 
 Строка.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `ext` в `section.data`:
+Ключ `ext` в данных секции:
 
 ```json
 {
@@ -71,7 +68,7 @@ description: "Строка scalar с подсказкой xtype без ExtJS в�
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -79,7 +76,7 @@ description: "Строка scalar с подсказкой xtype без ExtJS в�
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
@@ -88,4 +85,4 @@ description: "Строка scalar с подсказкой xtype без ExtJS в�
 
 - [Справочник типов](types)
 - [Обзор полей](overview)
-- [Pro в менеджере](../integration)
+- [Менеджер и события](../integration)

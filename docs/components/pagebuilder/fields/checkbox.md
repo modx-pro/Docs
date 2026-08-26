@@ -1,6 +1,6 @@
 ---
 title: "checkbox"
-description: "Один boolean-флаг true или false в section.data"
+description: "Один boolean-флаг: true или false"
 ---
 
 # Поле checkbox
@@ -11,9 +11,7 @@ description: "Один boolean-флаг true или false в section.data"
 
 ## Зачем этот тип
 
-- Явный чекбокс для одной опции
-- Значение boolean, не строка "1"/"0"
-- Пара с showWhen для условных полей
+Явный чекбокс для одной опции. Значение boolean, не строка "1"/"0". Пара с `showWhen` для условных полей.
 
 ## Когда использовать
 
@@ -23,8 +21,7 @@ description: "Один boolean-флаг true или false в section.data"
 
 ## Советы
 
-- Несколько независимых флагов возьмите [checkboxgroup](checkboxgroup)
-- Переключатель on/off на виду удобнее [toggle](toggle)
+Несколько независимых флагов: [checkboxgroup](checkboxgroup). Переключатель on/off на виду: [toggle](toggle).
 
 ## Похожие типы
 
@@ -48,9 +45,9 @@ description: "Один boolean-флаг true или false в section.data"
 
 Булево.
 
-## Вывод в section.data
+## Данные секции {#vyvod-v-section-data}
 
-Ключ `featured` в `section.data`:
+Ключ `featured` в данных секции:
 
 ```json
 {
@@ -66,7 +63,7 @@ description: "Один boolean-флаг true или false в section.data"
 
 ## Общие свойства
 
-Для полей с `name`, которые сохраняются в `section.data`:
+Для полей с `name`, которые сохраняются в данных секции:
 
 | Ключ | Тип | Роль | CMP |
 | --- | --- | --- | --- |
@@ -74,7 +71,7 @@ description: "Один boolean-флаг true или false в section.data"
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).

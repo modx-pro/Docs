@@ -13,24 +13,24 @@ description: "Row of client or partner logos (Pro)"
 Requires PageBuilder Pro.
 :::
 
-## Why this section
+## Trusted-by block
 
 - Fast “trusted by” strip
 - Alt text per logo for accessibility
 - Optional partner link
 
-## When to use
+## Typical placement
 
-- **B2B homepage** — clients and integrators
-- **Landing page** before testimonials
-- **Partners page**
+- B2B homepage: clients and integrators
+- Landing page before testimonials
+- Partners page
 
 ## Page examples
 
 - B2B: [Stats](stats) → [Logos](logos) → [Testimonials](testimonials)
 - Landing: [Features](features) → [Logos](logos) → [Pricing](pricing_table)
 
-## Inspector tips
+## Logo repeater
 
 **Logos** repeater: image, alt, URL. Keep logo heights consistent in design.
 
@@ -72,13 +72,13 @@ Each row:
 
 `pb-logos` grid with images.
 
-## Output in section.data
+## Section data {#output-in-section-data}
 
 Example payload after save. Media, video, and map values may be enriched on output:
 
 ```json
 {
-  "title": "Заголовок секции",
+  "title": "Section title",
   "items": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
@@ -92,7 +92,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
         "height": 1080,
         "type": "image"
       },
-      "alt": "Описание изображения для скринридеров"
+      "alt": "Image description for screen readers"
     }
   ]
 }

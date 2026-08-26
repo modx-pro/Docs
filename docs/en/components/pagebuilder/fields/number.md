@@ -1,6 +1,6 @@
 ---
 title: "number"
-description: "Numeric value in section.data for counters and limits"
+description: "Number for counters, limits, and order"
 ---
 
 # Field number
@@ -11,9 +11,7 @@ Layer: **Free**.
 
 ## Why this type
 
-- Number input in the inspector, not a digit string
-- Pro: `responsive` across breakpoints
-- Easy to sort and compute in the chunk
+Number input in the inspector, not a digit string. Pro: `responsive` across breakpoints. Easy to sort and compute in the chunk.
 
 ## When to use
 
@@ -23,8 +21,7 @@ Layer: **Free**.
 
 ## Tips
 
-- Money and currency format belong in [currency](currency) (Pro)
-- Phone or SKU with mask use [imask](imask) (Pro)
+Money and currency format belong in [currency](currency) (Pro). Phone or SKU with mask use [imask](imask) (Pro).
 
 ## Similar types
 
@@ -37,12 +34,12 @@ Layer: **Free**.
 {
   "name": "count",
   "type": "number",
-  "label": "Количество",
+  "label": "Count",
   "min": 0,
   "max": 100,
   "allowDecimals": false,
   "default": 0,
-  "tab": "Контент",
+  "tab": "Content",
   "width": 100,
   "active": true
 }
@@ -50,11 +47,11 @@ Layer: **Free**.
 
 ## Value
 
-Число или `null`.
+Number or `null`.
 
-## Output in section.data в section.data
+## Section data {#output-in-section-data}
 
-Ключ `count` в `section.data` (число или `null`):
+Key `count` in the section data (number or `null`):
 
 ```json
 {
@@ -62,7 +59,7 @@ Layer: **Free**.
 }
 ```
 
-## Chunk example в chunk
+## Chunk example
 
 ```fenom
 {if $count !== null}<span class="count">{$count}</span>{/if}
@@ -70,24 +67,24 @@ Layer: **Free**.
 
 ## Notes
 
-Лимиты: `min`, `max`, `minValue`, `maxValue`, `allowDecimals`. Pro: `responsive`.
+Limits: `min`, `max`, `minValue`, `maxValue`, `allowDecimals`. Pro: `responsive`.
 
 ## Common properties
 
-Для полей с `name`, которые сохраняются в `section.data`:
+For fields with `name` that are stored in the section data:
 
-| Ключ | Тип | Роль | CMP |
+| Key | Type | Role | CMP |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
-| `description` | string | Подсказка под подписью | да |
-| `default` | any | Начальное значение новой секции | да |
-| `active` | bool | `false` — скрыть поле в инспекторе | да |
-| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `tab` | string | Group subtitle in the inspector | yes |
+| `width` | 25–100 | Field width as % of the row (flex) | yes |
+| `description` | string | Hint under the label | yes |
+| `default` | any | Initial value for a new section | yes |
+| `active` | bool | `false` hides the field in the inspector | yes |
+| `required` | bool | Required on **publish** (draft still saves) | yes |
 
-**Pro** (capability `responsive`): при `responsive: true` в `section.data` — ключи `desktop`, `tablet`, `mobile` вместо скаляра.
+**Pro** (capability `responsive`): with `responsive: true`, the section data uses `desktop`, `tablet`, `mobile` keys instead of a scalar.
 
-See [fields overview](overview#common-field-properties).
+See [fields overview](overview#obshchie-svoystva-polya).
 
 ## See also
 
