@@ -19,7 +19,7 @@ Five short walkthroughs for the manager and storefront. If the package is not in
 
 1. Open **Extras → msBundles** (`manager/?a=index&namespace=msbundles`).
 2. Click **Add bundle**.
-3. Fill name, description, image. Turn on **Active**.
+3. Pick **Context**, fill name, description, image. Turn on **Active**.
 4. Add ≥ 2 products via search. Set quantity and price mode per line.
 5. Save.
 6. Call the snippet on the product template:

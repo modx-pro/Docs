@@ -23,13 +23,22 @@ Walk the list:
 
 1. **Active** is on in the editor.
 2. The current product is in the composition.
-3. The template calls:
+3. The bundle **context** matches the page context (`web`, `en`, …).
+4. The template calls:
 
 ```fenom
 {'!msBundles' | snippet : ['product' => $_modx->resource.id]}
 ```
 
 1. If a required line has zero stock, `msbundles_stock_behavior` is not `hide`.
+
+## Bundle needed on another language / context
+
+Each bundle has one `context_key`. For `en` or `de`, create a separate bundle: **Duplicate**, change context (while the copy is **inactive**), name, and composition. One ID does not span all storefronts.
+
+## After updating to 1.1.0
+
+The upgrade resolver sets `context_key = web` on existing bundles. If the storefront runs on another context, open the bundle, turn **Active** off, change context, and save.
 
 ## “Add bundle” button does nothing
 

@@ -30,7 +30,7 @@ On install the package creates tables, permissions, events, API routes, and bind
 ![Bundle list](/components/msbundles/screenshots/overview.png)
 
 1. Click **Add bundle**.
-2. Enter a name, for example “Laptop + headphones”. Add a description and image via the media browser if you want.
+2. Pick **Context** (defaults to `web`). Enter a name, for example “Laptop + headphones”. Add a description and image via the media browser if you want.
 3. Turn on **Active**. While it is off, the storefront will not show the bundle.
 
 ![Bundle editor](/components/msbundles/screenshots/editor.png)

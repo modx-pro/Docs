@@ -82,11 +82,63 @@ In `tpl.msCart`, call `tplMsBundlesCartInfo` under the product name (see below).
 
 ## Bundle selection logic
 
-1. `bundle` > 0 — one bundle by ID. If inactive and `activeOnly=1`, empty result.
-2. Else `product` > 0 — bundles that include the product.
-3. If nothing found or both are `0` — `emptyTpl`.
+The snippet, REST `/bundle/*`, and cart add use the **current MODX context** (`web`, `en`, …). A bundle with another `context_key` will not appear on the storefront.
+
+1. `bundle` > 0 — one bundle by ID. Inactive with `activeOnly=1` or wrong context → empty.
+2. Else non-empty `bundles` — bundles by ID list (order as in the parameter).
+3. Else `list=all` — all bundles in the current context (by `sortorder`).
+4. Else `product` > 0 — bundles that include the product.
+5. Otherwise — `emptyTpl`.
 
 With `msbundles_stock_behavior=hide` and unavailable stock, the card is omitted. `block` and `message` keep the card with `--blocked` / `--warning` modifiers.
+
+### Bundles catalog page
+
+Several cards by ID list:
+
+::: code-group
+
+```fenom
+{'!msBundles' | snippet : [
+  'bundles' => '5,8,12',
+  'wrapperTpl' => 'tplMsBundlesList',
+  'tpl' => 'tplMsBundlesItem'
+]}
+{'!msBundles.initialize' | snippet}
+```
+
+```modx
+[[!msBundles?
+  &bundles=`5,8,12`
+  &wrapperTpl=`tplMsBundlesList`
+  &tpl=`tplMsBundlesItem`
+]]
+[[!msBundles.initialize]]
+```
+
+:::
+
+All bundles in the current context:
+
+::: code-group
+
+```fenom
+{'!msBundles' | snippet : [
+  'list' => 'all',
+  'wrapperTpl' => 'tplMsBundlesList'
+]}
+{'!msBundles.initialize' | snippet}
+```
+
+```modx
+[[!msBundles?
+  &list=`all`
+  &wrapperTpl=`tplMsBundlesList`
+]]
+[[!msBundles.initialize]]
+```
+
+:::
 
 ## Theme (CSS variables)
 
