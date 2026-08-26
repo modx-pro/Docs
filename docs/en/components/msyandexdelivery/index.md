@@ -1,12 +1,11 @@
 ---
 title: msYandexDelivery
 description: Yandex Delivery Platform API (other-day) for MiniShop3 — rates, pickup points, manager requests
-author: modx-pro
+author: ibochkarev
 dependencies: [miniShop3, VueTools]
-description: Управляйте редиректами (с кодами 301, 302, 307, 308) на вашем сайте на базе MODX Revolution
+categories: minishop3
 logo: https://modstore.pro/assets/extras/msyandexdelivery/logo-md.png
 modstore: https://modstore.pro/packages/delivery/msyandexdelivery
-categories: minishop3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

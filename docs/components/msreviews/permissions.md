@@ -14,7 +14,7 @@ description: MODX permissions msreviews_* для CMP и API менеджера
 | Permission | Назначение |
 | --- | --- |
 | `msreviews_review_view` | Просмотр отзывов, превью, вкладка «Медиа» |
-| `msreviews_review_moderate` | Статус, bulk, закреп, удаление медиа |
+| `msreviews_review_moderate` | Ручное create/update, статус, bulk, закреп, удаление медиа |
 | `msreviews_review_reply` | Ответ магазина на отзыв |
 | `msreviews_review_export` | Экспорт CSV, список очереди писем |
 | `msreviews_review_import` | Импорт отзывов из CSV |

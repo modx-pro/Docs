@@ -82,11 +82,63 @@ description: Сниппет msBundles, чанки, CSS/JS и комплект в
 
 ## Логика выбора комплектов
 
-1. `bundle` > 0 — один комплект по ID. Если он неактивен и `activeOnly=1`, результата нет.
-2. Иначе `product` > 0 — комплекты, где товар в составе.
-3. Если ничего не нашлось или оба параметра `0` — возвращается `emptyTpl`.
+Сниппет, REST `/bundle/*` и добавление в корзину учитывают **текущий контекст** MODX (`web`, `en`, …). Комплект с другим `context_key` на витрине не появится.
+
+1. `bundle` > 0 — один комплект по ID. Неактивный при `activeOnly=1` или чужой контекст → пусто.
+2. Иначе непустой `bundles` — комплекты по списку ID (порядок как в параметре).
+3. Иначе `list=all` — все комплекты текущего контекста (как в списке менеджера).
+4. Иначе `product` > 0 — комплекты, где товар в составе.
+5. Иначе — `emptyTpl`.
 
 При `msbundles_stock_behavior=hide` и недоступном остатке карточка не выводится. Режимы `block` и `message` показывают карточку с модификаторами `--blocked` / `--warning`.
+
+### Страница каталога комплектов
+
+Несколько карточек по списку ID:
+
+::: code-group
+
+```fenom
+{'!msBundles' | snippet : [
+  'bundles' => '5,8,12',
+  'wrapperTpl' => 'tplMsBundlesList',
+  'tpl' => 'tplMsBundlesItem'
+]}
+{'!msBundles.initialize' | snippet}
+```
+
+```modx
+[[!msBundles?
+  &bundles=`5,8,12`
+  &wrapperTpl=`tplMsBundlesList`
+  &tpl=`tplMsBundlesItem`
+]]
+[[!msBundles.initialize]]
+```
+
+:::
+
+Все комплекты текущего контекста:
+
+::: code-group
+
+```fenom
+{'!msBundles' | snippet : [
+  'list' => 'all',
+  'wrapperTpl' => 'tplMsBundlesList'
+]}
+{'!msBundles.initialize' | snippet}
+```
+
+```modx
+[[!msBundles?
+  &list=`all`
+  &wrapperTpl=`tplMsBundlesList`
+]]
+[[!msBundles.initialize]]
+```
+
+:::
 
 ## Тема сайта (CSS-переменные)
 

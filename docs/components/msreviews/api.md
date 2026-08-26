@@ -57,6 +57,8 @@ action=request/process&key=ВАШ_КЛЮЧ
 | `action` | Назначение | Право |
 | --- | --- | --- |
 | `mgr/review/list` | Список для модерации | `review_view` |
+| `mgr/review/create` | Ручное создание отзыва | `review_moderate` |
+| `mgr/review/update` | Ручное редактирование (можно сменить `product_id`) | `review_moderate` |
 | `mgr/review/get` | Превью одного отзыва | `review_view` |
 | `mgr/review/update-status` | Статус | `review_moderate` |
 | `mgr/review/set-reply` | Ответ магазина | `review_reply` |
@@ -77,7 +79,9 @@ action=request/process&key=ВАШ_КЛЮЧ
 | `mgr/catalog/search` | Поиск товаров/папок | `review_analytics` |
 | `mgr/catalog/resolve` | Подписи по ID | `review_analytics` |
 
-Полные параметры — в исходниках `ConnectorRegistryFactory` и [Права доступа](permissions).
+Полные параметры **`mgr/review/create`** и **`mgr/review/update`**: `product_id`, `rating` (1–5), `title`, `text`, `author_name`, `author_email`, `status`, `is_verified` (0/1). У update обязателен `id`.
+
+Полный список действий — в исходниках `ConnectorRegistryFactory` и [Права доступа](permissions).
 
 ## Формат ответа
 
