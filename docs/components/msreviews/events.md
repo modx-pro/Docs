@@ -11,13 +11,13 @@ description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ош�
 
 | Событие | Когда |
 | --- | --- |
-| `msrOnBeforeReviewCreate` | До создания отзыва |
+| `msrOnBeforeReviewCreate` | До создания отзыва (витрина или `mgr/review/create`) |
 | `msrOnReviewCreate` | После создания |
 | `msrOnBeforeReviewPublish` | До публикации |
 | `msrOnReviewPublish` | После публикации |
 | `msrOnReviewReject` | При отклонении |
-| `msrOnBeforeReviewUpdate` / `msrOnReviewUpdate` | Самоправка |
-| `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | Самоудаление |
+| `msrOnBeforeReviewUpdate` / `msrOnReviewUpdate` | Правка на витрине (`review/update_own`) или в CMP (`mgr/review/update`) |
+| `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | Самоудаление на витрине |
 | `msrOnReviewVote` | После «полезно» |
 | `msrOnQuestionCreate` | Создание вопроса |
 | `msrOnAnswerCreate` | Ответ из CMP |

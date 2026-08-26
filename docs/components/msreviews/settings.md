@@ -115,13 +115,22 @@ description: Ключи msreviews_* — модерация, медиа, пись
 
 ## Verified purchase
 
-Флаг **`is_verified`** выставляется **только при создании отзыва** (`review/create`). В CMP нет переключателя «сделать verified».
+Флаг **`is_verified`** можно выставить двумя способами:
+
+1. **На витрине** — при `review/create` с валидным токеном заказа из письма или URL (`msr_token`).
+2. **В CMP** — чекбокс **Verified purchase** в диалоге «Добавить/Редактировать отзыв» (право **`review_moderate`**, с **1.1.0**).
+
+### Покупатель на сайте
 
 1. Заказ переходит в статус из **`msreviews_request_order_statuses`** → запись в очередь.
 2. Письмо со ссылкой **`?msr_token=…&msr_product_id=…`**.
-3. Покупатель открывает страницу товара, **`msReviewForm`** подхватывает токен.
-4. При **`msreviews_auto_publish_verified=1`** verified может опубликоваться сразу.
+3. **`msReviewForm`** на странице товара подхватывает токен.
+4. При **`msreviews_auto_publish_verified=1`** verified-отзыв может опубликоваться сразу.
 5. При **`msreviews_reject_on_cancel`** и списке **`msreviews_cancelled_order_status_ids`** отменённый заказ не даёт verified.
+
+### Модератор в CMP
+
+В форме создания или редактирования отзыва включите **Verified purchase**. Связь с заказом MS3 (`order_id`) при этом не создаётся: для ручных отзывов поле остаётся пустым.
 
 ## Порядок отзывов на витрине
 
