@@ -4,6 +4,8 @@ description: Доставка через Yandex Delivery Platform API (other-day
 author: modx-pro
 dependencies: [miniShop3, VueTools]
 categories: minishop3
+logo: https://modstore.pro/assets/extras/msyandexdelivery/logo-md.png
+modstore: https://modstore.pro/packages/delivery/msyandexdelivery
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },
