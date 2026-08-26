@@ -179,3 +179,6 @@ $aliases=`ms_tags==tag`
 
 Выполняет обновление индекса. Для запуска по расписанию используйте [CronManager](https://docs.modx.com/current/en/extras/cronmanager/index) или [Scheduler](https://docs.modx.pro/components/scheduler/)
 
+# simpleFiltersCheckSeoPages
+
+Выполняет проверку SEO-правил и создаёт SEO-страницы на их основе. Для запуска по расписанию также можно использовать [CronManager](https://docs.modx.com/current/en/extras/cronmanager/index) или [Scheduler](https://docs.modx.pro/components/scheduler/)
