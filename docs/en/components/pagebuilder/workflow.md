@@ -1,70 +1,141 @@
 ---
 title: Workflow
-description: Draft, publish, basket, and section copy in the PageBuilder editor
+description: Draft, publish, basket, copy, and preview in the PageBuilder editor
 ---
 
 # Workflow
 
-## Draft and published
+The editor lives on the resource **Sections** tab. You build the page from blocks, edit the draft as long as you need, and publish to the site separately.
+
+## Draft and published version
+
+PageBuilder keeps two copies of the document in `pb_pages`:
 
 | Layer | Storage | Who sees it |
 | --- | --- | --- |
-| Draft | `draft_json` in `pb_pages` | Editor, preview |
-| Published | `published_json` + `published_revision` | `[[!PageBuilder]]` snippet |
+| Draft | `draft_json` | Editor, in-tab preview |
+| Published | `published_json`, `published_revision` | `[[!PageBuilder]]` on the site |
 
-PageBuilder does not fill `modResource.content`.
+The component does not touch the resource **Content** field (`modResource.content`). SEO fields (pagetitle, description) work as usual.
+
+The site always shows the published snapshot only. You can change the draft freely until you click **Publish**.
+
+::: warning The MODX resource must be published too
+Even with published sections, the page will not open if the MODX resource itself is unpublished.
+:::
+
+## Typical cycle
+
+1. Open the resource → **Sections** tab (needs `pagebuilder_view` and `view` on the resource).
+2. **Add section** → pick a type in the catalog → fill fields in the inspector on the right.
+3. Reorder by drag or **Alt+↑** / **Alt+↓** with a section selected in the list.
+4. The draft auto-saves to the server. **Save draft** forces sync when needed.
+5. **Preview** or the center preview pane shows the draft (not the public URL).
+6. **Publish** copies the draft to `published_json`. Check the front with `[[!PageBuilder]]`.
+7. **Unpublish** removes sections from the site; the editor draft stays.
+
+First page walkthrough: [Quick start](quick-start).
 
 ## Save and revision
 
-The client sends `mgr/page/save` with the current `revision`. The server compares revision. On mismatch it returns `revision_conflict` and the client reloads the document.
+The client sends connector `mgr/page/save` with the draft `revision`. The server compares it to the database.
 
-Before publish the client validates required fields and opens the inspector on the first failing section.
+If two editors (or two tabs) save the same resource at once, the response is `revision_conflict`. The editor reloads the document from the server. Refresh the tab and save again. Do not bump revision manually.
+
+Before **Publish**, the client validates required fields (`required: true` in the type JSON). On failure it opens the inspector on the first failing section.
+
+Plugin events: `pbOnBeforeSave`, `pbOnAfterSave` (draft mode). `changes` carries a `DocumentChangeSet`: ids of sections added, removed, trashed, or restored.
 
 ## Publish and unpublish
 
-`mgr/page/publish` copies the draft to the published snapshot, increments revision, clears resource render cache.
+**Publish** (`mgr/page/publish`):
 
-`mgr/page/unpublish` clears the published snapshot. Draft is unchanged.
+- copies the current draft to `published_json`;
+- increments revision;
+- clears render cache `pagebuilder/{resourceId}`.
+
+**Unpublish** (`mgr/page/unpublish`) clears the published snapshot. The draft is unchanged. The snippet stops outputting sections on the site.
+
+Events: `pbOnBeforePublish`, `pbOnAfterPublish`, `pbOnBeforeUnpublish`, `pbOnAfterUnpublish`.
+
+## Section order and duplicate
+
+In the section list (outline):
+
+- drag changes order in the draft;
+- **Alt+↑** / **Alt+↓** move the selected section (keyboard-friendly);
+- **Duplicate** creates a copy with a new `id` in the same draft.
+
+After duplicate or reorder, wait for auto-save or click **Save draft** to persist on the server.
 
 ## Per-page basket (Free)
 
-Deleted sections go to **Basket** (`document.trash[]` in the draft).
+Deleting a section does not erase it immediately. The block goes to **Basket** on the same tab (`document.trash[]` inside the draft).
 
-| Action | Behavior |
+| Action | What happens |
 | --- | --- |
-| Move to basket | Section in `trash`, `_trashIndex` saved for restore |
-| Restore | Section at previous index (or end) |
-| Delete permanently | Remove from `trash` |
+| Move to basket | Section goes to `trash`; `settings` stores `_trashIndex` for restore at the same position |
+| Restore | Section returns to the previous index or the end of the list |
+| Delete permanently | Entry removed from `trash` |
 | Restore all / clear | Bulk restore or permanent delete with confirmation |
 
 Events: `pbOnBeforeTrash`, `pbOnAfterTrash`.
 
-In parallel, a plugin on `pbOnAfterSave` syncs `pb_basket_items` for the [global CMP basket](cmp#basket-pro) (Pro).
+This is a **single-page** basket. It does not list sections from other resources.
 
-## Copy and duplicate
+## Global basket (Pro)
 
-**Copy sections** uses processor `mgr/copy/sections`. Specify the source resource ID. Requires save permission on both resources. Events: `pbOnBeforeCopySections`, `pbOnAfterCopySections`.
+On draft save, a plugin on `pbOnAfterSave` syncs `pb_basket_items`. It indexes sections and table rows deleted across resources.
 
-**Duplicate** in the outline creates a copy with a new `id` in the draft. Save the draft to persist on the server.
+| Where | Purpose |
+| --- | --- |
+| Resource editor → **Basket** | Restore into this page's draft (Free) |
+| [Manager UI → Basket](cmp#basket-pro) | Cross-resource list, restore to source resource, purge (Pro) |
 
-## Undo / redo
+Restore from the manager UI inserts the section at `_trashIndex`, same as the local basket.
 
-Action history in the editor until the draft is saved to the server.
+## Copy between resources
+
+**Copy sections** calls connector `mgr/copy/sections`. Specify the source resource ID. Needs `save` on both resources and `pagebuilder_save` (or equivalent via policy).
+
+Events: `pbOnBeforeCopySections`, `pbOnAfterCopySections`.
+
+Copy moves selected blocks into the current resource's draft. This is not publish: the site updates only after **Publish** on the target page.
+
+## Undo and redo
+
+Undo and redo live in the editor memory until the draft is saved to the server. After `mgr/page/save`, local action history resets.
+
+Rapid edits to one field coalesce into one undo step: undo restores the last value, not every keystroke.
 
 ## Draft preview
 
-**Preview** button on the tab or URL `preview.php` with a signed token (`pagebuilder_preview_secret`). Details: [Frontend output → Draft preview](frontend#draft-preview).
+The public page URL shows published sections only. To view the draft:
 
-## Front render cache
+- **Preview** button on the **Sections** tab;
+- center iframe preview after save;
+- direct URL `{assets_url}components/pagebuilder/preview.php` with a signed token (`pagebuilder_preview_secret`).
 
-After publish or unpublish the cache partition `pagebuilder/{resourceId}` is invalidated. If you edit chunks or render plugins, publish again or clear MODX cache.
+Template CSS and extra styles for the iframe: `pagebuilder_preview_include_template_css` and `pagebuilder_preview_css_urls`. Details: [Frontend output → Draft preview](frontend#draft-preview).
 
-## Fake data
+## Front HTML cache
 
-When `pagebuilder_fake_enabled = 1`, the inspector **Fake** button fills fields with deterministic demo data (`mgr/section/fake`).
+After publish or unpublish, render cache `pagebuilder/{resourceId}` is cleared.
+
+The snippet with `use_cache=1` (default) caches final HTML in MODX. If you edit Fenom chunks or a plugin on `pbOnBeforeRenderSection`, publish again or call the snippet with `use_cache=0`, then clear site cache.
+
+Render events run only on cache miss. To debug render plugins, disable snippet cache.
+
+## Fake demo data
+
+When `pagebuilder_fake_enabled = 1`, the section inspector shows a **Fake** button. Connector `mgr/section/fake` fills fields with deterministic demo data (same seed yields the same output).
+
+Handy for layout and screenshots. Replace fake values before publishing to production.
 
 ## Related pages
 
 - [Quick start](quick-start)
-- [CMP](cmp)
-- [Snippets](snippets)
+- [Frontend output](frontend)
+- [Manager UI](cmp)
+- [Manager and events](integration)
+- [Snippets](snippets/)

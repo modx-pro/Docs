@@ -5,7 +5,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 # Обзор полей
 
-Поля задают, что редактор заполняет в секции. Схему хранят в JSON типа (`core/components/pagebuilder/sections/{key}.json`) или собирают в CMP.
+Поля задают, что редактор заполняет в секции. Схему хранят в JSON типа (`core/components/pagebuilder/sections/{key}.json`) или собирают в панели управления.
 
 В [справочнике](types) 50 типов. У каждого своя страница: JSON **Настройка**, блок **Данные секции** (как поле выглядит после сохранения) и пример для Fenom или HTML. В chunk значения приходят из `section.data`.
 
@@ -40,7 +40,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 Для полей с `name`, которые попадают в данные секции (не `heading` / `dependent`):
 
-| Ключ | Тип | Инспектор | CMP |
+| Ключ | Тип | Инспектор | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Поля с одним `tab` группируются под подзаголовком | да |
 | `width` | 25–100 | Ширина колонки в % (flex-строка), по умолчанию 100 | да |
@@ -53,7 +53,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 **Fieldset (Pro):** собственного ключа в data нет. Вложенные `fields` попадают в данные секции как плоские ключи. См. [fieldset.md](fieldset).
 
-Остальные ключи схемы (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) CMP не затирает: `sectionTypeForm.ts` сохраняет их в passthrough `extra`.
+Остальные ключи схемы (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) панель управления не затирает: `sectionTypeForm.ts` сохраняет их в passthrough `extra`.
 
 ### Pro: responsive
 
@@ -69,7 +69,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). На фронте читайте значения через `readResponsiveValue()` или capability `responsive`.
+Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). На фронте читайте значения через `readResponsiveValue()` или флаг `responsive`.
 
 ### Пример meta в JSON
 
@@ -119,7 +119,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 ## optionsSource
 
-Whitelist классов в `FieldOptionsService` (`modResource`, `modTemplate`, `modChunk`, …). Processor: `mgr/field/options`. Хук: `pbOnFieldValues`.
+Whitelist классов в `FieldOptionsService` (`modResource`, `modTemplate`, `modChunk`, …). Список опций: connector `mgr/field/options`. Хук: `pbOnFieldValues`.
 
 ## Фронт и enrich
 

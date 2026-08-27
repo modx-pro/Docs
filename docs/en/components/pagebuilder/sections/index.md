@@ -68,6 +68,7 @@ Product sections (`products_grid`, `product_spotlight`, `promo_banner`) are rend
 
 ## Related pages
 
-- [Fields overview](../fields/overview)
+- [Developer](../developer)
+- [Field types reference](../fields/types)
 - [Frontend output](../frontend)
 - [Manager and events](../integration)

@@ -1,11 +1,11 @@
 ---
-title: CMP PageBuilder
-description: Blocks, UTM, Collections и глобальная корзина в компоненте PageBuilder
+title: Панель управления PageBuilder
+description: Blocks, UTM, Collections и глобальная корзина в панели управления PageBuilder
 ---
 
-# CMP PageBuilder
+# Панель управления PageBuilder
 
-**Компоненты → PageBuilder** (`SectionTypesManager.vue`). Право **pagebuilder_manage_types** нужно для вкладки Blocks. Остальные вкладки CMP доступны по стандартным правам менеджера.
+**Компоненты → PageBuilder** (`SectionTypesManager.vue`). Право **pagebuilder_manage_types** нужно для вкладки Blocks. Остальные вкладки панели управления доступны по стандартным правам менеджера.
 
 Четыре вкладки на уровне сайта, не одного ресурса:
 
@@ -16,27 +16,36 @@ description: Blocks, UTM, Collections и глобальная корзина в 
 | **Collections** | Free | Наборы вкладок на форме ресурса по шаблону (`pb_collections`) |
 | **Basket** | Pro | Глобальная корзина удалённых секций и строк таблиц |
 
-<!-- ![CMP PageBuilder](/components/pagebuilder/screenshots/mgr-cmp-index.png) -->
+![Панель управления PageBuilder](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
 ## Blocks
 
-CRUD типов секций без деплоя PHP. Встроенные JSON из `core/components/pagebuilder/sections/*.json` можно править, скрывать и восстанавливать в каталоге через CMP.
+CRUD типов секций без деплоя PHP. Встроенные JSON из `core/components/pagebuilder/sections/*.json` можно править, скрывать и восстанавливать в каталоге через панель управления.
 
-При upgrade transport строки `pb_section_types` **не перезаписываются**: побеждает БД. Скрытие встроенного типа создаёт заглушку с `published = 0`. JSON в репозитории не удаляется. Секции на уже опубликованных страницах продолжают рендериться.
+| Действие | Что происходит |
+| --- | --- |
+| Переопределить | Запись в `pb_section_types`, флаг `overridesCode`. На runtime побеждает БД |
+| Скрыть | Тип не виден в каталоге на ресурсе, в панели управления остаётся с badge «Скрыт» |
+| Удалить (code-тип) | Tombstone `removedCode` в БД. JSON в пакете не удаляется |
+| Восстановить | Включите «Показывать скрытые» → **Восстановить** |
+
+При обновлении дополнения строки `pb_section_types` **не перезаписываются**: побеждает БД. Секции на уже опубликованных страницах продолжают рендериться.
+
+Connector `mgr/sectiontype/remove` принимает POST-параметр `lifecycle`: `hide`, `remove`, `restore` (не путать с `action` connector).
 
 Подробнее про JSON-схему: [Разработчик → Определение секции](developer#opredelenie-sekcii).
 
-<!-- ![Типы секций в CMP](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
+<!-- ![Типы секций в панели управления](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
 
 ## UTM
 
-Параметры для плейсхолдеров `{{utm:key}}` и значений по умолчанию. Правила **видимости** секций задаются в инспекторе ресурса (`settings.utm`), не на этой вкладке.
+Параметры для плейсхолдеров <code v-pre>{{utm:key}}</code> и значений по умолчанию. Правила **видимости** секций задаются в инспекторе ресурса (`settings.utm`), не на этой вкладке.
 
-На фронте сессия UTM: `[[!PageBuilderUtmSession]]` до `PageBuilder`. Ссылки: [Сниппеты](snippets#pagebuilderutmsession).
+На фронте сессия UTM: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) до `PageBuilder`. Ссылки: [Сниппеты](snippets/).
 
 ## Collections
 
-Collection привязывается к `template_ids` (пустой список означает все шаблоны). При `pagebuilder_collections_enabled = 1` старые вкладки `resource_tab_enabled` и `resource_tables_tab_enabled` заменяются динамическим набором из CMP.
+Collection привязывается к `template_ids` (пустой список означает все шаблоны). При `pagebuilder_collections_enabled = 1` старые вкладки `resource_tab_enabled` и `resource_tables_tab_enabled` заменяются динамическим набором из панели управления.
 
 ### Типы вкладок (`tab_type`)
 
@@ -49,13 +58,13 @@ Collection привязывается к `template_ids` (пустой списо
 | `modx_collections` | Интеграция с MODX Collections (`pagebuilder_collections_modx_bridge_enabled`) |
 | `iframe` | URL во `<iframe>` |
 
-Processors: `mgr/collection/list`, `save`, `remove`, `resolve`.
+CRUD коллекций и разрешение вкладок для шаблона: `mgr/collection/list`, `save`, `remove`, `resolve`.
 
 Настройки: [Системные настройки → Collections](settings#collections-cmp).
 
-## Basket (Pro) {#basket-pro}
+## Корзина (Pro) {#basket-pro}
 
-Capability `basket`. Корзина на странице в черновике ресурса остаётся в Free.
+Флаг `basket`. Корзина на странице в черновике ресурса остаётся в Free.
 
 Индекс секций из `draft.trash[]` и строк таблиц при удалении. Синхронизация при `pbOnAfterSave`. При `OnEmptyTrash` ресурса записи индекса для этого `resource_id` удаляются.
 
@@ -69,9 +78,9 @@ Capability `basket`. Корзина на странице в черновике 
 | Где | Что делает |
 | --- | --- |
 | Редактор ресурса → **Корзина** | На странице: восстановление и окончательное удаление в черновике (Free) |
-| CMP → **Basket** | Между ресурсами: список, восстановление в исходный ресурс, окончательное удаление (Pro) |
+| Панель управления → **Корзина** | Между ресурсами: список, восстановление в исходный ресурс, окончательное удаление (Pro) |
 
-Восстановление из CMP вставляет секцию на позицию `settings._trashIndex`, как в корзине на странице.
+Восстановление из панели управления вставляет секцию на позицию `settings._trashIndex`, как в корзине на странице.
 
 ## Связанные страницы
 

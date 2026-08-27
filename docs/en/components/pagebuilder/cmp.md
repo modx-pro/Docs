@@ -16,13 +16,22 @@ Four site-level tabs, not tied to a single resource:
 | **Collections** | Free | Resource form tab sets by template (`pb_collections`) |
 | **Basket** | Pro | Global basket for deleted sections and table rows |
 
-<!-- ![PageBuilder CMP](/components/pagebuilder/screenshots/mgr-cmp-index.png) -->
+![PageBuilder CMP](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
 ## Blocks
 
 CRUD section types without PHP deploy. Built-in JSON from `core/components/pagebuilder/sections/*.json` can be edited, hidden, and restored in the catalog via CMP.
 
-On transport upgrade, `pb_section_types` rows are **not overwritten**: the database wins. Hiding a built-in type creates a stub with `published = 0`. Repo JSON is not deleted. Sections on already published pages keep rendering.
+| Action | What happens |
+| --- | --- |
+| Override | Row in `pb_section_types`, `overridesCode` flag. Database wins at runtime |
+| Hide | Type hidden from the resource catalog; still visible in CMP with a Hidden badge |
+| Remove (code type) | `removedCode` tombstone in the database. Package JSON is not deleted |
+| Restore | Enable Show hidden → **Restore** |
+
+On extra upgrade, `pb_section_types` rows are **not overwritten**: the database wins. Sections on already published pages keep rendering.
+
+Processor `mgr/sectiontype/remove` accepts POST parameter `lifecycle`: `hide`, `remove`, `restore` (do not confuse with connector `action`).
 
 JSON schema details: [Developer → Section definition](developer#section-definition).
 
@@ -30,9 +39,9 @@ JSON schema details: [Developer → Section definition](developer#section-defini
 
 ## UTM
 
-Parameters for `{{utm:key}}` placeholders and default values. Section **visibility** rules are set in the resource inspector (`settings.utm`), not on this tab.
+Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. Section **visibility** rules are set in the resource inspector (`settings.utm`), not on this tab.
 
-Call `[[!PageBuilderUtmSession]]` before `PageBuilder` on the front. See [Snippets](snippets#pagebuilderutmsession).
+Call [PageBuilderUtmSession](snippets/PageBuilderUtmSession) before `PageBuilder` on the front. See [Snippets](snippets/).
 
 ## Collections
 

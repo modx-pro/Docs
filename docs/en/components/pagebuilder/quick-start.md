@@ -6,17 +6,27 @@ description: Install PageBuilder, permissions, Sections tab, and first frontend 
 
 ## 1. Install dependencies and the package
 
-Order:
+| Requirement | Version |
+| --- | --- |
+| MODX Revolution | 3.0.3+ |
+| PHP | 8.2+ |
+| VueTools | 1.1.2+ |
+| pdoTools | 3.0+ |
+| PageBuilder (Free) | 1.0.1-beta |
+| PageBuilder Pro | 1.0.1-beta, requires `pagebuilder` ≥ 1.0.1 |
 
-1. **VueTools** 1.1.2+
-2. **pdoTools** 3.0+
-3. Transport **`pagebuilder`** (Free) or **`pagebuilderpro`** (Pro)
+**PageBuilder** (Free) and **PageBuilder Pro** install from [modstore.pro](https://modstore.pro/extras/). Without the provider, install fails with `Package provider not found`.
 
-Clear the MODX cache after install. **Packages** should list namespace `pagebuilder`.
+1. [Connect ModStore](https://modstore.pro/info/connection).
+2. Install **VueTools** and **pdoTools** if they are not on the site yet.
+3. **Extras → Installer → Download Extras** — find **PageBuilder** (Free) or **PageBuilder Pro** → **Download** → **Install**.
+4. **Settings → Clear cache**. **Packages** should list namespace `pagebuilder`.
 
 ::: tip Pro
-Install `pagebuilderpro` only: Free core (`pagebuilder`) comes with it. You do not need to install Free separately.
+Install **PageBuilder Pro** only: MODX pulls Free core (`pagebuilder`) automatically. You do not need a separate Free install.
 :::
+
+Catalog: [modstore.pro](https://modstore.pro/).
 
 ## 2. Grant permissions
 
@@ -38,7 +48,7 @@ The tab is off by default. In **System settings** → namespace `pagebuilder`:
 
 Tab position: `pagebuilder_resource_tab_index` (`0` first, `-1` last).
 
-<!-- ![Sections tab on a resource](/components/pagebuilder/screenshots/mgr-sections-tab.png) -->
+![Sections tab on a resource](/components/pagebuilder/screenshots/mgr-sections-tab.png)
 
 Details: [System settings](settings#resource-form-tabs).
 
@@ -69,7 +79,7 @@ The snippet renders **published** sections for the current resource. Drafts are 
 1. Open the resource → **Sections** tab.
 2. Add a section (e.g. Hero) and fill fields.
 3. Click **Save** (draft).
-4. Click **Publish**. The version goes to `published_json`.
+4. Click **Publish**. The same layout appears on the site.
 
 With `pagebuilder_fake_enabled = 1`, the inspector shows a **Fake** button that fills fields with demo data for a quick layout check.
 
@@ -92,6 +102,6 @@ If the block is empty:
 ## Next steps
 
 - [Preview and Collections settings](settings)
-- [Snippet parameters](snippets)
+- [PageBuilder snippet parameters](snippets/PageBuilder)
 - [CSS and Fenom customization](frontend)
 - [Events and Pro](integration)

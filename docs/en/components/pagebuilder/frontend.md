@@ -22,7 +22,7 @@ Place the `PageBuilder` snippet in the template or content field. Use an uncache
 
 :::
 
-Published sections render through Fenom chunks in `core/components/pagebuilder/elements/chunks/`. Chunk names match section keys (`pagebuilder_section_hero`, etc.).
+Published sections render through Fenom chunks in `core/components/pagebuilder/elements/chunks/`. The chunk name matches the `chunk` field in the type JSON: `pagebuilder_hero`, `pagebuilder_cta`; Pro uses `pagebuilderpro_{key}`.
 
 ## CSS
 
@@ -67,9 +67,14 @@ Useful for partial blocks in different template areas.
 
 ## Section visibility
 
-Section JSON may include `settings.contexts` and `settings.utm`. Context comes from the current MODX context. UTM from `$_SESSION['utm']` after `PageBuilderUtmSession`.
+In section `settings` you can set:
 
-The section is skipped when rules do not match.
+- `contexts` — MODX context keys (current request context)
+- `utm` — UTM rules from `$_SESSION['utm']` after [PageBuilderUtmSession](snippets/PageBuilderUtmSession)
+
+With Pro and capability `conditions`, add `settings.conditions` (loggedIn, guest, context, GET params, and more). Checked via `SectionVisibility` and event `pbOnCheckSectionVisibility`.
+
+The section is omitted from HTML when a rule fails.
 
 ## Draft preview
 
@@ -90,7 +95,7 @@ Token is signed with `pagebuilder_preview_secret`. The iframe loads template CSS
 
 ## Related pages
 
-- [Snippets](snippets)
+- [PageBuilder snippet](snippets/PageBuilder)
 - [Design system](design-system)
 - [Section catalog](sections/)
 - [Render events](integration#frontend-render)

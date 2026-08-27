@@ -107,13 +107,13 @@ description: "Массив строк по columns с типизированны
 
 ## Примечание
 
-Колонки в CMP: `columnsText` (`name|Подпись|type`). Типы ячеек: text, number, image, color, date, tag, currency, url.
+Колонки в панели управления: `columnsText` (`name|Подпись|type`). Типы ячеек: text, number, image, color, date, tag, currency, url.
 
 ## Общие свойства
 
 Для полей с `name`, которые сохраняются в данных секции:
 
-| Ключ | Тип | Роль | CMP |
+| Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
 | `width` | 25–100 | Ширина поля в % строки (flex) | да |

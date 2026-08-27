@@ -6,9 +6,7 @@ description: "Ключи namespace pagebuilder: пути, превью, вкла
 
 Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
-<!-- ![System Settings → pagebuilder](/components/pagebuilder/screenshots/mgr-system-settings.png) -->
-
-При установке или апгрейде transport добавляет отсутствующие ключи. Уже заданные значения resolver не перезаписывает.
+При установке или обновлении дополнения resolver добавляет отсутствующие ключи. Уже заданные значения не перезаписывает.
 
 ## Пути и превью
 
@@ -31,14 +29,14 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_resource_tables_tab_enabled` | boolean | `0` | Вкладка «Таблицы» (табличные данные ресурса) |
 | `pagebuilder_resource_tables_tab_index` | number | `-1` | Позиция вкладки «Таблицы» |
 
-## Collections (CMP)
+## Collections (панель управления) {#collections-cmp}
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `pagebuilder_collections_enabled` | boolean | `0` | Динамический набор вкладок из CMP Collections |
+| `pagebuilder_collections_enabled` | boolean | `0` | Динамический набор вкладок из Collections в панели управления |
 | `pagebuilder_collections_modx_bridge_enabled` | boolean | `0` | Тип вкладки `modx_collections` |
 
-Включайте только если используете Collections и настроили конфигурацию вкладок в CMP PageBuilder. Подробнее: [CMP → Collections](cmp#collections).
+Включайте только если используете Collections и настроили конфигурацию вкладок в панели управления PageBuilder. Подробнее: [Панель управления → Collections](cmp#collections).
 
 ## Табличные данные ресурса
 
@@ -60,12 +58,21 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | --- | --- | --- | --- |
 | `pagebuilder_fake_enabled` | boolean | `0` | Кнопка **Fake** в инспекторе секции: заполняет поля детерминированными демо-данными (`mgr/section/fake`) |
 
+## Public API {#public-api}
+
+Read-only JSON для headless-фронта. Подробнее: [Public API](public-api).
+
+| Ключ | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `pagebuilder_public_api_enabled` | boolean | `0` | Включить `assets/components/pagebuilder/api.php` |
+| `pagebuilder_public_api_key` | text | пусто | API-ключ. Пусто: запросы без ключа (только для dev) |
+| `pagebuilder_public_api_cors_origins` | textarea | `*` | Разрешённые CORS origins для браузера |
+
 ## Связь со сниппетом
 
 | Настройка | Параметр сниппета | Поведение |
 | --- | --- | --- |
 | `pagebuilder_load_frontend_css` | `load_css` | Параметр переопределяет системную настройку |
 | — | `wrap_page` | Обёртка `<div class="pb-page">` (по умолчанию как у `load_css`) |
-| — | `qa_css` | Дополнительный QA-CSS для отладки вёрстки |
 
-Параметры `load_css`, `wrap_page`, `qa_css` задаются только на вызове сниппета, в transport properties они не перечислены.
+Параметры `load_css` и `wrap_page` задаются только на вызове сниппета, в properties сниппета они не перечислены.

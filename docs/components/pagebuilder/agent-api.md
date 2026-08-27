@@ -5,45 +5,114 @@ description: Snapshot и apply секций PageBuilder Pro для скрипт�
 
 # Agent API (Pro)
 
-HTTP-слой для скриптов, агентов и мини-конструкторов: соберите страницу из секций без ручной сборки полного `document` и без прямых правок таблиц MODX.
+HTTP-слой для скриптов, агентов и мини-конструкторов: добавьте или замените секции без ручной сборки полного JSON `document` и без прямых правок таблиц MODX.
 
-Нужен **PageBuilder Pro** (capability `api`). Используется тот же `connector.php` и сессия менеджера, что у Vue-редактора.
+Нужен **PageBuilder Pro** (capability `api`). Тот же `connector.php` и сессия менеджера, что у Vue-редактора.
 
-## Зачем
+Read-only JSON для витрины: [Public API](public-api). Agent API работает с черновиками, схемами полей и записью.
 
-Без Agent API типичный сценарий:
+```text
+/assets/components/pagebuilder/connector.php
+```
+
+Контекст: `mgr` (connector выставляет `ctx=mgr`). Метод: **POST**.
+
+## Что использовать
+
+| Задача | Инструмент |
+| --- | --- |
+| Прочитать опубликованную страницу для headless | [Public API](public-api) `web/page/get` |
+| Черновик, revision, схемы полей | `mgr/api/page/snapshot` |
+| Добавить или заменить блоки без полного document | `mgr/api/page/apply` |
+| Полный контроль над document и trash | `mgr/page/save` (Vue-редактор) |
+
+## Без Agent API
 
 1. Читать `modResource`, шаблоны, TV.
 2. Угадывать форму JSON секции.
-3. Отправлять весь черновик через `mgr/page/save` с проверкой revision.
+3. POST всего черновика через `mgr/page/save` с блокировкой revision.
 
-С Agent API:
+## С Agent API
 
 1. `mgr/api/page/snapshot` возвращает revision, черновик, типы секций и их поля.
-2. `mgr/api/page/apply` добавляет или заменяет секции по `{ type, data }`.
-3. По желанию передайте `publish=1`.
+2. `mgr/api/page/apply` пишет блоки `{ type, data }`.
+3. Передайте `publish=1`, если страница должна сразу выйти на сайт.
 
 ## Права
 
 | Требование | Значение |
 | --- | --- |
-| Transport | `POST` на `assets/components/pagebuilder/connector.php` |
+| HTTP | `POST` на `assets/components/pagebuilder/connector.php` |
 | Контекст | `ctx=mgr` |
+| Сессия | Вход в менеджер (cookie с `/manager/`) |
 | Токен | Заголовок `modAuth` = `MODx.siteId` (как в редакторе) |
 | Чтение | `pagebuilder_view` или `save_document` + policy **view** на ресурс |
 | Запись | `pagebuilder_save` или `save_document` + policy **save** на ресурс |
-| Pro | Установлен `pagebuilderpro`, в capabilities есть `api` |
+| Pro | Установлен `pagebuilderpro`, capability `api` в `PageBuilderConfig` |
+
+### Получить `modAuth`
+
+В консоли браузера на странице менеджера (вкладка Секции или любая mgr-страница):
+
+```js
+MODx.siteId
+```
+
+Для curl войдите в менеджер, сохраните cookies и отправьте токен:
+
+```bash
+# после POST /manager/ с -c cookies.txt
+MODX_MODAUTH="значение из MODx.siteId"
+
+curl -sS -X POST "${CONNECTOR}" \
+  -b cookies.txt \
+  -H "modAuth: ${MODX_MODAUTH}" \
+  ...
+```
+
+Без валидной сессии и `modAuth` connector вернёт ошибку авторизации MODX.
+
+## Формат ответа
+
+Тот же envelope, что у других processors PageBuilder:
+
+```json
+{ "success": true, "message": "", "object": {} }
+```
+
+При ошибке: `success: false`. Детали в `message` (строка или код ошибки).
+
+| Пример `message` | Когда |
+| --- | --- |
+| `revision_conflict` | `revision` в apply не совпал с сервером |
+| `Resource id is required.` | Нет или неверный `resource_id` |
+| `Resource not found.` | Ресурс не существует |
+| `Access denied.` | Нет policy view/save на ресурс |
+| `Save permission denied.` | Нет `pagebuilder_save` / `save_document` |
+| `Permission denied.` | Нет права на чтение (snapshot) |
+| `PageBuilder Pro API is required.` | Нет Pro или capability `api` |
+| `Sections payload must be a JSON array.` | `sections` не массив |
+| `Unknown section type: …` | Типа нет в каталоге |
+| `Section type is hidden: …` | Тип скрыт в UI |
+| `Section type is not available for this resource: …` | Ограничение template/parent/context |
+| `Section type requirements not satisfied: …` | Не выполнен `requires` (`pro`, `minishop3`) |
+| `Unsupported mode: …` | Неверный `mode` |
+| `Section type is required.` | Пустой `type` в элементе секции |
+
+При `revision_conflict` снова вызовите `snapshot`, возьмите новый `revision` и повторите `apply`. Не увеличивайте revision вручную.
+
+По HTTP конфликт только в JSON. В PHP `PageBuilderApiService::apply()` может бросить `\PageBuilder\Exception\RevisionConflictException`.
 
 ## `mgr/api/page/snapshot`
 
-Снимок страницы: черновик, revision, краткий список секций, схемы типов из каталога.
+Снимок одного ресурса: черновик, revision, краткий список секций, типы каталога с учётом `resourceContext` (template, parent, context).
 
 | Параметр | Обязателен | Описание |
 | --- | --- | --- |
 | `resource_id` | да | ID ресурса MODX |
-| `include_schemas` | нет | `1` (по умолчанию): поле `fields` у каждого типа. `0`: только метаданные |
+| `include_schemas` | нет | `1` (по умолчанию): `fields` у каждого типа. `0`: только метаданные |
 
-Пример `object` в ответе:
+Пример `object`:
 
 ```json
 {
@@ -80,19 +149,19 @@ HTTP-слой для скриптов, агентов и мини-констру
 }
 ```
 
-`availableTypes[].fields` это схема для сборки `data` в `apply`. `sectionsSummary[].id` нужен для `mode=upsert`.
+`availableTypes[].fields` это схема для `data` в `apply`. Используйте `sectionsSummary[].id` для `mode=upsert`. Полный `data` лежит в `draft.sections`.
 
 ## `mgr/api/page/apply`
 
-Запись секций без полной сборки документа редактора.
+Запись секций без сборки полного документа редактора.
 
 | Параметр | Обязателен | Описание |
 | --- | --- | --- |
 | `resource_id` | да | Целевой ресурс |
 | `sections` | да | JSON-массив (строка или распарсенный) |
 | `mode` | нет | `append` (по умолчанию), `prepend`, `replace`, `upsert` |
-| `revision` | нет | Ожидаемый revision черновика. `-1` или пропуск: берётся текущий |
-| `publish` | нет | `1`: опубликовать после сохранения |
+| `revision` | нет | Ожидаемый revision черновика. `-1` или пропуск: текущий на сервере |
+| `publish` | нет | `1`, `true` или `yes` публикует после save |
 
 Элемент массива `sections`:
 
@@ -112,16 +181,25 @@ HTTP-слой для скриптов, агентов и мини-констру
 }
 ```
 
-`data` накладывается поверх defaults из схемы типа. Неизвестный тип, скрытый тип или невыполненный `requires` (`pro`, `minishop3`) дают ошибку. Поле richtext в Free-секции `richtext` называется `content`, не `body`.
+| Поле | Назначение |
+| --- | --- |
+| `type` | Ключ из `availableTypes[].key` |
+| `data` | Накладывается на defaults из схемы типа |
+| `settings` | Настройки секции (видимость, UTM, Pro `conditions`) |
+| `enabled` | По умолчанию `true` |
+| `typeVersion` | По умолчанию: `version` типа из каталога |
+| `id` | 32 hex-символа для `upsert`. Пусто: генерируется новый id |
 
-| Режим `mode` | Поведение |
+Неизвестный тип, скрытый тип или невыполненный `requires` (`pro`, `minishop3`) дают ошибку. В Free-секции `richtext` поле называется `content`, не `body`.
+
+| `mode` | Поведение |
 | --- | --- |
 | `append` | Новые секции в конец черновика |
 | `prepend` | Новые секции в начало |
-| `replace` | Секции черновика заменяются целиком (`trash` не трогаем) |
-| `upsert` | По `id`: обновить существующую или добавить новую |
+| `replace` | Секции черновика заменяются целиком (`trash` не меняется) |
+| `upsert` | Обновление по `id` или добавление новой. Без `id`: как `append` |
 
-Пример `object` после `apply` (без `publish`):
+Пример `object` после apply (без publish):
 
 ```json
 {
@@ -134,11 +212,9 @@ HTTP-слой для скриптов, агентов и мини-констру
 }
 ```
 
-При расхождении revision ответ `{ "success": false, "message": "revision_conflict" }`. Снова вызовите `snapshot` и повторите `apply` с актуальным `revision`.
-
 ## Примеры
 
-Ниже `MODX_MODAUTH` это значение `MODx.siteId` из сессии менеджера. В DevTools откройте Network, любой POST к `connector.php`, заголовок `modAuth`.
+`MODX_MODAUTH` это `MODx.siteId` из сессии менеджера (DevTools → Network → любой POST к `connector.php` → заголовок `modAuth`).
 
 ### cURL: snapshot
 
@@ -146,21 +222,21 @@ HTTP-слой для скриптов, агентов и мини-констру
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data 'action=mgr/api/page/snapshot&resource_id=42&include_schemas=1'
 ```
 
-Без схем полей (меньше payload):
+Меньший payload без схем полей:
 
 ```bash
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data 'action=mgr/api/page/snapshot&resource_id=42&include_schemas=0'
 ```
 
 ### cURL: лендинг (replace + publish)
-
-Пересобирает черновик из hero, FAQ и CTA и сразу публикует его:
 
 ```bash
 SECTIONS='[
@@ -182,10 +258,6 @@ SECTIONS='[
         {
           "question": "Как оформить заказ?",
           "answer": "<p>Добавьте товар в корзину и перейдите к оформлению.</p>"
-        },
-        {
-          "question": "Есть ли самовывоз?",
-          "answer": "<p>Да, пункты выдачи на карте на странице доставки.</p>"
         }
       ]
     }
@@ -194,7 +266,7 @@ SECTIONS='[
     "type": "cta",
     "data": {
       "title": "Готовы начать?",
-      "text": "Оставьте заявку — перезвоним за 15 минут.",
+      "text": "Оставьте заявку, перезвоним за 15 минут.",
       "button_label": "Оставить заявку",
       "button_url": "/contacts/"
     }
@@ -204,73 +276,52 @@ SECTIONS='[
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data-urlencode "action=mgr/api/page/apply" \
   --data "resource_id=42&mode=replace&publish=1&revision=3" \
   --data-urlencode "sections=${SECTIONS}"
 ```
 
-`revision=3` возьмите из предыдущего `snapshot`. Без `revision` (или с `-1`) сервис подставляет текущий revision сам.
+`revision=3` возьмите из предыдущего `snapshot`. Без `revision` (или с `-1`) сервис подставляет текущий revision на сервере.
 
-### cURL: append (добавить в конец)
+### cURL: append, prepend, upsert
+
+Append:
 
 ```bash
-SECTIONS='[
-  {
-    "type": "richtext",
-    "data": {
-      "content": "<p>Дополнительный блок под основным контентом.</p>"
-    }
-  }
-]'
+SECTIONS='[{"type":"richtext","data":{"content":"<p>Дополнительный блок.</p>"}}]'
 
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data-urlencode "action=mgr/api/page/apply" \
   --data "resource_id=42&mode=append" \
   --data-urlencode "sections=${SECTIONS}"
 ```
 
-### cURL: prepend (в начало)
+Upsert по id из `sectionsSummary`:
 
 ```bash
-SECTIONS='[{"type":"cta","data":{"title":"Акция до пятницы","text":"−15% на первый заказ","button_label":"В каталог","button_url":"/catalog/"}}]'
-
-curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -H "modAuth: ${MODX_MODAUTH}" \
-  --data-urlencode "action=mgr/api/page/apply" \
-  --data "resource_id=42&mode=prepend" \
-  --data-urlencode "sections=${SECTIONS}"
-```
-
-### cURL: upsert (обновить секцию по id)
-
-`id` берёте из `sectionsSummary` ответа `snapshot`:
-
-```bash
-SECTIONS='[
-  {
-    "id": "a1b2c3d4e5f6789012345678abcdef01",
-    "type": "hero",
-    "data": {
-      "title": "Обновлённый заголовок",
-      "description": "Текст после upsert",
-      "button_label": "Купить",
-      "button_url": "/buy/"
-    }
+SECTIONS='[{
+  "id": "a1b2c3d4e5f6789012345678abcdef01",
+  "type": "hero",
+  "data": {
+    "title": "Обновлённый заголовок",
+    "description": "После upsert",
+    "button_label": "Купить",
+    "button_url": "/buy/"
   }
-]'
+}]'
 
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data-urlencode "action=mgr/api/page/apply" \
   --data "resource_id=42&mode=upsert" \
   --data-urlencode "sections=${SECTIONS}"
 ```
-
-Без `id` в элементе секция добавляется как новая (как при `append`).
 
 ### PHP: replace + publish
 
@@ -295,9 +346,7 @@ $result = $api->apply(
         ],
         [
             'type' => 'richtext',
-            'data' => [
-                'content' => '<p>Текст страницы.</p>',
-            ],
+            'data' => ['content' => '<p>Текст страницы.</p>'],
         ],
     ],
     mode: 'replace',
@@ -305,13 +354,11 @@ $result = $api->apply(
     userId: $userId,
     publish: true,
 );
-
-// $result['revision'], $result['addedSectionIds'], $result['published']
 ```
 
 Класс `PageBuilderPro\PageBuilderApiService` регистрируется в bootstrap `pagebuilderpro`.
 
-### PHP: append с повтором при revision_conflict
+### PHP: append с повтором при конфликте
 
 ```php
 /** @var \PageBuilderPro\PageBuilderApiService $api */
@@ -322,16 +369,14 @@ $sections = [
         'type' => 'cta',
         'data' => [
             'title' => 'Подписка',
-            'text' => 'Раз в неделю — новости и акции.',
+            'text' => 'Новости раз в неделю.',
             'button_label' => 'Подписаться',
             'button_url' => '/subscribe/',
         ],
     ],
 ];
 
-$attempts = 0;
-while ($attempts < 3) {
-    $attempts++;
+for ($attempt = 0; $attempt < 3; $attempt++) {
     $snapshot = $api->snapshot($resourceId, includeSchemas: false);
     try {
         $api->apply(
@@ -344,15 +389,12 @@ while ($attempts < 3) {
         );
         break;
     } catch (\PageBuilder\Exception\RevisionConflictException $e) {
-        // другой редактор сохранил черновик — снова snapshot
         continue;
     }
 }
 ```
 
-Через HTTP connector при конфликте приходит ответ `{ "success": false, "message": "revision_conflict" }` без PHP-exception.
-
-### JavaScript: append (сессия менеджера)
+### JavaScript: PageBuilderApi
 
 ```js
 const api = new PageBuilderApi({
@@ -364,8 +406,9 @@ const snap = await api.post('mgr/api/page/snapshot', {
   resource_id: 42,
   include_schemas: 1,
 })
+if (!snap.success) throw new Error(snap.message)
 
-await api.post('mgr/api/page/apply', {
+const apply = await api.post('mgr/api/page/apply', {
   resource_id: 42,
   revision: snap.object.revision,
   mode: 'append',
@@ -381,79 +424,50 @@ await api.post('mgr/api/page/apply', {
     },
   ]),
 })
-```
 
-### JavaScript: upsert по id из snapshot
-
-```js
-const snap = await api.post('mgr/api/page/snapshot', {
-  resource_id: 42,
-  include_schemas: 0,
-})
-const hero = (snap.object.sectionsSummary || []).find((s) => s.type === 'hero')
-if (!hero) {
-  throw new Error('No hero section on the page')
+if (apply.message === 'revision_conflict') {
+  // снова snapshot и retry
 }
-
-await api.post('mgr/api/page/apply', {
-  resource_id: 42,
-  revision: snap.object.revision,
-  mode: 'upsert',
-  sections: JSON.stringify([
-    {
-      id: hero.id,
-      type: 'hero',
-      data: {
-        title: 'Новый заголовок',
-        description: 'Обновлено скриптом',
-        button_label: 'Каталог',
-        button_url: '/catalog/',
-      },
-    },
-  ]),
-})
 ```
 
-### JavaScript: pb-fetch-lite
+`sections` передавайте JSON-строкой в POST, как в curl с `--data-urlencode`.
 
-Без Vue-обёртки, только POST:
-
-```js
-import { pbFetch } from '/assets/components/pagebuilder/js/pb-fetch-lite.js'
-
-const connector = '/assets/components/pagebuilder/connector.php'
-const auth = { baseUrl: connector, modAuth: MODx.siteId }
-
-const snap = await pbFetch('mgr/api/page/snapshot', { resource_id: 42 }, auth)
-
-await pbFetch(
-  'mgr/api/page/apply',
-  {
-    resource_id: 42,
-    revision: snap.object.revision,
-    mode: 'append',
-    sections: JSON.stringify([
-      { type: 'spacer', data: { size: 'md' } },
-    ]),
-  },
-  auth,
-)
-```
-
-Обёртка `PageBuilderApi`: `assets/components/pagebuilder/js/pagebuilder-api.js`. Лёгкий POST: `pb-fetch-lite.js` (`pbFetch(action, payload, options)`).
+Обёртка: `assets/components/pagebuilder/js/pagebuilder-api.js`. Лёгкий POST: `pb-fetch-lite.js` (`pbFetch(action, payload, options)`).
 
 ## Сценарий для агента
 
-1. `snapshot` по целевому ресурсу. Возьмите `revision`, `availableTypes[].fields`, `sectionsSummary`.
-2. Сопоставьте исходный контент с блоками `{ type, data }` по схемам из `availableTypes`.
-3. Вызовите `apply` с `mode=replace` (полная пересборка) или `append` / `upsert` (точечные правки). Передайте `revision` из шага 1.
-4. При `revision_conflict` снова вызовите `snapshot` и повторите `apply`.
-5. Опубликуйте через `publish=1` в `apply` или отдельно `mgr/page/publish`.
+1. `snapshot` по целевому ресурсу. Возьмите `revision`, `availableTypes[].fields`, `sectionsSummary` и `draft.sections`, если нужен текущий `data`.
+2. Сопоставьте исходный контент с `{ type, data }` по именам полей из `availableTypes`, а не по догадкам.
+3. `apply` с `mode=replace` (полная пересборка), `append` или `upsert`. Передайте `revision` из шага 1.
+4. При `revision_conflict` вернитесь к шагу 1.
+5. Публикация через `publish=1` в apply или отдельно `mgr/page/publish`.
+6. Проверка на сайте, в preview менеджера или через [Public API](public-api) `web/page/get`, если API включён.
 
-Free-процессор `mgr/catalog/list` по-прежнему отдаёт список типов. Agent API добавляет схемы полей и запись секций одним вызовом.
+Free-процессор `mgr/catalog/list` отдаёт типы без схем полей. Agent API добавляет схемы и запись одним вызовом.
+
+## События
+
+Apply использует `PageService::saveDraft` / `publishDraft`, как редактор:
+
+| Событие | Когда |
+| --- | --- |
+| `pbOnBeforeSave` / `pbOnAfterSave` | Запись черновика |
+| `pbOnBeforePublish` / `pbOnAfterPublish` | При `publish=1` |
+
+## Agent API vs `mgr/page/save`
+
+| | `mgr/api/page/apply` | `mgr/page/save` |
+| --- | --- | --- |
+| Тело | Массив `{ type, data }` | Полный JSON `PageDocument` |
+| Trash | Не меняется | Полный контроль |
+| Схемы типов | В `snapshot` | Отдельно `mgr/catalog/list`, без fields |
+| Блокировка revision | да | да |
+
+Apply удобен для сгенерированных лендингов из шаблонов секций. Save или редактор нужны для reorder, trash и тонкой настройки `settings`.
 
 ## Связанные страницы
 
 - [PageBuilder Pro](pro)
+- [Public API](public-api)
 - [Модель данных](developer#model-dannyh)
-- [События](integration#sobytiya): `pbOnBeforeSave`, `pbOnAfterSave` при apply
+- [События](integration#sobytiya)

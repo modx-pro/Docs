@@ -5,45 +5,114 @@ description: PageBuilder Pro snapshot and apply for scripts and agents
 
 # Agent API (Pro)
 
-HTTP layer for scripts, agents, and mini-builders: assemble a page from sections without hand-building the full `document` or editing MODX tables directly.
+HTTP layer for scripts, agents, and mini-builders: add or replace sections without hand-building the full `document` JSON or editing MODX tables directly.
 
 Requires **PageBuilder Pro** (capability `api`). Same `connector.php` and manager session as the Vue editor.
 
-## Why
+Published read-only JSON for the storefront lives in the [Public API](public-api). Agent API works with drafts, field schemas, and writes.
 
-Without Agent API, a typical flow is:
+```text
+/assets/components/pagebuilder/connector.php
+```
+
+Context: `mgr` (the connector sets `ctx=mgr`). Method: **POST**.
+
+## What to use
+
+| Task | Tool |
+| --- | --- |
+| Read published page for headless | [Public API](public-api) `web/page/get` |
+| Draft, revision, field schemas | `mgr/api/page/snapshot` |
+| Add or replace blocks without full document | `mgr/api/page/apply` |
+| Full control over document and trash | `mgr/page/save` (Vue editor) |
+
+## Without Agent API
 
 1. Read `modResource`, templates, TVs.
 2. Guess section JSON shape.
-3. Send the full draft via `mgr/page/save` with a revision check.
+3. POST the full draft through `mgr/page/save` with revision locking.
 
-With Agent API:
+## With Agent API
 
 1. `mgr/api/page/snapshot` returns revision, draft, section types, and their fields.
-2. `mgr/api/page/apply` adds or replaces sections with `{ type, data }`.
-3. Optionally pass `publish=1`.
+2. `mgr/api/page/apply` writes `{ type, data }` blocks.
+3. Pass `publish=1` when the page should go live.
 
 ## Permissions
 
 | Requirement | Value |
 | --- | --- |
-| Transport | `POST` to `assets/components/pagebuilder/connector.php` |
+| HTTP | `POST` to `assets/components/pagebuilder/connector.php` |
 | Context | `ctx=mgr` |
+| Session | Manager login (cookie from `/manager/`) |
 | Token | Header `modAuth` = `MODx.siteId` (same as the editor) |
-| Read | `pagebuilder_view` or `save_document` + **view** policy on the resource |
-| Write | `pagebuilder_save` or `save_document` + **save** policy on the resource |
-| Pro | `pagebuilderpro` installed, capabilities include `api` |
+| Read | `pagebuilder_view` or `save_document` + **view** on the resource |
+| Write | `pagebuilder_save` or `save_document` + **save** on the resource |
+| Pro | `pagebuilderpro` installed, capability `api` in `PageBuilderConfig` |
+
+### Get `modAuth`
+
+In the manager browser console (Sections tab or any mgr page):
+
+```js
+MODx.siteId
+```
+
+For curl, log in to the manager, save cookies, and send the token:
+
+```bash
+# after POST /manager/ with -c cookies.txt
+MODX_MODAUTH="value from MODx.siteId"
+
+curl -sS -X POST "${CONNECTOR}" \
+  -b cookies.txt \
+  -H "modAuth: ${MODX_MODAUTH}" \
+  ...
+```
+
+Without a valid session and `modAuth`, the connector returns a MODX auth error.
+
+## Response format
+
+Same envelope as other PageBuilder processors:
+
+```json
+{ "success": true, "message": "", "object": {} }
+```
+
+On failure: `success: false`. Details are in `message` (string or error code).
+
+| Example `message` | When |
+| --- | --- |
+| `revision_conflict` | `revision` in apply does not match the server |
+| `Resource id is required.` | Missing or invalid `resource_id` |
+| `Resource not found.` | Resource does not exist |
+| `Access denied.` | No view/save policy on the resource |
+| `Save permission denied.` | No `pagebuilder_save` / `save_document` |
+| `Permission denied.` | No read permission (snapshot) |
+| `PageBuilder Pro API is required.` | No Pro or missing capability `api` |
+| `Sections payload must be a JSON array.` | `sections` is not an array |
+| `Unknown section type: …` | Type not in catalog |
+| `Section type is hidden: …` | Type hidden in UI |
+| `Section type is not available for this resource: …` | template/parent/context limit |
+| `Section type requirements not satisfied: …` | `requires` not met (`pro`, `minishop3`) |
+| `Unsupported mode: …` | Invalid `mode` |
+| `Section type is required.` | Empty `type` in a section item |
+
+On `revision_conflict`, call `snapshot` again, take the new `revision`, and retry `apply`. Do not bump revision by hand.
+
+Over HTTP, conflicts return JSON only. In PHP, `PageBuilderApiService::apply()` can throw `\PageBuilder\Exception\RevisionConflictException`.
 
 ## `mgr/api/page/snapshot`
 
-Page snapshot: draft, revision, short section list, type schemas from the catalog.
+Snapshot for one resource: draft, revision, short section list, catalog types filtered by `resourceContext` (template, parent, context).
 
 | Parameter | Required | Description |
 | --- | --- | --- |
 | `resource_id` | yes | MODX resource ID |
-| `include_schemas` | no | `1` (default): `fields` on each type; `0`: metadata only |
+| `include_schemas` | no | `1` (default): `fields` on each type. `0`: metadata only |
 
-Sample response `object`:
+Sample `object`:
 
 ```json
 {
@@ -80,7 +149,7 @@ Sample response `object`:
 }
 ```
 
-`availableTypes[].fields` is the schema for building `data` in `apply`. Use `sectionsSummary[].id` for `mode=upsert`.
+`availableTypes[].fields` is the schema for `data` in `apply`. Use `sectionsSummary[].id` for `mode=upsert`. Full `data` lives in `draft.sections`.
 
 ## `mgr/api/page/apply`
 
@@ -91,10 +160,10 @@ Write sections without assembling the full editor document.
 | `resource_id` | yes | Target resource |
 | `sections` | yes | JSON array (string or parsed) |
 | `mode` | no | `append` (default), `prepend`, `replace`, `upsert` |
-| `revision` | no | Expected draft revision; `-1` or omit uses current |
-| `publish` | no | `1` publishes after save |
+| `revision` | no | Expected draft revision. `-1` or omit uses current server value |
+| `publish` | no | `1`, `true`, or `yes` publishes after save |
 
-`sections` array item:
+Each item in `sections`:
 
 ```json
 {
@@ -112,16 +181,25 @@ Write sections without assembling the full editor document.
 }
 ```
 
-`data` merges over defaults from the type schema. Unknown type, hidden type, or unmet `requires` (`pro`, `minishop3`) returns an error. The Free `richtext` section field is `content`, not `body`.
+| Field | Role |
+| --- | --- |
+| `type` | Key from `availableTypes[].key` |
+| `data` | Merged over defaults from the type schema |
+| `settings` | Section settings (visibility, UTM, Pro `conditions`) |
+| `enabled` | Default `true` |
+| `typeVersion` | Default: type `version` from catalog |
+| `id` | 32 hex chars for `upsert`. Empty: new id generated |
+
+Unknown type, hidden type, or failed `requires` (`pro`, `minishop3`) returns an error. Free `richtext` uses field name `content`, not `body`.
 
 | `mode` | Behavior |
 | --- | --- |
 | `append` | New sections at the end of the draft |
 | `prepend` | New sections at the start |
 | `replace` | Draft sections replaced entirely (`trash` unchanged) |
-| `upsert` | By `id`: update existing or add new |
+| `upsert` | Update by `id` or add new. No `id`: append like `append` |
 
-Sample `object` after `apply` (without `publish`):
+Sample `object` after apply (no publish):
 
 ```json
 {
@@ -134,11 +212,9 @@ Sample `object` after `apply` (without `publish`):
 }
 ```
 
-On revision mismatch the response is `{ "success": false, "message": "revision_conflict" }`. Call `snapshot` again and retry `apply` with the current `revision`.
-
 ## Examples
 
-`MODX_MODAUTH` is `MODx.siteId` from the manager session (DevTools → Network → any POST to `connector.php` → `modAuth` header).
+`MODX_MODAUTH` is `MODx.siteId` from the manager session (DevTools → Network → any POST to `connector.php` → header `modAuth`).
 
 ### cURL: snapshot
 
@@ -146,21 +222,21 @@ On revision mismatch the response is `{ "success": false, "message": "revision_c
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data 'action=mgr/api/page/snapshot&resource_id=42&include_schemas=1'
 ```
 
-Without field schemas (smaller payload):
+Smaller payload without field schemas:
 
 ```bash
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data 'action=mgr/api/page/snapshot&resource_id=42&include_schemas=0'
 ```
 
-### cURL: landing page (replace + publish)
-
-Rebuilds the draft from hero, FAQ, and CTA, then publishes:
+### cURL: landing (replace + publish)
 
 ```bash
 SECTIONS='[
@@ -182,10 +258,6 @@ SECTIONS='[
         {
           "question": "How do I place an order?",
           "answer": "<p>Add a product to the cart and proceed to checkout.</p>"
-        },
-        {
-          "question": "Is pickup available?",
-          "answer": "<p>Yes. Pickup points are on the delivery page map.</p>"
         }
       ]
     }
@@ -204,73 +276,52 @@ SECTIONS='[
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data-urlencode "action=mgr/api/page/apply" \
   --data "resource_id=42&mode=replace&publish=1&revision=3" \
   --data-urlencode "sections=${SECTIONS}"
 ```
 
-Take `revision=3` from the previous `snapshot`. Without `revision` (or `-1`) the service uses the current revision.
+Take `revision=3` from the previous `snapshot`. Without `revision` (or with `-1`) the service uses the current server revision.
 
-### cURL: append
+### cURL: append, prepend, upsert
+
+Append:
 
 ```bash
-SECTIONS='[
-  {
-    "type": "richtext",
-    "data": {
-      "content": "<p>Extra block under the main content.</p>"
-    }
-  }
-]'
+SECTIONS='[{"type":"richtext","data":{"content":"<p>Extra block.</p>"}}]'
 
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data-urlencode "action=mgr/api/page/apply" \
   --data "resource_id=42&mode=append" \
   --data-urlencode "sections=${SECTIONS}"
 ```
 
-### cURL: prepend
+Upsert by id from `sectionsSummary`:
 
 ```bash
-SECTIONS='[{"type":"cta","data":{"title":"Sale until Friday","text":"−15% on the first order","button_label":"Shop","button_url":"/catalog/"}}]'
-
-curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
-  -H 'Content-Type: application/x-www-form-urlencoded' \
-  -H "modAuth: ${MODX_MODAUTH}" \
-  --data-urlencode "action=mgr/api/page/apply" \
-  --data "resource_id=42&mode=prepend" \
-  --data-urlencode "sections=${SECTIONS}"
-```
-
-### cURL: upsert (update section by id)
-
-Take `id` from `sectionsSummary` in the `snapshot` response:
-
-```bash
-SECTIONS='[
-  {
-    "id": "a1b2c3d4e5f6789012345678abcdef01",
-    "type": "hero",
-    "data": {
-      "title": "Updated title",
-      "description": "Text after upsert",
-      "button_label": "Buy",
-      "button_url": "/buy/"
-    }
+SECTIONS='[{
+  "id": "a1b2c3d4e5f6789012345678abcdef01",
+  "type": "hero",
+  "data": {
+    "title": "Updated title",
+    "description": "After upsert",
+    "button_label": "Buy",
+    "button_url": "/buy/"
   }
-]'
+}]'
 
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
   -H "modAuth: ${MODX_MODAUTH}" \
+  -b cookies.txt \
   --data-urlencode "action=mgr/api/page/apply" \
   --data "resource_id=42&mode=upsert" \
   --data-urlencode "sections=${SECTIONS}"
 ```
-
-Without `id` on an item, the section is added as new (same as `append`).
 
 ### PHP: replace + publish
 
@@ -295,9 +346,7 @@ $result = $api->apply(
         ],
         [
             'type' => 'richtext',
-            'data' => [
-                'content' => '<p>Page text.</p>',
-            ],
+            'data' => ['content' => '<p>Page text.</p>'],
         ],
     ],
     mode: 'replace',
@@ -305,13 +354,11 @@ $result = $api->apply(
     userId: $userId,
     publish: true,
 );
-
-// $result['revision'], $result['addedSectionIds'], $result['published']
 ```
 
 Class `PageBuilderPro\PageBuilderApiService` registers in the `pagebuilderpro` bootstrap.
 
-### PHP: append with revision_conflict retry
+### PHP: append with retry on conflict
 
 ```php
 /** @var \PageBuilderPro\PageBuilderApiService $api */
@@ -322,16 +369,14 @@ $sections = [
         'type' => 'cta',
         'data' => [
             'title' => 'Subscribe',
-            'text' => 'News and deals once a week.',
+            'text' => 'News once a week.',
             'button_label' => 'Sign up',
             'button_url' => '/subscribe/',
         ],
     ],
 ];
 
-$attempts = 0;
-while ($attempts < 3) {
-    $attempts++;
+for ($attempt = 0; $attempt < 3; $attempt++) {
     $snapshot = $api->snapshot($resourceId, includeSchemas: false);
     try {
         $api->apply(
@@ -344,15 +389,12 @@ while ($attempts < 3) {
         );
         break;
     } catch (\PageBuilder\Exception\RevisionConflictException $e) {
-        // another editor saved the draft — snapshot again
         continue;
     }
 }
 ```
 
-Over the HTTP connector a conflict returns `{ "success": false, "message": "revision_conflict" }` without a PHP exception.
-
-### JavaScript: append (manager session)
+### JavaScript: PageBuilderApi
 
 ```js
 const api = new PageBuilderApi({
@@ -364,8 +406,9 @@ const snap = await api.post('mgr/api/page/snapshot', {
   resource_id: 42,
   include_schemas: 1,
 })
+if (!snap.success) throw new Error(snap.message)
 
-await api.post('mgr/api/page/apply', {
+const apply = await api.post('mgr/api/page/apply', {
   resource_id: 42,
   revision: snap.object.revision,
   mode: 'append',
@@ -381,79 +424,50 @@ await api.post('mgr/api/page/apply', {
     },
   ]),
 })
-```
 
-### JavaScript: upsert by id from snapshot
-
-```js
-const snap = await api.post('mgr/api/page/snapshot', {
-  resource_id: 42,
-  include_schemas: 0,
-})
-const hero = (snap.object.sectionsSummary || []).find((s) => s.type === 'hero')
-if (!hero) {
-  throw new Error('No hero section on the page')
+if (apply.message === 'revision_conflict') {
+  // snapshot again and retry
 }
-
-await api.post('mgr/api/page/apply', {
-  resource_id: 42,
-  revision: snap.object.revision,
-  mode: 'upsert',
-  sections: JSON.stringify([
-    {
-      id: hero.id,
-      type: 'hero',
-      data: {
-        title: 'New title',
-        description: 'Updated by script',
-        button_label: 'Catalog',
-        button_url: '/catalog/',
-      },
-    },
-  ]),
-})
 ```
 
-### JavaScript: pb-fetch-lite
+Send `sections` as a JSON string in POST, same as curl `--data-urlencode`.
 
-POST without the Vue wrapper:
-
-```js
-import { pbFetch } from '/assets/components/pagebuilder/js/pb-fetch-lite.js'
-
-const connector = '/assets/components/pagebuilder/connector.php'
-const auth = { baseUrl: connector, modAuth: MODx.siteId }
-
-const snap = await pbFetch('mgr/api/page/snapshot', { resource_id: 42 }, auth)
-
-await pbFetch(
-  'mgr/api/page/apply',
-  {
-    resource_id: 42,
-    revision: snap.object.revision,
-    mode: 'append',
-    sections: JSON.stringify([
-      { type: 'spacer', data: { size: 'md' } },
-    ]),
-  },
-  auth,
-)
-```
-
-`PageBuilderApi` wrapper: `assets/components/pagebuilder/js/pagebuilder-api.js`. Lite POST: `pb-fetch-lite.js` (`pbFetch(action, payload, options)`).
+Wrapper: `assets/components/pagebuilder/js/pagebuilder-api.js`. Lite POST: `pb-fetch-lite.js` (`pbFetch(action, payload, options)`).
 
 ## Agent workflow
 
-1. `snapshot` on the target resource. Take `revision`, `availableTypes[].fields`, `sectionsSummary`.
-2. Map source content to `{ type, data }` using schemas from `availableTypes`.
-3. `apply` with `mode=replace` (full rebuild) or `append` / `upsert` (targeted edits), pass `revision` from step 1.
-4. On `revision_conflict`, call `snapshot` again and retry `apply`.
-5. Publish: `publish=1` on `apply` or separately `mgr/page/publish`.
+1. `snapshot` on the target resource. Take `revision`, `availableTypes[].fields`, `sectionsSummary`, and `draft.sections` when you need current `data`.
+2. Map source content to `{ type, data }` using field names from `availableTypes`, not guessed keys.
+3. `apply` with `mode=replace` (full rebuild), `append`, or `upsert`. Pass `revision` from step 1.
+4. On `revision_conflict`, go back to step 1.
+5. Publish with `publish=1` on apply, or call `mgr/page/publish` separately.
+6. Verify on the site, in manager preview, or via [Public API](public-api) `web/page/get` if enabled.
 
-Free processor `mgr/catalog/list` still returns the type list. Agent API adds field schemas and single-call section writes.
+Free processor `mgr/catalog/list` returns types without field schemas. Agent API adds schemas and single-call writes.
+
+## Events
+
+Apply uses `PageService::saveDraft` / `publishDraft`, same as the editor:
+
+| Event | When |
+| --- | --- |
+| `pbOnBeforeSave` / `pbOnAfterSave` | Draft write |
+| `pbOnBeforePublish` / `pbOnAfterPublish` | When `publish=1` |
+
+## Agent API vs `mgr/page/save`
+
+| | `mgr/api/page/apply` | `mgr/page/save` |
+| --- | --- | --- |
+| Body | Array of `{ type, data }` | Full `PageDocument` JSON |
+| Trash | Unchanged | Full control |
+| Type schemas | In `snapshot` | Separate `mgr/catalog/list`, no fields |
+| Revision lock | yes | yes |
+
+Use apply for generated landings from section templates. Use save or the editor for reorder, trash, and fine-grained `settings`.
 
 ## Related pages
 
 - [PageBuilder Pro](pro)
+- [Public API](public-api)
 - [Data model](developer#data-model)
-- [Events](integration#events): `pbOnBeforeSave`, `pbOnAfterSave` on apply
+- [Events](integration#events)

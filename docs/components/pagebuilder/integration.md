@@ -1,27 +1,27 @@
 ---
 title: Менеджер и события
-description: CMP PageBuilder, права, модель данных, события pbOn и обзор Pro
+description: Панель управления PageBuilder, права, модель данных, события pbOn и обзор Pro
 ---
 # Менеджер и события
 
-## CMP
+## Панель управления
 
-<!-- ![CMP PageBuilder](/components/pagebuilder/screenshots/mgr-cmp-index.png) -->
+![Панель управления PageBuilder](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
 Компонент в менеджере: **Компоненты → PageBuilder** (namespace `pagebuilder`, controller `index`).
 
-В CMP:
+В панели управления:
 
 - список ресурсов с секциями
 - переход к редактору секций
 - **Типы секций** (право `pagebuilder_manage_types`): UI-типы, скрытие и восстановление встроенных JSON-типов
 
-<!-- ![Типы секций в CMP](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
+<!-- ![Типы секций в панели управления](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
 
-- **Basket** (Pro, capability `basket`): глобальная корзина удалённых секций и строк таблиц
-- настройки Collections-вкладок при включённых `pagebuilder_collections_*`
+- **Корзина** (Pro, флаг `basket`): глобальная корзина удалённых секций и строк таблиц
+- настройки вкладок Collections при включённых `pagebuilder_collections_*`
 
-Редактор на форме ресурса и в CMP использует один Vue-бандл через **VueTools**. Connector:
+Редактор на форме ресурса и в панели управления использует один Vue-бандл через **VueTools**. Точка входа API менеджера:
 
 `assets/components/pagebuilder/connector.php`
 
@@ -34,11 +34,14 @@ description: CMP PageBuilder, права, модель данных, событ�
 | `resource_id` | Связь с `modResource` |
 | `draft_json` | Черновик документа секций |
 | `published_json` | Опубликованная версия |
-| `draft_revision` / `published_revision` | Счётчики ревизий |
+| `revision` | Номер ревизии черновика (optimistic locking) |
+| `published_revision` | Ревизия последней публикации |
+| `publishedon` / `publishedby` | Время и пользователь публикации |
+| `editedon` / `editedby` | Последнее изменение черновика |
 
 `modResource.content` PageBuilder не перезаписывает. SEO-поля ресурса (pagetitle, description) используются как обычно.
 
-Корзина на странице хранит удалённые секции в `document.trash`. При сохранении черновика плагин синхронизирует индекс `pb_basket_items`. Отдельного события `pbOn*` для корзины нет: plugin на `pbOnAfterSave` может читать `record.draft.trash`. Глобальное восстановление и окончательное удаление выполняют Pro-процессоры `mgr/basket/*`.
+Корзина на странице хранит удалённые секции в `document.trash`. При сохранении черновика плагин синхронизирует индекс `pb_basket_items`. Отдельного события `pbOn*` для корзины нет: плагин на `pbOnAfterSave` может читать `record.draft.trash`. Глобальное восстановление и окончательное удаление выполняют действия connector Pro (`mgr/basket/*`).
 
 Табличные данные ресурса хранятся в отдельных таблицах `pb_*` (вкладка «Таблицы»).
 
@@ -46,15 +49,17 @@ description: CMP PageBuilder, права, модель данных, событ�
 
 ## PageBuilder Pro
 
-Transport `pagebuilderpro` добавляет библиотеку, версии, пресеты, responsive-поля, 20 расширенных типов полей, глобальную корзину CMP и [Agent API](agent-api).
+Дополнение `pagebuilderpro` добавляет библиотеку, версии, пресеты, поля по breakpoints, 20 расширенных типов полей, глобальную корзину в панели управления и [Agent API](agent-api).
 
-Подробно: [PageBuilder Pro](pro). Commerce-секции требуют **miniShop3**.
+Подробно: [PageBuilder Pro](pro). Секции витрины требуют **miniShop3**.
 
 ## События
 
-Подпишите plugin в **Система → События** или static plugin в transport.
+При установке дополнение регистрирует 20 событий `pbOn*` в MODX. Подпишите плагин в **Система → События** или используйте статический плагин из состава пакета.
 
-### Регистрация при boot
+Исключение: **`pbOnBeforeTableGetList`** и **`pbOnTableRowSave`** установщик не создаёт. Если нужны хуки табличных данных, добавьте события вручную и подпишите плагин.
+
+### Регистрация при загрузке
 
 | Событие | Данные |
 | --- | --- |
@@ -70,7 +75,7 @@ Transport `pagebuilderpro` добавляет библиотеку, версии
 | `pbOnBeforeUnpublish` / `pbOnAfterUnpublish` | Снятие с публикации |
 | `pbOnBeforeTrash` / `pbOnAfterTrash` | Удаление секций в корзину |
 
-В `pbOnAfterSave` и аналогах поле `changes` содержит `DocumentChangeSet` (added, removed, trashed, restored section ids).
+В `pbOnAfterSave` и аналогах поле `changes` содержит `DocumentChangeSet` (id добавленных, удалённых, отправленных в корзину и восстановленных секций).
 
 ### Копирование
 
@@ -86,8 +91,13 @@ Transport `pagebuilderpro` добавляет библиотеку, версии
 | `pbOnBeforeGetList` / `pbOnAfterGetList` | Список в каталоге |
 | `pbOnFieldValues` | `FieldValuesBag`: подстановка значений полей |
 | `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: проверка depends (pro, minishop3) |
+| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible` — видимость секции на фронте |
 
 ### Табличные данные ресурса
+
+::: warning Ручная регистрация
+События ниже **не** регистрируются при установке. Добавьте их в **Система → События**, если плагин должен на них реагировать.
+:::
 
 | Событие | Когда |
 | --- | --- |
@@ -102,7 +112,7 @@ Transport `pagebuilderpro` добавляет библиотеку, версии
 | `pbOnBeforeRenderSection` | `index`, `pipeline`: мутация секции перед chunk |
 | `pbOnGetValues` | При `return_values=1` у сниппета |
 
-Пример регистрации секции в plugin:
+Пример регистрации секции в плагине:
 
 ```php
 <?php
@@ -117,22 +127,24 @@ switch ($modx->event->name) {
 
 Свои JSON-определения должны соответствовать схеме встроенных секций: поля, chunk, category.
 
-## Mermaid: save → publish → frontend
+## Сохранение, публикация и вывод на сайте
+
+Редактор пишет черновик через connector, публикация копирует snapshot в `published_json`, сниппет на сайте читает только опубликованную версию.
 
 ```mermaid
 flowchart LR
-  Editor[Vue editor] --> Connector[connector.php]
+  Editor[Vue-редактор] --> Connector[connector.php]
   Connector --> Draft[draft_json]
-  Draft --> Publish[publish action]
+  Draft --> Publish[Публикация]
   Publish --> Published[published_json]
-  Published --> Snippet[PageBuilder snippet]
-  Snippet --> HTML[Frontend HTML]
+  Published --> Snippet[Сниппет PageBuilder]
+  Snippet --> HTML[HTML на сайте]
 ```
 
 ## Связанные страницы
 
 - [Рабочий процесс](workflow)
-- [CMP](cmp)
+- [Панель управления](cmp)
 - [PageBuilder Pro](pro)
 - [Agent API](agent-api)
 - [Разработчик](developer)

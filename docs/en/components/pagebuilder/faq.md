@@ -15,7 +15,7 @@ Open the browser console: VueTools load errors appear on the **Sections** tab.
 
 ## Empty on site, sections exist in manager
 
-- Was **Publish** clicked? The snippet reads `published_json`, not the draft.
+- Was **Publish** clicked? The snippet reads the published version, not the draft.
 - Template uses `[[!PageBuilder]]` with uncached `!`.
 - Clear MODX cache after publish or call with `use_cache=0`.
 
@@ -31,11 +31,11 @@ Preview loads template CSS (`pagebuilder_preview_include_template_css`) and `pag
 
 ## Pro section grayed out in palette
 
-You need transport **pagebuilderpro** and a valid Pro license. Commerce sections also require **miniShop3**.
+You need the **pagebuilderpro** extra and a valid Pro license. Commerce sections also require **miniShop3**.
 
 ## “Package provider not found” on install
 
-Paid transport from modstore.pro: add provider `https://modstore.pro/extras/` under **Packages → Providers** before install.
+Paid extra from modstore.pro: add provider `https://modstore.pro/extras/` under **Packages → Providers** before install.
 
 ## Custom section missing from list
 

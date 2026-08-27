@@ -5,7 +5,7 @@ description: PageBuilder section builder for MODX 3. Editor, draft, catalog, Pro
 
 # Key features
 
-PageBuilder stores a page as a set of **sections** in a separate table `pb_pages`. Editors assemble landings and inner pages in the **Sections** tab. Developers extend the type catalog, fields, and output via chunks and `pbOn*` events. The component does not overwrite `modResource.content`.
+PageBuilder builds a page from section blocks, not from the resource **Content** field. Editors work in the **Sections** tab: draft, preview, publish. Developers add custom section types, fields, and output chunks, and hook in via `pbOn*` events.
 
 ## Who it is for
 
@@ -25,9 +25,9 @@ See [Quick start](quick-start) and [Manager and events](integration).
 
 ### 2. Draft and publish
 
-Draft (`draft_json`) and published version (`published_json`) are separate. Editors save draft, open signed preview, and publish when ready. Revision counters live in `pb_pages`.
+Edits go to draft first. Preview shows the draft without publishing. After **Publish**, the same layout goes to the site. On the site, `[[!PageBuilder]]` renders the published version only.
 
-On the site, `[[!PageBuilder]]` renders published sections only.
+Storage details: [Workflow](workflow), [Developer → Data model](developer#data-model).
 
 ### 3. Free and Pro section catalog
 
@@ -46,7 +46,7 @@ See [Fields overview](fields/overview) and [Field types reference](fields/types)
 
 ## PageBuilder Pro
 
-The `pagebuilderpro` transport adds capabilities and extends the editor:
+The `pagebuilderpro` extra adds capabilities and extends the editor:
 
 - Section library: save a block, insert on another resource, edit linked copy
 - Versions: document snapshots, diff, rollback
@@ -92,8 +92,9 @@ Each section renders through a chunk with Fenom (pdoTools). Field data is in the
 | `PageBuilderSitemap` | XML sitemap for pages with sections |
 | `PageBuilderTableRows` | Resource data table rows |
 | `PageBuilderUtmSession` / `PageBuilderUtmUrl` | UTM on the front |
+| [Public API](public-api) | Published sections as JSON for headless (`api.php`) |
 
-Full parameter list: [Snippets](snippets).
+Full list: [Snippets](snippets/).
 
 ### 11. `pbOn*` events
 
@@ -111,7 +112,7 @@ Event list: [Manager and events → Events](integration#events).
 | pdoTools | 3.0+ |
 | miniShop3 | optional, for Pro commerce sections |
 
-MODX namespace: `pagebuilder`. Pro installs as transport `pagebuilderpro` (Free core is pulled in as a dependency).
+MODX namespace: `pagebuilder`. Pro installs as extra `pagebuilderpro` (Free core is pulled in as a dependency).
 
 ## Next steps
 

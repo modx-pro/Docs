@@ -22,7 +22,7 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 :::
 
-Опубликованные секции рендерятся через Fenom chunks в `core/components/pagebuilder/elements/chunks/`. Имена chunks привязаны к ключу секции (`pagebuilder_section_hero` и т.д.).
+Опубликованные секции рендерятся через Fenom chunks в `core/components/pagebuilder/elements/chunks/`. Имя chunk совпадает с полем `chunk` в JSON типа: `pagebuilder_hero`, `pagebuilder_cta`, для Pro — `pagebuilderpro_{key}`.
 
 ## CSS
 
@@ -67,9 +67,14 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 ## Видимость секций
 
-В JSON документа у секции могут быть `settings.contexts` и `settings.utm`. Контекст берётся из текущего контекста MODX. UTM приходит из `$_SESSION['utm']` после `PageBuilderUtmSession`.
+В `settings` секции можно задать:
 
-Секция не рендерится, если правило не выполнено.
+- `contexts` — список ключей контекста MODX (текущий контекст запроса)
+- `utm` — правила по UTM из `$_SESSION['utm']` после [PageBuilderUtmSession](snippets/PageBuilderUtmSession)
+
+В Pro при флаге `conditions` добавляется `settings.conditions` (loggedIn, guest, context, GET-параметры и др.). Проверка идёт через `SectionVisibility` и событие `pbOnCheckSectionVisibility`.
+
+Секция не попадает в HTML, если правило не выполнено.
 
 ## Превью черновика
 
@@ -90,7 +95,7 @@ Pipeline `SectionRenderPipeline::replaceSection()` позволяет подме
 
 ## Связанные страницы
 
-- [Сниппеты](snippets)
+- [Сниппет PageBuilder](snippets/PageBuilder)
 - [Дизайн-система](design-system)
 - [Каталог секций](sections/)
 - [События рендера](integration#рендер-на-фронте)

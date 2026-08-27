@@ -7,6 +7,15 @@ description: Section definitions, data model, extensions, and PageBuilder JS API
 
 For adding custom sections, extending Pro, or integrating the connector from your own code.
 
+## Reference
+
+| Topic | Pages |
+| --- | --- |
+| Inspector fields | [Overview](fields/overview), [50 field types](fields/types) |
+| Built-in sections | [Section catalog](sections/) |
+| Styles and BEM | [Design system](design-system) |
+| Headless JSON | [Public API](public-api) |
+
 ## Section definition {#section-definition}
 
 ### Code sections (Free)
@@ -80,12 +89,13 @@ Chunks should follow the [design system](design-system): shell `pb-section`, esc
 
 | Table | Purpose |
 | --- | --- |
-| `pb_pages` | Separate record: draft and published JSON per `resource_id` |
+| `pb_pages` | Separate record: draft and published JSON per `resource_id` (`revision`, `published_revision`, publish metadata) |
 | `pb_section_types` | UI definitions (`definition_json`) |
 | `pb_data_tables` / `pb_data_table_rows` | Tabular resource data |
 | `pb_utm_params` | UTM registry (CMP) |
 | `pb_collections` / `pb_collection_tabs` | Collections |
 | `pb_basket_items` | Global basket index |
+| `pb_user_states` | Reserved: schema exists, not used in runtime yet |
 
 Pro: `pb_library_items`, `pb_revisions`, `pb_section_events`.
 
@@ -116,9 +126,12 @@ Partition `pagebuilder/{resourceId}`. Invalidation on publish/unpublish. Skip ca
 ### PHP service
 
 ```php
-/** @var \PageBuilder\Service\PageBuilderService $pb */
+/** @var \PageBuilder\PageBuilder $pb */
 $pb = $modx->services->get('pagebuilder');
-$page = $pb->pages()->load($resourceId);
+// or: $modx->services->get(\PageBuilder\PageBuilder::class);
+
+$pageService = $pb->pages();
+// PageService: same layer as connector load/save/publish
 ```
 
 ## Pro extensions
@@ -126,6 +139,12 @@ $page = $pb->pages()->load($resourceId);
 Plugin on `pbOnRegisterFeatureProviders` registers your `FeatureProvider` alongside `ProFeatureProvider`.
 
 Boot, save, render events: [Manager and events](integration#events).
+
+## Public API (Headless)
+
+Read-only JSON for external frontends. Entry point: `assets/components/pagebuilder/api.php`. Enable and keys: [Public API](public-api) and [settings](settings#public-api).
+
+Writes and drafts: [Agent API](agent-api) (Pro) or the **Sections** tab in the manager.
 
 ## JavaScript API
 
@@ -162,10 +181,11 @@ Filter JSON: `{ "price": { "op": "gte", "value": "10" } }`. Operators: `eq`, `co
 
 ## Inspector
 
-Data fields from type JSON. Settings: `contexts`, `utm`, Pro `conditions`. Placeholders `{{utm:key}}` in url/button. Details in [fields](fields/overview).
+Data fields from type JSON. Settings: `contexts`, `utm`, Pro `conditions`. Placeholders <code v-pre>{{utm:key}}</code> in url/button. Details in [fields](fields/overview).
 
 ## Related pages
 
+- [Public API](public-api)
 - [Agent API](agent-api)
 - [PageBuilder Pro](pro)
 - [CMP](cmp)

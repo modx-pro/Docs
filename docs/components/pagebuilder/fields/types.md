@@ -5,7 +5,7 @@ description: "Все 50 типов полей инспектора PageBuilder (
 
 # Справочник типов полей
 
-30 типов в Free и 20 в Pro. Pro подключается capability `advanced-fields`. На странице каждого типа есть **Зачем этот тип**, **Когда использовать**, **Советы**, **Похожие типы**, JSON **Настройка**, блок **Данные секции**, пример Fenom и таблица **Общие свойства**.
+30 типов в Free и 20 в Pro. Pro включается флагом `advanced-fields`. На странице каждого типа есть **Зачем этот тип**, **Когда использовать**, **Советы**, **Похожие типы**, JSON **Настройка**, блок **Данные секции**, пример Fenom и таблица **Общие свойства**.
 
 Общие meta-ключи (`tab`, `width`, `description`, `default`, `active`): [обзор](overview#общие-свойства-поля).
 
@@ -104,11 +104,11 @@ description: "Все 50 типов полей инспектора PageBuilder (
 }
 ```
 
-Processor: `mgr/field/options`. Хук: `pbOnFieldValues`.
+Список опций: connector `mgr/field/options`. Хук: `pbOnFieldValues`.
 
 ### Таблицы ресурса
 
-Вкладка **Tables** на ресурсе или tab type `table` в Collections. Поле `embeddedTable` хранит `table_key` и настройки выборки. См. [настройку таблиц](../settings) и [CMP](../integration).
+Вкладка **Tables** на ресурсе или tab type `table` в Collections. Поле `embeddedTable` хранит `table_key` и настройки выборки. См. [настройку таблиц](../settings) и [панель управления](../integration).
 
 ## Алиасы
 

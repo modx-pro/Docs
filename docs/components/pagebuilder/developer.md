@@ -7,6 +7,15 @@ description: Определение секций, модель данных, р�
 
 Страница для тех, кто добавляет свои секции, расширяет Pro или вызывает connector из своего кода.
 
+## Справочники
+
+| Тема | Страницы |
+| --- | --- |
+| Поля инспектора | [Обзор](fields/overview), [справочник 50 типов](fields/types) |
+| Встроенные секции | [Каталог секций](sections/) |
+| Стили и BEM | [Дизайн-система](design-system) |
+| Headless JSON | [Public API](public-api) |
+
 ## Определение секции {#opredelenie-sekcii}
 
 ### Секции в коде (Free)
@@ -38,7 +47,7 @@ description: Определение секций, модель данных, р�
 
 JSON: `pagebuilderpro/sections/`. Chunk: `pagebuilderpro_{key}`. По умолчанию `"requires": ["pro"]`. Commerce: `"requires": ["pro", "minishop3"]`.
 
-### UI-типы в CMP
+### UI-типы в панели управления
 
 Таблица `pb_section_types`. Processors `mgr/sectiontype/*`. Определения из кода пакета при upgrade **не** перезаписываются.
 
@@ -80,12 +89,13 @@ Chunk стройте по [дизайн-системе](design-system): обол
 
 | Таблица | Назначение |
 | --- | --- |
-| `pb_pages` | Отдельная запись: черновик и опубликованный JSON по `resource_id` |
+| `pb_pages` | Отдельная запись: черновик и опубликованный JSON по `resource_id` (`revision`, `published_revision`, метаданные публикации) |
 | `pb_section_types` | UI-определения типов (`definition_json`) |
 | `pb_data_tables` / `pb_data_table_rows` | Табличные данные ресурса |
-| `pb_utm_params` | Реестр UTM в CMP |
+| `pb_utm_params` | Реестр UTM в панели управления |
 | `pb_collections` / `pb_collection_tabs` | Collections |
 | `pb_basket_items` | Индекс глобальной корзины |
+| `pb_user_states` | Зарезервировано: схема есть, в runtime пока не используется |
 
 Pro: `pb_library_items`, `pb_revisions`, `pb_section_events`.
 
@@ -118,9 +128,12 @@ Pro: `pb_library_items`, `pb_revisions`, `pb_section_events`.
 ### PHP-сервис
 
 ```php
-/** @var \PageBuilder\Service\PageBuilderService $pb */
+/** @var \PageBuilder\PageBuilder $pb */
 $pb = $modx->services->get('pagebuilder');
-$page = $pb->pages()->load($resourceId);
+// или: $modx->services->get(\PageBuilder\PageBuilder::class);
+
+$pageService = $pb->pages();
+// PageService: load/save/publish через тот же слой, что и connector
 ```
 
 ## Расширения Pro
@@ -128,6 +141,12 @@ $page = $pb->pages()->load($resourceId);
 Plugin на `pbOnRegisterFeatureProviders` регистрирует свой `FeatureProvider` рядом с `ProFeatureProvider`.
 
 События boot, save и render: [Менеджер и события](integration#sobytiya).
+
+## Public API (Headless)
+
+Read-only JSON для внешнего фронта. Точка входа `assets/components/pagebuilder/api.php`. Включение и ключи: [Public API](public-api) и [настройки](settings#public-api).
+
+Запись и черновики: [Agent API](agent-api) (Pro) или вкладка **Секции** в менеджере.
 
 ## JavaScript API
 
@@ -164,11 +183,12 @@ await api.post('mgr/catalog/list', { resource_id: 42 })
 
 ## Инспектор
 
-Поля `data` берутся из JSON типа. Settings: `contexts`, `utm`, в Pro ещё `conditions`. В полях url и button работают плейсхолдеры `{{utm:key}}`. Подробнее: [обзор полей](fields/overview).
+Поля `data` берутся из JSON типа. Settings: `contexts`, `utm`, в Pro ещё `conditions`. В полях url и button работают плейсхолдеры <code v-pre>{{utm:key}}</code>. Подробнее: [обзор полей](fields/overview).
 
 ## Связанные страницы
 
+- [Public API](public-api)
 - [Agent API](agent-api)
 - [PageBuilder Pro](pro)
-- [CMP](cmp)
+- [Панель управления](cmp)
 - [Дизайн-система](design-system)

@@ -6,7 +6,7 @@ description: PageBuilder CMP, permissions, data model, pbOn events, and Pro over
 
 ## CMP
 
-<!-- ![PageBuilder CMP](/components/pagebuilder/screenshots/mgr-cmp-index.png) -->
+![PageBuilder CMP](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
 Manager component: **Components → PageBuilder** (namespace `pagebuilder`, controller `index`).
 
@@ -34,7 +34,10 @@ Main page record: table `pb_pages` (prefix `modx_pb_`).
 | `resource_id` | Link to `modResource` |
 | `draft_json` | Draft section document |
 | `published_json` | Published version |
-| `draft_revision` / `published_revision` | Revision counters |
+| `revision` | Draft revision number (optimistic locking) |
+| `published_revision` | Last published revision |
+| `publishedon` / `publishedby` | Publish time and user |
+| `editedon` / `editedby` | Last draft edit |
 
 PageBuilder does not overwrite `modResource.content`. Resource SEO fields (pagetitle, description) work as usual.
 
@@ -46,13 +49,15 @@ Resource **data tables** live in separate `pb_*` tables (“Tables” tab).
 
 ## PageBuilder Pro
 
-Transport `pagebuilderpro` adds library, versions, presets, responsive fields, 20 advanced field types, global CMP basket, and [Agent API](agent-api).
+The `pagebuilderpro` extra adds library, versions, presets, responsive fields, 20 advanced field types, global CMP basket, and [Agent API](agent-api).
 
 Details: [PageBuilder Pro](pro). Commerce sections require **miniShop3**.
 
 ## Events
 
-Subscribe a plugin under **System → Events** or via static plugin in transport.
+On install, the extra registers 20 `pbOn*` events in MODX. Subscribe a plugin under **System → Events** or use a static plugin from the package.
+
+Exception: **`pbOnBeforeTableGetList`** and **`pbOnTableRowSave`** are not created by the installer. Add those events manually if your plugin needs table hooks.
 
 ### Boot registration
 
@@ -86,8 +91,13 @@ In `pbOnAfterSave` and similar: `changes` is `DocumentChangeSet` (added/removed/
 | `pbOnBeforeGetList` / `pbOnAfterGetList` | Catalog list |
 | `pbOnFieldValues` | `FieldValuesBag`: field value substitution |
 | `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: check depends (pro, minishop3) |
+| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible` — section visibility on the front |
 
 ### Tabular resource data
+
+::: warning Manual registration
+The events below are **not** registered on install. Add them under **System → Events** if your plugin should handle them.
+:::
 
 | Event | When |
 | --- | --- |
@@ -117,16 +127,18 @@ switch ($modx->event->name) {
 
 Custom JSON definitions must match built-in section schema (fields, chunk, category).
 
-## Mermaid: save → publish → frontend
+## Save, publish, and frontend output
+
+The editor writes the draft via connector, publish copies the snapshot to `published_json`, and the site snippet reads only the published version.
 
 ```mermaid
 flowchart LR
   Editor[Vue editor] --> Connector[connector.php]
   Connector --> Draft[draft_json]
-  Draft --> Publish[publish action]
+  Draft --> Publish[Publish]
   Publish --> Published[published_json]
   Published --> Snippet[PageBuilder snippet]
-  Snippet --> HTML[Frontend HTML]
+  Snippet --> HTML[Site HTML]
 ```
 
 ## Related pages

@@ -9,7 +9,7 @@ description: "Встроенные блоки секций PageBuilder Free и P
 
 У каждой секции своя страница: зачем брать блок, где его ставить, примеры порядка секций на странице и похожие альтернативы.
 
-Ключ (`key`) попадает в сниппет PageBuilder и в JSON документа. Свои типы добавляют через CMP (Pro) или плагин на `pbOnRegisterSectionDefinitions`.
+Ключ (`key`) попадает в сниппет PageBuilder и в JSON документа. Свои типы добавляют через панель управления (Pro) или плагин на `pbOnRegisterSectionDefinitions`.
 
 <!-- ![Каталог секций в менеджере](/components/pagebuilder/screenshots/mgr-section-catalog.png) -->
 
@@ -68,6 +68,7 @@ Commerce-секции требуют **miniShop3**. Без пакета `Section
 
 ## Связанные страницы
 
-- [Обзор полей](../fields/overview)
+- [Разработчик](../developer)
+- [Справочник типов полей](../fields/types)
 - [Вывод на сайте](../frontend)
 - [Менеджер и события](../integration)

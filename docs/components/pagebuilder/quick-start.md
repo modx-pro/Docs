@@ -6,17 +6,27 @@ description: Установка PageBuilder, права, вкладка «Сек
 
 ## 1. Установите зависимости и пакет
 
-Порядок:
+| Требование | Версия |
+| --- | --- |
+| MODX Revolution | 3.0.3+ |
+| PHP | 8.2+ |
+| VueTools | 1.1.2+ |
+| pdoTools | 3.0+ |
+| PageBuilder (Free) | 1.0.1-beta |
+| PageBuilder Pro | 1.0.1-beta, требует `pagebuilder` ≥ 1.0.1 |
 
-1. **VueTools** 1.1.2+
-2. **pdoTools** 3.0+
-3. Transport **`pagebuilder`** (Free) или **`pagebuilderpro`** (Pro)
+Пакеты **PageBuilder** (Free) и **PageBuilder Pro** ставятся из [modstore.pro](https://modstore.pro/extras/). Без провайдера установка падает с `Package provider not found`.
 
-После установки очистите кеш MODX. В **Пакеты** должен появиться namespace `pagebuilder`.
+1. [Подключите ModStore](https://modstore.pro/info/connection).
+2. Установите **VueTools** и **pdoTools**, если их ещё нет на сайте.
+3. **Extras → Installer → Download Extras** — найдите **PageBuilder** (Free) или **PageBuilder Pro** → **Download** → **Install**.
+4. **Настройки → Очистить кэш**. В списке пакетов должен появиться namespace `pagebuilder`.
 
 ::: tip Pro
-Достаточно установить `pagebuilderpro`: ядро Free (`pagebuilder`) ставится вместе с ним. Отдельно Free ставить не нужно.
+Достаточно установить **PageBuilder Pro**: ядро Free (`pagebuilder`) MODX подтянет сам. Отдельно Free ставить не нужно.
 :::
+
+Пакеты в каталоге: [modstore.pro](https://modstore.pro/).
 
 ## 2. Выдайте права
 
@@ -25,7 +35,7 @@ description: Установка PageBuilder, права, вкладка «Сек
 - `pagebuilder_view`
 - `pagebuilder_save`
 
-Для управления типами секций в CMP: `pagebuilder_manage_types`.
+Для управления типами секций в панели управления: `pagebuilder_manage_types`.
 
 ## 3. Включите вкладку «Секции»
 
@@ -38,7 +48,7 @@ description: Установка PageBuilder, права, вкладка «Сек
 
 Позицию вкладки задаёт `pagebuilder_resource_tab_index` (`0` первая, `-1` последняя).
 
-<!-- ![Вкладка «Секции» на ресурсе](/components/pagebuilder/screenshots/mgr-sections-tab.png) -->
+![Вкладка «Секции» на ресурсе](/components/pagebuilder/screenshots/mgr-sections-tab.png)
 
 Подробнее: [Системные настройки](settings#вкладки-на-форме-ресурса).
 
@@ -69,7 +79,7 @@ description: Установка PageBuilder, права, вкладка «Сек
 1. Откройте ресурс → вкладка **Секции**.
 2. Добавьте секцию (например Hero), заполните поля.
 3. Нажмите **Сохранить** (черновик).
-4. Нажмите **Опубликовать**. Версия попадёт в `published_json`.
+4. Нажмите **Опубликовать**. Та же раскладка появится на сайте.
 
 При `pagebuilder_fake_enabled = 1` в инспекторе появляется кнопка **Fake**: заполняет поля демо-данными для быстрой проверки вёрстки.
 
@@ -92,6 +102,6 @@ description: Установка PageBuilder, права, вкладка «Сек
 ## Дальше
 
 - [Настройки превью и Collections](settings)
-- [Параметры сниппета](snippets)
+- [Параметры сниппета PageBuilder](snippets/PageBuilder)
 - [Кастомизация CSS и Fenom](frontend)
 - [События и Pro](integration)

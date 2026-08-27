@@ -24,7 +24,7 @@
 | `mgr-section-inspector.png` | Инспектор секции: поля, repeater | [quick-start.md](../quick-start.md), [integration.md](../integration.md) |
 | `mgr-section-preview.png` | Превью черновика (iframe / кнопка Preview) | [quick-start.md](../quick-start.md), [frontend.md](../frontend.md) |
 | `mgr-cmp-index.png` | **Компоненты → PageBuilder**: список ресурсов | [integration.md](../integration.md) |
-| `mgr-cmp-section-types.png` | CMP: **Типы секций** (Pro) | [integration.md](../integration.md) |
+| `mgr-cmp-section-types.png` | Панель управления: **Типы секций** (Pro) | [integration.md](../integration.md) |
 | `mgr-resource-tables.png` | Вкладка **Таблицы** на ресурсе | [integration.md](../integration.md) |
 
 ## Фронт

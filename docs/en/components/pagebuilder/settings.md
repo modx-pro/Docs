@@ -8,7 +8,7 @@ MODX namespace: **pagebuilder**. Database key: `pagebuilder_<name>`.
 
 <!-- ![System Settings → pagebuilder](/components/pagebuilder/screenshots/mgr-system-settings.png) -->
 
-On install or upgrade, transport adds missing keys. Existing values are not overwritten.
+On install or upgrade, the extra resolver adds missing keys. Existing values are not overwritten.
 
 ## Paths and preview
 
@@ -60,12 +60,21 @@ On the front: `PageBuilderTableRows` snippet, [data_table](sections/data_table) 
 | --- | --- | --- | --- |
 | `pagebuilder_fake_enabled` | boolean | `0` | **Fake** button in the section inspector: fills fields with deterministic demo data (`mgr/section/fake`) |
 
+## Public API {#public-api}
+
+Read-only JSON for headless frontends. Details: [Public API](public-api).
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `pagebuilder_public_api_enabled` | boolean | `0` | Enable `assets/components/pagebuilder/api.php` |
+| `pagebuilder_public_api_key` | text | empty | API key. Empty allows unauthenticated requests (dev only) |
+| `pagebuilder_public_api_cors_origins` | textarea | `*` | Allowed CORS origins for browser clients |
+
 ## Snippet relation
 
 | Setting | Snippet param | Behavior |
 | --- | --- | --- |
 | `pagebuilder_load_frontend_css` | `load_css` | Param overrides system setting |
 | — | `wrap_page` | Wrapper `<div class="pb-page">` (default follows `load_css`) |
-| — | `qa_css` | Extra QA CSS for layout debugging |
 
-Params `load_css`, `wrap_page`, `qa_css` are set on the snippet call only; they are not listed in transport properties.
+Params `load_css` and `wrap_page` are set on the snippet call only; they are not listed in snippet properties.
