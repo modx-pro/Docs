@@ -18,9 +18,9 @@ description: Обзор сниппетов PageBuilder для вывода се�
 
 ## Порядок на типовой странице
 
-1. **PageBuilderUtmSession** — в общем layout, если на странице работают UTM-правила секций (один раз на запрос, до рендера секций).
-2. **PageBuilder** — в шаблоне или поле content ресурса.
-3. **PageBuilderTableRows** — отдельно, если таблица выводится вне секции `data_table`.
+1. **PageBuilderUtmSession** в общем layout, если на странице работают UTM-правила секций (один раз на запрос, до рендера секций).
+2. **PageBuilder** в шаблоне или поле content ресурса.
+3. **PageBuilderTableRows** отдельно, если таблица выводится вне секции `data_table`.
 
 Для блока с другой страницы (hero с главной, FAQ из лендинга) используйте **PageBuilderResource**.
 

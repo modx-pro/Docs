@@ -107,7 +107,7 @@ items: [
 
 ### Сниппеты, Public API и события
 
-`PageBuilder` выводит HTML секций, `PageBuilderResource` — секции другого ресурса, `PageBuilderSitemap` — XML sitemap. [Public API](public-api) отдаёт опубликованные секции JSON для headless-фронта (`api.php`). События `pbOn*` подключают плагины к save, publish, render и регистрации типов секций. Подробнее: [workflow](workflow), [cmp](cmp), [pro](pro).
+`PageBuilder` выводит HTML секций, `PageBuilderResource` отдаёт секции другого ресурса, `PageBuilderSitemap` строит XML sitemap. [Public API](public-api) отдаёт опубликованные секции JSON для headless-фронта (`api.php`). События `pbOn*` подключают плагины к save, publish, render и регистрации типов секций. Подробнее: [workflow](workflow), [cmp](cmp), [pro](pro).
 
 ## Системные требования
 

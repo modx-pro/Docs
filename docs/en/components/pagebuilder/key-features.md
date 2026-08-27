@@ -67,7 +67,7 @@ The resource **Tables** tab stores rows in `pb_*`: filters, pagination, CSV/JSON
 
 ### 6. UTM and contexts
 
-UTM registry in CMP, section visibility rules by tags and MODX context. `\{\{utm:key\}\}` placeholders in fields. `PageBuilderUtmSession` and `PageBuilderUtmUrl` snippets for session and links.
+UTM registry in CMP, section visibility rules by tags and MODX context. Placeholder <code v-pre>{{utm:key}}</code> in fields. `PageBuilderUtmSession` and `PageBuilderUtmUrl` snippets for session and links.
 
 ### 7. Collections
 

@@ -96,7 +96,7 @@ JSON для SEO-плагинов и headless-гибридов. Структур�
 
 ## Кеш HTML
 
-Кеш MODX: partition `pagebuilder/{resourceId}`, ключ с revision и фильтром типов. Сбрасывается при publish/unpublish.
+Кеш MODX: partition `pagebuilder/{resourceId}`, ключ `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Сбрасывается при publish/unpublish. Ошибки рендера в кеш не попадают.
 
 События `pbOnBeforeRenderDocument` и `pbOnBeforeRenderSection` вызываются только при промахе кеша:
 

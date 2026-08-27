@@ -53,7 +53,7 @@ The `pagebuilderpro` extra adds library, versions, presets, responsive fields, 2
 
 Details: [PageBuilder Pro](pro). Commerce sections require **miniShop3**.
 
-## Events
+## Events {#events}
 
 On install, the extra registers 20 `pbOn*` events in MODX. Subscribe a plugin under **System → Events** or use a static plugin from the package.
 
@@ -88,10 +88,10 @@ In `pbOnAfterSave` and similar: `changes` is `DocumentChangeSet` (added/removed/
 
 | Event | Purpose |
 | --- | --- |
-| `pbOnBeforeGetList` / `pbOnAfterGetList` | Catalog list |
-| `pbOnFieldValues` | `FieldValuesBag`: field value substitution |
+| `pbOnBeforeGetList` / `pbOnAfterGetList` | Catalog list (`mgr/catalog/list`) |
+| `pbOnFieldValues` | `FieldValuesBag`: field value substitution (`mgr/field/options`, pickers) |
 | `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: check depends (pro, minishop3) |
-| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible` — section visibility on the front |
+| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible`, section visibility on the front |
 
 ### Tabular resource data
 
@@ -104,7 +104,7 @@ The events below are **not** registered on install. Add them under **System → 
 | `pbOnBeforeTableGetList` | Row filtering (`criteria` by ref) |
 | `pbOnTableRowSave` | Before row save (`data` by ref) |
 
-### Frontend render
+### Frontend render {#frontend-render}
 
 | Event | Data |
 | --- | --- |

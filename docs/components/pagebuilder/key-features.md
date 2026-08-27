@@ -67,7 +67,7 @@ Commerce-секции (`products_grid`, `curated_products`…) требуют [m
 
 ### 6. UTM и контексты
 
-Реестр UTM в панели управления, правила видимости секций по меткам и контексту MODX. Плейсхолдеры `\{\{utm:key\}\}` в полях. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` для сессии и ссылок.
+UTM registry в панели управления, правила видимости секций по меткам и контексту MODX. Плейсхолдер <code v-pre>{{utm:key}}</code> в полях. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` для сессии и ссылок.
 
 ### 7. Collections
 

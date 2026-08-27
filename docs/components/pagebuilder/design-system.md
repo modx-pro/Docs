@@ -150,7 +150,7 @@ Spacer: два класса `pb-spacer pb-spacer--md`, не `pb-spacer-md`.
 Переменные chunk:
 
 - `$cssClass` из `data.cssClass` (событие `pbOnBeforeRenderSection`)
-- `$id` — id секции в JSON документа
+- `$id`: id секции в JSON документа
 - поля секции по `name` из JSON (`$title`, `$background`, …)
 
 Свои секции собирайте по тому же шаблону. Чеклист: [Разработчик → Определение секции](developer#opredelenie-sekcii).

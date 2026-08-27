@@ -6,9 +6,7 @@ description: "pagebuilder namespace keys: paths, preview, resource tabs, and Col
 
 MODX namespace: **pagebuilder**. Database key: `pagebuilder_<name>`.
 
-<!-- ![System Settings → pagebuilder](/components/pagebuilder/screenshots/mgr-system-settings.png) -->
-
-On install or upgrade, the extra resolver adds missing keys. Existing values are not overwritten.
+The extra manifest defines **16 keys**. On install or upgrade, the resolver adds missing keys. Existing values are not overwritten.
 
 ## Paths and preview
 
@@ -20,6 +18,16 @@ On install or upgrade, the extra resolver adds missing keys. Existing values are
 | `pagebuilder_load_frontend_css` | boolean | `1` | Register `pagebuilder-sections.css` when calling `PageBuilder` |
 | `pagebuilder_preview_include_template_css` | boolean | `1` | Load template `<link rel="stylesheet">` in preview iframe |
 | `pagebuilder_preview_css_urls` | textarea | empty | Extra CSS for preview (comma-separated), placeholders `{assets_url}`, etc. |
+
+Empty `pagebuilder_preview_secret` falls back to `site_uuid`. On production, set a dedicated secret if manager preview should not rely on a predictable UUID.
+
+Preview iframe CSS order (`preview.php`):
+
+1. Resource template stylesheets when `pagebuilder_preview_include_template_css = 1`
+2. URLs from `pagebuilder_preview_css_urls` (comma or newline separated)
+3. `pagebuilder-sections.css` and `pagebuilder-preview.css`
+
+If the theme loads CSS only via Fenom or `@import` without `<link>`, list files explicitly in `preview_css_urls`. Placeholders: `{assets_url}`, `{base_url}`, `{site_url}`.
 
 ## Resource form tabs
 
@@ -70,7 +78,7 @@ Read-only JSON for headless frontends. Details: [Public API](public-api).
 | `pagebuilder_public_api_key` | text | empty | API key. Empty allows unauthenticated requests (dev only) |
 | `pagebuilder_public_api_cors_origins` | textarea | `*` | Allowed CORS origins for browser clients |
 
-## Snippet relation
+## Snippet relation {#snippet-relation}
 
 | Setting | Snippet param | Behavior |
 | --- | --- | --- |

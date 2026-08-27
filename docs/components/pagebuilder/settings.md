@@ -6,7 +6,7 @@ description: "Ключи namespace pagebuilder: пути, превью, вкла
 
 Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
-При установке или обновлении дополнения resolver добавляет отсутствующие ключи. Уже заданные значения не перезаписывает.
+В манифесте дополнения **16 ключей**. При установке или обновлении resolver добавляет отсутствующие. Уже заданные значения не перезаписывает.
 
 ## Пути и превью
 
@@ -18,6 +18,16 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_load_frontend_css` | boolean | `1` | Подключать `pagebuilder-sections.css` при вызове сниппета `PageBuilder` |
 | `pagebuilder_preview_include_template_css` | boolean | `1` | Подтягивать `<link rel="stylesheet">` шаблона ресурса в iframe превью |
 | `pagebuilder_preview_css_urls` | textarea | пусто | Дополнительные CSS для превью (через запятую), плейсхолдеры `{assets_url}` и др. |
+
+Пустой `pagebuilder_preview_secret` подставляет `site_uuid`. На production задайте отдельный секрет, если превью в менеджере не должно опираться на предсказуемый UUID.
+
+Порядок CSS в iframe превью (`preview.php`):
+
+1. Stylesheet из шаблона ресурса, если `pagebuilder_preview_include_template_css = 1`
+2. URL из `pagebuilder_preview_css_urls` (через запятую или с новой строки)
+3. `pagebuilder-sections.css` и `pagebuilder-preview.css`
+
+Если тема подключает CSS только через Fenom или `@import` без `<link>`, добавьте файлы явно в `preview_css_urls`. Плейсхолдеры: `{assets_url}`, `{base_url}`, `{site_url}`.
 
 ## Вкладки на форме ресурса
 
@@ -68,7 +78,7 @@ Read-only JSON для headless-фронта. Подробнее: [Public API](pu
 | `pagebuilder_public_api_key` | text | пусто | API-ключ. Пусто: запросы без ключа (только для dev) |
 | `pagebuilder_public_api_cors_origins` | textarea | `*` | Разрешённые CORS origins для браузера |
 
-## Связь со сниппетом
+## Связь со сниппетом {#связь-со-сниппетом}
 
 | Настройка | Параметр сниппета | Поведение |
 | --- | --- | --- |

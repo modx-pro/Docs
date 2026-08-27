@@ -34,6 +34,8 @@ Even with published sections, the page will not open if the MODX resource itself
 6. **Publish** copies the draft to `published_json`. Check the front with `[[!PageBuilder]]`.
 7. **Unpublish** removes sections from the site; the editor draft stays.
 
+The editor sidebar **Delivery and API** block shows Public API and Agent API URLs for the current resource and revision.
+
 First page walkthrough: [Quick start](quick-start).
 
 ## Save and revision

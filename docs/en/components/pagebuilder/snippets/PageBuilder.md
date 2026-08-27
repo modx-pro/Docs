@@ -96,7 +96,7 @@ Disable globally: `pagebuilder_load_frontend_css = 0`. Per call: `&load_css=`0``
 
 ## HTML cache
 
-MODX partition: `pagebuilder/{resourceId}`, key includes revision and type filter. Cleared on publish/unpublish.
+MODX partition: `pagebuilder/{resourceId}`, key `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Cleared on publish/unpublish. Render errors are not cached.
 
 Events `pbOnBeforeRenderDocument` and `pbOnBeforeRenderSection` run only on cache miss:
 

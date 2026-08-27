@@ -69,14 +69,14 @@ Useful for partial blocks in different template areas.
 
 In section `settings` you can set:
 
-- `contexts` — MODX context keys (current request context)
-- `utm` — UTM rules from `$_SESSION['utm']` after [PageBuilderUtmSession](snippets/PageBuilderUtmSession)
+- `contexts`: MODX context keys (current request context)
+- `utm`: UTM rules from `$_SESSION['utm']` after [PageBuilderUtmSession](snippets/PageBuilderUtmSession)
 
 With Pro and capability `conditions`, add `settings.conditions` (loggedIn, guest, context, GET params, and more). Checked via `SectionVisibility` and event `pbOnCheckSectionVisibility`.
 
 The section is omitted from HTML when a rule fails.
 
-## Draft preview
+## Draft preview {#draft-preview}
 
 The public site shows **published** content only. View drafts in the manager (Preview button) or via:
 
@@ -91,7 +91,7 @@ Token is signed with `pagebuilder_preview_secret`. The iframe loads template CSS
 1. Copy the section chunk to your theme category.
 2. Edit Fenom markup, keep the name or override mapping in a plugin on `pbOnBeforeRenderSection`.
 
-`SectionRenderPipeline::replaceSection()` lets you replace a section in a plugin before chunk render.
+A plugin can replace a section before chunk render via `SectionRenderPipeline::replaceSection()`.
 
 ## Related pages
 

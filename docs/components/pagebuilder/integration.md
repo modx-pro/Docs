@@ -53,7 +53,7 @@ description: Панель управления PageBuilder, права, моде
 
 Подробно: [PageBuilder Pro](pro). Секции витрины требуют **miniShop3**.
 
-## События
+## События {#sobytiya}
 
 При установке дополнение регистрирует 20 событий `pbOn*` в MODX. Подпишите плагин в **Система → События** или используйте статический плагин из состава пакета.
 
@@ -88,10 +88,10 @@ description: Панель управления PageBuilder, права, моде
 
 | Событие | Назначение |
 | --- | --- |
-| `pbOnBeforeGetList` / `pbOnAfterGetList` | Список в каталоге |
-| `pbOnFieldValues` | `FieldValuesBag`: подстановка значений полей |
+| `pbOnBeforeGetList` / `pbOnAfterGetList` | Список в каталоге (`mgr/catalog/list`) |
+| `pbOnFieldValues` | `FieldValuesBag`: подстановка значений полей (`mgr/field/options`, picker) |
 | `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: проверка depends (pro, minishop3) |
-| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible` — видимость секции на фронте |
+| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible`, видимость секции на фронте |
 
 ### Табличные данные ресурса
 
@@ -104,7 +104,7 @@ description: Панель управления PageBuilder, права, моде
 | `pbOnBeforeTableGetList` | Фильтрация строк (`criteria` передаётся по ссылке) |
 | `pbOnTableRowSave` | Перед сохранением строки (`data` передаётся по ссылке) |
 
-### Рендер на фронте
+### Рендер на фронте {#рендер-на-фронте}
 
 | Событие | Данные |
 | --- | --- |

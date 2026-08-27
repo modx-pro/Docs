@@ -69,14 +69,14 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 В `settings` секции можно задать:
 
-- `contexts` — список ключей контекста MODX (текущий контекст запроса)
-- `utm` — правила по UTM из `$_SESSION['utm']` после [PageBuilderUtmSession](snippets/PageBuilderUtmSession)
+- `contexts`: список ключей контекста MODX (текущий контекст запроса)
+- `utm`: правила по UTM из `$_SESSION['utm']` после [PageBuilderUtmSession](snippets/PageBuilderUtmSession)
 
 В Pro при флаге `conditions` добавляется `settings.conditions` (loggedIn, guest, context, GET-параметры и др.). Проверка идёт через `SectionVisibility` и событие `pbOnCheckSectionVisibility`.
 
 Секция не попадает в HTML, если правило не выполнено.
 
-## Превью черновика
+## Превью черновика {#prevyu-chernovika}
 
 Публичный сайт показывает только опубликованную версию. Черновик смотрят через менеджер (кнопка Preview) или URL:
 
@@ -91,7 +91,7 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 1. Скопируйте chunk секции в категорию темы.
 2. Измените Fenom-разметку, сохраните имя или переопределите mapping в plugin на `pbOnBeforeRenderSection`.
 
-Pipeline `SectionRenderPipeline::replaceSection()` позволяет подменить секцию в plugin до рендера chunk.
+Plugin может подменить секцию до рендера chunk через `SectionRenderPipeline::replaceSection()`.
 
 ## Связанные страницы
 
