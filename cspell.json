@@ -1098,7 +1098,20 @@
     "yandexdelivery",
     "postpay",
     "card_on_receipt",
-    "already_paid"
+    "already_paid",
+    "geolocation2",
+    "geolocation",
+    "sxgeo",
+    "sypexgeo",
+    "модалка",
+    "модалку",
+    "Модалка",
+    "закэшированных",
+    "Автопоказ",
+    "Геоданные",
+    "jsdelivr",
+    "liveupdate",
+    "модалкой"
   ],
   "ignorePaths": [
     "node_modules",
