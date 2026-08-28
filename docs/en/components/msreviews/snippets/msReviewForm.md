@@ -3,6 +3,8 @@ title: msReviewForm
 description: Форма отправки отзыва на карточке товара msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msReviewForm.md -->
+
 # Сниппет msReviewForm
 
 Выводит форму отзыва: оценка 1–5★, текст, медиа, структурированные поля, капча. Отправляет AJAX на connector msReviews.

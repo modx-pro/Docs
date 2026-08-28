@@ -3,6 +3,8 @@ title: msReviewPrompt
 description: CTA «Будьте первым» при отсутствии отзывов msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msReviewPrompt.md -->
+
 # Сниппет msReviewPrompt
 
 Показывает призыв оставить первый отзыв, когда у товара **ноль** опубликованных отзывов. Ссылка-якорь ведёт на форму.

@@ -3,6 +3,8 @@ title: msReviewsTabbed
 description: Вкладки «Отзывы / Вопросы» на карточке товара msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msReviewsTabbed.md -->
+
 # Сниппет msReviewsTabbed
 
 Собирает [msReviews](msReviews) и [msQuestions](msQuestions) в блок с вкладками «Отзывы / Вопросы». Переключение — `msreviews-tabs.js` (`type="module"`, подключается автоматически).

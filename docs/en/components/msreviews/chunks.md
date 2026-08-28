@@ -3,6 +3,8 @@ title: Чанки
 description: Шаблоны msReviews — отзывы, формы, рейтинг, Q&A, email, готовые блоки
 ---
 
+<!-- TODO: translate from docs/components/msreviews/chunks.md -->
+
 # Чанки
 
 Чанки поставляются с пакетом в `core/components/msreviews/elements/chunks/`. Кастомизируйте копии в MODX или переопределяйте через параметр **`tpl`** / **`wrapper`** у сниппетов.

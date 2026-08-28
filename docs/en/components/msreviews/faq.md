@@ -3,6 +3,8 @@ title: FAQ
 description: Типовые вопросы по msReviews — product_id, модерация, verified, schema, каталог
 ---
 
+<!-- TODO: translate from docs/components/msreviews/faq.md -->
+
 # FAQ
 
 ## Откуда берётся product_id?

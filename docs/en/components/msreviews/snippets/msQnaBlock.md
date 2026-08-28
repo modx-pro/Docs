@@ -3,6 +3,8 @@ title: msQnaBlock
 description: Список Q&A и форма вопроса одним вызовом msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msQnaBlock.md -->
+
 # Сниппет msQnaBlock
 
 Компонует [msQuestions](msQuestions) и [msQuestionForm](msQuestionForm) в одной обёртке `.msreviews-qna-stack` с настраиваемым порядком блоков.

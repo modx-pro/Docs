@@ -3,6 +3,8 @@ title: msReviews
 description: Список опубликованных отзывов на карточке товара MiniShop3
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msReviews.md -->
+
 # Сниппет msReviews
 
 Выводит список опубликованных отзывов товара со статистикой в шапке (`showStats`), фильтрами из `$_GET` и поддержкой pdoPage. Подключает `reviews.css`, `review-form.js` и `reviews.js`.

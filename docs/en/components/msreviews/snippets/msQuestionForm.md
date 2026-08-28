@@ -3,6 +3,8 @@ title: msQuestionForm
 description: Форма отправки вопроса о товаре msReviews Q&A
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msQuestionForm.md -->
+
 # Сниппет msQuestionForm
 
 Выводит форму вопроса: текст, имя, email, уведомление об ответе, согласие, капча. Отправляет AJAX на connector.

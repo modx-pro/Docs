@@ -3,6 +3,8 @@ title: Интеграция и сценарии
 description: Сборка блоков msReviews на карточке, каталоге, главной — pdoPage, verified, капча
 ---
 
+<!-- TODO: translate from docs/components/msreviews/integration.md -->
+
 # Интеграция и сценарии
 
 Подключите сниппеты в шаблонах MiniShop3. На карточке товара **`product_id`** — id ресурса MS3.

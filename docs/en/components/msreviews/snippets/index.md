@@ -3,6 +3,8 @@ title: Сниппеты
 description: Обзор 17 сниппетов msReviews для витрины MiniShop3
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/index.md -->
+
 # Сниппеты msReviews
 
 С **1.2** чанки витрины на Fenom: нужен **[pdoTools](/components/pdotools/) 3.0+**. Компонент поставляет 17 сниппетов для карточки, каталога, главной и готовых блоков (Hub, вкладки, фильтры). На странице товара **`product_id`** совпадает с id ресурса MS3 (`[[*id]]`).

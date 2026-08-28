@@ -3,6 +3,8 @@ title: msReviewsHub
 description: Готовый блок отзывов на карточке товара с якорной навигацией msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msReviewsHub.md -->
+
 # Сниппет msReviewsHub
 
 Собирает на карточке товара секции «сводка → список → форма → Q&A → schema» в одном контейнере. Якорная навигация включается параметром `anchorNav`. Внутри вызывает остальные сниппеты.

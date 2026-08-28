@@ -3,6 +3,8 @@ title: msQuestionsLatest
 description: Последние вопросы с ответами для главной и FAQ-блоков msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msQuestionsLatest.md -->
+
 # Сниппет msQuestionsLatest
 
 Cross-product блок последних опубликованных вопросов с ответами. По умолчанию показывает только FAQ (`faqOnly=1`).

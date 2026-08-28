@@ -3,6 +3,8 @@ title: Системные настройки
 description: Ключи msreviews_* — модерация, медиа, письма, антиспам, витрина, рейтинг, schema, engagement
 ---
 
+<!-- TODO: translate from docs/components/msreviews/settings.md -->
+
 # Системные настройки
 
 Откройте **Система → Настройки**, фильтр namespace **`msreviews`**.

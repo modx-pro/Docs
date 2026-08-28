@@ -3,6 +3,8 @@ title: msReviewsFilters
 description: Chip-фильтры списка отзывов с GET-параметрами msr_* msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msReviewsFilters.md -->
+
 # Сниппет msReviewsFilters
 
 Выводит chip-ссылки для фильтрации [msReviews](msReviews): verified, с медиа, с ответом, рекомендуют, сортировка «сначала полезные». Активность берётся из `$_GET` (`msr_*`) или из параметра `activeFilters`.
