@@ -3,6 +3,8 @@ title: msTopRatedProducts
 description: Топ товаров по рейтингу для главной msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msTopRatedProducts.md -->
+
 # Сниппет msTopRatedProducts
 
 Выводит список товаров, отсортированных по агрегированному рейтингу магазина (алгоритм Wilson или среднее — настройка `msreviews_*_algorithm`).

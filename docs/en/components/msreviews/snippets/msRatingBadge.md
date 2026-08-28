@@ -3,6 +3,8 @@ title: msRatingBadge
 description: Микро-бейдж рейтинга для каталога и листингов msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msRatingBadge.md -->
+
 # Сниппет msRatingBadge
 
 Компактный бейдж **★ avg (count)** без разбивки по звёздам. Узкая обёртка над агрегатом каталога, чанк `tplRatingBadge`.

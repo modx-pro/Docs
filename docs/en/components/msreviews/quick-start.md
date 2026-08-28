@@ -3,6 +3,8 @@ title: Быстрый старт
 description: Установка msReviews и первый блок отзывов на карточке товара MiniShop3
 ---
 
+<!-- TODO: translate from docs/components/msreviews/quick-start.md -->
+
 # Быстрый старт
 
 За несколько минут выведете на карточке сводку рейтинга, список отзывов, форму и JSON-LD.

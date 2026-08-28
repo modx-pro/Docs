@@ -3,6 +3,8 @@ title: msReviewsLatest
 description: Виджет последних отзывов для главной и лендингов msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msReviewsLatest.md -->
+
 # Сниппет msReviewsLatest
 
 Выводит cross-product блок последних опубликованных отзывов: карточки с рейтингом, текстом, ссылкой на товар.

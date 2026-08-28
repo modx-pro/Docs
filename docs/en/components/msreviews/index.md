@@ -65,6 +65,8 @@ items: [
 ]
 ---
 
+<!-- TODO: translate from docs/components/msreviews/index.md -->
+
 # msReviews
 
 **msReviews** — дополнение для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): отзывы 1–5★, Q&A, фото к отзывам, подтверждённая покупка, JSON-LD и Vue-админка модерации.

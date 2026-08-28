@@ -3,6 +3,8 @@ title: msRatingSummary
 description: Сводка рейтинга товара — полная на странице товара и компактная в каталоге
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msRatingSummary.md -->
+
 # Сниппет msRatingSummary
 
 Выводит HTML-сводку рейтинга: средняя оценка, число отзывов, разбивка по звёздам (режим `full`) или компактная строка ★ 4.4 (32) (режим `aggregate`).

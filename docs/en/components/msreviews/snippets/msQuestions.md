@@ -3,6 +3,8 @@ title: msQuestions
 description: Список опубликованных вопросов и ответов на карточке товара
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msQuestions.md -->
+
 # Сниппет msQuestions
 
 Выводит список опубликованных вопросов по товару с ответами магазина (Q&A).

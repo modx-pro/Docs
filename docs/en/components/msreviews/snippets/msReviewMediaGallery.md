@@ -3,6 +3,8 @@ title: msReviewMediaGallery
 description: UGC-галерея фото из отзывов на карточке товара msReviews
 ---
 
+<!-- TODO: translate from docs/components/msreviews/snippets/msReviewMediaGallery.md -->
+
 # Сниппет msReviewMediaGallery
 
 Выводит горизонтальную галерею опубликованных фото из отзывов по товару. Разметка собирается из чанков, не из PHP.

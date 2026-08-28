@@ -3,6 +3,8 @@ title: События MODX и капча
 description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ошибок
 ---
 
+<!-- TODO: translate from docs/components/msreviews/events.md -->
+
 # События MODX и капча
 
 Примеры витрины — [Интеграция](integration). Ниже события, капча и prefetch для расширений.
