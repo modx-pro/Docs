@@ -8,7 +8,7 @@ description: Сборка блоков msReviews на карточке, ката
 Подключите сниппеты в шаблонах MiniShop3. На карточке товара **`product_id`** — id ресурса MS3.
 
 ::: tip Fenom
-Не вызывайте `getObject()` из шаблона: у `$_modx` этого метода нет. Вызывайте сниппет напрямую; при `hideEmpty=1` блок останется пустым без отзывов.
+Не вызывайте `getObject()` из шаблона: у `$_modx` этого метода нет. Вызывайте сниппет напрямую. При `hideEmpty=1` блок останется пустым без отзывов.
 :::
 
 ## Три способа собрать блок на карточке
@@ -39,6 +39,17 @@ description: Сборка блоков msReviews на карточке, ката
 **Кэш страницы:** при `cache_resource=1` HTML карточки кэшируется без учёта `?msr_*`. Пакет ставит плагин **msReviews Storefront cache** — не отключайте его, иначе фильтры «залипнут». С imageoptimizer HTML-кэшем плагин тоже сбрасывает ответ с query.
 
 **Hub / Tabbed:** внутренний `msReviews` вызывается с `showHeading=0` и `applyRequestFilters=0`. Chip-фильтры снаружи Hub не сработают, пока не передадите **`applyRequestFilters=1`** в [msReviewsHub](snippets/msReviewsHub) / [msReviewsTabbed](snippets/msReviewsTabbed).
+
+## Какой сниппет списка: карточка или лента
+
+| Нужно | Сниппет | Область |
+| --- | --- | --- |
+| Список отзывов **одного** товара (карточка, Hub, Tabbed, Filters) | `msReviews` | Обязателен `product_id` (или id текущего ресурса на странице товара) |
+| Лента последних отзывов на главной / категории / лендинге | `msReviewsLatest` | Весь каталог или `parents` / `productIds`. Параметра `product_id` нет |
+
+То же для Q&A: на карточке товара `msQuestions`, для FAQ-ленты по каталогу `msQuestionsLatest`.
+
+Без `product_id` у `msReviews` сработает fallback на id страницы, а не «все товары». Для ленты по каталогу вызывайте `msReviewsLatest`.
 
 ## Пагинация (pdoPage)
 

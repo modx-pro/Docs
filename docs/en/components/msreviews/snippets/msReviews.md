@@ -13,6 +13,8 @@ description: Список опубликованных отзывов на ка�
 
 Основной блок отзывов на странице товара: карточки отзывов, счётчики, кнопки «полезно», правка и удаление своего отзыва.
 
+Список **одного** товара (страница товара, Hub, Tabbed). Параметра `parents` нет: без `product_id` сниппет берёт id текущей страницы, а не весь каталог. Лента по магазину: [msReviewsLatest](msReviewsLatest).
+
 ## Где вызывать
 
 - Шаблон **msProduct**, под [msRatingSummary](msRatingSummary).
@@ -23,7 +25,7 @@ description: Список опубликованных отзывов на ка�
 
 - **MiniShop3**, **msReviews**
 - **[msReviewsLexiconScript](msReviewsLexiconScript)** — перед формой или автоматически через assets
-- **pdoTools 3.0+** — чанки на Fenom; для пагинации — обёртка `pdoPage`
+- **pdoTools 3.0+** — чанки на Fenom. Для пагинации нужна обёртка `pdoPage`
 - Фильтры из URL синхронизируйте с [msReviewsFilters](msReviewsFilters)
 
 ## Параметры
@@ -194,6 +196,7 @@ description: Список опубликованных отзывов на ка�
 ## См. также
 
 - [msReviewsFilters](msReviewsFilters)
+- [msReviewsLatest](msReviewsLatest) — лента по каталогу, не список одного товара
 - [msRatingSummary](msRatingSummary)
 - [Интеграция — пагинация](../integration)
 - [FAQ](../faq)

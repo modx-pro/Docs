@@ -59,7 +59,7 @@ description: MODX permissions msreviews_* для CMP и API менеджера
 | **403** | Недостаточно прав |
 | **405** | Mutating action не через POST |
 
-Публичные действия витрины (`review/create`, …) не используют эти permissions; там антиспам и rate limit.
+Публичные действия витрины (`review/create`, …) не используют эти permissions. Там работают антиспам и rate limit.
 
 ## См. также
 

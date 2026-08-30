@@ -9,7 +9,7 @@ description: Обзор 17 сниппетов msReviews для витрины Mi
 
 С **1.2** чанки витрины на Fenom: нужен **[pdoTools](/components/pdotools/) 3.0+**. Компонент поставляет 17 сниппетов для карточки, каталога, главной и готовых блоков (Hub, вкладки, фильтры). На странице товара **`product_id`** совпадает с id ресурса MS3 (`[[*id]]`).
 
-Порядок вызова на карточке и три способа собрать блок: [Интеграция](../integration).
+Порядок вызова на карточке и три способа собрать блок: [Интеграция](../integration). На главной и лендинге вызывайте [msReviewsLatest](msReviewsLatest), не [msReviews](msReviews).
 
 ## Справочник
 
@@ -17,13 +17,13 @@ description: Обзор 17 сниппетов msReviews для витрины Mi
 | --- | --- |
 | [msReviewsLexiconScript](msReviewsLexiconScript) | `window.msrLexicon` для JS форм и engagement |
 | [msRatingSummary](msRatingSummary) | Сводка рейтинга (`full` / `aggregate`, `tplRatingCatalog`) |
-| [msReviews](msReviews) | Список отзывов на странице товара, фильтры, pdoPage |
+| [msReviews](msReviews) | Список отзывов одного товара (страница товара, Hub, Tabbed) |
 | [msReviewForm](msReviewForm) | Форма отзыва |
 | [msQuestions](msQuestions) | Список Q&A |
 | [msQuestionForm](msQuestionForm) | Форма вопроса |
 | [msQnaBlock](msQnaBlock) | Список + форма Q&A одним вызовом |
 | [msReviewSchema](msReviewSchema) | JSON-LD Product + Review (один раз на странице товара) |
-| [msReviewsLatest](msReviewsLatest) | Последние отзывы (главная, лендинг) |
+| [msReviewsLatest](msReviewsLatest) | Лента последних отзывов (главная, категория, лендинг) |
 | [msTopRatedProducts](msTopRatedProducts) | Топ товаров по рейтингу |
 | [msQuestionsLatest](msQuestionsLatest) | Последние вопросы с ответами (FAQ) |
 | [msReviewMediaGallery](msReviewMediaGallery) | UGC-галерея фото отзывов |
@@ -54,7 +54,7 @@ description: Обзор 17 сниппетов msReviews для витрины Mi
 | Некэшированный вызов | `[[!Snippet? ...]]` | `{'!Snippet' \| snippet : [...]}` |
 | JSON-LD без экранирования | `[[!msReviewSchema? ...]]` | `{raw ('!msReviewSchema' \| snippet : [...])}` |
 
-В Fenom не вызывайте `getObject()` из шаблона: у `$_modx` этого метода нет. Вызывайте сниппет напрямую; при `hideEmpty=1` блок останется пустым без отзывов.
+В Fenom не вызывайте `getObject()` из шаблона: у `$_modx` этого метода нет. Вызывайте сниппет напрямую. При `hideEmpty=1` блок останется пустым без отзывов.
 
 ## См. также
 

@@ -28,7 +28,7 @@ description: Список Q&A и форма вопроса одним вызов
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
 | `product_id` | id ресурса | ID товара MS3 |
-| `formPosition` | *(настройка)* | `after` — список, затем форма; `before` / `first` / `top` — форма первой. Пусто — `msreviews_qna_form_position` |
+| `formPosition` | *(настройка)* | `after` — список, затем форма. `before` / `first` / `top` — форма первой. Пусто — `msreviews_qna_form_position` |
 | `limit` | `20` | Лимит вопросов (→ `msQuestions`) |
 | `faqOnly` | `0` | Только с ответом |
 | `formClass` | *(пусто)* | Классы формы |

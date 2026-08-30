@@ -25,6 +25,13 @@ description: Типовые вопросы по msReviews — product_id, мод
 
 У **`msQuestions`** и **`msQuestionForm`** только **`product_id`**. Параметр **`product`** не поддерживается.
 
+## msReviews или msReviewsLatest?
+
+- **Карточка товара** — `msReviews` (один `product_id`). Рядом Filters / Hub / Tabbed.
+- **Главная, категория, лендинг** — `msReviewsLatest` (`parents` / `productIds` или весь каталог). Параметра `product_id` у Latest нет.
+
+Без `product_id` у `msReviews` сработает fallback на id текущей страницы, а не «все товары». То же для Q&A: `msQuestions` на PDP, `msQuestionsLatest` для FAQ-ленты. См. [Интеграция](integration#какой-сниппет-списка-карточка-или-лента).
+
 ## Где модерировать отзывы с карточки товара?
 
 На **Ресурсы → редактирование msProduct** вкладка **«Отзывы»** (право **`review_view`**) показывает сводку и кнопку в **Extras → msReviews** с фильтром по товару. Таблица модерации только в CMP.
@@ -33,7 +40,7 @@ description: Типовые вопросы по msReviews — product_id, мод
 
 **Extras → msReviews → Отзывы** → **«Добавить отзыв»**. Нужно право **`review_moderate`** (с **1.1.0**).
 
-В форме: товар, рейтинг, заголовок, текст, автор, статус, **Verified purchase**. Для существующего отзыва — **«Редактировать отзыв»** в строке таблицы. Подробнее: [Админка](manager#добавление-и-правка-вручную).
+В форме: ресурс (любой неудалённый `site_content`, не только товар MS3), рейтинг, заголовок, текст, автор, статус, **Verified purchase**, ответ магазина (при праве `review_reply`). Для существующего отзыва — **«Редактировать отзыв»** в строке таблицы. Подробнее: [Админка](manager#добавление-и-правка-вручную).
 
 ## Отзыв не появляется сразу
 
@@ -47,8 +54,8 @@ description: Типовые вопросы по msReviews — product_id, мод
 
 На **витрине** (токен из письма) проверьте:
 
-- товар был в составе **этого** заказа;
-- ссылка из письма ведёт на страницу **того же** товара;
+- товар был в составе **этого** заказа
+- ссылка из письма ведёт на страницу **того же** товара
 - при **`msreviews_reject_on_cancel`** статус заказа не в **`msreviews_cancelled_order_status_ids`**.
 
 В **CMP** verified ставят галочкой **Verified purchase** в форме отзыва. Это не привязывает отзыв к заказу MS3.
@@ -144,6 +151,8 @@ description: Типовые вопросы по msReviews — product_id, мод
 
 С **1.2**: нужен **pdoTools 3.0+**, чанки на Fenom, JS по `data-msr-*`. См. [Обновление до 1.2](upgrade-1.2).
 
+С **1.2.1** в CMP отзыв привязывается к любому `site_content`. Пустой кастомный чанк письма модератору больше не подменяет лексиконом.
+
 ## Пустые блоки на витрине после 1.2
 
 1. Установлен **pdoTools 3.0+**?
@@ -153,4 +162,8 @@ description: Типовые вопросы по msReviews — product_id, мод
 
 ## Письма модератору не приходят
 
-Проверьте `msreviews_moderator_notify_enabled`, список `msreviews_moderator_notify_emails` и режим `msreviews_moderator_notify_on`. Письма только с витрины, не из CMP/CSV. Плагин на `msrOnModeratorNotify` не должен возвращать `false`. См. [Настройки](settings#уведомление-модератора).
+Проверьте `msreviews_moderator_notify_enabled`, список `msreviews_moderator_notify_emails` и режим `msreviews_moderator_notify_on`. Письма только с витрины, не из CMP/CSV. Плагин на `msrOnModeratorNotify` не должен возвращать `false`.
+
+Если задали `msreviews_moderator_email_*_chunk`, а чанк отдаёт пустую строку, лексикон не подставится: в журнале ошибок будет `[msReviews] moderator email … chunk empty`, письмо не уйдёт. Оставьте имена чанков пустыми, чтобы шёл текст из лексикона.
+
+См. [Настройки](settings#уведомление-модератора).

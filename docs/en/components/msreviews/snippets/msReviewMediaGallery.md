@@ -24,7 +24,7 @@ UGC-блок на странице товара: миниатюры фото п�
 
 - **MiniShop3**, **msReviews**, **pdoTools 3.0+**
 - Настройка `msreviews_media_enabled`
-- Lightbox: сниппет подключает `reviews.js` при наличии фото (если `registerJs=1`); строки UI — через [msReviewsLexiconScript](msReviewsLexiconScript)
+- Lightbox: сниппет подключает `reviews.js` при наличии фото (если `registerJs=1`). Строки UI идут через [msReviewsLexiconScript](msReviewsLexiconScript)
 
 ## Параметры
 

@@ -57,7 +57,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 | `tplMsReviewsEmailSubject` | Тема письма запроса отзыва |
 | `tplMsReviewsEmailBody` | Тело письма |
 
-Настройки запроса: **`msreviews_request_email_*_chunk`**. Письма модератору: ключи **`msreviews_moderator_email_*_chunk`** (пусто — текст из лексикона). См. [Уведомление модератора](settings#уведомление-модератора).
+Настройки запроса: **`msreviews_request_email_*_chunk`**. Письма модератору: ключи **`msreviews_moderator_email_*_chunk`**. Пустое имя: текст из лексикона. Имя задано, рендер пустой: ERROR в лог, письмо не уходит. См. [Уведомление модератора](settings#уведомление-модератора).
 
 ## Готовые блоки (Hub, вкладки, фильтры)
 
