@@ -21,7 +21,7 @@ description: Виджет последних отзывов для главно�
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
-- **pdoTools 3.0+** — чанки на Fenom; для пагинации — обёртка `pdoPage`
+- **pdoTools 3.0+** — чанки на Fenom. Для пагинации нужна обёртка `pdoPage`
 - При `engagement=1` — [msReviewsLexiconScript](msReviewsLexiconScript) для кнопок «полезно»
 
 ## Параметры

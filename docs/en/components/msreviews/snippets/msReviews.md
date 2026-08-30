@@ -25,7 +25,7 @@ description: Список опубликованных отзывов на ка�
 
 - **MiniShop3**, **msReviews**
 - **[msReviewsLexiconScript](msReviewsLexiconScript)** — перед формой или автоматически через assets
-- **pdoTools 3.0+** — чанки на Fenom; для пагинации — обёртка `pdoPage`
+- **pdoTools 3.0+** — чанки на Fenom. Для пагинации нужна обёртка `pdoPage`
 - Фильтры из URL синхронизируйте с [msReviewsFilters](msReviewsFilters)
 
 ## Параметры

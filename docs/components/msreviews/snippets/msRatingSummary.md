@@ -30,7 +30,7 @@ description: Сводка рейтинга товара — полная на с
 | --- | --- | --- |
 | `product_id` | id текущего ресурса | ID товара MS3. При `product_id < 1` — пустой вывод |
 | `tpl` | `tplRatingSummary` | Чанк вывода. В каталоге: `tplRatingCatalog` |
-| `summaryMode` | `full` | `full` — полная сводка; `aggregate` — только средняя и count |
+| `summaryMode` | `full` | `full` — полная сводка. `aggregate` — только средняя и count |
 | `hideEmpty` | `0` | `1` — не выводить при нуле отзывов |
 | `registerCss` | `1` | `0` — не подключать `reviews.css` повторно. См. [Подключение reviews.css](#подключение-reviewscss) |
 | `registerJs` | `1` | Подключать JS витрины |
