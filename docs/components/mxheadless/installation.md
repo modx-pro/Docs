@@ -33,6 +33,7 @@ mxHeadless рассчитан на MODX Revolution **3.2.3+** и PHP **8.1+**.
 2. В Manager: **Пакеты → Установить пакет**, загрузите `.transport.zip`.
 
 3. Завершите установку и очистите кэш.
+
 ## Вручную (разработка)
 
 Скопируйте или смонтируйте `core/components/mxheadless/` в установку MODX:
@@ -48,13 +49,13 @@ composer install --no-dev --optimize-autoloader
 
 ### Основной путь: плагин `OnHandleRequest`
 
-Префикс по умолчанию: `/api` (`mxheadless.api.prefix`). Запросы `/api/v1/...` обрабатывает приложение пакета.
+Префикс по умолчанию: `/api` (`mxheadless_api_prefix`). Запросы `/api/v1/...` обрабатывает приложение пакета.
 
 | Настройка | По умолчанию | Назначение |
 | --- | --- | --- |
-| `mxheadless.api.prefix` | `/api` | Префикс URL до `/v1` |
-| `mxheadless.enabled` | `true` | Kill switch |
-| `mxheadless.debug` | `false` | Подробные ошибки (только dev) |
+| `mxheadless_api_prefix` | `/api` | Префикс URL до `/v1` |
+| `mxheadless_enabled` | `true` | Kill switch |
+| `mxheadless_debug` | `false` | Подробные ошибки (только dev) |
 
 ### Запасной путь: `api.php`
 

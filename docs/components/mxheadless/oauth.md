@@ -11,9 +11,9 @@ Bearer-токены `mxt_*` с коротким TTL. По умолчанию в�
 
 | Ключ | По умолчанию | Назначение |
 | --- | --- | --- |
-| `mxheadless.oauth.enabled` | `false` | `POST /api/v1/auth/token` |
-| `mxheadless.oauth.token_ttl` | `3600` | TTL access token (секунды) |
-| `mxheadless.oauth.password_grant_enabled` | `false` | Grant `password` |
+| `mxheadless_oauth_enabled` | `false` | `POST /api/v1/auth/token` |
+| `mxheadless_oauth_token_ttl` | `3600` | TTL access token (секунды) |
+| `mxheadless_oauth_password_grant_enabled` | `false` | Grant `password` |
 
 ## Клиент
 
@@ -54,7 +54,7 @@ curl -s https://example.com/api/v1/resources \
 | Grant | Когда |
 | --- | --- |
 | `client_credentials` | Machine-to-machine (default) |
-| `password` | Только если `mxheadless.oauth.password_grant_enabled=true` |
+| `password` | Только если `mxheadless_oauth_password_grant_enabled=true` |
 
 Ошибка OAuth: `400` `invalid_grant`.
 

@@ -70,7 +70,7 @@ curl -s 'https://example.com/api/v1/objects/products/101?include=category'
 
 Pretty URL `/api/v1/cart/...` перехватит плагин mxHeadless и вернёт `404`. Cart вызывайте через `api.php?route=`.
 
-CORS: выровняйте `mxheadless.cors.*` и `ms3_cors_allowed_origins`.
+CORS: выровняйте `mxheadless_cors_*` и `ms3_cors_allowed_origins`.
 
 ## Фронтенд
 

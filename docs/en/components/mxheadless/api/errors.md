@@ -34,7 +34,7 @@ Failed requests return [RFC 9457](https://www.rfc-editor.org/rfc/rfc9457) (`appl
 
 | `code` | HTTP | When |
 | --- | --- | --- |
-| `service_disabled` | 503 | `mxheadless.enabled=false` |
+| `service_disabled` | 503 | `mxheadless_enabled=false` |
 | `token_required` | 401 | No credentials |
 | `invalid_token` | 401 | Invalid / expired / revoked |
 | `scope_denied` | 403 | Missing scope |
@@ -57,4 +57,4 @@ Not every error has a `code`. For generic handling, use `status` + `type`.
 | 500 | Server |
 | 503 | Kill switch |
 
-When `mxheadless.debug=false`, responses omit SQL, stack traces, and file paths.
+When `mxheadless_debug=false`, responses omit SQL, stack traces, and file paths.

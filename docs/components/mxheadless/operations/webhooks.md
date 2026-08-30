@@ -29,7 +29,7 @@ php core/components/mxheadless/bin/webhook-subscribe.php \
 php core/components/mxheadless/bin/webhook-worker.php --limit=50
 ```
 
-`--limit` по умолчанию из `mxheadless.webhook.worker_limit`. Вешайте на cron каждую минуту.
+`--limit` по умолчанию из `mxheadless_webhook_worker_limit`. Вешайте на cron каждую минуту.
 
 ## Доставка
 
@@ -43,11 +43,11 @@ POST JSON на URL подписчика:
 | `X-MxHeadless-Delivery-Id` | id доставки |
 | `X-MxHeadless-Signature` | `sha256=...` при secret |
 
-Retries: exponential backoff, max `mxheadless.webhook.max_attempts` (5) → `failed`.
+Retries: exponential backoff, max `mxheadless_webhook_max_attempts` (5) → `failed`.
 
 ## SSRF
 
-По умолчанию блокируются localhost, private IP, `.local`/`.test`. Dev-override: `mxheadless.webhook.allow_private_urls=true` (ослабляет и TLS verify).
+По умолчанию блокируются localhost, private IP, `.local`/`.test`. Dev-override: `mxheadless_webhook_allow_private_urls=true` (ослабляет и TLS verify).
 
 ## Payload (v1)
 

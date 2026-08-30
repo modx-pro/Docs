@@ -99,7 +99,7 @@ Elements, contexts, write operations, and `/objects/*` require credentials.
 
 ## Context
 
-Header `X-Context` or query `?context=`. Value must be in `mxheadless.allowed_contexts` (default `web,mgr`).
+Header `X-Context` or query `?context=`. Value must be in `mxheadless_allowed_contexts` (default `web,mgr`).
 
 ## Fields
 

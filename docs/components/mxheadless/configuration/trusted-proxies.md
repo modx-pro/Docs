@@ -5,7 +5,7 @@ description: Доверенные прокси и X-Forwarded-For для mxHeadl
 
 # Trusted proxies
 
-Настройка `mxheadless.trusted_proxies`: список IP (через запятую или перенос строки), которым вы доверяете forwarded headers.
+Настройка `mxheadless_trusted_proxies`: список IP (через запятую или перенос строки), которым вы доверяете forwarded headers.
 
 ## Поведение
 

@@ -70,7 +70,7 @@ curl -s 'https://example.com/api/v1/objects/products/101?include=category'
 
 Pretty URL `/api/v1/cart/...` is intercepted by mxHeadless → 404. Call cart via `api.php?route=`.
 
-CORS: align `mxheadless.cors.*` and `ms3_cors_allowed_origins`.
+CORS: align `mxheadless_cors_*` and `ms3_cors_allowed_origins`.
 
 ## Frontend
 

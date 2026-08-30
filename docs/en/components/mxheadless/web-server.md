@@ -5,7 +5,7 @@ description: Apache, Nginx, and api.php fallback for mxHeadless
 
 # Web server
 
-Default gateway prefix is `/api` (`mxheadless.api.prefix`). Requests to `/api/v1/*` must reach MODX `index.php`, where the `OnHandleRequest` plugin intercepts the API.
+Default gateway prefix is `/api` (`mxheadless_api_prefix`). Requests to `/api/v1/*` must reach MODX `index.php`, where the `OnHandleRequest` plugin intercepts the API.
 
 ## Apache
 
@@ -32,4 +32,4 @@ Bare `api.php` serves discovery. See [Installation](installation).
 
 ## Proxy and HTTPS
 
-Behind a load balancer, set `mxheadless.trusted_proxies` or rate limit and audit will see the proxy IP. The package does not rewrite URL scheme from `X-Forwarded-Proto`. Configure HTTPS on the web server or reverse proxy.
+Behind a load balancer, set `mxheadless_trusted_proxies` or rate limit and audit will see the proxy IP. The package does not rewrite URL scheme from `X-Forwarded-Proto`. Configure HTTPS on the web server or reverse proxy.

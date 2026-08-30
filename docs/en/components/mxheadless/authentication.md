@@ -31,9 +31,9 @@ Creation: [API keys](api-keys).
 
 ## OAuth tokens (`mxt_*`)
 
-Disabled by default (`mxheadless.oauth.enabled`). Issue via `POST /api/v1/auth/token`.
+Disabled by default (`mxheadless_oauth_enabled`). Issue via `POST /api/v1/auth/token`.
 
-Format: `mxt_{tokenId}_{secret}`. TTL: `mxheadless.oauth.token_ttl` (3600 s).
+Format: `mxt_{tokenId}_{secret}`. TTL: `mxheadless_oauth_token_ttl` (3600 s).
 
 Details: [OAuth](oauth).
 
@@ -45,7 +45,7 @@ With a session cookie, the current MODX user is attached. For `POST`/`PUT`/`PATC
 X-CSRF-Token: {token from MODX session}
 ```
 
-Setting: `mxheadless.csrf.enabled` (default `true`). Bearer keys do not need CSRF.
+Setting: `mxheadless_csrf_enabled` (default `true`). Bearer keys do not need CSRF.
 
 ## Scopes
 

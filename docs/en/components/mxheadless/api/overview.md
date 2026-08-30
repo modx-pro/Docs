@@ -7,7 +7,7 @@ description: Envelope, full endpoint list, discovery, health, schema, and OpenAP
 
 Base URL: `{prefix}/v1`, default `/api/v1`.
 
-Live catalog on an installed site: `GET /meta/endpoints` and Swagger UI at `/docs`. Below are **core** routes from `RoutesRegistrar` and `CoreEndpointBootstrap` (package version 1.0.41). Extras may add their own via `registerEndpoint`.
+Live catalog on an installed site: `GET /meta/endpoints` and Swagger UI at `/docs`. Below are **core** routes from `RoutesRegistrar` and `CoreEndpointBootstrap` (package version 1.0.42). Extras may add their own via `registerEndpoint`.
 
 ## Success envelope
 
@@ -37,11 +37,11 @@ On error the response follows [RFC 9457](errors) with no `data`/`meta` wrapper.
 | GET | `/` | yes | - | Discovery: version, capabilities |
 | GET | `/health` | yes | - | Health (DB). Available with kill switch |
 | GET | `/schema` | yes | - | Schema of registered objects |
-| GET | `/docs` | yes | - | Swagger UI (`mxheadless.swagger.enabled`) |
+| GET | `/docs` | yes | - | Swagger UI (`mxheadless_swagger_enabled`) |
 | GET | `/meta/endpoints` | yes | - | Live endpoint catalog |
 | GET | `/meta/openapi` | yes | - | OpenAPI in envelope |
 | GET | `/meta/openapi.json` | yes | - | Raw OpenAPI 3.0 JSON |
-| POST | `/auth/token` | yes\* | - | OAuth token. Works only when `mxheadless.oauth.enabled` |
+| POST | `/auth/token` | yes\* | - | OAuth token. Works only when `mxheadless_oauth_enabled` |
 
 \*The route is public, but the endpoint is disabled by setting until OAuth is turned on.
 
@@ -103,7 +103,7 @@ Full scope list: [Authorization](/components/mxheadless/authorization).
 
 ## Kill switch
 
-When `mxheadless.enabled=false`, only `GET /` and `GET /health` work. Everything else → `503` `service_disabled`.
+When `mxheadless_enabled=false`, only `GET /` and `GET /health` work. Everything else → `503` `service_disabled`.
 
 ## Headers
 

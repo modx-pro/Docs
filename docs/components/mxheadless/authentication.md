@@ -31,9 +31,9 @@ curl -s https://example.com/api/v1/resources \
 
 ## OAuth tokens (`mxt_*`)
 
-По умолчанию выключено (`mxheadless.oauth.enabled`). Выпуск: `POST /api/v1/auth/token`.
+По умолчанию выключено (`mxheadless_oauth_enabled`). Выпуск: `POST /api/v1/auth/token`.
 
-Формат: `mxt_{tokenId}_{secret}`. TTL задаёт `mxheadless.oauth.token_ttl` (3600 с).
+Формат: `mxt_{tokenId}_{secret}`. TTL задаёт `mxheadless_oauth_token_ttl` (3600 с).
 
 Подробнее: [OAuth](oauth).
 
@@ -45,7 +45,7 @@ curl -s https://example.com/api/v1/resources \
 X-CSRF-Token: {токен из сессии MODX}
 ```
 
-Настройка: `mxheadless.csrf.enabled` (default `true`). Bearer-ключи CSRF не требуют.
+Настройка: `mxheadless_csrf_enabled` (default `true`). Bearer-ключи CSRF не требуют.
 
 ## Scopes
 

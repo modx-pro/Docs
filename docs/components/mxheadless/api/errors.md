@@ -34,7 +34,7 @@ description: RFC 9457 problem+json и коды ошибок mxHeadless
 
 | `code` | HTTP | Когда |
 | --- | --- | --- |
-| `service_disabled` | 503 | `mxheadless.enabled=false` |
+| `service_disabled` | 503 | `mxheadless_enabled=false` |
 | `token_required` | 401 | Нет credentials |
 | `invalid_token` | 401 | Неверный / истёкший / отозванный |
 | `scope_denied` | 403 | Нет нужного scope |
@@ -57,4 +57,4 @@ description: RFC 9457 problem+json и коды ошибок mxHeadless
 | 500 | Сервер |
 | 503 | Kill switch |
 
-При `mxheadless.debug=false` в ответе нет SQL, stack trace и путей к файлам.
+При `mxheadless_debug=false` в ответе нет SQL, stack trace и путей к файлам.

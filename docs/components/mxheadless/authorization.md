@@ -99,7 +99,7 @@ Anonymous может читать discovery, health, schema, docs, meta, `GET /r
 
 ## Контекст
 
-Заголовок `X-Context` или query `?context=`. Значение должно входить в `mxheadless.allowed_contexts` (default `web,mgr`).
+Заголовок `X-Context` или query `?context=`. Значение должно входить в `mxheadless_allowed_contexts` (default `web,mgr`).
 
 ## Поля
 

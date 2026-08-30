@@ -7,7 +7,7 @@ description: Envelope, полный список эндпоинтов, discovery
 
 Базовый URL: `{prefix}/v1`, по умолчанию `/api/v1`.
 
-Живой каталог на установленном сайте: `GET /meta/endpoints` и Swagger UI `/docs`. Ниже маршруты **core** из `RoutesRegistrar` и `CoreEndpointBootstrap` (версия пакета 1.0.41). Extras могут добавить свои через `registerEndpoint`.
+Живой каталог на установленном сайте: `GET /meta/endpoints` и Swagger UI `/docs`. Ниже маршруты **core** из `RoutesRegistrar` и `CoreEndpointBootstrap` (версия пакета 1.0.42). Extras могут добавить свои через `registerEndpoint`.
 
 ## Envelope успеха
 
@@ -37,11 +37,11 @@ description: Envelope, полный список эндпоинтов, discovery
 | GET | `/` | да | - | Discovery: версия, capabilities |
 | GET | `/health` | да | - | Health (БД). Доступен при kill switch |
 | GET | `/schema` | да | - | Схема зарегистрированных объектов |
-| GET | `/docs` | да | - | Swagger UI (`mxheadless.swagger.enabled`) |
+| GET | `/docs` | да | - | Swagger UI (`mxheadless_swagger_enabled`) |
 | GET | `/meta/endpoints` | да | - | Живой каталог эндпоинтов |
 | GET | `/meta/openapi` | да | - | OpenAPI в envelope |
 | GET | `/meta/openapi.json` | да | - | Raw OpenAPI 3.0 JSON |
-| POST | `/auth/token` | да\* | - | OAuth token. Работает только при `mxheadless.oauth.enabled` |
+| POST | `/auth/token` | да\* | - | OAuth token. Работает только при `mxheadless_oauth_enabled` |
 
 \*Маршрут публичный, но endpoint отключён настройкой, пока OAuth выключен.
 
@@ -103,7 +103,7 @@ description: Envelope, полный список эндпоинтов, discovery
 
 ## Kill switch
 
-При `mxheadless.enabled=false` работают только `GET /` и `GET /health`. Остальное → `503` `service_disabled`.
+При `mxheadless_enabled=false` работают только `GET /` и `GET /health`. Остальное → `503` `service_disabled`.
 
 ## Заголовки
 

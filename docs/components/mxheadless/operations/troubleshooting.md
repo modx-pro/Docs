@@ -8,13 +8,13 @@ description: Типовые сбои mxHeadless и что проверить
 ## 404 на `/api/v1`
 
 - Friendly URLs и rewrite в `index.php`
-- Префикс `mxheadless.api.prefix` совпадает с URL
+- Префикс `mxheadless_api_prefix` совпадает с URL
 - Плагин mxHeadless активен
 - Fallback: `api.php?route=/v1/health`
 
 ## 503 `service_disabled`
 
-`mxheadless.enabled=false`. Включите или оставьте только health для maintenance.
+`mxheadless_enabled=false`. Включите или оставьте только health для maintenance.
 
 ## 401 / 403
 
@@ -32,7 +32,7 @@ Rate limit. Смотрите `X-RateLimit-*`. Поднимите global или p
 
 ## CORS не работает
 
-`mxheadless.cors.enabled=true`, origin в allowlist, не `*` с credentials. Preflight OPTIONS доходит до MODX.
+`mxheadless_cors_enabled=true`, origin в allowlist, не `*` с credentials. Preflight OPTIONS доходит до MODX.
 
 ## Webhooks не уходят
 
@@ -47,4 +47,4 @@ Rate limit. Смотрите `X-RateLimit-*`. Поднимите global или p
 
 ## Логи
 
-Включите временно `mxheadless.debug` только на staging. Журнал audit: [audit-log](audit-log).
+Включите временно `mxheadless_debug` только на staging. Журнал audit: [audit-log](audit-log).

@@ -5,7 +5,7 @@ description: Apache, Nginx и fallback api.php для mxHeadless
 
 # Веб-сервер
 
-Префикс gateway по умолчанию `/api` (`mxheadless.api.prefix`). Запросы `/api/v1/*` должны попадать в `index.php` MODX, где плагин `OnHandleRequest` перехватывает API.
+Префикс gateway по умолчанию `/api` (`mxheadless_api_prefix`). Запросы `/api/v1/*` должны попадать в `index.php` MODX, где плагин `OnHandleRequest` перехватывает API.
 
 ## Apache
 
@@ -32,4 +32,4 @@ location / {
 
 ## Прокси и HTTPS
 
-За load balancer заполните `mxheadless.trusted_proxies`, иначе rate limit и audit видят IP прокси. Пакет не подменяет схему URL из `X-Forwarded-Proto`. HTTPS настраивайте на веб-сервере или reverse proxy.
+За load balancer заполните `mxheadless_trusted_proxies`, иначе rate limit и audit видят IP прокси. Пакет не подменяет схему URL из `X-Forwarded-Proto`. HTTPS настраивайте на веб-сервере или reverse proxy.

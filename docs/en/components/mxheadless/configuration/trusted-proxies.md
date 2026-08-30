@@ -5,7 +5,7 @@ description: Trusted proxies and X-Forwarded-For for mxHeadless
 
 # Trusted proxies
 
-Setting `mxheadless.trusted_proxies` holds a list of IPs (comma or newline separated) you trust for forwarded headers.
+Setting `mxheadless_trusted_proxies` holds a list of IPs (comma or newline separated) you trust for forwarded headers.
 
 ## Behavior
 

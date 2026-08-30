@@ -86,7 +86,7 @@ items: [
 
 REST API gateway для [MODX Revolution 3](https://modx.com/). Отдаёт ресурсы, страницы, элементы, контексты и зарегистрированные xPDO-объекты в JSON. Подходит для Nuxt, Next.js, SvelteKit, мобильных приложений и своих клиентов.
 
-Версия 1.0.41. Лицензия GPL-2.0-or-later. Платных тарифов внутри пакета нет.
+Версия 1.0.42. Лицензия GPL-2.0-or-later. Платных тарифов внутри пакета нет.
 
 Исходники: [Ibochkarev/mxHeadless](https://github.com/Ibochkarev/mxHeadless).
 

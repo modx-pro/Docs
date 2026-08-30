@@ -9,7 +9,7 @@ description: Write API and Idempotency-Key in mxHeadless
 
 ## Body
 
-`Content-Type: application/json`. Size limited by `mxheadless.max_body_bytes` (1 MB).
+`Content-Type: application/json`. Size limited by `mxheadless_max_body_bytes` (1 MB).
 
 ```bash
 curl -s -X POST https://example.com/api/v1/resources \
@@ -23,7 +23,7 @@ Session mutations also need `X-CSRF-Token`.
 
 ## Idempotency
 
-When `mxheadless.idempotency.enabled=true` (default), on POST you can send:
+When `mxheadless_idempotency_enabled=true` (default), on POST you can send:
 
 ```text
 Idempotency-Key: <unique-string>
@@ -31,7 +31,7 @@ Idempotency-Key: <unique-string>
 
 A repeat with the same key and body returns the stored response (header `Idempotency-Replayed`). Different body or concurrent request → `409` `idempotency_conflict`.
 
-TTL: `mxheadless.idempotency_ttl` (86400 s).
+TTL: `mxheadless_idempotency_ttl` (86400 s).
 
 ## Soft delete
 

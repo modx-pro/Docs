@@ -8,13 +8,13 @@ description: Common mxHeadless failures and what to check
 ## 404 on `/api/v1`
 
 - Friendly URLs and rewrite to `index.php`
-- Prefix `mxheadless.api.prefix` matches the URL
+- Prefix `mxheadless_api_prefix` matches the URL
 - mxHeadless plugin is active
 - Fallback: `api.php?route=/v1/health`
 
 ## 503 `service_disabled`
 
-`mxheadless.enabled=false`. Re-enable or keep only health for maintenance.
+`mxheadless_enabled=false`. Re-enable or keep only health for maintenance.
 
 ## 401 / 403
 
@@ -32,7 +32,7 @@ Unknown field/filter/sort, bad JSON, `page`+`offset` together, max_fields exceed
 
 ## CORS not working
 
-`mxheadless.cors.enabled=true`, origin in allowlist, not `*` with credentials. Preflight OPTIONS must reach MODX.
+`mxheadless_cors_enabled=true`, origin in allowlist, not `*` with credentials. Preflight OPTIONS must reach MODX.
 
 ## Webhooks not firing
 
@@ -47,4 +47,4 @@ Send `X-CSRF-Token`. Bearer API keys do not need CSRF.
 
 ## Logs
 
-Enable `mxheadless.debug` temporarily on staging only. For request history, see [audit-log](audit-log).
+Enable `mxheadless_debug` temporarily on staging only. For request history, see [audit-log](audit-log).

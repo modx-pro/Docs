@@ -11,8 +11,8 @@ Common query parameters for list/detail on registered objects.
 
 | Parameter | Default | Note |
 | --- | --- | --- |
-| `limit` | `20` | Max: `mxheadless.max_limit` (100) |
-| `offset` | `0` | Max: `mxheadless.max_offset` |
+| `limit` | `20` | Max: `mxheadless_max_limit` (100) |
+| `offset` | `0` | Max: `mxheadless_max_offset` |
 | `page` | - | Alternative to offset. **Do not** combine with `offset` (422) |
 
 In `meta`: `total`, `count`, `limit`, `offset`, `has_more`. In `links`: `self`, `next`, `prev` when applicable.
@@ -23,7 +23,7 @@ In `meta`: `total`, `count`, `limit`, `offset`, `has_more`. In `links`: `self`, 
 fields=id,pagetitle,uri
 ```
 
-Max fields: `mxheadless.max_fields` (50). Unknown or forbidden field → `422`.
+Max fields: `mxheadless_max_fields` (50). Unknown or forbidden field → `422`.
 
 ## Filter
 
@@ -53,7 +53,7 @@ A leading `-` sorts DESC.
 include=template,tvs
 ```
 
-Limits: `mxheadless.max_include_relations` (10), `mxheadless.max_include_depth` (2). Relation names come from schema.
+Limits: `mxheadless_max_include_relations` (10), `mxheadless_max_include_depth` (2). Relation names come from schema.
 
 ## Context
 

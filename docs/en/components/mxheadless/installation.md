@@ -49,13 +49,13 @@ Verify namespace `mxheadless` under **System → Namespaces**.
 
 ### Primary path: `OnHandleRequest` plugin
 
-Default prefix: `/api` (`mxheadless.api.prefix`). Requests to `/api/v1/...` are handled by the package application.
+Default prefix: `/api` (`mxheadless_api_prefix`). Requests to `/api/v1/...` are handled by the package application.
 
 | Setting | Default | Purpose |
 | --- | --- | --- |
-| `mxheadless.api.prefix` | `/api` | URL prefix before `/v1` |
-| `mxheadless.enabled` | `true` | Kill switch |
-| `mxheadless.debug` | `false` | Verbose errors (dev only) |
+| `mxheadless_api_prefix` | `/api` | URL prefix before `/v1` |
+| `mxheadless_enabled` | `true` | Kill switch |
+| `mxheadless_debug` | `false` | Verbose errors (dev only) |
 
 ### Fallback entry: `api.php`
 

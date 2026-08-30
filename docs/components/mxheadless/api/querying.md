@@ -11,8 +11,8 @@ description: filter, sort, fields, pagination и includes в mxHeadless
 
 | Параметр | Default | Примечание |
 | --- | --- | --- |
-| `limit` | `20` | Max: `mxheadless.max_limit` (100) |
-| `offset` | `0` | Max: `mxheadless.max_offset` |
+| `limit` | `20` | Max: `mxheadless_max_limit` (100) |
+| `offset` | `0` | Max: `mxheadless_max_offset` |
 | `page` | - | Альтернатива offset. **Не** комбинируйте с `offset` (422) |
 
 В `meta`: `total`, `count`, `limit`, `offset`, `has_more`. В `links`: `self`, `next`, `prev` при наличии.
@@ -23,7 +23,7 @@ description: filter, sort, fields, pagination и includes в mxHeadless
 fields=id,pagetitle,uri
 ```
 
-Максимум полей: `mxheadless.max_fields` (50). Неизвестное или forbidden поле → `422`.
+Максимум полей: `mxheadless_max_fields` (50). Неизвестное или forbidden поле → `422`.
 
 ## Filter
 
@@ -53,7 +53,7 @@ sort=parent,-id
 include=template,tvs
 ```
 
-Лимиты: `mxheadless.max_include_relations` (10), `mxheadless.max_include_depth` (2). Имена relations берутся из schema.
+Лимиты: `mxheadless_max_include_relations` (10), `mxheadless_max_include_depth` (2). Имена relations берутся из schema.
 
 ## Контекст
 

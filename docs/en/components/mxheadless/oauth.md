@@ -11,9 +11,9 @@ Short-lived bearer tokens `mxt_*`. Disabled by default.
 
 | Key | Default | Purpose |
 | --- | --- | --- |
-| `mxheadless.oauth.enabled` | `false` | `POST /api/v1/auth/token` |
-| `mxheadless.oauth.token_ttl` | `3600` | Access token TTL (seconds) |
-| `mxheadless.oauth.password_grant_enabled` | `false` | `password` grant |
+| `mxheadless_oauth_enabled` | `false` | `POST /api/v1/auth/token` |
+| `mxheadless_oauth_token_ttl` | `3600` | Access token TTL (seconds) |
+| `mxheadless_oauth_password_grant_enabled` | `false` | `password` grant |
 
 ## Client
 
@@ -54,7 +54,7 @@ Supports `application/json` and `application/x-www-form-urlencoded`. For client 
 | Grant | When |
 | --- | --- |
 | `client_credentials` | Machine-to-machine (default) |
-| `password` | Only if `mxheadless.oauth.password_grant_enabled=true` |
+| `password` | Only if `mxheadless_oauth_password_grant_enabled=true` |
 
 OAuth error: `400` `invalid_grant`.
 
