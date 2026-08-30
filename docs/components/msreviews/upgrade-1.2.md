@@ -87,8 +87,8 @@ description: 'msReviews 1.2: Fenom, pdoTools, data-msr, письма модер�
 | `msreviews_moderator_notify_enabled` | `0` | Включить |
 | `msreviews_moderator_notify_emails` | *(пусто)* | Адреса через запятую |
 | `msreviews_moderator_notify_on` | `pending_only` | `pending_only` или `all` |
-| `msreviews_moderator_email_subject_chunk` | *(пусто)* | Чанк темы |
-| `msreviews_moderator_email_body_chunk` | *(пусто)* | Чанк тела |
+| `msreviews_moderator_email_subject_chunk` | *(пусто)* | Чанк темы. Пустое имя: текст из лексикона. Имя задано, рендер пустой: ERROR в лог, письмо не уходит (с **1.2.1**) |
+| `msreviews_moderator_email_body_chunk` | *(пусто)* | Чанк тела. То же правило, что у темы |
 
 Письма только с витрины. CSV и CMP не шлют. Отмена: плагин на **`msrOnModeratorNotify`** → `return false`.
 
@@ -134,3 +134,16 @@ description: 'msReviews 1.2: Fenom, pdoTools, data-msr, письма модер�
 ## Откат
 
 Поставьте предыдущую версию в Installer. Данные отзывов не трогаются. Настройки `msreviews_moderator_*` останутся в системе. Свои чанки под отдельными именами откат не перезапишет.
+
+## Патч 1.2.1
+
+Поставьте пакет **1.2.1-pl** поверх 1.2.0 и очистите кэш. Публичный API не меняется. Resolver при upgrade создаёт отсутствующие ключи `msreviews_moderator_*`.
+
+| Тема | Что изменилось |
+| --- | --- |
+| Письма модератору | Кастомный чанк темы/тела задан, но рендер пустой: ERROR в лог, лексикон не подставляется, письмо не уходит |
+| CMP отзывы | Колонки «Ответ магазина» в таблице нет. Ответ в форме редактирования (право `review_reply`) |
+| Привязка | `product_id` в CMP: любой неудалённый `site_content`, не только `msProduct` |
+| Поиск в CMP | `mgr/catalog/search` с `type=resource`; `limit` 1–100 (по умолчанию 50). При вводе `q` список подсказок заменяется. Числовой `q` поднимает точный id |
+| Витрина Latest | Заголовок и URL для отзывов/вопросов на любом опубликованном ресурсе |
+| Фильтры | Chip-ссылки без дубля `msr_product_id` при `baseQuery` и `$_GET` |

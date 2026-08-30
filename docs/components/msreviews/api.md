@@ -76,10 +76,12 @@ action=request/process&key=ВАШ_КЛЮЧ
 | `mgr/media/list` | Список медиа | `review_view` |
 | `mgr/media/delete` | Удалить медиа | `review_moderate` |
 | `mgr/queue/process` | Очередь из mgr | `queue_process` |
-| `mgr/catalog/search` | Поиск товаров/папок | `review_analytics` |
+| `mgr/catalog/search` | Поиск папок, товаров или ресурсов | `review_analytics` |
 | `mgr/catalog/resolve` | Подписи по ID | `review_analytics` |
 
-Полные параметры **`mgr/review/create`** и **`mgr/review/update`**: `product_id`, `rating` (1–5), `title`, `text`, `author_name`, `author_email`, `status`, `is_verified` (0/1). У update обязателен `id`.
+Полные параметры **`mgr/review/create`** и **`mgr/review/update`**: `product_id` (любой неудалённый `site_content`, не только `msProduct`), `rating` (1–5), `title`, `text`, `author_name`, `author_email`, `status`, `is_verified` (0/1). У update обязателен `id`. Опционально **`shop_reply`** при праве **`review_reply`**. Смена `product_id` пересчитывает агрегаты старого и нового ресурса.
+
+**`mgr/catalog/search`**: `type` = `parent` \| `product` \| `resource`; `q` до 80 символов; `limit` 1–100 (по умолчанию 50). `product` — только `msreviews_product_class_key`. `resource` — любой неудалённый `site_content` (форма и фильтр отзывов в CMP). Ответ `data.items`: `{ id, label }[]`. **`mgr/catalog/resolve`** принимает те же `type` и список `ids`.
 
 Полный список действий — в исходниках `ConnectorRegistryFactory` и [Права доступа](permissions).
 

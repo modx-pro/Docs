@@ -143,6 +143,8 @@ CSS попадёт в блок head через стандартный вывод
 
 ## Главная и лендинги
 
+На главной вызывайте **`msReviewsLatest`**, не **`msReviews`**. У Latest нет `product_id`: без него `msReviews` возьмёт id текущей страницы (главной), а не весь каталог. С **1.2.1** ссылка «на товар» в Latest работает и для отзывов на обычных страницах `site_content`.
+
 <!-- ![Виджеты на главной](/components/msreviews/screenshots/widgets-homepage.png) -->
 
 ::: code-group

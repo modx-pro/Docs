@@ -13,6 +13,8 @@ description: Список опубликованных отзывов на ка�
 
 Основной блок отзывов на странице товара: карточки отзывов, счётчики, кнопки «полезно», правка и удаление своего отзыва.
 
+Список **одного** товара (страница товара, Hub, Tabbed). Параметра `parents` нет: без `product_id` сниппет берёт id текущей страницы, а не весь каталог. Лента по магазину: [msReviewsLatest](msReviewsLatest).
+
 ## Где вызывать
 
 - Шаблон **msProduct**, под [msRatingSummary](msRatingSummary).
@@ -194,6 +196,7 @@ description: Список опубликованных отзывов на ка�
 ## См. также
 
 - [msReviewsFilters](msReviewsFilters)
+- [msReviewsLatest](msReviewsLatest) — лента по каталогу, не список одного товара
 - [msRatingSummary](msRatingSummary)
 - [Интеграция — пагинация](../integration)
 - [FAQ](../faq)

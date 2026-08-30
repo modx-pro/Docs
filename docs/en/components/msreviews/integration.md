@@ -42,6 +42,17 @@ description: Сборка блоков msReviews на карточке, ката
 
 **Hub / Tabbed:** внутренний `msReviews` вызывается с `showHeading=0` и `applyRequestFilters=0`. Chip-фильтры снаружи Hub не сработают, пока не передадите **`applyRequestFilters=1`** в [msReviewsHub](snippets/msReviewsHub) / [msReviewsTabbed](snippets/msReviewsTabbed).
 
+## Какой сниппет списка: карточка или лента
+
+| Нужно | Сниппет | Область |
+| --- | --- | --- |
+| Список отзывов **одного** товара (карточка, Hub, Tabbed, Filters) | `msReviews` | Обязателен `product_id` (или id текущего ресурса на странице товара) |
+| Лента последних отзывов на главной / категории / лендинге | `msReviewsLatest` | Весь каталог или `parents` / `productIds`. Параметра `product_id` нет |
+
+То же для Q&A: на карточке товара `msQuestions`, для FAQ-ленты по каталогу `msQuestionsLatest`.
+
+Без `product_id` у `msReviews` сработает fallback на id страницы, а не «все товары». Для ленты по каталогу вызывайте `msReviewsLatest`.
+
 ## Пагинация (pdoPage)
 
 Нужен **pdoTools**. Оборачивайте **`msReviews`**, **`msQuestions`**, **`msReviewsLatest`**, **`msQuestionsLatest`** в `!pdoPage` с `pageVarKey`, `pageNavVar`, `totalVar`. Внутри обёртки сниппет выводит только карточки, без шапки списка.

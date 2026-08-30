@@ -53,8 +53,8 @@ description: Ключи msreviews_* — модерация, медиа, пись
 | `msreviews_moderator_notify_enabled` | boolean | `0` | Письмо модератору о новом отзыве или вопросе с витрины |
 | `msreviews_moderator_notify_emails` | text | *(пусто)* | Адреса через запятую |
 | `msreviews_moderator_notify_on` | text | `pending_only` | `pending_only` — только pending, `all` — любой новый с витрины |
-| `msreviews_moderator_email_subject_chunk` | text | *(пусто)* | Чанк темы. Пусто — текст из лексикона |
-| `msreviews_moderator_email_body_chunk` | text | *(пусто)* | Чанк тела. Пусто — текст из лексикона |
+| `msreviews_moderator_email_subject_chunk` | text | *(пусто)* | Чанк темы. Пустое имя: текст из лексикона. Имя задано, рендер пустой: ERROR в лог, письмо не уходит |
+| `msreviews_moderator_email_body_chunk` | text | *(пусто)* | Чанк тела. То же правило, что у темы |
 
 Плагин **msReviews Order status** слушает **`msOnChangeOrderStatus`**. Обработка очереди: CMP или cron с **`action=request/process`** и **`msreviews_cron_key`**.
 
@@ -65,6 +65,7 @@ description: Ключи msreviews_* — модерация, медиа, пись
 - По умолчанию (`pending_only`) письмо уходит только для материалов со статусом `pending`. Значение `all` включает и автоматически опубликованные.
 - CSV-импорт и создание отзыва в CMP письма не шлют.
 - Плейсхолдеры чанков: `type` (`review` / `question`), `id`, `product_id`, `status`, `manager_url`.
+- Лексикон подставляется только если имя чанка пустое. Если имя задано, а чанк вернул пустую строку, в лог пишется `[msReviews] moderator email … chunk empty`, письмо не уходит.
 - Отмена отправки: плагин на **`msrOnModeratorNotify`** → `return false`. См. [События](events#msronmoderatornotify).
 
 ## Витрина

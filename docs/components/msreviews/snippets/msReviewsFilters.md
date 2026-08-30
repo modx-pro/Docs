@@ -32,7 +32,7 @@ UX-фильтры перед списком отзывов на странице
 | `showCounts` | `0` | Счётчики в chip из summary (verified, медиа…) |
 | `showSort` | `1` | Chip «Сначала полезные» |
 | `activeFilters` | *(из GET)* | CSV активных фильтров, напр. `msr_verified,msr_media` |
-| `baseQuery` | *(auto)* | Базовая query-строка для ссылок, напр. `?msr_product_id=5` |
+| `baseQuery` | *(auto)* | Базовая query-строка для ссылок, напр. `?msr_product_id=5`. Параметры из query объединяются с `$_GET` без дубля ключа |
 | `tpl` | `tplReviewsFilters` | Чанк-обёртка |
 | `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
 | `registerJs` | `1` | Подключать JS витрины этим вызовом |
@@ -71,6 +71,8 @@ UX-фильтры перед списком отзывов на странице
 :::
 
 ## baseQuery при base href в layout
+
+`baseQuery` вида `?msr_product_id=N` попадает в query-параметры ссылок, а не в path. Если тот же ключ уже есть в `$_GET`, дубль не добавляется (с **1.2.1**).
 
 ::: code-group
 
