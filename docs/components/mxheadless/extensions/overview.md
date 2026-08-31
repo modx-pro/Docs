@@ -60,4 +60,5 @@ ObjectDefinition::create('locations')
 ## Дальше
 
 - [Регистрация объектов](objects)
+- [Custom endpoints](endpoints)
 - [MiniShop3](minishop3)

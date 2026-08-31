@@ -47,6 +47,16 @@ sort=parent,-id
 
 Префикс `-` задаёт DESC.
 
+## Поиск
+
+```text
+?q=installation
+```
+
+`QueryParser` строит `LIKE %term%` по полям из `searchable` в definition. У `resources` в ядре: `pagetitle`, `longtitle`, `description`, `introtext`, `alias`, `uri`. Поля объединяются через OR.
+
+Короткий термин может вернуть много строк. Сужайте выборку через `filter`. Если searchable пуст, ответ `422 Search not supported`. Список полей: [Schema](schema).
+
 ## Includes
 
 ```text
@@ -73,4 +83,4 @@ Whitelist `mxheadless_allowed_contexts` (default `web,mgr`) ограничива
 ?include_deleted=1
 ```
 
-Только с соответствующими правами. См. [Авторизация](/components/mxheadless/authorization).
+Только с соответствующими правами. Подробнее: [Preview](preview), [Авторизация](/components/mxheadless/authorization).

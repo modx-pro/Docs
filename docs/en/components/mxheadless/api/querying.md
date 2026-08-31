@@ -47,6 +47,16 @@ sort=parent,-id
 
 A leading `-` sorts DESC.
 
+## Search
+
+```text
+?q=installation
+```
+
+`QueryParser` builds `LIKE %term%` over fields from `searchable` in the definition. For core `resources`: `pagetitle`, `longtitle`, `description`, `introtext`, `alias`, `uri`. Fields are ORed.
+
+A short term may return many rows. Narrow with `filter`. Empty searchable list → `422 Search not supported`. Field list: [Schema](schema).
+
 ## Includes
 
 ```text
@@ -73,4 +83,4 @@ The `mxheadless_allowed_contexts` whitelist (default `web,mgr`) limits allowed v
 ?include_deleted=1
 ```
 
-Requires matching permissions. See [Authorization](/components/mxheadless/authorization).
+Requires matching permissions. Details: [Preview](preview), [Authorization](/components/mxheadless/authorization).

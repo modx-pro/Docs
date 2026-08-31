@@ -32,11 +32,15 @@ items: [
     link: 'api/overview',
     items: [
       { text: 'Обзор и эндпоинты', link: 'api/overview' },
+      { text: 'Discovery', link: 'api/discovery' },
+      { text: 'Schema', link: 'api/schema' },
       { text: 'Swagger и OpenAPI', link: 'api/swagger' },
       { text: 'Resources и Pages', link: 'api/resources' },
       { text: 'Elements и Contexts', link: 'api/elements' },
       { text: 'Objects', link: 'api/objects' },
       { text: 'Запросы', link: 'api/querying' },
+      { text: 'Preview', link: 'api/preview' },
+      { text: 'HTTP-кэш', link: 'api/http-caching' },
       { text: 'Мутации', link: 'api/mutations' },
       { text: 'Ошибки', link: 'api/errors' },
     ],
@@ -56,6 +60,9 @@ items: [
     items: [
       { text: 'Чеклист production', link: 'operations/production-checklist' },
       { text: 'Webhooks', link: 'operations/webhooks' },
+      { text: 'Workers', link: 'operations/workers' },
+      { text: 'ISR revalidation', link: 'operations/isr-revalidation' },
+      { text: 'Ротация ключей', link: 'operations/key-rotation' },
       { text: 'Audit log', link: 'operations/audit-log' },
       { text: 'Диагностика', link: 'operations/troubleshooting' },
     ],
@@ -66,6 +73,7 @@ items: [
     items: [
       { text: 'Обзор', link: 'extensions/overview' },
       { text: 'Регистрация объектов', link: 'extensions/objects' },
+      { text: 'Custom endpoints', link: 'extensions/endpoints' },
       { text: 'MiniShop3', link: 'extensions/minishop3' },
     ],
   },
@@ -75,6 +83,7 @@ items: [
     items: [
       { text: 'cURL', link: 'examples/curl' },
       { text: 'JavaScript', link: 'examples/javascript' },
+      { text: 'TypeScript', link: 'examples/typescript' },
       { text: 'Nuxt', link: 'examples/nuxt' },
       { text: 'Next.js', link: 'examples/nextjs' },
       { text: 'SvelteKit', link: 'examples/sveltekit' },

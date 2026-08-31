@@ -69,3 +69,5 @@ Retries: exponential backoff, max `mxheadless_webhook_max_attempts` (5) → `fai
   }
 }
 ```
+
+Cron и systemd для worker: [Workers](workers). Теги `meta.revalidate` для Next.js и Nuxt: [ISR revalidation](isr-revalidation).

@@ -38,6 +38,8 @@ curl -s 'https://example.com/api/v1/pages/about' \
 
 Standard parameters from [Querying](querying): `filter`, `sort`, `fields`, `limit`/`offset`/`page`, `include`.
 
-## TVs and relations
+## TVs, media, and relations
 
 TVs are available as resource definition fields (when registered). Relations via `include=` when a relation exists in the registry. See live `/schema` and OpenAPI for details.
+
+File paths in resource fields become absolute URLs through MODX media sources (`MediaUrlResolver`). Relative paths use `site_url` and the active context. Values starting with `http://` or `https://` are unchanged.

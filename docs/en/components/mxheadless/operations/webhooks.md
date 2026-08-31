@@ -69,3 +69,5 @@ By default blocks localhost, private IP, `.local`/`.test`. Dev override: `mxhead
   }
 }
 ```
+
+Cron and systemd for the worker: [Workers](workers). `meta.revalidate` tags for Next.js and Nuxt: [ISR revalidation](isr-revalidation).

@@ -60,4 +60,5 @@ Flags: `readable`, `creatable`, `updatable`, `deletable`, `hiddenFields`, `prote
 ## Next steps
 
 - [Registering objects](objects)
+- [Custom endpoints](endpoints)
 - [MiniShop3](minishop3)

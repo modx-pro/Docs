@@ -119,8 +119,12 @@ description: Envelope, полный список эндпоинтов, discovery
 
 ## Дальше по группам
 
+- [Discovery](discovery)
+- [Schema](schema)
 - [Swagger и OpenAPI](swagger)
 - [Resources и Pages](resources)
+- [Preview](preview)
+- [HTTP-кэш](http-caching)
 - [Elements и Contexts](elements)
 - [Objects](objects)
 - [Запросы](querying)

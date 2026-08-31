@@ -38,6 +38,8 @@ curl -s 'https://example.com/api/v1/pages/about' \
 
 Стандартные параметры: [Запросы](querying): `filter`, `sort`, `fields`, `limit`/`offset`/`page`, `include`.
 
-## TV и связи
+## TV, media и связи
 
 TV доступны как поля resource definition (если зарегистрированы). Связи через `include=` при наличии relation в registry. Подробности в live `/schema` и OpenAPI.
+
+Пути к файлам в полях ресурсов превращаются в абсолютные URL через media sources MODX (`MediaUrlResolver`). Относительные пути собираются через `site_url` и активный контекст. Значения с `http://` или `https://` не меняются.
