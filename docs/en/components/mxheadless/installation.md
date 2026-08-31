@@ -34,6 +34,12 @@ The installer creates namespace `mxheadless`, the `OnHandleRequest` plugin, menu
 
 3. Finish installation and clear the cache.
 
+## Upgrade from 1.0.42
+
+Setting keys moved from dots (`mxheadless.cors.enabled`) to underscores (`mxheadless_cors_enabled`). The upgrade resolver copies values and removes the old rows. Clear the MODX cache after upgrade.
+
+New setting `mxheadless_context` (default `web`): bootstrap context for the gateway and `api.php`. Value `mgr` is ignored.
+
 ## Manual install (development)
 
 Copy or mount `core/components/mxheadless/` into your MODX install:
@@ -54,6 +60,7 @@ Default prefix: `/api` (`mxheadless_api_prefix`). Requests to `/api/v1/...` are 
 | Setting | Default | Purpose |
 | --- | --- | --- |
 | `mxheadless_api_prefix` | `/api` | URL prefix before `/v1` |
+| `mxheadless_context` | `web` | MODX bootstrap context for the API. `mgr` is ignored |
 | `mxheadless_enabled` | `true` | Kill switch |
 | `mxheadless_debug` | `false` | Verbose errors (dev only) |
 

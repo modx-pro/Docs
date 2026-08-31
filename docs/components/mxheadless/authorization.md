@@ -99,7 +99,11 @@ Anonymous может читать discovery, health, schema, docs, meta, `GET /r
 
 ## Контекст
 
-Заголовок `X-Context` или query `?context=`. Значение должно входить в `mxheadless_allowed_contexts` (default `web,mgr`).
+Bootstrap: `mxheadless_context` (default `web`) задаёт контекст при инициализации MODX в gateway и `api.php`. Значение `mgr` игнорируется.
+
+В запросе: заголовок `X-Context` или query `?context=`. Значение должно входить в `mxheadless_allowed_contexts` (default `web,mgr`). Иначе `422 Invalid context`.
+
+Мутации по id находят строку в любом контексте, затем проверяют доступ `context.{key}` / `context_{key}`. Запись `context_key` на неизвестный или незагружаемый контекст даёт `422`, не `500`.
 
 ## Поля
 

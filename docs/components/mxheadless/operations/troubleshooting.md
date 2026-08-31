@@ -32,7 +32,13 @@ Rate limit. Смотрите `X-RateLimit-*`. Поднимите global или p
 
 ## CORS не работает
 
-`mxheadless_cors_enabled=true`, origin в allowlist, не `*` с credentials. Preflight OPTIONS доходит до MODX.
+- `mxheadless_cors_enabled=true` и origin SPA в `mxheadless_cors_allowed_origins`
+- Не сочетайте `*` с `mxheadless_cors_allow_credentials=true`
+- Preflight `OPTIONS` доходит до MODX (rewrite, не блокируется WAF)
+- Сверьте origin с `data.cors` в discovery (`GET /api/v1`)
+- При выключенном CORS cross-origin fetch из браузера падает на клиенте: это ожидаемо, не «открытый доступ»
+
+Подробнее: [CORS](/components/mxheadless/configuration/cors).
 
 ## Webhooks не уходят
 

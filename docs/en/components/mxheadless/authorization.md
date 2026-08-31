@@ -99,7 +99,11 @@ Elements, contexts, write operations, and `/objects/*` require credentials.
 
 ## Context
 
-Header `X-Context` or query `?context=`. Value must be in `mxheadless_allowed_contexts` (default `web,mgr`).
+Bootstrap: `mxheadless_context` (default `web`) sets the MODX context when the gateway or `api.php` initializes. Value `mgr` is ignored.
+
+Per request: header `X-Context` or query `?context=`. Value must be in `mxheadless_allowed_contexts` (default `web,mgr`). Otherwise `422 Invalid context`.
+
+Mutations by id find the row across contexts, then check `context.{key}` / `context_{key}` access. Writing `context_key` to an unknown or unloadable context returns `422`, not `500`.
 
 ## Fields
 

@@ -59,9 +59,12 @@ Limits: `mxheadless_max_include_relations` (10), `mxheadless_max_include_depth` 
 
 ```text
 ?context=web
+X-Context: web
 ```
 
-or header `X-Context`.
+The header works better with caches. When omitted, the bootstrap context applies (`mxheadless_context`, default `web`).
+
+The `mxheadless_allowed_contexts` whitelist (default `web,mgr`) limits allowed values. Catalog and settings: [Elements and Contexts](elements).
 
 ## Preview / deleted
 

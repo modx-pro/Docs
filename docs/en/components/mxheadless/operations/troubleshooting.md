@@ -32,7 +32,13 @@ Unknown field/filter/sort, bad JSON, `page`+`offset` together, max_fields exceed
 
 ## CORS not working
 
-`mxheadless_cors_enabled=true`, origin in allowlist, not `*` with credentials. Preflight OPTIONS must reach MODX.
+- `mxheadless_cors_enabled=true` and the SPA origin is in `mxheadless_cors_allowed_origins`
+- Do not combine `*` with `mxheadless_cors_allow_credentials=true`
+- Preflight `OPTIONS` reaches MODX (rewrite, not blocked by WAF)
+- Compare the origin with `data.cors` in discovery (`GET /api/v1`)
+- With CORS disabled, cross-origin fetch from the browser fails on the client: expected, not "open access"
+
+Details: [CORS](/components/mxheadless/configuration/cors).
 
 ## Webhooks not firing
 

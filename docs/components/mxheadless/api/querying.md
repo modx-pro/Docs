@@ -59,9 +59,12 @@ include=template,tvs
 
 ```text
 ?context=web
+X-Context: web
 ```
 
-или заголовок `X-Context`.
+Заголовок удобнее для кэша. Без параметра используется bootstrap-контекст (`mxheadless_context`, по умолчанию `web`).
+
+Whitelist `mxheadless_allowed_contexts` (default `web,mgr`) ограничивает допустимые значения. Каталог и settings: [Elements и Contexts](elements).
 
 ## Preview / deleted
 

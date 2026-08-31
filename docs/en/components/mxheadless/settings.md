@@ -14,6 +14,7 @@ From **1.0.42**, upgrade migrates values from old dotted keys (`mxheadless.cors.
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
 | `mxheadless_api_prefix` | textfield | `/api` | Public prefix before `/v1` |
+| `mxheadless_context` | textfield | `web` | MODX context key for API bootstrap (`api.php`, gateway). Value `mgr` is ignored and falls back to `web` |
 
 ## Core
 

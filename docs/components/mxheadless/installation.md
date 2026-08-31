@@ -34,6 +34,12 @@ mxHeadless рассчитан на MODX Revolution **3.2.3+** и PHP **8.1+**.
 
 3. Завершите установку и очистите кэш.
 
+## Обновление с 1.0.42
+
+Ключи настроек перешли с точек (`mxheadless.cors.enabled`) на подчёркивания (`mxheadless_cors_enabled`). Resolver при upgrade копирует значения и удаляет старые строки. После обновления очистите кэш MODX.
+
+Добавлена настройка `mxheadless_context` (default `web`): bootstrap-контекст для gateway и `api.php`. Значение `mgr` игнорируется.
+
 ## Вручную (разработка)
 
 Скопируйте или смонтируйте `core/components/mxheadless/` в установку MODX:
@@ -54,6 +60,7 @@ composer install --no-dev --optimize-autoloader
 | Настройка | По умолчанию | Назначение |
 | --- | --- | --- |
 | `mxheadless_api_prefix` | `/api` | Префикс URL до `/v1` |
+| `mxheadless_context` | `web` | Bootstrap-контекст MODX для API. `mgr` игнорируется |
 | `mxheadless_enabled` | `true` | Kill switch |
 | `mxheadless_debug` | `false` | Подробные ошибки (только dev) |
 

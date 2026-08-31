@@ -14,6 +14,7 @@ Namespace: `mxheadless`. Ключи через подчёркивание (`mxhe
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `mxheadless_api_prefix` | textfield | `/api` | Публичный префикс до `/v1` |
+| `mxheadless_context` | textfield | `web` | Контекст инициализации MODX для bootstrap API (`api.php`, gateway). Значение `mgr` игнорируется, используется `web` |
 
 ## Основные
 
