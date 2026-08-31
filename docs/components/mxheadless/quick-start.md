@@ -45,15 +45,9 @@ curl -s 'https://your-site.example/api/v1/resources?limit=5&filter[published]=1'
 
 Публичное чтение `resources` и `pages` работает без ключа. Элементы, контексты и большинство objects требуют аутентификации.
 
-## 5. OpenAPI
+## 5. Swagger и OpenAPI
 
-Откройте в браузере:
-
-```text
-https://your-site.example/api/v1/docs
-```
-
-Raw JSON: `/api/v1/meta/openapi.json`.
+Откройте в браузере `/api/v1/docs` или скачайте spec с `/api/v1/meta/openapi.json`. Подробнее: [Swagger и OpenAPI](api/swagger).
 
 ## 6. Ключ для защищённых маршрутов
 

@@ -24,6 +24,8 @@ Namespace: `mxheadless`. Ключи через подчёркивание (`mxhe
 | `mxheadless_debug` | combo-boolean | `false` | Детали исключений в problem+json (только dev) |
 | `mxheadless_swagger_enabled` | combo-boolean | `true` | Swagger UI на `GET /docs`. OpenAPI JSON доступен и при `false` |
 
+Подробнее: [Swagger и OpenAPI](api/swagger).
+
 ## Кэш
 
 | Ключ | Тип | По умолчанию | Описание |

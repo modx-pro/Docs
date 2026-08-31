@@ -32,6 +32,7 @@ items: [
     link: 'api/overview',
     items: [
       { text: 'Обзор и эндпоинты', link: 'api/overview' },
+      { text: 'Swagger и OpenAPI', link: 'api/swagger' },
       { text: 'Resources и Pages', link: 'api/resources' },
       { text: 'Elements и Contexts', link: 'api/elements' },
       { text: 'Objects', link: 'api/objects' },
@@ -131,7 +132,7 @@ curl -s https://your-site.example/api/v1 | jq
 curl -s https://your-site.example/api/v1/health | jq
 ```
 
-Интерактивная спецификация: `/api/v1/docs`. Raw OpenAPI: `/api/v1/meta/openapi.json`.
+Интерактивная спецификация: `/api/v1/docs`. Подробнее: [Swagger и OpenAPI](api/swagger).
 
 Без rewrite: `assets/components/mxheadless/api.php?route=/v1/health`.
 
@@ -174,5 +175,6 @@ curl -s https://your-site.example/api/v1/health | jq
 | Системные настройки | [settings](settings) |
 | Аутентификация | [authentication](authentication) |
 | Resources | [api/resources](api/resources) |
+| Swagger и OpenAPI | [api/swagger](api/swagger) |
 | MiniShop3 | [extensions/minishop3](extensions/minishop3) |
 | Webhooks | [operations/webhooks](operations/webhooks) |

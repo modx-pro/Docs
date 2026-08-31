@@ -32,6 +32,7 @@ items: [
     link: 'api/overview',
     items: [
       { text: 'Overview and endpoints', link: 'api/overview' },
+      { text: 'Swagger and OpenAPI', link: 'api/swagger' },
       { text: 'Resources and Pages', link: 'api/resources' },
       { text: 'Elements and Contexts', link: 'api/elements' },
       { text: 'Objects', link: 'api/objects' },
@@ -131,7 +132,7 @@ curl -s https://your-site.example/api/v1 | jq
 curl -s https://your-site.example/api/v1/health | jq
 ```
 
-Interactive spec: `/api/v1/docs`. Raw OpenAPI: `/api/v1/meta/openapi.json`.
+Interactive spec: `/api/v1/docs`. Details: [Swagger and OpenAPI](api/swagger).
 
 Fallback without rewrite: `assets/components/mxheadless/api.php?route=/v1/health`.
 
@@ -174,5 +175,6 @@ An object appears in the API only after registration in `ObjectRegistry` with ex
 | System settings | [settings](settings) |
 | Authentication | [authentication](authentication) |
 | Resources | [api/resources](api/resources) |
+| Swagger and OpenAPI | [api/swagger](api/swagger) |
 | MiniShop3 | [extensions/minishop3](extensions/minishop3) |
 | Webhooks | [operations/webhooks](operations/webhooks) |

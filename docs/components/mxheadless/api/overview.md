@@ -119,6 +119,7 @@ description: Envelope, полный список эндпоинтов, discovery
 
 ## Дальше по группам
 
+- [Swagger и OpenAPI](swagger)
 - [Resources и Pages](resources)
 - [Elements и Contexts](elements)
 - [Objects](objects)

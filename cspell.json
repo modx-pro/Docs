@@ -1168,6 +1168,7 @@
     "filterable",
     "searchable",
     "creatable",
+    "codegen",
     "updatable",
     "deletable",
     "hiddenFields",

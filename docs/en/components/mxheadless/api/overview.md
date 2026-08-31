@@ -119,6 +119,7 @@ Rate limit response headers: `X-RateLimit-Limit`, `Remaining`, `Reset`.
 
 ## Further by group
 
+- [Swagger and OpenAPI](swagger)
 - [Resources and Pages](resources)
 - [Elements and Contexts](elements)
 - [Objects](objects)

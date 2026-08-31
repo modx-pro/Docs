@@ -45,15 +45,9 @@ curl -s 'https://your-site.example/api/v1/resources?limit=5&filter[published]=1'
 
 Public reads on `resources` and `pages` work without a key. Elements, contexts, and most objects require authentication.
 
-## 5. OpenAPI
+## 5. Swagger and OpenAPI
 
-Open in a browser:
-
-```text
-https://your-site.example/api/v1/docs
-```
-
-Raw JSON: `/api/v1/meta/openapi.json`.
+Open `/api/v1/docs` in a browser or fetch the spec from `/api/v1/meta/openapi.json`. Details: [Swagger and OpenAPI](api/swagger).
 
 ## 6. Key for protected routes
 
