@@ -1270,7 +1270,19 @@
     "фронтенд",
     "фронтенда",
     "санитизируйте",
-    "Санитизируйте"
+    "Санитизируйте",
+    "showlog",
+    "pdoresourceslog",
+    "pdopagelog",
+    "pdomenulog",
+    "pdocrumbslog",
+    "pdouserslog",
+    "pdoarchivelog",
+    "pdositemaplog",
+    "pdoneighborslog",
+    "тайминг",
+    "тайминга",
+    "таймингом"
   ],
   "ignorePaths": [
     "node_modules",

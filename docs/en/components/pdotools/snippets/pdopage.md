@@ -50,6 +50,7 @@ When calling *pdoPage*, pass the parameters of the snippet being paginated. That
 | **&cacheTime**         | `3600`                              | Cache lifetime in seconds.                                                                         |
 | **&cache_user**        |                                     | Force visitor ID for cache, by default cache includes visitor ID      |
 | **&toPlaceholder**     |                                     | If set, the snippet stores all data in a placeholder with this name instead of outputting.              |
+| **&showLog**             | `0`                                 | Log in a placeholder (since 3.0), not HTML. Requires mgr session. [Details](../general-properties#showlog). |
 | **ajax**               |                                     | Enable ajax support.                                                                            |
 | **ajaxMode**           |                                     | Ajax pagination out of the box. 3 modes: "default", "button", "scroll".                              |
 | **ajaxElemWrapper**    | `#pdopage`                          | jQuery wrapper selector with results and pagination.                                                |
