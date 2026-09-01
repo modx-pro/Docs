@@ -17,6 +17,8 @@ jobs:
           bun-version: latest
       - run: bun install --frozen-lockfile
       - name: Build
+        env:
+          NODE_OPTIONS: --max-old-space-size=10240
         run: bun run build
       - uses: easingthemes/ssh-deploy@main
         env:
