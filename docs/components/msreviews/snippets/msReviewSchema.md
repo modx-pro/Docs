@@ -9,7 +9,7 @@ description: JSON-LD Product и Review для SEO на карточке това
 
 ## Назначение
 
-SEO-разметка на URL товара: агрегированный рейтинг и выборка отзывов. HTML-рейтинг для пользователя — [msRatingSummary](msRatingSummary); JSON-LD — только этот сниппет.
+SEO-разметка на URL товара: агрегированный рейтинг и выборка отзывов. HTML-рейтинг для пользователя даёт [msRatingSummary](msRatingSummary). JSON-LD выводит только этот сниппет.
 
 ## Где вызывать
 

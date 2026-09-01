@@ -5,11 +5,11 @@ description: UGC-галерея фото из отзывов на карточк
 
 # Сниппет msReviewMediaGallery
 
-Выводит горизонтальную галерею опубликованных фото из отзывов по товару.
+Выводит горизонтальную галерею опубликованных фото из отзывов по товару. Разметка собирается из чанков, не из PHP.
 
 ## Назначение
 
-UGC-блок на странице товара: миниатюры фото покупателей. По умолчанию клик открывает **lightbox** (стрелки, счётчик, закрытие). С `reviewAnchor` ссылка ведёт к якорю отзыва на странице.
+UGC-блок на странице товара: миниатюры фото покупателей. По умолчанию клик открывает **lightbox** (`mediaLinkMode=lightbox`). Режим `anchor` ведёт к секции отзывов. Режим `raw` отдаёт плейсхолдеры без служебных атрибутов (свой Fancybox и т.п.).
 
 ## Где вызывать
 
@@ -20,9 +20,9 @@ UGC-блок на странице товара: миниатюры фото п�
 
 ## Зависимости
 
-- **MiniShop3**, **msReviews**
+- **MiniShop3**, **msReviews**, **pdoTools 3.0+**
 - Настройка `msreviews_media_enabled`
-- Lightbox: сниппет подключает `reviews.js` при наличии фото; строки UI — через [msReviewsLexiconScript](msReviewsLexiconScript) (`msreviews_media_lightbox_*`)
+- Lightbox: сниппет подключает `reviews.js` при наличии фото (если `registerJs=1`). Строки UI идут через [msReviewsLexiconScript](msReviewsLexiconScript)
 
 ## Параметры
 
@@ -31,14 +31,22 @@ UGC-блок на странице товара: миниатюры фото п�
 | `product_id` | id ресурса | ID товара MS3 |
 | `limit` | `24` | Максимум фото (1–100) |
 | `tpl` | `tplReviewMediaGallery` | Чанк-обёртка (плейсхолдер `gallery_body`) |
-| `itemTpl` | `tplReviewMediaGalleryItem` | Чанк элемента. По умолчанию HTML собирается в PHP |
+| `bodyTpl` | `tplReviewMediaGalleryBody` | Список фото или empty-state |
+| `itemTpl` | `tplReviewMediaGalleryItem` | Чанк одного фото |
+| `mediaLinkMode` | `lightbox` | `lightbox` / `anchor` / `raw` |
+| `galleryGroup` | *(пусто)* | Значение для `data-fancybox` и аналогов |
+| `thumbSize` | `160` | `width` и `height` превью |
 | `hideEmpty` | `1` | Не выводить без фото |
 | `showHeading` | `1` | Заголовок `<h3>` «Фото из отзывов» |
-| `reviewAnchor` | *(пусто)* | Якорь отзыва, напр. `#msreviews-reviews`. Пусто — lightbox вместо перехода |
+| `reviewAnchor` | *(пусто)* | Якорь секции отзывов (для `anchor` или вместе с режимом) |
+| `registerCss` | `1` | Подключать `reviews.css` |
+| `registerJs` | `1` | Подключать JS витрины |
+
+Плейсхолдеры item: `url`, `href`, `link_class`, `img_class`, `link_attrs`, `img_width`, `img_height`, `author_name`, `review_id`, `media_id`, `rating`, `gallery_group`, `review_anchor`, `label_open`, `link_html`. Body: `items`, `gallery_group`, `list_empty`.
 
 ## Lightbox (по умолчанию)
 
-Без `reviewAnchor` миниатюры получают `data-msr-media-lightbox="1"`. `reviews.js` открывает диалог с навигацией по всем фото блока.
+`mediaLinkMode=lightbox` (и пустой `reviewAnchor` в типовом сценарии): миниатюры получают атрибуты lightbox. `reviews.js` открывает диалог с навигацией.
 
 Перед галереей вызовите **`msReviewsLexiconScript`**, иначе подписи кнопок lightbox возьмутся из fallback в JS.
 
@@ -66,14 +74,13 @@ UGC-блок на странице товара: миниатюры фото п�
 
 ## Переход к секции отзывов
 
-С `reviewAnchor` lightbox отключается: ссылка ведёт на якорь (в Hub/Tabbed секция отзывов — `#msreviews-reviews`).
-
 ::: code-group
 
 ```fenom
 {'!msReviewMediaGallery' | snippet : [
   'product_id' => $_modx->resource.id,
   'limit' => 24,
+  'mediaLinkMode' => 'anchor',
   'reviewAnchor' => '#msreviews-reviews',
   'hideEmpty' => 1
 ]}
@@ -83,6 +90,7 @@ UGC-блок на странице товара: миниатюры фото п�
 [[!msReviewMediaGallery?
   &product_id=`[[*id]]`
   &limit=`24`
+  &mediaLinkMode=`anchor`
   &reviewAnchor=`#msreviews-reviews`
   &hideEmpty=`1`
 ]]
@@ -90,9 +98,45 @@ UGC-блок на странице товара: миниатюры фото п�
 
 :::
 
-## Кастомный itemTpl
+## Свой lightbox (Fancybox 5)
 
-При `itemTpl` ≠ `tplReviewMediaGalleryItem` сниппет передаёт в чанк готовый **`[[+link_html]]`** (ссылка + img). Разметку ссылки в PHP собирает `msr_storefront_media_link_html`.
+Чанк `tplGalleryItemFancybox` (Fenom):
+
+```fenom
+<li class="product-gallery__item">
+  <a href="{$href}" data-fancybox="{$gallery_group}" data-caption="{$author_name}">
+    <img src="{$url}" alt="{$author_name}" loading="lazy" width="{$img_width}" height="{$img_height}" />
+  </a>
+</li>
+```
+
+::: code-group
+
+```fenom
+{'!msReviewMediaGallery' | snippet : [
+  'product_id' => $_modx->resource.id,
+  'limit' => 24,
+  'itemTpl' => 'tplGalleryItemFancybox',
+  'mediaLinkMode' => 'raw',
+  'galleryGroup' => 'review-media',
+  'registerJs' => 0
+]}
+```
+
+```modx
+[[!msReviewMediaGallery?
+  &product_id=`[[*id]]`
+  &limit=`24`
+  &itemTpl=`tplGalleryItemFancybox`
+  &mediaLinkMode=`raw`
+  &galleryGroup=`review-media`
+  &registerJs=`0`
+]]
+```
+
+:::
+
+Инициализация: `Fancybox.bind('[data-fancybox="review-media"]')`.
 
 ## На странице товара
 
@@ -116,7 +160,7 @@ UGC-блок на странице товара: миниатюры фото п�
 
 :::
 
-Чанки: [Чанки — галерея](../chunks).
+Чанки: [Чанки — галерея](../chunks). Миграция: [Обновление до 1.2](../upgrade-1.2).
 
 ## См. также
 

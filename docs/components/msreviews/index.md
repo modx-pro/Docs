@@ -13,6 +13,7 @@ items: [
     link: 'quick-start',
     items: [
       { text: 'Быстрый старт', link: 'quick-start' },
+      { text: 'Обновление до 1.2', link: 'upgrade-1.2' },
       { text: 'Системные настройки', link: 'settings' },
     ],
   },
@@ -83,6 +84,7 @@ items: [
 | Нужно | Документ |
 | --- | --- |
 | Установить и вывести блок на странице товара | [Быстрый старт](quick-start) |
+| Переход с 1.1 на 1.2 | [Обновление до 1.2](upgrade-1.2) |
 | Все ключи `msreviews_*` | [Системные настройки](settings) |
 | Как собрать блок на карточке | [Интеграция](integration) |
 | Карточка товара | [Страница товара](frontend/product) |
@@ -113,11 +115,12 @@ items: [
 | PHP | 8.2+ |
 | MiniShop3 | 1.0+ |
 | VueTools | 1.1.2+ (только CMP) |
-| pdoTools | 3.x (для Fenom и pdoPage) |
+| pdoTools | 3.0+ (обязателен: чанки на Fenom, пагинация pdoPage) |
 
 ### Зависимости
 
 - **[MiniShop3](/components/minishop3/)** — товары `msProduct`, заказы, verified purchase
+- **[pdoTools](/components/pdotools/) 3.0+** — рендер чанков витрины. Без него сниппеты вернут пустую строку
 
 ### Опционально
 
@@ -127,14 +130,14 @@ items: [
 
 1. [Подключите ModStore](https://modstore.pro/info/connection).
 2. **Extras → Installer → Download Extras** — **msReviews** → **Download** → **Install**.
-3. Убедитесь, что установлен **MiniShop3** и **VueTools**.
+3. Убедитесь, что установлены **MiniShop3**, **pdoTools 3.0+** и **VueTools** (для CMP).
 4. **Настройки → Очистить кэш**.
 
 ## Термины
 
 | Термин | Описание |
 | --- | --- |
-| **product_id** | ID товара MS3 (`ms3_product.id`), на странице товара обычно совпадает с id ресурса |
+| **product_id** | ID ресурса (`site_content.id`). На карточке товара MS3 совпадает с id товара. В CMP с **1.2.1** отзыв можно привязать к любому неудалённому ресурсу |
 | **display_avg** | Рейтинг для сортировки топа (алгоритм Wilson или среднее) |
 | **verified** | Отзыв с подтверждённой покупкой по токену заказа |
 | **Готовые блоки** | `msReviewsHub`, `msReviewsTabbed`, `msReviewsFilters` — вместо ручной сборки по частям |

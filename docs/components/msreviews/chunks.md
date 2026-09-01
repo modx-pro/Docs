@@ -57,7 +57,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 | `tplMsReviewsEmailSubject` | Тема письма запроса отзыва |
 | `tplMsReviewsEmailBody` | Тело письма |
 
-Настройки: **`msreviews_request_email_*_chunk`**.
+Настройки запроса: **`msreviews_request_email_*_chunk`**. Письма модератору: ключи **`msreviews_moderator_email_*_chunk`**. Пустое имя: текст из лексикона. Имя задано, рендер пустой: ERROR в лог, письмо не уходит. См. [Уведомление модератора](settings#уведомление-модератора).
 
 ## Готовые блоки (Hub, вкладки, фильтры)
 
@@ -67,11 +67,25 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 | `tplReviewPrompt` | `msReviewPrompt` |
 | `tplReviewsFilters` / `tplReviewsFiltersItem` | `msReviewsFilters` |
 | `tplReviewsTabbed` | `msReviewsTabbed` |
-| `tplReviewMediaGallery` / `tplReviewMediaGalleryItem` | `msReviewMediaGallery`. Элемент по умолчанию собирается в PHP; кастомный itemTpl получает `[[+link_html]]` |
+| `tplReviewMediaGallery` / `tplReviewMediaGalleryBody` / `tplReviewMediaGalleryItem` | `msReviewMediaGallery`. Разметка целиком из чанков (`bodyTpl`, `itemTpl`) |
 
 ## Fenom в чанках
 
-Сниппеты подмешивают строки лексикона в плейсхолдеры **`[[+label_*]]`**, не `[[%msreviews_*]]`.
+С **1.2** все чанки пакета написаны на Fenom и рендерятся через **pdoTools** (`pdoTools::getChunk()` с принудительным Fenom). Системная **`pdotools_fenom_parser`** на msReviews не влияет.
+
+Без pdoTools 3.0+ сниппеты вернут пустую строку. Обновление пакета перезаписывает чанки категории **msReviews**. Свою версию держите под другим именем и подключайте параметром сниппета (`&tpl=`, `&itemTpl=`).
+
+| Было (MODX) | Стало (Fenom) |
+| --- | --- |
+| `[[+text]]` | `{$text}` |
+| ``[[+author_name:default=`Гость`]]`` | `{$author_name?:'Гость'}` |
+| ``[[+title:notempty=`<h4>[[+title]]</h4>`]]`` | `{if $title?}<h4>{$title}</h4>{/if}` |
+| ``[[+pinned:is=`1`:then=` is-pinned`]]`` | `{if $pinned?} is-pinned{/if}` |
+| `[[%msreviews_helpful]]` | `{$label_helpful}` |
+
+Подписи UI приходят плейсхолдерами **`{$label_*}`**, не `[[%msreviews_*]]`. Необязательный ключ: `{if $var?}` или `{$var?:''}`. Голое `{$var}` на пустом ключе даст warning Fenom.
+
+Свои чанки должны сохранить атрибуты **`data-msr-*`**, иначе штатный JS не подхватит форму, голос и список. См. [Интеграция — data-контракт](integration#кастомная-вёрстка-data-контракт) и [Обновление до 1.2](upgrade-1.2).
 
 ## CSS-токены `--msr-*`
 

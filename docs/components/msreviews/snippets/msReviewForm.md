@@ -22,6 +22,7 @@ description: Форма отправки отзыва на карточке то
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
+- **pdoTools 3.0+** — рендер чанков на Fenom
 - **msReviewsLexiconScript** — переводы для `review-form.js`
 - Настройки: `msreviews_media_enabled`, `msreviews_moderation_enabled`
 - Капча: плагин на `msrOnCaptchaVerify` — [События](../events)
@@ -40,6 +41,8 @@ description: Форма отправки отзыва на карточке то
 | `showDimensionRatings` | `0` | Оценки по критериям (качество, доставка…). Включите явно |
 | `captchaHtml` | *(пусто)* | HTML виджета капчи → плейсхолдер `[[+captcha_html]]` в чанке |
 | `connectorUrl` | auto | URL connector |
+| `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
+| `registerJs` | `1` | Подключать JS витрины этим вызовом |
 
 ## Базовый вызов
 
