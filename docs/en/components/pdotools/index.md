@@ -48,7 +48,7 @@ Thanks to the shared library, all pdoTools snippets share the same minimal featu
 - Proper sorting, preparation, processing and output of TV parameters.
 - Chunk code can be specified right in the snippet call, or loaded as usual or from static files.
 - "Fast placeholders" in chunks that replace filters like "isempty" and wrap values in tags only when non-empty.
-- Detailed timestamped snippet log for debugging.
+- Timestamped snippet log for debugging (`&showLog`). In 3.x the log is a placeholder: [general parameters](general-properties#showlog).
 
 All queries are built on xPDO; data is fetched via PDO for resource and speed efficiency.
 
