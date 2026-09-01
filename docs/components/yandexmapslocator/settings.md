@@ -25,7 +25,7 @@ Namespace: **yandexmapslocator**. В БД ключи с префиксом `yand
 | `yandexmapslocator_default_balloon_image` | text | *(пусто)* | Fallback-картинка балуна |
 | `yandexmapslocator_marker_icon_size` | text | `32,32` | Размер кастомной иконки маркера, px |
 | `yandexmapslocator_default_context` | text | `web` | Fallback-контекст. Также контекст CSV-экспорта Pro |
-| `yandexmapslocator_timezone` | text | `Europe/Moscow` | IANA-таймзона сети для Pro `working_now` / `is_open_now` |
+| `yandexmapslocator_timezone` | text | `Europe/Moscow` | IANA-таймзона сети (fallback), если у точки нет TV `yandexmaps_timezone`. Нужна для Pro `working_now` / `is_open_now` |
 | `yandexmapslocator_allowed_contexts` | text | *(пусто)* | Белый список context key через запятую. Пусто: любой существующий |
 
 ## Имена TV (`yandexmapslocator_tvs`)
@@ -64,4 +64,4 @@ Namespace: **yandexmapslocator**. В БД ключи с префиксом `yand
 
 ## Pro
 
-У Pro **нет** своих runtime-настроек. Берите ключи Free выше плюс TV `ms3_product_id` (её создаёт resolver Pro).
+У Pro **нет** своих runtime-настроек в System Settings. Берите ключи Free выше. TV, которые создаёт resolver Pro: `yandexmaps_timezone`, `ms3_product_id`, `ms3_product_ids`, `yandexmaps_amenities`, `yandexmaps_brand`. Список: [Точки и TV](integration).

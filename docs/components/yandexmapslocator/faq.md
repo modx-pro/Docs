@@ -34,7 +34,7 @@ Free: карта, список, поиск, геолокация. Pro на то�
 
 - Установлен Pro?
 - В TV JSON-расписание, не произвольный текст? Пример: [Открыто сейчас](pro/working-now).
-- `yandexmapslocator_timezone` совпадает с сетью?
+- Часовой пояс: TV `yandexmaps_timezone` на точке или сеть `yandexmapslocator_timezone`?
 
 ## Как вызвать только открытые / самовывоз
 
@@ -77,4 +77,4 @@ Free: карта, список, поиск, геолокация. Pro на то�
 
 ## productId не фильтрует
 
-Нужны Pro, TV `ms3_product_id` на точках и `filters=minishop_product`. Без Pro параметр сбрасывается.
+Нужны Pro и TV `ms3_product_ids` или `ms3_product_id` на точках. Параметр `productId` сам включает фильтр. Без Pro значение сбрасывается.

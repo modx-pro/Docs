@@ -20,6 +20,7 @@ Base URL:
 | `?route=api/v1/locations` | Список точек |
 | `?route=api/v1/locations/{id}` | Деталь |
 | `?route=api/v1/geocode` | Геокодирование |
+| `?route=api/v1/meta` | Capabilities, поля, фильтры, endpoints |
 
 PATH_INFO вида `api.php/api/v1/...` на многих хостингах отдаёт HTML 404. Берите `route=`.
 
@@ -46,12 +47,15 @@ Authorization: Bearer YOUR_TOKEN
 | `address` | Адрес (геокодируется) |
 | `radius` | км |
 | `filters`, `category` | Фильтры локатора |
+| `amenity` / `amenities` | Теги удобств через запятую (можно без `filters=amenity`) |
+| `brand` | Фильтр по TV `yandexmaps_brand` |
+| `working_now` | `1` / `true` — только открытые (нужен Pro) |
 | `context` | MODX context |
 | `product_id` | Pro: фильтр MiniShop3 |
 
 `where` → `400 where_not_allowed`.
 
-По умолчанию короткий набор: `id`, `resource_id`, `title`, `address`, `coordinates`. Для `distance` или `is_open_now` перечислите их в `fields`.
+По умолчанию короткий набор: `id`, `resource_id`, `title`, `address`, `coordinates`. Для `distance`, `is_open_now`, `status_hint`, `closes_at` и т.п. перечислите их в `fields`.
 
 ### Примеры запросов
 
@@ -125,7 +129,7 @@ Authorization: Bearer YOUR_TOKEN
 Только открытые:
 
 ```text
-?route=api/v1/locations&parents=5&filters=working_now&fields=id,title,is_open_now,working_hours_schedule
+?route=api/v1/locations&parents=5&filters=working_now&fields=id,title,is_open_now,status_hint,closes_at,working_hours_schedule
 ```
 
 ```json
@@ -136,6 +140,8 @@ Authorization: Bearer YOUR_TOKEN
       "id": 15,
       "title": "Аптека №3",
       "is_open_now": true,
+      "status_hint": "Закроется в 21:00",
+      "closes_at": "2026-09-01T21:00:00+06:00",
       "working_hours_schedule": {
         "mon": ["09:00-21:00"],
         "tue": ["09:00-21:00"],
@@ -151,6 +157,11 @@ Authorization: Bearer YOUR_TOKEN
 }
 ```
 
+По amenity:
+
+```text
+?route=api/v1/locations&parents=5&amenity=wifi,card&fields=id,title,amenities
+```
 С ресурсом и TV (имена TV из `yandexmapslocator_api_resource_tvs`):
 
 ```text
@@ -275,6 +286,14 @@ const res = await fetch(url, {
 const { data } = await res.json();
 ```
 
+## GET meta
+
+Discovery для headless-клиентов: capabilities, whitelist полей, зарегистрированные фильтры, endpoints, сетевые настройки.
+
+```text
+?route=api/v1/meta
+```
+
 ## Headless
 
 Список точек:
@@ -318,7 +337,7 @@ CORS: `yandexmapslocator_api_cors_origins` (`https://app.example.com`, не `*` 
 
 Базовые: `id`, `resource_id`, `title`, `address`, `latitude`, `longitude`, `coordinates`, `phone`, `email`, `category`, `working_hours`, `working_hours_formatted`, `working_hours_compact`, `distance`, `distance_meters`, `distance_km`, `distance_formatted`, `url`, `context_key`, `balloon_image`, `marker_icon`, `resource`.
 
-Pro: `is_open_now`, `working_hours_schedule`.
+Pro: `is_open_now`, `status_hint`, `closes_at`, `next_open_at`, `working_hours_schedule`, `amenities`, `brand`, `timezone`.
 
 ## Kill switch
 

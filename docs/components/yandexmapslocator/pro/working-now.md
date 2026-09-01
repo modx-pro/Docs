@@ -1,19 +1,20 @@
 ---
 title: Открыто сейчас
-description: Фильтр working_now и бейджи YandexMapsLocator Pro
+description: Фильтр working_now, TZ на точке и бейджи YandexMapsLocator Pro
 ---
 
 # Открыто сейчас
 
-**Pro.** На сайте появляются бейджи «Открыто» / «Закрыто», кнопка «Только открытые» и поле `is_open_now`. В сниппете и REST тот же смысл даёт фильтр `working_now`.
+**Pro.** На сайте появляются бейджи «Открыто» / «Закрыто», кнопка «Только открытые» и поля `is_open_now`, `status_hint`, `closes_at`, `next_open_at`. В сниппете и REST тот же смысл даёт фильтр `working_now` (или query `working_now=1`).
 
 ## Часовой пояс
 
-В TV `yandexmaps_working_hours` храните **местное время сети**, не UTC сервера.
+В TV `yandexmaps_working_hours` храните **местное время точки**, не UTC сервера.
 
-Настройка Free `yandexmapslocator_timezone` (IANA). По умолчанию `Europe/Moscow`. Для омской сети поставьте `Asia/Omsk`.
+1. На точке: TV `yandexmaps_timezone` (IANA), например `Europe/Moscow` или `Asia/Omsk`.
+2. Fallback сети: Free-настройка `yandexmapslocator_timezone` (по умолчанию `Europe/Moscow`).
 
-От неё зависят фильтр, бейджи и `is_open_now`.
+От пояса зависят фильтр, бейджи и поля статуса.
 
 ## Формат TV
 
@@ -65,6 +66,8 @@ description: Фильтр working_now и бейджи YandexMapsLocator Pro
 
 Произвольный текст вроде «пн-пт 10-19» в карточке покажется, но статус «открыто сейчас» для него **не считается**. Точка для фильтра закрыта.
 
+На форме ресурса кнопка Pro «Проверить расписание» показывает статус и ближайшее открытие/закрытие без сохранения.
+
 ## Сниппет
 
 ::: code-group
@@ -82,7 +85,7 @@ description: Фильтр working_now и бейджи YandexMapsLocator Pro
 
 :::
 
-В чанке точки после Pro `AfterStorePrepare` доступен `{$is_open_now}` (boolean).
+В чанке точки после Pro `AfterStorePrepare` доступны `{$is_open_now}`, при необходимости `{$status_hint}`, `{$closes_at}`, `{$next_open_at}`.
 
 Разметка статуса как в default `yandexmapslocator.store`:
 
@@ -103,7 +106,7 @@ description: Фильтр working_now и бейджи YandexMapsLocator Pro
 Список только открытых:
 
 ```text
-/assets/components/yandexmapslocatorpro/api.php?route=api/v1/locations&parents=42&filters=working_now&fields=id,title,is_open_now,working_hours_schedule
+/assets/components/yandexmapslocatorpro/api.php?route=api/v1/locations&parents=42&filters=working_now&fields=id,title,is_open_now,status_hint,closes_at,working_hours_schedule
 ```
 
 ```json
@@ -114,6 +117,8 @@ description: Фильтр working_now и бейджи YandexMapsLocator Pro
       "id": 15,
       "title": "Аптека №3",
       "is_open_now": true,
+      "status_hint": "Закроется в 21:00",
+      "closes_at": "2026-09-01T21:00:00+06:00",
       "working_hours_schedule": {
         "mon": ["09:00-21:00"],
         "tue": ["09:00-21:00"],
@@ -129,20 +134,7 @@ description: Фильтр working_now и бейджи YandexMapsLocator Pro
 }
 ```
 
-```javascript
-const base = '/assets/components/yandexmapslocatorpro/api.php';
-const url = `${base}?route=api/v1/locations&parents=42&filters=working_now&fields=id,title,address,is_open_now`;
-
-const res = await fetch(url, {
-  headers: {
-    Accept: 'application/json',
-    Authorization: 'Bearer YOUR_TOKEN',
-  },
-});
-const { data } = await res.json();
-```
-
-Поля Pro `is_open_now` и `working_hours_schedule` попадают в ответ только если их перечислили в `fields`.
+Поля Pro попадают в ответ только если их перечислили в `fields`.
 
 ## UI
 

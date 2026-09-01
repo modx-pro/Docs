@@ -5,7 +5,7 @@ description: Feature matrix for YandexMapsLocator Free and YandexMapsLocatorPro
 
 # Free and Pro
 
-Two packages. **Free** covers the map, list, search, and geolocation. **Pro** on the same UI adds open-now status, a MiniShop3 product pickup map, CSV in the manager, and REST for external clients. Pro cannot be installed without Free.
+Two packages. **Free** covers the map, list, address search, and geolocation. **Pro** adds "open now", MiniShop3 pickup map, CSV in the manager, and REST for external clients on the same UI. Pro requires Free.
 
 ## Matrix
 
@@ -15,46 +15,80 @@ Two packages. **Free** covers the map, list, search, and geolocation. **Pro** on
 | Geolocation, "All locations", route | yes | yes |
 | `category` filter, sort by `distance` | yes | yes |
 | `return=chunks` / `data` / `json` | yes | yes |
-| `search.php` (same-origin AJAX) | yes | fallback when REST is disabled |
+| `search.php` (same-origin AJAX) | yes | fallback when REST is off |
 | Geocode button in mgr | yes | yes |
 | Extension API (contract for extras) | yes | uses Free |
+| REST API v1 (`api.php`, CORS, Bearer, `fields`/`include`) | - | yes |
+| `GET …/meta` (filters, apiFields) | - | yes |
 | `working_now` filter | - | yes |
 | "Open" / "Closed" badge + "Open only" | - | yes |
-| Fields `is_open_now`, `working_hours_schedule` | - | yes |
-| MiniShop3: "where to pick up this product" map | - | yes (`ms3_product_id` + `productId`) |
-| CSV import/export (CMP) | - | yes |
-| REST API v1 (`api.php`, CORS, Bearer, `fields`/`include`) | - | yes |
+| Fields `is_open_now`, `status_hint`, `closes_at`, `next_open_at`, `working_hours_schedule` | - | yes |
+| Per-store TZ (`yandexmaps_timezone`) | - | yes |
+| `amenity`, `brand` filters | - | yes |
+| CSV import/export + bulk geocode (CMP) | - | yes |
+| MiniShop3: "pick up this product here" map | - | yes (`ms3_product_ids` / `ms3_product_id` + `productId`) |
 
-## What Pro adds on the site
+## Positioning
 
-Same Free snippet and markup. Pro loads `pro.js` and its filters:
+**Free** is an on-site locator: locations as MODX resources, map, search, categories. Enough for a store network without headless or bulk import.
 
-- "Open" / "Closed" badges on location cards
-- "Open only" button and `working_now` filter
-- `{$is_open_now}` placeholder in the location chunk
-- on a MiniShop3 product page, a map with only locations that stock that product (`productId` + TV `ms3_product_id`)
+**Pro** adds REST (including meta), "open now" with per-location TZ, CSV and bulk geocode in CMP, MiniShop3 on the product page, and UI add-ons on top of Free.
 
-In the manager: CSV (**Components → YandexMapsLocator Pro**).
+`return=json` and `search.php` in Free do not replace REST: no CORS for foreign origins, no `fields`/`include`, no Bearer. Headless (Nuxt/Next) requires Pro.
 
-REST v1 (`api.php`) with CORS and Bearer for Nuxt, Next, and similar clients is separate. Free `return=json` and `search.php` do not replace it: no CORS, `fields`/`include`, or Bearer.
+## Timezone (`working_now`)
 
-## When Free is enough
+Schedule in TV `yandexmaps_working_hours` is local store time, not server UTC.
 
-You need a map, search, and categories. You do not need open-now status, a product pickup map on the product page, or bulk CSV.
+1. On the location: TV `yandexmaps_timezone` (IANA), e.g. `Europe/Moscow` or `Asia/Omsk`.
+2. Network fallback: Free setting `yandexmapslocator_timezone` (default `Europe/Moscow`).
 
-## Install order
+This drives the `working_now` filter, badges, and fields `is_open_now`, `status_hint`, `closes_at`, `next_open_at`.
 
-1. YandexMapsLocator (Free)
-2. YandexMapsLocatorPro
+For `working_now` / `is_open_now` you need JSON in the TV. Plain text (including "day off") shows in the card, but "open now" is not computed: the location counts as closed.
 
-Free installs `yandexmapslocator_api_*` keys. The REST endpoint and kill switch `api_enabled` activate after Pro is installed.
+Details: [Open now](pro/working-now).
+
+## amenity and brand filters
+
+REST and `search.php`: `amenity=wifi,card` (or `amenities`) and `brand=…`. You can pass these without explicit `filters=amenity` / `filters=brand`.
+
+On the location: TV `yandexmaps_amenities` (comma-separated) and `yandexmaps_brand`. In the snippet: `amenities` / `amenity`, `brand`.
+
+## MiniShop3 (Pro)
+
+Free shows the whole network. On a MiniShop3 product page you usually need a map with only locations where the product is available.
+
+On the location: TV `ms3_product_ids` (comma-separated IDs or JSON array) or legacy `ms3_product_id`. If `ms3_product_ids` is set, it wins over the single ID. Details: [MiniShop3](pro/minishop3).
+
+## Pro CMP
+
+**Components → YandexMapsLocator Pro**: CSV import and export by container ID, bulk geocode, schedule preview on the location form.
+
+CSV columns (14): `id`, `pagetitle`, `address`, `latitude`, `longitude`, `phone`, `email`, `category`, `working_hours`, `timezone`, `ms3_product_id`, `ms3_product_ids`, `amenities`, `brand`.
+
+Export: UTF-8 with BOM. Import from mgr is sent to the server as base64 (Cyrillic survives POST). See [CSV in the manager](pro/manager).
+
+## REST and API settings
+
+Keys `yandexmapslocator_api_*` come from Free (shared rate limit for `search.php`). Endpoint and kill switch `api_enabled` work after Pro is installed.
+
+Empty `api_token` means public REST (handy on a local stack). On production set a Bearer token.
+
+```text
+/assets/components/yandexmapslocatorpro/api.php?route=api/v1/locations
+/assets/components/yandexmapslocatorpro/api.php?route=api/v1/meta
+```
+
+PATH_INFO like `api.php/v1/...` often returns HTML 404 on shared hosting. Use query `route=`.
 
 ## Compatibility
 
 | Free | Pro |
 |------|-----|
-| 1.0.x | 1.0.x |
+| 1.0.0-pl7+ | 1.1.0-pl2 |
+| 1.0.x | 1.0.x / 1.1.x |
 
-Pro: `yandexmapslocator >=1.0.0 <2.0.0`.
+Pro 1.1.0-pl2 targets Free ≥ 1.0.0-pl7. Transport constraint: `yandexmapslocator >=1.0.0-pl7 <2.0.0`.
 
 Next: [What Pro adds](pro/), [REST API](pro/api), [Open now](pro/working-now).

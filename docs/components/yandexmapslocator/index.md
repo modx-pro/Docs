@@ -62,10 +62,11 @@ items: [
 | Карта, список, поиск, геолокация | да | да |
 | Категории, `return=chunks/data/json` | да | да |
 | `search.php` (AJAX на том же сайте) | да | fallback, если REST выключен |
-| Фильтр «открыто сейчас», бейджи в UI | - | да |
+| Фильтр «открыто сейчас», бейджи, TZ на точке | - | да |
+| Фильтры amenity / brand | - | да |
 | MiniShop3: карта «где забрать товар» | - | да |
-| CSV import/export в CMP | - | да |
-| REST API v1, CORS, Bearer | - | да |
+| CSV, bulk geocode в CMP | - | да |
+| REST API v1 (`locations`, `geocode`, `meta`) | - | да |
 
 Подробнее: [Free и Pro](free-vs-pro).
 
@@ -86,12 +87,14 @@ items: [
 На том же локаторе:
 
 - фильтр `working_now`, бейджи «Открыто» / «Закрыто», кнопка «Только открытые»
-- поля `is_open_now`, `working_hours_schedule` в чанках и API
-- на карточке товара MiniShop3 только точки с этим товаром (`productId` + TV `ms3_product_id`)
+- поля `is_open_now`, `status_hint`, `closes_at`, `next_open_at`, `working_hours_schedule`
+- часовой пояс на точке (`yandexmaps_timezone`) или сеть `yandexmapslocator_timezone`
+- фильтры `amenity` / `brand`
+- на карточке товара MiniShop3 только точки с этим товаром (`productId` + `ms3_product_ids` / `ms3_product_id`)
 
-В менеджере: импорт и экспорт CSV по контейнеру.
+В менеджере: CSV, bulk geocode, превью расписания.
 
-Для Nuxt, Next и других клиентов: REST v1 (`locations`, `geocode`) с CORS и Bearer.
+Для Nuxt, Next и других клиентов: REST v1 (`locations`, `geocode`, `meta`) с CORS и Bearer.
 
 Разделы: [Что даёт Pro](pro/).
 
@@ -105,7 +108,7 @@ items: [
 | [pdoTools](/components/pdotools/) | chunks на Fenom |
 | API-ключ [Яндекс.Карт](https://developer.tech.yandex.ru/) | JS API и HTTP Геокодер |
 
-Pro требует установленный Free (`yandexmapslocator >=1.0.0 <2.0.0`). Совместимость: Free 1.0.x ↔ Pro 1.0.x.
+Pro 1.1.0-pl2 требует Free ≥ 1.0.0-pl7 (`yandexmapslocator >=1.0.0-pl7 <2.0.0`). Матрица: [Free и Pro](free-vs-pro).
 
 ## Установка
 

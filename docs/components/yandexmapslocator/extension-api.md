@@ -17,13 +17,13 @@ description: Контракт расширений YandexMapsLocator для Pro 
 | `frontendModules()` | ES-модули для `locator.js` (`src`: абсолютный URL от корня сайта) |
 | `apiFields()` | Доп. поля REST (`?fields=`) |
 
-**ProFeatureProvider:** capability `pro`, модуль `/assets/components/yandexmapslocatorpro/js/pro.js`, API fields `is_open_now`, `working_hours_schedule`, processors CSV.
+**ProFeatureProvider:** capability `pro`, модуль `/assets/components/yandexmapslocatorpro/js/pro.js`, API fields `is_open_now`, `working_hours_schedule`, `closes_at`, `next_open_at`, `status_hint`, `timezone`, `brand`, `amenities`, processors CSV / bulk geocode / preview.
 
 ## Фильтры
 
 Интерфейс `FilterInterface`, событие `OnYandexMapsLocatorRegisterFilters`.
 
-Free: `category`. Pro: `working_now`, `minishop_product`.
+Free: `category`. Pro: `working_now`, `minishop_product`, `amenity`, `brand`.
 
 ## REST hooks
 

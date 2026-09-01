@@ -5,55 +5,50 @@ description: 'Product pickup map: YandexMapsLocator Pro and MiniShop3'
 
 # MiniShop3
 
-**Pro.** On a general "Stores" page, Free shows the full network. On a MiniShop3 product page you usually need a map with only locations where that product can be picked up.
+**Pro.** On a general "Stores" page Free shows the whole network. On a MiniShop3 product page you usually need a map with only pickup points for that product.
 
-How to wire it up:
+How to wire it:
 
-1. In the location TV `ms3_product_id`, set the product resource ID.
-2. In the product template, call the snippet with `filters=minishop_product` and `productId` equal to the current resource ID.
-3. The list and map keep only matching locations.
+1. On the location TV set product IDs: `ms3_product_ids` (multiple) or legacy `ms3_product_id` (single).
+2. On the product template call the snippet with `productId` = current resource ID.
+3. List and map keep only matching locations.
+
+Parameter `productId` / `product_id` activates the MiniShop3 filter automatically. Explicit `filters=minishop_product` is optional but can be combined with other filters.
 
 ## Requirements
 
 - Free and **Pro**
-- Published locations under a container (`parents`)
-- Product as a MiniShop3 resource (its ID matches the TV on the location)
-- The call must include both `filters=minishop_product` and a non-zero `productId` / `product_id`
+- Published locations under the container (`parents`)
+- Product as a MiniShop3 resource (its ID matches the location TV)
+- Non-zero `productId` / `product_id` in the call
 
-Without Pro the filter is not registered. In REST and `search.php`, `product_id` is cleared to `0`.
+Without Pro the filter is not registered. In REST and `search.php` parameter `product_id` is reset to `0`.
 
-## TV
+## TVs
 
-On Pro install the resolver creates TV `ms3_product_id` (type `number`, category **YandexMapsLocator**) if it does not exist yet.
+On Pro install the resolver creates TVs (if missing), category **YandexMapsLocator**:
 
-The TV is not assigned to a template automatically. Attach it to the location resource template, like the other locator TVs.
+| TV | Type | Meaning |
+|----|------|---------|
+| `ms3_product_id` | number | Single product resource ID (legacy) |
+| `ms3_product_ids` | text | Multiple IDs: `25,26` or JSON `[25,26]`. When set, wins over `ms3_product_id` |
 
-| Field | Value |
-|------|----------|
-| Name | `ms3_product_id` |
-| Caption | MiniShop3 Product ID |
-| Type | number |
-| Meaning | MiniShop3 product resource ID |
+TVs are not bound to templates automatically. Assign them to the location template.
 
-On each location set the ID of the product available there. Empty or `0` drops the location when `productId` is non-zero.
+Empty value with non-zero `productId` excludes the location.
 
-The filter supports **one product ID per location** today. Several products at one place: separate location resources or a custom filter via [Extension API](../extension-api).
-
-Pro CSV has no column for this TV. Set the value in the resource form or with your own import.
-
-See [Locations and TVs](../integration).
+Pro CSV has both columns. See [CSV in the manager](manager), [Locations and TVs](../integration).
 
 ## Filter
 
-Pro class `ProductLocationFilter`, name `minishop_product`, opt-in.
+Pro class `ProductLocationFilter`, name `minishop_product`.
 
 | Condition | Result |
-|---------|-----------|
-| No `filters=minishop_product` | Filter does not run |
-| `productId` ≤ 0 | List is not narrowed |
-| `productId` > 0 | Keeps locations where `(int) ms3_product_id === productId` |
+|-----------|--------|
+| `productId` ≤ 0 | List is not filtered |
+| `productId` > 0 | Locations where product ID is in TV list remain |
 
-Match is by integer product resource ID, not SKU or title.
+Compares the product resource ID. Not SKU or title.
 
 ## Call on the product page
 
@@ -63,7 +58,6 @@ Match is by integer product resource ID, not SKU or title.
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'filters' => 'minishop_product'
 ]}
 ```
 
@@ -71,15 +65,14 @@ Match is by integer product resource ID, not SKU or title.
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &filters=`minishop_product`
 ]]
 ```
 
 :::
 
-Create system setting `yml_stores_parent` yourself or hardcode the container ID.
+Create setting `yml_stores_parent` yourself or use a numeric container ID.
 
-In the snippet, `productId` and `product_id` are the same. If the product page already rendered a filtered call, AJAX `search.php` receives the same `product_id`.
+In the snippet `productId` and `product_id` are the same. If the product page already calls with `productId`, AJAX `search.php` gets `product_id` too.
 
 ## Pickup and open now
 
@@ -89,7 +82,7 @@ In the snippet, `productId` and `product_id` are the same. If the product page a
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'filters' => 'minishop_product,working_now',
+    'filters' => 'working_now',
     'sortby' => 'distance',
     'radius' => 50
 ]}
@@ -99,7 +92,7 @@ In the snippet, `productId` and `product_id` are the same. If the product page a
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &filters=`minishop_product,working_now`
+    &filters=`working_now`
     &sortby=`distance`
     &radius=`50`
 ]]
@@ -107,7 +100,7 @@ In the snippet, `productId` and `product_id` are the same. If the product page a
 
 :::
 
-You need a filled `ms3_product_id`, JSON in `yandexmaps_working_hours`, and `yandexmapslocator_timezone`. See [Open now](working-now).
+Requires filled product IDs, JSON in `yandexmaps_working_hours`, and location/network timezone. See [Open now](working-now).
 
 Product plus category:
 
@@ -117,8 +110,8 @@ Product plus category:
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'category' => 'pickup',
-    'filters' => 'minishop_product,category'
+    'category' => 'самовывоз',
+    'filters' => 'category'
 ]}
 ```
 
@@ -126,26 +119,23 @@ Product plus category:
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &category=`pickup`
-    &filters=`minishop_product,category`
+    &category=`самовывоз`
+    &filters=`category`
 ]]
 ```
 
 :::
 
-## Product template
-
-Place the block below the description:
+## On the product template
 
 ::: code-group
 
 ```fenom
 <section class="product-pickup">
-    <h2>Pickup</h2>
+    <h2>Самовывоз</h2>
     {'!YandexMapsLocator' | snippet : [
         'parents' => $_modx->config.yml_stores_parent ?: 42,
         'productId' => $_modx->resource.id,
-        'filters' => 'minishop_product',
         'tplOuter' => 'yandexmapslocator.outer',
         'limit' => 30
     ]}
@@ -154,11 +144,10 @@ Place the block below the description:
 
 ```modx
 <section class="product-pickup">
-    <h2>Pickup</h2>
+    <h2>Самовывоз</h2>
     [[!YandexMapsLocator?
         &parents=`[[++yml_stores_parent]]`
         &productId=`[[*id]]`
-        &filters=`minishop_product`
         &limit=`30`
     ]]
 </section>
@@ -166,70 +155,36 @@ Place the block below the description:
 
 :::
 
-Call it **uncached**. Requires [pdoTools](/components/pdotools/). Chunks come from Free. Pro does not add its own.
+Call must be **uncached**. Requires [pdoTools](/en/components/pdotools/). Chunks come from Free. Pro adds none.
 
-If nothing matches, `tplEmpty` (`yandexmapslocator.empty`) is used.
+If there are no matches, `tplEmpty` (`yandexmapslocator.empty`) is used.
 
 ## REST
 
-In the query: `product_id` (not `productId`) and `filters=minishop_product`.
+In query use `product_id` (not `productId`). Explicit `filters=minishop_product` is optional.
 
 ```text
-?route=api/v1/locations&parents=5&product_id=120&filters=minishop_product&fields=id,title,address,coordinates
+?route=api/v1/locations&parents=5&product_id=120&fields=id,title,address,coordinates
 ```
 
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": 18,
-      "title": "Mira pickup point",
-      "address": "Omsk, Mira ave., 10",
-      "coordinates": { "lat": 54.9921, "lon": 73.371 }
-    }
-  ],
-  "meta": { "total": 1, "limit": 20, "offset": 0 }
-}
-```
-
-```javascript
-const base = '/assets/components/yandexmapslocatorpro/api.php';
-const productId = 120;
-
-const url = `${base}?route=api/v1/locations&parents=5&product_id=${productId}&filters=minishop_product&fields=id,title,address,phone`;
-
-const res = await fetch(url, {
-  headers: {
-    Accept: 'application/json',
-    Authorization: 'Bearer YOUR_TOKEN',
-  },
-});
-const { data } = await res.json();
-```
-
-Without Pro, `ApiSearchGuard` zeroes `productId` and the list will not narrow by product.
+Without Pro `ApiSearchGuard` zeroes `productId` and the list is not narrowed by product.
 
 Reference: [REST API](api).
 
 ## search.php
 
-Same-origin locator AJAX:
-
 ```text
-/assets/components/yandexmapslocator/search.php?parents=5&product_id=120&filters=minishop_product
+/assets/components/yandexmapslocator/search.php?parents=5&product_id=120
 ```
 
-Accepts `product_id` and `productId`. Without Pro the value is cleared, same as in REST.
+Accepts `product_id` and `productId`. Without Pro the value is reset, same as REST.
 
 ## Empty map
 
-Check in order:
-
-1. Pro is installed and capability `pro` is present.
-2. The call includes `filters=minishop_product` and a non-zero `productId`.
-3. TV `ms3_product_id` is on the location template and equals the product `[[*id]]`.
-4. Locations are published and `parents` is correct.
-5. `latitude` / `longitude` are filled.
+1. Pro installed, capability `pro` present.
+2. Non-zero `productId` in the call.
+3. TV `ms3_product_ids` or `ms3_product_id` on the template and contains the product ID.
+4. Locations published, correct `parents`.
+5. `latitude` / `longitude` filled.
 
 See [productId does not filter](../faq#productid-does-not-filter).

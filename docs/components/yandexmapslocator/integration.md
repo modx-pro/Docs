@@ -27,15 +27,25 @@ description: Ресурсы-точки YandexMapsLocator, TV, геокод в м
 
 ## TV Pro
 
+Resolver Pro создаёт (если ещё нет):
+
 | TV | Тип | Назначение |
 |----|-----|------------|
-| `ms3_product_id` | number | ID ресурса товара MiniShop3 для фильтра `minishop_product` |
+| `yandexmaps_timezone` | text | IANA-таймзона точки (`Europe/Moscow`, `Asia/Omsk`). Пусто — сеть `yandexmapslocator_timezone` |
+| `ms3_product_id` | number | Один ID товара MiniShop3 (legacy) |
+| `ms3_product_ids` | text | Несколько ID: `25,26` или JSON `[25,26]`. Если заполнено, важнее `ms3_product_id` |
+| `yandexmaps_amenities` | text | Теги удобств через запятую (`wifi,card,parking`) |
+| `yandexmaps_brand` | text | Бренд для фильтра `brand` |
 
-См. [MiniShop3](pro/minishop3).
+К шаблону TV сами не привязываются. Назначьте их шаблону точек, как остальные TV локатора.
+
+См. [MiniShop3](pro/minishop3), [Открыто сейчас](pro/working-now).
 
 ## Геокод в менеджере
 
-Плагин Free на `OnDocFormRender` добавляет кнопку: берёт адрес из TV и подставляет координаты. Нужен `yandexmapslocator_api_key`.
+Плагин Free на `OnDocFormRender` добавляет кнопку «Получить координаты» под полем адреса: берёт адрес из TV и подставляет координаты. Нужен `yandexmapslocator_api_key`.
+
+Pro добавляет «Проверить расписание» под TV часов: JSON через formatter, статус «открыто сейчас», ближайшее открытие/закрытие.
 
 ## Чанки Free
 
@@ -53,4 +63,4 @@ Pro своих чанков не возит. UI и `data-yml-*`: [Интерфе
 
 Обычный текст в `yandexmaps_working_hours` виден в карточке.
 
-Для «открыто сейчас» и бейджей Pro нужен **JSON** и верный `yandexmapslocator_timezone`. Иначе для `working_now` точка закрыта. Подробнее: [Открыто сейчас](pro/working-now).
+Для «открыто сейчас» и бейджей Pro нужен **JSON** и верный часовой пояс (TV точки или `yandexmapslocator_timezone`). Иначе для `working_now` точка закрыта. Подробнее: [Открыто сейчас](pro/working-now).

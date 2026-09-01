@@ -5,16 +5,16 @@ description: 'YandexMapsLocator snippet: map, location list, search, return mode
 
 # YandexMapsLocator
 
-The only Free snippet. Renders the search form, location list, and Yandex map. Fenom chunks build the HTML. JS keeps the list and markers in sync.
+The only Free snippet. Renders search form, location list, and Yandex map. HTML comes from Fenom chunks, JS keeps list and markers in sync.
 
 Pro does not replace the snippet: same parameters, plus filters and fields from [Pro](../pro/).
 
 ## Parameters
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+|-----------|---------|-------------|
 | `parents` | *(empty)* | Comma-separated parent IDs |
-| `limit` | `0` | Limit (0 = no limit) |
+| `limit` | `0` | Limit (0: no cap) |
 | `offset` | `0` | Offset |
 | `radius` | `0` | Radius, km (0 → `yandexmapslocator_default_radius`) |
 | `sortby` | `pagetitle` | `pagetitle`, `distance`, `menuindex`, `id`, … |
@@ -27,17 +27,19 @@ Pro does not replace the snippet: same parameters, plus filters and fields from 
 | `includeTVs` | *(empty)* | Extra TVs in location placeholders |
 | `context` | *(current)* | Context key or comma-separated list |
 | `where` | *(empty)* | JSON condition for resources (**snippet only**). Forbidden in `search.php` and REST |
-| `filters` | *(empty)* | Comma-separated filter names or JSON |
+| `filters` | *(empty)* | Comma-separated or JSON filter names |
 | `category` | *(empty)* | Category value |
+| `amenity` / `amenities` | *(empty)* | **Pro:** comma-separated amenity tags |
+| `brand` | *(empty)* | **Pro:** filter by TV `yandexmaps_brand` |
 | `return` | `chunks` | `chunks`, `data`, `json` |
-| `latitude`, `longitude` | *(empty)* | Starting coordinates for radius/sort |
+| `latitude`, `longitude` | *(empty)* | Start coordinates for radius/sort |
 | `address` | *(empty)* | Address for server geocoding |
-| `productId` / `product_id` | *(empty)* | **Pro:** MiniShop3 product ID. Cleared without Pro |
+| `productId` / `product_id` | *(empty)* | **Pro:** MiniShop3 product ID (enables filter automatically). Reset without Pro |
 
 ## `return` modes
 
 | Value | Result |
-|----------|-----------|
+|-------|--------|
 | `chunks` | Locator HTML (default) |
 | `data` | Placeholders `yandexmapslocator.stores` (array) and `yandexmapslocator.count` |
 | `json` | JSON `{ success, results }` without chunk wrapper |
@@ -47,15 +49,17 @@ Pro does not replace the snippet: same parameters, plus filters and fields from 
 ## Filters
 
 | Filter | Package | How to enable |
-|--------|-------|--------------|
-| `category` | Free | `filters=category` + `category` parameter |
-| `working_now` | Pro | `filters=working_now` |
-| `minishop_product` | Pro | `filters=minishop_product` + `productId` |
+|--------|---------|---------------|
+| `category` | Free | `filters=category` + parameter `category` |
+| `working_now` | Pro | `filters=working_now` or `working_now=1` |
+| `minishop_product` | Pro | `productId` (explicit `filters=minishop_product` optional) |
+| `amenity` | Pro | `amenity` / `amenities` |
+| `brand` | Pro | `brand` |
 
 ## Location chunk placeholders (`tpl`)
 
 | Variable | Description |
-|------------|----------|
+|----------|-------------|
 | `{$id}` | Resource ID |
 | `{$pagetitle}`, `{$longtitle}`, `{$description}` | Resource fields |
 | `{$url}` | Resource link |
@@ -70,7 +74,7 @@ Pro does not replace the snippet: same parameters, plus filters and fields from 
 | `{$distance_formatted}` | Distance (when search center is set) |
 | `{$idx}` | Index |
 
-Route icon in the default chunk: `{$_modx->config['assets_url']}components/yandexmapslocator/img/yandex-navigator.svg`.
+Route icon in default chunk: `{$_modx->config['assets_url']}components/yandexmapslocator/img/yandex-navigator.svg`.
 
 Lexicon: `{'yandexmapslocator_route' | lexicon}`.
 
@@ -98,16 +102,16 @@ Lexicon: `{'yandexmapslocator_route' | lexicon}`.
 
 :::
 
-### Server-side address search
+### Search from server-side address
 
-Geocodes `address` and sorts locations by distance (`yandexmapslocator_api_key` required).
+Geocodes `address` and sorts by distance (requires `yandexmapslocator_api_key`).
 
 ::: code-group
 
 ```fenom
 {'!YandexMapsLocator' | snippet : [
     'parents' => 123,
-    'address' => 'Omsk, Lenina st., 25',
+    'address' => 'Омск, ул. Ленина, 25',
     'radius' => 20,
     'sortby' => 'distance',
     'limit' => 15
@@ -117,7 +121,7 @@ Geocodes `address` and sorts locations by distance (`yandexmapslocator_api_key` 
 ```modx
 [[!YandexMapsLocator?
     &parents=`123`
-    &address=`Omsk, Lenina st., 25`
+    &address=`Омск, ул. Ленина, 25`
     &radius=`20`
     &sortby=`distance`
     &limit=`15`
@@ -154,7 +158,7 @@ Geocodes `address` and sorts locations by distance (`yandexmapslocator_api_key` 
 
 :::
 
-### Multiple parents
+### Multiple containers
 
 ::: code-group
 
@@ -178,7 +182,7 @@ Geocodes `address` and sorts locations by distance (`yandexmapslocator_api_key` 
 ```fenom
 {'!YandexMapsLocator' | snippet : [
     'parents' => 42,
-    'category' => 'pharmacy',
+    'category' => 'аптека',
     'filters' => 'category'
 ]}
 ```
@@ -186,16 +190,16 @@ Geocodes `address` and sorts locations by distance (`yandexmapslocator_api_key` 
 ```modx
 [[!YandexMapsLocator?
     &parents=`42`
-    &category=`pharmacy`
+    &category=`аптека`
     &filters=`category`
 ]]
 ```
 
 :::
 
-### `return=data`
+### `return=data` mode
 
-Locations in placeholders (custom markup next to the snippet).
+Location list in placeholders (custom template next to the snippet).
 
 ::: code-group
 
@@ -217,9 +221,9 @@ Locations in placeholders (custom markup next to the snippet).
 
 :::
 
-In a MODX chunk, walk the placeholder via Fenom or a custom snippet: the array is in `yandexmapslocator.stores`.
+In a MODX chunk iterate the placeholder via Fenom or a custom snippet: array is in `yandexmapslocator.stores`.
 
-### `return=json`
+### `return=json` mode
 
 ::: code-group
 
@@ -236,7 +240,7 @@ In a MODX chunk, walk the placeholder via Fenom or a custom snippet: the array i
 
 :::
 
-Sample payload:
+Sample response:
 
 ```json
 {
@@ -244,8 +248,8 @@ Sample payload:
   "results": [
     {
       "id": 15,
-      "pagetitle": "Store on Lenina",
-      "address": "Lenina st., 25",
+      "pagetitle": "Магазин на Ленина",
+      "address": "ул. Ленина, 25",
       "latitude": 54.98,
       "longitude": 73.36
     }
@@ -253,7 +257,7 @@ Sample payload:
 }
 ```
 
-For CORS and headless use [REST Pro](../pro/api), not this mode.
+For CORS and headless use [Pro REST](../pro/api), not this mode.
 
 ### `where` (snippet only)
 
@@ -277,7 +281,7 @@ xPDO JSON condition. Forbidden in `search.php` and REST.
 
 :::
 
-### Extra TVs on the card
+### Extra TVs in the card
 
 ::: code-group
 
@@ -297,7 +301,7 @@ xPDO JSON condition. Forbidden in `search.php` and REST.
 
 :::
 
-In the chunk: `{$metro_station}`, `{$parking}`.
+In chunk: `{$metro_station}`, `{$parking}`.
 
 ### Context
 
@@ -318,7 +322,7 @@ In the chunk: `{$metro_station}`, `{$parking}`.
 
 ### Open now only (Pro)
 
-Set `yandexmapslocator_timezone` for your network. Otherwise "now" uses `Europe/Moscow` (or PHP TZ if the setting is empty).
+Set TZ on the location (`yandexmaps_timezone`) or network `yandexmapslocator_timezone`. Otherwise "now" uses `Europe/Moscow`.
 
 ::: code-group
 
@@ -335,14 +339,14 @@ Set `yandexmapslocator_timezone` for your network. Otherwise "now" uses `Europe/
 
 :::
 
-### Category + open now (Pro)
+### Category + open (Pro)
 
 ::: code-group
 
 ```fenom
 {'!YandexMapsLocator' | snippet : [
     'parents' => 42,
-    'category' => 'pharmacy',
+    'category' => 'аптека',
     'filters' => 'category,working_now'
 ]}
 ```
@@ -350,7 +354,7 @@ Set `yandexmapslocator_timezone` for your network. Otherwise "now" uses `Europe/
 ```modx
 [[!YandexMapsLocator?
     &parents=`42`
-    &category=`pharmacy`
+    &category=`аптека`
     &filters=`category,working_now`
 ]]
 ```
@@ -365,7 +369,6 @@ Set `yandexmapslocator_timezone` for your network. Otherwise "now" uses `Europe/
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'filters' => 'minishop_product'
 ]}
 ```
 
@@ -373,13 +376,12 @@ Set `yandexmapslocator_timezone` for your network. Otherwise "now" uses `Europe/
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &filters=`minishop_product`
 ]]
 ```
 
 :::
 
-### Pickup + open now (Pro)
+### Pickup + open only (Pro)
 
 ::: code-group
 
@@ -387,7 +389,7 @@ Set `yandexmapslocator_timezone` for your network. Otherwise "now" uses `Europe/
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'filters' => 'minishop_product,working_now',
+    'filters' => 'working_now',
     'sortby' => 'distance'
 ]}
 ```
@@ -396,7 +398,7 @@ Set `yandexmapslocator_timezone` for your network. Otherwise "now" uses `Europe/
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &filters=`minishop_product,working_now`
+    &filters=`working_now`
     &sortby=`distance`
 ]]
 ```

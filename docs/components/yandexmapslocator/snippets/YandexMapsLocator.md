@@ -29,10 +29,12 @@ Pro сниппет не подменяет: те же параметры, плю
 | `where` | *(пусто)* | JSON-условие для ресурсов (**только сниппет**). В `search.php` и REST запрещён |
 | `filters` | *(пусто)* | Имена фильтров через запятую или JSON |
 | `category` | *(пусто)* | Значение категории |
+| `amenity` / `amenities` | *(пусто)* | **Pro:** теги удобств через запятую |
+| `brand` | *(пусто)* | **Pro:** фильтр по TV `yandexmaps_brand` |
 | `return` | `chunks` | `chunks`, `data`, `json` |
 | `latitude`, `longitude` | *(пусто)* | Стартовые координаты для радиуса/сортировки |
 | `address` | *(пусто)* | Адрес для геокодирования на сервере |
-| `productId` / `product_id` | *(пусто)* | **Pro:** ID товара MiniShop3. Без Pro сбрасывается |
+| `productId` / `product_id` | *(пусто)* | **Pro:** ID товара MiniShop3 (сам включает фильтр). Без Pro сбрасывается |
 
 ## Режимы `return`
 
@@ -49,8 +51,10 @@ Pro сниппет не подменяет: те же параметры, плю
 | Фильтр | Пакет | Как включить |
 |--------|-------|--------------|
 | `category` | Free | `filters=category` + параметр `category` |
-| `working_now` | Pro | `filters=working_now` |
-| `minishop_product` | Pro | `filters=minishop_product` + `productId` |
+| `working_now` | Pro | `filters=working_now` или `working_now=1` |
+| `minishop_product` | Pro | `productId` (явный `filters=minishop_product` не обязателен) |
+| `amenity` | Pro | `amenity` / `amenities` |
+| `brand` | Pro | `brand` |
 
 ## Плейсхолдеры чанка точки (`tpl`)
 
@@ -318,7 +322,7 @@ JSON-условие xPDO. В `search.php` и REST запрещено.
 
 ### Только открытые сейчас (Pro)
 
-Задайте `yandexmapslocator_timezone` под сеть. Иначе «сейчас» считается в `Europe/Moscow` (или TZ PHP, если настройка пустая).
+Задайте TZ на точке (`yandexmaps_timezone`) или сеть `yandexmapslocator_timezone`. Иначе «сейчас» считается в `Europe/Moscow`.
 
 ::: code-group
 
@@ -365,7 +369,6 @@ JSON-условие xPDO. В `search.php` и REST запрещено.
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'filters' => 'minishop_product'
 ]}
 ```
 
@@ -373,7 +376,6 @@ JSON-условие xPDO. В `search.php` и REST запрещено.
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &filters=`minishop_product`
 ]]
 ```
 
@@ -387,7 +389,7 @@ JSON-условие xPDO. В `search.php` и REST запрещено.
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'filters' => 'minishop_product,working_now',
+    'filters' => 'working_now',
     'sortby' => 'distance'
 ]}
 ```
@@ -396,7 +398,7 @@ JSON-условие xPDO. В `search.php` и REST запрещено.
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &filters=`minishop_product,working_now`
+    &filters=`working_now`
     &sortby=`distance`
 ]]
 ```

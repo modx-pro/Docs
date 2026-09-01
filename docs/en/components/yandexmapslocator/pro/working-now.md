@@ -1,25 +1,26 @@
 ---
 title: Open now
-description: working_now filter and badges in YandexMapsLocator Pro
+description: working_now filter, per-location TZ, and badges in YandexMapsLocator Pro
 ---
 
 # Open now
 
-**Pro.** On the site you get "Open" / "Closed" badges, an "Open only" button, and field `is_open_now`. In the snippet and REST the same behavior uses filter `working_now`.
+**Pro.** On the site you get "Open" / "Closed" badges, an "Open only" button, and fields `is_open_now`, `status_hint`, `closes_at`, `next_open_at`. In the snippet and REST the same behavior uses filter `working_now` (or query `working_now=1`).
 
 ## Timezone
 
-Store **local network time** in TV `yandexmaps_working_hours`, not server UTC.
+Store **local time** in TV `yandexmaps_working_hours`, not server UTC.
 
-Free setting: `yandexmapslocator_timezone` (IANA). Default `Europe/Moscow`. Omsk network: `Asia/Omsk`.
+1. On the location: TV `yandexmaps_timezone` (IANA), e.g. `Europe/Moscow` or `Asia/Omsk`.
+2. Network fallback: Free setting `yandexmapslocator_timezone` (default `Europe/Moscow`).
 
-The filter, badges, and `is_open_now` depend on it.
+Timezone drives the filter, badges, and status fields.
 
 ## TV format
 
-For `working_now` / `is_open_now` you need a **JSON schedule** in TV `yandexmaps_working_hours`.
+For `working_now` / `is_open_now` you need **JSON** in `yandexmaps_working_hours`.
 
-Day keys: `mon` … `sun`. Value: array of `"HH:MM-HH:MM"` intervals. Empty array: closed. Overnight intervals (`22:00-06:00`) are supported.
+Day keys: `mon` … `sun`. Value: array of intervals `"HH:MM-HH:MM"`. Empty array is a day off. Intervals past midnight (`22:00-06:00`) work too.
 
 Example (Mon-Thu 09-21, Fri 09-22, Sat 10-22, Sun 10-20):
 
@@ -63,7 +64,9 @@ Two intervals per day:
 }
 ```
 
-Free text like "Mon-Fri 10-19" still shows on the card, but open-now status is **not computed** for it. The location is treated as closed for the filter.
+Plain text like "Mon-Fri 10-19" shows in the card, but **open now** is not computed. The location counts as closed for the filter.
+
+On the resource form the Pro "Check schedule" button shows status and next open/close without saving.
 
 ## Snippet
 
@@ -82,9 +85,9 @@ Free text like "Mon-Fri 10-19" still shows on the card, but open-now status is *
 
 :::
 
-In the location chunk after Pro `AfterStorePrepare`, `{$is_open_now}` (boolean) is available.
+In the location chunk after Pro `AfterStorePrepare` you get `{$is_open_now}`, and optionally `{$status_hint}`, `{$closes_at}`, `{$next_open_at}`.
 
-Status markup as in default `yandexmapslocator.store`:
+Status markup like default `yandexmapslocator.store`:
 
 ```fenom
 {if isset($is_open_now)}
@@ -103,7 +106,7 @@ Status markup as in default `yandexmapslocator.store`:
 Open locations only:
 
 ```text
-/assets/components/yandexmapslocatorpro/api.php?route=api/v1/locations&parents=42&filters=working_now&fields=id,title,is_open_now,working_hours_schedule
+/assets/components/yandexmapslocatorpro/api.php?route=api/v1/locations&parents=42&filters=working_now&fields=id,title,is_open_now,status_hint,closes_at,working_hours_schedule
 ```
 
 ```json
@@ -112,8 +115,10 @@ Open locations only:
   "data": [
     {
       "id": 15,
-      "title": "Pharmacy #3",
+      "title": "Аптека №3",
       "is_open_now": true,
+      "status_hint": "Закроется в 21:00",
+      "closes_at": "2026-09-01T21:00:00+06:00",
       "working_hours_schedule": {
         "mon": ["09:00-21:00"],
         "tue": ["09:00-21:00"],
@@ -129,20 +134,7 @@ Open locations only:
 }
 ```
 
-```javascript
-const base = '/assets/components/yandexmapslocatorpro/api.php';
-const url = `${base}?route=api/v1/locations&parents=42&filters=working_now&fields=id,title,address,is_open_now`;
-
-const res = await fetch(url, {
-  headers: {
-    Accept: 'application/json',
-    Authorization: 'Bearer YOUR_TOKEN',
-  },
-});
-const { data } = await res.json();
-```
-
-Pro fields `is_open_now` and `working_hours_schedule` appear in the response only when listed in `fields`.
+Pro fields appear in the response only when listed in `fields`.
 
 ## UI
 

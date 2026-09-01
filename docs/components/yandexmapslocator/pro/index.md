@@ -13,10 +13,11 @@ description: 'YandexMapsLocatorPro: REST, открыто сейчас, CSV, Mini
 
 | Функция | Где | Раздел |
 |---------|-----|--------|
-| Фильтр `working_now`, бейджи, `is_open_now` | сайт | [Открыто сейчас](working-now) |
+| Фильтр `working_now`, бейджи, TZ на точке | сайт | [Открыто сейчас](working-now) |
+| Фильтры `amenity`, `brand` | сайт / REST | [Free и Pro](../free-vs-pro) |
 | Карта на карточке товара MiniShop3 | сайт | [MiniShop3](minishop3) |
-| CSV import/export | менеджер | [CSV в менеджере](manager) |
-| REST API v1 (`locations`, `geocode`) | HTTP | [REST API](api) |
+| CSV, bulk geocode, превью расписания | менеджер | [CSV в менеджере](manager) |
+| REST API v1 (`locations`, `geocode`, `meta`) | HTTP | [REST API](api) |
 | CORS, Bearer, rate limit, kill switch | HTTP | [Безопасность API](api-security) |
 
 ## Как устроено
@@ -37,9 +38,9 @@ Capability `pro` включает REST v1. Модуль `/assets/components/yand
 
 ## Установка
 
-1. Free уже стоит и отвечает на сайте.
-2. Поставьте Pro через ModStore.
-3. Задайте `yandexmapslocator_timezone` под вашу сеть.
+1. Free уже стоит и отвечает на сайте (рекомендуется ≥ 1.0.0-pl7).
+2. Поставьте Pro через ModStore (1.1.0-pl2).
+3. Задайте `yandexmapslocator_timezone` под сеть и при необходимости TV `yandexmaps_timezone` на точках.
 4. На production: `api_token` и `api_cors_origins`.
 
-Зависимость: `yandexmapslocator >=1.0.0 <2.0.0`.
+Зависимость: `yandexmapslocator >=1.0.0-pl7 <2.0.0`.

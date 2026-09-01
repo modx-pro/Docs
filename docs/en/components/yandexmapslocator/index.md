@@ -1,6 +1,6 @@
 ---
 title: YandexMapsLocator
-description: 'Yandex Maps store locator for MODX 3. Free: map and search. Pro: open now, MiniShop3, CSV, and REST'
+description: 'Store locator on Yandex Maps for MODX 3. Free: map and search. Pro: open now, MiniShop3, CSV, and REST'
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/yandexmapslocator/logo.png
 modstore: https://modstore.pro/packages/utilities/yandexmapslocator
@@ -51,9 +51,9 @@ items: [
 
 # YandexMapsLocator
 
-Store locator on [Yandex Maps](https://developer.tech.yandex.ru/) for MODX Revolution 3. One location is a published resource with TVs: address, coordinates, phone, working hours. On the site you get a list, map, address search, geolocation, and sort by distance.
+Store network locator on [Yandex Maps](https://developer.tech.yandex.ru/) for MODX Revolution 3. A location is a published resource with TVs: address, coordinates, phone, working hours. On the site you get a list, map, address search, geolocation, and distance sorting.
 
-Two packages, one documentation set. **Free** is the locator core. **Pro** installs on top of Free, extends the same UI, and adds CSV in the manager and REST. Pro does not ship its own snippet or chunks.
+Two packages, one docs set. **Free** is the locator core. **Pro** installs on top of Free and extends the same UI, plus CSV in the manager and REST. Pro does not duplicate the snippet or chunks.
 
 ## Free and Pro
 
@@ -61,23 +61,24 @@ Two packages, one documentation set. **Free** is the locator core. **Pro** insta
 |---|------|-----|
 | Map, list, search, geolocation | yes | yes |
 | Categories, `return=chunks/data/json` | yes | yes |
-| `search.php` (AJAX on the same site) | yes | fallback when REST is disabled |
-| "Open now" filter, UI badges | - | yes |
-| MiniShop3: "where to pick up this product" map | - | yes |
-| CSV import/export in CMP | - | yes |
-| REST API v1, CORS, Bearer | - | yes |
+| `search.php` (same-site AJAX) | yes | fallback when REST is off |
+| "Open now" filter, badges, TZ per location | - | yes |
+| amenity / brand filters | - | yes |
+| MiniShop3: "pick up product here" map | - | yes |
+| CSV, bulk geocode in CMP | - | yes |
+| REST API v1 (`locations`, `geocode`, `meta`) | - | yes |
 
 Details: [Free and Pro](free-vs-pro).
 
 ## Free features
 
-- Locations as MODX resources. TVs are created on install
-- `YandexMapsLocator` snippet: list + map + search form
-- Geolocation ("My location" / "All locations"), route building
+- Locations as MODX resources, TVs created on install
+- `YandexMapsLocator` snippet: list, map, search form
+- Geolocation ("My location" / "All locations"), route link
 - Marker clustering, custom icons and balloon image
 - Category filter, sort by `distance`
-- `return` modes: HTML, data in placeholders, JSON
-- "Get coordinates" button in the resource form
+- `return` modes: HTML, placeholders, JSON
+- "Get coordinates" button on the resource form
 - Extension API for third-party extras and Pro
 - Multi-context: `context` parameter, allowlist in settings
 
@@ -86,26 +87,28 @@ Details: [Free and Pro](free-vs-pro).
 On the same locator:
 
 - `working_now` filter, "Open" / "Closed" badges, "Open only" button
-- fields `is_open_now`, `working_hours_schedule` in chunks and API
-- on a MiniShop3 product page, only locations that stock that product (`productId` + TV `ms3_product_id`)
+- fields `is_open_now`, `status_hint`, `closes_at`, `next_open_at`, `working_hours_schedule`
+- timezone per location (`yandexmaps_timezone`) or network `yandexmapslocator_timezone`
+- `amenity` / `brand` filters
+- on a MiniShop3 product page only locations with that product (`productId` + `ms3_product_ids` / `ms3_product_id`)
 
-In the manager: CSV import and export by container.
+In the manager: CSV, bulk geocode, schedule preview.
 
-For Nuxt, Next, and other clients: REST v1 (`locations`, `geocode`) with CORS and Bearer.
+For Nuxt, Next, and other clients: REST v1 (`locations`, `geocode`, `meta`) with CORS and Bearer.
 
 Sections: [What Pro adds](pro/).
 
-## System requirements
+## Requirements
 
 | Requirement | Version |
-|------------|--------|
+|-------------|---------|
 | MODX Revolution | 3.0+ |
 | PHP | 8.2-8.4 |
 | MySQL / MariaDB | InnoDB |
-| [pdoTools](/components/pdotools/) | Fenom chunks |
+| [pdoTools](/en/components/pdotools/) | Fenom chunks |
 | [Yandex Maps](https://developer.tech.yandex.ru/) API key | JS API and HTTP Geocoder |
 
-Pro requires installed Free (`yandexmapslocator >=1.0.0 <2.0.0`). Compatibility: Free 1.0.x ↔ Pro 1.0.x.
+Pro 1.1.0-pl2 requires Free ≥ 1.0.0-pl7 (`yandexmapslocator >=1.0.0-pl7 <2.0.0`). Matrix: [Free and Pro](free-vs-pro).
 
 ## Installation
 
@@ -114,7 +117,7 @@ Pro requires installed Free (`yandexmapslocator >=1.0.0 <2.0.0`). Compatibility:
 1. [Connect the ModStore repository](https://modstore.pro/info/connection).
 2. **Extras → Installer** → **YandexMapsLocator** → **Download** → **Install**.
 3. Set `yandexmapslocator_api_key`.
-4. Create a container and child location resources. Fill in TVs.
+4. Create a container and child location resources, fill TVs.
 5. Insert the snippet: [Quick start](quick-start).
 
 Package: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslocator).
@@ -123,7 +126,7 @@ Package: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslocato
 
 1. Install Free.
 2. Install **YandexMapsLocatorPro**.
-3. Set `yandexmapslocator_timezone` for your network (for "open now").
+3. Set `yandexmapslocator_timezone` for the network (for "open now").
 4. If needed: `api_token`, CORS, CSV in **Components → YandexMapsLocator Pro**.
 
 Pro package: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslocatorpro).
@@ -131,9 +134,9 @@ Pro package: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslo
 ## Quick links
 
 | Section | Description |
-|--------|----------|
-| [Quick start](quick-start) | API key, locations, snippet |
+|---------|-------------|
+| [Quick start](quick-start) | Key, locations, snippet |
 | [Free and Pro](free-vs-pro) | Feature matrix |
 | [Snippet](snippets/YandexMapsLocator) | Parameters and examples |
 | [Pro](pro/) | REST, CSV, MiniShop3, open now |
-| [FAQ](faq) | Common issues |
+| [FAQ](faq) | Common errors |

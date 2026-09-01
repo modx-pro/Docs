@@ -9,49 +9,44 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 
 Как связать:
 
-1. В TV точки `ms3_product_id` пишете ID ресурса товара.
-2. В шаблоне товара вызываете сниппет с `filters=minishop_product` и `productId` = ID текущего ресурса.
+1. В TV точки укажите ID товара: `ms3_product_ids` (несколько) или legacy `ms3_product_id` (один).
+2. В шаблоне товара вызовите сниппет с `productId` = ID текущего ресурса.
 3. В списке и на карте остаются совпавшие точки.
+
+Параметр `productId` / `product_id` сам активирует фильтр MiniShop3. Явный `filters=minishop_product` не обязателен, но можно указать вместе с другими фильтрами.
 
 ## Что нужно
 
 - Free и **Pro**
 - Опубликованные точки под контейнером (`parents`)
 - Товар как ресурс MiniShop3 (его ID совпадает с TV на точке)
-- В вызове и `filters=minishop_product`, и ненулевой `productId` / `product_id`
+- Ненулевой `productId` / `product_id` в вызове
 
 Без Pro фильтр не регистрируется. В REST и `search.php` параметр `product_id` сбрасывается в `0`.
 
 ## TV
 
-При установке Pro resolver создаёт TV `ms3_product_id` (тип `number`, категория **YandexMapsLocator**), если её ещё нет.
+При установке Pro resolver создаёт TV (если ещё нет), категория **YandexMapsLocator**:
 
-К шаблону TV сама не привяжется. Назначьте её шаблону точек, как остальные TV локатора.
+| TV | Тип | Смысл |
+|----|-----|--------|
+| `ms3_product_id` | number | Один ID ресурса товара (legacy) |
+| `ms3_product_ids` | text | Несколько ID: `25,26` или JSON `[25,26]`. Если заполнено, важнее `ms3_product_id` |
 
-| Поле | Значение |
-|------|----------|
-| Имя | `ms3_product_id` |
-| Caption | MiniShop3 Product ID |
-| Тип | number |
-| Смысл | ID ресурса товара MiniShop3 |
+К шаблону TV сами не привяжутся. Назначьте их шаблону точек.
 
-На каждой точке укажите ID товара, который там выдают. Пустое или `0` при ненулевом `productId` отсекает точку.
+Пустое значение при ненулевом `productId` отсекает точку.
 
-Сейчас фильтр умеет **один ID товара на точку**. Несколько товаров в одном пункте: отдельные ресурсы-точки или свой фильтр через [Extension API](../extension-api).
-
-В CSV Pro этой колонки нет. Пишите значение в форме ресурса или своим импортом.
-
-См. [Точки и TV](../integration).
+В CSV Pro есть обе колонки. См. [CSV в менеджере](manager), [Точки и TV](../integration).
 
 ## Фильтр
 
-Класс Pro `ProductLocationFilter`, имя `minishop_product`, opt-in.
+Класс Pro `ProductLocationFilter`, имя `minishop_product`.
 
 | Условие | Результат |
 |---------|-----------|
-| Нет `filters=minishop_product` | Фильтр молчит |
 | `productId` ≤ 0 | Список не режется |
-| `productId` > 0 | Остаются точки с `(int) ms3_product_id === productId` |
+| `productId` > 0 | Остаются точки, где ID товара есть в списке TV |
 
 Сравнивается целый ID ресурса товара. Не артикул и не название.
 
@@ -63,7 +58,6 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'filters' => 'minishop_product'
 ]}
 ```
 
@@ -71,7 +65,6 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &filters=`minishop_product`
 ]]
 ```
 
@@ -79,7 +72,7 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 
 Настройку `yml_stores_parent` заведите сами или подставьте числовой ID контейнера.
 
-В сниппете `productId` и `product_id` одно и то же. Если на странице товара уже есть вызов с фильтром, AJAX `search.php` тоже получит `product_id`.
+В сниппете `productId` и `product_id` одно и то же. Если на странице товара уже есть вызов с `productId`, AJAX `search.php` тоже получит `product_id`.
 
 ## Самовывоз и «открыто сейчас»
 
@@ -89,7 +82,7 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'filters' => 'minishop_product,working_now',
+    'filters' => 'working_now',
     'sortby' => 'distance',
     'radius' => 50
 ]}
@@ -99,7 +92,7 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 [[!YandexMapsLocator?
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
-    &filters=`minishop_product,working_now`
+    &filters=`working_now`
     &sortby=`distance`
     &radius=`50`
 ]]
@@ -107,7 +100,7 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 
 :::
 
-Нужны заполненный `ms3_product_id`, JSON в `yandexmaps_working_hours` и `yandexmapslocator_timezone`. См. [Открыто сейчас](working-now).
+Нужны заполненные ID товаров, JSON в `yandexmaps_working_hours` и часовой пояс точки/сети. См. [Открыто сейчас](working-now).
 
 Товар плюс категория:
 
@@ -118,7 +111,7 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
     'category' => 'самовывоз',
-    'filters' => 'minishop_product,category'
+    'filters' => 'category'
 ]}
 ```
 
@@ -127,15 +120,13 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
     &category=`самовывоз`
-    &filters=`minishop_product,category`
+    &filters=`category`
 ]]
 ```
 
 :::
 
 ## В шаблоне товара
-
-Поставьте блок ниже описания:
 
 ::: code-group
 
@@ -145,7 +136,6 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
     {'!YandexMapsLocator' | snippet : [
         'parents' => $_modx->config.yml_stores_parent ?: 42,
         'productId' => $_modx->resource.id,
-        'filters' => 'minishop_product',
         'tplOuter' => 'yandexmapslocator.outer',
         'limit' => 30
     ]}
@@ -158,7 +148,6 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
     [[!YandexMapsLocator?
         &parents=`[[++yml_stores_parent]]`
         &productId=`[[*id]]`
-        &filters=`minishop_product`
         &limit=`30`
     ]]
 </section>
@@ -172,40 +161,10 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 
 ## REST
 
-В query: `product_id` (не `productId`) и `filters=minishop_product`.
+В query: `product_id` (не `productId`). Явный `filters=minishop_product` не обязателен.
 
 ```text
-?route=api/v1/locations&parents=5&product_id=120&filters=minishop_product&fields=id,title,address,coordinates
-```
-
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": 18,
-      "title": "Пункт выдачи Мира",
-      "address": "Омск, пр. Мира, 10",
-      "coordinates": { "lat": 54.9921, "lon": 73.371 }
-    }
-  ],
-  "meta": { "total": 1, "limit": 20, "offset": 0 }
-}
-```
-
-```javascript
-const base = '/assets/components/yandexmapslocatorpro/api.php';
-const productId = 120;
-
-const url = `${base}?route=api/v1/locations&parents=5&product_id=${productId}&filters=minishop_product&fields=id,title,address,phone`;
-
-const res = await fetch(url, {
-  headers: {
-    Accept: 'application/json',
-    Authorization: 'Bearer YOUR_TOKEN',
-  },
-});
-const { data } = await res.json();
+?route=api/v1/locations&parents=5&product_id=120&fields=id,title,address,coordinates
 ```
 
 Без Pro `ApiSearchGuard` обнуляет `productId`, и список по товару не сузится.
@@ -214,21 +173,17 @@ const { data } = await res.json();
 
 ## search.php
 
-Same-origin AJAX локатора:
-
 ```text
-/assets/components/yandexmapslocator/search.php?parents=5&product_id=120&filters=minishop_product
+/assets/components/yandexmapslocator/search.php?parents=5&product_id=120
 ```
 
 Принимаются `product_id` и `productId`. Без Pro значение сбрасывается, как в REST.
 
 ## Карта пустая
 
-Проверьте по порядку:
-
 1. Pro стоит, capability `pro` на месте.
-2. В вызове есть `filters=minishop_product` и ненулевой `productId`.
-3. TV `ms3_product_id` висит на шаблоне точки и равна `[[*id]]` товара.
+2. В вызове ненулевой `productId`.
+3. TV `ms3_product_ids` или `ms3_product_id` висит на шаблоне и содержит ID товара.
 4. Точки опубликованы, `parents` верный.
 5. Заполнены `latitude` / `longitude`.
 
