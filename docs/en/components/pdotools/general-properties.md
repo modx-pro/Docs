@@ -18,8 +18,9 @@ These parameters define which objects are selected.
 | **&showHidden** | `0` | Include resources hidden from menu |
 | **&showUnpublished** | `0` | Include unpublished resources |
 | **&showDeleted** | `0` | Include deleted resources |
-| **&hideContainers** | `0` | Do not output containers (resources with isfolder = 1) |
+| **&hideContainers**        | `0`                                             | Do not output containers (resources with isfolder = 1) |
 | **&hideUnsearchable** | | Exclude resources hidden from search |
+| **&disableMS3** | `0` | Skip MiniShop3 extra categories (`msCategoryMember`) when resolving **&parents**. **pdoTools 3.1.0+ (MODX 3)**; replaces removed miniShop2 / `&disableMS2` |
 | **&select** | | Comma-separated list of fields to select, or JSON e.g. `{"modResource":"id,pagetitle,content"}` |
 | **&leftJoin**, **&rightJoin**, **&innerJoin** | | Analog of SQL left/right/inner join |
 | **&joinSequence** | `innerJoin,leftJoin,rightJoin` | Order of joining tables, comma-separated |
