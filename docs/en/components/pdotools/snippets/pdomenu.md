@@ -59,7 +59,7 @@ These parameters set chunks that contain templates for menu generation.
 | **&tplParentRowHere**   | Chunk for the current document when it has children.                                                                                                                                                               |
 | **&tplParentRowActive** | Chunk for parents with children in the active menu branch.                                                                                                                                                                 |
 | **&tplCategoryFolder**  | Special chunk for category. Category is a parent with children that has empty template or `rel="category"` in `link_attributes` field.                                                             |
-| **&tplInner**           | Chunk for the whole submenu block. If empty - will use **&tplOuter**. For example: `@INLINE <ul class="submenu [[+classnames]]">[[+wrapper]]</ul>`                                                         |
+| **&tplInner**           | Chunk for the whole submenu block. If empty - will use **&tplOuter**. For example: `@INLINE <ul class="submenu [[+classnames]]">[[+wrapper]]</ul>`. From **pdoTools 3.1.0+ (MODX 3)** also receives `[[+children]]` (child count). |
 | **&tplInnerRow**        | Chunk for submenu item. For example: `@INLINE <li class="submenu_item [[+classnames]]"><a href="[[+link]]" [[+attributes]]>[[+menutitle]]</a>[[+wrapper]]</li>`                                                         |
 | **&tplInnerHere**       | Chunk for active submenu item.                                                                                                                                                                                    |
 
@@ -79,6 +79,33 @@ These parameters set placeholder values `[[+classnames]]` and `[[+classes]]` for
 | **&levelClass**   | Menu level class. For example if you specify «level», then you get «level1», «level2», etc. |
 | **&selfClass**    | Current resource class in menu.                                                       |
 | **&webLinkClass** | Web link resource class.                                                                |
+
+## Row placeholders {#row-placeholders}
+
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+Boolean flags as `0` / `1` in menu item chunks. Existing `tpl*` chunks still apply when set; you can branch on these placeholders instead of (or together with) CSS classes.
+:::
+
+| Placeholder | Meaning |
+| --- | --- |
+| `isFirst` | First item in the current level (`idx == 1`) |
+| `isLast` | Last item in the current level |
+| `isActive` | This row is the current resource (`hereId`) |
+| `hasChildren` / `hasChilds` | Row has nested children (alias spelling for older templates) |
+| `isHere` | Row lies on the path to the current resource |
+| `isStart` | Top-level start node when **&displayStart** is on |
+| `isCategory` | Parent with children and empty template or `category` in `link_attributes` |
+| `isInner` | Nested level (`level > 1`) |
+
+Example:
+
+```modx
+[[pdoMenu?
+  &parents=`0`
+  &level=`1`
+  &tpl=`@INLINE <li [[+classes]] data-first="[[+isFirst]]" data-active="[[+isActive]]"><a href="[[+link]]">[[+menutitle]]</a></li>`
+]]
+```
 
 ## Examples
 

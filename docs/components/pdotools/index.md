@@ -5,7 +5,9 @@ logo: https://modstore.pro/assets/extras/pdotools/logo-lg.jpg
 author: sergant210
 modstore: https://modstore.pro/packages/utilities/pdotools
 modx: https://extras.modx.com/package/pdotools
-repository: https://github.com/modx-pro/pdoTools
+repository:
+  - https://github.com/modx-pro/pdoTools
+  - https://github.com/modx-pro/pdoTools3
 
 items: [
   {
@@ -39,9 +41,13 @@ items: [
 ---
 # pdoTools
 
-pdoTools — это набор удобных сниппетов для повседневной работы + небольшая библиотека, которая делает их очень быстрыми.
+pdoTools — набор сниппетов для повседневной работы и небольшая библиотека, которая делает их быстрыми.
 
-Благодаря использованию общей библиотеки, все сниппеты pdoTools обладают единым минимальным функционалом:
+::: tip Линия MODX 3
+**pdoTools 3.x** (актуально: [3.1.0-pl](https://github.com/modx-pro/pdoTools3/releases/tag/v3.1.0-pl)) требует **MODX Revolution 3** и **PHP 8.1+**. Исходники: [modx-pro/pdoTools3](https://github.com/modx-pro/pdoTools3). Для MODX 2 берите [pdoTools 2.x](https://github.com/modx-pro/pdoTools).
+:::
+
+Благодаря общей библиотеке у всех сниппетов pdoTools один минимальный набор возможностей:
 
 - Все запросы в БД работают через PDO. Объекты xPDO не создаются, только если они действительно не нужны.
 - Предварительная обработка простых плейсхолдеров в чанках. Парсер MODX разбирается только со сложными вызовами.
@@ -69,4 +75,19 @@ pdoTools — это набор удобных сниппетов для повс
 - Учет времени на каждую операцию, подробный лог для выявления узких мест.
 - Полная совместимость с getPage для постраничного вывода результатов.
 - Самый быстрый процессинг чанков, быстрее только вообще без них.
-- **Встроенный шаблонизатор [Fenom](https://github.com/fenom-template/fenom/tree/master/docs/ru) в версии 2.0**
+- Встроенный шаблонизатор [Fenom](/components/pdotools/parser).
+
+## Что нового в 3.1.0 (MODX 3)
+
+::: tip Доступно в pdoTools 3.1.0+ (MODX 3)
+Нужен пакет [3.1.0-pl](https://github.com/modx-pro/pdoTools3/releases/tag/v3.1.0-pl) (или новее) на MODX 3.
+:::
+
+- Флаги строки в чанках: `isFirst`, `isLast`, `isActive` (pdoMenu, pdoPage, pdoCrumbs); у меню ещё `hasChildren` / `hasChilds`, `isHere`, `isStart`, `isCategory`, `isInner`; у страниц `isSkip`; у крошек `isHome`. Уже заданные чанки `tpl*` по-прежнему работают.
+- pdoMenu: `[[+children]]` в **&tplInner**.
+- Fenom: приведения `boolval`, `doubleval`, `floatval`, `intval`, `strval`. `array_merge` разрешён по умолчанию.
+- Ключ `pdotools_cache_path` для каталога кэша (по умолчанию `{core_path}cache/pdotools`).
+- pdoPage: свойства вызова сниппета доступны как плейсхолдеры в шаблонах пагинации.
+- pdoFetch: доп. категории через MiniShop3 (`msCategoryMember`). Отключение: **&disableMS3**=`1`. miniShop2 и `&disableMS2` убраны.
+- Ошибки Fenom называют чанк или ресурс и дают фрагмент исходника (ключ кэша по-прежнему хеш контента).
+- Ключи кэша результатов сниппета учитывают текущий контекст.

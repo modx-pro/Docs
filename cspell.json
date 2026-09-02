@@ -1282,7 +1282,22 @@
     "pdoneighborslog",
     "тайминг",
     "тайминга",
-    "таймингом"
+    "таймингом",
+    "disablems3",
+    "boolval",
+    "doubleval",
+    "floatval",
+    "intval",
+    "strval",
+    "mscategorymember",
+    "haschilds",
+    "isskip",
+    "ishome",
+    "ishere",
+    "isinner",
+    "iscategory",
+    "isstart",
+    "pdotools3"
   ],
   "ignorePaths": [
     "node_modules",

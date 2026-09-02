@@ -30,6 +30,19 @@ Accepts all [pdoTools][2] parameters and some of its own:
 | **&hideSingle**      | `0`          | Don't output result if it is the only one.                                                                                                        |
 | **&direction**       | `ltr`        | Navigation direction: left to right «ltr» or right to left «rtl», e.g. for Arabic.                                                        |
 
+## Row placeholders {#row-placeholders}
+
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+Each crumb row gets these flags as `0` / `1`. Existing **&tpl** / **&tplCurrent** / **&tplHome** chunks still apply.
+:::
+
+| Placeholder | Meaning |
+| --- | --- |
+| `isFirst` | First crumb in the list |
+| `isLast` | Last crumb in the list |
+| `isActive` | Crumb resource is the current page |
+| `isHome` | Crumb resource is the site start |
+
 ### Templates
 
 | Template          | Default                                              |

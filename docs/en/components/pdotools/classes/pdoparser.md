@@ -50,6 +50,11 @@ The number after # is the resource id to pull data from. pdoTools processes thes
 - **pdotools_fenom_php** — allows arbitrary PHP in templates via `{$.php.function()}`. Dangerous; off by default.
 - **pdotools_fenom_modx** — less dangerous but often needed: access to modX and pdoTools via `{$modx}` and `{$pdoTools}`. If you don't trust managers, turn it off; modX allows wiping the site.
 - **pdotools_fenom_cache** — caches compiled chunks via MODX cache (chunks only, not full pages). Use on production for large or complex chunks.
+- **pdotools_cache_path** — file cache directory for pdoTools/Fenom. Default `{core_path}cache/pdotools`. **pdoTools 3.1.0+ (MODX 3)**.
+
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+Fenom compile and runtime errors name the chunk or resource, include a short source excerpt, and still keep the cache key as a content hash.
+:::
 
 ### Fenom execution order
 
