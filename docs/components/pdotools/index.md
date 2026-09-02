@@ -5,7 +5,9 @@ logo: https://modstore.pro/assets/extras/pdotools/logo-lg.jpg
 author: sergant210
 modstore: https://modstore.pro/packages/utilities/pdotools
 modx: https://extras.modx.com/package/pdotools
-repository: https://github.com/modx-pro/pdoTools3
+repository:
+  - https://github.com/modx-pro/pdoTools
+  - https://github.com/modx-pro/pdoTools3
 
 items: [
   {

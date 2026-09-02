@@ -125,10 +125,18 @@ modx: https://modx.com/extras/package/minishop2
 
 ### Репозиторий исходного кода компонента
 
-- Тип: `string`
+- Тип: `string` или массив `string[]`
 
 ```yaml
 repository: https://github.com/modx-pro/miniShop2
+```
+
+Несколько репозиториев (например линии MODX 2 и MODX 3):
+
+```yaml
+repository:
+  - https://github.com/modx-pro/pdoTools
+  - https://github.com/modx-pro/pdoTools3
 ```
 
 Ссылка на репозиторий исходного кода компонента.
