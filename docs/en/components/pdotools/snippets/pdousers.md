@@ -16,7 +16,7 @@ Uses all [general pdoTools params][1] except those specific to *modResource*, pl
 | **&showInactive** | `0`     | Include inactive users |
 | **&showBlocked**  | `0`     | Include blocked users |
 | **&returnIds**    |         | Set to `1` to return comma-separated ids instead of rendered output. All templates ignored. |
-| **&showLog**      | `0`     | Extra debug info. Only for users in "mgr" context. |
+| **&showLog**      | `0`     | Log in a placeholder (since 3.0), not HTML. Requires mgr session. [Details](../general-properties#showlog). |
 | **&toPlaceholder**|         | If set, stores data in placeholder instead of outputting. |
 | **&wrapIfEmpty**  |         | Output wrapper chunk even when no results. |
 | **&tplWrapper**   |         | Wrapper chunk. Placeholder `[[+output]]`. Not used with **&toSeparatePlaceholders**. |

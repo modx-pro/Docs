@@ -21,6 +21,7 @@ description: Готовый блок отзывов на карточке тов
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
+- **pdoTools 3.0+** — рендер чанков на Fenom
 - Внутренние вызовы: `msRatingSummary`, `msReviews`, `msReviewForm`, Q&A, `msReviewSchema`
 
 ## Параметры
@@ -39,6 +40,8 @@ description: Готовый блок отзывов на карточке тов
 | `product_name` | *(auto)* | Проксируется в `msReviewSchema` |
 | `product_url` | *(auto)* | Проксируется в schema |
 | `image_url` | *(пусто)* | Картинка для schema |
+| `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
+| `registerJs` | `1` | Подключать JS витрины этим вызовом |
 
 Допустимые значения `sections`: `summary`, `reviews`, `form`, `qna`, `schema`.
 

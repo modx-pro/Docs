@@ -22,6 +22,7 @@ description: Вкладки «Отзывы / Вопросы» на карточ�
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
+- **pdoTools 3.0+** — рендер чанков на Fenom
 - **msReviewForm** и **msReviewSchema** — отдельными вызовами ниже или выше вкладок
 - **msReviewsLexiconScript** — для engagement в списке отзывов
 
@@ -34,6 +35,8 @@ description: Вкладки «Отзывы / Вопросы» на карточ�
 | `showStats` | `0` | Статистика в шапке списка отзывов |
 | `applyRequestFilters` | `0` | `1` — inner `msReviews` читает GET `msr_*` |
 | `tpl` | `tplReviewsTabbed` | Чанк вкладок |
+| `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
+| `registerJs` | `1` | Подключать JS витрины этим вызовом |
 
 Внутренним `msReviews` / `msQuestions` проксируются общие параметры вызова (`limit`, фильтры и др.).
 

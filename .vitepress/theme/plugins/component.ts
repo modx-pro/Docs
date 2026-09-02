@@ -54,7 +54,7 @@ export interface ComponentData {
 
   modstore?: string
   modx?: string
-  repository?: string
+  repository?: string | string[]
 
   items?: DefaultTheme.SidebarItem[]
 }

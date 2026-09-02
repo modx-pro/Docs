@@ -285,6 +285,8 @@ Templating engine is controlled by these system settings:
 - `pdotools_fenom_modx` - adds system variables `{$modx}` and `{$pdoTools}` to Fenom templates. Very dangerous - any manager can control MODX objects from chunks.
 - `pdotools_fenom_options` - JSON options per [official docs][7]. E.g. `{"auto_escape":true,"force_include":true}`
 - `pdotools_fenom_cache` - cache compiled templates. Use only for complex chunks on production. Off by default.
+- `pdotools_cache_path` - directory for pdoTools/Fenom file cache. Default `{core_path}cache/pdotools`. **pdoTools 3.1.0+ (MODX 3)**. Create the system setting in the manager if the package did not add it; CoreTools reads this key.
+- `pdotools_filter_path` - strip `../` from `@FILE` paths.
 
 By default Fenom is on only for chunks processed by pdoTools. Safe; managers get no extra powers except better syntax and speed.
 
@@ -711,6 +713,10 @@ If modifier not found, variable stays unchanged and error is logged.
 
 ### Array merge
 
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+The PHP function `array_merge` is allowed in Fenom by default (no extra `pdotools_fenom_options` entry).
+:::
+
 ```fenom
 {set $arr1 = [2,15,55]}
 {set $arr2 = [44,88,11]}
@@ -718,6 +724,20 @@ If modifier not found, variable stays unchanged and error is logged.
 <pre>
   {$arr | print_r}
 </pre>
+```
+
+#### Type cast modifiers
+
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+Cast a value with the matching PHP function.
+:::
+
+```fenom
+{'1' | boolval}      // true
+{'3.14' | floatval}  // 3.14
+{'3.14' | doubleval} // 3.14
+{'42abc' | intval}   // 42
+{42 | strval}        // "42"
 ```
 
 #### Built-in modifiers

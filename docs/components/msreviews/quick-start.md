@@ -10,7 +10,7 @@ description: Установка msReviews и первый блок отзыво�
 ```mermaid
 flowchart TB
   subgraph install [Установка]
-    A1[ModStore + MiniShop3 + VueTools]
+    A1[ModStore + MiniShop3 + pdoTools + VueTools]
     A2[Install msReviews]
     A3[Очистить кэш]
     A1 --> A2 --> A3
@@ -32,16 +32,16 @@ flowchart TB
 | PHP | 8.2+ |
 | MiniShop3 | установлен |
 | VueTools | 1.1.2+ (для CMP) |
-| pdoTools | 3.x (для примеров Fenom) |
+| pdoTools | 3.0+ (обязателен: чанки на Fenom) |
 
 ## Шаг 1: Установка пакета
 
 1. [Подключите ModStore](https://modstore.pro/info/connection).
 2. **Extras → Installer → Download Extras** — **msReviews** → **Download** → **Install**.
-3. Убедитесь, что установлен **MiniShop3**.
+3. Убедитесь, что установлены **MiniShop3** и **[pdoTools](/components/pdotools/) 3.0+**.
 4. **Настройки → Очистить кэш**.
 
-Пакет: [msReviews на modstore.pro](https://modstore.pro/packages/ecommerce/msreviews).
+Пакет: [msReviews на modstore.pro](https://modstore.pro/packages/ecommerce/msreviews). Обновление с 1.1: [Обновление до 1.2](upgrade-1.2).
 
 ### После установки
 
@@ -114,7 +114,7 @@ flowchart TB
 
 Плагин **msReviews Order status** ставит записи в очередь при смене статуса заказа. Отправка:
 
-- кнопка **Обработать очередь** во вкладке **Операции** CMP;
+- кнопка **Обработать очередь** во вкладке **Операции** CMP
 - или cron по URL:
 
 ```text
@@ -132,6 +132,7 @@ https://ваш-сайт/assets/components/msreviews/connector.php?action=request
 
 ## Дальше
 
-- [Интеграция](integration) — каталог, главная, фильтры, pdoPage
+- [Обновление до 1.2](upgrade-1.2) — Fenom, data-msr, письма модератору
+- [Интеграция](integration) — каталог, главная, фильтры, pdoPage, data-контракт
 - [Сниппеты](snippets/index) — параметры каждого вызова
 - [Админка](manager) — модерация и импорт CSV

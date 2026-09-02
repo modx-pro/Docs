@@ -15,11 +15,11 @@ description: Микро-бейдж рейтинга для каталога и �
 
 - Чанк карточки в **msProducts**, quick view, списки «похожие».
 - CSS-класс: `.msreviews-rating--badge`.
-- Стили: [Каталог — reviews.css](../frontend/catalog#подключение-reviewscss-в-каталоге). Сниппет подключает CSS сам при первом бейдже; параметра `registerCss` нет.
+- Стили: [Каталог — reviews.css](../frontend/catalog#подключение-reviewscss-в-каталоге). Сниппет подключает CSS при `registerCss=1` (по умолчанию).
 
 ## Зависимости
 
-- **MiniShop3**, **msReviews**
+- **MiniShop3**, **msReviews**, **pdoTools 3.0+**
 
 ## Параметры
 
@@ -28,6 +28,8 @@ description: Микро-бейдж рейтинга для каталога и �
 | `product_id` | id ресурса | ID товара. В каталоге — `[[+id]]` / `$id` |
 | `tpl` | `tplRatingBadge` | Чанк бейджа |
 | `hideEmpty` | `1` | Не выводить при нуле отзывов |
+| `registerCss` | `1` | `0` — не подключать `reviews.css` (CSS уже в шаблоне каталога) |
+| `registerJs` | `1` | Подключать JS витрины |
 
 ## В чанке msProducts
 

@@ -9,7 +9,7 @@ The package ships two snippets. On pages with bundles and a cart you usually cal
 
 | Snippet | Purpose |
 | --- | --- |
-| [msBundles](msBundles) | Bundle cards on a product page or by ID |
+| [msBundles](msBundles) | Cards on a product page, by ID, `bundles` list, or `list=all` |
 | [msBundles.initialize](msBundles.initialize) | Storefront CSS, JS, config, and lexicon |
 
 Stock Fenom chunks (pdoTools): `tplMsBundlesItem`, `tplMsBundlesList`, `tplMsBundlesEmpty`, `tplMsBundlesProduct`, `tplMsBundlesCartInfo`.

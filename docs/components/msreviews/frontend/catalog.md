@@ -101,7 +101,7 @@ assets/components/msreviews/css/reviews.css
 
 :::
 
-Если CSS подключаете вручную, настройка **`msreviews_frontend_css_enabled`** должна оставаться **`Да`** — она разрешает подключение стилей сниппетами; ваш `<link>` работает независимо от неё.
+Если CSS подключаете вручную, настройка **`msreviews_frontend_css_enabled`** должна оставаться **`Да`**. Она разрешает подключение стилей сниппетами. Ваш `<link>` работает независимо от неё.
 
 #### Способ 3 — через `regClientCSS` в Fenom-шаблоне
 
@@ -140,6 +140,8 @@ CSS попадёт в блок head через стандартный вывод
 В кастомном PHP (сниппет, плагин) перед циклом карточек вызовите **`msr_prefetch_aggregates($modx, $productIds)`** из `core/components/msreviews/include/helpers.php`. См. [Prefetch в events](../events#prefetch-агрегатов).
 
 ## Главная и лендинги
+
+На главной вызывайте **`msReviewsLatest`**, не **`msReviews`**. У Latest нет `product_id`: без него `msReviews` возьмёт id текущей страницы (главной), а не весь каталог. С **1.2.1** ссылка «на товар» в Latest работает и для отзывов на обычных страницах `site_content`.
 
 <!-- ![Виджеты на главной](/components/msreviews/screenshots/widgets-homepage.png) -->
 

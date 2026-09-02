@@ -9,7 +9,7 @@ description: Форма отправки вопроса о товаре msReview
 
 ## Назначение
 
-Сбор вопросов покупателей на странице товара. Ответ модератор добавляет в CMP; после публикации вопрос попадает в [msQuestions](msQuestions).
+Сбор вопросов покупателей на странице товара. Ответ модератор добавляет в CMP. После публикации вопрос попадает в [msQuestions](msQuestions).
 
 ## Где вызывать
 
@@ -22,6 +22,7 @@ description: Форма отправки вопроса о товаре msReview
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
+- **pdoTools 3.0+** — рендер чанков на Fenom
 - **msReviewsLexiconScript**
 - Капча: плагин на `msrOnCaptchaVerify`
 
@@ -36,6 +37,8 @@ description: Форма отправки вопроса о товаре msReview
 | `formHeading` | *(лексикон)* | Свой заголовок. Пусто — `msreviews_q_form_section_title` |
 | `captchaHtml` | *(пусто)* | HTML капчи |
 | `connectorUrl` | auto | URL connector |
+| `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
+| `registerJs` | `1` | Подключать JS витрины этим вызовом |
 
 ## Базовый вызов
 

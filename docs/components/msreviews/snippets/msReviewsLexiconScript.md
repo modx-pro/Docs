@@ -19,7 +19,7 @@ description: Лексикон window.msrLexicon для JS витрины msRevie
 ## Зависимости
 
 - **MiniShop3** и установленный пакет **msReviews**
-- Параметров нет; сниппет только читает лексикон `msreviews:default`
+- Параметров нет. Сниппет только читает лексикон `msreviews:default`
 
 ## Параметры
 

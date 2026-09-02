@@ -16,8 +16,8 @@ Step-by-step flows: [Flows](flows).
 Top to bottom:
 
 1. Section title.
-2. Toolbar: name search, activity filter, counter, **Add bundle**.
-3. Table: DnD order, name with thumb, status, product count, actions.
+2. Toolbar: name search, activity filter, **context** filter, counter, **Add bundle**.
+3. Table: DnD order, name with thumb, **context**, status, product count, actions.
 
 ![List filter](/components/msbundles/screenshots/list-filter.png)
 
@@ -28,21 +28,22 @@ Top to bottom:
 | Delete | Trash icon → confirm |
 | Reorder | Drag the left handle |
 
-Filters: name search (debounced), activity (all / active / inactive). Empty list and “nothing found” show an empty state with a create CTA.
+Filters: name search (debounced), activity (all / active / inactive), context (all contexts or one: `web`, `en`, …). Empty list and “nothing found” show an empty state with a create CTA.
 
 ## Create and edit
 
 1. **Add bundle** or click a name.
-2. Fill **Name** (required), description, image via the MODX media browser.
-3. **Active** toggle: with `activeOnly=1` only active bundles appear on the storefront.
-4. Add products by search (name, SKU, or ID). One product once per bundle.
-5. Per line: quantity, price mode, **Required** flag.
-6. Reorder products with DnD in the composition table.
-7. Save. Without products, **Save** stays disabled.
+2. Pick **Context** (required). The bundle is shown only on that context’s storefront. On an **active** bundle the field is locked: turn **Active** off and save first.
+3. Fill **Name** (required), description, image via the MODX media browser.
+4. **Active** toggle: with `activeOnly=1` only active bundles appear on the storefront.
+5. Add products by search (name, SKU, or ID). Search is scoped to the **selected context**. One product once per bundle.
+6. Per line: quantity, price mode, **Required** flag.
+7. Reorder products with DnD in the composition table.
+8. Save. Without products, **Save** stays disabled.
 
 ![Editor](/components/msbundles/screenshots/editor.png)
 
-The bundle shows on pages for **every** product in the set.
+The bundle shows on pages for **every** product in the set **in the chosen context**. For another language or storefront, create a separate bundle (duplicate, then change context and composition).
 
 ### Price mode examples in the editor
 

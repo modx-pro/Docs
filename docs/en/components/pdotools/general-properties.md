@@ -18,8 +18,9 @@ These parameters define which objects are selected.
 | **&showHidden** | `0` | Include resources hidden from menu |
 | **&showUnpublished** | `0` | Include unpublished resources |
 | **&showDeleted** | `0` | Include deleted resources |
-| **&hideContainers** | `0` | Do not output containers (resources with isfolder = 1) |
+| **&hideContainers**        | `0`                                             | Do not output containers (resources with isfolder = 1) |
 | **&hideUnsearchable** | | Exclude resources hidden from search |
+| **&disableMS3** | `0` | Skip MiniShop3 extra categories (`msCategoryMember`) when resolving **&parents**. **pdoTools 3.1.0+ (MODX 3)**; replaces removed miniShop2 / `&disableMS2` |
 | **&select** | | Comma-separated list of fields to select, or JSON e.g. `{"modResource":"id,pagetitle,content"}` |
 | **&leftJoin**, **&rightJoin**, **&innerJoin** | | Analog of SQL left/right/inner join |
 | **&joinSequence** | `innerJoin,leftJoin,rightJoin` | Order of joining tables, comma-separated |
@@ -85,6 +86,61 @@ These control what data is output and how.
 | **&cache_key** | resource or default | Cache key |
 | **&cache_handler** | xPDOFileCache or setting | Cache handler |
 | **&cacheTime** | 0 or setting | Cache TTL in seconds |
+| **&showLog** | `0` | Snippet timing log. Requires `mgr` auth. In 3.x the log is a placeholder, not HTML. See below. |
+
+## showLog parameter {#showlog}
+
+**&showLog**=`1` writes a step log: timing, SQL, memory. Only a user authenticated in `mgr` can read it.
+
+### pdoTools 3.x
+
+In 2.x the snippet appended the log to the end of its HTML (`<pre class="pdoResourcesLog">…</pre>`).
+
+From 3.0.0-beta the log goes to a placeholder and is not part of the snippet return value (changelog: *snippet logs are stored now in the corresponding placeholder*). After upgrading to 3.x, print the placeholder yourself or nothing shows on the page.
+
+| Snippet | Placeholder |
+| --- | --- |
+| pdoResources | `pdoResourcesLog` |
+| pdoPage | `pdoPageLog` |
+| pdoMenu | `pdoMenuLog` |
+| pdoCrumbs | `pdoCrumbsLog` |
+| pdoUsers | `pdoUsersLog` |
+| pdoArchive | `pdoArchiveLog` |
+| pdoSitemap | `pdoSitemapLog` |
+
+pdoNeighbors in the current 3.x code still appends the log to HTML, like 2.x.
+
+`pdoFetch::getCollection()` and `getArray()` always write timing to `pdoTools.log` (note the dot), without `&showLog`. See [pdoFetch](classes/pdofetch).
+
+### Example
+
+::: code-group
+
+```modx
+[[!pdoResources?
+  &parents=`0`
+  &limit=`5`
+  &tpl=`@INLINE <li>[[+pagetitle]]</li>`
+  &showLog=`1`
+]]
+
+<pre>[[+pdoResourcesLog]]</pre>
+```
+
+```fenom
+{'!pdoResources' | snippet : [
+  'parents' => 0,
+  'limit' => 5,
+  'tpl' => '@INLINE <li>{$pagetitle}</li>',
+  'showLog' => 1,
+]}
+
+<pre>{$_modx->getPlaceholder('pdoResourcesLog')}</pre>
+```
+
+:::
+
+After `pdoPage`, print `[[+pdoPageLog]]`.
 
 ## Chunk call types
 

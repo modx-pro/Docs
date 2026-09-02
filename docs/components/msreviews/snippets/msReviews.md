@@ -11,6 +11,8 @@ description: Список опубликованных отзывов на ка�
 
 Основной блок отзывов на странице товара: карточки отзывов, счётчики, кнопки «полезно», правка и удаление своего отзыва.
 
+Список **одного** товара (страница товара, Hub, Tabbed). Параметра `parents` нет: без `product_id` сниппет берёт id текущей страницы, а не весь каталог. Лента по магазину: [msReviewsLatest](msReviewsLatest).
+
 ## Где вызывать
 
 - Шаблон **msProduct**, под [msRatingSummary](msRatingSummary).
@@ -21,7 +23,7 @@ description: Список опубликованных отзывов на ка�
 
 - **MiniShop3**, **msReviews**
 - **[msReviewsLexiconScript](msReviewsLexiconScript)** — перед формой или автоматически через assets
-- **pdoTools** — для пагинации через обёртку `pdoPage`
+- **pdoTools 3.0+** — чанки на Fenom. Для пагинации нужна обёртка `pdoPage`
 - Фильтры из URL синхронизируйте с [msReviewsFilters](msReviewsFilters)
 
 ## Параметры
@@ -45,6 +47,8 @@ description: Список опубликованных отзывов на ка�
 | `gravatarSize` | `48` | Размер Gravatar (1–512) |
 | `dateFormat` | *(из настройки)* | PHP `date()`. Пусто — `msreviews_storefront_date_format` |
 | `connectorUrl` | auto | URL connector для engagement |
+| `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
+| `registerJs` | `1` | Подключать JS витрины этим вызовом |
 
 Фильтры читаются из `$_GET`: `msr_verified`, `msr_media`, `msr_reply`, `msr_recommend`, `msr_sort`. См. [msReviewsFilters](msReviewsFilters). При включённом `cache_resource` нужен плагин **msReviews Storefront cache** (см. [Интеграция — фильтры](../integration#фильтры-списка-отзывов)).
 
@@ -190,6 +194,7 @@ description: Список опубликованных отзывов на ка�
 ## См. также
 
 - [msReviewsFilters](msReviewsFilters)
+- [msReviewsLatest](msReviewsLatest) — лента по каталогу, не список одного товара
 - [msRatingSummary](msRatingSummary)
 - [Интеграция — пагинация](../integration)
 - [FAQ](../faq)

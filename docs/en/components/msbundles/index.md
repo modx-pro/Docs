@@ -49,9 +49,9 @@ Start here: [Quick start](quick-start).
 
 ### Manager
 
-**Extras → msBundles** runs on Vue 3 and PrimeVue via [VueTools](/components/vuetools/). You search by name, filter active and inactive sets, and reorder rows by dragging.
+**Extras → msBundles** runs on Vue 3 and PrimeVue via [VueTools](/components/vuetools/). You search by name, filter by activity and **context**, and reorder rows by dragging.
 
-In the editor you set the name, description, image, and composition. Duplicate a ready set in one click, check the “As on storefront” preview, and save with a stock check. Access needs `msbundles_view` and `msbundles_save`.
+In the editor you set the **storefront context** (`context_key`), name, description, image, and composition. Product search is limited to the selected context. You cannot change context on an **active** bundle: turn **Active** off, save, then switch context. Duplicate a ready set in one click, check the “As on storefront” preview, and save with a stock check. Access needs `msbundles_view` and `msbundles_save`.
 
 Screens and walkthroughs: [Interface](interface/), [Flows](interface/flows).
 
@@ -67,7 +67,7 @@ Each composition line has its own price mode:
 | Discount amount | Amount subtracted from the product price |
 | Free | The line costs 0 |
 
-A line can be required or optional. The editor footer shows the bundle total and savings vs regular prices. The bundle card appears on pages for every product in the set, not only a “main” one.
+A line can be required or optional. The editor footer shows the bundle total and savings vs regular prices. The bundle card appears on pages for every product in the set **in the same context** as the bundle, not only a “main” one. For multilingual sites, create a separate bundle per context (`en`, `de`, …): Duplicate, then change context, name, and composition.
 
 ### Stock
 
@@ -83,7 +83,9 @@ An optional line with zero stock does not block the whole set. On add that line 
 
 ### Storefront
 
-Call the `msBundles` snippet on the product page. Put `msBundles.initialize` in `<head>`. The shopper changes the bundle count with “−” / “+” or the quantity field. The price recalculates without a full page reload.
+Call the `msBundles` snippet on the product page. On a dedicated bundles page pass `bundles` (comma-separated IDs) or `list=all` (all bundles in the current context). The snippet, REST routes, and cart add only expose bundles for the **current request context**.
+
+Put `msBundles.initialize` in `<head>`. The shopper changes the bundle count with “−” / “+” or the quantity field. The price recalculates without a full page reload.
 
 You can replace the stock Fenom chunks. Custom templates need data attributes (`data-msbundles`, `data-ms-bundle`, `data-msbundles-action`), not specific CSS class names. Match your theme with `--msbundles-*` variables.
 
