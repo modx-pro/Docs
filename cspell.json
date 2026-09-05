@@ -1297,7 +1297,12 @@
     "isinner",
     "iscategory",
     "isstart",
-    "pdotools3"
+    "pdotools3",
+    "indexnow",
+    "краулер",
+    "краулеры",
+    "мультидомене",
+    "dedupe"
   ],
   "ignorePaths": [
     "node_modules",
