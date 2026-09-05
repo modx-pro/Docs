@@ -1,0 +1,32 @@
+name: Markdown links
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'docs/**'
+      - 'scripts/check-markdown-links.mjs'
+      - '.github/workflows/markdown-links.yml'
+      - 'package.json'
+
+jobs:
+  markdown-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Fetch base branch for diff
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: git fetch --no-tags --depth=1 origin "$BASE_REF"
+      - name: Check links in changed markdown
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: pnpm run check:links:changed
