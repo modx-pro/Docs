@@ -2,7 +2,6 @@
 title: IndexNow
 description: Очередь URL и уведомление поисковиков по протоколу IndexNow
 author: ibochkarev
-modstore: https://modstore.pro/packages/utilities/indexnow
 categories: utilities
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
@@ -55,7 +54,7 @@ IndexNow **не индексирует** страницу. Он только у�
 
 ## Установка
 
-В Package Manager нужен провайдер [modstore.pro](https://modstore.pro/extras/), иначе установка падает с `Package provider not found`.
+В Package Manager нужен провайдер modstore.pro (URL сервиса `https://modstore.pro/extras/`), иначе установка падает с `Package provider not found`. Как подключить: [инструкция ModStore](https://modstore.pro/info/connection).
 
 1. [Подключите репозиторий ModStore](https://modstore.pro/info/connection), если его ещё нет.
 2. **Extras → Installer** → найдите **IndexNow** → **Download** → **Install**.

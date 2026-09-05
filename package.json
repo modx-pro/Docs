@@ -23,7 +23,10 @@
     "lint": "markdownlint **/*.md --disable MD045",
     "lint:fix": "markdownlint **/*.md --disable MD045 --fix",
     "spellcheck": "cspell \"docs/**/*.md\" --exclude \"docs/en/**\" --no-progress",
-    "spellcheck:fix": "cspell \"docs/**/*.md\" --exclude \"docs/en/**\" --no-progress --show-suggestions"
+    "spellcheck:fix": "cspell \"docs/**/*.md\" --exclude \"docs/en/**\" --no-progress --show-suggestions",
+    "check:links": "node scripts/check-markdown-links.mjs",
+    "check:links:external": "node scripts/check-markdown-links.mjs --external",
+    "check:links:changed": "node scripts/check-markdown-links.mjs --changed"
   },
   "devDependencies": {
     "@braintree/sanitize-url": "^7.1.2",
