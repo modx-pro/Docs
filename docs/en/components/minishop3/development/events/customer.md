@@ -11,10 +11,10 @@ Fired **before** getting the customer for the order.
 
 ### Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
-| `msCustomer` | `msCustomer\|null` | Customer object (may be null) |
+| Parameter | Type | Description | |
+| --- | --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller | |
+| `msCustomer` | `msCustomer\ | null` | Customer object (may be null) |
 
 ### Aborting the operation
 
@@ -39,10 +39,10 @@ Fired **after** getting the customer for the order.
 
 ### Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
-| `msCustomer` | `msCustomer\|null` | Customer object |
+| Parameter | Type | Description | |
+| --- | --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller | |
+| `msCustomer` | `msCustomer\ | null` | Customer object |
 
 ### Example
 
@@ -73,7 +73,7 @@ Fired **before** adding or changing a customer field.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Field value |
@@ -134,7 +134,7 @@ Fired **after** adding a field to the customer.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Saved value |
@@ -174,7 +174,7 @@ Fired **before** validating a customer field value.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Value to validate |
@@ -207,7 +207,7 @@ Fired **after** successful validation of a field value.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Validated value |
@@ -245,7 +245,7 @@ Fired on validation **error** for a customer field.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Invalid value |
@@ -279,7 +279,7 @@ Fired **before** creating a new customer.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `customerData` | `array` | Data for creation |
 
@@ -333,7 +333,7 @@ Fired **after** creating a new customer.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `customerData` | `array` | Customer data |
 | `msCustomer` | `msCustomer` | Created customer object |
@@ -374,7 +374,7 @@ Fired **before** adding an address to the customer.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `addressData` | `array` | Address data |
 
@@ -434,7 +434,7 @@ Fired **after** adding an address to the customer.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `customer` | `\MiniShop3\Controllers\Customer\Customer` | Customer controller |
 | `addressData` | `array` | Address data |
 | `msCustomerAddress` | `msCustomerAddress` | Created address object |
@@ -539,11 +539,11 @@ Fired **before** resolving the MODX system user (`modUser`) for the order. Runs 
 
 ### Parameters
 
-| Parameter | Type | Description |
-|----------|-----|----------|
-| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service |
-| `user` | `\MODX\Revolution\modUser` \| `null` | Current user candidate — usually `null` on input |
-| `orderData` | `array` | Snapshot of order fields (address `address_email`, `address_phone`, `address_first_name`, etc.) |
+| Parameter | Type | Description | |
+| --- | --- | --- | --- |
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service | |
+| `user` | `\MODX\Revolution\modUser` \ | `null` | Current user candidate — usually `null` on input |
+| `orderData` | `array` | Snapshot of order fields (address `address_email`, `address_phone`, `address_first_name`, etc.) | |
 
 ### Substituting the user
 
@@ -578,7 +578,7 @@ Fired **after** resolving the user for the order.
 
 ### Parameters
 
-| Parameter | Type | Description |
-|----------|-----|----------|
-| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service |
-| `user` | `\MODX\Revolution\modUser` \| `null` | Final user (or `null` if resolution failed) |
+| Parameter | Type | Description | |
+| --- | --- | --- | --- |
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service | |
+| `user` | `\MODX\Revolution\modUser` \ | `null` | Final user (or `null` if resolution failed) |

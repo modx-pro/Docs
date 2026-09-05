@@ -10,7 +10,7 @@ MiniShop3 использует библиотеку [FastRoute](https://github.c
 ### Два типа API
 
 | Параметр | Manager API | Web API |
-|----------|-------------|---------|
+| --- | --- | --- |
 | **Префикс** | `/api/mgr/*` | `/api/v1/*` |
 | **Назначение** | Административная панель MODX | Фронтенд магазина |
 | **Entry point** | `connector.php` | `assets/.../api.php` |
@@ -191,7 +191,7 @@ Response::error($message, $statusCode, $errors);
 ### HTTP коды ответов
 
 | Код | Описание | Использование |
-|-----|----------|---------------|
+| --- | --- | --- |
 | 200 | OK | Успешный запрос |
 | 400 | Bad Request | Ошибка валидации |
 | 401 | Unauthorized | Не авторизован |
@@ -259,9 +259,12 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 **Основные права MiniShop3:**
 
 - `msproduct_save` — создание/редактирование товаров
-- `mssetting_save` — управление настройками
-- `msorder_list` — просмотр заказов
-- `msorder_save` — редактирование заказов
+- `mssetting_save` — управление настройками (доставки, оплаты, производители, уведомления)
+- `view_document` — чтение категорий и гридов товаров в категории
+- `msorder_list` — список заказов и клиентов, адреса клиента (GET)
+- `msorder_view` — просмотр карточки клиента
+- `msorder_save` — изменение заказов и клиентов, мутации позиций заказа
+- `msorder_remove` — удаление заказов, клиентов, массовое удаление
 
 #### TokenMiddleware
 
@@ -277,13 +280,15 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-**Публичные роуты** (не требуют токен):
+**Публичные роуты** (без токена, без авто-минта гостевого токена):
 
-- `/api/v1/cart/get`
 - `/api/v1/product/get`
 - `/api/v1/product/list`
 - `/api/v1/customer/token/get`
+- `/api/v1/customer/logout`
 - `/api/v1/health`
+
+Остальные роуты (например `/api/v1/cart/get`) при отсутствии токена **авто-минтят гостевой токен**, а не отклоняют запрос.
 
 #### CorsMiddleware
 
@@ -402,34 +407,34 @@ $router->get('/api/mgr/endpoint', $handler, [
 #### Общие
 
 | Метод | Роут | Описание |
-|-------|------|----------|
+| --- | --- | --- |
 | GET | `/health` | Проверка работоспособности API |
 | GET | `/user/info` | Информация о текущем пользователе |
 
 #### Конфигурация (`/config`)
 
 | Метод | Роут | Описание |
-|-------|------|----------|
-| GET | `/page-fields/{page_key}` | Получить поля страницы |
+| --- | --- | --- |
+| GET | `/page-fields/{page_key}` | Получить поля страницы (без `mssetting_save`) |
 | GET | `/page-fields/{page_key}/all` | Все поля страницы |
-| PUT | `/page-fields/{page_key}` | Обновить поля |
-| DELETE | `/page-fields/{page_key}/{field_name}` | Удалить переопределение поля |
+| PUT | `/page-fields/{page_key}` | Обновить поля (тело: `{ "fields": [...] }`, нужно `mssetting_save`) |
 | GET | `/sections/{page_key}` | Получить секции |
-| PUT | `/sections/{page_key}` | Обновить секции |
+| PUT | `/sections/{page_key}` | Обновить секции (тело: `{ "sections": [...] }`) |
+| DELETE | `/sections/{page_key}/{section_key}` | Удалить секцию по ключу |
 
 #### Конфигурация гридов (`/grid-config`)
 
-CRUD для конфига колонок административных гридов. Все запросы требуют право `mssetting_save`.
+CRUD для конфига колонок административных гридов. Чтение — `view_document`, запись — `mssetting_save`.
 
 | Метод | Роут | Описание |
-|-------|------|----------|
+| --- | --- | --- |
 | GET | `/{grid_key}` | Получить конфигурацию грида |
-| PUT | `/{grid_key}` | Обновить конфигурацию грида |
+| PUT | `/{grid_key}` | Обновить конфигурацию грида (тело: `fields`) |
 | POST | `/{grid_key}/field` | Добавить колонку |
 | PUT | `/{grid_key}/field/{field_name}` | Обновить колонку |
-| DELETE | `/{grid_key}/field/{field_name}` | Удалить колонку |
+| DELETE | `/{grid_key}/{field_name}` | Удалить колонку |
 
-**Известные `grid_key`:** `orders`, `customers`, `vendors`, `deliveries`, `payments`, `category-products`, `extra-fields`, `model-fields`, `notifications`, `option-groups`.
+**Известные `grid_key` в MS3 1.13:** `orders`, `order_products`, `customers`, `vendors`, `category-products`.
 
 ##### Ответ `GET /grid-config/{grid_key}`
 
@@ -446,10 +451,10 @@ CRUD для конфига колонок административных гр�
 ```
 
 | Поле | Тип | Описание |
-|------|-----|----------|
+| --- | --- | --- |
 | `columns` | `array` | Колонки грида с конфигурацией (тип, видимость, фильтрация, редактор) |
-| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные — отправлять с префиксом. Источник истины — backend; фронт читает массив отсюда. Появилось в MiniShop3 1.12.0 ([PR #317](https://github.com/modx-pro/MiniShop3/pull/317)) — закрывает дублирование между фронтом и контроллерами. |
-| `editor_references` | `array<{key,path}>` | **Только для `grid_key=category-products`.** Whitelist допустимых reference-ключей для combo-редактора inline-edit. Каждая запись — пара ключа и пути к API-эндпойнту справочника. Используется UI настройки колонок для select dropdown. Появилось в MiniShop3 1.12.0 ([PR #157](https://github.com/modx-pro/MiniShop3/pull/157)). |
+| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные — отправлять с префиксом. Источник истины — backend; фронт читает массив отсюда. Появилось в MiniShop3 1.12.0 — закрывает дублирование между фронтом и контроллерами. |
+| `editor_references` | `array<{key,path}>` | **Только для `grid_key=category-products`.** Whitelist допустимых reference-ключей для combo-редактора inline-edit. Каждая запись — пара ключа и пути к API-эндпойнту справочника. Используется UI настройки колонок для select dropdown. Появилось в MiniShop3 1.12.0. |
 
 ##### Контракт фильтров (`direct_filter_keys`)
 
@@ -470,42 +475,75 @@ function addFilterParam(params, key, value) {
 
 #### Заказы (`/orders`)
 
-| Метод | Роут | Описание | Право |
-|-------|------|----------|-------|
-| GET | `` | Список заказов | `msorder_list` |
-| POST | `` | Создать заказ | `msorder_list` |
-| GET | `/filters` | Конфигурация фильтров | `msorder_list` |
-| GET | `/{id}` | Получить заказ | `msorder_list` |
-| PUT | `/{id}` | Обновить заказ | `msorder_list` |
-| DELETE | `/{id}` | Удалить заказ | `msorder_list` |
-| GET | `/{id}/products` | Товары заказа | `msorder_list` |
-| POST | `/{id}/products` | Добавить товар | `msorder_list` |
-| PUT | `/{id}/products/{product_id}` | Обновить товар | `msorder_list` |
-| DELETE | `/{id}/products/{product_id}` | Удалить товар | `msorder_list` |
-| GET | `/{id}/logs` | История изменений | `msorder_list` |
-| DELETE | `/bulk` | Массовое удаление | `msorder_list` |
+Чтение и запись разделены на две группы middleware.
+
+**Чтение** — право `msorder_list`:
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| GET | `` | Список заказов |
+| GET | `/filters` | Конфигурация фильтров |
+| GET | `/stats` | Агрегаты для дашборда и фильтров |
+| GET | `/{id}` | Получить заказ |
+| GET | `/{id}/products` | Товары заказа |
+| GET | `/{id}/logs` | История изменений |
+
+**Запись** — право `msorder_save`:
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| POST | `` | Создать заказ из менеджера |
+| DELETE | `/bulk` | Массовое удаление |
+| POST | `/{id}/finalize` | Финализация черновика |
+| POST | `/{id}/recalculate-cost` | Пересчёт стоимости |
+| PUT | `/{id}` | Обновить заказ |
+| DELETE | `/{id}` | Удалить заказ |
+| POST | `/{id}/products` | Добавить товар |
+| PUT | `/{id}/products/{product_id}` | Обновить позицию |
+| DELETE | `/{id}/products/{product_id}` | Удалить позицию |
+
+**Справочники для форм заказа** (без отдельного PermissionMiddleware, сессия mgr):
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| GET | `/statuses-dropdown` | Статусы с переводами |
+| GET | `/deliveries-active` | Активные доставки для select |
 
 #### Покупатели (`/customers`)
 
 | Метод | Роут | Описание | Право |
-|-------|------|----------|-------|
-| GET | `` | Список покупателей | `view_document` |
-| GET | `/{id}` | Получить покупателя | `view_document` |
-| PUT | `/{id}` | Обновить покупателя | `view_document` |
-| DELETE | `/{id}` | Удалить покупателя | `view_document` |
-| GET | `/{id}/addresses` | Адреса покупателя | `view_document` |
-| POST | `/{id}/addresses` | Добавить адрес | `view_document` |
-| PUT | `/{id}/addresses/{address_id}` | Обновить адрес | `view_document` |
-| DELETE | `/{id}/addresses/{address_id}` | Удалить адрес | `view_document` |
+| --- | --- | --- | --- |
+| GET | `` | Список покупателей | `msorder_list` |
+| DELETE | `/bulk` | Массовое удаление | `msorder_remove` |
+| GET | `/{id}` | Получить покупателя | `msorder_view` |
+| PUT | `/{id}` | Обновить покупателя | `msorder_save` |
+| DELETE | `/{id}` | Удалить покупателя | `msorder_remove` |
+| GET | `/{id}/addresses` | Адреса покупателя | `msorder_list` |
+| POST | `/{id}/addresses` | Добавить адрес | `msorder_save` |
+| PUT | `/{id}/addresses/{address_id}` | Обновить адрес | `msorder_save` |
+| DELETE | `/{id}/addresses/{address_id}` | Удалить адрес | `msorder_remove` |
 
 #### Настройки магазина
 
 **Доставки (`/deliveries`)**, **Оплаты (`/payments`)**, **Производители (`/vendors`)**, **Статусы (`/statuses`)**, **Связи (`/links`)** — CRUD операции с правом `mssetting_save`.
 
+#### Данные товара (`/product-data`)
+
+Вкладки «Категории» и «Связи» на карточке товара (Vue). Право `msproduct_save` / сессия mgr:
+
+| Метод | Роут | Описание |
+| --- | --- | --- |
+| GET | `/{id}/categories/tree` | Дерево категорий (`ms3_product_category_tree`) |
+| GET | `/{id}/links` | Список связей |
+| POST | `/{id}/links` | Добавить связь `{ slave, link }` |
+| DELETE | `/{id}/links` | Удалить связь `{ link, master, slave }` |
+| GET | `/references/link-types` | Типы `msLink` (группа references) |
+| GET | `/references/products` | Autocomplete товаров |
+
 #### Уведомления (`/notifications`)
 
 | Метод | Роут | Описание | Право |
-|-------|------|----------|-------|
+| --- | --- | --- | --- |
 | GET | `/references` | Справочники для форм | `mssetting_save` |
 | GET | `` | Список уведомлений | `mssetting_save` |
 | GET | `/{id}` | Получить уведомление | `mssetting_save` |
@@ -516,7 +554,7 @@ function addFilterParam(params, key, value) {
 #### Импорт (`/import`)
 
 | Метод | Роут | Описание | Право |
-|-------|------|----------|-------|
+| --- | --- | --- | --- |
 | GET | `/fields` | Поля для маппинга | `msproduct_save` |
 | POST | `/upload` | Загрузка CSV | `msproduct_save` |
 | POST | `/preview` | Предпросмотр | `msproduct_save` |
@@ -528,43 +566,58 @@ function addFilterParam(params, key, value) {
 #### Корзина (`/cart`)
 
 | Метод | Роут | Описание | Токен |
-|-------|------|----------|-------|
+| --- | --- | --- | --- |
 | GET | `/get` | Получить корзину | Опционально |
 | POST | `/add` | Добавить товар | Обязательно |
 | POST | `/change` | Изменить количество | Обязательно |
+| POST | `/change-option` | Сменить опции позиции | Обязательно |
 | POST | `/remove` | Удалить товар | Обязательно |
 | POST | `/clean` | Очистить корзину | Обязательно |
 
 #### Заказ (`/order`)
 
 | Метод | Роут | Описание | Токен |
-|-------|------|----------|-------|
+| --- | --- | --- | --- |
 | GET | `/get` | Получить заказ | Обязательно |
 | POST | `/add` | Добавить данные | Обязательно |
 | POST | `/set` | Установить поля | Обязательно |
+| POST | `/remove` | Удалить поле | Обязательно |
 | POST | `/submit` | Оформить заказ | Обязательно |
+| POST | `/clean` | Очистить черновик | Обязательно |
 | GET | `/cost` | Полная стоимость | Обязательно |
 | GET | `/cost/cart` | Стоимость товаров | Обязательно |
 | GET | `/cost/delivery` | Стоимость доставки | Обязательно |
-| POST | `/address/set` | Установить адрес | Обязательно |
+| GET | `/cost/payment` | Комиссия оплаты | Обязательно |
+| POST | `/address/set` | Применить сохранённый адрес | Обязательно |
+| POST | `/address/clean` | Сбросить адресные поля | Обязательно |
+| GET | `/delivery/validation-rules` | Правила валидации доставки | Обязательно |
+| GET | `/delivery/required-fields` | Обязательные поля доставки | Обязательно |
 
 #### Покупатель (`/customer`)
 
 | Метод | Роут | Описание | Токен |
-|-------|------|----------|-------|
+| --- | --- | --- | --- |
 | POST | `/login` | Авторизация | Нет |
 | POST | `/register` | Регистрация | Нет |
+| POST | `/logout` | Выход | Обязательно |
+| POST | `/forgot-password` | Запрос сброса пароля | Нет |
+| POST | `/reset-password` | Смена пароля по токену | Нет |
 | GET | `/token/get` | Получить токен | Нет |
+| POST | `/add` | Обновить поле профиля | Обязательно |
+| POST | `/changeAddress` | Выбрать адрес на checkout | Обязательно |
 | PUT | `/profile` | Обновить профиль | Обязательно |
 | GET | `/addresses` | Список адресов | Обязательно |
 | POST | `/addresses` | Добавить адрес | Обязательно |
 | PUT | `/addresses/{id}` | Обновить адрес | Обязательно |
 | DELETE | `/addresses/{id}` | Удалить адрес | Обязательно |
+| GET | `/orders` | Список заказов клиента | Обязательно |
+| GET | `/orders/{id}` | Карточка заказа клиента | Обязательно |
+| POST | `/orders/{id}/cancel` | Отмена заказа клиента | Обязательно |
 
 #### Общие
 
 | Метод | Роут | Описание |
-|-------|------|----------|
+| --- | --- | --- |
 | GET | `/health` | Проверка работоспособности |
 
 ## Кастомизация роутов
@@ -812,7 +865,7 @@ copy(
 ### Custom-файл vs ms3.routes.d
 
 | | `ms3_routes_*.custom.php` | `ms3.routes.d/` |
-|---|---|---|
+| --- | --- | --- |
 | **Для кого** | Разработчик сайта | Авторы аддонов |
 | **Файлов** | Один на тип API | По файлу на аддон |
 | **Конфликты** | Возможны при нескольких аддонах | Нет |
@@ -822,7 +875,7 @@ copy(
 ## Системные настройки
 
 | Настройка | По умолчанию | Описание |
-|-----------|--------------|----------|
+| --- | --- | --- |
 | `ms3_cors_allowed_origins` | `["*"]` | Разрешённые домены для CORS |
 | `ms3_rate_limit_max_attempts` | `60` | Лимит запросов |
 | `ms3_rate_limit_decay_seconds` | `60` | Период сброса лимита (сек) |

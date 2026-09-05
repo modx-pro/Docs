@@ -1,70 +1,76 @@
+---
+title: Bootstrap modals
+description: Close and open Bootstrap Modal after FetchIt success
+---
+
 # Bootstrap modals
 
-This section covers several cases involving [Bootstrap](https://getbootstrap.com/) modals.
+Use cases with [Bootstrap Modal](https://getbootstrap.com/docs/5.3/components/modal/).
 
-## Closing the modal
+## Close on success
 
-Suppose your form is inside a modal and you want to close it after a successful submit. Use the [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) event.
+Form inside a modal. Listen for [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess).
 
-- If modals were initialized with JavaScript.
+If you created the modal in JS:
 
 ```js
-// Modal initialization
-const exampleModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+const exampleModal = new bootstrap.Modal(document.getElementById('exampleModal'))
 
 document.addEventListener('fetchit:success', () => {
-  exampleModal.hide();
-});
+  exampleModal.hide()
+})
 ```
 
-- If modals are initialized on page load via attributes.
+If the modal opens via Bootstrap data attributes:
 
 ```js
 document.addEventListener('fetchit:success', ({ detail: { form } }) => {
-  const modal = form.closest('.modal');
-  const modalInstance = bootstrap.Modal.getInstance(modal);
+  const modal = form.closest('.modal')
+  const modalInstance = bootstrap.Modal.getInstance(modal)
 
   if (!modalInstance) {
-    return;
+    return
   }
 
-  modalInstance.hide();
-});
+  modalInstance.hide()
+})
 ```
 
-:::warning Warning
-As of this documentation, in Bootstrap@5.3 the method bootstrap.Modal.getInstance() does not work as expected. This may be fixed in future versions.
+::: warning
+In Bootstrap 5.3, `bootstrap.Modal.getInstance()` sometimes returns `null` for modals opened only via the data API. Workaround below.
 :::
 
-:::details If you run into issues, use the following code instead
+::: details Workaround via dismiss button
 
 ```js
 document.addEventListener('fetchit:success', ({ detail: { form } }) => {
-  const modal = form.closest('.modal');
+  const modal = form.closest('.modal')
   if (!modal) {
-    return;
+    return
   }
 
-  const closeBtn = modal.querySelector('[data-bs-dismiss="modal"]');
+  const closeBtn = modal.querySelector('[data-bs-dismiss="modal"]')
   if (!closeBtn) {
-    return;
+    return
   }
 
-  closeBtn.click();
-});
+  closeBtn.click()
+})
 ```
 
 :::
 
-## Opening a modal
+## Open on success
 
-This is even simpler. Let's add the server response into the modal body.
+Show the modal and insert `message` from the response:
 
 ```js
 document.addEventListener('fetchit:success', ({ detail: { response: { message } } }) => {
-  const modal = bootstrap.Modal.getOrCreateInstance('#exampleModal');
-  const body = modal._element.querySelector('.modal-body');
-  body.innerHTML = message
-  modal.show();
-});
+  const modal = bootstrap.Modal.getOrCreateInstance('#exampleModal')
+  const body = modal._element.querySelector('.modal-body')
+  body.textContent = message
+  modal.show()
+})
 ```
+
+`textContent` is safer than `innerHTML`: the server message may contain markup, and `sanitizeHTML` is not called here.

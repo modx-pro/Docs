@@ -12,7 +12,7 @@ title: msCart
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCart` | Чанк оформления корзины |
 | **selector** | | CSS-селектор для автообновления HTML корзины |
 | **includeTVs** | | TV-параметры товаров через запятую |
@@ -22,14 +22,14 @@ title: msCart
 | **showLog** | `false` | Показать лог выполнения (только для менеджеров) |
 | **return** | `tpl` | Формат вывода: `tpl` или `data` |
 | **customer_token** | | Токен клиента (по умолчанию берётся из сессии) |
-| **hideOnThanks** | `false` | При `1` / `true` сниппет возвращает пустую строку на странице «спасибо» (детектируется по параметру URL `?msorder=...`). По умолчанию (`false`) корзина рендерится как обычно — мини-корзина в общем layout продолжает работать. До 1.11.0 поведение «пустая строка на thanks» было дефолтным и неотключаемым (#249). |
+| **hideOnThanks** | `false` | При `1` / `true` сниппет возвращает пустую строку на странице «спасибо» (детектируется по параметру URL `?msorder=...`). По умолчанию (`false`) корзина рендерится как обычно — мини-корзина в общем layout продолжает работать. До 1.11.0 поведение «пустая строка на thanks» было дефолтным и неотключаемым. |
 
 ### Параметры pdoTools
 
 Сниппет наследует параметры pdoTools:
 
 | Параметр | Описание |
-|----------|----------|
+| --- | --- |
 | **where** | Дополнительные условия выборки (JSON) |
 | **leftJoin** | Дополнительные JOIN (JSON) |
 | **select** | Дополнительные поля для выборки (JSON) |
@@ -154,7 +154,7 @@ title: msCart
 
 Для каждого товара доступны:
 
-- `{$product.key}` — Уникальный ключ позиции
+- `{$product.product_key}` — Уникальный ключ позиции
 - `{$product.id}` — ID товара
 - `{$product.count}` — Количество
 - `{$product.price}` — Цена за единицу
@@ -198,6 +198,26 @@ title: msCart
 - `{$status.total_discount}` — Сумма скидок
 - `{$status.total_positions}` — Количество позиций
 
+| `total.*` | Источник после синхронизации |
+| --- | --- |
+| `total.count` | `status.total_count` |
+| `total.cost` | `status.total_cost` |
+| `total.weight` | `status.total_weight` |
+| `total.discount` | `status.total_discount` |
+| `total.positions` | `status.total_positions` |
+
+## Автообновление HTML
+
+Сниппет регистрируется через `registerSnippet()` для перерисовки при изменении корзины (как [msOrderTotal](msordertotal)). Укажите `selector`, если на странице несколько блоков корзины:
+
+```fenom
+<div id="sidebar-cart">
+    {'!msCart' | snippet : [
+        'selector' => '#sidebar-cart'
+    ]}
+</div>
+```
+
 ## Пример чанка
 
 ```fenom
@@ -216,7 +236,7 @@ title: msCart
             </thead>
             <tbody>
                 {foreach $products as $product}
-                    <tr data-ms-cart-item="{$product.key}">
+                    <tr data-ms-cart-item="{$product.product_key}">
                         <td>
                             {if $product.thumb?}
                                 <img src="{$product.thumb}" alt="{$product.pagetitle}" width="60">
@@ -243,13 +263,13 @@ title: msCart
                                    value="{$product.count}"
                                    min="1"
                                    data-ms-action="cart/change"
-                                   data-key="{$product.key}">
+                                   data-key="{$product.product_key}">
                         </td>
                         <td>{$product.count * $product.price} руб.</td>
                         <td>
                             <button type="button"
                                     data-ms-action="cart/remove"
-                                    data-key="{$product.key}">
+                                    data-key="{$product.product_key}">
                                 ✕
                             </button>
                         </td>
@@ -281,16 +301,16 @@ title: msCart
 
 ```javascript
 // Добавить товар
-ms3.cart.add(productId, count, options);
+await ms3.cartAPI.add(productId, count, options)
 
 // Изменить количество
-ms3.cart.change(key, count);
+await ms3.cartAPI.change(productKey, count)
 
 // Удалить товар
-ms3.cart.remove(key);
+await ms3.cartAPI.remove(productKey)
 
-// Очистить корзину
-ms3.cart.clean();
+// Очистить корзину (только API; для UI — ms3.cartUI.handleClean())
+await ms3.cartAPI.clean()
 ```
 
 ### События

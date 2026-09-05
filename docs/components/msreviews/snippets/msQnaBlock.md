@@ -19,6 +19,7 @@ description: Список Q&A и форма вопроса одним вызов
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
+- **pdoTools 3.0+** — рендер чанков на Fenom
 - Внутренние вызовы `msQuestions` и `msQuestionForm` (те же параметры проксируются)
 - **msReviewsLexiconScript** — для формы
 
@@ -27,13 +28,14 @@ description: Список Q&A и форма вопроса одним вызов
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
 | `product_id` | id ресурса | ID товара MS3 |
-| `formPosition` | *(настройка)* | `after` — список, затем форма; `before` / `first` / `top` — форма первой. Пусто — `msreviews_qna_form_position` |
+| `formPosition` | *(настройка)* | `after` — список, затем форма. `before` / `first` / `top` — форма первой. Пусто — `msreviews_qna_form_position` |
 | `limit` | `20` | Лимит вопросов (→ `msQuestions`) |
 | `faqOnly` | `0` | Только с ответом |
 | `formClass` | *(пусто)* | Классы формы |
 | `showHeading` | `1` | Заголовок формы |
 | `formHeading` | *(лексикон)* | Заголовок формы |
 | `captchaHtml` | *(пусто)* | HTML капчи |
+| `registerCss` / `registerJs` | *(через дочерние)* | Свойства уходят в `msQuestions` и `msQuestionForm` |
 
 Параметры `msQuestions` (`tpl`, `wrapper`, `limit`, `offset`, `totalVar` и др.) проксируются во внутренний `runSnippet`. **`pdoPage`** через `msQnaBlock` не поддерживается.
 

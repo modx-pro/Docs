@@ -5,14 +5,28 @@ title: API and interfaces
 
 ## Connector `assets/components/mxeditorjs/connector.php`
 
-All connector requests require MODX manager authentication. Responses are JSON. Write operations require `save_document` permission.
+All connector requests require MODX manager authentication. Responses are JSON, `Content-Type: application/json`.
+
+**Normal resource save** goes through form POST and `OnBeforeDocFormSave`, **not** the connector. `content/save` is for AJAX and integrations.
+
+### Permissions by action
+
+| Action | `save_document` |
+| --- | --- |
+| `content/get` | No |
+| `content/save` | Yes |
+| `content/migrate` (without `dry_run`) | Yes |
+| `content/migrate` (`dry_run=1`) | No |
+| `media/upload`, `media/uploadFile` | Yes |
+| `media/browse` | No |
+| `link/search` | No |
 
 ### Authentication
 
-Unauthenticated requests return:
+Unauthenticated request: HTTP **200**, JSON body (lexicon, ru/en):
 
 ```json
-{ "success": false, "message": "Permission denied" }
+{ "success": false, "message": "Permission denied." }
 ```
 
 ---

@@ -125,10 +125,18 @@ Link to the component page in the official [modx.com] repository.
 
 ### Component source repository
 
-- Type: `string`
+- Type: `string` or `string[]`
 
 ```yaml
 repository: https://github.com/modx-pro/miniShop2
+```
+
+Multiple repositories (for example MODX 2 and MODX 3 lines):
+
+```yaml
+repository:
+  - https://github.com/modx-pro/pdoTools
+  - https://github.com/modx-pro/pdoTools3
 ```
 
 Link to the component source code repository.

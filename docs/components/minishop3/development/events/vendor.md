@@ -5,6 +5,10 @@ title: События производителей
 
 События для отслеживания операций с производителями (брендами).
 
+::: warning Vue-настройки vs процессоры
+CRUD производителей в админке (**Extras → MiniShop3 → Производители**) идёт через `VendorsController` (Manager API) **без** `$modx->invokeEvent`. События ниже срабатывают только при вызове legacy-процессоров `MiniShop3\Processors\Settings\Vendor\*` (`runProcessor`, старый connector). Для перехвата изменений из Vue используйте хуки после сохранения через собственный REST middleware или модификацию контроллера в дополнении.
+:::
+
 ## msOnBeforeVendorCreate
 
 Вызывается **перед** созданием производителя.
@@ -12,9 +16,12 @@ title: События производителей
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Объект производителя |
+| `object` | `msVendor` | Та же ссылка, что и `msVendor` (MS2-style алиас) |
 | `mode` | `string` | Режим: `new` |
+| `data` | `array` | Поля производителя на момент вызова (`$object->toArray()`) |
+| `id` | `int` | ID производителя (`0` — ещё не создан) |
 
 ### Прерывание операции
 
@@ -47,9 +54,11 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Созданный объект производителя |
+| `object` | `msVendor` | Та же ссылка, что и `msVendor` (MS2-style алиас) |
 | `mode` | `string` | Режим: `new` |
+| `id` | `int` | ID созданного производителя |
 
 ### Пример использования
 
@@ -80,11 +89,18 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msVendor` | `msVendor` | Объект производителя |
+| --- | --- | --- |
+| `msVendor` | `msVendor` | Объект производителя (поля уже несут НОВЫЕ значения — старый снимок недоступен) |
+| `object` | `msVendor` | Та же ссылка, что и `msVendor` (MS2-style алиас) |
 | `mode` | `string` | Режим: `upd` |
+| `data` | `array` | Поля производителя на момент вызова — уже новые значения (`$object->toArray()`) |
+| `id` | `int` | ID обновляемого производителя |
 
-### Пример использования
+::: warning Старых значений полей нет
+К моменту вызова этого события `msVendor` уже содержит новые значения (MODX применяет их до срабатывания `beforeSaveEvent`). Метода вроде `getPrevious()` у объекта не существует — если нужен снимок «до», получайте его заранее (например, в контроллере, до `runProcessor`).
+:::
+
+### Прерывание операции
 
 ```php
 <?php
@@ -92,11 +108,11 @@ switch ($modx->event->name) {
     case 'msOnBeforeVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
-        // Сохранить старые значения для логирования
-        $modx->eventData['vendor_before'] = [
-            'name' => $vendor->getPrevious('name'),
-            'logo' => $vendor->getPrevious('logo'),
-        ];
+        // Запретить пустое название
+        if (trim((string) $vendor->get('name')) === '') {
+            $modx->event->output('Название производителя не может быть пустым');
+            return;
+        }
         break;
 }
 ```
@@ -110,9 +126,11 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Обновлённый объект производителя |
+| `object` | `msVendor` | Та же ссылка, что и `msVendor` (MS2-style алиас) |
 | `mode` | `string` | Режим: `upd` |
+| `id` | `int` | ID обновлённого производителя |
 
 ### Пример использования
 
@@ -122,15 +140,11 @@ switch ($modx->event->name) {
     case 'msOnVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
-        $before = $modx->eventData['vendor_before'] ?? [];
-
-        if ($before['name'] !== $vendor->get('name')) {
-            $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                '[Vendor] Переименован: %s → %s',
-                $before['name'],
-                $vendor->get('name')
-            ));
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Vendor] Обновлён производитель: %s (ID: %d)',
+            $vendor->get('name'),
+            $vendor->get('id')
+        ));
         break;
 }
 ```
@@ -144,8 +158,10 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Объект производителя для удаления |
+| `object` | `msVendor` | Та же ссылка, что и `msVendor` (MS2-style алиас) |
+| `id` | `int` | ID удаляемого производителя |
 
 ### Прерывание операции
 
@@ -180,8 +196,10 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `msVendor` | `msVendor` | Удалённый объект производителя |
+| `object` | `msVendor` | Та же ссылка, что и `msVendor` (MS2-style алиас) |
+| `id` | `int` | ID удалённого производителя |
 
 ### Пример использования
 

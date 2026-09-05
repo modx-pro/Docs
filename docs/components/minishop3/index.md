@@ -27,6 +27,8 @@ items: [
   {
     text: 'Интерфейс админки',
     items: [
+      { text: 'Заказы', link: 'interface/orders' },
+      { text: 'Клиенты', link: 'interface/customers' },
       { text: 'Категория', link: 'interface/category' },
       { text: 'Товар', link: 'interface/product' },
       { text: 'Галерея', link: 'interface/gallery' },
@@ -57,6 +59,19 @@ items: [
     ],
   },
   {
+    text: 'Cookbook менеджера',
+    link: 'manager/',
+    items: [
+      { text: 'Обзор', link: 'manager/' },
+      { text: 'Поле в заказе', link: 'manager/examples/order-custom-field' },
+      { text: 'Поле у товара', link: 'manager/examples/product-extra-field' },
+      { text: 'Дополнительные поля', link: 'manager/extra-fields/cookbook' },
+      { text: 'Поля модели', link: 'manager/model-fields/cookbook' },
+      { text: 'Поля товара', link: 'manager/product-fields/cookbook' },
+      { text: 'Колонки грида', link: 'manager/grid-config/cookbook' },
+    ],
+  },
+  {
     text: 'Интерфейс фронтенда',
     items: [
       { text: 'Каталог', link: 'frontend/catalog' },
@@ -67,6 +82,7 @@ items: [
       {
         text: 'Личный кабинет',
         items: [
+          { text: 'Вход и регистрация', link: 'frontend/customer-auth' },
           { text: 'Профиль покупателя', link: 'frontend/customer-profile' },
           { text: 'Адреса доставки', link: 'frontend/customer-addresses' },
           { text: 'История заказов', link: 'frontend/customer-orders' },
@@ -93,6 +109,7 @@ items: [
           { text: 'Производитель', link: 'development/events/vendor' },
           { text: 'Уведомления', link: 'development/events/notifications' },
           { text: 'Импорт', link: 'development/events/import' },
+          { text: 'msProducts', link: 'development/events/msproducts' },
           { text: 'Менеджер', link: 'development/events/manager' },
         ],
       },
@@ -100,6 +117,8 @@ items: [
       { text: 'API Router', link: 'development/routing' },
       { text: 'JavaScript API', link: 'development/javascript' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
+      { text: 'Вкладки товара', link: 'development/product-tabs-integration' },
+      { text: 'Вкладки заказа', link: 'development/order-tabs-integration' },
       { text: 'Scheduler', link: 'development/scheduler' },
       { text: 'Модели и схема БД', link: 'development/models' },
       { text: 'Сервисный слой', link: 'development/services' },
@@ -134,7 +153,7 @@ MiniShop3 разработан специально для MODX Revolution 3.x �
 
 ### Улучшенная архитектура
 
-- **REST API** — полноценный API для headless-интеграций
+- **REST API** — Web API `api.php` (`/api/v1/*`) для витрины и headless: корзина, заказ, ЛК, публичный каталог. [Документация](/components/minishop3/development/api)
 - **Service Container** — зависимости через DI-контейнер MODX
 - **Vue 3 + PrimeVue** — современный интерфейс админки через [VueTools](/components/vuetools/)
 - **Современный фронтенд** — без jQuery, нативный JavaScript
@@ -144,13 +163,14 @@ MiniShop3 разработан специально для MODX Revolution 3.x �
 MiniShop3 сохраняет обратную совместимость с miniShop2 на уровне:
 
 - Имена сниппетов (`msProducts`, `msCart`, `msOrder` и др.)
-- Структура чанков и плейсхолдеров
-- Параметры сниппетов
+- Основные параметры сниппетов
+
+Поля моделей и плейсхолдеры отличаются: нет `receiver`, комментарий заказа — `order_comment`, остаток — `stock`, ключ позиции корзины — `product_key`. Подробнее: [Отличия от miniShop2](/components/minishop3/differences-from-ms2).
 
 ## Системные требования
 
 | Требование | Версия |
-|------------|--------|
+| --- | --- |
 | MODX Revolution | 3.0.0+ |
 | PHP | 8.1+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
@@ -170,7 +190,7 @@ MiniShop3 использует Vue 3 для современного интер�
 MiniShop3 использует следующие PHP библиотеки (включены в пакет):
 
 | Библиотека | Версия | Назначение |
-|------------|--------|------------|
+| --- | --- | --- |
 | [nikic/fast-route](https://github.com/nikic/FastRoute) | ^1.3 | Маршрутизация REST API |
 | [rakit/validation](https://github.com/rakit/validation) | ^1.4 | Валидация данных форм и API |
 | [intervention/image](https://image.intervention.io/) | ^3.0 | Обработка изображений (ресайз, водяные знаки) |
@@ -277,7 +297,7 @@ assets/components/minishop3/
 ├── api.php                 # Точка входа REST API
 ├── connector.php           # AJAX коннектор админки
 ├── js/
-│   ├── mgr/                # JavaScript админки (ExtJS)
+│   ├── mgr/                # JS админки (Vue bundles + legacy Ext resource)
 │   └── web/                # JavaScript сайта (нативный JS)
 ├── css/
 │   ├── mgr/                # Стили админки

@@ -9,14 +9,18 @@ title: msOrder
 Сниппет работает с сессией пользователя и должен вызываться **некэшированно**.
 :::
 
+::: info Страница «Спасибо за заказ»
+Если в URL есть GET-параметр `msorder` (редирект после оформления), сниппет возвращает **пустую строку**. На той же странице выводите [msGetOrder](msgetorder). Форму checkout и детали заказа не совмещайте без условия по URL.
+:::
+
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msOrder` | Чанк формы заказа |
 | **userFields** | | Маппинг полей профиля MODX (modUserProfile) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = true` |
 | **customerFields** | | Маппинг полей клиента (msCustomer) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = false` |
-| **includeDeliveryFields** | `id` | Поля доставки через запятую (`*` = все) |
+| **includeDeliveryFields** | `id` | Поля доставки через запятую (`*` = все). В выборку всегда попадает `id` |
 | **includePaymentFields** | `*` | Поля оплаты через запятую (`*` = все) |
 | **includeCustomerAddresses** | `true` | Загружать сохранённые адреса покупателя |
 | **showLog** | `false` | Показать лог выполнения |
@@ -51,6 +55,7 @@ title: msOrder
 ```
 
 ::: tip Выбор источника данных
+
 - `ms3_customer_sync_enabled = false` (по умолчанию): используется `customerFields` и данные msCustomer
 - `ms3_customer_sync_enabled = true`: используется `userFields` и данные modUserProfile
 
@@ -74,7 +79,7 @@ title: msOrder
     'order' => [
         'delivery_id' => 1,
         'payment_id' => 2,
-        'comment' => '...',
+        'order_comment' => '...',
         'cost' => 5300,                  // Итого (число)
         'cost_formatted' => '5 300 ₽',  // Итого с валютой
         'cart_cost' => 5000,             // Стоимость товаров
@@ -153,9 +158,9 @@ title: msOrder
 {foreach $deliveries as $delivery}
     <label>
         <input type="radio"
-               name="delivery"
-               value="{$delivery.id}"
-               {if $order.delivery_id == $delivery.id}checked{/if}>
+            name="delivery_id"
+            value="{$delivery.id}"
+            {if $order.delivery_id == $delivery.id}checked{/if}>
         {$delivery.name}
         {if $delivery.price > 0}
             — {$delivery.price} руб.
@@ -170,9 +175,9 @@ title: msOrder
 {foreach $payments as $payment}
     <label>
         <input type="radio"
-               name="payment"
-               value="{$payment.id}"
-               {if $order.payment_id == $payment.id}checked{/if}>
+            name="payment_id"
+            value="{$payment.id}"
+            {if $order.payment_id == $payment.id}checked{/if}>
         {$payment.name}
     </label>
 {/foreach}
@@ -180,10 +185,12 @@ title: msOrder
 
 ### Итоги
 
-- `{$order.cart_cost}` — Стоимость товаров
-- `{$order.delivery_cost}` — Стоимость доставки
-- `{$order.discount_cost}` — Скидка
-- `{$order.cost}` — Итого к оплате
+- `{$order.cart_cost}` — Стоимость товаров (число)
+- `{$order.delivery_cost}` — Стоимость доставки (число)
+- `{$order.discount_cost}` — Скидка (число)
+- `{$order.cost}` — Итого к оплате (число)
+- `{$order.cart_cost_formatted}`, `{$order.delivery_cost_formatted}`, `{$order.discount_cost_formatted}`, `{$order.cost_formatted}` — те же суммы с валютой
+- `{$order.currency_symbol}` — Символ валюты из настроек MS3
 
 ## Пример чанка
 
@@ -283,18 +290,18 @@ title: msOrder
         {foreach $payments as $payment}
             <label class="payment-option">
                 <input type="radio"
-                       name="payment_id"
-                       value="{$payment.id}"
-                       {if $order.payment_id == $payment.id}checked{/if}>
+                    name="payment_id"
+                    value="{$payment.id}"
+                    {if $order.payment_id == $payment.id}checked{/if}>
                 <span>{$payment.name}</span>
             </label>
         {/foreach}
     </fieldset>
 
-    {* Комментарий *}
+    {* Комментарий к заказу *}
     <fieldset>
         <legend>Комментарий к заказу</legend>
-        <textarea name="comment" rows="3">{$order.comment}</textarea>
+        <textarea name="order_comment" rows="3">{$order.order_comment}</textarea>
     </fieldset>
 
     {* Итого *}
@@ -318,39 +325,34 @@ title: msOrder
 
 ## JavaScript взаимодействие
 
-```javascript
-// Оформить заказ
-ms3.order.submit();
-
-// Обновить способ доставки
-ms3.order.setDelivery(deliveryId);
-
-// Обновить способ оплаты
-ms3.order.setPayment(paymentId);
-
-// Обновить поле
-ms3.order.setField(name, value);
-```
-
-## События
-
-При оформлении заказа генерируются события:
+Форма работает через `OrderUI` + `ms3.orderAPI`. Публичного объекта `ms3.order` нет.
 
 ```javascript
-// Перед отправкой
-document.addEventListener('ms3:order:before-submit', (e) => {
-    console.log('Данные заказа:', e.detail);
-});
+// Поля черновика
+await ms3.orderAPI.add('delivery_id', deliveryId)
+await ms3.orderAPI.add('payment_id', paymentId)
+await ms3.orderAPI.add('city', 'Москва')
+await ms3.orderAPI.add('order_comment', 'Позвонить перед доставкой')
 
-// После успешного оформления
-document.addEventListener('ms3:order:success', (e) => {
-    console.log('Заказ создан:', e.detail.order_id);
-    // Редирект на страницу успеха
-    window.location.href = e.detail.redirect;
-});
-
-// При ошибке
-document.addEventListener('ms3:order:error', (e) => {
-    console.error('Ошибка:', e.detail.message);
-});
+// Оформить
+const response = await ms3.orderAPI.submit()
+if (response.success) {
+  window.location.href = response.data.redirect
+}
 ```
+
+Хуки (нужен `hooks.js` в `ms3_frontend_assets`):
+
+```javascript
+ms3Hooks.addHook('beforeSubmitOrder', async (data) => {
+  // data.formData — FormData формы
+})
+
+ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
+  if (response.success) {
+    console.log('Заказ:', response.data.order_id)
+  }
+})
+```
+
+Подробнее: [JavaScript API](/components/minishop3/development/javascript), [Frontend JS](/components/minishop3/development/frontend-js).

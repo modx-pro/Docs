@@ -69,7 +69,7 @@ These further define what data is output and how.
 | **&useWeblinkUrl** | | Generate URL according to resource class; adds placeholder `[[+link]]`. |
 | **&toPlaceholder** | | If set, all output is saved to a placeholder with this name instead of being printed. |
 | **&toSeparatePlaceholders** | | If set, each result is put in a separate placeholder named by this value + row index from 0, e.g. `myPl` → `[[+myPl0]]`, `[[+myPl1]]`. |
-| **&showLog** | `0` | Show extra debug info. Only for users authorized in context "mgr". |
+| **&showLog** | `0` | Log in a placeholder (since 3.0), not HTML. Requires mgr session. [Details](../general-properties#showlog). |
 
 ## Examples
 

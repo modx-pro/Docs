@@ -7,8 +7,7 @@ title: Системные настройки
 
 **Где изменить:** **Управление → Системные настройки** → в фильтре выберите пространство имён **ms3pulse**.
 
-<!-- SCREENSHOT: Системные настройки, пространство ms3pulse -->
-<!-- ![Системные настройки — пространство ms3pulse](/components/ms3pulse/screenshots/settings-namespace.png) -->
+![Системные настройки — ms3pulse](/components/ms3pulse/screenshots/settings-namespace.png)
 
 ## Область «Дашборд»
 

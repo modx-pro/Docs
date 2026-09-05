@@ -17,15 +17,15 @@ ExtJS TabPanel (верхний уровень)
 ├── Товар (Vue ProductTabs)
 │   ├── Свойства (Vue)
 │   ├── Галерея (Vue)
-│   ├── Категории (ExtJS)
-│   ├── Связи (ExtJS)
-│   ├── Опции товара (Vue — с v1.10.0-beta1)
+│   ├── Категории (Vue ProductCategoriesTab)
+│   ├── Связи (Vue ProductLinksTab)
+│   ├── Опции товара (Vue)
 │   └── [Ваши вкладки]
 ├── Page Settings (системная вкладка MODX)
 └── Access Permissions (системная вкладка MODX)
 ```
 
-Вкладка "Товар" содержит Vue компонент `ProductTabs` с PrimeVue TabView, который управляет вложенными вкладками.
+Вкладка «Товар» — Vue-компонент `ProductTabs` (PrimeVue TabView). Категории и связи тоже Vue, не ExtJS.
 
 ## Plugin Registry API
 
@@ -40,7 +40,7 @@ ExtJS TabPanel (верхний уровень)
 **Параметры:**
 
 | Параметр | Тип | Обязательный | Описание |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `key` | string | Да | Уникальный идентификатор вкладки |
 | `title` | string | Да | Заголовок вкладки (отображается в табе) |
 | `type` | string | Нет | Тип вкладки: `'vue'` или `'extjs'` (по умолчанию `'vue'`) |
@@ -77,6 +77,7 @@ defineProps({
   }
 })
 </script>
+
 ```
 
 ### Шаг 2: Создайте entry point
@@ -100,6 +101,7 @@ if (window.MS3ProductTabsRegistry) {
     position: 5 // После Опций
   })
 }
+
 ```
 
 ### Шаг 3: Подключите скрипт в контроллере MODX
@@ -113,6 +115,7 @@ public function loadCustomCssJs()
     // Подключаем после product-tabs.min.js
     $this->addLastJavascript($assetsUrl . 'js/variants-tab.min.js');
 }
+
 ```
 
 ### Шаг 4: Обработка в ProductTabs
@@ -129,6 +132,7 @@ public function loadCustomCssJs()
     :record="record"
   />
 </template>
+
 ```
 
 ```javascript
@@ -137,6 +141,7 @@ function getComponent(name) {
   // Ищем компонент в глобальном scope
   return window[name] || null
 }
+
 ```
 
 ## Интеграция ExtJS компонента
@@ -161,6 +166,7 @@ MyComponent.panel.CustomTab = function(config) {
 };
 Ext.extend(MyComponent.panel.CustomTab, MODx.Panel);
 Ext.reg('mycomponent-custom-tab', MyComponent.panel.CustomTab);
+
 ```
 
 ### Шаг 2: Зарегистрируйте вкладку
@@ -183,12 +189,12 @@ Ext.onReady(function() {
         });
     }
 });
+
 ```
 
 ::: tip Автоматическая передача record
 Для ExtJS вкладок `record` с данными товара передаётся автоматически в `extConfig`. Вам не нужно указывать его явно.
 :::
-```
 
 ### Шаг 3: Подключите скрипты
 
@@ -202,6 +208,7 @@ public function loadCustomCssJs()
     // Затем интеграцию
     $this->addLastJavascript($assetsUrl . 'js/mgr/product-integration.js');
 }
+
 ```
 
 ## Позиционирование вкладок
@@ -209,7 +216,7 @@ public function loadCustomCssJs()
 Встроенные вкладки имеют следующие позиции:
 
 | Вкладка | Позиция |
-|---------|---------|
+| --- | --- |
 | Свойства | 0 |
 | Галерея | 1 |
 | Категории | 2 |
@@ -233,6 +240,7 @@ const props = defineProps({
 // Использование
 console.log(props.record.pagetitle)
 console.log(props.record.price)
+
 ```
 
 ### ExtJS компоненты
@@ -245,6 +253,7 @@ MyComponent.panel.CustomTab = function(config) {
 
     // ...
 };
+
 ```
 
 ## Пример: Интеграция ms3Variants
@@ -282,6 +291,7 @@ MyComponent.panel.CustomTab = function(config) {
         registerVariantsTab();
     }
 })();
+
 ```
 
 ## Важные замечания
@@ -306,4 +316,5 @@ console.log(window.MS3ProductTabsRegistry.pendingTabs);
 
 // Проверить экземпляр ProductTabs
 console.log(window.MS3ProductTabsRegistry._instance);
+
 ```

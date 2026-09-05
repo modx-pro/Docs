@@ -20,6 +20,7 @@
 | **&showDeleted**           | `0`                                             | Показывать удалённые ресурсы.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | **&hideContainers**        | `0`                                             | Отключает вывод контейнеров, то есть, ресурсов с `isfolder = 1`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | **&hideUnsearchable**      |                                                 | Отключает вывод спрятанных от поиска ресурсов.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| **&disableMS3**            | `0`                                             | Не учитывать доп. категории MiniShop3 (`msCategoryMember`) при разборе **&parents**. **pdoTools 3.1.0+ (MODX 3)**; вместо удалённых miniShop2 / `&disableMS2` |
 | **&select**                |                                                 | Список полей для выборки, через запятую. Можно указывать JSON строку с массивом, например `{"modResource":"id,pagetitle,content"}`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | **&leftJoin**              |                                                 | Аналог SQL оператора left join                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | **&rightJoin**             |                                                 | Аналог SQL оператора right join                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
@@ -87,6 +88,61 @@
 | **&cache_key**              | Значение системной настройки *cache_resource_key* для ресурсов (по умолчанию resource) или default | Ключ кеширования                                                                                                                                                                                                                                                                   |
 | **&cache_handler**          | Значение системной настройки *cache_resource_handler* или `xPDOFileCache`                          | Обработчик кеша                                                                                                                                                                                                                                                                    |
 | **&cacheTime**              | Значение системной настройки *cache_resource_expires* или `0` (вечный)                             | Время жизни кеша (в секундах)                                                                                                                                                                                                                                                      |
+| **&showLog**                | `0`                                                                                                | Лог времени работы сниппета. Нужна авторизация в `mgr`. В 3.x лог в плейсхолдере, не в HTML. См. ниже.                                                                                                              |
+
+## Параметр showLog {#showlog}
+
+**&showLog**=`1` пишет лог по шагам: время, SQL, память. Читать его может только пользователь, авторизованный в `mgr`.
+
+### pdoTools 3.x
+
+В 2.x сниппет дописывал лог в конец HTML (`<pre class="pdoResourcesLog">…</pre>`).
+
+С 3.0.0-beta лог уходит в плейсхолдер и не входит в return сниппета (changelog: *snippet logs are stored now in the corresponding placeholder*). После обновления на 3.x выведите плейсхолдер сами, иначе на странице его не будет.
+
+| Сниппет | Плейсхолдер |
+| --- | --- |
+| pdoResources | `pdoResourcesLog` |
+| pdoPage | `pdoPageLog` |
+| pdoMenu | `pdoMenuLog` |
+| pdoCrumbs | `pdoCrumbsLog` |
+| pdoUsers | `pdoUsersLog` |
+| pdoArchive | `pdoArchiveLog` |
+| pdoSitemap | `pdoSitemapLog` |
+
+У pdoNeighbors в текущем коде 3.x лог по-прежнему дописывается к HTML, как в 2.x.
+
+`pdoFetch::getCollection()` и `getArray()` всегда пишут тайминг в `pdoTools.log` (с точкой), без `&showLog`. См. [pdoFetch](classes/pdofetch).
+
+### Пример
+
+::: code-group
+
+```modx
+[[!pdoResources?
+  &parents=`0`
+  &limit=`5`
+  &tpl=`@INLINE <li>[[+pagetitle]]</li>`
+  &showLog=`1`
+]]
+
+<pre>[[+pdoResourcesLog]]</pre>
+```
+
+```fenom
+{'!pdoResources' | snippet : [
+  'parents' => 0,
+  'limit' => 5,
+  'tpl' => '@INLINE <li>{$pagetitle}</li>',
+  'showLog' => 1,
+]}
+
+<pre>{$_modx->getPlaceholder('pdoResourcesLog')}</pre>
+```
+
+:::
+
+После `pdoPage` выводите `[[+pdoPageLog]]`.
 
 ## Способы вызова чанков
 

@@ -12,13 +12,15 @@ The utilities section provides tools for bulk operations and MiniShop3 component
 ## Tabs
 
 | Tab | Description |
-|-----|-------------|
+| --- | --- |
 | [Gallery](utilities/gallery) | Bulk thumbnail regeneration for images |
 | [Import](utilities/import) | Product import from CSV files |
 | [Product fields](utilities/product-fields) | Product card field display configuration |
 | [Extra fields](utilities/extra-fields) | Creating new fields for models |
 | [Grid columns](utilities/grid-columns) | Table column configuration |
 | [Model fields](utilities/model-fields) | Database model field management |
+
+Cookbook: [manager](/en/components/minishop3/manager/) — when to use extra fields, product fields, model fields, or grid columns.
 
 ## Feature overview
 
@@ -41,12 +43,7 @@ Step-by-step wizard for importing products from CSV files with:
 
 ### Product fields
 
-Configure field display on the "Product data" tab:
-
-- Enable/disable fields
-- Group by sections
-- Change display order
-- Create and manage sections
+Data tab layout: sections, visibility, order. New columns via [Extra fields](utilities/extra-fields). Cookbook: [product fields](/en/components/minishop3/manager/product-fields/cookbook).
 
 ### Extra fields
 

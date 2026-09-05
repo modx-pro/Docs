@@ -19,10 +19,12 @@ The category edit page (`msCategory`) extends standard MODX functionality with p
 
 ### Products
 
+<!-- ![Category products table](/components/minishop3/screenshots/mgr-category-products.png) -->
+
 Main category tab — product table with:
 
 | Feature | Description |
-|---------|-------------|
+| --- | --- |
 | Drag-and-drop | Sort products by dragging |
 | Filters | Search, published status, custom filters |
 | Bulk operations | Publish, unpublish, delete |
@@ -34,7 +36,7 @@ Main category tab — product table with:
 Standard MODX tab with resource fields:
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `pagetitle` | Category name |
 | `longtitle` | Extended title |
 | `description` | Meta description |
@@ -97,12 +99,14 @@ The system setting `ms3_category_grid_fields` was removed in 1.7.0. Use [Grid co
 Double-click a cell to edit in place:
 
 | Editor type | Fields |
-|-------------|--------|
+| --- | --- |
 | `text` | `pagetitle`, `longtitle`, `article`, `made_in` |
 | `number` | `price`, `old_price`, `weight` |
 | `boolean` | `published`, `new`, `popular`, `favorite` |
 
-Editable fields are configured in [Utilities → Grid columns](utilities/grid-columns) (`editable` and `editType` on the column).
+Configure in **Utilities → Grid columns**, grid **category-products**: enable **editable**, set **editor_type** (`text`, `number`, `select`, `combo`). Step-by-step: [Grid columns cookbook](/en/components/minishop3/manager/grid-config/cookbook).
+
+See also: [Utilities: Grid columns](utilities/grid-columns).
 
 ## Table column configuration
 
@@ -113,197 +117,70 @@ Editable fields are configured in [Utilities → Grid columns](utilities/grid-co
 3. Configure visibility, order, column width
 4. Save
 
-See also: [Utilities: Grid columns](utilities/grid-columns)
+### Via API and utilities
 
-### Via PHP configuration
+In 1.13.x there is **no** PHP file `core/components/minishop3/custom/grids/category-products.php`. Columns live in `ms3_grid_fields` and are configured via:
 
-Create a custom config file:
+- **Utilities → Grid columns** (`grid_key=category-products`)
+- Manager API `/api/mgr/grid-config/category-products` (see [Grid columns cookbook](/en/components/minishop3/manager/grid-config/cookbook))
 
-```php
-// core/components/minishop3/custom/grids/category-products.php
+Example: add a column via API:
 
-return [
-    [
-        'name' => 'id',
-        'label' => 'ID',
-        'visible' => true,
-        'sortable' => true,
-        'width' => '60px',
-        'isSystem' => true,
-    ],
-    [
-        'name' => 'thumb',
-        'label' => 'Image',
-        'visible' => true,
-        'type' => 'image',
-        'width' => '60px',
-    ],
-    [
-        'name' => 'pagetitle',
-        'label' => 'Title',
-        'visible' => true,
-        'sortable' => true,
-        'filterable' => true,
-        'minWidth' => '200px',
-        'type' => 'template',
-        'template' => '<span class="product-id">({id})</span> <a href="?a=resource/update&id={id}">{pagetitle}</a>',
-    ],
-    [
-        'name' => 'article',
-        'label' => 'SKU',
-        'visible' => true,
-        'sortable' => true,
-        'filterable' => true,
-        'width' => '100px',
-    ],
-    [
-        'name' => 'price',
-        'label' => 'Price',
-        'visible' => true,
-        'sortable' => true,
-        'type' => 'price',
-        'width' => '100px',
-    ],
-    [
-        'name' => 'actions',
-        'label' => 'Actions',
-        'visible' => true,
-        'isSystem' => true,
-        'frozen' => true,
-        'width' => '140px',
-        'type' => 'actions',
-    ],
-];
+```http
+POST /api/mgr/grid-config/category-products/field
 ```
 
-### Adding a custom column
-
-**Example: adding a "Stock" column:**
-
-```php
-[
-    'name' => 'remains',
-    'label' => 'Stock',
-    'visible' => true,
-    'sortable' => true,
-    'width' => '80px',
-    'type' => 'number',
-    // Inline editing
-    'editable' => true,
-    'editor' => [
-        'xtype' => 'numberfield',
-        'minValue' => 0,
-    ],
-]
+```json
+{
+  "field_name": "stock",
+  "label": "Stock",
+  "type": "model",
+  "visible": true,
+  "sortable": true,
+  "editable": true,
+  "editor_type": "number",
+  "config": {}
+}
 ```
+
+Inline edit uses **`editable`**, **`editor_type`** (`text`, `number`, `select`, `combo`), and optional **`editor_options`**. Cell write permission: `msproduct_save` (`PUT /api/mgr/categories/{id}/products/{productId}/data`).
 
 ### Column types
 
 | Type | Description | Example |
-|------|-------------|---------|
-| `text` | Text (default) | Title, SKU |
-| `number` | Number | Stock |
-| `price` | Formatted price | 1,234.56 |
-| `weight` | Formatted weight | 0.5 kg |
-| `boolean` | Yes/No tag | Published |
-| `image` | Image thumbnail | Product photo |
-| `template` | Custom HTML template | Product link |
+| --- | --- | --- |
+| `model` | Model field | Title, SKU |
+| `price` | Price with `displayConfig` | 1,234.56 |
+| `weight` | Weight with `displayConfig` | 0.5 kg |
+| `boolean` | Yes/No | Published |
+| `image` | Thumbnail | Product photo |
+| `template` | HTML template | Product link |
 | `actions` | Action buttons | Edit, delete |
-| `relation` | Field from related table | Status name |
-| `badge` | Colored tag | Order status with color |
+| `relation` | Related table | Status name |
+| `badge` | Colored tag | Status with color |
+| `option` | Product option | `option.key` |
+| `computed` | PHP column class | `computed.className` |
 
-### Relation fields (joins)
+Full reference: [Grid columns](utilities/grid-columns).
 
-The `relation` type loads data from related tables (JOIN):
+### Relation and badge
 
-```php
-[
-    'name' => 'status_name',
-    'label' => 'Status',
-    'type' => 'relation',
-    'visible' => false,  // Hidden source field for badge
-    'relation' => [
-        'table' => 'msOrderStatus',       // Model class or table
-        'foreignKey' => 'status_id',      // Foreign key in main table
-        'displayField' => 'name',          // Field to display
-    ],
-]
+Relation loads a JOIN. For badge in the `orders` grid, hidden relation columns supply text and HEX; the visible column is type **`badge`** with fields at the **top level** of config (not under `computed`):
+
+```json
+{
+  "type": "badge",
+  "source_field": "status_name",
+  "color_field": "status_color"
+}
 ```
 
-**Relation parameters:**
+For type **`computed`**, config must include **`computed.className`** (class implements `ComputedFieldInterface`).
 
-| Parameter | Description |
-|-----------|-------------|
-| `table` | xPDO model class (e.g. `msOrderStatus`) |
-| `foreignKey` | Field in main table for the relation |
-| `displayField` | Field from related table to display |
+In `category-products`, relation aggregation is **not supported**.
 
-::: info Optimization
-When adding multiple relation fields to the same table, the system groups them into a single JOIN. For example, `status_name` and `status_color` use one JOIN to `msOrderStatus`.
-:::
-
-### Badge fields (colored tags)
-
-The `badge` type shows a colored tag (PrimeVue Tag) using data from other columns:
-
-```php
-[
-    'name' => 'status',
-    'label' => 'Status',
-    'type' => 'badge',
-    'visible' => true,
-    'computed' => [
-        'source_field' => 'status_name',   // Text source column
-        'color_field' => 'status_color',   // Color source column
-    ],
-]
-```
-
-**Example: Order status with color**
-
-To show order status as a colored badge you need 3 fields:
-
-```php
-// 1. Hidden relation field for status name
-[
-    'name' => 'status_name',
-    'type' => 'relation',
-    'visible' => false,
-    'relation' => [
-        'table' => 'msOrderStatus',
-        'foreignKey' => 'status_id',
-        'displayField' => 'name',
-    ],
-],
-
-// 2. Hidden relation field for status color
-[
-    'name' => 'status_color',
-    'type' => 'relation',
-    'visible' => false,
-    'relation' => [
-        'table' => 'msOrderStatus',
-        'foreignKey' => 'status_id',
-        'displayField' => 'color',
-    ],
-],
-
-// 3. Visible badge field using data from relation fields
-[
-    'name' => 'status',
-    'label' => 'Status',
-    'type' => 'badge',
-    'visible' => true,
-    'sortable' => true,
-    'computed' => [
-        'source_field' => 'status_name',
-        'color_field' => 'status_color',
-    ],
-],
-```
-
-::: tip Colors in database
-Colors in the `msOrderStatus` table are stored in HEX format without `#` (e.g. `FF5733`). The system adds `#` when rendering.
+::: tip Status colors
+In `msOrderStatus`, color is often HEX without `#`. The UI prepends `#` when rendering a badge.
 :::
 
 ## Adding actions to the column
@@ -363,7 +240,7 @@ Actions are configured in a column with type `actions`:
 ### Action parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Unique identifier |
 | `handler` | string | Handler name (view, edit, delete, publish, duplicate) |
 | `icon` | string | PrimeIcons icon (pi-*) |
@@ -378,69 +255,56 @@ Actions are configured in a column with type `actions`:
 
 ### Custom actions via JavaScript
 
-Register a custom action via `MS3ActionRegistry`:
+Register via `MS3ActionRegistry`. The second argument is **`context`**, not `gridId`:
 
 ```javascript
-// Plugin: Add to favorites
 document.addEventListener('DOMContentLoaded', () => {
-  if (window.MS3ActionRegistry) {
-    // Register handler
-    MS3ActionRegistry.register('addToFavorites', async (data, gridId) => {
-      const response = await fetch('/assets/components/mycomponent/api.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'addToFavorites',
-          product_id: data.id
-        })
+  if (!window.MS3ActionRegistry) return
+
+  MS3ActionRegistry.register('addToFavorites', async (data, context) => {
+    const response = await fetch('/assets/components/mycomponent/api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'addToFavorites',
+        product_id: data.id
       })
-
-      const result = await response.json()
-
-      if (result.success) {
-        // Show notification
-        if (window.PrimeVue) {
-          // Use PrimeVue Toast
-        } else {
-          alert('Product added to favorites')
-        }
-        return { success: true, refresh: true }
-      }
-
-      return { success: false, message: result.message }
     })
-  }
+
+    const result = await response.json()
+
+    if (result.success) {
+      return { success: true, refresh: true }
+    }
+
+    return { success: false, message: result.message }
+  })
 })
 ```
 
-Adding the action to the column config:
+Add the action to the `actions` column config via **Utilities → Grid columns** or PUT grid-config:
 
-```php
-[
-    'name' => 'addToFavorites',
-    'handler' => 'addToFavorites',  // Registered handler name
-    'icon' => 'pi-heart',
-    'label' => 'Add to favorites',
-]
+```json
+{
+  "name": "addToFavorites",
+  "handler": "addToFavorites",
+  "icon": "pi-heart",
+  "label": "Add to favorites"
+}
 ```
 
 ### Hooks for standard actions
 
 ```javascript
-// Hook before product delete
-MS3ActionRegistry.registerBeforeHook('delete', async (data, gridId) => {
-  // Check conditions
+MS3ActionRegistry.registerBeforeHook('delete', async (data, context) => {
   if (data.orders_count > 0) {
-    alert('Cannot delete product with orders!')
-    return false  // Cancel action
+    return false
   }
-  return true  // Continue
+  return true
 })
 
-// Hook after publish
-MS3ActionRegistry.registerAfterHook('publish', async (data, result, gridId) => {
+MS3ActionRegistry.registerAfterHook('publish', async (data, result, context) => {
   console.log(`Product ${data.id} published:`, result)
-  // Send notification, update cache, etc.
 })
 ```
 
@@ -532,7 +396,7 @@ return [
 ### Filter parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `type` | string | Filter type: `text`, `select`, `datepicker`, `daterange` |
 | `label` | string | Lexicon key for label |
 | `placeholder` | string | Lexicon key for placeholder |
@@ -603,7 +467,7 @@ foreach ($dataNumericFields as $field) {
 
 ### Adding a custom filter
 
-**Step 1: Add filter to config**
+#### Step 1: add filter to config
 
 ```php
 // core/components/minishop3/custom/filters/category-products.php
@@ -630,7 +494,7 @@ return [
 ];
 ```
 
-**Step 2: Handle filter on server**
+#### Step 2: handle filter on server
 
 Create a plugin to handle the custom filter:
 
@@ -665,7 +529,7 @@ if (!empty($params['price_range'])) {
 ### Available operations
 
 | Operation | Description |
-|-----------|-------------|
+| --- | --- |
 | Publish | Publish selected products |
 | Unpublish | Unpublish selected products |
 | Delete | Mark as deleted |
@@ -719,7 +583,7 @@ POST /api/mgr/categories/{id}/products/sort
 ## System settings
 
 | Setting | Description | Default |
-|---------|-------------|---------|
+| --- | --- | --- |
 | `ms3_category_show_nested_products` | Show nested products | `false` |
 | `ms3_category_show_options` | Show category options | `true` |
 | `ms3_category_remember_tabs` | Remember active tab | `true` |
@@ -757,7 +621,7 @@ GET /api/mgr/categories/{id}/products
 **Parameters:**
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | `start` | Offset (pagination) |
 | `limit` | Number of records |
 | `sort` | Sort field |
@@ -798,6 +662,14 @@ GET /api/mgr/categories/{id}/products/filters
   }
 }
 ```
+
+### Inline product data editing
+
+```
+PUT /api/mgr/categories/{id}/products/{productId}/data
+```
+
+JSON body — `msProductData` fields (price, article, etc.) from the category grid without opening the product card. Controller: `CategoryProductsController::updateProductData()`.
 
 ## Related pages
 

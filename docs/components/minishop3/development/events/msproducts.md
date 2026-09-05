@@ -7,12 +7,15 @@ title: События сниппета msProducts
 
 ::: tip Параметр usePackages
 Для активации загрузки данных внешнего пакета укажите его имя в параметре сниппета:
+
 ```fenom
 {'msProducts' | snippet : [
     'parents' => 0,
     'usePackages' => 'ms3Variants,msBrands'
 ]}
+
 ```
+
 Плагины проверяют наличие своего пакета в этом параметре и загружают данные только при необходимости.
 :::
 
@@ -23,11 +26,32 @@ title: События сниппета msProducts
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `rows` | `array` (ссылка) | Массив товаров, можно модифицировать |
+| --- | --- | --- |
+| `rows` | `array` | Массив товаров. Изменения применяются только через `returnedValues['rows']` — PHP-ссылка на этом уровне не сохраняется (см. ниже) |
 | `productIds` | `array` | Массив ID товаров `[1, 2, 3, ...]` |
 | `usePackages` | `array` | Список запрошенных пакетов `['ms3Variants', 'msBrands']` |
 | `scriptProperties` | `array` | Все параметры вызова сниппета |
+
+После события строки списка обновляются из `returnedValues['rows']` (`EventGate::applyReturnedArray`). List в `rows` заменяет весь массив товаров, assoc-пatch отдельной строки — через `msOnProductPrepare`.
+
+### returnedValues
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnProductsLoad':
+        $values = &$modx->event->returnedValues;
+        // Пример: пометить все товары без цены
+        $rows = $scriptProperties['rows'];
+        foreach ($rows as $i => $row) {
+            if (empty($row['price'])) {
+                $rows[$i]['price_hidden'] = true;
+            }
+        }
+        $values['rows'] = $rows;
+        break;
+}
+```
 
 ### Базовый пример
 
@@ -53,6 +77,7 @@ switch ($modx->event->name) {
         ];
         break;
 }
+
 ```
 
 ### Пример: загрузка вариантов товаров (ms3Variants)
@@ -82,6 +107,7 @@ switch ($modx->event->name) {
         ];
         break;
 }
+
 ```
 
 ---
@@ -93,10 +119,27 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `row` | `array` (ссылка) | Данные товара, можно модифицировать |
+| --- | --- | --- |
+| `row` | `array` | Данные товара. Изменения применяются только через `returnedValues['row']` — PHP-ссылка на этом уровне не сохраняется (см. ниже) |
 | `productId` | `int` | ID товара |
 | `idx` | `int` | Порядковый номер товара в выборке |
+
+После события строка обновляется из `returnedValues['row']` (patch или list-замена, как в import).
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnProductPrepare':
+        $modx->event->returnedValues = [
+            'row' => ['badge' => 'sale'],
+        ];
+        break;
+}
+```
+
+::: warning Мутация `$scriptProperties['row']` по ссылке не работает
+Хотя `row` помечен как «ссылка» на стороне вызова (`EventGate::invokeRaw(..., ['row' => &$rows[$k], ...])`), PHP-ссылка не переживает merge-конвейер MODX-ядра (`modElement::getProperties()` → `modX::invokeEvent()`, оба используют `array_merge()`, который разыменовывает ссылки). Прямое изменение `$scriptProperties['row']['field'] = ...` внутри плагина **не доходит** до шаблона — нужно обязательно выставлять `$modx->event->returnedValues['row']`, как показано ниже.
+:::
 
 ### Базовый пример
 
@@ -111,14 +154,17 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
 
-        // Присоединяем данные к товару
+        // Присоединяем данные к товару — только через returnedValues,
+        // прямая мутация $scriptProperties['row'] по ссылке до шаблона не доходит
         if (isset($myData[$productId])) {
-            $row['my_field'] = $myData[$productId];
+            $modx->event->returnedValues = [
+                'row' => ['my_field' => $myData[$productId]],
+            ];
         }
         break;
 }
+
 ```
 
 ### Пример: присоединение вариантов (ms3Variants)
@@ -134,21 +180,28 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
 
+        // Присоединяем варианты — только через returnedValues (см. предупреждение выше)
         if (isset($variantsMap[$productId])) {
-            $row['variants'] = $variantsMap[$productId];
-            $row['variants_count'] = count($variantsMap[$productId]);
-            $row['variants_json'] = json_encode($variantsMap[$productId]);
-            $row['has_variants'] = true;
+            $row = [
+                'variants' => $variantsMap[$productId],
+                'variants_count' => count($variantsMap[$productId]),
+                'variants_json' => json_encode($variantsMap[$productId]),
+                'has_variants' => true,
+            ];
         } else {
-            $row['variants'] = [];
-            $row['variants_count'] = 0;
-            $row['variants_json'] = '[]';
-            $row['has_variants'] = false;
+            $row = [
+                'variants' => [],
+                'variants_count' => 0,
+                'variants_json' => '[]',
+                'has_variants' => false,
+            ];
         }
+
+        $modx->event->returnedValues = ['row' => $row];
         break;
 }
+
 ```
 
 ---
@@ -197,7 +250,7 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
+        $row = $scriptProperties['row']; // читаем, не мутируем — для записи нужен returnedValues
 
         $badges = [];
 
@@ -220,11 +273,16 @@ switch ($modx->event->name) {
             ];
         }
 
-        $row['badges'] = $badges;
-        $row['badges_json'] = json_encode($badges);
-        $row['has_badges'] = !empty($badges);
+        $modx->event->returnedValues = [
+            'row' => [
+                'badges' => $badges,
+                'badges_json' => json_encode($badges),
+                'has_badges' => !empty($badges),
+            ],
+        ];
         break;
 }
+
 ```
 
 ### Использование в шаблоне
@@ -235,6 +293,7 @@ switch ($modx->event->name) {
     'usePackages' => 'msBadges',
     'tpl' => 'tpl.msProducts.badges'
 ]}
+
 ```
 
 **Чанк tpl.msProducts.badges:**
@@ -254,6 +313,7 @@ switch ($modx->event->name) {
     <h3>{$pagetitle}</h3>
     <div class="price">{$price} руб.</div>
 </div>
+
 ```
 
 ---
@@ -272,6 +332,7 @@ $modx->eventData['myPackage'] = [
 // В msOnProductPrepare — читаем
 $dataMap = $modx->eventData['myPackage']['dataMap'] ?? null;
 $settings = $modx->eventData['myPackage']['settings'] ?? [];
+
 ```
 
 ::: warning Изоляция данных
@@ -290,6 +351,8 @@ $settings = $modx->eventData['myPackage']['settings'] ?? [];
 Это позволяет избежать проблемы N+1 запросов:
 
 ```
+
 ❌ Без bulk-загрузки: 1 запрос на список + N запросов на варианты = O(N+1)
 ✅ С bulk-загрузкой:  1 запрос на список + 1 запрос на все варианты = O(2)
+
 ```

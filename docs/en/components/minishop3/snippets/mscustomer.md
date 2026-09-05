@@ -24,7 +24,7 @@ Edit personal data: name, email, phone. Shows email and phone verification statu
 ```
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCustomer.profile` | Profile chunk |
 
 See also: [Customer profile](/en/components/minishop3/frontend/customer-profile)
@@ -42,7 +42,7 @@ List of saved delivery addresses with create, edit, delete, and set-default opti
 ```
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCustomer.addresses` | Address list chunk |
 | **addressTpl** | `tpl.msCustomer.address.row` | Address row chunk |
 | **formTpl** | `tpl.msCustomer.address.form` | Address form chunk |
@@ -63,7 +63,7 @@ List of all customer orders with status filter and pagination. Click an order fo
 ```
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **tpl** | `tpl.msCustomer.orders` | Order list chunk |
 | **orderTpl** | `tpl.msCustomer.order.row` | Order row chunk |
 | **detailTpl** | `tpl.msCustomer.order.details` | Order details chunk |
@@ -76,7 +76,7 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
 ## Common parameters
 
 | Parameter | Default | Description |
-|----------|--------------|----------|
+| --- | --- | --- |
 | **service** | `profile` | Service: `profile`, `addresses`, `orders` |
 | **return** | `tpl` | Format: `tpl` (HTML), `data` (array) |
 | **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Chunk for unauthorized users |
@@ -101,7 +101,7 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
 ### For service=orders
 
 | Parameter | Description |
-|----------|----------|
+| --- | --- |
 | `order_id` | Order ID for details view |
 | `status` | Filter by status ID |
 | `offset` | Pagination offset |
@@ -115,7 +115,7 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
 ### For service=addresses
 
 | Parameter | Description |
-|----------|----------|
+| --- | --- |
 | `mode` | Mode: `list`, `edit`, `create` |
 | `id` | Address ID to edit |
 
@@ -213,7 +213,7 @@ When GET parameter `order_id` is present:
         'status_name' => 'Paid',
         'status_color' => '008000',
         'createdon_formatted' => '15.01.2024 10:30',
-        'comment' => 'Call before delivery',
+        'order_comment' => 'Call before delivery',
         // ... other msOrder fields
     ],
     'products' => [
@@ -383,7 +383,7 @@ Chunk `tpl.msCustomer.base` contains:
 ### tpl.msCustomer.profile
 
 | Placeholder | Description |
-|-------------|----------|
+| --- | --- |
 | `{$customer}` | Customer data (array) |
 | `{$customer.id}` | Customer ID |
 | `{$customer.email}` | Email |
@@ -400,7 +400,7 @@ Chunk `tpl.msCustomer.base` contains:
 ### tpl.msCustomer.orders
 
 | Placeholder | Description |
-|-------------|----------|
+| --- | --- |
 | `{$orders}` | Rendered order rows (HTML) |
 | `{$orders_count}` | Orders on current page |
 | `{$total}` | Total order count |
@@ -411,7 +411,7 @@ Chunk `tpl.msCustomer.base` contains:
 ### tpl.msCustomer.order.row
 
 | Placeholder | Description |
-|-------------|----------|
+| --- | --- |
 | `{$id}` | Order ID |
 | `{$num}` | Order number (MS-00015) |
 | `{$createdon_formatted}` | Created date |
@@ -422,7 +422,7 @@ Chunk `tpl.msCustomer.base` contains:
 ### tpl.msCustomer.order.details
 
 | Placeholder | Description |
-|-------------|----------|
+| --- | --- |
 | `{$order}` | Order data |
 | `{$products}` | Order products array |
 | `{$delivery}` | Delivery method |
@@ -434,7 +434,7 @@ Chunk `tpl.msCustomer.base` contains:
 ## System settings
 
 | Setting | Description |
-|-----------|----------|
+| --- | --- |
 | `ms3_customer_login_page_id` | Login page ID |
 | `ms3_customer_register_page_id` | Registration page ID |
 
@@ -474,7 +474,7 @@ Profile and address forms are submitted via POST with `ms3_action`:
 Available actions:
 
 | Action | Description |
-|----------|----------|
+| --- | --- |
 | `customer/update-profile` | Update profile |
 | `customer/create-address` | Create address |
 | `customer/update-address` | Update address |
@@ -486,7 +486,7 @@ Available actions:
 Main classes for styling:
 
 | Class | Element |
-|-------|---------|
+| --- | --- |
 | `.ms3-customer-account` | Account container |
 | `.ms3-customer-profile` | Profile block |
 | `.ms3-customer-orders` | Orders block |

@@ -12,7 +12,7 @@ Fired **before** adding or changing an order field.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Field value |
@@ -65,7 +65,7 @@ Fired **after** adding a field to the order (after successful validation).
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Validated value |
@@ -98,7 +98,7 @@ Fired **before** validating a field value.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Value to validate |
@@ -130,7 +130,7 @@ Fired **after** successful field validation.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Validated value |
@@ -162,7 +162,7 @@ Fired on validation **error**. Lets you change the error message or clear the er
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key |
 | `value` | `mixed` | Invalid value |
@@ -214,7 +214,7 @@ Fired **before** removing a field from the order.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Field key to remove |
 
@@ -244,7 +244,7 @@ Fired **after** removing a field from the order.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `key` | `string` | Removed field key |
 
@@ -266,6 +266,49 @@ switch ($modx->event->name) {
 
 ---
 
+## msOnBeforeEmptyOrder
+
+Fired **before** clearing the order draft (`OrderDraftManager::clean`, API/controller `order/clean`). Abort with `$modx->event->output(...)`.
+
+### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `draft` | `msOrder` | Draft about to be cleared |
+
+### What stays after cleanup
+
+Core nulls address and order fields except: address `id`, `order_id`, `user_id`, `createdon`; order `id`, `user_id`, `token`, `status_id`, `createdon`.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeEmptyOrder':
+        /** @var \MiniShop3\Model\msOrder $draft */
+        $draft = $scriptProperties['draft'];
+
+        if ($draft->get('delivery_id') && /* your “already booked” flag */) {
+            $modx->event->output('Cannot clear draft: delivery already reserved');
+            return;
+        }
+        break;
+}
+```
+
+---
+
+## msOnEmptyOrder
+
+Fired **after** draft fields are cleared. Plugin `output` makes the caller treat the operation as failed.
+
+### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `draft` | `msOrder` | Draft with fields already nulled |
+
+---
+
 ## msOnSubmitOrder
 
 Fired on order **submission** (Submit button). Lets you validate data and add extra info.
@@ -273,7 +316,7 @@ Fired on order **submission** (Submit button). Lets you validate data and add ex
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
 | `data` | `array` | Extra form data |
 
@@ -326,14 +369,39 @@ switch ($modx->event->name) {
 
 ## msOnBeforeCreateOrder
 
-Fired **before** final order creation (assigning "New" status).
+Fired **before** final order creation (assigning "New" status). Three scenarios:
+
+1. Storefront submit — `OrderSubmitHandler` (params have **no** `origin` / `from_manager`; has `handler`, `customFields`)
+2. Manager finalization — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
+3. Programmatic creation — `ProgrammaticOrderService` → `finalize` (`origin=integration`, without `from_manager`, `service`)
 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
-| `msOrder` | `msOrder` | Order object |
+| --- | --- | --- |
+| `msOrder` | `msOrder` | Order object (always) |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront submit only |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Manager or integration |
+| `origin` | `string` | Finalize paths only: `manager` \| `integration` (`OrderOrigin` constants) |
+| `from_manager` | `bool` | Only when `origin=manager` |
+| `customFields` | `array` | Storefront only — fields from `properties._validated` |
+
+::: tip Distinguishing scenarios
+
+```php
+$origin = $scriptProperties['origin'] ?? null;
+$fromManager = !empty($scriptProperties['from_manager']);
+
+if ($fromManager) {
+    // order card in mgr
+} elseif ($origin === \MiniShop3\Services\Order\OrderOrigin::INTEGRATION) {
+    // ProgrammaticOrderService / cron
+} elseif (!empty($scriptProperties['handler'])) {
+    // storefront
+}
+```
+
+:::
 
 ### Aborting the operation
 
@@ -344,10 +412,14 @@ switch ($modx->event->name) {
         /** @var \MiniShop3\Model\msOrder $order */
         $order = $scriptProperties['msOrder'];
 
+        // Stock check (msProductData.stock field, available via msProduct::get)
         foreach ($order->getMany('Products') as $product) {
             $msProduct = $product->getOne('Product');
-            $remains = $msProduct->get('remains') ?? 0;
-            if ($product->get('count') > $remains) {
+            if (!$msProduct) {
+                continue;
+            }
+            $stock = (float) ($msProduct->get('stock') ?? 0);
+            if ($product->get('count') > $stock) {
                 $modx->event->output(sprintf(
                     'Product "%s" is not available in the requested quantity',
                     $msProduct->get('pagetitle')
@@ -378,14 +450,18 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrder
 
-Fired **after** successful order creation.
+Fired **after** successful order creation. Pair to `msOnBeforeCreateOrder` — same three scenarios and the same parameter set (storefront has no `origin`).
 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
-| `msOrder` | `msOrder` | Created order |
+| --- | --- | --- |
+| `msOrder` | `msOrder` | Created order (always) |
+| `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront only |
+| `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Manager or integration |
+| `origin` | `string` | Finalize paths only |
+| `from_manager` | `bool` | Manager only |
+| `customFields` | `array` | Storefront only |
 
 ### Example
 
@@ -406,8 +482,11 @@ switch ($modx->event->name) {
 
         foreach ($order->getMany('Products') as $product) {
             $msProduct = $product->getOne('Product');
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', max(0, $remains - $product->get('count')));
+            if (!$msProduct) {
+                continue;
+            }
+            $stock = (float) ($msProduct->get('stock') ?? 0);
+            $msProduct->set('stock', max(0, $stock - $product->get('count')));
             $msProduct->save();
         }
 
@@ -471,9 +550,10 @@ After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still ru
 ### Parameters
 
 | Parameter | Type | Description |
-|----------|-----|----------|
+| --- | --- | --- |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Order finalization service |
 | `msOrder` | `msOrder` | Order being finalized |
+| `origin` | `string` | `manager` |
 | `from_manager` | `bool` | Always `true` |
 
 ---
@@ -485,7 +565,8 @@ Fired **after** successful order finalization from the manager. Pair to `msOnBef
 ### Parameters
 
 | Parameter | Type | Description |
-|----------|-----|----------|
+| --- | --- | --- |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Order finalization service |
 | `msOrder` | `msOrder` | Finalized order (status already changed to «New») |
+| `origin` | `string` | `manager` |
 | `from_manager` | `bool` | Always `true` |

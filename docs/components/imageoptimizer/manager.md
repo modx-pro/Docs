@@ -4,9 +4,9 @@ title: Админка
 
 # Админка
 
-**Компоненты → ImageOptimizer** или `manager/?a=index&namespace=imageoptimizer`.
+**Пакеты → ImageOptimizer** или `manager/?a=index&namespace=imageoptimizer`.
 
-![Пункт меню «Компоненты → ImageOptimizer»](/components/imageoptimizer/screenshots/menu-imageoptimizer.png)
+![Пункт меню «Пакеты → ImageOptimizer»](/components/imageoptimizer/screenshots/menu-imageoptimizer.png)
 
 Интерфейс на Vue 3 + PrimeVue через [VueTools](/components/vuetools/). Без VueTools ≥ 1.1.2-pl страница покажет `vuetools_required`.
 
@@ -24,7 +24,7 @@ ImageOptimizer регистрирует три permission. По умолчани
 
 - Пункт меню скрыт без `imageoptimizer_view`
 - Форма **Настройки** read-only без `imageoptimizer_settings`
-- Кнопки **Обработать очередь**, **Retry**, **Rebuild**, **Clear**, **Reset stuck** только с `imageoptimizer_run`
+- Кнопки **Обработать очередь**, **Остановить**, **Retry**, **Rebuild**, **Clear**, **Reset stuck** только с `imageoptimizer_run`
 
 ### Роли
 
@@ -38,6 +38,16 @@ ImageOptimizer регистрирует три permission. По умолчани
 
 CLI и cron инициализируют MODX как `mgr` без сессии пользователя. ACL connector на cron не распространяется. Ограничьте доступ к shell и crontab на сервере.
 
+## Вкладки
+
+| Вкладка | Назначение |
+| --- | --- |
+| **Обзор** | Сводка очереди, прогресс, готовность сервера, **Обработать очередь** / **Остановить** |
+| **Очередь** | Таблица задач, фильтры, rebuild, retry, clear |
+| **Настройки** | Форма `imageoptimizer_*` по группам |
+| **Сервер** | PHP, энкодеры, cron-команда |
+| **Совместимость** | VueTools, Thumb3x, MS3 |
+
 ## Обзор
 
 Сводка состояния:
@@ -45,11 +55,10 @@ CLI и cron инициализируют MODX как `mgr` без сессии �
 - статистика очереди: `pending`, `processing`, `done`, `failed`, `skipped`
 - прогресс выполнения (% done)
 - готовность сервера (энкодеры WebP/AVIF)
-- кнопки **Обработать очередь** и **Сбросить зависшие** (при `imageoptimizer_run`)
+- кнопки **Обработать очередь**, **Остановить** и **Сбросить зависшие** (при `imageoptimizer_run`)
 
-Переключатель **Live** обновляет сводку каждые 5 секунд.
+Переключатель **Live** обновляет сводку каждые 5 секунд. Подсказка под переключателем: для фоновой обработки без открытой вкладки настройте cron (команда на вкладке **Server**).
 
-<!-- SCREENSHOT: Вкладка Обзор — статистика и кнопки очереди -->
 ![Вкладка «Обзор» — статистика очереди и обработка](/components/imageoptimizer/screenshots/overview.png)
 
 ## Очередь
@@ -69,36 +78,43 @@ CLI и cron инициализируют MODX как `mgr` без сессии �
 | Sizes | `original_size → converted_size` (байты) |
 | Error | Текст последней ошибки |
 
-### Фильтры
+### Фильтры и toolbar
 
-- по статусу
-- поиск по пути
-- пагинация (lazy load)
-- **Live** — автообновление таблицы
+- по статусу, поиск по пути, пагинация (lazy load)
+- **Live** — автообновление таблицы (только отображение, не worker)
+- **Обработать очередь**, **Пересобрать очередь**, **Очистить варианты**
 
-<!-- SCREENSHOT: Вкладка Очередь — таблица и фильтры -->
 ![Вкладка «Очередь» — таблица задач и фильтры](/components/imageoptimizer/screenshots/queue.png)
 
 ### Действия
 
-| Действие | Право | Описание |
-| --- | --- | --- |
-| **Обработать очередь** | `imageoptimizer_run` | Конвертация pending (до `imageoptimizer_cron_limit` за клик) |
-| **Пересобрать очередь** | `imageoptimizer_run` | Scan и enqueue |
-| **Очистить варианты** | `imageoptimizer_run` | Удаление файлов вариантов и строк очереди |
-| **Повторить выбранные** | `imageoptimizer_run` | `failed`/`skipped` → `pending` |
-| **Сбросить зависшие** | `imageoptimizer_run` | `processing` → `pending` |
+| Действие | Право | Connector | Описание |
+| --- | --- | --- | --- |
+| **Обработать очередь** | `imageoptimizer_run` | `queue/process` | Конвертация pending батчами до `pending = 0` |
+| **Остановить** | `imageoptimizer_run` | — | Прерывает цикл батчей (текущий HTTP-запрос дорабатывает) |
+| **Пересобрать очередь** | `imageoptimizer_run` | `queue/rebuild` | Scan и enqueue |
+| **Очистить варианты** | `imageoptimizer_run` | `queue/clear` | Удаление файлов вариантов, строк очереди и HTML-кэша |
+| **Повторить выбранные** | `imageoptimizer_run` | `queue/retry` | `failed`/`skipped` → `pending` |
+| **Сбросить зависшие** | `imageoptimizer_run` | `queue/reset_stuck` | `processing` → `pending` |
 
 #### Обработать очередь
 
-Кнопка запускает тот же worker, что cron и `cli/convert.php`:
+Кнопка на вкладках **Обзор** и **Очередь** запускает тот же worker, что cron и `cli/convert.php`. С 1.0.4:
 
 1. Сбрасывает зависшие `processing` (как cron)
-2. Берёт lock `core/cache/imageoptimizer/cron.lock` (параллельно с cron не стартует)
-3. Обрабатывает до `imageoptimizer_cron_limit` задач за один HTTP-запрос
-4. Показывает: «Обработано N, в очереди осталось M»
+2. Берёт lock `core/cache/imageoptimizer/cron.lock`. Параллельно с cron не стартует
+3. Отправляет батчи `queue/process` по **`imageoptimizer_cron_limit`** задач за HTTP-запрос
+4. Повторяет батчи, пока `pending` не станет 0 или вы не нажмёте **Остановить**
+5. При `409 worker_busy` (cron уже работает) — до 3 повторов с паузой 2 с
+6. Метка кнопки во время работы: «Обработка… осталось N»
 
-При большой очереди нажимайте несколько раз или настройте cron. При лимите времени PHP увеличьте `max_execution_time` для FPM.
+Итоговые уведомления:
+
+- очередь пуста — «Обработано N задач. Очередь пуста.»
+- **Остановить** — «Остановлено. Обработано N, в очереди M.»
+- лимит времени PHP — «Достигнут лимит времени PHP…» (остаток дожмёт cron или повторный клик)
+
+Для больших каталогов без открытой вкладки используйте cron на вкладке **Server**.
 
 #### Диалог «Пересобрать очередь»
 
@@ -111,7 +127,6 @@ CLI и cron инициализируют MODX как `mgr` без сессии �
 3. **Только просмотр** — сколько **файлов** попадёт в scan (не число строк очереди)
 4. **Запустить** — постановка задач
 
-<!-- SCREENSHOT: Диалог «Пересобрать очередь» -->
 ![Диалог «Пересобрать очередь» — source, path, dry-run](/components/imageoptimizer/screenshots/queue-rebuild.png)
 
 После rebuild нажмите **Обработать очередь** или дождитесь cron.
@@ -123,11 +138,10 @@ CLI и cron инициализируют MODX как `mgr` без сессии �
 
 ## Настройки
 
-Форма всех `imageoptimizer_*` с группировкой по разделам. Сохранение через connector → `modSystemSetting`.
+Форма всех `imageoptimizer_*` с группировкой: **Общие**, **Форматы**, **Фронтенд**, **Обработка**. Сохранение через connector → `modSystemSetting`.
 
 После смены breakpoints или formats для уже загруженных файлов нужен **rebuild** или повторная загрузка. См. [Системные настройки](settings).
 
-<!-- SCREENSHOT: Вкладка Настройки -->
 ![Вкладка «Настройки» — форма imageoptimizer_*](/components/imageoptimizer/screenshots/settings.png)
 
 ## Сервер
@@ -144,7 +158,6 @@ CLI и cron инициализируют MODX как `mgr` без сессии �
 
 На Valet/Herd CLI и FPM могут быть разными PHP: imagick в CLI ≠ imagick в FPM. См. [Решение проблем](troubleshooting#энкодеры-не-найдены-на-valet--herd-macos).
 
-<!-- SCREENSHOT: Вкладка Server — энкодеры и cron -->
 ![Вкладка «Server» — PHP, энкодеры, cron-команда](/components/imageoptimizer/screenshots/server.png)
 
 ### Минимальные требования
@@ -164,12 +177,11 @@ ImageOptimizer пишет в `assets/...` (варианты) и `core/cache/imag
 
 Вкладка **Compatibility**: статус VueTools, подсказки по Thumb3x / MS3. См. [Совместимость](compatibility).
 
-<!-- SCREENSHOT: Вкладка Compatibility -->
 ![Вкладка «Compatibility» — VueTools и связанные extras](/components/imageoptimizer/screenshots/compatibility.png)
 
 ## Ошибки UI
 
-API: `assets/components/imageoptimizer/connector.php`, POST, параметр `action`, cookie сессии mgr.
+API: `assets/components/imageoptimizer/connector.php`, POST, параметр `action`, cookie сессии mgr + `HTTP_MODAUTH` / заголовок `Modauth`.
 
 | HTTP | Причина |
 | --- | --- |

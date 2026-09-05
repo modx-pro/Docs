@@ -5,6 +5,10 @@ title: Vendors
 
 Vendors (brands) are managed via **Extras → MiniShop3 → Settings → Vendors**.
 
+::: warning msOnVendor* events
+CRUD in this section goes through Manager API (`VendorsController`), **without** calling processors `Processors/Settings/Vendor/*`. Plugins on `msOnBeforeVendorCreate` and similar fire only on legacy `runProcessor()`. Details: [Vendor events](/en/components/minishop3/development/events/vendor).
+:::
+
 ## Purpose
 
 The vendor directory lets you:
@@ -17,7 +21,7 @@ The vendor directory lets you:
 ## Vendor fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Vendor name |
 | `resource_id` | int | Resource ID — vendor page |
 | `country` | string | Vendor country |

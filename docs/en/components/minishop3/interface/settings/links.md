@@ -18,7 +18,7 @@ Links define relationships between products:
 ## Link type fields
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `name` | string | Link type name |
 | `type` | string | System key (unique) |
 | `description` | text | Link type description |
@@ -26,7 +26,7 @@ Links define relationships between products:
 ## Built-in link types
 
 | type | Name | Use |
-|------|------|-----|
+| --- | --- | --- |
 | `similar` | Similar products | Alternatives for comparison |
 | `related` | Related | Accessories, consumables |
 | `upsell` | Upsell | Premium versions |

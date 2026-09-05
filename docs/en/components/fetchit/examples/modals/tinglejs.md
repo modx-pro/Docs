@@ -1,32 +1,40 @@
+---
+title: tingle.js modals
+description: Open tingle.js after FetchIt success
+---
+
 # tingle.js modals
 
-This section covers an example with [tingle.js](https://tingle.robinparisi.com/) modals.
+Open a [tingle.js](https://tingle.robinparisi.com/) dialog after a successful submit.
 
-## Opening a modal
+## Via event
 
-To open a modal after a successful form submit, you can do it in two ways:
+```js
+const successModal = new tingle.modal()
 
-1. Using the [`fetchit:success`](/en/components/fetchit/frontend/events#fetchitsuccess) event.
+document.addEventListener('fetchit:success', ({ detail: { response: { message } } }) => {
+  successModal.setContent(message)
+  successModal.open()
+})
+```
 
-    ```js
-    const successModal = new tingle.modal();
+## Via FetchIt.Message
 
-    document.addEventListener('fetchit:success', ({ detail: { response: { message } } }) => {
-      successModal.setContent(message);
-      successModal.open();
-    });
-    ```
+If you do not need toasts, wire the same modal to `success`:
 
-2. Using [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage).
+```js
+const successModal = new tingle.modal()
 
-    ```js
-    const successModal = new tingle.modal();
+FetchIt.Message = {
+  success(message) {
+    successModal.setContent(message)
+    successModal.open()
+  },
+  error(message) {
+    // your error UI or toast
+    console.error(message)
+  },
+}
+```
 
-    FetchIt.Message = {
-      // ...
-      success (message) {
-        successModal.setContent(message);
-        successModal.open();
-      },
-    }
-    ```
+Escape content from `message` if the response may include HTML.

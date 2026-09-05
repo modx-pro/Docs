@@ -1,8 +1,13 @@
+---
+title: PNotify
+description: Уведомления PNotify для FetchIt через CDN и FetchIt.Message
+---
+
 # PNotify
 
-В данном примере мы подключим библиотеку [PNotify](https://sciactive.com/pnotify/).
+[PNotify](https://sciactive.com/pnotify/): гибкие уведомления на чистом JS.
 
-- Подключим скрипты и стили. Для простоты примера сделаем это через CDN.
+## Подключение через CDN
 
 ```html
 <!-- JavaScript -->
@@ -13,32 +18,32 @@
 <link href="https://cdn.jsdelivr.net/npm/@pnotify/core@5/dist/BrightTheme.min.css" rel="stylesheet">
 ```
 
-- И определим свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
+Задайте [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      PNotify.success({ title: message });
+      PNotify.success({ title: message })
     },
     error(message) {
-      PNotify.error({ title: message });
+      PNotify.error({ title: message })
     },
   }
-});
+})
 ```
 
-- Либо в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    PNotify.success({ title: message });
+    PNotify.success({ title: message })
   },
   error(message) {
-    PNotify.error({ title: message });
+    PNotify.error({ title: message })
   },
 }
 ```
 
-Готово! Вот такими простыми действиями мы подключили **PNotify**.
+Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

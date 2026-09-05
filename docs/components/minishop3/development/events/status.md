@@ -12,9 +12,9 @@ title: События статуса заказа
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `msOrder` | `msOrder` | Объект заказа |
-| `old_status` | `int` | ID текущего статуса |
+| `old_status` | `int` \| `null` | ID текущего статуса (`null`, если активная запись статуса не найдена) |
 | `status` | `int` | ID нового статуса |
 
 ### Прерывание операции
@@ -39,6 +39,24 @@ switch ($modx->event->name) {
         if ($hour < 9 || $hour > 18) {
             $modx->event->output('Смена статуса доступна с 9:00 до 18:00');
             return;
+        }
+        break;
+}
+```
+
+### Подмена целевого статуса
+
+Помимо отмены через `output()`, обработчик может **перенаправить** смену на другой статус — ядро повторно валидирует переход и применяет статус, возвращённый плагином, вместо запрошенного.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeChangeOrderStatus':
+        $newStatus = $scriptProperties['status'];
+
+        // Заказы без предоплаты уходят не в "оплачен", а в "требует подтверждения"
+        if ($newStatus === 3) { // 3 = "оплачен"
+            $modx->event->returnedValues = ['status' => 7]; // 7 = "требует подтверждения"
         }
         break;
 }
@@ -75,7 +93,7 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
+| --- | --- | --- |
 | `msOrder` | `msOrder` | Объект заказа |
 | `old_status` | `int` | ID предыдущего статуса |
 | `status` | `int` | ID нового статуса |
@@ -168,8 +186,8 @@ switch ($modx->event->name) {
             foreach ($order->getMany('Products') as $product) {
                 $msProduct = $product->getOne('Product');
                 if ($msProduct) {
-                    $remains = $msProduct->get('remains') ?? 0;
-                    $msProduct->set('remains', $remains + $product->get('count'));
+                    $stock = $msProduct->get('stock') ?? 0;
+                    $msProduct->set('stock', $stock + $product->get('count'));
                     $msProduct->save();
                 }
             }
@@ -278,8 +296,8 @@ switch ($modx->event->name) {
                 foreach ($order->getMany('Products') as $product) {
                     $msProduct = $product->getOne('Product');
                     if ($msProduct) {
-                        $remains = $msProduct->get('remains') ?? 0;
-                        $msProduct->set('remains', max(0, $remains - $product->get('count')));
+                        $stock = $msProduct->get('stock') ?? 0;
+                        $msProduct->set('stock', max(0, $stock - $product->get('count')));
                         $msProduct->save();
                     }
                 }
@@ -301,8 +319,8 @@ switch ($modx->event->name) {
                 foreach ($order->getMany('Products') as $product) {
                     $msProduct = $product->getOne('Product');
                     if ($msProduct) {
-                        $remains = $msProduct->get('remains') ?? 0;
-                        $msProduct->set('remains', $remains + $product->get('count'));
+                        $stock = $msProduct->get('stock') ?? 0;
+                        $msProduct->set('stock', $stock + $product->get('count'));
                         $msProduct->save();
                     }
                 }

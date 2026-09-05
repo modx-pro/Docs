@@ -36,7 +36,10 @@ title: Типы подборок
 Приоритет:
 
 1. Ручные связи `type=buy_together`.
-2. Если пусто — `msps_get_auto_recommendations` по категории товара/`category_id`.
+2. Если пусто — статистика co-purchase (`msps_get_auto_sales`: товары из тех же заказов MiniShop3, что и текущий).
+3. Если статистики нет — `msps_get_auto_recommendations` по категории товара или `category_id`.
+
+`exclude_ids` применяется и к ручной, и к авто-ветке.
 
 ::: code-group
 
@@ -183,7 +186,7 @@ title: Типы подборок
 Приоритет:
 
 1. Ручные связи `type=auto_sales`.
-2. Если пусто — SQL по заказам (`ms3_order_product` + `ms3_order`, статусы `2,4,5`).
+2. Если пусто — SQL co-purchase: товары из **тех же заказов**, где есть текущий товар (`ms3_order_product` self-join, статусы заказа `2,4,5`), сортировка по частоте.
 3. Если статистики нет — fallback на `similar`.
 
 ::: code-group
@@ -284,27 +287,34 @@ title: Типы подборок
 
 :::
 
-## 8. Синонимы
+## 8. `also-bought` и `cross-sell`
 
-Типы ниже допустимы, но обрабатываются как `auto`:
+Синонимы логики **buy_together** на уровне `msps_get_products_by_type`:
 
-- `also-bought`
-- `cross-sell`
-- `custom`
+1. Ручные связи с соответствующим `type` в таблице (если заданы).
+2. Co-purchase по заказам (`msps_get_auto_sales`).
+3. Авто по категории.
 
-## 9. Краткая матрица fallback
+В админке шаблоны создаются с типами из `MSPS_ADMIN_TEMPLATE_TYPES` (`buy_together`, `similar`, …). Для фронта допустимы алиасы `also-bought` и `cross-sell` в параметре `type` сниппета.
 
-| Тип | Если нет ручной подборки |
+## 9. `custom`
+
+Обрабатывается как `auto`: таблица `type=custom`, иначе авто по категории.
+
+## 10. Краткая матрица fallback
+
+| Тип | Если ручной подборки нет |
 | --- | --- |
-| `buy_together` | авто по категории |
+| `buy_together` | co-purchase → авто по категории |
+| `also-bought`, `cross-sell` | как `buy_together` |
 | `similar` | похожие по категории |
 | `popcorn` | авто по категории → fallback на общий авто |
 | `cart_suggestion` | авто по категории/`category_id` |
-| `auto_sales` | статистика заказов → fallback на `similar` |
+| `auto_sales` | co-purchase → fallback на `similar` |
 | `vip` | системная настройка `vip_set_{set_id}` |
-| `auto` | авто по категории/каталогу |
+| `auto`, `custom` | авто по категории/каталогу |
 
-## 10. Практические рекомендации
+## 11. Практические рекомендации
 
 1. Для больших каталогов начинайте с `auto`/`similar` и точечно добавляйте ручные связи только для важных SKU.
 2. Для акций и сезонных подборок удобнее использовать `vip` + системные настройки.

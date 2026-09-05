@@ -54,7 +54,7 @@ Output:
 1 572 864: Memory usage
 ```
 
-So you can use pdoTools in your own snippets just for logging. The built-in snippets write to the log too; the manager can read it with **&showLog=`1`**.
+You can load pdoTools in your own snippet just for logging. Built-in snippets in 3.x put timing after **&showLog**=`1` into a placeholder, e.g. `[[+pdoResourcesLog]]`. See [showLog](../general-properties#showlog).
 
 ## Caching
 

@@ -14,7 +14,7 @@ Overview of the MiniShop3 administrative interface in the MODX manager.
 ### Resource pages
 
 | Page | Description |
-|------|-------------|
+| --- | --- |
 | [Category](category) | Edit product category with product table |
 | [Product](product) | Edit product card |
 | [Gallery](gallery) | Product image management |
@@ -24,7 +24,7 @@ Overview of the MiniShop3 administrative interface in the MODX manager.
 **Menu:** Applications → MiniShop3 → Settings
 
 | Tab | Description |
-|-----|-------------|
+| --- | --- |
 | [Deliveries](settings/deliveries) | Delivery methods |
 | [Payments](settings/payments) | Payment methods |
 | [Vendors](settings/vendors) | Vendor directory |
@@ -38,7 +38,7 @@ See also: [Settings](settings)
 **Menu:** Applications → MiniShop3 → Utilities
 
 | Tab | Description |
-|-----|-------------|
+| --- | --- |
 | [Gallery](utilities/gallery) | Thumbnail regeneration |
 | [Import](utilities/import) | CSV product import |
 | [Product fields](utilities/product-fields) | Product card field configuration |
@@ -46,18 +46,20 @@ See also: [Settings](settings)
 | [Grid columns](utilities/grid-columns) | Table configuration |
 | [Model fields](utilities/model-fields) | Database model fields |
 
+Step-by-step field and grid scenarios: [Manager cookbooks](/en/components/minishop3/manager/).
+
 See also: [Utilities](utilities)
 
 ## Technologies
 
-The MiniShop3 admin interface is built on two technologies:
-
 | Technology | Use |
-|------------|-----|
-| **ExtJS 3.4** | Main panels (orders, customers, ExtJS forms) |
-| **Vue 3 + PrimeVue** | Modern components (category tables, settings, utilities) |
+| --- | --- |
+| **Vue 3 + PrimeVue** | Orders, customers, notifications, settings (`settings.min.js`), utilities, product tabs |
+| **ExtJS 3.4** | Category/product resource shell in the MODX tree (Document / Settings / Access); product grids and “Product” tabs are Vue |
 
-Vue components are integrated into ExtJS via mount points and require the [VueTools](/en/components/vuetools/) package.
+Settings deep links: `#tab-deliveries`, `#tab-payments`, `#tab-statuses`, `#tab-vendors`, `#tab-links`, `#tab-options`.
+
+Requires the [VueTools](/en/components/vuetools/) package.
 
 ## Extending the interface
 

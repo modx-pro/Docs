@@ -17,6 +17,18 @@ $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', ['id' => $productI
 
 Короткий путь `Gallery\Upload` с опцией `processors_path` не используется — передавайте полное имя класса.
 
+## Manager API vs процессоры
+
+| Слой | Когда использовать |
+| --- | --- |
+| `Controllers\Api\Manager\*` | Vue-интерфейс менеджера (заказы, клиенты, настройки) |
+| `Controllers\Api\Web\*` | Витрина, SPA, мобильные клиенты |
+| `MiniShop3\Processors\*` | `runProcessor()` из PHP, legacy connector, утилиты с `RunsMs3Processors` |
+
+Примеры групп процессоров: `Gallery/*`, `Settings/Vendor/*`, `Settings/Delivery/*`, `Api/Customer/*` (Web auth из HTTP делегирует сюда), `Utilities/Import/*`, `Category/Option/*` (legacy).
+
+Vue-CRUD настроек **не** вызывает `Processors/Settings/Vendor/*` — см. [События производителей](../events/vendor).
+
 ## Содержание
 
 - [API товара](product) — создание, обновление, опции, изображения, категории, связи, производители

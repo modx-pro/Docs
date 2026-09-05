@@ -16,7 +16,7 @@ Fired **before** import starts. Lets you validate parameters or cancel import.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `file` | `string` | Path to import file |
 | `params` | `array` (by reference) | Import parameters |
 
@@ -88,6 +88,21 @@ switch ($modx->event->name) {
 }
 ```
 
+### returnedValues for params
+
+Patch import options via `returnedValues['params']` (assoc → `array_replace`, list → full replace):
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeImport':
+        $modx->event->returnedValues = [
+            'params' => ['key' => 'article', 'delimiter' => ';'],
+        ];
+        break;
+}
+```
+
 ---
 
 ## msOnAfterImport
@@ -97,7 +112,7 @@ Fired **after** import completes. Lets you run post-processing or send notificat
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `stats` | `array` | Import statistics |
 
 **stats structure:**
@@ -151,13 +166,15 @@ Fired when processing **each row** of the CSV. Lets you modify data or skip the 
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `row` | `int` | Current row number |
 | `csv` | `array` | Raw CSV row data |
 | `data` | `array` (by reference) | Data for create/update |
 | `tvData` | `array` (by reference) | TV field data |
 | `optionData` | `array` (by reference) | Product option data |
 | `gallery` | `array` (by reference) | Gallery image paths |
+
+Core applies `EventGate::applyReturnedArray()` for `data`, `tvData`, `optionData`, `gallery`. A list in `returnedValues` **replaces** the channel; assoc patches fields.
 
 ### Skipping a row
 
@@ -182,6 +199,20 @@ switch ($modx->event->name) {
         if (in_array($data['parent'], $excludedParents)) {
             return 'cancel';
         }
+        break;
+}
+```
+
+### returnedValues instead of by-ref only
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnImportRow':
+        $modx->event->returnedValues = [
+            'data' => ['vendor_id' => 1, 'template' => 5],
+            'optionData' => ['color' => $scriptProperties['csv'][10] ?? ''],
+        ];
         break;
 }
 ```

@@ -1,8 +1,13 @@
+---
+title: SweetAlert2
+description: SweetAlert2 notifications for FetchIt via CDN and FetchIt.Message
+---
+
 # SweetAlert2
 
-[SweetAlert2](https://sweetalert2.github.io/) is one of the most popular notification libraries and has no dependencies. To use it:
+[SweetAlert2](https://sweetalert2.github.io/): modal alerts and toasts with no dependencies.
 
-- Include the library scripts and styles. For simplicity we use CDN:
+## CDN setup
 
 ```html
 <!-- JavaScript -->
@@ -11,7 +16,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.min.css">
 ```
 
-- Set the [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) property as follows:
+Set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
@@ -21,20 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
         icon: 'success',
         title: message,
         showConfirmButton: false,
-      });
+      })
     },
     error(message) {
       Swal.fire({
         icon: 'error',
         title: message,
         showConfirmButton: false,
-      });
+      })
     },
   }
-});
+})
 ```
 
-- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
+In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
 
 ```js
 FetchIt.Message = {
@@ -43,16 +48,16 @@ FetchIt.Message = {
       icon: 'success',
       title: message,
       showConfirmButton: false,
-    });
+    })
   },
   error(message) {
     Swal.fire({
       icon: 'error',
       title: message,
       showConfirmButton: false,
-    });
+    })
   },
 }
 ```
 
-You will now see **SweetAlert2** notifications.
+Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).

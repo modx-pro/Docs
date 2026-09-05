@@ -18,3 +18,15 @@ Section for developers extending MiniShop3 functionality.
 - [Product tabs integration](product-tabs-integration) — adding tabs to the product page
 - [Order tabs integration](order-tabs-integration) — adding tabs to the order page
 - [Backend API](backend-api/) — programmatic API for working with entities from PHP (products, orders, options, customers)
+
+## Manager API and processors
+
+As of **1.10+**, most manager screens use the **Manager REST API** (`Controllers\Api\Manager\*` via FastRoute). Legacy **processors** (`MiniShop3\Processors\*`) remain for:
+
+- legacy connector / `runProcessor()` from PHP;
+- utilities where the controller explicitly calls a processor (`RunsMs3Processors`: import, bulk gallery updates);
+- some settings where events are still tied to the processor lifecycle.
+
+Vue CRUD (vendors, deliveries, payments, etc.) does **not** call `Processors/Settings/Vendor/*` — plugins on `msOnVendorCreate` from the admin UI will not run. See [Vendor events](events/vendor).
+
+The headless storefront uses **Web API** (`/api/v1/*`), not processors.

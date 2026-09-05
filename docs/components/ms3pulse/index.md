@@ -3,6 +3,9 @@ title: ms3Pulse
 description: Дашборд продаж и аналитика для MiniShop3 — метрики, графики, экспорт и отчёты по расписанию
 logo: https://modstore.pro/assets/extras/ms3pulse/logo.jpg
 author: ibochkarev
+modstore: https://modstore.pro/packages/integration/ms3pulse
+dependencies: [miniShop3, vuetools]
+categories: minishop3
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
@@ -11,25 +14,27 @@ items: [
     text: 'Интерфейс',
     link: 'interface',
     items: [
-      { text: 'Дашборд', link: 'dashboard' },
-      { text: 'Конструктор графиков', link: 'builder' },
-      { text: 'Топы и флопы', link: 'topflops' },
-      { text: 'Настройки', link: 'settings' },
+      { text: 'Дашборд', link: 'interface/dashboard' },
+      { text: 'Конструктор графиков', link: 'interface/builder' },
+      { text: 'Топы и флопы', link: 'interface/topflops' },
+      { text: 'Настройки', link: 'interface/settings' },
     ],
   },
   {
     text: 'Метрики и графики',
     link: 'metrics-and-charts',
     items: [
-      { text: 'Метрики и показатели', link: 'metrics' },
-      { text: 'Фильтры и период', link: 'filters' },
-      { text: 'Типы графиков', link: 'chart-types' },
-      { text: 'Источники данных', link: 'data-sources' },
+      { text: 'Метрики и показатели', link: 'metrics-and-charts/metrics' },
+      { text: 'Фильтры и период', link: 'metrics-and-charts/filters' },
+      { text: 'Типы графиков', link: 'metrics-and-charts/chart-types' },
+      { text: 'Источники данных', link: 'metrics-and-charts/data-sources' },
     ],
   },
+  { text: 'Сценарии (flows)', link: 'interface/flows' },
   { text: 'Экспорт', link: 'export' },
   { text: 'Отчёты по расписанию', link: 'scheduled-reports' },
   { text: 'Права доступа', link: 'permissions' },
+  { text: 'FAQ', link: 'faq' },
   { text: 'Решение проблем', link: 'troubleshooting' },
 ]
 ---
@@ -39,7 +44,7 @@ items: [
 
 ## Возможности
 
-- **Метрики** — выручка, заказы, средний чек, маржа, товары; сравнение с предыдущим периодом
+- **Метрики** — выручка, заказы, средний чек, товары, доставка, оплата. Сравнение с предыдущим периодом
 - **Графики** — 15 типов (линия, столбцы, круговая, воронка, дерево и др.), 5 источников данных
 - **Конструктор графиков** — добавление своих графиков на вкладки «Динамика» и «Товары»
 - **Конструктор таблиц** — 6 типов таблиц (топ/флоп товаров, по статусам, доставке, оплате, выручка по дням)

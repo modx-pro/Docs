@@ -1,43 +1,48 @@
+---
+title: Toastify JS
+description: Toastify JS notifications for FetchIt via CDN and FetchIt.Message
+---
+
 # Toastify JS
 
-[Toastify JS](https://apvarun.github.io/toastify-js/) is a lightweight library for browser notifications. This example shows how to integrate it.
+[Toastify JS](https://apvarun.github.io/toastify-js/): lightweight toasts in plain JS.
 
-- First include the library script and styles; for example via CDN:
+## CDN setup
 
 ```html
 <!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.js" defer></script>
 
 <!-- CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js@1/src/toastify.min.css">
 ```
 
-- Then set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage) as follows:
+Set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
   FetchIt.Message = {
     success(message) {
-      Toastify({ text: message, className: 'success', gravity: 'top' }).showToast();
+      Toastify({ text: message }).showToast()
     },
     error(message) {
-      Toastify({ text: message, className: 'error', gravity: 'top' }).showToast();
+      Toastify({ text: message }).showToast()
     },
   }
-});
+})
 ```
 
-- Or in your own script file with the `defer` attribute; then you do not need the `DOMContentLoaded` handler and have direct access to the FetchIt class:
+In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
 
 ```js
 FetchIt.Message = {
   success(message) {
-    Toastify({ text: message, className: 'success', gravity: 'top' }).showToast();
+    Toastify({ text: message }).showToast()
   },
   error(message) {
-    Toastify({ text: message, className: 'error', gravity: 'top' }).showToast();
+    Toastify({ text: message }).showToast()
   },
 }
 ```
 
-Done! With these steps we integrate **Toastify JS**.
+Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).

@@ -50,6 +50,7 @@ When calling *pdoPage*, pass the parameters of the snippet being paginated. That
 | **&cacheTime**         | `3600`                              | Cache lifetime in seconds.                                                                         |
 | **&cache_user**        |                                     | Force visitor ID for cache, by default cache includes visitor ID      |
 | **&toPlaceholder**     |                                     | If set, the snippet stores all data in a placeholder with this name instead of outputting.              |
+| **&showLog**             | `0`                                 | Log in a placeholder (since 3.0), not HTML. Requires mgr session. [Details](../general-properties#showlog). |
 | **ajax**               |                                     | Enable ajax support.                                                                            |
 | **ajaxMode**           |                                     | Ajax pagination out of the box. 3 modes: "default", "button", "scroll".                              |
 | **ajaxElemWrapper**    | `#pdopage`                          | jQuery wrapper selector with results and pagination.                                                |
@@ -78,6 +79,25 @@ When calling *pdoPage*, pass the parameters of the snippet being paginated. That
 | **&tplPagePrevEmpty**  | `@INLINE <li class="disabled"><span>&laquo;</span></li>`                                                            |
 | **&tplPageNextEmpty**  | `@INLINE <li class="disabled"><span>&raquo;</span></li>`                                                            |
 | **ajaxTplMore**        | `@INLINE <button class="btn btn-default btn-more">[[%pdopage_more]]</button>`                                       |
+
+## Row placeholders {#row-placeholders}
+
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+Each pagination slot (`tplPage`, `tplPageActive`, `tplPageSkip`, …) gets these flags as `0` / `1`. Dedicated `tpl*` chunks still win when set.
+:::
+
+| Placeholder | Meaning |
+| --- | --- |
+| `isFirst` | Page number is 1 |
+| `isLast` | Page number equals total pages |
+| `isActive` | This is the current page (not a skip slot) |
+| `isSkip` | Ellipsis / skip slot in advanced mode |
+
+### Snippet properties in pagination templates
+
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+When rendering **&tplPageWrapper** (and related pagination chunks), pdoPage merges the snippet call properties into the placeholders. You can read your own `&limit`, `&element`, custom keys, etc. inside those templates.
+:::
 
 ## Support for Ajax
 

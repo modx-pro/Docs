@@ -16,7 +16,7 @@ Fired when getting product price. Lets you modify the price on the fly.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msProductData` | `msProductData` | Product data object |
 | `data` | `array` | Extra product data |
 | `price` | `float` | Current price |
@@ -103,7 +103,7 @@ Fired when getting product weight. Lets you modify weight on the fly.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msProductData` | `msProductData` | Product data object |
 | `data` | `array` | Extra product data |
 | `weight` | `float` | Current weight |
@@ -163,7 +163,7 @@ Fired when getting product fields. Lets you add or modify any fields.
 ### Parameters
 
 | Parameter | Type | Description |
-|-----------|------|-------------|
+| --- | --- | --- |
 | `msProductData` | `msProductData` | Product data object |
 | `data` | `array` | Product fields array |
 
@@ -183,11 +183,11 @@ switch ($modx->event->name) {
             );
         }
 
-        $remains = $data['remains'] ?? 0;
-        if ($remains <= 0) {
+        $stock = $data['stock'] ?? 0;
+        if ($stock <= 0) {
             $data['availability'] = 'out_of_stock';
             $data['availability_text'] = 'Out of stock';
-        } elseif ($remains < 5) {
+        } elseif ($stock < 5) {
             $data['availability'] = 'low_stock';
             $data['availability_text'] = 'Low stock';
         } else {

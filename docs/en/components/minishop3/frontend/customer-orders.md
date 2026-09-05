@@ -3,12 +3,14 @@ title: Order history
 ---
 # Order history
 
+<!-- ![Account: order history](/components/minishop3/screenshots/fe-customer-orders.png) -->
+
 Customer order history page. Shows all orders with status filtering and pagination, plus detailed information for a specific order.
 
 ## Page structure
 
 | Component | File | Purpose |
-|-----------|------|---------|
+| --- | --- | --- |
 | Base layout | `tpl.msCustomer.base` | Common wrapper with sidebar |
 | Sidebar | `tpl.msCustomer.sidebar` | Account navigation |
 | Order list | `tpl.msCustomer.orders` | Orders table |
@@ -27,7 +29,7 @@ Customer order history page. Shows all orders with status filtering and paginati
 ### Parameters
 
 | Parameter | Default | Description |
-|----------|---------|-------------|
+| --- | --- | --- |
 | **service** | | Service type (`orders`) |
 | **tpl** | `tpl.msCustomer.orders` | Order list chunk |
 | **orderTpl** | `tpl.msCustomer.order.row` | Order row chunk |
@@ -39,7 +41,7 @@ Customer order history page. Shows all orders with status filtering and paginati
 ## Operating modes
 
 | URL | Mode | Description |
-|-----|------|-------------|
+| --- | --- | --- |
 | `/cabinet/orders/` | List | Orders table |
 | `/cabinet/orders/?order=550e8400-...` | Details | Order information by UUID |
 | `/cabinet/orders/?status=2` | Filter | Orders with status 2 |
@@ -79,7 +81,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 ### System settings
 
 | Setting | Default | Description |
-|-----------|--------------|-------------|
+| --- | --- | --- |
 | `ms3_customer_cancel_allowed_statuses` | `2,3` | Status IDs that allow cancellation |
 | `ms3_status_canceled` | `0` | Status ID for a canceled order |
 
@@ -88,7 +90,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 ### In tpl.msCustomer.orders
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$orders}` | string | Rendered order rows (HTML) |
 | `{$orders_count}` | int | Orders on the page |
 | `{$total}` | int | Total orders |
@@ -100,7 +102,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 ### In tpl.msCustomer.order.row
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$id}` | int | Order ID |
 | `{$uuid}` | string | Order UUID (for URL) |
 | `{$num}` | string | Order number (MS-00015) |
@@ -266,14 +268,14 @@ The customer can cancel an order if its current status is in the allowed list (s
 ### In tpl.msCustomer.order.details
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$order}` | array | Order data |
 | `{$order.id}` | int | Order ID |
 | `{$order.num}` | string | Order number |
 | `{$order.status_name}` | string | Status name |
 | `{$order.status_color}` | string | Status color |
 | `{$order.createdon_formatted}` | string | Created date |
-| `{$order.comment}` | string | Order comment |
+| `{$order.order_comment}` | string | Order comment |
 | `{$order.can_cancel}` | bool | Whether the order can be canceled |
 | `{$products}` | array | Order products |
 | `{$delivery}` | array | Delivery method |
@@ -285,7 +287,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 ### Product in order ({$products})
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$product.product_id}` | Product ID |
 | `{$product.pagetitle}` | Name |
 | `{$product.article}` | SKU |
@@ -299,7 +301,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 ### Totals ({$total})
 
 | Field | Description |
-|------|----------|
+| --- | --- |
 | `{$total.cost}` | Total to pay |
 | `{$total.cart_cost}` | Products cost |
 | `{$total.delivery_cost}` | Delivery cost |
@@ -497,13 +499,13 @@ The customer can cancel an order if its current status is in the allowed list (s
     </div>
 
     {* Comment *}
-    {if $order.comment}
+    {if $order.order_comment}
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
             <h6 class="mb-0">{'ms3_frontend_comment' | lexicon}</h6>
         </div>
         <div class="card-body">
-            <p class="mb-0">{$order.comment}</p>
+            <p class="mb-0">{$order.order_comment}</p>
         </div>
     </div>
     {/if}
@@ -544,7 +546,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 ## System settings
 
 | Setting | Description |
-|---------|-------------|
+| --- | --- |
 | `ms3_customer_orders_page_id` | Orders page ID |
 | `ms3_customer_cancel_allowed_statuses` | Status IDs that allow cancellation (comma-separated) |
 | `ms3_status_canceled` | Canceled order status ID |
@@ -552,7 +554,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 ## CSS classes
 
 | Class | Element |
-|-------|---------|
+| --- | --- |
 | `.ms3-customer-orders` | Order list container |
 | `.ms3-customer-order-details` | Order details container |
 | `.ms3-order-table` | Orders table |

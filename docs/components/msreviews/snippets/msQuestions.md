@@ -28,7 +28,7 @@ description: Список опубликованных вопросов и от�
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
-- **pdoTools** — для пагинации через обёртку `pdoPage`
+- **pdoTools 3.0+** — чанки на Fenom. Для пагинации нужна обёртка `pdoPage`
 
 ## Параметры
 
@@ -42,6 +42,8 @@ description: Список опубликованных вопросов и от�
 | `tpl` | `tplQuestionItem` | Чанк строки вопроса |
 | `wrapper` | `tplQuestionsList` | Чанк-обёртка. Пусто — секция без заголовка из чанка |
 | `connectorUrl` | auto | URL connector |
+| `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
+| `registerJs` | `1` | Подключать JS витрины этим вызовом |
 
 ## Базовый вызов
 

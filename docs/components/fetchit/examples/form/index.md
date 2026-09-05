@@ -1,6 +1,11 @@
+---
+title: Разметка форм
+description: Примеры форм FetchIt под популярные CSS-фреймворки
+---
+
 # Разметка форм
 
-Ниже представлен список разметки форм популярных CSS фреймворков.
+Примеры под CSS-фреймворки. Во всех случаях нужны `[data-error]`, для AJAX ещё `[data-success]` и `[data-validation-error]` ([селекторы](/components/fetchit/selectors)).
 
 - [Bootstrap](/components/fetchit/examples/form/bootstrap)
 - [Bulma](/components/fetchit/examples/form/bulma)

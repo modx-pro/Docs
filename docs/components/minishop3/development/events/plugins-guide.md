@@ -5,6 +5,20 @@ title: Работа с плагинами
 
 Руководство по созданию плагинов для событий MiniShop3: получение параметров, возврат данных, прерывание операций, передача данных между плагинами.
 
+## Плагин компонента (MODX-события)
+
+Пакет ставит системный плагин `minishop3.php` на события ядра MODX (не путать с `msOn*`):
+
+| MODX-событие | Назначение |
+| --- | --- |
+| `OnMODXInit` | Регистрация сервисов, namespace |
+| `OnLoadWebDocument` | Подключение фронтенд-assets, `registerFrontend()` |
+| `OnDocFormSave` | Конвертация ресурса в товар через `ProductService::handleConversion()` |
+| `OnBeforeUserFormSave` / `OnUserSave` | Sync `msCustomer` ↔ `modUser` при `ms3_customer_sync_enabled` |
+| `OnUserRemove` | Очистка связанных данных покупателя |
+
+Для бизнес-логики корзины и заказов подписывайтесь на события из раздела [События](../events).
+
 ## Базовая структура плагина
 
 ```php
@@ -179,6 +193,82 @@ $values['count'] = 5;
 $values = $modx->event->returnedValues;
 $values['count'] = 5;
 ```
+
+## Utils::invokeEvent и EventGate
+
+Большинство событий корзины, заказа, стоимости и покупателя идут через `MiniShop3\Utils\Utils::invokeEvent()`, а не напрямую через `$modx->invokeEvent()`. Перед вызовом ядро очищает `returnedValues`, после — собирает ответ:
+
+| Поле ответа | Смысл |
+| --- | --- |
+| `success` | `true`, если ни один плагин не вернул непустой `output` |
+| `message` | Тексты из `output`, склеенные через `<br/>` |
+| `data` | Исходные `$scriptProperties`, поверх них shallow-merge ключей из `returnedValues` |
+| `values` | Сырой массив `returnedValues` всех плагинов |
+
+Shallow-merge: если два плагина вернули `returnedValues['count']`, победит значение плагина с **большим** priority (MODX вызывает плагины по возрастанию priority, каждый следующий перезаписывает ключ).
+
+### Два способа изменить данные
+
+1. **По ссылке** в `$scriptProperties` (legacy MS2, по-прежнему работает там, где параметры переданы с `&`).
+2. **`returnedValues`** — предпочтительный контракт с 1.11+.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeAddToCart':
+        $values = &$modx->event->returnedValues;
+        $values['count'] = min(99, (int) $scriptProperties['count']);
+        break;
+}
+```
+
+Вызывающий код читает `$response['data']['count']` после merge.
+
+### Прерывание: output, false и cancel
+
+| Сигнал | Где работает | Эффект |
+| --- | --- | --- |
+| `$modx->event->output('текст')` | `Utils::invokeEvent` | `success = false`, текст в `message` |
+| `return false` из плагина | import, notifications, часть raw-вызовов | `EventGate::isCancelled()` → операция отменена |
+| `return 'cancel'` | то же | строка попадает в ответ MODX, импорт считает строку **пропущенной** |
+
+```php
+<?php
+// Импорт: пропустить строку без ошибки
+case 'msOnImportRow':
+    if (empty($scriptProperties['data']['price'])) {
+        return 'cancel';
+    }
+    break;
+```
+
+::: warning After-события в Vue-менеджере заказов
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` вызываются **после** save/remove. Ошибка after-плагина пишется в лог, HTTP-ответ клиенту остаётся успешным. Вето — только в `msOnBefore*`. Подробнее: [События товаров в заказе](order-product).
+:::
+
+### Именованные каналы returnedValues (import, msProducts, notifications)
+
+Для части событий ядро применяет не общий merge, а канал по ключу через `EventGate::applyReturnedArray()`:
+
+| Событие | Ключ в `returnedValues` | Поведение |
+| --- | --- | --- |
+| `msOnBeforeImport` | `params` | list → замена; assoc → `array_replace` |
+| `msOnImportRow` | `data`, `tvData`, `optionData`, `gallery` | то же |
+| `msOnProductsLoad` | `rows` | то же |
+| `msOnProductPrepare` | `row` | то же |
+| `msOnBeforeSendNotification` | `recipient`, `channels` | то же; `channels` list заменяет список каналов целиком |
+
+```php
+<?php
+case 'msOnImportRow':
+    $modx->event->returnedValues = [
+        'data' => ['vendor_id' => 1],           // patch полей ресурса
+        // 'gallery' => ['/path/a.jpg', '/path/b.jpg'], // list — полная замена галереи
+    ];
+    break;
+```
+
+События import / msProducts / notifications вызываются через `EventGate::invokeRaw()`, не через `Utils::invokeEvent()`.
 
 ## Передача данных между плагинами
 

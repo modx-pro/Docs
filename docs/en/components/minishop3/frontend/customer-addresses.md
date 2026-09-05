@@ -3,12 +3,14 @@ title: Delivery addresses
 ---
 # Delivery addresses
 
+<!-- ![Account: addresses](/components/minishop3/screenshots/fe-customer-addresses.png) -->
+
 Page for managing customer delivery addresses. Lets customers create, edit, delete addresses, and set a default address.
 
 ## Page structure
 
 | Component | File | Purpose |
-|-----------|------|---------|
+| --- | --- | --- |
 | Base layout | `tpl.msCustomer.base` | Common wrapper with sidebar |
 | Sidebar | `tpl.msCustomer.sidebar` | Account navigation |
 | Address list | `tpl.msCustomer.addresses` | List container |
@@ -26,7 +28,7 @@ Page for managing customer delivery addresses. Lets customers create, edit, dele
 ### Parameters
 
 | Parameter | Default | Description |
-|----------|---------|-------------|
+| --- | --- | --- |
 | **service** | | Service type (`addresses`) |
 | **tpl** | `tpl.msCustomer.addresses` | Address list chunk |
 | **addressTpl** | `tpl.msCustomer.address.row` | Address row chunk |
@@ -39,7 +41,7 @@ Page for managing customer delivery addresses. Lets customers create, edit, dele
 The page works in three modes via the GET parameter `mode`:
 
 | URL | Mode | Description |
-|-----|------|-------------|
+| --- | --- | --- |
 | `/cabinet/addresses/` | `list` | Address list |
 | `/cabinet/addresses/?mode=create` | `create` | Create address |
 | `/cabinet/addresses/?mode=edit&id=5` | `edit` | Edit address #5 |
@@ -49,7 +51,7 @@ The page works in three modes via the GET parameter `mode`:
 ### In tpl.msCustomer.addresses (list)
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$addresses}` | string | Rendered address rows (HTML) |
 | `{$addresses_count}` | int | Number of addresses |
 | `{$customer}` | array | Customer data |
@@ -59,7 +61,7 @@ The page works in three modes via the GET parameter `mode`:
 ### In tpl.msCustomer.address.row
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$id}` | int | Address ID |
 | `{$name}` | string | Address name |
 | `{$display_name}` | string | Auto-generated name |
@@ -79,7 +81,7 @@ The page works in three modes via the GET parameter `mode`:
 ### In tpl.msCustomer.address.form
 
 | Placeholder | Type | Description |
-|-------------|------|-------------|
+| --- | --- | --- |
 | `{$mode}` | string | Mode: `create` or `edit` |
 | `{$address}` | array | Address data (when editing) |
 | `{$errors}` | array | Validation errors |
@@ -385,7 +387,7 @@ On delete and set-default, a confirmation dialog is shown (`ms3Confirm`). Confir
 ### Hooks
 
 | Hook | Description |
-|-----|----------|
+| --- | --- |
 | `beforeSetDefaultAddress` | Before setting default address |
 | `afterSetDefaultAddress` | After setting default address |
 | `beforeDeleteAddress` | Before deleting address |
@@ -394,14 +396,14 @@ On delete and set-default, a confirmation dialog is shown (`ms3Confirm`). Confir
 ## Form handling
 
 | Action | ms3_action | Description |
-|----------|------------|----------|
+| --- | --- | --- |
 | Create | `customer/address-create` | Create new address |
 | Edit | `customer/address-update` | Update address |
 
 ## Address fields
 
 | Field | Required | Description |
-|------|--------------|----------|
+| --- | --- | --- |
 | `name` | No | Address name (Home, Office) |
 | `index` | No | Postal code |
 | `country` | No | Country |
@@ -418,13 +420,13 @@ On delete and set-default, a confirmation dialog is shown (`ms3Confirm`). Confir
 ## System settings
 
 | Setting | Description |
-|---------|-------------|
+| --- | --- |
 | `ms3_customer_addresses_page_id` | Addresses page ID |
 
 ## CSS classes
 
 | Class | Element |
-|-------|---------|
+| --- | --- |
 | `.ms3-customer-addresses` | List container |
 | `.ms3-customer-address-form` | Form container |
 | `.ms3-address-form` | Address form |

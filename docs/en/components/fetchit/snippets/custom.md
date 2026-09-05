@@ -1,32 +1,47 @@
-# Custom snippet
+# Custom snippet handling
 
-You can use your own snippet instead of **FormIt** to do whatever you need (e.g. create pages). The only requirement is that it must return a JSON object with these keys:
+Instead of FormIt you can set your own snippet in the `snippet` parameter. It receives the form fields and must return JSON with these keys:
 
-| Property | Description                                                                 |
-|----------|-----------------------------------------------------------------------------|
-| status   | 1 or 0 (success or error)                                                   |
-| message  | Message about the snippet result; shown when status = 0                      |
-| data     | Object mapping field names to error messages for invalid fields              |
+| Key | Type | Description |
+| --- | --- | --- |
+| `success` | `bool` | Success or error |
+| `message` | `string` | Text for notifications and `[data-success]` / `[data-validation-error]` blocks |
+| `data` | `object` | On error: field name → error text (for `[data-error]` and invalid classes) |
 
-For convenience, the snippet receives a `$FetchIt` parameter with the component class so you can call its `error` and `success` methods when returning a response.
-
-Minimal custom snippet example:
+From **1.1.3**, the FetchIt object is **not** passed in `$scriptProperties` (PDO session serialization). Get the service yourself:
 
 ```php
 <?php
-if (empty($_POST['name'])) {
-  return $FetchIt->error('Form errors', [
-    'name' => 'Please enter your name'
-  ]);
+/** @var modX $modx */
+$FetchIt = $modx->getService(
+    'fetchit',
+    'FetchIt',
+    MODX_CORE_PATH . 'components/fetchit/model/'
+);
+
+if (!$FetchIt) {
+    return json_encode([
+        'success' => false,
+        'message' => 'FetchIt is not available',
+        'data' => [],
+    ], JSON_UNESCAPED_UNICODE);
 }
-else {
-  return $FetchIt->success('Validation passed');
+
+$name = trim((string) ($_POST['name'] ?? ''));
+if ($name === '') {
+    return $FetchIt->error('Form errors', [
+        'name' => 'Please enter your name',
+    ]);
 }
+
+return $FetchIt->success('Validation passed');
 ```
 
-Call it like this:
+`error()` / `success()` build the same JSON. You can return an array by hand with the same keys.
 
-:::code-group
+## Call
+
+::: code-group
 
 ```modx
 [[!FetchIt?
@@ -36,7 +51,7 @@ Call it like this:
 ```
 
 ```fenom
-{'!FetchIt' | snippet: [
+{'!FetchIt' | snippet : [
   'snippet' => 'MySnippet',
   'form' => 'tpl.FetchIt.example',
 ]}
@@ -44,4 +59,10 @@ Call it like this:
 
 :::
 
-This snippet only validates the name field and returns the result.
+## What the snippet receives
+
+`$scriptProperties` gets the stored FetchIt call parameters plus a `fields` key: an associative array of POST fields. The same values are in `$_POST`. Files are in `$_FILES`.
+
+Do not put PHP objects in call parameters: they are dropped before writing to session or cache.
+
+The form page context arrives as `pageId` in FormData.

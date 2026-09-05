@@ -47,6 +47,7 @@ To use mxEditorJs in a TV:
 
 ## Next steps
 
+- [Editor guide](user-guide) — blocks, gallery, embed, shortcuts
 - [System settings](settings) — tool profiles, media, CSS presets
 - [Integration](integration) — HTML → Editor.js migration, frontend output
-- [API](api) — Connector, PHP classes, data formats
+- [FAQ](faq) — common questions

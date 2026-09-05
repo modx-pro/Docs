@@ -22,6 +22,7 @@ MiniShop3 использует модульную архитектуру JavaScr
 ## Структура модулей
 
 ```
+
 assets/components/minishop3/js/web/
 ├── core/                    # Ядро системы
 │   ├── ApiClient.js         # HTTP-клиент
@@ -45,6 +46,7 @@ assets/components/minishop3/js/web/
 │   └── izitoast/            # Уведомления iziToast
 ├── ms3.js                   # Главный модуль
 └── order-addresses.js       # Выбор адреса в заказе
+
 ```
 
 ## Порядок подключения
@@ -74,12 +76,13 @@ assets/components/minishop3/js/web/
     "[[+jsUrl]]web/ui/ProductCardUI.js",
     "[[+jsUrl]]web/ms3.js"
 ]
+
 ```
 
 **Поддерживаемые плейсхолдеры:**
 
 | Плейсхолдер | Значение |
-|-------------|----------|
+| --- | --- |
 | `[[+cssUrl]]` | `assets/components/minishop3/css/` |
 | `[[+jsUrl]]` | `assets/components/minishop3/js/` |
 
@@ -103,6 +106,7 @@ assets/components/minishop3/js/web/
     "[[+jsUrl]]web/core/ApiClient.js",
     ...
 ]
+
 ```
 
 ## Селекторы
@@ -134,6 +138,7 @@ assets/components/minishop3/js/web/
   authRegisterForm: '#ms3-register-form',
   authForgotPassword: '#forgot-password-link'
 }
+
 ```
 
 ### Переопределение селекторов
@@ -147,6 +152,7 @@ window.ms3Config = {
     form: '.my-form-class'
   }
 }
+
 ```
 
 ### Использование в UI-классах
@@ -157,6 +163,7 @@ window.ms3Config = {
 // Внутри UI-класса
 const forms = document.querySelectorAll(this.selectors.form)
 const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
+
 ```
 
 ## Главный объект ms3
@@ -229,6 +236,7 @@ const ms3 = {
     document.dispatchEvent(new CustomEvent('ms3:ready'))
   }
 }
+
 ```
 
 ### Конфигурация ms3Config
@@ -253,6 +261,7 @@ window.ms3Config = {
     ]
   }
 }
+
 ```
 
 ### Событие готовности
@@ -262,6 +271,7 @@ document.addEventListener('ms3:ready', () => {
   // ms3 полностью инициализирован
   console.log('ms3 ready', ms3.config)
 })
+
 ```
 
 ### Публичный refresh API (с 1.11.0)
@@ -283,6 +293,7 @@ document.addEventListener('mfilter:contentLoaded', () => {
 document.addEventListener('mse2_load.response', () => {
   window.ms3?.refresh?.()
 })
+
 ```
 
 Эквивалентный вариант через DOM-событие — `document.dispatchEvent(new CustomEvent('ms3:refresh'))`. Listener зарегистрирован один раз на module scope, повторные `init()` его не дублируют.
@@ -326,6 +337,7 @@ class TokenManager {
     return data.success ? data.data?.token : null
   }
 }
+
 ```
 
 ### ApiClient
@@ -366,6 +378,7 @@ class ApiClient {
   patch(route, data) { return this.request('PATCH', route, data) }
   delete(route) { return this.request('DELETE', route) }
 }
+
 ```
 
 ### CartAPI
@@ -406,6 +419,7 @@ class CartAPI {
     })
   }
 }
+
 ```
 
 **Примеры:**
@@ -419,6 +433,7 @@ await ms3.cartAPI.change('abc123', 5)
 
 // Удалить товар
 await ms3.cartAPI.remove('abc123')
+
 ```
 
 ### OrderAPI
@@ -451,6 +466,7 @@ class OrderAPI {
     return this.api.get('/api/v1/order/get')
   }
 }
+
 ```
 
 ### CustomerAPI
@@ -513,6 +529,7 @@ class CustomerAPI {
     return this.api.post(`/api/v1/customer/orders/${orderId}/cancel`)
   }
 }
+
 ```
 
 ## UI модули
@@ -610,6 +627,7 @@ class CartUI {
     }))
   }
 }
+
 ```
 
 ::: tip Очистка корзины из внешнего скрипта
@@ -621,6 +639,7 @@ await ms3.cartAPI.clean()
 
 // ✅ Правильно — полный цикл: API + рендеринг + событие
 await ms3.cartUI.handleClean()
+
 ```
 
 **Пример: очистка корзины после успешной отправки формы (FetchIt):**
@@ -638,6 +657,7 @@ document.addEventListener('fetchit:success', async (e) => {
     }
 })
 ```
+
 :::
 
 ### OrderUI
@@ -685,6 +705,7 @@ class OrderUI {
     return response
   }
 }
+
 ```
 
 ### CustomerUI
@@ -780,6 +801,7 @@ class CustomerUI {
     })
   }
 }
+
 ```
 
 ### AuthUI
@@ -848,6 +870,7 @@ class AuthUI {
     }
   }
 }
+
 ```
 
 **Чанк авторизации:** `tpl.msCustomer.unauthorized` — содержит формы входа и регистрации с табами (Bootstrap). Инлайн-скрипт экспортирует лексиконы в `window.ms3Lexicon`:
@@ -859,6 +882,7 @@ window.ms3Lexicon.ms3_customer_err_login_required = '{'ms3_customer_err_login_re
 window.ms3Lexicon.ms3_customer_login_success = '{'ms3_customer_login_success' | lexicon}';
 {* ... и другие ключи *}
 </script>
+
 ```
 
 ## Диалог подтверждения
@@ -870,12 +894,13 @@ Promise-based диалог подтверждения с Bootstrap Modal и fall
 ```javascript
 // Глобальная функция
 async function ms3Confirm(message, options = {}) → Promise<boolean>
+
 ```
 
 **Параметры options:**
 
 | Параметр | По умолчанию | Описание |
-|----------|--------------|----------|
+| --- | --- | --- |
 | `confirmText` | «Подтвердить» / «Confirm» | Текст кнопки подтверждения |
 | `cancelText` | «Отмена» / «Cancel» | Текст кнопки отмены |
 | `confirmClass` | `primary` | CSS-класс кнопки (primary, danger) |
@@ -891,6 +916,7 @@ if (!ok) return
 const ok = await ms3Confirm('Удалить адрес?', {
   confirmClass: 'danger'
 })
+
 ```
 
 ### Автоматическая привязка
@@ -905,6 +931,7 @@ i18n кнопок определяется по атрибуту `<html lang>`:
 ```javascript
 window.ms3Lexicon.ms3_confirm_ok = 'Да, удалить'
 window.ms3Lexicon.ms3_confirm_cancel = 'Нет'
+
 ```
 
 ### Декларативная привязка
@@ -917,6 +944,7 @@ window.ms3Lexicon.ms3_confirm_cancel = 'Нет'
         class="delete-address">
     Удалить
 </button>
+
 ```
 
 ## Система хуков
@@ -948,6 +976,7 @@ const ms3Hooks = {
     return data
   }
 }
+
 ```
 
 ### Доступные хуки
@@ -955,7 +984,7 @@ const ms3Hooks = {
 #### Корзина
 
 | Хук | Описание |
-|-----|----------|
+| --- | --- |
 | `beforeAddCart` | Перед добавлением товара |
 | `afterAddCart` | После добавления товара |
 | `beforeChangeCart` | Перед изменением количества |
@@ -968,7 +997,7 @@ const ms3Hooks = {
 #### Заказ
 
 | Хук | Описание |
-|-----|----------|
+| --- | --- |
 | `beforeAddOrder` | Перед сохранением поля |
 | `afterAddOrder` | После сохранения поля |
 | `beforeSubmitOrder` | Перед оформлением заказа |
@@ -979,7 +1008,7 @@ const ms3Hooks = {
 #### Покупатель
 
 | Хук | Описание |
-|-----|----------|
+| --- | --- |
 | `beforeAddCustomer` | Перед сохранением данных |
 | `afterAddCustomer` | После сохранения данных |
 | `beforeUpdateProfile` | Перед обновлением профиля |
@@ -1000,7 +1029,7 @@ const ms3Hooks = {
 #### Авторизация
 
 | Хук | Описание |
-|-----|----------|
+| --- | --- |
 | `beforeLogin` | Перед авторизацией |
 | `afterLogin` | После авторизации |
 | `beforeRegister` | Перед регистрацией |
@@ -1024,6 +1053,7 @@ ms3Hooks.addHook('beforeAddCart', async (data) => {
     return
   }
 })
+
 ```
 
 **Отслеживание добавления товара:**
@@ -1040,6 +1070,7 @@ ms3Hooks.addHook('afterAddCart', async (data) => {
 
   ym(COUNTER_ID, 'reachGoal', 'add_to_cart')
 })
+
 ```
 
 **Дополнительная логика после отмены заказа:**
@@ -1050,6 +1081,7 @@ ms3Hooks.addHook('afterCancelOrder', async (data) => {
     ym(COUNTER_ID, 'reachGoal', 'order_cancelled')
   }
 })
+
 ```
 
 **Дополнительная логика после регистрации:**
@@ -1060,6 +1092,7 @@ ms3Hooks.addHook('afterRegister', async (data) => {
     gtag('event', 'sign_up', { method: 'email' })
   }
 })
+
 ```
 
 ## Система уведомлений
@@ -1087,6 +1120,7 @@ const ms3Message = {
   info(message) { this.show('info', message) },
   warning(message) { this.show('warning', message) }
 }
+
 ```
 
 ### Кастомизация уведомлений
@@ -1107,6 +1141,7 @@ window.ms3Message = {
   info(message) { this.show('info', message) },
   warning(message) { this.show('warning', message) }
 }
+
 ```
 
 ## События DOM
@@ -1128,6 +1163,7 @@ document.addEventListener('ms3:cart:updated', (e) => {
     counter.textContent = e.detail.total_count || 0
   }
 })
+
 ```
 
 ## Формы и обработчики
@@ -1148,6 +1184,7 @@ MiniShop3 автоматически обрабатывает формы с кл
 <form class="ms3_form" data-ms3-entity="order" data-ms3-method="submit">
   <button type="submit">Оформить заказ</button>
 </form>
+
 ```
 
 ## Расширение и кастомизация
@@ -1168,6 +1205,7 @@ document.addEventListener('ms3:ready', () => {
   ms3.cartAPI = new CustomCartAPI(ms3.apiClient)
   ms3.cartUI.cart = ms3.cartAPI
 })
+
 ```
 
 ### Замена UI модуля
@@ -1191,6 +1229,7 @@ class CustomCartUI extends CartUI {
     setTimeout(() => cart?.classList.remove('bounce'), 500)
   }
 }
+
 ```
 
 ### Добавление нового модуля
@@ -1217,6 +1256,7 @@ class FavoritesAPI {
 document.addEventListener('ms3:ready', () => {
   ms3.favoritesAPI = new FavoritesAPI(ms3.apiClient)
 })
+
 ```
 
 ## Лексиконы на фронтенде
@@ -1232,13 +1272,14 @@ window.ms3Lexicon = {
   'ms3_confirm_cancel': 'Отмена',
   // ...
 }
+
 ```
 
 ### Дополнительные модули
 
 ### order-addresses.js
 
-Выбор сохранённого адреса при оформлении заказа:
+Выбор сохранённого адреса при оформлении заказа. Модуль **не** входит в JSON `ms3_frontend_assets`: его подключает сниппет `msOrder` через `regClientStartupScript`.
 
 ```html
 <select id="saved_address_id">
@@ -1247,9 +1288,18 @@ window.ms3Lexicon = {
     Москва, Тверская
   </option>
 </select>
+
 ```
 
-Модуль автоматически заполняет поля формы при выборе адреса.
+Модуль автоматически заполняет поля формы при выборе адреса. Подробнее: [Оформление заказа](/components/minishop3/frontend/order).
+
+### Встроенный хук afterSendRequest
+
+В `hooks.js` зарегистрирован `afterSendRequest`: после любого API-запроса через ~100 ms вызывается `cartUI.init()` для перевешивания обработчиков на обновлённый DOM. Учитывайте это при кастомных partial-обновлениях корзины.
+
+### change-option
+
+Смена опций позиции: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Хуки: `beforeChangeOptionCart` / `afterChangeOptionCart` (если подключены в вашей сборке).
 
 ## Совместимость
 

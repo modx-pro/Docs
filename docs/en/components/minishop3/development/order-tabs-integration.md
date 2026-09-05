@@ -35,7 +35,7 @@ Registers a new tab.
 **Parameters:**
 
 | Parameter | Type | Required | Description |
-|----------|-----|--------------|----------|
+| --- | --- | --- | --- |
 | `key` | string | Yes | Unique tab identifier |
 | `title` | string | Yes | Tab title |
 | `type` | string | No | `'vue'` (default) or `'extjs'` |
@@ -55,7 +55,7 @@ Registers a new tab.
 Each plugin tab automatically receives:
 
 | Parameter | Type | Description |
-|----------|-----|----------|
+| --- | --- | --- |
 | `orderId` | number | Order ID (0 on create) |
 | `order` | object | Order data |
 | `config` | object | ms3 configuration (`ms3.config`) |
@@ -309,7 +309,7 @@ The ExtJS tab is created **once** on first switch. Values `order`, `orderId`, `c
 Built-in tabs have fixed positions:
 
 | Tab | Position | Hidden on create |
-|---------|---------|---------------------|
+| --- | --- | --- |
 | Info | 0 | No |
 | Products | 1 | Yes |
 | Address | 2 | No |

@@ -11,20 +11,40 @@ description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ош�
 
 | Событие | Когда |
 | --- | --- |
-| `msrOnBeforeReviewCreate` | До создания отзыва |
+| `msrOnBeforeReviewCreate` | До создания отзыва (витрина или `mgr/review/create`) |
 | `msrOnReviewCreate` | После создания |
 | `msrOnBeforeReviewPublish` | До публикации |
 | `msrOnReviewPublish` | После публикации |
 | `msrOnReviewReject` | При отклонении |
-| `msrOnBeforeReviewUpdate` / `msrOnReviewUpdate` | Самоправка |
-| `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | Самоудаление |
+| `msrOnBeforeReviewUpdate` / `msrOnReviewUpdate` | Правка на витрине (`review/update_own`) или в CMP (`mgr/review/update`) |
+| `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | Самоудаление на витрине |
 | `msrOnReviewVote` | После «полезно» |
 | `msrOnQuestionCreate` | Создание вопроса |
 | `msrOnAnswerCreate` | Ответ из CMP |
 | `msrOnReviewRequestSend` | Отправка письма из очереди |
+| **`msrOnModeratorNotify`** | Перед письмом модератору о новом отзыве/вопросе с витрины |
 | **`msrOnCaptchaVerify`** | Перед `review/create` и `question/create` |
 
-Верните **`false`** из плагина на guard-событиях, чтобы заблокировать операцию (`msr_err_event_block`).
+Верните **`false`** из плагина на guard-событиях, чтобы заблокировать операцию (`msr_err_event_block` или отмена письма модератору).
+
+### msrOnModeratorNotify
+
+Вызывается, когда уведомления включены, статус подходит под `msreviews_moderator_notify_on` и список адресатов не пуст. Параметры: `type` (`review` / `question`), `id`, `product_id`, `status`, `recipients` (list). `return false` отменяет отправку.
+
+Событие срабатывает **до** рендера чанка письма. Если плагин не отменил отправку, а кастомный чанк темы/тела вернул пустую строку, письмо всё равно не уйдёт (см. [Настройки](settings#уведомление-модератора)).
+
+```php
+<?php
+/** @var modX $modx */
+/** @var array $scriptProperties */
+switch ($modx->event->name) {
+    case 'msrOnModeratorNotify':
+        // Своё уведомление (Telegram и т.п.), штатное письмо отменить:
+        return false;
+}
+```
+
+Настройки: [Уведомление модератора](settings#уведомление-модератора).
 
 ## Капча (msrOnCaptchaVerify)
 

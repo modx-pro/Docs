@@ -5,6 +5,8 @@ title: Корзина
 
 Корзина покупок — ключевой элемент интернет-магазина. MiniShop3 предоставляет гибкую систему для отображения корзины в любом месте сайта.
 
+<!-- ![Корзина на витрине](/components/minishop3/screenshots/fe-cart.png) -->
+
 [![](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498cs.jpg)](https://file.modx.pro/files/3/f/b/3fb27bc4fb74bcbbfad003ba2165498c.png)
 
 ## Множественные корзины на странице
@@ -46,7 +48,7 @@ MiniShop3 позволяет размещать **неограниченное �
 Работа корзины на фронтенде обеспечивается набором JavaScript-модулей:
 
 | Файл | Назначение |
-|------|------------|
+| --- | --- |
 | `js/web/ms3.js` | Главный объект `ms3`, инициализация всех модулей |
 | `js/web/core/CartAPI.js` | API-клиент для операций с корзиной (add, remove, change, clean) |
 | `js/web/ui/CartUI.js` | UI-обработчики: кнопки +/-, удаление, автообновление HTML |
@@ -84,6 +86,10 @@ document.addEventListener('ms3:cart:updated', function(e) {
 });
 ```
 
+### Смена опций в корзине
+
+Если у позиции есть опции (размер, цвет), смена комбинации идёт через `POST /api/v1/cart/change-option` (тело: `key`, `options`). На сервере `CartMutationHandler` пересчитывает ключ позиции и вызывает события `msOnBeforeChangeOptionInCart` / `msOnChangeOptionInCart`. В JS: `ms3.cartAPI.changeOption(key, options)` (см. [Frontend JavaScript](/components/minishop3/development/frontend-js)).
+
 ## Состав корзины и доступные поля
 
 ### Базовые поля товара в корзине
@@ -91,7 +97,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 Каждый товар в корзине содержит:
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `product_key` | Уникальный ключ позиции в корзине |
 | `product_id` | ID товара (ресурса MODX) |
 | `count` | Количество |
@@ -108,7 +114,7 @@ document.addEventListener('ms3:cart:updated', function(e) {
 ### Итоговые значения
 
 | Поле | Описание |
-|------|----------|
+| --- | --- |
 | `total.count` | Общее количество товаров |
 | `total.positions` | Количество позиций (уникальных товаров) |
 | `total.cost` | Общая стоимость |

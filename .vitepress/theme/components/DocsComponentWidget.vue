@@ -30,14 +30,26 @@ const links = computed<DefaultTheme.SidebarItem[]>(() => {
 
   return links.value = ['modstore', 'modx', 'repository']
     .reduce((filtered, key) => {
-      if (Object.prototype.hasOwnProperty.call(component.value, key)) {
-        const link = component.value[key]
-        if (typeof link !== 'string' || !link) {
-          return filtered
+      if (!Object.prototype.hasOwnProperty.call(component.value, key)) {
+        return filtered
+      }
+
+      const value = component.value[key]
+      const urls = Array.isArray(value)
+        ? value.filter((link): link is string => typeof link === 'string' && !!link)
+        : (typeof value === 'string' && value ? [value] : [])
+
+      for (const link of urls) {
+        const match = link.match(/^https?\:\/\/([^\/?#]+)(?:\/([^\/?#]+\/[^\/?#]+))?/i)
+        if (!match) {
+          continue
         }
 
+        const host = match[1].split('.').slice(-2).join('.')
+        const repoPath = match[2]
+
         filtered.push({
-          text: link.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i)[1].split('.').slice(-2).join('.'),
+          text: repoPath || host,
           link,
         })
       }

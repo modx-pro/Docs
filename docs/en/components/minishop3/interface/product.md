@@ -22,7 +22,7 @@ The product edit page (`msProduct`) combines standard MODX functionality with e-
 Standard MODX tab with main resource fields:
 
 | Field | Description |
-|-------|-------------|
+| --- | --- |
 | `pagetitle` | Product name |
 | `longtitle` | Extended title |
 | `description` | Meta description |
@@ -38,13 +38,13 @@ Tab with product fields grouped by sections. Uses a Vue 3 component for flexible
 **Default sections:**
 
 | Section | Fields |
-|---------|--------|
+| --- | --- |
 | Main data | `article`, `price`, `old_price`, `weight` |
-| Stock | `remains`, `new`, `popular`, `favorite` |
+| Stock | `stock`, `new`, `popular`, `favorite` |
 | Specifications | `color`, `size`, `vendor`, `made_in`, `tags` |
 
 ::: tip Configuration
-Sections and fields are configured via [Utilities → Product fields](utilities/product-fields).
+Sections and fields: [Utilities → Product fields](utilities/product-fields). New DB column: [Extra fields cookbook](/en/components/minishop3/manager/extra-fields/cookbook), example [Wholesale price](/en/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ### Gallery
@@ -60,17 +60,23 @@ See also: [Product gallery](gallery)
 
 ### Links
 
-Product link configuration:
+Vue tab `ProductLinksTab`. CRUD via Manager API (permission `msproduct_save`):
 
-| Link type | Description |
-|-----------|-------------|
-| Complementary | Accessories, components |
-| Similar | Similar products |
-| Recommended | Personal recommendations |
+| Method | Path |
+| --- | --- |
+| `GET` | `/api/mgr/product-data/{id}/links` |
+| `POST` | `/api/mgr/product-data/{id}/links` — body `{ slave, link }` |
+| `DELETE` | `/api/mgr/product-data/{id}/links` — body `{ link, master, slave }` (batch `ids[]` not supported) |
+| `GET` | `/api/mgr/references/link-types` |
+| `GET` | `/api/mgr/references/products` |
+
+Link types from the `msLink` directory: `one_to_many`, `many_to_one`, `one_to_one`, `many_to_many`. Configure types: [Settings → Links](settings/links).
 
 ### Categories
 
-Additional product categories. A product can belong to several categories besides the main one (`parent`).
+<!-- ![Product Categories tab](/components/minishop3/screenshots/mgr-product-categories.png) -->
+
+Vue tab `ProductCategoriesTab`. Tree: `GET /api/mgr/product-data/{id}/categories/tree` (service `ms3_product_category_tree`). Selected ids go in the resource POST as hidden `name="categories"` (JSON). The parent category (`parent`) is locked in the tree. A product can belong to several extra categories via `msCategoryMember`.
 
 ### Product options
 
@@ -80,7 +86,7 @@ Product option values (configured in [Settings → Options](settings/options)).
 The tab is fully Vue. The universal `ProductOptionField` component supports all 10 option types: `textfield`, `numberfield`, `textarea`, `checkbox`, `comboBoolean`, `combobox`, `comboMultiple`, `comboColors` (+ color square next to the value), `comboOptions` (PrimeVue `InputChips` — enter arbitrary tags with suggestions from previously used values), `datefield`.
 :::
 
-Options are grouped by `modcategory_id` (MODX category on `msOption`) and shown in vertical tabs on the left. If there is only one group, the tab is hidden and fields are listed directly.
+Options are grouped by `option_group_id` (`msOptionGroup`) and shown in vertical tabs on the left. If there is only one group, the tab is hidden and fields are listed directly.
 
 **Per-category caption / description.** If the option ↔ category link has its own `caption` (see [Settings → Options](settings/options#per-category-caption-description-override)), the product form shows that caption — the same override used on the storefront.
 
@@ -93,7 +99,7 @@ Options are grouped by `modcategory_id` (MODX category on `msOption`) and shown 
 Field configuration is stored in the database:
 
 | Table | Description |
-|-------|-------------|
+| --- | --- |
 | `ms3_page_sections` | Page sections (containers) |
 | `ms3_product_fields` | Product fields with settings |
 
@@ -104,7 +110,7 @@ A section is a container for grouping fields.
 **Model fields:**
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `id` | int | Section ID |
 | `page_key` | string | Page key (`product_data`) |
 | `section_key` | string | Unique section key |
@@ -120,7 +126,7 @@ Product field with display settings.
 **Model fields:**
 
 | Field | Type | Description |
-|-------|------|-------------|
+| --- | --- | --- |
 | `id` | int | Field ID |
 | `name` | string | System name |
 | `label` | string | Display name |
@@ -149,36 +155,27 @@ Product field with display settings.
    - **Label** — display name
 4. Save
 
-**Via API:**
+**Via API** (1.13.x: no separate POST; the UI adds a section locally and saves the list):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
 ```json
 {
-  "section_key": "seo",
-  "lexicon_key": "ms3_section_seo",
-  "label": "SEO",
-  "hidden": false,
-  "sort_order": 100
+  "sections": [
+    {
+      "section_key": "seo",
+      "lexicon_key": "ms3_section_seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
 }
 ```
 
-**Via PHP:**
-
-```php
-$section = $modx->newObject('MiniShop3\\Model\\msPageSection');
-$section->fromArray([
-    'page_key' => 'product_data',
-    'section_key' => 'seo',
-    'lexicon_key' => 'ms3_section_seo',
-    'label' => 'SEO',
-    'hidden' => false,
-    'sort_order' => 100
-]);
-$section->save();
-```
+Write permission: `mssetting_save`.
 
 ### Editing a section
 
@@ -215,7 +212,7 @@ New fields are added via [Utilities → Extra fields](utilities/extra-fields). T
 4. Configure:
 
 | Parameter | Description |
-|-----------|-------------|
+| --- | --- |
 | Label | Display name |
 | Description | Hint under field |
 | Section | Section membership |
@@ -265,7 +262,7 @@ The field remains in the database but is not shown on the product card.
 ### Standard
 
 | Type | Description | Use |
-|------|-------------|-----|
+| --- | --- | --- |
 | `textfield` | Single-line text | SKU, name |
 | `numberfield` | Number | Price, weight |
 | `textarea` | Multi-line | Description |
@@ -274,7 +271,7 @@ The field remains in the database but is not shown on the product card.
 ### MiniShop3 comboboxes
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `ms3-combo-vendor` | Vendor selection |
 | `ms3-combo-category` | Category selection |
 | `ms3-combo-autocomplete` | Autocomplete from list |
@@ -283,7 +280,7 @@ The field remains in the database but is not shown on the product card.
 ### Extended
 
 | Type | Description |
-|------|-------------|
+| --- | --- |
 | `modx-combo-browser` | File selection via Media Browser |
 | `datefield` | Date picker |
 | `timefield` | Time picker |
@@ -292,7 +289,7 @@ The field remains in the database but is not shown on the product card.
 ## System settings
 
 | Setting | Description | Default |
-|---------|-------------|---------|
+| --- | --- | --- |
 | `ms3_product_tab_extra` | Show data tab | `true` |
 | `ms3_product_tab_gallery` | Show gallery tab | `true` |
 | `ms3_product_tab_links` | Show links tab | `true` |
@@ -341,10 +338,24 @@ GET /api/mgr/config/page-fields/product_data
 }
 ```
 
-**Save field:**
+**Save fields** (body is a `fields` array):
 
 ```
 PUT /api/mgr/config/page-fields/product_data
+```
+
+```json
+{
+  "fields": [
+    {
+      "name": "article",
+      "label": "SKU",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0
+    }
+  ]
+}
 ```
 
 ### Sections
@@ -355,22 +366,29 @@ PUT /api/mgr/config/page-fields/product_data
 GET /api/mgr/config/sections/product_data
 ```
 
-**Create section:**
+**Save sections** (create and reorder via bulk PUT):
 
 ```
-POST /api/mgr/config/sections/product_data
+PUT /api/mgr/config/sections/product_data
 ```
 
-**Update section:**
+```json
+{
+  "sections": [
+    {
+      "section_key": "seo",
+      "label": "SEO",
+      "hidden": false,
+      "sort_order": 100
+    }
+  ]
+}
+```
+
+**Delete section** (by `section_key`, not id):
 
 ```
-PUT /api/mgr/config/sections/product_data/{id}
-```
-
-**Delete section:**
-
-```
-DELETE /api/mgr/config/sections/product_data/{id}
+DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
 ### Product data
@@ -405,7 +423,7 @@ $_lang['ms3_section_seo'] = 'SEO';
 $_lang['ms3_section_seo'] = 'SEO';
 ```
 
-3. Move fields `longtitle` and `description` into the SEO section
+1. Move fields `longtitle` and `description` into the SEO section
 
 ### Hiding unused fields
 

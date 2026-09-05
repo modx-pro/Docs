@@ -1,44 +1,53 @@
+---
+title: iziToast
+description: Уведомления iziToast для FetchIt через CDN и FetchIt.Message
+---
+
 # iziToast
 
-В данном разделе мы интегрируем элегантный и легковесный плагин для показа уведомлений [iziToast](https://izitoast.marcelodolza.com/).
+[iziToast](https://izitoast.marcelodolza.com/): лёгкие тосты на чистом JS.
 
-- Для простоты примера подключим стили.
+## Подключение через CDN
+
+Стили подключите отдельно:
 
 ```html
 <!-- CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/izitoast@1/dist/css/iziToast.min.css">
 ```
 
-- А для разнообразия можем импортировать скрипт прямо из CDN и определим свойство [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) следующим образом:
+Скрипт и [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) через ESM:
 
 ```html
 <script type="module">
-  import izitoast from 'https://cdn.jsdelivr.net/npm/izitoast@1/+esm';
+  import izitoast from 'https://cdn.jsdelivr.net/npm/izitoast@1/+esm'
 
   document.addEventListener('DOMContentLoaded', () => {
     FetchIt.Message = {
       success(message) {
-        izitoast.success({ message });
+        izitoast.success({ message })
       },
       error(message) {
-        izitoast.error({ message });
+        izitoast.error({ message })
       },
     }
-  });
+  })
 </script>
 ```
 
-- Или в своём файловом скрипте с атрибутом подключения `defer`, тогда вам не нужно накладывать обработчик на событие `DOMContentLoaded` и получить прямой доступ к классу FetchIt:
+В отдельном модуле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
 
 ```js
+import izitoast from 'https://cdn.jsdelivr.net/npm/izitoast@1/+esm'
+
 FetchIt.Message = {
   success(message) {
-    izitoast.success({ message });
+    izitoast.success({ message })
   },
   error(message) {
-    izitoast.error({ message });
+    izitoast.error({ message })
   },
 }
 ```
 
-Готово! Вот такими простыми действиями можно интегрировать **iziToast**.
+Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).

@@ -16,9 +16,8 @@ title: События товаров (каталог)
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msProductData` | `msProductData` | Объект данных товара |
-| `data` | `array` | Дополнительные данные товара |
+| --- | --- | --- |
+| `data` | `array` | Данные товара — по умолчанию `toArray()` объекта `msProductData` (core-поля: `price`, `article`, `weight`, `stock`, `vendor_id`, `tags`, `color`, `size` и т.д.), либо расширенный row, если вызывающий код передал свой `$data` (например, `ms3_products.php` передаёт весь row листинга, включая extra fields) |
 | `price` | `float` | Текущая цена |
 
 ### Модификация данных (с поддержкой цепочки)
@@ -55,16 +54,16 @@ switch ($modx->event->name) {
     case 'msOnGetProductPrice':
         $price = $modx->eventData['msOnGetProductPrice']['price']
             ?? $scriptProperties['price'];
-        $productData = $scriptProperties['msProductData'];
+        $data = $scriptProperties['data'];
 
         // VIP-скидка
         if ($modx->user->isMember('VIP')) {
             $price = $price * 0.8; // -20%
         }
 
-        // Оптовая цена для оптовиков
+        // Оптовая цена для оптовиков (если добавлен extra field wholesale_price)
         if ($modx->user->isMember('Wholesale')) {
-            $wholesalePrice = $productData->get('wholesale_price');
+            $wholesalePrice = $data['wholesale_price'] ?? 0;
             if ($wholesalePrice > 0) {
                 $price = $wholesalePrice;
             }
@@ -89,9 +88,9 @@ switch ($modx->event->name) {
         // Получаем курс из кэша или API
         $rate = $modx->cacheManager->get('usd_rate') ?? 90;
 
-        // Товар в долларах — конвертируем
-        $productData = $scriptProperties['msProductData'];
-        if ($productData->get('currency') === 'USD') {
+        // Товар в долларах — конвертируем (если добавлен extra field currency)
+        $data = $scriptProperties['data'];
+        if (($data['currency'] ?? null) === 'USD') {
             $price = $price * $rate;
         }
 
@@ -111,9 +110,8 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msProductData` | `msProductData` | Объект данных товара |
-| `data` | `array` | Дополнительные данные товара |
+| --- | --- | --- |
+| `data` | `array` | Данные товара — по умолчанию `toArray()` объекта `msProductData`, либо расширенный row, если вызывающий код передал свой `$data` |
 | `weight` | `float` | Текущий вес |
 
 ### Модификация данных
@@ -145,12 +143,12 @@ switch ($modx->event->name) {
     case 'msOnGetProductWeight':
         $weight = $modx->eventData['msOnGetProductWeight']['weight']
             ?? $scriptProperties['weight'];
-        $productData = $scriptProperties['msProductData'];
+        $data = $scriptProperties['data'];
 
-        // Получаем габариты
-        $length = $productData->get('length') ?? 0;
-        $width = $productData->get('width') ?? 0;
-        $height = $productData->get('height') ?? 0;
+        // Получаем габариты (если добавлены extra fields length/width/height)
+        $length = $data['length'] ?? 0;
+        $width = $data['width'] ?? 0;
+        $height = $data['height'] ?? 0;
 
         // Объёмный вес (делитель 5000 — стандарт для курьерских служб)
         if ($length > 0 && $width > 0 && $height > 0) {
@@ -176,9 +174,8 @@ switch ($modx->event->name) {
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msProductData` | `msProductData` | Объект данных товара |
-| `data` | `array` | Массив полей товара |
+| --- | --- | --- |
+| `data` | `array` | Данные товара — по умолчанию `toArray()` объекта `msProductData`, либо расширенный row, если вызывающий код передал свой `$data` |
 
 ### Модификация данных
 
@@ -198,11 +195,11 @@ switch ($modx->event->name) {
         }
 
         // Добавить статус наличия
-        $remains = $data['remains'] ?? 0;
-        if ($remains <= 0) {
+        $stock = $data['stock'] ?? 0;
+        if ($stock <= 0) {
             $data['availability'] = 'out_of_stock';
             $data['availability_text'] = 'Нет в наличии';
-        } elseif ($remains < 5) {
+        } elseif ($stock < 5) {
             $data['availability'] = 'low_stock';
             $data['availability_text'] = 'Заканчивается';
         } else {
@@ -225,7 +222,6 @@ switch ($modx->event->name) {
     case 'msOnGetProductFields':
         $data = $modx->eventData['msOnGetProductFields']['data']
             ?? $scriptProperties['data'];
-        $productData = $scriptProperties['msProductData'];
 
         // Добавить количество отзывов
         $reviewCount = $modx->getCount('msProductReview', [

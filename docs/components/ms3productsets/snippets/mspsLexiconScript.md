@@ -7,10 +7,11 @@ title: mspsLexiconScript
 
 После вызова заполняются:
 
-- `window.mspsLexicon` — строки интерфейса (`empty`, `added`, `removed`, `set_added`, `go_catalog`, `error`)
-- `window.mspsConfig` — конфиг фронта (`maxItems`, `lang`)
+- при `ms3productsets.izitoast_include` = Да — теги `<link>` и `<script>` для [iziToast](https://github.com/marcosmoura/iziToast) по путям из настроек `izitoast_css` / `izitoast_js`;
+- `window.mspsLexicon` — строки интерфейса (`empty`, `added`, `removed`, `set_added`, `go_catalog`, `error`);
+- `window.mspsConfig` — `maxItems`, `lang`, `toastTimeout` (мс), `toastPosition` (напр. `topRight`).
 
-Подключайте **до** `productsets.js`.
+Подключайте **до** `productsets.js`. Если автоподключение iziToast выключено, загрузите CSS и JS вручную — [Интеграция на сайт](../integration).
 
 ## Параметры
 

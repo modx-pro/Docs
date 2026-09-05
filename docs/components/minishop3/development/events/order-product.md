@@ -3,22 +3,34 @@ title: События товаров в заказе
 ---
 # События товаров в заказе
 
-События для управления товарами внутри заказа: добавление, обновление, удаление.
+События для позиций заказа: добавление, обновление, удаление строки.
 
 ::: info Контекст
-Эти события вызываются при операциях с товарами через процессоры админки, а не через контроллер корзины. Для событий добавления в корзину см. [События корзины](cart).
+С 1.12 позиции в админке меняет **Manager API** (`OrdersController`: `POST/PUT/DELETE …/orders/{id}/products/…`), не legacy-процессоры. Параметры включают `msOrder` и `msOrderProduct`.
+
+Для корзины на витрине см. [События корзины](cart).
+:::
+
+::: info Второй источник msOnBeforeCreateOrderProduct / msOnCreateOrderProduct
+Помимо Manager API, эта пара событий вызывается ещё и из `OrderDraftManager` — при программном создании заказа без сессии (`ProgrammaticOrderService`, sessionless API для интеграций/cron). В этом канале в параметрах события есть **дополнительный ключ `origin`** (значение `'integration'` по умолчанию), которого нет у вызова из Manager API.
+:::
+
+::: warning After-хуки не откатывают БД
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` вызываются **после** `save()` / `remove()`. Если after-плагин вернёт `output`, ядро только пишет предупреждение в лог — клиент Vue по-прежнему получит успех. Проверки и veto — в парных `msOnBefore*`.
 :::
 
 ## msOnBeforeCreateOrderProduct
 
-Вызывается **перед** добавлением товара в заказ (через админку).
+Вызывается **перед** сохранением новой позиции в заказе (Manager API).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Объект товара заказа |
-| `mode` | `string` | Режим: `new` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Новая строка (ещё не в БД) |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
+| `msOrder` | `msOrder` | Родительский заказ |
+| `mode` | `string` | `modSystemEvent::MODE_NEW` (значение `'new'`) |
 
 ### Прерывание операции
 
@@ -35,8 +47,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            if ($count > $remains) {
+            $stock = $msProduct->get('stock') ?? 0;
+            if ($count > $stock) {
                 $modx->event->output('Недостаточно товара на складе');
                 return;
             }
@@ -49,14 +61,16 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrderProduct
 
-Вызывается **после** добавления товара в заказ.
+Вызывается **после** успешного `save()` позиции. Ошибка плагина не откатывает строку в БД (см. предупреждение выше).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Созданный объект товара |
-| `mode` | `string` | Режим: `new` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Сохранённая строка |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
+| `msOrder` | `msOrder` | Заказ |
+| `mode` | `string` | `modSystemEvent::MODE_NEW` (значение `'new'`) |
 
 ### Пример использования
 
@@ -72,8 +86,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', max(0, $remains - $count));
+            $stock = $msProduct->get('stock') ?? 0;
+            $msProduct->set('stock', max(0, $stock - $count));
             $msProduct->save();
         }
 
@@ -90,14 +104,16 @@ switch ($modx->event->name) {
 
 ## msOnBeforeUpdateOrderProduct
 
-Вызывается **перед** обновлением товара в заказе.
+Вызывается **перед** `save()` изменённой позиции.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Объект товара заказа |
-| `mode` | `string` | Режим: `upd` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Строка с новыми значениями полей (объект уже мутирован — старых значений в параметрах события нет) |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
+| `msOrder` | `msOrder` | Заказ |
+| `mode` | `string` | `modSystemEvent::MODE_UPD` (значение `'upd'`) |
 
 ### Прерывание операции
 
@@ -107,21 +123,18 @@ switch ($modx->event->name) {
     case 'msOnBeforeUpdateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
+        // Объект уже несёт НОВОЕ значение count — старое значение среди
+        // параметров события недоступно (в БД ещё не сохранено).
         $newCount = $orderProduct->get('count');
-        $oldCount = $orderProduct->getPrevious('count');
+        $productId = $orderProduct->get('product_id');
 
-        // Если увеличиваем количество — проверяем остатки
-        if ($newCount > $oldCount) {
-            $diff = $newCount - $oldCount;
-            $productId = $orderProduct->get('product_id');
-
-            $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-            if ($msProduct) {
-                $remains = $msProduct->get('remains') ?? 0;
-                if ($diff > $remains) {
-                    $modx->event->output('Недостаточно товара для увеличения количества');
-                    return;
-                }
+        // Проверяем, хватает ли остатка на итоговое количество
+        $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
+        if ($msProduct) {
+            $stock = $msProduct->get('stock') ?? 0;
+            if ($newCount > $stock) {
+                $modx->event->output('Недостаточно товара для указанного количества');
+                return;
             }
         }
         break;
@@ -132,14 +145,16 @@ switch ($modx->event->name) {
 
 ## msOnUpdateOrderProduct
 
-Вызывается **после** обновления товара в заказе.
+Вызывается **после** успешного `save()`. Ошибка плагина не откатывает изменения в БД.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Обновлённый объект товара |
-| `mode` | `string` | Режим: `upd` |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Обновлённая строка |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
+| `msOrder` | `msOrder` | Заказ |
+| `mode` | `string` | `modSystemEvent::MODE_UPD` (значение `'upd'`) |
 
 ### Пример использования
 
@@ -149,27 +164,17 @@ switch ($modx->event->name) {
     case 'msOnUpdateOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
 
-        $newCount = $orderProduct->get('count');
-        $oldCount = $orderProduct->getPrevious('count');
+        // Событие не передаёт значение count "до" изменения (снимка старой
+        // строки в параметрах нет) — синхронизируем внешнюю систему
+        // с ТЕКУЩИМ (уже сохранённым) состоянием строки.
+        $productId = $orderProduct->get('product_id');
+        $count = $orderProduct->get('count');
 
-        if ($newCount != $oldCount) {
-            $diff = $newCount - $oldCount;
-            $productId = $orderProduct->get('product_id');
-
-            $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
-            if ($msProduct) {
-                $remains = $msProduct->get('remains') ?? 0;
-                $msProduct->set('remains', $remains - $diff);
-                $msProduct->save();
-
-                $modx->log(modX::LOG_LEVEL_INFO, sprintf(
-                    '[OrderProduct] Изменено кол-во товара #%d: %d → %d',
-                    $productId,
-                    $oldCount,
-                    $newCount
-                ));
-            }
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[OrderProduct] Товар #%d в заказе, текущее количество: %d',
+            $productId,
+            $count
+        ));
         break;
 }
 ```
@@ -178,13 +183,16 @@ switch ($modx->event->name) {
 
 ## msOnBeforeRemoveOrderProduct
 
-Вызывается **перед** удалением товара из заказа.
+Вызывается **перед** `remove()` позиции. Последнюю строку заказа API не даёт удалить (HTTP 400 до события).
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Объект товара для удаления |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Строка для удаления |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
+| `msOrder` | `msOrder` | Заказ |
+| `id` | `int` | ID строки `msOrderProduct` |
 
 ### Прерывание операции
 
@@ -193,10 +201,11 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnBeforeRemoveOrderProduct':
         $orderProduct = $scriptProperties['msOrderProduct'];
-        $order = $orderProduct->getOne('Order');
+        /** @var \MiniShop3\Model\msOrder $order */
+        $order = $scriptProperties['msOrder'];
 
-        // Запретить удаление товаров из оплаченных заказов
-        if ($order && $order->get('payment_status') === 'paid') {
+        // Запретить удаление из заказов в финальном статусе (пример)
+        if ($order && (int) $order->get('status_id') === 2) {
             $modx->event->output('Нельзя удалять товары из оплаченного заказа');
             return;
         }
@@ -208,13 +217,16 @@ switch ($modx->event->name) {
 
 ## msOnRemoveOrderProduct
 
-Вызывается **после** удаления товара из заказа.
+Вызывается **после** успешного `remove()`. Ошибка плагина не восстанавливает строку.
 
 ### Параметры
 
 | Параметр | Тип | Описание |
-|----------|-----|----------|
-| `msOrderProduct` | `msOrderProduct` | Удалённый объект товара |
+| --- | --- | --- |
+| `msOrderProduct` | `msOrderProduct` | Удалённый объект (ещё в памяти xPDO) |
+| `object` | `msOrderProduct` | Та же строка, что и `msOrderProduct` (MS2-style алиас) |
+| `msOrder` | `msOrder` | Заказ |
+| `id` | `int` | ID удалённой строки |
 
 ### Пример использования
 
@@ -230,8 +242,8 @@ switch ($modx->event->name) {
 
         $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
         if ($msProduct) {
-            $remains = $msProduct->get('remains') ?? 0;
-            $msProduct->set('remains', $remains + $count);
+            $stock = $msProduct->get('stock') ?? 0;
+            $msProduct->set('stock', $stock + $count);
             $msProduct->save();
         }
 
@@ -263,11 +275,14 @@ switch ($modx->event->name) {
         break;
 
     case 'msOnUpdateOrderProduct':
+        // Событие не передаёт count "до" изменения — инкрементальный расчёт
+        // остатка тут невозможен, только create/remove меняют резерв напрямую.
         $orderProduct = $scriptProperties['msOrderProduct'];
-        $diff = $orderProduct->get('count') - ($orderProduct->getPrevious('count') ?? 0);
-        if ($diff != 0) {
-            updateStock($modx, $orderProduct->get('product_id'), -$diff);
-        }
+        $modx->log(modX::LOG_LEVEL_INFO, sprintf(
+            '[Stock] Изменена строка заказа, товар #%d, текущее количество: %d',
+            $orderProduct->get('product_id'),
+            $orderProduct->get('count')
+        ));
         break;
 
     case 'msOnRemoveOrderProduct':
@@ -282,18 +297,18 @@ switch ($modx->event->name) {
 function updateStock($modx, $productId, $delta) {
     $msProduct = $modx->getObject(\MiniShop3\Model\msProduct::class, $productId);
     if ($msProduct) {
-        $remains = $msProduct->get('remains') ?? 0;
-        $newRemains = max(0, $remains + $delta);
-        $msProduct->set('remains', $newRemains);
+        $stock = $msProduct->get('stock') ?? 0;
+        $newStock = max(0, $stock + $delta);
+        $msProduct->set('stock', $newStock);
         $msProduct->save();
 
         $modx->log(modX::LOG_LEVEL_INFO, sprintf(
             '[Stock] Товар #%d: %d %s %d = %d',
             $productId,
-            $remains,
+            $stock,
             $delta >= 0 ? '+' : '-',
             abs($delta),
-            $newRemains
+            $newStock
         ));
     }
 }
