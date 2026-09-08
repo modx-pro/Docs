@@ -46,7 +46,37 @@ mFilterSelected показывает блок с текущими активны
 |----------|--------------|----------|
 | `toPlaceholder` | — | Вывести в плейсхолдер |
 
-## Плейсхолдеры в шаблонах
+## Кастомные чанки и AJAX
+
+Блок «Выбрано» рендерится на сервере — и при первой загрузке, и при каждой AJAX-фильтрации. Ваши чанки остаются единственным источником разметки.
+
+Чтобы это работало, в `tplOuter` должен быть атрибут с хэшем конфигурации — по нему сервер понимает, какими чанками пересобрать блок:
+
+```html
+{* @FILE chunks/mfilter/selected.outer.tpl *}
+<div class="my-selected"
+     data-mfilter-selected
+     {if $hash} data-mfilter-selected-hash="{$hash}"{/if}
+     {if $filterLabels} data-filter-labels="{$filterLabels | esc}"{/if}>
+
+    {if !$empty}
+        <div class="my-selected__items">{$items}</div>
+        {$reset}
+    {/if}
+</div>
+```
+
+::: warning Без атрибута разметка сбросится
+Если `data-mfilter-selected-hash` в чанке нет, сервер не сможет пересобрать блок, и JS соберёт его сам — стандартной разметкой. Ваш чанк при этом заменится на дефолтный при первом же клике по фильтру.
+
+В стандартном `mfilter.selected.outer` атрибут уже есть. При переносе на свой чанк не забудьте его перенести.
+:::
+
+::: tip Один блок на страницу
+AJAX-ответ несёт одну разметку блока «Выбрано». Если вызвать `mFilterSelected` дважды (например, в сайдбаре и над списком), оба блока получат разметку по конфигу того, чей `data-mfilter-selected-hash` встретится в DOM первым. Для двух блоков с разными настройками используйте один вызов и продублируйте вывод через `toPlaceholder`.
+:::
+
+## Плейсхолдеры в чанках
 
 ### tplOuter
 
@@ -56,8 +86,10 @@ mFilterSelected показывает блок с текущими активны
 | `{$reset}` | HTML кнопки сброса |
 | `{$count}` | Количество активных фильтров |
 | `{$empty}` | true, если фильтры не выбраны |
-| `{$hidden}` | true, если блок должен быть скрыт |
+| `{$hidden}` | true, если блок должен быть скрыт (при `hideWhenEmpty=1` и пустом состоянии) |
+| `{$total}` | То же число, что `{$count}` — второе имя одного значения |
 | `{$filterLabels}` | JSON-объект меток для JS |
+| `{$hash}` | Хэш конфигурации для AJAX — выводите в `data-mfilter-selected-hash` |
 
 ### tplGroup
 
@@ -84,6 +116,13 @@ mFilterSelected показывает блок с текущими активны
 | Плейсхолдер | Описание |
 |-------------|----------|
 | `{$text}` | Текст кнопки |
+| `{$url}` | Адрес страницы без фильтров |
+
+Стандартный чанк рисует `<button>`, который обрабатывает JS. `{$url}` нужен, если сброс делается ссылкой — тогда он работает и без JS:
+
+```fenom
+<a href="{$url}" class="mfilter-selected-reset" data-mfilter-reset-selected>{$text}</a>
+```
 
 ## Примеры
 
@@ -118,7 +157,7 @@ mFilterSelected показывает блок с текущими активны
 ]}
 ```
 
-### Кастомные шаблоны
+### Кастомные чанки
 
 ```fenom
 {'!mFilterSelected' | snippet : [
@@ -132,7 +171,7 @@ mFilterSelected показывает блок с текущими активны
             {$label} <button type="button">&times;</button>
         </span>',
     'tplReset' => '@INLINE
-        <button type="button" data-mfilter-reset class="btn btn-link">{$text}</button>'
+        <button type="button" data-mfilter-reset-selected class="btn btn-link">{$text}</button>'
 ]}
 ```
 
@@ -171,7 +210,7 @@ mFilterSelected показывает блок с текущими активны
 | `data-mfilter-selected` | Контейнер выбранных фильтров |
 | `data-mfilter-remove="{key}"` | Кнопка удаления значения |
 | `data-value="{value}"` | Значение для удаления |
-| `data-mfilter-reset` | Кнопка сброса всех фильтров |
+| `data-mfilter-reset-selected` | Кнопка сброса всех фильтров внутри блока «Выбрано» |
 
 ### Пример HTML разметки
 
@@ -186,7 +225,7 @@ mFilterSelected показывает блок с текущими активны
             Синий <button>&times;</button>
         </span>
     </div>
-    <button data-mfilter-reset>Сбросить всё</button>
+    <button data-mfilter-reset-selected>Сбросить всё</button>
 </div>
 ```
 
@@ -197,7 +236,7 @@ mFilterSelected показывает блок с текущими активны
 ```html
 <div class="mfilter-selected{if $hidden} mfilter-selected--hidden{/if}"
      data-mfilter-selected
-     data-filter-labels='{$filterLabels}'>
+     data-filter-labels="{$filterLabels | esc}">
     {if !$empty}
         <div class="mfilter-selected__items">
             {$items}
@@ -221,7 +260,7 @@ mFilterSelected показывает блок с текущими активны
 ### mfilter.selected.reset
 
 ```html
-<button type="button" class="mfilter-selected__reset" data-mfilter-reset>
+<button type="button" class="mfilter-selected__reset" data-mfilter-reset-selected>
     {$text}
 </button>
 ```
