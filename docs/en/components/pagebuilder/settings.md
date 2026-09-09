@@ -1,21 +1,21 @@
 ---
 title: System settings
-description: "pagebuilder namespace keys: paths, preview, resource tabs, and Collections"
+description: "pagebuilder namespace keys: preview, tabs, visibility, responsive, Public API"
 ---
 # System settings
 
 MODX namespace: **pagebuilder**. Database key: `pagebuilder_<name>`.
 
-The extra manifest defines **21 keys**. On install or upgrade, Phinx/resolver adds missing keys. Existing values are not overwritten (`update.settings = false`). Migration version table: `{table_prefix}pb_migrations`.
+The extra manifest defines **21 keys**. On install or upgrade, Phinx/resolver adds missing keys. Existing values are not overwritten (`update.settings = false`).
 
-For local dev without reinstalling the transport (CLI only, not site runtime):
+Keys added in 1.0.3+:
 
-```bash
-cd core/components/pagebuilder && composer install --no-dev
-php scripts/migrate.php
-```
-
-Phinx and its `vendor/` are for the installer and `migrate.php` only. The built extra does not load them on web requests. Deprecated alias: `php scripts/sync-system-settings.php` calls `migrate.php`.
+| Key | Section |
+| --- | --- |
+| `pagebuilder_inspector_visibility_enabled` | [Editor](#editor) |
+| `pagebuilder_default_breakpoint` | [Responsive](#responsive) |
+| `pagebuilder_responsive_breakpoints` | [Responsive](#responsive) |
+| `pagebuilder_responsive_apply` | [Responsive](#responsive) |
 
 ## Paths and preview
 
@@ -71,7 +71,7 @@ Column filter JSON: `{ "price": { "op": "gte", "value": "10" } }`. Operators: `e
 
 On the front: `PageBuilderTableRows` snippet, [data_table](sections/data_table) section. Details: [Developer](developer#resource-data-tables).
 
-## Editor
+## Editor {#editor}
 
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |

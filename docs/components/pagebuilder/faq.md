@@ -51,7 +51,7 @@ description: "Типовые проблемы PageBuilder: редактор, п�
 
 ## После обновления нет новых ключей настроек
 
-Resolver не перезаписывает существующие значения (`update.settings = false`). Отсутствующие ключи (breakpoints, visibility) добавляет Phinx при установке или `php scripts/migrate.php`. Очистите кеш MODX после обновления пакета.
+Resolver не перезаписывает существующие значения (`update.settings = false`). Отсутствующие ключи (breakpoints, visibility) добавляет Phinx при установке или обновлении пакета. Очистите кеш MODX после обновления.
 
 ## Connector 403 или 401
 

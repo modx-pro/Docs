@@ -51,7 +51,7 @@ Install the **MIGX** package. Without it the field shows a JSON textarea. See [m
 
 ## New setting keys missing after upgrade
 
-The resolver does not overwrite existing values (`update.settings = false`). Missing keys (breakpoints, visibility) are added by Phinx on install or via `php scripts/migrate.php`. Clear MODX cache after upgrading the package.
+The resolver does not overwrite existing values (`update.settings = false`). Missing keys (breakpoints, visibility) are added by Phinx on package install or upgrade. Clear MODX cache after upgrading.
 
 ## Connector 403 or 401
 

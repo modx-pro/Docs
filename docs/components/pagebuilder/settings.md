@@ -1,21 +1,21 @@
 ---
 title: Системные настройки
-description: "Ключи namespace pagebuilder: пути, превью, вкладки ресурса и Collections"
+description: "Ключи namespace pagebuilder: превью, вкладки, visibility, responsive, Public API"
 ---
 # Системные настройки
 
 Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
-В манифесте дополнения **21 ключ**. При установке или обновлении Phinx/resolver добавляет отсутствующие. Уже заданные значения не перезаписывает (`update.settings = false`). Таблица версий миграций: `{table_prefix}pb_migrations`.
+В манифесте дополнения **21 ключ**. При установке или обновлении Phinx/resolver добавляет отсутствующие. Уже заданные значения не перезаписывает (`update.settings = false`).
 
-Для dev без переустановки transport (CLI, не runtime сайта):
+Ключи, добавленные в 1.0.3+:
 
-```bash
-cd core/components/pagebuilder && composer install --no-dev
-php scripts/migrate.php
-```
-
-Phinx и его `vendor/` нужны только установщику и `migrate.php`. На запросах сайта компонент их не подключает. Устаревший алиас: `php scripts/sync-system-settings.php` вызывает `migrate.php`.
+| Ключ | Раздел |
+| --- | --- |
+| `pagebuilder_inspector_visibility_enabled` | [Редактор](#редактор) |
+| `pagebuilder_default_breakpoint` | [Responsive](#responsive) |
+| `pagebuilder_responsive_breakpoints` | [Responsive](#responsive) |
+| `pagebuilder_responsive_apply` | [Responsive](#responsive) |
 
 ## Пути и превью
 
@@ -71,7 +71,7 @@ Phinx и его `vendor/` нужны только установщику и `mig
 
 На сайте: сниппет `PageBuilderTableRows`, секция [data_table](sections/data_table). Подробнее: [Разработчик](developer#resource-data-tables).
 
-## Редактор
+## Редактор {#редактор}
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
