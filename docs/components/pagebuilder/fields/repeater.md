@@ -23,12 +23,15 @@ description: "Массив объектов с nested fields и служебны
 
 ## Советы
 
+- Порядок строк: ручка перетаскивания или стрелки вверх/вниз
 - В chunk: `{foreach}` и при необходимости `{$item._rowId|escape}`
 - Один объект без списка: [jsongrid](jsongrid) (Pro)
+- Сложный ExtJS-грид как у MIGX TV: [migx](migx)
 
 ## Похожие типы
 
 - [jsongrid](jsongrid) для одной строки-объекта (Pro)
+- [migx](migx) для нативного MIGX-грида (Free)
 - [table](table) для табличной сетки с колонками (Pro)
 
 ## Настройка

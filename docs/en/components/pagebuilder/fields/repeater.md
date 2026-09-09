@@ -23,12 +23,15 @@ Version: **Free**.
 
 ## Tips
 
+- Row order: drag handle or up/down arrows
 - In the chunk use `{foreach}` and `{$item._rowId|escape}` when needed
 - A single object without a list fits [jsongrid](jsongrid) (Pro)
+- Native MIGX ExtJS grid: [migx](migx)
 
 ## Similar types
 
 - [jsongrid](jsongrid) for one object row (Pro)
+- [migx](migx) for native MIGX grid (Free)
 - [table](table) for column grid (Pro)
 
 ## Schema

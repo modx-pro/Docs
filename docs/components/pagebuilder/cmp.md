@@ -39,7 +39,7 @@ Connector `mgr/sectiontype/remove` принимает POST-параметр `lif
 
 ## UTM
 
-Параметры для плейсхолдеров <code v-pre>{{utm:key}}</code> и значений по умолчанию. Правила **видимости** секций задаются в инспекторе ресурса (`settings.utm`), не на этой вкладке.
+Параметры для плейсхолдеров <code v-pre>{{utm:key}}</code> и значений по умолчанию. Правила **видимости** секций задаются в диалоге **Видимость** инспектора ресурса (`settings.utm`), если включена `pagebuilder_inspector_visibility_enabled`. Не на этой вкладке.
 
 На фронте сессия UTM: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) до `PageBuilder`. Ссылки: [Сниппеты](snippets/).
 

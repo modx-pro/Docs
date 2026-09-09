@@ -1,11 +1,11 @@
 ---
 title: "Справочник типов"
-description: "Все 50 типов полей инспектора PageBuilder (Free и Pro)"
+description: "Все 51 тип полей инспектора PageBuilder (Free и Pro)"
 ---
 
 # Справочник типов полей
 
-30 типов в Free и 20 в Pro. Pro включается флагом `advanced-fields`. На странице каждого типа есть **Зачем этот тип**, **Когда использовать**, **Советы**, **Похожие типы**, JSON **Настройка**, блок **Данные секции**, пример Fenom и таблица **Общие свойства**.
+31 тип в Free и 20 в Pro. Pro включается флагом `advanced-fields`. На странице каждого типа есть **Зачем этот тип**, **Когда использовать**, **Советы**, **Похожие типы**, JSON **Настройка**, блок **Данные секции**, пример Fenom и таблица **Общие свойства**.
 
 Общие meta-ключи (`tab`, `width`, `description`, `default`, `active`): [обзор](overview#общие-свойства-поля).
 
@@ -36,6 +36,7 @@ description: "Все 50 типов полей инспектора PageBuilder (
 | `colorpalette` | Free | [colorpalette](colorpalette) | [JSON и Fenom](colorpalette#vyvod-v-section-data) |
 | `file` | Free | [file](file) | [JSON и Fenom](file#vyvod-v-section-data) |
 | `image` | Free | [image](image) | [JSON и Fenom](image#vyvod-v-section-data) |
+| `migx` | Free | [migx](migx) | [JSON и Fenom](migx#vyvod-v-section-data) |
 | `video` | Free | [video](video) | [JSON и Fenom](video#vyvod-v-section-data) |
 | `button` | Free | [button](button) | [JSON и Fenom](button#vyvod-v-section-data) |
 | `resourcelist` | Free | [resourcelist](resourcelist) | [JSON и Fenom](resourcelist#vyvod-v-section-data) |

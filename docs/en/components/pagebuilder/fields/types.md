@@ -1,11 +1,11 @@
 ---
 title: "Field types reference"
-description: "All 50 PageBuilder inspector field types (Free and Pro)"
+description: "All 51 PageBuilder inspector field types (Free and Pro)"
 ---
 
 # Field types reference
 
-30 types in Free and 20 in Pro. Pro is enabled with capability `advanced-fields`. Each type page has **Why this type**, **When to use**, **Tips**, **Similar types**, JSON **Schema**, a **Section data** block, a Fenom example, and **Common properties**.
+31 types in Free and 20 in Pro. Pro is enabled with capability `advanced-fields`. Each type page has **Why this type**, **When to use**, **Tips**, **Similar types**, JSON **Schema**, a **Section data** block, a Fenom example, and **Common properties**.
 
 Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview](overview#obshchie-svoystva-polya).
 
@@ -36,6 +36,7 @@ Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview
 | `colorpalette` | Free | [colorpalette](colorpalette) | [JSON and Fenom](colorpalette#output-in-section-data) |
 | `file` | Free | [file](file) | [JSON and Fenom](file#output-in-section-data) |
 | `image` | Free | [image](image) | [JSON and Fenom](image#output-in-section-data) |
+| `migx` | Free | [migx](migx) | [JSON and Fenom](migx#output-in-section-data) |
 | `video` | Free | [video](video) | [JSON and Fenom](video#output-in-section-data) |
 | `button` | Free | [button](button) | [JSON and Fenom](button#output-in-section-data) |
 | `resourcelist` | Free | [resourcelist](resourcelist) | [JSON and Fenom](resourcelist#output-in-section-data) |

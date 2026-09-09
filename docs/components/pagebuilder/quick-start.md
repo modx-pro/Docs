@@ -12,8 +12,8 @@ description: Установка PageBuilder, права, вкладка «Сек
 | PHP | 8.2+ |
 | VueTools | 1.1.2+ |
 | pdoTools | 3.0+ |
-| PageBuilder (Free) | 1.0.1-beta |
-| PageBuilder Pro | 1.0.1-beta, требует `pagebuilder` ≥ 1.0.1 |
+| PageBuilder (Free) | 1.0.4-beta |
+| PageBuilder Pro | 1.0.3-beta, требует `pagebuilder` ≥ 1.0.3 |
 
 Пакеты **PageBuilder** (Free) и **PageBuilder Pro** ставятся из [modstore.pro](https://modstore.pro/extras/). Без провайдера установка падает с `Package provider not found`.
 

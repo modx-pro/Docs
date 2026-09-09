@@ -6,7 +6,16 @@ description: "Ключи namespace pagebuilder: пути, превью, вкла
 
 Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
-В манифесте дополнения **16 ключей**. При установке или обновлении resolver добавляет отсутствующие. Уже заданные значения не перезаписывает.
+В манифесте дополнения **21 ключ**. При установке или обновлении Phinx/resolver добавляет отсутствующие. Уже заданные значения не перезаписывает (`update.settings = false`). Таблица версий миграций: `{table_prefix}pb_migrations`.
+
+Для dev без переустановки transport (CLI, не runtime сайта):
+
+```bash
+cd core/components/pagebuilder && composer install --no-dev
+php scripts/migrate.php
+```
+
+Phinx и его `vendor/` нужны только установщику и `migrate.php`. На запросах сайта компонент их не подключает. Устаревший алиас: `php scripts/sync-system-settings.php` вызывает `migrate.php`.
 
 ## Пути и превью
 
@@ -67,6 +76,29 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `pagebuilder_fake_enabled` | boolean | `0` | Кнопка **Fake** в инспекторе секции: заполняет поля детерминированными демо-данными (`mgr/section/fake`) |
+| `pagebuilder_inspector_visibility_enabled` | boolean | `0` | Кнопка **Видимость** в инспекторе: диалог условий, контекстов, UTM и копии для контекста. По умолчанию выкл., редактор видит только поля контента |
+
+## Responsive breakpoints {#responsive}
+
+Пороги экранов для полей с `responsive: true` и ширины iframe превью в менеджере.
+
+| Ключ | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `pagebuilder_default_breakpoint` | text | `desktop` | Ключ из JSON breakpoints при `responsive_apply=manual`, если нет `?pb_bp=` |
+| `pagebuilder_responsive_breakpoints` | textarea | desktop / tablet / mobile JSON | Массив `{ key, minWidth, previewWidth, label }`. На типе секции можно переопределить `responsiveBreakpoints` |
+| `pagebuilder_responsive_apply` | text | `manual` | `manual`: на сайте одно значение (SEO-безопасно). `css`: все значения в HTML + media queries. В чанках для таких полей: `{$title\|pb_text}` вместо `\|escape` |
+
+Пример JSON по умолчанию:
+
+```json
+[
+  { "key": "desktop", "minWidth": 1024, "previewWidth": 1280, "label": "Desktop" },
+  { "key": "tablet", "minWidth": 768, "previewWidth": 768, "label": "Tablet" },
+  { "key": "mobile", "minWidth": 0, "previewWidth": 390, "label": "Mobile" }
+]
+```
+
+Подробнее про данные поля: [Обзор полей → responsive](fields/overview#pro-responsive).
 
 ## Public API {#public-api}
 

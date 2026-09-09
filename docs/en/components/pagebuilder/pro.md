@@ -20,7 +20,7 @@ The **pagebuilderpro** extra extends the Free editor. On install it pulls in **p
 | `conditions` | `settings.conditions` and evaluator (loggedIn, guest, context, GET, …) |
 | `presets` | Ready-made presets in the section catalog |
 | `i18n-copy` | Copy section between contexts |
-| `advanced-fields` | 20 field types in CMP (Pro group in the list). Without Pro, 30 Free types are available |
+| `advanced-fields` | 20 field types in CMP (Pro group in the list). Without Pro, 31 Free types are available |
 | `basket` | Global CMP basket (`mgr/basket/*`) |
 | `api` | [Agent API](agent-api): snapshot and apply sections |
 

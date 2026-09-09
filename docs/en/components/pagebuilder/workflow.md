@@ -114,8 +114,8 @@ Rapid edits to one field coalesce into one undo step: undo restores the last val
 
 The public page URL shows published sections only. To view the draft:
 
-- **Preview** button on the **Sections** tab;
-- center iframe preview after save;
+- **Preview** button on the **Sections** tab (saves a dirty draft before opening);
+- center iframe preview; viewport width comes from `pagebuilder_responsive_breakpoints`;
 - direct URL `{assets_url}components/pagebuilder/preview.php` with a signed token (`pagebuilder_preview_secret`).
 
 Template CSS and extra styles for the iframe: `pagebuilder_preview_include_template_css` and `pagebuilder_preview_css_urls`. Details: [Frontend output → Draft preview](frontend#draft-preview).

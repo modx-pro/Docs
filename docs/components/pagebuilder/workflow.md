@@ -114,8 +114,8 @@ Undo и redo работают в памяти редактора до успеш
 
 Публичный URL страницы показывает только опубликованные секции. Черновик смотрят так:
 
-- кнопка **Preview** на вкладке **Секции**;
-- iframe-превью по центру редактора после сохранения;
+- кнопка **Preview** на вкладке **Секции** (перед открытием сохраняет грязный черновик);
+- iframe-превью по центру редактора; ширина viewport берётся из `pagebuilder_responsive_breakpoints`;
 - прямой URL `{assets_url}components/pagebuilder/preview.php` с подписанным токеном (`pagebuilder_preview_secret`).
 
 CSS шаблона и дополнительные стили для iframe задают `pagebuilder_preview_include_template_css` и `pagebuilder_preview_css_urls`. Подробнее: [Вывод на сайте → Превью](frontend#prevyu-chernovika).

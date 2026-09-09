@@ -7,7 +7,7 @@ description: "Field schema in section JSON, inspector widgets, and saved section
 
 Fields define what the editor fills in for a section. The schema lives in the section type JSON (`core/components/pagebuilder/sections/{key}.json`) or in CMP.
 
-In the [reference](types) there are 50 types. Each has its own page: JSON **Schema**, a **Section data** block (how the field looks after save), and a Fenom or HTML example. In a chunk, values come from `section.data`.
+In the [reference](types) there are 51 types. Each has its own page: JSON **Schema**, a **Section data** block (how the field looks after save), and a Fenom or HTML example. In a chunk, values come from `section.data`.
 
 <!-- ![Section inspector](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
 
@@ -55,7 +55,7 @@ For fields with `name` that are stored in the section data (not `heading` / `dep
 
 Other schema keys (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) are not stripped by CMP: `sectionTypeForm.ts` keeps them in passthrough `extra`.
 
-### Pro: responsive
+### Pro: responsive {#pro-responsive}
 
 On `text`, `textarea`, `url`, `number`, `currency`, `richtext`, and `slug` with `responsive: true` (or an already saved breakpoint map), `section.data` holds:
 
@@ -69,7 +69,22 @@ On `text`, `textarea`, `url`, `number`, `currency`, `richtext`, and `slug` with 
 }
 ```
 
-Names `alt`, `caption`, and `slug` are excluded from responsive (`responsiveValues.ts`). On the frontend use `readResponsiveValue()` or capability `responsive`.
+Names `alt`, `caption`, and `slug` are excluded from responsive (`responsiveValues.ts`).
+
+Screen thresholds come from `pagebuilder_responsive_breakpoints` (or `responsiveBreakpoints` on the section type). Defaults: desktop ≥1024, tablet ≥768, mobile ≥0; manager preview uses `previewWidth`. Output mode: `pagebuilder_responsive_apply`.
+
+| Mode | Behavior |
+| --- | --- |
+| `manual` (default) | One value on the site: `?pb_bp=` or `pagebuilder_default_breakpoint`. SEO-safe |
+| `css` | All values in HTML, switched via CSS media queries |
+
+In chunks for responsive fields when `css` is on, use Fenom modifier `pb_text` instead of `escape`:
+
+```fenom
+{$title|pb_text}
+```
+
+With `manual`, plain `{$title|escape}` is enough (value is already a scalar).
 
 ### Meta example in JSON
 

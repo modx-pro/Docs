@@ -20,7 +20,7 @@ description: Флаги Pro, библиотека секций, версии, п
 | `conditions` | `settings.conditions` и evaluator (loggedIn, guest, context, GET, …) |
 | `presets` | Готовые пресеты в каталоге секций |
 | `i18n-copy` | Копирование секции между контекстами |
-| `advanced-fields` | 20 типов полей в панели управления (группа Pro в списке). Без Pro доступны 30 типов Free |
+| `advanced-fields` | 20 типов полей в панели управления (группа Pro в списке). Без Pro доступны 31 тип Free |
 | `basket` | Глобальная корзина в панели управления (`mgr/basket/*`) |
 | `api` | [Agent API](agent-api): snapshot и apply секций |
 

@@ -43,7 +43,15 @@ description: "Типовые проблемы PageBuilder: редактор, п�
 
 ## UTM-правила не работают
 
-Вызовите `[[!PageBuilderUtmSession]]` до `PageBuilder` в том же запросе. UTM должны быть в query string первого захода пользователя.
+Вызовите `[[!PageBuilderUtmSession]]` до `PageBuilder` в том же запросе. UTM должны быть в query string первого захода пользователя. В инспекторе откройте диалог **Видимость** (нужна `pagebuilder_inspector_visibility_enabled = 1`).
+
+## Поле migx без грида
+
+Нужен установленный пакет **MIGX**. Без него поле показывает textarea с JSON. См. [migx](fields/migx).
+
+## После обновления нет новых ключей настроек
+
+Resolver не перезаписывает существующие значения (`update.settings = false`). Отсутствующие ключи (breakpoints, visibility) добавляет Phinx при установке или `php scripts/migrate.php`. Очистите кеш MODX после обновления пакета.
 
 ## Connector 403 или 401
 

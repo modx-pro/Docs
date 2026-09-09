@@ -7,7 +7,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 Поля задают, что редактор заполняет в секции. Схему хранят в JSON типа (`core/components/pagebuilder/sections/{key}.json`) или собирают в панели управления.
 
-В [справочнике](types) 50 типов. У каждого своя страница: JSON **Настройка**, блок **Данные секции** (как поле выглядит после сохранения) и пример для Fenom или HTML. В chunk значения приходят из `section.data`.
+В [справочнике](types) 51 тип. У каждого своя страница: JSON **Настройка**, блок **Данные секции** (как поле выглядит после сохранения) и пример для Fenom или HTML. В chunk значения приходят из `section.data`.
 
 <!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
 
@@ -55,7 +55,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 Остальные ключи схемы (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) панель управления не затирает: `sectionTypeForm.ts` сохраняет их в passthrough `extra`.
 
-### Pro: responsive
+### Pro: responsive {#pro-responsive}
 
 На типах `text`, `textarea`, `url`, `number`, `currency`, `richtext`, `slug` при `responsive: true` (или уже сохранённой карте breakpoints) в данных секции:
 
@@ -69,7 +69,22 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). На фронте читайте значения через `readResponsiveValue()` или флаг `responsive`.
+Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`).
+
+Пороги экранов задаются в `pagebuilder_responsive_breakpoints` (или `responsiveBreakpoints` на типе секции). По умолчанию: desktop ≥1024, tablet ≥768, mobile ≥0; превью в менеджере берёт `previewWidth`. Режим вывода: `pagebuilder_responsive_apply`.
+
+| Режим | Поведение |
+| --- | --- |
+| `manual` (по умолчанию) | На сайте одно значение: `?pb_bp=` или `pagebuilder_default_breakpoint`. SEO-безопасно |
+| `css` | В HTML попадают все значения, переключение через CSS media queries |
+
+В chunk для responsive-полей при `css` используйте модификатор Fenom `pb_text` вместо `escape`:
+
+```fenom
+{$title|pb_text}
+```
+
+При `manual` достаточно обычного `{$title|escape}` (значение уже скаляр).
 
 ### Пример meta в JSON
 

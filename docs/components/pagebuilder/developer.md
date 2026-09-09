@@ -11,7 +11,7 @@ description: Определение секций, модель данных, р�
 
 | Тема | Страницы |
 | --- | --- |
-| Поля инспектора | [Обзор](fields/overview), [справочник 50 типов](fields/types) |
+| Поля инспектора | [Обзор](fields/overview), [справочник 51 типа](fields/types) |
 | Встроенные секции | [Каталог секций](sections/) |
 | Стили и BEM | [Дизайн-система](design-system) |
 | Headless JSON | [Public API](public-api) |

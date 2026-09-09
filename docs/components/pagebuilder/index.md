@@ -84,6 +84,7 @@ items: [
           { text: 'heading', link: 'fields/heading' },
           { text: 'hidden', link: 'fields/hidden' },
           { text: 'image', link: 'fields/image' },
+          { text: 'migx', link: 'fields/migx' },
           { text: 'multiselect', link: 'fields/multiselect' },
           { text: 'number', link: 'fields/number' },
           { text: 'radio', link: 'fields/radio' },
@@ -207,7 +208,7 @@ items: [
 
 ### Free: секции и поля
 
-11 встроенных типов: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. В панели управления можно править каталог, скрывать встроенные типы и добавлять свои через JSON (`pagebuilder_manage_types`). 30 типов полей в инспекторе: text, richtext, repeater, file, select и др. Часть полей поддерживает разные значения по breakpoint (responsive).
+11 встроенных типов: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. В панели управления можно править каталог, скрывать встроенные типы и добавлять свои через JSON (`pagebuilder_manage_types`). 31 тип полей в Free и 20 в Pro (51 всего): text, richtext, repeater, migx, file, select и др. Часть полей поддерживает разные значения по breakpoint (responsive).
 
 ### PageBuilder Pro
 
@@ -219,7 +220,7 @@ items: [
 
 ### UTM и контексты
 
-В панели управления задаёте реестр UTM-меток. В settings секции можно ограничить вывод по контексту MODX и по UTM. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` помогают на лендингах. В полях доступен плейсхолдер <code v-pre>{{utm:key}}</code>.
+В панели управления задаёте реестр UTM-меток. Правила видимости (контекст, UTM, Pro conditions) открываются кнопкой **Видимость** в инспекторе, если включена `pagebuilder_inspector_visibility_enabled`. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` помогают на лендингах. В полях доступен плейсхолдер <code v-pre>{{utm:key}}</code>.
 
 ### Collections и панель управления
 
@@ -243,8 +244,8 @@ items: [
 
 | Дополнение | Версия | Содержимое |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.1-beta | Free: core, 11 секций, панель управления, сниппеты |
-| `pagebuilderpro` | 1.0.1-beta | Pro: зависит от `pagebuilder` ≥ 1.0.1, расширенный каталог и функции |
+| `pagebuilder` | 1.0.4-beta | Free: core, секции, панель управления, сниппеты, поле `migx`, responsive breakpoints |
+| `pagebuilderpro` | 1.0.3-beta | Pro: зависит от `pagebuilder` ≥ 1.0.3, расширенный каталог и функции |
 
 Namespace в MODX: `pagebuilder`.
 
@@ -265,7 +266,7 @@ Namespace в MODX: `pagebuilder`.
 | Pro, корзина, пресеты | [PageBuilder Pro](pro) |
 | Скрипты и агенты | [Agent API](agent-api) |
 | Свои секции и расширения | [Разработчик](developer) |
-| 50 типов полей инспектора | [Справочник типов полей](fields/types) |
+| 51 типов полей инспектора | [Справочник типов полей](fields/types) |
 | 34 встроенных блока | [Каталог секций](sections/) |
 | Типовые ошибки | [FAQ](faq) |
 

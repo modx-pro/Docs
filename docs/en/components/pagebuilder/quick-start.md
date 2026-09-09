@@ -12,8 +12,8 @@ description: Install PageBuilder, permissions, Sections tab, and first frontend 
 | PHP | 8.2+ |
 | VueTools | 1.1.2+ |
 | pdoTools | 3.0+ |
-| PageBuilder (Free) | 1.0.1-beta |
-| PageBuilder Pro | 1.0.1-beta, requires `pagebuilder` ≥ 1.0.1 |
+| PageBuilder (Free) | 1.0.4-beta |
+| PageBuilder Pro | 1.0.3-beta, requires `pagebuilder` ≥ 1.0.3 |
 
 **PageBuilder** (Free) and **PageBuilder Pro** install from [modstore.pro](https://modstore.pro/extras/). Without the provider, install fails with `Package provider not found`.
 

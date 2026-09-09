@@ -6,7 +6,16 @@ description: "pagebuilder namespace keys: paths, preview, resource tabs, and Col
 
 MODX namespace: **pagebuilder**. Database key: `pagebuilder_<name>`.
 
-The extra manifest defines **16 keys**. On install or upgrade, the resolver adds missing keys. Existing values are not overwritten.
+The extra manifest defines **21 keys**. On install or upgrade, Phinx/resolver adds missing keys. Existing values are not overwritten (`update.settings = false`). Migration version table: `{table_prefix}pb_migrations`.
+
+For local dev without reinstalling the transport (CLI only, not site runtime):
+
+```bash
+cd core/components/pagebuilder && composer install --no-dev
+php scripts/migrate.php
+```
+
+Phinx and its `vendor/` are for the installer and `migrate.php` only. The built extra does not load them on web requests. Deprecated alias: `php scripts/sync-system-settings.php` calls `migrate.php`.
 
 ## Paths and preview
 
@@ -67,6 +76,29 @@ On the front: `PageBuilderTableRows` snippet, [data_table](sections/data_table) 
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
 | `pagebuilder_fake_enabled` | boolean | `0` | **Fake** button in the section inspector: fills fields with deterministic demo data (`mgr/section/fake`) |
+| `pagebuilder_inspector_visibility_enabled` | boolean | `0` | **Visibility** button in the inspector: dialog for conditions, contexts, UTM, and copy-for-context. Off by default so editors see content fields only |
+
+## Responsive breakpoints {#responsive}
+
+Screen thresholds for fields with `responsive: true` and manager preview iframe widths.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `pagebuilder_default_breakpoint` | text | `desktop` | Key from the breakpoints JSON when `responsive_apply=manual` and no `?pb_bp=` |
+| `pagebuilder_responsive_breakpoints` | textarea | desktop / tablet / mobile JSON | Array of `{ key, minWidth, previewWidth, label }`. Override per section type with `responsiveBreakpoints` |
+| `pagebuilder_responsive_apply` | text | `manual` | `manual`: one value on the site (SEO-safe). `css`: all values in HTML + media queries. In chunks for such fields use `{$title\|pb_text}` instead of `\|escape` |
+
+Default JSON example:
+
+```json
+[
+  { "key": "desktop", "minWidth": 1024, "previewWidth": 1280, "label": "Desktop" },
+  { "key": "tablet", "minWidth": 768, "previewWidth": 768, "label": "Tablet" },
+  { "key": "mobile", "minWidth": 0, "previewWidth": 390, "label": "Mobile" }
+]
+```
+
+Field data details: [Fields overview → responsive](fields/overview#pro-responsive).
 
 ## Public API {#public-api}
 
