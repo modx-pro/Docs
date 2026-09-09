@@ -76,7 +76,7 @@ Screen thresholds come from `pagebuilder_responsive_breakpoints` (or `responsive
 | Mode | Behavior |
 | --- | --- |
 | `manual` (default) | One value on the site: `?pb_bp=` or `pagebuilder_default_breakpoint`. SEO-safe |
-| `css` | All values in HTML, switched via CSS media queries |
+| `css` | All values in HTML inside `<span class="pb-rv">…</span>`, switched via CSS media queries |
 
 In chunks for responsive fields when `css` is on, use Fenom modifier `pb_text` instead of `escape`:
 
@@ -84,7 +84,7 @@ In chunks for responsive fields when `css` is on, use Fenom modifier `pb_text` i
 {$title|pb_text}
 ```
 
-With `manual`, plain `{$title|escape}` is enough (value is already a scalar).
+With `manual`, plain `{$title|escape}` is enough (value is already a scalar). Settings: [System settings → Responsive](../settings#responsive).
 
 ### Meta example in JSON
 
@@ -117,7 +117,7 @@ Live examples: section `_qa_field_matrix`, block "Meta parity".
 }
 ```
 
-In the section data this is an array of objects. Each row has a service `_rowId`. In a chunk: `{foreach $items as $item}` and `{$item.title|escape}`. Details: [repeater.md](repeater).
+In the section data this is an array of objects. Each row has a service `_rowId`. In a chunk: `{foreach $items as $item}` and `{$item.title|escape}`. Row order in the inspector: drag handle or arrows. The same drag exists for gallery, keyvalue, inline table, and related lists. Details: [repeater.md](repeater).
 
 ## showWhen
 

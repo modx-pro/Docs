@@ -200,7 +200,7 @@ Sidebar groups: getting started, editor, frontend, Pro, developer notes, plus se
 
 ### Resource editor
 
-On the **Sections** tab you get a block table: add from the catalog, drag-and-drop and Alt+↑/↓, duplicate, copy sections from another page. Deleted sections go to the page trash; you can restore or clear them. The inspector edits content and settings. Draft preview opens in a drawer via a signed link, without publishing. Undo/redo works in the current session. Before publish, the editor validates required fields and opens the inspector on the first error.
+On the **Sections** tab: table or compact editorial list, add from the catalog, drag-and-drop and Alt+↑/↓, duplicate, copy sections from another page. Deleted sections go to the page trash. Edit content in the modal **Properties** inspector; visibility rules (context, UTM) open from the **Visibility** button when the system setting is on. Draft preview opens in a drawer via a signed link, without publishing. Undo/redo in the current session. Before publish, the editor validates required fields.
 
 ### Draft and publish
 

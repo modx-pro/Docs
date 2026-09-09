@@ -76,7 +76,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 | Режим | Поведение |
 | --- | --- |
 | `manual` (по умолчанию) | На сайте одно значение: `?pb_bp=` или `pagebuilder_default_breakpoint`. SEO-безопасно |
-| `css` | В HTML попадают все значения, переключение через CSS media queries |
+| `css` | В HTML все значения в `<span class="pb-rv">…</span>`, переключение через CSS media queries |
 
 В chunk для responsive-полей при `css` используйте модификатор Fenom `pb_text` вместо `escape`:
 
@@ -84,7 +84,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 {$title|pb_text}
 ```
 
-При `manual` достаточно обычного `{$title|escape}` (значение уже скаляр).
+При `manual` достаточно обычного `{$title|escape}` (значение уже скаляр). Настройки: [Системные настройки → Responsive](../settings#responsive).
 
 ### Пример meta в JSON
 
@@ -117,7 +117,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-В данных секции лежит массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Подробнее: [repeater.md](repeater).
+В данных секции лежит массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Порядок строк в инспекторе: ручка перетаскивания или стрелки. Тот же drag есть у gallery, keyvalue, inline table и связанных списков. Подробнее: [repeater.md](repeater).
 
 ## showWhen
 

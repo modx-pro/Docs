@@ -65,7 +65,7 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 `return_values=1` возвращает JSON с извлечёнными значениями полей (`plainText`, структура `sections`). Подходит для headless-сценариев или своего шаблонизатора. Срабатывает `pbOnGetValues`.
 
-## Видимость секций
+## Видимость секций {#vidimost-sekcij}
 
 В `settings` секции можно задать:
 
@@ -75,6 +75,22 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 В Pro при флаге `conditions` добавляется `settings.conditions` (loggedIn, guest, context, GET-параметры и др.). Проверка идёт через `SectionVisibility` и событие `pbOnCheckSectionVisibility`.
 
 Секция не попадает в HTML, если правило не выполнено.
+
+В менеджере эти блоки открывает диалог **Видимость** (`pagebuilder_inspector_visibility_enabled`). См. [Рабочий процесс](workflow#vidimost).
+
+## Responsive на сайте {#responsive}
+
+При `pagebuilder_responsive_apply=manual` (по умолчанию) на сайт уходит одно значение breakpoint: query `?pb_bp=` или `pagebuilder_default_breakpoint`.
+
+При `css` в HTML попадают все значения. Pro-рендер оборачивает их в `<span class="pb-rv">` с `data-pb-bp`, стили media query подключаются автоматически. В chunk для таких полей:
+
+```fenom
+{$title|pb_text}
+```
+
+`pb_text` пропускает разметку `.pb-rv` и экранирует обычный текст. Не заменяйте его на `|escape`, иначе сломается CSS-режим.
+
+Схема поля и JSON: [Обзор полей → responsive](fields/overview#pro-responsive). Настройки: [Системные настройки → Responsive](settings#responsive).
 
 ## Превью черновика {#prevyu-chernovika}
 

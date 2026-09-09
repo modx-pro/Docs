@@ -65,7 +65,7 @@ Useful for partial blocks in different template areas.
 
 `return_values=1` returns JSON with extracted field values (`plainText`, `sections` structure). For headless or custom templating. Fires `pbOnGetValues`.
 
-## Section visibility
+## Section visibility {#section-visibility}
 
 In section `settings` you can set:
 
@@ -75,6 +75,22 @@ In section `settings` you can set:
 With Pro and capability `conditions`, add `settings.conditions` (loggedIn, guest, context, GET params, and more). Checked via `SectionVisibility` and event `pbOnCheckSectionVisibility`.
 
 The section is omitted from HTML when a rule fails.
+
+In the manager these blocks open from the **Visibility** dialog (`pagebuilder_inspector_visibility_enabled`). See [Workflow](workflow#visibility).
+
+## Responsive on the site {#responsive}
+
+With `pagebuilder_responsive_apply=manual` (default), the site gets one breakpoint value: `?pb_bp=` or `pagebuilder_default_breakpoint`.
+
+With `css`, all values go into HTML. Pro render wraps them in `<span class="pb-rv">` with `data-pb-bp`; media-query CSS is injected automatically. In chunks for those fields:
+
+```fenom
+{$title|pb_text}
+```
+
+`pb_text` passes through `.pb-rv` markup and escapes plain text. Do not swap it for `|escape` or CSS mode breaks.
+
+Field schema and JSON: [Fields overview → responsive](fields/overview#pro-responsive). Settings: [System settings → Responsive](settings#responsive).
 
 ## Draft preview {#draft-preview}
 

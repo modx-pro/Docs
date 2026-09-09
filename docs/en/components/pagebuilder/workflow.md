@@ -27,14 +27,16 @@ Even with published sections, the page will not open if the MODX resource itself
 ## Typical cycle
 
 1. Open the resource → **Sections** tab (needs `pagebuilder_view` and `view` on the resource).
-2. **Add section** → pick a type in the catalog → fill fields in the inspector on the right.
+2. **Add section** → pick a type in the catalog → open **Properties** (modal inspector) and fill the fields.
 3. Reorder by drag or **Alt+↑** / **Alt+↓** with a section selected in the list.
 4. The draft auto-saves to the server. **Save draft** forces sync when needed.
-5. **Preview** or the center preview pane shows the draft (not the public URL).
+5. **Preview** opens a drawer with a draft iframe (not the public URL).
 6. **Publish** copies the draft to `published_json`. Check the front with `[[!PageBuilder]]`.
 7. **Unpublish** removes sections from the site; the editor draft stays.
 
-The editor sidebar **Delivery and API** block shows Public API and Agent API URLs for the current resource and revision.
+The toolbar has a **table / editorial list** toggle: compact rows with actions on the right, or a table view. Search filters both modes.
+
+The sidebar **Delivery and API** block shows Public API and Agent API URLs for the current resource and revision.
 
 First page walkthrough: [Quick start](quick-start).
 
@@ -47,6 +49,12 @@ If two editors (or two tabs) save the same resource at once, the response is `re
 Before **Publish**, the client validates required fields (`required: true` in the type JSON). On failure it opens the inspector on the first failing section.
 
 Plugin events: `pbOnBeforeSave`, `pbOnAfterSave` (draft mode). `changes` carries a `DocumentChangeSet`: ids of sections added, removed, trashed, or restored.
+
+## Section visibility {#visibility}
+
+Show/hide rules (contexts, UTM, Pro `conditions`, copy-for-context) live in `section.settings`. In the inspector they open via the **Visibility** button when `pagebuilder_inspector_visibility_enabled = 1`. The setting is off by default, so editors see content fields only.
+
+Without the button, rules in JSON still apply on the front if they were set earlier or via API. Details: [Frontend → Section visibility](frontend#section-visibility).
 
 ## Publish and unpublish
 
@@ -115,7 +123,7 @@ Rapid edits to one field coalesce into one undo step: undo restores the last val
 The public page URL shows published sections only. To view the draft:
 
 - **Preview** button on the **Sections** tab (saves a dirty draft before opening);
-- center iframe preview; viewport width comes from `pagebuilder_responsive_breakpoints`;
+- drawer with an iframe; viewport width from `pagebuilder_responsive_breakpoints` (defaults 1280 / 768 / 390);
 - direct URL `{assets_url}components/pagebuilder/preview.php` with a signed token (`pagebuilder_preview_secret`).
 
 Template CSS and extra styles for the iframe: `pagebuilder_preview_include_template_css` and `pagebuilder_preview_css_urls`. Details: [Frontend output → Draft preview](frontend#draft-preview).
