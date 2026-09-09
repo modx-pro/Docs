@@ -11,7 +11,7 @@ For adding custom sections, extending Pro, or integrating the connector from you
 
 | Topic | Pages |
 | --- | --- |
-| Inspector fields | [Overview](fields/overview), [50 field types](fields/types) |
+| Inspector fields | [Overview](fields/overview), [51 field types](fields/types) |
 | Built-in sections | [Section catalog](sections/) |
 | Styles and BEM | [Design system](design-system) |
 | Headless JSON | [Public API](public-api) |

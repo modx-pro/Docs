@@ -115,6 +115,10 @@ function resolveInternalTarget(fromFile, href) {
   return false
 }
 
+function stripHtmlComments(content) {
+  return content.replace(/<!--[\s\S]*?-->/g, '')
+}
+
 function extractMarkdownLinks(content) {
   const links = []
   const re = /!?\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
@@ -172,7 +176,7 @@ for (const file of files) {
   const src = readFileSync(file, 'utf8')
   const { data, content } = matter(src)
 
-  for (const link of extractMarkdownLinks(content)) {
+  for (const link of extractMarkdownLinks(stripHtmlComments(content))) {
     const href = link.href.trim()
     if (!href || href.startsWith('#')) {
       continue

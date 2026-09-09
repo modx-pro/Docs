@@ -43,7 +43,15 @@ Register JSON via `pbOnRegisterSectionDefinitions` or CMP import (Pro). Check JS
 
 ## UTM rules do not work
 
-Call `[[!PageBuilderUtmSession]]` before `PageBuilder` in the same request. UTM must be in the query string on the user’s first hit.
+Call `[[!PageBuilderUtmSession]]` before `PageBuilder` in the same request. UTM must be in the query string on the user’s first hit. Open the inspector **Visibility** dialog (`pagebuilder_inspector_visibility_enabled = 1`).
+
+## migx field without a grid
+
+Install the **MIGX** package. Without it the field shows a JSON textarea. See [migx](fields/migx).
+
+## New setting keys missing after upgrade
+
+The resolver does not overwrite existing values (`update.settings = false`). Missing keys (breakpoints, visibility) are added by Phinx on package install or upgrade. Clear MODX cache after upgrading.
 
 ## Connector 403 or 401
 

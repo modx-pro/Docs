@@ -39,7 +39,7 @@ JSON schema details: [Developer → Section definition](developer#section-defini
 
 ## UTM
 
-Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. Section **visibility** rules are set in the resource inspector (`settings.utm`), not on this tab.
+Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. Section **visibility** rules are set in the inspector **Visibility** dialog (`settings.utm`) when `pagebuilder_inspector_visibility_enabled` is on. Not on this tab.
 
 Call [PageBuilderUtmSession](snippets/PageBuilderUtmSession) before `PageBuilder` on the front. See [Snippets](snippets/).
 

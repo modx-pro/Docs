@@ -12,7 +12,7 @@ PageBuilder builds a page from section blocks, not from the resource **Content**
 | Role | What you get |
 | --- | --- |
 | **Editor** | Drag-and-drop sections, field inspector, draft, preview, publish without editing the template |
-| **Beginner developer** | 34 built-in sections, 50 field types, JSON schema and Fenom in chunks without custom Vue |
+| **Beginner developer** | 34 built-in sections, 51 field types, JSON schema and Fenom in chunks without custom Vue |
 | **Experienced developer** | Events, custom section types, tabular resource data, UTM, miniShop3 and Collections integration |
 
 ## Page builder
@@ -38,9 +38,9 @@ Storage details: [Workflow](workflow), [Developer → Data model](developer#data
 
 Each section has a catalog page: what the block is for, where to use it, what to fill in the inspector, and related sections.
 
-### 4. Inspector and 50 field types
+### 4. Inspector and 51 field types
 
-Field schema lives in section JSON: **30 Free types** (text, repeater, editorjs, image, multiselect, video…) and **20 Pro** (relation, gallery, combo, embeddedTable…). Each type has a reference page with **Why**, **When to use**, and **Tips** sections.
+Field schema lives in section JSON: **31 Free types** (text, repeater, migx, editorjs, image, multiselect, video…) and **20 Pro** (relation, gallery, combo, embeddedTable…). Each type has a reference page with **Why**, **When to use**, and **Tips** sections.
 
 See [Fields overview](fields/overview) and [Field types reference](fields/types).
 
@@ -51,7 +51,7 @@ The `pagebuilderpro` extra adds capabilities and extends the editor:
 - Section library: save a block, insert on another resource, edit linked copy
 - Versions: document snapshots, diff, rollback
 - Presets: ready-made section sets for typical landings
-- Breakpoint fields: different values for desktop, tablet, and mobile
+- Breakpoint fields: different values for desktop, tablet, and mobile (`pagebuilder_responsive_apply`: `manual` or `css`)
 - Advanced fields: 20 types in the CMP (relation, map, table, dependent, and more; capability `advanced-fields`)
 - Global CMP basket: restore or purge deleted sections and table rows (capability `basket`)
 
@@ -67,7 +67,7 @@ The resource **Tables** tab stores rows in `pb_*`: filters, pagination, CSV/JSON
 
 ### 6. UTM and contexts
 
-UTM registry in CMP, section visibility rules by tags and MODX context. Placeholder <code v-pre>{{utm:key}}</code> in fields. `PageBuilderUtmSession` and `PageBuilderUtmUrl` snippets for session and links.
+UTM registry in CMP, section visibility rules by tags and MODX context. The **Visibility** dialog in the inspector is gated by `pagebuilder_inspector_visibility_enabled`. Placeholder <code v-pre>{{utm:key}}</code> in fields. `PageBuilderUtmSession` and `PageBuilderUtmUrl` snippets for session and links.
 
 ### 7. Collections
 

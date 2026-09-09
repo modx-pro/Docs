@@ -84,6 +84,7 @@ items: [
           { text: 'heading', link: 'fields/heading' },
           { text: 'hidden', link: 'fields/hidden' },
           { text: 'image', link: 'fields/image' },
+          { text: 'migx', link: 'fields/migx' },
           { text: 'multiselect', link: 'fields/multiselect' },
           { text: 'number', link: 'fields/number' },
           { text: 'radio', link: 'fields/radio' },
@@ -199,7 +200,7 @@ Sidebar groups: getting started, editor, frontend, Pro, developer notes, plus se
 
 ### Resource editor
 
-On the **Sections** tab you get a block table: add from the catalog, drag-and-drop and Alt+↑/↓, duplicate, copy sections from another page. Deleted sections go to the page trash; you can restore or clear them. The inspector edits content and settings. Draft preview opens in a drawer via a signed link, without publishing. Undo/redo works in the current session. Before publish, the editor validates required fields and opens the inspector on the first error.
+On the **Sections** tab: table or compact editorial list, add from the catalog, drag-and-drop and Alt+↑/↓, duplicate, copy sections from another page. Deleted sections go to the page trash. Edit content in the modal **Properties** inspector; visibility rules (context, UTM) open from the **Visibility** button when the system setting is on. Draft preview opens in a drawer via a signed link, without publishing. Undo/redo in the current session. Before publish, the editor validates required fields.
 
 ### Draft and publish
 
@@ -207,7 +208,7 @@ Edits go to the draft. After **Publish**, the same layout goes live. **Unpublish
 
 ### Free: sections and fields
 
-11 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. In the CMP you can edit the catalog, hide built-in types, and add custom ones via JSON (`pagebuilder_manage_types`). 30 field types in the inspector: text, richtext, repeater, file, select, and more. Some fields support per-breakpoint values (responsive).
+11 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. In the CMP you can edit the catalog, hide built-in types, and add custom ones via JSON (`pagebuilder_manage_types`). 31 Free field types and 20 Pro (51 total): text, richtext, repeater, migx, file, select, and more. Some fields support per-breakpoint values (responsive).
 
 ### PageBuilder Pro
 
@@ -219,7 +220,7 @@ The **Tables** tab stores large row sets in the DB: filters, CSV/JSON import, bu
 
 ### UTM and contexts
 
-Set up a UTM registry in the CMP. In section settings you can limit output by MODX context and UTM. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` help on landing pages. Fields support the <code v-pre>{{utm:key}}</code> placeholder.
+Set up a UTM registry in the CMP. Visibility rules (context, UTM, Pro conditions) open from the inspector **Visibility** button when `pagebuilder_inspector_visibility_enabled` is on. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` help on landing pages. Fields support the <code v-pre>{{utm:key}}</code> placeholder.
 
 ### Collections and CMP
 
@@ -243,8 +244,8 @@ With `collections_enabled`, resource tabs (sections, tables, iframe, and more) a
 
 | Extra | Version | Contents |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.1-beta | Free: core, 11 sections, CMP, snippets |
-| `pagebuilderpro` | 1.0.1-beta | Pro: requires `pagebuilder` ≥ 1.0.1, extended catalog and features |
+| `pagebuilder` | 1.0.4-beta | Free: core, sections, CMP, snippets, `migx` field, responsive breakpoints |
+| `pagebuilderpro` | 1.0.3-beta | Pro: requires `pagebuilder` ≥ 1.0.3, extended catalog and features |
 
 MODX namespace: `pagebuilder`.
 
@@ -265,7 +266,7 @@ MODX namespace: `pagebuilder`.
 | Pro features | [PageBuilder Pro](pro) |
 | Scripts and agents | [Agent API](agent-api) |
 | Custom sections and extensions | [Developer](developer) |
-| 50 inspector field types | [Field types reference](fields/types) |
+| 51 inspector field types | [Field types reference](fields/types) |
 | 34 built-in blocks | [Section catalog](sections/) |
 | Troubleshooting | [FAQ](faq) |
 
