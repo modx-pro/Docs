@@ -8,8 +8,10 @@ import DocsScreenAuthorWidget from './DocsScreenAuthorWidget.vue'
 import DocsBreadcrumbs from './DocsBreadcrumbs.vue'
 import DocsComponentTree from './DocsComponentTree.vue'
 import DocsNotFound from './DocsNotFound.vue'
+import { useSyntaxSwitcher } from '../composables/syntax-switcher'
 
 const { Layout } = DefaultTheme
+useSyntaxSwitcher('vitepress:default-syntax', ['modx', 'fenom'])
 </script>
 
 <template>
