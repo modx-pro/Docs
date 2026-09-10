@@ -234,6 +234,10 @@ export default withMermaid(
     ssr: {
       noExternal: ['mermaid'],
     },
+    // mermaid → fastdom (CJS): without prebundle Vite ESM interop has no default export
+    optimizeDeps: {
+      include: ['fastdom', 'fastdom/extensions/fastdom-promised.js'],
+    },
     resolve: {
       alias: [
         'VPSidebar',
