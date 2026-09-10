@@ -232,11 +232,19 @@ export default withMermaid(
 
   vite: {
     ssr: {
-      noExternal: ['mermaid'],
+      noExternal: [
+        'mermaid',
+        '@nolebase/vitepress-plugin-enhanced-readabilities',
+        '@nolebase/ui',
+      ],
     },
     // mermaid → fastdom (CJS): without prebundle Vite ESM interop has no default export
     optimizeDeps: {
       include: ['fastdom', 'fastdom/extensions/fastdom-promised.js'],
+      exclude: [
+        '@nolebase/vitepress-plugin-enhanced-readabilities/client',
+        '@nolebase/ui',
+      ],
     },
     resolve: {
       alias: [
