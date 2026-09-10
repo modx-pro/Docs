@@ -65,6 +65,50 @@ switch($modx->event->name){
 
 :::
 
+#### mspdOnGetShowPrices - fired when preparing display price of a product in catalog or on product page
+
+Fired after discounts are applied, but before formatted price values (**price_str**, **old_price_str**) are
+calculated, so a subscriber can replace the price pair and formatted values will be calculated from the replaced
+ones. The event is fired for a product without any discounts too — this way a site can show the «old / new price»
+pair where the benefit is not expressed by any discount record (a bundle product, for example).
+
+Available parameters:
+
+* **$productData** - array of product data.
+* **$discounts** - array of discounts included in display; may be empty.
+* **$scope** - display area: `catalog` or `product`.
+* **$prices** - current price pair: `['price' => ..., 'old_price' => ...]`.
+* **$object** - MsProductDiscounts\Discounts instance.
+
+Replacement is done through the **$object->showPrices** property; a price the subscriber did not touch is
+calculated as before.
+
+While discount display is not enabled by the **mspd_show_for_all** system setting and no discount has display set
+to «Show», the component answers only for cart products with discounts — a product without discounts never reaches
+display price calculation, and the event is not fired for it. A site that supplies its own prices must declare it
+with the **$object->externalPrices** property in the **mspdOnFilterIdsByDiscount** event: it removes the early
+return by cart. Note that products the server used to be silent about then get into the response, and their old
+price is taken from the product itself — if the old price field is filled there and should not be shown, reset it
+in your subscriber.
+
+::: details Plugin example
+
+```php:line-numbers
+// show bundle product 123 the old price calculated by the site
+switch($modx->event->name){
+  case 'mspdOnFilterIdsByDiscount':
+        $object->externalPrices = true;
+    break;
+  case 'mspdOnGetShowPrices':
+        if((int)$productData['id'] === 123){
+            $object->showPrices['old_price'] = 520.00;
+        }
+    break;
+}
+```
+
+:::
+
 #### mspdOnGetProductDiscounts - fired when getting discounts for product
 
 Available parameters:
