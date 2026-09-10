@@ -1,11 +1,11 @@
 ---
 title: PageBuilder Pro
-description: Pro flags, section library, versions, presets, and connector actions
+description: Pro flags, Shared blocks, versions, Examples, and connector actions
 ---
 
 # PageBuilder Pro
 
-The **pagebuilderpro** extra extends the Free editor. On install it pulls in **pagebuilder** core as a dependency.
+The **pagebuilderpro** extra extends the Free editor. On install it pulls in **pagebuilder** core as a dependency. Current line: **1.0.4-beta**, requires `pagebuilder` ≥ **1.0.5**.
 
 ## Pro flags
 
@@ -14,17 +14,17 @@ The **pagebuilderpro** extra extends the Free editor. On install it pulls in **p
 | Flag | Purpose |
 | --- | --- |
 | `pro` | Pro license |
-| `library` | Section library: save, link, insert, edit master (`pb_library_items`) |
+| `library` | Shared blocks: save, link, insert, edit master (`pb_library_items`) |
 | `versions` | Page publish history, restore, section event log |
 | `responsive` | Field values per desktop, tablet, and mobile (text, textarea, url, number, currency, richtext, slug) |
 | `conditions` | `settings.conditions` and evaluator (loggedIn, guest, context, GET, …) |
-| `presets` | Ready-made presets in the section catalog |
+| `presets` | **Examples** tab in the add-section catalog (sample-filled blocks) |
 | `i18n-copy` | Copy section between contexts |
 | `advanced-fields` | 20 field types in CMP (Pro group in the list). Without Pro, 31 Free types are available |
 | `basket` | Global CMP basket (`mgr/basket/*`) |
 | `api` | [Agent API](agent-api): snapshot and apply sections |
 
-Module `pro-resource.min.js` on the resource tab adds **Library** and **History** panels in the sidebar.
+Module `pro-resource.min.js` on the resource tab adds **Shared blocks** and **History** panels in the sidebar.
 
 ## Pro sections
 
@@ -38,17 +38,17 @@ Definitions live in `pagebuilderpro/sections/`, chunk name is `pagebuilderpro_{k
 
 Storefront sections require **miniShop3** (`requires: ["pro", "minishop3"]`). Site catalog: [Pro sections](sections/).
 
-## Section library
+## Shared blocks
 
-Save a block from the editor to the library, insert on another resource, or link to a master copy. At render time, master data merges into linked instances.
+Save a block from the editor as a shared item, insert on another resource, or link to a master copy. At render time, master data merges into linked instances. The add-section catalog shows the **Shared blocks** tab only when at least one item is saved.
 
 ## Versions and history
 
 Snapshots of the published document, version diff, rollback to draft. Each section has its own event log.
 
-## Presets
+## Examples
 
-Ready-made section sets for typical landings in the add-section catalog.
+The **Examples** tab in the add-section catalog: ready-made blocks with sample text (capability `presets`, `mgr/presets/list`). You can edit fields after insert. The connector action is still named `presets`.
 
 ## Connector actions (Pro)
 
@@ -56,10 +56,10 @@ All requests are POST to `assets/components/pagebuilder/connector.php` with `act
 
 | Action | Purpose |
 | --- | --- |
-| `mgr/library/list` | List library items |
+| `mgr/library/list` | List shared-block items |
 | `mgr/library/save` | Save or update an item |
 | `mgr/library/remove` | Remove an item |
-| `mgr/library/adjustusage` | Library item usage counter |
+| `mgr/library/adjustusage` | Shared-block usage counter |
 | `mgr/versions/list` | List page versions |
 | `mgr/versions/get` | One document version |
 | `mgr/versions/restore` | Roll draft back to a version |
@@ -67,7 +67,7 @@ All requests are POST to `assets/components/pagebuilder/connector.php` with `act
 | `mgr/sectionevents/get` | One log entry |
 | `mgr/sectionevents/record` | Append log entry |
 | `mgr/sectionevents/restore` | Restore section state from log |
-| `mgr/presets/list` | List presets |
+| `mgr/presets/list` | List examples for the catalog tab |
 | `mgr/basket/*` | [Global CMP basket](cmp#basket-pro) |
 | `mgr/api/page/snapshot` / `apply` | [Agent API](agent-api) |
 | `mgr/ms3/products/search` | Product search for commerce sections |
@@ -78,4 +78,4 @@ All requests are POST to `assets/components/pagebuilder/connector.php` with `act
 - [Agent API](agent-api)
 - [CMP](cmp)
 - [Developer](developer)
-- [Key features](key-features#pagebuilder-pro)
+- [Workflow](workflow)

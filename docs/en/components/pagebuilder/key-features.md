@@ -19,7 +19,7 @@ PageBuilder builds a page from section blocks, not from the resource **Content**
 
 ### 1. Section editor on the resource
 
-The **Sections** tab on the resource form and in the **PageBuilder** CMP share one Vue bundle via [VueTools](https://docs.modx.pro/en/components/vuetools/). Add sections from the catalog, reorder by drag or Alt+↑/↓, duplicate, and copy between resources.
+The **Sections** tab on the resource form and in the **PageBuilder** CMP share one Vue bundle via [VueTools](https://docs.modx.pro/en/components/vuetools/). Add sections from the catalog, reorder by drag or Alt+↑/↓, duplicate, and copy between resources. If you hit **Cancel** in the inspector right after adding a section, the draft rolls back and the empty block does not stay on the page.
 
 See [Quick start](quick-start) and [Manager and events](integration).
 
@@ -48,9 +48,9 @@ See [Fields overview](fields/overview) and [Field types reference](fields/types)
 
 The `pagebuilderpro` extra adds capabilities and extends the editor:
 
-- Section library: save a block, insert on another resource, edit linked copy
+- Shared blocks: save a section, insert on another resource, edit a linked copy
 - Versions: document snapshots, diff, rollback
-- Presets: ready-made section sets for typical landings
+- Examples: sample-filled blocks on the add-section catalog tab
 - Breakpoint fields: different values for desktop, tablet, and mobile (`pagebuilder_responsive_apply`: `manual` or `css`)
 - Advanced fields: 20 types in the CMP (relation, map, table, dependent, and more; capability `advanced-fields`)
 - Global CMP basket: restore or purge deleted sections and table rows (capability `basket`)

@@ -1,7 +1,9 @@
 ---
 title: PageBuilder
 description: Visual section builder for MODX 3. Draft and publish without overwriting resource content
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/pagebuilder/logo.png
+modstore: https://modstore.pro/packages/sites-themes/pagebuilder
 dependencies: [VueTools, pdoTools]
 categories: utilities
 
@@ -200,7 +202,7 @@ Sidebar groups: getting started, editor, frontend, Pro, developer notes, plus se
 
 ### Resource editor
 
-On the **Sections** tab: table or compact editorial list, add from the catalog, drag-and-drop and Alt+↑/↓, duplicate, copy sections from another page. Deleted sections go to the page trash. Edit content in the modal **Properties** inspector; visibility rules (context, UTM) open from the **Visibility** button when the system setting is on. Draft preview opens in a drawer via a signed link, without publishing. Undo/redo in the current session. Before publish, the editor validates required fields.
+On the **Sections** tab: table or compact editorial list, add from the catalog, drag-and-drop and Alt+↑/↓, duplicate, copy sections from another page. Deleted sections go to the page trash. Edit content in the modal **Properties** inspector. While the inspector is open for a newly added section, autosave is paused: **Cancel** rolls the draft back to the state before the insert. Visibility rules (context, UTM) open from the **Visibility** button when the system setting is on. Draft preview opens in a drawer via a signed link, without publishing. Undo/redo in the current session. Before publish, the editor validates required fields.
 
 ### Draft and publish
 
@@ -208,11 +210,11 @@ Edits go to the draft. After **Publish**, the same layout goes live. **Unpublish
 
 ### Free: sections and fields
 
-11 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. In the CMP you can edit the catalog, hide built-in types, and add custom ones via JSON (`pagebuilder_manage_types`). 31 Free field types and 20 Pro (51 total): text, richtext, repeater, migx, file, select, and more. Some fields support per-breakpoint values (responsive).
+11 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. In the CMP **Blocks** tab you filter types with **All / From package / Mine** chips, bulk-hide bundled types, and upload a custom catalog thumbnail instead of the built-in sketch. 31 Free field types and 20 Pro (51 total): text, richtext, repeater, migx, file, select, and more. Some fields support per-breakpoint values (responsive).
 
 ### PageBuilder Pro
 
-Global section library, version snapshots and event log, presets, [Agent API](agent-api) for scripts and agents. CMP **Basket** restores deleted sections and table rows across resources. Pro catalog: features, video, team, tabs, maps, forms, miniShop3 commerce blocks (product grids, brands, pricing, and more). 20 more field types: gallery, map, relation, table, embeddedTable, and more.
+Global **Shared blocks** library, version snapshots and event log, **Examples** tab in the add-section catalog, [Agent API](agent-api) for scripts and agents. CMP **Basket** restores deleted sections and table rows across resources. Pro catalog: features, video, team, tabs, maps, forms, miniShop3 commerce blocks (product grids, brands, pricing, and more). 20 more field types: gallery, map, relation, table, embeddedTable, and more.
 
 ### Resource tables
 
@@ -244,8 +246,8 @@ With `collections_enabled`, resource tabs (sections, tables, iframe, and more) a
 
 | Extra | Version | Contents |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.4-beta | Free: core, sections, CMP, snippets, `migx` field, responsive breakpoints |
-| `pagebuilderpro` | 1.0.3-beta | Pro: requires `pagebuilder` ≥ 1.0.3, extended catalog and features |
+| `pagebuilder` | 1.0.5-beta | Free: core, sections, CMP, snippets, `migx` field, responsive breakpoints, type filters and custom catalog thumbnails |
+| `pagebuilderpro` | 1.0.4-beta | Pro: requires `pagebuilder` ≥ 1.0.5, extended catalog and features |
 
 MODX namespace: `pagebuilder`.
 
@@ -263,7 +265,7 @@ MODX namespace: `pagebuilder`.
 | CSS tokens and section BEM | [Design system](design-system) |
 | JSON for headless | [Public API](public-api) |
 | Snippets and parameters | [Snippets](snippets/) |
-| Pro features | [PageBuilder Pro](pro) |
+| Pro, basket, examples | [PageBuilder Pro](pro) |
 | Scripts and agents | [Agent API](agent-api) |
 | Custom sections and extensions | [Developer](developer) |
 | 51 inspector field types | [Field types reference](fields/types) |

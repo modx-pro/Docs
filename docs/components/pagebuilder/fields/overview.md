@@ -102,7 +102,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Живые примеры: секция `_qa_field_matrix`, блок «Meta parity».
+Живые примеры: секция `_qa_field_matrix` (в каталоге: **QA: все типы полей**), блок «Meta parity».
 
 ## Repeater
 

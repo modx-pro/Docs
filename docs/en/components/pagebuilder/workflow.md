@@ -27,12 +27,13 @@ Even with published sections, the page will not open if the MODX resource itself
 ## Typical cycle
 
 1. Open the resource → **Sections** tab (needs `pagebuilder_view` and `view` on the resource).
-2. **Add section** → pick a type in the catalog → open **Properties** (modal inspector) and fill the fields.
-3. Reorder by drag or **Alt+↑** / **Alt+↓** with a section selected in the list.
-4. The draft auto-saves to the server. **Save draft** forces sync when needed.
-5. **Preview** opens a drawer with a draft iframe (not the public URL).
-6. **Publish** copies the draft to `published_json`. Check the front with `[[!PageBuilder]]`.
-7. **Unpublish** removes sections from the site; the editor draft stays.
+2. **Add section** → in the catalog use **Blocks**, and with Pro also **Examples** and **Shared blocks** (when saved items exist) → pick a type → open **Properties** and fill the fields.
+3. While the inspector is open for a newly added section, autosave is paused. **Cancel** rolls the draft back to before the insert. After you save, the section stays in the document.
+4. Reorder by drag or **Alt+↑** / **Alt+↓** with a section selected in the list.
+5. The draft auto-saves to the server. **Save draft** forces sync when needed.
+6. **Preview** opens a drawer with a draft iframe (not the public URL). Opening preview saves a dirty draft first.
+7. **Publish** copies the draft to `published_json`. Check the front with `[[!PageBuilder]]`.
+8. **Unpublish** removes sections from the site; the editor draft stays.
 
 The toolbar has a **table / editorial list** toggle: compact rows with actions on the right, or a table view. Search filters both modes.
 

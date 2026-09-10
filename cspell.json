@@ -1307,7 +1307,11 @@
     "краулер",
     "краулеры",
     "мультидомене",
-    "dedupe"
+    "dedupe",
+    "adjustusage",
+    "автосохранения",
+    "автосохранение",
+    "sobytiya"
   ],
   "ignorePaths": [
     "node_modules",
