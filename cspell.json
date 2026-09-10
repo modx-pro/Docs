@@ -1311,7 +1311,16 @@
     "adjustusage",
     "автосохранения",
     "автосохранение",
-    "sobytiya"
+    "sobytiya",
+    "mspyandexpay",
+    "yandexpay",
+    "jwks",
+    "fullpayment",
+    "линкует",
+    "переиспользует",
+    "фискализацию",
+    "юрлица",
+    "деплоем"
   ],
   "ignorePaths": [
     "node_modules",
