@@ -1,5 +1,6 @@
 import { type Router, inBrowser } from 'vitepress'
 import { type App, watch } from 'vue'
+import { NolebaseEnhancedReadabilitiesPlugin } from '@nolebase/vitepress-plugin-enhanced-readabilities/client'
 import { createZoom } from './composables/zoom'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import DocsLayout from './components/DocsLayout.vue'
@@ -12,6 +13,7 @@ export default {
   Layout: DocsLayout,
 
   enhanceApp({ app, router }: { app: App, router: Router }) {
+    app.use(NolebaseEnhancedReadabilitiesPlugin)
     app.component('DocsComponentsList', DocsComponentsList)
     createZoom(app, router)
 
