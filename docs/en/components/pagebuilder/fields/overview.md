@@ -102,7 +102,7 @@ With `manual`, plain `{$title|escape}` is enough (value is already a scalar). Se
 }
 ```
 
-Live examples: section `_qa_field_matrix`, block "Meta parity".
+Live examples: section `_qa_field_matrix` (catalog label: **QA: all field types**), block "Meta parity".
 
 ## Repeater
 

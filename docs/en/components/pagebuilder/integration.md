@@ -49,7 +49,7 @@ Resource **data tables** live in separate `pb_*` tables (“Tables” tab).
 
 ## PageBuilder Pro
 
-The `pagebuilderpro` extra adds library, versions, presets, responsive fields, 20 advanced field types, global CMP basket, and [Agent API](agent-api).
+The `pagebuilderpro` extra adds Shared blocks, versions, Examples in the catalog, responsive fields, 20 advanced field types, global CMP basket, and [Agent API](agent-api).
 
 Details: [PageBuilder Pro](pro). Commerce sections require **miniShop3**.
 

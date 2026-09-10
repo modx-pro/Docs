@@ -22,6 +22,18 @@ Four site-level tabs, not tied to a single resource:
 
 CRUD section types without PHP deploy. Built-in JSON from `core/components/pagebuilder/sections/*.json` can be edited, hidden, and restored in the catalog via CMP.
 
+Origin filter chips (choice is stored in the browser):
+
+| Chip | Shows |
+| --- | --- |
+| **All** | Packaged and custom types |
+| **From package** | Types from package JSON (and their UI overrides in the DB) |
+| **Mine** | Types created in the CMP |
+
+**Hide bundled** bulk-hides packaged types (`published = 0` for UI overrides and custom rows; code types still use the hide lifecycle). Your own types stay visible. Sections on existing pages do not change.
+
+Type card field **Catalog thumbnail**: upload a layout screenshot. In the resource **+ Create** dialog it replaces the package sketch.
+
 | Action | What happens |
 | --- | --- |
 | Override | Row in `pb_section_types`, `overridesCode` flag. Database wins at runtime |
@@ -29,9 +41,9 @@ CRUD section types without PHP deploy. Built-in JSON from `core/components/pageb
 | Remove (code type) | `removedCode` tombstone in the database. Package JSON is not deleted |
 | Restore | Enable Show hidden → **Restore** |
 
-On extra upgrade, `pb_section_types` rows are **not overwritten**: the database wins. Sections on already published pages keep rendering.
+On extra upgrade, `pb_section_types` rows are **not overwritten**: the database wins. User system settings are also left alone (`update.settings = false`). Sections on already published pages keep rendering.
 
-Processor `mgr/sectiontype/remove` accepts POST parameter `lifecycle`: `hide`, `remove`, `restore` (do not confuse with connector `action`).
+Processor `mgr/sectiontype/remove` accepts POST parameter `lifecycle`: `hide`, `remove`, `restore` (do not confuse with connector `action`). Bulk hide sends a `keys` array.
 
 JSON schema details: [Developer → Section definition](developer#section-definition).
 
