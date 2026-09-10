@@ -1,9 +1,10 @@
 ---
 title: Reactions
 description: Универсальная система реакций для MODX 3 — лайки, наборы в стиле GitHub, топы и trending на любом объекте
-author: ibochkarev
-repository: https://github.com/Ibochkarev/Reactions
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/reactions/logo.png
+modstore: https://modstore.pro/packages/ecommerce/reactions
+repository: https://github.com/Ibochkarev/Reactions
 categories: utilities
 
 items: [

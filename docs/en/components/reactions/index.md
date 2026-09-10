@@ -1,9 +1,10 @@
 ---
 title: Reactions
 description: Universal reactions for MODX 3 — likes, GitHub-style sets, tops and trending on any object
-author: ibochkarev
-repository: https://github.com/Ibochkarev/Reactions
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/reactions/logo.png
+modstore: https://modstore.pro/packages/ecommerce/reactions
+repository: https://github.com/Ibochkarev/Reactions
 categories: utilities
 
 items: [

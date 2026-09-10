@@ -1,8 +1,8 @@
 ---
 title: ms3ProductSets
 description: Динамические подборки товаров для MiniShop3 — ручные связи, авто-рекомендации, админка шаблонов
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3productsets/logo.png
-author: ibochkarev
 modstore: https://modstore.pro/packages/ecommerce/ms3productsets
 dependencies: miniShop3
 categories: minishop3

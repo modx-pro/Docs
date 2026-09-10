@@ -1,8 +1,8 @@
 ---
 title: ms3FirstTimeBuyerDiscount
 description: First-order discount for MiniShop3 — auto-applied when 0 paid orders (percent or fixed)
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3firsttimebuyerdiscount/logo.png
-author: ibochkarev
 modstore: https://modstore.pro/packages/discounts/ms3firsttimebuyerdiscount
 dependencies: miniShop3
 categories: minishop3

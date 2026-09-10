@@ -1,7 +1,7 @@
 ---
 title: msViewCounter
 description: Счётчик просмотров и активных посетителей товара для MiniShop3
-author: ibochkarev
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msviewcounter/logo.png
 modstore: https://modstore.pro/packages/ecommerce/msviewcounter
 dependencies: miniShop3

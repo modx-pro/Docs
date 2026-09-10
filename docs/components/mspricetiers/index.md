@@ -1,8 +1,7 @@
 ---
 title: msPriceTiers
 description: Оптовые цены по количеству для MiniShop3 — пороги на товаре и категории, сумма корзины, шаблоны, массовые операции, ms3Variants
-author: ibochkarev
-logo: https://modstore.pro/assets/extras/mspricetiers/logo.png
+author: Ibochkarev
 modstore: https://modstore.pro/packages/ecommerce/mspricetiers
 dependencies: miniShop3
 categories: minishop3

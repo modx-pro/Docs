@@ -1,8 +1,9 @@
 ---
 title: ms3Favorites
 description: Списки избранного для MiniShop3 и других ресурсов — хранение в браузере, синхронизация в БД
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3favorites/logo.png
-author: ibochkarev
+modstore: https://modstore.pro/packages/ecommerce/ms3favorites
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

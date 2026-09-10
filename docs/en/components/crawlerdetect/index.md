@@ -1,10 +1,10 @@
 ---
 title: CrawlerDetect
 description: Detect web crawlers by User-Agent and protect forms from spam without CAPTCHA
-author: ibochkarev
-repository: https://github.com/Ibochkarev/CrawlerDetect
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/crawlerdetect/logo.png
-modstore: https://modstore.pro/packages/utilities/crawlerdetect
+modstore: https://modstore.pro/packages/other/crawlerdetect
+repository: https://github.com/Ibochkarev/CrawlerDetect
 
 items: [
   { text: 'Quick start', link: 'quick-start' },
