@@ -1,11 +1,11 @@
 ---
 title: msp3Sberbank
 description: "Приём оплаты через Сбербанк для MiniShop3: redirect, callback, чеки 54-ФЗ, одно- и двухстадийная схема, deposit, reverse, refund"
-author: ibochkarev
-dependencies: miniShop3
-categories: minishop3
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msp3sberbank/logo.png
 modstore: https://modstore.pro/packages/payment-system/msp3sberbank
+dependencies: miniShop3
+categories: minishop3
 
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

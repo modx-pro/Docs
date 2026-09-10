@@ -1,8 +1,9 @@
 ---
 title: ms3RecentlyViewed
 description: '"Recently viewed products" block for MiniShop3 — browser or DB storage, similar products, manager'
-logo: "https://modstore.pro/assets/extras/ms3recentlyviewed/logo.png"
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/ms3recentlyviewed/logo.png
+modstore: https://modstore.pro/packages/ecommerce/ms3recentlyviewed
 
 items: [
   { text: 'Quick start', link: 'quick-start' },

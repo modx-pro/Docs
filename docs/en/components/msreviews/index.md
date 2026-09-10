@@ -1,7 +1,7 @@
 ---
 title: msReviews
 description: Отзывы, рейтинг, Q&A и JSON-LD для MiniShop3
-author: ibochkarev
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msreviews/logo.png
 modstore: https://modstore.pro/packages/ecommerce/msreviews
 dependencies: miniShop3

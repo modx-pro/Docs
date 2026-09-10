@@ -1,9 +1,9 @@
 ---
 title: ms3Pulse
 description: Дашборд продаж и аналитика для MiniShop3 — метрики, графики, экспорт и отчёты по расписанию
-logo: https://modstore.pro/assets/extras/ms3pulse/logo.jpg
-author: ibochkarev
-modstore: https://modstore.pro/packages/integration/ms3pulse
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/ms3pulse/logo.png
+modstore: https://modstore.pro/packages/other/ms3pulse
 dependencies: [miniShop3, vuetools]
 categories: minishop3
 

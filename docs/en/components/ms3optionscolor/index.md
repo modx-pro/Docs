@@ -1,7 +1,9 @@
 ---
 title: ms3OptionsColor
 description: "Swatches for miniShop3 options: HEX, patterns, images, and RAL Classic"
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/ms3optionscolor/logo.png
+modstore: https://modstore.pro/packages/ecommerce/ms3optionscolor
 dependencies:
   - miniShop3
   - VueTools

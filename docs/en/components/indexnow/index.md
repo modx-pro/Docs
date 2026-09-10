@@ -1,7 +1,9 @@
 ---
 title: IndexNow
 description: Очередь URL и уведомление поисковиков по протоколу IndexNow
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/indexnow/logo.png
+modstore: https://modstore.pro/packages/utilities/indexnow
 categories: utilities
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },

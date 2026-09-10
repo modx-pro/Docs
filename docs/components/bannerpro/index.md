@@ -1,8 +1,8 @@
 ---
 title: BannerPro
 description: "BannerPro: баннеры в MODX 3, позиции, UTM, webhook, A/B, REST API, Vue-админка"
-author: ibochkarev
-logo: https://modstore.pro/assets/extras/bannerpro/logo-md.png
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/bannerpro/logo.png
 modstore: https://modstore.pro/packages/photos-and-files/bannerpro
 dependencies: [pdoTools, VueTools]
 

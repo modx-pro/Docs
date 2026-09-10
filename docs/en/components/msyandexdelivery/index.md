@@ -1,11 +1,11 @@
 ---
 title: msYandexDelivery
 description: Yandex Delivery Platform API (other-day) for MiniShop3 — rates, pickup points, manager requests
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/msyandexdelivery/logo.png
+modstore: https://modstore.pro/packages/delivery/msyandexdelivery
 dependencies: [miniShop3, VueTools]
 categories: minishop3
-logo: https://modstore.pro/assets/extras/msyandexdelivery/logo-md.png
-modstore: https://modstore.pro/packages/delivery/msyandexdelivery
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },
