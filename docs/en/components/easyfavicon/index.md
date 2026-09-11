@@ -39,10 +39,6 @@ A favicon is usually installed by hand: generate a set on the service, download 
 
 EasyFavicon is a paid component on [modstore.pro](https://modstore.pro/). Install it via Package Manager with the modstore.pro provider ([how to connect the repository](https://modstore.pro/faq)).
 
-::: warning
-The package is encrypted and installs only through the modstore.pro provider on the site it was bought for. An archive uploaded to Package Manager by hand will not install.
-:::
-
 Next: [Quick start](/en/components/easyfavicon/quick-start).
 
 ## Requirements
