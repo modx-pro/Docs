@@ -240,7 +240,7 @@ JS обрабатывает `<select>` по событию `change`, а `<button
 | `$appliedFilters` | Применённые фильтры массивом, диапазоны свёрнуты в один ключ |
 
 ::: tip Кнопка сброса
-`$hasFilters` и `$activeFiltersCount` нужны, чтобы отрисовать кнопку сброса со счётчиком — см. [mFilterForm](../snippets/mfilterform#кнопка-сброса-только-при-активных-фильтрах).
+`$hasFilters` и `$activeFiltersCount` нужны, чтобы отрисовать кнопку сброса со счётчиком — см. [mFilterForm](../snippets/mfilterform#knopka-sbrosa-tolko-pri-aktivnyh).
 :::
 
 `&tpl` — обёртка одного фильтра (по умолчанию чанк `mfilter.filter`):
