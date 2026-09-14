@@ -8,75 +8,63 @@ repository: https://github.com/modx-pro/vuetools
 items:
   - text: Integration
     link: integration
+  - text: Theme
+    link: theme
   - text: API Composables
     link: composables
 ---
 
 # VueTools
 
-Base package providing **Vue 3 stack** for MODX 3.x components via ES Modules Import Map.
+Base package: gives MODX 3.x components a shared Vue 3 stack (Vue, Pinia, PrimeVue) through the ES Modules Import Map. Several components use the same libraries instead of bundling their own copies.
 
-## Purpose
+## What it solves
 
-VueTools solves the **library duplication** problem when using Vue 3 in multiple MODX components. Instead of each component including its own copy of Vue, Pinia and PrimeVue, they all use **shared libraries** from VueTools.
+Without a shared package, every component ships its own copy of Vue, Pinia and PrimeVue. VueTools serves them once for the whole manager.
 
-### Advantages
+- One library version across all components.
+- Libraries load once and stay in the browser cache.
+- PrimeVue styles isolated from the MODX ExtJS manager.
+- Ready composables for MODX: `useLexicon`, `useApi`, `useModx`, `usePermission`, `usePrimeVueLocale`, `useTheme`.
+- A single theme switched by one system setting (since 1.2.0).
 
-- **Single library version** — all components use the same versions of Vue, Pinia, PrimeVue
-- **Smaller load size** — libraries load once and are cached by the browser
-- **Isolated styles** — PrimeVue styles don't conflict with MODX admin ExtJS
-- **Ready composables** — useLexicon, useApi, useModx, usePermission for working with MODX
-
-::: info Renaming
-The package was previously called **ModxProVueCore**. As of version 2.0 it was renamed to **VueTools** for brevity.
-:::
-
-## Package contents
+## What's inside
 
 | Library | Version | Purpose |
 |---------|---------|---------|
 | Vue 3 | 3.5.x | Reactive framework |
 | Pinia | 3.0.x | State management |
-| PrimeVue | 4.3.x | UI components |
+| PrimeVue | 4.5.x | UI components, `Aura` and `Modx` themes |
 | PrimeIcons | 7.0.x | Icons |
 
-### Composables (helpers)
-
-| Module | Purpose |
+| Composable | Purpose |
 |--------|---------|
-| `useLexicon` | Working with MODX lexicons |
-| `useApi` | HTTP client for standard MODX API |
-| `useModx` | Access to global MODx object |
-| `usePermission` | User permission check |
+| `useLexicon` | MODX lexicons |
+| `useApi` | HTTP client for the standard MODX connector API |
+| `useModx` | Access to `window.MODx` |
+| `usePermission` | User permission checks |
+| `usePrimeVueLocale` | PrimeVue locales for DataTable, DatePicker, Calendar |
+| `useTheme` | Active theme from the `vuetools.theme` setting |
 
-## System requirements
+## Requirements
 
 | Requirement | Version |
 |-------------|---------|
 | MODX Revolution | 3.0.0+ |
 | PHP | 8.1+ |
-| Browser | ES Modules support (Chrome 89+, Firefox 108+, Safari 16.4+, Edge 89+) |
+| Browser | ES Modules (Chrome 89+, Firefox 108+, Safari 16.4+, Edge 89+) |
 
 ## Installation
 
-### Via package manager
+1. Open **Extras → Installer**.
+2. Click **Download Extras**.
+3. Find **VueTools**, click **Download**, then **Install**.
 
-1. Go to **Extras → Installer**
-2. Click **Download Extras**
-3. Find **VueTools** in the list
-4. Click **Download** then **Install**
+After install the package activates itself: the Import Map, PrimeVue styles and the client theme setting register on every manager page.
 
-::: info Automatic activation
-After installation the package activates automatically. Import Map and PrimeVue styles are registered on all MODX admin pages.
-:::
+## How the Import Map works
 
-## Architecture
-
-### Import Map
-
-VueTools uses [Import Map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap) — standard browser technology for resolving ES Module imports.
-
-The `VueToolsManager` plugin fires on `OnManagerPageInit` and registers Import Map in the page `<head>`:
+The `VueCoreManager` plugin fires on `OnManagerPageBeforeRender` and prepends two blocks to `<head>`: the Import Map and the `window.VueTools` client theme config.
 
 ```json
 {
@@ -84,56 +72,44 @@ The `VueToolsManager` plugin fires on `OnManagerPageInit` and registers Import M
     "vue": "/assets/components/vuetools/vendor/vue.min.js",
     "pinia": "/assets/components/vuetools/vendor/pinia.min.js",
     "primevue": "/assets/components/vuetools/vendor/primevue.min.js",
+    "vuetools": "/assets/components/vuetools/vendor/primevue.min.js",
+    "vuetools/theme": "/assets/components/vuetools/vendor/primevue.min.js",
     "@vuetools/useApi": "/assets/components/vuetools/composables/useApi.min.js",
     "@vuetools/useLexicon": "/assets/components/vuetools/composables/useLexicon.min.js",
     "@vuetools/useModx": "/assets/components/vuetools/composables/useModx.min.js",
-    "@vuetools/usePermission": "/assets/components/vuetools/composables/usePermission.min.js"
+    "@vuetools/usePermission": "/assets/components/vuetools/composables/usePermission.min.js",
+    "@vuetools/usePrimeVueLocale": "/assets/components/vuetools/composables/usePrimeVueLocale.min.js",
+    "@vuetools/useTheme": "/assets/components/vuetools/composables/useTheme.min.js"
   }
 }
 ```
 
-### How it works
+When a component module runs `import { ref } from 'vue'`, the browser finds the `vue` key and loads the file. Each URL carries a `?v=` query based on the file modification time, so after an update the browser fetches the fresh build instead of a cached one.
 
-```
-1. VueToolsManager plugin (OnManagerPageInit)
-   ↓
-2. Registers Import Map in <head> (before ES modules)
-   ↓
-3. Connects PrimeVue CSS styles (isolated with .vueApp)
-   ↓
-4. Your component loads ES modules
-   ↓
-5. Browser resolves imports via Import Map
-```
-
-When a Vue component runs `import { ref } from 'vue'`, the browser finds the `vue` key in Import Map and loads the file at the specified path.
+The `vuetools/theme` key points to the same bundle as `primevue` and marks a theme-capable version: a component uses it to tell VueTools 1.2.0+ from an older one (see [Theme](theme)).
 
 ## Style isolation
 
-PrimeVue styles are isolated using the CSS prefix `.vueApp`. This prevents conflicts with MODX admin ExtJS styles.
-
-All Vue widget containers **must** have the `vueApp` class:
+PrimeVue styles are isolated with the `.vueApp` prefix so they don't clash with ExtJS. Every Vue widget container must have the `vueApp` class:
 
 ```html
-<!-- In ExtJS panel or HTML -->
 <div id="my-vue-app" class="vueApp"></div>
 ```
 
-::: warning Important
-Without the `vueApp` class, PrimeVue styles will not be applied to your components.
+::: warning
+Without the `vueApp` class PrimeVue styles won't apply to the widget.
 :::
 
-## Components using VueTools
+::: info Former name
+The package was previously called **ModxProVueCore** and was renamed to **VueTools**.
+:::
 
-- **[MiniShop3](/en/components/minishop3/)** — modern e-commerce for MODX 3
+## Next
 
-## For developers
-
-If you are developing a MODX component and want to use Vue 3 + PrimeVue:
-
-- [Integration into component](integration) — step-by-step guide
-- [API Composables](composables) — helper documentation
+- [Integration](integration) — step by step: Vite, module loading, entry point.
+- [Theme](theme) — switch and apply the theme.
+- [API Composables](composables) — helper reference.
 
 ## Support
 
-- GitHub Issues: [modx-pro/vuetools](https://github.com/modx-pro/vuetools/issues)
+GitHub Issues: [modx-pro/vuetools](https://github.com/modx-pro/vuetools/issues)
