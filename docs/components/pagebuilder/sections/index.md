@@ -41,7 +41,7 @@ description: "Встроенные блоки секций PageBuilder Free и P
 | `blog_posts` | [Записи блога](blog_posts) | контент | pro |
 | `brands_row` | [Ряд брендов](brands_row) | магазин | pro, minishop3 |
 | `categories_row` | [Ряд категорий](categories_row) | магазин | pro, minishop3 |
-| `contact_form` | [Форма обратной связи](contact_form) | конверсия | pro |
+| `contact_form` | [Форма обратной связи](contact_form) | конверсия | pro, FetchIt |
 | `contact_map` | [Контакты с картой](contact_map) | конверсия | pro |
 | `curated_products` | [Подборка товаров](curated_products) | магазин | pro, minishop3 |
 | `data_table` | [Таблица данных](data_table) | контент | pro |
@@ -55,6 +55,7 @@ description: "Встроенные блоки секций PageBuilder Free и P
 | `products_carousel` | [Карусель товаров](products_carousel) | магазин | pro, minishop3 |
 | `products_grid` | [Сетка товаров](products_grid) | магазин | pro, minishop3 |
 | `promo_banner` | [Промо-баннер](promo_banner) | магазин | pro, minishop3 |
+| `quiz` | [Квиз](quiz) | конверсия | pro, FetchIt |
 | `related_products` | [Похожие товары](related_products) | магазин | pro, minishop3 |
 | `spec_table` | [Таблица характеристик](spec_table) | контент | pro |
 | `structured_content` | [Структурированный контент](structured_content) | контент | pro |
@@ -63,6 +64,8 @@ description: "Встроенные блоки секций PageBuilder Free и P
 | `video` | [Видео](video) | медиа | pro |
 
 Commerce-секции требуют **miniShop3**. Без пакета `SectionRequirementChecker` уберёт их из каталога. Проверку переопределяют через `pbOnCheckSectionRequirement`.
+
+Секции `quiz` и `contact_form` на витрине нуждаются в **FetchIt** (отдельная установка).
 
 Товарные секции (`products_grid`, `product_spotlight`, `promo_banner`) рендерит **msProducts**. Категории рендерит **pdoResources** с классом `msCategory`.
 

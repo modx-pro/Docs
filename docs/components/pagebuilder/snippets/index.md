@@ -1,11 +1,11 @@
 ---
 title: Сниппеты
-description: Обзор сниппетов PageBuilder для вывода секций, sitemap, UTM и табличных данных
+description: Обзор сниппетов PageBuilder для вывода секций, sitemap, UTM, таблиц и FetchIt-handlers
 ---
 
 # Сниппеты PageBuilder
 
-Пакет поставляет шесть сниппетов. Namespace chunks и секций: `pagebuilder`.
+Пакет поставляет сниппеты вывода и (в Pro) handlers для форм. Namespace chunks и секций: `pagebuilder`.
 
 | Сниппет | Назначение |
 | --- | --- |
@@ -16,6 +16,13 @@ description: Обзор сниппетов PageBuilder для вывода се�
 | [PageBuilderUtmUrl](PageBuilderUtmUrl) | UTM из реестра панели управления к произвольному URL |
 | [PageBuilderTableRows](PageBuilderTableRows) | Строки табличных данных ресурса (JSON или chunk) |
 
+Pro, через FetchIt (не вызывайте из шаблона, чанк секции вызывает FetchIt):
+
+| Сниппет | Назначение |
+| --- | --- |
+| [PageBuilderQuiz](PageBuilderQuiz) | Handler секции [quiz](../sections/quiz) |
+| [PageBuilderContactForm](PageBuilderContactForm) | Handler секции [contact_form](../sections/contact_form) |
+
 ## Порядок на типовой странице
 
 1. **PageBuilderUtmSession** в общем layout, если на странице работают UTM-правила секций (один раз на запрос, до рендера секций).
@@ -23,6 +30,8 @@ description: Обзор сниппетов PageBuilder для вывода се�
 3. **PageBuilderTableRows** отдельно, если таблица выводится вне секции `data_table`.
 
 Для блока с другой страницы (hero с главной, FAQ из лендинга) используйте **PageBuilderResource**.
+
+Квиз и форма заявки: добавьте секции `quiz` / `contact_form` и поставьте **FetchIt**. Прямые вызовы handler-сниппетов в шаблоне не нужны.
 
 ## Таблица соответствий (MODX / Fenom)
 

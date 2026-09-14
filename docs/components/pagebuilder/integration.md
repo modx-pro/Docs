@@ -75,7 +75,7 @@ description: Панель управления PageBuilder, права, моде
 | `pbOnBeforeUnpublish` / `pbOnAfterUnpublish` | Снятие с публикации |
 | `pbOnBeforeTrash` / `pbOnAfterTrash` | Удаление секций в корзину |
 
-В `pbOnAfterSave` и аналогах поле `changes` содержит `DocumentChangeSet` (id добавленных, удалённых, отправленных в корзину и восстановленных секций).
+В `pbOnBeforeSave` расширения могут заменить документ через `PageDocumentBag`. В `pbOnAfterSave` и аналогах поле `changes` содержит `DocumentChangeSet` (id добавленных, удалённых, отправленных в корзину, восстановленных, включённых и выключенных секций).
 
 ### Копирование
 

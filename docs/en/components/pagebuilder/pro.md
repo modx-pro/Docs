@@ -1,11 +1,11 @@
 ---
 title: PageBuilder Pro
-description: Pro flags, Shared blocks, versions, Examples, and connector actions
+description: "Pro flags, library pull, page templates, section journal, and connector actions"
 ---
 
 # PageBuilder Pro
 
-The **pagebuilderpro** extra extends the Free editor. On install it pulls in **pagebuilder** core as a dependency. Current line: **1.0.4-beta**, requires `pagebuilder` ≥ **1.0.5**.
+The **pagebuilderpro** extra extends the free editor. On install it pulls **pagebuilder** core as a dependency. Current line: **1.0.10-beta**, requires `pagebuilder` ≥ **1.0.10**.
 
 ## Pro flags
 
@@ -14,41 +14,70 @@ The **pagebuilderpro** extra extends the Free editor. On install it pulls in **p
 | Flag | Purpose |
 | --- | --- |
 | `pro` | Pro license |
-| `library` | Shared blocks: save, link, insert, edit master (`pb_library_items`) |
-| `versions` | Page publish history, restore, section event log |
-| `responsive` | Field values per desktop, tablet, and mobile (text, textarea, url, number, currency, richtext, slug) |
+| `library` | Shared blocks: save/link/insert/edit master, pull from another page, write-through (`pb_library_items`) |
+| `versions` | Section event journal (create/update/copy/remove/enable/disable) + View / Restore |
+| `page-templates` | Page templates: ordered empty sections (`pb_page_templates`, `mgr/pagetemplate/*`) |
+| `responsive` | Separate field values for desktop, tablet, and mobile (text, textarea, url, number, currency, richtext, slug) |
 | `conditions` | `settings.conditions` and evaluator (loggedIn, guest, context, GET, …) |
-| `presets` | **Examples** tab in the add-section catalog (sample-filled blocks) |
+| `presets` | **Examples** tab in catalog (hidden when `pagebuilder_catalog_examples_enabled = 0`) |
 | `i18n-copy` | Copy section between contexts |
-| `advanced-fields` | 20 field types in CMP (Pro group in the list). Without Pro, 31 Free types are available |
-| `basket` | Global CMP basket (`mgr/basket/*`) |
+| `advanced-fields` | 20 field types in control panel (Pro group in list). Without Pro, 31 Free types |
+| `basket` | Global basket in control panel (`mgr/basket/*`) |
 | `api` | [Agent API](agent-api): snapshot and apply sections |
 
-Module `pro-resource.min.js` on the resource tab adds **Shared blocks** and **History** panels in the sidebar.
+Module `pro-resource.min.js` on the resource tab adds **Inherit / Library** panel in the sidebar column. Section history opens from the row context menu.
 
 ## Pro sections
 
-Definitions live in `pagebuilderpro/sections/`, chunk name is `pagebuilderpro_{key}`. Register new types via plugin on `pbOnRegisterSectionDefinitions`.
+Definitions live in `pagebuilderpro/sections/`, chunk name `pagebuilderpro_{key}`. New types register via plugin on `pbOnRegisterSectionDefinitions`.
 
 | Group | Example keys |
 | --- | --- |
-| Universal | features, video, team, tabs |
-| Extras | map, contact_map, logos, blog_posts |
+| General | features, video, team, tabs |
+| Content and conversion | pricing_table, contact_form, quiz, spec_table |
+| Additional | map, contact_map, logos, blog_posts |
 | Commerce | products_grid, categories_row, product_spotlight |
 
 Storefront sections require **miniShop3** (`requires: ["pro", "minishop3"]`). Site catalog: [Pro sections](sections/).
 
-## Shared blocks
+[quiz](sections/quiz) and [contact_form](sections/contact_form) sections need **FetchIt** on the frontend.
 
-Save a block from the editor as a shared item, insert on another resource, or link to a master copy. At render time, master data merges into linked instances. The add-section catalog shows the **Shared blocks** tab only when at least one item is saved.
+## Shared blocks {#shared-blocks}
 
-## Versions and history
+A block from the editor can be saved as shared. After **Save as shared** the section on the current page is immediately linked to the new master (`libraryLocalFields: []`).
 
-Snapshots of the published document, version diff, rollback to draft. Each section has its own event log.
+| Action | Behavior |
+| --- | --- |
+| Catalog → **Shared blocks** → Insert | Insert linked or copy from master |
+| Menu → **Pull from another page** | `mgr/library/pull`: **Link** or **Copy** mode |
+| Local fields checklist | `settings.libraryLocalFields` in inspector |
+| Page save / publish | Write-through synced fields to master on server (`pbOnBeforeSave`) |
+
+**Pull** reads the source **draft**. **Link** creates or reuses master, sets `libraryId` on source and inserts linked section on target. **Copy** adds sections without a link.
+
+On render, master merge + local fields from `libraryLocalFields`. Without the key in settings the old overlay remains (local keys override master). After Library write, HTML cache `pagebuilder/*` is cleared.
+
+**Shared blocks** catalog tab is visible even when the list is empty.
+
+## Section event journal
+
+Capability `versions` is a **journal of events for one section**, not snapshots of the whole page. From row menu: View / Restore (`mgr/sectionevents/*`). Page-level UI `mgr/versions/*` is not in the current line.
+
+## Page templates
+
+Capability `page-templates`. Named skeleton: ordered list of section types **without content** (`pb_page_templates`).
+
+| Where | What it does |
+| --- | --- |
+| CMP → **Page templates** | CRUD: name, MODX template IDs, type order, default |
+| Editor → **Save as template** | Takes only `type` / `typeVersion` from current page |
+| Empty outline | "Apply …" buttons for matching templates |
+
+Apply writes draft via `mgr/pagetemplate/apply` (non-empty draft needs `force`).
 
 ## Examples
 
-The **Examples** tab in the add-section catalog: ready-made blocks with sample text (capability `presets`, `mgr/presets/list`). You can edit fields after insert. The connector action is still named `presets`.
+**Examples** tab in add catalog: ready blocks with text (capability `presets`, `mgr/presets/list`). After insert you can edit fields. Hide without deleting JSON: `pagebuilder_catalog_examples_enabled` or toggle in CMP Blocks.
 
 ## Connector actions (Pro)
 
@@ -56,19 +85,19 @@ All requests are POST to `assets/components/pagebuilder/connector.php` with `act
 
 | Action | Purpose |
 | --- | --- |
-| `mgr/library/list` | List shared-block items |
-| `mgr/library/save` | Save or update an item |
-| `mgr/library/remove` | Remove an item |
-| `mgr/library/adjustusage` | Shared-block usage counter |
-| `mgr/versions/list` | List page versions |
-| `mgr/versions/get` | One document version |
-| `mgr/versions/restore` | Roll draft back to a version |
-| `mgr/sectionevents/list` | Section event log list |
-| `mgr/sectionevents/get` | One log entry |
-| `mgr/sectionevents/record` | Append log entry |
-| `mgr/sectionevents/restore` | Restore section state from log |
-| `mgr/presets/list` | List examples for the catalog tab |
-| `mgr/basket/*` | [Global CMP basket](cmp#basket-pro) |
+| `mgr/library/list` | Library item list |
+| `mgr/library/save` | Save or update item |
+| `mgr/library/remove` | Delete item |
+| `mgr/library/adjustusage` | Library item usage counter |
+| `mgr/library/pull` | Pull sections from another page (link \| copy) |
+| `mgr/sectionevents/list` | Section event journal |
+| `mgr/sectionevents/get` | One journal entry / section snapshot |
+| `mgr/sectionevents/record` | Add journal entry (internal / tests) |
+| `mgr/sectionevents/restore` | Restore section state from journal |
+| `mgr/pagetemplate/list` / `get` / `save` / `remove` | Page template CRUD |
+| `mgr/pagetemplate/apply` | Apply template to draft |
+| `mgr/presets/list` | Example list for catalog tab |
+| `mgr/basket/*` | [Global basket in control panel](cmp#basket-pro) |
 | `mgr/api/page/snapshot` / `apply` | [Agent API](agent-api) |
 | `mgr/ms3/products/search` | Product search for commerce sections |
 | `mgr/ms3/categories/search` | miniShop3 category search (parent in grids and carousels) |
@@ -76,6 +105,6 @@ All requests are POST to `assets/components/pagebuilder/connector.php` with `act
 ## Related pages
 
 - [Agent API](agent-api)
-- [CMP](cmp)
+- [Control panel](cmp)
 - [Developer](developer)
-- [Workflow](workflow)
+- [Key features](key-features#pagebuilder-pro)

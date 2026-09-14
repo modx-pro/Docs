@@ -12,7 +12,7 @@ PageBuilder собирает страницу из блоков-секций, а
 | Роль | Что получает |
 | --- | --- |
 | **Редактор** | Drag-and-drop секций, инспектор полей, черновик, превью, публикация без правки шаблона |
-| **Начинающий разработчик** | 34 готовых секции, 51 тип полей, JSON-схема и Fenom в chunks без своего Vue |
+| **Начинающий разработчик** | 35 готовых секций, 51 тип полей, JSON-схема и Fenom в chunks без своего Vue |
 | **Опытный разработчик** | События, свои типы секций, табличные данные ресурса, UTM, интеграция с miniShop3 и Collections |
 
 ## Конструктор страницы
@@ -25,7 +25,7 @@ PageBuilder собирает страницу из блоков-секций, а
 
 ### 2. Черновик и публикация
 
-Правки сначала попадают в черновик. Превью показывает черновик без публикации. После **Опубликовать** на сайт уходит та же раскладка. Сниппет `[[!PageBuilder]]` выводит только опубликованную версию.
+Autosave пишет черновик. Превью показывает его без публикации. **Сохранить** ресурса MODX проверяет поля и публикует раскладку на сайт. Сниппет `[[!PageBuilder]]` выводит только опубликованную версию.
 
 Подробнее о хранении: [Рабочий процесс](workflow), [Разработчик → Модель данных](developer#model-dannyh).
 
@@ -34,7 +34,7 @@ PageBuilder собирает страницу из блоков-секций, а
 | Слой | Секций | Примеры |
 | --- | --- | --- |
 | **Free** | 11 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [faq](sections/faq), [cta](sections/cta) |
-| **Pro** | 23 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
+| **Pro** | 24 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [quiz](sections/quiz), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
 
 У каждой секции своя страница в [каталоге](sections/): зачем блок, где применять, что заполнить в инспекторе, похожие секции.
 
@@ -48,10 +48,11 @@ PageBuilder собирает страницу из блоков-секций, а
 
 Дополнение `pagebuilderpro` добавляет флаги Pro и расширяет редактор:
 
-- Общие блоки: сохранить секцию, вставить на другой ресурс, править связанную копию
-- Версии: снимки документа, сравнение версий, откат
-- Примеры: готовые блоки с текстом во вкладке каталога добавления
-- Поля по breakpoints: разные значения для desktop, tablet и mobile (`pagebuilder_responsive_apply`: `manual` или `css`)
+- Общие блоки: сохранить как shared (сразу link), pull с другой страницы (Связать | Копировать), локальные поля `libraryLocalFields`
+- Журнал событий секции: View / Restore (capability `versions`)
+- Шаблоны страниц: упорядоченные пустые секции (`pb_page_templates`)
+- Примеры: готовые блоки во вкладке каталога (`pagebuilder_catalog_examples_enabled`)
+- Поля по breakpoints: UI при `pagebuilder_responsive_editor_enabled`, вывод `pagebuilder_responsive_apply` (`manual` или `css`)
 - Расширенные поля: 20 типов в панели управления (relation, map, table, dependent и др., флаг `advanced-fields`)
 - Глобальная корзина в панели управления: восстановление и окончательное удаление секций и строк таблиц (флаг `basket`)
 
@@ -92,6 +93,7 @@ UTM registry в панели управления, правила видимос
 | `PageBuilderSitemap` | XML sitemap по страницам с секциями |
 | `PageBuilderTableRows` | Строки табличных данных ресурса |
 | `PageBuilderUtmSession` / `PageBuilderUtmUrl` | UTM на фронте |
+| `PageBuilderQuiz` / `PageBuilderContactForm` | FetchIt-handlers Pro (`quiz`, `contact_form`; из шаблона не вызываются) |
 | [Public API](public-api) | JSON опубликованных секций для headless (`api.php`) |
 
 Полный список: [Сниппеты](snippets/).

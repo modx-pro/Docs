@@ -6,7 +6,7 @@ description: "Ключи namespace pagebuilder: превью, вкладки, vi
 
 Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
-В манифесте дополнения **21 ключ**. При установке или обновлении Phinx/resolver добавляет отсутствующие. Уже заданные значения не перезаписывает (`update.settings = false`).
+В манифесте дополнения **24 ключа**. При установке или обновлении Phinx/resolver добавляет отсутствующие. Уже заданные значения не перезаписывает (`update.settings = false`).
 
 Ключи, добавленные в 1.0.3+:
 
@@ -16,6 +16,14 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_default_breakpoint` | [Responsive](#responsive) |
 | `pagebuilder_responsive_breakpoints` | [Responsive](#responsive) |
 | `pagebuilder_responsive_apply` | [Responsive](#responsive) |
+
+Ключи, добавленные в 1.0.9–1.0.10:
+
+| Ключ | Раздел |
+| --- | --- |
+| `pagebuilder_catalog_examples_enabled` | [Каталог](#каталог) |
+| `pagebuilder_resource_view_mode` | [Редактор](#редактор) |
+| `pagebuilder_responsive_editor_enabled` | [Responsive](#responsive) |
 
 ## Пути и превью
 
@@ -77,6 +85,13 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | --- | --- | --- | --- |
 | `pagebuilder_fake_enabled` | boolean | `0` | Кнопка **Fake** в инспекторе секции: заполняет поля детерминированными демо-данными (`mgr/section/fake`) |
 | `pagebuilder_inspector_visibility_enabled` | boolean | `0` | Кнопка **Видимость** в инспекторе: диалог условий, контекстов, UTM и копии для контекста. По умолчанию выкл., редактор видит только поля контента |
+| `pagebuilder_resource_view_mode` | text | `editorial` | Вид списка на вкладке **Секции**: `editorial` или `table`. Менеджер может переопределить тумблером (значение в `localStorage`) |
+
+## Каталог {#каталог}
+
+| Ключ | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `pagebuilder_catalog_examples_enabled` | boolean | `1` | Вкладка **Примеры** в каталоге секций (Pro JSON-пресеты). Выключите, чтобы спрятать без удаления файлов пакета. Тумблер также в CMP **Типы секций** при capability `presets` (`mgr/config/save`) |
 
 ## Responsive breakpoints {#responsive}
 
@@ -84,6 +99,7 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
+| `pagebuilder_responsive_editor_enabled` | boolean | `0` | Кнопка и вкладки разных значений поля для desktop / tablet / mobile в инспекторе. По умолчанию выкл. На сайте сохранённые карты breakpoints работают, пока редактор не сохранит поле одним значением |
 | `pagebuilder_default_breakpoint` | text | `desktop` | Ключ из JSON breakpoints при `responsive_apply=manual`, если нет `?pb_bp=` |
 | `pagebuilder_responsive_breakpoints` | textarea | desktop / tablet / mobile JSON | Массив `{ key, minWidth, previewWidth, label }`. На типе секции можно переопределить `responsiveBreakpoints` |
 | `pagebuilder_responsive_apply` | text | `manual` | `manual`: на сайте одно значение (SEO-безопасно). `css`: все значения в HTML + media queries. В чанках для таких полей: `{$title\|pb_text}` вместо `\|escape` |
