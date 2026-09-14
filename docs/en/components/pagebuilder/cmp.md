@@ -1,98 +1,101 @@
 ---
-title: PageBuilder CMP
-description: Blocks, UTM, Collections, and global basket in the PageBuilder component
+title: PageBuilder control panel
+description: Blocks, UTM, Collections, and global basket in the PageBuilder control panel
 ---
 
-# PageBuilder CMP
+# PageBuilder control panel
 
-**Components → PageBuilder** (`SectionTypesManager.vue`). Permission **pagebuilder_manage_types** is required for the Blocks tab. Other CMP tabs use standard manager permissions.
+**Components → PageBuilder** (`SectionTypesManager.vue`). Permission **pagebuilder_manage_types** is required for the Blocks tab. Other control panel tabs use standard manager permissions.
 
-Four site-level tabs, not tied to a single resource:
+Four site-level tabs plus Pro registries, not a single resource:
 
-| Tab | Tier | Purpose |
+| Tab | Layer | Purpose |
 | --- | --- | --- |
 | **Blocks** | Free | UI builder for section types (`pb_section_types`) |
 | **UTM** | Free | Global UTM parameter registry (`pb_utm_params`) |
 | **Collections** | Free | Resource form tab sets by template (`pb_collections`) |
 | **Basket** | Pro | Global basket for deleted sections and table rows |
+| **Page templates** | Pro | Empty section skeletons (`pb_page_templates`), capability `page-templates` |
 
-![PageBuilder CMP](/components/pagebuilder/screenshots/mgr-cmp-index.png)
+![PageBuilder control panel](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
 ## Blocks
 
-CRUD section types without PHP deploy. Built-in JSON from `core/components/pagebuilder/sections/*.json` can be edited, hidden, and restored in the catalog via CMP.
+CRUD section types without PHP deploy. Built-in JSON from `core/components/pagebuilder/sections/*.json` can be edited, hidden, and restored in the catalog via the control panel.
 
-Origin filter chips (choice is stored in the browser):
+Filter by source (chips, choice persists in the browser):
 
 | Chip | Shows |
 | --- | --- |
-| **All** | Packaged and custom types |
-| **From package** | Types from package JSON (and their UI overrides in the DB) |
-| **Mine** | Types created in the CMP |
+| **All** | Package and custom types |
+| **From package** | Types from package JSON (and their DB UI overrides) |
+| **Mine** | Types created in the control panel |
 
-**Hide bundled** bulk-hides packaged types (`published = 0` for UI overrides and custom rows; code types still use the hide lifecycle). Your own types stay visible. Sections on existing pages do not change.
+**Hide presets** bulk-hides package types (`published = 0` for UI overrides and custom; for code types hide still goes through lifecycle). Custom types remain. Sections on already built pages are unchanged.
 
-Type card field **Catalog thumbnail**: upload a layout screenshot. In the resource **+ Create** dialog it replaces the package sketch.
+On the type card, **Catalog preview**: upload a layout screenshot. In **+ Create** on the resource it replaces the package schematic image.
+
+With capability `presets` (Pro), the **Blocks** tab has **Show examples in catalog** toggle that writes `pagebuilder_catalog_examples_enabled` via `mgr/config/save`. Same value in [system settings](settings#catalog).
 
 | Action | What happens |
 | --- | --- |
-| Override | Row in `pb_section_types`, `overridesCode` flag. Database wins at runtime |
-| Hide | Type hidden from the resource catalog; still visible in CMP with a Hidden badge |
-| Remove (code type) | `removedCode` tombstone in the database. Package JSON is not deleted |
-| Restore | Enable Show hidden → **Restore** |
+| Override | Row in `pb_section_types`, flag `overridesCode`. DB wins at runtime |
+| Hide | Type hidden in resource catalog, stays in control panel with "Hidden" badge |
+| Delete (code type) | Tombstone `removedCode` in DB. Package JSON is not deleted |
+| Restore | Enable "Show hidden" → **Restore** |
 
-On extra upgrade, `pb_section_types` rows are **not overwritten**: the database wins. User system settings are also left alone (`update.settings = false`). Sections on already published pages keep rendering.
+On extra upgrade, `pb_section_types` rows are **not overwritten**: DB wins. User system settings are not reset either (`update.settings = false`). Sections on already published pages keep rendering.
 
-Processor `mgr/sectiontype/remove` accepts POST parameter `lifecycle`: `hide`, `remove`, `restore` (do not confuse with connector `action`). Bulk hide sends a `keys` array.
+Connector `mgr/sectiontype/remove` accepts POST parameter `lifecycle`: `hide`, `remove`, `restore` (not the connector `action`). Bulk hide passes array `keys`.
 
 JSON schema details: [Developer → Section definition](developer#section-definition).
 
-<!-- ![Section types in CMP](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
+<!-- ![Section types in control panel](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
 
 ## UTM
 
-Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. Section **visibility** rules are set in the inspector **Visibility** dialog (`settings.utm`) when `pagebuilder_inspector_visibility_enabled` is on. Not on this tab.
+Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. Section **visibility** rules are set in the **Visibility** dialog on the resource inspector (`settings.utm`) when `pagebuilder_inspector_visibility_enabled` is on. Not on this tab.
 
-Call [PageBuilderUtmSession](snippets/PageBuilderUtmSession) before `PageBuilder` on the front. See [Snippets](snippets/).
+Frontend UTM session: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) before `PageBuilder`. Links: [Snippets](snippets/).
 
-## Collections
+## Collections {#collections}
 
-A collection binds to `template_ids` (empty list = all templates). When `pagebuilder_collections_enabled = 1`, legacy tabs `resource_tab_enabled` / `resource_tables_tab_enabled` are replaced by the dynamic set from CMP.
+A collection binds to `template_ids` (empty list means all templates). With `pagebuilder_collections_enabled = 1`, legacy tabs `resource_tab_enabled` and `resource_tables_tab_enabled` are replaced by the dynamic set from the control panel.
 
 ### Tab types (`tab_type`)
 
 | Type | Behavior on resource |
 | --- | --- |
-| `sections` | “Sections” tab (Vue `pagebuilder-resource`) |
-| `table` | Tabular resource data (`table_key` optional) |
+| `sections` | Sections tab (Vue `pagebuilder-resource`) |
+| `table` | Resource table data (`table_key` optional) |
 | `resources` | Child resources |
 | `empty` | Placeholder (`config.message`) |
-| `modx_collections` | Bridge to MODX Collections (`pagebuilder_collections_modx_bridge_enabled`) |
+| `modx_collections` | MODX Collections integration (`pagebuilder_collections_modx_bridge_enabled`) |
 | `iframe` | URL in `<iframe>` |
 
-Processors: `mgr/collection/list`, `save`, `remove`, `resolve`.
+Collection CRUD and tab resolution for a template: `mgr/collection/list`, `save`, `remove`, `resolve`.
 
 Settings: [System settings → Collections](settings#collections-cmp).
 
 ## Basket (Pro) {#basket-pro}
 
-Capability `basket`. Per-page basket in the resource draft stays in Free.
+Flag `basket`. Page basket in the resource draft remains in Free.
 
-Indexes sections from `draft.trash[]` and table rows on delete. Syncs on `pbOnAfterSave`. On resource `OnEmptyTrash`, index entries for that `resource_id` are removed.
+Index of sections from `draft.trash[]` and table rows on delete. Sync on `pbOnAfterSave`. On resource `OnEmptyTrash`, index rows for that `resource_id` are removed.
 
 | Action | Purpose |
 | --- | --- |
 | `mgr/basket/list` | List (`item_type`, pagination) |
 | `mgr/basket/restore` | Restore section or table row |
-| `mgr/basket/purge` | Remove from index |
-| `mgr/basket/restoreall` / `purgeall` | Bulk by `ids` array |
+| `mgr/basket/purge` | Remove entry from index |
+| `mgr/basket/restoreall` / `purgeall` | Bulk ops on array `ids` |
 
 | Where | What it does |
 | --- | --- |
-| Resource editor → **Basket** | Per-page: restore / purge in draft (Free) |
-| CMP → **Basket** | Cross-resource: list, restore to source resource, purge (Pro) |
+| Resource editor → **Basket** | On page: restore and permanent delete in draft (Free) |
+| Control panel → **Basket** | Cross-resource: list, restore to source resource, permanent delete (Pro) |
 
-CMP restore inserts the section at `settings._trashIndex`, same as per-page basket.
+Restore from the control panel inserts the section at `settings._trashIndex`, same as the page basket.
 
 ## Related pages
 

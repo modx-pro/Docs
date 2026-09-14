@@ -57,6 +57,8 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 ### Pro: responsive {#pro-responsive}
 
+Сначала включите `pagebuilder_responsive_editor_enabled`. Пока оно выкл., в инспекторе нет кнопки и вкладок Desktop / Tablet / Mobile: одно поле. На сайте сохранённые карты breakpoints работают, пока редактор не сохранит поле одним значением.
+
 На типах `text`, `textarea`, `url`, `number`, `currency`, `richtext`, `slug` при `responsive: true` (или уже сохранённой карте breakpoints) в данных секции:
 
 ```json

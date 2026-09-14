@@ -97,7 +97,7 @@ Chunk стройте по [дизайн-системе](design-system): обол
 | `pb_basket_items` | Индекс глобальной корзины |
 | `pb_user_states` | Зарезервировано: схема есть, в runtime пока не используется |
 
-Pro: `pb_library_items`, `pb_revisions`, `pb_section_events`.
+Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Таблица `pb_revisions` может присутствовать в схеме Pro, но page-level UI версий страницы в 1.0.10 нет. Журнал секции: `pb_section_events` + `mgr/sectionevents/*`.
 
 ### JSON документа
 
@@ -141,6 +141,8 @@ $pageService = $pb->pages();
 Plugin на `pbOnRegisterFeatureProviders` регистрирует свой `FeatureProvider` рядом с `ProFeatureProvider`.
 
 События boot, save и render: [Менеджер и события](integration#sobytiya).
+
+В `pbOnBeforeSave` расширения могут заменить документ до записи черновика или публикации через `PageDocumentBag`. `DocumentChangeSet` отдельно фиксирует enable/disable секции (без ложного «update» при чистом тумблере).
 
 ## Public API (Headless)
 

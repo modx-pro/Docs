@@ -1,6 +1,6 @@
 ---
 title: PageBuilder
-description: Visual section builder for MODX 3. Draft and publish without overwriting resource content
+description: "Visual section builder for MODX 3: draft and publish without overwriting resource content"
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/pagebuilder/logo.png
 modstore: https://modstore.pro/packages/sites-themes/pagebuilder
@@ -22,7 +22,7 @@ items: [
     link: 'workflow',
     items: [
       { text: 'Workflow', link: 'workflow' },
-      { text: 'CMP', link: 'cmp' },
+      { text: 'Control panel', link: 'cmp' },
       { text: 'Manager and events', link: 'integration' },
     ],
   },
@@ -44,6 +44,8 @@ items: [
           { text: 'PageBuilderUtmSession', link: 'snippets/PageBuilderUtmSession' },
           { text: 'PageBuilderUtmUrl', link: 'snippets/PageBuilderUtmUrl' },
           { text: 'PageBuilderTableRows', link: 'snippets/PageBuilderTableRows' },
+          { text: 'PageBuilderQuiz', link: 'snippets/PageBuilderQuiz' },
+          { text: 'PageBuilderContactForm', link: 'snippets/PageBuilderContactForm' },
         ],
       },
     ],
@@ -68,7 +70,7 @@ items: [
     link: 'fields/types',
     items: [
       { text: 'Fields overview', link: 'fields/overview' },
-      { text: 'Field types reference', link: 'fields/types' },
+      { text: 'Type reference', link: 'fields/types' },
       {
         text: 'Free',
         link: 'fields/types',
@@ -143,46 +145,47 @@ items: [
         text: 'Free',
         link: 'sections/',
         items: [
-          { text: 'Call to action', link: 'sections/cta' },
-          { text: 'Cards', link: 'sections/cards' },
-          { text: 'Contact', link: 'sections/contact' },
           { text: 'FAQ', link: 'sections/faq' },
           { text: 'Gallery', link: 'sections/gallery' },
-          { text: 'Hero', link: 'sections/hero' },
           { text: 'Image', link: 'sections/image' },
-          { text: 'Rich text', link: 'sections/richtext' },
-          { text: 'Spacer', link: 'sections/spacer' },
-          { text: 'Stats', link: 'sections/stats' },
+          { text: 'Cards', link: 'sections/cards' },
+          { text: 'Contact', link: 'sections/contact' },
           { text: 'Testimonials', link: 'sections/testimonials' },
+          { text: 'Spacer', link: 'sections/spacer' },
+          { text: 'Hero', link: 'sections/hero' },
+          { text: 'Call to action', link: 'sections/cta' },
+          { text: 'Rich text', link: 'sections/richtext' },
+          { text: 'Stats', link: 'sections/stats' },
         ],
       },
       {
         text: 'Pro',
         link: 'sections/',
         items: [
+          { text: 'Video', link: 'sections/video' },
+          { text: 'Tabs', link: 'sections/tabs' },
           { text: 'Blog posts', link: 'sections/blog_posts' },
+          { text: 'Map', link: 'sections/map' },
+          { text: 'Gallery carousel', link: 'sections/gallery_carousel' },
+          { text: 'Products carousel', link: 'sections/products_carousel' },
+          { text: 'Quiz', link: 'sections/quiz' },
+          { text: 'Team', link: 'sections/team' },
+          { text: 'Contact with map', link: 'sections/contact_map' },
+          { text: 'Partner logos', link: 'sections/logos' },
+          { text: 'Curated products', link: 'sections/curated_products' },
+          { text: 'Related products', link: 'sections/related_products' },
+          { text: 'Features', link: 'sections/features' },
+          { text: 'Promo banner', link: 'sections/promo_banner' },
           { text: 'Brands row', link: 'sections/brands_row' },
           { text: 'Categories row', link: 'sections/categories_row' },
-          { text: 'Contact form', link: 'sections/contact_form' },
-          { text: 'Contact with map', link: 'sections/contact_map' },
-          { text: 'Curated products', link: 'sections/curated_products' },
-          { text: 'Data table', link: 'sections/data_table' },
-          { text: 'Features', link: 'sections/features' },
-          { text: 'Gallery carousel', link: 'sections/gallery_carousel' },
-          { text: 'Logo cloud', link: 'sections/logos' },
-          { text: 'Map', link: 'sections/map' },
-          { text: 'Pricing table', link: 'sections/pricing_table' },
-          { text: 'Product comparison', link: 'sections/product_comparison' },
-          { text: 'Product spotlight', link: 'sections/product_spotlight' },
-          { text: 'Products carousel', link: 'sections/products_carousel' },
           { text: 'Products grid', link: 'sections/products_grid' },
-          { text: 'Promo banner', link: 'sections/promo_banner' },
-          { text: 'Related products', link: 'sections/related_products' },
-          { text: 'Spec table', link: 'sections/spec_table' },
+          { text: 'Product comparison', link: 'sections/product_comparison' },
           { text: 'Structured content', link: 'sections/structured_content' },
-          { text: 'Tabs', link: 'sections/tabs' },
-          { text: 'Team', link: 'sections/team' },
-          { text: 'Video', link: 'sections/video' },
+          { text: 'Data table', link: 'sections/data_table' },
+          { text: 'Spec table', link: 'sections/spec_table' },
+          { text: 'Pricing table', link: 'sections/pricing_table' },
+          { text: 'Product spotlight', link: 'sections/product_spotlight' },
+          { text: 'Contact form', link: 'sections/contact_form' },
         ],
       },
     ],
@@ -192,47 +195,47 @@ items: [
 ---
 # PageBuilder
 
-![Sections tab on a resource](/components/pagebuilder/screenshots/mgr-sections-tab.png)
+![Section editor on a resource](/components/pagebuilder/screenshots/mgr-sections-tab.png)
 
-You build the page from sections in the **Sections** tab in MODX. While you edit, changes stay as a draft. After **Publish**, the same layout goes live. The resource **Content** field is not used for sections. On the storefront, the `PageBuilder` snippet renders the blocks.
+You build a page from sections on the **Sections** tab in MODX. Autosave writes the draft. **Save** on the MODX resource validates fields and publishes sections to the site. The standard resource **Content** field is not used for sections. On the storefront, the `PageBuilder` snippet renders the blocks.
 
-Sidebar groups: getting started, editor, frontend, Pro, developer notes, plus separate lists of [field types](fields/types) and [sections](sections/). Start here: [Quick start](quick-start).
+The sidebar covers installation, the editor, frontend output, Pro, the developer section, and separate lists of [field types](fields/types) and [sections](sections/). Start here: [Quick start](quick-start).
 
 ## Features
 
 ### Resource editor
 
-On the **Sections** tab: table or compact editorial list, add from the catalog, drag-and-drop and Alt+↑/↓, duplicate, copy sections from another page. Deleted sections go to the page trash. Edit content in the modal **Properties** inspector. While the inspector is open for a newly added section, autosave is paused: **Cancel** rolls the draft back to the state before the insert. Visibility rules (context, UTM) open from the **Visibility** button when the system setting is on. Draft preview opens in a drawer via a signed link, without publishing. Undo/redo in the current session. Before publish, the editor validates required fields.
+On the **Sections** tab: table or compact editorial list (default from `pagebuilder_resource_view_mode`, toggle in the toolbar). Add from the catalog, drag to reorder, Alt+↑/↓, duplicate, copy sections from another page. In the editorial list you enable and disable sections on each row. Deleted sections go to the page trash. Edit content in the **Properties** modal inspector. While the inspector is open for a newly added section, autosave pauses: **Cancel** rolls the draft back to the state before the add. Visibility rules (context, UTM) open via **Visibility** when the system setting is enabled. Draft preview in a drawer via a signed link. Undo/redo in the current session. Before publish (Save resource) the editor validates required fields.
 
 ### Draft and publish
 
-Edits go to the draft. After **Publish**, the same layout goes live. **Unpublish** clears the published version; the draft stays. On save the server checks the revision number so concurrent edits do not overwrite each other.
+Autosave writes the draft only. **Save** on the MODX resource: validate → draft → publish to `published_json`. **Unpublish** clears the published version; the draft remains. On save the server compares revision numbers to avoid overwriting concurrent edits.
 
 ### Free: sections and fields
 
-11 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. In the CMP **Blocks** tab you filter types with **All / From package / Mine** chips, bulk-hide bundled types, and upload a custom catalog thumbnail instead of the built-in sketch. 31 Free field types and 20 Pro (51 total): text, richtext, repeater, migx, file, select, and more. Some fields support per-breakpoint values (responsive).
+11 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. In the control panel (**Blocks**) filter types with **All / From package / Mine** chips, bulk-hide presets, and set custom catalog previews instead of schematic images. 31 field types in Free and 20 in Pro (51 total): text, richtext, repeater, migx, file, select, and more. With `pagebuilder_responsive_editor_enabled`, the inspector shows per-device value tabs.
 
 ### PageBuilder Pro
 
-Global **Shared blocks** library, version snapshots and event log, **Examples** tab in the add-section catalog, [Agent API](agent-api) for scripts and agents. CMP **Basket** restores deleted sections and table rows across resources. Pro catalog: features, video, team, tabs, maps, forms, miniShop3 commerce blocks (product grids, brands, pricing, and more). 20 more field types: gallery, map, relation, table, embeddedTable, and more.
+Global library (**Shared blocks**): pull from another page (Link | Copy), write-through for linked sections, page templates, section event journal (View/Restore). **Examples** tab in the catalog (Examples toggle / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) for scripts and agents. **Basket** in the control panel restores deleted sections and table rows across resources. Pro catalog: features, video, team, tabs, maps, [forms](sections/contact_form), [quiz](sections/quiz), miniShop3 commerce blocks. 20 more field types: gallery, map, relation, table, embeddedTable, and more.
 
 ### Resource tables
 
-The **Tables** tab stores large row sets in the DB: filters, CSV/JSON import, bulk delete. On the storefront, `PageBuilderTableRows` outputs rows. The `data_table` section (Pro) embeds a small table in the section JSON.
+The **Tables** tab stores large row sets in the database: filters, CSV/JSON import, bulk delete. On the storefront, `PageBuilderTableRows` outputs rows. The `data_table` section (Pro) embeds a small table in section JSON.
 
 ### UTM and contexts
 
-Set up a UTM registry in the CMP. Visibility rules (context, UTM, Pro conditions) open from the inspector **Visibility** button when `pagebuilder_inspector_visibility_enabled` is on. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` help on landing pages. Fields support the <code v-pre>{{utm:key}}</code> placeholder.
+Set the UTM registry in the control panel. Visibility rules (context, UTM, Pro conditions) open via **Visibility** in the inspector when `pagebuilder_inspector_visibility_enabled` is on. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` help on landing pages. Fields support the <code v-pre>{{utm:key}}</code> placeholder.
 
-### Collections and CMP
+### Collections and control panel
 
-With `collections_enabled`, resource tabs (sections, tables, iframe, and more) are configured in the CMP. **Extras → PageBuilder** lists resources with sections and manages section types.
+With `collections_enabled`, resource tabs (sections, tables, iframe, and more) are configured in the control panel. **Components → PageBuilder** lists resources with sections and section types.
 
 ### Snippets, Public API, and events
 
-`PageBuilder` outputs section HTML, `PageBuilderResource` renders another resource’s sections, `PageBuilderSitemap` builds an XML sitemap. [Public API](public-api) returns published sections as JSON for headless frontends (`api.php`). `pbOn*` events hook plugins into save, publish, render, and section type registration. See [workflow](workflow), [cmp](cmp), [pro](pro).
+`PageBuilder` outputs section HTML, `PageBuilderResource` returns sections from another resource, `PageBuilderSitemap` builds an XML sitemap. [Public API](public-api) serves published sections as JSON for headless frontends (`api.php`). `pbOn*` events let plugins hook save, publish, render, and section type registration. See [workflow](workflow), [cmp](cmp), [pro](pro).
 
-## Requirements
+## System requirements
 
 | Requirement | Value |
 | --- | --- |
@@ -246,8 +249,8 @@ With `collections_enabled`, resource tabs (sections, tables, iframe, and more) a
 
 | Extra | Version | Contents |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.5-beta | Free: core, sections, CMP, snippets, `migx` field, responsive breakpoints, type filters and custom catalog thumbnails |
-| `pagebuilderpro` | 1.0.4-beta | Pro: requires `pagebuilder` ≥ 1.0.5, extended catalog and features |
+| `pagebuilder` | 1.0.10-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
+| `pagebuilderpro` | 1.0.10-beta | Pro: requires `pagebuilder` ≥ 1.0.10, quiz, library pull, page templates, section journal |
 
 MODX namespace: `pagebuilder`.
 
@@ -256,10 +259,10 @@ MODX namespace: `pagebuilder`.
 | Need | Document |
 | --- | --- |
 | Feature overview | [Key features](key-features) |
-| Install and first page | [Quick start](quick-start) |
+| Install and build the first page | [Quick start](quick-start) |
 | All `pagebuilder_*` keys | [System settings](settings) |
 | Draft, publish, basket | [Workflow](workflow) |
-| CMP: Blocks, UTM, Collections, Pro basket | [CMP](cmp) |
+| Blocks, UTM, Collections, Pro basket | [Control panel](cmp) |
 | Permissions, `pbOn*` events, data model | [Manager and events](integration) |
 | Template, preview, snippet cache | [Frontend output](frontend) |
 | CSS tokens and section BEM | [Design system](design-system) |
@@ -268,18 +271,18 @@ MODX namespace: `pagebuilder`.
 | Pro, basket, examples | [PageBuilder Pro](pro) |
 | Scripts and agents | [Agent API](agent-api) |
 | Custom sections and extensions | [Developer](developer) |
-| 51 inspector field types | [Field types reference](fields/types) |
-| 34 built-in blocks | [Section catalog](sections/) |
-| Troubleshooting | [FAQ](faq) |
+| 51 inspector field types | [Field type reference](fields/types) |
+| 35 built-in blocks | [Section catalog](sections/) |
+| Common issues | [FAQ](faq) |
 
 ## Entry points
 
 | URL / path | Purpose |
 | --- | --- |
-| CMP `pagebuilder` → `index` | Resource catalog with sections, section types (Pro) |
+| Component `pagebuilder` → `index` | Resource catalog with sections, section types (Pro) |
 | `assets/components/pagebuilder/connector.php` | MGR API (VueTools) |
 | `assets/components/pagebuilder/preview.php` | Draft preview in iframe |
-| `assets/components/pagebuilder/api.php` | Public API: published sections as JSON (headless) |
+| `assets/components/pagebuilder/api.php` | Public API: published sections JSON (headless) |
 | Snippet `[[!PageBuilder]]` | Published section HTML on the site |
 
 ## Permissions
@@ -287,7 +290,7 @@ MODX namespace: `pagebuilder`.
 | Permission | Purpose |
 | --- | --- |
 | `pagebuilder_view` | Sections tab, catalog, preview token |
-| `pagebuilder_save` | Save draft and publish (fallback: `save_document`) |
-| `pagebuilder_manage_types` | CMP “Section types” (no fallback to view) |
+| `pagebuilder_save` | Draft save and publish (fallback: `save_document`) |
+| `pagebuilder_manage_types` | Control panel section types (no fallback to view) |
 
-Access to a specific resource is also checked by MODX policy (`view`, `save`).
+Access to a specific resource is also checked by the MODX policy (`view`, `save`).

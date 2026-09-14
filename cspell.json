@@ -1317,10 +1317,20 @@
     "jwks",
     "fullpayment",
     "линкует",
+    "линкуется",
     "переиспользует",
     "фискализацию",
     "юрлица",
-    "деплоем"
+    "деплоем",
+    "квиз",
+    "квиза",
+    "квизов",
+    "Квиз",
+    "pagetemplate",
+    "prevyu",
+    "chernovika",
+    "obshchie",
+    "bloki"
   ],
   "ignorePaths": [
     "node_modules",
