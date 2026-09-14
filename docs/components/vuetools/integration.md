@@ -1,10 +1,10 @@
 # Интеграция в компонент
 
-Пошаговое руководство по интеграции Vue 3 + PrimeVue в компонент MODX 3 с использованием VueTools.
+Как подключить Vue 3 + PrimeVue в компонент MODX 3 через VueTools: настройка сборки, загрузка модулей, точка входа.
 
 ## Настройка Vite
 
-В `vite.config.js` укажите внешние зависимости, которые **не должны** включаться в бандл:
+В `vite.config.js` перечислите внешние зависимости — их даёт VueTools через Import Map, в сборку компонента они не попадают:
 
 ```javascript
 import { defineConfig } from 'vite'
@@ -15,63 +15,42 @@ export default defineConfig({
   plugins: [vue()],
   build: {
     rollupOptions: {
-      // Эти модули НЕ бандлятся — берутся из Import Map
       external: [
         'vue',
         'pinia',
         'primevue',
+        '@vuetools/useTheme',
         '@vuetools/useApi',
         '@vuetools/useLexicon',
         '@vuetools/useModx',
-        '@vuetools/usePermission'
+        '@vuetools/usePermission',
+        '@vuetools/usePrimeVueLocale'
       ],
-      output: {
-        format: 'es',
-        entryFileNames: '[name].min.js',
-        chunkFileNames: '[name].min.js'
-      }
+      output: { format: 'es', entryFileNames: '[name].min.js' }
     }
   },
-  // Изоляция стилей от ExtJS
   css: {
     postcss: {
-      plugins: [
-        prefixSelector({
-          prefix: '.vueApp',
-          exclude: [/^:root/, /^\.p-/, /^\.pi/, /^\[data-p-/]
-        })
-      ]
+      plugins: [prefixSelector({ prefix: '.vueApp', exclude: [/^:root/, /^\.p-/, /^\.pi/, /^\[data-p-/] })]
     }
   }
 })
 ```
 
-::: info Ключевой момент
-Массив `external` указывает Vite **НЕ включать** эти зависимости в бандл. Браузер загрузит их из Import Map, зарегистрированного VueTools.
-:::
+PrimeVue импортируйте только через `primevue` (barrel), без путей вида `primevue/button`: subpath-импорт тянет в сборку второй экземпляр PrimeVue, и тема перестаёт применяться к его компонентам.
 
-### Установка зависимостей
+## Загрузка модулей в контроллере
 
-```bash
-npm install postcss-prefix-selector --save-dev
-```
-
-## Загрузка скриптов в PHP контроллере
-
-### Базовый подход
+ES-модули регистрируются через `regClientStartupHTMLBlock` — так они грузятся после Import Map. Каждый скрипт — отдельным вызовом.
 
 ```php
-<?php
 class MyComponentManagerController extends modExtraManagerController
 {
     public function loadCustomCssJs()
     {
         $assetsUrl = $this->myComponent->config['assetsUrl'];
 
-        // CSS вашего компонента (идёт в <head>)
         $this->addCss($assetsUrl . 'css/mgr/vue-dist/my-widget.min.css');
-
-        // ES modules ОБЯЗАТЕЛЬНО через regClientStartupHTMLBlock
         $this->modx->regClientStartupHTMLBlock(
             '<script type="module" src="' . $assetsUrl . 'js/mgr/vue-dist/my-widget.min.js"></script>'
         );
@@ -79,208 +58,93 @@ class MyComponentManagerController extends modExtraManagerController
 }
 ```
 
-::: danger Критично
-
-- Используйте `regClientStartupHTMLBlock()` для `<script type="module">`
-- **НЕ** используйте `addJavascript()` или `addLastJavascript()` для ES modules — они не поддерживают `type="module"`
+::: danger
+`addJavascript()` и `addLastJavascript()` не ставят `type="module"` — для ES-модулей они не годятся. Несколько тегов в одной строке с переносами MODX разобьёт неправильно: регистрируйте каждый отдельным вызовом.
 :::
 
-### Правильная регистрация нескольких скриптов
+## Проверка наличия VueTools {#vuetools-check}
+
+Без VueTools модули не разрешатся: в консоли появится `Failed to resolve module specifier "vue"`, а контейнер виджета останется пустым. Проверка находит Import Map и показывает понятное сообщение.
+
+Метод `addVueModule()` в контроллере регистрирует модуль и один раз на страницу — скрипт-проверку:
 
 ```php
-// ✅ ПРАВИЛЬНО — отдельные вызовы
-$this->modx->regClientStartupHTMLBlock(
-    '<script type="module" src="' . $assetsUrl . 'js/mgr/vue-dist/widget1.min.js"></script>'
-);
-$this->modx->regClientStartupHTMLBlock(
-    '<script type="module" src="' . $assetsUrl . 'js/mgr/vue-dist/widget2.min.js"></script>'
-);
+protected static $vueCoreCheckRegistered = false;
 
-// ❌ НЕПРАВИЛЬНО — multiline строка с несколькими тегами
-$this->modx->regClientStartupHTMLBlock('
-    <script type="module" src="' . $assetsUrl . 'js/mgr/vue-dist/widget1.min.js"></script>
-    <script type="module" src="' . $assetsUrl . 'js/mgr/vue-dist/widget2.min.js"></script>
-');
-```
-
-## Проверка наличия VueTools
-
-При отсутствии VueTools на сайте Vue модули не загрузятся, а в консоли появятся ошибки. Рекомендуется реализовать проверку и показывать понятное сообщение пользователю.
-
-### Метод addVueModule()
-
-Создайте метод в базовом контроллере:
-
-```php
-<?php
-class MyComponentManagerController extends modExtraManagerController
+public function addVueModule(string $src): void
 {
-    /**
-     * Флаг регистрации скрипта проверки (один раз на страницу)
-     */
-    protected static $vueCoreCheckRegistered = false;
-
-    /**
-     * Регистрация Vue ES module с проверкой зависимости VueTools
-     *
-     * @param string $src URL скрипта модуля
-     */
-    public function addVueModule(string $src): void
-    {
-        // Регистрируем скрипт проверки только один раз на страницу
-        if (!self::$vueCoreCheckRegistered) {
-            $this->registerVueCoreCheck();
-            self::$vueCoreCheckRegistered = true;
-        }
-
-        // Добавляем версию для сброса кэша
-        $src = $src . '?v=' . $this->myComponent->version;
-
-        // Регистрируем модуль с атрибутом data-vue-module
-        $this->modx->regClientStartupHTMLBlock(
-            '<script type="module" data-vue-module src="' . $src . '"></script>'
-        );
+    if (!self::$vueCoreCheckRegistered) {
+        $this->registerVueCoreCheck();
+        self::$vueCoreCheckRegistered = true;
     }
+    $this->modx->regClientStartupHTMLBlock(
+        '<script type="module" data-vue-module src="' . $src . '"></script>'
+    );
+}
 
-    /**
-     * Регистрация inline скрипта проверки Import Map
-     */
-    protected function registerVueCoreCheck(): void
-    {
-        $alertTitle = $this->modx->lexicon('mycomponent_error') ?: 'Error';
-        $alertMessage = $this->modx->lexicon('mycomponent_vuetools_required')
-            ?: 'VueTools package is required. Please install it from Package Manager.';
+protected function registerVueCoreCheck(): void
+{
+    $message = $this->modx->lexicon('mycomponent_vuetools_required')
+        ?: 'Требуется пакет VueTools. Установите его через Менеджер пакетов.';
 
-        $script = <<<JS
+    $script = <<<JS
 <script>
-(function() {
-    var importMap = document.querySelector('script[type="importmap"]');
-    var hasVueCore = false;
-
-    if (importMap) {
+(function () {
+    var map = document.querySelector('script[type="importmap"]');
+    var ok = false;
+    if (map) {
         try {
-            var mapContent = JSON.parse(importMap.textContent);
-            hasVueCore = mapContent.imports && mapContent.imports.vue;
-        } catch (e) {
-            hasVueCore = false;
-        }
+            var imports = JSON.parse(map.textContent).imports;
+            ok = imports && imports.vue;
+        } catch (e) { ok = false; }
     }
-
-    if (!hasVueCore) {
-        // Удаляем все скрипты с атрибутом data-vue-module
-        document.querySelectorAll('script[type="module"][data-vue-module]').forEach(function(el) {
-            el.remove();
-        });
-
-        // Показываем MODX алерт
-        if (typeof Ext !== 'undefined') {
-            Ext.onReady(function() {
-                if (typeof MODx !== 'undefined' && MODx.msg) {
-                    MODx.msg.alert('{$alertTitle}', '{$alertMessage}');
-                } else {
-                    alert('{$alertMessage}');
-                }
-            });
-        } else {
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    if (typeof MODx !== 'undefined' && MODx.msg) {
-                        MODx.msg.alert('{$alertTitle}', '{$alertMessage}');
-                    } else {
-                        alert('{$alertMessage}');
-                    }
-                }, 500);
-            });
-        }
-
+    if (!ok) {
+        document.querySelectorAll('script[type="module"][data-vue-module]').forEach(function (el) { el.remove(); });
+        if (typeof MODx !== 'undefined' && MODx.msg) { MODx.msg.alert('', '{$message}'); }
         window.MY_COMPONENT_VUE_CORE_MISSING = true;
     }
 })();
 </script>
 JS;
-
-        $this->modx->regClientStartupHTMLBlock($script);
-    }
+    $this->modx->regClientStartupHTMLBlock($script);
 }
 ```
 
-### Использование
+Атрибут `data-vue-module` нужен, чтобы при отсутствии VueTools удалить именно модули и не сыпать ошибками в консоль. Если компонент использует тему через `getActiveTheme()`, проверяйте ещё и ключ `vuetools/theme` — см. [Тема](theme#version).
+
+Загрузку ведите через `addVueModule()`:
 
 ```php
-public function loadCustomCssJs()
-{
-    $assetsUrl = $this->myComponent->config['assetsUrl'];
-
-    // CSS (как обычно)
-    $this->addCss($assetsUrl . 'css/mgr/vue-dist/my-widget.min.css');
-
-    // ✅ С проверкой зависимости
-    $this->addVueModule($assetsUrl . 'js/mgr/vue-dist/my-widget.min.js');
-    $this->addVueModule($assetsUrl . 'js/mgr/vue-dist/another-widget.min.js');
-}
+$this->addVueModule($assetsUrl . 'js/mgr/vue-dist/my-widget.min.js');
 ```
 
-### Лексиконы
-
-Добавьте лексиконы для сообщения об ошибке:
+Лексикон сообщения (на двух языках):
 
 ```php
-// lexicon/ru/default.inc.php
-$_lang['mycomponent_error'] = 'Ошибка';
-$_lang['mycomponent_vuetools_required'] = 'Для работы требуется пакет VueTools. Установите его через Менеджер пакетов.';
-
-// lexicon/en/default.inc.php
-$_lang['mycomponent_error'] = 'Error';
-$_lang['mycomponent_vuetools_required'] = 'VueTools package is required. Please install it via Package Manager.';
+$_lang['mycomponent_vuetools_required'] = 'Требуется пакет VueTools. Установите его через Менеджер пакетов.';
 ```
 
-### Результат
+## Использование в компоненте
 
-| Без проверки | С проверкой |
-|--------------|-------------|
-| Ошибки `Failed to resolve module specifier "vue"` в консоли | Чистая консоль |
-| Vue виджеты не работают | Понятный MODX алерт с инструкцией |
-| Пользователь не понимает проблему | Пользователь знает что делать |
-
-## Использование в Vue компонентах
+Vue, composable и компоненты PrimeVue импортируются из Import Map:
 
 ```vue
 <script setup>
-// Vue импортируется из Import Map (не бандлится)
-import { ref, computed, onMounted } from 'vue'
-
-// Pinia из Import Map
-import { createPinia } from 'pinia'
-
-// PrimeVue компоненты из Import Map
-import Button from 'primevue/button'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-
-// Composables из VueTools
+import { ref, computed } from 'vue'
+import { Button, DataTable, Column } from 'primevue'
 import { useLexicon } from '@vuetools/useLexicon'
-import { useModx } from '@vuetools/useModx'
 import { usePermission } from '@vuetools/usePermission'
 
 const { _ } = useLexicon()
-const { modx, config } = useModx()
-const { hasPermission } = usePermission()
+const { can } = usePermission()
 
-// Ваш код компонента
 const items = ref([])
-const canEdit = computed(() => hasPermission('my_component_edit'))
+const canEdit = computed(() => can('my_component_edit'))
 </script>
 
 <template>
   <div class="my-component">
-    <h1>{{ _('my_component_title') }}</h1>
-
-    <Button
-      v-if="canEdit"
-      :label="_('my_component_add')"
-      icon="pi pi-plus"
-    />
-
+    <Button v-if="canEdit" :label="_('my_component_add')" />
     <DataTable :value="items">
       <Column field="name" :header="_('my_component_name')" />
     </DataTable>
@@ -288,197 +152,105 @@ const canEdit = computed(() => hasPermission('my_component_edit'))
 </template>
 ```
 
-## Entry Point (точка входа)
+## Точка входа
 
-Создайте entry point для инициализации Vue приложения:
+Entry point создаёт приложение, задаёт тему через `getActiveTheme()` и монтирует виджет:
 
 ```javascript
-// src/entries/my-widget.js
-import '../scss/styles.scss'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import PrimeVue from 'primevue/config'
-import Aura from '@primevue/themes/aura'
-import ToastService from 'primevue/toastservice'
-import ConfirmationService from 'primevue/confirmationservice'
-
+import { PrimeVue, ToastService } from 'primevue'
+import { getActiveTheme } from '@vuetools/useTheme'
 import MyWidget from '../components/MyWidget.vue'
 
-let appInstance = null
+let app = null
 
-function createVueApp(props = {}) {
-  const app = createApp(MyWidget, props)
+export function init(selector = '#my-vue-widget') {
+  const el = document.querySelector(selector)
+  if (!el || el.dataset.vApp === 'true') return app
 
+  app = createApp(MyWidget)
   app.use(createPinia())
-
-  app.use(PrimeVue, {
-    theme: {
-      preset: Aura,
-      options: {
-        darkModeSelector: 'none'
-      }
-    }
-  })
-
+  app.use(PrimeVue, getActiveTheme())
   app.use(ToastService)
-  app.use(ConfirmationService)
-
+  app.mount(selector)
+  el.dataset.vApp = 'true'
   return app
 }
 
-export function init(selector = '#my-vue-widget', props = {}) {
-  const el = document.querySelector(selector)
-
-  if (!el) {
-    console.warn(`[MyWidget] Element ${selector} not found`)
-    return null
-  }
-
-  // Предотвращаем повторную инициализацию
-  if (el.dataset.vApp === 'true') {
-    return appInstance
-  }
-
-  appInstance = createVueApp(props)
-  appInstance.mount(selector)
-  el.dataset.vApp = 'true'
-
-  return appInstance
-}
-
-export function destroy() {
-  if (appInstance) {
-    appInstance.unmount()
-    appInstance = null
-  }
-}
-
-// Export для глобального доступа из ExtJS
-window.MyComponentWidget = { init, destroy }
+window.MyComponentWidget = { init }
 ```
 
-## Интеграция в ExtJS вкладку
+`dataset.vApp` защищает от повторного монтирования при повторной активации вкладки.
+
+## Вкладка ExtJS
+
+Контейнер обязан иметь класс `vueApp`, инициализация — при активации вкладки:
 
 ```javascript
-// В ExtJS панели
 {
   title: _('my_tab_title'),
-  id: 'my-vue-tab',
   html: '<div id="my-vue-widget" class="vueApp"></div>',
   listeners: {
-    activate: function() {
-      // Инициализация при активации вкладки
+    activate: function () {
       if (window.MyComponentWidget) {
-        const el = document.querySelector('#my-vue-widget')
-        if (el && el.dataset.vApp !== 'true') {
-          window.MyComponentWidget.init('#my-vue-widget', {
-            someId: config.record.id
-          })
-        }
+        window.MyComponentWidget.init('#my-vue-widget')
       }
     }
   }
 }
 ```
 
-::: warning Важно
-Не забудьте добавить класс `vueApp` к контейнеру — без него стили PrimeVue не применятся.
+::: warning
+Без класса `vueApp` на контейнере стили PrimeVue не применятся.
 :::
 
-## Собственный API клиент
+## Собственный API-клиент {#own-api-client}
 
-Если ваш компонент использует **собственный роутер** (не стандартный MODX connector), создайте локальный `request.js`:
+`useApi` рассчитан на стандартный connector MODX. Если у компонента свой роутер, заведите локальный `request.js` — он собирает URL под ваш процессор-роутер и добавляет токен `HTTP_MODAUTH`:
 
 ```javascript
-// src/request.js
 class Request {
-  getConnectorUrl() {
-    return window.myComponent?.config?.connector_url
-      || '/assets/components/mycomponent/connector.php'
-  }
-
-  getModAuthToken() {
-    return window.MODx?.siteId || null
-  }
-
   buildUrl(route, params = {}) {
-    const url = new URL(this.getConnectorUrl(), window.location.origin)
-
-    // Ваш процессор-роутер
+    const url = new URL(window.myComponent.config.connector_url, window.location.origin)
     url.searchParams.set('action', 'MyComponent\\Processors\\Api\\Index')
     url.searchParams.set('route', route)
-
-    const token = this.getModAuthToken()
-    if (token) {
-      url.searchParams.set('HTTP_MODAUTH', token)
-    }
-
-    Object.entries(params).forEach(([key, value]) => {
-      if (value != null) url.searchParams.set(key, value)
-    })
-
+    const token = window.MODx?.siteId
+    if (token) url.searchParams.set('HTTP_MODAUTH', token)
+    Object.entries(params).forEach(([k, v]) => { if (v != null) url.searchParams.set(k, v) })
     return url.toString()
   }
 
   async request(method, route, data = null) {
-    const options = {
-      method,
-      headers: { 'Accept': 'application/json' },
-      credentials: 'same-origin'
+    const options = { method, headers: { Accept: 'application/json' }, credentials: 'same-origin' }
+    let url = this.buildUrl(route, method === 'GET' ? data : {})
+    if (method !== 'GET' && data) {
+      options.headers['Content-Type'] = 'application/json'
+      options.body = JSON.stringify(data)
     }
-
-    let url
-    if (method === 'GET' && data) {
-      url = this.buildUrl(route, data)
-    } else {
-      url = this.buildUrl(route)
-      if (data) {
-        options.headers['Content-Type'] = 'application/json'
-        options.body = JSON.stringify(data)
-      }
-    }
-
-    const response = await fetch(url, options)
-    const result = await response.json()
-
-    if (!result.success) {
-      throw new Error(result.message || 'Request failed')
-    }
-
+    const result = await (await fetch(url, options)).json()
+    if (!result.success) throw new Error(result.message || 'Request failed')
     return result.object || result.data || result
   }
 
   get(route, params) { return this.request('GET', route, params) }
   post(route, data) { return this.request('POST', route, data) }
-  put(route, data) { return this.request('PUT', route, data) }
-  delete(route, data) { return this.request('DELETE', route, data) }
 }
 
 export default new Request()
 ```
 
-Использование:
+## Чеклист
 
-```javascript
-// Вместо useApi из VueTools
-import request from '../request.js'
+- [ ] `external` в `vite.config.js`: `vue`, `pinia`, `primevue`, используемые `@vuetools/*`.
+- [ ] PrimeVue импортируется только через `primevue`, без subpath.
+- [ ] Тема через `getActiveTheme()`, не жёстко прописанный пресет.
+- [ ] `addVueModule()` с проверкой зависимости вместо прямого `regClientStartupHTMLBlock()`.
+- [ ] Лексиконы сообщения об ошибке на двух языках.
+- [ ] `class="vueApp"` на контейнерах виджетов.
+- [ ] Топики лексиконов загружены в контроллере.
+- [ ] Свой `request.js`, если у компонента свой роутер.
 
-const products = await request.get('/api/products', { limit: 20 })
-await request.post('/api/products', { name: 'New Product' })
-```
+## Пример
 
-## Чеклист интеграции
-
-- [ ] Добавить `vuetools` в зависимости пакета (setup options)
-- [ ] Настроить `external` в vite.config.js
-- [ ] Настроить postcss prefix selector для изоляции стилей
-- [ ] Реализовать `addVueModule()` с проверкой зависимости
-- [ ] Добавить лексиконы для сообщения об ошибке
-- [ ] Использовать `addVueModule()` вместо `regClientStartupHTMLBlock()`
-- [ ] Добавить `class="vueApp"` к контейнерам Vue
-- [ ] Загрузить топики лексиконов в контроллере
-- [ ] Создать локальный `request.js` если используете собственный роутер
-
-## Примеры
-
-- **[MiniShop3](https://github.com/modx-pro/MiniShop3)** — полная интеграция с собственным роутером
+[MiniShop3](https://github.com/modx-pro/MiniShop3) — интеграция со своим роутером.
