@@ -89,7 +89,7 @@ Latest **jQuery** with **daily** updates from **jsdelivr.net**:
 ```modx
 [[!PageSpeed?
   &lifetime=`86400`
-  &script=`async``
+  &script=`async`
   &subresources=`{
     "script" : [
       { "url" : "https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js" }

@@ -2,10 +2,10 @@
 import { useScrollLock, useElementVisibility, useScroll } from '@vueuse/core'
 import { DefaultTheme, useRoute, useData, inBrowser } from 'vitepress'
 import { ref, watch, computed, nextTick } from 'vue'
-import { useSidebar } from 'vitepress/theme'
+import { useLayout } from 'vitepress/theme'
 import VPSidebarItem from 'vitepress/dist/client/theme-default/components/VPSidebarItem.vue'
 
-const { sidebar: flatSidebar, sidebarGroups, hasSidebar } = useSidebar()
+const { sidebar: flatSidebar, sidebarGroups, hasSidebar } = useLayout()
 const route = useRoute()
 
 const sidebar = computed<DefaultTheme.SidebarItem[]>(() => {
@@ -41,9 +41,14 @@ function scrollToActiveElement() {
   }
 
   activeLinkEl.value = navEl.value.querySelector<HTMLElement>(`a[href="${route.path}"]`)
-  activeGroupEl.value = activeLinkEl.value.closest<HTMLElement>('.group')
+  activeGroupEl.value = activeLinkEl.value?.closest<HTMLElement>('.group') ?? null
 
-  const offset = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--vp-nav-height')) * 2
+  if (!activeGroupEl.value) {
+    return
+  }
+
+  // --vp-nav-height is defined in rem, so take the rendered navbar height
+  const offset = (document.querySelector<HTMLElement>('.VPNavBar')?.offsetHeight ?? 64) * 2
   const isElementVisible = useElementVisibility(activeGroupEl)
 
   if (!isElementVisible.value) {

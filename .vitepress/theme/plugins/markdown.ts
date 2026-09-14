@@ -1,6 +1,4 @@
-import type MarkdownIt from 'markdown-it'
-import type StateBlock from 'markdown-it/lib/rules_block/state_block'
-import { isSpace } from 'markdown-it/lib/common/utils'
+import type { MarkdownIt, StateBlock } from 'markdown-it'
 import kbd from 'markdown-it-kbd'
 
 export const addPlugins = (md: MarkdownIt) => {
@@ -17,6 +15,7 @@ function table(
   endLine: number,
   silent: any
 ) {
+  const { isSpace } = state.md.utils
   var ch, lineText, pos, i, l, nextLine, headers, columns, columnCount, token,
       aligns, t, tableLines, tbodyLines, oldParentType, terminate,
       terminatorRules, firstCh, secondCh;

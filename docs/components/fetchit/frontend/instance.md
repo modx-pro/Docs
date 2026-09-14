@@ -46,7 +46,7 @@ document.addEventListener('fetchit:before', (e) => {
 })
 ```
 
-<!--@include: ./parts/validation.warning.md-->
+<!--@include: ../parts/validation.warning.md-->
 
 ## setFormMessage(type, message)
 

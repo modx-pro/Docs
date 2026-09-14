@@ -260,40 +260,68 @@ kbd {
 }
 
 @media (min-width: 768px) {
-  .DocSearch-Button {
-    display: flex;
+  .VPNavBar .VPNavBarSearch .VPNavBarSearchButton {
     justify-content: space-between;
+    height: 40px;
+    padding: 0 10px 0 12px;
     background-color: var(--vp-c-bg-elv);
     border: 1px solid var(--vp-c-gray-soft);
     box-shadow: var(--vp-shadow-1);
   }
 
-  .DocSearch-Button:hover {
-    background-color: var(--vp-c-bg-elv);
-    border: 1px solid var(--vp-c-gray-2);
-    box-shadow: var(--vp-shadow-1);
+  .VPNavBar .VPNavBarSearch .VPNavBarSearchButton:hover {
+    border-color: var(--vp-c-gray-2);
+  }
+
+  .VPNavBarSearchButton .text {
+    margin-right: auto;
   }
 }
 
 @media (min-width: 1024px) {
-  .DocSearch-Button {
+  .VPNavBar .VPNavBarSearch .VPNavBarSearchButton {
     min-width: 200px;
   }
+}
+
+/* shortcut keys are drawn by the `.keys` box, not by the global kbd style */
+.VPNavBarSearchButton kbd {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .VPLocalSearchBox>.shell:is(div) {
   gap: 0;
   padding: 0;
-  border-radius: 8px;
+  border-radius: 0;
   background-color: var(--vp-c-bg-elv);
 }
 
 .VPLocalSearchBox>.shell>.search-bar {
   border: none;
   border-bottom: 1px solid var(--vp-c-gray-soft);
-  border-radius: 8px 8px 0 0;
+  border-radius: 0;
   padding: 12px 16px;
   background-color: var(--vp-c-bg-elv);
+}
+
+/* the modal is fullscreen on small screens */
+@media (min-width: 768px) {
+  .VPLocalSearchBox>.shell:is(div) {
+    border-radius: 8px;
+  }
+
+  .VPLocalSearchBox>.shell>.search-bar {
+    border-radius: 8px 8px 0 0;
+  }
+}
+
+.VPLocalSearchBox .search-actions {
+  align-items: center;
 }
 
 .VPLocalSearchBox>.shell>.search-bar:focus-within {
