@@ -40,7 +40,7 @@
 
 ::: code-group
 
-``` markdown:line-numbers [docs/faq/useful-queries/название-вашего-файла.md]
+```markdown:line-numbers [docs/faq/useful-queries/название-вашего-файла.md]
 --- // [!code ++]
 author: github-login // [!code ++]
 --- // [!code ++]
@@ -58,7 +58,7 @@ author: github-login // [!code ++]
 
 ::: code-group
 
-``` markdown:line-numbers [docs/faq/useful-queries/название-вашего-файла.md]
+```markdown:line-numbers [docs/faq/useful-queries/название-вашего-файла.md]
 ---
 author: github-login
 head: // [!code ++]

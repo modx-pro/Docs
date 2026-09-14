@@ -580,7 +580,7 @@ Client ID, Google Client ID), браузер, число позиций в из�
 * --myf-primary-color
 * --myf-secondary-color
 
-``` CSS
+```CSS
 :root {
 --myf-primary-color:red;
 --myf-secondary-color:silver;
