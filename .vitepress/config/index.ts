@@ -4,12 +4,13 @@ import { type HeadConfig, defineConfigWithTheme } from 'vitepress'
 import { config as en, searchLocale as searchLocaleEn } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
+import { darkTheme, lightTheme } from '../theme/syntaxes/themes'
 import { addPlugins } from '../theme/plugins/markdown'
 import { components, prepareData } from '../theme/plugins/component'
 import { slugify } from 'transliteration'
 import { fileURLToPath, URL } from 'node:url'
 import { withMermaid } from 'vitepress-plugin-mermaid'
-import { modhost, modstore, modxpro, telegram } from '../../docs/icons'
+import { modstore, modxpro, telegram } from '../../docs/icons'
 import { coreMembers } from '../../docs/authors'
 import { normalize } from '../theme/utils'
 
@@ -45,6 +46,18 @@ export default withMermaid(
   mermaid: {
     securityLevel: 'loose',
     startOnLoad: false,
+    // Mermaid 12 defaults to the ELK layout, the new look and narrower labels, keep the previous appearance
+    layout: 'dagre',
+    look: 'classic',
+    theme: 'default',
+    flowchart: {
+      wrappingWidth: 200,
+      minNodeWidth: 0,
+    },
+    state: {
+      wrappingWidth: 200,
+      minNodeWidth: 0,
+    },
   },
 
   title: SITE_TITLE,
@@ -54,8 +67,8 @@ export default withMermaid(
   markdown: {
     languages,
     theme: {
-      light: 'github-light',
-      dark: 'one-dark-pro',
+      light: lightTheme,
+      dark: darkTheme,
     },
     container: {
       tipLabel: 'Подсказка',
@@ -122,10 +135,6 @@ export default withMermaid(
     },
 
     socialLinks: [
-      {
-        icon: { svg: modhost },
-        link: 'https://modhost.pro',
-      },
       {
         icon: { svg: modstore },
         link: 'https://modstore.pro',
@@ -250,8 +259,7 @@ export default withMermaid(
       alias: [
         'VPSidebar',
         'VPDocFooter',
-        'VPNavBarTranslations',
-        'VPNavScreenTranslations',
+        'VPNavTranslations',
         'VPNavBar',
       ].map(componentName => ({
         find: new RegExp(`^.*\/${componentName}\.vue$`),

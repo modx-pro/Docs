@@ -31,33 +31,31 @@
   "devDependencies": {
     "@braintree/sanitize-url": "^7.1.2",
     "@cspell/dict-ru_ru": "^2.3.2",
-    "@docsearch/css": "^4.6.2",
-    "@docsearch/js": "^4.6.2",
+    "@gulomov/fenom-tmlanguage": "^2.1.2",
+    "@gulomov/modx-tmlanguage": "^2.1.0",
     "@modix/smarty-tmlanguage": "^1.1.0",
     "@nolebase/vitepress-plugin-enhanced-readabilities": "^2.18.2",
     "@resvg/resvg-js": "^2.6.2",
-    "@types/markdown-it": "^14.2.0",
-    "@types/node": "^22.20.1",
-    "cspell": "^9.8.0",
+    "@types/node": "^22.20.2",
+    "cspell": "^10.3.1",
     "cytoscape": "^3.34.3",
     "cytoscape-cose-bilkent": "^4.1.0",
     "dayjs": "^1.11.23",
     "debug": "^4.4.3",
     "dotenv": "^17.4.2",
     "fast-glob": "^3.3.3",
-    "fenom-tmlanguage": "^1.0.0",
     "gray-matter": "^4.0.3",
-    "markdown-it": "^14.2.0",
+    "markdown-it": "^15.0.2",
     "markdown-it-kbd": "^3.0.2",
     "markdownlint": "^0.41.1",
     "markdownlint-cli": "^0.49.1",
-    "mermaid": "^11.17.2",
-    "modx-tmlanguage": "^1.2.0",
+    "mermaid": "^12.0.0",
     "plop": "^4.0.5",
-    "react": "^18.3.1",
+    "react": "^19.3.0",
     "satori": "^0.33.4",
+    "shiki": "^4.4.3",
     "transliteration": "^2.6.1",
-    "vitepress": "^1.6.4",
+    "vitepress": "2.0.0-alpha.20",
     "vitepress-plugin-mermaid": "^2.0.17",
     "vue": "^3.5.42"
   },
@@ -78,7 +76,7 @@
     "uuid": "^14.0.2"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.18"
   },
   "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
 }
