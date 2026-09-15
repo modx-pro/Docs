@@ -1,252 +1,78 @@
 # JavaScript
 
-Архитектура и подключение JavaScript mFilter.
+Скрипты mFilter подключаются сами и сами находят форму фильтров — для обычного каталога здесь ничего делать не нужно. Страница пригодится, чтобы подключить скрипты вручную, настроить поведение формы или слайдер диапазона.
 
-## Архитектура
-
-mFilter использует двухуровневую архитектуру:
-
-```
-┌─────────────────────────────────────────┐
-│              mfilter.js                  │  ← Точка входа, автоинициализация
-├─────────────────────────────────────────┤
-│              UI Layer                    │  ← DOM-bindings для SSR
-│            (FilterUI.js)                 │
-├─────────────────────────────────────────┤
-│             API Core                     │  ← Headless ядро
-│  ApiClient.js │ FilterAPI.js │ hooks.js │
-└─────────────────────────────────────────┘
-```
-
-### API Core (Headless)
-
-Независимое ядро без привязки к DOM:
-
-- **ApiClient.js** — HTTP-клиент для запросов к серверу
-- **FilterAPI.js** — методы работы с фильтрами
-- **hooks.js** — система хуков для расширения
-- **mfilter.headless.js** — инициализация и экспорт `window.mfilter`
-
-### UI Layer (SSR)
-
-DOM-привязки для работы с готовой разметкой:
-
-- **FilterUI.js** — управление формой, результатами, пагинацией
-- **mfilter.slider.js** — интеграция с noUiSlider
-- **mfilter.js** — автоинициализация
-
-## Файлы
-
-| Файл | Размер | Назначение |
-|------|--------|------------|
-| `core/ApiClient.js` | ~3 KB | HTTP-клиент |
-| `core/FilterAPI.js` | ~5 KB | API методы |
-| `modules/hooks.js` | ~3 KB | Система хуков |
-| `mfilter.headless.js` | ~4 KB | Headless точка входа |
-| `ui/FilterUI.js` | ~40 KB | UI для SSR |
-| `mfilter.slider.js` | ~8 KB | noUiSlider интеграция |
-| `mfilter.js` | ~4 KB | Автоинициализация |
+Управлять фильтром из своего кода — [JS API](js-api). Работать с сервером без формы, из своего приложения — [Headless API](headless).
 
 ## Подключение
 
-### Автоматическое (по умолчанию)
+Стили и скрипты добавляет плагин mFilter — на каждую страницу сайта, даже без формы фильтров. Список файлов берётся из системной настройки `mfilter.frontend_assets`, скрипты встают в конец страницы с атрибутом `defer`.
 
-Плагин mFilter автоматически подключает скрипты на страницах с фильтрами.
-
-Управление через системную настройку `mfilter.register_frontend`:
-
-- `true` — автоподключение (по умолчанию)
-- `false` — отключить, подключать вручную
-
-### Ручное подключение
+Чтобы подключать файлы самому, выключите настройку `mfilter.register_frontend` и добавьте в шаблон ресурса те же файлы в том же порядке:
 
 ```html
-<!-- Базовые стили -->
+<link rel="stylesheet" href="/assets/components/mfilter/css/web/vendor/nouislider/nouislider.min.css">
 <link rel="stylesheet" href="/assets/components/mfilter/css/web/mfilter.css">
 
-<!-- API Core (обязательно) -->
-<script src="/assets/components/mfilter/js/web/core/ApiClient.js"></script>
-<script src="/assets/components/mfilter/js/web/core/FilterAPI.js"></script>
-<script src="/assets/components/mfilter/js/web/modules/hooks.js"></script>
-<script src="/assets/components/mfilter/js/web/mfilter.headless.js"></script>
-
-<!-- UI Layer (для SSR) -->
-<script src="/assets/components/mfilter/js/web/ui/FilterUI.js"></script>
-<script src="/assets/components/mfilter/js/web/mfilter.slider.js"></script>
-<script src="/assets/components/mfilter/js/web/mfilter.js"></script>
+<script src="/assets/components/mfilter/js/web/vendor/nouislider/nouislider.min.js" defer></script>
+<script src="/assets/components/mfilter/js/web/core/ApiClient.js" defer></script>
+<script src="/assets/components/mfilter/js/web/core/FilterAPI.js" defer></script>
+<script src="/assets/components/mfilter/js/web/modules/hooks.js" defer></script>
+<script src="/assets/components/mfilter/js/web/mfilter.headless.js" defer></script>
+<script src="/assets/components/mfilter/js/web/ui/FilterUI.js" defer></script>
+<script src="/assets/components/mfilter/js/web/ui/SelectedFilters.js" defer></script>
+<script src="/assets/components/mfilter/js/web/mfilter.slider.js" defer></script>
+<script src="/assets/components/mfilter/js/web/mfilter.js" defer></script>
 ```
 
-### Минимальный набор (только Headless)
+Порядок не меняйте: `mfilter.js` запускает форму и рассчитывает, что остальные файлы уже загружены. После обновления mFilter сверьте список с настройкой `mfilter.frontend_assets` — в новых версиях в неё добавляются файлы.
 
-Для SPA-приложений:
+## Настройки формы {#form-options}
 
-```html
-<script src="/assets/components/mfilter/js/web/core/ApiClient.js"></script>
-<script src="/assets/components/mfilter/js/web/core/FilterAPI.js"></script>
-<script src="/assets/components/mfilter/js/web/modules/hooks.js"></script>
-<script src="/assets/components/mfilter/js/web/mfilter.headless.js"></script>
+Поведение формы задают `data`-атрибуты тега `<form>`. Сниппет `mFilterForm` выводит свои атрибуты переменной `{$formAttrs}` в чанке формы — параметр `&tplOuter`, по умолчанию `mfilter.form`. В своей копии чанка оставьте переменную и допишите нужные атрибуты рядом:
+
+```fenom
+<form{$formAttrs} data-mfilter-pagination-mode="loadmore">
 ```
 
-## Конфигурация
+Три атрибута — `data-mfilter-mode`, `data-mfilter-auto-submit` и `data-mfilter-delay` — `mFilterForm` выводит сам. Их меняют параметрами сниппета `&ajaxMode`, `&autoSubmit` и `&autoSubmitDelay`. Второй такой же атрибут в чанк не дописывайте: из двух одинаковых браузер учитывает только первый. Без параметров автоотправка и её задержка берутся из настроек `mfilter.auto_submit` и `mfilter.auto_submit_delay`, а при включённой автоотправке режим всегда `instant`.
 
-Глобальная конфигурация через `window.mfilterConfig`:
+«По умолчанию» в таблице — значение, когда атрибута нет. В колонке «Опция» — то же название для [формы, созданной вручную](js-api#sozdat-formu-vruchnuyu).
 
-```html
-<script>
-window.mfilterConfig = {
-    apiUrl: '/assets/components/mfilter/api.php',
-    resourceId: 5,      // ID категории
-    debug: false        // Режим отладки
-};
-</script>
+| Атрибут | Опция | По умолчанию | Что задаёт |
+|---|---|---|---|
+| `data-mfilter-mode` | `ajaxMode` | `form` | `instant` — следить за полями формы. Без этого не работают автоотправка и событие `mfilter:change` |
+| `data-mfilter-auto-submit` | `autoSubmit` | `false` | Отправлять запрос при изменении поля |
+| `data-mfilter-delay` | `autoSubmitDelay` | `500` | Задержка автоотправки, мс |
+| `data-mfilter-ajax` | `ajax` | `true` | `false` — форма и ссылки пагинации перезагружают страницу |
+| `data-mfilter-seo-url` | `seoUrl` | `true` | SEO-адрес вместо параметров в адресе |
+| `data-mfilter-push-state` | `pushState` | `true` | Менять адрес страницы и историю браузера |
+| `data-mfilter-reset-page` | `resetPage` | `true` | Возвращаться на первую страницу при смене фильтров |
+| `data-mfilter-scroll-to-results` | `scrollToResults` | `true` | Прокручивать к результатам после обновления |
+| `data-mfilter-scroll-offset` | `scrollOffset` | `100` | Отступ прокрутки сверху, px |
+| `data-mfilter-pagination` | `paginationSelector` | `.mfilter-pagination` | Куда вставлять пагинацию |
+| `data-mfilter-pagination-mode` | `paginationMode` | `links` | `links`, `loadmore` или `infinite` — см. [Пагинация](../frontend/pagination) |
+| `data-mfilter-loading-overlay` | `loadingOverlay` | `true` | Добавлять класс `active` элементу `.mfilter-overlay` на время запроса |
+| `data-mfilter-debug` | `debug` | `false` | Предупреждения о разметке в консоли браузера и замеры запроса в блоке `.mfilter-profiler` |
+| — | `resultsSelector` | `.mfilter-results` | Куда вставлять карточки |
+| — | `loadingClass` | `mfilter-loading` | Класс формы на время запроса |
+
+Атрибут-переключатель выключает только значение `"false"`, любое другое, в том числе пустое, включает.
+
+## Слайдер диапазона
+
+Слайдер у числового фильтра строит библиотека noUiSlider, она входит в mFilter. Скрипт находит элемент `data-mfilter-slider` и связывает его с полями `data-range="min"` и `data-range="max"`. Поля ищутся внутри родителя слайдера, поэтому все три элемента должны лежать в общем блоке.
+
+Разметка — стандартный чанк `mfilter.slider`, параметр `&tplSlider` сниппета `mFilterForm`. Чтобы настроить слайдер, допишите атрибуты элементу слайдера в своей копии чанка:
+
+```fenom
+<div data-mfilter-slider data-key="{$key}" data-min="{$min}" data-max="{$max}" data-step="100" data-pips="true"></div>
 ```
 
-## Инициализация
+| Атрибут | Без атрибута | Что задаёт |
+|---|---|---|
+| `data-step` | Шаг подбирается сам — до ста шагов на весь диапазон | Шаг ручек |
+| `data-tooltips="false"` | Над ручками видны числа | Скрыть числа над ручками |
+| `data-pips="true"` | Шкалы нет | Шкала с делениями под слайдером |
 
-### Автоматическая
-
-Элементы с `data-mfilter` инициализируются автоматически:
-
-```html
-<form data-mfilter data-mfilter-results=".results">
-    <!-- фильтры -->
-</form>
-```
-
-### Ручная
-
-```javascript
-// Создать инстанс
-const instance = mfilterInit('#my-filter', {
-    ajax: true,
-    autoSubmit: true,
-    autoSubmitDelay: 500
-});
-
-// Получить существующий инстанс
-const filter = mfilterGet('my-filter');
-
-// Уничтожить инстанс
-mfilterDestroy('my-filter');
-```
-
-## Data-атрибуты
-
-### На контейнере/форме
-
-| Атрибут | Описание |
-|---------|----------|
-| `data-mfilter` | Маркер для автоинициализации |
-| `data-mfilter-results` | CSS-селектор блока результатов |
-| `data-mfilter-pagination` | CSS-селектор пагинации |
-| `data-mfilter-ajax` | Включить AJAX (true/false) |
-| `data-mfilter-mode` | Режим: form или instant |
-| `data-mfilter-auto-submit` | Авто-отправка (true/false) |
-| `data-mfilter-delay` | Задержка авто-отправки (мс) |
-| `data-mfilter-seo-url` | SEO URL (true/false) |
-| `data-mfilter-push-state` | Обновлять URL (true/false) |
-| `data-mfilter-scroll-to-results` | Скролл к результатам |
-| `data-mfilter-scroll-offset` | Отступ скролла (px) |
-| `data-mfilter-debug` | Режим отладки |
-| `data-base-url` | Базовый URL категории |
-| `data-resource-id` | ID ресурса |
-
-### На элементах
-
-| Атрибут | Описание |
-|---------|----------|
-| `data-filter` | Ключ фильтра (на блоке) |
-| `data-range="min"` | Поле минимума диапазона |
-| `data-range="max"` | Поле максимума диапазона |
-| `data-mfilter-slider` | Маркер для noUiSlider |
-| `data-mfilter-sort` | Элемент сортировки |
-| `data-mfilter-limit` | Элемент выбора лимита |
-| `data-mfilter-tpl` | Элемент переключения шаблона |
-
-## События DOM
-
-| Событие | Описание | detail |
-|---------|----------|--------|
-| `mfilter:ready` | API Core инициализирован | `{ mfilter }` |
-| `mfilter:ui:ready` | UI инициализирован | `{ instances }` |
-| `mfilter:contentLoaded` | Новый контент загружен (AJAX) | `{ container }` |
-| `mfilter:beforeSubmit` | Перед отправкой | `{ state, instance }` |
-| `mfilter:afterSubmit` | После отправки | `{ state, instance }` |
-| `mfilter:success` | Успешный ответ | `{ response, instance }` |
-| `mfilter:error` | Ошибка | `{ error, instance }` |
-
-### Подписка на события
-
-```javascript
-document.addEventListener('mfilter:ui:ready', (e) => {
-    console.log('Инстансы:', e.detail.instances);
-});
-
-document.addEventListener('mfilter:success', (e) => {
-    console.log('Результаты:', e.detail.response);
-});
-```
-
-## Глобальные объекты
-
-| Объект | Описание |
-|--------|----------|
-| `window.mfilter` | API Core (headless) |
-| `window.mfilterHooks` | Система хуков |
-| `window.MFilterUI` | Конструктор UI |
-| `window.MFilterSlider` | API слайдеров |
-| `window.mfilterInit()` | Создать инстанс |
-| `window.mfilterGet()` | Получить инстанс |
-| `window.mfilterDestroy()` | Удалить инстанс |
-
-## noUiSlider
-
-Для диапазонных фильтров используется [noUiSlider](https://refreshless.com/nouislider/).
-
-### Подключение
-
-Подключите noUiSlider до скриптов mFilter:
-
-```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15/dist/nouislider.min.css">
-<script src="https://cdn.jsdelivr.net/npm/nouislider@15/dist/nouislider.min.js"></script>
-```
-
-### Кастомизация слайдера
-
-```javascript
-// Создать слайдер вручную
-MFilterSlider.create('#my-slider', {
-    start: [1000, 50000],
-    range: { min: 0, max: 100000 },
-    step: 100,
-    tooltips: true,
-    format: MFilterSlider.formats.currency
-});
-
-// Обновить диапазон
-MFilterSlider.updateRange('#my-slider', 0, 200000);
-
-// Установить значения
-MFilterSlider.set('#my-slider', [5000, 30000]);
-```
-
-### Форматы
-
-```javascript
-MFilterSlider.formats.integer   // 12345
-MFilterSlider.formats.float     // 123.45
-MFilterSlider.formats.currency  // 12 345 ₽
-MFilterSlider.formats.percent   // 50%
-```
-
-## jQuery (опционально)
-
-Если jQuery загружен, доступен плагин:
-
-```javascript
-$('#my-filter').mfilter({
-    ajax: true,
-    autoSubmit: true
-});
-```
+Поставить диапазон из своего кода — `mfilterGet().setFilter('price', { min: 1000, max: 5000 })`, слайдер передвинется сам. Подробнее — [JS API](js-api).

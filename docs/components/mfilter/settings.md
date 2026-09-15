@@ -186,7 +186,9 @@ seo_max_values = 1              → noindex для страниц с множе�
 
 ```json
 [
+    "[[+cssUrl]]web/vendor/nouislider/nouislider.min.css",
     "[[+cssUrl]]web/mfilter.css",
+    "[[+jsUrl]]web/vendor/nouislider/nouislider.min.js",
     "[[+jsUrl]]web/core/ApiClient.js",
     "[[+jsUrl]]web/core/FilterAPI.js",
     "[[+jsUrl]]web/modules/hooks.js",
@@ -202,17 +204,7 @@ seo_max_values = 1              → noindex для страниц с множе�
 
 ### Отключение автоподключения
 
-Если нужно подключить скрипты вручную:
-
-1. Установите `mfilter.register_frontend` = `false`
-2. Подключите нужные файлы в шаблоне:
-
-```html
-<link rel="stylesheet" href="/assets/components/mfilter/css/web/mfilter.css">
-<script src="/assets/components/mfilter/js/web/mfilter.headless.js"></script>
-<script src="/assets/components/mfilter/js/web/ui/FilterUI.js"></script>
-<script src="/assets/components/mfilter/js/web/mfilter.js"></script>
-```
+Установите `mfilter.register_frontend` = `false` и подключите файлы в шаблоне ресурса — все из списка выше, в том же порядке. Готовая разметка — в разделе [JavaScript → Подключение](development/javascript#podklyuchenie).
 
 ## Пример конфигурации
 

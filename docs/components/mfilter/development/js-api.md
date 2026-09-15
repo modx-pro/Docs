@@ -129,30 +129,17 @@ document.addEventListener('mfilter:contentLoaded', (e) => {
 Скрипт сам находит формы с атрибутом `data-mfilter`. Вручную форму создают только для своей разметки без него:
 
 ```js
-mfilterInit('#my-form', {
-    ajaxMode: 'instant',
-    autoSubmit: true,
+document.addEventListener('mfilter:ui:ready', () => {
+    mfilterInit('#my-form', {
+        ajaxMode: 'instant',
+        autoSubmit: true,
+    });
 });
 ```
 
-При ручном создании `data`-атрибуты формы не читаются — все настройки передаются объектом. Автоотправке нужны обе опции: `autoSubmit: true` без `ajaxMode: 'instant'` ничего не делает, потому что за полями никто не следит.
+При ручном создании `data`-атрибуты формы не читаются — все настройки передаются объектом. Опции — те же настройки, что у атрибутов, их список — в таблице [Настройки формы](javascript#form-options). Автоотправке нужны обе опции: `autoSubmit: true` без `ajaxMode: 'instant'` ничего не делает, потому что за полями никто не следит.
 
-| Опция | По умолчанию | Что задаёт |
-|---|---|---|
-| `ajax` | `true` | Обновлять выдачу без перезагрузки страницы |
-| `ajaxMode` | `form` | `instant` — следить за изменением полей |
-| `autoSubmit` | `false` | Отправлять запрос при изменении поля |
-| `autoSubmitDelay` | `500` | Задержка автоотправки, мс |
-| `seoUrl` | `true` | SEO-адрес вместо параметров в адресе |
-| `pushState` | `true` | Менять адрес страницы и историю браузера |
-| `resetPage` | `true` | Возвращаться на первую страницу при смене фильтров |
-| `scrollToResults` | `true` | Прокручивать к результатам после обновления |
-| `scrollOffset` | `100` | Отступ прокрутки, px |
-| `resultsSelector` | `.mfilter-results` | Куда вставлять карточки |
-| `paginationSelector` | `.mfilter-pagination` | Куда вставлять пагинацию |
-| `paginationMode` | `links` | `links`, `loadmore` или `infinite` |
-| `loadingClass` | `mfilter-loading` | Класс формы во время запроса |
-| `debug` | `false` | Подробности в консоли браузера |
+С jQuery то же самое записывается как `$('#my-form').mfilter({ … })`, если jQuery подключён раньше скриптов mFilter.
 
 Форма, которую выводит `mFilterForm`, включает автоотправку сама — по системной настройке `mfilter.auto_submit`.
 
