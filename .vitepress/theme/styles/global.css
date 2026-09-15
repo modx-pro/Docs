@@ -310,6 +310,13 @@ kbd {
 }
 
 /* the modal is fullscreen on small screens */
+@media (max-width: 767px) {
+  /* the clear button covers the hamburger, so it sits on the same spot */
+  .VPLocalSearchBox>.shell>.search-bar {
+    padding-right: 12px;
+  }
+}
+
 @media (min-width: 768px) {
   .VPLocalSearchBox>.shell:is(div) {
     border-radius: 8px;
@@ -373,8 +380,9 @@ kbd {
   padding: 24px;
 }
 
+/* same cross as the active hamburger: two 16px × 2px bars rotated by 45° */
 .vpi-delete {
-  --icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>');
+  --icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M6.343 6.343l11.314 11.314M17.657 6.343l-11.314 11.314"/></svg>');
   font-size: 24px !important;
 }
 
