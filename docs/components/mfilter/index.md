@@ -28,9 +28,11 @@ items: [
       { text: 'Слаги', link: 'interface/slugs' },
       { text: 'Паттерны URL', link: 'interface/patterns' },
       { text: 'SEO шаблоны', link: 'interface/seo-templates' },
+      { text: 'Индивидуальные SEO', link: 'interface/seo-pages' },
       { text: 'Словоформы', link: 'interface/word-forms' },
       { text: 'Обслуживание', link: 'interface/maintenance' },
       { text: 'Scheduler-задачи', link: 'interface/scheduler' },
+      { text: 'Прогрев кэша', link: 'interface/warmup' },
     ],
   },
   {
@@ -67,12 +69,15 @@ items: [
     text: 'Рецепты',
     link: 'cookbook/',
     items: [
+      { text: 'Фильтр выпадающим списком', link: 'cookbook/select-filter' },
       { text: 'Сортировка значений', link: 'cookbook/filter-values-sorting' },
       { text: 'Внешние фильтры', link: 'cookbook/external-filters' },
       { text: 'Свой тип фильтра', link: 'cookbook/custom-filter-type' },
       { text: 'Фильтры на странице поиска', link: 'cookbook/search-results-integration' },
+      { text: 'Синхронизация индекса фасетов', link: 'cookbook/facet-index-sync' },
     ],
   },
+  { text: 'История изменений', link: 'changelog/' },
 ]
 ---
 # mFilter

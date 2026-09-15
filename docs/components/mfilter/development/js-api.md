@@ -1,293 +1,152 @@
 # JS API
 
-Программное управление фильтрами через JavaScript API.
+Управление фильтром из своего кода: поставить или снять фильтр, сменить сортировку, отреагировать на обновление выдачи.
 
-## Получение инстанса
+## Получить форму
 
-```javascript
-// По ID элемента
-const filter = mfilterGet('mfilter-form');
-
-// Через MFilterUI
-const filter = MFilterUI.get('mfilter-form');
-
-// Все инстансы
-const all = MFilterUI.instances; // Map
+```js
+const filter = mfilterGet();
 ```
 
-## Методы инстанса
+Без аргумента `mfilterGet()` возвращает форму фильтров на странице. Если форм несколько, передайте id — его задаёт параметр `&formId` сниппета `mFilterForm`, по умолчанию `mfilter-form`: `mfilterGet('mfilter-form')`.
 
-### Управление фильтрами
+Форма появляется, когда скрипты mFilter загрузились. Код, который выполняется сразу при загрузке страницы, ждите событием:
 
-```javascript
-// Установить значение фильтра
-filter.setFilter('brand', 'apple');
-filter.setFilter('brand', ['apple', 'samsung']); // множественный
-
-// Удалить значение
-filter.removeFilter('brand', 'apple');
-
-// Удалить весь фильтр
-filter.removeFilter('brand');
-
-// Сбросить все фильтры
-filter.reset();
-
-// Получить текущие фильтры
-const filters = filter.getFilters();
-// { brand: ['apple'], color: ['red', 'blue'] }
-
-// Получить полное состояние
-const state = filter.getState();
-// { filters: {...}, page: 1, sort: 'price-asc', limit: 24 }
-```
-
-### Сортировка и пагинация
-
-```javascript
-// Установить сортировку
-filter.setSort('price-asc');
-filter.setSort('price-desc');
-
-// Установить лимит
-filter.setLimit(48);
-
-// Перейти на страницу
-filter.goToPage(3);
-
-// Загрузить ещё (для бесконечной прокрутки)
-filter.loadMore();
-```
-
-### Отправка
-
-```javascript
-// Отправить форму (собирает данные из DOM)
-filter.submit();
-
-// Отправить без сбора данных (использует текущий state)
-filter.submitWithoutCollect();
-```
-
-### Синхронизация
-
-```javascript
-// Синхронизировать форму с внутренним состоянием
-filter.syncFormWithState();
-```
-
-### События
-
-```javascript
-// Подписаться на событие
-filter.on('change', (data) => {
-    console.log('Изменение:', data.field, data.value);
+```js
+document.addEventListener('mfilter:ui:ready', () => {
+    mfilterGet().setSort('price-asc');
 });
-
-filter.on('success', (data) => {
-    console.log('Результаты:', data.response);
-});
-
-filter.on('error', (data) => {
-    console.error('Ошибка:', data.error);
-});
-
-// Отписаться
-filter.off('change', handler);
-filter.off('change'); // все обработчики события
 ```
 
-### Доступные события инстанса
+В обработчиках кликов это не нужно: к моменту клика форма уже есть.
 
-| Событие | Описание | Данные |
-|---------|----------|--------|
-| `init` | Инициализация | `{ instance }` |
-| `change` | Изменение поля | `{ field, name, value, state }` |
-| `beforeSubmit` | Перед отправкой | `{ state, instance, cancel }` |
-| `afterSubmit` | После отправки | `{ state, instance }` |
-| `success` | Успешный ответ | `{ response, instance }` |
-| `error` | Ошибка | `{ error, instance }` |
-| `seoUpdate` | Обновление SEO | `{ seoData, instance }` |
-| `destroy` | Уничтожение | `{ instance }` |
+## Методы
+
+| Метод | Что делает |
+|---|---|
+| `setFilter(ключ, значения)` | Заменяет значения фильтра |
+| `addFilter(ключ, значения)` | Добавляет значения к уже выбранным |
+| `removeFilter(ключ, значение)` | Снимает значение; без значения — весь фильтр |
+| `reset()` | Снимает все фильтры и сортировку |
+| `setSort(сортировка)` | Меняет сортировку: `price-asc`, `pagetitle-desc` |
+| `setLimit(число)` | Меняет число товаров на странице |
+| `setTpl(вид)` | Переключает вид — ключ из параметра `&tpls` сниппета `mFilter` |
+| `goToPage(номер)` | Переходит на страницу |
+| `loadMore()` | Догружает следующую страницу к показанным товарам |
+| `getFilters()` | Возвращает выбранные фильтры |
+| `getState()` | Возвращает фильтры, страницу, число страниц и товаров, сортировку, лимит, вид |
+| `on(событие, обработчик)`, `off(событие, обработчик)` | Подписка на события этой формы |
+
+Методы, которые что-то меняют, сами отправляют запрос и обновляют выдачу. Вызовы подряд уходят одним запросом, их можно писать цепочкой:
+
+```js
+filter.setFilter('color', 'red').setSort('price-asc');   // один запрос
+```
+
+После этих методов `submit()` не нужен. Он отправляет поля формы немедленно и пригодится кнопке вне формы, когда автоотправка выключена.
+
+## Значения фильтров
+
+```js
+filter.setFilter('color', 'red');
+filter.setFilter('color', ['red', 'blue']);
+filter.setFilter('vendor', [5, 7]);
+filter.setFilter('price', { min: 1000, max: 5000 });
+filter.setFilter('publishedon', { from: '2024-01-01', to: '2024-12-31' });
+
+filter.removeFilter('vendor', 5);
+filter.removeFilter('price');
+```
+
+- **Ключ** — ключ фильтра из набора фильтров.
+- **Производители и категории** задаются по id. По названию или слагу из адреса — `setFilter('vendor', 'apple')` — такой фильтр по производителю не отберёт.
+- **Числа и строки равнозначны**: `removeFilter('vendor', 5)` снимет значение `'5'`. `getFilters()` возвращает значения строками.
+- **Диапазон**: границу можно не передавать — `{ min: 1000 }` означает «от 1000», вторая граница снимается. `removeFilter('price')` снимает обе.
+
+## События
+
+События всплывают от формы до `document`, поэтому их слушают на `document`. Данные лежат в `e.detail`.
+
+| Событие | Когда | Что в `e.detail` |
+|---|---|---|
+| `mfilter:success` | Выдача обновлена | `filters`, `total`, `page`, `pageCount`, `sort`, `limit`, `tpl`, `response` — ответ сервера |
+| `mfilter:error` | Запрос не удался | `error` |
+| `mfilter:beforeSubmit` | Перед запросом | `state`, `cancel` — поставьте `true`, чтобы отменить запрос |
+| `mfilter:afterSubmit` | После запроса, удачного или нет | те же поля, что у `success`, без `response` |
+| `mfilter:contentLoaded` | Новые карточки вставлены на страницу | `container`, `append` — `true` при догрузке, и поля как у `success` |
+| `mfilter:change` | Пользователь изменил поле формы с автоотправкой | `field`, `name`, `value`, `state` |
+| `mfilter:seoUpdate` | Обновлены заголовок и метатеги | `seoData` |
+| `mfilter:ui:ready` | Формы на странице готовы | `instances` |
+
+Кроме `change`, в событиях формы есть и `instance` — сама форма. Через `filter.on('success', обработчик)` приходят те же данные, но сразу аргументом, без `e.detail`.
 
 ## Примеры
 
-### Внешний фильтр
+### Кнопка вне формы
 
 ```html
-<select id="quick-brand">
-    <option value="">Все бренды</option>
-    <option value="apple">Apple</option>
-    <option value="samsung">Samsung</option>
-</select>
+<button type="button" data-in-stock>Только в наличии</button>
 
 <script>
-document.getElementById('quick-brand').addEventListener('change', (e) => {
-    const filter = mfilterGet('main-filter');
-
-    if (e.target.value) {
-        filter.setFilter('vendor', e.target.value);
-    } else {
-        filter.removeFilter('vendor');
-    }
-
-    filter.submit();
+document.querySelector('[data-in-stock]').addEventListener('click', () => {
+    mfilterGet().setFilter('in_stock', 1);
 });
 </script>
 ```
 
-### Сброс при клике на кнопку
+Больше вариантов — сортировка в шапке, быстрые фильтры, цена в отдельном блоке — в рецепте [Внешние фильтры](../cookbook/external-filters).
 
-```html
-<button id="clear-filters">Сбросить все фильтры</button>
+### Число товаров в шапке
 
-<script>
-document.getElementById('clear-filters').addEventListener('click', () => {
-    const filter = mfilterGet('mfilter-form');
-    filter.reset();
+```js
+document.addEventListener('mfilter:success', (e) => {
+    document.querySelector('.header-count').textContent = e.detail.total;
 });
-</script>
 ```
 
-### Программная фильтрация
+### Отменить запрос
 
-```javascript
-const filter = mfilterGet('mfilter-form');
-
-// Установить несколько фильтров
-filter.setFilter('brand', ['apple', 'samsung']);
-filter.setFilter('price', { min: 10000, max: 50000 });
-filter.setSort('price-asc');
-filter.setLimit(24);
-
-// Отправить
-filter.submit();
+```js
+document.addEventListener('mfilter:beforeSubmit', (e) => {
+    if (Object.keys(e.detail.state.filters).length > 5) {
+        e.detail.cancel = true;
+    }
+});
 ```
 
-### Отслеживание изменений
+### Свои скрипты на новых карточках
 
-```javascript
-const filter = mfilterGet('mfilter-form');
+```js
+document.addEventListener('mfilter:contentLoaded', (e) => {
+    initGallery(e.detail.container);   // ваша функция
+});
+```
 
-filter.on('success', ({ response }) => {
-    // Отправить в аналитику
-    gtag('event', 'filter_applied', {
-        filters: JSON.stringify(filter.getFilters()),
-        results_count: response.total
+После фильтрации карточки заменяются новыми, и обработчики, навешанные на старые, пропадают. Запускайте свои скрипты заново в пределах `e.detail.container`.
+
+## Создать форму вручную
+
+Скрипт сам находит формы с атрибутом `data-mfilter`. Вручную форму создают только для своей разметки без него:
+
+```js
+document.addEventListener('mfilter:ui:ready', () => {
+    mfilterInit('#my-form', {
+        ajaxMode: 'instant',
+        autoSubmit: true,
     });
 });
 ```
 
-### Отмена отправки
+При ручном создании `data`-атрибуты формы не читаются — все настройки передаются объектом. Опции — те же настройки, что у атрибутов, их список — в таблице [Настройки формы](javascript#form-options). Автоотправке нужны обе опции: `autoSubmit: true` без `ajaxMode: 'instant'` ничего не делает, потому что за полями никто не следит.
 
-```javascript
-const filter = mfilterGet('mfilter-form');
+С jQuery то же самое записывается как `$('#my-form').mfilter({ … })`, если jQuery подключён раньше скриптов mFilter.
 
-filter.on('beforeSubmit', (data) => {
-    const filters = data.state.filters;
+Форма, которую выводит `mFilterForm`, включает автоотправку сама — по системной настройке `mfilter.auto_submit`.
 
-    // Отменить если выбрано слишком много фильтров
-    if (Object.keys(filters).length > 5) {
-        data.cancel = true;
-        alert('Выберите не более 5 фильтров');
-    }
-});
-```
+## Удалить форму
 
-### Кастомная обработка результатов
-
-```javascript
-const filter = mfilterGet('mfilter-form');
-
-filter.on('success', ({ response }) => {
-    // Обновить счётчик в шапке
-    document.querySelector('.header-count').textContent = response.total;
-
-    // Обновить URL без использования встроенного pushState
-    if (response.urls?.current) {
-        window.history.replaceState({}, '', response.urls.current);
-    }
-});
-```
-
-### Синхронизация двух форм
-
-```javascript
-const mainFilter = mfilterGet('main-filter');
-const mobileFilter = mfilterGet('mobile-filter');
-
-// При изменении основной формы — обновить мобильную
-mainFilter.on('success', () => {
-    const state = mainFilter.getState();
-
-    // Вручную обновить состояние мобильной формы
-    Object.entries(state.filters).forEach(([key, values]) => {
-        mobileFilter.setFilter(key, values);
-    });
-    mobileFilter.syncFormWithState();
-});
-```
-
-## Создание инстанса
-
-```javascript
-// Создать новый инстанс
-const instance = mfilterInit('#my-element', {
-    ajax: true,
-    seoUrl: true,
-    pushState: true,
-    autoSubmit: true,
-    autoSubmitDelay: 500,
-    resultsSelector: '.my-results',
-    paginationSelector: '.my-pagination',
-    scrollToResults: true,
-    scrollOffset: 100,
-
-    // Callbacks
-    onInit: function(instance) {
-        console.log('Инициализирован');
-    },
-    onChange: function(field, state) {
-        console.log('Изменено:', field.name);
-    },
-    onBeforeSubmit: function(state) {
-        console.log('Отправка...');
-    },
-    onSuccess: function(response) {
-        console.log('Результаты:', response);
-    },
-    onError: function(error) {
-        console.error('Ошибка:', error);
-    }
-});
-```
-
-## Опции инстанса
-
-| Опция | По умолчанию | Описание |
-|-------|--------------|----------|
-| `ajax` | `true` | Использовать AJAX |
-| `ajaxMode` | `form` | Режим: form или instant |
-| `seoUrl` | `true` | SEO-friendly URL |
-| `pushState` | `true` | Обновлять URL браузера |
-| `autoSubmit` | `false` | Авто-отправка при изменении |
-| `autoSubmitDelay` | `500` | Задержка авто-отправки (мс) |
-| `resetPage` | `true` | Сбрасывать страницу при фильтрации |
-| `scrollToResults` | `true` | Скроллить к результатам |
-| `scrollOffset` | `100` | Отступ скролла (px) |
-| `loadingClass` | `mfilter-loading` | CSS класс загрузки |
-| `loadingOverlay` | `true` | Показывать оверлей |
-| `resultsSelector` | `.mfilter-results` | Селектор результатов |
-| `paginationSelector` | `.mfilter-pagination` | Селектор пагинации |
-| `paginationMode` | `links` | Режим: links, loadmore, infinite |
-| `debug` | `false` | Режим отладки |
-
-## Уничтожение
-
-```javascript
-// По ID
+```js
 mfilterDestroy('mfilter-form');
-
-// Через MFilterUI
-MFilterUI.destroy('mfilter-form');
 ```
+
+id обязателен: без него форма не удаляется.
