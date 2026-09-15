@@ -73,6 +73,8 @@ watchPostEffect(() => {
 <style scoped>
 .VPNavBar {
   position: relative;
+  /* above the nav screen, which is fixed from the very top since VitePress 2 */
+  z-index: 1;
   border-bottom: 1px solid transparent;
   height: var(--vp-nav-height);
   pointer-events: none;
