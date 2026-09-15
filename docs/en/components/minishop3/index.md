@@ -113,7 +113,23 @@ items: [
           { text: 'Manager', link: 'development/events/manager' },
         ],
       },
-      { text: 'REST API', link: 'development/api' },
+      {
+        text: 'Web API',
+        link: 'development/api',
+        items: [
+          { text: 'Overview', link: 'development/api' },
+          { text: 'Reference', link: 'development/web-api/' },
+          { text: 'Authorization', link: 'development/web-api/auth' },
+          { text: 'Endpoint map', link: 'development/web-api/endpoints' },
+          { text: 'Catalog', link: 'development/web-api/catalog' },
+          { text: 'Cart', link: 'development/web-api/cart' },
+          { text: 'Checkout', link: 'development/web-api/checkout' },
+          { text: 'Customer', link: 'development/web-api/customer' },
+          { text: 'Errors', link: 'development/web-api/errors' },
+          { text: 'CORS and rate limit', link: 'development/web-api/cors' },
+          { text: 'Examples', link: 'development/web-api/examples' },
+        ],
+      },
       { text: 'API Router', link: 'development/routing' },
       { text: 'JavaScript API', link: 'development/javascript' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
@@ -153,7 +169,7 @@ MiniShop3 is designed specifically for MODX Revolution 3.x and takes full advant
 
 ### Improved architecture
 
-- **REST API** — Web API `api.php` (`/api/v1/*`) for storefront and headless: cart, order, account, public catalog. [Docs](/en/components/minishop3/development/api)
+- **Web API** — `api.php` (`/api/v1/*`) for storefront and headless: cart, checkout, account, catalog, delivery/payment. [Documentation](/en/components/minishop3/development/web-api/)
 - **Service Container** — dependencies via MODX DI container
 - **Vue 3 + PrimeVue** — modern Manager UI via [VueTools](/en/components/vuetools/)
 - **Modern frontend** — no jQuery, native JavaScript

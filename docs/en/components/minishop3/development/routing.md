@@ -269,7 +269,9 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 
 #### TokenMiddleware
 
-Validates auth token for Web API. Token is sent in `MS3TOKEN` header.
+Validates and auto-mints the customer token for Web API when needed.
+
+Resolve order: `Authorization: Bearer` → legacy `MS3TOKEN` header → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` is stripped and not accepted.
 
 ```php
 use MiniShop3\Middleware\TokenMiddleware;
@@ -281,13 +283,9 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-**Public routes** (no token required):
+On routes with middleware, without a valid token the server auto-mints a guest token (except paths in middleware `publicRoutes`, e.g. logout). Catalog, health, and `token/get` in `web.php` do not use the middleware.
 
-- `/api/v1/cart/get`
-- `/api/v1/product/get`
-- `/api/v1/product/list`
-- `/api/v1/customer/token/get`
-- `/api/v1/health`
+Details: [Web API authorization](/en/components/minishop3/development/web-api/auth).
 
 #### CorsMiddleware
 
@@ -305,7 +303,7 @@ $corsMiddleware = new CorsMiddleware([
 ]);
 ```
 
-**System setting:** `ms3_cors_allowed_origins` — allowed origins.
+System setting: `ms3_cors_allowed_origins`. Empty = same-origin; `*` = any origin without credentials; a domain list is required for cookies from another origin. See [CORS](/en/components/minishop3/development/web-api/cors).
 
 #### RateLimitMiddleware
 
@@ -562,59 +560,9 @@ Read and write are split into two middleware groups.
 
 ### Web API (`/api/v1/*`)
 
-#### Cart (`/cart`)
+Full path table: [Web API → Endpoint map](/en/components/minishop3/development/web-api/endpoints).
 
-| Method | Route | Description | Token |
-| --- | --- | --- | --- |
-| GET | `/get` | Get cart | Optional |
-| POST | `/add` | Add product | Required |
-| POST | `/change` | Change quantity | Required |
-| POST | `/change-option` | Change line options | Required |
-| POST | `/remove` | Remove product | Required |
-| POST | `/clean` | Clear cart | Required |
-
-#### Order (`/order`)
-
-| Method | Route | Description | Token |
-| --- | --- | --- | --- |
-| GET | `/get` | Get order | Required |
-| POST | `/add` | Add data | Required |
-| POST | `/set` | Set fields | Required |
-| POST | `/remove` | Remove field | Required |
-| POST | `/submit` | Submit order | Required |
-| POST | `/clean` | Clear draft | Required |
-| GET | `/cost` | Full cost | Required |
-| GET | `/cost/cart` | Cart cost | Required |
-| GET | `/cost/delivery` | Delivery cost | Required |
-| GET | `/cost/payment` | Payment fee | Required |
-| POST | `/address/set` | Apply saved address | Required |
-| POST | `/address/clean` | Clear address fields | Required |
-| GET | `/delivery/validation-rules` | Delivery validation rules | Required |
-| GET | `/delivery/required-fields` | Required delivery fields | Required |
-
-#### Customer (`/customer`)
-
-| Method | Route | Description | Token |
-| --- | --- | --- | --- |
-| POST | `/login` | Login | No |
-| POST | `/register` | Register | No |
-| POST | `/logout` | Logout | Required |
-| POST | `/forgot-password` | Request password reset | No |
-| POST | `/reset-password` | Change password by token | No |
-| GET | `/token/get` | Get token | No |
-| POST | `/add` | Update profile field | Required |
-| POST | `/changeAddress` | Select address at checkout | Required |
-| PUT | `/profile` | Update profile | Required |
-| GET | `/addresses` | List addresses | Required |
-| POST | `/addresses` | Add address | Required |
-| PUT | `/addresses/{id}` | Update address | Required |
-| DELETE | `/addresses/{id}` | Delete address | Required |
-
-#### General
-
-| Method | Route | Description |
-| --- | --- | --- |
-| GET | `/health` | Health check |
+Guides: [auth](/en/components/minishop3/development/web-api/auth), [catalog](/en/components/minishop3/development/web-api/catalog), [cart](/en/components/minishop3/development/web-api/cart), [checkout](/en/components/minishop3/development/web-api/checkout), [customer](/en/components/minishop3/development/web-api/customer).
 
 ## Customizing routes
 
