@@ -214,14 +214,14 @@ Off by default. The account runs on `msCustomer` and the MS3 token. Enable sync 
 
 Web API (`api.php`): CORS, rate limit, debug. Endpoint map: [REST API](/en/components/minishop3/development/api).
 
-`ms3_cors_allowed_origins`: `*` or a comma-separated origin list. For a cookie token from another domain set exact origins, not `*`.
+`ms3_cors_allowed_origins`: default is **empty** — cross-origin is blocked, only same-origin works. Value `*` allows any origin (without credentials); for a cookie token from another domain list exact origins comma-separated, not `*`.
 
 Rate limit applies to all `/api/v1/*`. Counter store: `ms3_rate_limit_store` = `file` | `redis` | `memcached` (if those keys exist in your build). On a single server `file` is enough.
 
 | Setting | Default | Description |
 | --- | --- | --- |
 | `ms3_api_debug` | `false` | API debug mode (extended logging) |
-| `ms3_cors_allowed_origins` | `*` | Allowed CORS domains (comma-separated or `*`) |
+| `ms3_cors_allowed_origins` | `-` | Allowed CORS origins: empty = same-origin only, `*` = any (without credentials), or comma-separated list |
 | `ms3_rate_limit_max_attempts` | `60` | Maximum requests per period |
 | `ms3_rate_limit_decay_seconds` | `60` | Rate limit period (seconds) |
 | `ms3_rate_limit_store` | `file` | Counter store: `file`, `redis`, `memcached` |

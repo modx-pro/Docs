@@ -5,7 +5,7 @@ title: Каталог товаров
 
 Каталог — основная страница магазина, где выводится список товаров из категории. MiniShop3 предоставляет готовый шаблон и чанк карточки товара.
 
-Для SPA или мобильного клиента без msProducts используйте публичный Web API `GET /api/v1/product/list` — ответ проходит через `ProductCatalogService` с allowlist полей. См. [REST API: каталог](/components/minishop3/development/api#каталог-товаров).
+Для SPA или мобильного клиента без msProducts используйте публичный Web API: `GET /api/v1/product/list`, `GET /api/v1/category/list` / `tree`, `GET /api/v1/product/filters`. Ответ каталога проходит через `ProductCatalogService` с allowlist полей. См. [Web API: каталог](/components/minishop3/development/web-api/catalog).
 
 <!-- ![Каталог на витрине](/components/minishop3/screenshots/fe-catalog.png) -->
 

@@ -8,7 +8,7 @@ Section for developers extending MiniShop3 functionality.
 ## Contents
 
 - [Events](events) — event system for plugins
-- [REST API](api) — Web API for frontend integration
+- [Web API](api): docs for storefront and Nuxt ([endpoint map](web-api/endpoints))
 - [API Router](routing) — routing, middleware, custom routes
 - [Scheduler](scheduler) — background tasks and Scheduler integration
 - [Models and DB schema](models) — xPDO models and table structure
@@ -29,4 +29,4 @@ As of **1.10+**, most manager screens use the **Manager REST API** (`Controllers
 
 Vue CRUD (vendors, deliveries, payments, etc.) does **not** call `Processors/Settings/Vendor/*` — plugins on `msOnVendorCreate` from the admin UI will not run. See [Vendor events](events/vendor).
 
-The headless storefront uses **Web API** (`/api/v1/*`), not processors.
+The headless storefront uses Web API (`/api/v1/*`), not processors.

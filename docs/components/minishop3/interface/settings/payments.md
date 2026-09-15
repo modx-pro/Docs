@@ -156,7 +156,7 @@ class YooKassaPayment implements PaymentProviderInterface
 
 Укажите класс в поле `class` карточки способа оплаты:
 
-```
+```text
 MyComponent\Payment\YooKassaPayment
 ```
 
@@ -186,17 +186,19 @@ MyComponent\Payment\YooKassaPayment
 
 ### Доставки и оплаты в черновике заказа
 
-Отдельного `GET /api/v1/order/payments` **нет**. Список доставок/оплат на витрине рендерит `msOrder`. Черновик:
+Публичные списки (без токена): `GET /api/v1/delivery/list`, `GET /api/v1/payment/list`. Отдельного `GET /api/v1/order/payments` нет.
 
-```
+Черновик:
+
+```http
 GET /api/v1/order/get
 ```
 
-В `data.order` — поля заказа, в том числе `delivery_id` / `payment_id` и `address_*`. Смена способа: `POST /api/v1/order/add` или `POST /api/v1/order/set` с ключами `payment_id` / `delivery_id`.
+В `data.order` лежат поля заказа, в том числе `delivery_id` / `payment_id` и `address_*`. Смена способа: `POST /api/v1/order/add` или `POST /api/v1/order/set` с ключами `payment_id` / `delivery_id`. Fenom-витрина может рендерить выбор через `msOrder`.
 
 ### Стоимость оплаты
 
-```
+```http
 GET /api/v1/order/cost/payment?payment_id=2
 ```
 
@@ -204,14 +206,14 @@ GET /api/v1/order/cost/payment?payment_id=2
 
 ```json
 {
-  "success": true,
-  "data": {
-    "cost": 150.00
-  }
+    "success": true,
+    "data": {
+        "cost": 150.00
+    }
 }
 ```
 
-Полный расчёт (корзина + доставка + оплата): `GET /api/v1/order/cost`. Карта Web API: [REST API](/components/minishop3/development/api).
+Полный расчёт (корзина + доставка + оплата): `GET /api/v1/order/cost`. Карта Web API: [Checkout](/components/minishop3/development/web-api/checkout).
 
 ## Ссылка на оплату (`payment_link`)
 

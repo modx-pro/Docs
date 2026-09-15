@@ -268,7 +268,9 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 
 #### TokenMiddleware
 
-Проверяет токен авторизации для Web API. Токен передаётся в заголовке `MS3TOKEN`.
+Проверяет и при необходимости auto-mint токен покупателя для Web API.
+
+Порядок resolve: `Authorization: Bearer` → заголовок `MS3TOKEN` (legacy) → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` снимаются и не принимаются.
 
 ```php
 use MiniShop3\Middleware\TokenMiddleware;
@@ -280,15 +282,9 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-**Публичные роуты** (без токена, без авто-минта гостевого токена):
+На роутах с middleware без валидного токена сервер auto-mint гостевой токен (кроме путей из `publicRoutes` middleware, например logout). Каталог, health и `token/get` в `web.php` middleware не вешают.
 
-- `/api/v1/product/get`
-- `/api/v1/product/list`
-- `/api/v1/customer/token/get`
-- `/api/v1/customer/logout`
-- `/api/v1/health`
-
-Остальные роуты (например `/api/v1/cart/get`) при отсутствии токена **авто-минтят гостевой токен**, а не отклоняют запрос.
+Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth).
 
 #### CorsMiddleware
 
@@ -306,7 +302,7 @@ $corsMiddleware = new CorsMiddleware([
 ]);
 ```
 
-**Системная настройка:** `ms3_cors_allowed_origins` — список разрешённых доменов.
+Системная настройка: `ms3_cors_allowed_origins`. Пусто = same-origin; `*` = любой origin без credentials; список доменов нужен для cookie с другого origin. См. [CORS](/components/minishop3/development/web-api/cors).
 
 #### RateLimitMiddleware
 
@@ -563,62 +559,9 @@ function addFilterParam(params, key, value) {
 
 ### Web API (`/api/v1/*`)
 
-#### Корзина (`/cart`)
+Полная таблица путей: [Web API → Карта эндпоинтов](/components/minishop3/development/web-api/endpoints).
 
-| Метод | Роут | Описание | Токен |
-| --- | --- | --- | --- |
-| GET | `/get` | Получить корзину | Опционально |
-| POST | `/add` | Добавить товар | Обязательно |
-| POST | `/change` | Изменить количество | Обязательно |
-| POST | `/change-option` | Сменить опции позиции | Обязательно |
-| POST | `/remove` | Удалить товар | Обязательно |
-| POST | `/clean` | Очистить корзину | Обязательно |
-
-#### Заказ (`/order`)
-
-| Метод | Роут | Описание | Токен |
-| --- | --- | --- | --- |
-| GET | `/get` | Получить заказ | Обязательно |
-| POST | `/add` | Добавить данные | Обязательно |
-| POST | `/set` | Установить поля | Обязательно |
-| POST | `/remove` | Удалить поле | Обязательно |
-| POST | `/submit` | Оформить заказ | Обязательно |
-| POST | `/clean` | Очистить черновик | Обязательно |
-| GET | `/cost` | Полная стоимость | Обязательно |
-| GET | `/cost/cart` | Стоимость товаров | Обязательно |
-| GET | `/cost/delivery` | Стоимость доставки | Обязательно |
-| GET | `/cost/payment` | Комиссия оплаты | Обязательно |
-| POST | `/address/set` | Применить сохранённый адрес | Обязательно |
-| POST | `/address/clean` | Сбросить адресные поля | Обязательно |
-| GET | `/delivery/validation-rules` | Правила валидации доставки | Обязательно |
-| GET | `/delivery/required-fields` | Обязательные поля доставки | Обязательно |
-
-#### Покупатель (`/customer`)
-
-| Метод | Роут | Описание | Токен |
-| --- | --- | --- | --- |
-| POST | `/login` | Авторизация | Нет |
-| POST | `/register` | Регистрация | Нет |
-| POST | `/logout` | Выход | Обязательно |
-| POST | `/forgot-password` | Запрос сброса пароля | Нет |
-| POST | `/reset-password` | Смена пароля по токену | Нет |
-| GET | `/token/get` | Получить токен | Нет |
-| POST | `/add` | Обновить поле профиля | Обязательно |
-| POST | `/changeAddress` | Выбрать адрес на checkout | Обязательно |
-| PUT | `/profile` | Обновить профиль | Обязательно |
-| GET | `/addresses` | Список адресов | Обязательно |
-| POST | `/addresses` | Добавить адрес | Обязательно |
-| PUT | `/addresses/{id}` | Обновить адрес | Обязательно |
-| DELETE | `/addresses/{id}` | Удалить адрес | Обязательно |
-| GET | `/orders` | Список заказов клиента | Обязательно |
-| GET | `/orders/{id}` | Карточка заказа клиента | Обязательно |
-| POST | `/orders/{id}/cancel` | Отмена заказа клиента | Обязательно |
-
-#### Общие
-
-| Метод | Роут | Описание |
-| --- | --- | --- |
-| GET | `/health` | Проверка работоспособности |
+Guides: [auth](/components/minishop3/development/web-api/auth), [catalog](/components/minishop3/development/web-api/catalog), [cart](/components/minishop3/development/web-api/cart), [checkout](/components/minishop3/development/web-api/checkout), [customer](/components/minishop3/development/web-api/customer).
 
 ## Кастомизация роутов
 
