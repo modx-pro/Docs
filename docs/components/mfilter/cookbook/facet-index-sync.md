@@ -1,174 +1,91 @@
 # Синхронизация индекса фасетов
 
-Денормализованный индекс фасетов (`mfl_facet_index_text`/`num`) — это копия данных из `msProductData`/`msProductOption`/`modTemplateVarResource`. Если данные товаров поменялись, а индекс не обновился — фильтры покажут устаревшие значения и неверные счётчики.
+Индекс фасетов — копия значений фильтров из таблиц товаров, опций и TV. Если данные изменились, а индекс нет, фильтры покажут устаревшие значения и неверные числа товаров.
 
-В большинстве сценариев синхронизация происходит автоматически. Эта страница — про то, как именно, и что делать в нестандартных случаях.
+## Задача
 
-## Сценарии и покрытие
+Понять, когда индекс обновляется сам, и обновить его вручную там, где автоматики не хватает: свой импортёр, прямые запросы к базе.
 
-| Что произошло | Что обновляет индекс | Когда |
-|---------------|----------------------|-------|
-| Товар сохранён через админку MODX | Плагин mFilter (OnDocFormSave) | Сразу |
-| Товар удалён через админку MODX | Плагин mFilter (OnResourceDelete) | Сразу |
-| Импорт через MS3 ImportCSV | Плагин mFilter (msOnAfterImport) | После завершения CSV-импорта |
-| Программное `$resource->save()` (без процессора) | Scheduler-задача `mfl_sync_facet_index` | В течение 5 минут (если editedon обновлён) |
-| Прямой SQL `UPDATE ... SET ..., editedon=NOW()` | Scheduler-задача `mfl_sync_facet_index` | В течение 5 минут |
-| Прямой SQL `UPDATE` без `editedon=NOW()` | Только ручной запуск | По требованию |
-| Прямой SQL `DELETE FROM modx_site_content` | Только ручной запуск | По требованию |
+## Что обновляет индекс само
 
-## Автоматическая синхронизация
+| Что произошло | Чем обновляется | Когда |
+|---|---|---|
+| Товар сохранён или удалён в админке MODX или MiniShop3 | Плагин mFilter | Сразу |
+| Импорт MiniShop3 из CSV | Плагин mFilter по событию `msOnAfterImport` | После импорта, полной пересборкой |
+| Правка через API MODX — `$resource->save()`, свой импортёр | Задача Scheduler `mfl_sync_facet_index` | В течение 5 минут |
+| Прямой запрос к базе с `editedon` | Та же задача | В течение 5 минут |
+| Прямой запрос к базе без `editedon` | Ничем | — |
 
-### Через события MODX (плагин mFilter)
+Задача сравнивает `editedon` товаров с временем прошлого запуска. Удалённые товары она находит по `deletedon` и убирает их из индекса. Поэтому важно не само изменение, а отметка времени: правка, которая её не обновила, для задачи не существует.
 
-При сохранении/удалении ресурса через админку или процессор плагин mFilter сам вызывает `FacetIndexBuilder::buildForProducts()` для затронутого товара. Стоимость — 5–20 мс на товар, незаметно для UX.
+Подробности задач — [Scheduler-задачи](../interface/scheduler).
 
-Покрывает:
-- Сохранение товара через стандартную форму ресурса MODX
-- Сохранение товара через MS3-админку (msProduct наследуется от modResource)
-- Изменение TV через админку
-- Удаление товара (включая отправку в корзину)
+## Свой импортёр: обновить точечно
 
-Не покрывает:
-- Прямой `$resource->save()` без процессора — событие `OnDocFormSave` не срабатывает
-- Любые операции в обход MODX
-
-### Через recurring-задачу (mfl_sync_facet_index)
-
-Если установлен Scheduler, регистрируется задача `mfl_sync_facet_index` с интервалом **+5 минут**. Каждый запуск:
-
-1. Берёт `last_sync_at` из `mfl_cache`
-2. Находит товары с `editedon > last_sync_at` в `msProductData` и `modResource`
-3. Пересобирает индекс для этих товаров батчами по 5000 ID
-4. Удаляет из индекса soft-deleted товары
-5. Записывает новый `last_sync_at`
-
-Покрывает любые правки, которые **обновляют `editedon`** — что делает большинство импортёров (1С, ms3 csv, кастомные скрипты на $modx API). На простаивающем сайте задача отрабатывает за миллисекунды, лога не пишет.
-
-Подробнее: [Scheduler-задачи → mfl_sync_facet_index](/components/mfilter/interface/scheduler#mfl-sync-facet-index).
-
-### Через msOnAfterImport (MS3 ImportCSV)
-
-После завершения штатного CSV-импорта MS3 событие `msOnAfterImport` триггерит **полную пересборку** индекса (через Scheduler если установлен, иначе синхронно). Списка обновлённых ID событие не передаёт, поэтому делается `buildAll`.
-
-Подходит для импортов 1k–100k строк. Для регулярного импорта 100k+ лучше явно вызывать `buildForProducts($ids)` из своего обработчика — см. ниже.
-
-## Ручная синхронизация в кастомных импортёрах
-
-Если вы пишете свой импортёр и знаете, какие именно ID товаров затрагиваете — пересоберите индекс точечно. Это **на порядок быстрее**, чем `buildAll()` на больших каталогах.
-
-### После batch-импорта одной пачкой
+Если импортёр знает, какие товары он изменил, пересоберите индекс только для них — это гораздо быстрее полной пересборки:
 
 ```php
+/** @var \MFilter\MFilter $mfilter */
 $mfilter = $modx->services->get('mfilter');
 $builder = $mfilter->getFacetIndexBuilder();
 
 $updatedIds = [];
 
-foreach ($csvRows as $row) {
-    /** @var \MODX\Revolution\modResource $resource */
+foreach ($rows as $row) {
     $resource = $modx->getObject(\MODX\Revolution\modResource::class, $row['id']);
-    if (!$resource) continue;
+    if (!$resource) {
+        continue;
+    }
 
     $resource->set('pagetitle', $row['name']);
-    $resource->setTVValue('has_pack', $row['pack']);
     $resource->save();
 
     $updatedIds[] = $resource->get('id');
 }
 
-// Один вызов после всего импорта — индекс обновится одним батчем
-if (!empty($updatedIds)) {
+// Один вызов после всего импорта
+if ($updatedIds) {
     $stats = $builder->buildForProducts($updatedIds);
-    $modx->log(modX::LOG_LEVEL_ERROR, "[Importer] Facet index updated: {$stats['products']} products in {$stats['duration_ms']}ms");
+    $modx->log(modX::LOG_LEVEL_ERROR, "[Импорт] Индекс фасетов: {$stats['products']} товаров за {$stats['duration_ms']} мс");
 }
 ```
 
-### Если ID неизвестны (или их слишком много)
+`buildForProducts()` возвращает `products`, `text_rows`, `num_rows` и `duration_ms`.
 
-Запустите полную пересборку. На каталоге 30k это 5–10 секунд, на 200k — до 2 минут. Лучше — через Scheduler в фоне:
+Если у импортёра есть своё событие окончания, тот же вызов можно повесить плагином на него — идентификаторы товаров плагин возьмёт из параметров события.
+
+## Когда идентификаторы неизвестны
+
+Тогда остаётся полная пересборка. Три способа:
 
 ```php
-// Через Scheduler (рекомендуется)
+// В фоне, задачей Scheduler
 $scheduler = $modx->services->get('scheduler');
 $task = $scheduler->getTask('mfilter', 'mfl_rebuild_facet_index');
 if ($task) {
     $task->schedule('+0 seconds');
 }
 
-// Или синхронно (для маленьких каталогов / CLI скриптов)
+// Сразу, в своём CLI-скрипте
 $mfilter->getFacetIndexBuilder()->buildAll();
 ```
 
-## Свой плагин на событие завершения импорта
+Третий способ — кнопки «Пересобрать сейчас» и «Через Scheduler» на вкладке [Обслуживание](../interface/maintenance). Полная пересборка тяжелее точечной, поэтому на больших каталогах запускайте её в фоне.
 
-Если у вашего импортёра есть собственное событие конца — повесьте на него плагин с инкрементальной пересборкой:
+## Прямые запросы к базе
 
-```php
-<?php
-/**
- * MyImportFacetSync — обновляет индекс mFilter после завершения нашего импорта.
- *
- * Events: myImporterAfterRun
- *
- * @var modX $modx
- * @var array $scriptProperties
- */
+Задача синхронизации видит только изменения с новым `editedon`. Если импортёр пишет в базу напрямую, есть три пути:
 
-if ($modx->event->name !== 'myImporterAfterRun') {
-    return;
-}
+1. Обновлять `editedon` в своих запросах — тогда задача подхватит изменения за 5 минут.
+2. Вызывать `buildForProducts()` или `buildAll()` в конце своего скрипта.
+3. Поставить `mfl_rebuild_facet_index` повторяемой задачей — например, раз в неделю ночью, как страховку.
 
-if (!$modx->services->has('mfilter')) {
-    return;
-}
+## Если индекс отстаёт
 
-// $scriptProperties['updated_ids'] — массив id, который ваш импортёр передаёт в событие
-$updatedIds = $scriptProperties['updated_ids'] ?? [];
+| Что проверить | Где |
+|---|---|
+| Время последней пересборки и число строк | Вкладка «Обслуживание», блок «Индекс фасетов» |
+| Работает ли задача синхронизации | `mfl_cache`, ключ `facet_index.last_sync_at`: время стоит на месте — Scheduler не запускается |
+| Ошибки пересборки | Журнал ошибок MODX, строки с `[mFilter] Facet index` |
 
-if (empty($updatedIds)) {
-    return;
-}
-
-try {
-    /** @var \MFilter\MFilter $mfilter */
-    $mfilter = $modx->services->get('mfilter');
-    $stats = $mfilter->getFacetIndexBuilder()->buildForProducts($updatedIds);
-
-    $modx->log(
-        modX::LOG_LEVEL_ERROR,
-        "[MyImportFacetSync] Refreshed facet index for {$stats['products']} products "
-        . "({$stats['text_rows']} text + {$stats['num_rows']} num rows in {$stats['duration_ms']}ms)"
-    );
-} catch (\Exception $e) {
-    $modx->log(modX::LOG_LEVEL_ERROR, '[MyImportFacetSync] Error: ' . $e->getMessage());
-}
-```
-
-Зарегистрируйте плагин на ваше событие через стандартный механизм MODX (через UI или builder).
-
-## Для прямого SQL в обход MODX
-
-Если ваш импортёр пишет напрямую через `INSERT/UPDATE` без `editedon=NOW()` — задача `mfl_sync_facet_index` **не увидит** изменений. Варианты:
-
-1. **Лучший** — выставлять `editedon=UNIX_TIMESTAMP()` в своих UPDATE'ах. Тогда sync подхватит за 5 минут.
-2. **Запускать rebuild явно** в конце своего CLI-скрипта:
-
-```bash
-# CLI runner, идущий в комплекте со Scheduler
-php /path/to/scheduler-runner.php mfilter mfl_rebuild_facet_index
-```
-
-3. **Включить sanity-rebuild по расписанию** — задать `mfl_rebuild_facet_index` recurring (через UI Scheduler), например, раз в неделю в ночь. На случай, если что-то всё равно расходится.
-
-## Контроль и диагностика
-
-- **Время последней пересборки и количество строк** — на вкладке **Обслуживание** в карточке «Индекс фасетов»
-- **`last_sync_at`** — в `mfl_cache` под ключом `facet_index.last_sync_at`. Если она «зависла» — значит, recurring sync не запускается (проверьте Scheduler cron)
-- **Логи** — задачи пишут в лог MODX с префиксом `[mFilter] Facet index ...`
-
-## См. также
-
-- [Обслуживание → Индекс фасетов](/components/mfilter/interface/maintenance)
-- [Scheduler-задачи](/components/mfilter/interface/scheduler)
-- [События](/components/mfilter/development/events)
-- [FacetIndexBuilder API](/components/mfilter/development/services#facetindexbuilder)
+Товары, сохранённые в обход MODX, в списке изменённых не появятся, сколько бы раз задача ни отработала. Для них — полная пересборка.
