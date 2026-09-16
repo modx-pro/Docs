@@ -226,14 +226,14 @@ mFilter — это полностью переписанный компонен�
 API-режим для современных фреймворков:
 
 ```javascript
-// Получить схему фильтров
-const schema = await mfilter.getSchema(resourceId);
+const response = await mfilter.api.apply({
+    resource_id: 5,
+    filters: { 'price|min': ['1000'], 'price|max': ['5000'] },
+    sort: 'price-asc',
+});
 
-// Применить фильтры
-const result = await mfilter.apply(
-    { brand: ['apple'], price: { min: 1000, max: 5000 } },
-    { sort: 'price-asc', page: 1 }
-);
+response.items;   // товары
+response.urls;    // SEO-адреса
 ```
 
 Подробнее: [Headless API](development/headless)
