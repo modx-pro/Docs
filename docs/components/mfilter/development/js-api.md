@@ -52,7 +52,6 @@ filter.setFilter('color', 'red');
 filter.setFilter('color', ['red', 'blue']);
 filter.setFilter('vendor', [5, 7]);
 filter.setFilter('price', { min: 1000, max: 5000 });
-filter.setFilter('publishedon', { from: '2024-01-01', to: '2024-12-31' });
 
 filter.removeFilter('vendor', 5);
 filter.removeFilter('price');
@@ -62,6 +61,7 @@ filter.removeFilter('price');
 - **Производители и категории** задаются по id. По названию или слагу из адреса — `setFilter('vendor', 'apple')` — такой фильтр по производителю не отберёт.
 - **Числа и строки равнозначны**: `removeFilter('vendor', 5)` снимет значение `'5'`. `getFilters()` возвращает значения строками.
 - **Диапазон**: границу можно не передавать — `{ min: 1000 }` означает «от 1000», вторая граница снимается. `removeFilter('price')` снимает обе.
+- **Даты** выбираются как значения из списка: `setFilter('publishedon', ['2024-03-15'])`. Диапазон дат `{ from, to }` сейчас не работает — см. [Типы фильтров](filter-types#vstroennye-tipy).
 
 ## События
 

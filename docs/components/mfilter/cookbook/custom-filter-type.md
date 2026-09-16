@@ -92,7 +92,7 @@ $mfilter->getFilterTypesRegistry()->register('sale', new \MySite\SaleFilterType(
 
 Остальные методы интерфейса реализует `AbstractFilterType`. Переопределять `formatValue()`, `parseSegment()` и `buildSegment()` бесполезно: mFilter их не вызывает.
 
-### Откуда брать товары для подсчёта
+### Откуда брать товары для подсчёта {#context-products}
 
 `getValues()` вызывается с разными товарами в `$context`:
 
