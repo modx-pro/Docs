@@ -62,9 +62,11 @@ description: Ключи msreviews_* — модерация, медиа, пись
 
 Включите **`msreviews_moderator_notify_enabled`** и заполните **`msreviews_moderator_notify_emails`**. При новом отзыве или вопросе с витрины модератор получит письмо со ссылкой на CMP.
 
+С **1.2.2** письма пакета (модератор, invite, reply/answer) уходят как `text/html`. Кастомный чанк тела может содержать вёрстку. Plain-текст из лексикона нормализуется (escape + `<br>`).
+
 - По умолчанию (`pending_only`) письмо уходит только для материалов со статусом `pending`. Значение `all` включает и автоматически опубликованные.
 - CSV-импорт и создание отзыва в CMP письма не шлют.
-- Плейсхолдеры чанков: `type` (`review` / `question`), `id`, `product_id`, `status`, `manager_url`.
+- Плейсхолдеры чанков: `type` / `status` (подписи из лексикона), `type_key` / `status_key` (коды `review`, `pending`, …), `id`, `product_id`, `manager_url`.
 - Лексикон подставляется только если имя чанка пустое. Если имя задано, а чанк вернул пустую строку, в лог пишется `[msReviews] moderator email … chunk empty`, письмо не уходит.
 - Отмена отправки: плагин на **`msrOnModeratorNotify`** → `return false`. См. [События](events#msronmoderatornotify).
 

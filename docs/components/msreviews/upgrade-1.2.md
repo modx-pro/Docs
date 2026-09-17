@@ -1,11 +1,11 @@
 ---
 title: Обновление до 1.2
-description: 'msReviews 1.2: Fenom, pdoTools, data-msr, письма модератору, галерея'
+description: 'msReviews 1.2.x: Fenom, pdoTools, data-msr, письма, патчи 1.2.1–1.2.3'
 ---
 
 # Обновление до 1.2
 
-Релиз **1.2** меняет настройку витрины: чанки на **Fenom** через **pdoTools**, JS ищет элементы по **`data-msr-*`**, часть PHP-классов переименована. Появились письма модератору, `registerCss` / `registerJs` на вызов сниппета и настраиваемая UGC-галерея.
+Релиз **1.2** меняет настройку витрины: чанки на **Fenom** через **pdoTools**, JS ищет элементы по **`data-msr-*`**, часть PHP-классов переименована. Появились письма модератору, `registerCss` / `registerJs` на вызов сниппета и настраиваемая UGC-галерея. Страницы ниже соответствуют пакету **1.2.3-pl**.
 
 Если вы не правили чанки, CSS и JS, поставьте pdoTools 3.0+, обновите пакет и очистите кэш.
 
@@ -147,3 +147,29 @@ description: 'msReviews 1.2: Fenom, pdoTools, data-msr, письма модер�
 | Поиск в CMP | `mgr/catalog/search` с `type=resource`. `limit` от 1 до 100, по умолчанию 50. При вводе `q` список подсказок заменяется. Числовой `q` поднимает точный id |
 | Витрина Latest | Заголовок и URL для отзывов/вопросов на любом опубликованном ресурсе |
 | Фильтры | Chip-ссылки без дубля `msr_product_id` при `baseQuery` и `$_GET` |
+
+## Патч 1.2.2
+
+Поставьте пакет **1.2.2-pl** поверх 1.2.x и очистите кэш. Breaking API нет.
+
+| Тема | Что изменилось |
+| --- | --- |
+| Письма | Уведомления (модератор, invite, reply/answer) уходят как HTML (`text/html`). Кастомный чанк тела можно верстать |
+| Mailer | Namespace `modMail` → `MODX\Revolution\Mail\modMail`. Раньше fallback на `mail()` без HTML Content-Type |
+| Плейсхолдеры чанка | `type` / `status`: подписи из лексикона. Коды: `type_key` / `status_key` (`review`, `pending`) |
+
+См. [Настройки](settings#уведомление-модератора).
+
+## Патч 1.2.3
+
+Поставьте пакет **1.2.3-pl** поверх 1.2.x и очистите кэш. Breaking API нет.
+
+| Тема | Что изменилось |
+| --- | --- |
+| CMP Вопросы | Кнопка «Добавить вопрос» / редактирование: ресурс, автор, email, текст, статус, notify, ответ |
+| API | `mgr/question/create`, `mgr/question/update`, `mgr/question/get` (POST-only create/update, `question_moderate`) |
+| Каталог ACL | `mgr/catalog/search` / `resolve`: `review_analytics` или `question_moderate` |
+| `msRatingSummary` | `&productIds=` / `&parents=` / `&all=`1``: общий рейтинг. Пустая явная область даёт нули |
+| Рейтинг | Взвешенное среднее по опубликованным. `rating/get` и JSON-LD остаются per-product |
+
+См. [Админка](manager#вопросы), [msRatingSummary](snippets/msRatingSummary), [AJAX API](api).
