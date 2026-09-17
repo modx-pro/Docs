@@ -2,17 +2,16 @@
 title: msRatingSummary
 description: Сводка рейтинга товара — полная на странице товара и компактная в каталоге
 ---
-
 <!-- TODO: translate from docs/components/msreviews/snippets/msRatingSummary.md -->
-
 # Сниппет msRatingSummary
 
-Выводит HTML-сводку рейтинга: средняя оценка, число отзывов, разбивка по звёздам (режим `full`) или компактная строка ★ 4.4 (32) (режим `aggregate`).
+Выводит HTML-сводку рейтинга: средняя оценка, число отзывов, разбивка по звёздам (режим `full`) или компактная строка ★ 4.4 (32) (режим `aggregate`). С **1.2.3** область задаётся через `productIds` / `parents` / `all` (главная или раздел).
 
 ## Назначение
 
 - **Страница товара** — полная сводка над списком отзывов (`summaryMode=full`, чанк `tplRatingSummary`).
 - **Каталог** — одна строка в карточке товара (`summaryMode=aggregate`, чанк `tplRatingCatalog`).
+- **Главная / категория / лендинг**: суммарный рейтинг по области (`all=1` / `parents` / `productIds`).
 
 ## Где вызывать
 
@@ -20,6 +19,7 @@ description: Сводка рейтинга товара — полная на с
 | --- | --- | --- |
 | Шаблон `msProduct` | `full` | `tplRatingSummary` (по умолчанию) |
 | Чанк карточки в `msProducts` | `aggregate` | `tplRatingCatalog` |
+| Главная, категория, «О компании» | `aggregate` + scope | `tplRatingCatalog` или свой |
 
 ## Зависимости
 
@@ -30,13 +30,18 @@ description: Сводка рейтинга товара — полная на с
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `product_id` | id текущего ресурса | ID товара MS3. При `product_id < 1` — пустой вывод |
+| `product_id` | id текущего ресурса | ID товара MS3. Без scope при `product_id=0` fallback на текущий ресурс |
+| `productIds` | *(пусто)* | CSV id ресурсов. Явная область, приоритет над `parents` |
+| `parents` | *(пусто)* | CSV id папок: сами папки + потомки, затем ресурсы каталога |
+| `all` | `0` | `1`: суммарный рейтинг по всему сайту (игнорирует `product_id`) |
 | `tpl` | `tplRatingSummary` | Чанк вывода. В каталоге: `tplRatingCatalog` |
-| `summaryMode` | `full` | `full` — полная сводка. `aggregate` — только средняя и count |
-| `hideEmpty` | `0` | `1` — не выводить при нуле отзывов |
-| `registerCss` | `1` | `0` — не подключать `reviews.css` повторно. См. [Подключение reviews.css](#подключение-reviewscss) |
+| `summaryMode` | `full` | `full`: полная сводка. `aggregate`: только средняя и count |
+| `hideEmpty` | `0` | `1`: не выводить при нуле отзывов |
+| `registerCss` | `1` | `0`: не подключать `reviews.css` повторно. См. [Подключение reviews.css](#подключение-reviewscss) |
 | `registerJs` | `1` | Подключать JS витрины |
 | `connectorUrl` | auto | URL `connector.php` (редко нужен override) |
+
+Приоритет области: `productIds` → `parents` → `all` → одиночный `product_id` / `msr_product_id` / текущий ресурс. Среднее взвешенное по числу опубликованных отзывов (`SUM(rating)/COUNT`), не среднее средних по товарам. Явно заданный, но пустой список (`productIds=`0`` / несуществующие id) даёт нулевую сводку, не весь сайт (`hideEmpty=0` показывает нули, `hideEmpty=1` пустую строку). Connector `rating/get` и JSON-LD остаются per-product.
 
 ## Подключение reviews.css
 
@@ -147,6 +152,33 @@ flowchart TB
   &hideEmpty=`1`
   &registerCss=`0`
 ]]
+```
+
+:::
+
+## Общий рейтинг (главная, категория)
+
+С **1.2.3** задайте область вместо одного `product_id`:
+
+::: code-group
+
+```fenom
+{'!msRatingSummary' | snippet : [
+  'all' => 1,
+  'summaryMode' => 'aggregate',
+  'hideEmpty' => 1
+]}
+
+{'!msRatingSummary' | snippet : [
+  'parents' => $_modx->resource.id,
+  'summaryMode' => 'aggregate',
+  'hideEmpty' => 1
+]}
+```
+
+```modx
+[[!msRatingSummary? &all=`1` &summaryMode=`aggregate` &hideEmpty=`1`]]
+[[!msRatingSummary? &parents=`[[*id]]` &summaryMode=`aggregate` &hideEmpty=`1`]]
 ```
 
 :::

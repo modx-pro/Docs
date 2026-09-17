@@ -2,9 +2,7 @@
 title: Каталог и главная
 description: Рейтинг в msProducts, виджеты Latest, TopRated, QuestionsLatest, prefetch
 ---
-
 <!-- TODO: translate from docs/components/msreviews/frontend/catalog.md -->
-
 # Каталог и главная
 
 ## Каталог (msProducts)
@@ -40,6 +38,29 @@ description: Рейтинг в msProducts, виджеты Latest, TopRated, Ques
 | `summaryMode=aggregate` | Только средняя и число отзывов |
 | `hideEmpty=1` | Ничего при нуле отзывов |
 | `registerCss=0` | Не просить сниппет подключить CSS (см. ниже) |
+| `productIds` / `parents` / `all` | Общий рейтинг раздела (с **1.2.3**). См. [msRatingSummary](../snippets/msRatingSummary#общий-рейтинг-главная-категория) |
+
+## Общий рейтинг раздела
+
+На главной или странице категории вызовите `msRatingSummary` с `all=1` или `parents` / `productIds`, без привязки к одной карточке товара:
+
+::: code-group
+
+```fenom
+{'!msRatingSummary' | snippet : [
+  'parents' => $_modx->resource.id,
+  'summaryMode' => 'aggregate',
+  'hideEmpty' => 1
+]}
+```
+
+```modx
+[[!msRatingSummary? &parents=`[[*id]]` &summaryMode=`aggregate` &hideEmpty=`1`]]
+```
+
+:::
+
+Параметры области и приоритет: [msRatingSummary](../snippets/msRatingSummary).
 
 ### Подключение `reviews.css` в каталоге
 

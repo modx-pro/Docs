@@ -19,7 +19,8 @@ description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ош�
 | `msrOnBeforeReviewUpdate` / `msrOnReviewUpdate` | Правка на витрине (`review/update_own`) или в CMP (`mgr/review/update`) |
 | `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | Самоудаление на витрине |
 | `msrOnReviewVote` | После «полезно» |
-| `msrOnQuestionCreate` | Создание вопроса |
+| `msrOnBeforeQuestionCreate` / `msrOnQuestionCreate` | Создание вопроса (витрина или CMP) |
+| `msrOnBeforeQuestionUpdate` / `msrOnQuestionUpdate` | Правка вопроса в CMP (`mgr/question/update`) |
 | `msrOnAnswerCreate` | Ответ из CMP |
 | `msrOnReviewRequestSend` | Отправка письма из очереди |
 | **`msrOnModeratorNotify`** | Перед письмом модератору о новом отзыве/вопросе с витрины |
@@ -32,6 +33,8 @@ description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ош�
 Вызывается, когда уведомления включены, статус подходит под `msreviews_moderator_notify_on` и список адресатов не пуст. Параметры: `type` (`review` / `question`), `id`, `product_id`, `status`, `recipients` (list). `return false` отменяет отправку.
 
 Событие срабатывает **до** рендера чанка письма. Если плагин не отменил отправку, а кастомный чанк темы/тела вернул пустую строку, письмо всё равно не уйдёт (см. [Настройки](settings#уведомление-модератора)).
+
+С **1.2.2** тело письма уходит как HTML (`text/html`). В чанке `{$type}` / `{$status}`: подписи. `{$type_key}` / `{$status_key}`: коды.
 
 ```php
 <?php
