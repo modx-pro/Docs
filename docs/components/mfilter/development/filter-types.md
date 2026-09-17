@@ -1,379 +1,78 @@
 # Типы фильтров
 
-Создание собственных типов фильтрации.
+Тип фильтра решает, какие значения показать в форме, сколько товаров у каждого значения и как отобрать товары по выбору. Тип задаётся в строке набора фильтров. Как написать свой — рецепт [Свой тип фильтра](../cookbook/custom-filter-type).
 
 ## Встроенные типы
 
-| Тип | Класс | Описание |
-|-----|-------|----------|
-| `default` | DefaultFilterType | Стандартный (checkbox/radio) |
-| `number` | NumberFilterType | Числовой диапазон |
-| `boolean` | BooleanFilterType | Да/Нет переключатель |
-| `date` | DateFilterType | Диапазон дат |
-| `day` | DayFilterType | Фильтр по дням |
-| `month` | MonthFilterType | Фильтр по месяцам |
-| `year` | YearFilterType | Фильтр по годам |
-| `vendors` | VendorsFilterType | Производители MS3 |
-| `parents` | ParentsFilterType | Родительские категории |
-| `ms3_categories` | MS3CategoriesFilterType | Категории товаров MS3 (с поддержкой вторичных категорий `msCategoryMember`) |
-| `colors` | ColorsFilterType | Цвета с HEX-кодами |
+| Тип | Значения | Отбор |
+|-----|----------|-------|
+| `default` | Значения опции, TV или поля ресурса | Значение совпадает с выбранным |
+| `number` | Минимум и максимум, ползунок | Значение между границами |
+| `boolean` | «Да» и «Нет». Подписи — `label_yes`, `label_no` в конфигурации фильтра | `1` или `0` |
+| `date` | Даты без времени: `2024-03-15` | Дата совпадает с одной из выбранных |
+| `day` | Числа месяца: `1`–`31` | Число месяца совпадает |
+| `month` | Год и месяц: `2024-03` | Месяц совпадает |
+| `year` | Годы | Год совпадает |
+| `vendors` | Производители MiniShop3, значение — id | Производитель товара |
+| `parents` | Родительские разделы, значение — id | Родитель товара |
+| `ms3_categories` | Разделы MiniShop3 с учётом дополнительных категорий товара | Основной или дополнительный раздел |
+| `colors` | Значения с цветом в `$hex` для образцов | Как у `default` |
 
-## Вид значений (`getValueKind`)
+Типы `date`, `day`, `month` и `year` отбирают по совпадению, а не по периоду. Диапазон дат через `|from` и `|to` сейчас не работает: тип `date` ищет товары ровно за две указанные даты.
 
-Тип фильтра сообщает компоненту, что представляют собой его значения. От этого зависят два решения при генерации слагов: нужен ли числовому значению человекочитаемый слаг и можно ли при конфликте добавить к слагу родителя.
+## Методы типа
 
-| Константа | Слаг для числового | Префикс родителя | Когда использовать |
-|-----------|--------------------|------------------|--------------------|
-| `VALUE_KIND_RESOURCE` | да | да | Значение — ID ресурса MODX (категории) |
-| `VALUE_KIND_ENTITY` | да | нет | Значение — ID сущности вне дерева ресурсов (производитель MS3) |
-| `VALUE_KIND_SCALAR` | нет | нет | Значение и есть отображаемое: опция, TV, число |
+Тип реализует `MFilter\Handlers\FilterTypes\FilterTypeInterface`. Удобнее наследовать `AbstractFilterType`: он реализует всё, кроме `getType()`.
 
-По умолчанию `AbstractFilterType` возвращает `VALUE_KIND_SCALAR` — для большинства типов это верно, переопределять не нужно. Переопределяйте, если значения вашего типа — идентификаторы:
+| Метод | Когда mFilter вызывает | Что возвращает |
+|---|---|---|
+| `getType()` | Всегда | Имя типа — то же, что при регистрации |
+| `buildQuery($query, $filterKey, $values, $config)` | Фильтр выбран | Запрос к `modResource` с условием отбора |
+| `getValues($filterKey, $config, $context)` | Загрузка страницы | Список значений: `value`, `label`, `count` |
+| `getSuggestions($filterKey, $config, $context)` | Подсчёт с учётом выбранных фильтров: при загрузке страницы и после каждого запроса | То же. В `AbstractFilterType` вызывает `getValues()` |
+| `supports($filterKey, $config)` | Тип ищется по ключу: строка набора без `type` и создание слагов | `true`, если тип подходит ключу |
+| `getValueKind()` | Создание слагов значений | Вид значений, см. ниже |
 
-```php
-use MFilter\Handlers\FilterTypes\AbstractFilterType;
+`getDefaultConfig()`, `formatValue()`, `parseSegment()` и `buildSegment()` mFilter не вызывает — переопределять их бесполезно.
 
-class WarehouseFilterType extends AbstractFilterType
-{
-    public function getValueKind(): string
-    {
-        // Значения — ID складов из своей таблицы: слаг нужен, родителя нет
-        return self::VALUE_KIND_ENTITY;
-    }
-}
-```
+В `$values` приходят выбранные значения. Границы диапазона `price|min` и `price|max` к этому моменту уже собраны в один ключ числами: `[1000, 5000]`. Недостающая граница приходит как `0` или `PHP_INT_MAX`.
 
-Без этого числовые значения уйдут в URL как есть (`/catalog/warehouse--17/` вместо `/catalog/warehouse--sklad-moskva/`).
+Какие товары приходят в `$context` при загрузке страницы и при пересчёте — в рецепте, раздел [Откуда брать товары для подсчёта](../cookbook/custom-filter-type#context-products).
 
-## Создание своего типа
+## Вид значений
 
-### 1. Создайте класс
+`getValueKind()` сообщает, что за значения у типа. От этого зависит, получит ли числовое значение слаг в адресе.
 
-```php
-<?php
-namespace MyNamespace;
+| Константа | Слаг для числа | Префикс родителя в слаге | Когда |
+|-----------|---|---|---|
+| `VALUE_KIND_RESOURCE` | Да | Да | Значение — id ресурса MODX, как у `parents` |
+| `VALUE_KIND_ENTITY` | Да | Нет | Значение — id сущности вне дерева ресурсов, как у `vendors` |
+| `VALUE_KIND_SCALAR` | Нет | Нет | Значение и есть текст: опция, TV, число. Так по умолчанию |
 
-use MODX\Revolution\modX;
-use MFilter\Handlers\FilterTypes\AbstractFilterType;
+Без слага число уходит в адрес как есть: `/catalog/warehouse--17/` вместо `/catalog/warehouse--sklad-moskva/`.
 
-class RatingFilterType extends AbstractFilterType
-{
-    /**
-     * Применить фильтр к запросу
-     */
-    public function apply(
-        \xPDOQuery $query,
-        string $key,
-        mixed $value,
-        array $config
-    ): void {
-        // $value может быть:
-        // - строкой: "5"
-        // - массивом: ["4", "5"]
-        // - объектом для диапазона: ["min" => 3, "max" => 5]
+Вид значений берётся у типа, заданного фильтру в наборе. Если фильтру с одним ключом в разных наборах заданы разные типы или тип не задан вовсе, вид определяется по ключу фильтра — через `supports()` и правила по имени ключа.
 
-        $values = is_array($value) ? $value : [$value];
+## Базовый класс
 
-        if (isset($values['min']) || isset($values['max'])) {
-            // Диапазон
-            $field = $this->getFieldName($key, $config);
+`AbstractFilterType` даёт типу `$this->modx`, `$this->mfilter` и защищённые методы:
 
-            if (isset($values['min'])) {
-                $query->where(["{$field}:>=" => (int)$values['min']]);
-            }
-            if (isset($values['max'])) {
-                $query->where(["{$field}:<=" => (int)$values['max']]);
-            }
-        } else {
-            // Множественный выбор
-            $field = $this->getFieldName($key, $config);
-            $query->where(["{$field}:IN" => array_map('intval', $values)]);
-        }
-    }
+| Метод | Что делает |
+|---|---|
+| `getFieldName($filterKey, $config)` | Поле фильтра: `field` из конфигурации или ключ |
+| `getSourceType($filterKey, $config)` | Источник: `source` из конфигурации или догадка по имени поля |
+| `getProductIdsByParents($parents, $secondaryIds)` | Id опубликованных товаров в разделах |
+| `buildParentSqlCondition($alias, $context)` | Условие SQL «товар в разделах контекста» с учётом дополнительных категорий |
+| `markSelected($values, $selected)` | Отмечает выбранные значения полем `selected` |
+| `sortValues($values, $config, $selected)` | Порядок значений по `sort`, `sort_dir`, `pinned`, `custom_order` |
+| `filterZeroCount($values, $config)` | Убирает значения с нулём товаров, если в конфигурации `hide_zero` |
 
-    /**
-     * Получить доступные значения для фильтра
-     */
-    public function getValues(
-        string $key,
-        array $config,
-        array $context
-    ): array {
-        $values = [];
+## Регистрация
 
-        // Генерируем значения 1-5 звёзд
-        for ($i = 1; $i <= 5; $i++) {
-            $values[] = [
-                'value' => (string)$i,
-                'label' => str_repeat('★', $i) . str_repeat('☆', 5 - $i),
-                'count' => 0 // Будет обновлено через suggestions
-            ];
-        }
-
-        return [
-            'values' => $values,
-            'min' => 1,
-            'max' => 5,
-            'step' => 1
-        ];
-    }
-
-    /**
-     * Получить имя поля для запроса
-     */
-    protected function getFieldName(string $key, array $config): string
-    {
-        // Если указано явно в конфиге
-        if (!empty($config['field'])) {
-            return $config['field'];
-        }
-
-        // По умолчанию ищем в опциях MS3
-        return "Option.{$key}";
-    }
-}
-```
-
-### 2. Зарегистрируйте тип
-
-Создайте плагин на событие `OnMFilterInit`:
+Плагин на событие `OnMFilterInit`:
 
 ```php
-<?php
-/** @var MFilter\MFilter $mfilter */
-$mfilter = $modx->event->params['mfilter'];
-
-$mfilter->getFilterTypeRegistry()->register(
-    'rating',
-    new MyNamespace\RatingFilterType($modx)
-);
+$mfilter->getFilterTypesRegistry()->register('sale', new \MySite\SaleFilterType($modx, $mfilter));
 ```
 
-### 3. Используйте в наборе фильтров
-
-В админке создайте фильтр с типом `rating`:
-
-```json
-{
-    "rating": {
-        "type": "rating",
-        "source": "option",
-        "label": "Рейтинг"
-    }
-}
-```
-
-## Интерфейс FilterTypeInterface
-
-```php
-interface FilterTypeInterface
-{
-    /**
-     * Применить фильтр к запросу
-     */
-    public function apply(
-        \xPDOQuery $query,
-        string $key,
-        mixed $value,
-        array $config
-    ): void;
-
-    /**
-     * Получить доступные значения
-     */
-    public function getValues(
-        string $key,
-        array $config,
-        array $context
-    ): array;
-
-    /**
-     * Получить SQL для подсчёта (suggestions)
-     */
-    public function getSuggestionsQuery(
-        string $key,
-        array $config,
-        array $context
-    ): ?string;
-}
-```
-
-## AbstractFilterType
-
-Базовый класс с полезными методами:
-
-```php
-abstract class AbstractFilterType implements FilterTypeInterface
-{
-    protected modX $modx;
-
-    /**
-     * Получить значения из опций MS3
-     */
-    protected function getOptionValues(string $key, array $context): array;
-
-    /**
-     * Получить значения из TV
-     */
-    protected function getTVValues(string $key, array $context): array;
-
-    /**
-     * Получить значения из поля ресурса
-     */
-    protected function getFieldValues(string $key, array $context): array;
-
-    /**
-     * Нормализовать значение (привести к массиву)
-     */
-    protected function normalizeValue(mixed $value): array;
-
-    /**
-     * Построить условие IN для запроса
-     */
-    protected function buildInCondition(string $field, array $values): array;
-}
-```
-
-## Примеры
-
-### Фильтр по наличию
-
-```php
-<?php
-namespace MyNamespace;
-
-use MFilter\Handlers\FilterTypes\AbstractFilterType;
-
-class InStockFilterType extends AbstractFilterType
-{
-    public function apply($query, string $key, mixed $value, array $config): void
-    {
-        $values = $this->normalizeValue($value);
-
-        if (in_array('instock', $values)) {
-            $query->where(['Data.count:>' => 0]);
-        }
-        if (in_array('outofstock', $values)) {
-            $query->where(['Data.count' => 0]);
-        }
-    }
-
-    public function getValues(string $key, array $config, array $context): array
-    {
-        return [
-            'values' => [
-                ['value' => 'instock', 'label' => 'В наличии', 'count' => 0],
-                ['value' => 'outofstock', 'label' => 'Под заказ', 'count' => 0],
-            ]
-        ];
-    }
-}
-```
-
-### Фильтр по тегам (many-to-many)
-
-```php
-<?php
-namespace MyNamespace;
-
-use MFilter\Handlers\FilterTypes\AbstractFilterType;
-
-class TagsFilterType extends AbstractFilterType
-{
-    public function apply($query, string $key, mixed $value, array $config): void
-    {
-        $values = $this->normalizeValue($value);
-        $tagIds = array_map('intval', $values);
-
-        // JOIN с таблицей связей
-        $query->innerJoin('ProductTags', 'Tags', 'Tags.product_id = msProduct.id');
-        $query->where(['Tags.tag_id:IN' => $tagIds]);
-        $query->groupby('msProduct.id');
-    }
-
-    public function getValues(string $key, array $config, array $context): array
-    {
-        // Получить все теги из БД
-        $tags = $this->modx->getCollection('Tag', ['active' => true]);
-
-        $values = [];
-        foreach ($tags as $tag) {
-            $values[] = [
-                'value' => (string)$tag->get('id'),
-                'label' => $tag->get('name'),
-                'count' => 0
-            ];
-        }
-
-        return ['values' => $values];
-    }
-}
-```
-
-### Фильтр по кастомной таблице
-
-```php
-<?php
-namespace MyNamespace;
-
-use MFilter\Handlers\FilterTypes\AbstractFilterType;
-
-class WarehouseFilterType extends AbstractFilterType
-{
-    public function apply($query, string $key, mixed $value, array $config): void
-    {
-        $values = $this->normalizeValue($value);
-        $warehouseIds = array_map('intval', $values);
-
-        // JOIN с таблицей остатков
-        $query->innerJoin(
-            'ProductStock',
-            'Stock',
-            'Stock.product_id = msProduct.id AND Stock.count > 0'
-        );
-        $query->where(['Stock.warehouse_id:IN' => $warehouseIds]);
-        $query->groupby('msProduct.id');
-    }
-
-    public function getValues(string $key, array $config, array $context): array
-    {
-        // Получить склады
-        $warehouses = $this->modx->getCollection('Warehouse', [
-            'active' => true
-        ]);
-
-        $values = [];
-        foreach ($warehouses as $wh) {
-            $values[] = [
-                'value' => (string)$wh->get('id'),
-                'label' => $wh->get('name'),
-                'count' => 0
-            ];
-        }
-
-        return ['values' => $values];
-    }
-}
-```
-
-## Регистрация через конфиг
-
-Альтернативно можно зарегистрировать типы через файл конфигурации:
-
-```php
-<?php
-// core/components/mfilter/config/filter_types.php
-
-return [
-    'rating' => MyNamespace\RatingFilterType::class,
-    'instock' => MyNamespace\InStockFilterType::class,
-    'tags' => MyNamespace\TagsFilterType::class,
-];
-```
-
-## Советы
-
-1. **Используйте индексы** — добавьте индексы на поля, по которым фильтруете
-2. **Кэшируйте значения** — если getValues() делает тяжёлые запросы
-3. **Проверяйте входные данные** — валидируйте и sanitize значения
-4. **Учитывайте производительность** — избегайте N+1 запросов
+Полный пример с классом — в рецепте [Свой тип фильтра](../cookbook/custom-filter-type).

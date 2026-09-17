@@ -83,7 +83,7 @@ mfilterHooks.add('beforeApply', (ctx) => {
 
 ```php
 // В плагине на OnMFilterInit
-$mfilter->getFilterTypeRegistry()->register('mytype', new MyFilterType($modx));
+$mfilter->getFilterTypesRegistry()->register('mytype', new MyFilterType($modx, $mfilter));
 ```
 
 ### Замена сервиса через DI
