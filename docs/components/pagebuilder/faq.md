@@ -59,7 +59,7 @@ Resolver не перезаписывает существующие значен
 
 ## Форма квиза или contact_form недоступна
 
-Нужен пакет **FetchIt**. Без него секция показывает сообщение лексикона `pagebuilder_fe_form_unavailable`. Получатель письма: поле **Notify email** в секции или системная настройка `emailsender`.
+Нужен пакет **FetchIt**. Без него секция показывает сообщение лексикона `pagebuilder_fe_form_unavailable`. Получатель письма: поле **Notify email** в секции или системная настройка `emailsender`. Сниппет `PageBuilderFetchIt` рендерит формы через Fenom.
 
 Сборка: [quiz](sections/quiz), [contact_form](sections/contact_form).
 

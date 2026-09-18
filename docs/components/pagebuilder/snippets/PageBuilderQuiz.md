@@ -13,7 +13,7 @@ Handler AJAX-отправки секции Pro [quiz](../sections/quiz). Чан�
 
 ## Где вызывается
 
-Chunk `pagebuilderpro_quiz` → `{'!FetchIt' | snippet}` с формой `pagebuilderpro_quiz_form` и сниппетом `PageBuilderQuiz`.
+Chunk `pagebuilderpro_quiz` вызывает [PageBuilderFetchIt](PageBuilderFetchIt) со свойствами `snippet` = `PageBuilderQuiz` и `form` = `pagebuilderpro_quiz_form`.
 
 ## Параметры
 

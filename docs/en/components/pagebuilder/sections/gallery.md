@@ -5,7 +5,7 @@ description: "Image grid with alt text and optional caption per slide"
 
 # Gallery
 
-Several photos or screenshots in one section. Each image has its own alt text and optional caption.
+Several photos or screenshots in one section. Each image has its own alt text and optional caption. Rendering is in Free. A new section of this type is created by PageBuilder Pro (`authoring: Pro; runtime in Free`).
 
 <!-- ![Gallery](/components/pagebuilder/screenshots/sections/gallery.png) -->
 

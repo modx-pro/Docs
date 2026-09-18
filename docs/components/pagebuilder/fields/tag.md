@@ -5,13 +5,13 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 # Поле tag
 
-Версия: **Pro**.
+Версия: **Free**.
 
 <!-- ![tag](/components/pagebuilder/screenshots/fields/tag.png) -->
 
 ## Зачем этот тип
 
-Свободный ввод строк без static `options`. Pro advanced-fields. Удобен для фильтров и меток на карточках.
+Свободный ввод строк без static `options`. Удобен для фильтров и меток на карточках.
 
 ## Когда использовать
 

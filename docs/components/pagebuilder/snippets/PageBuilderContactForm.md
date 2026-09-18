@@ -13,7 +13,7 @@ Handler AJAX-отправки секции Pro [contact_form](../sections/contac
 
 ## Где вызывается
 
-Chunk `pagebuilderpro_contact_form` → `{'!FetchIt' | snippet}` с формой `pagebuilderpro_contact_form_fields` и сниппетом `PageBuilderContactForm`.
+Chunk `pagebuilderpro_contact_form` вызывает [PageBuilderFetchIt](PageBuilderFetchIt) со свойствами `snippet` = `PageBuilderContactForm` и `form` = `pagebuilderpro_contact_form_fields`.
 
 ## Параметры
 

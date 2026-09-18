@@ -32,7 +32,19 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Category and sort
 
-**Parent category**: msCategory. **Limit** and **Sort** like msProducts. Requires miniShop3.
+Category search uses `mgr/ms3/categories/search`. `parent` is required. An empty `limit` becomes 12 in the chunk. The type is `"cacheable": false`.
+
+Before the chunk, `ProSectionRenderSupport` writes `parent_id` and `pb_parent_resource`. It maps `sortby` to `ms_sortby` and `ms_sortdir`:
+
+| `sortby` | `ms_sortby` | `ms_sortdir` |
+| --- | --- | --- |
+| `menuindex` | `msProduct.menuindex` | `ASC` |
+| `popular` | `Data.popular` | `DESC` |
+| `new` | `Data.new` | `DESC` |
+| `price_asc` | `Data.price` | `ASC` |
+| `price_desc` | `Data.price` | `DESC` |
+
+An unknown value sorts like `menuindex`. An empty category shows the chunk text «В этой категории пока нет товаров.»
 
 ## Similar sections
 

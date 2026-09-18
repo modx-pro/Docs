@@ -1,12 +1,12 @@
 ---
 title: Системные настройки
-description: "Ключи namespace pagebuilder: превью, вкладки, visibility, responsive, Public API"
+description: "Ключи namespace pagebuilder: превью, вкладки, visibility, responsive, Public API, REST"
 ---
 # Системные настройки
 
 Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
-В манифесте дополнения **24 ключа**. При установке или обновлении Phinx/resolver добавляет отсутствующие. Уже заданные значения не перезаписывает (`update.settings = false`).
+В манифесте дополнения **28 ключей**. При установке или обновлении Phinx/resolver добавляет отсутствующие. Уже заданные значения не перезаписывает (`update.settings = false`).
 
 Ключи, добавленные в 1.0.3+:
 
@@ -125,6 +125,17 @@ Read-only JSON для headless-фронта. Подробнее: [Public API](pu
 | `pagebuilder_public_api_enabled` | boolean | `0` | Включить `assets/components/pagebuilder/api.php` |
 | `pagebuilder_public_api_key` | text | пусто | API-ключ. Пусто: запросы без ключа (только для dev) |
 | `pagebuilder_public_api_cors_origins` | textarea | `*` | Разрешённые CORS origins для браузера |
+
+## REST API v1 {#rest-api}
+
+Read-only транспорт Pro. Подробнее: [REST API v1](rest-api). Токены выпускают во вкладке CMP **API tokens**, не правкой JSON вручную.
+
+| Ключ | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `pagebuilder_rest_api_enabled` | boolean | `0` | Включить `assets/components/pagebuilder/api/v1.php`. Нужен PageBuilder Pro |
+| `pagebuilder_rest_token_pepper` | text | пусто | Pepper для SHA-256 хеша токена. Пусто = `site_id` |
+| `pagebuilder_rest_tokens` | textarea | `[]` | JSON токенов без секретов (`prefix` и `hash`) |
+| `pagebuilder_rest_throttle_per_minute` | number | `120` | Лимит запросов на prefix токена. `0` выключает лимит |
 
 ## Связь со сниппетом {#связь-со-сниппетом}
 

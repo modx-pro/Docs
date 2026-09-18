@@ -16,12 +16,14 @@ description: Обзор сниппетов PageBuilder для вывода се�
 | [PageBuilderUtmUrl](PageBuilderUtmUrl) | UTM из реестра панели управления к произвольному URL |
 | [PageBuilderTableRows](PageBuilderTableRows) | Строки табличных данных ресурса (JSON или chunk) |
 
-Pro, через FetchIt (не вызывайте из шаблона, чанк секции вызывает FetchIt):
+Pro. Из шаблона не вызывайте. Чанк секции вызывает [PageBuilderFetchIt](PageBuilderFetchIt):
 
 | Сниппет | Назначение |
 | --- | --- |
 | [PageBuilderQuiz](PageBuilderQuiz) | Handler секции [quiz](../sections/quiz) |
 | [PageBuilderContactForm](PageBuilderContactForm) | Handler секции [contact_form](../sections/contact_form) |
+| [PageBuilderFormBuilder](PageBuilderFormBuilder) | Handler секции [form_builder](../sections/form_builder) |
+| [PageBuilderFetchIt](PageBuilderFetchIt) | Рендер формы через Fenom. Чанк передаёт handler в `snippet` |
 
 ## Порядок на типовой странице
 
@@ -31,7 +33,7 @@ Pro, через FetchIt (не вызывайте из шаблона, чанк �
 
 Для блока с другой страницы (hero с главной, FAQ из лендинга) используйте **PageBuilderResource**.
 
-Квиз и форма заявки: добавьте секции `quiz` / `contact_form` и поставьте **FetchIt**. Прямые вызовы handler-сниппетов в шаблоне не нужны.
+Квиз, форма заявки и конструктор формы: добавьте секции `quiz`, `contact_form` или `form_builder` и поставьте **FetchIt**. Чанк вызывает [PageBuilderFetchIt](PageBuilderFetchIt), не handler напрямую. Прямые вызовы из шаблона не нужны.
 
 ## Таблица соответствий (MODX / Fenom)
 

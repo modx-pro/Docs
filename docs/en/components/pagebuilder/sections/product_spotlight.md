@@ -32,7 +32,9 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Product relation
 
-**Product** relation to a miniShop3 resource. Other section fields set the block title.
+Product search uses `mgr/ms3/products/search`. `product` is required. The type is `"cacheable": false`.
+
+Before the chunk, `ProSectionRenderSupport` writes `product_id` and `pb_product_resource`. The chunk reads `$pb_product_resource`. If the id is missing, the visitor sees the chunk text «Товар не выбран или недоступен.»
 
 ## Similar sections
 

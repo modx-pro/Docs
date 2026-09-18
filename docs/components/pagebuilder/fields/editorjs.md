@@ -5,7 +5,7 @@ description: "Объект json и готовый html из Editor.js"
 
 # Поле editorjs
 
-Версия: **Free**.
+Версия: **Pro** (`advanced-fields`). Новое поле создаётся только в Pro. Уже сохранённое открывается и пишется.
 
 <!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.png) -->
 

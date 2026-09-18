@@ -22,7 +22,7 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 :::
 
-Опубликованные секции рендерятся через Fenom chunks в `core/components/pagebuilder/elements/chunks/`. Имя chunk совпадает с полем `chunk` в JSON типа: `pagebuilder_hero`, `pagebuilder_cta`, для Pro — `pagebuilderpro_{key}`.
+Опубликованные секции рендерятся через Fenom chunks в `core/components/pagebuilder/elements/chunks/`. Имя chunk совпадает с полем `chunk` в JSON типа: `pagebuilder_hero`, `pagebuilder_cta`, для Pro — `pagebuilderpro_{key}`. `FenomSectionRenderer` буферизует вывод чанка: exception FetchIt или Fenom не оставляет обрезанный HTML на странице.
 
 ## CSS
 

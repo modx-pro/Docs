@@ -1,12 +1,12 @@
 ---
 title: System settings
-description: "pagebuilder namespace keys: preview, tabs, visibility, responsive, Public API"
+description: "pagebuilder namespace keys: preview, tabs, visibility, responsive, Public API, REST"
 ---
 # System settings
 
 MODX namespace: **pagebuilder**. Database key: `pagebuilder_<name>`.
 
-The extra manifest has **24 keys**. On install or upgrade Phinx/resolver adds missing ones. Existing values are not overwritten (`update.settings = false`).
+The extra manifest has **28 keys**. On install or upgrade Phinx/resolver adds missing ones. Existing values are not overwritten (`update.settings = false`).
 
 Keys added in 1.0.3+:
 
@@ -125,6 +125,17 @@ Read-only JSON for headless frontends. Details: [Public API](public-api).
 | `pagebuilder_public_api_enabled` | boolean | `0` | Enable `assets/components/pagebuilder/api.php` |
 | `pagebuilder_public_api_key` | text | empty | API key. Empty: requests without key (dev only) |
 | `pagebuilder_public_api_cors_origins` | textarea | `*` | Allowed CORS origins for browser requests |
+
+## REST API v1 {#rest-api}
+
+Pro read-only transport. Details: [REST API v1](rest-api). Issue tokens on the CMP **API tokens** tab. Do not edit the JSON by hand.
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `pagebuilder_rest_api_enabled` | boolean | `0` | Enable `assets/components/pagebuilder/api/v1.php`. Requires PageBuilder Pro |
+| `pagebuilder_rest_token_pepper` | text | empty | Pepper for the token SHA-256 hash. Empty means `site_id` |
+| `pagebuilder_rest_tokens` | textarea | `[]` | Token JSON without secrets (`prefix` and `hash`) |
+| `pagebuilder_rest_throttle_per_minute` | number | `120` | Request limit per token prefix. `0` disables the limit |
 
 ## Snippet relation {#snippet-relation}
 

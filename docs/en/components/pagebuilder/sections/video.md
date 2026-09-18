@@ -1,17 +1,13 @@
 ---
 title: "Video"
-description: "Embed a video by URL (YouTube, Vimeo, Rutube) (Pro)"
+description: "Embed a video by URL (YouTube, Vimeo, Rutube). Free layer."
 ---
 
 # Video
 
-Responsive iframe from a video link. Common hosts are supported; `VideoEmbedResolver` parses the URL.
+Responsive iframe from a video link. Common hosts are supported. `VideoEmbedResolver` parses the URL on save. The section is part of Free.
 
 <!-- ![Video](/components/pagebuilder/screenshots/sections/video.png) -->
-
-::: info
-Requires PageBuilder Pro.
-:::
 
 ## URL instead of embed code
 
@@ -107,7 +103,7 @@ Fenom chunk `pagebuilderpro_video`:
 
 ## JSON definition
 
-`PageBuilderPro/core/components/pagebuilderpro/sections/video.json`
+`core/components/pagebuilder/sections/video.json`
 
 ## See also
 

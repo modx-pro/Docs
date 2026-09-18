@@ -46,6 +46,8 @@ items: [
           { text: 'PageBuilderTableRows', link: 'snippets/PageBuilderTableRows' },
           { text: 'PageBuilderQuiz', link: 'snippets/PageBuilderQuiz' },
           { text: 'PageBuilderContactForm', link: 'snippets/PageBuilderContactForm' },
+          { text: 'PageBuilderFormBuilder', link: 'snippets/PageBuilderFormBuilder' },
+          { text: 'PageBuilderFetchIt', link: 'snippets/PageBuilderFetchIt' },
         ],
       },
     ],
@@ -56,6 +58,7 @@ items: [
     items: [
       { text: 'Обзор Pro', link: 'pro' },
       { text: 'Agent API', link: 'agent-api' },
+      { text: 'REST API v1', link: 'rest-api' },
     ],
   },
   {
@@ -79,11 +82,12 @@ items: [
           { text: 'button', link: 'fields/button' },
           { text: 'checkbox', link: 'fields/checkbox' },
           { text: 'checkboxgroup', link: 'fields/checkboxgroup' },
+          { text: 'chunk', link: 'fields/chunk' },
           { text: 'color', link: 'fields/color' },
           { text: 'colorpalette', link: 'fields/colorpalette' },
           { text: 'date', link: 'fields/date' },
           { text: 'datetime', link: 'fields/datetime' },
-          { text: 'editorjs', link: 'fields/editorjs' },
+          { text: 'email', link: 'fields/email' },
           { text: 'file', link: 'fields/file' },
           { text: 'heading', link: 'fields/heading' },
           { text: 'hidden', link: 'fields/hidden' },
@@ -98,10 +102,13 @@ items: [
           { text: 'richtext', link: 'fields/richtext' },
           { text: 'select', link: 'fields/select' },
           { text: 'slug', link: 'fields/slug' },
+          { text: 'snippet', link: 'fields/snippet' },
+          { text: 'tag', link: 'fields/tag' },
           { text: 'text', link: 'fields/text' },
           { text: 'textarea', link: 'fields/textarea' },
           { text: 'time', link: 'fields/time' },
           { text: 'toggle', link: 'fields/toggle' },
+          { text: 'tv', link: 'fields/tv' },
           { text: 'url', link: 'fields/url' },
           { text: 'video', link: 'fields/video' },
           { text: 'xtype', link: 'fields/xtype' },
@@ -112,26 +119,33 @@ items: [
         text: 'Pro',
         link: 'fields/types',
         items: [
-          { text: 'chunk', link: 'fields/chunk' },
+          { text: 'address', link: 'fields/address' },
           { text: 'combo', link: 'fields/combo' },
           { text: 'currency', link: 'fields/currency' },
+          { text: 'datasource', link: 'fields/datasource' },
+          { text: 'daterange', link: 'fields/daterange' },
           { text: 'dependent', link: 'fields/dependent' },
+          { text: 'documents', link: 'fields/documents' },
+          { text: 'editorjs', link: 'fields/editorjs' },
           { text: 'embeddedTable', link: 'fields/embeddedTable' },
           { text: 'fieldset', link: 'fields/fieldset' },
+          { text: 'form', link: 'fields/form' },
           { text: 'gallery', link: 'fields/gallery' },
+          { text: 'icon', link: 'fields/icon' },
           { text: 'imask', link: 'fields/imask' },
           { text: 'jsongrid', link: 'fields/jsongrid' },
           { text: 'keyvalue', link: 'fields/keyvalue' },
+          { text: 'link', link: 'fields/link' },
           { text: 'map', link: 'fields/map' },
           { text: 'multicombo', link: 'fields/multicombo' },
           { text: 'multirelation', link: 'fields/multirelation' },
+          { text: 'product', link: 'fields/product' },
+          { text: 'products', link: 'fields/products' },
           { text: 'relation', link: 'fields/relation' },
-          { text: 'snippet', link: 'fields/snippet' },
+          { text: 'schedule', link: 'fields/schedule' },
           { text: 'table', link: 'fields/table' },
           { text: 'tablecombo', link: 'fields/tablecombo' },
           { text: 'tablemulticombo', link: 'fields/tablemulticombo' },
-          { text: 'tag', link: 'fields/tag' },
-          { text: 'tv', link: 'fields/tv' },
         ],
       },
     ],
@@ -145,6 +159,7 @@ items: [
         text: 'Free',
         link: 'sections/',
         items: [
+          { text: 'Видео', link: 'sections/video' },
           { text: 'Вопросы и ответы', link: 'sections/faq' },
           { text: 'Галерея', link: 'sections/gallery' },
           { text: 'Изображение', link: 'sections/image' },
@@ -162,22 +177,33 @@ items: [
         text: 'Pro',
         link: 'sections/',
         items: [
-          { text: 'Видео', link: 'sections/video' },
+          { text: 'Адреса', link: 'sections/locations' },
+          { text: 'Аккордеон', link: 'sections/accordion' },
           { text: 'Вкладки', link: 'sections/tabs' },
+          { text: 'Динамический список', link: 'sections/dynamic_list' },
+          { text: 'До и после', link: 'sections/before_after' },
+          { text: 'Загрузки', link: 'sections/downloads' },
           { text: 'Записи блога', link: 'sections/blog_posts' },
+          { text: 'Как это работает', link: 'sections/how_it_works' },
           { text: 'Карта', link: 'sections/map' },
           { text: 'Карусель галереи', link: 'sections/gallery_carousel' },
           { text: 'Карусель товаров', link: 'sections/products_carousel' },
+          { text: 'Кейс', link: 'sections/case_study' },
           { text: 'Квиз', link: 'sections/quiz' },
           { text: 'Команда', link: 'sections/team' },
+          { text: 'Конструктор формы', link: 'sections/form_builder' },
           { text: 'Контакты с картой', link: 'sections/contact_map' },
           { text: 'Логотипы партнёров', link: 'sections/logos' },
+          { text: 'Медиа и текст', link: 'sections/media_split' },
           { text: 'Подборка товаров', link: 'sections/curated_products' },
           { text: 'Похожие товары', link: 'sections/related_products' },
+          { text: 'Портфолио', link: 'sections/portfolio' },
           { text: 'Преимущества', link: 'sections/features' },
           { text: 'Промо-баннер', link: 'sections/promo_banner' },
+          { text: 'Рассылка', link: 'sections/newsletter' },
           { text: 'Ряд брендов', link: 'sections/brands_row' },
           { text: 'Ряд категорий', link: 'sections/categories_row' },
+          { text: 'Сетка с фильтром', link: 'sections/filterable_grid' },
           { text: 'Сетка товаров', link: 'sections/products_grid' },
           { text: 'Сравнение товаров', link: 'sections/product_comparison' },
           { text: 'Структурированный контент', link: 'sections/structured_content' },
@@ -185,9 +211,22 @@ items: [
           { text: 'Таблица характеристик', link: 'sections/spec_table' },
           { text: 'Тарифы', link: 'sections/pricing_table' },
           { text: 'Товар в фокусе', link: 'sections/product_spotlight' },
+          { text: 'Уведомление', link: 'sections/notice' },
           { text: 'Форма обратной связи', link: 'sections/contact_form' },
+          { text: 'Хронология', link: 'sections/timeline' },
+          { text: 'Цитата', link: 'sections/quote' },
         ],
       },
+    ],
+  },
+  {
+    text: 'Рецепты',
+    link: 'recipes/',
+    items: [
+      { text: 'Обзор', link: 'recipes/' },
+      { text: 'Лендинг', link: 'recipes/landing' },
+      { text: 'Свой тип секции', link: 'recipes/custom-section' },
+      { text: 'Bundle', link: 'recipes/bundle' },
     ],
   },
   { text: 'FAQ', link: 'faq' },
@@ -213,11 +252,11 @@ Autosave пишет только черновик. **Сохранить** рес
 
 ### Free: секции и поля
 
-11 встроенных типов: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. В панели управления (**Blocks**) фильтруете типы чипами **Все / Из пакета / Мои**, массово скрываете предустановленные и задаёте своё превью в каталоге вместо схематичной картинки. 31 тип полей в Free и 20 в Pro (51 всего): text, richtext, repeater, migx, file, select и др. При `pagebuilder_responsive_editor_enabled` в инспекторе появляются вкладки значений по устройствам.
+12 встроенных типов: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer, video. Новую `gallery` создаёт Pro, рендер остаётся в Free. В панели управления (**Blocks**) фильтруете типы чипами **Все / Из пакета / Мои**, массово скрываете предустановленные и задаёте своё превью в каталоге вместо схематичной картинки. 35 типов полей в Free и 27 в Pro (62 всего): text, richtext, repeater, migx, file, select и др. При `pagebuilder_responsive_editor_enabled` в инспекторе появляются вкладки значений по устройствам.
 
 ### PageBuilder Pro
 
-Глобальная библиотека (**Общие блоки**): pull с другой страницы (Связать | Копировать), write-through linked-секций, шаблоны страниц, журнал событий секции (View/Restore). Вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами. Каталог Pro: features, video, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), commerce-блоки miniShop3. Ещё 20 типов полей: gallery, map, relation, table, embeddedTable и др.
+Глобальная библиотека (**Общие блоки**): pull с другой страницы (Связать | Копировать), write-through linked-секций, шаблоны страниц, журнал событий секции (View/Restore). Вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами. Каталог Pro: features, video, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), commerce-блоки miniShop3. Ещё 27 типов полей: gallery, map, relation, table, embeddedTable, editorjs и др.
 
 ### Таблицы на ресурсе
 
@@ -249,8 +288,8 @@ Autosave пишет только черновик. **Сохранить** рес
 
 | Дополнение | Версия | Содержимое |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.10-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
-| `pagebuilderpro` | 1.0.10-beta | Pro: зависит от `pagebuilder` ≥ 1.0.10, quiz, library pull, шаблоны страниц, журнал секций |
+| `pagebuilder` | 1.0.12-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
+| `pagebuilderpro` | 1.0.12-beta | Pro: зависит от `pagebuilder` ≥ 1.0.12, quiz, library pull, шаблоны страниц, журнал секций |
 
 Namespace в MODX: `pagebuilder`.
 
@@ -271,8 +310,9 @@ Namespace в MODX: `pagebuilder`.
 | Pro, корзина, примеры | [PageBuilder Pro](pro) |
 | Скрипты и агенты | [Agent API](agent-api) |
 | Свои секции и расширения | [Разработчик](developer) |
-| 51 типов полей инспектора | [Справочник типов полей](fields/types) |
-| 34 встроенных блока | [Каталог секций](sections/) |
+| Лендинг, свой тип, Bundle | [Рецепты](recipes/) |
+| 62 типа полей инспектора | [Справочник типов полей](fields/types) |
+| 50 встроенных блоков | [Каталог секций](sections/) |
 | Типовые ошибки | [FAQ](faq) |
 
 ## Точки входа

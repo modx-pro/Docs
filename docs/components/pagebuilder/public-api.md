@@ -231,6 +231,7 @@ curl -s "${BASE}?action=web/catalog/list&context_key=web&api_key=${KEY}"
         "version": 1,
         "label": "Hero",
         "category": "hero",
+        "categories": ["hero"],
         "fields": [
           { "name": "title", "type": "text", "label": "Title", "required": true }
         ],
@@ -242,6 +243,10 @@ curl -s "${BASE}?action=web/catalog/list&context_key=web&api_key=${KEY}"
 ```
 
 Кэшируйте список на час или до деплоя. Он меняется, когда добавляете JSON-типы или UI-типы в панели управления.
+
+В ответе типа поле `categories`: список slug. Поле `category` остаётся для совместимости.
+
+Запросы каталога, таблиц и страниц идут через `QueryPolicy`. Ключи `sql`, `php`, `snippet` и `class` отклоняются. Размер страницы не больше 100. Free `api.php` на месте.
 
 ## CORS
 

@@ -5,13 +5,13 @@ description: "Object name of selected modSnippet for chunk call"
 
 # Field snippet
 
-Version: **Pro**.
+Version: **Free**.
 
 <!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.png) -->
 
 ## Why this type
 
-Snippet picker for `[[!{$snippet.name}]]`. Pro dynamic processor hook in section. Separates snippet call from chunk include.
+Snippet picker for `[[!{$snippet.name}]]`. Dynamic processor hook in a section. Separates the snippet call from a chunk include.
 
 ## When to use
 

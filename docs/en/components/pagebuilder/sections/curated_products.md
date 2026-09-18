@@ -32,7 +32,9 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Product multirelation
 
-**Products** multirelation: selection order is kept. Limit is the number of picked items.
+Product search uses `mgr/ms3/products/search`. `products` is required. The type is `"cacheable": false`.
+
+On render, `ProSectionRenderSupport` builds `curated_product_ids`: at most 12 ids, comma-separated, in selection order. The chunk passes that string to `msProducts` (`parents` = 0). An empty list shows the chunk text «Выберите товары в инспекторе секции.»
 
 ## Similar sections
 

@@ -5,13 +5,13 @@ description: "Объект name выбранного modChunk для include в 
 
 # Поле chunk
 
-Версия: **Pro**.
+Версия: **Free**.
 
 <!-- ![chunk](/components/pagebuilder/screenshots/fields/chunk.png) -->
 
 ## Зачем этот тип
 
-Выбор chunk по name без ручного ввода. Паттерн `{include file="file:chunks/{$chunk.name}.tpl"}`. Pro для секций с динамическими partial.
+Выбор chunk по name без ручного ввода. Паттерн `{include file="file:chunks/{$chunk.name}.tpl"}`. Для секций с динамическими partial.
 
 ## Когда использовать
 

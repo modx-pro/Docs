@@ -22,7 +22,7 @@ Place the `PageBuilder` snippet in the template or content field. Use an uncache
 
 :::
 
-Published sections render through Fenom chunks in `core/components/pagebuilder/elements/chunks/`. The chunk name matches the `chunk` field in the type JSON: `pagebuilder_hero`, `pagebuilder_cta`; Pro uses `pagebuilderpro_{key}`.
+Published sections render through Fenom chunks in `core/components/pagebuilder/elements/chunks/`. The chunk name matches the `chunk` field in the type JSON: `pagebuilder_hero`, `pagebuilder_cta`; Pro uses `pagebuilderpro_{key}`. `FenomSectionRenderer` buffers chunk output: a FetchIt or Fenom exception does not leave truncated HTML on the page.
 
 ## CSS
 

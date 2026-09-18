@@ -5,13 +5,13 @@ description: "String tag array with chip UI in inspector"
 
 # Field tag
 
-Version: **Pro**.
+Version: **Free**.
 
 <!-- ![tag](/components/pagebuilder/screenshots/fields/tag.png) -->
 
 ## Why this type
 
-Free input without static options. Pro advanced-fields. Good for filters and card labels.
+Free input without static options. Good for filters and card labels.
 
 ## When to use
 

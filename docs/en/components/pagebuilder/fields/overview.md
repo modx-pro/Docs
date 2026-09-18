@@ -7,7 +7,7 @@ description: "Field schema in section JSON, inspector widgets, and data after sa
 
 Fields define what the editor fills in a section. The schema lives in type JSON (`core/components/pagebuilder/sections/{key}.json`) or is built in the control panel.
 
-The [reference](types) lists 51 types. Each has its own page: JSON **Configuration**, **Section data** block (how the field looks after save), and Fenom or HTML example. Chunk values come from `section.data`.
+The [reference](types) lists 62 types (35 Free and 27 Pro). Types with a page have JSON **Configuration**, a **Section data** block, and a Fenom or HTML example. Chunk values come from `section.data`.
 
 <!-- ![Section inspector](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
 

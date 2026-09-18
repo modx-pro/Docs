@@ -5,13 +5,13 @@ description: "Object id name caption of selected MODX TV"
 
 # Field tv
 
-Version: **Pro**.
+Version: **Free**.
 
 <!-- ![tv](/components/pagebuilder/screenshots/fields/tv.png) -->
 
 ## Why this type
 
-Picker for template variable hybrid chunk. Front output `[[*{$tv.name}]]`. Pro bridge between PB section and resource TV.
+Picker for template variable hybrid chunk. Front output `[[*{$tv.name}]]`. Bridge between a PageBuilder section and a resource TV.
 
 ## When to use
 

@@ -5,7 +5,7 @@ description: "Editor.js object with json and rendered html"
 
 # Field editorjs
 
-Version: **Free**.
+Version: **Pro** (`advanced-fields`). A new field is created only in Pro. An already saved field still opens and writes.
 
 <!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.png) -->
 

@@ -1,13 +1,13 @@
 ---
 title: Панель управления PageBuilder
-description: Blocks, UTM, Collections и глобальная корзина в панели управления PageBuilder
+description: "Blocks, UTM, Collections, Forms, Bundle, API tokens и корзина PageBuilder"
 ---
 
 # Панель управления PageBuilder
 
 **Компоненты → PageBuilder** (`SectionTypesManager.vue`). Право **pagebuilder_manage_types** нужно для вкладки Blocks. Остальные вкладки панели управления доступны по стандартным правам менеджера.
 
-Четыре вкладки на уровне сайта плюс Pro-реестры, не одного ресурса:
+Четыре вкладки Free плюс реестры Pro:
 
 | Вкладка | Слой | Назначение |
 | --- | --- | --- |
@@ -16,6 +16,9 @@ description: Blocks, UTM, Collections и глобальная корзина в 
 | **Collections** | Free | Наборы вкладок на форме ресурса по шаблону (`pb_collections`) |
 | **Basket** | Pro | Глобальная корзина удалённых секций и строк таблиц |
 | **Шаблоны страниц** | Pro | Скелеты пустых секций (`pb_page_templates`), capability `page-templates` |
+| **Forms** | Pro | Схемы для [form_builder](sections/form_builder), capability `forms` |
+| **Bundle** | Pro | Export и import UI-типов секций |
+| **API tokens** | Pro | Bearer-токены [REST API v1](rest-api) |
 
 ![Панель управления PageBuilder](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
@@ -96,6 +99,29 @@ CRUD коллекций и разрешение вкладок для шабло
 | Панель управления → **Корзина** | Между ресурсами: список, восстановление в исходный ресурс, окончательное удаление (Pro) |
 
 Восстановление из панели управления вставляет секцию на позицию `settings._trashIndex`, как в корзине на странице.
+
+## Forms {#forms}
+
+Capability `forms`. Во вкладке создаёте схему с ключом и полями. На странице секция [form_builder](sections/form_builder) выбирает этот ключ. Отправка идёт через FetchIt и сниппет `PageBuilderFormBuilder`.
+
+Сервер проверяет CSRF и honeypot `nospam`. Письмо и webhook уходят синхронно после commit, в том же HTTP-запросе. Submissions в БД не хранятся. Файл в форме v1 не принимается. Процессоры: `mgr/form/*`.
+
+## Bundle {#bundle}
+
+Export UI-типов секций, dry-run и import одной транзакцией через `UiSectionTypeService`.
+
+1. На исходном сайте откройте **Bundle** и выгрузите JSON.
+2. На целевом сайте вставьте JSON и запустите dry-run.
+3. План показывает `create`, `update` или `conflict`. Conflict не импортируется.
+4. Import применяет create и update.
+
+В бандл v1 не входят secrets, токены, содержимое страниц, строки таблиц, формы и datasources. Процессоры: `mgr/bundle/*`.
+
+## API tokens {#api-tokens}
+
+Capability `api`. Новому токену задают имя и scopes `pages.read` и `catalog.read`. Секрет показывают один раз. В системной настройке `pagebuilder_rest_tokens` остаются `prefix` и hash.
+
+Отозванный токен отвечает `401`. Транспорт включается `pagebuilder_rest_api_enabled`. Маршруты: [REST API v1](rest-api). Процессоры: `mgr/resttoken/*`.
 
 ## Связанные страницы
 
