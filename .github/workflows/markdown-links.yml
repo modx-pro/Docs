@@ -25,7 +25,8 @@ jobs:
       - name: Fetch base branch for diff
         env:
           BASE_REF: ${{ github.base_ref }}
-        run: git fetch --no-tags --depth=1 origin "$BASE_REF"
+        # Three-dot diff needs a merge base. --depth=1 leaves origin/$BASE_REF as a shallow tip and git exits with "no merge base".
+        run: git fetch --no-tags origin "$BASE_REF"
       - name: Check links in changed markdown
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
