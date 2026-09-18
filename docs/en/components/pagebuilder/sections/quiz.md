@@ -5,7 +5,7 @@ description: "Multi-step quiz with lead, pricing, and survey modes. FetchIt. Pro
 
 # Quiz
 
-Multi-step quiz: answers, contacts, optional price calculation, email notification. Do not call `PageBuilderQuiz` from the template: FetchIt invokes it from the section chunk.
+Multi-step quiz: answers, contacts, optional price calculation, email notification. Do not call `PageBuilderQuiz` from the template: FetchIt invokes it from the section chunk. `PageBuilderFetchIt` renders the form through Fenom.
 
 <!-- ![Quiz](/components/pagebuilder/screenshots/sections/quiz.png) -->
 

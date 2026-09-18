@@ -49,7 +49,7 @@ description: Панель управления PageBuilder, права, моде
 
 ## PageBuilder Pro
 
-Дополнение `pagebuilderpro` добавляет общие блоки, версии, примеры в каталоге, поля по breakpoints, 20 расширенных типов полей, глобальную корзину в панели управления и [Agent API](agent-api).
+Дополнение `pagebuilderpro` добавляет общие блоки, версии, примеры в каталоге, поля по breakpoints, 27 расширенных типов полей, глобальную корзину в панели управления и [Agent API](agent-api).
 
 Подробно: [PageBuilder Pro](pro). Секции витрины требуют **miniShop3**.
 
@@ -68,14 +68,18 @@ description: Панель управления PageBuilder, права, моде
 
 ### Жизненный цикл страницы
 
-| Событие | Когда |
-| --- | --- |
-| `pbOnBeforeSave` / `pbOnAfterSave` | Черновик (`mode=draft`) |
-| `pbOnBeforePublish` / `pbOnAfterPublish` | Публикация |
-| `pbOnBeforeUnpublish` / `pbOnAfterUnpublish` | Снятие с публикации |
-| `pbOnBeforeTrash` / `pbOnAfterTrash` | Удаление секций в корзину |
+| Событие | Когда | Данные |
+| --- | --- | --- |
+| `pbOnBeforeSave` | Перед записью черновика | `resourceId`, `document`, `documentBag`, `revision`, `userId`, `mode`=`draft`, `changes` |
+| `pbOnAfterSave` | После записи черновика | `resourceId`, `record`, `userId`, `mode`=`draft`, `changes` |
+| `pbOnBeforePublish` | Перед публикацией | `resourceId`, `document`, `revision`, `userId` |
+| `pbOnAfterPublish` | После публикации | `resourceId`, `record`, `userId` |
+| `pbOnBeforeUnpublish` | Перед снятием | `resourceId`, `record`, `revision`, `userId` |
+| `pbOnAfterUnpublish` | После снятия | `resourceId`, `record`, `userId` |
+| `pbOnBeforeTrash` | Перед корзиной, только если есть удалённые секции | `resourceId`, `sectionIds`, `document`, `userId` |
+| `pbOnAfterTrash` | После записи черновика с теми же id | `resourceId`, `sectionIds`, `record`, `userId` |
 
-В `pbOnBeforeSave` расширения могут заменить документ через `PageDocumentBag`. В `pbOnAfterSave` и аналогах поле `changes` содержит `DocumentChangeSet` (id добавленных, удалённых, отправленных в корзину, восстановленных, включённых и выключенных секций).
+`documentBag` это `PageDocumentBag`. Слушатель подменяет документ до `saveDraft`. `changes` это массив `DocumentChangeSet`: `addedSectionIds`, `removedSectionIds`, `trashedSectionIds`, `restoredSectionIds`, `updatedSectionIds`, `enabledSectionIds`, `disabledSectionIds`. События trash идут из того же `saveDraft`, отдельного действия корзины нет.
 
 ### Копирование
 
@@ -86,12 +90,13 @@ description: Панель управления PageBuilder, права, моде
 
 ### Каталог и поля
 
-| Событие | Назначение |
+| Событие | Данные |
 | --- | --- |
-| `pbOnBeforeGetList` / `pbOnAfterGetList` | Список в каталоге (`mgr/catalog/list`) |
-| `pbOnFieldValues` | `FieldValuesBag`: подстановка значений полей (`mgr/field/options`, picker) |
-| `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: проверка depends (pro, minishop3) |
-| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible`, видимость секции на фронте |
+| `pbOnBeforeGetList` | `resourceContext` |
+| `pbOnAfterGetList` | `resourceContext`, `items`, `result` (`FieldValuesBag`, ключ `items`) |
+| `pbOnFieldValues` | В каталоге: `resourceContext`, `fieldValues`. В `mgr/field/options`: `field`, `fieldValues` |
+| `pbOnCheckSectionRequirement` | `requirement`, `result` (`FieldValuesBag`, ключ `satisfied`) |
+| `pbOnCheckSectionVisibility` | `section`, `conditions`, `result` (`FieldValuesBag`, ключ `visible`) |
 
 ### Табличные данные ресурса
 
@@ -99,18 +104,18 @@ description: Панель управления PageBuilder, права, моде
 События ниже **не** регистрируются при установке. Добавьте их в **Система → События**, если плагин должен на них реагировать.
 :::
 
-| Событие | Когда |
+| Событие | Данные |
 | --- | --- |
-| `pbOnBeforeTableGetList` | Фильтрация строк (`criteria` передаётся по ссылке) |
-| `pbOnTableRowSave` | Перед сохранением строки (`data` передаётся по ссылке) |
+| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` по ссылке |
+| `pbOnTableRowSave` | `table`, `data` по ссылке, `row_id` |
 
 ### Рендер на фронте {#рендер-на-фронте}
 
 | Событие | Данные |
 | --- | --- |
 | `pbOnBeforeRenderDocument` | `resourceId`, `document`, `pipeline`, `options` |
-| `pbOnBeforeRenderSection` | `index`, `pipeline`: мутация секции перед chunk |
-| `pbOnGetValues` | При `return_values=1` у сниппета |
+| `pbOnBeforeRenderSection` | `resourceId`, `pipeline` с одной секцией, `index`, `options` |
+| `pbOnGetValues` | `resourceId`, `document`, `values` (`SectionValuesBag`). Сниппет при `return_values=1` и Public API, если в `include` есть `values` |
 
 Пример регистрации секции в плагине:
 

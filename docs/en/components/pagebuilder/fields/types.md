@@ -1,11 +1,11 @@
 ---
 title: "Field types reference"
-description: "All 51 PageBuilder inspector field types (Free and Pro)"
+description: "35 Free and 27 Pro field types in the PageBuilder inspector"
 ---
 
 # Field types reference
 
-31 types in Free and 20 in Pro. Pro is enabled with capability `advanced-fields`. Each type page has **Why this type**, **When to use**, **Tips**, **Similar types**, JSON **Schema**, a **Section data** block, a Fenom example, and **Common properties**.
+35 types in Free and 27 in Pro. Most Pro types are enabled by `advanced-fields`. Types `datasource`, `form`, `product`, and `products` also require capabilities `datasources`, `forms`, and `minishop3`. Every type has a page: schema JSON and a section data block.
 
 Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview](overview#obshchie-svoystva-polya).
 
@@ -16,6 +16,7 @@ Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview
 | type | Layer | Page | Output and example |
 | --- | --- | --- | --- |
 | `text` | Free | [text](text) | [JSON and Fenom](text#output-in-section-data) |
+| `email` | Free | [email](email) | [JSON and Fenom](email#output-in-section-data) |
 | `textarea` | Free | [textarea](textarea) | [JSON and Fenom](textarea#output-in-section-data) |
 | `richtext` | Free | [richtext](richtext) | [JSON and Fenom](richtext#output-in-section-data) |
 | `ace` | Free | [ace](ace) | [JSON and Fenom](ace#output-in-section-data) |
@@ -45,7 +46,10 @@ Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview
 | `xtype` | Free | [xtype](xtype) | [JSON and Fenom](xtype#output-in-section-data) |
 | `heading` | Free | [heading](heading) | [JSON and Fenom](heading#output-in-section-data) |
 | `repeater` | Free | [repeater](repeater) | [JSON and Fenom](repeater#output-in-section-data) |
-| `editorjs` | Free | [editorjs](editorjs) | [JSON and Fenom](editorjs#output-in-section-data) |
+| `tag` | Free | [tag](tag) | [JSON and Fenom](tag#output-in-section-data) |
+| `tv` | Free | [tv](tv) | [JSON and Fenom](tv#output-in-section-data) |
+| `chunk` | Free | [chunk](chunk) | [JSON and Fenom](chunk#output-in-section-data) |
+| `snippet` | Free | [snippet](snippet) | [JSON and Fenom](snippet#output-in-section-data) |
 
 ## Pro
 
@@ -58,7 +62,7 @@ Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview
 | `table` | Pro | [table](table) | [JSON and Fenom](table#output-in-section-data) |
 | `embeddedTable` | Pro | [embeddedTable](embeddedTable) | [JSON and Fenom](embeddedTable#output-in-section-data) |
 | `keyvalue` | Pro | [keyvalue](keyvalue) | [JSON and Fenom](keyvalue#output-in-section-data) |
-| `tag` | Pro | [tag](tag) | [JSON and Fenom](tag#output-in-section-data) |
+| `editorjs` | Pro, `advanced-fields` | [editorjs](editorjs) | A new field is created only in Pro. An already saved field still opens and writes |
 | `currency` | Pro | [currency](currency) | [JSON and Fenom](currency#output-in-section-data) |
 | `imask` | Pro | [imask](imask) | [JSON and Fenom](imask#output-in-section-data) |
 | `combo` | Pro | [combo](combo) | [JSON and Fenom](combo#output-in-section-data) |
@@ -67,10 +71,17 @@ Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview
 | `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | [JSON and Fenom](tablemulticombo#output-in-section-data) |
 | `fieldset` | Pro | [fieldset](fieldset) | [JSON and Fenom](fieldset#output-in-section-data) |
 | `dependent` | Pro | [dependent](dependent) | [JSON and Fenom](dependent#output-in-section-data) |
-| `tv` | Pro | [tv](tv) | [JSON and Fenom](tv#output-in-section-data) |
-| `chunk` | Pro | [chunk](chunk) | [JSON and Fenom](chunk#output-in-section-data) |
-| `snippet` | Pro | [snippet](snippet) | [JSON and Fenom](snippet#output-in-section-data) |
 | `jsongrid` | Pro | [jsongrid](jsongrid) | [JSON and Fenom](jsongrid#output-in-section-data) |
+| `daterange` | Pro, `advanced-fields` | [daterange](daterange) | [JSON and Fenom](daterange#output-in-section-data) |
+| `icon` | Pro, `advanced-fields` | [icon](icon) | [JSON and Fenom](icon#output-in-section-data) |
+| `link` | Pro, `advanced-fields` | [link](link) | [JSON and Fenom](link#output-in-section-data) <!-- markdownlint-disable-line MD059 --> |
+| `documents` | Pro, `advanced-fields` | [documents](documents) | [JSON and Fenom](documents#output-in-section-data) |
+| `address` | Pro, `advanced-fields` | [address](address) | [JSON and Fenom](address#output-in-section-data) |
+| `schedule` | Pro, `advanced-fields` | [schedule](schedule) | [JSON and Fenom](schedule#output-in-section-data) |
+| `datasource` | Pro, capability `datasources` | [datasource](datasource) | [JSON and Fenom](datasource#output-in-section-data) |
+| `form` | Pro, capability `forms` | [form](form) | [JSON and Fenom](form#output-in-section-data) |
+| `product` | Pro, capability `minishop3` | [product](product) | [JSON and Fenom](product#output-in-section-data) |
+| `products` | Pro, capability `minishop3` | [products](products) | [JSON and Fenom](products#output-in-section-data) |
 
 ## Composite scenarios
 

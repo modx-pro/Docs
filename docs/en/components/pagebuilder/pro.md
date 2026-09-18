@@ -5,7 +5,7 @@ description: "Pro flags, library pull, page templates, section journal, and conn
 
 # PageBuilder Pro
 
-The **pagebuilderpro** extra extends the free editor. On install it pulls **pagebuilder** core as a dependency. Current line: **1.0.10-beta**, requires `pagebuilder` ≥ **1.0.10**.
+The **pagebuilderpro** extra extends the free editor. On install it pulls **pagebuilder** core as a dependency. Current line: **1.0.12-beta**, requires `pagebuilder` ≥ **1.0.12**.
 
 ## Pro flags
 
@@ -21,9 +21,12 @@ The **pagebuilderpro** extra extends the free editor. On install it pulls **page
 | `conditions` | `settings.conditions` and evaluator (loggedIn, guest, context, GET, …) |
 | `presets` | **Examples** tab in catalog (hidden when `pagebuilder_catalog_examples_enabled = 0`) |
 | `i18n-copy` | Copy section between contexts |
-| `advanced-fields` | 20 field types in control panel (Pro group in list). Without Pro, 31 Free types |
+| `advanced-fields` | 27 field types in control panel (Pro group in list). Without Pro, 35 Free types |
 | `basket` | Global basket in control panel (`mgr/basket/*`) |
-| `api` | [Agent API](agent-api): snapshot and apply sections |
+| `utm` | New UTM rules and the registry. Already published rules still run in Free |
+| `datasources` | [Dynamic list](sections/dynamic_list) and [Filterable grid](sections/filterable_grid): providers `modx-resources`, `pagebuilder-tables`, `minishop3`, `mgr/datasource/*` |
+| `forms` | CMP Forms, [form builder](sections/form_builder), FetchIt, CSRF, honeypot. Email and webhook after commit. Submissions are not stored |
+| `api` | [Agent API](agent-api) and [REST v1](rest-api) tokens (`mgr/resttoken/*`, API tokens tab) |
 
 Module `pro-resource.min.js` on the resource tab adds **Inherit / Library** panel in the sidebar column. Section history opens from the row context menu.
 
@@ -33,10 +36,11 @@ Definitions live in `pagebuilderpro/sections/`, chunk name `pagebuilderpro_{key}
 
 | Group | Example keys |
 | --- | --- |
-| General | features, video, team, tabs |
-| Content and conversion | pricing_table, contact_form, quiz, spec_table |
-| Additional | map, contact_map, logos, blog_posts |
-| Commerce | products_grid, categories_row, product_spotlight |
+| General | features, team, tabs |
+| Content and conversion | pricing_table, contact_form, quiz, spec_table, how_it_works, case_study, newsletter, accordion |
+| Additional | map, contact_map, logos, blog_posts, timeline, portfolio, downloads, locations |
+| Datasources and forms | dynamic_list, filterable_grid, form_builder |
+| Commerce | products_grid, categories_row, product_spotlight, promo_banner |
 
 Storefront sections require **miniShop3** (`requires: ["pro", "minishop3"]`). Site catalog: [Pro sections](sections/).
 
@@ -79,6 +83,12 @@ Apply writes draft via `mgr/pagetemplate/apply` (non-empty draft needs `force`).
 
 **Examples** tab in add catalog: ready blocks with text (capability `presets`, `mgr/presets/list`). After insert you can edit fields. Hide without deleting JSON: `pagebuilder_catalog_examples_enabled` or toggle in CMP Blocks.
 
+## Constructor Bundle
+
+**Bundle** tab: export, dry-run (`create`, `update`, `conflict`), and import of UI types in one transaction through `UiSectionTypeService`. A conflict is not imported. Details: [Control panel](cmp#bundle).
+
+Bundle v1 must not include secrets, tokens, page content, or table rows. Forms and datasources are not part of this format.
+
 ## Connector actions (Pro)
 
 All requests are POST to `assets/components/pagebuilder/connector.php` with `action=mgr/...`, same as the Vue editor.
@@ -99,6 +109,10 @@ All requests are POST to `assets/components/pagebuilder/connector.php` with `act
 | `mgr/presets/list` | Example list for catalog tab |
 | `mgr/basket/*` | [Global basket in control panel](cmp#basket-pro) |
 | `mgr/api/page/snapshot` / `apply` | [Agent API](agent-api) |
+| `mgr/datasource/*` | Datasource preview |
+| `mgr/form/*` | CMP Forms |
+| `mgr/bundle/*` | Export, dry-run, and import of UI types |
+| `mgr/resttoken/*` | [REST API v1](rest-api) tokens |
 | `mgr/ms3/products/search` | Product search for commerce sections |
 | `mgr/ms3/categories/search` | miniShop3 category search (parent in grids and carousels) |
 

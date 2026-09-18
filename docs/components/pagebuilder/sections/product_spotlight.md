@@ -32,7 +32,9 @@ Hero магазина или «товар недели»: крупное фот�
 
 ## Relation на товар
 
-Поле **Товар**: relation на ресурс miniShop3. Остальные поля секции дополняют заголовок блока.
+Поиск товара идёт в `mgr/ms3/products/search`. Поле `product` обязательно. Тип помечен `"cacheable": false`.
+
+Перед chunk `ProSectionRenderSupport` пишет `product_id` и `pb_product_resource`. Chunk берёт `$pb_product_resource`. Если id нет, посетитель видит «Товар не выбран или недоступен.»
 
 ## Похожие секции
 

@@ -1,17 +1,13 @@
 ---
 title: "Видео"
-description: "Встраивание ролика по URL (YouTube, Vimeo, Rutube). Слой Pro."
+description: "Встраивание ролика по URL (YouTube, Vimeo, Rutube). Слой Free."
 ---
 
 # Видео
 
-Responsive iframe по ссылке на ролик. Поддерживаются популярные хостинги. URL разбирает `VideoEmbedResolver`.
+Responsive iframe по ссылке на ролик. Поддерживаются популярные хостинги. URL разбирает `VideoEmbedResolver` при сохранении. Секция входит в Free.
 
 <!-- ![Видео](/components/pagebuilder/screenshots/sections/video.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
 
 ## URL вместо embed-кода
 
@@ -107,7 +103,7 @@ Fenom chunk `pagebuilderpro_video`:
 
 ## JSON-определение
 
-`PageBuilderPro/core/components/pagebuilderpro/sections/video.json`
+`core/components/pagebuilder/sections/video.json`
 
 ## Связанные страницы
 

@@ -59,7 +59,7 @@ The user is not logged into the manager or lacks `pagebuilder_view` / `pagebuild
 
 ## Quiz or contact_form form unavailable
 
-You need **FetchIt**. Without it the section shows lexicon message `pagebuilder_fe_form_unavailable`. Email recipient: **Notify email** on the section or system setting `emailsender`.
+You need **FetchIt**. Without it the section shows lexicon message `pagebuilder_fe_form_unavailable`. Email recipient: **Notify email** on the section or system setting `emailsender`. Snippet `PageBuilderFetchIt` renders forms through Fenom.
 
 Setup: [quiz](sections/quiz), [contact_form](sections/contact_form).
 

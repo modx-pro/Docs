@@ -49,7 +49,7 @@ Resource table data lives in separate `pb_*` tables (Tables tab).
 
 ## PageBuilder Pro
 
-The `pagebuilderpro` extra adds shared blocks, section journal, catalog examples, breakpoint fields, 20 advanced field types, global basket in the control panel, and [Agent API](agent-api).
+The `pagebuilderpro` extra adds shared blocks, section journal, catalog examples, breakpoint fields, 27 advanced field types, global basket in the control panel, and [Agent API](agent-api).
 
 Details: [PageBuilder Pro](pro). Storefront sections require **miniShop3**.
 
@@ -68,14 +68,18 @@ Exception: **`pbOnBeforeTableGetList`** and **`pbOnTableRowSave`** are not creat
 
 ### Page lifecycle
 
-| Event | When |
-| --- | --- |
-| `pbOnBeforeSave` / `pbOnAfterSave` | Draft (`mode=draft`) |
-| `pbOnBeforePublish` / `pbOnAfterPublish` | Publish |
-| `pbOnBeforeUnpublish` / `pbOnAfterUnpublish` | Unpublish |
-| `pbOnBeforeTrash` / `pbOnAfterTrash` | Move sections to basket |
+| Event | When | Data |
+| --- | --- | --- |
+| `pbOnBeforeSave` | Before the draft is stored | `resourceId`, `document`, `documentBag`, `revision`, `userId`, `mode`=`draft`, `changes` |
+| `pbOnAfterSave` | After the draft is stored | `resourceId`, `record`, `userId`, `mode`=`draft`, `changes` |
+| `pbOnBeforePublish` | Before publish | `resourceId`, `document`, `revision`, `userId` |
+| `pbOnAfterPublish` | After publish | `resourceId`, `record`, `userId` |
+| `pbOnBeforeUnpublish` | Before unpublish | `resourceId`, `record`, `revision`, `userId` |
+| `pbOnAfterUnpublish` | After unpublish | `resourceId`, `record`, `userId` |
+| `pbOnBeforeTrash` | Before trash, only when sections were removed | `resourceId`, `sectionIds`, `document`, `userId` |
+| `pbOnAfterTrash` | After the draft save, same ids | `resourceId`, `sectionIds`, `record`, `userId` |
 
-In `pbOnBeforeSave` extensions can replace the document via `PageDocumentBag`. In `pbOnAfterSave` and similar, field `changes` contains `DocumentChangeSet` (ids of sections added, removed, trashed, restored, enabled, and disabled).
+`documentBag` is a `PageDocumentBag`. A listener replaces the document before `saveDraft`. `changes` is the `DocumentChangeSet` array: `addedSectionIds`, `removedSectionIds`, `trashedSectionIds`, `restoredSectionIds`, `updatedSectionIds`, `enabledSectionIds`, `disabledSectionIds`. Trash events run inside the same `saveDraft`. There is no separate trash action.
 
 ### Copy
 
@@ -86,12 +90,13 @@ In `pbOnBeforeSave` extensions can replace the document via `PageDocumentBag`. I
 
 ### Catalog and fields
 
-| Event | Purpose |
+| Event | Data |
 | --- | --- |
-| `pbOnBeforeGetList` / `pbOnAfterGetList` | Catalog list (`mgr/catalog/list`) |
-| `pbOnFieldValues` | `FieldValuesBag`: field value substitution (`mgr/field/options`, picker) |
-| `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: check depends (pro, minishop3) |
-| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible`, section visibility on frontend |
+| `pbOnBeforeGetList` | `resourceContext` |
+| `pbOnAfterGetList` | `resourceContext`, `items`, `result` (`FieldValuesBag`, key `items`) |
+| `pbOnFieldValues` | Catalog: `resourceContext`, `fieldValues`. In `mgr/field/options`: `field`, `fieldValues` |
+| `pbOnCheckSectionRequirement` | `requirement`, `result` (`FieldValuesBag`, key `satisfied`) |
+| `pbOnCheckSectionVisibility` | `section`, `conditions`, `result` (`FieldValuesBag`, key `visible`) |
 
 ### Resource table data
 
@@ -99,18 +104,18 @@ In `pbOnBeforeSave` extensions can replace the document via `PageDocumentBag`. I
 Events below are **not** registered on install. Add them under **System → Events** if your plugin should react.
 :::
 
-| Event | When |
+| Event | Data |
 | --- | --- |
-| `pbOnBeforeTableGetList` | Filter rows (`criteria` passed by reference) |
-| `pbOnTableRowSave` | Before row save (`data` passed by reference) |
+| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` by reference |
+| `pbOnTableRowSave` | `table`, `data` by reference, `row_id` |
 
 ### Frontend render {#frontend-render}
 
 | Event | Data |
 | --- | --- |
 | `pbOnBeforeRenderDocument` | `resourceId`, `document`, `pipeline`, `options` |
-| `pbOnBeforeRenderSection` | `index`, `pipeline`: mutate section before chunk |
-| `pbOnGetValues` | When snippet has `return_values=1` |
+| `pbOnBeforeRenderSection` | `resourceId`, `pipeline` with one section, `index`, `options` |
+| `pbOnGetValues` | `resourceId`, `document`, `values` (`SectionValuesBag`). The snippet when `return_values=1`, and Public API when `include` contains `values` |
 
 Example section registration in a plugin:
 

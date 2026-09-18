@@ -5,7 +5,7 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 
 # PageBuilder Pro
 
-Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.10-beta**, требует `pagebuilder` ≥ **1.0.10**.
+Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.12-beta**, требует `pagebuilder` ≥ **1.0.12**.
 
 ## Флаги Pro
 
@@ -21,9 +21,12 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 | `conditions` | `settings.conditions` и evaluator (loggedIn, guest, context, GET, …) |
 | `presets` | Вкладка **Примеры** в каталоге (скрывается при `pagebuilder_catalog_examples_enabled = 0`) |
 | `i18n-copy` | Копирование секции между контекстами |
-| `advanced-fields` | 20 типов полей в панели управления (группа Pro в списке). Без Pro доступны 31 тип Free |
+| `advanced-fields` | 27 типов полей в панели управления (группа Pro в списке). Без Pro доступны 35 типов Free |
 | `basket` | Глобальная корзина в панели управления (`mgr/basket/*`) |
-| `api` | [Agent API](agent-api): snapshot и apply секций |
+| `utm` | Новые UTM-правила и реестр. Уже опубликованные правила исполняет Free |
+| `datasources` | [Dynamic list](sections/dynamic_list) и [Filterable grid](sections/filterable_grid): провайдеры `modx-resources`, `pagebuilder-tables`, `minishop3`, `mgr/datasource/*` |
+| `forms` | CMP Forms, [form_builder](sections/form_builder), FetchIt, CSRF, honeypot. Письмо и webhook после commit. Submissions в БД не пишутся |
+| `api` | [Agent API](agent-api) и токены [REST v1](rest-api) (`mgr/resttoken/*`, вкладка API tokens) |
 
 Модуль `pro-resource.min.js` на вкладке ресурса добавляет в боковую колонку панель **Наследовать / Библиотека**. История секции открывается из контекстного меню строки.
 
@@ -33,10 +36,11 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 
 | Группа | Примеры ключей |
 | --- | --- |
-| Универсальные | features, video, team, tabs |
-| Контент и конверсия | pricing_table, contact_form, quiz, spec_table |
-| Дополнительные | map, contact_map, logos, blog_posts |
-| Коммерция | products_grid, categories_row, product_spotlight |
+| Универсальные | features, team, tabs |
+| Контент и конверсия | pricing_table, contact_form, quiz, spec_table, how_it_works, case_study, newsletter, accordion |
+| Дополнительные | map, contact_map, logos, blog_posts, timeline, portfolio, downloads, locations |
+| Datasources и формы | dynamic_list, filterable_grid, form_builder |
+| Коммерция | products_grid, categories_row, product_spotlight, promo_banner |
 
 Секции витрины требуют **miniShop3** (`requires: ["pro", "minishop3"]`). Каталог на сайте: [Секции Pro](sections/).
 
@@ -79,6 +83,12 @@ Apply пишет черновик через `mgr/pagetemplate/apply` (на не
 
 Вкладка **Примеры** в каталоге добавления: готовые блоки с текстом (capability `presets`, `mgr/presets/list`). После вставки поля можно править. Скрытие без удаления JSON: `pagebuilder_catalog_examples_enabled` или тумблер в CMP Blocks.
 
+## Constructor Bundle
+
+Вкладка **Bundle**: export, dry-run (`create`, `update`, `conflict`) и import UI-типов одной транзакцией через `UiSectionTypeService`. Conflict не импортируется. Подробнее: [Панель управления](cmp#bundle).
+
+В бандл v1 не кладите secrets, токены, содержимое страниц и строки таблиц. Формы и datasources в этот формат не входят.
+
 ## Действия connector (Pro)
 
 Все запросы идут POST на `assets/components/pagebuilder/connector.php` с `action=mgr/...`, как у Vue-редактора.
@@ -99,6 +109,10 @@ Apply пишет черновик через `mgr/pagetemplate/apply` (на не
 | `mgr/presets/list` | Список примеров для вкладки каталога |
 | `mgr/basket/*` | [Глобальная корзина в панели управления](cmp#basket-pro) |
 | `mgr/api/page/snapshot` / `apply` | [Agent API](agent-api) |
+| `mgr/datasource/*` | Превью datasource |
+| `mgr/form/*` | CMP Forms |
+| `mgr/bundle/*` | Export, dry-run и import UI-типов |
+| `mgr/resttoken/*` | Токены [REST API v1](rest-api) |
 | `mgr/ms3/products/search` | Поиск товаров для commerce-секций |
 | `mgr/ms3/categories/search` | Поиск категорий miniShop3 (parent в сетках и каруселях) |
 

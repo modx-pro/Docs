@@ -46,6 +46,8 @@ items: [
           { text: 'PageBuilderTableRows', link: 'snippets/PageBuilderTableRows' },
           { text: 'PageBuilderQuiz', link: 'snippets/PageBuilderQuiz' },
           { text: 'PageBuilderContactForm', link: 'snippets/PageBuilderContactForm' },
+          { text: 'PageBuilderFormBuilder', link: 'snippets/PageBuilderFormBuilder' },
+          { text: 'PageBuilderFetchIt', link: 'snippets/PageBuilderFetchIt' },
         ],
       },
     ],
@@ -56,6 +58,7 @@ items: [
     items: [
       { text: 'Pro overview', link: 'pro' },
       { text: 'Agent API', link: 'agent-api' },
+      { text: 'REST API v1', link: 'rest-api' },
     ],
   },
   {
@@ -79,11 +82,12 @@ items: [
           { text: 'button', link: 'fields/button' },
           { text: 'checkbox', link: 'fields/checkbox' },
           { text: 'checkboxgroup', link: 'fields/checkboxgroup' },
+          { text: 'chunk', link: 'fields/chunk' },
           { text: 'color', link: 'fields/color' },
           { text: 'colorpalette', link: 'fields/colorpalette' },
           { text: 'date', link: 'fields/date' },
           { text: 'datetime', link: 'fields/datetime' },
-          { text: 'editorjs', link: 'fields/editorjs' },
+          { text: 'email', link: 'fields/email' },
           { text: 'file', link: 'fields/file' },
           { text: 'heading', link: 'fields/heading' },
           { text: 'hidden', link: 'fields/hidden' },
@@ -98,10 +102,13 @@ items: [
           { text: 'richtext', link: 'fields/richtext' },
           { text: 'select', link: 'fields/select' },
           { text: 'slug', link: 'fields/slug' },
+          { text: 'snippet', link: 'fields/snippet' },
+          { text: 'tag', link: 'fields/tag' },
           { text: 'text', link: 'fields/text' },
           { text: 'textarea', link: 'fields/textarea' },
           { text: 'time', link: 'fields/time' },
           { text: 'toggle', link: 'fields/toggle' },
+          { text: 'tv', link: 'fields/tv' },
           { text: 'url', link: 'fields/url' },
           { text: 'video', link: 'fields/video' },
           { text: 'xtype', link: 'fields/xtype' },
@@ -112,26 +119,33 @@ items: [
         text: 'Pro',
         link: 'fields/types',
         items: [
-          { text: 'chunk', link: 'fields/chunk' },
+          { text: 'address', link: 'fields/address' },
           { text: 'combo', link: 'fields/combo' },
           { text: 'currency', link: 'fields/currency' },
+          { text: 'datasource', link: 'fields/datasource' },
+          { text: 'daterange', link: 'fields/daterange' },
           { text: 'dependent', link: 'fields/dependent' },
+          { text: 'documents', link: 'fields/documents' },
+          { text: 'editorjs', link: 'fields/editorjs' },
           { text: 'embeddedTable', link: 'fields/embeddedTable' },
           { text: 'fieldset', link: 'fields/fieldset' },
+          { text: 'form', link: 'fields/form' },
           { text: 'gallery', link: 'fields/gallery' },
+          { text: 'icon', link: 'fields/icon' },
           { text: 'imask', link: 'fields/imask' },
           { text: 'jsongrid', link: 'fields/jsongrid' },
           { text: 'keyvalue', link: 'fields/keyvalue' },
+          { text: 'link', link: 'fields/link' },
           { text: 'map', link: 'fields/map' },
           { text: 'multicombo', link: 'fields/multicombo' },
           { text: 'multirelation', link: 'fields/multirelation' },
+          { text: 'product', link: 'fields/product' },
+          { text: 'products', link: 'fields/products' },
           { text: 'relation', link: 'fields/relation' },
-          { text: 'snippet', link: 'fields/snippet' },
+          { text: 'schedule', link: 'fields/schedule' },
           { text: 'table', link: 'fields/table' },
           { text: 'tablecombo', link: 'fields/tablecombo' },
           { text: 'tablemulticombo', link: 'fields/tablemulticombo' },
-          { text: 'tag', link: 'fields/tag' },
-          { text: 'tv', link: 'fields/tv' },
         ],
       },
     ],
@@ -145,6 +159,7 @@ items: [
         text: 'Free',
         link: 'sections/',
         items: [
+          { text: 'Video', link: 'sections/video' },
           { text: 'FAQ', link: 'sections/faq' },
           { text: 'Gallery', link: 'sections/gallery' },
           { text: 'Image', link: 'sections/image' },
@@ -162,7 +177,20 @@ items: [
         text: 'Pro',
         link: 'sections/',
         items: [
-          { text: 'Video', link: 'sections/video' },
+          { text: 'Accordion', link: 'sections/accordion' },
+          { text: 'Addresses', link: 'sections/locations' },
+          { text: 'Before / After', link: 'sections/before_after' },
+          { text: 'Case study', link: 'sections/case_study' },
+          { text: 'Downloads', link: 'sections/downloads' },
+          { text: 'Dynamic list', link: 'sections/dynamic_list' },
+          { text: 'Filterable grid', link: 'sections/filterable_grid' },
+          { text: 'Form builder', link: 'sections/form_builder' },
+          { text: 'How it works', link: 'sections/how_it_works' },
+          { text: 'Media + text', link: 'sections/media_split' },
+          { text: 'Newsletter', link: 'sections/newsletter' },
+          { text: 'Notice', link: 'sections/notice' },
+          { text: 'Portfolio', link: 'sections/portfolio' },
+          { text: 'Quote', link: 'sections/quote' },
           { text: 'Tabs', link: 'sections/tabs' },
           { text: 'Blog posts', link: 'sections/blog_posts' },
           { text: 'Map', link: 'sections/map' },
@@ -186,8 +214,19 @@ items: [
           { text: 'Pricing table', link: 'sections/pricing_table' },
           { text: 'Product spotlight', link: 'sections/product_spotlight' },
           { text: 'Contact form', link: 'sections/contact_form' },
+          { text: 'Timeline', link: 'sections/timeline' },
         ],
       },
+    ],
+  },
+  {
+    text: 'Recipes',
+    link: 'recipes/',
+    items: [
+      { text: 'Overview', link: 'recipes/' },
+      { text: 'Landing', link: 'recipes/landing' },
+      { text: 'Custom section type', link: 'recipes/custom-section' },
+      { text: 'Bundle', link: 'recipes/bundle' },
     ],
   },
   { text: 'FAQ', link: 'faq' },
@@ -213,11 +252,11 @@ Autosave writes the draft only. **Save** on the MODX resource: validate → draf
 
 ### Free: sections and fields
 
-11 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. In the control panel (**Blocks**) filter types with **All / From package / Mine** chips, bulk-hide presets, and set custom catalog previews instead of schematic images. 31 field types in Free and 20 in Pro (51 total): text, richtext, repeater, migx, file, select, and more. With `pagebuilder_responsive_editor_enabled`, the inspector shows per-device value tabs.
+12 built-in types: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer, video. A new `gallery` is created in Pro; rendering stays in Free. In the control panel (**Blocks**) filter types with **All / From package / Mine** chips, bulk-hide presets, and set custom catalog previews instead of schematic images. 35 field types in Free and 27 in Pro (62 total): text, richtext, repeater, migx, file, select, and more. With `pagebuilder_responsive_editor_enabled`, the inspector shows per-device value tabs.
 
 ### PageBuilder Pro
 
-Global library (**Shared blocks**): pull from another page (Link | Copy), write-through for linked sections, page templates, section event journal (View/Restore). **Examples** tab in the catalog (Examples toggle / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) for scripts and agents. **Basket** in the control panel restores deleted sections and table rows across resources. Pro catalog: features, video, team, tabs, maps, [forms](sections/contact_form), [quiz](sections/quiz), miniShop3 commerce blocks. 20 more field types: gallery, map, relation, table, embeddedTable, and more.
+Global library (**Shared blocks**): pull from another page (Link | Copy), write-through for linked sections, page templates, section event journal (View/Restore). **Examples** tab in the catalog (Examples toggle / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) for scripts and agents. **Basket** in the control panel restores deleted sections and table rows across resources. Pro catalog: features, team, tabs, maps, [forms](sections/contact_form), [quiz](sections/quiz), miniShop3 commerce blocks. 27 more field types: gallery, map, relation, table, embeddedTable, editorjs, and more.
 
 ### Resource tables
 
@@ -249,8 +288,8 @@ With `collections_enabled`, resource tabs (sections, tables, iframe, and more) a
 
 | Extra | Version | Contents |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.10-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
-| `pagebuilderpro` | 1.0.10-beta | Pro: requires `pagebuilder` ≥ 1.0.10, quiz, library pull, page templates, section journal |
+| `pagebuilder` | 1.0.12-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
+| `pagebuilderpro` | 1.0.12-beta | Pro: requires `pagebuilder` ≥ 1.0.12, quiz, library pull, page templates, section journal |
 
 MODX namespace: `pagebuilder`.
 
@@ -271,8 +310,9 @@ MODX namespace: `pagebuilder`.
 | Pro, basket, examples | [PageBuilder Pro](pro) |
 | Scripts and agents | [Agent API](agent-api) |
 | Custom sections and extensions | [Developer](developer) |
-| 51 inspector field types | [Field type reference](fields/types) |
-| 35 built-in blocks | [Section catalog](sections/) |
+| Landing, custom type, Bundle | [Recipes](recipes/) |
+| 62 inspector field types | [Field type reference](fields/types) |
+| 50 built-in blocks | [Section catalog](sections/) |
 | Common issues | [FAQ](faq) |
 
 ## Entry points

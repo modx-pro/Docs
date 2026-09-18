@@ -32,7 +32,19 @@ description: "Витрина товаров категории miniShop3 чер�
 
 ## Категория и сортировка
 
-**Родительская категория**: msCategory. **Лимит** и **Сортировка** как в msProducts. Нужен установленный miniShop3.
+Поиск категории идёт в `mgr/ms3/categories/search`. Поле `parent` обязательно. Пустой `limit` в chunk становится 12. Тип помечен `"cacheable": false`.
+
+Перед chunk `ProSectionRenderSupport` пишет `parent_id` и `pb_parent_resource`. Значение `sortby` он переводит в `ms_sortby` и `ms_sortdir`:
+
+| `sortby` | `ms_sortby` | `ms_sortdir` |
+| --- | --- | --- |
+| `menuindex` | `msProduct.menuindex` | `ASC` |
+| `popular` | `Data.popular` | `DESC` |
+| `new` | `Data.new` | `DESC` |
+| `price_asc` | `Data.price` | `ASC` |
+| `price_desc` | `Data.price` | `DESC` |
+
+Неизвестное значение сортирует как `menuindex`. Пустая категория показывает «В этой категории пока нет товаров.»
 
 ## Похожие секции
 

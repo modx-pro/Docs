@@ -12,7 +12,7 @@ PageBuilder собирает страницу из блоков-секций, а
 | Роль | Что получает |
 | --- | --- |
 | **Редактор** | Drag-and-drop секций, инспектор полей, черновик, превью, публикация без правки шаблона |
-| **Начинающий разработчик** | 35 готовых секций, 51 тип полей, JSON-схема и Fenom в chunks без своего Vue |
+| **Начинающий разработчик** | 50 готовых секций, 62 типа полей, JSON-схема и Fenom в chunks без своего Vue |
 | **Опытный разработчик** | События, свои типы секций, табличные данные ресурса, UTM, интеграция с miniShop3 и Collections |
 
 ## Конструктор страницы
@@ -33,14 +33,14 @@ Autosave пишет черновик. Превью показывает его �
 
 | Слой | Секций | Примеры |
 | --- | --- | --- |
-| **Free** | 11 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [faq](sections/faq), [cta](sections/cta) |
-| **Pro** | 24 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [quiz](sections/quiz), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
+| **Free** | 12 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [video](sections/video), [faq](sections/faq), [cta](sections/cta) |
+| **Pro** | 38 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [quiz](sections/quiz), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
 
 У каждой секции своя страница в [каталоге](sections/): зачем блок, где применять, что заполнить в инспекторе, похожие секции.
 
-### 4. Инспектор и 51 тип полей
+### 4. Инспектор и 62 типа полей
 
-Схема полей задаётся в JSON секции: **31 тип Free** (text, repeater, migx, editorjs, image, multiselect, video…) и **20 Pro** (relation, gallery, combo, embeddedTable…). У каждого типа есть справочная страница с блоками «Зачем», «Когда использовать», «Советы».
+Схема полей задаётся в JSON секции: **35 типов Free** (text, repeater, migx, image, multiselect, video, tag…) и **27 Pro** (relation, gallery, combo, editorjs, embeddedTable…). У типов со страницей есть блоки «Зачем», «Когда использовать», «Советы».
 
 См. [Обзор полей](fields/overview) и [справочник типов](fields/types).
 
@@ -53,7 +53,7 @@ Autosave пишет черновик. Превью показывает его �
 - Шаблоны страниц: упорядоченные пустые секции (`pb_page_templates`)
 - Примеры: готовые блоки во вкладке каталога (`pagebuilder_catalog_examples_enabled`)
 - Поля по breakpoints: UI при `pagebuilder_responsive_editor_enabled`, вывод `pagebuilder_responsive_apply` (`manual` или `css`)
-- Расширенные поля: 20 типов в панели управления (relation, map, table, dependent и др., флаг `advanced-fields`)
+- Расширенные поля: 27 типов в панели управления (relation, map, table, editorjs, dependent и др., флаг `advanced-fields`)
 - Глобальная корзина в панели управления: восстановление и окончательное удаление секций и строк таблиц (флаг `basket`)
 
 Commerce-секции (`products_grid`, `curated_products`…) требуют [miniShop3](/components/minishop3/).

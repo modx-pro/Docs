@@ -12,7 +12,7 @@ PageBuilder builds a page from section blocks instead of the resource **Content*
 | Role | What you get |
 | --- | --- |
 | **Editor** | Drag-and-drop sections, field inspector, draft, preview, publish without editing the template |
-| **Junior developer** | 35 ready-made sections, 51 field types, JSON schema and Fenom in chunks without your own Vue |
+| **Junior developer** | 50 ready-made sections, 62 field types, JSON schema and Fenom in chunks without your own Vue |
 | **Senior developer** | Events, custom section types, resource table data, UTM, miniShop3 and Collections integration |
 
 ## Page builder
@@ -33,14 +33,14 @@ Storage details: [Workflow](workflow), [Developer → Data model](developer#data
 
 | Layer | Sections | Examples |
 | --- | --- | --- |
-| **Free** | 11 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [faq](sections/faq), [cta](sections/cta) |
-| **Pro** | 24 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [quiz](sections/quiz), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
+| **Free** | 12 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [video](sections/video), [faq](sections/faq), [cta](sections/cta) |
+| **Pro** | 38 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [quiz](sections/quiz), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
 
 Each section has its own page in the [catalog](sections/): why to use the block, where to place it, what to fill in the inspector, similar sections.
 
-### 4. Inspector and 51 field types
+### 4. Inspector and 62 field types
 
-The field schema lives in section JSON: **31 Free types** (text, repeater, migx, editorjs, image, multiselect, video…) and **20 Pro** (relation, gallery, combo, embeddedTable…). Each type has a reference page with "Why", "When to use", and "Tips".
+The field schema lives in section JSON: **35 Free types** (text, repeater, migx, image, multiselect, video, tag…) and **27 Pro** (relation, gallery, combo, editorjs, embeddedTable…). Types with a page have "Why", "When to use", and "Tips".
 
 See [Fields overview](fields/overview) and [type reference](fields/types).
 
@@ -53,7 +53,7 @@ The `pagebuilderpro` extra adds Pro flags and extends the editor:
 - Page templates: ordered empty sections (`pb_page_templates`)
 - Examples: ready-made blocks in the catalog tab (`pagebuilder_catalog_examples_enabled`)
 - Breakpoint field values: UI with `pagebuilder_responsive_editor_enabled`, output `pagebuilder_responsive_apply` (`manual` or `css`)
-- Advanced fields: 20 types in the control panel (Pro group in the list). Without Pro, 31 Free types are available
+- Advanced fields: 27 types in the control panel (relation, map, table, editorjs, dependent, and others, flag `advanced-fields`)
 - Global basket in the control panel: restore and permanent delete for sections and table rows (flag `basket`)
 
 Commerce sections (`products_grid`, `curated_products`…) require [miniShop3](/en/components/minishop3/).

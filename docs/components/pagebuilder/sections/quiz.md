@@ -5,7 +5,7 @@ description: "Многошаговый квиз с режимами lead, pricin
 
 # Квиз
 
-Многошаговый квиз: ответы, контакты, опциональный расчёт цены, письмо на email. Сниппет `PageBuilderQuiz` из шаблона не вызывайте: его вызывает FetchIt из чанка секции.
+Многошаговый квиз: ответы, контакты, опциональный расчёт цены, письмо на email. Сниппет `PageBuilderQuiz` из шаблона не вызывайте: его вызывает FetchIt из чанка секции. `PageBuilderFetchIt` рендерит форму через Fenom.
 
 <!-- ![Квиз](/components/pagebuilder/screenshots/sections/quiz.png) -->
 

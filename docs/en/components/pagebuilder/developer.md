@@ -11,7 +11,7 @@ For adding custom sections, extending Pro, or calling the connector from your co
 
 | Topic | Pages |
 | --- | --- |
-| Inspector fields | [Overview](fields/overview), [51 type reference](fields/types) |
+| Inspector fields | [Overview](fields/overview), [62 type reference](fields/types) |
 | Built-in sections | [Section catalog](sections/) |
 | Styles and BEM | [Design system](design-system) |
 | Headless JSON | [Public API](public-api) |
@@ -83,6 +83,14 @@ switch ($modx->event->name) {
 
 Build chunks per [design system](design-system): `pb-section` wrapper, escape text, partial `pagebuilder_partial_image`.
 
+### Categories, JSON, and cache
+
+A type can have several categories: a `categories` array and a compatible `category` field. CMP filters show the type under each selected slug.
+
+The JSON tab in the type editor edits the definition, including nested repeater fields, and applies the edit before save. In a repeater, **Copy item** deep-copies the row with a new `_rowId`.
+
+The type flag `cacheable` defaults to `true`. If the page has an enabled type with `cacheable: false`, the document HTML cache is not written. MODX **Clear Cache** resets the `pagebuilder` partition (`OnSiteRefresh`).
+
 ## Data model {#data-model}
 
 ### Tables
@@ -97,7 +105,7 @@ Build chunks per [design system](design-system): `pb-section` wrapper, escape te
 | `pb_basket_items` | Global basket index |
 | `pb_user_states` | Reserved: schema exists, not used in runtime yet |
 
-Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Table `pb_revisions` may exist in Pro schema, but page-level version UI is not in 1.0.10. Section journal: `pb_section_events` + `mgr/sectionevents/*`.
+Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Table `pb_revisions` may exist in the Pro schema, but there is no page-level version UI. Section journal: `pb_section_events` + `mgr/sectionevents/*`.
 
 ### Document JSON
 

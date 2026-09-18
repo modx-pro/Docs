@@ -16,12 +16,14 @@ The package ships output snippets and (in Pro) form handlers. Namespace for chun
 | [PageBuilderUtmUrl](PageBuilderUtmUrl) | UTM from control panel registry appended to arbitrary URL |
 | [PageBuilderTableRows](PageBuilderTableRows) | Resource table rows (JSON or chunk) |
 
-Pro, via FetchIt (do not call from template; section chunk calls FetchIt):
+Pro. Do not call these from a template. The section chunk calls [PageBuilderFetchIt](PageBuilderFetchIt):
 
 | Snippet | Purpose |
 | --- | --- |
 | [PageBuilderQuiz](PageBuilderQuiz) | Handler for [quiz](../sections/quiz) section |
 | [PageBuilderContactForm](PageBuilderContactForm) | Handler for [contact_form](../sections/contact_form) section |
+| [PageBuilderFormBuilder](PageBuilderFormBuilder) | Handler for [form_builder](../sections/form_builder) section |
+| [PageBuilderFetchIt](PageBuilderFetchIt) | Renders the form through Fenom. The chunk passes the handler in `snippet` |
 
 ## Order on a typical page
 
@@ -31,7 +33,7 @@ Pro, via FetchIt (do not call from template; section chunk calls FetchIt):
 
 For a block from another page (hero from home, FAQ from landing) use **PageBuilderResource**.
 
-Quiz and lead form: add `quiz` / `contact_form` sections and install **FetchIt**. Direct handler snippet calls in the template are not needed.
+Quiz, lead form, and form builder: add the `quiz`, `contact_form`, or `form_builder` section and install **FetchIt**. The chunk calls [PageBuilderFetchIt](PageBuilderFetchIt), not the handler directly. Direct template calls are not needed.
 
 ## MODX / Fenom correspondence
 

@@ -13,7 +13,7 @@ Validates fields, email via `modMail`, FetchIt JSON response (success / field er
 
 ## Where it is called
 
-Chunk `pagebuilderpro_contact_form` → `{'!FetchIt' | snippet}` with form `pagebuilderpro_contact_form_fields` and snippet `PageBuilderContactForm`.
+Chunk `pagebuilderpro_contact_form` calls [PageBuilderFetchIt](PageBuilderFetchIt) with `snippet` = `PageBuilderContactForm` and `form` = `pagebuilderpro_contact_form_fields`.
 
 ## Parameters
 

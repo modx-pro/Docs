@@ -11,7 +11,7 @@ description: Определение секций, модель данных, р�
 
 | Тема | Страницы |
 | --- | --- |
-| Поля инспектора | [Обзор](fields/overview), [справочник 51 типа](fields/types) |
+| Поля инспектора | [Обзор](fields/overview), [справочник 62 типов](fields/types) |
 | Встроенные секции | [Каталог секций](sections/) |
 | Стили и BEM | [Дизайн-система](design-system) |
 | Headless JSON | [Public API](public-api) |
@@ -83,6 +83,14 @@ switch ($modx->event->name) {
 
 Chunk стройте по [дизайн-системе](design-system): оболочка `pb-section`, escape текста, partial `pagebuilder_partial_image`.
 
+### Категории, JSON и кеш
+
+У типа может быть несколько категорий: массив `categories` и совместимое поле `category`. Фильтры CMP показывают тип в каждом выбранном slug.
+
+Во вкладке JSON редактора типа правят definition, включая nested fields у repeater, и применяют правку перед сохранением. В repeater кнопка **Копировать элемент** делает глубокую копию строки с новым `_rowId`.
+
+Флаг типа `cacheable` по умолчанию `true`. Если на странице есть включённый тип с `cacheable: false`, HTML-кеш документа не пишется. Кнопка MODX **Очистить кеш** сбрасывает partition `pagebuilder` (`OnSiteRefresh`).
+
 ## Модель данных {#model-dannyh}
 
 ### Таблицы
@@ -97,7 +105,7 @@ Chunk стройте по [дизайн-системе](design-system): обол
 | `pb_basket_items` | Индекс глобальной корзины |
 | `pb_user_states` | Зарезервировано: схема есть, в runtime пока не используется |
 
-Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Таблица `pb_revisions` может присутствовать в схеме Pro, но page-level UI версий страницы в 1.0.10 нет. Журнал секции: `pb_section_events` + `mgr/sectionevents/*`.
+Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Таблица `pb_revisions` может присутствовать в схеме Pro, но page-level UI версий страницы нет. Журнал секции: `pb_section_events` + `mgr/sectionevents/*`.
 
 ### JSON документа
 

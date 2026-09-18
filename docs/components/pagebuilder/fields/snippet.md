@@ -5,13 +5,13 @@ description: "Объект name выбранного modSnippet для вызо�
 
 # Поле snippet
 
-Версия: **Pro**.
+Версия: **Free**.
 
 <!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.png) -->
 
 ## Зачем этот тип
 
-Выбор имени сниппета для `[[!{$snippet.name}]]`. Pro: динамический hook processor в секции. Отделяет вызов сниппета от include chunk.
+Выбор имени сниппета для `[[!{$snippet.name}]]`. Динамический hook processor в секции. Отделяет вызов сниппета от include chunk.
 
 ## Когда использовать
 

@@ -25,6 +25,7 @@ Read-only JSON для витрины: [Public API](public-api). Agent API раб
 | Черновик, revision, схемы полей | `mgr/api/page/snapshot` |
 | Добавить или заменить блоки без полного document | `mgr/api/page/apply` |
 | Полный контроль над document и trash | `mgr/page/save` (Vue-редактор) |
+| Опубликованный JSON по Bearer | [REST API v1](rest-api) |
 
 ## Без Agent API
 

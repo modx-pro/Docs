@@ -5,13 +5,13 @@ description: "Объект id name caption выбранного MODX TV"
 
 # Поле tv
 
-Версия: **Pro**.
+Версия: **Free**.
 
 <!-- ![tv](/components/pagebuilder/screenshots/fields/tv.png) -->
 
 ## Зачем этот тип
 
-Выбор template variable для гибридного chunk: на фронте `[[*{$tv.name}]]`. Pro-мост между секцией PB и TV ресурса.
+Выбор template variable для гибридного chunk: на фронте `[[*{$tv.name}]]`. Мост между секцией PageBuilder и TV ресурса.
 
 ## Когда использовать
 

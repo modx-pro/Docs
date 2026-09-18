@@ -5,13 +5,13 @@ description: "Object name of selected modChunk for Fenom include"
 
 # Field chunk
 
-Version: **Pro**.
+Version: **Free**.
 
 <!-- ![chunk](/components/pagebuilder/screenshots/fields/chunk.png) -->
 
 ## Why this type
 
-Chunk picker by name without typing. `{include file="file:chunks/{$chunk.name}.tpl"}` pattern. Pro for dynamic partial sections.
+Chunk picker by name without typing. `{include file="file:chunks/{$chunk.name}.tpl"}` pattern. For sections with dynamic partials.
 
 ## When to use
 

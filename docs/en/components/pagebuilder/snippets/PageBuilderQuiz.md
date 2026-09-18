@@ -13,7 +13,7 @@ Validates answers and contacts, server-side total in `pricing` mode, email via `
 
 ## Where it is called
 
-Chunk `pagebuilderpro_quiz` → `{'!FetchIt' | snippet}` with form `pagebuilderpro_quiz_form` and snippet `PageBuilderQuiz`.
+Chunk `pagebuilderpro_quiz` calls [PageBuilderFetchIt](PageBuilderFetchIt) with `snippet` = `PageBuilderQuiz` and `form` = `pagebuilderpro_quiz_form`.
 
 ## Parameters
 

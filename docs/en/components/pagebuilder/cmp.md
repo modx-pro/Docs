@@ -1,13 +1,13 @@
 ---
 title: PageBuilder control panel
-description: Blocks, UTM, Collections, and global basket in the PageBuilder control panel
+description: "Blocks, UTM, Collections, Forms, Bundle, API tokens, and the PageBuilder basket"
 ---
 
 # PageBuilder control panel
 
 **Components → PageBuilder** (`SectionTypesManager.vue`). Permission **pagebuilder_manage_types** is required for the Blocks tab. Other control panel tabs use standard manager permissions.
 
-Four site-level tabs plus Pro registries, not a single resource:
+Four Free tabs plus Pro registries:
 
 | Tab | Layer | Purpose |
 | --- | --- | --- |
@@ -16,6 +16,9 @@ Four site-level tabs plus Pro registries, not a single resource:
 | **Collections** | Free | Resource form tab sets by template (`pb_collections`) |
 | **Basket** | Pro | Global basket for deleted sections and table rows |
 | **Page templates** | Pro | Empty section skeletons (`pb_page_templates`), capability `page-templates` |
+| **Forms** | Pro | Schemas for [form builder](sections/form_builder), capability `forms` |
+| **Bundle** | Pro | Export and import of UI section types |
+| **API tokens** | Pro | Bearer tokens for [REST API v1](rest-api) |
 
 ![PageBuilder control panel](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
@@ -96,6 +99,29 @@ Index of sections from `draft.trash[]` and table rows on delete. Sync on `pbOnAf
 | Control panel → **Basket** | Cross-resource: list, restore to source resource, permanent delete (Pro) |
 
 Restore from the control panel inserts the section at `settings._trashIndex`, same as the page basket.
+
+## Forms {#forms}
+
+Capability `forms`. On this tab you create a schema with a key and fields. On the page, [form builder](sections/form_builder) selects that key. Submit goes through FetchIt and the `PageBuilderFormBuilder` snippet.
+
+The server checks CSRF and the `nospam` honeypot. Email and webhook leave synchronously after commit, in the same HTTP request. Submissions are not stored. Form v1 does not accept a file. Processors: `mgr/form/*`.
+
+## Bundle {#bundle}
+
+Export UI section types, dry-run, and import in one transaction through `UiSectionTypeService`.
+
+1. On the source site open **Bundle** and export JSON.
+2. On the target site paste the JSON and run dry-run.
+3. The plan shows `create`, `update`, or `conflict`. A conflict is not imported.
+4. Import applies create and update.
+
+Bundle v1 does not include secrets, tokens, page content, table rows, forms, or datasources. Processors: `mgr/bundle/*`.
+
+## API tokens {#api-tokens}
+
+Capability `api`. A new token gets a name and scopes `pages.read` and `catalog.read`. The secret is shown once. System setting `pagebuilder_rest_tokens` keeps `prefix` and the hash.
+
+A revoked token returns `401`. Enable the transport with `pagebuilder_rest_api_enabled`. Routes: [REST API v1](rest-api). Processors: `mgr/resttoken/*`.
 
 ## Related pages
 
