@@ -9,6 +9,8 @@ Version: **Pro**, capability `minishop3`.
 
 The inspector accepts ids separated by commas. Section data stores a string array. Without miniShop3 the type is not offered for a new field.
 
+Built-in shop sections, for example [comparison](../sections/product_comparison), store products in [multirelation](multirelation). This type does not put a price or an add-to-cart button into the chunk.
+
 ## Schema
 
 ```json

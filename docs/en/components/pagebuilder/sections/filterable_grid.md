@@ -13,7 +13,9 @@ Section `filterable_grid` shows rows with filters in the URL. Chunk: `pagebuilde
 
 Pagination in the chunk uses `range` and `foreach`. Fenom `{for}` is not supported here.
 
-Query operators match the [dynamic list](dynamic_list): `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. Keys `sql`, `php`, `snippet`, and `class` are rejected. Page size is at most 100.
+Query operators match the [dynamic list](dynamic_list): `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `contains` is case-insensitive, including Cyrillic. Keys `sql`, `php`, `snippet`, and `class` are rejected. Page size is at most 100.
+
+Filter labels come from the table schema column `label`, not from the field key. An `image` column is excluded from filters and sorting. After submit the form stays on `#pb-{id}`. A page number past the last page is clamped to the last page.
 
 The section is part of the page context so the HTML cache does not freeze the filter.
 

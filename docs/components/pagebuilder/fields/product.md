@@ -9,6 +9,8 @@ description: "ID одного товара miniShop3. Capability minishop3. Сл
 
 Строка с ID товара. Без miniShop3 тип в инспекторе нового поля не предлагается.
 
+Готовые секции магазина берут товар через [relation](relation) и [multirelation](multirelation), не через этот тип. Чанк сам цену и кнопку корзины не получает. Для карточки miniShop3 используйте [сетку товаров](../sections/products_grid) или [product spotlight](../sections/product_spotlight).
+
 ## Настройка
 
 ```json

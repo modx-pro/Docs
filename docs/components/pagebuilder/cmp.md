@@ -7,13 +7,13 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens и корзи�
 
 **Компоненты → PageBuilder** (`SectionTypesManager.vue`). Право **pagebuilder_manage_types** нужно для вкладки Blocks. Остальные вкладки панели управления доступны по стандартным правам менеджера.
 
-Четыре вкладки Free плюс реестры Pro:
+Вкладка **Blocks** есть в Free. Реестр UTM, Collections и остальные вкладки требуют PageBuilder Pro.
 
 | Вкладка | Слой | Назначение |
 | --- | --- | --- |
 | **Blocks** | Free | UI-конструктор типов секций (`pb_section_types`) |
-| **UTM** | Free | Глобальный реестр UTM-параметров (`pb_utm_params`) |
-| **Collections** | Free | Наборы вкладок на форме ресурса по шаблону (`pb_collections`) |
+| **UTM** | Pro | Глобальный реестр UTM-параметров (`pb_utm_params`), capability `utm` |
+| **Collections** | Pro | Наборы вкладок на форме ресурса по шаблону (`pb_collections`), capability `collections` |
 | **Basket** | Pro | Глобальная корзина удалённых секций и строк таблиц |
 | **Шаблоны страниц** | Pro | Скелеты пустых секций (`pb_page_templates`), capability `page-templates` |
 | **Forms** | Pro | Схемы для [form_builder](sections/form_builder), capability `forms` |
@@ -57,13 +57,15 @@ Connector `mgr/sectiontype/remove` принимает POST-параметр `lif
 
 ## UTM
 
-Параметры для плейсхолдеров <code v-pre>{{utm:key}}</code> и значений по умолчанию. Правила **видимости** секций задаются в диалоге **Видимость** инспектора ресурса (`settings.utm`), если включена `pagebuilder_inspector_visibility_enabled`. Не на этой вкладке.
+Нужна capability `utm`. Параметры для плейсхолдеров <code v-pre>{{utm:key}}</code> и значений по умолчанию. Правила **видимости** секций задаются в диалоге **Видимость** инспектора ресурса (`settings.utm`), если включена `pagebuilder_inspector_visibility_enabled`. Не на этой вкладке. Уже опубликованные правила на сайте исполняет Free. <!-- markdownlint-disable-line MD033 -->
 
 На фронте сессия UTM: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) до `PageBuilder`. Ссылки: [Сниппеты](snippets/).
 
 ## Collections
 
-Collection привязывается к `template_ids` (пустой список означает все шаблоны). При `pagebuilder_collections_enabled = 1` старые вкладки `resource_tab_enabled` и `resource_tables_tab_enabled` заменяются динамическим набором из панели управления.
+Нужны PageBuilder Pro и capability `collections`. Без capability вкладки нет, даже если `pagebuilder_collections_enabled = 1`.
+
+Collection привязывается к `template_ids` (пустой список означает все шаблоны). При включённой настройке старые вкладки `resource_tab_enabled` и `resource_tables_tab_enabled` заменяются динамическим набором из панели управления.
 
 ### Типы вкладок (`tab_type`)
 
@@ -90,7 +92,7 @@ CRUD коллекций и разрешение вкладок для шабло
 | --- | --- |
 | `mgr/basket/list` | Список (`item_type`, pagination) |
 | `mgr/basket/restore` | Вернуть секцию или строку таблицы |
-| `mgr/basket/purge` | Удалить запись из индекса |
+| `mgr/basket/purge` | Убрать секцию из `draft.trash` и строку индекса. `published_json` не меняется |
 | `mgr/basket/restoreall` / `purgeall` | Массовые операции по массиву `ids` |
 
 | Где | Что делает |
@@ -98,7 +100,7 @@ CRUD коллекций и разрешение вкладок для шабло
 | Редактор ресурса → **Корзина** | На странице: восстановление и окончательное удаление в черновике (Free) |
 | Панель управления → **Корзина** | Между ресурсами: список, восстановление в исходный ресурс, окончательное удаление (Pro) |
 
-Восстановление из панели управления вставляет секцию на позицию `settings._trashIndex`, как в корзине на странице.
+Восстановление из панели управления вставляет секцию на позицию `settings._trashIndex`, как в корзине на странице. После purge секция пропадает с сайта только когда на ресурсе нажмут **Сохранить**.
 
 ## Forms {#forms}
 

@@ -9,6 +9,8 @@ Version: **Pro**, capability `minishop3`.
 
 A string with the product id. Without miniShop3 the type is not offered for a new field.
 
+Built-in shop sections store the product in [relation](relation) and [multirelation](multirelation), not in this type. The chunk does not receive a price or an add-to-cart button. For a miniShop3 card use [products grid](../sections/products_grid) or [product spotlight](../sections/product_spotlight).
+
 ## Schema
 
 ```json

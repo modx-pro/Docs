@@ -256,7 +256,7 @@ Autosave пишет только черновик. **Сохранить** рес
 
 ### PageBuilder Pro
 
-Глобальная библиотека (**Общие блоки**): pull с другой страницы (Связать | Копировать), write-through linked-секций, шаблоны страниц, журнал событий секции (View/Restore). Вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами. Каталог Pro: features, video, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), commerce-блоки miniShop3. Ещё 27 типов полей: gallery, map, relation, table, embeddedTable, editorjs и др.
+Глобальная библиотека (**Общие блоки**): pull с другой страницы (Связать | Копировать), write-through linked-секций, шаблоны страниц, журнал событий секции (View/Restore). Вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами. Каталог Pro: features, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), commerce-блоки miniShop3. Секция `video` создаётся в Free. Ещё 27 типов полей: gallery, map, relation, table, embeddedTable, editorjs и др.
 
 ### Таблицы на ресурсе
 
@@ -264,11 +264,11 @@ Autosave пишет только черновик. **Сохранить** рес
 
 ### UTM и контексты
 
-В панели управления задаёте реестр UTM-меток. Правила видимости (контекст, UTM, Pro conditions) открываются кнопкой **Видимость** в инспекторе, если включена `pagebuilder_inspector_visibility_enabled`. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` помогают на лендингах. В полях доступен плейсхолдер <code v-pre>{{utm:key}}</code>.
+Реестр UTM-меток в панели управления требует capability `utm` (Pro). Уже опубликованные правила исполняет Free. Правила видимости (контекст, UTM, Pro conditions) открываются кнопкой **Видимость** в инспекторе, если включена `pagebuilder_inspector_visibility_enabled`. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` помогают на лендингах. В полях доступен плейсхолдер <code v-pre>{{utm:key}}</code>. <!-- markdownlint-disable-line MD033 -->
 
 ### Collections и панель управления
 
-При `collections_enabled` вкладки ресурса (секции, таблицы, iframe и др.) настраиваются в панели управления. Раздел **Компоненты → PageBuilder** ведёт каталог ресурсов с секциями и типами секций.
+Нужны PageBuilder Pro и capability `collections`. При `collections_enabled` вкладки ресурса (секции, таблицы, iframe и др.) настраиваются в панели управления. Без capability вкладки нет. Раздел **Компоненты → PageBuilder** ведёт каталог ресурсов с секциями и типами секций.
 
 ### Сниппеты, Public API и события
 
@@ -288,8 +288,8 @@ Autosave пишет только черновик. **Сохранить** рес
 
 | Дополнение | Версия | Содержимое |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.12-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
-| `pagebuilderpro` | 1.0.12-beta | Pro: зависит от `pagebuilder` ≥ 1.0.12, quiz, library pull, шаблоны страниц, журнал секций |
+| `pagebuilder` | 1.0.13-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
+| `pagebuilderpro` | 1.0.13-beta | Pro: зависит от `pagebuilder` ≥ 1.0.13, quiz, library pull, шаблоны страниц, журнал секций |
 
 Namespace в MODX: `pagebuilder`.
 

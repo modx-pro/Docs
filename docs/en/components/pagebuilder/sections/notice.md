@@ -7,7 +7,7 @@ description: "A short message with tone info, success, warning, or danger. Pro l
 
 Section `notice` shows a short message. Chunk: `pagebuilderpro_notice`. Requires PageBuilder Pro.
 
-`tone`: `info`, `success`, `warning`, `danger`.
+`tone`: `info`, `success`, `warning`, `danger`. The tone background sits on the text block (`width: fit-content`), not across the whole section.
 
 ## Where it fits
 

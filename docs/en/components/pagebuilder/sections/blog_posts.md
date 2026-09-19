@@ -75,11 +75,11 @@ Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle.
 
 ### Sort (`sortby`)
 
-Type [select](../fields/select#output-in-section-data). Optional. Dropdown with predefined options.
+Type [select](../fields/select#output-in-section-data). Optional. `publishedon_desc` (newest first), `publishedon_asc` (oldest first), `menuindex` (menu order).
 
 ### Layout (`layout`)
 
-Type [select](../fields/select#output-in-section-data). Optional. Dropdown with predefined options.
+Type [select](../fields/select#output-in-section-data). Optional. `grid`, `featured-first`, `compact-list`.
 
 ## Site output
 

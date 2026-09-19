@@ -75,11 +75,11 @@ description: "Список дочерних ресурсов родителя ч
 
 ### Сортировка (`sortby`)
 
-Тип [select](../fields/select#vyvod-v-section-data). Необязательное. Выпадающий список с заранее заданными вариантами.
+Тип [select](../fields/select#vyvod-v-section-data). Необязательное. `publishedon_desc` (новые сверху), `publishedon_asc` (старые сверху), `menuindex` (порядок в меню).
 
 ### Layout (`layout`)
 
-Тип [select](../fields/select#vyvod-v-section-data). Необязательное. Выпадающий список с заранее заданными вариантами.
+Тип [select](../fields/select#vyvod-v-section-data). Необязательное. `grid`, `featured-first`, `compact-list`.
 
 ## Что видит посетитель
 

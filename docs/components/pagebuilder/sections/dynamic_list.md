@@ -15,7 +15,7 @@ description: "Список записей провайдера datasource. Capab
 
 ## Запрос
 
-Запрос принимает только объявленные поля и операторы `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. Ключи `sql`, `php`, `snippet` и `class` отклоняет `QueryPolicy`. Лимит больше 100 не проходит.
+Запрос принимает только объявленные поля и операторы `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `contains` не различает регистр, включая кириллицу. Ключи `sql`, `php`, `snippet` и `class` отклоняет `QueryPolicy`. Лимит больше 100 не проходит.
 
 ## Поля
 
@@ -27,7 +27,7 @@ description: "Список записей провайдера datasource. Capab
 
 ## Рендер
 
-`ProSectionRenderSupport` наполняет `items`. Подпись строки берётся по цепочке `pagetitle`, `title`, `name`, `label`, `id`. Ссылка есть только при `uri`. Иначе `<span>`.
+`ProSectionRenderSupport` наполняет `items`. Подпись строки берётся по цепочке `pagetitle`, `title`, `name`, `label`, `id`. Ссылка есть только при `uri`. Иначе `<span>`. Если у записи есть `image`, карточка его показывает.
 
 Ошибка запроса пишется в `query_error`. Без capability `datasources` текст `Datasources are not available.` Пустой провайдер: `Datasource is not configured.` Пустой результат: лексикон `pagebuilder_fe_list_empty`, запасная строка `No items.`
 

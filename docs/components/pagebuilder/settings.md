@@ -60,10 +60,10 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `pagebuilder_collections_enabled` | boolean | `0` | Динамический набор вкладок из Collections в панели управления |
+| `pagebuilder_collections_enabled` | boolean | `0` | Динамический набор вкладок из Collections. Нужна capability `collections` (Pro). Без неё вкладки нет |
 | `pagebuilder_collections_modx_bridge_enabled` | boolean | `0` | Тип вкладки `modx_collections` |
 
-Включайте только если используете Collections и настроили конфигурацию вкладок в панели управления PageBuilder. Подробнее: [Панель управления → Collections](cmp#collections).
+Включайте только с PageBuilder Pro, если настроили вкладки в панели управления. Подробнее: [Панель управления → Collections](cmp#collections).
 
 ## Табличные данные ресурса
 

@@ -256,7 +256,7 @@ Autosave writes the draft only. **Save** on the MODX resource: validate → draf
 
 ### PageBuilder Pro
 
-Global library (**Shared blocks**): pull from another page (Link | Copy), write-through for linked sections, page templates, section event journal (View/Restore). **Examples** tab in the catalog (Examples toggle / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) for scripts and agents. **Basket** in the control panel restores deleted sections and table rows across resources. Pro catalog: features, team, tabs, maps, [forms](sections/contact_form), [quiz](sections/quiz), miniShop3 commerce blocks. 27 more field types: gallery, map, relation, table, embeddedTable, editorjs, and more.
+Global library (**Shared blocks**): pull from another page (Link | Copy), write-through for linked sections, page templates, section event journal (View/Restore). **Examples** tab in the catalog (Examples toggle / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) for scripts and agents. **Basket** in the control panel restores deleted sections and table rows across resources. Pro catalog: features, team, tabs, maps, [forms](sections/contact_form), [quiz](sections/quiz), miniShop3 commerce blocks. The `video` section is created in Free. 27 more field types: gallery, map, relation, table, embeddedTable, editorjs, and more.
 
 ### Resource tables
 
@@ -264,11 +264,11 @@ The **Tables** tab stores large row sets in the database: filters, CSV/JSON impo
 
 ### UTM and contexts
 
-Set the UTM registry in the control panel. Visibility rules (context, UTM, Pro conditions) open via **Visibility** in the inspector when `pagebuilder_inspector_visibility_enabled` is on. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` help on landing pages. Fields support the <code v-pre>{{utm:key}}</code> placeholder.
+The UTM registry in the control panel requires capability `utm` (Pro). Already published rules still run in Free. Visibility rules (context, UTM, Pro conditions) open via **Visibility** in the inspector when `pagebuilder_inspector_visibility_enabled` is on. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` help on landing pages. Fields support the <code v-pre>{{utm:key}}</code> placeholder. <!-- markdownlint-disable-line MD033 -->
 
 ### Collections and control panel
 
-With `collections_enabled`, resource tabs (sections, tables, iframe, and more) are configured in the control panel. **Components → PageBuilder** lists resources with sections and section types.
+Requires PageBuilder Pro and capability `collections`. With `collections_enabled`, resource tabs (sections, tables, iframe, and more) are configured in the control panel. Without the capability the tabs are absent. **Components → PageBuilder** lists resources with sections and section types.
 
 ### Snippets, Public API, and events
 
@@ -288,8 +288,8 @@ With `collections_enabled`, resource tabs (sections, tables, iframe, and more) a
 
 | Extra | Version | Contents |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.12-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
-| `pagebuilderpro` | 1.0.12-beta | Pro: requires `pagebuilder` ≥ 1.0.12, quiz, library pull, page templates, section journal |
+| `pagebuilder` | 1.0.13-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
+| `pagebuilderpro` | 1.0.13-beta | Pro: requires `pagebuilder` ≥ 1.0.13, quiz, library pull, page templates, section journal |
 
 MODX namespace: `pagebuilder`.
 

@@ -7,13 +7,13 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens, and the PageB
 
 **Components → PageBuilder** (`SectionTypesManager.vue`). Permission **pagebuilder_manage_types** is required for the Blocks tab. Other control panel tabs use standard manager permissions.
 
-Four Free tabs plus Pro registries:
+The **Blocks** tab is in Free. The UTM registry, Collections, and the other tabs require PageBuilder Pro.
 
 | Tab | Layer | Purpose |
 | --- | --- | --- |
 | **Blocks** | Free | UI builder for section types (`pb_section_types`) |
-| **UTM** | Free | Global UTM parameter registry (`pb_utm_params`) |
-| **Collections** | Free | Resource form tab sets by template (`pb_collections`) |
+| **UTM** | Pro | Global UTM parameter registry (`pb_utm_params`), capability `utm` |
+| **Collections** | Pro | Resource form tab sets by template (`pb_collections`), capability `collections` |
 | **Basket** | Pro | Global basket for deleted sections and table rows |
 | **Page templates** | Pro | Empty section skeletons (`pb_page_templates`), capability `page-templates` |
 | **Forms** | Pro | Schemas for [form builder](sections/form_builder), capability `forms` |
@@ -57,13 +57,15 @@ JSON schema details: [Developer → Section definition](developer#section-defini
 
 ## UTM
 
-Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. Section **visibility** rules are set in the **Visibility** dialog on the resource inspector (`settings.utm`) when `pagebuilder_inspector_visibility_enabled` is on. Not on this tab.
+Requires capability `utm`. Parameters for <code v-pre>{{utm:key}}</code> placeholders and default values. Section **visibility** rules are set in the **Visibility** dialog on the resource inspector (`settings.utm`) when `pagebuilder_inspector_visibility_enabled` is on. Not on this tab. Already published visibility rules still run in Free. <!-- markdownlint-disable-line MD033 -->
 
 Frontend UTM session: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) before `PageBuilder`. Links: [Snippets](snippets/).
 
 ## Collections {#collections}
 
-A collection binds to `template_ids` (empty list means all templates). With `pagebuilder_collections_enabled = 1`, legacy tabs `resource_tab_enabled` and `resource_tables_tab_enabled` are replaced by the dynamic set from the control panel.
+Requires PageBuilder Pro and capability `collections`. Without the capability the tabs are absent even when `pagebuilder_collections_enabled = 1`.
+
+A collection binds to `template_ids` (empty list means all templates). With the setting on, legacy tabs `resource_tab_enabled` and `resource_tables_tab_enabled` are replaced by the dynamic set from the control panel.
 
 ### Tab types (`tab_type`)
 
@@ -90,7 +92,7 @@ Index of sections from `draft.trash[]` and table rows on delete. Sync on `pbOnAf
 | --- | --- |
 | `mgr/basket/list` | List (`item_type`, pagination) |
 | `mgr/basket/restore` | Restore section or table row |
-| `mgr/basket/purge` | Remove entry from index |
+| `mgr/basket/purge` | Remove the section from `draft.trash` and the index row. `published_json` is unchanged |
 | `mgr/basket/restoreall` / `purgeall` | Bulk ops on array `ids` |
 
 | Where | What it does |
@@ -98,7 +100,7 @@ Index of sections from `draft.trash[]` and table rows on delete. Sync on `pbOnAf
 | Resource editor → **Basket** | On page: restore and permanent delete in draft (Free) |
 | Control panel → **Basket** | Cross-resource: list, restore to source resource, permanent delete (Pro) |
 
-Restore from the control panel inserts the section at `settings._trashIndex`, same as the page basket.
+Restore from the control panel inserts the section at `settings._trashIndex`, same as the page basket. After purge the section leaves the site only when you press **Save** on the resource.
 
 ## Forms {#forms}
 
