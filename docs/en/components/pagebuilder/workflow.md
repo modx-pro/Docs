@@ -115,11 +115,11 @@ Restore from the control panel inserts the section at `settings._trashIndex`, sa
 
 ## Copy between resources
 
-**Copy sections** calls connector `mgr/copy/sections`. Specify the source resource ID. Needs `save` on both resources and `pagebuilder_save` (or equivalent via policy).
+**Copy sections** calls connector `mgr/copy/sections`. Specify the source resource ID. Needs `view` on the source, `save` on the target, and the `pagebuilder_save` permission.
 
 Events: `pbOnBeforeCopySections`, `pbOnAfterCopySections`.
 
-Copy moves selected blocks into the current resource draft. Site changes appear after Save resource on the target page.
+The whole source draft is appended to the end of the current page draft. The source is not changed. The site updates after **Save** on the target page.
 
 In Pro additionally: **Pull from another page** (`mgr/library/pull`) in Link or Copy mode. See [PageBuilder Pro](pro#shared-blocks).
 

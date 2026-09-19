@@ -5,7 +5,7 @@ description: "Pro flags, library pull, page templates, section journal, and conn
 
 # PageBuilder Pro
 
-The **pagebuilderpro** extra extends the free editor. On install it pulls **pagebuilder** core as a dependency. Current line: **1.0.12-beta**, requires `pagebuilder` ≥ **1.0.12**.
+The **pagebuilderpro** extra extends the free editor. On install it pulls **pagebuilder** core as a dependency. Current line: **1.0.13-beta**, requires `pagebuilder` ≥ **1.0.13**.
 
 ## Pro flags
 
@@ -24,6 +24,7 @@ The **pagebuilderpro** extra extends the free editor. On install it pulls **page
 | `advanced-fields` | 27 field types in control panel (Pro group in list). Without Pro, 35 Free types |
 | `basket` | Global basket in control panel (`mgr/basket/*`) |
 | `utm` | New UTM rules and the registry. Already published rules still run in Free |
+| `collections` | Resource tabs from the control panel (`pb_collections`, `mgr/collection/*`). Also needs `pagebuilder_collections_enabled` |
 | `datasources` | [Dynamic list](sections/dynamic_list) and [Filterable grid](sections/filterable_grid): providers `modx-resources`, `pagebuilder-tables`, `minishop3`, `mgr/datasource/*` |
 | `forms` | CMP Forms, [form builder](sections/form_builder), FetchIt, CSRF, honeypot. Email and webhook after commit. Submissions are not stored |
 | `api` | [Agent API](agent-api) and [REST v1](rest-api) tokens (`mgr/resttoken/*`, API tokens tab) |
@@ -82,6 +83,24 @@ Apply writes draft via `mgr/pagetemplate/apply` (non-empty draft needs `force`).
 ## Examples
 
 **Examples** tab in add catalog: ready blocks with text (capability `presets`, `mgr/presets/list`). After insert you can edit fields. Hide without deleting JSON: `pagebuilder_catalog_examples_enabled` or toggle in CMP Blocks.
+
+The package ships 11 presets (`pagebuilderpro/sections/presets/`):
+
+| Key | Section type |
+| --- | --- |
+| `hero-centered` | `hero` |
+| `cta-banner` | `cta` |
+| `stats-launch` | `stats` |
+| `features-grid` | `features` |
+| `contact-split` | `contact_map` |
+| `blog-featured-first` | `blog_posts` |
+| `blog-compact-list` | `blog_posts` |
+| `pricing-saas` | `pricing_table` |
+| `pricing-utm` | `data_table` |
+| `products-hero` | `promo_banner` |
+| `quiz-kitchen` | `quiz` |
+
+`pricing-utm` is a `data_table`, not a pricing grid. `products-hero` needs miniShop3. `quiz-kitchen` needs FetchIt and sets the start label to `Начать подбор`.
 
 ## Constructor Bundle
 

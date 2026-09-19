@@ -53,6 +53,10 @@ JSON: `pagebuilderpro/sections/`. Chunk: `pagebuilderpro_{key}`. По умолч
 
 ### Доступность и requires
 
+В диалоге типа (CMP **Blocks**) вкладка **Доступность**. Пустые списки значат «везде». Ограничение действует на каталог кнопки **Создать**. Уже поставленная секция не скрывается.
+
+Поля: **Шаблоны**, **Родительские ресурсы**, **Ресурсы**, **Контексты**.
+
 ```json
 "availability": {
   "templates": [4, 7],
@@ -193,7 +197,7 @@ await api.post('mgr/catalog/list', { resource_id: 42 })
 
 ## Инспектор
 
-Поля `data` берутся из JSON типа. Settings: `contexts`, `utm`, в Pro ещё `conditions`. В полях url и button работают плейсхолдеры <code v-pre>{{utm:key}}</code>. Подробнее: [обзор полей](fields/overview).
+Поля `data` берутся из JSON типа. Settings: `contexts`, `utm`, в Pro ещё `conditions`. В полях url и button работают плейсхолдеры <code v-pre>{{utm:key}}</code>. Подробнее: [обзор полей](fields/overview). <!-- markdownlint-disable-line MD033 -->
 
 ## Связанные страницы
 

@@ -33,6 +33,8 @@ Requires PageBuilder Pro and **FetchIt**.
 
 After inserting a preset you can edit fields. **Examples** tab is visible when `pagebuilder_catalog_examples_enabled` is on.
 
+If you do not set button labels, the frontend uses the lexicon. The next step is `pagebuilder_fe_quiz_next` (Next). The `quiz-kitchen` preset sets the start label to `Начать подбор`.
+
 ## Typical pages
 
 - Kitchen landing: [Hero](hero) → [Features](features) → [Quiz](quiz) → [FAQ](faq)

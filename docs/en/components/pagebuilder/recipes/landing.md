@@ -20,6 +20,27 @@ Result: four blocks on the site. The draft is not public. The MODX resource **Sa
 4. Click **Save** on the resource. The editor validates fields and writes `published_json`.
 5. Open the page on the site.
 
+## Example fields
+
+Hero. Title `Kitchen remodel to your measurements`, Description `Measure the same day, estimate the next`. Button label `Request a visit`, Button URL `/contacts.html`. Alignment `left`.
+
+Rich text. A short paragraph about what the job includes.
+
+FAQ. Title `Common questions`. Two rows: question and answer.
+
+CTA. Title `Need a measure`, Text `Send the district and a good time.` Buttons match the Hero.
+
+The same order with other Free sections:
+
+| Job | Section |
+| --- | --- |
+| Numbers | `stats` |
+| A review | `testimonials` |
+| One photo | `image` |
+| A clip | `video` |
+| A gap | `spacer` |
+| Three cards | `cards` |
+
 With Pro you can add `how_it_works`, `media_split`, `case_study`, `newsletter`, or `quote` to the same order. If a type is missing from the catalog, check `requires` and the resource context.
 
 Rollback: move the section to the page trash, or unpublish sections through `mgr/page/unpublish` when that button is in the UI. The draft stays.

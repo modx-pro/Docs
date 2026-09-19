@@ -32,6 +32,33 @@ switch ($modx->event->name) {
 
 Проверка: ключ виден в каталоге на вкладке **Секции**. Откат: скройте тип в панели или уберите `registerFromFile`.
 
+## Пример: тип «Кейс»
+
+Нужно право `pagebuilder_manage_types`. CMP **Blocks**, новый тип, ключ `case`, подпись «Кейс», категория `content`.
+
+| name | type | label |
+| --- | --- | --- |
+| `title` | text | Заголовок |
+| `client` | text | Клиент |
+| `image` | image | Фото |
+| `description` | textarea | Что сделали |
+| `result` | text | Результат |
+
+Чанк с именем из поля `chunk`:
+
+```html
+<section class="pb-section pb-section--case">
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    {if $client}<p class="pb-lead">{$client|escape}</p>{/if}
+    {if $description}<p>{$description|escape}</p>{/if}
+    {if $result}<p>{$result|escape}</p>{/if}
+  </div>
+</section>
+```
+
+Картинку выводите partial `pagebuilder_partial_image`, как у секции [image](../sections/image).
+
 ## См. также
 
 - [Разработчик](../developer)

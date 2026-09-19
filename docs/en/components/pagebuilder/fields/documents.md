@@ -7,7 +7,7 @@ description: "A list of files with titles. Pro layer."
 
 Version: **Pro** (`advanced-fields`).
 
-A list of `{ title, file }` rows. The inspector does not save empty rows. `file` is a media value, same as [file](file).
+A list of `{ title, file }` rows. The inspector does not save empty rows. `file` is a media value, same as [file](file): an object with `url`, `filename`, and `title`, or a path string. In the chunk use `{$row.file.url}`.
 
 ## Schema
 
@@ -24,7 +24,10 @@ A list of `{ title, file }` rows. The inspector does not save empty rows. `file`
 ```json
 {
   "files": [
-    { "title": "Price list", "file": "/assets/files/price.pdf" }
+    {
+      "title": "Price list",
+      "file": { "url": "/assets/files/price.pdf", "filename": "price.pdf" }
+    }
   ]
 }
 ```
@@ -33,7 +36,7 @@ A list of `{ title, file }` rows. The inspector does not save empty rows. `file`
 
 ```html
 {foreach $files as $row}
-  <a href="{$row.file|escape}">{$row.title|escape}</a>
+  <a href="{$row.file.url|escape}">{$row.title|escape}</a>
 {/foreach}
 ```
 

@@ -7,7 +7,7 @@ description: "Список файлов с названием. Слой Pro."
 
 Версия: **Pro** (`advanced-fields`).
 
-Список строк `{ title, file }`. Пустые строки инспектор не сохраняет. `file` это media-значение, как у поля [file](file).
+Список строк `{ title, file }`. Пустые строки инспектор не сохраняет. `file` это media-значение, как у поля [file](file): объект с `url`, `filename`, `title` или строка-путь. В чанке берите `{$row.file.url}`.
 
 ## Настройка
 
@@ -24,7 +24,10 @@ description: "Список файлов с названием. Слой Pro."
 ```json
 {
   "files": [
-    { "title": "Прайс", "file": "/assets/files/price.pdf" }
+    {
+      "title": "Прайс",
+      "file": { "url": "/assets/files/price.pdf", "filename": "price.pdf" }
+    }
   ]
 }
 ```
@@ -33,7 +36,7 @@ description: "Список файлов с названием. Слой Pro."
 
 ```html
 {foreach $files as $row}
-  <a href="{$row.file|escape}">{$row.title|escape}</a>
+  <a href="{$row.file.url|escape}">{$row.title|escape}</a>
 {/foreach}
 ```
 

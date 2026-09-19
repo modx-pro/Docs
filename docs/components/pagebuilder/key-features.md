@@ -68,11 +68,11 @@ Commerce-секции (`products_grid`, `curated_products`…) требуют [m
 
 ### 6. UTM и контексты
 
-UTM registry в панели управления, правила видимости секций по меткам и контексту MODX. Диалог **Видимость** в инспекторе включается настройкой `pagebuilder_inspector_visibility_enabled`. Плейсхолдер <code v-pre>{{utm:key}}</code> в полях. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` для сессии и ссылок.
+Реестр UTM в панели управления требует capability `utm` (Pro). Уже опубликованные правила видимости исполняет Free. Диалог **Видимость** в инспекторе включается настройкой `pagebuilder_inspector_visibility_enabled`. Плейсхолдер <code v-pre>{{utm:key}}</code> в полях. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` для сессии и ссылок. <!-- markdownlint-disable-line MD033 -->
 
 ### 7. Collections
 
-При включённых настройках `pagebuilder_collections_*` на ресурсе появляются вкладки Collections с iframe. Редактор секций и коллекции оказываются на одной форме.
+Pro, capability `collections`. При `pagebuilder_collections_enabled` на ресурсе появляются вкладки Collections. Редактор секций и набор вкладок оказываются на одной форме. Без capability вкладки нет.
 
 ### 8. Корзина и undo
 

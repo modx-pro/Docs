@@ -33,6 +33,8 @@ description: "Многошаговый квиз с режимами lead, pricin
 
 После вставки пресета поля можно править. Вкладка **Примеры** видна при `pagebuilder_catalog_examples_enabled`.
 
+Если свои подписи кнопок не заданы, фронт берёт лексикон. Следующий шаг: «Дальше» (`pagebuilder_fe_quiz_next`). Пресет `quiz-kitchen` задаёт старт «Начать подбор».
+
 ## Типичные страницы
 
 - Лендинг кухни: [Hero](hero) → [Features](features) → [Quiz](quiz) → [FAQ](faq)

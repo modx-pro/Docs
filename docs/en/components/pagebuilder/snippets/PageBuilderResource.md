@@ -5,7 +5,7 @@ description: PageBuilderResource snippet — sections from another resource
 
 # PageBuilderResource snippet
 
-Same PHP as [PageBuilder](PageBuilder), but **`resource_id` is required** in snippet properties. A clear name for “sections from another page”.
+Same PHP as [PageBuilder](PageBuilder). Snippet properties mark `resource_id` as required, but `0` means the current resource. A clear name for sections from another page.
 
 ## Purpose
 
@@ -20,7 +20,7 @@ Any template or chunk that needs published sections from **another** resource. U
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `resource_id` | `0` | Source ID. **Required** > 0, otherwise empty output |
+| `resource_id` | `0` | Source ID. `0` = current resource. Empty output if the resource is not found |
 | `section_types` | empty | Section key filter |
 | `return_values` | `0` | JSON instead of HTML (same as PageBuilder) |
 | `use_cache` | `1` | HTML cache |

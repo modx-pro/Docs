@@ -71,7 +71,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`).
+Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). Если в JSON поля стоит `"responsive": true`, разные значения включены всегда. Свернуть их в одну строку нельзя.
 
 Пороги экранов задаются в `pagebuilder_responsive_breakpoints` (или `responsiveBreakpoints` на типе секции). По умолчанию: desktop ≥1024, tablet ≥768, mobile ≥0; превью в менеджере берёт `previewWidth`. Режим вывода: `pagebuilder_responsive_apply`.
 

@@ -53,6 +53,10 @@ Table `pb_section_types`. Processors `mgr/sectiontype/*`. Package code definitio
 
 ### Availability and requires
 
+In the type dialog (CMP **Blocks**) open the **Availability** tab. Empty lists mean everywhere. The limit applies to the **Create** catalog. A section already placed on a page stays visible.
+
+Fields: **Templates**, **Parent resources**, **Resources**, **Contexts**.
+
 ```json
 "availability": {
   "templates": [4, 7],
@@ -193,7 +197,7 @@ Tables tab or `table` tab type in [Collections](cmp#collections). Rows on the si
 
 ## Inspector
 
-Fields in `data` come from type JSON. Settings: `contexts`, `utm`, in Pro also `conditions`. In url and button fields <code v-pre>{{utm:key}}</code> placeholders work. Details: [fields overview](fields/overview).
+Fields in `data` come from type JSON. Settings: `contexts`, `utm`, in Pro also `conditions`. In url and button fields <code v-pre>{{utm:key}}</code> placeholders work. Details: [fields overview](fields/overview). <!-- markdownlint-disable-line MD033 -->
 
 ## Related pages
 

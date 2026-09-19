@@ -15,7 +15,7 @@ The section is part of the page context so the HTML cache does not freeze the li
 
 ## Query
 
-The query accepts only declared fields and operators `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `QueryPolicy` rejects keys `sql`, `php`, `snippet`, and `class`. A limit above 100 fails.
+The query accepts only declared fields and operators `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `contains` is case-insensitive, including Cyrillic. `QueryPolicy` rejects keys `sql`, `php`, `snippet`, and `class`. A limit above 100 fails.
 
 ## Fields
 
@@ -27,7 +27,7 @@ The query accepts only declared fields and operators `eq`, `contains`, `in`, `gt
 
 ## Render
 
-`ProSectionRenderSupport` fills `items`. The row label follows `pagetitle`, then `title`, `name`, `label`, `id`. A link exists only when `uri` is set. Otherwise the label is a `<span>`.
+`ProSectionRenderSupport` fills `items`. The row label follows `pagetitle`, then `title`, `name`, `label`, `id`. A link exists only when `uri` is set. Otherwise the label is a `<span>`. If a row has `image`, the card shows it.
 
 A failed query is stored in `query_error`. Without capability `datasources` the text is `Datasources are not available.` An empty provider yields `Datasource is not configured.` An empty result uses lexicon `pagebuilder_fe_list_empty`, fallback `No items.`
 

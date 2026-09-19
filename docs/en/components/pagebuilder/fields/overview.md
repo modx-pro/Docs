@@ -71,7 +71,7 @@ On types `text`, `textarea`, `url`, `number`, `currency`, `richtext`, `slug` wit
 }
 ```
 
-Names `alt`, `caption`, `slug` are excluded from responsive (`responsiveValues.ts`).
+Names `alt`, `caption`, `slug` are excluded from responsive (`responsiveValues.ts`). If the field JSON has `"responsive": true`, per-breakpoint values stay on. You cannot collapse them into one string.
 
 Screen thresholds come from `pagebuilder_responsive_breakpoints` (or `responsiveBreakpoints` on the section type). Default: desktop ≥1024, tablet ≥768, mobile ≥0; manager preview uses `previewWidth`. Output mode: `pagebuilder_responsive_apply`.
 

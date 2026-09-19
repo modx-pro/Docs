@@ -60,10 +60,10 @@ If the theme loads CSS only via Fenom or `@import` without `<link>`, add files e
 
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
-| `pagebuilder_collections_enabled` | boolean | `0` | Dynamic tab set from Collections in the control panel |
+| `pagebuilder_collections_enabled` | boolean | `0` | Dynamic tab set from Collections. Needs capability `collections` (Pro). Without it the tabs are absent |
 | `pagebuilder_collections_modx_bridge_enabled` | boolean | `0` | Tab type `modx_collections` |
 
-Enable only if you use Collections and configured tab sets in the PageBuilder control panel. Details: [Control panel → Collections](cmp#collections).
+Enable only with PageBuilder Pro, after you configured tabs in the control panel. Details: [Control panel → Collections](cmp#collections).
 
 ## Resource table data
 

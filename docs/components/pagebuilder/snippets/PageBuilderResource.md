@@ -5,7 +5,7 @@ description: Сниппет PageBuilderResource — секции другого 
 
 # Сниппет PageBuilderResource
 
-Тот же PHP, что у [PageBuilder](PageBuilder), но в properties сниппета **обязателен** `resource_id`. Удобное имя для вызова «секции с другой страницы».
+Тот же PHP, что у [PageBuilder](PageBuilder). В properties сниппета `resource_id` помечен обязательным, но код берёт текущий ресурс, если передали `0`. Удобное имя для вызова «секции с другой страницы».
 
 ## Назначение
 
@@ -20,7 +20,7 @@ description: Сниппет PageBuilderResource — секции другого 
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `resource_id` | `0` | ID источника. **Обязателен** > 0, иначе сниппет вернёт пустую строку |
+| `resource_id` | `0` | ID источника. `0` = текущий ресурс. Если ресурс не найден, сниппет вернёт пустую строку |
 | `section_types` | пусто | Фильтр по ключам секций |
 | `return_values` | `0` | JSON вместо HTML (как у PageBuilder) |
 | `use_cache` | `1` | Кеш HTML |

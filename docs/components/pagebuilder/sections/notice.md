@@ -7,7 +7,7 @@ description: "Короткое сообщение с тоном info, success, w
 
 Секция `notice` выводит короткое сообщение. Chunk: `pagebuilderpro_notice`. Требуется PageBuilder Pro.
 
-`tone`: `info`, `success`, `warning`, `danger`.
+`tone`: `info`, `success`, `warning`, `danger`. Подложка тона сидит на блоке текста (`width: fit-content`), не на всю ширину секции.
 
 ## Где уместна
 

@@ -7,7 +7,7 @@ description: "Opening hours as a JSON string by weekday. Pro layer."
 
 Version: **Pro** (`advanced-fields`).
 
-A textarea that stores JSON. The inspector placeholder is a weekday object, for example `mon` and `tue` with a list of `09:00-18:00` strings. The saved value is a string. Parse the JSON in the chunk or in your own code.
+A textarea. The inspector placeholder is `{"mon":["09:00-18:00"],"tue":["09:00-18:00"]}`. The editor does not validate the schema. The saved value is a string: that JSON or plain text such as `Daily 10:00-20:30`. Parse JSON in the chunk or in your own code.
 
 ## Schema
 

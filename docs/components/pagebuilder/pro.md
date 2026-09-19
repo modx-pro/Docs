@@ -5,7 +5,7 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 
 # PageBuilder Pro
 
-Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.12-beta**, требует `pagebuilder` ≥ **1.0.12**.
+Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.13-beta**, требует `pagebuilder` ≥ **1.0.13**.
 
 ## Флаги Pro
 
@@ -24,6 +24,7 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 | `advanced-fields` | 27 типов полей в панели управления (группа Pro в списке). Без Pro доступны 35 типов Free |
 | `basket` | Глобальная корзина в панели управления (`mgr/basket/*`) |
 | `utm` | Новые UTM-правила и реестр. Уже опубликованные правила исполняет Free |
+| `collections` | Вкладки ресурса из панели управления (`pb_collections`, `mgr/collection/*`). Нужна ещё `pagebuilder_collections_enabled` |
 | `datasources` | [Dynamic list](sections/dynamic_list) и [Filterable grid](sections/filterable_grid): провайдеры `modx-resources`, `pagebuilder-tables`, `minishop3`, `mgr/datasource/*` |
 | `forms` | CMP Forms, [form_builder](sections/form_builder), FetchIt, CSRF, honeypot. Письмо и webhook после commit. Submissions в БД не пишутся |
 | `api` | [Agent API](agent-api) и токены [REST v1](rest-api) (`mgr/resttoken/*`, вкладка API tokens) |
@@ -82,6 +83,24 @@ Apply пишет черновик через `mgr/pagetemplate/apply` (на не
 ## Примеры
 
 Вкладка **Примеры** в каталоге добавления: готовые блоки с текстом (capability `presets`, `mgr/presets/list`). После вставки поля можно править. Скрытие без удаления JSON: `pagebuilder_catalog_examples_enabled` или тумблер в CMP Blocks.
+
+В пакете 11 пресетов (`pagebuilderpro/sections/presets/`):
+
+| Ключ | Тип секции |
+| --- | --- |
+| `hero-centered` | `hero` |
+| `cta-banner` | `cta` |
+| `stats-launch` | `stats` |
+| `features-grid` | `features` |
+| `contact-split` | `contact_map` |
+| `blog-featured-first` | `blog_posts` |
+| `blog-compact-list` | `blog_posts` |
+| `pricing-saas` | `pricing_table` |
+| `pricing-utm` | `data_table` |
+| `products-hero` | `promo_banner` |
+| `quiz-kitchen` | `quiz` |
+
+`pricing-utm` это таблица `data_table`, не тарифы. `products-hero` требует miniShop3. `quiz-kitchen` требует FetchIt и задаёт старт «Начать подбор».
 
 ## Constructor Bundle
 

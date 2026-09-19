@@ -68,11 +68,11 @@ The **Tables** tab on a resource stores rows in `pb_*`: filters, pagination, CSV
 
 ### 6. UTM and contexts
 
-UTM registry in the control panel, section visibility rules by tags and MODX context. The **Visibility** dialog in the inspector is enabled by `pagebuilder_inspector_visibility_enabled`. Placeholder <code v-pre>{{utm:key}}</code> in fields. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` for session and links.
+The UTM registry in the control panel requires capability `utm` (Pro). Already published visibility rules still run in Free. The **Visibility** dialog in the inspector is enabled by `pagebuilder_inspector_visibility_enabled`. Placeholder <code v-pre>{{utm:key}}</code> in fields. Snippets `PageBuilderUtmSession` and `PageBuilderUtmUrl` for session and links. <!-- markdownlint-disable-line MD033 -->
 
 ### 7. Collections
 
-With `pagebuilder_collections_*` enabled, Collections iframe tabs appear on the resource. The section editor and collections share one form.
+Pro, capability `collections`. With `pagebuilder_collections_enabled`, Collections tabs appear on the resource. The section editor and the tab set share one form. Without the capability the tabs are absent.
 
 ### 8. Basket and undo
 
