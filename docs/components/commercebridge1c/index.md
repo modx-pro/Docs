@@ -7,6 +7,10 @@ repository: https://github.com/Mishiko23/CommerceBridge-1C
 dependencies: miniShop3
 outline: deep
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 items:
   - text: Установка
     link: installation

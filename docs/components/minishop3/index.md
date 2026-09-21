@@ -5,6 +5,9 @@ logo: https://modstore.pro/assets/extras/minishop3/logo.png
 author: biz87
 repository: https://github.com/modx-pro/MiniShop3
 
+compatibility:
+  - modx3
+  - php81
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Отличия от miniShop2', link: 'differences-from-ms2' },

@@ -7,6 +7,10 @@ logo: https://modstore.pro/assets/extras/mobiledetect/logo.png
 modstore: https://modstore.pro/packages/utilities/mobiledetect
 categories: utilities
 
+compatibility:
+  - modx2
+  - modx3
+  - php82
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

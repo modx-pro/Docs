@@ -6,6 +6,9 @@ lastUpdated: true
 logo: https://modstore.pro/assets/extras/ms_cdek2/logo.jpg
 modstore: https://modstore.pro/packages/delivery/ms-cdek2
 author: ShevArtV
+compatibility:
+  - modx2
+  - php74
 items: [
   { text: 'Начало работы', link: 'index' },
   { text: 'Сниппеты', link: 'snippets' },
