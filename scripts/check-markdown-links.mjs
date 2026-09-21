@@ -83,6 +83,8 @@ function stripHashAndQuery(url) {
   return url.replace(/[#?].*$/, '')
 }
 
+const PUBLIC = join(DOCS, 'public')
+
 function resolveInternalTarget(fromFile, href) {
   const raw = stripHashAndQuery(href)
   if (!raw || raw.startsWith('mailto:') || raw.startsWith('tel:')) {
@@ -97,7 +99,23 @@ function resolveInternalTarget(fromFile, href) {
   }
 
   candidate = normalize(candidate)
+  const found = existingTarget(candidate)
+  if (found) {
+    return found
+  }
 
+  // Site-root URLs for files in docs/public (VitePress srcDir is docs).
+  if (raw.startsWith('/')) {
+    const pub = existingTarget(normalize(join(PUBLIC, raw.replace(/^\//, ''))))
+    if (pub) {
+      return pub
+    }
+  }
+
+  return false
+}
+
+function existingTarget(candidate) {
   if (existsSync(candidate) && !candidate.endsWith('/')) {
     return candidate
   }

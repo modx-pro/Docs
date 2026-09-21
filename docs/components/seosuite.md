@@ -6,6 +6,8 @@ author: Sterc
 modstore: https://modstore.pro/packages/ecommerce/seosuite
 modx: https://extras.modx.com/package/seosuite
 repository: https://github.com/Sterc/seosuite
+compatibility:
+  - modx2
 ---
 # SEO Suite
 

@@ -6,6 +6,9 @@ lastUpdated: true
 logo: https://mscdek2.art-sites.ru/assets/components/ms_cdek2/img/cdek.png
 modstore: https://modstore.pro/packages/delivery/ms-cdek2
 author: ShevArtV
+compatibility:
+  - modx2
+  - php74
 items: [
   { text: 'Getting started', link: 'index' },
   { text: 'Snippets', link: 'snippets' },

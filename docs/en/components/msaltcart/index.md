@@ -7,6 +7,9 @@ logo: https://msaltcart.art-sites.ru/assets/components/msaltcart/logo.jpg
 modstore: https://modstore.pro/packages/integration/msaltcart
 repository: https://github.com/ShevArtV/msaltcart
 author: ShevArtV
+compatibility:
+  - php74
+  - minishop2
 items: [
   { text: 'Getting started', link: 'index' },
   { text: 'Snippets', link: 'snippets' },

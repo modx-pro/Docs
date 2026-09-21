@@ -4,6 +4,11 @@ description: Единая точка входа публичного API для 
 outline: [2, 3]
 lastUpdated: true
 author: ShevArtV
+compatibility:
+  - modx2
+  - modx3
+  - php74
+  - php81
 items: [
   {
     text: 'Начало работы',

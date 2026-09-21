@@ -7,6 +7,10 @@ modstore: https://modstore.pro/packages/payment-system/mspbepaid
 
 dependencies: miniShop2
 categories: payment
+compatibility:
+  - modx2
+  - php55
+  - minishop2
 ---
 
 # mspBePaid

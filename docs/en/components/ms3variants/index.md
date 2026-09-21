@@ -4,6 +4,11 @@ description: Product variants component for MiniShop3
 logo: https://modstore.pro/assets/extras/ms3variants/logo.png
 author: biz87
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
+  - vue3
 items: [
   { text: 'System settings', link: 'settings' },
   { text: 'Snippets', link: 'snippets' },

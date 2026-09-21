@@ -6,6 +6,9 @@ author: modx-pro
 modstore: https://modstore.pro/packages/utilities/localizator
 repository: https://github.com/modx-pro/localizator
 
+compatibility:
+  - modx2
+  - php74
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

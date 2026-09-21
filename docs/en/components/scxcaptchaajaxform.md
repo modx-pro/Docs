@@ -3,6 +3,10 @@ title: scxcaptchaAjaxForm
 description: Non-blocking numeric CAPTCHA (5 digits) for AjaxForm and FormIt. Easy for humans, harder for bots.
 logo: https://sait-modx.by/assets/images/components/scxcaptchaajaxform/logo_captha.png
 author: sait-modx.by
+compatibility:
+  - modx2
+  - modx3
+  - php72
 ---
 
 # scxcaptchaAjaxForm

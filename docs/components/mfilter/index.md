@@ -4,6 +4,10 @@ description: Фасетная фильтрация для MODX 3 с поддер
 logo: https://modstore.pro/assets/extras/mfilter/logo.png
 author: biz87
 
+compatibility:
+  - modx3
+  - php81
+  - vue3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

@@ -5,6 +5,10 @@ logo: https://modstore.pro/assets/extras/vuetools/logo.png
 author: modx-pro
 repository: https://github.com/modx-pro/vuetools
 
+compatibility:
+  - modx3
+  - php81
+  - vue3
 items:
   - text: Integration
     link: integration

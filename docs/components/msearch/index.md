@@ -5,6 +5,10 @@ logo: https://modstore.pro/assets/extras/msearch/logo.png
 author: biz87
 repository: https://github.com/modx-pro/msearch
 
+compatibility:
+  - modx3
+  - php81
+  - vue3
 items: [
   {
     text: 'Сниппеты',
