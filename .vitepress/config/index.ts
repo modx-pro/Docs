@@ -38,6 +38,31 @@ function getOgImageVersion(input: unknown): string {
   return createHash('md5').update(payload).digest('hex').slice(0, 8)
 }
 
+// Runs before the app paints. Dev shell does not include config.head, so the
+// same source is also injected via transformIndexHtml.
+const readabilityLayoutScript = `(function () {
+  try {
+    var mode = localStorage.getItem('vitepress-nolebase-enhanced-readabilities-layout-switch-mode');
+    var classes = {
+      '1': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchFullWidth',
+      '4': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchSidebarWidthAdjustableOnly',
+      '5': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchBothWidthAdjustable'
+    };
+    var cls = classes[mode];
+    if (cls) document.documentElement.classList.add(cls);
+    var wide = window.matchMedia('(min-width: 1440px)').matches;
+    function pct(key, fallback) {
+      var raw = localStorage.getItem(key);
+      var n = raw == null ? fallback : parseInt(raw, 10);
+      if (!wide || !n || isNaN(n)) return '100%';
+      return Math.ceil(n / 100) + '%';
+    }
+    var root = document.documentElement;
+    root.style.setProperty('--vp-nolebase-enhanced-readabilities-page-max-width', pct('vitepress-nolebase-enhanced-readabilities-page-layout-max-width', 10000));
+    root.style.setProperty('--vp-nolebase-enhanced-readabilities-content-max-width', pct('vitepress-nolebase-enhanced-readabilities-content-layout-max-width', 8000));
+  } catch (e) {}
+})();`
+
 export default withMermaid(
   defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
@@ -105,6 +130,8 @@ export default withMermaid(
     ['link', { rel: 'icon', href: '/icon.svg?v=2', type: 'image/svg+xml' }],
     ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png?v=2' }],
     ['link', { rel: 'manifest', href: '/site.webmanifest' }],
+
+    ['script', {}, readabilityLayoutScript],
 
     [
       'script',
@@ -240,6 +267,15 @@ export default withMermaid(
   },
 
   vite: {
+    plugins: [
+      {
+        name: 'readability-layout-early',
+        transformIndexHtml(html: string) {
+          if (html.includes('layout-switch-mode')) return html
+          return html.replace('<head>', `<head>\n    <script>${readabilityLayoutScript}</script>`)
+        },
+      },
+    ],
     ssr: {
       noExternal: [
         'mermaid',
