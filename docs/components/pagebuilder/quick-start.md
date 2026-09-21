@@ -12,8 +12,8 @@ description: Установка PageBuilder, права, вкладка «Сек
 | PHP | 8.2+ |
 | VueTools | 1.1.2+ |
 | pdoTools | 3.0+ |
-| PageBuilder (Free) | 1.0.13-beta |
-| PageBuilder Pro | 1.0.13-beta, требует `pagebuilder` ≥ 1.0.13 |
+| PageBuilder (Free) | 1.0.14-beta |
+| PageBuilder Pro | 1.0.14-beta, требует `pagebuilder` ≥ 1.0.14 |
 
 Пакеты **PageBuilder** (Free) и **PageBuilder Pro** ставятся из [modstore.pro](https://modstore.pro/extras/). Без провайдера установка падает с `Package provider not found`.
 
@@ -46,7 +46,7 @@ description: Установка PageBuilder, права, вкладка «Сек
 | `pagebuilder_resource_tab_enabled` | `1` |
 | `pagebuilder_resource_tab_parents` | пусто = все ресурсы, или ID родителей через запятую |
 
-Позицию вкладки задаёт `pagebuilder_resource_tab_index` (`0` первая, `-1` последняя).
+Позицию вкладки задаёт `pagebuilder_resource_tab_index` (`0` первая и сразу открыта, `-1` последняя).
 
 ![Вкладка «Секции» на ресурсе](/components/pagebuilder/screenshots/mgr-sections-tab.png)
 
@@ -72,9 +72,9 @@ description: Установка PageBuilder, права, вкладка «Сек
 
 ## 5. Соберите страницу в менеджере
 
-<!-- ![Каталог секций](/components/pagebuilder/screenshots/mgr-section-catalog.png) -->
+<!-- ![Каталог секций](/components/pagebuilder/screenshots/mgr-section-catalog.jpg) -->
 
-<!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
+<!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
 1. Откройте ресурс → вкладка **Секции**.
 2. Добавьте секцию (например Hero), заполните поля.
@@ -83,13 +83,13 @@ description: Установка PageBuilder, права, вкладка «Сек
 
 При `pagebuilder_fake_enabled = 1` в инспекторе появляется кнопка **Fake**: заполняет поля демо-данными для быстрой проверки вёрстки.
 
-<!-- ![Превью черновика](/components/pagebuilder/screenshots/mgr-section-preview.png) -->
+<!-- ![Превью черновика](/components/pagebuilder/screenshots/mgr-section-preview.jpg) -->
 
 Превью черновика без публикации: кнопка **Preview** во вкладке (токен через `preview.php`).
 
 ## 6. Проверка на фронте
 
-<!-- ![Страница с секциями на сайте](/components/pagebuilder/screenshots/fe-page-sections.png) -->
+<!-- ![Страница с секциями на сайте](/components/pagebuilder/screenshots/fe-page-sections.jpg) -->
 
 Откройте ресурс на сайте. Должен появиться HTML секций. По умолчанию подключается `pagebuilder-sections.css` (настройка `pagebuilder_load_frontend_css`).
 

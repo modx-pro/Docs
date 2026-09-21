@@ -7,11 +7,11 @@ description: "Время суток без календарной даты"
 
 Версия: **Free**.
 
-<!-- ![time](/components/pagebuilder/screenshots/fields/time.png) -->
+<!-- ![time](/components/pagebuilder/screenshots/fields/time.jpg) -->
 
 ## Зачем этот тип
 
-Time picker, не произвольная строка. Комбинируется с [date](date) в отдельных полях. Подходит для расписания и часов работы.
+Выбор времени в поле, а не произвольная строка. Дату ставят отдельно, полем [date](date). Подходит для расписания и часов работы.
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ Time picker, не произвольная строка. Комбинирует�
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<span class="time">[[+starts_at]]</span>
+```
+
+```fenom
 <span class="time">{$starts_at|escape}</span>
 ```
+
+:::
 
 ## Общие свойства
 

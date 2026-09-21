@@ -7,11 +7,11 @@ description: "Число суммы с символом валюты из нас
 
 Версия: **Pro**.
 
-<!-- ![currency](/components/pagebuilder/screenshots/fields/currency.png) -->
+<!-- ![currency](/components/pagebuilder/screenshots/fields/currency.jpg) -->
 
 ## Зачем этот тип
 
-Форматирование суммы в инспекторе, не простой number. Pro responsive как у number и text. Отделяет деньги от счётчиков и процентов.
+Сумма с форматированием в инспекторе, не просто число. В Pro можно задать разные значения для компьютера, планшета и телефона, как у [number](number) и [text](text). Деньги не смешиваются со счётчиками и процентами.
 
 ## Когда использовать
 
@@ -60,9 +60,17 @@ description: "Число суммы с символом валюты из нас
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span class="price">[[+price]] ₽</span>
+```
+
 ```fenom
 {if $price !== null}<span class="price">{$price} ₽</span>{/if}
 ```
+
+:::
 
 ## Примечание
 

@@ -7,6 +7,8 @@ description: "Короткое сообщение с тоном info, success, w
 
 Секция `notice` выводит короткое сообщение. Chunk: `pagebuilderpro_notice`. Требуется PageBuilder Pro.
 
+![Уведомление](/components/pagebuilder/screenshots/sections/notice.jpg)
+
 `tone`: `info`, `success`, `warning`, `danger`. Подложка тона сидит на блоке текста (`width: fit-content`), не на всю ширину секции.
 
 ## Где уместна
@@ -35,6 +37,20 @@ description: "Короткое сообщение с тоном info, success, w
   "title": "Склад",
   "text": "Отгрузка с 20 сентября"
 }
+```
+
+## Шаблон chunk
+
+Fenom chunk `pagebuilderpro_notice`:
+
+```fenom
+{set $toneValue = $tone|default:'info'}
+<aside class="pb-section pb-section--notice pb-notice pb-notice--{$toneValue|escape}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="notice" data-pb-tone="{$toneValue|escape}"{if $id} id="pb-{$id|escape}"{/if} role="note">
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading pb-notice__title">{$title|escape}</h2>{/if}
+    <p class="pb-notice__text">{$text|escape}</p>
+  </div>
+</aside>
 ```
 
 ## Похожие секции

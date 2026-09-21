@@ -5,7 +5,7 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 
 # PageBuilder Pro
 
-Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.13-beta**, требует `pagebuilder` ≥ **1.0.13**.
+Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.14-beta**, требует `pagebuilder` ≥ **1.0.14**. Free и Pro этой линии ставьте вместе: `ProFeatureProvider` реализует `serverContributions()` и `cmpContributions()`. Старый Pro без этих методов даёт fatal error при загрузке.
 
 ## Флаги Pro
 

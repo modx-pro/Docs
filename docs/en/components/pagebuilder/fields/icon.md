@@ -49,9 +49,17 @@ After render the same key includes `svg`:
 
 `svg` is already HTML. Do not run it through `escape`.
 
-```html
+::: code-group
+
+```modx
+<span class="pb-icon">[[+icon.svg]]</span>
+```
+
+```fenom
 <span class="pb-icon">{$icon.svg}</span>
 ```
+
+:::
 
 ## Similar types
 

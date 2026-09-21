@@ -33,9 +33,17 @@ Object `text`, `lat`, `lng`. This is not a map iframe. Coordinates are strings. 
 
 ## Chunk example
 
-```html
-<address>{$office.text|escape}</address>
+::: code-group
+
+```modx
+<address>[[+office.text]]</address>
 ```
+
+```fenom
+<address>{$office.text|pb_text}</address>
+```
+
+:::
 
 ## Similar types
 

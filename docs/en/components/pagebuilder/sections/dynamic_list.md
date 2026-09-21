@@ -7,6 +7,8 @@ description: "Rows from a datasource provider. Capability datasources. Pro layer
 
 Section `dynamic_list` shows provider rows at render time. Chunk: `pagebuilderpro_dynamic_list`. Requires PageBuilder Pro and capability `datasources`.
 
+![Dynamic list](/components/pagebuilder/screenshots/sections/dynamic_list.jpg)
+
 Providers: `modx-resources`, `pagebuilder-tables`, `minishop3`. In `datasource` you pick the provider and, when needed, a table key, filters, sort, and limit. Enrich calls `DatasourceQueryService` and passes `items` and `total` into the chunk.
 
 Manager preview: `mgr/datasource/query`.
@@ -48,9 +50,44 @@ A failed query is stored in `query_error`. Without capability `datasources` the 
 }
 ```
 
+## Chunk template
+
+Fenom chunk `pagebuilderpro_dynamic_list`:
+
+```fenom
+<section class="pb-section pb-section--dynamic-list" data-pb-section="dynamic_list"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    {if $query_error}
+      <p class="pb-dynamic-list__error" role="status">{$query_error|escape}</p>
+    {elseif !$items || $items|count == 0}
+      <p class="pb-dynamic-list__empty" role="status">{$lex_empty|default:'No items.'|escape}</p>
+    {else}
+      <ul class="pb-dynamic-list__items">
+        {foreach $items as $item}
+          <li class="pb-dynamic-list__item">
+            {set $label = $item.pagetitle|default:$item.title|default:$item.name|default:$item.label|default:$item.id}
+            {if $item.image}
+              <img class="pb-dynamic-list__image" src="{$item.image|escape}" alt="{$label|escape}" loading="lazy" />
+            {/if}
+            {if $item.uri}
+              <a href="{$item.uri|escape}">{$label|escape}</a>
+            {elseif $item.alias}
+              <span>{$label|escape}</span>
+            {else}
+              <span>{$label|escape}</span>
+            {/if}
+          </li>
+        {/foreach}
+      </ul>
+    {/if}
+  </div>
+</section>
+```
+
 ## Similar sections
 
-- [Filterable grid](filterable_grid) for GET filters and pagination
+- [Filterable grid](filterable_grid) for filters and pagination
 - [Blog posts](blog_posts) for child resources via `pdoResources`
 
 ## Related pages

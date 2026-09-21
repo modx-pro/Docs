@@ -7,7 +7,7 @@ description: "HTML-строка из привычного richtext MODX"
 
 Версия: **Free**.
 
-<!-- ![richtext](/components/pagebuilder/screenshots/fields/richtext.png) -->
+<!-- ![richtext](/components/pagebuilder/screenshots/fields/richtext.jpg) -->
 
 ## Зачем этот тип
 
@@ -60,9 +60,17 @@ HTML-строка.
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<div class="pb-richtext__content">[[+content]]</div>
+```
+
+```fenom
 <div class="pb-richtext__content">{$content}</div>
 ```
+
+:::
 
 ## Примечание
 

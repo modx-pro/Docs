@@ -7,6 +7,8 @@ description: "Два изображения с подписями Before и Afte
 
 Секция `before_after` ставит два кадра рядом. Chunk: `pagebuilderpro_before_after`. Требуется PageBuilder Pro. Категория: медиа.
 
+![До и после](/components/pagebuilder/screenshots/sections/before_after.jpg)
+
 ## Где уместна
 
 - Результат ремонта, ретуши, клинического случая
@@ -38,6 +40,29 @@ description: "Два изображения с подписями Before и Afte
   "after_image": { "url": "assets/images/after.jpg" },
   "caption": "Три недели"
 }
+```
+
+## Шаблон chunk
+
+Fenom chunk `pagebuilderpro_before_after`:
+
+```fenom
+<section class="pb-section pb-section--before-after pb-before-after{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="before_after"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    <div class="pb-before-after__grid">
+      <figure class="pb-before-after__panel">
+        {if $before_label}<figcaption>{$before_label|escape}</figcaption>{/if}
+        {include 'pagebuilder_partial_image' image=$before_image alt=($before_label ?: 'Before') class='pb-before-after__image'}
+      </figure>
+      <figure class="pb-before-after__panel">
+        {if $after_label}<figcaption>{$after_label|escape}</figcaption>{/if}
+        {include 'pagebuilder_partial_image' image=$after_image alt=($after_label ?: 'After') class='pb-before-after__image'}
+      </figure>
+    </div>
+    {if $caption}<p class="pb-before-after__caption">{$caption|escape}</p>{/if}
+  </div>
+</section>
 ```
 
 ## Похожие секции

@@ -7,11 +7,11 @@ description: "Editor.js object with json and rendered html"
 
 Version: **Pro** (`advanced-fields`). A new field is created only in Pro. An already saved field still opens and writes.
 
-<!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.png) -->
+<!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.jpg) -->
 
 ## Why this type
 
-Block content with headings, lists, embeds. Html ready for chunk, json for custom render. Structure safer than free-form HTML.
+Text made of blocks: headings, lists, and embeds. The chunk can print ready HTML (`html`), or JSON (`json`) if you build the markup yourself. The block list is more predictable than free HTML.
 
 ## When to use
 
@@ -73,9 +73,17 @@ Key `body` in the section data:
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<div class="pb-richtext__content">[[+body.html]]</div>
+```
+
+```fenom
 <div class="pb-richtext__content">{$body.html}</div>
 ```
+
+:::
 
 ## Common properties
 

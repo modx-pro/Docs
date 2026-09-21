@@ -7,11 +7,11 @@ description: "Array of resources with id and pagetitle from picker modal"
 
 Version: **Pro**.
 
-<!-- ![multirelation](/components/pagebuilder/screenshots/fields/multirelation.png) -->
+<!-- ![multirelation](/components/pagebuilder/screenshots/fields/multirelation.jpg) -->
 
 ## Why this type
 
-Row order preserved for curated lists. Same modal search as relation. Base for curated_products and similar sections.
+The order of the picked records is kept. Search uses the same window as [relation](relation). Sections such as a hand-picked product list are built on this field.
 
 ## When to use
 
@@ -66,11 +66,21 @@ Key `products` in the section data: array of resources:
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $products as $p}
-  <span class="related">{$p.pagetitle|escape}</span>
+  <span class="related">{$p.pagetitle}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $products as $p}
+  <span class="related">{$p.pagetitle|pb_text}</span>
+{/foreach}
+```
+
+:::
 
 ## Common properties
 

@@ -7,7 +7,7 @@ description: "Editor.js content: headings, lists, quotes, media (Pro)"
 
 Alternative to **Rich text** for long reads. Block editor: H2–H4, lists, quotes, inline images.
 
-<!-- ![Structured content](/components/pagebuilder/screenshots/sections/structured_content.png) -->
+![Structured content](/components/pagebuilder/screenshots/sections/structured_content.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -84,11 +84,11 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_structured_content`:
 
 ```fenom
-{var $bodyHtml = ''}
+{set $bodyHtml = ''}
 {if $body is array}
-  {var $bodyHtml = $body.html|default:''}
+  {set $bodyHtml = $body.html|default:''}
 {else}
-  {var $bodyHtml = $body}
+  {set $bodyHtml = $body}
 {/if}
 <section class="pb-section pb-section--structured-content pb-structured-content pb-richtext{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="structured_content"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-structured-content__inner pb-richtext__inner">
@@ -103,10 +103,6 @@ Fenom chunk `pagebuilderpro_structured_content`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/structured_content.json`
 
 ## See also
 

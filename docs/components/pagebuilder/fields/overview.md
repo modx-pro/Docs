@@ -9,7 +9,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 В [справочнике](types) 62 типа (35 Free и 27 Pro). У типов со страницей есть JSON **Настройка**, блок **Данные секции** и пример для Fenom или HTML. В chunk значения приходят из `section.data`.
 
-<!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
+<!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
 ## Минимальное поле
 
@@ -140,7 +140,7 @@ Whitelist классов в `FieldOptionsService` (`modResource`, `modTemplate`,
 
 ## Фронт и enrich
 
-`SectionRenderer` передаёт `section.data` в chunk как плейсхолдеры. Дополнительно в properties: `id`, `type`, `settings`.
+`SectionRenderer` передаёт `section.data` в chunk как плейсхолдеры. Дополнительно в properties: `id`, `type`, `settings`. Массив секции теги MODX не обходят. Цикл в примерах пишет Fenom. Вкладка MODX повторяет этот цикл и не ставит фильтр `pb_text`: такого выходного фильтра нет.
 
 При сохранении черновика `SectionFieldEnricher` дополняет:
 

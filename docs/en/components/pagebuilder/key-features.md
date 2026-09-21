@@ -119,6 +119,6 @@ MODX namespace: `pagebuilder`. Pro installs as `pagebuilderpro` (Free core is pu
 ## Where to start
 
 1. [Installation and first resource](quick-start)
-2. [System settings](settings)
+2. [Recipes](recipes/)
 3. [Section catalog](sections/)
 4. [FAQ](faq)

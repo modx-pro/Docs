@@ -7,11 +7,11 @@ description: "Строка URL с базовой проверкой формат
 
 Версия: **Free**.
 
-<!-- ![url](/components/pagebuilder/screenshots/fields/url.png) -->
+<!-- ![url](/components/pagebuilder/screenshots/fields/url.jpg) -->
 
 ## Зачем этот тип
 
-Отдельный тип для ссылок вместо text. В Pro доступен `responsive` для разных URL по breakpoint. Поддерживает UTM-плейсхолдеры в связке с [button](button).
+Отдельное поле для ссылки, не обычный текст. В Pro можно задать разные адреса для компьютера, планшета и телефона. В адресе работают плейсхолдеры UTM, как у [button](button).
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ description: "Строка URL с базовой проверкой формат
 
 ## Пример в chunk
 
-```html
-<a href="{$link|escape}">Подробнее</a>
+::: code-group
+
+```modx
+<a href="[[+link]]">Подробнее</a>
 ```
+
+```fenom
+<a href="{$link|pb_href|escape}">Подробнее</a>
+```
+
+:::
 
 ## Примечание
 

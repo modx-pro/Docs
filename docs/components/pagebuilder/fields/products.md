@@ -31,11 +31,21 @@ description: "Список ID товаров miniShop3 через запятую
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
 {foreach $product_ids as $id}
   <span>{$id|escape}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $product_ids as $id}
+  <span>{$id|escape}</span>
+{/foreach}
+```
+
+:::
 
 ## Похожие типы
 

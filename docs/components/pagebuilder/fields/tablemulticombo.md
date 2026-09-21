@@ -1,17 +1,17 @@
 ---
 title: "tablemulticombo"
-description: "Массив id строк custom table через MultiSelect"
+description: "Несколько значений из класса MODX через optionsSource"
 ---
 
 # Поле tablemulticombo
 
 Версия: **Pro**.
 
-<!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.png) -->
+<!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.jpg) -->
 
 ## Зачем этот тип
 
-Несколько id из того же table source. Парный тип к [tablecombo](tablecombo). В data только id, без inline-строк.
+Несколько значений из того же источника, что у [tablecombo](tablecombo): класс MODX и `optionsSource`. В инспекторе это список с поиском, не сетка. В данных только значения `valueField`, без самих строк. Без `optionsSource` список пустой.
 
 ## Когда использовать
 
@@ -36,7 +36,10 @@ description: "Массив id строк custom table через MultiSelect"
   "type": "tablemulticombo",
   "label": "Шаблоны",
   "optionsSource": {
-    "class": "modTemplate"
+    "class": "modTemplate",
+    "valueField": "id",
+    "labelField": "templatename",
+    "limit": 50
   },
   "tab": "Контент",
   "width": 100,
@@ -46,7 +49,7 @@ description: "Массив id строк custom table через MultiSelect"
 
 ## Значение
 
-Массив id.
+Массив значений `valueField`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -54,20 +57,27 @@ description: "Массив id строк custom table через MultiSelect"
 
 ```json
 {
-  "templates": [
-    "admin",
-    "editor"
-  ]
+  "templates": [3, 5]
 }
 ```
 
 ## Пример в chunk
+
+::: code-group
+
+```modx
+{foreach $templates as $id}
+  <span>{$id}</span>
+{/foreach}
+```
 
 ```fenom
 {foreach $templates as $id}
   <span>{$id}</span>
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 

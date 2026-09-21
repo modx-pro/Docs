@@ -7,11 +7,11 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 Версия: **Pro**.
 
-<!-- ![combo](/components/pagebuilder/screenshots/fields/combo.png) -->
+<!-- ![combo](/components/pagebuilder/screenshots/fields/combo.jpg) -->
 
 ## Зачем этот тип
 
-Список из БД: modResource, modTemplate и другие классы из whitelist. Загрузка через `mgr/field/options` и событие `pbOnFieldValues`. Поиск в выпадающем списке без модального окна relation.
+Список из базы: ресурсы, шаблоны и другие разрешённые классы. Варианты подгружаются действием `mgr/field/options` и событием `pbOnFieldValues`. Поиск идёт в выпадающем списке, без окна как у [relation](relation).
 
 ## Когда использовать
 
@@ -26,7 +26,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 ## Похожие типы
 
 - [select](select) для статического списка `options`
-- [tablecombo](tablecombo) для id строки custom table
+- [tablecombo](tablecombo) тоже список из класса MODX через `optionsSource`. Сетка в инспекторе у [table](table)
 
 ## Настройка
 
@@ -60,9 +60,17 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 ## Пример в chunk
 
-```fenom
-{$related|escape}
+::: code-group
+
+```modx
+[[+related]]
 ```
+
+```fenom
+{$related|pb_text}
+```
+
+:::
 
 ## Общие свойства
 

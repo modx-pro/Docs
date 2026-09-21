@@ -169,7 +169,7 @@ function wrapFrontmatter(title, description, body, options = {}) {
 }
 
 function fieldScreenshotStub(fieldKey) {
-  return `\n\n<!-- ![${fieldKey}](/components/pagebuilder/screenshots/fields/${fieldKey}.png) -->\n`
+  return `\n\n<!-- ![${fieldKey}](/components/pagebuilder/screenshots/fields/${fieldKey}.jpg) -->\n`;
 }
 
 function injectFieldEnrichmentBlocks(body, fieldKey, lang) {
@@ -544,7 +544,7 @@ function buildSectionPage(def, layer, lang) {
     ? `PageBuilderPro/core/components/pagebuilderpro/sections/${key}.json`
     : `core/components/pagebuilder/sections/${key}.json`
   const fieldsSection = buildFieldEditorSection(fields, lang)
-  const screenshotStub = `\n\n<!-- ![${copy.title.replace(/]/g, '')}](/components/pagebuilder/screenshots/sections/${key}.png) -->\n`
+  const screenshotStub = `\n\n<!-- ![${copy.title.replace(/]/g, "")}](/components/pagebuilder/screenshots/sections/${key}.jpg) -->\n`;
 
   const normalizeBody = (text) => text.replace(/\n{3,}/g, '\n\n').trim()
 
@@ -706,9 +706,9 @@ function buildSectionsIndex(definitions, lang) {
 
   if (lang === 'en') {
     return wrapFrontmatter(
-      'Section catalog',
-      'Built-in PageBuilder section blocks (Free and Pro)',
-      `# Section catalog
+        "Section catalog",
+        "Built-in PageBuilder section blocks (Free and Pro)",
+        `# Section catalog
 
 Built-in blocks for assembling pages in the MODX manager. Pick a section type, fill fields in the inspector, and reorder blocks on the resource.
 
@@ -716,28 +716,30 @@ Each section page lists **Why this section**, **When to use**, **Page examples**
 
 Section \`key\` is used in the PageBuilder snippet and document JSON. Register custom types via CMP (Pro) or a plugin on \`pbOnRegisterSectionDefinitions\`.
 
-<!-- ![Section catalog in the manager](/components/pagebuilder/screenshots/mgr-section-catalog.png) -->
+<!-- ![Section catalog in the manager](/components/pagebuilder/screenshots/mgr-section-catalog.jpg) -->
 
 ## Free — content and layout (9)
 
 | key | Section | Category | requires |
 | --- | --- | --- | --- |
-${groups.freeStarter.map(d => row(d, lang)).join('\n')}
+${groups.freeStarter.map((d) => row(d, lang)).join("\n")}
 
 ## Free — utility (2)
 
 | key | Section | requires |
 | --- | --- | --- |
-${groups.freeUtility.map(d => {
-    const copy = getSectionCopy(d.json.key, lang, d.json.label)
-    return `| \`${d.json.key}\` | [${copy.title}](${d.json.key}) | — |`
-  }).join('\n')}
+${groups.freeUtility
+    .map((d) => {
+        const copy = getSectionCopy(d.json.key, lang, d.json.label);
+        return `| \`${d.json.key}\` | [${copy.title}](${d.json.key}) | — |`;
+    })
+    .join("\n")}
 
 ## Pro
 
 | key | Section | Category | requires |
 | --- | --- | --- | --- |
-${groups.pro.map(d => row(d, lang)).join('\n')}
+${groups.pro.map((d) => row(d, lang)).join("\n")}
 
 Commerce sections need **miniShop3**. \`SectionRequirementChecker\` filters the catalog; override via \`pbOnCheckSectionRequirement\`.
 
@@ -749,13 +751,13 @@ Product sections (\`products_grid\`, \`product_spotlight\`, \`promo_banner\`) re
 - [Frontend output](../frontend)
 - [Manager and events](../integration)
 `,
-    )
+    );
   }
 
   return wrapFrontmatter(
-    'Каталог секций',
-    'Встроенные блоки секций PageBuilder Free и Pro',
-    `# Каталог секций
+      "Каталог секций",
+      "Встроенные блоки секций PageBuilder Free и Pro",
+      `# Каталог секций
 
 Встроенные блоки для сборки страниц в менеджере MODX. Выберите тип секции, заполните поля в инспекторе и меняйте порядок блоков на ресурсе.
 
@@ -763,28 +765,30 @@ Product sections (\`products_grid\`, \`product_spotlight\`, \`promo_banner\`) re
 
 Ключ секции (\`key\`) используется в сниппете PageBuilder и в JSON документа. Свои типы добавляют через CMP (Pro) или плагин на \`pbOnRegisterSectionDefinitions\`.
 
-<!-- ![Каталог секций в менеджере](/components/pagebuilder/screenshots/mgr-section-catalog.png) -->
+<!-- ![Каталог секций в менеджере](/components/pagebuilder/screenshots/mgr-section-catalog.jpg) -->
 
 ## Free — контент и layout (9)
 
 | key | Секция | Категория | Требования |
 | --- | --- | --- | --- |
-${groups.freeStarter.map(d => row(d, lang)).join('\n')}
+${groups.freeStarter.map((d) => row(d, lang)).join("\n")}
 
 ## Free — utility (2)
 
 | key | Секция | Требования |
 | --- | --- | --- |
-${groups.freeUtility.map(d => {
-    const copy = getSectionCopy(d.json.key, lang, d.json.label)
-    return `| \`${d.json.key}\` | [${copy.title}](${d.json.key}) | — |`
-  }).join('\n')}
+${groups.freeUtility
+    .map((d) => {
+        const copy = getSectionCopy(d.json.key, lang, d.json.label);
+        return `| \`${d.json.key}\` | [${copy.title}](${d.json.key}) | — |`;
+    })
+    .join("\n")}
 
 ## Pro
 
 | key | Секция | Категория | Требования |
 | --- | --- | --- | --- |
-${groups.pro.map(d => row(d, lang)).join('\n')}
+${groups.pro.map((d) => row(d, lang)).join("\n")}
 
 Commerce-секции требуют **miniShop3**. \`SectionRequirementChecker\` фильтрует каталог. Переопределение через \`pbOnCheckSectionRequirement\`.
 
@@ -796,7 +800,7 @@ Commerce-секции требуют **miniShop3**. \`SectionRequirementChecker\
 - [Вывод на сайте](../frontend)
 - [Менеджер и события](../integration)
 `,
-  )
+  );
 }
 
 function syncOverviewAndTypes(lang) {
@@ -815,13 +819,7 @@ function syncOverviewAndTypes(lang) {
     body = polishFieldDocs(body)
 
     if (name === 'overview.md') {
-      body = injectScreenshotCommentBefore(
-        body,
-        lang === 'en' ? '## Minimal field' : '## Минимальное поле',
-        lang === 'en'
-          ? '<!-- ![Section inspector](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->'
-          : '<!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->',
-      )
+      body = injectScreenshotCommentBefore(body, lang === "en" ? "## Minimal field" : "## Минимальное поле", lang === "en" ? "<!-- ![Section inspector](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->" : "<!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->");
     }
     if (name === 'types.md') {
       const typesIntro = lang === 'en'
@@ -833,13 +831,7 @@ function syncOverviewAndTypes(lang) {
           : /У каждого типа своя страница:.*?\*\*Общие свойства\*\*\./s,
         typesIntro,
       )
-      body = injectScreenshotCommentBefore(
-        body,
-        '## Free',
-        lang === 'en'
-          ? '<!-- ![Field types in inspector](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->'
-          : '<!-- ![Типы полей в инспекторе](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->',
-      )
+      body = injectScreenshotCommentBefore(body, "## Free", lang === "en" ? "<!-- ![Field types in inspector](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->" : "<!-- ![Типы полей в инспекторе](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->");
     }
 
     const title = extractTitle(body)

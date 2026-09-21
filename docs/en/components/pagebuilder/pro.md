@@ -5,7 +5,7 @@ description: "Pro flags, library pull, page templates, section journal, and conn
 
 # PageBuilder Pro
 
-The **pagebuilderpro** extra extends the free editor. On install it pulls **pagebuilder** core as a dependency. Current line: **1.0.13-beta**, requires `pagebuilder` ≥ **1.0.13**.
+The **pagebuilderpro** extra extends the free editor. On install it pulls **pagebuilder** core as a dependency. Current line: **1.0.14-beta**, requires `pagebuilder` ≥ **1.0.14**. Install Free and Pro from this line together: `ProFeatureProvider` implements `serverContributions()` and `cmpContributions()`. An older Pro without those methods fatals on load.
 
 ## Pro flags
 

@@ -7,6 +7,8 @@ description: "Список записей провайдера datasource. Capab
 
 Секция `dynamic_list` показывает записи провайдера на момент рендера. Chunk: `pagebuilderpro_dynamic_list`. Нужны PageBuilder Pro и capability `datasources`.
 
+![Динамический список](/components/pagebuilder/screenshots/sections/dynamic_list.jpg)
+
 Провайдеры: `modx-resources`, `pagebuilder-tables`, `minishop3`. В поле `datasource` выбирают провайдера, при необходимости ключ таблицы, фильтры, sort и limit. Enrich вызывает `DatasourceQueryService` и передаёт в чанк `items` и `total`.
 
 Превью в менеджере: `mgr/datasource/query`.
@@ -48,9 +50,44 @@ description: "Список записей провайдера datasource. Capab
 }
 ```
 
+## Шаблон chunk
+
+Fenom chunk `pagebuilderpro_dynamic_list`:
+
+```fenom
+<section class="pb-section pb-section--dynamic-list" data-pb-section="dynamic_list"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    {if $query_error}
+      <p class="pb-dynamic-list__error" role="status">{$query_error|escape}</p>
+    {elseif !$items || $items|count == 0}
+      <p class="pb-dynamic-list__empty" role="status">{$lex_empty|default:'No items.'|escape}</p>
+    {else}
+      <ul class="pb-dynamic-list__items">
+        {foreach $items as $item}
+          <li class="pb-dynamic-list__item">
+            {set $label = $item.pagetitle|default:$item.title|default:$item.name|default:$item.label|default:$item.id}
+            {if $item.image}
+              <img class="pb-dynamic-list__image" src="{$item.image|escape}" alt="{$label|escape}" loading="lazy" />
+            {/if}
+            {if $item.uri}
+              <a href="{$item.uri|escape}">{$label|escape}</a>
+            {elseif $item.alias}
+              <span>{$label|escape}</span>
+            {else}
+              <span>{$label|escape}</span>
+            {/if}
+          </li>
+        {/foreach}
+      </ul>
+    {/if}
+  </div>
+</section>
+```
+
 ## Похожие секции
 
-- [Сетка с фильтром](filterable_grid) для GET-фильтров и пагинации
+- [Сетка с фильтром](filterable_grid) для фильтров и пагинации
 - [Записи блога](blog_posts) для дочерних ресурсов через `pdoResources`
 
 ## Связанные страницы

@@ -119,6 +119,6 @@ Namespace в MODX: `pagebuilder`. Pro ставится дополнением `p
 ## С чего начать
 
 1. [Установка и первый ресурс](quick-start)
-2. [Системные настройки](settings)
+2. [Рецепты](recipes/)
 3. [Каталог секций](sections/)
 4. [FAQ](faq)

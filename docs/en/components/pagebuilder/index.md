@@ -225,8 +225,19 @@ items: [
     items: [
       { text: 'Overview', link: 'recipes/' },
       { text: 'Landing', link: 'recipes/landing' },
+      { text: 'Shared blocks', link: 'recipes/shared-blocks' },
+      { text: 'Page templates', link: 'recipes/page-templates' },
+      { text: 'Per-screen values', link: 'recipes/responsive' },
+      { text: 'UTM and visibility', link: 'recipes/utm' },
+      { text: 'Tables', link: 'recipes/tables' },
+      { text: 'Dynamic list', link: 'recipes/dynamic-list' },
+      { text: 'Filterable grid', link: 'recipes/filterable-grid' },
+      { text: 'Form', link: 'recipes/form' },
+      { text: 'Products grid', link: 'recipes/products' },
+      { text: 'Shop landing', link: 'recipes/shop-landing' },
       { text: 'Custom section type', link: 'recipes/custom-section' },
       { text: 'Bundle', link: 'recipes/bundle' },
+      { text: 'REST token', link: 'recipes/rest-read' },
     ],
   },
   { text: 'FAQ', link: 'faq' },
@@ -288,8 +299,8 @@ Requires PageBuilder Pro and capability `collections`. With `collections_enabled
 
 | Extra | Version | Contents |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.13-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
-| `pagebuilderpro` | 1.0.13-beta | Pro: requires `pagebuilder` ≥ 1.0.13, quiz, library pull, page templates, section journal |
+| `pagebuilder` | 1.0.14-beta | Free: core, sections, control panel, snippets, MIGX, responsive, Save = publish, type filter and custom previews |
+| `pagebuilderpro` | 1.0.14-beta | Pro: requires `pagebuilder` ≥ 1.0.14, quiz, library pull, page templates, section journal |
 
 MODX namespace: `pagebuilder`.
 
@@ -310,7 +321,7 @@ MODX namespace: `pagebuilder`.
 | Pro, basket, examples | [PageBuilder Pro](pro) |
 | Scripts and agents | [Agent API](agent-api) |
 | Custom sections and extensions | [Developer](developer) |
-| Landing, custom type, Bundle | [Recipes](recipes/) |
+| Landing, lists, forms, UTM, REST | [Recipes](recipes/) |
 | 62 inspector field types | [Field type reference](fields/types) |
 | 50 built-in blocks | [Section catalog](sections/) |
 | Common issues | [FAQ](faq) |

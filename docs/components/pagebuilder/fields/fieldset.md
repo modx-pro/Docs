@@ -7,11 +7,11 @@ description: "Группа вложенных полей с плоскими к�
 
 Версия: **Pro**.
 
-<!-- ![fieldset](/components/pagebuilder/screenshots/fields/fieldset.png) -->
+<!-- ![fieldset](/components/pagebuilder/screenshots/fields/fieldset.jpg) -->
 
 ## Зачем этот тип
 
-Legend в инспекторе без ключа fieldset в data. Вложенные `name` уникальны в пределах секции. Организация длинных форм Pro.
+Подпись группы в инспекторе. Отдельного ключа группы в данных секции нет: вложенные поля пишутся своими именами, и эти имена не повторяются в секции. Есть в Pro, чтобы разбить длинную форму.
 
 ## Когда использовать
 
@@ -63,9 +63,17 @@ Legend в инспекторе без ключа fieldset в data. Вложен�
 
 ## Пример в chunk
 
-```fenom
-{$seo_title|escape}
+::: code-group
+
+```modx
+[[+seo_title]]
 ```
+
+```fenom
+{$seo_title|pb_text}
+```
+
+:::
 
 ## Общие свойства
 

@@ -33,9 +33,17 @@ description: "Объект label, url и target. Слой Pro."
 
 ## Пример в chunk
 
-```html
-<a href="{$cta.url|escape}" target="{$cta.target|escape}">{$cta.label|escape}</a>
+::: code-group
+
+```modx
+<a href="[[+cta.url]]" target="[[+cta.target]]">[[+cta.label]]</a>
 ```
+
+```fenom
+<a href="{$cta.url|pb_href|escape}" target="{$cta.target|escape}">{$cta.label|pb_text}</a>
+```
+
+:::
 
 ## Похожие типы
 

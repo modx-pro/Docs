@@ -1,23 +1,23 @@
 ---
 title: "tablecombo"
-description: "Одно id строки custom table через optionsSource table"
+description: "Выпадающий список из класса MODX через optionsSource"
 ---
 
 # Поле tablecombo
 
 Версия: **Pro**.
 
-<!-- ![tablecombo](/components/pagebuilder/screenshots/fields/tablecombo.png) -->
+<!-- ![tablecombo](/components/pagebuilder/screenshots/fields/tablecombo.jpg) -->
 
 ## Зачем этот тип
 
-Select с поиском по строкам embedded/custom table. Альтернатива [combo](combo), когда источник не xPDO-класс. Требует Pro и capability `advanced-fields`.
+Выпадающий список. Варианты загружаются из класса MODX через `optionsSource` и процессор `mgr/field/options`. В инспекторе это не сетка: сетка строк у поля [table](table). Нужны PageBuilder Pro и возможность `advanced-fields`. Без `optionsSource` список пустой.
 
 ## Когда использовать
 
-- Строка бренда или вендора из таблицы MS
-- id из колонки Collections
-- Динамический pick, когда modResource не подходит
+- Шаблон или другой класс MODX (`modTemplate` и похожие)
+- Одна запись своего xPDO-класса, если есть поле id и поле подписи
+- Когда окно [relation](relation) не нужно
 
 ## Советы
 
@@ -38,7 +38,8 @@ Picker modResource: [relation](relation) или [combo](combo). Нескольк
   "optionsSource": {
     "class": "modTemplate",
     "valueField": "id",
-    "labelField": "templatename"
+    "labelField": "templatename",
+    "limit": 50
   },
   "tab": "Контент",
   "width": 100,
@@ -62,9 +63,17 @@ Picker modResource: [relation](relation) или [combo](combo). Нескольк
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+[[+template]]
+```
+
 ```fenom
 {if $template}{$template}{/if}
 ```
+
+:::
 
 ## Общие свойства
 

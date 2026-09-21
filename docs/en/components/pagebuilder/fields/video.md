@@ -7,26 +7,26 @@ description: "Video object with enrich embed_url provider and watch_url"
 
 Version: **Free**.
 
-<!-- ![video](/components/pagebuilder/screenshots/fields/video.png) -->
+<!-- ![video](/components/pagebuilder/screenshots/fields/video.jpg) -->
 
 ## Why this type
 
-YouTube, Vimeo, and upload in one field. Save draft enrich fills embed and provider. Flat video_* when type=video or name contains video.
+A YouTube or Vimeo link, or an uploaded clip. After save, the field stores a player URL (`embed_url`), the service name (`provider`), and a watch link (`watch_url`). If the field type is `video`, or the name contains "video", the same values are also stored as `video_*` keys.
 
 ## When to use
 
-- Hero background video or demo block
-- Embed on product landing
-- Single clip with poster and caption
+- Background video on the first screen, or a demo block
+- A clip on a product page
+- One clip with a poster and a caption
 
 ## Tips
 
-Chunk should use enrich fields, not raw url only. Frame gallery is [gallery](gallery), not video.
+In the chunk, output the player URL and the service, not only the original `url`. A set of photos uses [gallery](gallery), not video.
 
 ## Similar types
 
-- [image](image) for static poster frame
-- [url](url) for simple external watch link
+- [image](image) for a still poster
+- [url](url) for a plain link to the clip
 
 ## Schema
 
@@ -80,10 +80,23 @@ Key `video` in the section data after save enrich (`SectionFieldEnricher` + `Vid
 
 ## Chunk example
 
-```html
-<iframe src="{$video.embed_url|escape}" title="Video"></iframe>
-<img src="{$video.poster.url|escape}" alt="{$video.poster.title|escape}">
+::: code-group
+
+```modx
+<iframe src="[[+video.embed_url]]" title="Video"></iframe>
+[[$pagebuilder_partial_image?
+  &image=`[[+video.poster]]`
+  &alt=`[[+video.poster.title]]`
+  &class=`pb-video__poster`
+]]
 ```
+
+```fenom
+<iframe src="{$video.embed_url|escape}" title="Video"></iframe>
+{include 'pagebuilder_partial_image' image=$video.poster alt=$video.poster.title class='pb-video__poster'}
+```
+
+:::
 
 ## Notes
 

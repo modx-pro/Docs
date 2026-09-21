@@ -7,7 +7,7 @@ description: "Array of objects with nested fields and service _rowId"
 
 Version: **Free**.
 
-<!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.png) -->
+<!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.jpg) -->
 
 ## Why this type
 
@@ -79,13 +79,25 @@ Key `items` in the section data: an array of rows; each row has a stable `_rowId
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $items as $item}
   <article id="{$item._rowId|escape}">
-    <h3>{$item.title|escape}</h3>
+    <h3>{$item.title}</h3>
   </article>
 {/foreach}
 ```
+
+```fenom
+{foreach $items as $item}
+  <article id="{$item._rowId|escape}">
+    <h3>{$item.title|pb_text}</h3>
+  </article>
+{/foreach}
+```
+
+:::
 
 ## Common properties
 

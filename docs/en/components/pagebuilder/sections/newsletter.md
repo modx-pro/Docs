@@ -7,6 +7,8 @@ description: "HTML subscribe form to an external action_url. Not FetchIt. Pro la
 
 Section `newsletter` renders an HTML form. Submit goes to an external `action_url`, not through FetchIt. Chunk: `pagebuilderpro_newsletter`. Requires PageBuilder Pro.
 
+![Newsletter](/components/pagebuilder/screenshots/sections/newsletter.jpg)
+
 `action_url` is required. `email_name` sets the email field name in POST. `note` is the privacy text.
 
 ## Where it fits
@@ -43,6 +45,38 @@ The form uses `method="post"` and posts to `action_url`. FetchIt is not involved
   "submit_label": "Subscribe",
   "note": "Unsubscribe from the email"
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_newsletter`:
+
+```fenom
+{set $emailField = $email_name|default:'email'}
+{set $submitText = $submit_label|default:'Subscribe'}
+{set $ph = $placeholder|default:'you@example.com'}
+<section class="pb-section pb-section--newsletter pb-newsletter{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="newsletter"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    {if $text}<p class="pb-newsletter__text">{$text|escape}</p>{/if}
+    <form class="pb-newsletter__form" method="post" action="{$action_url|escape}">
+      <label class="pb-newsletter__label" for="pb-newsletter-{$id|escape}">
+        <span class="pb-sr-only">Email</span>
+        <input
+          class="pb-newsletter__input"
+          id="pb-newsletter-{$id|escape}"
+          type="email"
+          name="{$emailField|escape}"
+          placeholder="{$ph|escape}"
+          required
+          autocomplete="email"
+        />
+      </label>
+      <button class="pb-button" type="submit">{$submitText|escape}</button>
+    </form>
+    {if $note}<p class="pb-newsletter__note">{$note|escape}</p>{/if}
+  </div>
+</section>
 ```
 
 ## Similar sections

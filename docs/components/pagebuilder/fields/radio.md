@@ -7,11 +7,11 @@ description: "Одно значение из options с радиокнопкам
 
 Версия: **Free**.
 
-<!-- ![radio](/components/pagebuilder/screenshots/fields/radio.png) -->
+<!-- ![radio](/components/pagebuilder/screenshots/fields/radio.jpg) -->
 
 ## Зачем этот тип
 
-Все варианты видны сразу, без раскрытия select. Тот же массив `options`, что у [select](select). Удобен для 2–5 взаимоисключающих значений.
+Все варианты видны сразу, список раскрывать не нужно. Набор `options` тот же, что у [select](select). Удобен, когда вариантов от двух до пяти и выбрать можно только один.
 
 ## Когда использовать
 
@@ -67,11 +67,21 @@ description: "Одно значение из options с радиокнопкам
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<div class="align-[[+align]]">
+  …
+</div>
+```
+
+```fenom
 <div class="align-{$align|escape}">
   …
 </div>
 ```
+
+:::
 
 ## Общие свойства
 

@@ -7,11 +7,11 @@ description: "Decorative field group heading with no section data key"
 
 Version: **Free**.
 
-<!-- ![heading](/components/pagebuilder/screenshots/fields/heading.png) -->
+<!-- ![heading](/components/pagebuilder/screenshots/fields/heading.jpg) -->
 
 ## Why this type
 
-Breaks long inspector into blocks. No key in the section data. Tab and width work like normal fields.
+Splits a long form into titled blocks. It stores no value in the section data. `tab` and `width` work as they do on normal fields.
 
 ## When to use
 

@@ -9,7 +9,7 @@ description: "Строка email в инспекторе. Слой Free."
 
 ## Зачем этот тип
 
-Отдельная строка для адреса почты, не общий `text`. Значение сохраняется строкой.
+Отдельное поле для адреса почты, не общий [text](text). Значение сохраняется строкой.
 
 ## Когда использовать
 
@@ -37,9 +37,17 @@ description: "Строка email в инспекторе. Слой Free."
 
 ## Пример в chunk
 
-```html
-<a href="mailto:{$email|escape}">{$email|escape}</a>
+::: code-group
+
+```modx
+<a href="mailto:[[+email]]">[[+email]]</a>
 ```
+
+```fenom
+<a href="mailto:{$email|escape:'url'}">{$email|escape}</a>
+```
+
+:::
 
 ## Похожие типы
 

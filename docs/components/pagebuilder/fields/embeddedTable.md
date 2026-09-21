@@ -7,11 +7,11 @@ description: "Конфиг table_key limit filters без строк табли�
 
 Версия: **Pro**.
 
-<!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.png) -->
+<!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.jpg) -->
 
 ## Зачем этот тип
 
-Строки грузит сниппет PageBuilderTableRows на фронте. В data объект с `table_key`, `limit`, `filters`, `use_context`, `utm`. Подходит для catalog-scale data.
+Строки на сайте отдаёт сниппет PageBuilderTableRows. В секции хранятся не сами строки, а настройки: ключ таблицы, лимит, фильтры, контекст и UTM. Поле берут, когда строк слишком много, чтобы править их в инспекторе.
 
 ## Когда использовать
 
@@ -70,9 +70,20 @@ description: "Конфиг table_key limit filters без строк табли�
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
 [[!PageBuilderTableRows? &table_key=`products` &limit=`10`]]
 ```
+
+```fenom
+{'!PageBuilderTableRows' | snippet : [
+  'table_key' => 'products',
+  'limit' => 10,
+]}
+```
+
+:::
 
 ## Общие свойства
 

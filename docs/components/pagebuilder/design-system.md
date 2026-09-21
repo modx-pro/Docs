@@ -134,15 +134,19 @@ Spacer: два класса `pb-spacer pb-spacer--md`, не `pb-spacer-md`.
 
 ## Fenom-оболочка секции
 
-Штатный chunk hero (упрощённо):
+Штатный chunk `pagebuilder_hero`:
 
 ```fenom
-{var $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
-<section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}"
-  data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
+{set $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+<section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
   <div class="pb-section__inner pb-hero__inner">
-    <h1 class="pb-hero__title">{$title|escape}</h1>
-    ...
+    <h2 class="pb-hero__title">{$title|pb_text}</h2>
+    {if $description}
+      <div class="pb-hero__description">{$description|pb_text}</div>
+    {/if}
+    {if $button_label && $button_url}
+      <a class="pb-hero__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|pb_text}</a>
+    {/if}
   </div>
 </section>
 ```
@@ -174,13 +178,14 @@ Partial не рендерит тег, если URL пустой.
 
 ## Escape и ссылки
 
-| Тип поля | Fenom |
-| --- | --- |
-| text, textarea | `\|escape` |
-| url в href | `\|pb_href\|escape` (нормализация MODX-ссылок) |
-| richtext, editorjs | HTML редактора без sanitize на фронте |
+| Тип поля | MODX | Fenom |
+| --- | --- | --- |
+| text, textarea | `[[+title]]` | `{$title\|pb_text}` |
+| url в href | `[[+button_url]]` | `{$button_url\|pb_href\|escape}` |
+| image | `[[$pagebuilder_partial_image]]` | `{include 'pagebuilder_partial_image' image=$image alt=$alt}` |
+| richtext, editorjs | `[[+content]]` | `{$content}` |
 
-Rich text выводите только если доверяете редакторам с правом сохранения ресурса. Остальной текст экранируйте.
+`pb_href` нормализует MODX-ссылки. `pb_text` есть только у Fenom. Rich text выводите только если доверяете редакторам с правом сохранения ресурса. Обычный текст text и textarea выводите через `pb_text`, не через `escape`.
 
 ## Дополнительный класс через событие
 

@@ -7,26 +7,26 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 Версия: **Free**.
 
-<!-- ![video](/components/pagebuilder/screenshots/fields/video.png) -->
+<!-- ![video](/components/pagebuilder/screenshots/fields/video.jpg) -->
 
 ## Зачем этот тип
 
-YouTube, Vimeo и upload в одном поле. При save enrich заполняет `embed_url`, `provider`, `watch_url`. Плоские `video_*` появляются при `type=video` или имени поля с «video».
+Ссылка на YouTube или Vimeo, либо загруженный ролик. После сохранения появляются адрес плеера (`embed_url`), название сервиса (`provider`) и ссылка на просмотр (`watch_url`). Если тип поля `video` или в имени есть «video», те же значения записываются ещё и ключами `video_*`.
 
 ## Когда использовать
 
-- Фоновое видео в hero или demo-блок
-- Embed на product landing
-- Один ролик с poster и подписью
+- Фоновое видео на первом экране или в блоке с демонстрацией
+- Ролик на странице товара
+- Один ролик с обложкой и подписью
 
 ## Советы
 
-В chunk выводите enrich-поля, не только raw `url`. Галерея кадров: [gallery](gallery), не video.
+В чанке выводите адрес плеера и сервис, не только исходный `url`. Набор фотографий делают полем [gallery](gallery), не video.
 
 ## Похожие типы
 
-- [image](image) для poster static frame
-- [url](url) для простой внешней ссылки на ролик
+- [image](image) для неподвижной обложки
+- [url](url) для обычной ссылки на ролик
 
 ## Настройка
 
@@ -80,10 +80,23 @@ YouTube, Vimeo и upload в одном поле. При save enrich заполн
 
 ## Пример в chunk
 
-```html
-<iframe src="{$video.embed_url|escape}" title="Video"></iframe>
-<img src="{$video.poster.url|escape}" alt="{$video.poster.title|escape}">
+::: code-group
+
+```modx
+<iframe src="[[+video.embed_url]]" title="Video"></iframe>
+[[$pagebuilder_partial_image?
+  &image=`[[+video.poster]]`
+  &alt=`[[+video.poster.title]]`
+  &class=`pb-video__poster`
+]]
 ```
+
+```fenom
+<iframe src="{$video.embed_url|escape}" title="Video"></iframe>
+{include 'pagebuilder_partial_image' image=$video.poster alt=$video.poster.title class='pb-video__poster'}
+```
+
+:::
 
 ## Примечание
 

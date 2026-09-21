@@ -7,6 +7,8 @@ description: "Panels as native details with no JavaScript. Pro layer."
 
 Section `accordion` renders panels as `<details>`. There is no extra JavaScript. Chunk: `pagebuilderpro_accordion`. Requires PageBuilder Pro.
 
+![Accordion](/components/pagebuilder/screenshots/sections/accordion.jpg)
+
 `open` marks whether a panel is open by default.
 
 ## Where it fits
@@ -38,6 +40,28 @@ Each row is `<details class="pb-accordion__item">`. The `open` attribute is set 
     { "title": "Delivery", "body": "Next day in the city", "open": true }
   ]
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_accordion`:
+
+```fenom
+<section class="pb-section pb-section--accordion pb-accordion{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="accordion"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    <div class="pb-accordion__list">
+      {foreach $items as $item}
+        <details class="pb-accordion__item"{if $item.open} open{/if}>
+          <summary class="pb-accordion__summary">{$item.title|escape}</summary>
+          <div class="pb-accordion__body">
+            <p>{$item.body|escape}</p>
+          </div>
+        </details>
+      {/foreach}
+    </div>
+  </div>
+</section>
 ```
 
 ## Similar sections

@@ -7,11 +7,7 @@ description: "Ряд логотипов клиентов или партнёро
 
 Блок «Нам доверяют»: логотипы в одну линию или сетку. У каждого лого alt и необязательная ссылка.
 
-<!-- ![Логотипы партнёров](/components/pagebuilder/screenshots/sections/logos.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Логотипы партнёров](/components/pagebuilder/screenshots/sections/logos.jpg)
 
 ## Блок «нам доверяют»
 
@@ -116,10 +112,6 @@ Fenom chunk `pagebuilderpro_logos`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/logos.json`
 
 ## Связанные страницы
 

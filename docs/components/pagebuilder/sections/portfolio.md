@@ -7,6 +7,8 @@ description: "Карточки проектов с изображением, с�
 
 Секция `portfolio` показывает проекты из repeater. Chunk: `pagebuilderpro_portfolio`. Требуется PageBuilder Pro.
 
+![Портфолио](/components/pagebuilder/screenshots/sections/portfolio.jpg)
+
 ## Где уместна
 
 - Работы студии
@@ -42,6 +44,28 @@ description: "Карточки проектов с изображением, с�
     }
   ]
 }
+```
+
+## Шаблон chunk
+
+Fenom chunk `pagebuilderpro_portfolio`:
+
+```fenom
+<section class="pb-section pb-section--portfolio pb-portfolio{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="portfolio"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    <div class="pb-grid pb-grid--cards">
+      {foreach $items as $item}
+        <article class="pb-portfolio__item">
+          {if $item.image}{include 'pagebuilder_partial_image' image=$item.image alt=$item.title class='pb-portfolio__image'}{/if}
+          <h3>{$item.title|escape}</h3>
+          {if $item.text}<p>{$item.text|escape}</p>{/if}
+          {if $item.url}<p><a href="{$item.url|escape}">{$item.title|escape}</a></p>{/if}
+        </article>
+      {/foreach}
+    </div>
+  </div>
+</section>
 ```
 
 ## Похожие секции

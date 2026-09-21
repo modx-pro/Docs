@@ -43,6 +43,8 @@ The same order with other Free sections:
 
 With Pro you can add `how_it_works`, `media_split`, `case_study`, `newsletter`, or `quote` to the same order. If a type is missing from the catalog, check `requires` and the resource context.
 
+A shop page with products and a list of posts: [Shop landing](shop-landing).
+
 Rollback: move the section to the page trash, or unpublish sections through `mgr/page/unpublish` when that button is in the UI. The draft stays.
 
 ## See also

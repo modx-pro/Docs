@@ -7,11 +7,11 @@ description: "Маркер блока showWhen: в данные секции н�
 
 Версия: **Pro**.
 
-<!-- ![dependent](/components/pagebuilder/screenshots/fields/dependent.png) -->
+<!-- ![dependent](/components/pagebuilder/screenshots/fields/dependent.jpg) -->
 
 ## Зачем этот тип
 
-Сам тип скрыт в инспекторе (`fieldVisibility` false). Документирует группу условных полей. Соседи управляются `showWhen` на других полях.
+Само поле в инспекторе не показывается (`fieldVisibility` выключен). Оно помечает группу полей, которые видны по условию. Условие задаётся свойством `showWhen` у соседних полей.
 
 ## Когда использовать
 

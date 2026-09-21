@@ -7,24 +7,24 @@ description: "Media-объект изображения с alt и enrich metadat
 
 Версия: **Free**.
 
-<!-- ![image](/components/pagebuilder/screenshots/fields/image.png) -->
+<!-- ![image](/components/pagebuilder/screenshots/fields/image.jpg) -->
 
 ## Зачем этот тип
 
-- После enrich в объекте есть width, height, extension
-- Alt и caption задаёте в схеме секции
-- Один кадр, без repeater и gallery
+- После сохранения в объекте есть ширина, высота и расширение
+- Альтернативный текст и подпись задаются в схеме секции
+- Одно изображение, без списка как у [gallery](gallery)
 
 ## Когда использовать
 
-- Фон hero, превью карточки, фото автора
-- Превью в стиле OG внутри секции
-- Логотип партнёра с alt
+- Фон первого экрана, превью карточки, фото автора
+- Картинка для превью внутри секции
+- Логотип партнёра с альтернативным текстом
 
 ## Советы
 
-- Несколько кадров: [gallery](gallery) (Pro)
-- В chunk берите `{$photo.url}`, не строку path
+- Несколько фото: [gallery](gallery) (Pro)
+- В чанке берите `{$photo.url}`, не путь к файлу строкой
 
 ## Похожие типы
 
@@ -75,9 +75,21 @@ Media-объект. Кнопка Info редактирует width, height, titl
 
 ## Пример в chunk
 
-```html
-<img src="{$photo.url|escape}" width="{$photo.width}" height="{$photo.height}" alt="{$photo.title|escape}">
+::: code-group
+
+```modx
+[[$pagebuilder_partial_image?
+  &image=`[[+photo]]`
+  &alt=`[[+photo.title]]`
+  &class=`pb-image__media`
+]]
 ```
+
+```fenom
+{include 'pagebuilder_partial_image' image=$photo alt=$photo.title class='pb-image__media'}
+```
+
+:::
 
 ## Общие свойства
 

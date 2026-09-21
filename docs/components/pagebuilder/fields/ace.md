@@ -7,11 +7,11 @@ description: "Строка исходного кода с подсветкой A
 
 Версия: **Free**.
 
-<!-- ![ace](/components/pagebuilder/screenshots/fields/ace.png) -->
+<!-- ![ace](/components/pagebuilder/screenshots/fields/ace.jpg) -->
 
 ## Зачем этот тип
 
-Полный контроль над HTML, CSS или JSON. Режим через `mode` (html, css, javascript, json). Не навязывает WYSIWYG там, где нужен точный код.
+Редактор правит HTML, CSS или JSON как код. Режим задаётся свойством `mode`: html, css, javascript или json. Визуальный редактор здесь не подключается.
 
 ## Когда использовать
 
@@ -58,9 +58,17 @@ description: "Строка исходного кода с подсветкой A
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+[[+markup]]
+```
+
 ```fenom
 {$markup}
 ```
+
+:::
 
 ## Общие свойства
 

@@ -6,7 +6,7 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 ## Шаблон
 
-<!-- ![Страница с секциями на сайте](/components/pagebuilder/screenshots/fe-page-sections.png) -->
+<!-- ![Страница с секциями на сайте](/components/pagebuilder/screenshots/fe-page-sections.jpg) -->
 
 Сниппет `PageBuilder` вставляют в шаблон или в поле content. Вызов некэшированный:
 
@@ -100,7 +100,7 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 Токен подписывается `pagebuilder_preview_secret`. В iframe подключаются CSS шаблона (`pagebuilder_preview_include_template_css`) и список из `pagebuilder_preview_css_urls`.
 
-<!-- ![Превью черновика](/components/pagebuilder/screenshots/mgr-section-preview.png) -->
+<!-- ![Превью черновика](/components/pagebuilder/screenshots/mgr-section-preview.jpg) -->
 
 ## Кастомизация chunks
 

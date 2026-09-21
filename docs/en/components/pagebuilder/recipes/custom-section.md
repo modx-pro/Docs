@@ -7,11 +7,15 @@ description: "JSON, a chunk, and registration via pbOnRegisterSectionDefinitions
 
 Result: the type shows up in the **Blocks** catalog. JSON shape and chunk paths are in [section definition](../developer#section-definition).
 
+## Before you start
+
+Do not edit `core/components/pagebuilder/sections/`. A package upgrade overwrites that folder. A UI type needs the `pagebuilder_manage_types` permission.
+
 ## Plugin
 
-1. Keep the JSON next to your component. Do not edit `core/components/pagebuilder/sections/`. A package upgrade overwrites that folder.
+1. Keep the JSON next to your component.
 2. Create a chunk whose name matches the `chunk` field.
-3. Subscribe a plugin to `pbOnRegisterSectionDefinitions` and call `registerFromFile`.
+3. In **Elements → Plugins** create a plugin, subscribe it to `pbOnRegisterSectionDefinitions`, and call `registerFromFile`.
 
 ```php
 <?php
@@ -26,11 +30,17 @@ switch ($modx->event->name) {
 
 A key that contains `_`, or `category: dev`, stays out of the production catalog. `SectionRequirementChecker` evaluates `requires`.
 
+## What to check
+
+The key is visible in the catalog on the **Sections** tab.
+
 ## UI type (Pro)
 
 Create the type in the control panel through `mgr/sectiontype/*`. The row lives in `pb_section_types`. A PageBuilder upgrade does not overwrite those rows.
 
-Check: the key is visible in the catalog on the **Sections** tab. Rollback: hide the type in the panel, or remove `registerFromFile`.
+## Rollback
+
+Hide the type in the panel, or remove `registerFromFile`.
 
 ## Example: a Case type
 

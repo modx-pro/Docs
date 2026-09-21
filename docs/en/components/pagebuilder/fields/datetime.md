@@ -7,11 +7,11 @@ description: "Date and time in one value"
 
 Version: **Free**.
 
-<!-- ![datetime](/components/pagebuilder/screenshots/fields/datetime.png) -->
+<!-- ![datetime](/components/pagebuilder/screenshots/fields/datetime.jpg) -->
 
 ## Why this type
 
-One picker instead of date + time pair. ISO-like string for timed events. Fewer sync mistakes across two fields.
+Date and time in one calendar, not two fields. The saved value is an ISO-like string, so you can sort it. That avoids the mismatches you get from separate [date](date) and [time](time) fields.
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `starts_at` in the section data (`datetime-local` string):
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<time datetime="[[+starts_at]]">[[+starts_at]]</time>
+```
+
+```fenom
 <time datetime="{$starts_at|escape}">{$starts_at|escape}</time>
 ```
+
+:::
 
 ## Common properties
 

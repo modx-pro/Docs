@@ -134,15 +134,19 @@ Hero button: `pb-hero__button pb-button`. Hero background: CSS var `--pb-hero-bg
 
 ## Fenom section shell
 
-Stock hero chunk (simplified):
+Stock chunk `pagebuilder_hero`:
 
 ```fenom
-{var $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
-<section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}"
-  data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
+{set $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+<section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
   <div class="pb-section__inner pb-hero__inner">
-    <h1 class="pb-hero__title">{$title|escape}</h1>
-    ...
+    <h2 class="pb-hero__title">{$title|pb_text}</h2>
+    {if $description}
+      <div class="pb-hero__description">{$description|pb_text}</div>
+    {/if}
+    {if $button_label && $button_url}
+      <a class="pb-hero__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|pb_text}</a>
+    {/if}
   </div>
 </section>
 ```
@@ -174,13 +178,14 @@ The partial renders nothing when the URL is empty.
 
 ## Escape and links
 
-| Field type | Fenom |
-| --- | --- |
-| text, textarea | `\|escape` |
-| url in href | `\|pb_href\|escape` (MODX link normalization) |
-| richtext, editorjs | Editor HTML with no front-end sanitize |
+| Field type | MODX | Fenom |
+| --- | --- | --- |
+| text, textarea | `[[+title]]` | `{$title\|pb_text}` |
+| url in href | `[[+button_url]]` | `{$button_url\|pb_href\|escape}` |
+| image | `[[$pagebuilder_partial_image]]` | `{include 'pagebuilder_partial_image' image=$image alt=$alt}` |
+| richtext, editorjs | `[[+content]]` | `{$content}` |
 
-Output rich text only if you trust editors who can save the resource. Escape everything else.
+`pb_href` normalizes MODX links. `pb_text` is a Fenom modifier only. Output rich text only if you trust editors who can save the resource. Print text and textarea with `pb_text`, not `escape`.
 
 ## Extra class via event
 

@@ -16,7 +16,7 @@ In the control panel:
 - jump to section editor
 - **Section types** (permission `pagebuilder_manage_types`): UI types, hide and restore built-in JSON types
 
-<!-- ![Section types in control panel](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
+<!-- ![Section types in control panel](/components/pagebuilder/screenshots/mgr-cmp-section-types.jpg) -->
 
 - **Basket** (Pro, flag `basket`): global basket for deleted sections and table rows
 - Collections tab settings when `pagebuilder_collections_*` are enabled
@@ -45,7 +45,7 @@ Page basket stores deleted sections in `document.trash`. On draft save a plugin 
 
 Resource table data lives in separate `pb_*` tables (Tables tab).
 
-<!-- ![Tables tab on resource](/components/pagebuilder/screenshots/mgr-resource-tables.png) -->
+<!-- ![Tables tab on resource](/components/pagebuilder/screenshots/mgr-resource-tables.jpg) -->
 
 ## PageBuilder Pro
 

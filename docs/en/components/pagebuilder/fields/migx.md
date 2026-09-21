@@ -79,11 +79,21 @@ The field key (for example `items`) stores a MIGX row array with `MIGX_id` and f
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $items as $item}
-  <div>{$item.title|escape}</div>
+  <div>{$item.title}</div>
 {/foreach}
 ```
+
+```fenom
+{foreach $items as $item}
+  <div>{$item.title|pb_text}</div>
+{/foreach}
+```
+
+:::
 
 ## Common properties
 

@@ -7,11 +7,11 @@ description: "Строка scalar с подсказкой xtype без ExtJS в�
 
 Версия: **Free**.
 
-<!-- ![xtype](/components/pagebuilder/screenshots/fields/xtype.png) -->
+<!-- ![xtype](/components/pagebuilder/screenshots/fields/xtype.jpg) -->
 
 ## Зачем этот тип
 
-Legacy-ключ `xtype` для миграции старых схем. В инспекторе обычный `InputText`: ExtJS-виджет MODX не подключается. Семантический алиас для [text](text), если в JSON остался тип `xtype`.
+Старый ключ `xtype` для схем, которые ещё не переведены на `text`. В инспекторе обычное текстовое поле: виджет ExtJS не подключается. Если в JSON тип всё ещё `xtype`, поле ведёт себя как [text](text).
 
 ## Когда использовать
 
@@ -58,9 +58,17 @@ Legacy-ключ `xtype` для миграции старых схем. В инс
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+[[+ext]]
+```
+
 ```fenom
 {$ext|escape}
 ```
+
+:::
 
 ## Примечание
 

@@ -7,6 +7,8 @@ description: "Steps with title, text, and icon. Pro layer."
 
 Section `how_it_works` lists steps from a repeater. Chunk: `pagebuilderpro_how_it_works`. Requires PageBuilder Pro.
 
+![How it works](/components/pagebuilder/screenshots/sections/how_it_works.jpg)
+
 ## Where it fits
 
 - Order or onboarding flow
@@ -42,6 +44,29 @@ Steps sit in an `<ol>`. The number is the row index plus 1, with `aria-hidden="t
     }
   ]
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_how_it_works`:
+
+```fenom
+<section class="pb-section pb-section--how-it-works pb-how-it-works{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="how_it_works"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    {if $intro}<p class="pb-how-it-works__intro">{$intro|escape}</p>{/if}
+    <ol class="pb-how-it-works__steps">
+      {foreach $steps as $step}
+        <li class="pb-how-it-works__step">
+          <span class="pb-how-it-works__num" aria-hidden="true">{$step@index + 1}</span>
+          {if $step.icon}{include 'pagebuilder_partial_image' image=$step.icon alt=$step.title class='pb-how-it-works__icon'}{/if}
+          <h3>{$step.title|escape}</h3>
+          {if $step.text}<p>{$step.text|escape}</p>{/if}
+        </li>
+      {/foreach}
+    </ol>
+  </div>
+</section>
 ```
 
 ## Similar sections

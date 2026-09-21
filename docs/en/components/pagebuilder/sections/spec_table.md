@@ -7,7 +7,7 @@ description: "Parameter / value table with optional intro text (Pro)"
 
 Two-column table for technical data. Optional title and intro above the table.
 
-<!-- ![Spec table](/components/pagebuilder/screenshots/sections/spec_table.png) -->
+![Spec table](/components/pagebuilder/screenshots/sections/spec_table.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -97,7 +97,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_spec_table`:
 
 ```fenom
-{var $rows = $spec_rows|default:($specs|default:[])}
+{set $rows = $spec_rows|default:($specs|default:[])}
 <section class="pb-section pb-section--spec-table pb-spec-table{if $striped} pb-spec-table--striped{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="spec_table"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-spec-table__inner">
     {if $title}
@@ -111,8 +111,8 @@ Fenom chunk `pagebuilderpro_spec_table`:
         <table class="pb-spec-table__table">
           <thead>
             <tr>
-              <th scope="col">Parameter</th>
-              <th scope="col">Value</th>
+              <th scope="col">{'pagebuilder_fe_spec_param' | lexicon}</th>
+              <th scope="col">{'pagebuilder_fe_spec_value' | lexicon}</th>
             </tr>
           </thead>
           <tbody>
@@ -126,15 +126,11 @@ Fenom chunk `pagebuilderpro_spec_table`:
         </table>
       </div>
     {else}
-      <p class="pb-spec-table__empty">Add specification rows in the inspector.</p>
+      <p class="pb-spec-table__empty">{'pagebuilder_fe_spec_empty' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/spec_table.json`
 
 ## See also
 

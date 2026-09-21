@@ -7,7 +7,7 @@ description: "Подборка из категории с исключением
 
 На карточке товара показывает другие SKU из той же (или заданной) категории, кроме текущего ресурса.
 
-<!-- ![Похожие товары](/components/pagebuilder/screenshots/sections/related_products.png) -->
+![Похожие товары](/components/pagebuilder/screenshots/sections/related_products.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -96,11 +96,11 @@ description: "Подборка из категории с исключением
 Fenom chunk `pagebuilderpro_related_products`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $excludeId = $product.id|default:($product_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $excludeId = $product.id|default:($product_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => $catalogParent,
     'depth' => 10,
     'limit' => $limit|default:4,
@@ -124,15 +124,11 @@ Fenom chunk `pagebuilderpro_related_products`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">Подходящих товаров пока нет.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_related' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/related_products.json`
 
 ## Связанные страницы
 

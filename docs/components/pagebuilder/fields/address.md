@@ -33,9 +33,17 @@ description: "Текст адреса и координаты lat, lng. Слой
 
 ## Пример в chunk
 
-```html
-<address>{$office.text|escape}</address>
+::: code-group
+
+```modx
+<address>[[+office.text]]</address>
 ```
+
+```fenom
+<address>{$office.text|pb_text}</address>
+```
+
+:::
 
 ## Похожие типы
 

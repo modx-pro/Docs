@@ -7,11 +7,7 @@ description: "Карточки тарифов с ценой, периодом и
 
 Таблица цен для подписок и пакетов услуг. У каждого плана название, цена, период оплаты и список фич текстом.
 
-<!-- ![Тарифы](/components/pagebuilder/screenshots/sections/pricing_table.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Тарифы](/components/pagebuilder/screenshots/sections/pricing_table.jpg)
 
 ## Зачем таблица тарифов
 
@@ -145,7 +141,7 @@ Fenom chunk `pagebuilderpro_pricing_table`:
             </ul>
           {/if}
           {if $item.button_label && $item.button_url}
-            <a class="pb-button pb-pricing-table__cta" href="{$item.button_url|escape:'url'}">{$item.button_label|escape}</a>
+            <a class="pb-button pb-pricing-table__cta" href="{$item.button_url|pb_href|escape}">{$item.button_label|escape}</a>
           {/if}
         </article>
       {/foreach}
@@ -153,10 +149,6 @@ Fenom chunk `pagebuilderpro_pricing_table`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/pricing_table.json`
 
 ## Связанные страницы
 

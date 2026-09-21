@@ -7,7 +7,7 @@ description: "Single-line text for titles and short labels"
 
 Version: **Free**.
 
-<!-- ![text](/components/pagebuilder/screenshots/fields/text.png) -->
+<!-- ![text](/components/pagebuilder/screenshots/fields/text.jpg) -->
 
 ## Why this type
 
@@ -63,9 +63,17 @@ Key `title` in the section data:
 
 ## Chunk example
 
-```fenom
-{$title|escape}
+::: code-group
+
+```modx
+[[+title]]
 ```
+
+```fenom
+{$title|pb_text}
+```
+
+:::
 
 ## Notes
 

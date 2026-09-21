@@ -150,7 +150,7 @@ $pageService = $pb->pages();
 
 ## Расширения Pro
 
-Plugin на `pbOnRegisterFeatureProviders` регистрирует свой `FeatureProvider` рядом с `ProFeatureProvider`.
+Plugin на `pbOnRegisterFeatureProviders` регистрирует свой `FeatureProvider` рядом с `ProFeatureProvider`. У провайдера должны быть `serverContributions()` и `cmpContributions()`. Free и Pro этой линии ставьте вместе.
 
 События boot, save и render: [Менеджер и события](integration#sobytiya).
 

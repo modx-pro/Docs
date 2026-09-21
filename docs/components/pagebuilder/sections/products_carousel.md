@@ -7,7 +7,7 @@ description: "Горизонтальная лента товаров из кат
 
 Те же данные, что в **Сетке товаров**, но в карусели. Удобно, когда места мало, а товаров много.
 
-<!-- ![Карусель товаров](/components/pagebuilder/screenshots/sections/products_carousel.png) -->
+![Карусель товаров](/components/pagebuilder/screenshots/sections/products_carousel.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -67,7 +67,7 @@ description: "Горизонтальная лента товаров из кат
 
 ### Автовоспроизведение (`autoplay`)
 
-Тип [yesno](../fields/yesno#vyvod-v-section-data). Необязательное. Переключатель да/нет.
+Тип [yesno](../fields/yesno#vyvod-v-section-data). Необязательное. Переключатель да/нет. При включённой автопрокрутке на сайте есть кнопка паузы. Подписи: `pagebuilder_fe_carousel_pause` и `pagebuilder_fe_carousel_play`.
 
 ### Сортировка (`sortby`)
 
@@ -96,10 +96,10 @@ description: "Горизонтальная лента товаров из кат
 Fenom chunk `pagebuilderpro_products_carousel`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => $catalogParent,
     'depth' => 10,
     'limit' => $limit|default:8,
@@ -124,25 +124,30 @@ Fenom chunk `pagebuilderpro_products_carousel`:
       <h2 class="pb-heading">{$title|escape}</h2>
     {/if}
     {if $listing}
-      <div class="pb-carousel__viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="{$title|default:'Products'|escape}">
+      <div class="pb-carousel__viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="{$title|default:('pagebuilder_fe_carousel_products' | lexicon)|escape}">
         <div class="pb-carousel__track">
           {$listing}
         </div>
         <div class="pb-carousel__controls">
-          <button type="button" class="pb-carousel__btn" data-pb-carousel-prev aria-label="Previous slide">‹</button>
-          <button type="button" class="pb-carousel__btn" data-pb-carousel-next aria-label="Next slide">›</button>
+          <button type="button" class="pb-carousel__btn" data-pb-carousel-prev aria-label="{'pagebuilder_fe_carousel_prev' | lexicon}">‹</button>
+          <button type="button" class="pb-carousel__btn" data-pb-carousel-next aria-label="{'pagebuilder_fe_carousel_next' | lexicon}">›</button>
         </div>
+        <button
+          type="button"
+          class="pb-carousel__pause"
+          data-pb-carousel-pause
+          hidden
+          aria-pressed="false"
+          data-label-pause="{'pagebuilder_fe_carousel_pause' | lexicon}"
+          data-label-play="{'pagebuilder_fe_carousel_play' | lexicon}"
+        >{'pagebuilder_fe_carousel_pause' | lexicon}</button>
       </div>
     {else}
-      <p class="pb-listing__empty">В этой категории пока нет товаров для карусели.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_carousel' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/products_carousel.json`
 
 ## Связанные страницы
 

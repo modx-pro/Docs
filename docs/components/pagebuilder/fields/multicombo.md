@@ -7,11 +7,11 @@ description: "Массив значений из xPDO optionsSource через M
 
 Версия: **Pro**.
 
-<!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.png) -->
+<!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.jpg) -->
 
 ## Зачем этот тип
 
-Несколько id из одного xPDO-класса. Тот же контракт `optionsSource`, что у [combo](combo). Скаляры id, без объектов pagetitle как у relation.
+Несколько id из одного класса MODX. Источник списка тот же, что у [combo](combo): `optionsSource`. В данных лежат id, а не объекты с заголовком, как у [relation](relation).
 
 ## Когда использовать
 
@@ -26,7 +26,7 @@ description: "Массив значений из xPDO optionsSource через M
 ## Похожие типы
 
 - [combo](combo) для одного xPDO-значения
-- [tablemulticombo](tablemulticombo) для id из custom table
+- [tablemulticombo](tablemulticombo) для нескольких значений из того же `optionsSource`
 
 ## Настройка
 
@@ -60,11 +60,21 @@ description: "Массив значений из xPDO optionsSource через M
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+{foreach $ids as $id}
+  <span>{$id|escape}</span>
+{/foreach}
+```
+
 ```fenom
 {foreach $ids as $id}
   <span>{$id|escape}</span>
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 

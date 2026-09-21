@@ -7,11 +7,11 @@ description: "Объект json и готовый html из Editor.js"
 
 Версия: **Pro** (`advanced-fields`). Новое поле создаётся только в Pro. Уже сохранённое открывается и пишется.
 
-<!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.png) -->
+<!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.jpg) -->
 
 ## Зачем этот тип
 
-Блочный контент с заголовками, списками, embed. `html` готов для chunk, `json` для кастомного рендера. Структура предсказуемее произвольного HTML.
+Текст из блоков: заголовки, списки, вставки. В чанк можно отдать готовый HTML (`html`) или JSON (`json`), если разметку собираете сами. Набор блоков предсказуемее, чем произвольный HTML.
 
 ## Когда использовать
 
@@ -73,9 +73,17 @@ description: "Объект json и готовый html из Editor.js"
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<div class="pb-richtext__content">[[+body.html]]</div>
+```
+
+```fenom
 <div class="pb-richtext__content">{$body.html}</div>
 ```
+
+:::
 
 ## Общие свойства
 

@@ -7,11 +7,11 @@ description: "Массив строк по columns с типизированны
 
 Версия: **Pro**.
 
-<!-- ![table](/components/pagebuilder/screenshots/fields/table.png) -->
+<!-- ![table](/components/pagebuilder/screenshots/fields/table.jpg) -->
 
 ## Зачем этот тип
 
-Колонки text, number, image, color, date, tag, currency, url. Все строки хранятся в data секции, редактор правит grid в инспекторе.
+Колонки бывают текстовые, числовые, с картинкой, цветом, датой, меткой, суммой и ссылкой. Все строки лежат в данных секции. Редактор правит их таблицей в инспекторе.
 
 ## Когда использовать
 
@@ -21,7 +21,7 @@ description: "Массив строк по columns с типизированны
 
 ## Советы
 
-`columns` задаёт name, label, type для каждой колонки. Большие выборки из БД: [embeddedTable](embeddedTable).
+`columns` задаёт name, label, type для каждой колонки. Без `columns` инспектор показывает подсказку задать колонки и не подставляет столбец Value. В диалоге типа секции при выборе `table` подставляется черновик колонок `key|Key|text` и `value|Value|text` (строка `name|Подпись|type`). Большие выборки из БД: [embeddedTable](embeddedTable).
 
 ## Похожие типы
 
@@ -96,14 +96,27 @@ description: "Массив строк по columns с типизированны
 
 ## Пример в chunk
 
-```fenom
+::: code-group
+
+```modx
 {foreach $specs as $row}
   <div class="spec">
-    <span class="spec__key">{$row.key|escape}</span>
-    <span class="spec__value">{$row.value|escape}</span>
+    <span class="spec__key">{$row.key}</span>
+    <span class="spec__value">{$row.value}</span>
   </div>
 {/foreach}
 ```
+
+```fenom
+{foreach $specs as $row}
+  <div class="spec">
+    <span class="spec__key">{$row.key|pb_text}</span>
+    <span class="spec__value">{$row.value|pb_text}</span>
+  </div>
+{/foreach}
+```
+
+:::
 
 ## Примечание
 

@@ -7,11 +7,11 @@ description: "Row array by columns with typed cells"
 
 Version: **Pro**.
 
-<!-- ![table](/components/pagebuilder/screenshots/fields/table.png) -->
+<!-- ![table](/components/pagebuilder/screenshots/fields/table.jpg) -->
 
 ## Why this type
 
-Columns text number image color date tag currency url. All rows stored in section data. Editors edit grid in inspector.
+Columns can be text, number, image, color, date, tag, currency, or URL. Every row is stored in the section data. The editor changes them in a grid in the inspector.
 
 ## When to use
 
@@ -21,7 +21,7 @@ Columns text number image color date tag currency url. All rows stored in sectio
 
 ## Tips
 
-Columns sets name label type per column. Large DB-backed sets use [embeddedTable](embeddedTable).
+`columns` sets name, label, and type for each column. Without `columns` the inspector asks you to define columns and does not insert a Value column. When you pick type `table` in the section type dialog, a draft is filled in: `key|Key|text` and `value|Value|text` (one line `name|Label|type`). Large sets from the database use [embeddedTable](embeddedTable).
 
 ## Similar types
 
@@ -96,14 +96,27 @@ Key `specs` in the section data: array of rows keyed by `columns[].name`:
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $specs as $row}
   <div class="spec">
-    <span class="spec__key">{$row.key|escape}</span>
-    <span class="spec__value">{$row.value|escape}</span>
+    <span class="spec__key">{$row.key}</span>
+    <span class="spec__value">{$row.value}</span>
   </div>
 {/foreach}
 ```
+
+```fenom
+{foreach $specs as $row}
+  <div class="spec">
+    <span class="spec__key">{$row.key|pb_text}</span>
+    <span class="spec__value">{$row.value|pb_text}</span>
+  </div>
+{/foreach}
+```
+
+:::
 
 ## Notes
 

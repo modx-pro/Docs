@@ -9,7 +9,7 @@ Version: **Free**.
 
 ## Why this type
 
-A dedicated string for an email address, not a generic `text`. The saved value is a string.
+A field for an email address, not a generic [text](text). The saved value is a string.
 
 ## When to use
 
@@ -37,9 +37,17 @@ A dedicated string for an email address, not a generic `text`. The saved value i
 
 ## Chunk example
 
-```html
-<a href="mailto:{$email|escape}">{$email|escape}</a>
+::: code-group
+
+```modx
+<a href="mailto:[[+email]]">[[+email]]</a>
 ```
+
+```fenom
+<a href="mailto:{$email|escape:'url'}">{$email|escape}</a>
+```
+
+:::
 
 ## Similar types
 

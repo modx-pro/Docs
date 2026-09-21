@@ -7,11 +7,11 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 
 Версия: **Pro**.
 
-<!-- ![relation](/components/pagebuilder/screenshots/fields/relation.png) -->
+<!-- ![relation](/components/pagebuilder/screenshots/fields/relation.jpg) -->
 
 ## Зачем этот тип
 
-Модальный picker с поиском, не ручной id. `searchAction` для ms3 и кастомных connector. В data только `id` и `pagetitle`, не весь resource.
+Выбор записи в окне с поиском, без ручного id. Поиск идёт через `searchAction`: для miniShop3 и для своих коннекторов. В данных сохраняются `id` и `pagetitle`, не весь ресурс.
 
 ## Когда использовать
 
@@ -63,11 +63,19 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span class="related">[[+product.pagetitle]]</span>
+```
+
 ```fenom
 {if $product.id}
-  <span class="related">{$product.pagetitle|escape}</span>
+  <span class="related">{$product.pagetitle|pb_text}</span>
 {/if}
 ```
+
+:::
 
 ## Общие свойства
 

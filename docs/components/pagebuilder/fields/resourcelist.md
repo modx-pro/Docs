@@ -7,11 +7,11 @@ description: "Alias relation с тем же модальным picker и объ�
 
 Версия: **Free**.
 
-<!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.png) -->
+<!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.jpg) -->
 
 ## Зачем этот тип
 
-Семантика «выбор страницы» в подписи поля в панели управления. Поведение и data совпадают с [relation](relation): `searchAction` и модальный поиск из коробки.
+В панели управления поле подписано как выбор страницы. Данные и поиск те же, что у [relation](relation): `searchAction` и окно поиска уже встроены.
 
 ## Когда использовать
 
@@ -62,11 +62,19 @@ description: "Alias relation с тем же модальным picker и объ�
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span>[[+page.pagetitle]]</span>
+```
+
 ```fenom
 {if $page.id}
-  <span>{$page.pagetitle|escape}</span>
+  <span>{$page.pagetitle|pb_text}</span>
 {/if}
 ```
+
+:::
 
 ## Общие свойства
 

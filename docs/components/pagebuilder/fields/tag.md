@@ -7,11 +7,11 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 Версия: **Free**.
 
-<!-- ![tag](/components/pagebuilder/screenshots/fields/tag.png) -->
+<!-- ![tag](/components/pagebuilder/screenshots/fields/tag.jpg) -->
 
 ## Зачем этот тип
 
-Свободный ввод строк без static `options`. Удобен для фильтров и меток на карточках.
+Редактор вписывает метки сам. Готового списка `options` нет. Подходит для фильтров и подписей на карточках.
 
 ## Когда использовать
 
@@ -60,11 +60,21 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 ## Пример в chunk
 
-```fenom
+::: code-group
+
+```modx
 {foreach $labels as $label}
-  <span class="label">{$label|escape}</span>
+  <span class="label">{$label}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $labels as $label}
+  <span class="label">{$label|pb_text}</span>
+{/foreach}
+```
+
+:::
 
 ## Общие свойства
 

@@ -7,11 +7,11 @@ description: "Массив значений из статического спи
 
 Версия: **Free**.
 
-<!-- ![checkboxgroup](/components/pagebuilder/screenshots/fields/checkboxgroup.png) -->
+<!-- ![checkboxgroup](/components/pagebuilder/screenshots/fields/checkboxgroup.jpg) -->
 
 ## Зачем этот тип
 
-Несколько флагов из одного списка `options`. В данных секции попадает массив строк `value`, не объектов. Для коротких списков без поиска удобнее, чем multiselect.
+Несколько флажков из одного списка `options`. В данных секции массив строк `value`, не объекты. Для короткого списка без поиска это удобнее, чем [multiselect](multiselect).
 
 ## Когда использовать
 
@@ -70,11 +70,21 @@ description: "Массив значений из статического спи
 
 ## Пример в chunk
 
-```fenom
+::: code-group
+
+```modx
 {foreach $tags as $tag}
-  <span class="tag">{$tag|escape}</span>
+  <span class="tag">{$tag}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $tags as $tag}
+  <span class="tag">{$tag|pb_text}</span>
+{/foreach}
+```
+
+:::
 
 ## Примечание
 

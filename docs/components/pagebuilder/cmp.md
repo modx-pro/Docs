@@ -7,13 +7,13 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens и корзи�
 
 **Компоненты → PageBuilder** (`SectionTypesManager.vue`). Право **pagebuilder_manage_types** нужно для вкладки Blocks. Остальные вкладки панели управления доступны по стандартным правам менеджера.
 
-Вкладка **Blocks** есть в Free. Реестр UTM, Collections и остальные вкладки требуют PageBuilder Pro.
+Вкладка **Blocks** есть в Free. Реестр UTM, **Рабочие области** и остальные вкладки требуют PageBuilder Pro.
 
 | Вкладка | Слой | Назначение |
 | --- | --- | --- |
 | **Blocks** | Free | UI-конструктор типов секций (`pb_section_types`) |
 | **UTM** | Pro | Глобальный реестр UTM-параметров (`pb_utm_params`), capability `utm` |
-| **Collections** | Pro | Наборы вкладок на форме ресурса по шаблону (`pb_collections`), capability `collections` |
+| **Рабочие области** | Pro | Наборы вкладок на форме ресурса по шаблону (`pb_collections`), capability `collections` |
 | **Basket** | Pro | Глобальная корзина удалённых секций и строк таблиц |
 | **Шаблоны страниц** | Pro | Скелеты пустых секций (`pb_page_templates`), capability `page-templates` |
 | **Forms** | Pro | Схемы для [form_builder](sections/form_builder), capability `forms` |
@@ -53,7 +53,7 @@ Connector `mgr/sectiontype/remove` принимает POST-параметр `lif
 
 Подробнее про JSON-схему: [Разработчик → Определение секции](developer#opredelenie-sekcii).
 
-<!-- ![Типы секций в панели управления](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
+<!-- ![Типы секций в панели управления](/components/pagebuilder/screenshots/mgr-cmp-section-types.jpg) -->
 
 ## UTM
 
@@ -63,7 +63,7 @@ Connector `mgr/sectiontype/remove` принимает POST-параметр `lif
 
 ## Collections
 
-Нужны PageBuilder Pro и capability `collections`. Без capability вкладки нет, даже если `pagebuilder_collections_enabled = 1`.
+Вкладка в панели называется **Рабочие области**. Нужны PageBuilder Pro и capability `collections`. Без capability вкладки нет, даже если `pagebuilder_collections_enabled = 1`.
 
 Collection привязывается к `template_ids` (пустой список означает все шаблоны). При включённой настройке старые вкладки `resource_tab_enabled` и `resource_tables_tab_enabled` заменяются динамическим набором из панели управления.
 
@@ -104,7 +104,7 @@ CRUD коллекций и разрешение вкладок для шабло
 
 ## Forms {#forms}
 
-Capability `forms`. Во вкладке создаёте схему с ключом и полями. На странице секция [form_builder](sections/form_builder) выбирает этот ключ. Отправка идёт через FetchIt и сниппет `PageBuilderFormBuilder`.
+Capability `forms`. Во вкладке создаёте схему с ключом и полями. Для `select` и `radio` заполните **Варианты**: по строке `Подпись|value` или только value. На странице секция [form_builder](sections/form_builder) выбирает этот ключ. Отправка идёт через FetchIt и сниппет `PageBuilderFormBuilder`.
 
 Сервер проверяет CSRF и honeypot `nospam`. Письмо и webhook уходят синхронно после commit, в том же HTTP-запросе. Submissions в БД не хранятся. Файл в форме v1 не принимается. Процессоры: `mgr/form/*`.
 

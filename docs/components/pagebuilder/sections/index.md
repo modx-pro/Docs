@@ -11,7 +11,7 @@ description: "Встроенные блоки секций PageBuilder Free и P
 
 Ключ (`key`) попадает в сниппет PageBuilder и в JSON документа. Свои типы добавляют через панель управления (Pro) или плагин на `pbOnRegisterSectionDefinitions`.
 
-<!-- ![Каталог секций в менеджере](/components/pagebuilder/screenshots/mgr-section-catalog.png) -->
+<!-- ![Каталог секций в менеджере](/components/pagebuilder/screenshots/mgr-section-catalog.jpg) -->
 
 ## Free: контент и layout (10)
 
