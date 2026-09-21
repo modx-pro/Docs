@@ -5,13 +5,13 @@
 Положите PNG в эту папку (или в `sections/` для блоков), затем раскомментируйте строку в markdown:
 
 ```md
-<!-- ![Подпись](/components/pagebuilder/screenshots/имя-файла.jpg) -->
+<!-- ![Подпись](/components/pagebuilder/screenshots/sections/hero.jpg) -->
 ```
 
 →
 
 ```md
-![Подпись](/components/pagebuilder/screenshots/имя-файла.png)
+![Подпись](/components/pagebuilder/screenshots/sections/hero.jpg)
 ```
 
 Активная ссылка без файла ломает `pnpm build` (`Rollup failed to resolve import`). Заглушки держите в HTML-комментарии.
