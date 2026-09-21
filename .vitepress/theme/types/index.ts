@@ -15,6 +15,9 @@ export namespace DocsTheme {
 
     sponsorLink?: string
     sponsor?: Sponsor
+    feedback?: {
+      text: string
+    }
   }
 
   export interface TeamMember extends Omit<DefaultTheme.TeamMember, 'name'> {

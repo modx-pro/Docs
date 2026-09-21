@@ -390,3 +390,7 @@ kbd {
 .VPSocialLinks.VPNavBarSocialLinks.social-links {
   margin-right: 0;
 }
+
+.vp-doc tr[id] {
+  scroll-margin-top: calc(var(--vp-nav-height) + 24px);
+}

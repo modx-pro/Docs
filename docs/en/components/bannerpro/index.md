@@ -6,6 +6,10 @@ logo: https://modstore.pro/assets/extras/bannerpro/logo.png
 modstore: https://modstore.pro/packages/photos-and-files/bannerpro
 dependencies: [pdoTools, VueTools]
 
+compatibility:
+  - modx3
+  - php82
+  - vue3
 items: [
   {
     text: 'Getting started',

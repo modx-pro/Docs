@@ -4,6 +4,9 @@ description: Performance toolbar for MODX 3 — request metrics, slow components
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/modx3profilertoolbar/logo.png
 modstore: https://modstore.pro/packages/other/modx3profilertoolbar
+compatibility:
+  - modx3
+  - php81
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

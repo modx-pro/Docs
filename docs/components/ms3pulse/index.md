@@ -7,6 +7,11 @@ modstore: https://modstore.pro/packages/other/ms3pulse
 dependencies: [miniShop3, vuetools]
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
+  - vue3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

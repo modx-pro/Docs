@@ -7,6 +7,10 @@ modstore: https://modstore.pro/packages/discounts/ms3firsttimebuyerdiscount
 dependencies: miniShop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

@@ -6,6 +6,9 @@ logo: https://modstore.pro/assets/extras/crawlerdetect/logo.png
 modstore: https://modstore.pro/packages/other/crawlerdetect
 repository: https://github.com/Ibochkarev/CrawlerDetect
 
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

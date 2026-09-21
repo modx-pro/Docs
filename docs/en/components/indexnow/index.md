@@ -5,6 +5,10 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/indexnow/logo.png
 modstore: https://modstore.pro/packages/utilities/indexnow
 categories: utilities
+compatibility:
+  - modx2
+  - modx3
+  - php72
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

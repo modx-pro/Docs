@@ -6,6 +6,11 @@ logo: https://modstore.pro/assets/extras/msyandexdelivery/logo.png
 modstore: https://modstore.pro/packages/delivery/msyandexdelivery
 dependencies: [miniShop3, VueTools]
 categories: minishop3
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },
