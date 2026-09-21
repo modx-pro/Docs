@@ -7,6 +7,9 @@ modstore: https://modstore.pro/packages/content/mxeditorjs
 repository: https://github.com/Ibochkarev/mxEditorJs
 dependencies: []
 
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Getting started', link: 'quick-start', items: [
     { text: 'Quick start', link: 'quick-start' },

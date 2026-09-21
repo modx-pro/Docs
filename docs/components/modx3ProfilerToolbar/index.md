@@ -4,6 +4,9 @@ description: Тулбар производительности для MODX 3 —
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/modx3profilertoolbar/logo.png
 modstore: https://modstore.pro/packages/other/modx3profilertoolbar
+compatibility:
+  - modx3
+  - php81
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

@@ -5,6 +5,11 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msrussianpost/logo.png
 modstore: https://modstore.pro/packages/delivery/msrussianpost
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items:
   - text: Быстрый старт
     link: quick-start

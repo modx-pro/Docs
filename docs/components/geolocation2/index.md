@@ -6,6 +6,9 @@ logo: https://modstore.pro/assets/extras/geolocation2/logo.png
 modstore: https://modstore.pro/packages/maps/geolocation2
 repository: https://github.com/Ibochkarev/GeoLocation2
 categories: utilities
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

@@ -287,6 +287,31 @@ dependencies:
 categories: payment
 ```
 
+### Совместимость
+
+- Тип: `string | string[]`
+
+Необязательное поле. Метки рисуются на карточке компонента и в каталоге. Если поля нет, меток нет.
+
+| Значение | Метка |
+| --- | --- |
+| `modx2` | MODX 2 |
+| `modx3` | MODX 3 |
+| `vue2` | Vue 2 |
+| `vue3` | Vue 3 |
+| `minishop2` | miniShop2 |
+| `minishop3` | miniShop3 |
+| `php82` | PHP 8.2 |
+
+Для PHP укажите `php` и две цифры версии без точки. `php81` даст метку PHP 8.1. Неизвестное значение пропускается.
+
+```yaml
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+```
+
 ## Полный пример для компонента
 
 Ниже — условный каркас для `index.md` многостраничного компонента (поля можно опускать, если не нужны):
@@ -303,6 +328,10 @@ author: github-login
 dependencies:
   - miniShop2
 categories: payment
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 outline: [2, 3]
 lastUpdated: true
 items:

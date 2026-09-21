@@ -84,6 +84,9 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         pattern: 'https://github.com/modx-pro/Docs/edit/master/docs/:path',
         text: 'Предложить изменения на этой странице',
       },
+      feedback: {
+        text: 'Нашли ошибку?',
+      },
 
       notFound: {
         title: 'Страница не найдена',

@@ -6,6 +6,9 @@ logo: https://modstore.pro/assets/extras/imageoptimizer/logo.png
 modstore: https://modstore.pro/packages/photos-and-files/imageoptimizer
 repository: https://github.com/Ibochkarev/ImageOptimizer
 categories: utilities
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

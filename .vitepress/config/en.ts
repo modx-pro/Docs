@@ -73,6 +73,9 @@ export const config: LocaleConfig<DocsTheme.Config> = {
         pattern: 'https://github.com/modx-pro/Docs/edit/master/docs/:path',
         text: 'Suggest changes to this page',
       },
+      feedback: {
+        text: 'Found an error?',
+      },
 
       notFound: {
         title: 'Page not found',

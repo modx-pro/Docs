@@ -1,9 +1,37 @@
-import type { MarkdownIt, StateBlock } from 'markdown-it'
+import type { MarkdownIt, StateBlock, StateCore } from 'markdown-it'
 import kbd from 'markdown-it-kbd'
+import { headingAnchor, legacyHeadingSlug, uniqueSettingAnchor } from '../anchors'
 
 export const addPlugins = (md: MarkdownIt) => {
   md.use(kbd)
   md.block.ruler.at('table', table)
+  md.core.ruler.push('setting_heading_alias', settingHeadingAlias)
+}
+
+function settingHeadingAlias(state: StateCore) {
+  for (let i = 0; i < state.tokens.length; i++) {
+    const token = state.tokens[i]
+    if (token.type !== 'heading_open') continue
+
+    const inline = state.tokens[i + 1]
+    if (inline?.type !== 'inline') continue
+
+    const text = (inline.children ?? [])
+      .filter(child => child.type === 'text' || child.type === 'code_inline')
+      .map(child => child.content)
+      .join('')
+      .trim()
+    const key = headingAnchor(text)
+    if (!key) continue
+
+    const legacy = legacyHeadingSlug(text)
+    if (!legacy || legacy === key) continue
+
+    const alias = new state.Token('html_block', '', 0)
+    alias.content = `<span id="${legacy}" hidden></span>\n`
+    state.tokens.splice(i, 0, alias)
+    i += 1
+  }
 }
 
 // from https://github.com/markdown-it/markdown-it/blob/2b6cac25823af011ff3bc7628bc9b06e483c5a08/lib/rules_block/table.js
@@ -159,6 +187,12 @@ function table(
 
     token     = state.push('tr_open', 'tr', 1);
     token.map = [ nextLine, nextLine + 1 ];
+    const env = state.env as { settingAnchorIds?: Set<string> }
+    const seen = env.settingAnchorIds ?? (env.settingAnchorIds = new Set<string>())
+    const anchor = uniqueSettingAnchor(headers[0], columns[0], seen)
+    if (anchor) {
+      token.attrSet('id', anchor)
+    }
 
     for (i = 0; i < columnCount; i++) {
       token          = state.push('td_open', 'td', 1);

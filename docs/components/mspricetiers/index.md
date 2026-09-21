@@ -6,6 +6,11 @@ modstore: https://modstore.pro/packages/ecommerce/mspricetiers
 dependencies: miniShop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items: [
   {
     text: 'Начало работы',

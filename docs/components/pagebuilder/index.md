@@ -7,6 +7,10 @@ modstore: https://modstore.pro/packages/sites-themes/pagebuilder
 dependencies: [VueTools, pdoTools]
 categories: utilities
 
+compatibility:
+  - modx3
+  - php82
+  - vue3
 items: [
   {
     text: 'Начало работы',

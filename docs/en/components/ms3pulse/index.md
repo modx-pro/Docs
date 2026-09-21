@@ -5,6 +5,11 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3pulse/logo.png
 modstore: https://modstore.pro/packages/other/ms3pulse
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
+  - vue3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

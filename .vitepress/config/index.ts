@@ -7,7 +7,7 @@ import languages from '../theme/syntaxes'
 import { darkTheme, lightTheme } from '../theme/syntaxes/themes'
 import { addPlugins } from '../theme/plugins/markdown'
 import { components, prepareData } from '../theme/plugins/component'
-import { slugify } from 'transliteration'
+import { headingSlug } from '../theme/anchors'
 import { fileURLToPath, URL } from 'node:url'
 import { withMermaid } from 'vitepress-plugin-mermaid'
 import { modstore, modxpro, telegram } from '../../docs/icons'
@@ -103,15 +103,7 @@ export default withMermaid(
       detailsLabel: 'Подробнее',
     },
     anchor: {
-      slugify(str) {
-        str = str.trim()
-          .replace(/^\d*/g, '') // Удаление чисел из начала строки
-          .replace(/[^a-zA-Zа-яА-ЯЁё0-9\-\s]/g, '') // Удаление ненужных символов
-          .replace(/\s\-\s/, '-').replace(/\-+/g, '-') // Избавление от повторяющихся символов
-          .replace(/^(.{25}[^\s]*).*/, '$1') // Ограничение количества символов
-
-        return encodeURIComponent(slugify(str, { lowercase: true }))
-      }
+      slugify: headingSlug,
     },
     config(md) {
       addPlugins(md)

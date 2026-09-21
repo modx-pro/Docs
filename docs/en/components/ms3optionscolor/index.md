@@ -9,6 +9,11 @@ dependencies:
   - VueTools
   - pdoTools
 categories: minishop3
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items:
   - text: Getting started
     items:

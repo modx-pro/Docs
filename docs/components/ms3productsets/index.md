@@ -6,6 +6,10 @@ logo: https://modstore.pro/assets/extras/ms3productsets/logo.png
 modstore: https://modstore.pro/packages/ecommerce/ms3productsets
 dependencies: miniShop3
 categories: minishop3
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Сценарии (flows)', link: 'interface/flows' },

@@ -5,6 +5,10 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3productsets/logo.png
 modstore: https://modstore.pro/packages/ecommerce/ms3productsets
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

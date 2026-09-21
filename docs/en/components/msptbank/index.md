@@ -6,6 +6,10 @@ logo: https://modstore.pro/assets/extras/msptbank/logo.png
 modstore: https://modstore.pro/packages/payment-system/msptbank
 dependencies: miniShop3
 categories: minishop3
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 items:
   - text: Быстрый старт
     link: quick-start

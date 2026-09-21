@@ -7,6 +7,9 @@ modstore: https://modstore.pro/packages/ecommerce/reactions
 repository: https://github.com/Ibochkarev/Reactions
 categories: utilities
 
+compatibility:
+  - modx3
+  - php82
 items: [
   {
     text: 'Getting started',
