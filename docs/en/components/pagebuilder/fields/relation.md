@@ -7,11 +7,11 @@ description: "Single MODX resource as id and pagetitle object from picker modal"
 
 Version: **Pro**.
 
-<!-- ![relation](/components/pagebuilder/screenshots/fields/relation.png) -->
+<!-- ![relation](/components/pagebuilder/screenshots/fields/relation.jpg) -->
 
 ## Why this type
 
-Modal picker with search, not manual id. SearchAction for ms3 and custom connectors. Data stores id and pagetitle, not full resource.
+Pick a record in a search window instead of typing an id. Search uses `searchAction`, for miniShop3 and for your own connectors. The data stores `id` and `pagetitle`, not the whole resource.
 
 ## When to use
 
@@ -63,11 +63,19 @@ Key `product` in the section data (picker stores only the selection):
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<span class="related">[[+product.pagetitle]]</span>
+```
+
 ```fenom
 {if $product.id}
-  <span class="related">{$product.pagetitle|escape}</span>
+  <span class="related">{$product.pagetitle|pb_text}</span>
 {/if}
 ```
+
+:::
 
 ## Common properties
 

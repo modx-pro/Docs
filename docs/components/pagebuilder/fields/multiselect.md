@@ -7,11 +7,11 @@ description: "Массив значений из статического спи
 
 Версия: **Free**.
 
-<!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.png) -->
+<!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.jpg) -->
 
 ## Зачем этот тип
 
-Несколько значений из статического `options` с поиском в выпадающем списке. Тот же контракт options, что у [select](select).
+Несколько значений из готового списка `options`, с поиском в выпадающем списке. Список вариантов устроен так же, как у [select](select).
 
 ## Когда использовать
 
@@ -61,11 +61,21 @@ description: "Массив значений из статического спи
 
 ## Пример в chunk
 
-```fenom
+::: code-group
+
+```modx
 {foreach $roles as $role}
-  <span class="role">{$role|escape}</span>
+  <span class="role">{$role}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $roles as $role}
+  <span class="role">{$role|pb_text}</span>
+{/foreach}
+```
+
+:::
 
 ## Общие свойства
 

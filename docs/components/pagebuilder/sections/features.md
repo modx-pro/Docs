@@ -7,11 +7,7 @@ description: "Пункты с иконкой, заголовком и описа
 
 Блок «Почему мы»: у каждого пункта иконка (URL или класс), заголовок и пояснение. Визуально богаче, чем секция **Карточки**.
 
-<!-- ![Преимущества](/components/pagebuilder/screenshots/sections/features.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Преимущества](/components/pagebuilder/screenshots/sections/features.jpg)
 
 ## Чем Features богаче карточек
 
@@ -126,10 +122,6 @@ Fenom chunk `pagebuilderpro_features`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/features.json`
 
 ## Связанные страницы
 

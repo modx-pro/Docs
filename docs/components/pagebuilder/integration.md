@@ -16,7 +16,7 @@ description: Панель управления PageBuilder, права, моде
 - переход к редактору секций
 - **Типы секций** (право `pagebuilder_manage_types`): UI-типы, скрытие и восстановление встроенных JSON-типов
 
-<!-- ![Типы секций в панели управления](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
+<!-- ![Типы секций в панели управления](/components/pagebuilder/screenshots/mgr-cmp-section-types.jpg) -->
 
 - **Корзина** (Pro, флаг `basket`): глобальная корзина удалённых секций и строк таблиц
 - настройки вкладок Collections при включённых `pagebuilder_collections_*`
@@ -45,7 +45,7 @@ description: Панель управления PageBuilder, права, моде
 
 Табличные данные ресурса хранятся в отдельных таблицах `pb_*` (вкладка «Таблицы»).
 
-<!-- ![Вкладка «Таблицы» на ресурсе](/components/pagebuilder/screenshots/mgr-resource-tables.png) -->
+<!-- ![Вкладка «Таблицы» на ресурсе](/components/pagebuilder/screenshots/mgr-resource-tables.jpg) -->
 
 ## PageBuilder Pro
 

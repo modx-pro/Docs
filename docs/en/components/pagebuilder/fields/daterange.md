@@ -29,9 +29,17 @@ Two ends: `start` and `end`, date strings. If both are set and `start` is after 
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<time>[[+period.start]]</time> - <time>[[+period.end]]</time>
+```
+
+```fenom
 <time>{$period.start|escape}</time> - <time>{$period.end|escape}</time>
 ```
+
+:::
 
 ## Similar types
 

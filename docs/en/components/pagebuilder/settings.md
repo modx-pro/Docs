@@ -52,7 +52,7 @@ If the theme loads CSS only via Fenom or `@import` without `<link>`, add files e
 | --- | --- | --- | --- |
 | `pagebuilder_resource_tab_enabled` | boolean | `0` | Sections tab on the resource form |
 | `pagebuilder_resource_tab_parents` | text | empty | Parent IDs comma-separated. Empty with tab enabled = all resources |
-| `pagebuilder_resource_tab_index` | number | `-1` | Sections tab position: `0` first, `1` second, `-1` last |
+| `pagebuilder_resource_tab_index` | number | `-1` | Sections tab position: `0` first and selected when the resource opens, `1` second, `-1` last |
 | `pagebuilder_resource_tables_tab_enabled` | boolean | `0` | Tables tab (resource table data) |
 | `pagebuilder_resource_tables_tab_index` | number | `-1` | Tables tab position |
 

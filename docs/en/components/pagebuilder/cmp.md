@@ -7,13 +7,13 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens, and the PageB
 
 **Components → PageBuilder** (`SectionTypesManager.vue`). Permission **pagebuilder_manage_types** is required for the Blocks tab. Other control panel tabs use standard manager permissions.
 
-The **Blocks** tab is in Free. The UTM registry, Collections, and the other tabs require PageBuilder Pro.
+The **Blocks** tab is in Free. The UTM registry, **Workspaces**, and the other tabs require PageBuilder Pro.
 
 | Tab | Layer | Purpose |
 | --- | --- | --- |
 | **Blocks** | Free | UI builder for section types (`pb_section_types`) |
 | **UTM** | Pro | Global UTM parameter registry (`pb_utm_params`), capability `utm` |
-| **Collections** | Pro | Resource form tab sets by template (`pb_collections`), capability `collections` |
+| **Workspaces** | Pro | Resource form tab sets by template (`pb_collections`), capability `collections` |
 | **Basket** | Pro | Global basket for deleted sections and table rows |
 | **Page templates** | Pro | Empty section skeletons (`pb_page_templates`), capability `page-templates` |
 | **Forms** | Pro | Schemas for [form builder](sections/form_builder), capability `forms` |
@@ -53,7 +53,7 @@ Connector `mgr/sectiontype/remove` accepts POST parameter `lifecycle`: `hide`, `
 
 JSON schema details: [Developer → Section definition](developer#section-definition).
 
-<!-- ![Section types in control panel](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
+<!-- ![Section types in control panel](/components/pagebuilder/screenshots/mgr-cmp-section-types.jpg) -->
 
 ## UTM
 
@@ -63,7 +63,7 @@ Frontend UTM session: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) be
 
 ## Collections {#collections}
 
-Requires PageBuilder Pro and capability `collections`. Without the capability the tabs are absent even when `pagebuilder_collections_enabled = 1`.
+The control panel tab is labeled **Workspaces**. Requires PageBuilder Pro and capability `collections`. Without the capability the tabs are absent even when `pagebuilder_collections_enabled = 1`.
 
 A collection binds to `template_ids` (empty list means all templates). With the setting on, legacy tabs `resource_tab_enabled` and `resource_tables_tab_enabled` are replaced by the dynamic set from the control panel.
 
@@ -104,7 +104,7 @@ Restore from the control panel inserts the section at `settings._trashIndex`, sa
 
 ## Forms {#forms}
 
-Capability `forms`. On this tab you create a schema with a key and fields. On the page, [form builder](sections/form_builder) selects that key. Submit goes through FetchIt and the `PageBuilderFormBuilder` snippet.
+Capability `forms`. On this tab you create a schema with a key and fields. For `select` and `radio`, fill **Options**: one line per choice, `Label|value` or value only. On the page, [form builder](sections/form_builder) selects that key. Submit goes through FetchIt and the `PageBuilderFormBuilder` snippet.
 
 The server checks CSRF and the `nospam` honeypot. Email and webhook leave synchronously after commit, in the same HTTP request. Submissions are not stored. Form v1 does not accept a file. Processors: `mgr/form/*`.
 

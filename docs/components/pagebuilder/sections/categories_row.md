@@ -7,7 +7,7 @@ description: "Карточки подкатегорий родителя чер�
 
 Навигация по каталогу: дочерние категории выбранного родителя с превью и ссылкой.
 
-<!-- ![Ряд категорий](/components/pagebuilder/screenshots/sections/categories_row.png) -->
+![Ряд категорий](/components/pagebuilder/screenshots/sections/categories_row.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -86,10 +86,10 @@ description: "Карточки подкатегорий родителя чер�
 Fenom chunk `pagebuilderpro_categories_row`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('pdoResources', [
+  {set $listing = $modx->runSnippet('pdoResources', [
     'parents' => $catalogParent,
     'depth' => 1,
     'limit' => $limit|default:8,
@@ -107,15 +107,11 @@ Fenom chunk `pagebuilderpro_categories_row`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">В этой категории нет подразделов.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_category' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/categories_row.json`
 
 ## Связанные страницы
 

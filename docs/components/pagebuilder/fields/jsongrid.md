@@ -7,11 +7,11 @@ description: "Один объект с ключами nested fields не мас�
 
 Версия: **Pro**.
 
-<!-- ![jsongrid](/components/pagebuilder/screenshots/fields/jsongrid.png) -->
+<!-- ![jsongrid](/components/pagebuilder/screenshots/fields/jsongrid.jpg) -->
 
 ## Зачем этот тип
 
-Схема `fields` как у repeater, но один объект, не массив. Компактнее repeater из одной строки. Pro для config block фиксированной формы.
+Набор полей как у [repeater](repeater), но одна запись, не список. Так короче, чем repeater из единственной строки. Есть в Pro, когда блок настроек всегда одной и той же формы.
 
 ## Когда использовать
 
@@ -67,11 +67,19 @@ description: "Один объект с ключами nested fields не мас�
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<h4>[[+row.title]]</h4>
+```
+
 ```fenom
 {if $row.title}
-  <h4>{$row.title|escape}</h4>
+  <h4>{$row.title|pb_text}</h4>
 {/if}
 ```
+
+:::
 
 ## Общие свойства
 

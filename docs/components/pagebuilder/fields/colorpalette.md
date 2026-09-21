@@ -7,26 +7,26 @@ description: "Одно значение из preset options с образцам�
 
 Версия: **Free**.
 
-<!-- ![colorpalette](/components/pagebuilder/screenshots/fields/colorpalette.png) -->
+<!-- ![colorpalette](/components/pagebuilder/screenshots/fields/colorpalette.jpg) -->
 
 ## Зачем этот тип
 
-Редактор выбирает из brand-палитры, не любой hex. Статический список options как у select, с UI swatch. Меньше «случайных» цветов на проде.
+Редактор выбирает цвет из заданного списка, а не любой код. Варианты задаются так же, как у [select](select), только показаны образцами. Так на сайте реже появляются случайные цвета.
 
 ## Когда использовать
 
-- Токены темы primary / secondary / muted
-- Фон секции из design system
-- Ограниченный набор для white-label
+- Основные, дополнительные и приглушённые цвета темы
+- Фон секции из готового набора
+- Короткий список цветов для сайтов на одной теме
 
 ## Советы
 
-Произвольный hex: [color](color). В data сохраняется ключ option, не CSS напрямую.
+Свой код цвета вводят полем [color](color). В данных сохраняется ключ варианта, не готовое CSS-правило.
 
 ## Похожие типы
 
-- [color](color) для свободного color picker
-- [select](select) без визуальных swatch
+- [color](color), если нужен любой цвет
+- [select](select), если образцы цвета не нужны
 
 ## Настройка
 
@@ -61,9 +61,17 @@ HEX-строка.
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<span style="color: [[+theme]]">…</span>
+```
+
+```fenom
 <span style="color: {$theme|escape}">…</span>
 ```
+
+:::
 
 ## Примечание
 

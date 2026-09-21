@@ -7,11 +7,11 @@ description: "Boolean через switch PrimeVue в инспекторе"
 
 Версия: **Free**.
 
-<!-- ![toggle](/components/pagebuilder/screenshots/fields/toggle.png) -->
+<!-- ![toggle](/components/pagebuilder/screenshots/fields/toggle.jpg) -->
 
 ## Зачем этот тип
 
-Наглядный on/off без radio или checkbox. То же boolean в data, что у [yesno](yesno). Удобен для частых переключений режима.
+Переключатель вкл/выкл, без радиокнопок и без флажка. В данных то же да/нет, что у [yesno](yesno). Удобен, когда режим переключают часто.
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ description: "Boolean через switch PrimeVue в инспекторе"
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<div class="block is-enabled">…</div>
+```
+
 ```fenom
 {if $enabled}<div class="block is-enabled">…</div>{/if}
 ```
+
+:::
 
 ## Общие свойства
 

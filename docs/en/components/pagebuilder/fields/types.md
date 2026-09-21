@@ -9,7 +9,7 @@ description: "35 Free and 27 Pro field types in the PageBuilder inspector"
 
 Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview](overview#obshchie-svoystva-polya).
 
-<!-- ![Field types in inspector](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
+<!-- ![Field types in inspector](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
 ## Free
 
@@ -59,7 +59,7 @@ Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview
 | `multirelation` | Pro | [multirelation](multirelation) | [JSON and Fenom](multirelation#output-in-section-data) |
 | `gallery` | Pro | [gallery](gallery) | [JSON and Fenom](gallery#output-in-section-data) |
 | `map` | Pro | [map](map) | [JSON and Fenom](map#output-in-section-data) |
-| `table` | Pro | [table](table) | [JSON and Fenom](table#output-in-section-data) |
+| `table` | Pro | [table](table) | Inspector grid. [JSON and Fenom](table#output-in-section-data) |
 | `embeddedTable` | Pro | [embeddedTable](embeddedTable) | [JSON and Fenom](embeddedTable#output-in-section-data) |
 | `keyvalue` | Pro | [keyvalue](keyvalue) | [JSON and Fenom](keyvalue#output-in-section-data) |
 | `editorjs` | Pro, `advanced-fields` | [editorjs](editorjs) | A new field is created only in Pro. An already saved field still opens and writes |
@@ -67,8 +67,8 @@ Common meta keys (`tab`, `width`, `description`, `default`, `active`): [overview
 | `imask` | Pro | [imask](imask) | [JSON and Fenom](imask#output-in-section-data) |
 | `combo` | Pro | [combo](combo) | [JSON and Fenom](combo#output-in-section-data) |
 | `multicombo` | Pro | [multicombo](multicombo) | [JSON and Fenom](multicombo#output-in-section-data) |
-| `tablecombo` | Pro | [tablecombo](tablecombo) | [JSON and Fenom](tablecombo#output-in-section-data) |
-| `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | [JSON and Fenom](tablemulticombo#output-in-section-data) |
+| `tablecombo` | Pro | [tablecombo](tablecombo) | Dropdown from a MODX class. [JSON and Fenom](tablecombo#output-in-section-data) |
+| `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | Several values from a MODX class. [JSON and Fenom](tablemulticombo#output-in-section-data) |
 | `fieldset` | Pro | [fieldset](fieldset) | [JSON and Fenom](fieldset#output-in-section-data) |
 | `dependent` | Pro | [dependent](dependent) | [JSON and Fenom](dependent#output-in-section-data) |
 | `jsongrid` | Pro | [jsongrid](jsongrid) | [JSON and Fenom](jsongrid#output-in-section-data) |

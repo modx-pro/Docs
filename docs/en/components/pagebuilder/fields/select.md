@@ -7,7 +7,7 @@ description: "Single value from a static options array"
 
 Version: **Free**.
 
-<!-- ![select](/components/pagebuilder/screenshots/fields/select.png) -->
+<!-- ![select](/components/pagebuilder/screenshots/fields/select.jpg) -->
 
 ## Why this type
 
@@ -70,6 +70,12 @@ Key `size` in the section data: the selected option `value` string:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<div class="block block--[[+size]]"></div>
+```
+
 ```fenom
 {switch $size}
   {case 'sm'}<div class="block block--sm">{/case}
@@ -77,6 +83,8 @@ Key `size` in the section data: the selected option `value` string:
   {default}<div class="block">{/default}
 {/switch}
 ```
+
+:::
 
 ## Notes
 

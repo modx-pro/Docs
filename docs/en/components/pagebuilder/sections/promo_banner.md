@@ -7,7 +7,7 @@ description: "Banner with text, button, background, and optional product link (P
 
 Wide promo block: title, text, CTA, background, and optional miniShop3 product card.
 
-<!-- ![Promo banner](/components/pagebuilder/screenshots/sections/promo_banner.png) -->
+![Promo banner](/components/pagebuilder/screenshots/sections/promo_banner.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -110,11 +110,11 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_promo_banner`:
 
 ```fenom
-{var $promoBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
-{var $productId = $pb_product_resource|default:($product_id|default:0)}
-{var $listing = ''}
+{set $promoBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+{set $productId = $pb_product_resource !: ($product_id !: 0)}
+{set $listing = ''}
 {if $productId}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => 0,
     'resources' => $productId,
     'limit' => 1,
@@ -137,15 +137,11 @@ Fenom chunk `pagebuilderpro_promo_banner`:
       </div>
     {/if}
     {if $button_label && $button_url}
-      <a class="pb-promo-banner__button pb-button" href="{$button_url|escape}">{$button_label|escape}</a>
+      <a class="pb-promo-banner__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|escape}</a>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/promo_banner.json`
 
 ## See also
 

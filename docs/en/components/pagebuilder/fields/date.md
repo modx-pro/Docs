@@ -7,11 +7,11 @@ description: "ISO date without time of day"
 
 Version: **Free**.
 
-<!-- ![date](/components/pagebuilder/screenshots/fields/date.png) -->
+<!-- ![date](/components/pagebuilder/screenshots/fields/date.jpg) -->
 
 ## Why this type
 
-PrimeVue calendar, not manual text entry. Separate from time and datetime. Predictable format for sorting and Fenom.
+A calendar, not typed text. It is not a time and not a date with a time: those are [time](time) and [datetime](datetime). The format stays stable, so you can sort the date in Fenom.
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `starts_at` in the section data (`YYYY-MM-DD`):
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<time datetime="[[+starts_at]]">[[+starts_at]]</time>
+```
+
+```fenom
 <time datetime="{$starts_at|escape}">{$starts_at|escape}</time>
 ```
+
+:::
 
 ## Common properties
 

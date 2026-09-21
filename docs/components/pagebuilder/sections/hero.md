@@ -7,7 +7,7 @@ description: "Заголовок, текст, кнопка и фоновое и�
 
 Первый блок после шапки сайта. Посетитель сразу видит заголовок, короткий текст и кнопку с ссылкой. Фоновую картинку можно включить или оставить однотонный фон.
 
-<!-- ![Первый экран (Hero)](/components/pagebuilder/screenshots/sections/hero.png) -->
+![Первый экран (Hero)](/components/pagebuilder/screenshots/sections/hero.jpg)
 
 ## Зачем нужен первый экран
 
@@ -107,23 +107,19 @@ description: "Заголовок, текст, кнопка и фоновое и�
 Fenom chunk `pagebuilder_hero`:
 
 ```fenom
-{var $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+{set $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
 <section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
   <div class="pb-section__inner pb-hero__inner">
-    <h1 class="pb-hero__title">{$title|escape}</h1>
+    <h2 class="pb-hero__title">{$title|pb_text}</h2>
     {if $description}
-      <div class="pb-hero__description">{$description|escape}</div>
+      <div class="pb-hero__description">{$description|pb_text}</div>
     {/if}
     {if $button_label && $button_url}
-      <a class="pb-hero__button pb-button" href="{$button_url|escape}">{$button_label|escape}</a>
+      <a class="pb-hero__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|pb_text}</a>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/hero.json`
 
 ## Связанные страницы
 

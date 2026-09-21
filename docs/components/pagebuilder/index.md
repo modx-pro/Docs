@@ -225,8 +225,19 @@ items: [
     items: [
       { text: 'Обзор', link: 'recipes/' },
       { text: 'Лендинг', link: 'recipes/landing' },
+      { text: 'Общие блоки', link: 'recipes/shared-blocks' },
+      { text: 'Шаблоны страниц', link: 'recipes/page-templates' },
+      { text: 'Значения по экранам', link: 'recipes/responsive' },
+      { text: 'UTM и видимость', link: 'recipes/utm' },
+      { text: 'Таблицы', link: 'recipes/tables' },
+      { text: 'Динамический список', link: 'recipes/dynamic-list' },
+      { text: 'Сетка с фильтром', link: 'recipes/filterable-grid' },
+      { text: 'Форма', link: 'recipes/form' },
+      { text: 'Сетка товаров', link: 'recipes/products' },
+      { text: 'Витрина магазина', link: 'recipes/shop-landing' },
       { text: 'Свой тип секции', link: 'recipes/custom-section' },
       { text: 'Bundle', link: 'recipes/bundle' },
+      { text: 'Токен REST', link: 'recipes/rest-read' },
     ],
   },
   { text: 'FAQ', link: 'faq' },
@@ -288,8 +299,8 @@ Autosave пишет только черновик. **Сохранить** рес
 
 | Дополнение | Версия | Содержимое |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.13-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
-| `pagebuilderpro` | 1.0.13-beta | Pro: зависит от `pagebuilder` ≥ 1.0.13, quiz, library pull, шаблоны страниц, журнал секций |
+| `pagebuilder` | 1.0.14-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
+| `pagebuilderpro` | 1.0.14-beta | Pro: зависит от `pagebuilder` ≥ 1.0.14, quiz, library pull, шаблоны страниц, журнал секций |
 
 Namespace в MODX: `pagebuilder`.
 
@@ -310,7 +321,7 @@ Namespace в MODX: `pagebuilder`.
 | Pro, корзина, примеры | [PageBuilder Pro](pro) |
 | Скрипты и агенты | [Agent API](agent-api) |
 | Свои секции и расширения | [Разработчик](developer) |
-| Лендинг, свой тип, Bundle | [Рецепты](recipes/) |
+| Лендинг, списки, формы, UTM, REST | [Рецепты](recipes/) |
 | 62 типа полей инспектора | [Справочник типов полей](fields/types) |
 | 50 встроенных блоков | [Каталог секций](sections/) |
 | Типовые ошибки | [FAQ](faq) |

@@ -7,11 +7,11 @@ description: "String tag array with chip UI in inspector"
 
 Version: **Free**.
 
-<!-- ![tag](/components/pagebuilder/screenshots/fields/tag.png) -->
+<!-- ![tag](/components/pagebuilder/screenshots/fields/tag.jpg) -->
 
 ## Why this type
 
-Free input without static options. Good for filters and card labels.
+The editor types the labels. There is no fixed `options` list. It fits filters and labels on cards.
 
 ## When to use
 
@@ -60,11 +60,21 @@ Key `labels` in the section data: array of strings:
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $labels as $label}
-  <span class="label">{$label|escape}</span>
+  <span class="label">{$label}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $labels as $label}
+  <span class="label">{$label|pb_text}</span>
+{/foreach}
+```
+
+:::
 
 ## Common properties
 

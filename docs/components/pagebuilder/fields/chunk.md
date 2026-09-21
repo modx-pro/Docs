@@ -7,11 +7,11 @@ description: "Объект name выбранного modChunk для include в 
 
 Версия: **Free**.
 
-<!-- ![chunk](/components/pagebuilder/screenshots/fields/chunk.png) -->
+<!-- ![chunk](/components/pagebuilder/screenshots/fields/chunk.jpg) -->
 
 ## Зачем этот тип
 
-Выбор chunk по name без ручного ввода. Паттерн `{include file="file:chunks/{$chunk.name}.tpl"}`. Для секций с динамическими partial.
+Редактор выбирает чанк по имени и не вписывает его вручную. В Fenom его подключают так: `{include file="file:chunks/{$chunk.name}.tpl"}`. Нужен, когда секция подставляет разные фрагменты вёрстки.
 
 ## Когда использовать
 
@@ -59,9 +59,17 @@ description: "Объект name выбранного modChunk для include в 
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+[[$chunkName]]
+```
+
 ```fenom
 {include file="file:chunks/{$chunk.name}.tpl"}
 ```
+
+:::
 
 ## Общие свойства
 

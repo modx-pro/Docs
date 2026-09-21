@@ -7,7 +7,7 @@ description: "Фиксированный список товаров, выбра
 
 В отличие от **Сетки товаров**, здесь нет привязки к одной категории: вы отмечаете конкретные ID в multirelation.
 
-<!-- ![Подборка товаров](/components/pagebuilder/screenshots/sections/curated_products.png) -->
+![Подборка товаров](/components/pagebuilder/screenshots/sections/curated_products.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -92,10 +92,10 @@ description: "Фиксированный список товаров, выбра
 Fenom chunk `pagebuilderpro_curated_products`:
 
 ```fenom
-{var $resourceIds = $curated_product_ids|default:''}
-{var $listing = ''}
+{set $resourceIds = $curated_product_ids|default:''}
+{set $listing = ''}
 {if $resourceIds}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => 0,
     'resources' => $resourceIds,
     'limit' => 12,
@@ -119,15 +119,11 @@ Fenom chunk `pagebuilderpro_curated_products`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">Выберите товары в инспекторе секции.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_curated' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/curated_products.json`
 
 ## Связанные страницы
 

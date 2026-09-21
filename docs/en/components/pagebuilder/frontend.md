@@ -6,7 +6,7 @@ description: Template, CSS, section Fenom chunks, cache, and draft preview
 
 ## Template
 
-<!-- ![Page with sections on the site](/components/pagebuilder/screenshots/fe-page-sections.png) -->
+<!-- ![Page with sections on the site](/components/pagebuilder/screenshots/fe-page-sections.jpg) -->
 
 Place the `PageBuilder` snippet in the template or content field. Use an uncached call:
 
@@ -100,7 +100,7 @@ The public site shows **published** content only. View drafts in the manager (Pr
 
 Token is signed with `pagebuilder_preview_secret`. The iframe loads template CSS (`pagebuilder_preview_include_template_css`) and URLs from `pagebuilder_preview_css_urls`.
 
-<!-- ![Draft preview](/components/pagebuilder/screenshots/mgr-section-preview.png) -->
+<!-- ![Draft preview](/components/pagebuilder/screenshots/mgr-section-preview.jpg) -->
 
 ## Customize chunks
 

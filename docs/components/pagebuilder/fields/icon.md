@@ -49,9 +49,17 @@ description: "SVG из каталога Lucide или Heroicons. Не класс
 
 `svg` уже HTML. Не прогоняйте его через `escape`.
 
-```html
+::: code-group
+
+```modx
+<span class="pb-icon">[[+icon.svg]]</span>
+```
+
+```fenom
 <span class="pb-icon">{$icon.svg}</span>
 ```
+
+:::
 
 ## Похожие типы
 

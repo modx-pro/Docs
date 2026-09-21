@@ -7,6 +7,8 @@ description: "Project cards with image, link, and text. Pro layer."
 
 Section `portfolio` shows projects from a repeater. Chunk: `pagebuilderpro_portfolio`. Requires PageBuilder Pro.
 
+![Portfolio](/components/pagebuilder/screenshots/sections/portfolio.jpg)
+
 ## Where it fits
 
 - Studio work
@@ -42,6 +44,28 @@ Cards sit in `div.pb-grid.pb-grid--cards`. The image goes through chunk `pagebui
     }
   ]
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_portfolio`:
+
+```fenom
+<section class="pb-section pb-section--portfolio pb-portfolio{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="portfolio"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    <div class="pb-grid pb-grid--cards">
+      {foreach $items as $item}
+        <article class="pb-portfolio__item">
+          {if $item.image}{include 'pagebuilder_partial_image' image=$item.image alt=$item.title class='pb-portfolio__image'}{/if}
+          <h3>{$item.title|escape}</h3>
+          {if $item.text}<p>{$item.text|escape}</p>{/if}
+          {if $item.url}<p><a href="{$item.url|escape}">{$item.title|escape}</a></p>{/if}
+        </article>
+      {/foreach}
+    </div>
+  </div>
+</section>
 ```
 
 ## Similar sections

@@ -7,7 +7,7 @@ description: "Массив объектов с nested fields и служебны
 
 Версия: **Free**.
 
-<!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.png) -->
+<!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.jpg) -->
 
 ## Зачем этот тип
 
@@ -79,13 +79,25 @@ description: "Массив объектов с nested fields и служебны
 
 ## Пример в chunk
 
-```fenom
+::: code-group
+
+```modx
 {foreach $items as $item}
   <article id="{$item._rowId|escape}">
-    <h3>{$item.title|escape}</h3>
+    <h3>{$item.title}</h3>
   </article>
 {/foreach}
 ```
+
+```fenom
+{foreach $items as $item}
+  <article id="{$item._rowId|escape}">
+    <h3>{$item.title|pb_text}</h3>
+  </article>
+{/foreach}
+```
+
+:::
 
 ## Общие свойства
 

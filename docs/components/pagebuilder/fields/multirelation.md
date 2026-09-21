@@ -7,11 +7,11 @@ description: "Массив ресурсов с id и pagetitle из модаль
 
 Версия: **Pro**.
 
-<!-- ![multirelation](/components/pagebuilder/screenshots/fields/multirelation.png) -->
+<!-- ![multirelation](/components/pagebuilder/screenshots/fields/multirelation.jpg) -->
 
 ## Зачем этот тип
 
-Порядок строк сохраняется для curated-списков. Тот же модальный поиск, что у [relation](relation). Основа секций curated_products и похожих.
+Порядок выбранных записей сохраняется. Поиск в том же окне, что у [relation](relation). На этом поле собраны секции вроде подборки товаров.
 
 ## Когда использовать
 
@@ -66,11 +66,21 @@ description: "Массив ресурсов с id и pagetitle из модаль
 
 ## Пример в chunk
 
-```fenom
+::: code-group
+
+```modx
 {foreach $products as $p}
-  <span class="related">{$p.pagetitle|escape}</span>
+  <span class="related">{$p.pagetitle}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $products as $p}
+  <span class="related">{$p.pagetitle|pb_text}</span>
+{/foreach}
+```
+
+:::
 
 ## Общие свойства
 

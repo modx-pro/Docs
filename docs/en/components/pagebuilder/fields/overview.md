@@ -9,7 +9,7 @@ Fields define what the editor fills in a section. The schema lives in type JSON 
 
 The [reference](types) lists 62 types (35 Free and 27 Pro). Types with a page have JSON **Configuration**, a **Section data** block, and a Fenom or HTML example. Chunk values come from `section.data`.
 
-<!-- ![Section inspector](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
+<!-- ![Section inspector](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
 ## Minimal field
 
@@ -140,7 +140,7 @@ Whitelist classes in `FieldOptionsService` (`modResource`, `modTemplate`, `modCh
 
 ## Frontend and enrich
 
-`SectionRenderer` passes `section.data` to the chunk as placeholders. Also in properties: `id`, `type`, `settings`.
+`SectionRenderer` passes `section.data` to the chunk as placeholders. Also in properties: `id`, `type`, `settings`. MODX tags do not walk a section array. The loop in the examples is Fenom. The MODX tab repeats that loop and does not use the `pb_text` filter: there is no MODX output filter with that name.
 
 On draft save `SectionFieldEnricher` adds:
 

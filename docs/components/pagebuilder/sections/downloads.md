@@ -9,6 +9,8 @@ description: "Список файлов с названием и описани�
 
 Поле `file` на сайте отдаёт `url` media-записи.
 
+![Загрузки](/components/pagebuilder/screenshots/sections/downloads.jpg)
+
 ## Где уместна
 
 - Прайс, презентация, инструкция
@@ -42,6 +44,31 @@ description: "Список файлов с названием и описани�
     }
   ]
 }
+```
+
+## Шаблон chunk
+
+Fenom chunk `pagebuilderpro_downloads`:
+
+```fenom
+<section class="pb-section pb-section--downloads pb-downloads{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="downloads"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    <ul class="pb-downloads__list">
+      {foreach $items as $item}
+        {set $fileUrl = is_array($item.file) ? ($item.file.url ?: '') : ($item.file ?: '')}
+        <li class="pb-downloads__item">
+          {if $fileUrl}
+            <a href="{$fileUrl|escape}">{$item.title|escape}</a>
+          {else}
+            <span>{$item.title|escape}</span>
+          {/if}
+          {if $item.description}<p>{$item.description|escape}</p>{/if}
+        </li>
+      {/foreach}
+    </ul>
+  </div>
+</section>
 ```
 
 ## Похожие секции

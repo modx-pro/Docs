@@ -7,11 +7,7 @@ description: "Телефон, email, текст, кнопка и карта в �
 
 Объединяет секции **Контакты** и **Карта**: слева (или сверху) контакты и CTA, рядом iframe карты.
 
-<!-- ![Контакты с картой](/components/pagebuilder/screenshots/sections/contact_map.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Контакты с картой](/components/pagebuilder/screenshots/sections/contact_map.jpg)
 
 ## Зачем объединять контакты и карту
 
@@ -127,7 +123,7 @@ Fenom chunk `pagebuilderpro_contact_map`:
           <p class="pb-contact-map__email"><a href="mailto:{$email|escape:'url'}">{$email|escape}</a></p>
         {/if}
         {if $button_label && $button_url}
-          <a class="pb-contact-map__button pb-button" href="{$button_url|escape}">{$button_label|escape}</a>
+          <a class="pb-contact-map__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|escape}</a>
         {/if}
       </div>
       {if $map_embed_url}
@@ -145,10 +141,6 @@ Fenom chunk `pagebuilderpro_contact_map`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/contact_map.json`
 
 ## Связанные страницы
 

@@ -7,11 +7,11 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 Версия: **Free**.
 
-<!-- ![slug](/components/pagebuilder/screenshots/fields/slug.png) -->
+<!-- ![slug](/components/pagebuilder/screenshots/fields/slug.jpg) -->
 
 ## Зачем этот тип
 
-Нормализация сегмента URL, не произвольный text. `sourceField` подтягивает заголовок при первом save. Pro: `responsive` исключён для имён alt, caption, slug.
+Сегмент адреса страницы, не произвольный текст. Поле `sourceField` при первом сохранении копирует заголовок. В Pro разные значения для экранов (`responsive`) не применяются к именам alt, caption и slug.
 
 ## Когда использовать
 
@@ -59,9 +59,17 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<span class="slug">[[+slug]]</span>
+```
+
+```fenom
 <span class="slug">{$slug|escape}</span>
 ```
+
+:::
 
 ## Примечание
 

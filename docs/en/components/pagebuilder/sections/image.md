@@ -7,7 +7,7 @@ description: "Single full-width content image with alt and caption"
 
 One frame across the content column. Use for an illustration, screenshot, or banner without a button.
 
-<!-- ![Image](/components/pagebuilder/screenshots/sections/image.png) -->
+![Image](/components/pagebuilder/screenshots/sections/image.jpg)
 
 ## When one frame is enough
 
@@ -102,10 +102,6 @@ Fenom chunk `pagebuilder_image`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/image.json`
 
 ## See also
 

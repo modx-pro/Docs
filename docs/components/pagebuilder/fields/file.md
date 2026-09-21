@@ -7,26 +7,26 @@ description: "Media-объект файла после enrich при save draft"
 
 Версия: **Free**.
 
-<!-- ![file](/components/pagebuilder/screenshots/fields/file.png) -->
+<!-- ![file](/components/pagebuilder/screenshots/fields/file.jpg) -->
 
 ## Зачем этот тип
 
-Enrich добавляет filename, extension, size, url. Подходит для PDF, архивов, не только картинок. Тот же media pipeline, что у [image](image).
+Поле для PDF, архива и других файлов, не только для картинок. После сохранения в данных есть имя файла, расширение, размер и адрес. Файлы обрабатываются так же, как у [image](image).
 
 ## Когда использовать
 
-- PDF прайс, презентация, downloadable asset
-- Attachment в contact или CTA
+- PDF с ценами, презентация, файл для скачивания
+- Вложение в форме или в блоке с кнопкой
 - Любой файл из медиа MODX
 
 ## Советы
 
-В chunk используйте `{$file.url}`, не сырой path. Только изображения чаще через [image](image).
+В чанке берите `{$file.url}`, не путь к файлу. Для одних фотографий чаще хватает [image](image).
 
 ## Похожие типы
 
 - [image](image) для фото с alt и размерами
-- [url](url) для внешней ссылки без upload
+- [url](url) для внешней ссылки, если файл не загружают
 
 ## Настройка
 
@@ -70,9 +70,17 @@ Enrich добавляет filename, extension, size, url. Подходит дл�
 
 ## Пример в chunk
 
-```html
-<a href="{$pdf.url|escape}" download="{$pdf.title|escape}">{$pdf.title|escape}</a>
+::: code-group
+
+```modx
+<a href="[[+pdf.url]]" download="[[+pdf.title]]">[[+pdf.title]]</a>
 ```
+
+```fenom
+<a href="{$pdf.url|escape}" download="{$pdf.title|escape}">{$pdf.title|pb_text}</a>
+```
+
+:::
 
 ## Общие свойства
 

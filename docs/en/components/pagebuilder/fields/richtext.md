@@ -7,7 +7,7 @@ description: "HTML string from the familiar MODX richtext editor"
 
 Version: **Free**.
 
-<!-- ![richtext](/components/pagebuilder/screenshots/fields/richtext.png) -->
+<!-- ![richtext](/components/pagebuilder/screenshots/fields/richtext.jpg) -->
 
 ## Why this type
 
@@ -60,9 +60,17 @@ Key `content` in the section data:
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<div class="pb-richtext__content">[[+content]]</div>
+```
+
+```fenom
 <div class="pb-richtext__content">{$content}</div>
 ```
+
+:::
 
 ## Notes
 

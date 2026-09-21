@@ -150,7 +150,7 @@ $pageService = $pb->pages();
 
 ## Pro extensions
 
-Plugin on `pbOnRegisterFeatureProviders` registers your `FeatureProvider` alongside `ProFeatureProvider`.
+Plugin on `pbOnRegisterFeatureProviders` registers your `FeatureProvider` alongside `ProFeatureProvider`. The provider must implement `serverContributions()` and `cmpContributions()`. Install Free and Pro from this line together.
 
 Boot, save, and render events: [Manager and events](integration#events).
 

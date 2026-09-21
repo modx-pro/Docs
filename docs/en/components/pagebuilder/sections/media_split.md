@@ -7,6 +7,8 @@ description: "Image on the left or right, plus text and a button. Pro layer."
 
 Section `media_split` puts an image and text in two columns. Chunk: `pagebuilderpro_media_split`. Requires PageBuilder Pro.
 
+![Media + text](/components/pagebuilder/screenshots/sections/media_split.jpg)
+
 `media_side`: `left` or `right`.
 
 ## Where it fits
@@ -41,6 +43,28 @@ The side class is `pb-media-split--left` or `pb-media-split--right`. An empty `m
   "button_label": "Details",
   "button_url": "/about"
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_media_split`:
+
+```fenom
+{set $side = $media_side|default:'left'}
+<section class="pb-section pb-section--media-split pb-media-split pb-media-split--{$side|escape}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="media_split"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner pb-media-split__inner">
+    <div class="pb-media-split__media">
+      {include 'pagebuilder_partial_image' image=$image alt=$title class='pb-media-split__image'}
+    </div>
+    <div class="pb-media-split__content">
+      {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+      {if $text}<p>{$text|escape}</p>{/if}
+      {if $button_label && $button_url}
+        <p><a class="pb-button" href="{$button_url|pb_href|escape}">{$button_label|escape}</a></p>
+      {/if}
+    </div>
+  </div>
+</section>
 ```
 
 ## Similar sections

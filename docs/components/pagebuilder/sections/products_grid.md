@@ -7,7 +7,7 @@ description: "Витрина товаров категории miniShop3 чер�
 
 Классическая сетка интернет-магазина: карточки с фото, ценой, бейджами и кнопкой «В корзину». Товары из выбранной категории.
 
-<!-- ![Сетка товаров](/components/pagebuilder/screenshots/sections/products_grid.png) -->
+![Сетка товаров](/components/pagebuilder/screenshots/sections/products_grid.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -103,10 +103,10 @@ description: "Витрина товаров категории miniShop3 чер�
 Fenom chunk `pagebuilderpro_products_grid`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => $catalogParent,
     'depth' => 10,
     'limit' => $limit|default:12,
@@ -129,15 +129,11 @@ Fenom chunk `pagebuilderpro_products_grid`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">В этой категории пока нет товаров.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_products' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/products_grid.json`
 
 ## Связанные страницы
 

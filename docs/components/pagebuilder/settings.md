@@ -52,7 +52,7 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | --- | --- | --- | --- |
 | `pagebuilder_resource_tab_enabled` | boolean | `0` | Вкладка «Секции» на форме ресурса |
 | `pagebuilder_resource_tab_parents` | text | пусто | ID родителей через запятую. Пусто при включённой вкладке = все ресурсы |
-| `pagebuilder_resource_tab_index` | number | `-1` | Позиция вкладки «Секции»: `0` первая, `1` вторая, `-1` последняя |
+| `pagebuilder_resource_tab_index` | number | `-1` | Позиция вкладки «Секции»: `0` первая и открыта при загрузке ресурса, `1` вторая, `-1` последняя |
 | `pagebuilder_resource_tables_tab_enabled` | boolean | `0` | Вкладка «Таблицы» (табличные данные ресурса) |
 | `pagebuilder_resource_tables_tab_index` | number | `-1` | Позиция вкладки «Таблицы» |
 

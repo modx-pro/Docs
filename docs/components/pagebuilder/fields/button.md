@@ -7,11 +7,11 @@ description: "Объект CTA: label, url и target"
 
 Версия: **Free**.
 
-<!-- ![button](/components/pagebuilder/screenshots/fields/button.png) -->
+<!-- ![button](/components/pagebuilder/screenshots/fields/button.jpg) -->
 
 ## Зачем этот тип
 
-Три связанных свойства в одном поле: label, url, target. UTM-плейсхолдеры в url. Готовый объект для `<a>` в chunk.
+В одном поле три части ссылки: текст, адрес и куда открывать (`label`, `url`, `target`). В адресе можно оставить плейсхолдеры UTM. В чанке из этого объекта собирается тег `<a>`.
 
 ## Когда использовать
 
@@ -61,9 +61,17 @@ description: "Объект CTA: label, url и target"
 
 ## Пример в chunk
 
-```html
-<a class="btn" href="{$cta.url|escape}" target="{$cta.target|escape}">{$cta.label|escape}</a>
+::: code-group
+
+```modx
+<a class="pb-button" href="[[+cta.url]]" target="[[+cta.target]]">[[+cta.label]]</a>
 ```
+
+```fenom
+<a class="pb-button" href="{$cta.url|pb_href|escape}" target="{$cta.target|escape}">{$cta.label|pb_text}</a>
+```
+
+:::
 
 ## Общие свойства
 

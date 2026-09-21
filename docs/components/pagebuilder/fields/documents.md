@@ -34,11 +34,21 @@ description: "Список файлов с названием. Слой Pro."
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
 {foreach $files as $row}
-  <a href="{$row.file.url|escape}">{$row.title|escape}</a>
+  <a href="{$row.file.url|escape}">{$row.title}</a>
 {/foreach}
 ```
+
+```fenom
+{foreach $files as $row}
+  <a href="{$row.file.url|escape}">{$row.title|pb_text}</a>
+{/foreach}
+```
+
+:::
 
 ## Похожие типы
 

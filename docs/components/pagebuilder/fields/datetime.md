@@ -7,11 +7,11 @@ description: "Дата и время в одном значении"
 
 Версия: **Free**.
 
-<!-- ![datetime](/components/pagebuilder/screenshots/fields/datetime.png) -->
+<!-- ![datetime](/components/pagebuilder/screenshots/fields/datetime.jpg) -->
 
 ## Зачем этот тип
 
-Один picker вместо пары date + time. ISO-подобная строка для событий. Меньше ошибок синхронизации двух полей.
+Дата и время в одном календаре, а не в двух полях. В данных строка, близкая к ISO: её можно сортировать. Так меньше расхождений, чем у пары [date](date) и [time](time).
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ description: "Дата и время в одном значении"
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<time datetime="[[+starts_at]]">[[+starts_at]]</time>
+```
+
+```fenom
 <time datetime="{$starts_at|escape}">{$starts_at|escape}</time>
 ```
+
+:::
 
 ## Общие свойства
 

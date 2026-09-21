@@ -31,11 +31,21 @@ Built-in shop sections, for example [comparison](../sections/product_comparison)
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
 {foreach $product_ids as $id}
   <span>{$id|escape}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $product_ids as $id}
+  <span>{$id|escape}</span>
+{/foreach}
+```
+
+:::
 
 ## Similar types
 

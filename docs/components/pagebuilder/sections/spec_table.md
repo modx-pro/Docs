@@ -7,11 +7,7 @@ description: "Таблица «параметр / значение» с всту
 
 Двухколоночная таблица для технических данных. Сверху необязательный заголовок и вступление.
 
-<!-- ![Таблица характеристик](/components/pagebuilder/screenshots/sections/spec_table.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Таблица характеристик](/components/pagebuilder/screenshots/sections/spec_table.jpg)
 
 ## Specs в таблице
 
@@ -97,7 +93,7 @@ HTML-таблица `pb-spec-table`.
 Fenom chunk `pagebuilderpro_spec_table`:
 
 ```fenom
-{var $rows = $spec_rows|default:($specs|default:[])}
+{set $rows = $spec_rows|default:($specs|default:[])}
 <section class="pb-section pb-section--spec-table pb-spec-table{if $striped} pb-spec-table--striped{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="spec_table"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-spec-table__inner">
     {if $title}
@@ -111,8 +107,8 @@ Fenom chunk `pagebuilderpro_spec_table`:
         <table class="pb-spec-table__table">
           <thead>
             <tr>
-              <th scope="col">Параметр</th>
-              <th scope="col">Значение</th>
+              <th scope="col">{'pagebuilder_fe_spec_param' | lexicon}</th>
+              <th scope="col">{'pagebuilder_fe_spec_value' | lexicon}</th>
             </tr>
           </thead>
           <tbody>
@@ -126,15 +122,11 @@ Fenom chunk `pagebuilderpro_spec_table`:
         </table>
       </div>
     {else}
-      <p class="pb-spec-table__empty">Добавьте строки характеристик в инспекторе.</p>
+      <p class="pb-spec-table__empty">{'pagebuilder_fe_spec_empty' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/spec_table.json`
 
 ## Связанные страницы
 

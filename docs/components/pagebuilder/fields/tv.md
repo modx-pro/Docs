@@ -7,11 +7,11 @@ description: "Объект id name caption выбранного MODX TV"
 
 Версия: **Free**.
 
-<!-- ![tv](/components/pagebuilder/screenshots/fields/tv.png) -->
+<!-- ![tv](/components/pagebuilder/screenshots/fields/tv.jpg) -->
 
 ## Зачем этот тип
 
-Выбор template variable для гибридного chunk: на фронте `[[*{$tv.name}]]`. Мост между секцией PageBuilder и TV ресурса.
+Редактор выбирает дополнительное поле ресурса (TV). На сайте его значение выводят как `[[*{$tv.name}]]`. Секция не копирует значение к себе, а указывает, какую TV читать.
 
 ## Когда использовать
 
@@ -61,9 +61,17 @@ description: "Объект id name caption выбранного MODX TV"
 
 ## Пример в chunk
 
-```html
-[[*{$tv.name}]]
+::: code-group
+
+```modx
+[[*tvname]]
 ```
+
+```fenom
+{$_modx->resource[$tv.name]}
+```
+
+:::
 
 ## Общие свойства
 

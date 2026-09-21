@@ -7,7 +7,7 @@ description: "Image grid with alt text and optional caption per slide"
 
 Several photos or screenshots in one section. Each image has its own alt text and optional caption. Rendering is in Free. A new section of this type is created by PageBuilder Pro (`authoring: Pro; runtime in Free`).
 
-<!-- ![Gallery](/components/pagebuilder/screenshots/sections/gallery.png) -->
+![Gallery](/components/pagebuilder/screenshots/sections/gallery.jpg)
 
 ## What the gallery adds
 
@@ -104,7 +104,7 @@ Fenom chunk `pagebuilder_gallery`:
 <section class="pb-section pb-section--gallery pb-gallery{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="gallery"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-gallery__inner">
     {if $title}
-      <h2 class="pb-heading pb-gallery__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-gallery__title">{$title|pb_text}</h2>
     {/if}
     <div class="pb-gallery__grid">
       {foreach $items as $item}
@@ -119,10 +119,6 @@ Fenom chunk `pagebuilder_gallery`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/gallery.json`
 
 ## See also
 

@@ -7,7 +7,7 @@ description: "Fixed product list picked manually in the inspector (Pro)"
 
 Unlike **Products grid**, no single category: you pick exact product IDs in multirelation.
 
-<!-- ![Curated products](/components/pagebuilder/screenshots/sections/curated_products.png) -->
+![Curated products](/components/pagebuilder/screenshots/sections/curated_products.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -92,10 +92,10 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_curated_products`:
 
 ```fenom
-{var $resourceIds = $curated_product_ids|default:''}
-{var $listing = ''}
+{set $resourceIds = $curated_product_ids|default:''}
+{set $listing = ''}
 {if $resourceIds}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => 0,
     'resources' => $resourceIds,
     'limit' => 12,
@@ -119,15 +119,11 @@ Fenom chunk `pagebuilderpro_curated_products`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">Select products in the section inspector.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_curated' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/curated_products.json`
 
 ## See also
 

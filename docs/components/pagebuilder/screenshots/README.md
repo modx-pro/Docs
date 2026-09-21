@@ -3,7 +3,7 @@
 Положите PNG в эту папку (или в `sections/` для блоков), затем раскомментируйте строку в markdown:
 
 ```md
-<!-- ![Подпись](/components/pagebuilder/screenshots/имя-файла.png) -->
+<!-- ![Подпись](/components/pagebuilder/screenshots/имя-файла.jpg) -->
 ```
 
 →

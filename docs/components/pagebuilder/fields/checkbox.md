@@ -7,11 +7,11 @@ description: "Один boolean-флаг: true или false"
 
 Версия: **Free**.
 
-<!-- ![checkbox](/components/pagebuilder/screenshots/fields/checkbox.png) -->
+<!-- ![checkbox](/components/pagebuilder/screenshots/fields/checkbox.jpg) -->
 
 ## Зачем этот тип
 
-Явный чекбокс для одной опции. Значение boolean, не строка "1"/"0". Пара с `showWhen` для условных полей.
+Один флажок для одного варианта. В данных это да или нет, не строка "1" или "0". Рядом с `showWhen` им включают и выключают другие поля.
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ description: "Один boolean-флаг: true или false"
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span class="badge">Избранное</span>
+```
+
 ```fenom
 {if $featured}<span class="badge">Избранное</span>{/if}
 ```
+
+:::
 
 ## Общие свойства
 

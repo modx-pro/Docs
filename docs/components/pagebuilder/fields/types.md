@@ -9,7 +9,7 @@ description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 
 Общие meta-ключи (`tab`, `width`, `description`, `default`, `active`): [обзор](overview#общие-свойства-поля).
 
-<!-- ![Типы полей в инспекторе](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
+<!-- ![Типы полей в инспекторе](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
 ## Free
 
@@ -59,7 +59,7 @@ description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 | `multirelation` | Pro | [multirelation](multirelation) | [JSON и Fenom](multirelation#vyvod-v-section-data) |
 | `gallery` | Pro | [gallery](gallery) | [JSON и Fenom](gallery#vyvod-v-section-data) |
 | `map` | Pro | [map](map) | [JSON и Fenom](map#vyvod-v-section-data) |
-| `table` | Pro | [table](table) | [JSON и Fenom](table#vyvod-v-section-data) |
+| `table` | Pro | [table](table) | Сетка в инспекторе. [JSON и Fenom](table#vyvod-v-section-data) |
 | `embeddedTable` | Pro | [embeddedTable](embeddedTable) | [JSON и Fenom](embeddedTable#vyvod-v-section-data) |
 | `keyvalue` | Pro | [keyvalue](keyvalue) | [JSON и Fenom](keyvalue#vyvod-v-section-data) |
 | `editorjs` | Pro, `advanced-fields` | [editorjs](editorjs) | Новое поле создаётся только в Pro. Уже сохранённое открывается и пишется |
@@ -67,8 +67,8 @@ description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 | `imask` | Pro | [imask](imask) | [JSON и Fenom](imask#vyvod-v-section-data) |
 | `combo` | Pro | [combo](combo) | [JSON и Fenom](combo#vyvod-v-section-data) |
 | `multicombo` | Pro | [multicombo](multicombo) | [JSON и Fenom](multicombo#vyvod-v-section-data) |
-| `tablecombo` | Pro | [tablecombo](tablecombo) | [JSON и Fenom](tablecombo#vyvod-v-section-data) |
-| `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | [JSON и Fenom](tablemulticombo#vyvod-v-section-data) |
+| `tablecombo` | Pro | [tablecombo](tablecombo) | Выпадающий список из класса MODX. [JSON и Fenom](tablecombo#vyvod-v-section-data) |
+| `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | Несколько значений из класса MODX. [JSON и Fenom](tablemulticombo#vyvod-v-section-data) |
 | `fieldset` | Pro | [fieldset](fieldset) | [JSON и Fenom](fieldset#vyvod-v-section-data) |
 | `dependent` | Pro | [dependent](dependent) | [JSON и Fenom](dependent#vyvod-v-section-data) |
 | `jsongrid` | Pro | [jsongrid](jsongrid) | [JSON и Fenom](jsongrid#vyvod-v-section-data) |

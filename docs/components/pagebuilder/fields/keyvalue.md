@@ -7,11 +7,11 @@ description: "Массив пар ключ–значение без typed colum
 
 Версия: **Pro**.
 
-<!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.png) -->
+<!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.jpg) -->
 
 ## Зачем этот тип
 
-Проще [table](table) для одной text-колонки value. `keyLabel` и `valueLabel` настраивают подписи. Произвольное число строк без schema columns.
+Проще, чем [table](table), если нужна одна текстовая колонка значения. Подписи колонок задают `keyLabel` и `valueLabel`. Число строк не ограничено списком колонок в схеме.
 
 ## Когда использовать
 
@@ -68,11 +68,21 @@ Typed cells или image в ячейке: [table](table). Одна плоска�
 
 ## Пример в chunk
 
-```fenom
+::: code-group
+
+```modx
 {foreach $meta as $row}
-  <div><strong>{$row.key|escape}:</strong> {$row.value|escape}</div>
+  <div><strong>{$row.key}:</strong> {$row.value}</div>
 {/foreach}
 ```
+
+```fenom
+{foreach $meta as $row}
+  <div><strong>{$row.key|pb_text}:</strong> {$row.value|pb_text}</div>
+{/foreach}
+```
+
+:::
 
 ## Примечание
 

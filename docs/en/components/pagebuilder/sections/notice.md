@@ -7,6 +7,8 @@ description: "A short message with tone info, success, warning, or danger. Pro l
 
 Section `notice` shows a short message. Chunk: `pagebuilderpro_notice`. Requires PageBuilder Pro.
 
+![Notice](/components/pagebuilder/screenshots/sections/notice.jpg)
+
 `tone`: `info`, `success`, `warning`, `danger`. The tone background sits on the text block (`width: fit-content`), not across the whole section.
 
 ## Where it fits
@@ -35,6 +37,20 @@ The root is `<aside role="note">`. The tone class is `pb-notice--info`, `pb-noti
   "title": "Warehouse",
   "text": "Shipping from 20 September"
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_notice`:
+
+```fenom
+{set $toneValue = $tone|default:'info'}
+<aside class="pb-section pb-section--notice pb-notice pb-notice--{$toneValue|escape}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="notice" data-pb-tone="{$toneValue|escape}"{if $id} id="pb-{$id|escape}"{/if} role="note">
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading pb-notice__title">{$title|escape}</h2>{/if}
+    <p class="pb-notice__text">{$text|escape}</p>
+  </div>
+</aside>
 ```
 
 ## Similar sections

@@ -7,17 +7,17 @@ description: "Строка с маской ввода IMask в инспекто�
 
 Версия: **Pro**.
 
-<!-- ![imask](/components/pagebuilder/screenshots/fields/imask.png) -->
+<!-- ![imask](/components/pagebuilder/screenshots/fields/imask.jpg) -->
 
 ## Зачем этот тип
 
-Телефон, ИНН, шаблон карты: маска на вводе, не только post-validation. `mask` или preset в schema. Pro advanced-fields.
+Телефон, ИНН или номер карты вводятся по маске: лишние символы отсекаются сразу, а не только при проверке перед публикацией. Маска задаётся в схеме поля (`mask` или готовый набор). Тип есть в PageBuilder Pro.
 
 ## Когда использовать
 
-- Телефон в полях contact_form
-- SKU или serial с фиксированным форматом
-- Шаблон промокода
+- Телефон в форме обратной связи
+- Артикул или серийный номер фиксированной длины
+- Промокод по шаблону
 
 ## Советы
 
@@ -61,9 +61,17 @@ description: "Строка с маской ввода IMask в инспекто�
 
 ## Пример в chunk
 
-```html
-<a href="tel:{$phone|escape}">{$phone|escape}</a>
+::: code-group
+
+```modx
+<a href="tel:[[+phone]]">[[+phone]]</a>
 ```
+
+```fenom
+<a href="tel:{$phone|escape:'url'}">{$phone|escape}</a>
+```
+
+:::
 
 ## Примечание
 

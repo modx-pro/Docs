@@ -79,11 +79,21 @@ JSON-массив объектов (как значение MIGX TV):
 
 ## Пример в chunk
 
-```fenom
+::: code-group
+
+```modx
 {foreach $items as $item}
-  <div>{$item.title|escape}</div>
+  <div>{$item.title}</div>
 {/foreach}
 ```
+
+```fenom
+{foreach $items as $item}
+  <div>{$item.title|pb_text}</div>
+{/foreach}
+```
+
+:::
 
 ## Общие свойства
 

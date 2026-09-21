@@ -7,11 +7,11 @@ description: "Число для счётчиков, лимитов и поряд
 
 Версия: **Free**.
 
-<!-- ![number](/components/pagebuilder/screenshots/fields/number.png) -->
+<!-- ![number](/components/pagebuilder/screenshots/fields/number.jpg) -->
 
 ## Зачем этот тип
 
-Тип number в инспекторе, не строка с цифрами. Pro: `responsive` для разных breakpoint. Удобен для сортировки и арифметики в chunk.
+В инспекторе это число, а не строка из цифр. В Pro можно задать разные значения для компьютера, планшета и телефона (`responsive`). Число удобно сортировать и считать в чанке.
 
 ## Когда использовать
 
@@ -61,9 +61,17 @@ description: "Число для счётчиков, лимитов и поряд
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span class="count">[[+count]]</span>
+```
+
 ```fenom
 {if $count !== null}<span class="count">{$count}</span>{/if}
 ```
+
+:::
 
 ## Примечание
 

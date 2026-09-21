@@ -7,7 +7,7 @@ description: "Одно значение из статического масси
 
 Версия: **Free**.
 
-<!-- ![select](/components/pagebuilder/screenshots/fields/select.png) -->
+<!-- ![select](/components/pagebuilder/screenshots/fields/select.jpg) -->
 
 ## Зачем этот тип
 
@@ -70,6 +70,12 @@ description: "Одно значение из статического масси
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<div class="block block--[[+size]]"></div>
+```
+
 ```fenom
 {switch $size}
   {case 'sm'}<div class="block block--sm">{/case}
@@ -77,6 +83,8 @@ description: "Одно значение из статического масси
   {default}<div class="block">{/default}
 {/switch}
 ```
+
+:::
 
 ## Примечание
 

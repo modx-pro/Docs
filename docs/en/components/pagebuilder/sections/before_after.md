@@ -7,6 +7,8 @@ description: "Two images with before and after labels. Pro layer."
 
 Section `before_after` places two frames side by side. Chunk: `pagebuilderpro_before_after`. Requires PageBuilder Pro. Category: media.
 
+![Before / After](/components/pagebuilder/screenshots/sections/before_after.jpg)
+
 ## Where it fits
 
 - Renovation, retouch, or clinical result
@@ -38,6 +40,29 @@ Two columns, `figure.pb-before-after__panel`. There is no slider and no JavaScri
   "after_image": { "url": "assets/images/after.jpg" },
   "caption": "Three weeks"
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_before_after`:
+
+```fenom
+<section class="pb-section pb-section--before-after pb-before-after{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="before_after"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    <div class="pb-before-after__grid">
+      <figure class="pb-before-after__panel">
+        {if $before_label}<figcaption>{$before_label|escape}</figcaption>{/if}
+        {include 'pagebuilder_partial_image' image=$before_image alt=($before_label ?: 'Before') class='pb-before-after__image'}
+      </figure>
+      <figure class="pb-before-after__panel">
+        {if $after_label}<figcaption>{$after_label|escape}</figcaption>{/if}
+        {include 'pagebuilder_partial_image' image=$after_image alt=($after_label ?: 'After') class='pb-before-after__image'}
+      </figure>
+    </div>
+    {if $caption}<p class="pb-before-after__caption">{$caption|escape}</p>{/if}
+  </div>
+</section>
 ```
 
 ## Similar sections

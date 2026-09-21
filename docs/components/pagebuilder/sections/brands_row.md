@@ -7,7 +7,7 @@ description: "Логотипы брендов вручную или из вен�
 
 Похоже на **Логотипы партнёров**, но можно подтянуть бренды (vendors) из категории каталога автоматически.
 
-<!-- ![Ряд брендов](/components/pagebuilder/screenshots/sections/brands_row.png) -->
+![Ряд брендов](/components/pagebuilder/screenshots/sections/brands_row.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -120,7 +120,7 @@ description: "Логотипы брендов вручную или из вен�
 Fenom chunk `pagebuilderpro_brands_row`:
 
 ```fenom
-{var $brands = $brand_items|default:$items}
+{set $brands = $brand_items|default:$items}
 <section class="pb-section pb-section--brands-row pb-brands-row{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="brands_row"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-brands-row__inner">
     {if $title}
@@ -130,7 +130,7 @@ Fenom chunk `pagebuilderpro_brands_row`:
       <div class="pb-brands-row__grid">
         {foreach $brands as $item}
           {if $item.url}
-            <a class="pb-brands-row__item" href="{$item.url|escape:'url'}" title="{$item.name|escape}">
+            <a class="pb-brands-row__item" href="{$item.url|escape}" title="{$item.name|escape}">
               {if $item.logo}
                 {include 'pagebuilder_partial_image' image=$item.logo alt=$item.name class='pb-brands-row__logo'}
               {/if}
@@ -147,15 +147,11 @@ Fenom chunk `pagebuilderpro_brands_row`:
         {/foreach}
       </div>
     {else}
-      <p class="pb-brands-row__empty">Добавьте бренды вручную или выберите категорию с вендорами.</p>
+      <p class="pb-brands-row__empty">{'pagebuilder_fe_brands_empty' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/brands_row.json`
 
 ## Связанные страницы
 

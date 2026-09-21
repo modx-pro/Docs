@@ -7,7 +7,7 @@ description: "Встраивание ролика по URL (YouTube, Vimeo, Rutu
 
 Responsive iframe по ссылке на ролик. Поддерживаются популярные хостинги. URL разбирает `VideoEmbedResolver` при сохранении. Секция входит в Free.
 
-<!-- ![Видео](/components/pagebuilder/screenshots/sections/video.png) -->
+![Видео](/components/pagebuilder/screenshots/sections/video.jpg)
 
 ## URL вместо embed-кода
 
@@ -87,7 +87,7 @@ Fenom chunk `pagebuilderpro_video`:
       <h2 class="pb-heading pb-video__title">{$title|escape}</h2>
     {/if}
     {if $video_provider}
-      {var $providerLabel = $video_provider == 'youtube' ? 'YouTube' : ($video_provider == 'vimeo' ? 'Vimeo' : ($video_provider == 'rutube' ? 'Rutube' : $video_provider))}
+      {set $providerLabel = $video_provider == 'youtube' ? 'YouTube' : ($video_provider == 'vimeo' ? 'Vimeo' : ($video_provider == 'rutube' ? 'Rutube' : $video_provider))}
       <p class="pb-video__provider">{$providerLabel|escape}</p>
     {/if}
     {if $video_embed_url}
@@ -95,15 +95,11 @@ Fenom chunk `pagebuilderpro_video`:
         <iframe src="{$video_embed_url|escape}" title="{$title|default:'Video'|escape}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
     {elseif $video_watch_url}
-      <p><a class="pb-button" href="{$video_watch_url|escape}">Смотреть видео</a></p>
+      <p><a class="pb-button" href="{$video_watch_url|escape}">{'pagebuilder_fe_video_watch' | lexicon}</a></p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/video.json`
 
 ## Связанные страницы
 

@@ -7,7 +7,7 @@ description: "Баннер с текстом, кнопкой, фоном и оп
 
 Широкий промо-блок: заголовок, текст, CTA, фон и опционально карточка товара miniShop3.
 
-<!-- ![Промо-баннер](/components/pagebuilder/screenshots/sections/promo_banner.png) -->
+![Промо-баннер](/components/pagebuilder/screenshots/sections/promo_banner.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -110,11 +110,11 @@ description: "Баннер с текстом, кнопкой, фоном и оп
 Fenom chunk `pagebuilderpro_promo_banner`:
 
 ```fenom
-{var $promoBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
-{var $productId = $pb_product_resource|default:($product_id|default:0)}
-{var $listing = ''}
+{set $promoBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+{set $productId = $pb_product_resource !: ($product_id !: 0)}
+{set $listing = ''}
 {if $productId}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => 0,
     'resources' => $productId,
     'limit' => 1,
@@ -137,15 +137,11 @@ Fenom chunk `pagebuilderpro_promo_banner`:
       </div>
     {/if}
     {if $button_label && $button_url}
-      <a class="pb-promo-banner__button pb-button" href="{$button_url|escape}">{$button_label|escape}</a>
+      <a class="pb-promo-banner__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|escape}</a>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/promo_banner.json`
 
 ## Связанные страницы
 

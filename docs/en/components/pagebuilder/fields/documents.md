@@ -34,11 +34,21 @@ A list of `{ title, file }` rows. The inspector does not save empty rows. `file`
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
 {foreach $files as $row}
-  <a href="{$row.file.url|escape}">{$row.title|escape}</a>
+  <a href="{$row.file.url|escape}">{$row.title}</a>
 {/foreach}
 ```
+
+```fenom
+{foreach $files as $row}
+  <a href="{$row.file.url|escape}">{$row.title|pb_text}</a>
+{/foreach}
+```
+
+:::
 
 ## Similar types
 

@@ -7,6 +7,8 @@ description: "Places with title, address, and link. Pro layer."
 
 Section `locations` lists places from a repeater. Chunk: `pagebuilderpro_locations`. Requires PageBuilder Pro. This section does not embed a map.
 
+![Locations](/components/pagebuilder/screenshots/sections/locations.jpg)
+
 ## Where it fits
 
 - Offices and stores as a list
@@ -40,6 +42,27 @@ The list is `ul.pb-locations__list`. The address prints when set. The link targe
     }
   ]
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_locations`:
+
+```fenom
+<section class="pb-section pb-section--locations pb-locations{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="locations"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    <ul class="pb-locations__list">
+      {foreach $items as $item}
+        <li class="pb-locations__item">
+          <h3>{$item.title|escape}</h3>
+          {if $item.address}<p>{$item.address|escape}</p>{/if}
+          {if $item.url}<p><a href="{$item.url|escape}">{$item.url|escape}</a></p>{/if}
+        </li>
+      {/foreach}
+    </ul>
+  </div>
+</section>
 ```
 
 ## Similar sections

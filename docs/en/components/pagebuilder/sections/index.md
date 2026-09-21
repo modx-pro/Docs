@@ -11,7 +11,7 @@ Every section in the tables below has a page: why to use the block, its fields, 
 
 The key (`key`) goes into the PageBuilder snippet and document JSON. Add custom types via the control panel (Pro) or plugin on `pbOnRegisterSectionDefinitions`.
 
-<!-- ![Section catalog in manager](/components/pagebuilder/screenshots/mgr-section-catalog.png) -->
+<!-- ![Section catalog in manager](/components/pagebuilder/screenshots/mgr-section-catalog.jpg) -->
 
 ## Free: content and layout (10)
 

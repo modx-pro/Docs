@@ -7,11 +7,7 @@ description: "Встраивание карты по координатам (Я�
 
 Точка на карте по координатам или адресу. Iframe собирает `MapEmbedResolver`. Провайдер по умолчанию: Яндекс.Карты.
 
-<!-- ![Карта](/components/pagebuilder/screenshots/sections/map.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Карта](/components/pagebuilder/screenshots/sections/map.jpg)
 
 ## Отдельная карта
 
@@ -101,15 +97,11 @@ Fenom chunk `pagebuilderpro_map`:
         ></iframe>
       </div>
     {elseif $map_watch_url}
-      <p><a class="pb-button" href="{$map_watch_url|escape}">Открыть карту</a></p>
+      <p><a class="pb-button" href="{$map_watch_url|escape}">{'pagebuilder_fe_map_open' | lexicon}</a></p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/map.json`
 
 ## Связанные страницы
 

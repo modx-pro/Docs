@@ -7,11 +7,15 @@ description: "JSON, chunk и регистрация через pbOnRegisterSecti
 
 Результат: тип появляется в каталоге **Блоки**. Схема JSON и пути chunk описаны в [определении секции](../developer#opredelenie-sekcii).
 
+## Что нужно заранее
+
+Не правьте `core/components/pagebuilder/sections/`: upgrade пакета затрёт файл. Для UI-типа нужно право `pagebuilder_manage_types`.
+
 ## Плагин
 
-1. Положите JSON рядом с вашим компонентом. Не правьте `core/components/pagebuilder/sections/`: upgrade пакета затрёт файл.
+1. Положите JSON рядом с вашим компонентом.
 2. Создайте chunk с именем из поля `chunk`.
-3. Подпишите плагин на `pbOnRegisterSectionDefinitions` и вызовите `registerFromFile`.
+3. В **Элементы → Плагины** создайте плагин, подпишите его на `pbOnRegisterSectionDefinitions` и вызовите `registerFromFile`.
 
 ```php
 <?php
@@ -26,11 +30,17 @@ switch ($modx->event->name) {
 
 Ключ с `_` или `category: dev` в production-каталог не попадает. `requires` проверяет `SectionRequirementChecker`.
 
+## Что проверить
+
+Ключ виден в каталоге на вкладке **Секции**.
+
 ## UI-тип (Pro)
 
 В панели управления создайте тип через `mgr/sectiontype/*`. Запись лежит в `pb_section_types`. Upgrade PageBuilder эти строки не перезаписывает.
 
-Проверка: ключ виден в каталоге на вкладке **Секции**. Откат: скройте тип в панели или уберите `registerFromFile`.
+## Откат
+
+Скройте тип в панели или уберите `registerFromFile`.
 
 ## Пример: тип «Кейс»
 

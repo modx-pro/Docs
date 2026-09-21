@@ -7,6 +7,8 @@ description: "Events with date, title, and text. Pro layer."
 
 Section `timeline` lists events in repeater order. Chunk: `pagebuilderpro_timeline`. Requires PageBuilder Pro.
 
+![Timeline](/components/pagebuilder/screenshots/sections/timeline.jpg)
+
 ## Where it fits
 
 - Company or product history
@@ -36,6 +38,27 @@ The chunk builds `<ol class="pb-timeline__list">`. An empty `items` list stays e
     { "date": "2019", "title": "Start", "text": "First office" }
   ]
 }
+```
+
+## Chunk template
+
+Fenom chunk `pagebuilderpro_timeline`:
+
+```fenom
+<section class="pb-section pb-section--timeline pb-timeline{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="timeline"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner">
+    {if $title}<h2 class="pb-heading">{$title|escape}</h2>{/if}
+    <ol class="pb-timeline__list">
+      {foreach $items as $item}
+        <li>
+          <p class="pb-timeline__date">{$item.date|escape}</p>
+          <h3>{$item.title|escape}</h3>
+          {if $item.text}<p>{$item.text|escape}</p>{/if}
+        </li>
+      {/foreach}
+    </ol>
+  </div>
+</section>
 ```
 
 ## Similar sections

@@ -7,7 +7,7 @@ description: "Product showcase from a miniShop3 category via msProducts (Pro)"
 
 Classic store grid: cards with image, price, badges, and add to cart. Products from a selected category.
 
-<!-- ![Products grid](/components/pagebuilder/screenshots/sections/products_grid.png) -->
+![Products grid](/components/pagebuilder/screenshots/sections/products_grid.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -103,10 +103,10 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_products_grid`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => $catalogParent,
     'depth' => 10,
     'limit' => $limit|default:12,
@@ -129,15 +129,11 @@ Fenom chunk `pagebuilderpro_products_grid`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">No products in this category yet.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_products' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/products_grid.json`
 
 ## See also
 

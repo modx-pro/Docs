@@ -7,26 +7,26 @@ description: "File media object after enrich on save draft"
 
 Version: **Free**.
 
-<!-- ![file](/components/pagebuilder/screenshots/fields/file.png) -->
+<!-- ![file](/components/pagebuilder/screenshots/fields/file.jpg) -->
 
 ## Why this type
 
-Enrich adds filename, extension, size, url. Fits PDF, archives, not only images. Same media pipeline as image.
+A field for a PDF, an archive, or another file, not only a picture. After save, the data includes the file name, extension, size, and URL. Files are processed the same way as [image](image).
 
 ## When to use
 
-- PDF price list, deck, downloadable asset
-- Attachment in contact or CTA
+- A PDF price list, a presentation, a file to download
+- An attachment in a form or a button block
 - Any file from MODX media
 
 ## Tips
 
-In chunk use `{$file.url}`, not raw path. Photos alone often use [image](image).
+In the chunk use `{$file.url}`, not a file path. Photos alone often fit [image](image).
 
 ## Similar types
 
 - [image](image) for photos with alt and dimensions
-- [url](url) for external link without upload
+- [url](url) for an external link when nobody uploads a file
 
 ## Schema
 
@@ -70,9 +70,17 @@ Key `pdf` in the section data after save enrich (`MediaFieldEnricher`):
 
 ## Chunk example
 
-```html
-<a href="{$pdf.url|escape}" download="{$pdf.title|escape}">{$pdf.title|escape}</a>
+::: code-group
+
+```modx
+<a href="[[+pdf.url]]" download="[[+pdf.title]]">[[+pdf.title]]</a>
 ```
+
+```fenom
+<a href="{$pdf.url|escape}" download="{$pdf.title|escape}">{$pdf.title|pb_text}</a>
+```
+
+:::
 
 ## Common properties
 

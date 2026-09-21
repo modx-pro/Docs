@@ -7,7 +7,7 @@ description: "Compact block with title, text, and a single button"
 
 A short accent block in the middle or at the end of the page. Title, supporting text, and one button with a URL.
 
-<!-- ![Call to action](/components/pagebuilder/screenshots/sections/cta.png) -->
+![Call to action](/components/pagebuilder/screenshots/sections/cta.jpg)
 
 ## Why a separate CTA
 
@@ -89,22 +89,18 @@ Fenom chunk `pagebuilder_cta`:
 ```fenom
 <section class="pb-section pb-section--cta pb-cta{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="cta"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-cta__inner">
-    <h2 class="pb-heading pb-cta__title">{$title|escape}</h2>
+    <h2 class="pb-heading pb-cta__title">{$title|pb_text}</h2>
     {if $text}
-      <p class="pb-cta__text">{$text|escape}</p>
+      <p class="pb-cta__text">{$text|pb_text}</p>
     {/if}
     {if $button_label && $button_url}
       <div class="pb-cta__actions">
-        <a class="pb-cta__button pb-button" href="{$button_url|escape:'url'}">{$button_label|escape}</a>
+        <a class="pb-cta__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|pb_text}</a>
       </div>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/cta.json`
 
 ## See also
 

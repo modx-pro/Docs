@@ -7,7 +7,7 @@ description: "Однострочный текст для заголовков и
 
 Версия: **Free**.
 
-<!-- ![text](/components/pagebuilder/screenshots/fields/text.png) -->
+<!-- ![text](/components/pagebuilder/screenshots/fields/text.jpg) -->
 
 ## Зачем этот тип
 
@@ -63,9 +63,17 @@ description: "Однострочный текст для заголовков и
 
 ## Пример в chunk
 
-```fenom
-{$title|escape}
+::: code-group
+
+```modx
+[[+title]]
 ```
+
+```fenom
+{$title|pb_text}
+```
+
+:::
 
 ## Примечание
 

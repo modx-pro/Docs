@@ -7,17 +7,17 @@ description: "String with IMask input pattern in inspector"
 
 Version: **Pro**.
 
-<!-- ![imask](/components/pagebuilder/screenshots/fields/imask.png) -->
+<!-- ![imask](/components/pagebuilder/screenshots/fields/imask.jpg) -->
 
 ## Why this type
 
-Phone, tax id, card pattern without validate-only. Mask or preset in schema. Pro advanced-fields.
+A phone number, tax id, or card number is typed against a mask: extra characters are dropped as you type, not only when the page is checked before publish. The mask is set on the field (`mask` or a preset). The type is in PageBuilder Pro.
 
 ## When to use
 
-- Phone in contact_form fields
-- SKU or serial with fixed format
-- Promo code pattern
+- A phone number in a contact form
+- An SKU or serial number with a fixed length
+- A promo code that follows a pattern
 
 ## Tips
 
@@ -61,9 +61,17 @@ Key `phone` in the section data: masked string:
 
 ## Chunk example
 
-```html
-<a href="tel:{$phone|escape}">{$phone|escape}</a>
+::: code-group
+
+```modx
+<a href="tel:[[+phone]]">[[+phone]]</a>
 ```
+
+```fenom
+<a href="tel:{$phone|escape:'url'}">{$phone|escape}</a>
+```
+
+:::
 
 ## Notes
 

@@ -7,11 +7,11 @@ description: "relation alias with same picker modal and id pagetitle object"
 
 Version: **Free**.
 
-<!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.png) -->
+<!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.jpg) -->
 
 ## Why this type
 
-"Pick a page" semantics in CMP labels. Same behavior and data as relation. SearchAction and modal search built in.
+In the manager the field is labeled as picking a page. Behavior and data match [relation](relation): `searchAction` and the search window are already built in.
 
 ## When to use
 
@@ -62,11 +62,19 @@ Key `page` in the section data (picker stores only the selection):
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<span>[[+page.pagetitle]]</span>
+```
+
 ```fenom
 {if $page.id}
-  <span>{$page.pagetitle|escape}</span>
+  <span>{$page.pagetitle|pb_text}</span>
 {/if}
 ```
+
+:::
 
 ## Common properties
 

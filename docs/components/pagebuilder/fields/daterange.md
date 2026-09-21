@@ -29,9 +29,17 @@ description: "Две даты start и end. Публикация падает, �
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<time>[[+period.start]]</time> - <time>[[+period.end]]</time>
+```
+
+```fenom
 <time>{$period.start|escape}</time> - <time>{$period.end|escape}</time>
 ```
+
+:::
 
 ## Похожие типы
 

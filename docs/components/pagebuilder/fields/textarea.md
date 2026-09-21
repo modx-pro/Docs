@@ -7,11 +7,11 @@ description: "Многострочный plain-текст без HTML"
 
 Версия: **Free**.
 
-<!-- ![textarea](/components/pagebuilder/screenshots/fields/textarea.png) -->
+<!-- ![textarea](/components/pagebuilder/screenshots/fields/textarea.jpg) -->
 
 ## Зачем этот тип
 
-Несколько строк без риска случайной HTML-разметки. Проще [text](text) для описаний и цитат, легче [richtext](richtext), когда форматирование не нужно.
+Несколько строк текста. Случайная HTML-разметка сюда не попадает. Для описания и цитаты это удобнее [text](text) и проще [richtext](richtext), если оформление не нужно.
 
 ## Когда использовать
 
@@ -58,11 +58,19 @@ description: "Многострочный plain-текст без HTML"
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<p class="intro">[[+intro]]</p>
+```
+
 ```fenom
 {if $intro}
-  <p class="intro">{$intro|escape|nl2br}</p>
+  <p class="intro">{$intro|pb_text}</p>
 {/if}
 ```
+
+:::
 
 ## Примечание
 

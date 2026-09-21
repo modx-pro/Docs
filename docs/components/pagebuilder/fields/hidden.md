@@ -7,11 +7,11 @@ description: "Скрытая строка: есть в данных секции
 
 Версия: **Free**.
 
-<!-- ![hidden](/components/pagebuilder/screenshots/fields/hidden.png) -->
+<!-- ![hidden](/components/pagebuilder/screenshots/fields/hidden.jpg) -->
 
 ## Зачем этот тип
 
-Значение сохраняется и попадает в chunk, но не занимает место в UI редактора. `default` задаётся в JSON или панели управления.
+Значение сохраняется и попадает в чанк, но в форме редактора поля не видно. Значение по умолчанию задают в JSON или в панели управления.
 
 ## Когда использовать
 
@@ -56,9 +56,17 @@ description: "Скрытая строка: есть в данных секции
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<input type="hidden" name="token" value="[[+token]]">
+```
+
+```fenom
 <input type="hidden" name="token" value="{$token|escape}">
 ```
+
+:::
 
 ## Общие свойства
 

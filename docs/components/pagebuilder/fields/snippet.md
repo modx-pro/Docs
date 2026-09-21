@@ -7,11 +7,11 @@ description: "Объект name выбранного modSnippet для вызо�
 
 Версия: **Free**.
 
-<!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.png) -->
+<!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.jpg) -->
 
 ## Зачем этот тип
 
-Выбор имени сниппета для `[[!{$snippet.name}]]`. Динамический hook processor в секции. Отделяет вызов сниппета от include chunk.
+Редактор выбирает имя сниппета. На сайте его вызывают динамически, например `[[!{$snippet.name}]]`. Чанк подключают отдельным полем [chunk](chunk), не этим.
 
 ## Когда использовать
 
@@ -59,9 +59,17 @@ Include partial-шаблона: [chunk](chunk). Параметры сниппе�
 
 ## Пример в chunk
 
-```html
-[[!{$snippet.name}]]
+::: code-group
+
+```modx
+[[!snippetName]]
 ```
+
+```fenom
+{('!' ~ $snippet.name) | snippet}
+```
+
+:::
 
 ## Общие свойства
 
