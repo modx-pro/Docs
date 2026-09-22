@@ -61,6 +61,8 @@
 |---|---|
 | `getFieldName($filterKey, $config)` | Поле фильтра: `field` из конфигурации или ключ |
 | `getSourceType($filterKey, $config)` | Источник: `source` из конфигурации или догадка по имени поля |
+| `scopeIds($context)` | Товары, которыми ограничен запрос, или `null`, если ограничения по списку нет |
+| `scopeCondition($context, $колонка)` | То же условием SQL: `колонка IN (…)`, `1 = 0` для пустого списка или `null` |
 | `getProductIdsByParents($parents, $secondaryIds)` | Id опубликованных товаров в разделах |
 | `buildParentSqlCondition($alias, $context)` | Условие SQL «товар в разделах контекста» с учётом дополнительных категорий |
 | `markSelected($values, $selected)` | Отмечает выбранные значения полем `selected` |
