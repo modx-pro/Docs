@@ -9,7 +9,8 @@ description: Ключи ms3remains_* — опции, статусы заказо
 
 Экран разбит на карточки: **Основные**, **Заказы**, **Витрина**, **Проекция в каталог**. Внизу кнопка **Сохранить настройки**. **Обновить** перечитывает значения с сервера без записи.
 
-<!-- ![Раздел «Настройки» ms3Remains](/components/ms3remains/screenshots/settings.png) -->
+![Раздел «Настройки» ms3Remains](/components/ms3remains/screenshots/settings.jpg)
+![Раздел «Настройки» ms3Remains](/components/ms3remains/screenshots/settings-2.jpg)
 
 ## Основные
 
@@ -70,8 +71,6 @@ description: Ключи ms3remains_* — опции, статусы заказо
 Подробности проекции: [Проекция остатков](projections).
 
 ## Предупреждения в разделе «Настройки»
-
-<!-- ![Предупреждения в настройках](/components/ms3remains/screenshots/settings-warnings.png) -->
 
 Экран показывает диагностические блоки, когда они нужны:
 

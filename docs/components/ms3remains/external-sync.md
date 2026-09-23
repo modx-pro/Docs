@@ -25,7 +25,7 @@ description: CSV-импорт и экспорт, сервисный PHP API, Com
 
 ### Импорт
 
-<!-- ![Диалог импорта CSV](/components/ms3remains/screenshots/csv-import.png) -->
+![Диалог импорта CSV](/components/ms3remains/screenshots/csv-import.jpg)
 
 Кнопка **Импорт CSV** открывает диалог из трёх шагов:
 

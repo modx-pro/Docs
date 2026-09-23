@@ -41,7 +41,7 @@ description: Вывод остатка товара, комбинации опц
 
 :::
 
-<!-- ![Остаток на карточке товара](/components/ms3remains/screenshots/storefront-remains.png) -->
+![Остаток на карточке товара](/components/ms3remains/screenshots/storefront-remains.jpg)
 
 ## Другой товар
 

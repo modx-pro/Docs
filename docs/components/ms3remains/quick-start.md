@@ -14,7 +14,9 @@ description: Установка ms3Remains, остатки по опциям и 
 3. Откройте **Настройки** в меню ms3Remains или системные настройки по фильтру `ms3remains_`.
 4. Включите `ms3remains_enabled`.
 
-<!-- ![Раздел «Настройки» ms3Remains](/components/ms3remains/screenshots/settings.png) -->
+![Раздел «Настройки» ms3Remains](/components/ms3remains/screenshots/settings.jpg)
+
+![Раздел «Настройки» ms3Remains](/components/ms3remains/screenshots/settings-2.jpg)
 
 ## Шаг 2. Задайте отслеживаемые опции
 
@@ -26,7 +28,9 @@ description: Установка ms3Remains, остатки по опциям и 
 
 Откройте товар в manager. Во вкладке **Остатки** появится таблица: базовая строка, варианты ms3Variants (подпись — артикул) и сочетания значений отслеживаемых опций, которые реально заполнены у товара.
 
-<!-- ![Вкладка «Остатки» на карточке товара](/components/ms3remains/screenshots/product-tab.png) -->
+![Вкладка «Остатки» на карточке товара](/components/ms3remains/screenshots/product-tab.jpg)
+
+![Вкладка «Остатки» на карточке товара](/components/ms3remains/screenshots/product-tab-2.jpg)
 
 Впишите количество и нажмите **Сохранить**. Пока ни одна строка не сохранена, товар не отслеживается и продаётся без ограничения.
 
@@ -64,6 +68,6 @@ description: Установка ms3Remains, остатки по опциям и 
 
 :::
 
-<!-- ![Остаток на карточке товара](/components/ms3remains/screenshots/storefront-remains.png) -->
+![Остаток на карточке товара](/components/ms3remains/screenshots/storefront-remains.jpg)
 
 С опциями и вариантами сниппет работает точечно. Параметры и рецепты: [Остатки](stocks), [сниппет ms3Remains](snippets/ms3Remains).
