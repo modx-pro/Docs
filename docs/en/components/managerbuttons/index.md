@@ -22,7 +22,7 @@ The interface uses [VueTools](/en/components/vuetools/). Colors and controls fol
 ## Requirements
 
 | | |
-|---|---|
+| --- | --- |
 | MODX | 3.0+ |
 | PHP | 8.1+ |
 | VueTools | 1.2.0+ |
