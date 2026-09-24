@@ -5,7 +5,7 @@ description: Webhook WEBPAY, типы оплаты, ERIP, холд и Operations
 
 # Интеграция msp3WebPay
 
-Нужны только шаги установки? Откройте [Быстрый старт](quick-start).
+Шаги установки: [Быстрый старт](quick-start).
 
 ## Как проходит оплата
 

@@ -27,8 +27,6 @@ items: [
 
 Пространство имён настроек: **`msp3webpay`**. Уведомления: `assets/components/msp3webpay/webhook.php`. Возврат покупателя: `assets/components/msp3webpay/return.php`.
 
-С чего начать: [Быстрый старт](quick-start).
-
 ## Возможности
 
 - Карта, деньги списываются сразу: способ **Оплата через WebPay (карта)**.
@@ -115,10 +113,3 @@ flowchart LR
 | Уведомление, холд, ERIP | [Интеграция](integration) |
 | Статус, возврат до списания, return | [FAQ](faq) |
 | Оформление заказа MS3 | [MiniShop3: заказ](/components/minishop3/frontend/order) |
-
-## Документация по разделам
-
-- [Быстрый старт](quick-start): провайдер modstore, письмо менеджера, секрет в кабинете, песочница.
-- [Системные настройки](settings): ключи из README пакета.
-- [Интеграция и сценарии](integration): типы уведомлений, списание и возврат.
-- [FAQ](faq): ограничения из README.
