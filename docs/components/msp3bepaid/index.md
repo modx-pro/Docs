@@ -48,7 +48,7 @@ items: [
 | Требование | Версия |
 | --- | --- |
 | MODX Revolution | 3.0+ |
-| MiniShop3 | [1.14.0-beta1](https://github.com/modx-pro/MiniShop3/releases/tag/v1.14.0-beta1) и новее |
+| MiniShop3 | 1.14.0-beta1 и новее |
 | PHP | 8.2+ |
 | PHP-модуль | `bcmath` |
 | Доступ | Shop ID, секретный ключ и публичный ключ магазина |
