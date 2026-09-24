@@ -36,7 +36,7 @@ description: Установка msp3Tochka, песочница, webhook и бо�
 
 JWT и `customerCode` положите в `msPayment.properties` (`jwt_token`, `token` или `secret`). Если properties пусты, пакет читает системные настройки.
 
-`send()` отклоняет заказ дешевле 0.01 ₽. `paymentLinkId` не длиннее 45 символов.
+Заказ дешевле 1 копейки пакет на оплату не отправляет. `paymentLinkId` не длиннее 45 символов.
 
 ## Откуда брать ключи {#откуда-брать-ключи}
 

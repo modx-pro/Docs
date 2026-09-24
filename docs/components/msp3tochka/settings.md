@@ -5,7 +5,7 @@ description: Ключи msp3Tochka, JWT, customerCode, песочница, ср�
 
 # Системные настройки msp3Tochka
 
-Краткая последовательность шагов: [Быстрый старт](quick-start).
+Установка и ключи: [Быстрый старт](quick-start).
 
 Ключ в MODX: `msp3tochka_<имя>`. JWT и `customerCode` можно положить в `msPayment.properties` (`jwt_token`, `token` или `secret`). Если properties пусты, пакет читает системные настройки.
 
