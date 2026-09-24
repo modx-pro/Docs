@@ -26,7 +26,7 @@ description: Ключи msp3Tochka, JWT, customerCode, песочница, ср�
 | `msp3tochka_create_data_extra` | textarea | пусто | JSON, сливается в тело `Data` |
 | `msp3tochka_success_url` | text | пусто | Возврат после оплаты. Пусто: страница благодарности MS3 |
 | `msp3tochka_fail_url` | text | пусто | Возврат после ошибки. Пусто: та же страница с `payment_fail=1` |
-| `msp3tochka_webhook_verify_jwt` | bool | да | Проверка RS256. На бою оставьте Да |
+| `msp3tochka_webhook_verify_jwt` | bool | да | Проверять подпись уведомления банка. На бою оставьте Да |
 | `msp3tochka_webhook_jwk_url` | text | ключ банка | `https://enter.tochka.com/doc/openapi/static/keys/public` |
 | `msp3tochka_webhook_jwk_json` | textarea | пусто | JWK вручную, если URL недоступен |
 | `msp3tochka_debug` | bool | нет | Тело create и успешный webhook в лог MODX. На бою выключите |

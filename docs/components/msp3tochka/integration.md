@@ -17,7 +17,7 @@ https://ваш-домен.ru/assets/components/msp3tochka/webhook.php
 
 HTTPS без Basic Auth и без 301. Тело: компактный JWT, `Content-Type: text/plain`. Ответ всегда HTTP 200 и JSON `{"success":…,"message":…}`.
 
-Обработчик проверяет подпись, если `msp3tochka_webhook_verify_jwt` включён, берёт `operationId` из claims и вызывает `getPayment`. Сумма сверяется с попыткой (допуск 0.02 ₽). Статус для lifecycle читается из ответа `GET /payments/{operationId}`, не из claims JWT.
+Обработчик проверяет подпись, если `msp3tochka_webhook_verify_jwt` включён, берёт номер операции из токена и запрашивает платёж у банка (`GET /payments/{operationId}`). Сумма сверяется с попыткой (допуск 0.02 ₽). Статус заказа пакет берёт из этого ответа, не из текста уведомления.
 
 | status | Попытка |
 | --- | --- |
@@ -27,7 +27,7 @@ HTTPS без Basic Auth и без 301. Тело: компактный JWT, `Cont
 | REFUNDED | refunded |
 | CREATED | игнор |
 
-После APPROVED lifecycle ставит `ms3_status_paid`. Неуспех и возврат: `ms3_payment_on_failed_status` и `ms3_payment_on_refunded_status`.
+После статуса APPROVED MiniShop3 ставит заказу `ms3_status_paid`. Неуспех и возврат: `ms3_payment_on_failed_status` и `ms3_payment_on_refunded_status`.
 
 Старый `mspTochka` при AUTHORIZED сам вызывал capture. Здесь спишите холд кнопкой во вкладке. Второй webhook APPROVED тоже ставит paid.
 
@@ -52,11 +52,11 @@ flowchart LR
 
 `payment_id` и `external_id` это `paymentLinkId` вида `{orderId}-{random}`. `paymentLinkId` не длиннее 45 символов. `purpose`: `Order #<num>`, не длиннее 210 символов.
 
-`operationId` пакет кладёт в payload попытки через `initiate()`.
+Номер операции пакет сохраняет у попытки оплаты. Без него кнопки вкладки в банк не ходят.
 
-Двухстадийный способ передаёт `preAuthorization=true`. У Точки нет `reverse`. Холд истекает по `ttl` (EXPIRED).
+Двухстадийный способ просит банк заблокировать деньги, а не списать сразу (`preAuthorization=true`). Отмены холда у Точки нет. Блокировка снимается, когда истекает срок ссылки (статус EXPIRED).
 
-Событие `msp3TochkaOnProviderEvent` несёт claims JWT или ответ `getPayment`. Вызов идёт через `EventGate`, если класс есть в MiniShop3. Иначе `invokeEvent`.
+Событие `msp3TochkaOnProviderEvent` получает данные уведомления или ответ банка о платеже. Если в MiniShop3 есть класс `EventGate`, пакет вызывает событие через него. Иначе вызывает напрямую.
 
 Строки лога начинаются с `[msp3Tochka]`. Ошибки API, webhook и процессоров пишутся в `core/cache/logs/error.log` всегда.
 

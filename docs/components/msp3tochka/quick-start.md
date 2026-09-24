@@ -13,7 +13,7 @@ description: Установка msp3Tochka, песочница, webhook и бо�
 | --- | --- |
 | MODX Revolution | 3.0+ |
 | MiniShop3 | [1.14.0-beta1](https://github.com/modx-pro/MiniShop3/releases/tag/v1.14.0-beta1) и новее |
-| PHP | 8.2+, расширение openssl |
+| PHP | 8.2+. Нужно расширение openssl: им пакет проверяет подпись уведомления банка |
 | Сайт | HTTPS на webhook. 301 с HTTP часто роняет тело POST |
 
 ## Шаг 1: Провайдер modstore и установка пакета
@@ -93,7 +93,7 @@ JWT и `customerCode` положите в `msPayment.properties` (`jwt_token`, `
 - `customerCode`: `1234567ab`
 - `merchantId`: `200000000001097`
 
-В песочнице нет платёжной формы. `paymentLink` ведёт на `merch.example.com`. `getPayment` отдаёт фикстуру 2022 года: статус APPROVED, сумма 100 ₽, без `paymentLinkId`. Пакет тогда берёт `paymentLinkId` из JWT. Webhook `apply` проходит, только если сумма заказа тоже 100 ₽.
+В песочнице нет платёжной формы. Ссылка ведёт на `merch.example.com`. Запрос статуса отдаёт учебный ответ: оплачено, сумма 100 ₽, номера ссылки в нём нет. Пакет тогда берёт номер из токена. Уведомление пройдёт, только если сумма заказа тоже 100 ₽.
 
 Покупатели картой здесь заплатить не могут.
 

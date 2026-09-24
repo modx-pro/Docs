@@ -19,11 +19,11 @@ items: [
 
 # msp3Tochka
 
-**msp3Tochka** подключает [интернет-эквайринг Точка Банка](https://developers.tochka.com/docs/tochka-api/opisanie-metodov/platyozhnye-ssylki/) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. Оплата идёт через `ms3_payment_lifecycle`. Пакет не пишет `status_id` заказа. Письма покупателю шлёт Центр уведомлений MiniShop3.
+**msp3Tochka** подключает [интернет-эквайринг Точка Банка](https://developers.tochka.com/docs/tochka-api/opisanie-metodov/platyozhnye-ssylki/) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. Статус «оплачен» выставляет MiniShop3. Пакет сам статус заказа не меняет. Письма покупателю шлёт Центр уведомлений MiniShop3.
 
 Старый пакет `mspTochka` при установке не удаляется.
 
-Суммы передаются в рублях с двумя знаками. HTTP-запросы идут через `file_get_contents` и Bearer JWT. Подпись webhook проверяет openssl.
+Суммы передаются в рублях с двумя знаками. В банк пакет ходит с токеном из кабинета. Подпись уведомления об оплате проверяет сам.
 
 - [Документация API](https://developers.tochka.com/docs/tochka-api/)
 - [Песочница](https://developers.tochka.com/docs/tochka-api/pesochnica)
@@ -36,16 +36,16 @@ items: [
 
 ## Возможности
 
-- Платёжная ссылка `POST /acquiring/v1.0/payments`. Способы на ссылке задаёте JSON-массивом (`card`, `sbp` и другие, которые принимает API).
-- Одностадийная оплата: `Msp3Tochka\Payment\TochkaPayment`.
-- Холд: `TochkaTwoStagePayment` (`preAuthorization=true`). Списание кнопкой во вкладке заказа.
-- Webhook `acquiringInternetPayment`: тело JWT `text/plain`, проверка RS256. Статус для lifecycle читается из `GET /payments/{operationId}`, не из claims.
-- `operationId` пакет кладёт в payload попытки через `initiate()`.
-- Корни НУЦ Минцифры лежат в `certs/russian_trusted.pem`. Без них PHP часто не доверяет `enter.tochka.com`.
+- Пакет создаёт ссылку на оплату. На ней можно оставить карту, СБП или другие способы, которые принимает банк.
+- Обычная оплата, деньги списываются сразу: способ **Оплата через Точка Банк**.
+- Холд, деньги сначала блокируются на карте: способ **Оплата через Точка Банк (двухстадийная)**. Списание делается кнопкой во вкладке заказа.
+- Банк присылает уведомление на сайт. Пакет проверяет, что оно действительно от банка, и отдельно запрашивает статус платежа. Статус из текста уведомления не берёт.
+- Номер операции, который вернул банк, пакет сохраняет у попытки оплаты. Без него кнопки «Списать холд», «Возврат» и «Синхронизировать» в банк не ходят.
+- Сайт банка открывается по сертификату Минцифры. Обычный набор сертификатов PHP ему часто не доверяет, и запрос к банку обрывается. Нужный сертификат уже лежит в пакете, отдельно его ставить не нужно.
 
-У Точки нет `reverse`. Холд истекает по `ttl` (статус EXPIRED). Кнопка «Отменить холд» отвечает текстом об этом.
+У банка нет отмены холда. Блокировка сама снимается, когда истекает срок ссылки. Кнопка «Отменить холд» во вкладке заказа только пишет об этом.
 
-Права JWT: `MakeAcquiringOperation`, `ReadAcquiringData`. Чтобы регистрировать webhook через API Точки, ещё `ManageWebhookData`.
+При создании токена включите права `MakeAcquiringOperation` и `ReadAcquiringData`. Право `ManageWebhookData` нужно, только если уведомления регистрируете вызовом API банка. Из админки MODX пакет этого не делает.
 
 ## Системные требования
 
@@ -53,7 +53,7 @@ items: [
 | --- | --- |
 | MODX Revolution | 3.0+ |
 | MiniShop3 | [1.14.0-beta1](https://github.com/modx-pro/MiniShop3/releases/tag/v1.14.0-beta1) и новее |
-| PHP | 8.2+, расширение openssl |
+| PHP | 8.2+. Нужно расширение openssl: им пакет проверяет подпись уведомления банка |
 | Сайт | HTTPS на webhook. 301 с HTTP часто роняет тело POST |
 
 ### Зависимости
@@ -128,7 +128,7 @@ flowchart LR
 | Установить и принять первый платёж | [Быстрый старт](quick-start) |
 | Все ключи `msp3tochka_*` | [Системные настройки](settings) |
 | Webhook, холд, переход с mspTochka | [Интеграция](integration) |
-| TLS, 403, кеш | [FAQ](faq) |
+| Ошибка связи, 403, кеш | [FAQ](faq) |
 | Оформление заказа MS3 | [MiniShop3: заказ](/components/minishop3/frontend/order) |
 
 ## Документация по разделам
