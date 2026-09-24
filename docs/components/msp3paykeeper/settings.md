@@ -5,7 +5,7 @@ description: Ключи msp3PayKeeper, URL сервера, Basic Auth, секр�
 
 # Системные настройки msp3PayKeeper
 
-Краткая последовательность шагов: [Быстрый старт](quick-start).
+Установка и ключи: [Быстрый старт](quick-start).
 
 Ключ в MODX: `msp3paykeeper_<имя>`. В properties способа те же имена без префикса (`server_url`, `api_login`, `api_password`, `secret_word`). Секреты сначала читаются из properties, иначе из системных настроек.
 

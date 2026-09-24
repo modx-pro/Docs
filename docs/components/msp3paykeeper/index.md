@@ -19,22 +19,19 @@ items: [
 
 # msp3PayKeeper
 
-**msp3PayKeeper** подключает [PayKeeper](https://docs.paykeeper.ru/) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. Оплата идёт через `ms3_payment_lifecycle`. Пакет не пишет `status_id` заказа.
+**msp3PayKeeper** подключает [PayKeeper](https://docs.paykeeper.ru/) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. Статус «оплачен» выставляет MiniShop3. Пакет сам статус заказа не меняет.
 
-Суммы передаются в рублях с двумя знаками, не в копейках. HTTP-запросы идут через `file_get_contents` с Basic Auth.
+Сумма уходит в рублях, с двумя знаками после запятой. В запросах к PayKeeper логин и пароль те же, что для входа в кабинет.
 
 Пространство имён настроек: **`msp3paykeeper`**. Точка входа уведомлений: `assets/components/msp3paykeeper/webhook.php`.
 
-С чего начать: [Быстрый старт](quick-start).
-
 ## Возможности
 
-- Счёт `POST /change/invoice/preview/`. Покупатель уходит на `invoice_url`.
-- Одностадийная оплата: `Msp3PayKeeper\Payment\PayKeeperPayment`.
-- Холд: `PayKeeperTwoStagePayment`. В кабинете PayKeeper включите двухэтапный режим. Поле `batch_date` в POST ставит попытку `authorized`.
-- Возврат: `POST /change/payment/reverse/` по id платежа из поля `id` уведомления, не по `invoice_id`.
-- Отмена неоплаченного счёта: `POST /change/invoice/revoke/`.
-- Вкладка заказа: попытки, возврат, capture, revoke, синхронизация.
+- Счёт на оплату. Покупатель переходит на страницу PayKeeper. Способ **Оплата через PayKeeper**.
+- Холд: способ **Оплата через PayKeeper (двухстадийная)**. В кабинете PayKeeper включите двухэтапный режим. Пока в уведомлении есть дата блокировки и нет списания, заказ ещё не оплачен.
+- Возврат идёт по номеру платежа из уведомления, не по номеру счёта.
+- Неоплаченный счёт можно отменить во вкладке заказа.
+- Во вкладке: попытки, возврат, списание холда, отмена счёта, синхронизация.
 
 ## Системные требования
 
@@ -113,10 +110,3 @@ flowchart LR
 | Webhook, чеки, двухстадийная, возврат | [Интеграция](integration) |
 | Заказ не оплачен, токен 401 | [FAQ](faq) |
 | Оформление заказа MS3 | [MiniShop3: заказ](/components/minishop3/frontend/order) |
-
-## Документация по разделам
-
-- [Быстрый старт](quick-start): провайдер modstore, демо-кабинет, webhook, боевой режим.
-- [Системные настройки](settings): URL сервера, Basic Auth, секретное слово, чеки, URL возврата.
-- [Интеграция и сценарии](integration): поток оплаты, вкладка заказа, чеки 54-ФЗ.
-- [FAQ](faq): типовые сбои.
