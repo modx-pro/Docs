@@ -70,6 +70,14 @@ items: [
 | Оплата через PayKeeper | `Msp3PayKeeper\Payment\PayKeeperPayment` |
 | Оплата через PayKeeper (двухстадийная) | `Msp3PayKeeper\Payment\PayKeeperTwoStagePayment` |
 
+Четыре значения для приёма оплаты:
+
+- **`server_url`**. Адрес вашего кабинета PayKeeper без `/` в конце. Демо-стенд: `https://demo.paykeeper.ru`. Адрес `https://demo.server.paykeeper.ru` с парой `demo` / `demo` токен не отдаёт.
+- **Логин и пароль API.** Это логин и пароль пользователя кабинета. Для JSON API PayKeeper советует отдельного пользователя: **Настройки → Доступ к панели администратора**. Проверка: `GET {server_url}/info/settings/token/` с Basic Auth возвращает JSON с `token`.
+- **Секретное слово.** Это не пароль API. **Настройки → Получение информации о платежах**: способ уведомлений **POST-оповещения**, URL `webhook.php`, затем сгенерируйте или впишите слово.
+
+Подробнее: [Быстрый старт](quick-start#откуда-брать-ключи).
+
 ## Быстрая настройка webhook
 
 В кабинете PayKeeper один URL уведомлений. Ядро MiniShop3 на `/api/v1/payment/webhook/{id}` ждёт JSON, поэтому в личном кабинете указывают пакетный обработчик. PayKeeper шлёт form POST.
