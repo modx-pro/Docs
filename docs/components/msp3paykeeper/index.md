@@ -43,7 +43,7 @@ items: [
 | Требование | Версия |
 | --- | --- |
 | MODX Revolution | 3.x |
-| MiniShop3 | beta с `ms3_payment_lifecycle` |
+| MiniShop3 | [1.14.0-beta1](https://github.com/modx-pro/MiniShop3/releases/tag/v1.14.0-beta1) и новее |
 | PHP | 8.2+ |
 | Чек 54-ФЗ | в заказе должен быть email |
 | Сайт | HTTPS на webhook без 301 |
