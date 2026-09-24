@@ -33,8 +33,6 @@ items: [
 
 Пространство имён настроек: **`msp3cdekpay`**. Уведомления: `assets/components/msp3cdekpay/webhook.php`.
 
-Версия пакета: 1.0.0-pl. Лицензия: GPL v2 и новее.
-
 С чего начать: [Быстрый старт](quick-start).
 
 ## Возможности
@@ -132,5 +130,3 @@ flowchart LR
 - [Интеграция и сценарии](integration): webhook, вкладка заказа, чек 54-ФЗ.
 - [Привязки](bindings): сниппеты `cdekPayBindings` и `cdekPayBindingReturn`.
 - [FAQ](faq): типовые сбои из README пакета.
-
-Лицензия пакета: GPL v2 и новее.
