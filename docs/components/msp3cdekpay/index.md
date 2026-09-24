@@ -33,8 +33,6 @@ items: [
 
 Пространство имён настроек: **`msp3cdekpay`**. Уведомления: `assets/components/msp3cdekpay/webhook.php`.
 
-С чего начать: [Быстрый старт](quick-start).
-
 ## Возможности
 
 - Оплата по ссылке: способ **Оплата через CDEK Pay**.
@@ -122,11 +120,3 @@ flowchart LR
 | Карта и СБП в личном кабинете | [Привязки](bindings) |
 | 403, пустой webhook, редирект | [FAQ](faq) |
 | Оформление заказа MS3 | [MiniShop3: заказ](/components/minishop3/frontend/order) |
-
-## Документация по разделам
-
-- [Быстрый старт](quick-start): провайдер modstore, логин магазина, секреты, тест и бой.
-- [Системные настройки](settings): логин, секреты, чек, время ссылки и QR.
-- [Интеграция и сценарии](integration): webhook, вкладка заказа, чек 54-ФЗ.
-- [Привязки](bindings): сниппеты `cdekPayBindings` и `cdekPayBindingReturn`.
-- [FAQ](faq): типовые сбои из README пакета.
