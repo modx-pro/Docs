@@ -18,8 +18,6 @@ description: Установка msp3Tochka, песочница, webhook и бо�
 
 ## Шаг 1: Провайдер modstore и установка пакета
 
-Пакет зашифрован. Без провайдера установка завершится ошибкой `Package provider not found`.
-
 1. **Система → Управление пакетами → Провайдеры** → добавьте **modstore.pro**:
    - URL: `https://modstore.pro/extras/`
    - Email и API-ключ из личного кабинета modstore.pro
