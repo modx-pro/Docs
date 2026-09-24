@@ -5,7 +5,7 @@ description: Логин и пароль Альфа-Банка, тестовый 
 
 # Системные настройки msp3AlfaBank
 
-Краткая последовательность шагов: [Быстрый старт](quick-start).
+Установка и ключи: [Быстрый старт](quick-start).
 
 Ключ в MODX: `msp3alfabank_<имя>`. Логин и пароль можно положить в `msPayment.properties` (`user_name` или `login`, `password` или `secret`). Если properties пусты, пакет читает системные настройки.
 
