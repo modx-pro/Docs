@@ -29,8 +29,6 @@ items: [
 
 Пространство имён настроек: **`msp3bepaid`**. Уведомления: `assets/components/msp3bepaid/webhook.php`. Возврат покупателя: `assets/components/msp3bepaid/return.php`.
 
-С чего начать: [Быстрый старт](quick-start).
-
 ## Возможности
 
 - Один способ: **Оплата через BePaid**. Карта, ERIP и другие типы из настройки `payment_types`.
@@ -118,10 +116,3 @@ flowchart LR
 | Уведомление, возврат, вкладка заказа | [Интеграция](integration) |
 | Возврат до оплаты и страница return | [FAQ](faq) |
 | Оформление заказа MS3 | [MiniShop3: заказ](/components/minishop3/frontend/order) |
-
-## Документация по разделам
-
-- [Быстрый старт](quick-start): провайдер modstore, Shop ID, секрет и публичный ключ.
-- [Системные настройки](settings): ключи из README пакета.
-- [Интеграция и сценарии](integration): webhook, `return.php`, возврат денег.
-- [FAQ](faq): ограничения из README.
