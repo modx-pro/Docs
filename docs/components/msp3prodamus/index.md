@@ -29,8 +29,6 @@ items: [
 - [Уведомления](https://help.prodamus.ru/payform/uvedomleniya/kak-ustroena-otpravka-uvedomlenii-ob-oplate)
 - [Секрет и URL](https://help.prodamus.ru/payform/integracii/rest-api/url-dlya-uvedomlenii-i-sekretnyi-klyuch)
 
-Версия пакета: 1.0.0-pl. Лицензия: GPL v2 и новее.
-
 С чего начать: [Быстрый старт](quick-start).
 
 ## Возможности
@@ -128,5 +126,3 @@ flowchart LR
 - [Системные настройки](settings): URL payform, секрет, `sys`, валюта, чеки, URL возврата.
 - [Интеграция и сценарии](integration): поток оплаты, статусы webhook, вкладка заказа.
 - [FAQ](faq): типовые сбои.
-
-Лицензия пакета: GPL v2 и новее.
