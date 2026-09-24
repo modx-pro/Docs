@@ -78,7 +78,15 @@ items: [
 | Оплата через Точка Банк | `Msp3Tochka\Payment\TochkaPayment` |
 | Оплата через Точка Банк (двухстадийная) | `Msp3Tochka\Payment\TochkaTwoStagePayment` |
 
-JWT и `customerCode` положите в `msPayment.properties` (`jwt_token`, `token` или `secret`). Если properties пусты, пакет читает системные настройки.
+Секреты сначала кладите в `msPayment.properties` (`jwt_token`, `token` или `secret`, плюс `customer_code`). Если properties пусты, пакет читает системные настройки.
+
+Откуда брать значения:
+
+- **JWT.** Интернет-банк, вкладка **Сервисы**, сервис **Интеграции и API**, кнопка **Создать JWT-ключ**. Токену нужны права `MakeAcquiringOperation` и `ReadAcquiringData`. Скопируйте токен в `msp3tochka_jwt_token`. Рядом банк показывает `client_id`. Отдельного поля под него в пакете нет.
+- **customerCode.** Идентификатор компании в API, строка до 9 символов. Его нет на экране JWT. Возьмите методом [Get Customers List](https://developers.tochka.com/docs/tochka-api/faq) объект с `customerType` = `Business`. Это `msp3tochka_customer_code`.
+- **merchantId.** Нужен, только если торговых точек интернет-эквайринга несколько. 15 цифр из [Get Retailers](https://developers.tochka.com/docs/tochka-api/api/get-retailers-acquiring-v-1-0-retailers-get). Идентификатор СБП (начинается с `MA` или `MB`) сюда не подставляйте.
+
+Подробные шаги: [Быстрый старт](quick-start#откуда-брать-ключи).
 
 `send()` отклоняет заказ дешевле 0.01 ₽. `paymentLinkId` не длиннее 45 символов.
 

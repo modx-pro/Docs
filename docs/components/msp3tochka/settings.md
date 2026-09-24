@@ -9,7 +9,9 @@ description: Ключи msp3Tochka, JWT, customerCode, песочница, ср�
 
 Ключ в MODX: `msp3tochka_<имя>`. JWT и `customerCode` можно положить в `msPayment.properties` (`jwt_token`, `token` или `secret`). Если properties пусты, пакет читает системные настройки.
 
-После смены настроек очистите кеш MODX.
+После смены настроек очистите кеш MODX. Иначе запросы к API идут со старыми значениями.
+
+Где взять JWT, `customerCode` и `merchantId`: [Быстрый старт](quick-start#откуда-брать-ключи).
 
 | Ключ | Тип | По умолчанию | Назначение |
 | --- | --- | --- | --- |

@@ -38,7 +38,52 @@ JWT и `customerCode` положите в `msPayment.properties` (`jwt_token`, `
 
 `send()` отклоняет заказ дешевле 0.01 ₽. `paymentLinkId` не длиннее 45 символов.
 
-## Шаг 2: Песочница
+## Откуда брать ключи {#откуда-брать-ключи}
+
+Нужны открытый счёт в Точке и подключённый интернет-эквайринг. Песочнице боевые ключи не нужны: публичные значения в [шаге 3](#шаг-3-песочница).
+
+### JWT
+
+Токен выпускаете в интернет-банке. Инструкция банка: [авторизация по JWT](https://developers.tochka.com/docs/tochka-api/algoritm-raboty-s-jwt-tokenom).
+
+1. Вкладка **Сервисы**.
+2. В блоке **Все сервисы** откройте **Интеграции и API**.
+3. **Создать JWT-ключ**. Задайте название и срок. Когда срок кончится, ключ перевыпускают вручную. Отдельного refresh-токена нет.
+4. **Продолжить**. Отметьте разрешения. Для пакета нужны `MakeAcquiringOperation` и `ReadAcquiringData`. Если компаний несколько, разрешения задаются у каждой. `ManageWebhookData` нужен только если webhook регистрируете вызовом API Точки. Из админки MODX пакет webhook не регистрирует.
+5. **Создать ключ** и код из СМС.
+6. Скопируйте JWT в **`msp3tochka_jwt_token`**. Позже тот же токен лежит в блоке **JWT-ключи** того же сервиса.
+
+На том же экране банк показывает `client_id`. В настройках msp3Tochka поля для него нет. Он нужен, если webhook вешаете через API Точки: на один `client_id` приходится один URL.
+
+При перевыпуске банк удаляет старый JWT и старый `client_id`. В MODX вставьте новый токен. Если webhook был привязан к старому `client_id`, зарегистрируйте его заново.
+
+В запрос пакет сам подставляет заголовок `Authorization: Bearer`.
+
+### customerCode
+
+Это идентификатор компании в API, строка до 9 символов. На экране создания JWT его нет.
+
+Вызовите [Get Customers List](https://developers.tochka.com/docs/tochka-api/faq) с этим JWT. Возьмите `customerCode` у объекта, где `customerType` равен `Business`. Вставьте в **`msp3tochka_customer_code`**.
+
+Чужой или пустой код даёт `403 Forbidden by consent`.
+
+### merchantId
+
+Поле **`msp3tochka_merchant_id`** оставьте пустым, если торговая точка интернет-эквайринга одна.
+
+Если точек несколько, банк требует `merchantId`. Это 15 цифр из [Get Retailers](https://developers.tochka.com/docs/tochka-api/api/get-retailers-acquiring-v-1-0-retailers-get). Идентификатор точки СБП другой: он начинается с `MA` или `MB`. Его в эту настройку не кладите.
+
+Термины банка: [customerCode и merchantId](https://developers.tochka.com/docs/tochka-api/terminologiya).
+
+## Шаг 2: Куда вписать в MODX
+
+1. **Настройки → Системные настройки**, фильтр **`msp3tochka`**.
+2. Либо откройте способ оплаты и заполните properties: `jwt_token` (также принимаются `token` и `secret`) и `customer_code`. Непустые properties перекрывают системные настройки.
+3. После сохранения: **Управление → Очистить весь кеш**. Иначе API может не увидеть новые значения.
+
+Список полей: [Системные настройки](settings).
+
+## Шаг 3: Песочница
 
 **`msp3tochka_test_mode`** = Да. Хост: `https://enter.tochka.com/sandbox/v2`.
 
@@ -52,26 +97,15 @@ JWT и `customerCode` положите в `msPayment.properties` (`jwt_token`, `
 
 Покупатели картой здесь заплатить не могут.
 
-## Шаг 3: Ключи в MODX
-
-1. **Настройки → Системные настройки**, фильтр по пространству имён **`msp3tochka`**.
-2. Для песочницы:
-   - **`msp3tochka_test_mode`**: Да
-   - **`msp3tochka_jwt_token`**: `sandbox.jwt.token`
-   - **`msp3tochka_customer_code`**: `1234567ab`
-   - **`msp3tochka_merchant_id`**: `200000000001097`
-
-После смены настроек очистите кеш MODX. Подробнее: [Системные настройки](settings).
-
 ## Шаг 4: URL уведомлений
 
-В кабинете Точки событие `acquiringInternetPayment`:
+В кабинете Точки событие `acquiringInternetPayment`. Укажите URL сайта:
 
 ```text
 https://ваш-домен.ru/assets/components/msp3tochka/webhook.php
 ```
 
-HTTPS без Basic Auth и без 301.
+HTTPS без Basic Auth и без 301. Тело уведомления: компактный JWT, `Content-Type: text/plain`. Пакет проверяет подпись ключом банка (`msp3tochka_webhook_jwk_url`), затем сам запрашивает статус платежа.
 
 ## Шаг 5: Способ оплаты в MiniShop3
 
@@ -83,13 +117,8 @@ HTTPS без Basic Auth и без 301.
 
 ## Шаг 6: Боевой режим
 
-1. Открытый счёт в Точке и подключённый интернет-эквайринг.
-2. JWT в кабинете: **Интеграции и API → JWT-ключи**. Скопируйте токен сразу. Повторно его не показывают.
-3. В MODX: **`msp3tochka_test_mode`** = Нет, боевой JWT, `customer_code`, при нескольких точках ещё `merchant_id`.
-4. Хост боя: `https://enter.tochka.com/uapi`, если не задали `msp3tochka_api_base_url`.
-5. Активируйте нужный способ оплаты и привяжите к доставке.
-6. Пропишите webhook в кабинете Точки.
-7. Первый платёж лучше на 1 ₽. Проверьте попытку `paid`, статус `ms3_status_paid` и письмо из Центра уведомлений.
-8. Выключите **`msp3tochka_debug`**.
-
-Права JWT: `MakeAcquiringOperation` и `ReadAcquiringData`.
+1. **`msp3tochka_test_mode`** = Нет. Хост боя: `https://enter.tochka.com/uapi`, если не задали `msp3tochka_api_base_url`.
+2. Вставьте боевые JWT, `customer_code` и при нескольких точках `merchant_id`. Очистите кеш.
+3. Пропишите webhook из [шага 4](#шаг-4-url-уведомлений).
+4. Первый платёж лучше на 1 ₽. Проверьте попытку `paid`, статус `ms3_status_paid` и письмо из Центра уведомлений.
+5. Выключите **`msp3tochka_debug`**.
