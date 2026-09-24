@@ -5,7 +5,7 @@ description: Уведомления CloudPayments, холд, чек 54-ФЗ и �
 
 # Интеграция msp3CloudPayments
 
-Нужны только шаги установки? Откройте [Быстрый старт](quick-start).
+Шаги установки: [Быстрый старт](quick-start).
 
 ## Запросы к CloudPayments
 

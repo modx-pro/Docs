@@ -32,8 +32,6 @@ items: [
 
 Пространство имён настроек: **`msp3cloudpayments`**. Уведомления: `assets/components/msp3cloudpayments/webhook.php`.
 
-С чего начать: [Быстрый старт](quick-start).
-
 ## Возможности
 
 - Обычная оплата, деньги списываются сразу: способ **Оплата через CloudPayments**.
@@ -121,10 +119,3 @@ flowchart LR
 | Уведомления, холд, чек, старый пакет | [Интеграция](integration) |
 | Код 13, код 12, холд | [FAQ](faq) |
 | Оформление заказа MS3 | [MiniShop3: заказ](/components/minishop3/frontend/order) |
-
-## Документация по разделам
-
-- [Быстрый старт](quick-start): провайдер modstore, ключи кабинета, шесть URL, тестовая карта.
-- [Системные настройки](settings): Public ID, секрет, чек, URL возврата.
-- [Интеграция и сценарии](integration): коды уведомлений, вкладка заказа, переход с `mspCloudPayments`.
-- [FAQ](faq): типовые сбои из README пакета.

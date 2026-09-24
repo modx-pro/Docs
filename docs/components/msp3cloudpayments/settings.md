@@ -5,7 +5,7 @@ description: Public ID и API Secret CloudPayments, чек 54-ФЗ, валюта
 
 # Системные настройки msp3CloudPayments
 
-Краткая последовательность шагов: [Быстрый старт](quick-start).
+Установка и ключи: [Быстрый старт](quick-start).
 
 Ключ в MODX: `msp3cloudpayments_<имя>`. Public ID и секрет можно положить в `msPayment.properties` (`public_id`, `api_secret`, `secret`, `webhook_secret`). Если properties пусты, пакет читает системные настройки.
 
