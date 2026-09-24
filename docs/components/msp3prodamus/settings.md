@@ -5,7 +5,7 @@ description: Ключи msp3Prodamus, URL payform, секрет, sys, валют
 
 # Системные настройки msp3Prodamus
 
-Краткая последовательность шагов: [Быстрый старт](quick-start).
+Установка и ключи: [Быстрый старт](quick-start).
 
 Ключ в MODX: `msp3prodamus_<имя>`. Секрет и URL страницы можно положить в `msPayment.properties` (`secret` или `secret_key`, `payform_url`). Если properties пусты, пакет читает системные настройки.
 

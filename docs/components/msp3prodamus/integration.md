@@ -5,7 +5,7 @@ description: Webhook Prodamus, поток оплаты, чеки 54-ФЗ и вк
 
 # Интеграция msp3Prodamus
 
-Нужны только шаги установки? Откройте [Быстрый старт](quick-start). Двухстадийки у Prodamus нет.
+Шаги установки: [Быстрый старт](quick-start). Двухстадийки у Prodamus нет.
 
 ## Webhook
 
@@ -65,7 +65,7 @@ flowchart LR
 
 События: `msp3ProdamusOnPrepareReceiptItem`, `msp3ProdamusOnProviderEvent`. Секрет и `Sign` в лог не попадают. Строки лога начинаются с `[msp3Prodamus]`.
 
-`send()` отклоняет заказ дешевле 0.01 ₽.
+Заказ дешевле 1 копейки пакет на оплату не отправляет.
 
 ## Чеки 54-ФЗ
 

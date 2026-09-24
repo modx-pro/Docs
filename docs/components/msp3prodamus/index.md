@@ -19,9 +19,9 @@ items: [
 
 # msp3Prodamus
 
-**msp3Prodamus** подключает [Prodamus](https://prodamus.ru/) (payform) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. Оплата идёт через `ms3_payment_lifecycle`. Пакет не пишет `status_id` заказа. Письма покупателю шлёт Центр уведомлений MiniShop3.
+**msp3Prodamus** подключает [Prodamus](https://prodamus.ru/) (payform) к [MiniShop3](/components/minishop3/) в MODX Revolution 3. Покупатель переходит на страницу оплаты payform. Статус «оплачен» выставляет MiniShop3. Пакет сам статус заказа не меняет. Письма покупателю шлёт Центр уведомлений MiniShop3.
 
-Суммы передаются в рублях с двумя знаками. HTTP-запросы идут через `file_get_contents`. Двухстадийки у Prodamus нет.
+Сумма уходит в рублях, с двумя знаками после запятой. Двухстадийной оплаты у Prodamus нет.
 
 Пространство имён настроек: **`msp3prodamus`**. Точка входа уведомлений: `assets/components/msp3prodamus/webhook.php`.
 
@@ -29,14 +29,12 @@ items: [
 - [Уведомления](https://help.prodamus.ru/payform/uvedomleniya/kak-ustroena-otpravka-uvedomlenii-ob-oplate)
 - [Секрет и URL](https://help.prodamus.ru/payform/integracii/rest-api/url-dlya-uvedomlenii-i-sekretnyi-klyuch)
 
-С чего начать: [Быстрый старт](quick-start).
-
 ## Возможности
 
-- Ссылка на оплату: `Msp3Prodamus\Payment\ProdamusPayment`. POST на вашу страницу payform (`do=link`, `type=json`).
-- Webhook кабинета: form POST, заголовок `Sign` (HMAC-SHA256). Ответ HTTP 200 и текст `success`.
-- Чеки 54-ФЗ в поле `products` (`tax`, `paymentMethod`, `paymentObject`).
-- Вкладка заказа показывает попытки. Возврат, отмена и синхронизация отвечают текстом: у Prodamus нет REST для этих действий.
+- Один способ: **Оплата через Prodamus**. Пакет создаёт ссылку на вашу страницу payform.
+- Уведомление приходит формой. Подпись в заголовке `Sign` считается секретом этой страницы. Сайт отвечает кодом 200 и текстом `success`.
+- Чек 54-ФЗ уходит в составе корзины: налог, способ расчёта и предмет расчёта.
+- Во вкладке заказа только список попыток. Возврат, отмена и запрос статуса в Prodamus не уходят: таких запросов у сервиса нет.
 
 ## Системные требования
 
@@ -77,7 +75,7 @@ items: [
 
 Подробнее: [Быстрый старт](quick-start#откуда-брать-ключи).
 
-`send()` отклоняет заказ дешевле 0.01 ₽.
+Заказ дешевле 1 копейки пакет на оплату не отправляет.
 
 ## Быстрая настройка webhook
 
@@ -119,10 +117,3 @@ flowchart LR
 | Webhook, чеки, вкладка заказа | [Интеграция](integration) |
 | Подпись, sys, 301 | [FAQ](faq) |
 | Оформление заказа MS3 | [MiniShop3: заказ](/components/minishop3/frontend/order) |
-
-## Документация по разделам
-
-- [Быстрый старт](quick-start): провайдер modstore, демо-страница, webhook, боевой режим.
-- [Системные настройки](settings): URL payform, секрет, `sys`, валюта, чеки, URL возврата.
-- [Интеграция и сценарии](integration): поток оплаты, статусы webhook, вкладка заказа.
-- [FAQ](faq): типовые сбои.
