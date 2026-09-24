@@ -32,8 +32,6 @@ items: [
 
 Пространство имён настроек: **`msp3cloudpayments`**. Уведомления: `assets/components/msp3cloudpayments/webhook.php`.
 
-Версия пакета: 1.0.0-pl. Лицензия: GPL v2 и новее.
-
 С чего начать: [Быстрый старт](quick-start).
 
 ## Возможности
@@ -130,5 +128,3 @@ flowchart LR
 - [Системные настройки](settings): Public ID, секрет, чек, URL возврата.
 - [Интеграция и сценарии](integration): коды уведомлений, вкладка заказа, переход с `mspCloudPayments`.
 - [FAQ](faq): типовые сбои из README пакета.
-
-Лицензия пакета: GPL v2 и новее.
