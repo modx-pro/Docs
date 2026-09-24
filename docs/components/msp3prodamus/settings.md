@@ -9,6 +9,8 @@ description: Ключи msp3Prodamus, URL payform, секрет, sys, валют
 
 Ключ в MODX: `msp3prodamus_<имя>`. Секрет и URL страницы можно положить в `msPayment.properties` (`secret` или `secret_key`, `payform_url`). Если properties пусты, пакет читает системные настройки.
 
+Где взять URL, секрет и `sys`: [Быстрый старт](quick-start#откуда-брать-ключи).
+
 | Ключ | Тип | По умолчанию | Назначение |
 | --- | --- | --- | --- |
 | `msp3prodamus_payform_url` | text | пусто | Адрес страницы, например `https://shop.payform.ru/` |
