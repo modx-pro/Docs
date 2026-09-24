@@ -27,8 +27,6 @@ items: [
 
 Пространство имён настроек: **`msp3webpay`**. Уведомления: `assets/components/msp3webpay/webhook.php`. Возврат покупателя: `assets/components/msp3webpay/return.php`.
 
-Версия пакета: 2.0.0-pl. Лицензия: GPL v2 и новее.
-
 С чего начать: [Быстрый старт](quick-start).
 
 ## Возможности
@@ -124,5 +122,3 @@ flowchart LR
 - [Системные настройки](settings): ключи из README пакета.
 - [Интеграция и сценарии](integration): типы уведомлений, списание и возврат.
 - [FAQ](faq): ограничения из README.
-
-Лицензия пакета: GPL v2 и новее.
