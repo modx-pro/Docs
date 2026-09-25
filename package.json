@@ -20,6 +20,7 @@
     "generate:og": "node scripts/generate-og-images.mjs",
     "preview": "vitepress preview",
     "generate": "plop",
+    "typecheck": "vue-tsc --noEmit -p .",
     "lint": "markdownlint **/*.md --disable MD045",
     "lint:fix": "markdownlint **/*.md --disable MD045 --fix",
     "spellcheck": "node scripts/spellcheck.mjs",
@@ -56,9 +57,11 @@
     "satori": "^0.33.4",
     "shiki": "^4.4.3",
     "transliteration": "^2.6.1",
+    "typescript": "^6.0.3",
     "vitepress": "2.0.0-alpha.20",
     "vitepress-plugin-mermaid": "^2.0.17",
-    "vue": "^3.5.42"
+    "vue": "^3.5.42",
+    "vue-tsc": "^3.3.11"
   },
   "pnpm": {
     "overrides": {

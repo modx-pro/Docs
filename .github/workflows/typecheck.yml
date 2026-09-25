@@ -1,0 +1,38 @@
+name: Typecheck
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - '.vitepress/**'
+      - 'docs/*.ts'
+      - 'docs/*.json'
+      - 'globals.d.ts'
+      - 'tsconfig.json'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/typecheck.yml'
+  push:
+    branches:
+      - master
+    paths:
+      - '.vitepress/**'
+      - 'docs/*.ts'
+      - 'docs/*.json'
+      - 'globals.d.ts'
+      - 'tsconfig.json'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
