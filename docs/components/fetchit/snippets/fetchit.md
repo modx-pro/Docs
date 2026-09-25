@@ -5,13 +5,13 @@ description: Параметры сниппета FetchIt, FormIt, файлы, pa
 
 # Сниппет FetchIt
 
-Сниппет выводит чанк формы, сохраняет параметры вызова под ключом action и регистрирует фронтенд-скрипт. При отправке `action.php` поднимает эти параметры и запускает сниппет из `snippet` (по умолчанию FormIt).
+Сниппет выводит чанк формы, сохраняет параметры вызова под ключом action и регистрирует фронтенд-скрипт. При отправке `action.php` поднимает эти параметры, проверяет [защиту](/components/fetchit/protection) и запускает сниппет из `snippet` (по умолчанию FormIt).
 
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `form` | `tpl.FetchIt.example` | Чанк с разметкой формы |
+| `form` | `tpl.FetchIt.example` | Чанк с разметкой формы. С pdoTools можно `@FILE`, `@INLINE` и Fenom |
 | `snippet` | `FormIt` | Обработчик. Можно `FormIt@PropertySet` |
 | `actionUrl` | `[[+assetsUrl]]action.php` | URL коннектора |
 | `clearFieldsOnSuccess` | `1` | Очистить поля после успешного AJAX-ответа |
@@ -54,6 +54,10 @@ description: Параметры сниппета FetchIt, FormIt, файлы, pa
 
 Ошибки `recaptcha`, `recaptchav2_error`, `recaptchav3_error` из FormIt в AJAX-ответе схлопываются в один ключ `data.recaptcha`. В разметке используйте `data-error="recaptcha"`. После успеха клиент вызывает `grecaptcha.reset()`, если виджет на странице есть.
 
+::: warning
+reCAPTCHA из FormIt 5.2 получает ответ через `formit.js`, который в формах FetchIt отключается вместе с AJAX-режимом FormIt. Для таких форм включайте капчу настройкой [`fetchit.captcha`](/components/fetchit/protection#капча).
+:::
+
 ## FormIt и property set
 
 ::: code-group
@@ -81,6 +85,12 @@ description: Параметры сниппета FetchIt, FormIt, файлы, pa
 Клиент шлёт `FormData` (включая файлы) на `actionUrl` с заголовком `X-FetchIt-Action`. В тело добавляется `pageId`: ID ресурса, с которого вызван сниппет. Коннектор может переключить контекст MODX по этому ID.
 
 Пустой POST на `action.php` без action ведёт на стартовую страницу сайта.
+
+## Служебные поля
+
+Сразу после тега формы сниппет добавляет скрытые поля [защиты от спама](/components/fetchit/protection): токен, при включённом proof-of-work — поле для решения, и поле-ловушку. Из `$_POST` они убираются до FormIt или вашего сниппета, так что в письма и в `fields` они не попадают.
+
+Сниппет также сам дописывает форме `method="post"` и атрибут `data-fetchit`, если их нет.
 
 ## Где хранятся параметры action
 
