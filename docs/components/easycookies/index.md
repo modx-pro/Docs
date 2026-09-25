@@ -4,6 +4,7 @@ description: Баннер cookie для MODX 2 и 3 — простое увед�
 logo: https://modstore.pro/assets/extras/easycookies/logo.png
 author: GulomovCreative
 categories: utilities
+modstore: https://modstore.pro/packages/utilities/easycookies
 
 items:
   - text: Быстрый старт
