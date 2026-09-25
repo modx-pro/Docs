@@ -109,7 +109,7 @@ export default withMermaid(
       addPlugins(md)
     },
     image: {
-      lazyLoading: true
+      lazyLoad: true
     }
   },
 
