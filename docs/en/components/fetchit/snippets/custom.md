@@ -1,45 +1,49 @@
+---
+title: Custom snippet handling
+description: A custom snippet instead of FormIt, the success/message/data JSON answer and FetchIt::service()
+---
+
 # Custom snippet handling
 
-Instead of FormIt you can set your own snippet in the `snippet` parameter. It receives the form fields and must return JSON with these keys:
+Instead of FormIt you can name your own snippet in the `snippet` property. It gets the fields of the form and has to return JSON with these keys:
 
 | Key | Type | Description |
 | --- | --- | --- |
-| `success` | `bool` | Success or error |
-| `message` | `string` | Text for notifications and `[data-success]` / `[data-validation-error]` blocks |
-| `data` | `object` | On error: field name → error text (for `[data-error]` and invalid classes) |
+| `success` | `bool` | Accepted or refused |
+| `message` | `string` | Text for the notification and for the `[data-success]` / `[data-validation-error]` blocks |
+| `data` | `object` | On an error: field name → error text (for `[data-error]` and the invalid classes) |
 
-From **1.1.3**, the FetchIt object is **not** passed in `$scriptProperties` (PDO session serialization). Get the service yourself:
+The `error()` and `success()` methods of the service build that answer for you. Get the service itself with `FetchIt::service()` — it works on MODX 2 and MODX 3 alike:
 
 ```php
 <?php
 /** @var modX $modx */
-$FetchIt = $modx->getService(
-    'fetchit',
-    'FetchIt',
-    MODX_CORE_PATH . 'components/fetchit/model/'
-);
+/** @var array $fields */
+$FetchIt = FetchIt::service($modx);
 
-if (!$FetchIt) {
-    return json_encode([
-        'success' => false,
-        'message' => 'FetchIt is not available',
-        'data' => [],
-    ], JSON_UNESCAPED_UNICODE);
+if (empty($fields)) {
+    // Output of the form, not a submission: the snippet runs on every output.
+    return '';
 }
 
-$name = trim((string) ($_POST['name'] ?? ''));
+$name = trim((string) ($fields['name'] ?? ''));
 if ($name === '') {
-    return $FetchIt->error('Form errors', [
-        'name' => 'Please enter your name',
+    return $FetchIt->error('There are errors in the form', [
+        'name' => 'Enter your name',
     ]);
 }
 
-return $FetchIt->success('Validation passed');
+// ... save, send an e-mail
+return $FetchIt->success('The form has been accepted');
 ```
 
-`error()` / `success()` build the same JSON. You can return an array by hand with the same keys.
+::: warning
+The `empty($fields)` check is required: the snippet also runs on every output of the form, with an empty `$fields`. Without it the snippet would, for example, send an empty e-mail on every page view.
+:::
 
-## Call
+You can also return an array with the same keys yourself.
+
+## The call
 
 ::: code-group
 
@@ -59,10 +63,33 @@ return $FetchIt->success('Validation passed');
 
 :::
 
-## What the snippet receives
+## What the snippet gets
 
-`$scriptProperties` gets the stored FetchIt call parameters plus a `fields` key: an associative array of POST fields. The same values are in `$_POST`. Files are in `$_FILES`.
+`$scriptProperties` holds the stored properties of the FetchIt call and a `fields` key — an associative array of the submitted fields:
 
-Do not put PHP objects in call parameters: they are dropped before writing to session or cache.
+- for a FetchIt submission that is `$_POST`, with the files in `$_FILES`;
+- for a normal submission without JavaScript, `$_POST` only.
 
-The form page context arrives as `pageId` in FormData.
+The service fields of the [protection](/en/components/fetchit/protection) are removed from `fields`. There are no GET values and no cookies in it: before FetchIt 4 the snippet got `$_REQUEST`.
+
+Do not put PHP objects into the properties of the call: they are dropped before the properties are written to the session or the cache.
+
+The client sends the context of the form page as `pageId` in the FormData.
+
+## A submission without JavaScript
+
+The answer of the snippet is not output on a normal submission: a message appears on the page only if the snippet sets the placeholders itself.
+
+## The older ways to get the service
+
+They work too, and return the same object:
+
+```php
+// FetchIt 1.x, on MODX 2 and MODX 3
+$FetchIt = $modx->getService('fetchit', 'FetchIt', MODX_CORE_PATH . 'components/fetchit/model/');
+
+// FetchIt 3.x, MODX 3 only
+$FetchIt = $modx->services->get('FetchIt');
+```
+
+In detail: [Upgrading to FetchIt 4](/en/components/fetchit/upgrade).

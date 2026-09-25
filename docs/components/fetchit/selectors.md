@@ -19,7 +19,9 @@ description: data-fetchit, data-error, data-custom, data-success и data-validat
 
 Значение атрибута служебное (идентификатор action). Менять руками не нужно.
 
-Сниппет также принудительно ставит `method="post"`.
+Сниппет также принудительно ставит `method="post"`. Оба атрибута ставятся последними в теге формы.
+
+Сразу после тега формы сниппет добавляет скрытые поля [защиты от спама](/components/fetchit/protection). Их не нужно ни выводить, ни учитывать в вёрстке.
 
 ## `data-error`
 
@@ -46,7 +48,7 @@ description: data-fetchit, data-error, data-custom, data-success и data-validat
 
 ## `data-success` и `data-validation-error`
 
-Сообщения уровня формы (не поля). С **1.1.3** AJAX заполняет их через `setFormMessage()`:
+Сообщения уровня формы (не поля). AJAX заполняет их через `setFormMessage()`:
 
 | Атрибут | Когда показывается |
 | --- | --- |

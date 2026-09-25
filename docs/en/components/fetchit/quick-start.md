@@ -1,3 +1,8 @@
+---
+title: Quick start
+description: The first FetchIt call with FormIt, a form chunk and error messages
+---
+
 # Quick start
 
 Call the uncached **FetchIt** snippet and set the form chunk in `form`. By default the handler is FormIt: `hooks`, `validate`, `emailTo`, and the rest pass through unchanged.
@@ -36,7 +41,7 @@ Put `!` before the snippet name, or the chunk and action land in the page cache.
 
 :::
 
-From 1.1.3, `successMessage` goes into the AJAX response on FormIt success and shows in `[data-success]` / via `FetchIt.Message`.
+`successMessage` goes into the AJAX response on FormIt success and shows in `[data-success]` and via `FetchIt.Message`.
 
 ## Form chunk
 
@@ -108,6 +113,18 @@ The default invalid field class is `is-invalid` (`fetchit.frontend.input.invalid
 
 ## Notifications
 
-While `fetchit.frontend.default.notifier` is off, toasts stay hidden. You only get form blocks and field errors. Enable Notyf in settings or wire your own library: [Notifications](/en/components/fetchit/examples/notifications/).
+While `fetchit.frontend.default.notifier` is off, no notifications are shown: you only get the blocks in the form and the field errors. Turn the setting on to show the answers with the [built-in notifications](/en/components/fetchit/examples/notifications/#built-in-notifications), or wire your own library: [Notifications](/en/components/fetchit/examples/notifications/).
 
 After success, fields clear unless you turn off `clearFieldsOnSuccess` (`1` by default).
+
+## Spam protection
+
+The form is closed to bots right away: a single-use token, a minimum fill time (3 seconds), a hidden trap field and a rate limit. There is nothing to configure, and the service fields never reach e-mails.
+
+What is worth knowing about it:
+
+- on a development site and in automated tests set `fetchit.protection.min_time` and `fetchit.protection.rate_limit` to `0`;
+- pages with forms are better left out of a cache of the whole page, on the server or in a CDN;
+- if spam still gets through, turn on the proof of work or a captcha.
+
+In detail: [Spam protection](/en/components/fetchit/protection).

@@ -13,7 +13,7 @@ FetchIt не подключает CSS. Классы невалидных пол�
 
 ## Всплывающие сообщения
 
-В AjaxForm из коробки идёт jGrowl. В FetchIt тосты опциональны: включите Notyf (`fetchit.frontend.default.notifier`) или подключите свою библиотеку.
+В AjaxForm из коробки идёт jGrowl. В FetchIt уведомления опциональны: включите [встроенные](/components/fetchit/examples/notifications/#встроенные-уведомления) настройкой `fetchit.frontend.default.notifier` или подключите свою библиотеку.
 
 [Примеры](/components/fetchit/examples/notifications/).
 
@@ -55,7 +55,7 @@ FetchIt не подключает CSS. Классы невалидных пол�
 
 Селекторы ошибок: вместо `.error_name` используйте `[data-error="name"]`. Класс `ajax_form` не нужен: сниппет ставит `data-fetchit`.
 
-С **1.1.3** для AJAX добавьте `[data-success]` и `[data-validation-error]` (см. [селекторы](/components/fetchit/selectors)). В AjaxForm часто хватало только `[[+fi.successMessage]]` после перезагрузки.
+Для AJAX добавьте `[data-success]` и `[data-validation-error]` (см. [селекторы](/components/fetchit/selectors)). В AjaxForm часто хватало только `[[+fi.successMessage]]` после перезагрузки.
 
 Чанк AjaxForm → FetchIt:
 
@@ -151,7 +151,7 @@ FetchIt не подключает CSS. Классы невалидных пол�
 
 ## Свой сниппет вместо FormIt
 
-AjaxForm ждал JSON с ключом `status` (0/1). FetchIt ждёт `success` (bool). Объект компонента в `$scriptProperties` с 1.1.3 не передаётся: берите через `getService`. Пример: [свой сниппет](/components/fetchit/snippets/custom).
+AjaxForm ждал JSON с ключом `status` (0/1). FetchIt ждёт `success` (bool). Объект компонента в `$scriptProperties` не передаётся: берите его через `FetchIt::service($modx)`. Пример: [свой сниппет](/components/fetchit/snippets/custom).
 
 ## Валидация на стороне клиента
 

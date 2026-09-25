@@ -1,19 +1,17 @@
 ---
 title: Notyf
-description: Notyf notifications for FetchIt via system setting or manual CDN
+description: Notyf notifications for FetchIt via a CDN and FetchIt.Message
 ---
 
 # Notyf
 
-[Notyf](https://carlosroso.com/notyf/): lightweight toasts in plain JS. FetchIt supports two setups.
+[Notyf](https://carlosroso.com/notyf/): lightweight toasts in plain JS.
 
-## Via component setting
+::: warning
+Before FetchIt 4 the library shipped with the package and was turned on with the `fetchit.frontend.default.notifier` setting. That setting now shows the [built-in notifications](/en/components/fetchit/examples/notifications/#built-in-notifications), and Notyf is loaded by hand like any other third-party library.
+:::
 
-Enable `fetchit.frontend.default.notifier`. The plugin loads Notyf CSS/JS from `assets/components/fetchit/lib/` and sets `FetchIt.Message` on first `FetchIt.create()` if you have not defined it yourself.
-
-Skip extra CDN and manual `FetchIt.Message` in that case, or you will load the library twice.
-
-## Manual CDN
+## Via a CDN
 
 Load the library yourself and set `FetchIt.Message`:
 
