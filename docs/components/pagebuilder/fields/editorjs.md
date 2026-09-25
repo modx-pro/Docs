@@ -5,13 +5,15 @@ description: "Объект json и готовый html из Editor.js"
 
 # Поле editorjs
 
-Версия: **Free**.
+Версия: **Pro** (`advanced-fields`). Новое поле создаётся только в Pro. Уже сохранённое открывается и пишется.
 
-<!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.png) -->
+<!-- ![editorjs](/components/pagebuilder/screenshots/fields/editorjs.jpg) -->
 
 ## Зачем этот тип
 
-Блочный контент с заголовками, списками, embed. `html` готов для chunk, `json` для кастомного рендера. Структура предсказуемее произвольного HTML.
+Текст из блоков: заголовки, списки, вставки. В чанк можно отдать готовый HTML (`html`) или JSON (`json`), если разметку собираете сами. Набор блоков предсказуемее, чем произвольный HTML.
+
+Визуальный редактор блоков работает, если на сайте включён пакет **mxEditorJs** (`mxeditorjs.enabled`, редактор `mxEditorJs`, assets на месте). Иначе в инспекторе запасной вариант: JSON и HTML без визуального UI.
 
 ## Когда использовать
 
@@ -73,9 +75,17 @@ description: "Объект json и готовый html из Editor.js"
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<div class="pb-richtext__content">[[+body.html]]</div>
+```
+
+```fenom
 <div class="pb-richtext__content">{$body.html}</div>
 ```
+
+:::
 
 ## Общие свойства
 
@@ -84,7 +94,7 @@ description: "Объект json и готовый html из Editor.js"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

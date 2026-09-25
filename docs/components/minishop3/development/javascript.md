@@ -801,10 +801,12 @@ MiniShop3 использует токены для идентификации с
 
 ### Как работает
 
-1. При первом запросе `TokenManager` получает токен с сервера
-2. Токен сохраняется в `localStorage` с временем жизни
-3. Токен автоматически добавляется ко всем запросам
-4. При истечении токен обновляется автоматически
+1. При первом запросе клиент получает токен (`GET /customer/token/get` или auto-mint на cart)
+2. С 1.6 для браузера основной способ это httpOnly cookie `ms3_token`, не `localStorage`
+3. Запросы same-site идут с `credentials: 'include'`; headless может слать `Authorization: Bearer`
+4. Ротация на login / `token/refresh`
+
+Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth), [Frontend JavaScript](/components/minishop3/development/frontend-js).
 
 ### Ручное управление
 

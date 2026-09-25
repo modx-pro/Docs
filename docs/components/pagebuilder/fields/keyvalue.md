@@ -5,13 +5,13 @@ description: "Массив пар ключ–значение без typed colum
 
 # Поле keyvalue
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.png) -->
+<!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.jpg) -->
 
 ## Зачем этот тип
 
-Проще [table](table) для одной text-колонки value. `keyLabel` и `valueLabel` настраивают подписи. Произвольное число строк без schema columns.
+Проще, чем [table](table), если нужна одна текстовая колонка значения. Подписи колонок задают `keyLabel` и `valueLabel`. Число строк не ограничено списком колонок в схеме.
 
 ## Когда использовать
 
@@ -68,11 +68,21 @@ Typed cells или image в ячейке: [table](table). Одна плоска�
 
 ## Пример в chunk
 
+Перебор пар — блок Fenom. В MODX — сниппет или элемент по индексу.
+
+::: code-group
+
+```modx
+<div><strong>[[+meta.0.key]]:</strong> [[+meta.0.value]]</div>
+```
+
 ```fenom
 {foreach $meta as $row}
-  <div><strong>{$row.key|escape}:</strong> {$row.value|escape}</div>
+  <div><strong>{$row.key|pb_text}:</strong> {$row.value|pb_text}</div>
 {/foreach}
 ```
+
+:::
 
 ## Примечание
 
@@ -85,7 +95,7 @@ Typed cells или image в ячейке: [table](table). Одна плоска�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

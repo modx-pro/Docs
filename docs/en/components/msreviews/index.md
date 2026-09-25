@@ -1,12 +1,17 @@
 ---
 title: msReviews
 description: Отзывы, рейтинг, Q&A и JSON-LD для MiniShop3
-author: ibochkarev
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msreviews/logo.png
 modstore: https://modstore.pro/packages/ecommerce/msreviews
 dependencies: miniShop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items: [
   {
     text: 'Начало работы',
@@ -64,12 +69,10 @@ items: [
   { text: 'FAQ', link: 'faq' },
 ]
 ---
-
 <!-- TODO: translate from docs/components/msreviews/index.md -->
-
 # msReviews
 
-**msReviews** — дополнение для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): отзывы 1–5★, Q&A, фото к отзывам, подтверждённая покупка, JSON-LD и Vue-админка модерации.
+**msReviews**: дополнение для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/). Отзывы 1–5★, Q&A, фото к отзывам, подтверждённая покупка, JSON-LD и Vue-админка модерации. Описание под **1.2.3**.
 
 С чего начать: [Быстрый старт](quick-start).
 
@@ -107,7 +110,7 @@ items: [
 - **Verified purchase** — метка по токену из письма после заказа MS3
 - **UGC** — плюсы/минусы, сценарий, вариант, «рекомендую», фото, оценки по критериям
 - **Engagement** — «полезно», правка и удаление своего отзыва
-- **CMP** — дашборд, модерация, ручное добавление и правка отзывов, медиа, CSV import/export, очередь писем
+- **CMP** — дашборд, модерация, ручное добавление и правка отзывов и вопросов, медиа, CSV import/export, очередь писем
 
 ## Системные требования
 

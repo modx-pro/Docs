@@ -5,13 +5,13 @@ description: "Объект name выбранного modSnippet для вызо�
 
 # Поле snippet
 
-Версия: **Pro**.
+Версия: **Free**.
 
-<!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.png) -->
+<!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.jpg) -->
 
 ## Зачем этот тип
 
-Выбор имени сниппета для `[[!{$snippet.name}]]`. Pro: динамический hook processor в секции. Отделяет вызов сниппета от include chunk.
+Редактор выбирает имя сниппета. В MODX тег с подстановкой имени из плейсхолдера не работает: после выбора укажите статическое имя или вызывайте через Fenom (блок ниже). Чанк подключают отдельным полем [chunk](chunk), не этим.
 
 ## Когда использовать
 
@@ -59,9 +59,19 @@ Include partial-шаблона: [chunk](chunk). Параметры сниппе�
 
 ## Пример в chunk
 
-```html
-[[!{$snippet.name}]]
+::: code-group
+
+```modx
+[[!pbHero]]
 ```
+
+```fenom
+{('!' ~ $snippet.name) | snippet}
+```
+
+Вызов Fenom зависит от настроек сайта; проверьте на стенде.
+
+:::
 
 ## Общие свойства
 
@@ -70,7 +80,7 @@ Include partial-шаблона: [chunk](chunk). Параметры сниппе�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

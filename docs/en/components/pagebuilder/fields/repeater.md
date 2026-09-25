@@ -7,7 +7,7 @@ description: "Array of objects with nested fields and service _rowId"
 
 Version: **Free**.
 
-<!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.png) -->
+<!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.jpg) -->
 
 ## Why this type
 
@@ -23,12 +23,15 @@ Version: **Free**.
 
 ## Tips
 
+- Row order: drag handle or up/down arrows
 - In the chunk use `{foreach}` and `{$item._rowId|escape}` when needed
 - A single object without a list fits [jsongrid](jsongrid) (Pro)
+- Native MIGX ExtJS grid: [migx](migx)
 
 ## Similar types
 
 - [jsongrid](jsongrid) for one object row (Pro)
+- [migx](migx) for native MIGX grid (Free)
 - [table](table) for column grid (Pro)
 
 ## Schema
@@ -76,13 +79,25 @@ Key `items` in the section data: an array of rows; each row has a stable `_rowId
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $items as $item}
   <article id="{$item._rowId|escape}">
-    <h3>{$item.title|escape}</h3>
+    <h3>{$item.title}</h3>
   </article>
 {/foreach}
 ```
+
+```fenom
+{foreach $items as $item}
+  <article id="{$item._rowId|escape}">
+    <h3>{$item.title|pb_text}</h3>
+  </article>
+{/foreach}
+```
+
+:::
 
 ## Common properties
 

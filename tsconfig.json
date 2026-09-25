@@ -2,8 +2,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
+    "allowArbitraryExtensions": true,
     "resolveJsonModule": true,
     "types": [
       "vite/client"

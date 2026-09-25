@@ -8,7 +8,7 @@ title: Разработка
 ## Содержание
 
 - [События](events) — система событий для плагинов
-- [REST API](api) — Web API для интеграций с фронтендом
+- [Web API](api): документация для витрины и Nuxt ([карта эндпоинтов](web-api/endpoints))
 - [API Router](routing) — маршрутизация, middleware, кастомизация роутов
 - [Scheduler](scheduler) — фоновые задачи и интеграция с Scheduler
 - [Модели и схема БД](models) — xPDO модели и структура таблиц
@@ -29,4 +29,4 @@ title: Разработка
 
 Vue-CRUD (производители, доставки, оплаты и т.д.) **не** вызывает `Processors/Settings/Vendor/*` — плагины на `msOnVendorCreate` из админки не сработают. См. [События производителей](events/vendor).
 
-Headless витрина — **Web API** (`/api/v1/*`), не процессоры.
+Headless витрина использует Web API (`/api/v1/*`), не процессоры.

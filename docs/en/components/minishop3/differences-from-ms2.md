@@ -117,70 +117,17 @@ MiniShop3 adds many new settings:
 
 The Manager API powers the Vue admin (orders, customers, utilities). Processors under `core/components/minishop3/src/Processors/` remain for ExtJS resource panels (category, product). Custom web routes: `core/config/ms3_routes_web.custom.php`, add-on fragments: `core/config/ms3.routes.d/web/*.php`.
 
-Full map and request bodies: [REST API](/en/components/minishop3/development/api). Route source: `config/routes/web.php`.
+Full map and request bodies: [Web API](/en/components/minishop3/development/web-api/). Route source: `config/routes/web.php`.
 
 ### Web API (new in MiniShop3)
 
-Entry point `api.php`, prefix `/api/v1`. The whole group has CORS, rate limit, and `ServiceCheck`. Token is required for cart, order draft, and account; catalog and some auth endpoints are public.
+Entry point `api.php`, prefix `/api/v1`. The whole group has CORS, rate limit, and `ServiceCheck`. Token (auto-mint) is required for cart, order draft, and account; catalog, delivery/payment list, and part of auth are public.
 
-```http
-# Cart (guest token)
-POST /api/v1/cart/add
-POST /api/v1/cart/remove
-POST /api/v1/cart/change
-POST /api/v1/cart/change-option
-GET  /api/v1/cart/get
-POST /api/v1/cart/clean
+Short map (not complete): cart, order, customer (including `me`, `token/refresh`), product (+ filters/images/resolve), category, delivery, payment, health.
 
-# Order / checkout (guest token)
-GET  /api/v1/order/get
-POST /api/v1/order/add
-POST /api/v1/order/set
-POST /api/v1/order/remove
-POST /api/v1/order/submit
-POST /api/v1/order/clean
-GET  /api/v1/order/cost
-GET  /api/v1/order/cost/cart
-GET  /api/v1/order/cost/delivery
-GET  /api/v1/order/cost/payment
-POST /api/v1/order/address/set
-POST /api/v1/order/address/clean
-GET  /api/v1/order/delivery/validation-rules
-GET  /api/v1/order/delivery/required-fields
+Full table: [Endpoint map](/en/components/minishop3/development/web-api/endpoints).
 
-# Customer: public
-GET  /api/v1/customer/token/get
-POST /api/v1/customer/login
-POST /api/v1/customer/register
-POST /api/v1/customer/forgot-password
-POST /api/v1/customer/reset-password
-GET  /api/v1/customer/email/verify
-
-# Customer: token required (account)
-POST /api/v1/customer/logout
-POST /api/v1/customer/add
-PUT  /api/v1/customer/profile
-POST /api/v1/customer/changeAddress
-POST /api/v1/customer/email/resend-verification
-GET  /api/v1/customer/addresses
-GET  /api/v1/customer/addresses/{id}
-POST /api/v1/customer/addresses
-PUT  /api/v1/customer/addresses/{id}
-DELETE /api/v1/customer/addresses/{id}
-PUT  /api/v1/customer/addresses/{id}/set-default
-GET  /api/v1/customer/orders
-GET  /api/v1/customer/orders/{id}
-POST /api/v1/customer/orders/{id}/cancel
-
-# Catalog (no token)
-GET  /api/v1/product/get/{id}
-GET  /api/v1/product/list
-
-# Health
-GET  /api/v1/health
-```
-
-There is no separate `GET /api/v1/order/payments`. Storefront delivery and payment lists come from the `msOrder` snippet (server-side render). Draft: `GET /api/v1/order/get` returns only order/address fields (`delivery_id`, `payment_id`, `address_*`).
+There is no separate `GET /api/v1/order/payments`. Public lists: `GET /api/v1/delivery/list`, `GET /api/v1/payment/list`. Draft: `GET /api/v1/order/get` (order/address fields). The Fenom storefront can render the choice via `msOrder`.
 
 ### API authentication
 

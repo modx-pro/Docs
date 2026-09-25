@@ -1,12 +1,15 @@
 ---
 title: mxEditorJs
 description: Блочный редактор Editor.js для MODX 3 — контент блоками вместо TinyMCE/CKEditor
-author: ibochkarev
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/mxeditorjs/logo.png
 modstore: https://modstore.pro/packages/content/mxeditorjs
 repository: https://github.com/Ibochkarev/mxEditorJs
 dependencies: []
 
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Начало работы', link: 'quick-start', items: [
     { text: 'Быстрый старт', link: 'quick-start' },

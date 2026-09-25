@@ -7,7 +7,7 @@ description: "Однострочный текст для заголовков и
 
 Версия: **Free**.
 
-<!-- ![text](/components/pagebuilder/screenshots/fields/text.png) -->
+<!-- ![text](/components/pagebuilder/screenshots/fields/text.jpg) -->
 
 ## Зачем этот тип
 
@@ -63,9 +63,17 @@ description: "Однострочный текст для заголовков и
 
 ## Пример в chunk
 
-```fenom
-{$title|escape}
+::: code-group
+
+```modx
+[[+title]]
 ```
+
+```fenom
+{$title|pb_text}
+```
+
+:::
 
 ## Примечание
 
@@ -78,7 +86,7 @@ Pro: `field.responsive` (desktop / tablet / mobile).
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false` — скрыть поле в инспекторе | да |

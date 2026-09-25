@@ -1,17 +1,17 @@
 ---
 title: "radio"
-description: "Одно значение из options с радиокнопками в инспекторе"
+description: "Одно значение из options; в инспекторе — выпадающий список Select"
 ---
 
 # Поле radio
 
 Версия: **Free**.
 
-<!-- ![radio](/components/pagebuilder/screenshots/fields/radio.png) -->
+<!-- ![radio](/components/pagebuilder/screenshots/fields/radio.jpg) -->
 
 ## Зачем этот тип
 
-Все варианты видны сразу, без раскрытия select. Тот же массив `options`, что у [select](select). Удобен для 2–5 взаимоисключающих значений.
+Один выбор из списка `options`. В инспекторе тот же виджет PrimeVue Select, что у [select](select): выпадающий список, не группа переключателей. Имя типа `radio` в схеме отличает поле от `select` в шаблонах и условиях.
 
 ## Когда использовать
 
@@ -21,11 +21,11 @@ description: "Одно значение из options с радиокнопкам
 
 ## Советы
 
-Длинный список: [select](select). Boolean on/off быстрее в [yesno](yesno) или [toggle](toggle).
+Много вариантов: [select](select) или `optionsSource` (см. ниже). Boolean on/off быстрее в [yesno](yesno) или [toggle](toggle).
 
 ## Похожие типы
 
-- [select](select) для длинного статического списка
+- [select](select) — тот же виджет в инспекторе, другое имя типа в JSON
 - [checkboxgroup](checkboxgroup) для нескольких флагов
 
 ## Настройка
@@ -61,17 +61,31 @@ description: "Одно значение из options с радиокнопкам
 
 ```json
 {
-  "align": "lg"
+  "align": "left"
 }
 ```
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<div class="align-[[+align]]">
+  …
+</div>
+```
+
+```fenom
 <div class="align-{$align|escape}">
   …
 </div>
 ```
+
+:::
+
+## Примечание
+
+Динамический список: `optionsSource` и connector `mgr/field/options` — как у [select](select#примечание). См. [обзор полей](overview#optionssource).
 
 ## Общие свойства
 
@@ -80,7 +94,7 @@ description: "Одно значение из options с радиокнопкам
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

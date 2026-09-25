@@ -7,7 +7,7 @@ description: "Таблица сравнения выбранных товаро�
 
 Вы вручную выбираете несколько товаров в инспекторе. На сайте появится таблица характеристик по колонкам.
 
-<!-- ![Сравнение товаров](/components/pagebuilder/screenshots/sections/product_comparison.png) -->
+![Сравнение товаров](/components/pagebuilder/screenshots/sections/product_comparison.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -32,7 +32,7 @@ description: "Таблица сравнения выбранных товаро�
 
 ## Товары и подсветка
 
-Repeater или multirelation **Товары**. **Подсветить отличия** включает визуальное выделение разных значений.
+Multirelation **Товары** (не более четырёх SKU в выводе). **Подсветить отличия** добавляет модификатор класса `pb-product-comparison--diff` для оформления темы. Тип помечен `"cacheable": false`.
 
 ## Похожие секции
 
@@ -90,10 +90,11 @@ Repeater или multirelation **Товары**. **Подсветить отли�
 Fenom chunk `pagebuilderpro_product_comparison`:
 
 ```fenom
-{var $productIds = $comparison_product_ids|default:''}
-{var $listing = ''}
+{set $productIds = $comparison_product_ids|default:''}
+{set $listing = ''}
 {if $productIds}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
+    'parents' => 0,
     'resources' => $productIds,
     'limit' => 4,
     'tpl' => 'pagebuilderpro_product_comparison_cell',
@@ -119,15 +120,14 @@ Fenom chunk `pagebuilderpro_product_comparison`:
         </div>
       </div>
     {else}
-      <p class="pb-listing__empty">Выберите от 2 до 4 товаров для сравнения.</p>
+      <div class="pb-listing__empty">
+        <p>{'pagebuilder_fe_comparison_empty_lead' | lexicon}</p>
+        <p>{'pagebuilder_fe_comparison_empty_hint' | lexicon}</p>
+      </div>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/product_comparison.json`
 
 ## Связанные страницы
 

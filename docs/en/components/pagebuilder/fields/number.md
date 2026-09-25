@@ -7,11 +7,11 @@ description: "Number for counters, limits, and order"
 
 Version: **Free**.
 
-<!-- ![number](/components/pagebuilder/screenshots/fields/number.png) -->
+<!-- ![number](/components/pagebuilder/screenshots/fields/number.jpg) -->
 
 ## Why this type
 
-Number input in the inspector, not a digit string. Pro: `responsive` across breakpoints. Easy to sort and compute in the chunk.
+The inspector stores a number, not a string of digits. In Pro you can set different values for desktop, tablet, and phone (`responsive`). A number is easy to sort and to use in calculations in the chunk.
 
 ## When to use
 
@@ -61,9 +61,17 @@ Key `count` in the section data (number or `null`):
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<span class="count">[[+count]]</span>
+```
+
 ```fenom
 {if $count !== null}<span class="count">{$count}</span>{/if}
 ```
+
+:::
 
 ## Notes
 

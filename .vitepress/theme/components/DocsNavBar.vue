@@ -2,16 +2,16 @@
 import { useWindowScroll } from '@vueuse/core'
 import { ref, watchPostEffect } from 'vue'
 import { useData } from 'vitepress'
-import { useLocalNav } from 'vitepress/theme'
-import { useSidebar } from 'vitepress/theme'
-import VPNavBarAppearance from 'vitepress/dist/client/theme-default/components/VPNavBarAppearance.vue'
+import { useLayout } from 'vitepress/theme'
+import { provideNavOverflow } from 'vitepress/dist/client/theme-default/composables/nav-overflow'
+import VPNavAppearance from 'vitepress/dist/client/theme-default/components/VPNavAppearance.vue'
 import VPNavBarExtra from 'vitepress/dist/client/theme-default/components/VPNavBarExtra.vue'
 import VPNavBarHamburger from 'vitepress/dist/client/theme-default/components/VPNavBarHamburger.vue'
-import VPNavBarMenu from 'vitepress/dist/client/theme-default/components/VPNavBarMenu.vue'
 import VPNavBarSearch from 'vitepress/dist/client/theme-default/components/VPNavBarSearch.vue'
-import VPNavBarSocialLinks from 'vitepress/dist/client/theme-default/components/VPNavBarSocialLinks.vue'
 import VPNavBarTitle from 'vitepress/dist/client/theme-default/components/VPNavBarTitle.vue'
-import VPNavBarTranslations from 'vitepress/dist/client/theme-default/components/VPNavBarTranslations.vue'
+import VPNavMenu from 'vitepress/dist/client/theme-default/components/VPNavMenu.vue'
+import VPNavSocialLinks from 'vitepress/dist/client/theme-default/components/VPNavSocialLinks.vue'
+import VPNavTranslations from 'vitepress/dist/client/theme-default/components/VPNavTranslations.vue'
 
 defineProps<{
   isScreenOpen: boolean
@@ -22,9 +22,9 @@ defineEmits<{
 }>()
 
 const { y } = useWindowScroll()
-const { hasSidebar } = useSidebar()
-const { hasLocalNav } = useLocalNav()
-const { frontmatter } = useData()
+const { isHome, hasSidebar, hasLocalNav } = useLayout()
+const { theme } = useData()
+const overflow = provideNavOverflow({ itemsKey: () => JSON.stringify(theme.value.nav ?? null) })
 
 const classes = ref<Record<string, boolean>>({})
 
@@ -32,7 +32,7 @@ watchPostEffect(() => {
   classes.value = {
     'has-sidebar': hasSidebar.value,
     'has-local-nav': hasLocalNav.value,
-    top: frontmatter.value.layout === 'home' && y.value === 0,
+    top: isHome.value && y.value === 0,
   }
 })
 </script>
@@ -53,13 +53,13 @@ watchPostEffect(() => {
         </div>
 
         <div class="content">
-          <div class="content-body">
+          <div class="content-body" :ref="(el) => overflow.setContainerEl(el as HTMLElement | null)">
             <slot name="nav-bar-content-before" />
             <VPNavBarSearch class="search" />
-            <VPNavBarMenu class="menu" />
-            <VPNavBarTranslations class="translations" />
-            <VPNavBarAppearance class="appearance" />
-            <VPNavBarSocialLinks class="social-links" />
+            <VPNavMenu class="menu" />
+            <VPNavTranslations class="translations" />
+            <VPNavAppearance class="appearance" />
+            <VPNavSocialLinks class="social-links" />
             <VPNavBarExtra class="extra" />
             <slot name="nav-bar-content-after" />
             <VPNavBarHamburger class="hamburger" :active="isScreenOpen" @click="$emit('toggle-screen')" />
@@ -67,16 +67,14 @@ watchPostEffect(() => {
         </div>
       </div>
     </div>
-
-    <!-- <div class="divider">
-      <div class="divider-line" />
-    </div> -->
   </div>
 </template>
 
 <style scoped>
 .VPNavBar {
   position: relative;
+  /* above the nav screen, which is fixed from the very top since VitePress 2 */
+  z-index: 1;
   border-bottom: 1px solid transparent;
   height: var(--vp-nav-height);
   pointer-events: none;
@@ -109,10 +107,6 @@ watchPostEffect(() => {
 }
 
 @media (min-width: 960px) {
-  /* .VPNavBar.has-sidebar .wrapper {
-    padding: 0;
-  } */
-
   .VPNavBar:not(.has-sidebar):not(.top) {
     border-bottom-color: var(--vp-c-gutter);
     background-color: var(--vp-nav-bg-color);
@@ -149,28 +143,22 @@ watchPostEffect(() => {
   transition: background-color 0.5s;
 }
 
-/* @media (min-width: 960px) {
-  .VPNavBar.has-sidebar .title {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    padding: 0 32px;
-    width: var(--vp-sidebar-width);
-    height: var(--vp-nav-height);
-    background-color: transparent;
-  }
-} */
-
 @media (min-width: 1440px) {
   .VPNavBar.has-sidebar .title {
     padding-left: max(32px, calc((100% - (var(--vp-layout-max-width) - 64px)) / 2));
-    /* width: calc((100% - (var(--vp-layout-max-width) - 64px)) / 2 + var(--vp-sidebar-width) - 32px); */
   }
 }
 
 .content {
   flex-grow: 1;
+}
+
+/* the overflow engine measures the free space, so the controls must be able to shrink */
+@media (min-width: 768px) {
+  .content {
+    flex-shrink: 1;
+    min-width: 0;
+  }
 }
 
 @media (min-width: 1280px) {
@@ -183,23 +171,14 @@ watchPostEffect(() => {
   }
 }
 
-/* @media (min-width: 960px) {
-  .VPNavBar.has-sidebar .content {
-    position: relative;
-    z-index: 1;
-    padding-right: 32px;
-    padding-left: var(--vp-sidebar-width);
-  }
-} */
-
 @media (min-width: 1440px) {
   .VPNavBar.has-sidebar .content {
     padding-right: calc((100vw - var(--vp-layout-max-width)) / 2 + 32px);
-    /* padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width)); */
   }
 }
 
 .content-body {
+  position: relative;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -209,7 +188,6 @@ watchPostEffect(() => {
 
 @media (min-width: 960px) {
   .VPNavBar:not(.top) .content-body {
-    position: relative;
     background-color: var(--vp-nav-bg-color);
   }
 
@@ -222,6 +200,16 @@ watchPostEffect(() => {
   .content-body {
     column-gap: 0.5rem;
   }
+}
+
+/* collapsed into the `⋯` menu — kept mounted (hidden) so its natural width stays measurable */
+.content-body>.collapsed {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .menu+.translations::before,
@@ -248,42 +236,5 @@ watchPostEffect(() => {
 
 .social-links {
   margin-right: -8px;
-}
-
-.divider {
-  width: 100%;
-  height: 1px;
-}
-
-@media (min-width: 960px) {
-  .VPNavBar.has-sidebar .divider {
-    padding-left: var(--vp-sidebar-width);
-  }
-}
-
-@media (min-width: 1440px) {
-  .VPNavBar.has-sidebar .divider {
-    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width));
-  }
-}
-
-.divider-line {
-  width: 100%;
-  height: 1px;
-  transition: background-color 0.5s;
-}
-
-.VPNavBar.has-local-nav .divider-line {
-  background-color: var(--vp-c-gutter);
-}
-
-@media (min-width: 960px) {
-  .VPNavBar:not(.top) .divider-line {
-    background-color: var(--vp-c-gutter);
-  }
-
-  .VPNavBar:not(.has-sidebar):not(.top) .divider {
-    background-color: var(--vp-c-gutter);
-  }
 }
 </style>

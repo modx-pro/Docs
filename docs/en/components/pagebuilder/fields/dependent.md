@@ -7,11 +7,11 @@ description: "showWhen block marker: not written to section data"
 
 Version: **Pro**.
 
-<!-- ![dependent](/components/pagebuilder/screenshots/fields/dependent.png) -->
+<!-- ![dependent](/components/pagebuilder/screenshots/fields/dependent.jpg) -->
 
 ## Why this type
 
-Type hidden in inspector fieldVisibility false. Documents conditional field group. Neighbors controlled by showWhen on other fields.
+The field itself is hidden in the inspector (`fieldVisibility` is off). It marks a group of fields that appear only when a condition is met. The condition is `showWhen` on the neighboring fields.
 
 ## When to use
 

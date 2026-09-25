@@ -7,11 +7,11 @@ description: "Строка только для чтения с отображе�
 
 Версия: **Free**.
 
-<!-- ![readonly](/components/pagebuilder/screenshots/fields/readonly.png) -->
+<!-- ![readonly](/components/pagebuilder/screenshots/fields/readonly.jpg) -->
 
 ## Зачем этот тип
 
-Редактор видит значение, но не меняет. То же scalar в data, что у [text](text). Подходит для SKU, id, sync из внешней системы.
+Редактор видит значение и не может его изменить. В данных это строка, как у [text](text). Подходит для артикула, id и значения, которое приходит извне.
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ description: "Строка только для чтения с отображе�
 
 ## Пример в chunk
 
-```html
-<span class="sku">{$sku|escape}</span>
+::: code-group
+
+```modx
+<span class="sku">[[+sku]]</span>
 ```
+
+```fenom
+<span class="sku">{$sku|pb_text}</span>
+```
+
+:::
 
 ## Общие свойства
 
@@ -68,7 +76,7 @@ description: "Строка только для чтения с отображе�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

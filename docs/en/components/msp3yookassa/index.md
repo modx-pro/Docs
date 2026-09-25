@@ -1,10 +1,16 @@
 ---
 title: msp3YooKassa
 description: YooKassa payments for MiniShop3 — one- and two-stage payments, webhooks, 54-FZ receipts
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/msp3yookassa/logo.png
+modstore: https://modstore.pro/packages/payment-system/msp3yookassa
 dependencies: miniShop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

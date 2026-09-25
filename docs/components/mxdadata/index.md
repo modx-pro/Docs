@@ -1,10 +1,16 @@
 ---
 title: mxDadata
 description: Подсказки DaData и валидация адреса для MiniShop3 в MODX 3
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/mxdadata/logo.png
+modstore: https://modstore.pro/packages/utilities/mxdadata
 dependencies: minishop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 items:
   - text: Быстрый старт
     link: quick-start

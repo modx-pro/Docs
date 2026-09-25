@@ -7,26 +7,26 @@ description: "Single value from preset options with color swatches"
 
 Version: **Free**.
 
-<!-- ![colorpalette](/components/pagebuilder/screenshots/fields/colorpalette.png) -->
+<!-- ![colorpalette](/components/pagebuilder/screenshots/fields/colorpalette.jpg) -->
 
 ## Why this type
 
-Editors pick brand palette, not any hex. Static options like select with swatch UI. Fewer random colors in production.
+The editor picks a color from a fixed list, not any hex code. Options work like [select](select), but they are shown as color samples. That keeps random colors off the site.
 
 ## When to use
 
-- Theme token primary / secondary / muted
-- Section background from design system
-- Limited set for white-label sites
+- Primary, secondary, and muted theme colors
+- A section background from a fixed set
+- A short color list for sites that share one theme
 
 ## Tips
 
-Arbitrary hex needs [color](color). Stored value is option key, not raw CSS.
+A free hex code uses [color](color). The saved value is the option key, not a CSS rule.
 
 ## Similar types
 
-- [color](color) for free picker
-- [select](select) without visual swatches
+- [color](color) when any color is allowed
+- [select](select) when color samples are not needed
 
 ## Schema
 
@@ -61,9 +61,17 @@ Key `theme` in the section data (HEX):
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<span style="color: [[+theme]]">…</span>
+```
+
+```fenom
 <span style="color: {$theme|escape}">…</span>
 ```
+
+:::
 
 ## Notes
 

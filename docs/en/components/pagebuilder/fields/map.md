@@ -7,26 +7,26 @@ description: "Map point with enrich embed_url and watch_url"
 
 Version: **Pro**.
 
-<!-- ![map](/components/pagebuilder/screenshots/fields/map.png) -->
+<!-- ![map](/components/pagebuilder/screenshots/fields/map.jpg) -->
 
 ## Why this type
 
-Coordinates and address for contact_map sections. Enrich builds embed and maps link. Flat map_* when type=map or name contains map.
+An address and coordinates for a map section. After save, the field stores an embed URL and a link that opens the map. If the field type is `map`, or the name contains "map", the same values are also stored as `map_*` keys.
 
 ## When to use
 
-- Office on contact_map landing
-- Single delivery or pickup point
-- Geo block next to form
+- An office on a contact page
+- One delivery or pickup point
+- A map next to a form
 
 ## Tips
 
-Multiple points use repeater with lat lng text or custom. Output embed from enrich, do not hand-build URL.
+Several points use a [repeater](repeater): latitude and longitude as text fields, or your own row schema. Use the saved embed URL. Do not build the link by hand.
 
 ## Similar types
 
 - [text](textarea) for address without coordinates
-- [url](url) for manual maps.google link
+- [url](url) when you already have a maps link and nobody picks a point
 
 ## Schema
 
@@ -70,9 +70,17 @@ Key `location` in the section data after save enrich (`MapEmbedResolver`):
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<iframe src="[[+location.embed_url]]" title="Map"></iframe>
+```
+
+```fenom
 <iframe src="{$location.embed_url|default($map_embed_url)|escape}" title="Map"></iframe>
 ```
+
+:::
 
 ## Common properties
 

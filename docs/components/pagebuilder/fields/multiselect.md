@@ -7,11 +7,11 @@ description: "Массив значений из статического спи
 
 Версия: **Free**.
 
-<!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.png) -->
+<!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.jpg) -->
 
 ## Зачем этот тип
 
-Несколько значений из статического `options` с поиском в выпадающем списке. Тот же контракт options, что у [select](select).
+Несколько значений из готового списка `options`, с поиском в выпадающем списке. Список вариантов устроен так же, как у [select](select).
 
 ## Когда использовать
 
@@ -61,11 +61,19 @@ description: "Массив значений из статического спи
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span class="role">[[+roles.0]]</span>
+```
+
 ```fenom
 {foreach $roles as $role}
-  <span class="role">{$role|escape}</span>
+  <span class="role">{$role|pb_text}</span>
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -74,7 +82,7 @@ description: "Массив значений из статического спи
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

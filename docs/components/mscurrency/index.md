@@ -1,12 +1,17 @@
 ---
 title: msCurrency
 description: Мультивалютность для MiniShop3
-author: ibochkarev
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/mscurrency/logo.png
-modstore: https://modstore.pro/packages/ecommerce/mscurrency
+modstore: https://modstore.pro/packages/integration/mscurrency
 dependencies: miniShop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items: [
   {
     text: 'Начало работы',

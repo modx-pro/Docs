@@ -7,7 +7,7 @@ description: "Image slider with optional autoplay (Pro)"
 
 Same slides as **Gallery**, one per view with navigation. Optional autoplay.
 
-<!-- ![Gallery carousel](/components/pagebuilder/screenshots/sections/gallery_carousel.png) -->
+![Gallery carousel](/components/pagebuilder/screenshots/sections/gallery_carousel.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -59,7 +59,7 @@ Type [text](../fields/text#output-in-section-data). Optional.
 
 ### Autoplay (`autoplay`)
 
-Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle.
+Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle. When autoplay is on, the site shows a pause button. Labels: `pagebuilder_fe_carousel_pause` and `pagebuilder_fe_carousel_play`.
 
 ### Slides (`items`)
 
@@ -110,7 +110,7 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_gallery_carousel`:
 
 ```fenom
-{var $slideCount = $items|count}
+{set $slideCount = $items|count}
 <section
   class="pb-section pb-section--gallery-carousel pb-gallery-carousel{if $cssClass} {$cssClass|escape}{/if}"
   data-pb-section="gallery_carousel"
@@ -122,10 +122,10 @@ Fenom chunk `pagebuilderpro_gallery_carousel`:
     {if $title}
       <h2 class="pb-heading">{$title|escape}</h2>
     {/if}
-    <div class="pb-carousel__viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="{$title|default:'Gallery'|escape}">
+    <div class="pb-carousel__viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="{$title|default:('pagebuilder_fe_carousel_gallery' | lexicon)|escape}">
       <div class="pb-carousel__track">
         {foreach $items as $item}
-          <figure class="pb-carousel__slide" role="group" aria-roledescription="slide" aria-label="{$item@index + 1} / {$slideCount}">
+          <figure class="pb-carousel__slide" role="group" aria-roledescription="slide" aria-label="{'pagebuilder_fe_carousel_slide' | lexicon} {$item@index + 1} / {$slideCount}">
             {include 'pagebuilder_partial_image' image=$item.image alt=($item.alt ?: $item.caption) class='pb-carousel__media'}
             {if $item.caption}
               <figcaption class="pb-carousel__caption">{$item.caption|escape}</figcaption>
@@ -135,30 +135,35 @@ Fenom chunk `pagebuilderpro_gallery_carousel`:
       </div>
       {if $slideCount > 1}
         <div class="pb-carousel__controls">
-          <button type="button" class="pb-carousel__btn" data-pb-carousel-prev aria-label="Previous slide">‹</button>
-          <button type="button" class="pb-carousel__btn" data-pb-carousel-next aria-label="Next slide">›</button>
+          <button type="button" class="pb-carousel__btn" data-pb-carousel-prev aria-label="{'pagebuilder_fe_carousel_prev' | lexicon}">‹</button>
+          <button type="button" class="pb-carousel__btn" data-pb-carousel-next aria-label="{'pagebuilder_fe_carousel_next' | lexicon}">›</button>
         </div>
-        <div class="pb-carousel__dots" role="tablist" aria-label="Slides">
+        <div class="pb-carousel__dots" role="tablist" aria-label="{'pagebuilder_fe_carousel_slides' | lexicon}">
           {foreach $items as $item}
             <button
               type="button"
               class="pb-carousel__dot{if $item@first} pb-carousel__dot--active{/if}"
               data-pb-carousel-dot="{$item@index}"
               role="tab"
-              aria-label="Slide {$item@index + 1}"
+              aria-label="{'pagebuilder_fe_carousel_slide' | lexicon} {$item@index + 1}"
               {if $item@first}aria-selected="true"{/if}
             ></button>
           {/foreach}
         </div>
+        <button
+          type="button"
+          class="pb-carousel__pause"
+          data-pb-carousel-pause
+          hidden
+          aria-pressed="false"
+          data-label-pause="{'pagebuilder_fe_carousel_pause' | lexicon}"
+          data-label-play="{'pagebuilder_fe_carousel_play' | lexicon}"
+        >{'pagebuilder_fe_carousel_pause' | lexicon}</button>
       {/if}
     </div>
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/gallery_carousel.json`
 
 ## See also
 

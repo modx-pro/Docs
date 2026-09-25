@@ -1,339 +1,131 @@
 # Свой тип фильтра
 
-Создание кастомного типа фильтрации.
+Свой тип нужен, когда отбор не сводится к значению одного поля. Встроенные типы сравнивают опцию, TV или поле ресурса с выбранным значением, а условие вроде «старая цена больше текущей» так не записать. Рецепт — фильтр «Со скидкой».
 
 ## Задача
 
-Создать фильтр, которого нет среди встроенных типов.
+Добавить в форму фильтр «Со скидкой»: товары, у которых старая цена больше текущей. С числом таких товаров, пересчётом после выбора других фильтров и SEO-адресом.
 
-## Пример: Фильтр по рейтингу
+## Решение
 
-Создадим фильтр «Рейтинг» с выбором количества звёзд.
+### 1. Класс типа
 
-### 1. Создайте класс типа
-
-```php
-<?php
-// core/components/mysite/src/FilterTypes/RatingFilterType.php
-
-namespace MySite\FilterTypes;
-
-use MODX\Revolution\modX;
-use MFilter\Handlers\FilterTypes\AbstractFilterType;
-
-class RatingFilterType extends AbstractFilterType
-{
-    /**
-     * Применить фильтр к запросу
-     */
-    public function apply(
-        \xPDOQuery $query,
-        string $key,
-        mixed $value,
-        array $config
-    ): void {
-        $values = $this->normalizeValue($value);
-        $field = $this->getFieldName($config);
-
-        if (isset($values['min'])) {
-            // Рейтинг >= выбранного
-            $query->where(["{$field}:>=" => (int)$values['min']]);
-        } else {
-            // Точное значение рейтинга
-            $query->where(["{$field}:IN" => array_map('intval', $values)]);
-        }
-    }
-
-    /**
-     * Получить доступные значения для фильтра
-     */
-    public function getValues(
-        string $key,
-        array $config,
-        array $context
-    ): array {
-        $values = [];
-
-        // Генерируем значения 1-5 звёзд
-        for ($i = 5; $i >= 1; $i--) {
-            $values[] = [
-                'value' => (string)$i,
-                'label' => str_repeat('★', $i) . str_repeat('☆', 5 - $i),
-                'count' => 0 // Будет заполнено через suggestions
-            ];
-        }
-
-        return [
-            'values' => $values,
-            'min' => 1,
-            'max' => 5
-        ];
-    }
-
-    /**
-     * Получить SQL для подсчёта (suggestions)
-     */
-    public function getSuggestionsQuery(
-        string $key,
-        array $config,
-        array $context
-    ): ?string {
-        $field = $this->getFieldName($config);
-
-        return "SELECT {$field} as value, COUNT(*) as count
-                FROM {table}
-                WHERE {$field} IS NOT NULL
-                GROUP BY {$field}";
-    }
-
-    /**
-     * Получить имя поля
-     */
-    protected function getFieldName(array $config): string
-    {
-        return $config['field'] ?? 'Data.rating';
-    }
-}
-```
-
-### 2. Зарегистрируйте тип
-
-Создайте плагин на событие `OnMFilterInit`:
+Файл `core/components/mysite/SaleFilterType.php`:
 
 ```php
 <?php
-/**
- * Плагин: MySiteFilterTypes
- * События: OnMFilterInit
- */
 
-/** @var MFilter\MFilter $mfilter */
-$mfilter = $modx->event->params['mfilter'];
-
-// Автозагрузка (если не через Composer)
-require_once MODX_CORE_PATH . 'components/mysite/src/FilterTypes/RatingFilterType.php';
-
-// Регистрация типа
-$mfilter->getFilterTypeRegistry()->register(
-    'rating',
-    new \MySite\FilterTypes\RatingFilterType($modx)
-);
-```
-
-### 3. Используйте в наборе фильтров
-
-В админке создайте фильтр с типом `rating`:
-
-```json
-{
-    "rating": {
-        "type": "rating",
-        "source": "resource",
-        "field": "Data.rating",
-        "label": "Рейтинг"
-    }
-}
-```
-
-### 4. Создайте шаблон (опционально)
-
-```html
-{* @FILE chunks/mfilter/filter.rating.tpl *}
-
-<div class="mfilter-rating">
-    {foreach $values as $item}
-        <label class="mfilter-rating__item {$item.selected ? 'mfilter-rating__item--selected' : ''}">
-            <input type="radio"
-                   name="{$key}[min]"
-                   value="{$item.value}"
-                   {$item.selected ? 'checked' : ''}>
-            <span class="mfilter-rating__stars">{$item.label}</span>
-            <span class="mfilter-rating__text">и выше</span>
-            <span class="mfilter-rating__count">({$item.count})</span>
-        </label>
-    {/foreach}
-</div>
-```
-
-```css
-.mfilter-rating__stars {
-    color: #ffc107;
-    font-size: 1.2em;
-}
-
-.mfilter-rating__item--selected .mfilter-rating__stars {
-    text-shadow: 0 0 5px rgba(255, 193, 7, 0.5);
-}
-```
-
-## Пример: Фильтр по наличию на складе
-
-### Класс
-
-```php
-<?php
-namespace MySite\FilterTypes;
+namespace MySite;
 
 use MFilter\Handlers\FilterTypes\AbstractFilterType;
 
-class StockFilterType extends AbstractFilterType
+class SaleFilterType extends AbstractFilterType
 {
-    public function apply($query, string $key, mixed $value, array $config): void
+    public function getType(): string
     {
-        $values = $this->normalizeValue($value);
-
-        $conditions = [];
-
-        if (in_array('instock', $values)) {
-            $conditions[] = 'Data.count > 0';
-        }
-
-        if (in_array('preorder', $values)) {
-            $conditions[] = '(Data.count = 0 AND Data.available = 1)';
-        }
-
-        if (in_array('outofstock', $values)) {
-            $conditions[] = '(Data.count = 0 AND Data.available = 0)';
-        }
-
-        if ($conditions) {
-            $query->where('(' . implode(' OR ', $conditions) . ')');
-        }
+        return 'sale';
     }
 
-    public function getValues(string $key, array $config, array $context): array
+    // Отбор: старая цена больше текущей
+    public function buildQuery($query, string $filterKey, array $values, array $config)
     {
+        // Таблицу товаров могли уже присоединить другие фильтры
+        $joined = &$config['_joinedTables'];
+        if (!isset($joined['ms_data'])) {
+            $query->innerJoin('MiniShop3\\Model\\msProductData', 'Data', 'Data.id = modResource.id');
+            $joined['ms_data'] = true;
+        }
+        $query->where('Data.old_price > Data.price');
+
+        return $query;
+    }
+
+    // Одно значение и число товаров со скидкой среди товаров раздела
+    public function getValues(string $filterKey, array $config, array $context = []): array
+    {
+        $ids = $context['filtered_ids']
+            ?? $context['resource_ids']
+            ?? $this->getProductIdsByParents($context['parents'] ?? [], $context['secondary_ids'] ?? []);
+
+        $count = 0;
+        if ($ids) {
+            $query = $this->modx->newQuery('MiniShop3\\Model\\msProductData');
+            $query->where(['id:IN' => $ids]);
+            $query->where('old_price > price');
+            $count = $this->modx->getCount('MiniShop3\\Model\\msProductData', $query);
+        }
+
         return [
-            'values' => [
-                ['value' => 'instock', 'label' => 'В наличии', 'count' => 0],
-                ['value' => 'preorder', 'label' => 'Под заказ', 'count' => 0],
-                ['value' => 'outofstock', 'label' => 'Нет в наличии', 'count' => 0],
-            ]
+            ['value' => 'со скидкой', 'label' => 'Со скидкой', 'count' => $count],
         ];
     }
 }
 ```
 
-## Пример: Фильтр по тегам (many-to-many)
+### 2. Регистрация
 
-### Класс
-
-```php
-<?php
-namespace MySite\FilterTypes;
-
-use MFilter\Handlers\FilterTypes\AbstractFilterType;
-
-class TagsFilterType extends AbstractFilterType
-{
-    public function apply($query, string $key, mixed $value, array $config): void
-    {
-        $tagIds = array_map('intval', $this->normalizeValue($value));
-
-        // JOIN с таблицей связей
-        $query->innerJoin(
-            'ProductTags',
-            'Tags',
-            'Tags.product_id = msProduct.id'
-        );
-
-        $query->where(['Tags.tag_id:IN' => $tagIds]);
-        $query->groupby('msProduct.id');
-    }
-
-    public function getValues(string $key, array $config, array $context): array
-    {
-        // Получить все теги
-        $tags = $this->modx->getCollection('Tag', [
-            'active' => true
-        ]);
-
-        $values = [];
-        foreach ($tags as $tag) {
-            $values[] = [
-                'value' => (string)$tag->get('id'),
-                'label' => $tag->get('name'),
-                'count' => 0
-            ];
-        }
-
-        return ['values' => $values];
-    }
-
-    public function getSuggestionsQuery(string $key, array $config, array $context): ?string
-    {
-        return "SELECT Tags.tag_id as value, COUNT(DISTINCT Tags.product_id) as count
-                FROM modx_product_tags Tags
-                INNER JOIN {table} ON {table}.id = Tags.product_id
-                GROUP BY Tags.tag_id";
-    }
-}
-```
-
-## Пример: Географический фильтр
-
-### Класс
+Плагин на событие `OnMFilterInit`:
 
 ```php
-<?php
-namespace MySite\FilterTypes;
+require_once MODX_CORE_PATH . 'components/mysite/SaleFilterType.php';
 
-use MFilter\Handlers\FilterTypes\AbstractFilterType;
-
-class GeoFilterType extends AbstractFilterType
-{
-    public function apply($query, string $key, mixed $value, array $config): void
-    {
-        $values = $this->normalizeValue($value);
-
-        if (isset($values['lat'], $values['lng'], $values['radius'])) {
-            $lat = (float)$values['lat'];
-            $lng = (float)$values['lng'];
-            $radius = (float)$values['radius']; // км
-
-            // Формула Haversine для поиска в радиусе
-            $query->where("
-                (6371 * acos(
-                    cos(radians({$lat}))
-                    * cos(radians(Data.latitude))
-                    * cos(radians(Data.longitude) - radians({$lng}))
-                    + sin(radians({$lat}))
-                    * sin(radians(Data.latitude))
-                )) <= {$radius}
-            ");
-        }
-    }
-
-    public function getValues(string $key, array $config, array $context): array
-    {
-        return [
-            'type' => 'geo',
-            'defaultRadius' => 10
-        ];
-    }
-}
+$mfilter->getFilterTypesRegistry()->register('sale', new \MySite\SaleFilterType($modx, $mfilter));
 ```
 
-## Регистрация через конфиг
+Переменная `$mfilter` приходит в плагин вместе с событием.
 
-Альтернативный способ — файл конфигурации:
+### 3. Фильтр в наборе
+
+В наборе фильтров добавьте строку: ключ `sale`, тип `sale`, название «Скидка». Источник этот тип не читает — оставьте `option`.
+
+В форме появится флажок «Со скидкой» с числом товаров. Выбор даст адрес `/catalog/sale--so-skidkoj/`, а в SEO-заголовок страницы добавится «со скидкой».
+
+## Почему так
+
+### Что mFilter вызывает у типа
+
+| Метод | Когда | Что возвращает |
+|---|---|---|
+| `getType()` | Всегда | Имя типа — то же, что при регистрации |
+| `buildQuery()` | Фильтр выбран: после выбора в форме и при переходе по адресу с фильтром | Запрос с условием. `$query` — запрос к `modResource`, в `$values` — выбранные значения |
+| `getValues()` | При загрузке страницы и при пересчёте после каждого запроса | Список значений с полями `value`, `label`, `count` |
+
+Остальные методы интерфейса реализует `AbstractFilterType`. Переопределять `formatValue()`, `parseSegment()` и `buildSegment()` бесполезно: mFilter их не вызывает.
+
+### Откуда брать товары для подсчёта {#context-products}
+
+`getValues()` вызывается с разными товарами в `$context`:
+
+| Ключ | Когда приходит |
+|---|---|
+| `filtered_ids` | Пересчёт после запроса — товары с учётом остальных выбранных фильтров |
+| `resource_ids` | Товары страницы: их передаёт форма фильтров в любом режиме |
+| `parents` | Разделы — когда списка товаров нет |
+
+Порядок именно такой, и проще не проверять их по очереди вручную, а спросить базовый класс:
 
 ```php
-<?php
-// core/components/mfilter/config/filter_types.php
-
-return [
-    'rating' => \MySite\FilterTypes\RatingFilterType::class,
-    'stock' => \MySite\FilterTypes\StockFilterType::class,
-    'tags' => \MySite\FilterTypes\TagsFilterType::class,
-    'geo' => \MySite\FilterTypes\GeoFilterType::class,
-];
+$scopeIds = $this->scopeIds($context);   // список товаров или null
 ```
 
-## Советы
+`null` означает «по списку не ограничиваем» — тогда берите `parents`. Пустой список означает обратное: товаров нет, и значений у фильтра быть не должно. Для SQL удобнее `scopeCondition($context, 'd.id')` — он вернёт готовое условие, `1 = 0` для пустого списка или `null`.
 
-1. **Наследуйте AbstractFilterType** — он содержит полезные методы
-2. **Реализуйте getSuggestionsQuery()** — для корректных счётчиков
-3. **Валидируйте входные данные** — не доверяйте пользовательскому вводу
-4. **Добавляйте индексы** — для полей, по которым фильтруете
-5. **Тестируйте производительность** — сложные JOIN могут замедлить запросы
+Если читать только `parents`, фильтр покажет значения всего каталога вместо раздела. Если не читать `filtered_ids`, число товаров не будет меняться после выбора других фильтров.
+
+### Значение — текст, а не `1`
+
+SEO-заголовок и блок «Выбрано» выводят значение фильтра как есть. Со значением `1` в заголовке и блоке «Выбрано» стояло бы «1». Текст «со скидкой» читается в заголовке и сам превращается в адрес `sale--so-skidkoj`.
+
+### Проверка `_joinedTables`
+
+Таблицу товаров под именем `Data` присоединяют и другие части mFilter — например, вывод товаров в режиме без `&element`, чтобы получить цену и артикул. Отметка `ms_data` показывает, что таблица уже присоединена. Без проверки в одном запросе окажутся две `Data`, и MySQL ответит ошибкой.
+
+## Если не работает
+
+| Симптом | Причина |
+|---------|---------|
+| Типа `sale` нет в списке типов набора | Плагин не привязан к событию `OnMFilterInit` или путь в `require_once` неверный |
+| Блок фильтра есть, а флажка в нём нет | `getValues()` вернул `count` 0: например, читает только `parents`, а `mFilter` вызван с `&element` |
+| Число товаров у флажка не меняется после выбора других фильтров | `getValues()` не читает `filtered_ids` |
+| В заголовке страницы и блоке «Выбрано» стоит `1` | Значение фильтра — число, а не текст |
+| Ошибка MySQL «Not unique table/alias» | Таблица товаров присоединена без проверки `_joinedTables` |

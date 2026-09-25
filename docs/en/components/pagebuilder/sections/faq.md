@@ -7,7 +7,7 @@ description: "Question and answer pairs for an on-page FAQ block"
 
 A frequently asked questions block. Each row is a question title and answer text. Answers may include richtext HTML.
 
-<!-- ![FAQ](/components/pagebuilder/screenshots/sections/faq.png) -->
+![FAQ](/components/pagebuilder/screenshots/sections/faq.jpg)
 
 ## Why FAQ in PageBuilder
 
@@ -93,12 +93,12 @@ Fenom chunk `pagebuilder_faq`:
 <section class="pb-section pb-section--faq pb-faq{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="faq"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-faq__inner">
     {if $title}
-      <h2 class="pb-heading pb-faq__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-faq__title">{$title|pb_text}</h2>
     {/if}
     <div class="pb-faq__list">
       {foreach $items as $item}
         <details class="pb-faq__item">
-          <summary class="pb-faq__question">{$item.question|escape}</summary>
+          <summary class="pb-faq__question">{$item.question|pb_text}</summary>
           <div class="pb-faq__answer pb-richtext__content">{$item.answer}</div>
         </details>
       {/foreach}
@@ -106,10 +106,6 @@ Fenom chunk `pagebuilder_faq`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/faq.json`
 
 ## See also
 

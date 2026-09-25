@@ -1,9 +1,14 @@
 ---
 title: ms3Favorites
 description: 'Wishlists for MiniShop3 and other resources — browser storage, DB sync'
-logo: "https://modstore.pro/assets/extras/ms3favorites/logo.png"
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/ms3favorites/logo.png
+modstore: https://modstore.pro/packages/ecommerce/ms3favorites
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

@@ -2,9 +2,7 @@
 title: FAQ
 description: Типовые вопросы по msReviews — product_id, модерация, verified, schema, каталог
 ---
-
 <!-- TODO: translate from docs/components/msreviews/faq.md -->
-
 # FAQ
 
 ## Откуда берётся product_id?
@@ -31,6 +29,10 @@ description: Типовые вопросы по msReviews — product_id, мод
 - **Главная, категория, лендинг** — `msReviewsLatest` (`parents` / `productIds` или весь каталог). Параметра `product_id` у Latest нет.
 
 Без `product_id` у `msReviews` сработает fallback на id текущей страницы, а не «все товары». То же для Q&A: `msQuestions` на PDP, `msQuestionsLatest` для FAQ-ленты. См. [Интеграция](integration#какой-сниппет-списка-карточка-или-лента).
+
+## Как показать общий рейтинг на главной или в категории?
+
+С **1.2.3** у `msRatingSummary` есть `all=1`, `parents` и `productIds` (взвешенное среднее по опубликованным отзывам). Без scope `product_id=0` берёт текущий ресурс. См. [msRatingSummary](snippets/msRatingSummary#общий-рейтинг-главная-категория).
 
 ## Где модерировать отзывы с карточки товара?
 

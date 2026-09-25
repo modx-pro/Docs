@@ -1,27 +1,27 @@
 ---
 title: Manager and events
-description: PageBuilder CMP, permissions, data model, pbOn events, and Pro overview
+description: PageBuilder control panel, permissions, data model, pbOn events, and Pro overview
 ---
 # Manager and events
 
-## CMP
+## Control panel
 
-![PageBuilder CMP](/components/pagebuilder/screenshots/mgr-cmp-index.png)
+![PageBuilder control panel](/components/pagebuilder/screenshots/mgr-cmp-index.png)
 
 Manager component: **Components → PageBuilder** (namespace `pagebuilder`, controller `index`).
 
-In the CMP:
+In the control panel:
 
 - list of resources with sections
-- open section editor
-- **Section types** (permission `pagebuilder_manage_types`): UI types, hide/restore built-in JSON types
+- jump to section editor
+- **Section types** (permission `pagebuilder_manage_types`): UI types, hide and restore built-in JSON types
 
-<!-- ![Section types in CMP](/components/pagebuilder/screenshots/mgr-cmp-section-types.png) -->
+<!-- ![Section types in control panel](/components/pagebuilder/screenshots/mgr-cmp-section-types.jpg) -->
 
-- **Basket** (Pro, capability `basket`): global basket for deleted sections and table rows
+- **Basket** (Pro, flag `basket`): global basket for deleted sections and table rows
 - Collections tab settings when `pagebuilder_collections_*` are enabled
 
-The editor on the resource form and in the CMP shares one Vue bundle via **VueTools**. Connector:
+The editor on the resource form and in the control panel uses one Vue bundle via **VueTools**. Manager API entry:
 
 `assets/components/pagebuilder/connector.php`
 
@@ -32,50 +32,54 @@ Main page record: table `pb_pages` (prefix `modx_pb_`).
 | Field | Purpose |
 | --- | --- |
 | `resource_id` | Link to `modResource` |
-| `draft_json` | Draft section document |
+| `draft_json` | Section document draft |
 | `published_json` | Published version |
 | `revision` | Draft revision number (optimistic locking) |
-| `published_revision` | Last published revision |
+| `published_revision` | Last publish revision |
 | `publishedon` / `publishedby` | Publish time and user |
-| `editedon` / `editedby` | Last draft edit |
+| `editedon` / `editedby` | Last draft change |
 
-PageBuilder does not overwrite `modResource.content`. Resource SEO fields (pagetitle, description) work as usual.
+PageBuilder does not overwrite `modResource.content`. Resource SEO fields (pagetitle, description) are used as usual.
 
-Per-page basket stores deleted sections in `document.trash`. On draft save, the plugin syncs the index in `pb_basket_items`. There is no dedicated basket `pbOn*` event: a plugin on `pbOnAfterSave` can read `record.draft.trash`. Global restore and permanent delete run through Pro processors `mgr/basket/*`.
+Page basket stores deleted sections in `document.trash`. On draft save a plugin syncs index `pb_basket_items`. There is no separate `pbOn*` event for basket: a plugin on `pbOnAfterSave` can read `record.draft.trash`. Global restore and permanent delete use Pro connector actions (`mgr/basket/*`).
 
-Resource **data tables** live in separate `pb_*` tables (“Tables” tab).
+Resource table data lives in separate `pb_*` tables (Tables tab).
 
-<!-- ![Tables tab on a resource](/components/pagebuilder/screenshots/mgr-resource-tables.png) -->
+<!-- ![Tables tab on resource](/components/pagebuilder/screenshots/mgr-resource-tables.jpg) -->
 
 ## PageBuilder Pro
 
-The `pagebuilderpro` extra adds library, versions, presets, responsive fields, 20 advanced field types, global CMP basket, and [Agent API](agent-api).
+The `pagebuilderpro` extra adds shared blocks, section journal, catalog examples, breakpoint fields, 27 advanced field types, global basket in the control panel, and [Agent API](agent-api).
 
-Details: [PageBuilder Pro](pro). Commerce sections require **miniShop3**.
+Details: [PageBuilder Pro](pro). Storefront sections require **miniShop3**.
 
 ## Events {#events}
 
-On install, the extra registers 20 `pbOn*` events in MODX. Subscribe a plugin under **System → Events** or use a static plugin from the package.
+On install the extra registers 20 `pbOn*` events in MODX. Subscribe a plugin under **System → Events** or use the static plugin from the package.
 
-Exception: **`pbOnBeforeTableGetList`** and **`pbOnTableRowSave`** are not created by the installer. Add those events manually if your plugin needs table hooks.
+Exception: **`pbOnBeforeTableGetList`** and **`pbOnTableRowSave`** are not created by the installer. Add events manually if your plugin should react.
 
-### Boot registration
+### Registration on boot
 
 | Event | Data |
 | --- | --- |
-| `pbOnRegisterSectionDefinitions` | `registry` (`SectionRegistry`): add custom types |
-| `pbOnRegisterFeatureProviders` | `registry` (`FeatureProviderRegistry`) |
+| `pbOnRegisterSectionDefinitions` | `registry`: `SectionRegistry`, add custom types |
+| `pbOnRegisterFeatureProviders` | `registry`: `FeatureProviderRegistry` |
 
 ### Page lifecycle
 
-| Event | When |
-| --- | --- |
-| `pbOnBeforeSave` / `pbOnAfterSave` | Draft (`mode=draft`) |
-| `pbOnBeforePublish` / `pbOnAfterPublish` | Publish |
-| `pbOnBeforeUnpublish` / `pbOnAfterUnpublish` | Unpublish |
-| `pbOnBeforeTrash` / `pbOnAfterTrash` | Move sections to the basket |
+| Event | When | Data |
+| --- | --- | --- |
+| `pbOnBeforeSave` | Before the draft is stored | `resourceId`, `document`, `documentBag`, `revision`, `userId`, `mode`=`draft`, `changes` |
+| `pbOnAfterSave` | After the draft is stored | `resourceId`, `record`, `userId`, `mode`=`draft`, `changes` |
+| `pbOnBeforePublish` | Before publish | `resourceId`, `document`, `revision`, `userId` |
+| `pbOnAfterPublish` | After publish | `resourceId`, `record`, `userId` |
+| `pbOnBeforeUnpublish` | Before unpublish | `resourceId`, `record`, `revision`, `userId` |
+| `pbOnAfterUnpublish` | After unpublish | `resourceId`, `record`, `userId` |
+| `pbOnBeforeTrash` | Before trash, only when sections were removed | `resourceId`, `sectionIds`, `document`, `userId` |
+| `pbOnAfterTrash` | After the draft save, same ids | `resourceId`, `sectionIds`, `record`, `userId` |
 
-In `pbOnAfterSave` and similar: `changes` is `DocumentChangeSet` (added/removed/trashed/restored section ids).
+`documentBag` is a `PageDocumentBag`. A listener replaces the document before `saveDraft`. `changes` is the `DocumentChangeSet` array: `addedSectionIds`, `removedSectionIds`, `trashedSectionIds`, `restoredSectionIds`, `updatedSectionIds`, `enabledSectionIds`, `disabledSectionIds`. Trash events run inside the same `saveDraft`. There is no separate trash action.
 
 ### Copy
 
@@ -86,33 +90,34 @@ In `pbOnAfterSave` and similar: `changes` is `DocumentChangeSet` (added/removed/
 
 ### Catalog and fields
 
-| Event | Purpose |
+| Event | Data |
 | --- | --- |
-| `pbOnBeforeGetList` / `pbOnAfterGetList` | Catalog list (`mgr/catalog/list`) |
-| `pbOnFieldValues` | `FieldValuesBag`: field value substitution (`mgr/field/options`, pickers) |
-| `pbOnCheckSectionRequirement` | `requirement`, `result.satisfied`: check depends (pro, minishop3) |
-| `pbOnCheckSectionVisibility` | Pro: `settings.conditions`, `result.visible`, section visibility on the front |
+| `pbOnBeforeGetList` | `resourceContext` |
+| `pbOnAfterGetList` | `resourceContext`, `items`, `result` (`FieldValuesBag`, key `items`) |
+| `pbOnFieldValues` | Catalog: `resourceContext`, `fieldValues`. In `mgr/field/options`: `field`, `fieldValues` |
+| `pbOnCheckSectionRequirement` | `requirement`, `result` (`FieldValuesBag`, key `satisfied`) |
+| `pbOnCheckSectionVisibility` | `section`, `conditions`, `result` (`FieldValuesBag`, key `visible`) |
 
-### Tabular resource data
+### Resource table data
 
 ::: warning Manual registration
-The events below are **not** registered on install. Add them under **System → Events** if your plugin should handle them.
+Events below are **not** registered on install. Add them under **System → Events** if your plugin should react.
 :::
 
-| Event | When |
+| Event | Data |
 | --- | --- |
-| `pbOnBeforeTableGetList` | Row filtering (`criteria` by ref) |
-| `pbOnTableRowSave` | Before row save (`data` by ref) |
+| `pbOnBeforeTableGetList` | `table`, `query`, `criteria` by reference |
+| `pbOnTableRowSave` | `table`, `data` by reference, `row_id` |
 
 ### Frontend render {#frontend-render}
 
 | Event | Data |
 | --- | --- |
 | `pbOnBeforeRenderDocument` | `resourceId`, `document`, `pipeline`, `options` |
-| `pbOnBeforeRenderSection` | `index`, `pipeline`: mutate section before chunk |
-| `pbOnGetValues` | When snippet `return_values=1` |
+| `pbOnBeforeRenderSection` | `resourceId`, `pipeline` with one section, `index`, `options` |
+| `pbOnGetValues` | `resourceId`, `document`, `values` (`SectionValuesBag`). The snippet when `return_values=1`, and Public API when `include` contains `values` |
 
-Example: register a section in a plugin:
+Example section registration in a plugin:
 
 ```php
 <?php
@@ -125,11 +130,11 @@ switch ($modx->event->name) {
 }
 ```
 
-Custom JSON definitions must match built-in section schema (fields, chunk, category).
+Custom JSON definitions must match built-in section schema: fields, chunk, category.
 
 ## Save, publish, and frontend output
 
-The editor writes the draft via connector, publish copies the snapshot to `published_json`, and the site snippet reads only the published version.
+The editor writes the draft via connector, publish copies snapshot to `published_json`, the site snippet reads only the published version.
 
 ```mermaid
 flowchart LR
@@ -138,13 +143,13 @@ flowchart LR
   Draft --> Publish[Publish]
   Publish --> Published[published_json]
   Published --> Snippet[PageBuilder snippet]
-  Snippet --> HTML[Site HTML]
+  Snippet --> HTML[HTML on site]
 ```
 
 ## Related pages
 
 - [Workflow](workflow)
-- [CMP](cmp)
+- [Control panel](cmp)
 - [PageBuilder Pro](pro)
 - [Agent API](agent-api)
 - [Developer](developer)

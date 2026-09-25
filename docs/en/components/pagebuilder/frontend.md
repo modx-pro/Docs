@@ -6,7 +6,7 @@ description: Template, CSS, section Fenom chunks, cache, and draft preview
 
 ## Template
 
-<!-- ![Page with sections on the site](/components/pagebuilder/screenshots/fe-page-sections.png) -->
+<!-- ![Page with sections on the site](/components/pagebuilder/screenshots/fe-page-sections.jpg) -->
 
 Place the `PageBuilder` snippet in the template or content field. Use an uncached call:
 
@@ -22,7 +22,7 @@ Place the `PageBuilder` snippet in the template or content field. Use an uncache
 
 :::
 
-Published sections render through Fenom chunks in `core/components/pagebuilder/elements/chunks/`. The chunk name matches the `chunk` field in the type JSON: `pagebuilder_hero`, `pagebuilder_cta`; Pro uses `pagebuilderpro_{key}`.
+Published sections render through Fenom chunks in `core/components/pagebuilder/elements/chunks/`. The chunk name matches the `chunk` field in the type JSON: `pagebuilder_hero`, `pagebuilder_cta`; Pro uses `pagebuilderpro_{key}`. `FenomSectionRenderer` buffers chunk output: a FetchIt or Fenom exception does not leave truncated HTML on the page.
 
 ## CSS
 
@@ -65,7 +65,7 @@ Useful for partial blocks in different template areas.
 
 `return_values=1` returns JSON with extracted field values (`plainText`, `sections` structure). For headless or custom templating. Fires `pbOnGetValues`.
 
-## Section visibility
+## Section visibility {#section-visibility}
 
 In section `settings` you can set:
 
@@ -76,6 +76,22 @@ With Pro and capability `conditions`, add `settings.conditions` (loggedIn, guest
 
 The section is omitted from HTML when a rule fails.
 
+In the manager these blocks open from the **Visibility** dialog (`pagebuilder_inspector_visibility_enabled`). See [Workflow](workflow#visibility).
+
+## Responsive on the site {#responsive}
+
+With `pagebuilder_responsive_apply=manual` (default), the site gets one breakpoint value: `?pb_bp=` or `pagebuilder_default_breakpoint`.
+
+With `css`, all values go into HTML. Pro render wraps them in `<span class="pb-rv">` with `data-pb-bp`; media-query CSS is injected automatically. In chunks for those fields:
+
+```fenom
+{$title|pb_text}
+```
+
+`pb_text` passes through `.pb-rv` markup and escapes plain text. Do not swap it for `|escape` or CSS mode breaks.
+
+Field schema and JSON: [Fields overview → responsive](fields/overview#pro-responsive). Settings: [System settings → Responsive](settings#responsive).
+
 ## Draft preview {#draft-preview}
 
 The public site shows **published** content only. View drafts in the manager (Preview button) or via:
@@ -84,7 +100,7 @@ The public site shows **published** content only. View drafts in the manager (Pr
 
 Token is signed with `pagebuilder_preview_secret`. The iframe loads template CSS (`pagebuilder_preview_include_template_css`) and URLs from `pagebuilder_preview_css_urls`.
 
-<!-- ![Draft preview](/components/pagebuilder/screenshots/mgr-section-preview.png) -->
+<!-- ![Draft preview](/components/pagebuilder/screenshots/mgr-section-preview.jpg) -->
 
 ## Customize chunks
 

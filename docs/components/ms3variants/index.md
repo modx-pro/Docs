@@ -4,6 +4,11 @@ description: Компонент вариантов товаров для MiniSho
 logo: https://modstore.pro/assets/extras/ms3variants/logo.png
 author: biz87
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
+  - vue3
 items: [
   { text: 'Системные настройки', link: 'settings' },
   { text: 'Сниппеты', link: 'snippets' },

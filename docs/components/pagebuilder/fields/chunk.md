@@ -5,13 +5,13 @@ description: "Объект name выбранного modChunk для include в 
 
 # Поле chunk
 
-Версия: **Pro**.
+Версия: **Free**.
 
-<!-- ![chunk](/components/pagebuilder/screenshots/fields/chunk.png) -->
+<!-- ![chunk](/components/pagebuilder/screenshots/fields/chunk.jpg) -->
 
 ## Зачем этот тип
 
-Выбор chunk по name без ручного ввода. Паттерн `{include file="file:chunks/{$chunk.name}.tpl"}`. Pro для секций с динамическими partial.
+Редактор выбирает чанк по имени и не вписывает его вручную. В Fenom его подключают так: `{include file="file:chunks/{$chunk.name}.tpl"}`. Нужен, когда секция подставляет разные фрагменты вёрстки.
 
 ## Когда использовать
 
@@ -59,9 +59,17 @@ description: "Объект name выбранного modChunk для include в 
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+[[+chunk.name]]
+```
+
 ```fenom
 {include file="file:chunks/{$chunk.name}.tpl"}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -70,7 +78,7 @@ description: "Объект name выбранного modChunk для include в 
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

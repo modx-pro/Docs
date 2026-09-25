@@ -7,7 +7,7 @@ description: "Вертикальный зазор между секциями б
 
 Пустая секция фиксированной высоты. Нужна, когда соседние блоки визуально слипаются и не хватает «воздуха».
 
-<!-- ![Отступ](/components/pagebuilder/screenshots/sections/spacer.png) -->
+![Отступ](/components/pagebuilder/screenshots/sections/spacer.jpg)
 
 ## Зачем пустая секция
 
@@ -74,10 +74,6 @@ Fenom chunk `pagebuilder_spacer`:
 ```fenom
 <div class="pb-spacer pb-spacer--{$size ?: 'md'}" aria-hidden="true"{if $id} id="pb-{$id|escape}"{/if}></div>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/spacer.json`
 
 ## Связанные страницы
 

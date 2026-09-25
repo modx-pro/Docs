@@ -1,12 +1,16 @@
 ---
 title: msFastOrder
 description: Быстрый заказ в один клик через модальное окно для MODX 3 и MiniShop3
-author: ibochkarev
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msfastorder/logo.png
 modstore: https://modstore.pro/packages/integration/msfastorder
 dependencies: miniShop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 items: [
   {
     text: 'Начало работы',

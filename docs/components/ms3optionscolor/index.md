@@ -1,12 +1,19 @@
 ---
 title: ms3OptionsColor
 description: "Свотчи для опций miniShop3: HEX, паттерны, изображения и RAL Classic"
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/ms3optionscolor/logo.png
+modstore: https://modstore.pro/packages/ecommerce/ms3optionscolor
 dependencies:
   - miniShop3
   - VueTools
   - pdoTools
 categories: minishop3
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items:
   - text: Начало работы
     items:

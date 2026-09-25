@@ -7,7 +7,7 @@ description: "Крупная карточка одного товара с га�
 
 Hero магазина или «товар недели»: крупное фото, цена, описание и добавление в корзину. Один товар из msProducts.
 
-<!-- ![Товар в фокусе](/components/pagebuilder/screenshots/sections/product_spotlight.png) -->
+![Товар в фокусе](/components/pagebuilder/screenshots/sections/product_spotlight.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -32,7 +32,9 @@ Hero магазина или «товар недели»: крупное фот�
 
 ## Relation на товар
 
-Поле **Товар**: relation на ресурс miniShop3. Остальные поля секции дополняют заголовок блока.
+Поиск товара идёт в `mgr/ms3/products/search`. Поле `product` обязательно. Тип помечен `"cacheable": false`.
+
+Перед chunk `ProSectionRenderSupport` пишет `product_id` и `pb_product_resource`. Chunk берёт `$pb_product_resource`. Если id нет, посетитель видит «Товар не выбран или недоступен.»
 
 ## Похожие секции
 
@@ -59,7 +61,7 @@ Hero магазина или «товар недели»: крупное фот�
 
 ### Товар (`product`)
 
-Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Выбор одного ресурса MODX в модальном окне поиска.
+Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Autocomplete по ресурсам MODX в поле инспектора.
 
 ## Что видит посетитель
 
@@ -81,10 +83,10 @@ Hero магазина или «товар недели»: крупное фот�
 Fenom chunk `pagebuilderpro_product_spotlight`:
 
 ```fenom
-{var $productId = $pb_product_resource|default:($product_id|default:0)}
-{var $listing = ''}
+{set $productId = $pb_product_resource !: ($product_id !: 0)}
+{set $listing = ''}
 {if $productId}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => 0,
     'resources' => $productId,
     'limit' => 1,
@@ -103,15 +105,11 @@ Fenom chunk `pagebuilderpro_product_spotlight`:
     {if $listing}
       {$listing}
     {else}
-      <p class="pb-listing__empty">Товар не выбран или недоступен.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_product' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/product_spotlight.json`
 
 ## Связанные страницы
 

@@ -7,7 +7,7 @@ description: "Comparison table for selected miniShop3 products (Pro)"
 
 Pick several products in the inspector: the site renders a spec table with one column per product.
 
-<!-- ![Product comparison](/components/pagebuilder/screenshots/sections/product_comparison.png) -->
+![Product comparison](/components/pagebuilder/screenshots/sections/product_comparison.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -90,10 +90,11 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_product_comparison`:
 
 ```fenom
-{var $productIds = $comparison_product_ids|default:''}
-{var $listing = ''}
+{set $productIds = $comparison_product_ids|default:''}
+{set $listing = ''}
 {if $productIds}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
+    'parents' => 0,
     'resources' => $productIds,
     'limit' => 4,
     'tpl' => 'pagebuilderpro_product_comparison_cell',
@@ -119,15 +120,14 @@ Fenom chunk `pagebuilderpro_product_comparison`:
         </div>
       </div>
     {else}
-      <p class="pb-listing__empty">Select 2 to 4 products to compare.</p>
+      <div class="pb-listing__empty">
+        <p>{'pagebuilder_fe_comparison_empty_lead' | lexicon}</p>
+        <p>{'pagebuilder_fe_comparison_empty_hint' | lexicon}</p>
+      </div>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/product_comparison.json`
 
 ## See also
 

@@ -4,6 +4,10 @@ description: Промо-коды для MiniShop3 с гибкими правил
 logo: https://modstore.pro/assets/extras/ms3promocode/logo.png
 author: biz87
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

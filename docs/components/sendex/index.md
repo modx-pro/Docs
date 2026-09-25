@@ -7,6 +7,10 @@ modstore: https://modstore.pro/packages/alerts-mailing/sendex
 repository: https://github.com/modx-pro/Sendex
 categories: utilities
 
+compatibility:
+  - modx2
+  - modx3
+  - php74
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   {

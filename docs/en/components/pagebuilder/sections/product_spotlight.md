@@ -7,7 +7,7 @@ description: "Large single product card with gallery, price, and cart (Pro)"
 
 Store hero or "product of the week": large image, price, description, add to cart. One product from msProducts.
 
-<!-- ![Product spotlight](/components/pagebuilder/screenshots/sections/product_spotlight.png) -->
+![Product spotlight](/components/pagebuilder/screenshots/sections/product_spotlight.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -32,7 +32,9 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Product relation
 
-**Product** relation to a miniShop3 resource. Other section fields set the block title.
+Product search uses `mgr/ms3/products/search`. `product` is required. The type is `"cacheable": false`.
+
+Before the chunk, `ProSectionRenderSupport` writes `product_id` and `pb_product_resource`. The chunk reads `$pb_product_resource`. If the id is missing, the visitor sees the chunk text «Товар не выбран или недоступен.»
 
 ## Similar sections
 
@@ -81,10 +83,10 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_product_spotlight`:
 
 ```fenom
-{var $productId = $pb_product_resource|default:($product_id|default:0)}
-{var $listing = ''}
+{set $productId = $pb_product_resource !: ($product_id !: 0)}
+{set $listing = ''}
 {if $productId}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => 0,
     'resources' => $productId,
     'limit' => 1,
@@ -103,15 +105,11 @@ Fenom chunk `pagebuilderpro_product_spotlight`:
     {if $listing}
       {$listing}
     {else}
-      <p class="pb-listing__empty">Product not selected or unavailable.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_product' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/product_spotlight.json`
 
 ## See also
 

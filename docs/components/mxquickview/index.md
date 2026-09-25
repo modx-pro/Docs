@@ -1,10 +1,15 @@
 ---
 title: mxQuickView
 description: Быстрый просмотр карточки товара и любых ресурсов по AJAX для MODX 3
-author: ibochkarev
-logo: https://modstore.pro/assets/extras/mxquickview/logo.jpg
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/mxquickview/logo.png
+modstore: https://modstore.pro/packages/ecommerce/mxquickview
 dependencies: ['minishop3', 'ms3Variants']
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 items: [
   {
     text: 'Начало работы',

@@ -1,11 +1,18 @@
 ---
 title: msBundles
 description: Комплекты товаров miniShop3 с общей ценой, скидкой и синхронизацией в корзине
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/msbundles/logo.png
+modstore: https://modstore.pro/packages/ecommerce/msbundles
 dependencies:
   - miniShop3
   - VueTools
 categories: minishop3
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items:
   - text: Начало работы
     items:

@@ -7,7 +7,7 @@ description: "Фиксированный список товаров, выбра
 
 В отличие от **Сетки товаров**, здесь нет привязки к одной категории: вы отмечаете конкретные ID в multirelation.
 
-<!-- ![Подборка товаров](/components/pagebuilder/screenshots/sections/curated_products.png) -->
+![Подборка товаров](/components/pagebuilder/screenshots/sections/curated_products.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -17,7 +17,7 @@ description: "Фиксированный список товаров, выбра
 
 - Точный список SKU, порядок как в multirelation
 - Не зависит от одной категории
-- Тот же card markup, что у сетки
+- Карточки через общий tpl `pagebuilderpro_ms3_product_row`, как у [сетки товаров](products_grid)
 
 ## Сценарии подборки
 
@@ -32,7 +32,9 @@ description: "Фиксированный список товаров, выбра
 
 ## Multirelation товаров
 
-Поле **Товары** (multirelation): порядок выбора сохраняется. Лимит задаётся количеством выбранных позиций.
+Поиск товаров идёт в `mgr/ms3/products/search`. Поле `products` обязательно. Тип помечен `"cacheable": false`.
+
+На рендере `ProSectionRenderSupport` собирает `curated_product_ids`: не больше 12 id через запятую, в порядке выбора. Chunk передаёт эту строку в `msProducts` (`parents` = 0). Пустой список показывает «Выберите товары в инспекторе секции.»
 
 ## Похожие секции
 
@@ -90,10 +92,10 @@ description: "Фиксированный список товаров, выбра
 Fenom chunk `pagebuilderpro_curated_products`:
 
 ```fenom
-{var $resourceIds = $curated_product_ids|default:''}
-{var $listing = ''}
+{set $resourceIds = $curated_product_ids|default:''}
+{set $listing = ''}
 {if $resourceIds}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => 0,
     'resources' => $resourceIds,
     'limit' => 12,
@@ -117,15 +119,11 @@ Fenom chunk `pagebuilderpro_curated_products`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">Выберите товары в инспекторе секции.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_curated' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/curated_products.json`
 
 ## Связанные страницы
 

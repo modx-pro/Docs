@@ -1,17 +1,17 @@
 ---
 title: "color"
-description: "Строка цвета hex или rgba из color picker"
+description: "Строка цвета #rrggbb из color picker"
 ---
 
 # Поле color
 
 Версия: **Free**.
 
-<!-- ![color](/components/pagebuilder/screenshots/fields/color.png) -->
+<!-- ![color](/components/pagebuilder/screenshots/fields/color.jpg) -->
 
 ## Зачем этот тип
 
-Color picker вместо ручного ввода в text. Подходит для фона секции и акцентного цвета. Значение строка, в chunk в CSS inline или variable.
+Выбор цвета в палитре, а не ввод кода в текстовое поле. Подходит для фона секции и акцента. В данных строка: её подставляют в CSS в чанке, в стиль или в переменную.
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ HEX-строка.
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<span style="color: [[+accent]]">…</span>
+```
+
+```fenom
 <span style="color: {$accent|escape}">…</span>
 ```
+
+:::
 
 ## Общие свойства
 
@@ -68,7 +76,7 @@ HEX-строка.
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

@@ -7,11 +7,11 @@ description: "Single object with nested field keys not an array"
 
 Version: **Pro**.
 
-<!-- ![jsongrid](/components/pagebuilder/screenshots/fields/jsongrid.png) -->
+<!-- ![jsongrid](/components/pagebuilder/screenshots/fields/jsongrid.jpg) -->
 
 ## Why this type
 
-Fields schema like repeater but single row object. Compact than one-row repeater. Pro for fixed-shape config block.
+The same nested fields as [repeater](repeater), but one record, not a list. That is shorter than a repeater with a single row. It is in Pro when a settings block always has the same shape.
 
 ## When to use
 
@@ -67,11 +67,19 @@ Key `row` in the section data: one object with nested field keys:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<h4>[[+row.title]]</h4>
+```
+
 ```fenom
 {if $row.title}
-  <h4>{$row.title|escape}</h4>
+  <h4>{$row.title|pb_text}</h4>
 {/if}
 ```
+
+:::
 
 ## Common properties
 

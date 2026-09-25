@@ -8,6 +8,10 @@ repository: https://github.com/modx-pro/PayPal
 
 dependencies: miniShop2
 categories: payment
+compatibility:
+  - modx2
+  - php70
+  - minishop2
 ---
 
 # mspPayPal

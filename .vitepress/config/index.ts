@@ -4,12 +4,13 @@ import { type HeadConfig, defineConfigWithTheme } from 'vitepress'
 import { config as en, searchLocale as searchLocaleEn } from './en'
 import { config as root, searchLocale as searchLocaleRu } from './ru'
 import languages from '../theme/syntaxes'
+import { darkTheme, lightTheme } from '../theme/syntaxes/themes'
 import { addPlugins } from '../theme/plugins/markdown'
 import { components, prepareData } from '../theme/plugins/component'
-import { slugify } from 'transliteration'
+import { headingSlug } from '../theme/anchors'
 import { fileURLToPath, URL } from 'node:url'
 import { withMermaid } from 'vitepress-plugin-mermaid'
-import { modhost, modstore, modxpro, telegram } from '../../docs/icons'
+import { modstore, modxpro, telegram } from '../../docs/icons'
 import { coreMembers } from '../../docs/authors'
 import { normalize } from '../theme/utils'
 
@@ -37,6 +38,31 @@ function getOgImageVersion(input: unknown): string {
   return createHash('md5').update(payload).digest('hex').slice(0, 8)
 }
 
+// Runs before the app paints. Dev shell does not include config.head, so the
+// same source is also injected via transformIndexHtml.
+const readabilityLayoutScript = `(function () {
+  try {
+    var mode = localStorage.getItem('vitepress-nolebase-enhanced-readabilities-layout-switch-mode');
+    var classes = {
+      '1': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchFullWidth',
+      '4': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchSidebarWidthAdjustableOnly',
+      '5': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchBothWidthAdjustable'
+    };
+    var cls = classes[mode];
+    if (cls) document.documentElement.classList.add(cls);
+    var wide = window.matchMedia('(min-width: 1440px)').matches;
+    function pct(key, fallback) {
+      var raw = localStorage.getItem(key);
+      var n = raw == null ? fallback : parseInt(raw, 10);
+      if (!wide || !n || isNaN(n)) return '100%';
+      return Math.ceil(n / 100) + '%';
+    }
+    var root = document.documentElement;
+    root.style.setProperty('--vp-nolebase-enhanced-readabilities-page-max-width', pct('vitepress-nolebase-enhanced-readabilities-page-layout-max-width', 10000));
+    root.style.setProperty('--vp-nolebase-enhanced-readabilities-content-max-width', pct('vitepress-nolebase-enhanced-readabilities-content-layout-max-width', 8000));
+  } catch (e) {}
+})();`
+
 export default withMermaid(
   defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
@@ -45,6 +71,18 @@ export default withMermaid(
   mermaid: {
     securityLevel: 'loose',
     startOnLoad: false,
+    // Mermaid 12 defaults to the ELK layout, the new look and narrower labels, keep the previous appearance
+    layout: 'dagre',
+    look: 'classic',
+    theme: 'default',
+    flowchart: {
+      wrappingWidth: 200,
+      minNodeWidth: 0,
+    },
+    state: {
+      wrappingWidth: 200,
+      minNodeWidth: 0,
+    },
   },
 
   title: SITE_TITLE,
@@ -54,8 +92,8 @@ export default withMermaid(
   markdown: {
     languages,
     theme: {
-      light: 'github-light',
-      dark: 'one-dark-pro',
+      light: lightTheme,
+      dark: darkTheme,
     },
     container: {
       tipLabel: 'Подсказка',
@@ -65,15 +103,7 @@ export default withMermaid(
       detailsLabel: 'Подробнее',
     },
     anchor: {
-      slugify(str) {
-        str = str.trim()
-          .replace(/^\d*/g, '') // Удаление чисел из начала строки
-          .replace(/[^a-zA-Zа-яА-ЯЁё0-9\-\s]/g, '') // Удаление ненужных символов
-          .replace(/\s\-\s/, '-').replace(/\-+/g, '-') // Избавление от повторяющихся символов
-          .replace(/^(.{25}[^\s]*).*/, '$1') // Ограничение количества символов
-
-        return encodeURIComponent(slugify(str, { lowercase: true }))
-      }
+      slugify: headingSlug,
     },
     config(md) {
       addPlugins(md)
@@ -92,6 +122,8 @@ export default withMermaid(
     ['link', { rel: 'icon', href: '/icon.svg?v=2', type: 'image/svg+xml' }],
     ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png?v=2' }],
     ['link', { rel: 'manifest', href: '/site.webmanifest' }],
+
+    ['script', {}, readabilityLayoutScript],
 
     [
       'script',
@@ -122,10 +154,6 @@ export default withMermaid(
     },
 
     socialLinks: [
-      {
-        icon: { svg: modhost },
-        link: 'https://modhost.pro',
-      },
       {
         icon: { svg: modstore },
         link: 'https://modstore.pro',
@@ -231,15 +259,35 @@ export default withMermaid(
   },
 
   vite: {
+    plugins: [
+      {
+        name: 'readability-layout-early',
+        transformIndexHtml(html: string) {
+          if (html.includes('layout-switch-mode')) return html
+          return html.replace('<head>', `<head>\n    <script>${readabilityLayoutScript}</script>`)
+        },
+      },
+    ],
     ssr: {
-      noExternal: ['mermaid'],
+      noExternal: [
+        'mermaid',
+        '@nolebase/vitepress-plugin-enhanced-readabilities',
+        '@nolebase/ui',
+      ],
+    },
+    // mermaid → fastdom (CJS): without prebundle Vite ESM interop has no default export
+    optimizeDeps: {
+      include: ['fastdom', 'fastdom/extensions/fastdom-promised.js'],
+      exclude: [
+        '@nolebase/vitepress-plugin-enhanced-readabilities/client',
+        '@nolebase/ui',
+      ],
     },
     resolve: {
       alias: [
         'VPSidebar',
         'VPDocFooter',
-        'VPNavBarTranslations',
-        'VPNavScreenTranslations',
+        'VPNavTranslations',
         'VPNavBar',
       ].map(componentName => ({
         find: new RegExp(`^.*\/${componentName}\.vue$`),

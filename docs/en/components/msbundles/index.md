@@ -1,11 +1,18 @@
 ---
 title: msBundles
 description: Product bundles for miniShop3 with shared pricing, discounts, and cart sync
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/msbundles/logo.png
+modstore: https://modstore.pro/packages/ecommerce/msbundles
 dependencies:
   - miniShop3
   - VueTools
 categories: minishop3
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items:
   - text: Getting started
     items:

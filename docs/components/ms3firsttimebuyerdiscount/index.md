@@ -1,12 +1,16 @@
 ---
 title: ms3FirstTimeBuyerDiscount
 description: Скидка на первый заказ для MiniShop3 — автоматическое применение при 0 оплаченных заказов (процент или фикс)
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3firsttimebuyerdiscount/logo.png
-author: ibochkarev
 modstore: https://modstore.pro/packages/discounts/ms3firsttimebuyerdiscount
 dependencies: miniShop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

@@ -6,6 +6,11 @@ lastUpdated: true
 logo: /components/mxbackup.jpg
 author: ShevArtV
 modstore: https://modstore.pro/packages/utilities/mxbackup
+compatibility:
+  - modx2
+  - modx3
+  - php74
+  - php81
 items: [
   {
     text: 'Начало работы',

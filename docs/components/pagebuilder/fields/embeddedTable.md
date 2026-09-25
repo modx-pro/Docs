@@ -5,13 +5,13 @@ description: "Конфиг table_key limit filters без строк табли�
 
 # Поле embeddedTable
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.png) -->
+<!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.jpg) -->
 
 ## Зачем этот тип
 
-Строки грузит сниппет PageBuilderTableRows на фронте. В data объект с `table_key`, `limit`, `filters`, `use_context`, `utm`. Подходит для catalog-scale data.
+Строки на сайте отдаёт сниппет PageBuilderTableRows. В секции хранятся не сами строки, а настройки: ключ таблицы, лимит, фильтры, контекст и UTM. Поле берут, когда строк слишком много, чтобы править их в инспекторе.
 
 ## Когда использовать
 
@@ -35,12 +35,13 @@ description: "Конфиг table_key limit filters без строк табли�
   "name": "table",
   "type": "embeddedTable",
   "label": "Таблица",
-  "table_key": "products",
   "tab": "Контент",
   "width": 100,
   "active": true
 }
 ```
+
+Ключ `table_key`, лимит и фильтры задаются в данных секции (инспектор), не в JSON определения поля.
 
 ## Значение
 
@@ -70,9 +71,22 @@ description: "Конфиг table_key limit filters без строк табли�
 
 ## Пример в chunk
 
-```html
-[[!PageBuilderTableRows? &table_key=`products` &limit=`10`]]
+::: code-group
+
+```modx
+[[!PageBuilderTableRows? &table_key=`products`]]
 ```
+
+Без `&limit` сниппет берёт **20** строк. В data поля значение по умолчанию для `limit` — **10**: передайте `&limit` из данных секции, если нужен другой размер.
+
+```fenom
+{'!PageBuilderTableRows' | snippet : [
+  'table_key' => 'products',
+  'limit' => 10,
+]}
+```
+
+:::
 
 ## Общие свойства
 
@@ -81,7 +95,7 @@ description: "Конфиг table_key limit filters без строк табли�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

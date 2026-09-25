@@ -7,6 +7,7 @@ import { ellipsis } from '../utils'
 import { VPImage } from 'vitepress/theme-without-fonts'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import DocsSearchBar from './DocsSearchBar.vue'
+import DocsCompatibility from './DocsCompatibility.vue'
 
 const { site, frontmatter, localeIndex } = useData()
 const props = defineProps<{
@@ -67,6 +68,7 @@ const emptyText = computed(() => localeIndex.value === 'en'
             <p v-if="component.description" class="description">
               {{ ellipsis(component.description, 80) }}
             </p>
+            <DocsCompatibility class="badges" :values="component.compatibility" />
           </div>
         </VPLink>
       </div>
@@ -134,6 +136,10 @@ const emptyText = computed(() => localeIndex.value === 'en'
   margin: 0;
   color: var(--vp-c-text-2);
   font-weight: 500;
+}
+
+.badges {
+  margin-top: 8px;
 }
 
 :deep(.logo) {

@@ -48,7 +48,7 @@ No properties. Call with no arguments.
 
 Keys are normalized to lowercase. Empty values are ignored.
 
-Parameter registry and defaults live in CMP **UTM**. Section **visibility** rules are set in the resource inspector, not in CMP.
+Parameter registry and defaults live in CMP **UTM**. Section **visibility** rules are set in the inspector **Visibility** dialog (`pagebuilder_inspector_visibility_enabled`), not on the UTM tab.
 
 ## Field placeholders
 

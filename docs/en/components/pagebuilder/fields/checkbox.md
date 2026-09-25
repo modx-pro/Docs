@@ -7,11 +7,11 @@ description: "Single boolean flag: true or false"
 
 Version: **Free**.
 
-<!-- ![checkbox](/components/pagebuilder/screenshots/fields/checkbox.png) -->
+<!-- ![checkbox](/components/pagebuilder/screenshots/fields/checkbox.jpg) -->
 
 ## Why this type
 
-Explicit checkbox for one option. Boolean value, not string "1"/"0". Pairs with showWhen for conditional fields.
+One checkbox for one option. The saved value is yes or no, not the string "1" or "0". With `showWhen` it shows or hides other fields.
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `featured` in the section data:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<span class="badge">Featured</span>
+```
+
 ```fenom
 {if $featured}<span class="badge">Featured</span>{/if}
 ```
+
+:::
 
 ## Common properties
 

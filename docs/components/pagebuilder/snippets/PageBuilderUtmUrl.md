@@ -68,6 +68,12 @@ pdoTools регистрирует модификатор на `pdoToolsOnFenomIn
 <a href="{$button.url|utm_query}">{$button.label}</a>
 ```
 
+Второй аргумент модификатора — массив дополнительных query-параметров (перекрывают реестр, как `&params=` у сниппета):
+
+```fenom
+<a href="{$button.url|utm_query:['utm_content' => 'hero-cta']}">{$button.label}</a>
+```
+
 Эквивалент вызова сниппета для URL из данных секции.
 
 ## Сессия UTM

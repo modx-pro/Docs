@@ -5,13 +5,13 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 # Поле combo
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![combo](/components/pagebuilder/screenshots/fields/combo.png) -->
+<!-- ![combo](/components/pagebuilder/screenshots/fields/combo.jpg) -->
 
 ## Зачем этот тип
 
-Список из БД: modResource, modTemplate и другие классы из whitelist. Загрузка через `mgr/field/options` и событие `pbOnFieldValues`. Поиск в выпадающем списке без модального окна relation.
+Список из базы: ресурсы, шаблоны и другие разрешённые классы. Варианты подгружаются действием `mgr/field/options` и событием `pbOnFieldValues`. В инспекторе Select с поиском (`filter`) и свободным вводом (`editable`) поверх загруженных options. Окно выбора как у [relation](relation) не открывается.
 
 ## Когда использовать
 
@@ -26,7 +26,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 ## Похожие типы
 
 - [select](select) для статического списка `options`
-- [tablecombo](tablecombo) для id строки custom table
+- [tablecombo](tablecombo) тоже список из класса MODX через `optionsSource`. Сетка в инспекторе у [table](table)
 
 ## Настройка
 
@@ -60,9 +60,17 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 ## Пример в chunk
 
-```fenom
-{$related|escape}
+::: code-group
+
+```modx
+[[+related]]
 ```
+
+```fenom
+{$related|pb_text}
+```
+
+:::
 
 ## Общие свойства
 
@@ -71,7 +79,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

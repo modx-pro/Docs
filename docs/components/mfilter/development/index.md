@@ -6,7 +6,7 @@
 
 | Раздел | Описание |
 |--------|----------|
-| [JavaScript](javascript) | Архитектура фронтенда, подключение скриптов |
+| [JavaScript](javascript) | Подключение скриптов, настройки формы, слайдер диапазона |
 | [JS API](js-api) | Программное управление фильтрами |
 | [Headless API](headless) | REST API для SPA-приложений |
 | [Сервисы](services) | PHP сервисы и Dependency Injection |
@@ -67,9 +67,7 @@
 ### Программное управление фильтром
 
 ```javascript
-const filter = mfilterGet('mfilter-form');
-filter.setFilter('brand', ['apple', 'samsung']);
-filter.submit();
+mfilterGet().setFilter('color', ['red', 'blue']);   // запрос уйдёт сам
 ```
 
 ### Хук на применение фильтров
@@ -85,7 +83,7 @@ mfilterHooks.add('beforeApply', (ctx) => {
 
 ```php
 // В плагине на OnMFilterInit
-$mfilter->getFilterTypeRegistry()->register('mytype', new MyFilterType($modx));
+$mfilter->getFilterTypesRegistry()->register('mytype', new MyFilterType($modx, $mfilter));
 ```
 
 ### Замена сервиса через DI

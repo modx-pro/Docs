@@ -5,13 +5,13 @@ description: "Object name of selected modSnippet for chunk call"
 
 # Field snippet
 
-Version: **Pro**.
+Version: **Free**.
 
-<!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.png) -->
+<!-- ![snippet](/components/pagebuilder/screenshots/fields/snippet.jpg) -->
 
 ## Why this type
 
-Snippet picker for `[[!{$snippet.name}]]`. Pro dynamic processor hook in section. Separates snippet call from chunk include.
+The editor picks a snippet name. The site calls it dynamically, for example `[[!{$snippet.name}]]`. A chunk is included with [chunk](chunk), not with this field.
 
 ## When to use
 
@@ -59,9 +59,17 @@ Key `snippet` in the section data:
 
 ## Chunk example
 
-```html
-[[!{$snippet.name}]]
+::: code-group
+
+```modx
+[[!snippetName]]
 ```
+
+```fenom
+{('!' ~ $snippet.name) | snippet}
+```
+
+:::
 
 ## Common properties
 

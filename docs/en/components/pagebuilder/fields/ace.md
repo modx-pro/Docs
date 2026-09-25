@@ -7,11 +7,11 @@ description: "Source code string with Ace highlighting in the inspector"
 
 Version: **Free**.
 
-<!-- ![ace](/components/pagebuilder/screenshots/fields/ace.png) -->
+<!-- ![ace](/components/pagebuilder/screenshots/fields/ace.jpg) -->
 
 ## Why this type
 
-Full control over HTML, CSS, or JSON. Mode via `mode` (html, css, javascript, json). No WYSIWYG when you need exact markup.
+The editor writes HTML, CSS, or JSON as code. `mode` sets the language: html, css, javascript, or json. The visual editor is not used here.
 
 ## When to use
 
@@ -58,9 +58,17 @@ Key `markup` in the section data:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+[[+markup]]
+```
+
 ```fenom
 {$markup}
 ```
+
+:::
 
 ## Common properties
 

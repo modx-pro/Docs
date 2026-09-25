@@ -77,7 +77,7 @@ Set CSS variables for colors:
 
 #### Example
 
-``` CSS
+```CSS
 :root {
   --myf-primary-color:red;
   --myf-secondary-color:silver;
@@ -316,7 +316,7 @@ Use CSS variables for styling.
 * `--myf-primary-color`
 * `--myf-secondary-color`
 
-``` CSS
+```CSS
 :root {
   --myf-primary-color:red;
   --myf-secondary-color:silver;

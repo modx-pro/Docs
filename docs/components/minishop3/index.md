@@ -5,6 +5,9 @@ logo: https://modstore.pro/assets/extras/minishop3/logo.png
 author: biz87
 repository: https://github.com/modx-pro/MiniShop3
 
+compatibility:
+  - modx3
+  - php81
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Отличия от miniShop2', link: 'differences-from-ms2' },
@@ -113,7 +116,23 @@ items: [
           { text: 'Менеджер', link: 'development/events/manager' },
         ],
       },
-      { text: 'REST API', link: 'development/api' },
+      {
+        text: 'Web API',
+        link: 'development/api',
+        items: [
+          { text: 'Обзор', link: 'development/api' },
+          { text: 'Справка', link: 'development/web-api/' },
+          { text: 'Авторизация', link: 'development/web-api/auth' },
+          { text: 'Карта эндпоинтов', link: 'development/web-api/endpoints' },
+          { text: 'Каталог', link: 'development/web-api/catalog' },
+          { text: 'Корзина', link: 'development/web-api/cart' },
+          { text: 'Checkout', link: 'development/web-api/checkout' },
+          { text: 'Клиент', link: 'development/web-api/customer' },
+          { text: 'Ошибки', link: 'development/web-api/errors' },
+          { text: 'CORS и rate limit', link: 'development/web-api/cors' },
+          { text: 'Примеры', link: 'development/web-api/examples' },
+        ],
+      },
       { text: 'API Router', link: 'development/routing' },
       { text: 'JavaScript API', link: 'development/javascript' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
@@ -153,7 +172,7 @@ MiniShop3 разработан специально для MODX Revolution 3.x �
 
 ### Улучшенная архитектура
 
-- **REST API** — Web API `api.php` (`/api/v1/*`) для витрины и headless: корзина, заказ, ЛК, публичный каталог. [Документация](/components/minishop3/development/api)
+- **Web API** — `api.php` (`/api/v1/*`) для витрины и headless: корзина, заказ, ЛК, каталог, delivery/payment. [Документация](/components/minishop3/development/web-api/)
 - **Service Container** — зависимости через DI-контейнер MODX
 - **Vue 3 + PrimeVue** — современный интерфейс админки через [VueTools](/components/vuetools/)
 - **Современный фронтенд** — без jQuery, нативный JavaScript

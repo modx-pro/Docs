@@ -4,6 +4,10 @@ description: Фасетная фильтрация для MODX 3 с поддер
 logo: https://modstore.pro/assets/extras/mfilter/logo.png
 author: biz87
 
+compatibility:
+  - modx3
+  - php81
+  - vue3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },
@@ -28,9 +32,11 @@ items: [
       { text: 'Слаги', link: 'interface/slugs' },
       { text: 'Паттерны URL', link: 'interface/patterns' },
       { text: 'SEO шаблоны', link: 'interface/seo-templates' },
+      { text: 'Индивидуальные SEO', link: 'interface/seo-pages' },
       { text: 'Словоформы', link: 'interface/word-forms' },
       { text: 'Обслуживание', link: 'interface/maintenance' },
       { text: 'Scheduler-задачи', link: 'interface/scheduler' },
+      { text: 'Прогрев кэша', link: 'interface/warmup' },
     ],
   },
   {
@@ -67,12 +73,15 @@ items: [
     text: 'Рецепты',
     link: 'cookbook/',
     items: [
+      { text: 'Фильтр выпадающим списком', link: 'cookbook/select-filter' },
       { text: 'Сортировка значений', link: 'cookbook/filter-values-sorting' },
       { text: 'Внешние фильтры', link: 'cookbook/external-filters' },
       { text: 'Свой тип фильтра', link: 'cookbook/custom-filter-type' },
       { text: 'Фильтры на странице поиска', link: 'cookbook/search-results-integration' },
+      { text: 'Синхронизация индекса фасетов', link: 'cookbook/facet-index-sync' },
     ],
   },
+  { text: 'История изменений', link: 'changelog/' },
 ]
 ---
 # mFilter
@@ -221,14 +230,14 @@ mFilter — это полностью переписанный компонен�
 API-режим для современных фреймворков:
 
 ```javascript
-// Получить схему фильтров
-const schema = await mfilter.getSchema(resourceId);
+const response = await mfilter.api.apply({
+    resource_id: 5,
+    filters: { 'price|min': ['1000'], 'price|max': ['5000'] },
+    sort: 'price-asc',
+});
 
-// Применить фильтры
-const result = await mfilter.apply(
-    { brand: ['apple'], price: { min: 1000, max: 5000 } },
-    { sort: 'price-asc', page: 1 }
-);
+response.items;   // товары
+response.urls;    // SEO-адреса
 ```
 
 Подробнее: [Headless API](development/headless)

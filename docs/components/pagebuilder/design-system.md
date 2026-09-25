@@ -5,7 +5,7 @@ description: CSS variables, BEM, partial chunks и Fenom-оболочка сек
 
 # Дизайн-система (фронт)
 
-Стили секций на сайте не завязаны на PrimeVue в менеджере. Chunks выводят разметку с префиксом `pb-`, а `pagebuilder-sections.css` задаёт сетку, шрифты и токены внутри `.pb-page`.
+Стили секций на сайте не завязаны на PrimeVue в менеджере. Chunks выводят разметку с префиксом `pb-`. Файл `pagebuilder-sections.css` задаёт сетку, шрифты и токены внутри `.pb-page`.
 
 ## Подключение CSS и JS
 
@@ -32,12 +32,13 @@ description: CSS variables, BEM, partial chunks и Fenom-оболочка сек
 | `pagebuilder-sections.css` | Всегда при `load_css=1` |
 | `pagebuilder-sections-pro.css` | При флаге `pro` |
 | `pagebuilder-commerce.css` | При флаге `pro` (product-card, spotlight, promo) |
+| `pagebuilder-qa.css` | Если на странице есть QA-секции или `&qa_css=`1`` |
 
 Pro и commerce CSS не подключаются на Free-сборке, даже если chunk секции лежит в теме.
 
 ## Обёртка `.pb-page`
 
-Токены задаются на **`.pb-page`**, не на `:root`. Глобальная тема сайта не перезаписывается, а секции получают свой ритм отступов.
+Токены задаются на **`.pb-page`**, не на `:root`. Глобальная тема сайта не перезаписывается.
 
 Соседние прямые потомки `.pb-page` разделяет вертикальный gap:
 
@@ -134,15 +135,19 @@ Spacer: два класса `pb-spacer pb-spacer--md`, не `pb-spacer-md`.
 
 ## Fenom-оболочка секции
 
-Штатный chunk hero (упрощённо):
+Штатный chunk `pagebuilder_hero`:
 
 ```fenom
-{var $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
-<section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}"
-  data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
+{set $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+<section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
   <div class="pb-section__inner pb-hero__inner">
-    <h1 class="pb-hero__title">{$title|escape}</h1>
-    ...
+    <h2 class="pb-hero__title">{$title|pb_text}</h2>
+    {if $description}
+      <div class="pb-hero__description">{$description|pb_text}</div>
+    {/if}
+    {if $button_label && $button_url}
+      <a class="pb-hero__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|pb_text}</a>
+    {/if}
   </div>
 </section>
 ```
@@ -153,7 +158,7 @@ Spacer: два класса `pb-spacer pb-spacer--md`, не `pb-spacer-md`.
 - `$id`: id секции в JSON документа
 - поля секции по `name` из JSON (`$title`, `$background`, …)
 
-Свои секции собирайте по тому же шаблону. Чеклист: [Разработчик → Определение секции](developer#opredelenie-sekcii).
+Чеклист своих секций: [Разработчик → Определение секции](developer#opredelenie-sekcii).
 
 ## Partial `pagebuilder_partial_image`
 
@@ -170,21 +175,22 @@ Spacer: два класса `pb-spacer pb-spacer--md`, не `pb-spacer-md`.
 | `class` | CSS-класс на `<img>` |
 | `loading` | По умолчанию `lazy` |
 
-Partial не рендерит тег, если URL пустой.
+Partial не отрисовывает тег, если URL пустой.
 
 ## Escape и ссылки
 
-| Тип поля | Fenom |
-| --- | --- |
-| text, textarea | `\|escape` |
-| url в href | `\|pb_href\|escape` (нормализация MODX-ссылок) |
-| richtext, editorjs | HTML редактора без sanitize на фронте |
+| Тип поля | MODX | Fenom |
+| --- | --- | --- |
+| text, textarea | `[[+title]]` | `{$title\|pb_text}` |
+| url в href | `[[+button_url]]` | `{$button_url\|pb_href\|escape}` |
+| image | `[[$pagebuilder_partial_image]]` | `{include 'pagebuilder_partial_image' image=$image alt=$alt}` |
+| richtext, editorjs | `[[+content]]` | `{$content}` |
 
-Rich text выводите только если доверяете редакторам с правом сохранения ресурса. Остальной текст экранируйте.
+`pb_href` нормализует MODX-ссылки. `pb_text` есть только у Fenom. Rich text выводите только если доверяете редакторам с правом сохранения ресурса. Обычный текст text и textarea выводите через `pb_text`, не через `escape`.
 
 ## Дополнительный класс через событие
 
-В `pbOnBeforeRenderSection` можно дописать `data.cssClass` перед рендером chunk. Chunk добавляет класс на `<section>`:
+В `pbOnBeforeRenderSection` можно дописать `data.cssClass` перед отрисовкой chunk. Chunk добавляет класс на `<section>`:
 
 ```php
 case 'pbOnBeforeRenderSection':
@@ -224,7 +230,7 @@ case 'pbOnBeforeRenderSection':
 
 ## Миграция spacer
 
-Класс `pb-spacer-md` заменён на `pb-spacer--md`. После апгрейда проверьте кастомные CSS темы и свои chunks.
+Класс `pb-spacer-md` заменён на `pb-spacer--md`. После обновления проверьте свои CSS темы и свои chunks.
 
 ## Связанные страницы
 

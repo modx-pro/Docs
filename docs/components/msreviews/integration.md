@@ -51,6 +51,8 @@ description: Сборка блоков msReviews на карточке, ката
 
 Без `product_id` у `msReviews` сработает fallback на id страницы, а не «все товары». Для ленты по каталогу вызывайте `msReviewsLatest`.
 
+**Общий рейтинг раздела** (не список отзывов): `msRatingSummary` с `all=1` / `parents` / `productIds` (с **1.2.3**). См. [msRatingSummary](snippets/msRatingSummary#общий-рейтинг-главная-категория), [Каталог](frontend/catalog#общий-рейтинг-раздела).
+
 ## Пагинация (pdoPage)
 
 Нужен **pdoTools**. Оборачивайте **`msReviews`**, **`msQuestions`**, **`msReviewsLatest`**, **`msQuestionsLatest`** в `!pdoPage` с `pageVarKey`, `pageNavVar`, `totalVar`. Внутри обёртки сниппет выводит только карточки, без шапки списка.

@@ -7,11 +7,7 @@ description: "Карточки сотрудников с фото, именем,
 
 Блок команды: фото, имя, роль и короткий текст «о себе». Несколько человек выводятся сеткой.
 
-<!-- ![Команда](/components/pagebuilder/screenshots/sections/team.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Команда](/components/pagebuilder/screenshots/sections/team.jpg)
 
 ## Команда vs отзывы
 
@@ -32,7 +28,7 @@ description: "Карточки сотрудников с фото, именем,
 
 ## Repeater участников
 
-Repeater **Участники**. Фото через поле **Фото**. Биография это обычный textarea или richtext в зависимости от JSON секции.
+Repeater **Участники**. Фото через поле **Фото**. Биография — поле textarea.
 
 ## Похожие секции
 
@@ -131,10 +127,6 @@ Fenom chunk `pagebuilderpro_team`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/team.json`
 
 ## Связанные страницы
 

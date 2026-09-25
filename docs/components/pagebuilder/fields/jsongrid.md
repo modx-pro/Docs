@@ -5,13 +5,13 @@ description: "Один объект с ключами nested fields не мас�
 
 # Поле jsongrid
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![jsongrid](/components/pagebuilder/screenshots/fields/jsongrid.png) -->
+<!-- ![jsongrid](/components/pagebuilder/screenshots/fields/jsongrid.jpg) -->
 
 ## Зачем этот тип
 
-Схема `fields` как у repeater, но один объект, не массив. Компактнее repeater из одной строки. Pro для config block фиксированной формы.
+Набор полей как у [repeater](repeater), но одна запись, не список. Так короче, чем repeater из единственной строки. Есть в Pro, когда блок настроек всегда одной и той же формы.
 
 ## Когда использовать
 
@@ -67,11 +67,19 @@ description: "Один объект с ключами nested fields не мас�
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<h4>[[+row.title]]</h4>
+```
+
 ```fenom
 {if $row.title}
-  <h4>{$row.title|escape}</h4>
+  <h4>{$row.title|pb_text}</h4>
 {/if}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -80,7 +88,7 @@ description: "Один объект с ключами nested fields не мас�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

@@ -7,11 +7,11 @@ description: "Multi-line plain text without HTML"
 
 Version: **Free**.
 
-<!-- ![textarea](/components/pagebuilder/screenshots/fields/textarea.png) -->
+<!-- ![textarea](/components/pagebuilder/screenshots/fields/textarea.jpg) -->
 
 ## Why this type
 
-Several lines with no accidental HTML markup. Better than text for descriptions and quotes. Simpler than richtext when formatting is optional.
+Several lines of text, without accidental HTML. For a description or a quote it is roomier than [text](text) and simpler than [richtext](richtext) when you do not need formatting.
 
 ## When to use
 
@@ -58,11 +58,19 @@ Key `intro` in the section data:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<p class="intro">[[+intro]]</p>
+```
+
 ```fenom
 {if $intro}
-  <p class="intro">{$intro|escape|nl2br}</p>
+  <p class="intro">{$intro|pb_text}</p>
 {/if}
 ```
+
+:::
 
 ## Notes
 

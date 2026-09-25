@@ -5,13 +5,13 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 # Поле tag
 
-Версия: **Pro**.
+Версия: **Free**.
 
-<!-- ![tag](/components/pagebuilder/screenshots/fields/tag.png) -->
+<!-- ![tag](/components/pagebuilder/screenshots/fields/tag.jpg) -->
 
 ## Зачем этот тип
 
-Свободный ввод строк без static `options`. Pro advanced-fields. Удобен для фильтров и меток на карточках.
+Редактор вписывает метки сам. Готового списка `options` нет. Подходит для фильтров и подписей на карточках.
 
 ## Когда использовать
 
@@ -60,11 +60,19 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span class="label">[[+labels.0]]</span>
+```
+
 ```fenom
 {foreach $labels as $label}
-  <span class="label">{$label|escape}</span>
+  <span class="label">{$label|pb_text}</span>
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -73,7 +81,7 @@ description: "Массив строк tags с chip UI в инспекторе"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

@@ -7,11 +7,11 @@ description: "URL string with basic format checks in the inspector"
 
 Version: **Free**.
 
-<!-- ![url](/components/pagebuilder/screenshots/fields/url.png) -->
+<!-- ![url](/components/pagebuilder/screenshots/fields/url.jpg) -->
 
 ## Why this type
 
-Dedicated type instead of text for links. Pro: `responsive` for per-breakpoint URLs. UTM placeholders pair well with button fields.
+A field for a link, not plain text. In Pro you can set different URLs for desktop, tablet, and phone. UTM placeholders work here, as they do on [button](button).
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `link` in the section data:
 
 ## Chunk example
 
-```html
-<a href="{$link|escape}">Learn more</a>
+::: code-group
+
+```modx
+<a href="[[+link]]">Learn more</a>
 ```
+
+```fenom
+<a href="{$link|pb_href|escape}">Learn more</a>
+```
+
+:::
 
 ## Notes
 

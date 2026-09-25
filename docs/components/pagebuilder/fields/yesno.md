@@ -7,11 +7,11 @@ description: "Boolean да/нет в стиле классического MODX 
 
 Версия: **Free**.
 
-<!-- ![yesno](/components/pagebuilder/screenshots/fields/yesno.png) -->
+<!-- ![yesno](/components/pagebuilder/screenshots/fields/yesno.jpg) -->
 
 ## Зачем этот тип
 
-Привычный UX редакторам MODX: boolean в данных секции. Компактнее [radio](radio) для простого да/нет.
+Привычный редакторам MODX выбор «да» или «нет». В данных секции это логическое значение. Для простого да/нет поле короче, чем [radio](radio).
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ Switch UI: [toggle](toggle). Несколько опций из списка: [s
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<div class="block">…</div>
+```
+
 ```fenom
 {if $visible}<div class="block">…</div>{/if}
 ```
+
+:::
 
 ## Примечание
 
@@ -72,7 +80,7 @@ Switch UI: [toggle](toggle). Несколько опций из списка: [s
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

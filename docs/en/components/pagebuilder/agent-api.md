@@ -25,6 +25,7 @@ Context: `mgr` (the connector sets `ctx=mgr`). Method: **POST**.
 | Draft, revision, field schemas | `mgr/api/page/snapshot` |
 | Add or replace blocks without full document | `mgr/api/page/apply` |
 | Full control over document and trash | `mgr/page/save` (Vue editor) |
+| Published JSON with Bearer | [REST API v1](rest-api) |
 
 ## Without Agent API
 

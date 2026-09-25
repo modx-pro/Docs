@@ -6,6 +6,11 @@ lastUpdated: true
 logo: https://modx3.art-sites.ru/assets/components/mxlogger/logo.png
 author: ShevArtV
 modstore: https://modstore.pro/packages/utilities/mxlogger
+compatibility:
+  - modx2
+  - modx3
+  - php74
+  - php81
 items: [
   { text: 'Начало работы', link: 'index' },
   { text: 'API сервиса', link: 'api' },

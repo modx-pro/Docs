@@ -19,7 +19,7 @@ description: MODX permissions msreviews_* для CMP и API менеджера
 | `msreviews_review_export` | Экспорт CSV, список очереди писем |
 | `msreviews_review_import` | Импорт отзывов из CSV |
 | `msreviews_review_analytics` | Дашборд, аналитика, поиск товара |
-| `msreviews_question_moderate` | Вопросы, ответы, закреп Q&A |
+| `msreviews_question_moderate` | Вопросы, ответы, закреп Q&A; также доступ к `mgr/catalog/*` для выбора ресурса в форме |
 | `msreviews_queue_process` | Ручная обработка очереди писем |
 | `msreviews_settings_manage` | Зарезервировано (настройки в **Система → Настройки**) |
 

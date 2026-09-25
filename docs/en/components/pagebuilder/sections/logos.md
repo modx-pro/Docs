@@ -7,7 +7,7 @@ description: "Row of client or partner logos (Pro)"
 
 "Trusted by" block: logos in a row or grid. Each logo has alt text and optional link.
 
-<!-- ![Logo cloud](/components/pagebuilder/screenshots/sections/logos.png) -->
+![Logo cloud](/components/pagebuilder/screenshots/sections/logos.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -116,10 +116,6 @@ Fenom chunk `pagebuilderpro_logos`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/logos.json`
 
 ## See also
 

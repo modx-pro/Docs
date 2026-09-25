@@ -7,26 +7,26 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 Версия: **Free**.
 
-<!-- ![video](/components/pagebuilder/screenshots/fields/video.png) -->
+<!-- ![video](/components/pagebuilder/screenshots/fields/video.jpg) -->
 
 ## Зачем этот тип
 
-YouTube, Vimeo и upload в одном поле. При save enrich заполняет `embed_url`, `provider`, `watch_url`. Плоские `video_*` появляются при `type=video` или имени поля с «video».
+URL YouTube, Vimeo или Rutube в инспекторе (поле текста + poster как у [image](image)). После save enrich для распознанных ссылок добавляет `embed_url`, `provider`, `watch_url`. Произвольный URL без провайдера остаётся без embed. Плоские `video_embed_url`, `video_provider`, `video_watch_url` — только у секции с `type=video`. Объект с `url` enrich-ится, если имя ключа содержит `video`.
 
 ## Когда использовать
 
-- Фоновое видео в hero или demo-блок
-- Embed на product landing
-- Один ролик с poster и подписью
+- Фоновое видео на первом экране или в блоке с демонстрацией
+- Ролик на странице товара
+- Один ролик с обложкой и подписью
 
 ## Советы
 
-В chunk выводите enrich-поля, не только raw `url`. Галерея кадров: [gallery](gallery), не video.
+В чанке выводите адрес плеера и сервис, не только исходный `url`. Набор фотографий делают полем [gallery](gallery), не video.
 
 ## Похожие типы
 
-- [image](image) для poster static frame
-- [url](url) для простой внешней ссылки на ролик
+- [image](image) для неподвижной обложки
+- [url](url) для обычной ссылки на ролик
 
 ## Настройка
 
@@ -76,18 +76,31 @@ YouTube, Vimeo и upload в одном поле. При save enrich заполн
 }
 ```
 
-- Плоские `video_embed_url`, `video_provider`, `video_watch_url` добавляются, если имя поля содержит `video` или секция имеет `type=video`.
+- Плоские `video_*` — только секция `type=video`. Enrich объекта `{ url, … }` — если имя ключа содержит `video` (без плоских ключей).
 
 ## Пример в chunk
 
-```html
-<iframe src="{$video.embed_url|escape}" title="Video"></iframe>
-<img src="{$video.poster.url|escape}" alt="{$video.poster.title|escape}">
+::: code-group
+
+```modx
+<iframe src="[[+video.embed_url]]" title="Video"></iframe>
+[[$pagebuilder_partial_image?
+  &image=`[[+video.poster]]`
+  &alt=`[[+video.poster.title]]`
+  &class=`pb-video__poster`
+]]
 ```
+
+```fenom
+<iframe src="{$video.embed_url|escape}" title="Video"></iframe>
+{include 'pagebuilder_partial_image' image=$video.poster alt=$video.poster.title class='pb-video__poster'}
+```
+
+:::
 
 ## Примечание
 
-Плоские `video_embed_url` / `video_provider` / `video_watch_url`: только для секции `type=video` или имени поля с «video».
+Плоские `video_embed_url` / `video_provider` / `video_watch_url`: только секция `type=video`. Имя поля с «video» enrich-ит вложенный объект, не плоские ключи.
 
 ## Общие свойства
 
@@ -96,7 +109,7 @@ YouTube, Vimeo и upload в одном поле. При save enrich заполн
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

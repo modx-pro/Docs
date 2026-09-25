@@ -1,23 +1,23 @@
 ---
 title: "tablecombo"
-description: "Single id from a custom table row via optionsSource table"
+description: "Dropdown from a MODX class through optionsSource"
 ---
 
 # Field tablecombo
 
 Version: **Pro**.
 
-<!-- ![tablecombo](/components/pagebuilder/screenshots/fields/tablecombo.png) -->
+<!-- ![tablecombo](/components/pagebuilder/screenshots/fields/tablecombo.jpg) -->
 
 ## Why this type
 
-Select with search over embedded/custom table rows. Combo alternative when the source is not an xPDO class. Requires Pro and `advanced-fields` capability.
+A dropdown. Options load from a MODX class through `optionsSource` and the `mgr/field/options` processor. It is not a grid in the inspector. The row grid is [table](table). It needs PageBuilder Pro and the `advanced-fields` capability. Without `optionsSource` the list is empty.
 
 ## When to use
 
-- Pick a brand or vendor row from an MS table
-- id from a Collections column
-- Dynamic pick when modResource is wrong
+- A MODX class such as `modTemplate`
+- One row of your own xPDO class, when it has an id and a label field
+- When a [relation](relation) window is not needed
 
 ## Tips
 
@@ -38,7 +38,8 @@ ModResource picker → [relation](relation) or [combo](combo). Multiple ids → 
   "optionsSource": {
     "class": "modTemplate",
     "valueField": "id",
-    "labelField": "templatename"
+    "labelField": "templatename",
+    "limit": 50
   },
   "tab": "Content",
   "width": 100,
@@ -62,9 +63,17 @@ Key `template` in the section data: `valueField` from `optionsSource`:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+[[+template]]
+```
+
 ```fenom
 {if $template}{$template}{/if}
 ```
+
+:::
 
 ## Common properties
 

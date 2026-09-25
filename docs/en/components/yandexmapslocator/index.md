@@ -3,8 +3,11 @@ title: YandexMapsLocator
 description: 'Store locator on Yandex Maps for MODX 3. Free: map and search. Pro: open now, MiniShop3, CSV, and REST'
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/yandexmapslocator/logo.png
-modstore: https://modstore.pro/packages/utilities/yandexmapslocator
+modstore: https://modstore.pro/packages/maps/yandexmapslocator
 categories: utilities
+compatibility:
+  - modx3
+  - php82
 items: [
   {
     text: 'Getting started',

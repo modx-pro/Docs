@@ -5,13 +5,13 @@ description: "Object id name caption of selected MODX TV"
 
 # Field tv
 
-Version: **Pro**.
+Version: **Free**.
 
-<!-- ![tv](/components/pagebuilder/screenshots/fields/tv.png) -->
+<!-- ![tv](/components/pagebuilder/screenshots/fields/tv.jpg) -->
 
 ## Why this type
 
-Picker for template variable hybrid chunk. Front output `[[*{$tv.name}]]`. Pro bridge between PB section and resource TV.
+The editor picks a resource template variable (TV). On the site its value is printed as `[[*{$tv.name}]]`. The section does not copy the value. It only names which TV to read.
 
 ## When to use
 
@@ -61,9 +61,17 @@ Key `tv` in the section data:
 
 ## Chunk example
 
-```html
-[[*{$tv.name}]]
+::: code-group
+
+```modx
+[[*tvname]]
 ```
+
+```fenom
+{$_modx->resource[$tv.name]}
+```
+
+:::
 
 ## Common properties
 

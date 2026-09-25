@@ -4,6 +4,10 @@ description: Генератор демо-данных для MiniShop3 — пр�
 logo: https://modstore.pro/assets/extras/ms3demodata/logo.png
 author: modx-pro
 repository: https://github.com/modx-pro/ms3demodata
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 ---
 # MS3 Demo Data
 

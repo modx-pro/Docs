@@ -2,9 +2,7 @@
 title: AJAX API (connector)
 description: Публичные и mgr action коннектора msReviews
 ---
-
 <!-- TODO: translate from docs/components/msreviews/api.md -->
-
 # AJAX API (connector)
 
 Базовый URL:
@@ -68,7 +66,11 @@ action=request/process&key=ВАШ_КЛЮЧ
 | `mgr/review/bulk` | Массовая смена | `review_moderate` |
 | `mgr/review/moderation-log` | Журнал | `review_view` |
 | `mgr/question/list` | Список вопросов | `question_moderate` |
+| `mgr/question/create` | Ручное создание вопроса в CMP | `question_moderate` |
+| `mgr/question/update` | Редактирование вопроса в CMP | `question_moderate` |
+| `mgr/question/get` | Один вопрос для формы CMP (с `answer_text`) | `question_moderate` |
 | `mgr/question/update-status` | Статус вопроса | `question_moderate` |
+| `mgr/question/set-pinned` | Закреп вопроса | `question_moderate` |
 | `mgr/answer/create` | Ответ на вопрос | `question_moderate` |
 | `mgr/dashboard/summary` | Сводка дашборда | `review_analytics` |
 | `mgr/analytics/summary` | Расширенная аналитика | `review_analytics` |
@@ -78,12 +80,14 @@ action=request/process&key=ВАШ_КЛЮЧ
 | `mgr/media/list` | Список медиа | `review_view` |
 | `mgr/media/delete` | Удалить медиа | `review_moderate` |
 | `mgr/queue/process` | Очередь из mgr | `queue_process` |
-| `mgr/catalog/search` | Поиск папок, товаров или ресурсов | `review_analytics` |
-| `mgr/catalog/resolve` | Подписи по ID | `review_analytics` |
+| `mgr/catalog/search` | Поиск папок, товаров или ресурсов | `review_analytics` или `question_moderate` |
+| `mgr/catalog/resolve` | Подписи по ID | `review_analytics` или `question_moderate` |
 
 Полные параметры **`mgr/review/create`** и **`mgr/review/update`**: `product_id` (любой неудалённый `site_content`, не только `msProduct`), `rating` (1–5), `title`, `text`, `author_name`, `author_email`, `status`, `is_verified` (0/1). У update обязателен `id`. Опционально **`shop_reply`** при праве **`review_reply`**. Смена `product_id` пересчитывает агрегаты старого и нового ресурса.
 
-**`mgr/catalog/search`:** `type` равен `parent`, `product` или `resource`. `q` до 80 символов. `limit` от 1 до 100, по умолчанию 50. `product` ищет только `msreviews_product_class_key`. `resource` ищет любой неудалённый `site_content` (форма и фильтр отзывов в CMP). Ответ `data.items`: `{ id, label }[]`. **`mgr/catalog/resolve`** принимает те же `type` и список `ids`.
+**`mgr/question/create`** / **`update`** (только POST): `product_id` (любой неудалённый `site_content`), `text`, `author_name`, `author_email`, `status`, `notify` (0/1), опционально `answer_text`. У update обязателен `id`. Ответ пишет `AnswerService` (уведомление автора). Статус из поля формы перезаписывает авто-публикацию ответа. Быстрый `mgr/answer/create` публикует вопрос. **`mgr/question/get`**: `id`.
+
+**`mgr/catalog/search`:** `type` равен `parent`, `product` или `resource`. `q` до 80 символов. `limit` от 1 до 100, по умолчанию 50. `product` ищет только `msreviews_product_class_key`. `resource` ищет любой неудалённый `site_content` (форма и фильтр отзывов/вопросов в CMP). Ответ `data.items`: `{ id, label }[]`. **`mgr/catalog/resolve`** принимает те же `type` и список `ids`. Право: `review_analytics` или `question_moderate`.
 
 Полный список действий — в исходниках `ConnectorRegistryFactory` и [Права доступа](permissions).
 

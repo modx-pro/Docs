@@ -1,9 +1,15 @@
 ---
 title: ms3Pulse
 description: Sales dashboard and analytics for MiniShop3 — metrics, charts, export and scheduled reports
-logo: https://modstore.pro/assets/extras/ms3pulse/logo.jpg
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/ms3pulse/logo.png
+modstore: https://modstore.pro/packages/other/ms3pulse
 
+compatibility:
+  - modx3
+  - php81
+  - minishop3
+  - vue3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

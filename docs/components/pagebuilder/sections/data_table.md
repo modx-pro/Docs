@@ -7,11 +7,7 @@ description: "Строки из встроенной таблицы PageBuilder 
 
 Данные хранятся в панели управления или на вкладке **Таблицы** ресурса, а секция только выводит выбранную таблицу с лимитом строк.
 
-<!-- ![Таблица данных](/components/pagebuilder/screenshots/sections/data_table.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Таблица данных](/components/pagebuilder/screenshots/sections/data_table.jpg)
 
 ## Зачем таблица из панели управления
 
@@ -32,7 +28,7 @@ description: "Строки из встроенной таблицы PageBuilder 
 
 ## table_key и лимит
 
-В поле **Таблица** укажите `table_key` из панели управления и **Лимит** строк. Сами данные редактируются не в инспекторе секции.
+В поле **Таблица** укажите `table_key` из панели управления и **Лимит** строк. Сами данные редактируются не в инспекторе секции. Тип помечен `"cacheable": false`.
 
 ## Похожие секции
 
@@ -92,29 +88,26 @@ Fenom chunk `pagebuilder_data_table`:
 <section class="pb-section pb-section--data-table pb-data-table{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="data_table"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-data-table__inner">
     {if $title}
-      <h2 class="pb-heading pb-data-table__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-data-table__title">{$title|pb_text}</h2>
     {/if}
     {if $intro}
       <p class="pb-data-table__intro">{$intro|escape}</p>
     {/if}
     {if $table.table_key}
+      {set $resourceId = $resource_id|default:($modx->resource ? $modx->resource->get('id') : 0)}
+      {set $tableListing = $modx->runSnippet('PageBuilderTableRows', [
+        'resource_id' => $resourceId,
+        'table_key' => $table.table_key,
+        'limit' => $table.limit|default:20,
+        'return' => 'html'
+      ])}
       <div class="pb-data-table__embed">
-        {set $tableKey = $table.table_key}
-        {set $tableLimit = $table.limit|default:20}
-        {$modx->runSnippet('PageBuilderTableRows', [
-          'table_key' => $tableKey,
-          'limit' => $tableLimit,
-          'return' => 'html'
-        ])}
+        {$tableListing}
       </div>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/data_table.json`
 
 ## Связанные страницы
 

@@ -1,434 +1,136 @@
 # Headless API
 
-REST API для интеграции с SPA-приложениями (Vue, React, Svelte и др.).
+Headless API — запросы к серверу mFilter из своего кода: товары по фильтрам, SEO-адрес и данные для заголовков страницы. Нужен, когда выдачу рисует своё приложение, а не сниппет `mFilter`.
 
-## Архитектура
-
-```
-┌─────────────────┐     ┌──────────────┐     ┌─────────────┐
-│  Your App       │────▶│  FilterAPI   │────▶│  Server     │
-│  (Vue/React)    │◀────│  (JS Client) │◀────│  REST API   │
-└─────────────────┘     └──────────────┘     └─────────────┘
-         │                     │
-         │              ┌──────┴──────┐
-         │              │   Hooks     │
-         │              │  (events)   │
-         │              └─────────────┘
-         │
-    ┌────┴────┐
-    │ Custom  │
-    │   UI    │
-    └─────────┘
-```
+::: warning Значения фильтров пока не приходят
+`getSchema()`, `getFilterValues()` и `getSuggestions()` возвращают пустые списки значений, поэтому форму фильтров через Headless API сейчас не построить. Выводите форму сниппетом `mFilterForm`. Числа у значений приходят только в ответе `apply()` с `hash` — см. [Два режима](#two-modes).
+:::
 
 ## Подключение
 
-### Минимальный набор (только API)
+Скрипты подключает плагин mFilter — см. [JavaScript → Подключение](javascript#podklyuchenie). Объект `mfilter` готов к событию `mfilter:ready`:
 
-```html
-<script src="/assets/components/mfilter/js/web/core/ApiClient.js"></script>
-<script src="/assets/components/mfilter/js/web/core/FilterAPI.js"></script>
-<script src="/assets/components/mfilter/js/web/modules/hooks.js"></script>
-<script src="/assets/components/mfilter/js/web/mfilter.headless.js"></script>
-```
-
-### Конфигурация
-
-```html
-<script>
-window.mfilterConfig = {
-    apiUrl: '/assets/components/mfilter/api.php',
-    resourceId: 5,  // ID категории
-    debug: false
-};
-</script>
-```
-
-## JavaScript API
-
-### Инициализация
-
-```javascript
-// Ждём готовности
+```js
 document.addEventListener('mfilter:ready', async () => {
-    // mfilter готов к использованию
-});
-
-// Или ручная инициализация
-await mfilter.init({ resourceId: 5 });
-```
-
-### Получение схемы фильтров
-
-```javascript
-const response = await mfilter.getSchema(resourceId);
-
-if (response.success) {
-    const { filters, sort_options, limit_options } = response.data;
-
-    // filters = {
-    //     color: {
-    //         key: 'color',
-    //         type: 'checkbox',
-    //         label: 'Цвет',
-    //         values: [
-    //             { value: 'red', label: 'Красный', count: 15 },
-    //             { value: 'blue', label: 'Синий', count: 8 }
-    //         ]
-    //     },
-    //     price: {
-    //         key: 'price',
-    //         type: 'range',
-    //         label: 'Цена',
-    //         min: 100,
-    //         max: 50000,
-    //         step: 100
-    //     }
-    // }
-}
-```
-
-### Применение фильтров
-
-```javascript
-const response = await mfilter.apply(
-    { color: ['red', 'blue'], price: { min: 1000, max: 5000 } },
-    { sort: 'price-asc', page: 1, limit: 24 }
-);
-
-if (response.success) {
-    const { items, total, page, pageCount, suggestions, seo, urls } = response.data;
-
-    // items — товары (JSON или HTML)
-    // total — общее количество
-    // suggestions — обновлённые counts
-    // seo — данные для SEO
-    // urls — SEO URLs
-}
-```
-
-### Получение suggestions (counts)
-
-```javascript
-// Легковесный запрос без загрузки товаров
-const response = await mfilter.getSuggestions({ color: ['red'] });
-
-// response.data = {
-//     color: [{ value: 'red', count: 15 }, { value: 'blue', count: 8 }],
-//     size: [...],
-//     total: 150
-// }
-```
-
-### Построение SEO URL
-
-```javascript
-const response = await mfilter.buildUrl(
-    { color: ['red'] },
-    { sort: 'price-asc', page: 2 }
-);
-
-// response.data = {
-//     url: '/electronics/color_red/sort_price-asc/page_2/',
-//     canonical: '/electronics/',
-//     prev: '/electronics/color_red/sort_price-asc/'
-// }
-```
-
-### Парсинг URL
-
-```javascript
-const response = await mfilter.parseUrl('/catalog/brand_apple/color_red/');
-
-// response.data = {
-//     filters: { brand: ['apple'], color: ['red'] },
-//     tech: { sort: null, page: 1 },
-//     page: 1
-// }
-```
-
-## REST API Endpoints
-
-### GET /api/v1/filter/schema
-
-Получить схему фильтров.
-
-**Параметры:**
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `resource_id` | int | ID ресурса/категории (обязательный) |
-| `filters` | object | Текущее состояние фильтров |
-| `with_values` | bool | Включать значения (default: true) |
-| `with_counts` | bool | Включать counts (default: true) |
-
-**Ответ:**
-
-```json
-{
-    "success": true,
-    "data": {
-        "filters": {
-            "brand": {
-                "key": "brand",
-                "type": "checkbox",
-                "label": "Бренд",
-                "values": [
-                    { "value": "apple", "label": "Apple", "count": 25 }
-                ]
-            },
-            "price": {
-                "key": "price",
-                "type": "range",
-                "label": "Цена",
-                "min": 1000,
-                "max": 100000,
-                "step": 100
-            }
-        },
-        "sort_options": [
-            { "value": "price-asc", "label": "Сначала дешёвые" }
-        ],
-        "limit_options": [12, 24, 48, 96],
-        "resource_id": 5
-    }
-}
-```
-
-### POST /api/v1/filter/apply
-
-Применить фильтры и получить результаты.
-
-**Параметры:**
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `resource_id` | int | ID ресурса (обязательный) |
-| `filters` | object | Значения фильтров |
-| `sort` | string | Сортировка |
-| `page` | int | Номер страницы |
-| `limit` | int | Элементов на странице |
-| `format` | string | Формат: json или html |
-
-**Ответ:**
-
-```json
-{
-    "success": true,
-    "data": {
-        "items": [...],
-        "total": 150,
-        "page": 1,
-        "pageCount": 7,
-        "limit": 24,
-        "suggestions": { ... },
-        "seo": {
-            "title": "Apple — купить в Москве",
-            "h1": "Apple",
-            "description": "..."
-        },
-        "urls": {
-            "current": "/category/brand_apple/",
-            "canonical": "/category/",
-            "prev": null,
-            "next": "/category/brand_apple/page_2/"
-        }
-    }
-}
-```
-
-### POST /api/v1/filter/suggestions
-
-Получить только suggestions без товаров.
-
-### POST /api/v1/filter/build-url
-
-Построить SEO URL из параметров.
-
-### POST /api/v1/filter/parse-url
-
-Распарсить URL в параметры.
-
-### GET /api/v1/filter/values
-
-Получить значения одного фильтра (lazy loading).
-
-**Параметры:**
-| Параметр | Тип | Описание |
-|----------|-----|----------|
-| `resource_id` | int | ID ресурса |
-| `filter_key` | string | Ключ фильтра |
-| `search` | string | Поисковый запрос |
-| `limit` | int | Максимум значений |
-
-## Система хуков
-
-### Регистрация хуков
-
-```javascript
-// Перед применением фильтров
-mfilterHooks.add('beforeApply', async (context) => {
-    console.log('Params:', context.params);
-
-    // Модифицировать параметры
-    context.params.limit = 24;
-
-    // Отменить запрос
-    // context.cancel = true;
-    // context.cancelReason = 'Validation failed';
-});
-
-// После применения
-mfilterHooks.add('afterApply', async (context) => {
-    console.log('Result:', context.result);
-
-    // Аналитика
-    analytics.track('filter_applied', {
-        filters: context.params.filters,
-        total: context.result.data.total
-    });
-});
-
-// Обработка ошибок
-mfilterHooks.add('onError', async (context) => {
-    console.error('Error in', context.hookName, context.error);
+    const response = await mfilter.api.apply({ resource_id: 5, filters: {} });
+    console.log(response.total);
 });
 ```
 
-### Доступные хуки
+Если скрипты подключены без плагина и без `mfilter.js`, объект не запустится сам — вызовите `await mfilter.init()`.
 
-| Хук | Описание | context |
-|-----|----------|---------|
-| `beforeGetSchema` | Перед получением схемы | `{ resourceId, params, cancel }` |
-| `afterGetSchema` | После получения схемы | `{ resourceId, params, result }` |
-| `beforeApply` | Перед применением | `{ params, cancel }` |
-| `afterApply` | После применения | `{ params, result }` |
-| `beforeGetSuggestions` | Перед suggestions | `{ params, cancel }` |
-| `afterGetSuggestions` | После suggestions | `{ params, result }` |
-| `beforeBuildUrl` | Перед построением URL | `{ params, cancel }` |
-| `afterBuildUrl` | После построения URL | `{ params, result }` |
-| `onError` | При ошибке | `{ error, hookName, context }` |
+## Получить товары
 
-### Приоритеты
-
-```javascript
-// Высокий приоритет (выполнится раньше)
-mfilterHooks.add('beforeApply', handler1, 5);
-
-// Стандартный приоритет (10)
-mfilterHooks.add('beforeApply', handler2);
-
-// Низкий приоритет (выполнится позже)
-mfilterHooks.add('beforeApply', handler3, 20);
+```js
+const response = await mfilter.api.apply({
+    resource_id: 5,                       // id раздела каталога
+    filters: {
+        vendor_id: ['16'],
+        'price|min': ['1000'],
+        'price|max': ['5000'],
+    },
+    sort: 'price-asc',
+    page: 1,
+    limit: 24,
+});
 ```
 
-### Удаление хуков
+`resource_id` обязателен. Фильтры — по ключам из набора фильтров, значения — массивами. Диапазон — двумя ключами `price|min` и `price|max` или массивом `price: [1000, 5000]`. Объект `{ min, max }` сервер молча пропускает.
 
-```javascript
-const unsubscribe = mfilterHooks.add('beforeApply', handler);
-unsubscribe(); // Отписаться
+Поля ответа лежат в корне, ключа `data` нет:
 
-mfilterHooks.remove('beforeApply', handler);
-mfilterHooks.clear('beforeApply'); // Все хуки события
-mfilterHooks.clear(); // Все хуки
+| Поле | Что в нём |
+|---|---|
+| `success` | `true` |
+| `items` | Товары: `id`, `pagetitle`, `uri`, `price`, `old_price`, `thumb`, `vendor_id`, `article`… Только без `hash` |
+| `results` | HTML карточек |
+| `pagination` | HTML пагинации |
+| `total`, `page`, `pageCount` | Найдено товаров, текущая страница, всего страниц |
+| `urls` | `current` — SEO-адрес, `canonical`, `prev`, `next` |
+| `seo` | `h1`, `title`, `description`, `text`, `canonical`, `noindex` |
+| `suggestions` | Значения фильтров с числами. Только с `hash` |
+
+## Два режима {#two-modes}
+
+| | Без `hash` | С `hash` |
+|---|---|---|
+| Товары | `items` и HTML по стандартным чанкам | Только HTML — чанками и параметрами вызова `mFilter` на странице |
+| Значения фильтров с числами | Не приходят | Приходят в `suggestions` |
+
+`hash` — значение атрибута `data-mfilter-hash` в обёртке выдачи, его выводит сниппет `mFilter`. С ним сервер повторяет вызов сниппета со страницы:
+
+```js
+const hash = document.querySelector('[data-mfilter-hash]').dataset.mfilterHash;
+const response = await mfilter.api.apply({ resource_id: 5, hash, filters: { made_in: ['Германия'] } });
+
+response.suggestions.made_in.values;   // [{ value: 'Германия', count: 3051, selected: true }, …]
 ```
 
-## Пример: Vue 3
+## Адрес по фильтрам
 
-```vue
-<script setup>
-import { ref, onMounted } from 'vue'
+```js
+const built = await mfilter.api.buildUrl({ resource_id: 5, filters: { made_in: ['Германия'] }, sort: 'price-asc', page: 2 });
+built.url;        // SEO-адрес раздела с фильтром, сортировкой и страницей
 
-const filters = ref({})
-const products = ref([])
-const total = ref(0)
-const loading = ref(false)
-const schema = ref(null)
+const parsed = await mfilter.api.parseUrl({ url: built.url, resource_id: 5 });
+parsed.filters;   // { made_in: ['Германия'], … }
+parsed.page;      // 2
+```
 
-onMounted(async () => {
-    // Ждём готовности mfilter
-    if (!window.mfilter?.initialized) {
-        await new Promise(resolve => {
-            document.addEventListener('mfilter:ready', resolve, { once: true })
-        })
-    }
+`buildUrl()` возвращает `url`, `canonical` и `prev`. `parseUrl()` — `filters`, `sort` объектом `{ field, dir }`, `page`, `limit` и `unrecognized` — сегменты, которые не удалось разобрать.
 
-    // Загружаем схему
-    const schemaResponse = await mfilter.getSchema()
-    if (schemaResponse.success) {
-        schema.value = schemaResponse.data.filters
-    }
+## Ошибки
 
-    // Загружаем начальные результаты
-    await applyFilters()
-})
+Без `resource_id` и при ошибке сервера вызов бросает исключение `Error('HTTP error 400')`, а не возвращает `success: false`:
 
-async function applyFilters() {
-    loading.value = true
-
-    const response = await mfilter.apply(filters.value, {
-        sort: 'price-asc',
-        page: 1,
-        limit: 24
-    })
-
-    if (response.success) {
-        products.value = response.data.items
-        total.value = response.data.total
-        history.pushState({}, '', response.data.urls.current)
-    }
-
-    loading.value = false
+```js
+try {
+    const response = await mfilter.api.apply({ resource_id: 5, filters });
+} catch (error) {
+    console.error(error.message);
 }
-
-function toggleFilter(key, value) {
-    if (!filters.value[key]) {
-        filters.value[key] = []
-    }
-
-    const index = filters.value[key].indexOf(value)
-    if (index === -1) {
-        filters.value[key].push(value)
-    } else {
-        filters.value[key].splice(index, 1)
-    }
-
-    applyFilters()
-}
-</script>
-
-<template>
-    <div class="filter-page">
-        <aside v-if="schema">
-            <div v-for="(filter, key) in schema" :key="key">
-                <h3>{{ filter.label }}</h3>
-
-                <template v-if="filter.type === 'checkbox'">
-                    <label v-for="opt in filter.values" :key="opt.value">
-                        <input
-                            type="checkbox"
-                            :checked="filters[key]?.includes(opt.value)"
-                            @change="toggleFilter(key, opt.value)"
-                        >
-                        {{ opt.label }} ({{ opt.count }})
-                    </label>
-                </template>
-            </div>
-        </aside>
-
-        <main>
-            <div v-if="loading">Loading...</div>
-            <div v-else class="products">
-                <div v-for="product in products" :key="product.id">
-                    {{ product.pagetitle }}
-                </div>
-            </div>
-            <p>Total: {{ total }}</p>
-        </main>
-    </div>
-</template>
 ```
 
-## Совместимость
+`success: false` приходит, только если запрос отменил хук.
 
-- Headless API работает параллельно с SSR режимом
-- Один бэкенд обслуживает оба режима
-- Можно использовать оба подхода на разных страницах
+## Хуки
+
+Хуки перехватывают запросы до отправки и после ответа. Через `beforeApply` и `afterApply` проходят и запросы формы `mFilterForm`, поэтому хуком можно поменять параметры любого запроса фильтрации на странице:
+
+```js
+mfilterHooks.add('beforeApply', (ctx) => {
+    ctx.params.limit = 48;          // изменить параметры
+    // ctx.cancel = true;           // или отменить запрос
+});
+
+mfilterHooks.add('afterApply', (ctx) => {
+    console.log(ctx.result.total);
+});
+```
+
+| Хук | Что в `ctx` |
+|---|---|
+| `beforeApply`, `beforeGetSuggestions`, `beforeBuildUrl` | `params`, `cancel` |
+| `afterApply`, `afterGetSuggestions`, `afterBuildUrl` | `params`, `result` |
+| `beforeGetSchema` / `afterGetSchema` | `resourceId`, `params`, `cancel` / `result` |
+| `onError` | Упал запрос: `params`, `error`. Упал обработчик хука: `error`, `hookName`, `context` |
+
+- **Отмена.** `ctx.cancel = true` в хуке `before…` — запрос не уходит, вызов возвращает `{ success: false, message }`. Текст берётся из `ctx.cancelReason`.
+- **Порядок.** Третий аргумент `add()` — приоритет, по умолчанию `10`, меньше — раньше.
+- **Снятие.** `add()` возвращает функцию, которая снимает обработчик. Ещё есть `mfilterHooks.remove(имя, обработчик)` и `mfilterHooks.clear(имя)`.
+- **Без хуков.** `parseUrl()` и `getFilterValues()` хуки не вызывают, а `buildUrl()` при ошибке не вызывает `onError`.
+
+## Запросы без JS
+
+Адрес — `/assets/components/mfilter/api.php?route=<путь>`. Для `POST` параметры передаются телом JSON.
+
+| Метод | Путь | Параметры |
+|---|---|---|
+| `POST` | `/api/v1/filter/apply` | `resource_id`, `filters`, `sort`, `page`, `limit`, `hash` |
+| `POST` | `/api/v1/filter/build-url` | `resource_id`, `filters`, `sort`, `page`, `limit` |
+| `POST` | `/api/v1/filter/parse-url` | `url`, `resource_id` |
+| `GET` | `/api/v1/filter/schema` | `resource_id` |
+| `POST` | `/api/v1/filter/suggestions` | `resource_id`, `filters` |
+| `GET` | `/api/v1/filter/values` | `resource_id`, `filter_key`, `search`, `limit` |
+
+Последние три сейчас возвращают пустые значения фильтров.

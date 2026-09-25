@@ -1,10 +1,17 @@
 ---
 title: msBulkEditor
 description: Bulk editing of MiniShop3 products in the MODX 3 manager
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/msbulkeditor/logo.png
+modstore: https://modstore.pro/packages/ecommerce/msbulkeditor
 dependencies: [miniShop3, VueTools]
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items: [
   {
     text: 'Getting started',

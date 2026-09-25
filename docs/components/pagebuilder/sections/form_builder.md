@@ -1,0 +1,187 @@
+---
+title: "Конструктор формы"
+description: "Форма из схемы CMP Forms через FetchIt. Capability forms. Слой Pro."
+---
+
+# Конструктор формы
+
+Секция `form_builder` берёт схему из вкладки CMP **Forms**. Chunk: `pagebuilderpro_form_builder`. Нужны PageBuilder Pro, capability `forms` и пакет **FetchIt**.
+
+![Конструктор формы](/components/pagebuilder/screenshots/sections/form_builder.jpg)
+
+1. В CMP создайте схему с ключом и полями.
+2. На странице добавьте секцию и выберите ключ в поле `form`.
+3. На сайте форма уходит через [PageBuilderFetchIt](../snippets/PageBuilderFetchIt) в сниппет [PageBuilderFormBuilder](../snippets/PageBuilderFormBuilder).
+
+Поля схемы: text, email, tel, textarea, select, radio, checkbox, date, hidden, consent. У select и radio во вкладке **Forms** есть поле **Варианты**: по строке `Подпись|value` или только value. Файл в форме v1 не принимается.
+
+Сервер проверяет CSRF и honeypot `nospam`. Outbox пишется в транзакции. Письмо и webhook уходят синхронно после commit, в том же HTTP-запросе. Submissions в БД не хранятся. Неверный email submission не создаёт.
+
+Секция входит в контекст страницы, чтобы HTML-кеш не замораживал форму. `PageBuilderFetchIt` рендерит форму через Fenom.
+
+## Поля секции
+
+| Поле | Тип | Обязательно | Назначение |
+| --- | --- | --- | --- |
+| `title` | text | нет | Заголовок |
+| `intro` | textarea | нет | Текст под заголовком |
+| `form` | form | да | Ключ схемы из CMP Forms |
+
+## Рендер
+
+Без FetchIt chunk показывает лексикон `pagebuilder_fe_form_unavailable`. Если схема без полей, показывается `pagebuilder_fe_form_empty`. Иначе [PageBuilderFetchIt](../snippets/PageBuilderFetchIt) рендерит chunk `pagebuilderpro_form_builder_fields` и передаёт handler `PageBuilderFormBuilder`.
+
+## Данные секции {#vyvod-v-section-data}
+
+```json
+{
+  "title": "Заявка",
+  "intro": "Мы ответим в рабочее время.",
+  "form": "contact"
+}
+```
+
+## Шаблон chunk
+
+Fenom chunk `pagebuilderpro_form_builder`:
+
+```fenom
+{set $formKey = $form_key|default:$form|default:'form'}
+<section class="pb-section pb-section--form pb-form-builder" data-pb-section="form_builder"{if $id} id="pb-{$id|escape}"{/if}>
+  <div class="pb-section__inner pb-form-builder__inner">
+    {if $title}
+      <h2 class="pb-heading pb-form-builder__title">{$title|escape}</h2>
+    {/if}
+    {if $intro}
+      <p class="pb-form-builder__intro">{$intro|escape}</p>
+    {/if}
+
+    {if !$fetchit_available}
+      <p class="pb-form-builder__fallback" role="status">{$lex_form_unavailable|escape}</p>
+    {elseif $form_fields|count == 0}
+      <p class="pb-form-builder__fallback" role="status">{$lex_form_empty|escape}</p>
+    {else}
+      {'!PageBuilderFetchIt' | snippet : [
+        'snippet' => 'PageBuilderFormBuilder',
+        'form' => 'pagebuilderpro_form_builder_fields',
+        'form_key' => $formKey,
+        'resource_id' => $resource_id|default:0,
+        'successMessage' => ($success_message ?: $lex_success_default),
+        'validationErrorMessage' => $lex_validation_error,
+        'clearFieldsOnSuccess' => 1,
+        'form_fields' => $form_fields,
+        'form_csrf' => $form_csrf,
+        'lex_submit' => $lex_submit,
+        'lex_field_required' => $lex_field_required,
+        'lex_field_email' => $lex_field_email,
+        'lex_select_placeholder' => $lex_select_placeholder,
+        'id' => $id,
+      ]}
+    {/if}
+  </div>
+</section>
+```
+
+Fenom chunk `pagebuilderpro_form_builder_fields`:
+
+```fenom
+{set $formKey = $form_key|default:'form'}
+{set $fields = $form_fields|default:[]}
+{set $submitText = $lex_submit|default:'Submit'}
+{set $selectPlaceholder = $lex_select_placeholder|default:'—'}
+
+<form class="pb-form-builder__form fetchit-form" method="post" novalidate>
+  <input type="hidden" name="pb_form_key" value="{$formKey|escape}" />
+  <input type="hidden" name="pb_csrf" value="{$form_csrf|escape}" />
+  <input type="text" name="nospam" value="" tabindex="-1" autocomplete="off" class="pb-form-builder__honeypot" />
+
+  <div class="pb-form-builder__message pb-form-builder__message--success" data-success role="status"></div>
+  <div class="pb-form-builder__message pb-form-builder__message--error" data-validation-error role="alert"></div>
+
+  <div class="pb-form-builder__fields">
+    {foreach $fields as $field}
+      {set $fname = $field.name|default:''}
+      {if $fname == ''}{continue}{/if}
+      {set $flabel = $field.label|default:$fname}
+      {set $ftype = $field.type|default:'text'}
+      {set $frequired = $field.required|default:0}
+      {set $options = $field.options|default:[]}
+      {set $fid = "pb-{$formKey|escape}-{$fname|escape}"}
+      {set $ferr = "pb-{$formKey|escape}-{$fname|escape}-error"}
+      {if $ftype == 'hidden'}
+        <input type="hidden" name="{$fname|escape}" value="{$field.value|default:''|escape}" />
+        {continue}
+      {/if}
+      <div class="pb-form-builder__field" data-custom="{$fname|escape}">
+        {if $ftype == 'consent' || $ftype == 'checkbox'}
+          <label class="pb-form-builder__check" for="{$fid}">
+            <input type="checkbox" id="{$fid}" name="{$fname|escape}" value="1" aria-describedby="{$ferr}" {if $frequired}required aria-required="true"{/if} />
+            <span>{$flabel|escape}{if $frequired} <span class="pb-form-builder__required" aria-hidden="true">*</span>{/if}</span>
+          </label>
+        {elseif $ftype == 'textarea'}
+          <label class="pb-form-builder__label" for="{$fid}">
+            {$flabel|escape}{if $frequired} <span class="pb-form-builder__required" aria-hidden="true">*</span>{/if}
+          </label>
+          <textarea class="pb-form-builder__control" id="{$fid}" name="{$fname|escape}" rows="4" aria-describedby="{$ferr}" {if $frequired}required aria-required="true"{/if}></textarea>
+        {elseif $ftype == 'select'}
+          <label class="pb-form-builder__label" for="{$fid}">
+            {$flabel|escape}{if $frequired} <span class="pb-form-builder__required" aria-hidden="true">*</span>{/if}
+          </label>
+          <select class="pb-form-builder__control" id="{$fid}" name="{$fname|escape}" aria-describedby="{$ferr}" {if $frequired}required aria-required="true"{/if}>
+            <option value="">{$selectPlaceholder|escape}</option>
+            {foreach $options as $option}
+              {set $ovalue = $option.value|default:$option}
+              {set $olabel = $option.label|default:$ovalue}
+              <option value="{$ovalue|escape}">{$olabel|escape}</option>
+            {/foreach}
+          </select>
+        {elseif $ftype == 'radio'}
+          <fieldset class="pb-form-builder__fieldset">
+            <legend>{$flabel|escape}{if $frequired} <span class="pb-form-builder__required" aria-hidden="true">*</span>{/if}</legend>
+            {foreach $options as $option}
+              {set $ovalue = $option.value|default:$option}
+              {set $olabel = $option.label|default:$ovalue}
+              <label class="pb-form-builder__check">
+                <input type="radio" name="{$fname|escape}" value="{$ovalue|escape}" aria-describedby="{$ferr}" {if $frequired}required aria-required="true"{/if} />
+                <span>{$olabel|escape}</span>
+              </label>
+            {/foreach}
+          </fieldset>
+        {else}
+          {set $inputType = 'text'}
+          {if $ftype == 'email'}{set $inputType = 'email'}
+          {elseif $ftype == 'tel'}{set $inputType = 'tel'}
+          {elseif $ftype == 'date'}{set $inputType = 'date'}
+          {/if}
+          <label class="pb-form-builder__label" for="{$fid}">
+            {$flabel|escape}{if $frequired} <span class="pb-form-builder__required" aria-hidden="true">*</span>{/if}
+          </label>
+          <input
+            class="pb-form-builder__control"
+            id="{$fid}"
+            type="{$inputType}"
+            name="{$fname|escape}"
+            aria-describedby="{$ferr}"
+            {if $ftype == 'email'}autocomplete="email"{elseif $ftype == 'tel'}autocomplete="tel" inputmode="tel"{elseif $fname == 'name'}autocomplete="name"{elseif $fname == 'phone'}autocomplete="tel" inputmode="tel"{/if}
+            {if $frequired}required aria-required="true"{/if}
+          />
+        {/if}
+        <span class="pb-form-builder__error" id="{$ferr}" data-error="{$fname|escape}"></span>
+      </div>
+    {/foreach}
+  </div>
+
+  <button class="pb-button pb-form-builder__submit" type="submit">{$submitText|escape}</button>
+</form>
+```
+
+## Похожие секции
+
+- [Форма обратной связи](contact_form): поля собирают в инспекторе секции, не в CMP
+- [Квиз](quiz) для пошагового сценария
+- [Рассылка](newsletter): HTML-форма на внешний `action_url`, не FetchIt
+
+## Связанные страницы
+
+- [Панель управления](../cmp#forms)
+- [Каталог секций](index)

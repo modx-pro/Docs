@@ -7,11 +7,11 @@ description: "table_key limit filters config without table rows in data"
 
 Version: **Pro**.
 
-<!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.png) -->
+<!-- ![embeddedTable](/components/pagebuilder/screenshots/fields/embeddedTable.jpg) -->
 
 ## Why this type
 
-Rows load via PageBuilderTableRows snippet on front. Filters limit use_context utm in data object. Fits catalog-scale data.
+The site loads rows with the PageBuilderTableRows snippet. The section stores settings, not the rows themselves: table key, limit, filters, context, and UTM. Use it when there are too many rows to edit in the inspector.
 
 ## When to use
 
@@ -70,9 +70,20 @@ Key `table` in the section data: query config (table rows are not stored in data
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
 [[!PageBuilderTableRows? &table_key=`products` &limit=`10`]]
 ```
+
+```fenom
+{'!PageBuilderTableRows' | snippet : [
+  'table_key' => 'products',
+  'limit' => 10,
+]}
+```
+
+:::
 
 ## Common properties
 

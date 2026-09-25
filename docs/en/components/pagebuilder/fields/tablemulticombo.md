@@ -1,17 +1,17 @@
 ---
 title: "tablemulticombo"
-description: "Id array from a custom table via MultiSelect"
+description: "Several values from a MODX class through optionsSource"
 ---
 
 # Field tablemulticombo
 
 Version: **Pro**.
 
-<!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.png) -->
+<!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.jpg) -->
 
 ## Why this type
 
-Multiple row ids from the same table source. Pair to [tablecombo](tablecombo). Only ids in data, no inline rows.
+Several values from the same source as [tablecombo](tablecombo): a MODX class and `optionsSource`. In the inspector this is a searchable list, not a grid. The data stores `valueField` values only, not the rows. Without `optionsSource` the list is empty.
 
 ## When to use
 
@@ -36,7 +36,10 @@ Objects with pagetitle → [multirelation](multirelation). Static list → [mult
   "type": "tablemulticombo",
   "label": "Templates",
   "optionsSource": {
-    "class": "modTemplate"
+    "class": "modTemplate",
+    "valueField": "id",
+    "labelField": "templatename",
+    "limit": 50
   },
   "tab": "Content",
   "width": 100,
@@ -46,7 +49,7 @@ Objects with pagetitle → [multirelation](multirelation). Static list → [mult
 
 ## Value
 
-Array of ids.
+Array of `valueField` values.
 
 ## Section data {#output-in-section-data}
 
@@ -54,20 +57,27 @@ Key `templates` in the section data: array of values:
 
 ```json
 {
-  "templates": [
-    "admin",
-    "editor"
-  ]
+  "templates": [3, 5]
 }
 ```
 
 ## Chunk example
+
+::: code-group
+
+```modx
+{foreach $templates as $id}
+  <span>{$id}</span>
+{/foreach}
+```
 
 ```fenom
 {foreach $templates as $id}
   <span>{$id}</span>
 {/foreach}
 ```
+
+:::
 
 ## Common properties
 

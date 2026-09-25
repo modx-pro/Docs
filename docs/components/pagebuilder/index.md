@@ -1,10 +1,16 @@
 ---
 title: PageBuilder
 description: "Визуальный конструктор секций для MODX 3: черновик и публикация без перезаписи content ресурса"
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/pagebuilder/logo.png
+modstore: https://modstore.pro/packages/sites-themes/pagebuilder
 dependencies: [VueTools, pdoTools]
 categories: utilities
 
+compatibility:
+  - modx3
+  - php82
+  - vue3
 items: [
   {
     text: 'Начало работы',
@@ -42,6 +48,10 @@ items: [
           { text: 'PageBuilderUtmSession', link: 'snippets/PageBuilderUtmSession' },
           { text: 'PageBuilderUtmUrl', link: 'snippets/PageBuilderUtmUrl' },
           { text: 'PageBuilderTableRows', link: 'snippets/PageBuilderTableRows' },
+          { text: 'PageBuilderQuiz', link: 'snippets/PageBuilderQuiz' },
+          { text: 'PageBuilderContactForm', link: 'snippets/PageBuilderContactForm' },
+          { text: 'PageBuilderFormBuilder', link: 'snippets/PageBuilderFormBuilder' },
+          { text: 'PageBuilderFetchIt', link: 'snippets/PageBuilderFetchIt' },
         ],
       },
     ],
@@ -52,6 +62,7 @@ items: [
     items: [
       { text: 'Обзор Pro', link: 'pro' },
       { text: 'Agent API', link: 'agent-api' },
+      { text: 'REST API v1', link: 'rest-api' },
     ],
   },
   {
@@ -75,15 +86,17 @@ items: [
           { text: 'button', link: 'fields/button' },
           { text: 'checkbox', link: 'fields/checkbox' },
           { text: 'checkboxgroup', link: 'fields/checkboxgroup' },
+          { text: 'chunk', link: 'fields/chunk' },
           { text: 'color', link: 'fields/color' },
           { text: 'colorpalette', link: 'fields/colorpalette' },
           { text: 'date', link: 'fields/date' },
           { text: 'datetime', link: 'fields/datetime' },
-          { text: 'editorjs', link: 'fields/editorjs' },
+          { text: 'email', link: 'fields/email' },
           { text: 'file', link: 'fields/file' },
           { text: 'heading', link: 'fields/heading' },
           { text: 'hidden', link: 'fields/hidden' },
           { text: 'image', link: 'fields/image' },
+          { text: 'migx', link: 'fields/migx' },
           { text: 'multiselect', link: 'fields/multiselect' },
           { text: 'number', link: 'fields/number' },
           { text: 'radio', link: 'fields/radio' },
@@ -93,10 +106,13 @@ items: [
           { text: 'richtext', link: 'fields/richtext' },
           { text: 'select', link: 'fields/select' },
           { text: 'slug', link: 'fields/slug' },
+          { text: 'snippet', link: 'fields/snippet' },
+          { text: 'tag', link: 'fields/tag' },
           { text: 'text', link: 'fields/text' },
           { text: 'textarea', link: 'fields/textarea' },
           { text: 'time', link: 'fields/time' },
           { text: 'toggle', link: 'fields/toggle' },
+          { text: 'tv', link: 'fields/tv' },
           { text: 'url', link: 'fields/url' },
           { text: 'video', link: 'fields/video' },
           { text: 'xtype', link: 'fields/xtype' },
@@ -107,26 +123,33 @@ items: [
         text: 'Pro',
         link: 'fields/types',
         items: [
-          { text: 'chunk', link: 'fields/chunk' },
+          { text: 'address', link: 'fields/address' },
           { text: 'combo', link: 'fields/combo' },
           { text: 'currency', link: 'fields/currency' },
+          { text: 'datasource', link: 'fields/datasource' },
+          { text: 'daterange', link: 'fields/daterange' },
           { text: 'dependent', link: 'fields/dependent' },
+          { text: 'documents', link: 'fields/documents' },
+          { text: 'editorjs', link: 'fields/editorjs' },
           { text: 'embeddedTable', link: 'fields/embeddedTable' },
           { text: 'fieldset', link: 'fields/fieldset' },
+          { text: 'form', link: 'fields/form' },
           { text: 'gallery', link: 'fields/gallery' },
+          { text: 'icon', link: 'fields/icon' },
           { text: 'imask', link: 'fields/imask' },
           { text: 'jsongrid', link: 'fields/jsongrid' },
           { text: 'keyvalue', link: 'fields/keyvalue' },
+          { text: 'link', link: 'fields/link' },
           { text: 'map', link: 'fields/map' },
           { text: 'multicombo', link: 'fields/multicombo' },
           { text: 'multirelation', link: 'fields/multirelation' },
+          { text: 'product', link: 'fields/product' },
+          { text: 'products', link: 'fields/products' },
           { text: 'relation', link: 'fields/relation' },
-          { text: 'snippet', link: 'fields/snippet' },
+          { text: 'schedule', link: 'fields/schedule' },
           { text: 'table', link: 'fields/table' },
           { text: 'tablecombo', link: 'fields/tablecombo' },
           { text: 'tablemulticombo', link: 'fields/tablemulticombo' },
-          { text: 'tag', link: 'fields/tag' },
-          { text: 'tv', link: 'fields/tv' },
         ],
       },
     ],
@@ -140,8 +163,8 @@ items: [
         text: 'Free',
         link: 'sections/',
         items: [
+          { text: 'Видео', link: 'sections/video' },
           { text: 'Вопросы и ответы', link: 'sections/faq' },
-          { text: 'Галерея', link: 'sections/gallery' },
           { text: 'Изображение', link: 'sections/image' },
           { text: 'Карточки', link: 'sections/cards' },
           { text: 'Контакты', link: 'sections/contact' },
@@ -157,21 +180,34 @@ items: [
         text: 'Pro',
         link: 'sections/',
         items: [
-          { text: 'Видео', link: 'sections/video' },
+          { text: 'Адреса', link: 'sections/locations' },
+          { text: 'Аккордеон', link: 'sections/accordion' },
           { text: 'Вкладки', link: 'sections/tabs' },
+          { text: 'Галерея', link: 'sections/gallery' },
+          { text: 'Динамический список', link: 'sections/dynamic_list' },
+          { text: 'До и после', link: 'sections/before_after' },
+          { text: 'Загрузки', link: 'sections/downloads' },
           { text: 'Записи блога', link: 'sections/blog_posts' },
+          { text: 'Как это работает', link: 'sections/how_it_works' },
           { text: 'Карта', link: 'sections/map' },
           { text: 'Карусель галереи', link: 'sections/gallery_carousel' },
           { text: 'Карусель товаров', link: 'sections/products_carousel' },
+          { text: 'Кейс', link: 'sections/case_study' },
+          { text: 'Квиз', link: 'sections/quiz' },
           { text: 'Команда', link: 'sections/team' },
+          { text: 'Конструктор формы', link: 'sections/form_builder' },
           { text: 'Контакты с картой', link: 'sections/contact_map' },
           { text: 'Логотипы партнёров', link: 'sections/logos' },
+          { text: 'Медиа и текст', link: 'sections/media_split' },
           { text: 'Подборка товаров', link: 'sections/curated_products' },
           { text: 'Похожие товары', link: 'sections/related_products' },
+          { text: 'Портфолио', link: 'sections/portfolio' },
           { text: 'Преимущества', link: 'sections/features' },
           { text: 'Промо-баннер', link: 'sections/promo_banner' },
+          { text: 'Рассылка', link: 'sections/newsletter' },
           { text: 'Ряд брендов', link: 'sections/brands_row' },
           { text: 'Ряд категорий', link: 'sections/categories_row' },
+          { text: 'Сетка с фильтром', link: 'sections/filterable_grid' },
           { text: 'Сетка товаров', link: 'sections/products_grid' },
           { text: 'Сравнение товаров', link: 'sections/product_comparison' },
           { text: 'Структурированный контент', link: 'sections/structured_content' },
@@ -179,9 +215,32 @@ items: [
           { text: 'Таблица характеристик', link: 'sections/spec_table' },
           { text: 'Тарифы', link: 'sections/pricing_table' },
           { text: 'Товар в фокусе', link: 'sections/product_spotlight' },
+          { text: 'Уведомление', link: 'sections/notice' },
           { text: 'Форма обратной связи', link: 'sections/contact_form' },
+          { text: 'Хронология', link: 'sections/timeline' },
+          { text: 'Цитата', link: 'sections/quote' },
         ],
       },
+    ],
+  },
+  {
+    text: 'Рецепты',
+    link: 'recipes/',
+    items: [
+      { text: 'Обзор', link: 'recipes/' },
+      { text: 'Лендинг', link: 'recipes/landing' },
+      { text: 'Общие блоки', link: 'recipes/shared-blocks' },
+      { text: 'Шаблоны страниц', link: 'recipes/page-templates' },
+      { text: 'Значения по экранам', link: 'recipes/responsive' },
+      { text: 'UTM и видимость', link: 'recipes/utm' },
+      { text: 'Таблицы', link: 'recipes/tables' },
+      { text: 'Динамический список', link: 'recipes/dynamic-list' },
+      { text: 'Сетка с фильтром', link: 'recipes/filterable-grid' },
+      { text: 'Форма', link: 'recipes/form' },
+      { text: 'Сетка товаров', link: 'recipes/products' },
+      { text: 'Витрина магазина', link: 'recipes/shop-landing' },
+      { text: 'Свой тип секции', link: 'recipes/custom-section' },
+      { text: 'Токен REST', link: 'recipes/rest-read' },
     ],
   },
   { text: 'FAQ', link: 'faq' },
@@ -191,43 +250,76 @@ items: [
 
 ![Редактор секций на ресурсе](/components/pagebuilder/screenshots/mgr-sections-tab.png)
 
-Страницу вы собираете из секций во вкладке **Секции** в MODX. Пока правите, изменения остаются черновиком. После **Опубликовать** на сайт уходит та же раскладка. Обычное поле **Содержимое** ресурса для секций не используется. На витрине блоки выводит сниппет `PageBuilder`.
+Страницу собираете из секций во вкладке **Секции** в MODX. Автосохранение пишет черновик. **Сохранить** ресурса проверяет поля и публикует секции на сайт. Поле **Содержимое** для секций не используется. Сниппет `PageBuilder` выводит блоки на сайте.
 
-В боковом меню: установка, редактор, вывод на сайте, Pro, раздел разработчика, отдельные списки [типов полей](fields/types) и [секций](sections/). С чего начать: [Быстрый старт](quick-start).
+С чего начать: [Быстрый старт](quick-start).
 
-## Возможности
+## Редактор на ресурсе
 
-### Редактор на ресурсе
+Вкладка **Секции** содержит редактор:
 
-Во вкладке **Секции** таблица блоков: добавление из каталога, перетаскивание и Alt+↑/↓, дублирование, копирование секций с другой страницы. Удалённые секции попадают в корзину страницы, их можно вернуть или очистить. В инспекторе правите контент и настройки. Превью черновика открывается в drawer по подписанной ссылке, без публикации. Undo/redo работает в текущей сессии. Перед публикацией редактор проверяет обязательные поля и открывает инспектор у первой ошибки.
+- таблица или компактный редакционный список (значение по умолчанию из `pagebuilder_resource_view_mode`, тумблер в панели)
+- добавление из каталога, перетаскивание и Alt+↑/↓, дублирование, копирование секций с другой страницы
+- в редакционном списке секции включают и выключают на строках
+- удалённые секции попадают в корзину страницы
+- контент правите в модальном инспекторе **Свойства**
+- пока инспектор открыт для только что добавленной секции, автосохранение на паузе: **Отмена** откатывает черновик к состоянию до добавления
+- правила видимости (контекст, UTM) открывает кнопка **Видимость**, если включена системная настройка
+- превью черновика в выезжающей панели по подписанной ссылке
+- отмена и повтор в текущей сессии
+- перед публикацией (**Сохранить** ресурса) редактор проверяет обязательные поля
 
-### Черновик и публикация
+<!-- MEDIA: screenshot-admin | nice | Вкладка Секции: редакционный список и режим table с тумблером, несколько секций в списке | pagebuilder_resource_view_mode editorial или table на стенде -->
 
-Правки сохраняются в черновик. После **Опубликовать** та же раскладка уходит на сайт. **Снять с публикации** очищает опубликованную версию, черновик остаётся. При сохранении сервер сверяет номер ревизии, чтобы не затереть чужие правки.
+## Черновик и публикация
 
-### Free: секции и поля
+Автосохранение пишет только черновик. **Сохранить** ресурса MODX: проверка → черновик → публикация в `published_json`. **Снять с публикации** очищает опубликованную версию, черновик остаётся. При сохранении сервер сверяет номер ревизии, чтобы не затереть чужие правки.
 
-11 встроенных типов: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer. В панели управления можно править каталог, скрывать встроенные типы и добавлять свои через JSON (`pagebuilder_manage_types`). 30 типов полей в инспекторе: text, richtext, repeater, file, select и др. Часть полей поддерживает разные значения по breakpoint (responsive).
+<!-- MEDIA: diagram | must | Цикл черновик и публикация: автосохранение → только черновик; Сохранить ресурса → проверка полей → published_json; Снять с публикации → очистка published, черновик сохраняется; ветка конфликта revision | По тексту раздела «Черновик и публикация» -->
 
-### PageBuilder Pro
+## Free: секции и поля
 
-Глобальная библиотека секций, снимки версий и журнал событий, пресеты, [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами. Каталог Pro: features, video, team, tabs, карты, формы, commerce-блоки miniShop3 (сетки товаров, бренды, pricing и др.). Ещё 20 типов полей: gallery, map, relation, table, embeddedTable и др.
+11 встроенных типов: hero, richtext, faq, cta, cards, contact, stats, testimonials, image, spacer, video.
 
-### Таблицы на ресурсе
+Секцию `gallery` создаёт Pro (`authoring: pro`). Отрисовка уже созданной `gallery` на сайте работает и в Free.
 
-Вкладка **Таблицы** хранит большие наборы строк в БД: фильтры, импорт CSV/JSON, массовое удаление. На витрине строки выводит `PageBuilderTableRows`. Секция `data_table` (Pro) встраивает небольшую таблицу в JSON секции.
+В панели управления (**Blocks**) типы фильтруете чипами **Все / Из пакета / Мои**, массово скрываете предустановленные и задаёте своё превью в каталоге вместо схематичной картинки.
 
-### UTM и контексты
+35 типов полей в Free и 27 в Pro (62 всего): text, richtext, repeater, migx, file, select и др. При `pagebuilder_responsive_editor_enabled` в инспекторе появляются вкладки значений по устройствам.
 
-В панели управления задаёте реестр UTM-меток. В settings секции можно ограничить вывод по контексту MODX и по UTM. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` помогают на лендингах. В полях доступен плейсхолдер <code v-pre>{{utm:key}}</code>.
+## PageBuilder Pro
 
-### Collections и панель управления
+Глобальная библиотека (**Общие блоки**): подтянуть с другой страницы (Связать | Копировать), сквозная запись связанных секций, шаблоны страниц, журнал событий секции (View/Restore).
 
-При `collections_enabled` вкладки ресурса (секции, таблицы, iframe и др.) настраиваются в панели управления. Раздел **Компоненты → PageBuilder** ведёт каталог ресурсов с секциями и типами секций.
+Вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами.
 
-### Сниппеты, Public API и события
+Каталог Pro: [gallery](sections/gallery), features, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), блоки miniShop3. Кадрирование полей image/gallery задаёт capability `image-crop` (Pro). Секция `video` создаётся в Free. Ещё 27 типов полей: gallery, map, relation, table, embeddedTable, editorjs и др.
 
-`PageBuilder` выводит HTML секций, `PageBuilderResource` отдаёт секции другого ресурса, `PageBuilderSitemap` строит XML sitemap. [Public API](public-api) отдаёт опубликованные секции JSON для headless-фронта (`api.php`). События `pbOn*` подключают плагины к save, publish, render и регистрации типов секций. Подробнее: [workflow](workflow), [cmp](cmp), [pro](pro).
+<!-- MEDIA: screenshot-admin | nice | UI Pro: Общие блоки / подтягивание секции с другой страницы (Связать или Копировать) или вкладка Примеры в каталоге | PageBuilder Pro на тестовом стенде, синтетические страницы -->
+
+## Таблицы на ресурсе
+
+Вкладка **Таблицы** хранит большие наборы строк в БД: фильтры, импорт CSV/JSON, массовое удаление. На сайте строки выводит `PageBuilderTableRows`. Секция `data_table` (Pro) встраивает небольшую таблицу в JSON секции.
+
+## UTM и контексты
+
+Реестр UTM-меток в панели управления требует capability `utm` (Pro). Уже опубликованные правила исполняет Free. Правила видимости (контекст, UTM, Pro conditions) открывает кнопка **Видимость** в инспекторе, если включена `pagebuilder_inspector_visibility_enabled`. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` для лендингов. В полях доступен плейсхолдер <code v-pre>{{utm:key}}</code>. <!-- markdownlint-disable-line MD033 -->
+
+## Collections и панель управления
+
+Нужны PageBuilder Pro и capability `collections`. При `collections_enabled` вкладки ресурса (секции, таблицы, iframe и др.) настраиваются в панели управления. Без capability вкладки нет. Раздел **Компоненты → PageBuilder** ведёт в каталог ресурсов с секциями и типами секций.
+
+<!-- MEDIA: screenshot-admin | nice | Компоненты → PageBuilder: каталог ресурсов с секциями или экран настройки вкладок Collections | Pro + collections на стенде -->
+
+## Сниппеты, Public API и события
+
+| Что | Зачем |
+| --- | --- |
+| `PageBuilder` | HTML секций |
+| `PageBuilderResource` | секции другого ресурса |
+| `PageBuilderSitemap` | XML sitemap |
+| [Public API](public-api) | опубликованные секции JSON для headless (`api.php`) |
+| События `pbOn*` | плагины на save, publish, render и регистрацию типов |
 
 ## Системные требования
 
@@ -243,8 +335,8 @@ items: [
 
 | Дополнение | Версия | Содержимое |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.1-beta | Free: core, 11 секций, панель управления, сниппеты |
-| `pagebuilderpro` | 1.0.1-beta | Pro: зависит от `pagebuilder` ≥ 1.0.1, расширенный каталог и функции |
+| `pagebuilder` | 1.0.15-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
+| `pagebuilderpro` | 1.0.15-beta | Pro: зависит от `pagebuilder` ≥ 1.0.15, quiz, library pull, шаблоны страниц, журнал секций |
 
 Namespace в MODX: `pagebuilder`.
 
@@ -262,11 +354,12 @@ Namespace в MODX: `pagebuilder`.
 | CSS-токены и BEM секций | [Дизайн-система](design-system) |
 | JSON для headless | [Public API](public-api) |
 | Сниппеты и параметры | [Сниппеты](snippets/) |
-| Pro, корзина, пресеты | [PageBuilder Pro](pro) |
+| Pro, корзина, примеры | [PageBuilder Pro](pro) |
 | Скрипты и агенты | [Agent API](agent-api) |
 | Свои секции и расширения | [Разработчик](developer) |
-| 50 типов полей инспектора | [Справочник типов полей](fields/types) |
-| 34 встроенных блока | [Каталог секций](sections/) |
+| Лендинг, списки, формы, UTM, REST | [Рецепты](recipes/) |
+| 62 типа полей инспектора | [Справочник типов полей](fields/types) |
+| 50 встроенных блоков | [Каталог секций](sections/) |
 | Типовые ошибки | [FAQ](faq) |
 
 ## Точки входа
@@ -277,6 +370,7 @@ Namespace в MODX: `pagebuilder`.
 | `assets/components/pagebuilder/connector.php` | MGR API (VueTools) |
 | `assets/components/pagebuilder/preview.php` | Превью черновика в iframe |
 | `assets/components/pagebuilder/api.php` | Public API: опубликованные секции JSON (headless) |
+| `assets/components/pagebuilder/api/v1.php` | REST API v1 (Pro): Bearer-токены, scopes `pages.read` / `catalog.read` |
 | Сниппет `[[!PageBuilder]]` | HTML опубликованных секций на сайте |
 
 ## Права
@@ -284,7 +378,7 @@ Namespace в MODX: `pagebuilder`.
 | Permission | Назначение |
 | --- | --- |
 | `pagebuilder_view` | Вкладка «Секции», каталог, токен превью |
-| `pagebuilder_save` | Сохранение черновика и публикация (fallback: `save_document`) |
-| `pagebuilder_manage_types` | панель управления «Типы секций» (без fallback на view) |
+| `pagebuilder_save` | Сохранение черновика и публикация (запасной вариант: `save_document`) |
+| `pagebuilder_manage_types` | панель управления «Типы секций» (без запасного `view`) |
 
 Доступ к конкретному ресурсу дополнительно проверяет политика MODX (`view`, `save`).

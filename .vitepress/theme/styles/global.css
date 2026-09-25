@@ -260,40 +260,75 @@ kbd {
 }
 
 @media (min-width: 768px) {
-  .DocSearch-Button {
-    display: flex;
+  .VPNavBar .VPNavBarSearch .VPNavBarSearchButton {
     justify-content: space-between;
+    height: 40px;
+    padding: 0 10px 0 12px;
     background-color: var(--vp-c-bg-elv);
     border: 1px solid var(--vp-c-gray-soft);
     box-shadow: var(--vp-shadow-1);
   }
 
-  .DocSearch-Button:hover {
-    background-color: var(--vp-c-bg-elv);
-    border: 1px solid var(--vp-c-gray-2);
-    box-shadow: var(--vp-shadow-1);
+  .VPNavBar .VPNavBarSearch .VPNavBarSearchButton:hover {
+    border-color: var(--vp-c-gray-2);
+  }
+
+  .VPNavBarSearchButton .text {
+    margin-right: auto;
   }
 }
 
 @media (min-width: 1024px) {
-  .DocSearch-Button {
+  .VPNavBar .VPNavBarSearch .VPNavBarSearchButton {
     min-width: 200px;
   }
+}
+
+/* shortcut keys are drawn by the `.keys` box, not by the global kbd style */
+.VPNavBarSearchButton kbd {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .VPLocalSearchBox>.shell:is(div) {
   gap: 0;
   padding: 0;
-  border-radius: 8px;
+  border-radius: 0;
   background-color: var(--vp-c-bg-elv);
 }
 
 .VPLocalSearchBox>.shell>.search-bar {
   border: none;
   border-bottom: 1px solid var(--vp-c-gray-soft);
-  border-radius: 8px 8px 0 0;
+  border-radius: 0;
   padding: 12px 16px;
   background-color: var(--vp-c-bg-elv);
+}
+
+/* the modal is fullscreen on small screens */
+@media (max-width: 767px) {
+  /* the clear button covers the hamburger, so it sits on the same spot */
+  .VPLocalSearchBox>.shell>.search-bar {
+    padding-right: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  .VPLocalSearchBox>.shell:is(div) {
+    border-radius: 8px;
+  }
+
+  .VPLocalSearchBox>.shell>.search-bar {
+    border-radius: 8px 8px 0 0;
+  }
+}
+
+.VPLocalSearchBox .search-actions {
+  align-items: center;
 }
 
 .VPLocalSearchBox>.shell>.search-bar:focus-within {
@@ -345,7 +380,17 @@ kbd {
   padding: 24px;
 }
 
+/* same cross as the active hamburger: two 16px × 2px bars rotated by 45° */
 .vpi-delete {
-  --icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>');
+  --icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M6.343 6.343l11.314 11.314M17.657 6.343l-11.314 11.314"/></svg>');
   font-size: 24px !important;
+}
+
+/* Nolebase Enhanced Readabilities: VitePress social links have -16px margin-right */
+.VPSocialLinks.VPNavBarSocialLinks.social-links {
+  margin-right: 0;
+}
+
+.vp-doc tr[id] {
+  scroll-margin-top: calc(var(--vp-nav-height) + 24px);
 }

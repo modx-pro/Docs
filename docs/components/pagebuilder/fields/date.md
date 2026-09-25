@@ -7,11 +7,11 @@ description: "Дата в формате ISO без времени суток"
 
 Версия: **Free**.
 
-<!-- ![date](/components/pagebuilder/screenshots/fields/date.png) -->
+<!-- ![date](/components/pagebuilder/screenshots/fields/date.jpg) -->
 
 ## Зачем этот тип
 
-Календарь PrimeVue, не ручной ввод text. Отдельно от time и datetime. Предсказуемый формат для сортировки и Fenom.
+Календарь, а не ручной ввод. Это не время и не дата со временем: для них есть [time](time) и [datetime](datetime). Формат стабильный, дату можно сортировать в Fenom.
 
 ## Когда использовать
 
@@ -57,9 +57,17 @@ description: "Дата в формате ISO без времени суток"
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<time datetime="[[+starts_at]]">[[+starts_at]]</time>
+```
+
+```fenom
 <time datetime="{$starts_at|escape}">{$starts_at|escape}</time>
 ```
+
+:::
 
 ## Общие свойства
 
@@ -68,7 +76,7 @@ description: "Дата в формате ISO без времени суток"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

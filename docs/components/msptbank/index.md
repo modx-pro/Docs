@@ -1,10 +1,16 @@
 ---
 title: mspTBank
 description: "Приём оплаты через T-Bank для MiniShop3: redirect, webhook, чеки 54-ФЗ, одно- и двухстадийная схема, возвраты"
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/msptbank/logo.png
+modstore: https://modstore.pro/packages/payment-system/msptbank
 dependencies: miniShop3
 categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

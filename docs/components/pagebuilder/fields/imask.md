@@ -5,23 +5,23 @@ description: "Строка с маской ввода IMask в инспекто�
 
 # Поле imask
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![imask](/components/pagebuilder/screenshots/fields/imask.png) -->
+<!-- ![imask](/components/pagebuilder/screenshots/fields/imask.jpg) -->
 
 ## Зачем этот тип
 
-Телефон, ИНН, шаблон карты: маска на вводе, не только post-validation. `mask` или preset в schema. Pro advanced-fields.
+Телефон, ИНН или номер карты вводятся по маске: лишние символы отсекаются сразу, а не только при проверке перед публикацией. Маска задаётся ключами `mask` или `maskOptions` (object или JSON-строка). Alias: `mask_options` вместо `maskOptions`.
 
 ## Когда использовать
 
-- Телефон в полях contact_form
-- SKU или serial с фиксированным форматом
-- Шаблон промокода
+- Телефон в форме обратной связи
+- Артикул или серийный номер фиксированной длины
+- Промокод по шаблону
 
 ## Советы
 
-Чистое число без маски: [number](number). Значение строка с символами маски по preset.
+Чистое число без маски: [number](number). Значение — строка с символами маски.
 
 ## Похожие типы
 
@@ -61,9 +61,17 @@ description: "Строка с маской ввода IMask в инспекто�
 
 ## Пример в chunk
 
-```html
-<a href="tel:{$phone|escape}">{$phone|escape}</a>
+::: code-group
+
+```modx
+<a href="tel:[[+phone]]">[[+phone]]</a>
 ```
+
+```fenom
+<a href="tel:{$phone|escape:'url'}">{$phone|escape}</a>
+```
+
+:::
 
 ## Примечание
 
@@ -76,7 +84,7 @@ description: "Строка с маской ввода IMask в инспекто�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

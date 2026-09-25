@@ -7,11 +7,11 @@ description: "Array of key value pairs without typed columns"
 
 Version: **Pro**.
 
-<!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.png) -->
+<!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.jpg) -->
 
 ## Why this type
 
-Simpler than table for single text value column. KeyLabel and valueLabel customize captions. Free row count without column schema.
+Simpler than [table](table) when you need one text column for the value. `keyLabel` and `valueLabel` set the column captions. The row count is not limited by a column list in the schema.
 
 ## When to use
 
@@ -68,11 +68,21 @@ Key `meta` in the section data: array of pairs:
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $meta as $row}
-  <div><strong>{$row.key|escape}:</strong> {$row.value|escape}</div>
+  <div><strong>{$row.key}:</strong> {$row.value}</div>
 {/foreach}
 ```
+
+```fenom
+{foreach $meta as $row}
+  <div><strong>{$row.key|pb_text}:</strong> {$row.value|pb_text}</div>
+{/foreach}
+```
+
+:::
 
 ## Notes
 

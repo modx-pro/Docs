@@ -122,16 +122,16 @@ description: Установка MiniShop3, служебные страницы, 
 
 Точка входа: `/assets/components/minishop3/api.php?route=/api/v1/...`.
 
-| Сценарий | Эндпоинт |
+| Сценарий | Куда смотреть |
 | --- | --- |
-| Токен гостя | `GET /api/v1/customer/token/get` |
-| Каталог без токена | `GET /api/v1/product/list`, `GET /api/v1/product/get/{id}` |
-| Корзина | `/api/v1/cart/*` |
-| Checkout | `/api/v1/order/*` |
-| ЛК | `/api/v1/customer/*` (login, addresses, orders) |
-| Health | `GET /api/v1/health` |
+| Токен / cookie / Bearer | [Авторизация](development/web-api/auth) |
+| Каталог | [Каталог](development/web-api/catalog) (`product`, `category`) |
+| Корзина | [Корзина](development/web-api/cart) |
+| Checkout | [Checkout](development/web-api/checkout) (`delivery/list`, `payment/list`, order) |
+| ЛК | [Клиент](development/web-api/customer) |
+| Полная карта | [Эндпоинты](development/web-api/endpoints) |
 
-На группу `/api/v1` действуют CORS и rate limit. Полная карта: [REST API](development/api).
+На группу `/api/v1` действуют CORS и rate limit. Документация: [Web API](development/web-api/).
 
 ## Категория и товар
 
@@ -167,4 +167,4 @@ description: Установка MiniShop3, служебные страницы, 
 - [Оформление заказа](frontend/order)
 - [Заказы в админке](interface/orders)
 - [Сниппеты](snippets/)
-- [REST API](development/api)
+- [Web API](development/web-api/)

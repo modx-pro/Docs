@@ -7,11 +7,11 @@ description: "Value array from xPDO optionsSource via MultiSelect with search"
 
 Version: **Pro**.
 
-<!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.png) -->
+<!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.jpg) -->
 
 ## Why this type
 
-Multiple ids from one xPDO class. Same `optionsSource` contract as combo. Scalar ids, not pagetitle objects like relation.
+Several ids from one MODX class. The option source is the same as [combo](combo): `optionsSource`. The data stores ids, not objects with a title, unlike [relation](relation).
 
 ## When to use
 
@@ -26,7 +26,7 @@ Resource objects with titles → [multirelation](multirelation). Fixed list → 
 ## Similar types
 
 - [combo](combo) for a single xPDO value
-- [tablemulticombo](tablemulticombo) for custom table ids
+- [tablemulticombo](tablemulticombo) for several values from the same `optionsSource`
 
 ## Schema
 
@@ -60,11 +60,21 @@ Key `ids` in the section data: array of values:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+{foreach $ids as $id}
+  <span>{$id|escape}</span>
+{/foreach}
+```
+
 ```fenom
 {foreach $ids as $id}
   <span>{$id|escape}</span>
 {/foreach}
 ```
+
+:::
 
 ## Common properties
 

@@ -1,31 +1,33 @@
 ---
 title: "resourcelist"
-description: "Alias relation с тем же модальным picker и объектом id pagetitle"
+description: "Выбор одной страницы MODX: тот же picker, что у relation; тип Free"
 ---
 
 # Поле resourcelist
 
 Версия: **Free**.
 
-<!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.png) -->
+<!-- ![resourcelist](/components/pagebuilder/screenshots/fields/resourcelist.jpg) -->
 
 ## Зачем этот тип
 
-Семантика «выбор страницы» в подписи поля в панели управления. Поведение и data совпадают с [relation](relation): `searchAction` и модальный поиск из коробки.
+В панели управления поле подписано как выбор страницы. Редактор тот же, что у [relation](relation): Autocomplete с поиском, объект `{ id, pagetitle }`. Алиасы схемы: `resources`, `resource_list` → `resourcelist`.
+
+По умолчанию поиск: `searchAction` = `mgr/resources/search` (до 20 результатов). Свой connector задаётся ключом `searchAction`, как у relation.
 
 ## Когда использовать
 
 - Поле `page` или `blog_parent` в секции
 - Когда тип в схеме должен читаться редакторам как «список страниц»
-- Legacy-схемы с `type: resourcelist`
+- Устаревшие схемы с `type: resourcelist`
 
 ## Советы
 
-Функционально эквивалент [relation](relation). Несколько страниц: [multirelation](multirelation).
+Нужен Pro и capability `advanced-fields`: [relation](relation). Несколько страниц: [multirelation](multirelation).
 
 ## Похожие типы
 
-- [relation](relation): тот же picker
+- [relation](relation): тот же picker, Pro-тип
 - [multirelation](multirelation) для нескольких страниц
 
 ## Настройка
@@ -43,7 +45,7 @@ description: "Alias relation с тем же модальным picker и объ�
 
 ## Значение
 
-Как у `relation`.
+Как у `relation`: объект `{ id, pagetitle }`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -62,11 +64,19 @@ description: "Alias relation с тем же модальным picker и объ�
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span>[[+page.pagetitle]]</span>
+```
+
 ```fenom
 {if $page.id}
-  <span>{$page.pagetitle|escape}</span>
+  <span>{$page.pagetitle|pb_text}</span>
 {/if}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -75,11 +85,13 @@ description: "Alias relation с тем же модальным picker и объ�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+
+- Дополнительно: `searchAction` (по умолчанию `mgr/resources/search`).
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

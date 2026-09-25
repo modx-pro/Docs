@@ -1,12 +1,16 @@
 ---
 title: msp3YooKassa
 description: Приём оплаты через ЮKassa для MiniShop3 — одно- и двухстадийные платежи, webhook, чеки 54-ФЗ
-author: ibochkarev
-dependencies: miniShop3
-categories: minishop3
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msp3yookassa/logo.png
 modstore: https://modstore.pro/packages/payment-system/msp3yookassa
+dependencies: miniShop3
+categories: minishop3
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

@@ -57,7 +57,7 @@ The MODX resource must be published and not deleted. Filter by context with the 
 Each URL includes:
 
 - `<loc>` — full resource URL (`makeUrl`, `full` mode)
-- `<lastmod>` — resource `editedon` in ISO 8601
+- `<lastmod>` — resource `editedon`. If that field is empty, `publishedon`. If that is empty too, the request time. xPDO returns the date as a number or a datetime string. The snippet converts both to a unix timestamp and writes ISO 8601
 - `<changefreq>` and `<priority>` from snippet parameters
 
 If no pages match, an empty `<urlset>` is returned.

@@ -7,11 +7,11 @@ description: "Hex or rgba color string from a color picker"
 
 Version: **Free**.
 
-<!-- ![color](/components/pagebuilder/screenshots/fields/color.png) -->
+<!-- ![color](/components/pagebuilder/screenshots/fields/color.jpg) -->
 
 ## Why this type
 
-Picker instead of typing into text. Fits section background and accents. String value for inline CSS or variables in chunk.
+A color picker instead of typing a code into a text field. It fits a section background and an accent color. The saved value is a string: the chunk puts it into CSS, inline or as a variable.
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `accent` in the section data (HEX):
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<span style="color: [[+accent]]">…</span>
+```
+
+```fenom
 <span style="color: {$accent|escape}">…</span>
 ```
+
+:::
 
 ## Common properties
 

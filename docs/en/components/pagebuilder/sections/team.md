@@ -7,7 +7,7 @@ description: "Team cards with photo, name, role, and bio (Pro)"
 
 Team block: photo, name, role, and short bio. Multiple members render in a grid.
 
-<!-- ![Team](/components/pagebuilder/screenshots/sections/team.png) -->
+![Team](/components/pagebuilder/screenshots/sections/team.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -131,10 +131,6 @@ Fenom chunk `pagebuilderpro_team`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/team.json`
 
 ## See also
 

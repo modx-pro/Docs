@@ -117,70 +117,17 @@ MiniShop3 добавляет множество новых настроек:
 
 Manager API обслуживает Vue-админку (заказы, клиенты, утилиты). Processors в `core/components/minishop3/src/Processors/` остаются для ExtJS-панелей ресурса (категория, товар). Кастомные web-маршруты: `core/config/ms3_routes_web.custom.php`, фрагменты аддонов: `core/config/ms3.routes.d/web/*.php`.
 
-Полная карта и тела запросов: [REST API](/components/minishop3/development/api). Источник роутов: `config/routes/web.php`.
+Полная карта и тела запросов: [Web API](/components/minishop3/development/web-api/). Источник роутов: `config/routes/web.php`.
 
 ### Web API (новое в MiniShop3)
 
-Точка входа `api.php`, префикс `/api/v1`. На всю группу висят CORS, rate limit и `ServiceCheck`. Токен нужен для корзины, черновика заказа и ЛК; каталог и часть auth-эндпоинтов публичные.
+Точка входа `api.php`, префикс `/api/v1`. На всю группу висят CORS, rate limit и `ServiceCheck`. Токен (auto-mint) нужен для корзины, черновика заказа и ЛК; каталог, delivery/payment list и часть auth публичные.
 
-```http
-# Корзина (гостевой токен)
-POST /api/v1/cart/add
-POST /api/v1/cart/remove
-POST /api/v1/cart/change
-POST /api/v1/cart/change-option
-GET  /api/v1/cart/get
-POST /api/v1/cart/clean
+Краткая карта (не полная): cart, order, customer (включая `me`, `token/refresh`), product (+ filters/images/resolve), category, delivery, payment, health.
 
-# Заказ / checkout (гостевой токен)
-GET  /api/v1/order/get
-POST /api/v1/order/add
-POST /api/v1/order/set
-POST /api/v1/order/remove
-POST /api/v1/order/submit
-POST /api/v1/order/clean
-GET  /api/v1/order/cost
-GET  /api/v1/order/cost/cart
-GET  /api/v1/order/cost/delivery
-GET  /api/v1/order/cost/payment
-POST /api/v1/order/address/set
-POST /api/v1/order/address/clean
-GET  /api/v1/order/delivery/validation-rules
-GET  /api/v1/order/delivery/required-fields
+Полная таблица: [Карта эндпоинтов](/components/minishop3/development/web-api/endpoints).
 
-# Клиент: публичные
-GET  /api/v1/customer/token/get
-POST /api/v1/customer/login
-POST /api/v1/customer/register
-POST /api/v1/customer/forgot-password
-POST /api/v1/customer/reset-password
-GET  /api/v1/customer/email/verify
-
-# Клиент: с токеном (ЛК)
-POST /api/v1/customer/logout
-POST /api/v1/customer/add
-PUT  /api/v1/customer/profile
-POST /api/v1/customer/changeAddress
-POST /api/v1/customer/email/resend-verification
-GET  /api/v1/customer/addresses
-GET  /api/v1/customer/addresses/{id}
-POST /api/v1/customer/addresses
-PUT  /api/v1/customer/addresses/{id}
-DELETE /api/v1/customer/addresses/{id}
-PUT  /api/v1/customer/addresses/{id}/set-default
-GET  /api/v1/customer/orders
-GET  /api/v1/customer/orders/{id}
-POST /api/v1/customer/orders/{id}/cancel
-
-# Каталог (без токена)
-GET  /api/v1/product/get/{id}
-GET  /api/v1/product/list
-
-# Health
-GET  /api/v1/health
-```
-
-Отдельного `GET /api/v1/order/payments` нет. Список доставок и оплат на витрине отдаёт сниппет `msOrder` (серверный рендер). Черновик: `GET /api/v1/order/get` — только поля заказа/адреса (`delivery_id`, `payment_id`, `address_*`).
+Отдельного `GET /api/v1/order/payments` нет. Публичные списки: `GET /api/v1/delivery/list`, `GET /api/v1/payment/list`. Черновик: `GET /api/v1/order/get` (поля заказа/адреса). Fenom-витрина может рендерить выбор через `msOrder`.
 
 ### Авторизация API
 

@@ -7,7 +7,7 @@ description: "Сетка изображений с alt-текстом и под�
 
 Несколько фото или скриншотов в одной секции. У каждого изображения свой alt и необязательная подпись под превью.
 
-<!-- ![Галерея](/components/pagebuilder/screenshots/sections/gallery.png) -->
+![Галерея](/components/pagebuilder/screenshots/sections/gallery.jpg)
 
 ## Что даёт галерея
 
@@ -40,7 +40,7 @@ description: "Сетка изображений с alt-текстом и под�
 | Параметр | Значение |
 | --- | --- |
 | key | `gallery` |
-| Слой | Free |
+| Слой | authoring: Pro; runtime в Free |
 | Категория | медиа (`media`) |
 | Chunk | `pagebuilder_gallery` |
 | Требования | — |
@@ -104,7 +104,7 @@ Fenom chunk `pagebuilder_gallery`:
 <section class="pb-section pb-section--gallery pb-gallery{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="gallery"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-gallery__inner">
     {if $title}
-      <h2 class="pb-heading pb-gallery__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-gallery__title">{$title|pb_text}</h2>
     {/if}
     <div class="pb-gallery__grid">
       {foreach $items as $item}
@@ -119,10 +119,6 @@ Fenom chunk `pagebuilder_gallery`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/gallery.json`
 
 ## Связанные страницы
 

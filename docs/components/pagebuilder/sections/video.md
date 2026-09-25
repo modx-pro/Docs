@@ -1,17 +1,13 @@
 ---
 title: "Видео"
-description: "Встраивание ролика по URL (YouTube, Vimeo, Rutube). Слой Pro."
+description: "Встраивание ролика по URL (YouTube, Vimeo, Rutube). Слой Free."
 ---
 
 # Видео
 
-Responsive iframe по ссылке на ролик. Поддерживаются популярные хостинги. URL разбирает `VideoEmbedResolver`.
+Responsive iframe по ссылке на ролик. Поддерживаются популярные хостинги. URL разбирает `VideoEmbedResolver` при сохранении. Секция входит в Free.
 
-<!-- ![Видео](/components/pagebuilder/screenshots/sections/video.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Видео](/components/pagebuilder/screenshots/sections/video.jpg)
 
 ## URL вместо embed-кода
 
@@ -44,10 +40,10 @@ Responsive iframe по ссылке на ролик. Поддерживаютс�
 | Параметр | Значение |
 | --- | --- |
 | key | `video` |
-| Слой | Pro |
+| Слой | Free |
 | Категория | медиа (`media`) |
-| Chunk | `pagebuilderpro_video` |
-| Требования | pro |
+| Chunk | `pagebuilder_video` |
+| Требования | — |
 
 ## Поля в редакторе
 
@@ -59,7 +55,7 @@ Responsive iframe по ссылке на ролик. Поддерживаютс�
 
 ### URL видео (`video`)
 
-Тип [video](../fields/video#vyvod-v-section-data). Обязательное. URL ролика. На сайте. embed через VideoEmbedResolver.
+Тип [video](../fields/video#vyvod-v-section-data). Обязательное. URL ролика; опционально poster в объекте поля. На сайте embed через VideoEmbedResolver.
 
 ## Что видит посетитель
 
@@ -74,7 +70,7 @@ Iframe в блоке `pb-video`. Соотношение сторон сохра�
   "title": "Заголовок секции",
   "video": {
     "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "embed_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "embed_url": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
     "provider": "youtube"
   }
 }
@@ -82,7 +78,7 @@ Iframe в блоке `pb-video`. Соотношение сторон сохра�
 
 ## Шаблон chunk
 
-Fenom chunk `pagebuilderpro_video`:
+Fenom chunk `pagebuilder_video`:
 
 ```fenom
 <section class="pb-section pb-section--video pb-video{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="video"{if $id} id="pb-{$id|escape}"{/if}>
@@ -91,7 +87,7 @@ Fenom chunk `pagebuilderpro_video`:
       <h2 class="pb-heading pb-video__title">{$title|escape}</h2>
     {/if}
     {if $video_provider}
-      {var $providerLabel = $video_provider == 'youtube' ? 'YouTube' : ($video_provider == 'vimeo' ? 'Vimeo' : ($video_provider == 'rutube' ? 'Rutube' : $video_provider))}
+      {set $providerLabel = $video_provider == 'youtube' ? 'YouTube' : ($video_provider == 'vimeo' ? 'Vimeo' : ($video_provider == 'rutube' ? 'Rutube' : $video_provider))}
       <p class="pb-video__provider">{$providerLabel|escape}</p>
     {/if}
     {if $video_embed_url}
@@ -99,15 +95,11 @@ Fenom chunk `pagebuilderpro_video`:
         <iframe src="{$video_embed_url|escape}" title="{$title|default:'Video'|escape}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
     {elseif $video_watch_url}
-      <p><a class="pb-button" href="{$video_watch_url|escape}">Смотреть видео</a></p>
+      <p><a class="pb-button" href="{$video_watch_url|escape}">{'pagebuilder_fe_video_watch' | lexicon}</a></p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/video.json`
 
 ## Связанные страницы
 

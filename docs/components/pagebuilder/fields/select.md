@@ -7,12 +7,12 @@ description: "Одно значение из статического масси
 
 Версия: **Free**.
 
-<!-- ![select](/components/pagebuilder/screenshots/fields/select.png) -->
+<!-- ![select](/components/pagebuilder/screenshots/fields/select.jpg) -->
 
 ## Зачем этот тип
 
 - Список в JSON секции, без запросов к xPDO
-- На длинном перечне компактнее radio
+- Длинный перечень в том же выпадающем списке, что у [radio](radio)
 - В data пишется `value` опции, не label
 
 ## Когда использовать
@@ -70,6 +70,12 @@ description: "Одно значение из статического масси
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<div class="block block--[[+size]]"></div>
+```
+
 ```fenom
 {switch $size}
   {case 'sm'}<div class="block block--sm">{/case}
@@ -77,6 +83,8 @@ description: "Одно значение из статического масси
   {default}<div class="block">{/default}
 {/switch}
 ```
+
+:::
 
 ## Примечание
 
@@ -89,7 +97,7 @@ description: "Одно значение из статического масси
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false` — скрыть поле в инспекторе | да |

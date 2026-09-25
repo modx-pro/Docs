@@ -1,28 +1,39 @@
 ---
 title: Сниппеты
-description: Обзор сниппетов PageBuilder для вывода секций, sitemap, UTM и табличных данных
+description: Обзор сниппетов PageBuilder для вывода секций, sitemap, UTM, таблиц и FetchIt-handlers
 ---
 
 # Сниппеты PageBuilder
 
-Пакет поставляет шесть сниппетов. Namespace chunks и секций: `pagebuilder`.
+Сниппеты вывода и (в Pro) обработчики форм. Namespace chunks и секций: `pagebuilder`.
 
 | Сниппет | Назначение |
 | --- | --- |
 | [PageBuilder](PageBuilder) | HTML опубликованных секций текущего или заданного ресурса |
-| [PageBuilderResource](PageBuilderResource) | Секции другого ресурса (`resource_id` обязателен) |
+| [PageBuilderResource](PageBuilderResource) | Секции другого ресурса (`resource_id` в properties UI обязателен; `0` = текущий ресурс) |
 | [PageBuilderSitemap](PageBuilderSitemap) | XML sitemap страниц с опубликованными секциями |
 | [PageBuilderUtmSession](PageBuilderUtmSession) | UTM из query string в сессию для правил видимости секций |
 | [PageBuilderUtmUrl](PageBuilderUtmUrl) | UTM из реестра панели управления к произвольному URL |
 | [PageBuilderTableRows](PageBuilderTableRows) | Строки табличных данных ресурса (JSON или chunk) |
 
+Pro. Из шаблона не вызывайте. Чанк секции вызывает [PageBuilderFetchIt](PageBuilderFetchIt):
+
+| Сниппет | Назначение |
+| --- | --- |
+| [PageBuilderQuiz](PageBuilderQuiz) | Обработчик секции [quiz](../sections/quiz) |
+| [PageBuilderContactForm](PageBuilderContactForm) | Обработчик секции [contact_form](../sections/contact_form) |
+| [PageBuilderFormBuilder](PageBuilderFormBuilder) | Обработчик секции [form_builder](../sections/form_builder) |
+| [PageBuilderFetchIt](PageBuilderFetchIt) | Отрисовка формы через Fenom. Чанк передаёт обработчик в `snippet` |
+
 ## Порядок на типовой странице
 
-1. **PageBuilderUtmSession** в общем layout, если на странице работают UTM-правила секций (один раз на запрос, до рендера секций).
+1. **PageBuilderUtmSession** в общем layout, если на странице работают UTM-правила секций (один раз на запрос, до отрисовки секций).
 2. **PageBuilder** в шаблоне или поле content ресурса.
 3. **PageBuilderTableRows** отдельно, если таблица выводится вне секции `data_table`.
 
 Для блока с другой страницы (hero с главной, FAQ из лендинга) используйте **PageBuilderResource**.
+
+Секции `quiz`, `contact_form` и `form_builder` сами вызывают [PageBuilderFetchIt](PageBuilderFetchIt). Обработчик из шаблона не вызывайте.
 
 ## Таблица соответствий (MODX / Fenom)
 
@@ -37,7 +48,7 @@ description: Обзор сниппетов PageBuilder для вывода се�
 | URL с UTM | `[[!PageBuilderUtmUrl? &url=`/contacts/`]]` | `{'!PageBuilderUtmUrl' \| snippet : ['url' => '/contacts/']}` |
 | Строки таблицы | `[[!PageBuilderTableRows? &table_key=`prices`]]` | `{'!PageBuilderTableRows' \| snippet : ['table_key' => 'prices']}` |
 
-## Кэширование
+## Кеш
 
 `PageBuilder` и `PageBuilderResource` вызывайте некэшированно (`[[!...]]` или `{'!...' | snippet}`). Иначе MODX может отдать HTML без учёта свежей публикации.
 
