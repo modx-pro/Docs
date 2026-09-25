@@ -9,6 +9,8 @@ description: Фильтр каталога по наличию через про
 
 Документация mFilter для MiniShop3: [интеграция MiniShop3](/components/mfilter/integration/minishop3).
 
+Примеры JSON и JS ниже: контракт mFilter и MiniShop3, не этого пакета. Сверяйте их с документацией этих компонентов.
+
 ## Фильтр «только в наличии»
 
 В наборе фильтров добавьте числовой фильтр по полю `Data.stock` с нижней границей `1`.
@@ -45,7 +47,7 @@ description: Фильтр каталога по наличию через про
 
 ### Кнопка «Только в наличии»
 
-Вне формы — через [внешние фильтры](/components/mfilter/cookbook/external-filters) и [JS API](/components/mfilter/development/js-api). Ключ должен совпадать с ключом в наборе.
+Вне формы: через [внешние фильтры](/components/mfilter/cookbook/external-filters) и [JS API](/components/mfilter/development/js-api). Ключ должен совпадать с ключом в наборе.
 
 Числовой фильтр `stock`:
 

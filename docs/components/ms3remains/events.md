@@ -1,6 +1,6 @@
 ---
 title: События
-description: ms3remainsOnBeforeRemainChange, ms3remainsOnAfterRemainChange и хуки MiniShop3
+description: События остатка, проекции и хуки MiniShop3
 ---
 
 # События
@@ -9,9 +9,23 @@ description: ms3remainsOnBeforeRemainChange, ms3remainsOnAfterRemainChange и х
 
 Они срабатывают при ручной правке в manager, CSV-импорте, списании и возврате по заказу, вызове сервисного API. Если `setQuantity` получает то же число, что уже лежит в строке (`|old - target| < 0.0005`), события не вызываются. Пересчитывается только проекция.
 
-Отмена: плагин возвращает непустую строку из обработчика. `StockEventDispatcher` бросает `DomainException` с кодом `event_listener_failed` и этим текстом. Работает и для Before, и для After. Если сервис владеет транзакцией, изменение откатывается.
+Отмена: плагин возвращает непустую строку из обработчика. `StockEventDispatcher` бросает `DomainException` с кодом `event_listener_failed` и этим текстом. Правило одно для Before и After. Если сервис владеет транзакцией, изменение откатывается.
 
 События компонента регистрируются при установке пакета. Создайте свой плагин и повесьте его на нужные события.
+
+```mermaid
+flowchart TB
+  delta{"Количество реально меняется?"}
+  delta -->|нет| onlyProj["Только проекция"]
+  delta -->|да| before["ms3remainsOnBeforeRemainChange"]
+  before --> cancel1{"Плагин вернул текст?"}
+  cancel1 -->|да| fail["Откат"]
+  cancel1 -->|нет| write["Запись количества и проекция"]
+  write --> after["ms3remainsOnAfterRemainChange"]
+  after --> cancel2{"Плагин вернул текст?"}
+  cancel2 -->|да| fail
+  cancel2 -->|нет| commit["commit"]
+```
 
 ## `ms3remainsOnBeforeRemainChange`
 
@@ -39,11 +53,11 @@ description: ms3remainsOnBeforeRemainChange, ms3remainsOnAfterRemainChange и х
 | `comment` | string | комментарий |
 | `user_id` | int | id пользователя |
 
-Здесь удобно писать журнал аудита или проверять низкий остаток. Не отправляйте email и webhook до commit: при откате транзакции письмо уже уйдёт. Непустая строка из After тоже откатывает операцию.
+Здесь удобно писать журнал аудита или проверять низкий остаток. Не отправляйте email и webhook до commit. При откате транзакции письмо уже уйдёт. Непустая строка из After тоже откатывает операцию.
 
 ## Примеры плагинов
 
-Все примеры ниже — тело плагина. Создайте элемент Plugin, привяжите к событиям из `switch`.
+Все примеры ниже: тело плагина. Создайте элемент Plugin, привяжите к событиям из `switch`.
 
 ### Лимит количества при ручной правке
 
@@ -66,7 +80,7 @@ switch ($modx->event->name) {
 
 ### Запрет уменьшения из manager
 
-Списание по заказу (`user_id = 0`) проходит. Ручное уменьшение из UI или CSV — нет.
+Списание по заказу (`user_id = 0`) проходит. Ручное уменьшение из UI или CSV не проходит.
 
 ```php
 <?php
@@ -104,7 +118,7 @@ switch ($modx->event->name) {
 
 ### Чтение товара, варианта и опций
 
-`StockIdentity` — readonly-объект с публичными полями.
+`StockIdentity`: readonly-объект с публичными полями.
 
 ```php
 <?php
@@ -261,9 +275,21 @@ switch ($modx->event->name) {
 }
 ```
 
-Остаток в БД хранится как `DECIMAL(12,3)`. Перед записью через API можно дополнительно отсечь нежелательные значения в Before, как в примере выше.
+Остаток в БД хранится как `DECIMAL(12,3)`. Перед записью через API нежелательные значения можно отсечь в Before, как в примере выше.
 
 ## События MiniShop3, которые слушает компонент
+
+```mermaid
+flowchart TB
+  add["msOnBeforeAddToCart"] --> cartCheck["Проверка остатка"]
+  change["msOnBeforeChangeInCart"] --> cartCheck
+  create["msOnBeforeCreateOrder"] --> orderCheck["Проверка всех строк"]
+  svc["OrderStatusService"] --> before["msOnBeforeChangeOrderStatus"]
+  before --> beforeCheck["Проверки до списания"]
+  svc --> after["msOnChangeOrderStatus"]
+  after --> apply["Списание или возврат"]
+  remove["msOnRemoveOrder"] --> refund["Возврат списанного"]
+```
 
 | Событие | Реакция |
 | --- | --- |
@@ -278,3 +304,14 @@ switch ($modx->event->name) {
 Смену статуса запускайте через OrderStatusService MiniShop3. Прямой `$order->set('status_id')->save()` эти события не вызывает, остаток не спишется.
 
 Подробнее про списание: [Заказы](orders).
+
+## События проекции
+
+После записи `msProductData.stock` и `ms3Variants.count` вызываются `ms3remainsOnProductStockProjected` и `ms3remainsOnVariantStockProjected`. Пакет их не создаёт при установке. Чтобы повесить плагин, добавьте события вручную: **Система → События**.
+
+| Событие | Когда | Параметры |
+| --- | --- | --- |
+| `ms3remainsOnProductStockProjected` | после записи `stock` | `product_id`, `old_stock`, `new_stock` |
+| `ms3remainsOnVariantStockProjected` | после записи `count` | `product_id`, `variant_id`, `old_count`, `new_count` |
+
+Событие варианта срабатывает, только если поле `count` действительно изменилось.
