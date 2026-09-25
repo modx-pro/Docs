@@ -31,8 +31,8 @@ importers:
         specifier: ^2.3.2
         version: 2.3.2
       '@gulomov/fenom-tmlanguage':
-        specifier: ^2.1.2
-        version: 2.1.2
+        specifier: ^2.1.3
+        version: 2.1.3
       '@gulomov/modx-tmlanguage':
         specifier: ^2.1.0
         version: 2.1.0
@@ -401,8 +401,8 @@ packages:
   '@docsearch/sidepanel-js@4.7.0':
     resolution: {integrity: sha512-A8r34jCU8kcIk2viECEn2msA28ojUF1BLi/3v5OWWc5G2N3jOuuumBXoeYjfr8dA0UxgFSy5R2bt12dnFJQSyA==}
 
-  '@gulomov/fenom-tmlanguage@2.1.2':
-    resolution: {integrity: sha512-FrgCTaly509/IoAPhrEacpdGoLdh3j5el3lATyDcASrjPDoFf78W33pPa+3ug4Nse4ymPzVi2wOf3WFu4VUFog==}
+  '@gulomov/fenom-tmlanguage@2.1.3':
+    resolution: {integrity: sha512-umsQ+VG9S/s290HzQdlyq58OmKUw/dKXnYgRryW5DrIYYtASPVIAfH40+ahfqgfZrv/AJhf/P2WSeCAUxpGh9Q==}
     engines: {node: '>=12'}
 
   '@gulomov/modx-tmlanguage@2.1.0':
@@ -2815,7 +2815,7 @@ snapshots:
 
   '@docsearch/sidepanel-js@4.7.0': {}
 
-  '@gulomov/fenom-tmlanguage@2.1.2': {}
+  '@gulomov/fenom-tmlanguage@2.1.3': {}
 
   '@gulomov/modx-tmlanguage@2.1.0': {}
 
