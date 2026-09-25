@@ -23,21 +23,19 @@ items: [
 
 Сумма уходит с двумя знаками после запятой. Валюта по умолчанию RUB.
 
-Уведомление подписано секретом API. Эту проверку выключить нельзя. Чек 54-ФЗ, если он включён, уходит вместе со счётом. Для чека в заказе нужен email.
+Уведомление подписано секретом API. Проверку подписи выключить нельзя. Чек 54-ФЗ, если он включён, уходит вместе со счётом. Для чека в адресе заказа нужен email или телефон.
 
 Старый пакет `mspCloudPayments` при установке не удаляется.
 
 - [Документация API](https://developers.cloudpayments.ru/)
 - [Кабинет](https://merchant.cloudpayments.ru/)
 
-Пространство имён настроек: **`msp3cloudpayments`**. Уведомления: `assets/components/msp3cloudpayments/webhook.php`.
-
 ## Возможности
 
 - Обычная оплата, деньги списываются сразу: способ **Оплата через CloudPayments**.
 - Холд, деньги сначала блокируются: способ **Оплата через CloudPayments (двухстадийная)**. Заказ станет оплаченным после списания или уведомления Confirm.
 - Шесть адресов уведомлений: оплата, проверка, отказ, подтверждение, возврат, отмена.
-- Проверка перед оплатой статус заказа не меняет. Она ищет попытку и сверяет сумму.
+- Проверка перед оплатой статус заказа не меняет. Она ищет попытку по `ms3_ref` и сверяет сумму с суммой попытки.
 - Во вкладке заказа: списание холда, отмена холда, возврат, отмена неоплаченного счёта, запрос статуса у CloudPayments.
 - Номер счёта пакет сохраняет сам. Отмена неоплаченного счёта webhook не ждёт.
 
@@ -50,18 +48,21 @@ items: [
 | MODX Revolution | 3.0+ |
 | MiniShop3 | 1.14.0-beta1 и новее |
 | PHP | 8.2+ |
+| pdoTools | 3.0.0 и новее |
 | Доступ | Public ID и API Secret сайта |
-| Чек 54-ФЗ | email в заказе |
-| Сайт | HTTPS на webhook без 301 |
+| Чек 54-ФЗ | email или телефон в адресе заказа |
+| Сайт | HTTPS на webhook без редиректа 301 |
 
 ### Зависимости
 
 - [MiniShop3](/components/minishop3/): заказы и способы оплаты.
+- pdoTools: зависимость транспорта пакета при установке через **Управление пакетами**.
 
 ## Установка
 
 1. Установите **MiniShop3**.
-2. Добавьте провайдер **modstore.pro** (**Система → Управление пакетами → Провайдеры**): URL `https://modstore.pro/extras/`, email и API-ключ из личного кабинета modstore.
+2. Добавьте провайдер **modstore.pro** (**Система → Управление пакетами → Провайдеры**).
+   URL: `https://modstore.pro/extras/`. Email и API-ключ из личного кабинета modstore.
 3. Установите пакет **msp3CloudPayments** через **Управление пакетами** (в **Show Details** выберите провайдер **modstore.pro**).
 4. **Очистите кэш** MODX.
 
@@ -72,13 +73,23 @@ items: [
 | Оплата через CloudPayments | `Msp3CloudPayments\Payment\CloudPaymentsPayment` |
 | Оплата через CloudPayments (двухстадийная) | `Msp3CloudPayments\Payment\CloudPaymentsTwoStagePayment` |
 
-Ключи удобнее хранить в `msPayment.properties`: `public_id`, `api_secret`, `secret`, `webhook_secret`. Если properties пусты, пакет читает системные настройки.
+Пространство имён настроек: **`msp3cloudpayments`**.
+
+Счёт и вкладка заказа берут ключи по цепочке:
+
+1. Непустые `msPayment.properties`: `public_id` или `login`, `api_secret`, `secret`, `webhook_secret`, `secret_key`.
+2. `msp3cloudpayments_*`.
+3. `mspcloudpayments_*`.
+
+Кеш не подставляет ключи.
+
+`webhook.php` считает HMAC по той же цепочке. Секрет только в `properties` активного способа достаточен.
 
 Откуда брать Public ID и секрет: [Быстрый старт](quick-start#откуда-брать-ключи).
 
 ## Быстрая настройка уведомлений
 
-В кабинете CloudPayments укажите шесть адресов. Общий вид:
+Файл уведомлений: `assets/components/msp3cloudpayments/webhook.php`. В кабинете CloudPayments укажите шесть адресов. Общий вид:
 
 ```text
 https://ваш-домен.ru/assets/components/msp3cloudpayments/webhook.php?event=pay
@@ -86,7 +97,7 @@ https://ваш-домен.ru/assets/components/msp3cloudpayments/webhook.php?eve
 
 Вместо `pay` подставьте `check`, `fail`, `confirm`, `refund`, `cancel`. Полный список: [Быстрый старт](quick-start#шаг-3-шесть-адресов-уведомлений).
 
-JSON-адрес ядра MiniShop3 для этих уведомлений не подходит. CloudPayments шлёт обычную форму.
+JSON-маршрут ядра MiniShop3 для этих уведомлений не подходит. CloudPayments шлёт обычную форму.
 
 ## Архитектура
 
