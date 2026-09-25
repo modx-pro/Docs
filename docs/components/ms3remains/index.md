@@ -53,9 +53,9 @@ items: [
 
 # ms3Remains
 
-**ms3Remains** — дополнение для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): остатки товаров по комбинациям опций. Одна строка отвечает на вопрос «сколько единиц с таким набором опций лежит на остатке».
+**ms3Remains** дополняет [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): остатки товаров по комбинациям опций. Одна строка отвечает, сколько единиц с таким набором опций лежит на остатке.
 
-Пример. У футболки есть опции `color` и `size`. Вы указываете их в `ms3remains_option_keys`, и компонент ведёт отдельный остаток для каждой пары: «красная / M», «красная / L», «синяя / M». Товар без опций работает с одной базовой строкой. Пустой `ms3remains_option_keys` не отключает опции в корзине: в расчёт остатка войдут все опции, которые покупатель передал с товаром.
+Пример. У футболки есть опции `color` и `size`. Укажите их в `ms3remains_option_keys`. Компонент ведёт отдельный остаток для каждой пары: «красная / M», «красная / L», «синяя / M». Товар без опций работает с одной базовой строкой. Пустой `ms3remains_option_keys` не отключает опции в корзине: в расчёт остатка войдут все опции, которые покупатель передал с товаром.
 
 С чего начать: [Быстрый старт](quick-start).
 
@@ -99,41 +99,50 @@ items: [
 
 ## Модель
 
-- Остаток — число `DECIMAL(12,3)` в таблице `ms3remains_remains`. Дробные значения подходят для весовых и мерных товаров.
+- Остаток: число `DECIMAL(12,3)` в таблице `ms3remains_remains`. Дробные значения подходят для весовых и мерных товаров.
 - Комбинация опций кодируется полем `options_hash`. Одинаковые наборы дают один и тот же код независимо от порядка ключей и типа значения.
 - Товар отслеживается, если у него есть хотя бы одна строка остатка. Без строк проверки корзины и заказа его пропускают.
-- Истории изменений нет. Остаток меняется через manager UI, CSV-импорт или сервисный API. Кто и когда менял — по `updatedon` строки и по логу событий MODX, если пишете их в плагине на [события](events) компонента.
+- Истории изменений нет. Остаток меняется через manager UI, CSV-импорт или сервисный API. Кто и когда менял: смотрите `updatedon` строки и лог событий MODX, если пишете их в плагине на [события](events) компонента.
 
 ## Что происходит с заказами
 
+```mermaid
+flowchart TB
+  cart["Корзина: проверка опций и остатка"] --> deduct["Статус списания"]
+  deduct --> check["Проверка остатка"]
+  check -->|мало| rollback["Откат статуса"]
+  check -->|ок| write["Запись списания и уменьшение"]
+  write --> refund["Статус возврата или удаление"]
+  refund --> back["Возврат остатка"]
+```
+
 1. Покупатель добавляет товар в корзину. Компонент проверяет выбранные опции и достаточность остатка.
-2. Заказ переходит в статус из `ms3remains_deduct_statuses`. Компонент списывает остаток по каждой строке. Повторный переход в тот же статус не списывает дважды.
+2. Заказ переходит в статус из `ms3remains_deduct_statuses`. Компонент проверяет остаток, пишет строку списания и уменьшает количество. Повтор в тот же статус не списывает снова. Если остатка уже меньше количества строки, проверка до записи списания откатит статус.
 3. Заказ переходит в статус из `ms3remains_refund_statuses` или удаляется. Компонент возвращает списанное.
 
 ## Системные требования
 
 | Требование | Версия |
 | --- | --- |
-| MODX Revolution | 3.x |
-| PHP | 8.2 или 8.3 |
-| MiniShop3 | 1.13.0-beta1 и совместимые сборки той же ветки |
-| VueTools | 1.2.0-pl и новее (`vuetools/theme` в Import Map) |
-| pdoTools | 3.x |
-| MySQL | 5.7+ |
-| MariaDB | 10.3+ |
+| MODX Revolution | 3.0.0 и новее |
+| PHP | 8.2 и новее |
+| MiniShop3 | 1.13.0 и новее |
+| VueTools | 1.2.0 и новее (`vuetools/theme` в Import Map) |
+| pdoTools | 3.0.0 и новее |
+| СУБД | как у MODX 3. Ориентир: MySQL 5.7+ или MariaDB 10.3+. Пакет версию СУБД не проверяет |
 
 ### Зависимости
 
-- **[MiniShop3](/components/minishop3/)** — товары, заказы, статусы
-- **VueTools** — manager UI (тема `vuetools.theme`: `aura` или `modx`)
-- **pdoTools** — рекомендуется для примеров Fenom
+- **[MiniShop3](/components/minishop3/)**: товары, заказы, статусы
+- **VueTools**: manager UI (тема `vuetools.theme`: `aura` или `modx`)
+- **pdoTools**: обязателен (`>=3.0.0`). Нужен для примеров Fenom и вызова сниппета на витрине
 
 ### Опционально
 
 | Компонент | Роль |
 | --- | --- |
 | [ms3Variants](/components/ms3variants/) | варианты с отдельным `count` |
-| CommerceBridge1C | каталог и цены. Запись остатков без Sync-адаптера не поддерживается |
+| CommerceBridge1C | обнаруживается по ключу `cb1c_enabled`. Как он пишет `stock`, в этом пакете не видно |
 
 ### Inventory MiniShop3
 
@@ -141,7 +150,7 @@ items: [
 
 ### Права файловой системы
 
-Transport package пишет:
+Пакет пишет:
 
 - `core/components/ms3remains/`
 - `assets/components/ms3remains/`
@@ -150,16 +159,26 @@ Transport package пишет:
 
 Каталог `core/config/` должен быть доступен на запись при установке.
 
-ms3Remains не меняет файлы MiniShop3, ms3Variants и CommerceBridge1C. Интеграция идёт через DI-фрагменты, события и таблицы с префиксом `ms3remains_`.
+ms3Remains не меняет файлы MiniShop3, ms3Variants и CommerceBridge1C. Интеграция идёт через фрагменты MiniShop3, события и таблицы с префиксом `ms3remains_`.
 
 ## Установка
 
+<!-- MEDIA: screenshot-admin | must | Extras → Installer: установка пакета ms3Remains на тестовом стенде | MODX 3, синтетический стенд, пакет ms3Remains в списке Extras -->
+
 1. [Подключите репозиторий ModStore](https://modstore.pro/info/connection). Для зашифрованного transport нужен провайдер `modstore.pro`, иначе установка падает с `Package provider not found`.
 2. Установите **MiniShop3**, **VueTools** и **pdoTools**.
-3. **Extras → Installer** — установите **ms3Remains**.
+3. **Extras → Installer**: установите **ms3Remains**.
 4. **Настройки → Очистить кэш**.
 
-Установка создаёт namespace `ms3remains`, меню и controller manager, plugin и события, system settings, policy template и policy, таблицы `ms3remains_remains` и `ms3remains_order_deductions`, фрагменты MiniShop3 для сервиса статуса заказа и manager API.
+Установка создаёт:
+
+- namespace `ms3remains`
+- меню и controller manager
+- plugin и события
+- system settings
+- policy template и policy
+- таблицы `ms3remains_remains` и `ms3remains_order_deductions`
+- фрагменты MiniShop3 для сервиса статуса заказа и manager API
 
 Компонент ставится выключенным: `ms3remains_enabled = false`. Таблицы пустые.
 
@@ -176,7 +195,7 @@ ms3Remains не меняет файлы MiniShop3, ms3Variants и CommerceBridge
 | --- | --- | --- |
 | Меню есть, страницы пустые | нет VueTools или пустой `vue-dist` | проверьте VueTools |
 | Вкладка товара без стилей | нет CSS из `vue-dist` | плагин подключает первый существующий файл: `ms3remains-manager.css`, затем `ms3remains-product-tab.css` |
-| Таблиц нет | resolver миграций упал | смотрите error log MODX, переустановите пакет |
+| Таблиц нет | resolver миграций упал | смотрите error log MODX, переустановите пакет. Повтор из репозитория пакета: `composer migrate` или `php core/components/ms3remains/bin/migrate.php`. Это не замена resolver при установке с ModStore |
 | API 404 | нет route fragment | проверьте `core/config/ms3.routes.d/manager/50-ms3remains.php` и кэш |
 | Статус заказа не списывает | нет service fragment или компонент выключен | проверьте `50-ms3remains.php` и `ms3remains_enabled` |
 
