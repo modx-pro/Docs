@@ -4,6 +4,8 @@ description: A convenient System Settings and Events page for MODX 2 and 3
 logo: https://modstore.pro/assets/extras/easysettings/logo.png
 author: GulomovCreative
 categories: utilities
+modstore: https://modstore.pro/packages/utilities/easysettings
+modx: https://extras.modx.com/package/easysettings
 
 items:
   - text: Interface

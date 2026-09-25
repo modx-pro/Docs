@@ -5,6 +5,7 @@ logo: https://modstore.pro/assets/extras/modsizecontrol/logo.png
 author: GulomovCreative
 categories: utilities
 modstore: https://modstore.pro/packages/utilities/modsizecontrol
+modx: https://extras.modx.com/package/modsizecontrol
 
 items:
   - text: Quick start

@@ -4,6 +4,7 @@ description: Favicons from the RealFaviconGenerator editor right in the MODX 2 a
 logo: https://modstore.pro/assets/extras/easyfavicon/logo.png
 author: GulomovCreative
 categories: utilities
+modstore: https://modstore.pro/packages/utilities/easyfavicon
 
 items:
   - text: Quick start
