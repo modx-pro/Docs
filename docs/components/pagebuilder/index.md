@@ -165,7 +165,6 @@ items: [
         items: [
           { text: 'Видео', link: 'sections/video' },
           { text: 'Вопросы и ответы', link: 'sections/faq' },
-          { text: 'Галерея', link: 'sections/gallery' },
           { text: 'Изображение', link: 'sections/image' },
           { text: 'Карточки', link: 'sections/cards' },
           { text: 'Контакты', link: 'sections/contact' },
@@ -184,6 +183,7 @@ items: [
           { text: 'Адреса', link: 'sections/locations' },
           { text: 'Аккордеон', link: 'sections/accordion' },
           { text: 'Вкладки', link: 'sections/tabs' },
+          { text: 'Галерея', link: 'sections/gallery' },
           { text: 'Динамический список', link: 'sections/dynamic_list' },
           { text: 'До и после', link: 'sections/before_after' },
           { text: 'Загрузки', link: 'sections/downloads' },
@@ -251,43 +251,76 @@ items: [
 
 ![Редактор секций на ресурсе](/components/pagebuilder/screenshots/mgr-sections-tab.png)
 
-Страницу вы собираете из секций во вкладке **Секции** в MODX. Автосохранение пишет черновик. **Сохранить** ресурса MODX проверяет поля и публикует секции на сайт. Обычное поле **Содержимое** ресурса для секций не используется. На витрине блоки выводит сниппет `PageBuilder`.
+Страницу собираете из секций во вкладке **Секции** в MODX. Автосохранение пишет черновик. **Сохранить** ресурса проверяет поля и публикует секции на сайт. Поле **Содержимое** для секций не используется. Сниппет `PageBuilder` выводит блоки на сайте.
 
-В боковом меню: установка, редактор, вывод на сайте, Pro, раздел разработчика, отдельные списки [типов полей](fields/types) и [секций](sections/). С чего начать: [Быстрый старт](quick-start).
+С чего начать: [Быстрый старт](quick-start).
 
-## Возможности
+## Редактор на ресурсе
 
-### Редактор на ресурсе
+Вкладка **Секции** содержит редактор:
 
-Во вкладке **Секции**: таблица или компактный редакционный список (default из `pagebuilder_resource_view_mode`, тумблер в toolbar). Добавление из каталога, перетаскивание и Alt+↑/↓, дублирование, копирование секций с другой страницы. В редакционном списке включаете и выключаете секции на строках. Удалённые секции попадают в корзину страницы. Контент правите в модальном инспекторе **Свойства**. Пока инспектор открыт для только что добавленной секции, автосохранение стоит на паузе: **Отмена** откатывает черновик к состоянию до добавления. Правила видимости (контекст, UTM) открывает кнопка **Видимость**, если включена системная настройка. Превью черновика в drawer по подписанной ссылке. Undo/redo в текущей сессии. Перед публикацией (Save ресурса) редактор проверяет обязательные поля.
+- таблица или компактный редакционный список (значение по умолчанию из `pagebuilder_resource_view_mode`, тумблер в панели)
+- добавление из каталога, перетаскивание и Alt+↑/↓, дублирование, копирование секций с другой страницы
+- в редакционном списке секции включают и выключают на строках
+- удалённые секции попадают в корзину страницы
+- контент правите в модальном инспекторе **Свойства**
+- пока инспектор открыт для только что добавленной секции, автосохранение на паузе: **Отмена** откатывает черновик к состоянию до добавления
+- правила видимости (контекст, UTM) открывает кнопка **Видимость**, если включена системная настройка
+- превью черновика в выезжающей панели по подписанной ссылке
+- отмена и повтор в текущей сессии
+- перед публикацией (**Сохранить** ресурса) редактор проверяет обязательные поля
 
-### Черновик и публикация
+<!-- MEDIA: screenshot-admin | nice | Вкладка Секции: редакционный список и режим table с тумблером, несколько секций в списке | pagebuilder_resource_view_mode editorial или table на стенде -->
 
-Autosave пишет только черновик. **Сохранить** ресурса MODX: validate → черновик → публикация в `published_json`. **Снять с публикации** очищает опубликованную версию, черновик остаётся. При сохранении сервер сверяет номер ревизии, чтобы не затереть чужие правки.
+## Черновик и публикация
 
-### Free: секции и поля
+Автосохранение пишет только черновик. **Сохранить** ресурса MODX: проверка → черновик → публикация в `published_json`. **Снять с публикации** очищает опубликованную версию, черновик остаётся. При сохранении сервер сверяет номер ревизии, чтобы не затереть чужие правки.
 
-12 встроенных типов: hero, richtext, gallery, faq, cta, cards, contact, stats, testimonials, image, spacer, video. Новую `gallery` создаёт Pro, рендер остаётся в Free. В панели управления (**Blocks**) фильтруете типы чипами **Все / Из пакета / Мои**, массово скрываете предустановленные и задаёте своё превью в каталоге вместо схематичной картинки. 35 типов полей в Free и 27 в Pro (62 всего): text, richtext, repeater, migx, file, select и др. При `pagebuilder_responsive_editor_enabled` в инспекторе появляются вкладки значений по устройствам.
+<!-- MEDIA: diagram | must | Цикл черновик и публикация: автосохранение → только черновик; Сохранить ресурса → проверка полей → published_json; Снять с публикации → очистка published, черновик сохраняется; ветка конфликта revision | По тексту раздела «Черновик и публикация» -->
 
-### PageBuilder Pro
+## Free: секции и поля
 
-Глобальная библиотека (**Общие блоки**): pull с другой страницы (Связать | Копировать), write-through linked-секций, шаблоны страниц, журнал событий секции (View/Restore). Вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами. Каталог Pro: features, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), commerce-блоки miniShop3. Секция `video` создаётся в Free. Ещё 27 типов полей: gallery, map, relation, table, embeddedTable, editorjs и др.
+11 встроенных типов: hero, richtext, faq, cta, cards, contact, stats, testimonials, image, spacer, video.
 
-### Таблицы на ресурсе
+Секцию `gallery` создаёт Pro (`authoring: pro`). Отрисовка уже созданной `gallery` на сайте работает и в Free.
 
-Вкладка **Таблицы** хранит большие наборы строк в БД: фильтры, импорт CSV/JSON, массовое удаление. На витрине строки выводит `PageBuilderTableRows`. Секция `data_table` (Pro) встраивает небольшую таблицу в JSON секции.
+В панели управления (**Blocks**) типы фильтруете чипами **Все / Из пакета / Мои**, массово скрываете предустановленные и задаёте своё превью в каталоге вместо схематичной картинки.
 
-### UTM и контексты
+35 типов полей в Free и 27 в Pro (62 всего): text, richtext, repeater, migx, file, select и др. При `pagebuilder_responsive_editor_enabled` в инспекторе появляются вкладки значений по устройствам.
 
-Реестр UTM-меток в панели управления требует capability `utm` (Pro). Уже опубликованные правила исполняет Free. Правила видимости (контекст, UTM, Pro conditions) открываются кнопкой **Видимость** в инспекторе, если включена `pagebuilder_inspector_visibility_enabled`. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` помогают на лендингах. В полях доступен плейсхолдер <code v-pre>{{utm:key}}</code>. <!-- markdownlint-disable-line MD033 -->
+## PageBuilder Pro
 
-### Collections и панель управления
+Глобальная библиотека (**Общие блоки**): подтянуть с другой страницы (Связать | Копировать), сквозная запись связанных секций, шаблоны страниц, журнал событий секции (View/Restore).
 
-Нужны PageBuilder Pro и capability `collections`. При `collections_enabled` вкладки ресурса (секции, таблицы, iframe и др.) настраиваются в панели управления. Без capability вкладки нет. Раздел **Компоненты → PageBuilder** ведёт каталог ресурсов с секциями и типами секций.
+Вкладка **Примеры** в каталоге (тумблер Examples / `pagebuilder_catalog_examples_enabled`). [Agent API](agent-api) для скриптов и агентов. **Корзина** в панели управления восстанавливает удалённые секции и строки таблиц между ресурсами.
 
-### Сниппеты, Public API и события
+Каталог Pro: [gallery](sections/gallery), features, team, tabs, карты, [формы](sections/contact_form), [квиз](sections/quiz), блоки miniShop3. Кадрирование полей image/gallery задаёт capability `image-crop` (Pro). Секция `video` создаётся в Free. Ещё 27 типов полей: gallery, map, relation, table, embeddedTable, editorjs и др.
 
-`PageBuilder` выводит HTML секций, `PageBuilderResource` отдаёт секции другого ресурса, `PageBuilderSitemap` строит XML sitemap. [Public API](public-api) отдаёт опубликованные секции JSON для headless-фронта (`api.php`). События `pbOn*` подключают плагины к save, publish, render и регистрации типов секций. Подробнее: [workflow](workflow), [cmp](cmp), [pro](pro).
+<!-- MEDIA: screenshot-admin | nice | UI Pro: Общие блоки / подтягивание секции с другой страницы (Связать или Копировать) или вкладка Примеры в каталоге | PageBuilder Pro на тестовом стенде, синтетические страницы -->
+
+## Таблицы на ресурсе
+
+Вкладка **Таблицы** хранит большие наборы строк в БД: фильтры, импорт CSV/JSON, массовое удаление. На сайте строки выводит `PageBuilderTableRows`. Секция `data_table` (Pro) встраивает небольшую таблицу в JSON секции.
+
+## UTM и контексты
+
+Реестр UTM-меток в панели управления требует capability `utm` (Pro). Уже опубликованные правила исполняет Free. Правила видимости (контекст, UTM, Pro conditions) открывает кнопка **Видимость** в инспекторе, если включена `pagebuilder_inspector_visibility_enabled`. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` для лендингов. В полях доступен плейсхолдер <code v-pre>{{utm:key}}</code>. <!-- markdownlint-disable-line MD033 -->
+
+## Collections и панель управления
+
+Нужны PageBuilder Pro и capability `collections`. При `collections_enabled` вкладки ресурса (секции, таблицы, iframe и др.) настраиваются в панели управления. Без capability вкладки нет. Раздел **Компоненты → PageBuilder** ведёт в каталог ресурсов с секциями и типами секций.
+
+<!-- MEDIA: screenshot-admin | nice | Компоненты → PageBuilder: каталог ресурсов с секциями или экран настройки вкладок Collections | Pro + collections на стенде -->
+
+## Сниппеты, Public API и события
+
+| Что | Зачем |
+| --- | --- |
+| `PageBuilder` | HTML секций |
+| `PageBuilderResource` | секции другого ресурса |
+| `PageBuilderSitemap` | XML sitemap |
+| [Public API](public-api) | опубликованные секции JSON для headless (`api.php`) |
+| События `pbOn*` | плагины на save, publish, render и регистрацию типов |
 
 ## Системные требования
 
@@ -303,8 +336,8 @@ Autosave пишет только черновик. **Сохранить** рес
 
 | Дополнение | Версия | Содержимое |
 | --- | --- | --- |
-| `pagebuilder` | 1.0.14-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
-| `pagebuilderpro` | 1.0.14-beta | Pro: зависит от `pagebuilder` ≥ 1.0.14, quiz, library pull, шаблоны страниц, журнал секций |
+| `pagebuilder` | 1.0.15-beta | Free: core, секции, панель управления, сниппеты, MIGX, responsive, Save = публикация, фильтр типов и свои превью |
+| `pagebuilderpro` | 1.0.15-beta | Pro: зависит от `pagebuilder` ≥ 1.0.15, quiz, library pull, шаблоны страниц, журнал секций |
 
 Namespace в MODX: `pagebuilder`.
 
@@ -338,6 +371,7 @@ Namespace в MODX: `pagebuilder`.
 | `assets/components/pagebuilder/connector.php` | MGR API (VueTools) |
 | `assets/components/pagebuilder/preview.php` | Превью черновика в iframe |
 | `assets/components/pagebuilder/api.php` | Public API: опубликованные секции JSON (headless) |
+| `assets/components/pagebuilder/api/v1.php` | REST API v1 (Pro): Bearer-токены, scopes `pages.read` / `catalog.read` |
 | Сниппет `[[!PageBuilder]]` | HTML опубликованных секций на сайте |
 
 ## Права
@@ -345,7 +379,7 @@ Namespace в MODX: `pagebuilder`.
 | Permission | Назначение |
 | --- | --- |
 | `pagebuilder_view` | Вкладка «Секции», каталог, токен превью |
-| `pagebuilder_save` | Сохранение черновика и публикация (fallback: `save_document`) |
-| `pagebuilder_manage_types` | панель управления «Типы секций» (без fallback на view) |
+| `pagebuilder_save` | Сохранение черновика и публикация (запасной вариант: `save_document`) |
+| `pagebuilder_manage_types` | панель управления «Типы секций» (без запасного `view`) |
 
 Доступ к конкретному ресурсу дополнительно проверяет политика MODX (`view`, `save`).

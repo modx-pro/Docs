@@ -5,17 +5,13 @@ description: Сниппет PageBuilder — HTML опубликованных с
 
 # Сниппет PageBuilder
 
-Выводит **опубликованные** секции ресурса в HTML. Черновик на сайте не показывается. Каждая секция рендерится своим Fenom-chunk (`pagebuilder_{key}`).
-
-## Назначение
-
-Основной вывод PageBuilder в шаблоне или поле **Содержимое** ресурса.
+Выводит **опубликованные** секции ресурса в HTML. Черновик на сайте не показывается: HTML-путь (`return_values=0`) отдаёт пустую строку, пока страницу не опубликовали. Каждая секция отрисовывается своим Fenom-chunk (`pagebuilder_{key}`).
 
 ## Где вызывать
 
 - Шаблон страницы, собранной во вкладке **Секции**.
 - Поле content, если шаблон выводит `[[*content]]`.
-- Не подставляйте в кэшируемый вызов без `!`: после публикации секций HTML может устареть.
+- Только некэшированный вызов (`[[!PageBuilder]]`). Без `!` HTML может устареть после публикации секций.
 
 ## Зависимости
 
@@ -30,9 +26,10 @@ description: Сниппет PageBuilder — HTML опубликованных с
 | `resource_id` | `0` | ID ресурса. `0` = текущий |
 | `section_types` | пусто | Ключи секций через запятую (`hero,gallery`). Пусто = все опубликованные |
 | `return_values` | `0` | `1` → JSON `{ plainText, sections }` вместо HTML |
-| `use_cache` | `1` | Кеш MODX для HTML. `0` при отладке render events |
+| `use_cache` | `1` | Кеш MODX для HTML. `0` при отладке событий отрисовки |
 | `load_css` | из `pagebuilder_load_frontend_css` | Подключить `pagebuilder-sections.css` и связанные стили |
 | `wrap_page` | как `load_css` | Обёртка `<div class="pb-page">` |
+| `qa_css` | `0` | `1` → подключить `pagebuilder-qa.css`. Иначе CSS QA подключается сам, если на странице есть QA-секции |
 
 Параметры `load_css` и `wrap_page` не указаны в properties сниппета, но поддерживаются в коде. См. [Системные настройки → Связь со сниппетом](../settings#связь-со-сниппетом).
 
@@ -52,7 +49,7 @@ description: Сниппет PageBuilder — HTML опубликованных с
 
 ## Фильтр по типам секций
 
-Только hero и CTA на landing:
+Только hero и CTA:
 
 ::: code-group
 
@@ -88,6 +85,8 @@ JSON для SEO-плагинов и headless-гибридов. Структур�
 
 При `return_values=1` срабатывает событие `pbOnGetValues`. CSS и обёртка `pb-page` не подключаются.
 
+Источник документа: опубликованный snapshot, если `publishedRevision > 0`. Иначе берётся **черновик**.
+
 ## CSS и обёртка
 
 При `load_css=1` сниппет регистрирует frontend CSS (см. [Дизайн-система](../design-system)). Стили Pro и commerce подключаются при флаге `pro`.
@@ -96,7 +95,7 @@ JSON для SEO-плагинов и headless-гибридов. Структур�
 
 ## Кеш HTML
 
-Кеш MODX: partition `pagebuilder/{resourceId}`, ключ `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Сбрасывается при publish/unpublish. Ошибки рендера в кеш не попадают.
+Кеш MODX: partition `pagebuilder/{resourceId}`, ключ `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Сбрасывается при publish/unpublish. Ошибки отрисовки в кеш не попадают.
 
 События `pbOnBeforeRenderDocument` и `pbOnBeforeRenderSection` вызываются только при промахе кеша:
 
