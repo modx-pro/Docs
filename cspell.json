@@ -1391,6 +1391,10 @@
     "энкодеры",
     "юрлица"
   ],
+  "ignoreRegExpList": [
+    "/^\\s*(```|~~~)[\\s\\S]*?^\\s*\\1/gm",
+    "/`[^`\\n]+`/g"
+  ],
   "ignorePaths": [
     "node_modules",
     "plop-templates",
