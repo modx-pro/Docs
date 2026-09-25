@@ -87,6 +87,7 @@ $impex_config['noremove_images'] = false;
 | `ms` | Поля товара miniShop3 |
 | `msoption` | Опция товара (опции категории) |
 | `msgallery` | Галерея miniShop3 |
+| `gallery3x` | Галерея Gallery3x |
 | `mscats` | Дополнительные категории товара |
 
 #### categories
@@ -175,7 +176,7 @@ TV типа MIGX. Третий элемент — массив имён поле
 
 #### msgallery
 
-Галерея miniShop3. Пути в файле через `||`:
+Галерея miniShop2 / MiniShop3. Пути в файле через `||`:
 
 ```text
 image01.jpg||image02.jpg||image03.jpg
@@ -228,6 +229,9 @@ images/import/25/03.jpg
 ```
 
 и укажите `images/import/` в конфиге.
+
+#### gallery3x
+Все аналогично [msgallery](#msgallery), но для компонента [Gallery3x](https://modstore.pro/packages/photos-and-files/gallery3x)
 
 #### mscats
 
