@@ -1,50 +1,43 @@
 ---
 title: AlertifyJS
-description: AlertifyJS notifications for FetchIt via CDN and FetchIt.Message
+description: AlertifyJS notifications for FetchIt responses
 ---
 
 # AlertifyJS
 
-[AlertifyJS](https://alertifyjs.com/): dialogs and toasts in plain JS.
+[AlertifyJS](https://alertifyjs.com/) — dialogs and notifications with no dependencies, with themes.
 
-## CDN setup
+## Loading
 
 ```html
-<!-- JavaScript -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1/build/css/alertify.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1/build/css/themes/default.min.css">
 <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1/build/alertify.min.js" defer></script>
-
-<!-- CSS -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1/build/css/alertify.min.css"/>
-<!-- Default theme -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1/build/css/themes/default.min.css"/>
 ```
 
-Set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
+Instead of `default.min.css` you can take the `bootstrap.min.css` or `semantic.min.css` theme, to match the look of the site.
+
+## FetchIt.Message
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
+  alertify.set('notifier', 'position', 'top-right')
+  alertify.set('notifier', 'delay', 5)
+
+  const show = (type, message) => {
+    const text = FetchIt.sanitizeHTML(message).trim()
+    if (text) {
+      alertify.notify(text, type)
+    }
+  }
+
   FetchIt.Message = {
-    success(message) {
-      alertify.success(message)
-    },
-    error(message) {
-      alertify.error(message)
-    },
+    success: (message) => show('success', message),
+    error: (message) => show('error', message),
   }
 })
 ```
 
-In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
+`delay` is set in seconds.
 
-```js
-FetchIt.Message = {
-  success(message) {
-    alertify.success(message)
-  },
-  error(message) {
-    alertify.error(message)
-  },
-}
-```
-
-Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).
+Why the text goes through `sanitizeHTML` and what the empty-string check is for is explained in the [general section](/en/components/fetchit/examples/notifications/#third-party-libraries).

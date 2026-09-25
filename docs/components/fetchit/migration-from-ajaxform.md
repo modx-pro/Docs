@@ -13,7 +13,7 @@ FetchIt не подключает CSS. Классы невалидных пол�
 
 ## Всплывающие сообщения
 
-В AjaxForm из коробки идёт jGrowl. В FetchIt уведомления опциональны: включите [встроенные](/components/fetchit/examples/notifications/#встроенные-уведомления) настройкой `fetchit.frontend.default.notifier` или подключите свою библиотеку.
+В AjaxForm из коробки идёт jGrowl. В FetchIt уведомления опциональны: включите [встроенные](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya) настройкой `fetchit.frontend.default.notifier` или подключите свою библиотеку.
 
 [Примеры](/components/fetchit/examples/notifications/).
 

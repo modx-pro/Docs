@@ -1,55 +1,60 @@
 ---
 title: Notyf
-description: "Уведомления Notyf для FetchIt: подключение через CDN и FetchIt.Message"
+description: Тосты Notyf для ответов FetchIt через FetchIt.Message
 ---
 
 # Notyf
 
-[Notyf](https://carlosroso.com/notyf/): лёгкие тосты на чистом JS.
+[Notyf](https://carlosroso.com/notyf/) — лёгкие тосты без зависимостей: около 3 КБ, с анимацией и поддержкой программ экранного доступа.
 
 ::: warning
-До FetchIt 4 библиотека ехала в пакете и включалась настройкой `fetchit.frontend.default.notifier`. Теперь эта настройка показывает [встроенные уведомления](/components/fetchit/examples/notifications/#встроенные-уведомления), а Notyf подключается как любая другая сторонняя библиотека — вручную.
+До FetchIt 4 библиотека ехала в пакете и включалась настройкой `fetchit.frontend.default.notifier`. Теперь эта настройка показывает [встроенные уведомления](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya), а Notyf подключается как любая другая сторонняя библиотека — вручную.
 :::
 
-## Через CDN
-
-Подключите библиотеку сами и задайте `FetchIt.Message`:
+## Подключение
 
 ```html
-<!-- CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-<!-- JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js" defer></script>
 ```
 
+## FetchIt.Message
+
 ```js
 document.addEventListener('DOMContentLoaded', () => {
-  const notyf = new Notyf()
+  const notyf = new Notyf({
+    duration: 5000,
+    dismissible: true,
+    position: { x: 'right', y: 'top' },
+  })
+
+  const show = (type, message) => {
+    const text = FetchIt.sanitizeHTML(message).trim()
+    if (text) {
+      notyf.open({ type, message: text })
+    }
+  }
 
   FetchIt.Message = {
-    success(message) {
-      notyf.success(message)
-    },
-    error(message) {
-      notyf.error(message)
-    },
+    success: (message) => show('success', message),
+    error: (message) => show('error', message),
   }
 })
 ```
 
-В отдельном файле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
+Почему текст проходит через `sanitizeHTML` и зачем проверка на пустую строку — в [общем разделе](/components/fetchit/examples/notifications/#storonnie-biblioteki).
+
+## Свои цвета
+
+Типы `success` и `error` можно перекрасить или добавить свой:
 
 ```js
-const notyf = new Notyf()
-
-FetchIt.Message = {
-  success(message) {
-    notyf.success(message)
-  },
-  error(message) {
-    notyf.error(message)
-  },
-}
+const notyf = new Notyf({
+  types: [
+    { type: 'success', background: '#16a34a' },
+    { type: 'error', background: '#dc2626', duration: 8000 },
+  ],
+})
 ```
 
-Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).
+Ошибка здесь держится дольше: её обычно читают внимательнее.

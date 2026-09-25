@@ -14,7 +14,7 @@ In [Vanilla Framework](https://vanillaframework.io/), like [Fomantic UI](/en/com
     <input class="p-form-validation__input" type="text" name="name" value="">
     <p class="p-form-validation__message"></p>
   </div>
-  <div class="p-form-validation" data-custom="email">
+  <div class="p-form-validation">
     <label>Email</label>
     <input class="p-form-validation__input" type="email" name="email" value="">
     <p class="p-form-validation__message"></p>

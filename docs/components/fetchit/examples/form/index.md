@@ -13,5 +13,4 @@ description: Примеры форм FetchIt под популярные CSS-ф�
 - [Fomantic-UI](/components/fetchit/examples/form/fomantic)
 - [Pico.css](/components/fetchit/examples/form/pico)
 - [Cirrus CSS](/components/fetchit/examples/form/cirrus)
-- [turretcss](/components/fetchit/examples/form/turretcss)
 - [Vanilla](/components/fetchit/examples/form/vanilla)
