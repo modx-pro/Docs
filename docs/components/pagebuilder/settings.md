@@ -31,18 +31,20 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | --- | --- | --- | --- |
 | `pagebuilder_core_path` | text | `{core_path}components/pagebuilder/` | Путь к PHP core компонента |
 | `pagebuilder_assets_url` | text | `{assets_url}components/pagebuilder/` | URL connector, preview, статики |
-| `pagebuilder_preview_secret` | text | из resolver / `site_uuid` | Секрет подписи токена превью черновика |
+| `pagebuilder_preview_secret` | text | пусто → resolver | Секрет подписи токена превью черновика |
 | `pagebuilder_load_frontend_css` | boolean | `1` | Подключать `pagebuilder-sections.css` при вызове сниппета `PageBuilder` |
 | `pagebuilder_preview_include_template_css` | boolean | `1` | Подтягивать `<link rel="stylesheet">` шаблона ресурса в iframe превью |
-| `pagebuilder_preview_css_urls` | textarea | пусто | Дополнительные CSS для превью (через запятую), плейсхолдеры `{assets_url}` и др. |
+| `pagebuilder_preview_css_urls` | textarea | пусто | Дополнительные CSS для превью (через запятую или с новой строки) |
 
-Пустой `pagebuilder_preview_secret` подставляет `site_uuid`. На production задайте отдельный секрет, если превью в менеджере не должно опираться на предсказуемый UUID.
+Пустой `pagebuilder_preview_secret` при установке resolver заполняет случайным hex (`bin2hex(random_bytes(16))`). Если значение снова пустое во время работы, код берёт `site_uuid`. На рабочем сайте задайте отдельный секрет, если превью не должно опираться на предсказуемый UUID.
 
 Порядок CSS в iframe превью (`preview.php`):
 
 1. Stylesheet из шаблона ресурса, если `pagebuilder_preview_include_template_css = 1`
 2. URL из `pagebuilder_preview_css_urls` (через запятую или с новой строки)
 3. `pagebuilder-sections.css` и `pagebuilder-preview.css`
+
+<!-- MEDIA: diagram | nice | Порядок подключения CSS в iframe preview.php: шаблон → preview_css_urls → pagebuilder-sections.css и pagebuilder-preview.css | Схема по тексту раздела «Пути и превью», без привязки к домену -->
 
 Если тема подключает CSS только через Fenom или `@import` без `<link>`, добавьте файлы явно в `preview_css_urls`. Плейсхолдеры: `{assets_url}`, `{base_url}`, `{site_url}`.
 
@@ -56,6 +58,8 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_resource_tables_tab_enabled` | boolean | `0` | Вкладка «Таблицы» (табличные данные ресурса) |
 | `pagebuilder_resource_tables_tab_index` | number | `-1` | Позиция вкладки «Таблицы» |
 
+<!-- MEDIA: screenshot-admin | nice | Системные настройки, namespace pagebuilder: видны ключи pagebuilder_resource_tab_enabled, pagebuilder_resource_tab_parents, pagebuilder_resource_tab_index | Тестовый стенд, значения как в quick-start шаг 3 -->
+
 ## Collections (панель управления) {#collections-cmp}
 
 | Ключ | Тип | По умолчанию | Описание |
@@ -63,7 +67,9 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_collections_enabled` | boolean | `0` | Динамический набор вкладок из Collections. Нужна capability `collections` (Pro). Без неё вкладки нет |
 | `pagebuilder_collections_modx_bridge_enabled` | boolean | `0` | Тип вкладки `modx_collections` |
 
-Включайте только с PageBuilder Pro, если настроили вкладки в панели управления. Подробнее: [Панель управления → Collections](cmp#collections).
+Подробнее: [Панель управления → Collections](cmp#collections).
+
+<!-- MEDIA: screenshot-admin | nice | CMP PageBuilder: настройка Collections, pagebuilder_collections_enabled и modx_collections | PageBuilder Pro, capability collections на стенде -->
 
 ## Табличные данные ресурса
 
@@ -75,7 +81,7 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `mgr/datatable/rows/list` | Строки: `search`, `page`, `limit`, `filters` |
 | `mgr/datatable/rows/save` / `remove` | CRUD строк |
 
-Фильтры JSON по колонкам: `{ "price": { "op": "gte", "value": "10" } }`. Операторы: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`.
+Фильтры JSON по колонкам: `{ "price": { "op": "gte", "value": "10" } }`. Операторы: `eq`, `contains`, `in`, `gt`, `lt`, `gte`, `lte`, `between`, `empty`, `not_empty`.
 
 На сайте: сниппет `PageBuilderTableRows`, секция [data_table](sections/data_table). Подробнее: [Разработчик](developer#resource-data-tables).
 
@@ -87,11 +93,15 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_inspector_visibility_enabled` | boolean | `0` | Кнопка **Видимость** в инспекторе: диалог условий, контекстов, UTM и копии для контекста. По умолчанию выкл., редактор видит только поля контента |
 | `pagebuilder_resource_view_mode` | text | `editorial` | Вид списка на вкладке **Секции**: `editorial` или `table`. Менеджер может переопределить тумблером (значение в `localStorage`) |
 
+<!-- MEDIA: screenshot-admin | must | Инспектор секции: кнопки Fake и Видимость при pagebuilder_fake_enabled=1 и pagebuilder_inspector_visibility_enabled=1; кадр с тумблером editorial/table на вкладке Секции | Включить ключи на стенде, тестовая секция Hero -->
+
 ## Каталог {#каталог}
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `pagebuilder_catalog_examples_enabled` | boolean | `1` | Вкладка **Примеры** в каталоге секций (Pro JSON-пресеты). Выключите, чтобы спрятать без удаления файлов пакета. Тумблер также в CMP **Типы секций** при capability `presets` (`mgr/config/save`) |
+
+<!-- MEDIA: screenshot-admin | nice | Каталог секций на ресурсе: вкладка Примеры (Pro) или тумблер Examples в CMP Типы секций | pagebuilder_catalog_examples_enabled=1, Pro/presets на стенде -->
 
 ## Responsive breakpoints {#responsive}
 
@@ -116,19 +126,21 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 
 Подробнее про данные поля: [Обзор полей → responsive](fields/overview#pro-responsive).
 
+<!-- MEDIA: screenshot-admin | nice | Инспектор поля с responsive: вкладки desktop / tablet / mobile при pagebuilder_responsive_editor_enabled=1 | Включить настройку и responsive-поле в типе секции на стенде -->
+
 ## Public API {#public-api}
 
-Read-only JSON для headless-фронта. Подробнее: [Public API](public-api).
+JSON только для чтения: опубликованные секции для headless. Подробнее: [Public API](public-api).
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `pagebuilder_public_api_enabled` | boolean | `0` | Включить `assets/components/pagebuilder/api.php` |
-| `pagebuilder_public_api_key` | text | пусто | API-ключ. Пусто: запросы без ключа (только для dev) |
+| `pagebuilder_public_api_key` | text | пусто | API-ключ. Пусто: запросы без ключа (только для разработки) |
 | `pagebuilder_public_api_cors_origins` | textarea | `*` | Разрешённые CORS origins для браузера |
 
 ## REST API v1 {#rest-api}
 
-Read-only транспорт Pro. Подробнее: [REST API v1](rest-api). Токены выпускают во вкладке CMP **API tokens**, не правкой JSON вручную.
+Транспорт Pro только для чтения. Подробнее: [REST API v1](rest-api). Токены выпускают во вкладке CMP **API tokens**, не правкой JSON вручную.
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |

@@ -84,9 +84,9 @@ Commerce-секции требуют **miniShop3**. Без пакета `Section
 
 Товарные секции (`products_grid`, `product_spotlight`, `promo_banner`) рендерит **msProducts**. Категории рендерит **pdoResources** с классом `msCategory`.
 
-У [рассылки](newsletter) HTML-форма уходит на внешний `action_url`, это не FetchIt. [Аккордеон](accordion) рендерит `<details>` без JS. [Конструктор формы](form_builder) требует capability `forms`. [Динамический список](dynamic_list) и [сетка с фильтром](filterable_grid) требуют `datasources`. Эти три типа входят в контекст страницы, чтобы HTML-кеш их не замораживал.
+У [рассылки](newsletter) HTML-форма уходит на внешний `action_url`, это не FetchIt. [Аккордеон](accordion) выводит `<details>` без JS. [Конструктор формы](form_builder) требует capability `forms`. [Динамический список](dynamic_list) и [сетка с фильтром](filterable_grid) требуют `datasources`. С флагом `runtimeContext: true` в JSON также [квиз](quiz) и [форма обратной связи](contact_form). Эти пять типов входят в контекст страницы, чтобы HTML-кеш их не замораживал.
 
-Типы с `runSnippet` в чанке (`products_*`, `product_*`, `promo_banner`, `blog_posts`, `categories_row`, `data_table`) помечены `"cacheable": false`. HTML-кеш документа их не замораживает.
+Типы с `runSnippet` в чанке (`products_*`, `product_*`, `promo_banner`, `blog_posts`, `categories_row`, `data_table`, [подборка товаров](curated_products), [похожие товары](related_products)) помечены `"cacheable": false`. HTML-кеш документа их не замораживает.
 
 ## Связанные страницы
 

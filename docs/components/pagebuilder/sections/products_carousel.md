@@ -32,7 +32,7 @@ description: "Горизонтальная лента товаров из кат
 
 ## Категория и автопрокрутка
 
-Категория и лимит как в сетке. **Автовоспроизведение** и JS секций на фронте.
+Категория и лимит как в [сетке](products_grid). Пустой `limit` в chunk становится **8**. Тип помечен `"cacheable": false`. Значение `sortby` перед chunk переводится в `ms_sortby` и `ms_sortdir` — таблица в разделе «Категория и сортировка» у [Сетки товаров](products_grid). **Автовоспроизведение** и JS секций на фронте.
 
 ## Похожие секции
 
@@ -59,11 +59,11 @@ description: "Горизонтальная лента товаров из кат
 
 ### Корень каталога (`parent`)
 
-Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Выбор одного ресурса MODX в модальном окне поиска.
+Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Autocomplete по ресурсам MODX в поле инспектора.
 
 ### Лимит (`limit`)
 
-Тип [number](../fields/number#vyvod-v-section-data). Необязательное.
+Тип [number](../fields/number#vyvod-v-section-data). Необязательное. По умолчанию в chunk — 8.
 
 ### Автовоспроизведение (`autoplay`)
 

@@ -15,15 +15,25 @@ description: "JSON, chunk и регистрация через pbOnRegisterSecti
 
 1. Положите JSON рядом с вашим компонентом.
 2. Создайте chunk с именем из поля `chunk`.
-3. В **Элементы → Плагины** создайте плагин, подпишите его на `pbOnRegisterSectionDefinitions` и вызовите `registerFromFile`.
+3. В **Элементы → Плагины** создайте плагин, подпишите его на `pbOnRegisterSectionDefinitions`, прочитайте JSON и вызовите `$registry->register(SectionDefinition::fromArray(...))`.
 
 ```php
 <?php
+
+use PageBuilder\Section\SectionDefinition;
+
 switch ($modx->event->name) {
     case 'pbOnRegisterSectionDefinitions':
         /** @var \PageBuilder\Section\SectionRegistry $registry */
         $registry = $modx->event->params['registry'];
-        $registry->registerFromFile($modx->getOption('core_path') . 'components/mypackage/sections/custom.json');
+        $path = $modx->getOption('core_path') . 'components/mypackage/sections/custom.json';
+        $payload = json_decode((string) file_get_contents($path), true);
+        if (!is_array($payload)) {
+            break;
+        }
+        $payload['source'] = 'code';
+        $payload['readOnly'] = true;
+        $registry->register(SectionDefinition::fromArray($payload));
         break;
 }
 ```
@@ -40,7 +50,7 @@ switch ($modx->event->name) {
 
 ## Откат
 
-Скройте тип в панели или уберите `registerFromFile`.
+Скройте тип в панели или уберите регистрацию из плагина.
 
 ## Пример: тип «Кейс»
 

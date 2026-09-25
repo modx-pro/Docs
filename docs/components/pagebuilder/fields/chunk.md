@@ -62,7 +62,7 @@ description: "Объект name выбранного modChunk для include в 
 ::: code-group
 
 ```modx
-[[$chunkName]]
+[[+chunk.name]]
 ```
 
 ```fenom
@@ -78,7 +78,7 @@ description: "Объект name выбранного modChunk для include в 
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

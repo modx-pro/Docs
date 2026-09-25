@@ -21,5 +21,4 @@ description: "Сценарии PageBuilder: лендинг, общие блок�
 | [Сетка товаров](products) | Pro | Редактор |
 | [Витрина магазина](shop-landing) | Pro | Редактор |
 | [Свой тип секции](custom-section) | Free, UI-тип в Pro | Разработчик |
-| [Bundle](bundle) | Pro | Разработчик |
 | [Токен REST](rest-read) | Pro | Интегратор |

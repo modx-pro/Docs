@@ -90,6 +90,59 @@ switch ($modx->event->name){
 
 :::
 
+## Вес и габариты из Опций (с 2.11.0)
+
+События `msCdek2OnGetProductWeight` и `msCdek2OnGetProductSizes` вызываются для каждого
+товара до сборки упаковок, если включены соответственно `ms_cdek2_use_individual_weight`
+и `ms_cdek2_use_individual_sizes`. Параметры: `cartProduct` (позиция корзины/заказа),
+`productData` (поля ресурса и msProductData), `object` (сервис), а также `weight` или
+`sizes` (выбранное штатным способом значение).
+
+Значение изменяется через `$modx->event->params['weight']` или
+`$modx->event->params['sizes']`. `weight` — число, `sizes` — строка `длинаxширинаxвысота`.
+Это исходные единицы магазина: множители применяются ПОСЛЕ плагина.
+При стандартных множителях вес передаётся в килограммах (×1000 → граммы), размеры —
+в сантиметрах (×1). Если размеры хранятся в миллиметрах, задайте множитель 0.1.
+Количество товара учитывает штатный сборщик: передавайте значения для одной штуки.
+Пустые размеры и нулевой вес используют значения по умолчанию.
+Событие может вызываться повторно при подготовке списка вложений: обработчик должен
+возвращать одинаковые значения и не менять корзину.
+
+Пример: создайте плагин, подпишите его на оба события. Замените `shipping_weight`,
+`shipping_length`, `shipping_width`, `shipping_height` на ключи своих Опций miniShop2.
+
+```php
+$event = $modx->event->name;
+if (!in_array($event, ['msCdek2OnGetProductWeight', 'msCdek2OnGetProductSizes'], true)) {
+    return;
+}
+$id = (int)($productData['id'] ?? 0);
+$keys = $event === 'msCdek2OnGetProductWeight'
+    ? ['shipping_weight']
+    : ['shipping_length', 'shipping_width', 'shipping_height'];
+$values = [];
+foreach ($modx->getCollection('msProductOption', ['product_id' => $id, 'key:IN' => $keys]) as $option) {
+    $values[$option->get('key')] = $option->get('value');
+}
+foreach ($keys as $key) {
+    if (!isset($values[$key]) || !is_numeric($values[$key]) || $values[$key] <= 0) {
+        return; // Неполные Опции: сохраняем штатное значение.
+    }
+}
+if ($event === 'msCdek2OnGetProductWeight') {
+    $modx->event->params['weight'] = (float)$values['shipping_weight'];
+} else {
+    $modx->event->params['sizes'] = implode('x', [
+        $values['shipping_length'], $values['shipping_width'], $values['shipping_height'],
+    ]);
+}
+```
+
+`ms_cdek2_sizes_ceil` включает округление каждого размера вверх до целого сантиметра
+после применения `ms_cdek2_size_multiplier`: `12.1 → 13`; `121 мм × 0.1 → 13 см`.
+Округление действует и на размеры товаров, и на размеры упаковки по умолчанию.
+По умолчанию настройка выключена, прежнее поведение сохраняется.
+
 ## События JavaScript
 
 #### mscdek:initialized - инициализация компонента завершена

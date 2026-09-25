@@ -43,7 +43,7 @@ description: "Объект CTA: label, url и target"
 
 ## Значение
 
-Объект `{ label, url, target }`.
+Объект `{ label: '', url: '', target: '_self' }`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -80,7 +80,7 @@ description: "Объект CTA: label, url и target"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

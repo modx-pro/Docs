@@ -5,7 +5,7 @@ description: CSS variables, BEM, partial chunks и Fenom-оболочка сек
 
 # Дизайн-система (фронт)
 
-Стили секций на сайте не завязаны на PrimeVue в менеджере. Chunks выводят разметку с префиксом `pb-`, а `pagebuilder-sections.css` задаёт сетку, шрифты и токены внутри `.pb-page`.
+Стили секций на сайте не завязаны на PrimeVue в менеджере. Chunks выводят разметку с префиксом `pb-`. Файл `pagebuilder-sections.css` задаёт сетку, шрифты и токены внутри `.pb-page`.
 
 ## Подключение CSS и JS
 
@@ -32,12 +32,13 @@ description: CSS variables, BEM, partial chunks и Fenom-оболочка сек
 | `pagebuilder-sections.css` | Всегда при `load_css=1` |
 | `pagebuilder-sections-pro.css` | При флаге `pro` |
 | `pagebuilder-commerce.css` | При флаге `pro` (product-card, spotlight, promo) |
+| `pagebuilder-qa.css` | Если на странице есть QA-секции или `&qa_css=`1`` |
 
 Pro и commerce CSS не подключаются на Free-сборке, даже если chunk секции лежит в теме.
 
 ## Обёртка `.pb-page`
 
-Токены задаются на **`.pb-page`**, не на `:root`. Глобальная тема сайта не перезаписывается, а секции получают свой ритм отступов.
+Токены задаются на **`.pb-page`**, не на `:root`. Глобальная тема сайта не перезаписывается.
 
 Соседние прямые потомки `.pb-page` разделяет вертикальный gap:
 
@@ -157,7 +158,7 @@ Spacer: два класса `pb-spacer pb-spacer--md`, не `pb-spacer-md`.
 - `$id`: id секции в JSON документа
 - поля секции по `name` из JSON (`$title`, `$background`, …)
 
-Свои секции собирайте по тому же шаблону. Чеклист: [Разработчик → Определение секции](developer#opredelenie-sekcii).
+Чеклист своих секций: [Разработчик → Определение секции](developer#opredelenie-sekcii).
 
 ## Partial `pagebuilder_partial_image`
 
@@ -174,7 +175,7 @@ Spacer: два класса `pb-spacer pb-spacer--md`, не `pb-spacer-md`.
 | `class` | CSS-класс на `<img>` |
 | `loading` | По умолчанию `lazy` |
 
-Partial не рендерит тег, если URL пустой.
+Partial не отрисовывает тег, если URL пустой.
 
 ## Escape и ссылки
 
@@ -189,7 +190,7 @@ Partial не рендерит тег, если URL пустой.
 
 ## Дополнительный класс через событие
 
-В `pbOnBeforeRenderSection` можно дописать `data.cssClass` перед рендером chunk. Chunk добавляет класс на `<section>`:
+В `pbOnBeforeRenderSection` можно дописать `data.cssClass` перед отрисовкой chunk. Chunk добавляет класс на `<section>`:
 
 ```php
 case 'pbOnBeforeRenderSection':
@@ -229,7 +230,7 @@ case 'pbOnBeforeRenderSection':
 
 ## Миграция spacer
 
-Класс `pb-spacer-md` заменён на `pb-spacer--md`. После апгрейда проверьте кастомные CSS темы и свои chunks.
+Класс `pb-spacer-md` заменён на `pb-spacer--md`. После обновления проверьте свои CSS темы и свои chunks.
 
 ## Связанные страницы
 

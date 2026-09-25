@@ -21,6 +21,8 @@ description: Сохранение UTM-параметров в сессию дл�
 
 Разместите **до** `PageBuilder` в общем chunk шапки или base layout.
 
+Сниппет и плагин PageBuilder на `OnHandleRequest` вызывают один и тот же захват (`UtmSessionCapture`). Сессию сами не стартуют: если `session_status()` не `PHP_SESSION_ACTIVE`, запись в `$_SESSION['utm']` не выполняется (без ошибки в выводе).
+
 ## Параметры
 
 Сниппет без properties. Вызов без аргументов.
@@ -41,12 +43,13 @@ description: Сохранение UTM-параметров в сессию дл�
 
 ## Что сохраняется
 
+Обрабатываются скалярные ключи из `$_GET` текущего запроса. Префикс `utm_` снимается, имя приводится к lowercase. Допустимы и короткие имена без префикса (например `?campaign=launch` → `$_SESSION['utm']['campaign']`). Ключ должен совпадать с `^[a-z][a-z0-9_]*$`, иначе пара отбрасывается. Пустые значения игнорируются.
+
 | Query | Сессия |
 | --- | --- |
 | `?utm_source=google` | `$_SESSION['utm']['source'] = 'google'` |
 | `?utm_campaign=sale` | `$_SESSION['utm']['campaign'] = 'sale'` |
-
-Ключи нормализуются в lowercase. Пустые значения игнорируются.
+| `?campaign=launch` | `$_SESSION['utm']['campaign'] = 'launch'` |
 
 Реестр параметров и значения по умолчанию задаются на вкладке **UTM** панели управления. Правила **видимости** секций настраиваются в диалоге **Видимость** инспектора (`pagebuilder_inspector_visibility_enabled`), не на вкладке UTM.
 

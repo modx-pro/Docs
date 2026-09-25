@@ -11,6 +11,16 @@ description: "Список файлов с названием и описани�
 
 ![Загрузки](/components/pagebuilder/screenshots/sections/downloads.jpg)
 
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `downloads` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_downloads` |
+| Требования | pro |
+
 ## Где уместна
 
 - Прайс, презентация, инструкция

@@ -5,7 +5,7 @@ description: Read-only JSON API для headless-фронта. Опубликов
 
 # Public API (Headless)
 
-Read-only JSON для внешнего фронта (Next.js, Nuxt, React и т.п.). Отдаёт **только опубликованный** контент PageBuilder. Черновики и запись: [Agent API](agent-api) (Pro) или вкладка **Секции** на форме ресурса в менеджере.
+Read-only JSON для внешнего фронта (Next.js, Nuxt, React). Только **опубликованный** контент PageBuilder. Черновики и запись: [Agent API](agent-api) (Pro) или вкладка **Секции** на форме ресурса в менеджере.
 
 Точка входа:
 
@@ -17,7 +17,7 @@ Read-only JSON для внешнего фронта (Next.js, Nuxt, React и т.
 
 ## Включение
 
-Системные настройки, namespace `pagebuilder`:
+Три ключа в namespace `pagebuilder`:
 
 | Ключ | По умолчанию | Описание |
 | --- | --- | --- |
@@ -67,7 +67,9 @@ MODX дополнительно проверяет:
 | --- | --- | --- |
 | 401 | `Invalid API key.` | Неверный или отсутствующий ключ |
 | 403 | `Access denied.` | Нет policy view |
-| 404 | `Resource not found.` | Неизвестный ресурс или API выключен |
+| 404 | `Public API is disabled.` | `pagebuilder_public_api_enabled` выключен |
+| 404 | `Resource not found.` | Ресурс не найден |
+| 404 | `Resource is not published.` | Ресурс есть, но не опубликован в MODX |
 | 404 | `Page has no published content.` | Ресурс есть, PageBuilder ни разу не публиковали |
 | 400 | `resource_id or alias is required.` | Нет идентификатора |
 | 400 | `Invalid action.` | Неизвестный `action=` |
@@ -76,7 +78,7 @@ MODX дополнительно проверяет:
 
 ### `web/health/ping`
 
-Проверка доступности. Работает при выключенном API (в ответе поле `publicApiEnabled`).
+Работает при выключенном API. В ответе поле `publicApiEnabled`.
 
 ```bash
 curl -s "https://example.com/assets/components/pagebuilder/api.php?action=web/health/ping"
@@ -170,7 +172,7 @@ curl -s -H "X-PageBuilder-Api-Key: ${KEY}" \
 }
 ```
 
-`renderFailed: true` значит, что рендер чанка не удался (неизвестный тип, ошибка Fenom). Пропустите блок или покажите fallback в приложении.
+`renderFailed: true` значит, что отрисовка чанка не удалась (неизвестный тип, ошибка Fenom). Пропустите блок или покажите запасной вариант в приложении.
 
 #### JavaScript (fetch)
 
@@ -207,8 +209,6 @@ $page = $api->getPage(
 
 Класс `PageBuilder\PublicApi\PageBuilderPublicApiService` регистрируется в `ServiceRegistry`.
 
-Сравнивайте `publishedRevision` после публикации в менеджере, чтобы решить, когда сбрасывать кэш фронта.
-
 ### `web/catalog/list`
 
 Метаданные типов секций для маппинга `section.type` на ваши компоненты.
@@ -242,11 +242,13 @@ curl -s "${BASE}?action=web/catalog/list&context_key=web&api_key=${KEY}"
 }
 ```
 
-Кэшируйте список на час или до деплоя. Он меняется, когда добавляете JSON-типы или UI-типы в панели управления.
+Кэшируйте список на час или до деплоя. Он меняется, когда добавляете JSON-типы или UI-типы в панели управления. В ответе типа поле `categories`: список slug. Поле `category` остаётся для совместимости.
 
-В ответе типа поле `categories`: список slug. Поле `category` остаётся для совместимости.
+## Таблицы и QueryPolicy
 
-Запросы каталога, таблиц и страниц идут через `QueryPolicy`. Ключи `sql`, `php`, `snippet` и `class` отклоняются. Размер страницы не больше 100. Free `api.php` на месте.
+Отдельного endpoint таблиц нет. Строки таблиц отдаёт сниппет [PageBuilderTableRows](snippets/PageBuilderTableRows) или datasource в секции.
+
+`QueryPolicy` ограничивает datasource-запросы секций в менеджере. Ключи `sql`, `php`, `snippet`, `class` отклоняются. К query-параметрам `api.php` он не применяется. Размер страницы списка каталога не больше 100.
 
 ## CORS
 

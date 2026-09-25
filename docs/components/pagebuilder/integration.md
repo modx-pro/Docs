@@ -2,6 +2,7 @@
 title: Менеджер и события
 description: Панель управления PageBuilder, права, модель данных, события pbOn и обзор Pro
 ---
+
 # Менеджер и события
 
 ## Панель управления
@@ -12,14 +13,11 @@ description: Панель управления PageBuilder, права, моде
 
 В панели управления:
 
-- список ресурсов с секциями
-- переход к редактору секций
 - **Типы секций** (право `pagebuilder_manage_types`): UI-типы, скрытие и восстановление встроенных JSON-типов
-
-<!-- ![Типы секций в панели управления](/components/pagebuilder/screenshots/mgr-cmp-section-types.jpg) -->
-
 - **Корзина** (Pro, флаг `basket`): глобальная корзина удалённых секций и строк таблиц
 - настройки вкладок Collections при включённых `pagebuilder_collections_*`
+
+Списка ресурсов с секциями и перехода к редактору вкладки **Секции** в CMP нет. Редактор — вкладка ресурса (VueTools).
 
 Редактор на форме ресурса и в панели управления использует один Vue-бандл через **VueTools**. Точка входа API менеджера:
 
@@ -34,14 +32,14 @@ description: Панель управления PageBuilder, права, моде
 | `resource_id` | Связь с `modResource` |
 | `draft_json` | Черновик документа секций |
 | `published_json` | Опубликованная версия |
-| `revision` | Номер ревизии черновика (optimistic locking) |
+| `revision` | Номер ревизии черновика (оптимистичная блокировка) |
 | `published_revision` | Ревизия последней публикации |
 | `publishedon` / `publishedby` | Время и пользователь публикации |
 | `editedon` / `editedby` | Последнее изменение черновика |
 
 `modResource.content` PageBuilder не перезаписывает. SEO-поля ресурса (pagetitle, description) используются как обычно.
 
-Корзина на странице хранит удалённые секции в `document.trash`. При сохранении черновика плагин синхронизирует индекс `pb_basket_items`. Отдельного события `pbOn*` для корзины нет: плагин на `pbOnAfterSave` может читать `record.draft.trash`. Глобальное восстановление и окончательное удаление выполняют действия connector Pro (`mgr/basket/*`).
+Корзина на странице хранит удалённые секции в `document.trash`. При сохранении черновика с непустыми `trashedSectionIds` срабатывают `pbOnBeforeTrash` / `pbOnAfterTrash`. Плагин на `pbOnAfterSave` может читать `record.draft.trash`. Глобальное восстановление и окончательное удаление — connector Pro (`mgr/basket/*`).
 
 Табличные данные ресурса хранятся в отдельных таблицах `pb_*` (вкладка «Таблицы»).
 
@@ -88,6 +86,16 @@ description: Панель управления PageBuilder, права, моде
 | `pbOnBeforeCopySections` | `sourceResourceId`, `targetResourceId`, `userId` |
 | `pbOnAfterCopySections` | + `record` |
 
+### Библиотека (Pro, runtime)
+
+::: warning Ручная регистрация
+`pbOnLibraryItemSave` установщик не создаёт. Добавьте событие в **Система → События**, если нужен плагин.
+:::
+
+| Событие | Когда | Данные |
+| --- | --- | --- |
+| `pbOnLibraryItemSave` | После записи элемента Library | параметры из `LibraryService` (id, payload) |
+
 ### Каталог и поля
 
 | Событие | Данные |
@@ -117,6 +125,14 @@ description: Панель управления PageBuilder, права, моде
 | `pbOnBeforeRenderSection` | `resourceId`, `pipeline` с одной секцией, `index`, `options` |
 | `pbOnGetValues` | `resourceId`, `document`, `values` (`SectionValuesBag`). Сниппет при `return_values=1` и Public API, если в `include` есть `values` |
 
+### Кадрирование
+
+| Событие | Когда | Данные |
+| --- | --- | --- |
+| `pbOnAfterMediaCrop` | После записи кадра, до ответа менеджеру | `sourceUrl`, `sourcePath`, `path`, `geometry`, `result` (`MediaCropResult`) |
+
+Плагин дописывает `$result->variants`. Они лежат в `crops` поля `image`. Пример: [поле image](fields/image#crop-plugin).
+
 Пример регистрации секции в плагине:
 
 ```php
@@ -134,7 +150,7 @@ switch ($modx->event->name) {
 
 ## Сохранение, публикация и вывод на сайте
 
-Редактор пишет черновик через connector, публикация копирует snapshot в `published_json`, сниппет на сайте читает только опубликованную версию.
+Редактор пишет черновик через connector. Публикация копирует снимок в `published_json`. Сниппет на сайте читает только опубликованную версию.
 
 ```mermaid
 flowchart LR

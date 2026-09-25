@@ -53,7 +53,9 @@ description: "Многошаговый квиз с режимами lead, pricin
 | Слой | Pro |
 | Категория | конверсия (`conversion`) |
 | Chunk | `pagebuilderpro_quiz` |
-| Требования | pro, FetchIt |
+| Требования | pro |
+| `version` | `2` (схема секции в JSON) |
+| `runtimeContext` | `true` (контекст страницы, см. [каталог](index)) |
 
 ## Поля в редакторе
 
