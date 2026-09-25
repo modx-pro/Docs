@@ -1,19 +1,17 @@
 ---
 title: Notyf
-description: "Уведомления Notyf для FetchIt: системная настройка или ручной CDN"
+description: "Уведомления Notyf для FetchIt: подключение через CDN и FetchIt.Message"
 ---
 
 # Notyf
 
-[Notyf](https://carlosroso.com/notyf/): лёгкие тосты на чистом JS. В FetchIt два пути.
+[Notyf](https://carlosroso.com/notyf/): лёгкие тосты на чистом JS.
 
-## Через настройку компонента
+::: warning
+До FetchIt 4 библиотека ехала в пакете и включалась настройкой `fetchit.frontend.default.notifier`. Теперь эта настройка показывает [встроенные уведомления](/components/fetchit/examples/notifications/#встроенные-уведомления), а Notyf подключается как любая другая сторонняя библиотека — вручную.
+:::
 
-Включите `fetchit.frontend.default.notifier`. Плагин подключит CSS/JS Notyf из `assets/components/fetchit/lib/` и при первом `FetchIt.create()` выставит `FetchIt.Message`, если вы сами его ещё не определили.
-
-Дополнительный CDN и ручной `FetchIt.Message` тогда не нужны: иначе получите два набора скриптов.
-
-## Вручную через CDN
+## Через CDN
 
 Подключите библиотеку сами и задайте `FetchIt.Message`:
 

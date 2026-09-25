@@ -13,7 +13,7 @@ FetchIt does not load CSS. Set invalid-field classes in [`fetchit.frontend.input
 
 ## Notifications
 
-AjaxForm ships jGrowl. In FetchIt toasts are optional: enable Notyf (`fetchit.frontend.default.notifier`) or plug in your own library.
+AjaxForm ships jGrowl. In FetchIt notifications are optional: turn on the [built-in ones](/en/components/fetchit/examples/notifications/#built-in-notifications) with `fetchit.frontend.default.notifier`, or plug in your own library.
 
 [Examples](/en/components/fetchit/examples/notifications/).
 
@@ -55,7 +55,7 @@ Main parameters (`form`, `snippet`, `actionUrl`, `clearFieldsOnSuccess`) stay th
 
 Error selectors: use `[data-error="name"]` instead of `.error_name`. The `ajax_form` class is not needed: the snippet adds `data-fetchit`.
 
-From **1.1.3**, for AJAX add `[data-success]` and `[data-validation-error]` (see [selectors](/en/components/fetchit/selectors)). With AjaxForm, `[[+fi.successMessage]]` after a reload was often enough.
+For AJAX add `[data-success]` and `[data-validation-error]` (see [selectors](/en/components/fetchit/selectors)). With AjaxForm, `[[+fi.successMessage]]` after a reload was often enough.
 
 AjaxForm chunk → FetchIt:
 
@@ -151,7 +151,7 @@ AjaxForm chunk → FetchIt:
 
 ## Custom snippet instead of FormIt
 
-AjaxForm expected JSON with key `status` (0/1). FetchIt expects `success` (bool). From 1.1.3 the component object is not passed in `$scriptProperties`: get it via `getService`. Example: [custom snippet](/en/components/fetchit/snippets/custom).
+AjaxForm expected JSON with key `status` (0/1). FetchIt expects `success` (bool). The component object is not passed in `$scriptProperties`: get it with `FetchIt::service($modx)`. Example: [custom snippet](/en/components/fetchit/snippets/custom).
 
 ## Client-side validation
 

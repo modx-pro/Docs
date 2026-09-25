@@ -1,3 +1,8 @@
+---
+title: Selectors
+description: data-fetchit, data-error, data-custom, data-success and data-validation-error
+---
+
 # Selectors
 
 Attributes the client script uses to find the form, fields, and message blocks.
@@ -14,7 +19,9 @@ The snippet looks for a `<form>` in the chunk and, if the attribute is missing, 
 
 The attribute value is internal (action id). Do not change it by hand.
 
-The snippet also forces `method="post"`.
+The snippet also forces `method="post"`. Both attributes come last in the form tag.
+
+Right after the form tag the snippet adds the hidden fields of the [spam protection](/en/components/fetchit/protection). There is nothing to output and nothing to account for in the markup.
 
 ## `data-error`
 
@@ -41,7 +48,7 @@ The class from `fetchit.frontend.custom.invalid.class` is applied not to the inp
 
 ## `data-success` and `data-validation-error`
 
-Form-level messages (not field errors). From **1.1.3**, AJAX fills them via `setFormMessage()`:
+Form-level messages (not field errors). AJAX fills them via `setFormMessage()`:
 
 | Attribute | When it shows |
 | --- | --- |
