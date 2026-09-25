@@ -61,7 +61,7 @@ Hero магазина или «товар недели»: крупное фот�
 
 ### Товар (`product`)
 
-Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Выбор одного ресурса MODX в модальном окне поиска.
+Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Autocomplete по ресурсам MODX в поле инспектора.
 
 ## Что видит посетитель
 

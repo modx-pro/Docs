@@ -17,7 +17,7 @@ description: "Список записей провайдера datasource. Capab
 
 ## Запрос
 
-Запрос принимает только объявленные поля и операторы `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `contains` не различает регистр, включая кириллицу. Ключи `sql`, `php`, `snippet` и `class` отклоняет `QueryPolicy`. Лимит больше 100 не проходит.
+Запрос принимает только объявленные поля и операторы `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `contains` не различает регистр, включая кириллицу. Недопустимые операторы отсекает `QueryPolicy`. Ключи `sql`, `php`, `snippet` и `class` в payload и context запроса отклоняет `QueryRequest` (и `DatasourceQueryService` для context). Лимит секции и запроса обрезается до 100 без ошибки.
 
 ## Поля
 

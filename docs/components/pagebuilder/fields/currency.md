@@ -5,7 +5,7 @@ description: "Число суммы с символом валюты из нас
 
 # Поле currency
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
 <!-- ![currency](/components/pagebuilder/screenshots/fields/currency.jpg) -->
 
@@ -21,7 +21,7 @@ description: "Число суммы с символом валюты из нас
 
 ## Советы
 
-Ключ `currency` в schema задаёт ISO или symbol config. Процент скидки: [number](number), не currency.
+Ключ `currency` в schema — строка кода ISO 4217 (например `USD`, `RUB`), её передают в PrimeVue InputNumber. Без ключа в schema инспектор использует `USD`. Процент скидки: [number](number), не currency.
 
 ## Похожие типы
 
@@ -46,7 +46,7 @@ description: "Число суммы с символом валюты из нас
 
 ## Значение
 
-Число или `null`.
+Число или `null`. Новая секция без `default`: `null`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -83,7 +83,7 @@ description: "Число суммы с символом валюты из нас
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

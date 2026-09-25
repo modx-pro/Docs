@@ -5,7 +5,7 @@ description: "Массив пар ключ–значение без typed colum
 
 # Поле keyvalue
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
 <!-- ![keyvalue](/components/pagebuilder/screenshots/fields/keyvalue.jpg) -->
 
@@ -68,12 +68,12 @@ Typed cells или image в ячейке: [table](table). Одна плоска�
 
 ## Пример в chunk
 
+Перебор пар — блок Fenom. В MODX — сниппет или элемент по индексу.
+
 ::: code-group
 
 ```modx
-{foreach $meta as $row}
-  <div><strong>{$row.key}:</strong> {$row.value}</div>
-{/foreach}
+<div><strong>[[+meta.0.key]]:</strong> [[+meta.0.value]]</div>
 ```
 
 ```fenom
@@ -95,7 +95,7 @@ Typed cells или image в ячейке: [table](table). Одна плоска�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

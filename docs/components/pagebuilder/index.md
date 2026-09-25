@@ -240,7 +240,6 @@ items: [
       { text: 'Сетка товаров', link: 'recipes/products' },
       { text: 'Витрина магазина', link: 'recipes/shop-landing' },
       { text: 'Свой тип секции', link: 'recipes/custom-section' },
-      { text: 'Bundle', link: 'recipes/bundle' },
       { text: 'Токен REST', link: 'recipes/rest-read' },
     ],
   },

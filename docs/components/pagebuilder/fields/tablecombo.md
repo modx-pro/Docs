@@ -5,18 +5,18 @@ description: "Выпадающий список из класса MODX чере�
 
 # Поле tablecombo
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
 <!-- ![tablecombo](/components/pagebuilder/screenshots/fields/tablecombo.jpg) -->
 
 ## Зачем этот тип
 
-Выпадающий список. Варианты загружаются из класса MODX через `optionsSource` и процессор `mgr/field/options`. В инспекторе это не сетка: сетка строк у поля [table](table). Нужны PageBuilder Pro и возможность `advanced-fields`. Без `optionsSource` список пустой.
+Выпадающий список. Варианты загружаются из разрешённого класса MODX через `optionsSource` и процессор `mgr/field/options`, либо из статического `options` в schema. В инспекторе это не сетка: сетка строк у поля [table](table). Нужны PageBuilder Pro и `advanced-fields`. Пусто, если нет ни `options`, ни `optionsSource`.
 
 ## Когда использовать
 
-- Шаблон или другой класс MODX (`modTemplate` и похожие)
-- Одна запись своего xPDO-класса, если есть поле id и поле подписи
+- Шаблон или другой класс из whitelist `optionsSource` (см. [types](types#optionssource))
+- Одна запись из `modResource`, `modUser`, `modTemplate` и т.д.
 - Когда окно [relation](relation) не нужно
 
 ## Советы
@@ -82,7 +82,7 @@ Picker modResource: [relation](relation) или [combo](combo). Нескольк
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

@@ -56,7 +56,7 @@ description: "SVG из каталога Lucide или Heroicons. Не класс
 ```
 
 ```fenom
-<span class="pb-icon">{$icon.svg}</span>
+<span class="pb-icon">{$icon.svg|raw}</span>
 ```
 
 :::

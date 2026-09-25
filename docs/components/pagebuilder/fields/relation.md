@@ -1,17 +1,19 @@
 ---
 title: "relation"
-description: "Один ресурс MODX как объект id и pagetitle из модального picker"
+description: "Один ресурс MODX: объект id и pagetitle через Autocomplete с поиском"
 ---
 
 # Поле relation
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
 <!-- ![relation](/components/pagebuilder/screenshots/fields/relation.jpg) -->
 
 ## Зачем этот тип
 
-Выбор записи в окне с поиском, без ручного id. Поиск идёт через `searchAction`: для miniShop3 и для своих коннекторов. В данных сохраняются `id` и `pagetitle`, не весь ресурс.
+Выбор записи через Autocomplete с поиском в выпадающем списке, без модального окна. Поиск идёт через `searchAction`. В данных сохраняются `id` и `pagetitle`, не весь ресурс.
+
+По умолчанию `searchAction` = `mgr/resources/search` (до 20 результатов на запрос). Свой connector — например `mgr/ms3/products/search` для miniShop3.
 
 ## Когда использовать
 
@@ -21,12 +23,12 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 
 ## Советы
 
-Несколько ресурсов: [multirelation](multirelation). Только id из xPDO без модалки: [combo](combo).
+Несколько ресурсов: [multirelation](multirelation). Только id из xPDO без picker: [combo](combo).
 
 ## Похожие типы
 
 - [multirelation](multirelation) для списка ресурсов
-- [resourcelist](resourcelist): alias того же модального picker
+- [resourcelist](resourcelist): тот же редактор picker, отдельный Free-тип в каталоге
 
 ## Настройка
 
@@ -41,6 +43,8 @@ description: "Один ресурс MODX как объект id и pagetitle и�
   "active": true
 }
 ```
+
+Без `searchAction` в схеме используется `mgr/resources/search`.
 
 ## Значение
 
@@ -84,13 +88,13 @@ description: "Один ресурс MODX как объект id и pagetitle и�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: `searchAction` для кастомного connector (напр. ms3).
+- Дополнительно: `searchAction` для своего connector (напр. ms3).
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

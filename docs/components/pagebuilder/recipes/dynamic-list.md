@@ -18,15 +18,27 @@ description: "Секция dynamic_list читает modx-resources, табли�
 1. Добавьте секцию `dynamic_list`.
 2. В поле `datasource` выберите провайдера: `modx-resources`, `pagebuilder-tables` или `minishop3`.
 3. Для таблицы укажите ключ. Задайте фильтры, сортировку и limit. Лимит больше 100 `QueryPolicy` не пропустит.
-4. Операторы: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `contains` не различает регистр, в том числе кириллицу. Ключи `sql`, `php`, `snippet` и `class` отклоняются.
+4. Операторы: `eq`, `contains`, `in`, `gte`, `lte`, `between`, `empty`, `not_empty`. `contains` не различает регистр, в том числе кириллицу. Ключи `sql`, `php`, `snippet`, `class`, `classname` и `query` отклоняются.
 5. Превью в менеджере идёт через `mgr/datasource/query`.
 6. **Сохранить** ресурса публикует секцию. В чанк попадают `items` и `total`.
 
-Пустой провайдер: `Datasource is not configured.` Пустой результат: лексикон `pagebuilder_fe_list_empty`. Если у записи есть `image`, карточка его показывает. Секция в контексте страницы, HTML-кеш её не замораживает. Без Pro опубликованный HTML заново не строится.
+Пустой провайдер: `Datasource is not configured.` Пустой результат: лексикон `pagebuilder_fe_list_empty`. Если у записи есть `image`, карточка его показывает. Секция в контексте страницы, HTML-кеш её не замораживает. Без Pro и capability `datasources` тип `dynamic_list` и обогащение запросом к провайдеру недоступны.
 
 ## Пример полей
 
-Провайдер `modx-resources`. Фильтр как на странице секции: поле `parent`, оператор `eq`, значение `5` (id родителя, пример). Sort: поле `publishedon`, direction `desc`. Limit запроса `20`. Отдельное поле секции **Лимит** можно поставить `8`.
+Провайдер `modx-resources`. Допустимые поля фильтра и sort:
+
+| Поле |
+| --- |
+| `id` |
+| `pagetitle` |
+| `alias` |
+| `parent` |
+| `template` |
+| `context_key` |
+| `published` |
+
+Фильтр как на странице секции: поле `parent`, оператор `eq`, значение `5` (id родителя, пример). Sort: поле `published`, direction `desc`. Limit запроса `20`. Отдельное поле секции **Лимит** можно поставить `8`.
 
 Тот же набор ключей лежит в [данных секции](../sections/dynamic_list#vyvod-v-section-data). Менять published-ресурсы родителя `5` достаточно, чтобы список на сайте обновился. JSON секции при этом не переписывают.
 

@@ -9,6 +9,8 @@ description: Сниппет PageBuilderResource — секции другого 
 
 ## Назначение
 
+<!-- MEDIA: screenshot-front | nice | на главной виден блок секций с другого resource_id (например FAQ) | тестовый стенд: дочняя страница с секцией faq, главная с [[!PageBuilderResource? &resource_id=`…` &section_types=`faq`]] -->
+
 - Hero или FAQ с дочерней страницы на главной.
 - Общий блок контента на нескольких ресурсах без дублирования секций в каждом документе.
 

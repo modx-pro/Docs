@@ -9,6 +9,8 @@ description: Сниппет PageBuilder — HTML опубликованных с
 
 ## Где вызывать
 
+<!-- MEDIA: screenshot-admin | must | ресурс MODX с вкладкой «Секции» и опубликованными блоками | на тестовом стенде открыть документ с PageBuilder, вкладка «Секции» -->
+
 - Шаблон страницы, собранной во вкладке **Секции**.
 - Поле content, если шаблон выводит `[[*content]]`.
 - Только некэшированный вызов (`[[!PageBuilder]]`). Без `!` HTML может устареть после публикации секций.
@@ -69,6 +71,8 @@ description: Сниппет PageBuilder — HTML опубликованных с
 
 ## return_values
 
+<!-- MEDIA: output | must | фрагмент JSON с полями plainText и sections после вызова с return_values=1 | на тестовой странице вызвать [[!PageBuilder? &return_values=`1`]], сохранить ответ (синтетические заголовки и тексты) -->
+
 JSON для SEO-плагинов и headless-гибридов. Структура совпадает с полем `values` в [Public API](../public-api):
 
 ::: code-group
@@ -94,6 +98,8 @@ JSON для SEO-плагинов и headless-гибридов. Структур�
 Глобально отключить: `pagebuilder_load_frontend_css = 0`. На одном вызове: `&load_css=`0``.
 
 ## Кеш HTML
+
+<!-- MEDIA: diagram | nice | цепочка запроса: проверка кеша MODX, попадание без событий, промах с pbOnBeforeRenderDocument и pbOnBeforeRenderSection | по тексту раздела и параметру use_cache -->
 
 Кеш MODX: partition `pagebuilder/{resourceId}`, ключ `render/{context}/{resourceId}/{publishedRevision}[/{typeHash}]`. Сбрасывается при publish/unpublish. Ошибки отрисовки в кеш не попадают.
 

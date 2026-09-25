@@ -11,7 +11,7 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 ## Зачем этот тип
 
-Ссылка на YouTube или Vimeo, либо загруженный ролик. После сохранения появляются адрес плеера (`embed_url`), название сервиса (`provider`) и ссылка на просмотр (`watch_url`). Если тип поля `video` или в имени есть «video», те же значения записываются ещё и ключами `video_*`.
+URL YouTube, Vimeo или Rutube в инспекторе (поле текста + poster как у [image](image)). После save enrich для распознанных ссылок добавляет `embed_url`, `provider`, `watch_url`. Произвольный URL без провайдера остаётся без embed. Плоские `video_embed_url`, `video_provider`, `video_watch_url` — только у секции с `type=video`. Объект с `url` enrich-ится, если имя ключа содержит `video`.
 
 ## Когда использовать
 
@@ -76,7 +76,7 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 }
 ```
 
-- Плоские `video_embed_url`, `video_provider`, `video_watch_url` добавляются, если имя поля содержит `video` или секция имеет `type=video`.
+- Плоские `video_*` — только секция `type=video`. Enrich объекта `{ url, … }` — если имя ключа содержит `video` (без плоских ключей).
 
 ## Пример в chunk
 
@@ -100,7 +100,7 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 
 ## Примечание
 
-Плоские `video_embed_url` / `video_provider` / `video_watch_url`: только для секции `type=video` или имени поля с «video».
+Плоские `video_embed_url` / `video_provider` / `video_watch_url`: только секция `type=video`. Имя поля с «video» enrich-ит вложенный объект, не плоские ключи.
 
 ## Общие свойства
 
@@ -109,7 +109,7 @@ description: "Объект видео с enrich embed_url provider и watch_url"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
