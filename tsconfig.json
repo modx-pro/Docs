@@ -19,6 +19,8 @@
   },
   "include": [
     ".vitepress/theme/**/*",
+    ".vitepress/config/**/*",
+    "docs/*.ts",
     "globals.d.ts",
     "node_modules/vitepress/dist/client/theme-default/components/**/*.vue"
   ]

@@ -1,5 +1,5 @@
-import { DefaultTheme } from 'vitepress'
-import type { ComponentData } from '../plugins/component'
+import type { DefaultTheme } from 'vitepress'
+import type { ComponentData } from '../plugins/component.ts'
 
 export namespace DocsTheme {
   export interface Sponsor {
