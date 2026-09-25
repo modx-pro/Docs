@@ -7,28 +7,53 @@ import 'dotenv/config'
 export const SITE_NAME = 'Документация компонентов MODX и не только'
 export const META_DESCRIPTION = 'Простой и удобный Open-Source проект от сообщества и для сообщества, где вы можете найти и изучить документацию всех популярных компонентов MODX, а разработчики – легко описать свои'
 
-export const searchLocale: Record<string, Partial<Omit<DefaultTheme.LocalSearchOptions, 'locales'>>> = {
+export const searchLocale: NonNullable<DefaultTheme.AlgoliaSearchOptions['locales']> = {
   root: {
+    placeholder: 'Поиск по документации',
     translations: {
       button: {
         buttonText: 'Поиск',
         buttonAriaLabel: 'Поиск'
       },
       modal: {
-        resetButtonTitle: 'Сбросить',
-        backButtonTitle: 'Закрыть',
-        noResultsText: 'Нет результатов по запросу',
+        searchBox: {
+          clearButtonTitle: 'Очистить',
+          clearButtonAriaLabel: 'Очистить',
+          closeButtonText: 'Закрыть',
+          closeButtonAriaLabel: 'Закрыть',
+          placeholderText: 'Поиск по документации',
+          searchInputLabel: 'Поиск',
+        },
+        startScreen: {
+          recentSearchesTitle: 'Недавние',
+          noRecentSearchesText: 'Нет недавних запросов',
+          saveRecentSearchButtonTitle: 'Сохранить',
+          removeRecentSearchButtonTitle: 'Удалить из истории',
+          favoriteSearchesTitle: 'Избранное',
+          removeFavoriteSearchButtonTitle: 'Удалить из избранного',
+        },
+        errorScreen: {
+          titleText: 'Не удалось получить результаты',
+          helpText: 'Проверьте подключение к интернету',
+        },
         footer: {
-          selectText: 'для выбора',
+          selectText: 'выбрать',
           selectKeyAriaLabel: 'enter',
-          navigateText: 'для навигации',
+          navigateText: 'навигация',
           navigateUpKeyAriaLabel: 'стрелка вверх',
           navigateDownKeyAriaLabel: 'стрелка вниз',
           closeText: 'закрыть',
-          closeKeyAriaLabel: 'escape'
-        }
-      }
-    }
+          closeKeyAriaLabel: 'escape',
+          poweredByText: 'Поиск от',
+        },
+        noResultsScreen: {
+          noResultsText: 'Нет результатов по запросу',
+          suggestedQueryText: 'Попробуйте поискать',
+          reportMissingResultsText: 'Считаете, что результаты должны быть?',
+          reportMissingResultsLinkText: 'Сообщите нам',
+        },
+      },
+    },
   },
 }
 
