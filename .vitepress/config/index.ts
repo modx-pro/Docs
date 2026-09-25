@@ -170,32 +170,14 @@ export default withMermaid(
     ],
 
     search: {
-      provider: 'local',
+      provider: 'algolia',
       options: {
+        appId: 'BCE7F5SAJ2',
+        apiKey: 'b1fa3914451fbbf1ae1d1d65cd2b24d8',
+        indexName: 'modx',
         locales: {
           ...searchLocaleRu,
           ...searchLocaleEn,
-        },
-        detailedView: false,
-        miniSearch: {
-          options: {
-            // @ts-expect-error
-            fields: ['title', 'titles', 'text', 'isComponentIndex'],
-            storeFields: ['title', 'titles', 'isComponentIndex'],
-            extractField(document, fieldName) {
-              if (fieldName === 'isComponentIndex') {
-                return /(?<=(\/en)?)\/components\/(\w*)\/?(#\w+)?$/.test(document.id)
-              }
-
-              return document[fieldName]
-            },
-          },
-          searchOptions: {
-            boostDocument(documentId, term, storedFields) {
-              if (storedFields?.isComponentIndex) return 2.0
-              return 1.0
-            },
-          },
         },
       },
     },

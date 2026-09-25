@@ -1,12 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
-import { useData } from 'vitepress'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { createSearchTranslate } from 'vitepress/dist/client/theme-default/support/translation'
 import { v4 as uuidv4 } from 'uuid'
 
 const uid = uuidv4()
-const { theme } = useData()
-const translate = createSearchTranslate(theme.value.search?.options)
+// английские подписи на случай локали без переводов
+const translate = createSearchTranslate({
+  modal: {
+    searchBox: {
+      clearButtonAriaLabel: 'Clear search',
+      closeButtonAriaLabel: 'Close search',
+    },
+  },
+})
+const closeLabel = computed(() => translate('modal.searchBox.closeButtonAriaLabel'))
+const clearLabel = computed(() => translate('modal.searchBox.clearButtonAriaLabel'))
 withDefaults(defineProps<{
   modelValue: string
   placeholder: string
@@ -49,7 +57,7 @@ function resetSearch() {
       <span aria-hidden="true" class="vpi-search search-icon local-search-icon" />
     </label>
     <div v-if="backButton" class="search-actions before">
-      <button class="back-button" :title="translate('modal.backButtonTitle')" @click="$emit('close')"
+      <button class="back-button" :title="closeLabel" :aria-label="closeLabel" @click="$emit('close')"
         :disabled="disabled">
         <span class="vpi-arrow-left local-search-icon" />
       </button>
@@ -57,7 +65,7 @@ function resetSearch() {
     <input ref="searchInput" :id="uid" :value="modelValue" :placeholder="placeholder" class="search-input"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
     <div class="search-actions">
-      <button v-if="modelValue" class="clear-button" :title="translate('modal.resetButtonTitle')" @click="resetSearch">
+      <button v-if="modelValue" class="clear-button" :title="clearLabel" :aria-label="clearLabel" @click="resetSearch">
         <span class="vpi-delete local-search-icon" />
       </button>
     </div>

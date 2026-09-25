@@ -28,3 +28,24 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
+      # переиндексация поиска после выкладки; сбой не красит деплой, сайт уже выложен
+      - name: Reindex Algolia
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          CRAWLER_ID: 7f31fbfd-b89a-4652-9e5b-ed8b13d75e52
+          CRAWLER_USER_ID: ${{ secrets.ALGOLIA_CRAWLER_USER_ID }}
+          CRAWLER_API_KEY: ${{ secrets.ALGOLIA_CRAWLER_API_KEY }}
+        run: |
+          if [ -z "$CRAWLER_USER_ID" ] || [ -z "$CRAWLER_API_KEY" ]; then
+            echo "::warning title=Algolia reindex skipped::ALGOLIA_CRAWLER_USER_ID / ALGOLIA_CRAWLER_API_KEY are not set, search index will stay stale"
+            exit 0
+          fi
+          if ! resp=$(curl --fail-with-body -sS -X POST \
+            --connect-timeout 10 --max-time 60 --retry 3 --retry-all-errors --retry-delay 5 \
+            -u "$CRAWLER_USER_ID:$CRAWLER_API_KEY" \
+            "https://crawler.algolia.com/api/1/crawlers/$CRAWLER_ID/reindex" 2>&1); then
+            echo "::warning title=Algolia reindex failed::Site deployed, but reindex request failed: $resp"
+            exit 1
+          fi
+          echo "Reindex queued: $resp"
