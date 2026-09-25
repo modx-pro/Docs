@@ -4,6 +4,8 @@ description: Удобная страница системных настроек
 logo: https://modstore.pro/assets/extras/easysettings/logo.png
 author: GulomovCreative
 categories: utilities
+modstore: https://modstore.pro/packages/utilities/easysettings
+modx: https://extras.modx.com/package/easysettings
 
 items:
   - text: Интерфейс

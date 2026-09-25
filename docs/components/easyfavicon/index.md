@@ -4,6 +4,7 @@ description: Фавиконки из редактора RealFaviconGenerator п�
 logo: https://modstore.pro/assets/extras/easyfavicon/logo.png
 author: GulomovCreative
 categories: utilities
+modstore: https://modstore.pro/packages/utilities/easyfavicon
 
 items:
   - text: Быстрый старт

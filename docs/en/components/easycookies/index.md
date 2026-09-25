@@ -4,6 +4,7 @@ description: A cookie banner for MODX 2 and 3 — a simple notice or law-complia
 logo: https://modstore.pro/assets/extras/easycookies/logo.png
 author: GulomovCreative
 categories: utilities
+modstore: https://modstore.pro/packages/utilities/easycookies
 
 items:
   - text: Quick start
