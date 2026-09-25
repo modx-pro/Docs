@@ -27,7 +27,7 @@ Select the required file for editing in the `docs/components/` directory.
 ## Recommended way to make changes to the documentation
 
 ::: info INFO
-For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as **pnpm**, npm, or yarn installed on your computer.
+For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as the **[pnpm](https://pnpm.io/installation)** package manager installed on your computer: dependencies are locked in `pnpm-lock.yaml`.
 Knowledge and skills of working with Vue are not required.
 :::
 
@@ -54,24 +54,10 @@ Link to step by step instructions
 4. It is recommended to create a separate branch for the changes you make, but this is not required.
 5. If you want to preview your changes on your computer (recommended) before submitting a Pull Request, install the required dependencies.
 
-    ::: code-group
-
-    ```shell [pnpm]
+    ```shell
     pnpm install
     pnpm dev
     ```
-
-    ```shell [npm]
-    npm install
-    npm run dev
-    ```
-
-    ```shell [yarn]
-    yarn install
-    yarn dev
-    ```
-
-    :::
 
 6. Make the required changes to the existing documentation file or create a new one.
 7. Add your changes to git by creating a new commit.
@@ -120,21 +106,11 @@ For those who want to add new documentation of the extra to the project, the [pl
 ### Instructions
 
 1. After installing the dependencies, you need to enter the following command in the terminal:
-    ::: code-group
 
-    ```sh [pnpm]
+    ```sh
     pnpm run generate
     ```
 
-    ```sh [npm]
-    npm run generate
-    ```
-
-    ```sh [yarn]
-    yarn generate
-    ```
-
-    :::
 2. So you will run the CLI helper and you will see the following message. Use the [[&uarr;]] and [[&darr;]] keys to select the desired language and press [[Enter]]:
 
     ```ansi
@@ -196,7 +172,7 @@ For those who want to add new documentation of the extra to the project, the [pl
 
 ## Useful commands
 
-From the repository root after `pnpm install` / `npm install`:
+From the repository root after `pnpm install`:
 
 | Command | Purpose |
 | --- | --- |
