@@ -49,10 +49,27 @@ items:
         link: examples/form/pico
       - text: Форма на Cirrus CSS
         link: examples/form/cirrus
-      - text: Форма на turretcss
-        link: examples/form/turretcss
       - text: Форма на Vanilla
         link: examples/form/vanilla
+  - text: Готовые сценарии
+    link: examples/scenarios/
+    items:
+      - text: Индикатор отправки
+        link: examples/scenarios/loading
+      - text: Благодарность вместо формы
+        link: examples/scenarios/thank-you
+      - text: Переход на другую страницу
+        link: examples/scenarios/redirect
+      - text: Маска телефона
+        link: examples/scenarios/phone-mask
+      - text: Загрузка файлов
+        link: examples/scenarios/files
+      - text: Несколько форм на странице
+        link: examples/scenarios/multiple-forms
+      - text: Цели в Метрике и Google Analytics
+        link: examples/scenarios/analytics
+      - text: Заявка в Telegram
+        link: examples/scenarios/telegram
   - text: Всплывающие сообщения
     link: examples/notifications/
     items:
@@ -60,42 +77,46 @@ items:
         link: examples/notifications/notyf
       - text: SweetAlert2
         link: examples/notifications/sweetalert2
-      - text: iziToast
-        link: examples/notifications/izitoast
       - text: Notiflix.Notify
         link: examples/notifications/notiflix-notify
-      - text: Notie
-        link: examples/notifications/notie
-      - text: Awesome Notifications
-        link: examples/notifications/awesome-notifications
       - text: Toastify JS
         link: examples/notifications/toastifyjs
+      - text: Awesome Notifications
+        link: examples/notifications/awesome-notifications
       - text: AlertifyJS
         link: examples/notifications/alertifyjs
-      - text: PNotify
-        link: examples/notifications/pnotify
-      - text: toastr
-        link: examples/notifications/toastr
       - text: jGrowl
         link: examples/notifications/jgrowl
-      - text: NOTY
-        link: examples/notifications/noty
   - text: Модальные окна
     link: examples/modals/
     items:
-      - text: Модальные окна Bootstrap
-        link: examples/modals/bootstrap
-      - text: Модальные окна tingle.js
-        link: examples/modals/tinglejs
+      - text: Модальные окна на dialog
+        link: examples/modals/dialog
+      - text: Всплывающая форма на popover
+        link: examples/modals/popover
+      - text: Модальные окна a11y-dialog
+        link: examples/modals/a11y-dialog
       - text: Модальные окна Micromodal.js
         link: examples/modals/micromodaljs
+      - text: Модальные окна Bootstrap
+        link: examples/modals/bootstrap
+      - text: Модальные окна UIkit
+        link: examples/modals/uikit
+      - text: Модальные окна Fancybox
+        link: examples/modals/fancybox
   - text: Валидация
     link: examples/validation/
     items:
-      - text: Валидация с помощью Iodine
-        link: examples/validation/iodine
+      - text: Средствами браузера
+        link: examples/validation/native
+      - text: Валидация с помощью Zod
+        link: examples/validation/zod
+      - text: Валидация с помощью Valibot
+        link: examples/validation/valibot
       - text: Валидация с помощью yup
         link: examples/validation/yup
+      - text: Телефон и e-mail с validator.js
+        link: examples/validation/validator
 ---
 
 # FetchIt
@@ -119,7 +140,7 @@ FormIt сам по себе отвечает обычным POST с переза
 - **Работает и без JavaScript.** С FormIt форма отправляется обычным способом, сообщения и введённые значения выводятся его плейсхолдерами. Исключение — proof-of-work и капча: им нужен JavaScript.
 - **[Защита от спама](/components/fetchit/protection) по умолчанию:** одноразовый подписанный токен, минимальное время заполнения, скрытое поле-ловушка и лимит отправок. По желанию proof-of-work и капча — Cloudflare Turnstile, Google reCAPTCHA v3 или Яндекс SmartCaptcha. Свои правила добавляются плагином.
 - **Никаких зависимостей.** Кроме скрипта сервиса капчи, если она включена, других файлов скрипт не грузит.
-- **[Встроенные уведомления](/components/fetchit/examples/notifications/#встроенные-уведомления)** или свои через `FetchIt.Message`: Bootstrap, SweetAlert2, что угодно.
+- **[Встроенные уведомления](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya)** или свои через `FetchIt.Message`: Bootstrap, SweetAlert2, что угодно.
 - **[События](/components/fetchit/frontend/events)** `fetchit:before`, `fetchit:after`, `fetchit:success`, `fetchit:error`, `fetchit:reset`: дополнить данные, отменить отправку, показать модалку.
 - **[Типы для TypeScript](/components/fetchit/frontend/typescript)** лежат рядом со скриптом.
 - **Несколько форм на странице**, каждая со своим ключом и обработчиком, если вызовы сниппета различаются параметрами.

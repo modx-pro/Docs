@@ -54,9 +54,13 @@ FetchIt.Message = {
 
 `after`, `success` и `error` получают строку `message` из ответа сервера — пустую, если обрабатывающий сниппет сообщения не прислал. Хуки вызываются перед событием того же момента (кроме `reset`: он после `fetchit:reset`), так что отмена события их не отменяет. Исключение в хуке пишется в консоль с его именем и не мешает обработать ответ формы.
 
+::: warning
+`before` вызывается до `fetchit:before`, то есть до клиентской валидации. Если она отменит отправку, `after` не придёт, — поэтому спиннер или блокировку кнопки в `before` не включайте. Как сделать индикатор отправки: [пример](/components/fetchit/examples/scenarios/loading).
+:::
+
 `FetchIt` появляется, когда отработал отложенный `fetchit.js`, поэтому `FetchIt.Message` задавайте из отложенного скрипта, подключённого после него, или по `DOMContentLoaded`.
 
-Если включена настройка `fetchit.frontend.default.notifier`, а `Message` не задан, при первом `create()` подставятся [встроенные уведомления](/components/fetchit/examples/notifications/#встроенные-уведомления). Если в вашем `Message` нет ни `success`, ни `error`, они добавятся к нему.
+Если включена настройка `fetchit.frontend.default.notifier`, а `Message` не задан, при первом `create()` подставятся [встроенные уведомления](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya). Если в вашем `Message` нет ни `success`, ни `error`, они добавятся к нему.
 
 Готовые примеры: [уведомления](/components/fetchit/examples/notifications/).
 

@@ -113,7 +113,7 @@ description: Первый вызов FetchIt с FormIt, чанком формы 
 
 ## Уведомления
 
-Пока `fetchit.frontend.default.notifier` выключен, уведомления не показываются: видны только блоки в форме и ошибки полей. Включите настройку, чтобы показывать ответы [встроенными уведомлениями](/components/fetchit/examples/notifications/#встроенные-уведомления), или подключите свою библиотеку: [Всплывающие сообщения](/components/fetchit/examples/notifications/).
+Пока `fetchit.frontend.default.notifier` выключен, уведомления не показываются: видны только блоки в форме и ошибки полей. Включите настройку, чтобы показывать ответы [встроенными уведомлениями](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya), или подключите свою библиотеку: [Всплывающие сообщения](/components/fetchit/examples/notifications/).
 
 После успеха поля очищаются, если `clearFieldsOnSuccess` не отключён (`1` по умолчанию).
 

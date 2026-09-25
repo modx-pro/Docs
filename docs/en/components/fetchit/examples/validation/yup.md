@@ -92,6 +92,7 @@ yup schema, `validateSync` with `abortEarly: false`, errors via `setError`. Opti
         fetchit.setError(path, message)
       }
 
+      fetchit.getFields(err.inner[0]?.path)[0]?.focus()
       FetchIt.Message?.error?.('Fix the form errors')
     }
   })

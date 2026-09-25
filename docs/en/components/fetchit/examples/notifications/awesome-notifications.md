@@ -1,52 +1,43 @@
 ---
 title: Awesome Notifications
-description: Awesome Notifications for FetchIt via CDN and FetchIt.Message
+description: Awesome Notifications toasts for FetchIt responses
 ---
 
 # Awesome Notifications
 
-[Awesome Notifications](https://f3oall.github.io/awesome-notifications/): lightweight toasts in plain JS.
+[Awesome Notifications](https://f3oall.github.io/awesome-notifications/) — toasts with icons and a bar showing the time left, with no dependencies.
 
-## CDN setup
+## Loading
 
 ```html
-<!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/awesome-notifications@3/dist/index.var.js" defer></script>
-
-<!-- CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/awesome-notifications@3/dist/style.min.css">
+<script src="https://cdn.jsdelivr.net/npm/awesome-notifications@3/dist/index.var.js" defer></script>
 ```
 
-Create an instance and set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
+## FetchIt.Message
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
-  const notifier = new AWN()
+  const notifier = new AWN({
+    position: 'top-right',
+    durations: { global: 5000, alert: 8000 },
+    labels: { success: 'Done', alert: 'Error' },
+  })
+
+  const show = (message, display) => {
+    const text = FetchIt.sanitizeHTML(message).trim()
+    if (text) {
+      display(text)
+    }
+  }
 
   FetchIt.Message = {
-    success(message) {
-      notifier.success(message)
-    },
-    error(message) {
-      notifier.alert(message)
-    },
+    success: (message) => show(message, (text) => notifier.success(text)),
+    error: (message) => show(message, (text) => notifier.alert(text)),
   }
 })
 ```
 
-In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
+The error is shown by the `alert` method: the library has no `error` method.
 
-```js
-const notifier = new AWN()
-
-FetchIt.Message = {
-  success(message) {
-    notifier.success(message)
-  },
-  error(message) {
-    notifier.alert(message)
-  },
-}
-```
-
-Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).
+Why the text goes through `sanitizeHTML` and what the empty-string check is for is explained in the [general section](/en/components/fetchit/examples/notifications/#third-party-libraries).

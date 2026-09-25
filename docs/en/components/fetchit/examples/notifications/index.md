@@ -60,13 +60,34 @@ Before FetchIt 4 the setting loaded the Notyf library. It is no longer in the pa
 
 - [Notyf](/en/components/fetchit/examples/notifications/notyf)
 - [SweetAlert2](/en/components/fetchit/examples/notifications/sweetalert2)
-- [iziToast](/en/components/fetchit/examples/notifications/izitoast)
 - [Notiflix.Notify](/en/components/fetchit/examples/notifications/notiflix-notify)
-- [Notie](/en/components/fetchit/examples/notifications/notie)
-- [Awesome Notifications](/en/components/fetchit/examples/notifications/awesome-notifications)
 - [Toastify JS](/en/components/fetchit/examples/notifications/toastifyjs)
+- [Awesome Notifications](/en/components/fetchit/examples/notifications/awesome-notifications)
 - [AlertifyJS](/en/components/fetchit/examples/notifications/alertifyjs)
-- [PNotify](/en/components/fetchit/examples/notifications/pnotify)
-- [toastr](/en/components/fetchit/examples/notifications/toastr)
-- [jGrowl](/en/components/fetchit/examples/notifications/jgrowl)
-- [NOTY](/en/components/fetchit/examples/notifications/noty)
+- [jGrowl](/en/components/fetchit/examples/notifications/jgrowl) — if the site already has jQuery
+
+All the examples are built the same way, and any other library is wired in the same way too:
+
+```js
+document.addEventListener('DOMContentLoaded', () => {
+  const show = (type, message) => {
+    const text = FetchIt.sanitizeHTML(message).trim()
+    if (!text) {
+      return
+    }
+
+    // Call the library: type is 'success' or 'error'
+  }
+
+  FetchIt.Message = {
+    success: (message) => show('success', message),
+    error: (message) => show('error', message),
+  }
+})
+```
+
+- **`DOMContentLoaded`.** The FetchIt script is loaded with `defer`, and the `FetchIt` class appears only once the page has been parsed. By `DOMContentLoaded` it is already there — no matter where your code sits: in a separate file or right in the template.
+- **`sanitizeHTML`.** Most libraries insert the text as HTML. The message comes from the server and may contain tags — from a lexicon, for example, or from data the visitor typed in. The built-in notifications strip the tags, and it is worth doing the same in your own.
+- **Empty text.** When the processing snippet sends no message, the hook gets an empty string. Without the check the library shows an empty notification.
+
+A `FetchIt.Message` of your own replaces the built-in notifications entirely, even when the `fetchit.frontend.default.notifier` setting is on.

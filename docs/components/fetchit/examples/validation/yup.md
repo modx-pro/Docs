@@ -92,6 +92,7 @@ ESM с CDN:
         fetchit.setError(path, message)
       }
 
+      fetchit.getFields(err.inner[0]?.path)[0]?.focus()
       FetchIt.Message?.error?.('Исправьте ошибки в форме')
     }
   })

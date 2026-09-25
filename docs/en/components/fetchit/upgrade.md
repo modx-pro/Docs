@@ -20,7 +20,7 @@ The FetchIt snippet and plugin are replaced on upgrade, together with the defaul
 
 ## What may affect your code
 
-- The service fields of the [protection](/en/components/fetchit/protection) are added to the form. A script of your own instead of the bundled one has to send the token — see [Your own JavaScript instead of the bundled script](/en/components/fetchit/protection#your-own-javascript-instead-of-the-bundled-script).
+- The service fields of the [protection](/en/components/fetchit/protection) are added to the form. A script of your own instead of the bundled one has to send the token — see [Your own JavaScript instead of the bundled script](/en/components/fetchit/protection#your-own-javascript-instead).
 - The `fetchit.frontend.default.notifier` setting no longer loads Notyf; it shows the [built-in notifications](/en/components/fetchit/examples/notifications/#built-in-notifications). Styles for `.notyf__toast` and calls to `new Notyf()` need to change, or load Notyf yourself.
 - `fetchit:error` also fires when a request fails: `detail.response` is then `null` and the cause is in `detail.error`.
 - The processing snippet gets only the submitted form in `fields`: `$_POST`, and `$_FILES` for FetchIt submissions; only `$_POST` for a normal submission. No GET values and no cookies — it used to get `$_REQUEST`.
@@ -34,4 +34,4 @@ The FetchIt snippet and plugin are replaced on upgrade, together with the defaul
 - On a development site set `fetchit.protection.min_time` and `fetchit.protection.rate_limit` to `0`, so the protection does not get in the way of tests.
 - If the site runs FormIt 5.2 or later with reCAPTCHA, turn the captcha on through [`fetchit.captcha`](/en/components/fetchit/protection#captcha) for FetchIt forms: FormIt's own AJAX mode is disabled in them.
 
-The full list of changes is in the [changelog](https://github.com/GulomovCreative/FetchIt/blob/main/CHANGELOG.md) of the component.
+The full list of changes is in the [changelog](https://github.com/GulomovCreative/FetchIt/blob/master/core/components/fetchit/docs/changelog.txt) of the component, and the packages of every version are in the [GitHub releases](https://github.com/GulomovCreative/FetchIt/releases).

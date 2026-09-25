@@ -54,6 +54,10 @@ FetchIt.Message = {
 
 `after`, `success` and `error` get the `message` string from the answer of the server — empty when the processing snippet sent none. The hooks run before the event of the same moment (except `reset`: it runs after `fetchit:reset`), so cancelling the event does not undo them. An exception in a hook is logged with its name and does not keep the answer from the form.
 
+::: warning
+`before` is called before `fetchit:before`, that is, before client-side validation. If validation cancels the submission, `after` does not come — so do not turn on a spinner or disable the button in `before`. How to build a submit indicator: [example](/en/components/fetchit/examples/scenarios/loading).
+:::
+
 `FetchIt` appears once the deferred `fetchit.js` has run, so set `FetchIt.Message` from a deferred script loaded after it, or on `DOMContentLoaded`.
 
 With the `fetchit.frontend.default.notifier` setting on and no `Message` set, the first `create()` puts the [built-in notifications](/en/components/fetchit/examples/notifications/#built-in-notifications) there. When your `Message` has neither `success` nor `error`, they are added to it.

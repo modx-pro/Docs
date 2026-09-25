@@ -49,10 +49,27 @@ items:
         link: examples/form/pico
       - text: Cirrus CSS form
         link: examples/form/cirrus
-      - text: turretcss form
-        link: examples/form/turretcss
       - text: Vanilla form
         link: examples/form/vanilla
+  - text: Ready-made scenarios
+    link: examples/scenarios/
+    items:
+      - text: Submit indicator
+        link: examples/scenarios/loading
+      - text: Thank-you instead of the form
+        link: examples/scenarios/thank-you
+      - text: Redirect to another page
+        link: examples/scenarios/redirect
+      - text: Phone mask
+        link: examples/scenarios/phone-mask
+      - text: File uploads
+        link: examples/scenarios/files
+      - text: Several forms on a page
+        link: examples/scenarios/multiple-forms
+      - text: Goals in Yandex Metrica and Google Analytics
+        link: examples/scenarios/analytics
+      - text: Requests to Telegram
+        link: examples/scenarios/telegram
   - text: Popup notifications
     link: examples/notifications/
     items:
@@ -60,42 +77,46 @@ items:
         link: examples/notifications/notyf
       - text: SweetAlert2
         link: examples/notifications/sweetalert2
-      - text: iziToast
-        link: examples/notifications/izitoast
       - text: Notiflix.Notify
         link: examples/notifications/notiflix-notify
-      - text: Notie
-        link: examples/notifications/notie
-      - text: Awesome Notifications
-        link: examples/notifications/awesome-notifications
       - text: Toastify JS
         link: examples/notifications/toastifyjs
+      - text: Awesome Notifications
+        link: examples/notifications/awesome-notifications
       - text: AlertifyJS
         link: examples/notifications/alertifyjs
-      - text: PNotify
-        link: examples/notifications/pnotify
-      - text: toastr
-        link: examples/notifications/toastr
       - text: jGrowl
         link: examples/notifications/jgrowl
-      - text: NOTY
-        link: examples/notifications/noty
   - text: Modals
     link: examples/modals/
     items:
-      - text: Bootstrap modals
-        link: examples/modals/bootstrap
-      - text: tingle.js modals
-        link: examples/modals/tinglejs
+      - text: Modals with dialog
+        link: examples/modals/dialog
+      - text: Popover form
+        link: examples/modals/popover
+      - text: a11y-dialog modals
+        link: examples/modals/a11y-dialog
       - text: Micromodal.js modals
         link: examples/modals/micromodaljs
+      - text: Bootstrap modals
+        link: examples/modals/bootstrap
+      - text: UIkit modals
+        link: examples/modals/uikit
+      - text: Fancybox modals
+        link: examples/modals/fancybox
   - text: Validation
     link: examples/validation/
     items:
-      - text: Validation with Iodine
-        link: examples/validation/iodine
+      - text: Browser validation
+        link: examples/validation/native
+      - text: Validation with Zod
+        link: examples/validation/zod
+      - text: Validation with Valibot
+        link: examples/validation/valibot
       - text: Validation with yup
         link: examples/validation/yup
+      - text: Phone and e-mail with validator.js
+        link: examples/validation/validator
 ---
 
 # FetchIt
