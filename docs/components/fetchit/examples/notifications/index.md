@@ -60,13 +60,34 @@ FetchIt.Message = FetchIt.createNotifier({ closeLabel: 'Закрыть', duratio
 
 - [Notyf](/components/fetchit/examples/notifications/notyf)
 - [SweetAlert2](/components/fetchit/examples/notifications/sweetalert2)
-- [iziToast](/components/fetchit/examples/notifications/izitoast)
 - [Notiflix.Notify](/components/fetchit/examples/notifications/notiflix-notify)
-- [Notie](/components/fetchit/examples/notifications/notie)
-- [Awesome Notifications](/components/fetchit/examples/notifications/awesome-notifications)
 - [Toastify JS](/components/fetchit/examples/notifications/toastifyjs)
+- [Awesome Notifications](/components/fetchit/examples/notifications/awesome-notifications)
 - [AlertifyJS](/components/fetchit/examples/notifications/alertifyjs)
-- [PNotify](/components/fetchit/examples/notifications/pnotify)
-- [toastr](/components/fetchit/examples/notifications/toastr)
-- [jGrowl](/components/fetchit/examples/notifications/jgrowl)
-- [NOTY](/components/fetchit/examples/notifications/noty)
+- [jGrowl](/components/fetchit/examples/notifications/jgrowl) — если на сайте уже есть jQuery
+
+Все примеры устроены одинаково, и так же подключается любая другая библиотека:
+
+```js
+document.addEventListener('DOMContentLoaded', () => {
+  const show = (type, message) => {
+    const text = FetchIt.sanitizeHTML(message).trim()
+    if (!text) {
+      return
+    }
+
+    // Вызов библиотеки: type — 'success' или 'error'
+  }
+
+  FetchIt.Message = {
+    success: (message) => show('success', message),
+    error: (message) => show('error', message),
+  }
+})
+```
+
+- **`DOMContentLoaded`.** Скрипт FetchIt подключается с `defer`, и класс `FetchIt` появляется только после разбора страницы. К `DOMContentLoaded` он уже есть — неважно, где стоит ваш код: в отдельном файле или прямо в шаблоне.
+- **`sanitizeHTML`.** Большинство библиотек вставляет текст как HTML. Сообщение приходит с сервера, и в нём могут оказаться теги — например, из лексикона или из данных, которые ввёл посетитель. Встроенные уведомления теги убирают, в своих это тоже стоит делать.
+- **Пустой текст.** Если обрабатывающий сниппет не прислал сообщения, хук получит пустую строку. Без проверки библиотека покажет пустое уведомление.
+
+Свой `FetchIt.Message` заменяет встроенные уведомления целиком, даже если настройка `fetchit.frontend.default.notifier` включена.

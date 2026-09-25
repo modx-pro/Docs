@@ -20,8 +20,8 @@ FetchIt 1.x был пакетом для MODX 2, FetchIt 3.x — пакетом 
 
 ## Что может задеть ваш код
 
-- В форму добавляются служебные поля [защиты](/components/fetchit/protection). Свой JS вместо встроенного должен отправлять токен — см. [Свой JavaScript вместо встроенного скрипта](/components/fetchit/protection#свой-javascript-вместо-встроенного-скрипта).
-- Настройка `fetchit.frontend.default.notifier` больше не подключает Notyf, а показывает [встроенные уведомления](/components/fetchit/examples/notifications/#встроенные-уведомления). Стили для `.notyf__toast` и вызовы `new Notyf()` нужно поменять или подключить Notyf самостоятельно.
+- В форму добавляются служебные поля [защиты](/components/fetchit/protection). Свой JS вместо встроенного должен отправлять токен — см. [Свой JavaScript вместо встроенного скрипта](/components/fetchit/protection#svoy-javascript-vmesto-vstroennogo).
+- Настройка `fetchit.frontend.default.notifier` больше не подключает Notyf, а показывает [встроенные уведомления](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya). Стили для `.notyf__toast` и вызовы `new Notyf()` нужно поменять или подключить Notyf самостоятельно.
 - `fetchit:error` срабатывает и при сбое запроса: тогда `detail.response` равен `null`, а причина лежит в `detail.error`.
 - Обрабатывающий сниппет получает в `fields` только отправленную форму: `$_POST` и файлы из `$_FILES` при отправке через FetchIt, только `$_POST` при обычной отправке. Без GET-параметров и cookies — раньше приходил `$_REQUEST`.
 - `fetchit:success` можно отменить: `event.preventDefault()` оставит поля заполненными.
@@ -30,8 +30,8 @@ FetchIt 1.x был пакетом для MODX 2, FetchIt 3.x — пакетом 
 
 ## После обновления
 
-- Проверьте страницы с формами, исключёнными из кеша на стороне сервера или CDN: токен формы кешируется вместе со страницей, см. [Что стоит учесть](/components/fetchit/protection#что-стоит-учесть).
+- Проверьте страницы с формами, исключёнными из кеша на стороне сервера или CDN: токен формы кешируется вместе со страницей, см. [Что стоит учесть](/components/fetchit/protection#chto-stoit-uchest).
 - На сайте для разработки поставьте `fetchit.protection.min_time` и `fetchit.protection.rate_limit` в `0`, чтобы защита не мешала тестам.
-- Если на сайте FormIt 5.2 и новее с reCAPTCHA, для форм FetchIt включите капчу через [`fetchit.captcha`](/components/fetchit/protection#капча): свой AJAX-режим FormIt в формах FetchIt выключается.
+- Если на сайте FormIt 5.2 и новее с reCAPTCHA, для форм FetchIt включите капчу через [`fetchit.captcha`](/components/fetchit/protection#kapcha): свой AJAX-режим FormIt в формах FetchIt выключается.
 
-Полный список изменений — в [changelog](https://github.com/GulomovCreative/FetchIt/blob/main/CHANGELOG.ru.md) компонента.
+Полный список изменений — в [changelog](https://github.com/GulomovCreative/FetchIt/blob/master/core/components/fetchit/docs/changelog.txt) компонента (на английском), пакеты всех версий — в [релизах на GitHub](https://github.com/GulomovCreative/FetchIt/releases).

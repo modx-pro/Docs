@@ -39,7 +39,7 @@ CSS-класс на `input` / `select` / `textarea` с ошибкой. Неск�
 
 - По умолчанию: `Нет`
 
-Показывать ответы сервера и ошибки отправки [встроенными уведомлениями](/components/fetchit/examples/notifications/#встроенные-уведомления) в углу страницы. Свой `FetchIt.Message` важнее настройки.
+Показывать ответы сервера и ошибки отправки [встроенными уведомлениями](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya) в углу страницы. Свой `FetchIt.Message` важнее настройки.
 
 ::: warning
 До FetchIt 4 эта настройка подключала библиотеку Notyf. Теперь Notyf в пакете нет: стили для `.notyf__toast` и скрипты, которые вызывают `new Notyf()`, нужно поменять или подключить Notyf самостоятельно.
@@ -111,7 +111,7 @@ CSS-класс на `input` / `select` / `textarea` с ошибкой. Неск�
 
 ## Капча
 
-Подробно: [Капча](/components/fetchit/protection#капча).
+Подробно: [Капча](/components/fetchit/protection#kapcha).
 
 ### `fetchit.captcha`
 

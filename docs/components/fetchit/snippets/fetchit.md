@@ -55,7 +55,7 @@ description: Параметры сниппета FetchIt, FormIt, файлы, pa
 Ошибки `recaptcha`, `recaptchav2_error`, `recaptchav3_error` из FormIt в AJAX-ответе схлопываются в один ключ `data.recaptcha`. В разметке используйте `data-error="recaptcha"`. После успеха клиент вызывает `grecaptcha.reset()`, если виджет на странице есть.
 
 ::: warning
-reCAPTCHA из FormIt 5.2 получает ответ через `formit.js`, который в формах FetchIt отключается вместе с AJAX-режимом FormIt. Для таких форм включайте капчу настройкой [`fetchit.captcha`](/components/fetchit/protection#капча).
+reCAPTCHA из FormIt 5.2 получает ответ через `formit.js`, который в формах FetchIt отключается вместе с AJAX-режимом FormIt. Для таких форм включайте капчу настройкой [`fetchit.captcha`](/components/fetchit/protection#kapcha).
 :::
 
 ## FormIt и property set
