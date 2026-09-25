@@ -1,6 +1,6 @@
 import type { MarkdownIt, StateBlock, StateCore } from 'markdown-it'
 import kbd from 'markdown-it-kbd'
-import { headingAnchor, legacyHeadingSlug, uniqueSettingAnchor } from '../anchors'
+import { headingAnchor, legacyHeadingSlug, uniqueSettingAnchor } from '../anchors.ts'
 
 export const addPlugins = (md: MarkdownIt) => {
   md.use(kbd)

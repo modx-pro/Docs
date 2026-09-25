@@ -1,6 +1,6 @@
 import type { DefaultTheme } from 'vitepress'
-import { normalize, ensureStartingSlash } from '../utils'
-import faqCategories from '../../../docs/faq/categories.json'
+import { normalize, ensureStartingSlash } from '../utils.ts'
+import faqCategories from '../../../docs/faq/categories.json' with { type: 'json' }
 
 import { readFileSync } from 'fs'
 import { join, basename } from 'path'

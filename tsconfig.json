@@ -6,6 +6,8 @@
     "allowSyntheticDefaultImports": true,
     "allowArbitraryExtensions": true,
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "types": [
       "vite/client"
     ],
