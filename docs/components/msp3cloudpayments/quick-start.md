@@ -5,7 +5,7 @@ description: Установка msp3CloudPayments, Public ID, API Secret и ше
 
 # Быстрый старт
 
-Как принять первый платёж через CloudPayments на сайте с MiniShop3.
+Первый платёж через CloudPayments на сайте с MiniShop3.
 
 ## Требования
 
@@ -14,9 +14,10 @@ description: Установка msp3CloudPayments, Public ID, API Secret и ше
 | MODX Revolution | 3.0+ |
 | MiniShop3 | 1.14.0-beta1 и новее |
 | PHP | 8.2+ |
+| pdoTools | 3.0.0 и новее |
 | Доступ | Public ID и API Secret сайта |
-| Чек 54-ФЗ | email в заказе |
-| Сайт | HTTPS на webhook без 301 |
+| Чек 54-ФЗ | email или телефон в адресе заказа |
+| Сайт | HTTPS на webhook без редиректа 301 |
 
 Тестовые и боевые ключи не смешивайте. Public ID виджета `test_api_00000000000000000000001` для создания счетов не подходит.
 
@@ -40,9 +41,11 @@ description: Установка msp3CloudPayments, Public ID, API Secret и ше
 
 Public ID и API Secret берутся в [кабинете CloudPayments](https://merchant.cloudpayments.ru/) у сайта. Точный пункт меню в README пакета не назван.
 
-В MODX это **`msp3cloudpayments_public_id`** и **`msp3cloudpayments_api_secret`**. Тем же секретом пакет проверяет подпись уведомлений. В properties способа те же значения можно положить как `public_id` и `api_secret` (также `secret` и `webhook_secret`). Непустые properties перекрывают системные настройки.
+В MODX это **`msp3cloudpayments_public_id`** и **`msp3cloudpayments_api_secret`**. В `properties` способа те же значения можно положить как `public_id` или `login`, `api_secret`, `secret`, `webhook_secret`, `secret_key`. При `send()`, запросах вкладки и `webhook.php` непустые `properties` перекрывают системные настройки, затем идут ключи `mspcloudpayments_*`.
 
-Если свой адрес API пуст, пакет ходит на `https://api.cloudpayments.ru`.
+Подпись на `webhook.php` берёт секрет из `properties` способа, затем `msp3cloudpayments_api_secret`, затем `mspcloudpayments_api_secret`. Пустой секрет во всех трёх местах даёт код `13`.
+
+Если свой адрес API пуст, пакет использует `https://api.cloudpayments.ru`.
 
 ## Шаг 2: Куда вписать в MODX
 
@@ -54,7 +57,7 @@ Public ID и API Secret берутся в [кабинете CloudPayments](https
 
 ## Шаг 3: Шесть адресов уведомлений {#шаг-3-шесть-адресов-уведомлений}
 
-В кабинете укажите все шесть. HTTPS без 301.
+В кабинете укажите все шесть. HTTPS без редиректа 301.
 
 | Тип | URL |
 | --- | --- |
