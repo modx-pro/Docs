@@ -1,0 +1,114 @@
+---
+title: Быстрый старт
+description: Установка msp3PayKeeper, демо-кабинет, webhook и боевой режим
+---
+
+# Быстрый старт
+
+Как принять первый платёж через PayKeeper на сайте с MiniShop3.
+
+## Требования
+
+| Требование | Версия |
+| --- | --- |
+| MODX Revolution | 3.x |
+| MiniShop3 | 1.14.0-beta1 и новее |
+| PHP | 8.2+ |
+| pdoTools (установщик пакета) | 3.0.0 и новее |
+| Сайт | HTTPS на webhook без 301 |
+
+Сниппетов в поставке нет.
+
+Для чека 54-ФЗ с корзиной в счёте нужен email в заказе, если включён `msp3paykeeper_payment_receipt`. Без email счёт создаётся, `cart` в `service_name` не отправляется.
+
+## Шаг 1: Провайдер modstore и установка пакета
+
+1. **Система → Управление пакетами → Провайдеры** → добавьте **modstore.pro**:
+   - URL: `https://modstore.pro/extras/`
+   - Email и API-ключ из личного кабинета modstore.pro
+2. Убедитесь, что установлен **MiniShop3**.
+3. **Управление пакетами** → установите **msp3PayKeeper**. В **Show Details** выберите провайдер **modstore.pro**.
+4. **Управление → Очистить кэш**.
+
+При установке пакет создаёт два способа оплаты:
+
+| Название | Класс |
+| --- | --- |
+| Оплата через PayKeeper | `Msp3PayKeeper\Payment\PayKeeperPayment` |
+| Оплата через PayKeeper (двухстадийная) | `Msp3PayKeeper\Payment\PayKeeperTwoStagePayment` |
+
+`server_url`, логин, пароль API и секретное слово положите в `msPayment.properties` или в системные настройки. Непустые properties перекрывают системные ключи для `send()`, вкладки и подписи на `webhook.php`. Алиасы секрета: `secret`, `webhook_secret`.
+
+## Откуда брать ключи {#откуда-брать-ключи}
+
+Для демо хватает публичного стенда из [шага 3](#шаг-3-демо-кабинет). Ниже путь в вашем кабинете.
+
+### URL сервера
+
+**`msp3paykeeper_server_url`**: адрес кабинета PayKeeper без `/` в конце. Его видно в адресной строке, когда вы открываете личный кабинет.
+
+Публичный демо-стенд: `https://demo.paykeeper.ru`. Тот же логин `demo` на `https://demo.server.paykeeper.ru` токен не получает.
+
+### Логин и пароль API
+
+JSON API использует Basic Auth. Логин и пароль те же, что у пользователя кабинета. PayKeeper рекомендует отдельного пользователя.
+
+1. Откройте [страницу настроек](https://docs.paykeeper.ru/lichnyj-kabinet/stranitsa-nastrojki/) кабинета.
+2. Раздел **Доступ к панели администратора**.
+3. Создайте пользователя и задайте пароль.
+4. В MODX это **`msp3paykeeper_api_login`** и **`msp3paykeeper_api_password`**.
+
+Проверка пары: `GET {server_url}/info/settings/token/` с Basic Auth. Ответ 200 содержит JSON с полем `token`. Ответ 401 значит, что логин или пароль не те. Как устроен токен: [безопасность JSON API](https://docs.paykeeper.ru/dokumentatsiya-json-api/token-bezopasnosti/).
+
+### Секретное слово
+
+**`msp3paykeeper_secret_word`** подписывает POST-оповещения. Пароль API для этого не подходит.
+
+1. **Настройки → Получение информации о платежах**.
+2. Способ получения уведомлений: **POST-оповещения**.
+3. URL обработчика: `https://ваш-домен.ru/assets/components/msp3paykeeper/webhook.php`. Только HTTPS, без Basic Auth и без 301.
+4. Секретное слово впишите сами или нажмите генерацию. Допустимы латинские буквы, цифры и знаки препинания.
+
+Формула подписи и ответ `OK`: [приём POST-оповещений](https://docs.paykeeper.ru/metody-integratsii/priyom-post-opoveshhenij/).
+
+На публичном демо-стенде готового секретного слова в документации нет. Задайте его в кабинете этого стенда. Без слова webhook не проверить. Счёт при этом уже создаётся.
+
+Ядро MiniShop3 на `/api/v1/payment/webhook/{id}` ждёт JSON. В кабинет PayKeeper этот адрес не ставьте.
+
+### Холд
+
+Отдельной настройки в MODX нет. В кабинете PayKeeper включите двухэтапный режим и в MiniShop3 выберите способ **Оплата через PayKeeper (двухстадийная)**.
+
+## Шаг 2: Куда вписать в MODX
+
+1. **Настройки → Системные настройки**, фильтр **`msp3paykeeper`**.
+2. Либо properties способа: `server_url`, `api_login`, `api_password`, `secret_word`. Допустимы алиасы `login`, `password`, `secret`, `webhook_secret`. Непустые properties перекрывают системные настройки для API, вкладки и `webhook.php`.
+3. Очистите кэш MODX.
+
+Список полей: [Системные настройки](settings).
+
+## Шаг 3: Демо-кабинет
+
+В [примерах JSON API](https://docs.paykeeper.ru/vozmozhnosti-i-primery-ispolzovaniya/poluchenie-informatsii-o-spiske-platezhnyh-sistem-s-pomoshhyu-json-api/) PayKeeper публикует стенд:
+
+- **`msp3paykeeper_server_url`**: `https://demo.paykeeper.ru`
+- **`msp3paykeeper_api_login`** и **`msp3paykeeper_api_password`**: `demo` / `demo`
+
+`GET /info/settings/token/` и `POST /change/invoice/preview/` на этой паре отвечают 200.
+
+Карты смотрите на форме после перехода на `invoice_url`.
+
+## Шаг 4: Способ оплаты в MiniShop3
+
+1. В админке MiniShop3 откройте **Настройки → Оплаты**.
+2. Включите **Оплата через PayKeeper**. Для холда включите **Оплата через PayKeeper (двухстадийная)** и двухэтапный режим в кабинете PayKeeper.
+3. Привяжите способ к сценарию оформления заказа.
+
+## Шаг 5: Боевой режим
+
+1. Боевой `server_url`, логин и пароль отдельного пользователя, секретное слово из раздела **Получение информации о платежах**.
+2. URL уведомлений на пакетный `webhook.php`.
+3. Контрольный платёж. Проверьте `OK` в ответе webhook и статус заказа.
+4. Выключите **`msp3paykeeper_debug`**.
+
+Двухстадийный заказ не станет оплаченным, пока не спишете холд. Подробнее: [Интеграция](integration).

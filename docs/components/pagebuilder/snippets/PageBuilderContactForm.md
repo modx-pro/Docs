@@ -17,7 +17,25 @@ Chunk `pagebuilderpro_contact_form` вызывает [PageBuilderFetchIt](PageBu
 
 ## Параметры
 
-Параметры задаёт FetchIt из формы (POST): `pb_form_key`, поля из repeater секции, honeypot `nospam`. Отдельных свойств сниппета для вызова из шаблона нет.
+Отдельных свойств для вызова из шаблона нет. POST формы:
+
+| Поле | Назначение |
+| --- | --- |
+| `pb_form_key` | Ключ формы из данных секции. Пустой ключ — ошибка валидации |
+| `pb_csrf` | Токен из скрытого поля чанка. Неверный или пустой — лексикон `pagebuilder_fe_form_validation_error` |
+| поля repeater | Имена и правила из секции |
+| `nospam` | Honeypot. Заполненное поле отвечает success, письмо не отправляется |
+| `pageId` | Необязательный id ресурса со страницы формы |
+
+`resource_id` страницы, где искать секцию:
+
+| Источник | Приоритет |
+| --- | --- |
+| POST `pageId` | 1 |
+| свойство `resource_id` в action FetchIt | 2 |
+| текущий ресурс MODX | 3 |
+
+Секция с тем же `form_key` не найдена — `pagebuilder_fe_form_not_found`. Прямой вызов handler без сервиса FetchIt — JSON с `pagebuilder_fe_fetchit_unavailable`. На этапе отрисовки формы без FetchIt чанк показывает `pagebuilder_fe_form_unavailable` (см. [PageBuilderFetchIt](PageBuilderFetchIt)).
 
 ## Зависимости
 

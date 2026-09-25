@@ -5,13 +5,13 @@ description: "Несколько значений из класса MODX чер�
 
 # Поле tablemulticombo
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
 <!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.jpg) -->
 
 ## Зачем этот тип
 
-Несколько значений из того же источника, что у [tablecombo](tablecombo): класс MODX и `optionsSource`. В инспекторе это список с поиском, не сетка. В данных только значения `valueField`, без самих строк. Без `optionsSource` список пустой.
+Несколько значений из того же источника, что у [tablecombo](tablecombo): `optionsSource` или статический `options`. В инспекторе это список с поиском, не сетка. В данных только значения `valueField`, без самих строк. Пусто, если нет ни `options`, ни `optionsSource`.
 
 ## Когда использовать
 
@@ -66,9 +66,7 @@ description: "Несколько значений из класса MODX чер�
 ::: code-group
 
 ```modx
-{foreach $templates as $id}
-  <span>{$id}</span>
-{/foreach}
+<span>[[+templates.0]]</span>
 ```
 
 ```fenom
@@ -86,7 +84,7 @@ description: "Несколько значений из класса MODX чер�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

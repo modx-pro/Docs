@@ -40,10 +40,10 @@ Responsive iframe по ссылке на ролик. Поддерживаютс�
 | Параметр | Значение |
 | --- | --- |
 | key | `video` |
-| Слой | Pro |
+| Слой | Free |
 | Категория | медиа (`media`) |
-| Chunk | `pagebuilderpro_video` |
-| Требования | pro |
+| Chunk | `pagebuilder_video` |
+| Требования | — |
 
 ## Поля в редакторе
 
@@ -55,7 +55,7 @@ Responsive iframe по ссылке на ролик. Поддерживаютс�
 
 ### URL видео (`video`)
 
-Тип [video](../fields/video#vyvod-v-section-data). Обязательное. URL ролика. На сайте. embed через VideoEmbedResolver.
+Тип [video](../fields/video#vyvod-v-section-data). Обязательное. URL ролика; опционально poster в объекте поля. На сайте embed через VideoEmbedResolver.
 
 ## Что видит посетитель
 
@@ -70,7 +70,7 @@ Iframe в блоке `pb-video`. Соотношение сторон сохра�
   "title": "Заголовок секции",
   "video": {
     "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "embed_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    "embed_url": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
     "provider": "youtube"
   }
 }
@@ -78,7 +78,7 @@ Iframe в блоке `pb-video`. Соотношение сторон сохра�
 
 ## Шаблон chunk
 
-Fenom chunk `pagebuilderpro_video`:
+Fenom chunk `pagebuilder_video`:
 
 ```fenom
 <section class="pb-section pb-section--video pb-video{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="video"{if $id} id="pb-{$id|escape}"{/if}>

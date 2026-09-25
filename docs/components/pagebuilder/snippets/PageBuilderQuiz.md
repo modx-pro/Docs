@@ -17,7 +17,25 @@ Chunk `pagebuilderpro_quiz` вызывает [PageBuilderFetchIt](PageBuilderFet
 
 ## Параметры
 
-Параметры задаёт FetchIt из формы (POST): `pb_quiz_key`, `answer[...]`, контактные поля, honeypot `nospam`. Отдельных свойств сниппета для вызова из шаблона нет.
+Отдельных свойств для вызова из шаблона нет. POST формы:
+
+| Поле | Назначение |
+| --- | --- |
+| `pb_quiz_key` | Ключ квиза из данных секции. Пустой ключ — ошибка валидации |
+| `answer[...]` | Ответы по шагам |
+| контактные поля | Если включён блок контактов в секции |
+| `nospam` | Honeypot. Заполненное поле отвечает success, письмо не отправляется |
+| `pageId` | Необязательный id ресурса со страницы формы |
+
+`resource_id` страницы, где искать секцию:
+
+| Источник | Приоритет |
+| --- | --- |
+| POST `pageId` | 1 |
+| свойство `resource_id` в action FetchIt | 2 |
+| текущий ресурс MODX | 3 |
+
+Секция с тем же `quiz_key` не найдена — `pagebuilder_fe_quiz_not_found`. Прямой вызов handler без сервиса FetchIt — JSON с `pagebuilder_fe_fetchit_unavailable`. На этапе отрисовки формы без FetchIt чанк показывает `pagebuilder_fe_form_unavailable` (см. [PageBuilderFetchIt](PageBuilderFetchIt)).
 
 ## Зависимости
 

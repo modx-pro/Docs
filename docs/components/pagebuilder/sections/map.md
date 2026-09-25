@@ -12,7 +12,7 @@ description: "Встраивание карты по координатам (Я�
 ## Отдельная карта
 
 - Координаты в поле map, iframe собирает resolver
-- Яндекс.Карты по умолчанию, провайдер меняется в коде пакета
+- Провайдер в поле map: `yandex` по умолчанию или `osm` (OpenStreetMap)
 - Отдельно от текста контактов
 
 ## Сценарии
@@ -63,7 +63,7 @@ Iframe в блоке `pb-map`.
 
 ## Данные секции {#vyvod-v-section-data}
 
-Пример JSON после сохранения секции. Для media, video и map значения на выводе могут быть обогащены:
+Пример JSON после сохранения и enrich (`MapEmbedResolver`). Полный контракт поля map — в [справочнике map](../fields/map#vyvod-v-section-data).
 
 ```json
 {
@@ -71,10 +71,18 @@ Iframe в блоке `pb-map`.
   "location": {
     "lat": 55.751244,
     "lng": 37.618423,
-    "embed_url": "https://yandex.ru/map-widget/v1/..."
-  }
+    "zoom": 14,
+    "provider": "yandex",
+    "embed_url": "https://yandex.ru/map-widget/v1/?ll=37.618423%2C55.751244&z=14&pt=37.618423%2C55.751244%2Cpm2rdm&l=map",
+    "watch_url": "https://yandex.ru/maps/?ll=37.618423%2C55.751244&z=14&pt=37.618423%2C55.751244%2Cpm2rdm&l=map"
+  },
+  "map_embed_url": "https://yandex.ru/map-widget/v1/?ll=37.618423%2C55.751244&z=14&pt=37.618423%2C55.751244%2Cpm2rdm&l=map",
+  "map_provider": "yandex",
+  "map_watch_url": "https://yandex.ru/maps/?ll=37.618423%2C55.751244&z=14&pt=37.618423%2C55.751244%2Cpm2rdm&l=map"
 }
 ```
+
+Плоские `map_embed_url`, `map_provider`, `map_watch_url` дублируют embed для chunk (приоритет у `location`). Chunk читает `$map_embed_url` и `$map_watch_url`.
 
 ## Шаблон chunk
 

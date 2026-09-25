@@ -72,7 +72,7 @@ description: "Заголовок, текст, кнопка и фоновое и�
 
 ### Выравнивание (`alignment`)
 
-Тип [select](../fields/select#vyvod-v-section-data). Необязательное. Выпадающий список с заранее заданными вариантами.
+Тип [select](../fields/select#vyvod-v-section-data). Необязательное. `left`, `center`.
 
 ## Что видит посетитель
 

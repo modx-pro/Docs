@@ -72,29 +72,41 @@ Columns:
 | `label` | text | Parameter |
 | `value` | text | Value |
 
+The inspector supports group rows (`_pbGroup`), cell merges (`_span` on `label` / `value`), and a preview under the grid.
+
 ### Striped rows (`striped`)
 
 Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle.
 
 ## Site output
 
-HTML table `pb-spec-table`.
+HTML table `pb-spec-table`. With `striped`, the class `pb-spec-table--striped` is added. Groups use `pb-spec-table__row--group`. Rows fully covered by a span use `pb-spec-table__row--span-cont`.
 
 ## Section data {#output-in-section-data}
 
-Example payload after save. Media, video, and map values may be enriched on output:
+Example payload after save. On output Pro adds `spec_rows` via `TableCells::present()` (`_pb_cells` on each row):
 
 ```json
 {
-  "title": "Section title",
-  "intro": "Short intro before the main content.",
-  "striped": true
+  "title": "Specifications",
+  "intro": "Main product parameters.",
+  "striped": true,
+  "specs": [
+    { "label": "Dimensions", "value": "", "_pbGroup": true },
+    {
+      "label": "Storage",
+      "value": "128 GB",
+      "_span": { "value": { "colspan": 1, "rowspan": 2 } }
+    },
+    { "label": "With case", "value": "" },
+    { "label": "Color", "value": "Graphite" }
+  ]
 }
 ```
 
 ## Chunk template
 
-Fenom chunk `pagebuilderpro_spec_table`:
+Fenom chunk `pagebuilderpro_spec_table` uses `$spec_rows`, otherwise `$specs`:
 
 ```fenom
 {set $rows = $spec_rows|default:($specs|default:[])}
@@ -117,10 +129,22 @@ Fenom chunk `pagebuilderpro_spec_table`:
           </thead>
           <tbody>
             {foreach $rows as $row}
-              <tr>
-                <th scope="row">{$row.label|default:''|escape}</th>
-                <td>{$row.value|default:''|escape}</td>
-              </tr>
+              {if $row._pbGroup}
+                <tr class="pb-spec-table__row--group">
+                  <th colspan="2" scope="colgroup">{$row.label|default:''|escape}</th>
+                </tr>
+              {elseif $row._pb_cells.label.hidden && $row._pb_cells.value.hidden}
+                <tr class="pb-spec-table__row--span-cont" aria-hidden="true"></tr>
+              {else}
+                <tr>
+                  {if !$row._pb_cells.label.hidden}
+                    <th scope="row" colspan="{$row._pb_cells.label.colspan|default:1}" rowspan="{$row._pb_cells.label.rowspan|default:1}">{$row.label|default:''|escape}</th>
+                  {/if}
+                  {if !$row._pb_cells.value.hidden}
+                    <td colspan="{$row._pb_cells.value.colspan|default:1}" rowspan="{$row._pb_cells.value.rowspan|default:1}">{$row.value|default:''|escape}</td>
+                  {/if}
+                </tr>
+              {/if}
             {/foreach}
           </tbody>
         </table>
@@ -131,6 +155,8 @@ Fenom chunk `pagebuilderpro_spec_table`:
   </div>
 </section>
 ```
+
+Cell text is escaped (`|escape`). HTML from the editor is not executed on the site.
 
 ## See also
 

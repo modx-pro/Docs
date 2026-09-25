@@ -32,7 +32,7 @@ description: "Подборка из категории с исключением
 
 ## Категория и исключение
 
-**Категория**, **Исключить товар** (текущий), **Лимит**. Работает в контексте страницы товара.
+**Категория**, **Исключить товар** (текущий), **Лимит**. Пустой `limit` в chunk становится **4**. Тип помечен `"cacheable": false`. Значение `sortby` перед chunk переводится в `ms_sortby` и `ms_sortdir` — таблица у [Сетки товаров](products_grid). Работает в контексте страницы товара.
 
 ## Похожие секции
 
@@ -59,15 +59,15 @@ description: "Подборка из категории с исключением
 
 ### Корень каталога (`parent`)
 
-Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Выбор одного ресурса MODX в модальном окне поиска.
+Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Autocomplete по ресурсам MODX в поле инспектора.
 
 ### Исключить товар (`product`)
 
-Тип [relation](../fields/relation#vyvod-v-section-data). Необязательное. Выбор одного ресурса MODX в модальном окне поиска.
+Тип [relation](../fields/relation#vyvod-v-section-data). Необязательное. Autocomplete по ресурсам MODX в поле инспектора.
 
 ### Лимит (`limit`)
 
-Тип [number](../fields/number#vyvod-v-section-data). Необязательное.
+Тип [number](../fields/number#vyvod-v-section-data). Необязательное. По умолчанию в chunk — 4.
 
 ### Сортировка (`sortby`)
 
