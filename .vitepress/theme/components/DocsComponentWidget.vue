@@ -50,8 +50,9 @@ const links = computed<DefaultTheme.SidebarItem[]>(() => {
         const host = match[1].split('.').slice(-2).join('.')
         const repoPath = match[2]
 
+        // owner/repo only for repositories: several of them need telling apart
         filtered.push({
-          text: repoPath || host,
+          text: key === 'repository' ? repoPath || host : host,
           link,
         })
       }
