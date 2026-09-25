@@ -5,7 +5,7 @@ description: Snapshot и apply секций PageBuilder Pro для скрипт�
 
 # Agent API (Pro)
 
-HTTP-слой для скриптов, агентов и мини-конструкторов: добавьте или замените секции без ручной сборки полного JSON `document` и без прямых правок таблиц MODX.
+Скрипты и агенты добавляют или заменяют секции без полного JSON `document` и без прямых правок таблиц MODX.
 
 Нужен **PageBuilder Pro** (capability `api`). Тот же `connector.php` и сессия менеджера, что у Vue-редактора.
 
@@ -47,8 +47,9 @@ Read-only JSON для витрины: [Public API](public-api). Agent API раб
 | Контекст | `ctx=mgr` |
 | Сессия | Вход в менеджер (cookie с `/manager/`) |
 | Токен | Заголовок `modAuth` = `MODx.siteId` (как в редакторе) |
-| Чтение | `pagebuilder_view` или `save_document` + policy **view** на ресурс |
-| Запись | `pagebuilder_save` или `save_document` + policy **save** на ресурс |
+| Connector | `pagebuilder_view` **или** `view`. Без одного из них: `Permission denied.`, даже при `save_document` |
+| Snapshot (чтение) | После connector: `pagebuilder_view` **или** `save_document` + policy **view** на ресурс |
+| Apply (запись) | После connector: `pagebuilder_save` **или** `save_document` + policy **save** на ресурс |
 | Pro | Установлен `pagebuilderpro`, capability `api` в `PageBuilderConfig` |
 
 ### Получить `modAuth`
@@ -59,7 +60,7 @@ Read-only JSON для витрины: [Public API](public-api). Agent API раб
 MODx.siteId
 ```
 
-Для curl войдите в менеджер, сохраните cookies и отправьте токен:
+Для curl войдите в менеджер, сохраните cookies и передайте токен:
 
 ```bash
 # после POST /manager/ с -c cookies.txt
@@ -71,7 +72,14 @@ curl -sS -X POST "${CONNECTOR}" \
   ...
 ```
 
-Без валидной сессии и `modAuth` connector вернёт ошибку авторизации MODX.
+Сообщения connector при сбое сессии или токена:
+
+| `message` | Когда |
+| --- | --- |
+| `Method not allowed.` | Не `POST` на state-changing action |
+| `Session required.` | Нет пользователя mgr / нет `getUserToken` |
+| `Invalid MODAUTH token.` | Пустой или неверный `modAuth` |
+| `Permission denied.` | Нет `pagebuilder_view` и нет `view` |
 
 ## Формат ответа
 
@@ -150,7 +158,7 @@ curl -sS -X POST "${CONNECTOR}" \
 }
 ```
 
-`availableTypes[].fields` это схема для `data` в `apply`. Используйте `sectionsSummary[].id` для `mode=upsert`. Полный `data` лежит в `draft.sections`.
+`availableTypes[].fields` это схема для `data` в `apply`. Для `mode=upsert` берите `sectionsSummary[].id`. Полный `data` лежит в `draft.sections`.
 
 ## `mgr/api/page/apply`
 
@@ -215,7 +223,7 @@ curl -sS -X POST "${CONNECTOR}" \
 
 ## Примеры
 
-`MODX_MODAUTH` это `MODx.siteId` из сессии менеджера (DevTools → Network → любой POST к `connector.php` → заголовок `modAuth`).
+`MODX_MODAUTH` = `MODx.siteId`. В DevTools → Network любой POST к `connector.php` показывает заголовок `modAuth`.
 
 ### cURL: snapshot
 
@@ -239,40 +247,19 @@ curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.ph
 
 ### cURL: лендинг (replace + publish)
 
+Механизм: `mode=replace` и `publish=1` с массивом секций. Несколько типов подряд — тот же вызов, в `sections` несколько объектов.
+
 ```bash
-SECTIONS='[
-  {
-    "type": "hero",
-    "data": {
-      "title": "Доставка по городу за 2 часа",
-      "description": "Склад рядом, отслеживание в приложении.",
-      "button_label": "Рассчитать",
-      "button_url": "/calc/",
-      "alignment": "center"
-    }
-  },
-  {
-    "type": "faq",
-    "data": {
-      "title": "Частые вопросы",
-      "items": [
-        {
-          "question": "Как оформить заказ?",
-          "answer": "<p>Добавьте товар в корзину и перейдите к оформлению.</p>"
-        }
-      ]
-    }
-  },
-  {
-    "type": "cta",
-    "data": {
-      "title": "Готовы начать?",
-      "text": "Оставьте заявку, перезвоним за 15 минут.",
-      "button_label": "Оставить заявку",
-      "button_url": "/contacts/"
-    }
+SECTIONS='[{
+  "type": "hero",
+  "data": {
+    "title": "Доставка по городу за 2 часа",
+    "description": "Склад рядом, отслеживание в приложении.",
+    "button_label": "Рассчитать",
+    "button_url": "/calc/",
+    "alignment": "center"
   }
-]'
+}]'
 
 curl -sS -X POST 'https://example.com/assets/components/pagebuilder/connector.php' \
   -H 'Content-Type: application/x-www-form-urlencoded' \
@@ -464,7 +451,7 @@ Apply использует `PageService::saveDraft` / `publishDraft`, как р�
 | Схемы типов | В `snapshot` | Отдельно `mgr/catalog/list`, без fields |
 | Блокировка revision | да | да |
 
-Apply удобен для сгенерированных лендингов из шаблонов секций. Save или редактор нужны для reorder, trash и тонкой настройки `settings`.
+`apply` подходит для лендингов из шаблонов секций. Для reorder, trash и тонкой настройки `settings` нужен `save` или редактор.
 
 ## Связанные страницы
 

@@ -1,15 +1,17 @@
 ---
 title: Bundle
-description: "Export, dry-run и import UI-типов секций одной транзакцией. Слой Pro"
+description: "Export, dry-run и import UI-типов секций. Вкладка CMP скрыта в текущем релизе"
 ---
 
 # Constructor Bundle
 
-Результат: UI-типы секций с одного сайта появляются на другом. Вкладки CMP: [Bundle](../cmp#bundle). Нужен PageBuilder Pro.
+В текущем релизе вкладка **Bundle** в CMP **не показывается** (`BUNDLE_ENABLED = false` в `ProFeatureProvider`). Маршруты `mgr/bundle/*` и сервисы есть, пользователь вкладку не откроет, пока флаг не включат в сборке.
+
+Когда вкладка доступна: UI-типы секций с одного сайта переносят на другой. Описание процессоров — [Панель управления → Bundle](../cmp#bundle) и [PageBuilder Pro → Constructor Bundle](../pro#constructor-bundle).
 
 ## Что нужно заранее
 
-PageBuilder Pro на обоих сайтах. На исходном уже есть UI-типы, которые нужно перенести.
+PageBuilder Pro на обоих сайтах. На исходном уже есть UI-типы, которые нужно перенести. Вкладка Bundle включена в вашей сборке.
 
 ## Шаги
 
@@ -31,4 +33,5 @@ PageBuilder Pro на обоих сайтах. На исходном уже ес�
 ## См. также
 
 - [Панель управления](../cmp#bundle)
+- [PageBuilder Pro](../pro#constructor-bundle)
 - [Свой тип секции](custom-section)

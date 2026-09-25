@@ -5,7 +5,7 @@ description: "Массив значений из xPDO optionsSource через M
 
 # Поле multicombo
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
 <!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.jpg) -->
 
@@ -35,6 +35,9 @@ description: "Массив значений из xPDO optionsSource через M
   "name": "ids",
   "type": "multicombo",
   "label": "ID",
+  "optionsSource": {
+    "class": "modUser"
+  },
   "tab": "Контент",
   "width": 100,
   "active": true
@@ -63,9 +66,7 @@ description: "Массив значений из xPDO optionsSource через M
 ::: code-group
 
 ```modx
-{foreach $ids as $id}
-  <span>{$id|escape}</span>
-{/foreach}
+<span>[[+ids.0]]</span>
 ```
 
 ```fenom
@@ -83,11 +84,13 @@ description: "Массив значений из xPDO optionsSource через M
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+
+- Дополнительно: `optionsSource` — тот же контракт, что у [combo](combo) (whitelist классов в [types](types#optionssource)).
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

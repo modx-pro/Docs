@@ -118,13 +118,30 @@ description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 
 Список опций: connector `mgr/field/options`. Хук: `pbOnFieldValues`.
 
+| `class` | Назначение |
+| --- | --- |
+| `modResource` | Ресурсы |
+| `modUser` | Пользователи |
+| `modCategory` | Категории |
+| `modTemplate` | Шаблоны |
+| `modTemplateVar` | TV |
+| `modChunk` | Чанки |
+| `modSnippet` | Сниппеты |
+| `modPlugin` | Плагины |
+
+Другой класс не загружается: процессор вернёт пустой список.
+
+| Ключ | Значение по умолчанию | Максимум |
+| --- | --- | --- |
+| `optionsSource.limit` | 100 | 500 |
+
 ### Таблицы ресурса
 
 Вкладка **Tables** на ресурсе или tab type `table` в Collections. Поле `embeddedTable` хранит `table_key` и настройки выборки. См. [настройку таблиц](../settings) и [панель управления](../integration).
 
 ## Алиасы
 
-Полный список в `FIELD_TYPE_ALIASES` (`fieldDefaults.ts`). Частые: `relationship` → `relation`, `resources` → `resourcelist`, `boolean` / `listyesno` → `yesno`, `onlyreading` → `readonly`, `colorpicker` → `color`, `editor_js` → `editorjs`.
+Полный список в `FIELD_TYPE_ALIASES` (`fieldDefaults.ts`). Частые: `relationship` → `relation`, `resources` → `resourcelist`, `boolean` / `listyesno` → `yesno`, `onlyreading` → `readonly`, `colorpicker` → `color`, `editor_js` → `editorjs`, `table_combo` → `tablecombo`, `table_multicombo` → `tablemulticombo`, `templatevar` / `template_var` → `tv`.
 
 ## Дальше
 

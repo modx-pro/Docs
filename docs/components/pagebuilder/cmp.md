@@ -5,9 +5,9 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens и корзи�
 
 # Панель управления PageBuilder
 
-**Компоненты → PageBuilder** (`SectionTypesManager.vue`). Право **pagebuilder_manage_types** нужно для вкладки Blocks. Остальные вкладки панели управления доступны по стандартным правам менеджера.
+**Компоненты → PageBuilder** (`SectionTypesManager.vue`). Списка ресурсов с секциями в CMP нет. Редактор — вкладка **Секции** на ресурсе.
 
-Вкладка **Blocks** есть в Free. Реестр UTM, **Рабочие области** и остальные вкладки требуют PageBuilder Pro.
+Вкладка **Blocks**: право `pagebuilder_manage_types`. Pro-вкладки появляются только при своей capability (`utm`, `collections`, `basket`, …). Процессоры обычно требуют `pagebuilder_view`. Право не появляется у каждого менеджера само.
 
 | Вкладка | Слой | Назначение |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens и корзи�
 | **Basket** | Pro | Глобальная корзина удалённых секций и строк таблиц |
 | **Шаблоны страниц** | Pro | Скелеты пустых секций (`pb_page_templates`), capability `page-templates` |
 | **Forms** | Pro | Схемы для [form_builder](sections/form_builder), capability `forms` |
-| **Bundle** | Pro | Export и import UI-типов секций |
+| **Bundle** | Pro | Export/import UI-типов. В текущем релизе вкладка скрыта (`BUNDLE_ENABLED = false`) |
 | **API tokens** | Pro | Bearer-токены [REST API v1](rest-api) |
 
 ![Панель управления PageBuilder](/components/pagebuilder/screenshots/mgr-cmp-index.png)
@@ -26,15 +26,15 @@ description: "Blocks, UTM, Collections, Forms, Bundle, API tokens и корзи�
 
 CRUD типов секций без деплоя PHP. Встроенные JSON из `core/components/pagebuilder/sections/*.json` можно править, скрывать и восстанавливать в каталоге через панель управления.
 
-Фильтр по источнику (чипы, выбор сохраняется в браузере):
+Фильтр по источнику (выбор сохраняется в браузере):
 
 | Чип | Что показывает |
 | --- | --- |
 | **Все** | Пакетные и свои типы |
-| **Из пакета** | Типы из JSON пакета (и их UI-override в БД) |
+| **Из пакета** | Типы из JSON пакета (и их переопределение в БД) |
 | **Мои** | Типы, созданные в панели управления |
 
-Кнопка **Скрыть предустановленные** массово прячет типы из пакета (`published = 0` для UI-override и своих; для code-типов hide по-прежнему через lifecycle). Свои типы остаются. Секции на уже собранных страницах не меняются.
+Кнопка **Скрыть предустановленные** массово прячет типы из пакета. Для UI-записей и своих типов ставится `published = 0`. Для code-типов hide по-прежнему через lifecycle. Свои типы остаются. Секции на уже собранных страницах не меняются.
 
 В карточке типа поле **Превью в каталоге**: загрузите скриншот вёрстки. В диалоге **+ Создать** на ресурсе он заменит схематичную картинку пакета.
 
@@ -43,11 +43,11 @@ CRUD типов секций без деплоя PHP. Встроенные JSON 
 | Действие | Что происходит |
 | --- | --- |
 | Переопределить | Запись в `pb_section_types`, флаг `overridesCode`. На runtime побеждает БД |
-| Скрыть | Тип не виден в каталоге на ресурсе, в панели управления остаётся с badge «Скрыт» |
-| Удалить (code-тип) | Tombstone `removedCode` в БД. JSON в пакете не удаляется |
+| Скрыть | Тип не виден в каталоге на ресурсе, в панели управления остаётся с пометкой «Скрыт» |
+| Удалить (code-тип) | Запись `removedCode` в БД. JSON в пакете не удаляется |
 | Восстановить | Включите «Показывать скрытые» → **Восстановить** |
 
-При обновлении дополнения строки `pb_section_types` **не перезаписываются**: побеждает БД. Системные настройки пользователя тоже не сбрасываются (`update.settings = false`). Секции на уже опубликованных страницах продолжают рендериться.
+При обновлении дополнения строки `pb_section_types` **не перезаписываются**: побеждает БД. Системные настройки пользователя тоже не сбрасываются (`update.settings = false`). Секции на уже опубликованных страницах продолжают отрисовываться.
 
 Connector `mgr/sectiontype/remove` принимает POST-параметр `lifecycle`: `hide`, `remove`, `restore` (не путать с `action` connector). Для массового hide передаётся массив `keys`.
 
@@ -57,15 +57,17 @@ Connector `mgr/sectiontype/remove` принимает POST-параметр `lif
 
 ## UTM
 
-Нужна capability `utm`. Параметры для плейсхолдеров <code v-pre>{{utm:key}}</code> и значений по умолчанию. Правила **видимости** секций задаются в диалоге **Видимость** инспектора ресурса (`settings.utm`), если включена `pagebuilder_inspector_visibility_enabled`. Не на этой вкладке. Уже опубликованные правила на сайте исполняет Free. <!-- markdownlint-disable-line MD033 -->
+Нужна capability `utm`. Параметры для плейсхолдеров <code v-pre>{{utm:key}}</code> и значений по умолчанию. <!-- markdownlint-disable-line MD033 -->
+
+Правила **видимости** секций задаются в диалоге **Видимость** инспектора ресурса (`settings.utm`), если включена `pagebuilder_inspector_visibility_enabled`. Не на этой вкладке. Уже опубликованные правила на сайте исполняет Free.
 
 На фронте сессия UTM: [PageBuilderUtmSession](snippets/PageBuilderUtmSession) до `PageBuilder`. Ссылки: [Сниппеты](snippets/).
 
-## Collections
+## Collections {#collections}
 
 Вкладка в панели называется **Рабочие области**. Нужны PageBuilder Pro и capability `collections`. Без capability вкладки нет, даже если `pagebuilder_collections_enabled = 1`.
 
-Collection привязывается к `template_ids` (пустой список означает все шаблоны). При включённой настройке старые вкладки `resource_tab_enabled` и `resource_tables_tab_enabled` заменяются динамическим набором из панели управления.
+Collection привязывается к `template_ids` (пустой список означает все шаблоны). При включённой настройке старые вкладки `resource_tab_enabled` и `resource_tables_tab_enabled` заменяются набором из панели управления.
 
 ### Типы вкладок (`tab_type`)
 
@@ -84,7 +86,7 @@ CRUD коллекций и разрешение вкладок для шабло
 
 ## Корзина (Pro) {#basket-pro}
 
-Флаг `basket`. Корзина на странице в черновике ресурса остаётся в Free.
+Нужен флаг `basket`. Корзина на странице в черновике ресурса остаётся в Free.
 
 Индекс секций из `draft.trash[]` и строк таблиц при удалении. Синхронизация при `pbOnAfterSave`. При `OnEmptyTrash` ресурса записи индекса для этого `resource_id` удаляются.
 
@@ -109,6 +111,8 @@ Capability `forms`. Во вкладке создаёте схему с ключ�
 Сервер проверяет CSRF и honeypot `nospam`. Письмо и webhook уходят синхронно после commit, в том же HTTP-запросе. Submissions в БД не хранятся. Файл в форме v1 не принимается. Процессоры: `mgr/form/*`.
 
 ## Bundle {#bundle}
+
+Вкладка в CMP сейчас **не показывается** (`BUNDLE_ENABLED = false`).
 
 Export UI-типов секций, dry-run и import одной транзакцией через `UiSectionTypeService`.
 

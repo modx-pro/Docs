@@ -5,13 +5,13 @@ description: "Одно значение из xPDO optionsSource через Selec
 
 # Поле combo
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
 <!-- ![combo](/components/pagebuilder/screenshots/fields/combo.jpg) -->
 
 ## Зачем этот тип
 
-Список из базы: ресурсы, шаблоны и другие разрешённые классы. Варианты подгружаются действием `mgr/field/options` и событием `pbOnFieldValues`. Поиск идёт в выпадающем списке, без окна как у [relation](relation).
+Список из базы: ресурсы, шаблоны и другие разрешённые классы. Варианты подгружаются действием `mgr/field/options` и событием `pbOnFieldValues`. В инспекторе Select с поиском (`filter`) и свободным вводом (`editable`) поверх загруженных options. Окно выбора как у [relation](relation) не открывается.
 
 ## Когда использовать
 
@@ -79,7 +79,7 @@ description: "Одно значение из xPDO optionsSource через Selec
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

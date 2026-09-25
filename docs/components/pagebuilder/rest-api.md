@@ -5,15 +5,17 @@ description: "Read-only REST PageBuilder Pro: Bearer, scopes, GET /pages, ETag �
 
 # REST API v1 (Pro)
 
-Read-only выдача опубликованного контента. Не заменяет Free [Public API](public-api). Запись страниц остаётся в менеджере и в [Agent API](agent-api).
+Read-only выдача опубликованного контента. Нужны PageBuilder Pro и `pagebuilder_rest_api_enabled = 1`. Не заменяет Free [Public API](public-api). Запись страниц остаётся в менеджере и в [Agent API](agent-api).
 
 ```text
 /assets/components/pagebuilder/api/v1.php?path=/pages/42
 ```
 
-Нужны PageBuilder Pro и `pagebuilder_rest_api_enabled = 1`.
-
 ## Что выбрать
+
+1. Один фронт и ключ в server env: [Public API](public-api).
+2. Несколько приложений, отзыв токенов, scopes и `If-None-Match`: REST v1.
+3. Черновик или схемы полей из менеджера: [Agent API](agent-api), не этот транспорт.
 
 | | Public API (Free) | REST API v1 (Pro) |
 | --- | --- | --- |
@@ -24,10 +26,6 @@ Read-only выдача опубликованного контента. Не з�
 | Каталог типов | `action=web/catalog/list` | `GET /catalog/sections` |
 | ETag / 304 | нет | да |
 | Throttle по токену | нет | да |
-
-1. Один фронт и ключ в server env: [Public API](public-api).
-2. Несколько приложений, отзыв токенов, scopes и `If-None-Match`: REST v1.
-3. Черновик или схемы полей из менеджера: [Agent API](agent-api), не этот транспорт.
 
 После публикации в менеджере растёт `publishedRevision`. PageBuilder не шлёт исходящий webhook. Фронт сам сравнивает revision.
 
@@ -48,7 +46,11 @@ Read-only выдача опубликованного контента. Не з�
 Authorization: Bearer <secret>
 ```
 
-Секрет показывают один раз при выпуске в CMP. В настройке остаются `prefix` и `hash`. Отозванный или просроченный токен отвечает `401`. Превышение throttle отвечает `429` и заголовком `Retry-After`. Bucket: `{token.prefix}|read` или `|write`. IP в bucket не входит.
+Секрет показывают один раз при выпуске в CMP. В настройке остаются `prefix` и `hash`.
+
+- Отозванный или просроченный токен отвечает `401`.
+- Превышение throttle отвечает `429` и заголовком `Retry-After`.
+- Bucket: `{token.prefix}|read` или `|write`. IP в bucket не входит.
 
 Scope `pages.read` открывает `GET /pages` и `GET /pages/{id-or-alias}`. Записи через этот токен нет.
 
@@ -72,7 +74,7 @@ Scope `pages.read` открывает `GET /pages` и `GET /pages/{id-or-alias}`
 
 | Query | Описание |
 | --- | --- |
-| `include` | `document`, `values`. Поля совпадают с `web/page/get` |
+| `include` | `document`, `values`, `html`, `sections`: как у `web/page/get` (Public API). По умолчанию `document,values` |
 | `context` | Контекст для alias |
 | `section_types` | Фильтр типов, например `hero,cta` |
 

@@ -71,7 +71,7 @@ description: "Витрина товаров категории miniShop3 чер�
 
 ### Корень каталога (`parent`)
 
-Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Выбор одного ресурса MODX в модальном окне поиска.
+Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Autocomplete по ресурсам MODX в поле инспектора.
 
 ### Лимит (`limit`)
 

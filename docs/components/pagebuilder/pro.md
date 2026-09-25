@@ -5,16 +5,18 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 
 # PageBuilder Pro
 
-Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.14-beta**, требует `pagebuilder` ≥ **1.0.14**. Free и Pro этой линии ставьте вместе: `ProFeatureProvider` реализует `serverContributions()` и `cmpContributions()`. Старый Pro без этих методов даёт fatal error при загрузке.
+Дополнение **pagebuilderpro** расширяет бесплатный редактор. При установке подтягивает ядро **pagebuilder** как зависимость. Текущая линия: **1.0.15-beta**, требует `pagebuilder` ≥ **1.0.15**.
+
+Free и Pro этой линии ставьте вместе: `ProFeatureProvider` реализует `serverContributions()` и `cmpContributions()`. Старый Pro без этих методов даёт fatal error при загрузке.
 
 ## Флаги Pro
 
-`ProFeatureProvider` регистрирует флаги лицензии и функций. Vue-редактор читает список из `PageBuilderConfig.capabilities`.
+`ProFeatureProvider` регистрирует флаги. Vue-редактор читает список из `PageBuilderConfig.capabilities`.
 
 | Флаг | Назначение |
 | --- | --- |
 | `pro` | Лицензия Pro |
-| `library` | Общие блоки: save/link/insert/edit master, pull с другой страницы, write-through (`pb_library_items`) |
+| `library` | Общие блоки: save/link/insert/edit master, pull с другой страницы, запись synced-полей в master (`pb_library_items`) |
 | `versions` | Журнал событий секции (create/update/copy/remove/enable/disable) + View / Restore |
 | `page-templates` | Шаблоны страниц: упорядоченные пустые секции (`pb_page_templates`, `mgr/pagetemplate/*`) |
 | `responsive` | Значения полей отдельно для desktop, tablet и mobile (text, textarea, url, number, currency, richtext, slug) |
@@ -28,6 +30,7 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 | `datasources` | [Dynamic list](sections/dynamic_list) и [Filterable grid](sections/filterable_grid): провайдеры `modx-resources`, `pagebuilder-tables`, `minishop3`, `mgr/datasource/*` |
 | `forms` | CMP Forms, [form_builder](sections/form_builder), FetchIt, CSRF, honeypot. Письмо и webhook после commit. Submissions в БД не пишутся |
 | `api` | [Agent API](agent-api) и токены [REST v1](rest-api) (`mgr/resttoken/*`, вкладка API tokens) |
+| `image-crop` | Кадрирование полей image/gallery (`mgr/media/crop`) |
 
 Модуль `pro-resource.min.js` на вкладке ресурса добавляет в боковую колонку панель **Наследовать / Библиотека**. История секции открывается из контекстного меню строки.
 
@@ -49,18 +52,18 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 
 ## Общие блоки {#obshchie-bloki}
 
-Блок из редактора можно сохранить как общий. После **Сохранить как shared** секция на текущей странице сразу линкуется на созданный master (`libraryLocalFields: []`).
+Блок из редактора можно сохранить как общий. После **Сохранить как shared** секция на текущей странице сразу связывается с созданным master (`libraryLocalFields: []`).
 
 | Действие | Поведение |
 | --- | --- |
 | Каталог → **Общие блоки** → Insert | Вставка linked или копии с master |
 | Меню → **Подтянуть с другой страницы** | `mgr/library/pull`: режим **Связать** или **Копировать** |
 | Чеклист локальных полей | `settings.libraryLocalFields` в инспекторе |
-| Save / publish страницы | Write-through synced-полей в master на сервере (`pbOnBeforeSave`) |
+| Save / publish страницы | Запись synced-полей в master на сервере (`pbOnBeforeSave`) |
 
-**Подтянуть** читает **черновик** источника. **Связать** создаёт или reuse master, проставляет `libraryId` на источнике и вставляет linked-секцию на целевую. **Копировать** добавляет секции без связи.
+**Подтянуть** читает **черновик** источника. **Связать** создаёт master или берёт существующий, проставляет `libraryId` на источнике и вставляет linked-секцию на целевую. **Копировать** добавляет секции без связи.
 
-При рендере master merge + локальные поля из `libraryLocalFields`. Без ключа в settings остаётся старый overlay (локальные ключи перекрывают master). После записи Library сбрасывается HTML-кеш `pagebuilder/*`.
+При отрисовке master merge + локальные поля из `libraryLocalFields`. Без ключа в settings остаётся прежнее перекрытие: локальные ключи перекрывают master. После записи Library сбрасывается HTML-кеш `pagebuilder/*`.
 
 Вкладка **Общие блоки** в каталоге видна даже при пустом списке.
 
@@ -68,7 +71,7 @@ description: "Флаги Pro, библиотека pull, шаблоны стра
 
 Capability `versions`: **журнал событий одной секции**, не снимки всей страницы. Из меню строки: View / Restore (`mgr/sectionevents/*`). Page-level UI `mgr/versions/*` в текущей линии нет.
 
-## Шаблоны страниц
+## Шаблоны страниц {#shablony-stranic}
 
 Capability `page-templates`. Именованный скелет: упорядоченный список типов секций **без контента** (`pb_page_templates`).
 
@@ -104,7 +107,7 @@ Apply пишет черновик через `mgr/pagetemplate/apply` (на не
 
 ## Constructor Bundle
 
-Вкладка **Bundle**: export, dry-run (`create`, `update`, `conflict`) и import UI-типов одной транзакцией через `UiSectionTypeService`. Conflict не импортируется. Подробнее: [Панель управления](cmp#bundle).
+Вкладка **Bundle** в текущем релизе **скрыта** (`BUNDLE_ENABLED = false` в `ProFeatureProvider`). Процессоры `mgr/bundle/*` и UI есть, в CMP вкладка не регистрируется. Не обещайте её пользователю, пока флаг не включат в выпуске.
 
 В бандл v1 не кладите secrets, токены, содержимое страниц и строки таблиц. Формы и datasources в этот формат не входят.
 
@@ -123,7 +126,7 @@ Apply пишет черновик через `mgr/pagetemplate/apply` (на не
 | `mgr/sectionevents/get` | Одна запись журнала / снимок секции |
 | `mgr/sectionevents/record` | Добавить запись в журнал (внутреннее / тесты) |
 | `mgr/sectionevents/restore` | Восстановить состояние секции из журнала |
-| `mgr/pagetemplate/list` / `get` / `save` / `remove` | CRUD шаблонов страниц |
+| `mgr/pagetemplate/list` / `save` / `remove` | CRUD шаблонов страниц |
 | `mgr/pagetemplate/apply` | Применить шаблон на черновик |
 | `mgr/presets/list` | Список примеров для вкладки каталога |
 | `mgr/basket/*` | [Глобальная корзина в панели управления](cmp#basket-pro) |

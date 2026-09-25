@@ -7,7 +7,7 @@ description: "Список файлов с названием. Слой Pro."
 
 Версия: **Pro** (`advanced-fields`).
 
-Список строк `{ title, file }`. Пустые строки инспектор не сохраняет. `file` это media-значение, как у поля [file](file): объект с `url`, `filename`, `title` или строка-путь. В чанке берите `{$row.file.url}`.
+Список строк `{ title, file }`. Строка без `title` и без непустого `file` (строка или media-объект) отбрасывается. Объект `file` с пустым `url` сохраняется. `file` — media-значение, как у поля [file](file). В чанке берите `{$row.file.url}`.
 
 ## Настройка
 
@@ -34,12 +34,12 @@ description: "Список файлов с названием. Слой Pro."
 
 ## Пример в chunk
 
+Перебор списка — блок Fenom. В MODX без Fenom нужен сниппет или доступ по индексу.
+
 ::: code-group
 
 ```modx
-{foreach $files as $row}
-  <a href="{$row.file.url|escape}">{$row.title}</a>
-{/foreach}
+<a href="[[+files.0.file.url]]">[[+files.0.title]]</a>
 ```
 
 ```fenom

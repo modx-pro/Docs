@@ -63,9 +63,7 @@ description: "Массив строк tags с chip UI в инспекторе"
 ::: code-group
 
 ```modx
-{foreach $labels as $label}
-  <span class="label">{$label}</span>
-{/foreach}
+<span class="label">[[+labels.0]]</span>
 ```
 
 ```fenom
@@ -83,7 +81,7 @@ description: "Массив строк tags с chip UI в инспекторе"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

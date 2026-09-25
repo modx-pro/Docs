@@ -33,7 +33,7 @@ description: "Форма с настраиваемым набором полей
 
 ## form_key и поля
 
-**Ключ формы** (`form_key`) должен быть уникален на странице, если форм несколько. Repeater **Поля формы**: name, label, type (`text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`), required. Для select и radio варианты пишутся по строке в поле options (`Подпись|value` или только value). Имя поля: `[a-z][a-z0-9_]*`. Обязательный checkbox пустой, пока значение не `1`, `yes`, `true` или `on`.
+**Ключ формы** (`form_key`) должен быть уникален на странице, если форм несколько. Repeater **Поля формы**: name, label, type (`text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`), required. Для select и radio в поле `options` каждая непустая строка — одна опция: подпись и value совпадают. Имя поля проверяется шаблоном `[a-z][a-z0-9_]*` без учёта регистра (`Name`, `email` допустимы). Обязательный checkbox пустой, пока значение не `1`, `yes`, `true` или `on`.
 
 Получатель письма: `emailsender` или настройки почты сайта (как у handler). Без **FetchIt** секция показывает сообщение о недоступности формы.
 
@@ -51,7 +51,9 @@ description: "Форма с настраиваемым набором полей
 | Слой | Pro |
 | Категория | конверсия (`conversion`) |
 | Chunk | `pagebuilderpro_contact_form` |
-| Требования | pro, FetchIt |
+| Требования | pro |
+
+Секция входит в контекст страницы (`runtimeContext: true`), чтобы HTML-кеш не замораживал форму. На витрине нужен **FetchIt** (см. блок выше).
 
 ## Поля в редакторе
 
@@ -81,6 +83,7 @@ description: "Форма с настраиваемым набором полей
 | `label` | [text](../fields/text#vyvod-v-section-data) | Подпись | да |
 | `type` | [select](../fields/select#vyvod-v-section-data) | Тип поля | да |
 | `required` | [yesno](../fields/yesno#vyvod-v-section-data) | Обязательное | нет |
+| `options` | [textarea](../fields/textarea#vyvod-v-section-data) | Варианты (select, radio) | нет |
 
 ### Текст кнопки отправки (`submit_label`)
 

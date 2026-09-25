@@ -5,7 +5,7 @@ description: "Массив media-объектов изображений с enri
 
 # Поле gallery
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
 <!-- ![gallery](/components/pagebuilder/screenshots/fields/gallery.jpg) -->
 
@@ -92,16 +92,16 @@ description: "Массив media-объектов изображений с enri
 
 ## Пример в chunk
 
+Перебор галереи — блок Fenom. В MODX без Fenom — сниппет или один элемент по индексу.
+
 ::: code-group
 
 ```modx
-{foreach $shots as $image}
 [[$pagebuilder_partial_image?
-  &image=`{$image}`
-  &alt=`{$image.title}`
+  &image=`[[+shots.0]]`
+  &alt=`[[+shots.0.title]]`
   &class=`pb-gallery__media`
 ]]
-{/foreach}
 ```
 
 ```fenom
@@ -119,13 +119,14 @@ description: "Массив media-объектов изображений с enri
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: `groups: true`: группы у элементов галереи.
+- Дополнительно: `groups` или alias `fileGroups`: `true` — группы у элементов галереи.
+- `crops` в schema — именованные пресеты кадрирования (capability `image-crop`, Pro). Без Pro кнопка кадрирования недоступна; сохранённые `crops` в data остаются.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

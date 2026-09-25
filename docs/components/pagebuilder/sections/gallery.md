@@ -40,7 +40,7 @@ description: "Сетка изображений с alt-текстом и под�
 | Параметр | Значение |
 | --- | --- |
 | key | `gallery` |
-| Слой | Free |
+| Слой | authoring: Pro; runtime в Free |
 | Категория | медиа (`media`) |
 | Chunk | `pagebuilder_gallery` |
 | Требования | — |

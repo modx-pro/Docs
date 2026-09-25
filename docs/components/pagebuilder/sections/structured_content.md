@@ -26,9 +26,9 @@ description: "Текст через Editor.js: заголовки, списки,
 - Блог-пост на page builder: [Hero](hero) → [Structured content](structured_content) → [CTA](cta)
 - Новость: [Structured content](structured_content) → [Галерея](gallery)
 
-## Поле editorjs
+## Поле body
 
-Поле **editorjs** сохраняет JSON блоков. На выводе chunk превращает его в HTML внутри `.pb-richtext__content`.
+Поле **body** (тип editorjs) сохраняет JSON блоков. На выводе chunk берёт HTML из `$body.html` внутри `.pb-richtext__content`.
 
 ## Похожие секции
 
@@ -59,7 +59,7 @@ description: "Текст через Editor.js: заголовки, списки,
 
 ## Что видит посетитель
 
-HTML из поля `editorjs` в обёртке `.pb-richtext__content`.
+HTML из `$body.html` в обёртке `.pb-richtext__content`.
 
 ## Данные секции {#vyvod-v-section-data}
 

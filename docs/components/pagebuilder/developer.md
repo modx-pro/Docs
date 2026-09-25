@@ -5,8 +5,6 @@ description: Определение секций, модель данных, р�
 
 # Разработчик
 
-Страница для тех, кто добавляет свои секции, расширяет Pro или вызывает connector из своего кода.
-
 ## Справочники
 
 | Тема | Страницы |
@@ -14,7 +12,7 @@ description: Определение секций, модель данных, р�
 | Поля инспектора | [Обзор](fields/overview), [справочник 62 типов](fields/types) |
 | Встроенные секции | [Каталог секций](sections/) |
 | Стили и BEM | [Дизайн-система](design-system) |
-| Headless JSON | [Public API](public-api) |
+| JSON для внешнего фронта | [Public API](public-api) |
 
 ## Определение секции {#opredelenie-sekcii}
 
@@ -49,7 +47,7 @@ JSON: `pagebuilderpro/sections/`. Chunk: `pagebuilderpro_{key}`. По умолч
 
 ### UI-типы в панели управления
 
-Таблица `pb_section_types`. Processors `mgr/sectiontype/*`. Определения из кода пакета при upgrade **не** перезаписываются.
+Таблица `pb_section_types`. Processors `mgr/sectiontype/*`. Определения из кода пакета при обновлении **не** перезаписываются.
 
 ### Доступность и requires
 
@@ -113,8 +111,6 @@ Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Таблиц�
 
 ### JSON документа
 
-Формат документа страницы:
-
 ```json
 {
   "schemaVersion": 1,
@@ -133,9 +129,9 @@ Pro: `pb_library_items`, `pb_section_events`, `pb_page_templates`. Таблиц�
 
 `revision` задаёт оптимистичную блокировку: клиент передаёт текущий номер, сервер сравнивает. При расхождении ответ `revision_conflict`.
 
-### Кеш рендера
+### Кеш отрисовки
 
-Раздел кеша: `pagebuilder/{resourceId}`. Сбрасывается при publish и unpublish. Кеш не используется при проверке видимости по UTM во время запроса, при `use_cache=0` и при ошибках рендера.
+Раздел кеша: `pagebuilder/{resourceId}`. Сбрасывается при publish и unpublish. Кеш не используется при проверке видимости по UTM во время запроса, при `use_cache=0` и при ошибках отрисовки.
 
 ### PHP-сервис
 
@@ -152,13 +148,13 @@ $pageService = $pb->pages();
 
 Plugin на `pbOnRegisterFeatureProviders` регистрирует свой `FeatureProvider` рядом с `ProFeatureProvider`. У провайдера должны быть `serverContributions()` и `cmpContributions()`. Free и Pro этой линии ставьте вместе.
 
-События boot, save и render: [Менеджер и события](integration#sobytiya).
+События boot, save и отрисовки: [Менеджер и события](integration#sobytiya).
 
 В `pbOnBeforeSave` расширения могут заменить документ до записи черновика или публикации через `PageDocumentBag`. `DocumentChangeSet` отдельно фиксирует enable/disable секции (без ложного «update» при чистом тумблере).
 
-## Public API (Headless)
+## Public API
 
-Read-only JSON для внешнего фронта. Точка входа `assets/components/pagebuilder/api.php`. Включение и ключи: [Public API](public-api) и [настройки](settings#public-api).
+Точка входа `assets/components/pagebuilder/api.php`. Read-only JSON. Включение и ключи: [Public API](public-api) и [настройки](settings#public-api).
 
 Запись и черновики: [Agent API](agent-api) (Pro) или вкладка **Секции** в менеджере.
 
@@ -182,8 +178,6 @@ await api.post('mgr/catalog/list', { resource_id: 42 })
 Для агентов и массовой записи секций используйте [Agent API](agent-api).
 
 ## Таблицы данных ресурса {#resource-data-tables}
-
-Процессоры:
 
 | Processor | Назначение |
 | --- | --- |

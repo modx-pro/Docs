@@ -11,7 +11,7 @@ PageBuilder собирает страницу из блоков-секций, а
 
 | Роль | Что получает |
 | --- | --- |
-| **Редактор** | Drag-and-drop секций, инспектор полей, черновик, превью, публикация без правки шаблона |
+| **Редактор** | Перетаскивание секций, инспектор полей, черновик, превью, публикация без правки шаблона |
 | **Начинающий разработчик** | 50 готовых секций, 62 типа полей, JSON-схема и Fenom в chunks без своего Vue |
 | **Опытный разработчик** | События, свои типы секций, табличные данные ресурса, UTM, интеграция с miniShop3 и Collections |
 
@@ -19,13 +19,13 @@ PageBuilder собирает страницу из блоков-секций, а
 
 ### 1. Редактор секций на ресурсе
 
-Вкладка **Секции** на форме ресурса и в панели управления **PageBuilder** использует один Vue-бандл через [VueTools](https://docs.modx.pro/components/vuetools/). Вы добавляете секции из каталога, меняете порядок перетаскиванием или Alt+↑/↓, дублируете и копируете блоки между ресурсами. Если закрыли инспектор **Отмена** сразу после добавления секции, черновик откатывается: пустой блок на странице не остаётся.
+Вкладка **Секции** на форме ресурса и панель **PageBuilder** используют один Vue-бандл через [VueTools](https://docs.modx.pro/components/vuetools/). Добавляйте секции из каталога, меняйте порядок перетаскиванием или Alt+↑/↓, дублируйте и копируйте блоки между ресурсами. Если закрыли инспектор **Отмена** сразу после добавления секции, черновик откатывается: пустой блок на странице не остаётся.
 
 Подробнее: [Быстрый старт](quick-start), [Менеджер и события](integration).
 
 ### 2. Черновик и публикация
 
-Autosave пишет черновик. Превью показывает его без публикации. **Сохранить** ресурса MODX проверяет поля и публикует раскладку на сайт. Сниппет `[[!PageBuilder]]` выводит только опубликованную версию.
+Автосохранение пишет черновик. Превью показывает его без публикации. **Сохранить** ресурса MODX проверяет поля и публикует раскладку на сайт. Сниппет `[[!PageBuilder]]` выводит только опубликованную версию.
 
 Подробнее о хранении: [Рабочий процесс](workflow), [Разработчик → Модель данных](developer#model-dannyh).
 
@@ -36,11 +36,11 @@ Autosave пишет черновик. Превью показывает его �
 | **Free** | 12 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [video](sections/video), [faq](sections/faq), [cta](sections/cta) |
 | **Pro** | 38 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [quiz](sections/quiz), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
 
-У каждой секции своя страница в [каталоге](sections/): зачем блок, где применять, что заполнить в инспекторе, похожие секции.
+Страницы секций: [каталог](sections/).
 
 ### 4. Инспектор и 62 типа полей
 
-Схема полей задаётся в JSON секции: **35 типов Free** (text, repeater, migx, image, multiselect, video, tag…) и **27 Pro** (relation, gallery, combo, editorjs, embeddedTable…). У типов со страницей есть блоки «Зачем», «Когда использовать», «Советы».
+Схема полей задаётся в JSON секции: **35 типов Free** (text, repeater, migx, image, multiselect, video, tag…) и **27 Pro** (relation, gallery, combo, editorjs, embeddedTable…).
 
 См. [Обзор полей](fields/overview) и [справочник типов](fields/types).
 
@@ -82,7 +82,7 @@ Pro, capability `collections`. При `pagebuilder_collections_enabled` на р�
 
 ### 9. Fenom и chunks секций
 
-Каждая секция рендерится через chunk с Fenom (pdoTools). Данные полей лежат в `section.data`. Примеры MODX и Fenom смотрите на страницах полей и в разделе [Вывод на сайте](frontend).
+Каждая секция отрисовывается через chunk с Fenom (pdoTools). Данные полей лежат в `section.data`. Примеры MODX и Fenom смотрите на страницах полей и в разделе [Вывод на сайте](frontend).
 
 ### 10. Сниппеты
 
@@ -93,14 +93,14 @@ Pro, capability `collections`. При `pagebuilder_collections_enabled` на р�
 | `PageBuilderSitemap` | XML sitemap по страницам с секциями |
 | `PageBuilderTableRows` | Строки табличных данных ресурса |
 | `PageBuilderUtmSession` / `PageBuilderUtmUrl` | UTM на фронте |
-| `PageBuilderQuiz` / `PageBuilderContactForm` | FetchIt-handlers Pro (`quiz`, `contact_form`; из шаблона не вызываются) |
-| [Public API](public-api) | JSON опубликованных секций для headless (`api.php`) |
+| `PageBuilderQuiz` / `PageBuilderContactForm` | FetchIt-handlers Pro (`quiz`, `contact_form`). Из шаблона не вызываются |
+| [Public API](public-api) | JSON опубликованных секций для внешнего фронта (`api.php`) |
 
 Полный список: [Сниппеты](snippets/).
 
 ### 11. События `pbOn*`
 
-Plugin подписывается на save, publish, render, регистрацию типов секций и провайдеров Pro. Точка расширения без правок ядра компонента.
+Plugin подписывается на save, publish, отрисовку, регистрацию типов секций и провайдеров Pro.
 
 Список событий: [События](integration#sobytiya).
 

@@ -82,11 +82,7 @@ description: "Массив объектов с nested fields и служебны
 ::: code-group
 
 ```modx
-{foreach $items as $item}
-  <article id="{$item._rowId|escape}">
-    <h3>{$item.title}</h3>
-  </article>
-{/foreach}
+[[+items.0.title]]
 ```
 
 ```fenom
@@ -106,7 +102,7 @@ description: "Массив объектов с nested fields и служебны
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false` — скрыть поле в инспекторе | да |
