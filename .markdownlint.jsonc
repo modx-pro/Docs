@@ -5,6 +5,7 @@
         "allowed_elements": [
             "Badge",
             "DocsComponentsList",
+            "DocsComponentsCatalog",
             "ul",
             "ol",
             "li",
