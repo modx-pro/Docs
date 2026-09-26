@@ -5,6 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/mxquickview/logo.png
 modstore: https://modstore.pro/packages/ecommerce/mxquickview
 dependencies: ['minishop3', 'ms3Variants']
+categories: catalog
 
 compatibility:
   - modx3

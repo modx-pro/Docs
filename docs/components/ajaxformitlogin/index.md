@@ -1,6 +1,7 @@
 ---
 title: AjaxFormItLogin
 description: Современная и функциональная замена AjaxForm
+categories: users
 author: shevartv
 repository: https://github.com/ShevArtV/ajaxformitlogin
 

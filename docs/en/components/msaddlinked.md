@@ -6,6 +6,7 @@ author: mvoevodskiy
 modstore: https://modstore.pro/packages/integration/msaddlinked
 
 dependencies: miniShop2
+categories: orders
 ---
 
 # msAddLinked

@@ -6,6 +6,7 @@ author: nizart91
 modstore: https://modstore.pro/packages/discounts/mssaleprice
 
 dependencies: miniShop2
+categories: discounts
 ---
 
 # msSalePrice

@@ -6,6 +6,7 @@ logo: https://modstore.pro/assets/extras/mxeditorjs/logo.png
 modstore: https://modstore.pro/packages/content/mxeditorjs
 repository: https://github.com/Ibochkarev/mxEditorJs
 dependencies: []
+categories: content
 
 compatibility:
   - modx3

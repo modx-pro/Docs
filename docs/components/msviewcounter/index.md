@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msviewcounter/logo.png
 modstore: https://modstore.pro/packages/ecommerce/msviewcounter
 dependencies: miniShop3
-categories: minishop3
+categories: catalog
 
 compatibility:
   - modx3

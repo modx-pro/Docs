@@ -1,6 +1,8 @@
 ---
 title: Tickets
 description: Компонент для создания и комментирования пользовательских страниц
+categories: users
+popular: true
 logo: https://modstore.pro/assets/extras/tickets/logo-lg.jpg
 author: bezumkin
 modstore: https://modstore.pro/packages/users/tickets

@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/mxdadata/logo.png
 modstore: https://modstore.pro/packages/utilities/mxdadata
 dependencies: minishop3
-categories: minishop3
+categories: utilities
 
 compatibility:
   - modx3

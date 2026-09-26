@@ -1,6 +1,7 @@
 ---
 title: customExtra
 description: Дополнительная таблица в админке MODX
+categories: utilities
 logo: https://modstore.pro/assets/extras/customextra/logo.png
 author: ilyautkin
 modstore: https://modstore.pro/packages/utilities/customextra

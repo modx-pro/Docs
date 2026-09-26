@@ -3,7 +3,7 @@ title: ms3Remains
 description: Остатки товаров MiniShop3 по комбинациям опций
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: catalog
 
 compatibility:
   - modx3

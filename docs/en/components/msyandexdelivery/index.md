@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msyandexdelivery/logo.png
 modstore: https://modstore.pro/packages/delivery/msyandexdelivery
 dependencies: [miniShop3, VueTools]
-categories: minishop3
+categories: delivery
 compatibility:
   - modx3
   - php82

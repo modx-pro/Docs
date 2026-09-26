@@ -1,11 +1,11 @@
 ---
 title: GeoLocation2
 description: Геоданные MODX — справочник gl_*, SxGeo, модалка выбора города, REST action.php
+categories: maps
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/geolocation2/logo.png
 modstore: https://modstore.pro/packages/maps/geolocation2
 repository: https://github.com/Ibochkarev/GeoLocation2
-categories: utilities
 compatibility:
   - modx3
   - php82

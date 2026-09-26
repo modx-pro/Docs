@@ -1,6 +1,7 @@
 ---
 title: YandexMaps
 description: Создание Яндекс Карты и размещение на ней списка объектов
+categories: maps
 logo: https://modstore.pro/assets/extras/yandexmaps/logo-lg.jpg
 author: gvozdb
 modstore: https://modstore.pro/packages/maps/yandexmaps

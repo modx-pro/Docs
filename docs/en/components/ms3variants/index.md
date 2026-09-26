@@ -1,6 +1,7 @@
 ---
 title: ms3Variants
 description: Product variants component for MiniShop3
+categories: catalog
 logo: https://modstore.pro/assets/extras/ms3variants/logo.png
 author: biz87
 

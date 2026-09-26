@@ -6,6 +6,7 @@ lastUpdated: true
 logo: /components/mxboard.jpg
 author: ShevArtV
 dependencies: ['vuetools']
+categories: utilities
 items: [
   {
     text: 'Начало работы',

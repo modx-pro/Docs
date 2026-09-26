@@ -1,6 +1,7 @@
 ---
 title: DigitalSignage
 description: Приложение для создания трансляций на MODX
+categories: other
 logo: https://modstore.pro/assets/extras/digitalsignage/logo.png
 author: Sterc
 modstore: https://modstore.pro/packages/other/digitalsignage

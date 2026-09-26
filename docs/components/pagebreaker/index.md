@@ -1,6 +1,7 @@
 ---
 title: PageBreaker
 description: Разбивка страницы на части по специальному тегу
+categories: content
 logo: https://modstore.pro/assets/extras/pagebreaker/logo-lg.jpg
 author: bezumkin
 modstore: https://modstore.pro/packages/content/pagebreaker

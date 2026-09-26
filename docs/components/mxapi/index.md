@@ -1,6 +1,7 @@
 ---
 title: mxApi
 description: Единая точка входа публичного API для MODX Revolution 2 и 3 — маршруты под своим префиксом, bearer-токены, scope поверх прав MODX, каталог эндпоинтов и OpenAPI из живого реестра.
+categories: utilities
 outline: [2, 3]
 lastUpdated: true
 author: ShevArtV

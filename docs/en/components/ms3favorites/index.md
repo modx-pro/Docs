@@ -1,6 +1,7 @@
 ---
 title: ms3Favorites
 description: 'Wishlists for MiniShop3 and other resources — browser storage, DB sync'
+categories: catalog
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3favorites/logo.png
 modstore: https://modstore.pro/packages/ecommerce/ms3favorites

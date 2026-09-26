@@ -1,6 +1,7 @@
 ---
 title: frontTabs
 description: Вывод блока с вкладками на странице сайта
+categories: other
 logo: https://modstore.pro/assets/extras/fronttabs/logo.png
 author: justenj
 modstore: https://modstore.pro/packages/other/fronttabs

@@ -1,6 +1,7 @@
 ---
 title: MinifyX
 description: Automated minification of site scripts and styles
+categories: utilities
 logo: https://modstore.pro/assets/extras/minifyx/logo-lg.jpg
 author: sergant210
 modstore: https://modstore.pro/packages/utilities/minifyx

@@ -16,6 +16,7 @@ items: [
   { text: 'Разработка', link: 'development' },
 ]
 dependencies: [ 'miniShop2', 'SendIt' ]
+categories: delivery
 ---
 
 # ms_CDEK2

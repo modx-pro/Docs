@@ -1,6 +1,8 @@
 ---
 title: Office
 description: Универсальный личный кабинет покупателя
+categories: users
+popular: true
 logo: https://modstore.pro/assets/extras/office/logo.png
 author: ilyautkin
 modstore: https://modstore.pro/packages/users/office

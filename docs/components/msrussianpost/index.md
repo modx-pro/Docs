@@ -1,6 +1,7 @@
 ---
 title: msRussianPost
 description: Расчёт доставки Почтой России для MODX 3 и MiniShop3
+categories: delivery
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msrussianpost/logo.png
 modstore: https://modstore.pro/packages/delivery/msrussianpost

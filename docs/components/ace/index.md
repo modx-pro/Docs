@@ -1,6 +1,7 @@
 ---
 title: Ace
 description: Редактор кода с подсветкой синтаксиса для менеджера MODX Revolution
+categories: content
 author: modx-pro
 repository: https://github.com/modx-pro/modx-ace
 logo: https://modstore.pro/assets/extras/ace/logo.png

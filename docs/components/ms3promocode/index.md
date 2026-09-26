@@ -63,6 +63,7 @@ items: [
 ]
 
 dependencies: MiniShop3, pdoTools, VueTools
+categories: discounts
 ---
 
 # ms3PromoCode

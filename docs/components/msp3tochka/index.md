@@ -3,7 +3,7 @@ title: msp3Tochka
 description: "Приём оплаты через Точка Банк для MiniShop3: платёжная ссылка, webhook JWT, одно- и двухстадийная схема"
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3

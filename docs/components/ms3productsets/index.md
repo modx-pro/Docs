@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3productsets/logo.png
 modstore: https://modstore.pro/packages/ecommerce/ms3productsets
 dependencies: miniShop3
-categories: minishop3
+categories: catalog
 compatibility:
   - modx3
   - php81

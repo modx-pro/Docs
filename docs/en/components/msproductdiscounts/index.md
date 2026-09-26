@@ -11,6 +11,7 @@ items: [
 ]
 
 dependencies: [ 'miniShop2', 'SendIt' ]
+categories: discounts
 ---
 
 # msProductDiscounts

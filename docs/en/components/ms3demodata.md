@@ -1,6 +1,7 @@
 ---
 title: MS3 Demo Data
 description: Demo data generator for MiniShop3 — vendors, categories, products, customers, orders
+categories: utilities
 logo: https://modstore.pro/assets/extras/ms3demodata/logo.png
 author: modx-pro
 repository: https://github.com/modx-pro/ms3demodata

@@ -1,6 +1,8 @@
 ---
 title: pdoTools
 description: Быстрая выборка страниц и пользователей сайта
+categories: utilities
+popular: true
 logo: https://modstore.pro/assets/extras/pdotools/logo-lg.jpg
 author: sergant210
 modstore: https://modstore.pro/packages/utilities/pdotools

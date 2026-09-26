@@ -6,6 +6,7 @@ author: adm93rus
 dependencies:
   - VueTools
   - pdoTools
+categories: catalog
 compatibility:
   - modx3
   - php81

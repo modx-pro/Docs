@@ -1,11 +1,11 @@
 ---
 title: ImageOptimizer
 description: Конвертация изображений в WebP/AVIF, responsive srcset, очередь и авто-inject picture на витрине MODX 3
+categories: media
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/imageoptimizer/logo.png
 modstore: https://modstore.pro/packages/photos-and-files/imageoptimizer
 repository: https://github.com/Ibochkarev/ImageOptimizer
-categories: utilities
 compatibility:
   - modx3
   - php82

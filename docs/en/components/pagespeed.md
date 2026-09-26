@@ -1,6 +1,7 @@
 ---
 title: PageSpeed
 description: PageSpeed Insights optimizations integration for MODX Revolution
+categories: catalog
 logo: https://modstore.pro/assets/extras/pagespeed/logo-lg.jpg
 author: wfoojjaec
 modstore: https://modstore.pro/packages/ecommerce/pagespeed

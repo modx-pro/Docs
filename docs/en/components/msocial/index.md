@@ -1,6 +1,7 @@
 ---
 title: mSocial
 description: Posting to Twitter
+categories: notifications
 logo: https://modstore.pro/assets/extras/msocial/logo.png
 author: DevPastet
 modstore: https://modstore.pro/packages/alerts-mailing/msocial

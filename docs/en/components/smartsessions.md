@@ -1,6 +1,7 @@
 ---
 title: smartSessions
 description: Advanced MODX session management
+categories: utilities
 
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/smartsessions

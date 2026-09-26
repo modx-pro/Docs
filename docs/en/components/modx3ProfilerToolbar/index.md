@@ -1,6 +1,7 @@
 ---
 title: Modx3ProfilerToolbar
 description: Performance toolbar for MODX 3 — request metrics, slow components, timeline and SQL without admin
+categories: other
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/modx3profilertoolbar/logo.png
 modstore: https://modstore.pro/packages/other/modx3profilertoolbar

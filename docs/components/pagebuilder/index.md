@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/pagebuilder/logo.png
 modstore: https://modstore.pro/packages/sites-themes/pagebuilder
 dependencies: [VueTools, pdoTools]
-categories: utilities
+categories: themes
 
 compatibility:
   - modx3

@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msfastorder/logo.png
 modstore: https://modstore.pro/packages/integration/msfastorder
 dependencies: miniShop3
-categories: minishop3
+categories: orders
 
 compatibility:
   - modx3

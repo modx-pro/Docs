@@ -3,7 +3,7 @@ title: msp3CloudPayments
 description: "Приём оплаты через CloudPayments для MiniShop3: счёт, шесть уведомлений, одно- и двухстадийная схема"
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3

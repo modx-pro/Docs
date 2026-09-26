@@ -1,6 +1,7 @@
 ---
 title: Frontend Editor
 description: Редактирование контента не заходя в админ панель
+categories: content
 logo: https://modstore.pro/assets/extras/frontendeditor/logo.png
 author: apnix
 modstore: https://modstore.pro/packages/content/frontendeditor

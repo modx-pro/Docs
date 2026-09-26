@@ -1,6 +1,7 @@
 ---
 title: SEO Suite
 description: SEO Suite automatically redirects broken links (404) to suitable pages
+categories: catalog
 logo: https://modstore.pro/assets/extras/seosuite/logo.png
 author: Sterc
 modstore: https://modstore.pro/packages/ecommerce/seosuite

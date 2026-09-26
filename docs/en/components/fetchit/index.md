@@ -1,6 +1,8 @@
 ---
 title: FetchIt
 description: Lightweight AJAX form submission in MODX via the Fetch API on top of FormIt or a custom snippet
+categories: utilities
+popular: true
 logo: https://modstore.pro/assets/extras/fetchit/logo.png
 author: GulomovCreative
 modstore: https://modstore.pro/packages/utilities/fetchit

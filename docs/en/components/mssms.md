@@ -5,6 +5,7 @@ logo: https://modstore.pro/assets/extras/mssms/logo-lg.jpg
 modstore: https://modstore.pro/packages/alerts-mailing/mssms
 
 dependencies: miniShop2
+categories: notifications
 ---
 
 # msSMS

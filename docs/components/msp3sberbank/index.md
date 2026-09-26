@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msp3sberbank/logo.png
 modstore: https://modstore.pro/packages/payment-system/msp3sberbank
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3

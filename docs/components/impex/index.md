@@ -1,6 +1,7 @@
 ---
 title: Impex / Impex3
 description: Импорт и экспорт ресурсов MODX Revolution / MODX 3 и товаров miniShop2 / miniShop3
+categories: import-export
 logo: https://modstore.pro/assets/extras/impex3/logo-md.png
 author: Romanov Pavel
 modstore: https://modstore.pro/packages/import-and-export/impex3

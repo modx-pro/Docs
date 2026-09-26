@@ -1,6 +1,8 @@
 ---
 title: mFilter
 description: Фасетная фильтрация для MODX 3 с поддержкой SEO URL
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/mfilter/logo.png
 author: biz87
 

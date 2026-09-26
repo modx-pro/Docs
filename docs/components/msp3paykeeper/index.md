@@ -3,7 +3,7 @@ title: msp3PayKeeper
 description: "Приём оплаты через PayKeeper для MiniShop3: счёт, webhook, чеки 54-ФЗ, одно- и двухстадийная схема"
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3

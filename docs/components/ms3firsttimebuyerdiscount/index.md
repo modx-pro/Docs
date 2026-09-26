@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3firsttimebuyerdiscount/logo.png
 modstore: https://modstore.pro/packages/discounts/ms3firsttimebuyerdiscount
 dependencies: miniShop3
-categories: minishop3
+categories: discounts
 
 compatibility:
   - modx3

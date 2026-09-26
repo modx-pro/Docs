@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3pulse/logo.png
 modstore: https://modstore.pro/packages/other/ms3pulse
 dependencies: [miniShop3, vuetools]
-categories: minishop3
+categories: other
 
 compatibility:
   - modx3

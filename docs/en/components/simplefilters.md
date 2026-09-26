@@ -1,6 +1,7 @@
 ---
 title: simpleFilters
 description: Simple resource filtering for MODX 3.
+categories: catalog
 logo: https://modstore.pro/assets/extras/simplefilters/logo-md.png
 author: Romanov Pavel
 modstore: https://modstore.pro/packages/ecommerce/simplefilters

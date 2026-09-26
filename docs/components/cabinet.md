@@ -1,6 +1,7 @@
 ---
 title: Cabinet
 description: Личный кабинет пользователя
+categories: users
 logo: https://modstore.pro/assets/extras/cabinet/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/users/cabinet

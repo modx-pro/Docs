@@ -3,7 +3,7 @@ title: msp3BePaid
 description: "Приём оплаты через bePaid для MiniShop3: ссылка на оплату, webhook и возврат покупателя в браузере"
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3
