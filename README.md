@@ -107,15 +107,16 @@ pnpm dev
 | `pnpm dev` | Локальный предпросмотр (VitePress dev, hot reload) |
 | `pnpm build` | Продакшен-сборка (перед сборкой запускается генерация OG; для Node задан лимит памяти — см. скрипт в `package.json`) |
 | `pnpm preview` | Просмотр уже собранного статического сайта |
-| `pnpm lint:changed` / `pnpm lint` / `pnpm lint:fix` | Markdownlint: изменённые строки / все файлы / автоисправление |
+| `pnpm lint:changed` / `pnpm lint` | Markdownlint: изменённые строки / все файлы; автоисправление — `pnpm exec markdownlint --fix <путь>` (`pnpm lint:fix` — по всему репозиторию) |
 | `pnpm spellcheck:changed` / `pnpm spellcheck` | Проверка орфографии (RU и EN): изменённые строки / все файлы |
-| `pnpm check:sync:changed` | У новых русских страниц есть английские версии (заготовка — `node scripts/sync-docs-en.mjs <путь>`) |
+| `pnpm check:sync:changed` | У новых русских страниц есть английские версии (заготовка — `node scripts/sync-docs-en.mjs <путь>`); предупреждение, если изменена только русская |
+| `pnpm check:structure:changed` / `pnpm check:structure` | Разделов `##`/`###` в EN не меньше, чем в RU: изменённые страницы (предупреждения, как в CI) / все страницы |
 | `pnpm generate` | Мастер создания заготовок документации (Plop) |
 
 <h1 id="contributor-tips">💡 Советы контрибьюторам / Contributor tips</h1>
 
 - ✅ **Мелкие PR** проще и быстрее ревьюить: одна тема (один компонент, один раздел) вместо «всего сразу».
-- ✅ Перед отправкой PR прогоните **`pnpm lint:changed`**, **`pnpm spellcheck:changed`** и **`pnpm check:sync:changed`** — CI в PR запускает те же проверки изменённых строк.
+- ✅ Перед отправкой PR прогоните **`pnpm lint:changed`**, **`pnpm spellcheck:changed`** и **`pnpm check:sync:changed`** — их же запускает CI в PR (разметка и орфография — по изменённым строкам).
 - ✅ Следуйте структуре соседних статей в том же каталоге: front matter, заголовки, внутренние ссылки VitePress.
 - ✅ Скриншоты и схемы кладите в соответствующие папки рядом с документацией или в `docs/public/`, если так принято для вашего раздела — ориентируйтесь на существующие статьи.
 - ✅ Не знаете, с чего начать? Откройте [Issues][repository-issues] — там можно обсудить идею до большого объёма правок.

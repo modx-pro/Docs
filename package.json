@@ -32,7 +32,8 @@
     "check:links:changed": "node scripts/check-markdown-links.mjs --changed",
     "check:sync": "node scripts/check-docs-sync.mjs",
     "check:sync:changed": "node scripts/check-docs-sync.mjs --changed",
-    "check:structure": "node scripts/check-docs-structure-sync.mjs"
+    "check:structure": "node scripts/check-docs-structure-sync.mjs",
+    "check:structure:changed": "node scripts/check-docs-structure-sync.mjs --changed --warn"
   },
   "devDependencies": {
     "@braintree/sanitize-url": "^7.1.2",
