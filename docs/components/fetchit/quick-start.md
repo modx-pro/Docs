@@ -107,7 +107,7 @@ description: Первый вызов FetchIt с FormIt, чанком формы 
 
 :::
 
-Сниппет сам допишет `data-fetchit` и `method="post"`, если их нет.
+Сниппет сам ставит форме `data-fetchit` и `method="post"`, заменяя свои значения этих атрибутов.
 
 Класс невалидного поля по умолчанию: `is-invalid` (настройка `fetchit.frontend.input.invalid.class`). Подстройте под свою вёрстку.
 

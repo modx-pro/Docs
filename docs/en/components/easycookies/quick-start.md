@@ -26,7 +26,7 @@ For a compliant banner, texts of the preferences window, categories and the cook
 
 ## Counters
 
-In the "Counters and services" card, add the site's counters and enter their IDs. If the counters are already in the template, click "Find on the site": EasyCookies finds them in templates and chunks, moves them into the profile and removes their code from the templates.
+In the "Counters and services" card, add the site's counters and enter their IDs. If the counters are already in the template, click "Find on the site": EasyCookies finds them in templates and chunks and moves them into the profile; with "Remove their code from templates and chunks" ticked, it also removes their code from the templates.
 
 ::: warning
 Code of counters that the banner switches on must not stay in the template — otherwise they run twice and without consent.

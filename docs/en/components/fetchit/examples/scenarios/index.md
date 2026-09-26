@@ -18,7 +18,7 @@ Solutions for tasks that come up on almost every site. The code can be taken as 
 
 ## Analytics and integrations
 
-- [Goals in Yandex Metrica and Google Analytics](/en/components/fetchit/examples/scenarios/analytics) — Yandex Metrica, GA4, Google Tag Manager, VK Ads
+- [Goals in Yandex Metrika and Google Analytics](/en/components/fetchit/examples/scenarios/analytics) — Yandex Metrika, GA4, Google Tag Manager, VK Ads
 - [Requests to Telegram](/en/components/fetchit/examples/scenarios/telegram) — a FormIt hook that sends requests to a chat
 
 Modals, notifications and client-side field checks are in the neighbouring sections: [modal dialogs](/en/components/fetchit/examples/modals/), [notifications](/en/components/fetchit/examples/notifications/), [validation](/en/components/fetchit/examples/validation/).

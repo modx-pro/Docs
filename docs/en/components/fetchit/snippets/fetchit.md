@@ -90,7 +90,7 @@ An empty POST to `action.php` without an action redirects to the site start page
 
 Right after the form tag the snippet adds the hidden fields of the [spam protection](/en/components/fetchit/protection): the token, a field for the solution when the proof of work is on, and the trap field. They are removed from `$_POST` before FormIt or your snippet, so they reach neither e-mails nor `fields`.
 
-The snippet also adds `method="post"` and the `data-fetchit` attribute to the form when they are missing.
+The snippet also sets `method="post"` and the `data-fetchit` attribute on the form, replacing any values of its own.
 
 ## Where action parameters live
 

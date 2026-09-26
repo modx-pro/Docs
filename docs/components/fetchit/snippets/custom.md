@@ -11,7 +11,7 @@ description: Кастомный сниппет вместо FormIt, JSON-отв�
 | --- | --- | --- |
 | `success` | `bool` | Успех или ошибка |
 | `message` | `string` | Текст для уведомления и блоков `[data-success]` / `[data-validation-error]` |
-| `data` | `object` | При ошибке: имя поля → текст ошибки (для `[data-error]` и классов invalid) |
+| `data` | `object` | При ошибке: имя поля → текст ошибки (для `[data-error]` и классов invalid). При успехе — любые данные для своего кода, например адрес для [редиректа](/components/fetchit/examples/scenarios/redirect) |
 
 Собрать такой ответ помогают методы `error()` и `success()` сервиса. Сам сервис возьмите через `FetchIt::service()` — он работает и на MODX 2, и на MODX 3:
 
@@ -85,10 +85,10 @@ return $FetchIt->success('Форма прошла проверку');
 Работают и они — возвращают тот же объект:
 
 ```php
-// FetchIt 1.x, на MODX 2 и MODX 3
+// способ FetchIt 1.x — работает и на MODX 2, и на MODX 3
 $FetchIt = $modx->getService('fetchit', 'FetchIt', MODX_CORE_PATH . 'components/fetchit/model/');
 
-// FetchIt 3.x, только на MODX 3
+// способ FetchIt 3.x — только на MODX 3
 $FetchIt = $modx->services->get('FetchIt');
 ```
 

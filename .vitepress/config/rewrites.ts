@@ -874,6 +874,23 @@ const rewrites: Record<string, string> = {
   'components/msfastorder/configuration': 'components/msfastorder/settings',
   'components/msfastorder/usage': 'components/msfastorder/snippets/index',
   'components/msfastorder/troubleshooting': 'components/msfastorder/faq',
+
+  'components/fetchit/examples/form/turretcss':             'components/fetchit/examples/form/',
+  'components/fetchit/examples/modals/tinglejs':            'components/fetchit/examples/modals/',
+  'components/fetchit/examples/notifications/izitoast':     'components/fetchit/examples/notifications/',
+  'components/fetchit/examples/notifications/notie':        'components/fetchit/examples/notifications/',
+  'components/fetchit/examples/notifications/noty':         'components/fetchit/examples/notifications/',
+  'components/fetchit/examples/notifications/pnotify':      'components/fetchit/examples/notifications/',
+  'components/fetchit/examples/notifications/toastr':       'components/fetchit/examples/notifications/',
+  'components/fetchit/examples/validation/iodine':          'components/fetchit/examples/validation/',
+  'en/components/fetchit/examples/form/turretcss':          'en/components/fetchit/examples/form/',
+  'en/components/fetchit/examples/modals/tinglejs':         'en/components/fetchit/examples/modals/',
+  'en/components/fetchit/examples/notifications/izitoast':  'en/components/fetchit/examples/notifications/',
+  'en/components/fetchit/examples/notifications/notie':     'en/components/fetchit/examples/notifications/',
+  'en/components/fetchit/examples/notifications/noty':      'en/components/fetchit/examples/notifications/',
+  'en/components/fetchit/examples/notifications/pnotify':   'en/components/fetchit/examples/notifications/',
+  'en/components/fetchit/examples/notifications/toastr':    'en/components/fetchit/examples/notifications/',
+  'en/components/fetchit/examples/validation/iodine':       'en/components/fetchit/examples/validation/',
 }
 
 export { rewrites }

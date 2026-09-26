@@ -60,7 +60,7 @@ FetchIt.Message = {
 
 `FetchIt` появляется, когда отработал отложенный `fetchit.js`, поэтому `FetchIt.Message` задавайте из отложенного скрипта, подключённого после него, или по `DOMContentLoaded`.
 
-Если включена настройка `fetchit.frontend.default.notifier`, а `Message` не задан, при первом `create()` подставятся [встроенные уведомления](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya). Если в вашем `Message` нет ни `success`, ни `error`, они добавятся к нему.
+Если включена настройка `fetchit.frontend.default.notifier`, а `Message` не задан, при первом `create()` подставятся [встроенные уведомления](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya). Если в вашем `Message` нет ни `success`, ни `error`, они добавятся к нему — при условии, что `Message` задан до первого `create()`, то есть до `DOMContentLoaded`: в отложенном скрипте, а не в своём обработчике `DOMContentLoaded`.
 
 Готовые примеры: [уведомления](/components/fetchit/examples/notifications/).
 

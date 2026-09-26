@@ -83,7 +83,7 @@ description: Форма FetchIt в Bootstrap Modal и окно с ответом
 
 :::
 
-Класс `is-invalid`, который Bootstrap ждёт на невалидном поле, FetchIt ставит по умолчанию (настройка `fetchit.frontend.input.invalid.class`), — подробнее в [форме на Bootstrap](/components/fetchit/examples/form/bootstrap). Блока `[data-success]` в окне нет: оно закроется, а об успехе скажет уведомление.
+Класс `is-invalid`, который Bootstrap ждёт на невалидном поле, FetchIt ставит по умолчанию (настройка `fetchit.frontend.input.invalid.class`), — подробнее в [форме на Bootstrap](/components/fetchit/examples/form/bootstrap). Блока `[data-success]` в окне нет: оно закроется, а об успехе скажет уведомление — если включены [встроенные уведомления](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya) (по умолчанию выключены) или задан свой `FetchIt.Message`.
 
 ```js
 document.addEventListener('fetchit:success', ({ detail: { form } }) => {
