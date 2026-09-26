@@ -62,7 +62,7 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 | col 2 is      |   centered    |   $12 |
 | zebra stripes |   are neat    |    $1 |
 
-## Эмоджи
+## Эмодзи
 
 **Пример:**
 
@@ -74,7 +74,7 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 
 :tada: :100:
 
-[Список всех доступных эмоджи здесь](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json).
+[Список всех доступных эмодзи здесь](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json).
 
 ## Вывод оглавления в любом месте
 

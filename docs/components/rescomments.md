@@ -49,7 +49,7 @@ modstore: https://modstore.pro/packages/utilities/rescomments
 
 ## Сниппет resComments
 Выводит комментарии к ресурсу, подключает все необходимые скрипты и стили.
-Вызывается некешированным:
+Вызывается некэшированным:
 ```
 [[!resComments]]
 ```

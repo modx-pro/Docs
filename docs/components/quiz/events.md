@@ -52,7 +52,7 @@
   - **options** - опции квиза
 - `Quiz.submit.before` - перед сабмитом формы
   - **options** - опции квиза
-- `Quiz.submit.after` - после сабмитом формы
+- `Quiz.submit.after` - после сабмита формы
   - **options** - опции квиза
   - **response** - объект с ответом от сервера
 - `Quiz.result.before` - перед получение результата

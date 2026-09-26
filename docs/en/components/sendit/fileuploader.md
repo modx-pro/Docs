@@ -1,6 +1,6 @@
 # File upload
 
-Hostings limit POST size (typically 20MB). To upload larger files, chunking is needed. **SendIt** does this for you.
+Hosting providers limit POST size (typically 20MB). To upload larger files, chunking is needed. **SendIt** does this for you.
 
 For standard file field use this markup:
 
