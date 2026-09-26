@@ -9,7 +9,7 @@ description: Вкладки «Отзывы / Вопросы» на карточ�
 
 ## Назначение
 
-Компактная карточка: отзывы и Q&A в одной секции с вкладками. **Форму отзыва** и **JSON-LD** выводите **отдельно** — `msReviewsTabbed` их не включает.
+**Форму отзыва** и **JSON-LD** выводите отдельно: `msReviewsTabbed` их не включает.
 
 ## Где вызывать
 
@@ -22,8 +22,8 @@ description: Вкладки «Отзывы / Вопросы» на карточ�
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
-- **pdoTools 3.0+** — рендер чанков на Fenom
-- **msReviewForm** и **msReviewSchema** — отдельными вызовами ниже или выше вкладок
+- **pdoTools 3.0+** — отрисовка чанков на Fenom
+- **msReviewForm** и **msReviewSchema** — отдельными вызовами рядом с вкладками
 - **msReviewsLexiconScript** — для engagement в списке отзывов
 
 ## Параметры
@@ -33,16 +33,15 @@ description: Вкладки «Отзывы / Вопросы» на карточ�
 | `product_id` | id ресурса | ID товара MS3 |
 | `activeTab` | `reviews` | `reviews` или `questions` |
 | `showStats` | `0` | Статистика в шапке списка отзывов |
-| `applyRequestFilters` | `0` | `1` — inner `msReviews` читает GET `msr_*` |
+| `applyRequestFilters` | `0` | `1`: внутренний `msReviews` читает GET `msr_*` |
+| `useGravatar` | `1` | Аватар Gravatar во внутреннем `msReviews` |
 | `tpl` | `tplReviewsTabbed` | Чанк вкладок |
 | `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
 | `registerJs` | `1` | Подключать JS витрины этим вызовом |
 
-Внутренним `msReviews` / `msQuestions` проксируются общие параметры вызова (`limit`, фильтры и др.).
+Внутренний `msReviews` получает `product_id`, `showStats`, `showHeading=0`, `applyRequestFilters` и `useGravatar`. Внутренний `msQuestions` получает только `product_id`. Остальные параметры списков (`limit`, фильтры) задавайте отдельными вызовами сниппетов.
 
 ## Вкладки + форма + schema
-
-Раскладка на странице товара:
 
 ::: code-group
 

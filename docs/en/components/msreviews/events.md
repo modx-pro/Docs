@@ -2,10 +2,10 @@
 title: События MODX и капча
 description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ошибок
 ---
-<!-- TODO: translate from docs/components/msreviews/events.md -->
+
 # События MODX и капча
 
-Примеры витрины — [Интеграция](integration). Ниже события, капча и prefetch для расширений.
+Подключите плагин к событиям `msrOn*`. Примеры витрины: [Интеграция](integration).
 
 ## События msrOn*
 
@@ -13,26 +13,27 @@ description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ош�
 | --- | --- |
 | `msrOnBeforeReviewCreate` | До создания отзыва (витрина или `mgr/review/create`) |
 | `msrOnReviewCreate` | После создания |
-| `msrOnBeforeReviewPublish` | До публикации |
+| `msrOnBeforeReviewPublish` | До публикации в CMP (`mgr/review/update-status`) |
 | `msrOnReviewPublish` | После публикации |
 | `msrOnReviewReject` | При отклонении |
 | `msrOnBeforeReviewUpdate` / `msrOnReviewUpdate` | Правка на витрине (`review/update_own`) или в CMP (`mgr/review/update`) |
 | `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | Самоудаление на витрине |
 | `msrOnReviewVote` | После «полезно» |
-| `msrOnBeforeQuestionCreate` / `msrOnQuestionCreate` | Создание вопроса (витрина или CMP) |
+| `msrOnBeforeQuestionCreate` | До создания вопроса (витрина или CMP) |
+| `msrOnQuestionCreate` | После создания вопроса (витрина или CMP) |
 | `msrOnBeforeQuestionUpdate` / `msrOnQuestionUpdate` | Правка вопроса в CMP (`mgr/question/update`) |
 | `msrOnAnswerCreate` | Ответ из CMP |
 | `msrOnReviewRequestSend` | Отправка письма из очереди |
 | **`msrOnModeratorNotify`** | Перед письмом модератору о новом отзыве/вопросе с витрины |
 | **`msrOnCaptchaVerify`** | Перед `review/create` и `question/create` |
 
-Верните **`false`** из плагина на guard-событиях, чтобы заблокировать операцию (`msr_err_event_block` или отмена письма модератору).
+Верните **`false`** из плагина на guard-событиях, чтобы заблокировать операцию (`msr_err_event_block` или отмена письма модератору). Guard — все `Before*` из таблицы. До **1.2.6** `msrOnBeforeReviewPublish` результат не проверялся, а `msrOnBeforeQuestionCreate` на витрине не вызывался.
 
 ### msrOnModeratorNotify
 
 Вызывается, когда уведомления включены, статус подходит под `msreviews_moderator_notify_on` и список адресатов не пуст. Параметры: `type` (`review` / `question`), `id`, `product_id`, `status`, `recipients` (list). `return false` отменяет отправку.
 
-Событие срабатывает **до** рендера чанка письма. Если плагин не отменил отправку, а кастомный чанк темы/тела вернул пустую строку, письмо всё равно не уйдёт (см. [Настройки](settings#уведомление-модератора)).
+Событие срабатывает **до** отрисовки чанка письма. Если плагин не отменил отправку, а свой чанк темы или тела вернул пустую строку, письмо всё равно не уйдёт (см. [Настройки](settings#уведомление-модератора)).
 
 С **1.2.2** тело письма уходит как HTML (`text/html`). В чанке `{$type}` / `{$status}`: подписи. `{$type_key}` / `{$status_key}`: коды.
 
@@ -88,7 +89,7 @@ require_once MODX_CORE_PATH . 'components/msreviews/include/helpers.php';
 msr_prefetch_aggregates($modx, [101, 102, 103]);
 ```
 
-После prefetch **`msRatingSummary`** и **`msRatingBadge`** читают агрегат из request-scoped кеша без N+1 запросов.
+После prefetch **`msRatingSummary`** и **`msRatingBadge`** читают агрегат из кеша на время запроса, без N+1 запросов.
 
 ## Коды msr_err_*
 
@@ -100,6 +101,7 @@ msr_prefetch_aggregates($modx, [101, 102, 103]);
 | `msr_err_crawler` | CrawlerDetect |
 | `msr_err_rate` | Rate limit |
 | `msr_err_captcha` | Капча не пройдена |
+| `msr_err_event_block` | Guard-событие вернуло `false` |
 | `msr_err_token` | Неверный edit_token |
 | `msr_err_self_edit_disabled` | Самоправка выключена |
 | `msr_err_vote_disabled` | Голосование выключено |
@@ -118,7 +120,7 @@ msr_prefetch_aggregates($modx, [101, 102, 103]);
 
 События: `OnHandleRequest`, `OnLoadWebPageCache`, `OnBeforeSaveWebPageCache`, `OnWebPagePrerender`.
 
-Зачем: при `cache_resource=1` MODX кэширует HTML карточки товара **без** query `?msr_verified=1` и других фильтров. Плагин сбрасывает resource cache при запросе с `msr_*`, не сохраняет отфильтрованный HTML в кэш и обходит HTML-кэш **imageoptimizer**, если он установлен.
+При `cache_resource=1` MODX кэширует HTML карточки товара **без** query `?msr_verified=1` и других фильтров. Плагин сбрасывает resource cache при запросе с `msr_*`. Отфильтрованный HTML в кэш не попадает. Если установлен **imageoptimizer**, плагин обходит его HTML-кэш.
 
 Без плагина chip-фильтры [msReviewsFilters](snippets/msReviewsFilters) на проде могут не менять список. Подробнее: [Интеграция — фильтры](integration#фильтры-списка-отзывов).
 
