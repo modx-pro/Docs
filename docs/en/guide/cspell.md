@@ -33,7 +33,7 @@ Config file: **`cspell.json`** in the project root.
 
 - **`language`** — `"en,en-GB,ru"`: use Russian and English dictionaries (US and British spelling).
 - **`words`** — list of extra “correct” words: technical terms (MODX, miniShop2, Fenom), component and snippet names, domains (modstore, modx.pro), etc. These are not reported as errors.
-- **`ignoreRegExpList`** — code is not checked: code blocks and anything in `backticks`. Format snippet, parameter and variable names as code, and they don't need dictionary entries.
+- **`ignoreRegExpList`** — code (code blocks and anything in `backticks`) and addresses (Markdown link targets and `link:` in frontmatter) are not checked. Format snippet, parameter and variable names as code, and they don't need dictionary entries.
 - **`ignorePaths`** — paths cspell skips: `**/parts/**`, lock files, `node_modules`, `plop-templates`.
 
 This reduces false positives on package names, tags, and paths.
