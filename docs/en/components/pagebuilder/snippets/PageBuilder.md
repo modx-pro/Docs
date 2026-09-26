@@ -92,7 +92,7 @@ With `return_values=1`, event `pbOnGetValues` runs. CSS and `pb-page` wrapper ar
 
 With `load_css=1`, the snippet registers frontend CSS (see [Design system](../design-system)). Pro and commerce bundles load when capability `pro` is active.
 
-Disable globally: `pagebuilder_load_frontend_css = 0`. Per call: `&load_css=`0``.
+Disable globally: `pagebuilder_load_frontend_css = 0`. Per call: `` &load_css=`0` ``.
 
 ## HTML cache
 

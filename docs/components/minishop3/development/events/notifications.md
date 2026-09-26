@@ -190,14 +190,14 @@ switch ($modx->event->name) {
 
 Резолвленные `email`/`phone` дополнительно зеркалятся в `recipient['customer']['email']`/`['phone']` для плагинов, читающих контакт оттуда.
 
-| Ключ | Тип | Источник | Описание | |
-| --- | --- | --- | --- | --- |
-| `type` | `string` | — | `customer` или `manager` (дублирует `recipientType`) | |
-| `email` | `string\ | null` | address → customer → profile | Резолвленный email получателя |
-| `phone` | `string\ | null` | address → customer → profile | Резолвленный телефон |
-| `telegram_chat_id` | `string\ | null` | `customer.extended` → profile | ID чата Telegram, если задан |
-| `address` | `array` | `msOrderAddress->toArray()` | Полный адрес заказа (доступен только для customer-получателя) | |
-| `customer` | `array` | `msCustomer->toArray()` | Объект клиента (доступен только для customer-получателя); поля `email`/`phone` уже синхронизированы с резолвленными значениями | |
+| Ключ | Тип | Источник | Описание |
+| --- | --- | --- | --- |
+| `type` | `string` | — | `customer` или `manager` (дублирует `recipientType`) |
+| `email` | `string \| null` | address → customer → profile | Резолвленный email получателя |
+| `phone` | `string \| null` | address → customer → profile | Резолвленный телефон |
+| `telegram_chat_id` | `string \| null` | `customer.extended` → profile | ID чата Telegram, если задан |
+| `address` | `array` | `msOrderAddress->toArray()` | Полный адрес заказа (доступен только для customer-получателя) |
+| `customer` | `array` | `msCustomer->toArray()` | Объект клиента (доступен только для customer-получателя); поля `email`/`phone` уже синхронизированы с резолвленными значениями |
 
 :::tip Зачем разделять адрес и клиента
 До 1.12.0 уведомления слались по контактам из `msCustomer`, которые могли отличаться от контактов конкретного заказа (например, если в одной сессии оформили два заказа с разными email — оба уходили на email из msCustomer).

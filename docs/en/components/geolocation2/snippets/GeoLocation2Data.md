@@ -69,6 +69,6 @@ Extra placeholders: `default_label`, `default_pill_class`, `image_display`, `pro
 
 With `forCurrent=1`, default `liveUpdate=1` wraps output in `[data-gl2-data-live]`. After city change, `modal.js` calls `GET action=data` and replaces HTML.
 
-Disable: `&liveUpdate=`0``.
+Disable: `` &liveUpdate=`0` ``.
 
 See [Web API → action=data](../api-action), [GeoLocation2Modal](GeoLocation2Modal).

@@ -42,7 +42,8 @@ title: ms3FavoritesPage
 | Имя | Описание |
 |-----|----------|
 | `[[+ms3f.total]]` | Устанавливается через `$modx->setPlaceholder` — суммарное число элементов по табам `default` + `gifts` + `plans` (для вывода вне чанка страницы) |
-| **В чанк `tpl` передаются:** `itemTpl`, `emptyTpl`, `list`, `resource_type`, `extendedToolbar`, **`tabCounts`**, **`useServerProductList`**, **`serverListIdsStr`** и др. (см. чанк `tplFavoritesPage`) |
+
+**В чанк `tpl` передаются:** `itemTpl`, `emptyTpl`, `list`, `resource_type`, `extendedToolbar`, **`tabCounts`**, **`useServerProductList`**, **`serverListIdsStr`** и др. (см. чанк `tplFavoritesPage`)
 
 В Fenom-чанке используются, например, `{$tabCounts.default}`, `{$list}`, `{$resource_type}`.
 

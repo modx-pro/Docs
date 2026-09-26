@@ -9,7 +9,7 @@ description: CSS variables, BEM, partial chunks и Fenom-оболочка сек
 
 ## Подключение CSS и JS
 
-Сниппет [PageBuilder](snippets/PageBuilder) вызывает `pbRegisterFrontendAssets()` при `pagebuilder_load_frontend_css = 1` (или `&load_css=`1``). Файлы регистрируются через `regClientCSS` с query `?v=` по версии файла.
+Сниппет [PageBuilder](snippets/PageBuilder) вызывает `pbRegisterFrontendAssets()` при `pagebuilder_load_frontend_css = 1` (или `` &load_css=`1` ``). Файлы регистрируются через `regClientCSS` с query `?v=` по версии файла.
 
 | Параметр / настройка | По умолчанию | Что делает |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ description: CSS variables, BEM, partial chunks и Fenom-оболочка сек
 | `load_css` | из настройки | Переопределяет подключение на одном вызове |
 | `wrap_page` | как `load_css` | Оборачивает HTML в `<div class="pb-page">` |
 
-Отключить стили на странице: `[[!PageBuilder? &load_css=`0`]]`. Обёртку можно оставить: `&wrap_page=`1`` при `load_css=0`, если токены задаёте сами.
+Отключить стили на странице: `` [[!PageBuilder? &load_css=`0`]] ``. Обёртку можно оставить: `` &wrap_page=`1` `` при `load_css=0`, если токены задаёте сами.
 
 Вместе с CSS подключается `pagebuilder-sections.js` (если файл есть в составе дополнения). Скрипт инициализирует карусели (`data-pb-carousel`) и вкладки (`data-pb-tabs`) внутри `.pb-page`.
 
@@ -32,7 +32,7 @@ description: CSS variables, BEM, partial chunks и Fenom-оболочка сек
 | `pagebuilder-sections.css` | Всегда при `load_css=1` |
 | `pagebuilder-sections-pro.css` | При флаге `pro` |
 | `pagebuilder-commerce.css` | При флаге `pro` (product-card, spotlight, promo) |
-| `pagebuilder-qa.css` | Если на странице есть QA-секции или `&qa_css=`1`` |
+| `pagebuilder-qa.css` | Если на странице есть QA-секции или `` &qa_css=`1` `` |
 
 Pro и commerce CSS не подключаются на Free-сборке, даже если chunk секции лежит в теме.
 

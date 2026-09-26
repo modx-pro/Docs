@@ -51,13 +51,13 @@ Some languages require declension by case:
 
 | Modifier | Case | Example |
 |-------------|-------|--------|
-| `|nominative` | Nominative | `{$filters.vendor|nominative}` |
-| `|genitive` | Genitive | `{$filters.vendor|genitive}` |
-| `|dative` | Dative | `{$filters.vendor|dative}` |
-| `|accusative` | Accusative | `{$filters.vendor|accusative}` |
-| `|instrumental` | Instrumental | `{$filters.vendor|instrumental}` |
-| `|prepositional` | Prepositional | `{$filters.vendor|prepositional}` |
-| `|plural` | Plural | `{$filters.vendor|plural}` |
+| `\|nominative` | Nominative | `{$filters.vendor\|nominative}` |
+| `\|genitive` | Genitive | `{$filters.vendor\|genitive}` |
+| `\|dative` | Dative | `{$filters.vendor\|dative}` |
+| `\|accusative` | Accusative | `{$filters.vendor\|accusative}` |
+| `\|instrumental` | Instrumental | `{$filters.vendor\|instrumental}` |
+| `\|prepositional` | Prepositional | `{$filters.vendor\|prepositional}` |
+| `\|plural` | Plural | `{$filters.vendor\|plural}` |
 
 ### Examples
 

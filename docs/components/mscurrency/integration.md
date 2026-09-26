@@ -62,7 +62,7 @@ description: Переключатель, цены, корзина, заказ, �
 |-----------------|-----|
 | `tpl.msCurrency` (по умолчанию) | Ссылки `a[data-msc-currency]` |
 | `tpl.msCurrencySelect` | Выпадающий список `<select class="msc-currency-select">` |
-| `tpl.msCurrencyCompact` или `&compact=`1`` | Компактный вид: код ↔ символ, кнопка `data-msc-display-toggle`, состояние в `sessionStorage` |
+| `tpl.msCurrencyCompact` или `` &compact=`1` `` | Компактный вид: код ↔ символ, кнопка `data-msc-display-toggle`, состояние в `sessionStorage` |
 
 ::: code-group
 
@@ -231,7 +231,7 @@ description: Переключатель, цены, корзина, заказ, �
 
 | Было | msCurrency |
 |------|------------|
-| Сниппет цены с `&price=` | `[[!msCurrencyPrice? &price=`…` &format=`1`]]` / `{'!msCurrencyPrice' \| snippet : ['price' => …, 'format' => 1]}` |
+| Сниппет цены с `&price=` | `` [[!msCurrencyPrice? &price=`…` &format=`1`]] `` / `{'!msCurrencyPrice' \| snippet : ['price' => …, 'format' => 1]}` |
 | `[[!+msmc.symbol_right]]` | `[[!+msc.symbol_right]]` или дубль `[[!+msmc.symbol_right]]` |
 
 При `format=1` сниппет уже форматирует число по MS3. **Не добавляйте** `symbol_right` после вывода — символ может продублироваться. Если символы ставите вручную, используйте `format=0` и `msc.symbol_left` / `msc.symbol_right`.

@@ -24,20 +24,20 @@ description: Обзор сниппетов msCurrency для витрины Mini
 
 | Назначение | MODX | Fenom |
 |------------|------|-------|
-| Переключатель (select) | `[[!msCurrency? &tpl=`tpl.msCurrencySelect`]]` | `{'!msCurrency' \| snippet : ['tpl' => 'tpl.msCurrencySelect']}` |
-| Переключатель (компакт) | `[[!msCurrency? &compact=`1`]]` | `{'!msCurrency' \| snippet : ['compact' => 1]}` |
-| Переключатель (ссылки) | `[[!msCurrency? &tpl=`tpl.msCurrency`]]` | `{'!msCurrency' \| snippet : ['tpl' => 'tpl.msCurrency']}` |
-| Цена | `[[!msCurrencyPrice? &price=`100`]]` | `{'!msCurrencyPrice' \| snippet : ['price' => 100]}` |
-| Цена + товар | `[[!msCurrencyPrice? &pid=`123`]]` | `{'!msCurrencyPrice' \| snippet : ['pid' => 123]}` |
+| Переключатель (select) | `` [[!msCurrency? &tpl=`tpl.msCurrencySelect`]] `` | `{'!msCurrency' \| snippet : ['tpl' => 'tpl.msCurrencySelect']}` |
+| Переключатель (компакт) | `` [[!msCurrency? &compact=`1`]] `` | `{'!msCurrency' \| snippet : ['compact' => 1]}` |
+| Переключатель (ссылки) | `` [[!msCurrency? &tpl=`tpl.msCurrency`]] `` | `{'!msCurrency' \| snippet : ['tpl' => 'tpl.msCurrency']}` |
+| Цена | `` [[!msCurrencyPrice? &price=`100`]] `` | `{'!msCurrencyPrice' \| snippet : ['price' => 100]}` |
+| Цена + товар | `` [[!msCurrencyPrice? &pid=`123`]] `` | `{'!msCurrencyPrice' \| snippet : ['pid' => 123]}` |
 | Код валюты | `[[!+msc.code]]` | `{$_modx->getPlaceholder('msc.code')}` |
 | Курс | `[[!+msc.val]]` | `{$_modx->getPlaceholder('msc.val')}` |
 | Символы | `[[!+msc.symbol_left]]` / `[[!+msc.symbol_right]]` | `{$_modx->getPlaceholder('msc.symbol_left')}` |
-| Корзина | `[[!msCurrencyCart? &tpl=`tpl.cart`]]` | `{'!msCurrencyCart' \| snippet : ['tpl' => 'tpl.cart']}` |
+| Корзина | `` [[!msCurrencyCart? &tpl=`tpl.cart`]] `` | `{'!msCurrencyCart' \| snippet : ['tpl' => 'tpl.cart']}` |
 | Код в чанке корзины | `[[+currency]]` | `{$currency}` |
 | Цена в строке корзины | `[[+price_formatted]]` | `{$product.price_formatted}` |
 | Старая цена в корзине | `[[+old_price_formatted]]` | `{$product.old_price_formatted}` |
 | Заказ | `[[!msCurrencyGetOrder]]` | `{'!msCurrencyGetOrder' \| snippet}` |
-| Список валют | `[[!msCurrencyPrices? &tpl=`tpl.msCurrencyPrices`]]` | `{'!msCurrencyPrices' \| snippet : ['tpl' => 'tpl.msCurrencyPrices']}` |
+| Список валют | `` [[!msCurrencyPrices? &tpl=`tpl.msCurrencyPrices`]] `` | `{'!msCurrencyPrices' \| snippet : ['tpl' => 'tpl.msCurrencyPrices']}` |
 | Лексикон JS | `[[!mscLexiconScript]]` | `{'!mscLexiconScript' \| snippet}` |
 | Отладка `msc.*` | `[[!msCurrency? &tpl=``]]` | `{'!msCurrency' \| snippet : ['tpl' => '']}` |
 

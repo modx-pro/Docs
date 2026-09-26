@@ -9,7 +9,7 @@ Section styles on the site are separate from PrimeVue in the manager. Chunks ren
 
 ## Loading CSS and JS
 
-The [PageBuilder](snippets/PageBuilder) snippet calls `pbRegisterFrontendAssets()` when `pagebuilder_load_frontend_css = 1` (or `&load_css=`1``). Files are registered via `regClientCSS` with a `?v=` asset version query.
+The [PageBuilder](snippets/PageBuilder) snippet calls `pbRegisterFrontendAssets()` when `pagebuilder_load_frontend_css = 1` (or `` &load_css=`1` ``). Files are registered via `regClientCSS` with a `?v=` asset version query.
 
 | Parameter / setting | Default | Effect |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ The [PageBuilder](snippets/PageBuilder) snippet calls `pbRegisterFrontendAssets(
 | `load_css` | from setting | Overrides loading on a single call |
 | `wrap_page` | same as `load_css` | Wraps HTML in `<div class="pb-page">` |
 
-Disable styles on one page: `[[!PageBuilder? &load_css=`0`]]`. Keep the wrapper with `&wrap_page=`1`` and `load_css=0` if you set tokens yourself.
+Disable styles on one page: `` [[!PageBuilder? &load_css=`0`]] ``. Keep the wrapper with `` &wrap_page=`1` `` and `load_css=0` if you set tokens yourself.
 
 `pagebuilder-sections.js` loads with CSS when the file is shipped with the extra. It initializes carousels (`data-pb-carousel`) and tabs (`data-pb-tabs`) inside `.pb-page`.
 
