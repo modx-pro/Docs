@@ -7,7 +7,7 @@ description: Событие OnMxHeadlessRegister и ExtensionApi mxHeadless
 
 Сторонние Extras регистрируют объекты без правок core. Точка входа: событие **`OnMxHeadlessRegister`**.
 
-## Event hook
+## Событие
 
 ```php
 <?php
@@ -29,15 +29,15 @@ switch ($modx->event->name) {
 }
 ```
 
-После listeners registry замораживается. Поздняя регистрация выбрасывает `RegistryFrozenException`.
+После обработчиков реестр замораживается. Поздняя регистрация выбрасывает `RegistryFrozenException`.
 
 ## Методы ExtensionApi
 
 | Метод | Назначение |
 | --- | --- |
-| `registerObject(ObjectDefinition)` | xPDO-класс под public name |
+| `registerObject(ObjectDefinition)` | xPDO-класс под публичным именем |
 | `registerRelation(string $object, RelationDefinition)` | Связь для `include=` |
-| `registerEndpoint(...)` | Custom route с handler |
+| `registerEndpoint(...)` | Свой маршрут с обработчиком |
 
 ## ObjectDefinition
 
@@ -55,7 +55,16 @@ ObjectDefinition::create('locations')
     ->contexts(['web']);
 ```
 
-Флаги: `readable`, `creatable`, `updatable`, `deletable`, `hiddenFields`, `protectedFields`, `contexts`.
+Флаги: `readable`, `creatable`, `updatable`, `deletable`, `hiddenFields`, `protectedFields`, `immutableFields`, `requiredFields`, `searchable`, `primaryKey`, `contexts`.
+
+## События цепочки
+
+| Событие | Когда |
+| --- | --- |
+| `OnMxHeadlessRegister` | Регистрация objects, relations, endpoints |
+| `OnMxHeadlessRegisterMiddleware` | До freeze стека. `registrar`: `prepend` / `append` |
+| `OnMxHeadlessBeforeRequest` | После auth, до handler. Можно подменить `request` через `$modx->event->returned` |
+| `OnMxHeadlessAfterRequest` | После handler. Можно подменить `response` |
 
 ## Дальше
 

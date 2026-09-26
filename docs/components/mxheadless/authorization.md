@@ -14,16 +14,27 @@ description: Полный список scopes, MODX ACL и field policy в mxHea
 
 Нет нужного scope у API key / OAuth → `403` `scope_denied`.
 
+```mermaid
+flowchart TD
+  R[Запрос с identity] --> P{Маршрут public?}
+  P -->|нет, нет identity| E401[401 token_required]
+  P --> S{Scope key или token}
+  S -->|нет| E403[403 scope_denied]
+  S --> ACL[MODX ACL контекст ресурс]
+  ACL --> F[Field policy]
+  F --> OK[Обработчик]
+```
+
 ## Как проверяются scopes
 
-| Identity | Проверка |
+| Тип | Проверка |
 | --- | --- |
 | API key (`mxh_*`) | Список scopes ключа. Есть `*` → все действия |
 | OAuth (`mxt_*`) | Scopes токена (пересечение с scopes клиента) |
 | Session | `modX->hasPermission()` с той же строкой (`resources.read` и т.д.) |
 | Anonymous | Только public GET. Scopes не задают |
 
-Для интеграций обычно хватает API key. Session удобна для mgr / same-origin UI с CSRF.
+Для интеграций обычно хватает API key. Сессия удобна для mgr и UI на том же origin с CSRF.
 
 ## Core scopes (фиксированные маршруты)
 
@@ -47,7 +58,7 @@ Meta-маршруты (`/`, `/health`, `/schema`, `/docs`, `/meta/*`) и `POST /
 
 ## Scopes для `/objects/{name}`
 
-Паттерн из кода: `{name}.{action}`, где `{name}` — имя в registry, не PHP-класс и не префикс `objects.`.
+Шаблон из кода: `{name}.{action}`, где `{name}` — имя в registry, не PHP-класс и не префикс `objects.`.
 
 | Scope | Method | Path |
 | --- | --- | --- |
@@ -61,11 +72,11 @@ Meta-маршруты (`/`, `/health`, `/schema`, `/docs`, `/meta/*`) и `POST /
 | Scope | Смысл |
 | --- | --- |
 | `products.read` | Каталог товаров |
-| `categories.read` | Категории |
+| `ms_categories.read` | Категории товаров MS3. Core `categories.read` — элементы `modCategory` |
 | `orders.read` | Заказы (обычно не public, плюс ACL) |
 | `orders.update` | Обновление заказа, если object writable |
 
-Список зарегистрированных имён: `GET /schema` или `GET /meta/endpoints` на живом сайте.
+Список зарегистрированных имён: `GET /schema` или `GET /meta/endpoints` на этом сайте.
 
 ## Пример набора для ключа
 
@@ -80,7 +91,7 @@ resources.read,preview,chunks.read,templates.read
 Каталог MS3 + CMS:
 
 ```text
-resources.read,products.read,categories.read
+resources.read,products.read,ms_categories.read
 ```
 
 Admin API (узко, без `*`):
@@ -95,13 +106,13 @@ resources.read,resources.create,resources.update,orders.read
 
 Anonymous может читать discovery, health, schema, docs, meta, `GET /resources` и `GET /pages/{uri}` в рамках ACL опубликованных ресурсов.
 
-Элементы, контексты, write-операции и `/objects/*` требуют credentials.
+Элементы, контексты, операции записи и `/objects/*` требуют учётных данных.
 
 ## Контекст
 
-Bootstrap: `mxheadless_context` (default `web`) задаёт контекст при инициализации MODX в gateway и `api.php`. Значение `mgr` игнорируется.
+Контекст запуска: `mxheadless_context` (по умолчанию `web`) задаёт контекст при инициализации MODX в шлюзе и `api.php`. Значение `mgr` игнорируется.
 
-В запросе: заголовок `X-Context` или query `?context=`. Значение должно входить в `mxheadless_allowed_contexts` (default `web,mgr`). Иначе `422 Invalid context`.
+В запросе: заголовок `X-Context` или query `?context=`. Значение должно входить в `mxheadless_allowed_contexts` (по умолчанию `web,mgr`). Иначе `422 Invalid context`.
 
 Мутации по id находят строку в любом контексте, затем проверяют доступ `context.{key}` / `context_{key}`. Запись `context_key` на неизвестный или незагружаемый контекст даёт `422`, не `500`.
 

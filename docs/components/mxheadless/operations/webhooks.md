@@ -7,6 +7,14 @@ description: Подписки, worker и доставка событий mxHeadl
 
 После create/update/delete mxHeadless ставит события в outbox. Доставка идёт через CLI worker.
 
+```mermaid
+flowchart LR
+  API[Мутация API] --> OB[Outbox]
+  OB --> W[webhook-worker.php]
+  W --> POST[POST JSON подписчику]
+  POST -->|повтор| W
+```
+
 ## События core
 
 `resources.created`, `resources.updated`, `resources.deleted` и аналоги `{name}.*` для generic objects.
@@ -20,6 +28,8 @@ php core/components/mxheadless/bin/webhook-subscribe.php \
   --events=resources.created,resources.updated,resources.deleted \
   --secret=YOUR_HMAC_SECRET
 ```
+
+Без `--events=` подписка получает три события `resources.*`. Пустой `--events=` даёт `*`.
 
 Таблицы: `mxheadless_webhook_subscriptions`, `mxheadless_webhook_deliveries`.
 
@@ -43,11 +53,11 @@ POST JSON на URL подписчика:
 | `X-MxHeadless-Delivery-Id` | id доставки |
 | `X-MxHeadless-Signature` | `sha256=...` при secret |
 
-Retries: exponential backoff, max `mxheadless_webhook_max_attempts` (5) → `failed`.
+Повторы: пауза растёт экспоненциально, не больше `mxheadless_webhook_max_attempts` (5), затем `failed`.
 
 ## SSRF
 
-По умолчанию блокируются localhost, private IP, `.local`/`.test`. Dev-override: `mxheadless_webhook_allow_private_urls=true` (ослабляет и TLS verify).
+По умолчанию блокируются localhost, private IP, `.local`/`.test`. Для разработки: `mxheadless_webhook_allow_private_urls=true` (ослабляет и проверку TLS).
 
 ## Payload (v1)
 

@@ -5,7 +5,7 @@ description: Write API and Idempotency-Key in mxHeadless
 
 # Mutations
 
-`POST`, `PUT`, `PATCH`, `DELETE` on resources and objects require identity and write scopes.
+`POST`, `PUT`, `PATCH`, `DELETE` on resources and objects require credentials and write scopes.
 
 ## Body
 
@@ -29,7 +29,7 @@ When `mxheadless_idempotency_enabled=true` (default), on POST you can send:
 Idempotency-Key: <unique-string>
 ```
 
-A repeat with the same key and body returns the stored response (header `Idempotency-Replayed`). Different body or concurrent request → `409` `idempotency_conflict`.
+Key: 1–128 characters `A-Za-z0-9._:-`. A repeat with the same key and body returns the stored response (header `Idempotency-Replayed`). Different body or concurrent request → `409` `idempotency_conflict`.
 
 TTL: `mxheadless_idempotency_ttl` (86400 s).
 

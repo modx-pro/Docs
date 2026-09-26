@@ -7,7 +7,7 @@ description: CRUD ресурсов MODX и выборка страницы по 
 
 ## Resources
 
-| Method | Path | Public read | Scope |
+| Метод | Path | Публичное чтение | Scope |
 | --- | --- | --- | --- |
 | GET | `/resources` | да | `resources.read` |
 | GET | `/resources/{id}` | да | `resources.read` |
@@ -19,15 +19,24 @@ description: CRUD ресурсов MODX и выборка страницы по 
 curl -s 'https://example.com/api/v1/resources?limit=5&filter[published]=1&fields=id,pagetitle,uri'
 ```
 
-Удаление по умолчанию soft delete. `?force=1` делает permanent delete. Restore: PATCH `deleted: 0` с `?include_deleted=1` и правами.
+Удаление по умолчанию мягкое. `?force=1` удаляет окончательно. Восстановление: PATCH `deleted: 0` с `?include_deleted=1` и правами.
 
 ## Pages
 
-| Method | Path | Public read | Scope |
+| Метод | Path | Публичное чтение | Scope |
 | --- | --- | --- | --- |
 | GET | `/pages/{uri}` | да | `resources.read` |
 
-`uri`: путь ресурса в контексте. Контекст задаётся через `X-Context` или `?context=` из `allowed_contexts`.
+`{uri}` — путь без ведущего `/`. Слэши в path не кодируйте целиком через `encodeURIComponent`. Сегменты можно кодировать по отдельности. Кодирование `%XX` снимается.
+
+| Запрос | Кандидаты URI |
+| --- | --- |
+| `/pages/about` | `about`, `about.html`, `about/` |
+| `/pages/about.html` | `about.html`, `about` |
+| `/pages/blog/post` | `blog/post`, `blog/post.html`, `blog/post/` |
+| `/pages/index` | `index.html`, `index`, `` |
+
+В `meta`: `uri` (как в запросе), `resolved_uri` (совпавший URI MODX), `context`.
 
 ```bash
 curl -s 'https://example.com/api/v1/pages/about' \
@@ -36,10 +45,10 @@ curl -s 'https://example.com/api/v1/pages/about' \
 
 ## Query
 
-Стандартные параметры: [Запросы](querying): `filter`, `sort`, `fields`, `limit`/`offset`/`page`, `include`.
+Параметры: [Запросы](querying): `filter`, `sort`, `fields`, `limit`/`offset`/`page`, `include`.
 
 ## TV, media и связи
 
-TV доступны как поля resource definition (если зарегистрированы). Связи через `include=` при наличии relation в registry. Подробности в live `/schema` и OpenAPI.
+Значения TV на ресурсе: `?tv_fields=name1,name2` или `include=tvs` (без списка — все TV). Определения TV: `GET /tvs`, не поля `resources`. Связи ресурса: `include=parent,children`. Подробности в `/schema`.
 
 Пути к файлам в полях ресурсов превращаются в абсолютные URL через media sources MODX (`MediaUrlResolver`). Относительные пути собираются через `site_url` и активный контекст. Значения с `http://` или `https://` не меняются.

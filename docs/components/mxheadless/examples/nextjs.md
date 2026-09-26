@@ -5,9 +5,9 @@ description: App Router Next.js и mxHeadless server fetch
 
 # Next.js
 
-App Router: server helper, страница по URI, Route Handler proxy.
+Страница по URI, серверная обёртка и Route Handler.
 
-## Env
+## Переменные среды
 
 `.env.local`:
 
@@ -18,7 +18,7 @@ MXHEADLESS_API_KEY=mxh_...
 
 Ключ только в Server Components, Route Handlers или модулях с `server-only`.
 
-## Server helper
+## Серверная обёртка
 
 `lib/mxheadless.ts`:
 
@@ -80,7 +80,7 @@ export default async function CmsPage({ params }: Props) {
 
   let page
   try {
-    page = await mxGet<Record<string, unknown>>(`/pages/${encodeURIComponent(uri)}`, {
+    page = await mxGet<Record<string, unknown>>(`/pages/${uri}`, {
       fields: 'id,pagetitle,content,uri',
     })
   } catch {

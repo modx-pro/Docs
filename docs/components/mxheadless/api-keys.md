@@ -5,7 +5,7 @@ description: Создание и использование ключей mxh_ в
 
 # API keys
 
-Ключи `mxh_*` для CI, статических сборок и server-to-server интеграций.
+Ключи `mxh_*` для CI, статических сборок и вызовов сервер к серверу.
 
 ## Формат
 
@@ -15,12 +15,13 @@ mxh_{lookupId}_{secret}
 
 - `lookupId`: публичный id в таблице `{prefix}mxheadless_api_keys`
 - `secret` показывают один раз при создании
+- пустые scopes в CLI и Manager означают `*` (все scopes)
 
-Per-key rate limits: колонки `rate_limit_max`, `rate_limit_window`.
+Лимиты на ключ: колонки `rate_limit_max`, `rate_limit_window`.
 
 ## Manager
 
-Нужно право **`mxheadless_apikeys`** (по умолчанию у Administrator). Меню **Компоненты → mxHeadless**: создать ключ, задать name и scopes, отозвать.
+Нужно право **`mxheadless_apikeys`** (по умолчанию у Administrator). Меню **Компоненты → mxHeadless**: создать ключ, задать `name` и scopes, отозвать.
 
 ## CLI
 
@@ -32,7 +33,7 @@ php core/components/mxheadless/bin/api-key-create.php \
   --rate-limit-window=60
 ```
 
-Скрипт печатает полный ключ один раз. Сохраните его в secret store.
+Скрипт печатает полный ключ один раз. Сохраните его в хранилище секретов.
 
 ## Запрос
 
@@ -52,9 +53,7 @@ CSRF для API key не нужен.
 
 Список через запятую при создании. Примеры: `resources.read`, `resources.create`, `orders.read`, `*`.
 
-Полный перечень: [Авторизация](authorization).
-
-Пустой набор scopes обычно бесполезен для защищённых маршрутов. См. [Авторизация](authorization).
+Без `--scopes=` ключ получает `*`. Явно пустой список в Manager тоже даёт все scopes. Полный перечень: [Авторизация](authorization).
 
 ## Ротация
 
