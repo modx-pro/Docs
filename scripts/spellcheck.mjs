@@ -62,6 +62,10 @@ if (shortFlag) {
 if (changedOnly && pathArgs.length) {
   fail('--changed takes no paths: it checks the files changed against the base branch.')
 }
+const reporter = cspellFlags.find((a) => /^--(reporter|no-summary|no-issues)\b/.test(a))
+if (changedOnly && reporter) {
+  fail(`${reporter} can't be used with --changed: its issues and summary are parsed from the default output.`)
+}
 
 function pathFiles() {
   const patterns = pathArgs.map((p) => {
@@ -102,29 +106,54 @@ function projectWords() {
   return [...words].sort()
 }
 
-/** cspell prints issues as `file:line:col - Unknown word (...)`; keep those on changed lines. */
-function reportChangedLines(output, lines, fileCount) {
+/**
+ * cspell prints issues to stdout as `file:line:col - Unknown word (...)` and the summary
+ * (`CSpell: Files checked: N, Issues found: M in K files[ with E errors]`) to stderr.
+ * Keeps issues on changed lines; returns 1 on such issues or when the run can't be trusted:
+ * cspell exits 1 on its own failures too (bad option, broken import), so the summary is required,
+ * must show no errors and must match the number of issues parsed.
+ */
+function reportChangedLines(stdout, stderr, lines, fileCount) {
+  const summary = stderr.match(/CSpell: Files checked: (\d+), Issues found: (\d+) in \d+ files?(?: with (\d+) errors?)?/)
+  for (const row of stderr.split(/\r?\n/)) {
+    if (row.trim() && !row.startsWith('CSpell:')) console.error(row)
+  }
+  if (!summary) {
+    console.error('cspell did not report a summary: it failed before checking the files.')
+    return 1
+  }
+  if (Number(summary[3] ?? 0) > 0) {
+    console.error(summary[0])
+    console.error('cspell reported errors: the check is not reliable.')
+    return 1
+  }
+
   let kept = 0
-  let ignored = 0
+  let parsed = 0
   const files = new Set()
-  for (const row of output.split(/\r?\n/)) {
-    const issue = row.match(/^(.+?):(\d+):\d+ - /)
+  for (const row of stdout.split(/\r?\n/)) {
+    const issue = row.match(/^(.+?):(\d+):\d+\s+- /)
     if (!issue) {
-      if (row.trim() && !row.startsWith('CSpell:')) console.log(row)
+      if (row.trim()) console.log(row)
       continue
     }
+    parsed++
     const file = relative(ROOT, resolve(ROOT, issue[1])).replace(/\\/g, '/')
     if (lines.get(file)?.has(Number(issue[2]))) {
       console.log(row)
       kept++
       files.add(file)
-    } else {
-      ignored++
     }
   }
+  if (parsed !== Number(summary[2])) {
+    console.error(summary[0])
+    console.error(`Parsed ${parsed} of ${summary[2]} cspell issues: output format not recognised.`)
+    return 1
+  }
+  const ignored = parsed - kept
   const note = ignored ? ` (${ignored} on unchanged lines not counted)` : ''
   console.log(`Checked ${fileCount} files, changed lines: ${kept} issues in ${files.size} files${note}.`)
-  return kept
+  return kept ? 1 : 0
 }
 
 let targets = ['docs/**/*.md']
@@ -169,18 +198,21 @@ try {
 
   const result = spawnSync(
     process.execPath,
-    [CSPELL, '--no-progress', ...(lines ? ['--no-summary'] : []), '--config', config, ...cspellFlags, ...fileArgs],
-    { cwd: ROOT, stdio: ['inherit', lines ? 'pipe' : 'inherit', 'inherit'], encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }
+    [CSPELL, '--no-progress', ...(lines ? ['--no-color'] : []), '--config', config, ...cspellFlags, ...fileArgs],
+    { cwd: ROOT, stdio: lines ? ['inherit', 'pipe', 'pipe'] : 'inherit', encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }
   )
   if (result.error) {
     console.error('Failed to run cspell:', result.error.message)
   } else if (result.status === null) {
     console.error('cspell was terminated by signal', result.signal)
   } else if (lines && result.status <= 1) {
-    // 1 means "issues found": decide by the issues on changed lines only
-    status = reportChangedLines(result.stdout, lines, targets.length) ? 1 : 0
+    // 1 is both "issues found" and a failure of cspell itself: the summary tells them apart
+    status = reportChangedLines(result.stdout, result.stderr, lines, targets.length)
   } else {
-    if (lines) process.stdout.write(result.stdout)
+    if (lines) {
+      process.stdout.write(result.stdout)
+      process.stderr.write(result.stderr)
+    }
     status = result.status
   }
 } finally {
