@@ -13,7 +13,6 @@
   "/en/components/minishop2/interface/item":  "/en/components/minishop2/interface/product",
   "/en/components/minishop2/interface/order": "/en/components/minishop2/interface/orders",
   "/en/components/minishop2/quickstart":      "/en/components/minishop2/quick-start",
-  "/en/components/minishop2/snippets":        "/en/components/minishop2/snippets/",
 
   "/en/components/ms2gallery/examples":          "/en/components/ms2gallery/",
   "/en/components/ms2gallery/snippets":          "/en/components/ms2gallery/",
@@ -46,12 +45,10 @@
 
   "/en/components/pdotools/quick-start":      "/en/components/pdotools/",
   "/en/components/pdotools/snippets":         "/en/components/pdotools/",
-  "/en/components/pdotools/classes":          "/en/components/pdotools/classes/",
-  "/en/components/pdotools/classes/pdotools": "/en/components/pdotools/classes/pdotools",
   "/en/components/pdotools/general-settings": "/en/components/pdotools/general-properties",
 
   "/en/components/sendex/interface":             "/en/components/sendex/",
-  "/en/components/sendex/snippet":               "/en/components/sendex/",
+  "/en/components/sendex/snippet":               "/en/components/sendex/snippets/sendex",
   "/en/components/sendex/interface/email-queue": "/en/components/sendex/interface/queue",
 
   "/en/components/staticsaver/plugin": "/en/components/staticsaver",
@@ -61,7 +58,7 @@
   "/en/components/tickets/interface/user-rights-settings": "/en/components/tickets/interface/setup-permissions",
 
   "/faq/tinymce-rich-text-editor":                    "/faq/",
-  "/faq/ace":                                         "/faq/",
+  "/faq/ace":                                         "/faq/ace/modx-ace-material-theme",
   "/faq/tinymce-rich-text-editor/add-custom-buttons": "/faq/tinymce-rte/add-custom-buttons",
 
   "/komponentyi": "/components/",
@@ -91,14 +88,6 @@
   "/komponentyi/ajaxformitlogin/xuki/ajaxidentification":                         "/components/ajaxformitlogin/hooks/ajaxidentification",
 
   "/komponentyi/ajaxsnippet": "/components/ajaxsnippet",
-
-  "/komponentyi/amocrm":                                "/components/amocrm/",
-  "/komponentyi/amocrm/vozmozhnosti-i-byistryij-start": "/components/amocrm/",
-  "/komponentyi/amocrm/otpravka-dannyix-iz-form":       "/components/amocrm/submitting-forms",
-  "/komponentyi/amocrm/rasprostranennyie-oshibki":      "/components/amocrm/common-mistakes",
-  "/komponentyi/amocrm/sobyitiya":                      "/components/amocrm/events",
-  "/komponentyi/amocrm/ustanovka-i-nastrojka":          "/components/amocrm/setup",
-  "/komponentyi/amocrm/webhook":                        "/components/amocrm/webhook",
 
   "/komponentyi/autoredirector":        "/components/autoredirector",
   "/komponentyi/autoredirector/readme": "/components/autoredirector",
@@ -215,8 +204,6 @@
   "/komponentyi/hybridauth/snippetyi/haprofile":       "/components/hybridauth/snippets/haprofile",
   "/komponentyi/hybridauth/snippetyi/hybridauth":      "/components/hybridauth/snippets/hybridauth",
 
-  "/komponentyi/ideas": "/components/ideas",
-
   "/komponentyi/localizator":                              "/components/localizator/",
   "/komponentyi/localizator/obshhee-opisanie-i-nastrojka": "/components/localizator/",
   "/komponentyi/localizator/atribut-hreflang":             "/components/localizator/hreflang-attribute",
@@ -246,11 +233,11 @@
   "/komponentyi/migxpageconfigurator/nachalo-rabotyi":                  "/components/migxpageconfigurator/setup",
   "/komponentyi/migxpageconfigurator/pered-nachalom-rabotyi":           "/components/migxpageconfigurator/setup",
   "/komponentyi/migxpageconfigurator/rabota-s-chankami":                "/components/migxpageconfigurator/chunks",
-  "/komponentyi/migxpageconfigurator/rabota-s-formami":                 "/components/migxpageconfigurator/forms",
-  "/komponentyi/migxpageconfigurator/rabota-s-izobrazheniyami":         "/components/migxpageconfigurator/images",
+  "/komponentyi/migxpageconfigurator/rabota-s-formami":                 "/components/migxpageconfigurator/",
+  "/komponentyi/migxpageconfigurator/rabota-s-izobrazheniyami":         "/components/migxpageconfigurator/",
   "/komponentyi/migxpageconfigurator/rabota-s-kontaktami":              "/components/migxpageconfigurator/contacts",
   "/komponentyi/migxpageconfigurator/rabota-so-snippetami":             "/components/migxpageconfigurator/snippets",
-  "/komponentyi/migxpageconfigurator/raznaya-informacziya-po-regionam": "/components/migxpageconfigurator/regions",
+  "/komponentyi/migxpageconfigurator/raznaya-informacziya-po-regionam": "/components/migxpageconfigurator/",
   "/komponentyi/migxpageconfigurator/sozdanie-i-obnovlenie-elementov":  "/components/migxpageconfigurator/elements",
 
   "/komponentyi/minifyx":         "/components/minifyx",
@@ -409,7 +396,6 @@
   "/komponentyi/minishop2/moduli-oplatyi/mspyacassa":                                "/components/mspyacassa",
   "/komponentyi/minishop2/moduli-oplatyi/platron":                                   "/components/platron",
   "/komponentyi/minishop2/moduli-oplatyi/webmoney":                                  "/components/webmoney",
-  "/komponentyi/minishop2/moduli-oplatyi/yandeks.dengi":                             "/components/yandex-money",
 
   "/komponentyi/minishop2/moduli-oplatyi/rbk-money":                                 "/components/rbk-money/",
   "/komponentyi/minishop2/moduli-oplatyi/rbk-money/vyibor-sposoba-oplatyi-na-sajte": "/components/rbk-money/choosing-payment-method",
@@ -472,7 +458,6 @@
   "/komponentyi/modretailcrm/triggeryi/izmenenie-statusa-zakaza":                      "/components/modretailcrm/triggers/order-status-change",
 
   "/komponentyi/modtree":     "/components/modtree",
-  "/komponentyi/modvkmarket": "/components/modvkmarket",
 
   "/komponentyi/ms2gallery":                               "/components/ms2gallery/",
   "/komponentyi/ms2gallery/primeryi":                      "/components/ms2gallery/",
@@ -637,7 +622,7 @@
   "/komponentyi/pdotools/klassyi":                "/components/pdotools/classes/",
   "/komponentyi/pdotools/klassyi/pdofetch":       "/components/pdotools/classes/pdofetch",
   "/komponentyi/pdotools/klassyi/pdoparser":      "/components/pdotools/classes/pdoparser",
-  "/komponentyi/pdotools/klassyi/pdotools":       "/components/pdotools/snippets/pdotools",
+  "/komponentyi/pdotools/klassyi/pdotools":       "/components/pdotools/classes/pdotools",
   "/komponentyi/pdotools/obshhie-parametryi":     "/components/pdotools/general-properties",
   "/komponentyi/pdotools/parser":                 "/components/pdotools/parser",
   "/komponentyi/pdotools/snippetyi/pdoarchive":   "/components/pdotools/snippets/pdoarchive",
@@ -703,7 +688,7 @@
 
   "/komponentyi/sendex":                         "/components/sendex/",
   "/komponentyi/sendex/interfejs":               "/components/sendex/",
-  "/komponentyi/sendex/snippet":                 "/components/sendex/",
+  "/komponentyi/sendex/snippet":                 "/components/sendex/snippets/sendex",
   "/komponentyi/sendex/interfejs/ochered-pisem": "/components/sendex/interface/queue",
   "/komponentyi/sendex/interfejs/podpiski":      "/components/sendex/interface/subscriptions",
 
@@ -732,7 +717,6 @@
   "/komponentyi/seotabs/snippet-seotabs": "/components/seotabs/snippet-seotabs",
 
   "/komponentyi/shoppingcart": "/components/shoppingcart",
-  "/komponentyi/simplequeue":  "/components/simplequeue",
 
   "/komponentyi/socialtools":                            "/components/socialtools/",
   "/komponentyi/socialtools/obshhie":                    "/components/socialtools/",
@@ -857,5 +841,10 @@
   "/utilityi/teleport":                                    "/system/utilities/teleport/",
   "/utilityi/teleport/rasshirenie":                        "/system/utilities/teleport/",
   "/utilityi/teleport/ispolzovanie":                       "/system/utilities/teleport/usage",
-  "/utilityi/teleport/rasshirenie/shablonyi-izvlecheniya": "/system/utilities/teleport/extension/extract-templates"
+  "/utilityi/teleport/rasshirenie/shablonyi-izvlecheniya": "/system/utilities/teleport/extension/extract-templates",
+
+  "/components/msfastorder/installation":    "/components/msfastorder/quick-start",
+  "/components/msfastorder/configuration":   "/components/msfastorder/settings",
+  "/components/msfastorder/usage":           "/components/msfastorder/snippets/",
+  "/components/msfastorder/troubleshooting": "/components/msfastorder/faq"
 }
