@@ -18,9 +18,8 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
+      # лимит памяти задан в скрипте build (package.json)
       - name: Build
-        env:
-          NODE_OPTIONS: --max-old-space-size=10240
         run: pnpm run build
       - uses: easingthemes/ssh-deploy@main
         env:
