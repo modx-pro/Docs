@@ -32,7 +32,7 @@ title: События сниппета msProducts
 | `usePackages` | `array` | Список запрошенных пакетов `['ms3Variants', 'msBrands']` |
 | `scriptProperties` | `array` | Все параметры вызова сниппета |
 
-После события строки списка обновляются из `returnedValues['rows']` (`EventGate::applyReturnedArray`). List в `rows` заменяет весь массив товаров, assoc-пatch отдельной строки — через `msOnProductPrepare`.
+После события строки списка обновляются из `returnedValues['rows']` (`EventGate::applyReturnedArray`). List в `rows` заменяет весь массив товаров, assoc-patch отдельной строки — через `msOnProductPrepare`.
 
 ### returnedValues
 

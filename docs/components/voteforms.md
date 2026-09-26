@@ -68,7 +68,7 @@ repository: https://github.com/me6iaton/VoteForms
 [[getVoteFormRating?form=1&field=2]]
 ```
 
-Испрользование вместе с pdoResources : сортировка ресурсов по рейтингу из формы c id 1
+Использование вместе с pdoResources : сортировка ресурсов по рейтингу из формы c id 1
 
 ```modx
 [[pdoResources?
