@@ -94,7 +94,7 @@ See [Getting started](https://docs.modx.pro/en/guide/getting-started) on the doc
 
 <h1 id="local-dev">🔧 Локальная разработка / Local development</h1>
 
-**Требования:** Node.js **18+**. В репозитории зафиксирован менеджер пакетов **pnpm** (см. `package.json` → `packageManager`).
+**Требования:** Node.js **22.18+**. В репозитории зафиксирован менеджер пакетов **pnpm** (см. `package.json` → `packageManager`).
 
 ```bash
 pnpm install
