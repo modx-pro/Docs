@@ -1,7 +1,7 @@
 import { computed } from 'vue'
-import { useData, type DefaultTheme } from 'vitepress'
+import { useData } from 'vitepress'
 import { ensureStartingSlash } from '../utils'
-import { getFlatSideBarLinks } from 'vitepress/dist/client/theme-default/support/sidebar'
+import { getFlatSideBarLinks, getSidebar } from 'vitepress/dist/client/theme-default/support/sidebar'
 
 export function useLangs({
   removeCurrent = true,
@@ -52,8 +52,13 @@ export function useLangs({
         }
       }
 
-      for (const data of Object.values(sidebar ?? {}) as Array<DefaultTheme.SidebarItem[] | { items: DefaultTheme.SidebarItem[] }>) {
-        const flatSidebar = getFlatSideBarLinks(Array.isArray(data) ? data : data.items)
+      // getSidebar разбирает обе формы сайдбара и добавляет base к ссылкам — так же, как сам VitePress
+      const sidebars = Array.isArray(sidebar)
+        ? [getSidebar(sidebar, '')]
+        : Object.keys(sidebar ?? {}).map((dir) => getSidebar({ [dir]: sidebar[dir] }, dir))
+
+      for (const items of sidebars) {
+        const flatSidebar = getFlatSideBarLinks(items)
 
         for (const item of flatSidebar) {
           if (item.link === link) {
