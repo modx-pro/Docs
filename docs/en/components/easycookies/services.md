@@ -13,7 +13,7 @@ In EasyCookies counters go into the profile, not into the template. The banner i
 
 | Service | What to enter | Default category | Cookies deleted on refusal |
 | --- | --- | --- | --- |
-| Yandex Metrica | counter number, Session Replay | analytics | `_ym_uid`, `_ym_d`, `_ym_isad`, `_ym_visorc` |
+| Yandex Metrika | counter number, Session Replay | analytics | `_ym_uid`, `_ym_d`, `_ym_isad`, `_ym_visorc` |
 | Google Analytics | measurement ID `G-XXXXXXXXXX` | analytics | `_ga`, `_ga_*` |
 | Google Tag Manager | container ID `GTM-XXXXXXX` | analytics | — |
 | VK Ads | pixel ID | marketing | `tmr_lvid`, `tmr_lvidTS`, `tmr_detect` |
@@ -27,7 +27,7 @@ A service is added with the button carrying its name below the list. Every servi
 - an ID — the form warns if it does not look like an ID of this service. Without an ID the service does not run;
 - a category and a cookie table — compliant banner only.
 
-The same service can be added several times, for example two Metrica counters.
+The same service can be added several times, for example two Metrika counters.
 
 "Custom code" is inserted as it is, and its scripts run. Use it for a chat widget, a pixel or a counter that is not on the list.
 
@@ -55,7 +55,7 @@ The signal is honoured when "Honour Global Privacy Control" is ticked; new compl
 
 ## Moving counters out of templates
 
-On almost every site Metrica and Analytics are already pasted into the template. The "Find on the site" button in the services card finds them and moves them into the profile.
+On almost every site Metrika and Analytics are already pasted into the template. The "Find on the site" button in the services card finds them and moves them into the profile.
 
 ![The "Counters on the site" window](/components/easycookies/screenshots/dialog-migrate.png)
 
@@ -64,7 +64,7 @@ On almost every site Metrica and Analytics are already pasted into the template.
 - Templates and chunks in the database. The file of a static element is edited through the element itself.
 - `.tpl` and `.html` files in the pdoTools elements directory (`core/elements/`) and in directories from the `easycookies.migrate_paths` setting. Only inside the site and `core/`, skipping `cache`, `vendor`, `node_modules`, `.git` and `packages`.
 
-It recognises Yandex Metrica, Google Analytics, Google Tag Manager, Meta Pixel and VK Ads, and reads counter numbers and Session Replay. Each finding shows where the counter is and its code.
+It recognises Yandex Metrika, Google Analytics, Google Tag Manager, Meta Pixel and VK Ads, and reads counter numbers and Session Replay. Each finding shows where the counter is and its code.
 
 - "already in the profile" — the profile has this counter.
 - "The number cannot be read" — the number is set with a MODX tag or a placeholder. Move such a counter by hand.

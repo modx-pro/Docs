@@ -25,7 +25,7 @@ items:
 
 # EasyCookies
 
-MODX Revolution 2 and 3 component: shows a cookie banner on every page of the site and runs the counters itself — Yandex Metrica, Google Analytics, VK Ads and others — according to the visitor's answer. It is built on the [CookieConsent](https://cookieconsent.orestbida.com/) library by Orest Bida.
+MODX Revolution 2 and 3 component: shows a cookie banner on every page of the site and runs the counters itself — Yandex Metrika, Google Analytics, VK Ads and others — according to the visitor's answer. It is built on the [CookieConsent](https://cookieconsent.orestbida.com/) library by Orest Bida.
 
 ![Profile editor with the banner preview](/components/easycookies/screenshots/editor.png)
 
@@ -38,7 +38,7 @@ In EasyCookies counters live in the banner profile, not in the template. The ban
 ## Features
 
 - **Two kinds of banner.** Simple — a notice with an "OK" button. Compliant — consent before any counter runs, as GDPR, CCPA and similar laws require. You switch between them with one button without losing settings.
-- **Counters without editing templates.** Yandex Metrica, Google Analytics, Google Tag Manager, VK Ads, Meta Pixel and custom code. "Find on the site" moves counters already pasted into templates and chunks into the profile.
+- **Counters without editing templates.** Yandex Metrika, Google Analytics, Google Tag Manager, VK Ads, Meta Pixel and custom code. "Find on the site" moves counters already pasted into templates and chunks into the profile.
 - **Live preview.** The banner and the preferences window update as you edit.
 - **Consent log.** Every visitor's answer is stored. Summary for a period, filters, CSV export and a dashboard widget.
 - **Look as in the CookieConsent playground:** window, cloud or bar, nine positions, themes and own colours.

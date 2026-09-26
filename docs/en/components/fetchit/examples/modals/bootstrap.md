@@ -83,7 +83,7 @@ The modal closes after a successful submission, and the next time it opens the f
 
 :::
 
-The `is-invalid` class that Bootstrap expects on an invalid field is set by FetchIt by default (the `fetchit.frontend.input.invalid.class` setting) — more in the [Bootstrap form](/en/components/fetchit/examples/form/bootstrap). There is no `[data-success]` block in the modal: it closes, and a notification reports the success.
+The `is-invalid` class that Bootstrap expects on an invalid field is set by FetchIt by default (the `fetchit.frontend.input.invalid.class` setting) — more in the [Bootstrap form](/en/components/fetchit/examples/form/bootstrap). There is no `[data-success]` block in the modal: it closes, and a notification reports the success — provided the [built-in notifications](/en/components/fetchit/examples/notifications/#built-in-notifications) are on (they are off by default) or a `FetchIt.Message` of your own is set.
 
 ```js
 document.addEventListener('fetchit:success', ({ detail: { form } }) => {
