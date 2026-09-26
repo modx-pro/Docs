@@ -14,14 +14,14 @@ description: Обзор сниппетов ms3Discounts для витрины Mi
 flowchart TD
   Task{Какая задача?}
   Task -->|Бейдж на карточке| S1["ms3discountsGetDiscount<br>&id=`[[*id]]`"]
-  Task -->|Скидки в каталоге| S2["msProducts<br>&prepareSnippet=`ms3discountsGetDiscount`"]
+  Task -->|Бейдж в каталоге| S2["Вызов ms3discountsGetDiscount<br>в чанке строки msProducts"]
   Task -->|Сетка с таймером акции| S3["ms3discountsBuyNow<br>&force_date=`1`"]
   Task -->|Список акций магазина| S4["ms3discounts<br>&return=`tpl`"]
 ```
 
 | Сниппет | Назначение |
 | --- | --- |
-| [ms3discountsGetDiscount](ms3discountsGetDiscount) | Бейдж на карточке товара или `prepareSnippet` для вызова `msProducts` |
+| [ms3discountsGetDiscount](ms3discountsGetDiscount) | Бейдж на карточке товара или в строке каталога `msProducts` |
 | [ms3discountsBuyNow](ms3discountsBuyNow) | Выборка товаров по акциям и запуск `msProducts` с таймером |
 | [ms3discounts](ms3discounts) | Список действующих акций каталога или все скидки конкретного товара |
 
@@ -32,7 +32,7 @@ flowchart TD
 ## Порядок на типовой странице
 
 1. Карточка товара: вызов `ms3discountsGetDiscount` с параметром `id` текущего ресурса.
-2. Каталог: запуск `msProducts` с параметром `prepareSnippet=ms3discountsGetDiscount`.
+2. Каталог: цены пересчитывает плагин автоматически, бейдж — вызовом `ms3discountsGetDiscount` в чанке строки `msProducts`.
 3. Подборка «Успей купить»: вызов `ms3discountsBuyNow` с таймером окончания акций.
 4. Список акций: вызов `ms3discounts` с параметром `return=tpl`.
 

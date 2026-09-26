@@ -26,7 +26,7 @@ description: Как завести процентную скидку на кат
 
 ## Если не работает
 
-- Нет бейджа в каталоге: каталог должен вызывать `msProducts` с `prepareSnippet=ms3discountsGetDiscount`. См. [ms3discountsGetDiscount](../snippets/ms3discountsGetDiscount).
+- Нет бейджа в каталоге: вызовите `ms3discountsGetDiscount` в чанке строки `msProducts` с параметром `id` товара. Цены в строках пересчитывает плагин без дополнительных вызовов. См. [ms3discountsGetDiscount](../snippets/ms3discountsGetDiscount).
 - В корзине цена прежняя: очистите кэш MODX и измените состав корзины для запуска пересчёта.
 - Скидка не подошла части товаров категории: откройте вкладку «Трассировка» в панели **Проверить** (нужно право `ms3discounts_debug`) и посмотрите, какое условие отклонило товар.
 
