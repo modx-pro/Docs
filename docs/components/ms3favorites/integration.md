@@ -3,24 +3,24 @@ title: Интеграция и кастомизация
 ---
 # Интеграция и кастомизация
 
-Расширенные сценарии подключения и настройки внешнего вида.
-
 ## Автоподключение CSS/JS (плагин ms3fFrontend)
 
-По умолчанию CSS, JS и inline `ms3fLexicon` / `ms3fConfig` подключаются плагином **ms3fFrontend** на событии `OnLoadWebDocument` — по тому же принципу, что `ms3_frontend_assets` в MiniShop3.
+По умолчанию CSS, JS и inline `ms3fLexicon` / `ms3fConfig` подключает плагин **ms3fFrontend** на событии `OnLoadWebDocument` — по тому же принципу, что `ms3_frontend_assets` в MiniShop3.
 
 **Система → Настройки → ms3favorites → frontend:**
 
 | Настройка | Назначение |
 |-----------|------------|
-| **frontend_assets** | JSON-массив путей с `[[+cssUrl]]`, `[[+jsUrl]]`, `[[+assetsUrl]]`. CSS — в `<head>`, JS — с `defer`, `?v=filemtime`. |
+| **frontend_assets** | JSON-массив путей с `[[+cssUrl]]`, `[[+jsUrl]]`, `[[+assetsUrl]]`. CSS — в `<head>`, JS — с `defer`. К URL добавляется `?v=` с датой изменения файла (`dmYHi`). |
 | **register_global_config** | Inline `window.ms3fLexicon` и `window.ms3fConfig` перед `favorites.js`. |
+
+Плагин не срабатывает в контексте `mgr` и в режиме `MODX_API_MODE`.
 
 Подробнее — [Системные настройки](settings) и [Быстрый старт](quick-start).
 
 ## Типы ресурсов (resource_type)
 
-По умолчанию используется тип товаров MiniShop3 (`resource_type=products`). Поддерживаются также `resources`, `articles`, `pages`, `custom`. Тип задаётся в `window.ms3fConfig` (плагин **ms3fFrontend** или `ms3fLexiconScript`) и при необходимости переопределяется на элементах через `data-resource-type`.
+По умолчанию используется тип товаров MiniShop3 (`resource_type=products`). Также поддерживаются `resources`, `articles`, `pages`, `custom`. Тип задаётся в `window.ms3fConfig` (плагин **ms3fFrontend** или `ms3fLexiconScript`). На элементе его можно переопределить через `data-resource-type`.
 
 **Тип по умолчанию (глобально):**
 
@@ -50,17 +50,17 @@ title: Интеграция и кастомизация
 
 ## Страница /wishlist/ и параметр serverList {#wishlist-serverlist}
 
-Сниппет [ms3FavoritesPage](snippets/ms3FavoritesPage) управляет тем, как выводятся **товары** на странице избранного:
+Сниппет [ms3FavoritesPage](snippets/ms3FavoritesPage) задаёт, как выводятся **товары** на странице избранного:
 
 - **`resource_type=products`**, **`serverList=1`** (по умолчанию) — карточки собираются **на сервере** в чанке **tplFavoritesPage** через **pdoPage** + **msProducts**. Сортировка `FIELD(msProduct.id,…)`, пагинация в плейсхолдерах `ms3f.page.*`. **favorites.js** для этого списка `render` не вызывает. После sync обновляются счётчики табов.
 - **`serverList=0`** и products — список дорисовывает **JS** (`render`, до 100 элементов на вкладку без серверной пагинации в чанке).
 - **`resource_type` ≠ products** — вывод списка через **JS** после sync. **serverList** SSR не включает.
 
-Отдельная кастомная страница с пагинацией — по-прежнему **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`), см. ниже и [Быстрый старт](quick-start).
+Отдельная своя страница с пагинацией — по-прежнему **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`). См. ниже и [Быстрый старт](quick-start).
 
 ## Режим `data-favorites-mode="list"` (скрытие всей карточки)
 
-Для каталога, где при удалении из избранного нужно скрывать всю карточку товара:
+Для каталога, где при удалении из избранного нужно скрыть всю карточку товара:
 
 1. Оберните контейнер списка в элемент с `data-favorites-mode="list"`.
 2. Каждую карточку оберните в элемент с классом `.ms3f-parent`.
@@ -86,11 +86,11 @@ title: Интеграция и кастомизация
 
 ## Заметки к элементам
 
-При `ms3favorites.comments_enabled` в карточках отображается textarea для заметок. Атрибут `[data-favorites-comment]` с `data-product-id`, `data-list`. Максимум 500 символов. Сохранение — action `update_comment` или `ms3Favorites.updateComment(productId, list, comment)`.
+При `ms3favorites.comments_enabled` в карточках показывается textarea для заметок. Атрибут `[data-favorites-comment]` с `data-product-id`, `data-list`. Максимум 500 символов. Метод `ms3Favorites.updateComment(productId, list, comment)` пишет заметку в локальное хранилище (localStorage/cookie). В БД заметка уходит отдельно: POST `update_comment` по событию blur у `[data-favorites-comment]` (с заголовком `X-Requested-With`, см. [коннектор](frontend#connector-ajax)).
 
 ## Вывод через msProducts напрямую
 
-Для полного контроля над параметрами фильтрации и сортировки используйте [ms3FavoritesIds](snippets/ms3FavoritesIds) и [ms3Favorites](snippets/ms3Favorites):
+Полный контроль над фильтрацией и сортировкой — через [ms3FavoritesIds](snippets/ms3FavoritesIds) и [ms3Favorites](snippets/ms3Favorites):
 
 ::: code-group
 ```modx
@@ -155,11 +155,11 @@ title: Интеграция и кастомизация
 
 ### Каталог: pdoPage + msProducts, счётчик и кнопка в строке {#catalog-pdopage-row}
 
-Типичный сценарий (как в примерах классических дополнений избранного): **обычный каталог** с пагинацией, в каждой строке — кнопка в список **`default`**, сверху — **общий счётчик** по этому списку. Это **не** страница `/wishlist/` (`ms3FavoritesPage`). По умолчанию CSS/JS подключает плагин **ms3fFrontend** ([Быстрый старт](quick-start)).
+**Обычный каталог** с пагинацией: в каждой строке — кнопка в список **`default`**, сверху — **общий счётчик** по этому списку. Это **не** страница `/wishlist/` (`ms3FavoritesPage`). По умолчанию CSS/JS подключает плагин **ms3fFrontend** ([Быстрый старт](quick-start)).
 
-Счётчик удобно вывести [ms3FavoritesCounter](snippets/ms3FavoritesCounter) с `&list` и `&resource_type`: в чанке `tplMs3fCounter` уже есть `data-favorites-count`, число обновляется при add/remove.
+Счётчик — [ms3FavoritesCounter](snippets/ms3FavoritesCounter) с `&list` и `&resource_type`. В чанке `tplMs3fCounter` уже есть `data-favorites-count`, число обновляется при add/remove.
 
-**Fenom** — в пакете есть чанк **`tplCatalogRowMs3f`** (при необходимости скопируйте и измените вёрстку):
+**Fenom** — в пакете есть чанк **`tplCatalogRowMs3f`** (скопируйте и измените вёрстку при необходимости):
 
 ::: code-group
 ```modx
@@ -172,11 +172,15 @@ title: Интеграция и кастомизация
       &limit=`10`
       &tpl=`tplCatalogRowMs3f`
       &ajaxMode=`default`
+      &ajaxElemWrapper=`#ms3f-catalog-pdopage`
+      &ajaxElemRows=`#ms3f-catalog-pdopage .rows`
+      &ajaxElemPagination=`#ms3f-catalog-pdopage nav.pagination`
+      &ajaxElemLink=`#ms3f-catalog-pdopage nav.pagination a`
       &totalVar=`page.total`
       &pageNavVar=`page.nav`
     ]]
   </div>
-  <nav class="pagination" aria-label="Страницы">[[!+page.nav]]</nav>
+  <nav class="pagination">[[!+page.nav]]</nav>
 </div>
 ```
 
@@ -190,11 +194,15 @@ title: Интеграция и кастомизация
       'limit' => 10,
       'tpl' => 'tplCatalogRowMs3f',
       'ajaxMode' => 'default',
+      'ajaxElemWrapper' => '#ms3f-catalog-pdopage',
+      'ajaxElemRows' => '#ms3f-catalog-pdopage .rows',
+      'ajaxElemPagination' => '#ms3f-catalog-pdopage nav.pagination',
+      'ajaxElemLink' => '#ms3f-catalog-pdopage nav.pagination a',
       'totalVar' => 'page.total',
       'pageNavVar' => 'page.nav'
     ]}
   </div>
-  <nav class="pagination" aria-label="Страницы">{$_modx->getPlaceholder('page.nav')}</nav>
+  <nav class="pagination">{$_modx->getPlaceholder('page.nav')}</nav>
 </div>
 ```
 :::
@@ -202,7 +210,7 @@ title: Интеграция и кастомизация
 В **MODX** без Fenom в чанке строки можно использовать `@INLINE` с вызовом `ms3FavoritesBtn` — полный пример в [Быстром старте](quick-start) (каталог).
 
 ::: tip AJAX-пагинация (ajaxMode)
-После подгрузки следующей страницы каталога вызовите **`window.ms3Favorites.refresh()`** в callback pdoPage (событие/хук зависят от версии pdoTools). По умолчанию ms3Favorites также слушает **`mfilter:contentLoaded`** и использует fallback **MutationObserver** — см. [Подключение на сайте](frontend). Либо отключите AJAX и делайте полную перезагрузку страницы.
+После подгрузки следующей страницы каталога вызовите **`window.ms3Favorites.refresh()`** в callback pdoPage (событие/хук зависят от версии pdoTools). По умолчанию ms3Favorites также слушает **`mfilter:contentLoaded`** и использует запасной **MutationObserver** — см. [Подключение на сайте](frontend). Либо отключите AJAX и делайте полную перезагрузку страницы.
 :::
 
 **Фильтрация через msProducts** (товары со скидкой, в наличии, по бренду):
@@ -220,13 +228,14 @@ title: Интеграция и кастомизация
 ```
 
 ```fenom
-{set $ids = ms3f_get_ids_for_current_user($modx, 'default')}
+{'!ms3FavoritesIds' | snippet : ['list' => 'default', 'toPlaceholder' => 'favorites_ids']}
+{set $ids = $_modx->getPlaceholder('favorites_ids')}
 {'msProducts' | snippet : [
-  'resources' => implode(',', $ids),
+  'resources' => $ids,
   'where' => '{"old_price:>":0}',
   'includeTVs' => 'brand',
   'tvFilters' => 'brand==Apple',
-  'sortby' => 'FIELD(msProduct.id, ' ~ implode(',', $ids) ~ ')'
+  'sortby' => 'FIELD(msProduct.id, ' ~ $ids ~ ')'
 ]}
 ```
 :::
@@ -247,9 +256,12 @@ title: Интеграция и кастомизация
 ```
 
 ```fenom
-{set $defaultIds = ms3f_get_ids_for_current_user($modx, 'default')}
-{set $giftIds = ms3f_get_ids_for_current_user($modx, 'gifts')}
-{set $allIds = array_unique(array_merge($defaultIds, $giftIds))}
+{'!ms3FavoritesIds' | snippet : ['list' => 'default', 'toPlaceholder' => 'ids_default']}
+{'!ms3FavoritesIds' | snippet : ['list' => 'gifts', 'toPlaceholder' => 'ids_gifts']}
+{set $allIds = array_unique(array_filter(array_merge(
+  explode(',', $_modx->getPlaceholder('ids_default')),
+  explode(',', $_modx->getPlaceholder('ids_gifts'))
+), 'intval'))}
 {if count($allIds) > 0}
 {'msProducts' | snippet : [
   'resources' => implode(',', $allIds),
@@ -261,8 +273,8 @@ title: Интеграция и кастомизация
 ```
 :::
 
-::: tip Сниппет ms3fMergeIds
-Для объединения списков в MODX нужен простой сниппет `ms3fMergeIds`: принимает `ids1`, `ids2`, `toPlaceholder`, объединяет ID, убирает дубликаты, записывает в плейсхолдер. Либо используйте [PHP helper](#php-helper-для-получения-id) в кастомном сниппете.
+::: warning Сниппет ms3fMergeIds пока не входит в пакет
+Вызов `ms3fMergeIds` в MODX-примере выше — запланированная возможность ([issue #9](https://github.com/Ibochkarev/ms3Favorites/issues/9)). До её появления объединяйте списки своим сниппетом (принимает `ids1`, `ids2`, убирает дубликаты, пишет результат в `toPlaceholder`) или через [PHP helper](#php-helper-для-получения-id).
 :::
 
 ## Несколько списков
@@ -275,7 +287,7 @@ title: Интеграция и кастомизация
 <button data-favorites-toggle data-id="123" data-list="gifts">В подарки</button>
 ```
 
-**Dropdown выбора списка** — чанк `tplFavoritesListSelector` или сниппет [ms3FavoritesLists](snippets/ms3FavoritesLists). Ссылки на страницу списка формируются по настройке **ms3favorites.list_page** (по умолчанию `wishlist/`):
+**Выпадающий список** — чанк `tplFavoritesListSelector` или сниппет [ms3FavoritesLists](snippets/ms3FavoritesLists). Ссылки на страницу списка формируются по настройке **ms3favorites.list_page** (по умолчанию `wishlist/`):
 
 ::: code-group
 ```modx
@@ -308,7 +320,7 @@ ms3Favorites.render('#container', { list: 'gifts' });
 <button type="button" data-favorites-share data-list="default">Поделиться списком</button>
 ```
 
-**Страница просмотра:** создайте ресурс с alias `wishlist/share` (или дочерний `share` у `/wishlist/`). **Важно:** используйте отдельный шаблон для share — иначе при невалидном токене не появится сообщение «Список не найден». Сниппет [ms3FavoritesShare](snippets/ms3FavoritesShare):
+**Страница просмотра:** создайте ресурс с alias `wishlist/share` (или дочерний `share` у `/wishlist/`). Нужен отдельный шаблон для share. Иначе при неверном токене не появится сообщение «Список не найден». Сниппет [ms3FavoritesShare](snippets/ms3FavoritesShare):
 
 ::: code-group
 ```modx
@@ -323,13 +335,14 @@ ms3Favorites.render('#container', { list: 'gifts' });
 URL для шаринга: `/wishlist/share?token=xxx`
 
 **API коннектора:**
+
 - `create_share` — POST list=default → `{ success, token }` (только авторизованные)
-- `get_share` — POST token=xxx → `{ success, ids, list_name }`
+- `get_share` — POST token=xxx → `{ success, ids, list_name, resource_type }`
 - **`copy_share`** — POST **`token=xxx`**, **`target_list=default`** → **`{ success, ids }`**. **Гости** получают **`ids`** для **localStorage**.
 
 ## Интеграция с корзиной
 
-На странице **/wishlist/** (чанк `tplFavoritesPage`) при **`resource_type=products`** и **`serverList=1`** (по умолчанию) товары выводятся **на сервере**. При **`serverList=0`** или другом типе ресурсов карточки подгружает **`favorites.js`** (`render()`). Доступны:
+На странице **/wishlist/** (чанк `tplFavoritesPage`) при **`resource_type=products`** и **`serverList=1`** (по умолчанию) товары выводятся **на сервере**. При **`serverList=0`** или другом типе ресурсов карточки подгружает **`favorites.js`** (`render()`). Кнопки:
 
 - **Кнопка «Добавить все в корзину»** — `[data-favorites-add-all]`, добавляет все товары текущего списка
 - **Кнопка «Добавить выбранные»** — `[data-favorites-add-selected]`, добавляет только отмеченные checkbox
@@ -349,7 +362,7 @@ ms3Favorites.addSelectedToCart();   // Добавить выбранные (по
 
 ## Callbacks и события
 
-Актуально для `assets/components/ms3favorites/js/favorites.js`: события вешаются на **`document`**.
+События из `assets/components/ms3favorites/js/favorites.js` вешаются на **`document`**.
 
 **События DOM:**
 
@@ -376,8 +389,8 @@ window.ms3fConfig = window.ms3fConfig || {};
 window.ms3fConfig.onAdd = function (id, list, resourceType) { /* ... */ };
 window.ms3fConfig.onRemove = function (id, list, resourceType) { /* ... */ };
 window.ms3fConfig.refreshEvents = ['myCatalog:loaded']; // доп. события для refresh() после AJAX
-window.ms3fConfig.mfilterContainer = '.my-products'; // кастомный контейнер для MutationObserver
-window.ms3fConfig.mfilterMutationFallback = false; // отключить fallback Observer
+window.ms3fConfig.mfilterContainer = '.my-products'; // свой контейнер для MutationObserver
+window.ms3fConfig.mfilterMutationFallback = false; // отключить запасной Observer
 // Полностью своё уведомление: вернуть true — встроенная цепочка не вызывается
 window.ms3fConfig.notify = function (variant, text) {
   // variant: 'success' | 'error' | 'info' и т.д.
@@ -386,13 +399,13 @@ window.ms3fConfig.notify = function (variant, text) {
 window.ms3fConfig.showToast = false;  // отключить любые стандартные toast
 ```
 
-Отдельного флага **`debug`** в скрипте нет: для отладки смотрите вкладку **Network** (`connector.php`) и **`console.warn`** с префиксом **`[ms3Favorites]`** при сбоях iziToast.
+Отдельного флага **`debug`** в скрипте нет. Для отладки смотрите вкладку **Network** (`connector.php`) и **`console.warn`** с префиксом **`[ms3Favorites]`** при сбоях iziToast.
 
 Цепочка уведомлений по умолчанию: `notify` → `window.ms3Message.show` (MiniShop3) → iziToast (подгрузка из `ms3fConfig.iziToastBaseUrl`, задаётся в `ms3fLexiconScript`).
 
 ## Плейсхолдер ms3f.total
 
-Серверный счётчик количества элементов в избранном. Устанавливается сниппетами [ms3FavoritesPage](snippets/ms3FavoritesPage) и [ms3Favorites](snippets/ms3Favorites).
+Серверный счётчик элементов в избранном. Его ставят сниппеты [ms3FavoritesPage](snippets/ms3FavoritesPage) и [ms3Favorites](snippets/ms3Favorites).
 
 **Пример — ссылка в меню только при непустом списке:**
 
@@ -410,7 +423,7 @@ window.ms3fConfig.showToast = false;  // отключить любые стан�
 
 ## PHP helper для получения ID
 
-Для гибкой логики (msProducts, кастомные фильтры) используйте функции:
+Для своей логики (msProducts, свои фильтры) используйте функции:
 
 ```php
 require_once $modx->getOption('core_path') . 'components/ms3favorites/include/helpers.php';
@@ -435,7 +448,7 @@ $ids = ms3f_get_ids_from_cookie($modx, 'default', 'products');
 | Счётчик не обновляется | `updateCounter()` не вызывается | Убедитесь, что `save()` вызывается после add/remove |
 | Счётчики табов на /wishlist/ «левые» | `getAllLists()` без типа смешивал разные `resource_type` | На странице задан `data-resource-type`. Используйте `getAllLists(pageResourceType)` (актуальные сборки) |
 | Кнопки не работают в модалке (mxQuickView) | Контент подгружен по AJAX | `ms3Favorites` подписан на `mxqv:loaded` / `mxqv:open` и вызывает `refresh()` |
-| Кнопки не работают после фильтров (mFilter) | DOM обновлён, состояние кнопок не синхронизировано | Вызовите `window.ms3Favorites.refresh()` после AJAX или полагайтесь на автоподписку `mfilter:contentLoaded` / MutationObserver (`ms3fConfig.mfilterContainer`, `mfilterMutationFallback = false` для отключения) |
+| Кнопки не работают после фильтров (mFilter) | DOM обновлён, состояние кнопок не синхронизировано | Вызовите `window.ms3Favorites.refresh()` после AJAX или положитесь на автоподписку `mfilter:contentLoaded` / MutationObserver (`ms3fConfig.mfilterContainer`, `mfilterMutationFallback = false` для отключения) |
 | Пустой список после входа | Sync не выполнился | Проверьте консоль на ошибки fetch |
 | Удалили на /wishlist/, в БД осталось | Раньше пустой локальный список сливался с сервером при merge | В актуальных сборках при явных add/remove/clear используется **authoritative**-sync и **`flushToServer()`**. Первый sync при загрузке без authoritative (новое устройство) |
 | Share не работает | Только для авторизованных | `create_share` требует `user_id` |

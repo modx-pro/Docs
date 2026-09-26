@@ -33,7 +33,7 @@ items: [
 ---
 # ms3Favorites
 
-ms3Favorites — компонент реализует функционал создания списков избранного для товаров [MiniShop3](/components/minishop3/) и других типов ресурсов (`resources`, `articles`, `pages`, `custom`). Пользователи сохраняют товары в список для последующих покупок. Список хранится в браузере (`localStorage` или `cookie`), с синхронизацией в БД для авторизованных и гостей (при `guest_db_enabled`).
+ms3Favorites — списки избранного для товаров [MiniShop3](/components/minishop3/) и других ресурсов (`resources`, `articles`, `pages`, `custom`). Пользователь сохраняет товары для следующих покупок. Список лежит в браузере (`localStorage` или `cookie`) и синхронизируется в БД для авторизованных и гостей (при `guest_db_enabled`).
 
 ## Возможности
 
@@ -48,17 +48,17 @@ ms3Favorites — компонент реализует функционал со
 - **Популярность** — «У N пользователей в избранном»
 - **Типы ресурсов** — `products`, `resources`, `articles`, `pages`, `custom`
 - **Локализация** — MODX Lexicon (ru, en). На фронте — inline через плагин **ms3fFrontend** или сниппет `ms3fLexiconScript`
-- **Кастомизация** — Fenom-чанки, BEM-классы (префикс `ms3f`), CSS-переменные
+- **Свой вид** — Fenom-чанки, BEM-классы (префикс `ms3f`), CSS-переменные
 - **Каталог** — чанк `tplCatalogRowMs3f` для строки с кнопкой избранного при **pdoPage** + **msProducts** ([интеграция](integration#catalog-pdopage-row))
-- **Автоподключение CSS/JS** — плагин `ms3fFrontend` (OnLoadWebDocument): список файлов в `ms3favorites.frontend_assets`, inline `ms3fLexicon` / `ms3fConfig` через `register_global_config` (как `ms3_frontend_assets` в MiniShop3)
+- **Автоподключение CSS/JS** — плагин `ms3fFrontend` (OnLoadWebDocument). Список файлов — в `ms3favorites.frontend_assets`. Inline `ms3fLexicon` / `ms3fConfig` — через `register_global_config` (как `ms3_frontend_assets` в MiniShop3)
 - **AJAX-каталог** — публичный API `window.ms3Favorites.refresh()` после подмены HTML. Есть автоподписка на `mfilter:contentLoaded`, опция `ms3fConfig.refreshEvents` и запасной MutationObserver
-- **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/) (ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`, базовый URL в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`).
+- **Уведомления** — цепочка: опционально `ms3fConfig.notify` → `window.ms3Message.show` (MiniShop3) → [iziToast](https://marcelodolza.github.io/iziToast/). Ленивая загрузка из `assets/components/ms3favorites/vendor/izitoast/`. Базовый URL — в `ms3fConfig.iziToastBaseUrl` из `ms3fLexiconScript`
 
 ## Системные требования
 
 | Требование | Версия |
 |------------|--------|
-| MODX Revolution | 3.0+ |
+| MODX Revolution | 3.0.3+ |
 | PHP | 8.1+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
 
@@ -68,8 +68,6 @@ ms3Favorites — компонент реализует функционал со
 - **[pdoTools](/components/pdotools/) 3.0.0+**
 
 ## Установка
-
-Подробная инструкция с требованиями и шагами через ModStore — в [Быстром старте](quick-start).
 
 ### Через ModStore
 
@@ -83,7 +81,7 @@ ms3Favorites — компонент реализует функционал со
 
 ### После установки
 
-По умолчанию CSS/JS и inline-конфиг подключаются плагином **ms3fFrontend** — достаточно разместить кнопку в карточке товара и вывести блок избранного. Ручное подключение в шаблоне нужно только при отключённом плагине или `register_global_config = Нет`.
+По умолчанию CSS/JS и inline-конфиг подключает плагин **ms3fFrontend**. Достаточно кнопки в карточке товара и блока избранного. Ручное подключение в шаблоне нужно только при отключённом плагине или `register_global_config = Нет`.
 
 Подробнее: [Быстрый старт](quick-start) и [Подключение на сайте](frontend).
 
