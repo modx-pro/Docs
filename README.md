@@ -109,6 +109,7 @@ pnpm dev
 | `pnpm dev` | Локальный предпросмотр (VitePress dev, hot reload) |
 | `pnpm build` | Продакшен-сборка (перед сборкой запускается генерация OG; для Node задан лимит памяти — см. скрипт в `package.json`) |
 | `pnpm preview` | Просмотр уже собранного статического сайта |
+| `pnpm generate:og` | OG-картинки компонентов (запускается и в `pnpm build`). Перерисовываются только изменившиеся, кэш — `.vitepress/cache/og`; в git картинки (`docs/public/og/`, `og-default.png`) не хранятся. `pnpm generate:og -- --force` перерисовывает всё и заново скачивает логотипы |
 | `pnpm lint:changed` / `pnpm lint` | Markdownlint: изменённые строки / все файлы; автоисправление — `pnpm exec markdownlint --fix <путь>` (`pnpm lint:fix` — по всему репозиторию) |
 | `pnpm spellcheck:changed` / `pnpm spellcheck` | Проверка орфографии (RU и EN): изменённые строки / все файлы |
 | `pnpm check:sync:changed` | У новых русских страниц есть английские версии (заготовка — `node scripts/sync-docs-en.mjs <путь>`); предупреждение, если изменена только русская |
