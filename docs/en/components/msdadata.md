@@ -3,7 +3,7 @@ title: msDaData
 description: Component for address and name autocomplete when placing orders in miniShop2 via DaData
 dependencies: miniShop2
 categories: orders
-logo: https://modstore.pro/assets/extras/msdadata/logo.png
+logo: https://modstore.pro/assets/extras/dadata/logo.jpg
 ---
 
 # msDaData
