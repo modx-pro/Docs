@@ -12,6 +12,8 @@
 | `discounts-list.png` | Вкладка **Скидки**: таблица правил с бейджами статусов, фильтрами, строкой поиска и панелью `BulkBar` | [manager.md](../manager.md), [quick-start.md](../quick-start.md) |
 | `discount-drawer-main.png` | Боковая панель создания/редактирования скидки: название, выбор «Применяется к», тип скидки и период | [manager.md](../manager.md), [quick-start.md](../quick-start.md) |
 | `rule-builder.png` | Конструктор условий **Rule Builder**: группа условий И/ИЛИ, выбор провайдеров, операторов и блок «Исключить» | [manager.md](../manager.md) |
+| `discount-drawer-nth.png` | Боковая панель правила с типом **N-й товар**: поля «Каждый N-й» и «Скидка на N-й товар, %» | [recipes/nth-free.md](../recipes/nth-free.md) |
+| `discount-drawer-gift.png` | Боковая панель правила с типом **Подарок**: поля «Подарок» и «Количество» | [recipes/gift.md](../recipes/gift.md) |
 | `preview-panel.png` | Панель тестирования **Проверить**: выбор товара, расчёт цены и вкладка «Трассировка» (права `ms3discounts_debug`) | [manager.md](../manager.md) |
 | `storefront-badge.png` | Карточка товара на витрине с бейджем скидки, зачёркнутой старой ценой и актуальной ценой | [snippets/ms3discountsGetDiscount.md](../snippets/ms3discountsGetDiscount.md), [quick-start.md](../quick-start.md) |
 | `storefront-buynow.png` | Промо-блок «Успей купить» на витрине: сетка акционных товаров с таймером обратного отсчёта | [snippets/ms3discountsBuyNow.md](../snippets/ms3discountsBuyNow.md), [snippets/index.md](../snippets/index.md) |

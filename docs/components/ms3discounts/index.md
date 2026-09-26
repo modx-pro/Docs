@@ -21,6 +21,21 @@ items: [
     ],
   },
   {
+    text: 'Рецепты',
+    link: 'recipes/index',
+    items: [
+      { text: 'Рецепты (обзор)', link: 'recipes/index' },
+      { text: 'Скидка на категорию в процентах', link: 'recipes/percent-category' },
+      { text: 'Фиксированная цена на товар', link: 'recipes/fixed-price' },
+      { text: 'Каждый N-й товар бесплатно', link: 'recipes/nth-free' },
+      { text: 'Подарок к заказу', link: 'recipes/gift' },
+      { text: 'Скидка для группы покупателей', link: 'recipes/customer-group' },
+      { text: 'Скидка по расписанию', link: 'recipes/schedule' },
+      { text: 'Скидка от суммы корзины', link: 'recipes/cart-subtotal' },
+      { text: 'Скидка после активации', link: 'recipes/activation' },
+    ],
+  },
+  {
     text: 'Витрина',
     link: 'snippets/index',
     items: [
@@ -57,6 +72,7 @@ items: [
 | Нужно | Документ |
 | --- | --- |
 | Установить и вывести бейдж | [Быстрый старт](quick-start) |
+| Завести типовую акцию | [Рецепты](recipes/index) |
 | Панель управления и конструктор правил | [Панель управления](manager) |
 | Ключи `ms3discounts_*` и права | [Системные настройки](settings) |
 | Сниппеты и параметры | [Сниппеты](snippets/index) |
