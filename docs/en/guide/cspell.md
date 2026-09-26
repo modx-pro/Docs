@@ -4,13 +4,13 @@ lastUpdated: false
 
 # Spell checking (cspell)
 
-The project uses [cspell](https://cspell.org/) for spell checking in Markdown and code. Russian and English are enabled (dictionary `@cspell/dict-ru_ru`). The `docs/en/` folder is excluded from the main check and can be checked separately if needed.
+The project uses [cspell](https://cspell.org/) to spell-check Markdown. Russian and English are enabled (dictionary `@cspell/dict-ru_ru`). Code, the `docs/en/` folder and fragments in `parts/` are not checked.
 
 ## Running the check
 
 From the repo root:
 
-- **`pnpm run spellcheck:changed`** — checks only Markdown files changed against `origin/master`. CI runs the same check on every PR, so it is the handiest one before submitting changes.
+- **`pnpm run spellcheck:changed`** — checks only Markdown files changed since the branch forked from `origin/master` (run `git fetch` first; set another base with `SPELLCHECK_BASE=origin/<branch>`). CI runs the same check on PRs that change `docs/`, against the PR's base branch, so it is the handiest one before submitting changes.
 - **`pnpm run spellcheck`** — checks all docs and reports every spelling issue (file, line, word).
 - **`pnpm run spellcheck:fix`** — same check with spelling suggestions for each unknown word; fix files manually or add the word to `cspell.json`.
 
@@ -18,10 +18,14 @@ After installing dependencies (`pnpm install`), these commands work without extr
 
 ### Check a single file or folder
 
+Handy when editing a particular page:
+
 ```shell
 pnpm run spellcheck docs/components/ajaxform.md
 pnpm run spellcheck docs/guide
 ```
+
+If a path has no files to check (a typo in the path, or only `docs/en/` and `parts/`), the script says so and exits with an error. Paths can't be combined with `--changed`. Pass cspell options as `--flag` or `--flag=value`.
 
 ## Configuration
 
@@ -36,22 +40,22 @@ This reduces false positives on package names, tags, and paths.
 
 ## Adding words
 
-Component and author names don't need to be added: `scripts/spellcheck.mjs` collects them itself — file and folder names in `docs/components/`, `title` from frontmatter, names and handles from `docs/authors.json`.
+Component and author names don't need to be added: `scripts/spellcheck.mjs` collects them itself — names of `docs/components/*.md` files and `docs/components/*/` folders with the words of their `title`, plus keys, name words and handles (last segment of the profile link) from `docs/authors.json`.
 
-If cspell flags a valid word (e.g. a new component name or term), add it to the **`words`** array in `cspell.json`. Use lowercase; cspell matches case-insensitively.
+If cspell flags a valid word (e.g. a term or jargon word), add it to the **`words`** array in `cspell.json`. Use lowercase; cspell matches case-insensitively.
 
 **Example `cspell.json` fragment:**
 
 ```json
 {
-  "words": ["minishop2", "pdotools"]
+  "words": ["кукисов", "брейкпоинтом"]
 }
 ```
 
 - **`words`** — project dictionary: package names, hooks, rare abbreviations.
-- **`ignorePaths`** — skip whole paths. Prefer adding a term to `words` instead of disabling large folders without a good reason.
+- **`ignorePaths`** — skip whole paths (the English guide, plop templates, etc.). Prefer adding a term to `words` instead of disabling large folders without a good reason.
 
-English files in `docs/en/` are not checked.
+English files in `docs/en/` and fragments in `parts/` are not checked.
 
 ## CI
 
