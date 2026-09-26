@@ -89,7 +89,7 @@ seo_max_values = 1              → noindex для страниц с множе�
 
 | Настройка | По умолчанию | Описание |
 |-----------|--------------|----------|
-| `mfilter.morpher_api_key` | `` | API-ключ сервиса Morpher для автогенерации словоформ |
+| `mfilter.morpher_api_key` | | API-ключ сервиса Morpher для автогенерации словоформ |
 
 ### Morpher API
 

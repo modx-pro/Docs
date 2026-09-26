@@ -65,7 +65,7 @@ Integration of mFilter with mSearch — filtering full-text search results.
 | `minQuery` | Minimum query length | `3` |
 | `htagOpen` | Opening highlight tag | `<b>` |
 | `htagClose` | Closing highlight tag | `</b>` |
-| `includeTVs` | TVs to search | `` |
+| `includeTVs` | TVs to search | |
 
 ## Filter set
 

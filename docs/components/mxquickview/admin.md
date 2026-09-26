@@ -17,7 +17,7 @@ title: Руководство по админке
 | --- | --- | --- |
 | `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Какие чанки можно рендерить (`mxqv_resource` — для новостей, статей, страниц) |
 | `mxquickview_allowed_snippet` | `msCart,msMiniCart` | Какие сниппеты можно рендерить |
-| `mxquickview_allowed_template` | `` | Какие шаблоны можно рендерить |
+| `mxquickview_allowed_template` | | Какие шаблоны можно рендерить |
 | `mxquickview_mouseover_delay` | `300` | Задержка перед загрузкой по наведению |
 | `mxquickview_modal_size` | `modal-lg` | Размер встроенной модалки |
 | `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Явный путь/URL к Fancybox CSS (override) |

@@ -17,7 +17,7 @@ The component has no dedicated manager page: configuration is done via system se
 | --- | --- | --- |
 | `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Which chunks can be rendered (`mxqv_resource` — for news, articles, pages) |
 | `mxquickview_allowed_snippet` | `msCart,msMiniCart` | Which snippets can be rendered |
-| `mxquickview_allowed_template` | `` | Which templates can be rendered |
+| `mxquickview_allowed_template` | | Which templates can be rendered |
 | `mxquickview_mouseover_delay` | `300` | Delay before load on hover |
 | `mxquickview_modal_size` | `modal-lg` | Built-in modal size |
 | `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Override path/URL for Fancybox CSS |

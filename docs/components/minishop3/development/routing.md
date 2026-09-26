@@ -477,7 +477,7 @@ function addFilterParam(params, key, value) {
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
-| GET | `` | Список заказов |
+| GET | (корень) | Список заказов |
 | GET | `/filters` | Конфигурация фильтров |
 | GET | `/stats` | Агрегаты для дашборда и фильтров |
 | GET | `/{id}` | Получить заказ |
@@ -488,7 +488,7 @@ function addFilterParam(params, key, value) {
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
-| POST | `` | Создать заказ из менеджера |
+| POST | (корень) | Создать заказ из менеджера |
 | DELETE | `/bulk` | Массовое удаление |
 | POST | `/{id}/finalize` | Финализация черновика |
 | POST | `/{id}/recalculate-cost` | Пересчёт стоимости |
@@ -509,7 +509,7 @@ function addFilterParam(params, key, value) {
 
 | Метод | Роут | Описание | Право |
 | --- | --- | --- | --- |
-| GET | `` | Список покупателей | `msorder_list` |
+| GET | (корень) | Список покупателей | `msorder_list` |
 | DELETE | `/bulk` | Массовое удаление | `msorder_remove` |
 | GET | `/{id}` | Получить покупателя | `msorder_view` |
 | PUT | `/{id}` | Обновить покупателя | `msorder_save` |
@@ -541,9 +541,9 @@ function addFilterParam(params, key, value) {
 | Метод | Роут | Описание | Право |
 | --- | --- | --- | --- |
 | GET | `/references` | Справочники для форм | `mssetting_save` |
-| GET | `` | Список уведомлений | `mssetting_save` |
+| GET | (корень) | Список уведомлений | `mssetting_save` |
 | GET | `/{id}` | Получить уведомление | `mssetting_save` |
-| POST | `` | Создать уведомление | `mssetting_save` |
+| POST | (корень) | Создать уведомление | `mssetting_save` |
 | PUT | `/{id}` | Обновить | `mssetting_save` |
 | DELETE | `/{id}` | Удалить | `mssetting_save` |
 

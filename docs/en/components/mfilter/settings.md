@@ -81,7 +81,7 @@ Manual clear: **mFilter → Maintenance → Clear cache**
 
 | Setting | Default | Description |
 |-----------|--------------|----------|
-| `mfilter.morpher_api_key` | `` | Morpher API key for automatic word form generation |
+| `mfilter.morpher_api_key` | | Morpher API key for automatic word form generation |
 | `mfilter.wordforms_auto_generate` | `true` | Auto-generate word forms |
 
 ### Morpher API

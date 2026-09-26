@@ -55,7 +55,7 @@ Main field settings:
 
 | parent    | categories                                             |
 |-----------|--------------------------------------------------------|
-| category1 | `sub_category1&#10072;sub_category2%sub_sub_category2` |
+| category1 | `sub_category1\|sub_category2%sub_sub_category2` |
 
 Product will be created in category1 but also available in sub_category1 and sub_sub_category2.
 
@@ -81,7 +81,7 @@ You can import only categories. Import file must contain at least fields: pageti
 
 | pagetitle | parent                                            |
 |-----------|---------------------------------------------------|
-| category3 | `Base category&#10072;category1&#10072;category2` |
+| category3 | `Base category\|category1\|category2` |
 
 In this example category3 will be created in category2; the entire parent chain will also be created.
 
@@ -132,8 +132,8 @@ Import/update files for stock options can be:
 
 | mspr:id | mspr:options | mspr:remains |
 |---------|--------------|--------------|
-| 2       | Red&#10072;S | 1            |
-| 3       | Red&#10072;M | 2            |
+| 2       | Red\|S | 1            |
+| 3       | Red\|M | 2            |
 
 1. Product ID
 2. Stock options
@@ -141,8 +141,8 @@ Import/update files for stock options can be:
 
 | mspr:product_id | mspr:options | mspr:remains |
 |-----------------|--------------|--------------|
-| 3               | Red&#10072;S | 1            |
-| 3               | Red&#10072;M | 2            |
+| 3               | Red\|S | 1            |
+| 3               | Red\|M | 2            |
 
 1. Value of "Product key for uniqueness" field
 2. Stock options
@@ -150,8 +150,8 @@ Import/update files for stock options can be:
 
 | article   | mspr:options | mspr:remains |
 |-----------|--------------|--------------|
-| article-1 | Red&#10072;S | 1            |
-| article-1 | Red&#10072;M | 2            |
+| article-1 | Red\|S | 1            |
+| article-1 | Red\|M | 2            |
 
 **Important!** Stock options must match order in msProductRemains settings (mspr_options key) and use delimiter from **"Additional delimiter for JSON fields"**.
 
@@ -242,7 +242,7 @@ For exporting modifications (msOptionsPrice2) to Yandex.Market, add your field n
 - **to** — file format csv|xlsx. Default xlsx
 - **filename** — file name
 - **where** — JSON-encoded string with additional query conditions
-- **element** — Snippet name that returns product IDs (comma-separated) for price list. You can pass params: &element=`mySnippet@myParams`. &returnIds=`1` is added automatically.
+- **element** — Snippet name that returns product IDs (comma-separated) for price list. You can pass params: `` &element=`mySnippet@myParams` ``. `` &returnIds=`1` `` is added automatically.
 
 Example: products with price > 0
 
