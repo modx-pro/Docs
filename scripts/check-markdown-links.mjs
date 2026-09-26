@@ -67,10 +67,8 @@ function collectFiles() {
   }
   const patterns = pathArgs.map((p) => {
     const abs = resolve(ROOT, p)
-    if (extname(abs) === '.md') {
-      return relative(ROOT, abs)
-    }
-    return relative(ROOT, join(abs, '**/*.md'))
+    // fast-glob needs forward slashes, relative() gives backslashes on Windows
+    return relative(ROOT, extname(abs) === '.md' ? abs : join(abs, '**/*.md')).replace(/\\/g, '/')
   })
   return fg.sync(patterns, {
     cwd: ROOT,
@@ -137,6 +135,17 @@ function stripHtmlComments(content) {
   return content.replace(/<!--[\s\S]*?-->/g, '')
 }
 
+/**
+ * Code blocks and inline code: `['add']('active')` in JS or `[text](url)` in a syntax example
+ * look like links but are not. Same patterns as cspell.json (CommonMark fences and code spans).
+ */
+function stripCode(content) {
+  return content
+    .replace(/^[ \t]*(`{3,})[^`\n]*\n[\s\S]*?^[ \t]*\1`*[ \t]*$/gm, '')
+    .replace(/^[ \t]*(~{3,})[^\n]*\n[\s\S]*?^[ \t]*\1~*[ \t]*$/gm, '')
+    .replace(/(?<!`)(`+)(?=[^`\n])[^\n]*?[^`\n]\1(?!`)/g, '')
+}
+
 function extractMarkdownLinks(content) {
   const links = []
   const re = /!?\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
@@ -194,7 +203,7 @@ for (const file of files) {
   const src = readFileSync(file, 'utf8')
   const { data, content } = matter(src)
 
-  for (const link of extractMarkdownLinks(stripHtmlComments(content))) {
+  for (const link of extractMarkdownLinks(stripCode(stripHtmlComments(content)))) {
     const href = link.href.trim()
     if (!href || href.startsWith('#')) {
       continue
