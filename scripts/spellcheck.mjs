@@ -1,5 +1,5 @@
 /**
- * Spell check of Russian docs. docs/en and parts are skipped (see cspell.json ignorePaths).
+ * Spell check of the docs (Russian and English). Fragments in parts are skipped (see cspell.json ignorePaths).
  * Component names and authors are added to the dictionary from the repo itself,
  * so a new component does not need a manual entry in cspell.json.
  * Usage:
@@ -25,7 +25,7 @@ const ROOT = join(__dirname, '..')
 const CSPELL = join(ROOT, 'node_modules/cspell/bin.mjs')
 
 /** Same as ignorePaths in cspell.json: cspell would drop these files anyway. */
-const isSkipped = (file) => file.startsWith('docs/en/') || /(^|\/)parts\//.test(file)
+const isSkipped = (file) => /(^|\/)parts\//.test(file)
 
 function fail(message) {
   console.error(message)
@@ -110,7 +110,7 @@ if (changedOnly || pathArgs.length) {
   const skipped = files.filter(isSkipped)
   targets = files.filter((f) => !isSkipped(f))
   if (skipped.length) {
-    console.log(`Skipped (docs/en and parts are not checked): ${skipped.join(', ')}`)
+    console.log(`Skipped (parts are not checked): ${skipped.join(', ')}`)
   }
   if (targets.length === 0) {
     if (changedOnly) {
