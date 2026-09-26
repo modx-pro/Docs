@@ -245,7 +245,7 @@ Scripts are loaded by the MiniShop3 plugin on the `OnLoadWebDocument` event — 
 The file set is defined by the `ms3_frontend_assets` system setting: a list of 18 paths, styles and scripts mixed together, order matters. Add your own files there when needed.
 
 ::: warning One of these files does not exist
-There is no bundled `ms3.min.js` — only the admin side is minified. Frontend scripts load as separate files: `ms3.js` expects the others to be present already and will not work on its own.
+There is no bundled `ms3.min.js`: a single compressed file is built only for the admin side. Frontend scripts load separately — `ms3.js` expects the others to be present already and will not work on its own.
 :::
 
 ### The `ms3:ready` event
