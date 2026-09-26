@@ -9,7 +9,7 @@ description: Готовый блок отзывов на карточке тов
 
 ## Назначение
 
-Один вызов вместо [ручной сборки по частям](../integration). Каждая секция оборачивается в `<section id="msreviews-…">`.
+Один вызов вместо [сборки по частям](../integration). Каждая секция оборачивается в `<section id="msreviews-…">`.
 
 ## Где вызывать
 
@@ -21,7 +21,7 @@ description: Готовый блок отзывов на карточке тов
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
-- **pdoTools 3.0+** — рендер чанков на Fenom
+- **pdoTools 3.0+** — отрисовка чанков на Fenom
 - Внутренние вызовы: `msRatingSummary`, `msReviews`, `msReviewForm`, Q&A, `msReviewSchema`
 
 ## Параметры
@@ -34,7 +34,8 @@ description: Готовый блок отзывов на карточке тов
 | `showStats` | `1` | Статистика в списке. На странице товара часто `0` при секции summary |
 | `formPosition` | *(настройка)* | Порядок Q&A внутри секции `qna` |
 | `hideEmpty` | `0` | Скрыть пустые секции (кроме `schema`) |
-| `applyRequestFilters` | `0` | `1` — inner `msReviews` читает GET `msr_*` (нужно для [msReviewsFilters](msReviewsFilters) рядом с Hub) |
+| `applyRequestFilters` | `0` | `1`: внутренний `msReviews` читает GET `msr_*` (нужно для [msReviewsFilters](msReviewsFilters) рядом с Hub) |
+| `useGravatar` | `1` | Аватар Gravatar во внутреннем списке отзывов |
 | `tpl` | `tplReviewsHub` | Чанк-обёртка блока |
 | `navTpl` | `tplReviewsHubNav` | Чанк якорной навигации |
 | `product_name` | *(auto)* | Проксируется в `msReviewSchema` |

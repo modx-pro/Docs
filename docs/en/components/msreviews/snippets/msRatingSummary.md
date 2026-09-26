@@ -2,10 +2,10 @@
 title: msRatingSummary
 description: Сводка рейтинга товара — полная на странице товара и компактная в каталоге
 ---
-<!-- TODO: translate from docs/components/msreviews/snippets/msRatingSummary.md -->
+
 # Сниппет msRatingSummary
 
-Выводит HTML-сводку рейтинга: средняя оценка, число отзывов, разбивка по звёздам (режим `full`) или компактная строка ★ 4.4 (32) (режим `aggregate`). С **1.2.3** область задаётся через `productIds` / `parents` / `all` (главная или раздел).
+Выводит HTML-сводку рейтинга: средняя оценка, число отзывов и разбивка по звёздам (`full`) или строка ★ 4.4 (32) (`aggregate`). С **1.2.3** область задаётся через `productIds` / `parents` / `all`.
 
 ## Назначение
 
@@ -30,7 +30,7 @@ description: Сводка рейтинга товара — полная на с
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `product_id` | id текущего ресурса | ID товара MS3. Без scope при `product_id=0` fallback на текущий ресурс |
+| `product_id` | id текущего ресурса | ID товара MS3. Без области при `product_id=0` берётся текущий ресурс |
 | `productIds` | *(пусто)* | CSV id ресурсов. Явная область, приоритет над `parents` |
 | `parents` | *(пусто)* | CSV id папок: сами папки + потомки, затем ресурсы каталога |
 | `all` | `0` | `1`: суммарный рейтинг по всему сайту (игнорирует `product_id`) |
@@ -39,9 +39,9 @@ description: Сводка рейтинга товара — полная на с
 | `hideEmpty` | `0` | `1`: не выводить при нуле отзывов |
 | `registerCss` | `1` | `0`: не подключать `reviews.css` повторно. См. [Подключение reviews.css](#подключение-reviewscss) |
 | `registerJs` | `1` | Подключать JS витрины |
-| `connectorUrl` | auto | URL `connector.php` (редко нужен override) |
+| `connectorUrl` | auto | Свойство в transport есть, сниппет его не читает |
 
-Приоритет области: `productIds` → `parents` → `all` → одиночный `product_id` / `msr_product_id` / текущий ресурс. Среднее взвешенное по числу опубликованных отзывов (`SUM(rating)/COUNT`), не среднее средних по товарам. Явно заданный, но пустой список (`productIds=`0`` / несуществующие id) даёт нулевую сводку, не весь сайт (`hideEmpty=0` показывает нули, `hideEmpty=1` пустую строку). Connector `rating/get` и JSON-LD остаются per-product.
+Приоритет области: `productIds` → `parents` → `all` → одиночный `product_id` / `msr_product_id` / текущий ресурс. Среднее взвешенное по числу опубликованных отзывов (`SUM(rating)/COUNT`), не среднее средних по товарам. Явно заданный, но пустой список (`productIds=`0`` / несуществующие id) даёт нулевую сводку, не весь сайт. При `hideEmpty=0` видны нули. При `hideEmpty=1` выводится пустая строка. Connector `rating/get` и JSON-LD остаются per-product.
 
 ## Подключение reviews.css
 

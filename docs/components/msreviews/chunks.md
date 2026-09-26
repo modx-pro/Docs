@@ -5,7 +5,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 
 # Чанки
 
-Чанки поставляются с пакетом в `core/components/msreviews/elements/chunks/`. Кастомизируйте копии в MODX или переопределяйте через параметр **`tpl`** / **`wrapper`** у сниппетов.
+Чанки поставляются с пакетом в `core/components/msreviews/elements/chunks/`. Правите копии в MODX или подключайте свои через параметр **`tpl`** / **`wrapper`** у сниппетов.
 
 ## Отзывы — список
 
@@ -50,6 +50,8 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 | `tplQuestionItem` / `tplQuestionsList` | `msQuestions` |
 | `tplQuestionForm` | `msQuestionForm` |
 
+В `tplQuestionItem` и `tplQuestionLatestItem` с **1.2.4** приходит `{$idx}`: номер строки с 1 с учётом `offset`.
+
 ## Email
 
 | Чанк | Назначение |
@@ -57,7 +59,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 | `tplMsReviewsEmailSubject` | Тема письма запроса отзыва |
 | `tplMsReviewsEmailBody` | Тело письма |
 
-Настройки запроса: **`msreviews_request_email_*_chunk`**. Письма модератору: ключи **`msreviews_moderator_email_*_chunk`**. Пустое имя: текст из лексикона. Имя задано, рендер пустой: ERROR в лог, письмо не уходит. См. [Уведомление модератора](settings#уведомление-модератора).
+Настройки запроса: **`msreviews_request_email_*_chunk`**. Письма модератору: ключи **`msreviews_moderator_email_*_chunk`**. Пустое имя: текст из лексикона. Имя задано, отрисовка пустая: ERROR в лог, письмо не уходит. См. [Уведомление модератора](settings#уведомление-модератора).
 
 ## Готовые блоки (Hub, вкладки, фильтры)
 
@@ -71,7 +73,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 
 ## Fenom в чанках
 
-С **1.2** все чанки пакета написаны на Fenom и рендерятся через **pdoTools** (`pdoTools::getChunk()` с принудительным Fenom). Системная **`pdotools_fenom_parser`** на msReviews не влияет.
+С **1.2** все чанки пакета написаны на Fenom и отрисовываются через **pdoTools** (`pdoTools::getChunk()` с принудительным Fenom). Системная **`pdotools_fenom_parser`** на msReviews не влияет.
 
 Без pdoTools 3.0+ сниппеты вернут пустую строку. Обновление пакета перезаписывает чанки категории **msReviews**. Свою версию держите под другим именем и подключайте параметром сниппета (`&tpl=`, `&itemTpl=`).
 
@@ -105,7 +107,7 @@ description: Шаблоны msReviews — отзывы, формы, рейтин
 
 Полный список — в `reviews.css`. Админка CMP использует отдельные **`--msrv-*`** в `css/mgr/main.css`.
 
-### Кастомизация через formClass
+### Настройка через formClass
 
 ::: code-group
 

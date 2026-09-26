@@ -9,21 +9,13 @@ description: Список опубликованных вопросов и от�
 
 ## Назначение
 
-Блок «Вопросы и ответы» на странице товара. Поддерживает pdoPage и фильтр `faqOnly` (только вопросы с ответом).
+Поддерживает pdoPage и фильтр `faqOnly` (только вопросы с ответом).
 
 ## Где вызывать
 
 - Шаблон **msProduct**, после [msQuestionForm](msQuestionForm) или перед ним (см. [msQnaBlock](msQnaBlock)).
 - Параметр **`product_id`** обязателен. Имя **`product`** не поддерживается.
 - Не дублируйте с [msReviewsTabbed](msReviewsTabbed) / [msReviewsHub](msReviewsHub).
-
-Обёртка с отступом:
-
-```html
-<div class="msreviews-qna-stack">
-  ...
-</div>
-```
 
 ## Зависимости
 
@@ -39,11 +31,14 @@ description: Список опубликованных вопросов и от�
 | `offset` | `0` | Пропуск. При вызове из `pdoPage` передаётся обёрткой автоматически |
 | `totalVar` | `page.total` | Плейсхолдер total для `pdoPage`. Режим списка без шапки включается при вызове из pdoPage |
 | `faqOnly` | `0` | Только вопросы с опубликованным ответом |
+| `sortDir` | `DESC` | `DESC` или `ASC` (с **1.2.4**) |
 | `tpl` | `tplQuestionItem` | Чанк строки вопроса |
 | `wrapper` | `tplQuestionsList` | Чанк-обёртка. Пусто — секция без заголовка из чанка |
-| `connectorUrl` | auto | URL connector |
+| `connectorUrl` | auto | Свойство в transport есть, сниппет его не читает |
 | `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
 | `registerJs` | `1` | Подключать JS витрины этим вызовом |
+
+В чанке `tplQuestionItem` с **1.2.4** доступен `{$idx}`: номер строки с 1 с учётом `offset`.
 
 ## Базовый вызов
 

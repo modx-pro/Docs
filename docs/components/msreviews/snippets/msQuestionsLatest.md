@@ -5,7 +5,7 @@ description: Последние вопросы с ответами для гла
 
 # Сниппет msQuestionsLatest
 
-Cross-product блок последних опубликованных вопросов с ответами. По умолчанию показывает только FAQ (`faqOnly=1`).
+Блок последних опубликованных вопросов с ответами по нескольким товарам. По умолчанию показывает только FAQ (`faqOnly=1`).
 
 ## Назначение
 
@@ -33,6 +33,7 @@ Cross-product блок последних опубликованных вопр�
 | `parents` | *(пусто)* | CSV id категорий |
 | `productIds` | *(пусто)* | CSV id товаров |
 | `faqOnly` | `1` | Только вопросы с опубликованным ответом |
+| `sortDir` | `DESC` | `DESC` или `ASC` (с **1.2.4**) |
 | `showProduct` | `1` | Ссылка на ресурс в карточке |
 | `dateFormat` | *(настройка)* | Формат даты |
 | `hideEmpty` | `0` | Пустой вывод без вопросов |
@@ -113,7 +114,7 @@ Cross-product блок последних опубликованных вопр�
 
 :::
 
-Чанки: `tplQuestionsLatestList`, `tplQuestionLatestItem` — [Чанки](../chunks).
+Чанки: `tplQuestionsLatestList`, `tplQuestionLatestItem` — [Чанки](../chunks). В `tplQuestionLatestItem` с **1.2.4** доступен `{$idx}`: номер строки с 1 с учётом `offset`.
 
 ## Пагинация
 
