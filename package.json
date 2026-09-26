@@ -60,6 +60,7 @@
     "plop": "^4.0.5",
     "react": "^19.3.0",
     "satori": "^0.33.4",
+    "sharp": "^0.35.4",
     "shiki": "^4.4.3",
     "transliteration": "^2.6.1",
     "typescript": "^6.0.3",

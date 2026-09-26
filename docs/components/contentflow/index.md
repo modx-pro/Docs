@@ -2,7 +2,7 @@
 title: ContentFlow
 description: Планирование, подготовка, проверка и публикация материалов в MODX 3.
 categories: content
-logo: https://contentflow.ffox.site/contentflow-logo.png
+logo: https://modstore.pro/assets/extras/contentflow/logo.png
 author: derzk1y
 outline: [2, 3]
 items:
