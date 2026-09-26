@@ -3,7 +3,7 @@ title: ms3FavoritesLists
 ---
 # Сниппет ms3FavoritesLists
 
-Выводит списки избранного текущего пользователя (или указанного по `user`) с количеством элементов в каждом. Для гостей при пустой БД данные берутся из cookie.
+Выводит списки избранного текущего пользователя (или указанного по `user`) и число элементов в каждом. Для гостей при пустой БД данные берутся из cookie.
 
 ## Параметры
 
@@ -16,7 +16,7 @@ title: ms3FavoritesLists
 | **offset** | Пропуск списков с начала | `0` |
 | **sortby** | Сортировка: `name` (по имени), `count` (по количеству) | `name` |
 | **sortdir** | Направление: `ASC`, `DESC` | `ASC` |
-| **tpl** | Чанк строки списка | `tplMs3fListsRow` |
+| **tpl** | Чанк строки списка. Поддерживает `@FILE path.tpl` (pdoTools, путь от `pdotools_elements_path`) | `tplMs3fListsRow` |
 | **tplWrapper** | Чанк-обёртка (например `<ul>`). Пусто — без обёртки | `—` |
 
 Ссылки на страницу списка формируются по настройке **ms3favorites.list_page** (по умолчанию `wishlist/`).
@@ -37,7 +37,6 @@ title: ms3FavoritesLists
 ```modx
 [[!ms3FavoritesLists? &tplWrapper=`tplMs3fListsWrapper`]]
 ```
-
 
 ```fenom
 {'!ms3FavoritesLists' | snippet : [

@@ -3,9 +3,9 @@ title: ms3Favorites
 ---
 # Сниппет ms3Favorites
 
-Выводит список товаров или ресурсов по переданным ID. Используется для блока «Избранное» при серверном выводе или после получения ID из коннектора.
+Выводит список товаров или ресурсов по переданным ID. Нужен для блока «Избранное» при серверном выводе или после получения ID из коннектора.
 
-Поддерживает `resource_type`: `products` (msProducts), `resources` (pdoResources), `articles`, `pages`, `custom`. Для products требуется MiniShop3.
+Поддерживает `resource_type`: `products` (msProducts), `resources` (pdoResources), `articles`, `pages`, `custom`. Для products нужен MiniShop3.
 
 ## Параметры
 
@@ -13,12 +13,12 @@ title: ms3Favorites
 |----------|----------|--------------|
 | **ids** | ID товаров/ресурсов через запятую | — |
 | **list** | Имя списка (`default, gifts, plans`) | `default` |
-| **resource_type** | Тип ресурсов: products, resources, articles, `pages`, `custom` | `products` |
+| **resource_type** | Тип ресурсов: `products`, `resources`, `articles`, `pages`, `custom` | `products` |
 | **tpl** | Чанк карточки товара | `tplFavoritesItem` |
 | **emptyTpl** | Чанк пустого состояния | `tplFavoritesEmpty` |
 | **limit** | Макс. количество в выборке | из настройки `ms3favorites.max_items` (20) |
 | **page** | Номер страницы (для `pdoPage`) | 1 |
-| **offset** | Смещение (для `pdoPage`) | (page-1)*limit |
+| **offset** | Смещение (для `pdoPage`) | `0`. При пагинации смещение передаёт pdoPage |
 | **totalVar** | Плейсхолдер для общего количества | — |
 
 Параметр **ids** передаётся извне: из JS при вызове коннектора или из другого сниппета (`ms3FavoritesIds`). Для пагинации используйте **pdoPage** с `element=ms3Favorites`.
@@ -81,4 +81,4 @@ title: ms3Favorites
 
 :::
 
-При отсутствии товаров сниппет вернёт контент `emptyTpl`: в шаблоне можно не выводить блок при пустом результате.
+Пустой `ids` возвращает пустую строку. Контент `emptyTpl` сниппет вернёт, если `offset` оказался за концом выборки или адаптер получил пустой набор после фильтрации. Коннектор при пустых `ids` отвечает `emptyTpl`.

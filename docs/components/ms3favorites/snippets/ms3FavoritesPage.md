@@ -3,17 +3,17 @@ title: ms3FavoritesPage
 ---
 # Сниппет ms3FavoritesPage
 
-Страница `/wishlist/` — табы списков (`default`, `gifts`, `plans`), тулбар («Добавить все в корзину», выбор чекбоксов и т.д.), контейнер под карточки.
+Страница `/wishlist/` — табы списков (`default`, `gifts`, `plans`), панель («Добавить все в корзину», выбор чекбоксов и т.д.), контейнер под карточки.
 
 ## Как выводятся карточки (products)
 
-- При **`resource_type=products`** и **`serverList=1`** (по умолчанию) список товаров собирается **на сервере** в чанке: ID берутся тем же способом, что у [ms3FavoritesIds](ms3FavoritesIds) (плейсхолдер `-0` или `1,2,3`), затем **pdoPage** с **`element=msProducts`**, сортировка `FIELD(msProduct.id,…)`, пагинация через плейсхолдеры `ms3f.page.*`. Табы — ссылки `?list=default|gifts|plans` (полная перезагрузка при смене вкладки). **favorites.js** для этого списка **`render` не вызывает**. После sync обновляются счётчики на табах.
+- При **`resource_type=products`** и **`serverList=1`** (по умолчанию) список товаров собирается **на сервере** в чанке. ID берутся тем же способом, что у [ms3FavoritesIds](ms3FavoritesIds) (плейсхолдер `-0` или `1,2,3`). Затем **pdoPage** с **`element=msProducts`**, сортировка `FIELD(msProduct.id,…)`, пагинация через плейсхолдеры `ms3f.page.*`. Табы — ссылки `?list=default|gifts|plans` (полная перезагрузка при смене вкладки). **favorites.js** для этого списка **`render` не вызывает**. После sync обновляются счётчики на табах.
 - При `&serverList=0` и `products` — прежний режим: список дорисовывает **favorites.js** (`render`, до **100** позиций на вкладку без серверной пагинации в чанке).
 - Для **`resource_type` ≠ products** список по-прежнему через **JS** после sync. Параметр **serverList** SSR не включает.
 
-Кастомная страница без **ms3FavoritesPage** или особая вёрстка — по-прежнему **[ms3FavoritesIds](ms3FavoritesIds) → [pdoPage](/components/pdotools/snippets/pdopage) → [ms3Favorites](ms3Favorites)** (или `msProducts`) — см. [Интеграцию](../integration).
+Своя страница без **ms3FavoritesPage** или особая вёрстка — по-прежнему **[ms3FavoritesIds](ms3FavoritesIds) → [pdoPage](/components/pdotools/snippets/pdopage) → [ms3Favorites](ms3Favorites)** (или `msProducts`). См. [Интеграцию](../integration).
 
-**Что делает сервер для табов:** для каждого таба подсчитываются ID из БД (авторизованный пользователь или гость с `session_id` при `ms3favorites.guest_db_enabled`) с учётом **`sortBy`**. Если в БД пусто, для гостя подмешиваются ID из cookie. Результат попадает в **`tabCounts`** и в плейсхолдер **`ms3f.total`** (сумма по трём табам).
+**Что делает сервер для табов:** для каждого таба считает ID из БД (авторизованный пользователь или гость с `session_id` при `ms3favorites.guest_db_enabled`) с учётом **`sortBy`**. Если в БД пусто, для гостя подмешиваются ID из cookie. Результат попадает в **`tabCounts`** и в плейсхолдер **`ms3f.total`** (сумма по трём табам).
 
 ::: warning Удалены параметры встроенной пагинации страницы
 Параметры **`usePdoPage`**, старый **`limit`** страницы и **`pageVarKey`** у сниппета **не используются**. Серверная разбивка для товаров на `/wishlist/` идёт через встроенный в чанк вызов **pdoPage** + **msProducts** при **`serverList=1`**. Для отдельного ресурса — цепочка **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`) — см. [Интеграцию](../integration).
@@ -30,9 +30,11 @@ title: ms3FavoritesPage
 | **extendedToolbar** | `1` — показать кнопки Каталог, Очистить, Поделиться | `false` (становится `true` при `tpl=tplFavoritesPageDemo`) |
 | **itemTpl** | Чанк элемента списка (для `render()` в JS-режиме) | `tplFavoritesPageItem` |
 | **emptyTpl** | Чанк пустого состояния (для `render()`) | `tplFavoritesEmpty` |
-| **list** | Активный список (или из `$_REQUEST['list']`) | `default` |
+| **list** | Активный список (или из `$_GET['list']`) | `default` |
 | **resource_type** | Тип ресурсов | `products` |
 | **sortBy** | Порядок ID при подсчёте счётчиков: `added_at_desc`, `added_at_asc` | `added_at_desc` |
+| **pageLimit** | Лимит серверного списка (pdoPage + msProducts) при `serverList=1` | из настройки `ms3favorites.max_items` (20), максимум 100 |
+| **msProductsTpl** | Чанк карточки для msProducts в серверном списке. Пусто — используется `itemTpl` | `—` |
 
 ## Плейсхолдеры и данные для чанка
 
@@ -105,6 +107,6 @@ title: ms3FavoritesPage
 
 Отдельный ресурс или блок: схема из [Интеграции](../integration) (**ms3FavoritesIds** + **pdoPage** + **ms3Favorites** / **msProducts**).
 
-Гости при пустой БД видят данные из браузера после инициализации JS. Серверные счётчики могут быть нулевыми до появления записей в БД или cookie.
+Гости при пустой БД видят данные из браузера после инициализации JS. Серверные счётчики могут быть нулевыми, пока нет записей в БД или cookie.
 
-**Очистка списка при SSR:** на странице с серверным выводом товаров после «Очистить» или удаления последней карточки может выполняться перезагрузка страницы, чтобы совпало пустое состояние в разметке.
+**Очистка списка при SSR:** на странице с серверным выводом товаров после «Очистить» или удаления последней карточки страница может перезагрузиться, чтобы пустое состояние в разметке совпало.
