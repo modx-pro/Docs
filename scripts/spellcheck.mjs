@@ -62,9 +62,11 @@ if (shortFlag) {
 if (changedOnly && pathArgs.length) {
   fail('--changed takes no paths: it checks the files changed against the base branch.')
 }
-const reporter = cspellFlags.find((a) => /^--(reporter|no-summary|no-issues)\b/.test(a))
-if (changedOnly && reporter) {
-  fail(`${reporter} can't be used with --changed: its issues and summary are parsed from the default output.`)
+// options that change the output or stop the run early: --changed parses the default output of a full run
+const formatFlag = cspellFlags.find((a) =>
+  /^--(reporter|no-summary|no-issues|silent|unique|color|fail-fast|issue-template|words-only|legacy)\b/.test(a))
+if (changedOnly && formatFlag) {
+  fail(`${formatFlag} can't be used with --changed: it parses the default output of a full cspell run.`)
 }
 
 function pathFiles() {
@@ -107,14 +109,15 @@ function projectWords() {
 }
 
 /**
- * cspell prints issues to stdout as `file:line:col - Unknown word (...)` and the summary
- * (`CSpell: Files checked: N, Issues found: M in K files[ with E errors]`) to stderr.
+ * cspell prints issues to stdout as `file:line:col - Unknown word (...)` and the summary to stderr:
+ * `CSpell: Files checked: N[ (C from cache)][, skipped: S], Issues found: M in K files[ with E errors].`
  * Keeps issues on changed lines; returns 1 on such issues or when the run can't be trusted:
  * cspell exits 1 on its own failures too (bad option, broken import), so the summary is required,
- * must show no errors and must match the number of issues parsed.
+ * every target file must be checked, no errors reported, and the issues parsed must match M.
  */
 function reportChangedLines(stdout, stderr, lines, fileCount) {
-  const summary = stderr.match(/CSpell: Files checked: (\d+), Issues found: (\d+) in \d+ files?(?: with (\d+) errors?)?/)
+  const summary = stderr.match(
+    /CSpell: Files checked: (\d+)(?: \((\d+) from cache\))?(?:, skipped: (\d+))?, Issues found: (\d+) in \d+ files?(?: with (\d+) errors?)?\./)
   for (const row of stderr.split(/\r?\n/)) {
     if (row.trim() && !row.startsWith('CSpell:')) console.error(row)
   }
@@ -122,9 +125,15 @@ function reportChangedLines(stdout, stderr, lines, fileCount) {
     console.error('cspell did not report a summary: it failed before checking the files.')
     return 1
   }
-  if (Number(summary[3] ?? 0) > 0) {
-    console.error(summary[0])
+  const [line, checked, , skipped = '0', found, errors = '0'] = summary
+  if (Number(errors) > 0) {
+    console.error(line)
     console.error('cspell reported errors: the check is not reliable.')
+    return 1
+  }
+  if (Number(skipped) > 0 || Number(checked) !== fileCount) {
+    console.error(line)
+    console.error(`cspell checked ${checked} of ${fileCount} files (skipped: ${skipped}): the check is not complete.`)
     return 1
   }
 
@@ -139,15 +148,21 @@ function reportChangedLines(stdout, stderr, lines, fileCount) {
     }
     parsed++
     const file = relative(ROOT, resolve(ROOT, issue[1])).replace(/\\/g, '/')
-    if (lines.get(file)?.has(Number(issue[2]))) {
+    if (!lines.has(file)) {
+      // a path that doesn't match git's would silently count every issue as unchanged
+      console.error(row)
+      console.error(`cspell reported ${file}, which is not among the changed files: paths don't match.`)
+      return 1
+    }
+    if (lines.get(file).has(Number(issue[2]))) {
       console.log(row)
       kept++
       files.add(file)
     }
   }
-  if (parsed !== Number(summary[2])) {
-    console.error(summary[0])
-    console.error(`Parsed ${parsed} of ${summary[2]} cspell issues: output format not recognised.`)
+  if (parsed !== Number(found)) {
+    console.error(line)
+    console.error(`Parsed ${parsed} of ${found} cspell issues: output format not recognised.`)
     return 1
   }
   const ignored = parsed - kept
