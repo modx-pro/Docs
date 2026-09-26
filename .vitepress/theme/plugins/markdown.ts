@@ -1,8 +1,12 @@
-import type { MarkdownIt, StateBlock, StateCore } from 'markdown-it'
+import type { MarkdownRenderer } from 'vitepress'
 import kbd from 'markdown-it-kbd'
 import { headingAnchor, legacyHeadingSlug, uniqueSettingAnchor } from '../anchors.ts'
 
-export const addPlugins = (md: MarkdownIt) => {
+// типы состояния берём из экземпляра VitePress: он работает на своей версии markdown-it
+type StateBlock = Parameters<Parameters<MarkdownRenderer['block']['ruler']['at']>[1]>[0]
+type StateCore = Parameters<Parameters<MarkdownRenderer['core']['ruler']['push']>[1]>[0]
+
+export const addPlugins = (md: MarkdownRenderer) => {
   md.use(kbd)
   md.block.ruler.at('table', table)
   md.core.ruler.push('setting_heading_alias', settingHeadingAlias)
@@ -129,7 +133,7 @@ function table(
   if (silent) { return true; }
 
   oldParentType = state.parentType;
-  // @ts-expect-error
+  // @ts-expect-error: встроенное правило таблиц markdown-it тоже ставит 'table', в типах 14.x его нет
   state.parentType = 'table';
 
   // use 'blockquote' lists for termination because it's

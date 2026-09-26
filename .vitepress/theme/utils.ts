@@ -20,14 +20,14 @@ export function findPath(
   searchable = ensureStartingSlash(searchable)
   const localeConfig: DocsTheme.Config = config.locales[locale.key].themeConfig
   const root = localeConfig.nav.find(item => {
-    if (!('link' in item)) {
+    if (!('link' in item) || typeof item.link !== 'string') {
       return false
     }
     const tmp = locale.link === '/' ? item.link.replace(/(^\/.*?\/).*$/, '$1') : item.link.replace(/(^\/.*?\/)(.*?\/).*$/, '$1$2')
     return searchable.startsWith(tmp)
   })
   const path: DefaultTheme.SidebarItem[] = []
-  if (root && ('link' in root)) {
+  if (root && ('link' in root) && typeof root.link === 'string') {
     path.push({ text: root.text, link: root.link })
   }
 

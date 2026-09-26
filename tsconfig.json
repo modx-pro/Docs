@@ -8,8 +8,11 @@
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "noEmit": true,
+    "skipLibCheck": true,
+    "strict": false,
     "types": [
-      "vite/client"
+      "vitepress/client",
+      "node"
     ],
     "typeRoots": [
       "./node_modules/@types/",

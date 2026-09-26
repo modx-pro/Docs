@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import { useData } from 'vitepress'
+import { useData, type DefaultTheme } from 'vitepress'
 import { ensureStartingSlash } from '../utils'
 import { getFlatSideBarLinks } from 'vitepress/dist/client/theme-default/support/sidebar'
 
@@ -52,8 +52,8 @@ export function useLangs({
         }
       }
 
-      for (const data of Object.values(sidebar)) {
-        const flatSidebar = getFlatSideBarLinks(data)
+      for (const data of Object.values(sidebar ?? {}) as Array<DefaultTheme.SidebarItem[] | { items: DefaultTheme.SidebarItem[] }>) {
+        const flatSidebar = getFlatSideBarLinks(Array.isArray(data) ? data : data.items)
 
         for (const item of flatSidebar) {
           if (item.link === link) {
