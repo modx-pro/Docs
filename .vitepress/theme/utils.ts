@@ -7,18 +7,35 @@ import type { DocsTheme } from './types/index.ts'
 const HASH_OR_QUERY_RE = /[?#].*$/;
 const INDEX_OR_EXT_RE = /(?:(^|\/)index)?\.(?:md|html)$/;
 
+/**
+ * A node of the sidebar tree: a page with optional children, a list of pages or a component.
+ * `base` of multi-sidebar entries is not applied: links are expected to be absolute.
+ */
+type SidebarNode = { link?: string, items?: DefaultTheme.SidebarItem[] } | DefaultTheme.SidebarItem[]
+
+const warnedSidebar = new Set<string>()
+
 export function findPath(
   pageData: PageData,
   config: UserConfig,
 ): DefaultTheme.SidebarItem[] {
   let searchable = normalize(pageData.relativePath)
 
-  const localeLinks = Object.entries(config.locales).flatMap(([key]) => ({ key, link: key === 'root' ? '/' : `${key}/` }))
+  // a broken locale config must fail the build: empty breadcrumbs would also
+  // silently change <title> of pages without a frontmatter title (component.ts)
+  const locales = config.locales
+  if (!locales || !Object.keys(locales).length) {
+    throw new Error('findPath: config.locales is empty')
+  }
+  const localeLinks = Object.keys(locales).map(key => ({ key, link: key === 'root' ? '/' : `${key}/` }))
   if (localeLinks.some(({ link }) => link === searchable)) return []
 
   const locale = localeLinks.find(locale => locale.link.startsWith(searchable.replace(/(^.*?\/).*$/, '$1'))) || localeLinks[0]
   searchable = ensureStartingSlash(searchable)
-  const localeConfig: DocsTheme.Config = config.locales[locale.key].themeConfig
+  const localeConfig: DocsTheme.Config | undefined = locales[locale.key].themeConfig
+  if (!localeConfig?.nav) {
+    throw new Error(`findPath: locale "${locale.key}" has no themeConfig.nav`)
+  }
   const root = localeConfig.nav.find(item => {
     if (!('link' in item) || typeof item.link !== 'string') {
       return false
@@ -31,51 +48,42 @@ export function findPath(
     path.push({ text: root.text, link: root.link })
   }
 
-  let tree: DefaultTheme.SidebarItem | ComponentData
+  let tree: SidebarNode | undefined
 
   if (pageData.component) {
     const { title, link, items } = pageData.component
     tree = pageData.component
     path.push({ text: title, link, items })
-  } else {
+  } else if (localeConfig.sidebar && !Array.isArray(localeConfig.sidebar)) {
+    // multi-sidebar: { '/components/x/': items | { items, base } }
     const sidebar = Object.entries(localeConfig.sidebar).find(([link]) => searchable.startsWith(link))
     if (sidebar) tree = sidebar[1]
+  } else if (!warnedSidebar.has(locale.key)) {
+    // breadcrumbs are built from a multi-sidebar only; without it pages get just the nav root
+    warnedSidebar.add(locale.key)
+    console.warn(`findPath: locale "${locale.key}" has no multi-sidebar, breadcrumbs contain only the nav item`)
   }
 
   if (!tree) return path
 
-  const keyExists = (tree) => {
-    if (!tree || (typeof tree !== 'object' && !Array.isArray(tree.items) && !Array.isArray(tree))) {
+  const keyExists = (node: SidebarNode | undefined): boolean => {
+    if (!node || typeof node !== 'object') {
       return false
     }
-    else if (tree.hasOwnProperty('link') && ensureStartingSlash(tree.link) === searchable) {
+    if (!Array.isArray(node) && typeof node.link === 'string' && ensureStartingSlash(node.link) === searchable) {
       return true
     }
-    else if (Array.isArray(tree)) {
-      for (let i = 0; i < tree.length; i++) {
-        const item = tree[i]
-        path.push(item)
-        const result = keyExists(item)
-        if (result) {
-          return result
-        }
-
-        path.pop()
-      }
+    const children = Array.isArray(node) ? node : node.items
+    if (!Array.isArray(children)) {
+      return false
     }
-    else if (Array.isArray(tree.items)) {
-      for (let i = 0; i < tree.items.length; i++) {
-        const item = tree.items[i]
-        path.push(item)
-        const result = keyExists(item)
-        if (result) {
-          return result
-        }
-
-        path.pop()
+    for (const item of children) {
+      path.push(item)
+      if (keyExists(item)) {
+        return true
       }
+      path.pop()
     }
-
     return false
   }
 
@@ -117,7 +125,7 @@ export function getAuthor(author: string): Author | undefined {
   return authors[key]
 }
 
-export function normalize(path) {
+export function normalize(path: string): string {
   return decodeURI(path)
       .replace(HASH_OR_QUERY_RE, '')
       .replace(INDEX_OR_EXT_RE, '$1');

@@ -1,13 +1,14 @@
 import { computed } from 'vue'
-import { useData } from 'vitepress'
+import { useData, type DefaultTheme } from 'vitepress'
 import { ensureStartingSlash } from '../utils'
+import type { DocsTheme } from '../types/index.ts'
 import { getFlatSideBarLinks, getSidebar } from 'vitepress/dist/client/theme-default/support/sidebar'
 
 export function useLangs({
   removeCurrent = true,
   correspondingLink = false
 } = {}) {
-  const { site, localeIndex, page, theme } = useData()
+  const { site, localeIndex, page, theme } = useData<DocsTheme.Config>()
   const currentLang = computed(() => ({
     label: site.value.locales[localeIndex.value]?.label,
     link:
@@ -40,11 +41,13 @@ export function useLangs({
         }
       }
 
+      // this runs in the browser: a locale without nav or components falls back to its root link
       const { themeConfig } = site.value.locales[key]
-      const { nav, sidebar } = themeConfig
+      const nav = themeConfig?.nav ?? []
+      const sidebar = themeConfig?.sidebar
 
       for (const item of nav) {
-        if (Object.prototype.hasOwnProperty.call(item, 'link') && item.link === link) {
+        if ('link' in item && item.link === link) {
           return {
             text,
             link
@@ -55,7 +58,9 @@ export function useLangs({
       // getSidebar разбирает обе формы сайдбара и добавляет base к ссылкам — так же, как сам VitePress
       const sidebars = Array.isArray(sidebar)
         ? [getSidebar(sidebar, '')]
-        : Object.keys(sidebar ?? {}).map((dir) => getSidebar({ [dir]: sidebar[dir] }, dir))
+        : Object.entries(sidebar ?? {}).map(([dir, value]) =>
+          // locale themeConfig is typed as DeepPartial by VitePress; the data is the same sidebar
+          getSidebar({ [dir]: value } as DefaultTheme.SidebarMulti, dir))
 
       for (const items of sidebars) {
         const flatSidebar = getFlatSideBarLinks(items)
@@ -70,15 +75,16 @@ export function useLangs({
         }
       }
 
-      if (!page.value.component) {
+      const current = page.value.component
+      if (!current) {
         return {
           text: value.label,
           link: rootLink,
         }
       }
 
-      const component = themeConfig.components.find(component => component.title === page.value.component.title)
-      if (!component) {
+      const component = themeConfig?.components?.find(component => component.title === current.title)
+      if (!component?.link) {
         return {
           text: value.label,
           link: rootLink,

@@ -30,9 +30,16 @@ export default class DocsSidebar {
     }
 
     const entries = fg.sync(['docs/faq/**/*.md', '!docs/faq/index.md'])
+    const categoryOf = (path: string) => path.match(/^docs\/faq\/(.*)\//i)?.[1]
+
+    // an article outside the known categories still builds, but is missing from the sidebar
+    const orphans = entries.filter(path => !Object.hasOwn(faqCategories, categoryOf(path) ?? ''))
+    if (orphans.length) {
+      console.warn(`FAQ articles outside the categories of docs/faq/categories.json, not in the sidebar: ${orphans.join(', ')}`)
+    }
 
     return Object.entries(faqCategories).map(([category, text]) => {
-      const articles = entries.filter(path => path.match(/^docs\/faq\/(.*)\//i)[1] === category)
+      const articles = entries.filter(path => categoryOf(path) === category)
       const items = articles.map(path => DocsSidebar.getData(path))
 
       return {
@@ -84,7 +91,7 @@ export default class DocsSidebar {
     }
 
     if (items) {
-      output.collapsed = options.collapsed === null || options.collapsed === undefined || options.collapsed
+      output.collapsed = options?.collapsed ?? true
       output.items = DocsSidebar.generateSidebarItem(items, link)
     }
 
