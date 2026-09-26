@@ -286,6 +286,7 @@ export default withMermaid(
     resolve: {
       alias: [
         'VPSidebar',
+        'VPSidebarItem',
         'VPDocFooter',
         'VPNavTranslations',
         'VPNavBar',

@@ -30,7 +30,7 @@ const links = computed<DefaultTheme.SidebarItem[]>(() => {
     return []
   }
 
-  return links.value = ['modstore', 'modx', 'repository']
+  return ['modstore', 'modx', 'repository']
     .reduce((filtered, key) => {
       if (!Object.prototype.hasOwnProperty.call(component.value, key)) {
         return filtered
