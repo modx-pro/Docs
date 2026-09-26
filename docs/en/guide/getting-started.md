@@ -194,7 +194,7 @@ More on markup and pages: [Markdown](/en/guide/markdown), [VitePress](/en/guide/
 
 ::: details Dev server won�t start or build fails
 
-Use **Node.js 22.18+** (`package.json` has `"engines": { "node": ">=22.18" }`). Try removing `node_modules` and reinstalling with `pnpm install`.
+Use **Node.js 22.18+** (`package.json` has `"engines": { "node": ">=22.18" }`). Try removing `node_modules` and reinstalling with `pnpm install` (keep `pnpm-lock.yaml`: it pins the dependency versions).
 
 :::
 
