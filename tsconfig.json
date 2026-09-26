@@ -9,7 +9,7 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "types": [
       "vitepress/client",
       "node"

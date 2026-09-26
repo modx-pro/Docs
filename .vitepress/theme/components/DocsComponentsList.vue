@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { ComponentData } from '../plugins/component'
+import type { DocsTheme } from '../types/index.ts'
 import { useData } from 'vitepress'
 
 import DocsSearchBar from './DocsSearchBar.vue'
 import DocsComponentCard from './DocsComponentCard.vue'
 
-const { site, frontmatter, localeIndex } = useData()
+const { site, frontmatter, localeIndex } = useData<DocsTheme.Config>()
 const props = defineProps<{
   title?: string
   dependency?: string
@@ -18,18 +19,20 @@ const props = defineProps<{
 const query = ref<string>('')
 
 const components = computed<ComponentData[]>(() => {
-  let filtered: ComponentData[] = site.value.themeConfig.components
+  let filtered: ComponentData[] = site.value.themeConfig.components ?? []
 
-  if (props.dependency) {
-    filtered = filtered.filter(component => component.dependencies?.includes(props.dependency))
+  const { dependency, category, excludeCategory } = props
+
+  if (dependency) {
+    filtered = filtered.filter(component => component.dependencies?.includes(dependency))
   }
 
-  if (props.category) {
-    filtered = filtered.filter(component => component.categories?.includes(props.category))
+  if (category) {
+    filtered = filtered.filter(component => component.categories?.includes(category))
   }
 
-  if (props.excludeCategory) {
-    filtered = filtered.filter(component => !component.categories?.includes(props.excludeCategory))
+  if (excludeCategory) {
+    filtered = filtered.filter(component => !component.categories?.includes(excludeCategory))
   }
 
   if (query.value) {

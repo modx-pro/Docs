@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { ComponentData } from '../plugins/component'
+import type { DocsTheme } from '../types/index.ts'
 import { useData } from 'vitepress'
 import { categoryKeys, categoryLabel } from '../categories'
 
@@ -9,7 +10,7 @@ import DocsComponentCard from './DocsComponentCard.vue'
 
 const NEW_SIZE = 6
 
-const { site, localeIndex } = useData()
+const { site, localeIndex } = useData<DocsTheme.Config>()
 const props = defineProps<{
   title?: string
 }>()

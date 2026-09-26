@@ -194,7 +194,7 @@ export default withMermaid(
     return prepareData(pageData, siteConfig)
   },
 
-  transformHead({ pageData }: { pageData }) {
+  transformHead({ pageData }) {
     const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
     const image = pageData?.component
       ? SITE_HOST + 'og/' + getComponentSlug(pageData.component) + '.png?v=' + getOgImageVersion({
