@@ -91,6 +91,11 @@ export default withMermaid(
 
   markdown: {
     languages,
+    // shiki has no `env` and `cron`: .env files are dotenv, a crontab line is a shell command
+    languageAlias: {
+      env: 'dotenv',
+      cron: 'shellscript',
+    },
     theme: {
       light: lightTheme,
       dark: darkTheme,
