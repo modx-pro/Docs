@@ -81,7 +81,7 @@ description: Вывод msViewCounter в списке товаров msProducts
 
 :::
 
-![Счётчик в сетке каталога](/components/msviewcounter/screenshots/catalog-grid.png)
+![Счётчик в сетке каталога](/components/msviewcounter/screenshots/catalog-grid.jpg)
 
 ## msProducts с inline-шаблоном
 
