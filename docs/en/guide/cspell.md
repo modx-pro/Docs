@@ -10,7 +10,7 @@ The project uses [cspell](https://cspell.org/) to spell-check Markdown. Both the
 
 From the repo root:
 
-- **`pnpm run spellcheck:changed`** — checks Markdown files changed since the branch forked from `origin/master` and reports only issues on changed lines, so old typos elsewhere in the file don't get in the way (run `git fetch` first; set another base with `SPELLCHECK_BASE=origin/<branch>`). CI runs the same check on PRs that change `docs/`, against the PR's base branch, so it is the handiest one before submitting changes.
+- **`pnpm run spellcheck:changed`** — checks Markdown files changed since the branch forked from `origin/master` and reports only issues on changed lines, so old typos elsewhere in the file don't get in the way (run `git fetch` first; set another base with `CHECK_BASE=origin/<branch>`). CI runs the same check on PRs that change `docs/`, against the PR's base branch, so it is the handiest one before submitting changes.
 - **`pnpm run spellcheck`** — checks all docs and reports every spelling issue (file, line, word).
 - **`pnpm run spellcheck:fix`** — same check with spelling suggestions for each unknown word; fix files manually or add the word to `cspell.json`.
 

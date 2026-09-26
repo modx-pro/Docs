@@ -181,8 +181,11 @@ VitePress также поставляет инструменты, украшаю
 | `pnpm dev` | Локальный предпросмотр с hot reload (по умолчанию порт из вывода VitePress, часто `5173`) |
 | `pnpm build` | Production-сборка сайта (тяжёлая; нужен достаточный объём памяти для Node) |
 | `pnpm preview` | Просмотр уже собранного статического вывода |
-| `pnpm run lint` | Проверка Markdown ([markdownlint](https://github.com/DavidAnson/markdownlint)) |
-| `pnpm run spellcheck` | Орфография по `docs/**/*.md` (кроме `docs/en/`) |
+| `pnpm run lint:changed` | Проверка разметки ([markdownlint](https://github.com/DavidAnson/markdownlint)) в изменённых строках; `pnpm run lint` — по всем файлам, `pnpm run lint:fix` — исправить автоматически |
+| `pnpm run spellcheck:changed` | Орфография в изменённых строках (RU и EN); `pnpm run spellcheck` — по всем файлам, подробнее — [Проверка орфографии](/guide/cspell) |
+| `pnpm run check:sync:changed` | У новых русских страниц есть английские версии |
+
+Эти же проверки CI запускает в каждом PR, который меняет `docs/`, и учитывает только изменённые строки — старые замечания в остальных строках файла не мешают. Для новой русской страницы нужна английская: если перевода пока нет, создайте заготовку командой `node scripts/sync-docs-en.mjs docs/путь/к/странице.md` — она скопирует страницу в `docs/en/` с пометкой TODO. Если вы правите русскую страницу, а английскую — нет, CI выведет предупреждение: проверьте, не нужна ли та же правка в переводе.
 
 Подробнее про разметку и возможности страниц — в [гайде по Markdown](/guide/markdown), [VitePress](/guide/vitepress) и [Frontmatter](/guide/frontmatter).
 

@@ -13,7 +13,6 @@
 | Русская версия | [docs.modx.pro](https://docs.modx.pro/) |
 | English | [docs.modx.pro/en](https://docs.modx.pro/en/) |
 
-
 ## 📑 Содержание
 
 - [Русский](#русский)
@@ -108,18 +107,18 @@ pnpm dev
 | `pnpm dev` | Локальный предпросмотр (VitePress dev, hot reload) |
 | `pnpm build` | Продакшен-сборка (перед сборкой запускается генерация OG; для Node задан лимит памяти — см. скрипт в `package.json`) |
 | `pnpm preview` | Просмотр уже собранного статического сайта |
-| `pnpm lint` / `pnpm lint:fix` | Markdownlint по `**/*.md` |
-| `pnpm spellcheck` | Проверка орфографии для `docs/**/*.md` **кроме** `docs/en/**` (отдельная проверка английского при необходимости — вручную или своими правилами) |
+| `pnpm lint:changed` / `pnpm lint` / `pnpm lint:fix` | Markdownlint: изменённые строки / все файлы / автоисправление |
+| `pnpm spellcheck:changed` / `pnpm spellcheck` | Проверка орфографии (RU и EN): изменённые строки / все файлы |
+| `pnpm check:sync:changed` | У новых русских страниц есть английские версии (заготовка — `node scripts/sync-docs-en.mjs <путь>`) |
 | `pnpm generate` | Мастер создания заготовок документации (Plop) |
 
 <h1 id="contributor-tips">💡 Советы контрибьюторам / Contributor tips</h1>
 
 - ✅ **Мелкие PR** проще и быстрее ревьюить: одна тема (один компонент, один раздел) вместо «всего сразу».
-- ✅ Перед отправкой PR полезно прогнать **`pnpm lint`** (и при правках по-русски — **`pnpm spellcheck`**).
+- ✅ Перед отправкой PR прогоните **`pnpm lint:changed`**, **`pnpm spellcheck:changed`** и **`pnpm check:sync:changed`** — CI в PR запускает те же проверки изменённых строк.
 - ✅ Следуйте структуре соседних статей в том же каталоге: front matter, заголовки, внутренние ссылки VitePress.
 - ✅ Скриншоты и схемы кладите в соответствующие папки рядом с документацией или в `docs/public/`, если так принято для вашего раздела — ориентируйтесь на существующие статьи.
 - ✅ Не знаете, с чего начать? Откройте [Issues][repository-issues] — там можно обсудить идею до большого объёма правок.
-
 
 <h1 id="useful-links">🔗 Полезные ссылки / Links</h1>
 

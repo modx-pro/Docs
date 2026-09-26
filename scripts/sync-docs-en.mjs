@@ -1,10 +1,11 @@
 /**
  * Copy missing Russian doc files to docs/en/ with a TODO placeholder.
  * Run from repo root: node scripts/sync-docs-en.mjs
+ * Only some pages or folders: node scripts/sync-docs-en.mjs docs/components/fetchit docs/guide/cspell.md
  * After running, translate the content of the created files.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
-import { dirname, join } from 'path'
+import { dirname, join, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import fg from 'fast-glob'
 import matter from 'gray-matter'
@@ -14,7 +15,11 @@ const ROOT = join(__dirname, '..')
 const DOCS = join(ROOT, 'docs')
 const DOCS_EN = join(ROOT, 'docs', 'en')
 
-const ruFiles = fg.sync('**/*.md', { cwd: DOCS, ignore: ['en/**'] })
+const only = process.argv.slice(2).map((p) => relative(DOCS, resolve(ROOT, p)).replace(/\\/g, '/'))
+const inScope = (file) => only.length === 0
+  || only.some((p) => file === p || file.startsWith(p.replace(/\/$/, '') + '/'))
+
+const ruFiles = fg.sync('**/*.md', { cwd: DOCS, ignore: ['en/**'] }).filter(inScope)
 const enFiles = new Set(fg.sync('**/*.md', { cwd: DOCS_EN }))
 
 const missing = ruFiles.filter((p) => !enFiles.has(p))

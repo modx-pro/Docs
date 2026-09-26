@@ -1,18 +1,19 @@
-name: Spellcheck
+name: Markdownlint
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - 'docs/**'
-      - 'cspell.json'
-      - 'scripts/spellcheck.mjs'
+      - '.markdownlint.jsonc'
+      - '.markdownlintignore'
+      - 'scripts/markdownlint.mjs'
       - 'scripts/lib/git-changed.mjs'
-      - '.github/workflows/spellcheck.yml'
+      - '.github/workflows/markdownlint.yml'
       - 'package.json'
 
 jobs:
-  spellcheck:
+  markdownlint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -28,7 +29,7 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
         run: git fetch --no-tags origin "$BASE_REF"
-      - name: Spellcheck changed markdown
+      - name: Lint changed markdown
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: pnpm run spellcheck:changed
+        run: pnpm run lint:changed

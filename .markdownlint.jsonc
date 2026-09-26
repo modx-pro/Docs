@@ -21,5 +21,9 @@
     "single-title": {
         "front_matter_title": ""
     },
-    "no-blanks-blockquote": false
+    "no-blanks-blockquote": false,
+    // было отключено флагом --disable MD045 в скрипте lint
+    "no-alt-text": false,
+    // выравнивание столбцов таблиц на отображение не влияет, а правило дало ~10 000 замечаний
+    "table-column-style": false
 }
