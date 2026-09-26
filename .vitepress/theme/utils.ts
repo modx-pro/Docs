@@ -1,8 +1,8 @@
 import type { DefaultTheme, UserConfig, PageData } from 'vitepress'
-import type { ComponentData } from './plugins/component'
+import type { ComponentData } from './plugins/component.ts'
 
-import { type Author, authors } from '../../docs/authors'
-import { DocsTheme } from './types'
+import { type Author, authors } from '../../docs/authors.ts'
+import type { DocsTheme } from './types/index.ts'
 
 const HASH_OR_QUERY_RE = /[?#].*$/;
 const INDEX_OR_EXT_RE = /(?:(^|\/)index)?\.(?:md|html)$/;

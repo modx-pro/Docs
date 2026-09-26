@@ -1,17 +1,17 @@
 import { createHash } from 'node:crypto'
 import type { DefaultTheme, PageData, SiteConfig } from 'vitepress'
-import { ensureStartingSlash, getAuthor, normalize } from '../utils'
+import { ensureStartingSlash, getAuthor, normalize } from '../utils.ts'
 
 import { readFileSync } from 'fs'
 import { basename } from 'path'
 import fg from 'fast-glob'
 import matter from 'gray-matter'
 
-import { generateSidebarItem, getTitleFromContent } from './sidebar'
-import { normalizeCompatibility } from '../compatibility'
+import { generateSidebarItem, getTitleFromContent } from './sidebar.ts'
+import { normalizeCompatibility } from '../compatibility.ts'
 
-import type { Author } from '../../../docs/authors'
-import { findPath } from '../utils'
+import type { Author } from '../../../docs/authors.ts'
+import { findPath } from '../utils.ts'
 
 const LOGO_CACHE_VERSION = (
   process.env.GITHUB_SHA?.slice(0, 8)

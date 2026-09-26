@@ -1,7 +1,7 @@
 import type { DefaultTheme, LocaleConfig } from 'vitepress'
-import type { DocsTheme } from '../theme/types'
-import { generateSidebar } from '../theme/plugins/sidebar'
-import { components } from '../theme/plugins/component'
+import type { DocsTheme } from '../theme/types/index.ts'
+import { generateSidebar } from '../theme/plugins/sidebar.ts'
+import { components } from '../theme/plugins/component.ts'
 import 'dotenv/config'
 
 export const SITE_NAME = 'Documentation hub for MODX extras and more'

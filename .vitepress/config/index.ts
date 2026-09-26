@@ -1,18 +1,18 @@
 import { createHash } from 'node:crypto'
-import type { DocsTheme } from '../theme/types'
+import type { DocsTheme } from '../theme/types/index.ts'
 import { type HeadConfig, defineConfigWithTheme } from 'vitepress'
-import { config as en, searchLocale as searchLocaleEn } from './en'
-import { config as root, searchLocale as searchLocaleRu } from './ru'
-import languages from '../theme/syntaxes'
-import { darkTheme, lightTheme } from '../theme/syntaxes/themes'
-import { addPlugins } from '../theme/plugins/markdown'
-import { components, prepareData } from '../theme/plugins/component'
-import { headingSlug } from '../theme/anchors'
+import { config as en, searchLocale as searchLocaleEn } from './en.ts'
+import { config as root, searchLocale as searchLocaleRu } from './ru.ts'
+import languages from '../theme/syntaxes/index.ts'
+import { darkTheme, lightTheme } from '../theme/syntaxes/themes.ts'
+import { addPlugins } from '../theme/plugins/markdown.ts'
+import { components, prepareData } from '../theme/plugins/component.ts'
+import { headingSlug } from '../theme/anchors.ts'
 import { fileURLToPath, URL } from 'node:url'
 import { withMermaid } from 'vitepress-plugin-mermaid'
-import { modstore, modxpro, telegram } from '../../docs/icons'
-import { coreMembers } from '../../docs/authors'
-import { normalize } from '../theme/utils'
+import { modstore, modxpro, telegram } from '../../docs/icons.ts'
+import { coreMembers } from '../../docs/authors.ts'
+import { normalize } from '../theme/utils.ts'
 
 const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
@@ -109,7 +109,7 @@ export default withMermaid(
       addPlugins(md)
     },
     image: {
-      lazyLoading: true
+      lazyLoad: true
     }
   },
 
