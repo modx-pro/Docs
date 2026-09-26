@@ -28,6 +28,7 @@ title: ms3FavoritesPage
 | **tpl** | Чанк обёртки страницы | `tplFavoritesPage` |
 | **serverList** | При **products**: `1` — SSR в чанке (**pdoPage** + **msProducts**). `0` — список через **favorites.js** (`render`) | `1` |
 | **extendedToolbar** | `1` — показать кнопки Каталог, Очистить, Поделиться | `false` (становится `true` при `tpl=tplFavoritesPageDemo`) |
+| **catalogId** | ID ресурса каталога для кнопки «Перейти в каталог» (плейсхолдер `{$catalogUrl}` в чанке) | `0` — главная страница (`site_start`) |
 | **itemTpl** | Чанк элемента списка (для `render()` в JS-режиме) | `tplFavoritesPageItem` |
 | **emptyTpl** | Чанк пустого состояния (для `render()`) | `tplFavoritesEmpty` |
 | **list** | Активный список (или из `$_GET['list']`) | `default` |
