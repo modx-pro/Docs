@@ -5,9 +5,9 @@ description: Generic CRUD /objects/{name} для зарегистрирован�
 
 # Objects
 
-Универсальный CRUD для объектов из `ObjectRegistry`. Имя в URL, logical name (`products`, `orders`), не PHP-класс.
+Универсальный CRUD для объектов из `ObjectRegistry`. В URL — имя (`products`, `orders`), не PHP-класс.
 
-| Method | Path | Scope |
+| Метод | Path | Scope |
 | --- | --- | --- |
 | GET | `/objects/{name}` | `{name}.read` |
 | GET | `/objects/{name}/{id}` | `{name}.read` |
@@ -15,7 +15,7 @@ description: Generic CRUD /objects/{name} для зарегистрирован�
 | PUT / PATCH | `/objects/{name}/{id}` | `{name}.update` |
 | DELETE | `/objects/{name}/{id}` | `{name}.delete` |
 
-Паттерн фиксирован в `RoutesRegistrar`: `{name}.{action}`. Не `objects.{name}.read`.
+Шаблон фиксирован в `RoutesRegistrar`: `{name}.{action}`. Не `objects.{name}.read`.
 
 ```bash
 curl -s 'https://example.com/api/v1/objects/products?limit=10' \
@@ -30,8 +30,8 @@ curl -s 'https://example.com/api/v1/objects/products?limit=10' \
 
 ## MiniShop3
 
-Типичные имена: `products`, `categories`, `orders`, … Заказы обычно protected. Подробнее: [MiniShop3](/components/mxheadless/extensions/minishop3).
+Типичные имена: `products`, `ms_categories`, `orders`. Имя `categories` в core — элементы `modCategory`. Заказы обычно `protected`. Подробнее: [MiniShop3](/components/mxheadless/extensions/minishop3).
 
 ## Query и мутации
 
-Те же правила [querying](querying) и [mutations](mutations), что у resources, в пределах fields/filters definition.
+Те же правила [querying](querying) и [mutations](mutations), что у resources. Поля и фильтры — из определения объекта.

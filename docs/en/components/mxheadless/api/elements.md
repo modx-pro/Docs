@@ -18,18 +18,18 @@ Reads require authentication (API key, OAuth, or session) and the matching scope
 | `/categories` | `categories.read` |
 | `/content_types` | `content_types.read` |
 
-List and `GET /{prefix}/{id}` for each type.
+List and `GET /{prefix}/{id}` for each type. Chunks, templates, snippets, TVs: `include=category`. Categories: `include=parent`.
 
 ```bash
 curl -s https://example.com/api/v1/chunks \
   -H 'Authorization: Bearer mxh_...'
 ```
 
-Core does not ship full site CRUD for elements. Check the live OpenAPI registry for available routes.
+Core does not ship full element CRUD. See the live OpenAPI registry.
 
 ## Contexts
 
-MODX contexts isolate sites, languages, or manager vs web. mxHeadless reads the active context from the request and enforces a whitelist.
+MODX contexts isolate sites, languages, or manager vs web. mxHeadless reads the active context from the request and checks the allowed list.
 
 | Method | Path | Scope |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ MODX contexts isolate sites, languages, or manager vs web. mxHeadless reads the 
 
 Catalog fields: `key`, `name`, `description`, `rank`.
 
-Settings are returned from an allowlist, not the full `modContextSetting`. Response includes `site_url`, `base_url`, `http_host`, `site_start`, `error_page`, `unauthorized_page`, `cultureKey`, `locale`.
+Settings come from an allowlist, not the full `modContextSetting`. Response includes `site_url`, `base_url`, `http_host`, `site_start`, `error_page`, `unauthorized_page`, `cultureKey`, `locale`.
 
 Set context on a request:
 
@@ -52,9 +52,9 @@ GET /api/v1/resources?context=web
 X-Context: web
 ```
 
-When omitted, the bootstrap context applies (`mxheadless_context`, default `web`).
+When omitted, the startup context applies (`mxheadless_context`, default `web`).
 
-The `mxheadless_allowed_contexts` whitelist (default `web,mgr`) limits `?context=` and `X-Context`. Others return `422 Invalid context`. Writing `context_key` on a resource must use a context from the whitelist that MODX can load. Unknown or unloadable contexts (often `mgr` from a web front controller) return `422`, not `500`.
+The `mxheadless_allowed_contexts` list (default `web,mgr`) limits `?context=` and `X-Context`. Others return `422 Invalid context`. Writing `context_key` on a resource must use a context from the list that MODX can load. Unknown contexts or ones MODX cannot load (often `mgr` on a web request) return `422`, not `500`.
 
 ```bash
 curl -s https://example.com/api/v1/contexts/web \

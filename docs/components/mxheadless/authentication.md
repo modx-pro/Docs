@@ -13,10 +13,21 @@ mxHeadless определяет, кто вызывает API. Что можно 
 | --- | --- | --- |
 | Anonymous | Публичное чтение | Без заголовков |
 | Session | UI в mgr или фронт с cookie MODX | Cookie сессии |
-| API key | CI, сборки, server-to-server | `Authorization: Bearer mxh_...` или `X-API-Key` |
-| OAuth token | Короткоживущий machine access | `Authorization: Bearer mxt_...` |
+| API key | CI, сборки, вызовы сервер к серверу | `Authorization: Bearer mxh_...` или `X-API-Key` |
+| OAuth token | Короткоживущий доступ сервиса | `Authorization: Bearer mxt_...` |
 
-Порядок authenticator: OAuth token → API key → session → anonymous.
+Порядок проверки: OAuth token → API key → session → anonymous.
+
+```mermaid
+flowchart TD
+  R[Запрос] --> T{mxt_* в Authorization?}
+  T -->|да| IO[OAuth identity]
+  T -->|нет| K{mxh_* или X-API-Key?}
+  K -->|да| IK[Identity ключа]
+  K -->|нет| S{Cookie сессии MODX?}
+  S -->|да| IS[Identity сессии]
+  S -->|нет| AN[Anonymous]
+```
 
 ## API keys (`mxh_*`)
 
@@ -39,19 +50,17 @@ curl -s https://example.com/api/v1/resources \
 
 ## Сессия и CSRF
 
-При cookie сессии подставляется текущий пользователь MODX. Для `POST`/`PUT`/`PATCH`/`DELETE` нужен заголовок:
+При cookie сессии подставляется текущий пользователь MODX.
 
-```text
-X-CSRF-Token: {токен из сессии MODX}
-```
+Любой запрос с сессией создаёт `$_SESSION['mxheadless.csrf_token']`, если его ещё нет, и возвращает его в заголовке `X-CSRF-Token`. Для `POST`/`PUT`/`PATCH`/`DELETE` отправьте тот же заголовок. Это не CSRF-токен ядра MODX.
 
-Настройка: `mxheadless_csrf_enabled` (default `true`). Bearer-ключи CSRF не требуют.
+Настройка: `mxheadless_csrf_enabled` (по умолчанию `true`). Bearer-ключи CSRF не требуют. При CORS добавьте `X-CSRF-Token` в `mxheadless_cors_expose_headers`, чтобы JS прочитал заголовок.
 
 ## Scopes
 
-Паттерн `{object}.{action}`: `resources.read`, `chunks.read`, `products.read`, `preview`, `*`.
+Шаблон `{object}.{action}`: `resources.read`, `chunks.read`, `products.read`, `preview`, `*`.
 
-Нет scope → `403` `scope_denied`. Нет credentials на защищённом маршруте → `401` `token_required`.
+Нет scope → `403` `scope_denied`. Нет учётных данных на защищённом маршруте → `401` `token_required`.
 
 ## Preview
 
@@ -59,8 +68,14 @@ X-CSRF-Token: {токен из сессии MODX}
 
 ## Цепочка
 
-```text
-Запрос → Authentication → Identity
-       → Authorization → scope + MODX ACL + контекст + поля
-       → Сервис
+```mermaid
+flowchart LR
+  Q[Запрос] --> AUTH[Authentication]
+  AUTH --> ID[Identity]
+  ID --> AUTHZ[Authorization]
+  AUTHZ --> SVC[Сервис]
+  AUTHZ -.-> SC[scope]
+  AUTHZ -.-> ACL[MODX ACL]
+  AUTHZ -.-> CTX[контекст]
+  AUTHZ -.-> FL[поля]
 ```

@@ -7,18 +7,18 @@ description: Каталог и заказы MiniShop3 через mxHeadless Exte
 
 [MiniShop3](https://github.com/modx-pro/MiniShop3) подключают через Extension API. В core mxHeadless нет зависимости от магазина. Документация MS3 на сайте: [/components/minishop3/](/components/minishop3/).
 
-## Типичные objects
+## Типичные объекты
 
-| Public name | Описание |
+| Имя | Описание |
 | --- | --- |
 | `products` | Товары (price, SKU, options) |
-| `categories` | Категории |
-| `orders` | Заказы (protected, не public) |
+| `ms_categories` | Категории товаров. Имя `categories` занято `modCategory` в core |
+| `orders` | Заказы (`protected`, не публичные) |
 | `order_addresses` | Адреса |
 | `product_options` | Опции |
-| `product_links` | Связи / upsell |
+| `product_links` | Связи товаров |
 
-Orders требуют scope `orders.read` (паттерн `{name}.read`) и ACL. Никогда не public.
+Заказы требуют scope `orders.read` (шаблон `{name}.read`) и ACL. Никогда не публичные.
 
 ## Пример регистрации
 
@@ -64,14 +64,14 @@ curl -s 'https://example.com/api/v1/objects/products/101?include=category'
 
 | | mxHeadless | MiniShop3 Web API |
 | --- | --- | --- |
-| Назначение | Каталог, CMS, admin orders | Cart, checkout, customer token |
+| Назначение | Каталог, CMS, заказы в админке | Корзина, оформление, токен покупателя |
 | Вход | `/api/v1/...` | `assets/components/minishop3/api.php?route=/api/v1/...` |
 | Envelope | `{ data, meta, links }` | `{ success, message, data, ... }` |
 
-Pretty URL `/api/v1/cart/...` перехватит плагин mxHeadless и вернёт `404`. Cart вызывайте через `api.php?route=`.
+ЧПУ `/api/v1/cart/...` перехватит плагин mxHeadless и вернёт `404`. Корзину вызывайте через `api.php?route=`.
 
 CORS: выровняйте `mxheadless_cors_*` и `ms3_cors_allowed_origins`.
 
 ## Фронтенд
 
-Два base URL (cms + shop), либо BFF, либо осторожный split на nginx. Подробные гайды Nuxt/Next: [docs/examples в репозитории](https://github.com/Ibochkarev/mxHeadless/tree/main/docs/examples).
+Два базовых URL (CMS и магазин), серверный прокси или разделение на nginx. Примеры Nuxt и Next: [docs/examples в репозитории](https://github.com/Ibochkarev/mxHeadless/tree/main/docs/examples).

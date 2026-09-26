@@ -7,6 +7,14 @@ description: Subscriptions, worker, and event delivery in mxHeadless
 
 After create/update/delete, mxHeadless enqueues events in the outbox. Delivery runs via CLI worker.
 
+```mermaid
+flowchart LR
+  API[API mutation] --> OB[Outbox]
+  OB --> W[webhook-worker.php]
+  W --> POST[POST JSON to subscriber]
+  POST -->|retry| W
+```
+
 ## Core events
 
 `resources.created`, `resources.updated`, `resources.deleted`, and `{name}.*` analogs for generic objects.
@@ -20,6 +28,8 @@ php core/components/mxheadless/bin/webhook-subscribe.php \
   --events=resources.created,resources.updated,resources.deleted \
   --secret=YOUR_HMAC_SECRET
 ```
+
+Without `--events=` the subscription gets the three `resources.*` events. Empty `--events=` becomes `*`.
 
 Tables: `mxheadless_webhook_subscriptions`, `mxheadless_webhook_deliveries`.
 
@@ -43,11 +53,11 @@ POST JSON to subscriber URL:
 | `X-MxHeadless-Delivery-Id` | delivery id |
 | `X-MxHeadless-Signature` | `sha256=...` when secret is set |
 
-Retries: exponential backoff, max `mxheadless_webhook_max_attempts` (5) → `failed`.
+Retries: the pause grows exponentially, at most `mxheadless_webhook_max_attempts` (5), then `failed`.
 
 ## SSRF
 
-By default blocks localhost, private IP, `.local`/`.test`. Dev override: `mxheadless_webhook_allow_private_urls=true` (also relaxes TLS verify).
+By default blocks localhost, private IP, `.local`/`.test`. For development: `mxheadless_webhook_allow_private_urls=true` (also relaxes TLS verification).
 
 ## Payload (v1)
 
