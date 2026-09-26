@@ -196,3 +196,19 @@ description: 'msReviews 1.2.x: Fenom, pdoTools, data-msr, письма, патч
 | `msreviews_product_class_key` | Только поиск CMP `type=product` и метрика `products_without_reviews`. Verified purchase и очередь писем — по заказам MiniShop3 |
 
 См. [Админка](manager), [Системные настройки](settings).
+
+## Патч 1.2.6
+
+Поставьте пакет **1.2.6-pl** поверх 1.2.x и очистите кэш. Breaking API нет.
+
+| Тема | Что изменилось |
+| --- | --- |
+| `msrOnBeforeQuestionCreate` | Вызывается и на витрине (`question/create`) до записи вопроса. `return false` из плагина отклоняет создание с `msr_err_event_block`, как в CMP |
+| `msrOnBeforeReviewPublish` | Guard: результат проверяется до смены статуса. При `return false` отзыв не публикуется, агрегат не пересчитывается, `msrOnReviewPublish` не вызывается |
+| Свойства сниппетов | В transport добавлены `applyRequestFilters` (`msReviewsHub`, `msReviewsTabbed`), `showStructuredFields` и `showDimensionRatings` (`msReviewForm`) — видны на вкладке «Свойства» в менеджере. Мёртвое свойство `connectorUrl` у `msQuestions` и `msRatingSummary` убрано |
+
+::: warning
+Плагин на `msrOnBeforeQuestionCreate`, написанный для CMP, с 1.2.6 срабатывает и на витрине. Проверьте его логику до обновления.
+:::
+
+См. [События MODX и капча](events).

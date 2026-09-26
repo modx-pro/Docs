@@ -13,13 +13,13 @@ description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ош�
 | --- | --- |
 | `msrOnBeforeReviewCreate` | До создания отзыва (витрина или `mgr/review/create`) |
 | `msrOnReviewCreate` | После создания |
-| `msrOnBeforeReviewPublish` | До публикации. Уведомление: `return false` публикацию не блокирует |
+| `msrOnBeforeReviewPublish` | До публикации в CMP (`mgr/review/update-status`) |
 | `msrOnReviewPublish` | После публикации |
 | `msrOnReviewReject` | При отклонении |
 | `msrOnBeforeReviewUpdate` / `msrOnReviewUpdate` | Правка на витрине (`review/update_own`) или в CMP (`mgr/review/update`) |
 | `msrOnBeforeReviewDelete` / `msrOnReviewDelete` | Самоудаление на витрине |
 | `msrOnReviewVote` | После «полезно» |
-| `msrOnBeforeQuestionCreate` | До создания вопроса в CMP (`mgr/question/create`). На витрине не вызывается |
+| `msrOnBeforeQuestionCreate` | До создания вопроса (витрина или CMP) |
 | `msrOnQuestionCreate` | После создания вопроса (витрина или CMP) |
 | `msrOnBeforeQuestionUpdate` / `msrOnQuestionUpdate` | Правка вопроса в CMP (`mgr/question/update`) |
 | `msrOnAnswerCreate` | Ответ из CMP |
@@ -27,7 +27,7 @@ description: msrOn* события, msrOnCaptchaVerify, prefetch, коды ош�
 | **`msrOnModeratorNotify`** | Перед письмом модератору о новом отзыве/вопросе с витрины |
 | **`msrOnCaptchaVerify`** | Перед `review/create` и `question/create` |
 
-Верните **`false`** из плагина на guard-событиях, чтобы заблокировать операцию (`msr_err_event_block` или отмена письма модератору). Guard — все `Before*` из таблицы, кроме `msrOnBeforeReviewPublish`: его результат код не проверяет.
+Верните **`false`** из плагина на guard-событиях, чтобы заблокировать операцию (`msr_err_event_block` или отмена письма модератору). Guard — все `Before*` из таблицы. До **1.2.6** `msrOnBeforeReviewPublish` результат не проверялся, а `msrOnBeforeQuestionCreate` на витрине не вызывался.
 
 ### msrOnModeratorNotify
 
@@ -101,6 +101,7 @@ msr_prefetch_aggregates($modx, [101, 102, 103]);
 | `msr_err_crawler` | CrawlerDetect |
 | `msr_err_rate` | Rate limit |
 | `msr_err_captcha` | Капча не пройдена |
+| `msr_err_event_block` | Guard-событие вернуло `false` |
 | `msr_err_token` | Неверный edit_token |
 | `msr_err_self_edit_disabled` | Самоправка выключена |
 | `msr_err_vote_disabled` | Голосование выключено |

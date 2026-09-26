@@ -34,7 +34,6 @@ description: Список опубликованных вопросов и от�
 | `sortDir` | `DESC` | `DESC` или `ASC` (с **1.2.4**) |
 | `tpl` | `tplQuestionItem` | Чанк строки вопроса |
 | `wrapper` | `tplQuestionsList` | Чанк-обёртка. Пусто — секция без заголовка из чанка |
-| `connectorUrl` | auto | Свойство в transport есть, сниппет его не читает |
 | `registerCss` | `1` | Подключать `reviews.css` этим вызовом |
 | `registerJs` | `1` | Подключать JS витрины этим вызовом |
 
