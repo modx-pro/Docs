@@ -41,7 +41,7 @@ description: Первый вызов FetchIt с FormIt, чанком формы 
 
 :::
 
-`successMessage` с 1.1.3 уходит в AJAX-ответ при успехе FormIt и показывается в `[data-success]` / через `FetchIt.Message`.
+`successMessage` уходит в AJAX-ответ при успехе FormIt и показывается в `[data-success]` и через `FetchIt.Message`.
 
 ## Чанк формы
 
@@ -107,12 +107,24 @@ description: Первый вызов FetchIt с FormIt, чанком формы 
 
 :::
 
-Сниппет сам допишет `data-fetchit` и `method="post"`, если их нет.
+Сниппет сам ставит форме `data-fetchit` и `method="post"`, заменяя свои значения этих атрибутов.
 
 Класс невалидного поля по умолчанию: `is-invalid` (настройка `fetchit.frontend.input.invalid.class`). Подстройте под свою вёрстку.
 
 ## Уведомления
 
-Пока `fetchit.frontend.default.notifier` выключен, тосты не показываются. Видны только блоки в форме и полевые ошибки. Включите Notyf в настройках или подключите свою библиотеку: [Всплывающие сообщения](/components/fetchit/examples/notifications/).
+Пока `fetchit.frontend.default.notifier` выключен, уведомления не показываются: видны только блоки в форме и ошибки полей. Включите настройку, чтобы показывать ответы [встроенными уведомлениями](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya), или подключите свою библиотеку: [Всплывающие сообщения](/components/fetchit/examples/notifications/).
 
 После успеха поля очищаются, если `clearFieldsOnSuccess` не отключён (`1` по умолчанию).
+
+## Защита от спама
+
+Форма закрыта от ботов сразу: одноразовый токен, минимальное время заполнения (3 секунды), скрытое поле-ловушка и лимит отправок. Настраивать ничего не нужно, служебные поля в письма не попадают.
+
+Что об этом стоит знать:
+
+- на сайте для разработки и в автотестах поставьте `fetchit.protection.min_time` и `fetchit.protection.rate_limit` в `0`;
+- страницы с формами лучше исключить из кеша всей страницы на стороне сервера или CDN;
+- если спам всё равно проходит, включите proof-of-work или капчу.
+
+Подробно: [Защита от спама](/components/fetchit/protection).

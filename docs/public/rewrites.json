@@ -857,5 +857,22 @@
   "/utilityi/teleport":                                    "/system/utilities/teleport/",
   "/utilityi/teleport/rasshirenie":                        "/system/utilities/teleport/",
   "/utilityi/teleport/ispolzovanie":                       "/system/utilities/teleport/usage",
-  "/utilityi/teleport/rasshirenie/shablonyi-izvlecheniya": "/system/utilities/teleport/extension/extract-templates"
+  "/utilityi/teleport/rasshirenie/shablonyi-izvlecheniya": "/system/utilities/teleport/extension/extract-templates",
+
+  "/components/fetchit/examples/form/turretcss":              "/components/fetchit/examples/form/",
+  "/components/fetchit/examples/modals/tinglejs":             "/components/fetchit/examples/modals/",
+  "/components/fetchit/examples/notifications/izitoast":      "/components/fetchit/examples/notifications/",
+  "/components/fetchit/examples/notifications/notie":         "/components/fetchit/examples/notifications/",
+  "/components/fetchit/examples/notifications/noty":          "/components/fetchit/examples/notifications/",
+  "/components/fetchit/examples/notifications/pnotify":       "/components/fetchit/examples/notifications/",
+  "/components/fetchit/examples/notifications/toastr":        "/components/fetchit/examples/notifications/",
+  "/components/fetchit/examples/validation/iodine":           "/components/fetchit/examples/validation/",
+  "/en/components/fetchit/examples/form/turretcss":           "/en/components/fetchit/examples/form/",
+  "/en/components/fetchit/examples/modals/tinglejs":          "/en/components/fetchit/examples/modals/",
+  "/en/components/fetchit/examples/notifications/izitoast":   "/en/components/fetchit/examples/notifications/",
+  "/en/components/fetchit/examples/notifications/notie":      "/en/components/fetchit/examples/notifications/",
+  "/en/components/fetchit/examples/notifications/noty":       "/en/components/fetchit/examples/notifications/",
+  "/en/components/fetchit/examples/notifications/pnotify":    "/en/components/fetchit/examples/notifications/",
+  "/en/components/fetchit/examples/notifications/toastr":     "/en/components/fetchit/examples/notifications/",
+  "/en/components/fetchit/examples/validation/iodine":        "/en/components/fetchit/examples/validation/"
 }

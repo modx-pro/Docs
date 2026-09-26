@@ -1,46 +1,60 @@
 ---
 title: Notiflix.Notify
-description: Уведомления Notiflix.Notify для FetchIt через CDN и FetchIt.Message
+description: Тосты Notiflix.Notify для ответов FetchIt
 ---
 
 # Notiflix.Notify
 
-[Notiflix](https://notiflix.github.io/) — набор UI-инструментов на чистом JS. Для тостов используйте модуль [Notify](https://notiflix.github.io/notify).
+[Notiflix](https://notiflix.github.io/) — набор UI-модулей на чистом JS. Для тостов нужен модуль [Notify](https://notiflix.github.io/notify), стили он добавляет сам.
 
-## Подключение через CDN
+## Подключение и FetchIt.Message
 
-Скрипт и [`FetchIt.Message`](/components/fetchit/frontend/class#fetchitmessage) через ESM:
+Библиотека подключается как ES-модуль. Модули выполняются отложенно, как `defer`, поэтому `FetchIt` в них уже доступен и `DOMContentLoaded` не нужен:
 
 ```html
 <script type="module">
   import Notiflix from 'https://cdn.jsdelivr.net/npm/notiflix@3/+esm'
 
-  document.addEventListener('DOMContentLoaded', () => {
-    FetchIt.Message = {
-      success(message) {
-        Notiflix.Notify.success(message)
-      },
-      error(message) {
-        Notiflix.Notify.failure(message)
-      },
-    }
+  Notiflix.Notify.init({
+    position: 'right-top',
+    timeout: 5000,
+    clickToClose: true,
+    pauseOnHover: true,
   })
+
+  const show = (message, display) => {
+    const text = FetchIt.sanitizeHTML(message).trim()
+    if (text) {
+      display(text)
+    }
+  }
+
+  FetchIt.Message = {
+    success: (message) => show(message, (text) => Notiflix.Notify.success(text)),
+    error: (message) => show(message, (text) => Notiflix.Notify.failure(text)),
+  }
 </script>
 ```
 
-В отдельном модуле с `defer` (после скрипта FetchIt) обёртка `DOMContentLoaded` не нужна:
+Модуль должен стоять в HTML после скрипта FetchIt — плагин подключает его в `<head>`, так что достаточно разместить модуль ниже, например перед `</body>`.
+
+Почему текст проходит через `sanitizeHTML` и зачем проверка на пустую строку — в [общем разделе](/components/fetchit/examples/notifications/#storonnie-biblioteki).
+
+## Индикатор загрузки
+
+У Notiflix есть и модуль [Loading](https://notiflix.github.io/loading) — затемнение страницы со спиннером на время отправки. Показывайте его по [`fetchit:before`](/components/fetchit/frontend/events#fetchitbefore), а убирайте по `fetchit:success` и `fetchit:error`:
 
 ```js
-import Notiflix from 'https://cdn.jsdelivr.net/npm/notiflix@3/+esm'
+// В том же модуле, после import
+document.addEventListener('fetchit:before', (e) => {
+  if (!e.defaultPrevented) {
+    Notiflix.Loading.circle()
+  }
+})
 
-FetchIt.Message = {
-  success(message) {
-    Notiflix.Notify.success(message)
-  },
-  error(message) {
-    Notiflix.Notify.failure(message)
-  },
+for (const name of ['fetchit:success', 'fetchit:error']) {
+  document.addEventListener(name, () => Notiflix.Loading.remove())
 }
 ```
 
-Блоки формы `[data-success]` и `[data-validation-error]` работают параллельно с тостами. Если нужны только они, `Message` можно не задавать. Селекторы: [документация](/components/fetchit/selectors).
+`Notiflix` из `import` виден только внутри модуля, поэтому код идёт туда же. Подключайте модуль после клиентской валидации: если она отменит отправку, `e.defaultPrevented` уже будет `true`. Подробнее — в примере [индикатора отправки](/components/fetchit/examples/scenarios/loading).

@@ -1,59 +1,62 @@
 ---
 title: jGrowl
-description: jGrowl notifications for FetchIt via CDN and FetchIt.Message
+description: jGrowl notifications for FetchIt responses on a site with jQuery
 ---
 
 # jGrowl
 
-[jGrowl](https://github.com/stanlemon/jGrowl): jQuery plugin for toasts. It shipped with AjaxForm in the past.
+[jGrowl](https://github.com/stanlemon/jGrowl) — a notification plugin for jQuery. It came with AjaxForm, so it is handy when [moving from AjaxForm](/en/components/fetchit/migration-from-ajaxform), to keep the notifications looking as before.
 
-The library requires jQuery.
+::: tip
+jGrowl makes sense only if the site already has jQuery. For a new site the [built-in notifications](/en/components/fetchit/examples/notifications/#built-in-notifications) or a library with no dependencies are enough.
+:::
 
-## CDN setup
+## Loading
 
-Load jQuery first, then jGrowl. Define themes in CSS for success/error types:
+jQuery is loaded before jGrowl:
 
 ```html
-<!-- jQuery -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jgrowl@1/jquery.jgrowl.min.css">
 <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" defer></script>
-
-<!-- JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/jgrowl@1/jquery.jgrowl.min.js" defer></script>
-
-<!-- CSS -->
-<link href="https://cdn.jsdelivr.net/npm/jgrowl@1/jquery.jgrowl.min.css" rel="stylesheet">
-<style>
-  .custom-success { background: green; }
-  .custom-error { background: red; }
-</style>
 ```
 
-Set [`FetchIt.Message`](/en/components/fetchit/frontend/class#fetchitmessage):
+jGrowl has no colours of its own for a success and an error — set them with themes:
+
+```css
+.jGrowl-notification.fetchit-success {
+  background-color: #15803d;
+}
+
+.jGrowl-notification.fetchit-error {
+  background-color: #b91c1c;
+}
+```
+
+## FetchIt.Message
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {
+  $.jGrowl.defaults.position = 'top-right'
+  $.jGrowl.defaults.closerTemplate = '<div>Close all</div>'
+
+  const show = (type, message) => {
+    const text = FetchIt.sanitizeHTML(message).trim()
+    if (!text) {
+      return
+    }
+
+    $.jGrowl(text, {
+      theme: `fetchit-${type}`,
+      life: type === 'error' ? 8000 : 5000,
+    })
+  }
+
   FetchIt.Message = {
-    success(message) {
-      $.jGrowl(message, { theme: 'custom-success' })
-    },
-    error(message) {
-      $.jGrowl(message, { theme: 'custom-error' })
-    },
+    success: (message) => show('success', message),
+    error: (message) => show('error', message),
   }
 })
 ```
 
-In a separate file with `defer` (after the FetchIt script), skip the `DOMContentLoaded` wrapper:
-
-```js
-FetchIt.Message = {
-  success(message) {
-    $.jGrowl(message, { theme: 'custom-success' })
-  },
-  error(message) {
-    $.jGrowl(message, { theme: 'custom-error' })
-  },
-}
-```
-
-Skip jGrowl if jQuery is not on the site: load it only when jQuery is already in use. Form blocks `[data-success]` and `[data-validation-error]` work alongside toasts. Skip `Message` if you only need those blocks. Selectors: [documentation](/en/components/fetchit/selectors).
+Why the text goes through `sanitizeHTML` and what the empty-string check is for is explained in the [general section](/en/components/fetchit/examples/notifications/#third-party-libraries).
