@@ -1,0 +1,152 @@
+name: Preview
+
+# Превью PR на Cloudflare Pages: сборка выкладывается веткой pr-<номер> проекта,
+# ссылку бот пишет в PR, при закрытии PR выкладки этой ветки удаляются.
+# PR из форков пропускаются: на pull_request GitHub не даёт им секретов,
+# а pull_request_target запустил бы код из PR с секретами.
+#
+# Настройка репозитория:
+#   секрет CLOUDFLARE_API_TOKEN — токен с правом Account / Cloudflare Pages / Edit;
+#   переменные CLOUDFLARE_ACCOUNT_ID и CLOUDFLARE_PAGES_PROJECT — проект Pages с прямой
+#   загрузкой (Direct Upload), создаётся заранее.
+# Пока не задана CLOUDFLARE_PAGES_PROJECT, jobs пропускаются.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+concurrency:
+  group: preview-${{ github.event.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+  BRANCH: pr-${{ github.event.number }}
+  PR: ${{ github.event.number }}
+  MARKER: '<!-- preview -->'
+
+jobs:
+  deploy:
+    if: >-
+      github.event.action != 'closed'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && vars.CLOUDFLARE_PAGES_PROJECT != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check settings
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::error::Не задан секрет CLOUDFLARE_API_TOKEN"; exit 1; }
+          [ -n "$CLOUDFLARE_ACCOUNT_ID" ] || { echo "::error::Не задана переменная CLOUDFLARE_ACCOUNT_ID"; exit 1; }
+      # собирается сам PR, без слияния с master: ссылка в комментарии ведёт на тот же коммит
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      # как скрипт build (package.json), но без генерации OG-картинок (og:image ведёт
+      # на docs.modx.pro) и без Метрики (DOCS_PREVIEW)
+      - name: Build
+        env:
+          DOCS_PREVIEW: '1'
+          NODE_OPTIONS: --max-old-space-size=10240
+        run: pnpm exec vitepress build
+      - name: Deploy
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler.ndjson
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          npx --yes wrangler@4 pages deploy .vitepress/dist \
+            --project-name "$PROJECT" --branch "$BRANCH" \
+            --commit-hash "$HEAD_SHA" --commit-dirty=true
+          # alias — постоянный адрес ветки (pr-N.<поддомен проекта>.pages.dev), url — адрес этой выкладки
+          url=$(jq -r 'select(.type == "pages-deploy-detailed") | .alias // .url // empty' "$WRANGLER_OUTPUT_FILE_PATH" | tail -n 1)
+          [ -n "$url" ] || { echo "::error::wrangler не вернул адрес выкладки"; cat "$WRANGLER_OUTPUT_FILE_PATH"; exit 1; }
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+      # при сбое правится уже выложенный комментарий, чтобы старая ссылка не выглядела свежей
+      - name: Comment
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ steps.deploy.outputs.url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$MARKER\"))) | .id" | sed -n 1p)
+          if [ -n "$URL" ]; then
+            body="$MARKER
+          **Превью:** $URL
+
+          Собрано из $HEAD_SHA."
+          elif [ -n "$id" ]; then
+            body="$MARKER
+          Превью не обновлено: сборка $HEAD_SHA упала, см. $RUN_URL"
+          else
+            exit 0
+          fi
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$body" > /dev/null
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -f body="$body" > /dev/null
+          fi
+
+  cleanup:
+    if: >-
+      github.event.action == 'closed'
+      && github.event.pull_request.head.repo.full_name == github.repository
+      && vars.CLOUDFLARE_PAGES_PROJECT != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete deployments
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::error::Не задан секрет CLOUDFLARE_API_TOKEN"; exit 1; }
+          [ -n "$CLOUDFLARE_ACCOUNT_ID" ] || { echo "::error::Не задана переменная CLOUDFLARE_ACCOUNT_ID"; exit 1; }
+          api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PROJECT/deployments"
+          auth="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          # сначала собрать все id: удаление по ходу сдвигает страницы; обход до пустой страницы
+          ids=()
+          page=1
+          while :; do
+            resp=$(curl -sS --fail-with-body -H "$auth" "$api?env=preview&page=$page&per_page=25")
+            jq -e '.success == true and (.result | type == "array")' <<< "$resp" > /dev/null \
+              || { echo "::error::Cloudflare API: $resp"; exit 1; }
+            [ "$(jq '.result | length' <<< "$resp")" -gt 0 ] || break
+            page_ids=$(jq -r --arg b "$BRANCH" \
+              '.result[] | select(.deployment_trigger.metadata.branch == $b) | .id' <<< "$resp")
+            [ -z "$page_ids" ] || mapfile -t -O "${#ids[@]}" ids <<< "$page_ids"
+            page=$((page + 1))
+          done
+          echo "Deployments of $BRANCH: ${#ids[@]}"
+          [ "${#ids[@]}" -gt 0 ] || echo "::warning::Выкладок ветки $BRANCH не найдено"
+          # force: последняя выкладка ветки привязана к её адресу, без force её не удалить
+          for id in "${ids[@]}"; do
+            curl -sS --fail-with-body -X DELETE -H "$auth" "$api/$id?force=true" > /dev/null
+          done
+      - name: Comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$MARKER\"))) | .id" | sed -n 1p)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" \
+              -f body="$MARKER
+          Превью удалено: PR закрыт." > /dev/null
+          fi
