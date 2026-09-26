@@ -10,6 +10,7 @@ on:
       - 'globals.d.ts'
       - 'tsconfig.json'
       - 'package.json'
+      - 'pnpm-workspace.yaml'
       - 'pnpm-lock.yaml'
       - '.github/workflows/typecheck.yml'
   push:
@@ -22,6 +23,7 @@ on:
       - 'globals.d.ts'
       - 'tsconfig.json'
       - 'package.json'
+      - 'pnpm-workspace.yaml'
       - 'pnpm-lock.yaml'
       - '.github/workflows/typecheck.yml'
 

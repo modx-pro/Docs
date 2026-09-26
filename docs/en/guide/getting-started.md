@@ -27,7 +27,7 @@ Select the required file for editing in the `docs/components/` directory.
 ## Recommended way to make changes to the documentation
 
 ::: info INFO
-For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as the **[pnpm](https://pnpm.io/installation)** package manager installed on your computer: dependencies are locked in `pnpm-lock.yaml`.
+For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as the **[pnpm](https://pnpm.io/installation)** package manager version 10 or later installed on your computer: it switches to the version from `package.json` → `packageManager` by itself, and dependencies are locked in `pnpm-lock.yaml`.
 Knowledge and skills of working with Vue are not required.
 :::
 
@@ -195,6 +195,8 @@ More on markup and pages: [Markdown](/en/guide/markdown), [VitePress](/en/guide/
 ::: details Dev server won�t start or build fails
 
 Use **Node.js 22.18+** (`package.json` has `"engines": { "node": ">=22.18" }`). Try removing `node_modules` and reinstalling with `pnpm install` (keep `pnpm-lock.yaml`: it pins the dependency versions).
+
+After the project updates pnpm, run `pnpm install` once in a terminal and confirm recreating `node_modules`: otherwise `pnpm run …` from an editor or a git hook stops with `ABORTED_REMOVE_MODULES_DIR_NO_TTY`. The error `packages field missing or empty` means pnpm 9 is installed: update it (`npm i -g pnpm@latest`).
 
 :::
 

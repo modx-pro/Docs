@@ -68,20 +68,6 @@
     "vue": "^3.5.42",
     "vue-tsc": "^3.3.11"
   },
-  "pnpm": {
-    "overrides": {
-      "nanoid": "^3.3.18",
-      "handlebars": "^4.7.9",
-      "js-yaml@3": "3.15.2",
-      "lodash-es": "^4.18.0",
-      "mdast-util-to-hast": "^13.2.1"
-    },
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "@algolia/client-search"
-      ]
-    }
-  },
   "dependencies": {
     "@vueuse/core": "^14.4.0",
     "@xobotyi/scrollbar-width": "^1.9.5",
@@ -91,5 +77,5 @@
   "engines": {
     "node": ">=22.18"
   },
-  "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
+  "packageManager": "pnpm@12.6.0+sha512.3ef68f951cb111ac204b4a5a16f0b2ddf0da56a96e0413e81d855d9f0b55ef926714709028e1cd00c405c2c5fb7b9e8ec4dc46777c805d0373c2f2ff00fd20ec"
 }

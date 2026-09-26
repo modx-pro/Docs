@@ -12,6 +12,7 @@ on:
       - 'scripts/lib/git-changed.mjs'
       - '.github/workflows/markdownlint.yml'
       - 'package.json'
+      - 'pnpm-workspace.yaml'
 
 jobs:
   markdownlint:
