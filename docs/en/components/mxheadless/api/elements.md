@@ -54,7 +54,7 @@ X-Context: web
 
 When omitted, the startup context applies (`mxheadless_context`, default `web`).
 
-The `mxheadless_allowed_contexts` list (default `web,mgr`) limits `?context=` and `X-Context`. Others return `422 Invalid context`. Writing `context_key` on a resource must use a context from the list that MODX can load. Unknown or unloadable contexts (often `mgr` on a web request) return `422`, not `500`.
+The `mxheadless_allowed_contexts` list (default `web,mgr`) limits `?context=` and `X-Context`. Others return `422 Invalid context`. Writing `context_key` on a resource must use a context from the list that MODX can load. Unknown contexts or ones MODX cannot load (often `mgr` on a web request) return `422`, not `500`.
 
 ```bash
 curl -s https://example.com/api/v1/contexts/web \
