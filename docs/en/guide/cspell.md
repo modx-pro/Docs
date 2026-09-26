@@ -10,7 +10,7 @@ The project uses [cspell](https://cspell.org/) to spell-check Markdown. Both the
 
 From the repo root:
 
-- **`pnpm run spellcheck:changed`** — checks only Markdown files changed since the branch forked from `origin/master` (run `git fetch` first; set another base with `SPELLCHECK_BASE=origin/<branch>`). CI runs the same check on PRs that change `docs/`, against the PR's base branch, so it is the handiest one before submitting changes.
+- **`pnpm run spellcheck:changed`** — checks Markdown files changed since the branch forked from `origin/master` and reports only issues on changed lines, so old typos elsewhere in the file don't get in the way (run `git fetch` first; set another base with `SPELLCHECK_BASE=origin/<branch>`). CI runs the same check on PRs that change `docs/`, against the PR's base branch, so it is the handiest one before submitting changes.
 - **`pnpm run spellcheck`** — checks all docs and reports every spelling issue (file, line, word).
 - **`pnpm run spellcheck:fix`** — same check with spelling suggestions for each unknown word; fix files manually or add the word to `cspell.json`.
 
@@ -59,6 +59,6 @@ Fragments in `parts/` are not checked: they are embedded into other pages and ch
 
 ## CI
 
-The **Spellcheck** workflow runs on every PR that changes `docs/` and checks only the changed files (`pnpm run spellcheck:changed`). If it fails, fix the typo or add the word to `words`.
+The **Spellcheck** workflow runs on every PR that changes `docs/` and checks the changed lines (`pnpm run spellcheck:changed`). If it fails, fix the typo or add the word to `words`.
 
 For more options see the [cspell docs](https://cspell.org/docs/configuration/).
