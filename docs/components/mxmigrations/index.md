@@ -1,6 +1,7 @@
 ---
 title: mxMigrations
 description: Расширяемый раннер и генератор миграций для MODX Revolution 2 и 3 — журнал, контрольные суммы, защита порядка и готовые шаблоны.
+categories: utilities
 outline: [2, 3]
 lastUpdated: true
 logo: /components/mxmigrations.jpg

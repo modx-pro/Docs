@@ -1,6 +1,7 @@
 ---
 title: SEO Domains
 description: Добавление доп. доменов для сайта, без контекстов с добавлением в Вебмастер
+categories: other
 logo: https://modstore.pro/assets/extras/seodomains/logo.png
 author: tventos
 modstore: https://modstore.pro/packages/other/seodomains

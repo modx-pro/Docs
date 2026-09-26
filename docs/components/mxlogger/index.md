@@ -1,6 +1,7 @@
 ---
 title: mxLogger
 description: Логирование процессов с тэгами для MODX Revolution 2 и 3 — тэги, воронки, контекст, менеджерный грид, алерты.
+categories: utilities
 outline: [ 2,3 ]
 lastUpdated: true
 logo: https://modx3.art-sites.ru/assets/components/mxlogger/logo.png

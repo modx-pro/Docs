@@ -1,6 +1,7 @@
 ---
 title: ResVideoGallery
 description: Responsive video gallery with Ajax loading
+categories: media
 logo: https://modstore.pro/assets/extras/resvideogallery/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/photos-and-files/resvideogallery

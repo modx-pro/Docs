@@ -1,6 +1,7 @@
 ---
 title: VueTools
 description: Базовый пакет Vue 3 стека для компонентов MODX 3
+categories: utilities
 logo: https://modstore.pro/assets/extras/vuetools/logo.png
 author: modx-pro
 repository: https://github.com/modx-pro/vuetools

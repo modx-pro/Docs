@@ -5,6 +5,7 @@ logo: /components/commercebridge1c/cover.png
 author: Mishiko23
 repository: https://github.com/Mishiko23/CommerceBridge-1C
 dependencies: miniShop3
+categories: import-export
 outline: deep
 
 compatibility:

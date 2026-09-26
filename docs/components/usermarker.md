@@ -1,6 +1,7 @@
 ---
 title: userMarker
 description: Добавление меток и тегов к ресурсам
+categories: catalog
 logo: https://modstore.pro/assets/extras/usermarker/logo.png
 author: webnitros
 modstore: https://modstore.pro/packages/ecommerce/usermarker

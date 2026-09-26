@@ -1,6 +1,7 @@
 ---
 title: userPages
 description: Импорт и экспорт ресурсов MODX Revolution / MODX 3 и товаров miniShop2 / miniShop3
+categories: users
 logo: https://modstore.pro/assets/extras/userpages/logo-md.png
 author: Romanov Pavel
 modstore: https://modstore.pro/packages/users/userpages

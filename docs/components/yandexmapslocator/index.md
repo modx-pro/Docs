@@ -1,10 +1,10 @@
 ---
 title: YandexMapsLocator
 description: 'Локатор точек на Яндекс.Картах для MODX 3. Free: карта и поиск. Pro: «открыто сейчас», MiniShop3, CSV и REST'
+categories: maps
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/yandexmapslocator/logo.png
 modstore: https://modstore.pro/packages/maps/yandexmapslocator
-categories: utilities
 compatibility:
   - modx3
   - php82

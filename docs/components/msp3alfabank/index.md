@@ -3,7 +3,7 @@ title: msp3AlfaBank
 description: "Приём оплаты через Альфа-Банк для MiniShop3: ссылка на оплату, callback, одно- и двухстадийная схема"
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3

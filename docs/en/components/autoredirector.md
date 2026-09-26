@@ -1,6 +1,7 @@
 ---
 title: autoRedirector
 description: Add-on so you don't have to worry when page URLs change
+categories: utilities
 logo: https://modstore.pro/assets/extras/autoredirector/logo-lg.jpg
 author: ilyautkin
 modstore: https://modstore.pro/packages/utilities/autoredirector

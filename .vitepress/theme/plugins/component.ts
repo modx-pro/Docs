@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import type { DefaultTheme, PageData, SiteConfig } from 'vitepress'
 import { ensureStartingSlash, getAuthor, normalize } from '../utils.ts'
 
+import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'fs'
 import { basename } from 'path'
 import fg from 'fast-glob'
@@ -9,6 +10,7 @@ import matter from 'gray-matter'
 
 import { generateSidebarItem, getTitleFromContent } from './sidebar.ts'
 import { normalizeCompatibility } from '../compatibility.ts'
+import { categoryKeys } from '../categories.ts'
 
 import type { Author } from '../../../docs/authors.ts'
 import { findPath } from '../utils.ts'
@@ -57,6 +59,8 @@ export interface ComponentData {
   logo?: string
   dependencies?: Array<string>
   categories?: Array<string>
+  popular?: boolean
+  addedAt?: string
   compatibility?: Array<string>
   usedBy?: Array<ComponentLink>
 
@@ -66,6 +70,43 @@ export interface ComponentData {
 
   items?: DefaultTheme.SidebarItem[]
 }
+
+// Дата появления компонента: самый ранний коммит, добавивший любой его файл по текущему пути.
+// Перенос файла считается добавлением (--no-renames), иначе перенесённые компоненты теряют дату.
+// Нужна полная история (fetch-depth: 0): в shallow-клоне даты совпадут, без git блок новинок не выводится.
+function readAddedDates(): Map<string, string> {
+  const dates = new Map<string, string>()
+  let log = ''
+  try {
+    log = execFileSync(
+      'git',
+      [
+        '-c', 'core.quotepath=off',
+        'log', '--no-renames', '--diff-filter=A', '--name-only', '--format=@%aI',
+        '--', 'docs/components', 'docs/en/components',
+      ],
+      { encoding: 'utf-8', maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'] },
+    )
+  } catch (error) {
+    console.warn(`[components] git log недоступен, блок новинок отключён: ${(error as Error).message}`)
+    return dates
+  }
+
+  let date = ''
+  for (const line of log.split('\n')) {
+    if (line.startsWith('@')) {
+      date = line.slice(1, 11)
+      continue
+    }
+    const match = line.match(/^docs\/((?:en\/)?components\/[^/]+?)(?:\.md$|\/)/)
+    // лог идёт от новых коммитов к старым, последняя запись самая ранняя
+    if (match && date) dates.set(match[1], date)
+  }
+
+  return dates
+}
+
+const addedDates = readAddedDates()
 
 export const components: ComponentData[] = fg
   .sync([
@@ -92,6 +133,7 @@ export const components: ComponentData[] = fg
       modx,
       repository,
       description,
+      popular,
     } = data
 
     const filePath = file.substring(file.indexOf('/') + 1)
@@ -109,9 +151,16 @@ export const components: ComponentData[] = fg
       dependencies: Array.isArray(dependencies) ? dependencies : Array(dependencies),
       categories: Array.isArray(categories) ? categories : Array(categories),
       compatibility: normalizeCompatibility(compatibility),
+      popular: popular === true,
+      addedAt: addedDates.get(filePath.replace(/(\/index)?\.md$/, '')),
     }
 
     component.author = getAuthor(author)
+
+    const unknown = component.categories!.filter(key => !categoryKeys.includes(key))
+    if (unknown.length) {
+      console.warn(`[components] ${file}: неизвестные категории ${unknown.join(', ')}`)
+    }
 
     if (items) {
       component.items = generateSidebarItem(items, component.link)

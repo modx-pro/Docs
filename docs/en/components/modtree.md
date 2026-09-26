@@ -1,6 +1,7 @@
 ---
 title: ModTree
 description: Linking resources to each other
+categories: catalog
 logo: https://modstore.pro/assets/extras/modtree/logo.png
 author: visermort
 modstore: https://modstore.pro/packages/ecommerce/modtree

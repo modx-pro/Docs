@@ -6,6 +6,7 @@ author: vgrish
 modstore: https://modstore.pro/packages/ecommerce/mscategoryoptions
 
 dependencies: miniShop2
+categories: catalog
 ---
 
 # msCategoryOptions

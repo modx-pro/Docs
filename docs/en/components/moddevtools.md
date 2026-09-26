@@ -1,6 +1,7 @@
 ---
 title: modDevTools
 description: Component for viewing chunks and snippets used on a template or chunk edit page
+categories: utilities
 logo: https://modstore.pro/assets/extras/moddevtools/logo-lg.jpg
 author: argnist
 modstore: https://modstore.pro/packages/utilities/moddevtools

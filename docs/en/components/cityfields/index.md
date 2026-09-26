@@ -1,6 +1,7 @@
 ---
 title: cityFields
 description: Multi-city site support without contexts
+categories: maps
 logo: https://modstore.pro/assets/extras/cityfields/logo.png
 author: feschukov
 modstore: https://modstore.pro/packages/ecommerce/cityfields

@@ -15,6 +15,7 @@ items: [
 { text: 'Development', link: 'development' },
 ]
 dependencies: ['SendIt']
+categories: catalog
 ---
 
 # FlatFilters

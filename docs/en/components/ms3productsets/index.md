@@ -1,6 +1,7 @@
 ---
 title: ms3ProductSets
 description: Dynamic product recommendations for MiniShop3 — manual links, auto rules, manager templates
+categories: catalog
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3productsets/logo.png
 modstore: https://modstore.pro/packages/ecommerce/ms3productsets

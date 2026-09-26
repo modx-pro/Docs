@@ -1,6 +1,7 @@
 ---
 title: Scheduler
 description: Планирование отложенных задач
+categories: utilities
 logo: https://modstore.pro/assets/extras/scheduler/logo.png
 author: modx-pro
 modstore: https://modstore.pro/packages/utilities/scheduler

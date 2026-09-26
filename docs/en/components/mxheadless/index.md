@@ -1,11 +1,11 @@
 ---
 title: mxHeadless
 description: REST API gateway for headless frontends on MODX 3. Resources, objects, OpenAPI, API keys, and OAuth
+categories: utilities
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/mxheadless/logo.png
 modstore: https://modstore.pro/packages/utilities/mxheadless
 repository: https://github.com/Ibochkarev/mxHeadless
-categories: utilities
 compatibility:
   - modx3
   - php81

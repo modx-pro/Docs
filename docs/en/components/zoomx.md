@@ -1,6 +1,7 @@
 ---
 title: ZoomX
 description: Alternative way to use PHP templating engines
+categories: utilities
 logo: https://modstore.pro/assets/extras/zoomx/logo.png
 author: sergant210
 modstore: https://modstore.pro/packages/utilities/zoomx

@@ -1,6 +1,7 @@
 ---
 title: ms3RecentlyViewed
 description: '"Recently viewed products" block for MiniShop3 — browser or DB storage, similar products, manager'
+categories: catalog
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3recentlyviewed/logo.png
 modstore: https://modstore.pro/packages/ecommerce/ms3recentlyviewed

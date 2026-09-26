@@ -2,8 +2,8 @@
 title: ms3Discounts
 description: Правила скидок для MiniShop3. Без промокодов
 author: Ibochkarev
-categories: minishop3
 dependencies: miniShop3
+categories: discounts
 
 compatibility:
   - modx3

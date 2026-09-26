@@ -1,6 +1,8 @@
 ---
 title: SeoFilter
 description: Friendly URLs, meta tags and text generation
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/seofilter/logo.png
 author: sheronov
 modstore: https://modstore.pro/packages/ecommerce/seofilter

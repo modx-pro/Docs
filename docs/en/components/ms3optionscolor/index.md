@@ -8,7 +8,7 @@ dependencies:
   - miniShop3
   - VueTools
   - pdoTools
-categories: minishop3
+categories: catalog
 compatibility:
   - modx3
   - php82

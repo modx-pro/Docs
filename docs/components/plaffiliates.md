@@ -1,6 +1,7 @@
 ---
 title: plAffiliates
 description: Филиалы, остатки в филиалах, региональность, мультиязычность, геолокация, seo
+categories: other
 logo: https://modstore.pro/assets/extras/plaffiliates/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/other/plaffiliates

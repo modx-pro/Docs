@@ -3,7 +3,7 @@ title: msp3WebPay
 description: "Приём оплаты через WEBPAY для MiniShop3: карта, ERIP, холд, webhook и возврат покупателя"
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3

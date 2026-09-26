@@ -1,6 +1,7 @@
 ---
 title: UserLocation
 description: Geolocation and user city selection
+categories: maps
 logo: https://modstore.pro/assets/extras/userlocation/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/maps/userlocation

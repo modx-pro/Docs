@@ -17,6 +17,7 @@ items: [
   { text: 'Разработка', link: 'development' },
 ]
 dependencies: [ 'MiniShop3', 'msCDEK' ]
+categories: delivery
 ---
 
 # CdekIntegrate

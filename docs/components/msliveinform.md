@@ -6,6 +6,7 @@ author: vgrish
 modstore: https://modstore.pro/packages/delivery/msliveinform
 
 dependencies: miniShop2
+categories: delivery
 ---
 
 # msLiveInform

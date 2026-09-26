@@ -1,6 +1,7 @@
 ---
 title: SEO Suite
 description: SЕО Suite автоматически перенаправляет битые ссылки (код 404) на подходящие страницы
+categories: catalog
 logo: https://modstore.pro/assets/extras/seosuite/logo.png
 author: Sterc
 modstore: https://modstore.pro/packages/ecommerce/seosuite

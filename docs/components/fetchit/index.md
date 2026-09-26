@@ -1,6 +1,8 @@
 ---
 title: FetchIt
 description: Легковесная AJAX-отправка форм в MODX на Fetch API поверх FormIt или своего сниппета
+categories: utilities
+popular: true
 logo: https://modstore.pro/assets/extras/fetchit/logo.png
 author: GulomovCreative
 modstore: https://modstore.pro/packages/utilities/fetchit

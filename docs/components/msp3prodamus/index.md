@@ -3,7 +3,7 @@ title: msp3Prodamus
 description: "Приём оплаты через Prodamus для MiniShop3: ссылка payform, webhook Sign, чеки 54-ФЗ"
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3

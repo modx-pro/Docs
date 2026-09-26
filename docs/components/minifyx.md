@@ -1,6 +1,7 @@
 ---
 title: MinifyX
 description: Автоматизированное сжатие скриптов и стилей сайта
+categories: utilities
 logo: https://modstore.pro/assets/extras/minifyx/logo-lg.jpg
 author: sergant210
 modstore: https://modstore.pro/packages/utilities/minifyx

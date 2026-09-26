@@ -1,6 +1,7 @@
 ---
 title: CrawlerDetect
 description: Detect web crawlers by User-Agent and protect forms from spam without CAPTCHA
+categories: other
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/crawlerdetect/logo.png
 modstore: https://modstore.pro/packages/other/crawlerdetect

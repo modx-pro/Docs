@@ -3,7 +3,7 @@ title: msp3CDEKPay
 description: "Приём оплаты через CDEK Pay для MiniShop3: ссылка, QR СБП, webhook и чеки"
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3
