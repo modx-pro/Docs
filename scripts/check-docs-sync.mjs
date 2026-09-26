@@ -6,9 +6,10 @@
  *   node scripts/check-docs-sync.mjs --changed
  * --changed looks only at Russian files changed since the branch forked from the base
  * (origin/$GITHUB_BASE_REF in CI, $CHECK_BASE or origin/master locally):
- * a new page without an English counterpart fails, an edited page whose
- * English counterpart was not touched gets a warning.
- * Exit code: 0 if in sync, 1 if missing files in EN.
+ * a new, renamed or copied page without an English counterpart fails, an edited page
+ * whose English counterpart was not touched gets a warning.
+ * Exit 1 if EN files are missing (with --changed: only for new Russian files) or git diff fails;
+ * warnings never fail.
  */
 import { join } from 'path'
 import fg from 'fast-glob'
@@ -46,6 +47,6 @@ if (missing.length === 0) {
 
 console.error('Missing in docs/en (' + missing.length + ' file(s)):')
 missing.forEach((p) => console.error('  -', p))
-const paths = changedOnly ? ' ' + missing.map((p) => `docs/${p}`).join(' ') : ''
+const paths = changedOnly ? ' ' + missing.map((p) => JSON.stringify(`docs/${p}`)).join(' ') : ''
 console.error(`\nRun: node scripts/sync-docs-en.mjs${paths} to copy RU files to docs/en, then translate.`)
 process.exit(1)

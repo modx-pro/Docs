@@ -2,6 +2,7 @@
  * Copy missing Russian doc files to docs/en/ with a TODO placeholder.
  * Run from repo root: node scripts/sync-docs-en.mjs
  * Only some pages or folders: node scripts/sync-docs-en.mjs docs/components/fetchit docs/guide/cspell.md
+ * (Russian paths inside docs/; a path that matches no Russian page is an error).
  * After running, translate the content of the created files.
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs'
@@ -15,16 +16,36 @@ const ROOT = join(__dirname, '..')
 const DOCS = join(ROOT, 'docs')
 const DOCS_EN = join(ROOT, 'docs', 'en')
 
-const only = process.argv.slice(2).map((p) => relative(DOCS, resolve(ROOT, p)).replace(/\\/g, '/'))
-const inScope = (file) => only.length === 0
-  || only.some((p) => file === p || file.startsWith(p.replace(/\/$/, '') + '/'))
+const allRu = fg.sync('**/*.md', { cwd: DOCS, ignore: ['en/**'] })
+const args = process.argv.slice(2)
 
-const ruFiles = fg.sync('**/*.md', { cwd: DOCS, ignore: ['en/**'] }).filter(inScope)
+// each argument is a Russian page or folder inside docs/; "docs" itself means all pages
+const scopes = args.map((arg) => {
+  const rel = relative(DOCS, resolve(ROOT, arg)).replace(/\\/g, '/').replace(/\/$/, '')
+  if (rel.startsWith('..') || /^[a-z]:/i.test(rel)) {
+    console.error(`Not inside docs/: ${arg}`)
+    process.exit(1)
+  }
+  if (rel === 'en' || rel.startsWith('en/')) {
+    console.error(`Pass the Russian page, not the English one: ${arg}`)
+    process.exit(1)
+  }
+  const matches = (file) => rel === '' || file === rel || file.startsWith(rel + '/')
+  if (!allRu.some(matches)) {
+    console.error(`No Russian pages match: ${arg}`)
+    process.exit(1)
+  }
+  return matches
+})
+
+const ruFiles = scopes.length ? allRu.filter((file) => scopes.some((matches) => matches(file))) : allRu
 const enFiles = new Set(fg.sync('**/*.md', { cwd: DOCS_EN }))
 
 const missing = ruFiles.filter((p) => !enFiles.has(p))
 if (missing.length === 0) {
-  console.log('No missing files. docs/en is in sync with docs/.')
+  console.log(scopes.length
+    ? 'Nothing to copy: the given pages already have English counterparts.'
+    : 'No missing files. docs/en is in sync with docs/.')
   process.exit(0)
 }
 

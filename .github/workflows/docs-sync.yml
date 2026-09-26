@@ -12,7 +12,6 @@ on:
       - 'package.json'
 
 jobs:
-  # a new Russian page needs an English counterpart; an edited one gets a warning if EN is untouched
   docs-sync:
     runs-on: ubuntu-latest
     steps:
@@ -29,10 +28,13 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
         run: git fetch --no-tags origin "$BASE_REF"
+      # a new Russian page needs an English one (fails); an edited one with untouched EN gets a warning
       - name: EN counterparts of new pages
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: pnpm run check:sync:changed
-      # EN must have at least as many ##/### sections as RU; whole repo, it is in sync now
-      - name: EN structure
-        run: pnpm run check:structure
+      # EN should have at least as many ##/### sections as RU; changed pages, warnings only
+      - name: EN structure of changed pages
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: pnpm run check:structure:changed

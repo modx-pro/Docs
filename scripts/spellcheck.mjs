@@ -31,6 +31,25 @@ function fail(message) {
   process.exit(1)
 }
 
+/** A broken cspell.json must fail even when there is nothing to check. */
+function checkConfig() {
+  let config
+  try {
+    config = JSON.parse(readFileSync(join(ROOT, 'cspell.json'), 'utf8'))
+  } catch (err) {
+    fail(`cspell.json is not valid JSON: ${err.message}`)
+  }
+  for (const pattern of config.ignoreRegExpList ?? []) {
+    const regex = String(pattern).match(/^\/(.*)\/([a-z]*)$/s)
+    try {
+      if (regex) new RegExp(regex[1], regex[2])
+    } catch (err) {
+      fail(`cspell.json ignoreRegExpList: ${err.message}`)
+    }
+  }
+}
+checkConfig()
+
 const args = process.argv.slice(2)
 const changedOnly = args.includes('--changed')
 const cspellFlags = args.filter((a) => a.startsWith('--') && a !== '--changed')
@@ -118,7 +137,7 @@ if (changedOnly || pathArgs.length) {
   }
   if (targets.length === 0) {
     if (changedOnly) {
-      console.log('No changed markdown files to check.')
+      console.log('No changed markdown files to check (cspell.json OK).')
       process.exit(0)
     }
     fail(`No markdown files to check in: ${pathArgs.join(', ')}`)
