@@ -7,8 +7,9 @@
  *   node scripts/spellcheck.mjs docs/components/fetchit
  *   node scripts/spellcheck.mjs --changed
  *   node scripts/spellcheck.mjs --show-suggestions
- * --changed checks Markdown changed since the branch forked from the base:
- * origin/$GITHUB_BASE_REF in CI, $SPELLCHECK_BASE or origin/master locally.
+ * --changed checks Markdown changed since the branch forked from the base
+ * (origin/$GITHUB_BASE_REF in CI, $SPELLCHECK_BASE or origin/master locally)
+ * and reports only words on changed lines: old issues elsewhere in a touched file don't fail it.
  * Other options go to cspell as --flag or --flag=value.
  * Exit 0 if OK, 1 on unknown words, bad arguments, no matching files or a failed git/cspell run.
  */
@@ -23,6 +24,9 @@ import matter from 'gray-matter'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
 const CSPELL = join(ROOT, 'node_modules/cspell/bin.mjs')
+const BASE = process.env.GITHUB_BASE_REF
+  ? `origin/${process.env.GITHUB_BASE_REF}`
+  : process.env.SPELLCHECK_BASE || 'origin/master'
 
 /** Same as ignorePaths in cspell.json: cspell would drop these files anyway. */
 const isSkipped = (file) => /(^|\/)parts\//.test(file)
@@ -45,24 +49,43 @@ if (changedOnly && pathArgs.length) {
   fail('--changed takes no paths: it checks the files changed against the base branch.')
 }
 
-function changedMarkdownFiles() {
-  const base = process.env.GITHUB_BASE_REF
-    ? `origin/${process.env.GITHUB_BASE_REF}`
-    : process.env.SPELLCHECK_BASE || 'origin/master'
-  let out = ''
+function gitDiff(diffArgs) {
   try {
-    out = execFileSync(
+    return execFileSync(
       'git',
-      ['-c', 'core.quotePath=false', 'diff', '--name-only', '--diff-filter=ACMRT', `${base}...HEAD`, '--', 'docs'],
-      { cwd: ROOT, encoding: 'utf8' }
+      ['-c', 'core.quotePath=false', 'diff', ...diffArgs, `${BASE}...HEAD`, '--', 'docs'],
+      { cwd: ROOT, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }
     )
   } catch (err) {
-    fail(`git diff failed for ${base}: ${err.message}`)
+    fail(`git diff failed for ${BASE}: ${err.message}`)
   }
-  return out
+}
+
+function changedMarkdownFiles() {
+  return gitDiff(['--name-only', '--diff-filter=ACMRT'])
     .split('\n')
     .map((l) => l.trim())
     .filter((l) => l.endsWith('.md') && existsSync(join(ROOT, l)))
+}
+
+/** Added and modified line numbers of every changed file, from the zero-context diff. */
+function changedLines() {
+  const lines = new Map()
+  let current = null
+  for (const row of gitDiff(['-U0', '--no-color', '--no-ext-diff', '--diff-filter=ACMRT']).split('\n')) {
+    if (row.startsWith('+++ ')) {
+      current = row.startsWith('+++ b/') ? row.slice(6).trimEnd() : null
+      if (current) lines.set(current, new Set())
+      continue
+    }
+    const hunk = current && row.match(/^@@ -\S+ \+(\d+)(?:,(\d+))? @@/)
+    if (hunk) {
+      const start = Number(hunk[1])
+      const count = hunk[2] === undefined ? 1 : Number(hunk[2])
+      for (let n = start; n < start + count; n++) lines.get(current).add(n)
+    }
+  }
+  return lines
 }
 
 function pathFiles() {
@@ -104,6 +127,31 @@ function projectWords() {
   return [...words].sort()
 }
 
+/** cspell prints issues as `file:line:col - Unknown word (...)`; keep those on changed lines. */
+function reportChangedLines(output, lines, fileCount) {
+  let kept = 0
+  let ignored = 0
+  const files = new Set()
+  for (const row of output.split(/\r?\n/)) {
+    const issue = row.match(/^(.+?):(\d+):\d+ - /)
+    if (!issue) {
+      if (row.trim() && !row.startsWith('CSpell:')) console.log(row)
+      continue
+    }
+    const file = relative(ROOT, resolve(ROOT, issue[1])).replace(/\\/g, '/')
+    if (lines.get(file)?.has(Number(issue[2]))) {
+      console.log(row)
+      kept++
+      files.add(file)
+    } else {
+      ignored++
+    }
+  }
+  const note = ignored ? ` (${ignored} on unchanged lines not counted)` : ''
+  console.log(`Checked ${fileCount} files, changed lines: ${kept} issues in ${files.size} files${note}.`)
+  return kept
+}
+
 let targets = ['docs/**/*.md']
 if (changedOnly || pathArgs.length) {
   const files = changedOnly ? changedMarkdownFiles() : pathFiles()
@@ -126,6 +174,7 @@ if (!existsSync(CSPELL)) {
 }
 
 const words = projectWords()
+const lines = changedOnly ? changedLines() : null
 const dir = mkdtempSync(join(tmpdir(), 'docs-cspell-'))
 let status = 1
 try {
@@ -145,14 +194,18 @@ try {
 
   const result = spawnSync(
     process.execPath,
-    [CSPELL, '--no-progress', '--config', config, ...cspellFlags, ...fileArgs],
-    { cwd: ROOT, stdio: 'inherit' }
+    [CSPELL, '--no-progress', ...(lines ? ['--no-summary'] : []), '--config', config, ...cspellFlags, ...fileArgs],
+    { cwd: ROOT, stdio: ['inherit', lines ? 'pipe' : 'inherit', 'inherit'], encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }
   )
   if (result.error) {
     console.error('Failed to run cspell:', result.error.message)
   } else if (result.status === null) {
     console.error('cspell was terminated by signal', result.signal)
+  } else if (lines && result.status <= 1) {
+    // 1 means "issues found": decide by the issues on changed lines only
+    status = reportChangedLines(result.stdout, lines, targets.length) ? 1 : 0
   } else {
+    if (lines) process.stdout.write(result.stdout)
     status = result.status
   }
 } finally {
