@@ -71,7 +71,6 @@
   },
   "dependencies": {
     "@vueuse/core": "^14.4.0",
-    "@xobotyi/scrollbar-width": "^1.9.5",
     "glightbox": "^3.3.1",
     "uuid": "^14.0.2"
   },
