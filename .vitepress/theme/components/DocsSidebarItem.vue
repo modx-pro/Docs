@@ -1,4 +1,8 @@
 <script setup>
+// Копия vitepress/dist/client/theme-default/components/VPSidebarItem.vue (VitePress 2.0.0-alpha.20),
+// подключена через resolve.alias в .vitepress/config/index.ts.
+// Отличия от оригинала: импорты по пути пакета, opened/renderChildren, v-if="renderChildren" у .items
+// и рекурсия через DocsSidebarItem. Остальной шаблон и <style> совпадают — при обновлении VitePress сверять diff.
 import { computed, ref, watchEffect } from "vue";
 import { useSidebarItemControl } from 'vitepress/dist/client/theme-default/composables/sidebar.js';
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue';
@@ -17,8 +21,11 @@ const linkTag = computed(() => isLink.value ? "a" : "div");
 const textTag = computed(() => hasChildren.value && props.depth < 5 ? `h${props.depth + 2}` : "p");
 // a section needs a heading
 const sectionTag = computed(() => props.item.text && textTag.value !== "p" ? "section" : "div");
-// вложенные пункты свёрнутых групп не рендерим: иначе каждая страница
-// несёт в HTML весь сайдбар компонентов (~1800 пунктов, ~660 КБ)
+// Оригинал рендерит вложенные пункты всегда и прячет свёрнутые через CSS, и каждая страница
+// несёт в HTML весь сайдбар компонентов. Здесь они рендерятся, только если группа:
+// несворачиваемая; раскрыта; содержит текущую страницу — hasActiveLink вычисляется
+// синхронно в setup, а collapsed снимается лишь в nextTick, без этого активная группа
+// пропала бы из SSR-HTML; уже раскрывалась (opened) — повторное сворачивание не пересоздаёт DOM.
 const opened = ref(false);
 watchEffect(() => {
 	if (!collapsed.value) opened.value = true;

@@ -2,7 +2,7 @@ import type { MarkdownRenderer } from 'vitepress'
 import kbd from 'markdown-it-kbd'
 import { headingAnchor, legacyHeadingSlug, uniqueSettingAnchor } from '../anchors.ts'
 
-// типы состояния берём из экземпляра VitePress: он работает на своей версии markdown-it
+// типы состояния — из MarkdownRenderer VitePress (markdown-it 14), а не из markdown-it в devDependencies
 type StateBlock = Parameters<Parameters<MarkdownRenderer['block']['ruler']['at']>[1]>[0]
 type StateCore = Parameters<Parameters<MarkdownRenderer['core']['ruler']['push']>[1]>[0]
 
@@ -40,6 +40,8 @@ function settingHeadingAlias(state: StateCore) {
 
 // from https://github.com/markdown-it/markdown-it/blob/2b6cac25823af011ff3bc7628bc9b06e483c5a08/lib/rules_block/table.js
 // GFM table, non-standard
+// Отличия от оригинала: строке таблицы настроек — id-якорь из первой колонки (uniqueSettingAnchor),
+// ячейкам — data-label с заголовком столбца (подпись ячейки в мобильной вёрстке, global.css)
 
 function table(
   state: StateBlock,
@@ -133,7 +135,8 @@ function table(
   if (silent) { return true; }
 
   oldParentType = state.parentType;
-  // @ts-expect-error: встроенное правило таблиц markdown-it тоже ставит 'table', в типах 14.x его нет
+  // @ts-expect-error: markdown-it 14 сам ставит parentType 'table' (rules_block/table), но ParentType
+  // в @types/markdown-it 14.x его не включает; убрать, когда VitePress перейдёт на markdown-it 15 (там parentType: string)
   state.parentType = 'table';
 
   // use 'blockquote' lists for termination because it's
@@ -202,7 +205,7 @@ function table(
       token          = state.push('td_open', 'td', 1);
       const attrs = [];
       if (aligns[i]) {
-        token.attrs  = attrs.push([ 'style', 'text-align:' + aligns[i] ]);
+        attrs.push([ 'style', 'text-align:' + aligns[i] ]);
       }
 
       attrs.push(['data-label', headers[i].trim()]);

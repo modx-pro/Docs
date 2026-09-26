@@ -2,7 +2,7 @@ name: Typecheck
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
     paths:
       - '.vitepress/**'
       - 'docs/*.ts'
@@ -23,6 +23,7 @@ on:
       - 'tsconfig.json'
       - 'package.json'
       - 'pnpm-lock.yaml'
+      - '.github/workflows/typecheck.yml'
 
 jobs:
   typecheck:

@@ -284,6 +284,8 @@ export default withMermaid(
       ],
     },
     resolve: {
+      // подмена компонентов темы: …/VPName.vue → theme/components/DocsName.vue;
+      // ловит и импорты внутри самого VitePress (VPSidebarGroup → VPSidebarItem)
       alias: [
         'VPSidebar',
         'VPSidebarItem',
@@ -291,7 +293,7 @@ export default withMermaid(
         'VPNavTranslations',
         'VPNavBar',
       ].map(componentName => ({
-        find: new RegExp(`^.*\/${componentName}\.vue$`),
+        find: new RegExp(`^.*/${componentName}\\.vue$`),
         replacement: fileURLToPath(
           new URL(`../theme/components/${componentName.replace(/^VP/, 'Docs')}.vue`, import.meta.url)
         )
