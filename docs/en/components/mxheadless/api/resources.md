@@ -34,7 +34,7 @@ Delete is soft by default. `?force=1` removes the resource permanently. Restore 
 | `/pages/about` | `about`, `about.html`, `about/` |
 | `/pages/about.html` | `about.html`, `about` |
 | `/pages/blog/post` | `blog/post`, `blog/post.html`, `blog/post/` |
-| `/pages/index` | `index.html`, `index`, `` |
+| `/pages/index` | `index.html`, `index`, empty URI |
 
 In `meta`: `uri` (as requested), `resolved_uri` (matched MODX URI), `context`.
 

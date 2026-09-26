@@ -387,9 +387,9 @@ Legacy-процессоры `Processors/Settings/Option/*` и `Processors/Catego
 
 | Метод | Путь | Описание |
 | --- | --- | --- |
-| `GET` | `` | Список групп. Параметры: `start`, `limit` (`0` = всё), `query` (поиск по `name` / `description`). В ответе — массив групп c `options_count` (число опций в группе). |
+| `GET` | (корень) | Список групп. Параметры: `start`, `limit` (`0` = всё), `query` (поиск по `name` / `description`). В ответе — массив групп c `options_count` (число опций в группе). |
 | `GET` | `/{id}` | Одна группа + `options_count` |
-| `POST` | `` | Создать группу: `name` (обязательное), `description`, `sort_order` |
+| `POST` | (корень) | Создать группу: `name` (обязательное), `description`, `sort_order` |
 | `PUT` | `/{id}` | Обновить: `name`, `description`, `sort_order` |
 | `DELETE` | `/{id}` | Удалить группу. Опции в ней не удаляются — у них обнуляется `option_group_id` (попадают в «Без группы») |
 | `PUT` | `/positions` | Сохранить новый порядок: либо `positions: { id: position, ... }`, либо `ids: [id, id, ...]` (упорядоченный список) |
@@ -401,8 +401,8 @@ Legacy-процессоры `Processors/Settings/Option/*` и `Processors/Catego
 
 | Метод | Путь | Описание |
 | --- | --- | --- |
-| `GET` | `` | Опции, привязанные к категории. Каждая строка отдаёт `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
-| `POST` | `` | Привязать опцию к категории: `option_id`, `value`, `active`, `required`, `caption`, `description` |
+| `GET` | (корень) | Опции, привязанные к категории. Каждая строка отдаёт `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
+| `POST` | (корень) | Привязать опцию к категории: `option_id`, `value`, `active`, `required`, `caption`, `description` |
 | `PUT` | `/{option_id}` | Partial update связки: `value`, `active`, `required`, `position`, `caption`, `description` |
 | `DELETE` | `/{option_id}` | Удалить связку. Значения у товаров удаляются только если опция не активна ни в одной другой категории товара |
 | `POST` | `/sort` | Сохранить новый порядок (`option_ids[]`) |

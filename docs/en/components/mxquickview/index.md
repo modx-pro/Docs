@@ -100,7 +100,7 @@ Quick view of product card and any resources via AJAX for MODX 3.
 | --- | --- | --- |
 | `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Allowed chunks |
 | `mxquickview_allowed_snippet` | `msCart,msMiniCart` | Allowed snippets |
-| `mxquickview_allowed_template` | `` | Allowed templates (empty = template render disabled) |
+| `mxquickview_allowed_template` | | Allowed templates (empty = template render disabled) |
 | `mxquickview_mouseover_delay` | `300` | Mouseover delay (ms) |
 | `mxquickview_modal_size` | `modal-lg` | Modal size (`modal-sm`, `modal-lg`, `modal-xl`) |
 | `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Fancybox CSS path/URL (override) |

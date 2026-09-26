@@ -100,7 +100,7 @@ items: [
 | --- | --- | --- |
 | `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Список разрешённых чанков |
 | `mxquickview_allowed_snippet` | `msCart,msMiniCart` | Список разрешённых сниппетов |
-| `mxquickview_allowed_template` | `` | Список разрешённых шаблонов (если пусто, `template`-рендер запрещён) |
+| `mxquickview_allowed_template` | | Список разрешённых шаблонов (если пусто, `template`-рендер запрещён) |
 | `mxquickview_mouseover_delay` | `300` | Задержка по mouseover (мс) |
 | `mxquickview_modal_size` | `modal-lg` | Размер модалки (`modal-sm`, `modal-lg`, `modal-xl`) |
 | `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Путь/URL к Fancybox CSS (override) |

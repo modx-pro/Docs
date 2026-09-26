@@ -34,7 +34,7 @@ curl -s 'https://example.com/api/v1/resources?limit=5&filter[published]=1&fields
 | `/pages/about` | `about`, `about.html`, `about/` |
 | `/pages/about.html` | `about.html`, `about` |
 | `/pages/blog/post` | `blog/post`, `blog/post.html`, `blog/post/` |
-| `/pages/index` | `index.html`, `index`, `` |
+| `/pages/index` | `index.html`, `index`, пустой URI |
 
 В `meta`: `uri` (как в запросе), `resolved_uri` (совпавший URI MODX), `context`.
 

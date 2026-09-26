@@ -8,7 +8,7 @@
 
 1. Установить miniShop2, msOptionsPrice2 и allGifts.
 
-2. Создать шаблон для разделов и прописать в настройке ms2_template_category_default`
+2. Создать шаблон для разделов и прописать в настройке `ms2_template_category_default`
 
 3. Создать шаблон для товаров и прописать в настройках `ms2_template_product_default` и `msoptionsprice_working_templates`
 

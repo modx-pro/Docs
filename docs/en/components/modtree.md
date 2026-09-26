@@ -86,4 +86,4 @@ Show linked resources of resource 15 on page load.
 | **&parent** | Current resource | Resource for initial query |
 | **&queryForce** | `1` | When to run initial query: `1` — on page load, `0` — only on "Search" click |
 | **&linkWay** | `0` | Link direction: `1` — master to slave, `-1` — slave to master, `0` — both |
-| **&searchFields** | `pagetitle,content` | Comma-separated search fields. Use &searchFields=`` to disable |
+| **&searchFields** | `pagetitle,content` | Comma-separated search fields. Use ` &searchFields=`` ` to disable |

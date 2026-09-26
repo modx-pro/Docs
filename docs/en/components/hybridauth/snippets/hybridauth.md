@@ -15,7 +15,7 @@ Snippet outputs a sign-in form for the site.
 | **&logoutResourceId**  | `0`                              | Resource ID to redirect the user to after logout. Default 0 refreshes the current page.                                                                                   |
 | **&logoutTpl**         | `tpl.HybridAuth.logout`          | This chunk is shown to authenticated users.                                                                                                                                                           |
 | **&providerTpl**       | `tpl.HybridAuth.provider`        | Chunk for the sign-in or link-provider link.                                                                                                                                    |
-| **&providers**         | `all available`                  | List of auth providers, comma-separated. All available providers are in `{core_path}components/hybridauth/model/hybridauth/lib/Providers/`. E.g. ```&providers=`Google,Twitter,Facebook````. |
+| **&providers**         | `all available`                  | List of auth providers, comma-separated. All available providers are in `{core_path}components/hybridauth/model/hybridauth/lib/Providers/`. E.g. `` &providers=`Google,Twitter,Facebook` ``. |
 | **&rememberme**        | `1`                              | Remember the user for a long time. Default is on.                                                                                                                                               |
 
 ## Examples
