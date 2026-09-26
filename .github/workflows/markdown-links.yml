@@ -6,6 +6,8 @@ on:
     paths:
       - 'docs/**'
       - 'scripts/check-markdown-links.mjs'
+      - 'scripts/redirects.mjs'
+      - '.vitepress/config/rewrites.json'
       - '.github/workflows/markdown-links.yml'
       - 'package.json'
 
@@ -31,3 +33,8 @@ jobs:
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: pnpm run check:links:changed
+      # a moved or deleted page must not leave a redirect pointing nowhere;
+      # runs even when the link check failed, so both errors show up at once
+      - name: Check redirects
+        if: ${{ !cancelled() }}
+        run: pnpm run check:redirects
