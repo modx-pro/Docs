@@ -3,8 +3,8 @@
   "import": [
     "@cspell/dict-ru_ru/cspell-ext.json"
   ],
-  "locale": "en-US,ru-RU",
-  "language": "en,ru",
+  "locale": "en-US,en-GB,ru-RU",
+  "language": "en,en-GB,ru",
   "words": [
     "activeOnly",
     "adjustusage",
@@ -1412,7 +1412,6 @@
   "ignorePaths": [
     "node_modules",
     "plop-templates",
-    "docs/en",
     "**/parts/**",
     "*.lock",
     "pnpm-lock.yaml"

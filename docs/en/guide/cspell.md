@@ -4,7 +4,7 @@ lastUpdated: false
 
 # Spell checking (cspell)
 
-The project uses [cspell](https://cspell.org/) to spell-check Markdown. Russian and English are enabled (dictionary `@cspell/dict-ru_ru`). Code, the `docs/en/` folder and fragments in `parts/` are not checked.
+The project uses [cspell](https://cspell.org/) to spell-check Markdown. Both the Russian and the English docs are checked: dictionary `@cspell/dict-ru_ru` plus English dictionaries (US and British spelling). Code and fragments in `parts/` are not checked.
 
 ## Running the check
 
@@ -25,16 +25,16 @@ pnpm run spellcheck docs/components/ajaxform.md
 pnpm run spellcheck docs/guide
 ```
 
-If a path has no files to check (a typo in the path, or only `docs/en/` and `parts/`), the script says so and exits with an error. Paths can't be combined with `--changed`. Pass cspell options as `--flag` or `--flag=value`.
+If a path has no files to check (a typo in the path, or only `parts/` fragments), the script says so and exits with an error. Paths can't be combined with `--changed`. Pass cspell options as `--flag` or `--flag=value`.
 
 ## Configuration
 
 Config file: **`cspell.json`** in the project root.
 
-- **`language`** — `"en,ru"`: use Russian and English dictionaries.
+- **`language`** — `"en,en-GB,ru"`: use Russian and English dictionaries (US and British spelling).
 - **`words`** — list of extra “correct” words: technical terms (MODX, miniShop2, Fenom), component and snippet names, domains (modstore, modx.pro), etc. These are not reported as errors.
 - **`ignoreRegExpList`** — code is not checked: code blocks and anything in `backticks`. Format snippet, parameter and variable names as code, and they don't need dictionary entries.
-- **`ignorePaths`** — paths cspell skips: `docs/en`, `**/parts/**`, lock files, `node_modules`, `plop-templates`.
+- **`ignorePaths`** — paths cspell skips: `**/parts/**`, lock files, `node_modules`, `plop-templates`.
 
 This reduces false positives on package names, tags, and paths.
 
@@ -53,9 +53,9 @@ If cspell flags a valid word (e.g. a term or jargon word), add it to the **`word
 ```
 
 - **`words`** — project dictionary: package names, hooks, rare abbreviations.
-- **`ignorePaths`** — skip whole paths (the English guide, plop templates, etc.). Prefer adding a term to `words` instead of disabling large folders without a good reason.
+- **`ignorePaths`** — skip whole paths (`parts/` fragments, plop templates, etc.). Prefer adding a term to `words` instead of disabling large folders without a good reason.
 
-English files in `docs/en/` and fragments in `parts/` are not checked.
+Fragments in `parts/` are not checked: they are embedded into other pages and checked there.
 
 ## CI
 
