@@ -5,6 +5,7 @@ import { createZoom } from './composables/zoom'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import DocsLayout from './components/DocsLayout.vue'
 import DocsComponentsList from './components/DocsComponentsList.vue'
+import DocsComponentsCatalog from './components/DocsComponentsCatalog.vue'
 import './styles/global.css'
 import './styles/glightbox.css'
 
@@ -55,6 +56,7 @@ export default {
       },
     })
     app.component('DocsComponentsList', DocsComponentsList)
+    app.component('DocsComponentsCatalog', DocsComponentsCatalog)
     createZoom(app, router)
 
     if (

@@ -4,4 +4,4 @@ layout: page
 sidebar: false
 ---
 
-<DocsComponentsList title="Компоненты" :search="true" />
+<DocsComponentsCatalog title="Компоненты" />
