@@ -57,7 +57,7 @@ $excludeLexiconFields = [
 
 ## Три уровня лексиконов
 
-Файлы лежат в `mpc_lexicon_path` (по умолчанию `components/migxpageconfigurator/lexicon/`), в подпапке по культуре: `{культура}/{идентификатор}.inc.php`. Идентификатор (имя файла) берётся из поля ресурса, заданного настройкой `mpc_lexicon_filename_field` (по умолчанию `alias`, фоллбэк — `id`).
+Файлы лежат в `mpc_lexicon_path` (по умолчанию `components/migxpageconfigurator/lexicon/`), в подпапке по культуре: `{культура}/{идентификатор}.inc.php`. Идентификатор (имя файла) берётся из поля ресурса, заданного настройкой `mpc_lexicon_filename_field` (по умолчанию `alias`, фолбэк — `id`).
 
 Уровней — три, по возрастанию приоритета:
 

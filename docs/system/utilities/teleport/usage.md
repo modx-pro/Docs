@@ -60,7 +60,7 @@ php composer.phar create-project --prefer-source --stability=dev modxcms/telepor
 
 ### Кастомные Извлечения
 
-Teleport [Команда Extract](https://github.com/modxcms/teleport/blob/master/doc/use/extract.md) использует JSON [Шаблоны Извлечения (extract tpl)](https://github.com/modxcms/teleport/blob/master/doc/use/extract/tpl.md) чтобы описать как транспортный пакет создаётся из различных ресурсов/объектов сайта MODX. Вы можете легко создать Ваши собственные шаблоны чтобы быстро создавать кастомные пакеты для бесконечного количества целей от бекапирования сайтов до создания своих дополнений и создания вашего специфичного процесса разработки (workflow). Читайте [Создание кастомных Шаблонов Извлечения (Extract Tpls)](https://github.com/modxcms/teleport/blob/master/doc/extend/custom-extract-tpls.md) для большей информации.
+Teleport [Команда Extract](https://github.com/modxcms/teleport/blob/master/doc/use/extract.md) использует JSON [Шаблоны Извлечения (extract tpl)](https://github.com/modxcms/teleport/blob/master/doc/use/extract/tpl.md) чтобы описать как транспортный пакет создаётся из различных ресурсов/объектов сайта MODX. Вы можете легко создать Ваши собственные шаблоны чтобы быстро создавать кастомные пакеты для бесконечного количества целей от бэкапирования сайтов до создания своих дополнений и создания вашего специфичного процесса разработки (workflow). Читайте [Создание кастомных Шаблонов Извлечения (Extract Tpls)](https://github.com/modxcms/teleport/blob/master/doc/extend/custom-extract-tpls.md) для большей информации.
 
 ### Кастомные команды Teleport'а
 

@@ -160,7 +160,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `last_name` | varchar(191) | Фамилия |
 | `phone` | varchar(50) | Телефон |
 | `email` | varchar(191) | Email |
-| `password` | varchar(255) | Хэш пароля |
+| `password` | varchar(255) | Хеш пароля |
 | `is_active` | tinyint(1) | Активен |
 | `is_blocked` | tinyint(1) | Заблокирован |
 | `email_verified_at` | datetime | Дата подтверждения email |
