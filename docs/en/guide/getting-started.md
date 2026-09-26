@@ -179,8 +179,11 @@ From the repository root after `pnpm install`:
 | `pnpm dev` | Local preview with hot reload (default port is printed by Vite, often `5173`) |
 | `pnpm build` | Production build (heavy; Node may need extra memory, see `package.json` scripts) |
 | `pnpm preview` | Preview the built static output |
-| `pnpm run lint` | Markdown checks ([markdownlint](https://github.com/DavidAnson/markdownlint)) |
-| `pnpm run spellcheck` | Spell check for `docs/**/*.md` (excluding `docs/en/` in the default script) |
+| `pnpm run lint:changed` | Markup checks ([markdownlint](https://github.com/DavidAnson/markdownlint)) on changed lines; `pnpm run lint` — all files, `pnpm run lint:fix` — fix automatically |
+| `pnpm run spellcheck:changed` | Spell check on changed lines (RU and EN); `pnpm run spellcheck` — all files, see [Spell checking](/en/guide/cspell) |
+| `pnpm run check:sync:changed` | New Russian pages have English counterparts |
+
+CI runs the same checks on every PR that changes `docs/` and counts only changed lines, so old issues elsewhere in a file don't get in the way. A new Russian page needs an English one: if there is no translation yet, create a stub with `node scripts/sync-docs-en.mjs docs/path/to/page.md` — it copies the page to `docs/en/` with a TODO note. If you edit a Russian page but not its English counterpart, CI prints a warning: check whether the translation needs the same edit.
 
 More on markup and pages: [Markdown](/en/guide/markdown), [VitePress](/en/guide/vitepress), [Frontmatter](/en/guide/frontmatter).
 

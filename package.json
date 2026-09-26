@@ -21,14 +21,18 @@
     "preview": "vitepress preview",
     "generate": "plop",
     "typecheck": "vue-tsc --noEmit -p .",
-    "lint": "markdownlint **/*.md --disable MD045",
-    "lint:fix": "markdownlint **/*.md --disable MD045 --fix",
+    "lint": "node scripts/markdownlint.mjs",
+    "lint:changed": "node scripts/markdownlint.mjs --changed",
+    "lint:fix": "markdownlint \"**/*.md\" --fix",
     "spellcheck": "node scripts/spellcheck.mjs",
     "spellcheck:fix": "node scripts/spellcheck.mjs --show-suggestions",
     "spellcheck:changed": "node scripts/spellcheck.mjs --changed",
     "check:links": "node scripts/check-markdown-links.mjs",
     "check:links:external": "node scripts/check-markdown-links.mjs --external",
-    "check:links:changed": "node scripts/check-markdown-links.mjs --changed"
+    "check:links:changed": "node scripts/check-markdown-links.mjs --changed",
+    "check:sync": "node scripts/check-docs-sync.mjs",
+    "check:sync:changed": "node scripts/check-docs-sync.mjs --changed",
+    "check:structure": "node scripts/check-docs-structure-sync.mjs"
   },
   "devDependencies": {
     "@braintree/sanitize-url": "^7.1.2",

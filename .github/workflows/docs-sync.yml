@@ -1,18 +1,19 @@
-name: Spellcheck
+name: Docs sync
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - 'docs/**'
-      - 'cspell.json'
-      - 'scripts/spellcheck.mjs'
+      - 'scripts/check-docs-sync.mjs'
+      - 'scripts/check-docs-structure-sync.mjs'
       - 'scripts/lib/git-changed.mjs'
-      - '.github/workflows/spellcheck.yml'
+      - '.github/workflows/docs-sync.yml'
       - 'package.json'
 
 jobs:
-  spellcheck:
+  # a new Russian page needs an English counterpart; an edited one gets a warning if EN is untouched
+  docs-sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -28,7 +29,10 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref }}
         run: git fetch --no-tags origin "$BASE_REF"
-      - name: Spellcheck changed markdown
+      - name: EN counterparts of new pages
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
-        run: pnpm run spellcheck:changed
+        run: pnpm run check:sync:changed
+      # EN must have at least as many ##/### sections as RU; whole repo, it is in sync now
+      - name: EN structure
+        run: pnpm run check:structure

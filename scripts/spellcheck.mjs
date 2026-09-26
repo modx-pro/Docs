@@ -8,25 +8,20 @@
  *   node scripts/spellcheck.mjs --changed
  *   node scripts/spellcheck.mjs --show-suggestions
  * --changed checks Markdown changed since the branch forked from the base
- * (origin/$GITHUB_BASE_REF in CI, $SPELLCHECK_BASE or origin/master locally)
+ * (origin/$GITHUB_BASE_REF in CI, $CHECK_BASE or origin/master locally)
  * and reports only words on changed lines: old issues elsewhere in a touched file don't fail it.
  * Other options go to cspell as --flag or --flag=value.
  * Exit 0 if OK, 1 on unknown words, bad arguments, no matching files or a failed git/cspell run.
  */
-import { execFileSync, spawnSync } from 'child_process'
+import { spawnSync } from 'child_process'
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { basename, dirname, extname, join, relative, resolve } from 'path'
-import { fileURLToPath } from 'url'
 import fg from 'fast-glob'
 import matter from 'gray-matter'
+import { ROOT, changedLines, changedMarkdownFiles } from './lib/git-changed.mjs'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const ROOT = join(__dirname, '..')
 const CSPELL = join(ROOT, 'node_modules/cspell/bin.mjs')
-const BASE = process.env.GITHUB_BASE_REF
-  ? `origin/${process.env.GITHUB_BASE_REF}`
-  : process.env.SPELLCHECK_BASE || 'origin/master'
 
 /** Same as ignorePaths in cspell.json: cspell would drop these files anyway. */
 const isSkipped = (file) => /(^|\/)parts\//.test(file)
@@ -47,45 +42,6 @@ if (shortFlag) {
 }
 if (changedOnly && pathArgs.length) {
   fail('--changed takes no paths: it checks the files changed against the base branch.')
-}
-
-function gitDiff(diffArgs) {
-  try {
-    return execFileSync(
-      'git',
-      ['-c', 'core.quotePath=false', 'diff', ...diffArgs, `${BASE}...HEAD`, '--', 'docs'],
-      { cwd: ROOT, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }
-    )
-  } catch (err) {
-    fail(`git diff failed for ${BASE}: ${err.message}`)
-  }
-}
-
-function changedMarkdownFiles() {
-  return gitDiff(['--name-only', '--diff-filter=ACMRT'])
-    .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => l.endsWith('.md') && existsSync(join(ROOT, l)))
-}
-
-/** Added and modified line numbers of every changed file, from the zero-context diff. */
-function changedLines() {
-  const lines = new Map()
-  let current = null
-  for (const row of gitDiff(['-U0', '--no-color', '--no-ext-diff', '--diff-filter=ACMRT']).split('\n')) {
-    if (row.startsWith('+++ ')) {
-      current = row.startsWith('+++ b/') ? row.slice(6).trimEnd() : null
-      if (current) lines.set(current, new Set())
-      continue
-    }
-    const hunk = current && row.match(/^@@ -\S+ \+(\d+)(?:,(\d+))? @@/)
-    if (hunk) {
-      const start = Number(hunk[1])
-      const count = hunk[2] === undefined ? 1 : Number(hunk[2])
-      for (let n = start; n < start + count; n++) lines.get(current).add(n)
-    }
-  }
-  return lines
 }
 
 function pathFiles() {
