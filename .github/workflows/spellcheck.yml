@@ -1,0 +1,33 @@
+name: Spellcheck
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'docs/**'
+      - 'cspell.json'
+      - 'scripts/spellcheck.mjs'
+      - '.github/workflows/spellcheck.yml'
+      - 'package.json'
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Fetch base branch for diff
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: git fetch --no-tags origin "$BASE_REF"
+      - name: Spellcheck changed markdown
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: pnpm run spellcheck:changed
