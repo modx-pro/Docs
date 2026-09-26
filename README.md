@@ -93,7 +93,9 @@ See [Getting started](https://docs.modx.pro/en/guide/getting-started) on the doc
 
 <h1 id="local-dev">🔧 Локальная разработка / Local development</h1>
 
-**Требования:** Node.js **22.18+**. В репозитории зафиксирован менеджер пакетов **pnpm** (см. `package.json` → `packageManager`).
+**Требования:** Node.js **22.18+**. В репозитории зафиксирован менеджер пакетов **pnpm** (см. `package.json` → `packageManager`); установите pnpm 10 или новее, и он сам переключится на эту версию. Настройки pnpm — в `pnpm-workspace.yaml`.
+
+pnpm не ставит версии пакетов моложе суток (`minimumReleaseAge`) и при `pnpm add`/`pnpm update` молча берёт предыдущую, даже с `@latest`. Если свежая версия нужна срочно (например, исправление уязвимости), укажите её явно: `pnpm add пакет@X.Y.Z --config.minimumReleaseAge=0`. До истечения суток CI и деплой с таким `pnpm-lock.yaml` не пройдут.
 
 ```bash
 pnpm install

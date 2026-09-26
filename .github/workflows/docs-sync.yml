@@ -10,6 +10,7 @@ on:
       - 'scripts/lib/git-changed.mjs'
       - '.github/workflows/docs-sync.yml'
       - 'package.json'
+      - 'pnpm-workspace.yaml'
 
 jobs:
   docs-sync:
