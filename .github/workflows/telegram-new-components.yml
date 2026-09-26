@@ -96,25 +96,21 @@ jobs:
             fi
           }
 
+          # OG-картинки создаются при сборке и в git не хранятся. После Deploy (workflow_run)
+          # картинка уже на сайте; при ручном запуске её там может не быть — тогда логотип из frontmatter
           resolve_logo_url() {
             local slug="$1"
             local frontmatter_logo="$2"
+            local og_url="https://docs.modx.pro/og/${slug}.png"
 
-            if [[ -f "docs/public/og/${slug}.png" ]]; then
-              printf "https://docs.modx.pro/og/%s.png" "$slug"
+            if [[ "$(curl -fsIL --max-time 15 -o /dev/null -w '%{content_type}' "$og_url")" == image/png* ]]; then
+              printf "%s" "$og_url"
               return 0
             fi
+            echo "::warning::OG-картинка недоступна (${og_url}), берём логотип из frontmatter" >&2
 
             if [[ -n "$frontmatter_logo" ]]; then
               printf "%s" "$frontmatter_logo"
-            fi
-          }
-
-          resolve_logo_file() {
-            local slug="$1"
-
-            if [[ -f "docs/public/og/${slug}.png" ]]; then
-              printf "docs/public/og/%s.png" "$slug"
             fi
           }
 
@@ -193,7 +189,6 @@ jobs:
             description="$(trim_quotes "$description")"
             author="$(trim_quotes "$author")"
             logo="$(trim_quotes "$logo")"
-            logo_file="$(resolve_logo_file "$slug" || true)"
             logo="$(resolve_logo_url "$slug" "$logo" || true)"
 
             [[ -z "$title" ]] && title="$slug"
@@ -223,11 +218,9 @@ jobs:
             jq -n \
               --arg message "$message" \
               --arg logo "$logo" \
-              --arg logo_file "$logo_file" \
               '{
                 message: $message,
-                logo: (if ($logo | length) > 0 then $logo else null end),
-                logo_file: (if ($logo_file | length) > 0 then $logo_file else null end)
+                logo: (if ($logo | length) > 0 then $logo else null end)
               }' \
               >> "$notifications_file"
 
@@ -311,12 +304,9 @@ jobs:
           while IFS= read -r item; do
             message="$(jq -r '.message' <<< "$item")"
             logo="$(jq -r '.logo // empty' <<< "$item")"
-            logo_file="$(jq -r '.logo_file // empty' <<< "$item")"
             sent=false
 
-            if [[ -n "$logo_file" && -f "$logo_file" ]]; then
-              send_photo_file "$logo_file" "$message" && sent=true || true
-            elif [[ -n "$logo" ]]; then
+            if [[ -n "$logo" ]]; then
               send_photo_url "$logo" "$message" && sent=true || true
             fi
 
