@@ -3,7 +3,7 @@ title: msCart
 ---
 # msCart
 
-Сниппет для вывода корзины покупок. Отображает список товаров в корзине с возможностью изменения количества и удаления.
+Выводит содержимое корзины: список товаров с количеством, ценами и итогами.
 
 ::: warning Кэширование
 Сниппет работает с сессией пользователя и должен вызываться **некэшированно**.
@@ -19,22 +19,22 @@ title: msCart
 | **includeThumbs** | | Превью изображений через запятую |
 | **includeContent** | | Включить поле `content` товара в выборку |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
-| **showLog** | `false` | Показать лог выполнения (только для менеджеров) |
+| **showLog** | `false` | Показать журнал выполнения. Виден только тому, кто вошёл в админку |
 | **return** | `tpl` | Формат вывода: `tpl` или `data` |
 | **customer_token** | | Токен клиента (по умолчанию берётся из сессии) |
-| **hideOnThanks** | `false` | При `1` / `true` сниппет возвращает пустую строку на странице «спасибо» (детектируется по параметру URL `?msorder=...`). По умолчанию (`false`) корзина рендерится как обычно — мини-корзина в общем layout продолжает работать. До 1.11.0 поведение «пустая строка на thanks» было дефолтным и неотключаемым. |
+| **hideOnThanks** | `false` | При `1` / `true` сниппет возвращает пустую строку на странице «спасибо» (она определяется по параметру URL `?msorder=...`). При `false` корзина выводится как обычно — мини-корзина в общем шаблоне продолжает работать. До 1.11.0 пустая строка на этой странице была поведением по умолчанию и не отключалась. |
 
 ### Параметры pdoTools
-
-Сниппет наследует параметры pdoTools:
 
 | Параметр | Описание |
 | --- | --- |
 | **where** | Дополнительные условия выборки (JSON) |
 | **leftJoin** | Дополнительные JOIN (JSON) |
 | **select** | Дополнительные поля для выборки (JSON) |
-| **sortby** | Сортировка (по умолчанию `msProduct.id`) |
-| **sortdir** | Направление сортировки (по умолчанию `ASC`) |
+
+::: info Порядок товаров не настраивается
+Товары выводятся в том порядке, в каком лежат в корзине, — сниппет обходит её содержимое, а не делает отсортированную выборку. Параметры сортировки pdoTools на вывод не влияют.
+:::
 
 ## Примеры
 
@@ -45,14 +45,6 @@ title: msCart
 ```
 
 ### С превью изображений
-
-```fenom
-{'!msCart' | snippet : [
-    'includeThumbs' => 'small'
-]}
-```
-
-### С несколькими размерами превью
 
 ```fenom
 {'!msCart' | snippet : [
@@ -67,16 +59,6 @@ title: msCart
     'includeTVs' => 'my_tv,another_tv'
 ]}
 ```
-
-### С автообновлением в указанный элемент
-
-```fenom
-{'!msCart' | snippet : [
-    'selector' => '#header-mini-cart'
-]}
-```
-
-При изменении корзины JavaScript автоматически перерендерит HTML и обновит содержимое элемента `#header-mini-cart`.
 
 ### Получение данных в массиве
 
@@ -98,45 +80,24 @@ title: msCart
 
 ## Структура данных корзины
 
-При `return=data` возвращается массив:
+При `return=data` возвращается массив из трёх ключей; их поля — в таблицах раздела «[Плейсхолдеры в чанке](#плейсхолдеры-в-чанке)».
 
 ```php
 [
     'products' => [
         [
-            'key' => 'abc123',           // Уникальный ключ позиции
-            'id' => 15,                  // ID товара
-            'product_id' => 15,          // ID товара (дублируется)
-            'count' => 2,                // Количество
-            'price' => 1500,             // Цена за единицу
-            'weight' => 500,             // Вес за единицу
-            'options' => ['size' => 'M'], // Выбранные опции
-            'option_size' => 'M',        // Опции как отдельные поля
-            'pagetitle' => 'Футболка',   // Название товара
-            'article' => 'ART-001',      // Артикул
-            'old_price' => 2000,         // Старая цена
-            'discount_price' => 500,     // Скидка на единицу
-            'discount_cost' => 1000,     // Скидка на позицию
-            // ... остальные поля товара
+            'product_key' => 'abc123',    // Уникальный ключ позиции
+            'id' => 42,                   // ID строки заказа, НЕ товара
+            'product_id' => 15,           // ID товара — его и используйте
+            'count' => 2,
+            'price' => 1500,
+            'options' => ['size' => 'M'],
+            // ... остальные поля позиции и товара
         ],
         // ...
     ],
-    'total' => [
-        'count' => 5,                    // Общее количество товаров
-        'weight' => 2500,                // Общий вес
-        'cost' => 7500,                  // Общая стоимость
-        'discount' => 0,                 // Сумма скидок
-        'positions' => 3,                // Количество позиций
-        'cost_formatted' => '7 500 ₽',  // Стоимость с валютой
-        'weight_formatted' => '2.5 кг',  // Вес с единицей
-    ],
-    'status' => [
-        'total_count' => 5,              // Количество из Cart::get()
-        'total_cost' => 7500,            // Стоимость из Cart::get()
-        'total_weight' => 2500,          // Вес из Cart::get()
-        'total_discount' => 0,           // Скидка из Cart::get()
-        'total_positions' => 3,          // Позиции из Cart::get()
-    ],
+    'total'  => [ /* итоги корзины */ ],
+    'status' => [ /* агрегаты из Cart::get() */ ],
 ]
 ```
 
@@ -144,67 +105,62 @@ title: msCart
 
 ### Товары корзины
 
-Перебор товаров в чанке:
-
 ```fenom
 {foreach $products as $product}
     {$product.pagetitle} — {$product.count} шт. × {$product.price} руб.
 {/foreach}
 ```
 
-Для каждого товара доступны:
+| Плейсхолдер | Значение |
+| --- | --- |
+| `{$product.product_key}` | Уникальный ключ позиции |
+| `{$product.product_id}` | ID товара. Ссылка на карточку: `{$product.product_id \| url}` |
+| `{$product.id}` | ID строки заказа, а не товара. Ссылку по нему строить нельзя |
+| `{$product.count}` | Количество |
+| `{$product.price}` | Цена за единицу |
+| `{$product.weight}` | Вес за единицу |
+| `{$product.old_price}` | Старая цена |
+| `{$product.discount_price}` | Скидка на единицу |
+| `{$product.discount_cost}` | Скидка на позицию (количество × скидка) |
+| `{$product.price_formatted}` | Цена с валютой (например `1 234 ₽`) |
+| `{$product.old_price_formatted}` | Старая цена с валютой |
+| `{$product.cost_formatted}` | Стоимость позиции с валютой |
+| `{$product.old_cost_formatted}` | Старая стоимость позиции с валютой |
+| `{$product.weight_formatted}` | Вес с единицей (например `500 г`) |
+| `{$product.discount_price_formatted}` | Скидка на единицу с валютой |
+| `{$product.discount_cost_formatted}` | Скидка на позицию с валютой |
+| `{$product.options}` | Массив опций |
+| `{$product.option_*}` | Опции как отдельные поля (например `option_size`) |
 
-- `{$product.product_key}` — Уникальный ключ позиции
-- `{$product.id}` — ID товара
-- `{$product.count}` — Количество
-- `{$product.price}` — Цена за единицу
-- `{$product.weight}` — Вес за единицу
-- `{$product.old_price}` — Старая цена
-- `{$product.discount_price}` — Скидка на единицу
-- `{$product.discount_cost}` — Скидка на позицию (количество × скидка)
-- `{$product.price_formatted}` — Цена с валютой (например `1 234 ₽`)
-- `{$product.old_price_formatted}` — Старая цена с валютой
-- `{$product.cost_formatted}` — Стоимость позиции с валютой
-- `{$product.old_cost_formatted}` — Старая стоимость позиции с валютой
-- `{$product.weight_formatted}` — Вес с единицей (например `500 г`)
-- `{$product.discount_price_formatted}` — Скидка на единицу с валютой
-- `{$product.discount_cost_formatted}` — Скидка на позицию с валютой
-- `{$product.options}` — Массив опций
-- `{$product.option_*}` — Опции как отдельные поля (например `option_size`)
-- Все поля товара (`pagetitle`, `article`, `thumb` и т.д.)
-- Все поля производителя с префиксом `vendor.` (`vendor.name`, `vendor.logo` и т.д.)
+Кроме них доступны все поля товара (`pagetitle`, `article`, `thumb` и другие) и поля производителя. Имена полей производителя содержат точку — это плоские ключи, а не вложенный массив, поэтому пишите `{$product['vendor.name']}`, а не `{$product.vendor.name}`.
 
 ### Итоги
 
-- `{$total.count}` — Общее количество товаров
-- `{$total.positions}` — Количество позиций (уникальных товаров)
-- `{$total.weight}` — Общий вес
-- `{$total.cost}` — Общая стоимость
-- `{$total.discount}` — Сумма скидок
-- `{$total.cost_formatted}` — Стоимость с символом валюты
-- `{$total.weight_formatted}` — Вес с единицей измерения
-
-::: tip Синхронизация с плагинами
-Если плагин на событие `msOnGetStatusCart` изменяет агрегаты в `status` (например, пересчитывает скидку или добавляет стоимость доставки), сниппет автоматически синхронизирует `total` с данными `status`. Поля `total.cost`, `total.count`, `total.weight`, `total.discount`, `total.positions` будут соответствовать значениям из `status`, а не простой сумме по строкам корзины.
-:::
+| Плейсхолдер | Значение |
+| --- | --- |
+| `{$total.count}` | Общее количество товаров |
+| `{$total.positions}` | Количество позиций (уникальных товаров) |
+| `{$total.weight}` | Общий вес |
+| `{$total.cost}` | Общая стоимость |
+| `{$total.discount}` | Сумма скидок |
+| `{$total.cost_formatted}` | Стоимость с символом валюты |
+| `{$total.weight_formatted}` | Вес с единицей измерения |
 
 ### Статус корзины
 
-Начиная с **v1.9.0**, в чанке и при `return=data` доступен массив `status` — данные из `Cart::get()` после обработки плагинами:
+Начиная с **v1.9.0**, в чанке и при `return=data` доступен массив `status` — данные из `Cart::get()` после обработки плагинами.
 
-- `{$status.total_cost}` — Итоговая стоимость (с учётом плагинов)
-- `{$status.total_count}` — Количество товаров
-- `{$status.total_weight}` — Общий вес
-- `{$status.total_discount}` — Сумма скидок
-- `{$status.total_positions}` — Количество позиций
+| Плейсхолдер | Значение | Синхронизируется с |
+| --- | --- | --- |
+| `{$status.total_count}` | Количество товаров | `total.count` |
+| `{$status.total_cost}` | Итоговая стоимость (с учётом плагинов) | `total.cost` |
+| `{$status.total_weight}` | Общий вес | `total.weight` |
+| `{$status.total_discount}` | Сумма скидок | `total.discount` |
+| `{$status.total_positions}` | Количество позиций | `total.positions` |
 
-| `total.*` | Источник после синхронизации |
-| --- | --- |
-| `total.count` | `status.total_count` |
-| `total.cost` | `status.total_cost` |
-| `total.weight` | `status.total_weight` |
-| `total.discount` | `status.total_discount` |
-| `total.positions` | `status.total_positions` |
+::: tip Синхронизация с плагинами
+Если плагин на событие `msOnGetStatusCart` изменяет агрегаты в `status` (например, пересчитывает скидку или добавляет стоимость доставки), сниппет автоматически синхронизирует `total` с данными `status`. Поля из третьей колонки будут соответствовать значениям из `status`, а не простой сумме по строкам корзины.
+:::
 
 ## Автообновление HTML
 
@@ -222,7 +178,7 @@ title: msCart
 
 ```fenom
 {* tpl.msCart *}
-<div class="ms-cart" data-ms-cart>
+<div class="ms-cart">
     {if $products?}
         <table class="cart-table">
             <thead>
@@ -236,12 +192,12 @@ title: msCart
             </thead>
             <tbody>
                 {foreach $products as $product}
-                    <tr data-ms-cart-item="{$product.product_key}">
+                    <tr id="{$product.product_key}">
                         <td>
                             {if $product.thumb?}
-                                <img src="{$product.thumb}" alt="{$product.pagetitle}" width="60">
+                                <img src="{$product.thumb}" alt="{$product.pagetitle}">
                             {/if}
-                            <a href="{$product.id | resource : 'uri'}">{$product.pagetitle}</a>
+                            <a href="{$product.product_id | url}">{$product.pagetitle}</a>
 
                             {if $product.options?}
                                 <small>
@@ -253,25 +209,25 @@ title: msCart
                         </td>
                         <td>
                             {if $product.old_price > 0}
-                                <del>{$product.old_price} руб.</del>
+                                <del>{$product.old_price_formatted}</del>
                             {/if}
-                            {$product.price} руб.
+                            {$product.price_formatted}
                         </td>
                         <td>
-                            <input type="number"
-                                   name="count"
-                                   value="{$product.count}"
-                                   min="1"
-                                   data-ms-action="cart/change"
-                                   data-key="{$product.product_key}">
+                            {* Изменение количества — формой: скрипт читает ms3_action внутри неё *}
+                            <form method="post" class="ms3_form" data-ms3-form>
+                                <input type="hidden" name="product_key" value="{$product.product_key}">
+                                <input type="hidden" name="ms3_action" value="cart/change">
+                                <input type="number" name="count" value="{$product.count}" min="0">
+                            </form>
                         </td>
-                        <td>{$product.count * $product.price} руб.</td>
+                        <td>{$product.cost_formatted}</td>
                         <td>
-                            <button type="button"
-                                    data-ms-action="cart/remove"
-                                    data-key="{$product.product_key}">
-                                ✕
-                            </button>
+                            <form method="post" class="ms3_form" data-ms3-form>
+                                <input type="hidden" name="product_key" value="{$product.product_key}">
+                                <input type="hidden" name="ms3_action" value="cart/remove">
+                                <button type="submit">&times;</button>
+                            </form>
                         </td>
                     </tr>
                 {/foreach}
@@ -280,13 +236,14 @@ title: msCart
                 <tr>
                     <td colspan="3">Итого:</td>
                     <td colspan="2">
-                        <strong data-ms-cart-total-cost>{$total.cost}</strong> руб.
+                        <strong>{$total.cost_formatted}</strong>
                     </td>
                 </tr>
             </tfoot>
         </table>
 
-        <a href="{'ms3_order_page' | option}" class="btn btn-primary">
+        {set $order_page_id = 'ms3_order_page_id' | option}
+        <a href="{$order_page_id | url}" class="btn btn-primary">
             Оформить заказ
         </a>
     {else}
@@ -295,9 +252,7 @@ title: msCart
 </div>
 ```
 
-## JavaScript взаимодействие
-
-Корзина обновляется через JavaScript API MiniShop3:
+## Работа из JavaScript
 
 ```javascript
 // Добавить товар
@@ -309,13 +264,17 @@ await ms3.cartAPI.change(productKey, count)
 // Удалить товар
 await ms3.cartAPI.remove(productKey)
 
-// Очистить корзину (только API; для UI — ms3.cartUI.handleClean())
+// Очистить корзину
 await ms3.cartAPI.clean()
 ```
 
+::: warning cartAPI не перерисовывает разметку
+Это только обращение к серверу. HTML корзины не обновится и событие `ms3:cart:updated` не сработает — ни у одного из методов, не только у `clean()`. Перерисовкой занимается `ms3.cartUI`: например, `ms3.cartUI.handleClean()` вместо прямого вызова `cartAPI.clean()`.
+:::
+
 ### События
 
-При изменении корзины генерируется событие:
+При изменении корзины срабатывает событие:
 
 ```javascript
 document.addEventListener('ms3:cart:updated', function(e) {
@@ -323,31 +282,6 @@ document.addEventListener('ms3:cart:updated', function(e) {
 });
 ```
 
-### Data-атрибуты
+### Разметка действий с корзиной
 
-Для автоматического взаимодействия используйте data-атрибуты:
-
-```html
-<!-- Добавить в корзину -->
-<button data-ms-action="cart/add" data-id="15" data-count="1">
-    В корзину
-</button>
-
-<!-- С опциями -->
-<button data-ms-action="cart/add"
-        data-id="15"
-        data-options='{"size":"M","color":"red"}'>
-    В корзину
-</button>
-
-<!-- Изменить количество -->
-<input type="number"
-       data-ms-action="cart/change"
-       data-key="abc123"
-       value="2">
-
-<!-- Удалить из корзины -->
-<button data-ms-action="cart/remove" data-key="abc123">
-    Удалить
-</button>
-```
+Действия описываются формой с классом `ms3_form` и скрытым полем `ms3_action`, а позиция адресуется полем `product_key`. Полный разбор разметки, таблица допустимых действий и примеры форм — на странице [Корзина](/components/minishop3/frontend/cart#формы-и-действия).
