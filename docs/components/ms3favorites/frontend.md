@@ -34,7 +34,7 @@ CSS, JS и inline `ms3fLexicon` / `ms3fConfig` по умолчанию подк�
 - **get_share** — получение данных по токену (JSON). POST `token` → `{ success, ids, list_name, resource_type }`
 - **`copy_share`** — копирование чужого списка в свой (JSON). POST **`token=xxx`**, **`target_list=default`** → **`{ success, ids }`**. **Гости** получают **`ids`** для **localStorage**.
 - **update_comment** — обновление заметки к элементу (JSON). POST `product_id`, `list`, `comment`. При `comments_enabled`
-- **add_to_cart** — добавление товаров в корзину (JSON). POST `ids` или `product_id`
+- **add_to_cart** — добавление товаров в корзину (JSON). POST `ids` или `product_id`. Ответ `{ success, added, message }`: `message` — `cart_success` при `added > 0`, иначе `cart_error`
 - **get_popularity** — маппинг id→count (JSON). POST `ids`, `resource_type`
 - **clear** — очистка списка (JSON). POST `list`, `resource_type`
 

@@ -258,24 +258,22 @@ title: Интеграция и кастомизация
 ```fenom
 {'!ms3FavoritesIds' | snippet : ['list' => 'default', 'toPlaceholder' => 'ids_default']}
 {'!ms3FavoritesIds' | snippet : ['list' => 'gifts', 'toPlaceholder' => 'ids_gifts']}
-{set $allIds = array_unique(array_filter(array_merge(
-  explode(',', $_modx->getPlaceholder('ids_default')),
-  explode(',', $_modx->getPlaceholder('ids_gifts'))
-), 'intval'))}
-{if count($allIds) > 0}
+{set $allIds = '!ms3fMergeIds' | snippet : [
+  'ids1' => $_modx->getPlaceholder('ids_default'),
+  'ids2' => $_modx->getPlaceholder('ids_gifts')
+]}
+{if $allIds != ''}
 {'msProducts' | snippet : [
-  'resources' => implode(',', $allIds),
+  'resources' => $allIds,
   'parents' => 0,
-  'sortby' => 'FIELD(msProduct.id, ' ~ implode(',', $allIds) ~ ')',
+  'sortby' => 'FIELD(msProduct.id, ' ~ $allIds ~ ')',
   'tpl' => 'tplFavoritesItem'
 ]}
 {/if}
 ```
 :::
 
-::: warning Сниппет ms3fMergeIds пока не входит в пакет
-Вызов `ms3fMergeIds` в MODX-примере выше — запланированная возможность ([issue #9](https://github.com/Ibochkarev/ms3Favorites/issues/9)). До её появления объединяйте списки своим сниппетом (принимает `ids1`, `ids2`, убирает дубликаты, пишет результат в `toPlaceholder`) или через [PHP helper](#php-helper-для-получения-id).
-:::
+`ms3fMergeIds` принимает любые параметры вида `ids`, `ids1`, `ids2` и т.д., убирает дубликаты и возвращает строку id через запятую (порядок — по номеру параметра; `sortBy=asc|desc` — числовая сортировка). Поддерживает `toPlaceholder`. Доступен с версии 1.1.5.
 
 ## Несколько списков
 
