@@ -34,6 +34,6 @@ The toolbar shows only the top-level call (e.g. `[[!msProducts]]`) with total ti
 
 ### For production
 
-1. **Cache pdoTools snippets** where possible: e.g. pdoPage with `&cache=`1`` and `&cacheTime=`3600``. See [pdoTools — general properties](/en/components/pdotools/general-properties) and [pdoPage](/en/components/pdotools/snippets/pdopage).
-2. Use **`&includeContent=`0``** if content is not needed.
+1. **Cache pdoTools snippets** where possible: e.g. pdoPage with `` &cache=`1` `` and `` &cacheTime=`3600` ``. See [pdoTools — general properties](/en/components/pdotools/general-properties) and [pdoPage](/en/components/pdotools/snippets/pdopage).
+2. Use **`` &includeContent=`0` ``** if content is not needed.
 3. **Optimize SQL** from toolbar reports — indexes, prefer `&where` with JSON string.

@@ -11,10 +11,10 @@ title: События покупателя
 
 ### Параметры
 
-| Параметр | Тип | Описание | |
-| --- | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа | |
-| `msCustomer` | `msCustomer\ | null` | Объект покупателя (может быть null) |
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `msCustomer` | `msCustomer \| null` | Объект покупателя (может быть null) |
 
 ::: warning Отмена не блокирует оформление заказа
 Привязка `msCustomer` к заказу опциональна — `OrderSubmitHandler` продолжает оформление, даже если клиент не был создан/найден (данные остаются в `msOrderAddress`). Отмена этого события через `output()` не «запрещает checkout для неавторизованных» — она лишь оставляет заказ без привязанного `msCustomer`.
@@ -54,10 +54,10 @@ switch ($modx->event->name) {
 
 ### Параметры
 
-| Параметр | Тип | Описание | |
-| --- | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа | |
-| `msCustomer` | `msCustomer\ | null` | Объект покупателя |
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Order\Order` | Контроллер заказа |
+| `msCustomer` | `msCustomer \| null` | Объект покупателя |
 
 ### Пример использования
 
@@ -676,11 +676,11 @@ switch ($modx->event->name) {
 
 ### Параметры
 
-| Параметр | Тип | Описание | |
-| --- | --- | --- | --- |
-| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя | |
-| `user` | `\MODX\Revolution\modUser` \ | `null` | Текущий вариант пользователя — на входе обычно `null` |
-| `orderData` | `array` | Снимок полей заказа (адресные `address_email`, `address_phone`, `address_first_name` и т. д.) | |
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя |
+| `user` | `\MODX\Revolution\modUser` \| `null` | Текущий вариант пользователя — на входе обычно `null` |
+| `orderData` | `array` | Снимок полей заказа (адресные `address_email`, `address_phone`, `address_first_name` и т. д.) |
 
 ### Подмена пользователя
 
@@ -715,7 +715,7 @@ switch ($modx->event->name) {
 
 ### Параметры
 
-| Параметр | Тип | Описание | |
-| --- | --- | --- | --- |
-| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя | |
-| `user` | `\MODX\Revolution\modUser` \ | `null` | Финальный пользователь (или `null`, если разрешить не удалось) |
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | Сервис разрешения пользователя |
+| `user` | `\MODX\Revolution\modUser` \| `null` | Финальный пользователь (или `null`, если разрешить не удалось) |

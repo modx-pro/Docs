@@ -11,10 +11,10 @@ Fired **before** getting the customer for the order.
 
 ### Parameters
 
-| Parameter | Type | Description | |
-| --- | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller | |
-| `msCustomer` | `msCustomer\ | null` | Customer object (may be null) |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `msCustomer` | `msCustomer \| null` | Customer object (may be null) |
 
 ### Aborting the operation
 
@@ -39,10 +39,10 @@ Fired **after** getting the customer for the order.
 
 ### Parameters
 
-| Parameter | Type | Description | |
-| --- | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller | |
-| `msCustomer` | `msCustomer\ | null` | Customer object |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `msCustomer` | `msCustomer \| null` | Customer object |
 
 ### Example
 
@@ -539,11 +539,11 @@ Fired **before** resolving the MODX system user (`modUser`) for the order. Runs 
 
 ### Parameters
 
-| Parameter | Type | Description | |
-| --- | --- | --- | --- |
-| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service | |
-| `user` | `\MODX\Revolution\modUser` \ | `null` | Current user candidate — usually `null` on input |
-| `orderData` | `array` | Snapshot of order fields (address `address_email`, `address_phone`, `address_first_name`, etc.) | |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service |
+| `user` | `\MODX\Revolution\modUser` \| `null` | Current user candidate — usually `null` on input |
+| `orderData` | `array` | Snapshot of order fields (address `address_email`, `address_phone`, `address_first_name`, etc.) |
 
 ### Substituting the user
 
@@ -578,7 +578,7 @@ Fired **after** resolving the user for the order.
 
 ### Parameters
 
-| Parameter | Type | Description | |
-| --- | --- | --- | --- |
-| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service | |
-| `user` | `\MODX\Revolution\modUser` \ | `null` | Final user (or `null` if resolution failed) |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `resolver` | `\MiniShop3\Services\Order\OrderUserResolver` | User resolver service |
+| `user` | `\MODX\Revolution\modUser` \| `null` | Final user (or `null` if resolution failed) |

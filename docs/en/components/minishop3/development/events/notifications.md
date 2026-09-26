@@ -216,13 +216,13 @@ Fired **after** sending a notification (success or failure).
 
 ### Parameters
 
-| Parameter | Type | Description | |
-| --- | --- | --- | --- |
-| `notification` | `NotificationInterface` | Notification object | |
-| `channel` | `ChannelInterface` | Channel | |
-| `recipient` | `array` | Recipient data | |
-| `success` | `bool` | Send result | |
-| `error` | `string\ | null` | Error message (if any) |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `notification` | `NotificationInterface` | Notification object |
+| `channel` | `ChannelInterface` | Channel |
+| `recipient` | `array` | Recipient data |
+| `success` | `bool` | Send result |
+| `error` | `string \| null` | Error message (if any) |
 
 ### Example
 

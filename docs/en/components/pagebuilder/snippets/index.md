@@ -40,13 +40,13 @@ Quiz, lead form, and form builder: add the `quiz`, `contact_form`, or `form_buil
 | Purpose | MODX | Fenom |
 | --- | --- | --- |
 | Page sections | `[[!PageBuilder]]` | `{'!PageBuilder' \| snippet}` |
-| Filter sections | `[[!PageBuilder? &section_types=`hero,cta`]]` | `{'!PageBuilder' \| snippet : ['section_types' => 'hero,cta']}` |
-| Another resource | `[[!PageBuilderResource? &resource_id=`42`]]` | `{'!PageBuilderResource' \| snippet : ['resource_id' => 42]}` |
-| JSON for SEO | `[[!PageBuilder? &return_values=`1`]]` | `{'!PageBuilder' \| snippet : ['return_values' => 1]}` |
+| Filter sections | `` [[!PageBuilder? &section_types=`hero,cta`]] `` | `{'!PageBuilder' \| snippet : ['section_types' => 'hero,cta']}` |
+| Another resource | `` [[!PageBuilderResource? &resource_id=`42`]] `` | `{'!PageBuilderResource' \| snippet : ['resource_id' => 42]}` |
+| JSON for SEO | `` [[!PageBuilder? &return_values=`1`]] `` | `{'!PageBuilder' \| snippet : ['return_values' => 1]}` |
 | Sitemap | `[[!PageBuilderSitemap]]` | `{'!PageBuilderSitemap' \| snippet}` |
 | UTM to session | `[[!PageBuilderUtmSession]]` | `{'!PageBuilderUtmSession' \| snippet}` |
-| URL with UTM | `[[!PageBuilderUtmUrl? &url=`/contacts/`]]` | `{'!PageBuilderUtmUrl' \| snippet : ['url' => '/contacts/']}` |
-| Table rows | `[[!PageBuilderTableRows? &table_key=`prices`]]` | `{'!PageBuilderTableRows' \| snippet : ['table_key' => 'prices']}` |
+| URL with UTM | `` [[!PageBuilderUtmUrl? &url=`/contacts/`]] `` | `{'!PageBuilderUtmUrl' \| snippet : ['url' => '/contacts/']}` |
+| Table rows | `` [[!PageBuilderTableRows? &table_key=`prices`]] `` | `{'!PageBuilderTableRows' \| snippet : ['table_key' => 'prices']}` |
 
 ## Caching
 

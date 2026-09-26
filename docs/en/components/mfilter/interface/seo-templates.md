@@ -124,12 +124,12 @@ Conditions define when a template is used:
 
 | Placeholder | Description |
 |-------------|----------|
-| `{$filters.vendor|genitive}` | Genitive |
-| `{$filters.vendor|dative}` | Dative |
-| `{$filters.vendor|accusative}` | Accusative |
-| `{$filters.vendor|instrumental}` | Instrumental |
-| `{$filters.vendor|prepositional}` | Prepositional |
-| `{$filters.vendor|plural}` | Plural |
+| `{$filters.vendor\|genitive}` | Genitive |
+| `{$filters.vendor\|dative}` | Dative |
+| `{$filters.vendor\|accusative}` | Accusative |
+| `{$filters.vendor\|instrumental}` | Instrumental |
+| `{$filters.vendor\|prepositional}` | Prepositional |
+| `{$filters.vendor\|plural}` | Plural |
 
 ## Template examples
 

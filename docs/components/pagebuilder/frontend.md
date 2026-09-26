@@ -31,9 +31,9 @@ description: Шаблон, CSS, Fenom chunks секций, кеш и превь�
 
 - `pagebuilder-sections.css`: базовые стили секций Free
 - `pagebuilder-sections.js` — вместе с CSS, если файл есть в пакете (карусели и вкладки по маркерам DOM)
-- `pagebuilder-qa.css` — если на странице есть QA-секции (или `&qa_css=`1``)
+- `pagebuilder-qa.css` — если на странице есть QA-секции (или `` &qa_css=`1` ``)
 
-Отключить глобально: `pagebuilder_load_frontend_css = 0`. На одном вызове: `&load_css=`0``.
+Отключить глобально: `pagebuilder_load_frontend_css = 0`. На одном вызове: `` &load_css=`0` ``.
 
 Обёртка страницы `<div class="pb-page">` управляется `wrap_page` (по умолчанию совпадает с `load_css`).
 

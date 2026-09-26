@@ -37,7 +37,7 @@ Add `crawlerDetectBlock` to FormIt’s `&preHooks`. If you have other preHooks, 
 FetchIt processes forms via FormIt on the server. To protect the form:
 
 1. In FetchIt config set the URL/page where FormIt is called.
-2. In that page’s FormIt call add `&preHooks=`crawlerDetectBlock``.
+2. In that page’s FormIt call add `` &preHooks=`crawlerDetectBlock` ``.
 3. When a bot is blocked FetchIt gets an error response and shows the message from `crawlerdetect_block_message`.
 
 ### AJAX form (SendIt)
@@ -134,7 +134,7 @@ Run the counter snippet only when the visitor is not a bot:
 ### “Request a call” form (FetchIt)
 
 1. Ensure FetchIt is configured to call FormIt on the server.
-2. In FormIt on the target page add `&preHooks=`crawlerDetectBlock``.
+2. In FormIt on the target page add `` &preHooks=`crawlerDetectBlock` ``.
 3. When a bot is blocked FetchIt shows the message from CrawlerDetect settings.
 
 ### E‑commerce — “Viewing this product”
