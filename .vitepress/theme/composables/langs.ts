@@ -4,6 +4,25 @@ import { ensureStartingSlash } from '../utils'
 import type { DocsTheme } from '../types/index.ts'
 import { getFlatSideBarLinks, getSidebar } from 'vitepress/dist/client/theme-default/support/sidebar'
 
+// Ссылки сайдбара локали одинаковы для всех страниц, поэтому собираются один раз
+// на объект сайдбара, а не при каждом пересчёте localeLinks
+const sidebarLinks = new WeakMap<object, Set<string>>()
+
+function getSidebarLinks(sidebar: DefaultTheme.Sidebar): Set<string> {
+  let links = sidebarLinks.get(sidebar)
+  if (links) return links
+
+  // getSidebar разбирает обе формы сайдбара и добавляет base к ссылкам — так же, как сам VitePress
+  const sidebars = Array.isArray(sidebar)
+    ? [getSidebar(sidebar, '')]
+    : Object.entries(sidebar).map(([dir, value]) =>
+      getSidebar({ [dir]: value }, dir))
+
+  links = new Set(sidebars.flatMap(items => getFlatSideBarLinks(items).map(item => item.link)))
+  sidebarLinks.set(sidebar, links)
+  return links
+}
+
 export function useLangs({
   removeCurrent = true,
   correspondingLink = false
@@ -55,23 +74,11 @@ export function useLangs({
         }
       }
 
-      // getSidebar разбирает обе формы сайдбара и добавляет base к ссылкам — так же, как сам VitePress
-      const sidebars = Array.isArray(sidebar)
-        ? [getSidebar(sidebar, '')]
-        : Object.entries(sidebar ?? {}).map(([dir, value]) =>
-          // locale themeConfig is typed as DeepPartial by VitePress; the data is the same sidebar
-          getSidebar({ [dir]: value } as DefaultTheme.SidebarMulti, dir))
-
-      for (const items of sidebars) {
-        const flatSidebar = getFlatSideBarLinks(items)
-
-        for (const item of flatSidebar) {
-          if (item.link === link) {
-            return {
-              text,
-              link
-            }
-          }
+      // locale themeConfig is typed as DeepPartial by VitePress; the data is the same sidebar
+      if (sidebar && getSidebarLinks(sidebar as DefaultTheme.Sidebar).has(link)) {
+        return {
+          text,
+          link
         }
       }
 

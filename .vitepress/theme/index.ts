@@ -1,5 +1,5 @@
-import { type Router, inBrowser } from 'vitepress'
-import { type App, watch } from 'vue'
+import { type EnhanceAppContext, type SiteData, inBrowser } from 'vitepress'
+import { markRaw, watch } from 'vue'
 import { NolebaseEnhancedReadabilitiesPlugin } from '@nolebase/vitepress-plugin-enhanced-readabilities/client'
 import { createZoom } from './composables/zoom'
 import DefaultTheme from 'vitepress/theme-without-fonts'
@@ -38,11 +38,22 @@ function handoffEarlyLayoutClass() {
   observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
 }
 
+// Layout VitePress следит за theme.sidebar с deep: true и на каждой странице обходит весь
+// сайдбар локали. На клиенте сайдбар не меняется (правка конфига перезапускает dev-сервер
+// и перезагружает страницу), поэтому markRaw обрывает глубокий обход на объекте сайдбара.
+function markSidebarsRaw(siteData: SiteData) {
+  const themeConfigs = [siteData.themeConfig, ...Object.values(siteData.locales).map(locale => locale.themeConfig)]
+  for (const themeConfig of themeConfigs) {
+    if (themeConfig?.sidebar && typeof themeConfig.sidebar === 'object') markRaw(themeConfig.sidebar)
+  }
+}
+
 export default {
   extends: DefaultTheme,
   Layout: DocsLayout,
 
-  enhanceApp({ app, router }: { app: App, router: Router }) {
+  enhanceApp({ app, router, siteData }: EnhanceAppContext) {
+    markSidebarsRaw(siteData.value)
     handoffEarlyLayoutClass()
     app.use(NolebaseEnhancedReadabilitiesPlugin, {
       layoutSwitch: {
