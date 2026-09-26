@@ -5,7 +5,10 @@
  *   node scripts/check-markdown-links.mjs docs/components/indexnow
  *   node scripts/check-markdown-links.mjs --external
  *   node scripts/check-markdown-links.mjs --changed
- * Exit 0 if OK, 1 if broken.
+ * Links are taken from the markdown-it parse, so code blocks, inline code and HTML comments
+ * are skipped and reference-style links ([text][id] + [id]: url) are checked too.
+ * --changed checks Markdown changed against the base branch and takes no paths.
+ * Exit 0 if OK, 1 if broken, on unknown options or on a path that matches no Markdown.
  */
 import { execFileSync } from 'child_process'
 import { existsSync, readFileSync } from 'fs'
@@ -13,6 +16,7 @@ import { dirname, extname, join, normalize, relative, resolve } from 'path'
 import { fileURLToPath } from 'url'
 import fg from 'fast-glob'
 import matter from 'gray-matter'
+import MarkdownIt from 'markdown-it'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
@@ -22,6 +26,16 @@ const args = process.argv.slice(2)
 const checkExternal = args.includes('--external')
 const changedOnly = args.includes('--changed')
 const pathArgs = args.filter((a) => !a.startsWith('--'))
+
+const unknown = args.filter((a) => a.startsWith('-') && !['--external', '--changed'].includes(a))
+if (unknown.length) {
+  console.error(`Unknown option: ${unknown.join(', ')}`)
+  process.exit(1)
+}
+if (changedOnly && pathArgs.length) {
+  console.error('--changed takes no paths: it checks the files changed against the base branch.')
+  process.exit(1)
+}
 
 const FRONTMATTER_URL_KEYS = ['logo', 'modstore', 'repository', 'modx']
 
@@ -65,16 +79,22 @@ function collectFiles() {
       ignore: ['**/node_modules/**', '**/plop-templates/**'],
     })
   }
-  const patterns = pathArgs.map((p) => {
+  const files = new Set()
+  for (const p of pathArgs) {
     const abs = resolve(ROOT, p)
-    // fast-glob needs forward slashes, relative() gives backslashes on Windows
-    return relative(ROOT, extname(abs) === '.md' ? abs : join(abs, '**/*.md')).replace(/\\/g, '/')
-  })
-  return fg.sync(patterns, {
-    cwd: ROOT,
-    absolute: true,
-    ignore: ['**/node_modules/**', '**/plop-templates/**'],
-  })
+    // convertPathToPattern: forward slashes on Windows, glob characters in names escaped
+    const pattern = fg.convertPathToPattern(abs) + (extname(abs) === '.md' ? '' : '/**/*.md')
+    const found = fg.sync(pattern, {
+      absolute: true,
+      ignore: ['**/node_modules/**', '**/plop-templates/**'],
+    })
+    if (found.length === 0) {
+      console.error(`No markdown files in: ${p}`)
+      process.exit(1)
+    }
+    found.forEach((f) => files.add(normalize(f)))
+  }
+  return [...files]
 }
 
 function stripHashAndQuery(url) {
@@ -131,32 +151,26 @@ function existingTarget(candidate) {
   return false
 }
 
-function stripHtmlComments(content) {
-  return content.replace(/<!--[\s\S]*?-->/g, '')
-}
+// html: true turns comments and raw HTML into their own tokens instead of text;
+// normalizeLink is off so hrefs stay as written (no percent-encoding of Cyrillic paths)
+const md = new MarkdownIt({ html: true })
+md.normalizeLink = (url) => url
+md.validateLink = () => true
 
-/**
- * Code blocks and inline code: `['add']('active')` in JS or `[text](url)` in a syntax example
- * look like links but are not. Same patterns as cspell.json (CommonMark fences and code spans).
- */
-function stripCode(content) {
-  return content
-    .replace(/^[ \t]*(`{3,})[^`\n]*\n[\s\S]*?^[ \t]*\1`*[ \t]*$/gm, '')
-    .replace(/^[ \t]*(~{3,})[^\n]*\n[\s\S]*?^[ \t]*\1~*[ \t]*$/gm, '')
-    .replace(/(?<!`)(`+)(?=[^`\n])[^\n]*?[^`\n]\1(?!`)/g, '')
-}
-
+/** Links and images as markdown-it renders them: nothing from code, comments or raw HTML. */
 function extractMarkdownLinks(content) {
   const links = []
-  const re = /!?\[([^\]]*)\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
-  let m
-  while ((m = re.exec(content)) !== null) {
-    links.push({
-      href: m[2],
-      image: m[0].startsWith('!'),
-      raw: m[0],
-    })
+  const walk = (tokens) => {
+    for (const token of tokens) {
+      if (token.type === 'link_open') {
+        links.push({ href: token.attrGet('href') ?? '', image: false })
+      } else if (token.type === 'image') {
+        links.push({ href: token.attrGet('src') ?? '', image: true })
+      }
+      if (token.children) walk(token.children)
+    }
   }
+  walk(md.parse(content, {}))
   return links
 }
 
@@ -203,7 +217,7 @@ for (const file of files) {
   const src = readFileSync(file, 'utf8')
   const { data, content } = matter(src)
 
-  for (const link of extractMarkdownLinks(stripCode(stripHtmlComments(content)))) {
+  for (const link of extractMarkdownLinks(content)) {
     const href = link.href.trim()
     if (!href || href.startsWith('#')) {
       continue
