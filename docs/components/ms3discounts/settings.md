@@ -1,6 +1,6 @@
 ---
 title: Системные настройки
-description: Ключи ms3discounts_*, пути витрины и права менеджера
+description: Ключи ms3discounts_*, пути витрины и права доступа
 ---
 
 # Системные настройки
@@ -11,32 +11,46 @@ description: Ключи ms3discounts_*, пути витрины и права м
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `ms3discounts_enabled` | да/нет | да | Плагин пересчитывает цену в draft-корзине MiniShop3 |
-| `ms3discounts_debug` | да/нет | нет | Ключ ставится при установке. Движок его не читает. Трассировка в превью менеджера — право `ms3discounts_debug` |
-| `ms3discounts_round_precision` | число | `2` | Знаки после запятой для цены и скидки |
-| `ms3discounts_log_level` | число | `1` | Ключ ставится при установке. Код не читает уровень журнала |
+| `ms3discounts_enabled` | да/нет | да | Включение работы плагина пересчёта цен в draft-корзине MiniShop3. |
+| `ms3discounts_debug` | да/нет | нет | Служебный ключ конфигурации. Доступ к трассировке расчётов в панели управления регулируется правом `ms3discounts_debug`. |
+| `ms3discounts_round_precision` | число | `2` | Количество знаков после запятой при округлении цен и скидок. |
+| `ms3discounts_log_level` | число | `1` | Числовой уровень системных сообщений компонента. |
 
 ## Витрина
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `ms3discounts_frontend_css` | строка | `[[+assetsUrl]]css/web/default.css` | CSS бейджа и таймера. Пусто или `0` — не подключать |
-| `ms3discounts_frontend_js` | строка | `[[+assetsUrl]]js/web/default.js` | JS таймера `.ms3d_remains`. Пусто или `0` — не подключать |
+| `ms3discounts_frontend_css` | строка | `[[+assetsUrl]]css/web/default.css` | Путь к CSS бейджа и таймера. Значение `0` или пустая строка отключает подключение стилей. |
+| `ms3discounts_frontend_js` | строка | `[[+assetsUrl]]js/web/default.js` | Путь к JS таймера обратного отсчёта `.ms3d_remains`. Значение `0` или пустая строка отключает скрипт. |
 
-Пакет подставляет плейсхолдеры в путях: `[[+assetsUrl]]` → `{assets_url}components/ms3discounts/`, `[[+cssUrl]]` → тот же каталог плюс `css/`, `[[+jsUrl]]` → плюс `js/`.
+В путях поддерживаются плейсхолдеры: `[[+assetsUrl]]` заменяется на путь к `assets/components/ms3discounts/`, `[[+cssUrl]]` — на подкаталог `css/`, `[[+jsUrl]]` — на подкаталог `js/`.
 
-- `ms3discountsBuyNow` без своих свойств берёт пути из этих настроек.
-- У `ms3discountsGetDiscount` свойства `frontend_css` и `frontend_js` по умолчанию пустые.
-- Пустая строка или `0` отключает файл и настройку не читает.
-- Чтобы взять путь из настройки, удалите свойство сниппета в менеджере или передайте путь явно.
+Сниппеты витрины по умолчанию используют стили и скрипты из этих настроек. Для отключения стилей на конкретной странице передайте `&frontend_css='0'`.
 
-## Права
+## Права доступа
 
-Политика `ms3DiscountsManagerPolicy` выдаёт четыре права. Без `ms3discounts_view` страница **Компоненты → Скидки** не откроется.
+<!-- MEDIA: screenshot-admin | nice | Политика доступа ms3DiscountsManagerPolicy в настройках MODX | Открыть Настройки → Управление доступом → Политики доступа -->
+<!-- ![Политика доступа ms3DiscountsManagerPolicy](/components/ms3discounts/screenshots/permissions-policy.png) -->
+
+Пакет поставляет шаблон прав `ms3DiscountsPolicyTemplate` и политику `ms3DiscountsManagerPolicy`, содержащую четыре права:
+
+```mermaid
+flowchart LR
+  View["ms3discounts_view<br>(вход в раздел и просмотр)"]
+  Manage["ms3discounts_manage<br>(создание и правка правил)"]
+  Delete["ms3discounts_delete<br>(удаление правил)"]
+  Debug["ms3discounts_debug<br>(вкладка трассировки)"]
+
+  View --> Manage
+  Manage --> Delete
+  View --> Debug
+```
 
 | Право | Назначение |
 | --- | --- |
-| `ms3discounts_view` | Открыть список и карточку акции |
-| `ms3discounts_manage` | Создать и сохранить правило |
-| `ms3discounts_delete` | Удалить правило |
-| `ms3discounts_debug` | Трассировка в превью менеджера |
+| `ms3discounts_view` | Доступ к разделу меню «Компоненты → Скидки», просмотр списка и деталей акций. |
+| `ms3discounts_manage` | Создание, редактирование, копирование и сохранение правил скидок. |
+| `ms3discounts_delete` | Удаление правил скидок по отдельности и через массовые операции. |
+| `ms3discounts_debug` | Просмотр вкладки пошаговой трассировки расчёта условий в панели превью. |
+
+По умолчанию политика при установке назначается группе пользователей «Администраторы» для контекста `mgr`.

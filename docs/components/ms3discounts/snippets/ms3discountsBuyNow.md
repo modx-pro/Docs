@@ -1,37 +1,63 @@
 ---
 title: Сниппет ms3discountsBuyNow
-description: Выборка товаров по акциям и прокси в msProducts
+description: Выборка товаров по акциям и запуск msProducts с таймером
 ---
 
 # Сниппет ms3discountsBuyNow
 
-Собирает id товаров по активным акциям с `show_in_catalog` и вызывает `msProducts`. Остальные свойства уходят в `msProducts` как есть.
+<!-- MEDIA: screenshot-front | must | Сетка акционных товаров с таймером обратного отсчёта | Вызвать ms3discountsBuyNow на промо-странице -->
+<!-- ![Подборка товаров с таймером акции](/components/ms3discounts/screenshots/storefront-buynow.png) -->
 
-Как собираются цели include:
+Сниппет находит товары, попадающие под действующие акции с включённым флагом `show_in_catalog`, передаёт список ID в сниппет `msProducts` и возвращает готовую разметку подборки.
 
-- `product` — id как есть
-- `category` — товары категории (`msCategoryMember` и `parent`)
-- `vendor` — товары производителя
+```mermaid
+flowchart LR
+  A["Активные акции<br>с show_in_catalog"] --> B{"force_date = 1?"}
+  B -->|Да| C["Фильтр: только<br>с датой окончания"]
+  B -->|Нет| D["Все активные акции"]
+  C --> E["Сбор ID товаров по целям<br>(товары, категории, бренды)"]
+  D --> E
+  E --> F["Запуск msProducts<br>&resources=`...`"]
+```
 
-Акция «все товары» без целей include (товар, категория, производитель) в выборку id не входит. Иначе сниппет развернул бы весь каталог.
+Как сниппет собирает товары по целям правила:
 
-По умолчанию в `msProducts` уходят `parents=0`, `tpl=tpl.ms3discounts.buynow.row` и `prepareSnippet=ms3discountsGetDiscount`, если вы их не задали.
+- `product` — конкретные ID товаров добавляются напрямую.
+- `category` — добавляются товары категорий (включая основные категории и связи `msCategoryMember`).
+- `vendor` — добавляются все товары указанных производителей.
+
+Акции со сферой «Весь каталог» без явного указания включаемых целей в выборку сниппета не попадают. Это предотвращает случайную выгрузку всего каталога магазина.
+
+По умолчанию сниппет передаёт в `msProducts` параметры `parents=0`, `tpl=tpl.ms3discounts.buynow.row` и `prepareSnippet=ms3discountsGetDiscount`.
 
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `sale` | пусто | Id акций через запятую |
-| `force_date` | `1` | `1` — только акции с `date_end` |
-| `tpl` | `tpl.ms3discounts.buynow.row` | Чанк строки `msProducts` |
-| `prepareSnippet` | `ms3discountsGetDiscount` | Подготовка строки. Пустая строка и отсутствие параметра дают то же имя. Отключить prepare из этого сниппета нельзя |
-| `frontend_css` / `frontend_js` | из настроек | Файлы таймера. Свойств сниппета нет, пустой вызов читает настройки |
+| `sale` | пусто | Список ID акций через запятую для фильтрации |
+| `force_date` | `1` | `1` — отбирать только акции с заполненной датой окончания `date_end`. `0` — отбирать любые акции |
+| `tpl` | `tpl.ms3discounts.buynow.row` | Имя чанка строки товара для `msProducts` |
+| `prepareSnippet` | `ms3discountsGetDiscount` | Сниппет подготовки данных строки. Отключить параметр из вызова нельзя |
+| `frontend_css` | из настроек | Путь к CSS-файлу витрины |
+| `frontend_js` | из настроек | Путь к JS-файлу таймера |
 
-Чанк по умолчанию выводит `.ms3d_remains` с `data-remain`.
+Все остальные переданные параметры (например `limit`, `sortby`, `where`, `parents`) без изменений передаются в `msProducts`.
 
-Если подходящих id нет, сниппет возвращает пустую строку и `msProducts` не вызывает.
+Если подходящих товаров не найдено, сниппет возвращает пустую строку и не запускает `msProducts`.
 
-## Примеры
+## Работа таймера
+
+Чанк по умолчанию `tpl.ms3discounts.buynow.row` содержит разметку таймера с классом `.ms3d_remains` и атрибутом `data-remain`:
+
+```fenom
+<span class="ms3d_remains" data-remain="{$remains}"></span>
+```
+
+Скрипт `default.js` автоматически запускает обратный отсчёт времени до окончания акции.
+
+## Примеры вызова
+
+Вывод 8 акционных товаров со сроком действия:
 
 ::: code-group
 
@@ -51,6 +77,22 @@ description: Выборка товаров по акциям и прокси в 
 
 :::
 
-Параметр `sale` уходит в плейсхолдер `ms3discounts.sale`. Его читает `ms3discountsGetDiscount` в режиме prepare.
+Выборка товаров конкретной акции по её ID:
 
-Остальные свойства (`limit` и свои `parents`) уходят в `msProducts`. Список id сниппет кладёт в `resources`. Если `parents` не передан, `ms3discountsBuyNow` ставит `0`.
+::: code-group
+
+```fenom
+{'!ms3discountsBuyNow' | snippet : [
+  'sale' => 5,
+  'limit' => 12,
+]}
+```
+
+```modx
+[[!ms3discountsBuyNow?
+  &sale=`5`
+  &limit=`12`
+]]
+```
+
+:::
