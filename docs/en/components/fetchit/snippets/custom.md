@@ -11,7 +11,7 @@ Instead of FormIt you can name your own snippet in the `snippet` property. It ge
 | --- | --- | --- |
 | `success` | `bool` | Accepted or refused |
 | `message` | `string` | Text for the notification and for the `[data-success]` / `[data-validation-error]` blocks |
-| `data` | `object` | On an error: field name → error text (for `[data-error]` and the invalid classes) |
+| `data` | `object` | On an error: field name → error text (for `[data-error]` and the invalid classes). On success: any data for your own code, such as the address for a [redirect](/en/components/fetchit/examples/scenarios/redirect) |
 
 The `error()` and `success()` methods of the service build that answer for you. Get the service itself with `FetchIt::service()` — it works on MODX 2 and MODX 3 alike:
 
@@ -85,10 +85,10 @@ The answer of the snippet is not output on a normal submission: a message appear
 They work too, and return the same object:
 
 ```php
-// FetchIt 1.x, on MODX 2 and MODX 3
+// the FetchIt 1.x way — works on MODX 2 and MODX 3
 $FetchIt = $modx->getService('fetchit', 'FetchIt', MODX_CORE_PATH . 'components/fetchit/model/');
 
-// FetchIt 3.x, MODX 3 only
+// the FetchIt 3.x way — MODX 3 only
 $FetchIt = $modx->services->get('FetchIt');
 ```
 

@@ -52,7 +52,10 @@ modSizeControl один раз обходит все файлы сайта и з
 
 ## Установка
 
-Через Менеджер пакетов с провайдером [modstore.pro](https://modstore.pro/packages/utilities/modsizecontrol) ([как подключить репозиторий](https://modstore.pro/faq)).
+Через Менеджер пакетов:
+
+- [modstore.pro](https://modstore.pro/packages/utilities/modsizecontrol) ([как подключить репозиторий](https://modstore.pro/faq))
+- [extras.modx.com](https://extras.modx.com/package/modsizecontrol)
 
 Виджет сам встаёт на рабочий стол при первой установке. Дальше: [Быстрый старт](/components/modsizecontrol/quick-start).
 

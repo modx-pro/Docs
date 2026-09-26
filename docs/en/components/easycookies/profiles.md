@@ -31,6 +31,10 @@ The table sorts by name, number of consents and date of change.
 | Languages | the site's language, more can be added | any set, texts for each |
 | Revisions, Google Consent Mode, consent log | — | yes |
 
+![Editor of a simple profile: a cookie notice at the bottom of the page](/components/easycookies/screenshots/simple.png)
+
+![A compliant banner on the site: "Accept all", "Reject all", "Manage preferences"](/components/easycookies/screenshots/site-banner.png)
+
 A simple banner only tells about cookies. Declining (the "Decline" button is optional) turns the counters off from the next page on and deletes their cookies.
 
 Switch the kind in the "Profile" card with "Make it simple" and "Make it compliant". Settings are not lost; only what the form shows changes.

@@ -60,7 +60,7 @@ FetchIt.Message = {
 
 `FetchIt` appears once the deferred `fetchit.js` has run, so set `FetchIt.Message` from a deferred script loaded after it, or on `DOMContentLoaded`.
 
-With the `fetchit.frontend.default.notifier` setting on and no `Message` set, the first `create()` puts the [built-in notifications](/en/components/fetchit/examples/notifications/#built-in-notifications) there. When your `Message` has neither `success` nor `error`, they are added to it.
+With the `fetchit.frontend.default.notifier` setting on and no `Message` set, the first `create()` puts the [built-in notifications](/en/components/fetchit/examples/notifications/#built-in-notifications) there. When your `Message` has neither `success` nor `error`, they are added to it — provided `Message` is set before the first `create()`, that is before `DOMContentLoaded`: in a deferred script, not in a `DOMContentLoaded` handler of your own.
 
 Ready examples: [notifications](/en/components/fetchit/examples/notifications/).
 

@@ -44,7 +44,7 @@ If a Content-Security-Policy forbids inline styles (`style-src` without `'unsafe
 
 ### Your own options
 
-A `FetchIt.Message` of your own takes precedence over the setting. When it has neither `success` nor `error` — only a spinner in `before` and `after`, say — the built-in notifications add theirs, as long as `FetchIt.Message` is set before `DOMContentLoaded`: right in a deferred script loaded after `fetchit.js`.
+A `FetchIt.Message` of your own takes precedence over the setting. When it has neither `success` nor `error` — only `reset`, say — the built-in notifications add theirs, as long as `FetchIt.Message` is set before `DOMContentLoaded`: right in a deferred script loaded after `fetchit.js`.
 
 They can also be turned on from your own script, with another button label or another duration (`0` means until closed):
 
@@ -90,4 +90,4 @@ document.addEventListener('DOMContentLoaded', () => {
 - **`sanitizeHTML`.** Most libraries insert the text as HTML. The message comes from the server and may contain tags — from a lexicon, for example, or from data the visitor typed in. The built-in notifications strip the tags, and it is worth doing the same in your own.
 - **Empty text.** When the processing snippet sends no message, the hook gets an empty string. Without the check the library shows an empty notification.
 
-A `FetchIt.Message` of your own replaces the built-in notifications entirely, even when the `fetchit.frontend.default.notifier` setting is on.
+A `FetchIt.Message` of your own with `success` or `error` replaces the built-in notifications entirely, even when the `fetchit.frontend.default.notifier` setting is on.

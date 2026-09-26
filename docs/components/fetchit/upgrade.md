@@ -30,7 +30,7 @@ FetchIt 1.x был пакетом для MODX 2, FetchIt 3.x — пакетом 
 
 ## После обновления
 
-- Проверьте страницы с формами, исключёнными из кеша на стороне сервера или CDN: токен формы кешируется вместе со страницей, см. [Что стоит учесть](/components/fetchit/protection#chto-stoit-uchest).
+- Проверьте страницы с формами, которые кешируются на стороне сервера или CDN: токен формы кешируется вместе со страницей, см. [Что стоит учесть](/components/fetchit/protection#chto-stoit-uchest).
 - На сайте для разработки поставьте `fetchit.protection.min_time` и `fetchit.protection.rate_limit` в `0`, чтобы защита не мешала тестам.
 - Если на сайте FormIt 5.2 и новее с reCAPTCHA, для форм FetchIt включите капчу через [`fetchit.captcha`](/components/fetchit/protection#kapcha): свой AJAX-режим FormIt в формах FetchIt выключается.
 

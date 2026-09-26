@@ -107,7 +107,7 @@ For AJAX add `[data-success]` and `[data-validation-error]` blocks. Without them
 
 :::
 
-The snippet adds `data-fetchit` and `method="post"` itself if they are missing.
+The snippet sets `data-fetchit` and `method="post"` on the form itself, replacing any values of its own.
 
 The default invalid field class is `is-invalid` (`fetchit.frontend.input.invalid.class`). Match it to your layout.
 

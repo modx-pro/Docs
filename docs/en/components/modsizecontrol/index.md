@@ -52,7 +52,10 @@ The component was originally made by Pavel Zarubin and Bakhtovar Gulomov. The cu
 
 ## Installation
 
-Via Package Manager with the [modstore.pro](https://modstore.pro/packages/utilities/modsizecontrol) provider ([how to connect the repository](https://modstore.pro/faq)).
+Via Package Manager:
+
+- [modstore.pro](https://modstore.pro/packages/utilities/modsizecontrol) ([how to connect the repository](https://modstore.pro/faq))
+- [extras.modx.com](https://extras.modx.com/package/modsizecontrol)
 
 The widget places itself on the dashboard on the first install. Next: [Quick start](/en/components/modsizecontrol/quick-start).
 

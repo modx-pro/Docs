@@ -23,7 +23,7 @@ Below, the "What takes up the space" list has the same categories with their siz
 | Components | `core/components` and `assets/components` |
 | Media | `assets` and file sources |
 | Packages | Installed package archives in `core/packages` |
-| Cache | `core/cache` |
+| Cache | `core/cache` except `logs` |
 | Logs | `core/cache/logs` |
 | Other | Everything else: site folders, backups, `.git` |
 

@@ -66,7 +66,7 @@ items:
         link: examples/scenarios/files
       - text: Several forms on a page
         link: examples/scenarios/multiple-forms
-      - text: Goals in Yandex Metrica and Google Analytics
+      - text: Goals in Yandex Metrika and Google Analytics
         link: examples/scenarios/analytics
       - text: Requests to Telegram
         link: examples/scenarios/telegram

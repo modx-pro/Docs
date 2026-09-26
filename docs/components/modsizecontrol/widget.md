@@ -23,7 +23,7 @@ description: Виджет «Контроль размера сайта» на р
 | Компоненты | `core/components` и `assets/components` |
 | Медиа | `assets` и источники файлов |
 | Пакеты | Архивы установленных пакетов в `core/packages` |
-| Кеш | `core/cache` |
+| Кеш | `core/cache` без `logs` |
 | Логи | `core/cache/logs` |
 | Прочее | Всё остальное: папки сайта, резервные копии, `.git` |
 

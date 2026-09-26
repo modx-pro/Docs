@@ -10,8 +10,8 @@ description: SweetAlert2 toasts and modals for FetchIt responses
 ## Loading
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2-neutral/dist/sweetalert2.all.min.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2-neutral@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2-neutral@11/dist/sweetalert2.all.min.js" defer></script>
 ```
 
 ## Toasts

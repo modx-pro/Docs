@@ -130,7 +130,7 @@ EasyCookies.accepted('analytics') // whether a category is allowed
 EasyCookies.CookieConsent // the CookieConsent library itself
 ```
 
-For example, send a Metrica goal only when analytics is allowed:
+For example, send a Metrika goal only when analytics is allowed:
 
 ```js
 document.addEventListener('DOMContentLoaded', () => {

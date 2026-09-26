@@ -94,7 +94,7 @@ document.addEventListener('fetchit:success', ({ detail: { form } }) => {
 })
 ```
 
-To have a clean form the next time the modal opens, reset it when the modal is closed. The `onClose` option is there for this:
+To have a clean form the next time the modal opens, reset it when the modal is closed. The `onClose` option is there for this — add it to the same `MicroModal.init` call as above instead of calling `init` a second time:
 
 ```js
 MicroModal.init({

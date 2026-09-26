@@ -9,7 +9,7 @@ description: The first scan, the site limit and regular checks
 
 Until the site is scanned, the dashboard widget is empty and offers the Scan button. The **Extras → modSizeControl** page shows the same button.
 
-A scan walks through every file of the site: the root, the core, `assets`, the manager, the connectors and the file sources. On a site of a few gigabytes it takes a couple of minutes. The progress is shown both in the widget and on the page. You can close the page: the scan continues when you open it again.
+A scan walks through every file of the site: the root, the core, `assets`, the manager, the connectors and the file sources. On a site of a few gigabytes it takes a couple of minutes. The progress is shown both in the widget and on the page. You can close the page: the scan continues when you open the page or the dashboard again.
 
 ## The limit
 
