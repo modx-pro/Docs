@@ -75,7 +75,7 @@ items: [
 ## Кому что читать
 
 - **Менеджеру / интегратору:** [Быстрый старт](quick-start) → [Системные настройки](settings) → [Интеграция](integration).
-- **Вёрстальщику:** [Сниппеты](snippets/msFastOrder) → [Подключение на сайте](frontend) → [Чанки](chunks).
+- **Верстальщику:** [Сниппеты](snippets/msFastOrder) → [Подключение на сайте](frontend) → [Чанки](chunks).
 - **Разработчику:** [AJAX API](api) → [События JavaScript](events) → `assets/components/msfastorder/js/msfo.min.js`.
 
 ## Возможности
