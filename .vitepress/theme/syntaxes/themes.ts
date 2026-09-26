@@ -1,5 +1,5 @@
 import type { ThemeRegistration, ThemeRegistrationRaw } from 'shiki'
-import { bundledThemes } from 'shiki'
+import { bundledThemes, normalizeTheme } from 'shiki'
 
 type TokenColors = NonNullable<ThemeRegistrationRaw['tokenColors']>
 
@@ -8,10 +8,13 @@ type TokenColors = NonNullable<ThemeRegistrationRaw['tokenColors']>
 async function extendTheme(name: 'github-light' | 'one-dark-pro', tokenColors: TokenColors) {
   const theme = (await bundledThemes[name]()).default as ThemeRegistration
 
-  return {
+  // VitePress passes the theme object to Shiki for every code block. Shiki caches parsed
+  // themes by object, but normalizes a raw theme into a new object on each call, so the
+  // theme would be parsed again for every block. A normalized theme is passed through as is.
+  return normalizeTheme({
     ...theme,
     tokenColors: [...(theme.tokenColors ?? []), ...tokenColors],
-  }
+  })
 }
 
 export const lightTheme = await extendTheme('github-light', [
