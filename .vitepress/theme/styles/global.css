@@ -66,15 +66,22 @@
   --vp-code-color: var(--vp-c-blue-1);
 }
 
-.Layout {
-  margin-right: var(--scrollbar-width);
+html {
+  scrollbar-gutter: stable;
+}
+
+/* место под полосу прокрутки зарезервировано, отступ glightbox и DocSearch сдвигал бы страницу */
+@supports (scrollbar-gutter: stable) {
+  body.gscrollbar-fixer,
+  body.DocSearch--active {
+    margin-inline-end: 0 !important;
+  }
 }
 
 .VPNav {
   background-color: var(--vp-c-bg);
   border-radius: 0 0 var(--vp-border-radius) var(--vp-border-radius);
   box-shadow: var(--vp-shadow-6);
-  padding-right: var(--scrollbar-width);
 }
 
 .VPLocalNav {
@@ -88,12 +95,6 @@
 .VPNavBarTitle .title {
   font-size: 0;
   border: none;
-}
-
-@media (min-width: 1440px) {
-  .VPSidebar {
-    left: calc((var(--scrollbar-width) / 2) * -1) !important;
-  }
 }
 
 .VPSidebarItem.level-0 {
