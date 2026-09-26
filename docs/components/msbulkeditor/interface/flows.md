@@ -5,7 +5,7 @@ description: "Сценарии A–J: фильтр, операции, правк
 
 # Пошаговые сценарии
 
-Здесь собраны сценарии A–J со скриншотами. Читайте по задаче: скидка, Excel, откат, пресет. Краткий обзор вкладок: [Интерфейс](./).
+Сценарии A–J со скриншотами: скидка, Excel, откат, пресет. Краткий обзор вкладок: [Интерфейс](./).
 
 | Сценарий | Задача |
 | --- | --- |
@@ -169,14 +169,14 @@ sequenceDiagram
 | --- | --- |
 | Изменить шаблон | Новый шаблон ресурса |
 | Изменить родителя | Другая категория-родитель |
-| Изменить производителя | Vendor MiniShop3 |
+| Изменить производителя | Производитель MiniShop3 |
 | Установить текст | Название или другое текстовое поле |
 | Регенерация превью галереи | Пересобрать превью фото |
 | Очистить кэш ресурса | Сброс кэша страниц |
 | Перегенерировать URI | Пересчёт alias и URI |
 | Мягкое удаление | Пометить удалённым |
-| Изменить источник файлов | Media source |
-| Изменить тип контента | Content type |
+| Изменить источник файлов | Источник файлов MODX |
+| Изменить тип контента | Тип содержимого MODX |
 | Назначить группу ресурсов | Группа доступа |
 | Изменить даты | Даты публикации и др. |
 | Изменить пользователя | Автор / редактор |
@@ -347,7 +347,7 @@ sequenceDiagram
 | Группа ресурсов | [Поля ресурса](resource-fields) |
 | Вариант (ms3Variants) | [Товар и цены](product-and-prices) |
 
-Только через **Быстрые действия** (не в общем списке типов): регенерация превью галереи, очистка кэша, регенерация URI, мягкое удаление.
+Регенерация превью галереи, очистка кэша, регенерация URI и мягкое удаление есть в общем списке типов. В меню **Быстрые действия** они запускаются без выбора типа.
 
 Коды для JSON-пресетов: [Возможности](../features#справочник-кодов-fieldtype).
 
@@ -355,30 +355,30 @@ sequenceDiagram
 
 | Тип | Скриншот |
 | --- | --- |
-| Цена | ![](/components/msbulkeditor/screenshots/operation-price.png) |
-| Цена (перенос) | ![](/components/msbulkeditor/screenshots/operation-price-transfer.png) |
-| Остаток | ![](/components/msbulkeditor/screenshots/operation-stock.png) |
-| Булево | ![](/components/msbulkeditor/screenshots/operation-boolean.png) |
-| Категории | ![](/components/msbulkeditor/screenshots/operation-categories.png) |
-| Категории (снять все доп.) | ![](/components/msbulkeditor/screenshots/operation-categories-remove-all.png) |
-| Опция | ![](/components/msbulkeditor/screenshots/operation-option.png) |
-| Опция (теги) | ![](/components/msbulkeditor/screenshots/operation-option-multi.png) |
-| TV | ![](/components/msbulkeditor/screenshots/operation-tv.png) |
-| Производитель | ![](/components/msbulkeditor/screenshots/operation-vendor.png) |
-| Шаблон | ![](/components/msbulkeditor/screenshots/operation-template.png) |
-| Источник файлов | ![](/components/msbulkeditor/screenshots/operation-source.png) |
-| Тип содержимого | ![](/components/msbulkeditor/screenshots/operation-content-type.png) |
-| Пользователь | ![](/components/msbulkeditor/screenshots/operation-user.png) |
-| Группа ресурсов | ![](/components/msbulkeditor/screenshots/operation-resource-group.png) |
-| Текстовое поле | ![](/components/msbulkeditor/screenshots/operation-text-set.png) |
-| Даты | ![](/components/msbulkeditor/screenshots/operation-dates.png) |
-| Замена текста | ![](/components/msbulkeditor/screenshots/operation-text-replace.png) |
-| SEO | ![](/components/msbulkeditor/screenshots/operation-seo.png) |
-| Связь товаров | ![](/components/msbulkeditor/screenshots/operation-link.png) |
-| Вариант | ![](/components/msbulkeditor/screenshots/operation-variant.png) |
-| Предпросмотр TV | ![](/components/msbulkeditor/screenshots/tv-preview.png) |
-| Предпросмотр опции | ![](/components/msbulkeditor/screenshots/option-preview.png) |
-| Дерево категорий | ![](/components/msbulkeditor/screenshots/category-sidebar.png) |
+| Цена | ![Диалог операции «Цена»](/components/msbulkeditor/screenshots/operation-price.png) |
+| Цена (перенос) | ![Диалог «Цена»: перенос в старую цену](/components/msbulkeditor/screenshots/operation-price-transfer.png) |
+| Остаток | ![Диалог операции «Остаток»](/components/msbulkeditor/screenshots/operation-stock.png) |
+| Булево | ![Диалог «Булево переключение»](/components/msbulkeditor/screenshots/operation-boolean.png) |
+| Категории | ![Диалог операции «Категории»](/components/msbulkeditor/screenshots/operation-categories.png) |
+| Категории (снять все доп.) | ![Категории: снять все дополнительные](/components/msbulkeditor/screenshots/operation-categories-remove-all.png) |
+| Опция | ![Диалог операции «Опция»](/components/msbulkeditor/screenshots/operation-option.png) |
+| Опция (теги) | ![Опция: режим списка тегов](/components/msbulkeditor/screenshots/operation-option-multi.png) |
+| TV | ![Диалог операции «TV-параметр»](/components/msbulkeditor/screenshots/operation-tv.png) |
+| Производитель | ![Диалог операции «Производитель»](/components/msbulkeditor/screenshots/operation-vendor.png) |
+| Шаблон | ![Диалог операции «Шаблон»](/components/msbulkeditor/screenshots/operation-template.png) |
+| Источник файлов | ![Диалог «Источник файлов»](/components/msbulkeditor/screenshots/operation-source.png) |
+| Тип содержимого | ![Диалог «Тип содержимого»](/components/msbulkeditor/screenshots/operation-content-type.png) |
+| Пользователь | ![Диалог «Пользователь»](/components/msbulkeditor/screenshots/operation-user.png) |
+| Группа ресурсов | ![Диалог «Группа ресурсов»](/components/msbulkeditor/screenshots/operation-resource-group.png) |
+| Текстовое поле | ![Диалог «Текстовое поле»](/components/msbulkeditor/screenshots/operation-text-set.png) |
+| Даты | ![Диалог операции «Даты»](/components/msbulkeditor/screenshots/operation-dates.png) |
+| Замена текста | ![Диалог «Замена текста»](/components/msbulkeditor/screenshots/operation-text-replace.png) |
+| SEO | ![Диалог операции SEO](/components/msbulkeditor/screenshots/operation-seo.png) |
+| Связь товаров | ![Диалог «Связь товаров»](/components/msbulkeditor/screenshots/operation-link.png) |
+| Вариант | ![Диалог операции «Вариант»](/components/msbulkeditor/screenshots/operation-variant.png) |
+| Предпросмотр TV | ![Предпросмотр изменения TV](/components/msbulkeditor/screenshots/tv-preview.png) |
+| Предпросмотр опции | ![Предпросмотр изменения опции](/components/msbulkeditor/screenshots/option-preview.png) |
+| Дерево категорий | ![Дерево категорий слева от таблицы](/components/msbulkeditor/screenshots/category-sidebar.png) |
 
 ---
 
@@ -419,7 +419,7 @@ sequenceDiagram
 | Право | Что открывает |
 | --- | --- |
 | `msbulkeditor_view` | Панель, предпросмотр, история |
-| `msbulkeditor_edit` | Применить, правка ячеек, импорт |
+| `msbulkeditor_edit` | Применить, правка ячеек |
 | `msbulkeditor_rollback` | Откат |
 | `msbulkeditor_presets` | Пресеты |
 | `msbulkeditor_import_export` | Импорт и экспорт |

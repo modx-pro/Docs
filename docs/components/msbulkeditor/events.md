@@ -5,16 +5,18 @@ description: Плагины msbeOn* — apply, поля, расширение э
 
 # События MODX
 
-При apply msBulkEditor вызывает системные события. Регистрируйте их в плагине.
+При применении msBulkEditor вызывает системные события. Регистрируйте их в плагине.
 
 | Событие | Когда | Полезные свойства |
 | --- | --- | --- |
-| `msbeOnBulkOperationStarted` | Старт apply | `operationId`, … |
-| `msbeOnBulkOperationCompleted` | Успешное завершение | `operationId`, `success`, `skipped`, `error` |
-| `msbeOnBulkOperationFailed` | Исключение при apply | `operationId`, сообщение ошибки |
-| `msbeOnFieldApplied` | После успешного apply поля | `operationId`, `productId`, `field`, `oldValue`, `newValue`, `status` |
+| `msbeOnBulkOperationStarted` | Старт применения | `operationId`, `fieldType`, `total`, `occurredAt` |
+| `msbeOnBulkOperationCompleted` | Успешное завершение | `operationId`, `success`, `skipped`, `error`, `occurredAt` |
+| `msbeOnBulkOperationFailed` | Исключение при применении | `operationId`, `reason`, `occurredAt` |
+| `msbeOnFieldApplied` | После успешного применения поля | `operationId`, `productId`, `field`, `oldValue`, `newValue`, `status`, `occurredAt` |
 | `msbeOnExportColumns` | Перед записью заголовка экспорта | `columns`, `format`, `selection` |
 | `msbeOnExportBuildRow` | Перед записью каждой строки | `productId`, `row`, `columns`, `format`, `selection` |
+
+`occurredAt` — дата и время в формате ISO 8601. `fieldType` и `status` приходят строками (`price`, `applied` и т.д.).
 
 Пример: после `msbeOnBulkOperationCompleted` сбросить кэш Fenom или отправить уведомление.
 
@@ -47,11 +49,11 @@ switch ($modx->event->name) {
 }
 ```
 
-Ключи колонок должны совпадать с каталогом полей (`tv:name`, `option:key`, `msbe:option:key`) или использовать префикс `plugin:` для виртуальных колонок. Без плагинов экспорт работает как раньше.
+Ключи колонок должны совпадать с каталогом полей (`tv:name`, `option:key`, `msbe:option:key`) или нести префикс `plugin:` для виртуальных колонок. Без плагинов экспорт работает как раньше.
 
 ## Реакция на изменение одного поля
 
-После apply для каждой позиции со статусом `applied` вызывается `msbeOnFieldApplied`. Событие срабатывает и для inline-edit (один товар), и для массовых операций.
+После применения для каждой позиции со статусом `applied` вызывается `msbeOnFieldApplied`. Событие срабатывает и для правки ячейки (один товар), и для массовых операций.
 
 ```php
 <?php
@@ -72,9 +74,9 @@ if ($field === 'pagetitle' && $productId > 0) {
 
 Базовый URL: `{site}/assets/components/msbulkeditor/connector.php`.
 
-Аутентификация: сессия менеджера (`mgr`) + заголовок `HTTP_MODAUTH` = `user->getUserToken('mgr')` + право на route.
+Аутентификация: сессия менеджера (`mgr`) + заголовок `HTTP_MODAUTH` = `user->getUserToken('mgr')` + право на маршрут.
 
-Основные actions: `mgr/products/list`, `preview`, `apply`, `rollback`, `mgr/history/*`, `mgr/export/run`, `mgr/import/parse`, `mgr/import/run`, `mgr/bindings/check`, `mgr/bindings/apply`.
+Основные действия: `mgr/products/list`, `preview`, `apply`, `rollback`, `mgr/history/*`, `mgr/export/run`, `mgr/import/parse`, `mgr/import/run`, `mgr/bindings/check`, `mgr/bindings/apply`.
 
 Формат ответа:
 
@@ -97,5 +99,6 @@ if ($field === 'pagetitle' && $productId > 0) {
 | `msbe_operations` | Заголовок операции (тип, статус, счётчики) |
 | `msbe_operation_items` | Снимки по товарам для отката |
 | `msbe_presets` | Сохранённые пресеты |
+| `msbe_user_states` | Состояние интерфейса менеджера (колонки, экспертный режим) |
 
 См. также: [Системные настройки](settings), [История](interface/history).
