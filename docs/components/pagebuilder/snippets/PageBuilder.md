@@ -95,7 +95,7 @@ JSON для SEO-плагинов и headless-гибридов. Структур�
 
 При `load_css=1` сниппет регистрирует frontend CSS (см. [Дизайн-система](../design-system)). Стили Pro и commerce подключаются при флаге `pro`.
 
-Глобально отключить: `pagebuilder_load_frontend_css = 0`. На одном вызове: `&load_css=`0``.
+Глобально отключить: `pagebuilder_load_frontend_css = 0`. На одном вызове: `` &load_css=`0` ``.
 
 ## Кеш HTML
 

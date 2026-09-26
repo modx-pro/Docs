@@ -96,8 +96,8 @@ TV-параметр с именем **instock**:
 
 | Атрибут | Описание | По умолчанию |
 |:---|:---|:---|
-| data-field | Имя поля	 |
-| data-files | Максимальное кол-во файлов	| 5 |
+| data-field | Имя поля | |
+| data-files | Максимальное кол-во файлов | 5 |
 | data-types | Типы файлов. Можно указывать как непосредственно расширения, так и [типы](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/accept). | image/* |
 | data-size | Размер одного файла в МБ | 5 |
 	

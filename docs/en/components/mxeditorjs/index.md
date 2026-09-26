@@ -116,7 +116,7 @@ Links and MODX resource autocomplete are implemented by the custom **LinkAutocom
 
 | Plugin | Links |
 | --- | --- |
-| **@editorjs/editorjs** | Editor.js core | [npm](https://www.npmjs.com/package/@editorjs/editorjs) · [GitHub](https://github.com/codex-team/editor.js) · [docs](https://editorjs.io/) |
+| **@editorjs/editorjs** — Editor.js core | [npm](https://www.npmjs.com/package/@editorjs/editorjs) · [GitHub](https://github.com/codex-team/editor.js) · [docs](https://editorjs.io/) |
 
 ## Requirements
 

@@ -18,6 +18,7 @@ To simplify parser logic, improve performance and avoid confusion with composite
 | Snippets             | `[[snippet]]`          | `[[snippet]]`       | `[[getResources]]`       |
 | Plugins              | No                     | No                  |                          |
 | Modules              | No                     | Revo has no modules |                          |
+
 :::
 
 ## For content output
@@ -25,7 +26,7 @@ To simplify parser logic, improve performance and avoid confusion with composite
 | Element        | In Evolution (Legacy) | In Revolution (New)       | Example (for Revolution)        |
 |----------------|------------------------|---------------------------|--------------------------------|
 | Placeholders   | `[+placeholder+]`      | `[[+placeholder]]`        | `[[+modx.user.id]]`            |
-| Links          | `[~link~]`             | `[[~link]]`               | `[[~[[*id]]? &scheme=`full`]]` |
+| Links          | `[~link~]`             | `[[~link]]`               | `` [[~[[*id]]? &scheme=`full`]] `` |
 | System settings| `[(system_setting)]`   | `[[++system_setting]]`    | `[[++site_start]]`             |
 | Language tags  | No                     | `[[%language_string_key]]`|                                |
 | Comments       | No                     | `[[-this is a comment]]` |                                |

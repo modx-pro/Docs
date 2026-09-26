@@ -116,7 +116,7 @@ mxEditorJs собирает редактор из следующих блоко�
 
 | Плагин | Ссылки |
 | --- | --- |
-| **@editorjs/editorjs** | Ядро Editor.js | [npm](https://www.npmjs.com/package/@editorjs/editorjs) · [GitHub](https://github.com/codex-team/editor.js) · [документация](https://editorjs.io/) |
+| **@editorjs/editorjs** — ядро Editor.js | [npm](https://www.npmjs.com/package/@editorjs/editorjs) · [GitHub](https://github.com/codex-team/editor.js) · [документация](https://editorjs.io/) |
 
 ## Требования
 

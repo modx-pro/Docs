@@ -40,7 +40,7 @@ description: Сводка рейтинга товара — полная на с
 | `registerCss` | `1` | `0`: не подключать `reviews.css` повторно. См. [Подключение reviews.css](#подключение-reviewscss) |
 | `registerJs` | `1` | Подключать JS витрины |
 
-Приоритет области: `productIds` → `parents` → `all` → одиночный `product_id` / `msr_product_id` / текущий ресурс. Среднее взвешенное по числу опубликованных отзывов (`SUM(rating)/COUNT`), не среднее средних по товарам. Явно заданный, но пустой список (`productIds=`0`` / несуществующие id) даёт нулевую сводку, не весь сайт. При `hideEmpty=0` видны нули. При `hideEmpty=1` выводится пустая строка. Connector `rating/get` и JSON-LD остаются per-product.
+Приоритет области: `productIds` → `parents` → `all` → одиночный `product_id` / `msr_product_id` / текущий ресурс. Среднее взвешенное по числу опубликованных отзывов (`SUM(rating)/COUNT`), не среднее средних по товарам. Явно заданный, но пустой список (`` productIds=`0` `` / несуществующие id) даёт нулевую сводку, не весь сайт. При `hideEmpty=0` видны нули. При `hideEmpty=1` выводится пустая строка. Connector `rating/get` и JSON-LD остаются per-product.
 
 ## Подключение reviews.css
 

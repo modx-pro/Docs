@@ -33,9 +33,9 @@ These parameters define which objects are selected.
 | **&first** | `1` | Index of first output iteration |
 | **&last** | Auto: total + first - 1 | Index of last output iteration |
 | **&loadModels** | | Comma-separated list of components whose models to load for the query, e.g. `ms2gallery,msearch2` |
-| **&tvFilters** | | TV filters with AND and OR. OR delimiter is in **&tvFiltersOrDelimiter**; conditions are grouped by OR first. Use **&tvFiltersAndDelimiter** within a group. Example: `filter2==one,filter1==bar%||filter1==foo`. Uses LIKE; % is wildcard. Search is on values stored in DB, not TV default values |
+| **&tvFilters** | | TV filters with AND and OR. OR delimiter is in **&tvFiltersOrDelimiter**; conditions are grouped by OR first. Use **&tvFiltersAndDelimiter** within a group. Example: `filter2==one,filter1==bar%\|\|filter1==foo`. Uses LIKE; % is wildcard. Search is on values stored in DB, not TV default values |
 | **&tvFiltersAndDelimiter** | `,` | Delimiter for AND conditions in **&tvFilters** |
-| **&tvFiltersOrDelimiter** | `||` | Delimiter for OR conditions in **&tvFilters** |
+| **&tvFiltersOrDelimiter** | `\|\|` | Delimiter for OR conditions in **&tvFilters** |
 | **&sortbyTV** | | Extra field to sort by; can also be set in **&sortby** |
 | **&sortdirTV** | | Sort direction for the field in **&sortbyTV**; can be in **&sortby** |
 | **&sortbyTVType** | | Type for TV sort: **string**, **integer**, **decimal**, **datetime**. If empty, TV is sorted by its type |
@@ -53,8 +53,8 @@ These set the chunks (templates) used to generate output.
 | **&tplFirst** | Chunk for the first resource in the result |
 | **&tplLast** | Chunk for the last resource |
 | **&tplOdd** | Chunk for every even-position resource (name "odd" but applies to even) |
-| **&tpl_N** | Chunk for the N-th resource, e.g. `&tpl_4=`tpl4th` for the 4th |
-| **&tpl_nN** | Chunk for every N-th resource, e.g. `&tpl_n4=`tplEvery4th` for every 4th |
+| **&tpl_N** | Chunk for the N-th resource, e.g. `` &tpl_4=`tpl4th` `` for the 4th |
+| **&tpl_nN** | Chunk for every N-th resource, e.g. `` &tpl_n4=`tplEvery4th` `` for every 4th |
 | **&tplCondition** | Resource field whose value is used to choose chunk via **&conditionalTpls** |
 | **&tplOperator** | Optional operator for comparing **&tplCondition** with values in **&conditionalTpls** |
 | **&conditionalTpls** | JSON object: keys = values to compare with **&tplCondition**, values = chunk names. For operators like *isempty* use an array without keys |

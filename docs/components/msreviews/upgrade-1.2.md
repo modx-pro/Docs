@@ -167,7 +167,7 @@ description: 'msReviews 1.2.x: Fenom, pdoTools, data-msr, письма, патч
 | CMP Вопросы | Кнопка «Добавить вопрос» / редактирование: ресурс, автор, email, текст, статус, notify, ответ |
 | API | `mgr/question/create`, `mgr/question/update`, `mgr/question/get` (POST-only create/update, `question_moderate`) |
 | Каталог ACL | `mgr/catalog/search` / `resolve`: `review_analytics` или `question_moderate` |
-| `msRatingSummary` | `&productIds=` / `&parents=` / `&all=`1``: общий рейтинг. Пустая явная область даёт нули |
+| `msRatingSummary` | `&productIds=` / `&parents=` / `` &all=`1` ``: общий рейтинг. Пустая явная область даёт нули |
 | Рейтинг | Взвешенное среднее по опубликованным. `rating/get` и JSON-LD остаются per-product |
 
 См. [Админка](manager#вопросы), [msRatingSummary](snippets/msRatingSummary), [AJAX API](api).

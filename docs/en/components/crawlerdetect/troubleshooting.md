@@ -57,7 +57,7 @@ Update the CrawlerDetect package via Package Manager. New package versions ship 
 
 Yes. You can use CrawlerDetect with reCAPTCHA or other CAPTCHA: add both preHooks to FormIt.
 
-- **MODX:** `&preHooks=`crawlerDetectBlock,recaptcha``
+- **MODX:** `` &preHooks=`crawlerDetectBlock,recaptcha` ``
 - **Fenom:** `'preHooks' => 'crawlerDetectBlock,recaptcha'`
 
 CrawlerDetect runs first and filters bots before CAPTCHA.

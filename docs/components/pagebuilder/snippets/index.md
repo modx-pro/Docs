@@ -40,13 +40,13 @@ Pro. Из шаблона не вызывайте. Чанк секции вызы
 | Назначение | MODX | Fenom |
 | --- | --- | --- |
 | Секции страницы | `[[!PageBuilder]]` | `{'!PageBuilder' \| snippet}` |
-| Фильтр секций | `[[!PageBuilder? &section_types=`hero,cta`]]` | `{'!PageBuilder' \| snippet : ['section_types' => 'hero,cta']}` |
-| Секции другого ресурса | `[[!PageBuilderResource? &resource_id=`42`]]` | `{'!PageBuilderResource' \| snippet : ['resource_id' => 42]}` |
-| JSON для SEO | `[[!PageBuilder? &return_values=`1`]]` | `{'!PageBuilder' \| snippet : ['return_values' => 1]}` |
+| Фильтр секций | `` [[!PageBuilder? &section_types=`hero,cta`]] `` | `{'!PageBuilder' \| snippet : ['section_types' => 'hero,cta']}` |
+| Секции другого ресурса | `` [[!PageBuilderResource? &resource_id=`42`]] `` | `{'!PageBuilderResource' \| snippet : ['resource_id' => 42]}` |
+| JSON для SEO | `` [[!PageBuilder? &return_values=`1`]] `` | `{'!PageBuilder' \| snippet : ['return_values' => 1]}` |
 | Sitemap | `[[!PageBuilderSitemap]]` | `{'!PageBuilderSitemap' \| snippet}` |
 | UTM в сессию | `[[!PageBuilderUtmSession]]` | `{'!PageBuilderUtmSession' \| snippet}` |
-| URL с UTM | `[[!PageBuilderUtmUrl? &url=`/contacts/`]]` | `{'!PageBuilderUtmUrl' \| snippet : ['url' => '/contacts/']}` |
-| Строки таблицы | `[[!PageBuilderTableRows? &table_key=`prices`]]` | `{'!PageBuilderTableRows' \| snippet : ['table_key' => 'prices']}` |
+| URL с UTM | `` [[!PageBuilderUtmUrl? &url=`/contacts/`]] `` | `{'!PageBuilderUtmUrl' \| snippet : ['url' => '/contacts/']}` |
+| Строки таблицы | `` [[!PageBuilderTableRows? &table_key=`prices`]] `` | `{'!PageBuilderTableRows' \| snippet : ['table_key' => 'prices']}` |
 
 ## Кеш
 

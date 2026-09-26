@@ -23,7 +23,7 @@ title: Интеграция с pdoTools
 
 `msProducts` всегда группирует по `msProduct.id`. На MySQL с `ONLY_FULL_GROUP_BY` нельзя сортировать просто по `Aggregate.likes` — используйте агрегат:
 
-`&sortby=`MAX(Aggregate.likes)`` или `'sortby' => 'MAX(Aggregate.likes)'`
+`` &sortby=`MAX(Aggregate.likes)` `` или `'sortby' => 'MAX(Aggregate.likes)'`
 
 Для `pdoResources` без `GROUP BY` достаточно `Aggregate.likes`.
 

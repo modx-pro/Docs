@@ -76,4 +76,4 @@ $(document).on('tickets_before_comment_save', function (e, form, button) {
 
 ## subscribeAuthor на произвольной странице
 
-Передайте `&TicketsInit=`1``, чтобы подключить JS Tickets без `TicketComments` на странице. См. [subscribeAuthor](snippets/subscribeauthor).
+Передайте `` &TicketsInit=`1` ``, чтобы подключить JS Tickets без `TicketComments` на странице. См. [subscribeAuthor](snippets/subscribeauthor).
