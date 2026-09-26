@@ -183,10 +183,13 @@ From the repository root after `pnpm install`:
 | `pnpm run spellcheck:changed` | Spell check on changed lines (RU and EN); `pnpm run spellcheck` — all files, see [Spell checking](/en/guide/cspell) |
 | `pnpm run check:sync:changed` | New Russian pages have English counterparts; warns when a Russian page changed but its English one didn't |
 | `pnpm run check:structure:changed` | In changed pages the English version has at least as many `##`/`###` sections as the Russian one (warnings only); `pnpm run check:structure` — all pages |
+| `pnpm run check:redirects` | Redirects from old URLs: every target is an existing page, no chains or repeats |
 
 CI runs these checks on every PR that changes `docs/`. Markup and spelling count only changed lines, so old issues elsewhere in a file don't get in the way. Locally the `:changed` commands compare against `origin/master` (run `git fetch` first; set another base with `CHECK_BASE=origin/<branch>`).
 
 A new Russian page needs an English one, otherwise the check fails: if there is no translation yet, create a stub with `node scripts/sync-docs-en.mjs docs/path/to/page.md` — it copies the page to `docs/en/` with a TODO note. If you edit a Russian page but not its English counterpart, CI prints a warning: check whether the translation needs the same edit. If a changed page has fewer `##`/`###` sections in English than in Russian, CI prints a warning too.
+
+If you rename, move or delete a page, add a redirect from its old URL to `.vitepress/config/rewrites.json`: `"/en/components/old-url": "/en/components/new-url"` (no `.md`). This keeps links from other sites and search results working. CI checks only the list itself: it fails when a redirect target disappears, but a new redirect is up to you.
 
 More on markup and pages: [Markdown](/en/guide/markdown), [VitePress](/en/guide/vitepress), [Frontmatter](/en/guide/frontmatter).
 
