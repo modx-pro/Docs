@@ -7,8 +7,8 @@ name: Preview
 # а pull_request_target запустил бы код из PR с секретами.
 #
 # Настройка репозитория:
-#   секрет CLOUDFLARE_API_TOKEN — токен с правом Account / Cloudflare Pages / Edit;
-#   переменные CLOUDFLARE_ACCOUNT_ID и CLOUDFLARE_PAGES_PROJECT — проект Pages с прямой
+#   секрет CLOUDFLARE_API_TOKEN: токен с правом Account / Cloudflare Pages / Edit;
+#   переменные CLOUDFLARE_ACCOUNT_ID и CLOUDFLARE_PAGES_PROJECT: проект Pages с прямой
 #   загрузкой (Direct Upload), создаётся заранее.
 # Пока не задана CLOUDFLARE_PAGES_PROJECT, jobs пропускаются.
 on:
