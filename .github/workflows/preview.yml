@@ -1,7 +1,8 @@
 name: Preview
 
 # Превью PR на Cloudflare Pages: сборка выкладывается веткой pr-<номер> проекта,
-# ссылку бот пишет в PR, при закрытии PR выкладки этой ветки удаляются.
+# бот ведёт в PR один комментарий со ссылкой и обновляет его при каждой сборке,
+# при закрытии PR выкладки этой ветки удаляются.
 # PR из форков пропускаются: на pull_request GitHub не даёт им секретов,
 # а pull_request_target запустил бы код из PR с секретами.
 #
@@ -69,34 +70,84 @@ jobs:
           WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler.ndjson
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
+          # по этому файлу ниже проверяется, что адрес ветки отдаёт именно эту сборку
+          echo "$HEAD_SHA" > .vitepress/dist/preview-build.txt
           npx --yes wrangler@4 pages deploy .vitepress/dist \
             --project-name "$PROJECT" --branch "$BRANCH" \
             --commit-hash "$HEAD_SHA" --commit-dirty=true
-          # alias — постоянный адрес ветки (pr-N.<поддомен проекта>.pages.dev), url — адрес этой выкладки
-          url=$(jq -r 'select(.type == "pages-deploy-detailed") | .alias // .url // empty' "$WRANGLER_OUTPUT_FILE_PATH" | tail -n 1)
+          # выкладка уже есть: если дальше что-то упадёт, комментарий не должен писать, что она не удалась
+          echo "deployed=true" >> "$GITHUB_OUTPUT"
+          # alias: постоянный адрес ветки (pr-N.<поддомен проекта>.pages.dev), url: адрес этой выкладки
+          detailed='select(.type == "pages-deploy-detailed")'
+          url=$(jq -r "$detailed | .url // empty" "$WRANGLER_OUTPUT_FILE_PATH" | tail -n 1)
+          alias=$(jq -r "$detailed | .alias // empty" "$WRANGLER_OUTPUT_FILE_PATH" | tail -n 1)
           [ -n "$url" ] || { echo "::error::wrangler не вернул адрес выкладки"; cat "$WRANGLER_OUTPUT_FILE_PATH"; exit 1; }
-          echo "url=$url" >> "$GITHUB_OUTPUT"
-      # при сбое правится уже выложенный комментарий, чтобы старая ссылка не выглядела свежей
+          # адрес ветки переключается на новую выкладку не сразу: ждём до 2 минут,
+          # иначе предупреждение, а комментарий ведёт на адрес этой выкладки
+          fresh=true
+          if [ -n "$alias" ]; then
+            fresh=false
+            for i in $(seq 12); do
+              got=$(curl -fsS --connect-timeout 5 --max-time 10 "$alias/preview-build.txt?t=$RANDOM" 2>&1) || true
+              if [ "$got" = "$HEAD_SHA" ]; then
+                fresh=true
+                break
+              fi
+              [ "$i" -eq 12 ] || sleep 10
+            done
+            $fresh || echo "::warning::$alias за 2 минуты не переключился на $HEAD_SHA, последний ответ: ${got:0:200}"
+          fi
+          {
+            echo "url=$url"
+            echo "alias=$alias"
+            echo "fresh=$fresh"
+          } >> "$GITHUB_OUTPUT"
+      # комментарий один на PR и правится при каждой сборке, поэтому в нём коммит и время выкладки.
+      # При сбое он тоже пишется или правится, чтобы старая ссылка не выглядела свежей
       - name: Comment
         if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ github.token }}
+          DEPLOYED: ${{ steps.deploy.outputs.deployed }}
           URL: ${{ steps.deploy.outputs.url }}
+          ALIAS: ${{ steps.deploy.outputs.alias }}
+          FRESH: ${{ steps.deploy.outputs.fresh }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          COMMIT_URL: ${{ github.event.pull_request.html_url }}/commits/${{ github.event.pull_request.head.sha }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          id=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
-            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$MARKER\"))) | .id" | sed -n 1p)
-          if [ -n "$URL" ]; then
+          comment=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$MARKER\"))) | {id, body} | @json" | sed -n 1p)
+          id=$(jq -r '.id // empty' <<< "${comment:-null}")
+          commit="[\`${HEAD_SHA:0:7}\`]($COMMIT_URL)"
+          at=$(TZ=Europe/Moscow date '+%d.%m.%Y %H:%M МСК')
+          log="[лог]($RUN_URL)"
+          if [ -n "$URL" ] && [ -z "$ALIAS" ]; then
             body="$MARKER
           **Превью:** $URL
 
-          Собрано из $HEAD_SHA."
-          elif [ -n "$id" ]; then
+          Коммит $commit, выложено $at, $log."
+          elif [ -n "$URL" ] && [ "$FRESH" = true ]; then
             body="$MARKER
-          Превью не обновлено: сборка $HEAD_SHA упала, см. $RUN_URL"
+          **Превью:** $ALIAS
+
+          Коммит $commit, выложено $at, $log. Адрес именно этой выкладки: $URL"
+          elif [ -n "$URL" ]; then
+            body="$MARKER
+          **Превью:** $URL
+
+          Коммит $commit, выложено $at, $log. Постоянный адрес $ALIAS пока не переключился на эту выкладку."
+          elif [ "$DEPLOYED" = true ]; then
+            body="$MARKER
+          **Превью выложено, но адрес не получен:** коммит $commit, $at, см. $log."
           else
-            exit 0
+            # первый адрес *.pages.dev в прошлом тексте: адрес ветки или сохранённая ссылка из прошлого сбоя
+            prev=$(jq -r '.body // empty' <<< "${comment:-null}" | grep -o 'https://[^ ),]*\.pages\.dev' | sed -n 1p || true)
+            body="$MARKER
+          **Превью не обновлено:** не удалось собрать или выложить коммит $commit ($at), см. $log."
+            [ -z "$prev" ] || body+="
+
+          По адресу $prev осталась предыдущая сборка."
           fi
           if [ -n "$id" ]; then
             gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$body" > /dev/null
