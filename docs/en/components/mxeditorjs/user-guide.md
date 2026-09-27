@@ -3,26 +3,26 @@ title: Editor guide
 ---
 # Editor guide
 
-For content editors in the MODX manager. Tool profiles and media: [System settings](settings).
+How to write content in the MODX manager. Tool profiles and media: [System settings](/en/components/mxeditorjs/settings).
 
 ## Enabling
 
 1. **Settings → System settings**
 2. `which_editor` = **mxEditorJs**
 3. `mxeditorjs.enabled` = **Yes**
-4. Open a resource — Editor.js appears in the content field
+4. Open a resource: Editor.js appears in the content field
 
-Editor did not load — see [FAQ](faq).
+Editor did not load: [FAQ](/en/components/mxeditorjs/faq).
 
 ## Blocks
 
-**Add block:** Enter at end of block or **«+»** on the left.
+**Add block:** Enter at the end of a block or **«+»** on the left.
 
 **Move:** ⋮⋮ handle on the left, drag.
 
 **Delete:** ⋮⋮ → **Delete**.
 
-**Formatting:** select text — **B**, **I**, **Link**, **Code**, **Marker**, **U**.
+**Formatting:** select text: **B**, **I**, **Link**, **Code**, **Marker**, **U**.
 
 | Block | Purpose |
 | --- | --- |
@@ -39,15 +39,16 @@ Editor did not load — see [FAQ](faq).
 | Attaches | Downloadable file (PDF, DOC, ZIP) |
 | Image | Single image with caption |
 | Gallery | Multiple images, fit or slider modes |
+| mxGallery | mxGallery media or collection (toolbox only if the package is installed) |
 | Embed | Video and iframe (paste URL, see below) |
 
-Block set is defined by admin via profile (`default`, `minimal`, `blog`, `full`) or `mxeditorjs.enabled_tools`.
+The admin sets the block list via a profile (`default`, `minimal`, `blog`, `full`) or `mxeditorjs.enabled_tools`.
 
 ## Images
 
 1. **«+»** → **Image**
-2. **Upload** — drag-and-drop or file picker
-3. **Browse** — Media Source browser
+2. **Upload**: drag-and-drop or file picker
+3. **Browse**: Media Source browser
 
 After insert: caption, border, stretch, background, CSS preset (if configured).
 
@@ -61,19 +62,19 @@ Formats: JPG, JPEG, PNG, GIF, WebP, SVG. Default max size 5 MB (`mxeditorjs.max_
 4. Block settings: **fit** (grid) or **slider** (horizontal scroll)
 5. Optional shared caption
 
-Image limit — `mxeditorjs.gallery_max_count` (`0` = no limit).
+Image limit: `mxeditorjs.gallery_max_count` (`0` = no limit).
 
 ## Links
 
 1. Select text → **Link**
 2. URL or MODX resource name (autocomplete by pagetitle, longtitle, ID)
-3. Target, rel, CSS class — if presets are configured
+3. Target, rel, CSS class: if presets are configured
 
 ## Embed (video and iframe)
 
-There is no separate Embed button. Paste a URL into an empty block (Ctrl+V / Cmd+V) — the editor creates the block automatically.
+There is no separate Embed button. Paste a URL into an empty block (Ctrl+V / Cmd+V). The editor creates the block.
 
-Supports YouTube, Vimeo, RuTube (`https://rutube.ru/video/...`), Twitter/X, Instagram, CodePen and other `@editorjs/embed` services. Frontend output is an iframe.
+`buildTools()` enables six services: YouTube, Vimeo, Twitter/X, Instagram, CodePen, RuTube. The rest of the `@editorjs/embed` defaults are off. A new service needs a change in `mxeditorjs.ts`. Frontend output is an iframe.
 
 ## TVs (Template Variables)
 
@@ -96,12 +97,12 @@ Each TV has its own editor instance and JSON storage. HTML auto-migration for TV
 If the resource has HTML from TinyMCE/CKEditor but no JSON in sidecar, a dialog appears on first open:
 
 1. Preview: block count and HTML size
-2. **Migrate** — convert to Editor.js
-3. **Cancel** — empty editor
+2. **Migrate**: convert to Editor.js
+3. **Cancel**: empty editor
 
-Migrator handles headings, paragraphs, lists, quotes, images, tables, code, delimiters. Does **not** restore embed, gallery, attachments, or checklists from HTML.
+The migrator handles headings, paragraphs, lists, quotes, images, tables, code, delimiters. It does **not** restore embed, gallery, attachments, or checklists from HTML.
 
-Migration applies to main content only, not TVs. Details: [Integration](integration).
+Migration applies to main content only, not TVs. Details: [Integration](/en/components/mxeditorjs/integration).
 
 ## Shortcuts
 

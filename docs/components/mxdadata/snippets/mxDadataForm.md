@@ -15,13 +15,13 @@ title: mxDadataForm
 | **suggestionsChunk** | Имя чанка MODX, в теле **только JSON** (удобно для Fenom: `{ignore}` / избегать пустого `suggestions` при `extends`) | — |
 | **connectorUrl** | Веб-коннектор | авто |
 
-Если нет ни **suggestions**, ни валидного **suggestionsChunk**, в браузере получится пустой конфиг — подсказки не заработают.
+Если нет ни **suggestions**, ни валидного **suggestionsChunk**, в браузере получится пустой конфиг. Подсказки не заработают.
 
-**Резерв из файла:** при заданном **suggestionsChunk** сниппет сначала берёт содержимое чанка из БД. Если там пусто или не JSON, подставляется JSON из файла `core/components/mxdadata/elements/chunks/<имя_чанка>.tpl` (имя совпадает с параметром, с расширением `.tpl`). Удобно при кастомной установке, когда чанк лежит в пакете, а в MODX ещё не создан.
+**Запасной вариант из файла:** при заданном **suggestionsChunk** сниппет сначала берёт содержимое чанка из БД. Если там пусто или не JSON, подставляется JSON из файла `core/components/mxdadata/elements/chunks/<имя_чанка>.tpl` (имя совпадает с параметром, с расширением `.tpl`). Удобно, когда чанк лежит в пакете, а в MODX ещё не создан.
 
 ## Примеры
 
-### Inline `suggestions` (email + address)
+### Параметр `suggestions` (email + address)
 
 ::: code-group
 
@@ -68,10 +68,10 @@ title: mxDadataForm
 
 :::
 
-Типы полей, `subject`, `master`, **GEOLOCATE**, **VERSION_INFO** — в разделе [Интеграция → Универсальная форма mxDadataForm](/components/mxdadata/integration#универсальная-форма-mxdadataform).
+Типы полей, `subject`, `master`, **GEOLOCATE**, **VERSION_INFO**: [Интеграция → Универсальная форма mxDadataForm](/components/mxdadata/integration#универсальная-форма-mxdadataform).
 
 ::: tip Fenom и `auto_escape`
-При включённом **auto_escape** выводите сниппет как сырой HTML. Для `mxDadataForm` в шаблонах с `{extends}` / `{block}` надёжнее передавать **`suggestionsChunk`**, а не длинный `suggestions` из переменной — иначе в браузере может оказаться пустой `[]`.
+При включённом **auto_escape** выводите сниппет как сырой HTML. Для `mxDadataForm` в шаблонах с `{extends}` / `{block}` надёжнее передавать **`suggestionsChunk`**, а не длинный `suggestions` из переменной. Иначе в браузере может оказаться пустой `[]`.
 :::
 
 ## См. также

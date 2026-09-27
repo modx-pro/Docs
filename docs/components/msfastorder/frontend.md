@@ -5,23 +5,19 @@ description: JavaScript, window.msfoConfig, форма в модалке, AJAX �
 
 # Подключение на сайте
 
-Фронтенд: JavaScript, разметка, конфиг.
-
-Документ описывает всё, что происходит в браузере после вызова `[[!msFastOrder]]`: подключение скриптов, `window.msfoConfig`, глобальный API, разметку формы, AJAX и события.
-
-См. также: [AJAX API](api), [События JavaScript](events), [Сниппеты](snippets/index).
+После `[[!msFastOrder]]` браузер получает скрипты, `window.msfoConfig`, форму в модалке и AJAX.
 
 ## Подключение на странице
 
 Сниппет `msFastOrder` при каждом вызове:
 
 1. Проверяет, что ресурс — товар MS3 (`msProduct`).
-2. Рендерит чанк кнопки (`tplBtn`, по умолчанию `msfo_button`).
+2. Собирает чанк кнопки (`tplBtn`, по умолчанию `msfo_button`).
 3. Регистрирует CSS: `{msfastorder_assets_url}css/msfo.min.css?v={mtime}`.
-4. Регистрирует JS: `{msfastorder_assets_url}js/msfo.min.js?v={mtime}`.
-5. Создаёт/обновляет CSRF в сессии (`$_SESSION['msfastorder.csrf_token']`).
+4. Регистрирует JS: `{msfastorder_assets_url}js/msfo.min.js?v={mtime}` (версия по `mtime` файла при обновлении через ModStore).
+5. Выводит inline `window.msfoConfig` с CSRF (`ClientConfig::getConfigScript()`).
 
-Плагин `msfastorder_web` (события `OnLoadWebPageCache`, `OnWebPagePrerender`) подставляет **свежий** `window.msfoConfig` перед `msfo.min.js`, чтобы токен не «застывал» в кэше ресурса.
+Плагин `msfastorder_web` (события `OnLoadWebPageCache`, `OnWebPagePrerender`) удаляет застывший конфиг из кэша страницы и подставляет **свежий** `window.msfoConfig` перед `msfo.min.js`.
 
 ```mermaid
 sequenceDiagram
@@ -74,7 +70,8 @@ sequenceDiagram
   modalLibrary: 'native',           // native | bootstrap | fancybox
   phoneMask: '+7 (999) 999-99-99',
   successRedirect: '',              // URL или пусто
-  requiredFields: ['receiver', 'phone'],  // с сервера, для справки
+  copyCount: true,                      // msfastorder_copy_count
+  requiredFields: ['receiver', 'phone'], // те же поля, что msfastorder_required_fields
   lexicon: {
     modal_title: '...',
     submit_button: '...',
@@ -119,8 +116,9 @@ window.msfoConfig = Object.assign(window.msfoConfig || {}, {
 | `modalLibrary` | `msfastorder_modal_library` |
 | `phoneMask` | `msfastorder_phone_mask` |
 | `successRedirect` | `msfastorder_success_redirect` |
-| `requiredFields` | `msfastorder_required_fields` |
-| `lexicon.*` | lexicon `msfastorder:*` |
+| `requiredFields` | `msfastorder_required_fields` (JS ставит `required` и валидирует) |
+| `copyCount` | `msfastorder_copy_count` |
+| `lexicon.*` | lexicon `msfastorder:*` (ключ `order_number` в конфиг **не** попадает — на экране успеха подпись номера может остаться «Order») |
 
 ## Глобальный объект msFastOrder
 
@@ -131,11 +129,9 @@ window.msfoConfig = Object.assign(window.msfoConfig || {}, {
 | `openOrderModal(productId)` | Загрузить товар, открыть модалку с формой |
 | `closeModal()` | Закрыть текущую модалку |
 | `getModalLibrary()` | Текущая библиотека (`native` / `bootstrap` / `fancybox`) |
-| `setModalLibrary(name)` | Переключить библиотеку; при отсутствии BS/Fancybox — fallback на `native` |
+| `setModalLibrary(name)` | Переключить библиотеку; при отсутствии BS/Fancybox — запасной вариант `native` |
 | `on(event, callback)` | Подписка на EventBus |
 | `off(event, callback)` | Отписка |
-
-Подробнее о вызове без стандартной кнопки: [Программное открытие модалки](#программное-открытие-модалки).
 
 ## Разметка кнопки
 
@@ -150,14 +146,11 @@ window.msfoConfig = Object.assign(window.msfoConfig || {}, {
 
 | Атрибут / класс | Описание |
 |-----------------|----------|
-| `data-msfo-hash` | md5(`product_id` + `site_key`) — в стандартном чанке |
 | `msfo-trigger--primary` | Стиль кнопки (`&primary=1` в сниппете) |
-
-Клик по такой кнопке внутри вызывает тот же `openOrderModal`, что и ручной вызов из JS (делегирование на `document`).
 
 ## Программное открытие модалки
 
-Используйте, когда кнопка «в 1 клик» не из сниппета `msFastOrder`: своя вёрстка в каталоге, ссылка «Купить сейчас», виджет, сравнение товаров, открытие из другого скрипта.
+Нужно, когда кнопка «в 1 клик» не из сниппета `msFastOrder`: своя вёрстка в каталоге, ссылка «Купить сейчас», виджет, сравнение товаров, открытие из другого скрипта.
 
 ### Что должно быть на странице
 
@@ -170,9 +163,9 @@ window.msfoConfig = Object.assign(window.msfoConfig || {}, {
 Конфиг и CSRF дают:
 
 - **`[[!msFastOrder]]`** на этой же странице (кнопка необязательна, но сниппет подключает assets и конфиг), **или**
-- **`[[!msFastOrderClientConfig]]`** + ручное подключение CSS/JS в шаблоне — см. [msFastOrderClientConfig](snippets/msFastOrderClientConfig).
+- **`[[!msFastOrderClientConfig]]`** + ручное подключение CSS/JS в шаблоне — см. [msFastOrderClientConfig](/components/msfastorder/snippets/msFastOrderClientConfig).
 
-Без свежего CSRF запросы вернут **403** — на кэшируемых страницах помогает плагин `msfastorder_web`.
+Без свежего CSRF запросы вернут **403**. На кэшируемых страницах помогает плагин `msfastorder_web`.
 
 ### Метод `openOrderModal(productId)`
 
@@ -215,12 +208,12 @@ sequenceDiagram
 1. Событие **`modal:beforeLoad`** / `msfo:modal:beforeLoad` — `{ productId }`.
 2. **POST** `product/get` (токен из `msfoConfig.csrfToken`).
 3. При `success: false` — `alert`, модалка **не** открывается.
-4. **`MiniShop3Integration.copyFromProductPage(productId)`** — с страницы берутся `count` (класс `msfastorder-count-{id}` или `input[name="count"]`) и `options` (форма `.ms3variants-product-{id}`).
+4. **`MiniShop3Integration.copyFromProductPage(productId)`** — со страницы берутся `count` (класс `msfastorder-count-{id}` или `input[name="count"]`) и `options` (форма `.ms3variants-product-{id}`).
 5. HTML формы собирается **`renderForm()`**, модалка открывается (`modal:beforeOpen` → `modal:open`).
 6. На форму вешается **`FormHandler`** (маска телефона, submit, success).
-7. Событие **`modal:loaded`** — `{ productId, product }`. Удобная точка для правки DOM формы.
+7. Событие **`modal:loaded`** — `{ productId, product, form }` (`form` — элемент `.msfo-form` или `null`, если форма не нашлась за ~3 с). Точка для правки DOM формы.
 
-Полный список событий: [События JavaScript](events).
+Полный список событий: [События JavaScript](/components/msfastorder/events).
 
 ### Своя кнопка без сниппета msFastOrder
 
@@ -310,9 +303,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 ```
 
-**Открытие с карточки в каталоге** — `productId` из data-атрибута строки. На странице списка желательно поле `count` с классом `msfastorder-count-{id}` для каждого товара (см. [Быстрый старт](quick-start#шаг-5-рекомендуемая-разметка-варианты-и-количество)).
+**Открытие с карточки в каталоге** — `productId` из data-атрибута строки. На странице списка задайте поле `count` с классом `msfastorder-count-{id}` для каждого товара (см. [Быстрый старт](/components/msfastorder/quick-start#шаг-5-рекомендуемая-разметка-варианты-и-количество)).
 
-**Смена библиотеки модалки на лету** (если на странице есть Bootstrap 5 или Fancybox):
+**Смена библиотеки модалки на лету** (если на странице есть `bootstrap.Modal` или `Fancybox`):
 
 ```javascript
 msFastOrder.setModalLibrary('bootstrap'); // или 'fancybox', 'native'
@@ -328,7 +321,7 @@ msFastOrder.openOrderModal(42);
 | `alert` при открытии | Товар не `msProduct`, неверный `productId`, ошибка connector — смотрите JSON ответа |
 | Неверное количество / вариант | Нет формы `ms3variants-product-{id}` или класса `msfastorder-count-{id}` на странице |
 
-См. также: [FAQ](faq), [Интеграция](integration), [Сниппет msFastOrder](snippets/msFastOrder#программное-открытие-модалки).
+См. также: [FAQ](/components/msfastorder/faq), [Интеграция](/components/msfastorder/integration), [Сниппет msFastOrder](/components/msfastorder/snippets/msFastOrder#программное-открытие-модалки).
 
 ## Форма в модалке: важно
 
@@ -340,13 +333,13 @@ msFastOrder.openOrderModal(42);
 | `msfo_form` | **Нет** (эталон для копирования; правки только в чанке не изменят модалку) |
 | `msfo_success` | **Нет** (success рисуется `FormHandler.renderSuccess()` в JS) |
 | `msfo_modal` | Нет (оболочка создаётся `ModalManager`) |
-| `msfo_email_*` | Да (режим MAIL / письма MS) |
+| `msfo_email_*` | Да (только режим **MAIL**) |
 
 Чтобы изменить форму на фронте без правки ядра пакета:
 
 1. На событии **`msfo:modal:loaded`** меняйте DOM формы (добавление полей, разметка, валидация на клиенте).
-2. Подписывайтесь на **`msfo:form:submit`** и дополняйте отправку (UTM, метки) — см. [События JavaScript](events).
-3. Эталоны разметки для копирования — чанки `msfo_form` / `msfo_success` ([Чанки](chunks)); сами чанки в стандартном потоке на сервере не подставляются.
+2. Подписывайтесь на **`msfo:form:submit`** и дополняйте отправку (UTM, метки) — см. [События JavaScript](/components/msfastorder/events).
+3. Эталоны разметки для копирования — чанки `msfo_form` / `msfo_success` ([Чанки](/components/msfastorder/chunks)). Сами чанки в стандартном потоке на сервере не подставляются.
 
 ### Поля формы (POST `order/create`)
 
@@ -370,7 +363,7 @@ msFastOrder.openOrderModal(42);
   - предпочтительно: `input.msfastorder-count-{productId}`;
   - иначе: первый на странице `input[name="count"]` (на **каталоге** может быть чужой товар — задавайте класс с ID).
 
-Настройка `msfastorder_copy_count` в транспорте пакета описана, но **в JS пока не отключает** копирование (всегда выполняется).
+При `msfastorder_copy_count=Нет` (`copyCount: false` в `msfoConfig`) количество в модалке **всегда 1**, со страницы не копируется.
 
 ### Копирование варианта и опций со страницы
 
@@ -394,17 +387,15 @@ msFastOrder.openOrderModal(42);
 
 или плоский объект опций — сервер нормализует в `OrderProcessor::parseOptions()`.
 
-Подробнее: [integration](integration#интеграция-с-ms3variants).
+Подробнее: [Интеграция → ms3Variants](/components/msfastorder/integration#интеграция-с-ms3variants).
 
 ## Клиентская валидация
 
 - Атрибут `novalidate` на форме — браузерная валидация отключена.
-- Проверяются поля с HTML-атрибутом `required` (в `renderForm` жёстко заданы `receiver`, `phone`).
+- Атрибут `required` и клиентская проверка идут по списку `msfoConfig.requiredFields` (тот же, что `msfastorder_required_fields`).
 - Сообщения обязательных полей: `formatRequiredError()` подставляет подпись из `msfoConfig.lexicon.field_*`.
 - Email проверяется regex, если поле не пустое.
-- Серверная валидация строже (`msfastorder_required_fields`) — см. [api](api).
-
-**Расхождение:** если в настройках обязателен `email`, в стандартной JS-форме атрибут `required` на email **не** добавляется автоматически — добавьте в кастомной разметке или полагайтесь на ответ сервера.
+- Серверная валидация может быть строже (префикс телефона и т.д.) — см. [AJAX API](/components/msfastorder/api).
 
 ## AJAX из браузера
 
@@ -419,7 +410,7 @@ msFastOrder.openOrderModal(42);
 
 При HTTP **429** показывается `lexicon.error_rate_limit`.
 
-Полное описание ответов: [api](api).
+Полное описание ответов: [AJAX API](/components/msfastorder/api).
 
 ## Экран успеха и редирект
 
@@ -438,8 +429,8 @@ msFastOrder.openOrderModal(42);
 | `msfastorder_modal_library` | Зависимости на странице |
 |-----------------------------|-------------------------|
 | `native` | нет |
-| `bootstrap` | Bootstrap 5 Modal JS |
-| `fancybox` | Fancybox 4/5; подключайте `msfo.min.css` **после** CSS Fancybox |
+| `bootstrap` | глобальный `bootstrap.Modal` |
+| `fancybox` | `window.Fancybox`; подключайте `msfo.min.css` **после** CSS Fancybox |
 
 `ModalManager` блокирует скролл страницы (`msfo-modal-open` на `body`/`html`) и снимает блокировку при `closeModal()` / `closeAll()`.
 
@@ -461,22 +452,4 @@ msFastOrder.openOrderModal(42);
 
 ## События
 
-Полный список, payload и примеры: [events](events).
-
-Кратко:
-
-| EventBus | DOM |
-|----------|-----|
-| `modal:beforeLoad` | `msfo:modal:beforeLoad` |
-| `modal:beforeOpen` | `msfo:modal:beforeOpen` |
-| `modal:open` | `msfo:modal:open` |
-| `modal:loaded` | `msfo:modal:loaded` |
-| `form:submit` | `msfo:form:submit` |
-| `order:success` | `msfo:order:success` |
-| `order:error` | `msfo:order:error` |
-| `modal:beforeClose` | `msfo:modal:beforeClose` |
-| `modal:close` | `msfo:modal:close` |
-
-После успешного MS-заказа вызывается `MiniShop3Integration.reinitCart()` (`ms3:cart:updated`).
-
-На витрине подключается **`msfo.min.js`** из пакета (`assets/components/msfastorder/js/`). Версия в URL обновляется по `mtime` файла при обновлении дополнения через ModStore.
+После успешного MS-заказа вызывается `MiniShop3Integration.reinitCart()` (`ms3:cart:updated`). Полный список и payload: [События JavaScript](/components/msfastorder/events).

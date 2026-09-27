@@ -3,7 +3,7 @@ title: Troubleshooting
 ---
 # Troubleshooting
 
-Common manager and development issues. Editor FAQ: [FAQ](faq).
+Common manager and development issues. Editor FAQ: [FAQ](/en/components/mxeditorjs/faq).
 
 ## Editor does not load
 
@@ -12,7 +12,7 @@ Common manager and development issues. Editor FAQ: [FAQ](faq).
 3. Console (F12): JS errors, `mxeditorjs.js?v=...` load
 4. Plugin **mxEditorJs** is enabled
 
-On init failure Editor.js falls back to textarea.
+On init failure Editor.js falls back to a textarea.
 
 Console:
 
@@ -33,14 +33,14 @@ Expected: `connectorUrl`, `resourceId`, `enabledTools`, `galleryMaxCount`, `loca
 
 ## Attaches does not open file dialog
 
-`patch-package` for `@editorjs/attaches` did not apply. In package directory:
+`patch-package` for `@editorjs/attaches` did not apply. In the package directory:
 
 ```bash
 npm install
 npm run build
 ```
 
-Copy `mxeditorjs.js` to `assets/components/mxeditorjs/js/`. After `npm update @editorjs/attaches` rebuild patch: `npx patch-package @editorjs/attaches`.
+Copy `mxeditorjs.js` to `assets/components/mxeditorjs/js/`. After `npm update @editorjs/attaches` rebuild the patch: `npx patch-package @editorjs/attaches`.
 
 ## Connector returns error
 
@@ -50,7 +50,7 @@ Typical `message`: validation errors from `ContentValidator`.
 
 ## Site HTML ≠ Source Preview
 
-Two renderers: client `renderPreviewHtml` (form) and server `HtmlRenderer` (`content/save`). Align block logic in both. See [Architecture](architecture).
+Two HTML builders: client `renderPreviewHtml` (form) and server `HtmlRenderer` (`content/save`). Align block logic in both. See [Architecture](/en/components/mxeditorjs/architecture).
 
 ## Gallery missing from toolbar after upgrade
 
@@ -83,7 +83,7 @@ rsync -av --delete --exclude='node_modules' Extras/mxEditorJs/assets/components/
 SELECT id, name, static, static_file FROM modx_site_plugins WHERE name = 'mxEditorJs';
 ```
 
-With `static = 1`, edit `Extras/.../mxeditorjs.plugin.php` without re-saving the element in manager.
+With `static = 1`, edit `Extras/.../mxeditorjs.plugin.php` without re-saving the element in the manager.
 
 ## Clear cache (CLI)
 
@@ -95,9 +95,9 @@ Or **Settings → Clear cache**.
 
 ## Debug save flow
 
-1. **Network** — resource form POST: `mxeditorjs_json`, `mxeditorjs_tv_{id}_json`
-2. **Console** — `[mxEditorJs]` errors in `syncToTextarea` / `renderPreviewHtml`
-3. DB — row in `mxeditorjs_content`, `content_hash` field
+1. **Network**: resource form POST, fields `mxeditorjs_json`, `mxeditorjs_tv_{id}_json`
+2. **Console**: `[mxEditorJs]` errors in `syncToTextarea` / `renderPreviewHtml`
+3. DB: row in `mxeditorjs_content`, `content_hash` field
 
 ## PHP log
 

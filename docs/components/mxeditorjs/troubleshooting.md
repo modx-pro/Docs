@@ -3,7 +3,7 @@ title: Решение проблем
 ---
 # Решение проблем
 
-Типовые сбои в manager и при разработке пакета. FAQ для редакторов: [FAQ](faq).
+Сбои в manager и при разработке пакета. FAQ для редакторов: [FAQ](/components/mxeditorjs/faq).
 
 ## Редактор не загружается
 
@@ -12,7 +12,7 @@ title: Решение проблем
 3. Консоль (F12): ошибки JS, загрузка `mxeditorjs.js?v=...`
 4. Плагин **mxEditorJs** включён
 
-При ошибке инициализации Editor.js показывается fallback на textarea.
+При ошибке инициализации Editor.js показывается запасной вариант: textarea.
 
 Console:
 
@@ -44,17 +44,17 @@ npm run build
 
 ## Connector возвращает ошибку
 
-URL: `assets/components/mxeditorjs/connector.php`. В Network смотрите `action`, тело `{ success, message }`. HTTP-код при ошибке auth — **200**, не 403.
+URL: `assets/components/mxeditorjs/connector.php`. В Network смотрите `action`, тело `{ success, message }`. HTTP-код при ошибке auth: **200**, не 403.
 
-Типовые `message`: validation errors от `ContentValidator`.
+Типовые `message`: ошибки проверки от `ContentValidator`.
 
 ## HTML на сайте ≠ Source Preview
 
-Два рендерера: клиент `renderPreviewHtml` (форма) и сервер `HtmlRenderer` (`content/save`). Сверьте логику блока в обоих. См. [Архитектура](architecture).
+Два сборщика HTML: клиент `renderPreviewHtml` (форма) и сервер `HtmlRenderer` (`content/save`). Сверьте логику блока в обоих. См. [Архитектура](/components/mxeditorjs/architecture).
 
 ## Gallery нет в toolbar после upgrade
 
-Resolver добавляет `gallery` в `available_tools` и профили. Проверьте JSON `mxeditorjs.profiles`, если редактировали вручную. Очистите кэш.
+Resolver добавляет `gallery` в `available_tools` и профили. Проверьте JSON `mxeditorjs.profiles`, если правили вручную. Очистите кэш.
 
 ## Две копии файлов при разработке
 
@@ -95,9 +95,9 @@ rm -rf core/cache/mgr/ core/cache/includes/ core/cache/scripts/
 
 ## Отладка save flow
 
-1. **Network** — POST формы ресурса: поля `mxeditorjs_json`, `mxeditorjs_tv_{id}_json`
-2. **Console** — `[mxEditorJs]` ошибки `syncToTextarea` / `renderPreviewHtml`
-3. БД — строка в `mxeditorjs_content`, поле `content_hash`
+1. **Network**: POST формы ресурса, поля `mxeditorjs_json`, `mxeditorjs_tv_{id}_json`
+2. **Console**: `[mxEditorJs]` ошибки `syncToTextarea` / `renderPreviewHtml`
+3. БД: строка в `mxeditorjs_content`, поле `content_hash`
 
 ## PHP-лог
 

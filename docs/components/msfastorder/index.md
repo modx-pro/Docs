@@ -46,47 +46,49 @@ items: [
 
 # msFastOrder
 
-**msFastOrder** — дополнение для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): оформление заказа «в один клик» с карточки товара через модальное окно, без перехода в корзину.
+**msFastOrder** оформляет заказ «в один клик» с карточки товара: модальное окно, без перехода в корзину. Нужны [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/).
 
-С чего начать: [Быстрый старт](quick-start).
+[Быстрый старт](/components/msfastorder/quick-start).
 
 ## Минимальный путь к кнопке на витрине
 
-1. Установить пакет и убедиться, что на сайте работает **MiniShop3**.
-2. В **Системные настройки** (область `msfastorder`) задать `msfastorder_method`, email менеджера (для MAIL) и ID оплаты/доставки MS3 (для MS).
-3. На шаблоне **страницы товара** (`msProduct`) **некэшированно** вывести `[[!msFastOrder]]`.
-4. **Настройки → Очистить кэш** и проверить: клик по кнопке → модалка → заказ или письмо.
+Установите пакет, задайте настройки и выведите `[[!msFastOrder]]` на странице товара.
 
-Детали: [Быстрый старт](quick-start), разметка карточки: [Подключение на сайте](frontend).
+1. Установите пакет. На сайте должен работать **MiniShop3**.
+2. В **Системные настройки** (область `msfastorder`) задайте `msfastorder_method`, email менеджера (для MAIL) и ID оплаты/доставки MS3 (для MS).
+3. На шаблоне **страницы товара** (`msProduct`) **некэшированно** выведите `[[!msFastOrder]]`.
+4. **Настройки → Очистить кэш**. Проверьте: клик по кнопке → модалка → заказ или письмо.
+
+Разметка карточки: [Подключение на сайте](/components/msfastorder/frontend).
 
 ## Быстрые ссылки
 
 | Нужно | Документ |
 | --- | --- |
-| Установить и проверить первый заказ | [Быстрый старт](quick-start) |
-| Все ключи `msfastorder_*` и режимы MS/MAIL | [Системные настройки](settings) |
-| Сниппеты, параметры, кнопка на каталоге | [Сниппеты](snippets/index) |
-| `msfoConfig`, форма в JS, модалки | [Подключение на сайте](frontend) |
-| ms3Variants, ЮKassa, аналитика | [Интеграция](integration) |
-| `connector.php`, actions, JSON | [AJAX API](api) |
-| События `msfo:*` | [События JavaScript](events) |
-| Ошибки 403, payment_link, чанки | [FAQ](faq) |
+| Установить и проверить первый заказ | [Быстрый старт](/components/msfastorder/quick-start) |
+| Все ключи `msfastorder_*` и режимы MS/MAIL | [Системные настройки](/components/msfastorder/settings) |
+| Сниппеты, параметры, кнопка на каталоге | [Сниппеты](/components/msfastorder/snippets/) |
+| `msfoConfig`, форма в JS, модалки | [Подключение на сайте](/components/msfastorder/frontend) |
+| ms3Variants, ЮKassa, аналитика | [Интеграция](/components/msfastorder/integration) |
+| `connector.php`, actions, JSON | [AJAX API](/components/msfastorder/api) |
+| События `msfo:*` | [События JavaScript](/components/msfastorder/events) |
+| Ошибки 403, payment_link, чанки | [FAQ](/components/msfastorder/faq) |
 
 ## Кому что читать
 
-- **Менеджеру / интегратору:** [Быстрый старт](quick-start) → [Системные настройки](settings) → [Интеграция](integration).
-- **Верстальщику:** [Сниппеты](snippets/msFastOrder) → [Подключение на сайте](frontend) → [Чанки](chunks).
-- **Разработчику:** [AJAX API](api) → [События JavaScript](events) → `assets/components/msfastorder/js/msfo.min.js`.
+- **Менеджеру / интегратору:** [Быстрый старт](/components/msfastorder/quick-start) → [Системные настройки](/components/msfastorder/settings) → [Интеграция](/components/msfastorder/integration).
+- **Верстальщику:** [Сниппеты](/components/msfastorder/snippets/msFastOrder) → [Подключение на сайте](/components/msfastorder/frontend) → [Чанки](/components/msfastorder/chunks).
+- **Разработчику:** [AJAX API](/components/msfastorder/api) → [События JavaScript](/components/msfastorder/events) → `assets/components/msfastorder/js/msfo.min.js`.
 
 ## Возможности
 
-- **Модальное окно** — `native` (по умолчанию), Bootstrap 5 Modal или Fancybox 4/5
-- **Режим MS** — полноценный заказ в MiniShop3 с одной позицией, покупателем и `payment_link`
+- **Модальное окно** — `native` (по умолчанию), глобальный `bootstrap.Modal` или `window.Fancybox`
+- **Режим MS** — заказ в MiniShop3 с одной позицией, покупателем и `payment_link`
 - **Режим MAIL** — письмо менеджеру без записи в MS3
 - **Количество и итого** — поле `count`, пересчёт суммы в браузере
 - **Варианты** — подхват `variant_id` и опций со страницы ([ms3Variants](/components/ms3variants/))
 - **Оплата** — ссылка из способа оплаты MS3, в том числе [msp3YooKassa](/components/msp3yookassa/)
-- **Безопасность** — CSRF в сессии, rate limit на `order/create`, журнал `msfastorder_logs`
+- **Безопасность** — CSRF в сессии, rate limit на **успешные** `order/create` с IP, журнал `msfastorder_logs`
 - **Расширяемость** — DOM-события `msfo:*` и EventBus `msFastOrder.on()`
 
 ## Системные требования
@@ -96,11 +98,9 @@ items: [
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | 1.0+ |
-| pdoTools | 3.0+ (рекомендуется для Fenom) |
+| pdoTools | 3.0+ (жёсткая зависимость транспорта) |
 
-### Зависимости
-
-- **[MiniShop3](/components/minishop3/)** — товары, заказы, способы оплаты и доставки
+**[MiniShop3](/components/minishop3/)** даёт товары, заказы, способы оплаты и доставки. **pdoTools** 3.0+ — требование установщика пакета.
 
 ### Опционально
 
@@ -117,9 +117,9 @@ items: [
 
 Каталог пакета: [modstore.pro/packages/integration/msfastorder](https://modstore.pro/packages/integration/msfastorder).
 
-После установки появляются: namespace `msfastorder`, сниппеты `msFastOrder` и `msFastOrderClientConfig`, чанки `msfo_*`, плагин `msfastorder_web`, таблица `msfastorder_logs`. Резолвер может создать способы оплаты и доставки «Fast Order» и прописать их ID в настройки.
+После установки появляются: namespace `msfastorder`, сниппеты `msFastOrder` и `msFastOrderClientConfig`, чанки `msfo_*`, плагин `msfastorder_web`, таблица `msfastorder_logs`. Резолвер может создать способы **Fast Order Payment** / **Fast Order Delivery** и прописать их ID в настройки.
 
-Подробнее: [Быстрый старт → Шаг 1](quick-start#шаг-1-установка-пакета).
+Подробнее: [Быстрый старт → Шаг 1](/components/msfastorder/quick-start#шаг-1-установка-пакета).
 
 ## Термины
 
@@ -129,19 +129,7 @@ items: [
 | **msfoConfig** | `window.msfoConfig` — URL connector, CSRF, маска телефона, лексикон для JS |
 | **MS / MAIL** | Режимы: заказ в MiniShop3 или только email |
 | **payment_link** | URL оплаты из обработчика MS3 (`msfastorder_payment_id`) |
-| **renderForm** | JS-сборка HTML формы в модалке (чанк `msfo_form` по умолчанию не рендерится на сервере) |
-
-## Документация по разделам
-
-- [Быстрый старт](quick-start) — установка, настройки, вывод на карточке товара, проверка
-- [Системные настройки](settings) — все ключи, MS/MAIL, `payment_link`, безопасность
-- [Сниппеты](snippets/index) — `msFastOrder`, `msFastOrderClientConfig`
-- [Чанки](chunks) — кнопка, письма, эталоны формы и success
-- [Подключение на сайте](frontend) — жизненный цикл, `msfoConfig`, поля формы, CSS
-- [Интеграция и сценарии](integration) — шаблон товара, ms3Variants, ЮKassa, метрики
-- [AJAX API](api) — actions, поля POST, ответы, PHP
-- [События JavaScript](events) — `msfo:*`, аналитика
-- [FAQ](faq) — типичные ошибки и диагностика
+| **renderForm** | JS-сборка HTML формы в модалке (чанк `msfo_form` по умолчанию на сервере не собирается) |
 
 ## Архитектура (кратко)
 
@@ -189,8 +177,8 @@ sequenceDiagram
   JS->>JS: renderSuccess
 ```
 
-Подробнее: [Подключение на сайте](frontend#жизненный-цикл-клик--заказ), [AJAX API](api).
+Подробнее: [Подключение на сайте](/components/msfastorder/frontend#жизненный-цикл-клик--заказ), [AJAX API](/components/msfastorder/api).
 
 ## Лицензия
 
-GPL v2 — `core/components/msfastorder/docs/license.txt`.
+В транспорте пакета указана **GPL v2** (`core/components/msfastorder/docs/license.txt`). В корне репозитория пакета может лежать **MIT** (`LICENSE`, `composer.json`). Сверяйте лицензию с тем артефактом, из которого ставите дополнение.

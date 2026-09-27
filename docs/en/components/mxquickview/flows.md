@@ -5,6 +5,19 @@ title: Flows
 
 ## 1. Render in modal on click
 
+```mermaid
+flowchart TD
+  CL[Click data-mxqv-click] --> RD[Read mode action element id]
+  RD --> LIB{modal_library}
+  LIB -->|native or bootstrap| OM[Modal loading state]
+  OM --> POST[POST connector render]
+  LIB -->|fancybox| POST2[POST connector render]
+  POST2 --> FB[Fancybox with HTML]
+  POST --> INS[Insert HTML in modal]
+  INS --> EV[mxqv:loaded]
+  FB --> EV
+```
+
 1. Click on element with `data-mxqv-click`.
 2. JS reads `mode`, `data_action`, `element`, `id`, `title`.
 3. For `native`/`bootstrap` the modal opens immediately (loading state), then POST is sent to `connector.php` (`action=render`, including `modal_library`).
@@ -32,14 +45,16 @@ title: Flows
 
 1. Trigger is inside container with `data-mxqv-parent data-mxqv-loop="true"`.
 2. JS builds list of triggers inside that container.
-3. Buttons `[data-mxqv-nav="prev|next"]` change current index.
-4. At list boundaries buttons are hidden.
+3. Buttons `[data-mxqv-nav="prev|next"]` and ←/→ keys change current index (`modalLibrary` `native` or `bootstrap` only).
+4. At list boundaries buttons are hidden. For Fancybox `updateNavButtons` is skipped; no prev/next.
+5. **Escape** closes the modal only in `native` mode (not bootstrap/fancybox).
 
 ## 5. Add to cart from quick view
 
 1. Render uses MiniShop3 form (`data-ms3-form`, `ms3_action=cart/add`).
-2. After HTML is inserted, `ms3.productCardUI.reinit()` is called (if available).
-3. Add to cart works without page reload.
+2. After insert: `ms3.cartUI.init`/`reinit`, `ms3.quantityUI.reinit`/`init`, `ms3.productCardUI.reinit()` when MiniShop3 API is on the page.
+3. Dispatches `ms3:cart:updated` with `detail: { source: 'mxqv' }`.
+4. Add to cart without reload works when MiniShop3 is already initialized on the page.
 
 ## 6. ms3Variants inside quick view
 
@@ -48,6 +63,7 @@ title: Flows
 3. JS finds `.qv-product[data-mxqv-variants]` and only handles flag `true|1|yes|on`.
 4. JS listens for `click` on `[data-variant-id]` and `change` on `select/input` in `.qv-product__variants`.
 5. On variant change it updates price, old price and image.
+6. Variant handler (`initVariantsInContent`) runs on **modal** insert (`setContent`), not in `mode=selector` ([issue #2](https://github.com/Ibochkarev/mxQuickView/issues/2)).
 
 ## 7. Error flow
 

@@ -11,15 +11,17 @@ title: API и интерфейсы
 
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
-| `modalSize` | из `mxquickview_modal_size` | Размер модалки: `modal-sm`, `modal-lg`, `modal-xl` |
-| `mouseoverDelay` | из `mxquickview_mouseover_delay` | Задержка перед загрузкой по наведению |
-| `modalLibrary` | `native` | Режим модалки: `native`, `bootstrap`, `fancybox` (`bootstrap5` поддерживается как alias) |
-| `debug` | `0` | Включить диагностическое логирование в консоль (`[mxqv]`) |
-| `loadingText` | из лексикона `mxqv_loading` | Текст индикатора загрузки в modal/selector |
-| `fancyboxCss` | пусто | URL/путь к CSS Fancybox. Если пусто, используется bundled-файл `assets/components/mxquickview/vendor/fancybox/fancybox.css`, при отсутствии — CDN |
-| `fancyboxJs` | пусто | URL/путь к JS Fancybox. Если пусто, используется bundled-файл `assets/components/mxquickview/vendor/fancybox/fancybox.umd.js`, при отсутствии — CDN |
-| `bootstrapCss` | пусто | URL/путь к CSS Bootstrap для `modalLibrary=bootstrap`. Если пусто, используется bundled-файл `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.css`, при отсутствии — CDN |
-| `bootstrapJs` | пусто | URL/путь к JS Bootstrap для `modalLibrary=bootstrap`. Если пусто, используется bundled-файл `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.js`, при отсутствии — CDN |
+| `modalSize` | свойство перекрывает `mxquickview_modal_size` (в transport default `modal-lg`) | Классы `modal-sm`, `modal-lg`, `modal-xl` только для `native` и `bootstrap` |
+| `mouseoverDelay` | свойство перекрывает `mxquickview_mouseover_delay` (transport default `''`) | Задержка наведения в мс; пустое свойство → `(int)'' = 0`, в JS `parseInt(...) \|\| 300` |
+| `modalLibrary` | `native` | `native`, `bootstrap`, `fancybox` (`bootstrap5` alias). Без `window.bootstrap.Modal` → запасной `native`; без Fancybox API режим остаётся `fancybox` ([issue #3](https://github.com/Ibochkarev/mxQuickView/issues/3)) |
+| `debug` | `mxquickview_debug`, если параметр не передан | Лог `[mxqv]` в консоли. В карточке сниппета в панели управления поля нет, работает через `scriptProperties` |
+| `loadingText` | лексикон `mxqv_loading` | Текст загрузки в modal/selector. Не в свойствах transport сниппета, только `scriptProperties` |
+| `fancyboxCss` | системная настройка, если параметр **не передан** | URL/путь к CSS Fancybox. Пустая строка в свойстве не читает настройку ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)), далее файлы поставки или CDN |
+| `fancyboxJs` | то же | JS Fancybox |
+| `bootstrapCss` | то же | CSS Bootstrap для `modalLibrary=bootstrap` |
+| `bootstrapJs` | то же | JS Bootstrap |
+
+Параметры `debug` и `loadingText` не входят в карточку свойств сниппета в панели управления, но обрабатываются при вызове с `&debug=` / `&loadingText=`.
 
 ### data-атрибуты триггера
 
@@ -63,12 +65,12 @@ title: API и интерфейсы
 
 ### Что добавляет на страницу
 
-- `<link ... mxqv.min.css?v=filemtime>` (если `mxqv.min.css` отсутствует, fallback на `mxqv.css`)
+- `<link ... mxqv.min.css?v=filemtime>` (если `mxqv.min.css` нет, запасной `mxqv.css`)
 - `<script>window.mxqvConfig = ...</script>`
-- `<script src="...mxqv.min.js?v=filemtime" defer></script>` (если `mxqv.min.js` отсутствует, fallback на `mxqv.js`)
+- `<script src="...mxqv.min.js?v=filemtime" defer></script>` (если `mxqv.min.js` нет, запасной `mxqv.js`)
 - разметку нативной модалки (`#mxqv-modal-backdrop`, `#mxqv-modal`)
-- при `modalLibrary=bootstrap` — bootstrap-контейнер `#mxqv-bootstrap-modal` и Bootstrap из `bootstrapCss/bootstrapJs` или bundled-файлы в `assets/components/mxquickview/vendor/bootstrap/`; если не найдено, используется CDN `bootstrap`
-- при `modalLibrary=fancybox` — Fancybox из `fancyboxCss/fancyboxJs` или bundled-файлы в `assets/components/mxquickview/vendor/fancybox/`; если не найдено, используется CDN `@fancyapps/ui`
+- при `modalLibrary=bootstrap` — контейнер `#mxqv-bootstrap-modal` и Bootstrap из `bootstrapCss/bootstrapJs` или файлы в `assets/components/mxquickview/vendor/bootstrap/`; если не найдено, CDN `bootstrap`
+- при `modalLibrary=fancybox` — Fancybox из `fancyboxCss/fancyboxJs` или файлы в `assets/components/mxquickview/vendor/fancybox/`; если не найдено, CDN `@fancyapps/ui`
 
 ## CSS переменные нативной модалки
 
@@ -126,7 +128,7 @@ title: API и интерфейсы
 
 ## Коннектор `assets/components/mxquickview/connector.php`
 
-## Endpoint
+### Точка входа
 
 - Метод: `POST`
 - `Content-Type` запроса: `application/x-www-form-urlencoded`
@@ -140,10 +142,10 @@ title: API и интерфейсы
 | `data_action` | нет | `chunk`, `snippet`, `template` (по умолчанию `chunk`) |
 | `element` | да | Имя чанка/сниппета/шаблона |
 | `id` | да | ID ресурса (целое > 0) |
-| `context` | нет | Ключ контекста; если невалиден, будет `web` |
-| `mode` | нет | `modal` или `selector` (служебно для snippet/template рендера) |
-| `output` | нет | CSS selector целевого контейнера (для `mode=selector`) |
-| `modal_library` | нет | `native`, `bootstrap`, `fancybox` (служебно для корректного selector у cart-сниппетов) |
+| `context` | нет | Ключ контекста; если невалиден, берётся `web` |
+| `mode` | нет | `modal` или `selector`; учитывается только в `renderSnippet` для `msCart` / `msMiniCart` |
+| `output` | нет | CSS selector контейнера; только для `msCart` при `mode=selector` (параметр `selector` сниппета) |
+| `modal_library` | нет | `native`, `bootstrap`, `fancybox`. Только для `msCart`: выбор selector корзины по умолчанию |
 
 ### Успешный ответ
 
@@ -166,33 +168,50 @@ title: API и интерфейсы
 
 ## Ошибки и сообщения
 
-| Условие | `message` |
-| --- | --- |
-| Метод не POST | `Invalid request method` |
-| `action != render` | `mxqv_invalid_action` (лексикон) |
-| Не найден `index.php` | `index.php not found` |
-| `element` пуст или `id <= 0` | `Missing element or id` |
-| Ресурс не найден | `Resource not found` |
-| Нет права просмотра | `Access denied` |
-| Чанк не в whitelist | `Chunk not allowed` |
-| Чанк не найден | `Chunk not found` |
-| Сниппет не в whitelist | `Snippet not allowed` |
-| Сниппет не найден | `Snippet not found` |
-| Шаблон не в whitelist | `Template not allowed` |
-| Шаблон не найден | `Template not found` |
-| Неподдерживаемый `data_action` | `Invalid action` |
+В JSON поле `message` содержит **готовую строку** из лексикона `mxquickview:default` (или запасной EN в коде), не ключ.
 
-Примечание: текст ошибок локализуется через лексикон `mxquickview:default` (ключи `mxqv_*`).
+| Условие | Ключ лексикона | `message` (RU, панель) | EN запасной |
+| --- | --- | --- | --- |
+| Метод не POST | `mxqv_invalid_request` | Недопустимый метод запроса | Invalid request method |
+| `action != render` | `mxqv_invalid_action` | Недопустимое действие | Invalid action |
+| Не найден `index.php` | `mxqv_index_not_found` | Файл index.php не найден | index.php not found |
+| `element` пуст или `id <= 0` | `mxqv_missing_element_or_id` | Не переданы element или id | Missing element or id |
+| Ресурс не найден | `mxqv_resource_not_found` | Ресурс не найден | Resource not found |
+| Нет права просмотра | `mxqv_access_denied` | Доступ запрещён | Access denied |
+| Чанк не в whitelist | `mxqv_chunk_not_allowed` | Чанк не разрешён | Chunk not allowed |
+| Чанк не найден | `mxqv_chunk_not_found` | Чанк не найден | Chunk not found |
+| Сниппет не в whitelist | `mxqv_snippet_not_allowed` | Сниппет не разрешён | Snippet not allowed |
+| Сниппет не найден | `mxqv_snippet_not_found` | Сниппет не найден | Snippet not found |
+| Шаблон не в whitelist | `mxqv_template_not_allowed` | Шаблон не разрешён | Template not allowed |
+| Шаблон не найден | `mxqv_template_not_found` | Шаблон не найден | Template not found |
+| Неподдерживаемый `data_action` | `mxqv_invalid_data_action` | Недопустимый тип рендера | Invalid action |
+
+Имя сниппета в POST `element` для `data_action=snippet`: ведущий `!` снимается (`Render.php`).
 
 ## JS API (через события)
 
-Компонент не экспортирует отдельный объект API, но публикует события `CustomEvent` на `document`:
+Отдельного объекта API нет. События `CustomEvent` публикуются на `document`:
 
 | Событие | Когда | `detail` |
 | --- | --- | --- |
 | `mxqv:open` | модалка открыта | `{ title }` |
 | `mxqv:close` | модалка закрыта | — |
 | `mxqv:loaded` | контент вставлен в модалку | `{ content }` |
+| `ms3:cart:updated` | после `reinitIntegrations()` | `{ source: 'mxqv' }` |
+
+### Клавиатура (modal открыта)
+
+- **Escape**: закрывает только `modalLibrary=native`.
+- **← / →**: prev/next в loop-списке (как кнопки `[data-mxqv-nav]`), только `native`/`bootstrap`.
+
+### Маркеры msCart / ms3 render
+
+После отрисовки `msCart` в HTML может быть скрытый `<span class="mxqv-ms3-render">` с:
+
+- `data-mxqv-ms3-render-token` — токен для `ms3Config.render.cart`;
+- `data-mxqv-ms3-render-selector` — опциональный CSS selector контейнера корзины.
+
+JS переносит token в `window.ms3Config.render.cart` без inline-script.
 
 ## Пример запроса
 

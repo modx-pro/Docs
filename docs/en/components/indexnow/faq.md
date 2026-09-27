@@ -1,38 +1,42 @@
 ---
 title: FAQ
-description: Индексация, Scheduler, delete, endpoint и совместимость MODX 2/3
+description: Indexing, Scheduler, delete, endpoint, MODX 2/3 compatibility
 ---
 
 # FAQ
 
-## Страница не появилась в поиске
+## The page is not in search results
 
-IndexNow только уведомляет поисковую систему. Срок и факт индексации решает поисковик. У Яндекса: [Поддержка протокола IndexNow](https://yandex.ru/support/webmaster/ru/indexing-options/index-now).
+IndexNow only notifies the search engine. Timing and indexing are up to the search engine. Yandex: [IndexNow support](https://yandex.com/support/webmaster/indexing-options/index-now.html).
 
-## Нужен ли Scheduler
+## Do I need Scheduler?
 
-Scheduler нужен, если очередь должна уходить сама по расписанию. Без него URL копятся в очереди, а отправляете вы вручную: кнопка **Обработать очередь** или вкладка **Отправка URL**.
+No. Basic background processing uses **queue tick** after a resource save or a manager page load (up to 25 due URLs on shutdown). Scheduler adds backup cron every minute when tick did not run or the site has little HTTP traffic. Without Scheduler and traffic, use **Process queue**.
 
-## Что уходит при удалении страницы
+## Does “Send URL” submit to Yandex immediately?
 
-URL с действием `delete`. Снятие с публикации тоже ставит `delete`.
+No. It only enqueues URLs with `update`. Delivery uses queue tick, Scheduler, or **Process queue** ([issue #2](https://github.com/Ibochkarev/IndexNow/issues/2)).
 
-## Можно ли слать чужие сайты
+## What is sent when a page is deleted?
 
-Нет. Ручная отправка принимает только host ваших контекстов.
+URL with action `delete`. Unpublishing also enqueues `delete`.
 
-## Какой endpoint по умолчанию
+## Can I notify third-party sites?
 
-`https://yandex.com/indexnow` ([документация Яндекса](https://yandex.ru/support/webmaster/ru/indexing-options/index-now)). Другой IndexNow-совместимый URL задаётся в `indexnow_endpoint`.
+No. Manual enqueue only accepts hosts from your contexts. Localhost and private IPs in the URL are rejected too.
 
-## IndexNow ломает сохранение ресурса
+## Default endpoint
 
-Не должен. Если ресурс не сохраняется, ищите причину в другом плагине или валидации. Сообщения IndexNow в логе сами по себе сохранение не блокируют.
+`https://yandex.com/indexnow` ([Yandex docs](https://yandex.com/support/webmaster/indexing-options/index-now.html)). Set another IndexNow-compatible URL in `indexnow_endpoint`.
 
-## Где смотреть историю отправок
+## IndexNow breaks resource save
 
-**Extras → IndexNow → История**. Срок хранения задаёт `indexnow_history_retention_days`.
+It should not. If save fails, look at another plugin or validation. IndexNow log lines alone do not roll back the save.
 
-## Пакет для MODX 2 и 3 разный
+## Where is delivery history?
 
-Нет. Один transport package.
+**Extras → IndexNow → History**. Retention is controlled by `indexnow_history_retention_days`.
+
+## Separate packages for MODX 2 and 3?
+
+No. One transport package.

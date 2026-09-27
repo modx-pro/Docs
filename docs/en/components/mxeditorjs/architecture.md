@@ -3,7 +3,7 @@ title: Architecture
 ---
 # Architecture
 
-Component overview for developers. Connector API: [API](api). Save flows: [Flows](flows).
+Package layers and extension points. Connector API: [API](/en/components/mxeditorjs/api). Save flows: [Flows](/en/components/mxeditorjs/flows).
 
 ## Components
 
@@ -22,9 +22,9 @@ No snippets or MODX processors in the package.
 | Path | When | Where |
 | --- | --- | --- |
 | Client `renderPreviewHtml()` | Resource form save | `mxeditorjs.ts` |
-| Server `HtmlRenderer` | `content/save`, migration | PHP |
+| Server `HtmlRenderer` | `content/save` | PHP |
 
-Duplicate logic for new blocks in both places or manager preview and site HTML will diverge.
+Duplicate logic for new blocks in both places. Otherwise manager preview and site HTML will diverge.
 
 ## Database tables
 
@@ -47,7 +47,7 @@ Same fields + `tmplvar_id`, UNIQUE `(resource_id, tmplvar_id)`.
 
 ## HtmlRenderer
 
-14 block types. Alignment via `tunes.alignmentTune.alignment` for paragraph, header, list, quote.
+15 block types, including `mxgallery`. Alignment via `tunes.alignmentTune.alignment` for paragraph, header, list, quote.
 
 | Type | HTML |
 | --- | --- |
@@ -57,6 +57,7 @@ Same fields + `tmplvar_id`, UNIQUE `(resource_id, tmplvar_id)`.
 | `checklist` | `<ul class="mxeditorjs-checklist">` |
 | `image` | `<figure class="mxeditorjs-image"><img>` |
 | `gallery` | `<figure class="mxeditorjs-gallery mxeditorjs-gallery--{fit\|slider}">` |
+| `mxgallery` | mxGallery block (HTML depends on the mxGallery snippet) |
 | `attaches` | `<p><a download>` |
 | `embed` | `<div class="mxeditorjs-embed"><iframe>` |
 | `delimiter` | `<hr>` |
@@ -78,16 +79,17 @@ $renderer->registerBlockRenderer('myBlock', function (array $data, array $block)
 
 Class `MxEditorJs\Config\EditorTools`:
 
-- `DEFAULT_AVAILABLE` — CSV of all block tools
-- `PACKAGE_PROFILES` — reference default, minimal, blog, full
-- `resolve()` — final list with whitelist and upgrade merge
-- `migrateProfiles()` / `migrateAvailableTools()` — add `gallery` on upgrade
+- `DEFAULT_AVAILABLE`: CSV of all block tools
+- `PACKAGE_PROFILES`: reference default, minimal, blog, full
+- `resolve()`: final list with whitelist and upgrade merge
+- `migrateProfiles()` / `migrateAvailableTools()`: add `gallery` and `mxgallery` on upgrade
+- `parseList()`: parse a CSV tool list
 
 Priority: `enabled_tools` → `profiles[profile].tools ∩ available_tools` (+ upgrade merge) → `available_tools`.
 
 ## ContentValidator
 
-Allowed types: `paragraph`, `header`, `list`, `checklist`, `quote`, `table`, `code`, `raw`, `embed`, `image`, `gallery`, `attaches`, `delimiter`, `warning`.
+Allowed types: `paragraph`, `header`, `list`, `checklist`, `quote`, `table`, `code`, `raw`, `embed`, `image`, `gallery`, `mxgallery`, `attaches`, `delimiter`, `warning`.
 
 ## Client (TypeScript)
 
@@ -98,23 +100,24 @@ Sources: `assets/components/mxeditorjs/js/src/`.
 | `mxeditorjs.ts` | `MxEditorJsApp`, RTE hooks, syncToTextarea, renderPreviewHtml |
 | `tools/ImageTool.ts` | Image + Media Browser |
 | `tools/GalleryTool.ts` | Gallery on `@kiberpro/editorjs-gallery` |
+| `tools/MxGalleryTool.ts` | mxGallery block (`ids` / collection) |
 | `tools/AttachesTool.ts` | Attaches + patch-package |
 | `tools/LinkAutocomplete.ts` | MODX resource search |
 | `tools/MediaBrowser.ts` | Shared browser for Image/Gallery |
 | `tools/ParagraphTool.ts`, `HeaderTool.ts`, `ChecklistTool.ts` | Wrappers with validate |
 
-**Block tools** (profile): paragraph, header, list, checklist, quote, table, code, raw, embed, image, gallery, attaches, delimiter, warning.
+**Block tools** (profile): paragraph, header, list, checklist, quote, table, code, raw, embed, image, gallery, mxgallery, attaches, delimiter, warning.
 
 **Always on:** inline marker, inlineCode, underline, linkAutocomplete. Tunes: alignmentTune. Plugin: editorjs-undo.
 
 ### Embed
 
-`@editorjs/embed` has no toolbox button — Paste API only. `buildTools()` defines `services`, including RuTube (`embedUrl` for `rutube.ru/video/...`). Add custom services in `mxeditorjs.ts`, not via system settings.
+`@editorjs/embed` has no toolbox button: Paste API only. `buildTools()` defines `services`, including RuTube (`embedUrl` for `rutube.ru/video/...`). Add custom services in `mxeditorjs.ts`, not via system settings.
 
 ### RTE integration
 
-- `MODx.loadRTE` / `unloadRTE` — main content and TVs
-- `MutationObserver` — `textarea.modx-richtext` (except `#ta`)
+- `MODx.loadRTE` / `unloadRTE`: main content and TVs
+- `MutationObserver`: `textarea.modx-richtext` (except `#ta`)
 - Toolbar: Source (Ctrl+U), Fullscreen (F11)
 - Cache-bust: `?v={filemtime}` on CSS/JS
 
@@ -128,7 +131,7 @@ npm run dev    # watch + sourcemap
 
 Entry: `assets/.../src/mxeditorjs.ts`. Target ES2020, format IIFE, global `MxEditorJs`.
 
-Patch `patches/@editorjs+attaches+1.3.2.patch` replaces `appendCallback` with `rendered` or Attaches file dialog will not open.
+Patch `patches/@editorjs+attaches+1.3.2.patch` replaces `appendCallback` with `rendered`. Otherwise the Attaches file dialog will not open.
 
 ## Adding a new block tool
 
@@ -152,7 +155,7 @@ Resolver `resolver_06_metrics.php` sends anonymous install stats to `https://met
 
 ## Site styles
 
-`gallery-front.css` loads only in manager. Connect CSS on the frontend manually — see [Integration](integration).
+`gallery-front.css` loads only in the manager. Connect CSS on the frontend manually. See [Integration](/en/components/mxeditorjs/integration).
 
 ## Requirements
 

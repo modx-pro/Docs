@@ -5,9 +5,9 @@ title: API and interfaces
 
 ## Connector `assets/components/mxeditorjs/connector.php`
 
-All connector requests require MODX manager authentication. Responses are JSON, `Content-Type: application/json`.
+Connector requests require MODX manager authentication. Responses are JSON, `Content-Type: application/json`.
 
-**Normal resource save** goes through form POST and `OnBeforeDocFormSave`, **not** the connector. `content/save` is for AJAX and integrations.
+Normal resource save goes through form POST and `OnBeforeDocFormSave`, not the connector. `content/save` is for AJAX and integrations.
 
 ### Permissions by action
 
@@ -26,20 +26,20 @@ All connector requests require MODX manager authentication. Responses are JSON, 
 Unauthenticated request: HTTP **200**, JSON body (lexicon, ru/en):
 
 ```json
-{ "success": false, "message": "Permission denied." }
+{ "success": false, "message": "Access denied." }
 ```
 
 ---
 
 ### content/get
 
-Get JSON content of a resource or TV.
+JSON content of a resource or TV.
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |
 | `action` | string | ✓ | `content/get` |
 | `resource_id` | int | ✓ | MODX resource ID |
-| `tmplvar_id` | int | — | TV ID (if omitted — main content) |
+| `tmplvar_id` | int | — | TV ID (if omitted: main content) |
 
 **Response (content found):**
 
@@ -59,13 +59,13 @@ Get JSON content of a resource or TV.
 
 ### content/save
 
-Save JSON content with validation and HTML snapshot generation.
+Saves JSON with validation and builds an HTML snapshot.
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |
 | `action` | string | ✓ | `content/save` |
 | `resource_id` | int | ✓ | Resource ID |
-| `tmplvar_id` | int | — | TV ID (if omitted — main content) |
+| `tmplvar_id` | int | — | TV ID (if omitted: main content) |
 | `content_json` | string/object | ✓ | Editor.js OutputData |
 
 **Response (success):**
@@ -77,7 +77,7 @@ Save JSON content with validation and HTML snapshot generation.
 }
 ```
 
-**Logic:** JSON is validated (`ContentValidator`), `HtmlRenderer` generates HTML; for main content JSON goes to sidecar, HTML to `modResource.content`; for TV — to `mxeditorjs_tv_content`.
+`ContentValidator` checks JSON. `HtmlRenderer` builds HTML. For main content JSON goes to sidecar, HTML to `modResource.content`. For TV: `mxeditorjs_tv_content`.
 
 ---
 
@@ -104,7 +104,7 @@ Upload image (multipart/form-data).
 }
 ```
 
-Validation: extension from `mxeditorjs.allowed_image_types`, MIME image/*, size ≤ `mxeditorjs.max_upload_size`.
+Validation: extension from `mxeditorjs.allowed_image_types`, MIME from `ALLOWED_IMAGE_MIME` (`image/jpeg`, `image/png`, `image/gif`, `image/webp`, `image/svg+xml`), size ≤ `mxeditorjs.max_upload_size`. Used by **Image** and **Gallery**.
 
 ---
 
@@ -145,7 +145,7 @@ Search by `pagetitle`, `longtitle`, exact match by `id`. Deleted resources are e
 
 ### content/migrate
 
-Migrate resource HTML content to Editor.js format.
+Migrate resource HTML to Editor.js format.
 
 | Parameter | Type | Required | Description |
 | --- | --- | :---: | --- |
@@ -155,7 +155,7 @@ Migrate resource HTML content to Editor.js format.
 | `confirmed` | bool | — | Confirm overwrite |
 | `force` | bool | — | Force overwrite existing data |
 
-Responses: with `dry_run` — preview and `blocks_count`; overwrite may require `confirmed=true`; on success — `migrated`, `blocks_count`, `overwritten`.
+With `dry_run`: preview and `blocks_count`. Overwrite may require `confirmed=true`. On success: `migrated`, `blocks_count`, `overwritten`.
 
 ---
 
@@ -163,12 +163,12 @@ Responses: with `dry_run` — preview and `blocks_count`; overwrite may require 
 
 ### MxEditorJs\Renderer\HtmlRenderer
 
-Renders Editor.js OutputData to HTML.
+Builds HTML from Editor.js OutputData.
 
 | Method | Description |
 | --- | --- |
-| `render(array $editorJsData): string` | Renders all blocks to an HTML string |
-| `registerBlockRenderer(string $type, callable $renderer): void` | Registers custom renderer for block type. Callable: `function(array $data, array $block): string` |
+| `render(array $editorJsData): string` | Builds HTML for all blocks |
+| `registerBlockRenderer(string $type, callable $renderer): void` | Registers a custom renderer for a block type. Callable: `function(array $data, array $block): string` |
 
 ### MxEditorJs\Validator\ContentValidator
 
@@ -182,7 +182,7 @@ Validates Editor.js structure.
 
 ### MxEditorJs\Repository\ContentRepository
 
-Main resource content (JSON sidecar + HTML in `modResource.content`).
+Sidecar `mxeditorjs_content`. HTML in `modResource.content` is written by connector `content/save` or the form client, not this class.
 
 | Method | Description |
 | --- | --- |
@@ -227,16 +227,19 @@ Supports: `p`, `h1`–`h6`, `ul`/`ol`, `blockquote`, `hr`, `pre`/`code`, `figure
 
 ### window.mxEditorJsConfig
 
-Config available after `OnDocFormPrerender`:
+Config after `OnDocFormPrerender`:
 
-- `connectorUrl` — Connector URL  
-- `resourceId` — Current resource ID  
-- `assetsUrl` — Assets directory URL  
-- `profile` — Profile name  
-- `enabledTools` — Array of enabled tools  
-- `presets` — imageClass, linkClass, linkTarget, linkRel  
-- `locale` — Language code  
-- `i18n`, `editorJsI18n` — UI translations  
+- `connectorUrl`: Connector URL
+- `resourceId`: Current resource ID
+- `assetsUrl`: Assets directory URL
+- `profile`: Profile name
+- `enabledTools`: Array of enabled tools
+- `galleryMaxCount`: max images per Gallery block (`0` = unlimited)
+- `tmplvarId`: optional TV ID on the instance (from `tv[N]` / `tvN`)
+- `mxGallery`: `{enabled, connectorUrl, pickerUrl, authToken}`. `enabled` is true when `core/components/mxgallery/` exists
+- `presets`: imageClass, linkClass, linkTarget, linkRel
+- `locale`: Language code
+- `i18n`, `editorJsI18n`: UI translations
 
 ### MODx.loadRTE / MODx.unloadRTE
 
@@ -263,7 +266,40 @@ mxEditorJs hooks into MODX RTE init: `MODx.loadRTE(textareaId)` when the field a
 }
 ```
 
+### Gallery block
+
+```json
+{
+  "type": "gallery",
+  "data": {
+    "files": [
+      { "url": "/assets/images/resources/42/photo1.jpg", "name": "photo1.jpg" },
+      { "url": "/assets/images/resources/42/photo2.jpg", "name": "photo2.jpg" }
+    ],
+    "style": "fit",
+    "caption": "Gallery caption"
+  }
+}
+```
+
+`style`: `fit` (grid) or `slider` (horizontal scroll). HTML snapshot: `<figure class="mxeditorjs-gallery mxeditorjs-gallery--{style}">` with images in `.mxeditorjs-gallery__track`.
+
+### mxGallery block
+
+```json
+{
+  "type": "mxgallery",
+  "data": {
+    "mode": "ids",
+    "ids": [12, 34],
+    "collectionId": null
+  }
+}
+```
+
+`mode`: `ids` or `collection`. `HtmlRenderer` outputs `[[!mxGallery]]`: a collection uses `collection` and `picture=1`; one id uses `id`; several use `ids` and `sort=selection`. Toolbox only if mxGallery is installed.
+
 ### API response
 
-Success: `{ "success": true, "data": { ... } }`  
+Success: `{ "success": true, "data": { ... } }`
 Error: `{ "success": false, "message": "..." }`

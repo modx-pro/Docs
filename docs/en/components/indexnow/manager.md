@@ -1,70 +1,77 @@
 ---
-title: Менеджер
-description: Вкладки Статус, Очередь, История и ручная отправка URL
+title: Manager
+description: Status, Queue, History tabs and manual URL enqueue
 ---
 
-# Менеджер
+# Manager
 
-Меню: **Extras → IndexNow**.
+Menu: **Extras → IndexNow**.
 
-Вверху страницы есть предупреждение: IndexNow не гарантирует индексацию, только уведомляет поисковик ([Яндекс](https://yandex.ru/support/webmaster/ru/indexing-options/index-now)).
+The **Status** tab starts with a short intro (`indexnow_intro_msg`). At the **bottom** of the same tab, `indexnow_disclaimer` warns that IndexNow does not guarantee indexing, only notification ([Yandex](https://yandex.com/support/webmaster/indexing-options/index-now.html)).
 
-## Статус
+## Status
 
-![Вкладка Статус](/components/indexnow/screenshots/indexnow-status.png)
+![Status tab](/components/indexnow/screenshots/indexnow-status.png)
 
-Сводка состояния:
+Summary:
 
-- включён ли IndexNow
+- whether IndexNow is enabled
 - endpoint
-- ключ (без вывода секрета в лишние места UI)
-- найден ли key file
-- установлен ли Scheduler и есть ли задача очереди
-- счётчики: pending, processing, failed, отправлено сегодня
-- время последней отправки
+- key (masked in the UI)
+- whether the key file was found
+- Scheduler installed, queue task present, interval, **next run** (`next_run`), **overdue** flag, manual task run URL (`run_url`)
+- counters: pending, processing, failed, sent today
+- last send time
 
-Кнопки:
+“Sent today” counts history with status `success`. The DB query also lists `accepted`, but the worker only writes `success` / `failed` / `retry`. The `accepted` value in the **History** filter is a UI leftover, not a real delivery status ([issue #3](https://github.com/Ibochkarev/IndexNow/issues/3)).
 
-- **Проверить подключение**: ключ, файл, доступность endpoint
-- **Обработать очередь**: один проход worker
-- **Обновить**: перечитать статус
+Buttons:
 
-## Очередь
+- **Test connection**: key, file, endpoint reachability (creates the Scheduler task if needed)
+- **Process queue**: one worker pass immediately, without waiting for tick
+- **Refresh**: reload status
 
-![Вкладка Очередь](/components/indexnow/screenshots/indexnow-queue.png)
+## Queue
 
-Таблица записей `pending` / `processing` / `failed` (и связанные статусы retry-потока).
+![Queue tab](/components/indexnow/screenshots/indexnow-queue.png)
 
-Колонки: URL, контекст, действие (`update` / `delete`), статус, попытки, даты, ошибка.
+Rows in `pending` / `processing` / `failed` (and the retry flow).
 
-Действия по строке:
+Columns: URL, context, action (`update` / `delete`), status, attempts, dates, error.
 
-- **Повторить**: снова поставить failed в pending
-- **Удалить**: убрать запись из очереди без отправки
+Row actions:
 
-Фильтры: поиск по URL, статус, действие.
+- **Retry**: sets `failed` back to `pending`, resets `available_at` and `last_error`. It does **not** reset **`attempts`** ([issue #1](https://github.com/Ibochkarev/IndexNow/issues/1)): after several failures, another temporary error may fail again immediately.
+- **Delete**: remove the row without sending
 
-## История
+Filters: URL search, status. There is **no** action filter on this tab (only on **History**).
 
-![Вкладка История](/components/indexnow/screenshots/indexnow-history.png)
+## History
 
-Журнал отправок: URL, HTTP-код, статус (`success` / `failed` / `retry`), время.
+![History tab](/components/indexnow/screenshots/indexnow-history.png)
 
-Старые записи удаляются по `indexnow_history_retention_days` во время работы worker.
+Delivery log: URL, HTTP code, status (`success` / `failed` / `retry`), time.
 
-## Отправка URL
+Old rows are removed per `indexnow_history_retention_days` during worker runs.
 
-![Вкладка Отправка URL](/components/indexnow/screenshots/indexnow-send.png)
+## Send URL
 
-Поле для абсолютных URL вашего сайта, по одному на строку.
+![Send URL tab](/components/indexnow/screenshots/indexnow-send.png)
 
-Пример:
+One absolute site URL per line.
+
+Example:
 
 ```text
 https://example.com/page-1
 https://example.com/page-2
 ```
 
-Внешние домены и host вне ваших контекстов MODX отклоняются (защита от SSRF).
+Rejected:
 
-Успешные URL попадают в очередь. Дальше их забирает worker или кнопка **Обработать очередь**.
+- hosts outside your MODX contexts (SSRF protection);
+- `localhost`, `metadata.google.internal`, private/reserved IPs in the host (same rules as resource URLs).
+
+Each accepted URL is enqueued with action **`update`**. You cannot enqueue **`delete`** manually.
+
+**Send** only enqueues. It does **not** call the worker or queue tick ([issue #2](https://github.com/Ibochkarev/IndexNow/issues/2)). Delivery happens on the next queue tick, Scheduler run, or **Process queue**.

@@ -3,11 +3,9 @@ title: Интеграция на сайт
 ---
 # Интеграция на сайт
 
-Документ для менеджера и разработчика: как подключить mxQuickView и использовать в каталоге.
-
 ## 1. Подключение ресурсов (обязательно)
 
-Сначала подключите `mxQuickView.initialize` один раз в шаблоне.
+Подключите `mxQuickView.initialize` один раз в шаблоне.
 
 ::: code-group
 
@@ -40,6 +38,10 @@ title: Интеграция на сайт
 ```
 
 :::
+
+Базовый URL ресурсов и `connector.php`: по умолчанию `[[++assets_url]]components/mxquickview/`. Переопределение — системная настройка `mxquickview.assets_url`.
+
+Чанки поставки (`mxqv_product`, `mxqv_resource`) используют **Fenom**. Установите pdoTools 3.x: процессор разбирает Fenom при отрисовке chunk/template. Без pdoTools в ответе останутся сырые `{$…}`.
 
 ### Выбор библиотеки модалки
 
@@ -97,20 +99,20 @@ title: Интеграция на сайт
 
 :::
 
-`fancybox` использует `window.Fancybox.show()`.
-В поставке mxQuickView локальные Fancybox-файлы уже включены:
+`fancybox` вызывает `window.Fancybox.show()`. Если API Fancybox недоступен, режим **не** переключается на `native` (в отличие от bootstrap). См. [issue #3](https://github.com/Ibochkarev/mxQuickView/issues/3).
+В поставке уже есть локальные файлы Fancybox:
 
 - `assets/components/mxquickview/vendor/fancybox/fancybox.css`
 - `assets/components/mxquickview/vendor/fancybox/fancybox.umd.js`
 
-Для `modalLibrary=bootstrap` также включены локальные файлы:
+Для `modalLibrary=bootstrap` в поставке есть:
 
 - `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.css`
 - `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.js`
 
-Если локальные файлы недоступны, подключается CDN (для Fancybox — `@fancyapps/ui`, для Bootstrap — `bootstrap`).
+Если локальных файлов нет, подключается CDN (Fancybox — `@fancyapps/ui`, Bootstrap — `bootstrap`).
 
-При необходимости можно явно задать пути:
+Пути можно задать явно:
 
 ::: code-group
 
@@ -134,7 +136,7 @@ title: Интеграция на сайт
 
 ## 2. Быстрый просмотр любого ресурса (новости, статьи, страницы)
 
-Чанк `mxqv_resource` — универсальный для любых ресурсов (pagetitle, introtext, content). Добавьте в `mxquickview_allowed_chunk`.
+Чанк `mxqv_resource` подходит для любых ресурсов (pagetitle, introtext, content). Добавьте его в `mxquickview_allowed_chunk`.
 
 ::: code-group
 
@@ -232,10 +234,9 @@ title: Интеграция на сайт
 
 :::
 
-Требование: `msCart` должен быть добавлен в `mxquickview_allowed_snippet`.
+`msCart` должен быть в `mxquickview_allowed_snippet`.
 
-Примечание по MiniShop3: компактная миникорзина в quick view рендерится по схеме
-`msCart` + `tpl.msMiniCart` (по docs.modx.pro). `data-mxqv-element="msMiniCart"` поддерживается как alias.
+Компактная миникорзина в quick view собирается как `msCart` + `tpl.msMiniCart` (по docs.modx.pro). `data-mxqv-element="msMiniCart"` работает как alias.
 
 ## 5. Рендер по наведению (mouseover)
 
@@ -263,7 +264,7 @@ title: Интеграция на сайт
 
 :::
 
-Задержка берётся из `mxquickview_mouseover_delay` или параметра `mouseoverDelay` у `initialize`.
+Задержка: параметр `mouseoverDelay` перекрывает `mxquickview_mouseover_delay`. Пустое свойство сниппета в transport даёт `(int)'' = 0`, в JS затем 300 мс ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)).
 
 ## 6. Режим `selector` (свой контейнер)
 
@@ -333,7 +334,7 @@ title: Интеграция на сайт
 
 :::
 
-Задержка берётся из `mxquickview_mouseover_delay` или параметра `mouseoverDelay` у `initialize`.
+Задержка наведения — как в разделе 5 ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)).
 
 ### Вариант с Bootstrap 5 modal через `selector`
 
@@ -395,6 +396,8 @@ title: Интеграция на сайт
 
 ## 8. Навигация prev/next в списке товаров
 
+Только при `modalLibrary` `native` или `bootstrap`. У Fancybox нет кнопок `[data-mxqv-nav]` и клавиш ←/→.
+
 ::: code-group
 
 ```modx
@@ -427,13 +430,13 @@ title: Интеграция на сайт
 
 :::
 
-Требование: у каждого триггера внутри должны быть свои `data-mxqv-action`, `data-mxqv-element`, `data-mxqv-id`.
+У каждого триггера внутри должны быть свои `data-mxqv-action`, `data-mxqv-element`, `data-mxqv-id`.
 
 ## 9. Интеграция с MiniShop3 и ms3Variants
 
-- В quick view-чанке используйте форму `ms3-add-to-cart` (`data-ms3-form`, `ms3_action=cart/add`).
-- После загрузки контента компонент вызывает `ms3.productCardUI.reinit()` (если MiniShop3 доступен).
-- При установленном ms3Variants доступны плейсхолдеры `[[+variants_html]]`, `[[+variants_json]]`, `[[+has_variants]]`.
+- В чанке quick view — форма `ms3-add-to-cart` (`data-ms3-form`, `ms3_action=cart/add`).
+- После вставки HTML: `ms3.cartUI.init`/`reinit`, `ms3.quantityUI.reinit`/`init`, `ms3.productCardUI.reinit()` и событие `ms3:cart:updated` (`source: 'mxqv'`), если MiniShop3 на странице.
+- При установленном ms3Variants доступны `[[+variants_html]]`, `[[+variants_json]]`, `[[+has_variants]]`.
 
 ### Что делает mxQuickView на сервере
 
@@ -448,30 +451,32 @@ title: Интеграция на сайт
 
 ```modx
 <div class="qv-product"
+  data-ms3-product-id="[[+id]]"
   data-mxqv-variants="[[+has_variants]]"
   data-mxqv-variants-json="[[+variants_json:htmlent]]">
-  <form method="post" class="ms3_form ms3-add-to-cart qv-product__form" data-ms3-form data-cart-state="add">
+  <form method="post" class="ms3_form ms3-add-to-cart" data-ms3-form data-cart-state="add">
     <input type="hidden" name="id" value="[[+id]]">
     <input type="hidden" name="count" value="1">
     <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
     <div class="qv-product__variants">[[+variants_html]]</div>
-    <button type="submit" class="qv-product__btn-cart">В корзину</button>
+    <button type="submit">В корзину</button>
   </form>
 </div>
 ```
 
 ```fenom
 <div class="qv-product"
+  data-ms3-product-id="{$id}"
   data-mxqv-variants="{$has_variants}"
   data-mxqv-variants-json="{$variants_json|escape:'html'}">
-  <form method="post" class="ms3_form ms3-add-to-cart qv-product__form" data-ms3-form data-cart-state="add">
+  <form method="post" class="ms3_form ms3-add-to-cart" data-ms3-form data-cart-state="add">
     <input type="hidden" name="id" value="{$id}">
     <input type="hidden" name="count" value="1">
     <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
     <div class="qv-product__variants">{$variants_html}</div>
-    <button type="submit" class="qv-product__btn-cart">В корзину</button>
+    <button type="submit">В корзину</button>
   </form>
 </div>
 ```
@@ -480,6 +485,8 @@ title: Интеграция на сайт
 
 ### Что делает frontend-логика mxQuickView
 
+Переключение вариантов (`initVariantsInContent`) вызывается при вставке в **modal**, не в `mode=selector` ([issue #2](https://github.com/Ibochkarev/mxQuickView/issues/2)).
+
 1. Ищет `.qv-product[data-mxqv-variants]` и проверяет флаг (`true|1|yes|on`).
 2. Парсит `data-mxqv-variants-json`.
 3. Слушает выбор варианта в `.qv-product__variants`.
@@ -487,23 +494,23 @@ title: Интеграция на сайт
 5. Поддерживает `change` для `select/input`, если id варианта передан в `value` или `data-variant-id`.
 6. При смене варианта обновляет цену (`[data-mxqv-price]`), old price (`.qv-product__price-old`) и изображение (`.qv-product__thumb`, если есть `data-thumb|data-image`).
 
-### Как это должно работать в UX
+### Как это выглядит для покупателя
 
 1. Открыли quick view товара с вариантами.
 2. Виден блок выбора `[[+variants_html]]`.
 3. При выборе варианта цена/old price/изображение в модалке меняются без перезагрузки.
 4. Кнопка `В корзину` отправляет форму ms3 с выбранным вариантом/опциями.
 
-### Важно по документации MiniShop3/ms3Variants
+### MiniShop3 и ms3Variants
 
-- Для вывода данных вариантов в списках/карточках используйте `&includeThumbs` и подключение `ms3Variants` в `usePackages` у `msProducts`/`pdoPage` (см. docs.modx.pro).
-- Подробности по компоненту `ms3Variants` и его сниппетам: <https://docs.modx.pro/components/ms3variants/>
-- Интеграция с MiniShop3 и `usePackages`: <https://docs.modx.pro/components/minishop3/development/product-tabs-integration>
+- Для данных вариантов в списках и карточках: `&includeThumbs` и `ms3Variants` в `usePackages` у `msProducts`/`pdoPage`.
+- [ms3Variants](/components/ms3variants/)
+- [MiniShop3: вкладки товара и `usePackages`](/components/minishop3/development/product-tabs-integration)
 
-## 10. Частые причины, почему блок не работает
+## 10. Почему блок не работает
 
-1. Не подключен `mxQuickView.initialize`.
-2. Элемент не добавлен в whitelist (`allowed_chunk`, `allowed_snippet`, `allowed_template`).
-3. Не передан или неверный `data-mxqv-id`.
-4. Для `selector`-режима отсутствует целевой контейнер `data-mxqv-output`.
+1. Не подключён `mxQuickView.initialize`.
+2. Элемента нет в белом списке (`allowed_chunk`, `allowed_snippet`, `allowed_template`).
+3. Нет или неверный `data-mxqv-id`.
+4. В режиме `selector` нет целевого контейнера `data-mxqv-output`.
 5. Ресурс недоступен для просмотра (ответ `Access denied`).

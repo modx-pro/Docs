@@ -3,22 +3,42 @@ title: Интеграция
 ---
 # Интеграция
 
-Защита форм, скрытие контента от ботов и типовые сценарии использования CrawlerDetect.
-
 ## Защита форм от спама
 
 ### Как это работает
 
 1. Пользователь отправляет форму.
 2. FormIt вызывает preHook `crawlerDetectBlock` **до** валидации и отправки.
-3. Если User-Agent — бот → форма не обрабатывается, показывается сообщение из настройки.
-4. Если человек → форма обрабатывается как обычно.
+3. Если `isCrawler` считает запрос ботом (заголовки JayBizzle, не только User-Agent), форма не обрабатывается. Показывается сообщение из настройки.
+4. Если человек, форма обрабатывается как обычно.
 
-Подробнее: [crawlerDetectBlock](snippets/crawlerDetectBlock).
+```mermaid
+sequenceDiagram
+  participant U as Посетитель
+  participant F as FormIt
+  participant H as crawlerDetectBlock
+  participant S as CrawlerDetectService
+  U->>F: POST формы
+  F->>H: preHook
+  H->>S: isCrawler
+  alt бот
+    S-->>H: true
+    H-->>F: ошибка crawlerdetect
+    F-->>U: fi.validation_error_message
+  else человек
+    S-->>H: false
+    H-->>F: ok
+    F->>F: validate и hooks
+  end
+```
+
+[crawlerDetectBlock](snippets/crawlerDetectBlock)
+
+Сервис в PHP: `$modx->services->get('CrawlerDetect\\CrawlerDetectService')`. Методы: `isCrawler($ua = null)` и `getMatches()`. Без класса в vendor метод возвращает `false` без записи в журнал.
 
 ### Обычная форма (FormIt)
 
-Добавьте `crawlerDetectBlock` в `&preHooks` вызова FormIt. Если уже есть другие preHooks — перечислите через запятую:
+Добавьте `crawlerDetectBlock` в `&preHooks` FormIt. Другие preHooks перечислите через запятую.
 
 ::: code-group
 
@@ -34,17 +54,17 @@ title: Интеграция
 
 ### AJAX-форма (FetchIt)
 
-FetchIt обрабатывает формы через FormIt на сервере. Чтобы защитить форму:
+FetchIt обрабатывает формы через FormIt на сервере.
 
-1. В конфигурации FetchIt укажите URL/страницу, где вызывается FormIt.
+1. В конфигурации FetchIt укажите URL или страницу, где вызывается FormIt.
 2. В вызов FormIt на этой странице добавьте ``&preHooks=`crawlerDetectBlock` ``.
 3. При блокировке ботом FetchIt получит ответ с ошибкой и покажет сообщение из настройки `crawlerdetect_block_message`.
 
 ### AJAX-форма (SendIt)
 
-SendIt обрабатывает формы через FormIt; параметры вызова задаются в пресетах (файл из настройки **si_path_to_presets**). Чтобы защитить форму:
+SendIt обрабатывает формы через FormIt. Параметры задаются в пресетах (файл из настройки **si_path_to_presets**).
 
-1. Откройте файл пресетов (свою копию, не стандартный `core/components/sendit/presets/sendit.inc.php` — при обновлении SendIt он перезаписывается).
+1. Откройте свою копию файла пресетов. Не правьте стандартный `core/components/sendit/presets/sendit.inc.php`: при обновлении SendIt он перезаписывается.
 2. Добавьте в нужный пресет `preHooks` с `crawlerDetectBlock`.
 3. При блокировке ботом SendIt вернёт ошибку и покажет сообщение из настроек CrawlerDetect.
 
@@ -67,7 +87,7 @@ return [
 
 ## Скрытие контента от ботов
 
-Сниппет **isCrawler** возвращает `"1"` (бот) или `"0"` (не бот). Вызывайте его **без кэша** и используйте для условного вывода.
+Сниппет **isCrawler** возвращает `"1"` (бот) или `"0"` (не бот). Вызывайте без кэша.
 
 ### Виджет только для людей
 
@@ -101,7 +121,7 @@ return [
 
 :::
 
-Подробнее: [isCrawler](snippets/isCrawler).
+[isCrawler](snippets/isCrawler)
 
 ## Типовые сценарии
 
@@ -111,11 +131,11 @@ return [
 
 ### Несколько форм на сайте
 
-Один и тот же preHook можно использовать для всех форм. В каждом вызове FormIt добавьте `crawlerDetectBlock` в `&preHooks`.
+В каждом вызове FormIt добавьте `crawlerDetectBlock` в `&preHooks`.
 
 ### Счётчик «N человек на сайте»
 
-Вызывайте сниппет счётчика только когда посетитель не бот:
+Вызывайте сниппет счётчика, только если посетитель не бот:
 
 ::: code-group
 
@@ -133,9 +153,7 @@ return [
 
 ### Форма «Заказать звонок» (FetchIt)
 
-1. Убедитесь, что FetchIt настроен на вызов FormIt на сервере.
-2. В FormIt на странице назначения добавьте ``&preHooks=`crawlerDetectBlock` ``.
-3. При блокировке ботом FetchIt покажет сообщение из настроек CrawlerDetect.
+Те же шаги, что у [AJAX-формы (FetchIt)](#ajax-форма-fetchit).
 
 ### E-commerce — «Смотрят этот товар»
 

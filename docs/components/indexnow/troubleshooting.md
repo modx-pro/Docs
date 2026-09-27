@@ -7,10 +7,10 @@ description: Очередь не уходит, HTTP 403/429, key file и connect
 
 ## Очередь растёт, ничего не уходит
 
-1. Установите [Scheduler](/components/scheduler/) и проверьте задачу **IndexNow: Process Queue**.
-2. Или нажмите **Обработать очередь**.
-3. Откройте **Историю**: смотрите HTTP-код и текст ошибки.
-4. Убедитесь, что `indexnow_enabled = Да`.
+1. Проверьте `indexnow_enabled = Да` и валидность ключа и `indexnow_endpoint`. При невалидных значениях worker молча пропускает проход: очередь растёт, **история пустая**, в логе MODX строки `Worker skipped`.
+2. Дождитесь queue tick (любой запрос фронта или перезагрузка страницы менеджера) или нажмите **Обработать очередь**.
+3. Если сайт долго без HTTP-трафика, установите [Scheduler](/components/scheduler/) и задачу **IndexNow: Process Queue**.
+4. Откройте **Историю**: HTTP-код и текст ошибки.
 
 ## Файл ключа не найден
 
@@ -22,11 +22,15 @@ description: Очередь не уходит, HTTP 403/429, key file и connect
 
 Частые причины: нет key file, неверный ключ, endpoint отверг запрос (в том числе локальный host вроде `project.test`).
 
-Исправьте файл ключа, затем **Повторить** у failed-строки.
+Исправьте файл ключа, затем **Повторить** у failed-строки. **Повторить** не сбрасывает `attempts` ([issue #1](https://github.com/Ibochkarev/IndexNow/issues/1)).
 
 ## HTTP 429 или 5xx
 
 Временная ошибка. Worker ставит паузу `indexnow_retry_delay`. При необходимости увеличьте задержку или уменьшите `indexnow_batch_size`.
+
+## HTTP 401, 404, 410 и другие 4xx
+
+Считаются постоянной ошибкой: сразу `failed`, без цикла retry (кроме явно временных кодов в worker).
 
 ## Страница сохранилась, в логе ошибка IndexNow
 
@@ -34,7 +38,7 @@ description: Очередь не уходит, HTTP 403/429, key file и connect
 
 ## Ручной URL отклонён
 
-Разрешены только host ваших контекстов. Проверьте абсолютный URL и настройки `site_url` / `http_host`.
+Разрешены только host ваших контекстов. Не проходят `localhost`, private/reserved IP и `metadata.google.internal`. Проверьте абсолютный URL и настройки `site_url` / `http_host`.
 
 ## Manager / AJAX не отвечает
 
