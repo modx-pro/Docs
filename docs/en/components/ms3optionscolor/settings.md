@@ -7,9 +7,11 @@ description: ms3optionscolor namespace keys and when to enable each
 
 Open **System → System settings**, then filter by namespace **ms3optionscolor**.
 
-After changing values, clear the MODX cache. If you edited the manager (RAL, option key), reload the manager page: the Vue config is read on open.
+After changing values, clear the MODX cache. If you edited the manager (RAL, option key), reload the page: Vue configuration is read on open.
 
-The database key always uses an underscore: `ms3optionscolor_<name>`.
+The database key always uses an underscore: `ms3optionscolor_<name>`. An empty key is read as `ms3optionscolor.default_option_key`, then `ms3optionscolor_product_option_keys`, then `color`.
+
+Transport has `'settings' => false`: a new package default will not overwrite values already saved on the site.
 
 ## Summary table
 
@@ -29,7 +31,7 @@ Which option appears on the **Swatches** tab and in chips on **Product propertie
 | `color` | One "Color" option key (typical shop) |
 | `color,material` | Swatches for both color and material |
 
-Write multiple keys comma-separated. The package trims spaces after commas. Do not leave the field empty: set a real option key.
+Write multiple keys comma-separated. The package trims spaces after commas. Do not leave the field empty.
 
 If the option key differs (for example `obivka`), set it here. Otherwise the Swatches tab stays empty even when values exist on **Product properties**.
 
@@ -40,7 +42,7 @@ If the option key differs (for example `obivka`), set it here. Otherwise the Swa
 | Yes | The CMP shows a **RAL** tab; the color dialog can search RAL codes |
 | No | The RAL tab is hidden and RAL search in the form is unavailable. Saved codes in the dictionary are not deleted |
 
-Turn off if RAL is not needed. HEX and patterns work regardless of this setting.
+Turn off if RAL is not needed. HEX and patterns do not depend on this setting.
 
 ## `ms3optionscolor_frontend_css`
 
@@ -49,7 +51,7 @@ Turn off if RAL is not needed. HEX and patterns work regardless of this setting.
 | Yes | Styles from `css/web/main.css` load on site pages and when the snippet runs |
 | No | Styles do not load. `[data-ms3oc-swatch]` squares often have no size, especially in the cart |
 
-Keep **Yes** if you use stock chunks. Set **No** only when you include theme CSS yourself and do not want to duplicate the package file.
+Keep **Yes** if you use stock chunks. Set **No** only when you load theme CSS yourself and do not want a second package file.
 
 Manual include:
 
@@ -74,7 +76,7 @@ Works only with [ms3variants](/components/ms3variants/) and a listing call with 
 | Yes | Each catalog variant gets dictionary colors (`variants[].swatches`) |
 | No | Variants behave like ms3variants without dictionary colors |
 
-This setting does not affect the cart, price, or variant selection on the product page. More details and markup examples: [ms3variants](ms3variants).
+This setting does not affect the cart, price, or variant selection on the product page. Markup: [ms3variants](ms3variants).
 
 ## Access permissions
 

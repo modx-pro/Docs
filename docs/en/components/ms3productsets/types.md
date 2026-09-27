@@ -7,7 +7,7 @@ A set type chooses which manual links to read and which auto logic to run when t
 
 ## Common rules (all types)
 
-1. Manual links in `ms3_product_sets` for (`product_id`, `type`) are checked first.
+1. Manual links in `ms3_product_sets` for (`product_id`, `type`) are checked first. Unpublished and deleted IDs are dropped (`msps_filter_valid_product_ids`). One bad ID does not empty the block. `showUnpublished=true` will not bring those IDs back from the table.
 2. If there are no manual links, auto logic for the type runs.
 3. When the result is empty:
    - `hideIfEmpty=true` → empty string `''`
@@ -26,7 +26,7 @@ A set type chooses which manual links to read and which auto logic to run when t
 
 ### For managers
 
-Use for “Frequently bought together” on the product card.
+“Frequently bought together” on the product card.
 
 ### For developers
 
@@ -288,6 +288,18 @@ Priority:
 - `custom` is handled as `auto`.
 
 ## 9. Fallback matrix
+
+Auto chains when manual links are empty:
+
+```mermaid
+flowchart LR
+  BT[buy_together / also-bought / cross-sell] --> AS1[co-purchase] --> CAT1[category]
+  AS[auto_sales] --> AS1 --> SIM[similar]
+  SIMT[similar] --> SIM
+  POP[popcorn] --> CAT1 --> GEN[catalog auto]
+  VIP[vip] --> SET[vip_set_n setting]
+  AUTO[auto / custom / cart_suggestion] --> CAT1
+```
 
 | Type | When there are no manual links |
 | --- | --- |

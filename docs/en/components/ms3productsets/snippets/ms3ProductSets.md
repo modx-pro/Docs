@@ -3,7 +3,7 @@ title: ms3ProductSets
 ---
 # Snippet ms3ProductSets
 
-Outputs product sets for MiniShop3. First tries manual links from `ms3_product_sets`. If the result is empty, applies auto logic by type.
+Outputs product sets for MiniShop3. First reads manual links from `ms3_product_sets` and drops unpublished or deleted IDs. If the filtered list is empty, applies auto logic by type.
 
 ## Supported types
 

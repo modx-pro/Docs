@@ -36,7 +36,7 @@ flowchart TB
 4. Each value is looked up in the dictionary. With `includeUnset=1`, values without a dictionary entry still appear (empty swatch).
 5. With `activeOnly=1`, inactive dictionary entries are hidden.
 6. `limit` trims the list from the top.
-7. With `return=tpl` each row renders through chunk `tpl`. With `return=data` you get an array.
+7. With `return=tpl` each row is output through chunk `tpl`. With `return=data` you get an array.
 
 ## Parameters
 
@@ -72,7 +72,7 @@ In the chunk and in `return=data`:
 | `active` | Whether the dictionary entry is active |
 | `status` | `active` / `inactive` / `unset` |
 | `hint_color` | HEX from comboColors, no dictionary write |
-| `configured` | Dictionary row exists |
+| `configured` | Non-empty HEX or pattern. Title/RAL/image alone is `false` and `status=unset` |
 | `id` / `rank` | Dictionary row id and sort |
 | `selected` | `true` when `value` matches `selectedValue` |
 
@@ -128,7 +128,7 @@ Without `&options` the snippet uses keys from `ms3optionscolor_default_option_ke
 
 ### Catalog row
 
-In the `msProducts` row chunk pass the line product ID and a short list:
+In the `msProducts` row chunk pass the row product ID and a short list:
 
 ::: code-group
 
@@ -258,7 +258,7 @@ In MODX tags send the array to a placeholder and parse it with your own snippet 
 
 ### byOptions: cart and ready JSON
 
-When values already exist (cart line, custom JSON), do not read product options from the database:
+When values already exist (cart line, your JSON), do not read product options from the database:
 
 ::: code-group
 
@@ -289,7 +289,7 @@ When values already exist (cart line, custom JSON), do not read product options 
 
 :::
 
-`byOptions` is a JSON string. In a cart chunk Fenom is easier. Ready cart branch example: chunk `tplMs3OptionsColorCart` on [Frontend](/components/ms3optionscolor/frontend#cart).
+`byOptions` is a JSON string. In a cart chunk Fenom is easier. Cart branches: chunk `tplMs3OptionsColorCart` on [Frontend](/components/ms3optionscolor/frontend#cart).
 
 ### Select with a preselected value
 
@@ -325,7 +325,7 @@ Chunk `tplMs3OptionsColorSelect` calls the snippet itself. Direct option chunk c
 
 :::
 
-Ready select with label:
+Select with a label:
 
 ::: code-group
 
@@ -381,7 +381,7 @@ Path is relative to `pdotools_elements_path` (usually `core/elements/`):
 
 :::
 
-Dots and `_` are allowed in the file name. Segment `..` is rejected. Minimum row markup: [custom swatch chunk](/components/ms3optionscolor/frontend#custom-swatch-chunk).
+Dots and `_` are allowed in the file name. Segment `..` is rejected. Minimum markup: [custom swatch chunk](/components/ms3optionscolor/frontend#custom-swatch-chunk).
 
 ## Common issues
 
@@ -392,4 +392,4 @@ Dots and `_` are allowed in the file name. Segment `..` is rejected. Minimum row
 | No options in select | Chunk `tpl` must be `tplMs3OptionsColorSelectOption` or your own with `<option>` |
 | `byOptions` returns nothing | JSON is valid; keys match options; try `includeUnset=1` |
 
-Next: [Frontend](/components/ms3optionscolor/frontend), [mFilter](/components/ms3optionscolor/mfilter), [ms3variants](/components/ms3optionscolor/ms3variants). Chunk overview: [Snippets](index).
+[Frontend](/components/ms3optionscolor/frontend), [mFilter](/components/ms3optionscolor/mfilter), [ms3variants](/components/ms3optionscolor/ms3variants). Chunk overview: [Snippets](index).

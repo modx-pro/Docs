@@ -5,7 +5,7 @@ description: CMP словаря и RAL, вкладка Swatches, чипы опц
 
 # Обзор менеджера
 
-Раздел **Компоненты → ms3OptionsColor** открывается из меню или по ссылке `manager/?a=index&namespace=ms3optionscolor`. Интерфейс на Vue 3 и PrimeVue через VueTools.
+Раздел **Компоненты → ms3OptionsColor** открывается из меню или по ссылке `manager/?a=index&namespace=ms3optionscolor`. Интерфейс на Vue 3 и PrimeVue (VueTools).
 
 ![CMP: словарь](/components/ms3optionscolor/screenshots/overview.png)
 
@@ -23,13 +23,26 @@ flowchart TB
 
 ## Как работает раздел
 
-Список словаря и вкладка **Swatches** сохраняют данные через connector miniShop3. Отдельного URL API нет: на части хостингов прямой адрес отвечает 404. Нужны установленный miniShop3 и право `msproduct_save` у менеджера.
+Список словаря и вкладка **Swatches** сохраняют данные через connector miniShop3 (`assets/components/minishop3/connector.php`, `action=MiniShop3\Processors\Api\Index`). Прямой `/api/mgr/…` на части хостингов отвечает 404. Нужны miniShop3 и право `msproduct_save`.
+
+Маршруты под `/api/mgr/ms3optionscolor`:
+
+| Метод | Путь | Назначение |
+| --- | --- | --- |
+| GET | `/product/{id}` | Свотчи товара |
+| GET | `/map` | Карта ключ+значение → HEX/pattern |
+| GET | `/colors` | Список словаря |
+| PUT | `/colors` | Создать/обновить цвет |
+| DELETE | `/colors/{id}` | Удалить цвет |
+| GET | `/ral` | Поиск RAL |
+| PUT | `/ral` | Создать/обновить RAL |
+| DELETE | `/ral/{id}` | Удалить RAL |
 
 ## Экран CMP
 
 Сверху вниз:
 
-1. Вкладки **Словарь** и **RAL** (если включён `ms3optionscolor_ral_enabled`).
+1. Вкладки **Словарь** и **RAL**, если включён `ms3optionscolor_ral_enabled`.
 2. Таблица с поиском, фильтром статуса и действиями.
 
 ### Словарь
@@ -59,9 +72,9 @@ flowchart TB
 
 ### Диалог цвета
 
-В диалоге задаёте HEX (полоска + RGB/HSV), URL паттерна, RAL, title, activity. Переключатель режимов: **Цвет** / **Паттерн**.
+В диалоге задаёте HEX (полоска + RGB/HSV), URL паттерна, RAL, title, activity. Режимы: **Цвет** / **Паттерн**.
 
-Выбор RAL подставляет его HEX. Если вы измените HEX вручную или сохраните режим **Паттерн**, форма очистит связь с прежним RAL. Так код и цвет не расходятся.
+Выбор RAL подставляет его HEX. Если вы измените HEX вручную или сохраните режим **Паттерн**, форма очистит связь с прежним RAL. Код и цвет не расходятся.
 
 При сохранении пакет нормализует URL паттерна и поле «Изображение»:
 
@@ -91,7 +104,7 @@ flowchart TB
 
 На вкладке **Свойства товара** скрипт `product-option-swatch.js` рисует квадрат свотча в чипах опции. Запрос `/map` идёт тем же connector miniShop3.
 
-![Чипы опции со swatch](/components/ms3optionscolor/screenshots/product-options-chips.png)
+![Чипы опции со свотчем](/components/ms3optionscolor/screenshots/product-options-chips.png)
 
 ## Ограничения
 

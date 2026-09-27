@@ -1,6 +1,6 @@
 ---
 title: ms3ProductSets
-description: Dynamic product recommendations for MiniShop3 — manual links, auto rules, manager templates
+description: Dynamic product recommendations for MiniShop3. Manual links, auto rules, manager templates
 categories: catalog
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/ms3productsets/logo.png
@@ -47,9 +47,7 @@ items: [
 ---
 # ms3ProductSets
 
-ms3ProductSets adds recommendation blocks to [MiniShop3](/en/components/minishop3/). Manual links come first (TVs on the product and/or manager templates). When they are empty, auto logic runs by set type (category, orders, VIP settings).
-
-Typical blocks: “Frequently bought together”, “Similar”, “VIP sets”, cart suggestions.
+ms3ProductSets adds recommendation blocks to [MiniShop3](/en/components/minishop3/): “Frequently bought together”, similar products, VIP sets, cart suggestions. Manual links come first (TVs on the product and manager templates). When they are empty, auto logic runs by set type (category, orders, VIP settings).
 
 ## Features
 

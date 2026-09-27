@@ -74,9 +74,9 @@ flowchart LR
 
 ### Manager
 
-CMP on Vue 3 and PrimeVue (via VueTools): **Dictionary** and **RAL** tabs. Search by key and value, status filter, HEX / pattern / RAL dialog.
+CMP on Vue 3 and PrimeVue (VueTools): **Dictionary** and **RAL** tabs. Search by key and value, status filter, HEX / pattern / RAL dialog.
 
-On the product card, the **Swatches** tab sits next to **Product properties**. Set option values first, then assign swatches. On option chips the script draws a color square.
+On the product card the **Swatches** tab sits next to **Product properties**. Set option values first, then assign swatches. On option chips the script draws a color square.
 
 ![Swatches tab](/components/ms3optionscolor/screenshots/product-tab.png)
 
@@ -88,7 +88,7 @@ Snippet `ms3OptionsColor` and Fenom chunks. Storefront CSS loads automatically w
 
 ### mFilter and ms3variants
 
-Filter type `ms3oc` renders swatches from the dictionary. The built-in `colors` type stays as is. With [ms3variants](/components/ms3variants/), catalog variants can show colors from the dictionary. Details: [mFilter](mfilter), [ms3variants](ms3variants).
+Filter type `ms3oc` draws swatches from the dictionary. The package does not change the built-in `colors` type. With [ms3variants](/components/ms3variants/), catalog variants can show colors from the dictionary.
 
 ![ms3oc filter](/components/ms3optionscolor/screenshots/storefront-mfilter.png)
 
@@ -97,7 +97,7 @@ Filter type `ms3oc` renders swatches from the dictionary. The built-in `colors` 
 | Component | Version |
 | --- | --- |
 | MODX Revolution | ≥ 3.0.3 |
-| miniShop3 | cart, product options, manager API |
+| miniShop3 | ≥ 1.0.0 |
 | VueTools | ≥ 1.1.2-pl |
 | pdoTools | 3.x |
 | PHP | ≥ 8.2 |

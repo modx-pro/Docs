@@ -11,11 +11,11 @@ description: 'Типовые ошибки ms3OptionsColor: VueTools, CSS, mFilte
 
 ## Не сохраняется словарь / ошибка доступа
 
-Нужно право `msproduct_save` у роли менеджера (как у сохранения товара miniShop3). Своих отдельных прав пакет не добавляет. Проверьте политику доступа.
+Нужно право `msproduct_save` у роли менеджера (как у сохранения товара miniShop3). Отдельных прав пакет не добавляет. Проверьте политику доступа.
 
 ## Вкладка Swatches пустая или нет значений
 
-Сначала на **Свойства товара** добавьте значения опции (`color` или ключи из `ms3optionscolor_default_option_key`) и сохраните товар. Потом откройте **Swatches**. Цвет хранится в словаре пакета, не в свойствах самой опции miniShop3.
+Сначала на **Свойства товара** добавьте значения опции (`color` или ключи из `ms3optionscolor_default_option_key`) и сохраните товар. Потом откройте **Swatches**. Цвет лежит в словаре пакета, не в свойствах опции miniShop3.
 
 ## Свотчи на витрине без размера / невидимы
 
@@ -33,7 +33,7 @@ description: 'Типовые ошибки ms3OptionsColor: VueTools, CSS, mFilte
 
 :::
 
-Без CSS элемент `[data-ms3oc-swatch]` часто остаётся с нулевой шириной, особенно в корзине.
+Без CSS элемент `[data-ms3oc-swatch]` часто с нулевой шириной, особенно в корзине.
 
 ## Select без цветных квадратов в списке
 
@@ -55,11 +55,11 @@ description: 'Типовые ошибки ms3OptionsColor: VueTools, CSS, mFilte
 
 ## Фильтр mFilter без свотчей
 
-В Filter Set укажите `"type": "ms3oc"`, не встроенный `colors`. Тип появится, только если установлен mFilter и сработал `OnMFilterInit`. На витрине сначала `mFilter` (результаты), затем `mFilterForm`. В части версий mFilter задайте `&tplItem=tplMFilterMs3OptionsColor`. Подробнее: [mFilter](mfilter).
+В Filter Set укажите `"type": "ms3oc"`, не встроенный `colors`. Тип появится, только если установлен mFilter и сработал `OnMFilterInit`. На витрине сначала `mFilter` (результаты), затем `mFilterForm`. В части сборок mFilter задайте `&tplItem=tplMFilterMs3OptionsColor`. [mFilter](mfilter).
 
 ## В каталоге нет `variants[].swatches`
 
-Чеклист и разметка: [ms3variants](ms3variants). Пакет не загружает варианты сам. Он только дополняет уже подготовленный `row.variants`.
+Чеклист и разметка: [ms3variants](ms3variants). Пакет не загружает варианты сам. Он дополняет уже подготовленный `row.variants`.
 
 ## Другой товар не видит мой цвет
 

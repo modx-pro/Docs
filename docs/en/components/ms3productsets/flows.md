@@ -3,6 +3,36 @@ title: Flows
 ---
 # Flows
 
+Manager walkthroughs: [interface/flows](/en/components/ms3productsets/interface/flows).
+
+## Flow diagrams
+
+Server-side snippet output:
+
+```mermaid
+flowchart TD
+  T[Resource / template] --> S[snippet ms3ProductSets]
+  S --> F[normalize parameters]
+  F --> G[msps_get_products_by_type]
+  G --> DB[(ms3_product_sets, auto types)]
+  G -->|ID list| MP[msProducts, chunks]
+  MP --> OUT[HTML / toPlaceholder / return=ids / emptyTpl]
+```
+
+AJAX render from the storefront:
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant P as productsets.js
+  participant C as connector.php
+  participant SN as ms3ProductSets
+  P->>C: POST action=get_set
+  C->>SN: params from POST
+  SN-->>C: HTML
+  C-->>P: inject into selector
+```
+
 ## 1. Render a set block on the frontend
 
 1. Template calls the snippet: **MODX** `[[!ms3ProductSets? ... ]]`, **Fenom** `{'ms3ProductSets' | snippet : [ ... ]}`.
@@ -20,7 +50,7 @@ title: Flows
 1. `window.ms3ProductSets.render('#selector', options)`.
 2. JS POSTs `action=get_set` to `connector.php`.
 3. Connector runs snippet `ms3ProductSets` with POST params.
-4. HTML is injected into the container. Empty response hides the container.
+4. HTML is injected into the container. An empty response hides the container.
 
 ## 3. Add to cart from a set card
 

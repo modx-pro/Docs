@@ -53,7 +53,7 @@ The record goes into the shared dictionary. The same `color=Синий` on anoth
 
 ## Step 3. Output on the storefront
 
-CSS (`css/web/main.css`) loads automatically when `ms3optionscolor_frontend_css=Yes`. On the product template, the snippet is enough:
+CSS (`css/web/main.css`) loads when `ms3optionscolor_frontend_css=Yes`. On the product template the snippet is enough:
 
 ::: code-group
 
@@ -75,7 +75,7 @@ CSS (`css/web/main.css`) loads automatically when `ms3optionscolor_frontend_css=
 
 :::
 
-If CSS is disabled in settings, add a manual `<link>`:
+If CSS is disabled, add a manual `<link>`:
 
 ::: code-group
 
@@ -123,7 +123,7 @@ Include `select.js` and call the chunk:
 
 :::
 
-With `native=1` you keep a plain `<select>`. Without the flag, when jQuery + Select2 are on the page, the script builds a dropdown with swatches.
+With `native=1` you keep a plain `<select>`. Without the flag, if jQuery and Select2 are on the page, the script builds a dropdown with swatches.
 
 ![Select with swatch](/components/ms3optionscolor/screenshots/storefront-select.png)
 

@@ -5,7 +5,7 @@ description: Цвета словаря в variants[].swatches на листин�
 
 # ms3variants
 
-Если установлен [ms3variants](/components/ms3variants/), ms3OptionsColor дописывает к каждому варианту в каталоге цвет из словаря. Пакет не создаёт варианты и не меняет цену, остаток или `_variant_id`. Он дополняет уже готовый список.
+Если установлен [ms3variants](/components/ms3variants/), ms3OptionsColor дописывает к каждому варианту в каталоге цвет из словаря. Пакет не создаёт варианты и не меняет цену, остаток или `_variant_id`. Он дополняет готовый список.
 
 ```mermaid
 sequenceDiagram
@@ -28,7 +28,7 @@ sequenceDiagram
 3. Настройка `ms3optionscolor_variants_decorate` = Да.
 4. У варианта в `options` есть ключ из `ms3optionscolor_default_option_key` (например `color`) с точным совпадением значения со словарём.
 
-Отключить: `ms3optionscolor_variants_decorate` = Нет. Тогда варианты остаются как у ms3variants, без `swatches`.
+Отключить: `ms3optionscolor_variants_decorate` = Нет. Варианты остаются как у ms3variants, без `swatches`.
 
 ## Вызов листинга
 
@@ -52,11 +52,11 @@ sequenceDiagram
 
 :::
 
-После плагинов в строке каталога будут `variants`, `has_variants`, `variants_json`. OptionsColor добавит `variants[].swatches` для ключей из настройки.
+После плагинов в строке каталога есть `variants`, `has_variants`, `variants_json`. Пакет дописывает `variants[].swatches` для ключей из настройки.
 
 ## Разметка в чанке строки
 
-Цикл по массиву вариантов удобнее в Fenom-чанке (pdoTools):
+Цикл по вариантам в Fenom-чанке (pdoTools):
 
 ```fenom
 {if $has_variants?}
@@ -71,7 +71,7 @@ sequenceDiagram
 {/if}
 ```
 
-Поле `swatches.color` здесь соответствует ключу опции `color`. Если в настройке несколько ключей (`color,material`), смотрите `swatches.material` и т.д.
+Если в настройке несколько ключей (`color,material`), читайте `swatches.material` и остальные ключи так же.
 
 Структура одной записи swatch:
 
@@ -82,13 +82,13 @@ sequenceDiagram
 | `title` | Подпись из словаря |
 | `value` | Значение опции (есть даже без совпадения со словарём) |
 
-Без точного совпадения `option_key` + `value` со словарём поля `color` / `pattern` / `title` остаются пустыми.
+Без точного совпадения `option_key` + `value` со словарём поля `color` / `pattern` / `title` пустые.
 
 ![Каталог с variants[].swatches](/components/ms3optionscolor/screenshots/storefront-variants.png)
 
 ## Только цвета товара без SKU
 
-Если обходить варианты не нужно, в том же чанке вызовите сниппет:
+Если варианты обходить не нужно, в том же чанке вызовите сниппет:
 
 ::: code-group
 
@@ -114,7 +114,7 @@ sequenceDiagram
 
 ## Корзина
 
-Ветка с `options._variant_id` в чанке `tplMs3OptionsColorCart` показывает цвет без смены опции и ссылку на страницу товара `?variant=ID`. Смену варианта и цену по-прежнему ведёт ms3variants. Подробнее: [Вывод на сайте](frontend#корзина).
+Ветка с `options._variant_id` в чанке `tplMs3OptionsColorCart` показывает цвет без смены опции и ссылку на товар `?variant=ID`. Смену варианта и цену ведёт ms3variants. [Вывод на сайте](frontend#корзина).
 
 ## Типичные ошибки
 

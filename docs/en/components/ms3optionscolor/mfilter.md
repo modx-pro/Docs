@@ -5,7 +5,7 @@ description: Filter type ms3oc for swatches from the ms3OptionsColor dictionary
 
 # mFilter
 
-The package adds filter type **`ms3oc`**. Shoppers see color squares from the dictionary, not a plain value list. The built-in mFilter type `colors` is unchanged.
+The package adds filter type **`ms3oc`**. Shoppers see color squares from the dictionary, not a plain value list. The package does not change the built-in mFilter type `colors`.
 
 You need [mFilter](/components/mfilter/) installed. Without it, `OnMFilterInit` never runs and type `ms3oc` will not appear.
 
@@ -42,13 +42,13 @@ flowchart LR
 | --- | --- |
 | `type` | Always `ms3oc` for dictionary swatches |
 | `source` | Usually `option` |
-| `field` | Option values come from this MiniShop3 option |
-| object key | Dictionary lookup uses **this** Filter Set key as `option_key`, not `field` |
+| `field` | Option values and dictionary `option_key`. If `field` is empty, the Filter Set key is used |
+| object key | Must match `mFilterForm` `filters`. Does not drive the dictionary when `field` is set |
 | `label` | Block label on the storefront |
 | `tpl` | Row chunk: stock `tplMFilterMs3OptionsColor` or your own |
 | `multiple` | Several values at once |
 
-The object key must match `mFilterForm` `filters` and the dictionary `option_key`. If the key is `color_swatch` and `field` is `color`, values come from `color` and colors load from `color_swatch`. Swatches miss. Keep key = `field` = `option_key` until [Ibochkarev/ms3OptionsColor#1](https://github.com/Ibochkarev/ms3OptionsColor/issues/1) is fixed.
+Dictionary `option_key` is `field`, otherwise the Filter Set key. Example: key `color_swatch` with `"field": "color"` looks up swatches by `color` ([#1](https://github.com/Ibochkarev/ms3OptionsColor/issues/1)).
 
 ## Call on the page
 
@@ -74,10 +74,10 @@ Run the results snippet (`mFilter` / `baseIds`) first, then the form:
 
 `mFilter` / `mFilterForm` parameters depend on your build. See [mFilter snippets](/components/mfilter/snippets/). ms3OptionsColor needs:
 
-- Filter Set with `"type": "ms3oc"`;
-- `filters` matching the JSON key;
-- `mFilterForm` passing `hex` / `pattern` / `ral` on each item (or flat `$hex`, `$pattern`, `$ral`);
-- `&tplItem=tplMFilterMs3OptionsColor` when your mFilter version needs it.
+- Filter Set with `"type": "ms3oc"`
+- `filters` matching the JSON key
+- `mFilterForm` passing `hex` / `pattern` / `ral` on each item (or flat `$hex`, `$pattern`, `$ral`)
+- `&tplItem=tplMFilterMs3OptionsColor` when your mFilter build needs it.
 
 ![ms3oc filter](/components/ms3optionscolor/screenshots/storefront-mfilter.png)
 
@@ -90,7 +90,7 @@ Two data shapes for the chunk:
 | demo / manual call | `$item.value`, `$item.label`, `$item.hex`, `$item.pattern`, `$item.ral`, `$item.count`, `$item.selected` |
 | mFilterForm | flat `$value`, `$label`, `$hex`, `$pattern`, `$ral`, `$count`, `$active` |
 
-Minimal custom row (Fenom):
+Minimal custom row (Fenom). Attributes `data-ms3oc-filter-label` and `data-ms3oc-filter-count` are hooks for package CSS (label and count).
 
 ```fenom
 <label data-ms3oc-filter{if $active?} data-selected{/if}>
@@ -103,7 +103,7 @@ Minimal custom row (Fenom):
 </label>
 ```
 
-Storefront CSS (`ms3optionscolor_frontend_css`) must be on, or the filter swatch often has no size.
+Storefront CSS (`ms3optionscolor_frontend_css`) must be on. Otherwise the filter swatch often has no size.
 
 ## Common issues
 

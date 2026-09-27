@@ -5,7 +5,7 @@ description: Dictionary and RAL CMP, Swatches tab, option chips
 
 # Manager overview
 
-Open **Components → ms3OptionsColor** from the menu or at `manager/?a=index&namespace=ms3optionscolor`. The UI uses Vue 3 and PrimeVue via VueTools.
+Open **Components → ms3OptionsColor** from the menu or at `manager/?a=index&namespace=ms3optionscolor`. The UI uses Vue 3 and PrimeVue (VueTools).
 
 ![CMP: dictionary](/components/ms3optionscolor/screenshots/overview.png)
 
@@ -23,21 +23,34 @@ flowchart TB
 
 ## How the section works
 
-The dictionary list and **Swatches** tab save data through the miniShop3 connector. There is no separate API URL: on some hosts a direct address returns 404. You need miniShop3 installed and `msproduct_save` for the manager role.
+The dictionary list and **Swatches** tab save through the miniShop3 connector (`assets/components/minishop3/connector.php`, `action=MiniShop3\Processors\Api\Index`). A direct `/api/mgr/…` URL returns 404 on some hosts. You need miniShop3 and `msproduct_save`.
+
+Routes under `/api/mgr/ms3optionscolor`:
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| GET | `/product/{id}` | Product swatches |
+| GET | `/map` | Key+value → HEX/pattern map |
+| GET | `/colors` | Dictionary list |
+| PUT | `/colors` | Create/update color |
+| DELETE | `/colors/{id}` | Delete color |
+| GET | `/ral` | RAL search |
+| PUT | `/ral` | Create/update RAL |
+| DELETE | `/ral/{id}` | Delete RAL |
 
 ## CMP screen
 
 Top to bottom:
 
-1. **Dictionary** and **RAL** tabs (when `ms3optionscolor_ral_enabled` is enabled).
+1. **Dictionary** and **RAL** tabs when `ms3optionscolor_ral_enabled` is enabled.
 2. Table with search, status filter, and actions.
 
 ### Dictionary
 
 | Action | How |
 | --- | --- |
-| Search | Placeholder is hardcoded Russian: «Поиск значения или ключа». Search is case-insensitive, including Cyrillic |
-| Status filter | API: `all` / unset / `active` / `inactive`. EN lexicon: Inactive. Not `disabled` |
+| Search | Placeholder from the lexicon: Search by value or key. Case-insensitive, including Cyrillic |
+| Status filter | API: `all` / unset / `active` / `inactive`. Lexicon label: Inactive. Not `disabled` |
 | Edit / assign | Pencil icon in the row |
 | Delete | **Delete** button in the dialog with confirm |
 
@@ -59,7 +72,7 @@ The dictionary is shared: one `option_key` + `value` pair for the whole catalog.
 
 ### Color dialog
 
-In the dialog you set HEX (bar + RGB/HSV), pattern URL, RAL, title, activity. Mode switch: **Color** / **Pattern**.
+In the dialog you set HEX (bar + RGB/HSV), pattern URL, RAL, title, activity. Modes: **Color** / **Pattern**.
 
 Choosing RAL fills its HEX. If you change HEX manually or save **Pattern** mode, the form clears the previous RAL link. Code and color stay in sync.
 

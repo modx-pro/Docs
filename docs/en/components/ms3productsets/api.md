@@ -14,7 +14,10 @@ title: API and interfaces
 | `max_items` | `ms3productsets.max_items` | Limit (1..100) |
 | `category_id` | `0` | Category for auto pick |
 | `set_id` | `0` | VIP set number for `type=vip`. `0` or omitted uses 1 (`ms3productsets.vip_set_1`). |
-| `tpl` | `tplSetItem` | Card chunk |
+| `tpl` | `tplSetItem` | Card chunk (`tplSetVIP` / `tplPopcorn` use `itemTpl` for the row) |
+| `itemTpl` | `''` | Row chunk when `tpl` is a VIP/popcorn wrapper |
+| `set_title` / `discount_percent` | `''` | Placeholders for the VIP wrapper |
+| `showLog` | `false` | Passed to `msProducts` |
 | `emptyTpl` | `tplSetEmpty` | Empty result chunk |
 | `hideIfEmpty` | `true` | `true`: empty string. `false`: `emptyTpl`. |
 | `exclude_ids` | `''` | Excluded IDs |
@@ -76,6 +79,16 @@ Load before `productsets.js`.
 | --- | --- | --- | --- |
 | `get_set` | POST | `type`, `resource_id` (alias `product_id`), `category_id`, `set_id`, `max_items`, `tpl`, `tplWrapper`, `emptyTpl`, `hideIfEmpty` | HTML |
 | `add_to_cart` | POST | `product_id`, `count` | JSON `{success, added, message}` |
+
+Sample `add_to_cart` responses (connector fallback path):
+
+```json
+{"success": true, "added": 1, "message": ""}
+```
+
+```json
+{"success": false, "added": 0, "message": "Product not found"}
+```
 
 ### Manager (`mgr`, auth required)
 

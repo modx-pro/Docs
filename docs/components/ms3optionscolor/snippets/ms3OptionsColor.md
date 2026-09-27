@@ -31,12 +31,12 @@ flowchart TB
 ```
 
 1. Берётся список ключей опций: параметр `options` или настройка `ms3optionscolor_default_option_key`.
-2. Если передан `byOptions`, значения берутся из JSON. Опции товара из БД не читаются.
+2. Если передан `byOptions`, значения берутся из JSON. Опции товара из базы не читаются.
 3. Иначе значения читаются у товара `product` (по умолчанию текущий ресурс).
 4. Каждое значение ищется в словаре. При `includeUnset=1` значения без записи тоже попадают в вывод (пустой свотч).
 5. При `activeOnly=1` неактивные записи словаря скрываются.
 6. `limit` обрезает список сверху.
-7. При `return=tpl` каждая строка рендерится чанком `tpl`. При `return=data` возвращается массив.
+7. При `return=tpl` каждая строка отдаётся чанком `tpl`. При `return=data` возвращается массив.
 
 ## Параметры
 
@@ -72,7 +72,7 @@ flowchart TB
 | `active` | Активна ли запись словаря |
 | `status` | `active` / `inactive` / `unset` |
 | `hint_color` | HEX из comboColors, в словарь не пишется |
-| `configured` | Есть запись в словаре |
+| `configured` | Непустой HEX или pattern. Строка только с title/RAL/image даёт `false` и `status=unset` |
 | `id` / `rank` | ID строки словаря и сортировка |
 | `selected` | `true`, если `value` совпал с `selectedValue` |
 
@@ -102,7 +102,7 @@ flowchart TB
 
 :::
 
-Без `&options` сниппет возьмёт ключи из `ms3optionscolor_default_option_key`.
+Без `&options` сниппет берёт ключи из `ms3optionscolor_default_option_key`.
 
 ### Несколько ключей опций
 
@@ -128,7 +128,7 @@ flowchart TB
 
 ### Карточка в каталоге
 
-В чанке строки `msProducts` передайте ID товара строки и короткий список:
+В чанке строки `msProducts` передайте ID товара из строки и короткий список:
 
 ::: code-group
 
@@ -258,7 +258,7 @@ flowchart TB
 
 ### byOptions: корзина и готовый JSON
 
-Когда значения уже есть (строка корзины, свой JSON), не читайте опции товара из БД:
+Когда значения уже есть (строка корзины, свой JSON), не читайте опции товара из базы:
 
 ::: code-group
 
@@ -289,11 +289,11 @@ flowchart TB
 
 :::
 
-`byOptions` это JSON-строка. В чанке корзины удобнее Fenom. Готовый пример веток корзины: чанк `tplMs3OptionsColorCart` на [Выводе на сайте](/components/ms3optionscolor/frontend#корзина).
+`byOptions` это JSON-строка. В чанке корзины удобнее Fenom. Ветки корзины: чанк `tplMs3OptionsColorCart` на [Выводе на сайте](/components/ms3optionscolor/frontend#корзина).
 
 ### Select с выбранным значением
 
-Чанк `tplMs3OptionsColorSelect` сам вызывает сниппет. Прямой вызов option-чанка:
+Чанк `tplMs3OptionsColorSelect` вызывает сниппет сам. Прямой вызов option-чанка:
 
 ::: code-group
 
@@ -325,7 +325,7 @@ flowchart TB
 
 :::
 
-Готовый select с подписью:
+Select с подписью:
 
 ::: code-group
 
@@ -381,7 +381,7 @@ flowchart TB
 
 :::
 
-В имени файла допустимы точки и `_`. Сегмент `..` отклоняется. Минимальная разметка строки: [свой чанк свотча](/components/ms3optionscolor/frontend#свой-чанк-свотча).
+В имени файла допустимы точки и `_`. Сегмент `..` отклоняется. Минимальная разметка: [свой чанк свотча](/components/ms3optionscolor/frontend#свой-чанк-свотча).
 
 ## Частые ошибки
 
@@ -392,4 +392,4 @@ flowchart TB
 | В select нет option | Чанк `tpl` должен быть `tplMs3OptionsColorSelectOption` или свой с `<option>` |
 | `byOptions` ничего не даёт | JSON валидный, ключи совпадают с опциями, при необходимости `includeUnset=1` |
 
-Дальше: [Вывод на сайте](/components/ms3optionscolor/frontend), [mFilter](/components/ms3optionscolor/mfilter), [ms3variants](/components/ms3optionscolor/ms3variants). Обзор чанков: [Сниппеты](index).
+[Вывод на сайте](/components/ms3optionscolor/frontend), [mFilter](/components/ms3optionscolor/mfilter), [ms3variants](/components/ms3optionscolor/ms3variants). Обзор чанков: [Сниппеты](index).

@@ -18,6 +18,19 @@ Related: [Flows](/en/components/ms3productsets/flows), [API](/en/components/ms3p
 
 ## Database tables
 
+Templates for bulk apply and output rows (logical link: `template_name` on rows matches the template name):
+
+```mermaid
+flowchart TB
+  subgraph T["ms3_product_set_templates"]
+    t["name, type, related_product_ids, …"]
+  end
+  subgraph S["ms3_product_sets"]
+    r["product_id, related_product_id, type, sortorder, template_name"]
+  end
+  T -.->|apply_template| S
+```
+
 ### `ms3_product_sets`
 
 Links used to output sets.
@@ -27,6 +40,7 @@ Links used to output sets.
 - `type`: set type
 - `sortorder`: order
 - `template_name`: template name when the link came from bulk apply
+- `discount`: present in the schema; helpers never read or write it
 - unique key: (`product_id`, `related_product_id`, `type`)
 
 ### `ms3_product_set_templates`
@@ -41,15 +55,30 @@ Templates for bulk apply to categories.
 
 ## Selection algorithm (high level)
 
+```mermaid
+flowchart TD
+  A[normalize type, resource_id, max_items, exclude_ids] --> B[msps_get_products_by_type]
+  B --> M[manual links in ms3_product_sets]
+  M -->|empty| AUTO[auto logic for type]
+  M -->|IDs| F{filters and limit}
+  AUTO --> F
+  F -->|no IDs| H{hideIfEmpty}
+  H -->|true| E[empty string]
+  H -->|false| ET[emptyTpl]
+  F -->|IDs| R{return mode}
+  R -->|ids| CSV[CSV of IDs]
+  R -->|data| MP[msProducts + tplWrapper]
+```
+
 1. Normalize parameters (`type`, `resource_id`, `max_items`, `exclude_ids`, chunks).
 2. Call `msps_get_products_by_type(...)`:
-   - first manual set from `ms3_product_sets`
+   - first manual set from `ms3_product_sets` (published, not deleted `msProduct` only)
    - if empty: auto logic for the type
 3. If no IDs:
    - `hideIfEmpty=true` → `''`
-   - else render `emptyTpl`
+   - else output `emptyTpl`
 4. If `return=ids` → return CSV of IDs.
-5. Else render via `msProducts` + optional `tplWrapper`.
+5. Else output via `msProducts` + optional `tplWrapper`.
 
 ## Per-type logic
 
@@ -62,6 +91,18 @@ Templates for bulk apply to categories.
 - `auto`, `custom`: auto by category.
 
 ## TV -> table data flow
+
+```mermaid
+flowchart TD
+  SAVE[Save msProduct] --> PL[OnDocFormSave plugin]
+  PL --> SYNC[msps_sync_product_sets_from_tv]
+  SYNC --> Q{TV value empty?}
+  Q -->|yes| DEL1[delete rows with empty template_name for this type]
+  Q -->|no| DEL2[delete TV rows empty template_name]
+  DEL2 --> INS[insert related IDs from TV]
+  DEL1 --> KEEP[rows with template_name unchanged]
+  INS --> KEEP
+```
 
 1. Manager fills set TVs (`ms3productsets_*`) on the product.
 2. `OnDocFormSave` checks those TVs exist on the resource template.

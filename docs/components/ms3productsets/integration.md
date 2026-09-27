@@ -3,24 +3,21 @@ title: Интеграция на сайт
 ---
 # Интеграция на сайт
 
-Документ рассчитан на две роли:
-
-- **Менеджер**: что включить и где проверить результат.
-- **Разработчик**: как правильно подключить сниппеты в Fenom и стандартном MODX.
+Как подключить сниппеты в Fenom и стандартном MODX и где проверить результат.
 
 ## 1. Подключение ресурсов (обязательно)
 
-Уведомления корзины используют **[iziToast](https://github.com/marcosmoura/iziToast)**. Пути к локальным CSS и JS задаются **системными настройками** компонента `ms3productsets` (относительно `[[++assets_url]]` или полный URL):
+Уведомления корзины используют **[iziToast](https://github.com/marcosmoura/iziToast)**. Пути к локальным CSS и JS задаются системными настройками `ms3productsets` (относительно `[[++assets_url]]` или полный URL):
 
 | Настройка | Назначение |
 |-----------|------------|
-| `ms3productsets.izitoast_include` | Включить вывод `<link>` и `<script>` для iziToast **внутри** сниппета `mspsLexiconScript`. По умолчанию **Да**. |
-| `ms3productsets.izitoast_css` | Путь к CSS. По умолчанию файл из **MiniShop3**: `components/minishop3/css/web/lib/izitoast/iziToast.min.css`. Пустое значение — тег не выводится. |
-| `ms3productsets.izitoast_js` | Путь к JS. По умолчанию: `components/minishop3/js/web/lib/izitoast/iziToast.js`. Пустое — тег не выводится. |
+| `ms3productsets.izitoast_include` | Вывод `<link>` и `<script>` для iziToast **внутри** сниппета `mspsLexiconScript`. По умолчанию **Да**. |
+| `ms3productsets.izitoast_css` | Путь к CSS. По умолчанию файл из **MiniShop3**: `components/minishop3/css/web/lib/izitoast/iziToast.min.css`. Пустое значение: тег не выводится. |
+| `ms3productsets.izitoast_js` | Путь к JS. По умолчанию: `components/minishop3/js/web/lib/izitoast/iziToast.js`. Пустое: тег не выводится. |
 
-Если iziToast уже подключает ваш шаблон (например, общая вёрстка MiniShop3), выключите `ms3productsets.izitoast_include`, чтобы не дублировать библиотеку.
+Если iziToast уже подключает шаблон (общая вёрстка MiniShop3), выключите `ms3productsets.izitoast_include`, чтобы не дублировать библиотеку.
 
-В пакете дублируются те же файлы в `assets/components/ms3productsets/vendor/izitoast/` — укажите их в настройках, если нужен вариант без опоры на пути MS3.
+В пакете те же файлы лежат в `assets/components/ms3productsets/vendor/izitoast/`. Укажите их в настройках, если не хотите опираться на пути MS3.
 
 В шаблоне (или общем head/footer) подключите **сначала** лексикон, затем CSS и JS.
 
@@ -40,13 +37,13 @@ title: Интеграция на сайт
 
 :::
 
-Порядок важен: **mspsLexiconScript** (при включённой настройке — сначала iziToast, затем `window.mspsLexicon` / `window.mspsConfig`) **→ productsets.css → productsets.js**. При отсутствии `iziToast` на странице в консоли будет предупреждение, уведомления не покажутся.
+Порядок: **mspsLexiconScript** (при включённой настройке сначала iziToast, затем `window.mspsLexicon` / `window.mspsConfig`) **→ productsets.css → productsets.js**. Если на странице нет `iziToast`, в консоли будет предупреждение, уведомления не покажутся.
 
-Переопределение через `window.mspsConfig` (до вызова `mspsLexiconScript` или в объекте, который мержится со сниппетом): `toastTimeout` (мс), `toastPosition` (например `topRight`, `bottomCenter` — см. документацию iziToast).
+Переопределение через `window.mspsConfig` (до вызова `mspsLexiconScript` или в объекте, который мержится со сниппетом): `toastTimeout` (мс), `toastPosition` (например `topRight`, `bottomCenter`. См. документацию iziToast).
 
 ## 2. Блок в карточке товара: «С этим товаром покупают»
 
-Для менеджера: после добавления вызова на карточке товара должен появиться блок рекомендаций. Если товаров нет, блок не выводится.
+После вызова на карточке товара появляется блок рекомендаций. Если товаров нет, блок не выводится.
 
 ::: code-group
 
@@ -85,7 +82,7 @@ title: Интеграция на сайт
 
 ## 3. Авто-рекомендации по категории
 
-Для менеджера: удобно для главной страницы или лендинга, когда нужен блок из конкретной категории.
+Для главной страницы или лендинга, когда нужен блок из конкретной категории.
 
 ::: code-group
 
@@ -112,8 +109,6 @@ title: Интеграция на сайт
 :::
 
 ## 4. VIP-набор
-
-Для менеджера:
 
 1. Заполните системную настройку `ms3productsets.vip_set_1` (`1,2,3,...`).
 2. Убедитесь, что товары опубликованы.
@@ -166,9 +161,9 @@ title: Интеграция на сайт
 
 :::
 
-## 6. AJAX-рендер блока (через JS API)
+## 6. AJAX-отрисовка блока (через JS API)
 
-Логика `render()` одна и та же; в шаблоне отличается подстановка `resource_id` и разметка контейнера.
+Логика `render()` одна и та же. В шаблоне отличаются подстановка `resource_id` и разметка контейнера.
 
 ::: code-group
 
@@ -208,11 +203,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 :::
 
-На страницах без текущего ресурса (главная и т.п.) передайте `resource_id: 0` или не передавайте поле — см. [API](api).
+На страницах без текущего ресурса (главная и подобные) передайте `resource_id: 0` или не передавайте поле. См. [API](api).
 
 ## 7. Кнопка «В корзину» в карточке подборки
 
-Текст кнопки — из лексикона MiniShop3 (`ms3_cart_add`), как в чанке **tplSetItem**.
+Текст кнопки берётся из лексикона MiniShop3 (`ms3_cart_add`), как в чанке **tplSetItem**.
 
 ::: code-group
 
@@ -226,31 +221,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
 :::
 
-`productsets.js` обработает клик и отправит запрос в `connector.php`.
+Штатный `tplSetItem` это форма MiniShop3 (`ms3_form`), не `data-add-to-cart`. Пример ниже свой. `productsets.js` сначала отправляет запрос в MiniShop3 Web API (`ms3Config.actionUrl`). Коннектор `add_to_cart` это запасной путь.
 
 ## 8. Кнопка «Добавить весь набор»
 
 Кнопка с атрибутом `data-add-set` добавляет все товары подборки в корзину. Входит в чанки **tplSetVIP** и **tplSetWrapper** (при `count > 0`).
 
-Контейнер подборки должен содержать элементы с `data-product-id` (карточки из tplSetItem). JS находит контейнер от кнопки (`.msps__vip-set`, `.msps__wrapper`) и последовательно вызывает `addToCart` для каждого товара.
+Чанки **tplSetVIP** / **tplSetWrapper** / **tplPopcorn** пишут `data-msps-product-ids`. JS берёт этот атрибут первым, затем карточки `[data-product-id]` / `[data-add-to-cart]`, затем `input[name="id"]`.
 
 ::: code-group
 
 ```fenom
-<button type="button" class="msps__add-all-button" data-add-set="1">
+<button type="button" data-add-set="1">
   {'msproductsets_add_all_to_cart' | lexicon}
 </button>
 ```
 
 ```modx
-<button type="button" class="msps__add-all-button" data-add-set="1">
+<button type="button" data-add-set="1">
   [[%msproductsets_add_all_to_cart? &namespace=`ms3productsets` &topic=`default`]]
 </button>
 ```
 
 :::
 
-Текст кнопки должен браться из лексикона компонента (`ms3productsets`, топик `default`), а не храниться в шаблоне в явном виде.
+Текст кнопки берите из лексикона компонента (`ms3productsets`, топик `default`), не храните в шаблоне явно.
 
 ## Чек-лист после внедрения
 

@@ -29,6 +29,10 @@ Wire recommendation blocks (sets) on a MiniShop3 site.
 4. Find **ms3ProductSets**, click **Download**, then **Install**.
 5. **Settings → Clear cache**.
 
+Open **Components → Product sets** and create the first template. Walkthroughs: [interface/flows](/en/components/ms3productsets/interface/flows).
+
+![Product sets manager](/components/ms3productsets/screenshots/page-overview.png)
+
 Package is available at [modstore.pro](https://modstore.pro/).
 
 ### After installation
@@ -61,7 +65,7 @@ Call **`ms3ProductSets`** on the product page template (or in the product card c
 
 ### The `type` parameter
 
-**`type`** selects the scenario: which manual links to read from `ms3_product_sets`, and which auto logic to run when those links are missing. Shared rules: [Set types](types), section “Common rules (all types)”.
+**`type`** selects the scenario: which manual links to read from `ms3_product_sets`, and which auto logic to run when those links are missing. Shared rules: [Set types](types), “Common rules (all types)”.
 
 | `type` | Purpose |
 |--------|---------|
@@ -73,7 +77,7 @@ Call **`ms3ProductSets`** on the product page template (or in the product card c
 | **`vip`** | Promo set from `vip_set_*`. Missing `set_id` uses `vip_set_1`. |
 | **`auto`** | Generic blocks (home, landings). Often **`category_id`** and/or **`resource_id`**. |
 
-This page uses **`buy_together`**.
+The example below uses **`buy_together`**.
 
 Other call parameters:
 
