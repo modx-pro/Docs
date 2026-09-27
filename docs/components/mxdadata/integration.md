@@ -4,7 +4,7 @@ title: Интеграция и сценарии
 
 # Интеграция и сценарии
 
-Плагин валидирует заказ, кэширует ответы DaData и ограничивает частоту запросов. Плейсхолдеры и сценарии сопровождения: [Для разработчиков](developer).
+Плагин валидирует заказ, пишет ответы DaData в **`mxdadata_cache`** и ограничивает частоту запросов. Плейсхолдеры: [Для разработчиков](/components/mxdadata/developer).
 
 ## Схемы потоков данных
 
@@ -15,7 +15,7 @@ flowchart LR
   A[address-suggest.js / сниппет] --> B[connector-web.php]
   B --> C[RateLimiter]
   C --> D[CacheService]
-  D --> E[cacheManager mxdadata_*]
+  D --> E[таблица mxdadata_cache]
   D --> F[HTTP к DaData Suggest / Party / ...]
 ```
 
@@ -53,17 +53,19 @@ flowchart TD
 
 ### Кэш Clean и валидация заказа
 
-При попадании в кэш **`CleanService`** отдаёт обёртку `{from_cache, data, status}` **без** массива **`body[0]`**, которого ждёт **`OrderValidator`**. Повторная нормализация того же телефона, email или адреса может ломаться ([issue #4](https://github.com/Ibochkarev/mxDadata/issues/4)). Для проверки временно уменьшите TTL или очистите кэш MODX с Dashboard (см. [Админка → Подключение](admin-ui)).
+При попадании в кэш **`CleanService`** отдаёт `{from_cache, body, status: 200}`. **`body`** — сохранённый массив Clean, **`OrderValidator`** читает **`body[0]`**. Повторная нормализация тех же данных проходит. Сброс: **Очистить кеш** на Dashboard или меньший TTL.
+
+При установке резолвер добавляет колонку **`fias_id`** (`VARCHAR(36)`) в `{prefix}ms3_order_addresses`, если её нет. Без MiniShop3 — WARN, установка идёт дальше. Плагин пишет `fias_id` в Address.
 
 ## Кэш и ограничение частоты
 
-- Ответы кэшируются в **`cacheManager`**, ключи с префиксом **`mxdadata_`**, TTL **`mxdadata_cache_ttl`**
-- Таблица **`mxdadata_cache`** в установке создаётся, рантайм её не использует ([issue #3](https://github.com/Ibochkarev/mxDadata/issues/3))
-- **`RateLimiter`** ограничивает частоту по **`mxdadata_throttle_rpm`**
+- Ответы DaData пишутся в **`mxdadata_cache`**, TTL **`mxdadata_cache_ttl`**
+- Кнопка на Dashboard чистит только эту таблицу
+- **`RateLimiter`** считает запросы в **`cacheManager`** по **`mxdadata_throttle_rpm`**
 
 ## Логи
 
-Записи в **`mxdadata_log`**: каждый Suggest/Clean/Party через **`LoggerService::log()`** попадает в таблицу. **`mxdadata_log_level`** на INSERT **не** влияет ([issue #5](https://github.com/Ibochkarev/mxDadata/issues/5)). Просмотр и ротация: [админка](admin-ui).
+**`LoggerService::log()`** пишет Suggest/Clean/Party в **`mxdadata_log`**, если уровень пропускает запись. При `warning` и `error` статус 200 не пишется. `debug` / **`mxdadata_debug_mode`** пишут все. Просмотр и ротация: [админка](/components/mxdadata/admin-ui).
 
 ## Отладка на витрине {#отладка-на-витрине}
 
@@ -101,7 +103,7 @@ sequenceDiagram
 
 По ответу геолокации **первый** найденный адрес сразу подставляется в `fillTarget`. Если список пуст или у первого варианта **`qc_geo === '4'`**, скрипт повторяет запрос. Повтор идёт с **`radius_meters` не меньше 500**, если в конфиге радиус меньше или не задан. Если вариантов несколько, список остаётся для ручного выбора.
 
-Допустимые **`action`** в `connector-web.php` для веб-части: `Suggest/Address`, `Suggest/Party`, `Suggest/Name`, `Suggest/Email`, `Suggest/Bank`, `Party/FindById`, `Geolocate/Address`, `Tools/Version` (см. коннектор в пакете). Сложные схемы с вложенным `subject` и несколькими полями удобно задавать через **`suggestionsChunk`** с чанком, содержащим только JSON.
+Допустимые **`action`** в `connector-web.php` для веб-части: `Suggest/Address`, `Suggest/Party`, `Suggest/Name`, `Suggest/Email`, `Suggest/Bank`, `Party/FindById`, `Geolocate/Address`, `Tools/Version` (см. коннектор в пакете). Сложные схемы с вложенным `subject` и несколькими полями задавайте через **`suggestionsChunk`**: в чанке только JSON.
 
 Если **`suggestionsChunk`** задан, сниппет сначала читает JSON из чанка MODX (`$modx->getChunk()`). Когда в БД чанк пустой или в теле невалидный JSON, берётся **файл** в пакете: `core/components/mxdadata/elements/chunks/<имя_чанка>.tpl`. Путь тот же, что у статического чанка в репозитории. Это помогает, когда конфиг в репозитории есть, а запись в БД ещё не перенесена.
 

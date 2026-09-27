@@ -4,11 +4,9 @@ title: Для разработчиков
 
 # Для разработчиков
 
-Плейсхолдеры страницы, коннекторы и соответствие вызовов API DaData.
+Плейсхолдеры выставляет `mxdadata_set_web_context_placeholders()`. В шаблонах и Fenom используйте **`[[+имя]]`**. Системные подстановки **`[[++…]]`** к ним не относятся.
 
 ## Плейсхолдеры веб-контекста (OnWebPageInit)
-
-Плейсхолдеры выставляет вызов `mxdadata_set_web_context_placeholders()`. В шаблонах и Fenom используйте **`[[+имя]]`**. Системные подстановки **`[[++…]]`** к ним не относятся. Это **плейсхолдеры страницы**:
 
 | Плейсхолдер | Содержимое |
 |-------------|------------|
@@ -24,8 +22,8 @@ title: Для разработчиков
 
 ## События MODX / MiniShop3
 
-- **Свои плагины** на `msOnBeforeCreateOrder` / `msOnSubmitOrder` выполняются **вместе** с mxDadata (приоритет — порядок плагинов в БД). mxDadata нормализует адрес в объекте `Address` **до** сохранения, если валидация прошла.
-- Для реакции на **витрине** после подсказки используйте событие DOM **`mxdadata:order-address-updated`** (см. [Интеграция](integration#событие-для-других-скриптов)).
+- **Свои плагины** на `msOnBeforeCreateOrder` / `msOnSubmitOrder` выполняются **вместе** с mxDadata. Приоритет задаёт порядок плагинов в БД. mxDadata нормализует адрес в объекте `Address` **до** сохранения, если валидация прошла.
+- Для реакции на **витрине** после подсказки используйте событие DOM **`mxdadata:order-address-updated`** (см. [Интеграция](/components/mxdadata/integration#событие-для-других-скриптов)).
 
 ## Коннекторы
 
@@ -43,22 +41,22 @@ title: Для разработчиков
 | Party по ИНН | `findById/party` (Secret) |
 | Версия/статус справочников Suggest | GET `…/suggestions/api/4_1/rs/status` (Token) |
 | Clean: телефон, email, адрес, ФИО | `cleaner.dadata.ru/api/v1/clean/…` (Secret) |
-| Баланс (дашборд) | `dadata.ru/api/v2/profile/balance` (Secret) |
+| Баланс (Dashboard) | `dadata.ru/api/v2/profile/balance` (Secret) |
 
 **Secret в браузер не отдаётся.** `mxdadata_api_secret` используется только в серверных запросах: плагин, менеджерские процессоры и действия `connector-web.php`, где нужен Secret. Публичные подсказки с витрины идут через `connector-web.php` с ограничением **`RateLimiter`** и кэшем.
 
-**HTTP-повторы:** настройка **`mxdadata_api_retry`** читается в клиенте, но **`exchange()`** повторов не делает ([issue #1](https://github.com/Ibochkarev/mxDadata/issues/1)).
+**HTTP-повторы:** **`mxdadata_api_retry`** — число попыток. По умолчанию `1`. Повтор только при ошибке curl, не при HTTP 4xx/5xx.
 
 ## Таблицы БД
 
 | Таблица | Назначение |
 |---------|------------|
-| `mxdadata_cache` | Создаётся при установке. **Кэш ответов в рантайме здесь не хранится** ([issue #3](https://github.com/Ibochkarev/mxDadata/issues/3)). Актуальный кэш — **`cacheManager`**, префикс `mxdadata_`, TTL **`mxdadata_cache_ttl`** |
+| `mxdadata_cache` | Ответы DaData (Suggest, Clean, Party, Geolocate). TTL **`mxdadata_cache_ttl`**. Очистка с Dashboard — только эта таблица. **`RateLimiter`** хранит счётчик в **`cacheManager`** |
 | `mxdadata_log` | Журнал запросов, ротация по **`mxdadata_log_retention_days`** (процессор **`Logs/Rotate`**, задача Scheduler **`mxdadata_rotate_logs`**) |
 
 ## Связанные разделы документации
 
-- [Интеграция и сценарии](integration) — плагин, кэш, mermaid-схемы
-- [Системные настройки](settings) — полный список ключей
-- [Подключение на сайте](frontend) — поля формы и коннектор
-- [Админка в MODX](admin-ui) — права и вкладки Vue
+- [Интеграция и сценарии](/components/mxdadata/integration) — плагин, кэш, mermaid-схемы
+- [Системные настройки](/components/mxdadata/settings) — полный список ключей
+- [Подключение на сайте](/components/mxdadata/frontend) — поля формы и коннектор
+- [Админка в MODX](/components/mxdadata/admin-ui) — права и вкладки Vue

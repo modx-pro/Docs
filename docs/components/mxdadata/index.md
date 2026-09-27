@@ -39,7 +39,7 @@ items:
 
 # mxDadata
 
-**mxDadata** подключает **[DaData](https://dadata.ru/)** к **[MiniShop3](/components/minishop3/)** на **[MODX Revolution 3](https://modx.com/)**. На чекауте работают подсказки адреса и организаций. При оформлении заказа компонент нормализует и проверяет данные через **Clean** API, кэширует ответы и пишет журнал запросов в панели управления.
+**mxDadata** подключает **[DaData](https://dadata.ru/)** к **[MiniShop3](/components/minishop3/)** на **[MODX Revolution 3](https://modx.com/)**. Сниппеты дают подсказки адреса и организаций. При оформлении заказа плагин нормализует и проверяет данные через **Clean**, пишет ответы в **`mxdadata_cache`** и журнал в **`mxdadata_log`**.
 
 Список изменений: `core/components/mxdadata/docs/changelog.txt` в составе компонента.
 
@@ -51,7 +51,7 @@ items:
 4. В чанк формы заказа (например `tpl.msOrder`) **некэшированно** выведите `[[!mxDadataAddressSuggest]]`. Параметр **`input`** должен указывать на поле адреса.
 5. **Настройки → Очистить кэш**. Откройте оформление заказа с товаром в корзине.
 
-Детали: [Быстрый старт](quick-start). Поля формы: [Подключение на сайте](frontend).
+Детали: [Быстрый старт](/components/mxdadata/quick-start). Поля формы: [Подключение на сайте](/components/mxdadata/frontend).
 
 ## Безопасность ключей
 
@@ -62,14 +62,16 @@ items:
 ## Тарифы, баланс и лимиты DaData
 
 - Условия и стоимость: [кабинет DaData](https://dadata.ru/pricing/). **Баланс** и **статистика** запросов: **Extras → mxDadata → Dashboard** (там же **Логи**).
-- Каждая подсказка и валидация расходует квоту. **`RateLimiter`** (`mxdadata_throttle_rpm`) снижает риск всплесков и ответа 429. При **исчерпанном балансе** API отказывает: [FAQ → 429](faq#429-лимиты-и-баланс-dadata), [Логи](admin-ui).
+- Каждая подсказка и валидация расходует квоту. **`RateLimiter`** (`mxdadata_throttle_rpm`) снижает риск всплесков и ответа 429. При **исчерпанном балансе** API отказывает: [FAQ → 429](/components/mxdadata/faq#429-лимиты-и-баланс-dadata), [Логи](/components/mxdadata/admin-ui).
 
 ## Возможности
 
 - **Suggest на витрине:** сниппеты `mxDadataAddressSuggest`, `mxDadataPartySuggest`, форма `mxDadataForm` (JSON-конфиг полей) через `assets/components/mxdadata/connector-web.php`
-- **Плагин MiniShop3:** на `msOnBeforeCreateOrder` и `msOnSubmitOrder` валидирует телефон и email (Clean), нормализует адрес, требует FIAS/индекс, блокирует заказ при ошибках. **`OnWebPageInit`** подставляет плейсхолдеры веб-контекста в шаблоны
-- **Админ-панель (Vue):** **Extras → mxDadata**, вкладки **Dashboard**, **Юрлица**, **Логи** (KPI, тест API, очистка кэша, Party по ИНН). Ключи MS3, API и лимит запросов: [системные настройки](settings). Для интерфейса нужен [VueTools](https://docs.modx.pro/components/vuetools/). Сниппеты на витрине работают без него
-- **Кэш:** `modX::cacheManager`, префикс `mxdadata_`, TTL **`mxdadata_cache_ttl`**, очистка с Dashboard. Таблица `mxdadata_cache` создаётся при установке, в рантайме не используется ([issue #3](https://github.com/Ibochkarev/mxDadata/issues/3))
+- **Плагин MiniShop3:** на `msOnBeforeCreateOrder` и `msOnSubmitOrder` валидирует телефон и email (Clean), нормализует адрес, требует FIAS/индекс, блокирует заказ при ошибках
+- **`OnWebPageInit`:** подставляет плейсхолдеры веб-контекста в шаблоны
+- **Админ-панель (Vue):** **Extras → mxDadata**, вкладки **Dashboard**, **Юрлица**, **Логи** (KPI, тест API, очистка кэша, Party по ИНН). Ключи MS3, API и лимит запросов: [системные настройки](/components/mxdadata/settings)
+- Для админки нужен [VueTools](https://docs.modx.pro/components/vuetools/). Сниппеты на витрине работают без него
+- **Кэш:** таблица `mxdadata_cache`, TTL **`mxdadata_cache_ttl`**, очистка с Dashboard (только эта таблица). Счётчик **`RateLimiter`** — в `cacheManager`
 - **Логи:** таблица `mxdadata_log`, фильтры, просмотр request/response. Ротация вручную или задача Scheduler **`mxdadata_rotate_logs`** (процессор `Logs/Rotate`)
 
 ## Системные требования
@@ -93,12 +95,11 @@ items:
 ## Установка
 
 1. Установите пакет через **Extras → Installer** (транспорт с ModStore или локальная сборка `php _build/build.php` из исходников).
-2. Нужен установленный **MiniShop3**.
-3. Зарегистрируйтесь на [dadata.ru](https://dadata.ru/). В [профиле](https://dadata.ru/profile/#info) скопируйте **API Token** и **Secret**.
-4. Задайте **`mxdadata_api_token`** и **`mxdadata_api_secret`** в системных настройках `mxdadata`. **Тест соединения:** **Dashboard → Подключение**.
-5. **Настройки → Очистить кэш**.
+2. Зарегистрируйтесь на [dadata.ru](https://dadata.ru/). В [профиле](https://dadata.ru/profile/#info) скопируйте **API Token** и **Secret**.
+3. Задайте **`mxdadata_api_token`** и **`mxdadata_api_secret`** в системных настройках `mxdadata`. **Тест соединения:** **Dashboard → Подключение**.
+4. **Настройки → Очистить кэш**.
 
-Пошагово: [Быстрый старт](quick-start).
+Пошагово: [Быстрый старт](/components/mxdadata/quick-start).
 
 ## Термины
 
@@ -109,13 +110,4 @@ items:
 | **connector.php** | Коннектор для менеджерских процессоров (MODX) |
 | **Party** | API организаций по ИНН (реквизиты, адрес) |
 
-## Документация по разделам
-
-- [Быстрый старт](quick-start) — ключи, плагин, сниппеты в чанке заказа
-- [Админка в MODX](admin-ui) — вкладки, дашборд, логи, Party
-- [Системные настройки](settings) — API, кэш, лимит запросов, MiniShop3
-- [Сниппеты](snippets/index) — адрес, ИНН, универсальная форма
-- [Подключение на сайте](frontend) — порядок вывода с [msRussianPost](/components/msrussianpost/), событие `mxdadata:order-address-updated`
-- [Интеграция и сценарии](integration) — события плагина, валидация, кэш, схемы потоков
-- [Для разработчиков](developer) — плейсхолдеры, API DaData
-- [FAQ](faq) — частые проблемы, 429
+Порядок вывода с [msRussianPost](/components/msrussianpost/) и событие `mxdadata:order-address-updated`: [Подключение на сайте](/components/mxdadata/frontend). Частые ошибки: [FAQ](/components/mxdadata/faq).
