@@ -1,6 +1,6 @@
 ---
 title: System settings
-description: indexnow_* keys: endpoint, queue, batch, retry, and history
+description: "indexnow_* keys: endpoint, queue, batch, retry, and history"
 ---
 
 # System settings
