@@ -16,21 +16,21 @@ description: Stuck queue, HTTP 403/429, key file, connector
 
 Create `{key}.txt` in the web root. File body must be the key only.
 
-On multi-domain setups, place the file in each public document root. See [Key and key file](key).
+On multi-domain setups, place the file in each public document root. See [Key and key file](/en/components/indexnow/key).
 
 ## HTTP 403
 
 Common causes: missing key file, wrong key, endpoint rejected the request (including local hosts like `project.test`).
 
-Fix the key file, then **Retry** on the failed row. **Retry** does not reset `attempts` ([issue #1](https://github.com/Ibochkarev/IndexNow/issues/1)).
+Fix the key file, then **Retry** on the `failed` row: `attempts` is reset, and the worker starts a full attempt series.
 
 ## HTTP 429 or 5xx
 
-Temporary error. Worker schedules retry after `indexnow_retry_delay`. Increase delay or lower `indexnow_batch_size` if needed.
+Temporary error. Worker schedules retry after [`indexnow_retry_delay`](/en/components/indexnow/settings). Increase delay or lower `indexnow_batch_size` if needed.
 
 ## HTTP 401, 404, 410, and other 4xx
 
-Treated as permanent: immediate `failed`, no retry loop (except codes explicitly treated as temporary in the worker).
+Treated as permanent: immediate `failed`, no retry loop (except codes explicitly treated as temporary in the worker). Full code table: [Queue and delivery → HTTP codes](/en/components/indexnow/queue#http-codes).
 
 ## Resource saved but IndexNow error in the log
 
