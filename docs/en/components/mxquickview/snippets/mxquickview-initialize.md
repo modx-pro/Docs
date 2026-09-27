@@ -19,11 +19,11 @@ Loads mxQuickView frontend assets, sets `window.mxqvConfig` and outputs the moda
 | Parameter | Default | Description |
 | --- | --- | --- |
 | `modalSize` | overrides `mxquickview_modal_size` | `native`/`bootstrap` only: `modal-sm`, `modal-lg`, `modal-xl` |
-| `mouseoverDelay` | overrides setting; transport default `''` | Empty property → 0 in PHP, effectively 300 ms in JS ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)) |
+| `mouseoverDelay` | overrides `mxquickview_mouseover_delay` | Empty string uses the setting (default 300 ms) |
 | `modalLibrary` | `native` | `native`, `bootstrap`, `fancybox` (`bootstrap5` alias) |
 | `debug` | `mxquickview_debug` | Not in transport snippet properties in the manager; pass `&debug=` in the call |
 | `loadingText` | lexicon `mxqv_loading` | Not in transport properties; pass `&loadingText=` |
-| `fancyboxCss` | setting when parameter omitted | Empty snippet property skips `mxquickview_fancybox_css` |
+| `fancyboxCss` | `mxquickview_fancybox_css` if omitted or empty | Fancybox CSS URL/path |
 | `fancyboxJs` | same | Fancybox JS |
 | `bootstrapCss` | same | Bootstrap CSS |
 | `bootstrapJs` | same | Bootstrap JS |

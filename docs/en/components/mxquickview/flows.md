@@ -18,21 +18,23 @@ flowchart TD
   FB --> EV
 ```
 
-1. Click on element with `data-mxqv-click`.
-2. JS reads `mode`, `data_action`, `element`, `id`, `title`.
-3. For `native`/`bootstrap` the modal opens immediately (loading state), then POST is sent to `connector.php` (`action=render`, including `modal_library`).
-4. For `fancybox` POST runs first, then Fancybox opens with the returned HTML.
-5. On success HTML is inserted into the chosen mode container:
-   - `native` → `#mxqv-modal-body .qv-modal__content-area`;
-   - `bootstrap` → `#mxqv-bootstrap-modal-body .qv-modal__content-area`;
-   - `fancybox` → current Fancybox slide.
-6. After insert, `mxqv:loaded` is dispatched.
+For `native`/`bootstrap` the modal opens immediately (loading state), then POST is sent to `connector.php` (`action=render`, including `modal_library`).
+
+For `fancybox` POST runs first, then Fancybox opens with the returned HTML.
+
+On success HTML is inserted into the chosen mode container:
+
+- `native` → `#mxqv-modal-body .qv-modal__content-area`
+- `bootstrap` → `#mxqv-bootstrap-modal-body .qv-modal__content-area`
+- `fancybox` → current Fancybox slide
+
+After insert, `mxqv:loaded` is dispatched.
 
 ## 2. Render on mouseover
 
 1. Hover over element with `data-mxqv-mouseover`.
 2. Timer starts using `mouseoverDelay` from `window.mxqvConfig`.
-3. If cursor is still there when timer ends, the same `render` request runs.
+3. If cursor is still there when timer ends, the same `render` request runs. Loop is not collected: prev/next and ←/→ do not work with `data-mxqv-mouseover`.
 4. If cursor leaves earlier, timer is cancelled.
 
 ## 3. `selector` mode (no built-in modal)
@@ -63,7 +65,7 @@ flowchart TD
 3. JS finds `.qv-product[data-mxqv-variants]` and only handles flag `true|1|yes|on`.
 4. JS listens for `click` on `[data-variant-id]` and `change` on `select/input` in `.qv-product__variants`.
 5. On variant change it updates price, old price and image.
-6. Variant handler (`initVariantsInContent`) runs on **modal** insert (`setContent`), not in `mode=selector` ([issue #2](https://github.com/Ibochkarev/mxQuickView/issues/2)).
+6. Variant handler (`initVariantsInContent`) runs on **modal** insert and in `mode=selector`.
 
 ## 7. Error flow
 

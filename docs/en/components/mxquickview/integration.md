@@ -19,7 +19,7 @@ Include `mxQuickView.initialize` once in the template.
 
 :::
 
-Default asset base and `connector.php`: `[[++assets_url]]components/mxquickview/`. Override with system setting `mxquickview.assets_url`.
+Default asset base and `connector.php`: `[[++assets_url]]components/mxquickview/`. Override with optional `getOption` `mxquickview.assets_url` (not in transport).
 
 Bundled chunks (`mxqv_product`, `mxqv_resource`) use **Fenom**. Install pdoTools 3.x: the processor parses Fenom on chunk/template render. Without pdoTools, raw `{$…}` remains in the response.
 
@@ -45,61 +45,10 @@ Bundled chunks (`mxqv_product`, `mxqv_resource`) use **Fenom**. Install pdoTools
 
 ### Modal library choice
 
-#### `native`
+`modalLibrary`: `native` (default), `bootstrap`, or `fancybox`.
 
-::: code-group
+`fancybox` calls `window.Fancybox.show()`. If the Fancybox API is missing, JS falls back to `native` (`#mxqv-modal` is always in the HTML). Same without `bootstrap.Modal` or without `#mxqv-bootstrap-modal`.
 
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`native`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'native'
-]}
-```
-
-:::
-
-#### `fancybox`
-
-::: code-group
-
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`fancybox`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'fancybox'
-]}
-```
-
-:::
-
-#### `bootstrap`
-
-::: code-group
-
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`bootstrap`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'bootstrap'
-]}
-```
-
-:::
-
-`fancybox` calls `window.Fancybox.show()`. If the Fancybox API is missing, the mode **does not** fall back to `native` (unlike bootstrap). See [issue #3](https://github.com/Ibochkarev/mxQuickView/issues/3).
 The package ships with local Fancybox files:
 
 - `assets/components/mxquickview/vendor/fancybox/fancybox.css`
@@ -133,6 +82,8 @@ You can set paths explicitly:
 ```
 
 :::
+
+For Bootstrap pass `modalLibrary=bootstrap`.
 
 ## 2. Quick view for any resource (news, articles, pages)
 
@@ -264,7 +215,7 @@ A compact mini-cart in quick view is built as `msCart` + `tpl.msMiniCart` (per d
 
 :::
 
-Delay: snippet `mouseoverDelay` overrides `mxquickview_mouseover_delay`. Empty transport property → `(int)'' = 0`, then 300 ms in JS ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)).
+Delay: snippet `mouseoverDelay` overrides `mxquickview_mouseover_delay`. An empty property string reads the setting (default 300 ms).
 
 ## 6. `selector` mode (custom container)
 
@@ -333,8 +284,6 @@ Delay: snippet `mouseoverDelay` overrides `mxquickview_mouseover_delay`. Empty t
 ```
 
 :::
-
-Hover delay is the same as in section 5 ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)).
 
 ### Bootstrap 5 modal via selector
 
@@ -485,7 +434,7 @@ Each trigger inside must have its own `data-mxqv-action`, `data-mxqv-element`, `
 
 ### What mxQuickView frontend does
 
-Variant switching (`initVariantsInContent`) runs on **modal** insert, not in `mode=selector` ([issue #2](https://github.com/Ibochkarev/mxQuickView/issues/2)).
+Variant switching (`initVariantsInContent`) runs on **modal** insert and in `mode=selector`.
 
 1. Finds `.qv-product[data-mxqv-variants]` and checks flag (`true|1|yes|on`).
 2. Parses `data-mxqv-variants-json`.
@@ -493,13 +442,6 @@ Variant switching (`initVariantsInContent`) runs on **modal** insert, not in `mo
 4. Handles click on elements with `data-variant-id`.
 5. Handles `change` on `select/input` when variant id is in `value` or `data-variant-id`.
 6. On variant change updates price (`[data-mxqv-price]`), old price (`.qv-product__price-old`) and image (`.qv-product__thumb`, if `data-thumb|data-image` present).
-
-### What the shopper sees
-
-1. Open quick view for a product with variants.
-2. Variant block `[[+variants_html]]` is visible.
-3. On variant change, price/old price/image in the modal update without reload.
-4. “Add to cart” submits the ms3 form with selected variant/options.
 
 ### MiniShop3 and ms3Variants
 

@@ -11,17 +11,15 @@ Loads quick view CSS/JS and outputs the built-in modal HTML.
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `modalSize` | snippet property overrides `mxquickview_modal_size` (transport default `modal-lg`) | `modal-sm`, `modal-lg`, `modal-xl` for `native` and `bootstrap` only |
-| `mouseoverDelay` | property overrides `mxquickview_mouseover_delay` (transport default `''`) | Hover delay ms; empty property → `(int)'' = 0`, JS `parseInt(...) \|\| 300` |
-| `modalLibrary` | `native` | `native`, `bootstrap`, `fancybox` (`bootstrap5` alias). No `window.bootstrap.Modal` → fallback `native`; no Fancybox API stays `fancybox` ([issue #3](https://github.com/Ibochkarev/mxQuickView/issues/3)) |
+| `modalSize` | non-empty property overrides `mxquickview_modal_size` (transport `modal-lg`) | `modal-sm`, `modal-lg`, `modal-xl` for `native` and `bootstrap` only |
+| `mouseoverDelay` | non-empty property overrides `mxquickview_mouseover_delay` | Hover delay in ms. Empty property string means “not set”: the setting is used (default 300) |
+| `modalLibrary` | `native` | `native`, `bootstrap`, `fancybox` (`bootstrap5` alias). No `window.bootstrap.Modal` or no `#mxqv-bootstrap-modal` → `native`. No Fancybox API (`Fancybox.show`) → `native` |
 | `debug` | `mxquickview_debug` when parameter omitted | Console `[mxqv]` logs. Not in manager snippet properties; works via `scriptProperties` |
 | `loadingText` | lexicon `mxqv_loading` | Loading text in modal/selector. Not in transport snippet properties |
-| `fancyboxCss` | system setting when parameter **omitted** | Fancybox CSS; empty snippet property skips setting ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)), then bundled/CDN |
+| `fancyboxCss` | `mxquickview_fancybox_css` if the parameter is omitted or empty | Fancybox CSS URL/path; then bundled files or CDN |
 | `fancyboxJs` | same | Fancybox JS |
 | `bootstrapCss` | same | Bootstrap CSS for `modalLibrary=bootstrap` |
 | `bootstrapJs` | same | Bootstrap JS |
-
-Parameters `debug` and `loadingText` are not in the snippet property card in the manager, but are handled when passed as `&debug=` / `&loadingText=`.
 
 ### Trigger data attributes
 
@@ -36,6 +34,8 @@ Parameters `debug` and `loadingText` are not in the snippet property card in the
 | `data-mxqv-title` | Modal title for `mode=modal` |
 | `data-mxqv-output` | CSS selector for container when `mode=selector` |
 | `data-mxqv-context` | Context key (for multi-language / multi-site) |
+| `data-mxqv-parent` | List container for loop |
+| `data-mxqv-loop` | `true` — collect sibling triggers for prev/next (click only, not mouseover) |
 
 ### Call examples
 
@@ -69,14 +69,12 @@ Parameters `debug` and `loadingText` are not in the snippet property card in the
 - `<script>window.mxqvConfig = ...</script>`
 - `<script src="...mxqv.min.js?v=filemtime" defer></script>` (fallback to `mxqv.js` if min not found)
 - Native modal markup (`#mxqv-modal-backdrop`, `#mxqv-modal`)
-- For `modalLibrary=bootstrap`: container `#mxqv-bootstrap-modal` and Bootstrap from `bootstrapCss/bootstrapJs` or bundled files; if missing, Bootstrap CDN
-- For `modalLibrary=fancybox`: Fancybox from `fancyboxCss/fancyboxJs` or bundled files; if missing, CDN `@fancyapps/ui`
+- For `modalLibrary=bootstrap`: container `#mxqv-bootstrap-modal` and Bootstrap from `bootstrapCss/bootstrapJs` or bundled files. If missing, Bootstrap CDN
+- For `modalLibrary=fancybox`: Fancybox from `fancyboxCss/fancyboxJs` or bundled files. If missing, CDN `@fancyapps/ui`
 
 ## Native modal CSS variables
 
-Variables apply to the built-in modal (`modalLibrary = native`) and are defined in:
-
-- `assets/components/mxquickview/css/mxqv.css`
+For `modalLibrary=native` they are defined in `assets/components/mxquickview/css/mxqv.css`.
 
 ### Full list
 
@@ -128,6 +126,8 @@ Variables apply to the built-in modal (`modalLibrary = native`) and are defined 
 
 ## Connector `assets/components/mxquickview/connector.php`
 
+The connector accepts only `POST` with `action=render` and returns JSON.
+
 ### Endpoint
 
 - Method: `POST`
@@ -142,10 +142,10 @@ Variables apply to the built-in modal (`modalLibrary = native`) and are defined 
 | `data_action` | no | `chunk`, `snippet`, `template` (default `chunk`) |
 | `element` | yes | Chunk/snippet/template name |
 | `id` | yes | Resource ID (integer > 0) |
-| `context` | no | Context key; invalid value falls back to `web` |
-| `mode` | no | `modal` or `selector`; only in `renderSnippet` for `msCart` / `msMiniCart` |
-| `output` | no | CSS selector; only for `msCart` with `mode=selector` (snippet `selector` param) |
-| `modal_library` | no | `native`, `bootstrap`, `fancybox`; only for `msCart` default cart selector |
+| `context` | no | Context key. Invalid value falls back to `web` |
+| `mode` | no | `modal` or `selector`. Only in `renderSnippet` for `msCart` / `msMiniCart` |
+| `output` | no | CSS selector. Only for `msCart` with `mode=selector` (snippet `selector` param) |
+| `modal_library` | no | `native`, `bootstrap`, `fancybox`. Only for `msCart` default cart selector. Fancybox default selector is empty: the script attaches the token to the current container |
 
 ### Success response
 
@@ -168,13 +168,13 @@ Variables apply to the built-in modal (`modalLibrary = native`) and are defined 
 
 ## Errors and messages
 
-JSON field `message` is the **resolved string** from lexicon `mxquickview:default` (or EN fallback in code), not the key.
+JSON field `message` is a **resolved string**, not a key. Before MODX loads, the connector returns English literals.
 
-| Condition | Lexicon key | RU (manager) | EN fallback |
+| Condition | Lexicon key | RU | EN |
 | --- | --- | --- | --- |
-| Method not POST | `mxqv_invalid_request` | Недопустимый метод запроса | Invalid request method |
-| `action != render` | `mxqv_invalid_action` | Недопустимое действие | Invalid action |
-| `index.php` not found | `mxqv_index_not_found` | Файл index.php не найден | index.php not found |
+| Method not POST | `mxqv_invalid_request` exists in lexicon; PHP does not call it | | always `Invalid request method` |
+| `action != render` | `mxqv_invalid_action` | | lexicon: Invalid action |
+| `index.php` not found | `mxqv_index_not_found` exists; PHP does not call it | | always `index.php not found` |
 | Empty `element` or `id <= 0` | `mxqv_missing_element_or_id` | Не переданы element или id | Missing element or id |
 | Resource not found | `mxqv_resource_not_found` | Ресурс не найден | Resource not found |
 | No view access | `mxqv_access_denied` | Доступ запрещён | Access denied |
@@ -208,8 +208,8 @@ There is no separate API object. `CustomEvent` events are dispatched on `documen
 
 After `msCart` render, HTML may include hidden `<span class="mxqv-ms3-render">` with:
 
-- `data-mxqv-ms3-render-token` — token for `ms3Config.render.cart`;
-- `data-mxqv-ms3-render-selector` — optional cart container CSS selector.
+- `data-mxqv-ms3-render-token` — token for `ms3Config.render.cart`
+- `data-mxqv-ms3-render-selector` — optional cart container CSS selector
 
 JS pushes the token into `window.ms3Config.render.cart` without inline script.
 

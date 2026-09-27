@@ -39,67 +39,16 @@ title: Интеграция на сайт
 
 :::
 
-Базовый URL ресурсов и `connector.php`: по умолчанию `[[++assets_url]]components/mxquickview/`. Переопределение — системная настройка `mxquickview.assets_url`.
+Базовый URL ресурсов и `connector.php`: по умолчанию `[[++assets_url]]components/mxquickview/`. Переопределение — необязательный `getOption` `mxquickview.assets_url` (в transport нет).
 
 Чанки поставки (`mxqv_product`, `mxqv_resource`) используют **Fenom**. Установите pdoTools 3.x: процессор разбирает Fenom при отрисовке chunk/template. Без pdoTools в ответе останутся сырые `{$…}`.
 
 ### Выбор библиотеки модалки
 
-#### `native`
+`modalLibrary`: `native` (по умолчанию), `bootstrap` или `fancybox`.
 
-::: code-group
+`fancybox` вызывает `window.Fancybox.show()`. Если API Fancybox нет, JS переключает режим на `native` (разметка `#mxqv-modal` всегда в HTML). То же без `bootstrap.Modal` или без `#mxqv-bootstrap-modal`.
 
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`native`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'native'
-]}
-```
-
-:::
-
-#### `fancybox`
-
-::: code-group
-
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`fancybox`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'fancybox'
-]}
-```
-
-:::
-
-#### `bootstrap`
-
-::: code-group
-
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`bootstrap`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'bootstrap'
-]}
-```
-
-:::
-
-`fancybox` вызывает `window.Fancybox.show()`. Если API Fancybox недоступен, режим **не** переключается на `native` (в отличие от bootstrap). См. [issue #3](https://github.com/Ibochkarev/mxQuickView/issues/3).
 В поставке уже есть локальные файлы Fancybox:
 
 - `assets/components/mxquickview/vendor/fancybox/fancybox.css`
@@ -133,6 +82,8 @@ title: Интеграция на сайт
 ```
 
 :::
+
+Для Bootstrap передайте `modalLibrary=bootstrap`.
 
 ## 2. Быстрый просмотр любого ресурса (новости, статьи, страницы)
 
@@ -238,7 +189,7 @@ title: Интеграция на сайт
 
 Компактная миникорзина в quick view собирается как `msCart` + `tpl.msMiniCart` (по docs.modx.pro). `data-mxqv-element="msMiniCart"` работает как alias.
 
-## 5. Рендер по наведению (mouseover)
+## 5. Отрисовка по наведению (mouseover)
 
 ::: code-group
 
@@ -264,7 +215,7 @@ title: Интеграция на сайт
 
 :::
 
-Задержка: параметр `mouseoverDelay` перекрывает `mxquickview_mouseover_delay`. Пустое свойство сниппета в transport даёт `(int)'' = 0`, в JS затем 300 мс ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)).
+Задержка: параметр `mouseoverDelay` перекрывает `mxquickview_mouseover_delay`. Пустая строка свойства читает настройку (по умолчанию 300 мс).
 
 ## 6. Режим `selector` (свой контейнер)
 
@@ -333,8 +284,6 @@ title: Интеграция на сайт
 ```
 
 :::
-
-Задержка наведения — как в разделе 5 ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)).
 
 ### Вариант с Bootstrap 5 modal через `selector`
 
@@ -485,7 +434,7 @@ title: Интеграция на сайт
 
 ### Что делает frontend-логика mxQuickView
 
-Переключение вариантов (`initVariantsInContent`) вызывается при вставке в **modal**, не в `mode=selector` ([issue #2](https://github.com/Ibochkarev/mxQuickView/issues/2)).
+Переключение вариантов (`initVariantsInContent`) вызывается и в **modal**, и в `mode=selector`.
 
 1. Ищет `.qv-product[data-mxqv-variants]` и проверяет флаг (`true|1|yes|on`).
 2. Парсит `data-mxqv-variants-json`.
@@ -493,13 +442,6 @@ title: Интеграция на сайт
 4. Поддерживает клик по элементам с `data-variant-id`.
 5. Поддерживает `change` для `select/input`, если id варианта передан в `value` или `data-variant-id`.
 6. При смене варианта обновляет цену (`[data-mxqv-price]`), old price (`.qv-product__price-old`) и изображение (`.qv-product__thumb`, если есть `data-thumb|data-image`).
-
-### Как это выглядит для покупателя
-
-1. Открыли quick view товара с вариантами.
-2. Виден блок выбора `[[+variants_html]]`.
-3. При выборе варианта цена/old price/изображение в модалке меняются без перезагрузки.
-4. Кнопка `В корзину` отправляет форму ms3 с выбранным вариантом/опциями.
 
 ### MiniShop3 и ms3Variants
 

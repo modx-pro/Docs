@@ -5,7 +5,7 @@ title: Подключение на сайте
 
 Полный сценарий — [Интеграция на сайт](/components/mxquickview/integration).
 
-1. Подключите `mxQuickView.initialize` один раз в базовом шаблоне (при необходимости задайте `mxquickview.assets_url`).
+1. Подключите `mxQuickView.initialize` один раз в базовом шаблоне. Ключ `mxquickview.assets_url` в transport нет: при необходимости создайте вручную.
 2. Выберите `modalLibrary`: `native`, `bootstrap` или `fancybox`.
 3. Добавьте триггеры `data-mxqv-click` или `data-mxqv-mouseover`.
 4. Укажите режим (`modal`/`selector`) и тип отрисовки (`chunk`/`snippet`/`template`).

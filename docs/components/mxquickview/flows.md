@@ -18,21 +18,23 @@ flowchart TD
   FB --> EV
 ```
 
-1. Клик по элементу с `data-mxqv-click`.
-2. JS читает `mode`, `data_action`, `element`, `id`, `title`.
-3. Для `native`/`bootstrap` модалка открывается сразу (состояние загрузки), затем уходит POST в `connector.php` (`action=render`, включая `modal_library`).
-4. Для `fancybox` сначала POST, затем Fancybox открывается уже с полученным HTML.
-5. При успехе HTML вставляется в контейнер выбранного режима:
-   - `native` → `#mxqv-modal-body .qv-modal__content-area`;
-   - `bootstrap` → `#mxqv-bootstrap-modal-body .qv-modal__content-area`;
-   - `fancybox` → текущий слайд Fancybox.
-6. После вставки публикуется `mxqv:loaded`.
+Для `native`/`bootstrap` модалка открывается сразу (состояние загрузки), затем уходит POST в `connector.php` (`action=render`, включая `modal_library`).
+
+Для `fancybox` сначала POST, затем Fancybox открывается уже с полученным HTML.
+
+При успехе HTML вставляется в контейнер выбранного режима:
+
+- `native` → `#mxqv-modal-body .qv-modal__content-area`
+- `bootstrap` → `#mxqv-bootstrap-modal-body .qv-modal__content-area`
+- `fancybox` → текущий слайд Fancybox
+
+После вставки публикуется `mxqv:loaded`.
 
 ## 2. Отрисовка по наведению (mouseover)
 
 1. Наведение на элемент с `data-mxqv-mouseover`.
 2. Запускается таймер `mouseoverDelay` из `window.mxqvConfig`.
-3. Если курсор не ушёл до конца таймера, выполняется тот же запрос `render`.
+3. Если курсор не ушёл до конца таймера, выполняется тот же запрос `render`. Список loop не собирается: prev/next и ←/→ с `data-mxqv-mouseover` не работают.
 4. Если курсор ушёл раньше, таймер отменяется.
 
 ## 3. Режим `selector` (без встроенной модалки)
@@ -63,7 +65,7 @@ flowchart TD
 3. JS ищет `.qv-product[data-mxqv-variants]` и обрабатывает только флаг `true|1|yes|on`.
 4. JS слушает `click` по `[data-variant-id]` и `change` на `select/input` в `.qv-product__variants`.
 5. При выборе варианта обновляет цену, старую цену и изображение.
-6. Обработчик вариантов (`initVariantsInContent`) вызывается при вставке в **modal** (`setContent`), не в ветке `mode=selector` ([issue #2](https://github.com/Ibochkarev/mxQuickView/issues/2)).
+6. Обработчик вариантов (`initVariantsInContent`) вызывается при вставке в **modal** и в `mode=selector`.
 
 ## 7. Поток ошибок
 

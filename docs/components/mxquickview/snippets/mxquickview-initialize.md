@@ -19,11 +19,11 @@ title: mxQuickView.initialize
 | Параметр | По умолчанию | Описание |
 | --- | --- | --- |
 | `modalSize` | перекрывает `mxquickview_modal_size` | Только `native`/`bootstrap`: `modal-sm`, `modal-lg`, `modal-xl` |
-| `mouseoverDelay` | перекрывает настройку; transport default `''` | Пустое свойство → 0 в PHP, в JS фактически 300 мс ([issue #1](https://github.com/Ibochkarev/mxQuickView/issues/1)) |
+| `mouseoverDelay` | перекрывает `mxquickview_mouseover_delay` | Пустая строка = настройка (по умолчанию 300 мс) |
 | `modalLibrary` | `native` | `native`, `bootstrap`, `fancybox` (`bootstrap5` alias) |
 | `debug` | `mxquickview_debug` | В панели управления нет в списке свойств transport, передаётся через `&debug=` |
 | `loadingText` | лексикон `mxqv_loading` | Не в свойствах transport, только через `&loadingText=` |
-| `fancyboxCss` | настройка, если параметр не передан | Пустая строка в свойстве не подставляет `mxquickview_fancybox_css` |
+| `fancyboxCss` | `mxquickview_fancybox_css`, если параметр не задан или пустой | URL/путь к CSS Fancybox |
 | `fancyboxJs` | то же | JS Fancybox |
 | `bootstrapCss` | то же | CSS Bootstrap |
 | `bootstrapJs` | то же | JS Bootstrap |
