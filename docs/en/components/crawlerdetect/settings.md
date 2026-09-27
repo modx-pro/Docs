@@ -3,7 +3,7 @@ title: System settings
 ---
 # System settings
 
-Keys: `crawlerdetect_*`. Namespace **crawlerdetect**. The dot in `crawlerdetect.` belongs to the `placeholderPrefix` placeholder. System setting keys do not use a dot.
+Keys: `crawlerdetect_*`. Namespace **crawlerdetect**. The dot in `crawlerdetect.` is only on the `placeholderPrefix` placeholder. System setting keys have no dot.
 
 Path: **System → System settings**, filter by namespace `crawlerdetect`.
 
@@ -11,10 +11,12 @@ Path: **System → System settings**, filter by namespace `crawlerdetect`.
 
 | Setting | Description | Default |
 |---------|-------------|---------|
-| `crawlerdetect_block_message` | Message when form is blocked (bot) | Russian string from transport: «Не удалось отправить форму. Попробуйте позже.» |
+| `crawlerdetect_block_message` | Message when a bot is blocked | Russian string from transport: «Не удалось отправить форму. Попробуйте позже.» |
 | `crawlerdetect_log_blocked` | Log blocked submissions to MODX system log | Yes |
 
-The message is written to `[[+fi.validation_error_message]]` and to the FormIt error key `crawlerdetect` (`$hook->addError`). If `crawlerdetect_log_blocked` is missing from the database, the hook does not log (fallback `false`, issue [#2](https://github.com/Ibochkarev/CrawlerDetect/issues/2)).
+The message goes to `[[+fi.validation_error_message]]` and the FormIt error key `crawlerdetect` (`$hook->addError`).
+
+If `crawlerdetect_log_blocked` is missing from the database, the hook logs (fallback `true`, same as transport). Log line: `HTTP_USER_AGENT` only, max 200 characters. Not a concat of detection headers.
 
 ## isCrawler snippet properties
 
@@ -23,4 +25,4 @@ The message is written to `[[+fi.validation_error_message]]` and to the FormIt e
 | **userAgent** | String to check. Empty: JayBizzle headers (`HTTP_USER_AGENT`, `HTTP_FROM`, `HTTP_SEC_CH_UA`, …) | — |
 | **placeholderPrefix** | Placeholder prefix for detected bot name | `crawlerdetect.` |
 
-Placeholder `crawlerdetect.matches` (or your prefix) gets the bot name. Use it when debugging.
+Bot name: `crawlerdetect.matches` (or your prefix). For debugging.
