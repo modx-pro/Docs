@@ -16,7 +16,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vitepress dev",
-    "build": "pnpm run generate:og && NODE_OPTIONS=--max-old-space-size=10240 vitepress build",
+    "build": "pnpm run generate:og && NODE_OPTIONS=--max-old-space-size=10240 vitepress build && node scripts/redirects.mjs nginx",
     "generate:og": "node scripts/generate-og-images.mjs",
     "preview": "vitepress preview",
     "generate": "plop",
@@ -30,6 +30,7 @@
     "check:links": "node scripts/check-markdown-links.mjs",
     "check:links:external": "node scripts/check-markdown-links.mjs --external",
     "check:links:changed": "node scripts/check-markdown-links.mjs --changed",
+    "check:redirects": "node scripts/redirects.mjs check",
     "check:sync": "node scripts/check-docs-sync.mjs",
     "check:sync:changed": "node scripts/check-docs-sync.mjs --changed",
     "check:structure": "node scripts/check-docs-structure-sync.mjs",
