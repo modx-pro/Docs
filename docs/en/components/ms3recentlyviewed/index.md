@@ -38,16 +38,16 @@ items: [
 
 "Recently viewed products" block for [MiniShop3](/en/components/minishop3/). The list lives in the browser (`localStorage` or cookie) or in the DB for logged-in users. It fills when a user opens a product page.
 
-**Naming:** user-facing — **ms3RecentlyViewed**; in code (folders, snippets, lexicon) — **ms3recentlyviewed**.
+**Naming:** user-facing — **ms3RecentlyViewed**. In code (folders, snippets, lexicon) — **ms3recentlyviewed**.
 
 ## Features
 
-- **Recently viewed block** — IDs via client **JS** (`render()`), server snippet with **`fromDB`**, or **`ids`** from placeholder / cookie. See [Quick start](quick-start).
+- **Recently viewed block** — IDs via client **JS** (`render()`), server snippet with **`fromDB`**, or **`ids`** from placeholder / cookie. See [Quick start](/en/components/ms3recentlyviewed/quick-start).
 - **Browser storage** — `localStorage` (default) or cookie, no registration
 - **DB sync** — on login, anonymous views move from `localStorage` to the DB (first visit after login)
-- **Monthly archiving** — `archive_enabled` (on by default): aggregation into a summary table, smaller main table
+- **Monthly archiving** — `archive_enabled` (on by default): summary in `ms3recentlyviewed_monthly` without deleting `items` rows
 - **Bot exclusion** — `block_bots` + `block_bots_detector` (`crawler_detect` — CrawlerDetect library, or `regex` as fallback)
-- **Server output with cookie** — plugin **ms3recentlyviewedViewedIdsPlaceholder** (`OnWebPageInit`, priority **-5**) always sets **`[[+viewedIds]]`**. From the cookie when `storage_type=cookie`, otherwise empty. Fenom: `{$_modx->getPlaceholder('viewedIds')}`
+- **Server output with cookie** — plugin **ms3recentlyviewedViewedIdsPlaceholder** (`OnWebPageInit`, priority **-5**). Always sets **`[[+viewedIds]]`**. From the cookie when `storage_type=cookie`, otherwise empty. Fenom: `{$_modx->getPlaceholder('viewedIds')}`
 - **"Similar to viewed" snippet** — products from the same categories (`ms3recentlyviewedSimilar`)
 - **Manager** — dashboard (KPIs, top products), view history with filters, CSV export (BOM UTF-8, GET in connector-mgr for file download)
 - **Localization** — MODX Lexicon (ru, en), frontend snippet `ms3rvLexiconScript`
@@ -83,7 +83,7 @@ In MODX 3 the msProducts snippet requires the `parents` parameter even when usin
 
 ### After installation
 
-Load lexicon, CSS and JS, pass the product ID on the product page, output the block. [Quick start](quick-start), [Frontend setup](frontend).
+Load lexicon, CSS and JS. Pass the product ID on the product page. Output the block. [Quick start](/en/components/ms3recentlyviewed/quick-start), [Frontend setup](/en/components/ms3recentlyviewed/frontend).
 
 In the manager: **Extras → ms3RecentlyViewed** — dashboard and view history.
 

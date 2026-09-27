@@ -38,16 +38,16 @@ items: [
 
 Блок «Недавно просмотренные товары» для [MiniShop3](/components/minishop3/). Список хранится в браузере (`localStorage` или cookie) или в БД для авторизованных. Заполняется при открытии страниц товаров.
 
-**Именование:** для пользователя — **ms3RecentlyViewed**; в коде (папки, сниппеты, лексикон) — **ms3recentlyviewed**.
+**Именование:** для пользователя — **ms3RecentlyViewed**. В коде (папки, сниппеты, лексикон) — **ms3recentlyviewed**.
 
 ## Возможности
 
-- **Блок «Недавно просмотренные»** — вывод по списку ID: клиентский **JS** (`render()`), серверный сниппет с **`fromDB`**, либо **`ids`** из плейсхолдера / cookie. См. [Быстрый старт](quick-start).
+- **Блок «Недавно просмотренные»** — вывод по списку ID: клиентский **JS** (`render()`), серверный сниппет с **`fromDB`**, либо **`ids`** из плейсхолдера / cookie. См. [Быстрый старт](/components/ms3recentlyviewed/quick-start).
 - **Хранение в браузере** — `localStorage` (по умолчанию) или cookie, без регистрации
 - **Синхронизация в БД** — при входе анонимные просмотры из `localStorage` переносятся в БД (первый заход после авторизации)
-- **Месячное архивирование** — настройка `archive_enabled` (по умолчанию включено): агрегация в сводную таблицу, уменьшение основной таблицы
+- **Месячное архивирование** — настройка `archive_enabled` (по умолчанию включено): сводка в `ms3recentlyviewed_monthly` без удаления строк `items`
 - **Исключение ботов** — `block_bots` + `block_bots_detector` (`crawler_detect` — библиотека CrawlerDetect, либо `regex` как запасной вариант)
-- **Серверный вывод при cookie** — плагин **ms3recentlyviewedViewedIdsPlaceholder** (`OnWebPageInit`, приоритет **-5**): плейсхолдер **`[[+viewedIds]]`** из cookie `ms3_recently_viewed`, если **`ms3recentlyviewed.storage_type` = `cookie`**. В Fenom: `$_modx->getPlaceholder('viewedIds')`. Переменная `$viewedIds` сама не появляется.
+- **Серверный вывод при cookie** — плагин **ms3recentlyviewedViewedIdsPlaceholder** (`OnWebPageInit`, приоритет **-5**). Плейсхолдер **`[[+viewedIds]]`** из cookie `ms3_recently_viewed`, если **`ms3recentlyviewed.storage_type` = `cookie`**. В Fenom: `$_modx->getPlaceholder('viewedIds')`. Переменная `$viewedIds` сама не появляется.
 - **Сниппет «Похожие на просмотренные»** — товары из тех же категорий (`ms3recentlyviewedSimilar`)
 - **Админка** — дашборд (KPI, топ товаров), история просмотров с фильтрами, экспорт CSV (BOM UTF-8, GET в connector-mgr для загрузки файла)
 - **Локализация** — MODX Lexicon (ru, en), на сайте — сниппет `ms3rvLexiconScript`
@@ -82,7 +82,7 @@ items: [
 
 ### После установки
 
-Подключите лексикон, CSS и JS, передайте ID товара на странице товара, выведите блок. [Быстрый старт](quick-start), [Подключение на сайте](frontend).
+Подключите лексикон, CSS и JS. Передайте ID товара на странице товара. Выведите блок. [Быстрый старт](/components/ms3recentlyviewed/quick-start), [Подключение на сайте](/components/ms3recentlyviewed/frontend).
 
 В админке: **Extras → ms3RecentlyViewed** — дашборд и история просмотров.
 

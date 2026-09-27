@@ -11,7 +11,7 @@ Stats and history in admin come from `ms3recentlyviewed_items`. Records are writ
 
 - Guests are identified by session. Guest tracking: `ms3recentlyviewed.track_anonymous`.
 - Bot views are not stored when **`ms3recentlyviewed.block_bots`** is on.
-- Detection: **`ms3recentlyviewed.block_bots_detector`** — **`crawler_detect`** (jaybizzle/crawler-detect in vendor) or **`regex`**.
+- Detection: **`ms3recentlyviewed.block_bots_detector`** — **`crawler_detect`** (jaybizzle/crawler-detect in `vendor`) or **`regex`**.
 
 **Checklist:**
 
@@ -33,14 +33,14 @@ Plugin **ms3recentlyviewedViewedIdsPlaceholder** (event **OnWebPageInit**, prior
 
 Actions:
 
-- **Render viewed list** — optional `ids`, `limit`, `tpl`, `emptyTpl`. Empty `ids` is not an error: the snippet returns `emptyTpl`.
+- **Render viewed list** — optional `ids`, `limit`, `tpl`, `emptyTpl`, `includeThumbs`. Empty `ids` is not an error: the snippet returns `emptyTpl`.
 - **Similar** — `action=similar`, `ids`, optionally `limit`, `tpl`, `depth`
 - **`track`** + `product_id` — writes a view for guests (session) and logged-in users when sync is on
 - **`sync`** + `ids`, **`get`** — web-authenticated users only
 
-**Response:** HTML of the list; empty string when no products. If `window.MODX_ASSETS_URL` or `window.MODX_BASE_URL` is set, the JS builds the connector URL itself.
+**Response:** HTML of the list. Empty string when no products. If `window.MODX_ASSETS_URL` or `window.MODX_BASE_URL` is set, the JS builds the connector URL itself.
 
-IDs are parsed as integers (cap 100). Chunk names (`tpl`, `emptyTpl`) are only trimmed: `@FILE` and any characters pass through. The helper `ms3rv_sanitize_chunk_name` exists and is not called.
+IDs are parsed as integers (cap 100). POST `tpl` / `emptyTpl` (list and similar) go through `ms3rv_sanitize_chunk_name`. Only `[a-zA-Z0-9_-]` is allowed. `@FILE` and paths are stripped. Empty name → default chunk. Snippet properties in the template still use `ms3rv_resolve_chunk_name` (`trim`, `@FILE` allowed). If the snippet returns empty, the fallback reads `showUnpublished` / `showDeleted` from POST. Both are off by default.
 
 ## Chunks
 
@@ -66,4 +66,4 @@ There are no `--ms3rv-*` CSS variables on the storefront. `--ms3rv-accent*` exis
 
 ## Passing product ID manually
 
-Optional: button with `data-viewed-toggle` and `data-id` to add a product to the list on click (for example from a catalog grid without opening the product page).
+Optionally add a button with `data-viewed-toggle` and `data-id`. A click adds the product to the list, for example from a catalog grid without opening the product page.
