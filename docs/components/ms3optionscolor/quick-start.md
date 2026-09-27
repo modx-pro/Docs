@@ -13,13 +13,13 @@ flowchart TB
   Values[Значения опции на товаре]
   Assign[Назначить HEX во вкладке Swatches]
   Snippet[Вызов сниппета на витрине]
-  Select[Select со swatch]
+  Select[Select со свотчем]
   Install --> Values --> Assign --> Snippet --> Select
 ```
 
 ## Перед стартом
 
-У вас уже стоят MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools и PHP 8.2+. Нужен товар с опцией `color` и хотя бы одним значением. Для вкладки Swatches и CMP у роли должно быть право `msproduct_save` (как у сохранения товара miniShop3). Отдельных ACL-ключей пакет не создаёт.
+У вас уже стоят MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools и PHP 8.2+. Нужен товар с опцией `color` и хотя бы одним значением. Для вкладки Swatches и CMP нужно право `msproduct_save` у роли (как у сохранения товара miniShop3). Отдельных ACL-ключей пакет не создаёт.
 
 ## Установка
 
@@ -27,7 +27,7 @@ flowchart TB
 2. Очистите кэш MODX.
 3. Откройте **Компоненты → ms3OptionsColor**. Список словаря должен открыться без белого экрана и ошибок VueTools.
 
-При установке пакет сам готовит базу под словарь и RAL Classic, открывает раздел в меню и подключает плагин: вкладка товара, стили витрины, фильтр mFilter.
+Пакет готовит базу словаря и RAL Classic, пункт меню и плагин: вкладка товара, стили витрины, фильтр mFilter.
 
 ## Шаг 1. Откройте словарь
 
@@ -35,7 +35,7 @@ flowchart TB
 
 ![Словарь swatch](/components/ms3optionscolor/screenshots/overview.png)
 
-Вкладка **Словарь** показывает пары ключ/значение. **RAL** открывает справочник RAL Classic, если включена настройка `ms3optionscolor_ral_enabled`.
+**RAL** открывает справочник RAL Classic, если включена настройка `ms3optionscolor_ral_enabled`.
 
 ## Шаг 2. Назначьте цвет на карточке товара
 
@@ -47,13 +47,13 @@ flowchart TB
 
 У значения без свотча статус «не задано». Нажмите **Назначить** / **Изменить**, укажите HEX или RAL, сохраните.
 
-Запись пишется в общий словарь. Тот же `color=Синий` на другом товаре получит тот же свотч. На **Свойства товара** у уже назначенных значений в чипах появится квадрат цвета.
+Запись пишется в общий словарь. Тот же `color=Синий` на другом товаре получит тот же свотч. На **Свойства товара** у назначенных значений в чипах появится квадрат цвета.
 
-![Чипы опции со swatch](/components/ms3optionscolor/screenshots/product-options-chips.png)
+![Чипы опции со свотчем](/components/ms3optionscolor/screenshots/product-options-chips.png)
 
 ## Шаг 3. Выведите на витрину
 
-CSS (`css/web/main.css`) подключается сам при `ms3optionscolor_frontend_css=Да`. В шаблоне товара достаточно сниппета:
+CSS (`css/web/main.css`) подключается при `ms3optionscolor_frontend_css=Да`. В шаблоне товара достаточно сниппета:
 
 ::: code-group
 
@@ -75,7 +75,7 @@ CSS (`css/web/main.css`) подключается сам при `ms3optionscolor
 
 :::
 
-Если CSS отключён настройкой, добавьте `<link>` вручную:
+Если CSS отключён, добавьте `<link>` вручную:
 
 ::: code-group
 
@@ -123,9 +123,9 @@ CSS (`css/web/main.css`) подключается сам при `ms3optionscolor
 
 :::
 
-С `native=1` остаётся обычный `<select>`. Без флага и при наличии jQuery + Select2 на странице скрипт соберёт dropdown со swatch.
+С `native=1` остаётся обычный `<select>`. Без флага, если на странице есть jQuery и Select2, скрипт соберёт список со свотчами.
 
-![Select со swatch](/components/ms3optionscolor/screenshots/storefront-select.png)
+![Select со свотчем](/components/ms3optionscolor/screenshots/storefront-select.png)
 
 ## Дальше
 

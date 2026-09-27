@@ -5,7 +5,7 @@ description: Тип фильтра ms3oc для свотчей из словар
 
 # mFilter
 
-Пакет добавляет тип фильтра **`ms3oc`**. В каталоге покупатель видит квадраты цвета из словаря, а не голый список значений. Встроенный тип mFilter `colors` пакет не меняет.
+Пакет добавляет тип фильтра **`ms3oc`**. В каталоге покупатель видит квадраты цвета из словаря, не голый список значений. Встроенный тип mFilter `colors` пакет не меняет.
 
 Нужен установленный [mFilter](/components/mfilter/). Без него событие `OnMFilterInit` не сработает и типа `ms3oc` не будет.
 
@@ -42,12 +42,13 @@ flowchart LR
 | --- | --- |
 | `type` | Всегда `ms3oc` для свотчей из словаря |
 | `source` | Обычно `option` |
-| `field` | Ключ опции miniShop3, чаще `color` |
+| `field` | Значения опции и `option_key` словаря. Если `field` пуст — ключ Filter Set |
+| ключ объекта | Должен совпадать с `filters` у `mFilterForm`. На словарь не влияет, если задан `field` |
 | `label` | Подпись блока на витрине |
 | `tpl` | Чанк строки: штатный `tplMFilterMs3OptionsColor` или свой |
 | `multiple` | Несколько значений сразу |
 
-Ключ объекта (`"color"` в примере) должен совпадать с тем, что передаёте в `mFilterForm` как `filters`.
+`option_key` словаря равен `field`, иначе ключу Filter Set. Пример: ключ `color_swatch` и `"field": "color"` ищет свотчи по `color` ([#1](https://github.com/Ibochkarev/ms3OptionsColor/issues/1)).
 
 ## Вызов на странице
 
@@ -71,25 +72,25 @@ flowchart LR
 
 :::
 
-Параметры `mFilter` / `mFilterForm` зависят от вашей сборки. См. [сниппеты mFilter](/components/mfilter/snippets/). Важно для ms3OptionsColor:
+Параметры `mFilter` / `mFilterForm` зависят от сборки. См. [сниппеты mFilter](/components/mfilter/snippets/). Для ms3OptionsColor:
 
-- в Filter Set указан `"type": "ms3oc"`;
-- `filters` совпадает с ключом в JSON набора;
-- `mFilterForm` отдаёт в item `hex` / `pattern` / `ral` (или плоские `$hex`, `$pattern`, `$ral`);
-- при необходимости явно задайте `&tplItem=tplMFilterMs3OptionsColor`.
+- в Filter Set указан `"type": "ms3oc"`
+- `filters` совпадает с ключом в JSON набора
+- `mFilterForm` отдаёт в item `hex` / `pattern` / `ral` (или плоские `$hex`, `$pattern`, `$ral`)
+- при необходимости задайте `&tplItem=tplMFilterMs3OptionsColor`
 
 ![Фильтр ms3oc](/components/ms3optionscolor/screenshots/storefront-mfilter.png)
 
 ## Чанк `tplMFilterMs3OptionsColor`
 
-Штатный чанк рисует checkbox, свотч и подпись. Два формата данных:
+Два формата данных у чанка:
 
 | Источник | Поля |
 | --- | --- |
 | demo / ручной вызов | `$item.value`, `$item.label`, `$item.hex`, `$item.pattern`, `$item.ral`, `$item.count`, `$item.selected` |
 | mFilterForm | плоские `$value`, `$label`, `$hex`, `$pattern`, `$ral`, `$count`, `$active` |
 
-Минимальный свой ряд (Fenom):
+Минимальный свой ряд (Fenom). Атрибуты `data-ms3oc-filter-label` и `data-ms3oc-filter-count` читает CSS пакета для подписи и счётчика.
 
 ```fenom
 <label data-ms3oc-filter{if $active?} data-selected{/if}>
@@ -102,7 +103,7 @@ flowchart LR
 </label>
 ```
 
-CSS витрины (`ms3optionscolor_frontend_css`) должен быть включён, иначе свотч в фильтре часто без размера.
+CSS витрины (`ms3optionscolor_frontend_css`) должен быть включён. Иначе свотч в фильтре часто без размера.
 
 ## Типичные ошибки
 
@@ -110,7 +111,8 @@ CSS витрины (`ms3optionscolor_frontend_css`) должен быть вкл
 | --- | --- |
 | Нет свотчей, только текст | В Filter Set стоит `colors`, а не `ms3oc` |
 | Тип `ms3oc` не находится | Установлен mFilter, очищен кэш, плагин подписан на `OnMFilterInit` |
-| Пустые квадраты | В словаре нет HEX/pattern для значений опции |
+| Значения нет в фильтре | У записи словаря нет HEX и pattern. `ms3oc` её пропускает |
+| Пустые квадраты | Нет CSS (`frontend_css`) или свой чанк отдаёт пустой `hex` |
 | Нет стилей | `ms3optionscolor_frontend_css` или ручной `<link>` на `css/web/main.css` |
 
 Сценарий со скриншотом: [Flow G](interface/flows#flow-g-фильтр-каталога-mfilter). Общая витрина: [Вывод на сайте](frontend).

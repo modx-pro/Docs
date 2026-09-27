@@ -20,13 +20,11 @@ flowchart TD
 
 ## Кнопка не появляется
 
-**Причины:**
-
 - Ресурс не класса **msProduct** или нет записи `Data` у товара.
 - Параметр `&id` указывает на несуществующий или не товарный ресурс.
 - Сниппет вызван **кэшированно** — используйте `[[!msFastOrder]]` / `{'!msFastOrder' | snippet}`.
 
-**Проверка:** сниппет должен выполняться на странице товара MS3. В HTML должна быть разметка кнопки с `data-msfo-trigger`.
+Сниппет должен выполняться на странице товара MS3. В HTML должна быть разметка кнопки с `data-msfo-trigger`.
 
 ## Модалка не открывается
 
@@ -57,14 +55,14 @@ Connector вернул **HTML** (PHP-ошибка), а не JSON.
 - Сверьте `msfastorder_phone_mask` с форматом ввода.
 - При `msfastorder_prefix_enabled=1` — `msfastorder_prefix_country`, `msfastorder_prefix_length`.
 
-Серверная валидация строже клиентской — см. `msfastorder_required_fields` в [настройках](settings).
+Серверная валидация строже клиентской — см. `msfastorder_required_fields` в [настройках](/components/msfastorder/settings).
 
 ## Заказ MS не создаётся
 
 - MiniShop3 установлен и инициализирован.
 - `msfastorder_payment_id` и `msfastorder_delivery_id` — существующие **активные** ID в MS3.
 - **Журнал ошибок** MODX, префикс `[msFastOrder]`.
-- Временно `msfastorder_debug=1` на staging.
+- Временно `msfastorder_debug=1` на тестовом стенде.
 
 ## payment_link не появляется или не ЮKassa {#payment-link-не-появляется-или-не-юkassa}
 
@@ -77,11 +75,11 @@ Connector вернул **HTML** (PHP-ошибка), а не JSON.
 | Статус заказа не «оплачен» | Webhook ЮKassa и ключи msp3YooKassa |
 | Нет кнопки «Оплатить» | `payment_link` в ответе. Не ломайте `renderSuccess` без кнопки |
 
-Пошагово: [Интеграция → ЮKassa](integration#оплата-через-юkassa-msp3yookassa).
+Пошагово: [Интеграция → ЮKassa](/components/msfastorder/integration#оплата-через-юkassa-msp3yookassa).
 
 ## Режим MAIL — письмо не приходит {#режим-mail--письмо-не-приходит}
 
-- Заполнен `msfastorder_email_manager`.
+- Непустой итог цепочки: `msfastorder_email_manager` → `ms3_email_manager` → `emailsender`. Если все пусты — **заказ MAIL не создаётся**.
 - Настроен SMTP / sendmail в MODX.
 - Папка «Спам», лог `modMail`.
 
@@ -91,13 +89,13 @@ Connector вернул **HTML** (PHP-ошибка), а не JSON.
 - Поле `ms3variant_id` обновляется при смене варианта.
 - Сначала выберите вариант на странице, затем «в 1 клик».
 
-[Интеграция → ms3Variants](integration#интеграция-с-ms3variants).
+[Интеграция → ms3Variants](/components/msfastorder/integration#интеграция-с-ms3variants).
 
 ## Изменения в чанке msfo_form не видны
 
 Форма в модалке строится в **JS** (`renderForm`), success — `renderSuccess`. Чанки — эталоны.
 
-[Подключение на сайте → форма](frontend#форма-в-модалке-важно), [Чанки](chunks).
+[Подключение на сайте → форма](/components/msfastorder/frontend#форма-в-модалке-важно), [Чанки](/components/msfastorder/chunks).
 
 ## Неверное количество в каталоге
 
@@ -117,9 +115,9 @@ Connector вернул **HTML** (PHP-ошибка), а не JSON.
 
 ## HTTP 429
 
-Превышен rate limit на `order/create`. Настройки: `msfastorder_rate_limit_attempts`, `msfastorder_rate_limit_window`.
+Превышен лимит **успешных** `order/create` с IP. Настройки: `msfastorder_rate_limit_attempts`, `msfastorder_rate_limit_window`.
 
-На staging при `msfastorder_debug=1`: POST `action=rate-limit/reset` — [AJAX API](api).
+На тестовом стенде при `msfastorder_debug=1` лимит **отключён**. Можно сбросить счётчик: POST `action=rate-limit/reset` — [AJAX API](/components/msfastorder/api).
 
 ## Ошибка «Поле "" обязательно»
 
@@ -134,3 +132,5 @@ SELECT * FROM msfastorder_logs ORDER BY created_at DESC LIMIT 20;
 ```
 
 **AJAX:** Network → `connector.php` → JSON `success`, `message`, `errors`, `debug`.
+
+**Статистика и список логов в UI нет.** В PHP доступны `OrderService::getStatistics()` и `getLogs()` — см. [AJAX API](/components/msfastorder/api).

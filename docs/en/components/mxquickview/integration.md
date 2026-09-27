@@ -3,11 +3,9 @@ title: Site integration
 ---
 # Site integration
 
-For managers and developers: how to add mxQuickView and use it in the catalog.
-
 ## 1. Load resources (required)
 
-First include `mxQuickView.initialize` once in the template.
+Include `mxQuickView.initialize` once in the template.
 
 ::: code-group
 
@@ -20,6 +18,10 @@ First include `mxQuickView.initialize` once in the template.
 ```
 
 :::
+
+Default asset base and `connector.php`: `[[++assets_url]]components/mxquickview/`. Override with optional `getOption` `mxquickview.assets_url` (not in transport).
+
+Bundled chunks (`mxqv_product`, `mxqv_resource`) use **Fenom**. Install pdoTools 3.x: the processor parses Fenom on chunk/template render. Without pdoTools, raw `{$…}` remains in the response.
 
 ### Example with parameters
 
@@ -43,72 +45,21 @@ First include `mxQuickView.initialize` once in the template.
 
 ### Modal library choice
 
-#### `native`
+`modalLibrary`: `native` (default), `bootstrap`, or `fancybox`.
 
-::: code-group
+`fancybox` calls `window.Fancybox.show()`. If the Fancybox API is missing, JS falls back to `native` (`#mxqv-modal` is always in the HTML). Same without `bootstrap.Modal` or without `#mxqv-bootstrap-modal`.
 
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`native`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'native'
-]}
-```
-
-:::
-
-#### `fancybox`
-
-::: code-group
-
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`fancybox`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'fancybox'
-]}
-```
-
-:::
-
-#### `bootstrap`
-
-::: code-group
-
-```modx
-[[!mxQuickView.initialize?
-  &modalLibrary=`bootstrap`
-]]
-```
-
-```fenom
-{'!mxQuickView.initialize'|snippet:[
-  'modalLibrary' => 'bootstrap'
-]}
-```
-
-:::
-
-`fancybox` uses `window.Fancybox.show()`.
-mxQuickView ships with local Fancybox files:
+The package ships with local Fancybox files:
 
 - `assets/components/mxquickview/vendor/fancybox/fancybox.css`
 - `assets/components/mxquickview/vendor/fancybox/fancybox.umd.js`
 
-For `modalLibrary=bootstrap` local files are also included:
+For `modalLibrary=bootstrap` the package also includes:
 
 - `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.css`
 - `assets/components/mxquickview/vendor/bootstrap/bootstrap.min.js`
 
-If local files are missing, CDN is used (Fancybox: `@fancyapps/ui`, Bootstrap: `bootstrap`).
+If local files are missing, a CDN is used (Fancybox: `@fancyapps/ui`, Bootstrap: `bootstrap`).
 
 You can set paths explicitly:
 
@@ -132,9 +83,11 @@ You can set paths explicitly:
 
 :::
 
+For Bootstrap pass `modalLibrary=bootstrap`.
+
 ## 2. Quick view for any resource (news, articles, pages)
 
-Chunk `mxqv_resource` is generic for any resource (pagetitle, introtext, content). Add it to `mxquickview_allowed_chunk`.
+Chunk `mxqv_resource` works for any resource (pagetitle, introtext, content). Add it to `mxquickview_allowed_chunk`.
 
 ::: code-group
 
@@ -232,9 +185,9 @@ Chunk `mxqv_resource` is generic for any resource (pagetitle, introtext, content
 
 :::
 
-Requirement: `msCart` must be in `mxquickview_allowed_snippet`.
+`msCart` must be in `mxquickview_allowed_snippet`.
 
-MiniShop3 note: compact mini-cart in quick view is rendered as `msCart` + `tpl.msMiniCart` (per docs.modx.pro). `data-mxqv-element="msMiniCart"` is supported as an alias.
+A compact mini-cart in quick view is built as `msCart` + `tpl.msMiniCart` (per docs.modx.pro). `data-mxqv-element="msMiniCart"` works as an alias.
 
 ## 5. Render on mouseover
 
@@ -262,7 +215,7 @@ MiniShop3 note: compact mini-cart in quick view is rendered as `msCart` + `tpl.m
 
 :::
 
-Delay comes from `mxquickview_mouseover_delay` or `mouseoverDelay` in `initialize`.
+Delay: snippet `mouseoverDelay` overrides `mxquickview_mouseover_delay`. An empty property string reads the setting (default 300 ms).
 
 ## 6. `selector` mode (custom container)
 
@@ -332,8 +285,6 @@ Delay comes from `mxquickview_mouseover_delay` or `mouseoverDelay` in `initializ
 
 :::
 
-Delay from `mxquickview_mouseover_delay` or `mouseoverDelay` in `initialize`.
-
 ### Bootstrap 5 modal via selector
 
 ::: code-group
@@ -394,6 +345,8 @@ Delay from `mxquickview_mouseover_delay` or `mouseoverDelay` in `initialize`.
 
 ## 8. Prev/next navigation in product list
 
+Only with `modalLibrary` `native` or `bootstrap`. Fancybox has no `[data-mxqv-nav]` buttons or ←/→ keys.
+
 ::: code-group
 
 ```modx
@@ -426,13 +379,13 @@ Delay from `mxquickview_mouseover_delay` or `mouseoverDelay` in `initialize`.
 
 :::
 
-Requirement: each trigger inside must have its own `data-mxqv-action`, `data-mxqv-element`, `data-mxqv-id`.
+Each trigger inside must have its own `data-mxqv-action`, `data-mxqv-element`, `data-mxqv-id`.
 
 ## 9. MiniShop3 and ms3Variants integration
 
 - In the quick view chunk use the `ms3-add-to-cart` form (`data-ms3-form`, `ms3_action=cart/add`).
-- After content loads the component calls `ms3.productCardUI.reinit()` (if MiniShop3 is available).
-- With ms3Variants installed, placeholders `[[+variants_html]]`, `[[+variants_json]]`, `[[+has_variants]]` are available.
+- After HTML insert: `ms3.cartUI.init`/`reinit`, `ms3.quantityUI.reinit`/`init`, `ms3.productCardUI.reinit()` and `ms3:cart:updated` (`source: 'mxqv'`) when MiniShop3 is on the page.
+- With ms3Variants installed, `[[+variants_html]]`, `[[+variants_json]]`, `[[+has_variants]]` are available.
 
 ### What mxQuickView does on the server
 
@@ -447,30 +400,32 @@ Requirement: each trigger inside must have its own `data-mxqv-action`, `data-mxq
 
 ```modx
 <div class="qv-product"
+  data-ms3-product-id="[[+id]]"
   data-mxqv-variants="[[+has_variants]]"
   data-mxqv-variants-json="[[+variants_json:htmlent]]">
-  <form method="post" class="ms3_form ms3-add-to-cart qv-product__form" data-ms3-form data-cart-state="add">
+  <form method="post" class="ms3_form ms3-add-to-cart" data-ms3-form data-cart-state="add">
     <input type="hidden" name="id" value="[[+id]]">
     <input type="hidden" name="count" value="1">
     <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
     <div class="qv-product__variants">[[+variants_html]]</div>
-    <button type="submit" class="qv-product__btn-cart">Add to cart</button>
+    <button type="submit">Add to cart</button>
   </form>
 </div>
 ```
 
 ```fenom
 <div class="qv-product"
+  data-ms3-product-id="{$id}"
   data-mxqv-variants="{$has_variants}"
   data-mxqv-variants-json="{$variants_json|escape:'html'}">
-  <form method="post" class="ms3_form ms3-add-to-cart qv-product__form" data-ms3-form data-cart-state="add">
+  <form method="post" class="ms3_form ms3-add-to-cart" data-ms3-form data-cart-state="add">
     <input type="hidden" name="id" value="{$id}">
     <input type="hidden" name="count" value="1">
     <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
     <div class="qv-product__variants">{$variants_html}</div>
-    <button type="submit" class="qv-product__btn-cart">Add to cart</button>
+    <button type="submit">Add to cart</button>
   </form>
 </div>
 ```
@@ -479,6 +434,8 @@ Requirement: each trigger inside must have its own `data-mxqv-action`, `data-mxq
 
 ### What mxQuickView frontend does
 
+Variant switching (`initVariantsInContent`) runs on **modal** insert and in `mode=selector`.
+
 1. Finds `.qv-product[data-mxqv-variants]` and checks flag (`true|1|yes|on`).
 2. Parses `data-mxqv-variants-json`.
 3. Listens for variant selection in `.qv-product__variants`.
@@ -486,20 +443,13 @@ Requirement: each trigger inside must have its own `data-mxqv-action`, `data-mxq
 5. Handles `change` on `select/input` when variant id is in `value` or `data-variant-id`.
 6. On variant change updates price (`[data-mxqv-price]`), old price (`.qv-product__price-old`) and image (`.qv-product__thumb`, if `data-thumb|data-image` present).
 
-### UX flow
+### MiniShop3 and ms3Variants
 
-1. Open quick view for a product with variants.
-2. Variant block `[[+variants_html]]` is visible.
-3. On variant change, price/old price/image in the modal update without reload.
-4. “Add to cart” submits the ms3 form with selected variant/options.
+- For variant data in lists and cards: `&includeThumbs` and ms3Variants in `usePackages` for `msProducts`/`pdoPage`.
+- [ms3Variants](/en/components/ms3variants/)
+- [MiniShop3: product tabs and `usePackages`](/en/components/minishop3/development/product-tabs-integration)
 
-### MiniShop3/ms3Variants docs
-
-- For variant data in lists/cards use `&includeThumbs` and ms3Variants in `usePackages` for `msProducts`/`pdoPage` (see docs.modx.pro).
-- ms3Variants component and snippets: <https://docs.modx.pro/en/components/ms3variants/>
-- MiniShop3 integration and `usePackages`: <https://docs.modx.pro/en/components/minishop3/development/product-tabs-integration>
-
-## 10. Why the block may not work
+## 10. Why the block does not work
 
 1. `mxQuickView.initialize` not included.
 2. Element not in whitelist (`allowed_chunk`, `allowed_snippet`, `allowed_template`).

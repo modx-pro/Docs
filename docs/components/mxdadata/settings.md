@@ -4,9 +4,9 @@ title: Системные настройки
 
 # Системные настройки mxDadata
 
-Все ключи в пространстве имён **`mxdadata`**, в БД: префикс `mxdadata_` (например `mxdadata_api_token`).
+Ключи в пространстве имён **`mxdadata`**. В БД префикс `mxdadata_` (пример: `mxdadata_api_token`).
 
-**Где менять:** **Настройки → Системные настройки** (фильтр `mxdadata`) либо **Extras → mxDadata** (вкладки API, miniShop3, Кеш, Общие).
+Где менять: **Настройки → Системные настройки** (фильтр `mxdadata`) или **Extras → mxDadata → Настройки** (`system/settings&ns=mxdadata`). Во Vue-админке отдельных вкладок для этих полей нет.
 
 ## API
 
@@ -15,15 +15,15 @@ title: Системные настройки
 | `mxdadata_api_token` | текст | — | API Token DaData. Обязателен для Suggest, Clean, Party |
 | `mxdadata_api_secret` | текст | — | Secret. Для Clean и Party |
 | `mxdadata_api_timeout` | число | `2` | Таймаут HTTP к DaData, сек. |
-| `mxdadata_api_retry` | число | `1` | Повторы при ошибке запроса |
+| `mxdadata_api_retry` | число | `1` | Число попыток HTTP в `DadataClient::exchange()`. По умолчанию `1` (без повтора). Повтор только при ошибке curl (сеть, таймаут), не при HTTP 4xx/5xx. Пауза между попытками: 100 мс × номер попытки |
 
 ## Кэш
 
 | Ключ | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `mxdadata_cache_ttl` | число | `86400` | TTL кэша ответов, сек. (86400 = 24 ч.) |
+| `mxdadata_cache_ttl` | число | `86400` | TTL ответов в таблице **`mxdadata_cache`**, сек. (86400 = 24 ч.). Считается от `created_at` |
 
-Кэш в таблице `mxdadata_cache`. Очистка: вкладка **Кеш** в **Extras → mxDadata** или процессор `Cache/Clear`.
+Suggest, Clean, Party и Geolocate пишутся в **`mxdadata_cache`**. Кнопка **Очистить кеш** на Dashboard делает `DELETE` только из этой таблицы. Кэш MODX и счётчик **`RateLimiter`** в `cacheManager` не сбрасываются.
 
 ## Основные
 
@@ -31,9 +31,9 @@ title: Системные настройки
 |------|-----|--------------|----------|
 | `mxdadata_enabled` | да/нет | Да | Включить компонент. При «Нет» плагин и публичный коннектор не обрабатывают логику |
 | `mxdadata_throttle_rpm` | число | `60` | Лимит запросов в минуту (защита квоты DaData) |
-| `mxdadata_log_level` | список | `warning` | Уровни: `error`, `warning`, `debug` |
-| `mxdadata_debug_mode` | да/нет | Нет | Режим разработки: детальнее в лог и на витрине (в т.ч. детали ошибок в connector) |
-| `mxdadata_log_retention_days` | число | `90` | Хранение записей логов (дней), используется при ротации |
+| `mxdadata_log_level` | список | `warning` | Режет INSERT в **`mxdadata_log`**. `debug` — все запросы. `warning` и `error` — только статус ≠ 200. **`LoggerService::debug()`** в лог MODX пишется только при уровне `debug` |
+| `mxdadata_debug_mode` | да/нет | Нет | Форсирует уровень `debug` в `LoggerService::debug()`. На **витрине** `connector-web.php` всегда отвечает `'Processor error'` без текста исключения. В **менеджерском** `connector.php` при «Да» в ответ может попасть сообщение исключения |
+| `mxdadata_log_retention_days` | число | `30` | Хранение записей логов (дней). Ротация: `Logs/Rotate`, Scheduler **`mxdadata_rotate_logs`** |
 
 ## MiniShop3 {#minishop3}
 
@@ -46,9 +46,9 @@ title: Системные настройки
 | `mxdadata_auto_normalize_address` | да/нет | Да | Нормализация адреса через Clean Address при создании заказа |
 | `mxdadata_required_fias` | да/нет | Нет | Требовать выбор адреса из подсказок (FIAS) |
 | `mxdadata_required_index` | да/нет | Нет | Требовать почтовый индекс |
-| `mxdadata_field_mapping` | многостр. текст | — | JSON: переопределение сопоставления полей DaData → поля адреса MS3. Пример: `{"city": "city_with_type"}` |
+| `mxdadata_field_mapping` | многостр. текст | — | JSON: переопределение сопоставления полей **Clean Address** → поля адреса MS3. Пример: `{"city": "city", "index": "postal_code"}` (ключи ответа Clean, не Suggest `city_with_type`) |
 
-По умолчанию маппинг включает `address`, `city`, `region`, `index`, `street`, `building`, `room`, `lat`, `lon`, `fias_id` и др. — см. исходник `AddressMapper` в пакете.
+По умолчанию маппинг включает `address`, `city`, `region`, `index`, `street`, `building`, `room`, `lat`, `lon`, `fias_id` и другие поля. **`AddressMapper`** считает `lat`/`lon`. Плагин заказа в **`msOrder.Address`** координаты не сохраняет: их нет в карте полей плагина. Плагин пишет **`fias_id`**. При установке резолвер добавляет колонку `fias_id` (`VARCHAR(36)`) в `{prefix}ms3_order_addresses`, если её нет. Без MiniShop3 резолвер пишет WARN и продолжает установку.
 
 ## Получение в коде
 
@@ -59,4 +59,4 @@ $modx->getOption('mxdadata_cache_ttl', null, 86400);
 
 ## Связанные настройки MiniShop3
 
-Имена полей формы заказа должны соответствовать ожиданиям MS3 и сниппетов — см. [Подключение на сайте](frontend) и [Интеграцию](integration).
+Имена полей формы заказа должны совпадать с тем, что ждут MS3 и сниппеты. См. [Подключение на сайте](/components/mxdadata/frontend) и [Интеграцию](/components/mxdadata/integration).

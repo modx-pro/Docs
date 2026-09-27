@@ -1,44 +1,44 @@
 ---
-title: Ключ и key file
-description: Генерация indexnow_key и файла {key}.txt для проверки владения доменом
+title: Key and key file
+description: indexnow_key and {key}.txt for domain verification
 ---
 
-# Ключ и key file
+# Key and key file
 
-Протокол IndexNow требует ключ и файл на сайте, по которому поисковик проверяет владение доменом. У Яндекса это описано в разделе [Поддержка протокола IndexNow](https://yandex.ru/support/webmaster/ru/indexing-options/index-now) и на странице про [ключ](https://yandex.ru/support/webmaster/ru/indexnow/key).
+IndexNow requires a key and a file on the site so the search engine can verify domain ownership. Yandex describes this in [IndexNow support](https://yandex.com/support/webmaster/indexing-options/index-now.html) and [key file help](https://yandex.com/support/webmaster/indexnow/key.html).
 
-## Ключ
+## Key
 
-При установке IndexNow:
+On install IndexNow:
 
-1. генерирует ключ (обычно 32 hex-символа),
-2. пишет его в `indexnow_key`,
-3. создаёт файл `{key}.txt` в web root сайта.
+1. generates a key (usually 32 hex characters),
+2. stores it in `indexnow_key`,
+3. creates `{key}.txt` in the site web root.
 
-Ключ: длина 8-128, символы `a-z`, `A-Z`, `0-9`, `-`.
+Key rules: length 8–128, characters `a-z`, `A-Z`, `0-9`, `-`.
 
-Сменить ключ можно в системных настройках. После смены обновите или пересоздайте файл в корне.
+Change the key in system settings. After a change, update or recreate the file in the web root.
 
-## Файл ключа
+## Key file
 
-Путь: `{web_root}/{key}.txt`.
+Path: `{web_root}/{key}.txt`.
 
-Содержимое: **только** значение ключа, без пробелов, HTML и лишнего текста.
+Content: **only** the key value, no spaces, HTML, or extra text.
 
-Пример: ключ `abc123def456`, файл `/abc123def456.txt`, тело файла:
+Example: key `abc123def456`, file `/abc123def456.txt`, body:
 
 ```text
 abc123def456
 ```
 
-Файл должен открываться с публичного URL того же host, который вы отправляете в IndexNow (например `https://example.com/abc123def456.txt`).
+The file must be reachable at a public URL on the same host you send to IndexNow (e.g. `https://example.com/abc123def456.txt`).
 
-## Несколько доменов
+## Multiple domains
 
-У каждого публичного document root, куда ходят краулеры, должен быть свой `{key}.txt` с тем же ключом. Штатно пакет использует один `indexnow_key` на сайт.
+Each public document root crawlers use needs its own `{key}.txt` with the same key. The package uses one `indexnow_key` per site by default.
 
-Подробнее про host и контексты: [Контексты и домены](contexts).
+More on hosts and contexts: [Contexts and domains](contexts).
 
-## Проверка
+## Verification
 
-В IndexNow → **Статус** смотрите строку **Файл ключа**. Кнопка **Проверить подключение** дополнительно проверяет ключ, файл и доступность endpoint.
+On IndexNow → **Status**, check **Key file**. **Test connection** also validates key, file, and endpoint.

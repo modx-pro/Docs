@@ -3,77 +3,68 @@ title: Troubleshooting
 ---
 # Troubleshooting
 
-Common CrawlerDetect issues and how to fix them.
-
 ## Form is not blocked for bots
 
-**Check:**
-
 1. `crawlerDetectBlock` is in FormIt’s `&preHooks`.
-2. The form is submitted through FormIt (not another handler).
-3. For FetchIt — on the page FetchIt calls, FormIt is invoked with `crawlerDetectBlock` in preHooks.
-4. For SendIt — the preset has `preHooks` with `crawlerDetectBlock`.
+2. The form is submitted through FormIt, not another handler.
+3. For FetchIt: on the page FetchIt calls, FormIt has `crawlerDetectBlock` in preHooks.
+4. For SendIt: the preset has `preHooks` with `crawlerDetectBlock`.
 
-**Test:** submit the form with a bot User-Agent (e.g. `Googlebot`) via dev tools (change headers) or curl.
+Test: submit the form with a bot User-Agent (e.g. `Googlebot`) via dev tools or curl.
 
 ## isCrawler always returns 0
 
-**Possible causes:**
-
-1. **Caching** — use `[[!isCrawler]]` (uncached). With cache the result is the same for all visitors.
-2. **Library not loaded** — check that `core/components/crawlerdetect/vendor/autoload.php` exists. On load error the snippet returns `0` (fail-open) and writes to the MODX log.
+1. **Caching.** Use `[[!isCrawler]]` uncached. With cache the result is the same for all visitors.
+2. **Missing `vendor/autoload.php`.** The service is created, `isCrawler()` reports “not a bot”, nothing is written to the log.
+3. **Exception from `services->get`.** ERROR in the log, `isCrawler` returns `0`. The `crawlerDetectBlock` preHook **allows** the submit in that case.
 
 ## Block message not showing
 
-**Check:**
-
 1. The form template outputs `[[+fi.validation_error_message]]` (MODX) or `{$modx->getPlaceholder('fi.validation_error_message')}` (Fenom).
-2. The placeholder is not overwritten by other FormIt hooks.
+2. Other FormIt hooks do not overwrite this placeholder.
 
 ## False positives (human blocked)
 
-Rare, but possible with an unusual User-Agent. Options:
+Possible with an unusual User-Agent.
 
 1. Temporarily disable `crawlerDetectBlock` or check logs.
-2. Report the User-Agent in the [CrawlerDetect repository](https://github.com/Ibochkarev/CrawlerDetect); [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect) is updated regularly.
+2. Report the User-Agent in the [CrawlerDetect repository](https://github.com/Ibochkarev/CrawlerDetect). [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect) is updated.
 
 ## Viewing logs
 
-**Manage** → **System log**. With `crawlerdetect_log_blocked` enabled, blocked form submissions are logged.
-
----
+**Manage** → **System log**. With `crawlerdetect_log_blocked` enabled, blocked form submissions are logged. The line is `HTTP_USER_AGENT` only, max 200 characters. `HTTP_FROM` and `HTTP_SEC_CH_UA` are not written.
 
 ## FAQ
 
 ### Do I need to run composer install on the server?
 
-**No.** Dependencies are included. Install CrawlerDetect via Package Manager — that’s enough.
+**No.** Dependencies are included. Install CrawlerDetect via Package Manager.
 
 ### How do I update JayBizzle/Crawler-Detect?
 
-Update the CrawlerDetect package via Package Manager. New package versions ship an updated library. You don’t need to update the library on the server separately.
+Update the CrawlerDetect package via Package Manager. A new package version already ships an updated library. Do not update the library on the server separately. This package lockfile has **jaybizzle/crawler-detect v1.3.11**.
 
 ### Is CrawlerDetect compatible with CAPTCHA?
 
-Yes. You can use CrawlerDetect with reCAPTCHA or other CAPTCHA: add both preHooks to FormIt.
+**Yes.** Add both preHooks to FormIt: CrawlerDetect and reCAPTCHA or another CAPTCHA.
 
 - **MODX:** `` &preHooks=`crawlerDetectBlock,recaptcha` ``
 - **Fenom:** `'preHooks' => 'crawlerDetectBlock,recaptcha'`
 
-CrawlerDetect runs first and filters bots before CAPTCHA.
+CrawlerDetect is first in the list and filters bots before CAPTCHA.
 
 ### Does it work with AjaxForm?
 
-AjaxForm is an alternative to FormIt. CrawlerDetect integrates with FormIt. If AjaxForm calls FormIt on the server, add `crawlerDetectBlock` to FormIt preHooks — protection will work.
+AjaxForm is an alternative to FormIt. CrawlerDetect works through FormIt. If AjaxForm calls FormIt on the server, add `crawlerDetectBlock` to FormIt preHooks.
 
 ### Does it work with SendIt?
 
-Yes. SendIt uses FormIt; parameters are in presets. Add `'preHooks' => 'crawlerDetectBlock'` to the preset — when a bot is blocked SendIt returns an error and shows the message from CrawlerDetect settings. See [Integration → AJAX form (SendIt)](integration#ajax-form-sendit).
+**Yes.** SendIt uses FormIt. Parameters are in presets. Add `'preHooks' => 'crawlerDetectBlock'` to the preset. When a bot is blocked, SendIt returns an error and shows the message from CrawlerDetect settings. See [Integration → AJAX form (SendIt)](/en/components/crawlerdetect/integration#ajax-form-sendit).
 
 ### Is MODX 2.x supported?
 
-No. MODX Revolution 3.x only.
+**No.** MODX Revolution 3.x only.
 
 ### Can I add my own User-Agent to the blacklist?
 
-Not in the current version. Only the JayBizzle/Crawler-Detect library is used. Custom blacklist/whitelist is planned for future versions.
+**No.** The list comes from JayBizzle/Crawler-Detect. The package has no blacklist or whitelist of its own.

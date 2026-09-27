@@ -3,20 +3,20 @@ title: isCrawler
 ---
 # isCrawler snippet
 
-Detects if the current visitor is a bot (web crawler) by the User-Agent header. Use for conditional output or counters.
+Detects whether the visitor is a bot. Without `&userAgent` JayBizzle concatenates headers: `HTTP_USER_AGENT`, `HTTP_FROM`, `HTTP_SEC_CH_UA`, and the rest of its list.
 
 **Returns:** `"1"` (bot) or `"0"` (not bot).
 
-**Important:** call uncached — `[[!isCrawler]]` (MODX) or `$modx->runSnippet('isCrawler', [])` (Fenom). Otherwise the result is cached and won’t match the current visitor.
+Call uncached: `[[!isCrawler]]` (MODX) or `$modx->runSnippet('isCrawler', [])` (Fenom). Otherwise the result is shared across visitors.
 
 ## Parameters
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| **userAgent** | User-Agent string to check (if empty — from current request) | — |
+| **userAgent** | Explicit string. Empty: JayBizzle headers from the request | — |
 | **placeholderPrefix** | Placeholder prefix for detected bot name | `crawlerdetect.` |
 
-When a bot is detected, placeholder `crawlerdetect.matches` (or your prefix) is set to the bot name (e.g. `Googlebot`) — useful for debugging.
+When a bot is detected, placeholder `crawlerdetect.matches` (or your prefix) is set to the bot name, e.g. `Googlebot`. Use it when debugging.
 
 ## Examples
 

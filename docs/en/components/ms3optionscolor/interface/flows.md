@@ -5,7 +5,7 @@ description: Flows A–I for ms3OptionsColor manager and storefront
 
 # Flows
 
-Short flows for the manager and storefront. If you have not installed the package yet, start with [quick start](/components/ms3optionscolor/quick-start).
+If you have not installed the package yet, start with [quick start](/components/ms3optionscolor/quick-start).
 
 | Flow | Scenario |
 | --- | --- |
@@ -39,7 +39,7 @@ An active record appears in the dictionary. Other products with the same `option
 2. Enter image URL in the pattern field.
 3. Save.
 
-When you switch to **Pattern** mode the form removes the previous RAL from the saved record. On the storefront the chunk renders `background-image`. Select uses `data-pattern`.
+When you switch to **Pattern** mode the form removes the previous RAL from the record. On the storefront the chunk draws `background-image`. Select reads `data-pattern`.
 
 ![Pattern dialog](/components/ms3optionscolor/screenshots/pattern-edit.png)
 
@@ -52,8 +52,6 @@ When you switch to **Pattern** mode the form removes the previous RAL from the s
 ![Unset filter](/components/ms3optionscolor/screenshots/dictionary-filter.png)
 
 ![Assign dialog](/components/ms3optionscolor/screenshots/dictionary-assign.png)
-
-Search by value:
 
 ![Dictionary search](/components/ms3optionscolor/screenshots/dictionary.png)
 
@@ -127,7 +125,7 @@ In the cart row chunk values already sit in `$product.options`. Do not read opti
 
 :::
 
-Ready example chunk: `tplMs3OptionsColorCart`. Details: [Frontend](/components/ms3optionscolor/frontend#cart).
+Ready chunk: `tplMs3OptionsColorCart`. [Frontend](/components/ms3optionscolor/frontend#cart).
 
 ![byOptions](/components/ms3optionscolor/screenshots/storefront-byoptions.png)
 
@@ -147,13 +145,13 @@ In the filter set JSON:
 }
 ```
 
-The built-in `colors` type is unchanged. Use `ms3oc` for dictionary swatches. Details: [mFilter](/components/ms3optionscolor/mfilter).
+The built-in `colors` type is unchanged. Use `ms3oc` for dictionary swatches. [mFilter](/components/ms3optionscolor/mfilter).
 
 ![mFilter ms3oc](/components/ms3optionscolor/screenshots/storefront-mfilter.png)
 
 ## Flow H. Catalog card grid
 
-On listing rows call the snippet with `product` = row product ID:
+On listing rows call the snippet with `product` = the row product ID:
 
 ::: code-group
 
@@ -183,6 +181,6 @@ On listing rows call the snippet with `product` = row product ID:
 
 ## Flow I. Variant colors in the catalog
 
-In `msProducts` set `usePackages=ms3Variants`. Catalog variants get colors from the dictionary. Details: [ms3variants](/components/ms3optionscolor/ms3variants).
+In `msProducts` set `usePackages=ms3Variants`. Catalog variants get colors from the dictionary. [ms3variants](/components/ms3optionscolor/ms3variants).
 
 ![Variants swatches](/components/ms3optionscolor/screenshots/storefront-variants.png)

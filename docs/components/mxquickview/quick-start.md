@@ -3,13 +3,13 @@ title: Быстрый старт
 ---
 # Быстрый старт
 
-Минимальный сценарий, чтобы за 5-10 минут включить `mxQuickView` на странице каталога.
+Включите `mxQuickView` на странице каталога.
 
 ## 1. Установите пакет
 
 1. Установите `mxQuickView` в `Extras -> Installer`.
 2. Очистите кэш MODX.
-3. Проверьте системные настройки namespace `mxquickview`.
+3. Проверьте системные настройки namespace `mxquickview` (белый список, при Fenom-чанках — pdoTools 3.x).
 
 ## 2. Подключите инициализацию в шаблоне
 
@@ -55,11 +55,11 @@ title: Быстрый старт
 
 :::
 
-## 4. Проверьте whitelist
+## 4. Проверьте белый список
 
 - В `mxquickview_allowed_chunk` должен быть `mxqv_product` (или ваш чанк).
-- Для быстрого просмотра обычных ресурсов добавьте `mxqv_resource`.
-- Для `snippet`/`template` аналогично заполните `mxquickview_allowed_snippet` и `mxquickview_allowed_template`.
+- Для обычных ресурсов добавьте `mxqv_resource`.
+- Для `snippet`/`template` заполните `mxquickview_allowed_snippet` и `mxquickview_allowed_template`.
 
 ## 5. Проверьте результат
 
@@ -69,7 +69,7 @@ title: Быстрый старт
 
 ## Что дальше
 
-- [Системные настройки](settings)
-- [Интеграция на сайт](integration)
-- [Типы рендера](types)
-- [API и интерфейсы](api)
+- [Системные настройки](/components/mxquickview/settings)
+- [Интеграция на сайт](/components/mxquickview/integration)
+- [Типы рендера](/components/mxquickview/types)
+- [API и интерфейсы](/components/mxquickview/api)

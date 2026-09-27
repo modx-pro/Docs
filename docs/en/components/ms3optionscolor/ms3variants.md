@@ -5,7 +5,7 @@ description: Dictionary colors in variants[].swatches on the miniShop3 listing
 
 # ms3variants
 
-With [ms3variants](/components/ms3variants/) installed, ms3OptionsColor can add dictionary colors to each catalog variant. The package does not create variants and does not change price, stock, or `_variant_id`. It only enriches an already prepared list.
+With [ms3variants](/components/ms3variants/) installed, ms3OptionsColor adds dictionary colors to each catalog variant. The package does not create variants and does not change price, stock, or `_variant_id`. It adds colors to a prepared list.
 
 ```mermaid
 sequenceDiagram
@@ -52,28 +52,26 @@ Turn off with `ms3optionscolor_variants_decorate` = No. Variants stay as in ms3v
 
 :::
 
-After the plugins, the catalog row has `variants`, `has_variants`, `variants_json`. OptionsColor adds `variants[].swatches` for keys from the setting.
+After the plugins, the catalog row has `variants`, `has_variants`, `variants_json`. The package adds `variants[].swatches` for keys from the setting.
 
 ## Row chunk markup
 
-Looping the variants array is easiest in a Fenom chunk (pdoTools):
+Loop variants in a Fenom chunk (pdoTools):
 
 ```fenom
 {if $has_variants?}
   {foreach $variants as $variant}
     {set $sw = $variant.swatches.color ?: []}
-    <button type="button" {if !$variant.in_stock}disabled{/if}>
-      <span data-ms3oc-swatch
-            {if !$sw.color && !$sw.pattern}data-empty{/if}
-            {if $sw.pattern}data-has-pattern{/if}
-            style="{if $sw.color}background-color:#{$sw.color};{/if}{if $sw.pattern}background-image:url('{$sw.pattern}');{/if}"></span>
-      {$variant.options_array.color} / {$variant.options_array.size}
-    </button>
+    <span data-ms3oc-swatch
+          {if !$sw.color && !$sw.pattern}data-empty{/if}
+          {if $sw.pattern}data-has-pattern{/if}
+          style="{if $sw.color}background-color:#{$sw.color};{/if}{if $sw.pattern}background-image:url('{$sw.pattern}');{/if}"></span>
+    {$variant.options_array.color}
   {/foreach}
 {/if}
 ```
 
-Here `swatches.color` matches option key `color`. If the setting has several keys (`color,material`), read `swatches.material` and so on.
+If the setting has several keys (`color,material`), read `swatches.material` and the other keys the same way.
 
 One swatch entry:
 
@@ -116,7 +114,7 @@ If you do not need to walk variants, call the snippet in the same chunk:
 
 ## Cart
 
-The `options._variant_id` branch in chunk `tplMs3OptionsColorCart` shows a read-only color and a link to PDP `?variant=ID`. Variant changes and price still belong to ms3variants. More: [Frontend](frontend#cart).
+The `options._variant_id` branch in chunk `tplMs3OptionsColorCart` shows a color with no option change and a link to the product `?variant=ID`. Variant changes and price belong to ms3variants. [Frontend](frontend#cart).
 
 ## Common issues
 

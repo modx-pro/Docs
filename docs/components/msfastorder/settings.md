@@ -5,11 +5,9 @@ description: Все ключи msfastorder, режимы MS и MAIL, payment_lin
 
 # Системные настройки msFastOrder
 
-Краткая последовательность: [Быстрый старт](quick-start).
+Все ключи в пространстве имён **`msfastorder`**. В БД: префикс `msfastorder_`. Область в интерфейсе — **msfastorder** или **msfastorder_main** (зависит от версии транспорта).
 
-Все ключи в пространстве имён **`msfastorder`**. В БД: префикс `msfastorder_`. Область в интерфейсе может называться **msfastorder** или **msfastorder_main** (зависит от версии транспорта).
-
-**Где менять:** **Настройки → Системные настройки**, фильтр `msfastorder`.
+Меняйте в **Настройки → Системные настройки**, фильтр `msfastorder`. Последовательность: [Быстрый старт](/components/msfastorder/quick-start).
 
 ```mermaid
 flowchart TD
@@ -29,7 +27,7 @@ flowchart TD
 |------|-----|--------------|----------|
 | `msfastorder_method` | текст | `MS` | Режим: **`MS`** — заказ в MiniShop3; **`MAIL`** — только письмо менеджеру. Параметр сниппета `&method=` **не читается** PHP |
 | `msfastorder_required_fields` | текст | `receiver,phone` | Обязательные поля на **сервере** (через запятую): `receiver`, `phone`, `email`, `city`, `comment` |
-| `msfastorder_email_manager` | текст | *(пусто)* | Email менеджера. Для **MAIL** обязателен. Для MS — уведомления при настройке почты |
+| `msfastorder_email_manager` | текст | *(пусто)* | Email менеджера в режиме **MAIL**. Цепочка: `msfastorder_email_manager` → `ms3_email_manager` → `emailsender`. Пустой итог — заказ MAIL **не создаётся** |
 | `msfastorder_phone_mask` | текст | `+7 (999) 999-99-99` | Маска поля телефона в модалке (`PhoneMask` в JS) |
 | `msfastorder_success_redirect` | текст | *(пусто)* | URL редиректа после успеха, если нет `payment_link`. При наличии `payment_link` — редирект на оплату через ~2 с |
 
@@ -48,6 +46,7 @@ flowchart TD
 | Ключ MS3 | Зачем |
 |----------|--------|
 | `ms3_order_success_page_id` | Страница «Спасибо» с просмотром заказа (`msorder=uuid`) для DefaultPayment |
+| `ms3_order_redirect_thanks_id` | Запасная страница «Спасибо», если `ms3_order_success_page_id` пуст. Дальше запасной вариант — `site_start` |
 | `ms3_status_new` | Статус нового заказа после быстрого оформления |
 
 ## Интерфейс и assets
@@ -57,38 +56,42 @@ flowchart TD
 | `msfastorder_modal_library` | текст | `native` | Модалка: `native`, `bootstrap`, `fancybox` |
 | `msfastorder_connector_url` | текст | `/assets/components/msfastorder/connector.php` | URL AJAX (только POST) |
 | `msfastorder_assets_url` | текст | `/assets/components/msfastorder/` | База для `css/msfo.min.css` и `js/msfo.min.js` |
-| `msfastorder_copy_count` | да/нет | Да | Задумано для копирования количества со страницы. **В JS 1.0.0 копирование выполняется всегда** — см. [Подключение на сайте](frontend#количество-и-итого) |
-| `msfastorder_generate_email` | да/нет | Да | Задумано для автогенерации email. В **MS** при пустом email PHP вызывает `generateEmail()` **независимо** от этой настройки |
-| `msfastorder_frontend_css` | текст | *(пусто)* | Зарезервировано под свой CSS. Стандартный сниппет подключает `msfo.min.css` |
-| `msfastorder_frontend_js` | текст | *(пусто)* | Зарезервировано под свой JS. Стандартный сниппет подключает `msfo.min.js` |
+| `msfastorder_copy_count` | да/нет | Да | Копировать количество со страницы в модалку. **`Нет`** — в модалке всегда `1` (`msfoConfig.copyCount`) |
 
-Для `bootstrap` на странице нужен Bootstrap 5 Modal. Для `fancybox` — Fancybox 4/5. Подключайте `msfo.min.css` **после** CSS Fancybox.
+Сниппет **всегда** подключает `msfo.min.css` и `msfo.min.js` из `msfastorder_assets_url`. Свой CSS/JS — вручную в шаблоне. Отдельных ключей настроек нет.
+
+Для `bootstrap` на странице нужен глобальный `bootstrap.Modal`. Для `fancybox` — `window.Fancybox`. Подключайте `msfo.min.css` **после** CSS Fancybox.
 
 ## Телефон и префикс страны
 
 | Ключ | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `msfastorder_prefix_enabled` | да/нет | Нет | Включить проверку длины и кода страны на сервере |
+| `msfastorder_prefix_enabled` | да/нет | Нет | Включить проверку кода страны на сервере |
 | `msfastorder_prefix_country` | текст | `7` | Код страны без `+` |
-| `msfastorder_prefix_length` | число | `11` | Ожидаемое число цифр в номере |
+| `msfastorder_prefix_length` | число | `11` | Длина номера **для проверки префикса**: если число цифр не совпало с этим значением, префикс не проверяется (ошибки нет). Общая длина 10–15 цифр по-прежнему допустима |
+
+::: warning Ограничение валидации префикса
+`msfastorder_prefix_length` не отклоняет номера «не той» длины: при несовпадении длины проверка префикса пропускается. Это поведение текущего кода, не настройка «строгой длины».
+:::
 
 ## Безопасность и отладка
 
 | Ключ | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `msfastorder_debug` | да/нет | Нет | В JSON-ответах connector при ошибках добавляется `debug`. Доступен `action=rate-limit/reset` |
-| `msfastorder_rate_limit_attempts` | число | `5` | Лимит запросов `order/create` с одного IP за окно |
+| `msfastorder_debug` | да/нет | Нет | В JSON-ответах connector при ошибках добавляется `debug`. Доступен `action=rate-limit/reset`. **Отключает rate limit** на `order/create` (удобно на тестовом стенде) |
+| `msfastorder_rate_limit_attempts` | число | `5` | Лимит **успешных** `order/create` с одного IP за окно |
 | `msfastorder_rate_limit_window` | число | `300` | Длина окна в секундах (5 минут) |
 
-CSRF: токен в `$_SESSION['msfastorder.csrf_token']`, в HTML — `window.msfoConfig.csrfToken`. Плагин **`msfastorder_web`** обновляет конфиг при `OnWebPagePrerender`, чтобы токен не «застывал» в кэше страницы. Подробнее: [AJAX API](api).
+CSRF: токен в `$_SESSION['msfastorder.csrf_token']`, в HTML — `window.msfoConfig.csrfToken`. Плагин **`msfastorder_web`** обновляет конфиг при `OnWebPagePrerender`, чтобы токен не «застывал» в кэше страницы. Подробнее: [AJAX API](/components/msfastorder/api).
 
 ## Режим MS {#режим-ms}
 
 1. Создаётся заказ MiniShop3 с одной позицией (товар, количество, опции/`variant_id`).
-2. Покупатель заполняется из полей формы.
+2. Покупатель заполняется из полей формы. При пустом email PHP всегда вызывает `generateEmail()` (отдельной настройки нет).
 3. Заказ регистрируется в сессии MS3, статус «Новый».
 4. В ответе AJAX — `payment_link` (если способ оплаты это поддерживает).
 5. Запись в `msfastorder_logs`.
+6. Письма через чанки `msfo_email_*` **не отправляются**. Уведомления MS3 настраиваются в MiniShop3.
 
 ### payment_link {#payment-link}
 
@@ -97,22 +100,25 @@ URL возвращает обработчик оплаты MiniShop3 (`Payment::
 **Где используется:**
 
 - `data.payment_link` в ответе `order/create`
-- кнопка «Оплатить» на экране успеха (JS `renderSuccess`)
+- кнопка «Оплатить» на экране успеха (JS `FormHandler.renderSuccess`)
 - событие `msfo:order:success`
-- чанк `msfo_email_customer` (если отправка клиенту включена)
+
+В письме клиенту (`msfo_email_customer`, режим MAIL) плейсхолдер `{$payment_link}` в шаблоне есть, но **штатный поток MAIL его не передаёт**. Кнопка оплаты только на экране успеха в JS.
 
 | Тип способа оплаты | `payment_link` |
 |--------------------|----------------|
-| DefaultPayment | `https://site.ru/spasibo?msorder={uuid}` |
-| ЮKassa ([msp3YooKassa](/components/msp3yookassa/)) | URL checkout ЮKassa |
+| DefaultPayment | Страница «Спасибо» с `?msorder={uuid}`; при `msorder=num` PHP может переписать URL на uuid (см. ниже) |
+| ЮKassa ([msp3YooKassa](/components/msp3yookassa/)) | URL checkout от обработчика MS3 |
 
-Пошаговая настройка ЮKassa: [Интеграция](integration#оплата-через-юkassa-msp3yookassa).
+**Нормализация DefaultPayment:** `MiniShop3Integration::normalizePaymentLink()` переписывает `msorder={num}` на `msorder={uuid}`, если uuid заказа **36 символов** (канонический UUID v4). Без библиотеки Ramsey UUID в пакете может генерироваться **32 hex** без дефисов — тогда переписывание не сработает.
+
+Пошаговая настройка ЮKassa: [Интеграция](/components/msfastorder/integration#оплата-через-юkassa-msp3yookassa).
 
 ```mermaid
 flowchart LR
   PID[msfastorder_payment_id] --> PM[Способ оплаты MS3]
   PM -->|DefaultPayment| THANK[Страница Спасибо<br/>?msorder=uuid]
-  PM -->|YooKassaPayment| YK[URL checkout ЮKassa]
+  PM -->|обработчик MS3| YK[URL checkout провайдера]
 ```
 
 При непустом `msfastorder_success_redirect` и наличии `payment_link` фронт через ~2 с перенаправляет на оплату.
@@ -135,8 +141,8 @@ $modx->getOption('msfastorder_payment_id', null, 0);
 
 | Элемент | Назначение |
 |---------|------------|
-| Сниппет `msFastOrder` | Кнопка, CSS/JS, CSRF в сессии |
-| Сниппет `msFastOrderClientConfig` | Только `<script>window.msfoConfig</script>` |
-| Плагин `msfastorder_web` | Свежий CSRF при отдаче страницы |
+| Сниппет `msFastOrder` | Кнопка, CSS/JS, inline `msfoConfig` + CSRF (`ClientConfig::getConfigScript`) |
+| Сниппет `msFastOrderClientConfig` | Только `<script>window.msfoConfig</script>` + CSRF |
+| Плагин `msfastorder_web` | Свежий CSRF и конфиг при отдаче кэшированной страницы |
 
-См. [Сниппеты](snippets/index).
+См. [Сниппеты](/components/msfastorder/snippets/).

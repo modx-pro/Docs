@@ -1,54 +1,70 @@
 ---
-title: Быстрый старт
-description: Установка IndexNow, ключ, Scheduler и первая проверка очереди
+title: Quick start
+description: Install IndexNow, key, Scheduler, and first queue check
 ---
 
-# Быстрый старт
+# Quick start
 
-## После установки
+## After install
 
-Откройте **Extras → IndexNow** → вкладка **Статус** и проверьте:
+Open **Extras → IndexNow** → **Status** and verify:
 
-- IndexNow включён (`indexnow_enabled`)
-- ключ валиден
-- файл ключа найден в корне сайта
-- Scheduler установлен (рекомендуется)
-- задача очереди создана
+- IndexNow is enabled (`indexnow_enabled`)
+- key is valid
+- key file exists in the site web root
+- Scheduler is installed (recommended as backup cron)
+- queue task exists
 
-Если файла ключа нет, создайте его вручную. См. [Ключ и key file](key).
+If the key file is missing, create it manually. See [Key and key file](key).
 
-## Scheduler
+Install adds an IndexNow entry to the **`extension_packages`** system setting so xPDO loads package models. Uninstall removes that entry via resolver.
 
-IndexNow регистрирует recurring-задачу **IndexNow: Process Queue**, если [Scheduler](/components/scheduler/) уже стоит на сайте.
+## Queue tick and Scheduler
 
-Интервал: раз в минуту (`+1 minute`), если ваша версия Scheduler это поддерживает.
+**Queue tick** is the primary background path: `OnWebPageComplete` / `OnManagerPageAfterRender`, shutdown, up to 25 due URLs, 55 s lock. Details: [Queue and delivery](queue).
 
-Если Scheduler поставили позже IndexNow:
+IndexNow registers the recurring task **IndexNow: Process Queue** when [Scheduler](/en/components/scheduler/) is already on the site.
 
-1. Откройте IndexNow и нажмите **Проверить подключение** (задача создаётся при необходимости), или
-2. переустановите / обновите пакет IndexNow.
+Interval: every minute (`+1 minute`) when your Scheduler version supports it.
 
-Без Scheduler пакет работает: очередь наполняется, ручная отправка и **Обработать очередь** доступны. Автоматический фон появится после установки Scheduler.
+If you installed Scheduler after IndexNow:
 
-## Права доступа
+1. Open IndexNow and click **Test connection** (creates the task if needed), or
+2. reinstall / upgrade IndexNow.
 
-При установке в политику Administrator добавляются:
+Without Scheduler the package still works: the queue fills, HTTP ticks and **Process queue** remain available.
 
-| Permission | Назначение |
+## Permissions
+
+Install adds these permissions to the **Administrator** policy:
+
+| Permission | Purpose |
 | --- | --- |
-| `indexnow_manage` | Управление IndexNow (очередь, процесс, настройки через UI) |
-| `indexnow_send` | Ручная отправка URL |
-| `indexnow_view_history` | Просмотр истории |
+| `indexnow_manage` | IndexNow manager: status, queue, **Process queue**, test connection |
+| `indexnow_send` | **Send URL** tab |
+| `indexnow_view_history` | View history |
 
-Для роли редактора выдайте нужные permissions отдельно.
+System settings `indexnow_*` are edited under **System → System settings**, not in the CMP.
 
-## Первая проверка
+The package ships **`IndexNowUserPolicy`** and **`IndexNowPolicyTemplate`** with the same three permissions. For editors, assign that policy to a user group instead of full Administrator.
 
-1. Сохраните опубликованный ресурс.
-2. Откройте **Очередь**: должна появиться строка со статусом `pending` (или уже обработанная, если worker уже отработал).
-3. Без Scheduler нажмите **Обработать очередь**.
-4. В **Истории** смотрите HTTP-код (`200` / `202`: уведомление принято).
+## First check
 
-## Удаление пакета
+1. Save a published resource.
+2. Open **Queue**: expect `pending` or an already processed row after tick.
+3. If needed, click **Process queue**.
+4. In **History**, check the HTTP code (`200` / `202` means the notification was accepted).
 
-При uninstall удаляются настройки, permissions, plugin, таблицы очереди и истории, задача Scheduler и key file (только если содержимое файла совпадает с ключом IndexNow).
+## Uninstall
+
+Uninstall removes:
+
+- IndexNow system settings;
+- plugin and namespace;
+- queue and history tables;
+- IndexNow Scheduler task;
+- key file in the web root (only when file content matches `indexnow_key`);
+- transport policy/template vehicles;
+- the **`extension_packages`** entry.
+
+Permissions already embedded in **AdministratorTemplate** / Administrator policy are **not** removed. Clean them manually under **Security → Access policies** if needed.

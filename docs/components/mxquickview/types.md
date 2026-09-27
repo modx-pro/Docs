@@ -3,14 +3,12 @@ title: Типы рендера
 ---
 # Типы рендера mxQuickView
 
-Документ описывает, как выбирать `data-mxqv-action` и режим вывода.
-
 ## Общие правила
 
 1. Всегда передавайте валидный `data-mxqv-id` (ресурс должен существовать и быть доступен).
-2. `data-mxqv-action` определяет, что рендерить: `chunk`, `snippet` или `template`.
-3. `data-mxqv-mode` определяет, куда выводить: `modal` или `selector`.
-4. Коннектор работает только по `POST` и только с `action=render`.
+2. `data-mxqv-action` задаёт, что отрисовать: `chunk`, `snippet` или `template`.
+3. `data-mxqv-mode` задаёт, куда вывести: `modal` или `selector`.
+4. Коннектор принимает только `POST` и только `action=render`.
 
 ## Матрица выбора
 
@@ -19,7 +17,7 @@ title: Типы рендера
 | Показ карточки товара | `chunk` | `modal` |
 | Показ корзины/миникорзины | `snippet` | `modal` |
 | Вставка quick view в отдельный блок | `chunk` или `snippet` | `selector` |
-| Рендер шаблона ресурса | `template` | `modal` или `selector` |
+| Отрисовка шаблона ресурса | `template` | `modal` или `selector` |
 
 ## 1. `chunk`
 
@@ -30,7 +28,7 @@ title: Типы рендера
 ### Для разработчика
 
 - Проверяется по `mxquickview_allowed_chunk`.
-- Рендер: `$modx->getChunk($name, $props)`.
+- Отрисовка: `$modx->getChunk($name, $props)`.
 - В `$props` доступны поля ресурса, `msProductData`, `variants_*` (`has_variants=true|false`, `variants_html`, `variants_json`).
 
 ### Пример
@@ -63,13 +61,15 @@ title: Типы рендера
 
 ### Для менеджера
 
-Используйте для элементов, которые уже собраны сниппетом (например, `msCart`).
+Для элементов, которые уже собирает сниппет (например, `msCart`).
 
 ### Для разработчика
 
 - Проверяется по `mxquickview_allowed_snippet`.
-- Рендер: `$modx->runSnippet($name, $props)`.
-- В вызов передаются свойства ресурса как параметры сниппета.
+- Отрисовка: `$modx->runSnippet($name, $props)`.
+- В вызов передаются поля ресурса как параметры сниппета, кроме `msCart`: ключ `id` снимается, задаётся `resource_id`.
+- Имя сниппета в `data-mxqv-element` может начинаться с `!` (префикс снимается в процессоре).
+- POST-поля `mode`, `output`, `modal_library` учитываются только при отрисовке `msCart` (контейнер корзины), не для `template`.
 
 ### Пример
 
@@ -101,14 +101,14 @@ title: Типы рендера
 
 ### Для менеджера
 
-Используется реже: когда нужно отрендерить шаблон ресурса целиком.
+Реже: когда нужно отрисовать шаблон ресурса целиком.
 
 ### Для разработчика
 
 - Всегда проверяется по `mxquickview_allowed_template`.
-- Пустой `mxquickview_allowed_template` означает, что `template`-рендер запрещён.
+- Пустой `mxquickview_allowed_template` означает, что отрисовка `template` запрещена.
 - `element` принимает ID шаблона или `templatename`.
-- Рендер выполняется как обработка ресурса через выбранный шаблон.
+- Отрисовка: временно подменяется `template` ресурса, вызывается `$resource->process()` с шаблоном из `data-mxqv-element` (не обязательно шаблон ресурса в панели управления).
 
 ### Пример
 
@@ -140,10 +140,11 @@ title: Типы рендера
 
 ## `modal`
 
-- Использует режим из `modalLibrary` (`native`, `bootstrap`, `fancybox`) в `mxQuickView.initialize`.
-- Поддерживает заголовок (`data-mxqv-title`) и навигацию prev/next.
+- Берёт режим из `modalLibrary` (`native`, `bootstrap`, `fancybox`) в `mxQuickView.initialize`.
+- Поддерживает заголовок (`data-mxqv-title`).
+- Кнопки prev/next и клавиши ←/→ работают только при `modalLibrary` `native` или `bootstrap`. У Fancybox навигации loop нет.
 
 ## `selector`
 
 - Вставляет ответ в контейнер из `data-mxqv-output`.
-- Удобно, если у сайта уже есть своя модалка или отдельная зона вывода.
+- Нужен, если на сайте уже своя модалка или отдельная зона вывода.

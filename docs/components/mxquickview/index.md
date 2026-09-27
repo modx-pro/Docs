@@ -4,7 +4,6 @@ description: Быстрый просмотр карточки товара и л
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/mxquickview/logo.png
 modstore: https://modstore.pro/packages/ecommerce/mxquickview
-dependencies: ['minishop3', 'ms3Variants']
 categories: catalog
 
 compatibility:
@@ -52,33 +51,31 @@ items: [
 ---
 # mxQuickView
 
-Быстрый просмотр карточки товара и любых ресурсов по AJAX для MODX 3.
-
-`mxQuickView` загружает контент ресурса по AJAX и показывает его в модалке или в указанном контейнере (`selector`).
+`mxQuickView` загружает контент ресурса по AJAX и показывает его в модалке или в контейнере (`selector`).
 
 ## Быстрые ссылки
 
 | Нужно | Документ |
 | --- | --- |
-| Подключить mxQuickView на фронт (Fenom/MODX) | [Интеграция](integration) |
-| Настроить whitelist и параметры в manager | [Админка](admin) |
-| Понять endpoint, payload и ответы JSON | [API](api) |
-| Разобраться с потоками (modal/selector, loop, variants) | [Потоки](flows) |
-| Выбрать тип рендера (`chunk`, `snippet`, `template`) | [Типы рендера](types) |
+| Подключить на сайт (Fenom/MODX) | [Интеграция](/components/mxquickview/integration) |
+| Настроить белый список в панели управления | [Админка](/components/mxquickview/admin) |
+| Точка входа, тело запроса и ответы JSON | [API](/components/mxquickview/api) |
+| Потоки (`modal`/`selector`, loop, варианты) | [Потоки](/components/mxquickview/flows) |
+| Тип отрисовки (`chunk`, `snippet`, `template`) | [Типы рендера](/components/mxquickview/types) |
 
 ## Кому что читать
 
-- **Менеджеру**: [Админка](admin) -> [Интеграция](integration).
-- **Разработчику**: [Архитектура](architecture) -> [API](api) -> [Типы рендера](types) -> [Потоки](flows).
+- **Менеджеру**: [Админка](/components/mxquickview/admin) → [Интеграция](/components/mxquickview/integration).
+- **Разработчику**: [Архитектура](/components/mxquickview/architecture) → [API](/components/mxquickview/api) → [Типы рендера](/components/mxquickview/types) → [Потоки](/components/mxquickview/flows).
 
 ## Что умеет дополнение
 
-- Рендерит элементы трёх типов: `chunk`, `snippet`, `template`.
-- Работает в режимах `modal` и `selector`.
-- Поддерживает три библиотечных режима модалки: `native`, `bootstrap`, `fancybox`.
-- Даёт навигацию prev/next внутри списка товаров при `data-mxqv-loop="true"`.
-- Переинициализирует MiniShop3 UI после динамической подгрузки.
-- Поддерживает ms3Variants в quick view (`variants_html`, `variants_json`, `has_variants`).
+- Отрисовывает три типа: `chunk`, `snippet`, `template`.
+- Режимы `modal` и `selector`.
+- Три библиотеки модалки: `native`, `bootstrap`, `fancybox`.
+- Навигация prev/next в списке при `data-mxqv-loop="true"` (только `modalLibrary` `native` или `bootstrap`, не Fancybox).
+- После подгрузки вызывает `ms3.cartUI`, `ms3.quantityUI`, `ms3.productCardUI.reinit()` и событие `ms3:cart:updated` (если MiniShop3 на странице).
+- ms3Variants в quick view (`variants_html`, `variants_json`, `has_variants`).
 
 ## Требования
 
@@ -86,24 +83,13 @@ items: [
 - PHP 8.1+
 - MiniShop3 (опционально, для корзины и product card UI)
 - ms3Variants (опционально, для выбора вариантов в модалке)
+- pdoTools 3.x с Fenom (рекомендуется). Чанки поставки `mxqv_product` и `mxqv_resource` написаны на Fenom. Без pdoTools в HTML останутся сырые `{$…}`
 
 ## Быстрый старт
 
 1. Установите пакет `mxQuickView`.
-1. Проверьте namespace `mxquickview` в системных настройках (особенно whitelist).
-1. Подключите в шаблоне: Fenom — `{'!mxQuickView.initialize'|snippet}`, MODX — `[[!mxQuickView.initialize]]`.
-1. Добавьте trigger с data-атрибутами (`data-mxqv-click`, `data-mxqv-action`, `data-mxqv-element`, `data-mxqv-id`).
+2. Проверьте namespace `mxquickview` в системных настройках (особенно белый список).
+3. Подключите в шаблоне: Fenom — `{'!mxQuickView.initialize'|snippet}`, MODX — `[[!mxQuickView.initialize]]`.
+4. Добавьте триггер с `data-mxqv-click`, `data-mxqv-action`, `data-mxqv-element`, `data-mxqv-id`.
 
-## Системные настройки (`mxquickview`)
-
-| Ключ | По умолчанию | Назначение |
-| --- | --- | --- |
-| `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Список разрешённых чанков |
-| `mxquickview_allowed_snippet` | `msCart,msMiniCart` | Список разрешённых сниппетов |
-| `mxquickview_allowed_template` | | Список разрешённых шаблонов (если пусто, `template`-рендер запрещён) |
-| `mxquickview_mouseover_delay` | `300` | Задержка по mouseover (мс) |
-| `mxquickview_modal_size` | `modal-lg` | Размер модалки (`modal-sm`, `modal-lg`, `modal-xl`) |
-| `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Путь/URL к Fancybox CSS (override) |
-| `mxquickview_fancybox_js` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.umd.js` | Путь/URL к Fancybox JS (override) |
-| `mxquickview_bootstrap_css` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.css` | Путь/URL к Bootstrap CSS (override) |
-| `mxquickview_bootstrap_js` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.js` | Путь/URL к Bootstrap JS (override) |
+Ключи `mxquickview_*` и перекрытие свойств сниппета — в [системных настройках](/components/mxquickview/settings).

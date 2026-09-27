@@ -24,11 +24,11 @@ flowchart LR
   Prep[msOnProductPrepare] --> Sw[variants.swatches]
 ```
 
-Put your own logic in a separate plugin. On `OnMFilterInit` register another type key. Do not overwrite `ms3oc` if you want a parallel type.
+Put your own logic in a separate plugin. On `OnMFilterInit` register another type key. Do not overwrite `ms3oc` if you need a parallel type.
 
 ### Enriching ms3variants
 
-The package does not create variants and does not change price, stock, or `_variant_id`. It only enriches the variant list already prepared by ms3variants:
+The package enriches the variant list prepared by ms3variants. It does not change price, stock, or `_variant_id`.
 
 ```mermaid
 sequenceDiagram
@@ -50,11 +50,11 @@ sequenceDiagram
 3. On matching key and value writes `color`, `pattern`, `title` into `swatches`.
 4. Updates `variants_json` for the chunk.
 
-The listing needs `usePackages=ms3Variants`. Markup example: [ms3variants](ms3variants).
+The listing needs `usePackages=ms3Variants`. Markup: [ms3variants](ms3variants).
 
 ## Dictionary events
 
-When a color is saved or removed in the dictionary:
+When a color is saved or removed in the dictionary the package fires:
 
 ```mermaid
 sequenceDiagram
@@ -80,7 +80,7 @@ sequenceDiagram
 | `ms3ocColorBeforeRemove` | before delete | `color` object |
 | `ms3ocColorRemove` | after delete | `color` object |
 
-You cannot cancel save via returnedValues. In `BeforeSave` you may change fields on `$color`. The original array stays in `data`. After save read the final object in `ms3ocColorSave`.
+You cannot cancel save via returnedValues. In `BeforeSave` change fields on `$color`. The original array stays in `data`. Read the final object in `ms3ocColorSave`.
 
 ## Plugin example
 
@@ -102,4 +102,14 @@ switch ($modx->event->name) {
 
 :::
 
-Add your subscription under **Elements → Plugins → System Events**.
+Add the subscription under **Elements → Plugins → System Events**.
+
+## Manager hooks
+
+Not for the storefront. After you change option chips on the product card:
+
+| Function | When |
+| --- | --- |
+| `ms3ocInvalidateSwatchMap` | Drop the `/map` cache |
+| `ms3ocReloadProductSwatches` | Reload tab swatches |
+| `ms3ocEnhanceProductOptionSwatches` | Redraw squares in option chips |

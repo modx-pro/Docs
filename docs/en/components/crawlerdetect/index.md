@@ -1,6 +1,6 @@
 ---
 title: CrawlerDetect
-description: Detect web crawlers by User-Agent and protect forms from spam without CAPTCHA
+description: Detect bots from request headers and protect forms from spam without CAPTCHA
 categories: other
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/crawlerdetect/logo.png
@@ -27,13 +27,13 @@ items: [
 ---
 # CrawlerDetect
 
-MODX extra that detects web crawlers (bots) by the User-Agent header and protects forms from spam without CAPTCHA. Uses [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect).
+Detects bots from request headers (User-Agent and the rest of the JayBizzle set) and blocks FormIt submits without CAPTCHA. Library: [JayBizzle/Crawler-Detect](https://github.com/JayBizzle/Crawler-Detect).
 
 ## Features
 
-- **Form protection** — block bot form submissions via FormIt preHook
-- **Hide widgets from bots** — don’t load chat, analytics or heavy scripts for bots
-- **Accurate visitor counts** — exclude bots from “online” and “views” counters
+- **Form protection:** FormIt preHook blocks bot submits
+- **Hide widgets:** do not load chat, analytics, or heavy scripts for bots
+- **Visitor counts:** exclude bots from “online” and “views” counters
 
 ## Requirements
 
@@ -44,22 +44,20 @@ MODX extra that detects web crawlers (bots) by the User-Agent header and protect
 
 ## Dependencies
 
-- **FormIt** — for form protection (preHook `crawlerDetectBlock`)
-- **FetchIt** — optional, for AJAX forms
-- **SendIt** — optional, for AJAX forms
+- **FormIt:** form protection (preHook `crawlerDetectBlock`)
+- **FetchIt:** not required, for AJAX forms
+- **SendIt:** not required, for AJAX forms
 
 ## Installation
-
-Install via MODX **Package Manager**:
 
 1. **Manage** → **Install packages**
 2. Find **CrawlerDetect** in the repository
 3. Click **Install**
 
-Dependencies (JayBizzle/Crawler-Detect) are included. You do **not** need to run `composer install` on the server.
+JayBizzle is already in the package (`vendor/autoload.php`). You do not need `composer install` on the server.
 
-After install, **Elements → Snippets** will have: `isCrawler`, `crawlerDetectBlock`.
+On install and upgrade the package sends anonymous telemetry to `https://metrics.modx.pro/` (no site domain).
 
-## Next steps
+After install, **Elements → Snippets** will have `isCrawler` and `crawlerDetectBlock`.
 
-See [Quick start](quick-start) and [Integration](integration).
+Next: [Quick start](quick-start), [Integration](integration).

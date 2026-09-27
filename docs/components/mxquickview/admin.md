@@ -5,42 +5,43 @@ title: Руководство по админке
 
 ## Где настраивать
 
-- Manager: **Настройки -> Системные настройки**
+- Панель управления: **Настройки → Системные настройки**
 - Фильтр: `namespace = mxquickview`
 - Область: `mxquickview_main`
 
-У компонента нет отдельной manager-страницы: управление выполняется через системные настройки и шаблоны/чанки сайта.
+Отдельной страницы компонента нет: управление через системные настройки и шаблоны/чанки сайта.
 
 ## Ключевые настройки
 
 | Ключ | По умолчанию | Что контролирует |
 | --- | --- | --- |
-| `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Какие чанки можно рендерить (`mxqv_resource` — для новостей, статей, страниц) |
-| `mxquickview_allowed_snippet` | `msCart,msMiniCart` | Какие сниппеты можно рендерить |
-| `mxquickview_allowed_template` | | Какие шаблоны можно рендерить |
+| `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Какие чанки можно отрисовать (`mxqv_resource` — новости, статьи, страницы) |
+| `mxquickview_allowed_snippet` | `msCart,msMiniCart` | Какие сниппеты можно отрисовать |
+| `mxquickview_allowed_template` | | Какие шаблоны можно отрисовать |
 | `mxquickview_mouseover_delay` | `300` | Задержка перед загрузкой по наведению |
-| `mxquickview_modal_size` | `modal-lg` | Размер встроенной модалки |
-| `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Явный путь/URL к Fancybox CSS (override) |
-| `mxquickview_fancybox_js` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.umd.js` | Явный путь/URL к Fancybox JS (override) |
-| `mxquickview_bootstrap_css` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.css` | Явный путь/URL к Bootstrap CSS (override); пусто — bundled `vendor/bootstrap`, затем CDN |
-| `mxquickview_bootstrap_js` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.js` | Явный путь/URL к Bootstrap JS (override); пусто — bundled `vendor/bootstrap`, затем CDN |
+| `mxquickview_modal_size` | `modal-lg` | Размер native/bootstrap (`modal-sm`, `modal-lg`, `modal-xl`) |
+| `mxquickview_debug` | `0` | Диагностика `[mxqv]` в консоли, если параметр `debug` у сниппета не задан |
+| `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Путь/URL к Fancybox CSS |
+| `mxquickview_fancybox_js` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.umd.js` | Путь/URL к Fancybox JS |
+| `mxquickview_bootstrap_css` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.css` | Путь/URL к Bootstrap CSS. Пусто — файлы в `vendor/bootstrap`, затем CDN |
+| `mxquickview_bootstrap_js` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.js` | Путь/URL к Bootstrap JS. Пусто — файлы в `vendor/bootstrap`, затем CDN |
 
-Параметр сниппета `modalLibrary` поддерживает режимы `native`, `bootstrap`, `fancybox`.
+Параметр сниппета `modalLibrary` принимает `native`, `bootstrap`, `fancybox`.
 
 ## Рекомендованный порядок настройки
 
-1. Оставьте в whitelist только доверенные элементы.
-2. Проверьте `modal_size` и `mouseover_delay` под UX шаблона.
+1. Оставьте в белом списке только доверенные элементы.
+2. Проверьте `modal_size` и `mouseover_delay` под шаблон.
 3. Подключите `mxQuickView.initialize` в базовый шаблон.
 4. Добавьте триггеры quick view в карточки каталога.
-5. Протестируйте сценарии: click, mouseover, selector, loop.
+5. Проверьте сценарии: click, mouseover, selector, loop.
 
 ## Практические сценарии
 
 ### Показ карточки товара через чанк
 
 - Добавьте чанк (например, `mxqv_product`) в `mxquickview_allowed_chunk`.
-- На кнопке товара используйте:
+- На кнопке товара:
   - `data-mxqv-click`
   - `data-mxqv-mode="modal"`
   - `data-mxqv-action="chunk"`
@@ -50,36 +51,36 @@ title: Руководство по админке
 ### Показ корзины через сниппет
 
 - Добавьте сниппет (например, `msCart`) в `mxquickview_allowed_snippet`.
-- На кнопке используйте `data-mxqv-action="snippet"` и `data-mxqv-element="msCart"`.
+- На кнопке: `data-mxqv-action="snippet"` и `data-mxqv-element="msCart"`.
 
-### Рендер в свой контейнер (без встроенной модалки)
+### Вывод в свой контейнер (без встроенной модалки)
 
-- На триггере задайте `data-mxqv-mode="selector"`.
+- На триггере: `data-mxqv-mode="selector"`.
 - Укажите `data-mxqv-output=".css-selector"`.
-- JS вставит HTML в указанный контейнер.
+- JS вставит HTML в этот контейнер.
 
-### Кастомизация нативной модалки через CSS переменные
+### Настройка нативной модалки через CSS-переменные
 
-- Для `modalLibrary = native` стили модалки можно менять без правки HTML/JS.
+- Для `modalLibrary = native` стили меняются без правки HTML/JS.
 - Переопределяйте `--mxqv-*` в теме после подключения `mxqv.css`.
-- Для `modalLibrary = fancybox` компонент использует bundled-файлы в `assets/components/mxquickview/vendor/fancybox/`; если они недоступны, подключается CDN `@fancyapps/ui`.
-- Для `modalLibrary = bootstrap` компонент использует bundled-файлы в `assets/components/mxquickview/vendor/bootstrap/`; если они недоступны, подключается CDN `bootstrap`.
-- Чаще всего меняют:
+- Для `modalLibrary = fancybox` компонент берёт файлы из `assets/components/mxquickview/vendor/fancybox/`. Если их нет, подключается CDN `@fancyapps/ui`.
+- Для `modalLibrary = bootstrap` — файлы из `assets/components/mxquickview/vendor/bootstrap/`. Если их нет, CDN `bootstrap`.
+- Чаще меняют:
   - `--mxqv-modal-size-lg`, `--mxqv-modal-size-xl`
   - `--mxqv-backdrop-bg`
   - `--mxqv-header-padding`, `--mxqv-body-padding`
   - `--mxqv-modal-bg`, `--mxqv-modal-shadow`
-- Полный список переменных: [API и интерфейсы](api) -> раздел `CSS переменные нативной модалки`.
+- Полный список: [API и интерфейсы](/components/mxquickview/api) → [CSS переменные нативной модалки](/components/mxquickview/api#css-peremennye-nativnoj-modalki).
 
 ## Логика `allowed_template`
 
-`template` всегда проверяется по whitelist `mxquickview_allowed_template`.
-Если список пуст, `data_action="template"` будет возвращать `Template not allowed`.
+`template` всегда проверяется по белому списку `mxquickview_allowed_template`.
+Если список пуст, `data_action="template"` вернёт `Template not allowed`.
 
 ## Чек-лист перед релизом
 
-1. В whitelist нет лишних элементов.
-2. Для всех триггеров задан корректный `data-mxqv-id`.
+1. В белом списке нет лишних элементов.
+2. У всех триггеров корректный `data-mxqv-id`.
 3. Проверен ответ коннектора при ошибках (`Chunk/Snippet/Template not allowed`).
-4. Если используется `mode=selector`, целевой контейнер реально существует в DOM.
-5. При наличии MiniShop3 проверено добавление товара в корзину из quick view.
+4. При `mode=selector` целевой контейнер есть в DOM.
+5. При MiniShop3 проверено добавление в корзину из quick view (если MS3 на странице инициализирован).

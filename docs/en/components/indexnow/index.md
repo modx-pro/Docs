@@ -1,6 +1,6 @@
 ---
 title: IndexNow
-description: Очередь URL и уведомление поисковиков по протоколу IndexNow
+description: URL queue and search-engine notifications via the IndexNow protocol
 categories: utilities
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/indexnow/logo.png
@@ -10,60 +10,60 @@ compatibility:
   - modx3
   - php72
 items: [
-  { text: 'Быстрый старт', link: 'quick-start' },
-  { text: 'Системные настройки', link: 'settings' },
-  { text: 'Ключ и key file', link: 'key' },
-  { text: 'Менеджер', link: 'manager' },
-  { text: 'Очередь и отправка', link: 'queue' },
-  { text: 'Контексты и домены', link: 'contexts' },
-  { text: 'Решение проблем', link: 'troubleshooting' },
+  { text: 'Quick start', link: 'quick-start' },
+  { text: 'System settings', link: 'settings' },
+  { text: 'Key and key file', link: 'key' },
+  { text: 'Manager', link: 'manager' },
+  { text: 'Queue and delivery', link: 'queue' },
+  { text: 'Contexts and domains', link: 'contexts' },
+  { text: 'Troubleshooting', link: 'troubleshooting' },
   { text: 'FAQ', link: 'faq' },
 ]
 ---
 
 # IndexNow
 
-IndexNow ставит URL страниц MODX в очередь и сообщает о них поисковым системам по протоколу [IndexNow](https://www.indexnow.org/). По умолчанию endpoint Яндекса: `https://yandex.com/indexnow`. Как это устроено у Яндекса: [Поддержка протокола IndexNow](https://yandex.ru/support/webmaster/ru/indexing-options/index-now).
+IndexNow queues MODX page URLs and notifies search engines using the [IndexNow](https://www.indexnow.org/) protocol. The default endpoint is Yandex: `https://yandex.com/indexnow`. Yandex docs: [IndexNow support](https://yandex.com/support/webmaster/indexing-options/index-now.html).
 
-Один transport package ставится на MODX Revolution **2.x и 3.x**.
+One transport package works on MODX Revolution **2.x and 3.x**.
 
-IndexNow **не индексирует** страницу. Он только уведомляет поисковик, что URL изменился. Появление в выдаче решает поисковая система.
+IndexNow **does not index** pages. It only tells the search engine that a URL changed. Whether it appears in results is up to the search engine.
 
-## Как устроено
+## How it works
 
-1. Вы сохраняете, публикуете, снимаете с публикации или удаляете ресурс.
-2. Плагин добавляет URL в очередь (или обновляет уже существующую запись).
-3. [Scheduler](/components/scheduler/) или кнопка **Обработать очередь** отправляет batch на endpoint.
-4. Результат пишется в историю.
+1. You save, publish, unpublish, or delete a resource.
+2. The plugin enqueues the URL (or updates an existing row).
+3. After the HTTP response, a **queue tick** runs: up to 25 due URLs in one shutdown. See [Queue and delivery](queue). You can also use [Scheduler](/en/components/scheduler/) on a cron schedule or **Process queue** in the manager.
+4. Results are written to history.
 
-Ошибки IndexNow не мешают сохранению ресурса: работа плагина обёрнута в try/catch.
+IndexNow errors do not block resource saves: plugin handlers run inside try/catch.
 
-## Возможности
+## Features
 
-- очередь при создании, изменении, снятии с публикации и удалении
-- ключ и файл `{key}.txt` в корне сайта
-- batch по host, retry при временных ошибках
-- история отправок
-- ручная отправка URL
-- фоновая обработка через Scheduler или вручную
+- queue on create, update, unpublish, and delete
+- key and `{key}.txt` in the site web root
+- batches per host, retries on temporary errors
+- delivery history
+- manual URL enqueue (`update` only)
+- background processing: queue tick, optional Scheduler, manager button
 
-## Требования
+## Requirements
 
-| Требование | Версия |
+| Requirement | Version |
 | --- | --- |
-| MODX Revolution | 2.8+ или 3.x |
+| MODX Revolution | 2.8+ or 3.x |
 | PHP | 7.2+ |
-| curl | рекомендуется |
-| [Scheduler](/components/scheduler/) | для фона (без него очередь обрабатывают вручную) |
+| curl | recommended |
+| [Scheduler](/en/components/scheduler/) | optional backup cron for the queue |
 
-Интерфейс менеджера на ExtJS. Composer на сервере не нужен.
+The manager UI uses ExtJS. Composer is not required on the server.
 
-## Установка
+## Installation
 
-В Package Manager нужен провайдер modstore.pro (URL сервиса `https://modstore.pro/extras/`), иначе установка падает с `Package provider not found`. Как подключить: [инструкция ModStore](https://modstore.pro/info/connection).
+Package Manager needs the modstore.pro provider (service URL `https://modstore.pro/extras/`). Without it, install fails with `[encryptedVehicle] package provider not found` (or a similar provider message). Setup: [ModStore connection guide](https://modstore.pro/info/connection).
 
-1. [Подключите репозиторий ModStore](https://modstore.pro/info/connection), если его ещё нет.
-2. **Extras → Installer** → найдите **IndexNow** → **Download** → **Install**.
-3. Откройте **Extras → IndexNow** и проверьте вкладку **Статус**.
+1. [Add the ModStore repository](https://modstore.pro/info/connection) if it is not there yet.
+2. **Extras → Installer** (MODX 3: **Packages**) → find **IndexNow** → **Download** → **Install**.
+3. Open **Extras → IndexNow** and check the **Status** tab.
 
-Дальше: [Быстрый старт](quick-start).
+Install registers the package in the `extension_packages` system setting. Next: [Quick start](quick-start).

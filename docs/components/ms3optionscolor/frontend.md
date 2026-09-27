@@ -5,7 +5,11 @@ description: Select, корзина, CSS и JS ms3OptionsColor на витрин
 
 # Вывод на сайте
 
-На витрине вы рисуете свотчи сниппетом `ms3OptionsColor`, select чанком `tplMs3OptionsColorSelect`, фильтр типом `ms3oc`. Параметры сниппета и список чанков: [Сниппеты](snippets/). Стили завязаны на data-атрибуты (`[data-ms3oc-swatch]`, `[data-empty]`, `[data-size]`…), а не на обязательные CSS-классы.
+На витрине сниппет `ms3OptionsColor` рисует свотчи. Select собирает чанк `tplMs3OptionsColorSelect`. Фильтр рисует тип `ms3oc`. Параметры и чанки: [Сниппеты](snippets/).
+
+Стили читают `[data-ms3oc-swatch]`, `[data-empty]`, `[data-size]`. Классы темы не обязательны.
+
+После AJAX-вставки `[data-ms3oc-select]` вызовите `window.ms3ocInitColorSelects()`.
 
 ```mermaid
 flowchart TB
@@ -26,7 +30,7 @@ flowchart TB
 
 ## CSS и JS
 
-При `ms3optionscolor_frontend_css=Да` плагин и сниппет сами подключают `css/web/main.css`. Select нужен отдельно:
+При `ms3optionscolor_frontend_css=Да` плагин и сниппет подключают `css/web/main.css`. Select нужен отдельно:
 
 ::: code-group
 
@@ -42,20 +46,20 @@ flowchart TB
 
 :::
 
-`select.js` ищет `[data-ms3oc-select]`. При наличии jQuery + Select2 строит dropdown со swatch. Иначе остаётся обычный `<select>` с `data-ms3oc-select-plain` (параметр `native=1` / `data-ms3oc-native`).
+`select.js` ищет `[data-ms3oc-select]`. При jQuery + Select2 строит список со свотчами. Иначе остаётся обычный `<select>` с `data-ms3oc-select-plain` (`native=1` / `data-ms3oc-native`).
 
 ```mermaid
 flowchart LR
   Markup["select data-ms3oc-select"]
   Check{jQuery и Select2?}
-  S2[Dropdown Select2 со swatch]
+  S2[Dropdown Select2 со свотчем]
   Native[Обычный select]
   Markup --> Check
   Check -->|да и native не 1| S2
   Check -->|нет или native=1| Native
 ```
 
-Размер свотча задаёте атрибутом `data-size`: `sm`, `md`, `lg`. Без атрибута размер 1.75rem.
+Размер свотча задаёт `data-size`: `sm`, `md`, `lg`. Без атрибута размер 1.75rem.
 
 ![Select](/components/ms3optionscolor/screenshots/storefront-select.png)
 
@@ -83,9 +87,7 @@ flowchart LR
 
 :::
 
-Штатный `tplMs3OptionsColor` рисует `<span data-ms3oc-swatch>` с `data-color`, `data-pattern`, `data-ral`, `data-status`. Пустой свотч получает `data-empty`.
-
-Параметры и поля строки: [сниппет ms3OptionsColor](snippets/ms3OptionsColor).
+Штатный `tplMs3OptionsColor` рисует `<span data-ms3oc-swatch>` с `data-color`, `data-pattern`, `data-ral`, `data-status`. Пустой свотч получает `data-empty`. Поля строки: [сниппет ms3OptionsColor](snippets/ms3OptionsColor).
 
 ### Select
 
@@ -113,7 +115,7 @@ flowchart LR
 
 :::
 
-Чанк внутри вызывает сниппет с `tplMs3OptionsColorSelectOption`. Параметры `tpl` / `optionTpl` переопределяют чанк одной option. Имя поля формы: `options[color]` (или ваш `option_key`).
+Чанк вызывает сниппет с `tplMs3OptionsColorSelectOption`. Параметры `tpl` / `optionTpl` подменяют чанк одной option. Имя поля формы: `options[color]` (или ваш `option_key`).
 
 | Параметр чанка | Назначение |
 | --- | --- |
@@ -123,13 +125,14 @@ flowchart LR
 | `placeholder` | Пустая option в начале |
 | `native` | `1` отключает Select2 |
 | `selected` / `selectedValue` | Предвыбранное value |
-| `activeOnly` / `includeUnset` | Как у сниппета |
+| `activeOnly` | Как у сниппета |
+| `includeUnset` | В чанке по умолчанию `1`. У сниппета auto: `1` только при `byOptions`, иначе `0` |
 | `multiple` / `required` | Атрибуты `<select>` |
 | `field_id` | id элемента |
 
 ## Каталог
 
-На листинге передайте ID товара строки:
+На листинге передайте ID товара из строки:
 
 ::: code-group
 
@@ -159,7 +162,7 @@ flowchart LR
 
 ## byOptions
 
-Когда значения уже есть (корзина, свой JSON), не читайте опции товара из БД:
+Когда значения уже есть (корзина, свой JSON), не читайте опции товара из базы:
 
 ::: code-group
 
@@ -181,34 +184,32 @@ flowchart LR
 
 :::
 
-`byOptions` это JSON-строка. В чанке корзины удобнее Fenom/`runSnippet`. В тегах MODX передайте уже сериализованный JSON.
+`byOptions` это JSON-строка. В чанке корзины удобнее Fenom и `runSnippet`. В тегах MODX передайте уже сериализованный JSON.
 
 ## Корзина
 
-Пример-чанк `tplMs3OptionsColorCart` показывает три ветки:
+Чанк `tplMs3OptionsColorCart` показывает три ветки:
 
 | Строка корзины | Поведение |
 | --- | --- |
-| Есть `options._variant_id` | Read-only swatch `color` (+ label `size` при наличии). Без color swatch-блок не рендерится. **Нет** `cart/changeOption`. Ссылка «изменить вариант» ведёт на PDP `?variant=ID` |
-| Bundle (`options.msbundles` / `bundle_hash`) | Read-only. Swatch при `options.color`. Иначе один цвет из `product.color` или все цвета товара. **Нет** `cart/changeOption` |
-| Обычная позиция | Если у товара есть опция `color`, `<select>` + `cart/changeOption` показывается даже без `options.color` в строке. Inline swatch и подпись только когда цвет уже выбран. Select размера только если `options.size` уже задан |
+| Есть `options._variant_id` | Свотч `color` без смены опции. Подпись `size`, если есть. Без color блок свотча не рисуется. **Нет** `cart/changeOption`. Ссылка «изменить вариант» ведёт на товар `?variant=ID` |
+| Bundle (`options.msbundles` / `bundle_hash`) | Без смены опции. Свотч при `options.color`. Иначе один цвет из `product.color` или все цвета товара. **Нет** `cart/changeOption` |
+| Обычная позиция | Если у товара есть опция `color`, `<select>` + `cart/changeOption` виден даже без `options.color` в строке. Свотч и подпись только когда цвет уже выбран. Select размера только если `options.size` уже задан |
 
-CSS витрины должен быть подключён. Иначе swatch в корзине часто остаётся с нулевой шириной.
+CSS витрины должен быть подключён. Иначе свотч в корзине часто с нулевой шириной.
 
-Display-контракт чанка: color swatch и size label. Прочие ключи опций не выводятся. Identity варианта (`_variant_id`, цена, canonical options) остаётся у ms3variants.
+Чанк выводит свотч цвета и подпись размера. Другие ключи опций не показывает. Поля варианта `_variant_id`, цена и канонические options остаются у ms3variants.
 
-Подключите чанк в шаблоне строки `tpl.msCart` под названием товара или замените своим на основе тех же веток.
+`tplMs3OptionsColorCart` это **полный** шаблон корзины (`tpl.msCart`: `$products`, qty, `cart/clean`). Назначьте его как `tpl` сниппета корзины, не вставляйте внутрь строки. Готового фрагмента-строки в пакете нет.
 
 ## mFilter и ms3variants
-
-Отдельные разделы:
 
 - [mFilter](mfilter) — тип фильтра `ms3oc`, Filter Set, чанк ряда
 - [ms3variants](ms3variants) — `variants[].swatches` в каталоге
 
 ## Свой чанк свотча
 
-Минимальный контракт для CSS и select:
+Минимальный контракт для CSS и select (цвет и паттерн задаются через `data-color` / `data-pattern`, отрисовку делает `main.css`):
 
 ::: code-group
 
@@ -216,29 +217,25 @@ Display-контракт чанка: color swatch и size label. Прочие к
 <span data-ms3oc-swatch
       {if !$color && !$pattern}data-empty{/if}
       {if $pattern}data-has-pattern{/if}
-      title="{($title ?: $value) | escape}"
       data-option="{$option_key | escape}"
       data-value="{$value | escape}"
       data-color="{if $color}#{$color | escape}{/if}"
       data-pattern="{$pattern | escape}"
       data-ral="{$ral | escape}"
-      data-status="{$status ?: 'active'}"
-      style="{if $color}background-color:#{$color | escape};{/if}{if $pattern}background-image:url('{$pattern | escape}');background-size:cover;{/if}">
+      data-status="{$status ?: 'active'}">
 </span>
 ```
 
 ```modx
 <span data-ms3oc-swatch[[+color:empty=`[[+pattern:empty=` data-empty`]]`]][[+pattern:notempty=` data-has-pattern`]]
-      title="[[+title:default=`[[+value]]`]]"
       data-option="[[+option_key]]"
       data-value="[[+value]]"
       data-color="[[+color:notempty=`#[[+color]]`]]"
       data-pattern="[[+pattern]]"
       data-ral="[[+ral]]"
-      data-status="[[+status:default=`active`]]"
-      style="[[+color:notempty=`background-color:#[[+color]];`]][[+pattern:notempty=`background-image:url('[[+pattern]]');background-size:cover;`]]"></span>
+      data-status="[[+status:default=`active`]]"></span>
 ```
 
 :::
 
-Классы темы можно менять. JS select и штатный CSS опираются на `data-ms3oc-*`. Штатные чанки пакета написаны на Fenom.
+Классы темы можно менять. JS select и штатный CSS читают `data-ms3oc-*`. Штатные чанки пакета написаны на Fenom.
