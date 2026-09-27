@@ -23,22 +23,21 @@ flowchart TB
 
 ## How the section works
 
-The dictionary list and **Swatches** tab save data through the miniShop3 connector, not a separate URL. That is intentional: on some hosts a direct API address returns 404. You need miniShop3 installed and `msproduct_save` for the manager role.
+The dictionary list and **Swatches** tab save data through the miniShop3 connector. There is no separate API URL: on some hosts a direct address returns 404. You need miniShop3 installed and `msproduct_save` for the manager role.
 
 ## CMP screen
 
 Top to bottom:
 
-1. Title and short description.
-2. **Dictionary** and **RAL** tabs (when `ms3optionscolor_ral_enabled` is enabled).
-3. Table with search, status filter, and actions.
+1. **Dictionary** and **RAL** tabs (when `ms3optionscolor_ral_enabled` is enabled).
+2. Table with search, status filter, and actions.
 
 ### Dictionary
 
 | Action | How |
 | --- | --- |
-| Search | Field "Search value or key" (case-insensitive, including Cyrillic) |
-| Status filter | all / not set / active / disabled |
+| Search | Placeholder is hardcoded Russian: «Поиск значения или ключа». Search is case-insensitive, including Cyrillic |
+| Status filter | API: `all` / unset / `active` / `inactive`. EN lexicon: Inactive. Not `disabled` |
 | Edit / assign | Pencil icon in the row |
 | Delete | **Delete** button in the dialog with confirm |
 
@@ -62,9 +61,15 @@ The dictionary is shared: one `option_key` + `value` pair for the whole catalog.
 
 In the dialog you set HEX (bar + RGB/HSV), pattern URL, RAL, title, activity. Mode switch: **Color** / **Pattern**.
 
-Choosing RAL fills its HEX. If you change HEX manually or save **Pattern** mode, the form clears the previous RAL link so code and color stay in sync.
+Choosing RAL fills its HEX. If you change HEX manually or save **Pattern** mode, the form clears the previous RAL link. Code and color stay in sync.
 
-On save the package normalizes pattern URL and **Image** field: `/assets/…` stays a site-root path, a full URL of the same site becomes relative, external HTTPS/CDN URLs stay as-is.
+On save the package normalizes the pattern URL and the **Image** field:
+
+| You save | Stored as |
+| --- | --- |
+| `/assets/…` | site-root path |
+| full URL of this site | relative path |
+| external HTTPS/CDN URL | as-is |
 
 ![HEX edit dialog](/components/ms3optionscolor/screenshots/color-edit.png)
 

@@ -22,16 +22,14 @@ The database key always uses an underscore: `ms3optionscolor_<name>`.
 
 ## `ms3optionscolor_default_option_key`
 
-Which option (or options) appear on the **Swatches** tab, in color requests for chips on **Product properties**, and in the snippet when you omit `&options`.
+Which option appears on the **Swatches** tab and in chips on **Product properties**. The snippet uses the same key when you omit `&options`.
 
 | Value | When to use |
 | --- | --- |
 | `color` | One "Color" option key (typical shop) |
 | `color,material` | Swatches for both color and material |
 
-Write multiple keys comma-separated, with or without spaces after commas: the package trims spaces. Do not leave the field empty: set a real option key.
-
-Example: the miniShop3 option is named `color`. Keep the default. The Swatches tab shows all values of that option for the product. The snippet without `&options` also uses `color`.
+Write multiple keys comma-separated. The package trims spaces after commas. Do not leave the field empty: set a real option key.
 
 If the option key differs (for example `obivka`), set it here. Otherwise the Swatches tab stays empty even when values exist on **Product properties**.
 
@@ -42,7 +40,7 @@ If the option key differs (for example `obivka`), set it here. Otherwise the Swa
 | Yes | The CMP shows a **RAL** tab; the color dialog can search RAL codes |
 | No | The RAL tab is hidden and RAL search in the form is unavailable. Saved codes in the dictionary are not deleted |
 
-Turn off if RAL is not needed and distracts managers. HEX and patterns work regardless of this setting.
+Turn off if RAL is not needed. HEX and patterns work regardless of this setting.
 
 ## `ms3optionscolor_frontend_css`
 

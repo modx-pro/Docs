@@ -19,7 +19,7 @@ flowchart TB
 
 ## Перед стартом
 
-У вас уже стоят MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools и PHP 8.2+. Нужен товар с опцией `color` и хотя бы одним значением. Для вкладки Swatches и CMP у роли должно быть право `msproduct_save` (как у сохранения товара miniShop3). Отдельных ACL-ключей пакет не создаёт.
+У вас уже стоят MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools и PHP 8.2+. Нужен товар с опцией `color` и хотя бы одним значением. Для вкладки Swatches и CMP роли нужно право `msproduct_save` (как у сохранения товара miniShop3). Отдельных ACL-ключей пакет не создаёт.
 
 ## Установка
 
@@ -27,7 +27,7 @@ flowchart TB
 2. Очистите кэш MODX.
 3. Откройте **Компоненты → ms3OptionsColor**. Список словаря должен открыться без белого экрана и ошибок VueTools.
 
-При установке пакет сам готовит базу под словарь и RAL Classic, открывает раздел в меню и подключает плагин: вкладка товара, стили витрины, фильтр mFilter.
+Пакет сам готовит базу словаря и RAL Classic, пункт меню и плагин: вкладка товара, стили витрины, фильтр mFilter.
 
 ## Шаг 1. Откройте словарь
 
@@ -35,7 +35,7 @@ flowchart TB
 
 ![Словарь swatch](/components/ms3optionscolor/screenshots/overview.png)
 
-Вкладка **Словарь** показывает пары ключ/значение. **RAL** открывает справочник RAL Classic, если включена настройка `ms3optionscolor_ral_enabled`.
+**RAL** открывает справочник RAL Classic, если включена настройка `ms3optionscolor_ral_enabled`.
 
 ## Шаг 2. Назначьте цвет на карточке товара
 
@@ -123,7 +123,7 @@ CSS (`css/web/main.css`) подключается сам при `ms3optionscolor
 
 :::
 
-С `native=1` остаётся обычный `<select>`. Без флага и при наличии jQuery + Select2 на странице скрипт соберёт dropdown со swatch.
+С `native=1` остаётся обычный `<select>`. Без флага и при jQuery + Select2 на странице скрипт соберёт выпадающий список со swatch.
 
 ![Select со swatch](/components/ms3optionscolor/screenshots/storefront-select.png)
 

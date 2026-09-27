@@ -55,7 +55,7 @@ For Select2 you need jQuery and Select2 on the page. Otherwise set `native=1` an
 
 ## mFilter without swatches
 
-In the Filter Set set `"type": "ms3oc"`, not the built-in `colors`. The type appears only when mFilter is installed and `OnMFilterInit` fired. On the storefront call `mFilter` (results) first, then `mFilterForm`. In some mFilter versions set `&tplItem=tplMFilterMs3OptionsColor`. Details: [mFilter](mfilter).
+In the Filter Set set `"type": "ms3oc"`, not the built-in `colors`. The type appears only when mFilter is installed and `OnMFilterInit` has fired. On the storefront call `mFilter` (results) first, then `mFilterForm`. In some mFilter versions set `&tplItem=tplMFilterMs3OptionsColor`. Details: [mFilter](mfilter).
 
 ## No `variants[].swatches` in the catalog
 

@@ -3,27 +3,24 @@ title: Set types
 ---
 # ms3ProductSets set types
 
-For two audiences:
-
-- **Manager:** which type fits the task and what to expect in output.
-- **Developer:** exact logic, fallbacks and call examples.
+A set type chooses which manual links to read and which auto logic to run when those links are empty.
 
 ## Common rules (all types)
 
 1. Manual links in `ms3_product_sets` for (`product_id`, `type`) are checked first.
 2. If there are no manual links, auto logic for the type runs.
 3. When the result is empty:
-   - `hideIfEmpty=true` → empty string `''`;
-   - `hideIfEmpty=false` → `emptyTpl`.
+   - `hideIfEmpty=true` → empty string `''`
+   - `hideIfEmpty=false` → `emptyTpl`
 4. `max_items` is clamped to `1..100`.
 5. If `return=ids`, the snippet returns only the ID list.
 
 ## Parameters that most often affect output
 
-- `resource_id` / `productId` — base product.
-- `category_id` — forced category for auto modes.
-- `set_id` — VIP set number (`vip_set_{set_id}`).
-- `exclude_ids` — IDs to exclude.
+- `resource_id` / `productId`: base product
+- `category_id`: forced category for auto modes
+- `set_id`: VIP set number (`vip_set_{set_id}`)
+- `exclude_ids`: IDs to exclude
 
 ## 1. `buy_together`
 
@@ -36,7 +33,8 @@ Use for “Frequently bought together” on the product card.
 Priority:
 
 1. Manual links `type=buy_together`.
-2. If empty — `msps_get_auto_recommendations` by product category/`category_id`.
+2. If empty: `msps_get_auto_sales` (co-purchase from orders).
+3. If still empty: `msps_get_auto_recommendations` by product category/`category_id`.
 
 ::: code-group
 
@@ -71,9 +69,9 @@ Alternatives from the same category.
 Priority:
 
 1. Manual links `type=similar`.
-2. If empty — `msps_get_similar_products`:
-   - category (`parent`) of the current product;
-   - current product and `exclude_ids` excluded.
+2. If empty: `msps_get_similar_products`:
+   - category (`parent`) of the current product
+   - current product and `exclude_ids` excluded
 
 ::: code-group
 
@@ -110,8 +108,8 @@ Compact impulse / add-on block.
 Priority:
 
 1. Manual links `type=popcorn`.
-2. If empty — auto by current product category.
-3. If still empty — fallback to general auto pick.
+2. If empty: auto by current product category.
+3. If still empty: random catalog products (`resource_id=0`, then shuffle).
 
 ::: code-group
 
@@ -146,7 +144,7 @@ Suggestions in the cart or before checkout.
 Priority:
 
 1. Manual links `type=cart_suggestion`.
-2. If empty — auto by `category_id` or `resource_id` category.
+2. If empty: auto by `category_id` or `resource_id` category.
 
 ::: code-group
 
@@ -183,8 +181,8 @@ Recommendations from real orders (“often bought together”).
 Priority:
 
 1. Manual links `type=auto_sales`.
-2. If empty — SQL on orders (`ms3_order_product` + `ms3_order`, statuses `2,4,5`).
-3. If no stats — fallback to `similar`.
+2. If empty: SQL on orders (`ms3_order_product` + `ms3_order`, statuses `2,4,5`).
+3. If no stats: fallback to `similar`.
 
 ::: code-group
 
@@ -219,7 +217,7 @@ Manual promo sets and campaign blocks.
 Priority:
 
 1. Manual links `type=vip`.
-2. If empty — `ms3productsets.vip_set_{set_id}`.
+2. If empty: `ms3productsets.vip_set_{set_id}`.
 
 If `set_id` is missing or less than 1, `set_id=1` is used.
 
@@ -256,9 +254,9 @@ General recommendations for home, categories and landings.
 Priority:
 
 1. Manual links `type=auto`.
-2. If empty — `msps_get_auto_recommendations`:
-   - by product category (`resource_id`),
-   - or by given `category_id`.
+2. If empty: `msps_get_auto_recommendations`:
+   - by product category (`resource_id`)
+   - or by given `category_id`
 
 ::: code-group
 
@@ -286,19 +284,16 @@ Priority:
 
 ## 8. Synonyms
 
-These types are accepted but handled as `auto`:
-
-- `also-bought`
-- `cross-sell`
-- `custom`
+- `also-bought` and `cross-sell` use the same auto path as `buy_together` (co-purchase, then category).
+- `custom` is handled as `auto`.
 
 ## 9. Fallback matrix
 
 | Type | When there are no manual links |
 | --- | --- |
-| `buy_together` | auto by category |
+| `buy_together` / `also-bought` / `cross-sell` | co-purchase (`msps_get_auto_sales`) → category |
 | `similar` | similar by category |
-| `popcorn` | auto by category → general auto fallback |
+| `popcorn` | auto by category → random catalog (`resource_id=0`) |
 | `cart_suggestion` | auto by category/`category_id` |
 | `auto_sales` | order stats → fallback to `similar` |
 | `vip` | system setting `vip_set_{set_id}` |
@@ -309,4 +304,4 @@ These types are accepted but handled as `auto`:
 1. For large catalogs start with `auto`/`similar` and add manual links only for key SKUs.
 2. For promos and seasonal blocks, `vip` + system settings work well.
 3. For `auto_sales` ensure enough orders exist, otherwise you will often fall back to `similar`.
-4. For stable order use manual links or `sortby`; auto modes are often random.
+4. For stable order use manual links or `sortby`. Auto modes are often random.

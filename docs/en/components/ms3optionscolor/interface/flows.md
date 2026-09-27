@@ -5,7 +5,7 @@ description: Flows A–I for ms3OptionsColor manager and storefront
 
 # Flows
 
-Short flows for the manager and storefront. If you have not installed the package yet, start with [quick start](/components/ms3optionscolor/quick-start).
+If you have not installed the package yet, start with [quick start](/components/ms3optionscolor/quick-start).
 
 | Flow | Scenario |
 | --- | --- |
@@ -52,8 +52,6 @@ When you switch to **Pattern** mode the form removes the previous RAL from the s
 ![Unset filter](/components/ms3optionscolor/screenshots/dictionary-filter.png)
 
 ![Assign dialog](/components/ms3optionscolor/screenshots/dictionary-assign.png)
-
-Search by value:
 
 ![Dictionary search](/components/ms3optionscolor/screenshots/dictionary.png)
 

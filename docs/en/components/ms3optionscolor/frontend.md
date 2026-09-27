@@ -5,7 +5,9 @@ description: Select, cart, CSS, and JS for ms3OptionsColor on the storefront
 
 # Frontend
 
-On the storefront you render swatches with snippet `ms3OptionsColor`, select with chunk `tplMs3OptionsColorSelect`, and filters with type `ms3oc`. Snippet parameters and chunk list: [Snippets](snippets/). Styles rely on data attributes (`[data-ms3oc-swatch]`, `[data-empty]`, `[data-size]`…), not required CSS classes.
+On the storefront snippet `ms3OptionsColor` draws swatches. Chunk `tplMs3OptionsColorSelect` builds the select. Type `ms3oc` draws the filter. Snippet parameters and chunks: [Snippets](snippets/). Styles read data attributes: `[data-ms3oc-swatch]`, `[data-empty]`, `[data-size]`. Theme classes are optional.
+
+After AJAX insert of `[data-ms3oc-select]`, call `window.ms3ocInitColorSelects()`.
 
 ```mermaid
 flowchart TB
@@ -42,7 +44,7 @@ When `ms3optionscolor_frontend_css=Yes` the plugin and snippet load `css/web/mai
 
 :::
 
-`select.js` finds `[data-ms3oc-select]`. With jQuery + Select2 it builds a dropdown with swatches. Otherwise you keep a plain `<select>` with `data-ms3oc-select-plain` (parameter `native=1` / `data-ms3oc-native`).
+`select.js` finds `[data-ms3oc-select]`. With jQuery + Select2 it builds a dropdown with swatches. Otherwise you keep a plain `<select>` with `data-ms3oc-select-plain` (`native=1` / `data-ms3oc-native`).
 
 ```mermaid
 flowchart LR
@@ -123,7 +125,8 @@ The chunk calls the snippet with `tplMs3OptionsColorSelectOption`. Parameters `t
 | `placeholder` | Empty option at the top |
 | `native` | `1` disables Select2 |
 | `selected` / `selectedValue` | Preselected value |
-| `activeOnly` / `includeUnset` | Same as snippet |
+| `activeOnly` | Same as snippet |
+| `includeUnset` | Chunk default `1`. Snippet auto: `1` only with `byOptions`, else `0` |
 | `multiple` / `required` | `<select>` attributes |
 | `field_id` | Element id |
 
@@ -189,19 +192,17 @@ Example chunk `tplMs3OptionsColorCart` has three branches:
 
 | Cart line | Behavior |
 | --- | --- |
-| Has `options._variant_id` | Read-only swatch for `color` (+ label `size` when present). Without color the swatch block is not rendered. **No** `cart/changeOption`. Link "change variant" → PDP `?variant=ID` |
-| Bundle (`options.msbundles` / `bundle_hash`) | Read-only. Swatch when `options.color`. Otherwise one color from `product.color` or all product colors. **No** `cart/changeOption` |
-| Regular line | When the product has option `color`, `<select>` + `cart/changeOption` shows even without `options.color` on the line. Inline swatch and label only when color is already selected. Size: select only when `options.size` is already set |
+| Has `options._variant_id` | Swatch for `color` with no option change (+ `size` label when present). Without color the swatch block is not rendered. **No** `cart/changeOption`. Link "change variant" goes to the product page `?variant=ID` |
+| Bundle (`options.msbundles` / `bundle_hash`) | No option change. Swatch when `options.color`. Otherwise one color from `product.color` or all product colors. **No** `cart/changeOption` |
+| Regular line | When the product has option `color`, `<select>` + `cart/changeOption` shows even without `options.color` on the line. Swatch and label only when color is already selected. Size select only when `options.size` is already set |
 
 Storefront CSS must be loaded. Otherwise the cart swatch often stays zero width.
 
-Display contract for the chunk: color swatch and size label. Other option keys are not output. Variant identity (`_variant_id`, price, canonical options) stays with ms3variants.
+The chunk outputs a color swatch and a size label. It does not show other option keys. Variant fields `_variant_id`, price, and canonical options stay with ms3variants.
 
-Include the chunk in `tpl.msCart` row template under the product name, or replace it with your own using the same branches.
+`tplMs3OptionsColorCart` is a **full** `tpl.msCart` stand-in (`$products`, qty, `cart/clean`). Assign it as the cart snippet `tpl`, do not include it inside a row. There is no row-only fragment in the package.
 
 ## mFilter and ms3variants
-
-Separate pages:
 
 - [mFilter](mfilter) — filter type `ms3oc`, Filter Set, row chunk
 - [ms3variants](ms3variants) — `variants[].swatches` in the catalog

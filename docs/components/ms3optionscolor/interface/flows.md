@@ -5,7 +5,7 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 
 # Сценарии
 
-Короткие сценарии для менеджера и витрины. Если пакет ещё не ставили, начните с [быстрого старта](/components/ms3optionscolor/quick-start).
+Если пакет ещё не ставили, начните с [быстрого старта](/components/ms3optionscolor/quick-start).
 
 | Flow | Сценарий |
 | --- | --- |
@@ -52,8 +52,6 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 ![Фильтр unset](/components/ms3optionscolor/screenshots/dictionary-filter.png)
 
 ![Диалог назначения](/components/ms3optionscolor/screenshots/dictionary-assign.png)
-
-Поиск по значению:
 
 ![Поиск в словаре](/components/ms3optionscolor/screenshots/dictionary.png)
 

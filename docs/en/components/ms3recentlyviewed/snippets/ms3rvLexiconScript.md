@@ -3,13 +3,15 @@ title: ms3rvLexiconScript
 ---
 # Snippet ms3rvLexiconScript
 
-Adds a script to the page with lexicon and config for the frontend. Puts site language and **max_items** setting value into `window.ms3rvLexicon` and `window.ms3rvConfig`.
+Adds a script with lexicon and config: `window.ms3rvLexicon` and `window.ms3rvConfig`.
 
-Include **before** the viewed.js script so the JS uses the correct strings and limit.
+Include **before** the `viewed.js` script so the JS uses the correct strings and limit.
 
 ## Parameters
 
-The snippet has no required parameters; it uses the current context and system setting `ms3recentlyviewed.max_items`.
+Optional **`cultureKey`**: lexicon language. Empty = context `cultureKey`, then site `cultureKey`, then `en`.
+
+`ms3rvConfig` keys: `maxItems`, `storageType`, `cultureKey`, `isAuthenticated`, `userId`.
 
 ## Usage
 
@@ -25,6 +27,6 @@ The snippet has no required parameters; it uses the current context and system s
 
 :::
 
-If not included, viewed.js falls back to default (Russian) phrases. For a multilingual site, outputting the lexicon is required.
+If not included, `viewed.js` falls back to default (Russian) phrases. For a multilingual site, outputting the lexicon is required.
 
-Lexicon keys (namespace ms3recentlyviewed): e.g. `ms3recentlyviewed_empty`, `ms3recentlyviewed_item_title`, etc.
+Lexicon keys (namespace `ms3recentlyviewed`): `ms3recentlyviewed_empty`, `ms3recentlyviewed_item_title`, and others.

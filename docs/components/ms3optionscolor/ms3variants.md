@@ -5,7 +5,7 @@ description: Цвета словаря в variants[].swatches на листин�
 
 # ms3variants
 
-Если установлен [ms3variants](/components/ms3variants/), ms3OptionsColor может дописать к каждому варианту в каталоге цвет из словаря. Пакет не создаёт варианты и не меняет цену, остаток или `_variant_id`. Он только обогащает уже готовый список.
+Если установлен [ms3variants](/components/ms3variants/), ms3OptionsColor дописывает к каждому варианту в каталоге цвет из словаря. Пакет не создаёт варианты и не меняет цену, остаток или `_variant_id`. Он дополняет уже готовый список.
 
 ```mermaid
 sequenceDiagram
@@ -62,13 +62,11 @@ sequenceDiagram
 {if $has_variants?}
   {foreach $variants as $variant}
     {set $sw = $variant.swatches.color ?: []}
-    <button type="button" {if !$variant.in_stock}disabled{/if}>
-      <span data-ms3oc-swatch
-            {if !$sw.color && !$sw.pattern}data-empty{/if}
-            {if $sw.pattern}data-has-pattern{/if}
-            style="{if $sw.color}background-color:#{$sw.color};{/if}{if $sw.pattern}background-image:url('{$sw.pattern}');{/if}"></span>
-      {$variant.options_array.color} / {$variant.options_array.size}
-    </button>
+    <span data-ms3oc-swatch
+          {if !$sw.color && !$sw.pattern}data-empty{/if}
+          {if $sw.pattern}data-has-pattern{/if}
+          style="{if $sw.color}background-color:#{$sw.color};{/if}{if $sw.pattern}background-image:url('{$sw.pattern}');{/if}"></span>
+    {$variant.options_array.color}
   {/foreach}
 {/if}
 ```
@@ -116,7 +114,7 @@ sequenceDiagram
 
 ## Корзина
 
-Ветка с `options._variant_id` в чанке `tplMs3OptionsColorCart` показывает цвет read-only и ссылку на PDP `?variant=ID`. Смену варианта и цену по-прежнему ведёт ms3variants. Подробнее: [Вывод на сайте](frontend#корзина).
+Ветка с `options._variant_id` в чанке `tplMs3OptionsColorCart` показывает цвет без смены опции и ссылку на страницу товара `?variant=ID`. Смену варианта и цену по-прежнему ведёт ms3variants. Подробнее: [Вывод на сайте](frontend#корзина).
 
 ## Типичные ошибки
 

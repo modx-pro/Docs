@@ -42,12 +42,13 @@ flowchart LR
 | --- | --- |
 | `type` | Всегда `ms3oc` для свотчей из словаря |
 | `source` | Обычно `option` |
-| `field` | Ключ опции miniShop3, чаще `color` |
+| `field` | Значения опции берутся из этого ключа MiniShop3 |
+| ключ объекта | Словарь ищется по **этому** ключу Filter Set как `option_key`, не по `field` |
 | `label` | Подпись блока на витрине |
 | `tpl` | Чанк строки: штатный `tplMFilterMs3OptionsColor` или свой |
 | `multiple` | Несколько значений сразу |
 
-Ключ объекта (`"color"` в примере) должен совпадать с тем, что передаёте в `mFilterForm` как `filters`.
+Ключ объекта должен совпадать с `filters` у `mFilterForm` и с `option_key` в словаре. Если ключ `color_swatch`, а `field` равен `color`, значения идут из `color`, цвета из `color_swatch`. Держите ключ = `field` = `option_key`, пока не закрыт [Ibochkarev/ms3OptionsColor#1](https://github.com/Ibochkarev/ms3OptionsColor/issues/1).
 
 ## Вызов на странице
 
@@ -71,7 +72,7 @@ flowchart LR
 
 :::
 
-Параметры `mFilter` / `mFilterForm` зависят от вашей сборки. См. [сниппеты mFilter](/components/mfilter/snippets/). Важно для ms3OptionsColor:
+Параметры `mFilter` / `mFilterForm` зависят от вашей сборки. См. [сниппеты mFilter](/components/mfilter/snippets/). Для ms3OptionsColor нужно:
 
 - в Filter Set указан `"type": "ms3oc"`;
 - `filters` совпадает с ключом в JSON набора;
@@ -82,7 +83,7 @@ flowchart LR
 
 ## Чанк `tplMFilterMs3OptionsColor`
 
-Штатный чанк рисует checkbox, свотч и подпись. Два формата данных:
+Два формата данных у чанка:
 
 | Источник | Поля |
 | --- | --- |
@@ -110,7 +111,8 @@ CSS витрины (`ms3optionscolor_frontend_css`) должен быть вкл
 | --- | --- |
 | Нет свотчей, только текст | В Filter Set стоит `colors`, а не `ms3oc` |
 | Тип `ms3oc` не находится | Установлен mFilter, очищен кэш, плагин подписан на `OnMFilterInit` |
-| Пустые квадраты | В словаре нет HEX/pattern для значений опции |
+| Значения нет в фильтре | У записи словаря нет HEX и pattern. `ms3oc` её пропускает |
+| Пустые квадраты | Нет CSS (`frontend_css`) или свой чанк отдаёт пустой `hex` |
 | Нет стилей | `ms3optionscolor_frontend_css` или ручной `<link>` на `css/web/main.css` |
 
 Сценарий со скриншотом: [Flow G](interface/flows#flow-g-фильтр-каталога-mfilter). Общая витрина: [Вывод на сайте](frontend).

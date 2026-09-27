@@ -19,7 +19,7 @@ flowchart TB
 
 ## Before you start
 
-You already have MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools, and PHP 8.2+. You need a product with option `color` and at least one value. For the Swatches tab and CMP the role needs `msproduct_save` (same as saving a miniShop3 product). The package does not create separate ACL keys.
+You already have MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools, and PHP 8.2+. You need a product with option `color` and at least one value. The Swatches tab and CMP need `msproduct_save` on the role (same as saving a miniShop3 product). The package does not create separate ACL keys.
 
 ## Installation
 
@@ -27,7 +27,7 @@ You already have MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools, and PHP 8.2
 2. Clear the MODX cache.
 3. Open **Extras → ms3OptionsColor**. The dictionary list should load without a blank screen or VueTools errors.
 
-On install the package prepares the database for the dictionary and RAL Classic, adds the menu item, and enables the plugin: product tab, storefront styles, mFilter.
+The package prepares the dictionary and RAL Classic database, the menu item, and the plugin: product tab, storefront styles, mFilter.
 
 ## Step 1. Open the dictionary
 
@@ -35,7 +35,7 @@ Direct link: `manager/?a=index&namespace=ms3optionscolor`.
 
 ![Swatch dictionary](/components/ms3optionscolor/screenshots/overview.png)
 
-The **Dictionary** tab shows key/value pairs. **RAL** opens the RAL Classic reference when `ms3optionscolor_ral_enabled` is enabled.
+**RAL** opens the RAL Classic reference when `ms3optionscolor_ral_enabled` is enabled.
 
 ## Step 2. Assign a color on the product card
 

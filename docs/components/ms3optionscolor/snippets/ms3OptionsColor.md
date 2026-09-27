@@ -5,11 +5,9 @@ description: Параметры сниппета ms3OptionsColor, поля ст�
 
 # ms3OptionsColor
 
-Сниппет читает значения опций товара (или готовый JSON), сопоставляет их со словарём цветов и отдаёт HTML по чанку либо массив строк.
+Сниппет читает значения опций товара или готовый JSON, сопоставляет их со словарём и отдаёт HTML по чанку либо массив строк. Вызов лучше некэшированный: `[[!ms3OptionsColor]]` / `{'!ms3OptionsColor' | snippet}`.
 
-Ставьте на страницу товара, в карточку каталога или в чанк корзины. Вызов лучше некэшированный: `[[!ms3OptionsColor]]` / `{'!ms3OptionsColor' | snippet}`.
-
-При каждом вызове сниппет может зарегистрировать CSS витрины, если включён `ms3optionscolor_frontend_css`.
+При каждом вызове сниппет может подключить CSS витрины, если включён `ms3optionscolor_frontend_css`.
 
 ## Как выбираются строки
 
@@ -59,7 +57,7 @@ flowchart TB
 
 ## Поля строки
 
-Каждая строка (и в чанке, и в `return=data`) содержит:
+И в чанке, и в `return=data`:
 
 | Поле | Описание |
 | --- | --- |
@@ -73,6 +71,9 @@ flowchart TB
 | `image` | Изображение |
 | `active` | Активна ли запись словаря |
 | `status` | `active` / `inactive` / `unset` |
+| `hint_color` | HEX из comboColors, в словарь не пишется |
+| `configured` | Есть запись в словаре |
+| `id` / `rank` | ID строки словаря и сортировка |
 | `selected` | `true`, если `value` совпал с `selectedValue` |
 
 В CSS и select используйте `#{$color}` или `data-color="#{$color}"`: в поле лежит код без решётки.
@@ -153,7 +154,7 @@ flowchart TB
 
 ### Показать значения без цвета в словаре
 
-Пустой свотч (клетчатый фон в штатном CSS) удобен, пока менеджер ещё не назначил HEX:
+Пустой свотч (клетчатый фон в штатном CSS) показывает значение, пока в словаре нет HEX:
 
 ::: code-group
 
@@ -213,9 +214,7 @@ flowchart TB
   'options' => 'color',
   'toPlaceholder' => 'ms3oc.swatches'
 ]}
-<div class="product-colors">
-  {$_modx->getPlaceholder('ms3oc.swatches')}
-</div>
+{$_modx->getPlaceholder('ms3oc.swatches')}
 ```
 
 ```modx
@@ -224,9 +223,7 @@ flowchart TB
   &options=`color`
   &toPlaceholder=`ms3oc.swatches`
 ]]
-<div class="product-colors">
-  [[+ms3oc.swatches]]
-</div>
+[[+ms3oc.swatches]]
 ```
 
 :::
@@ -241,15 +238,9 @@ flowchart TB
   'options' => 'color',
   'return' => 'data'
 ])}
-<ul>
 {foreach $rows as $row}
-  <li>
-    <span style="background:#{$row.color}"></span>
-    {$row.title ?: $row.value}
-    {if $row.ral} (RAL {$row.ral}){/if}
-  </li>
+  {$row.color} {$row.title ?: $row.value}{if $row.ral} RAL {$row.ral}{/if}
 {/foreach}
-</ul>
 ```
 
 ```modx
@@ -263,7 +254,7 @@ flowchart TB
 
 :::
 
-В тегах MODX массив удобнее сразу отдать в плейсхолдер и разобрать своим сниппетом или Fenom-чанком. В Fenom цикл по результату `runSnippet` проще.
+В тегах MODX массив удобнее отдать в плейсхолдер и разобрать своим сниппетом или Fenom-чанком.
 
 ### byOptions: корзина и готовый JSON
 
@@ -298,7 +289,7 @@ flowchart TB
 
 :::
 
-`byOptions` — JSON-строка. В чанке корзины удобнее Fenom. Готовый пример веток корзины: чанк `tplMs3OptionsColorCart` на [Выводе на сайте](/components/ms3optionscolor/frontend#корзина).
+`byOptions` это JSON-строка. В чанке корзины удобнее Fenom. Готовый пример веток корзины: чанк `tplMs3OptionsColorCart` на [Выводе на сайте](/components/ms3optionscolor/frontend#корзина).
 
 ### Select с выбранным значением
 
@@ -364,7 +355,7 @@ flowchart TB
 
 :::
 
-Параметры чанка select: `product`, `option_key`, `caption`, `placeholder`, `native`, `selected` / `selectedValue`, `activeOnly`, `includeUnset`, `multiple`, `required`, `field_id`, `tpl` / `optionTpl`.
+Параметры чанка select: таблица на [Выводе на сайте](/components/ms3optionscolor/frontend#select).
 
 ### Свой чанк через @FILE
 

@@ -10,10 +10,10 @@ Access to ms3RecentlyViewed admin sections is controlled by MODX permissions.
 | Permission | Action |
 |------------|--------|
 | `view` | View dashboard and history |
-| `save_log` | Delete records, bulk delete, CSV export |
+| `save_log` | Delete a row and bulk delete |
 
-Without **view**, the **ms3RecentlyViewed** menu item and component pages are unavailable. Without **save_log**, delete and export buttons in history are unavailable.
+Without **view**, the **ms3RecentlyViewed** menu item and component pages are unavailable. Connector `mgr/views/export` checks only `view`. History delete/export buttons stay visible without `save_log`: delete then fails, export succeeds.
 
 ## Assigning
 
-Permissions are set in **Policies**. **Manage → Access Control** — select a policy or create one, then assign **view** and optionally **save_log** to the desired roles or users.
+Set permissions in **Policies**: **Manage → Access Control**. Select a policy or create one, then assign **view** and optionally **save_log** to the roles or users.

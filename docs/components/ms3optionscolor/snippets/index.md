@@ -5,7 +5,7 @@ description: Обзор сниппета и чанков ms3OptionsColor
 
 # Сниппеты
 
-В пакете один сниппет для витрины. Чанки подключаются параметром `tpl` или вызываются отдельно (select, корзина, mFilter).
+В пакете один сниппет для витрины. Чанки подключаются параметром `tpl` или вызываются сами (select, корзина, mFilter).
 
 | Сниппет | Назначение |
 | --- | --- |
@@ -18,7 +18,7 @@ description: Обзор сниппета и чанков ms3OptionsColor
 | `tplMs3OptionsColor` | Квадрат цвета на карточке товара и в каталоге (по умолчанию у сниппета) |
 | `tplMs3OptionsColorSelect` | Готовый `<select>` с подписью и option-строками |
 | `tplMs3OptionsColorSelectOption` | Одна `<option>` с `data-color` / `data-pattern` |
-| `tplMs3OptionsColorCart` | Пример блока цвета в строке корзины |
+| `tplMs3OptionsColorCart` | Полный шаблон корзины (замена `tpl.msCart`), не include в строку |
 | `tplMFilterMs3OptionsColor` | Ряд фильтра mFilter типа `ms3oc` |
 
 Штатные чанки на Fenom. Стили завязаны на `data-ms3oc-*`, не на имена CSS-классов темы.

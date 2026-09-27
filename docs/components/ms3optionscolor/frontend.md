@@ -5,7 +5,9 @@ description: Select, корзина, CSS и JS ms3OptionsColor на витрин
 
 # Вывод на сайте
 
-На витрине вы рисуете свотчи сниппетом `ms3OptionsColor`, select чанком `tplMs3OptionsColorSelect`, фильтр типом `ms3oc`. Параметры сниппета и список чанков: [Сниппеты](snippets/). Стили завязаны на data-атрибуты (`[data-ms3oc-swatch]`, `[data-empty]`, `[data-size]`…), а не на обязательные CSS-классы.
+На витрине сниппет `ms3OptionsColor` рисует свотчи. Чанк `tplMs3OptionsColorSelect` собирает select. Тип `ms3oc` рисует фильтр. Параметры сниппета и чанки: [Сниппеты](snippets/). Стили читают data-атрибуты: `[data-ms3oc-swatch]`, `[data-empty]`, `[data-size]`. Классы темы не обязательны.
+
+После AJAX-вставки `[data-ms3oc-select]` вызовите `window.ms3ocInitColorSelects()`.
 
 ```mermaid
 flowchart TB
@@ -42,7 +44,7 @@ flowchart TB
 
 :::
 
-`select.js` ищет `[data-ms3oc-select]`. При наличии jQuery + Select2 строит dropdown со swatch. Иначе остаётся обычный `<select>` с `data-ms3oc-select-plain` (параметр `native=1` / `data-ms3oc-native`).
+`select.js` ищет `[data-ms3oc-select]`. При jQuery + Select2 строит выпадающий список со swatch. Иначе остаётся обычный `<select>` с `data-ms3oc-select-plain` (параметр `native=1` / `data-ms3oc-native`).
 
 ```mermaid
 flowchart LR
@@ -123,7 +125,8 @@ flowchart LR
 | `placeholder` | Пустая option в начале |
 | `native` | `1` отключает Select2 |
 | `selected` / `selectedValue` | Предвыбранное value |
-| `activeOnly` / `includeUnset` | Как у сниппета |
+| `activeOnly` | Как у сниппета |
+| `includeUnset` | В чанке по умолчанию `1`. У сниппета auto: `1` только при `byOptions`, иначе `0` |
 | `multiple` / `required` | Атрибуты `<select>` |
 | `field_id` | id элемента |
 
@@ -189,19 +192,17 @@ flowchart LR
 
 | Строка корзины | Поведение |
 | --- | --- |
-| Есть `options._variant_id` | Read-only swatch `color` (+ label `size` при наличии). Без color swatch-блок не рендерится. **Нет** `cart/changeOption`. Ссылка «изменить вариант» ведёт на PDP `?variant=ID` |
-| Bundle (`options.msbundles` / `bundle_hash`) | Read-only. Swatch при `options.color`. Иначе один цвет из `product.color` или все цвета товара. **Нет** `cart/changeOption` |
-| Обычная позиция | Если у товара есть опция `color`, `<select>` + `cart/changeOption` показывается даже без `options.color` в строке. Inline swatch и подпись только когда цвет уже выбран. Select размера только если `options.size` уже задан |
+| Есть `options._variant_id` | Свотч `color` без смены опции (+ подпись `size` при наличии). Без color блок свотча не рисуется. **Нет** `cart/changeOption`. Ссылка «изменить вариант» ведёт на страницу товара `?variant=ID` |
+| Bundle (`options.msbundles` / `bundle_hash`) | Без смены опции. Свотч при `options.color`. Иначе один цвет из `product.color` или все цвета товара. **Нет** `cart/changeOption` |
+| Обычная позиция | Если у товара есть опция `color`, `<select>` + `cart/changeOption` показывается даже без `options.color` в строке. Свотч и подпись только когда цвет уже выбран. Select размера только если `options.size` уже задан |
 
 CSS витрины должен быть подключён. Иначе swatch в корзине часто остаётся с нулевой шириной.
 
-Display-контракт чанка: color swatch и size label. Прочие ключи опций не выводятся. Identity варианта (`_variant_id`, цена, canonical options) остаётся у ms3variants.
+Чанк выводит свотч цвета и подпись размера. Другие ключи опций не показывает. Поля варианта `_variant_id`, цена и канонические options остаются у ms3variants.
 
-Подключите чанк в шаблоне строки `tpl.msCart` под названием товара или замените своим на основе тех же веток.
+`tplMs3OptionsColorCart` это **полный** шаблон корзины (`tpl.msCart`: `$products`, qty, `cart/clean`). Назначьте его как `tpl` сниппета корзины, не вставляйте внутрь строки. Готового фрагмента-строки в пакете нет.
 
 ## mFilter и ms3variants
-
-Отдельные разделы:
 
 - [mFilter](mfilter) — тип фильтра `ms3oc`, Filter Set, чанк ряда
 - [ms3variants](ms3variants) — `variants[].swatches` в каталоге

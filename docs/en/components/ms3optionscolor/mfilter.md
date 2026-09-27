@@ -42,12 +42,13 @@ flowchart LR
 | --- | --- |
 | `type` | Always `ms3oc` for dictionary swatches |
 | `source` | Usually `option` |
-| `field` | miniShop3 option key, most often `color` |
+| `field` | Option values come from this MiniShop3 option |
+| object key | Dictionary lookup uses **this** Filter Set key as `option_key`, not `field` |
 | `label` | Block label on the storefront |
 | `tpl` | Row chunk: stock `tplMFilterMs3OptionsColor` or your own |
 | `multiple` | Several values at once |
 
-The object key (`"color"` in the example) must match what you pass to `mFilterForm` as `filters`.
+The object key must match `mFilterForm` `filters` and the dictionary `option_key`. If the key is `color_swatch` and `field` is `color`, values come from `color` and colors load from `color_swatch`. Swatches miss. Keep key = `field` = `option_key` until [Ibochkarev/ms3OptionsColor#1](https://github.com/Ibochkarev/ms3OptionsColor/issues/1) is fixed.
 
 ## Call on the page
 
@@ -71,7 +72,7 @@ Run the results snippet (`mFilter` / `baseIds`) first, then the form:
 
 :::
 
-`mFilter` / `mFilterForm` parameters depend on your build. See [mFilter snippets](/components/mfilter/snippets/). For ms3OptionsColor you need:
+`mFilter` / `mFilterForm` parameters depend on your build. See [mFilter snippets](/components/mfilter/snippets/). ms3OptionsColor needs:
 
 - Filter Set with `"type": "ms3oc"`;
 - `filters` matching the JSON key;
@@ -82,7 +83,7 @@ Run the results snippet (`mFilter` / `baseIds`) first, then the form:
 
 ## Chunk `tplMFilterMs3OptionsColor`
 
-The stock chunk draws a checkbox, swatch, and label. Two data shapes:
+Two data shapes for the chunk:
 
 | Source | Fields |
 | --- | --- |
@@ -110,7 +111,8 @@ Storefront CSS (`ms3optionscolor_frontend_css`) must be on, or the filter swatch
 | --- | --- |
 | Text only, no swatches | Filter Set uses `colors` instead of `ms3oc` |
 | Type `ms3oc` missing | mFilter installed, cache cleared, plugin on `OnMFilterInit` |
-| Empty squares | No HEX/pattern in the dictionary for those option values |
+| Value missing from the filter | Dictionary row has no HEX and no pattern. `ms3oc` skips it |
+| Empty squares | CSS not loaded (`frontend_css`) or your chunk outputs an empty `hex` |
 | No styles | `ms3optionscolor_frontend_css` or a manual `<link>` to `css/web/main.css` |
 
 Screenshot flow: [Flow G](interface/flows#flow-g-catalog-filter-with-mfilter). General storefront: [Frontend](frontend).

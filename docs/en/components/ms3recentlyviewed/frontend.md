@@ -3,73 +3,67 @@ title: Frontend integration
 ---
 # Frontend integration
 
-Lexicon, styles and scripts setup is described in [Quick start](/en/components/ms3recentlyviewed/quick-start). Below: connector, customization and chunks.
+Lexicon, styles and scripts: [Quick start](/en/components/ms3recentlyviewed/quick-start).
 
 ## Integration check: empty stats in admin
 
-Stats and history in admin come from the `ms3recentlyviewed_items` table. Records are written when sync is enabled — for **logged-in** and **anonymous** (guest) users. Anonymous users are identified by session; guest tracking is controlled by `ms3recentlyviewed.track_anonymous`. Bot views are not stored when **`ms3recentlyviewed.block_bots`** is on; detection method: **`ms3recentlyviewed.block_bots_detector`** — **`crawler_detect`** (jaybizzle/crawler-detect in vendor) or **`regex`** as fallback.
+Stats and history in admin come from `ms3recentlyviewed_items`. Records are written when sync is enabled, for **logged-in** and **anonymous** (guest) users.
 
-**Checklist:** lexicon and viewed.js are loaded on every product page; product page has `data-viewed-product-id` on `<body>` or `window.ms3rvCurrentProductId`; `ms3recentlyviewed.sync_enabled` = Yes; for logged-in users — user is authenticated in **web** context (not only in manager). The `fromDB` option works only for users logged in on the frontend (web context).
+- Guests are identified by session. Guest tracking: `ms3recentlyviewed.track_anonymous`.
+- Bot views are not stored when **`ms3recentlyviewed.block_bots`** is on.
+- Detection: **`ms3recentlyviewed.block_bots_detector`** — **`crawler_detect`** (jaybizzle/crawler-detect in vendor) or **`regex`**.
+
+**Checklist:**
+
+- Lexicon and `viewed.js` on every product page
+- Product page has `data-viewed-product-id` on `<body>` or `window.ms3rvCurrentProductId`
+- `ms3recentlyviewed.sync_enabled` = Yes
+- Logged-in users authenticated in the **web** context (not only in the manager)
+
+`fromDB` works only for users logged in on the frontend (web context).
 
 ### `viewedIds` placeholder (cookie)
 
-Plugin **ms3recentlyviewedViewedIdsPlaceholder** (event **OnWebPageInit**, priority **-5**): if **`ms3recentlyviewed.storage_type` = `cookie`** and limit &gt; 0, the **`viewedIds`** placeholder is filled from the `ms3_recently_viewed` cookie. The name is **reserved** — do not override. Fenom: `{$_modx->getPlaceholder('viewedIds')}`.
+Plugin **ms3recentlyviewedViewedIdsPlaceholder** (event **OnWebPageInit**, priority **-5**) always sets **`viewedIds`**. With **`storage_type` = `cookie`** the value comes from the `ms3_recently_viewed` cookie. Otherwise the placeholder is an empty string and can overwrite a value set earlier. The name is **reserved**. Fenom: `{$_modx->getPlaceholder('viewedIds')}`.
 
 ## Connector (AJAX)
 
-**URL:** `assets/components/ms3recentlyviewed/connector.php`
+**URL:** `assets/components/ms3recentlyviewed/connector.php`  
 **Method:** POST.
 
 Actions:
 
-- **Render viewed list** — parameters `ids` (required), optionally `limit`, `tpl`, `emptyTpl`
+- **Render viewed list** — optional `ids`, `limit`, `tpl`, `emptyTpl`. Empty `ids` is not an error: the snippet returns `emptyTpl`.
 - **Similar** — `action=similar`, `ids`, optionally `limit`, `tpl`, `depth`
-- **For logged-in users** — `action=track` + `product_id`, `action=sync` + `ids`, `action=get` (fetch from DB)
+- **`track`** + `product_id` — writes a view for guests (session) and logged-in users when sync is on
+- **`sync`** + `ids`, **`get`** — web-authenticated users only
 
 **Response:** HTML of the list; empty string when no products. If `window.MODX_ASSETS_URL` or `window.MODX_BASE_URL` is set, the JS builds the connector URL itself.
 
-The connector uses shared helpers for sanitization: IDs are parsed as integers (limit 100), chunk names only allow valid characters. No personal data is sent in requests.
+IDs are parsed as integers (cap 100). Chunk names (`tpl`, `emptyTpl`) are only trimmed: `@FILE` and any characters pass through. The helper `ms3rv_sanitize_chunk_name` exists and is not called.
 
 ## Chunks
 
 | Chunk | Purpose |
 |-------|---------|
 | tplViewedItem | Product card in “Recently viewed” list |
-| tplViewedEmpty | Empty state (block can be hidden when no products) |
-| tplSimilarItem | Card in “Similar” block (optional) |
+| tplViewedEmpty | Empty state |
+| tplViewedOuter | Optional wrapper. Placeholders: `output`, `hydrate`, `tpl`, `emptyTpl`, `limit`, `includeThumbs` |
+| tplSimilarItem | Card in “Similar” block |
+| tplMs3rvLexiconScript | Optional wrapper for `ms3rvLexiconScript`. The snippet can emit the script tag itself |
 
-Chunks can be overridden (Fenom or MODX); `tpl` and `emptyTpl` are available in the snippet and in JS `render()` calls.
+Override chunks (Fenom or MODX). `tpl` and `emptyTpl` are available in the snippet and in JS `render()` calls.
 
 ## Styles and BEM
 
-Classes use the **ms3rv** prefix (BEM): `ms3rv__list`, `ms3rv__item`, etc. Styles: `assets/components/ms3recentlyviewed/css/viewed.css`. Default cards use Bootstrap (`ms3-product-card`, `product-image-wrapper`); include Bootstrap and catalog styles if needed.
+Classes use the **ms3rv** prefix (BEM): `ms3rv__list`, `ms3rv__item`, etc. File: `assets/components/ms3recentlyviewed/css/viewed.css`.
 
-On mobile — horizontal scroll for the list (`.ms3rv__list`).
+Default cards use Bootstrap (`ms3-product-card`, `product-image-wrapper`). Include Bootstrap and catalog styles if needed.
 
-## CSS variables
+Horizontal scroll applies only to `.ms3rv-slider__wrapper .ms3rv__list`. A plain `.ms3rv__list` is a wrapping Bootstrap row.
 
-Override in your theme (`:root` or block container):
-
-| Variable | Description |
-|----------|--------------|
-| `--ms3rv-bg` | Card background |
-| `--ms3rv-border` | Border |
-| `--ms3rv-radius` | Border radius |
-| `--ms3rv-color` | Text color |
-| `--ms3rv-price-color` | Price color |
-
-Example:
-
-```css
-:root {
-  --ms3rv-bg: #fff;
-  --ms3rv-border: #eee;
-  --ms3rv-radius: 0.5rem;
-  --ms3rv-color: #333;
-  --ms3rv-price-color: #111;
-}
-```
+There are no `--ms3rv-*` CSS variables on the storefront. `--ms3rv-accent*` exists only in the manager stylesheet.
 
 ## Passing product ID manually
 
-Optional: button with `data-viewed-toggle` and `data-id` to add a product to the list on click (e.g. from catalog grid without opening the product page).
+Optional: button with `data-viewed-toggle` and `data-id` to add a product to the list on click (for example from a catalog grid without opening the product page).

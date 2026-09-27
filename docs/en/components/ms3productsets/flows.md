@@ -5,14 +5,13 @@ title: Flows
 
 ## 1. Render a set block on the frontend
 
-1. Template calls the snippet: **MODX** — `[[!ms3ProductSets? ... ]]`, **Fenom** — `{'ms3ProductSets' | snippet : [ ... ]}`.
+1. Template calls the snippet: **MODX** `[[!ms3ProductSets? ... ]]`, **Fenom** `{'ms3ProductSets' | snippet : [ ... ]}`.
 2. Snippet validates and normalizes parameters (`type`, `max_items`, `resource_id`, `category_id`, …).
 3. Product IDs come from `msps_get_products_by_type`.
-4. If the result is empty:
-   - returns `''` or `emptyTpl`.
+4. If the result is empty: returns `''` or `emptyTpl`.
 5. If IDs exist:
-   - with `return=ids` returns CSV of IDs;
-   - else calls `msProducts` and renders cards.
+   - with `return=ids` returns CSV of IDs
+   - else calls `msProducts` and renders cards
 6. With `tplWrapper`, wraps the final HTML.
 7. With `toPlaceholder`, stores output in a placeholder.
 
@@ -21,15 +20,15 @@ title: Flows
 1. `window.ms3ProductSets.render('#selector', options)`.
 2. JS POSTs `action=get_set` to `connector.php`.
 3. Connector runs snippet `ms3ProductSets` with POST params.
-4. HTML is injected into the container; empty response hides the container.
+4. HTML is injected into the container. Empty response hides the container.
 
 ## 3. Add to cart from a set card
 
-1. Click on an element with `data-add-to-cart`.
-2. JS POSTs `action=add_to_cart` with `product_id`, `count`.
-3. Connector calls `msCartAdd` (if miniShop3 is available).
-4. Returns JSON `{success,message}`.
-5. JS shows a toast and dispatches `msps:cart:update` on success.
+1. Stock chunk `tplSetItem` uses a MiniShop3 form (`ms3_form`), not `data-add-to-cart`.
+2. `productsets.js` first POSTs MiniShop3 Web API (`ms3Config.actionUrl`, route `/api/v1/cart/add`) when that URL exists.
+3. Fallback: connector `action=add_to_cart` → `$ms3->cart->add()`. There is no `msCartAdd` call.
+4. Connector JSON: `{success, added, message}`.
+5. On MiniShop3 API success JS also fires `ms3:cart:updated`. Toast + `msps:cart:update`.
 
 ## 4. Create a set template (manager)
 
@@ -56,7 +55,7 @@ title: Flows
 
 1. Click a button with `data-add-set` (in tplSetVIP or tplSetWrapper).
 2. JS finds the container from the button (`.msps__vip-set`, `.msps__wrapper` or `[data-set-type]`).
-3. Collects product IDs from `[data-product-id]` and `[data-add-to-cart]`.
+3. Collects IDs from `data-msps-product-ids`, then cards, then `input[name="id"]`.
 4. Calls `addToCart(productId, 1)` for each ID in order.
 5. Shows toast `set_added` and dispatches `msps:cart:update` with `product_ids`.
 
@@ -64,5 +63,5 @@ title: Flows
 
 1. Plugin `OnDocFormSave` runs.
 2. If the product template has set TVs, sync runs.
-3. **Empty TV:** only rows without `template_name` (from TV) are removed; template-based links keep `template_name`.
-4. **Non-empty TV:** all rows of that type for the product are removed, new links are inserted from the TV value.
+3. **Empty TV:** only rows without `template_name` (from TV) are removed. Template-based links keep `template_name`.
+4. **Non-empty TV:** only rows with empty `template_name` (TV rows) are rewritten. Template links stay.

@@ -3,7 +3,7 @@ title: Quick start
 ---
 # Quick start
 
-Step-by-step wiring of product recommendation blocks (sets) on a MiniShop3 site.
+Wire recommendation blocks (sets) on a MiniShop3 site.
 
 **Snippet names:** `ms3ProductSets`, `mspsLexiconScript`.
 
@@ -23,23 +23,21 @@ Step-by-step wiring of product recommendation blocks (sets) on a MiniShop3 site.
 
 ### Via ModStore
 
-1. [Connect ModStore repository](https://modstore.pro/info/connection)
-2. Go to **Extras → Installer** and click **Download Extras**
-3. Ensure **MiniShop3**, **pdoTools** and **VueTools** are installed
-4. Find **ms3ProductSets**, click **Download**, then **Install**
-5. **Settings → Clear cache**
+1. [Connect ModStore repository](https://modstore.pro/info/connection). Encrypted transport needs provider [modstore.pro/extras](https://modstore.pro/extras/) or install fails with `Package provider not found`.
+2. Go to **Extras → Installer** and click **Download Extras**.
+3. Ensure **MiniShop3**, **pdoTools** and **VueTools** are installed.
+4. Find **ms3ProductSets**, click **Download**, then **Install**.
+5. **Settings → Clear cache**.
 
 Package is available at [modstore.pro](https://modstore.pro/).
 
 ### After installation
 
-Load lexicon, CSS and JS on the site, place the recommendation block in the product card template (**`ms3ProductSets`** snippet). Details below.
-
----
+Load lexicon, CSS and JS. Place **`ms3ProductSets`** in the product card template.
 
 ## Step 1: Lexicon, styles and script
 
-In the template (or shared head/footer), load **lexicon first**, then CSS and JS.
+Load **lexicon first**, then CSS and JS, in the template (or shared head/footer).
 
 ::: code-group
 
@@ -59,31 +57,31 @@ In the template (or shared head/footer), load **lexicon first**, then CSS and JS
 
 ## Step 2: Block in the product card
 
-On the product page template (or in the product card chunk inside a listing), call the **`ms3ProductSets`** snippet.
+Call **`ms3ProductSets`** on the product page template (or in the product card chunk inside a listing).
 
 ### The `type` parameter
 
-**`type`** selects the recommendation scenario: it determines which manual links are read from `ms3_product_sets` and which auto logic runs when manual links are missing. The shared rules for all values are in [Set types](types) (section “Common rules (all types)”).
+**`type`** selects the scenario: which manual links to read from `ms3_product_sets`, and which auto logic to run when those links are missing. Shared rules: [Set types](types), section “Common rules (all types)”.
 
-| `type` | Purpose (short) |
-|--------|-----------------|
-| **`buy_together`** | “Frequently bought together” on the product card; auto by product category. |
+| `type` | Purpose |
+|--------|---------|
+| **`buy_together`** | “Frequently bought together”. Auto: co-purchase, then category. |
 | **`similar`** | Similar products from the same category. |
-| **`popcorn`** | Compact impulse add-ons; extra fallback if the category path is empty. |
-| **`cart_suggestion`** | Cart / checkout suggestions; often with `category_id`. |
-| **`auto_sales`** | Order-statistics based set; falls back to **`similar`** when data is thin. |
-| **`vip`** | Fixed promo sets from `vip_set_*` settings; requires **`set_id`**. |
-| **`auto`** | Generic blocks (home, landings); often **`category_id`** and/or **`resource_id`**. |
+| **`popcorn`** | Compact impulse add-ons. Extra fallback if the category path is empty. |
+| **`cart_suggestion`** | Cart / checkout suggestions. Often with `category_id`. |
+| **`auto_sales`** | Order-statistics set. Falls back to **`similar`** when data is thin. |
+| **`vip`** | Promo set from `vip_set_*`. Missing `set_id` uses `vip_set_1`. |
+| **`auto`** | Generic blocks (home, landings). Often **`category_id`** and/or **`resource_id`**. |
 
-This quick start uses **`buy_together`** for a typical product card.
+This page uses **`buy_together`**.
 
 Other call parameters:
 
-- **`resource_id`** — product ID the set is built for (on the product page, the current resource).
-- **`max_items`** — max items in the block (allowed range **1…100**).
-- **`tpl`** — chunk for one product row; the package default **`tplSetItem`** is a good starting point.
+- **`resource_id`:** product ID the set is built for. On the product page, the current resource.
+- **`max_items`:** max items in the block (range **1…100**).
+- **`tpl`:** chunk for one product row. Package default **`tplSetItem`**.
 
-If the set is empty, the snippet returns an empty string by default (`hideIfEmpty=true`) — wrap the output in a conditional or use a placeholder for heading and markup; see [Site integration](integration). Per-type details: [Set types](types).
+If the set is empty, the snippet returns an empty string (`hideIfEmpty=true`). Wrap heading and markup in a conditional, or use a placeholder. See [Site integration](integration). Per-type details: [Set types](types).
 
 ::: code-group
 
@@ -110,9 +108,9 @@ If the set is empty, the snippet returns an empty string by default (`hideIfEmpt
 ## Step 3: Verify
 
 - Open a product page.
-- If the product has manual links, the block shows them.
-- If not, auto logic for the chosen type runs.
-- If the set is empty, the block is not output (default `hideIfEmpty=true`).
+- Manual links: the block shows them.
+- No manual links: auto logic for the chosen type runs.
+- Empty set: no output (`hideIfEmpty=true`).
 
 ## Step 4: VIP set (optional)
 
@@ -144,4 +142,4 @@ If the set is empty, the snippet returns an empty string by default (`hideIfEmpt
 - [Set types](/en/components/ms3productsets/types)
 - [Site integration](/en/components/ms3productsets/integration)
 - [API and interfaces](/en/components/ms3productsets/api)
-- [Admin guide](/en/components/ms3productsets/admin)
+- [Manager guide](/en/components/ms3productsets/admin)

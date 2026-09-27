@@ -51,9 +51,7 @@ items:
 
 # ms3OptionsColor
 
-With ms3OptionsColor you assign a color, pattern, or RAL to [miniShop3](/components/minishop3/) option values and show swatches on the storefront, in select, in filters, and in the cart. The dictionary is shared: one `option_key` + `value` pair for the whole catalog. Assign `color=Синий` once and the same swatch appears on every product with that value.
-
-Start here: [Quick start](quick-start).
+With ms3OptionsColor you assign a color, pattern, or RAL to [miniShop3](/components/minishop3/) option values. Swatches appear on the storefront, in select, in filters, and in the cart. The dictionary is shared: one `option_key` + `value` pair for the whole catalog. Assign `color=Синий` once, and the same swatch appears on every product with that value.
 
 ```mermaid
 flowchart LR
@@ -90,7 +88,7 @@ Snippet `ms3OptionsColor` and Fenom chunks. Storefront CSS loads automatically w
 
 ### mFilter and ms3variants
 
-Filter type `ms3oc` renders swatches from the dictionary and does not replace the built-in `colors` type. With [ms3variants](/components/ms3variants/), catalog variants can show colors from the dictionary. Details: [mFilter](mfilter), [ms3variants](ms3variants).
+Filter type `ms3oc` renders swatches from the dictionary. The built-in `colors` type stays as is. With [ms3variants](/components/ms3variants/), catalog variants can show colors from the dictionary. Details: [mFilter](mfilter), [ms3variants](ms3variants).
 
 ![ms3oc filter](/components/ms3optionscolor/screenshots/storefront-mfilter.png)
 
@@ -110,10 +108,10 @@ Filter type `ms3oc` renders swatches from the dictionary and does not replace th
 
 1. Install **ms3OptionsColor** via **System → Package Management**.
 2. Clear the MODX cache.
-3. Make sure the manager role has `msproduct_save` (same as saving a miniShop3 product). The package does not create its own ACL keys.
+3. Check that the manager role has `msproduct_save` (same as saving a miniShop3 product). The package does not create its own ACL keys.
 4. Open **Extras → ms3OptionsColor**. The dictionary should open without a blank screen or VueTools errors.
 
-On install the package prepares the database for the color dictionary and RAL Classic, adds the manager menu item, and enables the plugin for the product tab, storefront styles, and filter. Step-by-step with the first swatch: [Quick start](quick-start).
+The package prepares the dictionary and RAL Classic database, the manager section, and the plugin: product tab, storefront, filter.
 
 ## Package elements
 

@@ -28,7 +28,7 @@ Put your own logic in a separate plugin. On `OnMFilterInit` register another typ
 
 ### Enriching ms3variants
 
-The package does not create variants and does not change price, stock, or `_variant_id`. It only enriches the variant list already prepared by ms3variants:
+The package does not create variants and does not change price, stock, or `_variant_id`. It enriches the variant list already prepared by ms3variants:
 
 ```mermaid
 sequenceDiagram
@@ -80,7 +80,7 @@ sequenceDiagram
 | `ms3ocColorBeforeRemove` | before delete | `color` object |
 | `ms3ocColorRemove` | after delete | `color` object |
 
-You cannot cancel save via returnedValues. In `BeforeSave` you may change fields on `$color`. The original array stays in `data`. After save read the final object in `ms3ocColorSave`.
+You cannot cancel save via returnedValues. In `BeforeSave` change fields on `$color`. The original array stays in `data`. After save read the final object in `ms3ocColorSave`.
 
 ## Plugin example
 

@@ -5,11 +5,9 @@ description: ms3OptionsColor snippet parameters, row fields, and call examples
 
 # ms3OptionsColor
 
-The snippet reads product option values (or ready JSON), matches them to the color dictionary, and returns HTML via a chunk or an array of rows.
+The snippet reads product option values or ready JSON, matches them to the dictionary, and returns HTML via a chunk or an array of rows. Prefer an uncached call: `[[!ms3OptionsColor]]` / `{'!ms3OptionsColor' | snippet}`.
 
-Place it on the product page, in a catalog row chunk, or in a cart chunk. Prefer an uncached call: `[[!ms3OptionsColor]]` / `{'!ms3OptionsColor' | snippet}`.
-
-On each run the snippet may register storefront CSS when `ms3optionscolor_frontend_css` is enabled.
+On each run the snippet may load storefront CSS when `ms3optionscolor_frontend_css` is enabled.
 
 ## How rows are selected
 
@@ -59,7 +57,7 @@ The alias `selected` for `selectedValue` is also accepted.
 
 ## Row fields
 
-Each row (in the chunk and in `return=data`) includes:
+In the chunk and in `return=data`:
 
 | Field | Description |
 | --- | --- |
@@ -73,6 +71,9 @@ Each row (in the chunk and in `return=data`) includes:
 | `image` | Image |
 | `active` | Whether the dictionary entry is active |
 | `status` | `active` / `inactive` / `unset` |
+| `hint_color` | HEX from comboColors, no dictionary write |
+| `configured` | Dictionary row exists |
+| `id` / `rank` | Dictionary row id and sort |
 | `selected` | `true` when `value` matches `selectedValue` |
 
 In CSS and select use `#{$color}` or `data-color="#{$color}"`: the field holds the code without `#`.
@@ -153,7 +154,7 @@ In the `msProducts` row chunk pass the line product ID and a short list:
 
 ### Show values without a dictionary color
 
-An empty swatch (checkerboard in stock CSS) helps while the manager has not assigned HEX yet:
+An empty swatch (checkerboard in stock CSS) shows a value until the dictionary has a HEX:
 
 ::: code-group
 
@@ -213,9 +214,7 @@ An empty swatch (checkerboard in stock CSS) helps while the manager has not assi
   'options' => 'color',
   'toPlaceholder' => 'ms3oc.swatches'
 ]}
-<div class="product-colors">
-  {$_modx->getPlaceholder('ms3oc.swatches')}
-</div>
+{$_modx->getPlaceholder('ms3oc.swatches')}
 ```
 
 ```modx
@@ -224,9 +223,7 @@ An empty swatch (checkerboard in stock CSS) helps while the manager has not assi
   &options=`color`
   &toPlaceholder=`ms3oc.swatches`
 ]]
-<div class="product-colors">
-  [[+ms3oc.swatches]]
-</div>
+[[+ms3oc.swatches]]
 ```
 
 :::
@@ -241,15 +238,9 @@ An empty swatch (checkerboard in stock CSS) helps while the manager has not assi
   'options' => 'color',
   'return' => 'data'
 ])}
-<ul>
 {foreach $rows as $row}
-  <li>
-    <span style="background:#{$row.color}"></span>
-    {$row.title ?: $row.value}
-    {if $row.ral} (RAL {$row.ral}){/if}
-  </li>
+  {$row.color} {$row.title ?: $row.value}{if $row.ral} RAL {$row.ral}{/if}
 {/foreach}
-</ul>
 ```
 
 ```modx
@@ -263,7 +254,7 @@ An empty swatch (checkerboard in stock CSS) helps while the manager has not assi
 
 :::
 
-In MODX tags it is easier to send the array to a placeholder and parse it with your own snippet or Fenom chunk. In Fenom a loop over `runSnippet` output is simpler.
+In MODX tags send the array to a placeholder and parse it with your own snippet or Fenom chunk.
 
 ### byOptions: cart and ready JSON
 
@@ -364,7 +355,7 @@ Ready select with label:
 
 :::
 
-Select chunk parameters: `product`, `option_key`, `caption`, `placeholder`, `native`, `selected` / `selectedValue`, `activeOnly`, `includeUnset`, `multiple`, `required`, `field_id`, `tpl` / `optionTpl`.
+Select chunk parameters: table on [Frontend](/components/ms3optionscolor/frontend#select).
 
 ### Custom chunk via @FILE
 

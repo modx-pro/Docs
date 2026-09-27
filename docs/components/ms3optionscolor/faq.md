@@ -55,7 +55,7 @@ description: 'Типовые ошибки ms3OptionsColor: VueTools, CSS, mFilte
 
 ## Фильтр mFilter без свотчей
 
-В Filter Set укажите `"type": "ms3oc"`, не встроенный `colors`. Тип появляется только если установлен mFilter и сработал `OnMFilterInit`. На витрине сначала `mFilter` (результаты), затем `mFilterForm`. В части версий mFilter задайте `&tplItem=tplMFilterMs3OptionsColor`. Подробнее: [mFilter](mfilter).
+В Filter Set укажите `"type": "ms3oc"`, не встроенный `colors`. Тип появится, только если установлен mFilter и сработал `OnMFilterInit`. На витрине сначала `mFilter` (результаты), затем `mFilterForm`. В части версий mFilter задайте `&tplItem=tplMFilterMs3OptionsColor`. Подробнее: [mFilter](mfilter).
 
 ## В каталоге нет `variants[].swatches`
 
