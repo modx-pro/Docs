@@ -29,7 +29,7 @@ Wire recommendation blocks (sets) on a MiniShop3 site.
 4. Find **ms3ProductSets**, click **Download**, then **Install**.
 5. **Settings → Clear cache**.
 
-Open **Components → Product sets** and create the first template. Walkthroughs: [interface/flows](/en/components/ms3productsets/interface/flows).
+Open **Components → Product sets** and create the first template. Walkthroughs: [manager scenarios](/en/components/ms3productsets/interface/flows).
 
 ![Product sets manager](/components/ms3productsets/screenshots/page-overview.png)
 

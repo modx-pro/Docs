@@ -12,6 +12,7 @@ compatibility:
   - minishop3
 items: [
   { text: 'Quick start', link: 'quick-start' },
+  { text: 'Manager scenarios', link: 'interface/flows' },
   { text: 'System settings', link: 'settings' },
   { text: 'Set types', link: 'types' },
   {

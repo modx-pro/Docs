@@ -3,7 +3,7 @@ title: Flows
 ---
 # Flows
 
-Manager walkthroughs: [interface/flows](/en/components/ms3productsets/interface/flows).
+Manager walkthroughs: [manager scenarios](/en/components/ms3productsets/interface/flows).
 
 ## Flow diagrams
 
