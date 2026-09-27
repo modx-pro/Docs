@@ -14,6 +14,8 @@ How to write content in the MODX manager. Tool profiles and media: [System setti
 
 Editor did not load: [FAQ](/en/components/mxeditorjs/faq).
 
+A MIGX column with `"inputTVtype": "richtext"` uses the same `which_editor`. The value is HTML in the row JSON, not a sidecar.
+
 ## Blocks
 
 **Add block:** Enter at the end of a block or **«+»** on the left.
@@ -40,7 +42,7 @@ Editor did not load: [FAQ](/en/components/mxeditorjs/faq).
 | Image | Single image with caption |
 | Gallery | Multiple images, fit or slider modes |
 | mxGallery | mxGallery media or collection (toolbox only if the package is installed) |
-| Embed | Video and iframe (paste URL, see below) |
+| Embed | Video and iframe (paste URL) |
 
 The admin sets the block list via a profile (`default`, `minimal`, `blog`, `full`) or `mxeditorjs.enabled_tools`.
 
@@ -74,7 +76,7 @@ Image limit: `mxeditorjs.gallery_max_count` (`0` = no limit).
 
 There is no separate Embed button. Paste a URL into an empty block (Ctrl+V / Cmd+V). The editor creates the block.
 
-`buildTools()` enables six services: YouTube, Vimeo, Twitter/X, Instagram, CodePen, RuTube. The rest of the `@editorjs/embed` defaults are off. A new service needs a change in `mxeditorjs.ts`. Frontend output is an iframe.
+`buildTools()` enables six services: YouTube, Vimeo, Twitter/X, Instagram, CodePen, RuTube. The rest of the `@editorjs/embed` defaults are off. A new service needs a change in `mxeditorjs.ts`. Site output is an iframe.
 
 ## TVs (Template Variables)
 

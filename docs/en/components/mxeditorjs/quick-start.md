@@ -35,13 +35,15 @@ How to enable mxEditorJs in MODX 3.
 
 1. Open any resource in the manager.
 2. The content field should show the Editor.js block editor instead of TinyMCE/CKEditor.
-3. Add a block (heading, paragraph, image, or **gallery**), then save. Content is stored in Editor.js format and rendered as HTML on the frontend.
+3. Add a block (heading, paragraph, image, or **gallery**) and save. JSON goes to the sidecar, HTML to the site.
 
 ## Step 5: Template Variables (optional)
 
 1. Create or edit a TV of type **Text (multiline)**.
 2. Enable **Use visual editor** (richtext).
 3. With `which_editor` set to **mxEditorJs**, this TV also uses the block editor.
+
+MIGX field: Form Tabs `"inputTVtype": "richtext"`. Handler `migxmxeditorjs` (`OnTVInputRenderList`). The cell has no sidecar.
 
 ## Next steps
 

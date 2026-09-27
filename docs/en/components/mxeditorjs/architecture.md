@@ -11,18 +11,18 @@ Package layers and extension points. Connector API: [API](/en/components/mxedito
 | --- | --- | --- |
 | Plugin | `core/.../elements/plugins/mxeditorjs.plugin.php` | MODX RTE hooks |
 | Connector | `assets/components/mxeditorjs/connector.php` | Manager JSON API |
-| Frontend | `assets/components/mxeditorjs/js/mxeditorjs.js` | Editor.js, `MxEditorJsApp` |
+| Client | `assets/components/mxeditorjs/js/mxeditorjs.js` | Editor.js, `MxEditorJsApp` |
 | PHP | `core/components/mxeditorjs/src/` | Renderer, Validator, Repository, MediaUploader, HtmlMigrator |
-| Config | `src/Config/EditorTools.php` | Profiles and tool whitelist |
+| Config | `src/Config/EditorTools.php` | Profiles and allowed tool list |
 
 No snippets or MODX processors in the package.
 
-## Two HTML renderers
+## Two HTML builders
 
 | Path | When | Where |
 | --- | --- | --- |
 | Client `renderPreviewHtml()` | Resource form save | `mxeditorjs.ts` |
-| Server `HtmlRenderer` | `content/save` | PHP |
+| Server `HtmlRenderer` | `content/save` and `content/migrate` (not `dry_run`) | PHP |
 
 Duplicate logic for new blocks in both places. Otherwise manager preview and site HTML will diverge.
 
@@ -81,7 +81,7 @@ Class `MxEditorJs\Config\EditorTools`:
 
 - `DEFAULT_AVAILABLE`: CSV of all block tools
 - `PACKAGE_PROFILES`: reference default, minimal, blog, full
-- `resolve()`: final list with whitelist and upgrade merge
+- `resolve()`: final list with the allowed-tool list and upgrade merge
 - `migrateProfiles()` / `migrateAvailableTools()`: add `gallery` and `mxgallery` on upgrade
 - `parseList()`: parse a CSV tool list
 
@@ -112,16 +112,16 @@ Sources: `assets/components/mxeditorjs/js/src/`.
 
 ### Embed
 
-`@editorjs/embed` has no toolbox button: Paste API only. `buildTools()` defines `services`, including RuTube (`embedUrl` for `rutube.ru/video/...`). Add custom services in `mxeditorjs.ts`, not via system settings.
+`@editorjs/embed` has no toolbox button: Paste API only. `buildTools()` defines `services`, including RuTube (`embedUrl` for `rutube.ru/video/...`). Add a service in `mxeditorjs.ts`, not via system settings.
 
 ### RTE integration
 
 - `MODx.loadRTE` / `unloadRTE`: main content and TVs
 - `MutationObserver`: `textarea.modx-richtext` (except `#ta`)
 - Toolbar: Source (Ctrl+U), Fullscreen (F11)
-- Cache-bust: `?v={filemtime}` on CSS/JS
+- Version in URL: `?v={filemtime}` on CSS/JS
 
-## Frontend build
+## Client build
 
 ```bash
 npm install    # postinstall → patch-package (@editorjs/attaches)
@@ -149,13 +149,13 @@ php _build/build.php
 # → core/packages/mxeditorjs-*.transport.zip
 ```
 
-On upgrade, transport settings are **not overwritten** (`settings => false`). New keys are added by resolvers (`resolve.settings.php` for gallery).
+On upgrade, transport settings are **not overwritten** (`settings => false`). Resolvers add `gallery` and `mxgallery` to `available_tools` and the `default` / `full` / `blog` profiles.
 
 Resolver `resolver_06_metrics.php` sends anonymous install stats to `https://metrics.modx.pro/`.
 
 ## Site styles
 
-`gallery-front.css` loads only in the manager. Connect CSS on the frontend manually. See [Integration](/en/components/mxeditorjs/integration).
+`gallery-front.css` loads only in the manager. Add CSS on the site yourself. See [Integration](/en/components/mxeditorjs/integration).
 
 ## Requirements
 
@@ -163,4 +163,4 @@ Resolver `resolver_06_metrics.php` sends anonymous install stats to `https://met
 | --- | --- |
 | MODX | 3.0.3+ |
 | PHP | 8.2+ |
-| Node.js | 18+ (frontend build only) |
+| Node.js | 18+ (client build only) |

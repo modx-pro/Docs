@@ -10,7 +10,7 @@ Save and load diagrams. Editor guide: [Editor guide](/en/components/mxeditorjs/u
 mxEditorJs uses **Canonical JSON + HTML snapshot**:
 
 - **JSON** (Editor.js OutputData): source of truth in sidecar tables
-- **HTML**: frontend snapshot in `modResource.content` or TV textarea
+- **HTML**: site snapshot in `modResource.content` or TV textarea
 
 ```mermaid
 flowchart LR
@@ -28,6 +28,8 @@ flowchart LR
 
 ## Save via MODX form (primary path)
 
+The form writes HTML to the resource or TV, JSON to the sidecar. Connector `content/save` is not called.
+
 ```mermaid
 flowchart TD
   S[Save in form] --> E[Editor.js OutputData]
@@ -41,15 +43,13 @@ flowchart TD
   D -->|yes| VER[content_version plus 1]
 ```
 
-1. User clicks **Save**
-2. Editor.js returns OutputData
-3. Client (`syncToTextarea`, debounce 500 ms):
+1. Client (`syncToTextarea`, 500 ms delay):
    - HTML → textarea (client `renderPreviewHtml`)
    - JSON → hidden `mxeditorjs_json` / `mxeditorjs_tv_{id}_json`
-4. `hookBeforeSubmit` flushes JSON to hidden fields
-5. Form POST → MODX saves HTML to resource/TV
-6. `OnBeforeDocFormSave` → `ContentRepository` / `TvContentRepository.save(JSON)`
-7. Dedup: if SHA-256 of JSON is unchanged, sidecar is not rewritten. Otherwise `content_version` increments. Empty `blocks: []` is **not** saved by the plugin ([#6](https://github.com/Ibochkarev/mxEditorJs/issues/6)): the sidecar stays as-is.
+2. `hookBeforeSubmit` flushes JSON to hidden fields
+3. Form POST → MODX saves HTML to resource/TV
+4. `OnBeforeDocFormSave` → `ContentRepository` / `TvContentRepository.save(JSON)`
+5. If SHA-256 of JSON is unchanged, sidecar is not rewritten. Otherwise `content_version` increments. Empty `blocks: []` updates the sidecar (clearing the editor wipes JSON).
 
 Server `HtmlRenderer` is **not** called on this path. The client builds HTML in the textarea.
 
@@ -74,9 +74,9 @@ Use for AJAX or custom integrations. TVs do not update `modResource.content` via
 
 ## HTML → Editor.js migration
 
-1. UI: modal when opening a resource without sidecar but with HTML
+1. Dialog when opening a resource without sidecar but with HTML
 2. `content/migrate?dry_run=1`: block preview
-3. Confirm → `HtmlMigrator.convert()` → save sidecar. `modResource.content` is not updated ([#5](https://github.com/Ibochkarev/mxEditorJs/issues/5))
+3. Confirm → `HtmlMigrator.convert()` → sidecar + `HtmlRenderer` → `modResource.content`
 4. `force`, `confirmed`: overwrite existing sidecar
 
 Supported: `p`, `h1`–`h6`, `ul`/`ol`, `blockquote`, `img`, `table`, `pre`/`code`, `hr`. Not migrated: embed, gallery, attaches, checklist.
@@ -98,6 +98,7 @@ Supported: `p`, `h1`–`h6`, `ul`/`ol`, `blockquote`, `img`, `table`, `pre`/`cod
 | Event | Purpose |
 | --- | --- |
 | `OnRichTextEditorRegister` | Register mxEditorJs in RTE list |
+| `OnTVInputRenderList` | Path to `elements/tv/input/` (`migxmxeditorjs` handler) when `mxeditorjs.enabled` |
 | `OnDocFormPrerender` | Config, assets, init |
 | `OnBeforeDocFormSave` | Save JSON to sidecar |
 | `OnResourceDelete` | Clean sidecar |

@@ -14,6 +14,8 @@ title: Руководство редактора
 
 Редактор не открылся: [FAQ](/components/mxeditorjs/faq).
 
+В колонке MIGX с `"inputTVtype": "richtext"` редактор подключается тем же `which_editor`. Значение хранится как HTML в JSON строки, не в sidecar.
+
 ## Блоки
 
 **Добавить блок:** Enter в конце блока или **«+»** слева.
@@ -40,7 +42,7 @@ title: Руководство редактора
 | Image | Одно изображение с подписью |
 | Gallery | Несколько изображений, режимы fit или slider |
 | mxGallery | Медиа или коллекция пакета mxGallery (toolbox только если пакет установлен) |
-| Embed | Видео и iframe (вставка по URL, см. ниже) |
+| Embed | Видео и iframe (вставка по URL) |
 
 Набор блоков задаёт администратор через профиль (`default`, `minimal`, `blog`, `full`) или `mxeditorjs.enabled_tools`.
 
@@ -74,7 +76,7 @@ title: Руководство редактора
 
 Отдельной кнопки Embed нет. Вставьте URL в пустой блок (Ctrl+V / Cmd+V). Редактор создаст блок сам.
 
-В `buildTools()` явно заданы шесть сервисов: YouTube, Vimeo, Twitter/X, Instagram, CodePen, RuTube. Остальные сервисы `@editorjs/embed` по умолчанию отключены. Новый сервис: только правка `mxeditorjs.ts`. На сайте выводится iframe.
+В `buildTools()` заданы шесть сервисов: YouTube, Vimeo, Twitter/X, Instagram, CodePen, RuTube. Остальные сервисы `@editorjs/embed` по умолчанию отключены. Новый сервис: только правка `mxeditorjs.ts`. На сайте выводится iframe.
 
 ## TV (дополнительные поля)
 

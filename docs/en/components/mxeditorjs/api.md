@@ -5,7 +5,7 @@ title: API and interfaces
 
 ## Connector `assets/components/mxeditorjs/connector.php`
 
-Connector requests require MODX manager authentication. Responses are JSON, `Content-Type: application/json`.
+Requests require MODX manager authentication. Responses are JSON, `Content-Type: application/json`.
 
 Normal resource save goes through form POST and `OnBeforeDocFormSave`, not the connector. `content/save` is for AJAX and integrations.
 
@@ -15,6 +15,7 @@ Normal resource save goes through form POST and `OnBeforeDocFormSave`, not the c
 | --- | --- |
 | `content/get` | No |
 | `content/save` | Yes |
+| `content/fromHtml` | No (manager session is enough) |
 | `content/migrate` (without `dry_run`) | Yes |
 | `content/migrate` (`dry_run=1`) | No |
 | `media/upload`, `media/uploadFile` | Yes |
@@ -77,7 +78,7 @@ Saves JSON with validation and builds an HTML snapshot.
 }
 ```
 
-`ContentValidator` checks JSON. `HtmlRenderer` builds HTML. For main content JSON goes to sidecar, HTML to `modResource.content`. For TV: `mxeditorjs_tv_content`.
+`ContentValidator` checks JSON. `HtmlRenderer` builds HTML. Main content: JSON to sidecar, HTML to `modResource.content`. TV: table `mxeditorjs_tv_content`.
 
 ---
 
@@ -104,13 +105,19 @@ Upload image (multipart/form-data).
 }
 ```
 
-Validation: extension from `mxeditorjs.allowed_image_types`, MIME from `ALLOWED_IMAGE_MIME` (`image/jpeg`, `image/png`, `image/gif`, `image/webp`, `image/svg+xml`), size ≤ `mxeditorjs.max_upload_size`. Used by **Image** and **Gallery**.
+File checks:
+
+- extension from `mxeditorjs.allowed_image_types`
+- MIME from `ALLOWED_IMAGE_MIME`: `image/jpeg`, `image/png`, `image/gif`, `image/webp`, `image/svg+xml`
+- size ≤ `mxeditorjs.max_upload_size`
+
+**Image** and **Gallery** call this action.
 
 ---
 
 ### media/uploadFile
 
-Upload file attachment (Attaches). Parameters: `action=media/uploadFile`, `resource_id`, `file`. Response format same as `media/upload`.
+Upload file attachment (Attaches). Parameters: `action=media/uploadFile`, `resource_id`, `file`. Path: **mxeditorjs.file_upload_path**, not the image path. Response format same as `media/upload`.
 
 ---
 
@@ -124,6 +131,8 @@ Browse files in Media Source.
 | `resource_id` | int | ✓ | Resource ID |
 | `type` | string | — | `image` (default) or `file` |
 | `path` | string | — | Path relative to Media Source root; `__root__` or `/` for root |
+
+`type=image` uses the image Media Source. `type=file` uses attachments. The **Gallery** block calls `type=image` (same browse as Image).
 
 **Response:** object with `files`, `folders`, `path`, `parentPath`.
 
@@ -143,6 +152,12 @@ Search by `pagetitle`, `longtitle`, exact match by `id`. Deleted resources are e
 
 ---
 
+### content/fromHtml
+
+Convert HTML to OutputData without writing a sidecar. Parameter `html`. Response: `{time, blocks, version}`. The client calls this when `storageMode === 'inline'` (MIGX fields and similar).
+
+---
+
 ### content/migrate
 
 Migrate resource HTML to Editor.js format.
@@ -155,7 +170,7 @@ Migrate resource HTML to Editor.js format.
 | `confirmed` | bool | — | Confirm overwrite |
 | `force` | bool | — | Force overwrite existing data |
 
-With `dry_run`: preview and `blocks_count`. Overwrite may require `confirmed=true`. On success: `migrated`, `blocks_count`, `overwritten`.
+With `dry_run`: preview and `blocks_count`. Overwrite may need `confirmed=true`. After `confirmed` the sidecar and HTML in `modResource.content` are written. Success: `migrated`, `blocks_count`, `overwritten`, `html`.
 
 ---
 
@@ -192,7 +207,7 @@ Sidecar `mxeditorjs_content`. HTML in `modResource.content` is written by connec
 
 ### MxEditorJs\Repository\TvContentRepository
 
-TV content (sidecar table for TV).
+TV sidecar: table `mxeditorjs_tv_content`.
 
 | Method | Description |
 | --- | --- |
@@ -243,7 +258,16 @@ Config after `OnDocFormPrerender`:
 
 ### MODx.loadRTE / MODx.unloadRTE
 
-mxEditorJs hooks into MODX RTE init: `MODx.loadRTE(textareaId)` when the field appears, `MODx.unloadRTE(textareaId)` when it is removed.
+mxEditorJs hooks MODX RTE init. The `elements` argument is normalized: string, id array, or object with `id`. That avoids `TypeError: e.split is not a function` on static resources.
+
+```javascript
+window.MODx.loadRTE(textareaId);
+window.MODx.unloadRTE(textareaId);
+```
+
+`window.MxEditorJsFlush()` writes HTML back to the textarea before the MIGX window submits (`onBeforeSubmit` in `migxmxeditorjs.tpl`).
+
+Storage modes: `main` (`#ta`, resource sidecar), `tv` (`tv[N]`, TV sidecar), `inline` (not `#ta` and not a TV: no hidden JSON, load via `content/fromHtml`).
 
 ---
 
@@ -297,7 +321,7 @@ mxEditorJs hooks into MODX RTE init: `MODx.loadRTE(textareaId)` when the field a
 }
 ```
 
-`mode`: `ids` or `collection`. `HtmlRenderer` outputs `[[!mxGallery]]`: a collection uses `collection` and `picture=1`; one id uses `id`; several use `ids` and `sort=selection`. Toolbox only if mxGallery is installed.
+`mode`: `ids` or `collection`. `HtmlRenderer` outputs `[[!mxGallery]]`. A collection uses `collection` and `picture=1`. One id uses `id`. Several use `ids` and `sort=selection`. Toolbox only if mxGallery is installed.
 
 ### API response
 

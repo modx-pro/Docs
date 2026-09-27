@@ -10,21 +10,21 @@ title: Архитектура
 | Слой | Путь | Роль |
 | --- | --- | --- |
 | Плагин | `core/.../elements/plugins/mxeditorjs.plugin.php` | RTE-хуки MODX |
-| Connector | `assets/components/mxeditorjs/connector.php` | JSON API manager |
-| Frontend | `assets/components/mxeditorjs/js/mxeditorjs.js` | Editor.js, `MxEditorJsApp` |
+| Connector | `assets/components/mxeditorjs/connector.php` | JSON API менеджера |
+| Клиент | `assets/components/mxeditorjs/js/mxeditorjs.js` | Editor.js, `MxEditorJsApp` |
 | PHP | `core/components/mxeditorjs/src/` | Renderer, Validator, Repository, MediaUploader, HtmlMigrator |
 | Config | `src/Config/EditorTools.php` | Профили и список допустимых инструментов |
 
 Сниппетов и MODX processors в пакете нет.
 
-## Два рендерера HTML
+## Два сборщика HTML
 
 | Путь | Когда | Где |
 | --- | --- | --- |
 | Клиент `renderPreviewHtml()` | Сохранение формы ресурса | `mxeditorjs.ts` |
-| Сервер `HtmlRenderer` | `content/save` | PHP |
+| Сервер `HtmlRenderer` | `content/save` и `content/migrate` (не `dry_run`) | PHP |
 
-Логику нового блока дублируйте в обоих местах. Иначе preview в manager и HTML на сайте разойдутся.
+Логику нового блока дублируйте в обоих местах. Иначе предпросмотр в менеджере и HTML на сайте разойдутся.
 
 ## Таблицы БД
 
@@ -114,14 +114,14 @@ $renderer->registerBlockRenderer('myBlock', function (array $data, array $block)
 
 Инструмент `@editorjs/embed` без кнопки в toolbox: только Paste API. В `buildTools()` заданы `services`, включая RuTube (`embedUrl` для `rutube.ru/video/...`). Новый сервис добавляют в `mxeditorjs.ts`, не через системные настройки.
 
-### RTE integration
+### Интеграция RTE
 
 - `MODx.loadRTE` / `unloadRTE`: основной контент и TV
 - `MutationObserver`: `textarea.modx-richtext` (кроме `#ta`)
 - Toolbar: Source (Ctrl+U), Fullscreen (F11)
-- Cache-bust: `?v={filemtime}` на CSS/JS
+- Версия в URL: `?v={filemtime}` у CSS/JS
 
-## Сборка фронтенда
+## Сборка клиента
 
 ```bash
 npm install    # postinstall → patch-package (@editorjs/attaches)
@@ -129,7 +129,7 @@ npm run build  # IIFE → assets/.../js/mxeditorjs.js
 npm run dev    # watch + sourcemap
 ```
 
-Entry: `assets/.../src/mxeditorjs.ts`. Target ES2020, format IIFE, global `MxEditorJs`.
+Точка входа: `assets/.../src/mxeditorjs.ts`. Цель ES2020, формат IIFE, глобальный объект `MxEditorJs`.
 
 Патч `patches/@editorjs+attaches+1.3.2.patch` заменяет `appendCallback` на `rendered`. Иначе диалог Attaches не откроется.
 
@@ -142,20 +142,20 @@ Entry: `assets/.../src/mxeditorjs.ts`. Target ES2020, format IIFE, global `MxEdi
 5. ID в `mxeditorjs.available_tools` и профили
 6. `npm run build`, синхронизация в установленный MODX
 
-## Transport и upgrade
+## Transport и обновление
 
 ```bash
 php _build/build.php
 # → core/packages/mxeditorjs-*.transport.zip
 ```
 
-При обновлении настройки из transport **не перезаписываются** (`settings => false`). Новые ключи добавляют resolvers (`resolve.settings.php` для gallery).
+При обновлении настройки из transport **не перезаписываются** (`settings => false`). Resolvers дописывают `gallery` и `mxgallery` в `available_tools` и профили `default` / `full` / `blog`.
 
 Resolver `resolver_06_metrics.php` отправляет анонимную статистику установки на `https://metrics.modx.pro/`.
 
 ## Стили на сайте
 
-`gallery-front.css` подключает только manager. На витрине подключите CSS вручную. См. [Интеграция](/components/mxeditorjs/integration).
+`gallery-front.css` подключается только в менеджере. На сайте подключите CSS вручную. См. [Интеграция](/components/mxeditorjs/integration).
 
 ## Требования
 
@@ -163,4 +163,4 @@ Resolver `resolver_06_metrics.php` отправляет анонимную ст�
 | --- | --- |
 | MODX | 3.0.3+ |
 | PHP | 8.2+ |
-| Node.js | 18+ (только сборка фронта) |
+| Node.js | 18+ (только сборка клиента) |

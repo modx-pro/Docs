@@ -5,7 +5,7 @@ title: API и интерфейсы
 
 ## Коннектор `assets/components/mxeditorjs/connector.php`
 
-Запросы к коннектору идут с авторизацией в менеджере MODX. Ответы: JSON, `Content-Type: application/json`.
+Запросы требуют авторизации в менеджере MODX. Ответы: JSON, `Content-Type: application/json`.
 
 Обычное сохранение ресурса идёт через POST формы и `OnBeforeDocFormSave`, не через connector. `content/save` нужен для AJAX и интеграций.
 
@@ -15,6 +15,7 @@ title: API и интерфейсы
 | --- | --- |
 | `content/get` | Нет |
 | `content/save` | Да |
+| `content/fromHtml` | Нет (достаточно сессии менеджера) |
 | `content/migrate` (без `dry_run`) | Да |
 | `content/migrate` (`dry_run=1`) | Нет |
 | `media/upload`, `media/uploadFile` | Да |
@@ -77,7 +78,7 @@ JSON-контент ресурса или TV.
 }
 ```
 
-`ContentValidator` проверяет JSON. `HtmlRenderer` собирает HTML. Для основного контента JSON пишется в sidecar, HTML в `modResource.content`. Для TV: в `mxeditorjs_tv_content`.
+`ContentValidator` проверяет JSON. `HtmlRenderer` собирает HTML. Основной контент: JSON в sidecar, HTML в `modResource.content`. TV: таблица `mxeditorjs_tv_content`.
 
 ---
 
@@ -104,13 +105,19 @@ JSON-контент ресурса или TV.
 }
 ```
 
-Проверка: расширение из `mxeditorjs.allowed_image_types`, MIME из `ALLOWED_IMAGE_MIME` (`image/jpeg`, `image/png`, `image/gif`, `image/webp`, `image/svg+xml`), размер ≤ `mxeditorjs.max_upload_size`. Используют блоки **Image** и **Gallery**.
+Проверка файла:
+
+- расширение из `mxeditorjs.allowed_image_types`
+- MIME из `ALLOWED_IMAGE_MIME`: `image/jpeg`, `image/png`, `image/gif`, `image/webp`, `image/svg+xml`
+- размер ≤ `mxeditorjs.max_upload_size`
+
+Блоки **Image** и **Gallery** вызывают этот action.
 
 ---
 
 ### media/uploadFile
 
-Загрузка файла-вложения (Attaches). Параметры: `action=media/uploadFile`, `resource_id`, `file`. Файл сохраняется по шаблону **mxeditorjs.file_upload_path** (не зависит от пути изображений). Формат ответа как у `media/upload`.
+Загрузка файла-вложения (Attaches). Параметры: `action=media/uploadFile`, `resource_id`, `file`. Путь: **mxeditorjs.file_upload_path**, не путь изображений. Формат ответа как у `media/upload`.
 
 ---
 
@@ -125,7 +132,7 @@ JSON-контент ресурса или TV.
 | `type` | string | — | `image` (по умолчанию) или `file` |
 | `path` | string | — | Путь относительно корня Media Source; `__root__` или `/` — корень |
 
-Для `type=image` берётся Media Source изображений, для `type=file`: вложений. Блок **Gallery** вызывает `type=image` (тот же обзор, что у Image).
+`type=image` — Media Source изображений. `type=file` — вложений. Блок **Gallery** вызывает `type=image` (тот же обзор, что у Image).
 
 **Ответ:** объект с полями `files`, `folders`, `path`, `parentPath`.
 
@@ -145,6 +152,12 @@ JSON-контент ресурса или TV.
 
 ---
 
+### content/fromHtml
+
+Конвертация HTML в OutputData без записи sidecar. Параметр `html`. Ответ: `{time, blocks, version}`. Клиент вызывает это при `storageMode === 'inline'` (поля MIGX и аналоги).
+
+---
+
 ### content/migrate
 
 Миграция HTML ресурса в формат Editor.js.
@@ -157,7 +170,7 @@ JSON-контент ресурса или TV.
 | `confirmed` | bool | — | Подтверждение перезаписи |
 | `force` | bool | — | Принудительная перезапись существующих данных |
 
-При `dry_run` в ответе: preview и `blocks_count`. При перезаписи может понадобиться `confirmed=true`. При успехе: `migrated`, `blocks_count`, `overwritten`.
+При `dry_run` в ответе: preview и `blocks_count`. Перезапись может потребовать `confirmed=true`. После `confirmed` пишутся sidecar и HTML в `modResource.content`. Успех: `migrated`, `blocks_count`, `overwritten`, `html`.
 
 ---
 
@@ -169,7 +182,7 @@ JSON-контент ресурса или TV.
 
 | Метод | Описание |
 | --- | --- |
-| `render(array $editorJsData): string` | Собирает HTML всех блоков (включая `gallery`) |
+| `render(array $editorJsData): string` | Собирает HTML всех блоков |
 | `registerBlockRenderer(string $type, callable $renderer): void` | Регистрирует свой обработчик типа блока. Сигнатура: `function(array $data, array $block): string` |
 
 ### MxEditorJs\Validator\ContentValidator
@@ -184,7 +197,7 @@ JSON-контент ресурса или TV.
 
 ### MxEditorJs\Repository\ContentRepository
 
-Работа с sidecar `mxeditorjs_content`. HTML в `modResource.content` пишет connector `content/save` или клиент формы, не этот класс.
+Sidecar `mxeditorjs_content`. HTML в `modResource.content` пишет connector `content/save` или клиент формы, не этот класс.
 
 | Метод | Описание |
 | --- | --- |
@@ -194,7 +207,7 @@ JSON-контент ресурса или TV.
 
 ### MxEditorJs\Repository\TvContentRepository
 
-Контент TV (таблица sidecar для TV).
+Sidecar TV: таблица `mxeditorjs_tv_content`.
 
 | Метод | Описание |
 | --- | --- |
@@ -245,7 +258,7 @@ JSON-контент ресурса или TV.
 
 ### MODx.loadRTE / MODx.unloadRTE
 
-mxEditorJs перехватывает стандартные хуки MODX для инициализации RTE. Аргумент `elements` нормализуется (строка, массив ID или объект с полем `id`). Это убирает ошибку `TypeError: e.split is not a function` при открытии статических ресурсов.
+mxEditorJs перехватывает хуки MODX для инициализации RTE. Аргумент `elements` нормализуется: строка, массив ID или объект с полем `id`. Так снимается `TypeError: e.split is not a function` на статических ресурсах.
 
 ```javascript
 // Вызывается MODX при появлении textarea
@@ -254,6 +267,10 @@ window.MODx.loadRTE(textareaId);
 // Вызывается при удалении textarea
 window.MODx.unloadRTE(textareaId);
 ```
+
+`window.MxEditorJsFlush()` сбрасывает HTML в textarea перед submit окна MIGX (`onBeforeSubmit` в `migxmxeditorjs.tpl`).
+
+Режимы хранения: `main` (`#ta`, sidecar ресурса), `tv` (`tv[N]`, sidecar TV), `inline` (не `#ta` и не TV: без скрытого JSON, загрузка через `content/fromHtml`).
 
 ---
 
@@ -307,7 +324,7 @@ window.MODx.unloadRTE(textareaId);
 }
 ```
 
-`mode`: `ids` или `collection`. `HtmlRenderer` выводит сниппет `[[!mxGallery]]`: коллекция — параметр `collection` и `picture=1`; одно id — `id`; несколько — `ids` и `sort=selection`. Toolbox блока только если установлен mxGallery.
+`mode`: `ids` или `collection`. `HtmlRenderer` выводит сниппет `[[!mxGallery]]`. Коллекция: параметр `collection` и `picture=1`. Одно id: `id`. Несколько: `ids` и `sort=selection`. Toolbox блока только если установлен mxGallery.
 
 ### Ответ API
 

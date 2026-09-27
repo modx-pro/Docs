@@ -9,11 +9,11 @@ title: Интеграция
 2. **mxeditorjs.enabled** = **Да** (пространство имён `mxeditorjs`).
 3. Откройте ресурс: в поле контента блочный редактор.
 
-Плагин подключает редактор на `OnDocFormPrerender` и запускает его, когда появляется поле контента или TV с richtext.
+Плагин на `OnDocFormPrerender` запускает редактор, когда на странице появляется поле контента или TV с richtext.
 
 **Сохранение через форму ресурса** (основной путь):
 
-1. Editor.js отдаёт JSON и HTML (клиент `renderPreviewHtml`) в textarea и hidden fields
+1. Editor.js отдаёт JSON и HTML (клиент `renderPreviewHtml`) в textarea и скрытые поля
 2. MODX сохраняет HTML в `modResource.content` / TV
 3. Плагин на `OnBeforeDocFormSave` пишет JSON в sidecar
 
@@ -25,14 +25,14 @@ title: Интеграция
 2. В настройках TV включите **Использовать визуальный редактор** (richtext).
 3. При `which_editor` = **mxEditorJs** в этом TV будет тот же блочный редактор.
 
-Контент TV хранится в sidecar-таблице `mxeditorjs_tv_content` в формате Editor.js. При выводе на сайте используется собранный HTML (как и для основного контента).
+JSON TV хранится в `mxeditorjs_tv_content`. HTML попадает в textarea TV при сохранении.
 
 ## Вывод на сайте
 
-Контент ресурса после сохранения существует в двух видах:
+После сохранения контент ресурса существует в двух видах:
 
-- **JSON**: в sidecar для редактора (при следующем открытии формы подставляется в Editor.js).
-- **HTML**: в `modResource.content` (вывод на фронте).
+- **JSON**: sidecar для редактора (подставляется при следующем открытии формы)
+- **HTML**: `modResource.content` (вывод на сайте)
 
 В шаблоне:
 
@@ -48,16 +48,20 @@ title: Интеграция
 
 :::
 
-TV с Editor.js выводятся через плейсхолдеры TV (`[[*my_richtext_tv]]` или Fenom). HTML попадает в textarea TV при сохранении. На фронте всегда готовый HTML.
+TV с Editor.js: плейсхолдер `[[*my_richtext_tv]]` или Fenom. На сайте всегда готовый HTML.
 
 ## Миграция HTML → Editor.js
 
 Конвертация HTML в поле контента в формат Editor.js:
 
 1. Connector: действие **content/migrate**, параметры `resource_id`, при необходимости `dry_run=1` (предпросмотр), затем `confirmed=1` для перезаписи.
-2. При `dry_run` в ответе: `preview` (блоки) и `blocks_count`. При успехе: `migrated`, `blocks_count`, `overwritten`.
+2. При `dry_run` в ответе: `preview` (блоки) и `blocks_count`. При успехе: `migrated`, `blocks_count`, `overwritten`, `html`.
 
-После миграции менеджер открывает блоки из sidecar. `[[*content]]` на сайте остаётся старым HTML, пока не сохранят форму или не вызовут `content/save` ([#5](https://github.com/Ibochkarev/mxEditorJs/issues/5)).
+После `confirmed` миграция пишет sidecar **и** HTML-снимок в `modResource.content` (`HtmlRenderer`, как `content/save`). `[[*content]]` на сайте обновляется без повторного сохранения формы.
+
+## MIGX
+
+В Form Tabs у колонки `"inputTVtype": "richtext"`. MIGX сопоставляет тип с `migx` + `which_editor` → `migxmxeditorjs`. Значение — HTML в JSON строки. Sidecar нет. Перед закрытием окна вызовите `MxEditorJsFlush`.
 
 ## Профили и инструменты
 
@@ -68,16 +72,16 @@ TV с Editor.js выводятся через плейсхолдеры TV (`[[*m
 - Загрузка **изображений** и блока **Gallery**: Media Source **mxeditorjs.image_mediasource**, путь **mxeditorjs.image_upload_path** (шаблон с `{resource_id}`).
 - Загрузка **файлов-вложений** (Attaches): **mxeditorjs.file_mediasource** и путь **mxeditorjs.file_upload_path**.
 - Лимит картинок в одном блоке Gallery: **mxeditorjs.gallery_max_count** (`0` = без лимита).
-- CSS-классы: **mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets** и др. Пресеты Image в UI редактора **не добавляют** класс к `<img>` в HTML-снимке. См. [Системные настройки](/components/mxeditorjs/settings).
+- CSS-классы: **mxeditorjs.image_class_presets**, **mxeditorjs.link_class_presets** и др. Пресеты Image в редакторе **не добавляют** класс к `<img>` в HTML-снимке. См. [Системные настройки](/components/mxeditorjs/settings).
 
-## Галерея на фронте
+## Галерея на сайте
 
-HTML-снимок блока Gallery собирается при сохранении (клиент `renderPreviewHtml` или сервер `HtmlRenderer` при `content/save`). Разметка:
+HTML-снимок Gallery собирается при сохранении: клиент `renderPreviewHtml` или сервер `HtmlRenderer` (`content/save`, `content/migrate`). Разметка:
 
 - `<figure class="mxeditorjs-gallery mxeditorjs-gallery--fit">`: сетка (режим **Fit**)
 - `<figure class="mxeditorjs-gallery mxeditorjs-gallery--slider">`: горизонтальный скролл (режим **Slider**)
 
-Файл `gallery-front.css` подключает **только manager** (превью в форме ресурса). На витрине CSS **не грузится** автоматически.
+`gallery-front.css` подключается только в менеджере (предпросмотр в форме). На сайте CSS сам не грузится.
 
 Подключите стили в шаблоне или теме:
 
@@ -87,14 +91,14 @@ HTML-снимок блока Gallery собирается при сохране�
 
 Либо скопируйте правила из `assets/components/mxeditorjs/css/gallery-front.css` в CSS темы.
 
-## Embed на фронте
+## Embed на сайте
 
-Блок embed выводит `<div class="mxeditorjs-embed"><iframe ...></iframe></div>`. RuTube и другие сервисы `@editorjs/embed` настраиваются в `mxeditorjs.ts` (секция `services`). Отдельной системной настройки нет. Свой сервис добавляет разработчик в исходниках. См. [Архитектура](/components/mxeditorjs/architecture).
+Блок embed выводит `<div class="mxeditorjs-embed"><iframe ...></iframe></div>`. Сервисы `@editorjs/embed` заданы в `mxeditorjs.ts` (секция `services`). Системной настройки нет. Свой сервис добавляют в исходниках. См. [Архитектура](/components/mxeditorjs/architecture).
 
 ## Что дальше
 
 - [Руководство редактора](/components/mxeditorjs/user-guide): блоки, embed, TV
-- [Потоки](/components/mxeditorjs/flows): save flow, sidecar, connector
-- [API](/components/mxeditorjs/api): эндпоинты коннектора, PHP-классы
+- [Потоки](/components/mxeditorjs/flows): сохранение, sidecar, connector
+- [API](/components/mxeditorjs/api): действия коннектора, PHP-классы
 - [Системные настройки](/components/mxeditorjs/settings): профили, медиа, пресеты
 - [FAQ](/components/mxeditorjs/faq): типовые вопросы

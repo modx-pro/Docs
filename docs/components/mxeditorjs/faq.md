@@ -16,9 +16,16 @@ title: FAQ
 2. Откройте вкладку **Дополнительные поля** на ресурсе
 3. Редактор запускается, когда поле появляется на странице
 
+## Редактор не появляется в MIGX
+
+1. `which_editor` = **mxEditorJs**, `mxeditorjs.enabled` = **Да**
+2. В Form Tabs MIGX у поля `"inputTVtype": "richtext"`
+3. Плагин отдаёт обработчик `migxmxeditorjs` на `OnTVInputRenderList`
+4. Значение — HTML внутри JSON MIGX. Отдельного sidecar у строки MIGX нет. Перед отправкой окна вызывается `MxEditorJsFlush`
+
 ## Не добавляется видео
 
-Вставьте ссылку (YouTube, RuTube и т.д.) в **пустой** блок через Ctrl+V. Кнопки Embed в меню нет.
+Вставьте ссылку (YouTube, RuTube и другие) в **пустой** блок через Ctrl+V. Кнопки Embed в меню нет.
 
 ## Картинка или галерея не загружаются
 
@@ -31,7 +38,7 @@ title: FAQ
 
 ## После сохранения на сайте «ломается» вёрстка
 
-На фронте выводится HTML-снимок из `modResource.content`. Блок **Raw HTML** и часть embed попадают в разметку как есть. Проверьте CSS темы для классов `mxeditorjs-gallery`, таблиц и iframe.
+На сайте выводится HTML-снимок из `modResource.content`. Блок **Raw HTML** и часть embed попадают в разметку как есть. Проверьте CSS темы для классов `mxeditorjs-gallery`, таблиц и iframe.
 
 ## Миграция перезаписала контент
 
@@ -48,4 +55,4 @@ title: FAQ
 | Основной контент | `mxeditorjs_content` |
 | TV | `mxeditorjs_tv_content` |
 
-HTML для витрины: в `modResource.content` или значении TV (textarea).
+HTML для сайта: в `modResource.content` или значении TV (textarea).

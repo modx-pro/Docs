@@ -14,7 +14,7 @@ Common manager and development issues. Editor FAQ: [FAQ](/en/components/mxeditor
 
 On init failure Editor.js falls back to a textarea.
 
-Console:
+Console check:
 
 ```javascript
 console.log(window.mxEditorJsConfig);
@@ -44,21 +44,21 @@ Copy `mxeditorjs.js` to `assets/components/mxeditorjs/js/`. After `npm update @e
 
 ## Connector returns error
 
-URL: `assets/components/mxeditorjs/connector.php`. In Network inspect `action`, body `{ success, message }`. Auth errors use HTTP **200**, not 403.
+URL: `assets/components/mxeditorjs/connector.php`. In Network inspect `action` and body `{ success, message }`. Auth errors use HTTP **200**, not 403.
 
 Typical `message`: validation errors from `ContentValidator`.
 
 ## Site HTML ≠ Source Preview
 
-Two HTML builders: client `renderPreviewHtml` (form) and server `HtmlRenderer` (`content/save`). Align block logic in both. See [Architecture](/en/components/mxeditorjs/architecture).
+Two HTML builders: client `renderPreviewHtml` (form) and server `HtmlRenderer` (`content/save` and `content/migrate`). Align block logic in both. See [Architecture](/en/components/mxeditorjs/architecture).
 
 ## Gallery missing from toolbar after upgrade
 
-Resolver adds `gallery` to `available_tools` and profiles. Check JSON in `mxeditorjs.profiles` if edited manually. Clear cache.
+Resolver adds `gallery` to `available_tools` and profiles. If you edited JSON in `mxeditorjs.profiles`, check it and clear cache.
 
 ## Two copies of files during development
 
-MODX reads not `Extras/` but:
+MODX reads these paths, not `Extras/`:
 
 - `core/components/mxeditorjs/`
 - `assets/components/mxeditorjs/`
@@ -96,7 +96,7 @@ Or **Settings → Clear cache**.
 ## Debug save flow
 
 1. **Network**: resource form POST, fields `mxeditorjs_json`, `mxeditorjs_tv_{id}_json`
-2. **Console**: `[mxEditorJs]` errors in `syncToTextarea` / `renderPreviewHtml`
+2. **Console**: `[mxEditorJs]` errors from `syncToTextarea` / `renderPreviewHtml`
 3. DB: row in `mxeditorjs_content`, `content_hash` field
 
 ## PHP log

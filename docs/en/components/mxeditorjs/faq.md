@@ -16,6 +16,13 @@ title: FAQ
 2. Open **Template Variables** tab on the resource
 3. The editor starts when the field is visible on the page
 
+## Editor does not appear in MIGX
+
+1. `which_editor` = **mxEditorJs**, `mxeditorjs.enabled` = **Yes**
+2. Form Tabs field `"inputTVtype": "richtext"`
+3. The plugin serves `migxmxeditorjs` on `OnTVInputRenderList`
+4. The value is HTML inside MIGX JSON. The row has no sidecar. `MxEditorJsFlush` runs before submit
+
 ## Video does not embed
 
 Paste a link (YouTube, RuTube, etc.) into an **empty** block with Ctrl+V. There is no Embed menu button.
@@ -31,7 +38,7 @@ Ask the admin to check:
 
 ## Layout breaks on the site after save
 
-The frontend uses the HTML snapshot from `modResource.content`. **Raw HTML** block and some embeds pass through as-is. Check theme CSS for `mxeditorjs-gallery`, tables, and iframes.
+The site uses the HTML snapshot from `modResource.content`. **Raw HTML** block and some embeds pass through as-is. Check theme CSS for `mxeditorjs-gallery`, tables, and iframes.
 
 ## Migration overwrote content
 
@@ -48,4 +55,4 @@ The plugin normalizes the `MODx.loadRTE(elements)` argument. Upgrade to the late
 | Main content | `mxeditorjs_content` |
 | TV | `mxeditorjs_tv_content` |
 
-HTML for the site: in `modResource.content` or the TV textarea value.
+HTML for the site lives in `modResource.content` or the TV textarea value.
