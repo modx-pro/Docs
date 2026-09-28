@@ -64,7 +64,7 @@ Two packages, one docs set. **Free** is the locator core. **Pro** installs on to
 |---|------|-----|
 | Map, list, search, geolocation | yes | yes |
 | Categories, `return=chunks/data/json` | yes | yes |
-| `search.php` (same-site AJAX) | yes | fallback when REST is off |
+| `search.php` (same-site AJAX) | yes | fallback when REST is off or `api_token` is set |
 | "Open now" filter, badges, TZ per location | - | yes |
 | amenity / brand filters | - | yes |
 | MiniShop3: "pick up product here" map | - | yes |
@@ -90,7 +90,7 @@ Details: [Free and Pro](free-vs-pro).
 On the same locator:
 
 - `working_now` filter, "Open" / "Closed" badges, "Open only" button
-- fields `is_open_now`, `status_hint`, `closes_at`, `next_open_at`, `working_hours_schedule`
+- fields `is_open_now`, `status_hint`, `closes_at`, `next_open_at` on the storefront and in `search.php`. `working_hours_schedule` is REST-only
 - timezone per location (`yandexmaps_timezone`) or network `yandexmapslocator_timezone`
 - `amenity` / `brand` filters
 - on a MiniShop3 product page only locations with that product (`productId` + `ms3_product_ids` / `ms3_product_id`)
@@ -106,8 +106,8 @@ Sections: [What Pro adds](pro/).
 | Requirement | Version |
 |-------------|---------|
 | MODX Revolution | 3.0+ |
-| PHP | 8.2-8.4 |
-| MySQL / MariaDB | InnoDB |
+| PHP | 8.2+ |
+| MySQL / MariaDB | same as MODX |
 | [pdoTools](/en/components/pdotools/) | Fenom chunks |
 | [Yandex Maps](https://developer.tech.yandex.ru/) API key | JS API and HTTP Geocoder |
 
@@ -123,7 +123,7 @@ Pro 1.1.0-pl2 requires Free ≥ 1.0.0-pl7 (`yandexmapslocator >=1.0.0-pl7 <2.0.0
 4. Create a container and child location resources, fill TVs.
 5. Insert the snippet: [Quick start](quick-start).
 
-Package: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslocator).
+Package: [modstore.pro](https://modstore.pro/packages/maps/yandexmapslocator).
 
 ### Pro
 
@@ -132,7 +132,7 @@ Package: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslocato
 3. Set `yandexmapslocator_timezone` for the network (for "open now").
 4. If needed: `api_token`, CORS, CSV in **Components → YandexMapsLocator Pro**.
 
-Pro package: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslocatorpro).
+Pro package: [modstore.pro](https://modstore.pro/packages/maps/yandexmapslocatorpro).
 
 ## Quick links
 

@@ -46,10 +46,9 @@ Authorization: Bearer YOUR_TOKEN
 | `lat`, `lng` | Coordinates for distance |
 | `address` | Address (geocoded) |
 | `radius` | km |
-| `filters`, `category` | Locator filters |
+| `filters`, `category` | `category` filters the list on its own. Open now: `filters=working_now` |
 | `amenity` / `amenities` | Comma-separated amenity tags (works without `filters=amenity`) |
 | `brand` | Filter by TV `yandexmaps_brand` |
-| `working_now` | `1` / `true` — open only (requires Pro) |
 | `context` | MODX context |
 | `product_id` | Pro: MiniShop3 filter |
 

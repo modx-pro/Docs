@@ -5,7 +5,7 @@ description: Ресурсы-точки YandexMapsLocator, TV, геокод в м
 
 # Точки и TV
 
-Точка на карте — **опубликованный** ресурс MODX. Контейнер задаёте параметром `parents` у сниппета.
+Точка на карте: **опубликованный** ресурс MODX. Контейнер задаёте параметром `parents` у сниппета.
 
 ## TV Free
 
@@ -31,8 +31,8 @@ Resolver Pro создаёт (если ещё нет):
 
 | TV | Тип | Назначение |
 |----|-----|------------|
-| `yandexmaps_timezone` | text | IANA-таймзона точки (`Europe/Moscow`, `Asia/Omsk`). Пусто — сеть `yandexmapslocator_timezone` |
-| `ms3_product_id` | number | Один ID товара MiniShop3 (legacy) |
+| `yandexmaps_timezone` | text | IANA-таймзона точки (`Europe/Moscow`, `Asia/Omsk`). Пусто: сеть `yandexmapslocator_timezone` |
+| `ms3_product_id` | number | Один ID товара MiniShop3 (прежний) |
 | `ms3_product_ids` | text | Несколько ID: `25,26` или JSON `[25,26]`. Если заполнено, важнее `ms3_product_id` |
 | `yandexmaps_amenities` | text | Теги удобств через запятую (`wifi,card,parking`) |
 | `yandexmaps_brand` | text | Бренд для фильтра `brand` |
@@ -45,7 +45,7 @@ Resolver Pro создаёт (если ещё нет):
 
 Плагин Free на `OnDocFormRender` добавляет кнопку «Получить координаты» под полем адреса: берёт адрес из TV и подставляет координаты. Нужен `yandexmapslocator_api_key`.
 
-Pro добавляет «Проверить расписание» под TV часов: JSON через formatter, статус «открыто сейчас», ближайшее открытие/закрытие.
+Pro добавляет «Проверить расписание» под TV часов: разбор JSON, статус «открыто сейчас», ближайшее открытие/закрытие.
 
 ## Чанки Free
 
@@ -57,7 +57,7 @@ Pro добавляет «Проверить расписание» под TV ч�
 | `yandexmapslocator.empty` | Пустой результат |
 | `yandexmapslocator.error` | Ошибка |
 
-Pro своих чанков не возит. UI и `data-yml-*`: [Интерфейс](frontend).
+Pro своих чанков не кладёт. Разметка и `data-yml-*`: [Интерфейс](frontend).
 
 ## Часы работы
 

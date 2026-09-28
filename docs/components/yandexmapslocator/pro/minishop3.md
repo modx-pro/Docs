@@ -9,7 +9,7 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 
 Как связать:
 
-1. В TV точки укажите ID товара: `ms3_product_ids` (несколько) или legacy `ms3_product_id` (один).
+1. В TV точки укажите ID товара: `ms3_product_ids` (несколько) или прежний `ms3_product_id` (один).
 2. В шаблоне товара вызовите сниппет с `productId` = ID текущего ресурса.
 3. В списке и на карте остаются совпавшие точки.
 
@@ -30,7 +30,7 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 
 | TV | Тип | Смысл |
 |----|-----|--------|
-| `ms3_product_id` | number | Один ID ресурса товара (legacy) |
+| `ms3_product_id` | number | Один ID ресурса товара (прежний) |
 | `ms3_product_ids` | text | Несколько ID: `25,26` или JSON `[25,26]`. Если заполнено, важнее `ms3_product_id` |
 
 К шаблону TV сами не привяжутся. Назначьте их шаблону точек.
@@ -110,8 +110,7 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 {'!YandexMapsLocator' | snippet : [
     'parents' => $storesParent,
     'productId' => $_modx->resource.id,
-    'category' => 'самовывоз',
-    'filters' => 'category'
+    'category' => 'самовывоз'
 ]}
 ```
 
@@ -120,7 +119,6 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
     &parents=`[[++yml_stores_parent]]`
     &productId=`[[*id]]`
     &category=`самовывоз`
-    &filters=`category`
 ]]
 ```
 
@@ -131,26 +129,19 @@ description: 'Карта самовывоза товара: YandexMapsLocator Pr
 ::: code-group
 
 ```fenom
-<section class="product-pickup">
-    <h2>Самовывоз</h2>
-    {'!YandexMapsLocator' | snippet : [
-        'parents' => $_modx->config.yml_stores_parent ?: 42,
-        'productId' => $_modx->resource.id,
-        'tplOuter' => 'yandexmapslocator.outer',
-        'limit' => 30
-    ]}
-</section>
+{'!YandexMapsLocator' | snippet : [
+    'parents' => $_modx->config.yml_stores_parent ?: 42,
+    'productId' => $_modx->resource.id,
+    'limit' => 30
+]}
 ```
 
 ```modx
-<section class="product-pickup">
-    <h2>Самовывоз</h2>
-    [[!YandexMapsLocator?
-        &parents=`[[++yml_stores_parent]]`
-        &productId=`[[*id]]`
-        &limit=`30`
-    ]]
-</section>
+[[!YandexMapsLocator?
+    &parents=`[[++yml_stores_parent]]`
+    &productId=`[[*id]]`
+    &limit=`30`
+]]
 ```
 
 :::

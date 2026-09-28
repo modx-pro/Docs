@@ -14,10 +14,11 @@ description: Контракт расширений YandexMapsLocator для Pro 
 | Метод | Назначение |
 |-------|------------|
 | `capabilities()` | Теги (`pro` → REST v1) |
-| `frontendModules()` | ES-модули для `locator.js` (`src`: абсолютный URL от корня сайта) |
+| `frontendModules()` | Модули JS для `locator.js` (`src`: абсолютный URL от корня сайта) |
+| `processorActions()` | Процессоры менеджера |
 | `apiFields()` | Доп. поля REST (`?fields=`) |
 
-**ProFeatureProvider:** capability `pro`, модуль `/assets/components/yandexmapslocatorpro/js/pro.js`, API fields `is_open_now`, `working_hours_schedule`, `closes_at`, `next_open_at`, `status_hint`, `timezone`, `brand`, `amenities`, processors CSV / bulk geocode / preview.
+**ProFeatureProvider:** capability `pro`, модуль `/assets/components/yandexmapslocatorpro/js/pro.js`, API fields `is_open_now`, `working_hours_schedule`, `closes_at`, `next_open_at`, `status_hint`, `timezone`, `brand`, `amenities`. `processorActions()`: `mgr/locations/import`, `export`, `bulk_geocode`, `mgr/working_hours/preview`.
 
 ## Фильтры
 
@@ -25,9 +26,9 @@ description: Контракт расширений YandexMapsLocator для Pro 
 
 Free: `category`. Pro: `working_now`, `minishop_product`, `amenity`, `brand`.
 
-## REST hooks
+## События REST
 
-- `OnYandexMapsLocatorSerializeLocation`: поля одной точки (`data` by ref)
+- `OnYandexMapsLocatorSerializeLocation`: поля одной точки (`data` по ссылке)
 - `OnYandexMapsLocatorBeforeApiResponse`: весь payload ответа
 
 См. [События](events), [REST API](pro/api).

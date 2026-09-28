@@ -52,10 +52,10 @@ Change the setting if TVs on the site already use different names. TV list: [Loc
 | `yandexmapslocator_api_max_limit` | number | `100` | Max `limit` in REST |
 | `yandexmapslocator_api_max_offset` | number | `10000` | Max `offset` |
 | `yandexmapslocator_api_max_parents` | number | `20` | Max parents per request |
-| `yandexmapslocator_api_geocode_rate_limit` | number | `30` | Geocode requests per minute per IP |
+| `yandexmapslocator_api_geocode_rate_limit` | number | `30` | Geocode bucket: REST geocode and address search in REST and `search.php` |
 | `yandexmapslocator_api_list_rate_limit` | number | `120` | List requests per minute per IP (and limit for `search.php`) |
 | `yandexmapslocator_api_cors_origins` | text | *(empty)* | Comma-separated origins. Not `*` on production |
-| `yandexmapslocator_api_token` | text | *(empty)* | Bearer token. Empty: public REST (dev only) |
+| `yandexmapslocator_api_token` | text | *(empty)* | Bearer for server-side clients. Never written into page HTML. When set, the on-page locator uses `search.php` |
 | `yandexmapslocator_api_resource_tvs` | text | *(empty)* | Allowed TVs in `include=tv` |
 | `yandexmapslocator_api_allowed_parents` | text | *(empty)* | Parent ID allowlist. Empty: any |
 | `yandexmapslocator_api_trust_proxy` | boolean | No | Trust `X-Forwarded-For` for rate limit |
