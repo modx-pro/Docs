@@ -697,12 +697,12 @@ const rewrites: Record<string, string> = {
   'komponentyi/resvideogallery/snippetyi/resvideogalleryform':   'components/resvideogallery/',
   'komponentyi/resvideogallery/sozdanie-svoej-kastomnoj-temyi':  'components/resvideogallery/',
   'komponentyi/resvideogallery/xuki':                            'components/resvideogallery/',
-  'komponentyi/resvideogallery/dobavlenie-svoego-video-parsera': 'components/resvideogallery/adding-custom-video-parser',
-  'komponentyi/resvideogallery/nastrojka/vkontakte':             'components/resvideogallery/setup/vkontakte',
-  'komponentyi/resvideogallery/snippetyi/resvideogallery':       'components/resvideogallery/snippets/resvideogallery',
-  'komponentyi/resvideogallery/snippetyi/resvideogallerytags':   'components/resvideogallery/snippets/resvideogallerytags',
-  'komponentyi/resvideogallery/snippetyi/resvideogalleryupload': 'components/resvideogallery/snippets/resvideogalleryupload',
-  'komponentyi/resvideogallery/sobyitiya':                       'components/resvideogallery/events',
+  'komponentyi/resvideogallery/dobavlenie-svoego-video-parsera': 'components/resvideogallery/modx2',
+  'komponentyi/resvideogallery/nastrojka/vkontakte':             'components/resvideogallery/modx2',
+  'komponentyi/resvideogallery/snippetyi/resvideogallery':       'components/resvideogallery/modx2',
+  'komponentyi/resvideogallery/snippetyi/resvideogallerytags':   'components/resvideogallery/modx2',
+  'komponentyi/resvideogallery/snippetyi/resvideogalleryupload': 'components/resvideogallery/modx2',
+  'komponentyi/resvideogallery/sobyitiya':                       'components/resvideogallery/modx2',
 
   'komponentyi/save2page': 'components/save2page',
 
@@ -891,6 +891,15 @@ const rewrites: Record<string, string> = {
   'en/components/fetchit/examples/notifications/pnotify':   'en/components/fetchit/examples/notifications/',
   'en/components/fetchit/examples/notifications/toastr':    'en/components/fetchit/examples/notifications/',
   'en/components/fetchit/examples/validation/iodine':       'en/components/fetchit/examples/validation/',
+
+  'components/resvideogallery/snippets/resvideogallery':       'components/resvideogallery/modx2',
+  'components/resvideogallery/snippets/resvideogallerytags':   'components/resvideogallery/modx2',
+  'components/resvideogallery/snippets/resvideogalleryupload': 'components/resvideogallery/modx2',
+  'components/resvideogallery/adding-custom-video-parser':     'components/resvideogallery/modx2',
+  'components/resvideogallery/events':                         'components/resvideogallery/modx2',
+  'components/resvideogallery/setup/vkontakte':                'components/resvideogallery/modx2',
+  'components/resvideogallery/snippets':                       'components/resvideogallery/modx2',
+  'components/resvideogallery/setup':                          'components/resvideogallery/modx2',
 }
 
 export { rewrites }
