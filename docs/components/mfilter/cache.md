@@ -58,6 +58,7 @@ return [
 - **suggestions** — фасетные счётчики (количество товаров для каждого значения)
 
 **Формат ключей:**
+
 ```
 baseids_{resourceId}_{cacheKeyHash}
 filters_{resourceId}_{depth}
@@ -83,7 +84,7 @@ suggestions_forids_{resourceId}_{filterHash}
 
 ### Из админки
 
-**Обслуживание → Очистить кэш**
+Кнопка **Очистить кэш** на вкладке «Обслуживание».
 
 Очищает:
 
@@ -151,7 +152,7 @@ $mfilter->clearCache();
 
 ## Scheduler (фоновые задачи)
 
-mFilter регистрирует семь задач в Scheduler. Связанные с кэшем:
+mFilter регистрирует семь задач в [Scheduler](/components/scheduler/). Связанные с кэшем:
 
 - **`mfl_rebuild_cache`** — перестройка кэша роутера и фильтров (on-demand)
 - **`mfl_warmup`** — прогрев baseIds для AJAX *(legacy с 1.4.0)*
