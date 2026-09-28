@@ -9,7 +9,7 @@ Namespace: **yandexmapslocator**. В БД ключи с префиксом `yand
 
 **Система → Настройки системы** → фильтр `yandexmapslocator`.
 
-Все ключи ставит **Free**. REST-ключи (`api_*`) оживают после **Pro**. Rate limit из той же группы режет и Free `search.php`.
+Все ключи ставит **Free**. Ключи `api_*` начинают работать после **Pro**. Лимит запросов из той же группы режет и Free `search.php`.
 
 ## Карта и поиск (`yandexmapslocator_main`)
 
@@ -22,10 +22,10 @@ Namespace: **yandexmapslocator**. В БД ключи с префиксом `yand
 | `yandexmapslocator_cluster` | boolean | Да | Кластеризация маркеров |
 | `yandexmapslocator_default_radius` | number | `50` | Радиус поиска, км (если у сниппета `radius=0`) |
 | `yandexmapslocator_distance_unit` | list | `km` | Единица расстояния: `km` или `m` |
-| `yandexmapslocator_default_balloon_image` | text | *(пусто)* | Fallback-картинка балуна |
-| `yandexmapslocator_marker_icon_size` | text | `32,32` | Размер кастомной иконки маркера, px |
-| `yandexmapslocator_default_context` | text | `web` | Fallback-контекст. Также контекст CSV-экспорта Pro |
-| `yandexmapslocator_timezone` | text | `Europe/Moscow` | IANA-таймзона сети (fallback), если у точки нет TV `yandexmaps_timezone`. Нужна для Pro `working_now` / `is_open_now` |
+| `yandexmapslocator_default_balloon_image` | text | *(пусто)* | Запасная картинка балуна |
+| `yandexmapslocator_marker_icon_size` | text | `32,32` | Размер своей иконки маркера, px |
+| `yandexmapslocator_default_context` | text | `web` | Запасной контекст. Также контекст CSV-экспорта Pro |
+| `yandexmapslocator_timezone` | text | `Europe/Moscow` | IANA-таймзона сети (запасной вариант), если у точки нет TV `yandexmaps_timezone`. Нужна для Pro `working_now` / `is_open_now` |
 | `yandexmapslocator_allowed_contexts` | text | *(пусто)* | Белый список context key через запятую. Пусто: любой существующий |
 
 ## Имена TV (`yandexmapslocator_tvs`)
@@ -44,24 +44,28 @@ Namespace: **yandexmapslocator**. В БД ключи с префиксом `yand
 
 Сменить значение настройки, если TV на сайте уже названы иначе. Список TV: [Точки и TV](integration).
 
+Pro читает ключ `yandexmapslocator_tv_timezone` (имя TV пояса). В пакете Free ключа нет: задайте вручную или оставьте имя `yandexmaps_timezone`.
+
 ## REST и лимиты (`yandexmapslocator_api`)
 
 | Ключ | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
-| `yandexmapslocator_api_enabled` | boolean | Да | Kill switch REST Pro. Нет → 503. Локатор на странице уходит на `search.php` |
+| `yandexmapslocator_api_enabled` | boolean | Да | Выключатель REST Pro. Нет → 503. Локатор на странице уходит на `search.php` |
 | `yandexmapslocator_api_max_limit` | number | `100` | Макс. `limit` в REST |
 | `yandexmapslocator_api_max_offset` | number | `10000` | Макс. `offset` |
 | `yandexmapslocator_api_max_parents` | number | `20` | Макс. число parents в запросе |
-| `yandexmapslocator_api_geocode_rate_limit` | number | `30` | Запросов geocode в минуту на IP |
-| `yandexmapslocator_api_list_rate_limit` | number | `120` | Запросов list в минуту на IP (и лимит для `search.php`) |
-| `yandexmapslocator_api_cors_origins` | text | *(пусто)* | Origins через запятую. На production не `*` |
-| `yandexmapslocator_api_token` | text | *(пусто)* | Bearer-токен. Пусто: публичный REST (только для стенда) |
+| `yandexmapslocator_api_geocode_rate_limit` | number | `30` | Бакет geocode: REST geocode и поиск по `address` в REST и в `search.php` |
+| `yandexmapslocator_api_list_rate_limit` | number | `120` | Бакет list: REST locations и каждый запрос `search.php` |
+| `yandexmapslocator_api_cors_origins` | text | *(пусто)* | Origins через запятую. На рабочем сайте не `*` |
+| `yandexmapslocator_api_token` | text | *(пусто)* | Bearer для серверных клиентов. В HTML страницы не попадает. Если задан, локатор на сайте ходит в `search.php` |
 | `yandexmapslocator_api_resource_tvs` | text | *(пусто)* | Разрешённые TV в `include=tv` |
 | `yandexmapslocator_api_allowed_parents` | text | *(пусто)* | Белый список parent ID. Пусто: любой |
-| `yandexmapslocator_api_trust_proxy` | boolean | Нет | Доверять `X-Forwarded-For` для rate limit |
+| `yandexmapslocator_api_trust_proxy` | boolean | Нет | Доверять `X-Forwarded-For` для лимита запросов |
+
+С `127.0.0.1`, `::1` и системной `debug` лимит запросов не режет.
 
 Подробнее: [Безопасность API](pro/api-security).
 
 ## Pro
 
-У Pro **нет** своих runtime-настроек в System Settings. Берите ключи Free выше. TV, которые создаёт resolver Pro: `yandexmaps_timezone`, `ms3_product_id`, `ms3_product_ids`, `yandexmaps_amenities`, `yandexmaps_brand`. Список: [Точки и TV](integration).
+У Pro **нет** своих настроек в System Settings. Берите ключи Free выше. TV, которые создаёт resolver Pro: `yandexmaps_timezone`, `ms3_product_id`, `ms3_product_ids`, `yandexmaps_amenities`, `yandexmaps_brand`. Список: [Точки и TV](integration).
