@@ -154,7 +154,7 @@
 
 Если кнопка «Пересобрать сейчас» не возвращается на каталогах 100k+:
 
-1. Установите [Scheduler](https://github.com/modxcms/scheduler)
+1. Установите [Scheduler](/components/scheduler/)
 2. Используйте кнопку «Через Scheduler» — сборка уйдёт в фон без HTTP-таймаута
 
 ### Логи
