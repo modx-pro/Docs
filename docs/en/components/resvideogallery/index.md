@@ -6,38 +6,17 @@ logo: https://modstore.pro/assets/extras/resvideogallery/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/photos-and-files/resvideogallery
 
+compatibility:
+  - modx2
+  - modx3
 items: [
-  {
-    text: 'Snippets',
-    items: [
-      { text: 'ResVideoGallery', link: 'snippets/resvideogallery' },
-      { text: 'ResVideoGalleryTags', link: 'snippets/resvideogallerytags' },
-      { text: 'ResVideoGalleryUpload', link: 'snippets/resvideogalleryupload' },
-    ],
-  },
-  { text: 'Adding custom video parser', link: 'adding-custom-video-parser' },
-  { text: 'Events', link: 'events' },
-  {
-    text: 'Settings',
-    items: [
-      { text: 'VKontakte', link: 'setup/vkontakte' },
-    ],
-  },
+  { text: 'ResVideoGallery for MODX 3', link: 'modx3' },
+  { text: 'ResVideoGallery for MODX 2', link: 'modx2' },
 ]
 ---
 # ResVideoGallery
 
-Responsive video gallery with Ajax loading.
+Responsive video gallery with Ajax loading. The component has two branches for different MODX versions:
 
-Supported video hosts:
-
-- youtube.com
-- vimeo.com
-- dailymotion.com
-- rutube.ru
-- vk.com
-- coub.com
-
-[ResVideoGallery (old video)](https://www.youtube.com/watch?v=GC-YCY_vmWM)
-
-[RuTube](https://rutube.ru/video/f3a71cfc764f0692a2abf484c1f321be/)
+- [ResVideoGallery for MODX 3](modx3) — version 1.x, rewritten from scratch for MODX Revolution 3.x (PHP 8.4 or later, pdoTools). Videos from YouTube, Vimeo, RuTube, VKontakte, Dailymotion, Coub, Google Drive, TikTok, Instagram and Facebook are attached to resources, visitors add videos by link, authors manage their videos in "My videos", and the administrator reviews them before publication.
+- [ResVideoGallery for MODX 2](modx2) — the version for MODX Revolution 2.x: videos from YouTube, Vimeo, Dailymotion, RuTube, VKontakte and Coub, a tag cloud, adding videos from the site.

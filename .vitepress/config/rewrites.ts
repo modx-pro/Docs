@@ -900,6 +900,14 @@ const rewrites: Record<string, string> = {
   'components/resvideogallery/setup/vkontakte':                'components/resvideogallery/modx2',
   'components/resvideogallery/snippets':                       'components/resvideogallery/modx2',
   'components/resvideogallery/setup':                          'components/resvideogallery/modx2',
+  'en/components/resvideogallery/snippets/resvideogallery':       'en/components/resvideogallery/modx2',
+  'en/components/resvideogallery/snippets/resvideogallerytags':   'en/components/resvideogallery/modx2',
+  'en/components/resvideogallery/snippets/resvideogalleryupload': 'en/components/resvideogallery/modx2',
+  'en/components/resvideogallery/adding-custom-video-parser':     'en/components/resvideogallery/modx2',
+  'en/components/resvideogallery/events':                         'en/components/resvideogallery/modx2',
+  'en/components/resvideogallery/setup/vkontakte':                'en/components/resvideogallery/modx2',
+  'en/components/resvideogallery/snippets':                       'en/components/resvideogallery/modx2',
+  'en/components/resvideogallery/setup':                          'en/components/resvideogallery/modx2',
 }
 
 export { rewrites }
