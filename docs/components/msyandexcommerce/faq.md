@@ -43,4 +43,4 @@ YCP — checkout (корзина, сессия, заказ). Оплата чер
 
 ## Пакет не ставится / «Package provider not found»
 
-Пакет зашифрован. Добавьте провайдер **modstore.pro** (URL `https://modstore.pro/extras/`, email и API-ключ из ЛК modstore) и в **Show Details** при Install укажите этот провайдер. Подробно: [Установка](installation).
+Добавьте провайдер **modstore.pro** (URL `https://modstore.pro/extras/`, email и API-ключ из ЛК modstore) и в **Show Details** при Install укажите этот провайдер. Подробно: [Установка](installation).

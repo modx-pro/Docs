@@ -1,6 +1,6 @@
 ---
 title: Установка
-description: Провайдер modstore, установка msYandexCommerce и миграция с ms2YandexCommerce
+description: Провайдер modstore и установка msYandexCommerce
 ---
 
 # Установка
@@ -17,7 +17,7 @@ description: Провайдер modstore, установка msYandexCommerce и
 
 ## Провайдер modstore и установка пакета
 
-Пакет зашифрован. Без провайдера установка завершится ошибкой `Package provider not found`.
+Без провайдера **modstore.pro** установка падает с `Package provider not found`.
 
 1. **Система → Управление пакетами → Провайдеры** → добавьте **modstore.pro**:
    - URL: `https://modstore.pro/extras/`
@@ -37,24 +37,3 @@ description: Провайдер modstore, установка msYandexCommerce и
 3. Включите `msyandexcommerce_enabled` и заполните склады / delivery / payment. См. [Конфигурация](configuration).
 
 Проверка: `GET …/assets/components/msyandexcommerce/api.php/health` → `{"status":"ok"}`.
-
-## Обновление с ms2YandexCommerce
-
-Signature в менеджере больше не `ms2yandexcommerce-*`. Обновление «поверх» старого пакета не сработает. Сначала поставьте новый пакет с modstore, затем удалите старый.
-
-1. Установите **msYandexCommerce** через **Управление пакетами** (провайдер **modstore.pro**), не удаляя старый пакет. Resolver `resolver_00_migrate` перенесёт:
-   - таблицы `ms2_yandexcommerce_*` → `ms_yandexcommerce_*`
-   - настройки `ms2yandexcommerce_*` → `msyandexcommerce_*` (включая `api_token`)
-   - сниппет и чанк (переименует)
-   - плагин `ms2yandexcommerce_bootstrap` (выключит)
-2. Проверьте: настройка `msyandexcommerce_api_token`, `GET …/assets/components/msyandexcommerce/api.php/health`, сниппет `msYandexCommerceButton` в шаблоне, плагин **`msyandexcommerce_bootstrap`** включён.
-3. Удалите пакет `ms2yandexcommerce` из **Управление пакетами**. После rename DROP по старым именам таблиц пустой.
-
-```mermaid
-flowchart TB
-  Install[Установить msYandexCommerce] --> Migrate[resolver_00_migrate]
-  Migrate --> Check[token и health]
-  Check --> Remove[Удалить ms2yandexcommerce]
-```
-
-События `ms2ycpOnDeliveryOptions` и `ms2ycpOnPaymentNotification` не меняются. Плагины на них переподписывать не нужно.

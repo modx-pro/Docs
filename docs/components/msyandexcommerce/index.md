@@ -30,7 +30,7 @@ items: [
 
 **msYandexCommerce** — серверная часть [Yandex Commerce Protocol (YCP)](https://yandex.ru/support/merchants-ru-ycp/ru/) для [miniShop2](/components/minishop2/) на MODX Revolution 2.x. Яндекс вызывает API магазина при оформлении через кнопку «Купить в 1 клик».
 
-Пространство имён: **`msyandexcommerce`**. Вход: `assets/components/msyandexcommerce/api.php`. Версия пакета: `0.1.2-beta`. Пакет платный, установка с [modstore.pro](https://modstore.pro/) ([автор](https://modstore.pro/authors/ibochkarev)).
+Пространство имён: **`msyandexcommerce`**. Вход: `assets/components/msyandexcommerce/api.php`.
 
 С чего начать: [Установка](installation) → [Конфигурация](configuration) → [План тестирования](testing).
 
