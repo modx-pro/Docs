@@ -27,7 +27,7 @@ Select the required file for editing in the `docs/components/` directory.
 ## Recommended way to make changes to the documentation
 
 ::: info INFO
-For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as the **[pnpm](https://pnpm.io/installation)** package manager version 10 or later installed on your computer: it switches to the version from `package.json` â†’ `packageManager` by itself, and dependencies are locked in `pnpm-lock.yaml`.
+For the recommended way, you will need git skills (clone, fetch, add, commit, push), as well as the **[pnpm](https://pnpm.io/installation)** package manager version 10 or later installed on your computer: it switches to the version from `package.json` ? `packageManager` by itself, and dependencies are locked in `pnpm-lock.yaml`.
 Knowledge and skills of working with Vue are not required.
 :::
 
@@ -179,24 +179,24 @@ From the repository root after `pnpm install`:
 | `pnpm dev` | Local preview with hot reload (default port is printed by Vite, often `5173`) |
 | `pnpm build` | Production build (heavy; Node may need extra memory, see `package.json` scripts) |
 | `pnpm preview` | Preview the built static output |
-| `pnpm run lint:changed` | Markup checks ([markdownlint](https://github.com/DavidAnson/markdownlint)) on changed lines; `pnpm run lint` â€” all files; to fix automatically â€” `pnpm exec markdownlint --fix <path>` (`pnpm run lint:fix` fixes every file in the repo) |
-| `pnpm run spellcheck:changed` | Spell check on changed lines (RU and EN); `pnpm run spellcheck` â€” all files, see [Spell checking](/en/guide/cspell) |
-| `pnpm run check:sync:changed` | New Russian pages have English counterparts; warns when a Russian page changed but its English one didn't |
-| `pnpm run check:structure:changed` | In changed pages the English version has at least as many `##`/`###` sections as the Russian one (warnings only); `pnpm run check:structure` â€” all pages |
+| `pnpm run lint:changed` | Markup checks ([markdownlint](https://github.com/DavidAnson/markdownlint)) on changed lines; `pnpm run lint` — all files; to fix automatically — `pnpm exec markdownlint --fix <path>` (`pnpm run lint:fix` fixes every file in the repo) |
+| `pnpm run spellcheck:changed` | Spell check on changed lines (RU and EN); `pnpm run spellcheck` — all files, see [Spell checking](/en/guide/cspell) |
+| `pnpm run check:sync:changed` | English is optional: warns when a new Russian page has no EN counterpart or only the Russian page changed; `pnpm run check:sync -- --strict` fails on missing EN |
+| `pnpm run check:structure:changed` | In changed pages the English version has at least as many `##`/`###` sections as the Russian one (warnings only); `pnpm run check:structure` — all pages |
 
 CI runs these checks on every PR that changes `docs/`. Markup and spelling count only changed lines, so old issues elsewhere in a file don't get in the way. Locally the `:changed` commands compare against `origin/master` (run `git fetch` first; set another base with `CHECK_BASE=origin/<branch>`).
 
-A new Russian page needs an English one, otherwise the check fails: if there is no translation yet, create a stub with `node scripts/sync-docs-en.mjs docs/path/to/page.md` â€” it copies the page to `docs/en/` with a TODO note. If you edit a Russian page but not its English counterpart, CI prints a warning: check whether the translation needs the same edit. If a changed page has fewer `##`/`###` sections in English than in Russian, CI prints a warning too.
+English is optional: CI does not block a PR without `docs/en/…`. If you want a stub, run `node scripts/sync-docs-en.mjs docs/path/to/page.md` — it copies the page to `docs/en/` with a TODO note. If you edit a Russian page but not its English counterpart (or EN is missing), CI prints a warning. If a changed page has fewer `##`/`###` sections in English than in Russian, CI prints a warning too.
 
 More on markup and pages: [Markdown](/en/guide/markdown), [VitePress](/en/guide/vitepress), [Frontmatter](/en/guide/frontmatter).
 
 ## FAQ
 
-::: details Dev server wonï¿½t start or build fails
+::: details Dev server wont start or build fails
 
 Use **Node.js 22.18+** (`package.json` has `"engines": { "node": ">=22.18" }`). Try removing `node_modules` and reinstalling with `pnpm install` (keep `pnpm-lock.yaml`: it pins the dependency versions).
 
-After the project updates pnpm, run `pnpm install` once in a terminal and confirm recreating `node_modules`: otherwise `pnpm run â€¦` from an editor or a git hook stops with `ABORTED_REMOVE_MODULES_DIR_NO_TTY`. The error `packages field missing or empty` means pnpm 9 is installed: update it (`npm i -g pnpm@latest`).
+After the project updates pnpm, run `pnpm install` once in a terminal and confirm recreating `node_modules`: otherwise `pnpm run …` from an editor or a git hook stops with `ABORTED_REMOVE_MODULES_DIR_NO_TTY`. The error `packages field missing or empty` means pnpm 9 is installed: update it (`npm i -g pnpm@latest`).
 
 :::
 
