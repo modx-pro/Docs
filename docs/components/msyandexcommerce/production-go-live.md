@@ -13,31 +13,15 @@ description: "Порядок: staging, проверка боевого URL и п
 
 ```text
 1. Delivery options (courier / pickup)
-2. Сборка ZIP с фиксами 0.1.1+
-3. Установка или обновление на проде (как на staging)
-4. Диагностика в mgr MODX
-5. Настройки прода + Bearer в кабинет
-6. Curl / Postman на боевом api.php
-7. Кабинет: проверка подключения, склады, тестовый заказ, отмена
-8. Публикация кнопки только после зелёного теста
+2. Установка или обновление на проде (как на staging)
+3. Диагностика в mgr MODX
+4. Настройки прода + Bearer в кабинет
+5. Curl / Postman на боевом api.php
+6. Кабинет: проверка подключения, склады, тестовый заказ, отмена
+7. Публикация кнопки только после зелёного теста
 ```
 
-Шаг 7 без зелёных 1–6 не начинайте.
-
-## Фиксы в пакете 0.1.1-beta
-
-Перед деплоем на прод нужна версия с этими правками (см. changelog пакета):
-
-| Фикс | Зачем |
-|------|--------|
-| Bearer через `getallheaders()` | На CGI/nginx `Authorization` часто не попадает в `$_SERVER`, кабинет получает ложный `401` |
-| Остаток из `ms2_product_remains` | Если на сайте нет `msProductData.remains`, корзина без этой таблицы пустая |
-| `createdon` по типу колонки | На части схем unix-int ломает сохранение `msOrder` / адреса |
-| Draft status + bind user | Плагины MS2, которым нужен пользователь заказа |
-| `Ms2OrderBagStub` | Плагины, которые ждут `msOrderHandler` на create-событиях |
-| Delivery: разные `type` при одном `msDelivery` id | Кабинет ждёт `courier` и `pickup`, а не два раза `pickup` |
-
-Доставка: [delivery](delivery). Остатки: [stock](stock).
+Шаг 6 без зелёных 1–5 не начинайте.
 
 ## 1. Delivery options
 
@@ -49,7 +33,7 @@ description: "Порядок: staging, проверка боевого URL и п
 Как пакет строит ответ `POST /api/v1/checkout/delivery/options`:
 
 - Разные id → два option: `type=courier` и `type=pickup` с разными `id`
-- Один id в обеих настройках → два option с одним `id`, но разными `type` (с 0.1.1). Раньше оба уходили как `pickup`
+- Один id в обеих настройках → два option с одним `id`, но разными `type`
 - Оба id = `0` → все активные `msDelivery` как `type=courier`
 
 Проверка:
@@ -61,15 +45,13 @@ curl -sS -X POST "$BASE/api/v1/checkout/delivery/options" \
   -d "{\"items\":[{\"offer_id\":$OFFER,\"count\":1}]}"
 ```
 
-В ответе должны быть типы и id, которые кабинет сможет выбрать. Если на staging дважды `id=5` с `type=pickup`, поставьте 0.1.1 и повторите запрос.
+В ответе должны быть типы и id, которые кабинет сможет выбрать.
 
 Оплата: `payment_online_id` / `payment_cod_id` ([payment](payment)). Для первой проверки удобнее `payment_method: cod`.
 
 ## 2. Получение пакета
 
 Скачайте актуальный transport с [modstore.pro](https://modstore.pro/) (провайдер `https://modstore.pro/extras/`). В менеджере пакетов при Install укажите этот провайдер.
-
-В ZIP / changelog должна быть 0.1.1 или новее с нужными фиксами.
 
 ## 3. Деплой на прод
 
@@ -212,7 +194,6 @@ flowchart TB
 ## Чего избегать
 
 - Публиковать кнопку до зелёного curl и одного заказа в кабинете
-- Ставить на прод старый ZIP без фиксов Bearer / remains / delivery type
 - Включать `trust_proxy` без доверенного reverse proxy (клиент сможет подделать HTTPS)
 - Искать «Обновить склады через YCP» в MODX
 - Хранить остаток только в TV: пакет TV не читает ([stock](stock))
@@ -220,7 +201,7 @@ flowchart TB
 ## Чеклист
 
 - [ ] В `delivery/options` корректные `courier` / `pickup`
-- [ ] Пакет 0.1.1+ с фиксами из таблицы выше установлен с modstore на проде (как на staging)
+- [ ] Пакет установлен с modstore на проде (как на staging)
 - [ ] Mgr: диагностика грузится, «Обновить» отдаёт статус
 - [ ] Прод: `enabled`, `trust_proxy` (если нужен), склад, delivery / payment
 - [ ] Bearer из прода вставлен в кабинет
