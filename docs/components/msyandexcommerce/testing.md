@@ -80,7 +80,7 @@ Content-Type: application/json
 ```
 
 ```mermaid
-flowchart LR
+flowchart TB
   H[health] --> W[warehouses]
   W --> B[basket/check]
   B --> D[delivery/options]

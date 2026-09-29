@@ -197,7 +197,7 @@ curl -sS -X POST "$BASE/api/v1/checkout/basket/check" \
 8. «Опубликовать» кнопку только когда проверка и заказ в MS2 выглядят нормально. В выдаче кнопка может появиться с задержкой (до ~36 ч по справке Яндекса).
 
 ```mermaid
-flowchart LR
+flowchart TB
   Url[URL и Bearer] --> Check[Проверить подключение]
   Check --> Wh[Склады YCP]
   Wh --> Order[Тестовый заказ]

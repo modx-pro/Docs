@@ -66,19 +66,23 @@ Content-Type: application/json
 
 `POST /v1/webhook` в этот список **не** входит. Дедуп Pay — по `ycp_pay_event_id` в заказе ([payment](payment)).
 
+Маршруты YCP (кроме Pay webhook):
+
 ```mermaid
 flowchart TB
-  subgraph YcpRoutes[Маршруты YCP]
-    Https[HttpsMiddleware] --> Auth[AuthenticationMiddleware]
-    Auth --> Json[JsonBodyMiddleware]
-    Json --> Idem[IdempotencyMiddleware]
-    Idem --> Handler[Route handler]
-  end
-  subgraph PayWebhook["POST /v1/webhook"]
-    HttpsPay[HttpsMiddleware] --> JsonPay[JsonBodyMiddleware]
-    JsonPay --> PayHandler[PaymentWebhookService]
-    PayHandler --> EventId[дедуп ycp_pay_event_id]
-  end
+  Https[HttpsMiddleware] --> Auth[AuthenticationMiddleware]
+  Auth --> Json[JsonBodyMiddleware]
+  Json --> Idem[IdempotencyMiddleware]
+  Idem --> Handler[Route handler]
+```
+
+`POST /v1/webhook`:
+
+```mermaid
+flowchart TB
+  HttpsPay[HttpsMiddleware] --> JsonPay[JsonBodyMiddleware]
+  JsonPay --> PayHandler[PaymentWebhookService]
+  PayHandler --> EventId[дедуп ycp_pay_event_id]
 ```
 
 ## Ошибки
@@ -113,7 +117,7 @@ HTTP-код совпадает с `YcpException` (400–503). Неизвестн
 8. **Проверить подключение**, затем тестовый заказ в разделе Товары. Полный план: [testing](testing).
 
 ```mermaid
-flowchart LR
+flowchart TB
   Reg[Регистрация YCP API] --> Token[api_token в кабинет]
   Token --> Url[URL api.php]
   Url --> Wh[Обновить склады]

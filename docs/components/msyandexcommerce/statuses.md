@@ -37,7 +37,7 @@ description: Маппинг статусов YCP и miniShop2
 Paid наружу отдельным значением не отдаём.
 
 ```mermaid
-flowchart LR
+flowchart TB
   Placed[placed] --> InProg[in_progress]
   Paid[Pay CAPTURED] --> InProg
   InProg --> Delivered[delivered]

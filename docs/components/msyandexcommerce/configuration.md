@@ -48,7 +48,7 @@ description: Системные настройки msyandexcommerce, склад�
 Пакет отдаёт один склад из настроек MODX. Кабинет Яндекса забирает его через `GET /api/v1/warehouses`.
 
 ```mermaid
-flowchart LR
+flowchart TB
   Settings["warehouse_* в MODX"] --> Api["GET /api/v1/warehouses"]
   Api --> Cabinet["Обновить склады через YCP"]
 ```

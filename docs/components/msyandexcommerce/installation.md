@@ -51,7 +51,7 @@ Signature в менеджере больше не `ms2yandexcommerce-*`. Обн�
 3. Удалите пакет `ms2yandexcommerce` из **Управление пакетами**. После rename DROP по старым именам таблиц пустой.
 
 ```mermaid
-flowchart LR
+flowchart TB
   Install[Установить msYandexCommerce] --> Migrate[resolver_00_migrate]
   Migrate --> Check[token и health]
   Check --> Remove[Удалить ms2yandexcommerce]
