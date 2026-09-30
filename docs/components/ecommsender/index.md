@@ -54,7 +54,7 @@ items: [
 | `payedStatuses` | id способа оплаты → id статуса (или массив статусов), при переходе в который заказ считается оплаченным |
 | `paymentKeyParams` | id способа оплаты → параметр ссылки на оплату, в котором лежит ключ оплаты |
 | `savedCookiesOnCreatingOrder` | куки аналитики, которые сохраняются в свойства заказа при его создании (`_ga`, `_ym_uid`, `_fbp` и т. п.) |
-| `hashedKeys` | поля покупателя и заказа, которые хешируются sha256 (`email`, `phone` …) |
+| `hashedKeys` | поля покупателя и заказа, которые передаются sha256-хешами (`email`, `phone` …) |
 | `redefinedSubmit` | переопределять ли отправку формы заказа miniShop2, чтобы `order_created` успел попасть в `dataLayer` |
 | `measurementProtocol` | серверная отправка: `events` (событие → чанк), `requestUrl`, `token`, `counterId`, `clientIdKey`, `sessionIdKey` |
 
@@ -85,7 +85,7 @@ items: [
 | `ecs_product_selector` | CSS-селектор карточки товара (по умолчанию `.ms2_form`) |
 | `ecs_product_link_selector` | CSS-селекторы ссылок на товар для события `click`; пусто — клики не отслеживаются |
 | `ecs_list_attr_name` | data-атрибут списка товаров (по умолчанию `data-ecs-list`) |
-| `ecs_data_param_name` | имя массива для пушей (по умолчанию `dataLayer`) |
+| `ecs_data_param_name` | имя массива, в который пишутся события (по умолчанию `dataLayer`) |
 | `ecs_redirect_timeout` | задержка перед переходом на оплату или страницу «Спасибо», мс |
 | `ecs_debug`, `ecs_log_level` | логирование через mxLogger (если установлен) |
 
