@@ -1,10 +1,13 @@
+---
+title: VueTools API Composables
+description: useLexicon, useModx, usePermission, useApi, usePrimeVueLocale, useTheme
+---
+
 # API Composables
 
-Ready composables for MODX work from Vue components. Each is imported from its own Import Map key.
+Import each composable from its Import Map key (`@vuetools/useApi`, etc.). `index.min.js` exists in assets; there is no `@vuetools/index` key in the map.
 
 ## useLexicon
-
-MODX lexicons.
 
 ```javascript
 import { useLexicon } from '@vuetools/useLexicon'
@@ -12,20 +15,27 @@ import { useLexicon } from '@vuetools/useLexicon'
 const { _, has, getByPrefix } = useLexicon()
 ```
 
-| Method | Returns | Description |
-|--------|---------|-------------|
-| `_(key, params?)` | `string` | Lexicon value; falls back to `key` if missing |
-| `has(key)` | `boolean` | Whether the key exists |
-| `getByPrefix(prefix)` | `object` | All keys starting with `prefix` |
-
-`params` fills placeholders written as `[[+name]]`, `{name}` and `:name`.
+Your dictionary overrides `window.MODx.lang`:
 
 ```javascript
-_('my_component_title')                      // "My component"
-_('my_component_welcome', { name: 'John' })  // from "Hello, {name}!" → "Hello, John!"
+const { _ } = useLexicon({ lexicon: { my_key: 'Value' } })
 ```
 
-Lexicons are read from `window.MODx.lang`. Load topics in the controller:
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `_(key, params?)` | `string` | Lexicon value. Missing key: returns `key` |
+| `has(key)` | `boolean` | Key in `options.lexicon` or `MODx.lang` |
+| `getByPrefix(prefix)` | `object` | All keys with the prefix |
+| `load(topics)` | `Promise<void>` | **Not implemented**: logs a console warning, does not load topics |
+
+`_` replaces `[[+name]]`, `{name}`, and `:name`. The `:name` form has no word boundary: matches inside longer text and values with `$&` / `$'` / `$$` break the string ([issue #67](https://github.com/modx-pro/vueTools/issues/67)). `[[+name]]` and `{name}` do not have this gap.
+
+```javascript
+_('my_component_title')                       // "My component"
+_('my_component_welcome', { name: 'John' })   // from "Hello, {name}!" → "Hello, John!"
+```
+
+Load topics in the controller:
 
 ```php
 public function getLanguageTopics()
@@ -35,8 +45,6 @@ public function getLanguageTopics()
 ```
 
 ## useModx
-
-Access to `window.MODx`.
 
 ```javascript
 import { useModx } from '@vuetools/useModx'
@@ -49,20 +57,20 @@ const { config, siteId, isManager, getSetting } = useModx()
 | `config` | `ComputedRef<object>` | `MODx.config` |
 | `user` | `ComputedRef<object>` | `MODx.user` |
 | `siteId` | `ComputedRef<string>` | Auth token `MODx.siteId` |
-| `hasPermission(key)` | `boolean` | Whether the user has permission `key` |
+| `hasPermission(key)` | `boolean` | `MODx.perm[key] === true` |
 | `getSetting(key, default?)` | `*` | Value from `MODx.config` |
-| `getManagerUrl(path?)` | `string` | Manager URL |
-| `getAssetsUrl(component)` | `string` | Component assets URL |
-| `getConnectorUrl(component)` | `string` | Component connector URL |
-| `getContextKey()` | `string` | Current context key |
-| `isManager()` | `boolean` | Whether the code runs in the manager |
-| `fireEvent(name, data?)` | `void` | Fire an ExtJS `MODx` event |
+| `getManagerUrl(path?)` | `string` | Manager URL; without config → `/manager/` |
+| `getAssetsUrl(component)` | `string` | `{assets}components/{name}/`; otherwise `/assets/` |
+| `getConnectorUrl(component)` | `string` | `{assets}components/{name}/connector.php` |
+| `getContextKey()` | `string` | Context; otherwise `web`. Without MODx → `null` on related checks |
+| `isManager()` | `boolean` | Code runs in the manager |
+| `fireEvent(name, data?)` | `void` | Calls `MODx.fireEvent` if it is a function. Otherwise no-op |
 
-`config`, `user` and `siteId` are Vue computed refs: use `config.assets_url` in a template, `config.value.assets_url` in code.
+`config`, `user`, and `siteId` are computed. In template: `config.assets_url`. In `<script>`: `config.value.assets_url`.
 
 ## usePermission
 
-User permission checks. Permissions come from `window.MODx.perm`.
+Permissions from `window.MODx.perm`. Strict check: value must be `=== true`.
 
 ```javascript
 import { usePermission } from '@vuetools/usePermission'
@@ -72,71 +80,115 @@ const { can, canAny, canAll } = usePermission()
 
 | Method | Returns | Description |
 |--------|---------|-------------|
-| `can(key)` | `boolean` | Whether the user has permission `key` |
-| `canAny(keys)` | `boolean` | Whether the user has any of the permissions |
-| `canAll(keys)` | `boolean` | Whether the user has all permissions |
-| `getAll()` | `object` | All user permissions |
+| `can(key)` | `boolean` | Permission `key` present |
+| `canAny(keys)` | `boolean` | Any of the permissions |
+| `canAll(keys)` | `boolean` | All permissions |
+| `getAll()` | `object` | Reference to `MODx.perm` (or `{}`). Not a clone: mutating it changes page permissions |
+
+### Shortcuts → MODX key
+
+| Method | `MODx.perm` key |
+|-------|------------------|
+| `canCreateResource()` | `new_document` |
+| `canEditResource()` | `edit_document` |
+| `canDeleteResource()` | `delete_document` |
+| `canPublishResource()` | `publish_document` |
+| `canUnpublishResource()` | `unpublish_document` |
+| `canViewUsers()` | `view_user` |
+| `canEditUsers()` | `edit_user` |
+| `canDeleteUsers()` | `delete_user` |
+| `canViewElements()` | `view_element` |
+| `canEditElements()` | `edit_element` |
+| `canDeleteElements()` | `delete_element` |
+| `canViewSystemSettings()` | `settings` |
+| `canFlushSessions()` | `flush_sessions` |
+| `canClearCache()` | `empty_cache` |
+| `canViewFiles()` | `file_view` |
+| `canUploadFiles()` | `file_upload` |
+| `canDeleteFiles()` | `file_remove` |
+| `canInstallPackages()` | `packages` |
 
 ```javascript
-const { can } = usePermission()
+const { can, canClearCache } = usePermission()
 const canEdit = computed(() => can('my_component_edit'))
 ```
 
-Shortcuts for common MODX permissions exist too: `canCreateResource()`, `canEditResource()`, `canViewUsers()`, `canClearCache()` and others — all called without arguments.
-
 ## useApi
 
-HTTP client for the standard MODX connector API (`?action=processor/path`).
+HTTP client for the standard MODX connector (`?action=processor/path`).
 
 ```javascript
 import { useApi } from '@vuetools/useApi'
 
-const { get, post, put, delete: del } = useApi()
+const { get, post, put, delete: del, request, buildUrl } = useApi()
 ```
+
+### Constructor options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `baseUrl` | `MODx.config.connector_url`, else `/connectors/` | Connector base URL |
+| `authToken` | `MODx.siteId` | Token for `HTTP_MODAUTH` |
+
+Fallback `/connectors/` without `index.php` does not fit every site. Set `baseUrl` from `MODx.config.connector_url`.
+
+### Methods
 
 | Method | Description |
 |--------|-------------|
-| `get(action, params?)` | GET request |
-| `post(action, params?, options?)` | POST request |
-| `put(action, params?, options?)` | PUT request |
-| `delete(action, params?)` | DELETE request |
-| `buildUrl(action, params?)` | Build a URL without sending |
+| `get(action, params?)` | GET: params in query via `String(value)` (array → `"a,b"`, object → `"[object Object]"`) |
+| `post(action, params?, options?)` | POST: FormData (`key[i]` for arrays, JSON string for objects) unless `{ json: true }` |
+| `put(action, params?, options?)` | PUT (see limitation below) |
+| `delete(action, params?)` | DELETE; no third `options` (unlike `put`) |
+| `request(action, params?, options?)` | Generic; `options.method`, `options.json`, headers |
+| `buildUrl(action, params?)` | URL without sending |
 
 ```javascript
-const users = await get('security/user/getlist', { limit: 20 })
+const data = await get('security/user/getlist', { limit: 20 })
+const users = data.results // list in results, not the full response
 await post('security/user/create', { username: 'newuser' })
 ```
 
-POST and PUT send `FormData` by default. For a JSON body pass `{ json: true }` as the third argument. The `HTTP_MODAUTH` token (from `MODx.siteId`) is added automatically. On a `success: false` response the method throws an error carrying a `data` field.
+Adds `HTTP_MODAUTH` to the query. On `success: false` throws with `data`. HTTP status outside 2xx: plain `Error` without `data`.
+
+::: warning Stock connector and request body
+Core builds processor properties from `$_GET` + `$_POST`. PHP does not fill `$_POST` for PUT/DELETE or parse `application/json` into `$_POST`.
+
+For the standard connector, **GET** and **POST without `{ json: true }`** (FormData) are reliable. `put` / `delete` and `{ json: true }` often do not reach the processor. See [issue #52](https://github.com/modx-pro/vueTools/issues/52). Custom `headers` may overwrite `Accept` ([#63](https://github.com/modx-pro/vueTools/issues/63)).
+:::
 
 ::: warning Custom router
-`useApi` targets the standard MODX connector. If your component has its own router, add a local `request.js` — see [Custom API client](integration#own-api-client).
+`useApi` targets the standard connector. Custom router: local `request.js`. See [Custom API client](integration#own-api-client).
 :::
 
 ## usePrimeVueLocale
 
-PrimeVue locales: DataTable filter labels, DatePicker/Calendar buttons and headers.
+PrimeVue locales: DataTable filters and DatePicker.
 
 ```javascript
-import { getPrimeVueLocale } from '@vuetools/usePrimeVueLocale'
+import { getPrimeVueLocale, usePrimeVueLocale } from '@vuetools/usePrimeVueLocale'
 import { PrimeVue } from 'primevue'
 import { getActiveTheme } from '@vuetools/useTheme'
 
 app.use(PrimeVue, { ...getActiveTheme(), locale: getPrimeVueLocale() })
+
+// or
+const { locale } = usePrimeVueLocale() // same as getPrimeVueLocale() at call time
 ```
 
 | Function | Returns | Description |
 |----------|---------|-------------|
-| `getPrimeVueLocale(cultureKey?)` | `object` | Locale by code; without an argument — by `MODx.cultureKey` |
+| `getPrimeVueLocale(cultureKey?)` | `object` | Locale by code |
+| `usePrimeVueLocale({ cultureKey? })` | `{ locale, getPrimeVueLocale }` | Wrapper: `locale` fixed at call time |
 
-Codes: `de`, `en`, `es`, `fr`, `pl`, `ru`, `uk`. An unknown code yields the English locale. The locale is not reactive: to change language without a page reload, pass a new `cultureKey` or recreate the app.
+Code chain: argument → `MODx.cultureKey` → `MODx.config.cultureKey` → `en`. Tag split on `-`/`_` and lowercased (`ru-RU` → `ru`). Codes: `de`, `en`, `es`, `fr`, `pl`, `ru`, `uk`. Unknown → `en`. Locale is not reactive: on language change without reload pass a new `cultureKey` or recreate the app.
 
 ## useTheme
 
-The active theme. Full page: [Theme](theme).
+More: [Theme](theme).
 
 ```javascript
-import { getActiveTheme } from '@vuetools/useTheme'
+import { getActiveTheme, getThemeName, useTheme } from '@vuetools/useTheme'
 import { PrimeVue } from 'primevue'
 
 app.use(PrimeVue, getActiveTheme())
@@ -144,7 +196,8 @@ app.use(PrimeVue, getActiveTheme())
 
 | Function | Returns | Description |
 |----------|---------|-------------|
-| `getActiveTheme(name?)` | `{ theme }` | Theme config for `app.use(PrimeVue, …)` |
-| `getThemeName(name?)` | `string` | Active theme name (`aura` or `modx`) |
+| `getActiveTheme(name?)` | `{ theme }` | Fragment for `app.use(PrimeVue, …)` |
+| `getThemeName(name?)` | `string` | `aura` or `modx` |
+| `useTheme({ name? })` | `{ theme }` | Same as `getActiveTheme(name)` |
 
-Without an argument the theme comes from the `vuetools.theme` setting (delivered via `window.VueTools`); an unknown value falls back to `aura`.
+Without an argument, name comes from `window.VueTools.theme`, then `trim` and lowercase (` MODX ` → `modx`). Empty or unknown → `aura`. `getActiveTheme()` returns a reference to the registry entry. Do not mutate `theme.options`.

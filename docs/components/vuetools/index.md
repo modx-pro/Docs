@@ -11,21 +11,25 @@ compatibility:
   - php81
   - vue3
 items:
+  - text: Быстрый старт
+    link: quick-start
   - text: Интеграция
     link: integration
   - text: Тема
     link: theme
   - text: API Composables
     link: composables
+  - text: Практики и CRUD
+    link: practices
 ---
 
 # VueTools
 
-Компоненты MODX 3.x берут Vue, Pinia и PrimeVue из общего Import Map, без копий в своей сборке.
+Vue, Pinia и PrimeVue подключаются один раз через Import Map. Extra не тащит свои копии в бандл.
 
 ## Что решает
 
-Без VueTools каждый компонент включает свою копию Vue, Pinia и PrimeVue. Пакет отдаёт библиотеки один раз на всю панель управления.
+Без общего пакета каждый Extra тащит отдельные копии Vue, Pinia и PrimeVue.
 
 - Единая версия библиотек у всех компонентов.
 - Библиотеки загружаются один раз и кэшируются браузером.
@@ -48,7 +52,7 @@ items:
 | `useApi` | HTTP-клиент к стандартному connector API MODX |
 | `useModx` | Доступ к объекту `window.MODx` |
 | `usePermission` | Проверка прав пользователя |
-| `usePrimeVueLocale` | Локали PrimeVue для DataTable, DatePicker, Calendar |
+| `usePrimeVueLocale` | Локали PrimeVue для DataTable и DatePicker |
 | `useTheme` | Активная тема из настройки `vuetools.theme` |
 
 ## Требования
@@ -83,9 +87,9 @@ flowchart TB
   Map --> Vendor
 ```
 
-Плагин `VueCoreManager` срабатывает на `OnManagerPageBeforeRender` и вставляет в начало `<head>` **один** HTML-блок из двух тегов: Import Map и скрипт `window.VueTools`.
+Плагин `VueCoreManager` на `OnManagerPageBeforeRender` вставляет один блок: Import Map и скрипт `window.VueTools`. Обычно в начало `<head>` контроллера. Если `controller->head['html']` недоступен, HTML уходит в `sjscripts`.
 
-База пути: `MODX_ASSETS_URL` или опция `vuetools.assets_url`, если задана. К URL файлов добавляется `?v=` (mtime файла или версия пакета). После обновления браузер не держит старый кэш.
+База URL: `MODX_ASSETS_URL` или `vuetools.assets_url`. К файлам добавляют `?v=` (mtime или версия пакета), чтобы после обновления не тянуть старый кэш.
 
 Пример карты (пути и `?v=` условные):
 
@@ -132,7 +136,7 @@ window.VueTools = Object.assign({}, window.VueTools || {}, { theme: 'aura' })
 <div id="my-vue-app" class="vueApp"></div>
 ```
 
-Стили компонентов PrimeVue 4 подключаются иначе и **не** ограничены `.vueApp`. Класс на контейнере нужен для иконок. Полной изоляции от ExtJS он не даёт.
+Стили PrimeVue 4 не завязаны на `.vueApp`. Класс на контейнере нужен только для иконок, не для изоляции от ExtJS.
 
 ::: warning
 Без класса `vueApp` иконки PrimeIcons (`.pi`) к виджету не применятся.
@@ -144,9 +148,11 @@ window.VueTools = Object.assign({}, window.VueTools || {}, { theme: 'aura' })
 
 ## Дальше
 
-- [Интеграция в компонент](integration): Vite, загрузка модулей, точка входа, PHP-сервис.
+- [Быстрый старт](quick-start): от установки до виджета на вкладке.
+- [Интеграция](integration): Vite, контроллер, PHP-сервис.
 - [Тема](theme): переключение и пресеты.
 - [API Composables](composables): справочник функций.
+- [Практики и CRUD](practices): структура Extra и сценарий list → form → toast.
 
 ## Поддержка
 

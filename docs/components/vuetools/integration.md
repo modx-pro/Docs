@@ -1,6 +1,11 @@
+---
+title: Интеграция VueTools
+description: Vite external, контроллер, PHP-сервис и проверка Import Map
+---
+
 # Интеграция в компонент
 
-Соберите виджет как ES-модуль с внешними `vue`, `pinia`, `primevue` и подключите его в контроллере через `regClientStartupHTMLBlock`.
+Соберите виджет как ES-модуль: runtime (`vue`, `pinia`, `primevue`, `@vuetools/*`) остаётся снаружи бандла, скрипт подключайте через `regClientStartupHTMLBlock`.
 
 ## Настройка Vite
 
@@ -39,7 +44,7 @@ export default defineConfig({
 })
 ```
 
-PrimeVue импортируйте только через `primevue`. Пресеты берите из `vuetools` или `vuetools/theme`. Путь вида `primevue/button` тянет второй экземпляр: тема к нему не применяется.
+Импорт PrimeVue только из `primevue`, пресеты из `vuetools` или `vuetools/theme`. В Import Map нет subpath: `primevue/button` в менеджере не резолвится. Если Vite вшил subpath в бандл Extra, получится второй экземпляр PrimeVue без темы VueTools.
 
 ## Загрузка модулей в контроллере
 
@@ -47,9 +52,9 @@ PrimeVue импортируйте только через `primevue`. Пресе
 flowchart TB
   subgraph viteBuild [Сборка Vite]
     Src[Исходники Vue]
-    Ext["external: vue, pinia, primevue, @vuetools/*"]
+    Build["Rollup: external vue, pinia, primevue, @vuetools/*"]
     Out[my-widget.min.js]
-    Src --> Ext --> Out
+    Src --> Build --> Out
   end
   subgraph mgr [Страница менеджера]
     Map[Import Map VueTools]
@@ -58,12 +63,12 @@ flowchart TB
     Map --> Resolve[Разрешение import]
     Tag --> Widget[my-widget.min.js]
     Widget --> Resolve
-    Resolve --> Mount[createApp и mount]
+    Resolve --> Mount[init, createApp, mount]
   end
   Css[addCss my-widget.min.css] --> Mount
 ```
 
-ES-модули подключайте через `regClientStartupHTMLBlock`, после Import Map. Каждый скрипт отдельным вызовом.
+Подключайте ES-модули через `regClientStartupHTMLBlock` (после Import Map). Один вызов на один тег `<script>`.
 
 ```php
 class MyComponentManagerController extends modExtraManagerController
@@ -142,7 +147,7 @@ $_lang['mycomponent_vuetools_required'] = 'Требуется пакет VueTool
 
 ## PHP-сервис {#php-service}
 
-Extras не создают `new \VueTools\Service`. Берите сервис из контейнера MODX:
+Не создавайте `new \VueTools\Service` в Extra. Берите сервис из контейнера MODX:
 
 ```php
 /** @var \VueTools\Service $vueTools */
@@ -157,16 +162,28 @@ $vueTools = $modx->services->get('vuetools');
 
 | Метод | Назначение |
 |-------|------------|
-| `include()` | Import Map + CSS + combo настройки темы |
+| `include()` | Import Map + CSS + combo настройки темы (`includeManagerCombos`) |
 | `registerImportMap()` | Только Import Map и `window.VueTools.theme` |
 | `includeStyles()` | `vuetools.css` |
+| `includeManagerCombos()` | ExtJS combo для настройки `vuetools.theme` |
+| `isRegistered()` | Флаг экземпляра: Import Map уже регистрировали. Не смотрит DOM |
+| `isStylesIncluded()` | Флаг экземпляра: стили уже подключали. Не смотрит DOM |
 | `getVersion()` | Версия пакета, например `1.2.1-pl` |
 | `getVersions()` | Массив версий библиотек (`vue`, `pinia`, `primevue`, `primeicons`) |
 | `getAssetsUrl()` | URL assets VueTools |
 
 Сигнатура зависимости transport-пакета: **`vuetools`** (не старое имя `modxpro-vue-core`).
 
-Опция `vuetools.assets_url` читается через `getOption`, если задана вручную. В transport пакета как системная настройка не поставляется. Обычно достаточно `MODX_ASSETS_URL`.
+### Публичный контракт
+
+| Публично | Не контракт |
+|----------|-------------|
+| Ключи Import Map: `vue`, `pinia`, `primevue`, `vuetools`, `vuetools/theme`, `@vuetools/*` | Исходники `src/` пакета VueTools |
+| Шесть composable `@vuetools/*`, пресеты `Modx`, `ModxManagerTheme`, `ModxTheme` | Внутренние флаги PHP вне методов таблицы |
+| `$modx->services->get('vuetools')`, методы таблицы выше | Реестр тем в `useTheme.js` (снаружи не расширить) |
+| `window.VueTools.theme`, настройка `vuetools.theme`, опция `vuetools.assets_url` | Default export у `primevue` / `pinia` (только именованный импорт) |
+
+Опция `vuetools.assets_url` читается через `getOption`, если задана вручную. В transport как системная настройка не идёт. Обычно хватает `MODX_ASSETS_URL`.
 
 ## Использование в компоненте
 

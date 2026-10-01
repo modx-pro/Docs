@@ -30,9 +30,9 @@ flowchart TB
 | `aura` | `Aura`: стандартная тема PrimeVue (по умолчанию) |
 | `modx` | `ModxManagerTheme`: вид панели MODX Revolution 3 (без тёмного режима) |
 
-После смены значения компоненты, которые вызывают `getActiveTheme()`, получают новую тему без пересборки. Неизвестное или пустое значение даёт `aura`.
+После смены настройки виджеты с `getActiveTheme()` подхватывают тему без пересборки. Имя: `trim` и нижний регистр (` MODX ` → `modx`). Пустое или неизвестное → `aura`. В реестре только `aura` и `modx`, регистрации своей темы в пакете нет.
 
-Реестр в коде фиксированный: только `aura` и `modx`. Публичного API «зарегистрировать свою тему» нет.
+`getActiveTheme()` возвращает ссылку на запись реестра. Не мутируйте `theme.options`: правка меняет тему для всех следующих вызовов на странице ([issue #66](https://github.com/modx-pro/vueTools/issues/66)).
 
 ## Подключить в компоненте
 
@@ -53,9 +53,7 @@ app.use(PrimeVue, { ...getActiveTheme(), locale: getPrimeVueLocale() })
 
 `getActiveTheme()` читает `window.VueTools.theme` и возвращает `{ theme }` для активной записи реестра.
 
-Не задавайте тему вручную (`{ theme: { preset: Aura } }`), если нужен переключатель настройки. Такой компонент останется на жёстком пресете.
-
-`useTheme({ name })` делает то же, что `getActiveTheme(name)`. Возвращает `{ theme }`, не имя строки.
+Жёсткий пресет в коде (`{ theme: { preset: Aura } }`) игнорирует настройку `vuetools.theme`. `useTheme({ name })` эквивалентен `getActiveTheme(name)` и возвращает `{ theme }`.
 
 ## Пресеты `Modx`, `ModxManagerTheme`, `ModxTheme`
 
@@ -63,9 +61,9 @@ app.use(PrimeVue, { ...getActiveTheme(), locale: getPrimeVueLocale() })
 
 | Экспорт | Назначение |
 |---------|------------|
-| `Modx` | Пресет цветов/семантики MODX |
-| `ModxManagerTheme` | `{ preset: Modx, options: { darkModeSelector: 'none' } }`. Менеджер без тёмного режима. Это то, что отдаёт `getActiveTheme()` при `vuetools.theme = modx` |
-| `ModxTheme` | `{ preset: Modx, options: { darkModeSelector: '.p-dark' } }`. standalone / витрина: тёмный режим по классу `p-dark` на предке |
+| `Modx` | Пресет на базе Nora: прямоугольные контролы, плотность менеджера. Поле 32px (`2rem`), кнопка 36px (`2.25rem`). Кнопка без severity и `severity="success"`: зелёный `#6CB24A`. Navy `#234368` не заливка кнопки |
+| `ModxManagerTheme` | `{ preset: Modx, options: { darkModeSelector: 'none', cssLayer: false } }`. Менеджер без тёмного режима. Это то, что отдаёт `getActiveTheme()` при `vuetools.theme = modx` |
+| `ModxTheme` | `{ preset: Modx, options: { darkModeSelector: '.p-dark', cssLayer: false } }`. standalone / витрина: тёмный режим по классу `p-dark` на предке |
 
 ```javascript
 import { Modx, ModxManagerTheme, ModxTheme } from 'vuetools/theme'
