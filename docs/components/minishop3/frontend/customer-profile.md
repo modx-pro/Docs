@@ -215,6 +215,13 @@ tpl.msCustomer.base          # базовый layout
 
 JavaScript MiniShop3 перехватывает формы с классом `ms3_form` и шлёт данные в API.
 
+### Хуки профиля
+
+| Хук | Когда |
+| --- | --- |
+| `beforeUpdateProfile` / `afterUpdateProfile` | Сохранение профиля |
+| `beforeResendVerificationEmail` / `afterResendVerificationEmail` | Повторная отправка письма подтверждения |
+
 ## Ошибки
 
 Массив `{$errors}` приходит после неудачной валидации:

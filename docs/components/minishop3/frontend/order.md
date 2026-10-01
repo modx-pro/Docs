@@ -26,6 +26,15 @@ title: Оформление заказа
 Сниппет msOrder должен вызываться **некэшированно** (`!msOrder`), так как работает с сессией пользователя.
 :::
 
+```mermaid
+flowchart TB
+  Form[Форма tpl.msOrder] --> Val[Правила доставки]
+  Val --> Add["orderAPI.add поле"]
+  Add --> Draft[Черновик заказа]
+  Draft --> Submit[orderAPI.submit]
+  Submit --> Redirect["redirect ?msorder=uuid"]
+```
+
 ## Форма заказа
 
 Форма содержит следующие секции:
@@ -93,7 +102,7 @@ title: Оформление заказа
 1. При смене доставки `OrderUI` запрашивает `GET /api/v1/order/delivery/validation-rules` и `GET /api/v1/order/delivery/required-fields`, скрывает лишние поля и обновляет `required`.
 2. При `ms3.orderAPI.add(key, value)` сервер проверяет поле по правилам текущей доставки.
 3. При submit сервер проверяет все обязательные поля.
-4. При ошибке JS вешает `is-invalid` и текст в `.invalid-feedback`.
+4. При ошибке `OrderUI` ставит атрибут `data-ms3-error` и класс `ms3_field_error` на поле. Классы Bootstrap `is-invalid` / `.invalid-feedback` форма заказа сама не получает.
 
 ### Сохранённые адреса
 
@@ -104,7 +113,7 @@ title: Оформление заказа
 | Сценарий | Эндпоинт |
 | --- | --- |
 | Checkout: применить адрес к черновику | `POST /api/v1/order/address/set` |
-| Выбор адреса из списка (AuthUI / msCustomer) | `POST /api/v1/customer/changeAddress` |
+| Выбор адреса из списка (`CustomerUI` / msCustomer) | `POST /api/v1/customer/changeAddress` |
 
 Сброс адресных полей: `POST /api/v1/order/address/clean`.
 
@@ -156,6 +165,13 @@ ms3Hooks.addHook('afterAddOrder', async ({ key, value, response }) => {
   }
 })
 ```
+
+| Хук | Когда |
+| --- | --- |
+| `beforeAddOrder` / `afterAddOrder` | Поле черновика через `orderAPI.add` |
+| `afterUpdateOrderCosts` | После пересчёта сумм (только `after`) |
+| `beforeSubmitOrder` / `afterSubmitOrder` | Оформление заказа |
+| `beforeCleanOrder` / `afterCleanOrder` | Очистка черновика |
 
 См. [Frontend JS — хуки](/components/minishop3/development/frontend-js).
 
