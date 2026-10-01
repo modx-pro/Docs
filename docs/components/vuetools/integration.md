@@ -1,10 +1,10 @@
 # Интеграция в компонент
 
-Как подключить Vue 3 + PrimeVue в компонент MODX 3 через VueTools: настройка сборки, загрузка модулей, точка входа.
+Соберите виджет как ES-модуль с внешними `vue`, `pinia`, `primevue` и подключите его в контроллере через `regClientStartupHTMLBlock`.
 
 ## Настройка Vite
 
-В `vite.config.js` перечислите внешние зависимости — их даёт VueTools через Import Map, в сборку компонента они не попадают:
+В `vite.config.js` перечислите внешние зависимости. Их даёт VueTools через Import Map:
 
 ```javascript
 import { defineConfig } from 'vite'
@@ -19,6 +19,8 @@ export default defineConfig({
         'vue',
         'pinia',
         'primevue',
+        'vuetools',
+        'vuetools/theme',
         '@vuetools/useTheme',
         '@vuetools/useApi',
         '@vuetools/useLexicon',
@@ -37,11 +39,31 @@ export default defineConfig({
 })
 ```
 
-PrimeVue импортируйте только через `primevue` (barrel), без путей вида `primevue/button`: subpath-импорт тянет в сборку второй экземпляр PrimeVue, и тема перестаёт применяться к его компонентам.
+PrimeVue импортируйте только через `primevue`. Пресеты берите из `vuetools` или `vuetools/theme`. Путь вида `primevue/button` тянет второй экземпляр: тема к нему не применяется.
 
 ## Загрузка модулей в контроллере
 
-ES-модули регистрируются через `regClientStartupHTMLBlock` — так они грузятся после Import Map. Каждый скрипт — отдельным вызовом.
+```mermaid
+flowchart TB
+  subgraph viteBuild [Сборка Vite]
+    Src[Исходники Vue]
+    Ext["external: vue, pinia, primevue, @vuetools/*"]
+    Out[my-widget.min.js]
+    Src --> Ext --> Out
+  end
+  subgraph mgr [Страница менеджера]
+    Map[Import Map VueTools]
+    Php[regClientStartupHTMLBlock]
+    Out --> Php --> Tag["script type=module"]
+    Map --> Resolve[Разрешение import]
+    Tag --> Widget[my-widget.min.js]
+    Widget --> Resolve
+    Resolve --> Mount[createApp и mount]
+  end
+  Css[addCss my-widget.min.css] --> Mount
+```
+
+ES-модули подключайте через `regClientStartupHTMLBlock`, после Import Map. Каждый скрипт отдельным вызовом.
 
 ```php
 class MyComponentManagerController extends modExtraManagerController
@@ -59,14 +81,12 @@ class MyComponentManagerController extends modExtraManagerController
 ```
 
 ::: danger
-`addJavascript()` и `addLastJavascript()` не ставят `type="module"` — для ES-модулей они не годятся. Несколько тегов в одной строке с переносами MODX разобьёт неправильно: регистрируйте каждый отдельным вызовом.
+`addJavascript()` и `addLastJavascript()` не ставят `type="module"`. Несколько тегов в одной строке с переносами MODX разобьёт неправильно: регистрируйте каждый отдельным вызовом.
 :::
 
 ## Проверка наличия VueTools {#vuetools-check}
 
-Без VueTools модули не разрешатся: в консоли появится `Failed to resolve module specifier "vue"`, а контейнер виджета останется пустым. Проверка находит Import Map и показывает понятное сообщение.
-
-Метод `addVueModule()` в контроллере регистрирует модуль и один раз на страницу — скрипт-проверку:
+Без VueTools в консоли будет `Failed to resolve module specifier "vue"`, контейнер останется пустым.
 
 ```php
 protected static $vueCoreCheckRegistered = false;
@@ -110,23 +130,45 @@ JS;
 }
 ```
 
-Атрибут `data-vue-module` нужен, чтобы при отсутствии VueTools удалить именно модули и не сыпать ошибками в консоль. Если компонент использует тему через `getActiveTheme()`, проверяйте ещё и ключ `vuetools/theme` — см. [Тема](theme#version).
-
-Загрузку ведите через `addVueModule()`:
+Атрибут `data-vue-module` нужен, чтобы при отсутствии VueTools снять модули с страницы. Для темы через `getActiveTheme()` проверяйте ещё `vuetools/theme`. См. [Тема](theme#version).
 
 ```php
 $this->addVueModule($assetsUrl . 'js/mgr/vue-dist/my-widget.min.js');
 ```
 
-Лексикон сообщения (на двух языках):
-
 ```php
 $_lang['mycomponent_vuetools_required'] = 'Требуется пакет VueTools. Установите его через Менеджер пакетов.';
 ```
 
-## Использование в компоненте
+## PHP-сервис {#php-service}
 
-Vue, composable и компоненты PrimeVue импортируются из Import Map:
+Extras не создают `new \VueTools\Service`. Берите сервис из контейнера MODX:
+
+```php
+/** @var \VueTools\Service $vueTools */
+$vueTools = $modx->services->get('vuetools');
+// алиас того же объекта:
+// $modx->services->get('vueTools');
+```
+
+Ключи контейнера `vuetools` и `vueTools` указывают на **один** экземпляр (иначе Import Map и стили регистрируются дважды).
+
+Методы (`VueTools\VueCore` / `Service`):
+
+| Метод | Назначение |
+|-------|------------|
+| `include()` | Import Map + CSS + combo настройки темы |
+| `registerImportMap()` | Только Import Map и `window.VueTools.theme` |
+| `includeStyles()` | `vuetools.css` |
+| `getVersion()` | Версия пакета, например `1.2.1-pl` |
+| `getVersions()` | Массив версий библиотек (`vue`, `pinia`, `primevue`, `primeicons`) |
+| `getAssetsUrl()` | URL assets VueTools |
+
+Сигнатура зависимости transport-пакета: **`vuetools`** (не старое имя `modxpro-vue-core`).
+
+Опция `vuetools.assets_url` читается через `getOption`, если задана вручную. В transport пакета как системная настройка не поставляется. Обычно достаточно `MODX_ASSETS_URL`.
+
+## Использование в компоненте
 
 ```vue
 <script setup>
@@ -153,8 +195,6 @@ const canEdit = computed(() => can('my_component_edit'))
 ```
 
 ## Точка входа
-
-Entry point создаёт приложение, задаёт тему через `getActiveTheme()` и монтирует виджет:
 
 ```javascript
 import { createApp } from 'vue'
@@ -185,7 +225,7 @@ window.MyComponentWidget = { init }
 
 ## Вкладка ExtJS
 
-Контейнер обязан иметь класс `vueApp`, инициализация — при активации вкладки:
+Контейнер с классом `vueApp`, инициализация при активации вкладки:
 
 ```javascript
 {
@@ -202,12 +242,12 @@ window.MyComponentWidget = { init }
 ```
 
 ::: warning
-Без класса `vueApp` на контейнере стили PrimeVue не применятся.
+Без класса `vueApp` иконки PrimeIcons (`.pi`) не применятся. Стили компонентов PrimeVue от этого класса не зависят.
 :::
 
 ## Собственный API-клиент {#own-api-client}
 
-`useApi` рассчитан на стандартный connector MODX. Если у компонента свой роутер, заведите локальный `request.js` — он собирает URL под ваш процессор-роутер и добавляет токен `HTTP_MODAUTH`:
+`useApi` работает со стандартным connector. Свой роутер пишите в локальный `request.js`:
 
 ```javascript
 class Request {
@@ -240,17 +280,20 @@ class Request {
 export default new Request()
 ```
 
+Распаковка `object || data` есть только в **этом** образце, не в `useApi`.
+
 ## Чеклист
 
-- [ ] `external` в `vite.config.js`: `vue`, `pinia`, `primevue`, используемые `@vuetools/*`.
-- [ ] PrimeVue импортируется только через `primevue`, без subpath.
-- [ ] Тема через `getActiveTheme()`, не жёстко прописанный пресет.
-- [ ] `addVueModule()` с проверкой зависимости вместо прямого `regClientStartupHTMLBlock()`.
-- [ ] Лексиконы сообщения об ошибке на двух языках.
-- [ ] `class="vueApp"` на контейнерах виджетов.
-- [ ] Топики лексиконов загружены в контроллере.
-- [ ] Свой `request.js`, если у компонента свой роутер.
+- [ ] `external` в Vite: `vue`, `pinia`, `primevue`, при необходимости `vuetools` / `vuetools/theme`, используемые `@vuetools/*`.
+- [ ] PrimeVue без subpath-импортов.
+- [ ] Тема через `getActiveTheme()`, не жёсткий пресет (если нужен переключатель).
+- [ ] `addVueModule()` с проверкой зависимости.
+- [ ] Лексикон сообщения об ошибке на двух языках.
+- [ ] `class="vueApp"` на контейнерах (для иконок).
+- [ ] Топики лексиконов в контроллере.
+- [ ] Свой `request.js`, если свой роутер.
+- [ ] Зависимость пакета: сигнатура `vuetools`.
 
 ## Пример
 
-[MiniShop3](https://github.com/modx-pro/MiniShop3) — интеграция со своим роутером.
+[MiniShop3](https://github.com/modx-pro/MiniShop3): интеграция со своим роутером.
