@@ -29,7 +29,7 @@ external: [
 ]
 ```
 
-Import PrimeVue only from `primevue` (not subpaths). Theme: `getActiveTheme()` from `@vuetools/useTheme`.
+Import PrimeVue only from `primevue`, not `primevue/button`. Theme: `getActiveTheme()` from `@vuetools/useTheme`.
 
 ## 3. Entry point
 
