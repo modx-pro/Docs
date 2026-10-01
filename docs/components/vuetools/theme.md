@@ -11,7 +11,6 @@ description: Переключение и подключение темы офо�
 
 Настройка **Система → Системные настройки → `vuetools.theme`**.
 
-
 ```mermaid
 flowchart TB
   Opt[vuetools.theme]
