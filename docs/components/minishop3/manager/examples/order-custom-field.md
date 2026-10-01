@@ -13,7 +13,7 @@ description: End-to-end — extra field на заказе и сохранени�
 
 ## Что понадобится
 
-- MiniShop3 1.13.x
+- MiniShop3 1.14.x
 - Право `mssetting_save` (создание extra field)
 - Право `msorder_list` (чтение карточки)
 - Право `msorder_save` (сохранение заказа)
@@ -35,6 +35,20 @@ description: End-to-end — extra field на заказе и сохранени�
 | Активно | да |
 
 Сохраните форму. Пакет создаст миграцию и добавит колонку в таблицу заказов.
+
+```mermaid
+flowchart TB
+  create[POST extra-fields class FQCN]
+  db[(ms3_extra_fields + колонка)]
+  open[Открыть карточку заказа]
+  get[GET extra-fields?class=msOrder]
+  match{class совпал с БД?}
+  show[Секция Дополнительные поля]
+  empty[Пустая секция — bug 812]
+  create --> db --> open --> get --> match
+  match -->|FQCN = msOrder| show
+  match -->|только FQCN в БД| empty
+```
 
 <!-- ![Утилита «Дополнительные поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
 
@@ -85,7 +99,7 @@ Extra field **создаёт колонку** в БД. [Поля модели](/
 
 | Метод | Путь | Права |
 | --- | --- | --- |
-| GET | `/api/mgr/extra-fields?class=MiniShop3\Model\msOrder` | `mssetting_save` |
+| GET | `/api/mgr/extra-fields?class=MiniShop3\Model\msOrder` | сессия менеджера |
 | POST | `/api/mgr/extra-fields` | `mssetting_save` |
 | PUT | `/api/mgr/orders/{id}` | `msorder_save` |
 | GET | `/api/mgr/orders/{id}` | `msorder_list` |
@@ -110,9 +124,9 @@ Extra field **создаёт колонку** в БД. [Поля модели](/
 
 | Симптом | Что проверить |
 | --- | --- |
-| 403 на extra-fields | Политика `mssetting_save` у пользователя |
+| 403 на запись extra-fields | Политика `mssetting_save` у пользователя |
 | Секция в заказе пустая | `active = 1` в `ms3_extra_fields`, ключ без опечаток |
-| Поле есть в утилите, но не в заказе | Колонка `class` в `ms3_extra_fields`. Форма запрашивает `GET ...?class=msOrder`, в БД часто `MiniShop3\Model\msOrder`. Сверьте в DevTools |
+| Поле есть в утилите, но не в заказе | Баг [#812](https://github.com/modx-pro/MiniShop3/issues/812): форма запрашивает `GET ...?class=msOrder`, в БД часто `MiniShop3\Model\msOrder`. Сверьте в DevTools |
 | Ошибка после создания | Лог MODX: миграция Phinx, права на `core/components/minishop3/migrations` |
 | Две системы полей путают | См. [issue #214](https://github.com/modx-pro/MiniShop3/issues/214) и [cookbook полей модели](/components/minishop3/manager/model-fields/cookbook) |
 

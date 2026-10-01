@@ -15,7 +15,7 @@ description: Badge в списке заказов и inline-edit с select в ca
 
 Вы меняете список заказов, покупателей или товаров в категории без правки Vue-компонентов. Конфиг хранится в `ms3_grid_fields`.
 
-## grid_key в 1.13
+## grid_key
 
 | grid_key | Экран |
 | --- | --- |
@@ -24,9 +24,26 @@ description: Badge в списке заказов и inline-edit с select в ca
 | `customers` | Покупатели |
 | `vendors` | Производители |
 | `category-products` | Таблица товаров на ресурсе категории |
+| `deliveries` | Доставки в настройках |
+
+```mermaid
+flowchart TB
+  key[grid_key в ms3_grid_fields]
+  get[GET /api/mgr/grid-config/key]
+  put[PUT /api/mgr/grid-config/key]
+  screen[Vue-грид на экране]
+  inline{key = category-products?}
+  edit[Inline-edit ячеек]
+  view[Только отображение]
+  key --> get --> screen
+  put --> screen
+  screen --> inline
+  inline -->|Да| edit
+  inline -->|Нет| view
+```
 
 ::: warning Inline-edit
-Редактирование ячейки в гриде включено **только** для `category-products`. В `orders` inline-edit в 1.13 нет. Для списка заказов используйте badge, relation или model-колонки.
+Редактирование ячейки в гриде включено **только** для `category-products`. В `orders` и остальных ключах inline-edit нет. Для списка заказов используйте badge, relation или model-колонки.
 :::
 
 ## Кейс: badge статуса в заказах

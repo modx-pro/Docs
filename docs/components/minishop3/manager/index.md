@@ -5,14 +5,14 @@ description: Пошаговые кейсы по extra fields, полям мод�
 
 # Cookbook менеджера
 
-Краткие сценарии для integrator-а: поля и колонки в Vue-менеджере MS3 1.13.x без правки PHP ядра.
+Краткие сценарии для integrator-а: поля и колонки в Vue-менеджере MS3 1.14.x без правки PHP ядра.
 
 Справочники API и xtype лежат в [Утилитах](/components/minishop3/interface/utilities). Cookbook показывает, **когда** какой инструмент брать и как довести задачу до результата в UI.
 
 ## Когда что выбирать
 
 ```mermaid
-flowchart TD
+flowchart TB
   needCol[Нужна новая колонка в БД?]
   needCol -->|Да| extra[Дополнительные поля]
   needCol -->|Нет| where{Где показываем?}
@@ -34,7 +34,8 @@ flowchart TD
 
 | Действие | Политика |
 | --- | --- |
-| CRUD extra fields, model fields, product fields | `mssetting_save` |
+| GET списка extra-fields | сессия менеджера |
+| CRUD extra fields, model fields, product fields (запись) | `mssetting_save` |
 | PUT grid-config (порядок, типы колонок) | `mssetting_save` |
 | GET grid-config, списки заказов и категорий | `view_document` |
 | Карточка заказа | чтение `msorder_list`, запись `msorder_save` |
@@ -52,6 +53,6 @@ flowchart TD
 
 ## Требования
 
-- MiniShop3 **1.13.x**, MODX 3, Vue-менеджер из пакета
-- Для записи конфигов: `mssetting_save`
+- MiniShop3 **1.14.x**, MODX 3, Vue-менеджер из пакета
+- Для записи конфигов: `mssetting_save` (GET списка extra-fields — сессия менеджера)
 - Для просмотра гридов: `view_document`

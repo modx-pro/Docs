@@ -13,7 +13,7 @@ description: End-to-end — extra field на msProductData, раскладка �
 
 ## Что понадобится
 
-- MiniShop3 1.13.x
+- MiniShop3 1.14.x
 - Право `mssetting_save`
 - Право редактирования ресурса товара
 

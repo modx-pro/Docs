@@ -21,7 +21,7 @@ description: Секции, visible и page_key product_data на вкладке 
 | --- | --- |
 | `product_data` | Вкладка «Данные товара» |
 
-Других page_key в 1.13.x для этой утилиты нет.
+Других page_key для этой утилиты нет.
 
 ## Связь с extra fields
 
@@ -55,13 +55,31 @@ description: Секции, visible и page_key product_data на вкладке 
 
 ```http
 GET /api/mgr/config/page-fields/product_data
+GET /api/mgr/config/page-fields/product_data/all
 GET /api/mgr/config/sections/product_data
 PUT /api/mgr/config/page-fields/product_data
 PUT /api/mgr/config/sections/product_data
 DELETE /api/mgr/config/sections/product_data/{section_key}
 ```
 
-GET доступен любой сессии менеджера. Запись: `mssetting_save`. `POST /config/sections/...` в 1.13.x нет.
+GET доступен любой сессии менеджера. Запись: `mssetting_save`.
+
+Отдельного `POST /config/sections/...` нет: **новую секцию создаёт PUT** `/api/mgr/config/sections/product_data`, если записи с таким ключом ещё нет. `GET .../page-fields/{page_key}/all` возвращает полный список полей, включая скрытые.
+
+```mermaid
+flowchart TB
+  util[Утилита Поля товара]
+  putSec[PUT /config/sections/product_data]
+  exists{Секция есть в БД?}
+  create[Создать секцию]
+  update[Обновить секции]
+  putFields[PUT /config/page-fields/product_data]
+  tab[Вкладка Данные на карточке]
+  util --> putSec --> exists
+  exists -->|Нет| create --> putFields
+  exists -->|Да| update --> putFields
+  putFields --> tab
+```
 
 Пример PUT полей (массив **`fields`**):
 

@@ -24,25 +24,35 @@ Extra field добавляет колонку в таблицу модели и 
 
 ## Модели (class)
 
-В UI и в POST указывайте полное имя класса:
+В UI и в POST указывайте полное имя класса (`classOptions` в ExtraFieldsManager):
 
 | Модель в UI | class |
 | --- | --- |
 | msProductData | `MiniShop3\Model\msProductData` |
+| msVendor | `MiniShop3\Model\msVendor` |
+| msOption | `MiniShop3\Model\msOption` |
+| msLink | `MiniShop3\Model\msLink` |
 | msOrder | `MiniShop3\Model\msOrder` |
 | msOrderAddress | `MiniShop3\Model\msOrderAddress` |
-| msVendor | `MiniShop3\Model\msVendor` |
-| msCategory | `MiniShop3\Model\msCategory` |
+| msOrderProduct | `MiniShop3\Model\msOrderProduct` |
+| msOrderStatus | `MiniShop3\Model\msOrderStatus` |
+| msCustomer | `MiniShop3\Model\msCustomer` |
+| msCustomerAddress | `MiniShop3\Model\msCustomerAddress` |
+| msDelivery | `MiniShop3\Model\msDelivery` |
+| msPayment | `MiniShop3\Model\msPayment` |
 
-Для заказа есть [сквозной пример](/components/minishop3/manager/examples/order-custom-field).
+`msCategory` в списке UI нет.
 
-## xtype в 1.13
+Для заказа: [сквозной пример](/components/minishop3/manager/examples/order-custom-field).
+
+## xtype
 
 | xtype | Назначение |
 | --- | --- |
 | `textfield` | Строка |
 | `numberfield` | Число |
 | `textarea` | Многострочный текст |
+| `datefield` | Дата |
 | `xcheckbox` | Да/нет |
 | `ms3-combo-select` | Select из `select_options` |
 | `ms3-repeater` | Таблица строк (JSON) |
@@ -51,7 +61,7 @@ Extra field добавляет колонку в таблицу модели и 
 | `ms3-combo-autocomplete` | Autocomplete по API |
 | `ms3-combo-options` | Опция товара |
 
-Типы «текстовый редактор» и «дата» в 1.13 в UI extra fields не входят. Следите за [issue #610](https://github.com/modx-pro/MiniShop3/issues/610) и [#612](https://github.com/modx-pro/MiniShop3/issues/612).
+Тип «текстовый редактор» в UI extra fields пока нет. Следите за [issue #610](https://github.com/modx-pro/MiniShop3/issues/610).
 
 ## Кейс: select на товаре
 
@@ -69,6 +79,19 @@ Extra field добавляет колонку в таблицу модели и 
 Укажите dbtype `varchar` и phptype `string`.
 
 Для `msProductData` пакет создаёт связанную запись в `ms3_product_fields`, чтобы поле появилось на вкладке «Данные».
+
+```mermaid
+flowchart TB
+  ui[UI ExtraFieldsManager]
+  post[POST /api/mgr/extra-fields]
+  mig[Phinx-миграция колонки]
+  auto{class = msProductData?}
+  pf[Строка в ms3_product_fields]
+  form[Виджет на форме модели]
+  ui --> post --> mig --> auto
+  auto -->|Да| pf --> form
+  auto -->|Нет| form
+```
 
 ## Кейс: repeater
 
@@ -119,8 +142,8 @@ Repeater в CSV-импорт не попадает.
 
 | Метод | Путь | Права |
 | --- | --- | --- |
-| GET | `/api/mgr/extra-fields?class={class}` | `mssetting_save` |
-| GET | `/api/mgr/extra-fields/{id}` | `mssetting_save` |
+| GET | `/api/mgr/extra-fields?class={class}` | сессия менеджера |
+| GET | `/api/mgr/extra-fields/{id}` | сессия менеджера |
 | POST | `/api/mgr/extra-fields` | `mssetting_save` |
 | PUT | `/api/mgr/extra-fields/{id}` | `mssetting_save` |
 | DELETE | `/api/mgr/extra-fields/{id}` | `mssetting_save` |
@@ -133,8 +156,8 @@ Repeater в CSV-импорт не попадает.
 | --- | --- |
 | «Column already exists» | Колонка уже в таблице или дубликат ключа |
 | Поле не на карточке товара | Для `msProductData` проверьте `ms3_product_fields` и `visible`. См. [product-fields cookbook](/components/minishop3/manager/product-fields/cookbook) |
-| Секция заказа пустая при active=1 | Форма: `class=msOrder`. БД: `MiniShop3\Model\msOrder`. API фильтрует по точному совпадению |
+| Секция заказа пустая при active=1 | Баг [#812](https://github.com/modx-pro/MiniShop3/issues/812): форма шлёт `class=msOrder`, в БД часто `MiniShop3\Model\msOrder`. API фильтрует по точному совпадению |
 | Repeater/key-value не сохраняется | JSON-схема в конфиге, dbtype должен быть `json` |
-| 403 | `mssetting_save` |
+| 403 на запись | `mssetting_save` |
 
 Справочник: [extra-fields](/components/minishop3/interface/utilities/extra-fields).
