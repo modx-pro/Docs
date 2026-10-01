@@ -3,15 +3,38 @@ title: Интерфейс админки
 ---
 # Административный интерфейс
 
-Обзор административного интерфейса MiniShop3 в панели управления MODX.
+Откройте **Приложения → MiniShop3**. Ресурсы категории и товара — в дереве MODX.
 
 ## Доступ
 
 **Меню:** Приложения → MiniShop3
 
-## Структура интерфейса
+```mermaid
+flowchart TB
+  ModxMenu[Приложения] --> MiniShop3[MiniShop3]
+  MiniShop3 --> MgrOrders[Заказы_mgr/orders]
+  MiniShop3 --> MgrCustomers[Клиенты_mgr/customers]
+  MiniShop3 --> MgrNotifications[Уведомления_mgr/notifications]
+  MiniShop3 --> MgrSettings[Настройки_mgr/settings]
+  MiniShop3 --> MgrUtilities[Утилиты_mgr/utilities]
+  MiniShop3 --> MgrHelp[Помощь_mgr/help]
+  MiniShop3 --> SysSettings[Системные_настройки_ns_minishop3]
+  TreeMODX[Дерево_ресурсов] --> ResCategory[Категория_msCategory]
+  TreeMODX --> ResProduct[Товар_msProduct]
+  ResProduct --> TabGallery[Галерея_товара]
+```
 
-### Страницы ресурсов
+| Пункт | `action` | Примечание |
+| --- | --- | --- |
+| Заказы | `mgr/orders` | [Заказы](orders) |
+| Клиенты | `mgr/customers` | [Клиенты](customers) |
+| Уведомления | `mgr/notifications` | [Центр уведомлений](notifications) |
+| Настройки | `mgr/settings` | Вкладки магазина, см. [Настройки](settings) |
+| Системные настройки | `system/settings` + `&ns=minishop3` | Namespace MODX `minishop3`, не вкладки `mgr/settings` |
+| Помощь | `mgr/help` | Справка по менеджеру MS3 |
+| Утилиты | `mgr/utilities` | [Утилиты](utilities) |
+
+## Страницы ресурсов
 
 | Страница | Описание |
 | --- | --- |
@@ -19,7 +42,7 @@ title: Интерфейс админки
 | [Товар](product) | Редактирование карточки товара |
 | [Галерея](gallery) | Управление изображениями товара |
 
-### Раздел настроек
+## Раздел настроек
 
 **Меню:** Приложения → MiniShop3 → Настройки
 
@@ -33,7 +56,7 @@ title: Интерфейс админки
 
 Подробнее: [Настройки](settings)
 
-### Утилиты
+## Утилиты
 
 **Меню:** Приложения → MiniShop3 → Утилиты
 
@@ -65,7 +88,7 @@ Deep-link вкладок настроек: `#tab-deliveries`, `#tab-payments`, `
 
 ### Добавление CSS/JS
 
-Используйте событие `msOnManagerCustomCssJs`:
+Событие `msOnManagerCustomCssJs`:
 
 ```php
 <?php
@@ -82,12 +105,12 @@ switch ($modx->event->name) {
 }
 ```
 
-### Кастомные действия в таблицах
+### Свои действия в таблицах
 
-Регистрация действий через `MS3ActionRegistry`:
+Регистрация через `MS3ActionRegistry`:
 
 ```javascript
-MS3ActionRegistry.register('myAction', async (data, gridId) => {
+MS3ActionRegistry.register('myAction', async (data, context) => {
     // Ваш код
     return { success: true, refresh: true };
 });
