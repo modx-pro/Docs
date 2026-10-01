@@ -3,11 +3,11 @@ title: Связи товаров
 ---
 # Связи товаров
 
-Управление типами связей между товарами доступно через **Extras → MiniShop3 → Настройки → Связи**.
+Откройте **Extras → MiniShop3 → Настройки → Связи**.
 
 ## Назначение
 
-Связи позволяют устанавливать отношения между товарами:
+Типы отношений между товарами:
 
 - **Похожие товары** — альтернативы текущему товару
 - **Сопутствующие товары** — дополнения к покупке
@@ -19,18 +19,11 @@ title: Связи товаров
 
 | Поле | Тип | Описание |
 | --- | --- | --- |
-| `name` | string | Название типа связи |
-| `type` | string | Системный ключ (уникальный) |
+| `name` | string | Название типа связи (например «Похожие», «С этим покупают») |
+| `type` | string | Кратность: `one_to_one`, `one_to_many`, `many_to_one`, `many_to_many` |
 | `description` | text | Описание типа связи |
 
-## Встроенные типы связей
-
-| type | Название | Применение |
-| --- | --- | --- |
-| `similar` | Похожие товары | Альтернативы для сравнения |
-| `related` | Сопутствующие | Аксессуары, расходники |
-| `upsell` | Апсейл | Премиум-версии |
-| `crosssell` | Кросс-сейл | Допродажи в корзине |
+Готовых ключей вроде `similar` или `upsell` в пакете нет. Смысл связи задаёте полем `name`, поведение — полем `type`.
 
 ## Создание связей между товарами
 
@@ -47,7 +40,7 @@ title: Связи товаров
 // Создание связи
 $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
 $link->fromArray([
-    'link_id' => 1,        // ID типа связи (например, "similar")
+    'link' => 1,           // ID типа связи (msLink)
     'master' => 10,        // ID основного товара
     'slave' => 20,         // ID связанного товара
 ]);
@@ -96,38 +89,19 @@ $link->save();
 
 ## Двусторонние связи
 
-По умолчанию связь односторонняя: товар A связан с товаром B, но не наоборот.
+Поведение зависит от `type` записи в `msLink`:
 
-Для двусторонних связей создавайте обратную связь программно:
+| `type` | Что пишется в `ms3_product_links` |
+| --- | --- |
+| `one_to_many` | Одна строка: master → slave |
+| `many_to_one` | Одна строка с переставленными master/slave |
+| `one_to_one`, `many_to_many` | Две строки: A→B и B→A (создаёт `ProductLinkService`) |
 
-```php
-// Создание двусторонней связи
-$linkTypeId = 1; // ID типа связи
-$productA = 10;
-$productB = 20;
-
-// Прямая связь: A → B
-$link1 = $modx->newObject(\MiniShop3\Model\msProductLink::class);
-$link1->fromArray([
-    'link_id' => $linkTypeId,
-    'master' => $productA,
-    'slave' => $productB,
-]);
-$link1->save();
-
-// Обратная связь: B → A
-$link2 = $modx->newObject(\MiniShop3\Model\msProductLink::class);
-$link2->fromArray([
-    'link_id' => $linkTypeId,
-    'master' => $productB,
-    'slave' => $productA,
-]);
-$link2->save();
-```
+Для `one_to_many` обратную строку вручную не добавляйте, если нужна только связь «один ко многим».
 
 ## Использование в корзине
 
-Связи типа `crosssell` удобно показывать в корзине:
+Тип связи для предложений «с этим товаром» в корзине:
 
 ```fenom
 {* В чанке корзины *}
@@ -171,7 +145,7 @@ switch ($modx->event->name) {
         foreach ($siblings as $sibling) {
             // Проверяем, нет ли уже связи
             $existing = $modx->getObject(\MiniShop3\Model\msProductLink::class, [
-                'link_id' => 1,
+                'link' => 1,
                 'master' => $product->get('id'),
                 'slave' => $sibling->get('id'),
             ]);
@@ -179,7 +153,7 @@ switch ($modx->event->name) {
             if (!$existing) {
                 $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
                 $link->fromArray([
-                    'link_id' => 1,
+                    'link' => 1,
                     'master' => $product->get('id'),
                     'slave' => $sibling->get('id'),
                 ]);

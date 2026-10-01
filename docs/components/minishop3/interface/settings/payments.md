@@ -3,9 +3,7 @@ title: Способы оплаты
 ---
 # Способы оплаты
 
-<!-- ![Настройки → Оплаты](/components/minishop3/screenshots/mgr-payments.png) -->
-
-Управление: **Extras → MiniShop3 → Настройки → Оплаты**.
+Откройте **Extras → MiniShop3 → Настройки → Оплаты**.
 
 ## Для владельца магазина
 
@@ -51,7 +49,7 @@ title: Способы оплаты
 
 ### Создание обработчика
 
-Платёжный extra реализует `PaymentProviderInterface` и регистрирует класс в способе оплаты. Ниже набросок для своего пакета. Готовые шлюзы берите из документации extras. Скелет ниже не копируйте в бой без доработки.
+Платёжный extra реализует `PaymentProviderInterface` и указывает класс в карточке способа оплаты. Готовые шлюзы — в документации extras. Ниже только контракт:
 
 ```php
 <?php
@@ -61,7 +59,7 @@ use MiniShop3\Controllers\Payment\PaymentProviderInterface;
 use MiniShop3\Model\msPayment;
 use MiniShop3\Model\msOrder;
 
-class YooKassaPayment implements PaymentProviderInterface
+class MyPayment implements PaymentProviderInterface
 {
     protected $modx;
     protected $payment;
@@ -72,115 +70,77 @@ class YooKassaPayment implements PaymentProviderInterface
         $this->payment = $payment;
     }
 
-    /**
-     * Отправка на оплату
-     * Вызывается при submit заказа с онлайн-оплатой
-     */
     public function send(msOrder $order): array
     {
-        $properties = $this->payment->get('properties');
-        $shopId = $properties['shop_id'] ?? '';
-        $secretKey = $properties['secret_key'] ?? '';
-
-        // Создание платежа в ЮKassa
-        $client = new \YooKassa\Client();
-        $client->setAuth($shopId, $secretKey);
-
-        $payment = $client->createPayment([
-            'amount' => [
-                'value' => $order->get('cost'),
-                'currency' => 'RUB',
-            ],
-            'confirmation' => [
-                'type' => 'redirect',
-                'return_url' => $this->modx->makeUrl(
-                    $this->modx->getOption('ms3_payment_return_id')
-                ),
-            ],
-            'description' => 'Заказ #' . $order->get('id'),
-            'metadata' => [
-                'order_id' => $order->get('id'),
-            ],
-        ], uniqid('', true));
-
-        // Сохраняем ID платежа в заказе
-        $order->set('payment_link', $payment->getConfirmation()->getConfirmationUrl());
-        $order->save();
-
+        // Создать платёж у провайдера; return_url: ms3_order_success_page_id
         return [
             'success' => true,
-            'redirect' => $payment->getConfirmation()->getConfirmationUrl(),
+            'data' => ['payment_link' => '...'],
         ];
     }
 
-    /**
-     * Получение уведомления об оплате (webhook)
-     */
     public function receive(msOrder $order): array
     {
-        // Обработка webhook от платёжной системы
-        $source = file_get_contents('php://input');
-        $data = json_decode($source, true);
-
-        if ($data['event'] === 'payment.succeeded') {
-            return [
-                'success' => true,
-                'message' => 'Payment received',
-            ];
-        }
-
-        return [
-            'success' => false,
-            'message' => 'Payment not confirmed',
-        ];
+        // Webhook / callback провайдера
+        return ['success' => true, 'message' => 'Payment received'];
     }
 
-    /**
-     * Расчёт стоимости оплаты (комиссия)
-     */
-    public function getCost(msOrder $order, float $cost): float
+    public function getPaymentLink(msOrder $order): ?string
     {
-        $price = $this->payment->get('price');
+        return $order->get('payment_link') ?: null;
+    }
 
+    public function getOrderHash(msOrder $order): string
+    {
+        return hash('sha256', $order->get('id') . $order->get('uuid'));
+    }
+
+    public function getCost(msOrder $order, msPayment $payment, float $cost): float
+    {
+        $price = (string)$payment->get('price');
         if (str_ends_with($price, '%')) {
-            $percent = (float)rtrim($price, '%');
-            return $cost * ($percent / 100);
+            return $cost * ((float)rtrim($price, '%') / 100);
         }
-
         return (float)$price;
     }
 }
 ```
 
-### Регистрация обработчика
-
-Укажите класс в поле `class` карточки способа оплаты:
+Регистрация в поле `class`:
 
 ```text
-MyComponent\Payment\YooKassaPayment
+MyComponent\Payment\MyPayment
 ```
 
-### Дополнительные настройки
-
-Поле `properties` хранит JSON с настройками платёжной системы:
+Секреты шлюза — в `properties` (JSON) карточки оплаты:
 
 ```json
 {
   "shop_id": "123456",
   "secret_key": "live_xxx...",
-  "test_mode": false,
-  "success_status": 2,
-  "fail_status": 5
+  "test_mode": false
 }
 ```
 
-Эти настройки доступны в обработчике через `$this->payment->get('properties')`.
+В коде: `$this->payment->get('properties')`.
 
 ## Уведомления об оплате (webhook / callback)
 
 В ядре MiniShop3 **нет** готового `payment/handler.php`. URL уведомлений задаёт платёжный extra (например `webhook.php` / `callback.php` в `assets/components/{ns}/`). Смотрите документацию конкретного шлюза ([msp3YooKassa](/components/msp3yookassa/), [mspTBank](/components/msptbank/) и т.д.).
 
 Класс оплаты реализует `send()` / приём уведомления и меняет статус заказа. Ссылка на оплату в письмах и `msGetOrder` строится через `PaymentLinkResolver`.
+
+```mermaid
+flowchart TB
+  OrderDraft[Черновик_заказа] --> SetPayment[payment_id_витрина_или_API]
+  SetPayment --> SendMethod[PaymentProvider_send]
+  SendMethod --> PaymentLink[payment_link_у_провайдера]
+  PaymentLink --> Redirect[Страница_оплаты_или_ms3_order_success_page_id]
+  WebhookUrl[webhook_callback_в_extra] --> ReceiveMethod[PaymentProvider_receive]
+  ReceiveMethod --> OrderStatus[Статус_заказа]
+  PaymentLinkResolver[PaymentLinkResolver] --> MsGetOrder[msGetOrder_и_уведомления]
+  EmptyClass[class_пусто] --> OnlyPaymentId[Только_payment_id_без_онлайн]
+```
 
 ## API
 

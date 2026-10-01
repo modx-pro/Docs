@@ -26,11 +26,45 @@ description: Список заказов в менеджере, черновик
 
 Старые черновики чистит Scheduler по `ms3_delete_drafts_after`. См. [Scheduler](/components/minishop3/development/scheduler).
 
+```mermaid
+flowchart TB
+  Vitrina[Витрина_до_кнопки_Оформить] --> DraftDB[Заказ_ms3_status_draft]
+  DraftDB --> GridOrders[OrdersGrid]
+  GridOrders --> ShowDrafts{show_drafts}
+  ShowDrafts --> LocalStorage[localStorage_ms3_orders_show_drafts]
+  ShowDrafts --> ApiList[GET_api/mgr/orders]
+  DraftDB --> FinalizeMgr[POST_finalize_из_менеджера]
+  DraftDB --> SchedulerClean[Scheduler_ms3_delete_drafts_after]
+```
+
 ## Карточка
 
-Карточка `OrderView` держит вкладки: состав, покупатель, доставка и оплата, комментарии, плюс вкладки аддонов, если вы их зарегистрировали.
+Карточка `OrderView` держит вкладки (ключи `useOrderPluginTabs`):
 
-<!-- ![Карточка заказа](/components/minishop3/screenshots/mgr-order.png) -->
+| Ключ | Содержимое |
+| --- | --- |
+| `info` | Сведения о заказе, покупатель, доставка и оплата, комментарии |
+| `products` | Состав заказа (скрыта при создании) |
+| `address` | Адрес доставки |
+| `ms3_shipment` | Трекинг отправления (скрыта при создании) |
+| `history` | История изменений |
+
+Вкладки дополнений появятся, если вы их зарегистрировали через plugin tabs.
+
+**Трекинг:** `GET /api/mgr/orders/{id}/shipment` (чтение), `PUT /api/mgr/orders/{id}/shipment` (сохранение). Права: `msorder_list` / `msorder_save`.
+
+```mermaid
+flowchart TB
+  OrderView[OrderView] --> TabInfo[info]
+  OrderView --> TabProducts[products]
+  OrderView --> TabAddress[address]
+  OrderView --> TabShipment[ms3_shipment]
+  OrderView --> TabHistory[history]
+  TabInfo --> PutOrder[PUT_api/mgr/orders/id]
+  TabInfo --> StatusChange[status_id]
+  StatusChange --> Notifications[Центр_уведомлений]
+  TabProducts --> Recalc[POST_recalculate-cost]
+```
 
 ### Статус
 
@@ -40,11 +74,9 @@ description: Список заказов в менеджере, черновик
 
 ### Дополнительные поля заказа
 
-Свои колонки на заказе создают через [extra fields](/components/minishop3/manager/examples/order-custom-field). В БД и при POST класс — `MiniShop3\Model\msOrder`. Карточка заказа в 1.13.x запрашивает `GET /api/mgr/extra-fields?class=msOrder` (короткий алиас): фильтр точный, поэтому секция может быть пустой при корректно созданном поле. Подробности и workaround — в troubleshooting примера.
+Свои колонки на заказе создают через [extra fields](/components/minishop3/manager/examples/order-custom-field). В утилите «Дополнительные поля» класс хранится как `MiniShop3\Model\msOrder`. Карточка заказа запрашивает `GET /api/mgr/extra-fields?class=msOrder` (короткий алиас). Фильтр в контроллере сравнивает строку точно. Секция на заказе может остаться пустой при корректно созданном поле. Известная проблема: [MiniShop3#812](https://github.com/modx-pro/MiniShop3/issues/812). Обход: создавать поле с классом `msOrder` или выровнять query на FQCN в коде.
 
 Сохранение: `PUT /api/mgr/orders/{id}` ключом поля на верхнем уровне JSON (`msorder_save`). Метаданные extra fields грузятся только с правом `mssetting_save`.
-
-<!-- ![Секция дополнительных полей на карточке заказа](/components/minishop3/screenshots/mgr-order-extra-field.png) -->
 
 ### Пересчёт стоимости
 

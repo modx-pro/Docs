@@ -3,23 +3,13 @@ title: Товар
 ---
 # Страница товара
 
-Редактирование товара в административной панели MiniShop3.
-
-## Обзор
-
-Страница редактирования товара (`msProduct`) объединяет стандартный функционал MODX с расширенными возможностями для e-commerce:
-
-- Редактируемые секции с полями товара
-- Галерея изображений с drag-and-drop загрузкой
-- Связи между товарами
-- Опции и характеристики
-- Дополнительные категории
+Откройте товар в дереве ресурсов MODX. Карточка `msProduct` совмещает поля ресурса и данные магазина.
 
 ## Структура вкладок
 
 ### Документ
 
-Стандартная вкладка MODX с основными полями ресурса:
+Стандартная вкладка MODX с полями ресурса:
 
 | Поле | Описание |
 | --- | --- |
@@ -33,23 +23,22 @@ title: Товар
 
 ### Данные товара
 
-Вкладка с полями товара, сгруппированными по секциям. Использует Vue 3 компонент для гибкого отображения.
+Поля товара сгруппированы по секциям. Вкладка на Vue 3.
 
-**Стандартные секции:**
+**Стандартные секции** (`section_key` из сида):
 
-| Секция | Поля |
-| --- | --- |
-| Основные данные | `article`, `price`, `old_price`, `weight` |
-| Наличие | `stock`, `new`, `popular`, `favorite` |
-| Характеристики | `color`, `size`, `vendor`, `made_in`, `tags` |
+| Секция | Ключ | Поля по умолчанию |
+| --- | --- | --- |
+| Основные данные | `main` | `article`, `weight`, `color`, `size`, `vendor_id`, `made_in` |
+| Цены и склад | `pricing` | `price`, `old_price`, `stock` |
+| SEO | `seo` | (пустая, под ваши поля) |
+| Дополнительно | `additional` | `tags`, `new`, `favorite`, `popular` |
 
 ::: tip Настройка
 Секции и поля: [Утилиты → Поля товара](utilities/product-fields). Новое поле в БД: [Cookbook extra fields](/components/minishop3/manager/extra-fields/cookbook), пример [Оптовая цена](/components/minishop3/manager/examples/product-extra-field).
 :::
 
 ### Галерея
-
-Управление изображениями товара:
 
 - Загрузка через drag-and-drop
 - Сортировка перетаскиванием
@@ -74,8 +63,6 @@ Vue-вкладка `ProductLinksTab`. CRUD через Manager API (право `m
 
 ### Категории
 
-<!-- ![Вкладка «Категории» на карточке товара](/components/minishop3/screenshots/mgr-product-categories.png) -->
-
 Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-data/{id}/categories/tree` (сервис `ms3_product_category_tree`). Выбранные id уходят в resource POST как hidden `name="categories"` (JSON). Родительская категория (`parent`) в дереве заблокирована. Товар может состоять в нескольких доп. категориях через `msCategoryMember`.
 
 ### Опции товара
@@ -88,15 +75,13 @@ Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-d
 
 Опции группируются по `option_group_id` (`msOptionGroup`) и показываются в вертикальных табах слева. Если группа одна — таб не показывается, поля идут списком.
 
-**Per-category caption / description.** Если у связки «опция ↔ категория» задан свой `caption` (см. [Настройки → Опции](settings/options#per-category-caption-description-override)), в форме товара отображается именно он — это тот же override, что уходит на витрину.
+**Per-category caption / description.** Если у связки «опция ↔ категория» задан свой `caption` (см. [Настройки → Опции](settings/options#per-category-caption-description-override)), в форме товара отображается именно он. Это тот же override, что уходит на витрину.
 
-**Сохранение.** Значения попадают в POST как `options-{key}` (single) или `options-{key}` с JSON-массивом (multi). Процессор `MiniShop3\Processors\Product\Update` в `beforeSet` собирает всё в ключ `options`, `Utils::decodeOptionValue()` разворачивает JSON-массив, `afterSave` вызывает `OptionSyncService::saveProductOptions($productId, $options, removeOther: true)` — ключи, отсутствующие в POST, из `msProductOption` удаляются.
+**Сохранение.** Значения попадают в POST как `options-{key}` (single) или `options-{key}` с JSON-массивом (multi). Процессор `MiniShop3\Processors\Product\Update` в `beforeSet` собирает всё в ключ `options`. `Utils::decodeOptionValue()` разворачивает JSON-массив. `afterSave` вызывает `OptionSyncService::saveProductOptions($productId, $options, removeOther: true)`. Ключи, отсутствующие в POST, из `msProductOption` удаляются.
 
 ## Архитектура секций и полей
 
 ### Хранение данных
-
-Конфигурация полей хранится в базе данных:
 
 | Таблица | Описание |
 | --- | --- |
@@ -105,25 +90,17 @@ Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-d
 
 ### Модель msPageSection
 
-Секция — это контейнер для группировки полей.
-
-**Поля модели:**
-
 | Поле | Тип | Описание |
 | --- | --- | --- |
 | `id` | int | ID секции |
 | `page_key` | string | Ключ страницы (`product_data`) |
 | `section_key` | string | Уникальный ключ секции |
-| `lexicon_key` | string | Ключ лексикона для названия |
-| `label` | string | Название (если без лексикона) |
 | `hidden` | bool | Скрыта ли секция |
 | `sort_order` | int | Порядок сортировки |
+| `config` | json | JSON, часто `{"lexicon_key":"ms3_section_main"}` |
+| `is_default` | bool | Секция по умолчанию |
 
 ### Модель msProductField
-
-Поле товара с настройками отображения.
-
-**Поля модели:**
 
 | Поле | Тип | Описание |
 | --- | --- | --- |
@@ -136,7 +113,7 @@ Vue-вкладка `ProductCategoriesTab`. Дерево: `GET /api/mgr/product-d
 | `visible` | bool | Видимость |
 | `required` | bool | Обязательность |
 | `sort_order` | int | Порядок в секции |
-| `width` | int | Ширина в процентах |
+| `width` | int | Ширина в 12-колоночной сетке (1–12, по умолчанию 4) |
 | `config` | json | Дополнительные настройки |
 | `is_system` | bool | Системное поле |
 | `is_default` | bool | Поле по умолчанию |
@@ -166,8 +143,7 @@ PUT /api/mgr/config/sections/product_data
   "sections": [
     {
       "section_key": "seo",
-      "lexicon_key": "ms3_section_seo",
-      "label": "SEO",
+      "config": "{\"lexicon_key\":\"ms3_section_seo\"}",
       "hidden": false,
       "sort_order": 100
     }
@@ -218,9 +194,9 @@ PUT /api/mgr/config/sections/product_data
 | Секция | Принадлежность к секции |
 | Тип виджета | Тип элемента формы |
 | Видимость | Показывать/скрывать |
-| Ширина | Ширина в % (50 = половина) |
+| Ширина | Колонки сетки 1–12 (6 = половина строки, 12 = вся строка) |
 
-**Через API:**
+**Через API** (тело только с обёрткой `fields`):
 
 ```
 PUT /api/mgr/config/page-fields/product_data
@@ -228,12 +204,16 @@ PUT /api/mgr/config/page-fields/product_data
 
 ```json
 {
-  "name": "article",
-  "label": "Артикул товара",
-  "section": 1,
-  "visible": true,
-  "sort_order": 0,
-  "width": 50
+  "fields": [
+    {
+      "name": "article",
+      "label": "Артикул товара",
+      "section": 1,
+      "visible": true,
+      "sort_order": 0,
+      "width": 6
+    }
+  ]
 }
 ```
 
@@ -283,8 +263,6 @@ PUT /api/mgr/config/page-fields/product_data
 | --- | --- |
 | `modx-combo-browser` | Выбор файла через Media Browser |
 | `datefield` | Выбор даты |
-| `timefield` | Выбор времени |
-| `htmleditor` | WYSIWYG редактор |
 
 ## Системные настройки
 
@@ -323,7 +301,7 @@ GET /api/mgr/config/page-fields/product_data
         "section": 1,
         "visible": true,
         "sort_order": 0,
-        "width": 50
+        "width": 6
       }
     ],
     "sections": {
@@ -338,35 +316,15 @@ GET /api/mgr/config/page-fields/product_data
 }
 ```
 
-**Сохранить поля** (тело — массив `fields`):
-
-```
-PUT /api/mgr/config/page-fields/product_data
-```
-
-```json
-{
-  "fields": [
-    {
-      "name": "article",
-      "label": "Артикул",
-      "section": 1,
-      "visible": true,
-      "sort_order": 0
-    }
-  ]
-}
-```
+Сохранение полей: `PUT /api/mgr/config/page-fields/product_data`, тело — массив `fields` (см. выше).
 
 ### Секции
-
-**Получить секции:**
 
 ```
 GET /api/mgr/config/sections/product_data
 ```
 
-**Сохранить секции** (создание и порядок — через bulk PUT):
+Создание и порядок — через bulk PUT:
 
 ```
 PUT /api/mgr/config/sections/product_data
@@ -393,13 +351,9 @@ DELETE /api/mgr/config/sections/product_data/{section_key}
 
 ### Данные товара
 
-**Получить данные:**
-
 ```
 GET /api/mgr/product-data/{product_id}
 ```
-
-**Сохранить данные:**
 
 ```
 PUT /api/mgr/product-data/{product_id}
@@ -407,23 +361,11 @@ PUT /api/mgr/product-data/{product_id}
 
 ## Примеры настройки
 
-### Создание секции "SEO"
+### Секция SEO
 
-1. Создайте секцию:
-   - Ключ: `seo`
-   - Название: `SEO`
+Секция `seo` уже в сиде и по умолчанию без полей. Перенесите в неё нужные поля из `main` / `additional` или extra fields модели `msProductData`.
 
-2. Добавьте лексикон (опционально):
-
-```php
-// lexicon/ru/product.inc.php
-$_lang['ms3_section_seo'] = 'SEO';
-
-// lexicon/en/product.inc.php
-$_lang['ms3_section_seo'] = 'SEO';
-```
-
-1. Переместите поля `longtitle` и `description` в секцию SEO
+`longtitle` и `description` живут на вкладке «Документ» (`ms3_product_main_fields`), не в `product_data`.
 
 ### Скрытие ненужных полей
 
@@ -438,12 +380,12 @@ $_lang['ms3_section_seo'] = 'SEO';
 Сделать поле `article` на всю ширину:
 
 1. Откройте редактирование поля
-2. Установите ширину `100`
+2. Установите ширину `12`
 3. Сохраните
 
-Два поля в ряд — установите каждому ширину `50`.
+Два поля в ряд — установите каждому ширину `6`.
 
-### Добавление кастомного поля
+### Добавление своего поля
 
 1. Откройте **Утилиты → Дополнительные поля**
 2. Выберите модель `msProductData`
@@ -460,7 +402,7 @@ $_lang['ms3_section_seo'] = 'SEO';
 
 ### Событие msOnManagerCustomCssJs
 
-Позволяет добавить свой CSS/JS на страницу товара:
+Добавляет свой CSS/JS на страницу товара:
 
 ```php
 <?php
@@ -475,24 +417,6 @@ if ($page === 'product_update' || $page === 'product_create') {
     $modx->regClientCSS('/assets/components/mycomponent/css/product.css');
     $modx->regClientStartupScript('/assets/components/mycomponent/js/product.js');
 }
-```
-
-### Расширение Vue компонента
-
-Через Plugin Registry можно добавить свои виджеты:
-
-```javascript
-// assets/components/mycomponent/js/product.js
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.MS3PluginRegistry) {
-    // Регистрация кастомного xtype
-    MS3PluginRegistry.registerWidget('my-custom-field', {
-      component: MyCustomFieldComponent,
-      props: ['field', 'modelValue']
-    })
-  }
-})
 ```
 
 ## Связанные страницы

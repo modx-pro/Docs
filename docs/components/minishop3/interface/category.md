@@ -3,30 +3,16 @@ title: Категория
 ---
 # Страница категории
 
-Редактирование категории товаров в административной панели MiniShop3.
-
-## Обзор
-
-Страница редактирования категории (`msCategory`) расширяет стандартный функционал MODX возможностями управления товарами:
-
-- Таблица товаров категории с drag-and-drop сортировкой
-- Фильтрация и поиск товаров
-- Массовые операции (публикация, удаление)
-- Настраиваемые колонки и действия
-- Управление опциями категории
+Откройте категорию (`msCategory`) в дереве ресурсов. Главная вкладка — таблица товаров.
 
 ## Структура вкладок
 
 ### Товары
 
-<!-- ![Таблица товаров категории](/components/minishop3/screenshots/mgr-category-products.png) -->
-
-Главная вкладка категории — таблица товаров с возможностями:
-
 | Функция | Описание |
 | --- | --- |
 | Drag-and-drop | Сортировка товаров перетаскиванием |
-| Фильтры | Поиск, публикация, кастомные фильтры |
+| Фильтры | Поиск, публикация, свои фильтры |
 | Массовые операции | Публикация, снятие с публикации, удаление |
 | Настраиваемые колонки | Через [Утилиты → Колонки гридов](utilities/grid-columns) |
 | Действия | Просмотр, редактирование, удаление, дублирование |
@@ -60,16 +46,16 @@ title: Категория
 Вкладка полностью на Vue (компонент `CategoryOptionsTab`). Legacy ExtJS-грид и процессоры `Processors/Category/Option/*` удалены.
 :::
 
-Грид опций, привязанных к этой категории, со следующими возможностями:
+Грид опций, привязанных к этой категории:
 
 - **Drag-and-drop сортировка** — порядок (`position`) сохраняется одним POST после отпускания (`/api/mgr/categories/{id}/options/sort`)
 - **Inline-редактирование** по двойному клику:
-  - `Значение по умолчанию` — то, что будет использовано как default в форме товара
-  - `Название (для категории)` — per-category override глобального `caption` (пусто = использовать глобальное)
-- **Колонка «Глобально»** (read-only) — показывает `caption` из `msOption` для сравнения с override
+  - `Значение по умолчанию` — default в форме товара
+  - `Название (для категории)` — per-category override глобального `caption` (пусто = глобальное)
+- **Колонка «Глобально»** (read-only) — `caption` из `msOption` для сравнения с override
 - **Массовые действия** (выделение чекбоксами): Активировать / Деактивировать / Сделать обязательной / Снять обязательность / Удалить
-- **Кнопка «Добавить опцию»** — диалог выбора существующей опции с полями: значение по умолчанию, active, required, caption/description override
-- **Кнопка «Копировать опции из категории»** — переносит все связки из другой категории (дубликаты пропускает). После копирования `msCategoryOption::afterSave` автоматически применит опции ко всем товарам текущей категории.
+- **Кнопка «Добавить опцию»** — диалог выбора опции: значение по умолчанию, active, required, caption/description override
+- **Кнопка «Копировать опции из категории»** — переносит все связки из другой категории (дубликаты пропускает). После копирования `msCategoryOption::afterSave` применит опции ко всем товарам текущей категории.
 
 ### Группы ресурсов
 
@@ -77,18 +63,11 @@ title: Категория
 
 ## Таблица товаров
 
-### Технология
-
-Таблица товаров реализована на Vue 3 + PrimeVue для современного UX:
-
-- Виртуализация больших списков
-- Динамическая загрузка данных
-- Реактивные фильтры
-- Плавная анимация drag-and-drop
+Таблица на Vue 3 + PrimeVue. Большие списки грузятся порциями; на экране только видимые строки.
 
 ### Настройка колонок
 
-Колонки таблицы настраиваются через интерфейс **Утилиты → Колонки гридов** (грид `category-products`).
+Колонки настраиваются в **Утилиты → Колонки гридов** (грид `category-products`).
 
 ::: warning Устаревшая настройка
 Системная настройка `ms3_category_grid_fields` удалена начиная с версии 1.7.0. Используйте интерфейс [Колонки гридов](utilities/grid-columns).
@@ -96,7 +75,7 @@ title: Категория
 
 ### Inline-редактирование
 
-Двойной клик по ячейке позволяет редактировать значение прямо в таблице:
+Двойной клик по ячейке правит значение прямо в таблице:
 
 | Тип редактора | Поля |
 | --- | --- |
@@ -253,7 +232,7 @@ Relation подтягивает JOIN. Для badge в гриде `orders` скр
 | `toggleField` | string | Поле для toggle-действий |
 | `visible` | function | Условие видимости |
 
-### Кастомные действия через JavaScript
+### Свои действия через JavaScript
 
 Регистрация через `MS3ActionRegistry`. Второй аргумент — **`context`**, не `gridId`:
 
@@ -316,9 +295,9 @@ MS3ActionRegistry.registerAfterHook('publish', async (data, result, context) => 
 Фильтры настраиваются через конфигурационные файлы:
 
 - **Стандартные:** `core/components/minishop3/config/filters/category-products.php`
-- **Кастомные:** `core/components/minishop3/custom/filters/category-products.php`
+- **Свои:** `core/components/minishop3/custom/filters/category-products.php`
 
-Кастомный файл переопределяет стандартный и не перезаписывается при обновлении компонента.
+Свой файл переопределяет стандартный и не перезаписывается при обновлении компонента.
 
 ### Конфигурация фильтра
 
@@ -436,37 +415,18 @@ return [
 
 ### Обработка фильтров на сервере
 
-Фильтры автоматически применяются в `CategoryProductsController`:
+Фильтры автоматически применяются в `CategoryProductsListService`:
 
 ```php
-// core/components/minishop3/src/Controllers/Api/Manager/CategoryProductsController.php
+// core/components/minishop3/src/Services/Category/CategoryProductsListService.php
 
-// Boolean фильтры для полей msProduct
-$productBooleanFields = ['published', 'deleted', 'hidemenu'];
-foreach ($productBooleanFields as $field) {
-    if (isset($params[$field]) && $params[$field] !== '') {
-        $c->where(["msProduct.{$field}" => (int)$params[$field]]);
-    }
-}
-
-// Boolean фильтры для полей msProductData
+$productBooleanFields = ['published', 'deleted', 'hidemenu', 'isfolder'];
 $dataBooleanFields = ['new', 'popular', 'favorite'];
-foreach ($dataBooleanFields as $field) {
-    if (isset($params[$field]) && $params[$field] !== '') {
-        $c->where(["Data.{$field}" => (int)$params[$field]]);
-    }
-}
-
-// Числовые фильтры
-$dataNumericFields = ['price', 'vendor_id'];
-foreach ($dataNumericFields as $field) {
-    if (isset($params[$field]) && $params[$field] !== '') {
-        $c->where(["Data.{$field}" => $params[$field]]);
-    }
-}
+$dataNumericFields = ['price', 'old_price', 'weight', 'vendor_id'];
+// Плюс текстовые поля msProduct и Data.article, Data.made_in, опции filter_* …
 ```
 
-### Добавление кастомного фильтра
+### Добавление своего фильтра
 
 #### Шаг 1: добавьте фильтр в конфигурацию
 
@@ -495,35 +455,7 @@ return [
 ];
 ```
 
-#### Шаг 2: обработайте фильтр на сервере
-
-Создайте плагин для обработки кастомного фильтра:
-
-```php
-<?php
-// Плагин: CustomCategoryFilters
-// События: msOnBeforeCategoryProductsQuery
-
-if ($modx->event->name !== 'msOnBeforeCategoryProductsQuery') return;
-
-$params = $modx->event->params['params'] ?? [];
-$query = $modx->event->params['query'];
-
-// Обработка фильтра диапазона цен
-if (!empty($params['price_range'])) {
-    $range = $params['price_range'];
-
-    if ($range === '10000+') {
-        $query->where(['Data.price:>=' => 10000]);
-    } else {
-        [$min, $max] = explode('-', $range);
-        $query->where([
-            'Data.price:>=' => (int)$min,
-            'Data.price:<=' => (int)$max,
-        ]);
-    }
-}
-```
+Ключ из query, которого нет в сервисе (например `price_range`), сервер сам не обработает. Логику фильтрации добавляйте в сервис списка или расширяйте `CategoryProductsListService` в своём пакете.
 
 ## Массовые операции
 
@@ -557,11 +489,10 @@ POST /api/mgr/categories/{id}/products/multiple
 
 ### Условия работы
 
-Сортировка перетаскиванием доступна когда:
+Сортировка перетаскиванием доступна, когда:
 
 1. Сортировка по `menuindex`
-2. Не включён режим "Показать вложенные товары"
-3. Нет активных фильтров
+2. Не включён режим «Показать вложенные товары»
 
 ### API сортировки
 
@@ -587,14 +518,13 @@ POST /api/mgr/categories/{id}/products/sort
 | --- | --- | --- |
 | `ms3_category_show_nested_products` | Показывать вложенные товары | `false` |
 | `ms3_category_show_options` | Показывать опции категории | `true` |
-| `ms3_category_remember_tabs` | Запоминать активную вкладку | `true` |
 | `ms3_category_remember_grid` | Запоминать состояние таблицы | `true` |
 
 ## События
 
 ### msOnManagerCustomCssJs
 
-Добавление CSS/JS на страницу категории:
+Добавляет CSS/JS на страницу категории:
 
 ```php
 <?php
@@ -670,7 +600,7 @@ GET /api/mgr/categories/{id}/products/filters
 PUT /api/mgr/categories/{id}/products/{productId}/data
 ```
 
-Тело JSON — поля `msProductData` (цена, артикул и т.д.) из грида категории без открытия карточки товара. Контроллер: `CategoryProductsController::updateProductData()`.
+Тело JSON — поля `msProductData` (цена, артикул и т.д.) из грида категории, без открытия карточки товара. Контроллер: `CategoryProductsController::updateProductData()`.
 
 ## Связанные страницы
 
