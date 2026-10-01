@@ -76,7 +76,7 @@ title: Адреса доставки
 | `{$floor}` | string | Этаж |
 | `{$room}` | string | Квартира |
 | `{$metro}` | string | Метро |
-| `{$text_address}` | string | Комментарий к адресу |
+| `{$comment}` | string | Комментарий к адресу |
 
 ### В чанке tpl.msCustomer.address.form
 
@@ -329,11 +329,11 @@ title: Адреса доставки
 
                 {* Комментарий *}
                 <div class="mb-3">
-                    <label for="text_address" class="form-label">
+                    <label for="comment" class="form-label">
                         {'ms3_customer_comment' | lexicon}
                     </label>
-                    <textarea class="form-control" id="text_address" name="text_address"
-                              rows="2">{$address.text_address}</textarea>
+                    <textarea class="form-control" id="comment" name="comment"
+                              rows="2">{$address.comment}</textarea>
                 </div>
 
                 {* Кнопки *}
@@ -388,10 +388,10 @@ DELETE /api/v1/customer/addresses/{id}               // Удалить адре�
 
 | Хук | Описание |
 | --- | --- |
-| `beforeSetDefaultAddress` | Перед установкой адреса по умолчанию |
-| `afterSetDefaultAddress` | После установки адреса по умолчанию |
-| `beforeDeleteAddress` | Перед удалением адреса |
-| `afterDeleteAddress` | После удаления адреса |
+| `beforeCreateAddress` / `afterCreateAddress` | Создание адреса |
+| `beforeUpdateAddress` / `afterUpdateAddress` | Редактирование адреса |
+| `beforeSetDefaultAddress` / `afterSetDefaultAddress` | Адрес по умолчанию |
+| `beforeDeleteAddress` / `afterDeleteAddress` | Удаление адреса |
 
 ## Обработка форм
 
@@ -400,22 +400,35 @@ DELETE /api/v1/customer/addresses/{id}               // Удалить адре�
 | Создание | `customer/address-create` | Создание нового адреса |
 | Редактирование | `customer/address-update` | Обновление адреса |
 
+```mermaid
+flowchart TB
+  Form[Форма адреса] --> Req["name city street обязательны"]
+  Req --> API["customer/address-create или update"]
+  API --> Field[comment не text_address]
+```
+
 ## Поля адреса
 
 | Поле | Обязательное | Описание |
 | --- | --- | --- |
-| `name` | Нет | Название адреса (Дом, Офис) |
+| `name` | **Да** | Название адреса (Дом, Офис) |
 | `index` | Нет | Почтовый индекс |
 | `country` | Нет | Страна |
 | `region` | Нет | Регион/область |
 | `city` | **Да** | Город |
 | `street` | **Да** | Улица |
-| `building` | **Да** | Дом |
+| `building` | Нет | Дом |
 | `entrance` | Нет | Подъезд |
 | `floor` | Нет | Этаж |
 | `room` | Нет | Квартира/офис |
 | `metro` | Нет | Станция метро |
-| `text_address` | Нет | Комментарий к адресу |
+| `comment` | Нет | Комментарий к адресу |
+
+Поле `text_address` относится к адресу **заказа** (`msOrderAddress`), не к сохранённому адресу покупателя (`msCustomerAddress`).
+
+::: warning Форма vs API
+Демо-чанк `ms3_customer_address_form.tpl` шлёт `text_address` и помечает `building` как required. API ждёт `comment` и `name`+`city`+`street` ([issue #816](https://github.com/modx-pro/MiniShop3/issues/816)).
+:::
 
 ## Системные настройки
 

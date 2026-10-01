@@ -48,7 +48,7 @@ description: Формы входа и регистрации покупател�
 | Вкладки | `#login-tab`, `#register-tab` | Bootstrap tabs (`data-bs-toggle="tab"`) |
 | «Забыли пароль» | `#forgot-password-link` | ссылка под формой входа |
 
-Если правите чанк под свой дизайн, оставьте эти `id` и `name`. `AuthUI` берёт селекторы из `ms3.js` и иначе формы не подхватит.
+Если правите чанк под свой дизайн, оставьте эти `id` и `name`. Селекторы заданы в `assets/components/minishop3/js/web/core/Selectors.js` (`#ms3-login-form`, `#ms3-register-form`, `#forgot-password-link`); `ms3.js` только подхватывает их в config.
 
 ## AuthUI
 
@@ -69,6 +69,13 @@ description: Формы входа и регистрации покупател�
 ::: warning SMS-верификация
 Сервис `SmsVerificationService` в пакете — **заглушка**: `sendVerificationCode()` логирует предупреждение и возвращает ошибку. SMS-логин из коробки нет, пока вы не подключите свой провайдер.
 :::
+
+### Хуки AuthUI
+
+| Хук | Когда |
+| --- | --- |
+| `beforeLogin` / `afterLogin` | Вход |
+| `beforeRegister` / `afterRegister` | Регистрация |
 
 ## Восстановление пароля
 
