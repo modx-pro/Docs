@@ -5,12 +5,24 @@ title: Отличия от miniShop2
 
 Это руководство поможет разработчикам, знакомым с miniShop2, быстро освоить MiniShop3 и понять ключевые изменения.
 
+```mermaid
+flowchart TB
+  ms2[miniShop2 сайт]
+  export[Экспорт каталога / ручной перенос]
+  install[Установить MS3 + VueTools + pdoTools 3]
+  settings[Ключи ms3_* вместо ms2_*]
+  forms[Формы ms3_form / Web API]
+  grids[Колонки в Утилитах гридов]
+  ms2 --> export --> install --> settings --> forms
+  install --> grids
+```
+
 ## Системные требования
 
 | Требование | miniShop2 | MiniShop3 |
 | --- | --- | --- |
 | MODX | 2.3+ | **3.0.0+** |
-| PHP | 7.0+ | **8.1+** |
+| PHP | 7.0+ | **8.2+** |
 | MySQL | 5.5+ | 5.7+ / MariaDB 10.3+ |
 | pdoTools | 2.x | **3.x** |
 
@@ -279,7 +291,7 @@ switch ($modx->event->name) {
 
 ### msMiniCart → msOrderTotal
 
-Параметр `formatPrices` удалён. Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`.
+Параметр `formatPrices` у сниппетов витрины удалён (у `msProducts` его нет). Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`. У `msOrderTotal` свойства `formatPrices` / `withCurrency` ещё могут быть в админке, код их не читает ([#825](https://github.com/modx-pro/MiniShop3/issues/825)).
 
 ```fenom
 {* miniShop2 *}

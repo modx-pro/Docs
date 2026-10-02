@@ -430,19 +430,19 @@ CRUD для конфига колонок административных гр�
 | PUT | `/{grid_key}/field/{field_name}` | Обновить колонку |
 | DELETE | `/{grid_key}/{field_name}` | Удалить колонку |
 
-**Известные `grid_key` в MS3 1.13:** `orders`, `order_products`, `customers`, `vendors`, `category-products`.
+**Известные `grid_key` в MS3 1.14.x:** `orders`, `order_products`, `customers`, `vendors`, `category-products`, `deliveries`.
 
 ##### Ответ `GET /grid-config/{grid_key}`
 
 ```json
 {
-  "columns": [
-    { "name": "id", "label": "ID", "type": "model", "visible": true, ... }
-  ],
-  "direct_filter_keys": ["query", "status_id", "delivery_id", ...],
-  "editor_references": [
-    { "key": "vendors", "path": "/api/mgr/references/vendors" }
-  ]
+    "columns": [
+        { "name": "id", "label": "ID", "type": "model", "visible": true, ... }
+    ],
+    "direct_filter_keys": ["query", "status_id", "delivery_id", ...],
+    "editor_references": [
+        { "key": "vendors", "path": "/api/mgr/references/vendors" }
+    ]
 }
 ```
 

@@ -5,6 +5,19 @@ title: Разработка
 
 Раздел для разработчиков, расширяющих функциональность MiniShop3.
 
+```mermaid
+flowchart TB
+  need[Задача]
+  need -->|Плагин на процесс| events[События]
+  need -->|Headless / SPA| webapi[Web API /api/v1]
+  need -->|Маршруты и middleware| router[API Router]
+  need -->|Фон| scheduler[Scheduler]
+  need -->|PHP CRUD сущностей| backend[Backend API]
+  need -->|Замена классов| services[ServiceRegistry]
+  need -->|Вкладки mgr| tabs[product / order tabs]
+  webapi --> router
+```
+
 ## Содержание
 
 - [События](events) — система событий для плагинов

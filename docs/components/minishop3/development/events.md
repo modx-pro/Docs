@@ -83,6 +83,8 @@ MiniShop3 использует систему событий MODX для рас�
 | [msOnErrorValidateCustomerValue](events/customer#msonerrorvalidatecustomervalue) | Ошибка валидации |
 | [msOnBeforeCreateCustomer](events/customer#msonbeforecreatecustomer) | Перед созданием покупателя |
 | [msOnCreateCustomer](events/customer#msoncreatecustomer) | После создания покупателя |
+| [msOnBeforeUpdateCustomer](events/customer#msonbeforeupdatecustomer) | Перед обновлением покупателя (процессор; встроенный UI пока не вызывает) |
+| [msOnUpdateCustomer](events/customer#msonupdatecustomer) | После обновления покупателя |
 | [msOnBeforeAddCustomerAddress](events/customer#msonbeforeaddcustomeraddress) | Перед добавлением адреса |
 | [msOnAddCustomerAddress](events/customer#msonaddcustomeraddress) | После добавления адреса |
 
@@ -93,6 +95,7 @@ MiniShop3 использует систему событий MODX для рас�
 | [msOnGetProductPrice](events/product#msongetproductprice) | Модификация цены товара |
 | [msOnGetProductWeight](events/product#msongetproductweight) | Модификация веса товара |
 | [msOnGetProductFields](events/product#msongetproductfields) | Модификация полей товара |
+| `msOnGetPublicSeo` | После сборки публичных SEO-полей товара/категории (`PublicSeoService`, настройка `ms3_public_seo_tv_map`) |
 
 ### Сниппет msProducts
 
@@ -162,6 +165,26 @@ MiniShop3 использует систему событий MODX для рас�
 | --- | --- |
 | [msOnManagerCustomCssJs](events/manager#msonmanagercustomcssjs) | Загрузка скриптов и стилей |
 
+### Отгрузки (shipment)
+
+Включаются логикой `ShipmentLifecycleService` при работе с трекингом заказа (`ms3_shipment_*`).
+
+| Событие | Описание |
+| --- | --- |
+| `msOnBeforeCreateShipment` / `msOnCreateShipment` | Создание отгрузки |
+| `msOnBeforeChangeShipmentStatus` / `msOnChangeShipmentStatus` | Смена статуса отгрузки |
+| `msOnBeforeUpdateShipmentTracking` / `msOnUpdateShipmentTracking` | Обновление трекинг-номера |
+
+### Остатки (inventory)
+
+При `ms3_inventory_enabled` — `ProductStockInventory`.
+
+| Событие | Описание |
+| --- | --- |
+| `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Резерв остатка |
+| `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Подтверждение списания |
+| `msOnBeforeInventoryRelease` / `msOnInventoryRelease` | Снятие резерва |
+
 ## Изменения относительно miniShop2
 
 | miniShop2 | MiniShop3 | Изменения |
@@ -182,6 +205,18 @@ MiniShop3 использует систему событий MODX для рас�
 
 ### Цепочки вызовов (куда смотреть в коде)
 
+```mermaid
+flowchart TB
+  submit[msOnSubmitOrder]
+  beforeCreate[msOnBeforeCreateOrder]
+  create[msOnCreateOrder]
+  mgrBefore[msOnBeforeMgrCreateOrder]
+  mgrAfter[msOnMgrCreateOrder]
+  submit --> beforeCreate --> create
+  mgrBefore --> beforeCreate
+  create --> mgrAfter
+```
+
 | Действие | События по порядку |
 | --- | --- |
 | Очистка черновика (`order/clean`) | `msOnBeforeEmptyOrder` → reset полей → `msOnEmptyOrder` |
@@ -189,4 +224,4 @@ MiniShop3 использует систему событий MODX для рас�
 | Submit витрины | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
 | Финализация в админке | `msOnBeforeMgrCreateOrder` → `msOnBeforeCreateOrder` → `msOnCreateOrder` → `msOnMgrCreateOrder` |
 
-Источник реестра: `_build/elements/events.php` (все имена выше зарегистрированы в MODX).
+Источник реестра: `_build/elements/events.php` (имена выше зарегистрированы в MODX).

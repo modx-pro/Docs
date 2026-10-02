@@ -267,7 +267,7 @@ title: Системные настройки
 | `ms3_snippet_token_secret` | (автогенерация) | Секретный ключ для токенов сниппетов |
 | `ms3_snippet_cache_ttl` | `3600` | Время кеширования параметров сниппетов (секунды) |
 | `ms3_payment_secret` | | Секретный ключ для платёжных уведомлений |
-| `ms3_payment_link_statuses` | (пусто → `ms3_status_new`) | CSV ID статусов, при которых `PaymentLinkResolver` отдаёт URL оплаты в письмах и msGetOrder |
+| `ms3_payment_link_statuses` | (пусто → `ms3_status_new`) *(не в transport)* | CSV ID статусов, при которых `PaymentLinkResolver` отдаёт URL оплаты в письмах и msGetOrder. Ключ читается из кода, в `_build/elements/settings.php` пока нет — создайте вручную ([#826](https://github.com/modx-pro/MiniShop3/issues/826)) |
 
 ### Защита от брутфорса
 

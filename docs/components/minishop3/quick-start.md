@@ -11,7 +11,7 @@ description: Установка MiniShop3, служебные страницы, 
 | Требование | Версия |
 | --- | --- |
 | MODX Revolution | 3.0.0+ |
-| PHP | 8.1+ |
+| PHP | 8.2+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
 | Composer | 2.x |
 
@@ -149,6 +149,18 @@ description: Установка MiniShop3, служебные страницы, 
 Без связки delivery↔payment оформление на витрине упадёт с ошибкой пары.
 
 ## Первый тестовый заказ
+
+```mermaid
+flowchart TB
+  cat[Категория на витрине]
+  cart[msCart]
+  order[msOrder]
+  thanks[thanks ?msorder=]
+  get[msGetOrder]
+  mgr[Админка Заказы статус Новый]
+  cat -->|cart/add| cart --> order -->|submit| thanks --> get
+  thanks --> mgr
+```
 
 1. Откройте витрину категории, добавьте товар в корзину.
 2. Перейдите в корзину, затем в оформление.
