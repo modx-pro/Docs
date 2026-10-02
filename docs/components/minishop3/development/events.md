@@ -95,7 +95,7 @@ MiniShop3 использует систему событий MODX для рас�
 | [msOnGetProductPrice](events/product#msongetproductprice) | Модификация цены товара |
 | [msOnGetProductWeight](events/product#msongetproductweight) | Модификация веса товара |
 | [msOnGetProductFields](events/product#msongetproductfields) | Модификация полей товара |
-| `msOnGetPublicSeo` | После сборки публичных SEO-полей товара/категории (`PublicSeoService`, настройка `ms3_public_seo_tv_map`) |
+| [msOnGetPublicSeo](events/product#msongetpublicseo) | После сборки публичных SEO (`PublicSeoService`, `ms3_public_seo_tv_map`) |
 
 ### Сниппет msProducts
 
@@ -167,23 +167,49 @@ MiniShop3 использует систему событий MODX для рас�
 
 ### Отгрузки (shipment)
 
-Включаются логикой `ShipmentLifecycleService` при работе с трекингом заказа (`ms3_shipment_*`).
+Логика `ShipmentLifecycleService` (`ms3_shipment_lifecycle`). Таблицы `ms3_shipments` / `ms3_shipment_events`. Создание и `setTracking` работают и при `ms3_shipment_enabled=0`. Webhook доставки при выкл. отвечает 404. Before-события: отмена через `success=false` в ответе `invokeEvent`.
 
-| Событие | Описание |
-| --- | --- |
-| `msOnBeforeCreateShipment` / `msOnCreateShipment` | Создание отгрузки |
-| `msOnBeforeChangeShipmentStatus` / `msOnChangeShipmentStatus` | Смена статуса отгрузки |
-| `msOnBeforeUpdateShipmentTracking` / `msOnUpdateShipmentTracking` | Обновление трекинг-номера |
+| Событие | Параметры | Когда |
+| --- | --- | --- |
+| `msOnBeforeCreateShipment` / `msOnCreateShipment` | before: `order_id`, `delivery_id`; after: `shipment` (row) | `create()` |
+| `msOnBeforeChangeShipmentStatus` / `msOnChangeShipmentStatus` | before: `shipment`, `status`; after: `shipment` | `transition()` / provider webhook |
+| `msOnBeforeUpdateShipmentTracking` / `msOnUpdateShipmentTracking` | before: `shipment`, `tracking_number`; after: `shipment` | `setTracking()` / webhook при смене трека |
+
+Статусы row: `preparing`, `shipped`, `in_transit`, `delivered`, `cancelled`, `returned`, `failed` (`ShipmentStatus`).
+
+```mermaid
+flowchart TB
+  create[create / webhook]
+  beforeCreate[msOnBeforeCreateShipment]
+  afterCreate[msOnCreateShipment]
+  transition[transition / provider event]
+  beforeStatus[msOnBeforeChangeShipmentStatus]
+  sync[syncOrderStatus если enabled]
+  afterStatus[msOnChangeShipmentStatus]
+  create --> beforeCreate --> afterCreate
+  transition --> beforeStatus --> sync --> afterStatus
+```
 
 ### Остатки (inventory)
 
-При `ms3_inventory_enabled` — `ProductStockInventory`.
+При `ms3_inventory_enabled=1` — `ProductStockInventory` (`ms3_inventory`). Контракт: `InventoryServiceInterface`. Параметры событий: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin`). Before с `success=false` → `InventoryException` (`ms3_err_inventory_cancelled`). `$notify=false` на reserve/release пропускает пару событий (компенсация внутри SQL-транзакции).
 
-| Событие | Описание |
+| Событие | Когда в статусах заказа |
 | --- | --- |
-| `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Резерв остатка |
-| `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Подтверждение списания |
-| `msOnBeforeInventoryRelease` / `msOnInventoryRelease` | Снятие резерва |
+| `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Резерв на `ms3_status_new` (и перед commit при прыжке к paid) |
+| `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Commit на `ms3_status_paid` (повторно stock не уменьшает) |
+| `msOnBeforeInventoryRelease` / `msOnInventoryRelease` | Release на `ms3_status_canceled` до commit. Также при сбое `payment send()` |
+
+```mermaid
+flowchart TB
+  assert[assertAvailable на submit]
+  reserve[reserve на new]
+  commit[commit на paid]
+  release[release на canceled]
+  assert --> reserve
+  reserve --> commit
+  reserve --> release
+```
 
 ## Изменения относительно miniShop2
 
@@ -202,6 +228,9 @@ MiniShop3 использует систему событий MODX для рас�
 | — | `msOnImportRow` | Новое событие |
 | — | `msOnProductsLoad` | Интеграция внешних пакетов |
 | — | `msOnProductPrepare` | Интеграция внешних пакетов |
+| — | `msOnGetPublicSeo` | Публичные SEO Web API |
+| — | `msOn*Shipment*` | Lifecycle отгрузки |
+| — | `msOn*Inventory*` | Резерв/commit/release остатков |
 
 ### Цепочки вызовов (куда смотреть в коде)
 

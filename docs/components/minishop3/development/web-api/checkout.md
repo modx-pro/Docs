@@ -20,7 +20,14 @@ description: "Доставка, оплата, черновик заказа, cos
 
 Список только активных способов. Связка delivery↔payment проверяется при оформлении: без пары submit упадёт.
 
-`POST /delivery/webhook/{delivery_id}`: callback провайдера (подпись), не токен покупателя.
+Webhooks провайдеров (подпись handler’а, не customer token). Префикс API: `/api/v1`.
+
+| Метод | Путь | Условие |
+| --- | --- | --- |
+| `POST` | `/delivery/webhook/{delivery_id}` | Handler доставки + при `ms3_shipment_enabled=0` → 404 |
+| `POST` | `/payment/webhook/{payment_method_id}` | Нужен `PaymentWebhookHandlerInterface`, иначе 400 |
+
+Оплата: JSON body → `verifyWebhook` → `parseWebhook` → `PaymentLifecycleService::applyWebhook`. Ответ success: `attempt_id`, `status`, `order_id`. Классические `webhook.php` / `callback.php` у платёжных extras остаются валидны, если класс не реализует интерфейс Web API.
 
 ## Черновик заказа
 

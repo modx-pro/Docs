@@ -149,6 +149,8 @@ $customer = $ms3->customer->getFields();
 | `ms3_product_import` | `Services\Product\Import\ProductImportService` | Импорт CSV |
 | `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Дерево категорий товара в менеджере |
 | `ms3_product_link_service` | `Services\Product\ProductLinkService` | Связи товара (mgr Vue-вкладка) |
+| `ms3_product_facets` | `Services\Product\ProductFacetService` | Фасеты каталога |
+| `ms3_product_gallery_public` | `Services\Product\ProductGalleryPublicService` | Публичная галерея (get/list/images) |
 
 ```php
 $productService = $modx->services->get('ms3_product_data_service');
@@ -207,6 +209,11 @@ $authManager->registerProvider(new SmsAuthProvider($modx));
 | `ms3_programmatic_order` | `Services\Order\ProgrammaticOrderService` | Создание заказа без витринной сессии для extras/cron (`idempotency_key`) |
 | `ms3_order_number_generator` | `Services\Order\OrderNumberGenerator` | Нумерация заказов |
 | `ms3_manager_order_cost_recalculator` | `Services\Order\ManagerOrderCostRecalculator` | Пересчёт в карточке заказа (mgr) |
+| `ms3_manager_order_list` | `Services\Order\ManagerOrderListService` | Список заказов в менеджере |
+| `ms3_manager_order_mutation` | `Services\Order\ManagerOrderMutationService` | Мутации заказа в mgr |
+| `ms3_manager_order_presenter` | `Services\Order\ManagerOrderPresenter` | Презентация карточки заказа |
+| `ms3_manager_order_products` | `Services\Order\ManagerOrderProductsService` | Позиции заказа в mgr |
+| `ms3_order_lifecycle_ports` | `Services\Order\NullOrderLifecyclePorts` | Порты lifecycle (по умолчанию null) |
 
 ```php
 // Получение сервисов напрямую
@@ -242,6 +249,7 @@ $logService->addEntry(
 | --- | --- | --- |
 | `ms3_cart_item_manager` | `Services\Cart\CartItemManager` | CRUD позиций, расчёт итогов |
 | `ms3_cart_mutation_handler` | `Services\Cart\CartMutationHandler` | Web API корзины: add/change/remove/change-option + события `msOn*Cart` |
+| `ms3_cart_response_normalizer` | `Services\Cart\CartResponseNormalizer` | Нормализация ответа корзины для API/JS |
 
 ```php
 $itemManager = $modx->services->get('ms3_cart_item_manager');
@@ -272,17 +280,45 @@ OrderFieldManager    — поля заказа (Order-specific)
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
 | `ms3_delivery_service` | `Services\Delivery\DeliveryService` | Способы доставки |
+| `ms3_delivery_catalog` | `Services\Delivery\DeliveryCatalogService` | Публичный каталог доставок (Web API) |
 | `ms3_payment_service` | `Services\Payment\PaymentService` | Способы оплаты |
+| `ms3_payment_catalog` | `Services\Payment\PaymentCatalogService` | Публичный каталог оплат (Web API) |
 | `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты для писем и `msGetOrder` (статусы из `ms3_payment_link_statuses` / `payStatus`) |
+| `ms3_payment_lifecycle` | `Services\Payment\PaymentLifecycleService` | Жизненный цикл оплаты → статусы заказа |
+| `ms3_shipment_lifecycle` | `Services\Shipment\ShipmentLifecycleService` | Отгрузки и трекинг (`ms3_shipments` через `PdoShipmentStore`) |
+
+### Остатки, SEO, валидация, domain events
+
+| Ключ | Класс | Назначение |
+| --- | --- | --- |
+| `ms3_inventory` | `Services\Inventory\ProductStockInventory` | Резерв/списание `stock` при `ms3_inventory_enabled` (`InventoryServiceInterface`) |
+| `ms3_public_seo` | `Services\Seo\PublicSeoService` | Публичные SEO-поля + `msOnGetPublicSeo` |
+| `ms3_validation_service` | `Services\Validation\ValidationService` | Pipe-валидация (замена rakit) |
+| `ms3_domain_events` | `Services\Events\DomainEventBridge` | Мост domain events |
+| `ms3_webhook_dispatcher` | `Services\Events\NullWebhookDispatcher` | Диспетчер outbound webhooks (по умолчанию null-реализация) |
+
+### Extra fields и поля моделей
+
+| Ключ | Класс | Назначение |
+| --- | --- | --- |
+| `ms3_extra_fields` | `Services\ExtraFieldsService` | CRUD дополнительных полей |
+| `ms3_repeater_field` | `Services\ExtraFields\RepeaterFieldService` | xtype repeater |
+| `ms3_key_value_field` | `Services\ExtraFields\KeyValueFieldService` | xtype key-value |
+| `ms3_model_field_service` | `Services\ModelField\ModelFieldService` | Поля моделей |
+| `ms3_model_field_section_service` | `Services\ModelField\ModelFieldSectionService` | Секции полей моделей |
 
 ### Сервисы категорий (Category)
 
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
 | `ms3_category_service` | `Services\Category\CategoryService` | Работа с категориями |
+| `ms3_category_catalog` | `Services\Category\CategoryCatalogService` | Публичный каталог категорий (Web API) |
+| `ms3_category_tree` | `Services\Category\CategoryTreeService` | Дерево для Web API / менеджера |
 | `ms3_category_option_service` | `Services\Category\CategoryOptionService` | Опции категорий |
 | `ms3_category_product_scope` | `Services\Category\CategoryProductScopeService` | Доп. категории товара для msProducts |
 | `ms3_category_products_list` | `Services\Category\CategoryProductsListService` | Грид товаров категории |
+| `ms3_customer_resource_group_resolver` | `Services\Catalog\CustomerResourceGroupResolver` | ACL каталога для покупателя |
+| `ms3_catalog_acl_cache` | `Services\Catalog\CatalogAclCacheInvalidator` | Сброс ACL-кэша каталога |
 
 ### Сервисы опций (Option)
 
@@ -290,6 +326,8 @@ OrderFieldManager    — поля заказа (Order-specific)
 | --- | --- | --- |
 | `ms3_option_service` | `Services\Option\OptionService` | EAV система опций |
 | `ms3_option_loader` | `Services\Option\OptionLoaderService` | Загрузка опций с `CaptionOverlayResolver` |
+| `ms3_option_sync` | `Services\Option\OptionSyncService` | Синхронизация значений опций |
+| `ms3_option_category_service` | `Services\Option\OptionCategoryService` | Привязка опций к категориям |
 
 ### Сервисы конфигурации
 

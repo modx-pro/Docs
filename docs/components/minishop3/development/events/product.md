@@ -329,3 +329,37 @@ switch ($modx->event->name) {
         break;
 }
 ```
+
+## msOnGetPublicSeo
+
+Вызывается из `PublicSeoService` после сборки SEO и overlay TV-карты (`ms3_public_seo_tv_map`), до финального whitelist. Товар и категория. На list/tree по умолчанию `include_seo=0`, на get — `1`.
+
+### Параметры
+
+| Параметр | Тип | Описание |
+| --- | --- | --- |
+| `seo` | `array` | Текущий whitelist SEO |
+| `payload` | `array` | Строка каталога (товар/категория) |
+| `og_type` | `string` | `product` или `website` (категория) |
+
+### Модификация
+
+Плагин возвращает patch в `$modx->event->returnedValues['seo']`. Неизвестные ключи отрезает whitelist. `og.title` / `og.description` копируют `title` / `description`, если явно не заданы в patch `seo.og`.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnGetPublicSeo':
+        $seo = $scriptProperties['seo'];
+        $payload = $scriptProperties['payload'];
+        $ogType = $scriptProperties['og_type'];
+
+        if ($ogType === 'product' && !empty($payload['vendor'])) {
+            $seo['description'] = trim(($seo['description'] ?? '') . ' — ' . $payload['vendor']);
+        }
+
+        $values = &$modx->event->returnedValues;
+        $values['seo'] = $seo;
+        break;
+}
+```
