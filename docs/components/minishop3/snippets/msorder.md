@@ -13,6 +13,20 @@ title: msOrder
 Если в URL есть GET-параметр `msorder` (редирект после оформления), сниппет возвращает **пустую строку**. На той же странице выводите [msGetOrder](msgetorder). Форму checkout и детали заказа не совмещайте без условия по URL.
 :::
 
+```mermaid
+flowchart TB
+  call[msOrder на странице checkout]
+  getMsorder{GET msorder?}
+  empty[Пустая строка]
+  form[Форма доставка / оплата / поля]
+  submit[submit заказа]
+  redirect[Редирект ?msorder=id]
+  thanks[msGetOrder на thanks]
+  call --> getMsorder
+  getMsorder -->|Да| empty
+  getMsorder -->|Нет| form --> submit --> redirect --> thanks
+```
+
 ## Параметры
 
 | Параметр | По умолчанию | Описание |
@@ -20,9 +34,9 @@ title: msOrder
 | **tpl** | `tpl.msOrder` | Чанк формы заказа |
 | **userFields** | | Маппинг полей профиля MODX (modUserProfile) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = true` |
 | **customerFields** | | Маппинг полей клиента (msCustomer) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = false` |
-| **includeDeliveryFields** | `id` | Поля доставки через запятую (`*` = все). В выборку всегда попадает `id` |
+| **includeDeliveryFields** | `*` | Поля доставки через запятую (`*` = все). В выборку всегда попадает `id`. В PHP fallback при пустом свойстве — `id` ([#824](https://github.com/modx-pro/MiniShop3/issues/824)) |
 | **includePaymentFields** | `*` | Поля оплаты через запятую (`*` = все) |
-| **includeCustomerAddresses** | `true` | Загружать сохранённые адреса покупателя |
+| **includeCustomerAddresses** | `true` | Загружать сохранённые адреса покупателя. В properties transport пока не объявлен ([#824](https://github.com/modx-pro/MiniShop3/issues/824)) |
 | **showLog** | `false` | Показать лог выполнения |
 | **return** | `tpl` | Формат вывода: `tpl`, `data` |
 

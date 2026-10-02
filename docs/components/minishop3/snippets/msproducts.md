@@ -70,10 +70,10 @@ title: msProducts
 | **includeTVs** | | Список TV через запятую |
 | **includeThumbs** | | Превью изображений через запятую |
 | **includeVendorFields** | `*` | Поля производителя (`*` = все) |
-| **includeOptions** | | Опции товара для включения (через запятую) |
+| **includeOptions** | | Опции товара для включения (через запятую). В properties transport не объявлен ([#799](https://github.com/modx-pro/MiniShop3/issues/799)) |
 | **tvPrefix** | | Префикс для TV-плейсхолдеров (pdoTools) |
-| **withCurrency** | `false` | Добавить символ валюты в `price_formatted` и `old_price_formatted` |
-| **usePackages** | | Внешние пакеты через запятую (см. [Интеграция](#интеграция-с-внешними-пакетами)) |
+| **withCurrency** | `false` | Добавить символ валюты в `price_formatted` и `old_price_formatted`. В properties transport не объявлен ([#799](https://github.com/modx-pro/MiniShop3/issues/799)) |
+| **usePackages** | | Внешние пакеты через запятую (см. [Интеграция](#интеграция-с-внешними-пакетами)). В properties transport не объявлен ([#799](https://github.com/modx-pro/MiniShop3/issues/799)) |
 
 ### Вывод
 
@@ -83,8 +83,8 @@ title: msProducts
 | **returnIds** | `false` | Вернуть только ID товаров |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
 | **toSeparatePlaceholders** | | Префикс для отдельных плейсхолдеров |
-| **outputSeparator** | `\n` | Разделитель между товарами |
-| **tplWrapper** | | Чанк-обёртка для всего вывода |
+| **outputSeparator** | `\n` | Разделитель между товарами. Возможен лишний разделитель в конце списка ([#806](https://github.com/modx-pro/MiniShop3/issues/806)) |
+| **tplWrapper** | | Чанк-обёртка для всего вывода. В properties transport не объявлен ([#799](https://github.com/modx-pro/MiniShop3/issues/799)) |
 | **wrapIfEmpty** | `true` | Использовать обёртку при пустом результате |
 | **showLog** | `false` | Показать журнал выполнения. Виден только тому, кто вошёл в админку, — на любой странице сайта |
 

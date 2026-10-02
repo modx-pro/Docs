@@ -11,7 +11,32 @@ title: msCustomer
 
 ## Принцип работы
 
-Основа сниппета — параметр **`service`**. Меняя этот параметр, вы получаете совершенно разные страницы личного кабинета с разными данными и функциональностью.
+Основа сниппета — параметр **`service`**. Меняя этот параметр, вы получаете разные страницы личного кабинета с разными данными и функциональностью.
+
+```mermaid
+flowchart TB
+  call[msCustomer]
+  auth{Покупатель авторизован?}
+  unauth[unauthorizedTpl / return data]
+  svc{service}
+  profile[profile]
+  addresses[addresses]
+  orders[orders]
+  outTpl[Чанк service]
+  outData[return=data массив]
+  call --> auth
+  auth -->|Нет| unauth
+  auth -->|Да| svc
+  svc --> profile
+  svc --> addresses
+  svc --> orders
+  profile --> outTpl
+  addresses --> outTpl
+  orders --> outTpl
+  profile --> outData
+  addresses --> outData
+  orders --> outData
+```
 
 ### profile — Профиль покупателя
 

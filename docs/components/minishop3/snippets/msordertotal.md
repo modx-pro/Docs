@@ -15,28 +15,44 @@ title: msOrderTotal
 | --- | --- | --- |
 | **tpl** | `tpl.msOrderTotal` | Чанк оформления |
 | **return** | `tpl` | Формат: `data` (массив), `tpl` (рендеринг чанка) |
-| **selector** | (авто) | CSS-селектор контейнера для автообновления |
+| **selector** | (авто) | CSS-селектор контейнера для автообновления. В properties transport не объявлен ([#805](https://github.com/modx-pro/MiniShop3/issues/805)) |
+
+::: warning Свойства formatPrices / withCurrency
+В админке у сниппета могут отображаться `formatPrices` и `withCurrency`. Код их не читает: `*_formatted` всегда с валютой/единицей веса ([#825](https://github.com/modx-pro/MiniShop3/issues/825)).
+:::
 
 ## Чанк по умолчанию
 
-Компонент поставляется с готовым чанком `tpl.msOrderTotal`:
+Компонент поставляет чанк `tpl.msOrderTotal`:
 
 ```fenom
 <span class="ms3-order-total">
     <span class="ms3-order-total__count">{$total_count}</span>
     {if $total_count > 0}
-        <span class="ms3-order-total__cost">{$total_cost} {'ms3_frontend_currency' | lexicon}</span>
+        <span class="ms3-order-total__cost">{$total_cost_formatted}</span>
     {/if}
 </span>
 ```
 
-Для чанка предоставляются готовые CSS-стили в `default.css`.
+Для чанка есть стили в `default.css`.
 
 ## Автообновление виджетов
 
 Сниппет автоматически регистрируется для обновления при изменениях в корзине. При добавлении, удалении или изменении товаров виджет **перерендеривается** с актуальными данными.
 
 ### Как это работает
+
+```mermaid
+flowchart TB
+  snip[msOrderTotal return=tpl]
+  reg[registerSnippet → ms3Config.render.cart]
+  change[Изменение корзины в JS]
+  req[Запрос перерисовки]
+  html[Новый HTML виджета]
+  snip --> reg
+  change --> req --> html
+  reg -.-> req
+```
 
 1. При вызове сниппет регистрирует себя в `ms3Config.render.cart`
 2. При изменении корзины JavaScript отправляет запрос на сервер

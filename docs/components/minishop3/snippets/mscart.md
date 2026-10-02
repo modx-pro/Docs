@@ -21,8 +21,13 @@ title: msCart
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
 | **showLog** | `false` | Показать журнал выполнения. Виден только тому, кто вошёл в админку |
 | **return** | `tpl` | Формат вывода: `tpl` или `data` |
-| **customer_token** | | Токен клиента (по умолчанию берётся из сессии) |
+| **customer_token** | | Токен клиента (по умолчанию из сессии). В properties transport не объявлен ([#805](https://github.com/modx-pro/MiniShop3/issues/805)) |
+| **selector** | | CSS-селектор контейнера для автообновления при нескольких виджетах корзины ([#804](https://github.com/modx-pro/MiniShop3/issues/804), [#805](https://github.com/modx-pro/MiniShop3/issues/805)) |
 | **hideOnThanks** | `false` | При `1` / `true` сниппет возвращает пустую строку на странице «спасибо» (она определяется по параметру URL `?msorder=...`). При `false` корзина выводится как обычно — мини-корзина в общем шаблоне продолжает работать. До 1.11.0 пустая строка на этой странице была поведением по умолчанию и не отключалась. |
+
+::: tip Известные ограничения
+`toPlaceholder` и `showLog` при части сценариев игнорируются ([#803](https://github.com/modx-pro/MiniShop3/issues/803)). Параметры `sortby` / `sortdir`, если передать, не влияют на порядок позиций ([#800](https://github.com/modx-pro/MiniShop3/issues/800)).
+:::
 
 ### Параметры pdoTools
 

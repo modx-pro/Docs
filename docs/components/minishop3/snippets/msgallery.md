@@ -22,24 +22,21 @@ title: msGallery
 | **extensionsDir** | `components/minishop3/img/mgr/extensions/` | Путь к иконкам типов файлов (от `assets/`) для не-image |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
 | **showLog** | `false` | Показать лог выполнения |
-| **return** | `data` | Формат: `data`, `tpl`, `json`, `sql` |
+| **return** | `tpl` | Формат: `data`, `tpl`, `json`, `sql`. После установки свойство = `tpl`. Если свойство пустое, PHP fallback = `data` ([#823](https://github.com/modx-pro/MiniShop3/issues/823)) |
 
 ## Примеры
 
 ### Базовый вывод
 
 ```fenom
-{'msGallery' | snippet : [
-    'return' => 'tpl'
-]}
+{'msGallery' | snippet}
 ```
 
 ### Для конкретного товара
 
 ```fenom
 {'msGallery' | snippet : [
-    'product' => 15,
-    'return' => 'tpl'
+    'product' => 15
 ]}
 ```
 
@@ -47,8 +44,7 @@ title: msGallery
 
 ```fenom
 {'msGallery' | snippet : [
-    'limit' => 5,
-    'return' => 'tpl'
+    'limit' => 5
 ]}
 ```
 
@@ -56,8 +52,7 @@ title: msGallery
 
 ```fenom
 {'msGallery' | snippet : [
-    'filetype' => 'image',
-    'return' => 'tpl'
+    'filetype' => 'image'
 ]}
 ```
 
@@ -65,8 +60,7 @@ title: msGallery
 
 ```fenom
 {'msGallery' | snippet : [
-    'thumbnails' => 'small,medium',
-    'return' => 'tpl'
+    'thumbnails' => 'small,medium'
 ]}
 ```
 
@@ -75,23 +69,22 @@ title: msGallery
 ```fenom
 {'msGallery' | snippet : [
     'sortby' => 'name',
-    'sortdir' => 'ASC',
-    'return' => 'tpl'
+    'sortdir' => 'ASC'
 ]}
 ```
 
 ### Получение данных для обработки
 
 ```fenom
-{set $files = 'msGallery' | snippet}
+{set $files = 'msGallery' | snippet : ['return' => 'data']}
 
 {foreach $files as $file}
     <img src="{$file['url']}" alt="{$file['name']}">
 {/foreach}
 ```
 
-::: info return=data по умолчанию
-По умолчанию сниппет возвращает массив данных (`return=data`). Для вывода через чанк укажите `return=tpl`.
+::: info return по умолчанию
+После установки `return=tpl` (чанк `tpl.msGallery`). Для массива укажите `return=data` явно. Расхождение с PHP fallback при пустом свойстве: [#823](https://github.com/modx-pro/MiniShop3/issues/823).
 :::
 
 ## Плейсхолдеры в чанке
