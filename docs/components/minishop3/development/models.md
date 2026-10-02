@@ -181,6 +181,35 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `msPayment` | `ms3_payments` | Способы оплаты |
 | `msDeliveryMember` | `ms3_delivery_payments` | Связь доставка-оплата |
 
+### Отгрузки (shipment)
+
+Таблицы без xPDO-моделей: доступ через `PdoShipmentStore` / DI-ключ `ms3_shipment_lifecycle` (`ShipmentLifecycleService`). Миграции Phinx: `create_shipments`, `create_shipment_events`.
+
+| Таблица | Описание |
+| --- | --- |
+| `ms3_shipments` | Одна отгрузка на заказ (`uniq_shipment_order`) |
+| `ms3_shipment_events` | Идемпотентность webhook: `provider_event_id` на отгрузку |
+
+#### ms3_shipments — поля
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `id` | int | ID отгрузки |
+| `order_id` | int unsigned | ID заказа (unique) |
+| `delivery_id` | int unsigned | ID способа доставки |
+| `status` | varchar(32) | `preparing`, `shipped`, `in_transit`, `delivered`, `cancelled`, `returned`, `failed` |
+| `tracking_number` | varchar(191) | Трек-номер |
+| `external_id` | varchar(191) | ID у провайдера |
+| `provider` | varchar(191) | Класс/имя провайдера |
+| `carrier` | varchar(191) | Перевозчик |
+| `shipped_at` | int unsigned | Unix-время отправки |
+| `delivered_at` | int unsigned | Unix-время доставки |
+| `last_event_id` | varchar(191) | Последний `provider_event_id` |
+| `meta` | text | JSON-метаданные |
+| `createdon` / `updatedon` | int unsigned | Unix-время |
+
+При `ms3_shipment_enabled=1` статусы отгрузки синхронизируются с заказом через `OrderStatusService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите опции `ms3_shipment_on_*_status`.
+
 ### Производители
 
 | Модель | Таблица | Описание |
@@ -472,4 +501,8 @@ erDiagram
   msCustomer ||--o{ msCustomerAddress : "1:N"
   msOrder }o--|| msDelivery : "N:1"
   msOrder }o--|| msPayment : "N:1"
+  msOrder ||--o| ms3_shipments : "1:0..1"
+  ms3_shipments ||--o{ ms3_shipment_events : "1:N"
 ```
+
+`ms3_shipments` / `ms3_shipment_events` — PDO-таблицы (не классы `MiniShop3\Model\*`).

@@ -101,9 +101,10 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | --- | --- | --- | --- |
 | `GET` | `/delivery/get/{id}` | нет | Способ доставки |
 | `GET` | `/delivery/list` | нет | Активные доставки |
-| `POST` | `/delivery/webhook/{delivery_id}` | нет | Webhook провайдера (подпись, не customer token) |
+| `POST` | `/delivery/webhook/{delivery_id}` | нет | Webhook доставки (подпись handler’а; при `ms3_shipment_enabled=0` → 404) |
 | `GET` | `/payment/get/{id}` | нет | Способ оплаты |
 | `GET` | `/payment/list` | нет | Активные оплаты |
+| `POST` | `/payment/webhook/{payment_method_id}` | нет | Webhook оплаты (`PaymentWebhookHandlerInterface`) |
 
 ## Health
 
