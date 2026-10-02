@@ -58,7 +58,7 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | `POST` | `/customer/forgot-password` | нет | Запрос сброса |
 | `POST` | `/customer/reset-password` | нет | Сброс по токену письма |
 | `POST` | `/customer/add` | auto-mint | Быстрое поле профиля |
-| `GET` | `/customer/token/get` | нет | Гостевой / текущий API-токен |
+| `GET` | `/customer/token/get` | optional | Гостевой / текущий API-токен |
 | `POST` | `/customer/token/refresh` | auto-mint | Ротация токена |
 | `GET` | `/customer/addresses` | auto-mint | Список адресов |
 | `GET` | `/customer/addresses/{id}` | auto-mint | Один адрес |

@@ -283,7 +283,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | `ms3_delivery_catalog` | `Services\Delivery\DeliveryCatalogService` | Публичный каталог доставок (Web API) |
 | `ms3_payment_service` | `Services\Payment\PaymentService` | Способы оплаты |
 | `ms3_payment_catalog` | `Services\Payment\PaymentCatalogService` | Публичный каталог оплат (Web API) |
-| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты для писем и `msGetOrder` (статусы из `ms3_payment_link_statuses` / `payStatus`) |
+| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты: в письмах по `ms3_payment_link_statuses`, в `msGetOrder` по параметру `payStatus` |
 | `ms3_payment_lifecycle` | `Services\Payment\PaymentLifecycleService` | Жизненный цикл оплаты → статусы заказа |
 | `ms3_shipment_lifecycle` | `Services\Shipment\ShipmentLifecycleService` | Отгрузки и трекинг (`ms3_shipments` через `PdoShipmentStore`) |
 
