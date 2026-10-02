@@ -32,7 +32,7 @@ Cookie наследует параметры сессии MODX: `session_cookie_
 
 ## Auto-mint
 
-На роутах с `TokenMiddleware` (корзина, заказ, часть customer) без валидного токена сервер создаёт гостевой токен и ставит cookie. Каталог, health и `GET /customer/token/get` middleware не вешают.
+На роутах с `TokenMiddleware` (корзина, заказ, часть customer) без валидного токена сервер создаёт гостевой токен и ставит cookie. Каталог и health middleware не вешают. `GET /customer/token/get` вешает middleware в режиме optional (`publicRoutes`).
 
 `POST /customer/logout` висит на middleware, но путь в `publicRoutes`: без токена не mint и не 401.
 

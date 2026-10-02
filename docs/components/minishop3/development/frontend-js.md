@@ -245,7 +245,7 @@ const ms3 = {
 
 ```javascript
 window.ms3Config = {
-  apiUrl: '/assets/components/minishop3/api.php',
+  actionUrl: '/assets/components/minishop3/api.php',
   tokenName: 'ms3_token',
 
   // Переопределение селекторов
@@ -317,8 +317,12 @@ Cookie автоматически передаётся браузером при
 ```javascript
 class TokenManager {
   constructor(config) {
-    this.config = config
     this.tokenName = config.tokenName || 'ms3_token'
+    this.apiClient = null
+  }
+
+  setApiClient(apiClient) {
+    this.apiClient = apiClient
   }
 
   // Проверить наличие токена и получить при необходимости
@@ -330,11 +334,21 @@ class TokenManager {
 
   // Запросить новый токен (сервер установит httpOnly cookie)
   async fetchNewToken() {
-    const response = await fetch(
-      `${this.config.apiUrl}?route=/api/v1/customer/token/get`
-    )
+    if (!this.apiClient) {
+      console.error('TokenManager: ApiClient not set. Use setApiClient()')
+      return
+    }
+    const url = this.apiClient.buildUrl('/api/v1/customer/token/get')
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    })
     const data = await response.json()
-    return data.success ? data.data?.token : null
+    return data.success
   }
 }
 
@@ -346,20 +360,27 @@ HTTP-клиент. Токен передаётся автоматически ч
 
 ```javascript
 class ApiClient {
-  constructor(config, tokenManager) {
-    this.baseUrl = config.apiUrl || '/assets/components/minishop3/api.php'
+  constructor({ baseUrl, tokenManager, ctx }) {
+    this.baseUrl = baseUrl || '/assets/components/minishop3/api.php'
     this.tokenManager = tokenManager
+    this.ctx = ctx || 'web'
+  }
+
+  buildUrl(endpoint) {
+    const url = new URL(this.baseUrl, window.location.origin)
+    url.searchParams.set('route', endpoint)
+    url.searchParams.set('ctx', this.ctx)
+    return url
   }
 
   async request(method, route, data = null) {
-    const url = new URL(this.baseUrl, window.location.origin)
-    url.searchParams.set('route', route)
+    const url = this.buildUrl(route)
 
     const options = {
       method,
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        Accept: 'application/json'
       },
       credentials: 'same-origin'  // Включает httpOnly cookie
     }

@@ -128,7 +128,7 @@ flowchart TB
     'payments' => [
         1 => [
             'id' => 1,
-            'name' => 'Наличными',
+            'name' => 'Наличные',
             'description' => '...',
             'logo' => '...',
         ],

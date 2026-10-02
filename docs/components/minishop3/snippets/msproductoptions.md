@@ -246,7 +246,11 @@ title: msProductOptions
 Если опции можно выбирать (например, цвет и размер):
 
 ```fenom
-<form class="product-form">
+<form method="post" class="ms3_form product-form" data-ms3-form>
+    <input type="hidden" name="id" value="{$_modx->resource.id}">
+    <input type="hidden" name="count" value="1">
+    <input type="hidden" name="ms3_action" value="cart/add">
+
     {set $options = 'msProductOptions' | snippet : [
         'return' => 'data',
         'onlyOptions' => 'color,size'
@@ -266,11 +270,7 @@ title: msProductOptions
         </div>
     {/foreach}
 
-    <button type="button"
-            data-ms-action="cart/add"
-            data-id="{$_modx->resource.id}">
-        В корзину
-    </button>
+    <button type="submit">В корзину</button>
 </form>
 ```
 

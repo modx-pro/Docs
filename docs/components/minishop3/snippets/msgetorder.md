@@ -361,7 +361,7 @@ UUID заказа (36 символов) вместо числового ID уд�
 Ссылка на оплату `{$payment_link}` появляется если:
 
 1. У способа оплаты указан класс обработчика (`class`) с методом, возвращающим URL
-2. Статус заказа входит в список допустимых: параметр сниппета `payStatus` (CSV) или системная настройка `ms3_payment_link_statuses` (fallback — `ms3_status_new`)
+2. Статус заказа входит в список допустимых по параметру сниппета `payStatus` (CSV). По умолчанию `1` (черновик). Настройка `ms3_payment_link_statuses` на этот сниппет не влияет: её читают письма и `PaymentLinkResolver::shouldResolveForStatus()`
 3. Заказ не финальный и не в статусе «оплачен» — логика `PaymentLinkResolver::isStatusEligibleForPaymentLink()`
 
 ```fenom

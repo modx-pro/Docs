@@ -203,7 +203,7 @@ MiniShop3 сохраняет обратную совместимость с mini
 
 | Требование | Версия |
 | --- | --- |
-| MODX Revolution | 3.0.0+ |
+| MODX Revolution | 3.0.3+ |
 | PHP | 8.2+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
 
@@ -269,7 +269,9 @@ git clone https://github.com/modx-pro/MiniShop3.git
 cd MiniShop3
 
 # Установка PHP зависимостей
+cd core/components/minishop3
 composer install
+cd ../../..
 
 # Сборка Vue виджетов (требуется Node.js 18+)
 cd vueManager
@@ -295,7 +297,6 @@ core/components/minishop3/
 ├── bootstrap.php           # Инициализация компонента
 ├── config/
 │   ├── routes/             # Маршруты REST API
-│   ├── mgr/                # Конфигурация админки
 │   ├── combos/             # Комбобоксы для админки
 │   ├── filters/            # Фильтры для гридов
 │   └── ms3.services.d/     # Кастомные сервисы
@@ -305,11 +306,10 @@ core/components/minishop3/
 │   ├── chunks/             # Чанки (шаблоны Fenom)
 │   ├── plugins/            # MODX плагины
 │   ├── tasks/              # Задачи Scheduler
-│   └── templates/          # Email-шаблоны
+│   └── templates/          # Шаблоны страниц витрины
 ├── lexicon/                # Языковые файлы (en, ru)
-├── migrations/             # Миграции Phinx
+├── migrations/             # Миграции Phinx (включая сиды)
 ├── schema/                 # xPDO схема БД
-├── seeds/                  # Сиды для БД
 ├── src/
 │   ├── Controllers/        # Бизнес-логика (Cart, Order, Customer)
 │   ├── Model/              # xPDO модели
@@ -337,6 +337,5 @@ assets/components/minishop3/
 │   ├── mgr/                # Стили админки
 │   └── web/                # Стили сайта
 ├── img/                    # Изображения
-├── payment/                # Обработчики платёжных систем
-└── plugins/                # JavaScript плагины
+└── payment/                # Обработчики платёжных систем
 ```

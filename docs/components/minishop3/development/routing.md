@@ -282,7 +282,7 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-На роутах с middleware без валидного токена сервер auto-mint гостевой токен (кроме путей из `publicRoutes` middleware, например logout). Каталог, health и `token/get` в `web.php` middleware не вешают.
+На роутах с middleware без валидного токена сервер auto-mint гостевой токен (кроме путей из `publicRoutes` middleware, например logout и `token/get`). Каталог и health в `web.php` middleware не вешают. `token/get` вешает middleware в режиме optional.
 
 Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth).
 

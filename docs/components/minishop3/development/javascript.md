@@ -77,13 +77,13 @@ DOM-привязки для работы с серверной разметко�
 ```javascript
 // Конфигурация
 const config = {
-  apiUrl: '/assets/components/minishop3/api.php',
+  actionUrl: '/assets/components/minishop3/api.php',
   tokenName: 'ms3_token'
 }
 
 // Инициализация ядра
 const tokenManager = new TokenManager(config)
-const apiClient = new ApiClient({ baseUrl: config.apiUrl, tokenManager })
+const apiClient = new ApiClient({ baseUrl: config.actionUrl, tokenManager })
 tokenManager.setApiClient(apiClient)
 
 // Получение токена
@@ -95,7 +95,7 @@ const order = new OrderAPI(apiClient)
 const customer = new CustomerAPI(apiClient)
 
 // Готово к использованию
-const response = await ms3.cartAPI.add(123, 2, { color: 'red' })
+const response = await cart.add(123, 2, { color: 'red' })
 ```
 
 ## Глобальные объекты
