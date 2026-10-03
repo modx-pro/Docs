@@ -150,7 +150,7 @@ flowchart TB
 
 ## Поля товара в разметке
 
-Полный перечень — в справочнике: [плейсхолдеры msCart](/components/minishop3/snippets/mscart#плейсхолдеры-в-чанке).
+Полный перечень — в справочнике: [плейсхолдеры msCart](/components/minishop3/snippets/mscart#pleysholdery-v-chanke).
 
 ### Опции позиции
 

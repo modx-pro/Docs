@@ -92,7 +92,7 @@ description: Формы входа и регистрации покупател�
 
 Включите `ms3_customer_require_email_verification`. После регистрации покупатель получит письмо со ссылкой на `GET /api/v1/customer/email/verify`. Повторная отправка: `POST /api/v1/customer/email/resend-verification` (нужна авторизация).
 
-URL подставьте в `ms3_email_verification_url` и `ms3_email_verification_success_url`, если стандартный редирект на `api.php` вам не подходит.
+URL подставьте в `ms3_email_verification_url` и `ms3_email_verification_success_url`, если стандартный редирект на `api.php` вам не подходит. В URL для `ms3_email_verification_url` оставьте плейсхолдер `{token}` (или `[[+token]]` в MODX-синтаксисе) — на его место подставится код подтверждения. Если плейсхолдера в настройке нет, письмо будет вести на `api.php` с `route=/api/v1/customer/email/verify&token=...&html=1`.
 
 ## Настройки страниц и поведения
 
@@ -116,5 +116,5 @@ URL подставьте в `ms3_email_verification_url` и `ms3_email_verificat
 
 - [Профиль покупателя](/components/minishop3/frontend/customer-profile)
 - [Сниппет msCustomer](/components/minishop3/snippets/mscustomer)
-- [REST API: клиент](/components/minishop3/development/api#клиент)
+- [REST API: клиент](/components/minishop3/development/web-api/customer)
 - [Frontend JavaScript: AuthUI](/components/minishop3/development/frontend-js)
