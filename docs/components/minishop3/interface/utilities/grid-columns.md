@@ -8,7 +8,7 @@ title: Колонки гридов
 ## Назначение
 
 ::: tip Cookbook
-Пошаговые примеры badge-колонки в заказах и inline-edit в категории: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
+Пошаговые примеры badge-колонки в заказах и редактирование прямо в таблице: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
 :::
 
 - Включать и отключать колонки
@@ -16,7 +16,7 @@ title: Колонки гридов
 - Настраивать сортировку и фильтрацию
 - Задавать ширину колонок
 - Добавлять свои колонки
-- Настраивать inline-редактирование (для грида `category-products`)
+- Настраивать редактирование прямо в таблице (для грида `category-products`)
 
 ::: info Начиная с версии 1.7.0
 Системная настройка `ms3_category_grid_fields` удалена. Настройка колонок таблицы товаров в категории выполняется только через этот интерфейс.
@@ -37,20 +37,6 @@ title: Колонки гридов
 ### Выбор грида
 
 Вверху страницы выберите грид из списка.
-
-### Таблица колонок
-
-Текущая конфигурация:
-
-| Колонка | Описание |
-| --- | --- |
-| Имя | Системное имя поля |
-| Название | Отображаемый заголовок |
-| Видимость | Показывать ли колонку |
-| Сортировка | Можно ли сортировать |
-| Фильтр | Можно ли фильтровать |
-| Заморожена | Фиксация при горизонтальной прокрутке |
-| Ширина | Ширина колонки в пикселях |
 
 ### Действия
 
@@ -97,47 +83,47 @@ title: Колонки гридов
 
 ## Типы колонок
 
-### Model (Поле модели)
+### Поле модели (`model`)
 
 Стандартная колонка: значение поля.
 
-```
+```text
 Тип: model
 Имя поля: email
 Название: Email
 ```
 
-### Template (Шаблон)
+### Шаблон (`template`)
 
 Колонка с HTML-шаблоном.
 
-```
+```text
 Тип: template
 Шаблон: <a href="mailto:{email}">{email}</a>
 ```
 
 Доступные переменные — поля текущей записи в фигурных скобках.
 
-### Badge (Метка)
+### Цветная метка (`badge`)
 
 Цветная метка по тексту и HEX-цвету из других полей строки. В гриде `orders` колонка `order_status` берёт подпись из `status_name` и цвет из `status_color`.
 
-```
+```text
 Тип: badge
 source_field: status_name
 color_field: status_color
 ```
 
-### Option (Опция товара)
+### Опция товара (`option`)
 
 Колонка опции в гриде `category-products`. В конфиге укажите `option.key` (ключ опции из `msOption`).
 
-```
+```text
 Тип: option
 option.key: color
 ```
 
-### Relation (Связь)
+### Связь (`relation`)
 
 Данные из связанной таблицы.
 
@@ -152,14 +138,14 @@ option.key: color
 
 **Пример — количество заказов покупателя:**
 
-```
+```text
 Тип: relation
 Таблица: msOrder
 Внешний ключ: customer_id
 Агрегация: COUNT
 ```
 
-### Computed (Вычисляемое)
+### Вычисляемое значение (`computed`)
 
 Значение вычисляется на сервере. В JSON config обязателен ключ **`computed.className`** (класс реализует `ComputedFieldInterface`):
 
@@ -172,25 +158,25 @@ option.key: color
 }
 ```
 
-### Image (Изображение)
+### Изображение (`image`)
 
 Миниатюра изображения.
 
-```
+```text
 Тип: image
 Имя поля: image
 ```
 
-### Boolean (Логическое)
+### Флаг (`boolean`)
 
 Флаг с иконкой.
 
-```
+```text
 Тип: boolean
 Имя поля: active
 ```
 
-### Price (Цена)
+### Цена (`price`)
 
 Числовое поле как цена. Параметры в JSON **displayConfig**:
 
@@ -200,24 +186,27 @@ option.key: color
 | `currency` | Символ валюты |
 | `currency_position` | `before` или `after` |
 | `thousands_separator` | Разделитель тысяч |
+| `decimal_separator` | Разделитель дробной части (по умолчанию из настройки цены) |
 
-```
+```text
 Тип: price
 Имя поля: price
 displayConfig: {"decimals":2,"currency":"₽","currency_position":"after","thousands_separator":" "}
 ```
 
-### Weight (Вес)
+### Вес (`weight`)
 
-```
+Вес отображается с единицей измерения:
+
+```text
 Тип: weight
 Имя поля: weight
 displayConfig: {"decimals":2,"unit":"кг","unit_position":"after"}
 ```
 
-### Datetime (Дата и время)
+### Дата и время (`datetime`)
 
-```
+```text
 Тип: datetime
 Имя поля: createdon
 displayConfig: {"format":"dd.MM.yyyy HH:mm"}
@@ -225,7 +214,7 @@ displayConfig: {"format":"dd.MM.yyyy HH:mm"}
 
 Формат — шаблон PrimeVue date formatter (`dd`, `MM`, `yyyy`, `HH`, `mm`).
 
-### Actions (Действия)
+### Действия (`actions`)
 
 Колонка с кнопками действий. Встроенные и свои обработчики.
 
@@ -258,7 +247,7 @@ displayConfig: {"format":"dd.MM.yyyy HH:mm"}
 | --- | --- | --- |
 | `name` | string | Уникальное имя действия |
 | `handler` | string | Имя обработчика из реестра |
-| `icon` | string | Иконка PrimeIcons (без `pi-` префикса) |
+| `icon` | string | Полный класс PrimeIcons, например `pi-pencil` |
 | `label` | string | Текст подсказки / ключ лексикона |
 | `severity` | string | Стиль кнопки: `danger`, `success`, `secondary`, `info`, `warn` |
 | `confirm` | boolean | Требовать подтверждение |
@@ -279,15 +268,9 @@ displayConfig: {"format":"dd.MM.yyyy HH:mm"}
 
 ## Примеры настройки
 
-### Скрыть колонку
+### Добавить колонку «Сумма заказов»
 
-1. Найдите колонку в списке
-2. Снимите флаг "Видимость"
-3. Нажмите "Сохранить"
-
-### Добавить колонку "Сумма заказов"
-
-1. Нажмите "Добавить колонку"
+1. Нажмите «Добавить колонку»
 2. Заполните:
    - Имя: `total_spent`
    - Название: `Сумма заказов`
@@ -298,22 +281,11 @@ displayConfig: {"format":"dd.MM.yyyy HH:mm"}
    - Агрегация: `SUM`
 3. Сохраните
 
-### Изменить порядок колонок
-
-Перетащите колонки в нужном порядке.
-
-### Добавить ссылку в email
-
-1. Найдите колонку `email`
-2. Измените тип на `template`
-3. Укажите шаблон: `<a href="mailto:{email}">{email}</a>`
-4. Сохраните
-
-## API Endpoints
+## API-эндпоинты
 
 ### Получение конфигурации грида
 
-```
+```http
 GET /api/mgr/grid-config/{grid_name}
 ```
 
@@ -322,7 +294,7 @@ GET /api/mgr/grid-config/{grid_name}
 ```json
 {
   "success": true,
-  "object": {
+  "data": {
     "columns": [
       {
         "name": "id",
@@ -345,7 +317,7 @@ GET /api/mgr/grid-config/{grid_name}
 
 ### Сохранение конфигурации
 
-```
+```http
 PUT /api/mgr/grid-config/{grid_key}
 ```
 
@@ -374,7 +346,7 @@ PUT /api/mgr/grid-config/{grid_key}
 
 ### Удаление колонки
 
-```
+```http
 DELETE /api/mgr/grid-config/{grid_key}/{field_name}
 ```
 
@@ -398,8 +370,8 @@ DELETE /api/mgr/grid-config/{grid_key}/{field_name}
 
 Реестр доступен как `window.MS3ActionRegistry`:
 
-- регистрируете новые обработчики
-- вешаете хуки before/after на существующие действия
+- регистрируете обработчики действий
+- подключаете хуки до и после существующих действий
 - переопределяете встроенные обработчики
 
 ### API реестра
@@ -564,7 +536,7 @@ $modx->regClientStartupScript(
 
 **Шаг 3. Настройка колонки действий** через интерфейс:
 
-1. Откройте **Утилиты → Колонки гридов**
+1. Откройте **Утилиты → Конфигурация гридов**
 2. Выберите грид `customers`
 3. Найдите колонку `actions` и откройте редактор
 4. Добавьте новое действие:
@@ -577,13 +549,15 @@ $modx->regClientStartupScript(
 
 #### Пример 2: Копирование товара
 
+Штатного процессора дублирования в MiniShop3 нет — вызываем ядерный MODX `resource/duplicate` (`msProduct` наследует ресурс):
+
 ```javascript
 MS3ActionRegistry.register('duplicateProduct', async (data, context) => {
   const response = await fetch('/assets/components/minishop3/connector.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      action: 'MiniShop3\\Processors\\Product\\Duplicate',
+      action: 'resource/duplicate',
       id: data.id,
       HTTP_MODAUTH: MODx.siteId
     })
@@ -618,21 +592,14 @@ MS3ActionRegistry.register('duplicateProduct', async (data, context) => {
 
 #### Пример 3: Отправка уведомления
 
+Штатного процессора отправки уведомления нет — REST-роуты `/api/mgr/notifications` отдают только CRUD конфигураций. Для кнопки «Отправить» реализуйте свой эндпоинт (внутри — `NotificationManager` или `StatusChangedNotification`) и вызовите его из обработчика:
+
 ```javascript
 MS3ActionRegistry.register('sendNotification', async (data, context) => {
-  // Показать диалог выбора шаблона
-  const template = prompt('Введите имя шаблона уведомления:')
-  if (!template) return
-
-  const response = await fetch('/assets/components/minishop3/connector.php', {
+  const response = await fetch('/assets/components/mycomponent/notify.php', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      action: 'MiniShop3\\Processors\\Notification\\Send',
-      customer_id: data.id,
-      template: template,
-      HTTP_MODAUTH: MODx.siteId
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customer_id: data.id })
   })
 
   const result = await response.json()
@@ -650,7 +617,7 @@ MS3ActionRegistry.register('sendNotification', async (data, context) => {
 
 #### Пример 4: Условная видимость кнопки
 
-Используйте функцию для `disabled`:
+Кнопку отключают полем записи `disabledField`:
 
 ```javascript
 // В конфигурации колонки
@@ -665,76 +632,6 @@ MS3ActionRegistry.register('sendNotification', async (data, context) => {
 }
 ```
 
-Или проверка через поле данных:
-
-```json
-{
-  "name": "block",
-  "handler": "blockCustomer",
-  "icon": "pi-ban",
-  "label": "Заблокировать",
-  "severity": "danger",
-  "disabledField": "blocked"  // disabled когда blocked = true
-}
-```
-
-### Хуки для встроенных действий
-
-#### Логирование удалений
-
-```javascript
-MS3ActionRegistry.registerAfterHook('delete', async (data, context, result) => {
-  // Отправка в систему аудита
-  await fetch('/api/audit/log', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      action: 'delete',
-      entity: context.gridId,
-      entityId: data.id,
-      user: MODx.user?.id,
-      timestamp: new Date().toISOString()
-    })
-  })
-})
-```
-
-#### Предотвращение удаления
-
-```javascript
-MS3ActionRegistry.registerBeforeHook('delete', (data, context) => {
-  // Запретить удаление записей со статусом "оплачен"
-  if (context.gridId === 'orders' && data.status === 2) {
-    context.toast.add({
-      severity: 'error',
-      summary: 'Запрещено',
-      detail: 'Нельзя удалить оплаченный заказ',
-      life: 5000
-    })
-    return false // Отменить действие
-  }
-  return true // Продолжить
-})
-```
-
 ### Доступные иконки
 
-Используются иконки [PrimeIcons](https://primevue.org/icons). Популярные:
-
-| Иконка | Класс | Назначение |
-| --- | --- | --- |
-| ✏️ | `pi-pencil` | Редактирование |
-| 🗑️ | `pi-trash` | Удаление |
-| 👁️ | `pi-eye` | Просмотр |
-| 📋 | `pi-copy` | Копирование |
-| ⬇️ | `pi-download` | Скачивание |
-| 📤 | `pi-send` | Отправка |
-| 🔒 | `pi-lock` | Блокировка |
-| 🔓 | `pi-unlock` | Разблокировка |
-| 🚫 | `pi-ban` | Запрет |
-| ✅ | `pi-check` | Подтверждение |
-| ❌ | `pi-times` | Отмена |
-| 🔄 | `pi-refresh` | Обновление |
-| ⚙️ | `pi-cog` | Настройки |
-| 🖨️ | `pi-print` | Печать |
-| 🔗 | `pi-external-link` | Внешняя ссылка |
+Иконки — [PrimeIcons](https://primevue.org/icons): `pi-pencil`, `pi-trash`, `pi-eye`, `pi-copy`, `pi-download`, `pi-send`, `pi-lock`, `pi-unlock`, `pi-ban`, `pi-check`, `pi-times`, `pi-refresh`, `pi-cog`.

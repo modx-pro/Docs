@@ -7,21 +7,13 @@ title: Поля модели
 
 ## Назначение
 
-Вы правите конфигурацию полей `ms3_model_fields`:
+Правите подписи, виджеты и секции существующих полей; данные в таблицах не меняются.
 
 ::: info Не путать с page-fields
-[Поля товара](/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) настраивают только вкладку «Данные» на карточке товара. [Дополнительные поля](/components/minishop3/interface/utilities/extra-fields) создают новые колонки в БД. Cookbook: [Поля модели](/components/minishop3/manager/model-fields/cookbook).
+[Поля товара](/components/minishop3/interface/utilities/product-fields) (`ms3_product_fields`, `page_key=product_data`) настраивают только вкладку «Свойства товара» на карточке товара. [Дополнительные поля](/components/minishop3/interface/utilities/extra-fields) создают новые колонки в БД. Cookbook: [Поля модели](/components/minishop3/manager/model-fields/cookbook).
 :::
 
-Вы:
-
-- смотрите поля модели
-- правите отображение
-- привязываете поля к секциям
-- задаёте виджеты (xtype)
-- управляете секциями
-
-## Отличие от "Дополнительных полей"
+## Отличие от дополнительных полей
 
 | Характеристика | Поля модели | Дополнительные поля |
 | --- | --- | --- |
@@ -34,24 +26,18 @@ title: Поля модели
 
 ### Выбор модели
 
-Фильтр по модели вверху страницы:
+Фильтр по модели вверху страницы — доступны 4 модели:
 
-- msProductData — данные товара
-- msVendor — производители
 - msOrder — заказы
 - msOrderAddress — адреса
 - msOrderProduct — позиции в заказе
+- msVendor — производители
+
+`msProductData` в этом списке нет: данные товара настраиваются в [Поля товара](product-fields).
 
 ### Панель секций
 
 Левая панель: секции выбранной модели.
-
-**Действия с секциями:**
-
-- Добавить новую секцию
-- Редактировать существующую
-- Удалить секцию
-- Изменить порядок (drag-and-drop)
 
 ### Таблица полей
 
@@ -104,33 +90,44 @@ title: Поля модели
 
 ### Источник данных для combo
 
-Для типа `combo` укажите JSON-конфигурацию:
+Для типа `combo` укажите JSON-конфигурацию с обязательным `source.type`.
+
+Модель (класс из реестра):
 
 ```json
 {
-  "store": [
-    ["value1", "Вариант 1"],
-    ["value2", "Вариант 2"],
-    ["value3", "Вариант 3"]
-  ]
+  "source": {
+    "type": "model",
+    "class": "MiniShop3\\Model\\msOption",
+    "valueField": "id",
+    "labelTemplate": "{caption}",
+    "where": {"active": true},
+    "limit": 500
+  }
 }
 ```
 
-Или загрузка из API:
+Статический список:
 
 ```json
 {
-  "url": "/api/mgr/options/list",
-  "valueField": "id",
-  "displayField": "name"
+  "source": {
+    "type": "static",
+    "options": [
+      ["value1", "Вариант 1"],
+      ["value2", "Вариант 2"]
+    ]
+  }
 }
 ```
+
+Поле `url` не нужно: готового роута `GET /api/mgr/options/list` нет, список опций отдаёт `GET /api/mgr/options`.
 
 ## Управление секциями
 
 ### Создание секции
 
-1. Нажмите кнопку "+" в панели секций
+1. Нажмите кнопку «+» в панели секций
 2. Заполните форму:
 
 | Поле | Описание |
@@ -146,7 +143,7 @@ title: Поля модели
 ### Удаление секции
 
 ::: warning Внимание
-При удалении секции поля не удаляются, а перемещаются в "Без секции".
+При удалении секции поля не удаляются, а перемещаются в «Без секции».
 :::
 
 ### Порядок секций
@@ -154,29 +151,6 @@ title: Поля модели
 Перетаскивайте секции, чтобы сменить порядок.
 
 ## Примеры использования
-
-### Группировка полей цены
-
-1. Создайте секцию "Цены":
-   - Ключ: `prices`
-   - Название: `Цены`
-
-2. Переместите поля в секцию:
-   - `price` → Цены
-   - `old_price` → Цены
-   - `wholesale_price` → Цены (если добавлено)
-
-### Настройка ширины полей
-
-Для компактного отображения:
-
-| Поле | Ширина |
-| --- | --- |
-| article | 6 (50%) |
-| price | 3 (25%) |
-| old_price | 3 (25%) |
-| weight | 4 (33%) |
-| stock | 4 (33%) |
 
 ### Скрытие технических полей
 
@@ -186,11 +160,11 @@ title: Поля модели
 - `createdon` — технические даты
 - `source` — если используется один источник
 
-## API Endpoints
+## API-эндпоинты
 
 ### Список моделей
 
-```
+```http
 GET /api/mgr/model-fields/models
 ```
 
@@ -199,9 +173,9 @@ GET /api/mgr/model-fields/models
 ```json
 {
   "success": true,
-  "object": {
+  "data": {
     "models": [
-      { "value": "msProductData", "label": "Данные товара" },
+      { "value": "msOrder", "label": "Заказ" },
       { "value": "msVendor", "label": "Производитель" }
     ]
   }
@@ -210,13 +184,21 @@ GET /api/mgr/model-fields/models
 
 ### Список полей модели
 
+```http
+GET /api/mgr/model-fields?model=msOrder
 ```
-GET /api/mgr/model-fields?model=msProductData
+
+### Создание поля
+
+```http
+POST /api/mgr/model-fields
 ```
+
+Тело — параметры поля (те же, что в диалоге: `label`, `xtype`, `section_id`, `visible`, `width`, …). Требуется `mssetting_save`.
 
 ### Обновление поля
 
-```
+```http
 PUT /api/mgr/model-fields/{id}
 ```
 
@@ -233,15 +215,23 @@ PUT /api/mgr/model-fields/{id}
 }
 ```
 
+### Переупорядочивание полей
+
+```http
+PUT /api/mgr/model-fields/ranks
+```
+
+Тело — JSON с новым порядком полей (как в drag-and-drop интерфейса). Требуется `mssetting_save`.
+
 ### Секции модели
 
-```
-GET /api/mgr/model-fields/sections/msProductData
+```http
+GET /api/mgr/model-fields/sections/msOrder
 ```
 
 ### Создание секции
 
-```
+```http
 POST /api/mgr/model-fields/sections
 ```
 
@@ -249,21 +239,35 @@ POST /api/mgr/model-fields/sections
 
 ```json
 {
-  "model": "msProductData",
+  "model": "msOrder",
   "section_key": "prices",
   "label": "Цены",
   "sort_order": 10
 }
 ```
 
+### Редактирование секции
+
+```http
+PUT /api/mgr/model-fields/sections/{id}
+```
+
+Тело — изменяемые поля секции (`label`, `sort_order`, …). Требуется `mssetting_save`.
+
+### Переупорядочивание секций
+
+```http
+PUT /api/mgr/model-fields/sections/ranks
+```
+
+Тело — JSON с новым порядком секций. Требуется `mssetting_save`.
+
 ### Удаление секции
 
-```
+```http
 DELETE /api/mgr/model-fields/sections/{id}
 ```
 
 ## Связь с конфигурацией
-
-Утилита правит раскладку полей моделей (`msOrder`, `msOrderAddress`, `msVendor` и др.) на формах менеджера.
 
 Не путайте с [Поля товара](product-fields) (`product_data`) и с [Колонки гридов](grid-columns). Влияние на CSV-импорт и публичный API этим экраном не задаётся.

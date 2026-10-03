@@ -14,7 +14,7 @@ title: Категория
 | Drag-and-drop | Сортировка товаров перетаскиванием |
 | Фильтры | Поиск, публикация, свои фильтры |
 | Массовые операции | Публикация, снятие с публикации, удаление |
-| Настраиваемые колонки | Через [Утилиты → Колонки гридов](utilities/grid-columns) |
+| Настраиваемые колонки | Через [Утилиты → Конфигурация гридов](utilities/grid-columns) |
 | Действия | Просмотр, редактирование, удаление, дублирование |
 
 ### Документ
@@ -43,19 +43,19 @@ title: Категория
 ### Опции категории
 
 ::: info Начиная с v1.10.0-beta1
-Вкладка полностью на Vue (компонент `CategoryOptionsTab`). Legacy ExtJS-грид и процессоры `Processors/Category/Option/*` удалены.
+Вкладка полностью на Vue (компонент `CategoryOptionsTab`). Прежний ExtJS-грид и процессоры `Processors/Category/Option/*` удалены.
 :::
 
 Грид опций, привязанных к этой категории:
 
 - **Drag-and-drop сортировка** — порядок (`position`) сохраняется одним POST после отпускания (`/api/mgr/categories/{id}/options/sort`)
 - **Inline-редактирование** по двойному клику:
-  - `Значение по умолчанию` — default в форме товара
-  - `Название (для категории)` — per-category override глобального `caption` (пусто = глобальное)
-- **Колонка «Глобально»** (read-only) — `caption` из `msOption` для сравнения с override
+  - `Значение по умолчанию` — подставится в форму товара
+  - `Название (для категории)` — собственное значение вместо глобального `caption` (пусто = берётся глобальное)
+- **Колонка «Глобально»** (только для чтения) — `caption` из `msOption` для сравнения со своим значением
 - **Массовые действия** (выделение чекбоксами): Активировать / Деактивировать / Сделать обязательной / Снять обязательность / Удалить
-- **Кнопка «Добавить опцию»** — диалог выбора опции: значение по умолчанию, active, required, caption/description override
-- **Кнопка «Копировать опции из категории»** — переносит все связки из другой категории (дубликаты пропускает). После копирования `msCategoryOption::afterSave` применит опции ко всем товарам текущей категории.
+- **Кнопка «Добавить опцию»** — диалог выбора опции: значение по умолчанию, active, required, свои `caption`/`description`
+- **Кнопка «Копировать опции из категории»** — переносит все связки из другой категории (дубликаты пропускает). После копирования `msCategoryOption::save()` применит опции ко всем товарам текущей категории.
 
 ### Группы ресурсов
 
@@ -63,15 +63,7 @@ title: Категория
 
 ## Таблица товаров
 
-Таблица на Vue 3 + PrimeVue. Большие списки грузятся порциями; на экране только видимые строки.
-
-### Настройка колонок
-
-Колонки настраиваются в **Утилиты → Колонки гридов** (грид `category-products`).
-
-::: warning Устаревшая настройка
-Системная настройка `ms3_category_grid_fields` удалена начиная с версии 1.7.0. Используйте интерфейс [Колонки гридов](utilities/grid-columns).
-:::
+Большие списки грузятся порциями: на экране только видимые строки.
 
 ### Inline-редактирование
 
@@ -81,27 +73,25 @@ title: Категория
 | --- | --- |
 | `text` | `pagetitle`, `longtitle`, `article`, `made_in` |
 | `number` | `price`, `old_price`, `weight` |
-| `boolean` | `published`, `new`, `popular`, `favorite` |
+| `select` | `published`, `new`, `popular`, `favorite` |
 
-Настройка в **Утилиты → Колонки гридов**, грид `category-products`: включите `editable`, задайте `editor_type` (`text`, `number`, `select`, `combo`). Пошагово: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
+Флаги выводятся колонкой типа `boolean` (Да/Нет). Для inline-правки задайте им `editor_type` `select` или `text`: типа `boolean` среди редакторов нет.
 
-Подробнее: [Колонки гридов](utilities/grid-columns).
+Настройка в **Утилиты → Конфигурация гридов**, грид `category-products`: включите `editable`, задайте `editor_type` (`text`, `number`, `select`, `combo`), опционально `editor_options`. Право на запись ячейки: `msproduct_save` (`PUT /api/mgr/categories/{id}/products/{productId}/data`). Пошагово: [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook).
 
 ## Настройка колонок таблицы
 
+::: warning Устаревшая настройка
+Системная настройка `ms3_category_grid_fields` удалена начиная с версии 1.7.0. Используйте интерфейс [Колонки гридов](utilities/grid-columns).
+:::
+
 ### Через интерфейс
 
-1. Откройте **Утилиты → Колонки гридов**
-2. Выберите грид **category-products**
-3. Настройте видимость, порядок, ширину колонок
-4. Сохраните
+**Утилиты → Конфигурация гридов** → грид **category-products** (`grid_key=category-products`): настройте видимость, порядок и ширину колонок, сохраните.
 
 ### Через API и утилиту
 
-В 1.13.x PHP-файла `core/components/minishop3/custom/grids/category-products.php` **нет**. Колонки хранятся в `ms3_grid_fields` и настраиваются через:
-
-- **Утилиты → Колонки гридов** (`grid_key=category-products`)
-- Manager API `/api/mgr/grid-config/category-products` (см. [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook))
+В 1.13.x PHP-файла `core/components/minishop3/custom/grids/category-products.php` **нет**. Колонки хранятся в `ms3_grid_fields` и настраиваются через интерфейс гридов (см. выше) или Manager API `/api/mgr/grid-config/category-products` (см. [Cookbook колонок грида](/components/minishop3/manager/grid-config/cookbook)).
 
 Пример добавления колонки через API:
 
@@ -121,8 +111,6 @@ POST /api/mgr/grid-config/category-products/field
   "config": {}
 }
 ```
-
-Inline-edit: флаги **`editable`**, **`editor_type`** (`text`, `number`, `select`, `combo`), опционально **`editor_options`**. Право на запись ячейки: `msproduct_save` (`PUT /api/mgr/categories/{id}/products/{productId}/data`).
 
 ### Типы колонок
 
@@ -144,7 +132,7 @@ Inline-edit: флаги **`editable`**, **`editor_type`** (`text`, `number`, `se
 
 ### Relation и badge
 
-Relation подтягивает JOIN. Для badge в гриде `orders` скрытые relation-колонки дают текст и HEX, видимая колонка — тип **`badge`** с полями на **верхнем уровне** config (не внутри `computed`):
+Для badge в гриде `orders` скрытые relation-колонки дают текст и HEX. Видимая колонка получает тип **`badge`** с полями на **верхнем уровне** config (не внутри `computed`):
 
 ```json
 {
@@ -154,12 +142,10 @@ Relation подтягивает JOIN. Для badge в гриде `orders` скр
 }
 ```
 
-Для типа **`computed`** в config обязателен ключ **`computed.className`** (класс должен реализовать `ComputedFieldInterface`).
-
-В `category-products` aggregation у relation **не поддерживается**.
+В `category-products` агрегация для relation **не поддерживается**. Параметры relation и `computed.className` — в справочнике [Колонки гридов](utilities/grid-columns).
 
 ::: tip Цвета статусов
-В `msOrderStatus` цвет часто хранится HEX без `#`. UI добавляет `#` при рендере badge.
+В `msOrderStatus` цвет часто хранится HEX без `#`. Интерфейс добавляет `#` при отрисовке badge.
 :::
 
 ## Добавление действий в колонку
@@ -183,12 +169,6 @@ Relation подтягивает JOIN. Для badge в гриде `orders` скр
             'label' => 'view',
         ],
         [
-            'name' => 'edit',
-            'handler' => 'edit',
-            'icon' => 'pi-pencil',
-            'label' => 'edit',
-        ],
-        [
             'name' => 'publish',
             'handler' => 'publish',
             'icon' => 'pi-check',
@@ -196,12 +176,6 @@ Relation подтягивает JOIN. Для badge в гриде `orders` скр
             'label' => 'publish',
             'labelOff' => 'unpublish',
             'toggleField' => 'published',
-        ],
-        [
-            'name' => 'duplicate',
-            'handler' => 'duplicate',
-            'icon' => 'pi-copy',
-            'label' => 'duplicate',
         ],
         [
             'name' => 'delete',
@@ -226,11 +200,14 @@ Relation подтягивает JOIN. Для badge в гриде `orders` скр
 | `iconOff` | string | Иконка для выключенного состояния (toggle) |
 | `label` | string | Ключ лексикона для tooltip |
 | `labelOff` | string | Ключ лексикона для выключенного состояния |
-| `severity` | string | Стиль кнопки (danger, success, warning) |
+| `severity` | string | Стиль кнопки: `secondary`, `success`, `info`, `warn`, `danger` |
 | `confirm` | bool | Требовать подтверждение |
 | `confirmMessage` | string | Ключ лексикона сообщения подтверждения |
 | `toggleField` | string | Поле для toggle-действий |
 | `visible` | function | Условие видимости |
+| `disabled` | bool / function | Выключить кнопку: `true` или функция от строки (`(row) => …`) |
+| `disabledField` | string | Выключить кнопку, пока истинно поле строки с этим именем |
+| `isDisabled` | bool | Итоговое состояние выключения (вычисляется и используется UI) |
 
 ### Свои действия через JavaScript
 
@@ -261,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 ```
 
-Действие добавьте в config колонки `actions` через **Утилиты → Колонки гридов** или PUT grid-config:
+Действие добавьте в config колонки `actions` через **Утилиты → Конфигурация гридов** или PUT grid-config:
 
 ```json
 {
@@ -377,7 +354,7 @@ return [
 
 | Параметр | Тип | Описание |
 | --- | --- | --- |
-| `type` | string | Тип фильтра: `text`, `select`, `datepicker`, `daterange` |
+| `type` | string | Тип фильтра: `text`, `select` — эти два выводит грид категории; `checkbox` заявлен в конфиге, но в вёрстке не выводится; `datepicker`/`daterange` используются в гриде заказов |
 | `label` | string | Ключ лексикона для подписи |
 | `placeholder` | string | Ключ лексикона для placeholder |
 | `width` | string | CSS ширина (`150px`, `20%`) |
@@ -428,8 +405,6 @@ $dataNumericFields = ['price', 'old_price', 'weight', 'vendor_id'];
 
 ### Добавление своего фильтра
 
-#### Шаг 1: добавьте фильтр в конфигурацию
-
 ```php
 // core/components/minishop3/custom/filters/category-products.php
 
@@ -470,7 +445,7 @@ return [
 
 ### API массовых операций
 
-```
+```http
 POST /api/mgr/categories/{id}/products/multiple
 ```
 
@@ -496,7 +471,7 @@ POST /api/mgr/categories/{id}/products/multiple
 
 ### API сортировки
 
-```
+```http
 POST /api/mgr/categories/{id}/products/sort
 ```
 
@@ -516,9 +491,10 @@ POST /api/mgr/categories/{id}/products/sort
 
 | Настройка | Описание | По умолчанию |
 | --- | --- | --- |
-| `ms3_category_show_nested_products` | Показывать вложенные товары | `false` |
-| `ms3_category_show_options` | Показывать опции категории | `true` |
-| `ms3_category_remember_grid` | Запоминать состояние таблицы | `true` |
+| `ms3_category_show_nested_products` | Показывать вложенные товары | `true` |
+| `ms3_category_show_options` | Показывать опции категории | `false` |
+
+Системной настройки «Запоминать состояние таблицы» нет: номер и размер страницы хранятся в браузере (`localStorage`) и настройкой не управляются.
 
 ## События
 
@@ -541,11 +517,11 @@ if ($page === 'category_update' || $page === 'category_create') {
 }
 ```
 
-## API Endpoints
+## API-эндпоинты
 
 ### Товары категории
 
-```
+```http
 GET /api/mgr/categories/{id}/products
 ```
 
@@ -564,7 +540,7 @@ GET /api/mgr/categories/{id}/products
 
 ### Конфигурация фильтров
 
-```
+```http
 GET /api/mgr/categories/{id}/products/filters
 ```
 
@@ -573,7 +549,7 @@ GET /api/mgr/categories/{id}/products/filters
 ```json
 {
   "success": true,
-  "object": {
+  "data": {
     "filters": {
       "query": {
         "type": "text",
@@ -596,7 +572,7 @@ GET /api/mgr/categories/{id}/products/filters
 
 ### Inline-редактирование данных товара
 
-```
+```http
 PUT /api/mgr/categories/{id}/products/{productId}/data
 ```
 

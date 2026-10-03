@@ -3,26 +3,9 @@ title: Интерфейс админки
 ---
 # Административный интерфейс
 
-Откройте **Приложения → MiniShop3**. Ресурсы категории и товара — в дереве MODX.
+Откройте **Пакеты → MiniShop3**. Ресурсы категории и товара — в дереве MODX.
 
 ## Доступ
-
-**Меню:** Приложения → MiniShop3
-
-```mermaid
-flowchart TB
-  ModxMenu[Приложения] --> MiniShop3[MiniShop3]
-  MiniShop3 --> MgrOrders[Заказы_mgr/orders]
-  MiniShop3 --> MgrCustomers[Клиенты_mgr/customers]
-  MiniShop3 --> MgrNotifications[Уведомления_mgr/notifications]
-  MiniShop3 --> MgrSettings[Настройки_mgr/settings]
-  MiniShop3 --> MgrUtilities[Утилиты_mgr/utilities]
-  MiniShop3 --> MgrHelp[Помощь_mgr/help]
-  MiniShop3 --> SysSettings[Системные_настройки_ns_minishop3]
-  TreeMODX[Дерево_ресурсов] --> ResCategory[Категория_msCategory]
-  TreeMODX --> ResProduct[Товар_msProduct]
-  ResProduct --> TabGallery[Галерея_товара]
-```
 
 | Пункт | `action` | Примечание |
 | --- | --- | --- |
@@ -44,30 +27,31 @@ flowchart TB
 
 ## Раздел настроек
 
-**Меню:** Приложения → MiniShop3 → Настройки
+**Меню:** Пакеты → MiniShop3 → Настройки
 
 | Вкладка | Описание |
 | --- | --- |
-| [Доставки](settings/deliveries) | Способы доставки |
-| [Оплаты](settings/payments) | Способы оплаты |
-| [Производители](settings/vendors) | Справочник производителей |
-| [Связи](settings/links) | Типы связей товаров |
-| [Опции](settings/options) | Справочник опций товаров |
+| [Варианты доставки](settings/deliveries) | Способы доставки |
+| [Способы оплаты](settings/payments) | Платёжные системы |
+| Статусы заказа | `#tab-statuses` |
+| [Производители товаров](settings/vendors) | Справочник производителей |
+| [Связи товаров](settings/links) | Типы связей товаров |
+| [Свойства товаров](settings/options) | Справочник опций товаров |
 
 Подробнее: [Настройки](settings)
 
 ## Утилиты
 
-**Меню:** Приложения → MiniShop3 → Утилиты
+**Меню:** Пакеты → MiniShop3 → Утилиты
 
 | Вкладка | Описание |
 | --- | --- |
 | [Галерея](utilities/gallery) | Перегенерация миниатюр |
 | [Импорт](utilities/import) | Импорт товаров из CSV |
-| [Поля товара](utilities/product-fields) | Настройка полей в карточке товара |
-| [Дополнительные поля](utilities/extra-fields) | Создание новых полей |
-| [Колонки гридов](utilities/grid-columns) | Настройка таблиц |
-| [Поля модели](utilities/model-fields) | Поля моделей БД |
+| [Поля товара (админка)](utilities/product-fields) | Настройка полей в карточке товара |
+| [Свои поля](utilities/extra-fields) | Создание новых полей |
+| [Конфигурация гридов](utilities/grid-columns) | Настройка таблиц |
+| [Поля форм (админка)](utilities/model-fields) | Поля моделей БД |
 
 Пошаговые сценарии полей и гридов: [Cookbook менеджера](/components/minishop3/manager/).
 
@@ -116,4 +100,4 @@ MS3ActionRegistry.register('myAction', async (data, context) => {
 });
 ```
 
-Подробнее: [Категория — Добавление действий](category#добавление-действий-в-колонку)
+Подробнее: [Категория — добавление действий](category#добавление-действий-в-колонку)

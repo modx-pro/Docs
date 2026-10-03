@@ -3,7 +3,7 @@ title: Связи товаров
 ---
 # Связи товаров
 
-Откройте **Extras → MiniShop3 → Настройки → Связи**.
+Откройте **Пакеты → MiniShop3 → Настройки → Связи товаров**.
 
 ## Назначение
 
@@ -49,7 +49,7 @@ $link->save();
 
 ## Вывод связанных товаров
 
-### Сниппет msProducts с параметром link
+Связанные товары выводит сниппет `msProducts` с параметром `link`:
 
 ```fenom
 {* Похожие товары для текущего товара *}
@@ -59,32 +59,6 @@ $link->save();
     'tpl' => 'tpl.msProducts.row',
     'limit' => 4
 ])}
-```
-
-### Вывод в карточке товара
-
-```fenom
-{* Сопутствующие товары *}
-<div class="related-products">
-    <h3>С этим товаром покупают</h3>
-    {'msProducts' | snippet : [
-        'link' => 2,
-        'master' => $id,
-        'tpl' => 'tpl.msRelated.row',
-        'limit' => 6
-    ]}
-</div>
-
-{* Похожие товары *}
-<div class="similar-products">
-    <h3>Похожие товары</h3>
-    {'msProducts' | snippet : [
-        'link' => 1,
-        'master' => $id,
-        'tpl' => 'tpl.msSimilar.row',
-        'limit' => 4
-    ]}
-</div>
 ```
 
 ## Двусторонние связи
@@ -97,7 +71,7 @@ $link->save();
 | `many_to_one` | Одна строка с переставленными master/slave |
 | `one_to_one`, `many_to_many` | Две строки: A→B и B→A (создаёт `ProductLinkService`) |
 
-Для `one_to_many` обратную строку вручную не добавляйте, если нужна только связь «один ко многим».
+Для `many_to_many` вторая строка создаётся автоматически: сервис синхронизирует обе строки, поэтому пару master/slave задавать не нужно. Правка одной из строк перезаписывается сервисом.
 
 ## Использование в корзине
 
@@ -110,56 +84,59 @@ $link->save();
     {$cartProductIds[] = $product.id}
 {/foreach}
 
-{* Товары для допродажи *}
-<div class="cart-crosssell">
-    <h4>Рекомендуем добавить</h4>
-    {'msProducts' | snippet : [
-        'link' => 4,
-        'master' => $cartProductIds | join : ',',
-        'tpl' => 'tpl.msCrosssell.row',
-        'limit' => 3
-    ]}
-</div>
+{* Товары для допродажи: параметр `master` принимает только один id, для нескольких id
+  задаём джойн и условие сами
+*}
+{'msProducts' | snippet : [
+    'innerJoin' => ['Link' => ['class' => 'msProductLink', 'alias' => 'Link', 'on' => '`msProduct`.`id` = `Link`.`slave` AND `Link`.`link` = 4']],
+    'where' => ['Link.master:IN' => $cartProductIds],
+    'tpl' => 'tpl.msCrosssell.row',
+    'limit' => 3
+]}
 ```
 
 ## Массовое управление связями
 
-### Через плагин при сохранении товара
+События сохранения товара в пакете нет — используйте ядерное `OnDocFormSave` и проверяйте, что сохраняется именно `msProduct`:
 
 ```php
 <?php
-// Плагин на событие msOnProductSave
-switch ($modx->event->name) {
-    case 'msOnProductSave':
-        // Автоматическое создание связей для товаров той же категории
-        $product = $modx->getOption('product', $scriptProperties);
-        $categoryId = $product->get('parent');
+// Плагин на событие OnDocFormSave (события: OnDocFormSave)
+if ($modx->event->name !== 'OnDocFormSave') {
+    return;
+}
+// $mode = 'create' при создании, 'cmp_update' при сохранении карточки
+if ($mode === 'cmp_update' || $resource->class_key !== 'msProduct') {
+    return;
+}
+$product = $resource;
 
-        // Получаем товары из той же категории
-        $siblings = $modx->getCollection(\MiniShop3\Model\msProduct::class, [
-            'parent' => $categoryId,
-            'id:!=' => $product->get('id'),
-            'published' => 1,
+// Автоматическое создание связей для товаров той же категории
+$categoryId = $product->get('parent');
+
+// Получаем товары из той же категории
+$siblings = $modx->getCollection(\MiniShop3\Model\msProduct::class, [
+    'parent' => $categoryId,
+    'id:!=' => $product->get('id'),
+    'published' => 1,
+]);
+
+foreach ($siblings as $sibling) {
+    // Проверяем, нет ли уже связи
+    $existing = $modx->getObject(\MiniShop3\Model\msProductLink::class, [
+        'link' => 1,
+        'master' => $product->get('id'),
+        'slave' => $sibling->get('id'),
+    ]);
+
+    if (!$existing) {
+        $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
+        $link->fromArray([
+            'link' => 1,
+            'master' => $product->get('id'),
+            'slave' => $sibling->get('id'),
         ]);
-
-        foreach ($siblings as $sibling) {
-            // Проверяем, нет ли уже связи
-            $existing = $modx->getObject(\MiniShop3\Model\msProductLink::class, [
-                'link' => 1,
-                'master' => $product->get('id'),
-                'slave' => $sibling->get('id'),
-            ]);
-
-            if (!$existing) {
-                $link = $modx->newObject(\MiniShop3\Model\msProductLink::class);
-                $link->fromArray([
-                    'link' => 1,
-                    'master' => $product->get('id'),
-                    'slave' => $sibling->get('id'),
-                ]);
-                $link->save();
-            }
-        }
-        break;
+        $link->save();
+    }
 }
 ```

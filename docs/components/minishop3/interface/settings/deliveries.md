@@ -3,7 +3,7 @@ title: Способы доставки
 ---
 # Способы доставки
 
-Откройте **Extras → MiniShop3 → Настройки → Доставки**.
+Откройте **Пакеты → MiniShop3 → Настройки → Варианты доставки**.
 
 ## Поля доставки
 
@@ -11,15 +11,16 @@ title: Способы доставки
 | --- | --- | --- |
 | `name` | string | Название способа доставки |
 | `description` | text | Описание для покупателя |
-| `price` | number | Базовая стоимость доставки |
+| `price` | string | Базовая стоимость доставки (в БД — `varchar(11)`, в расчёте приводится к числу) |
 | `weight_price` | float | Стоимость за единицу веса |
-| `distance_price` | float | Стоимость за единицу расстояния |
+| `distance_price` | float | Стоимость за единицу расстояния — в расчёте сейчас не используется (резервное поле) |
 | `free_delivery_amount` | float | Сумма заказа для бесплатной доставки |
 | `logo` | string | Путь к изображению |
 | `position` | int | Порядок сортировки |
 | `active` | bool | Активность |
 | `class` | string | PHP-класс обработчика |
 | `validation_rules` | JSON | Правила валидации полей |
+| `properties` | JSON | JSON-свойства для своих данных обработчика |
 
 ## Связь с оплатой
 
@@ -35,11 +36,11 @@ title: Способы доставки
 
 Стоимость доставки рассчитывается по формуле:
 
-```
-Итоговая стоимость = price + (weight_price × вес) + (distance_price × расстояние)
+```text
+Итоговая стоимость = price + (weight_price × вес)
 ```
 
-Если сумма заказа превышает `free_delivery_amount`, стоимость доставки = 0.
+Если сумма заказа больше или равна `free_delivery_amount`, стоимость доставки равна 0.
 
 ### Свой расчёт
 
@@ -74,15 +75,13 @@ class CustomDelivery implements DeliveryProviderInterface
 }
 ```
 
-Укажите класс в поле `class`: `MyComponent\Delivery\CustomDelivery`
+Укажите класс в поле `class`: `MyComponent\Delivery\CustomDelivery`.
 
 ## Валидация полей заказа
 
-Для каждого способа доставки задаёте обязательные поля и правила. Курьеру можно требовать полный адрес. Самовывозу хватит телефона.
+Для каждого способа доставки задаёте обязательные поля и правила: полный адрес для курьера, телефон для самовывоза.
 
 ### Визуальный конструктор
-
-Два режима.
 
 #### Визуальный режим
 
@@ -91,9 +90,9 @@ class CustomDelivery implements DeliveryProviderInterface
 3. Добавьте правила валидации для поля
 4. Для правил с параметрами укажите значение
 
-Правила видны как теги (chips). Удаляете кликом по крестику.
+Правила отображаются тегами, удаляются кликом по крестику.
 
-#### JSON режим
+#### JSON-режим
 
 Переключатель открывает ручное редактирование JSON:
 
@@ -107,7 +106,7 @@ class CustomDelivery implements DeliveryProviderInterface
 }
 ```
 
-Так удобно копировать правила между доставками, писать regex и таскать JSON между установками.
+В этом режиме правила копируют между доставками, задают regex и переносят JSON между установками.
 
 ### Свои поля валидации
 
@@ -158,42 +157,42 @@ class CustomDelivery implements DeliveryProviderInterface
 
 ### Правила валидации
 
-MiniShop3 использует библиотеку [rakit/validation](https://github.com/rakit/validation) для валидации данных.
+Валидацию выполняет встроенный `PipeRuleValidator` (`src/Services/Validation/PipeRuleValidator.php`), внешние библиотеки не нужны. Правила комбинируются через `|`.
 
 #### Базовые правила
 
-| Правило | Описание | Пример |
-| --- | --- | --- |
-| `required` | Обязательное поле | `required` |
-| `nullable` | Поле может быть null | `nullable` |
-| `present` | Поле должно присутствовать (даже пустое) | `present` |
-| `accepted` | Значение должно быть "yes", "on", "1", true | `accepted` |
+| Правило | Описание |
+| --- | --- |
+| `required` | Обязательное поле |
+| `nullable` | Поле может быть null |
+| `present` | Поле должно присутствовать (даже пустое) |
+| `accepted` | Значение должно быть "yes", "on", "1", true |
 
 #### Типы данных
 
-| Правило | Описание | Пример |
-| --- | --- | --- |
-| `email` | Валидный email | `email` |
-| `url` | Валидный URL | `url` |
-| `ip` | IP адрес (v4 или v6) | `ip` |
-| `ipv4` | IPv4 адрес | `ipv4` |
-| `ipv6` | IPv6 адрес | `ipv6` |
-| `numeric` | Числовое значение | `numeric` |
-| `integer` | Целое число | `integer` |
-| `boolean` | Булево значение | `boolean` |
-| `array` | Массив | `array` |
-| `json` | Валидный JSON | `json` |
+| Правило | Описание |
+| --- | --- |
+| `email` | Валидный email |
+| `url` | Валидный URL |
+| `ip` | IP адрес (v4 или v6) |
+| `ipv4` | IPv4 адрес |
+| `ipv6` | IPv6 адрес |
+| `numeric` | Числовое значение |
+| `integer` | Целое число |
+| `boolean` | Булево значение |
+| `array` | Массив |
+| `json` | Валидный JSON |
 
 #### Строковые правила
 
-| Правило | Описание | Пример |
-| --- | --- | --- |
-| `alpha` | Только буквы | `alpha` |
-| `alpha_num` | Буквы и цифры | `alpha_num` |
-| `alpha_dash` | Буквы, цифры, дефис, подчёркивание | `alpha_dash` |
-| `alpha_spaces` | Буквы и пробелы | `alpha_spaces` |
-| `uppercase` | Только заглавные буквы | `uppercase` |
-| `lowercase` | Только строчные буквы | `lowercase` |
+| Правило | Описание |
+| --- | --- |
+| `alpha` | Только буквы |
+| `alpha_num` | Буквы и цифры |
+| `alpha_dash` | Буквы, цифры, дефис, подчёркивание |
+| `alpha_spaces` | Буквы и пробелы |
+| `uppercase` | Только заглавные буквы |
+| `lowercase` | Только строчные буквы |
 
 #### Правила с параметрами
 
@@ -209,6 +208,8 @@ MiniShop3 использует библиотеку [rakit/validation](https://g
 | `same` | Совпадает с другим полем | `same:email_confirm` |
 | `different` | Отличается от другого поля | `different:old_password` |
 | `regex` | Соответствует регулярному выражению | `regex:/^[0-9]{6}$/` |
+| `extension` | Расширение файла | `extension:jpg,png` |
+| `mimes` | MIME-тип файла | `mimes:jpg,png` |
 
 #### Правила для дат
 
@@ -288,31 +289,17 @@ MiniShop3 использует библиотеку [rakit/validation](https://g
 }
 ```
 
-### Комбинирование правил
-
-Правила комбинируются через символ `|`:
-
-```json
-{
-  "email": "required|email",
-  "phone": "required|numeric|min:10|max:15",
-  "index": "nullable|digits:6"
-}
-```
-
 ### Сообщения об ошибках
 
-Валидатор пишет сообщения на языке интерфейса. Примеры:
-
-- "Поле Email обязательно для заполнения"
-- "Поле Телефон должно содержать не менее 10 символов"
-- "Поле Индекс должно состоять из 6 цифр"
+Сообщения по умолчанию **английские** (`PipeRuleValidator::DEFAULT_MESSAGES`): язык интерфейса они не читают. Настроить их можно через `setValidationRules()` / `setValidationMessages()` (`OrderFieldManager`) или `properties` доставки.
 
 ## API
 
+Оба GET-запроса требуют токен магазина: заголовок `Bearer`/`MS3Token` или кука `ms3_token` (query-параметр не принимается).
+
 ### Получение правил валидации
 
-```
+```http
 GET /api/v1/order/delivery/validation-rules?delivery_id=1
 ```
 
@@ -322,26 +309,34 @@ GET /api/v1/order/delivery/validation-rules?delivery_id=1
 {
   "success": true,
   "data": {
-    "phone": "required",
-    "city": "required|min:2",
-    "street": "required"
+    "validation_rules": {
+      "phone": "required",
+      "city": "required|min:2",
+      "street": "required"
+    }
   }
 }
 ```
 
 ### Получение обязательных полей
 
-```
+```http
 GET /api/v1/order/delivery/required-fields?delivery_id=1
 ```
 
-**Ответ:**
+**Ответ** (карта поле → правила, только с `required`):
 
 ```json
 {
   "success": true,
-  "data": ["phone", "city", "street"]
+  "data": {
+    "requires": {
+      "phone": "required",
+      "city": "required",
+      "street": "required"
+    }
+  }
 }
 ```
 
-Эти endpoints обновляют форму заказа при смене способа доставки.
+Эти два запроса обновляют форму заказа при смене способа доставки.
