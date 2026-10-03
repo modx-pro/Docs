@@ -15,13 +15,13 @@ title: Дополнительные поля
 
 ## Поддерживаемые модели
 
-В UI выбираете короткое имя; в БД и POST сохраняется полное `MiniShop3\Model\...`.
+В интерфейсе выбираете короткое имя; в БД и POST сохраняется полное `MiniShop3\Model\...`.
 
 | Короткое имя | Класс в API / БД | Описание |
 | --- | --- | --- |
-| `msProduct` | `MiniShop3\Model\msProduct` | Ресурс товара |
+| `msProduct` | `MiniShop3\Model\msProduct` | Ресурс товара (в выпадающем списке интерфейса нет — только через API) |
 | `msProductData` | `MiniShop3\Model\msProductData` | Данные товара |
-| `msCategory` | `MiniShop3\Model\msCategory` | Категория |
+| `msCategory` | `MiniShop3\Model\msCategory` | Категория (в выпадающем списке интерфейса нет — только через API) |
 | `msVendor` | `MiniShop3\Model\msVendor` | Производитель |
 | `msOption` | `MiniShop3\Model\msOption` | Опция |
 | `msLink` | `MiniShop3\Model\msLink` | Тип связи |
@@ -34,17 +34,12 @@ title: Дополнительные поля
 | `msDelivery` | `MiniShop3\Model\msDelivery` | Доставка |
 | `msPayment` | `MiniShop3\Model\msPayment` | Оплата |
 
-CRUD extra-fields требует `mssetting_save`. Карточка заказа тоже вызывает `GET /extra-fields` при загрузке: без этого права метаданные виджетов не подтянутся (значения колонок в `GET /orders/{id}` всё равно приходят).
+Чтение схемы (`GET /api/mgr/extra-fields`) доступно любому авторизованному менеджеру — формы заказа и товара получают её без отдельного права. `mssetting_save` требуется только на создание, правку и удаление полей.
 
 ## Создание поля
 
-### Шаг 1: Выбор модели
-
-Выберите модель в списке вверху страницы.
-
-### Шаг 2: Добавление поля
-
-Нажмите **"Добавить поле"** и заполните форму.
+1. Выберите модель в списке вверху страницы.
+2. Нажмите **«Добавить поле»** и заполните форму.
 
 ### Параметры поля
 
@@ -69,14 +64,15 @@ CRUD extra-fields требует `mssetting_save`. Карточка заказа
 | `numberfield` | Числовое поле | Цены, количества |
 | `textarea` | Многострочное поле | Описания |
 | `xcheckbox` | Флажок | Да/Нет |
-| `ms3-combo-select` | Выпадающий список (фикс. options) | Статусы, типы доставки |
+| `ms3-combo-select` | Выпадающий список (фиксированный) | Статусы, типы доставки |
 | `ms3-combo-vendor` | Выбор производителя | Связь с производителем |
 | `ms3-combo-autocomplete` | Автодополнение | Выбор из списка |
 | `ms3-combo-options` | Выбор опции | Варианты товара |
 | `ms3-repeater` | Таблица строк (JSON) | Состав, характеристики списком |
 | `ms3-key-value` | Ключ → значение (JSON) | Набор именованных свойств |
+| `datefield` | Поле даты | Даты (обычно с `dbtype: date`) |
 
-### Repeater (`ms3-repeater`)
+#### Repeater (`ms3-repeater`)
 
 С v1.12. В `properties` / конфиге виджета задают `repeater_config`:
 
@@ -93,9 +89,9 @@ CRUD extra-fields требует `mssetting_save`. Карточка заказа
 }
 ```
 
-В БД обычно колонка `json`. В импорт CSV repeater не попадает.
+В БД обычно колонка `json`. В CSV-импорт эти поля не попадают.
 
-### Key-value (`ms3-key-value`)
+#### Key-value (`ms3-key-value`)
 
 Конфиг `key_value_config`:
 
@@ -109,7 +105,7 @@ CRUD extra-fields требует `mssetting_save`. Карточка заказа
 }
 ```
 
-`mode`: `fixed` (только заданные ключи) или `free` (покупатель/менеджер добавляет пары).
+Режим `fixed` разрешает только заданные ключи, режим `free` — добавлять пары самостоятельно.
 
 #### Тип данных БД (dbtype)
 
@@ -120,6 +116,7 @@ CRUD extra-fields требует `mssetting_save`. Карточка заказа
 | `int` | Целое число | ID, количества |
 | `decimal` | Десятичное число | Цены с копейками |
 | `tinyint` | Малое целое (0-255) | Флаги, рейтинги |
+| `date` | Дата без времени | 2024-01-15 |
 | `datetime` | Дата и время | 2024-01-15 12:30:00 |
 | `timestamp` | Временная метка | Unix timestamp |
 | `json` | JSON-данные | Массивы, объекты |
@@ -165,7 +162,7 @@ CRUD extra-fields требует `mssetting_save`. Карточка заказа
 
 ### Оптовая цена
 
-```
+```text
 Ключ: wholesale_price
 Название: Оптовая цена
 xtype: numberfield
@@ -178,7 +175,7 @@ Index: NONE
 
 ### Внешний ID (1С)
 
-```
+```text
 Ключ: external_id
 Название: ID в 1С
 xtype: textfield
@@ -191,7 +188,7 @@ Index: UNIQUE
 
 ### Срок доставки
 
-```
+```text
 Ключ: delivery_days
 Название: Срок доставки (дней)
 xtype: numberfield
@@ -203,7 +200,7 @@ Index: NONE
 
 ### Дополнительные характеристики (JSON)
 
-```
+```text
 Ключ: extra_attributes
 Название: Доп. характеристики
 xtype: textarea
@@ -232,7 +229,7 @@ Index: NONE
 2. Подтвердите действие в диалоговом окне
 
 ::: danger Внимание
-Удаление поля **безвозвратно** удаляет:
+Удаление поля необратимо — пропадают:
 
 - Определение поля из схемы
 - Колонку из таблицы БД
@@ -271,17 +268,17 @@ $data->save();
 {/if}
 ```
 
-## API Endpoints
+## API-эндпоинты
 
 ### Список полей модели
 
-```
+```http
 GET /api/mgr/extra-fields?class=MiniShop3\Model\msProductData
 ```
 
 ### Создание поля
 
-```
+```http
 POST /api/mgr/extra-fields
 ```
 
@@ -305,13 +302,13 @@ POST /api/mgr/extra-fields
 
 ### Обновление поля
 
-```
+```http
 PUT /api/mgr/extra-fields/{id}
 ```
 
 ### Удаление поля
 
-```
+```http
 DELETE /api/mgr/extra-fields/{id}
 ```
 
