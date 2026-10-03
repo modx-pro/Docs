@@ -25,7 +25,7 @@ $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', ['id' => $productI
 | `Controllers\Api\Web\*` | Витрина, SPA, мобильные клиенты |
 | `MiniShop3\Processors\*` | `runProcessor()` из PHP, legacy connector, утилиты с `RunsMs3Processors` |
 
-Примеры групп процессоров: `Gallery/*`, `Settings/Vendor/*`, `Settings/Delivery/*`, `Api/Customer/*` (Web auth из HTTP делегирует сюда), `Utilities/Import/*`, `Category/Option/*` (legacy).
+Примеры групп процессоров: `Gallery/*`, `Settings/Vendor/*`, `Settings/Delivery/*`, `Api/Customer/*` (Web auth из HTTP делегирует сюда), `Utilities/Import/*`, `Category/*`.
 
 Vue-CRUD настроек **не** вызывает `Processors/Settings/Vendor/*` — см. [События производителей](../events/vendor).
 

@@ -586,9 +586,10 @@ echo $vendor->get('name');  // "Samsung"
 | `MiniShop3\Processors\Product\Hide` | Скрыть из дерева |
 | `MiniShop3\Processors\Product\Sort` | Сортировка |
 | `MiniShop3\Processors\Product\Multiple` | Массовые операции |
-| `MiniShop3\Processors\Product\Autocomplete` | Автодополнение (поиск товаров) |
 | `MiniShop3\Processors\Product\Category` | Работа с категориями товара |
 | `MiniShop3\Processors\Product\UpdateSource` | Смена медиа-источника товара |
+
+Автодополнение (поиск товаров) — не процессор, а эндпоинт Manager API: `GET /api/mgr/references/products`. См. [Эндпоинты References](../routing#references).
 
 ### Пример вызова из PHP
 

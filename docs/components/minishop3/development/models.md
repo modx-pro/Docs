@@ -147,8 +147,20 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | Модель | Таблица | Описание |
 | --- | --- | --- |
 | `msCustomer` | `ms3_customers` | Клиент магазина |
+| `msCustomerGroup` | `ms3_customer_groups` | Группы покупателей (сегментация, ACL каталога) |
 | `msCustomerAddress` | `ms3_customer_addresses` | Сохранённые адреса клиента |
 | `msCustomerToken` | `ms3_customer_tokens` | Токены авторизации |
+
+#### msCustomerGroup — основные поля
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `id` | int | ID группы |
+| `name` | varchar(191) | Название группы |
+| `user_group_id` | int | ID группы пользователей MODX (принципал для modAccessResourceGroup) |
+| `active` | tinyint(1) | Активна |
+| `created_at` | datetime | Дата создания |
+| `updated_at` | datetime | Дата обновления |
 
 #### msCustomer — основные поля
 
@@ -229,6 +241,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Настройки полей моделей |
 | `msModelFieldSection` | `ms3_model_field_sections` | Секции полей |
+| `msGridField` | `ms3_grid_fields` | Конфигурация колонок гридов (customers, orders, products) |
 | `msProductField` | `ms3_product_fields` | Поля товара (legacy) |
 | `msPageSection` | `ms3_page_sections` | Секции страниц (legacy) |
 | `msExtraField` | `ms3_extra_fields` | Дополнительные поля |

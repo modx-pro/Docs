@@ -337,6 +337,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | `ms3_field_config_manager` | `Services\FieldConfigManager` | Конфигурация полей |
 | `ms3_grid_config` | `Services\GridConfigService` | Конфигурация гридов |
 | `ms3_filter_config` | `Services\FilterConfigManager` | Фильтры гридов |
+| `ms3_settings_combo_list` | `Services\Settings\SettingsComboListService` | Справочники для combo-полей настроек |
 
 ### Сервисы уведомлений
 
