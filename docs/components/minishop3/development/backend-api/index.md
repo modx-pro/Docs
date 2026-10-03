@@ -5,7 +5,7 @@ description: Программный интерфейс MiniShop3 для рабо
 
 # Backend API
 
-Раздел описывает программный интерфейс MiniShop3 для работы с сущностями магазина из PHP-кода: плагины, сниппеты, консольные скрипты, сторонние компоненты.
+Программный интерфейс MiniShop3 для работы с сущностями магазина из PHP-кода: плагины, сниппеты, консольные скрипты, сторонние компоненты.
 
 ## Процессоры (MODX Manager)
 
@@ -23,9 +23,9 @@ $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', ['id' => $productI
 | --- | --- |
 | `Controllers\Api\Manager\*` | Vue-интерфейс менеджера (заказы, клиенты, настройки) |
 | `Controllers\Api\Web\*` | Витрина, SPA, мобильные клиенты |
-| `MiniShop3\Processors\*` | `runProcessor()` из PHP, legacy connector, утилиты с `RunsMs3Processors` |
+| `MiniShop3\Processors\*` | `runProcessor()` из PHP, прежний connector, утилиты с `RunsMs3Processors` |
 
-Примеры групп процессоров: `Gallery/*`, `Settings/Vendor/*`, `Settings/Delivery/*`, `Api/Customer/*` (Web auth из HTTP делегирует сюда), `Utilities/Import/*`, `Category/*`.
+Примеры групп процессоров: `Gallery/*`, `Settings/Vendor/*`, `Settings/Delivery/*`, `Api/Customer/*` (аутентификация Web API делегирует сюда), `Utilities/Import/*`, `Category/*`.
 
 Vue-CRUD настроек **не** вызывает `Processors/Settings/Vendor/*` — см. [События производителей](../events/vendor).
 
