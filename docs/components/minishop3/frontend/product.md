@@ -15,7 +15,8 @@ title: Страница товара
 | --- | --- | --- |
 | Шаблон страницы | `elements/templates/product.tpl` | Разметка страницы товара |
 | Галерея | `tpl.msGallery` | Слайдер изображений с лайтбоксом |
-| Опции товара | `tpl.msProductOptions` | Вывод характеристик товара |
+
+Таблицу характеристик выводит сниппет [`msProductOptions`](/components/minishop3/snippets/msproductoptions) со своим чанком `tpl.msProductOptions` — в демо-шаблоне он не подключён, вызывайте его в своём шаблоне отдельно.
 
 ## Шаблон страницы
 
@@ -198,7 +199,6 @@ JavaScript активирует первую опцию по умолчанию 
 ```fenom
 <form method="post" class="ms3_form" data-cart-state="add">
     <input type="hidden" name="id" value="{$_modx->resource.id}">
-    <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
 
     <div class="row g-3 align-items-end">
@@ -333,7 +333,7 @@ Bootstrap-табы для организации контента:
             'parents' => $_modx->resource.parent,
             'resources' => '-' ~ $_modx->resource.id,
             'limit' => 4,
-            'withCurrency' => 1
+            'withCurrency' => 0
         ]}
     </div>
 </div>
@@ -375,11 +375,12 @@ Bootstrap-табы для организации контента:
 | `{$source_id}` | int | ID Media Source |
 | `{$preview_file_id}` | int | ID файла превью в галерее |
 | `{$vendor_id}` | int | ID производителя |
-| `{$vendor_name}` | string | Название производителя |
 | `{$made_in}` | string | Страна производства |
 | `{$new}` | bool | Флаг "Новинка" |
 | `{$popular}` | bool | Флаг "Популярный" |
 | `{$favorite}` | bool | Флаг "Рекомендуемый" |
+
+`{$vendor_name}` — не колонка `msProductData`: название приходит из связи с `msVendor` по `vendor_id`. В сниппете `msProducts` поля производителя с префиксом `vendor_` появляются при `includeVendorFields`.
 
 ### Опции товара
 

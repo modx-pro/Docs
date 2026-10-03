@@ -64,12 +64,12 @@ title: Каталог товаров
 | `tpl` | `tpl.msProducts.row` | Чанк карточки товара |
 | `includeThumbs` | `small,medium` | Загрузить превью изображений |
 | `includeVendorFields` | `name,logo` | Подключить данные производителя |
-| `withCurrency` | `1` | Заполнить `{$price_formatted}`, `{$old_price_formatted}`, `{$weight_formatted}` (символ валюты / формат веса) |
+| `withCurrency` | `1` | Добавить символ валюты в `{$price_formatted}` и `{$old_price_formatted}` |
 | `showZeroPrice` | `0` | Скрыть товары без цены |
 
 Параметра `formatPrices` у `msProducts` нет (он есть у `msOrderTotal`). Демо-шаблон `catalog.tpl` всё ещё передаёт `formatPrices` — сниппет его игнорирует ([issue #818](https://github.com/modx-pro/MiniShop3/issues/818)).
 
-Чанк ряда по умолчанию печатает сырой `{$price}`. Для форматированной цены используйте `{$price_formatted}` при `withCurrency`.
+Чанк ряда по умолчанию печатает сырой `{$price}`. Для форматированной цены используйте `{$price_formatted}` при `withCurrency`. Поле `{$weight_formatted}` заполняется всегда, от `withCurrency` не зависит.
 
 ```mermaid
 flowchart TB
