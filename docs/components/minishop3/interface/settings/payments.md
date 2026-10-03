@@ -149,4 +149,4 @@ GET /api/v1/order/cost/payment?payment_id=2
 - в **уведомлениях** — настройка `ms3_payment_link_statuses` (CSV id статусов; скрытая — в Системных настройках не объявлена, задаётся напрямую в БД или кодом), если пуста, берётся `ms3_status_new`;
 - ссылка **не** показывается для финальных статусов и статуса «оплачен».
 
-Обработчик способа оплаты должен вернуть URL из метода оплаты (см. пример `send()` выше). Подробнее: [msGetOrder](/components/minishop3/snippets/msgetorder#ссылка-на-оплату).
+Обработчик способа оплаты должен вернуть URL из метода оплаты (см. пример `send()` выше). Подробнее: [msGetOrder](/components/minishop3/snippets/msgetorder#ssylka-na-oplatu).

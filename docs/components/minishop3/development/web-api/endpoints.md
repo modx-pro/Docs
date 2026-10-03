@@ -112,4 +112,4 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | --- | --- | --- | --- |
 | `GET` | `/health` | нет | Статус API |
 
-Программное создание заказа из PHP (cron/extra) это не Web HTTP: [ProgrammaticOrderService](/components/minishop3/development/backend-api/order#программное-создание-заказа-programmaticorderservice).
+Программное создание заказа из PHP (cron/extra) это не Web HTTP: [ProgrammaticOrderService](/components/minishop3/development/backend-api/order#programmnoe-sozdanie-zakazaprogrammaticorderservice).
