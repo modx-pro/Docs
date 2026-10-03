@@ -24,9 +24,9 @@ title: msProductOptions
 Если указан `onlyOptions`, но не указан `sortOptions`, то опции автоматически сортируются в порядке, указанном в `onlyOptions`.
 :::
 
-Опции с пустым значением (`value`) **не попадают** в вывод. Параметры `groups` / `ignoreGroups` сравнивают строку `group_name` из msOptionGroup (регистр учитывается).
+Опции с пустым значением (`value`) **не попадают** в вывод. Параметры `groups` и `ignoreGroups` сравниваются со строкой `group_name` из msOptionGroup, регистр учитывается.
 
-### Deprecated параметры
+### Устаревшие параметры
 
 ::: warning Обратная совместимость
 Параметр `&input` устарел. Используйте `&product`.
@@ -102,7 +102,7 @@ title: msProductOptions
 
 ## Структура данных
 
-При `return=data` или `return=array` возвращается ассоциативный массив, где ключ — имя опции:
+При `return=data` или `return=array` сниппет возвращает ассоциативный массив, ключ — имя опции:
 
 ```php
 [
@@ -150,15 +150,6 @@ title: msProductOptions
 | `{$option.type}` | Тип поля (textfield, combo-options и т.д.) |
 | `{$option.properties}` | Дополнительные свойства опции |
 
-Для получения ключа опции используйте синтаксис foreach:
-
-```fenom
-{foreach $options as $key => $option}
-    {* $key = 'color', 'size' и т.д. *}
-    <div data-option="{$key}">{$option.caption}: {$option.value}</div>
-{/foreach}
-```
-
 ## Чанк по умолчанию
 
 Стандартный чанк `tpl.msProductOptions` выводит опции в виде строк:
@@ -181,7 +172,7 @@ title: msProductOptions
 {/foreach}
 ```
 
-## Альтернативный чанк — таблица
+## Альтернативный чанк с таблицей
 
 ```fenom
 {* tpl.msProductOptions.table *}
@@ -205,7 +196,7 @@ title: msProductOptions
 {/if}
 ```
 
-## Группировка по категориям
+## Группировка по группам
 
 ```fenom
 {* tpl.msProductOptions.grouped *}
