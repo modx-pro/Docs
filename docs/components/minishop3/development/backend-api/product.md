@@ -52,9 +52,6 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\Create', [
     // Опции передаются с префиксом options-
     'options-color' => ['Red', 'Blue'],
     'options-size' => ['L', 'XL'],
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 
 if ($response->isError()) {
@@ -95,7 +92,7 @@ if ($product->save()) {
 ```
 
 ::: warning Разница между подходами
-Создание через модель не вызывает системные события (`OnBeforeDocFormSave`, `OnDocFormSave`), не устанавливает значения по умолчанию и не обновляет кеш ресурсов. Для полноценного создания товаров используйте процессор.
+Создание через модель не вызывает системные события (`OnBeforeDocFormSave`, `OnDocFormSave`), не устанавливает значения по умолчанию и не обновляет кэш ресурсов. Для полноценного создания товаров используйте процессор.
 :::
 
 ## Получение и обновление
@@ -142,9 +139,6 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\Update', [
     'old_price' => 2500,
     'popular' => true,
     'options-color' => ['Red', 'Green'],
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 ```
 
@@ -197,7 +191,7 @@ $updated = $service->updateProductData($productId, [
 | `source_id` | int unsigned | integer | 1 | ID медиа-источника |
 
 ::: info JSON-поля и опции
-Поля `tags`, `color`, `size` хранятся в `msProductData` как JSON, но при сохранении автоматически дублируются в таблицу опций `ms3_product_options`. Это обеспечивает возможность фильтрации по этим полям через EAV-систему опций.
+Поля `tags`, `color`, `size` хранятся в `msProductData` как JSON, но при сохранении автоматически дублируются в таблицу опций `ms3_product_options`. Так по этим полям можно фильтровать через EAV-систему опций.
 :::
 
 ### Модификация цены и веса через события
@@ -303,18 +297,12 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', [
     'id' => $productId,
     'file' => 'https://example.com/image.jpg',
     'description' => 'Фото товара',
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 
 // Загрузка из локального файла
 $response = $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', [
     'id' => $productId,
     'file' => '/path/to/image.jpg',
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 ```
 
@@ -366,11 +354,11 @@ $imageService->removeProductCatalog($productData);
 | `MiniShop3\Processors\Gallery\GenerateAll` | Генерация миниатюр для всех изображений товара |
 | `MiniShop3\Processors\Gallery\SetPreview` | Назначить главное изображение (`preview_file_id` в `msProductData`) |
 
-Дерево категорий товара в менеджере: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
-
 ## Дополнительные категории
 
 Товар может принадлежать нескольким категориям. Основная категория — поле `parent` в `msProduct`. Дополнительные хранятся в таблице `ms3_product_categories` через модель `msCategoryMember`.
+
+Дерево категорий товара в менеджере: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
 
 ### Программное управление
 
@@ -480,9 +468,6 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Cr
     'link' => $linkTypeId,
     'master' => $productId,
     'slave' => $relatedId,
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 
 // Удаление связи
@@ -490,9 +475,6 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Re
     'link' => $linkTypeId,
     'master' => $productId,
     'slave' => $relatedId,
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 ```
 
@@ -599,9 +581,6 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\GetList', [
     'limit' => 20,
     'sort' => 'price',
     'dir' => 'ASC',
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 
 if (!$response->isError()) {

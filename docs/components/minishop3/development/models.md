@@ -61,10 +61,10 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 
 Основные атрибуты схемы:
 
-- **package**: `MiniShop3\Model`
-- **baseClass**: `xPDO\Om\xPDOObject`
-- **platform**: `mysql`
-- **version**: `3.0`
+- `package`: `MiniShop3\Model`
+- `baseClass`: `xPDO\Om\xPDOObject`
+- `platform`: `mysql`
+- `version`: `3.0`
 
 ## Таблицы базы данных
 
@@ -142,7 +142,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `createdon` | datetime | Дата создания |
 | `updatedon` | datetime | Дата обновления |
 
-### Клиенты (NEW в MiniShop3)
+### Клиенты
 
 | Модель | Таблица | Описание |
 | --- | --- | --- |
@@ -195,7 +195,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 
 ### Отгрузки (shipment)
 
-Таблицы без xPDO-моделей: доступ через `PdoShipmentStore` / DI-ключ `ms3_shipment_lifecycle` (`ShipmentLifecycleService`). Миграции Phinx: `create_shipments`, `create_shipment_events`.
+Таблицы без xPDO-моделей: доступ через `PdoShipmentStore` и DI-ключ `ms3_shipment_lifecycle` (`ShipmentLifecycleService`). Миграции Phinx: `create_shipments`, `create_shipment_events`.
 
 | Таблица | Описание |
 | --- | --- |
@@ -235,15 +235,15 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `msOption` | `ms3_options` | Справочник опций |
 | `msOptionGroup` | `ms3_option_groups` | Группы опций (заменили использование `modCategory` для группировки, начиная с 1.11.0) |
 
-### Конфигурация полей (NEW в MiniShop3)
+### Конфигурация полей (новое в MiniShop3)
 
 | Модель | Таблица | Описание |
 | --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Настройки полей моделей |
 | `msModelFieldSection` | `ms3_model_field_sections` | Секции полей |
 | `msGridField` | `ms3_grid_fields` | Конфигурация колонок гридов (customers, orders, products) |
-| `msProductField` | `ms3_product_fields` | Поля товара (legacy) |
-| `msPageSection` | `ms3_page_sections` | Секции страниц (legacy) |
+| `msProductField` | `ms3_product_fields` | Поля товара (устаревшие) |
+| `msPageSection` | `ms3_page_sections` | Секции страниц (устаревшие) |
 | `msExtraField` | `ms3_extra_fields` | Дополнительные поля |
 
 ### Уведомления
@@ -393,11 +393,11 @@ class msProductData extends xPDOSimpleObject
 
 Это позволяет:
 
-- Добавлять кастомные методы в модели
+- Добавлять свои методы в модели
 - Использовать полную типизацию PHP 8
 - Иметь полный контроль над кодом моделей
 
-**Важно:** Не запускайте `buildModel()` — это перезапишет кастомные методы моделей.
+**Важно:** Не запускайте `buildModel()` — это перезапишет методы, добавленные вручную.
 :::
 
 ### Структура файлов модели
@@ -495,7 +495,7 @@ class CreateCustomersTable extends AbstractMigration
 
 ### Товар
 
-`msProduct` (extends `modResource`) и `msProductData` (таблица `ms3_products`)
+`msProduct` (расширяет `modResource`) и `msProductData` (таблица `ms3_products`)
 
 ```mermaid
 erDiagram

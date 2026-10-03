@@ -3,7 +3,7 @@ title: API Router
 ---
 # API Router
 
-MiniShop3 использует библиотеку [FastRoute](https://github.com/nikic/FastRoute) для маршрутизации API запросов. Компонент предоставляет два отдельных API с различными механизмами авторизации.
+MiniShop3 использует библиотеку [FastRoute](https://github.com/nikic/FastRoute) для маршрутизации API-запросов. Компонент предоставляет два отдельных API с различными механизмами авторизации.
 
 ## Архитектура
 
@@ -13,7 +13,7 @@ MiniShop3 использует библиотеку [FastRoute](https://github.c
 | --- | --- | --- |
 | **Префикс** | `/api/mgr/*` | `/api/v1/*` |
 | **Назначение** | Административная панель MODX | Фронтенд магазина |
-| **Entry point** | `connector.php` | `assets/.../api.php` |
+| **Точка входа** | `connector.php` | `assets/.../api.php` |
 | **Авторизация** | MODX сессии + HTTP_MODAUTH | Токены MS3TOKEN |
 | **Middleware** | AuthMiddleware, PermissionMiddleware | TokenMiddleware, CorsMiddleware, RateLimitMiddleware |
 | **Файл роутов** | `config/routes/manager.php` | `config/routes/web.php` |
@@ -149,7 +149,7 @@ $router->group('/api/mgr/orders', function($router) use ($modx) {
 
 ## Response
 
-Все API endpoints возвращают JSON ответы через класс `MiniShop3\Router\Response`:
+Все эндпоинты API возвращают JSON-ответы через класс `MiniShop3\Router\Response`:
 
 ```php
 use MiniShop3\Router\Response;
@@ -268,9 +268,9 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 
 #### TokenMiddleware
 
-Проверяет и при необходимости auto-mint токен покупателя для Web API.
+Проверяет токен покупателя для Web API и при необходимости создаёт гостевой токен.
 
-Порядок resolve: `Authorization: Bearer` → заголовок `MS3TOKEN` (legacy) → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` снимаются и не принимаются.
+Порядок определения токена: `Authorization: Bearer` → заголовок `MS3TOKEN` (устаревший) → httpOnly cookie `ms3_token` → `$_REQUEST` → session. Query `token` / `ms3_token` снимаются и не принимаются.
 
 ```php
 use MiniShop3\Middleware\TokenMiddleware;
@@ -282,7 +282,7 @@ $router->group('/api/v1/cart', function($router) use ($modx) {
 }, [$tokenMiddleware]);
 ```
 
-На роутах с middleware без валидного токена сервер auto-mint гостевой токен (кроме путей из `publicRoutes` middleware, например logout и `token/get`). Каталог и health в `web.php` middleware не вешают. `token/get` вешает middleware в режиме optional.
+Исключение — маршруты из `publicRoutes` (например, logout и `token/get`): на них гостевой токен не создаётся. Каталог и health в `web.php` работают без этого middleware, а для `token/get` он подключён в режиме optional.
 
 Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth).
 
@@ -409,7 +409,7 @@ $router->get('/api/mgr/endpoint', $handler, [
 | GET | `/health` | Проверка работоспособности API |
 | GET | `/user/info` | Информация о текущем пользователе |
 
-#### Справочники (`/references`)
+#### Справочники (`/references`) {#references}
 
 CRUD справочников (право `view_document`). Обеспечивает автодополнение и выбор значений в формах менеджера.
 
@@ -426,11 +426,11 @@ CRUD справочников (право `view_document`). Обеспечива
 
 #### Поля модели (`/models/{alias}/fields`)
 
-Получение полей модели по её алиасу. Используется формами товара/заказа для выбора конфигурации полей.
+Получение полей модели по `alias`. Используется формами товара/заказа для выбора конфигурации полей.
 
 | Метод | Роут | Описание | Право |
 | --- | --- | --- | --- |
-| GET | `/{alias}/fields` | Получить поля модели по алиасу | `view_document` |
+| GET | `/{alias}/fields` | Получить поля модели по `alias` | `view_document` |
 
 #### Дополнительные поля (`/extra-fields`)
 
@@ -463,7 +463,7 @@ CRUD опций настроек магазина. Право `mssetting_save`.
 
 #### Группы опций (`/option-groups`)
 
-Замена legacy использования `modCategory` для группировки опций. Право `mssetting_save`.
+Группировка опций вместо прежнего способа на основе `modCategory`. Право `mssetting_save`.
 
 | Метод | Роут | Описание |
 | --- | --- | --- |
@@ -543,12 +543,12 @@ CRUD для конфига колонок административных гр�
 | Поле | Тип | Описание |
 | --- | --- | --- |
 | `columns` | `array` | Колонки грида с конфигурацией (тип, видимость, фильтрация, редактор) |
-| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные — отправлять с префиксом. Источник истины — backend; фронт читает массив отсюда. Появилось в MiniShop3 1.12.0 — закрывает дублирование между фронтом и контроллерами. |
-| `editor_references` | `array<{key,path}>` | **Только для `grid_key=category-products`.** Whitelist допустимых reference-ключей для combo-редактора inline-edit. Каждая запись — пара ключа и пути к API-эндпойнту справочника. Используется UI настройки колонок для select dropdown. Появилось в MiniShop3 1.12.0. |
+| `direct_filter_keys` | `string[]` | Ключи фильтров, которые контроллер ждёт как **прямые** параметры запроса (без префикса `filter_`). Остальные отправляют с префиксом. Источник истины — сервер: фронт читает список отсюда, поэтому новый фильтр не нужно дублировать на клиенте. Появилось в MiniShop3 1.12.0. |
+| `editor_references` | `array<{key,path}>` | **Только для `grid_key=category-products`.** Список допустимых ключей справочников для выпадающего списка в combo-редакторе колонки. Каждая запись — пара ключа и пути к эндпоинту справочника. Используется в интерфейсе настройки колонок. Появилось в MiniShop3 1.12.0. |
 
 ##### Контракт фильтров (`direct_filter_keys`)
 
-Фронт-код решает, как сериализовать значение фильтра:
+Фронт решает, как сериализовать значение фильтра:
 
 ```js
 // Псевдокод composable useGridFilterParams
@@ -561,7 +561,7 @@ function addFilterParam(params, key, value) {
 }
 ```
 
-Это значит — добавляя новый прямой фильтр на бекенде, **обязательно** дописать его ключ в `DIRECT_FILTER_KEYS`-константу соответствующего контроллера. Иначе фронт отправит его с префиксом и фильтрация не сработает.
+Поэтому при добавлении прямого фильтра на сервере **обязательно** дописывайте его ключ в константу `DIRECT_FILTER_KEYS` соответствующего контроллера. Иначе фронт отправит фильтр с префиксом и фильтрация не сработает.
 
 #### Заказы (`/orders`)
 
@@ -730,7 +730,7 @@ CRUD типов связей товаров. Право `mssetting_save`.
 | POST | `/{id}/links` | Добавить связь `{ slave, link }` |
 | DELETE | `/{id}/links` | Удалить связь `{ link, master, slave }` |
 | GET | `/references/link-types` | Типы `msLink` (группа references) |
-| GET | `/references/products` | Autocomplete товаров |
+| GET | `/references/products` | Автодополнение товаров |
 
 #### Уведомления (`/notifications`)
 
@@ -757,7 +757,7 @@ CRUD типов связей товаров. Право `mssetting_save`.
 
 Полная таблица путей: [Web API → Карта эндпоинтов](/components/minishop3/development/web-api/endpoints).
 
-Guides: [auth](/components/minishop3/development/web-api/auth), [catalog](/components/minishop3/development/web-api/catalog), [cart](/components/minishop3/development/web-api/cart), [checkout](/components/minishop3/development/web-api/checkout), [customer](/components/minishop3/development/web-api/customer).
+Руководства: [auth](/components/minishop3/development/web-api/auth), [catalog](/components/minishop3/development/web-api/catalog), [cart](/components/minishop3/development/web-api/cart), [checkout](/components/minishop3/development/web-api/checkout), [customer](/components/minishop3/development/web-api/customer).
 
 ## Кастомизация роутов
 
@@ -803,7 +803,7 @@ $router->group('/api/mgr/my-module', function($router) use ($modx) {
 
 ### Переопределение системных роутов
 
-Кастомные роуты загружаются **после** системных и переопределяют их:
+Пользовательские роуты загружаются **после** системных и переопределяют их:
 
 ```php
 <?php
@@ -1008,8 +1008,8 @@ copy(
 | **Для кого** | Разработчик сайта | Авторы аддонов |
 | **Файлов** | Один на тип API | По файлу на аддон |
 | **Конфликты** | Возможны при нескольких аддонах | Нет |
-| **Install/uninstall** | Нужно редактировать вручную | Атомарный: создать/удалить файл |
-| **Создаётся** | При установке ms3 (example) | Аддон через resolver |
+| **Установка/удаление** | Нужно редактировать вручную | Атомарный: создать/удалить файл |
+| **Создаётся** | При установке MiniShop3 (файл-пример) | Аддон через resolver |
 
 ## Системные настройки
 
