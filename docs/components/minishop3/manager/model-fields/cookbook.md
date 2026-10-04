@@ -13,7 +13,7 @@ description: Секции, sort_order, visible list и связь с page-fields
 
 ## Цель
 
-Вы группируете поля по секциям, задаёте xtype и ширину, скрываете технические колонки. Vue-форма заказа и других сущностей читает **visible**-список с сервера.
+Вы группируете поля по секциям, задаёте xtype и ширину, скрываете технические колонки.
 
 ## Модели
 
@@ -23,15 +23,20 @@ description: Секции, sort_order, visible list и связь с page-fields
 | `msOrderAddress` | Адрес в заказе |
 | `msOrderProduct` | Позиция заказа |
 | `msVendor` | Производитель |
-| `msProductData` | Данные товара (часть полей) |
+
+Другие модели API отклоняет ошибкой `Invalid model type`. Раскладку данных товара настраивают через [поля товара](/components/minishop3/manager/product-fields/cookbook), не через model fields.
 
 ## Visible list vs полный CRUD
 
 | Запрос | Назначение |
 | --- | --- |
+| `GET /api/mgr/model-fields/models` | Список доступных моделей (для выпадающего списка в утилите) |
 | `GET /api/mgr/model-fields/visible/{model}` | Поля для Vue-формы (только `visible`) |
 | `GET /api/mgr/model-fields?model={model}` | Полный список в утилите «Поля модели» |
+| `GET /api/mgr/model-fields/{id}` | Метаданные одного поля |
+| `POST /api/mgr/model-fields` | Создать поле модели |
 | `PUT /api/mgr/model-fields/{id}` | Метаданные одного поля |
+| `DELETE /api/mgr/model-fields/{id}` | Удалить поле модели |
 | `PUT /api/mgr/model-fields/ranks` | Порядок полей (drag-and-drop) |
 
 Карточка заказа вызывает `visible/msOrder` и `visible/msOrderAddress` при загрузке.
@@ -79,19 +84,22 @@ PUT /api/mgr/model-fields/sections/ranks
 DELETE /api/mgr/model-fields/sections/{id}
 ```
 
-### Visible fields
+### Combo-options
 
 ```http
-GET /api/mgr/model-fields/visible/msOrder
-```
-
-### Combo для xtype combo
-
-```http
+GET /api/mgr/model-fields/combo-options/{model}
 GET /api/mgr/model-fields/combo-options/{model}/{field_name}
 ```
 
-Запись во все эндпойнты: `mssetting_save`.
+Первый вариант возвращает опции самой модели (например список статусов), второй — источник конкретного поля `combo`.
+
+**Права:**
+
+| Действие | Права |
+| --- | --- |
+| Чтение списка, моделей и секций | только сессия менеджера |
+| Чтение `visible` и `combo-options` | любое из `msorder_list`, `msorder_view`, `msorder_save`, `msproduct_save`, `mscategory_save`, `mssetting_list`, `mssetting_view`, `mssetting_save`, `view_document` |
+| Запись: создание, изменение, удаление, ranks | `mssetting_save` |
 
 ## Troubleshooting
 
@@ -99,7 +107,7 @@ GET /api/mgr/model-fields/combo-options/{model}/{field_name}
 | --- | --- |
 | 403 | Политики MS3, см. [issue #613](https://github.com/modx-pro/MiniShop3/issues/613) |
 | Поле не на форме | `visible = false` или поле не в `visible`-ответе |
-| Путаница с extra fields | Extra создаёт колонку. Model fields только UI. См. [#214](https://github.com/modx-pro/MiniShop3/issues/214) |
+| Путаница с extra fields | Extra fields создают колонку, model fields меняют только отображение. См. [#214](https://github.com/modx-pro/MiniShop3/issues/214) |
 | Изменения не видны | Обновите страницу карточки |
 
 См. [Cookbook менеджера](/components/minishop3/manager/).

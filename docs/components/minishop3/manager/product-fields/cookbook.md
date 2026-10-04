@@ -13,7 +13,7 @@ description: Секции, visible и page_key product_data на вкладке 
 
 ## Цель
 
-Вы группируете `article`, `price`, extra-поля по секциям, скрываете лишнее, меняете порядок. Vue-компонент вкладки читает `GET /api/mgr/config/page-fields/product_data`.
+Вы группируете `article`, `price`, extra-поля по секциям, скрываете лишнее, меняете порядок.
 
 ## page_key
 
@@ -26,7 +26,7 @@ description: Секции, visible и page_key product_data на вкладке 
 ## Связь с extra fields
 
 1. POST в **Дополнительные поля** для `MiniShop3\Model\msProductData` создаёт колонку и строку в `ms3_product_fields`.
-2. **Поля товара** меняют секцию, label, xtype, `visible`, `sort_order`. Новую колонку здесь не создают.
+2. **Поля товара** меняют секцию, label, xtype, `visible`, `sort_order`.
 
 Полный пример: [Оптовая цена](/components/minishop3/manager/examples/product-extra-field).
 
@@ -48,7 +48,7 @@ description: Секции, visible и page_key product_data на вкладке 
 ## Кейс: SEO-блок
 
 1. Секция `seo`, название **SEO**.
-2. Перенесите `tags` или кастомные extra-поля метаданных.
+2. Перенесите `tags` или свои extra-поля метаданных.
 3. Поднимите секцию в списке drag-and-drop.
 
 ## API appendix
@@ -105,12 +105,13 @@ flowchart TB
     {
       "section_key": "prices",
       "label": "Цены",
-      "hidden": false,
-      "sort_order": 10
+      "hidden": false
     }
   ]
 }
 ```
+
+Порядок секций задаёт порядок элементов в массиве `sections`: сервер не читает поле `sort_order` в теле PUT. Для полей в `PUT page-fields` `sort_order` работает.
 
 ## Troubleshooting
 
@@ -121,4 +122,4 @@ flowchart TB
 | Путаете с model fields | Model fields — заказ, vendor. Product fields — только вкладка «Данные» |
 | xtype не тот | Редактирование поля в утилите или через PUT page-fields |
 
-См. [Cookbook менеджера](/components/minishop3/manager/), [model-fields](/components/minishop3/manager/model-fields/cookbook).
+См. [Cookbook менеджера](/components/minishop3/manager/), [Cookbook полей модели](/components/minishop3/manager/model-fields/cookbook).

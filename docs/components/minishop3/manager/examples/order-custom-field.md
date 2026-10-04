@@ -1,6 +1,6 @@
 ---
 title: Поле «Комментарий менеджера» в заказе
-description: End-to-end — extra field на заказе и сохранение из Vue-формы менеджера
+description: Пошагово — extra field на заказе и сохранение из Vue-формы менеджера
 ---
 
 # Поле «Комментарий менеджера» в заказе
@@ -35,20 +35,6 @@ description: End-to-end — extra field на заказе и сохранени�
 | Активно | да |
 
 Сохраните форму. Пакет создаст миграцию и добавит колонку в таблицу заказов.
-
-```mermaid
-flowchart TB
-  create[POST extra-fields class FQCN]
-  db[(ms3_extra_fields + колонка)]
-  open[Открыть карточку заказа]
-  get[GET extra-fields?class=msOrder]
-  match{class совпал с БД?}
-  show[Секция Дополнительные поля]
-  empty[Пустая секция — bug 812]
-  create --> db --> open --> get --> match
-  match -->|FQCN = msOrder| show
-  match -->|только FQCN в БД| empty
-```
 
 <!-- ![Утилита «Дополнительные поля»](/components/minishop3/screenshots/mgr-extra-fields.png) -->
 
@@ -93,7 +79,7 @@ GET /api/mgr/orders/{id}
 
 ## Отличие от полей модели
 
-Extra field **создаёт колонку** в БД. [Поля модели](/components/minishop3/manager/model-fields/cookbook) только меняют отображение уже существующих колонок (секции, xtype, `visible`). Для нового текста на заказе берите extra fields.
+Для нового текста на заказе берите extra fields: он **создаёт колонку** в БД. [Поля модели](/components/minishop3/manager/model-fields/cookbook) только меняют отображение существующих колонок (секции, xtype, `visible`).
 
 ## API appendix
 

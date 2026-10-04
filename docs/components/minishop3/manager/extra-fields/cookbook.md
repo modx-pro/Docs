@@ -20,11 +20,11 @@ Extra field добавляет колонку в таблицу модели и 
 | Новая колонка «оптовая цена» на товаре | да |
 | Комментарий менеджера на заказе | да |
 | Перенести `price` в другую секцию без новой колонки | нет → [поля модели](/components/minishop3/manager/model-fields/cookbook) |
-| Изменить порядок полей на вкладке «Данные» | нет → [поля товара](/components/minishop3/interface/utilities/product-fields) |
+| Изменить порядок полей на вкладке «Данные» | нет → [поля товара](/components/minishop3/manager/product-fields/cookbook) |
 
 ## Модели (class)
 
-В UI и в POST указывайте полное имя класса (`classOptions` в ExtraFieldsManager):
+В UI и в POST указывайте полное имя класса:
 
 | Модель в UI | class |
 | --- | --- |
@@ -67,31 +67,18 @@ Extra field добавляет колонку в таблицу модели и 
 
 1. **Утилиты → Дополнительные поля** → класс **msProductData**.
 2. Ключ `supply_type`, xtype `ms3-combo-select`.
-3. В **select_options** (JSON или текст в UI):
+3. В **select_options** — построчно, формат `значение==подпись` (именно так это читает UI, JSON не разбирается):
 
-```json
-[
-  ["stock", "Со склада"],
-  ["on_request", "Под заказ"]
-]
+```text
+stock==Со склада
+on_request==Под заказ
 ```
+
+Подпись необязательна: без `==` в списке будет значение-и-подпись.
 
 Укажите dbtype `varchar` и phptype `string`.
 
 Для `msProductData` пакет создаёт связанную запись в `ms3_product_fields`, чтобы поле появилось на вкладке «Данные».
-
-```mermaid
-flowchart TB
-  ui[UI ExtraFieldsManager]
-  post[POST /api/mgr/extra-fields]
-  mig[Phinx-миграция колонки]
-  auto{class = msProductData?}
-  pf[Строка в ms3_product_fields]
-  form[Виджет на форме модели]
-  ui --> post --> mig --> auto
-  auto -->|Да| pf --> form
-  auto -->|Нет| form
-```
 
 ## Кейс: repeater
 
@@ -101,8 +88,8 @@ flowchart TB
 ```json
 {
   "columns": [
-    { "key": "name", "label": "Название" },
-    { "key": "qty", "label": "Кол-во", "type": "number" }
+    { "key": "name", "label": "Название", "xtype": "textfield" },
+    { "key": "qty", "label": "Кол-во", "xtype": "numberfield" }
   ],
   "minRows": 0,
   "maxRows": 50,
@@ -132,7 +119,7 @@ Repeater в CSV-импорт не попадает.
 
 ## Вывод на форме заказа
 
-После создания поля для `MiniShop3\Model\msOrder` откройте карточку заказа. Секция **Дополнительные поля заказа** строится из `GET /api/mgr/extra-fields` и `OrderExtraFieldsSection.vue`.
+Поле для `MiniShop3\Model\msOrder` появляется в секции **Дополнительные поля заказа** карточки заказа.
 
 Сохранение: ключ поля на верхнем уровне `PUT /api/mgr/orders/{id}` (см. [пример](/components/minishop3/manager/examples/order-custom-field)).
 
@@ -155,9 +142,7 @@ Repeater в CSV-импорт не попадает.
 | Симптом | Действие |
 | --- | --- |
 | «Column already exists» | Колонка уже в таблице или дубликат ключа |
-| Поле не на карточке товара | Для `msProductData` проверьте `ms3_product_fields` и `visible`. См. [product-fields cookbook](/components/minishop3/manager/product-fields/cookbook) |
+| Поле не на карточке товара | Для `msProductData` проверьте `ms3_product_fields` и `visible`. См. [Cookbook полей товара](/components/minishop3/manager/product-fields/cookbook) |
 | Секция заказа пустая при active=1 | Баг [#812](https://github.com/modx-pro/MiniShop3/issues/812): форма шлёт `class=msOrder`, в БД часто `MiniShop3\Model\msOrder`. API фильтрует по точному совпадению |
 | Repeater/key-value не сохраняется | JSON-схема в конфиге, dbtype должен быть `json` |
 | 403 на запись | `mssetting_save` |
-
-Справочник: [extra-fields](/components/minishop3/interface/utilities/extra-fields).
