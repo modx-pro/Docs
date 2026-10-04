@@ -1,10 +1,10 @@
 # Интеграция с FormIt
 
-При установленном FormIt валидация работает в `TicketForm` и `TicketComments` через параметры `&validate` и `&customValidators`. FormIt в зависимости пакета нет.
+Валидация FormIt работает в `TicketForm` и `TicketComments` через `&validate` и `&customValidators`. FormIt не входит в зависимости пакета.
 
 ## Правила
 
-- Ошибки выводятся в `<span class="error"></span>` рядом с полем или в `#имя_поля-error`
+- Ошибки выводят в `<span class="error"></span>` рядом с полем или в `#имя_поля-error`
 - Правила FormIt: [документация FormIt](https://docs.modx.com/current/ru/extras/formit)
 - Для комментариев валидируется поле `text`
 
@@ -28,7 +28,7 @@
 
 ## Пользовательский валидатор
 
-Сниппет **mycensore**:
+Сниппет `mycensore`:
 
 ```php
 <?php

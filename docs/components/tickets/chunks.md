@@ -5,7 +5,7 @@ description: Стандартные чанки tpl.Tickets.*
 
 # Чанки
 
-При установке пакет создаёт чанки `tpl.Tickets.*` в namespace Tickets. Копируйте в тему и правьте копии, не оригиналы в ядре.
+При установке пакет создаёт чанки `tpl.Tickets.*` в namespace Tickets. Копируйте их в свою тему и правьте копии, а не оригиналы в ядре.
 
 ## Формы тикета
 
@@ -65,12 +65,8 @@ description: Стандартные чанки tpl.Tickets.*
 
 ## Подписка на автора
 
-| Чанк | Сниппет |
-| --- | --- |
-| `tpl.Tickets.author.subscribe` | `subscribeAuthor` |
-
-Для `&tpl` допустимы `@INLINE` и `@FILE` (с 1.11.2).
+Форму подписки выводит чанк `tpl.Tickets.author.subscribe` (`subscribeAuthor`). Для `&tpl` допустимы `@INLINE` и `@FILE` (с 1.11.2).
 
 ## Вложенные чанки
 
-В чанках списка и мета встречаются префиксы `<!--tickets_* ... -->` — условные подчанки Fenom/pdoTools (`tickets_can_vote`, `tickets_subscribed` и т.д.). Префикс задаёт `nestedChunkPrefix` в коде (`tickets_`).
+В чанках списка и мета условные подчанки Fenom/pdoTools помечены префиксом: `<!--tickets_* ... -->` (`tickets_can_vote`, `tickets_subscribed`). Префикс задаётся в коде через `nestedChunkPrefix` (`tickets_`).
