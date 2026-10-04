@@ -5,9 +5,7 @@ description: Badge в списке заказов и inline-edit с select в ca
 
 # Cookbook колонок грида
 
-Настройка колонок административных таблиц: видимость, тип, badge, relation, inline-edit.
-
-Полный справочник: [Колонки гридов](/components/minishop3/interface/utilities/grid-columns).
+Настройка колонок административных таблиц: видимость, тип, badge, relation, inline-edit. Полный справочник: [Колонки гридов](/components/minishop3/interface/utilities/grid-columns).
 
 <!-- ![Утилита «Колонки гридов»](/components/minishop3/screenshots/mgr-grid-columns.png) -->
 
@@ -26,22 +24,6 @@ description: Badge в списке заказов и inline-edit с select в ca
 | `category-products` | Таблица товаров на ресурсе категории |
 | `deliveries` | Доставки в настройках |
 
-```mermaid
-flowchart TB
-  key[grid_key в ms3_grid_fields]
-  get[GET /api/mgr/grid-config/key]
-  put[PUT /api/mgr/grid-config/key]
-  screen[Vue-грид на экране]
-  inline{key = category-products?}
-  edit[Inline-edit ячеек]
-  view[Только отображение]
-  key --> get --> screen
-  put --> screen
-  screen --> inline
-  inline -->|Да| edit
-  inline -->|Нет| view
-```
-
 ::: warning Inline-edit
 Редактирование ячейки в гриде включено **только** для `category-products`. В `orders` и остальных ключах inline-edit нет. Для списка заказов используйте badge, relation или model-колонки.
 :::
@@ -52,16 +34,6 @@ flowchart TB
 
 - скрытые relation-колонки `status_name` и `status_color` подтягивают текст и HEX из `msOrderStatus`
 - видимая колонка `order_status` с типом `badge`
-
-Конфиг badge (фрагмент из `ms3_grid_fields`):
-
-```json
-{
-  "type": "badge",
-  "source_field": "status_name",
-  "color_field": "status_color"
-}
-```
 
 ### Своя badge-колонка
 
@@ -105,12 +77,12 @@ POST /api/mgr/grid-config/orders/field
    - displayField: `id`
    - aggregation: `COUNT`
 
-Агрегации: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`. Для `category-products` aggregation в relation **не поддерживается**.
+Агрегации: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`. Для `category-products` агрегация в relation не поддерживается.
 
 ## Кейс: inline-edit + select (category-products)
 
-1. Грид **category-products** → выберите колонку (например `vendor_name` или extra-поле товара).
-2. Включите **Редактирование в ячейке**.
+1. Грид **category-products** → выберите колонку (например `price` или extra-поле товара).
+2. Включите **Редактируемое поле**.
 3. **Тип редактора**: `select`.
 4. **editor_options** — массив пар `[value, label]`:
 
@@ -121,7 +93,12 @@ POST /api/mgr/grid-config/orders/field
 ]
 ```
 
-Для combo-редактора с API справочником используйте `editor_type: combo` и ключ из `editor_references` в ответе `GET /api/mgr/grid-config/category-products`.
+Для combo-редактора с API справочником используйте `editor_type: combo` и один из двух источников:
+
+- ключ из `editor_references` в ответе `GET /api/mgr/grid-config/category-products` (поле `editor_reference`);
+- свой эндпоинт в `editor_combo_endpoint`: он принимает только путь из списка разрешённых пакетом.
+
+Один из двух источников обязателен, без него сохранение вернёт ошибку.
 
 <!-- ![Inline-edit в таблице товаров категории](/components/minishop3/screenshots/mgr-category-products.png) -->
 
@@ -133,39 +110,9 @@ POST /api/mgr/grid-config/orders/field
 
 ## Кейс: price, weight, datetime
 
-Типы **price**, **weight**, **datetime** форматируют значение model-колонки без PHP.
+Типы **price**, **weight**, **datetime** форматируют значение model-колонки без PHP. Например: цена в гриде `category-products`, вес с единицей измерения, дата `createdon` в `orders`.
 
-**Цена в гриде category-products:**
-
-1. Колонка `price`, тип **price**.
-2. displayConfig:
-
-```json
-{
-  "decimals": 2,
-  "currency": "₽",
-  "currency_position": "after",
-  "thousands_separator": " "
-}
-```
-
-**Вес:**
-
-```json
-{
-  "decimals": 2,
-  "unit": "кг",
-  "unit_position": "after"
-}
-```
-
-**Дата создания заказа** (грид `orders`, поле `createdon`):
-
-```json
-{
-  "format": "dd.MM.yyyy HH:mm"
-}
-```
+Ключи `displayConfig` и готовые значения: [Колонки гридов](/components/minishop3/interface/utilities/grid-columns).
 
 ## Кейс: computed-колонка
 
@@ -180,7 +127,7 @@ POST /api/mgr/grid-config/orders/field
 }
 ```
 
-Класс должен быть в autoload MODX и реализовывать `ComputedFieldInterface`. Для простого форматирования цены или даты достаточно типов **price** / **datetime**.
+Класс должен быть в autoload MODX и реализовывать `ComputedFieldInterface`. Для форматирования цены или даты достаточно типов **price** / **datetime**.
 
 ## API appendix
 
@@ -195,12 +142,13 @@ GET /api/mgr/grid-config/orders?include_hidden=1
 ```json
 {
   "columns": [ ... ],
-  "direct_filter_keys": ["query", "status_id", "delivery_id"],
-  "editor_references": []
+  "direct_filter_keys": ["query", "status_id", "delivery_id", "payment_id", "context_key", "createdon_from", "createdon_to"]
 }
 ```
 
-`direct_filter_keys` — фильтры без префикса `filter_` в query списка. Для `orders` источник — `OrdersController::getDirectFilterKeys()`.
+`direct_filter_keys` — фильтры без префикса `filter_` в query списка. Для `orders` источник — `ManagerOrderListService::DIRECT_FILTER_KEYS`. Ответ содержит `editor_references` только для `category-products`.
+
+Каждая колонка в `columns`, помимо `visible`/`sortable`/`type`/`config`, несёт служебные поля `filterable`, `frozen`, `min_width`, `is_system`. Системные колонки (`is_system`) удалить нельзя. Остальные колонки удаляются тем же PUT (см. ниже).
 
 **Сохранение порядка и метаданных** (`mssetting_save`):
 
@@ -219,6 +167,10 @@ PUT /api/mgr/grid-config/orders
 
 Тело PUT принимает массив **`fields`**, не `columns`.
 
+::: warning PUT заменяет состав колонок
+PUT ожидает **полный** список колонок грида. Любая не-system колонка, которой нет в `fields`, будет удалена. Прежде чем отправлять частичный список, прочитайте текущий конфиг через `GET /api/mgr/grid-config/{grid_key}` и дополняйте его, а не заменяйте.
+:::
+
 | Метод | Путь |
 | --- | --- |
 | POST | `/api/mgr/grid-config/{grid_key}/field` |
@@ -231,7 +183,7 @@ PUT /api/mgr/grid-config/orders
 | --- | --- |
 | 403 на PUT | `mssetting_save` |
 | Badge без цвета | Проверьте `color_field` и HEX в данных строки |
-| Combo editor ошибка | Whitelist `editor_references` только для category-products |
+| Ошибка combo-редактора | `editor_references` работает только для `category-products` |
 | Колонка не в списке заказов | `visible: true`, перезагрузите грид |
 
-См. [routing: grid-config](/components/minishop3/development/routing.md), [Cookbook менеджера](/components/minishop3/manager/).
+См. [routing: grid-config](/components/minishop3/development/routing), [Cookbook менеджера](/components/minishop3/manager/).
