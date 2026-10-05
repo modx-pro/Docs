@@ -36,7 +36,7 @@ Hero. Title `Каталог`. Button label `Смотреть категории`
 
 FAQ. Title `Доставка`. Две строки repeater: `question` и `answer`.
 
-`contact_form`. **Ключ формы** `shop_question`. В **Полях формы** две строки: `email` типа email и `phone` типа phone. Имя поля: `[a-z][a-z0-9_]*`.
+`contact_form`. **Ключ формы** `shop_question`. В **Полях формы** две строки: `email` типа email и `phone` типа phone. Имя поля: `[a-z][a-z0-9_]*`, регистр не важен.
 
 ## Что проверить
 
