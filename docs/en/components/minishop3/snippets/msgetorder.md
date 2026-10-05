@@ -5,6 +5,11 @@ title: msGetOrder
 
 Snippet for displaying order information. Used on the thank-you page or in the customer account.
 
+::: warning The order page must not be cached
+Untick «Cacheable» on the resource in the admin. The snippet outputs one specific order — name, phone, address, contents; on a cacheable page that HTML lands in the cache and reaches the next visitor.
+
+The `!` prefix is not enough for this. In MODX `[[!snippet]]` defers execution to the uncacheable pass, while in Fenom `{'!msGetOrder'|snippet}` the snippet runs where it stands: `!` only disables the element cache inside pdoTools. Keep the prefix, but rely on the resource setting.
+
 ## Parameters
 
 | Parameter | Default | Description |
@@ -16,9 +21,11 @@ Snippet for displaying order information. Used on the thank-you page or in the c
 | **includeTVs** | | Comma-separated product TVs (pdoTools, `joinTVsTo` = `msProduct`) |
 | **payStatus** | `1` | CSV of status IDs for which to show `payment_link`. Default `1` = draft; after checkout the order is usually in `ms3_status_new` (often `2`) — set the needed IDs explicitly |
 | **toPlaceholder** | | Save result to placeholder |
-| **showLog** | `false` | Show execution log |
+| **showLog** | `false` | Show the execution log. Visible only to a user signed in to the admin |
 
-The snippet does **not** support `return`: output is chunk HTML or a placeholder via `toPlaceholder`. Extra pdoTools `where`, `leftJoin`, `select` can be passed as JSON parameters.
+The snippet does **not** support `return`: output is chunk HTML or a placeholder via `toPlaceholder`.
+
+Every other parameter passed goes into the pdoFetch product query on top of the snippet defaults — that is how `where`, `leftJoin`, `select` and its other settings work. Both an array and a JSON string are accepted.
 
 ## Order resolution
 
@@ -26,7 +33,15 @@ The snippet resolves the order in this order:
 
 1. Snippet parameter `id` (ID or UUID)
 2. GET parameter `msorder` (e.g. `?msorder=15` or `?msorder=uuid`)
-3. Empty result if order not found
+3. If the order is not found, the text of the `ms3_err_order_nf` lexicon is returned. An empty string means the identifier was not passed or the visitor has no access
+
+A value exactly 36 characters long is treated as a UUID; anything else is cast to a number and looked up by `id`.
+
+::: warning The link from the payment email points at the wrong order
+The built-in payment handler puts the order **number** into `payment_link`: `?msorder=2610/5` (`DefaultPayment`). The snippet does not understand that format — it is not 36 characters long, so it is cast to a number and `2610/5` becomes `2610`. The visitor gets either «order not found» or an unrelated order with that id.
+
+There is no lookup by number in the snippet. If the email link has to work, put the UUID or the ID into it — for example by overriding the email template or the payment handler.
+:::
 
 ::: tip UUID access
 Order UUID (36 characters) instead of numeric ID is useful for public links. With UUID, **access control is skipped** — anyone with the link can view the order. In the account area use numeric ID or customer login.
@@ -47,13 +62,13 @@ The order is shown if any of the following is true:
 ### Basic output
 
 ```fenom
-{'msGetOrder' | snippet}
+{'!msGetOrder' | snippet}
 ```
 
 ### With product thumbnails
 
 ```fenom
-{'msGetOrder' | snippet : [
+{'!msGetOrder' | snippet : [
     'includeThumbs' => 'small'
 ]}
 ```
@@ -61,7 +76,7 @@ The order is shown if any of the following is true:
 ### Specific order by ID
 
 ```fenom
-{'msGetOrder' | snippet : [
+{'!msGetOrder' | snippet : [
     'id' => 15,
     'includeThumbs' => 'small,medium'
 ]}
@@ -70,7 +85,7 @@ The order is shown if any of the following is true:
 ### Order by UUID
 
 ```fenom
-{'msGetOrder' | snippet : [
+{'!msGetOrder' | snippet : [
     'id' => 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
 ]}
 ```
@@ -78,7 +93,7 @@ The order is shown if any of the following is true:
 ### To placeholder
 
 ```fenom
-{'msGetOrder' | snippet : [
+{'!msGetOrder' | snippet : [
     'toPlaceholder' => 'orderHtml'
 ]}
 
@@ -108,7 +123,7 @@ The chunk receives the following objects:
 | Field | Description |
 | --- | --- |
 | `{$order.id}` | Order ID |
-| `{$order.num}` | Formatted number (MS-00015) |
+| `{$order.num}` | Order number. Built as a date per `ms3_order_format_num` (default `ym`) plus a separator and a counter — for example `2610/5` |
 | `{$order.uuid}` | Order UUID |
 | `{$order.status_id}` | Status ID |
 | `{$order.cost}` | Total cost |
@@ -147,7 +162,7 @@ The chunk receives the following objects:
 | `{$delivery.id}` | Delivery ID |
 | `{$delivery.name}` | Name |
 | `{$delivery.description}` | Description |
-| `{$delivery.price}` | Cost |
+| `{$delivery.price}` | A delivery surcharge, not its cost. It may be a percentage (`10%`), counted off the product cost. Take the final amount from `{$total.delivery_cost_formatted}` |
 | `{$delivery.logo}` | Logo |
 
 ### payment object
@@ -158,6 +173,13 @@ The chunk receives the following objects:
 | `{$payment.name}` | Name |
 | `{$payment.description}` | Description |
 | `{$payment.logo}` | Logo |
+| `{$payment.price}` | Payment method surcharge |
+
+### shipments array
+
+`{$shipments}` — the order's shipments. An empty array when the shipment service is off or there are none.
+
+Each element carries: `id`, `order_id`, `delivery_id`, `status`, `tracking_number`, `carrier`, `shipped_at`, `delivered_at`.
 
 ### total object
 
@@ -202,7 +224,9 @@ For each product:
 | `{$product.price_formatted}`, `{$product.cost_formatted}`, `{$product.weight_formatted}`, etc. | Formatted output with currency/unit |
 | `{$product.options}` | Order line options (array) |
 | `{$product.option.color}` | Option value as a separate field (`option.{key}`) |
-| `{$product.thumb}` | Thumbnail (if includeThumbs) |
+| `{$product.thumb}` | The product's own thumbnail. Sizes requested through `includeThumbs` arrive as fields named after the size: with `includeThumbs => 'small'` that is `{$product.small}` |
+| `{$product.product_key}` | Line key: the same product with different options gets different keys |
+| `{$product.original_price}` | The product's current catalogue price — may differ from the price in the order |
 
 ## Default chunk
 
@@ -361,11 +385,15 @@ The default chunk `tpl.msGetOrder` uses Bootstrap 5:
 The payment link `{$payment_link}` is available when:
 
 1. The payment method has a handler class (`class`) with a method that returns a URL
-2. Order status is in the allowed list: snippet parameter `payStatus` (CSV) or system setting `ms3_payment_link_statuses` (fallback — `ms3_status_new`)
-3. The order is not final and not in “paid” status — logic in `PaymentLinkResolver::isStatusEligibleForPaymentLink()`
+2. The order status is in the CSV list of the `payStatus` parameter (default `1`, draft)
+3. The order is not final and not in the «paid» status
+
+::: tip `ms3_payment_link_statuses` is not a system setting
+There is no such key in the package or in the lexicons: it will not show up in the admin. The code reads it through `getOption()` in one place — `PaymentLinkResolver` — so a value can only be set by creating the setting by hand. It does not affect this snippet: here the status list comes from the `payStatus` parameter.
+:::
 
 ```fenom
-{'msGetOrder' | snippet : [
+{'!msGetOrder' | snippet : [
     'payStatus' => '2,3'  {* after submit status is usually ms3_status_new (2) *}
 ]}
 ```
@@ -381,7 +409,7 @@ Typical use on the page after checkout:
         <p class="lead">We will contact you shortly.</p>
     </div>
 
-    {'msGetOrder' | snippet : [
+    {'!msGetOrder' | snippet : [
         'includeThumbs' => 'small'
     ]}
 
@@ -390,3 +418,9 @@ Typical use on the page after checkout:
     </div>
 </div>
 ```
+
+Which resource this is, is set by `ms3_order_redirect_thanks_id` — `1` by default. Separately there is `ms3_order_success_page_id` (default `0`, i.e. the site start page): the payment handler uses it for the `payment_link`.
+
+::: tip msOrder and msGetOrder coexist on one page
+With `?msorder` in the address the checkout form snippet returns an empty string. So both calls can live in one template: before checkout the customer sees the form, after the redirect — the order details. There is no need to split them across resources.
+:::
