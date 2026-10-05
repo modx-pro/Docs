@@ -75,7 +75,7 @@ sequenceDiagram
 | `properties` | `discount_percent` | Итоговый процент скидки. |
 | `properties` | `discounts` | Список применённых правил: `id`, `name`, `action_type`, `value`, `discount`. |
 
-Подарочная позиция создаётся с полями `price = 0` и `cost = 0`. В её `properties` записываются `ms3discounts_gift = true`, `discount_id`, а числовые поля скидок равны `0`. Такие строки исключаются из расчёта других скидок.
+Подарочная позиция создаётся с полями `price = 0` и `cost = 0`. В её `properties` записываются `ms3discounts_gift = true`, `discount_id`, а поля `original_price`, `old_price`, `discount_price` и `discount_cost` равны `0`. Ключа `discount_percent` у подарка нет — в шаблоне он будет пустым. Такие строки исключаются из расчёта других скидок.
 
 Пример вывода в чанке строки корзины:
 

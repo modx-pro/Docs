@@ -72,21 +72,35 @@ flowchart TD
 
 ## Скидки в каталоге msProducts
 
-Цены в списке товаров пересчитываются без дополнительных вызовов: плагин ms3Discounts подписан на событие `msOnGetProductPrice`, поэтому в чанке строки `msProducts` поле `price` уже содержит цену со скидкой, `old_price` — базовую цену, а `discount` — готовый процент. Простой бейдж собирается без сниппета:
+Цены в списке товаров пересчитываются без дополнительных вызовов: плагин ms3Discounts подписан на событие `msOnGetProductPrice` и подставляет в строку `msProducts` только `price` — уже со скидкой. Поле `old_price` в строке берётся из самого MiniShop3 (TV `old_price`), а `discount` плагин не добавляет.
+
+Простой бейдж собирается из полей MS3 и строки:
 
 ```fenom
-{if $discount > 0}
+{if $price < $old_price}
   <span class="badge">−{$discount}%</span>
   <s>{$old_price}</s> {$price}
 {/if}
 ```
 
-Для бейджа с названием акции и таймером вызовите сниппет в чанке строки с `id` товара:
+Для бейджа с названием акции, процентом и таймером подключите `ms3discountsGetDiscount` как `prepareSnippet` — сниппет сам разбирает вложенный ключ `row` и добавляет в строку `name`, `percent`, `price`, `base_price`, `discount`, `sale_discount`, `remains`, `date_end` и `sale_id`:
+
+```fenom
+{'!msProducts' | snippet : [
+  'parents' => 0,
+  'prepareSnippet' => 'ms3discountsGetDiscount',
+  'tpl' => '@FILE chunks/ms3d-row.tpl'
+]}
+```
+
+::: tip Подготовка строки или вызов в чанке
+Режим `prepareSnippet` включается, когда в строке есть `id` и `pagetitle`, — именно их передаёт `msProducts`. Если полей нет, сниппет считает, что это обычный вызов, и ждёт параметр `id` в корне. Второй способ — вызвать сниппет прямо в чанке строки:
 
 ```fenom
 {'!ms3discountsGetDiscount' | snippet : ['id' => $id]}
 ```
 
-::: warning Не используйте prepareSnippet
-Параметр `prepareSnippet=ms3discountsGetDiscount` у `msProducts` не обогащает строки: pdoTools передаёт поля товара во вложенном ключе `row`, а сниппет ожидает их в корне параметров. Вызов завершается молча, поля скидки в строке не появляются.
+Именно так сделано в [ms3discountsBuyNow](ms3discountsBuyNow): он подставляет `prepareSnippet=ms3discountsGetDiscount` по умолчанию.
+
+Обратите внимание на флаги: режим подготовки строки отбирает правила по флагу «Показывать в каталоге», а отдельный вызов на карточке — по «Показывать на товаре». Правило с выключенным «В каталоге» в строке `msProducts` бейджа не даст.
 :::
