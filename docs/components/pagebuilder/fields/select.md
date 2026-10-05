@@ -13,18 +13,17 @@ description: "Одно значение из статического масси
 
 - Список в JSON секции, без запросов к xPDO
 - Длинный перечень в том же выпадающем списке, что у [radio](radio)
-- В data пишется `value` опции, не label
+- В данные секции пишется `value` опции, не label
 
 ## Когда использовать
 
 - Размер, тема, выравнивание, preset макета
 - От 5 до 20 фиксированных вариантов без поиска
-- Настройки секции в духе enum
+- Настройки секции с фиксированным набором значений
 
 ## Советы
 
-- Список из БД: [combo](combo) (Pro)
-- Два–четыре варианта на экране удобнее в [radio](radio)
+Список из БД: [combo](combo) (Pro).
 
 ## Похожие типы
 
@@ -60,7 +59,7 @@ description: "Одно значение из статического масси
 
 ## Данные секции {#vyvod-v-section-data}
 
-Ключ `size` в данных секции — строка `value` выбранной опции:
+Ключ `size` в данных секции:
 
 ```json
 {
@@ -73,15 +72,11 @@ description: "Одно значение из статического масси
 ::: code-group
 
 ```modx
-<div class="block block--[[+size]]"></div>
+[[+size]]
 ```
 
 ```fenom
-{switch $size}
-  {case 'sm'}<div class="block block--sm">{/case}
-  {case 'lg'}<div class="block block--lg">{/case}
-  {default}<div class="block">{/default}
-{/switch}
+{$size|escape}
 ```
 
 :::

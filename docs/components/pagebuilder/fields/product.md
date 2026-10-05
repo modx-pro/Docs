@@ -7,9 +7,9 @@ description: "ID одного товара miniShop3. Capability minishop3. Сл
 
 Версия: **Pro**, capability `minishop3`.
 
-Строка с ID товара. В дескрипторе типа указана зависимость `minishop3`, но `ProFeatureProvider` сейчас не выдаёт эту capability: тип не попадает в диалог нового поля ни с установленным miniShop3, ни без него.
+Строка с ID товара. В дескрипторе типа указана зависимость `minishop3`, но `ProFeatureProvider` не выдаёт эту capability: тип не попадает в диалог нового поля, даже с установленным miniShop3.
 
-Готовые секции магазина берут товар через [relation](relation) и [multirelation](multirelation), не через этот тип. Чанк сам цену и кнопку корзины не получает. Для карточки miniShop3 используйте [сетку товаров](../sections/products_grid) или [product spotlight](../sections/product_spotlight).
+Готовые секции магазина берут товар через [relation](relation) и [multirelation](multirelation), не через этот тип. Чанк цену и кнопку корзины не получает: для карточки miniShop3 используйте [сетку товаров](../sections/products_grid) или [product spotlight](../sections/product_spotlight).
 
 ## Настройка
 
@@ -21,11 +21,9 @@ description: "ID одного товара miniShop3. Capability minishop3. Сл
 }
 ```
 
-## Значение
-
-В инспекторе и в сохранённых данных секции — строка ID (`InputText`). Демо-матрица и sample-данные могут подставлять объект как у `relation`. В chunk опирайтесь на строку ID. Объект в поле даст в инспекторе `[object Object]`.
-
 ## Данные секции {#vyvod-v-section-data}
+
+В инспекторе и в данных секции — строка ID (`InputText`), не объект, как у [relation](relation). В chunk опирайтесь на строку: объект вместо строки даст в инспекторе `[object Object]`.
 
 ```json
 {

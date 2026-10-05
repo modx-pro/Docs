@@ -21,7 +21,7 @@ The old `xtype` key, for schemas that are not switched to `text` yet. The inspec
 
 ## Tips
 
-UI does not mount Ext modx-combo. New schemas use native [text](text) or [combo](combo).
+New schemas use [text](text) or [combo](combo).
 
 ## Similar types
 
@@ -69,10 +69,6 @@ Key `ext` in the section data:
 ```
 
 :::
-
-## Notes
-
-The inspector renders plain `InputText`. `xtype` is only a hint; MODX does not mount an ExtJS widget.
 
 ## Common properties
 

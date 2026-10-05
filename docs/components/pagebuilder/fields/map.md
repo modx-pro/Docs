@@ -11,7 +11,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 ## Зачем этот тип
 
-Широта, долгота, масштаб и провайдер карты в инспекторе (отдельного поля «улица» нет — текстовый адрес у типа [address](address)). После save enrich добавляет `embed_url` и `watch_url` любому объекту с ключами `lat` и `lng`. Плоские `map_embed_url`, `map_provider`, `map_watch_url` пишутся при первом успешном embed; при нескольких точках приоритет у ключа `location`.
+Широта, долгота, масштаб и провайдер карты в инспекторе (отдельного поля «улица» нет — текстовый адрес у типа [address](address)). После save enrich добавляет `embed_url` и `watch_url` любому объекту с ключами `lat` и `lng`. Плоские `map_embed_url`, `map_provider`, `map_watch_url` пишутся при первом успешном встраивании; при нескольких точках приоритет у ключа `location`.
 
 ## Когда использовать
 
@@ -25,7 +25,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 ## Похожие типы
 
-- [text](textarea) для адреса без координат
+- [text](text) для адреса без координат
 - [url](url), если нужна готовая ссылка на карты и точку не выбирают на карте
 
 ## Настройка
@@ -43,7 +43,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 ## Значение
 
-Объект `{ lat, lng, zoom, provider }`; enrich: `embed_url` в объекте и плоский `map_embed_url`.
+Объект `{ lat, lng, zoom, provider }`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -65,7 +65,6 @@ description: "Точка на карте с enrich embed_url и watch_url"
 }
 ```
 
-- Плоские `map_embed_url`, `map_provider`, `map_watch_url` дублируют embed первого map-поля (приоритет у ключа `location`).
 - Провайдер по умолчанию `yandex`; `osm`: OpenStreetMap.
 
 ## Пример в chunk
@@ -94,8 +93,6 @@ description: "Точка на карте с enrich embed_url и watch_url"
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
-
-- Дополнительно: enrich добавляет `embed_url`, `watch_url` и плоские `map_*` в данных секции.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 
