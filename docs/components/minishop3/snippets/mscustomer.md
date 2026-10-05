@@ -11,11 +11,36 @@ title: msCustomer
 
 ## Принцип работы
 
-Основа сниппета — параметр **`service`**. Меняя этот параметр, вы получаете совершенно разные страницы личного кабинета с разными данными и функциональностью.
+Параметр **`service`** выбирает страницу личного кабинета: `profile`, `addresses` или `orders`.
 
-### profile — Профиль покупателя
+```mermaid
+flowchart TB
+  call[msCustomer]
+  auth{Покупатель авторизован?}
+  unauth[unauthorizedTpl / return data]
+  svc{service}
+  profile[profile]
+  addresses[addresses]
+  orders[orders]
+  outTpl[Чанк service]
+  outData[return=data массив]
+  call --> auth
+  auth -->|Нет| unauth
+  auth -->|Да| svc
+  svc --> profile
+  svc --> addresses
+  svc --> orders
+  profile --> outTpl
+  addresses --> outTpl
+  orders --> outTpl
+  profile --> outData
+  addresses --> outData
+  orders --> outData
+```
 
-Редактирование личных данных: имя, email, телефон. Показывает статус верификации email и телефона.
+### Профиль покупателя (`service=profile`)
+
+Редактирование личных данных (имя, email, телефон) и статусов их верификации.
 
 ```fenom
 {'!msCustomer' | snippet : [
@@ -29,9 +54,7 @@ title: msCustomer
 
 Подробнее: [Профиль покупателя](/components/minishop3/frontend/customer-profile)
 
----
-
-### addresses — Управление адресами
+### Управление адресами (`service=addresses`)
 
 Список сохранённых адресов доставки с возможностью создания, редактирования, удаления и выбора адреса по умолчанию.
 
@@ -49,11 +72,9 @@ title: msCustomer
 
 Подробнее: [Адреса доставки](/components/minishop3/frontend/customer-addresses)
 
----
+### История заказов (`service=orders`)
 
-### orders — История заказов
-
-Список всех заказов покупателя с фильтрацией по статусу и пагинацией. При клике на заказ — детальная информация.
+Список заказов покупателя с фильтрацией по статусу и пагинацией. Клик по заказу открывает его детальную информацию. Заказы со статусом id=1 (черновик) в список не попадают и не отображаются в фильтре статусов.
 
 ```fenom
 {'!msCustomer' | snippet : [
@@ -71,8 +92,6 @@ title: msCustomer
 
 Подробнее: [История заказов](/components/minishop3/frontend/customer-orders)
 
----
-
 ## Общие параметры
 
 | Параметр | По умолчанию | Описание |
@@ -81,7 +100,7 @@ title: msCustomer
 | **return** | `tpl` | Формат: `tpl` (HTML), `data` (массив) |
 | **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Чанк для неавторизованных |
 
-## Получение данных без рендеринга
+## Получение данных в массиве
 
 ```fenom
 {set $profile = '!msCustomer' | snippet : [
@@ -102,12 +121,12 @@ title: msCustomer
 
 | Параметр | Описание |
 | --- | --- |
-| `order_id` | ID заказа для просмотра деталей |
+| `order` | UUID заказа (36 символов) для просмотра деталей |
 | `status` | Фильтр по ID статуса |
 | `offset` | Смещение для пагинации |
 
-```
-/cabinet/?order_id=15      — детали заказа #15
+```text
+/cabinet/?order=0f9e8d7c-1a2b-3c4d-5e6f-7a8b9c0d1e2f  — детали заказа
 /cabinet/?status=2         — заказы со статусом 2
 /cabinet/?offset=20        — вторая страница
 ```
@@ -119,7 +138,7 @@ title: msCustomer
 | `mode` | Режим: `list`, `edit`, `create` |
 | `id` | ID адреса для редактирования |
 
-```
+```text
 /cabinet/addresses/              — список адресов
 /cabinet/addresses/?mode=create  — создание адреса
 /cabinet/addresses/?mode=edit&id=5  — редактирование адреса #5
@@ -127,13 +146,13 @@ title: msCustomer
 
 ### Выход из аккаунта
 
-```
+```text
 /cabinet/?action=logout
 ```
 
 ## Структура данных
 
-### service=profile (return=data)
+### Профиль (`service=profile`)
 
 ```php
 [
@@ -156,7 +175,7 @@ title: msCustomer
 ]
 ```
 
-### service=orders (return=data) — список
+### Список заказов (`service=orders`)
 
 ```php
 [
@@ -173,6 +192,7 @@ title: msCustomer
             'status_id' => 2,
             'status_name' => 'Оплачен',
             'status_color' => '008000',
+            'can_cancel' => false,
             // ... другие поля msOrder
         ],
         // ...
@@ -196,12 +216,13 @@ title: msCustomer
         'next_offset' => 10,
     ],
     'customer' => [...],
+    'page_url' => 'https://example.com/cabinet/',
 ]
 ```
 
-### service=orders (return=data) — детали заказа
+### Детали заказа (`service=orders`)
 
-При наличии GET-параметра `order_id`:
+При наличии GET-параметра `order`:
 
 ```php
 [
@@ -213,6 +234,7 @@ title: msCustomer
         'status_name' => 'Оплачен',
         'status_color' => '008000',
         'createdon_formatted' => '15.01.2024 10:30',
+        'can_cancel' => false,
         'order_comment' => 'Позвонить перед доставкой',
         // ... другие поля msOrder
     ],
@@ -225,7 +247,8 @@ title: msCustomer
             'price' => '3 500',
             'old_price' => '4 000',
             'cost' => '7 000',
-            'weight' => '500 г',
+            'weight' => '500',
+            'weight_formatted' => '500 г',
             'options' => ['color' => 'Красный', 'size' => 'M'],
         ],
         // ...
@@ -250,8 +273,20 @@ title: msCustomer
         'cost' => '7 800',
         'cart_cost' => '7 500',
         'delivery_cost' => '300',
-        'weight' => '1 кг',
+        'weight' => '1',
+        'weight_formatted' => '1 кг',
     ],
+    'customer' => [...],
+    'api_url' => '/api/v1/',
+    'assets_url' => '/assets/components/minishop3/',
+]
+```
+
+Если заказ не найден или принадлежит другому покупателю:
+
+```php
+[
+    'error' => 'Заказ не найден',
     'customer' => [...],
 ]
 ```
@@ -268,21 +303,16 @@ title: msCustomer
 
 ## Архитектура чанков
 
-Чанки личного кабинета используют **наследование** через базовый layout:
+Чанки личного кабинета наследуются от базового чанка:
 
-```
+```text
 tpl.msCustomer.base          — базовый layout (sidebar + content)
 ├── tpl.msCustomer.profile   — extends base, блок профиля
 ├── tpl.msCustomer.orders    — extends base, блок списка заказов
 └── tpl.msCustomer.addresses — extends base, блок адресов
 ```
 
-### Базовый layout
-
-Чанк `tpl.msCustomer.base` содержит:
-
-- Боковую панель (`tpl.msCustomer.sidebar`)
-- Область контента через `{block 'content'}`
+### Базовый чанк
 
 ```fenom
 {* tpl.msCustomer.base *}
@@ -401,7 +431,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 
 | Плейсхолдер | Описание |
 | --- | --- |
-| `{$orders}` | Отрендеренные строки заказов (HTML) |
+| `{$orders}` | Строки заказов в HTML |
 | `{$orders_count}` | Количество заказов на странице |
 | `{$total}` | Общее количество заказов |
 | `{$statuses}` | Список статусов для фильтра |
@@ -437,28 +467,9 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 | --- | --- |
 | `ms3_customer_login_page_id` | ID страницы входа |
 | `ms3_customer_register_page_id` | ID страницы регистрации |
-
-## Пример страницы личного кабинета
-
-Создайте три ресурса с одним шаблоном, но разными вызовами сниппета:
-
-### Профиль (/cabinet/profile/)
-
-```fenom
-{'!msCustomer' | snippet : ['service' => 'profile']}
-```
-
-### Заказы (/cabinet/orders/)
-
-```fenom
-{'!msCustomer' | snippet : ['service' => 'orders']}
-```
-
-### Адреса (/cabinet/addresses/)
-
-```fenom
-{'!msCustomer' | snippet : ['service' => 'addresses']}
-```
+| `ms3_customer_profile_page_id` | ID страницы профиля |
+| `ms3_customer_orders_page_id` | ID страницы истории заказов |
+| `ms3_customer_addresses_page_id` | ID страницы адресов |
 
 ## Обработка форм
 
@@ -476,14 +487,12 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 | Действие | Описание |
 | --- | --- |
 | `customer/update-profile` | Обновление профиля |
-| `customer/create-address` | Создание адреса |
-| `customer/update-address` | Обновление адреса |
-| `customer/delete-address` | Удаление адреса |
-| `customer/set-default-address` | Установка адреса по умолчанию |
+| `customer/address-create` | Создание адреса |
+| `customer/address-update` | Обновление адреса |
+
+Удаление адреса и установка адреса по умолчанию работают не через `ms3_action`: JS обрабатывает клики по классам `.delete-address` и `.set-default-address` в строке адреса (`ms3_customer_address_row.tpl:57,42`).
 
 ## CSS-классы
-
-Основные классы для стилизации:
 
 | Класс | Элемент |
 | --- | --- |

@@ -7,7 +7,7 @@ description: "Grid of cards with a title and text in each"
 
 A flexible grid: each card has a title and short text. No icons or buttons, just structured blocks.
 
-<!-- ![Cards](/components/pagebuilder/screenshots/sections/cards.png) -->
+![Cards](/components/pagebuilder/screenshots/sections/cards.jpg)
 
 ## When to use cards
 
@@ -90,28 +90,27 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilder_cards`:
 
 ```fenom
+{set $cardItems = is_array($items) ? $items : []}
+{if count($cardItems) > 0}
 <section class="pb-section pb-section--cards pb-cards{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="cards"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-cards__inner">
     {if $title}
-      <h2 class="pb-heading pb-cards__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-cards__title">{$title|pb_text}</h2>
     {/if}
     <div class="pb-cards__grid pb-grid pb-grid--cards">
-      {foreach $items as $item}
+      {foreach $cardItems as $item}
         <article class="pb-cards__item">
-          <h3 class="pb-cards__item-title">{$item.title|escape}</h3>
+          <h3 class="pb-cards__item-title">{$item.title|pb_text}</h3>
           {if $item.text}
-            <p class="pb-cards__item-text">{$item.text|escape}</p>
+            <p class="pb-cards__item-text">{$item.text|pb_text}</p>
           {/if}
         </article>
       {/foreach}
     </div>
   </div>
 </section>
+{/if}
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/cards.json`
 
 ## See also
 

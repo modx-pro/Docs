@@ -3,13 +3,11 @@ title: Подключение на сайте
 ---
 # Подключение на сайте
 
-Для полного сценария внедрения используйте [Интеграция на сайт](integration).
+Полный сценарий — [Интеграция на сайт](/components/mxquickview/integration).
 
-Краткий минимум:
-
-1. Подключите `mxQuickView.initialize` один раз в базовом шаблоне.
-2. Выберите `modalLibrary`: `native`, `bootstrap` или `fancybox` (по необходимости).
+1. Подключите `mxQuickView.initialize` один раз в базовом шаблоне. Ключ `mxquickview.assets_url` в transport нет: при необходимости создайте вручную.
+2. Выберите `modalLibrary`: `native`, `bootstrap` или `fancybox`.
 3. Добавьте триггеры `data-mxqv-click` или `data-mxqv-mouseover`.
-4. Укажите режим вывода (`modal`/`selector`) и тип рендера (`chunk`/`snippet`/`template`).
-5. Проверьте whitelist в системных настройках `mxquickview`.
-6. Если используете MiniShop3/ms3Variants, проверьте сценарии выбора варианта и `add-to-cart` в quick view.
+4. Укажите режим (`modal`/`selector`) и тип отрисовки (`chunk`/`snippet`/`template`).
+5. Проверьте белый список в системных настройках `mxquickview`.
+6. Если используете MiniShop3/ms3Variants, проверьте выбор варианта и `add-to-cart` в quick view.

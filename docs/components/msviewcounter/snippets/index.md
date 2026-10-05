@@ -20,10 +20,10 @@ Heartbeat JS подключает плагин на странице товар�
 
 | Назначение | MODX | Fenom |
 |------------|------|-------|
-| Базовый вывод | `[[!msViewCounter? &pid=`[[*id]]` &tpl=`tplMsViewCounter`]]` | `{'!msViewCounter' \| snippet : ['pid' => $_modx->resource.id, 'tpl' => 'tplMsViewCounter']}` |
-| Другой товар | `[[!msViewCounter? &pid=`42`]]` | `{'!msViewCounter' \| snippet : ['pid' => 42]}` |
-| Свой чанк | `[[!msViewCounter? &tpl=`myCounter`]]` | `{'!msViewCounter' \| snippet : ['tpl' => 'myCounter']}` |
-| В каталоге | `[[!msViewCounter? &pid=`[[+id]]`]]` | в чанке msProducts: `pid` из `[[+id]]` |
+| Базовый вывод | `` [[!msViewCounter? &pid=`[[*id]]` &tpl=`tplMsViewCounter`]] `` | `{'!msViewCounter' \| snippet : ['pid' => $_modx->resource.id, 'tpl' => 'tplMsViewCounter']}` |
+| Другой товар | `` [[!msViewCounter? &pid=`42`]] `` | `{'!msViewCounter' \| snippet : ['pid' => 42]}` |
+| Свой чанк | `` [[!msViewCounter? &tpl=`myCounter`]] `` | `{'!msViewCounter' \| snippet : ['tpl' => 'myCounter']}` |
+| В каталоге | `` [[!msViewCounter? &pid=`[[+id]]`]] `` | в чанке msProducts: `pid` из `[[+id]]` |
 
 ## Кэширование
 

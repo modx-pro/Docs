@@ -1,6 +1,7 @@
 ---
 title: PromoDs
 description: Top page banner
+categories: other
 logo: https://modstore.pro/assets/extras/promods/logo.png
 author: electrica
 modstore: https://modstore.pro/packages/discounts/promods
@@ -75,7 +76,7 @@ Default banner id is **name = promoDsBanner**. For multiple banners use differen
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | **tpl** | `PromodsBanner` | Banner chunk |
-| **content** | | Use instead of chunk. Can pass content, e.g. **&content=`Banner text`** |
+| **content** | | Use instead of chunk. Can pass content, e.g. `` &content=`Banner text` `` |
 | **reset** | `false` | Reset current user's view records |
 | **target_yandex** | `false` | Send goals to Yandex Metrika (create goal first) |
 | **target_target_yandex_counter** | | Metrika counter id, e.g. yaCounter37321225 ![Counter](https://file.modx.pro/files/2/9/c/29c2e861cb2b4dc95a2e6ce6db3aafb1.png) |

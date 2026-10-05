@@ -5,8 +5,11 @@ import { DefaultTheme, useData } from 'vitepress'
 import { VPImage } from 'vitepress/theme-without-fonts'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import DocsList from './DocsList.vue'
+import DocsCompatibility from './DocsCompatibility.vue'
+import { normalizeCompatibility } from '../compatibility'
+import type { DocsTheme } from '../types/index.ts'
 
-const { page, theme, lang } = useData()
+const { page, theme, lang } = useData<DocsTheme.Config>()
 
 const component = computed(() => {
   if (!page.value?.component) {
@@ -24,20 +27,34 @@ const component = computed(() => {
 })
 
 const links = computed<DefaultTheme.SidebarItem[]>(() => {
-  if (!component.value) {
+  const data = component.value
+  if (!data) {
     return []
   }
 
-  return links.value = ['modstore', 'modx', 'repository']
+  return (['modstore', 'modx', 'repository'] as const)
     .reduce((filtered, key) => {
-      if (Object.prototype.hasOwnProperty.call(component.value, key)) {
-        const link = component.value[key]
-        if (typeof link !== 'string' || !link) {
-          return filtered
+      if (!Object.prototype.hasOwnProperty.call(data, key)) {
+        return filtered
+      }
+
+      const value = data[key]
+      const urls = Array.isArray(value)
+        ? value.filter((link): link is string => typeof link === 'string' && !!link)
+        : (typeof value === 'string' && value ? [value] : [])
+
+      for (const link of urls) {
+        const match = link.match(/^https?\:\/\/([^\/?#]+)(?:\/([^\/?#]+\/[^\/?#]+))?/i)
+        if (!match) {
+          continue
         }
 
+        const host = match[1].split('.').slice(-2).join('.')
+        const repoPath = match[2]
+
+        // owner/repo only for repositories: several of them need telling apart
         filtered.push({
-          text: link.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i)[1].split('.').slice(-2).join('.'),
+          text: key === 'repository' ? repoPath || host : host,
           link,
         })
       }
@@ -47,17 +64,34 @@ const links = computed<DefaultTheme.SidebarItem[]>(() => {
 })
 
 const dependencies = computed<DefaultTheme.SidebarItem[]>(() => {
-  if (!page.value.component.dependencies.length) {
+  const names = page.value.component?.dependencies
+  if (!names?.length) {
     return []
   }
 
-  return page.value.component.dependencies.map(name => {
-    const component = theme.value.components.find(component => component.title === name)
+  return names.map(name => {
+    const match = theme.value.components?.find(item => item.title === name)
     return {
-      text: component?.title || name,
-      link: component?.link || '',
+      text: match?.title || name,
+      link: match?.link || '',
     }
   })
+})
+
+const usedBy = computed<DefaultTheme.SidebarItem[]>(() => {
+  const items = page.value.component?.usedBy
+  if (!items?.length) return []
+
+  return items.map(item => ({
+    text: item.title,
+    link: item.link,
+  }))
+})
+
+const compatibility = computed(() => {
+  const fromPage = normalizeCompatibility(page.value.frontmatter?.compatibility)
+  if (fromPage.length) return fromPage
+  return page.value.component?.compatibility ?? []
 })
 
 const show = computed<boolean>(() => {
@@ -65,7 +99,9 @@ const show = computed<boolean>(() => {
     (
       component.value.logo ||
       component.value.description ||
-      page.value?.component.dependencies.length ||
+    page.value?.component?.dependencies?.length ||
+    page.value?.component?.usedBy?.length ||
+    compatibility.value.length ||
       links.value.length
     )
 })
@@ -83,11 +119,16 @@ const show = computed<boolean>(() => {
       <div v-if="component?.description" class="description">
         {{ component.description }}
       </div>
+      <DocsCompatibility :values="compatibility" />
       <DocsList v-if="links.length" :items="links" class="list" />
     </div>
     <div v-if="dependencies.length" class="footer">
-      <span class="title">{{ lang.value === 'ru' ? 'Зависимости' : 'Dependencies' }}</span>
+      <span class="label">{{ lang === 'ru' ? 'Зависимости' : 'Dependencies' }}</span>
       <DocsList :items="dependencies" class="list" />
+    </div>
+    <div v-if="usedBy.length" class="footer">
+      <span class="label">{{ lang === 'ru' ? 'Используется в' : 'Used by' }}</span>
+      <DocsList :items="usedBy" class="list" />
     </div>
   </article>
 </template>
@@ -134,6 +175,12 @@ const show = computed<boolean>(() => {
   font-weight: 500;
 }
 
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: var(--vp-c-text-2);
+}
 :deep(.link) {
   transition: color 0.25s;
 }

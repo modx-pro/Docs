@@ -5,7 +5,7 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 
 # Сценарии
 
-Короткие сценарии для менеджера и витрины. Если пакет ещё не ставили, начните с [быстрого старта](/components/ms3optionscolor/quick-start).
+Если пакет ещё не ставили, начните с [быстрого старта](/components/ms3optionscolor/quick-start).
 
 | Flow | Сценарий |
 | --- | --- |
@@ -31,7 +31,7 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 
 В словаре появляется активная запись. Другие товары с тем же `option_key` + `value` показывают тот же свотч. На **Свойства товара** у назначенных значений в чипах появляется квадрат цвета:
 
-![Чипы опции со swatch](/components/ms3optionscolor/screenshots/product-options-chips.png)
+![Чипы опции со свотчем](/components/ms3optionscolor/screenshots/product-options-chips.png)
 
 ## Flow B. Pattern вместо сплошного цвета
 
@@ -39,7 +39,7 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 2. Укажите URL изображения в поле pattern.
 3. Сохраните.
 
-При переходе в режим **Паттерн** форма удаляет прежний RAL из сохраняемой записи. На витрине чанк рисует `background-image`. Select использует `data-pattern`.
+При переходе в режим **Паттерн** форма удаляет прежний RAL из записи. На витрине чанк рисует `background-image`. Select читает `data-pattern`.
 
 ![Диалог паттерна](/components/ms3optionscolor/screenshots/pattern-edit.png)
 
@@ -52,8 +52,6 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 ![Фильтр unset](/components/ms3optionscolor/screenshots/dictionary-filter.png)
 
 ![Диалог назначения](/components/ms3optionscolor/screenshots/dictionary-assign.png)
-
-Поиск по значению:
 
 ![Поиск в словаре](/components/ms3optionscolor/screenshots/dictionary.png)
 
@@ -105,7 +103,7 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 
 ## Flow F. Корзина через byOptions
 
-В чанке строки корзины значения уже есть в `$product.options`. Не читайте опции из БД повторно:
+В чанке строки корзины значения уже есть в `$product.options`. Не читайте опции из базы повторно:
 
 ::: code-group
 
@@ -127,7 +125,7 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 
 :::
 
-Готовый пример-чанк: `tplMs3OptionsColorCart`. Подробности: [Вывод на сайте](/components/ms3optionscolor/frontend#корзина).
+Готовый чанк: `tplMs3OptionsColorCart`. [Вывод на сайте](/components/ms3optionscolor/frontend#корзина).
 
 ![byOptions](/components/ms3optionscolor/screenshots/storefront-byoptions.png)
 
@@ -147,13 +145,13 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 }
 ```
 
-Встроенный тип `colors` не меняется. Для свотчей из словаря используйте `ms3oc`. Подробнее: [mFilter](/components/ms3optionscolor/mfilter).
+Встроенный тип `colors` не меняется. Для свотчей из словаря используйте `ms3oc`. [mFilter](/components/ms3optionscolor/mfilter).
 
 ![mFilter ms3oc](/components/ms3optionscolor/screenshots/storefront-mfilter.png)
 
 ## Flow H. Сетка карточек каталога
 
-На листинге вызовите сниппет с `product` = ID товара строки:
+На листинге вызовите сниппет с `product` = ID товара из строки:
 
 ::: code-group
 
@@ -183,6 +181,6 @@ description: Flow A–I для менеджера и витрины ms3OptionsCo
 
 ## Flow I. Цвета вариантов в каталоге
 
-В `msProducts` задайте `usePackages=ms3Variants`. У вариантов в каталоге появятся цвета из словаря. Подробности: [ms3variants](/components/ms3optionscolor/ms3variants).
+В `msProducts` задайте `usePackages=ms3Variants`. У вариантов в каталоге появятся цвета из словаря. [ms3variants](/components/ms3optionscolor/ms3variants).
 
 ![Variants swatches](/components/ms3optionscolor/screenshots/storefront-variants.png)

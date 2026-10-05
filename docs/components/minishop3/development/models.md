@@ -61,10 +61,10 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 
 Основные атрибуты схемы:
 
-- **package**: `MiniShop3\Model`
-- **baseClass**: `xPDO\Om\xPDOObject`
-- **platform**: `mysql`
-- **version**: `3.0`
+- `package`: `MiniShop3\Model`
+- `baseClass`: `xPDO\Om\xPDOObject`
+- `platform`: `mysql`
+- `version`: `3.0`
 
 ## Таблицы базы данных
 
@@ -142,13 +142,25 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `createdon` | datetime | Дата создания |
 | `updatedon` | datetime | Дата обновления |
 
-### Клиенты (NEW в MiniShop3)
+### Клиенты
 
 | Модель | Таблица | Описание |
 | --- | --- | --- |
 | `msCustomer` | `ms3_customers` | Клиент магазина |
+| `msCustomerGroup` | `ms3_customer_groups` | Группы покупателей (сегментация, ACL каталога) |
 | `msCustomerAddress` | `ms3_customer_addresses` | Сохранённые адреса клиента |
 | `msCustomerToken` | `ms3_customer_tokens` | Токены авторизации |
+
+#### msCustomerGroup — основные поля
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `id` | int | ID группы |
+| `name` | varchar(191) | Название группы |
+| `user_group_id` | int | ID группы пользователей MODX (принципал для modAccessResourceGroup) |
+| `active` | tinyint(1) | Активна |
+| `created_at` | datetime | Дата создания |
+| `updated_at` | datetime | Дата обновления |
 
 #### msCustomer — основные поля
 
@@ -160,7 +172,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `last_name` | varchar(191) | Фамилия |
 | `phone` | varchar(50) | Телефон |
 | `email` | varchar(191) | Email |
-| `password` | varchar(255) | Хэш пароля |
+| `password` | varchar(255) | Хеш пароля |
 | `is_active` | tinyint(1) | Активен |
 | `is_blocked` | tinyint(1) | Заблокирован |
 | `email_verified_at` | datetime | Дата подтверждения email |
@@ -181,6 +193,35 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `msPayment` | `ms3_payments` | Способы оплаты |
 | `msDeliveryMember` | `ms3_delivery_payments` | Связь доставка-оплата |
 
+### Отгрузки (shipment)
+
+Таблицы без xPDO-моделей: доступ через `PdoShipmentStore` и DI-ключ `ms3_shipment_lifecycle` (`ShipmentLifecycleService`). Миграции Phinx: `create_shipments`, `create_shipment_events`.
+
+| Таблица | Описание |
+| --- | --- |
+| `ms3_shipments` | Одна отгрузка на заказ (`uniq_shipment_order`) |
+| `ms3_shipment_events` | Идемпотентность webhook: `provider_event_id` на отгрузку |
+
+#### ms3_shipments — поля
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `id` | int | ID отгрузки |
+| `order_id` | int unsigned | ID заказа (unique) |
+| `delivery_id` | int unsigned | ID способа доставки |
+| `status` | varchar(32) | `preparing`, `shipped`, `in_transit`, `delivered`, `cancelled`, `returned`, `failed` |
+| `tracking_number` | varchar(191) | Трек-номер |
+| `external_id` | varchar(191) | ID у провайдера |
+| `provider` | varchar(191) | Класс/имя провайдера |
+| `carrier` | varchar(191) | Перевозчик |
+| `shipped_at` | int unsigned | Unix-время отправки |
+| `delivered_at` | int unsigned | Unix-время доставки |
+| `last_event_id` | varchar(191) | Последний `provider_event_id` |
+| `meta` | text | JSON-метаданные |
+| `createdon` / `updatedon` | int unsigned | Unix-время |
+
+При `ms3_shipment_enabled=1` статусы отгрузки синхронизируются с заказом через `OrderStatusService`: `shipped` → `ms3_status_sent`, `cancelled`/`failed` → `ms3_status_canceled`. Для `delivered` / `in_transit` смотрите опции `ms3_shipment_on_*_status`.
+
 ### Производители
 
 | Модель | Таблица | Описание |
@@ -194,14 +235,15 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `msOption` | `ms3_options` | Справочник опций |
 | `msOptionGroup` | `ms3_option_groups` | Группы опций (заменили использование `modCategory` для группировки, начиная с 1.11.0) |
 
-### Конфигурация полей (NEW в MiniShop3)
+### Конфигурация полей (новое в MiniShop3)
 
 | Модель | Таблица | Описание |
 | --- | --- | --- |
 | `msModelField` | `ms3_model_fields` | Настройки полей моделей |
 | `msModelFieldSection` | `ms3_model_field_sections` | Секции полей |
-| `msProductField` | `ms3_product_fields` | Поля товара (legacy) |
-| `msPageSection` | `ms3_page_sections` | Секции страниц (legacy) |
+| `msGridField` | `ms3_grid_fields` | Конфигурация колонок гридов (customers, orders, products) |
+| `msProductField` | `ms3_product_fields` | Поля товара (устаревшие) |
+| `msPageSection` | `ms3_page_sections` | Секции страниц (устаревшие) |
 | `msExtraField` | `ms3_extra_fields` | Дополнительные поля |
 
 ### Уведомления
@@ -351,11 +393,11 @@ class msProductData extends xPDOSimpleObject
 
 Это позволяет:
 
-- Добавлять кастомные методы в модели
+- Добавлять свои методы в модели
 - Использовать полную типизацию PHP 8
 - Иметь полный контроль над кодом моделей
 
-**Важно:** Не запускайте `buildModel()` — это перезапишет кастомные методы моделей.
+**Важно:** Не запускайте `buildModel()` — это перезапишет методы, добавленные вручную.
 :::
 
 ### Структура файлов модели
@@ -453,7 +495,7 @@ class CreateCustomersTable extends AbstractMigration
 
 ### Товар
 
-`msProduct` (extends `modResource`) и `msProductData` (таблица `ms3_products`)
+`msProduct` (расширяет `modResource`) и `msProductData` (таблица `ms3_products`)
 
 ```mermaid
 erDiagram
@@ -472,4 +514,8 @@ erDiagram
   msCustomer ||--o{ msCustomerAddress : "1:N"
   msOrder }o--|| msDelivery : "N:1"
   msOrder }o--|| msPayment : "N:1"
+  msOrder ||--o| ms3_shipments : "1:0..1"
+  ms3_shipments ||--o{ ms3_shipment_events : "1:N"
 ```
+
+`ms3_shipments` / `ms3_shipment_events` — PDO-таблицы (не классы `MiniShop3\Model\*`).

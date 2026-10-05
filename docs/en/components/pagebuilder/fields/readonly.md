@@ -7,11 +7,11 @@ description: "Read-only string still shown in the inspector"
 
 Version: **Free**.
 
-<!-- ![readonly](/components/pagebuilder/screenshots/fields/readonly.png) -->
+<!-- ![readonly](/components/pagebuilder/screenshots/fields/readonly.jpg) -->
 
 ## Why this type
 
-Editors see value but cannot edit. Same scalar in data as text. Fits SKU, id, sync from external system.
+The editor can see the value and cannot change it. The data is a string, as with [text](text). It fits an SKU, an id, or a value that comes from outside MODX.
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `sku` in the section data:
 
 ## Chunk example
 
-```html
-<span class="sku">{$sku|escape}</span>
+::: code-group
+
+```modx
+<span class="sku">[[+sku]]</span>
 ```
+
+```fenom
+<span class="sku">{$sku|pb_text}</span>
+```
+
+:::
 
 ## Common properties
 

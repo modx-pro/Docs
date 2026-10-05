@@ -5,11 +5,9 @@ description: ms3OptionsColor snippet parameters, row fields, and call examples
 
 # ms3OptionsColor
 
-The snippet reads product option values (or ready JSON), matches them to the color dictionary, and returns HTML via a chunk or an array of rows.
+The snippet reads product option values or ready JSON, matches them to the dictionary, and returns HTML via a chunk or an array of rows. Prefer an uncached call: `[[!ms3OptionsColor]]` / `{'!ms3OptionsColor' | snippet}`.
 
-Place it on the product page, in a catalog row chunk, or in a cart chunk. Prefer an uncached call: `[[!ms3OptionsColor]]` / `{'!ms3OptionsColor' | snippet}`.
-
-On each run the snippet may register storefront CSS when `ms3optionscolor_frontend_css` is enabled.
+On each run the snippet may load storefront CSS when `ms3optionscolor_frontend_css` is enabled.
 
 ## How rows are selected
 
@@ -38,7 +36,7 @@ flowchart TB
 4. Each value is looked up in the dictionary. With `includeUnset=1`, values without a dictionary entry still appear (empty swatch).
 5. With `activeOnly=1`, inactive dictionary entries are hidden.
 6. `limit` trims the list from the top.
-7. With `return=tpl` each row renders through chunk `tpl`. With `return=data` you get an array.
+7. With `return=tpl` each row is output through chunk `tpl`. With `return=data` you get an array.
 
 ## Parameters
 
@@ -59,7 +57,7 @@ The alias `selected` for `selectedValue` is also accepted.
 
 ## Row fields
 
-Each row (in the chunk and in `return=data`) includes:
+In the chunk and in `return=data`:
 
 | Field | Description |
 | --- | --- |
@@ -73,6 +71,9 @@ Each row (in the chunk and in `return=data`) includes:
 | `image` | Image |
 | `active` | Whether the dictionary entry is active |
 | `status` | `active` / `inactive` / `unset` |
+| `hint_color` | HEX from comboColors, no dictionary write |
+| `configured` | Non-empty HEX or pattern. Title/RAL/image alone is `false` and `status=unset` |
+| `id` / `rank` | Dictionary row id and sort |
 | `selected` | `true` when `value` matches `selectedValue` |
 
 In CSS and select use `#{$color}` or `data-color="#{$color}"`: the field holds the code without `#`.
@@ -127,7 +128,7 @@ Without `&options` the snippet uses keys from `ms3optionscolor_default_option_ke
 
 ### Catalog row
 
-In the `msProducts` row chunk pass the line product ID and a short list:
+In the `msProducts` row chunk pass the row product ID and a short list:
 
 ::: code-group
 
@@ -153,7 +154,7 @@ In the `msProducts` row chunk pass the line product ID and a short list:
 
 ### Show values without a dictionary color
 
-An empty swatch (checkerboard in stock CSS) helps while the manager has not assigned HEX yet:
+An empty swatch (checkerboard in stock CSS) shows a value until the dictionary has a HEX:
 
 ::: code-group
 
@@ -213,9 +214,7 @@ An empty swatch (checkerboard in stock CSS) helps while the manager has not assi
   'options' => 'color',
   'toPlaceholder' => 'ms3oc.swatches'
 ]}
-<div class="product-colors">
-  {$_modx->getPlaceholder('ms3oc.swatches')}
-</div>
+{$_modx->getPlaceholder('ms3oc.swatches')}
 ```
 
 ```modx
@@ -224,9 +223,7 @@ An empty swatch (checkerboard in stock CSS) helps while the manager has not assi
   &options=`color`
   &toPlaceholder=`ms3oc.swatches`
 ]]
-<div class="product-colors">
-  [[+ms3oc.swatches]]
-</div>
+[[+ms3oc.swatches]]
 ```
 
 :::
@@ -241,15 +238,9 @@ An empty swatch (checkerboard in stock CSS) helps while the manager has not assi
   'options' => 'color',
   'return' => 'data'
 ])}
-<ul>
 {foreach $rows as $row}
-  <li>
-    <span style="background:#{$row.color}"></span>
-    {$row.title ?: $row.value}
-    {if $row.ral} (RAL {$row.ral}){/if}
-  </li>
+  {$row.color} {$row.title ?: $row.value}{if $row.ral} RAL {$row.ral}{/if}
 {/foreach}
-</ul>
 ```
 
 ```modx
@@ -263,11 +254,11 @@ An empty swatch (checkerboard in stock CSS) helps while the manager has not assi
 
 :::
 
-In MODX tags it is easier to send the array to a placeholder and parse it with your own snippet or Fenom chunk. In Fenom a loop over `runSnippet` output is simpler.
+In MODX tags send the array to a placeholder and parse it with your own snippet or Fenom chunk.
 
 ### byOptions: cart and ready JSON
 
-When values already exist (cart line, custom JSON), do not read product options from the database:
+When values already exist (cart line, your JSON), do not read product options from the database:
 
 ::: code-group
 
@@ -298,7 +289,7 @@ When values already exist (cart line, custom JSON), do not read product options 
 
 :::
 
-`byOptions` is a JSON string. In a cart chunk Fenom is easier. Ready cart branch example: chunk `tplMs3OptionsColorCart` on [Frontend](/components/ms3optionscolor/frontend#cart).
+`byOptions` is a JSON string. In a cart chunk Fenom is easier. Cart branches: chunk `tplMs3OptionsColorCart` on [Frontend](/components/ms3optionscolor/frontend#cart).
 
 ### Select with a preselected value
 
@@ -334,7 +325,7 @@ Chunk `tplMs3OptionsColorSelect` calls the snippet itself. Direct option chunk c
 
 :::
 
-Ready select with label:
+Select with a label:
 
 ::: code-group
 
@@ -364,7 +355,7 @@ Ready select with label:
 
 :::
 
-Select chunk parameters: `product`, `option_key`, `caption`, `placeholder`, `native`, `selected` / `selectedValue`, `activeOnly`, `includeUnset`, `multiple`, `required`, `field_id`, `tpl` / `optionTpl`.
+Select chunk parameters: table on [Frontend](/components/ms3optionscolor/frontend#select).
 
 ### Custom chunk via @FILE
 
@@ -390,7 +381,7 @@ Path is relative to `pdotools_elements_path` (usually `core/elements/`):
 
 :::
 
-Dots and `_` are allowed in the file name. Segment `..` is rejected. Minimum row markup: [custom swatch chunk](/components/ms3optionscolor/frontend#custom-swatch-chunk).
+Dots and `_` are allowed in the file name. Segment `..` is rejected. Minimum markup: [custom swatch chunk](/components/ms3optionscolor/frontend#custom-swatch-chunk).
 
 ## Common issues
 
@@ -401,4 +392,4 @@ Dots and `_` are allowed in the file name. Segment `..` is rejected. Minimum row
 | No options in select | Chunk `tpl` must be `tplMs3OptionsColorSelectOption` or your own with `<option>` |
 | `byOptions` returns nothing | JSON is valid; keys match options; try `includeUnset=1` |
 
-Next: [Frontend](/components/ms3optionscolor/frontend), [mFilter](/components/ms3optionscolor/mfilter), [ms3variants](/components/ms3optionscolor/ms3variants). Chunk overview: [Snippets](index).
+[Frontend](/components/ms3optionscolor/frontend), [mFilter](/components/ms3optionscolor/mfilter), [ms3variants](/components/ms3optionscolor/ms3variants). Chunk overview: [Snippets](index).

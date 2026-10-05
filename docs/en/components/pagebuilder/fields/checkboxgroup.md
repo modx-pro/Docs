@@ -7,11 +7,11 @@ description: "Array of values from static options for multiple flags"
 
 Version: **Free**.
 
-<!-- ![checkboxgroup](/components/pagebuilder/screenshots/fields/checkboxgroup.png) -->
+<!-- ![checkboxgroup](/components/pagebuilder/screenshots/fields/checkboxgroup.jpg) -->
 
 ## Why this type
 
-Multiple picks from one options list. Data is an array of value strings, not objects. Alternative to multiselect for short lists without search.
+Several checkboxes from one `options` list. The section stores an array of `value` strings, not objects. For a short list without search this is easier than [multiselect](multiselect).
 
 ## When to use
 
@@ -70,11 +70,21 @@ Key `tags` in the section data: array of checked option `value`s:
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $tags as $tag}
-  <span class="tag">{$tag|escape}</span>
+  <span class="tag">{$tag}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $tags as $tag}
+  <span class="tag">{$tag|pb_text}</span>
+{/foreach}
+```
+
+:::
 
 ## Notes
 

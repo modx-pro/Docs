@@ -1,6 +1,7 @@
 ---
 title: PageSpeed
 description: Интеграция оптимизаций PageSpeed Insights для MODX Revolution
+categories: catalog
 logo: https://modstore.pro/assets/extras/pagespeed/logo-lg.jpg
 author: wfoojjaec
 modstore: https://modstore.pro/packages/ecommerce/pagespeed
@@ -89,7 +90,7 @@ modstore: https://modstore.pro/packages/ecommerce/pagespeed
 ```modx
 [[!PageSpeed?
   &lifetime=`86400`
-  &script=`async``
+  &script=`async`
   &subresources=`{
     "script" : [
       { "url" : "https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js" }

@@ -7,7 +7,7 @@ description: "Items with icon, title, and description (Pro)"
 
 A "why us" block: each item has an icon (URL or class), title, and body text. Richer than the **Cards** section.
 
-<!-- ![Features](/components/pagebuilder/screenshots/sections/features.png) -->
+![Features](/components/pagebuilder/screenshots/sections/features.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -126,10 +126,6 @@ Fenom chunk `pagebuilderpro_features`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/features.json`
 
 ## See also
 

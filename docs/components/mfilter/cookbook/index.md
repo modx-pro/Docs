@@ -1,238 +1,141 @@
 # Рецепты
 
-Практические примеры решения типовых задач с mFilter.
+Готовые решения типовых задач: большие — отдельными страницами, короткие — ниже на этой.
 
 ## Содержание
 
-| Рецепт | Описание |
-|--------|----------|
-| [Сортировка значений](filter-values-sorting) | Управление порядком значений в фильтрах |
-| [Внешние фильтры](external-filters) | Фильтры вне основной формы |
-| [Свой тип фильтра](custom-filter-type) | Создание кастомного типа |
-| [Фильтры на странице поиска](search-results-integration) | Интеграция с mSearch: порядок вызова сниппетов |
-| [Синхронизация индекса фасетов](facet-index-sync) | Когда индекс обновляется автоматически и как запускать вручную |
+| Рецепт | Задача |
+|--------|--------|
+| [Фильтр выпадающим списком](select-filter) | Вывести значения фильтра в `<select>` вместо чекбоксов |
+| [Сортировка значений](filter-values-sorting) | Задать порядок значений в фильтре |
+| [Внешние фильтры](external-filters) | Сортировка, число на странице, вид, кнопки фильтров и цена вне формы |
+| [Свой тип фильтра](custom-filter-type) | Написать свой тип фильтра |
+| [Фильтры на странице поиска](search-results-integration) | Подключить фильтры к выдаче mSearch |
+| [Синхронизация индекса фасетов](facet-index-sync) | Понять, когда индекс обновляется сам и как запустить вручную |
 
-## Быстрые рецепты
-
-### Сортировка через select
-
-```html
-<select data-mfilter-sort onchange="mFilter.getInstance().submit()">
-    <option value="pagetitle-asc">По названию (А-Я)</option>
-    <option value="Data.price-asc">Сначала дешёвые</option>
-    <option value="Data.price-desc">Сначала дорогие</option>
-</select>
-```
-
-### Количество на странице
+## Кнопка сброса вне формы
 
 ```html
-<select data-mfilter-limit onchange="mFilter.getInstance().submit()">
-    <option value="12">12</option>
-    <option value="24" selected>24</option>
-    <option value="48">48</option>
-    <option value="96">96</option>
-</select>
+<button type="button" onclick="mfilterGet().reset()">Сбросить фильтры</button>
+
+<button type="button" onclick="mfilterGet().removeFilter('vendor')">Любой производитель</button>
 ```
 
-### Переключение вида
+`reset()` снимает все фильтры и сортировку, `removeFilter()` — один фильтр. Запрос оба вызова отправляют сами. Кнопка сброса внутри формы уже есть в стандартном чанке `mfilter.form`.
+
+## Число выбранных фильтров
 
 ```html
-<div class="view-switcher">
-    <button data-mfilter-view="grid" class="active">Сетка</button>
-    <button data-mfilter-view="list">Список</button>
-</div>
-
-<script>
-document.querySelectorAll('[data-mfilter-view]').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const view = this.dataset.mfilterView;
-        const mfilter = window.mFilter.getInstance();
-
-        // Переключить шаблон (используя ключ из tpls)
-        mfilter.setTpl(view);
-        mfilter.submit();
-
-        // Обновить UI
-        document.querySelectorAll('[data-mfilter-view]').forEach(b =>
-            b.classList.toggle('active', b === this)
-        );
-    });
-});
-</script>
+<button type="button">Фильтры <span data-filters-count></span></button>
 ```
 
-### Сброс всех фильтров
-
-```html
-<button onclick="mFilter.getInstance().reset()">
-    Сбросить фильтры
-</button>
-```
-
-### Сброс одного фильтра
-
-```html
-<button onclick="mFilter.getInstance().removeFilter('vendor')">
-    Сбросить производителя
-</button>
-```
-
-### Показать количество активных фильтров
-
-```html
-<span class="filter-badge" data-mfilter-active-count>
-    {$mfilter.filterCount}
-</span>
-
-<script>
-document.addEventListener('mfilter:success', function(e) {
-    const count = Object.keys(e.detail.filters).length;
-    document.querySelector('[data-mfilter-active-count]').textContent = count;
-});
-</script>
-```
-
-### Автоотправка при изменении
-
-```javascript
-// Уже включено по умолчанию для чекбоксов и радио
-// Для select добавьте:
-document.querySelectorAll('[data-mfilter-form] select').forEach(select => {
-    select.addEventListener('change', () => {
-        window.mFilter.getInstance().submit();
-    });
-});
-```
-
-### Отключить автоотправку
-
-```php
-[[!mFilterForm?
-    &autoSubmit=`0`
-]]
-```
-
-### Показать лоадер
-
-```html
-<style>
-.mfilter-loading [data-mfilter-results] {
-    opacity: 0.5;
-    pointer-events: none;
+```js
+function showFiltersCount() {
+    // Границы диапазона price|min и price|max — один фильтр
+    const keys = Object.keys(mfilterGet().getFilters()).map((key) => key.split('|')[0]);
+    document.querySelector('[data-filters-count]').textContent = new Set(keys).size || '';
 }
+document.addEventListener('mfilter:ui:ready', showFiltersCount);
+document.addEventListener('mfilter:success', showFiltersCount);
+```
 
-.mfilter-loading::after {
-    content: '';
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    width: 40px;
-    height: 40px;
-    border: 3px solid #ccc;
-    border-top-color: #333;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+Число считается так же, как в кнопке сброса формы: по фильтрам, а не по значениям. В самой кнопке сброса число выводит скрипт — это элемент `data-mfilter-reset-count` в стандартном чанке `mfilter.form`.
+
+## Индикатор загрузки
+
+```html
+<div class="mfilter-overlay"><div class="mfilter-spinner"></div></div>
+```
+
+Блок ставится в любое место страницы. На время запроса скрипт добавляет ему класс `active`, и стили mFilter показывают полупрозрачный слой на весь экран с крутящимся кругом.
+
+Чтобы вместо слоя приглушить только товары, достаточно CSS — форма на время запроса получает класс `mfilter-loading`:
+
+```css
+body:has(.mfilter-loading) .mfilter-results {
+    opacity: .5;
 }
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-</style>
 ```
 
-### Прокрутка к результатам
+## Автоотправка
 
-```javascript
-document.addEventListener('mfilter:success', function() {
-    document.querySelector('[data-mfilter-results]').scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-    });
+Автоотправка включена по умолчанию — системной настройкой `mfilter.auto_submit`. Форма отправляется при изменении любого поля, свой код не нужен. Свой обработчик `change` с отправкой формы пошлёт второй запрос.
+
+Выключить для одной формы:
+
+```fenom
+{'!mFilterForm' | snippet : ['autoSubmit' => 0]}
+```
+
+Без автоотправки форму отправляет её кнопка «Применить». Кнопке вне формы — например, в подвале модального окна — нужен вызов `submit()`:
+
+```html
+<button type="button" onclick="mfilterGet().submit()">Показать товары</button>
+```
+
+## Прокрутка к результатам
+
+После каждого обновления выдачи скрипт сам прокручивает страницу к товарам, свой код для этого не нужен.
+
+Если товары закрывает закреплённая шапка, увеличьте отступ. Если прокрутка не нужна — выключите её. Атрибуты дописываются в свою копию чанка формы:
+
+```fenom
+{* Отступ сверху под шапку, px *}
+<form{$formAttrs} data-mfilter-scroll-offset="150">
+
+{* Без прокрутки *}
+<form{$formAttrs} data-mfilter-scroll-to-results="false">
+```
+
+Остальные настройки формы — в таблице [Настройки формы](../development/javascript#form-options).
+
+## Цель в Яндекс Метрике
+
+```js
+document.addEventListener('mfilter:success', (e) => {
+    ym(12345678, 'reachGoal', 'filter', { total: e.detail.total });
 });
 ```
 
-### Трекинг фильтрации (Google Analytics)
+`12345678` — номер вашего счётчика. Что ещё приходит в `e.detail` — в разделе [События](../development/js-api#sobytiya).
 
-```javascript
-document.addEventListener('mfilter:success', function(e) {
-    gtag('event', 'filter', {
-        'event_category': 'catalog',
-        'event_label': JSON.stringify(e.detail.filters),
-        'value': e.detail.total
-    });
-});
-```
+## Запомнить фильтры
 
-### Сохранение фильтров в localStorage
+Посетитель вернулся в раздел — фильтры те же, что он выбирал в прошлый раз:
 
-```javascript
-// Сохранить
-document.addEventListener('mfilter:success', function(e) {
-    localStorage.setItem('mfilter_state', JSON.stringify(e.detail.filters));
+```js
+// Отдельно для каждого раздела: id раздела выводит mFilterForm
+const storageKey = () => 'mfilter:' + document.querySelector('[data-mfilter][data-resource-id]').dataset.resourceId;
+
+document.addEventListener('mfilter:success', (e) => {
+    localStorage.setItem(storageKey(), JSON.stringify(e.detail.filters));
 });
 
-// Восстановить
-window.addEventListener('load', function() {
-    const saved = localStorage.getItem('mfilter_state');
-    if (saved) {
-        const mfilter = window.mFilter.getInstance();
-        const filters = JSON.parse(saved);
+document.addEventListener('mfilter:ui:ready', () => {
+    const filter = mfilterGet();
+    // Фильтры в адресе страницы важнее сохранённых
+    if (Object.keys(filter.getFilters()).length) return;
 
-        Object.entries(filters).forEach(([key, values]) => {
-            mfilter.setFilter(key, values);
-        });
-
-        mfilter.submit();
+    const saved = JSON.parse(localStorage.getItem(storageKey()) || '{}');
+    for (const [key, values] of Object.entries(saved)) {
+        filter.setFilter(key, values);
     }
 });
 ```
 
-### Фильтр в модальном окне (мобильные)
+Вызовы `setFilter()` подряд уходят одним запросом.
 
-```html
-<!-- Кнопка открытия -->
-<button class="mobile-filter-btn" onclick="openFilterModal()">
-    Фильтры
-    <span data-mfilter-active-count></span>
-</button>
+## Скрыть фильтр с одним значением
 
-<!-- Модальное окно -->
-<div id="filter-modal" class="filter-modal">
-    <div class="filter-modal__header">
-        <span>Фильтры</span>
-        <button onclick="closeFilterModal()">×</button>
-    </div>
-    <div class="filter-modal__body">
-        [[!mFilterForm]]
-    </div>
-    <div class="filter-modal__footer">
-        <button onclick="mFilter.getInstance().submit(); closeFilterModal();">
-            Показать товары
-        </button>
-    </div>
-</div>
+Оберните условием всё содержимое чанка обёртки фильтра — параметр `&tpl` сниппета `mFilterForm`:
 
-<script>
-function openFilterModal() {
-    document.getElementById('filter-modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeFilterModal() {
-    document.getElementById('filter-modal').classList.remove('active');
-    document.body.style.overflow = '';
-}
-</script>
-```
-
-### Условное отображение фильтра
-
-```html
-{* В шаблоне фильтра *}
-{if count($values) > 1}
-    <fieldset class="mfilter-filter">
-        {* ... *}
-    </fieldset>
+```fenom
+{if $itemCount > 1 || $activeCount || $type == 'number'}
+    {* прежнее содержимое чанка *}
 {/if}
 ```
+
+- **`$activeCount`** — фильтр, в котором значение уже выбрано, не прячется, иначе выбор нельзя будет снять.
+- **`$type == 'number'`** — ползунок диапазона считается одним значением и без этого условия пропадёт.
+
+Условие проверяется при загрузке страницы. После фильтрации блок не исчезает — скрипт только блокирует значения, по которым не осталось товаров.

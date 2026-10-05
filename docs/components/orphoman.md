@@ -1,6 +1,7 @@
 ---
 title: OrphoMan
 description: Выявление орфографических ошибок в тексте
+categories: content
 logo: https://modstore.pro/assets/extras/orphoman/logo-lg.jpg
 author: sergant210
 modstore: https://modstore.pro/packages/content/orphoman

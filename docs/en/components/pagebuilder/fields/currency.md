@@ -7,11 +7,11 @@ description: "Amount number with currency symbol from currency setting"
 
 Version: **Pro**.
 
-<!-- ![currency](/components/pagebuilder/screenshots/fields/currency.png) -->
+<!-- ![currency](/components/pagebuilder/screenshots/fields/currency.jpg) -->
 
 ## Why this type
 
-Inspector formatter, not plain number. Pro responsive like number and text. Separates money from counters and percents.
+A formatted amount in the inspector, not a plain number. In Pro you can set different values for desktop, tablet, and phone, as with [number](number) and [text](text). Money stays separate from counters and percentages.
 
 ## When to use
 
@@ -60,9 +60,17 @@ Key `price` in the section data (number or `null`):
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<span class="price">[[+price]] ₽</span>
+```
+
 ```fenom
 {if $price !== null}<span class="price">{$price} ₽</span>{/if}
 ```
+
+:::
 
 ## Notes
 

@@ -1,12 +1,16 @@
 ---
 title: MobileDetect
 description: Определение типа устройства в MODX и вывод разного контента на одной странице
+categories: utilities
 author: modx-pro
 repository: https://github.com/modx-pro/MobileDetect
-logo: https://modstore.pro/assets/extras/mobiledetect/logo.png
+logo: https://modstore.pro/assets/extras/mobiledetect/logo.jpg
 modstore: https://modstore.pro/packages/utilities/mobiledetect
-categories: utilities
 
+compatibility:
+  - modx2
+  - modx3
+  - php82
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

@@ -1,6 +1,7 @@
 ---
 title: amoBridge
 description: Интеграция MODX 3 с amoCRM нового поколения
+categories: import-export
 logo: https://modstore.pro/assets/extras/amobridge/logo.png
 author: biz87
 modstore: https://modstore.pro/packages/import-and-export/amobridge

@@ -231,6 +231,7 @@ curl -s "${BASE}?action=web/catalog/list&context_key=web&api_key=${KEY}"
         "version": 1,
         "label": "Hero",
         "category": "hero",
+        "categories": ["hero"],
         "fields": [
           { "name": "title", "type": "text", "label": "Title", "required": true }
         ],
@@ -242,6 +243,10 @@ curl -s "${BASE}?action=web/catalog/list&context_key=web&api_key=${KEY}"
 ```
 
 Cache the list for an hour or until deploy. It changes when you add JSON types or UI types in the CMP.
+
+The type payload includes `categories`: a list of slugs. `category` stays for compatibility.
+
+Catalog, table, and page queries go through `QueryPolicy`. Keys `sql`, `php`, `snippet`, and `class` are rejected. Page size is at most 100. Free `api.php` stays in place.
 
 ## CORS
 

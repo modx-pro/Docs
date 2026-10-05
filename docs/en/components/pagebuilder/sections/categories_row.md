@@ -7,7 +7,7 @@ description: "Subcategory cards from a parent via pdoResources (msCategory) (Pro
 
 Catalog navigation: child categories of a parent with thumbnail and link.
 
-<!-- ![Categories row](/components/pagebuilder/screenshots/sections/categories_row.png) -->
+![Categories row](/components/pagebuilder/screenshots/sections/categories_row.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -86,10 +86,10 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_categories_row`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('pdoResources', [
+  {set $listing = $modx->runSnippet('pdoResources', [
     'parents' => $catalogParent,
     'depth' => 1,
     'limit' => $limit|default:8,
@@ -107,15 +107,11 @@ Fenom chunk `pagebuilderpro_categories_row`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">No subcategories in this category.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_category' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/categories_row.json`
 
 ## See also
 

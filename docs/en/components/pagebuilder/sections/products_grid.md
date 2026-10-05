@@ -7,7 +7,7 @@ description: "Product showcase from a miniShop3 category via msProducts (Pro)"
 
 Classic store grid: cards with image, price, badges, and add to cart. Products from a selected category.
 
-<!-- ![Products grid](/components/pagebuilder/screenshots/sections/products_grid.png) -->
+![Products grid](/components/pagebuilder/screenshots/sections/products_grid.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -32,7 +32,19 @@ Requires PageBuilder Pro and miniShop3.
 
 ## Category and sort
 
-**Parent category**: msCategory. **Limit** and **Sort** like msProducts. Requires miniShop3.
+Category search uses `mgr/ms3/categories/search`. `parent` is required. An empty `limit` becomes 12 in the chunk. The type is `"cacheable": false`.
+
+Before the chunk, `ProSectionRenderSupport` writes `parent_id` and `pb_parent_resource`. It maps `sortby` to `ms_sortby` and `ms_sortdir`:
+
+| `sortby` | `ms_sortby` | `ms_sortdir` |
+| --- | --- | --- |
+| `menuindex` | `msProduct.menuindex` | `ASC` |
+| `popular` | `Data.popular` | `DESC` |
+| `new` | `Data.new` | `DESC` |
+| `price_asc` | `Data.price` | `ASC` |
+| `price_desc` | `Data.price` | `DESC` |
+
+An unknown value sorts like `menuindex`. An empty category shows the chunk text «В этой категории пока нет товаров.»
 
 ## Similar sections
 
@@ -91,10 +103,10 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_products_grid`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => $catalogParent,
     'depth' => 10,
     'limit' => $limit|default:12,
@@ -117,15 +129,11 @@ Fenom chunk `pagebuilderpro_products_grid`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">No products in this category yet.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_products' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/products_grid.json`
 
 ## See also
 

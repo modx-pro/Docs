@@ -3,73 +3,67 @@ title: Подключение на сайте
 ---
 # Подключение на сайте
 
-Подробное подключение лексикона, стилей и скриптов описано в [Быстрый старт](quick-start). Ниже — коннектор, кастомизация и чанки.
+Лексикон, стили и скрипты: [Быстрый старт](/components/ms3recentlyviewed/quick-start).
 
 ## Проверка интеграции: пустая статистика в админке
 
-Статистика и история в админке берутся из таблицы `ms3recentlyviewed_items`. Записи попадают туда при включённой синхронизации — для **авторизованных** и **анонимных** (гостей) пользователей. Анонимные идентифицируются по сессии; учёт гостей включается настройкой `ms3recentlyviewed.track_anonymous`. Просмотры от поисковых ботов не сохраняются при **`ms3recentlyviewed.block_bots` = Да**; способ определения ботов задаётся **`ms3recentlyviewed.block_bots_detector`**: **`crawler_detect`** (библиотека jaybizzle/crawler-detect в vendor) или **`regex`** как запасной вариант.
+Статистика и история в админке берутся из таблицы `ms3recentlyviewed_items`. Записи попадают туда при включённой синхронизации, для **авторизованных** и **анонимных** (гостей).
 
-**Чек-лист:** лексикон и viewed.js подключены на каждой странице товара; на странице товара задан `data-viewed-product-id` на `<body>` или `window.ms3rvCurrentProductId`; `ms3recentlyviewed.sync_enabled` = Да; для авторизованных — пользователь авторизован в контексте **web** (не только в админке). Блок `fromDB` работает только для пользователей, авторизованных на фронте (контекст web).
+- Анонимные идентифицируются по сессии. Учёт гостей: `ms3recentlyviewed.track_anonymous`.
+- Просмотры ботов не сохраняются при **`ms3recentlyviewed.block_bots` = Да**.
+- Способ определения: **`ms3recentlyviewed.block_bots_detector`** — **`crawler_detect`** (jaybizzle/crawler-detect в `vendor`) или **`regex`**.
+
+**Проверьте:**
+
+- лексикон и `viewed.js` на каждой странице товара
+- на странице товара задан `data-viewed-product-id` на `<body>` или `window.ms3rvCurrentProductId`
+- `ms3recentlyviewed.sync_enabled` = Да
+- авторизованный пользователь вошёл в контексте **web**, не только в админке
+
+Блок `fromDB` работает только для пользователей, авторизованных на сайте (контекст web).
 
 ### Плейсхолдер `viewedIds` (cookie)
 
-Плагин **ms3recentlyviewedViewedIdsPlaceholder** (событие **OnWebPageInit**, приоритет **-5**): если **`ms3recentlyviewed.storage_type` = `cookie`** и лимит > 0, в плейсхолдер **`viewedIds`** подставляется строка ID из куки `ms3_recently_viewed`. Имя **зарезервировано** — не переопределяйте его своим кодом. В Fenom: `{$_modx->getPlaceholder('viewedIds')}` (переменная `$viewedIds` в шаблоне сама не появляется).
+Плагин **ms3recentlyviewedViewedIdsPlaceholder** (событие **OnWebPageInit**, приоритет **-5**) всегда ставит **`viewedIds`**. При **`storage_type` = `cookie`** значение берётся из cookie `ms3_recently_viewed`. Иначе плейсхолдер пустой и может затереть ранее заданное значение. Имя **зарезервировано**. Fenom: `{$_modx->getPlaceholder('viewedIds')}`.
 
 ## Коннектор (AJAX)
 
-**URL:** `assets/components/ms3recentlyviewed/connector.php`
+**URL:** `assets/components/ms3recentlyviewed/connector.php`  
 **Метод:** POST.
 
 Действия:
 
-- **Вывод списка просмотренных** — параметры `ids` (обязательно), опционально `limit`, `tpl`, `emptyTpl`
+- **Вывод списка просмотренных** — опционально `ids`, `limit`, `tpl`, `emptyTpl`, `includeThumbs`. Пустой `ids` не ошибка: сниппет вернёт `emptyTpl`.
 - **Похожие** — `action=similar`, `ids`, опционально `limit`, `tpl`, `depth`
-- **Для авторизованных** — `action=track` + `product_id`, `action=sync` + `ids`, `action=get` (получить из БД)
+- **`track`** + `product_id` — пишет просмотр гостю (сессия) и авторизованному при включённом sync
+- **`sync`** + `ids`, **`get`** — только пользователь, авторизованный в web
 
-**Ответ:** HTML списка; при отсутствии товаров — пустая строка. Если заданы `window.MODX_ASSETS_URL` или `window.MODX_BASE_URL`, JS сам формирует URL коннектора.
+**Ответ:** HTML списка. При отсутствии товаров — пустая строка. Если заданы `window.MODX_ASSETS_URL` или `window.MODX_BASE_URL`, JS сам формирует URL коннектора.
 
-Коннектор использует централизованные helper-функции для санитизации: идентификаторы парсятся как целые числа (лимит 100), имена чанков — только допустимые символы. Персональные данные в запросах не передаются.
+ID парсятся как целые (потолок 100). POST `tpl` / `emptyTpl` (list и similar) проходят `ms3rv_sanitize_chunk_name`. Допустимы только `[a-zA-Z0-9_-]`. `@FILE` и путь отбрасываются. Пустое имя даёт стандартный чанк. Свойства сниппета в шаблоне по-прежнему идут через `ms3rv_resolve_chunk_name` (`trim`, `@FILE` можно). Если сниппет вернул пусто, запасной вариант читает `showUnpublished` / `showDeleted` из POST. По умолчанию оба выкл.
 
 ## Чанки
 
 | Чанк | Назначение |
 |------|------------|
 | tplViewedItem | Карточка товара в списке «Недавно просмотренные» |
-| tplViewedEmpty | Пустое состояние (при отсутствии товаров блок можно не выводить) |
-| tplSimilarItem | Карточка в блоке «Похожие» (опционально) |
+| tplViewedEmpty | Пустое состояние |
+| tplViewedOuter | Опциональная обёртка. Плейсхолдеры: `output`, `hydrate`, `tpl`, `emptyTpl`, `limit`, `includeThumbs` |
+| tplSimilarItem | Карточка в блоке «Похожие» |
+| tplMs3rvLexiconScript | Опциональная обёртка `ms3rvLexiconScript`. Сниппет умеет вывести script сам |
 
-Чанки можно переопределять своими (Fenom или MODX), параметры `tpl` и `emptyTpl` в сниппете и при вызове `render()` в JS.
+Чанки можно переопределять (Fenom или MODX). Параметры `tpl` и `emptyTpl` есть в сниппете и при вызове `render()` в JS.
 
 ## Стили и BEM
 
-Классы с префиксом **ms3rv** (BEM): `ms3rv__list`, `ms3rv__item` и др. Файл стилей: `assets/components/ms3recentlyviewed/css/viewed.css`. Карточки по умолчанию используют Bootstrap (`ms3-product-card`, `product-image-wrapper`); для корректного отображения подключите Bootstrap и при необходимости стили каталога.
+Классы с префиксом **ms3rv** (BEM): `ms3rv__list`, `ms3rv__item` и др. Файл: `assets/components/ms3recentlyviewed/css/viewed.css`.
 
-На мобильных — горизонтальный скролл списка (`.ms3rv__list`).
+Карточки по умолчанию используют Bootstrap (`ms3-product-card`, `product-image-wrapper`). Подключите Bootstrap и при необходимости стили каталога.
 
-## CSS-переменные
+Горизонтальная прокрутка только у `.ms3rv-slider__wrapper .ms3rv__list`. Обычный `.ms3rv__list` — сетка Bootstrap.
 
-Переопределяйте в своей теме (`:root` или контейнер блока):
-
-| Переменная | Описание |
-|------------|----------|
-| `--ms3rv-bg` | Фон карточки |
-| `--ms3rv-border` | Граница |
-| `--ms3rv-radius` | Скругление |
-| `--ms3rv-color` | Цвет текста |
-| `--ms3rv-price-color` | Цвет цены |
-
-Пример:
-
-```css
-:root {
-  --ms3rv-bg: #fff;
-  --ms3rv-border: #eee;
-  --ms3rv-radius: 0.5rem;
-  --ms3rv-color: #333;
-  --ms3rv-price-color: #111;
-}
-```
+Переменных `--ms3rv-*` на витрине нет. `--ms3rv-accent*` есть только в стилях менеджера.
 
 ## Передача ID товара вручную
 
-Опционально: кнопка с атрибутами `data-viewed-toggle` и `data-id` для добавления товара в список по клику (например, из сетки каталога без перехода на страницу товара).
+Опционально задайте кнопку с `data-viewed-toggle` и `data-id`. Клик добавляет товар в список, например из сетки каталога без перехода на страницу товара.

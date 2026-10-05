@@ -1,6 +1,7 @@
 ---
 title: msImportExport
 description: Импорт и экспорт для miniShop2
+categories: import-export
 logo: https://modstore.pro/assets/extras/msimportexport/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/import-and-export/msimportexport

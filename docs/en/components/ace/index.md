@@ -1,11 +1,15 @@
 ---
 title: Ace
 description: Code editor with syntax highlighting for the MODX Revolution manager
+categories: content
 author: modx-pro
 repository: https://github.com/modx-pro/modx-ace
 logo: https://modstore.pro/assets/extras/ace/logo.png
 modstore: https://modstore.pro/packages/content/ace
 
+compatibility:
+  - modx2
+  - modx3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

@@ -1,9 +1,15 @@
 ---
 title: mFilter
 description: Faceted filtering for MODX 3 with SEO URL support
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/mfilter/logo.png
 author: biz87
 
+compatibility:
+  - modx3
+  - php81
+  - vue3
 items: [
   { text: 'Quick start', link: 'quick-start' },
   { text: 'System settings', link: 'settings' },

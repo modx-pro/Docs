@@ -81,11 +81,12 @@ description: Вывод window.msfoConfig без кнопки быстрого �
 | `phoneMask` | `msfastorder_phone_mask` |
 | `successRedirect` | `msfastorder_success_redirect` |
 | `requiredFields` | `msfastorder_required_fields` |
+| `copyCount` | `msfastorder_copy_count` |
 | `lexicon` | лексикон `msfastorder:*` |
 
-Полное описание: [Подключение на сайте → msfoConfig](../frontend#window-msfoconfig).
+Полное описание: [Подключение на сайте → msfoConfig](/components/msfastorder/frontend#window-msfoconfig).
 
 ## См. также
 
-- [Сниппет msFastOrder](msFastOrder)
-- [AJAX API](../api)
+- [Сниппет msFastOrder](/components/msfastorder/snippets/msFastOrder)
+- [AJAX API](/components/msfastorder/api)

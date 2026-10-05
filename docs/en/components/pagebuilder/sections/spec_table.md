@@ -7,7 +7,7 @@ description: "Parameter / value table with optional intro text (Pro)"
 
 Two-column table for technical data. Optional title and intro above the table.
 
-<!-- ![Spec table](/components/pagebuilder/screenshots/sections/spec_table.png) -->
+![Spec table](/components/pagebuilder/screenshots/sections/spec_table.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -72,32 +72,44 @@ Columns:
 | `label` | text | Parameter |
 | `value` | text | Value |
 
+The inspector supports group rows (`_pbGroup`), cell merges (`_span` on `label` / `value`), and a preview under the grid.
+
 ### Striped rows (`striped`)
 
 Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle.
 
 ## Site output
 
-HTML table `pb-spec-table`.
+HTML table `pb-spec-table`. With `striped`, the class `pb-spec-table--striped` is added. Groups use `pb-spec-table__row--group`. Rows fully covered by a span use `pb-spec-table__row--span-cont`.
 
 ## Section data {#output-in-section-data}
 
-Example payload after save. Media, video, and map values may be enriched on output:
+Example payload after save. On output Pro adds `spec_rows` via `TableCells::present()` (`_pb_cells` on each row):
 
 ```json
 {
-  "title": "Section title",
-  "intro": "Short intro before the main content.",
-  "striped": true
+  "title": "Specifications",
+  "intro": "Main product parameters.",
+  "striped": true,
+  "specs": [
+    { "label": "Dimensions", "value": "", "_pbGroup": true },
+    {
+      "label": "Storage",
+      "value": "128 GB",
+      "_span": { "value": { "colspan": 1, "rowspan": 2 } }
+    },
+    { "label": "With case", "value": "" },
+    { "label": "Color", "value": "Graphite" }
+  ]
 }
 ```
 
 ## Chunk template
 
-Fenom chunk `pagebuilderpro_spec_table`:
+Fenom chunk `pagebuilderpro_spec_table` uses `$spec_rows`, otherwise `$specs`:
 
 ```fenom
-{var $rows = $spec_rows|default:($specs|default:[])}
+{set $rows = $spec_rows|default:($specs|default:[])}
 <section class="pb-section pb-section--spec-table pb-spec-table{if $striped} pb-spec-table--striped{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="spec_table"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-spec-table__inner">
     {if $title}
@@ -111,30 +123,40 @@ Fenom chunk `pagebuilderpro_spec_table`:
         <table class="pb-spec-table__table">
           <thead>
             <tr>
-              <th scope="col">Parameter</th>
-              <th scope="col">Value</th>
+              <th scope="col">{'pagebuilder_fe_spec_param' | lexicon}</th>
+              <th scope="col">{'pagebuilder_fe_spec_value' | lexicon}</th>
             </tr>
           </thead>
           <tbody>
             {foreach $rows as $row}
-              <tr>
-                <th scope="row">{$row.label|default:''|escape}</th>
-                <td>{$row.value|default:''|escape}</td>
-              </tr>
+              {if $row._pbGroup}
+                <tr class="pb-spec-table__row--group">
+                  <th colspan="2" scope="colgroup">{$row.label|default:''|escape}</th>
+                </tr>
+              {elseif $row._pb_cells.label.hidden && $row._pb_cells.value.hidden}
+                <tr class="pb-spec-table__row--span-cont" aria-hidden="true"></tr>
+              {else}
+                <tr>
+                  {if !$row._pb_cells.label.hidden}
+                    <th scope="row" colspan="{$row._pb_cells.label.colspan|default:1}" rowspan="{$row._pb_cells.label.rowspan|default:1}">{$row.label|default:''|escape}</th>
+                  {/if}
+                  {if !$row._pb_cells.value.hidden}
+                    <td colspan="{$row._pb_cells.value.colspan|default:1}" rowspan="{$row._pb_cells.value.rowspan|default:1}">{$row.value|default:''|escape}</td>
+                  {/if}
+                </tr>
+              {/if}
             {/foreach}
           </tbody>
         </table>
       </div>
     {else}
-      <p class="pb-spec-table__empty">Add specification rows in the inspector.</p>
+      <p class="pb-spec-table__empty">{'pagebuilder_fe_spec_empty' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
 
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/spec_table.json`
+Cell text is escaped (`|escape`). HTML from the editor is not executed on the site.
 
 ## See also
 

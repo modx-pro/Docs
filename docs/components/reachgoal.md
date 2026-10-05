@@ -1,6 +1,7 @@
 ---
 title: ReachGoal
 description: Управление целями (Яндекс, Google) через админку
+categories: catalog
 logo: https://modstore.pro/assets/extras/reachgoal/logo.png
 author: tventos
 modstore: https://modstore.pro/packages/ecommerce/reachgoal

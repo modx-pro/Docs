@@ -6,6 +6,7 @@ lastUpdated: true
 logo: /components/mxboard.jpg
 author: ShevArtV
 dependencies: ['vuetools']
+categories: utilities
 items: [
   {
     text: 'Начало работы',
@@ -38,6 +39,7 @@ items: [
     items: [
       { text: '3.1.0-pl', link: 'changelog/3.1.0-pl' },
       { text: '3.0.0-pl', link: 'changelog/3.0.0-pl' },
+      { text: '2.8.1-pl', link: 'changelog/2.8.1-pl' },
       { text: '2.8.0-pl', link: 'changelog/2.8.0-pl' },
       { text: '2.7.1-pl', link: 'changelog/2.7.1-pl' },
       { text: '2.7.0-pl', link: 'changelog/2.7.0-pl' },

@@ -7,7 +7,7 @@ description: "Map embed by coordinates (Yandex Maps by default) (Pro)"
 
 A map pin from coordinates or address. `MapEmbedResolver` builds the iframe; default provider is Yandex Maps.
 
-<!-- ![Map](/components/pagebuilder/screenshots/sections/map.png) -->
+![Map](/components/pagebuilder/screenshots/sections/map.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -101,15 +101,11 @@ Fenom chunk `pagebuilderpro_map`:
         ></iframe>
       </div>
     {elseif $map_watch_url}
-      <p><a class="pb-button" href="{$map_watch_url|escape}">Open map</a></p>
+      <p><a class="pb-button" href="{$map_watch_url|escape}">{'pagebuilder_fe_map_open' | lexicon}</a></p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/map.json`
 
 ## See also
 

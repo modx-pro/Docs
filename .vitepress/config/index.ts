@@ -1,21 +1,24 @@
 import { createHash } from 'node:crypto'
-import type { DocsTheme } from '../theme/types'
+import type { DocsTheme } from '../theme/types/index.ts'
 import { type HeadConfig, defineConfigWithTheme } from 'vitepress'
-import { config as en, searchLocale as searchLocaleEn } from './en'
-import { config as root, searchLocale as searchLocaleRu } from './ru'
-import languages from '../theme/syntaxes'
-import { addPlugins } from '../theme/plugins/markdown'
-import { components, prepareData } from '../theme/plugins/component'
-import { slugify } from 'transliteration'
+import { config as en, searchLocale as searchLocaleEn } from './en.ts'
+import { config as root, searchLocale as searchLocaleRu } from './ru.ts'
+import languages from '../theme/syntaxes/index.ts'
+import { darkTheme, lightTheme } from '../theme/syntaxes/themes.ts'
+import { addPlugins } from '../theme/plugins/markdown.ts'
+import { components, prepareData } from '../theme/plugins/component.ts'
+import { headingSlug } from '../theme/anchors.ts'
 import { fileURLToPath, URL } from 'node:url'
 import { withMermaid } from 'vitepress-plugin-mermaid'
-import { modhost, modstore, modxpro, telegram } from '../../docs/icons'
-import { coreMembers } from '../../docs/authors'
-import { normalize } from '../theme/utils'
+import { modstore, modxpro, telegram } from '../../docs/icons.ts'
+import { coreMembers } from '../../docs/authors.ts'
+import { normalize } from '../theme/utils.ts'
 
 const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
+// сборка для превью PR (.github/workflows/preview.yml): без счётчика посещаемости
+const IS_PREVIEW = Boolean(process.env.DOCS_PREVIEW)
 
 const OG_CACHE_VERSION = (
   process.env.GITHUB_SHA?.slice(0, 8)
@@ -37,6 +40,49 @@ function getOgImageVersion(input: unknown): string {
   return createHash('md5').update(payload).digest('hex').slice(0, 8)
 }
 
+// Runs before the app paints. Dev shell does not include config.head, so the
+// same source is also injected via transformIndexHtml.
+const readabilityLayoutScript = `(function () {
+  try {
+    var mode = localStorage.getItem('vitepress-nolebase-enhanced-readabilities-layout-switch-mode');
+    var classes = {
+      '1': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchFullWidth',
+      '4': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchSidebarWidthAdjustableOnly',
+      '5': 'VPNolebaseEnhancedReadabilitiesLayoutSwitchBothWidthAdjustable'
+    };
+    var cls = classes[mode];
+    if (cls) document.documentElement.classList.add(cls);
+    var wide = window.matchMedia('(min-width: 1440px)').matches;
+    function pct(key, fallback) {
+      var raw = localStorage.getItem(key);
+      var n = raw == null ? fallback : parseInt(raw, 10);
+      if (!wide || !n || isNaN(n)) return '100%';
+      return Math.ceil(n / 100) + '%';
+    }
+    var root = document.documentElement;
+    root.style.setProperty('--vp-nolebase-enhanced-readabilities-page-max-width', pct('vitepress-nolebase-enhanced-readabilities-page-layout-max-width', 10000));
+    root.style.setProperty('--vp-nolebase-enhanced-readabilities-content-max-width', pct('vitepress-nolebase-enhanced-readabilities-content-layout-max-width', 8000));
+  } catch (e) {}
+})();`
+
+const metrikaScript: HeadConfig = [
+  'script',
+  {},
+  `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+  ym(103589705, "init", {
+    clickmap:true,
+    trackLinks:true,
+    accurateTrackBounce:true,
+    webvisor:false,
+    trackHash:true,
+  });`,
+]
+
 export default withMermaid(
   defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
@@ -45,6 +91,18 @@ export default withMermaid(
   mermaid: {
     securityLevel: 'loose',
     startOnLoad: false,
+    // Mermaid 12 defaults to the ELK layout, the new look and narrower labels, keep the previous appearance
+    layout: 'dagre',
+    look: 'classic',
+    theme: 'default',
+    flowchart: {
+      wrappingWidth: 200,
+      minNodeWidth: 0,
+    },
+    state: {
+      wrappingWidth: 200,
+      minNodeWidth: 0,
+    },
   },
 
   title: SITE_TITLE,
@@ -53,9 +111,14 @@ export default withMermaid(
 
   markdown: {
     languages,
+    // shiki has no `env` and `cron`: .env files are dotenv, a crontab line is a shell command
+    languageAlias: {
+      env: 'dotenv',
+      cron: 'shellscript',
+    },
     theme: {
-      light: 'github-light',
-      dark: 'one-dark-pro',
+      light: lightTheme,
+      dark: darkTheme,
     },
     container: {
       tipLabel: 'Подсказка',
@@ -65,21 +128,13 @@ export default withMermaid(
       detailsLabel: 'Подробнее',
     },
     anchor: {
-      slugify(str) {
-        str = str.trim()
-          .replace(/^\d*/g, '') // Удаление чисел из начала строки
-          .replace(/[^a-zA-Zа-яА-ЯЁё0-9\-\s]/g, '') // Удаление ненужных символов
-          .replace(/\s\-\s/, '-').replace(/\-+/g, '-') // Избавление от повторяющихся символов
-          .replace(/^(.{25}[^\s]*).*/, '$1') // Ограничение количества символов
-
-        return encodeURIComponent(slugify(str, { lowercase: true }))
-      }
+      slugify: headingSlug,
     },
     config(md) {
       addPlugins(md)
     },
     image: {
-      lazyLoading: true
+      lazyLoad: true
     }
   },
 
@@ -93,23 +148,9 @@ export default withMermaid(
     ['link', { rel: 'apple-touch-icon', href: '/apple-touch-icon.png?v=2' }],
     ['link', { rel: 'manifest', href: '/site.webmanifest' }],
 
-    [
-      'script',
-      {},
-      `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-      m[i].l=1*new Date();
-      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    ['script', {}, readabilityLayoutScript],
 
-      ym(103589705, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true,
-        webvisor:false,
-        trackHash:true,
-      });`,
-    ],
+    ...(IS_PREVIEW ? [] : [metrikaScript]),
   ],
 
   themeConfig: {
@@ -122,10 +163,6 @@ export default withMermaid(
     },
 
     socialLinks: [
-      {
-        icon: { svg: modhost },
-        link: 'https://modhost.pro',
-      },
       {
         icon: { svg: modstore },
         link: 'https://modstore.pro',
@@ -142,32 +179,14 @@ export default withMermaid(
     ],
 
     search: {
-      provider: 'local',
+      provider: 'algolia',
       options: {
+        appId: 'BCE7F5SAJ2',
+        apiKey: 'b1fa3914451fbbf1ae1d1d65cd2b24d8',
+        indexName: 'modx',
         locales: {
           ...searchLocaleRu,
           ...searchLocaleEn,
-        },
-        detailedView: false,
-        miniSearch: {
-          options: {
-            // @ts-expect-error
-            fields: ['title', 'titles', 'text', 'isComponentIndex'],
-            storeFields: ['title', 'titles', 'isComponentIndex'],
-            extractField(document, fieldName) {
-              if (fieldName === 'isComponentIndex') {
-                return /(?<=(\/en)?)\/components\/(\w*)\/?(#\w+)?$/.test(document.id)
-              }
-
-              return document[fieldName]
-            },
-          },
-          searchOptions: {
-            boostDocument(documentId, term, storedFields) {
-              if (storedFields?.isComponentIndex) return 2.0
-              return 1.0
-            },
-          },
         },
       },
     },
@@ -184,7 +203,7 @@ export default withMermaid(
     return prepareData(pageData, siteConfig)
   },
 
-  transformHead({ pageData }: { pageData }) {
+  transformHead({ pageData }) {
     const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
     const image = pageData?.component
       ? SITE_HOST + 'og/' + getComponentSlug(pageData.component) + '.png?v=' + getOgImageVersion({
@@ -231,18 +250,41 @@ export default withMermaid(
   },
 
   vite: {
+    plugins: [
+      {
+        name: 'readability-layout-early',
+        transformIndexHtml(html: string) {
+          if (html.includes('layout-switch-mode')) return html
+          return html.replace('<head>', `<head>\n    <script>${readabilityLayoutScript}</script>`)
+        },
+      },
+    ],
     ssr: {
-      noExternal: ['mermaid'],
+      noExternal: [
+        'mermaid',
+        '@nolebase/vitepress-plugin-enhanced-readabilities',
+        '@nolebase/ui',
+      ],
+    },
+    // mermaid → fastdom (CJS): without prebundle Vite ESM interop has no default export
+    optimizeDeps: {
+      include: ['fastdom', 'fastdom/extensions/fastdom-promised.js'],
+      exclude: [
+        '@nolebase/vitepress-plugin-enhanced-readabilities/client',
+        '@nolebase/ui',
+      ],
     },
     resolve: {
+      // подмена компонентов темы: …/VPName.vue → theme/components/DocsName.vue;
+      // ловит и импорты внутри самого VitePress (VPSidebarGroup → VPSidebarItem)
       alias: [
         'VPSidebar',
+        'VPSidebarItem',
         'VPDocFooter',
-        'VPNavBarTranslations',
-        'VPNavScreenTranslations',
+        'VPNavTranslations',
         'VPNavBar',
       ].map(componentName => ({
-        find: new RegExp(`^.*\/${componentName}\.vue$`),
+        find: new RegExp(`^.*/${componentName}\\.vue$`),
         replacement: fileURLToPath(
           new URL(`../theme/components/${componentName.replace(/^VP/, 'Docs')}.vue`, import.meta.url)
         )

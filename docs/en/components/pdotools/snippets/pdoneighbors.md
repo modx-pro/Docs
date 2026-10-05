@@ -19,7 +19,7 @@ Accepts all [pdoTools][1] params (except chunk templates) plus:
 | **&tplNext**     | see below         | Chunk for next document link. |
 | **&tplWrapper**  | see below         | Wrapper chunk. Placeholders: `[[+prev]]`, `[[+top]]`, `[[+next]]`, `[[+log]]`. Not used with **&toSeparatePlaceholders**. |
 | **&toPlaceholder** |                  | If set, snippet stores data in placeholder instead of outputting. |
-| **&showLog**     | `0`               | Show extra debug info. Only for users logged in to "mgr" context. |
+| **&showLog**     | `0`               | Appends the log to HTML (exception in 3.x). Requires mgr session. [Details](../general-properties#showlog). |
 
 ### Templates
 

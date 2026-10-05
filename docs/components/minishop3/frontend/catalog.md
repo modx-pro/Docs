@@ -5,7 +5,7 @@ title: Каталог товаров
 
 Каталог — основная страница магазина, где выводится список товаров из категории. MiniShop3 предоставляет готовый шаблон и чанк карточки товара.
 
-Для SPA или мобильного клиента без msProducts используйте публичный Web API `GET /api/v1/product/list` — ответ проходит через `ProductCatalogService` с allowlist полей. См. [REST API: каталог](/components/minishop3/development/api#каталог-товаров).
+Для SPA или мобильного клиента без msProducts используйте публичный Web API: `GET /api/v1/product/list`, `GET /api/v1/category/list` / `tree`, `GET /api/v1/product/filters`. Ответ каталога проходит через `ProductCatalogService` с allowlist полей. См. [Web API: каталог](/components/minishop3/development/web-api/catalog).
 
 <!-- ![Каталог на витрине](/components/minishop3/screenshots/fe-catalog.png) -->
 
@@ -45,7 +45,6 @@ title: Каталог товаров
                     'tpl' => 'tpl.msProducts.row',
                     'includeThumbs' => 'small,medium',
                     'includeVendorFields' => 'name,logo',
-                    'formatPrices' => 1,
                     'withCurrency' => 1,
                     'limit' => 12,
                     'sortby' => 'menuindex',
@@ -65,9 +64,22 @@ title: Каталог товаров
 | `tpl` | `tpl.msProducts.row` | Чанк карточки товара |
 | `includeThumbs` | `small,medium` | Загрузить превью изображений |
 | `includeVendorFields` | `name,logo` | Подключить данные производителя |
-| `formatPrices` | `1` | Форматировать цены (пробелы, копейки) |
-| `withCurrency` | `1` | Добавить символ валюты |
+| `withCurrency` | `1` | Добавить символ валюты в `{$price_formatted}` и `{$old_price_formatted}` |
 | `showZeroPrice` | `0` | Скрыть товары без цены |
+
+Параметра `formatPrices` у `msProducts` нет (он есть у `msOrderTotal`). Демо-шаблон `catalog.tpl` всё ещё передаёт `formatPrices` — сниппет его игнорирует ([issue #818](https://github.com/modx-pro/MiniShop3/issues/818)).
+
+Чанк ряда по умолчанию печатает сырой `{$price}`. Для форматированной цены используйте `{$price_formatted}` при `withCurrency`. Поле `{$weight_formatted}` заполняется всегда, от `withCurrency` не зависит.
+
+```mermaid
+flowchart TB
+  Call["msProducts withCurrency=1"] --> Raw["price / old_price / weight"]
+  Call --> Fmt["price_formatted / old_price_formatted / weight_formatted"]
+  Call --> Disc["discount при old_price больше price"]
+  Raw --> Row[tpl.msProducts.row]
+  Fmt --> Row
+  Disc --> Row
+```
 
 ::: tip Подробнее о параметрах
 Полный список параметров смотрите в документации сниппета [msProducts](/components/minishop3/snippets/msproducts).
@@ -85,24 +97,32 @@ title: Каталог товаров
 
 ### Элементы карточки
 
-- **Изображение** с hover-эффектом и overlay "Быстрый просмотр"
+- **Изображение** с hover (смена картинки)
 - **Бейджи статуса**: наличие, скидка, NEW, ХИТ, избранное
 - **Информация о товаре**: производитель, артикул, название
 - **Варианты товара**: цвет, размер (первые 3 + счётчик остальных)
-- **Цена**: старая и текущая с форматированием
+- **Цена**: старая и текущая (`{$price}` / при `withCurrency` — `{$price_formatted}`)
 - **Кнопки корзины**: адаптивное состояние
+
+Отдельного overlay «Быстрый просмотр» в чанке нет.
 
 ### Бейджи и метки
 
-Карточка автоматически показывает бейджи в зависимости от данных товара:
+Карточка показывает бейджи по данным товара:
 
-| Бейдж | Условие | Расположение |
+| Бейдж | Условие в чанке | Расположение |
 | --- | --- | --- |
 | В наличии / Под заказ | `{$weight > 0}` | Левый верхний угол |
 | Скидка (-XX%) | `{$discount > 0}` | Правый верхний угол |
 | NEW | `{$new}` | Правый верхний угол |
 | ХИТ | `{$popular}` | Правый верхний угол |
 | FAV | `{$favorite}` | Правый верхний угол |
+
+::: warning Наличие по weight
+В штатном чанке бейдж смотрит на массу `weight`, не на остаток `stock`. `itemprop="availability"` всегда `InStock`. См. [issue #813](https://github.com/modx-pro/MiniShop3/issues/813).
+:::
+
+Процент `{$discount}` считает цикл `msProducts` при `old_price > price`.
 
 ### Состояния кнопки корзины
 

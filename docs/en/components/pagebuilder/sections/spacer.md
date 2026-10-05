@@ -7,7 +7,7 @@ description: "Vertical gap between sections with no visible content"
 
 An empty section with fixed height. Use it when neighboring blocks feel cramped.
 
-<!-- ![Spacer](/components/pagebuilder/screenshots/sections/spacer.png) -->
+<!-- ![Spacer](/components/pagebuilder/screenshots/sections/spacer.jpg) -->
 
 ## Why an empty section
 
@@ -74,10 +74,6 @@ Fenom chunk `pagebuilder_spacer`:
 ```fenom
 <div class="pb-spacer pb-spacer--{$size ?: 'md'}" aria-hidden="true"{if $id} id="pb-{$id|escape}"{/if}></div>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/spacer.json`
 
 ## See also
 

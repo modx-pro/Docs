@@ -7,7 +7,7 @@ description: "Horizontal product strip from a category with autoplay (Pro)"
 
 Same data as **Products grid**, in a carousel. Fits narrow layouts with many SKUs.
 
-<!-- ![Products carousel](/components/pagebuilder/screenshots/sections/products_carousel.png) -->
+![Products carousel](/components/pagebuilder/screenshots/sections/products_carousel.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -67,7 +67,7 @@ Type [number](../fields/number#output-in-section-data). Optional.
 
 ### Autoplay (`autoplay`)
 
-Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle.
+Type [yesno](../fields/yesno#output-in-section-data). Optional. Yes/no toggle. When autoplay is on, the site shows a pause button. Labels: `pagebuilder_fe_carousel_pause` and `pagebuilder_fe_carousel_play`.
 
 ### Sort (`sortby`)
 
@@ -96,10 +96,10 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_products_carousel`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => $catalogParent,
     'depth' => 10,
     'limit' => $limit|default:8,
@@ -124,25 +124,30 @@ Fenom chunk `pagebuilderpro_products_carousel`:
       <h2 class="pb-heading">{$title|escape}</h2>
     {/if}
     {if $listing}
-      <div class="pb-carousel__viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="{$title|default:'Products'|escape}">
+      <div class="pb-carousel__viewport" tabindex="0" role="region" aria-roledescription="carousel" aria-label="{$title|default:('pagebuilder_fe_carousel_products' | lexicon)|escape}">
         <div class="pb-carousel__track">
           {$listing}
         </div>
         <div class="pb-carousel__controls">
-          <button type="button" class="pb-carousel__btn" data-pb-carousel-prev aria-label="Previous slide">‹</button>
-          <button type="button" class="pb-carousel__btn" data-pb-carousel-next aria-label="Next slide">›</button>
+          <button type="button" class="pb-carousel__btn" data-pb-carousel-prev aria-label="{'pagebuilder_fe_carousel_prev' | lexicon}">‹</button>
+          <button type="button" class="pb-carousel__btn" data-pb-carousel-next aria-label="{'pagebuilder_fe_carousel_next' | lexicon}">›</button>
         </div>
+        <button
+          type="button"
+          class="pb-carousel__pause"
+          data-pb-carousel-pause
+          hidden
+          aria-pressed="false"
+          data-label-pause="{'pagebuilder_fe_carousel_pause' | lexicon}"
+          data-label-play="{'pagebuilder_fe_carousel_play' | lexicon}"
+        >{'pagebuilder_fe_carousel_pause' | lexicon}</button>
       </div>
     {else}
-      <p class="pb-listing__empty">No products for the carousel in this category yet.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_carousel' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/products_carousel.json`
 
 ## See also
 

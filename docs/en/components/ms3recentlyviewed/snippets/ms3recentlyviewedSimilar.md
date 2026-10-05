@@ -3,9 +3,7 @@ title: ms3recentlyviewedSimilar
 ---
 # Snippet ms3recentlyviewedSimilar
 
-Outputs products from the same categories (parents) as the given viewed IDs, excluding those IDs. “Similar to viewed” block.
-
-**Optimization:** a single getCollection query for parent categories of all viewed products instead of N separate queries.
+Outputs products from the same categories (parents) as the given viewed IDs. Excludes those IDs. “Similar to viewed” block.
 
 ## Parameters
 
@@ -13,11 +11,14 @@ Outputs products from the same categories (parents) as the given viewed IDs, exc
 |-----------|-------------|---------|
 | **ids** | Comma-separated viewed product IDs | — |
 | **tpl** | Product card chunk | tplSimilarItem |
-| **limit** | Max items in result | 10 |
-| **depth** | Category search depth (nesting levels) | **2** (the snippet enforces a minimum depth of 2 for category-based selection) |
-| **fromDB** | Load viewed IDs from DB for logged-in user (instead of **ids**) | false |
-
-**fromDB** mirrors **ms3recentlyviewed**: with sync on and an authenticated **web** context, IDs are read from the table. For guests, a demo ID fallback may apply (see the package code).
+| **tplOuter** | Wrapper chunk | *(empty)* |
+| **limit** | Max items in result | `10` |
+| **depth** | Category search depth. Values `< 2` are raised to 2 by the snippet and AJAX | **2** |
+| **fromDB** | Load IDs from DB if the user is authenticated in the current context | `false` |
+| **autoIdsFallback** | Demo IDs when `fromDB` and the list is empty. Default off, not in transport | `false` |
+| **fallbackToRoot** / **fallbackReturnIds** | Catalog-wide fallback when the category query is empty. Not in transport | `true` |
+| **where** | Extra `msProducts` `where` (JSON). Merged with `id:NOT IN` viewed IDs | — |
+| **showUnpublished** / **showDeleted** | Passed to the product query | `false` |
 
 ## Examples
 
@@ -43,6 +44,6 @@ Outputs products from the same categories (parents) as the given viewed IDs, exc
 
 :::
 
-If nothing is found by category, the snippet may use a **fallback** (e.g. catalog-wide selection with a higher depth) — see the package changelog.
+If nothing is found by category, the snippet may use a catalog-wide selection with a higher depth.
 
-Via connector (AJAX): POST with `action=similar`, parameters `ids`, optionally `limit`, `tpl`, `depth`.
+Via connector (AJAX): POST with `action=similar`, parameters `ids`, optionally `limit`, `tpl`, `depth`. See [Frontend integration](/en/components/ms3recentlyviewed/frontend).

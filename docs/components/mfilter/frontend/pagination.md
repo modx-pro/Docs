@@ -35,7 +35,7 @@ mFilter использует **собственную пагинацию**, а �
 
 ```html
 {var $baseUrl = $_modx->resource.uri}
-<div class="mfilter-wrapper" data-mfilter-results data-base-url="/{$baseUrl}">
+<div class="mfilter-wrapper" data-mfilter-results data-base-url="/{$baseUrl}" data-mfilter-hash="{$hash}">
 
     {* Результаты — сюда JS вставляет HTML товаров *}
     <div class="mfilter-results row">
@@ -55,6 +55,8 @@ mFilter использует **собственную пагинацию**, а �
 ::: warning Пагинация внутри .mfilter-results
 Если `.mfilter-pagination` окажется внутри `.mfilter-results`, AJAX-обновление затрёт её вместе с товарами. Результат — пагинация пропадает после первого применения фильтра.
 :::
+
+`data-mfilter-hash="{$hash}"` обязателен: по нему AJAX находит сохранённую конфигурацию вызова. Переменная `$hash` существует только внутри чанка — переносить эту обёртку в шаблон ресурса нельзя, подробности в [Плейсхолдерах](placeholders#pls-v-shablone-i-v-chanke-eto).
 
 ### Чанк пагинации (tplPagination)
 
@@ -78,19 +80,37 @@ mFilter использует **собственную пагинацию**, а �
 | `{$total}` | Всего результатов |
 | `{$limit}` | Элементов на странице |
 | `{$baseUrl}` | Базовый URL с фильтрами (без page) |
+| `{$pageParam}` | Имя GET-параметра страницы (по умолчанию `page`) — для ссылок вида `?page=2`. Имя сегмента в ЧПУ им не управляется, оно всегда `page` |
 
 Ссылки на страницы должны содержать `data-page` — JS перехватывает клик и делает AJAX-запрос вместо перехода.
+
+::: warning Разделитель берите из настройки
+Сегмент страницы собирается как `page` + разделитель + номер, где разделитель — системная настройка `mfilter.url_separator`. На новых установках это `--`, на старых `_`. Если зашить его в чанк, при несовпадении роутер не разберёт адрес и отдаст **404** — по всем ссылкам пагинации сразу.
+
+Изнутри сайта это незаметно: JS перехватывает клик и строит адрес сам, минуя роутер. В 404 попадают при прямом открытии — из закладки, новой вкладки или поиска.
+
+```fenom
+{var $sep = 'mfilter.url_separator' | option}
+{if !$sep}{var $sep = '_'}{/if}
+...
+<a href="{$baseUrl}page{$sep}{$page + 1}/" data-page="{$page + 1}">&raquo;</a>
+```
+
+Модификатор `option` — это `$modx->getOption()` без второго аргумента, поэтому значение по умолчанию задаётся отдельной строкой.
+:::
 
 Типовая разметка чанка:
 
 ```html
+{var $sep = 'mfilter.url_separator' | option}
+{if !$sep}{var $sep = '_'}{/if}
 {if $pageCount > 1}
-<nav aria-label="Навигация" class="mfilter-pagination">
+<nav aria-label="Навигация">
     <ul class="pagination justify-content-center">
 
         {* Предыдущая *}
         <li class="page-item{if $page == 1} disabled{/if}">
-            <a href="{$baseUrl}{if $page > 2}page_{$page - 1}/{/if}"
+            <a href="{$baseUrl}{if $page > 2}page{$sep}{$page - 1}/{/if}"
                class="page-link" data-page="{$page - 1}">&laquo;</a>
         </li>
 
@@ -110,7 +130,7 @@ mFilter использует **собственную пагинацию**, а �
                 <li class="page-item active"><span class="page-link">{$i}</span></li>
             {else}
                 <li class="page-item">
-                    <a href="{$baseUrl}{if $i > 1}page_{$i}/{/if}"
+                    <a href="{$baseUrl}{if $i > 1}page{$sep}{$i}/{/if}"
                        class="page-link" data-page="{$i}">{$i}</a>
                 </li>
             {/if}
@@ -122,14 +142,14 @@ mFilter использует **собственную пагинацию**, а �
         {/if}
         {if $page < $pageCount - 2}
             <li class="page-item">
-                <a href="{$baseUrl}page_{$pageCount}/"
+                <a href="{$baseUrl}page{$sep}{$pageCount}/"
                    class="page-link" data-page="{$pageCount}">{$pageCount}</a>
             </li>
         {/if}
 
         {* Следующая *}
         <li class="page-item{if $page == $pageCount} disabled{/if}">
-            <a href="{$baseUrl}page_{$page + 1}/"
+            <a href="{$baseUrl}page{$sep}{$page + 1}/"
                class="page-link" data-page="{$page + 1}">&raquo;</a>
         </li>
 
@@ -213,6 +233,8 @@ document.addEventListener('mfilter:ui:ready', function(e) {
 /catalog/color_red/page_3/         ← фильтр + страница 3
 ```
 
+Разделитель здесь — значение настройки `mfilter.url_separator`. Примеры показаны с `_`; на установках с `--` те же адреса выглядят как `/catalog/page--2/` и `/catalog/color--red/page--3/`.
+
 При применении фильтра страница автоматически сбрасывается на 1.
 
 ## Частые ошибки
@@ -279,11 +301,13 @@ document.addEventListener('mfilter:ui:ready', function(e) {
 ### tplPagination
 
 ```html
+{var $sep = 'mfilter.url_separator' | option}
+{if !$sep}{var $sep = '_'}{/if}
 {if $pageCount > 1}
 <nav>
     <ul class="pagination">
         {if $page > 1}
-            <li><a href="{$baseUrl}{if $page > 2}page_{$page - 1}/{/if}" data-page="{$page - 1}">&laquo;</a></li>
+            <li><a href="{$baseUrl}{if $page > 2}page{$sep}{$page - 1}/{/if}" data-page="{$page - 1}">&laquo;</a></li>
         {/if}
 
         {for $i = 1 to $pageCount}
@@ -291,13 +315,13 @@ document.addEventListener('mfilter:ui:ready', function(e) {
                 {if $i == $page}
                     <span>{$i}</span>
                 {else}
-                    <a href="{$baseUrl}{if $i > 1}page_{$i}/{/if}" data-page="{$i}">{$i}</a>
+                    <a href="{$baseUrl}{if $i > 1}page{$sep}{$i}/{/if}" data-page="{$i}">{$i}</a>
                 {/if}
             </li>
         {/for}
 
         {if $page < $pageCount}
-            <li><a href="{$baseUrl}page_{$page + 1}/" data-page="{$page + 1}">&raquo;</a></li>
+            <li><a href="{$baseUrl}page{$sep}{$page + 1}/" data-page="{$page + 1}">&raquo;</a></li>
         {/if}
     </ul>
 </nav>

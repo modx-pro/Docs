@@ -1,17 +1,13 @@
 ---
 title: "Video"
-description: "Embed a video by URL (YouTube, Vimeo, Rutube) (Pro)"
+description: "Embed a video by URL (YouTube, Vimeo, Rutube). Free layer."
 ---
 
 # Video
 
-Responsive iframe from a video link. Common hosts are supported; `VideoEmbedResolver` parses the URL.
+Responsive iframe from a video link. Common hosts are supported. `VideoEmbedResolver` parses the URL on save. The section is part of Free.
 
-<!-- ![Video](/components/pagebuilder/screenshots/sections/video.png) -->
-
-::: info
-Requires PageBuilder Pro.
-:::
+![Video](/components/pagebuilder/screenshots/sections/video.jpg)
 
 ## URL instead of embed code
 
@@ -91,7 +87,7 @@ Fenom chunk `pagebuilderpro_video`:
       <h2 class="pb-heading pb-video__title">{$title|escape}</h2>
     {/if}
     {if $video_provider}
-      {var $providerLabel = $video_provider == 'youtube' ? 'YouTube' : ($video_provider == 'vimeo' ? 'Vimeo' : ($video_provider == 'rutube' ? 'Rutube' : $video_provider))}
+      {set $providerLabel = $video_provider == 'youtube' ? 'YouTube' : ($video_provider == 'vimeo' ? 'Vimeo' : ($video_provider == 'rutube' ? 'Rutube' : $video_provider))}
       <p class="pb-video__provider">{$providerLabel|escape}</p>
     {/if}
     {if $video_embed_url}
@@ -99,15 +95,11 @@ Fenom chunk `pagebuilderpro_video`:
         <iframe src="{$video_embed_url|escape}" title="{$title|default:'Video'|escape}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
       </div>
     {elseif $video_watch_url}
-      <p><a class="pb-button" href="{$video_watch_url|escape}">Watch video</a></p>
+      <p><a class="pb-button" href="{$video_watch_url|escape}">{'pagebuilder_fe_video_watch' | lexicon}</a></p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/video.json`
 
 ## See also
 

@@ -1,17 +1,17 @@
 ---
 title: "multirelation"
-description: "Массив ресурсов с id и pagetitle из модального picker"
+description: "Массив ресурсов с id и pagetitle из AutoComplete с поиском"
 ---
 
 # Поле multirelation
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![multirelation](/components/pagebuilder/screenshots/fields/multirelation.png) -->
+<!-- ![multirelation](/components/pagebuilder/screenshots/fields/multirelation.jpg) -->
 
 ## Зачем этот тип
 
-Порядок строк сохраняется для curated-списков. Тот же модальный поиск, что у [relation](relation). Основа секций curated_products и похожих.
+Порядок выбранных записей сохраняется. В инспекторе AutoComplete с поиском и сортируемый список (модального окна нет). На этом поле собраны секции вроде подборки товаров.
 
 ## Когда использовать
 
@@ -21,7 +21,7 @@ description: "Массив ресурсов с id и pagetitle из модаль
 
 ## Советы
 
-Один ресурс: [relation](relation). Статический список id без модального picker возможен через combo, но без pagetitle enrich.
+Один ресурс: [relation](relation). Статический список id без AutoComplete возможен через combo, но без pagetitle enrich.
 
 ## Похожие типы
 
@@ -66,11 +66,19 @@ description: "Массив ресурсов с id и pagetitle из модаль
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span class="related">[[+products.0.pagetitle]]</span>
+```
+
 ```fenom
 {foreach $products as $p}
-  <span class="related">{$p.pagetitle|escape}</span>
+  <span class="related">{$p.pagetitle|pb_text}</span>
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -79,7 +87,7 @@ description: "Массив ресурсов с id и pagetitle из модаль
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

@@ -13,10 +13,21 @@ mxHeadless determines who calls the API. What they can do is decided by [authori
 | --- | --- | --- |
 | Anonymous | Public reads | No headers |
 | Session | Manager UI or front end with MODX cookie | Session cookie |
-| API key | CI, builds, server-to-server | `Authorization: Bearer mxh_...` or `X-API-Key` |
-| OAuth token | Short-lived machine access | `Authorization: Bearer mxt_...` |
+| API key | CI, builds, server-to-server calls | `Authorization: Bearer mxh_...` or `X-API-Key` |
+| OAuth token | Short-lived service access | `Authorization: Bearer mxt_...` |
 
-Authenticator order: OAuth token → API key → session → anonymous.
+Check order: OAuth token → API key → session → anonymous.
+
+```mermaid
+flowchart TD
+  R[Request] --> T{mxt_* in Authorization?}
+  T -->|yes| IO[OAuth identity]
+  T -->|no| K{mxh_* or X-API-Key?}
+  K -->|yes| IK[Key identity]
+  K -->|no| S{MODX session cookie?}
+  S -->|yes| IS[Session identity]
+  S -->|no| AN[Anonymous]
+```
 
 ## API keys (`mxh_*`)
 
@@ -39,13 +50,11 @@ Details: [OAuth](oauth).
 
 ## Session and CSRF
 
-With a session cookie, the current MODX user is attached. For `POST`/`PUT`/`PATCH`/`DELETE`, send:
+With a session cookie, the current MODX user is attached.
 
-```text
-X-CSRF-Token: {token from MODX session}
-```
+Any session request creates `$_SESSION['mxheadless.csrf_token']` if missing and returns it in `X-CSRF-Token`. Send the same header on `POST`/`PUT`/`PATCH`/`DELETE`. This is not the MODX core CSRF token.
 
-Setting: `mxheadless_csrf_enabled` (default `true`). Bearer keys do not need CSRF.
+Setting: `mxheadless_csrf_enabled` (default `true`). Bearer keys do not need CSRF. With CORS, add `X-CSRF-Token` to `mxheadless_cors_expose_headers` so JavaScript can read it.
 
 ## Scopes
 
@@ -59,8 +68,14 @@ Missing scope → `403` `scope_denied`. Missing credentials on a protected route
 
 ## Pipeline
 
-```text
-Request → Authentication → Identity
-        → Authorization → scope + MODX ACL + context + fields
-        → Service
+```mermaid
+flowchart LR
+  Q[Request] --> AUTH[Authentication]
+  AUTH --> ID[Identity]
+  ID --> AUTHZ[Authorization]
+  AUTHZ --> SVC[Service]
+  AUTHZ -.-> SC[scope]
+  AUTHZ -.-> ACL[MODX ACL]
+  AUTHZ -.-> CTX[context]
+  AUTHZ -.-> FL[fields]
 ```

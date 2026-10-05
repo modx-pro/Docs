@@ -7,7 +7,7 @@ description: "Pricing cards with price, billing period, and feature list (Pro)"
 
 Price table for subscriptions and service tiers. Each plan has a name, price, billing period, and plain-text feature list.
 
-<!-- ![Pricing table](/components/pagebuilder/screenshots/sections/pricing_table.png) -->
+![Pricing table](/components/pagebuilder/screenshots/sections/pricing_table.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -145,7 +145,7 @@ Fenom chunk `pagebuilderpro_pricing_table`:
             </ul>
           {/if}
           {if $item.button_label && $item.button_url}
-            <a class="pb-button pb-pricing-table__cta" href="{$item.button_url|escape:'url'}">{$item.button_label|escape}</a>
+            <a class="pb-button pb-pricing-table__cta" href="{$item.button_url|pb_href|escape}">{$item.button_label|escape}</a>
           {/if}
         </article>
       {/foreach}
@@ -153,10 +153,6 @@ Fenom chunk `pagebuilderpro_pricing_table`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/pricing_table.json`
 
 ## See also
 

@@ -5,6 +5,10 @@ outline: [ 2,3 ]
 lastUpdated: true
 logo: https://modstore.pro/assets/extras/cdekintegrate/logo.jpg
 author: ShevArtV
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 items: [
   { text: 'Начало работы', link: 'index' },
   { text: 'Системные настройки', link: 'settings' },
@@ -13,6 +17,7 @@ items: [
   { text: 'Разработка', link: 'development' },
 ]
 dependencies: [ 'MiniShop3', 'msCDEK' ]
+categories: delivery
 ---
 
 # CdekIntegrate

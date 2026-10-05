@@ -1,17 +1,17 @@
 ---
 title: Интерфейс
-description: 'UI локатора YandexMapsLocator: BEM, data-yml, карта и список'
+description: 'Интерфейс локатора YandexMapsLocator: BEM, data-yml, карта и список'
 ---
 
 # Интерфейс
 
-Фронт Free собран из Fenom-чанков, `locator.css` и ES-модулей. Внешний вид — BEM, поведение — атрибуты `data-yml-*`.
+Интерфейс Free: Fenom-чанки, `locator.css` и модули JS. Вид: BEM. Поведение: атрибуты `data-yml-*`.
 
-## Mobile-first
+## Колонки и табы
 
-На узком экране одна колонка и табы «Список» / «Карта». С 769px шире — две колонки, табы прячутся.
+На узком экране одна колонка и табы «Список» / «Карта». С 769px шире две колонки, табы прячутся.
 
-Табы сидят на уровне layout, не внутри панели списка. Карту из DOM не выкидываем: в режиме списка панель карты получает `hidden`. Перед балуном JS переключает вид на «Карта».
+Табы стоят в общей разметке, не внутри панели списка. Карту из HTML не удаляем: в режиме списка панель карты получает `hidden`. Перед балуном скрипт переключает вид на «Карта».
 
 ## BEM
 
@@ -29,14 +29,21 @@ description: 'UI локатора YandexMapsLocator: BEM, data-yml, карта �
 | Атрибут | Где | Назначение |
 |---------|-----|------------|
 | `data-yml-root` | `.yml-locator` | Корень, инициализация |
+| `data-yml-config` | JSON в корне | Конфиг карты. Без него свой `outer` не стартует |
+| `data-yml-stores` | JSON в корне | Стартовый список точек |
 | `data-yml-view="list\|map"` | корень | Режим на мобильном |
+| `data-yml-view-tab` | табы | Переключение «Список» / «Карта» |
 | `data-yml-empty` | корень | Пустой список |
 | `data-yml-located` | корень | Активен геофильтр после `locate()` |
 | `data-yml-parents` | корень | ID родителей |
 | `data-yml-search` | форма | Поиск |
+| `data-yml-submit` | кнопка формы | Отправка поиска |
+| `data-yml-error` | форма | Текст ошибки поиска |
 | `data-yml-locate` | кнопка | «Моё местоположение» / «Все точки» |
 | `data-yml-list` / `data-yml-map` | панели | Список и карта |
+| `data-yml-panel="list\|map"` | панели | Тот же смысл для JS |
 | `data-yml-store-id` | карточка | ID точки |
+| `data-yml-select` | кнопка карточки | Открыть точку на карте |
 | `data-yml-lat`, `data-yml-lng` | карточка | Координаты |
 
 Pro добавляет `data-yml-open-now` и бейджи `.yml-store__status` («Открыто» / «Закрыто»).
@@ -71,30 +78,44 @@ Pro добавляет `data-yml-open-now` и бейджи `.yml-store__status` 
 }
 ```
 
-Same-origin, без CORS и Bearer. Если стоит Pro и REST включён, фронт может ходить в `api.php`. При `api_enabled=No` снова `search.php`.
+Запрос с той же страницы, без CORS и Bearer. Локатор на странице идёт в REST `api.php` только если стоят Pro, `api_enabled=Да` и пустой `api_token`. Если токен задан, `api_enabled=No` или Pro нет, страница остаётся на `search.php`. Bearer в HTML не попадает.
+
+Если в запросе есть `address`, `search.php` тратит и бакет list (`api_list_rate_limit`, 120/мин), и бакет geocode (`api_geocode_rate_limit`, 30/мин).
+
+Ошибки `search.php` (не REST):
+
+| Код | Когда |
+|-----|-------|
+| `parents_required` | пустой `parents` |
+| `where_not_allowed` | передан `where` |
+| `invalid_param` | `include`, `fields` или `route` |
+| `invalid_context` | неизвестный или запрещённый контекст |
+| `method_not_allowed` | не GET |
 
 ## JavaScript API
+
+Класс: `window.YandexMapsLocator`.
 
 ```javascript
 const locator = new YandexMapsLocator('[data-yml-root]', { apiUrl, config, stores });
 
-// Поиск по адресу (форма / свой UI)
 locator.search({ address: 'Омск, ул. Ленина, 25' });
-
-// Геолокация браузера → сортировка по distance
 locator.locate();
-
-// Сброс геофильтра («Все точки»)
-locator.resetLocate?.();
+locator.clearLocation();
+locator.showStore(15);
+locator.setStores(stores);
+locator.setCenter(54.98, 73.36);
+locator.getStores();
 
 locator.on('store:click', ({ id }) => console.log('card', id));
 locator.on('marker:click', ({ id }) => console.log('marker', id));
-locator.on('balloon:build', (payload) => {
-  // можно дополнить HTML балуна
-});
+locator.on('balloon:build', (payload) => {});
+locator.on('search:start', (params) => {});
+locator.on('search:complete', (data) => {});
+locator.on('error', ({ message }) => {});
 ```
 
-События JS: `store:click`, `marker:click`, `balloon:build`, `marker:options`.
+События JS: `store:click`, `marker:click`, `balloon:build`, `marker:options`, `search:start`, `search:complete`, `error`. Pro на `search:start` дописывает `filters=working_now`.
 
 После `locate()` кнопка становится «Все точки» и сбрасывает геофильтр. На мобильном после геолокации открывается вкладка «Карта».
 
@@ -108,19 +129,10 @@ card?.querySelector('[data-yml-select]')?.click();
 
 ## Стилизация
 
-Токены на `.yml-locator` (CSS-переменные `--yml-*`). Переопределяйте в теме сайта, файлы пакета не трогайте.
+Токены на `.yml-locator` (CSS-переменные `--yml-*`). Переопределяйте в теме сайта, файлы пакета не трогайте. JS ставит `data-yml-active` на карточку и классы `is-open` / `is-closed` на `.yml-store__status`.
 
 ```css
 .yml-locator {
   --yml-color-accent: #e11d48;
-}
-.yml-store[data-yml-active] {
-  outline: 2px solid var(--yml-color-accent);
-}
-.yml-store__status.is-open {
-  color: #15803d;
-}
-.yml-store__status.is-closed {
-  color: #b91c1c;
 }
 ```

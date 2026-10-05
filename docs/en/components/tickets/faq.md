@@ -44,7 +44,7 @@ Call the snippet **uncached** by default. If cached, enable `tickets_clear_cache
 
 ## Flat comment list
 
-`&tree=`0`` with `&limit=` / `&offset=`. No nested reply DOM.
+`` &tree=`0` `` with `&limit=` / `&offset=`. No nested reply DOM.
 
 ## Multiple threads per page
 

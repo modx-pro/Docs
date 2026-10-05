@@ -7,11 +7,11 @@ description: "Массив значений из статического спи
 
 Версия: **Free**.
 
-<!-- ![checkboxgroup](/components/pagebuilder/screenshots/fields/checkboxgroup.png) -->
+<!-- ![checkboxgroup](/components/pagebuilder/screenshots/fields/checkboxgroup.jpg) -->
 
 ## Зачем этот тип
 
-Несколько флагов из одного списка `options`. В данных секции попадает массив строк `value`, не объектов. Для коротких списков без поиска удобнее, чем multiselect.
+Несколько флажков из одного списка `options`. В данных секции массив строк `value`, не объекты. Для короткого списка без поиска это удобнее, чем [multiselect](multiselect).
 
 ## Когда использовать
 
@@ -26,7 +26,7 @@ description: "Массив значений из статического спи
 ## Похожие типы
 
 - [multiselect](multiselect) для MultiSelect с поиском
-- [tag](tag) для свободного ввода строк (Pro)
+- [tag](tag) для свободного ввода строк
 
 ## Настройка
 
@@ -70,11 +70,19 @@ description: "Массив значений из статического спи
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<!-- `tags` — массив строк; перебор в чистом MODX — через сниппет, цикл — в блоке Fenom -->
+```
+
 ```fenom
 {foreach $tags as $tag}
-  <span class="tag">{$tag|escape}</span>
+  <span class="tag">{$tag|pb_text}</span>
 {/foreach}
 ```
+
+:::
 
 ## Примечание
 
@@ -87,7 +95,7 @@ description: "Массив значений из статического спи
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

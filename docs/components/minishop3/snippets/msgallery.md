@@ -19,27 +19,24 @@ title: msGallery
 | **filetype** | | Фильтр по типу файла (через запятую) |
 | **thumbnails** | | Фильтр превью по именам (через запятую) |
 | **showInactive** | `false` | Показывать неактивные файлы |
-| **extensionsDir** | `components/minishop3/img/mgr/extensions/` | Путь к иконкам типов файлов (от `assets/`) для не-image |
+| **extensionsDir** | `components/minishop3/img/mgr/extensions/` | Путь к иконкам типов файлов (от `assets/`) для не-изображений |
 | **toPlaceholder** | | Сохранить результат в плейсхолдер |
-| **showLog** | `false` | Показать лог выполнения |
-| **return** | `data` | Формат: `data`, `tpl`, `json`, `sql` |
+| **showLog** | `false` | Показать лог выполнения (выводится только при открытой сессии менеджера) |
+| **return** | `tpl` | Формат: `data`, `tpl`, `json`, `sql`. `json` и `sql` отдают сырые строки выборки без слияния превью и поля `thumbnail` |
 
 ## Примеры
 
 ### Базовый вывод
 
 ```fenom
-{'msGallery' | snippet : [
-    'return' => 'tpl'
-]}
+{'msGallery' | snippet}
 ```
 
 ### Для конкретного товара
 
 ```fenom
 {'msGallery' | snippet : [
-    'product' => 15,
-    'return' => 'tpl'
+    'product' => 15
 ]}
 ```
 
@@ -47,17 +44,7 @@ title: msGallery
 
 ```fenom
 {'msGallery' | snippet : [
-    'limit' => 5,
-    'return' => 'tpl'
-]}
-```
-
-### Только изображения (без видео и документов)
-
-```fenom
-{'msGallery' | snippet : [
-    'filetype' => 'image',
-    'return' => 'tpl'
+    'limit' => 5
 ]}
 ```
 
@@ -65,8 +52,7 @@ title: msGallery
 
 ```fenom
 {'msGallery' | snippet : [
-    'thumbnails' => 'small,medium',
-    'return' => 'tpl'
+    'thumbnails' => 'small,medium'
 ]}
 ```
 
@@ -75,28 +61,25 @@ title: msGallery
 ```fenom
 {'msGallery' | snippet : [
     'sortby' => 'name',
-    'sortdir' => 'ASC',
-    'return' => 'tpl'
+    'sortdir' => 'ASC'
 ]}
 ```
 
 ### Получение данных для обработки
 
 ```fenom
-{set $files = 'msGallery' | snippet}
+{set $files = 'msGallery' | snippet : ['return' => 'data']}
 
 {foreach $files as $file}
     <img src="{$file['url']}" alt="{$file['name']}">
 {/foreach}
 ```
 
-::: info return=data по умолчанию
-По умолчанию сниппет возвращает массив данных (`return=data`). Для вывода через чанк укажите `return=tpl`.
+::: info return по умолчанию
+После установки `return=tpl` (чанк `tpl.msGallery`). Для массива укажите `return=data` явно: при пустом свойстве PHP использует запасное значение `data` ([#823](https://github.com/modx-pro/MiniShop3/issues/823)).
 :::
 
 ## Плейсхолдеры в чанке
-
-В чанк передаются:
 
 | Плейсхолдер | Описание |
 | --- | --- |
@@ -115,7 +98,7 @@ title: msGallery
 | `{$file['path']}` | Путь к файлу |
 | `{$file['file']}` | Имя файла на диске |
 | `{$file['type']}` | Тип файла (image, video, document и т.д.) |
-| `{$file['thumbnail']}` | URL иконки типа (для не-image, из `extensionsDir`) |
+| `{$file['thumbnail']}` | URL иконки типа (для не-изображений, из `extensionsDir`) |
 | `{$file['createdon']}` | Дата добавления |
 | `{$file['createdby']}` | ID пользователя |
 | `{$file['position']}` | Позиция в галерее |
@@ -124,7 +107,7 @@ title: msGallery
 
 ### Превью изображений
 
-Превью добавляются как дополнительные поля с именем папки:
+Компонент добавляет превью дополнительными полями с именем папки:
 
 | Поле | Описание |
 | --- | --- |
@@ -138,8 +121,6 @@ title: msGallery
 
 ### Служебные переменные цикла
 
-В Fenom доступны переменные итерации:
-
 ```fenom
 {foreach $files as $file}
     {$file@index}     {* Индекс с 0 *}
@@ -151,7 +132,7 @@ title: msGallery
 
 ## Чанк по умолчанию
 
-Стандартный чанк `tpl.msGallery` использует Splide.js для слайдера и GLightbox для просмотра:
+Поставляемый чанк `tpl.msGallery` строит слайдер на Splide.js и открывает фото в GLightbox. Упрощённый образец той же разметки: в поставке больше опций плеера и заглушка с `srcset`:
 
 ```fenom
 {* tpl.msGallery *}
@@ -239,9 +220,7 @@ title: msGallery
 {/if}
 ```
 
-## Простой чанк
-
-Минимальный пример без внешних библиотек:
+## Чанк без внешних библиотек
 
 ```fenom
 {* tpl.msGallery.simple *}
@@ -250,8 +229,8 @@ title: msGallery
         {foreach $files as $file}
             <a href="{$file['url']}" target="_blank">
                 <img src="{$file['medium'] ?: $file['url']}"
-                     alt="{$file['name']}"
-                     loading="{$file@first ? 'eager' : 'lazy'}">
+                    alt="{$file['name']}"
+                    loading="{$file@first ? 'eager' : 'lazy'}">
             </a>
         {/foreach}
     </div>
@@ -263,7 +242,7 @@ title: msGallery
 Если в галерее есть видео:
 
 ```fenom
-{set $files = 'msGallery' | snippet}
+{set $files = 'msGallery' | snippet : ['return' => 'data']}
 
 {foreach $files as $file}
     {if $file['type'] == 'video'}

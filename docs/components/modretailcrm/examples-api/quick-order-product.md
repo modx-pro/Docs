@@ -101,10 +101,10 @@ if (!$modRetailCrm = $modx->getService(
 $pdo = $modx->getService('pdoFetch');
 
 $orderData = array();
-$orderData['externalId'] = md5(time() . $productId . $email . $phone); // Генерируем уникальный хэш-номер заказа
+$orderData['externalId'] = md5(time() . $productId . $email . $phone); // Генерируем уникальный хеш-номер заказа
 
 // Информация о клиенте
-$orderData['customer']['externalId'] = md5($phone . $email);  // Генерируем уникальный хэш-номер клиента
+$orderData['customer']['externalId'] = md5($phone . $email);  // Генерируем уникальный хеш-номер клиента
 // Проверяю наличие пользователя в базе retailCRM
 $user_response = $modRetailCrm->request->customersGet($orderData['customer']['externalId'], 'externalId');
 

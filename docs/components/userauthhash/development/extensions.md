@@ -2,12 +2,12 @@
 
 Использование в сторонних компонентах:
 
-## Создание хэш-кода авторизации
+## Создание хеш-кода авторизации
 
 ```php
 $options = [
   'user' => 'test@gmail.com',
-  'lifeTime' => '1m' // срок жизни хэш-кода 1 месяц
+  'lifeTime' => '1m' // срок жизни хеш-кода 1 месяц
 ];
 /** @var UserAuthHash $UserAuthHash */
 if ($UserAuthHash = $modx->getService('userauthhash.UserAuthHash', '', MODX_CORE_PATH.'components/userauthhash/model/')) {
@@ -15,7 +15,7 @@ if ($UserAuthHash = $modx->getService('userauthhash.UserAuthHash', '', MODX_CORE
 }
 ```
 
-## Удаление хэш-кода авторизации
+## Удаление хеш-кода авторизации
 
 ```php
 $options = [

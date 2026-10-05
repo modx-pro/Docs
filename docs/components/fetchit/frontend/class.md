@@ -1,11 +1,13 @@
 ---
 title: Класс FetchIt
-description: "Статические свойства FetchIt: forms, instances, Message, create, sanitizeHTML"
+description: "Статические свойства и методы FetchIt: forms, instances, Message, create, createNotifier, sanitizeHTML"
 ---
 
 # Класс FetchIt
 
-Глобальный класс объявлен в скрипте компонента. Плагин вешает файл в `<head>` с `defer`, чтобы не блокировать разбор страницы (около 5 KB в `fetchit.min.js`).
+Глобальный класс объявлен в скрипте компонента. Плагин подключает файл в `<head>` с `defer`, чтобы не блокировать разбор страницы. Имя класса задаёт настройка `fetchit.frontend.js.classname`.
+
+Типы для TypeScript: [`fetchit.d.ts`](/components/fetchit/frontend/typescript).
 
 ## FetchIt.forms
 
@@ -28,33 +30,70 @@ const fetchit = FetchIt.instances.get(form)
 
 - Тип: `object` (не объявлен по умолчанию)
 
-Экземпляры вызывают методы, если они есть: `before`, `success`, `error`, `after`, `reset`. Так подключают тосты без правки ядра.
+Экземпляры вызывают методы, если они есть: `before`, `after`, `success`, `error`, `reset`. Так подключают уведомления без правки ядра.
 
 ```js
 FetchIt.Message = {
   before() {
-    // Показать сообщение до отправки формы
-  },
-  success(message) {
-    // Показать сообщение в случае успешной отправки
-  },
-  error(message) {
-    // Показать сообщение в случае ошибки при отправке
+    // Перед отправкой формы
   },
   after(message) {
-    // Показать сообщение в любом случае
+    // Пришёл ответ FetchIt
+  },
+  success(message) {
+    // Форма принята
+  },
+  error(message) {
+    // Форма отклонена или не отправилась
   },
   reset() {
-    // Показать сообщение после сбрасывания данных формы
+    // Форму сбросили
   },
 }
 ```
 
-`success`, `error` и `after` получают строку `message` из ответа сервера.
+`after`, `success` и `error` получают строку `message` из ответа сервера — пустую, если обрабатывающий сниппет сообщения не прислал. Хуки вызываются перед событием того же момента (кроме `reset`: он после `fetchit:reset`), так что отмена события их не отменяет. Исключение в хуке пишется в консоль с его именем и не мешает обработать ответ формы.
 
-Если включён `fetchit.frontend.default.notifier` и вы ещё не задали `Message`, при первом `create()` подставится обёртка над Notyf из пакета.
+::: warning
+`before` вызывается до `fetchit:before`, то есть до клиентской валидации. Если она отменит отправку, `after` не придёт, — поэтому спиннер или блокировку кнопки в `before` не включайте. Как сделать индикатор отправки: [пример](/components/fetchit/examples/scenarios/loading).
+:::
+
+`FetchIt` появляется, когда отработал отложенный `fetchit.js`, поэтому `FetchIt.Message` задавайте из отложенного скрипта, подключённого после него, или по `DOMContentLoaded`.
+
+Если включена настройка `fetchit.frontend.default.notifier`, а `Message` не задан, при первом `create()` подставятся [встроенные уведомления](/components/fetchit/examples/notifications/#vstroennye-uvedomleniya). Если в вашем `Message` нет ни `success`, ни `error`, они добавятся к нему — при условии, что `Message` задан до первого `create()`, то есть до `DOMContentLoaded`: в отложенном скрипте, а не в своём обработчике `DOMContentLoaded`.
 
 Готовые примеры: [уведомления](/components/fetchit/examples/notifications/).
+
+## FetchIt.createNotifier(options)
+
+Встроенные уведомления как объект для `FetchIt.Message` — например, чтобы включить их без системной настройки или с другими параметрами:
+
+```js
+FetchIt.Message = FetchIt.createNotifier({ closeLabel: 'Закрыть', duration: 4000 })
+```
+
+| Параметр | По умолчанию | Описание |
+| --- | --- | --- |
+| `closeLabel` | `Close` | Подпись кнопки закрытия |
+| `duration` | `6000` | Сколько миллисекунд держится уведомление; `0` — пока не закроют |
+
+## FetchIt.create(config)
+
+Фабрика экземпляров. Inline-скрипт сниппета вызывает её для каждого набора форм на странице. Вручную нужно редко.
+
+Если ни одна форма под конфиг не подошла, в консоли будет предупреждение.
+
+## FetchIt.events
+
+Имена событий (`before`, `success`, …). Удобно при наследовании.
+
+## FetchIt.notify(hook, message)
+
+Вызывает хук `FetchIt.Message`, если он есть. Исключение в хуке пишется в консоль.
+
+## FetchIt.isResponse(value)
+
+`true`, если значение похоже на ответ FetchIt: объект с булевым `success`. Так скрипт отличает ответ компонента от страницы с ошибкой PHP или ответа файрвола.
 
 ## FetchIt.sanitizeHTML(str)
 
@@ -64,13 +103,13 @@ FetchIt.Message = {
 
 `true`, если после очистки и trim сообщение непустое. Пустые и пробельные ошибки с сервера не рисуются на полях.
 
-## FetchIt.create(config)
+## FetchIt.tokenField / FetchIt.powField
 
-Фабрика экземпляров. Inline-скрипт сниппета вызывает её для каждой формы на странице. Вручную нужно редко.
+Имена служебных полей [защиты от спама](/components/fetchit/protection): `fetchit_token` и `fetchit_pow`.
 
-## FetchIt.events
+## FetchIt.defaultRequestErrorMessage
 
-Имена событий (`before`, `success`, …). Удобно при наследовании.
+Запасной текст на случай, когда форма не отправилась (сеть недоступна, ответ пришёл не от FetchIt), а в конфиге формы сообщения нет — например, страница попала в кеш ещё до обновления компонента. Обычно посетитель видит `fetchit_err_request` из лексикона.
 
 ## Когда класс уже есть
 

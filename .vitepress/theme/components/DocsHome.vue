@@ -4,7 +4,7 @@ import { useData } from 'vitepress'
 import DocsHomeHero from './DocsHomeHero.vue'
 import DocsFeatures from './DocsFeatures.vue'
 import DocsTeam from './DocsTeam.vue'
-import DocsSponsors from './DocsSponsors.vue'
+import DocsSupport from './DocsSupport.vue'
 
 const { frontmatter: fm } = useData()
 </script>
@@ -16,7 +16,7 @@ const { frontmatter: fm } = useData()
       <DocsFeatures :features="fm.main.features" />
       <DocsTeam />
     </div>
-    <DocsSponsors />
+    <DocsSupport />
   </template>
 </template>
 

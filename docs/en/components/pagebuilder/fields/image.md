@@ -7,24 +7,24 @@ description: "Image media object with alt and enrich metadata"
 
 Version: **Free**.
 
-<!-- ![image](/components/pagebuilder/screenshots/fields/image.png) -->
+<!-- ![image](/components/pagebuilder/screenshots/fields/image.jpg) -->
 
 ## Why this type
 
-- After enrich, the object includes width, height, and extension
-- Alt and caption live in the section schema
-- One frame without a gallery repeater
+- After save, the object includes width, height, and file extension
+- Alt text and caption are set in the section schema
+- One image, not a list like [gallery](gallery)
 
 ## When to use
 
-- Hero background, card thumbnail, author photo
-- OG-style preview inside a section
+- First-screen background, card thumbnail, author photo
+- Preview image inside a section
 - Partner logo with alt text
 
 ## Tips
 
-- Multiple frames: use [gallery](gallery) (Pro)
-- In the chunk use `{$photo.url}`, not a bare path string
+- Several photos: use [gallery](gallery) (Pro)
+- In the chunk use `{$photo.url}`, not a file path as a plain string
 
 ## Similar types
 
@@ -75,9 +75,21 @@ Key `photo` in the section data after save enrich:
 
 ## Chunk example
 
-```html
-<img src="{$photo.url|escape}" width="{$photo.width}" height="{$photo.height}" alt="{$photo.title|escape}">
+::: code-group
+
+```modx
+[[$pagebuilder_partial_image?
+  &image=`[[+photo]]`
+  &alt=`[[+photo.title]]`
+  &class=`pb-image__media`
+]]
 ```
+
+```fenom
+{include 'pagebuilder_partial_image' image=$photo alt=$photo.title class='pb-image__media'}
+```
+
+:::
 
 ## Common properties
 

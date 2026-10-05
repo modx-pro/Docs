@@ -435,6 +435,21 @@ $stats = $builder->syncByEditedon();
 $builder->shouldIndexClassKey($resource->get('class_key'));
 ```
 
+### Одна пересборка за раз
+
+`buildAll()` и `syncByEditedon()` не выполняются, пока идёт другая пересборка индекса: она начинается с очистки таблиц, и вторая выбросила бы всё, что успела записать первая. Вместо работы метод возвращает `['locked' => true]` с нулевой статистикой.
+
+```php
+$stats = $builder->buildAll();
+if (!empty($stats['locked'])) {
+    // Индекс занят — повторить позже
+}
+```
+
+Тот же признак возвращают `TvIndexer::indexAll()` и `SlugManager::generateForAllConfigs()`.
+
+Точечные методы — `rebuildKeys()`, `buildForProducts()`, `removeProducts()` — не блокируются. Они удаляют и вставляют строки по своим ключам или товарам, а повторная вставка той же строки отсекается первичным ключом `(filter_key, filter_value, product_id)`, поэтому совпасть с идущей пересборкой для них безопасно.
+
 ### Прогресс-callback
 
 ```php

@@ -7,11 +7,11 @@ description: "Array of values from static options with PrimeVue MultiSelect"
 
 Version: **Free**.
 
-<!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.png) -->
+<!-- ![multiselect](/components/pagebuilder/screenshots/fields/multiselect.jpg) -->
 
 ## Why this type
 
-Multiple static options with dropdown search. Same options array as select.
+Several values from a fixed `options` list, with search in the dropdown. The option list works the same way as [select](select).
 
 ## When to use
 
@@ -61,11 +61,21 @@ Key `roles` in the section data: array of values:
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $roles as $role}
-  <span class="role">{$role|escape}</span>
+  <span class="role">{$role}</span>
 {/foreach}
 ```
+
+```fenom
+{foreach $roles as $role}
+  <span class="role">{$role|pb_text}</span>
+{/foreach}
+```
+
+:::
 
 ## Common properties
 

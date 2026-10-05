@@ -1,9 +1,14 @@
 ---
 title: mxHeadless
 description: REST API gateway for headless frontends on MODX 3. Resources, objects, OpenAPI, API keys, and OAuth
-author: Ibochkarev
-repository: https://github.com/Ibochkarev/mxHeadless
 categories: utilities
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/mxheadless/logo.png
+modstore: https://modstore.pro/packages/utilities/mxheadless
+repository: https://github.com/Ibochkarev/mxHeadless
+compatibility:
+  - modx3
+  - php81
 items: [
   {
     text: 'Getting started',
@@ -96,7 +101,7 @@ items: [
 
 REST API gateway for [MODX Revolution 3](https://modx.com/). Exposes resources, pages, elements, contexts, and registered xPDO objects as JSON for Nuxt, Next.js, SvelteKit, mobile apps, and custom clients.
 
-Release **1.0.42**. License GPL-2.0-or-later, no feature tiers.
+Release **1.0.43**. License GPL-2.0-or-later, no feature tiers.
 
 Source: [Ibochkarev/mxHeadless](https://github.com/Ibochkarev/mxHeadless).
 

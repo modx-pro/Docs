@@ -7,11 +7,11 @@ description: "Scalar string with xtype hint without MODX ExtJS widget"
 
 Version: **Free**.
 
-<!-- ![xtype](/components/pagebuilder/screenshots/fields/xtype.png) -->
+<!-- ![xtype](/components/pagebuilder/screenshots/fields/xtype.jpg) -->
 
 ## Why this type
 
-Legacy xtype key for schema migration. Inspector renders plain InputText. Semantic alias for text when the schema still uses key xtype.
+The old `xtype` key, for schemas that are not switched to `text` yet. The inspector shows a plain text field: the ExtJS widget is not loaded. If the JSON type is still `xtype`, the field behaves like [text](text).
 
 ## When to use
 
@@ -58,9 +58,17 @@ Key `ext` in the section data:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+[[+ext]]
+```
+
 ```fenom
 {$ext|escape}
 ```
+
+:::
 
 ## Notes
 

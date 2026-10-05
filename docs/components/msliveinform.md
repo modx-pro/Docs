@@ -6,6 +6,7 @@ author: vgrish
 modstore: https://modstore.pro/packages/delivery/msliveinform
 
 dependencies: miniShop2
+categories: delivery
 ---
 
 # msLiveInform
@@ -58,7 +59,7 @@ dependencies: miniShop2
 ![Создание отслеживания - 2](https://file.modx.pro/files/1/8/9/1895f4eec3345b16ce27b6c554d75a99.png)
 
 Сохраняем. Отслеживание будет синхронизировано с сервисом [LiveInform][001].
-Информацию об ослеживании можно обновить тут же в админке, либо настроив скрипт на `cron`.
+Информацию об отслеживании можно обновить тут же в админке, либо настроив скрипт на `cron`.
 
 Пример скрипта синхронизации в папке `core/components/msliveinform/cron/`.
 
@@ -156,7 +157,7 @@ dependencies: miniShop2
 
 ## Настройка Callback
 
-**LiveInform** может оповещать ваш серевер при изменении статусов заказа. Для этого нужно [указать адрес скрипта][00102], на который будут отправляться оповещения.
+**LiveInform** может оповещать ваш сервер при изменении статусов заказа. Для этого нужно [указать адрес скрипта][00102], на который будут отправляться оповещения.
 
 Пример скрипта callback `http://site.ru/assets/components/msliveinform/callback.php`.
 

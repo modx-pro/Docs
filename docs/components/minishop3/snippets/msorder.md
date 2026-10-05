@@ -3,15 +3,29 @@ title: msOrder
 ---
 # msOrder
 
-Сниппет для вывода формы оформления заказа. Отображает поля покупателя, способы доставки и оплаты.
+Сниппет выводит форму оформления заказа: поля покупателя, способы доставки и оплаты.
 
 ::: warning Кэширование
 Сниппет работает с сессией пользователя и должен вызываться **некэшированно**.
 :::
 
 ::: info Страница «Спасибо за заказ»
-Если в URL есть GET-параметр `msorder` (редирект после оформления), сниппет возвращает **пустую строку**. На той же странице выводите [msGetOrder](msgetorder). Форму checkout и детали заказа не совмещайте без условия по URL.
+Если в URL есть GET-параметр `msorder` (редирект после оформления), сниппет возвращает **пустую строку**. На той же странице выводите [msGetOrder](msgetorder). Форму оформления заказа и детали заказа не совмещайте без условия по URL.
 :::
+
+```mermaid
+flowchart TB
+  call[msOrder на странице checkout]
+  getMsorder{GET msorder?}
+  empty[Пустая строка]
+  form[Форма доставка / оплата / поля]
+  submit[submit заказа]
+  redirect[Редирект ?msorder=id]
+  thanks[msGetOrder на thanks]
+  call --> getMsorder
+  getMsorder -->|Да| empty
+  getMsorder -->|Нет| form --> submit --> redirect --> thanks
+```
 
 ## Параметры
 
@@ -20,11 +34,19 @@ title: msOrder
 | **tpl** | `tpl.msOrder` | Чанк формы заказа |
 | **userFields** | | Маппинг полей профиля MODX (modUserProfile) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = true` |
 | **customerFields** | | Маппинг полей клиента (msCustomer) на поля заказа (JSON). Используется при `ms3_customer_sync_enabled = false` |
-| **includeDeliveryFields** | `id` | Поля доставки через запятую (`*` = все). В выборку всегда попадает `id` |
+| **includeDeliveryFields** | `*` | Поля доставки через запятую (`*` = все). В выборку всегда попадает `id`. В PHP, если свойство пустое, берётся `id` ([#824](https://github.com/modx-pro/MiniShop3/issues/824)) |
 | **includePaymentFields** | `*` | Поля оплаты через запятую (`*` = все) |
-| **includeCustomerAddresses** | `true` | Загружать сохранённые адреса покупателя |
-| **showLog** | `false` | Показать лог выполнения |
+| **includeCustomerAddresses** | `true` | Загружать сохранённые адреса покупателя. В properties transport пока не объявлен ([#824](https://github.com/modx-pro/MiniShop3/issues/824)) |
+| **showLog** | `false` | Показать журнал выполнения |
 | **return** | `tpl` | Формат вывода: `tpl`, `data` |
+
+::: tip Выбор источника данных
+
+- `ms3_customer_sync_enabled = false` (по умолчанию): используется `customerFields` и данные msCustomer
+- `ms3_customer_sync_enabled = true`: используется `userFields` и данные modUserProfile
+
+Источники взаимоисключающие: активен только тот, что задан настройкой.
+:::
 
 ## Примеры
 
@@ -36,31 +58,23 @@ title: msOrder
 
 ### Маппинг полей клиента (msCustomer)
 
-При отключённой синхронизации (`ms3_customer_sync_enabled = false`) данные берутся из msCustomer:
-
 ```fenom
 {'!msOrder' | snippet : [
     'customerFields' => '{"company": "company_name", "inn": "tax_id"}'
 ]}
 ```
 
-### Маппинг полей профиля MODX (modUserProfile)
+Имена полей справа должны существовать в msCustomer: на чистой установке маппинг молча ничего не подставит, пока не заведёте такие поля (например, дополнительные). Имена в примере условные.
 
-При включённой синхронизации (`ms3_customer_sync_enabled = true`) данные берутся из modUserProfile:
+### Маппинг полей профиля MODX (modUserProfile)
 
 ```fenom
 {'!msOrder' | snippet : [
-    'userFields' => '{"company": "extended.company_name"}'
+    'userFields' => '{"company": "extended[company_name]"}'
 ]}
 ```
 
-::: tip Выбор источника данных
-
-- `ms3_customer_sync_enabled = false` (по умолчанию): используется `customerFields` и данные msCustomer
-- `ms3_customer_sync_enabled = true`: используется `userFields` и данные modUserProfile
-
-Источники данных взаимоисключающие — активен только один в зависимости от настройки.
-:::
+Ключ после `extended[` — имя из `profile.extended`. Для вложенных полей формат только такой: `extended[comment]`, `extended[building]` и т. п.
 
 ### Получение данных
 
@@ -114,7 +128,7 @@ title: msOrder
     'payments' => [
         1 => [
             'id' => 1,
-            'name' => 'Наличными',
+            'name' => 'Наличные',
             'description' => '...',
             'logo' => '...',
         ],
@@ -128,7 +142,6 @@ title: msOrder
             // ...
         ],
     ],
-    'errors' => [],                   // Массив полей с ошибками
     'isCustomerAuth' => true,         // Авторизован ли покупатель
     'isCartEmpty' => false,           // Пуста ли корзина
 ]
@@ -197,128 +210,43 @@ title: msOrder
 ```fenom
 {* tpl.msOrder *}
 {if $isCartEmpty}
-    <div class="alert alert-warning">Корзина пуста</div>
+    <p>Корзина пуста</p>
 {else}
-<form class="ms-order ms3_form" method="post">
+<form class="ms3_form" method="post">
     <input type="hidden" name="ms3_action" value="order/submit">
-    <h2>Оформление заказа</h2>
 
-    {* Контактные данные *}
-    <fieldset>
-        <legend>Контактные данные</legend>
+    {* Поля контактов и адреса: {$form.*}, раздел «Данные формы» *}
+    <input type="text" name="first_name" value="{$form.first_name}" required>
+    <input type="text" name="last_name" value="{$form.last_name}">
+    <input type="email" name="email" value="{$form.email}" required>
+    <input type="tel" name="phone" value="{$form.phone}" required>
 
-        <div class="form-group">
-            <label>Имя *</label>
-            <input type="text"
-                   name="first_name"
-                   value="{$form.first_name}"
-                   required>
-        </div>
+    {* Способы доставки и оплаты — разделы «Способы доставки» и «Способы оплаты» *}
+    {foreach $deliveries as $delivery}
+        <label>
+            <input type="radio" name="delivery_id" value="{$delivery.id}"
+                   {if $order.delivery_id == $delivery.id}checked{/if}>
+            {$delivery.name}{if $delivery.price > 0} (+{$delivery.price} руб.){/if}
+        </label>
+    {/foreach}
 
-        <div class="form-group">
-            <label>Фамилия</label>
-            <input type="text"
-                   name="last_name"
-                   value="{$form.last_name}">
-        </div>
+    {foreach $payments as $payment}
+        <label>
+            <input type="radio" name="payment_id" value="{$payment.id}"
+                   {if $order.payment_id == $payment.id}checked{/if}>
+            {$payment.name}
+        </label>
+    {/foreach}
 
-        <div class="form-group">
-            <label>Email *</label>
-            <input type="email"
-                   name="email"
-                   value="{$form.email}"
-                   required>
-        </div>
+    <textarea name="order_comment" rows="3">{$order.order_comment}</textarea>
 
-        <div class="form-group">
-            <label>Телефон *</label>
-            <input type="tel"
-                   name="phone"
-                   value="{$form.phone}"
-                   required>
-        </div>
-    </fieldset>
+    {* Итоги — раздел «Итоги» *}
+    <p>Товары: {$order.cart_cost}</p>
+    <p>Доставка: {$order.delivery_cost}</p>
+    {if $order.discount_cost}<p>Скидка: {$order.discount_cost}</p>{/if}
+    <p><strong>Итого: {$order.cost}</strong></p>
 
-    {* Адрес *}
-    <fieldset>
-        <legend>Адрес доставки</legend>
-
-        <div class="form-group">
-            <label>Город</label>
-            <input type="text" name="city" value="{$form.city}">
-        </div>
-
-        <div class="form-group">
-            <label>Улица</label>
-            <input type="text" name="street" value="{$form.street}">
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <label>Дом</label>
-                <input type="text" name="building" value="{$form.building}">
-            </div>
-            <div class="col">
-                <label>Квартира</label>
-                <input type="text" name="room" value="{$form.room}">
-            </div>
-        </div>
-    </fieldset>
-
-    {* Доставка *}
-    <fieldset>
-        <legend>Способ доставки</legend>
-
-        {foreach $deliveries as $delivery}
-            <label class="delivery-option">
-                <input type="radio"
-                       name="delivery_id"
-                       value="{$delivery.id}"
-                       {if $order.delivery_id == $delivery.id}checked{/if}>
-                <span>{$delivery.name}</span>
-                {if $delivery.price > 0}
-                    <span class="price">+{$delivery.price} руб.</span>
-                {/if}
-            </label>
-        {/foreach}
-    </fieldset>
-
-    {* Оплата *}
-    <fieldset>
-        <legend>Способ оплаты</legend>
-
-        {foreach $payments as $payment}
-            <label class="payment-option">
-                <input type="radio"
-                    name="payment_id"
-                    value="{$payment.id}"
-                    {if $order.payment_id == $payment.id}checked{/if}>
-                <span>{$payment.name}</span>
-            </label>
-        {/foreach}
-    </fieldset>
-
-    {* Комментарий к заказу *}
-    <fieldset>
-        <legend>Комментарий к заказу</legend>
-        <textarea name="order_comment" rows="3">{$order.order_comment}</textarea>
-    </fieldset>
-
-    {* Итого *}
-    <div class="order-total">
-        <div>Товары: <span>{$order.cart_cost}</span></div>
-        <div>Доставка: <span>{$order.delivery_cost}</span></div>
-        {if $order.discount_cost}
-            <div>Скидка: <span>{$order.discount_cost}</span></div>
-        {/if}
-        <div class="total">
-            <strong>Итого: <span>{$order.cost}</span></strong>
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary btn-lg">
-        Оформить заказ
-    </button>
+    <button type="submit">Оформить заказ</button>
 </form>
 {/if}
 ```
@@ -354,5 +282,7 @@ ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
   }
 })
 ```
+
+`order_id` в ответе возвращает встроенный обработчик оплаты. Для внешних платёжных шлюзов состав `data` зависит от класса оплаты.
 
 Подробнее: [JavaScript API](/components/minishop3/development/javascript), [Frontend JS](/components/minishop3/development/frontend-js).

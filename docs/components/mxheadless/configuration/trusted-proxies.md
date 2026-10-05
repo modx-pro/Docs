@@ -5,17 +5,17 @@ description: Доверенные прокси и X-Forwarded-For для mxHeadl
 
 # Trusted proxies
 
-Настройка `mxheadless_trusted_proxies`: список IP (через запятую или перенос строки), которым вы доверяете forwarded headers.
+Настройка `mxheadless_trusted_proxies`: список IP через запятую. Перенос строки и CIDR не читаются.
 
 ## Поведение
 
-Если `REMOTE_ADDR` входит в список, client IP берётся из первого hop `X-Forwarded-For`. Иначе используется только `REMOTE_ADDR`.
+Если `REMOTE_ADDR` входит в список, IP клиента берётся из первого адреса `X-Forwarded-For`. Иначе используется только `REMOTE_ADDR`.
 
-IP влияет на rate limit и audit. Пустой список безопасен при прямом подключении.
+IP влияет на rate limit и журнал. Пустой список безопасен при прямом подключении.
 
 ## Ограничения
 
-- CIDR в core может не парситься: указывайте конкретные IP балансировщика
+- CIDR не поддерживается: указывайте точные IP балансировщика
 - mxHeadless не читает `X-Forwarded-Proto` для построения URL. HTTPS настраивайте на reverse proxy.
 
 ## Пример

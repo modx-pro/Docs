@@ -1,6 +1,7 @@
 ---
 title: SVResolution
 description: A helper indicator for the current Bootstrap breakpoint and browser viewport width
+categories: utilities
 logo: /components/svresolution/screenshots/logo.webp
 author: rumata-estor
 ---

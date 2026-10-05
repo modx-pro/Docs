@@ -7,11 +7,7 @@ description: "Список дочерних ресурсов родителя ч
 
 Автоматическая лента статей: вы указываете родителя-блог, лимит и сортировку. Анонс и превью подтягиваются из ресурсов.
 
-<!-- ![Записи блога](/components/pagebuilder/screenshots/sections/blog_posts.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Записи блога](/components/pagebuilder/screenshots/sections/blog_posts.jpg)
 
 ## Что даёт лента блога
 
@@ -32,7 +28,7 @@ description: "Список дочерних ресурсов родителя ч
 
 ## Родитель и лимит
 
-**Родитель блога**: ID или выбор ресурса. **Лимит**, **Сортировка**, флаги **Показывать анонс** / **изображение**.
+**Родитель блога**: ID или выбор ресурса. **Лимит**, **Сортировка**, флаги **Показывать анонс** / **изображение**. Пустой `limit` в chunk становится 6. Тип помечен `"cacheable": false`.
 
 ## Похожие секции
 
@@ -75,15 +71,15 @@ description: "Список дочерних ресурсов родителя ч
 
 ### Сортировка (`sortby`)
 
-Тип [select](../fields/select#vyvod-v-section-data). Необязательное. Выпадающий список с заранее заданными вариантами.
+Тип [select](../fields/select#vyvod-v-section-data). Необязательное. `publishedon_desc` (новые сверху), `publishedon_asc` (старые сверху), `menuindex` (порядок в меню).
 
 ### Layout (`layout`)
 
-Тип [select](../fields/select#vyvod-v-section-data). Необязательное. Выпадающий список с заранее заданными вариантами.
+Тип [select](../fields/select#vyvod-v-section-data). Необязательное. `grid`, `featured-first`, `compact-list`.
 
 ## Что видит посетитель
 
-Секция `pb-blog-posts` с карточками статей.
+Секция `pb-blog-posts` с карточками статей. Пустой родитель или пустая выборка показывают лексикон `pagebuilder_fe_listing_empty_blog`. Анонс берётся из `introtext` и выводится только при `show_intro`. Картинка (TV `image`) выводится только при `show_image`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -106,31 +102,40 @@ description: "Список дочерних ресурсов родителя ч
 Fenom chunk `pagebuilderpro_blog_posts`:
 
 ```fenom
+{set $blogParent = $parent.id|default:($parent_id|default:0)}
+{set $showIntro = $show_intro|default:0}
+{set $showImage = $show_image|default:0}
+{set $includeTvs = $showImage ? 'image' : ''}
+{set $listing = ''}
+{if $blogParent}
+  {set $listing = $modx->runSnippet('pdoResources', [
+    'parents' => $blogParent,
+    'depth' => 1,
+    'limit' => $limit|default:6,
+    'sortby' => $blog_sortby|default:'publishedon',
+    'sortdir' => $blog_sortdir|default:'DESC',
+    'includeTVs' => $includeTvs,
+    'tvPrefix' => '',
+    'show_intro' => $showIntro,
+    'show_image' => $showImage,
+    'tpl' => 'pagebuilderpro_blog_post_row'
+  ])}
+{/if}
 <section class="pb-section pb-section--blog-posts pb-blog-posts pb-blog-posts--{$layout|default:'grid'|escape}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="blog_posts"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-blog-posts__inner">
     {if $title}
       <h2 class="pb-heading pb-blog-posts__title">{$title|escape}</h2>
     {/if}
-    <div class="pb-blog-posts__listing">
-      {var $includeTvs = ($show_image|default:0) ? 'image' : ''}
-      {$modx->runSnippet('pdoResources', [
-        'parents' => $parent.id|default:($parent_id|default:0),
-        'depth' => 1,
-        'limit' => $limit|default:6,
-        'sortby' => $blog_sortby|default:'publishedon',
-        'sortdir' => $blog_sortdir|default:'DESC',
-        'includeContent' => $show_intro|default:0,
-        'includeTVs' => $includeTvs,
-        'tpl' => 'pagebuilderpro_blog_post_row'
-      ])}
-    </div>
+    {if $listing}
+      <div class="pb-blog-posts__listing">
+        {$listing}
+      </div>
+    {else}
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_blog' | lexicon}</p>
+    {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/blog_posts.json`
 
 ## Связанные страницы
 

@@ -122,16 +122,16 @@ Details: [Scheduler integration](development/scheduler).
 
 Entry point: `/assets/components/minishop3/api.php?route=/api/v1/...`.
 
-| Scenario | Endpoint |
+| Scenario | Where to look |
 | --- | --- |
-| Guest token | `GET /api/v1/customer/token/get` |
-| Catalog without token | `GET /api/v1/product/list`, `GET /api/v1/product/get/{id}` |
-| Cart | `/api/v1/cart/*` |
-| Checkout | `/api/v1/order/*` |
-| Account | `/api/v1/customer/*` (login, addresses, orders) |
-| Health | `GET /api/v1/health` |
+| Token / cookie / Bearer | [Authorization](development/web-api/auth) |
+| Catalog | [Catalog](development/web-api/catalog) (`product`, `category`) |
+| Cart | [Cart](development/web-api/cart) |
+| Checkout | [Checkout](development/web-api/checkout) (`delivery/list`, `payment/list`, order) |
+| Account | [Customer](development/web-api/customer) |
+| Full map | [Endpoints](development/web-api/endpoints) |
 
-The `/api/v1` group has CORS and rate limit. Full map: [REST API](development/api).
+The `/api/v1` group has CORS and rate limit. Docs: [Web API](development/web-api/).
 
 ## Category and product
 
@@ -167,4 +167,4 @@ Online payment comes from a separate payment extra (YooKassa, Sberbank, and so o
 - [Checkout](frontend/order)
 - [Orders in the Manager](interface/orders)
 - [Snippets](snippets/)
-- [REST API](development/api)
+- [Web API](development/web-api/)

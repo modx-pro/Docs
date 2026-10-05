@@ -1,6 +1,7 @@
 ---
 title: mpcVisualEditor
 description: Визуальное редактирование контента прямо на странице
+categories: content
 
 author: shevartv
 

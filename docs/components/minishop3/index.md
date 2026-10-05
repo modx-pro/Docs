@@ -1,10 +1,15 @@
 ---
 title: MiniShop3
 description: Современный компонент интернет-магазина для MODX 3
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/minishop3/logo.png
 author: biz87
 repository: https://github.com/modx-pro/MiniShop3
 
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Отличия от miniShop2', link: 'differences-from-ms2' },
@@ -113,7 +118,23 @@ items: [
           { text: 'Менеджер', link: 'development/events/manager' },
         ],
       },
-      { text: 'REST API', link: 'development/api' },
+      {
+        text: 'Web API',
+        link: 'development/api',
+        items: [
+          { text: 'Обзор', link: 'development/api' },
+          { text: 'Справка', link: 'development/web-api/' },
+          { text: 'Авторизация', link: 'development/web-api/auth' },
+          { text: 'Карта эндпоинтов', link: 'development/web-api/endpoints' },
+          { text: 'Каталог', link: 'development/web-api/catalog' },
+          { text: 'Корзина', link: 'development/web-api/cart' },
+          { text: 'Checkout', link: 'development/web-api/checkout' },
+          { text: 'Клиент', link: 'development/web-api/customer' },
+          { text: 'Ошибки', link: 'development/web-api/errors' },
+          { text: 'CORS и rate limit', link: 'development/web-api/cors' },
+          { text: 'Примеры', link: 'development/web-api/examples' },
+        ],
+      },
       { text: 'API Router', link: 'development/routing' },
       { text: 'JavaScript API', link: 'development/javascript' },
       { text: 'Frontend JavaScript', link: 'development/frontend-js' },
@@ -146,14 +167,25 @@ items: [
 
 MiniShop3 разработан специально для MODX Revolution 3.x и использует все преимущества новой версии:
 
-- **PHP 8.1+** — современный синтаксис, типизация, атрибуты
+- **PHP 8.2+** — современный синтаксис, типизация, атрибуты
 - **Namespaces** — все классы организованы в пространстве имён `MiniShop3\`
 - **PSR-4 автозагрузка** — через Composer
 - **Миграции Phinx** — версионирование структуры БД
 
 ### Улучшенная архитектура
 
-- **REST API** — Web API `api.php` (`/api/v1/*`) для витрины и headless: корзина, заказ, ЛК, публичный каталог. [Документация](/components/minishop3/development/api)
+```mermaid
+flowchart TB
+  store[Витрина сниппеты / JS]
+  api[api.php Web API /api/v1]
+  mgr[Vue-менеджер]
+  mgrApi[Manager API /api/mgr]
+  core[Сервисы MS3 + xPDO]
+  store --> api --> core
+  mgr --> mgrApi --> core
+```
+
+- **Web API** — `api.php` (`/api/v1/*`) для витрины и headless: корзина, заказ, ЛК, каталог, delivery/payment. [Документация](/components/minishop3/development/web-api/)
 - **Service Container** — зависимости через DI-контейнер MODX
 - **Vue 3 + PrimeVue** — современный интерфейс админки через [VueTools](/components/vuetools/)
 - **Современный фронтенд** — без jQuery, нативный JavaScript
@@ -171,8 +203,8 @@ MiniShop3 сохраняет обратную совместимость с mini
 
 | Требование | Версия |
 | --- | --- |
-| MODX Revolution | 3.0.0+ |
-| PHP | 8.1+ |
+| MODX Revolution | 3.0.3+ |
+| PHP | 8.2+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
 
 ### Зависимости MODX
@@ -192,10 +224,12 @@ MiniShop3 использует следующие PHP библиотеки (вк
 | Библиотека | Версия | Назначение |
 | --- | --- | --- |
 | [nikic/fast-route](https://github.com/nikic/FastRoute) | ^1.3 | Маршрутизация REST API |
-| [rakit/validation](https://github.com/rakit/validation) | ^1.4 | Валидация данных форм и API |
 | [intervention/image](https://image.intervention.io/) | ^3.0 | Обработка изображений (ресайз, водяные знаки) |
 | [robmorgan/phinx](https://phinx.org/) | ^0.16 | Миграции базы данных |
 | [ramsey/uuid](https://uuid.ramsey.dev/) | ^4.7 | Генерация UUID для токенов |
+| [brick/math](https://github.com/brick/math) | ^0.12 | Точная арифметика (зависимость UUID и др.) |
+
+Валидация форм и API — собственный `ValidationService` (`ms3_validation_service`), пакет `rakit/validation` удалён.
 
 ## Установка
 
@@ -235,7 +269,9 @@ git clone https://github.com/modx-pro/MiniShop3.git
 cd MiniShop3
 
 # Установка PHP зависимостей
+cd core/components/minishop3
 composer install
+cd ../../..
 
 # Сборка Vue виджетов (требуется Node.js 18+)
 cd vueManager
@@ -261,7 +297,6 @@ core/components/minishop3/
 ├── bootstrap.php           # Инициализация компонента
 ├── config/
 │   ├── routes/             # Маршруты REST API
-│   ├── mgr/                # Конфигурация админки
 │   ├── combos/             # Комбобоксы для админки
 │   ├── filters/            # Фильтры для гридов
 │   └── ms3.services.d/     # Кастомные сервисы
@@ -271,11 +306,10 @@ core/components/minishop3/
 │   ├── chunks/             # Чанки (шаблоны Fenom)
 │   ├── plugins/            # MODX плагины
 │   ├── tasks/              # Задачи Scheduler
-│   └── templates/          # Email-шаблоны
+│   └── templates/          # Шаблоны страниц витрины
 ├── lexicon/                # Языковые файлы (en, ru)
-├── migrations/             # Миграции Phinx
+├── migrations/             # Миграции Phinx (включая сиды)
 ├── schema/                 # xPDO схема БД
-├── seeds/                  # Сиды для БД
 ├── src/
 │   ├── Controllers/        # Бизнес-логика (Cart, Order, Customer)
 │   ├── Model/              # xPDO модели
@@ -303,6 +337,5 @@ assets/components/minishop3/
 │   ├── mgr/                # Стили админки
 │   └── web/                # Стили сайта
 ├── img/                    # Изображения
-├── payment/                # Обработчики платёжных систем
-└── plugins/                # JavaScript плагины
+└── payment/                # Обработчики платёжных систем
 ```

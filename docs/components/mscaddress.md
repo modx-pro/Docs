@@ -7,6 +7,7 @@ modstore: https://modstore.pro/packages/integration/mscaddress
 repository: https://github.com/modx-pro/mscAddress
 
 dependencies: miniShop2
+categories: orders
 ---
 
 # mscAddress

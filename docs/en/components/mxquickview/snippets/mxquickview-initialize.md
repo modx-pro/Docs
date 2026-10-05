@@ -7,26 +7,26 @@ Loads mxQuickView frontend assets, sets `window.mxqvConfig` and outputs the moda
 
 ## What it does
 
-- Loads `css/mxqv.min.css` (fallback to `css/mxqv.css` if not found).
+- Loads `css/mxqv.min.css` (falls back to `css/mxqv.css` if not found).
 - Publishes `window.mxqvConfig` (`connectorUrl`, `mouseoverDelay`, `modalSize`, `modalLibrary`, `debug`, `loadingText`).
-- Loads `js/mxqv.min.js` (fallback to `js/mxqv.js` if not found).
+- Loads `js/mxqv.min.js` (falls back to `js/mxqv.js` if not found).
 - Always outputs the native modal container (`#mxqv-modal-backdrop`, `#mxqv-modal`).
-- For `modalLibrary=bootstrap` also outputs bootstrap container (`#mxqv-bootstrap-modal`) and loads Bootstrap CSS/JS.
+- For `modalLibrary=bootstrap` also outputs the `#mxqv-bootstrap-modal` container and loads Bootstrap CSS/JS.
 - For `modalLibrary=fancybox` loads Fancybox CSS/JS.
 
 ## Parameters
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `modalSize` | from `mxquickview_modal_size` | Modal size (`modal-sm`, `modal-lg`, `modal-xl`) |
-| `mouseoverDelay` | from `mxquickview_mouseover_delay` | Hover load delay in ms |
-| `modalLibrary` | `native` | Modal mode: `native`, `bootstrap`, `fancybox` (`bootstrap5` alias) |
-| `debug` | `0` | Diagnostic logging to console (`[mxqv]`) |
-| `loadingText` | from lexicon `mxqv_loading` | Loading indicator text |
-| `fancyboxCss` | empty | Override CSS for Fancybox |
-| `fancyboxJs` | empty | Override JS for Fancybox |
-| `bootstrapCss` | empty | Override CSS for Bootstrap |
-| `bootstrapJs` | empty | Override JS for Bootstrap |
+| `modalSize` | overrides `mxquickview_modal_size` | `native`/`bootstrap` only: `modal-sm`, `modal-lg`, `modal-xl` |
+| `mouseoverDelay` | overrides `mxquickview_mouseover_delay` | Empty string uses the setting (default 300 ms) |
+| `modalLibrary` | `native` | `native`, `bootstrap`, `fancybox` (`bootstrap5` alias) |
+| `debug` | `mxquickview_debug` | Not in transport snippet properties in the manager; pass `&debug=` in the call |
+| `loadingText` | lexicon `mxqv_loading` | Not in transport properties; pass `&loadingText=` |
+| `fancyboxCss` | `mxquickview_fancybox_css` if omitted or empty | Fancybox CSS URL/path |
+| `fancyboxJs` | same | Fancybox JS |
+| `bootstrapCss` | same | Bootstrap CSS |
+| `bootstrapJs` | same | Bootstrap JS |
 
 ## Usage
 

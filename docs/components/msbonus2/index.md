@@ -37,6 +37,7 @@ items: [
 ]
 
 dependencies: miniShop2
+categories: discounts
 ---
 
 # msBonus2

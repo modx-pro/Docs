@@ -156,7 +156,7 @@ class YooKassaPayment implements PaymentProviderInterface
 
 Set the class in the payment method `class` field:
 
-```
+```text
 MyComponent\Payment\YooKassaPayment
 ```
 
@@ -186,17 +186,19 @@ The payment class implements `send()` / notification handling and changes the or
 
 ### Deliveries and payments in the order draft
 
-There is **no** separate `GET /api/v1/order/payments`. Storefront delivery/payment lists are rendered by `msOrder`. Draft:
+Public lists (no token): `GET /api/v1/delivery/list`, `GET /api/v1/payment/list`. There is no separate `GET /api/v1/order/payments`.
 
-```
+Draft:
+
+```http
 GET /api/v1/order/get
 ```
 
-`data.order` holds order fields, including `delivery_id` / `payment_id` and `address_*`. Change method: `POST /api/v1/order/add` or `POST /api/v1/order/set` with keys `payment_id` / `delivery_id`.
+`data.order` holds order fields, including `delivery_id` / `payment_id` and `address_*`. Change method: `POST /api/v1/order/add` or `POST /api/v1/order/set` with keys `payment_id` / `delivery_id`. The Fenom storefront can render the choice via `msOrder`.
 
 ### Payment cost
 
-```
+```http
 GET /api/v1/order/cost/payment?payment_id=2
 ```
 
@@ -211,7 +213,7 @@ GET /api/v1/order/cost/payment?payment_id=2
 }
 ```
 
-Full totals (cart + delivery + payment): `GET /api/v1/order/cost`. Web API map: [REST API](/en/components/minishop3/development/api).
+Full totals (cart + delivery + payment): `GET /api/v1/order/cost`. Web API map: [Checkout](/en/components/minishop3/development/web-api/checkout).
 
 ## Payment link (`payment_link`)
 

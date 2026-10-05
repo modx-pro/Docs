@@ -1,6 +1,7 @@
 ---
 title: mxLocDoc
 description: Просмотр локальной Markdown-документации проекта в менеджере MODX Revolution 2 и 3 — навигация из манифеста, безопасный рендер, защищённые ассеты, поиск с кэшем, языки.
+categories: utilities
 outline: [ 2,3 ]
 lastUpdated: true
 logo: https://modstore.pro/assets/extras/mxlocdoc/logo.jpg

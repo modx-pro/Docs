@@ -5,9 +5,9 @@ title: API и интерфейсы
 
 ## Коннектор `assets/components/mxeditorjs/connector.php`
 
-Все запросы к коннектору выполняются с авторизацией в менеджере MODX. Ответы — JSON, `Content-Type: application/json`.
+Запросы требуют авторизации в менеджере MODX. Ответы: JSON, `Content-Type: application/json`.
 
-**Обычное сохранение ресурса** идёт через POST формы и `OnBeforeDocFormSave`, **не** через connector. `content/save` — для AJAX и интеграций.
+Обычное сохранение ресурса идёт через POST формы и `OnBeforeDocFormSave`, не через connector. `content/save` нужен для AJAX и интеграций.
 
 ### Права по action
 
@@ -15,6 +15,7 @@ title: API и интерфейсы
 | --- | --- |
 | `content/get` | Нет |
 | `content/save` | Да |
+| `content/fromHtml` | Нет (достаточно сессии менеджера) |
 | `content/migrate` (без `dry_run`) | Да |
 | `content/migrate` (`dry_run=1`) | Нет |
 | `media/upload`, `media/uploadFile` | Да |
@@ -33,13 +34,13 @@ title: API и интерфейсы
 
 ### content/get
 
-Получить JSON-контент ресурса или TV.
+JSON-контент ресурса или TV.
 
 | Параметр | Тип | Обязательный | Описание |
 | --- | --- | :---: | --- |
 | `action` | string | ✓ | `content/get` |
 | `resource_id` | int | ✓ | ID ресурса MODX |
-| `tmplvar_id` | int | — | ID TV (если не указан — основной контент) |
+| `tmplvar_id` | int | — | ID TV (если не указан: основной контент) |
 
 **Ответ (контент найден):**
 
@@ -59,13 +60,13 @@ title: API и интерфейсы
 
 ### content/save
 
-Сохранить JSON-контент с валидацией и генерацией HTML-снимка.
+Сохраняет JSON с проверкой и собирает HTML-снимок.
 
 | Параметр | Тип | Обязательный | Описание |
 | --- | --- | :---: | --- |
 | `action` | string | ✓ | `content/save` |
 | `resource_id` | int | ✓ | ID ресурса |
-| `tmplvar_id` | int | — | ID TV (если не указан — основной контент) |
+| `tmplvar_id` | int | — | ID TV (если не указан: основной контент) |
 | `content_json` | string/object | ✓ | Editor.js OutputData |
 
 **Ответ (успех):**
@@ -77,13 +78,13 @@ title: API и интерфейсы
 }
 ```
 
-**Логика:** JSON валидируется (`ContentValidator`), `HtmlRenderer` генерирует HTML. Для основного контента JSON в sidecar, HTML в `modResource.content`. Для TV — в `mxeditorjs_tv_content`.
+`ContentValidator` проверяет JSON. `HtmlRenderer` собирает HTML. Основной контент: JSON в sidecar, HTML в `modResource.content`. TV: таблица `mxeditorjs_tv_content`.
 
 ---
 
 ### media/upload
 
-Загрузить изображение (multipart/form-data).
+Загрузка изображения (multipart/form-data).
 
 | Параметр | Тип | Обязательный | Описание |
 | --- | --- | :---: | --- |
@@ -104,13 +105,19 @@ title: API и интерфейсы
 }
 ```
 
-Валидация: расширение из `mxeditorjs.allowed_image_types`, MIME image/*, размер ≤ `mxeditorjs.max_upload_size`. Используется блоками **Image** и **Gallery** (загрузка через `media/upload`).
+Проверка файла:
+
+- расширение из `mxeditorjs.allowed_image_types`
+- MIME из `ALLOWED_IMAGE_MIME`: `image/jpeg`, `image/png`, `image/gif`, `image/webp`, `image/svg+xml`
+- размер ≤ `mxeditorjs.max_upload_size`
+
+Блоки **Image** и **Gallery** вызывают этот action.
 
 ---
 
 ### media/uploadFile
 
-Загрузить файл-вложение (инструмент Attaches). Параметры: `action=media/uploadFile`, `resource_id`, `file`. Файл сохраняется по шаблону **mxeditorjs.file_upload_path** (независимо от пути изображений). Формат ответа как у `media/upload`.
+Загрузка файла-вложения (Attaches). Параметры: `action=media/uploadFile`, `resource_id`, `file`. Путь: **mxeditorjs.file_upload_path**, не путь изображений. Формат ответа как у `media/upload`.
 
 ---
 
@@ -125,7 +132,7 @@ title: API и интерфейсы
 | `type` | string | — | `image` (по умолчанию) или `file` |
 | `path` | string | — | Путь относительно корня Media Source; `__root__` или `/` — корень |
 
-Для `type=image` используется Media Source изображений, для `type=file` — Media Source вложений. Блок **Gallery** использует `type=image` (тот же обзор, что и Image).
+`type=image` — Media Source изображений. `type=file` — вложений. Блок **Gallery** вызывает `type=image` (тот же обзор, что у Image).
 
 **Ответ:** объект с полями `files`, `folders`, `path`, `parentPath`.
 
@@ -145,9 +152,15 @@ title: API и интерфейсы
 
 ---
 
+### content/fromHtml
+
+Конвертация HTML в OutputData без записи sidecar. Параметр `html`. Ответ: `{time, blocks, version}`. Клиент вызывает это при `storageMode === 'inline'` (поля MIGX и аналоги).
+
+---
+
 ### content/migrate
 
-Миграция HTML-контента ресурса в формат Editor.js.
+Миграция HTML ресурса в формат Editor.js.
 
 | Параметр | Тип | Обязательный | Описание |
 | --- | --- | :---: | --- |
@@ -157,7 +170,7 @@ title: API и интерфейсы
 | `confirmed` | bool | — | Подтверждение перезаписи |
 | `force` | bool | — | Принудительная перезапись существующих данных |
 
-Ответы: при `dry_run` — preview и `blocks_count`. При перезаписи может потребоваться `confirmed=true`. При успехе — `migrated`, `blocks_count`, `overwritten`.
+При `dry_run` в ответе: preview и `blocks_count`. Перезапись может потребовать `confirmed=true`. После `confirmed` пишутся sidecar и HTML в `modResource.content`. Успех: `migrated`, `blocks_count`, `overwritten`, `html`.
 
 ---
 
@@ -165,26 +178,26 @@ title: API и интерфейсы
 
 ### MxEditorJs\Renderer\HtmlRenderer
 
-Рендерит Editor.js OutputData в HTML.
+Собирает HTML из Editor.js OutputData.
 
 | Метод | Описание |
 | --- | --- |
-| `render(array $editorJsData): string` | Рендерит все блоки в HTML-строку (включая `gallery`) |
-| `registerBlockRenderer(string $type, callable $renderer): void` | Регистрирует кастомный рендерер для типа блока. Сигнатура callable: `function(array $data, array $block): string` |
+| `render(array $editorJsData): string` | Собирает HTML всех блоков |
+| `registerBlockRenderer(string $type, callable $renderer): void` | Регистрирует свой обработчик типа блока. Сигнатура: `function(array $data, array $block): string` |
 
 ### MxEditorJs\Validator\ContentValidator
 
-Валидация структуры Editor.js.
+Проверка структуры Editor.js.
 
 | Метод | Описание |
 | --- | --- |
-| `validate(array $data): bool` | Проверяет структуру, возвращает `true` если валидно |
+| `validate(array $data): bool` | Проверяет структуру, возвращает `true` если данные верны |
 | `getErrors(): array` | Массив строк с описаниями ошибок |
 | `getFirstError(): ?string` | Первая ошибка или `null` |
 
 ### MxEditorJs\Repository\ContentRepository
 
-Работа с основным контентом ресурса (JSON sidecar + HTML в `modResource.content`).
+Sidecar `mxeditorjs_content`. HTML в `modResource.content` пишет connector `content/save` или клиент формы, не этот класс.
 
 | Метод | Описание |
 | --- | --- |
@@ -194,7 +207,7 @@ title: API и интерфейсы
 
 ### MxEditorJs\Repository\TvContentRepository
 
-Работа с контентом TV (таблица sidecar для TV).
+Sidecar TV: таблица `mxeditorjs_tv_content`.
 
 | Метод | Описание |
 | --- | --- |
@@ -229,21 +242,23 @@ title: API и интерфейсы
 
 ### window.mxEditorJsConfig
 
-Конфигурация, доступная после `OnDocFormPrerender`:
+Конфигурация после `OnDocFormPrerender`:
 
-- `connectorUrl` — URL коннектора
-- `resourceId` — ID текущего ресурса
-- `assetsUrl` — URL директории ассетов
-- `profile` — имя профиля
-- `enabledTools` — массив включённых инструментов
-- `galleryMaxCount` — лимит изображений в блоке Gallery (`0` = без лимита)
-- `presets` — imageClass, linkClass, linkTarget, linkRel
-- `locale` — код языка
-- `i18n`, `editorJsI18n` — переводы UI
+- `connectorUrl`: URL коннектора
+- `resourceId`: ID текущего ресурса
+- `assetsUrl`: URL директории ассетов
+- `profile`: имя профиля
+- `enabledTools`: массив включённых инструментов
+- `galleryMaxCount`: лимит изображений в блоке Gallery (`0` = без лимита)
+- `tmplvarId`: необязательный ID TV у экземпляра (из имени `tv[N]` / `tvN`)
+- `mxGallery`: `{enabled, connectorUrl, pickerUrl, authToken}`. `enabled` = есть каталог `core/components/mxgallery/`
+- `presets`: imageClass, linkClass, linkTarget, linkRel
+- `locale`: код языка
+- `i18n`, `editorJsI18n`: переводы UI
 
 ### MODx.loadRTE / MODx.unloadRTE
 
-mxEditorJs перехватывает стандартные хуки MODX для инициализации RTE. Аргумент `elements` нормализуется (строка, массив ID или объект с полем `id`) — это устраняет ошибку `TypeError: e.split is not a function` при открытии статических ресурсов.
+mxEditorJs перехватывает хуки MODX для инициализации RTE. Аргумент `elements` нормализуется: строка, массив ID или объект с полем `id`. Так снимается `TypeError: e.split is not a function` на статических ресурсах.
 
 ```javascript
 // Вызывается MODX при появлении textarea
@@ -252,6 +267,10 @@ window.MODx.loadRTE(textareaId);
 // Вызывается при удалении textarea
 window.MODx.unloadRTE(textareaId);
 ```
+
+`window.MxEditorJsFlush()` сбрасывает HTML в textarea перед submit окна MIGX (`onBeforeSubmit` в `migxmxeditorjs.tpl`).
+
+Режимы хранения: `main` (`#ta`, sidecar ресурса), `tv` (`tv[N]`, sidecar TV), `inline` (не `#ta` и не TV: без скрытого JSON, загрузка через `content/fromHtml`).
 
 ---
 
@@ -291,6 +310,21 @@ window.MODx.unloadRTE(textareaId);
 ```
 
 Поле `style`: `fit` (сетка) или `slider` (горизонтальный скролл). HTML-снимок: `<figure class="mxeditorjs-gallery mxeditorjs-gallery--{style}">` с изображениями в `.mxeditorjs-gallery__track`.
+
+### Структура блока mxGallery
+
+```json
+{
+  "type": "mxgallery",
+  "data": {
+    "mode": "ids",
+    "ids": [12, 34],
+    "collectionId": null
+  }
+}
+```
+
+`mode`: `ids` или `collection`. `HtmlRenderer` выводит сниппет `[[!mxGallery]]`. Коллекция: параметр `collection` и `picture=1`. Одно id: `id`. Несколько: `ids` и `sort=selection`. Toolbox блока только если установлен mxGallery.
 
 ### Ответ API
 

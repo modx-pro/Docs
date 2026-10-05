@@ -1,10 +1,13 @@
 ---
 title: YandexMapsLocator
 description: 'Локатор точек на Яндекс.Картах для MODX 3. Free: карта и поиск. Pro: «открыто сейчас», MiniShop3, CSV и REST'
+categories: maps
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/yandexmapslocator/logo.png
-modstore: https://modstore.pro/packages/utilities/yandexmapslocator
-categories: utilities
+modstore: https://modstore.pro/packages/maps/yandexmapslocator
+compatibility:
+  - modx3
+  - php82
 items: [
   {
     text: 'Начало работы',
@@ -51,9 +54,9 @@ items: [
 
 # YandexMapsLocator
 
-Локатор точек сети на [Яндекс.Картах](https://developer.tech.yandex.ru/) для MODX Revolution 3. Точка = опубликованный ресурс с TV: адрес, координаты, телефон, часы работы. На сайте вы получаете список, карту, поиск по адресу, геолокацию и сортировку по расстоянию.
+Локатор точек сети на [Яндекс.Картах](https://developer.tech.yandex.ru/) для MODX Revolution 3. Точка: опубликованный ресурс с TV (адрес, координаты, телефон, часы работы). На сайте: список, карта, поиск по адресу, геолокация и сортировка по расстоянию.
 
-Два пакета, одна документация. **Free** — ядро локатора. **Pro** ставится поверх Free и расширяет тот же UI, плюс CSV в менеджере и REST. Свой сниппет и чанки Pro не дублирует.
+**Free**: ядро локатора. **Pro** ставится поверх Free: тот же интерфейс, плюс CSV в менеджере и REST. Свой сниппет и чанки Pro не дублирует.
 
 ## Free и Pro
 
@@ -61,11 +64,11 @@ items: [
 |---|------|-----|
 | Карта, список, поиск, геолокация | да | да |
 | Категории, `return=chunks/data/json` | да | да |
-| `search.php` (AJAX на том же сайте) | да | fallback, если REST выключен |
-| Фильтр «открыто сейчас», бейджи, TZ на точке | - | да |
+| `search.php` (запрос с той же страницы) | да | запасной вариант, если REST выключен или задан `api_token` |
+| Фильтр «открыто сейчас», бейджи, пояс на точке | - | да |
 | Фильтры amenity / brand | - | да |
 | MiniShop3: карта «где забрать товар» | - | да |
-| CSV, bulk geocode в CMP | - | да |
+| CSV, массовый геокод в менеджере | - | да |
 | REST API v1 (`locations`, `geocode`, `meta`) | - | да |
 
 Подробнее: [Free и Pro](free-vs-pro).
@@ -80,31 +83,29 @@ items: [
 - Режимы `return`: HTML, плейсхолдеры, JSON
 - Кнопка «Получить координаты» в форме ресурса
 - Extension API для сторонних extras и для Pro
-- Multi-context: параметр `context`, allowlist в настройках
+- Несколько контекстов: параметр `context`, белый список в настройках
 
 ## Что даёт Pro
 
 На том же локаторе:
 
 - фильтр `working_now`, бейджи «Открыто» / «Закрыто», кнопка «Только открытые»
-- поля `is_open_now`, `status_hint`, `closes_at`, `next_open_at`, `working_hours_schedule`
+- поля `is_open_now`, `status_hint`, `closes_at`, `next_open_at` на витрине и в `search.php`. `working_hours_schedule` только в REST
 - часовой пояс на точке (`yandexmaps_timezone`) или сеть `yandexmapslocator_timezone`
 - фильтры `amenity` / `brand`
 - на карточке товара MiniShop3 только точки с этим товаром (`productId` + `ms3_product_ids` / `ms3_product_id`)
 
-В менеджере: CSV, bulk geocode, превью расписания.
+В менеджере: CSV, массовый геокод, превью расписания.
 
 Для Nuxt, Next и других клиентов: REST v1 (`locations`, `geocode`, `meta`) с CORS и Bearer.
-
-Разделы: [Что даёт Pro](pro/).
 
 ## Системные требования
 
 | Требование | Версия |
 |------------|--------|
 | MODX Revolution | 3.0+ |
-| PHP | 8.2-8.4 |
-| MySQL / MariaDB | InnoDB |
+| PHP | 8.2+ |
+| MySQL / MariaDB | как у MODX |
 | [pdoTools](/components/pdotools/) | chunks на Fenom |
 | API-ключ [Яндекс.Карт](https://developer.tech.yandex.ru/) | JS API и HTTP Геокодер |
 
@@ -120,7 +121,7 @@ Pro 1.1.0-pl2 требует Free ≥ 1.0.0-pl7 (`yandexmapslocator >=1.0.0-pl7 
 4. Создайте контейнер и дочерние ресурсы-точки, заполните TV.
 5. Вставьте сниппет: [Быстрый старт](quick-start).
 
-Пакет: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslocator).
+Пакет: [modstore.pro](https://modstore.pro/packages/maps/yandexmapslocator).
 
 ### Pro
 
@@ -129,7 +130,7 @@ Pro 1.1.0-pl2 требует Free ≥ 1.0.0-pl7 (`yandexmapslocator >=1.0.0-pl7 
 3. Задайте `yandexmapslocator_timezone` под сеть (для «открыто сейчас»).
 4. При необходимости: `api_token`, CORS, CSV в **Компоненты → YandexMapsLocator Pro**.
 
-Пакет Pro: [modstore.pro](https://modstore.pro/packages/utilities/yandexmapslocatorpro).
+Пакет Pro: [modstore.pro](https://modstore.pro/packages/maps/yandexmapslocatorpro).
 
 ## Быстрые ссылки
 

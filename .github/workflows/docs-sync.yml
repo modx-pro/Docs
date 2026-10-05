@@ -1,0 +1,41 @@
+name: Docs sync
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'docs/**'
+      - 'scripts/check-docs-sync.mjs'
+      - 'scripts/check-docs-structure-sync.mjs'
+      - 'scripts/lib/git-changed.mjs'
+      - '.github/workflows/docs-sync.yml'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+
+jobs:
+  docs-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Fetch base branch for diff
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: git fetch --no-tags origin "$BASE_REF"
+      # a new Russian page needs an English one (fails); an edited one with untouched EN gets a warning
+      - name: EN counterparts of new pages
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: pnpm run check:sync:changed
+      # EN should have at least as many ##/### sections as RU; changed pages, warnings only
+      - name: EN structure of changed pages
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: pnpm run check:structure:changed

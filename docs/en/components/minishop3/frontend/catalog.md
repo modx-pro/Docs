@@ -5,7 +5,7 @@ title: Product catalog
 
 The catalog is the main store page that displays a list of products from a category. MiniShop3 provides a ready-made template and product card chunk.
 
-For SPA or a mobile client without msProducts use the public Web API `GET /api/v1/product/list` — the response goes through `ProductCatalogService` with a field allowlist. See [REST API: catalog](/en/components/minishop3/development/api#product-catalog).
+For SPA or a mobile client without msProducts use the public Web API: `GET /api/v1/product/list`, `GET /api/v1/category/list` / `tree`, `GET /api/v1/product/filters`. The catalog response goes through `ProductCatalogService` with a field allowlist. See [Web API: catalog](/en/components/minishop3/development/web-api/catalog).
 
 <!-- ![Storefront catalog](/components/minishop3/screenshots/fe-catalog.png) -->
 

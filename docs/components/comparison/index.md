@@ -1,6 +1,7 @@
 ---
 title: Comparison
 description: Компонент для сравнения товаров
+categories: catalog
 logo: https://modstore.pro/assets/extras/comparison/logo-lg.jpg
 author: ilyautkin
 modstore: https://modstore.pro/packages/ecommerce/comparison

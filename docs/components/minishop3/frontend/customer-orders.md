@@ -78,12 +78,21 @@ title: История заказов
 {/if}
 ```
 
+### Хуки отмены
+
+| Хук | Когда | Данные |
+| --- | --- | --- |
+| `beforeCancelOrder` | После подтверждения в диалоге, перед вызовом API. Установите `hookData.cancel = true`, чтобы отменить действие | `{ orderId }` |
+| `afterCancelOrder` | После ответа API, до показа результата | `{ orderId, response }` |
+
+Полный список JS-хуков — в разделе [Frontend JS — хуки](/components/minishop3/development/frontend-js).
+
 ### Системные настройки
 
 | Настройка | По умолчанию | Описание |
 | --- | --- | --- |
 | `ms3_customer_cancel_allowed_statuses` | `2,3` | ID статусов, при которых разрешена отмена |
-| `ms3_status_canceled` | `0` | ID статуса, в который переводится отменённый заказ |
+| `ms3_status_canceled` | `5` | ID статуса, в который переводится отменённый заказ |
 
 ## Плейсхолдеры списка заказов
 
@@ -98,6 +107,8 @@ title: История заказов
 | `{$pagination}` | array | Данные пагинации |
 | `{$customer}` | array | Данные покупателя |
 | `{$api_url}` | string | URL API для JS-операций |
+| `{$assets_url}` | string | URL папки компонента для JS/CSS |
+| `{$page_url}` | string | URL страницы списка заказов |
 
 ### В чанке tpl.msCustomer.order.row
 
@@ -181,7 +192,7 @@ title: История заказов
                 <ul class="pagination justify-content-center">
                     {if $pagination.has_prev}
                     <li class="page-item">
-                        <a class="page-link" href="?offset={$pagination.prev_offset}">
+                        <a class="page-link" href="{$pagination.prev_url}">
                             {'ms3_customer_orders_prev' | lexicon}
                         </a>
                     </li>
@@ -189,7 +200,7 @@ title: История заказов
 
                     {foreach $pagination.pages as $page}
                     <li class="page-item {if $page.active}active{/if}">
-                        <a class="page-link" href="?offset={$page.offset}">
+                        <a class="page-link" href="{$page.url}">
                             {$page.num}
                         </a>
                     </li>
@@ -197,7 +208,7 @@ title: История заказов
 
                     {if $pagination.has_next}
                     <li class="page-item">
-                        <a class="page-link" href="?offset={$pagination.next_offset}">
+                        <a class="page-link" href="{$pagination.next_url}">
                             {'ms3_customer_orders_next' | lexicon}
                         </a>
                     </li>
@@ -283,6 +294,7 @@ title: История заказов
 | `{$address}` | array | Адрес доставки |
 | `{$total}` | array | Итоги заказа |
 | `{$customer}` | array | Данные покупателя |
+| `{$assets_url}` | string | URL папки компонента для JS/CSS |
 
 ### Товар в заказе ({$products})
 
@@ -521,15 +533,17 @@ title: История заказов
     'current_page' => 1,     // Текущая страница
     'limit' => 20,           // На странице
     'offset' => 0,           // Смещение
-    'pages' => [             // Список страниц
-        ['num' => 1, 'offset' => 0, 'active' => true],
-        ['num' => 2, 'offset' => 20, 'active' => false],
-        ['num' => 3, 'offset' => 40, 'active' => false],
+    'pages' => [             // Список страниц (url — абсолютный, формирует enrichPaginationWithUrls)
+        ['num' => 1, 'offset' => 0, 'active' => true, 'url' => 'https://site/cabinet/orders/'],
+        ['num' => 2, 'offset' => 20, 'active' => false, 'url' => 'https://site/cabinet/orders/?offset=20'],
+        ['num' => 3, 'offset' => 40, 'active' => false, 'url' => 'https://site/cabinet/orders/?offset=40'],
     ],
     'has_prev' => false,     // Есть предыдущая
     'has_next' => true,      // Есть следующая
     'prev_offset' => 0,      // Смещение предыдущей
     'next_offset' => 20,     // Смещение следующей
+    'prev_url' => '...',     // URL предыдущей — только при has_prev
+    'next_url' => 'https://site/cabinet/orders/?offset=20', // URL следующей — только при has_next
 ]
 ```
 

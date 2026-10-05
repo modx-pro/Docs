@@ -5,12 +5,24 @@ title: Отличия от miniShop2
 
 Это руководство поможет разработчикам, знакомым с miniShop2, быстро освоить MiniShop3 и понять ключевые изменения.
 
+```mermaid
+flowchart TB
+  ms2[miniShop2 сайт]
+  export[Экспорт каталога / ручной перенос]
+  install[Установить MS3 + VueTools + pdoTools 3]
+  settings[Ключи ms3_* вместо ms2_*]
+  forms[Формы ms3_form / Web API]
+  grids[Колонки в Утилитах гридов]
+  ms2 --> export --> install --> settings --> forms
+  install --> grids
+```
+
 ## Системные требования
 
 | Требование | miniShop2 | MiniShop3 |
 | --- | --- | --- |
-| MODX | 2.3+ | **3.0.0+** |
-| PHP | 7.0+ | **8.1+** |
+| MODX | 2.3+ | **3.0.3+** |
+| PHP | 7.0+ | **8.2+** |
 | MySQL | 5.5+ | 5.7+ / MariaDB 10.3+ |
 | pdoTools | 2.x | **3.x** |
 
@@ -117,70 +129,17 @@ MiniShop3 добавляет множество новых настроек:
 
 Manager API обслуживает Vue-админку (заказы, клиенты, утилиты). Processors в `core/components/minishop3/src/Processors/` остаются для ExtJS-панелей ресурса (категория, товар). Кастомные web-маршруты: `core/config/ms3_routes_web.custom.php`, фрагменты аддонов: `core/config/ms3.routes.d/web/*.php`.
 
-Полная карта и тела запросов: [REST API](/components/minishop3/development/api). Источник роутов: `config/routes/web.php`.
+Полная карта и тела запросов: [Web API](/components/minishop3/development/web-api/). Источник роутов: `config/routes/web.php`.
 
 ### Web API (новое в MiniShop3)
 
-Точка входа `api.php`, префикс `/api/v1`. На всю группу висят CORS, rate limit и `ServiceCheck`. Токен нужен для корзины, черновика заказа и ЛК; каталог и часть auth-эндпоинтов публичные.
+Точка входа `api.php`, префикс `/api/v1`. На всю группу висят CORS, rate limit и `ServiceCheck`. Токен (auto-mint) нужен для корзины, черновика заказа и ЛК; каталог, delivery/payment list и часть auth публичные.
 
-```http
-# Корзина (гостевой токен)
-POST /api/v1/cart/add
-POST /api/v1/cart/remove
-POST /api/v1/cart/change
-POST /api/v1/cart/change-option
-GET  /api/v1/cart/get
-POST /api/v1/cart/clean
+Краткая карта (не полная): cart, order, customer (включая `me`, `token/refresh`), product (+ filters/images/resolve), category, delivery, payment, health.
 
-# Заказ / checkout (гостевой токен)
-GET  /api/v1/order/get
-POST /api/v1/order/add
-POST /api/v1/order/set
-POST /api/v1/order/remove
-POST /api/v1/order/submit
-POST /api/v1/order/clean
-GET  /api/v1/order/cost
-GET  /api/v1/order/cost/cart
-GET  /api/v1/order/cost/delivery
-GET  /api/v1/order/cost/payment
-POST /api/v1/order/address/set
-POST /api/v1/order/address/clean
-GET  /api/v1/order/delivery/validation-rules
-GET  /api/v1/order/delivery/required-fields
+Полная таблица: [Карта эндпоинтов](/components/minishop3/development/web-api/endpoints).
 
-# Клиент: публичные
-GET  /api/v1/customer/token/get
-POST /api/v1/customer/login
-POST /api/v1/customer/register
-POST /api/v1/customer/forgot-password
-POST /api/v1/customer/reset-password
-GET  /api/v1/customer/email/verify
-
-# Клиент: с токеном (ЛК)
-POST /api/v1/customer/logout
-POST /api/v1/customer/add
-PUT  /api/v1/customer/profile
-POST /api/v1/customer/changeAddress
-POST /api/v1/customer/email/resend-verification
-GET  /api/v1/customer/addresses
-GET  /api/v1/customer/addresses/{id}
-POST /api/v1/customer/addresses
-PUT  /api/v1/customer/addresses/{id}
-DELETE /api/v1/customer/addresses/{id}
-PUT  /api/v1/customer/addresses/{id}/set-default
-GET  /api/v1/customer/orders
-GET  /api/v1/customer/orders/{id}
-POST /api/v1/customer/orders/{id}/cancel
-
-# Каталог (без токена)
-GET  /api/v1/product/get/{id}
-GET  /api/v1/product/list
-
-# Health
-GET  /api/v1/health
-```
-
-Отдельного `GET /api/v1/order/payments` нет. Список доставок и оплат на витрине отдаёт сниппет `msOrder` (серверный рендер). Черновик: `GET /api/v1/order/get` — только поля заказа/адреса (`delivery_id`, `payment_id`, `address_*`).
+Отдельного `GET /api/v1/order/payments` нет. Публичные списки: `GET /api/v1/delivery/list`, `GET /api/v1/payment/list`. Черновик: `GET /api/v1/order/get` (поля заказа/адреса). Fenom-витрина может рендерить выбор через `msOrder`.
 
 ### Авторизация API
 
@@ -231,7 +190,7 @@ miniShop2Config.actionUrl;
 // MiniShop3
 await ms3.cartAPI.add(123, 1);
 await ms3.orderAPI.submit();
-ms3Config.apiUrl;
+ms3Config.actionUrl;
 ```
 
 ### Callbacks → Hooks
@@ -274,13 +233,13 @@ ms3Hooks.addHook('afterAddCart', async ({ response }) => {
     </button>
 </form>
 
-<!-- MiniShop3 — декларативный подход -->
-<button type="button"
-        data-ms-action="cart/add"
-        data-id="123"
-        data-count="1">
-    В корзину
-</button>
+<!-- MiniShop3 — форма с ms3_action -->
+<form method="post" class="ms3_form" data-ms3-form>
+    <input type="hidden" name="id" value="123">
+    <input type="hidden" name="count" value="1">
+    <input type="hidden" name="ms3_action" value="cart/add">
+    <button type="submit">В корзину</button>
+</form>
 ```
 
 ## События плагинов
@@ -298,18 +257,19 @@ switch ($modx->event->name) {
 // MiniShop3
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
-        $cart = $scriptProperties['cart'];  // MiniShop3\Controllers\Cart\Cart
+        $product = $scriptProperties['msProduct'];
+        $count = $scriptProperties['count'];
+        $options = $scriptProperties['options'];
         break;
 }
 ```
 
 ### Новые события MiniShop3
 
-- `msOnCustomerCreate` — создание клиента
-- `msOnCustomerUpdate` — обновление клиента
-- `msOnCustomerLogin` — вход клиента
-- `msOnBeforeAPIRequest` — перед API запросом
-- `msOnAfterAPIRequest` — после API запроса
+- `msOnCreateCustomer` — создание клиента
+- `msOnUpdateCustomer` — обновление клиента
+
+Полный список: [События](/components/minishop3/development/events).
 
 ## Сниппеты
 
@@ -332,7 +292,7 @@ switch ($modx->event->name) {
 
 ### msMiniCart → msOrderTotal
 
-Параметр `formatPrices` удалён. Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`.
+Параметр `formatPrices` у сниппетов витрины удалён (у `msProducts` его нет). Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`. У `msOrderTotal` свойства `formatPrices` / `withCurrency` ещё могут быть в админке, код их не читает ([#825](https://github.com/modx-pro/MiniShop3/issues/825)).
 
 ```fenom
 {* miniShop2 *}
@@ -470,7 +430,12 @@ await ms3.cartAPI.add(id, 1);
     <button name="ms2_action" value="cart/add">
 
 <!-- Стало -->
-<button data-ms-action="cart/add" data-id="{$id}">
+<form method="post" class="ms3_form" data-ms3-form>
+    <input type="hidden" name="id" value="{$id}">
+    <input type="hidden" name="count" value="1">
+    <input type="hidden" name="ms3_action" value="cart/add">
+    <button type="submit">В корзину</button>
+</form>
 ```
 
 ### Шаг 9: Проверка

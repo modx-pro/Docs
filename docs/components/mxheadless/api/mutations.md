@@ -5,7 +5,7 @@ description: Write API и Idempotency-Key в mxHeadless
 
 # Мутации
 
-`POST`, `PUT`, `PATCH`, `DELETE` на resources и objects требуют identity и write-scopes.
+`POST`, `PUT`, `PATCH`, `DELETE` на resources и objects требуют учётные данные и scopes записи.
 
 ## Тело
 
@@ -23,19 +23,19 @@ curl -s -X POST https://example.com/api/v1/resources \
 
 ## Idempotency
 
-При `mxheadless_idempotency_enabled=true` (default) на **POST** можно передать:
+При `mxheadless_idempotency_enabled=true` (по умолчанию) на **POST** можно передать:
 
 ```text
 Idempotency-Key: <unique-string>
 ```
 
-Повтор с тем же ключом и тем же телом возвращает сохранённый ответ (заголовок `Idempotency-Replayed`). Другое тело или параллельный запрос → `409` `idempotency_conflict`.
+Ключ: 1–128 символов `A-Za-z0-9._:-`. Повтор с тем же ключом и тем же телом возвращает сохранённый ответ (заголовок `Idempotency-Replayed`). Другое тело или параллельный запрос → `409` `idempotency_conflict`.
 
 TTL: `mxheadless_idempotency_ttl` (86400 с).
 
-## Soft delete
+## Мягкое удаление
 
-`DELETE` на resources обычно soft. Permanent: `?force=1`. Restore через PATCH `deleted: 0` + `include_deleted=1`.
+`DELETE` на resources обычно мягкий. Окончательно: `?force=1`. Восстановление через PATCH `deleted: 0` + `include_deleted=1`.
 
 ## Webhooks
 

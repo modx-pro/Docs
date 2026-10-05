@@ -3,91 +3,81 @@ title: Manager guide
 ---
 # Manager guide
 
-The **Product sets** page is for **set templates** (a fixed list of recommended products + a **type**) and **bulk application** of those templates to categories. Per-product overrides use TVs — see [TVs on the product card](#tvs-on-the-product-card).
+The **Product sets** page manages **set templates** and **bulk apply** to categories. A template is a fixed product list plus a **type**. Per-product overrides use TVs. See [TVs on the product card](#tvs-on-the-product-card).
 
-For UI zones and template types, see [Product sets (interface)](interface/templates).
+UI zones and template types: [Product sets (interface)](interface/templates).
 
 ## Manager section
 
 - Menu: **Components → Product sets**
 - Controller: `namespace=ms3productsets`, `action=index`
-- **VueTools** is required (without it the page will not load).
+- **VueTools** is required. Without it the page will not load.
 
-> **Screenshot placeholder** — file `images/admin-menu.png`: manager menu **Components → Product sets**.  
-> Filenames and subjects: [images/README.md](images/README.md).
+![Page overview](/components/ms3productsets/screenshots/page-overview.png)
 
 ## Page layout
 
-Typically you will see:
+1. **Template list:** table of existing templates (ID, name, type, related products).
+2. **Create/edit form:** template fields (`name`, `type`, `related_product_ids`, `description`, `sortorder`).
+3. **Apply to category:** pick template, category tree, replace option, apply action.
+4. Optionally **unbind** a template from a category.
 
-1. **Template list** — table of existing templates (ID, name, type, related products).
-2. **Create/edit form** — template fields (`name`, `type`, `related_product_ids`, `description`, `sortorder`).
-3. **Apply to category** — pick template, category tree, replace option, apply action.
-4. Optionally **unbind** template from a category.
-
-> **Screenshot placeholder** — `images/admin-page-overview.png`: full page (list + form / tree panel).
-
-> **Screenshot placeholder** — `images/admin-template-list.png`: template table only.
+![Template list](/components/ms3productsets/screenshots/template-list.png)
 
 ## Creating a template
 
-A template is a **preset**: a fixed **type** and **product list** that is copied into `ms3_product_sets` for each product in the chosen category when you **Apply** (see below).
-
-### Steps
+A template is a **preset**: a fixed **type** and **product list**. **Apply** copies it into `ms3_product_sets` for each product in the chosen category.
 
 1. Open **Components → Product sets**.
-2. Use the UI action to **create** a new template (button label may vary by version).
+2. Create a new template.
 3. Fill in the form:
 
 | Field | What to enter |
 |-------|----------------|
-| **`name`** | Clear name for managers (stored as `template_name` on generated links). |
-| **`type`** | One of the admin types: `buy_together`, `similar`, `popcorn`, `cart_suggestion`, `vip`. Frontend logic for `ms3ProductSets` depends on matching **`type`**. Types like `auto`, `auto_sales` are snippet-only, not template types. |
+| **`name`** | Clear name for managers. Stored as `template_name` on generated links. |
+| **`type`** | Admin types: `buy_together`, `similar`, `popcorn`, `cart_suggestion`, `vip`. Frontend logic for `ms3ProductSets` depends on matching **`type`**. `auto` and `auto_sales` are snippet-only, not template types. |
 | **`related_product_ids`** | Comma-separated product IDs (e.g. `12,34,56`) or picker selection if available. Order matters for output unless the snippet uses different sorting. |
-| **`description`** | Internal note for the team; not shown on the site. |
-| **`sortorder`** | Number for ordering templates in the admin list (lower first; exact sort depends on the UI). |
+| **`description`** | Internal note for the team. Not shown on the site. |
+| **`sortorder`** | Number for ordering templates in the admin list (lower first). Exact sort depends on the UI. |
 
-4. Save. The connector calls `save_template`; empty **`name`** or invalid **`related_product_ids`** will be rejected with an error.
+1. Save. The connector calls `save_template`. Empty **`name`** or invalid **`related_product_ids`** returns an error.
+2. Confirm the new row appears in the list.
 
-5. Confirm the new row appears in the list.
+![New template form](/components/ms3productsets/screenshots/template-dialog-new.png)
 
-> **Screenshot placeholder** — `images/admin-template-form-create.png`: create form with labelled fields (annotations on the image are fine).
-
-> **Screenshot placeholder** — `images/admin-product-picker.png`: product selection if a separate modal/picker exists.
+![Product picker](/components/ms3productsets/screenshots/product-picker.png)
 
 ## Editing a template
 
-1. In the list, select the row (click or **Edit**, depending on UI).
+1. Select the row in the list (click or **Edit**, depending on UI).
 2. Change **`name`**, **`type`**, **`related_product_ids`**, **`description`**, **`sortorder`**.
 3. Save.
 
-**Important:** this updates the row in `ms3_product_set_templates`. Links already **applied** to categories in `ms3_product_sets` are **not** rebuilt automatically — to refresh products for a whole category, run **Apply to category** again (use **Replace** for that type if needed).
+![Edit template](/components/ms3productsets/screenshots/template-dialog-edit.png)
 
-> **Screenshot placeholder** — `images/admin-template-form-edit.png`: edit form with sample data.
+This updates the row in `ms3_product_set_templates`. A change of `name` or `type` is copied into already applied rows (`template_name`, `type`). The `related_product_id` list on those rows is not rewritten. To refresh IDs, run **Apply** again. Use **Replace** if you need to overwrite this template’s links.
 
 ## Deleting a template
 
-The UI can remove a template from the list. That deletes the template record; **existing** product links with that `template_name` in `ms3_product_sets` **do not** disappear by themselves. To bulk-remove such links for a category, use **Unbind** (below).
+![Delete confirmation](/components/ms3productsets/screenshots/delete-confirm.png)
 
-> **Screenshot placeholder** — optional `images/admin-template-delete-confirm.png` if a confirmation dialog exists.
+Deleting a template also deletes its rows in `ms3_product_sets` (`template_name` + `type`). To drop links for a category without deleting the template, use **Unbind**.
 
 ## Apply template to a category
 
 1. Select the **template** in the apply panel.
-2. Pick **category** (or several) in the resource tree — child categories with `msProduct` resources are usually included.
-3. Optionally enable **“Replace existing sets of this type”** — `replace=true`: for products in that branch, existing links of that **`type`** are removed first, then new ones are created from the template. Without replace, new links are **added** alongside existing ones (watch for unwanted duplicates).
+2. Pick **category** (or several) in the resource tree. Child categories with `msProduct` resources are included.
+3. Optionally enable **“Replace existing sets of this template”** (`replace=true`). For products in that branch, only links of this **`type` + `template_name`** are removed, then new ones are inserted. Other templates and TV rows stay. Without replace, new links are added alongside existing ones.
 4. Click **Apply**.
+
+![Apply to category](/components/ms3productsets/screenshots/apply-category.png)
 
 **Result:** rows in `ms3_product_sets` with **`template_name`** set to the template name.
 
-> **Screenshot placeholder** — `images/admin-apply-category.png`: template selected, category tree, replace checkbox, **Apply**.
-
 ## Unbind template
 
-- Removes **only** links created by that template (matching **`type`** + **`template_name`**).
+- Removes **only** links created by that template (`type` + `template_name`).
 - Manual TV links and links from **other** templates stay.
-
-> **Screenshot placeholder** — `images/admin-unbind.png`: unbind UI with category + template.
 
 ## TVs on the product card
 
@@ -109,6 +99,6 @@ On product save, TVs sync into `ms3_product_sets`.
 
 ## See also
 
-- [Product sets (interface)](interface/templates) — UI areas and template types
-- [Flows](flows) — `save_template`, `apply_template`, `unbind_template`
-- [API and interfaces](api) — connector actions
+- [Product sets (interface)](interface/templates): UI areas and template types
+- [Flows](flows): `save_template`, `apply_template`, `unbind_template`
+- [API and interfaces](api): connector actions

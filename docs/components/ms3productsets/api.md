@@ -13,8 +13,11 @@ title: API и интерфейсы
 | `resource_id` / `productId` | текущий ресурс | ID базового товара |
 | `max_items` | `ms3productsets.max_items` | Лимит (1..100) |
 | `category_id` | `0` | Категория для авто-подбора |
-| `set_id` | `0` | Номер VIP-набора (для `type=vip`). При 0 или не заданном используется 1 — настройка `ms3productsets.vip_set_1`. |
-| `tpl` | `tplSetItem` | Чанк карточки |
+| `set_id` | `0` | Номер VIP-набора (для `type=vip`). При 0 или не заданном используется 1 (`ms3productsets.vip_set_1`). |
+| `tpl` | `tplSetItem` | Чанк карточки (`tplSetVIP` / `tplPopcorn` используют `itemTpl` для строки) |
+| `itemTpl` | `''` | Чанк строки, если `tpl` это обёртка VIP/popcorn |
+| `set_title` / `discount_percent` | `''` | Плейсхолдеры обёртки VIP |
+| `showLog` | `false` | Проброс в `msProducts` |
 | `emptyTpl` | `tplSetEmpty` | Чанк для пустого результата |
 | `hideIfEmpty` | `true` | `true` -> пустая строка, `false` -> `emptyTpl` |
 | `exclude_ids` | `''` | Исключаемые ID |
@@ -30,7 +33,7 @@ title: API и интерфейсы
 
 `auto`, `vip`, `cross-sell`, `popcorn`, `also-bought`, `buy_together`, `similar`, `cart_suggestion`, `auto_sales`, `custom`.
 
-Подробная логика каждого типа — в [Типы подборок](types).
+Подробная логика каждого типа: [Типы подборок](types).
 
 ### Примеры вызова
 
@@ -60,11 +63,11 @@ title: API и интерфейсы
 
 Выводит:
 
-- при `ms3productsets.izitoast_include` = Да — теги `<link>` и `<script>` для [iziToast](https://github.com/marcosmoura/iziToast) по путям из `ms3productsets.izitoast_css` / `ms3productsets.izitoast_js` (по умолчанию файлы MiniShop3);
-- `window.mspsLexicon` (ключи для фронтовых сообщений);
+- при `ms3productsets.izitoast_include` = Да: теги `<link>` и `<script>` для [iziToast](https://github.com/marcosmoura/iziToast) по путям из `ms3productsets.izitoast_css` / `ms3productsets.izitoast_js` (по умолчанию файлы MiniShop3);
+- `window.mspsLexicon` (ключи для сообщений на сайте);
 - `window.mspsConfig`: `maxItems`, `lang`, `toastTimeout` (мс), `toastPosition` (iziToast, напр. `topRight`).
 
-Подключать перед `productsets.js`. Если автоподключение iziToast выключено, загрузите CSS и JS вручную — см. [Интеграция на сайт](integration).
+Подключайте перед `productsets.js`. Если автоподключение iziToast выключено, загрузите CSS и JS вручную. См. [Интеграция на сайт](integration).
 
 **Fenom:** `{'mspsLexiconScript' | snippet}`
 **MODX:** `[[!mspsLexiconScript]]`
@@ -75,8 +78,18 @@ title: API и интерфейсы
 
 | action | Метод | Параметры | Ответ |
 | --- | --- | --- | --- |
-| `get_set` | POST | `type`, `resource_id`, `category_id`, `set_id`, `max_items`, `tpl`, `emptyTpl`, `hideIfEmpty` | HTML |
-| `add_to_cart` | POST | `product_id`, `count` | JSON `{success,message}` |
+| `get_set` | POST | `type`, `resource_id` (алиас `product_id`), `category_id`, `set_id`, `max_items`, `tpl`, `tplWrapper`, `emptyTpl`, `hideIfEmpty` | HTML |
+| `add_to_cart` | POST | `product_id`, `count` | JSON `{success, added, message}` |
+
+Пример ответа `add_to_cart` (запасной путь через коннектор):
+
+```json
+{"success": true, "added": 1, "message": ""}
+```
+
+```json
+{"success": false, "added": 0, "message": "Product not found"}
+```
 
 ### Manager (`mgr`, авторизация обязательна)
 
@@ -85,28 +98,28 @@ title: API и интерфейсы
 | `get_templates` | Список шаблонов подборок | — |
 | `save_template` | Создать/обновить шаблон | `id`, `name`, `type`, `related_product_ids`, `description`, `sortorder`. Ошибки: `invalid_type`, `template_not_found`, `name_required`, `related_ids_required` |
 | `delete_template` | Удалить шаблон и связи с его `template_name` | `id` |
-| `apply_template` | Применить шаблон к категориям/товарам | `template_id`, `parent_id` или `parent_ids[]`, `replace`. Ответ: `{ success, applied }`. При `replace=true` удаляются только строки с тем же `template_name`, что у шаблона |
+| `apply_template` | Применить шаблон к категориям/товарам | `template_id`, `parent_id` или `parent_ids[]`, `replace`, запасной `product_ids` если нет категории. Ответ: `{ success, applied }`. При `replace=true` удаляются только строки с тем же `template_name`, что у шаблона |
 | `unbind_template` | Отвязать шаблон от категории | `template_id`, `parent_id` или `parent_ids[]` |
 | `get_resource_tree` | Дерево категорий (без товаров) | `parent_id`, `context_key` |
-| `get_resources` | Список товаров для пикера | `parent_id`, `template_id`, `query`, `limit`, **`ids[]`** — загрузка выбранных ID по списку |
+| `get_resources` | Список товаров для пикера | `parent_id`, `template_id`, `query`, `limit`, **`ids[]`** (загрузка выбранных ID по списку) |
 
 ## JS API (`window.ms3ProductSets`)
 
 | Метод | Назначение |
 | --- | --- |
-| `render(selector, options)` | Рендер блока подборки через `action=get_set` |
-| `addToCart(productId, count)` | Добавление товара в корзину через `action=add_to_cart` |
+| `render(selector, options)` | Отрисовка блока через `get_set`. В JS значение `type` по умолчанию: `auto`. У сниппета: `buy_together`. |
+| `addToCart(productId, count)` | Сначала MiniShop3 Web API. Коннектор `add_to_cart` это запасной путь. |
 | `addAllToCart(buttonOrContainer)` | Добавление всего набора в корзину. Принимает DOM-элемент (кнопку с `data-add-set` или контейнер) либо CSS-селектор. Ищет `data-msps-product-ids` / `[data-product-id]` / скрытые `input[name="id"]`, последовательно вызывает `addToCart`, затем **iziToast** и событие `msps:cart:update`. |
-| `toast(message, kind)` | Уведомление **iziToast**: `kind` — `'success'` (по умолчанию) или `'error'`. Требуется подключённый на странице iziToast. |
+| `toast(message, kind)` | Уведомление **iziToast**: `kind` равен `'success'` (по умолчанию) или `'error'`. Нужен iziToast на странице. |
 
 События после успешного добавления:
 
-- `addToCart`: `msps:cart:update` с `detail: { product_id, count }`
+- `addToCart`: `msps:cart:update` с `detail: { product_id, count }`. Путь MiniShop3 API ещё шлёт `ms3:cart:updated`.
 - `addAllToCart`: `msps:cart:update` с `detail: { product_ids }`
 
 ## Плагины
 
 | Плагин | Событие | Назначение |
 | --- | --- | --- |
-| `ms3productsets_sync_tv` | `OnDocFormSave` | Синхронизация TV подборок в таблицу `ms3_product_sets` |
-| `ms3productsets_on_resource_delete` | `OnResourceDelete` | Очистка связей удаляемого ресурса |
+| `ms3ProductSets SyncTV` (файл `ms3productsets_sync_tv`) | `OnDocFormSave` | Синхронизация TV подборок в таблицу `ms3_product_sets` |
+| `ms3ProductSets Cleanup` (файл `ms3productsets_on_resource_delete`) | `OnResourceDelete` | Очистка связей удаляемого ресурса |

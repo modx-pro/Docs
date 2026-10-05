@@ -1,5 +1,5 @@
-import { DefaultTheme } from 'vitepress'
-import type { ComponentData } from '../plugins/component'
+import type { DefaultTheme } from 'vitepress'
+import type { ComponentData } from '../plugins/component.ts'
 
 export namespace DocsTheme {
   export interface Sponsor {
@@ -15,6 +15,9 @@ export namespace DocsTheme {
 
     sponsorLink?: string
     sponsor?: Sponsor
+    feedback?: {
+      text: string
+    }
   }
 
   export interface TeamMember extends Omit<DefaultTheme.TeamMember, 'name'> {

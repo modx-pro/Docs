@@ -7,11 +7,11 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 Версия: **Free**.
 
-<!-- ![slug](/components/pagebuilder/screenshots/fields/slug.png) -->
+<!-- ![slug](/components/pagebuilder/screenshots/fields/slug.jpg) -->
 
 ## Зачем этот тип
 
-Нормализация сегмента URL, не произвольный text. `sourceField` подтягивает заголовок при первом save. Pro: `responsive` исключён для имён alt, caption, slug.
+Сегмент адреса страницы, не произвольный текст. Пока slug пустой и редактор не правил его вручную, значение следует за полем `sourceField` при изменении источника. После ручного ввода — lock до кнопки Sync. В Pro разные значения для экранов (`responsive`) не применяются к именам alt, caption и slug.
 
 ## Когда использовать
 
@@ -59,9 +59,17 @@ description: "Строка ЧПУ, часто с автогенерацией и
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<span class="slug">[[+slug]]</span>
+```
+
+```fenom
 <span class="slug">{$slug|escape}</span>
 ```
+
+:::
 
 ## Примечание
 
@@ -74,7 +82,7 @@ description: "Строка ЧПУ, часто с автогенерацией и
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

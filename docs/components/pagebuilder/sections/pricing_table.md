@@ -7,11 +7,7 @@ description: "Карточки тарифов с ценой, периодом и
 
 Таблица цен для подписок и пакетов услуг. У каждого плана название, цена, период оплаты и список фич текстом.
 
-<!-- ![Тарифы](/components/pagebuilder/screenshots/sections/pricing_table.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Тарифы](/components/pagebuilder/screenshots/sections/pricing_table.jpg)
 
 ## Зачем таблица тарифов
 
@@ -77,11 +73,11 @@ Repeater **Тарифы**. Поле **Список возможностей**: p
 
 ## Что видит посетитель
 
-Секция `pb-pricing` с карточками планов.
+Секция `pb-pricing-table` с карточками планов.
 
 ## Данные секции {#vyvod-v-section-data}
 
-Пример JSON после сохранения секции. Для media, video и map значения на выводе могут быть обогащены:
+Пример JSON после сохранения и enrich: строка `features` дополнительно разбивается в массив `features_list` (chunk предпочитает его). Для media, video и map значения на выводе могут быть обогащены:
 
 ```json
 {
@@ -94,6 +90,11 @@ Repeater **Тарифы**. Поле **Список возможностей**: p
       "period": "в месяц",
       "description": "Короткое описание блока для первого экрана.",
       "features": "Безлимитные проекты\nПриоритетная поддержка\nAPI-доступ",
+      "features_list": [
+        "Безлимитные проекты",
+        "Приоритетная поддержка",
+        "API-доступ"
+      ],
       "button_label": "Подробнее",
       "button_url": "https://example.com/action",
       "highlighted": true,
@@ -145,7 +146,7 @@ Fenom chunk `pagebuilderpro_pricing_table`:
             </ul>
           {/if}
           {if $item.button_label && $item.button_url}
-            <a class="pb-button pb-pricing-table__cta" href="{$item.button_url|escape:'url'}">{$item.button_label|escape}</a>
+            <a class="pb-button pb-pricing-table__cta" href="{$item.button_url|pb_href|escape}">{$item.button_label|escape}</a>
           {/if}
         </article>
       {/foreach}
@@ -153,10 +154,6 @@ Fenom chunk `pagebuilderpro_pricing_table`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/pricing_table.json`
 
 ## Связанные страницы
 

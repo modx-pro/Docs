@@ -7,11 +7,11 @@ description: "Single value from xPDO optionsSource via Select with search"
 
 Version: **Pro**.
 
-<!-- ![combo](/components/pagebuilder/screenshots/fields/combo.png) -->
+<!-- ![combo](/components/pagebuilder/screenshots/fields/combo.jpg) -->
 
 ## Why this type
 
-Database list: modResource, modTemplate, and other whitelist classes. Loaded via `mgr/field/options` and `pbOnFieldValues`. Dropdown search without a relation modal.
+A list from the database: resources, templates, and other allowed classes. Options load through `mgr/field/options` and the `pbOnFieldValues` event. Search stays in the dropdown, not in a window like [relation](relation).
 
 ## When to use
 
@@ -26,7 +26,7 @@ Resource with pagetitle in data → [relation](relation). Multiple values → [m
 ## Similar types
 
 - [select](select) for a static `options` list
-- [tablecombo](tablecombo) for a custom table row id
+- [tablecombo](tablecombo) is also a list from a MODX class through `optionsSource`. The inspector grid is [table](table)
 
 ## Schema
 
@@ -60,9 +60,17 @@ Key `related` in the section data: string or id from `optionsSource`:
 
 ## Chunk example
 
-```fenom
-{$related|escape}
+::: code-group
+
+```modx
+[[+related]]
 ```
+
+```fenom
+{$related|pb_text}
+```
+
+:::
 
 ## Common properties
 

@@ -7,7 +7,7 @@ description: "Ряд метрик: крупное число и подпись �
 
 Несколько показателей в одну линию или сетку: «10 лет на рынке», «500+ клиентов». Цифра крупно, пояснение мелким текстом.
 
-<!-- ![Цифры и факты](/components/pagebuilder/screenshots/sections/stats.png) -->
+![Цифры и факты](/components/pagebuilder/screenshots/sections/stats.jpg)
 
 ## Зачем выводить цифры
 
@@ -93,23 +93,19 @@ Fenom chunk `pagebuilder_stats`:
 <section class="pb-section pb-section--stats pb-stats{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="stats"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-stats__inner">
     {if $title}
-      <h2 class="pb-heading pb-stats__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-stats__title">{$title|pb_text}</h2>
     {/if}
     <div class="pb-stats__grid">
       {foreach $items as $item}
         <div class="pb-stats__item">
           <div class="pb-stats__value">{$item.value|escape}</div>
-          <div class="pb-stats__label">{$item.label|escape}</div>
+          <div class="pb-stats__label">{$item.label|pb_text}</div>
         </div>
       {/foreach}
     </div>
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/stats.json`
 
 ## Связанные страницы
 

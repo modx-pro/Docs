@@ -7,11 +7,11 @@ description: "Slug string, often auto-generated from sourceField"
 
 Version: **Free**.
 
-<!-- ![slug](/components/pagebuilder/screenshots/fields/slug.png) -->
+<!-- ![slug](/components/pagebuilder/screenshots/fields/slug.jpg) -->
 
 ## Why this type
 
-Normalized URL segment, not free-form text. `sourceField` copies a title on first save. Pro: responsive map excludes alt, caption, slug names.
+A URL segment, not free text. `sourceField` copies a title on the first save. In Pro, per-screen values (`responsive`) are not applied to fields named alt, caption, or slug.
 
 ## When to use
 
@@ -59,9 +59,17 @@ Key `slug` in the section data:
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<span class="slug">[[+slug]]</span>
+```
+
+```fenom
 <span class="slug">{$slug|escape}</span>
 ```
+
+:::
 
 ## Notes
 

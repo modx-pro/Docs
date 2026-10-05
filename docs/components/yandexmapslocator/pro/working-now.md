@@ -1,18 +1,18 @@
 ---
 title: Открыто сейчас
-description: Фильтр working_now, TZ на точке и бейджи YandexMapsLocator Pro
+description: Фильтр working_now, пояс на точке и бейджи YandexMapsLocator Pro
 ---
 
 # Открыто сейчас
 
-**Pro.** На сайте появляются бейджи «Открыто» / «Закрыто», кнопка «Только открытые» и поля `is_open_now`, `status_hint`, `closes_at`, `next_open_at`. В сниппете и REST тот же смысл даёт фильтр `working_now` (или query `working_now=1`).
+**Pro.** На сайте появляются бейджи «Открыто» / «Закрыто», кнопка «Только открытые» и поля `is_open_now`, `status_hint`, `closes_at`, `next_open_at`. Фильтр включается только через `filters=working_now`. Параметр `working_now=1` код не читает.
 
 ## Часовой пояс
 
 В TV `yandexmaps_working_hours` храните **местное время точки**, не UTC сервера.
 
 1. На точке: TV `yandexmaps_timezone` (IANA), например `Europe/Moscow` или `Asia/Omsk`.
-2. Fallback сети: Free-настройка `yandexmapslocator_timezone` (по умолчанию `Europe/Moscow`).
+2. Запасной вариант сети: Free-настройка `yandexmapslocator_timezone` (по умолчанию `Europe/Moscow`).
 
 От пояса зависят фильтр, бейджи и поля статуса.
 
@@ -20,7 +20,7 @@ description: Фильтр working_now, TZ на точке и бейджи Yandex
 
 Для `working_now` / `is_open_now` в `yandexmaps_working_hours` нужен **JSON**.
 
-Ключи дней: `mon` … `sun`. Значение: массив интервалов `"HH:MM-HH:MM"`. Пустой массив — выходной. Интервал через полночь (`22:00-06:00`) тоже ок.
+Ключи дней: `mon` … `sun`. Значение: массив интервалов `"HH:MM-HH:MM"`. Пустой массив: выходной. Интервал через полночь (`22:00-06:00`) допустим.
 
 Пример (пн-чт 09-21, пт 09-22, сб 10-22, вс 10-20):
 
@@ -87,7 +87,7 @@ description: Фильтр working_now, TZ на точке и бейджи Yandex
 
 В чанке точки после Pro `AfterStorePrepare` доступны `{$is_open_now}`, при необходимости `{$status_hint}`, `{$closes_at}`, `{$next_open_at}`.
 
-Разметка статуса как в default `yandexmapslocator.store`:
+Разметка статуса как в `yandexmapslocator.store` пакета:
 
 ```fenom
 {if isset($is_open_now)}
@@ -136,7 +136,7 @@ description: Фильтр working_now, TZ на точке и бейджи Yandex
 
 Поля Pro попадают в ответ только если их перечислили в `fields`.
 
-## UI
+## Интерфейс
 
 Модуль `pro.js` добавляет бейдж на карточке и кнопку «Только открытые» в панели фильтров.
 

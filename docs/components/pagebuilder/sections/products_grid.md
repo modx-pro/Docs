@@ -7,7 +7,7 @@ description: "Витрина товаров категории miniShop3 чер�
 
 Классическая сетка интернет-магазина: карточки с фото, ценой, бейджами и кнопкой «В корзину». Товары из выбранной категории.
 
-<!-- ![Сетка товаров](/components/pagebuilder/screenshots/sections/products_grid.png) -->
+![Сетка товаров](/components/pagebuilder/screenshots/sections/products_grid.jpg)
 
 ::: info
 Требуются PageBuilder Pro и miniShop3.
@@ -32,7 +32,19 @@ description: "Витрина товаров категории miniShop3 чер�
 
 ## Категория и сортировка
 
-**Родительская категория**: msCategory. **Лимит** и **Сортировка** как в msProducts. Нужен установленный miniShop3.
+Поиск категории идёт в `mgr/ms3/categories/search`. Поле `parent` обязательно. Пустой `limit` в chunk становится 12. Тип помечен `"cacheable": false`.
+
+Перед chunk `ProSectionRenderSupport` пишет `parent_id` и `pb_parent_resource`. Значение `sortby` он переводит в `ms_sortby` и `ms_sortdir`:
+
+| `sortby` | `ms_sortby` | `ms_sortdir` |
+| --- | --- | --- |
+| `menuindex` | `msProduct.menuindex` | `ASC` |
+| `popular` | `Data.popular` | `DESC` |
+| `new` | `Data.new` | `DESC` |
+| `price_asc` | `Data.price` | `ASC` |
+| `price_desc` | `Data.price` | `DESC` |
+
+Неизвестное значение сортирует как `menuindex`. Пустая категория показывает «В этой категории пока нет товаров.»
 
 ## Похожие секции
 
@@ -59,7 +71,7 @@ description: "Витрина товаров категории miniShop3 чер�
 
 ### Корень каталога (`parent`)
 
-Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Выбор одного ресурса MODX в модальном окне поиска.
+Тип [relation](../fields/relation#vyvod-v-section-data). Обязательное. Autocomplete по ресурсам MODX в поле инспектора.
 
 ### Лимит (`limit`)
 
@@ -91,10 +103,10 @@ description: "Витрина товаров категории miniShop3 чер�
 Fenom chunk `pagebuilderpro_products_grid`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => $catalogParent,
     'depth' => 10,
     'limit' => $limit|default:12,
@@ -117,15 +129,11 @@ Fenom chunk `pagebuilderpro_products_grid`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">В этой категории пока нет товаров.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_products' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/products_grid.json`
 
 ## Связанные страницы
 

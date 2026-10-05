@@ -7,7 +7,7 @@ description: "Title, text, button, and optional background image above the fold"
 
 The first block below the site header. Visitors see a title, short text, and a linked button. Add a background image or keep a flat background.
 
-<!-- ![Hero](/components/pagebuilder/screenshots/sections/hero.png) -->
+![Hero](/components/pagebuilder/screenshots/sections/hero.jpg)
 
 ## Why you need a hero
 
@@ -107,23 +107,19 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilder_hero`:
 
 ```fenom
-{var $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+{set $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
 <section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
   <div class="pb-section__inner pb-hero__inner">
-    <h1 class="pb-hero__title">{$title|escape}</h1>
+    <h2 class="pb-hero__title">{$title|pb_text}</h2>
     {if $description}
-      <div class="pb-hero__description">{$description|escape}</div>
+      <div class="pb-hero__description">{$description|pb_text}</div>
     {/if}
     {if $button_label && $button_url}
-      <a class="pb-hero__button pb-button" href="{$button_url|escape}">{$button_label|escape}</a>
+      <a class="pb-hero__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|pb_text}</a>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/hero.json`
 
 ## See also
 

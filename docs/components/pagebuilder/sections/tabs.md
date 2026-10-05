@@ -7,11 +7,7 @@ description: "Переключаемые панели с названием вк
 
 Длинный материал делится на вкладки: доставка, оплата, характеристики. Контент каждой вкладки. HTML из richtext.
 
-<!-- ![Вкладки](/components/pagebuilder/screenshots/sections/tabs.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Вкладки](/components/pagebuilder/screenshots/sections/tabs.jpg)
 
 ## Вкладки вместо простыни
 
@@ -96,7 +92,7 @@ Repeater **Вкладки**: **Название вкладки**, **Якорь**
 Fenom chunk `pagebuilderpro_tabs`:
 
 ```fenom
-{var $tabCount = $items|count}
+{set $tabCount = $items|count}
 <section class="pb-section pb-section--tabs pb-tabs{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="tabs" data-pb-tabs{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-tabs__inner">
     {if $title}
@@ -105,7 +101,7 @@ Fenom chunk `pagebuilderpro_tabs`:
     {if $tabCount > 0}
       <div class="pb-tabs__nav" role="tablist" aria-label="{$title|default:'Tabs'|escape}">
         {foreach $items as $item}
-          {var $anchor = $item.anchor|default:('tab-' ~ $item@index)}
+          {set $anchor = $item.anchor|default:('tab-' ~ $item@index)}
           <button
             type="button"
             class="pb-tabs__tab{if $item@first} pb-tabs__tab--active{/if}"
@@ -122,7 +118,7 @@ Fenom chunk `pagebuilderpro_tabs`:
       </div>
       <div class="pb-tabs__panels">
         {foreach $items as $item}
-          {var $anchor = $item.anchor|default:('tab-' ~ $item@index)}
+          {set $anchor = $item.anchor|default:('tab-' ~ $item@index)}
           <div
             class="pb-tabs__panel{if $item@first} pb-tabs__panel--active{/if}"
             id="pb-panel-{$id|default:'section'}-{$item@index}"
@@ -144,10 +140,6 @@ Fenom chunk `pagebuilderpro_tabs`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/tabs.json`
 
 ## Связанные страницы
 

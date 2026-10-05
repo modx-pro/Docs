@@ -1,6 +1,7 @@
 ---
 title: idimage
 description: Automatic similar product suggestions by image
+categories: catalog
 logo: https://modstore.pro/assets/extras/idimage/logo-md.png
 author: webnitros
 modstore: https://modstore.pro/packages/ecommerce/idimage

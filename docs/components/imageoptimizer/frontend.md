@@ -121,9 +121,9 @@ URL с `thumb3x` пропускаются, чтобы не дублироват�
 
 - контексту и URI ресурса
 - `editedon` ресурса
-- хэшу настроек inject
+- хешу настроек inject
 - **generation-счётчику** (увеличивается при каждом успешном `done` в очереди)
-- **хэшу содержимого HTML** (Fenom `file:` и динамические include без смены `editedon`)
+- **хешу содержимого HTML** (Fenom `file:` и динамические include без смены `editedon`)
 - `IMAGEOPTIMIZER_HTML_SERIALIZE_REV`
 
 Новые WebP попадают на фронт без правки ресурса в MODX.

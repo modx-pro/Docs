@@ -1,6 +1,7 @@
 ---
 title: MyFavorites
 description: Избранное
+categories: other
 logo: https://modstore.pro/assets/extras/myfavorites/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/other/myfavorites
@@ -580,7 +581,7 @@ Client ID, Google Client ID), браузер, число позиций в из�
 * --myf-primary-color
 * --myf-secondary-color
 
-``` CSS
+```CSS
 :root {
 --myf-primary-color:red;
 --myf-secondary-color:silver;
@@ -880,7 +881,7 @@ const response = await fetch(`${api}?_rest=favorites`, {
 
 | Имя  | Описание                                               |
 |------|--------------------------------------------------------|
-| muid | ID пользователя MODX, если в этот момент авторизирован |
+| muid | ID пользователя MODX, если в этот момент авторизован |
 
 ### OnMyFavoritesCreateUser - Запускается после создания посетителя MyFavorites.
 

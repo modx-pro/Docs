@@ -7,7 +7,7 @@ description: "Карточки с цитатой, именем, должност
 
 Социальное доказательство: цитата клиента, имя, роль и аватар. Несколько отзывов выводятся сеткой.
 
-<!-- ![Отзывы клиентов](/components/pagebuilder/screenshots/sections/testimonials.png) -->
+![Отзывы клиентов](/components/pagebuilder/screenshots/sections/testimonials.jpg)
 
 ## Что даёт блок отзывов
 
@@ -106,7 +106,7 @@ Fenom chunk `pagebuilder_testimonials`:
 <section class="pb-section pb-section--testimonials pb-testimonials{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="testimonials"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-testimonials__inner">
     {if $title}
-      <h2 class="pb-heading pb-testimonials__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-testimonials__title">{$title|pb_text}</h2>
     {/if}
     <div class="pb-testimonials__grid">
       {foreach $items as $item}
@@ -116,7 +116,7 @@ Fenom chunk `pagebuilder_testimonials`:
           {/if}
           <p class="pb-testimonials__quote">{$item.quote|escape}</p>
           <footer class="pb-testimonials__footer">
-            <div class="pb-testimonials__author">{$item.name|escape}</div>
+            <div class="pb-testimonials__author">{$item.name|pb_text}</div>
             {if $item.role}
               <div class="pb-testimonials__role">{$item.role|escape}</div>
             {/if}
@@ -127,10 +127,6 @@ Fenom chunk `pagebuilder_testimonials`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/testimonials.json`
 
 ## Связанные страницы
 

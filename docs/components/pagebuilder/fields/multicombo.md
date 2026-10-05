@@ -5,13 +5,13 @@ description: "Массив значений из xPDO optionsSource через M
 
 # Поле multicombo
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.png) -->
+<!-- ![multicombo](/components/pagebuilder/screenshots/fields/multicombo.jpg) -->
 
 ## Зачем этот тип
 
-Несколько id из одного xPDO-класса. Тот же контракт `optionsSource`, что у [combo](combo). Скаляры id, без объектов pagetitle как у relation.
+Несколько id из одного класса MODX. Источник списка тот же, что у [combo](combo): `optionsSource`. В данных лежат id, а не объекты с заголовком, как у [relation](relation).
 
 ## Когда использовать
 
@@ -26,7 +26,7 @@ description: "Массив значений из xPDO optionsSource через M
 ## Похожие типы
 
 - [combo](combo) для одного xPDO-значения
-- [tablemulticombo](tablemulticombo) для id из custom table
+- [tablemulticombo](tablemulticombo) для нескольких значений из того же `optionsSource`
 
 ## Настройка
 
@@ -35,6 +35,9 @@ description: "Массив значений из xPDO optionsSource через M
   "name": "ids",
   "type": "multicombo",
   "label": "ID",
+  "optionsSource": {
+    "class": "modUser"
+  },
   "tab": "Контент",
   "width": 100,
   "active": true
@@ -60,11 +63,19 @@ description: "Массив значений из xPDO optionsSource через M
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+<span>[[+ids.0]]</span>
+```
+
 ```fenom
 {foreach $ids as $id}
   <span>{$id|escape}</span>
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -73,11 +84,13 @@ description: "Массив значений из xPDO optionsSource через M
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+
+- Дополнительно: `optionsSource` — тот же контракт, что у [combo](combo) (whitelist классов в [types](types#optionssource)).
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

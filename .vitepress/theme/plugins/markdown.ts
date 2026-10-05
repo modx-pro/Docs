@@ -1,15 +1,47 @@
-import type MarkdownIt from 'markdown-it'
-import type StateBlock from 'markdown-it/lib/rules_block/state_block'
-import { isSpace } from 'markdown-it/lib/common/utils'
+import type { MarkdownRenderer } from 'vitepress'
 import kbd from 'markdown-it-kbd'
+import { headingAnchor, legacyHeadingSlug, uniqueSettingAnchor } from '../anchors.ts'
 
-export const addPlugins = (md: MarkdownIt) => {
+// типы состояния — из MarkdownRenderer VitePress (markdown-it 14), а не из markdown-it в devDependencies
+type StateBlock = Parameters<Parameters<MarkdownRenderer['block']['ruler']['at']>[1]>[0]
+type StateCore = Parameters<Parameters<MarkdownRenderer['core']['ruler']['push']>[1]>[0]
+
+export const addPlugins = (md: MarkdownRenderer) => {
   md.use(kbd)
   md.block.ruler.at('table', table)
+  md.core.ruler.push('setting_heading_alias', settingHeadingAlias)
+}
+
+function settingHeadingAlias(state: StateCore) {
+  for (let i = 0; i < state.tokens.length; i++) {
+    const token = state.tokens[i]
+    if (token.type !== 'heading_open') continue
+
+    const inline = state.tokens[i + 1]
+    if (inline?.type !== 'inline') continue
+
+    const text = (inline.children ?? [])
+      .filter(child => child.type === 'text' || child.type === 'code_inline')
+      .map(child => child.content)
+      .join('')
+      .trim()
+    const key = headingAnchor(text)
+    if (!key) continue
+
+    const legacy = legacyHeadingSlug(text)
+    if (!legacy || legacy === key) continue
+
+    const alias = new state.Token('html_block', '', 0)
+    alias.content = `<span id="${legacy}" hidden></span>\n`
+    state.tokens.splice(i, 0, alias)
+    i += 1
+  }
 }
 
 // from https://github.com/markdown-it/markdown-it/blob/2b6cac25823af011ff3bc7628bc9b06e483c5a08/lib/rules_block/table.js
 // GFM table, non-standard
+// Отличия от оригинала: строке таблицы настроек — id-якорь из первой колонки (uniqueSettingAnchor),
+// ячейкам — data-label с заголовком столбца (подпись ячейки в мобильной вёрстке, global.css)
 
 function table(
   state: StateBlock,
@@ -17,9 +49,12 @@ function table(
   endLine: number,
   silent: any
 ) {
+  const { isSpace } = state.md.utils
   var ch, lineText, pos, i, l, nextLine, headers, columns, columnCount, token,
-      aligns, t, tableLines, tbodyLines, oldParentType, terminate,
+      aligns, t, oldParentType, terminate,
       terminatorRules, firstCh, secondCh;
+  let tableLines: [number, number];
+  let tbodyLines: [number, number] | undefined;
 
   // should have at least two lines
   if (startLine + 2 > endLine) { return false; }
@@ -102,7 +137,8 @@ function table(
   if (silent) { return true; }
 
   oldParentType = state.parentType;
-  // @ts-expect-error
+  // @ts-expect-error: markdown-it 14 сам ставит parentType 'table' (rules_block/table), но ParentType
+  // в @types/markdown-it 14.x его не включает; убрать, когда VitePress перейдёт на markdown-it 15 (там parentType: string)
   state.parentType = 'table';
 
   // use 'blockquote' lists for termination because it's
@@ -160,12 +196,18 @@ function table(
 
     token     = state.push('tr_open', 'tr', 1);
     token.map = [ nextLine, nextLine + 1 ];
+    const env = state.env as { settingAnchorIds?: Set<string> }
+    const seen = env.settingAnchorIds ?? (env.settingAnchorIds = new Set<string>())
+    const anchor = uniqueSettingAnchor(headers[0], columns[0], seen)
+    if (anchor) {
+      token.attrSet('id', anchor)
+    }
 
     for (i = 0; i < columnCount; i++) {
       token          = state.push('td_open', 'td', 1);
-      const attrs = [];
+      const attrs: [string, string][] = [];
       if (aligns[i]) {
-        token.attrs  = attrs.push([ 'style', 'text-align:' + aligns[i] ]);
+        attrs.push([ 'style', 'text-align:' + aligns[i] ]);
       }
 
       attrs.push(['data-label', headers[i].trim()]);

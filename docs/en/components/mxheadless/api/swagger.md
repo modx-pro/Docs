@@ -21,7 +21,7 @@ The page loads Swagger UI from a CDN (version pinned in the package) and points 
 
 Toggle: `mxheadless_swagger_enabled` (default `true`). When `false`, `/docs` returns `404`. Raw OpenAPI JSON stays available.
 
-On production, teams often disable the UI on the public internet when external docs are not needed. See [production checklist](/components/mxheadless/operations/production-checklist).
+On a production site, teams often disable the UI when external docs are not needed. See [production checklist](/components/mxheadless/operations/production-checklist).
 
 ## Live OpenAPI
 
@@ -58,11 +58,11 @@ Discovery (`GET /api/v1`) links to meta URLs. Full core route list: [API overvie
 | Schema | `GET /schema` | Registry objects: fields, filterable, sortable, relations, CRUD flags |
 | OpenAPI | `GET /meta/openapi`, `/meta/openapi.json` | HTTP: methods, path/query params, status codes, security |
 
-Schema fits query clients. OpenAPI fits the HTTP contract and codegen. Registering a new object via the Extension API updates runtime schema and OpenAPI on the site.
+Schema fits query clients. OpenAPI fits the HTTP contract and client generation. Registering a new object via the Extension API updates schema and OpenAPI on the site.
 
 ## TypeScript client generation
 
-Point the generator at `/api/v1/meta/openapi.json`, not enveloped `/meta/openapi`, if the tool expects a root `openapi` field.
+Point the generator at `/api/v1/meta/openapi.json`, not wrapped `/meta/openapi`, if the tool expects a root `openapi` field.
 
 Example with [openapi-typescript](https://github.com/drwpow/openapi-typescript):
 
@@ -70,11 +70,11 @@ Example with [openapi-typescript](https://github.com/drwpow/openapi-typescript):
 npx openapi-typescript https://your-site.example/api/v1/meta/openapi.json -o mxheadless.d.ts
 ```
 
-On CI, compare the static `openapi.yaml` from the [mxHeadless repo](https://github.com/Ibochkarev/mxHeadless/blob/main/docs/openapi.yaml) with the live spec on staging.
+On CI, compare the static `openapi.yaml` from the [mxHeadless repo](https://github.com/Ibochkarev/mxHeadless/blob/main/docs/openapi.yaml) with the live specification on staging.
 
 ## See also
 
 - [API overview](overview)
 - [Querying](querying)
 - [System settings](/components/mxheadless/settings)
-- [Object registration](/components/mxheadless/extensions/objects)
+- [Endpoint registration](/components/mxheadless/extensions/endpoints)

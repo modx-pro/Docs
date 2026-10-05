@@ -6,6 +6,7 @@ author: vgrish
 modstore: https://modstore.pro/packages/payment-system/msmerchant
 
 dependencies: miniShop2
+categories: payment
 ---
 
 # msMerchant

@@ -5,9 +5,9 @@ description: GET /schema and ObjectRegistry in mxHeadless
 
 # Schema
 
-`GET /api/v1/schema` returns objects from `ObjectRegistry` after bootstrap. Clients use it to learn public names, fields, and allowed mutations on **this** install.
+`GET /api/v1/schema` returns objects from `ObjectRegistry` after startup. Clients use it to learn public names, fields, and allowed mutations on **this** install.
 
-No authentication required. The response lists only what code registered. Hidden fields never appear.
+No authentication required. The response lists only what code registered. `hiddenFields` stay in schema `fields`. The serializer strips them from JSON responses.
 
 ```bash
 curl -s https://example.com/api/v1/schema
@@ -21,18 +21,21 @@ curl -s https://example.com/api/v1/schema
     "objects": {
       "resources": {
         "class": "MODX\\Revolution\\modResource",
-        "fields": ["id", "pagetitle", "uri"],
-        "filterable": ["parent", "published", "deleted"],
-        "sortable": ["id", "menuindex", "pagetitle"],
-        "searchable": ["pagetitle", "longtitle", "alias", "uri"],
+        "fields": ["id", "pagetitle", "longtitle", "alias", "uri", "content", "published", "parent", "template", "properties"],
+        "filterable": ["id", "parent", "published", "deleted", "alias", "hidemenu", "template"],
+        "sortable": ["id", "menuindex", "pagetitle", "createdon", "editedon", "publishedon"],
+        "searchable": ["pagetitle", "longtitle", "description", "introtext", "alias", "uri"],
         "required": ["pagetitle"],
-        "protected": ["createdby", "editedby"],
-        "immutable": ["id", "createdon"],
+        "protected": ["createdby", "editedby", "deletedby", "publishedby"],
+        "immutable": ["id", "createdon", "createdby", "editedon", "editedby", "deletedon"],
         "readable": true,
         "creatable": true,
         "updatable": true,
         "deletable": true,
-        "relations": []
+        "relations": [
+          { "name": "parent", "target": "resources", "type": "to_one" },
+          { "name": "children", "target": "resources", "type": "to_many" }
+        ]
       }
     }
   },
@@ -58,7 +61,7 @@ Extras add entries in `OnMxHeadlessRegister`. Before core bootstrap, `count` may
 
 ## Schema vs OpenAPI
 
-Schema describes objects and query capabilities from PHP definitions. OpenAPI describes HTTP paths and status codes. See [Swagger and OpenAPI](swagger).
+Schema describes objects and query parameters from PHP definitions. OpenAPI describes HTTP paths and status codes. See [Swagger and OpenAPI](swagger).
 
 ## See also
 

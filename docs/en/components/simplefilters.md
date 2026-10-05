@@ -1,6 +1,7 @@
 ---
 title: simpleFilters
 description: Simple resource filtering for MODX 3.
+categories: catalog
 logo: https://modstore.pro/assets/extras/simplefilters/logo-md.png
 author: Romanov Pavel
 modstore: https://modstore.pro/packages/ecommerce/simplefilters
@@ -100,7 +101,7 @@ switch ($modx->event->name){
 
 ### Working without the index
 
-If there are few resources/fields or you cannot maintain the index, switch to direct table queries by passing `&fromIndex=`0`` in the snippet call.
+If there are few resources/fields or you cannot maintain the index, switch to direct table queries by passing `` &fromIndex=`0` `` in the snippet call.
 
 ## simpleFilters snippet
 

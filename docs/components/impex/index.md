@@ -1,6 +1,7 @@
 ---
 title: Impex / Impex3
 description: Импорт и экспорт ресурсов MODX Revolution / MODX 3 и товаров miniShop2 / miniShop3
+categories: import-export
 logo: https://modstore.pro/assets/extras/impex3/logo-md.png
 author: Romanov Pavel
 modstore: https://modstore.pro/packages/import-and-export/impex3
@@ -20,7 +21,8 @@ items: [
 
 - Форматы XLS, XLSX, CSV
 - PHP 7.4 и 8.x
-- Поля miniShop2 / miniShop3: опции категорий, производитель, галерея
+- Поля miniShop2 / MiniShop3: опции категорий, производитель, галерея
+- Поддержка галереи Gallery3x
 - MIGX-TV с настраиваемыми разделителями
 - Контейнеры Collections
 - Пакетный импорт и тестовый прогон

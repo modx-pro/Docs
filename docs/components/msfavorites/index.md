@@ -1,6 +1,7 @@
 ---
 title: msFavorites
 description: Создание списков избранного
+categories: catalog
 logo: https://modstore.pro/assets/extras/msfavorites/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/ecommerce/msfavorites

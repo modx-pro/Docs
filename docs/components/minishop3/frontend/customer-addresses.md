@@ -57,6 +57,8 @@ title: Адреса доставки
 | `{$customer}` | array | Данные покупателя |
 | `{$success}` | string | Сообщение об успехе |
 | `{$error}` | string | Сообщение об ошибке |
+| `{$page_url}` | string | URL страницы со списком адресов |
+| `{$create_url}` | string | URL страницы в режиме создания (`?mode=create`) |
 
 ### В чанке tpl.msCustomer.address.row
 
@@ -76,7 +78,9 @@ title: Адреса доставки
 | `{$floor}` | string | Этаж |
 | `{$room}` | string | Квартира |
 | `{$metro}` | string | Метро |
-| `{$text_address}` | string | Комментарий к адресу |
+| `{$comment}` | string | Комментарий к адресу |
+| `{$page_url}` | string | URL страницы со списком адресов |
+| `{$edit_url}` | string | URL редактирования адреса (`?mode=edit&id=...`) |
 
 ### В чанке tpl.msCustomer.address.form
 
@@ -86,6 +90,7 @@ title: Адреса доставки
 | `{$address}` | array | Данные адреса (при редактировании) |
 | `{$errors}` | array | Ошибки валидации |
 | `{$customer}` | array | Данные покупателя |
+| `{$page_url}` | string | URL страницы со списком адресов (кнопка «Отмена») |
 
 ## Чанк списка адресов
 
@@ -211,9 +216,8 @@ title: Адреса доставки
             </h5>
         </div>
         <div class="card-body">
-            <form class="ms3_form ms3-address-form" method="post" action="">
-                <input type="hidden" name="ms3_action"
-                       value="customer/{if $mode == 'edit'}address-update{else}address-create{/if}">
+            <form class="ms3_form ms3-address-form" method="post" action="" data-ms3-form="customer-address">
+                <input type="hidden" name="ms3_action" value="customer/{if $mode == 'edit'}address-update{else}address-create{/if}">
                 {if $mode == 'edit'}
                 <input type="hidden" name="id" value="{$address.id}">
                 {/if}
@@ -223,9 +227,15 @@ title: Адреса доставки
                     <label for="name" class="form-label">
                         {'ms3_customer_address_name' | lexicon}
                     </label>
-                    <input type="text" class="form-control" id="name" name="name"
+                    <input type="text"
+                           class="form-control {if $errors.name?}is-invalid{/if}"
+                           id="name"
+                           name="name"
                            value="{$address.name}"
                            placeholder="{'ms3_customer_address_name_placeholder' | lexicon}">
+                    {if $errors.name?}
+                    <div class="invalid-feedback">{$errors.name}</div>
+                    {/if}
                     <div class="form-text">
                         {'ms3_customer_address_name_help' | lexicon}
                     </div>
@@ -237,8 +247,14 @@ title: Адреса доставки
                         <label for="index" class="form-label">
                             {'ms3_customer_index' | lexicon}
                         </label>
-                        <input type="text" class="form-control" id="index" name="index"
+                        <input type="text"
+                               class="form-control {if $errors.index?}is-invalid{/if}"
+                               id="index"
+                               name="index"
                                value="{$address.index}">
+                        {if $errors.index?}
+                        <div class="invalid-feedback">{$errors.index}</div>
+                        {/if}
                     </div>
 
                     {* Страна *}
@@ -246,8 +262,14 @@ title: Адреса доставки
                         <label for="country" class="form-label">
                             {'ms3_customer_country' | lexicon}
                         </label>
-                        <input type="text" class="form-control" id="country" name="country"
+                        <input type="text"
+                               class="form-control {if $errors.country?}is-invalid{/if}"
+                               id="country"
+                               name="country"
                                value="{$address.country}">
+                        {if $errors.country?}
+                        <div class="invalid-feedback">{$errors.country}</div>
+                        {/if}
                     </div>
                 </div>
 
@@ -257,8 +279,14 @@ title: Адреса доставки
                         <label for="region" class="form-label">
                             {'ms3_customer_region' | lexicon}
                         </label>
-                        <input type="text" class="form-control" id="region" name="region"
+                        <input type="text"
+                               class="form-control {if $errors.region?}is-invalid{/if}"
+                               id="region"
+                               name="region"
                                value="{$address.region}">
+                        {if $errors.region?}
+                        <div class="invalid-feedback">{$errors.region}</div>
+                        {/if}
                     </div>
 
                     {* Город *}
@@ -266,8 +294,15 @@ title: Адреса доставки
                         <label for="city" class="form-label">
                             {'ms3_customer_city' | lexicon} <span class="text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" id="city" name="city"
-                               value="{$address.city}" required>
+                        <input type="text"
+                               class="form-control {if $errors.city?}is-invalid{/if}"
+                               id="city"
+                               name="city"
+                               value="{$address.city}"
+                               required>
+                        {if $errors.city?}
+                        <div class="invalid-feedback">{$errors.city}</div>
+                        {/if}
                     </div>
                 </div>
 
@@ -276,8 +311,15 @@ title: Адреса доставки
                     <label for="street" class="form-label">
                         {'ms3_customer_street' | lexicon} <span class="text-danger">*</span>
                     </label>
-                    <input type="text" class="form-control" id="street" name="street"
-                           value="{$address.street}" required>
+                    <input type="text"
+                           class="form-control {if $errors.street?}is-invalid{/if}"
+                           id="street"
+                           name="street"
+                           value="{$address.street}"
+                           required>
+                    {if $errors.street?}
+                    <div class="invalid-feedback">{$errors.street}</div>
+                    {/if}
                 </div>
 
                 <div class="row">
@@ -286,8 +328,15 @@ title: Адреса доставки
                         <label for="building" class="form-label">
                             {'ms3_customer_building' | lexicon} <span class="text-danger">*</span>
                         </label>
-                        <input type="text" class="form-control" id="building" name="building"
-                               value="{$address.building}" required>
+                        <input type="text"
+                               class="form-control {if $errors.building?}is-invalid{/if}"
+                               id="building"
+                               name="building"
+                               value="{$address.building}"
+                               required>
+                        {if $errors.building?}
+                        <div class="invalid-feedback">{$errors.building}</div>
+                        {/if}
                     </div>
 
                     {* Подъезд *}
@@ -295,8 +344,14 @@ title: Адреса доставки
                         <label for="entrance" class="form-label">
                             {'ms3_customer_entrance' | lexicon}
                         </label>
-                        <input type="text" class="form-control" id="entrance" name="entrance"
+                        <input type="text"
+                               class="form-control {if $errors.entrance?}is-invalid{/if}"
+                               id="entrance"
+                               name="entrance"
                                value="{$address.entrance}">
+                        {if $errors.entrance?}
+                        <div class="invalid-feedback">{$errors.entrance}</div>
+                        {/if}
                     </div>
 
                     {* Этаж *}
@@ -304,8 +359,14 @@ title: Адреса доставки
                         <label for="floor" class="form-label">
                             {'ms3_customer_floor' | lexicon}
                         </label>
-                        <input type="text" class="form-control" id="floor" name="floor"
+                        <input type="text"
+                               class="form-control {if $errors.floor?}is-invalid{/if}"
+                               id="floor"
+                               name="floor"
                                value="{$address.floor}">
+                        {if $errors.floor?}
+                        <div class="invalid-feedback">{$errors.floor}</div>
+                        {/if}
                     </div>
 
                     {* Квартира *}
@@ -313,8 +374,14 @@ title: Адреса доставки
                         <label for="room" class="form-label">
                             {'ms3_customer_room' | lexicon}
                         </label>
-                        <input type="text" class="form-control" id="room" name="room"
+                        <input type="text"
+                               class="form-control {if $errors.room?}is-invalid{/if}"
+                               id="room"
+                               name="room"
                                value="{$address.room}">
+                        {if $errors.room?}
+                        <div class="invalid-feedback">{$errors.room}</div>
+                        {/if}
                     </div>
                 </div>
 
@@ -323,22 +390,36 @@ title: Адреса доставки
                     <label for="metro" class="form-label">
                         {'ms3_customer_metro' | lexicon}
                     </label>
-                    <input type="text" class="form-control" id="metro" name="metro"
+                    <input type="text"
+                           class="form-control {if $errors.metro?}is-invalid{/if}"
+                           id="metro"
+                           name="metro"
                            value="{$address.metro}">
+                    {if $errors.metro?}
+                    <div class="invalid-feedback">{$errors.metro}</div>
+                    {/if}
                 </div>
 
-                {* Комментарий *}
+                {* Комментарий к адресу *}
                 <div class="mb-3">
                     <label for="text_address" class="form-label">
                         {'ms3_customer_comment' | lexicon}
                     </label>
-                    <textarea class="form-control" id="text_address" name="text_address"
+                    <textarea class="form-control {if $errors.text_address?}is-invalid{/if}"
+                              id="text_address"
+                              name="text_address"
                               rows="2">{$address.text_address}</textarea>
+                    {if $errors.text_address?}
+                    <div class="invalid-feedback">{$errors.text_address}</div>
+                    {/if}
+                    <div class="form-text">
+                        {'ms3_customer_address_comment_help' | lexicon}
+                    </div>
                 </div>
 
                 {* Кнопки *}
                 <div class="d-flex justify-content-between gap-2 mt-4">
-                    <a href="?" class="btn btn-secondary">
+                    <a href="{$page_url}" class="btn btn-secondary">
                         {'ms3_customer_cancel' | lexicon}
                     </a>
                     <button type="submit" class="btn btn-primary ms3_link">
@@ -388,10 +469,10 @@ DELETE /api/v1/customer/addresses/{id}               // Удалить адре�
 
 | Хук | Описание |
 | --- | --- |
-| `beforeSetDefaultAddress` | Перед установкой адреса по умолчанию |
-| `afterSetDefaultAddress` | После установки адреса по умолчанию |
-| `beforeDeleteAddress` | Перед удалением адреса |
-| `afterDeleteAddress` | После удаления адреса |
+| `beforeCreateAddress` / `afterCreateAddress` | Создание адреса |
+| `beforeUpdateAddress` / `afterUpdateAddress` | Редактирование адреса |
+| `beforeSetDefaultAddress` / `afterSetDefaultAddress` | Адрес по умолчанию |
+| `beforeDeleteAddress` / `afterDeleteAddress` | Удаление адреса |
 
 ## Обработка форм
 
@@ -400,22 +481,35 @@ DELETE /api/v1/customer/addresses/{id}               // Удалить адре�
 | Создание | `customer/address-create` | Создание нового адреса |
 | Редактирование | `customer/address-update` | Обновление адреса |
 
+```mermaid
+flowchart TB
+  Form[Форма адреса] --> Req["name city street обязательны"]
+  Req --> API["customer/address-create или update"]
+  API --> Field[comment не text_address]
+```
+
 ## Поля адреса
 
 | Поле | Обязательное | Описание |
 | --- | --- | --- |
-| `name` | Нет | Название адреса (Дом, Офис) |
+| `name` | **Да** | Название адреса (Дом, Офис) |
 | `index` | Нет | Почтовый индекс |
 | `country` | Нет | Страна |
 | `region` | Нет | Регион/область |
 | `city` | **Да** | Город |
 | `street` | **Да** | Улица |
-| `building` | **Да** | Дом |
+| `building` | Нет | Дом |
 | `entrance` | Нет | Подъезд |
 | `floor` | Нет | Этаж |
 | `room` | Нет | Квартира/офис |
 | `metro` | Нет | Станция метро |
-| `text_address` | Нет | Комментарий к адресу |
+| `comment` | Нет | Комментарий к адресу |
+
+Поле `text_address` относится к адресу **заказа** (`msOrderAddress`), не к сохранённому адресу покупателя (`msCustomerAddress`).
+
+::: warning Форма vs API
+Демо-чанк `ms3_customer_address_form.tpl` шлёт `text_address` и помечает `building` как required. API ждёт `comment` и `name`+`city`+`street` ([issue #816](https://github.com/modx-pro/MiniShop3/issues/816)).
+:::
 
 ## Системные настройки
 

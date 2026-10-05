@@ -1,6 +1,7 @@
 ---
 title: MyFavorites
 description: Favorites
+categories: other
 logo: https://modstore.pro/assets/extras/myfavorites/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/other/myfavorites
@@ -77,7 +78,7 @@ Set CSS variables for colors:
 
 #### Example
 
-``` CSS
+```CSS
 :root {
   --myf-primary-color:red;
   --myf-secondary-color:silver;
@@ -316,7 +317,7 @@ Use CSS variables for styling.
 * `--myf-primary-color`
 * `--myf-secondary-color`
 
-``` CSS
+```CSS
 :root {
   --myf-primary-color:red;
   --myf-secondary-color:silver;

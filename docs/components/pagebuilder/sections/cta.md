@@ -7,7 +7,7 @@ description: "Компактный блок с заголовком, текст�
 
 Короткий акцентный блок посередине или в конце страницы. Заголовок, поясняющий текст и одна кнопка с URL.
 
-<!-- ![Призыв к действию](/components/pagebuilder/screenshots/sections/cta.png) -->
+![Призыв к действию](/components/pagebuilder/screenshots/sections/cta.jpg)
 
 ## Зачем отдельный CTA
 
@@ -89,22 +89,18 @@ Fenom chunk `pagebuilder_cta`:
 ```fenom
 <section class="pb-section pb-section--cta pb-cta{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="cta"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-cta__inner">
-    <h2 class="pb-heading pb-cta__title">{$title|escape}</h2>
+    <h2 class="pb-heading pb-cta__title">{$title|pb_text}</h2>
     {if $text}
-      <p class="pb-cta__text">{$text|escape}</p>
+      <p class="pb-cta__text">{$text|pb_text}</p>
     {/if}
     {if $button_label && $button_url}
       <div class="pb-cta__actions">
-        <a class="pb-cta__button pb-button" href="{$button_url|escape:'url'}">{$button_label|escape}</a>
+        <a class="pb-cta__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|pb_text}</a>
       </div>
     {/if}
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/cta.json`
 
 ## Связанные страницы
 

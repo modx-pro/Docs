@@ -1,10 +1,17 @@
 ---
 title: msBulkEditor
 description: Массовое редактирование товаров MiniShop3 в менеджере MODX 3
-author: ibochkarev
+author: Ibochkarev
+logo: https://modstore.pro/assets/extras/msbulkeditor/logo.png
+modstore: https://modstore.pro/packages/ecommerce/msbulkeditor
 dependencies: [miniShop3, VueTools]
-categories: minishop3
+categories: catalog
 
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+  - vue3
 items: [
   {
     text: 'Начало работы',
@@ -59,7 +66,7 @@ items: [
 
 ## Кому подходит
 
-| Роль | Что делать в docs |
+| Роль | Куда идти |
 | --- | --- |
 | Менеджер каталога | [Быстрый старт](quick-start), [сценарии](interface/flows), [FAQ](faq) |
 | Администратор MODX | [Установка](#установка), [настройки и права](settings) |
@@ -115,8 +122,8 @@ flowchart LR
 | --- | --- |
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
-| MiniShop3 | 1.0+ |
-| VueTools (`modxpro-vue-core`) | 1.0+ |
+| MiniShop3 | установлен |
+| VueTools (`modxpro-vue-core`) | установлен |
 
 ### Обязательные зависимости
 
@@ -127,7 +134,7 @@ flowchart LR
 
 - **[ms3Variants](/components/ms3variants/)**: правки вариантов товара
 - **[Scheduler](/components/scheduler/)**: автоочистка журнала операций
-- **OpenSpout** (идёт в vendor пакета): файлы XLSX
+- **OpenSpout** (идёт в поставке пакета): файлы XLSX
 
 ## Установка
 
@@ -148,6 +155,6 @@ flowchart LR
 | **Экспертный режим** | Операция на всех товарах по фильтру, не только на отмеченных |
 | **Пресет** | Сохранённая настройка операции под именем (для повторного запуска) |
 | **Мастер привязки** | Диалог, если у части товаров нет нужного TV или опции |
-| **fieldType** | Внутренний код типа операции (`price`, `tv`, …). В UI вы видите русские названия |
+| **fieldType** | Внутренний код типа операции (`price`, `tv`, …). В интерфейсе вы видите русские названия |
 
 Дальше: [Быстрый старт](quick-start) или [обзор вкладок](interface/).

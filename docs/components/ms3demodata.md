@@ -1,9 +1,14 @@
 ---
 title: MS3 Demo Data
 description: Генератор демо-данных для MiniShop3 — производители, категории, товары, клиенты, заказы
+categories: utilities
 logo: https://modstore.pro/assets/extras/ms3demodata/logo.png
 author: modx-pro
 repository: https://github.com/modx-pro/ms3demodata
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 ---
 # MS3 Demo Data
 

@@ -1,6 +1,7 @@
 ---
 title: CallBack
 description: Компонент для вывода, обработки и ведения журнала заявок на обратный звонок
+categories: notifications
 
 ---
 

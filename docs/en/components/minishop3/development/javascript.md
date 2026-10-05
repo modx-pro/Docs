@@ -797,10 +797,12 @@ MiniShop3 uses tokens to identify the cart session.
 
 ### How it works
 
-1. On first request `TokenManager` gets a token from the server
-2. Token is stored in `localStorage` with TTL
-3. Token is added to all requests automatically
-4. When expired the token is refreshed automatically
+1. On first request the client gets a token (`GET /customer/token/get` or auto-mint on cart)
+2. Since 1.6 the main browser approach is httpOnly cookie `ms3_token`, not `localStorage`
+3. Same-site requests use `credentials: 'include'`; headless can send `Authorization: Bearer`
+4. Rotation on login / `token/refresh`
+
+Details: [Web API authorization](/en/components/minishop3/development/web-api/auth), [Frontend JavaScript](/en/components/minishop3/development/frontend-js).
 
 ### Manual control
 

@@ -6,6 +6,10 @@ lastUpdated: true
 logo: https://modx3.art-sites.ru/assets/components/mscdek/img/cdek.png
 modstore: https://modstore.pro/packages/delivery/ms-cdek2
 author: ShevArtV
+compatibility:
+  - modx3
+  - php81
+  - minishop3
 items: [
   { text: 'Начало работы', link: 'index' },
   { text: 'API', link: 'api' },
@@ -13,6 +17,7 @@ items: [
   { text: 'Разработка', link: 'development' },
 ]
 dependencies: [ 'MiniShop3' ]
+categories: delivery
 ---
 
 # msCDEK

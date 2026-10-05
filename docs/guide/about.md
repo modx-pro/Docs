@@ -29,7 +29,7 @@ lastUpdated: false
 
 ## Технологии сайта
 
-Статический сайт собирается [VitePress](https://vitepress.dev/) поверх [Vite](https://vitejs.dev/): Markdown в HTML, подсветка кода (Shiki), поиск, тёмная тема, встраиваемые диаграммы Mermaid. Репозиторий — обычный Node.js-проект: зависимости через **pnpm** / npm / yarn, скрипты в `package.json`.
+Статический сайт собирается [VitePress](https://vitepress.dev/) поверх [Vite](https://vitejs.dev/): Markdown в HTML, подсветка кода (Shiki), поиск, тёмная тема, встраиваемые диаграммы Mermaid. Репозиторий — обычный Node.js-проект: зависимости через **pnpm**, скрипты в `package.json`.
 
 ## С чего начать автору
 

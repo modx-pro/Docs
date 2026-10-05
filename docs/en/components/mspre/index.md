@@ -1,6 +1,7 @@
 ---
 title: msPre
 description: Bulk editing and filtering of products and resources
+categories: catalog
 logo: https://modstore.pro/assets/extras/mspre/logo.png
 author: webnitros
 modstore: https://modstore.pro/packages/ecommerce/mspre

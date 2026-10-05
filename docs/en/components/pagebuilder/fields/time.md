@@ -7,11 +7,11 @@ description: "Time of day without a calendar date"
 
 Version: **Free**.
 
-<!-- ![time](/components/pagebuilder/screenshots/fields/time.png) -->
+<!-- ![time](/components/pagebuilder/screenshots/fields/time.jpg) -->
 
 ## Why this type
 
-Time picker, not a free string. Pairs with date in separate fields. Good for schedules and opening hours.
+A time field, not a free string. Put the date in a separate [date](date) field. It fits a schedule and opening hours.
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `starts_at` in the section data (`HH:MM`):
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<span class="time">[[+starts_at]]</span>
+```
+
+```fenom
 <span class="time">{$starts_at|escape}</span>
 ```
+
+:::
 
 ## Common properties
 

@@ -5,13 +5,13 @@ description: "Объект id name caption выбранного MODX TV"
 
 # Поле tv
 
-Версия: **Pro**.
+Версия: **Free**. Тип не предлагается при создании нового поля в CMP; уже сохранённый в schema открывается.
 
-<!-- ![tv](/components/pagebuilder/screenshots/fields/tv.png) -->
+<!-- ![tv](/components/pagebuilder/screenshots/fields/tv.jpg) -->
 
 ## Зачем этот тип
 
-Выбор template variable для гибридного chunk: на фронте `[[*{$tv.name}]]`. Pro-мост между секцией PB и TV ресурса.
+Редактор выбирает дополнительное поле ресурса (TV). На сайте его значение выводят как `[[*{$tv.name}]]`. Секция не копирует значение к себе, а указывает, какую TV читать.
 
 ## Когда использовать
 
@@ -61,9 +61,17 @@ description: "Объект id name caption выбранного MODX TV"
 
 ## Пример в chunk
 
-```html
-[[*{$tv.name}]]
+::: code-group
+
+```modx
+[[*tvname]]
 ```
+
+```fenom
+{$_modx->resource[$tv.name]}
+```
+
+:::
 
 ## Общие свойства
 
@@ -72,7 +80,7 @@ description: "Объект id name caption выбранного MODX TV"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

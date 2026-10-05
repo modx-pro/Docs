@@ -7,11 +7,11 @@ description: "Boolean via PrimeVue switch in the inspector"
 
 Version: **Free**.
 
-<!-- ![toggle](/components/pagebuilder/screenshots/fields/toggle.png) -->
+<!-- ![toggle](/components/pagebuilder/screenshots/fields/toggle.jpg) -->
 
 ## Why this type
 
-Clear on/off without radio or checkbox. Same boolean in data as yesno. Good for frequent mode toggles.
+An on/off switch, without radio buttons or a checkbox. The data is yes or no, the same as [yesno](yesno). It fits a mode that editors switch often.
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `enabled` in the section data:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<div class="block is-enabled">…</div>
+```
+
 ```fenom
 {if $enabled}<div class="block is-enabled">…</div>{/if}
 ```
+
+:::
 
 ## Common properties
 

@@ -1,6 +1,7 @@
 ---
 title: mSync
 description: Sync products, offers and orders with 1C
+categories: import-export
 logo: https://modstore.pro/assets/extras/msync/logo.png
 author: argnist
 modstore: https://modstore.pro/packages/import-and-export/msync

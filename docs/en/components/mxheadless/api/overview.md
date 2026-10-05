@@ -7,7 +7,7 @@ description: Envelope, full endpoint list, discovery, health, schema, and OpenAP
 
 Base URL: `{prefix}/v1`, default `/api/v1`.
 
-Live catalog on an installed site: `GET /meta/endpoints` and Swagger UI at `/docs`. Below are **core** routes from `RoutesRegistrar` and `CoreEndpointBootstrap` (package version 1.0.42). Extras may add their own via `registerEndpoint`.
+Live catalog on an installed site: `GET /meta/endpoints` and Swagger UI at `/docs`. Below are **core** routes from `RoutesRegistrar` and `CoreEndpointBootstrap` (package version 1.0.43). Extras add their own via `registerEndpoint`.
 
 ## Success envelope
 
@@ -35,7 +35,7 @@ On error the response follows [RFC 9457](errors) with no `data`/`meta` wrapper.
 | Method | Path | Public | Scope | Purpose |
 | --- | --- | --- | --- | --- |
 | GET | `/` | yes | - | Discovery: version, capabilities |
-| GET | `/health` | yes | - | Health (DB). Available with kill switch |
+| GET | `/health` | yes | - | DB health: `data.status` (`ok` / `degraded`), `data.database`, `data.timestamp`. Available with kill switch |
 | GET | `/schema` | yes | - | Schema of registered objects |
 | GET | `/docs` | yes | - | Swagger UI (`mxheadless_swagger_enabled`) |
 | GET | `/meta/endpoints` | yes | - | Live endpoint catalog |
@@ -87,7 +87,7 @@ Public GET works for anonymous callers. API key or OAuth on a public GET still n
 
 ## Generic objects
 
-Only for names in `ObjectRegistry` (core + extras). Unregistered `{name}` → `404`.
+Only for names in `ObjectRegistry` (core + extras). Unregistered `{name}` returns `404`.
 
 | Method | Path | Public | Scope |
 | --- | --- | --- | --- |

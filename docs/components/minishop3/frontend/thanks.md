@@ -90,13 +90,7 @@ title: Спасибо за заказ
 
 ## Как работает определение заказа
 
-После успешного оформления заказа происходит редирект на страницу благодарности с GET-параметром:
-
-```
-/thanks/?msorder=15
-```
-
-или с UUID заказа:
+После успешного оформления заказа происходит редирект на страницу благодарности с GET-параметром UUID:
 
 ```
 /thanks/?msorder=a1b2c3d4-e5f6-7890-abcd-ef1234567890
@@ -139,19 +133,33 @@ UUID-ссылки можно безопасно отправлять по email 
 
 После оформления заказа покупатель перенаправляется на страницу благодарности. URL страницы задаётся в системных настройках:
 
-| Настройка | Описание |
-| --- | --- |
-| `ms3.page_id.thanks` | ID ресурса страницы "Спасибо за заказ" |
+| Настройка | По умолчанию | Описание |
+| --- | --- | --- |
+| `ms3_order_redirect_thanks_id` | `1` | ID ресурса страницы «Спасибо» после `orderAPI.submit` |
+| `ms3_order_success_page_id` | `0` | Куда вести после успешной оплаты (`return_url` шлюза). `0` — страница заказа / thanks по логике провайдера |
 
-При оформлении заказа происходит редирект (после `orderAPI.submit` / hook `afterSubmitOrder`):
+Ключа `ms3.page_id.thanks` в пакете нет. В демо-`thanks.tpl` ссылка «Продолжить покупки» читает несуществующий `ms3.page_id.catalog` ([issue #817](https://github.com/modx-pro/MiniShop3/issues/817)).
+
+При оформлении заказа редирект (после `orderAPI.submit` / hook `afterSubmitOrder`):
 
 ```javascript
 ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
   if (response.success && response.data.redirect) {
     window.location.href = response.data.redirect
-    // например /thanks/?msorder=15
+    // например /thanks/?msorder=<uuid>
   }
 })
+```
+
+Submit кладёт в URL **UUID** заказа, не числовой id. Числовой `?msorder=15` `msGetOrder` ещё принимает вручную, но после оформления его не отдаёт.
+
+```mermaid
+flowchart TB
+  Submit[orderAPI.submit] --> Setting[ms3_order_redirect_thanks_id]
+  Setting --> Page[Страница Спасибо]
+  Page --> GetOrder["msGetOrder ?msorder=uuid"]
+  PayOk[Успешная оплата] --> SuccessId[ms3_order_success_page_id]
+  SuccessId -->|0| OrderPage[Страница заказа по шлюзу]
 ```
 
 ## Кастомизация
@@ -207,10 +215,12 @@ ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
 
 | Получатель | Шаблон | Описание |
 | --- | --- | --- |
-| Покупатель | `tpl.msEmail.order.new` | Подтверждение заказа |
-| Менеджер | `tpl.msEmail.order.manager` | Уведомление о новом заказе |
+| Покупатель | `tpl.msEmail.new.customer` | Подтверждение заказа |
+| Менеджер | `tpl.msEmail.new.manager` | Уведомление о новом заказе |
 
-Настройка уведомлений описана в разделе [События → Уведомления](/components/minishop3/development/events/notifications).
+Имена `tpl.msEmail.order.new` / `tpl.msEmail.order.manager` в пакет не входят (только устаревшая подсказка лексикона). Фактическая доставка писем идёт через [Центр уведомлений](/components/minishop3/interface/notifications) (`order_status_changed`; `order_created` в UI есть, но не шлётся — [#811](https://github.com/modx-pro/MiniShop3/issues/811)).
+
+Настройка: [События → Уведомления](/components/minishop3/development/events/notifications).
 
 ## Адаптивная вёрстка
 

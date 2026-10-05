@@ -7,26 +7,26 @@ description: "Array of image media objects with enrich metadata"
 
 Version: **Pro**.
 
-<!-- ![gallery](/components/pagebuilder/screenshots/fields/gallery.png) -->
+<!-- ![gallery](/components/pagebuilder/screenshots/fields/gallery.jpg) -->
 
 ## Why this type
 
-Multiple photos with alt and caption in repeater-like UI. Same enrich as image per frame. Pro advanced-fields.
+Several photos in one field. Each photo has its own alt text and caption. After save, the file gets a URL, width, and height, the same as [image](image). The type is in PageBuilder Pro.
 
 ## When to use
 
-- Slides without dedicated carousel section
-- Product screenshot set
-- Portfolio grid source data
+- Several photos in one section, without a separate carousel
+- Product screenshots
+- Photos for a portfolio grid
 
 ## Tips
 
-Single frame fits [image](image). In chunk loop array and `{$slide.url}`.
+One photo is easier with [image](image). In the chunk, loop the array and use the photo URL: `{$slide.url}`.
 
 ## Similar types
 
 - [image](image) for one file
-- [repeater](repeater) + image for custom nested schema (Free)
+- [repeater](repeater) with an image field when you need your own row schema. Available in Free
 
 ## Schema
 
@@ -92,11 +92,25 @@ Key `shots` in the section data: array of media objects after enrich:
 
 ## Chunk example
 
-```fenom
+::: code-group
+
+```modx
 {foreach $shots as $image}
-  <img src="{$image.url|escape}" width="{$image.width}" height="{$image.height}" alt="{$image.title|escape}">
+[[$pagebuilder_partial_image?
+  &image=`{$image}`
+  &alt=`{$image.title}`
+  &class=`pb-gallery__media`
+]]
 {/foreach}
 ```
+
+```fenom
+{foreach $shots as $image}
+  {include 'pagebuilder_partial_image' image=$image alt=$image.title class='pb-gallery__media'}
+{/foreach}
+```
+
+:::
 
 ## Common properties
 

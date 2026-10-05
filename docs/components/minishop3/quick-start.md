@@ -10,8 +10,8 @@ description: Установка MiniShop3, служебные страницы, 
 
 | Требование | Версия |
 | --- | --- |
-| MODX Revolution | 3.0.0+ |
-| PHP | 8.1+ |
+| MODX Revolution | 3.0.3+ |
+| PHP | 8.2+ |
 | MySQL | 5.7+ / MariaDB 10.3+ |
 | Composer | 2.x |
 
@@ -37,7 +37,7 @@ description: Установка MiniShop3, служебные страницы, 
 2. Сниппеты, плагины, чанки.
 3. Системные настройки с префиксом `ms3_`.
 4. Пять статусов заказа (id 1–5: черновик, новый, оплачен, отправлен, отменён). Ключи `ms3_status_new` / `paid` / `canceled` получают id 2, 3, 5.
-5. Доставка «Самовывоз» (id 1) и оплата «Наличными» (id 1) со связью в `ms3_delivery_payments`.
+5. Доставка «Самовывоз» (id 1) и оплата «Наличные» (id 1) со связью в `ms3_delivery_payments`.
 6. Задачи Scheduler (`ms3_cleanup_tokens`, `ms3_cleanup_drafts`) — активируются после включения `ms3_use_scheduler`.
 
 После установки откройте **System → System Settings → minishop3** и проверьте `ms3_status_*`, если меняли статусы вручную.
@@ -122,16 +122,16 @@ description: Установка MiniShop3, служебные страницы, 
 
 Точка входа: `/assets/components/minishop3/api.php?route=/api/v1/...`.
 
-| Сценарий | Эндпоинт |
+| Сценарий | Куда смотреть |
 | --- | --- |
-| Токен гостя | `GET /api/v1/customer/token/get` |
-| Каталог без токена | `GET /api/v1/product/list`, `GET /api/v1/product/get/{id}` |
-| Корзина | `/api/v1/cart/*` |
-| Checkout | `/api/v1/order/*` |
-| ЛК | `/api/v1/customer/*` (login, addresses, orders) |
-| Health | `GET /api/v1/health` |
+| Токен / cookie / Bearer | [Авторизация](development/web-api/auth) |
+| Каталог | [Каталог](development/web-api/catalog) (`product`, `category`) |
+| Корзина | [Корзина](development/web-api/cart) |
+| Checkout | [Checkout](development/web-api/checkout) (`delivery/list`, `payment/list`, order) |
+| ЛК | [Клиент](development/web-api/customer) |
+| Полная карта | [Эндпоинты](development/web-api/endpoints) |
 
-На группу `/api/v1` действуют CORS и rate limit. Полная карта: [REST API](development/api).
+На группу `/api/v1` действуют CORS и rate limit. Документация: [Web API](development/web-api/).
 
 ## Категория и товар
 
@@ -144,11 +144,23 @@ description: Установка MiniShop3, служебные страницы, 
 
 ## Доставка и оплата
 
-В **Extras → MiniShop3 → Настройки** проверьте, что есть хотя бы один активный способ доставки и один способ оплаты. После установки resolver создаёт «Самовывоз» (id 1) и «Наличными» (id 1) с правилами `first_name`, `last_name`, `email` для самовывоза.
+В **Extras → MiniShop3 → Настройки** проверьте, что есть хотя бы один активный способ доставки и один способ оплаты. После установки resolver создаёт «Самовывоз» (id 1) и «Наличные» (id 1) с правилами `first_name`, `last_name`, `email` для самовывоза.
 
 Без связки delivery↔payment оформление на витрине упадёт с ошибкой пары.
 
 ## Первый тестовый заказ
+
+```mermaid
+flowchart TB
+  cat[Категория на витрине]
+  cart[msCart]
+  order[msOrder]
+  thanks[thanks ?msorder=]
+  get[msGetOrder]
+  mgr[Админка Заказы статус Новый]
+  cat -->|cart/add| cart --> order -->|submit| thanks --> get
+  thanks --> mgr
+```
 
 1. Откройте витрину категории, добавьте товар в корзину.
 2. Перейдите в корзину, затем в оформление.
@@ -167,4 +179,4 @@ description: Установка MiniShop3, служебные страницы, 
 - [Оформление заказа](frontend/order)
 - [Заказы в админке](interface/orders)
 - [Сниппеты](snippets/)
-- [REST API](development/api)
+- [Web API](development/web-api/)

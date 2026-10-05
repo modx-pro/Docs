@@ -2,6 +2,7 @@
 title: msBuyNow
 description: Компонент для вывода виджета «Сейчас покупают» — товары, добавленные в корзину за последнее время
 dependencies: miniShop2
+categories: catalog
 
 ---
 

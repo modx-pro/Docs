@@ -1,11 +1,15 @@
 ---
 title: PhoneSpamDetect
 description: Валидация телефонов в формах MODX через Google libphonenumber — локально, без API-ключей
-author: ibochkarev
-repository: https://github.com/Ibochkarev/PhoneSpamDetect
+categories: other
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/phonespamdetect/logo.png
-modstore: https://modstore.pro/packages/utilities/phonespamdetect
+modstore: https://modstore.pro/packages/other/phonespamdetect
+repository: https://github.com/Ibochkarev/PhoneSpamDetect
 
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Быстрый старт', link: 'quick-start' },
   { text: 'Системные настройки', link: 'settings' },

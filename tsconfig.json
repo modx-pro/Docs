@@ -2,11 +2,17 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
+    "allowArbitraryExtensions": true,
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
     "types": [
-      "vite/client"
+      "vitepress/client",
+      "node"
     ],
     "typeRoots": [
       "./node_modules/@types/",
@@ -16,6 +22,8 @@
   },
   "include": [
     ".vitepress/theme/**/*",
+    ".vitepress/config/**/*",
+    "docs/*.ts",
     "globals.d.ts",
     "node_modules/vitepress/dist/client/theme-default/components/**/*.vue"
   ]

@@ -3,15 +3,21 @@ title: Интерфейс админки
 ---
 # Административный интерфейс
 
-Обзор административного интерфейса MiniShop3 в панели управления MODX.
+Откройте **Пакеты → MiniShop3**. Ресурсы категории и товара — в дереве MODX.
 
 ## Доступ
 
-**Меню:** Приложения → MiniShop3
+| Пункт | `action` | Примечание |
+| --- | --- | --- |
+| Заказы | `mgr/orders` | [Заказы](orders) |
+| Клиенты | `mgr/customers` | [Клиенты](customers) |
+| Уведомления | `mgr/notifications` | [Центр уведомлений](notifications) |
+| Настройки | `mgr/settings` | Вкладки магазина, см. [Настройки](settings) |
+| Системные настройки | `system/settings` + `&ns=minishop3` | Namespace MODX `minishop3`, не вкладки `mgr/settings` |
+| Помощь | `mgr/help` | Справка по менеджеру MS3 |
+| Утилиты | `mgr/utilities` | [Утилиты](utilities) |
 
-## Структура интерфейса
-
-### Страницы ресурсов
+## Страницы ресурсов
 
 | Страница | Описание |
 | --- | --- |
@@ -19,32 +25,33 @@ title: Интерфейс админки
 | [Товар](product) | Редактирование карточки товара |
 | [Галерея](gallery) | Управление изображениями товара |
 
-### Раздел настроек
+## Раздел настроек
 
-**Меню:** Приложения → MiniShop3 → Настройки
+**Меню:** Пакеты → MiniShop3 → Настройки
 
 | Вкладка | Описание |
 | --- | --- |
-| [Доставки](settings/deliveries) | Способы доставки |
-| [Оплаты](settings/payments) | Способы оплаты |
-| [Производители](settings/vendors) | Справочник производителей |
-| [Связи](settings/links) | Типы связей товаров |
-| [Опции](settings/options) | Справочник опций товаров |
+| [Варианты доставки](settings/deliveries) | Способы доставки |
+| [Способы оплаты](settings/payments) | Платёжные системы |
+| Статусы заказа | `#tab-statuses` |
+| [Производители товаров](settings/vendors) | Справочник производителей |
+| [Связи товаров](settings/links) | Типы связей товаров |
+| [Свойства товаров](settings/options) | Справочник опций товаров |
 
 Подробнее: [Настройки](settings)
 
-### Утилиты
+## Утилиты
 
-**Меню:** Приложения → MiniShop3 → Утилиты
+**Меню:** Пакеты → MiniShop3 → Утилиты
 
 | Вкладка | Описание |
 | --- | --- |
 | [Галерея](utilities/gallery) | Перегенерация миниатюр |
 | [Импорт](utilities/import) | Импорт товаров из CSV |
-| [Поля товара](utilities/product-fields) | Настройка полей в карточке товара |
-| [Дополнительные поля](utilities/extra-fields) | Создание новых полей |
-| [Колонки гридов](utilities/grid-columns) | Настройка таблиц |
-| [Поля модели](utilities/model-fields) | Поля моделей БД |
+| [Поля товара (админка)](utilities/product-fields) | Настройка полей в карточке товара |
+| [Свои поля](utilities/extra-fields) | Создание новых полей |
+| [Конфигурация гридов](utilities/grid-columns) | Настройка таблиц |
+| [Поля форм (админка)](utilities/model-fields) | Поля моделей БД |
 
 Пошаговые сценарии полей и гридов: [Cookbook менеджера](/components/minishop3/manager/).
 
@@ -65,7 +72,7 @@ Deep-link вкладок настроек: `#tab-deliveries`, `#tab-payments`, `
 
 ### Добавление CSS/JS
 
-Используйте событие `msOnManagerCustomCssJs`:
+Событие `msOnManagerCustomCssJs`:
 
 ```php
 <?php
@@ -82,15 +89,15 @@ switch ($modx->event->name) {
 }
 ```
 
-### Кастомные действия в таблицах
+### Свои действия в таблицах
 
-Регистрация действий через `MS3ActionRegistry`:
+Регистрация через `MS3ActionRegistry`:
 
 ```javascript
-MS3ActionRegistry.register('myAction', async (data, gridId) => {
+MS3ActionRegistry.register('myAction', async (data, context) => {
     // Ваш код
     return { success: true, refresh: true };
 });
 ```
 
-Подробнее: [Категория — Добавление действий](category#добавление-действий-в-колонку)
+Подробнее: [Категория — добавление действий](category#добавление-действий-в-колонку)

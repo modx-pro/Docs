@@ -1,364 +1,203 @@
+---
+title: VueTools API Composables
+description: useLexicon, useModx, usePermission, useApi, usePrimeVueLocale, useTheme
+---
+
 # API Composables
 
-VueTools provides ready composables (helpers) for working with MODX from Vue components.
+Import each composable from its Import Map key (`@vuetools/useApi`, etc.). `index.min.js` exists in assets; there is no `@vuetools/index` key in the map.
 
 ## useLexicon
 
-Working with MODX lexicons.
-
-### Import
-
 ```javascript
 import { useLexicon } from '@vuetools/useLexicon'
-```
 
-### API
-
-```javascript
 const { _, has, getByPrefix } = useLexicon()
 ```
 
-| Method | Description |
-|--------|-------------|
-| `_(key, params?)` | Get lexicon value by key |
-| `has(key)` | Check if key exists |
-| `getByPrefix(prefix)` | Get all keys with the given prefix |
-
-### Examples
+Your dictionary overrides `window.MODx.lang`:
 
 ```javascript
-const { _, has, getByPrefix } = useLexicon()
-
-// Simple value
-const title = _('my_component_title')
-// "My component"
-
-// With substitution parameters
-const message = _('my_component_welcome', { name: 'John', count: 5 })
-// Lexicon: "Hello, {name}! You have {count} messages"
-// Result: "Hello, John! You have 5 messages"
-
-// Check if key exists
-if (has('my_component_optional_feature')) {
-  // Key exists
-}
-
-// Get all keys with prefix
-const allMyKeys = getByPrefix('my_component_')
-// { 'my_component_title': 'My component', 'my_component_desc': 'Description', ... }
+const { _ } = useLexicon({ lexicon: { my_key: 'Value' } })
 ```
 
-### Loading lexicons
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `_(key, params?)` | `string` | Lexicon value. Missing key: returns `key` |
+| `has(key)` | `boolean` | Key in `options.lexicon` or `MODx.lang` |
+| `getByPrefix(prefix)` | `object` | All keys with the prefix |
+| `load(topics)` | `Promise<void>` | **Not implemented**: logs a console warning, does not load topics |
 
-Lexicons are searched in `window.MODx.lang`. Load topics in the PHP controller:
+`_` replaces `[[+name]]`, `{name}`, and `:name`. The `:name` form has no word boundary: matches inside longer text and values with `$&` / `$'` / `$$` break the string ([issue #67](https://github.com/modx-pro/vueTools/issues/67)). `[[+name]]` and `{name}` do not have this gap.
+
+```javascript
+_('my_component_title')                       // "My component"
+_('my_component_welcome', { name: 'John' })   // from "Hello, {name}!" → "Hello, John!"
+```
+
+Load topics in the controller:
 
 ```php
 public function getLanguageTopics()
 {
-    return ['mycomponent:default', 'mycomponent:manager'];
+    return ['mycomponent:default'];
 }
 ```
 
 ## useModx
 
-Access to the global MODX object.
-
-### Import
-
 ```javascript
 import { useModx } from '@vuetools/useModx'
+
+const { config, siteId, isManager, getSetting } = useModx()
 ```
 
-### API
+| Property / method | Type | Description |
+|-------------------|------|-------------|
+| `config` | `ComputedRef<object>` | `MODx.config` |
+| `user` | `ComputedRef<object>` | `MODx.user` |
+| `siteId` | `ComputedRef<string>` | Auth token `MODx.siteId` |
+| `hasPermission(key)` | `boolean` | `MODx.perm[key] === true` |
+| `getSetting(key, default?)` | `*` | Value from `MODx.config` |
+| `getManagerUrl(path?)` | `string` | Manager URL; without config → `/manager/` |
+| `getAssetsUrl(component)` | `string` | `{assets}components/{name}/`; otherwise `/assets/` |
+| `getConnectorUrl(component)` | `string` | `{assets}components/{name}/connector.php` |
+| `getContextKey()` | `string` | Context; otherwise `web`. Without MODx → `null` on related checks |
+| `isManager()` | `boolean` | Code runs in the manager |
+| `fireEvent(name, data?)` | `void` | Calls `MODx.fireEvent` if it is a function. Otherwise no-op |
 
-```javascript
-const { modx, config, siteId } = useModx()
-```
-
-| Property | Type | Description |
-|----------|------|-------------|
-| `modx` | `Object` | Full `window.MODx` object |
-| `config` | `Object` | `MODx.config` configuration |
-| `siteId` | `String` | Auth token `MODx.siteId` |
-
-### Examples
-
-```javascript
-const { modx, config, siteId } = useModx()
-
-// Access config
-const assetsUrl = config.assets_url
-const connectorUrl = config.connector_url
-const baseUrl = config.base_url
-
-// MODX Site ID for API auth
-console.log(siteId) // "modx68ed50b266b7e9.17779601_168f40d849ba6b1.18395696"
-
-// Use MODX methods
-modx.msg.alert('Title', 'Message')
-modx.msg.confirm({
-  title: 'Confirmation',
-  text: 'Are you sure?',
-  url: config.connector_url,
-  params: { action: 'myaction' }
-})
-```
-
-### Common config properties
-
-| Property | Description |
-|----------|-------------|
-| `config.assets_url` | Assets folder URL |
-| `config.connector_url` | Connector URL |
-| `config.base_url` | Site base URL |
-| `config.manager_url` | Manager URL |
-| `config.template` | Current template ID |
+`config`, `user`, and `siteId` are computed. In template: `config.assets_url`. In `<script>`: `config.value.assets_url`.
 
 ## usePermission
 
-User permission checks.
-
-### Import
+Permissions from `window.MODx.perm`. Strict check: value must be `=== true`.
 
 ```javascript
 import { usePermission } from '@vuetools/usePermission'
+
+const { can, canAny, canAll } = usePermission()
 ```
 
-### API
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `can(key)` | `boolean` | Permission `key` present |
+| `canAny(keys)` | `boolean` | Any of the permissions |
+| `canAll(keys)` | `boolean` | All permissions |
+| `getAll()` | `object` | Reference to `MODx.perm` (or `{}`). Not a clone: mutating it changes page permissions |
+
+### Shortcuts → MODX key
+
+| Method | `MODx.perm` key |
+|-------|------------------|
+| `canCreateResource()` | `new_document` |
+| `canEditResource()` | `edit_document` |
+| `canDeleteResource()` | `delete_document` |
+| `canPublishResource()` | `publish_document` |
+| `canUnpublishResource()` | `unpublish_document` |
+| `canViewUsers()` | `view_user` |
+| `canEditUsers()` | `edit_user` |
+| `canDeleteUsers()` | `delete_user` |
+| `canViewElements()` | `view_element` |
+| `canEditElements()` | `edit_element` |
+| `canDeleteElements()` | `delete_element` |
+| `canViewSystemSettings()` | `settings` |
+| `canFlushSessions()` | `flush_sessions` |
+| `canClearCache()` | `empty_cache` |
+| `canViewFiles()` | `file_view` |
+| `canUploadFiles()` | `file_upload` |
+| `canDeleteFiles()` | `file_remove` |
+| `canInstallPackages()` | `packages` |
 
 ```javascript
-const { hasPermission, hasAnyPermission, hasAllPermissions } = usePermission()
-```
-
-| Method | Description |
-|--------|-------------|
-| `hasPermission(perm)` | Check single permission |
-| `hasAnyPermission(perms)` | Check any of permissions |
-| `hasAllPermissions(perms)` | Check all permissions |
-
-### Examples
-
-```javascript
-const { hasPermission, hasAnyPermission, hasAllPermissions } = usePermission()
-
-// Check single permission
-if (hasPermission('my_component_edit')) {
-  // User can edit
-}
-
-// Check any permission
-if (hasAnyPermission(['edit', 'save', 'delete'])) {
-  // User has at least one permission
-}
-
-// Check all permissions
-if (hasAllPermissions(['view', 'edit'])) {
-  // User has both permissions
-}
-```
-
-### Use in template
-
-```vue
-<script setup>
-import { computed } from 'vue'
-import { usePermission } from '@vuetools/usePermission'
-
-const { hasPermission } = usePermission()
-
-const canEdit = computed(() => hasPermission('my_component_edit'))
-const canDelete = computed(() => hasPermission('my_component_delete'))
-</script>
-
-<template>
-  <Button v-if="canEdit" label="Edit" />
-  <Button v-if="canDelete" label="Delete" severity="danger" />
-</template>
+const { can, canClearCache } = usePermission()
+const canEdit = computed(() => can('my_component_edit'))
 ```
 
 ## useApi
 
-HTTP client for **standard** MODX connector API.
-
-### Import
+HTTP client for the standard MODX connector (`?action=processor/path`).
 
 ```javascript
 import { useApi } from '@vuetools/useApi'
+
+const { get, post, put, delete: del, request, buildUrl } = useApi()
 ```
 
-### API
+### Constructor options
 
-```javascript
-const { get, post, put, delete: del } = useApi()
-```
+| Option | Default | Description |
+|--------|---------|-------------|
+| `baseUrl` | `MODx.config.connector_url`, else `/connectors/` | Connector base URL |
+| `authToken` | `MODx.siteId` | Token for `HTTP_MODAUTH` |
+
+Fallback `/connectors/` without `index.php` does not fit every site. Set `baseUrl` from `MODx.config.connector_url`.
+
+### Methods
 
 | Method | Description |
 |--------|-------------|
-| `get(action, params?)` | GET request |
-| `post(action, data?)` | POST request |
-| `put(action, data?)` | PUT request |
-| `delete(action, data?)` | DELETE request |
-
-### Examples
+| `get(action, params?)` | GET: params in query via `String(value)` (array → `"a,b"`, object → `"[object Object]"`) |
+| `post(action, params?, options?)` | POST: FormData (`key[i]` for arrays, JSON string for objects) unless `{ json: true }` |
+| `put(action, params?, options?)` | PUT (see limitation below) |
+| `delete(action, params?)` | DELETE; no third `options` (unlike `put`) |
+| `request(action, params?, options?)` | Generic; `options.method`, `options.json`, headers |
+| `buildUrl(action, params?)` | URL without sending |
 
 ```javascript
-const { get, post, put, delete: del } = useApi()
-
-// GET request
-const users = await get('security/user/getlist', { limit: 20 })
-
-// POST request
-const result = await post('security/user/create', {
-  username: 'newuser',
-  email: 'user@example.com'
-})
-
-// PUT request
-await put('security/user/update', {
-  id: 1,
-  fullname: 'New Name'
-})
-
-// DELETE request
-await del('security/user/remove', { id: 1 })
+const data = await get('security/user/getlist', { limit: 20 })
+const users = data.results // list in results, not the full response
+await post('security/user/create', { username: 'newuser' })
 ```
 
-### Request format
+Adds `HTTP_MODAUTH` to the query. On `success: false` throws with `data`. HTTP status outside 2xx: plain `Error` without `data`.
 
-useApi uses standard MODX connector format:
+::: warning Stock connector and request body
+Core builds processor properties from `$_GET` + `$_POST`. PHP does not fill `$_POST` for PUT/DELETE or parse `application/json` into `$_POST`.
 
-```
-POST /connectors/index.php?action=security/user/getlist
-```
-
-::: warning For components with router
-If your component uses a custom router (FastRoute, etc.), create local `request.js`. See [Custom API client](integration#custom-api-client).
+For the standard connector, **GET** and **POST without `{ json: true }`** (FormData) are reliable. `put` / `delete` and `{ json: true }` often do not reach the processor. See [issue #52](https://github.com/modx-pro/vueTools/issues/52). Custom `headers` may overwrite `Accept` ([#63](https://github.com/modx-pro/vueTools/issues/63)).
 :::
 
-## Full example
+::: warning Custom router
+`useApi` targets the standard connector. Custom router: local `request.js`. See [Custom API client](integration#own-api-client).
+:::
 
-Component using all composables:
+## usePrimeVueLocale
 
-```vue
-<script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useLexicon } from '@vuetools/useLexicon'
-import { useModx } from '@vuetools/useModx'
-import { usePermission } from '@vuetools/usePermission'
-import { useApi } from '@vuetools/useApi'
+PrimeVue locales: DataTable filters and DatePicker.
 
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Button from 'primevue/button'
-import Toast from 'primevue/toast'
-import { useToast } from 'primevue/usetoast'
+```javascript
+import { getPrimeVueLocale, usePrimeVueLocale } from '@vuetools/usePrimeVueLocale'
+import { PrimeVue } from 'primevue'
+import { getActiveTheme } from '@vuetools/useTheme'
 
-// Composables
-const { _ } = useLexicon()
-const { config } = useModx()
-const { hasPermission } = usePermission()
-const { get, post } = useApi()
-const toast = useToast()
+app.use(PrimeVue, { ...getActiveTheme(), locale: getPrimeVueLocale() })
 
-// State
-const users = ref([])
-const loading = ref(false)
-
-// Computed
-const canCreate = computed(() => hasPermission('new_user'))
-const canEdit = computed(() => hasPermission('save_user'))
-
-// Methods
-async function loadUsers() {
-  loading.value = true
-  try {
-    const response = await get('security/user/getlist', { limit: 50 })
-    users.value = response.results || []
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: _('error'),
-      detail: error.message,
-      life: 3000
-    })
-  } finally {
-    loading.value = false
-  }
-}
-
-async function createUser() {
-  try {
-    await post('security/user/create', {
-      username: 'newuser',
-      email: 'new@example.com'
-    })
-    toast.add({
-      severity: 'success',
-      summary: _('success'),
-      detail: _('user_created'),
-      life: 3000
-    })
-    await loadUsers()
-  } catch (error) {
-    toast.add({
-      severity: 'error',
-      summary: _('error'),
-      detail: error.message,
-      life: 3000
-    })
-  }
-}
-
-// Lifecycle
-onMounted(() => {
-  loadUsers()
-})
-</script>
-
-<template>
-  <div class="user-management">
-    <Toast />
-
-    <div class="header">
-      <h1>{{ _('user_management') }}</h1>
-      <Button
-        v-if="canCreate"
-        :label="_('create_user')"
-        icon="pi pi-plus"
-        @click="createUser"
-      />
-    </div>
-
-    <DataTable
-      :value="users"
-      :loading="loading"
-      paginator
-      :rows="10"
-    >
-      <Column field="id" :header="_('id')" sortable />
-      <Column field="username" :header="_('username')" sortable />
-      <Column field="email" :header="_('email')" sortable />
-      <Column v-if="canEdit" :header="_('actions')">
-        <template #body="{ data }">
-          <Button
-            icon="pi pi-pencil"
-            severity="secondary"
-            text
-            rounded
-            @click="editUser(data.id)"
-          />
-        </template>
-      </Column>
-    </DataTable>
-  </div>
-</template>
-
-<style scoped>
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-</style>
+// or
+const { locale } = usePrimeVueLocale() // same as getPrimeVueLocale() at call time
 ```
+
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `getPrimeVueLocale(cultureKey?)` | `object` | Locale by code |
+| `usePrimeVueLocale({ cultureKey? })` | `{ locale, getPrimeVueLocale }` | Wrapper: `locale` fixed at call time |
+
+Code chain: argument → `MODx.cultureKey` → `MODx.config.cultureKey` → `en`. Tag split on `-`/`_` and lowercased (`ru-RU` → `ru`). Codes: `de`, `en`, `es`, `fr`, `pl`, `ru`, `uk`. Unknown → `en`. Locale is not reactive: on language change without reload pass a new `cultureKey` or recreate the app.
+
+## useTheme
+
+More: [Theme](theme).
+
+```javascript
+import { getActiveTheme, getThemeName, useTheme } from '@vuetools/useTheme'
+import { PrimeVue } from 'primevue'
+
+app.use(PrimeVue, getActiveTheme())
+```
+
+| Function | Returns | Description |
+|----------|---------|-------------|
+| `getActiveTheme(name?)` | `{ theme }` | Fragment for `app.use(PrimeVue, …)` |
+| `getThemeName(name?)` | `string` | `aura` or `modx` |
+| `useTheme({ name? })` | `{ theme }` | Same as `getActiveTheme(name)` |
+
+Without an argument, name comes from `window.VueTools.theme`, then `trim` and lowercase (` MODX ` → `modx`). Empty or unknown → `aura`. `getActiveTheme()` returns a reference to the registry entry. Do not mutate `theme.options`.

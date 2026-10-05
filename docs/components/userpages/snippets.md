@@ -14,7 +14,7 @@
 | tplEditForm | Чанк-шаблон формы редактирования ресурса | `up_edit_form` |
 | errorText | Чанк-шаблон текста ошибки (при невозможности создания/редактирования) | `up_error_text` |
 | notifications | Скрипт всплывающих уведомлений | `[[++up_notifications]]` |
-| userGroups | Группы пользователей через зяпятую, которые могут работать с userPages | `Administrator` |
+| userGroups | Группы пользователей через запятую, которые могут работать с userPages | `Administrator` |
 | emailFrom | Адрес отправителя email-уведомлений | `[[++emailsender]]` |
 | emailManager | Почтовые адреса менеджеров для уведомлений | `[[++emailsender]]` |
 | emailManagerSubject | Тема письма менеджерам | `[[%up_manager_subject]]` |
@@ -28,7 +28,7 @@
 {'!userPages' | snippet : []}
 ```
 
-Работа с товаром miniShop3 в категории с id=15, модерацией ('published' => 0), cвоими чанками форм и адресами менеджеров:
+Работа с товаром miniShop3 в категории с id=15, модерацией ('published' => 0), своими чанками форм и адресами менеджеров:
 
 ```
 {'!userPages' | snippet : [

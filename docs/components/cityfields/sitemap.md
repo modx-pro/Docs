@@ -7,7 +7,7 @@
 * Тип содержимого: `XML`
 * Содержимое:
 
-``` modx
+```modx
 [[!pdoSitemap?
   &cache=`0`
   &scheme=`-1`

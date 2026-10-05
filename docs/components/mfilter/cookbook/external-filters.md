@@ -1,303 +1,117 @@
 # Внешние фильтры
 
-Размещение отдельных фильтров вне основной формы.
+Сортировка, число товаров на странице и вид выдачи работают в любом месте страницы — по атрибутам, без своего JS. Фильтр вне формы — кнопка или отдельный блок цены — ставится вызовом [JS API](../development/js-api).
 
 ## Задача
 
-Разместить некоторые фильтры (например, сортировку или быстрые фильтры) отдельно от основной формы фильтрации.
+Управлять каталогом не только из формы фильтров: сортировку вынести в шапку, быстрые фильтры — кнопками над товарами, цену — в отдельный блок.
 
 ## Решение
 
-Использовать JavaScript API для управления фильтрами из любого места на странице.
-
-## Пример: Сортировка в шапке
-
-### HTML
+### Сортировка, число на странице, вид
 
 ```html
-<!-- Шапка каталога (вне формы) -->
-<div class="catalog-header">
-    <div class="catalog-header__sort">
-        <label>Сортировка:</label>
-        <select id="external-sort">
-            <option value="pagetitle-asc">По названию (А-Я)</option>
-            <option value="pagetitle-desc">По названию (Я-А)</option>
-            <option value="Data.price-asc">Сначала дешёвые</option>
-            <option value="Data.price-desc">Сначала дорогие</option>
-            <option value="publishedon-desc">Сначала новые</option>
-        </select>
-    </div>
+<select data-mfilter-sort>
+    <option value="">По умолчанию</option>
+    <option value="price-asc">Сначала дешёвые</option>
+    <option value="price-desc">Сначала дорогие</option>
+</select>
 
-    <div class="catalog-header__total">
-        Найдено: <span data-mfilter-total></span>
-    </div>
-</div>
+<select data-mfilter-limit>
+    <option value="24">24</option>
+    <option value="48">48</option>
+</select>
 
-<!-- Основная форма в сайдбаре -->
-<aside class="catalog-sidebar">
-    [[!mFilterForm]]
-</aside>
-
-<!-- Результаты -->
-<main class="catalog-content">
-    <div data-mfilter-results>
-        [[!mFilter? ...]]
-    </div>
-</main>
+<button type="button" data-mfilter-tpl="tpl1">Плиткой</button>
+<button type="button" data-mfilter-tpl="tpl2">Списком</button>
 ```
 
-### JavaScript
+Эти элементы уже есть над товарами в стандартном чанке `mfilter.outer` — их можно перенести в любое место страницы. Сортировка записывается как `поле-направление`, вид — ключ из параметра `&tpls` сниппета `mFilter`. Сортировку можно сделать и кнопками: `<button type="button" data-mfilter-sort="price-asc">`. Активной кнопке сортировки и вида скрипт ставит класс `active`.
 
-```javascript
-document.addEventListener('DOMContentLoaded', function() {
-    const sortSelect = document.getElementById('external-sort');
-
-    sortSelect.addEventListener('change', function() {
-        const [field, dir] = this.value.split('-');
-        const mfilter = window.mFilter.getInstance();
-
-        // Установить сортировку через техпараметры
-        mfilter.setTechParam('sort', this.value);
-        mfilter.submit();
-    });
-
-    // Синхронизация при загрузке
-    document.addEventListener('mfilter:success', function(e) {
-        if (e.detail.tech?.sort) {
-            sortSelect.value = e.detail.tech.sort;
-        }
-    });
-});
-```
-
-## Пример: Быстрые фильтры-кнопки
-
-### HTML
+### Кнопка фильтра
 
 ```html
-<!-- Быстрые фильтры (вне формы) -->
-<div class="quick-filters">
-    <button class="quick-filter" data-filter="new" data-value="1">
-        Новинки
-    </button>
-    <button class="quick-filter" data-filter="popular" data-value="1">
-        Популярные
-    </button>
-    <button class="quick-filter" data-filter="sale" data-value="1">
-        Со скидкой
-    </button>
-</div>
-
-<!-- Основная форма -->
-[[!mFilterForm]]
+<button type="button" data-quick-filter="in_stock" data-value="1">В наличии</button>
 ```
 
-### JavaScript
+```js
+// Нажатие ставит фильтр, повторное — снимает
+document.addEventListener('click', (e) => {
+    const button = e.target.closest('[data-quick-filter]');
+    if (!button) return;
 
-```javascript
-document.querySelectorAll('.quick-filter').forEach(button => {
-    button.addEventListener('click', function() {
-        const key = this.dataset.filter;
-        const value = this.dataset.value;
-        const mfilter = window.mFilter.getInstance();
+    const filter = mfilterGet();
+    const key = button.dataset.quickFilter;
+    const value = button.dataset.value;
 
-        // Toggle фильтра
-        const current = mfilter.getState().filters[key];
-
-        if (current && current.includes(value)) {
-            mfilter.removeFilter(key);
-            this.classList.remove('active');
-        } else {
-            mfilter.setFilter(key, [value]);
-            this.classList.add('active');
-        }
-
-        mfilter.submit();
-    });
-});
-
-// Синхронизация состояния кнопок
-document.addEventListener('mfilter:success', function(e) {
-    document.querySelectorAll('.quick-filter').forEach(button => {
-        const key = button.dataset.filter;
-        const value = button.dataset.value;
-        const active = e.detail.filters[key]?.includes(value);
-        button.classList.toggle('active', active);
-    });
-});
-```
-
-## Пример: Поиск по названию
-
-### HTML
-
-```html
-<!-- Поиск вне формы -->
-<div class="catalog-search">
-    <input type="text" id="catalog-search-input" placeholder="Поиск товаров...">
-    <button id="catalog-search-btn">Найти</button>
-</div>
-
-[[!mFilterForm]]
-```
-
-### JavaScript
-
-```javascript
-const searchInput = document.getElementById('catalog-search-input');
-const searchBtn = document.getElementById('catalog-search-btn');
-
-function doSearch() {
-    const query = searchInput.value.trim();
-    const mfilter = window.mFilter.getInstance();
-
-    if (query) {
-        mfilter.setFilter('pagetitle', query);
+    if ((filter.getFilters()[key] || []).includes(value)) {
+        filter.removeFilter(key, value);
     } else {
-        mfilter.removeFilter('pagetitle');
-    }
-
-    mfilter.submit();
-}
-
-searchBtn.addEventListener('click', doSearch);
-searchInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        doSearch();
+        filter.addFilter(key, value);
     }
 });
-```
 
-## Пример: Ценовой диапазон в отдельном блоке
-
-### HTML
-
-```html
-<!-- Отдельный блок с ценой -->
-<div class="price-filter-external">
-    <h4>Цена</h4>
-    <div class="price-inputs">
-        <input type="number" id="price-min" placeholder="От">
-        <span>—</span>
-        <input type="number" id="price-max" placeholder="До">
-    </div>
-    <button id="price-apply">Применить</button>
-</div>
-
-<!-- Форма без ценового фильтра -->
-[[!mFilterForm?
-    &filters=`vendor,color,size`
-]]
-```
-
-### JavaScript
-
-```javascript
-const priceMin = document.getElementById('price-min');
-const priceMax = document.getElementById('price-max');
-const priceApply = document.getElementById('price-apply');
-
-priceApply.addEventListener('click', function() {
-    const mfilter = window.mFilter.getInstance();
-
-    const min = priceMin.value ? parseInt(priceMin.value) : null;
-    const max = priceMax.value ? parseInt(priceMax.value) : null;
-
-    if (min !== null || max !== null) {
-        mfilter.setFilter('price', {
-            min: min,
-            max: max
-        });
-    } else {
-        mfilter.removeFilter('price');
-    }
-
-    mfilter.submit();
-});
-
-// Синхронизация при загрузке и после AJAX
-document.addEventListener('mfilter:success', function(e) {
-    const price = e.detail.filters.price;
-    if (price) {
-        priceMin.value = price.min || '';
-        priceMax.value = price.max || '';
-    } else {
-        priceMin.value = '';
-        priceMax.value = '';
-    }
-});
-```
-
-## Пример: Производитель в выпадающем меню
-
-### HTML
-
-```html
-<!-- Меню категорий с производителями -->
-<nav class="category-menu">
-    <div class="category-menu__item">
-        <a href="/catalog/electronics/">Электроника</a>
-        <ul class="vendor-submenu">
-            <li><a href="#" data-vendor="apple">Apple</a></li>
-            <li><a href="#" data-vendor="samsung">Samsung</a></li>
-            <li><a href="#" data-vendor="xiaomi">Xiaomi</a></li>
-        </ul>
-    </div>
-</nav>
-```
-
-### JavaScript
-
-```javascript
-document.querySelectorAll('[data-vendor]').forEach(link => {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
-
-        const vendor = this.dataset.vendor;
-        const mfilter = window.mFilter.getInstance();
-
-        // Сбросить все фильтры и установить только производителя
-        mfilter.reset();
-        mfilter.setFilter('vendor', [vendor]);
-        mfilter.submit();
-    });
-});
-```
-
-## Синхронизация с формой
-
-Если фильтр есть и в форме, и снаружи — синхронизируйте состояние:
-
-```javascript
-document.addEventListener('mfilter:success', function(e) {
-    // Обновить внешние элементы
-    syncExternalFilters(e.detail.filters);
-
-    // Обновить счётчики
-    document.querySelectorAll('[data-mfilter-total]').forEach(el => {
-        el.textContent = e.detail.total;
-    });
-});
-
-function syncExternalFilters(filters) {
-    // Синхронизировать select сортировки
-    const sortSelect = document.getElementById('external-sort');
-    if (sortSelect && filters.sort) {
-        sortSelect.value = filters.sort;
-    }
-
-    // Синхронизировать быстрые фильтры
-    document.querySelectorAll('.quick-filter').forEach(btn => {
-        const key = btn.dataset.filter;
-        const value = btn.dataset.value;
-        btn.classList.toggle('active', filters[key]?.includes(value));
+// Подсветка — при загрузке страницы и после каждого обновления выдачи
+function markQuickFilters() {
+    const filters = mfilterGet().getFilters();
+    document.querySelectorAll('[data-quick-filter]').forEach((button) => {
+        const values = filters[button.dataset.quickFilter] || [];
+        button.classList.toggle('active', values.includes(button.dataset.value));
     });
 }
+document.addEventListener('mfilter:ui:ready', markQuickFilters);
+document.addEventListener('mfilter:success', markQuickFilters);
 ```
 
-## Советы
+`data-quick-filter` и `data-value` читает только этот скрипт. Ключ — ключ фильтра из набора фильтров. Значение — такое же, как `value` у чекбокса этого фильтра в форме: у производителей и категорий это id.
 
-1. **Используйте события** — подписывайтесь на `mfilter:success` для синхронизации
-2. **Не дублируйте данные** — если фильтр есть в форме, скройте его и управляйте через JS
-3. **Сохраняйте UX** — внешние фильтры должны визуально отражать текущее состояние
-4. **Тестируйте без JS** — предусмотрите fallback для SEO и доступности
+### Цена в отдельном блоке
+
+```html
+<input type="number" data-price="min" placeholder="от">
+<input type="number" data-price="max" placeholder="до">
+<button type="button" data-price-apply>Показать</button>
+```
+
+```js
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-price-apply]')) return;
+
+    // Пустые поля снимают фильтр
+    mfilterGet().setFilter('price', {
+        min: document.querySelector('[data-price="min"]').value,
+        max: document.querySelector('[data-price="max"]').value,
+    });
+});
+
+// После сброса формы и «Назад» поля показывают текущий диапазон
+document.addEventListener('mfilter:success', (e) => {
+    document.querySelector('[data-price="min"]').value = e.detail.filters['price|min']?.[0] ?? '';
+    document.querySelector('[data-price="max"]').value = e.detail.filters['price|max']?.[0] ?? '';
+});
+```
+
+Фильтр цены оставьте и в форме: если задана одна граница, скрипт дополнит вторую краем диапазона из ползунка формы.
+
+### Ссылка на отфильтрованную страницу
+
+Чтобы открыть другой раздел сразу с выбранным производителем, JS не нужен — это обычная ссылка на SEO-адрес. Список таких ссылок выводит сниппет [mFilterNav](../snippets/mfilternav).
+
+## Почему так
+
+Сортировку, число на странице и вид скрипт ищет по атрибутам во всей странице один раз — при запуске. Поэтому элементы должны быть на странице сразу, а не добавляться позже. И они не должны стоять внутри `.mfilter-results` и `.mfilter-pagination`: содержимое этих блоков заменяется после каждого запроса, и новые элементы остаются без обработчиков.
+
+Фильтры скрипт читает из полей формы, кнопку вне формы он не видит — поэтому фильтр ставит вызов JS API. Вызов сам отправляет запрос и отмечает тот же фильтр в форме, если он там есть. Следующее изменение в форме поставленный так фильтр не снимает.
+
+Подсветку своих кнопок и значения своих полей скрипт не знает — их обновляет ваш код по событию `mfilter:success`. Оно приходит после любого обновления выдачи: из формы, из JS API, после сброса и «Назад».
+
+## Если не работает
+
+| Симптом | Причина |
+|---------|---------|
+| Селект сортировки или кнопка вида не реагирует | Элемент добавлен скриптом после загрузки страницы или стоит внутри `.mfilter-results` |
+| После сброса селект сортировки показывает не ту сортировку | Первая опция селекта — не сортировка по умолчанию: при сбросе скрипт выбирает первую |
+| Второй счётчик `mfilter-total` не обновляется | Скрипт обновляет только первый элемент с этим классом на странице |
+| Кнопка отбирает не те товары | Значение не такое, как `value` у чекбокса в форме: например, производитель передан названием вместо id |
+| Кнопка не гаснет после сброса или «Назад» | Подсветка не подписана на `mfilter:success` |
+| После перехода по ссылке заголовок страницы «1000 — 0» | Задана одна граница цены, а фильтра цены в форме нет. Верните фильтр в форму или задавайте обе границы |

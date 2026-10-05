@@ -7,11 +7,11 @@ title: Быстрый старт
 
 ## Шаг 1: Откройте страницу с формой
 
-Откройте в редакторе MODX страницу, на которой выводится форма обратной связи (или другая форма на FormIt).
+В редакторе MODX откройте страницу с формой на FormIt.
 
 ## Шаг 2: Добавьте preHook в вызов FormIt
 
-Найдите вызов FormIt и добавьте в него `crawlerDetectBlock` в параметр **preHooks**.
+В параметр **preHooks** добавьте `crawlerDetectBlock`.
 
 ::: code-group
 
@@ -41,9 +41,7 @@ title: Быстрый старт
   'emailTo' => $modx->getOption('emailsender'),
   'emailSubject' => 'Обратная связь'
 ])}
-{if $modx->getPlaceholder('fi.validation_error_message')}
-  <div class="error">{$modx->getPlaceholder('fi.validation_error_message')}</div>
-{/if}
+{$modx->getPlaceholder('fi.validation_error_message')}
 <form action="{$modx->makeUrl($modx->resource->id)}" method="post">
   <input type="text" name="name" value="{$modx->getPlaceholder('fi.name')}" />
   <input type="email" name="email" value="{$modx->getPlaceholder('fi.email')}" />
@@ -53,7 +51,7 @@ title: Быстрый старт
 
 :::
 
-Сообщение при блокировке ботом выводится через плейсхолдер `[[+fi.validation_error_message]]` (MODX) или `{$modx->getPlaceholder('fi.validation_error_message')}` (Fenom). Текст сообщения настраивается в [системных настройках](settings).
+Сообщение при блокировке ботом выводится через `[[+fi.validation_error_message]]` (MODX) или `{$modx->getPlaceholder('fi.validation_error_message')}` (Fenom). Текст задаётся в [системных настройках](settings).
 
 ## Шаг 3: Сохраните страницу
 
@@ -61,7 +59,7 @@ title: Быстрый старт
 
 ## Что дальше
 
-- [Системные настройки](settings) — текст сообщения при блокировке, логирование
-- [Сниппеты](snippets/) — isCrawler и crawlerDetectBlock, параметры
-- [Интеграция](integration) — защита форм, скрытие контента, типовые сценарии
-- [Решение проблем](troubleshooting) — если форма не блокируется или сообщение не показывается
+- [Системные настройки](settings): текст сообщения, логирование
+- [Сниппеты](snippets/): `isCrawler` и `crawlerDetectBlock`
+- [Интеграция](integration): формы, скрытие контента, сценарии
+- [Решение проблем](troubleshooting): форма не блокируется, сообщение не видно

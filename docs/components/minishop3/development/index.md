@@ -5,10 +5,23 @@ title: Разработка
 
 Раздел для разработчиков, расширяющих функциональность MiniShop3.
 
+```mermaid
+flowchart TB
+  need[Задача]
+  need -->|Плагин на процесс| events[События]
+  need -->|Headless / SPA| webapi[Web API /api/v1]
+  need -->|Маршруты и middleware| router[API Router]
+  need -->|Фон| scheduler[Scheduler]
+  need -->|PHP CRUD сущностей| backend[Backend API]
+  need -->|Замена классов| services[ServiceRegistry]
+  need -->|Вкладки mgr| tabs[product / order tabs]
+  webapi --> router
+```
+
 ## Содержание
 
 - [События](events) — система событий для плагинов
-- [REST API](api) — Web API для интеграций с фронтендом
+- [Web API](api): документация для витрины и Nuxt ([карта эндпоинтов](web-api/endpoints))
 - [API Router](routing) — маршрутизация, middleware, кастомизация роутов
 - [Scheduler](scheduler) — фоновые задачи и интеграция с Scheduler
 - [Модели и схема БД](models) — xPDO модели и структура таблиц
@@ -29,4 +42,4 @@ title: Разработка
 
 Vue-CRUD (производители, доставки, оплаты и т.д.) **не** вызывает `Processors/Settings/Vendor/*` — плагины на `msOnVendorCreate` из админки не сработают. См. [События производителей](events/vendor).
 
-Headless витрина — **Web API** (`/api/v1/*`), не процессоры.
+Headless витрина использует Web API (`/api/v1/*`), не процессоры.

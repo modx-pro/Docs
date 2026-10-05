@@ -7,6 +7,9 @@ logo: https://msaltcart.art-sites.ru/assets/components/msaltcart/logo.jpg
 modstore: https://modstore.pro/packages/integration/msaltcart
 repository: https://github.com/ShevArtV/msaltcart
 author: ShevArtV
+compatibility:
+  - php74
+  - minishop2
 items: [
   { text: 'Начало работы', link: 'index' },
   { text: 'Сниппеты', link: 'snippets' },
@@ -16,6 +19,7 @@ items: [
 
 ]
 dependencies: [ 'pdoTools', 'SendIt', 'miniShop2' ]
+categories: orders
 ---
 
 # msAltCart
@@ -177,7 +181,7 @@ dependencies: [ 'pdoTools', 'SendIt', 'miniShop2' ]
 ## Чанк товара(row)
 
 :::danger
-Это опциональный чанк, если вам нужно вывести только общие значения, например в шапке, то не нужно указывать параметр **row** в сниппите [getCarts](https://docs.modx.pro/components/msaltcart/snippets#getcarts)
+Это опциональный чанк, если вам нужно вывести только общие значения, например в шапке, то не нужно указывать параметр **row** в сниппете [getCarts](https://docs.modx.pro/components/msaltcart/snippets#getcarts)
 :::
 
 ```fenom:line-numbers
@@ -350,7 +354,7 @@ dependencies: [ 'pdoTools', 'SendIt', 'miniShop2' ]
 ```
 
 :::warning
-Сниппет следует вызывать некешированным
+Сниппет следует вызывать некэшированным
 :::
 
 ## Вставка плейсхолдера

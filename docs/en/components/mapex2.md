@@ -1,6 +1,7 @@
 ---
 title: Mapex2
 description: Yandex.Maps with advanced editor
+categories: maps
 logo: https://modstore.pro/assets/extras/mapex2/logo-lg.jpg
 author: createit-ru
 modstore: https://modstore.pro/packages/maps/mapex2

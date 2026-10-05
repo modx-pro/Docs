@@ -1,6 +1,7 @@
 ---
 title: easyComm
 description: Reviews, comments, Q&A modules and sections
+categories: utilities
 logo: https://modstore.pro/assets/extras/easycomm/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/easycomm

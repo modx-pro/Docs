@@ -125,10 +125,18 @@ Link to the component page in the official [modx.com] repository.
 
 ### Component source repository
 
-- Type: `string`
+- Type: `string` or `string[]`
 
 ```yaml
 repository: https://github.com/modx-pro/miniShop2
+```
+
+Multiple repositories (for example MODX 2 and MODX 3 lines):
+
+```yaml
+repository:
+  - https://github.com/modx-pro/pdoTools
+  - https://github.com/modx-pro/pdoTools3
 ```
 
 Link to the component source code repository.
@@ -277,6 +285,31 @@ Currently there is one category, `payment`, used to list payment modules on the 
 categories: payment
 ```
 
+### Compatibility
+
+- Type: `string | string[]`
+
+Optional. Labels show on the component card and in the catalog. If the field is absent, there are no labels.
+
+| Value | Label |
+| --- | --- |
+| `modx2` | MODX 2 |
+| `modx3` | MODX 3 |
+| `vue2` | Vue 2 |
+| `vue3` | Vue 3 |
+| `minishop2` | miniShop2 |
+| `minishop3` | miniShop3 |
+| `php82` | PHP 8.2 |
+
+For PHP, write `php` and two version digits without a dot. `php81` renders as PHP 8.1. Unknown values are skipped.
+
+```yaml
+compatibility:
+  - modx3
+  - php82
+  - minishop3
+```
+
 ## Full example for a component
 
 Example skeleton for a multi-page component `index.md` (omit fields you do not need):
@@ -293,6 +326,10 @@ author: github-login
 dependencies:
   - miniShop2
 categories: payment
+compatibility:
+  - modx3
+  - php82
+  - minishop3
 outline: [2, 3]
 lastUpdated: true
 items:

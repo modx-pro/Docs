@@ -1,12 +1,16 @@
 ---
 title: mxEditorJs
 description: Блочный редактор Editor.js для MODX 3 — контент блоками вместо TinyMCE/CKEditor
-author: ibochkarev
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/mxeditorjs/logo.png
 modstore: https://modstore.pro/packages/content/mxeditorjs
 repository: https://github.com/Ibochkarev/mxEditorJs
 dependencies: []
+categories: content
 
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Начало работы', link: 'quick-start', items: [
     { text: 'Быстрый старт', link: 'quick-start' },
@@ -27,45 +31,45 @@ items: [
 ---
 # mxEditorJs
 
-Блочный редактор контента для MODX 3 на базе [Editor.js](https://editorjs.io/). Работает вместо стандартного TinyMCE/CKEditor: контент создаётся блоками (заголовок, текст, картинка, видео), на сайте отображается корректный HTML.
+Блочный редактор для MODX 3 на базе [Editor.js](https://editorjs.io/). Вместо TinyMCE/CKEditor контент собирается блоками. На сайте выходит HTML.
 
 ## Быстрые ссылки
 
 | Нужно | Документ |
 | --- | --- |
-| Включить редактор за 3 шага | [Быстрый старт](quick-start) |
-| Работа с блоками, медиа, embed | [Руководство редактора](user-guide) |
-| Настроить профили инструментов и медиа | [Системные настройки](settings) |
-| Connector API, PHP-классы, форматы данных | [API](api) |
-| TV, миграция HTML → Editor.js | [Интеграция](integration) |
-| Типовые вопросы редакторов | [FAQ](faq) |
-| Save flow, sidecar, connector | [Потоки](flows) |
+| Включить редактор за 3 шага | [Быстрый старт](/components/mxeditorjs/quick-start) |
+| Работа с блоками, медиа, embed | [Руководство редактора](/components/mxeditorjs/user-guide) |
+| Настроить профили инструментов и медиа | [Системные настройки](/components/mxeditorjs/settings) |
+| Connector API, PHP-классы, форматы данных | [API](/components/mxeditorjs/api) |
+| TV, миграция HTML → Editor.js | [Интеграция](/components/mxeditorjs/integration) |
+| Типовые вопросы редакторов | [FAQ](/components/mxeditorjs/faq) |
+| Save flow, sidecar, connector | [Потоки](/components/mxeditorjs/flows) |
 
 ## Кому что читать
 
-- **Редактору контента:** [Руководство редактора](user-guide)
-- **Администратору:** [Системные настройки](settings), [FAQ](faq)
-- **Разработчику:** [API](api), [Потоки](flows), [Архитектура](architecture), [Решение проблем](troubleshooting)
+- **Редактору:** [Руководство редактора](/components/mxeditorjs/user-guide)
+- **Администратору:** [Системные настройки](/components/mxeditorjs/settings), [FAQ](/components/mxeditorjs/faq)
+- **Разработчику:** [API](/components/mxeditorjs/api), [Потоки](/components/mxeditorjs/flows), [Архитектура](/components/mxeditorjs/architecture), [Решение проблем](/components/mxeditorjs/troubleshooting)
 
-Пакет: **1.1.0-beta2**. [modstore.pro](https://modstore.pro/packages/content/mxeditorjs), [GitHub](https://github.com/Ibochkarev/mxEditorJs). Changelog — в репозитории пакета: `core/components/mxeditorjs/docs/changelog.txt`.
+[modstore.pro](https://modstore.pro/packages/content/mxeditorjs), [GitHub](https://github.com/Ibochkarev/mxEditorJs). Changelog: `core/components/mxeditorjs/docs/changelog.txt`.
 
 ## Возможности
 
-- **Блочный редактор** — 14 типов блоков: параграф, заголовок, список, чеклист, цитата, таблица, код, raw HTML, embed, изображение, **галерея**, вложение, разделитель, предупреждение
-- **Поддержка TV** — редактор в основном контенте ресурса и в Template Variables типа `textarea` с опцией richtext
-- **Загрузка медиа** — drag-and-drop изображений и файлов через MODX Media Sources. Отдельные пути для изображений и вложений (Attaches)
-- **Галерея** — несколько изображений в одном блоке, сортировка, режимы «сетка» и «слайдер», загрузка и «Обзор» через Media Source (как у Image)
-- **Браузер файлов** — навигация по директориям Media Source
-- **Автодополнение ссылок** — поиск ресурсов MODX при вставке ссылок
-- **Миграция HTML → Editor.js** — конвертация существующего HTML-контента
-- **Профили инструментов** — предустановки (default, minimal, blog, full) и пользовательские
-- **Полноэкранный режим**, **Source Preview**, **Undo/Redo**, выравнивание текста
-- **Локализация** — русский и английский, наследование локали менеджера
-- **CSS-пресеты** — настраиваемые классы для изображений и ссылок
+- **15 типов блоков:** параграф, заголовок, список, чеклист, цитата, таблица, код, raw HTML, embed, изображение, **галерея**, **mxGallery**, вложение, разделитель, предупреждение. Toolbox `mxgallery` только если установлен пакет mxGallery.
+- **TV**: основной контент и Template Variables типа `textarea` с richtext
+- **Медиа**: drag-and-drop через Media Sources. Отдельные пути для изображений и вложений (Attaches)
+- **Галерея**: несколько изображений, сортировка, сетка или слайдер, загрузка и «Обзор» через Media Source
+- **Браузер файлов**: навигация по Media Source
+- **Автодополнение ссылок**: поиск ресурсов MODX
+- **Миграция HTML → Editor.js**
+- **Профили**: default, minimal, blog, full и свои
+- **Полноэкранный режим**, **Source Preview**, **Undo/Redo**, выравнивание
+- **Локализация**: русский и английский, наследует локаль менеджера
+- **CSS-пресеты**: классы для изображений и ссылок
 
 ## Используемые плагины Editor.js
 
-mxEditorJs собирает редактор из следующих блоковых и инлайновых инструментов, блочного tune и плагина. Полный каталог инструментов и интеграций: [Awesome Editor.js](https://github.com/editor-js/awesome-editorjs).
+Каталог инструментов: [Awesome Editor.js](https://github.com/editor-js/awesome-editorjs).
 
 ### Блоковые инструменты (Block Tools)
 
@@ -83,8 +87,9 @@ mxEditorJs собирает редактор из следующих блоко�
 | **@editorjs/attaches** | Вложение файлов | [npm](https://www.npmjs.com/package/@editorjs/attaches) · [awesome](https://github.com/editor-js/awesome-editorjs#media--embed) |
 | **@editorjs/delimiter** | Разделитель | [npm](https://www.npmjs.com/package/@editorjs/delimiter) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
 | **@editorjs/warning** | Блок предупреждения | [npm](https://www.npmjs.com/package/@editorjs/warning) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
-| **Image** (кастомный) | Изображение с загрузкой и браузером MODX Media Source | В составе mxEditorJs (`ImageTool.ts`), аналог [@editorjs/image](https://github.com/editor-js/awesome-editorjs#media--embed) |
-| **Gallery** (кастомный) | Галерея изображений на базе `@kiberpro/editorjs-gallery`: сортировка, режимы fit/slider | В составе mxEditorJs (`GalleryTool.ts`) |
+| **Image** | Изображение с загрузкой и браузером MODX Media Source | В составе mxEditorJs (`ImageTool.ts`), аналог [@editorjs/image](https://github.com/editor-js/awesome-editorjs#media--embed) |
+| **Gallery** | Галерея на базе `@kiberpro/editorjs-gallery`: сортировка, режимы fit/slider | В составе mxEditorJs (`GalleryTool.ts`) |
+| **mxGallery** | Блок пакета mxGallery: медиа по `ids` или коллекция | В составе mxEditorJs (`MxGalleryTool.ts`). Toolbox только если есть `core/components/mxgallery/` |
 
 ### Инлайновые инструменты (Inline Tools)
 
@@ -94,7 +99,7 @@ mxEditorJs собирает редактор из следующих блоко�
 | **@editorjs/inline-code** | Моноширинный код в тексте | [npm](https://www.npmjs.com/package/@editorjs/inline-code) · [awesome](https://github.com/editor-js/awesome-editorjs#inline-tools) |
 | **@editorjs/underline** | Подчёркивание | [npm](https://www.npmjs.com/package/@editorjs/underline) · [awesome](https://github.com/editor-js/awesome-editorjs#inline-tools) |
 
-Ссылки в тексте и автодополнение по ресурсам MODX реализованы кастомным инструментом **LinkAutocomplete** в составе mxEditorJs (по мотивам [@editorjs/link-autocomplete](https://github.com/editor-js/awesome-editorjs#inline-tools)).
+Ссылки и автодополнение по ресурсам MODX: инструмент **LinkAutocomplete** в составе mxEditorJs (по мотивам [@editorjs/link-autocomplete](https://github.com/editor-js/awesome-editorjs#inline-tools)).
 
 ### Блочный tune (Block Tune)
 
@@ -112,7 +117,7 @@ mxEditorJs собирает редактор из следующих блоко�
 
 | Плагин | Ссылки |
 | --- | --- |
-| **@editorjs/editorjs** | Ядро Editor.js | [npm](https://www.npmjs.com/package/@editorjs/editorjs) · [GitHub](https://github.com/codex-team/editor.js) · [документация](https://editorjs.io/) |
+| **@editorjs/editorjs** — ядро Editor.js | [npm](https://www.npmjs.com/package/@editorjs/editorjs) · [GitHub](https://github.com/codex-team/editor.js) · [документация](https://editorjs.io/) |
 
 ## Требования
 
@@ -126,12 +131,12 @@ mxEditorJs собирает редактор из следующих блоко�
 
 ### Через менеджер пакетов
 
-1. Перейдите в **Extras → Installer** (в MODX 3: **Пакеты → Установщик**)
-2. Нажмите **Download Extras** и обновите список пакетов
-3. Найдите **mxEditorJs** в списке, нажмите **Download**, затем **Install**
-4. **Управление → Очистить кэш** (в MODX 3: **Настройки → Очистить кэш**)
+1. **Extras → Installer** (MODX 3: **Пакеты → Установщик**)
+2. **Download Extras**, обновите список пакетов
+3. Найдите **mxEditorJs** → **Download** → **Install**
+4. **Управление → Очистить кэш** (MODX 3: **Настройки → Очистить кэш**)
 
-Либо загрузите транспортный пакет вручную: скачайте `mxeditorjs-*.transport.zip`, в **Пакеты → Установщик** нажмите **Загрузить пакет**, выберите файл и установите, затем очистите кэш.
+Либо `mxeditorjs-*.transport.zip`: **Пакеты → Установщик** → **Загрузить пакет** → установить → очистить кэш.
 
 ### Из исходников (разработка)
 
@@ -146,11 +151,11 @@ php _build/build.php
 
 ## Быстрый старт (3 шага)
 
-1. **Система → Системные настройки** → найдите `which_editor` → выберите **mxEditorJs**
-2. Убедитесь, что `mxeditorjs.enabled` = **Да**
-3. Откройте любой ресурс — в поле контента появится блочный редактор
+1. **Система → Системные настройки** → `which_editor` → **mxEditorJs**
+2. `mxeditorjs.enabled` = **Да**
+3. Откройте ресурс: в поле контента появится блочный редактор
 
-Подробнее: [Быстрый старт](quick-start).
+Подробнее: [Быстрый старт](/components/mxeditorjs/quick-start).
 
 ## Системные настройки (кратко)
 
@@ -167,4 +172,4 @@ php _build/build.php
 | `mxeditorjs.gallery_max_count` | `0` | Макс. изображений в блоке Gallery (`0` = без лимита) |
 | `mxeditorjs.max_upload_size` | `5242880` (5 МБ) | Макс. размер загружаемого файла (байты) |
 
-Полный список: [Системные настройки](settings).
+Полный список: [Системные настройки](/components/mxeditorjs/settings).

@@ -7,7 +7,7 @@ description: "Category picks excluding the current product (Pro)"
 
 On a product page, shows other SKUs from the same (or chosen) category except the current resource.
 
-<!-- ![Related products](/components/pagebuilder/screenshots/sections/related_products.png) -->
+![Related products](/components/pagebuilder/screenshots/sections/related_products.jpg)
 
 ::: info
 Requires PageBuilder Pro and miniShop3.
@@ -96,11 +96,11 @@ Example payload after save. Media, video, and map values may be enriched on outp
 Fenom chunk `pagebuilderpro_related_products`:
 
 ```fenom
-{var $catalogParent = $parent.id|default:($parent_id|default:0)}
-{var $excludeId = $product.id|default:($product_id|default:0)}
-{var $listing = ''}
+{set $catalogParent = $parent.id|default:($parent_id|default:0)}
+{set $excludeId = $product.id|default:($product_id|default:0)}
+{set $listing = ''}
 {if $catalogParent}
-  {var $listing = $modx->runSnippet('msProducts', [
+  {set $listing = $modx->runSnippet('msProducts', [
     'parents' => $catalogParent,
     'depth' => 10,
     'limit' => $limit|default:4,
@@ -124,15 +124,11 @@ Fenom chunk `pagebuilderpro_related_products`:
         {$listing}
       </div>
     {else}
-      <p class="pb-listing__empty">No matching products yet.</p>
+      <p class="pb-listing__empty">{'pagebuilder_fe_listing_empty_related' | lexicon}</p>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/related_products.json`
 
 ## See also
 

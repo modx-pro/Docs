@@ -1,17 +1,17 @@
 ---
 title: "tablemulticombo"
-description: "Массив id строк custom table через MultiSelect"
+description: "Несколько значений из класса MODX через optionsSource"
 ---
 
 # Поле tablemulticombo
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.png) -->
+<!-- ![tablemulticombo](/components/pagebuilder/screenshots/fields/tablemulticombo.jpg) -->
 
 ## Зачем этот тип
 
-Несколько id из того же table source. Парный тип к [tablecombo](tablecombo). В data только id, без inline-строк.
+Несколько значений из того же источника, что у [tablecombo](tablecombo): `optionsSource` или статический `options`. В инспекторе это список с поиском, не сетка. В данных только значения `valueField`, без самих строк. Пусто, если нет ни `options`, ни `optionsSource`.
 
 ## Когда использовать
 
@@ -36,7 +36,10 @@ description: "Массив id строк custom table через MultiSelect"
   "type": "tablemulticombo",
   "label": "Шаблоны",
   "optionsSource": {
-    "class": "modTemplate"
+    "class": "modTemplate",
+    "valueField": "id",
+    "labelField": "templatename",
+    "limit": 50
   },
   "tab": "Контент",
   "width": 100,
@@ -46,7 +49,7 @@ description: "Массив id строк custom table через MultiSelect"
 
 ## Значение
 
-Массив id.
+Массив значений `valueField`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -54,20 +57,25 @@ description: "Массив id строк custom table через MultiSelect"
 
 ```json
 {
-  "templates": [
-    "admin",
-    "editor"
-  ]
+  "templates": [3, 5]
 }
 ```
 
 ## Пример в chunk
+
+::: code-group
+
+```modx
+<span>[[+templates.0]]</span>
+```
 
 ```fenom
 {foreach $templates as $id}
   <span>{$id}</span>
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -76,7 +84,7 @@ description: "Массив id строк custom table через MultiSelect"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

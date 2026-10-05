@@ -7,11 +7,11 @@ description: "CTA object: label, url, and target"
 
 Version: **Free**.
 
-<!-- ![button](/components/pagebuilder/screenshots/fields/button.png) -->
+<!-- ![button](/components/pagebuilder/screenshots/fields/button.jpg) -->
 
 ## Why this type
 
-Three related props in one field. UTM placeholders in url. Ready object for `<a>` in chunk.
+One field holds the three parts of a link: label, URL, and where it opens (`label`, `url`, `target`). The URL can keep UTM placeholders. The chunk turns that object into an `<a>` tag.
 
 ## When to use
 
@@ -61,9 +61,17 @@ Key `cta` in the section data:
 
 ## Chunk example
 
-```html
-<a class="btn" href="{$cta.url|escape}" target="{$cta.target|escape}">{$cta.label|escape}</a>
+::: code-group
+
+```modx
+<a class="pb-button" href="[[+cta.url]]" target="[[+cta.target]]">[[+cta.label]]</a>
 ```
+
+```fenom
+<a class="pb-button" href="{$cta.url|pb_href|escape}" target="{$cta.target|escape}">{$cta.label|pb_text}</a>
+```
+
+:::
 
 ## Common properties
 

@@ -7,11 +7,11 @@ description: "Boolean yes/no in classic MODX TV style"
 
 Version: **Free**.
 
-<!-- ![yesno](/components/pagebuilder/screenshots/fields/yesno.png) -->
+<!-- ![yesno](/components/pagebuilder/screenshots/fields/yesno.jpg) -->
 
 ## Why this type
 
-Familiar UX for MODX editors. Boolean in the section data. Compact than radio for simple yes/no.
+The yes/no control MODX editors already know. The section stores a yes or no value. For a simple yes or no it takes less space than [radio](radio).
 
 ## When to use
 
@@ -57,9 +57,17 @@ Key `visible` in the section data:
 
 ## Chunk example
 
+::: code-group
+
+```modx
+<div class="block">…</div>
+```
+
 ```fenom
 {if $visible}<div class="block">…</div>{/if}
 ```
+
+:::
 
 ## Notes
 

@@ -18,18 +18,18 @@ description: Чтение chunks, templates, snippets, TVs, categories и кон
 | `/categories` | `categories.read` |
 | `/content_types` | `content_types.read` |
 
-Список и `GET /{prefix}/{id}` на каждом типе.
+Список и `GET /{prefix}/{id}` на каждом типе. Чанки, шаблоны, сниппеты, TV: `include=category`. Категории: `include=parent`.
 
 ```bash
 curl -s https://example.com/api/v1/chunks \
   -H 'Authorization: Bearer mxh_...'
 ```
 
-Write API для элементов в core не поставляется как полноценный CRUD сайта. Ориентируйтесь на OpenAPI live registry.
+Полного CRUD элементов в core нет. Смотрите живой реестр OpenAPI.
 
 ## Contexts
 
-Контексты MODX разделяют сайты, языки, web и mgr. mxHeadless берёт активный контекст из запроса и проверяет whitelist.
+Контексты MODX разделяют сайты, языки, web и mgr. mxHeadless берёт активный контекст из запроса и проверяет список разрешённых.
 
 | Method | Path | Scope |
 | --- | --- | --- |
@@ -43,7 +43,7 @@ Write API для элементов в core не поставляется как
 
 Поля каталога: `key`, `name`, `description`, `rank`.
 
-Settings отдаются по allowlist, не весь `modContextSetting`. В ответе: `site_url`, `base_url`, `http_host`, `site_start`, `error_page`, `unauthorized_page`, `cultureKey`, `locale`.
+Settings отдаются по списку, не весь `modContextSetting`. В ответе: `site_url`, `base_url`, `http_host`, `site_start`, `error_page`, `unauthorized_page`, `cultureKey`, `locale`.
 
 Передать контекст в запросе:
 
@@ -52,9 +52,9 @@ GET /api/v1/resources?context=web
 X-Context: web
 ```
 
-Если не указано, используется контекст bootstrap (`mxheadless_context`, по умолчанию `web`).
+Если не указано, используется контекст запуска (`mxheadless_context`, по умолчанию `web`).
 
-Whitelist `mxheadless_allowed_contexts` (default `web,mgr`) ограничивает значения `?context=` и `X-Context`. Остальные дают `422 Invalid context`. Запись `context_key` у ресурса: контекст из whitelist, который MODX может загрузить. Несуществующие и незагружаемые (часто `mgr` с web front controller) → `422`, не `500`.
+Список `mxheadless_allowed_contexts` (по умолчанию `web,mgr`) ограничивает значения `?context=` и `X-Context`. Остальные дают `422 Invalid context`. Запись `context_key` у ресурса: контекст из списка, который MODX может загрузить. Несуществующие и незагружаемые (часто `mgr` при запросе через web) дают `422`, не `500`.
 
 ```bash
 curl -s https://example.com/api/v1/contexts/web \

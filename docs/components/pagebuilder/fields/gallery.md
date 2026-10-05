@@ -5,28 +5,28 @@ description: "Массив media-объектов изображений с enri
 
 # Поле gallery
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![gallery](/components/pagebuilder/screenshots/fields/gallery.png) -->
+<!-- ![gallery](/components/pagebuilder/screenshots/fields/gallery.jpg) -->
 
 ## Зачем этот тип
 
-Несколько фото с alt и caption в repeater-like UI. Enrich как у [image](image) на каждый кадр. Pro advanced-fields.
+Несколько фотографий в одном поле. У каждого снимка свои альтернативный текст и подпись. После сохранения у файла появляются адрес, ширина и высота, как у поля [image](image). Тип есть в PageBuilder Pro.
 
 ## Когда использовать
 
-- Слайды без отдельной carousel-секции
-- Набор screenshots продукта
-- Источник данных для сетки portfolio
+- Несколько снимков в одной секции, без отдельной карусели
+- Скриншоты товара
+- Фото для сетки портфолио
 
 ## Советы
 
-Один кадр: [image](image). В chunk перебирайте массив и `{$slide.url}`.
+Одно фото удобнее полем [image](image). В чанке переберите массив и возьмите адрес снимка: `{$slide.url}`.
 
 ## Похожие типы
 
 - [image](image) для одного файла
-- [repeater](repeater) + image для кастомной nested схемы (Free)
+- [repeater](repeater) с полем image, если нужна своя схема строки. Доступно в Free
 
 ## Настройка
 
@@ -92,11 +92,25 @@ description: "Массив media-объектов изображений с enri
 
 ## Пример в chunk
 
+Перебор галереи — блок Fenom. В MODX без Fenom — сниппет или один элемент по индексу.
+
+::: code-group
+
+```modx
+[[$pagebuilder_partial_image?
+  &image=`[[+shots.0]]`
+  &alt=`[[+shots.0.title]]`
+  &class=`pb-gallery__media`
+]]
+```
+
 ```fenom
 {foreach $shots as $image}
-  <img src="{$image.url|escape}" width="{$image.width}" height="{$image.height}" alt="{$image.title|escape}">
+  {include 'pagebuilder_partial_image' image=$image alt=$image.title class='pb-gallery__media'}
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -105,13 +119,14 @@ description: "Массив media-объектов изображений с enri
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |
 | `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
 
-- Дополнительно: `groups: true`: группы у элементов галереи.
+- Дополнительно: `groups` или alias `fileGroups`: `true` — группы у элементов галереи.
+- `crops` в schema — именованные пресеты кадрирования (capability `image-crop`, Pro). Без Pro кнопка кадрирования недоступна; сохранённые `crops` в data остаются.
 
 Подробнее: [обзор полей](overview#общие-свойства-поля).
 

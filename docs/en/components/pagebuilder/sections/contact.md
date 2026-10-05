@@ -7,7 +7,7 @@ description: "Phone, email, text, and button without a map"
 
 Simple contact block: clickable phone and email (`tel:` / `mailto:`), optional short text and button.
 
-<!-- ![Contact](/components/pagebuilder/screenshots/sections/contact.png) -->
+![Contact](/components/pagebuilder/screenshots/sections/contact.jpg)
 
 ## What the contact block adds
 
@@ -100,10 +100,10 @@ Fenom chunk `pagebuilder_contact`:
 <section class="pb-section pb-section--contact pb-contact{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="contact"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-contact__inner">
     {if $title}
-      <h2 class="pb-heading pb-contact__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-contact__title">{$title|pb_text}</h2>
     {/if}
     {if $text}
-      <p class="pb-contact__text">{$text|escape}</p>
+      <p class="pb-contact__text">{$text|pb_text}</p>
     {/if}
     <div class="pb-contact__details">
       {if $phone}
@@ -115,16 +115,12 @@ Fenom chunk `pagebuilder_contact`:
     </div>
     {if $button_label && $button_url}
       <div class="pb-contact__actions">
-        <a class="pb-contact__button pb-button" href="{$button_url|escape}">{$button_label|escape}</a>
+        <a class="pb-contact__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|pb_text}</a>
       </div>
     {/if}
   </div>
 </section>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/contact.json`
 
 ## See also
 

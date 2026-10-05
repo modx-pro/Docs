@@ -7,7 +7,7 @@ description: "HTML string from the familiar MODX richtext editor"
 
 A text block between other sections. The editor works like MODX richtext: paragraphs, lists, links, basic formatting.
 
-<!-- ![Rich text](/components/pagebuilder/screenshots/sections/richtext.png) -->
+![Rich text](/components/pagebuilder/screenshots/sections/richtext.jpg)
 
 ## When richtext is enough
 
@@ -80,10 +80,6 @@ Fenom chunk `pagebuilder_richtext`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/richtext.json`
 
 ## See also
 

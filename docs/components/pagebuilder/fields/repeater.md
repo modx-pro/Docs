@@ -7,7 +7,7 @@ description: "Массив объектов с nested fields и служебны
 
 Версия: **Free**.
 
-<!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.png) -->
+<!-- ![repeater](/components/pagebuilder/screenshots/fields/repeater.jpg) -->
 
 ## Зачем этот тип
 
@@ -23,12 +23,15 @@ description: "Массив объектов с nested fields и служебны
 
 ## Советы
 
+- Порядок строк: ручка перетаскивания или стрелки вверх/вниз
 - В chunk: `{foreach}` и при необходимости `{$item._rowId|escape}`
 - Один объект без списка: [jsongrid](jsongrid) (Pro)
+- Сложный ExtJS-грид как у MIGX TV: [migx](migx)
 
 ## Похожие типы
 
 - [jsongrid](jsongrid) для одной строки-объекта (Pro)
+- [migx](migx) для нативного MIGX-грида (Free)
 - [table](table) для табличной сетки с колонками (Pro)
 
 ## Настройка
@@ -76,13 +79,21 @@ description: "Массив объектов с nested fields и служебны
 
 ## Пример в chunk
 
+::: code-group
+
+```modx
+[[+items.0.title]]
+```
+
 ```fenom
 {foreach $items as $item}
   <article id="{$item._rowId|escape}">
-    <h3>{$item.title|escape}</h3>
+    <h3>{$item.title|pb_text}</h3>
   </article>
 {/foreach}
 ```
+
+:::
 
 ## Общие свойства
 
@@ -91,7 +102,7 @@ description: "Массив объектов с nested fields и служебны
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false` — скрыть поле в инспекторе | да |

@@ -7,7 +7,7 @@ description: "Phone, email, text, button, and map in one block (Pro)"
 
 Combines **Contact** and **Map**: contacts and CTA beside the map iframe.
 
-<!-- ![Contact with map](/components/pagebuilder/screenshots/sections/contact_map.png) -->
+![Contact with map](/components/pagebuilder/screenshots/sections/contact_map.jpg)
 
 ::: info
 Requires PageBuilder Pro.
@@ -127,7 +127,7 @@ Fenom chunk `pagebuilderpro_contact_map`:
           <p class="pb-contact-map__email"><a href="mailto:{$email|escape:'url'}">{$email|escape}</a></p>
         {/if}
         {if $button_label && $button_url}
-          <a class="pb-contact-map__button pb-button" href="{$button_url|escape}">{$button_label|escape}</a>
+          <a class="pb-contact-map__button pb-button" href="{$button_url|pb_href|escape}">{$button_label|escape}</a>
         {/if}
       </div>
       {if $map_embed_url}
@@ -145,10 +145,6 @@ Fenom chunk `pagebuilderpro_contact_map`:
   </div>
 </section>
 ```
-
-## JSON definition
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/contact_map.json`
 
 ## See also
 

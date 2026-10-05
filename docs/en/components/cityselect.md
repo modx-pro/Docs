@@ -1,6 +1,7 @@
 ---
 title: CitySelect
 description: Component for city selection
+categories: maps
 logo: https://modstore.pro/assets/extras/cityselect/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/maps/cityselect

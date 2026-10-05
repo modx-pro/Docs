@@ -1,6 +1,6 @@
-import authors from './authors.json'
-import type { DocsTheme } from '../.vitepress/theme/types'
-import { modxpro } from './icons'
+import authors from './authors.json' with { type: 'json' }
+import type { DocsTheme } from '../.vitepress/theme/types/index.ts'
+import { modxpro } from './icons.ts'
 
 export interface Author {
   name: string | Record<string, string>

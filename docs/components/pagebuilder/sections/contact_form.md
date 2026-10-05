@@ -1,23 +1,24 @@
 ---
 title: "Форма обратной связи"
-description: "Форма с настраиваемым набором полей, ключом и сообщением об успехе. Слой Pro."
+description: "Форма с настраиваемым набором полей через FetchIt. Слой Pro."
 ---
 
 # Форма обратной связи
 
-Вы собираете набор полей в инспекторе (text, email, tel и др.), задаёте **Ключ формы** для обработчика и текст после отправки.
+Вы собираете набор полей в инспекторе (text, email, phone, textarea, select, radio, checkbox, date), задаёте **Ключ формы** и текст после отправки. Отправка идёт через **FetchIt** и сниппет `PageBuilderContactForm`. Из шаблона handler не вызывайте.
 
-<!-- ![Форма обратной связи](/components/pagebuilder/screenshots/sections/contact_form.png) -->
+![Форма обратной связи](/components/pagebuilder/screenshots/sections/contact_form.jpg)
 
 ::: info
-Требуется PageBuilder Pro.
+Требуются PageBuilder Pro и **FetchIt**.
 :::
 
 ## Что даёт форма в PageBuilder
 
 - Набор полей собираете в repeater, не в коде формы
-- `form_key` связывает блок с вашим обработчиком (AjaxForm, сниппет)
+- `form_key` стабильный id POST (`pb_form_key`)
 - Сообщение об успехе и redirect настраиваются в инспекторе
+- Персональные данные в `published_json` не пишутся
 
 ## Типичные места
 
@@ -32,10 +33,13 @@ description: "Форма с настраиваемым набором полей
 
 ## form_key и поля
 
-**Ключ формы** (`form_key`) должен совпадать с обработчиком на сайте (сниппет, AjaxForm). Repeater **Поля формы**: name, type, required для каждой строки.
+**Ключ формы** (`form_key`) должен быть уникален на странице, если форм несколько. Repeater **Поля формы**: name, label, type (`text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`), required. Для select и radio в поле `options` каждая непустая строка — одна опция: подпись и value совпадают. Имя поля проверяется шаблоном `[a-z][a-z0-9_]*` без учёта регистра (`Name`, `email` допустимы). Обязательный checkbox пустой, пока значение не `1`, `yes`, `true` или `on`.
+
+Получатель письма: `emailsender` или настройки почты сайта (как у handler). Без **FetchIt** секция показывает сообщение о недоступности формы.
 
 ## Похожие секции
 
+- [Квиз](quiz) для многошагового сбора
 - [CTA](cta) с одной ссылкой вместо полей
 - [Контакты](contact) для tel:/mailto: без отправки формы
 
@@ -48,6 +52,8 @@ description: "Форма с настраиваемым набором полей
 | Категория | конверсия (`conversion`) |
 | Chunk | `pagebuilderpro_contact_form` |
 | Требования | pro |
+
+Секция входит в контекст страницы (`runtimeContext: true`), чтобы HTML-кеш не замораживал форму. На витрине нужен **FetchIt** (см. блок выше).
 
 ## Поля в редакторе
 
@@ -77,6 +83,7 @@ description: "Форма с настраиваемым набором полей
 | `label` | [text](../fields/text#vyvod-v-section-data) | Подпись | да |
 | `type` | [select](../fields/select#vyvod-v-section-data) | Тип поля | да |
 | `required` | [yesno](../fields/yesno#vyvod-v-section-data) | Обязательное | нет |
+| `options` | [textarea](../fields/textarea#vyvod-v-section-data) | Варианты (select, radio) | нет |
 
 ### Текст кнопки отправки (`submit_label`)
 
@@ -92,23 +99,30 @@ description: "Форма с настраиваемым набором полей
 
 ## Что видит посетитель
 
-Секция `pb-contact-form`. Отправка через `pbForm` / `pbFetch` на фронте.
+Секция `pb-contact-form`. AJAX через FetchIt → [PageBuilderContactForm](../snippets/PageBuilderContactForm). Honeypot `nospam`: тихий success без письма.
 
 ## Данные секции {#vyvod-v-section-data}
 
-Пример JSON после сохранения секции. Для media, video и map значения на выводе могут быть обогащены:
+Пример JSON после сохранения секции (схема полей, не ответы посетителя):
 
 ```json
 {
-  "title": "Заголовок секции",
-  "intro": "Краткое вступление перед основным содержимым.",
+  "title": "Оставьте заявку",
+  "intro": "Мы ответим в рабочее время.",
   "form_key": "contact",
   "fields": [
     {
       "_rowId": "00000000-0000-4000-8000-000000000001",
-      "name": "Иван Петров",
-      "label": "Довольных клиентов",
+      "name": "name",
+      "label": "Имя",
       "type": "text",
+      "required": true
+    },
+    {
+      "_rowId": "00000000-0000-4000-8000-000000000002",
+      "name": "email",
+      "label": "Email",
+      "type": "email",
       "required": true
     }
   ],
@@ -123,8 +137,7 @@ description: "Форма с настраиваемым набором полей
 Fenom chunk `pagebuilderpro_contact_form`:
 
 ```fenom
-{var $formKey = $form_key|default:'contact'}
-{var $status = $form_status|default:'idle'}
+{set $formKey = $form_key|default:'contact'}
 <section class="pb-section pb-section--contact-form pb-contact-form{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="contact_form"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-contact-form__inner">
     {if $title}
@@ -134,76 +147,118 @@ Fenom chunk `pagebuilderpro_contact_form`:
       <p class="pb-contact-form__intro">{$intro|escape}</p>
     {/if}
 
-    {if !$formit_available}
-      <p class="pb-contact-form__fallback" role="status">Форма временно недоступна. Установите FormIt или ajaxForm.</p>
-    {elseif $status == 'success'}
-      <div class="pb-contact-form__success" role="status">
-        <p>{$success_message|default:'Спасибо! Мы свяжемся с вами в ближайшее время.'|escape}</p>
-      </div>
+    {if !$fetchit_available}
+      <p class="pb-contact-form__fallback" role="status">{$lex_form_unavailable|escape}</p>
     {else}
-      {if $status == 'error'}
-        <div class="pb-contact-form__summary" role="alert">
-          <p>Проверьте обязательные поля и попробуйте снова.</p>
-        </div>
-      {/if}
-      <form class="pb-contact-form__form" method="post" action="">
-        <input type="hidden" name="pb_form_key" value="{$formKey|escape}" />
-        <input type="hidden" name="nospam" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="pb-contact-form__honeypot" />
-        <div class="pb-contact-form__fields">
-          {foreach $fields as $field}
-            {var $fname = $field.name|default:''}
-            {var $flabel = $field.label|default:$fname}
-            {var $ftype = $field.type|default:'text'}
-            {var $frequired = $field.required|default:0}
-            {var $fvalue = $form_values[$fname]|default:''}
-            {var $ferror = $form_errors[$fname]|default:''}
-            <div class="pb-contact-form__field{if $ferror} pb-contact-form__field--error{/if}">
-              <label class="pb-contact-form__label" for="pb-{$formKey|escape}-{$fname|escape}">
-                {$flabel|escape}{if $frequired}<span class="pb-contact-form__required" aria-hidden="true">*</span>{/if}
-              </label>
-              {if $ftype == 'textarea'}
-                <textarea
-                  class="pb-contact-form__control"
-                  id="pb-{$formKey|escape}-{$fname|escape}"
-                  name="{$fname|escape}"
-                  rows="4"
-                  {if $frequired}required aria-required="true"{/if}
-                  {if $ferror}aria-invalid="true"{/if}
-                >{$fvalue|escape}</textarea>
-              {else}
-                <input
-                  class="pb-contact-form__control"
-                  id="pb-{$formKey|escape}-{$fname|escape}"
-                  type="{if $ftype == 'email'}email{elseif $ftype == 'phone'}tel{else}text{/if}"
-                  name="{$fname|escape}"
-                  value="{$fvalue|escape}"
-                  {if $frequired}required aria-required="true"{/if}
-                  {if $ferror}aria-invalid="true"{/if}
-                />
-              {/if}
-              {if $ferror}
-                <p class="pb-contact-form__error" id="pb-{$formKey|escape}-{$fname|escape}-error">
-                  {if $ferror == 'email'}Введите корректный email.{else}Поле обязательно.{/if}
-                </p>
-              {/if}
-            </div>
-          {/foreach}
-        </div>
-        <button class="pb-button pb-contact-form__submit" type="submit">
-          {$submit_label|default:'Отправить'|escape}
-        </button>
-      </form>
+      {'!PageBuilderFetchIt' | snippet : [
+        'snippet' => 'PageBuilderContactForm',
+        'form' => 'pagebuilderpro_contact_form_fields',
+        'form_key' => $formKey,
+        'resource_id' => $resource_id|default:0,
+        'successMessage' => ($success_message ?: $lex_success_default),
+        'validationErrorMessage' => $lex_validation_error,
+        'clearFieldsOnSuccess' => 1,
+        'fields' => $fields,
+        'form_csrf' => $form_csrf,
+        'submit_label' => $submit_label,
+        'lex_submit' => $lex_submit,
+        'lex_field_required' => $lex_field_required,
+        'lex_field_email' => $lex_field_email,
+        'cssClass' => $cssClass,
+        'id' => $id,
+      ]}
     {/if}
   </div>
 </section>
 ```
 
-## JSON-определение
+Fenom chunk `pagebuilderpro_contact_form_fields`:
 
-`PageBuilderPro/core/components/pagebuilderpro/sections/contact_form.json`
+```fenom
+{set $formKey = $form_key|default:'contact'}
+{set $submitText = $submit_label|default:$lex_submit}
+
+<form class="pb-contact-form__form fetchit-form" method="post" novalidate>
+  <input type="hidden" name="pb_form_key" value="{$formKey|escape}" />
+  <input type="hidden" name="pb_csrf" value="{$form_csrf|escape}" />
+  <input type="hidden" name="nospam" value="" tabindex="-1" autocomplete="off" aria-hidden="true" class="pb-contact-form__honeypot" />
+
+  <div class="pb-contact-form__message pb-contact-form__message--success" data-success role="status"></div>
+  <div class="pb-contact-form__message pb-contact-form__message--error" data-validation-error role="alert"></div>
+
+  <div class="pb-contact-form__fields">
+    {foreach $fields as $field}
+      {set $fname = $field.name|default:''}
+      {if $fname == ''}{continue}{/if}
+      {set $flabel = $field.label|default:$fname}
+      {set $ftype = $field.type|default:'text'}
+      {set $frequired = $field.required|default:0}
+      {set $options = $field.options_list|default:($field.options|default:[])}
+      {set $fid = "pb-{$formKey|escape}-{$fname|escape}"}
+
+      <div class="pb-contact-form__field" data-custom="{$fname|escape}">
+        {if $ftype == 'checkbox'}
+          <label class="pb-contact-form__check" for="{$fid}">
+            <input type="checkbox" id="{$fid}" name="{$fname|escape}" value="1" {if $frequired}required aria-required="true"{/if} />
+            <span>{$flabel|escape}{if $frequired}<span class="pb-contact-form__required" aria-hidden="true">*</span>{/if}</span>
+          </label>
+        {elseif $ftype == 'textarea'}
+          <label class="pb-contact-form__label" for="{$fid}">
+            {$flabel|escape}{if $frequired}<span class="pb-contact-form__required" aria-hidden="true">*</span>{/if}
+          </label>
+          <textarea class="pb-contact-form__control" id="{$fid}" name="{$fname|escape}" rows="4" {if $frequired}required aria-required="true"{/if}></textarea>
+        {elseif $ftype == 'select'}
+          <label class="pb-contact-form__label" for="{$fid}">
+            {$flabel|escape}{if $frequired}<span class="pb-contact-form__required" aria-hidden="true">*</span>{/if}
+          </label>
+          <select class="pb-contact-form__control" id="{$fid}" name="{$fname|escape}" {if $frequired}required aria-required="true"{/if}>
+            <option value="">—</option>
+            {foreach $options as $option}
+              {set $ovalue = $option.value|default:$option}
+              {set $olabel = $option.label|default:$ovalue}
+              <option value="{$ovalue|escape}">{$olabel|escape}</option>
+            {/foreach}
+          </select>
+        {elseif $ftype == 'radio'}
+          <fieldset class="pb-contact-form__fieldset">
+            <legend>{$flabel|escape}{if $frequired}<span class="pb-contact-form__required" aria-hidden="true">*</span>{/if}</legend>
+            {foreach $options as $option}
+              {set $ovalue = $option.value|default:$option}
+              {set $olabel = $option.label|default:$ovalue}
+              <label class="pb-contact-form__check">
+                <input type="radio" name="{$fname|escape}" value="{$ovalue|escape}" {if $frequired}required aria-required="true"{/if} />
+                <span>{$olabel|escape}</span>
+              </label>
+            {/foreach}
+          </fieldset>
+        {else}
+          <label class="pb-contact-form__label" for="{$fid}">
+            {$flabel|escape}{if $frequired}<span class="pb-contact-form__required" aria-hidden="true">*</span>{/if}
+          </label>
+          <input
+            class="pb-contact-form__control"
+            id="{$fid}"
+            type="{if $ftype == 'email'}email{elseif $ftype == 'phone'}tel{elseif $ftype == 'date'}date{else}text{/if}"
+            name="{$fname|escape}"
+            {if $ftype == 'email'}autocomplete="email"{elseif $ftype == 'phone'}autocomplete="tel" inputmode="tel"{elseif $fname == 'name'}autocomplete="name"{/if}
+            {if $frequired}required aria-required="true"{/if}
+          />
+        {/if}
+        <span class="pb-contact-form__error" data-error="{$fname|escape}"></span>
+      </div>
+    {/foreach}
+  </div>
+
+  <button class="pb-button pb-contact-form__submit" type="submit">{$submitText|escape}</button>
+</form>
+```
+
+Без FetchIt чанк выводит лексикон `pagebuilder_fe_form_unavailable`.
 
 ## Связанные страницы
 
+- [Квиз](quiz)
+- [Сниппет PageBuilderContactForm](../snippets/PageBuilderContactForm)
 - [Каталог секций](index)
 - [Обзор полей](../fields/overview)
 - [Вывод на сайте](../frontend)

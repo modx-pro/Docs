@@ -1,34 +1,29 @@
 import type { DefaultTheme, LocaleConfig } from 'vitepress'
-import type { DocsTheme } from '../theme/types'
-import { generateSidebar } from '../theme/plugins/sidebar'
-import { components } from '../theme/plugins/component'
+import type { DocsTheme } from '../theme/types/index.ts'
+import { generateSidebar } from '../theme/plugins/sidebar.ts'
+import { components } from '../theme/plugins/component.ts'
 import 'dotenv/config'
 
 export const SITE_NAME = 'Documentation hub for MODX extras and more'
 export const META_DESCRIPTION = 'A simple and easy-to-use Open-Source project by and for the community, where you can find and explore the documentation of all popular MODX extras, and developers can easily describe their'
 
-export const searchLocale: Record<string, Partial<Omit<DefaultTheme.LocalSearchOptions, 'locales'>>> = {
+export const searchLocale: NonNullable<DefaultTheme.AlgoliaSearchOptions['locales']> = {
   en: {
+    placeholder: 'Search docs',
     translations: {
       button: {
         buttonText: 'Search',
         buttonAriaLabel: 'Search'
       },
       modal: {
-        resetButtonTitle: 'Reset search',
-        backButtonTitle: 'Close search',
-        noResultsText: 'No results for',
-        footer: {
-          selectText: 'to select',
-          selectKeyAriaLabel: 'enter',
-          navigateText: 'to navigate',
-          navigateUpKeyAriaLabel: 'up arrow',
-          navigateDownKeyAriaLabel: 'down arrow',
-          closeText: 'to close',
-          closeKeyAriaLabel: 'escape'
-        }
-      }
-    }
+        searchBox: {
+          clearButtonTitle: 'Reset search',
+          clearButtonAriaLabel: 'Reset search',
+          closeButtonText: 'Close search',
+          closeButtonAriaLabel: 'Close search',
+        },
+      },
+    },
   },
 }
 
@@ -72,6 +67,9 @@ export const config: LocaleConfig<DocsTheme.Config> = {
       editLink: {
         pattern: 'https://github.com/modx-pro/Docs/edit/master/docs/:path',
         text: 'Suggest changes to this page',
+      },
+      feedback: {
+        text: 'Found an error?',
       },
 
       notFound: {

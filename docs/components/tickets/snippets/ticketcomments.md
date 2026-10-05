@@ -4,21 +4,21 @@
 
 **Вызывайте некэшированным:** `[[!TicketComments]]`.
 
-На странице можно разместить несколько веток: задайте разные `&thread=`. Каждая оборачивается в `<div class="comments-thread" id="...">`.
+На странице можно разместить несколько веток: задайте разные `&thread=`. Сниппет оборачивает каждую в `<div class="comments-thread" id="...">`.
 
 ## Параметры
 
 | Название | По умолчанию | Описание |
 | --- | --- | --- |
 | **&thread** | `resource-[[*id]]` | Имя ветки комментариев |
-| **&threadUrl** | | Абсолютный URL страницы комментария; для ресурсов вне текущего документа |
-| **&tree** | `1` | `1` — дерево ответов; `0` — плоский список с пагинацией `limit`/`offset` |
+| **&threadUrl** | | Абсолютный URL для перехода к комментарию из админки. Используется при комментировании объектов, не являющихся ресурсами |
+| **&tree** | `1` | `1` — дерево ответов, `0` — плоский список с пагинацией `limit`/`offset` |
 | **&depth** | `0` | Максимальная глубина вложенности (`0` — без ограничения при `tree=1`) |
 | **&sortby** | `TicketComment.id` | Поле сортировки |
 | **&sortdir** | `ASC` | `ASC` или `DESC` |
-| **&limit** | `0` | Лимит комментариев; `0` — все |
+| **&limit** | `0` | Лимит комментариев. `0` — все |
 | **&offset** | `0` | Смещение выборки |
-| **&where** | | Доп. условия в JSON |
+| **&where** | | Дополнительные условия в JSON |
 | **&fastMode** | `1` | Только значения из БД, без необработанных тегов MODX |
 | **&outputSeparator** | перенос строки | Разделитель между комментариями |
 | **&toPlaceholder** | | Имя плейсхолдера вместо вывода |
@@ -31,16 +31,16 @@
 | **&allowGuestEmails** | `0` | Письма гостям об ответах |
 | **&requiredFields** | `name,email` | Обязательные поля формы гостя |
 | **&autoPublish** | `1` | Публиковать комментарии авторизованных без премодерации |
-| **&autoPublishGuest** | `1` | То же для гостей |
+| **&autoPublishGuest** | `1` | Публиковать комментарии гостей без премодерации |
 | **&enableCaptcha** | `1` | Капча для гостей |
 | **&minCaptcha** | `1` | Минимум в арифметической капче |
 | **&maxCaptcha** | `10` | Максимум в арифметической капче |
 | **&allowFiles** | `0` | Загрузка файлов в комментарий |
-| **&source** | `0` | ID источника медиа; иначе `tickets_source_default` |
+| **&source** | `0` | ID источника медиа, иначе `tickets.source_default` |
 | **&gravatarIcon** | `mm` | Заглушка Gravatar |
 | **&gravatarSize** | `24` | Размер аватара |
 | **&gravatarUrl** | `https://www.gravatar.com/avatar/` | URL Gravatar |
-| **&tplComments** | `tpl.Tickets.comment.wrapper` | Обёртка ветки; плейсхолдер `[[+total]]` — счётчик из `TicketThread` |
+| **&tplComments** | `tpl.Tickets.comment.wrapper` | Обёртка ветки. Плейсхолдер `[[+total]]` берёт счётчик из `TicketThread` |
 | **&tplCommentForm** | `tpl.Tickets.comment.form` | Форма для авторизованных |
 | **&tplCommentFormGuest** | `tpl.Tickets.comment.form.guest` | Форма для гостей |
 | **&tplCommentAuth** | `tpl.Tickets.comment.one.auth` | Один комментарий (авторизованный) |
@@ -55,7 +55,7 @@
 | **&tplFiles** | `tpl.Tickets.comment.form.files` | Блок загрузчика файлов |
 | **&tplFile** | `tpl.Tickets.form.file` | Строка файла |
 | **&tplImage** | `tpl.Tickets.form.image` | Строка изображения |
-| **&validate** | | Правила FormIt для поля `text`; см. [TicketFormit](/components/tickets/ticketformit) |
+| **&validate** | | Правила FormIt для поля `text`. См. [TicketFormit](/components/tickets/ticketformit) |
 | **&customValidators** | | Сниппеты-валидаторы FormIt |
 
 Счётчик комментариев в списках тикетов ведёт на `#first_unread` или `#comments` (с 1.14.0).

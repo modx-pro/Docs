@@ -7,7 +7,7 @@ description: "HTML-строка из привычного richtext MODX"
 
 Обычный текстовый фрагмент между другими секциями. Редактор похож на стандартный richtext MODX: абзацы, списки, ссылки, базовое форматирование.
 
-<!-- ![Текстовый блок](/components/pagebuilder/screenshots/sections/richtext.png) -->
+![Текстовый блок](/components/pagebuilder/screenshots/sections/richtext.jpg)
 
 ## Когда хватит richtext
 
@@ -80,10 +80,6 @@ Fenom chunk `pagebuilder_richtext`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/richtext.json`
 
 ## Связанные страницы
 

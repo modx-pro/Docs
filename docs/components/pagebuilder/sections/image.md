@@ -7,7 +7,7 @@ description: "Одно изображение на ширину контента
 
 Один кадр на всю ширину колонки контента. Подходит для иллюстрации, скриншота или баннера без кнопки.
 
-<!-- ![Изображение](/components/pagebuilder/screenshots/sections/image.png) -->
+![Изображение](/components/pagebuilder/screenshots/sections/image.jpg)
 
 ## Когда одного кадра достаточно
 
@@ -102,10 +102,6 @@ Fenom chunk `pagebuilder_image`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`core/components/pagebuilder/sections/image.json`
 
 ## Связанные страницы
 

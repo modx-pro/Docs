@@ -6,6 +6,7 @@ author: vgrish
 modstore: https://modstore.pro/packages/delivery/mscdistance
 
 dependencies: miniShop2
+categories: delivery
 ---
 
 # mscDistance

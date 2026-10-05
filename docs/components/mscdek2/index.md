@@ -6,6 +6,9 @@ lastUpdated: true
 logo: https://modstore.pro/assets/extras/ms_cdek2/logo.jpg
 modstore: https://modstore.pro/packages/delivery/ms-cdek2
 author: ShevArtV
+compatibility:
+  - modx2
+  - php74
 items: [
   { text: 'Начало работы', link: 'index' },
   { text: 'Сниппеты', link: 'snippets' },
@@ -13,6 +16,7 @@ items: [
   { text: 'Разработка', link: 'development' },
 ]
 dependencies: [ 'miniShop2', 'SendIt' ]
+categories: delivery
 ---
 
 # ms_CDEK2
@@ -103,7 +107,7 @@ dependencies: [ 'miniShop2', 'SendIt' ]
    :::details
    Например ID доставки до двери у вас 9, а до ПВЗ 10, тогда значение этой настройки будет выглядеть так `{"9":"137","10":"136"}`.
    :::
-6. Установите номер шаблона с формой оформления заказа в поле ms_cdek2_template (чтобы скрипты фронтэнда подключались только на страницах с этим шаблоном);
+6. Установите номер шаблона с формой оформления заказа в поле ms_cdek2_template (чтобы скрипты фронтенда подключались только на страницах с этим шаблоном);
 7. Если используете доставку до ПВЗ, то в чанке с формой оформления заказа добавьте код
 
 ```html:line-numbers

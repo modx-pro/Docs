@@ -7,11 +7,11 @@ description: "Hidden string: stored in section data, not shown in the inspector"
 
 Version: **Free**.
 
-<!-- ![hidden](/components/pagebuilder/screenshots/fields/hidden.png) -->
+<!-- ![hidden](/components/pagebuilder/screenshots/fields/hidden.jpg) -->
 
 ## Why this type
 
-Value saves and reaches the chunk. No UI space for editors. Default set in JSON or CMP.
+The value is saved and reaches the chunk, but the editor does not see a field. The default is set in JSON or in the manager.
 
 ## When to use
 
@@ -56,9 +56,17 @@ Key `token` in the section data:
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<input type="hidden" name="token" value="[[+token]]">
+```
+
+```fenom
 <input type="hidden" name="token" value="{$token|escape}">
 ```
+
+:::
 
 ## Common properties
 

@@ -4,7 +4,7 @@ title: Подключение на сайте
 
 # Подключение на сайте
 
-Сниппеты выводятся в **чанке формы заказа** (например `tpl.msOrder`) или эквиваленте. Используйте **некэшированный** вызов, иначе скрипты не попадут на страницу при необходимости.
+Сниппеты выводятся в **чанке формы заказа** (например `tpl.msOrder`) или эквиваленте. Вызов должен быть **некэшированным**, иначе скрипты не попадут на страницу.
 
 ## Коннектор витрины
 
@@ -12,7 +12,9 @@ title: Подключение на сайте
 
 Переопределение: параметр сниппета **`connectorUrl`**.
 
-Разрешённые действия (см. исходник коннектора): в т.ч. `Suggest/Address`, `Suggest/Party`, `Suggest/Name`, `Suggest/Email`, `Suggest/Bank`, `Party/FindById`, `Geolocate/Address`, `Tools/Version`.
+Разрешённые действия (см. исходник коннектора), в том числе: `Suggest/Address`, `Suggest/Party`, `Suggest/Name`, `Suggest/Email`, `Suggest/Bank`, `Party/FindById`, `Geolocate/Address`, `Tools/Version`.
+
+Публичный POST без сессии менеджера. В ответах заголовок **`Access-Control-Allow-Origin: *`** (см. `connector-web.php`). Ошибки процессора в JSON: `'Processor error'` без текста исключения.
 
 ## Имена полей формы MiniShop3 {#имена-полей-формы-minishop3}
 
@@ -53,24 +55,30 @@ title: Подключение на сайте
 
 ## Порядок с msRussianPost {#порядок-с-msrussianpost}
 
-Для корректного пересчёта [доставки Почтой России](/components/msrussianpost/) после выбора подсказки:
+Чтобы [доставка Почтой России](/components/msrussianpost/) пересчиталась после выбора подсказки:
 
 1. Поля адреса и **подсказки mxDadata** (`mxDadataAddressSuggest` и при необходимости Party) — **выше** по разметке
 2. Затем **msrpLexiconScript** → **msRussianPost** → чанки виджета Почты
 
-После обновления адреса срабатывает кастомное событие **`mxdadata:order-address-updated`** — `russianpost.js` подписан на него и вызывает пересчёт, если выбрана доставка Почты России (хук `ms3Hooks.afterAddOrder` в ряде сценариев после `order/set` не вызывается).
+После обновления адреса срабатывает событие **`mxdadata:order-address-updated`**. `russianpost.js` подписан на него и вызывает пересчёт, если выбрана доставка Почты России. Хук `ms3Hooks.afterAddOrder` в ряде сценариев после `order/set` не вызывается.
 
 ## Демо чанка {#демо-чанка}
 
-В пакете есть чанк **`tpl.mxdadata.msOrder`**: внизу — блок **«Демо mxDadata»** в `<details>`. В нём — поля Party (`#mxdadata-demo-inn` и реквизиты), контейнер **`#mxdadata-demo-universal`** для `mxDadataForm` (конфиг из чанка вроде **`chunk.mxdadata.demoFormSug`** через `suggestionsChunk`), плюс поле адреса для `mxDadataAddressSuggest`. В конце чанка вызываются три сниппета: `mxDadataAddressSuggest`, `mxDadataPartySuggest` (с `innInput` на демо-ИНН), `mxDadataForm`.
+Чанк **`tpl.mxdadata.msOrder`** в пакете содержит блок **«Демо mxDadata»** в `<details>` (внизу):
+
+- поля Party (`#mxdadata-demo-inn` и реквизиты)
+- контейнер **`#mxdadata-demo-universal`** для `mxDadataForm` (конфиг **`chunk.mxdadata.demoFormSug`** через `suggestionsChunk`)
+- поле адреса для `mxDadataAddressSuggest`
+
+В конце чанка вызываются `mxDadataAddressSuggest`, `mxDadataPartySuggest` (`innInput` на демо-ИНН) и `mxDadataForm`.
 
 **Показ демо** в штатном чанке — **только если корзина не пуста** (ветка в шаблоне на непустую корзину). На экране «пустая корзина» демо **намеренно** не выводится: не подключаются скрипты и запросы к DaData.
 
 **Проверка всех трёх сниппетов на одной странице без товаров в корзине** (когда блок из `tpl.mxdadata.msOrder` не подходит):
 
-1. В MODX создайте ресурс с шаблоном из поставки пакета — обычно это файл `core/elements/templates/demo/mxdadata_test.tpl` в проекте.
-2. У полей формы задайте префикс `id` вроде `mxdadata_test_…` и передайте в вызовы сниппетов явный **`suggestions`** или **`suggestionsChunk`** (например на чанк **`chunk.mxdadata.demoFormSugTest`**).
-3. Либо вручную вставьте на страницу сниппеты с непустым `suggestions` / `suggestionsChunk`. Без валидного конфига в разметке в браузер уйдёт пустой массив подсказок, и автозаполнение не заработает.
+1. Создайте отдельный ресурс с произвольным шаблоном (отдельного демо-шаблона в транспорте **нет**).
+2. Разметка формы + **`suggestionsChunk`** = **`chunk.mxdadata.demoFormSugTest`** для **`mxDadataForm`**, плюс **`mxDadataAddressSuggest`** и **`mxDadataPartySuggest`** с нужными **`input`** / **`innInput`**.
+3. Либо передайте непустой **`suggestions`** в параметре. Без валидного JSON подсказки не инициализируются.
 
 ## Стили
 
@@ -80,4 +88,4 @@ title: Подключение на сайте
 
 При **auto_escape** выводите сниппеты как **сырой HTML** (`|raw` / `{raw …}`), чтобы не экранировались `<script>`.
 
-Примеры синтаксиса MODX и Fenom — в [сниппетах](snippets/index) и в [mxDadataForm](snippets/mxDadataForm).
+Примеры синтаксиса MODX и Fenom: [сниппеты](snippets/index) и [mxDadataForm](snippets/mxDadataForm).

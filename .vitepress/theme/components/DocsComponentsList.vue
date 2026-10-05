@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { ComponentData } from '../plugins/component'
+import type { DocsTheme } from '../types/index.ts'
 import { useData } from 'vitepress'
-import { ellipsis } from '../utils'
 
-import { VPImage } from 'vitepress/theme-without-fonts'
-import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import DocsSearchBar from './DocsSearchBar.vue'
+import DocsComponentCard from './DocsComponentCard.vue'
 
-const { site, frontmatter, localeIndex } = useData()
+const { site, frontmatter, localeIndex } = useData<DocsTheme.Config>()
 const props = defineProps<{
   title?: string
   dependency?: string
@@ -20,18 +19,20 @@ const props = defineProps<{
 const query = ref<string>('')
 
 const components = computed<ComponentData[]>(() => {
-  let filtered: ComponentData[] = site.value.themeConfig.components
+  let filtered: ComponentData[] = site.value.themeConfig.components ?? []
 
-  if (props.dependency) {
-    filtered = filtered.filter(component => component.dependencies?.includes(props.dependency))
+  const { dependency, category, excludeCategory } = props
+
+  if (dependency) {
+    filtered = filtered.filter(component => component.dependencies?.includes(dependency))
   }
 
-  if (props.category) {
-    filtered = filtered.filter(component => component.categories?.includes(props.category))
+  if (category) {
+    filtered = filtered.filter(component => component.categories?.includes(category))
   }
 
-  if (props.excludeCategory) {
-    filtered = filtered.filter(component => !component.categories?.includes(props.excludeCategory))
+  if (excludeCategory) {
+    filtered = filtered.filter(component => !component.categories?.includes(excludeCategory))
   }
 
   if (query.value) {
@@ -60,15 +61,7 @@ const emptyText = computed(() => localeIndex.value === 'en'
         <DocsSearchBar v-model.trim="query" :placeholder="placeholder" :backButton="!search" />
       </div>
       <div v-if="components.length" class="list" :class="{ slim: search }">
-        <VPLink v-for="component, index in components" :key="index" :href="component.link" class="component">
-          <VPImage :image="component.logo || '/placeholder-logo.png'" class="logo" loading="lazy" />
-          <div class="body">
-            <span class="name">{{ component.title }}</span>
-            <p v-if="component.description" class="description">
-              {{ ellipsis(component.description, 80) }}
-            </p>
-          </div>
-        </VPLink>
+        <DocsComponentCard v-for="component in components" :key="component.link" :component="component" />
       </div>
       <div v-else-if="search
         && query.length
@@ -97,47 +90,6 @@ const emptyText = computed(() => localeIndex.value === 'en'
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(272px, auto));
   gap: 24px;
-}
-
-.component {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  align-items: center;
-  column-gap: 12px;
-  padding: 18px;
-  border: 1px solid var(--vp-c-gray-soft);
-  border-radius: 8px;
-  transition: border-color 0.25s;
-  color: inherit;
-  font-weight: bold;
-  box-shadow: var(--vp-shadow-1);
-  text-decoration: none;
-  background-color: var(--vp-c-bg-elv);
-}
-
-.component:hover {
-  border-color: var(--vp-c-brand-1);
-  text-decoration: none;
-}
-
-.component:hover .name {
-  color: var(--vp-c-brand-1);
-}
-
-.name {
-  transition: color 0.25s;
-}
-
-.description {
-  font-size: 13px;
-  line-height: normal;
-  margin: 0;
-  color: var(--vp-c-text-2);
-  font-weight: 500;
-}
-
-:deep(.logo) {
-  width: 100%;
 }
 
 .title {
@@ -171,10 +123,6 @@ const emptyText = computed(() => localeIndex.value === 'en'
 
   .list.slim {
     grid-template-columns: repeat(3, 1fr);
-  }
-
-  .component {
-    grid-template-columns: 100px 1fr;
   }
 }
 

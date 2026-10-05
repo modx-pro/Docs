@@ -14,16 +14,27 @@ After authentication, mxHeadless checks whether the action is allowed in four st
 
 Missing scope on API key or OAuth → `403` `scope_denied`.
 
+```mermaid
+flowchart TD
+  R[Request with identity] --> P{Route public?}
+  P -->|no, no identity| E401[401 token_required]
+  P --> S{Key or token scope}
+  S -->|missing| E403[403 scope_denied]
+  S --> ACL[MODX ACL context resource]
+  ACL --> F[Field policy]
+  F --> OK[Handler]
+```
+
 ## How scopes are checked
 
-| Identity | Check |
+| Type | Check |
 | --- | --- |
 | API key (`mxh_*`) | Key scope list. `*` grants all actions |
 | OAuth (`mxt_*`) | Token scopes (intersection with client scopes) |
 | Session | `modX->hasPermission()` with the same string (`resources.read`, etc.) |
 | Anonymous | Public GET only. Scopes do not apply |
 
-For integrations an API key is usually enough. Session fits mgr or same-origin UI with CSRF.
+For integrations an API key is usually enough. A session fits mgr or same-origin UI with CSRF.
 
 ## Core scopes (fixed routes)
 
@@ -61,11 +72,11 @@ Examples after MiniShop3 objects are registered:
 | Scope | Meaning |
 | --- | --- |
 | `products.read` | Product catalog |
-| `categories.read` | Categories |
+| `ms_categories.read` | MS3 product categories. Core `categories.read` is `modCategory` elements |
 | `orders.read` | Orders (usually not public, plus ACL) |
 | `orders.update` | Order update when the object is writable |
 
-Registered names: `GET /schema` or `GET /meta/endpoints` on a live site.
+Registered names: `GET /schema` or `GET /meta/endpoints` on this site.
 
 ## Example scope sets for a key
 
@@ -80,7 +91,7 @@ resources.read,preview,chunks.read,templates.read
 MS3 catalog + CMS:
 
 ```text
-resources.read,products.read,categories.read
+resources.read,products.read,ms_categories.read
 ```
 
 Admin API (narrow, no `*`):
@@ -99,7 +110,7 @@ Elements, contexts, write operations, and `/objects/*` require credentials.
 
 ## Context
 
-Bootstrap: `mxheadless_context` (default `web`) sets the MODX context when the gateway or `api.php` initializes. Value `mgr` is ignored.
+Startup context: `mxheadless_context` (default `web`) sets the MODX context when the gateway or `api.php` initializes. Value `mgr` is ignored.
 
 Per request: header `X-Context` or query `?context=`. Value must be in `mxheadless_allowed_contexts` (default `web,mgr`). Otherwise `422 Invalid context`.
 

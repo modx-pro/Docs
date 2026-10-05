@@ -3,7 +3,7 @@ title: Сервисный слой
 ---
 # Сервисный слой
 
-MiniShop3 использует сервисный слой для отделения бизнес-логики от ORM моделей. Это архитектурное решение улучшает тестируемость, переиспользуемость и расширяемость кода.
+MiniShop3 использует сервисный слой, чтобы отделить бизнес-логику от моделей xPDO.
 
 ## Архитектурный паттерн
 
@@ -41,7 +41,7 @@ class ProductService
 
 | Аспект | Толстые модели | Сервисный слой |
 | --- | --- | --- |
-| Тестирование | Сложно мокать | Легко изолировать |
+| Тестирование | Связано с ORM | Изолированные тесты |
 | Переиспользование | Привязано к ORM | Независимые сервисы |
 | Расширение | Наследование | Замена через DI |
 | Размер файлов | 1000+ строк | 100-300 строк |
@@ -52,7 +52,7 @@ class ProductService
 Поэтому модели MiniShop3 содержат ссылки на сервисы для вызова методов бизнес-логики — это прагматичный компромисс для совместимости с экосистемой MODX.
 :::
 
-## DI Container
+## DI-контейнер
 
 MiniShop3 использует встроенный DI-контейнер MODX (`$modx->services`) для регистрации и получения сервисов.
 
@@ -99,7 +99,7 @@ $service2 = $modx->services->get('ms3_order_service');
 // $service1 === $service2
 ```
 
-### Конвенция именования
+### Соглашение об именовании
 
 Все сервисы MiniShop3 используют префикс `ms3_`:
 
@@ -145,10 +145,12 @@ $customer = $ms3->customer->getFields();
 | `ms3_product_service` | `Services\Product\ProductService` | Конвертация ресурса в товар, дубликаты, `OnDocFormSave` |
 | `ms3_product_data_service` | `Services\Product\ProductDataService` | Работа с данными товара |
 | `ms3_product_image` | `Services\Product\ProductImageService` | Изображения, превью (`preview_file_id`) |
-| `ms3_product_catalog` | `Services\Product\ProductCatalogService` | Headless каталог Web API (allowlist полей) |
+| `ms3_product_catalog` | `Services\Product\ProductCatalogService` | Каталог Web API (список разрешённых полей) |
 | `ms3_product_import` | `Services\Product\Import\ProductImportService` | Импорт CSV |
 | `ms3_product_category_tree` | `Services\Product\ProductCategoryTreeService` | Дерево категорий товара в менеджере |
 | `ms3_product_link_service` | `Services\Product\ProductLinkService` | Связи товара (mgr Vue-вкладка) |
+| `ms3_product_facets` | `Services\Product\ProductFacetService` | Фасеты каталога |
+| `ms3_product_gallery_public` | `Services\Product\ProductGalleryPublicService` | Публичная галерея (get/list/images) |
 
 ```php
 $productService = $modx->services->get('ms3_product_data_service');
@@ -167,7 +169,7 @@ $imageService = $modx->services->get('ms3_product_image');
 | `ms3_customer_address_manager` | `Services\Customer\CustomerAddressManager` | Управление адресами покупателя |
 | `ms3_customer_field_manager` | `Services\Customer\CustomerFieldManager` | Поля профиля покупателя |
 | `ms3_customer_order` | `Services\Customer\CustomerOrderService` | Заказы покупателя на витрине |
-| `ms3_customer_order_resolver` | `Services\Customer\CustomerOrderResolver` | Привязка заказа к customer при submit |
+| `ms3_customer_order_resolver` | `Services\Customer\CustomerOrderResolver` | Привязка заказа к покупателю при оформлении |
 | `ms3_customer_duplicate_checker` | `Services\CustomerDuplicateChecker` | Проверка дубликатов |
 | `ms3_customer_factory` | `Services\CustomerFactory` | Фабрика покупателей |
 
@@ -199,14 +201,19 @@ $authManager->registerProvider(new SmsAuthProvider($modx));
 | `ms3_order_cost_calculator` | `Services\Order\OrderCostCalculator` | Расчёт стоимости |
 | `ms3_order_field_manager` | `Services\Order\OrderFieldManager` | CRUD полей + валидация |
 | `ms3_order_address_manager` | `Services\Order\OrderAddressManager` | Работа с адресами клиентов |
-| `ms3_order_user_resolver` | `Services\Order\OrderUserResolver` | Резолвинг MODX пользователей |
+| `ms3_order_user_resolver` | `Services\Order\OrderUserResolver` | Определение пользователей MODX |
 | `ms3_order_submit_handler` | `Services\Order\OrderSubmitHandler` | Оформление заказа |
 | `ms3_order_log` | `Services\Order\OrderLogService` | Логирование изменений заказа |
 | `ms3_order_status` | `Services\Order\OrderStatusService` | Смена статуса + уведомления |
 | `ms3_order_finalize` | `Services\Order\OrderFinalizeService` | Финализация заказа (валидация, создание клиента) |
-| `ms3_programmatic_order` | `Services\Order\ProgrammaticOrderService` | Создание заказа без витринной сессии для extras/cron (`idempotency_key`) |
+| `ms3_programmatic_order` | `Services\Order\ProgrammaticOrderService` | Создание заказа без витринной сессии для компонентов и cron (`idempotency_key`) |
 | `ms3_order_number_generator` | `Services\Order\OrderNumberGenerator` | Нумерация заказов |
 | `ms3_manager_order_cost_recalculator` | `Services\Order\ManagerOrderCostRecalculator` | Пересчёт в карточке заказа (mgr) |
+| `ms3_manager_order_list` | `Services\Order\ManagerOrderListService` | Список заказов в менеджере |
+| `ms3_manager_order_mutation` | `Services\Order\ManagerOrderMutationService` | Мутации заказа в mgr |
+| `ms3_manager_order_presenter` | `Services\Order\ManagerOrderPresenter` | Презентация карточки заказа |
+| `ms3_manager_order_products` | `Services\Order\ManagerOrderProductsService` | Позиции заказа в mgr |
+| `ms3_order_lifecycle_ports` | `Services\Order\NullOrderLifecyclePorts` | Порты жизненного цикла заказа (по умолчанию null-реализация) |
 
 ```php
 // Получение сервисов напрямую
@@ -242,6 +249,7 @@ $logService->addEntry(
 | --- | --- | --- |
 | `ms3_cart_item_manager` | `Services\Cart\CartItemManager` | CRUD позиций, расчёт итогов |
 | `ms3_cart_mutation_handler` | `Services\Cart\CartMutationHandler` | Web API корзины: add/change/remove/change-option + события `msOn*Cart` |
+| `ms3_cart_response_normalizer` | `Services\Cart\CartResponseNormalizer` | Нормализация ответа корзины для API/JS |
 
 ```php
 $itemManager = $modx->services->get('ms3_cart_item_manager');
@@ -260,7 +268,7 @@ $status = $itemManager->calculateStatus($items);
 
 **Разделение ответственности Cart и Order:**
 
-```
+```text
 OrderDraftManager    — жизненный цикл черновика (общий для Cart и Order)
 CartItemManager      — операции с позициями корзины (Cart-specific)
 OrderCostCalculator  — расчёт стоимости заказа (Order-specific)
@@ -272,17 +280,45 @@ OrderFieldManager    — поля заказа (Order-specific)
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
 | `ms3_delivery_service` | `Services\Delivery\DeliveryService` | Способы доставки |
+| `ms3_delivery_catalog` | `Services\Delivery\DeliveryCatalogService` | Публичный каталог доставок (Web API) |
 | `ms3_payment_service` | `Services\Payment\PaymentService` | Способы оплаты |
-| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты для писем и `msGetOrder` (статусы из `ms3_payment_link_statuses` / `payStatus`) |
+| `ms3_payment_catalog` | `Services\Payment\PaymentCatalogService` | Публичный каталог оплат (Web API) |
+| `ms3_payment_link_resolver` | `Services\Payment\PaymentLinkResolver` | URL оплаты: в письмах по `ms3_payment_link_statuses`, в `msGetOrder` по параметру `payStatus` |
+| `ms3_payment_lifecycle` | `Services\Payment\PaymentLifecycleService` | Жизненный цикл оплаты → статусы заказа |
+| `ms3_shipment_lifecycle` | `Services\Shipment\ShipmentLifecycleService` | Отгрузки и трекинг (`ms3_shipments` через `PdoShipmentStore`) |
+
+### Остатки, SEO, валидация, domain events
+
+| Ключ | Класс | Назначение |
+| --- | --- | --- |
+| `ms3_inventory` | `Services\Inventory\ProductStockInventory` | Резерв/списание `stock` при `ms3_inventory_enabled` (`InventoryServiceInterface`) |
+| `ms3_public_seo` | `Services\Seo\PublicSeoService` | Публичные SEO-поля + `msOnGetPublicSeo` |
+| `ms3_validation_service` | `Services\Validation\ValidationService` | Конвейерная валидация (заменяет rakit) |
+| `ms3_domain_events` | `Services\Events\DomainEventBridge` | Мост событий домена |
+| `ms3_webhook_dispatcher` | `Services\Events\NullWebhookDispatcher` | Диспетчер outbound webhooks (по умолчанию null-реализация) |
+
+### Extra fields и поля моделей
+
+| Ключ | Класс | Назначение |
+| --- | --- | --- |
+| `ms3_extra_fields` | `Services\ExtraFieldsService` | CRUD дополнительных полей |
+| `ms3_repeater_field` | `Services\ExtraFields\RepeaterFieldService` | `xtype` repeater |
+| `ms3_key_value_field` | `Services\ExtraFields\KeyValueFieldService` | `xtype` key-value |
+| `ms3_model_field_service` | `Services\ModelField\ModelFieldService` | Поля моделей |
+| `ms3_model_field_section_service` | `Services\ModelField\ModelFieldSectionService` | Секции полей моделей |
 
 ### Сервисы категорий (Category)
 
 | Ключ | Класс | Назначение |
 | --- | --- | --- |
 | `ms3_category_service` | `Services\Category\CategoryService` | Работа с категориями |
+| `ms3_category_catalog` | `Services\Category\CategoryCatalogService` | Публичный каталог категорий (Web API) |
+| `ms3_category_tree` | `Services\Category\CategoryTreeService` | Дерево для Web API / менеджера |
 | `ms3_category_option_service` | `Services\Category\CategoryOptionService` | Опции категорий |
 | `ms3_category_product_scope` | `Services\Category\CategoryProductScopeService` | Доп. категории товара для msProducts |
 | `ms3_category_products_list` | `Services\Category\CategoryProductsListService` | Грид товаров категории |
+| `ms3_customer_resource_group_resolver` | `Services\Catalog\CustomerResourceGroupResolver` | ACL каталога для покупателя |
+| `ms3_catalog_acl_cache` | `Services\Catalog\CatalogAclCacheInvalidator` | Сброс ACL-кэша каталога |
 
 ### Сервисы опций (Option)
 
@@ -290,6 +326,8 @@ OrderFieldManager    — поля заказа (Order-specific)
 | --- | --- | --- |
 | `ms3_option_service` | `Services\Option\OptionService` | EAV система опций |
 | `ms3_option_loader` | `Services\Option\OptionLoaderService` | Загрузка опций с `CaptionOverlayResolver` |
+| `ms3_option_sync` | `Services\Option\OptionSyncService` | Синхронизация значений опций |
+| `ms3_option_category_service` | `Services\Option\OptionCategoryService` | Привязка опций к категориям |
 
 ### Сервисы конфигурации
 
@@ -299,6 +337,7 @@ OrderFieldManager    — поля заказа (Order-specific)
 | `ms3_field_config_manager` | `Services\FieldConfigManager` | Конфигурация полей |
 | `ms3_grid_config` | `Services\GridConfigService` | Конфигурация гридов |
 | `ms3_filter_config` | `Services\FilterConfigManager` | Фильтры гридов |
+| `ms3_settings_combo_list` | `Services\Settings\SettingsComboListService` | Справочники для combo-полей настроек |
 
 ### Сервисы уведомлений
 
@@ -363,7 +402,7 @@ return [
 ];
 ```
 
-**Пример кастомного OrderSubmitHandler с интеграцией CRM:**
+**Пример собственного OrderSubmitHandler с интеграцией CRM:**
 
 ```php
 <?php
@@ -399,7 +438,7 @@ class CRMOrderSubmitHandler extends OrderSubmitHandler
 }
 ```
 
-**Пример программного заказа (cron / extra):**
+**Пример программного заказа из cron или компонента:**
 
 ```php
 use MiniShop3\Services\Order\OrderOrigin;
@@ -426,9 +465,9 @@ if (!$result['success']) {
 }
 ```
 
-### Требования к кастомным классам
+### Требования к пользовательским классам
 
-Кастомный класс **должен**:
+Пользовательский класс **должен**:
 
 1. **Существовать** и быть доступным через автозагрузчик
 2. **Наследовать** базовый класс MiniShop3
@@ -470,7 +509,7 @@ ServiceRegistry автоматически проверяет:
 - **Наследование** — `is_subclass_of($className, $baseClass)`
 - **Интерфейсы** — `class_implements()` (если указано)
 
-При ошибке валидации используется стандартный класс + запись в лог:
+При ошибке валидации подставляется стандартный класс, в лог пишется запись:
 
 ```
 [MiniShop3 ServiceRegistry] Class 'MyProject\Cart' must extend MiniShop3\Controllers\Cart\Cart, using fallback
@@ -520,7 +559,7 @@ ServiceRegistry логирует все загруженные конфиги:
 
 ## Примеры использования
 
-### Кастомный расчёт стоимости доставки
+### Свой расчёт стоимости доставки
 
 ```php
 <?php
@@ -587,7 +626,7 @@ class CRMOrderService extends OrderService
 }
 ```
 
-### Кастомный провайдер аутентификации
+### Свой провайдер аутентификации
 
 ```php
 <?php
@@ -666,7 +705,7 @@ Service 'ms3_my_service' not found
 2. Проверьте правильность ключа сервиса (с префиксом `ms3_`)
 3. Проверьте, что класс существует и доступен автозагрузчику
 
-### Кастомный класс не применяется
+### Пользовательский класс не применяется
 
 ```
 [MiniShop3 ServiceRegistry] Class 'MyClass' must extend BaseClass, using fallback
@@ -674,9 +713,9 @@ Service 'ms3_my_service' not found
 
 **Решения:**
 
-1. Убедитесь, что кастомный класс наследует базовый класс MiniShop3
+1. Убедитесь, что пользовательский класс наследует базовый класс MiniShop3
 2. Проверьте namespace и use-директивы
-3. Очистите кеш MODX
+3. Очистите кэш MODX
 
 ### Конфликт компонентов
 

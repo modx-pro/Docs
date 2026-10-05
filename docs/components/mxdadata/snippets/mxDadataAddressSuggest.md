@@ -10,7 +10,7 @@ title: mxDadataAddressSuggest
 
 | Параметр | Описание | По умолчанию |
 |----------|----------|----------------|
-| **input** | CSS-селектор поля ввода адреса (строка или несколько через запятую) | `#mxdadata-order-address`, `[name="address"]`, `#address`, `[name="address_text_address"]` |
+| **input** | CSS-селектор поля ввода адреса (строка или несколько через запятую) | `[name="address"], #address, [name="address_text_address"]` (свойство сниппета в транспорте. В PHP сниппета запасной список может быть шире) |
 | **connectorUrl** | URL `connector-web.php` | `[[++assets_url]]components/mxdadata/connector-web.php` |
 
 ## Примеры
@@ -56,7 +56,7 @@ title: mxDadataAddressSuggest
 ## Поведение
 
 - Скрипт регистрируется в конец страницы. Инициализация — после `DOMContentLoaded` и готовности `window.mxDadataAddressSuggest`
-- Отладка в консоли: `mxdadata_debug_mode`, `?mxdadata_debug=1`, `localStorage mxdadata_web_debug = 1` — см. [Интеграция → отладка](/components/mxdadata/integration#отладка-на-витрине)
+- Отладка в консоли: `mxdadata_debug_mode`, `?mxdadata_debug=1`, `localStorage mxdadata_web_debug = 1`. См. [Интеграция → отладка](/components/mxdadata/integration#отладка-на-витрине)
 
 ## См. также
 

@@ -1,12 +1,16 @@
 ---
 title: mxEditorJs
 description: Block editor Editor.js for MODX 3 — content in blocks instead of TinyMCE/CKEditor
-author: ibochkarev
+author: Ibochkarev
 logo: https://modstore.pro/assets/extras/mxeditorjs/logo.png
 modstore: https://modstore.pro/packages/content/mxeditorjs
 repository: https://github.com/Ibochkarev/mxEditorJs
 dependencies: []
+categories: content
 
+compatibility:
+  - modx3
+  - php82
 items: [
   { text: 'Getting started', link: 'quick-start', items: [
     { text: 'Quick start', link: 'quick-start' },
@@ -27,45 +31,45 @@ items: [
 ---
 # mxEditorJs
 
-Block content editor for MODX 3 based on [Editor.js](https://editorjs.io/). Replaces the default TinyMCE/CKEditor: content is created in blocks (heading, text, image, video), and the site renders proper HTML.
+Block editor for MODX 3 on [Editor.js](https://editorjs.io/). Content is built in blocks instead of TinyMCE/CKEditor. The site outputs HTML.
 
 ## Quick links
 
 | Need | Document |
 | --- | --- |
-| Enable editor in 3 steps | [Quick start](quick-start) |
-| Blocks, media, embed | [Editor guide](user-guide) |
-| Configure tool profiles and media | [System settings](settings) |
-| Connector API, PHP classes, data formats | [API](api) |
-| TVs, HTML → Editor.js migration | [Integration](integration) |
-| Common editor questions | [FAQ](faq) |
-| Save flow, sidecar, connector | [Flows](flows) |
+| Enable editor in 3 steps | [Quick start](/en/components/mxeditorjs/quick-start) |
+| Blocks, media, embed | [Editor guide](/en/components/mxeditorjs/user-guide) |
+| Configure tool profiles and media | [System settings](/en/components/mxeditorjs/settings) |
+| Connector API, PHP classes, data formats | [API](/en/components/mxeditorjs/api) |
+| TVs, HTML → Editor.js migration | [Integration](/en/components/mxeditorjs/integration) |
+| Common editor questions | [FAQ](/en/components/mxeditorjs/faq) |
+| Save flow, sidecar, connector | [Flows](/en/components/mxeditorjs/flows) |
 
 ## Who reads what
 
-- **Content editor:** [Editor guide](user-guide)
-- **Administrator:** [System settings](settings), [FAQ](faq)
-- **Developer:** [API](api), [Flows](flows), [Architecture](architecture), [Troubleshooting](troubleshooting)
+- **Content editor:** [Editor guide](/en/components/mxeditorjs/user-guide)
+- **Administrator:** [System settings](/en/components/mxeditorjs/settings), [FAQ](/en/components/mxeditorjs/faq)
+- **Developer:** [API](/en/components/mxeditorjs/api), [Flows](/en/components/mxeditorjs/flows), [Architecture](/en/components/mxeditorjs/architecture), [Troubleshooting](/en/components/mxeditorjs/troubleshooting)
 
-Package: **1.1.0-beta2**. [modstore.pro](https://modstore.pro/packages/content/mxeditorjs), [GitHub](https://github.com/Ibochkarev/mxEditorJs). Changelog in the package repo: `core/components/mxeditorjs/docs/changelog.txt`.
+[modstore.pro](https://modstore.pro/packages/content/mxeditorjs), [GitHub](https://github.com/Ibochkarev/mxEditorJs). Changelog: `core/components/mxeditorjs/docs/changelog.txt`.
 
 ## Features
 
-- **Block editor** — 14 block types: paragraph, header, list, checklist, quote, table, code, raw HTML, embed, image, **gallery**, attachment, delimiter, warning
-- **TV support** — editor in main resource content and in Template Variables of type `textarea` with richtext option
-- **Media upload** — drag-and-drop images and files via MODX Media Sources. Separate paths for images and attachments (Attaches)
-- **Gallery** — multiple images in one block, sorting, fit and slider modes, upload and Browse via Media Source (same as Image)
-- **File browser** — browse Media Source directories
-- **Link autocomplete** — MODX resource search when inserting links
-- **HTML → Editor.js migration** — convert existing HTML content
-- **Tool profiles** — presets (default, minimal, blog, full) and custom
+- **15 block types:** paragraph, header, list, checklist, quote, table, code, raw HTML, embed, image, **gallery**, **mxGallery**, attachment, delimiter, warning. The `mxgallery` toolbox appears only when the mxGallery package is installed.
+- **TVs**: main resource content and Template Variables of type `textarea` with richtext
+- **Media**: drag-and-drop via MODX Media Sources. Separate paths for images and attachments (Attaches)
+- **Gallery**: multiple images, sorting, fit or slider, upload and Browse via Media Source
+- **File browser**: browse Media Source directories
+- **Link autocomplete**: MODX resource search
+- **HTML → Editor.js migration**
+- **Tool profiles**: default, minimal, blog, full, and custom
 - **Fullscreen**, **Source Preview**, **Undo/Redo**, text alignment
-- **Localization** — Russian and English, inherits manager locale
-- **CSS presets** — configurable classes for images and links
+- **Localization**: Russian and English, inherits manager locale
+- **CSS presets**: classes for images and links
 
 ## Editor.js plugins used
 
-mxEditorJs builds the editor from the following block and inline tools, block tune, and plugin. Full catalog: [Awesome Editor.js](https://github.com/editor-js/awesome-editorjs).
+Tool catalog: [Awesome Editor.js](https://github.com/editor-js/awesome-editorjs).
 
 ### Block tools
 
@@ -83,8 +87,9 @@ mxEditorJs builds the editor from the following block and inline tools, block tu
 | **@editorjs/attaches** | File attachments | [npm](https://www.npmjs.com/package/@editorjs/attaches) · [awesome](https://github.com/editor-js/awesome-editorjs#media--embed) |
 | **@editorjs/delimiter** | Delimiter | [npm](https://www.npmjs.com/package/@editorjs/delimiter) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
 | **@editorjs/warning** | Warning block | [npm](https://www.npmjs.com/package/@editorjs/warning) · [awesome](https://github.com/editor-js/awesome-editorjs#text-and-typography) |
-| **Image** (custom) | Image with MODX Media Source upload and browser | Part of mxEditorJs (`ImageTool.ts`), similar to [@editorjs/image](https://github.com/editor-js/awesome-editorjs#media--embed) |
-| **Gallery** (custom) | Image gallery on `@kiberpro/editorjs-gallery`: sorting, fit/slider modes | Part of mxEditorJs (`GalleryTool.ts`) |
+| **Image** | Image with MODX Media Source upload and browser | Part of mxEditorJs (`ImageTool.ts`), similar to [@editorjs/image](https://github.com/editor-js/awesome-editorjs#media--embed) |
+| **Gallery** | Image gallery on `@kiberpro/editorjs-gallery`: sorting, fit/slider modes | Part of mxEditorJs (`GalleryTool.ts`) |
+| **mxGallery** | mxGallery package block: media by `ids` or a collection | Part of mxEditorJs (`MxGalleryTool.ts`). Toolbox only if `core/components/mxgallery/` exists |
 
 ### Inline tools
 
@@ -94,7 +99,7 @@ mxEditorJs builds the editor from the following block and inline tools, block tu
 | **@editorjs/inline-code** | Monospace code in text | [npm](https://www.npmjs.com/package/@editorjs/inline-code) · [awesome](https://github.com/editor-js/awesome-editorjs#inline-tools) |
 | **@editorjs/underline** | Underline | [npm](https://www.npmjs.com/package/@editorjs/underline) · [awesome](https://github.com/editor-js/awesome-editorjs#inline-tools) |
 
-Links and MODX resource autocomplete are implemented by the custom **LinkAutocomplete** tool in mxEditorJs (inspired by [@editorjs/link-autocomplete](https://github.com/editor-js/awesome-editorjs#inline-tools)).
+Links and MODX resource autocomplete: the **LinkAutocomplete** tool in mxEditorJs (inspired by [@editorjs/link-autocomplete](https://github.com/editor-js/awesome-editorjs#inline-tools)).
 
 ### Block tune
 
@@ -112,7 +117,7 @@ Links and MODX resource autocomplete are implemented by the custom **LinkAutocom
 
 | Plugin | Links |
 | --- | --- |
-| **@editorjs/editorjs** | Editor.js core | [npm](https://www.npmjs.com/package/@editorjs/editorjs) · [GitHub](https://github.com/codex-team/editor.js) · [docs](https://editorjs.io/) |
+| **@editorjs/editorjs** — Editor.js core | [npm](https://www.npmjs.com/package/@editorjs/editorjs) · [GitHub](https://github.com/codex-team/editor.js) · [docs](https://editorjs.io/) |
 
 ## Requirements
 
@@ -126,12 +131,12 @@ Links and MODX resource autocomplete are implemented by the custom **LinkAutocom
 
 ### Via package manager
 
-1. Go to **Extras → Installer** (in MODX 3: **Packages → Installer**)
-2. Click **Download Extras** and refresh the package list
-3. Find **mxEditorJs**, click **Download**, then **Install**
-4. **Manage → Clear cache** (in MODX 3: **Settings → Clear cache**)
+1. **Extras → Installer** (MODX 3: **Packages → Installer**)
+2. **Download Extras**, refresh the package list
+3. Find **mxEditorJs** → **Download** → **Install**
+4. **Manage → Clear cache** (MODX 3: **Settings → Clear cache**)
 
-Or install a transport package manually: download `mxeditorjs-*.transport.zip`, in **Packages → Installer** click **Upload package**, select the file, install, then clear cache.
+Or install `mxeditorjs-*.transport.zip`: **Packages → Installer** → **Upload package** → install → clear cache.
 
 ### From source (development)
 
@@ -146,11 +151,11 @@ php _build/build.php
 
 ## Quick start (3 steps)
 
-1. **System → System settings** → find `which_editor` → select **mxEditorJs**
-2. Ensure `mxeditorjs.enabled` = **Yes**
-3. Open any resource — the block editor appears in the content field
+1. **System → System settings** → `which_editor` → **mxEditorJs**
+2. `mxeditorjs.enabled` = **Yes**
+3. Open any resource: the block editor appears in the content field
 
-See: [Quick start](quick-start).
+See: [Quick start](/en/components/mxeditorjs/quick-start).
 
 ## System settings (overview)
 
@@ -167,4 +172,4 @@ All settings are in the **mxeditorjs** namespace.
 | `mxeditorjs.gallery_max_count` | `0` | Max images in Gallery block (`0` = no limit) |
 | `mxeditorjs.max_upload_size` | `5242880` (5 MB) | Max upload size (bytes) |
 
-Full list: [System settings](settings).
+Full list: [System settings](/en/components/mxeditorjs/settings).

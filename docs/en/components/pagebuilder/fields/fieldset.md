@@ -7,11 +7,11 @@ description: "Nested field group with flat keys in section data"
 
 Version: **Pro**.
 
-<!-- ![fieldset](/components/pagebuilder/screenshots/fields/fieldset.png) -->
+<!-- ![fieldset](/components/pagebuilder/screenshots/fields/fieldset.jpg) -->
 
 ## Why this type
 
-Inspector legend without fieldset key in data. Nested names unique within section. Pro organization for long forms.
+A group label in the inspector. The group has no key of its own in the section data: nested fields keep their own names, and those names must be unique in the section. It is in Pro, to split a long form.
 
 ## When to use
 
@@ -63,9 +63,17 @@ The `seo` key in the schema is not stored in the section data. Nested fields are
 
 ## Chunk example
 
-```fenom
-{$seo_title|escape}
+::: code-group
+
+```modx
+[[+seo_title]]
 ```
+
+```fenom
+{$seo_title|pb_text}
+```
+
+:::
 
 ## Common properties
 

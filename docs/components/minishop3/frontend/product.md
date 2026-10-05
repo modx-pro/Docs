@@ -15,7 +15,8 @@ title: Страница товара
 | --- | --- | --- |
 | Шаблон страницы | `elements/templates/product.tpl` | Разметка страницы товара |
 | Галерея | `tpl.msGallery` | Слайдер изображений с лайтбоксом |
-| Опции товара | `tpl.msProductOptions` | Вывод характеристик товара |
+
+Таблицу характеристик выводит сниппет [`msProductOptions`](/components/minishop3/snippets/msproductoptions) со своим чанком `tpl.msProductOptions` — в демо-шаблоне он не подключён, вызывайте его в своём шаблоне отдельно.
 
 ## Шаблон страницы
 
@@ -159,7 +160,7 @@ title: Страница товара
 ```
 
 ::: tip Расчёт скидки
-Процент скидки рассчитывается автоматически сниппетом msProducts при наличии `old_price`. Формула: `(old_price - price) / old_price * 100`
+Процент `{$discount}` заполняет только цикл **msProducts** (карточки каталога): `(old_price - price) / old_price * 100`. На странице товара плейсхолдер пустой, пока шаблон сам не посчитает то же выражение. Блок «Скидка {$discount}%» в демо-`product.tpl` без доработки не работает ([issue #814](https://github.com/modx-pro/MiniShop3/issues/814)).
 :::
 
 ---
@@ -198,7 +199,6 @@ JavaScript активирует первую опцию по умолчанию 
 ```fenom
 <form method="post" class="ms3_form" data-cart-state="add">
     <input type="hidden" name="id" value="{$_modx->resource.id}">
-    <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
 
     <div class="row g-3 align-items-end">
@@ -333,7 +333,6 @@ Bootstrap-табы для организации контента:
             'parents' => $_modx->resource.parent,
             'resources' => '-' ~ $_modx->resource.id,
             'limit' => 4,
-            'formatPrices' => 1,
             'withCurrency' => 0
         ]}
     </div>
@@ -369,13 +368,19 @@ Bootstrap-табы для организации контента:
 | `{$price}` | float | Цена |
 | `{$old_price}` | float | Старая цена |
 | `{$weight}` | float | Вес |
-| `{$stock}` | int | Остаток на складе |
+| `{$stock}` | float | Остаток на складе (`decimal`) |
+| `{$image}` | string | URL основного изображения |
+| `{$thumb}` | string | URL превью |
+| `{$tags}` | mixed | Теги |
+| `{$source_id}` | int | ID Media Source |
+| `{$preview_file_id}` | int | ID файла превью в галерее |
 | `{$vendor_id}` | int | ID производителя |
-| `{$vendor_name}` | string | Название производителя |
 | `{$made_in}` | string | Страна производства |
 | `{$new}` | bool | Флаг "Новинка" |
 | `{$popular}` | bool | Флаг "Популярный" |
 | `{$favorite}` | bool | Флаг "Рекомендуемый" |
+
+`{$vendor_name}` — не колонка `msProductData`: название приходит из связи с `msVendor` по `vendor_id`. В сниппете `msProducts` поля производителя с префиксом `vendor_` появляются при `includeVendorFields`.
 
 ### Опции товара
 
@@ -383,7 +388,7 @@ Bootstrap-табы для организации контента:
 | --- | --- | --- |
 | `{$_modx->resource.color}` | array | Массив доступных цветов |
 | `{$_modx->resource.size}` | array | Массив доступных размеров |
-| `{$discount}` | int | Процент скидки (рассчитывается) |
+| `{$discount}` | int | Процент скидки: только из `msProducts`, на странице товара не заполняется |
 
 ## Кастомизация
 
@@ -405,7 +410,7 @@ Bootstrap-табы для организации контента:
 
 ### Добавление своих табов
 
-Расширьте блок табов в шаблоне:
+Расширьте блок табов в шаблоне. Сниппета отзывов в ядре MiniShop3 нет — подключайте свой extra или разметку:
 
 ```fenom
 <li class="nav-item">
@@ -415,9 +420,13 @@ Bootstrap-табы для организации контента:
 </li>
 
 <div class="tab-pane fade" id="reviews">
-    {'!msProductReviews' | snippet : ['product' => $_modx->resource.id]}
+    {* Свой сниппет / чанк отзывов — не часть MiniShop3 *}
 </div>
 ```
+
+::: warning Опции color/size в демо-шаблоне
+Кнопки цвета и размера в `product.tpl` только ставят класс `active` и не пишут значения в форму `cart/add`. В корзину опции не уходят, пока не добавите hidden/input или JS ([issue #815](https://github.com/modx-pro/MiniShop3/issues/815)).
+:::
 
 ## CSS-классы
 

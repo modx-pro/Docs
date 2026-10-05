@@ -7,11 +7,7 @@ description: "Текст через Editor.js: заголовки, списки,
 
 Альтернатива **Текстовому блоку** для лонгридов. Блочный редактор: заголовки H2–H4, списки, цитаты, встроенные изображения.
 
-<!-- ![Структурированный контент](/components/pagebuilder/screenshots/sections/structured_content.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Структурированный контент](/components/pagebuilder/screenshots/sections/structured_content.jpg)
 
 ## Editor.js вместо richtext
 
@@ -30,9 +26,9 @@ description: "Текст через Editor.js: заголовки, списки,
 - Блог-пост на page builder: [Hero](hero) → [Structured content](structured_content) → [CTA](cta)
 - Новость: [Structured content](structured_content) → [Галерея](gallery)
 
-## Поле editorjs
+## Поле body
 
-Поле **editorjs** сохраняет JSON блоков. На выводе chunk превращает его в HTML внутри `.pb-richtext__content`.
+Поле **body** (тип editorjs) сохраняет JSON блоков. На выводе chunk берёт HTML из `$body.html` внутри `.pb-richtext__content`.
 
 ## Похожие секции
 
@@ -63,7 +59,7 @@ description: "Текст через Editor.js: заголовки, списки,
 
 ## Что видит посетитель
 
-HTML из поля `editorjs` в обёртке `.pb-richtext__content`.
+HTML из `$body.html` в обёртке `.pb-richtext__content`.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -84,11 +80,11 @@ HTML из поля `editorjs` в обёртке `.pb-richtext__content`.
 Fenom chunk `pagebuilderpro_structured_content`:
 
 ```fenom
-{var $bodyHtml = ''}
+{set $bodyHtml = ''}
 {if $body is array}
-  {var $bodyHtml = $body.html|default:''}
+  {set $bodyHtml = $body.html|default:''}
 {else}
-  {var $bodyHtml = $body}
+  {set $bodyHtml = $body}
 {/if}
 <section class="pb-section pb-section--structured-content pb-structured-content pb-richtext{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="structured_content"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-structured-content__inner pb-richtext__inner">
@@ -103,10 +99,6 @@ Fenom chunk `pagebuilderpro_structured_content`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/structured_content.json`
 
 ## Связанные страницы
 

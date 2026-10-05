@@ -7,7 +7,7 @@ description: Справочник ключей mxheadless в System Settings MOD
 
 Namespace: `mxheadless`. Ключи через подчёркивание (`mxheadless_cors_enabled`), без точек.
 
-С **1.0.42** при upgrade пакет переносит значения со старых dotted-ключей (`mxheadless.cors.enabled`) на новые.
+С **1.0.42** при обновлении пакет переносит значения со старых ключей с точками (`mxheadless.cors.enabled`) на новые.
 
 ## API
 
@@ -41,7 +41,7 @@ Namespace: `mxheadless`. Ключи через подчёркивание (`mxhe
 | `mxheadless_rate_limit_max_requests` | numberfield | `120` | Запросов в окне |
 | `mxheadless_rate_limit_window_seconds` | numberfield | `60` | Длина окна (секунды) |
 
-Per-key overrides: колонки `rate_limit_max`, `rate_limit_window` в `mxheadless_api_keys` и `mxheadless_oauth_clients`.
+Лимиты на ключ: колонки `rate_limit_max`, `rate_limit_window` в `mxheadless_api_keys` и `mxheadless_oauth_clients`.
 
 ## CORS
 
@@ -51,12 +51,12 @@ Per-key overrides: колонки `rate_limit_max`, `rate_limit_window` в `mxhe
 | `mxheadless_cors_allowed_origins` | textarea | пусто | Origins через запятую или `*` |
 | `mxheadless_cors_allowed_methods` | textfield | `GET,POST,PUT,PATCH,DELETE,OPTIONS` | Методы preflight |
 | `mxheadless_cors_allowed_headers` | textfield | `Authorization,Content-Type,X-Request-ID,X-CSRF-Token,X-Context,X-API-Key,Idempotency-Key` | Разрешённые заголовки |
-| `mxheadless_cors_expose_headers` | textfield | `ETag,X-Request-ID,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,Idempotency-Replayed` | Expose-Headers для JS |
+| `mxheadless_cors_expose_headers` | textfield | `ETag,X-Request-ID,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,Idempotency-Replayed,X-CSRF-Token` | Expose-Headers для JS |
 | `mxheadless_cors_allow_credentials` | combo-boolean | `false` | Не сочетайте с origins=`*` |
 
 Подробнее: [CORS](configuration/cors).
 
-## Безопасность и idempotency
+## Безопасность и идемпотентность
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
@@ -80,7 +80,7 @@ Per-key overrides: колонки `rate_limit_max`, `rate_limit_window` в `mxhe
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `mxheadless_webhook_max_attempts` | numberfield | `5` | Попыток доставки до `failed` |
-| `mxheadless_webhook_worker_limit` | numberfield | `50` | Default `--limit` для worker |
+| `mxheadless_webhook_worker_limit` | numberfield | `50` | `--limit` worker по умолчанию |
 | `mxheadless_webhook_allow_private_urls` | combo-boolean | `false` | Dev: localhost/private IP (также ослабляет TLS verify) |
 
 ## Audit
@@ -88,12 +88,12 @@ Per-key overrides: колонки `rate_limit_max`, `rate_limit_window` в `mxhe
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `mxheadless_audit_enabled` | combo-boolean | `false` | Журнал в `mxheadless_api_log` |
-| `mxheadless_audit_retention_days` | numberfield | `90` | Retention для `audit-prune.php` |
+| `mxheadless_audit_retention_days` | numberfield | `90` | Срок хранения для `audit-prune.php` |
 | `mxheadless_audit_log_get` | combo-boolean | `false` | Логировать GET |
 
-## Лимиты query (дефолты в коде)
+## Лимиты query (значения по умолчанию в коде)
 
-`QueryParser` читает через `getOption`. Можно добавить как system settings:
+`QueryParser` читает через `getOption`. Можно добавить как системные настройки:
 
 | Ключ | По умолчанию |
 | --- | --- |

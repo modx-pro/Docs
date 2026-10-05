@@ -5,28 +5,28 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 # Поле map
 
-Версия: **Pro**.
+Версия: **Pro** (`advanced-fields`).
 
-<!-- ![map](/components/pagebuilder/screenshots/fields/map.png) -->
+<!-- ![map](/components/pagebuilder/screenshots/fields/map.jpg) -->
 
 ## Зачем этот тип
 
-Координаты и адрес для секций contact_map. Enrich строит embed и ссылку на карты. Плоские `map_*` при `type=map` или имени с «map».
+Широта, долгота, масштаб и провайдер карты в инспекторе (отдельного поля «улица» нет — текстовый адрес у типа [address](address)). После save enrich добавляет `embed_url` и `watch_url` любому объекту с ключами `lat` и `lng`. Плоские `map_embed_url`, `map_provider`, `map_watch_url` пишутся при первом успешном embed; при нескольких точках приоритет у ключа `location`.
 
 ## Когда использовать
 
-- Офис на landing contact_map
-- Одна точка доставки или pickup
-- Geo block рядом с формой
+- Офис на странице контактов
+- Одна точка доставки или самовывоза
+- Карта рядом с формой
 
 ## Советы
 
-Несколько точек: repeater с text lat/lng или custom. Embed выводите из enrich, URL не собирайте вручную.
+Несколько точек собирают полем [repeater](repeater): широта и долгота отдельными текстовыми полями или своей схемой. Адрес встраивания берите из сохранённых данных, не собирайте ссылку вручную.
 
 ## Похожие типы
 
 - [text](textarea) для адреса без координат
-- [url](url) для ссылки на maps.google без picker
+- [url](url), если нужна готовая ссылка на карты и точку не выбирают на карте
 
 ## Настройка
 
@@ -70,9 +70,17 @@ description: "Точка на карте с enrich embed_url и watch_url"
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<iframe src="[[+location.embed_url]]" title="Карта"></iframe>
+```
+
+```fenom
 <iframe src="{$location.embed_url|default($map_embed_url)|escape}" title="Карта"></iframe>
 ```
+
+:::
 
 ## Общие свойства
 
@@ -81,7 +89,7 @@ description: "Точка на карте с enrich embed_url и watch_url"
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

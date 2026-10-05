@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useData, useRoute } from 'vitepress'
+import { useData, useRoute, withBase } from 'vitepress'
 import { useEditLink } from 'vitepress/dist/client/theme-default/composables/edit-link'
 import { usePrevNext as useVPPrevNext } from 'vitepress/dist/client/theme-default/composables/prev-next'
 import { usePrevNext } from '../composables/prev-next'
@@ -8,9 +8,10 @@ import { usePrevNext } from '../composables/prev-next'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import VPDocFooterLastUpdated from 'vitepress/dist/client/theme-default/components/VPDocFooterLastUpdated.vue'
 
+const SITE_HOST = 'https://docs.modx.pro'
 const route = useRoute()
 
-const { theme, page, frontmatter } = useData()
+const { theme, page, frontmatter, lang } = useData()
 
 const editLink = useEditLink()
 const control = computed(() => (route.path.includes('/components/') ? usePrevNext() : useVPPrevNext()).value)
@@ -21,8 +22,46 @@ const hasEditLink = computed(() => {
 const hasLastUpdated = computed(() => {
   return page.value.lastUpdated && frontmatter.value.lastUpdated !== false
 })
+const feedback = computed(() => {
+  const text = theme.value.feedback?.text
+  if (!text) return
+
+  const pageUrl = new URL(withBase(route.path), SITE_HOST).href
+  const pageTitle = page.value.title || pageUrl
+  const ru = lang.value === 'ru'
+  const title = ru ? `Ошибка: ${pageTitle}` : `Error: ${pageTitle}`
+  const body = ru
+    ? [
+        'Документация в Markdown: русская часть в `docs/`, английская в `docs/en/`.',
+        '',
+        '## Затронутые страницы',
+        '',
+        pageUrl,
+        '',
+        '## Что нужно улучшить?',
+        '',
+      ].join('\n')
+    : [
+        '## Page',
+        '',
+        pageUrl,
+        '',
+        '## What is wrong?',
+        '',
+      ].join('\n')
+  const params = new URLSearchParams({
+    template: 'incorrect.md',
+    title,
+    body,
+  })
+
+  return {
+    text,
+    href: `https://github.com/modx-pro/Docs/issues/new?${params}`,
+  }
+})
 const showFooter = computed(() => {
-  return hasEditLink.value || hasLastUpdated.value || control.value.prev || control.value.next
+  return hasEditLink.value || hasLastUpdated.value || feedback.value || control.value.prev || control.value.next
 })
 </script>
 
@@ -30,11 +69,14 @@ const showFooter = computed(() => {
   <footer v-if="showFooter" class="VPDocFooter">
     <slot name="doc-footer-before" />
 
-    <div v-if="hasEditLink || hasLastUpdated" class="edit-info">
-      <div v-if="hasEditLink" class="edit-link">
-        <VPLink class="edit-link-button" :href="editLink.url" :no-icon="true">
+    <div v-if="hasEditLink || hasLastUpdated || feedback" class="edit-info">
+      <div v-if="hasEditLink || feedback" class="edit-links">
+        <VPLink v-if="hasEditLink" class="edit-link-button" :href="editLink.url" :no-icon="true">
           <span class="vpi-square-pen edit-link-icon" aria-label="edit icon" />
           {{ editLink.text }}
+        </VPLink>
+        <VPLink v-if="feedback" class="edit-link-button" :href="feedback.href" :no-icon="true">
+          {{ feedback.text }}
         </VPLink>
       </div>
 
@@ -79,6 +121,13 @@ const showFooter = computed(() => {
     align-items: center;
     padding-bottom: 14px;
   }
+}
+
+.edit-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .edit-link-button {

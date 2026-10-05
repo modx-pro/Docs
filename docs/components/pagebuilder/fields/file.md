@@ -7,26 +7,26 @@ description: "Media-объект файла после enrich при save draft"
 
 Версия: **Free**.
 
-<!-- ![file](/components/pagebuilder/screenshots/fields/file.png) -->
+<!-- ![file](/components/pagebuilder/screenshots/fields/file.jpg) -->
 
 ## Зачем этот тип
 
-Enrich добавляет filename, extension, size, url. Подходит для PDF, архивов, не только картинок. Тот же media pipeline, что у [image](image).
+Поле для PDF, архива и других файлов, не только для картинок. После сохранения в данных есть имя файла, расширение, размер и адрес. Файлы обрабатываются так же, как у [image](image).
 
 ## Когда использовать
 
-- PDF прайс, презентация, downloadable asset
-- Attachment в contact или CTA
+- PDF с ценами, презентация, файл для скачивания
+- Вложение в форме или в блоке с кнопкой
 - Любой файл из медиа MODX
 
 ## Советы
 
-В chunk используйте `{$file.url}`, не сырой path. Только изображения чаще через [image](image).
+В чанке берите `{$file.url}`, не путь к файлу. Для одних фотографий чаще хватает [image](image).
 
 ## Похожие типы
 
 - [image](image) для фото с alt и размерами
-- [url](url) для внешней ссылки без upload
+- [url](url) для внешней ссылки, если файл не загружают
 
 ## Настройка
 
@@ -44,7 +44,7 @@ Enrich добавляет filename, extension, size, url. Подходит дл�
 
 ## Значение
 
-Объект media: `url`, `size`, `title`, `name`, `filename`, `extension`, `type` и др. Legacy-строка при чтении оборачивается в `{ url }`.
+Объект media: `url`, `size`, `title`, `name`, `filename`, `extension`, `type` и др. Устаревшая строка URL в JSON остаётся строкой до следующего save. В инспекторе Vue нормализует её в объект `{ url }` для редактирования.
 
 ## Данные секции {#vyvod-v-section-data}
 
@@ -66,13 +66,21 @@ Enrich добавляет filename, extension, size, url. Подходит дл�
 }
 ```
 
-- Legacy-строка URL при чтении нормализуется в `{ url }`.
+- Устаревшая строка URL в данных без повторного save на фронте остаётся строкой: `{$pdf.url}` не сработает, пока редактор не сохранит секцию после открытия в инспекторе.
 
 ## Пример в chunk
 
-```html
-<a href="{$pdf.url|escape}" download="{$pdf.title|escape}">{$pdf.title|escape}</a>
+::: code-group
+
+```modx
+<a href="[[+pdf.url]]" download="[[+pdf.title]]">[[+pdf.title]]</a>
 ```
+
+```fenom
+<a href="{$pdf.url|escape}" download="{$pdf.title|escape}">{$pdf.title|pb_text}</a>
+```
+
+:::
 
 ## Общие свойства
 
@@ -81,7 +89,7 @@ Enrich добавляет filename, extension, size, url. Подходит дл�
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false`: скрыть поле в инспекторе | да |

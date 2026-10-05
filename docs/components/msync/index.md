@@ -1,6 +1,7 @@
 ---
 title: mSync
 description: Компонент для синхронизации товаров, предложений и заказов с 1С
+categories: import-export
 logo: https://modstore.pro/assets/extras/msync/logo.png
 author: argnist
 modstore: https://modstore.pro/packages/import-and-export/msync

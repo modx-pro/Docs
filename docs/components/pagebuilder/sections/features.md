@@ -5,19 +5,15 @@ description: "Пункты с иконкой, заголовком и описа
 
 # Преимущества
 
-Блок «Почему мы»: у каждого пункта иконка (URL или класс), заголовок и пояснение. Визуально богаче, чем секция **Карточки**.
+Блок «Почему мы»: у каждого пункта иконка из media, заголовок и пояснение. Визуально богаче, чем секция **Карточки**.
 
-<!-- ![Преимущества](/components/pagebuilder/screenshots/sections/features.png) -->
-
-::: info
-Требуется PageBuilder Pro.
-:::
+![Преимущества](/components/pagebuilder/screenshots/sections/features.jpg)
 
 ## Чем Features богаче карточек
 
 - Иконка + заголовок + текст в каждой ячейке
 - Визуально сильнее [Карточек](cards) на лендинге продукта
-- Иконка через URL или CSS-класс темы
+- Иконка через поле `image` (URL media на сайте)
 
 ## Типичные лендинги
 
@@ -32,7 +28,7 @@ description: "Пункты с иконкой, заголовком и описа
 
 ## Repeater преимуществ
 
-Repeater **Преимущества**: **Иконка**, **Заголовок**, **Описание**. Иконку можно задать URL к SVG/PNG или CSS-класс темы.
+Repeater **Преимущества**: **Иконка**, **Заголовок**, **Описание**. Иконка — поле `icon` типа image; chunk выводит `<img>` через `pagebuilder_partial_image`.
 
 ## Похожие секции
 
@@ -126,10 +122,6 @@ Fenom chunk `pagebuilderpro_features`:
   </div>
 </section>
 ```
-
-## JSON-определение
-
-`PageBuilderPro/core/components/pagebuilderpro/sections/features.json`
 
 ## Связанные страницы
 

@@ -12,7 +12,7 @@ Accepts all [pdoTools][2] parameters and some of its own:
 
 | Parameter             | Default | Description                                                                                                                                                 |
 |----------------------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **&showLog**         | `0`          | Show extra snippet debug info. Only for users logged in to the "mgr" context.                                                      |
+| **&showLog**         | `0`          | Log in a placeholder (since 3.0), not HTML. Requires mgr session. [Details](../general-properties#showlog). |
 | **&from**            | `0`          | Resource id from which to build breadcrumbs. Usually the site root, i.e. «0».                                                                    |
 | **&to**              |              | Resource id for which breadcrumbs are built. Default is current page id.                                                                   |
 | **&exclude**         |              | List of resource IDs to exclude from selection.                                                                                                  |
@@ -29,6 +29,19 @@ Accepts all [pdoTools][2] parameters and some of its own:
 | **&showAtHome**      | `1`          | Show breadcrumbs on the site home page.                                                                                                     |
 | **&hideSingle**      | `0`          | Don't output result if it is the only one.                                                                                                        |
 | **&direction**       | `ltr`        | Navigation direction: left to right «ltr» or right to left «rtl», e.g. for Arabic.                                                        |
+
+## Row placeholders {#row-placeholders}
+
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+Each crumb row gets these flags as `0` / `1`. Existing **&tpl** / **&tplCurrent** / **&tplHome** chunks still apply.
+:::
+
+| Placeholder | Meaning |
+| --- | --- |
+| `isFirst` | First crumb in the list |
+| `isLast` | Last crumb in the list |
+| `isActive` | Crumb resource is the current page |
+| `isHome` | Crumb resource is the site start |
 
 ### Templates
 

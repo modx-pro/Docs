@@ -5,6 +5,7 @@ logo: https://modstore.pro/assets/extras/msems/logo-lg.jpeg
 modstore: https://modstore.pro/packages/delivery/msems
 
 dependencies: miniShop2
+categories: delivery
 ---
 
 # msEMS

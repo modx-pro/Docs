@@ -1,21 +1,22 @@
 ---
 title: "Справочник типов"
-description: "Все 50 типов полей инспектора PageBuilder (Free и Pro)"
+description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 ---
 
 # Справочник типов полей
 
-30 типов в Free и 20 в Pro. Pro включается флагом `advanced-fields`. На странице каждого типа есть **Зачем этот тип**, **Когда использовать**, **Советы**, **Похожие типы**, JSON **Настройка**, блок **Данные секции**, пример Fenom и таблица **Общие свойства**.
+35 типов в Free и 27 в Pro. Большинство Pro-типов включается флагом `advanced-fields`. Типы `datasource`, `form`, `product` и `products` дополнительно требуют capabilities `datasources`, `forms` и `minishop3`. У каждого типа есть страница: JSON настройки и блок данных секции.
 
 Общие meta-ключи (`tab`, `width`, `description`, `default`, `active`): [обзор](overview#общие-свойства-поля).
 
-<!-- ![Типы полей в инспекторе](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
+<!-- ![Типы полей в инспекторе](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
 ## Free
 
 | type | Слой | Страница | Вывод и пример |
 | --- | --- | --- | --- |
 | `text` | Free | [text](text) | [JSON и Fenom](text#vyvod-v-section-data) |
+| `email` | Free | [email](email) | [JSON и Fenom](email#vyvod-v-section-data) |
 | `textarea` | Free | [textarea](textarea) | [JSON и Fenom](textarea#vyvod-v-section-data) |
 | `richtext` | Free | [richtext](richtext) | [JSON и Fenom](richtext#vyvod-v-section-data) |
 | `ace` | Free | [ace](ace) | [JSON и Fenom](ace#vyvod-v-section-data) |
@@ -36,6 +37,7 @@ description: "Все 50 типов полей инспектора PageBuilder (
 | `colorpalette` | Free | [colorpalette](colorpalette) | [JSON и Fenom](colorpalette#vyvod-v-section-data) |
 | `file` | Free | [file](file) | [JSON и Fenom](file#vyvod-v-section-data) |
 | `image` | Free | [image](image) | [JSON и Fenom](image#vyvod-v-section-data) |
+| `migx` | Free | [migx](migx) | [JSON и Fenom](migx#vyvod-v-section-data) |
 | `video` | Free | [video](video) | [JSON и Fenom](video#vyvod-v-section-data) |
 | `button` | Free | [button](button) | [JSON и Fenom](button#vyvod-v-section-data) |
 | `resourcelist` | Free | [resourcelist](resourcelist) | [JSON и Fenom](resourcelist#vyvod-v-section-data) |
@@ -44,7 +46,10 @@ description: "Все 50 типов полей инспектора PageBuilder (
 | `xtype` | Free | [xtype](xtype) | [JSON и Fenom](xtype#vyvod-v-section-data) |
 | `heading` | Free | [heading](heading) | [JSON и Fenom](heading#vyvod-v-section-data) |
 | `repeater` | Free | [repeater](repeater) | [JSON и Fenom](repeater#vyvod-v-section-data) |
-| `editorjs` | Free | [editorjs](editorjs) | [JSON и Fenom](editorjs#vyvod-v-section-data) |
+| `tag` | Free | [tag](tag) | [JSON и Fenom](tag#vyvod-v-section-data) |
+| `tv` | Free | [tv](tv) | [JSON и Fenom](tv#vyvod-v-section-data) |
+| `chunk` | Free | [chunk](chunk) | [JSON и Fenom](chunk#vyvod-v-section-data) |
+| `snippet` | Free | [snippet](snippet) | [JSON и Fenom](snippet#vyvod-v-section-data) |
 
 ## Pro
 
@@ -54,22 +59,29 @@ description: "Все 50 типов полей инспектора PageBuilder (
 | `multirelation` | Pro | [multirelation](multirelation) | [JSON и Fenom](multirelation#vyvod-v-section-data) |
 | `gallery` | Pro | [gallery](gallery) | [JSON и Fenom](gallery#vyvod-v-section-data) |
 | `map` | Pro | [map](map) | [JSON и Fenom](map#vyvod-v-section-data) |
-| `table` | Pro | [table](table) | [JSON и Fenom](table#vyvod-v-section-data) |
+| `table` | Pro | [table](table) | Сетка в инспекторе. [JSON и Fenom](table#vyvod-v-section-data) |
 | `embeddedTable` | Pro | [embeddedTable](embeddedTable) | [JSON и Fenom](embeddedTable#vyvod-v-section-data) |
 | `keyvalue` | Pro | [keyvalue](keyvalue) | [JSON и Fenom](keyvalue#vyvod-v-section-data) |
-| `tag` | Pro | [tag](tag) | [JSON и Fenom](tag#vyvod-v-section-data) |
+| `editorjs` | Pro, `advanced-fields` | [editorjs](editorjs) | Новое поле создаётся только в Pro. Уже сохранённое открывается и пишется |
 | `currency` | Pro | [currency](currency) | [JSON и Fenom](currency#vyvod-v-section-data) |
 | `imask` | Pro | [imask](imask) | [JSON и Fenom](imask#vyvod-v-section-data) |
 | `combo` | Pro | [combo](combo) | [JSON и Fenom](combo#vyvod-v-section-data) |
 | `multicombo` | Pro | [multicombo](multicombo) | [JSON и Fenom](multicombo#vyvod-v-section-data) |
-| `tablecombo` | Pro | [tablecombo](tablecombo) | [JSON и Fenom](tablecombo#vyvod-v-section-data) |
-| `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | [JSON и Fenom](tablemulticombo#vyvod-v-section-data) |
+| `tablecombo` | Pro | [tablecombo](tablecombo) | Выпадающий список из класса MODX. [JSON и Fenom](tablecombo#vyvod-v-section-data) |
+| `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | Несколько значений из класса MODX. [JSON и Fenom](tablemulticombo#vyvod-v-section-data) |
 | `fieldset` | Pro | [fieldset](fieldset) | [JSON и Fenom](fieldset#vyvod-v-section-data) |
 | `dependent` | Pro | [dependent](dependent) | [JSON и Fenom](dependent#vyvod-v-section-data) |
-| `tv` | Pro | [tv](tv) | [JSON и Fenom](tv#vyvod-v-section-data) |
-| `chunk` | Pro | [chunk](chunk) | [JSON и Fenom](chunk#vyvod-v-section-data) |
-| `snippet` | Pro | [snippet](snippet) | [JSON и Fenom](snippet#vyvod-v-section-data) |
 | `jsongrid` | Pro | [jsongrid](jsongrid) | [JSON и Fenom](jsongrid#vyvod-v-section-data) |
+| `daterange` | Pro, `advanced-fields` | [daterange](daterange) | [JSON и Fenom](daterange#vyvod-v-section-data) |
+| `icon` | Pro, `advanced-fields` | [icon](icon) | [JSON и Fenom](icon#vyvod-v-section-data) |
+| `link` | Pro, `advanced-fields` | [link](link) | [JSON и Fenom](link#vyvod-v-section-data) <!-- markdownlint-disable-line MD059 --> |
+| `documents` | Pro, `advanced-fields` | [documents](documents) | [JSON и Fenom](documents#vyvod-v-section-data) |
+| `address` | Pro, `advanced-fields` | [address](address) | [JSON и Fenom](address#vyvod-v-section-data) |
+| `schedule` | Pro, `advanced-fields` | [schedule](schedule) | [JSON и Fenom](schedule#vyvod-v-section-data) |
+| `datasource` | Pro, capability `datasources` | [datasource](datasource) | [JSON и Fenom](datasource#vyvod-v-section-data) |
+| `form` | Pro, capability `forms` | [form](form) | [JSON и Fenom](form#vyvod-v-section-data) |
+| `product` | Pro, capability `minishop3` | [product](product) | [JSON и Fenom](product#vyvod-v-section-data) |
+| `products` | Pro, capability `minishop3` | [products](products) | [JSON и Fenom](products#vyvod-v-section-data) |
 
 ## Составные сценарии
 
@@ -106,13 +118,30 @@ description: "Все 50 типов полей инспектора PageBuilder (
 
 Список опций: connector `mgr/field/options`. Хук: `pbOnFieldValues`.
 
+| `class` | Назначение |
+| --- | --- |
+| `modResource` | Ресурсы |
+| `modUser` | Пользователи |
+| `modCategory` | Категории |
+| `modTemplate` | Шаблоны |
+| `modTemplateVar` | TV |
+| `modChunk` | Чанки |
+| `modSnippet` | Сниппеты |
+| `modPlugin` | Плагины |
+
+Другой класс не загружается: процессор вернёт пустой список.
+
+| Ключ | Значение по умолчанию | Максимум |
+| --- | --- | --- |
+| `optionsSource.limit` | 100 | 500 |
+
 ### Таблицы ресурса
 
 Вкладка **Tables** на ресурсе или tab type `table` в Collections. Поле `embeddedTable` хранит `table_key` и настройки выборки. См. [настройку таблиц](../settings) и [панель управления](../integration).
 
 ## Алиасы
 
-Полный список в `FIELD_TYPE_ALIASES` (`fieldDefaults.ts`). Частые: `relationship` → `relation`, `resources` → `resourcelist`, `boolean` / `listyesno` → `yesno`, `onlyreading` → `readonly`, `colorpicker` → `color`, `editor_js` → `editorjs`.
+Полный список в `FIELD_TYPE_ALIASES` (`fieldDefaults.ts`). Частые: `relationship` → `relation`, `resources` → `resourcelist`, `boolean` / `listyesno` → `yesno`, `onlyreading` → `readonly`, `colorpicker` → `color`, `editor_js` → `editorjs`, `table_combo` → `tablecombo`, `table_multicombo` → `tablemulticombo`, `templatevar` / `template_var` → `tv`.
 
 ## Дальше
 

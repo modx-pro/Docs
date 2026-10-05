@@ -5,11 +5,9 @@ description: Параметры сниппета ms3OptionsColor, поля ст�
 
 # ms3OptionsColor
 
-Сниппет читает значения опций товара (или готовый JSON), сопоставляет их со словарём цветов и отдаёт HTML по чанку либо массив строк.
+Сниппет читает значения опций товара или готовый JSON, сопоставляет их со словарём и отдаёт HTML по чанку либо массив строк. Вызов лучше некэшированный: `[[!ms3OptionsColor]]` / `{'!ms3OptionsColor' | snippet}`.
 
-Ставьте на страницу товара, в карточку каталога или в чанк корзины. Вызов лучше некэшированный: `[[!ms3OptionsColor]]` / `{'!ms3OptionsColor' | snippet}`.
-
-При каждом вызове сниппет может зарегистрировать CSS витрины, если включён `ms3optionscolor_frontend_css`.
+При каждом вызове сниппет может подключить CSS витрины, если включён `ms3optionscolor_frontend_css`.
 
 ## Как выбираются строки
 
@@ -33,12 +31,12 @@ flowchart TB
 ```
 
 1. Берётся список ключей опций: параметр `options` или настройка `ms3optionscolor_default_option_key`.
-2. Если передан `byOptions`, значения берутся из JSON. Опции товара из БД не читаются.
+2. Если передан `byOptions`, значения берутся из JSON. Опции товара из базы не читаются.
 3. Иначе значения читаются у товара `product` (по умолчанию текущий ресурс).
 4. Каждое значение ищется в словаре. При `includeUnset=1` значения без записи тоже попадают в вывод (пустой свотч).
 5. При `activeOnly=1` неактивные записи словаря скрываются.
 6. `limit` обрезает список сверху.
-7. При `return=tpl` каждая строка рендерится чанком `tpl`. При `return=data` возвращается массив.
+7. При `return=tpl` каждая строка отдаётся чанком `tpl`. При `return=data` возвращается массив.
 
 ## Параметры
 
@@ -59,7 +57,7 @@ flowchart TB
 
 ## Поля строки
 
-Каждая строка (и в чанке, и в `return=data`) содержит:
+И в чанке, и в `return=data`:
 
 | Поле | Описание |
 | --- | --- |
@@ -73,6 +71,9 @@ flowchart TB
 | `image` | Изображение |
 | `active` | Активна ли запись словаря |
 | `status` | `active` / `inactive` / `unset` |
+| `hint_color` | HEX из comboColors, в словарь не пишется |
+| `configured` | Непустой HEX или pattern. Строка только с title/RAL/image даёт `false` и `status=unset` |
+| `id` / `rank` | ID строки словаря и сортировка |
 | `selected` | `true`, если `value` совпал с `selectedValue` |
 
 В CSS и select используйте `#{$color}` или `data-color="#{$color}"`: в поле лежит код без решётки.
@@ -101,7 +102,7 @@ flowchart TB
 
 :::
 
-Без `&options` сниппет возьмёт ключи из `ms3optionscolor_default_option_key`.
+Без `&options` сниппет берёт ключи из `ms3optionscolor_default_option_key`.
 
 ### Несколько ключей опций
 
@@ -127,7 +128,7 @@ flowchart TB
 
 ### Карточка в каталоге
 
-В чанке строки `msProducts` передайте ID товара строки и короткий список:
+В чанке строки `msProducts` передайте ID товара из строки и короткий список:
 
 ::: code-group
 
@@ -153,7 +154,7 @@ flowchart TB
 
 ### Показать значения без цвета в словаре
 
-Пустой свотч (клетчатый фон в штатном CSS) удобен, пока менеджер ещё не назначил HEX:
+Пустой свотч (клетчатый фон в штатном CSS) показывает значение, пока в словаре нет HEX:
 
 ::: code-group
 
@@ -213,9 +214,7 @@ flowchart TB
   'options' => 'color',
   'toPlaceholder' => 'ms3oc.swatches'
 ]}
-<div class="product-colors">
-  {$_modx->getPlaceholder('ms3oc.swatches')}
-</div>
+{$_modx->getPlaceholder('ms3oc.swatches')}
 ```
 
 ```modx
@@ -224,9 +223,7 @@ flowchart TB
   &options=`color`
   &toPlaceholder=`ms3oc.swatches`
 ]]
-<div class="product-colors">
-  [[+ms3oc.swatches]]
-</div>
+[[+ms3oc.swatches]]
 ```
 
 :::
@@ -241,15 +238,9 @@ flowchart TB
   'options' => 'color',
   'return' => 'data'
 ])}
-<ul>
 {foreach $rows as $row}
-  <li>
-    <span style="background:#{$row.color}"></span>
-    {$row.title ?: $row.value}
-    {if $row.ral} (RAL {$row.ral}){/if}
-  </li>
+  {$row.color} {$row.title ?: $row.value}{if $row.ral} RAL {$row.ral}{/if}
 {/foreach}
-</ul>
 ```
 
 ```modx
@@ -263,11 +254,11 @@ flowchart TB
 
 :::
 
-В тегах MODX массив удобнее сразу отдать в плейсхолдер и разобрать своим сниппетом или Fenom-чанком. В Fenom цикл по результату `runSnippet` проще.
+В тегах MODX массив удобнее отдать в плейсхолдер и разобрать своим сниппетом или Fenom-чанком.
 
 ### byOptions: корзина и готовый JSON
 
-Когда значения уже есть (строка корзины, свой JSON), не читайте опции товара из БД:
+Когда значения уже есть (строка корзины, свой JSON), не читайте опции товара из базы:
 
 ::: code-group
 
@@ -298,11 +289,11 @@ flowchart TB
 
 :::
 
-`byOptions` — JSON-строка. В чанке корзины удобнее Fenom. Готовый пример веток корзины: чанк `tplMs3OptionsColorCart` на [Выводе на сайте](/components/ms3optionscolor/frontend#корзина).
+`byOptions` это JSON-строка. В чанке корзины удобнее Fenom. Ветки корзины: чанк `tplMs3OptionsColorCart` на [Выводе на сайте](/components/ms3optionscolor/frontend#корзина).
 
 ### Select с выбранным значением
 
-Чанк `tplMs3OptionsColorSelect` сам вызывает сниппет. Прямой вызов option-чанка:
+Чанк `tplMs3OptionsColorSelect` вызывает сниппет сам. Прямой вызов option-чанка:
 
 ::: code-group
 
@@ -334,7 +325,7 @@ flowchart TB
 
 :::
 
-Готовый select с подписью:
+Select с подписью:
 
 ::: code-group
 
@@ -364,7 +355,7 @@ flowchart TB
 
 :::
 
-Параметры чанка select: `product`, `option_key`, `caption`, `placeholder`, `native`, `selected` / `selectedValue`, `activeOnly`, `includeUnset`, `multiple`, `required`, `field_id`, `tpl` / `optionTpl`.
+Параметры чанка select: таблица на [Выводе на сайте](/components/ms3optionscolor/frontend#select).
 
 ### Свой чанк через @FILE
 
@@ -390,7 +381,7 @@ flowchart TB
 
 :::
 
-В имени файла допустимы точки и `_`. Сегмент `..` отклоняется. Минимальная разметка строки: [свой чанк свотча](/components/ms3optionscolor/frontend#свой-чанк-свотча).
+В имени файла допустимы точки и `_`. Сегмент `..` отклоняется. Минимальная разметка: [свой чанк свотча](/components/ms3optionscolor/frontend#свой-чанк-свотча).
 
 ## Частые ошибки
 
@@ -401,4 +392,4 @@ flowchart TB
 | В select нет option | Чанк `tpl` должен быть `tplMs3OptionsColorSelectOption` или свой с `<option>` |
 | `byOptions` ничего не даёт | JSON валидный, ключи совпадают с опциями, при необходимости `includeUnset=1` |
 
-Дальше: [Вывод на сайте](/components/ms3optionscolor/frontend), [mFilter](/components/ms3optionscolor/mfilter), [ms3variants](/components/ms3optionscolor/ms3variants). Обзор чанков: [Сниппеты](index).
+[Вывод на сайте](/components/ms3optionscolor/frontend), [mFilter](/components/ms3optionscolor/mfilter), [ms3variants](/components/ms3optionscolor/ms3variants). Обзор чанков: [Сниппеты](index).

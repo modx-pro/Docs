@@ -7,11 +7,11 @@ description: "Single value from options shown as radio buttons"
 
 Version: **Free**.
 
-<!-- ![radio](/components/pagebuilder/screenshots/fields/radio.png) -->
+<!-- ![radio](/components/pagebuilder/screenshots/fields/radio.jpg) -->
 
 ## Why this type
 
-All choices visible without opening a dropdown. Same static options model as select. Best for two to five exclusive values.
+Every choice is visible. You do not open a dropdown. The `options` list is the same as [select](select). It fits two to five choices when only one can be picked.
 
 ## When to use
 
@@ -67,11 +67,21 @@ Key `align` in the section data: selected option `value` string:
 
 ## Chunk example
 
-```html
+::: code-group
+
+```modx
+<div class="align-[[+align]]">
+  …
+</div>
+```
+
+```fenom
 <div class="align-{$align|escape}">
   …
 </div>
 ```
+
+:::
 
 ## Common properties
 

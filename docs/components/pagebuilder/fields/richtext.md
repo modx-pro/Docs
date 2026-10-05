@@ -7,13 +7,15 @@ description: "HTML-строка из привычного richtext MODX"
 
 Версия: **Free**.
 
-<!-- ![richtext](/components/pagebuilder/screenshots/fields/richtext.png) -->
+<!-- ![richtext](/components/pagebuilder/screenshots/fields/richtext.jpg) -->
 
 ## Зачем этот тип
 
-- Тот же WYSIWYG, что у ресурса MODX, без отдельного TV
+- HTML-редактор в инспекторе без отдельного TV
 - Ссылки, списки и базовое форматирование из коробки
 - В chunk отдаёт готовый HTML, парсить блоки не нужно
+
+Режим редактора берётся из `pageBuilderConfig.richText`: при `whichEditor` = `mxEditorJs` и доступном Editor.js — блок Editor.js. Иначе при `useEditor` ≠ false — RTE ресурса MODX (`MODx.loadRTE`). Если инициализация не удалась или редактор выключен — запасной вариант: обычная многострочная textarea (PrimeVue `Textarea`).
 
 ## Когда использовать
 
@@ -60,9 +62,17 @@ HTML-строка.
 
 ## Пример в chunk
 
-```html
+::: code-group
+
+```modx
+<div class="pb-richtext__content">[[+content]]</div>
+```
+
+```fenom
 <div class="pb-richtext__content">{$content}</div>
 ```
+
+:::
 
 ## Примечание
 
@@ -75,7 +85,7 @@ Pro: `responsive`.
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Подзаголовок группы в инспекторе | да |
-| `width` | 25–100 | Ширина поля в % строки (flex) | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
 | `description` | string | Подсказка под подписью | да |
 | `default` | any | Начальное значение новой секции | да |
 | `active` | bool | `false` — скрыть поле в инспекторе | да |

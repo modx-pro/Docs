@@ -3,9 +3,9 @@ title: Системные настройки
 ---
 # Системные настройки
 
-Все настройки имеют префикс `mxeditorjs.` и находятся в пространстве имён **mxeditorjs**.
+Префикс `mxeditorjs.`, пространство имён **mxeditorjs**.
 
-**Где изменить:** **Настройки → Системные настройки** — фильтр по пространству имён `mxeditorjs`.
+**Где изменить:** **Настройки → Системные настройки**, фильтр по `mxeditorjs`.
 
 ## Краткая справка
 
@@ -26,7 +26,7 @@ title: Системные настройки
 
 ### mxeditorjs.enabled
 
-Включает или выключает редактор. При `false` плагин не подключает ассеты и не обрабатывает сохранение.
+При `false` `OnDocFormPrerender` не подключает CSS/JS. Хук `OnBeforeDocFormSave` всё равно пишет sidecar, если в POST есть `mxeditorjs_json`.
 
 | | |
 | --- | --- |
@@ -35,7 +35,7 @@ title: Системные настройки
 
 ### mxeditorjs.profile
 
-Имя активного профиля инструментов. Профили задаются в `mxeditorjs.profiles`.
+Имя активного профиля. Профили задаются в `mxeditorjs.profiles`.
 
 | | |
 | --- | --- |
@@ -46,40 +46,40 @@ title: Системные настройки
 
 | Профиль | Инструменты |
 | --- | --- |
-| `default` | paragraph, header, list, checklist, quote, table, code, raw, embed, image, gallery, attaches, delimiter, warning |
+| `default` | paragraph, header, list, checklist, quote, table, code, raw, embed, image, gallery, mxgallery, attaches, delimiter, warning |
 | `minimal` | paragraph, header, list, image |
-| `blog` | paragraph, header, list, quote, image, gallery, embed, delimiter |
-| `full` | Все инструменты (как default, включая gallery) |
+| `blog` | paragraph, header, list, quote, image, gallery, mxgallery, embed, delimiter |
+| `full` | Как default, включая `gallery` и `mxgallery` |
 
 ### mxeditorjs.enabled_tools
 
-Переопределение профиля. Если задано — используется этот список (через запятую), профиль игнорируется.
+Если задано, используется этот список через запятую. Профиль игнорируется.
 
 **Пример:** `paragraph,header,list,embed,image`
 
 ### mxeditorjs.profiles
 
-JSON-объект с определениями профилей. Каждый профиль — объект с массивом `tools`.
+JSON-объект профилей. Каждый профиль: объект с массивом `tools`.
 
 ```json
 {
   "default": {
     "tools": ["paragraph", "header", "list", "checklist", "quote", "table",
-              "code", "raw", "embed", "image", "gallery", "attaches", "delimiter", "warning"]
+              "code", "raw", "embed", "image", "gallery", "mxgallery", "attaches", "delimiter", "warning"]
   },
   "blog": {
-    "tools": ["paragraph", "header", "list", "quote", "image", "gallery", "embed", "delimiter"]
+    "tools": ["paragraph", "header", "list", "quote", "image", "gallery", "mxgallery", "embed", "delimiter"]
   }
 }
 ```
 
-Чтобы добавить профиль: допишите ключ в JSON и установите `mxeditorjs.profile` на его имя.
+Чтобы добавить профиль: допишите ключ в JSON и поставьте `mxeditorjs.profile` на его имя.
 
 ### mxeditorjs.available_tools
 
-Whitelist всех block tools пакета. Fallback, если у профиля пустой `tools` и `enabled_tools` не задан. **Не включает блоки напрямую**, если профиль уже задан — см. приоритет ниже.
+Список допустимых block tools пакета. Запасной вариант, если у профиля пустой `tools` и `enabled_tools` не задан. **Не включает блоки напрямую**, если профиль уже задан. Приоритет: ниже.
 
-По умолчанию: `paragraph,header,list,checklist,quote,table,code,raw,embed,image,gallery,attaches,delimiter,warning`
+По умолчанию: `paragraph,header,list,checklist,quote,table,code,raw,embed,image,gallery,mxgallery,attaches,delimiter,warning`
 
 | ID | Описание |
 | --- | --- |
@@ -92,43 +92,44 @@ Whitelist всех block tools пакета. Fallback, если у профил�
 | `code` | Блок кода |
 | `raw` | Сырой HTML |
 | `embed` | Embed (Paste API, без кнопки в меню) |
-| `image` | Изображение (кастомный ImageTool) |
+| `image` | Изображение (ImageTool пакета) |
 | `gallery` | Галерея (fit/slider) |
+| `mxgallery` | Блок mxGallery (toolbox только при установленном mxGallery) |
 | `attaches` | Файл-вложение |
 | `delimiter` | Разделитель |
 | `warning` | Предупреждение |
 
-Inline-инструменты (marker, inline-code, underline, linkAutocomplete) и tunes (alignment, undo) подключены всегда и не настраиваются через профили.
+Inline-инструменты (marker, inline-code, underline, linkAutocomplete) и tunes (alignment, undo) включены всегда. Через профили их не настраивают.
 
 ## Область: медиа (mxeditorjs_media)
 
 ### mxeditorjs.image_mediasource / mxeditorjs.file_mediasource
 
-ID Media Source для изображений и для файлов-вложений (инструмент Attaches). По умолчанию `1` (стандартный файловый источник).
+ID Media Source для изображений и для файлов-вложений (Attaches). По умолчанию `1`.
 
 ### mxeditorjs.image_upload_path
 
-Шаблон пути внутри Media Source для **изображений** (блоки Image и Gallery). Плейсхолдер `{resource_id}` подставляется ID ресурса.
+Шаблон пути внутри Media Source для **изображений** (Image и Gallery). Плейсхолдер `{resource_id}` заменяется на ID ресурса.
 
 Примеры: `images/resources/{resource_id}/`, `uploads/images/`, `content/{resource_id}/img/`
 
 ### mxeditorjs.file_upload_path
 
-Шаблон пути внутри Media Source для **файлов-вложений** (блок Attaches). Независим от `image_upload_path`.
+Шаблон пути для **файлов-вложений** (Attaches). Не зависит от `image_upload_path`.
 
 Примеры: `files/resources/{resource_id}/`, `uploads/files/`, `content/{resource_id}/attachments/`
 
 ### mxeditorjs.gallery_max_count
 
-Максимальное количество изображений в одном блоке **Gallery**. Значение `0` — без ограничения. Загрузка и выбор через «Обзор» используют те же Media Source и путь, что и блок Image (`mxeditorjs.image_mediasource`, `mxeditorjs.image_upload_path`).
+Максимум изображений в одном блоке **Gallery**. `0`: без ограничения. Загрузка и «Обзор» идут в тот же Media Source и путь, что у Image (`mxeditorjs.image_mediasource`, `mxeditorjs.image_upload_path`).
 
 ### mxeditorjs.allowed_image_types
 
-Допустимые расширения изображений через запятую: `jpg,jpeg,png,gif,webp,svg`
+Допустимые расширения через запятую: `jpg,jpeg,png,gif,webp,svg`
 
 ### mxeditorjs.max_upload_size
 
-Максимальный размер загружаемого файла в байтах. Примеры: 1048576 (1 МБ), 5242880 (5 МБ), 10485760 (10 МБ).
+Максимальный размер файла в байтах. Примеры: 1048576 (1 МБ), 5242880 (5 МБ), 10485760 (10 МБ).
 
 ## Область: пресеты (mxeditorjs_presets)
 
@@ -148,7 +149,7 @@ JSON: CSS-классы для изображений. Пользователь �
 ```
 
 ::: warning
-Серверный `HtmlRenderer` и клиентский `renderPreviewHtml` **не добавляют** выбранный пресет к тегу `<img>`. Пресет хранится в JSON блока. Для фронта подключите свою логику или кастомный рендерер блока `image`.
+Серверный `HtmlRenderer` и клиентский `renderPreviewHtml` **не добавляют** выбранный пресет к тегу `<img>`. Пресет хранится в JSON блока. Для фронта подключите свою логику или свой обработчик блока `image`.
 :::
 
 ### mxeditorjs.link_class_presets
@@ -163,7 +164,7 @@ JSON: CSS-классы для изображений. Пользователь �
 
 ### mxeditorjs.link_target_options / mxeditorjs.link_rel_options
 
-JSON-варианты `target` и `rel` для диалога ссылки. Класс из `link_class_presets` попадает в HTML ссылки при рендере.
+JSON-варианты `target` и `rel` для диалога ссылки. Класс из `link_class_presets` попадает в HTML ссылки при сборке HTML.
 
 ## Связанные настройки MODX
 
@@ -172,14 +173,18 @@ JSON-варианты `target` и `rel` для диалога ссылки. Кл
 | `which_editor` | `mxEditorJs` | Выбор RTE в менеджере (обязательно для активации) |
 | `use_editor` | `true` | Глобальное включение визуального редактора |
 | `which_element_editor` | _(любое)_ | Редактор кода элементов. **Не влияет** на mxEditorJs |
-| `cultureKey` | `en` / `ru` | Язык интерфейса. mxEditorJs наследует для локализации |
+| `cultureKey` | `en` / `ru` | Язык интерфейса. mxEditorJs наследует его для локализации |
 
 ## Приоритет набора инструментов
 
-Логику реализует `MxEditorJs\Config\EditorTools`:
+Логику задаёт `MxEditorJs\Config\EditorTools`:
 
-1. **mxeditorjs.enabled_tools** (если не пусто) — высший приоритет
-2. Иначе **mxeditorjs.profiles**[**mxeditorjs.profile**].tools, пересечение с **mxeditorjs.available_tools**, плюс инструменты из эталонных профилей пакета при upgrade (например `gallery`)
-3. Иначе **mxeditorjs.available_tools** — fallback
+1. **mxeditorjs.enabled_tools** (если не пусто): высший приоритет
+2. Иначе **mxeditorjs.profiles**[**mxeditorjs.profile**].tools, пересечение с **mxeditorjs.available_tools**, плюс инструменты из эталонных профилей пакета при обновлении (например `gallery`, `mxgallery`)
+3. Иначе **mxeditorjs.available_tools**: запасной вариант
 
-При обновлении с версий до 1.1.0 resolver `resolve.settings.php` добавляет `gallery` в `available_tools` и профили `default`, `full`, `blog`, если их там не было. После upgrade проверьте JSON в `mxeditorjs.profiles` и очистите кэш.
+При обновлении с версий до 1.1.0 resolver `resolve.settings.php` добавляет `gallery` и `mxgallery` в `available_tools` и профили `default`, `full`, `blog`, если их там не было. После обновления проверьте JSON в `mxeditorjs.profiles` и очистите кэш.
+
+## Пути пакета (не в transport)
+
+`mxeditorjs.core_path` и `mxeditorjs.assets_url` читают plugin, `bootstrap.php` и connector. В `_build/elements/settings.php` их нет. Пустые значения заменяются на `core_path`/`assets_url` + `components/mxeditorjs/`.

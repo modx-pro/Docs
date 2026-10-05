@@ -59,6 +59,9 @@ $impex_config['batch_import'] = 100;
 
 // поле для генерации alias при импорте (пусто — alias только из файла)
 $impex_config['alias_field'] = 'pagetitle';
+
+// не удалять исходники изображений при импорте галереи MiniShop
+$impex_config['noremove_images'] = false;
 ```
 
 В файле должен быть массив `$impex_config` с ключами ниже.
@@ -84,6 +87,7 @@ $impex_config['alias_field'] = 'pagetitle';
 | `ms` | Поля товара miniShop3 |
 | `msoption` | Опция товара (опции категории) |
 | `msgallery` | Галерея miniShop3 |
+| `gallery3x` | Галерея Gallery3x |
 | `mscats` | Дополнительные категории товара |
 
 #### categories
@@ -172,7 +176,7 @@ TV типа MIGX. Третий элемент — массив имён поле
 
 #### msgallery
 
-Галерея miniShop3. Пути в файле через `||`:
+Галерея miniShop2 / MiniShop3. Пути в файле через `||`:
 
 ```text
 image01.jpg||image02.jpg||image03.jpg
@@ -184,7 +188,24 @@ image01.jpg||image02.jpg||image03.jpg
 ['Галерея', 'images/import/', 'msgallery'],
 ```
 
-Пустая строка — источник по умолчанию `{assets_url}components/impex3/images/`.
+Пустая строка — источник по умолчанию `{assets_url}components/impex3/images/`.  
+
+Также в качестве источника можно указать директорию на другом сайте:
+
+```php
+['Галерея', 'https://site.ru/images/', 'msgallery'],
+```
+
+Если используются изображения с разных сайтов оставьте в конфигурации только протокол:..
+
+```php
+['Галерея', 'https://', 'msgallery'],
+```
+...а в файле импорта указывайте пути без него:
+
+```
+site1.ru/images/001.jpg||site2.com/products/image-5.jpg
+```
 
 При экспорте данные из `modx_ms3_product_files`. В файл попадают пути к основным изображениям в корне папки товара. Пример структуры на диске:
 
@@ -208,6 +229,9 @@ images/import/25/03.jpg
 ```
 
 и укажите `images/import/` в конфиге.
+
+#### gallery3x
+Все аналогично [msgallery](#msgallery), но для компонента [Gallery3x](https://modstore.pro/packages/photos-and-files/gallery3x)
 
 #### mscats
 
@@ -294,7 +318,7 @@ icons/icon01.svg--Низкие цены--Мы держим низкие цены
 
 ### $impex_config['batch_import']
 
-Сколько строк обрабатывать за один проход. `0` — без лимита. Уменьшите значение, если сервер не успевает (особенно с галереей miniShop3).
+Сколько строк обрабатывать за один проход. `0` — без лимита. Уменьшите значение, если сервер не успевает (особенно с галереей MiniShop).
 
 ### $impex_config['alias_field']
 
@@ -303,3 +327,7 @@ icons/icon01.svg--Низкие цены--Мы держим низкие цены
 ```php
 ['Псевдоним', 'alias', 'resource'],
 ```
+
+### $impex_config['noremove_images']
+
+`true` - не удалять исходники изображений при импорте галереи MiniShop (например, если у всех товаров одинаковое изображение).

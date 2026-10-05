@@ -24,6 +24,7 @@ items: [
 ]
 
 dependencies: miniShop2
+categories: delivery
 ---
 
 # msPointsIssue

@@ -1,6 +1,7 @@
 ---
 title: ModTree
 description: Связь ресурсов друг с другом
+categories: catalog
 logo: https://modstore.pro/assets/extras/modtree/logo.png
 author: visermort
 modstore: https://modstore.pro/packages/ecommerce/modtree
@@ -85,4 +86,4 @@ repository: https://github.com/visermort/ModTree
 | **&parent**       | `Текущий ресурс`    | Ресурс для первоначального поиска                                                                                         |
 | **&queryForce**   | `1`                 | Определяет, выполнять ли первоначальный поиск . `1` - поиск при загрузке страницы, `0` - поиск только при нажатии "Поиск" |
 | **&linkWay**      | `0`                 | Направление поиска связи. `1` - от master к slave. `-1` - от slave к master. `0` - в обе стороны                          |
-| **&searchFields** | `pagetitle,content` | Поля поиска. Строка разделённая запятыми. Для запрета вывода полей - &searchFields=``                                     |
+| **&searchFields** | `pagetitle,content` | Поля поиска. Строка разделённая запятыми. Для запрета вывода полей - ` &searchFields=`` `                                     |

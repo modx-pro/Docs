@@ -4,6 +4,10 @@ This class works with any database tables, as long as MODX has access to them an
 
 pdoFetch builds the query and adds parameters via xPDO, but selects via PDO, which provides protection, flexibility and speed.
 
+::: tip Available in pdoTools 3.1.0+ (MODX 3)
+When resolving **&parents**, extra product links use MiniShop3 `msCategoryMember` (not miniShop2). Pass **&disableMS3**=`1` to skip that join. See [general parameters](../general-properties).
+:::
+
 ## Class initialization
 
 The xPDOQuery object is created by method **makeQuery()**, based on pdoFetch parameters. By default it works with modResource, but if you need another class you must specify it.
@@ -434,12 +438,12 @@ Of course, don't forget to join tables via Join if you plan to sort by them.
 
 Next the query is prepared by method **prepareQuery** and executed via PDO.
 
-pdoFetch snippets have another parameter **&return=``** that determines what method run() returns:
+pdoFetch snippets have another parameter ` &return=`` ` that determines what method run() returns:
 
 - **sql** - string with ready SQL query, it's not executed.
 - **ids** - list of matching object ids, comma-separated. Usually used to select needed resource ids with one snippet and pass them to another.
 - **data** - array with results. When calling via snippet you get the word Array, since all MODX snippets return only strings. But when called from another snippet you get an array.
-- **tpl** - query result formatted in specified chunk **&tpl=``**. If no chunk, just printed result arrays.
+- **tpl** - query result formatted in specified chunk ` &tpl=`` `. If no chunk, just printed result arrays.
 
 By default snippets have &return = **tpl**, and if parameter &returnIds exists, then **ids**. **Data** and **sql** in snippets aren't used. First just doesn't work, second you see in pdoTools log anyway.
 

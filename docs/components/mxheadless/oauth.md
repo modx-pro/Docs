@@ -29,6 +29,16 @@ Secret показывают один раз. Таблицы: `mxheadless_oauth_c
 
 ## Выпуск токена
 
+```mermaid
+sequenceDiagram
+  participant S as Сервис
+  participant A as POST /auth/token
+  participant G as GET /v1/...
+  S->>A: client_id client_secret scope
+  A-->>S: data.access_token mxt_*
+  S->>G: Authorization Bearer mxt_*
+```
+
 ```bash
 curl -s -X POST https://example.com/api/v1/auth/token \
   -H 'Content-Type: application/json' \
@@ -40,11 +50,16 @@ curl -s -X POST https://example.com/api/v1/auth/token \
   }'
 ```
 
-Ответ содержит `access_token` (`mxt_...`), `token_type`, `expires_in`. Дальше:
+Ответ в envelope: `data.access_token` (`mxt_...`), `data.token_type`, `data.expires_in`, `data.scope`. Дальше:
 
 ```bash
+TOKEN=$(curl -s -X POST https://example.com/api/v1/auth/token \
+  -H 'Content-Type: application/json' \
+  -d '{"grant_type":"client_credentials","client_id":"...","client_secret":"...","scope":"resources.read"}' \
+  | jq -r .data.access_token)
+
 curl -s https://example.com/api/v1/resources \
-  -H "Authorization: Bearer mxt_..."
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 Поддерживаются `application/json` и `application/x-www-form-urlencoded`. Для client credentials допускается HTTP Basic с `client_id`/`client_secret`.
@@ -53,7 +68,7 @@ curl -s https://example.com/api/v1/resources \
 
 | Grant | Когда |
 | --- | --- |
-| `client_credentials` | Machine-to-machine (default) |
+| `client_credentials` | Сервер к серверу (по умолчанию) |
 | `password` | Только если `mxheadless_oauth_password_grant_enabled=true` |
 
 Ошибка OAuth: `400` `invalid_grant`.
@@ -62,7 +77,7 @@ curl -s https://example.com/api/v1/resources \
 
 | Credential | Когда |
 | --- | --- |
-| `mxh_*` | CI, долгие workers, без refresh |
-| `mxt_*` | TTL, ротация без redeploy секрета в каждом сервисе |
+| `mxh_*` | CI, долгие фоновые задачи, без обновления токена |
+| `mxt_*` | TTL, ротация без повторной выкладки секрета в каждом сервисе |
 
-Оба типа проходят один scope checker. CSRF не нужен.
+Оба типа проходят одну проверку scopes. CSRF не нужен.

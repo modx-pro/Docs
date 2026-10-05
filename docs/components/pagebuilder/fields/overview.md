@@ -7,9 +7,9 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 Поля задают, что редактор заполняет в секции. Схему хранят в JSON типа (`core/components/pagebuilder/sections/{key}.json`) или собирают в панели управления.
 
-В [справочнике](types) 50 типов. У каждого своя страница: JSON **Настройка**, блок **Данные секции** (как поле выглядит после сохранения) и пример для Fenom или HTML. В chunk значения приходят из `section.data`.
+В [справочнике](types) 62 типа (35 Free и 27 Pro). У типов со страницей есть JSON **Настройка**, блок **Данные секции** и пример для Fenom или HTML. В chunk значения приходят из `section.data`.
 
-<!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.png) -->
+<!-- ![Инспектор секции](/components/pagebuilder/screenshots/mgr-section-inspector.jpg) -->
 
 ## Минимальное поле
 
@@ -43,7 +43,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 | Ключ | Тип | Инспектор | Панель |
 | --- | --- | --- | --- |
 | `tab` | string | Поля с одним `tab` группируются под подзаголовком | да |
-| `width` | 25–100 | Ширина колонки в % (flex-строка), по умолчанию 100 | да |
+| `width` | 25, 33, 50, 66, 75, 100 | Ширина колонки в % (flex-строка); в CMP только эти значения, по умолчанию 100 | да |
 | `description` | string | Текст под подписью поля | да |
 | `default` | any | Начальное значение, если в данных секции пусто | да |
 | `active` | bool | `false` скрывает поле в инспекторе | да |
@@ -55,7 +55,9 @@ description: "Схема полей в JSON секции, виджеты инс�
 
 Остальные ключи схемы (`showWhen`, `currency`, `mask`, `sourceField`, `columns`, `table_key`, …) панель управления не затирает: `sectionTypeForm.ts` сохраняет их в passthrough `extra`.
 
-### Pro: responsive
+### Pro: responsive {#pro-responsive}
+
+Сначала включите `pagebuilder_responsive_editor_enabled`. Пока оно выкл., в инспекторе нет кнопки и вкладок Desktop / Tablet / Mobile: одно поле. На сайте сохранённые карты breakpoints работают, пока редактор не сохранит поле одним значением.
 
 На типах `text`, `textarea`, `url`, `number`, `currency`, `richtext`, `slug` при `responsive: true` (или уже сохранённой карте breakpoints) в данных секции:
 
@@ -69,7 +71,22 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). На фронте читайте значения через `readResponsiveValue()` или флаг `responsive`.
+Имена `alt`, `caption`, `slug` из responsive исключены (`responsiveValues.ts`). Если в JSON поля стоит `"responsive": true`, разные значения включены всегда. Свернуть их в одну строку нельзя.
+
+Пороги экранов задаются в `pagebuilder_responsive_breakpoints` (или `responsiveBreakpoints` на типе секции). По умолчанию: desktop ≥1024, tablet ≥768, mobile ≥0; превью в менеджере берёт `previewWidth`. Режим вывода: `pagebuilder_responsive_apply`.
+
+| Режим | Поведение |
+| --- | --- |
+| `manual` (по умолчанию) | На сайте одно значение: `?pb_bp=` или `pagebuilder_default_breakpoint`. SEO-безопасно |
+| `css` | В HTML все значения в `<span class="pb-rv">…</span>`, переключение через CSS media queries |
+
+В chunk для responsive-полей при `css` используйте модификатор Fenom `pb_text` вместо `escape`:
+
+```fenom
+{$title|pb_text}
+```
+
+При `manual` достаточно обычного `{$title|escape}` (значение уже скаляр). Настройки: [Системные настройки → Responsive](../settings#responsive).
 
 ### Пример meta в JSON
 
@@ -87,7 +104,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-Живые примеры: секция `_qa_field_matrix`, блок «Meta parity».
+Живые примеры: секция `_qa_field_matrix` (в каталоге: **QA: все типы полей**), блок «Meta parity».
 
 ## Repeater
 
@@ -102,7 +119,7 @@ description: "Схема полей в JSON секции, виджеты инс�
 }
 ```
 
-В данных секции лежит массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Подробнее: [repeater.md](repeater).
+В данных секции лежит массив объектов. У каждой строки служебный `_rowId`. В chunk: `{foreach $items as $item}` и `{$item.title|escape}`. Порядок строк в инспекторе: ручка перетаскивания или стрелки. Тот же drag есть у gallery, keyvalue, inline table и связанных списков. Подробнее: [repeater.md](repeater).
 
 ## showWhen
 
@@ -123,7 +140,7 @@ Whitelist классов в `FieldOptionsService` (`modResource`, `modTemplate`,
 
 ## Фронт и enrich
 
-`SectionRenderer` передаёт `section.data` в chunk как плейсхолдеры. Дополнительно в properties: `id`, `type`, `settings`.
+`SectionRenderer` передаёт `section.data` в chunk как плейсхолдеры. Дополнительно в properties: `id`, `type`, `settings`. Массив секции теги MODX не обходят. Цикл в примерах пишет Fenom. Вкладка MODX повторяет этот цикл и не ставит фильтр `pb_text`: такого выходного фильтра нет.
 
 При сохранении черновика `SectionFieldEnricher` дополняет:
 

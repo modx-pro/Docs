@@ -1,6 +1,7 @@
 ---
 title: msPre
 description: Массовое редактирование и фильтрация товаров и ресурсов
+categories: catalog
 logo: https://modstore.pro/assets/extras/mspre/logo.png
 author: webnitros
 modstore: https://modstore.pro/packages/ecommerce/mspre

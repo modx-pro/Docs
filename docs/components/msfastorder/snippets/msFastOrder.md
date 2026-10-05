@@ -15,20 +15,20 @@ flowchart LR
   B -->|нет| Z[пустая строка]
   B -->|да| C[чанк кнопки]
   C --> D[msfo.min.css/js]
-  D --> E[page_active + CSRF через плагин]
+  D --> E[msfoConfig + CSRF в HTML]
+  E --> F[плагин обновляет конфиг в кэше]
 ```
 
 1. Проверяет, что ресурс с `id` — товар MiniShop3 (`msProduct` + `Data`).
-2. Рендерит чанк кнопки (`tplBtn`, по умолчанию `msfo_button`).
+2. Собирает чанк кнопки (`tplBtn`, по умолчанию `msfo_button`).
 3. Устанавливает флаг `msfastorder.page_active` для плагина `msfastorder_web`.
 4. Подключает `msfo.min.css` и `msfo.min.js` с версией по `mtime` файла.
+5. Выводит inline `window.msfoConfig` через `ClientConfig::getConfigScript()` (CSRF в сессии + токен в HTML).
 
-**CSRF и `window.msfoConfig`** обеспечивает плагин **`msfastorder_web`**:
+Плагин **`msfastorder_web`** на кэшируемых страницах:
 
-- `OnLoadWebPageCache` — `ClientConfig::ensureCsrfToken()` (токен в сессии);
-- `OnWebPagePrerender` — `refreshClientConfig()` (актуальный `csrfToken` и настройки в HTML).
-
-Сниппет **не** создаёт CSRF сам — только помечает страницу активной и подключает assets.
+- `OnLoadWebPageCache` — `ClientConfig::ensureCsrfToken()`;
+- `OnWebPagePrerender` — `refreshClientConfig()` (убирает застывший `msfoConfig` из кэша, вставляет свежий перед `msfo.min.js`).
 
 ## Параметры
 
@@ -93,8 +93,7 @@ flowchart LR
 <button type="button"
   class="msfo-trigger{if $primary} msfo-trigger--primary{/if}"
   data-msfo-trigger
-  data-msfo-product-id="{$product_id}"
-  data-msfo-hash="{$hash}">
+  data-msfo-product-id="{$product_id}">
   {$_modx->lexicon('msfastorder_button_text')}
 </button>
 ```
@@ -103,8 +102,7 @@ flowchart LR
 <button type="button"
   class="msfo-trigger[[+primary:is=`1`:then=` msfo-trigger--primary`]]"
   data-msfo-trigger
-  data-msfo-product-id="[[+product_id]]"
-  data-msfo-hash="[[+hash]]">
+  data-msfo-product-id="[[+product_id]]">
   [[%msfastorder_button_text]]
 </button>
 ```
@@ -116,13 +114,13 @@ flowchart LR
 | `data-msfo-trigger` | Маркер кнопки |
 | `data-msfo-product-id` | ID товара для `product/get` |
 
-Плейсхолдеры чанка: `product_id`, `hash` (md5 от `product_id` + `site_key`), `primary`.
+Плейсхолдеры чанка: `product_id`, `primary`.
 
-Своя кнопка без чанка — те же `data-msfo-trigger` и `data-msfo-product-id` (см. [msFastOrderClientConfig](msFastOrderClientConfig)).
+Своя кнопка без чанка — те же `data-msfo-trigger` и `data-msfo-product-id` (см. [msFastOrderClientConfig](/components/msfastorder/snippets/msFastOrderClientConfig)).
 
 ## Поля заказа (POST)
 
-Отправляются на `order/create` (см. [AJAX API](../api)):
+Отправляются на `order/create` (см. [AJAX API](/components/msfastorder/api)):
 
 | Поле | Описание |
 |------|----------|
@@ -135,18 +133,16 @@ flowchart LR
 
 После загрузки `msfo.min.js` на странице доступен `window.msFastOrder.openOrderModal(productId)` — открытие формы без кнопки из чанка `msfo_button`.
 
-Краткий вызов:
-
 ```javascript
 await msFastOrder.openOrderModal(123); // ID ресурса msProduct
 ```
 
-**Обязательно** на той же странице: `window.msfoConfig` (через этот сниппет или [msFastOrderClientConfig](msFastOrderClientConfig)) и подключённый `msfo.min.js`.
+На той же странице обязательны `window.msfoConfig` (этот сниппет или [msFastOrderClientConfig](/components/msfastorder/snippets/msFastOrderClientConfig)) и подключённый `msfo.min.js`.
 
-Подробно: сценарии, события, своя кнопка, каталог, ошибки — [Подключение на сайте → Программное открытие модалки](../frontend#программное-открытие-модалки).
+Подробно: сценарии, события, своя кнопка, каталог, ошибки — [Подключение на сайте → Программное открытие модалки](/components/msfastorder/frontend#программное-открытие-модалки).
 
 ## См. также
 
-- [msFastOrderClientConfig](msFastOrderClientConfig) — только конфиг
-- [Подключение на сайте](../frontend)
-- [Системные настройки](../settings)
+- [msFastOrderClientConfig](/components/msfastorder/snippets/msFastOrderClientConfig) — только конфиг
+- [Подключение на сайте](/components/msfastorder/frontend)
+- [Системные настройки](/components/msfastorder/settings)

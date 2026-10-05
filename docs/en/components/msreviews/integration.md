@@ -2,9 +2,7 @@
 title: Интеграция и сценарии
 description: Сборка блоков msReviews на карточке, каталоге, главной — pdoPage, verified, капча
 ---
-
 <!-- TODO: translate from docs/components/msreviews/integration.md -->
-
 # Интеграция и сценарии
 
 Подключите сниппеты в шаблонах MiniShop3. На карточке товара **`product_id`** — id ресурса MS3.
@@ -52,6 +50,8 @@ description: Сборка блоков msReviews на карточке, ката
 То же для Q&A: на карточке товара `msQuestions`, для FAQ-ленты по каталогу `msQuestionsLatest`.
 
 Без `product_id` у `msReviews` сработает fallback на id страницы, а не «все товары». Для ленты по каталогу вызывайте `msReviewsLatest`.
+
+**Общий рейтинг раздела** (не список отзывов): `msRatingSummary` с `all=1` / `parents` / `productIds` (с **1.2.3**). См. [msRatingSummary](snippets/msRatingSummary#общий-рейтинг-главная-категория), [Каталог](frontend/catalog#общий-рейтинг-раздела).
 
 ## Пагинация (pdoPage)
 

@@ -7,6 +7,7 @@ modstore: https://modstore.pro/packages/integration/msmcd
 repository: https://github.com/modx-pro/msMCD
 
 dependencies: miniShop2
+categories: orders
 ---
 
 # msMCD (mini cart dynamic) for miniShop2

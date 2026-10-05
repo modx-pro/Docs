@@ -11,21 +11,21 @@ PageBuilder собирает страницу из блоков-секций, а
 
 | Роль | Что получает |
 | --- | --- |
-| **Редактор** | Drag-and-drop секций, инспектор полей, черновик, превью, публикация без правки шаблона |
-| **Начинающий разработчик** | 34 готовых секции, 50 типов полей, JSON-схема и Fenom в chunks без своего Vue |
+| **Редактор** | Перетаскивание секций, инспектор полей, черновик, превью, публикация без правки шаблона |
+| **Начинающий разработчик** | 50 готовых секций, 62 типа полей, JSON-схема и Fenom в chunks без своего Vue |
 | **Опытный разработчик** | События, свои типы секций, табличные данные ресурса, UTM, интеграция с miniShop3 и Collections |
 
 ## Конструктор страницы
 
 ### 1. Редактор секций на ресурсе
 
-Вкладка **Секции** на форме ресурса и в панели управления **PageBuilder** использует один Vue-бандл через [VueTools](https://docs.modx.pro/components/vuetools/). Вы добавляете секции из каталога, меняете порядок перетаскиванием или Alt+↑/↓, дублируете и копируете блоки между ресурсами.
+Вкладка **Секции** на форме ресурса и панель **PageBuilder** используют один Vue-бандл через [VueTools](https://docs.modx.pro/components/vuetools/). Добавляйте секции из каталога, меняйте порядок перетаскиванием или Alt+↑/↓, дублируйте и копируйте блоки между ресурсами. Если закрыли инспектор **Отмена** сразу после добавления секции, черновик откатывается: пустой блок на странице не остаётся.
 
 Подробнее: [Быстрый старт](quick-start), [Менеджер и события](integration).
 
 ### 2. Черновик и публикация
 
-Правки сначала попадают в черновик. Превью показывает черновик без публикации. После **Опубликовать** на сайт уходит та же раскладка. Сниппет `[[!PageBuilder]]` выводит только опубликованную версию.
+Автосохранение пишет черновик. Превью показывает его без публикации. **Сохранить** ресурса MODX проверяет поля и публикует раскладку на сайт. Сниппет `[[!PageBuilder]]` выводит только опубликованную версию.
 
 Подробнее о хранении: [Рабочий процесс](workflow), [Разработчик → Модель данных](developer#model-dannyh).
 
@@ -33,14 +33,14 @@ PageBuilder собирает страницу из блоков-секций, а
 
 | Слой | Секций | Примеры |
 | --- | --- | --- |
-| **Free** | 11 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [faq](sections/faq), [cta](sections/cta) |
-| **Pro** | 23 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
+| **Free** | 12 | [hero](sections/hero), [richtext](sections/richtext), [gallery](sections/gallery), [video](sections/video), [faq](sections/faq), [cta](sections/cta) |
+| **Pro** | 38 | [products_grid](sections/products_grid), [contact_form](sections/contact_form), [quiz](sections/quiz), [pricing_table](sections/pricing_table), [tabs](sections/tabs) |
 
-У каждой секции своя страница в [каталоге](sections/): зачем блок, где применять, что заполнить в инспекторе, похожие секции.
+Страницы секций: [каталог](sections/).
 
-### 4. Инспектор и 50 типов полей
+### 4. Инспектор и 62 типа полей
 
-Схема полей задаётся в JSON секции: **30 типов Free** (text, repeater, editorjs, image, multiselect, video…) и **20 Pro** (relation, gallery, combo, embeddedTable…). У каждого типа есть справочная страница с блоками «Зачем», «Когда использовать», «Советы».
+Схема полей задаётся в JSON секции: **35 типов Free** (text, repeater, migx, image, multiselect, video, tag…) и **27 Pro** (relation, gallery, combo, editorjs, embeddedTable…).
 
 См. [Обзор полей](fields/overview) и [справочник типов](fields/types).
 
@@ -48,11 +48,12 @@ PageBuilder собирает страницу из блоков-секций, а
 
 Дополнение `pagebuilderpro` добавляет флаги Pro и расширяет редактор:
 
-- Библиотека секций: сохранить блок, вставить на другой ресурс, править связанную копию
-- Версии: снимки документа, сравнение версий, откат
-- Пресеты: готовые наборы секций для типовых лендингов
-- Поля по breakpoints: разные значения для desktop, tablet и mobile
-- Расширенные поля: 20 типов в панели управления (relation, map, table, dependent и др., флаг `advanced-fields`)
+- Общие блоки: сохранить как shared (сразу link), pull с другой страницы (Связать | Копировать), локальные поля `libraryLocalFields`
+- Журнал событий секции: View / Restore (capability `versions`)
+- Шаблоны страниц: упорядоченные пустые секции (`pb_page_templates`)
+- Примеры: готовые блоки во вкладке каталога (`pagebuilder_catalog_examples_enabled`)
+- Поля по breakpoints: UI при `pagebuilder_responsive_editor_enabled`, вывод `pagebuilder_responsive_apply` (`manual` или `css`)
+- Расширенные поля: 27 типов в панели управления (relation, map, table, editorjs, dependent и др., флаг `advanced-fields`)
 - Глобальная корзина в панели управления: восстановление и окончательное удаление секций и строк таблиц (флаг `basket`)
 
 Commerce-секции (`products_grid`, `curated_products`…) требуют [miniShop3](/components/minishop3/).
@@ -67,11 +68,11 @@ Commerce-секции (`products_grid`, `curated_products`…) требуют [m
 
 ### 6. UTM и контексты
 
-UTM registry в панели управления, правила видимости секций по меткам и контексту MODX. Плейсхолдер <code v-pre>{{utm:key}}</code> в полях. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` для сессии и ссылок.
+Реестр UTM в панели управления требует capability `utm` (Pro). Уже опубликованные правила видимости исполняет Free. Диалог **Видимость** в инспекторе включается настройкой `pagebuilder_inspector_visibility_enabled`. Плейсхолдер <code v-pre>{{utm:key}}</code> в полях. Сниппеты `PageBuilderUtmSession` и `PageBuilderUtmUrl` для сессии и ссылок. <!-- markdownlint-disable-line MD033 -->
 
 ### 7. Collections
 
-При включённых настройках `pagebuilder_collections_*` на ресурсе появляются вкладки Collections с iframe. Редактор секций и коллекции оказываются на одной форме.
+Pro, capability `collections`. При `pagebuilder_collections_enabled` на ресурсе появляются вкладки Collections. Редактор секций и набор вкладок оказываются на одной форме. Без capability вкладки нет.
 
 ### 8. Корзина и undo
 
@@ -81,7 +82,7 @@ UTM registry в панели управления, правила видимос
 
 ### 9. Fenom и chunks секций
 
-Каждая секция рендерится через chunk с Fenom (pdoTools). Данные полей лежат в `section.data`. Примеры MODX и Fenom смотрите на страницах полей и в разделе [Вывод на сайте](frontend).
+Каждая секция отрисовывается через chunk с Fenom (pdoTools). Данные полей лежат в `section.data`. Примеры MODX и Fenom смотрите на страницах полей и в разделе [Вывод на сайте](frontend).
 
 ### 10. Сниппеты
 
@@ -92,13 +93,14 @@ UTM registry в панели управления, правила видимос
 | `PageBuilderSitemap` | XML sitemap по страницам с секциями |
 | `PageBuilderTableRows` | Строки табличных данных ресурса |
 | `PageBuilderUtmSession` / `PageBuilderUtmUrl` | UTM на фронте |
-| [Public API](public-api) | JSON опубликованных секций для headless (`api.php`) |
+| `PageBuilderQuiz` / `PageBuilderContactForm` | FetchIt-handlers Pro (`quiz`, `contact_form`). Из шаблона не вызываются |
+| [Public API](public-api) | JSON опубликованных секций для внешнего фронта (`api.php`) |
 
 Полный список: [Сниппеты](snippets/).
 
 ### 11. События `pbOn*`
 
-Plugin подписывается на save, publish, render, регистрацию типов секций и провайдеров Pro. Точка расширения без правок ядра компонента.
+Plugin подписывается на save, publish, отрисовку, регистрацию типов секций и провайдеров Pro.
 
 Список событий: [События](integration#sobytiya).
 
@@ -117,6 +119,6 @@ Namespace в MODX: `pagebuilder`. Pro ставится дополнением `p
 ## С чего начать
 
 1. [Установка и первый ресурс](quick-start)
-2. [Системные настройки](settings)
+2. [Рецепты](recipes/)
 3. [Каталог секций](sections/)
 4. [FAQ](faq)

@@ -7,8 +7,8 @@ Adds lexicon and config for `productsets.js` to the page.
 
 After the call:
 
-- `window.mspsLexicon` — UI strings (`empty`, `added`, `removed`, `set_added`, `go_catalog`, `error`)
-- `window.mspsConfig` — frontend config (`maxItems`, `lang`)
+- `window.mspsLexicon`: `empty`, `added`, `add_failed`, `removed`, `set_added`, `go_catalog`, `error`
+- `window.mspsConfig`: `maxItems`, `lang`, `toastTimeout` (`4000`), `toastPosition` (`topRight`)
 
 Include **before** `productsets.js`.
 

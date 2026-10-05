@@ -5,7 +5,7 @@ description: curl recipes for discovery, resources, keys, and mutations in mxHea
 
 # cURL examples
 
-Replace `https://example.com` with your host.
+Replace `https://example.com` with your URL.
 
 ## Discovery and health
 
@@ -30,7 +30,7 @@ curl -s 'https://example.com/api/v1/pages/about?fields=id,pagetitle,content' | j
 ```bash
 curl -s 'https://example.com/api/v1/resources?filter[parent]=2&filter[published]=1' | jq
 
-curl -s 'https://example.com/api/v1/resources?filter[pagetitle][like]=%News%' | jq
+curl -s 'https://example.com/api/v1/resources?q=News&fields=id,pagetitle,uri' | jq
 ```
 
 ## API key
@@ -63,13 +63,13 @@ curl -s -X POST https://example.com/api/v1/resources \
 TOKEN=$(curl -s -X POST https://example.com/api/v1/auth/token \
   -H 'Content-Type: application/json' \
   -d '{"grant_type":"client_credentials","client_id":"...","client_secret":"...","scope":"resources.read"}' \
-  | jq -r .access_token)
+  | jq -r .data.access_token)
 
 curl -s https://example.com/api/v1/resources \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
-## Fallback without rewrite
+## Fallback without friendly URLs
 
 ```bash
 curl -s 'https://example.com/assets/components/mxheadless/api.php?route=/v1/health' | jq

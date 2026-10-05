@@ -6,6 +6,7 @@ author: vgrish
 modstore: https://modstore.pro/packages/ecommerce/mssetincart
 
 dependencies: miniShop2
+categories: catalog
 ---
 
 # msSetInCart

@@ -3,9 +3,9 @@ title: Frontend integration
 ---
 # Frontend integration
 
-For step-by-step setup see [Site integration](/en/components/ms3productsets/integration).
+Step-by-step setup: [Site integration](/en/components/ms3productsets/integration).
 
-Quick minimum:
+Minimum:
 
 1. Include `mspsLexiconScript`, `productsets.css`, `productsets.js`.
 2. Output the block via `ms3ProductSets` or `window.ms3ProductSets.render(...)`.

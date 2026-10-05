@@ -387,9 +387,9 @@ Controller `MiniShop3\Controllers\Api\Manager\OptionGroupsController`, permissio
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | `` | Group list. Params: `start`, `limit` (`0` = all), `query` (search by `name` / `description`). Response: groups with `options_count`. |
+| `GET` | (root) | Group list. Params: `start`, `limit` (`0` = all), `query` (search by `name` / `description`). Response: groups with `options_count`. |
 | `GET` | `/{id}` | One group + `options_count` |
-| `POST` | `` | Create group: `name` (required), `description`, `sort_order` |
+| `POST` | (root) | Create group: `name` (required), `description`, `sort_order` |
 | `PUT` | `/{id}` | Update: `name`, `description`, `sort_order` |
 | `DELETE` | `/{id}` | Delete group. Options are not deleted — `option_group_id` is cleared (moved to «No group») |
 | `PUT` | `/positions` | Save new order: either `positions: { id: position, ... }` or `ids: [id, id, ...]` (ordered list) |
@@ -401,8 +401,8 @@ Controller `MiniShop3\Controllers\Api\Manager\CategoryOptionsController`, permis
 
 | Method | Path | Description |
 | --- | --- | --- |
-| `GET` | `` | Options linked to the category. Each row returns `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
-| `POST` | `` | Link option to category: `option_id`, `value`, `active`, `required`, `caption`, `description` |
+| `GET` | (root) | Options linked to the category. Each row returns `caption` (effective), `global_caption`/`global_description` + `category_caption`/`category_description` (override) |
+| `POST` | (root) | Link option to category: `option_id`, `value`, `active`, `required`, `caption`, `description` |
 | `PUT` | `/{option_id}` | Partial update of link: `value`, `active`, `required`, `position`, `caption`, `description` |
 | `DELETE` | `/{option_id}` | Remove link. Product values are deleted only if the option is not active in any other product category |
 | `POST` | `/sort` | Save new order (`option_ids[]`) |

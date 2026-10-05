@@ -1,8 +1,11 @@
 ---
 title: SVRegions
 description: Regional data for multiple domains and subdomains in a single MODX installation
+categories: other
 logo: /components/svregions/screenshots/logo.webp
 author: rumata-estor
+compatibility:
+  - modx2
 ---
 
 # SVRegions

@@ -21,6 +21,8 @@ items: [
   { text: 'Development', link: 'development' },
 ]
 dependencies: ['pdoTools', 'FormIt']
+categories: users
+popular: true
 ---
 
 # SendIt

@@ -7,7 +7,7 @@ description: "Row of metrics with a large value and label underneath"
 
 Several KPIs in a row or grid: years in business, client count, and similar figures. Large number, small caption.
 
-<!-- ![Stats](/components/pagebuilder/screenshots/sections/stats.png) -->
+![Stats](/components/pagebuilder/screenshots/sections/stats.jpg)
 
 ## Why show numbers
 
@@ -93,23 +93,19 @@ Fenom chunk `pagebuilder_stats`:
 <section class="pb-section pb-section--stats pb-stats{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="stats"{if $id} id="pb-{$id|escape}"{/if}>
   <div class="pb-section__inner pb-stats__inner">
     {if $title}
-      <h2 class="pb-heading pb-stats__title">{$title|escape}</h2>
+      <h2 class="pb-heading pb-stats__title">{$title|pb_text}</h2>
     {/if}
     <div class="pb-stats__grid">
       {foreach $items as $item}
         <div class="pb-stats__item">
           <div class="pb-stats__value">{$item.value|escape}</div>
-          <div class="pb-stats__label">{$item.label|escape}</div>
+          <div class="pb-stats__label">{$item.label|pb_text}</div>
         </div>
       {/foreach}
     </div>
   </div>
 </section>
 ```
-
-## JSON definition
-
-`core/components/pagebuilder/sections/stats.json`
 
 ## See also
 

@@ -30,7 +30,7 @@ These parameters define which resources appear in the generated list.
 | **&first** | `1` | Index of first output iteration. |
 | **&last** | Auto: total + first - 1 | Index of last output iteration. |
 | **&loadModels** | | Comma-separated list of components whose models to load for the query, e.g. `ms2gallery,msearch2`. |
-| **&tvFilters** | | TV filters with AND and OR. OR delimiter is in **&tvFiltersOrDelimiter**; conditions are grouped by OR first. Within a group use **&tvFiltersAndDelimiter**. Filter in a specific TV: `myTV==value`, or in any: `value`. Example: `filter2==one,filter1==bar%||filter1==foo`. Uses LIKE; % is wildcard. Search is on values stored in DB, not TV default values. |
+| **&tvFilters** | | TV filters with AND and OR. OR delimiter is in **&tvFiltersOrDelimiter**; conditions are grouped by OR first. Within a group use **&tvFiltersAndDelimiter**. Filter in a specific TV: `myTV==value`, or in any: `value`. Example: `filter2==one,filter1==bar%\|\|filter1==foo`. Uses LIKE; % is wildcard. Search is on values stored in DB, not TV default values. |
 | **&tvFiltersAndDelimiter** | `,` | Delimiter for AND conditions in **&tvFilters**. |
 | **&tvFiltersOrDelimiter** | `\|\|` | Delimiter for OR conditions in **&tvFilters**. |
 
@@ -69,7 +69,7 @@ These further define what data is output and how.
 | **&useWeblinkUrl** | | Generate URL according to resource class; adds placeholder `[[+link]]`. |
 | **&toPlaceholder** | | If set, all output is saved to a placeholder with this name instead of being printed. |
 | **&toSeparatePlaceholders** | | If set, each result is put in a separate placeholder named by this value + row index from 0, e.g. `myPl` → `[[+myPl0]]`, `[[+myPl1]]`. |
-| **&showLog** | `0` | Show extra debug info. Only for users authorized in context "mgr". |
+| **&showLog** | `0` | Log in a placeholder (since 3.0), not HTML. Requires mgr session. [Details](../general-properties#showlog). |
 
 ## Examples
 

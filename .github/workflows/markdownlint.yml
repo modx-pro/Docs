@@ -1,0 +1,37 @@
+name: Markdownlint
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - '.markdownlint.jsonc'
+      - '.markdownlintignore'
+      - 'scripts/markdownlint.mjs'
+      - 'scripts/lib/git-changed.mjs'
+      - '.github/workflows/markdownlint.yml'
+      - 'package.json'
+      - 'pnpm-workspace.yaml'
+
+jobs:
+  markdownlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Fetch base branch for diff
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: git fetch --no-tags origin "$BASE_REF"
+      - name: Lint changed markdown
+        env:
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: pnpm run lint:changed

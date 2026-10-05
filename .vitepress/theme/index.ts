@@ -1,18 +1,73 @@
-import { type Router, inBrowser } from 'vitepress'
-import { type App, watch } from 'vue'
+import { type EnhanceAppContext, type SiteData, inBrowser } from 'vitepress'
+import { markRaw, watch } from 'vue'
+import { NolebaseEnhancedReadabilitiesPlugin } from '@nolebase/vitepress-plugin-enhanced-readabilities/client'
 import { createZoom } from './composables/zoom'
 import DefaultTheme from 'vitepress/theme-without-fonts'
 import DocsLayout from './components/DocsLayout.vue'
 import DocsComponentsList from './components/DocsComponentsList.vue'
+import DocsComponentsCatalog from './components/DocsComponentsCatalog.vue'
 import './styles/global.css'
 import './styles/glightbox.css'
+
+const layoutSwitchClasses = [
+  'VPNolebaseEnhancedReadabilitiesLayoutSwitchFullWidth',
+  'VPNolebaseEnhancedReadabilitiesLayoutSwitchSidebarWidthAdjustableOnly',
+  'VPNolebaseEnhancedReadabilitiesLayoutSwitchBothWidthAdjustable',
+]
+
+// The head script sets the saved mode on <html> before paint. The plugin then
+// writes the same class on <body>. Drop the html copy once body has it, so a
+// later mode switch only updates body.
+function handoffEarlyLayoutClass() {
+  if (!inBrowser) return
+
+  const html = document.documentElement
+  if (!layoutSwitchClasses.some(name => html.classList.contains(name))) return
+
+  const release = () => {
+    if (!layoutSwitchClasses.some(name => document.body.classList.contains(name))) return false
+    for (const name of layoutSwitchClasses) html.classList.remove(name)
+    return true
+  }
+
+  if (release()) return
+
+  const observer = new MutationObserver(() => {
+    if (release()) observer.disconnect()
+  })
+  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] })
+}
+
+// Layout VitePress следит за theme.sidebar с deep: true и на каждой странице обходит весь
+// сайдбар локали. На клиенте сайдбар не меняется (правка конфига перезапускает dev-сервер
+// и перезагружает страницу), поэтому markRaw обрывает глубокий обход на объекте сайдбара.
+function markSidebarsRaw(siteData: SiteData) {
+  const themeConfigs = [siteData.themeConfig, ...Object.values(siteData.locales).map(locale => locale.themeConfig)]
+  for (const themeConfig of themeConfigs) {
+    if (themeConfig?.sidebar && typeof themeConfig.sidebar === 'object') markRaw(themeConfig.sidebar)
+  }
+}
 
 export default {
   extends: DefaultTheme,
   Layout: DocsLayout,
 
-  enhanceApp({ app, router }: { app: App, router: Router }) {
+  enhanceApp({ app, router, siteData }: EnhanceAppContext) {
+    markSidebarsRaw(siteData.value)
+    handoffEarlyLayoutClass()
+    app.use(NolebaseEnhancedReadabilitiesPlugin, {
+      layoutSwitch: {
+        disableAnimation: true,
+        contentLayoutMaxWidth: {
+          disableAnimation: true,
+        },
+        pageLayoutMaxWidth: {
+          disableAnimation: true,
+        },
+      },
+    })
     app.component('DocsComponentsList', DocsComponentsList)
+    app.component('DocsComponentsCatalog', DocsComponentsCatalog)
     createZoom(app, router)
 
     if (
@@ -28,7 +83,7 @@ export default {
           }
 
           const url = '/' + path.replace(/(^|\/)index\.md$/, '$1').replace(/\.md$/, '')
-          window.ym(103589705, 'hit', url)
+          window.ym?.(103589705, 'hit', url)
         }
       )
     }
