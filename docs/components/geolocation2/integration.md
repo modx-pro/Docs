@@ -27,27 +27,33 @@ gl_countries
               └── gl_data (0..n записей на город)
 ```
 
-Сессия пользователя (`$_SESSION['gl2']`, ключ задаётся сервисом):
+Сессия пользователя (`$_SESSION['geolocation2']`, ключ константой `GeoLocation2::SESSION_KEY`):
 
 | Поле сессии | Назначение |
 |-------------|------------|
 | `city_id` | ID из `gl_cities` |
 | `confirmed` | Пользователь подтвердил или выбрал город |
-| `dismissed` | Модалку закрыли без выбора (если применимо) |
+| `prompt_done` | Модалку показали, дальше выбор не повторяют |
 | `csrf` | Токен для POST в `action.php` |
 
 ## PHP-сервис
 
 ```php
-/** @var \GeoLocation2\Service\GeoLocation2 $gl2 */
+/** @var \GeoLocation2\GeoLocation2 $gl2 */
 $gl2 = $modx->services->get('GeoLocation2');
 
-$cityId = $gl2->getCurrentCityId();
-$state = $gl2->getSessionState();
-$gl2->setCity($cityId, true);
+// состояние сессии: city_id, confirmed, prompt_done, csrf
+$state = $gl2->getSessionGeo();
+$cityId = (int) ($state['city_id'] ?? 0);
+
+// записать город и подтвердить выбор
+$gl2->mergeSessionGeo(['city_id' => 8, 'confirmed' => 1]);
+
+// город по умолчанию из gl_cities
+$default = $gl2->getDefaultCityRow();
 ```
 
-Методы и события смотрите в исходниках `core/components/geolocation2/src/Service/`.
+Сервис лежит в `core/components/geolocation2/src/GeoLocation2.php`, класс `GeoLocation2\GeoLocation2`. Публичные методы: `getSessionGeo()`, `mergeSessionGeo()`, `isConfirmed()`, `markConfirmed()`, `getOrCreateCsrfToken()`, `validateCsrfToken()`, `getDefaultCityRow()`, `getCountry()`, `getCity()`, `getCityFull()`, `getCityFullByIp()`, `findGlCityFromSxGeo()`, `buildWebPlaceholders()`.
 
 ## SxGeo
 
@@ -64,7 +70,7 @@ assets/components/geolocation2/vendor/sypexgeo/data/SxGeoCity.dat
 **CLI** (из корня MODX):
 
 ```bash
-php assets/components/geolocation2/bin/update-sxgeo.php
+php core/components/geolocation2/bin/update-sxgeo.php
 ```
 
 **Scheduler** (MODX 3): задача `geolocation2_update_sxgeo`. Включите `geolocation2_sxgeo_auto_update` и задайте `geolocation2_sxgeo_update_interval_days`.

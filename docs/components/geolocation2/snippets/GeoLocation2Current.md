@@ -57,16 +57,16 @@ description: Текущий город из сессии GeoLocation2 — чан
 
 `data-confirmed="0"` до первого подтверждения в модалке, `"1"` после.
 
-Свой чанк — кнопка с `data-gl2-open="1"`, чтобы открыть [GeoLocation2Modal](GeoLocation2Modal):
+Свой чанк — кнопка с классом `gl2-open-modal`, чтобы открыть [GeoLocation2Modal](GeoLocation2Modal):
 
 ::: code-group
 
 ```modx
-<button type="button" class="btn btn-link" data-gl2-open="1">[[+gl2_current_name_ru]]</button>
+<button type="button" class="btn btn-link gl2-open-modal">[[+gl2_current_name_ru]]</button>
 ```
 
 ```fenom
-<button type="button" class="btn btn-link" data-gl2-open="1">{$gl2_current_name_ru}</button>
+<button type="button" class="btn btn-link gl2-open-modal">{$gl2_current_name_ru}</button>
 ```
 
 :::
