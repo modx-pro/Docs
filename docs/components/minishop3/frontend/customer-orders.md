@@ -116,7 +116,7 @@ title: История заказов
 | --- | --- | --- |
 | `{$id}` | int | ID заказа |
 | `{$uuid}` | string | UUID заказа (для URL) |
-| `{$num}` | string | Номер заказа (MS-00015) |
+| `{$num}` | string | Номер заказа: дата по `ms3_order_format_num` плюс разделитель и счётчик, например `2610/5` |
 | `{$createdon_formatted}` | string | Дата создания |
 | `{$cost_formatted}` | string | Сумма заказа |
 | `{$status_id}` | int | ID статуса |

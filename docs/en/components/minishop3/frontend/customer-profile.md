@@ -59,8 +59,8 @@ tpl.msCustomer.base          # base layout
 | `{$customer.phone}` | string | Phone |
 | `{$email_verified}` | bool | Email verified |
 | `{$email_verified_at}` | string | Email verification date |
-| `{$phone_verified}` | bool | Phone verified |
-| `{$phone_verified_at}` | string | Phone verification date |
+| `{$phone_verified}` | bool | Always `false`: phone verification is planned ([#138](https://github.com/modx-pro/MiniShop3/issues/138)) |
+| `{$phone_verified_at}` | string | Always empty, for the same reason |
 | `{$errors}` | array | Validation errors |
 | `{$success}` | bool | Save succeeded |
 
