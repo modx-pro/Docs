@@ -72,7 +72,6 @@ When sync is enabled (`ms3_customer_sync_enabled = true`), data is taken from mo
 
 The key after `extended[` is a name from `profile.extended`. Nested fields take this form and no other: `extended[comment]`, `extended[building]` and so on. Dot notation does not work — the parser cuts a fixed number of characters and would read `company_nam` from `extended.company_name`.
 
-
 ## Data structure
 
 ```fenom
@@ -187,6 +186,7 @@ Until it is fixed, check the first option in the chunk yourself and fire a `chan
 <input type="radio" name="delivery_id" value="{$delivery.id}"
     {if $order.delivery_id == $delivery.id || (!$order.delivery_id && $delivery@first)}checked{/if}>
 ```
+
 :::
 
 ::: tip `price` is the base price only
