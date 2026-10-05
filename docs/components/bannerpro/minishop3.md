@@ -56,7 +56,7 @@ BannerPro работает без MiniShop3. Если магазин устан�
 {'!BannerPro' | snippet : [
   'positionName' => 'shop-product-sidebar',
   'productId' => $_modx->resource.id,
-  'tpl' => 'byAdProduct',
+  'tpl' => '@FILE chunks/byad-product.fenom.tpl',
   'limit' => 3
 ]}
 ```
@@ -65,12 +65,20 @@ BannerPro работает без MiniShop3. Если магазин устан�
 [[!BannerPro?
   &positionName=`shop-product-sidebar`
   &productId=`[[*id]]`
-  &tpl=`byAdProduct`
+  &tpl=`@FILE chunks/byad-product.fenom.tpl`
   &limit=`3`
 ]]
-```
-
 :::
+
+Пакет ставит два чанка: `byAd` и `byHtml`. Карточка товара — свой `@FILE`-чанк с плейсхолдерами `product_*`:
+
+```fenom
+<a href="{$click_url|escape:'html'}" class="bannerpro-product">
+  <img src="{$product_thumb|escape:'html'}" alt="{$product_title|escape}" />
+  <span class="bannerpro-product__title">{$product_title|escape}</span>
+  <span class="bannerpro-product__price">{$product_price|escape}</span>
+</a>
+```
 
 На каталоге и главной `productId` не передавайте. Там выводятся глобальные баннеры.
 
