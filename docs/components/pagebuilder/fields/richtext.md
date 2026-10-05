@@ -17,6 +17,15 @@ description: "HTML-строка из привычного richtext MODX"
 
 Режим редактора берётся из `pageBuilderConfig.richText`. При `whichEditor` = `mxEditorJs` и доступном Editor.js включается блок Editor.js. Иначе при `useEditor` ≠ false работает RTE ресурса MODX (`MODx.loadRTE`). Если инициализация не удалась или редактор выключен, остаётся обычная многострочная textarea.
 
+```mermaid
+flowchart TB
+    A{"whichEditor = mxEditorJs и Editor.js доступен?"} -->|"да"| B[Блок Editor.js]
+    A -->|"нет"| C{"useEditor ≠ false?"}
+    C -->|"да"| D["RTE ресурса MODX: MODx.loadRTE"]
+    C -->|"нет"| E[Многострочная textarea]
+    D -->|"инициализация не удалась"| E
+```
+
 ## Когда использовать
 
 - Основной текст секции: абзацы, ссылки
