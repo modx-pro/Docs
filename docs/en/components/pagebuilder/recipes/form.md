@@ -19,7 +19,7 @@ A form that lives on one page:
 
 1. Add a `contact_form` section.
 2. Set **Form key**. If the page has several forms, do not reuse the key.
-3. In the **Form fields** repeater add name, label, and type: `text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`. For select and radio write options one per line: `Label|value` or value only. Field name: `[a-z][a-z0-9_]*`.
+3. In the **Form fields** repeater add name, label, and type: `text`, `email`, `phone`, `textarea`, `select`, `radio`, `checkbox`, `date`. For select and radio write one value per line — the line becomes both the label and the value. Field name: `[a-z][a-z0-9_]*`, case-insensitive.
 4. A required checkbox stays empty until the value is `1`, `yes`, `true`, or `on`.
 5. **Save** the resource. The recipient is `emailsender` or the site mail settings.
 
@@ -41,7 +41,7 @@ Two forms on one page. Keys differ.
 | --- | --- | --- | --- |
 | `name` | Name | `text` | |
 | `email` | Email | `email` | |
-| `topic` | Topic | `select` | `Delivery\|delivery` and `Payment\|payment`, one per line |
+| `topic` | Topic | `select` | `Delivery` and `Payment`, one value per line |
 
 A second `contact_form` section uses key `callback_footer`. Same fields, different key.
 

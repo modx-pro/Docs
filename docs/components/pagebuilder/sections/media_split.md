@@ -5,7 +5,7 @@ description: "Изображение слева или справа и текс�
 
 # Медиа и текст
 
-Секция `media_split` ставит изображение и текст в две колонки. Chunk: `pagebuilderpro_media_split`. Требуется PageBuilder Pro.
+Секция `media_split` ставит изображение и текст в две колонки.
 
 ![Медиа и текст](/components/pagebuilder/screenshots/sections/media_split.jpg)
 
@@ -16,6 +16,16 @@ description: "Изображение слева или справа и текс�
 - Блок «о компании» с фото
 - Продукт с коротким текстом и кнопкой
 - Чередование колонок на лендинге
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `media_split` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_media_split` |
+| Требования | pro |
 
 ## Поля
 

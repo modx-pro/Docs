@@ -19,7 +19,7 @@ description: "filterable_grid: поиск, сортировка и страни�
 2. Выберите datasource: `modx-resources`, `pagebuilder-tables` или `minishop3`. Для таблицы укажите ключ.
 3. **Сохранить** ресурса. На сайте форма, сортировка и пагинация идут через `pagebuilder-filterable-grid.js`. Адрес обновляет `history.pushState`.
 4. Параметры: `pb_fg_{id}_search`, `_sort`, `_dir`, `_page`, `_f_{поле}`. Префикс `pb_fg_{id}_` пишет `DatasourceSectionEnricher` в `filter_param_prefix`.
-5. Оператор зависит от типа поля: text → `contains`, number и currency → `gte`, color → `eq`. Колонка `image` в фильтр и сортировку не попадает. Подпись фильтра берётся из `label` колонки.
+5. Оператор зависит от типа поля: text → `contains`, number и currency → `gte`, color, yesno и toggle → `eq`. Колонка `image` в фильтр и сортировку не попадает. Подпись фильтра берётся из `label` колонки.
 
 Страница больше последней приводится к последней. Пустой результат: `pagebuilder_fe_filter_empty`. Кнопка сброса: `pagebuilder_fe_filter_clear`.
 

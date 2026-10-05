@@ -5,7 +5,7 @@ description: "Цитата с автором, должностью и авата
 
 # Цитата
 
-Секция `quote` выводит одну цитату. Chunk: `pagebuilderpro_quote`. Требуется PageBuilder Pro.
+Секция `quote` выводит одну цитату.
 
 ![Цитата](/components/pagebuilder/screenshots/sections/quote.jpg)
 
@@ -14,6 +14,16 @@ description: "Цитата с автором, должностью и авата
 - Выделенная фраза клиента
 - Эпиграф статьи
 - Одна рекомендация без карточек команды
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `quote` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_quote` |
+| Требования | pro |
 
 ## Поля
 

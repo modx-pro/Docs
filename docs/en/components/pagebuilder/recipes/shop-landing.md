@@ -36,7 +36,7 @@ Hero. Title `Catalog`. Button label `Browse categories`, Button URL pointing at 
 
 FAQ. Title `Delivery`. Two repeater rows: `question` and `answer`.
 
-`contact_form`. **Form key** `shop_question`. In **Form fields**, two rows: `email` of type email and `phone` of type phone. Field name: `[a-z][a-z0-9_]*`.
+`contact_form`. **Form key** `shop_question`. In **Form fields**, two rows: `email` of type email and `phone` of type phone. Field name: `[a-z][a-z0-9_]*`, case-insensitive.
 
 ## What to check
 
