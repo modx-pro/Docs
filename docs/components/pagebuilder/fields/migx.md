@@ -5,25 +5,22 @@ description: "ExtJS-грид MIGX в инспекторе секции (Free), �
 
 # Поле migx
 
-Версия: **Free**. Нужен установленный пакет **MIGX**. Без него поле в CMP есть, но грид не монтируется (fallback: textarea с JSON).
+Версия: **Free**. Нужен установленный пакет **MIGX**. Без него поле в CMP есть, но грид не монтируется: JSON в textarea и кнопка «Повторить».
 
 ## Зачем этот тип
 
-- Настоящий ExtJS-грид MIGX TV, не Vue-repeater
-- Можно взять готовый MIGX Config или задать `formtabs` / `columns` как у TV
-- Удобен, если редакторы уже работают с MIGX
+Настоящий ExtJS-грид MIGX TV, не Vue-repeater.
 
 ## Когда использовать
 
 - Сложные строки с теми же вкладками, что в MIGX Configs
 - Миграция контента с MIGX TV в секции PageBuilder
-- Когда нужен нативный add/edit MIGX, а не `repeater`
+- Штатные окна MIGX вместо `repeater`
 
 ## Советы
 
-- Предпочтительно имя config в `configs` (MIGX → Configs)
-- Окна add/edit стекуются над инспектором (z-index)
-- Без MIGX: JSON в textarea и кнопка «Повторить»
+- Предпочтительнее указать имя config в `configs` (MIGX → Configs)
+- Окна добавления и редактирования открываются поверх инспектора (z-index)
 
 ## Похожие типы
 
@@ -46,7 +43,7 @@ description: "ExtJS-грид MIGX в инспекторе секции (Free), �
 }
 ```
 
-Или inline `formtabs` / `columns` (как input properties TV):
+Или `formtabs` / `columns` прямо в схеме (как input properties TV):
 
 ```json
 {
@@ -58,11 +55,15 @@ description: "ExtJS-грид MIGX в инспекторе секции (Free), �
 }
 ```
 
-Ключ `migxConfig` / `migx_config` это алиас для `configs`.
+`migxConfig` / `migx_config` — алиас для `configs`.
 
 ## Значение
 
-JSON-массив объектов (как значение MIGX TV):
+JSON-массив строк: `MIGX_id` и поля из formtabs, как значение MIGX TV.
+
+## Данные секции {#vyvod-v-section-data}
+
+Ключ `items` в данных секции:
 
 ```json
 {
@@ -72,10 +73,6 @@ JSON-массив объектов (как значение MIGX TV):
   ]
 }
 ```
-
-## Данные секции {#vyvod-v-section-data}
-
-Ключ поля (например `items`) хранит массив строк MIGX с `MIGX_id` и полями из formtabs.
 
 ## Пример в chunk
 
@@ -95,17 +92,21 @@ JSON-массив объектов (как значение MIGX TV):
 
 ## Общие свойства
 
+Для полей с `name`, которые сохраняются в данных секции:
+
 | Ключ | Тип | Роль | Панель |
 | --- | --- | --- | --- |
-| `tab` | string | Подзаголовок группы | да |
+| `tab` | string | Подзаголовок группы в инспекторе | да |
 | `width` | 25, 33, 50, 66, 75, 100 | Ширина поля в % строки (flex); в CMP только эти значения | да |
-| `description` | string | Подсказка | да |
-| `default` | array | Начальное значение | да |
-| `active` | bool | Скрыть в инспекторе | да |
-| `required` | bool | Обязательно при publish | да |
-| `configs` | string | Имя MIGX config | да |
-| `formtabs` | string/array | Tabs формы элемента | да |
+| `description` | string | Подсказка под подписью | да |
+| `default` | array | Начальное значение новой секции | да |
+| `active` | bool | `false`: скрыть поле в инспекторе | да |
+| `required` | bool | Обязательно при **publish** (черновик сохраняется) | да |
+| `configs` | string | Имя конфигурации MIGX | да |
+| `formtabs` | string/array | Вкладки формы элемента | да |
 | `columns` | string/array | Колонки грида | да |
+
+Подробнее: [обзор полей](overview#общие-свойства-поля).
 
 ## Дальше
 

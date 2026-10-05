@@ -11,7 +11,7 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 ## Зачем этот тип
 
-Редактор вписывает метки сам. Готового списка `options` нет. Подходит для фильтров и подписей на карточках.
+Редактор вписывает метки сам. Готового списка `options` нет.
 
 ## Когда использовать
 
@@ -21,12 +21,12 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 ## Советы
 
-Фиксированный enum: [multiselect](multiselect) или [checkboxgroup](checkboxgroup). Значения строки, не объекты.
+Фиксированный список: [multiselect](multiselect) или [checkboxgroup](checkboxgroup).
 
 ## Похожие типы
 
 - [multiselect](multiselect) для выбора из options
-- [checkboxgroup](checkboxgroup) для static flags (Free)
+- [checkboxgroup](checkboxgroup) для статических флагов (Free)
 
 ## Настройка
 
@@ -47,7 +47,7 @@ description: "Массив строк tags с chip UI в инспекторе"
 
 ## Данные секции {#vyvod-v-section-data}
 
-Ключ `labels` в данных секции: массив строк:
+Ключ `labels` в данных секции:
 
 ```json
 {
