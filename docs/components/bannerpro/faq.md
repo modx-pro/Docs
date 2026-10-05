@@ -91,7 +91,7 @@ You need to install pdoTools to use this snippet!
 
 ## Статистика «Сегодня» показывает чужие даты
 
-При периоде **Сегодня** без событий за текущий день сводка должна быть **0 / 0**, а на графике — одна точка с сегодняшней датой. Если видны прошлые дни, обновите пакет BannerPro.
+При периоде **Сегодня** без событий за текущий день сводка должна быть **0 / 0**, а на графике — одна точка с сегодняшней датой. Если видны прошлые дни, период посчитан неверно — напишите автору пакета с выгрузкой за эти даты.
 
 ## A/B-деление не работает
 
@@ -211,7 +211,7 @@ assets/components/bannerpro/js/mgr/vue-dist/bannerpro-admin.min.js
 {'!BannerPro' | snippet : [
   'positionName' => 'shop-product-sidebar',
   'productId' => $_modx->resource.id,
-  'tpl' => 'byAdProduct'
+  'tpl' => '@FILE chunks/byad-product.fenom.tpl'
 ]}
 ```
 
@@ -219,13 +219,11 @@ assets/components/bannerpro/js/mgr/vue-dist/bannerpro-admin.min.js
 [[!BannerPro?
   &positionName=`shop-product-sidebar`
   &productId=`[[*id]]`
-  &tpl=`byAdProduct`
+  &tpl=`@FILE chunks/byad-product.fenom.tpl`
 ]]
-```
-
 :::
 
-На каталоге и главной не передавайте `productId`.
+Пакет ставит два чанка: `byAd` и `byHtml`. Карточка товара — свой `@FILE`-чанк, иначе баннер уйдёт в стандартную сетку. На каталоге и главной не передавайте `productId`.
 
 ## Плейсхолдеры `product_*` пустые
 
