@@ -1,22 +1,22 @@
 ---
 title: Сниппеты
-description: Обзор сниппетов PageBuilder для вывода секций, sitemap, UTM, таблиц и FetchIt-handlers
+description: Обзор сниппетов PageBuilder для вывода секций, sitemap, UTM, таблиц и обработчиков FetchIt
 ---
 
 # Сниппеты PageBuilder
 
-Сниппеты вывода и (в Pro) обработчики форм. Namespace chunks и секций: `pagebuilder`.
+Сниппеты вывода. Pro-пакет добавляет к ним обработчики форм. Чанк секции: Free-пакет — `pagebuilder_{key}`, Pro — `pagebuilderpro_{key}` (исключение — `data_table` → `pagebuilder_data_table`). Namespace у чанков нет: префикс равен имени пакета.
 
 | Сниппет | Назначение |
 | --- | --- |
 | [PageBuilder](PageBuilder) | HTML опубликованных секций текущего или заданного ресурса |
-| [PageBuilderResource](PageBuilderResource) | Секции другого ресурса (`resource_id` в properties UI обязателен; `0` = текущий ресурс) |
+| [PageBuilderResource](PageBuilderResource) | Секции другого ресурса (`resource_id`, `0` = текущий ресурс) |
 | [PageBuilderSitemap](PageBuilderSitemap) | XML sitemap страниц с опубликованными секциями |
 | [PageBuilderUtmSession](PageBuilderUtmSession) | UTM из query string в сессию для правил видимости секций |
 | [PageBuilderUtmUrl](PageBuilderUtmUrl) | UTM из реестра панели управления к произвольному URL |
 | [PageBuilderTableRows](PageBuilderTableRows) | Строки табличных данных ресурса (JSON или chunk) |
 
-Pro. Из шаблона не вызывайте. Чанк секции вызывает [PageBuilderFetchIt](PageBuilderFetchIt):
+Pro. Из шаблона не вызывайте: чанк секции вызывает [PageBuilderFetchIt](PageBuilderFetchIt).
 
 | Сниппет | Назначение |
 | --- | --- |
@@ -27,13 +27,19 @@ Pro. Из шаблона не вызывайте. Чанк секции вызы
 
 ## Порядок на типовой странице
 
-1. **PageBuilderUtmSession** в общем layout, если на странице работают UTM-правила секций (один раз на запрос, до отрисовки секций).
+1. **PageBuilderUtmSession** в общий layout, если на странице работают UTM-правила секций: один раз на запрос, до отрисовки секций.
 2. **PageBuilder** в шаблоне или поле content ресурса.
 3. **PageBuilderTableRows** отдельно, если таблица выводится вне секции `data_table`.
 
-Для блока с другой страницы (hero с главной, FAQ из лендинга) используйте **PageBuilderResource**.
+Блок с другой страницы (hero с главной, FAQ из лендинга) выводит **PageBuilderResource**.
 
-Секции `quiz`, `contact_form` и `form_builder` сами вызывают [PageBuilderFetchIt](PageBuilderFetchIt). Обработчик из шаблона не вызывайте.
+```mermaid
+flowchart TB
+    A["PageBuilderUtmSession в шапке: один раз на запрос"] --> B["PageBuilder в шаблоне или content"]
+    B --> C{Дополнительно}
+    C -->|"таблица вне секции data_table"| D[PageBuilderTableRows]
+    C -->|"секции другой страницы"| E[PageBuilderResource]
+```
 
 ## Таблица соответствий (MODX / Fenom)
 
