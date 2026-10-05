@@ -184,6 +184,7 @@ flowchart TB
 <input type="radio" name="delivery_id" value="{$delivery.id}"
     {if $order.delivery_id == $delivery.id || (!$order.delivery_id && $delivery@first)}checked{/if}>
 ```
+
 :::
 
 ::: tip `price` — только базовая цена
@@ -231,7 +232,6 @@ flowchart TB
 
 Те же суммы с валютой — имена с суффиксом `_formatted`: `{$order.cart_cost_formatted}`, `{$order.delivery_cost_formatted}`, `{$order.discount_cost_formatted}`, `{$order.cost_formatted}`. Символ валюты из настроек MS3 — `{$order.currency_symbol}`.
 
-
 ## Пример чанка
 
 ::: warning Форме нужен именно `data-ms3-form="order"`
@@ -239,7 +239,6 @@ flowchart TB
 
 Заказ собирается на сервере из черновика, отправка уходит без тела формы. Поэтому форма без нужной пометки вернёт «не выбран способ доставки» — даже когда покупатель выбрал доставку ([#832](https://github.com/modx-pro/MiniShop3/issues/832)).
 :::
-
 
 ```fenom
 {* tpl.msOrder *}
