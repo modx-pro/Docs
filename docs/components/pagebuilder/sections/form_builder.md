@@ -5,7 +5,7 @@ description: "Форма из схемы CMP Forms через FetchIt. Capabilit
 
 # Конструктор формы
 
-Секция `form_builder` берёт схему из вкладки CMP **Forms**. Chunk: `pagebuilderpro_form_builder`. Нужны PageBuilder Pro, capability `forms` и пакет **FetchIt**.
+Секция `form_builder` берёт схему из вкладки CMP **Forms**.
 
 ![Конструктор формы](/components/pagebuilder/screenshots/sections/form_builder.jpg)
 
@@ -26,6 +26,16 @@ description: "Форма из схемы CMP Forms через FetchIt. Capabilit
 | `title` | text | нет | Заголовок |
 | `intro` | textarea | нет | Текст под заголовком |
 | `form` | form | да | Ключ схемы из CMP Forms |
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `form_builder` |
+| Слой | Pro |
+| Категория | конверсия (`conversion`) |
+| Chunk | `pagebuilderpro_form_builder` |
+| Требования | pro, `forms`, FetchIt |
 
 ## Рендер
 

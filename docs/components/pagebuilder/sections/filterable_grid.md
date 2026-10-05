@@ -5,7 +5,7 @@ description: "Записи datasource с фильтрами, сортировк�
 
 # Сетка с фильтром
 
-Секция `filterable_grid` показывает записи с фильтрами в URL. На сайте форма, сортировка и пагинация идут через Ajax (`pagebuilder-filterable-grid.js`), адрес обновляет `history.pushState`. Без JavaScript остаётся обычный GET. Chunk: `pagebuilderpro_filterable_grid`. Нужны PageBuilder Pro и capability `datasources`.
+Секция `filterable_grid` показывает записи с фильтрами в URL. На сайте форма, сортировка и пагинация идут через Ajax (`pagebuilder-filterable-grid.js`), адрес обновляет `history.pushState`. Без JavaScript остаётся обычный GET.
 
 ![Сетка с фильтром](/components/pagebuilder/screenshots/sections/filterable_grid.jpg)
 
@@ -20,6 +20,16 @@ description: "Записи datasource с фильтрами, сортировк�
 Подписи фильтров берутся из `label` колонки схемы таблицы, не из ключа поля. В форме и сортировке UI колонки типа `image` нет. Прямой GET с `f_*` по полю-картинке сервер по типу не отсекает. В форме тип поля задаёт оператор: text → `contains`, number и currency → `gte`, color → `eq`. Номер страницы пагинации больше последней приводится к последней.
 
 Секция входит в контекст страницы, чтобы HTML-кеш не замораживал фильтр.
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `filterable_grid` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_filterable_grid` |
+| Требования | pro, `datasources` |
 
 ## Поля
 

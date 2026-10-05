@@ -5,7 +5,7 @@ description: "Карточки проектов с изображением, с�
 
 # Портфолио
 
-Секция `portfolio` показывает проекты из repeater. Chunk: `pagebuilderpro_portfolio`. Требуется PageBuilder Pro.
+Секция `portfolio` показывает проекты из repeater.
 
 ![Портфолио](/components/pagebuilder/screenshots/sections/portfolio.jpg)
 
@@ -14,6 +14,16 @@ description: "Карточки проектов с изображением, с�
 - Работы студии
 - Кейсы без отдельной страницы на каждый проект
 - Подборка ссылок с обложкой
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `portfolio` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_portfolio` |
+| Требования | pro |
 
 ## Поля
 
