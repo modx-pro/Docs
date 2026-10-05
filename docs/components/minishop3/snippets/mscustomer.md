@@ -304,7 +304,6 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 └── tpl.msCustomer.addresses — extends base, блок адресов
 ```
 
-
 ```fenom
 {* tpl.msCustomer.base *}
 <div class="ms3-customer-account">
@@ -375,7 +374,7 @@ tpl.msCustomer.base          — базовый layout (sidebar + content)
 ::: tip Чем управляет `ms3_customer_cancel_allowed_statuses`
 От неё зависит `{$can_cancel}` в строке заказа. В поставке стоит `2,3`.
 
-Если настройку очистить, отмена не запретится: код подставит статусы из `ms3_status_new` и `ms3_status_paid`. Чтобы запретить отмену совсем, поставьте `0`.
+Очистка настройки отмену не запрещает: код подставит статусы из `ms3_status_new` и `ms3_status_paid`. Чтобы запретить отмену совсем, поставьте `0`.
 :::
 
 ## Обработка форм {#forms}
