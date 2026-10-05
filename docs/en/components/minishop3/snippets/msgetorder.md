@@ -419,7 +419,6 @@ Typical use on the page after checkout:
 </div>
 ```
 
-
 Which resource this is, is set by `ms3_order_redirect_thanks_id` — `1` by default. Separately there is `ms3_order_success_page_id` (default `0`, i.e. the site start page): the payment handler uses it for the `payment_link`.
 
 ::: tip msOrder and msGetOrder coexist on one page
