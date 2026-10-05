@@ -52,7 +52,6 @@ items: [
 
 # ms3Discounts
 
-<!-- MEDIA: screenshot-admin | nice | Главный экран управления скидками: дашборд с показателями и ближайшими акциями | Открыть Компоненты → Скидки на тестовом стенде -->
 <!-- ![Панель управления ms3Discounts](/components/ms3discounts/screenshots/overview.png) -->
 
 **ms3Discounts** — дополнение для [MODX Revolution 3](https://modx.com/) и [MiniShop3](/components/minishop3/): правила скидок в панели управления и пересчёт `price` / `cost` в draft-корзине.

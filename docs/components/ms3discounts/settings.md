@@ -14,7 +14,7 @@ description: Ключи ms3discounts_*, пути витрины и права д
 | `ms3discounts_enabled` | да/нет | да | Включение работы плагина пересчёта цен в draft-корзине MiniShop3. |
 | `ms3discounts_debug` | да/нет | нет | Служебный ключ конфигурации. Доступ к трассировке расчётов в панели управления регулируется правом `ms3discounts_debug`. |
 | `ms3discounts_round_precision` | число | `2` | Количество знаков после запятой при округлении цен и скидок. |
-| `ms3discounts_log_level` | число | `1` | Числовой уровень системных сообщений компонента. |
+| `ms3discounts_log_level` | число | `1` | Числовой уровень системных сообщений компонента. В текущей версии пакет регистрирует ключ, но не читает его: на уровень лога MODX настройка не влияет. |
 
 ## Витрина
 
@@ -29,7 +29,6 @@ description: Ключи ms3discounts_*, пути витрины и права д
 
 ## Права доступа
 
-<!-- MEDIA: screenshot-admin | nice | Политика доступа ms3DiscountsManagerPolicy в настройках MODX | Открыть Настройки → Управление доступом → Политики доступа -->
 <!-- ![Политика доступа ms3DiscountsManagerPolicy](/components/ms3discounts/screenshots/permissions-policy.png) -->
 
 Пакет поставляет шаблон прав `ms3DiscountsPolicyTemplate` и политику `ms3DiscountsManagerPolicy`, содержащую четыре права:

@@ -18,3 +18,4 @@
 | `storefront-badge.png` | Карточка товара на витрине с бейджем скидки, зачёркнутой старой ценой и актуальной ценой | [snippets/ms3discountsGetDiscount.md](../snippets/ms3discountsGetDiscount.md), [quick-start.md](../quick-start.md) |
 | `storefront-buynow.png` | Промо-блок «Успей купить» на витрине: сетка акционных товаров с таймером обратного отсчёта | [snippets/ms3discountsBuyNow.md](../snippets/ms3discountsBuyNow.md), [snippets/index.md](../snippets/index.md) |
 | `cart-discount.png` | Корзина MiniShop3: строка товара с пересчитанной ценой, исходной ценой в свойствах и подарочной позицией за 0 | [integration.md](../integration.md), [quick-start.md](../quick-start.md) |
+| `permissions-policy.png` | Политика доступа `ms3DiscountsManagerPolicy` в **Настройки → Управление доступом → Политики доступа**: четыре права и назначение группе «Администраторы» | [settings.md](../settings.md) |
