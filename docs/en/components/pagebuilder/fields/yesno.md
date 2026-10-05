@@ -21,7 +21,7 @@ The yes/no control MODX editors already know. The section stores a yes or no val
 
 ## Tips
 
-Switch UI use [toggle](toggle). Multiple labeled options need [select](select), not yesno.
+Toggle: [toggle](toggle). Several options from a list: [select](select), not yesno.
 
 ## Similar types
 
