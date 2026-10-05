@@ -1,15 +1,23 @@
 ---
 title: PageBuilderQuiz
-description: "FetchIt-handler секции quiz. Из шаблона не вызывается"
+description: "FetchIt вызывает обработчик секции quiz. Из шаблона не вызывается"
 ---
 
 # Сниппет PageBuilderQuiz
 
-Handler AJAX-отправки секции Pro [quiz](../sections/quiz). Чанк секции вызывает его через **FetchIt**. Из шаблона ресурса сниппет не вызывайте.
+Обработчик AJAX-отправки секции Pro [quiz](../sections/quiz). Чанк секции вызывает его через **FetchIt**. Из шаблона ресурса сниппет не вызывайте.
 
 ## Назначение
 
-Валидация ответов и контактов, server-side сумма в режиме `pricing`, письмо через `modMail`, JSON-ответ FetchIt.
+Валидация ответов и контактов, расчёт суммы на сервере в режиме `pricing`, письмо через `modMail`, JSON-ответ FetchIt.
+
+```mermaid
+flowchart LR
+    A[Проверка ответов и контактов] -->|"ок"| B["Расчёт суммы: режим pricing"]
+    A -->|"ошибки"| E["JSON с ошибками полей"]
+    B --> C[Письмо через modMail]
+    C --> D["JSON: успех"]
+```
 
 ## Где вызывается
 
@@ -35,14 +43,20 @@ Chunk `pagebuilderpro_quiz` вызывает [PageBuilderFetchIt](PageBuilderFet
 | свойство `resource_id` в action FetchIt | 2 |
 | текущий ресурс MODX | 3 |
 
-Секция с тем же `quiz_key` не найдена — `pagebuilder_fe_quiz_not_found`. Прямой вызов handler без сервиса FetchIt — JSON с `pagebuilder_fe_fetchit_unavailable`. На этапе отрисовки формы без FetchIt чанк показывает `pagebuilder_fe_form_unavailable` (см. [PageBuilderFetchIt](PageBuilderFetchIt)).
+### Ошибки
+
+| Ситуация | Ответ |
+| --- | --- |
+| Секция с тем же `quiz_key` не найдена | `pagebuilder_fe_quiz_not_found` |
+| Прямой вызов обработчика без сервиса FetchIt | JSON с `pagebuilder_fe_fetchit_unavailable` |
+| Отрисовка формы без FetchIt | Чанк показывает `pagebuilder_fe_form_unavailable`, см. [PageBuilderFetchIt](PageBuilderFetchIt) |
 
 ## Зависимости
 
 | Пакет | Зачем |
 | --- | --- |
 | pagebuilderpro | Секция `quiz` |
-| FetchIt | AJAX и inline errors |
+| FetchIt | AJAX и ошибки в полях |
 
 ## См. также
 
