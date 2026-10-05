@@ -26,6 +26,22 @@ Last purchase step: contacts, delivery, payment, address. The package ships a pa
 The msOrder snippet must be called **uncached** (`!msOrder`) because it works with the user session.
 :::
 
+The form is not submitted as a whole. Every field goes to the server in its own request right after it changes and fills the order draft; the «Place order» button sends an empty request, and the order is assembled from the accumulated draft.
+
+```mermaid
+flowchart TB
+  change[Customer changed a field] --> add["orderAPI.add(field, value)"]
+  add --> valid{"Checked against the rules of the chosen delivery"}
+  valid -->|Error| feedback["Text into .invalid-feedback, field not saved"]
+  valid -->|Success| draft[(Order draft)]
+  feedback --> change
+  draft --> change
+  draft --> submit["orderAPI.submit() — no form body"]
+  submit --> redirect["Redirect ?msorder=uuid"]
+```
+
+Two consequences people run into most: a form without `data-ms3-form="order"` and a field without a `<div>` wrapper never get their values into the draft, so on submit the customer sees an «empty field» error although everything was filled in.
+
 ## Order form
 
 The form contains the following sections:
@@ -141,7 +157,9 @@ There are no `ms3:order:*` DOM events. Use hooks:
 
 ```javascript
 ms3Hooks.addHook('beforeSubmitOrder', async (data) => {
-  // you can change data.formData
+  // There is no order data here — the object is empty.
+  // Form fields live in the beforeFormSubmit hook; here you can only cancel
+  data.cancel = true
 })
 
 ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {

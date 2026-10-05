@@ -26,14 +26,21 @@ title: Оформление заказа
 Сниппет msOrder должен вызываться **некэшированно** (`!msOrder`), так как работает с сессией пользователя.
 :::
 
+Форма не отправляется целиком. Каждое поле уходит на сервер отдельным запросом сразу после изменения и наполняет черновик заказа; кнопка «Оформить» отправляет пустой запрос, а заказ собирается из накопленного черновика.
+
 ```mermaid
 flowchart TB
-  Form[Форма tpl.msOrder] --> Val[Правила доставки]
-  Val --> Add["orderAPI.add поле"]
-  Add --> Draft[Черновик заказа]
-  Draft --> Submit[orderAPI.submit]
-  Submit --> Redirect["redirect ?msorder=uuid"]
+  change[Покупатель изменил поле] --> add["orderAPI.add(поле, значение)"]
+  add --> valid{"Проверка по правилам выбранной доставки"}
+  valid -->|Ошибка| feedback["Текст в .invalid-feedback, поле не сохранено"]
+  valid -->|Успех| draft[(Черновик заказа)]
+  feedback --> change
+  draft --> change
+  draft --> submit["orderAPI.submit() — без тела формы"]
+  submit --> redirect["Редирект ?msorder=uuid"]
 ```
+
+Отсюда два следствия, на которые чаще всего наступают: форма без `data-ms3-form="order"` и поле без обёртки `<div>` не доводят значения до черновика, поэтому при отправке покупатель видит ошибку о незаполненных полях, хотя всё заполнил.
 
 ## Форма заказа
 
@@ -152,7 +159,9 @@ DOM-событий `ms3:order:*` нет. Используйте hooks:
 
 ```javascript
 ms3Hooks.addHook('beforeSubmitOrder', async (data) => {
-  // можно изменить data.formData
+  // Данных о заказе здесь нет — объект пустой.
+  // Поля формы доступны в хуке beforeFormSubmit, здесь можно только отменить отправку
+  data.cancel = true
 })
 
 ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {

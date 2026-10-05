@@ -13,18 +13,34 @@ The snippet uses the user session and must be called **uncached**.
 If the URL contains GET parameter `msorder` (redirect after checkout), the snippet returns an **empty string**. On the same page use [msGetOrder](msgetorder). Do not show checkout and order details together without a URL condition.
 :::
 
+```mermaid
+flowchart TB
+  call[msOrder on the checkout page]
+  getMsorder{GET msorder?}
+  empty[Empty string]
+  form[Form: delivery / payment / fields]
+  submit[Order submit]
+  redirect[Redirect ?msorder=uuid]
+  thanks[msGetOrder on the thanks page]
+  call --> getMsorder
+  getMsorder -->|Yes| empty
+  getMsorder -->|No| form --> submit --> redirect --> thanks
+```
+
 ## Parameters
 
 | Parameter | Default | Description |
 | --- | --- | --- |
 | **tpl** | `tpl.msOrder` | Order form chunk |
-| **userFields** | | Mapping of MODX profile fields (modUserProfile) to order fields (JSON). Used when `ms3_customer_sync_enabled = true` |
-| **customerFields** | | Mapping of customer fields (msCustomer) to order fields (JSON). Used when `ms3_customer_sync_enabled = false` |
-| **includeDeliveryFields** | `id` | Comma-separated delivery fields (`*` = all). `id` is always included |
+| **userFields** | | Where to take order fields from in the MODX profile (modUserProfile): JSON shaped `{"order_field": "profile_field"}`. Used when `ms3_customer_sync_enabled = true` |
+| **customerFields** | | Where to take order fields from in the customer data (msCustomer): JSON shaped `{"order_field": "customer_field"}`. Used when `ms3_customer_sync_enabled = false` |
+| **includeDeliveryFields** | `*` | Comma-separated delivery fields (`*` = all). `id` is always included. In PHP, when the property is empty, `id` is used ([#824](https://github.com/modx-pro/MiniShop3/issues/824)) |
 | **includePaymentFields** | `*` | Comma-separated payment fields (`*` = all) |
-| **includeCustomerAddresses** | `true` | Load saved customer addresses |
+| **includeCustomerAddresses** | `true` | Load saved customer addresses. Not yet declared in the transport properties ([#824](https://github.com/modx-pro/MiniShop3/issues/824)) |
 | **showLog** | `false` | Show execution log |
 | **return** | `tpl` | Output format: `tpl`, `data` |
+
+The sources are mutually exclusive: with `ms3_customer_sync_enabled = false` (the default) `customerFields` and the msCustomer data are used, with `true` — `userFields` and the MODX profile.
 
 ## Examples
 
@@ -50,27 +66,20 @@ When sync is enabled (`ms3_customer_sync_enabled = true`), data is taken from mo
 
 ```fenom
 {'!msOrder' | snippet : [
-    'userFields' => '{"company": "extended.company_name"}'
+    'userFields' => '{"company": "extended[company_name]"}'
 ]}
 ```
 
-::: tip Choosing data source
+The key after `extended[` is a name from `profile.extended`. Nested fields take this form and no other: `extended[comment]`, `extended[building]` and so on. Dot notation does not work — the parser cuts a fixed number of characters and would read `company_nam` from `extended.company_name`.
 
-- `ms3_customer_sync_enabled = false` (default): use `customerFields` and msCustomer data
-- `ms3_customer_sync_enabled = true`: use `userFields` and modUserProfile data
 
-Data sources are mutually exclusive — only one is active depending on the setting.
-:::
-
-### Get data
+## Data structure
 
 ```fenom
 {'!msOrder' | snippet : [
     'return' => 'data'
 ]}
 ```
-
-## Data structure
 
 With `return=data` the snippet returns an array:
 
@@ -86,6 +95,7 @@ With `return=data` the snippet returns an array:
         'cart_cost_formatted' => '5 000 ₽',
         'delivery_cost' => 300,          // Delivery cost
         'delivery_cost_formatted' => '300 ₽',
+        'currency_symbol' => '₽',       // Currency symbol from the settings
         'discount_cost' => 0,            // Discount
         'discount_cost_formatted' => '0 ₽',
     ],
@@ -128,7 +138,6 @@ With `return=data` the snippet returns an array:
             // ...
         ],
     ],
-    'errors' => [],                   // Fields with validation errors
     'isCustomerAuth' => true,         // Whether customer is logged in
     'isCartEmpty' => false,           // Whether cart is empty
 ]
@@ -138,14 +147,14 @@ With `return=data` the snippet returns an array:
 
 ### Form data (contacts and address)
 
-- `{$form.first_name}` — First name
-- `{$form.last_name}` — Last name
-- `{$form.email}` — Email
-- `{$form.phone}` — Phone
-- `{$form.city}` — City
-- `{$form.street}` — Street
-- `{$form.building}` — Building
-- `{$form.room}` — Apartment/office
+- Contacts: `{$form.first_name}`, `{$form.last_name}`, `{$form.email}`, `{$form.phone}`
+- Address: `{$form.city}`, `{$form.street}`, `{$form.building}` (house), `{$form.room}` (apartment or office)
+
+::: warning Every field goes inside a `<div>`
+The handler looks for the nearest parent `<div>` and silently stops without one, never reaching the save. A field placed directly in the form, or inside another tag, never reaches the draft: the customer fills it in and gets a «field is empty» error on submit.
+
+Put `.invalid-feedback` in the same `<div>` — that is where this field's error text goes.
+:::
 
 ### State flags
 
@@ -169,6 +178,21 @@ With `return=data` the snippet returns an array:
 {/foreach}
 ```
 
+::: warning Nothing is selected by default
+The first method does not check itself: `delivery_id` and `payment_id` stay empty in the draft until the customer clicks, and a submission without them returns «no delivery method selected». miniShop2 checked the first option automatically; MiniShop3 lost that.
+
+Until it is fixed, check the first option in the chunk yourself and fire a `change` event on it, otherwise the value never reaches the draft:
+
+```fenom
+<input type="radio" name="delivery_id" value="{$delivery.id}"
+    {if $order.delivery_id == $delivery.id || (!$order.delivery_id && $delivery@first)}checked{/if}>
+```
+:::
+
+::: tip `price` is the base price only
+A delivery method also has `weight_price`, `distance_price` and `free_delivery_amount`. The final cost is calculated on the server and arrives in `{$order.delivery_cost_formatted}` — showing that to the customer is safer than `{$delivery.price}`.
+:::
+
 ### Payment methods
 
 ```fenom
@@ -183,23 +207,47 @@ With `return=data` the snippet returns an array:
 {/foreach}
 ```
 
+::: warning Payments must be filtered by the chosen delivery
+Not every payment method goes with every delivery method. The server checks the pair on each saved field and answers with an error, but it does not shorten the list itself — and nothing is hidden on the client either.
+
+List only the compatible options: a delivery method carries `{$delivery.payments}` for exactly this. Show the whole list and the customer picks an incompatible pair, then runs into an error without knowing what is wrong.
+:::
+
+### Saved addresses
+
+The list arrives in `{$addresses}`.
+
+::: warning The select id is baked into the script
+When the customer is signed in and `includeCustomerAddresses` is on, the snippet loads `js/web/order-addresses.js`. The script looks for exactly `<select id="saved_address_id">` and reads the address JSON from the chosen option's `data-address` attribute.
+
+The id cannot be overridden through `ms3Config.selectors`: name the select anything else and address filling stops working, with no message. The markup to copy is in the shipped chunk `ms3_order.tpl`.
+:::
+
 ### Totals
 
-- `{$order.cart_cost}` — Products cost (number)
-- `{$order.delivery_cost}` — Delivery cost (number)
-- `{$order.discount_cost}` — Discount (number)
-- `{$order.cost}` — Total to pay (number)
-- `{$order.cart_cost_formatted}`, `{$order.delivery_cost_formatted}`, `{$order.discount_cost_formatted}`, `{$order.cost_formatted}` — same amounts with currency
-- `{$order.currency_symbol}` — Currency symbol from MS3 settings
+| Placeholder | Value (number) |
+| --- | --- |
+| `{$order.cart_cost}` | Product cost |
+| `{$order.delivery_cost}` | Delivery cost |
+| `{$order.discount_cost}` | Discount. A reference figure: already reflected in `cart_cost`, do not subtract it from the total |
+| `{$order.cost}` | Total to pay |
+
+The same amounts with currency carry the `_formatted` suffix: `{$order.cart_cost_formatted}`, `{$order.delivery_cost_formatted}`, `{$order.discount_cost_formatted}`, `{$order.cost_formatted}`. The currency symbol from the MS3 settings is `{$order.currency_symbol}`.
 
 ## Example chunk
+
+::: warning The form needs exactly `data-ms3-form="order"`
+The `ms3_form` class alone is not enough, even though a form carrying it does get submitted. Field auto-saving is attached through a different selector — `[data-ms3-form="order"], .ms3_order_form` — and without it nothing the customer types goes anywhere.
+
+The order is assembled on the server from the draft: the submission goes out with no form body. So a form without the right mark submits and comes back with «no delivery method selected» — even when the customer picked one ([#832](https://github.com/modx-pro/MiniShop3/issues/832)).
+:::
 
 ```fenom
 {* tpl.msOrder *}
 {if $isCartEmpty}
     <div class="alert alert-warning">Cart is empty</div>
 {else}
-<form class="ms-order ms3_form" method="post">
+<form data-ms3-form="order" method="post">
     <input type="hidden" name="ms3_action" value="order/submit">
     <h2>Checkout</h2>
 
@@ -213,6 +261,7 @@ With `return=data` the snippet returns an array:
                    name="first_name"
                    value="{$form.first_name}"
                    required>
+            <div class="invalid-feedback"></div>
         </div>
 
         <div class="form-group">
@@ -304,15 +353,16 @@ With `return=data` the snippet returns an array:
         <textarea name="order_comment" rows="3">{$order.order_comment}</textarea>
     </fieldset>
 
-    {* Total *}
+    {* Totals. The ids are required: JavaScript updates the amounts through
+       them after a delivery or payment method is picked, without a reload *}
     <div class="order-total">
-        <div>Products: <span>{$order.cart_cost}</span></div>
-        <div>Delivery: <span>{$order.delivery_cost}</span></div>
+        <div>Products: <span id="ms3_order_cart_cost">{$order.cart_cost_formatted}</span></div>
+        <div>Delivery: <span id="ms3_order_delivery_cost">{$order.delivery_cost_formatted}</span></div>
         {if $order.discount_cost}
-            <div>Discount: <span>{$order.discount_cost}</span></div>
+            <div>Discount: <span>{$order.discount_cost_formatted}</span></div>
         {/if}
         <div class="total">
-            <strong>Total: <span>{$order.cost}</span></strong>
+            <strong>Total: <span id="ms3_order_cost">{$order.cost_formatted}</span></strong>
         </div>
     </div>
 
@@ -323,9 +373,15 @@ With `return=data` the snippet returns an array:
 {/if}
 ```
 
-## JavaScript interaction
+## Working from JavaScript
 
 The form uses `OrderUI` + `ms3.orderAPI`. There is no public `ms3.order` object.
+
+::: tip What refreshes itself and what does not
+After a cart change only three amounts refresh — through the ids `#ms3_order_cart_cost`, `#ms3_order_delivery_cost` and `#ms3_order_cost`.
+
+The form markup itself is not re-rendered: msOrder does not register for re-rendering, unlike msCart and msOrderTotal. The list of delivery methods, their prices and the free-delivery threshold stay as the page loaded them.
+:::
 
 ```javascript
 // Draft fields
@@ -341,11 +397,15 @@ if (response.success) {
 }
 ```
 
-Hooks (needs `hooks.js` in `ms3_frontend_assets`):
+### Hooks
+
+`hooks.js` is part of `ms3_frontend_assets` by default — check only if you overrode the setting.
 
 ```javascript
 ms3Hooks.addHook('beforeSubmitOrder', async (data) => {
-  // data.formData — form FormData
+  // There is no order data here — the object is empty.
+  // The one thing it can do is cancel the submission
+  data.cancel = true
 })
 
 ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
@@ -354,5 +414,9 @@ ms3Hooks.addHook('afterSubmitOrder', async ({ response }) => {
   }
 })
 ```
+
+::: tip Need the form fields — use the other hook
+`beforeSubmitOrder` receives an empty object: the submission goes out with no body, and the order is assembled on the server from the draft. To read or adjust what was entered, subscribe to `beforeFormSubmit` — it gets `entity`, `method` and `formData`. Cancelling works from either one: `data.cancel = true`.
+:::
 
 Details: [JavaScript API](/en/components/minishop3/development/javascript), [Frontend JS](/en/components/minishop3/development/frontend-js).
