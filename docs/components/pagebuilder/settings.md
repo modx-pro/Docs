@@ -44,7 +44,14 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 2. URL из `pagebuilder_preview_css_urls` (через запятую или с новой строки)
 3. `pagebuilder-sections.css` и `pagebuilder-preview.css`
 
-<!-- MEDIA: diagram | nice | Порядок подключения CSS в iframe preview.php: шаблон → preview_css_urls → pagebuilder-sections.css и pagebuilder-preview.css | Схема по тексту раздела «Пути и превью», без привязки к домену -->
+```mermaid
+flowchart LR
+  A["Стили шаблона ресурса<br>(если preview_include_template_css = 1)"] --> B["URL из preview_css_urls<br>через запятую или с новой строки"]
+  B --> C["pagebuilder-sections.css<br>и стили Pro/commerce по флагам"]
+  C --> D["pagebuilder-preview.css"]
+```
+
+Порядок собирает функция `pbBuildPreviewStylesheetUrls()` из `core/components/pagebuilder/include/preview_styles.php`, а `preview.php` выводит теги через `pbRenderPreviewStylesheetTags()`.
 
 Если тема подключает CSS только через Fenom или `@import` без `<link>`, добавьте файлы явно в `preview_css_urls`. Плейсхолдеры: `{assets_url}`, `{base_url}`, `{site_url}`.
 
@@ -58,8 +65,6 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_resource_tables_tab_enabled` | boolean | `0` | Вкладка «Таблицы» (табличные данные ресурса) |
 | `pagebuilder_resource_tables_tab_index` | number | `-1` | Позиция вкладки «Таблицы» |
 
-<!-- MEDIA: screenshot-admin | nice | Системные настройки, namespace pagebuilder: видны ключи pagebuilder_resource_tab_enabled, pagebuilder_resource_tab_parents, pagebuilder_resource_tab_index | Тестовый стенд, значения как в quick-start шаг 3 -->
-
 ## Collections (панель управления) {#collections-cmp}
 
 | Ключ | Тип | По умолчанию | Описание |
@@ -68,8 +73,6 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_collections_modx_bridge_enabled` | boolean | `0` | Тип вкладки `modx_collections` |
 
 Подробнее: [Панель управления → Collections](cmp#collections).
-
-<!-- MEDIA: screenshot-admin | nice | CMP PageBuilder: настройка Collections, pagebuilder_collections_enabled и modx_collections | PageBuilder Pro, capability collections на стенде -->
 
 ## Табличные данные ресурса
 
@@ -93,15 +96,11 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 | `pagebuilder_inspector_visibility_enabled` | boolean | `0` | Кнопка **Видимость** в инспекторе: диалог условий, контекстов, UTM и копии для контекста. По умолчанию выкл., редактор видит только поля контента |
 | `pagebuilder_resource_view_mode` | text | `editorial` | Вид списка на вкладке **Секции**: `editorial` или `table`. Менеджер может переопределить тумблером (значение в `localStorage`) |
 
-<!-- MEDIA: screenshot-admin | must | Инспектор секции: кнопки Fake и Видимость при pagebuilder_fake_enabled=1 и pagebuilder_inspector_visibility_enabled=1; кадр с тумблером editorial/table на вкладке Секции | Включить ключи на стенде, тестовая секция Hero -->
-
 ## Каталог {#каталог}
 
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `pagebuilder_catalog_examples_enabled` | boolean | `1` | Вкладка **Примеры** в каталоге секций (Pro JSON-пресеты). Выключите, чтобы спрятать без удаления файлов пакета. Тумблер также в CMP **Типы секций** при capability `presets` (`mgr/config/save`) |
-
-<!-- MEDIA: screenshot-admin | nice | Каталог секций на ресурсе: вкладка Примеры (Pro) или тумблер Examples в CMP Типы секций | pagebuilder_catalog_examples_enabled=1, Pro/presets на стенде -->
 
 ## Responsive breakpoints {#responsive}
 
@@ -125,8 +124,6 @@ Namespace MODX: **pagebuilder**. Ключ в базе: `pagebuilder_<name>`.
 ```
 
 Подробнее про данные поля: [Обзор полей → responsive](fields/overview#pro-responsive).
-
-<!-- MEDIA: screenshot-admin | nice | Инспектор поля с responsive: вкладки desktop / tablet / mobile при pagebuilder_responsive_editor_enabled=1 | Включить настройку и responsive-поле в типе секции на стенде -->
 
 ## Public API {#public-api}
 
