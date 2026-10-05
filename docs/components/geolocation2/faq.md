@@ -9,7 +9,7 @@ description: Типовые проблемы GeoLocation2 — SxGeo, модал�
 
 - Вызван ли `[[!GeoLocation2Initialize]]` на странице?
 - Подключён ли Bootstrap 5 (своим шаблоном или через `loadBootstrap=1` у Initialize)?
-- В чанке текущего города есть атрибут `data-gl2-open="1"`?
+- В чанке текущего города есть кнопка с классом `gl2-open-modal`?
 
 ## SxGeo определяет не тот город
 
@@ -24,7 +24,7 @@ description: Типовые проблемы GeoLocation2 — SxGeo, модал�
 Запустите:
 
 ```bash
-php assets/components/geolocation2/bin/update-sxgeo.php
+php core/components/geolocation2/bin/update-sxgeo.php
 ```
 
 или переустановите assets пакета.

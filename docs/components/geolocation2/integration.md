@@ -16,7 +16,23 @@ description: Менеджер gl_*, модель данных, CSV, PHP-серв
 | Города | `gl_cities` | Город, регион, координаты, признак «основной» |
 | Данные | `gl_data` | Контакты, адрес, изображение, alt-название для города |
 
-Импорт и экспорт CSV доступны из интерфейса менеджера (страны, регионы, города).
+Импорт и экспорт CSV доступны из интерфейса менеджера (страны, регионы, города). Формат файлов описан ниже — он относится к справочнику городов, для стран и регионов используются те же правила.
+
+### CSV городов
+
+Импорт и экспорт cities обрабатывают процессоры `GlCity/ImportCsv` и `GlCity/ExportCsv`.
+
+| Правило | Поведение |
+|---------|-----------|
+| Разделитель | Определяется по строке: если в строке есть `;`, берётся `;`, иначе `,` |
+| Обязательные колонки | `region_id` и `name_ru`. Без них строка пропускается с ошибкой `geolocation2_csv_err_line` |
+| Необязательные колонки | `id`, `name_en`, `lat`, `lon`, `okato`, `default`, `active` |
+| Булевы колонки | `default` и `active` понимают `1`, `true`, `yes`, `y` |
+| Ключ обновления | Пара `region_id` + `name_ru`: существующий город обновляется, новый создаётся |
+| Регион | Должен существовать в `gl_regions`, иначе строка пропускается с ошибкой |
+| Координаты | `lat` и `lon` проходят через `CoordinateSanitizer`: тильда `~`, запятая и пробелы допустимы, значение нормализуется в число |
+
+Импорт собирает список пропущенных строк и отдаёт его в ответе вместе с числом обработанных записей.
 
 ## Модель данных
 
@@ -27,27 +43,33 @@ gl_countries
               └── gl_data (0..n записей на город)
 ```
 
-Сессия пользователя (`$_SESSION['gl2']`, ключ задаётся сервисом):
+Сессия пользователя (`$_SESSION['geolocation2']`, ключ константой `GeoLocation2::SESSION_KEY`):
 
 | Поле сессии | Назначение |
 |-------------|------------|
 | `city_id` | ID из `gl_cities` |
 | `confirmed` | Пользователь подтвердил или выбрал город |
-| `dismissed` | Модалку закрыли без выбора (если применимо) |
+| `prompt_done` | Модалку показали, дальше выбор не повторяют |
 | `csrf` | Токен для POST в `action.php` |
 
 ## PHP-сервис
 
 ```php
-/** @var \GeoLocation2\Service\GeoLocation2 $gl2 */
+/** @var \GeoLocation2\GeoLocation2 $gl2 */
 $gl2 = $modx->services->get('GeoLocation2');
 
-$cityId = $gl2->getCurrentCityId();
-$state = $gl2->getSessionState();
-$gl2->setCity($cityId, true);
+// состояние сессии: city_id, confirmed, prompt_done, csrf
+$state = $gl2->getSessionGeo();
+$cityId = (int) ($state['city_id'] ?? 0);
+
+// записать город и подтвердить выбор
+$gl2->mergeSessionGeo(['city_id' => 8, 'confirmed' => 1]);
+
+// город по умолчанию из gl_cities
+$default = $gl2->getDefaultCityRow();
 ```
 
-Методы и события смотрите в исходниках `core/components/geolocation2/src/Service/`.
+Сервис лежит в `core/components/geolocation2/src/GeoLocation2.php`, класс `GeoLocation2\GeoLocation2`. Публичные методы: `getSessionGeo()`, `mergeSessionGeo()`, `isConfirmed()`, `markConfirmed()`, `getOrCreateCsrfToken()`, `validateCsrfToken()`, `getDefaultCityRow()`, `getCountry()`, `getCity()`, `getCityFull()`, `getCityFullByIp()`, `findGlCityFromSxGeo()`, `buildWebPlaceholders()`.
 
 ## SxGeo
 
@@ -64,7 +86,7 @@ assets/components/geolocation2/vendor/sypexgeo/data/SxGeoCity.dat
 **CLI** (из корня MODX):
 
 ```bash
-php assets/components/geolocation2/bin/update-sxgeo.php
+php core/components/geolocation2/bin/update-sxgeo.php
 ```
 
 **Scheduler** (MODX 3): задача `geolocation2_update_sxgeo`. Включите `geolocation2_sxgeo_auto_update` и задайте `geolocation2_sxgeo_update_interval_days`.

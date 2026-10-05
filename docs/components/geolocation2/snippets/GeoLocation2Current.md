@@ -44,6 +44,8 @@ description: Текущий город из сессии GeoLocation2 — чан
 | `gl2_display_name_ru` | Имя в тексте модалки (может подставить SxGeo) |
 | `gl2_real_name_ru` | Город из SxGeo |
 | `gl2_default_id` / `gl2_default_name_ru` | Город с флагом default |
+| `gl2_default_label` | Подпись для города по умолчанию. Значение задаёт параметр `defaultCityLabel` у [GeoLocation2Modal](GeoLocation2Modal), иначе лексикон |
+| `gl2_unknown_label` | Подпись для нераспознанного города. Значение задаёт параметр `unknownCityLabel` у модалки, иначе лексикон |
 | `gl2_confirmed` / `gl2_prompt_done` | `1`, если пользователь подтвердил выбор |
 | `gl2_csrf` | Токен для POST в `action.php` |
 
@@ -57,16 +59,16 @@ description: Текущий город из сессии GeoLocation2 — чан
 
 `data-confirmed="0"` до первого подтверждения в модалке, `"1"` после.
 
-Свой чанк — кнопка с `data-gl2-open="1"`, чтобы открыть [GeoLocation2Modal](GeoLocation2Modal):
+Свой чанк — кнопка с классом `gl2-open-modal`, чтобы открыть [GeoLocation2Modal](GeoLocation2Modal):
 
 ::: code-group
 
 ```modx
-<button type="button" class="btn btn-link" data-gl2-open="1">[[+gl2_current_name_ru]]</button>
+<button type="button" class="btn btn-link gl2-open-modal">[[+gl2_current_name_ru]]</button>
 ```
 
 ```fenom
-<button type="button" class="btn btn-link" data-gl2-open="1">{$gl2_current_name_ru}</button>
+<button type="button" class="btn btn-link gl2-open-modal">{$gl2_current_name_ru}</button>
 ```
 
 :::
