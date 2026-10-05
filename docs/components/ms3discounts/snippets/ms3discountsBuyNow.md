@@ -5,7 +5,6 @@ description: Выборка товаров по акциям и запуск msP
 
 # Сниппет ms3discountsBuyNow
 
-<!-- MEDIA: screenshot-front | must | Сетка акционных товаров с таймером обратного отсчёта | Вызвать ms3discountsBuyNow на промо-странице -->
 <!-- ![Подборка товаров с таймером акции](/components/ms3discounts/screenshots/storefront-buynow.png) -->
 
 Сниппет находит товары, попадающие под действующие акции с включённым флагом `show_in_catalog`, передаёт список ID в сниппет `msProducts` и возвращает готовую разметку подборки.

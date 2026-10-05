@@ -29,7 +29,6 @@ description: Ключи ms3discounts_*, пути витрины и права д
 
 ## Права доступа
 
-<!-- MEDIA: screenshot-admin | nice | Политика доступа ms3DiscountsManagerPolicy в настройках MODX | Открыть Настройки → Управление доступом → Политики доступа -->
 <!-- ![Политика доступа ms3DiscountsManagerPolicy](/components/ms3discounts/screenshots/permissions-policy.png) -->
 
 Пакет поставляет шаблон прав `ms3DiscountsPolicyTemplate` и политику `ms3DiscountsManagerPolicy`, содержащую четыре права:
