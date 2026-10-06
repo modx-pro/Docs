@@ -14,7 +14,7 @@ MiniShop3 поставляет набор сниппетов для витрин
 | [msOrder](msorder) | Форма оформления заказа |
 | [msGetOrder](msgetorder) | Получение информации о заказе |
 | [msGallery](msgallery) | Галерея изображений товара |
-| [msOptions](msoptions) | Вывод опций для фильтрации товаров |
+| [msOptions](msoptions) | Вывод конкретных опций товара по их ключам |
 | [msProductOptions](msproductoptions) | Характеристики конкретного товара |
 | [msCustomer](mscustomer) | Личный кабинет покупателя |
 | [msOrderTotal](msordertotal) | Итоговая сумма заказа |

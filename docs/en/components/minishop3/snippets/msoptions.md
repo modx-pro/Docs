@@ -3,124 +3,188 @@ title: msOptions
 ---
 # msOptions
 
-Simple snippet for outputting specific product options. When you know in advance which options you need, use this snippet for best performance.
+Outputs the named product options by their keys. If the keys are not known in advance, all options are needed, or a selection by group — [msProductOptions](msproductoptions).
+
+::: warning The option must exist and be enabled for the category
+An option reaches `$options` under two conditions: it is created in the admin and enabled for the category the product belongs to. A key that does not exist is not created by the snippet — it is silently skipped.
+
+A clean installation has no options at all; the component does not add them. So the first call on a new site returns nothing, and that is not a misconfiguration.
+:::
+
+::: danger The names `color` and `size` cannot be used for options
+These are columns of the product table, and `msProduct::get()` checks them **before** options. An option with such a key is silently shadowed: the output carries the product field value, not the option value.
+
+The full list of taken names is in the `reserved` rule of the `msOption` model: it covers every MODX resource field plus `article`, `price`, `old_price`, `weight`, `image`, `thumb`, `vendor`, `made_in`, `new`, `popular`, `favorite`, `tags`, `color`, `size`, `source`, `action`.
+:::
 
 ## Parameters
 
 | Parameter | Default | Description |
 | --- | --- | --- |
 | **product** | current resource | Product ID |
-| **options** | | Comma-separated option list |
+| **options** | | Comma-separated list of options |
 | **tpl** | `tpl.msOptions` | Layout chunk |
-| **sortOptionValues** | | Sort option values (see below) |
+| **sortOptionValues** | | [Sorting of option values](#sorting-option-values) |
 
-Options with an empty first value are not included in the chunk `$options` array.
+Options whose first value is empty do not reach `$options` in the chunk.
 
 ### Deprecated parameters
 
-::: warning Backward compatibility
-These parameters are deprecated and will be removed in future versions:
+| Parameter | Replacement |
+| --- | --- |
+| `&input` | `&product` |
+| `&name` | `&options` |
 
-- `&input` → use `&product`
-- `&name` → use `&options`
-:::
+Both still work, but will be removed in future versions.
 
 ## Examples
 
-### Output color and size for the current product
+### Options of the current product
+
+:::code-group
+
+```modx
+[[msOptions? &options=`material,length`]]
+```
 
 ```fenom
 {'msOptions' | snippet : [
-    'options' => 'color,size'
+    'options' => 'material,length'
 ]}
 ```
 
+:::
+
 ### For a specific product
+
+:::code-group
+
+```modx
+[[msOptions? &product=`123` &options=`material,length`]]
+```
 
 ```fenom
 {'msOptions' | snippet : [
     'product' => 123,
-    'options' => 'color,size,material'
+    'options' => 'material,length'
 ]}
 ```
+
+:::
 
 ### Uncached call
 
+:::code-group
+
+```modx
+[[!msOptions? &options=`material,length`]]
+```
+
 ```fenom
 {'!msOptions' | snippet : [
-    'options' => 'color,size'
+    'options' => 'material,length'
 ]}
 ```
 
-### Custom chunk
+:::
+
+::: warning The prefix works differently in the two syntaxes
+`[[!msOptions]]` stays in the page cache as a tag and runs on every request — that is a real uncached call.
+
+In Fenom `{'!msOptions' | snippet}` execution is not deferred: the snippet runs where it stands, and the finished result is what goes into the page cache. On the next request the template is not executed, so neither is the snippet.
+
+If the options output has to be recalculated on every request, it is safer to untick «Cacheable» on the resource — that works with either call syntax.
+:::
+
+### With your own chunk
+
+:::code-group
+
+```modx
+[[msOptions? &options=`material,length` &tpl=`myOptionsChunk`]]
+```
 
 ```fenom
 {'msOptions' | snippet : [
-    'options' => 'color,size',
+    'options' => 'material,length',
     'tpl' => 'myOptionsChunk'
 ]}
 ```
 
+:::
+
 ### With value sorting
+
+:::code-group
+
+```modx
+[[msOptions? &options=`material,length` &sortOptionValues=`length:SORT_ASC:SORT_NATURAL`]]
+```
 
 ```fenom
 {'msOptions' | snippet : [
-    'options' => 'color,size',
-    'sortOptionValues' => 'size:SORT_ASC:SORT_STRING:M'
+    'options' => 'material,length',
+    'sortOptionValues' => 'length:SORT_ASC:SORT_NATURAL'
 ]}
 ```
 
+:::
+
 ## Sorting option values
 
-The `sortOptionValues` parameter lets you sort values within each option.
+`sortOptionValues` sorts the values inside each option. Format:
 
-### Format
-
-```
+```text
 option_name:direction:type:first_value
 ```
 
-| Part | Description | Values |
+| Part | Description | Possible values |
 | --- | --- | --- |
-| option_name | Option key to sort | `color`, `size`, etc. |
+| option_name | Option key to sort | the key of any existing option |
 | direction | Sort direction | `SORT_ASC`, `SORT_DESC` |
 | type | Sort type | `SORT_STRING`, `SORT_NUMERIC`, `SORT_NATURAL` |
-| first_value | Value to put first (optional) | Any value from the list |
+| first_value | Value to put first (not required) | any value from the list |
 
 ### Sorting examples
 
 ```fenom
-{* Sizes alphabetically *}
-'sortOptionValues' => 'size:SORT_ASC:SORT_STRING'
+{* Alphabetically *}
+'sortOptionValues' => 'material:SORT_ASC:SORT_STRING'
 
-{* Sizes alphabetically, M first *}
-'sortOptionValues' => 'size:SORT_ASC:SORT_STRING:M'
+{* Alphabetically, but «cotton» first *}
+'sortOptionValues' => 'material:SORT_ASC:SORT_STRING:cotton'
 
-{* Multiple options *}
-'sortOptionValues' => 'size:SORT_ASC:SORT_STRING, color:SORT_DESC:SORT_STRING'
+{* Several options *}
+'sortOptionValues' => 'length:SORT_ASC:SORT_NATURAL, material:SORT_DESC:SORT_STRING'
 ```
 
-## Placeholders in chunk
+## Placeholders in the chunk
 
 | Placeholder | Description |
 | --- | --- |
 | `{$id}` | Product ID |
-| `{$options}` | Array of options and their values |
+| `{$options}` | Array of options with their values |
 
 ## Data structure
 
-Returns an array of option values **without metadata**:
+Under the option key sits the array of its values, and next to it the metadata with a dot in the name:
 
 ```php
 [
-    'color' => ['Red', 'Blue'],
-    'size' => ['S', 'M', 'L']
+    'material'              => ['cotton', 'linen'],
+    'material.caption'      => 'Material',
+    'material.description'  => 'Fabric composition',
+    'material.type'         => 'select',
+    'material.measure_unit' => '',
+    'material.group_name'   => 'Specifications',
 ]
 ```
 
+The metadata is available both in the chunk and directly on the product: `{$product['material.caption']}`. It can also be requested explicitly by listing it in `options` alongside the option key: `material,material.caption`.
+
 ## Default chunk
 
-The default chunk `tpl.msOptions` outputs options as select elements:
+The default `tpl.msOptions` chunk renders options as select elements:
 
 ```fenom
 {* tpl.msOptions *}
@@ -143,42 +207,17 @@ The default chunk `tpl.msOptions` outputs options as select elements:
 
 ## Alternative chunk
 
-Simple list output example:
-
 ```fenom
 {* tpl.myOptions *}
 {if $options?}
-    <div class="product-options">
-        {foreach $options as $key => $values}
-            <div class="option">
-                <strong>{$key}:</strong>
-                {if $values is iterable}
-                    {$values | join : ', '}
-                {else}
-                    {$values}
-                {/if}
-            </div>
-        {/foreach}
-    </div>
+    {foreach $options as $key => $values}
+        <strong>{$key}:</strong>
+        {* option values arrive as an array, metadata as separate keys *}
+        {if $values is iterable}
+            {$values | join : ', '}
+        {else}
+            {$values}
+        {/if}
+    {/foreach}
 {/if}
 ```
-
-## When to use
-
-| Suitable | Not suitable |
-| --- | --- |
-| Only specific options needed | Need ALL product options |
-| No metadata required | Filter by groups |
-| Best performance | Need option names and categories |
-
-## Comparison with msProductOptions
-
-| Criteria | msOptions | msProductOptions |
-| --- | --- | --- |
-| **Speed** | Faster | Slower |
-| **Filtering** | Option list only | Groups, options, sorting |
-| **Metadata** | None | Full (category, type) |
-| **Flexibility** | Simple | Advanced |
-| **Use case** | Fixed list | Dynamic list |
-
-If you need option metadata (categories, types, descriptions), use [msProductOptions](msproductoptions).

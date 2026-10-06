@@ -3,7 +3,19 @@ title: msOptions
 ---
 # msOptions
 
-Сниппет для вывода конкретных опций товара.
+Выводит указанные опции товара по их ключам. Если ключи заранее неизвестны, нужны все опции или выборка по группам — [msProductOptions](msproductoptions).
+
+::: warning Опция должна существовать и быть включена для категории
+Опция попадёт в `$options` при двух условиях: она заведена в админке и включена для категории, в которой лежит товар. Несуществующий ключ сниппет не создаёт, а молча пропускает.
+
+На чистой установке опций нет вообще — компонент их не добавляет. Поэтому первый вызов на новом сайте вернёт пустоту, и это не ошибка настройки.
+:::
+
+::: danger Имена `color` и `size` для опций запрещены
+Это колонки таблицы товара, и `msProduct::get()` проверяет их **раньше** опций. Опция с таким ключом молча затеняется: в выводе окажется значение поля товара, а не значение опции.
+
+Полный список занятых имён — в правиле `reserved` модели `msOption`: все поля ресурса MODX плюс `article`, `price`, `old_price`, `weight`, `image`, `thumb`, `vendor`, `made_in`, `new`, `popular`, `favorite`, `tags`, `color`, `size`, `source`, `action`.
+:::
 
 ## Параметры
 
@@ -12,69 +24,115 @@ title: msOptions
 | **product** | текущий ресурс | ID товара |
 | **options** | | Список опций через запятую |
 | **tpl** | `tpl.msOptions` | Чанк оформления |
-| **sortOptionValues** | | Сортировка значений опций (см. ниже) |
+| **sortOptionValues** | | [Сортировка значений опций](#сортировка-значений-опций) |
 
 Опции с пустым первым значением не попадают в `$options` чанка.
 
 ### Устаревшие параметры
 
-::: warning Обратная совместимость
-Следующие параметры устарели и будут удалены в будущих версиях:
+| Параметр | Замена |
+| --- | --- |
+| `&input` | `&product` |
+| `&name` | `&options` |
 
-- `&input` → используйте `&product`
-- `&name` → используйте `&options`
-:::
+Оба ещё работают, но будут удалены в будущих версиях.
 
 ## Примеры
 
-### Вывод цвета и размера текущего товара
+### Опции текущего товара
+
+:::code-group
+
+```modx
+[[msOptions? &options=`material,length`]]
+```
 
 ```fenom
 {'msOptions' | snippet : [
-    'options' => 'color,size'
+    'options' => 'material,length'
 ]}
 ```
 
+:::
+
 ### Для конкретного товара
+
+:::code-group
+
+```modx
+[[msOptions? &product=`123` &options=`material,length`]]
+```
 
 ```fenom
 {'msOptions' | snippet : [
     'product' => 123,
-    'options' => 'color,size,material'
+    'options' => 'material,length'
 ]}
 ```
+
+:::
 
 ### Некэшируемый вызов
 
+:::code-group
+
+```modx
+[[!msOptions? &options=`material,length`]]
+```
+
 ```fenom
 {'!msOptions' | snippet : [
-    'options' => 'color,size'
+    'options' => 'material,length'
 ]}
 ```
 
+:::
+
+::: warning Префикс работает по-разному в двух синтаксисах
+`[[!msOptions]]` — настоящий некэшируемый вызов: в кэше страницы остаётся тег, сниппет выполняется при каждом запросе.
+
+В Fenom `{'!msOptions' | snippet}` исполнение не откладывается. Сниппет отрабатывает там же, где встретился, и в кэш страницы попадает готовый результат: при следующем запросе не выполняется ни шаблон, ни сниппет.
+
+Чтобы вывод опций пересчитывался на каждый запрос, снимите у ресурса галочку «Кэшировать» — это работает при любом синтаксисе вызова.
+:::
+
 ### Со своим чанком
+
+:::code-group
+
+```modx
+[[msOptions? &options=`material,length` &tpl=`myOptionsChunk`]]
+```
 
 ```fenom
 {'msOptions' | snippet : [
-    'options' => 'color,size',
+    'options' => 'material,length',
     'tpl' => 'myOptionsChunk'
 ]}
 ```
 
+:::
+
 ### С сортировкой значений
+
+:::code-group
+
+```modx
+[[msOptions? &options=`material,length` &sortOptionValues=`length:SORT_ASC:SORT_NATURAL`]]
+```
 
 ```fenom
 {'msOptions' | snippet : [
-    'options' => 'color,size',
-    'sortOptionValues' => 'size:SORT_ASC:SORT_STRING:M'
+    'options' => 'material,length',
+    'sortOptionValues' => 'length:SORT_ASC:SORT_NATURAL'
 ]}
 ```
 
+:::
+
 ## Сортировка значений опций
 
-Параметр `sortOptionValues` позволяет сортировать значения внутри каждой опции.
-
-### Формат
+`sortOptionValues` сортирует значения внутри каждой опции. Формат:
 
 ```text
 имя_опции:направление:тип:первое_значение
@@ -82,22 +140,22 @@ title: msOptions
 
 | Часть | Описание | Возможные значения |
 | --- | --- | --- |
-| имя_опции | Ключ опции для сортировки | `color`, `size` и т.д. |
+| имя_опции | Ключ опции для сортировки | ключ любой существующей опции |
 | направление | Направление сортировки | `SORT_ASC`, `SORT_DESC` |
 | тип | Тип сортировки | `SORT_STRING`, `SORT_NUMERIC`, `SORT_NATURAL` |
-| первое_значение | Значение, которое поставить первым (опционально) | Любое значение из списка |
+| первое_значение | Значение, которое поставить первым (необязательно) | любое значение из списка |
 
 ### Примеры сортировки
 
 ```fenom
-{* Размеры по алфавиту *}
-'sortOptionValues' => 'size:SORT_ASC:SORT_STRING'
+{* По алфавиту *}
+'sortOptionValues' => 'material:SORT_ASC:SORT_STRING'
 
-{* Размеры по алфавиту, но M первым *}
-'sortOptionValues' => 'size:SORT_ASC:SORT_STRING:M'
+{* По алфавиту, но «хлопок» первым *}
+'sortOptionValues' => 'material:SORT_ASC:SORT_STRING:хлопок'
 
 {* Несколько опций *}
-'sortOptionValues' => 'size:SORT_ASC:SORT_STRING, color:SORT_DESC:SORT_STRING'
+'sortOptionValues' => 'length:SORT_ASC:SORT_NATURAL, material:SORT_DESC:SORT_STRING'
 ```
 
 ## Плейсхолдеры в чанке
@@ -109,18 +167,25 @@ title: msOptions
 
 ## Структура данных
 
-Сниппет возвращает массив значений опций **без метаданных**:
+Под ключом опции лежит массив её значений, а рядом — метаданные с точкой в имени:
 
 ```php
 [
-    'color' => ['Красный', 'Синий'],
-    'size' => ['S', 'M', 'L']
+    'material'              => ['хлопок', 'лён'],
+    'material.caption'      => 'Материал',
+    'material.description'  => 'Состав ткани',
+    'material.type'         => 'select',
+    'material.measure_unit' => '',
+    'material.group_name'   => 'Характеристики',
 ]
 ```
 
+Метаданные доступны и в чанке, и напрямую у товара: `{$product['material.caption']}`. Их можно запросить явно, перечислив в `options` рядом с ключом опции: `material,material.caption`.
+
 ## Чанк по умолчанию
 
-Стандартный чанк `tpl.msOptions` выводит опции как select-элементы:
+Стандартный чанк `tpl.msOptions` выводит каждую опцию как `<select>`:
+
 
 ```fenom
 {* tpl.msOptions *}
@@ -146,27 +211,14 @@ title: msOptions
 ```fenom
 {* tpl.myOptions *}
 {if $options?}
-    <div class="product-options">
-        {foreach $options as $key => $values}
-            <div class="option">
-                <strong>{$key}:</strong>
-                {if $values is iterable}
-                    {$values | join : ', '}
-                {else}
-                    {$values}
-                {/if}
-            </div>
-        {/foreach}
-    </div>
+    {foreach $options as $key => $values}
+        <strong>{$key}:</strong>
+        {* значения опции приходят массивом, метаданные — отдельными ключами *}
+        {if $values is iterable}
+            {$values | join : ', '}
+        {else}
+            {$values}
+        {/if}
+    {/foreach}
 {/if}
 ```
-
-## Когда использовать
-
-| Подходит | Не подходит |
-| --- | --- |
-| Нужны только конкретные опции | Нужны ВСЕ опции товара |
-| Не требуются метаданные | Требуется фильтрация по группам |
-| Нужна максимальная производительность | Нужны названия, категории опций |
-
-Если нужны метаданные опций (категории, типы, описания), используйте [msProductOptions](msproductoptions).

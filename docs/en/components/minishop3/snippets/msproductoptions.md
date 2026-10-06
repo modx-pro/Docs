@@ -52,7 +52,7 @@ The `&input` parameter is deprecated. Use `&product`.
 
 ```fenom
 {'msProductOptions' | snippet: [
-    'onlyOptions' => 'color,size,material,weight'
+    'onlyOptions' => 'material,length,season'
 ]}
 ```
 
@@ -77,7 +77,7 @@ The `&input` parameter is deprecated. Use `&product`.
 ```fenom
 {'msProductOptions' | snippet: [
     'sortGroups' => 'Main,Dimensions,Additional',
-    'sortOptions' => 'weight,dimensions,material,color'
+    'sortOptions' => 'material,length,season'
 ]}
 ```
 
@@ -106,23 +106,23 @@ With `return=data` or `return=array`, an associative array is returned where the
 
 ```php
 [
-    'color' => [
-        'caption' => 'Color',
-        'value' => ['Red', 'Blue'],
+    'material' => [
+        'caption' => 'Material',
+        'value' => ['cotton', 'linen'],
         'category' => 'main',
         'group_name' => 'Main specs',
         'type' => 'combo-options',
         'properties' => [...]
     ],
-    'size' => [
-        'caption' => 'Size',
-        'value' => 'M',
+    'length' => [
+        'caption' => 'Length',
+        'value' => '120 cm',
         'category' => 'main',
         'group_name' => 'Main specs'
     ],
-    'weight' => [
-        'caption' => 'Weight',
-        'value' => '250 g',
+    'season' => [
+        'caption' => 'Season',
+        'value' => 'winter',
         'category' => 'specs',
         'group_name' => 'Specs'
     ]
@@ -130,7 +130,7 @@ With `return=data` or `return=array`, an associative array is returned where the
 ```
 
 ::: info Option key
-The option name (`color`, `size`, `weight`) is the array key, not a field inside the option. To access it, use `{foreach $options as $key => $option}`.
+The option name (`material`, `length`, `season`) is the array key, not a field inside the option. To access it, use `{foreach $options as $key => $option}`.
 :::
 
 ## Placeholders in chunk
@@ -154,7 +154,7 @@ Use foreach to get the option key:
 
 ```fenom
 {foreach $options as $key => $option}
-    {* $key = 'color', 'size', etc. *}
+    {* $key = 'material', 'length', etc. *}
     <div data-option="{$key}">{$option.caption}: {$option.value}</div>
 {/foreach}
 ```
@@ -249,7 +249,7 @@ When options are selectable (for example, color and size):
 <form class="product-form">
     {set $options = 'msProductOptions' | snippet: [
         'return' => 'data',
-        'onlyOptions' => 'color,size'
+        'onlyOptions' => 'material,length'
     ]}
 
     {foreach $options as $key => $option}
