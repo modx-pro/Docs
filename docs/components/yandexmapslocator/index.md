@@ -25,6 +25,7 @@ items: [
       { text: 'Точки и TV', link: 'integration' },
       { text: 'Интерфейс', link: 'frontend' },
       { text: 'Контексты MODX', link: 'contexts' },
+      { text: 'Сниппеты', link: 'snippets/' },
       { text: 'Сниппет YandexMapsLocator', link: 'snippets/YandexMapsLocator' },
     ],
   },
@@ -110,6 +111,8 @@ items: [
 | API-ключ [Яндекс.Карт](https://developer.tech.yandex.ru/) | JS API и HTTP Геокодер |
 
 Pro 1.1.0-pl2 требует Free ≥ 1.0.0-pl7 (`yandexmapslocator >=1.0.0-pl7 <2.0.0`). Матрица: [Free и Pro](free-vs-pro).
+
+Локатор берёт pdoTools по порядку: сервис `ModxPro\PdoTools\CoreTools`, сервис `pdoTools`, затем `$modx->getService('pdoTools')`. Берётся любой объект с методом `getChunk()`. Если не нашлось ни одного, в лог один раз падает предупреждение `[YandexMapsLocator] Fenom chunks require pdoTools`, и чанки рендерятся через `$modx->getChunk()` без Fenom.
 
 ## Установка
 

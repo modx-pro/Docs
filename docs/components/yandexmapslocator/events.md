@@ -31,4 +31,13 @@ description: События MODX YandexMapsLocator для плагинов и Pr
 | Free | `OnDocFormSave`, `OnSiteRefresh`, `OnDocFormRender` (геокод в менеджере) |
 | Pro | RegisterFeatureProviders, RegisterFilters, BeforeStorePrepare (пояс, товары, amenity, brand), AfterStorePrepare, SerializeLocation, OnDocFormRender (превью расписания) |
 
+## Кэш и его сброс
+
+Кэш лежит в отдельном разделе кэш-менеджера `yandexmapslocator`, поэтому общая очистка кэша MODX его не трогает. Чистят его два события плагина Free:
+
+| Событие | Что чистит |
+|---------|------------|
+| `OnDocFormSave` | Только ключ геокода адреса сохранённого ресурса. Остальные ключи не трогает |
+| `OnSiteRefresh` | Весь раздел `yandexmapslocator`: геокод и счётчики лимитов |
+
 Контракт расширений: [Extension API](extension-api).

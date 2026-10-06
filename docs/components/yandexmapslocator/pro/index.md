@@ -36,7 +36,7 @@ Free: сервис yandexmapslocator, сниппет, search.php, chunks, Extens
 - `OnYandexMapsLocatorSerializeLocation`
 - `OnDocFormRender`
 
-Capability `pro` включает REST v1. Модуль `/assets/components/yandexmapslocatorpro/js/pro.js` рисует бейджи и кнопку «Только открытые».
+REST v1 включается самим фактом установки Pro: эндпоинт лежит в `assets/components/yandexmapslocatorpro/api.php` и capability не проверяет. Capability `pro` это сигнал, который читает Free: по нему локатор на странице переключается с `search.php` на REST и разрешается `product_id`. Модуль `/assets/components/yandexmapslocatorpro/js/pro.js` рисует бейджи и кнопку «Только открытые».
 
 ## Установка
 
