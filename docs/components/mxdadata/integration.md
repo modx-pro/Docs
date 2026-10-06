@@ -53,15 +53,16 @@ flowchart TD
 
 ### Кэш Clean и валидация заказа
 
-При попадании в кэш **`CleanService`** отдаёт `{from_cache, body, status: 200}`. **`body`** — сохранённый массив Clean, **`OrderValidator`** читает **`body[0]`**. Повторная нормализация тех же данных проходит. Сброс: **Очистить кеш** на Dashboard или меньший TTL.
+При попадании в кэш **`CleanService`** отдаёт `{from_cache, body, status: 200}`. **`body`** — сохранённый массив Clean, **`OrderValidator`** читает **`body[0]`**. Повторная нормализация тех же данных проходит. Сброс: **Очистить кеш** на вкладке **Обзор** или меньший TTL.
 
 При установке резолвер добавляет колонку **`fias_id`** (`VARCHAR(36)`) в `{prefix}ms3_order_addresses`, если её нет. Без MiniShop3 — WARN, установка идёт дальше. Плагин пишет `fias_id` в Address.
 
 ## Кэш и ограничение частоты
 
 - Ответы DaData пишутся в **`mxdadata_cache`**, TTL **`mxdadata_cache_ttl`**
-- Кнопка на Dashboard чистит только эту таблицу
-- **`RateLimiter`** считает запросы в **`cacheManager`** по **`mxdadata_throttle_rpm`**
+- Кнопка на вкладке **Обзор** чистит только эту таблицу
+- **`RateLimiter`** считает запросы в **`cacheManager`** под ключом `mxdadata_throttle<YYYY-MM-DD-HH-mm>` (срок 120 с) по **`mxdadata_throttle_rpm`**
+- Порядок проверок в сервисах: сначала кэш, потом счётчик. Ответ из кэша квоту DaData не расходует
 
 ## Логи
 
@@ -105,7 +106,31 @@ sequenceDiagram
 
 Допустимые **`action`** в `connector-web.php` для веб-части: `Suggest/Address`, `Suggest/Party`, `Suggest/Name`, `Suggest/Email`, `Suggest/Bank`, `Party/FindById`, `Geolocate/Address`, `Tools/Version` (см. коннектор в пакете). Сложные схемы с вложенным `subject` и несколькими полями задавайте через **`suggestionsChunk`**: в чанке только JSON.
 
+Ограничения процессоров, которые клиент не обходит: у `Suggest/Address` запрос короче 3 символов отклоняется, `count` у всех Suggest зажимается в диапазон 1…20, у `Geolocate/Address` `count` тоже 1…20, а `radius_meters` 1…100000.
+
 Если **`suggestionsChunk`** задан, сниппет сначала читает JSON из чанка MODX (`$modx->getChunk()`). Когда в БД чанк пустой или в теле невалидный JSON, берётся **файл** в пакете: `core/components/mxdadata/elements/chunks/<имя_чанка>.tpl`. Путь тот же, что у статического чанка в репозитории. Это помогает, когда конфиг в репозитории есть, а запись в БД ещё не перенесена.
+
+## Процессоры менеджера
+
+Вызов идёт через `assets/components/mxdadata/connector.php`: параметры передаются в `$_REQUEST` или в JSON-теле (`Content-Type: application/json`), поле `action` — имя процессора без префикса пространства имён. Ответ всегда имеет форму `{ success, message }` плюс `data` при успехе и `errors` при ошибке.
+
+| `action` | Параметры | `data` в ответе |
+|----------|-----------|----------------|
+| `Dashboard/Status` | нет | `api_ok`, `has_credentials`, `balance` (руб.), `requests_today`, `errors_today`, `stats_for_date` (`YYYY-MM-DD`), `last_errors` (до 5 обрезанных ответов). При заданных ключах делает два запроса к DaData: баланс и тестовый `suggest/address` |
+| `Dashboard/TestConnection` | нет | `{ ok: true }`. Не проходит через `RateLimiter` |
+| `Settings/Get` | нет | 18 ключей без префикса `mxdadata_`, с приведением типов. Включает `api_secret` |
+| `Settings/Save` | `settings` (JSON-строка или объект) | `{ saved: true }`. Ключи вне списка из 18 игнорируются, после записи сбрасывается кэш системных настроек. Из админки не вызывается |
+| `Cache/Clear` | нет | `{ cleared: true }` |
+| `Cache/Stats` | нет | `ttl`, `ttl_human` |
+| `Logs/GetList` | `limit` (1…100, по умолчанию 20), `start`, `type`, `status` (`success` / `error` / пусто), `date_from`, `date_to` (`YYYY-MM-DD`), `sortField` (один из `id`, `type`, `method`, `status`, `execution_time`, `created_at`), `sortOrder` | `total`, `results` (без `request` и `response`) |
+| `Logs/GetItem` | `id` | Полная запись журнала, включая `request` и `response` |
+| `Logs/Rotate` | нет | `deleted`, `cutoff`. Удаляет записи старше `mxdadata_log_retention_days` |
+
+Действия витрины (`Suggest/*`, `Party/FindById`, `Geolocate/Address`, `Tools/Version`) и `Clean/*` доступны в обоих коннекторах, но в `connector.php` список не зафиксирован: строка `action` подставляется в имя класса напрямую.
+
+::: warning
+`connector.php` **не фильтрует** `action` и **не проверяет права** компонента: есть только аутентификация менеджера. Проверок `mxdadata_view`, `mxdadata_edit`, `mxdadata_logs`, `mxdadata_cache_clear` в процессорах пакета нет, единственное место, где право проверяется, это пункт меню **Extras → mxDadata**. Ограничение доступа к процессорам держится только на скрытии пункта меню.
+:::
 
 ## Связанные компоненты
 
