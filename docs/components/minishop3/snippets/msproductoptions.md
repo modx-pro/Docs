@@ -181,7 +181,6 @@ title: msProductOptions
 
 ## Чанк по умолчанию
 
-
 ```fenom
 {* tpl.msProductOptions *}
 {foreach $options as $option}
@@ -199,7 +198,6 @@ title: msProductOptions
 ## Свои чанки
 
 ### Группировка по группам
-
 
 ```fenom
 {* tpl.myProductOptions.grouped *}
@@ -232,7 +230,6 @@ title: msProductOptions
 ```
 
 ## Выбор опций при добавлении в корзину
-
 
 ```fenom
 <form method="post" class="ms3_form" data-ms3-form>
