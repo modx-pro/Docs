@@ -9,21 +9,14 @@ description: PHP, MODX, xPDO и опциональные зависимости 
 
 | Компонент | Версия |
 | --- | --- |
-| MODX Revolution | **3.2.3+** |
-| PHP | **8.1+** |
-| xPDO | **~3.1** на стабильной ветке, **^3.2** на актуальной `3.x` |
-| СУБД | MySQL / MariaDB с InnoDB |
+| MODX Revolution | **3.0.0+** (`modx >= 3.0.0` в `_build/build.php`) |
+| PHP | **8.1+** (`>=8.1.0` в `_build/build.php` и `composer.json`) |
+| xPDO | **3.x** из поставки MODX, отдельного ограничения пакет не задаёт |
+| СУБД | MySQL / MariaDB с InnoDB (все таблицы пакета на InnoDB) |
 
-В transport-метаданных указано `modx >= 3.0.0`. На сайте и в README пакета ориентир: **3.2.3+**.
+Требование транспорта: `modx >= 3.0.0`. README пакета указывает более строгое значение: **MODX Revolution 3.2.3+**. В коде пакета ограничений на xPDO нет, поэтому версии xPDO сверяйте со своей сборкой MODX.
 
-Friendly URLs желательны для префикса `/api/v1`. Без них используйте [fallback `api.php`](installation#запасной-путь-apiphp).
-
-## Матрица совместимости
-
-| MODX | xPDO | PHP |
-| --- | --- | --- |
-| 3.2.3-pl | ~3.1 | 8.1-8.3 |
-| 3.x (dev) | ^3.2 | 8.2+ |
+Friendly URLs желательны для префикса `/api/v1`. Без них используйте [fallback `api.php`](installation#zapasnoy-put-apiphp).
 
 ## Опционально
 

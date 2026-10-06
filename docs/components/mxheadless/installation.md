@@ -5,7 +5,7 @@ description: Сборка transport-пакета mxHeadless, gateway и пров
 
 # Установка
 
-mxHeadless рассчитан на MODX Revolution **3.2.3+** и PHP **8.1+**.
+Требование транспорта: MODX Revolution **3.0.0+** (`modx >= 3.0.0`) и PHP **8.1+**. README пакета указывает более строгое значение: 3.2.3+.
 
 ## Через Package Manager
 
@@ -72,20 +72,23 @@ composer install --no-dev --optimize-autoloader
 https://your-site.example/assets/components/mxheadless/api.php/v1/health
 ```
 
-На nginx/Herd (часто без PATH_INFO у вложенных `.php`) используйте query `route`:
+На nginx/Herd (часто без PATH_INFO у вложенных `.php`) используйте query-параметры `route` или `path`:
 
 ```text
 https://your-site.example/assets/components/mxheadless/api.php?route=/v1/health
 https://your-site.example/assets/components/mxheadless/api.php?route=/api/v1/resources&limit=5
+https://your-site.example/assets/components/mxheadless/api.php?path=/v1/health
 ```
 
-Голый `api.php` ведёт на discovery. Оба входа используют одну цепочку middleware.
+Приоритет разбора пути: `PATH_INFO`, затем `ORIG_PATH_INFO`, затем путь после `api.php` в `REQUEST_URI`, затем `?route=`, затем `?path=`. Значение может начинаться с `/v1/...` или с префикса из `mxheadless_api_prefix` (`/api/v1/...`). Если ни один источник не дал путь, срабатывает discovery. `route` и `path` на этом входе вырезаются из query, в обработчик они не попадают.
+
+Голый `api.php` ведёт на discovery. Все входы используют одну цепочку middleware.
 
 ```mermaid
 flowchart LR
   subgraph entry [Точки входа]
     P["OnHandleRequest /api/v1/..."]
-    F["api.php PATH_INFO или ?route="]
+    F["api.php: PATH_INFO, ?route=, ?path="]
   end
   M[Одна цепочка middleware]
   P --> M

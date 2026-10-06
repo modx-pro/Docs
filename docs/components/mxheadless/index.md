@@ -109,7 +109,8 @@ REST API gateway для [MODX Revolution 3](https://modx.com/). Отдаёт р�
 
 - Префикс `/api/v1` через плагин `OnHandleRequest` (настраивается)
 - В API попадают только зарегистрированные объекты и поля
-- Middleware PSR-7/15: CORS, rate limit, CSRF, idempotency, HTTP-кэш, audit, webhooks
+- 16 middleware PSR-15 в фиксированном порядке: audit log, error, trusted proxy, request ID, body limit, content negotiation, CORS, routing, service gate, аутентификация, rate limit, CSRF, авторизация, request lifecycle, idempotency, HTTP-кэш
+- Webhooks вне HTTP-цепочки: события пишутся в outbox, доставка идёт отдельным CLI worker
 - Live OpenAPI и Swagger UI на `/api/v1/docs`
 - API keys (`mxh_*`), OAuth (`mxt_*`), сессия менеджера
 - Extension API (`OnMxHeadlessRegister`) для MiniShop3 и своих extras
@@ -118,7 +119,7 @@ REST API gateway для [MODX Revolution 3](https://modx.com/). Отдаёт р�
 
 | | Версия |
 | --- | --- |
-| MODX Revolution | 3.2.3+ (в transport указано `modx >= 3.0.0`, ориентируйтесь на README) |
+| MODX Revolution | 3.2.3+ |
 | PHP | 8.1+ |
 | БД | MySQL / MariaDB (InnoDB), xPDO 3 |
 
@@ -148,7 +149,7 @@ curl -s https://your-site.example/api/v1/health | jq
 
 Интерактивная спецификация: `/api/v1/docs`. Подробнее: [Swagger и OpenAPI](api/swagger).
 
-Без rewrite: `assets/components/mxheadless/api.php?route=/v1/health`.
+Без rewrite: `assets/components/mxheadless/api.php?route=/v1/health`. Второй fallback-параметр, если `route` занят: `?path=`.
 
 ## Формат ответа
 

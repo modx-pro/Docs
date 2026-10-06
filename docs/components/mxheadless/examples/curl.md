@@ -35,14 +35,21 @@ curl -s 'https://example.com/api/v1/resources?q=News&fields=id,pagetitle,uri' | 
 
 ## API key
 
+Ключ принимается и в `Authorization: Bearer`, и в отдельном заголовке `X-API-Key`. Значение то же: `mxh_...`.
+
 ```bash
 export MXHEADLESS_API_KEY='mxh_...'
 
 curl -s https://example.com/api/v1/chunks \
   -H "Authorization: Bearer $MXHEADLESS_API_KEY" | jq
+
+curl -s https://example.com/api/v1/chunks \
+  -H "X-API-Key: $MXHEADLESS_API_KEY" | jq
 ```
 
 ## Создание ресурса
+
+`Idempotency-Key` работает только на `POST`. Повтор с тем же ключом и тем же телом вернёт сохранённый ответ с `Idempotency-Replayed: true`, повтор с другим телом даст `409`.
 
 ```bash
 curl -s -X POST https://example.com/api/v1/resources \

@@ -26,6 +26,20 @@ CORS нужен, когда **браузер** с другого origin ходи
 
 Если включить `mxheadless_cors_enabled=true`, срабатывает список разрешённых origin. Заголовки появляются только когда `Origin` совпал с `mxheadless_cors_allowed_origins`, либо в списке ровно `*`. Даже при `*` в ответ подставляется origin запроса, а не безусловный `*` с credentials.
 
+## Когда заголовков не будет
+
+Middleware Cors стоит в цепочке после Error и до маршрутизации, аутентификации и авторизации. Поэтому `Access-Control-*` не появляется в таких случаях:
+
+| Ситуация | Результат |
+| --- | --- |
+| Запрос без заголовка `Origin` (curl, серверные вызовы) | Заголовков нет |
+| `Origin` не совпал со списком | Заголовков нет, запрос при этом обрабатывается |
+| `mxheadless_cors_allowed_origins` пуст | Разрешённых origin нет, включая `*` |
+| `mxheadless_cors_enabled=false` | Заголовков нет ни при каком `Origin` |
+| Ответ `401`, `403`, `409`, `429`, `500`, `503` | Заголовков нет: ошибку собирает Error, который стоит выше Cors |
+
+Последний пункт стоит учесть в SPA: при отказе по rate limit или CSRF браузер покажет generic CORS-ошибку, а не problem+json. Смотрите [журнал запросов](../operations/audit-log) или заголовок `X-Request-ID`.
+
 ## Локальный Nuxt или Next SPA
 
 Фронт на `localhost:3000`, MODX на другом хосте или порту:
@@ -67,7 +81,18 @@ flowchart TD
 
 ## Preflight и проверка curl
 
-Совпавший Origin на `OPTIONS` даёт `204` с CORS-заголовками. Даже при выключенном CORS preflight возвращает `204`, но без `Access-Control-*`.
+Запрос `OPTIONS` Cors обрабатывает сам и отвечает `204` до маршрутизации: существование пути и аутентификация не проверяются. Preflight возвращает `204` даже при выключенном CORS, но без `Access-Control-*`.
+
+При совпавшем origin в ответ уходят заголовки из настроек плюс два жёстко заданных, настроек для них нет:
+
+| Заголовок | Значение |
+| --- | --- |
+| `Access-Control-Max-Age` | `86400` |
+| `Vary` | `Origin` |
+
+`Vary: Origin` нужен кэшам и CDN: без него ответ с CORS-заголовками может отдаться чужому origin. Настройкой это не меняется.
+
+`Access-Control-Allow-Credentials: true` добавляется только при `mxheadless_cors_allow_credentials=true`.
 
 Имитация preflight:
 
@@ -83,4 +108,4 @@ CORS включён и origin в списке: `204` и `Access-Control-Allow-Or
 
 ## MiniShop3
 
-Если на том же сайте крутится MiniShop3 Web API, продублируйте origin SPA в `ms3_cors_allowed_origins`. См. [MiniShop3](/components/mxheadless/extensions/minishop3).
+`ms3_cors_allowed_origins` не имеет отношения к mxHeadless: пакета с таким ключом нет, ни один `mxheadless_*`-ключ его не заменяет. Настройка принадлежит MiniShop3, и если на сайте крутится его Web API, продублируйте origin SPA там. См. [MiniShop3](/components/mxheadless/extensions/minishop3).

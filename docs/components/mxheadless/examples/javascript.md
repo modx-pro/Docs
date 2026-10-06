@@ -36,7 +36,7 @@ async function api(path, options = {}) {
 }
 ```
 
-Успешный ответ: `{ data, meta, links }`. Ошибки приходят как problem+json с полями `status`, `detail`, часто `code`.
+Успешный ответ: `data` и `meta`, в списках ещё и `links` с `self`, `next`, `prev`. Ошибки приходят как problem+json с полями `status`, `detail`, часто `code`.
 
 ## Discovery и список
 
@@ -57,11 +57,13 @@ const list = await api(
 
 ## С API key
 
+Ключ можно передать и в `Authorization: Bearer`, и в `X-API-Key`.
+
 ```js
 const key = process.env.MXHEADLESS_API_KEY
 
 const chunks = await api('/chunks', {
-  headers: { Authorization: `Bearer ${key}` },
+  headers: { 'X-API-Key': key },
 })
 ```
 
