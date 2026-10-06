@@ -24,7 +24,7 @@ description: Настройки безопасности REST YandexMapsLocator 
 | `yandexmapslocator_api_list_rate_limit` | Два независимых счётчика: бакет `locations` на REST и бакет `search` на `search.php` |
 | `yandexmapslocator_api_geocode_rate_limit` | Геокод дороже по квоте Яндекса. Счётчик общий для REST и `search.php` |
 
-Полный список: [Системные настройки](../settings#rest-и-лимиты-yandexmapslocator_api).
+Полный список: [Системные настройки](../settings#rest-i-limity-yandexmapslocatorapi).
 
 ## Заголовки ответа
 
@@ -69,7 +69,7 @@ description: Настройки безопасности REST YandexMapsLocator 
 
 ## Что не отдаёт API
 
-REST не отдаёт `apiKey` Яндекс.Карт в JSON. Но в HTML страницы со сниппетом ключ **есть**: он лежит в конфиге карты, который сниппет печатает инлайном в `<script type="application/json" data-yml-config>`, а браузер потом дописывает его к URL скрипта карт. Ключ JS API по определению публичный, так что ограничивайте его в кабинете Яндекса по домену и Referer, а не прячьте. См. [FAQ](../faq#карта-пустая--не-грузится).
+REST не отдаёт `apiKey` Яндекс.Карт в JSON. Но в HTML страницы со сниппетом ключ **есть**: он лежит в конфиге карты, который сниппет печатает инлайном в `<script type="application/json" data-yml-config>`, а браузер потом дописывает его к URL скрипта карт. Ключ JS API по определению публичный, так что ограничивайте его в кабинете Яндекса по домену и Referer, а не прячьте. См. [FAQ](../faq#karta-pustaya-ne-gruzitsya).
 
 `yandexmapslocator_api_token` в `data-yml-config` не попадает. Локатор на сайте с заданным токеном ходит в `search.php`.
 
