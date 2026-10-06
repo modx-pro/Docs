@@ -12,86 +12,60 @@ Snippet for outputting a product image gallery.
 | **product** | current resource | Product ID |
 | **tpl** | `tpl.msGallery` | Gallery layout chunk |
 | **limit** | `0` | Number of images (0 = all) |
-| **offset** | `0` | Skip count |
+| **offset** | `0` | Skip count. Works only together with `limit > 0` |
 | **sortby** | `position` | Sort field |
 | **sortdir** | `ASC` | Sort direction |
 | **where** | | JSON extra conditions |
-| **filetype** | | File type filter (comma-separated) |
-| **thumbnails** | | Thumbnail filter by name (comma-separated) |
-| **showInactive** | `false` | Show inactive files |
-| **extensionsDir** | `components/minishop3/img/mgr/extensions/` | Path to file-type icons (from `assets/`) for non-image files |
+| **filetype** | | Type filter: `image`, or file extensions comma-separated |
+| **thumbnails** \* | | Thumbnail filter by names, comma-separated ([#805](https://github.com/modx-pro/MiniShop3/issues/805)) |
+| **showInactive** \* | `false` | Show inactive files |
+| **extensionsDir** \* | `components/minishop3/img/mgr/extensions/` | Path to file type icons (from `assets/`) for non-images |
 | **toPlaceholder** | | Save result to placeholder |
-| **showLog** | `false` | Show execution log |
-| **return** | `data` | Format: `data`, `tpl`, `json`, `sql` |
+| **showLog** | `false` | Show the execution log. Visible only to a user signed in to the admin |
+| **return** | `tpl` | Format: `tpl`, `data`, `json`, `sql`. `json` returns the query rows without merged thumbnails and the `thumbnail` field, while `sql` returns the text of the SQL query without running it |
+
+\* Not declared in the snippet properties.
 
 ## Examples
 
-### Basic output
-
 ```fenom
-{'msGallery' | snippet : [
-    'return' => 'tpl'
-]}
+{* Gallery of the current product *}
+{'msGallery' | snippet}
+
+{* Gallery of a specific product *}
+{'msGallery' | snippet : ['product' => 15]}
+
+{* First 5 images *}
+{'msGallery' | snippet : ['limit' => 5]}
+
+{* Only the small and medium thumbnails *}
+{'msGallery' | snippet : ['thumbnails' => 'small,medium']}
+
+{* Sort by file name *}
+{'msGallery' | snippet : ['sortby' => 'name', 'sortdir' => 'ASC']}
+
+{* Images only *}
+{'msGallery' | snippet : ['filetype' => 'image']}
+
+{* Video only — list the extensions *}
+{'msGallery' | snippet : ['filetype' => 'mp4,webm,mov']}
+
+{* Images and video *}
+{'msGallery' | snippet : ['filetype' => 'image,mp4,webm']}
 ```
 
-### For specific product
+### An array instead of HTML
 
 ```fenom
-{'msGallery' | snippet : [
-    'product' => 15,
-    'return' => 'tpl'
-]}
-```
-
-### First 5 images
-
-```fenom
-{'msGallery' | snippet : [
-    'limit' => 5,
-    'return' => 'tpl'
-]}
-```
-
-### Images only (no video or documents)
-
-```fenom
-{'msGallery' | snippet : [
-    'filetype' => 'image',
-    'return' => 'tpl'
-]}
-```
-
-### Specific thumbnails only
-
-```fenom
-{'msGallery' | snippet : [
-    'thumbnails' => 'small,medium',
-    'return' => 'tpl'
-]}
-```
-
-### Sort by name
-
-```fenom
-{'msGallery' | snippet : [
-    'sortby' => 'name',
-    'sortdir' => 'ASC',
-    'return' => 'tpl'
-]}
-```
-
-### Get data for processing
-
-```fenom
-{set $files = 'msGallery' | snippet}
+{set $files = 'msGallery' | snippet : ['return' => 'data']}
 
 {foreach $files as $file}
     <img src="{$file['url']}" alt="{$file['name']}">
 {/foreach}
 ```
 
-::: info return=data default
-By default the snippet returns a data array (`return=data`). Use `return=tpl` for chunk output.
+::: info The default value of `return`
+After installation the snippet has `return=tpl` — output through the `tpl.msGallery` chunk. The fallback in the code is different, `data`: it only kicks in when the property is empty ([#823](https://github.com/modx-pro/MiniShop3/issues/823)). So ask for an array with an explicit `return=data`.
 :::
 
 ## Chunk placeholders
@@ -112,9 +86,9 @@ Passed to the chunk:
 | `{$file['name']}` | File name |
 | `{$file['description']}` | Description |
 | `{$file['url']}` | Original URL |
-| `{$file['path']}` | File path |
+| `{$file['path']}` | Folder inside the media source: `{product_id}/` for the original, `{product_id}/{size}/` for a thumbnail. The file name sits separately, in `file` |
 | `{$file['file']}` | Filename on disk |
-| `{$file['type']}` | File type (image, video, document, etc.) |
+| `{$file['type']}` | `image` for pictures, the file extension for everything else (`mp4`, `pdf`, `zip`) |
 | `{$file['thumbnail']}` | Type icon URL (non-image files, from `extensionsDir`) |
 | `{$file['createdon']}` | Created date |
 | `{$file['createdby']}` | User ID |
@@ -128,12 +102,19 @@ Thumbnails are added as extra fields named by folder:
 
 | Field | Description |
 | --- | --- |
-| `{$file['small']}` | Small thumbnail URL |
-| `{$file['medium']}` | Medium thumbnail URL |
-| `{$file['large']}` | Large thumbnail URL |
+| `{$file['thumb']}` | 150 × 150, WebP |
+| `{$file['small']}` | 300 × 300, WebP |
+| `{$file['medium']}` | 600 × 600, WebP |
+| `{$file['large']}` | 1200 × 1200, JPEG |
 
-::: info Thumbnail names
-Thumbnail names depend on product media source settings. Default: `small`, `medium`, `large`.
+::: info Names and sizes come from the media source
+These are the values of the source the installer creates. Change the `thumbnails` property of the source and the field names follow it — a field is named after its size.
+
+Clear that property entirely and a single `small` 120 × 120 thumbnail remains: that is the fallback set in the code.
+:::
+
+::: warning `thumb` here and `thumb` on a product are different things
+In the gallery `thumb` is a thumbnail name from the media source. But `{$product.thumb}` in the catalogue and the cart is a separate column of the product table, unrelated to gallery thumbnails. The names coincide, the sources do not.
 :::
 
 ### Loop variables
@@ -143,11 +124,31 @@ In Fenom, iteration variables are available:
 ```fenom
 {foreach $files as $file}
     {$file@index}     {* Index from 0 *}
-    {$file@iteration} {* Number from 1 *}
+    {$file@index + 1}  {* number from 1 *}
     {$file@first}     {* true for first *}
     {$file@last}      {* true for last *}
 {/foreach}
 ```
+
+## Edge cases
+
+| What happens | What is rendered |
+| --- | --- |
+| The product has no images | With `return=tpl` the chunk is still rendered with an empty `$files`; the default chunk shows a placeholder. With `return=data` — an empty array |
+| `product` points at something that is not a product | An empty string, and `[msGallery] Resource is not msProduct` goes to the MODX log |
+| The product is closed by resource group permissions | An empty string. The check only applies when `product` differs from the current resource |
+
+::: warning Product publication is not checked
+The gallery of an unpublished product is rendered if you address it through `&product` directly. Resource group permissions are respected, the published flag is not.
+:::
+
+::: tip Viewing a page creates a folder in the media source
+The snippet initializes the media source on every call, and initialization creates the `{product id}/` folder even when there are no images and nothing to upload. On the storefront this means folders appear from ordinary catalogue views.
+:::
+
+::: warning File URLs are written to the database on upload
+The `url` field is filled once, at upload time. Change the base URL of the media source afterwards and the stored addresses stay as they are — the gallery keeps the old links. The same goes for thumbnails.
+:::
 
 ## Default chunk
 
@@ -266,25 +267,12 @@ When the gallery contains video:
 {set $files = 'msGallery' | snippet}
 
 {foreach $files as $file}
-    {if $file['type'] == 'video'}
+    {if $file['type'] != 'image'}
         <video controls>
-            <source src="{$file['url']}" type="video/{$file['file'] | pathinfo : 'extension'}">
+            <source src="{$file['url']}" type="video/{$file['type']}">
         </video>
     {else}
         <img src="{$file['medium'] ?: $file['url']}" alt="{$file['name']}">
     {/if}
 {/foreach}
-```
-
-## Filter by type
-
-```fenom
-{* Images only *}
-{'msGallery' | snippet : ['filetype' => 'image']}
-
-{* Video only *}
-{'msGallery' | snippet : ['filetype' => 'video']}
-
-{* Images and video *}
-{'msGallery' | snippet : ['filetype' => 'image,video']}
 ```
