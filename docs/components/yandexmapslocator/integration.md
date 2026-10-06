@@ -41,11 +41,57 @@ Resolver Pro создаёт (если ещё нет):
 
 См. [MiniShop3](pro/minishop3), [Открыто сейчас](pro/working-now).
 
+```mermaid
+flowchart TD
+    res["Опубликованный ресурс в parents"] --> tv["Пакетная загрузка TV локатора"]
+    tv --> coords{"lat и lng числовые?"}
+    coords -->|нет| skip["Точка пропущена, warning в лог"]
+    coords -->|да| store["Сборка Store: адрес, телефон, часы, медиа"]
+    store --> ev["OnBeforeStorePrepare и OnAfterStorePrepare"]
+    ev --> geo{"Есть lat и lng запроса?"}
+    geo -->|да| dist["Отсев по bbox и расчёт расстояния"]
+    geo -->|нет| filt["Фильтры и сортировка"]
+    dist --> filt
+    filt --> out["limit, offset, idx и выдача"]
+```
+
 ## Геокод в менеджере
 
-Плагин Free на `OnDocFormRender` добавляет кнопку «Получить координаты» под полем адреса: берёт адрес из TV и подставляет координаты. Нужен `yandexmapslocator_api_key`.
+Плагин Free на `OnDocFormRender` добавляет кнопку «Получить координаты» под полем адреса: берёт адрес из TV и подставляет координаты. Нужен `yandexmapslocator_api_key`. Кнопка монтируется с повторными попытками, до 120 проверок по 250 мс, пока `Ext` не отрисует поле TV, поэтому на медленной админке появляется не сразу.
 
 Pro добавляет «Проверить расписание» под TV часов: разбор JSON, статус «открыто сейчас», ближайшее открытие/закрытие.
+
+## Геокод из кода
+
+Кнопка в форме ходит через коннектор `/assets/components/yandexmapslocator/connector.php`. Коннектор требует менеджерский контекст и право `save_document`, иначе отдаёт `access_denied`.
+
+За процессором стоит `YandexMapsLocator\Processors\Geocode\Geocode`: параметр `address`, при успехе `object` с `latitude` и `longitude`. Пустой адрес, ненайденный адрес и ошибки геокодера приходят как `success: false` с текстом в `message`. Отдельного сниппета-обёртки у процессора нет, поэтому в MODX-чанке вызывайте его через свой сниппет:
+
+::: code-group
+
+```fenom
+{runProcessor 'YandexMapsLocator\Processors\Geocode\Geocode' : ['address' => $address]}
+    {if $success}
+        {$object.latitude}, {$object.longitude}
+    {else}
+        {$message}
+    {/if}
+```
+
+```php
+<?php
+$address = $modx->getOption('address', $scriptProperties, '');
+$result = $modx->runProcessor('YandexMapsLocator\Processors\Geocode\Geocode', ['address' => $address]);
+return $result['success'] ? "{$result['object']['latitude']}, {$result['object']['longitude']}" : $result['message'];
+```
+
+:::
+
+Из кода пакета процессор вызывается напрямую через `LocatorService::get($modx)->getGeocoder()->geocode($address)`: [Extension API](extension-api#доступ-из-кода-пакета).
+
+## Точка входа коннектора
+
+`/assets/components/yandexmapslocator/connector.php` обслуживает только процессоры пакета в разделе `Processors/`. Действие передаётся строкой `action`, например `YandexMapsLocator\Processors\Geocode\Geocode`. Свои обработчики через этот коннектор не добавляются: держите свой путь и свою проверку прав.
 
 ## Чанки Free
 
@@ -55,7 +101,7 @@ Pro добавляет «Проверить расписание» под TV ч�
 | `yandexmapslocator.search` | Форма поиска |
 | `yandexmapslocator.store` | Карточка точки |
 | `yandexmapslocator.empty` | Пустой результат |
-| `yandexmapslocator.error` | Ошибка |
+| `yandexmapslocator.error` | Ошибка, плейсхолдер `{$error}` |
 
 Pro своих чанков не кладёт. Разметка и `data-yml-*`: [Интерфейс](frontend).
 

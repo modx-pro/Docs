@@ -50,6 +50,8 @@ description: Матрица возможностей YandexMapsLocator Free и Y
 
 REST и `search.php`: `amenity=wifi,card` (или `amenities`) и `brand=…`. Параметры можно передавать без явного `filters=amenity` / `filters=brand`.
 
+`amenity` работает как «И»: точка остаётся, только если у неё есть все перечисленные теги. Режима «любого из» нет: запрашивайте по одному тегу или фильтруйте на своей стороне.
+
 На точке: TV `yandexmaps_amenities` (через запятую) и `yandexmaps_brand`. В сниппете: `amenities` / `amenity`, `brand`.
 
 ## MiniShop3 (Pro)
@@ -68,7 +70,9 @@ Free показывает всю сеть. На карточке товара Mi
 
 ## REST и настройки API
 
-Ключи `yandexmapslocator_api_*` ставит Free (общий лимит запросов для `search.php`). URL и выключатель `api_enabled` работают после установки Pro.
+Ключи `yandexmapslocator_api_*` ставит Free. URL и выключатель `api_enabled` работают после установки Pro.
+
+Лимит list настроек один, но счётчиков два: REST тратит бакет `locations`, `search.php` бакет `search`. Общий счётчик только у геокода: REST `geocode`, REST list с `address` и `search.php` с `address` бьют по одному бакету `geocode`.
 
 Пустой `api_token`: публичный REST, удобно на стенде. На рабочем сайте задайте Bearer: его читают серверные клиенты. Локатор на странице токен не получает и при заданном секрете ходит в `search.php`.
 
@@ -86,6 +90,6 @@ PATH_INFO вида `api.php/v1/...` на многих хостингах отд�
 | 1.0.0-pl7+ | 1.1.0-pl2 |
 | 1.0.x | 1.0.x / 1.1.x |
 
-Pro 1.1.0-pl2 рассчитан на Free ≥ 1.0.0-pl7. Ограничение в пакете: `yandexmapslocator >=1.0.0-pl7 <2.0.0`.
+Pro 1.1.0-pl2 рассчитан на Free ≥ 1.0.0-pl7. Ограничение в пакете: `yandexmapslocator >=1.0.0-pl7 <2.0.0`. Фактическое требование берётся из `config.inc.php` пакета и перетирает дефолт `>=1.0.0 <2.0.0` из `build.php`. Проверено против Free `1.0.0-pl8`.
 
 Дальше: [Что даёт Pro](pro/), [REST API](pro/api), [Открыто сейчас](pro/working-now).
