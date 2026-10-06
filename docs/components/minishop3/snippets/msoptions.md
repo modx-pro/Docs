@@ -174,7 +174,7 @@ title: msOptions
     'material'              => ['хлопок', 'лён'],
     'material.caption'      => 'Материал',
     'material.description'  => 'Состав ткани',
-    'material.type'         => 'select',
+    'material.type'         => 'comboOptions',
     'material.measure_unit' => '',
     'material.group_name'   => 'Характеристики',
 ]
