@@ -147,7 +147,7 @@ The snippet initializes the media source on every call, and initialization creat
 :::
 
 ::: warning File URLs are written to the database on upload
-The `url` field is filled once, at upload time. Change the base URL of the media source afterwards and the stored addresses are not rewritten — the gallery keeps the old links. The same goes for thumbnails.
+The `url` field is filled once, at upload time. Change the base URL of the media source afterwards and the stored addresses stay as they are — the gallery keeps the old links. The same goes for thumbnails.
 :::
 
 ## Default chunk
