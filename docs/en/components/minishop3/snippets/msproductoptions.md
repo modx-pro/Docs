@@ -3,7 +3,13 @@ title: msProductOptions
 ---
 # msProductOptions
 
-Extended snippet for outputting all or filtered product options with full information for each (metadata, categories, types).
+Outputs all product options together with their metadata — caption, group, field type. If the option keys are known in advance, take [msOptions](msoptions): it returns the metadata as flat keys like `material.caption`.
+
+::: warning The option must be created and enabled for the category
+Only options enabled for the category the product belongs to reach the output. A clean installation has no options at all — the component does not add them, so the first call on a new site returns nothing.
+
+Product field names are taken: `color`, `size`, `weight`, `article`, `price`, `vendor`, `description`, `source`, `action` and the rest from the `reserved` rule of the `msOption` model. An option with such a key is silently shadowed by the product field.
+:::
 
 ## Parameters
 
@@ -18,19 +24,29 @@ Extended snippet for outputting all or filtered product options with full inform
 | **sortOptions** | | Option sort order (comma-separated) |
 | **sortGroups** | | Group sort order (comma-separated) |
 | **sortOptionValues** | | Sort values within options (see [msOptions](msoptions#sorting-option-values)) |
-| **return** | `tpl` | Output format: `tpl`, `data`, `array` |
+| **return** | `tpl` | Output format: `tpl`, `data`, `array`. Not declared in the snippet properties ([#805](https://github.com/modx-pro/MiniShop3/issues/805)) |
 
 ::: tip Auto sort
 If `onlyOptions` is set but `sortOptions` is not, options are automatically sorted in the order given in `onlyOptions`.
 :::
 
-Options with an empty `value` are **not** included in the output. Parameters `groups` / `ignoreGroups` match the `group_name` string from msOptionGroup (case-sensitive).
+An option with no stored values does not reach the output. But an option holding a saved empty string passes the filter and renders empty — the check looks at the array of values, not at their contents.
+
+::: warning Filters are case-sensitive, sorting is not
+`groups`, `ignoreGroups`, `onlyOptions` and `ignoreOptions` compare strings as they are: `Main` and `main` are different groups to them, and a wrong case silently leaves the output empty.
+
+Meanwhile `sortGroups` and `sortOptions` lowercase their values, so they work with any spelling. Because of this difference the same group name can behave differently in two parameters.
+:::
+
+::: tip A stray comma switches `onlyOptions` off
+A value like `,material,length` — with a leading comma — silently drops the filtering, and every option of the product is printed ([#842](https://github.com/modx-pro/MiniShop3/issues/842)). Check the list if you see the whole set instead of the chosen options.
+:::
 
 ### Deprecated parameters
 
-::: warning Backward compatibility
-The `&input` parameter is deprecated. Use `&product`.
-:::
+| Parameter | Replacement |
+| --- | --- |
+| `&input` | `&product` |
 
 ## Examples
 
@@ -81,6 +97,12 @@ The `&input` parameter is deprecated. Use `&product`.
 ]}
 ```
 
+::: warning The two sorting parameters do not combine into a hierarchy
+`sortGroups` runs first, then `sortOptions` re-sorts the **whole** list again. Options listed in `sortOptions` move to the front regardless of their group, and the group order falls apart.
+
+Use one or the other: either the order of groups, or the order of options.
+:::
+
 ### Return data for processing
 
 ```fenom
@@ -91,11 +113,7 @@ The `&input` parameter is deprecated. Use `&product`.
 {foreach $options as $key => $option}
     <div class="option">
         <strong>{$option.caption}:</strong>
-        {if $option.value is array}
-            {$option.value | join: ', '}
-        {else}
-            {$option.value}
-        {/if}
+        {$option.value | join: ', '}
     </div>
 {/foreach}
 ```
@@ -109,28 +127,31 @@ With `return=data` or `return=array`, an associative array is returned where the
     'material' => [
         'caption' => 'Material',
         'value' => ['cotton', 'linen'],
-        'category' => 'main',
         'group_name' => 'Main specs',
-        'type' => 'combo-options',
-        'properties' => [...]
+        'type' => 'comboOptions',
+        'properties' => '{"source":"manual"}',
     ],
     'length' => [
         'caption' => 'Length',
-        'value' => '120 cm',
-        'category' => 'main',
-        'group_name' => 'Main specs'
+        'value' => ['120 cm'],
+        'group_name' => 'Main specs',
+        'type' => 'textfield',
     ],
     'season' => [
         'caption' => 'Season',
-        'value' => 'winter',
-        'category' => 'specs',
-        'group_name' => 'Specs'
-    ]
+        'value' => ['winter'],
+        'group_name' => 'Specs',
+        'type' => 'combobox',
+    ],
 ]
 ```
 
+::: warning `value` is always an array, even for a single value
+Option values are collected into an array for every field type — there is no scalar path in the code. So the `{else}` branch of `{if $option.value is iterable}` never runs, and `{$option.value}` without a loop prints `Array`.
+:::
+
 ::: info Option key
-The option name (`material`, `length`, `season`) is the array key, not a field inside the option. To access it, use `{foreach $options as $key => $option}`.
+Walk the array with `{foreach $options as $key => $option}` — `$key` holds the option name. It is also duplicated by the `{$option.key}` field, so both ways work inside the loop.
 :::
 
 ## Placeholders in chunk
@@ -144,11 +165,19 @@ The option name (`material`, `length`, `season`) is the array key, not a field i
 | Field | Description |
 | --- | --- |
 | `{$option.caption}` | Option label (human-readable) |
-| `{$option.value}` | Value (string or array) |
-| `{$option.category}` | Option group key |
+| `{$option.value}` | Option values — always an array |
 | `{$option.group_name}` | Group name |
-| `{$option.type}` | Field type (textfield, combo-options, etc.) |
-| `{$option.properties}` | Additional option properties |
+| `{$option.type}` | Field type: `textfield`, `numberfield`, `textarea`, `checkbox`, `combobox`, `comboBoolean`, `comboColors`, `comboMultiple`, `comboOptions`, `datefield` |
+| `{$option.measure_unit}` | Unit of measurement |
+| `{$option.description}` | Option description |
+| `{$option.properties}` | Additional properties — a JSON string, not an array |
+| `{$option.key}` | Option name, the same as the array key |
+| `{$option.option_group_id}` | Option group ID |
+| `{$option.id}` | ID of the option itself |
+
+::: tip The caption and description can be overridden per category
+`caption` and `description` come from the option, but if the category defines its own, those are what reach the output. The same option can therefore read differently in different parts of the catalogue.
+:::
 
 Use foreach to get the option key:
 
@@ -171,44 +200,18 @@ The default chunk `tpl.msProductOptions` outputs options as rows:
             {$option.caption}:
         </label>
         <div class="col-6 col-md-9">
-            {if $option.value is array}
-                {$option.value | join: ', '}
-            {else}
-                {$option.value}
-            {/if}
+            {$option.value | join: ', '}
         </div>
     </div>
 {/foreach}
 ```
 
-## Alternative chunk — table
+## Your own chunks
+
+### Grouping by group
 
 ```fenom
-{* tpl.msProductOptions.table *}
-{if $options?}
-    <table class="product-options">
-        <tbody>
-            {foreach $options as $option}
-                <tr>
-                    <th>{$option.caption}</th>
-                    <td>
-                        {if $option.value is array}
-                            {$option.value | join: ', '}
-                        {else}
-                            {$option.value}
-                        {/if}
-                    </td>
-                </tr>
-            {/foreach}
-        </tbody>
-    </table>
-{/if}
-```
-
-## Grouping by category
-
-```fenom
-{* tpl.msProductOptions.grouped *}
+{* tpl.myProductOptions.grouped *}
 {if $options?}
     {set $grouped = []}
 
@@ -227,11 +230,7 @@ The default chunk `tpl.msProductOptions` outputs options as rows:
                     <tr>
                         <th>{$option.caption}</th>
                         <td>
-                            {if $option.value is array}
-                                {$option.value | join: ', '}
-                            {else}
-                                {$option.value}
-                            {/if}
+                            {$option.value | join: ', '}
                         </td>
                     </tr>
                 {/foreach}
@@ -243,11 +242,15 @@ The default chunk `tpl.msProductOptions` outputs options as rows:
 
 ## Selecting options when adding to cart
 
-When options are selectable (for example, color and size):
+When options are selectable (for example, material and length):
 
 ```fenom
-<form class="product-form">
-    {set $options = 'msProductOptions' | snippet: [
+<form method="post" class="ms3_form" data-ms3-form>
+    <input type="hidden" name="id" value="{$_modx->resource.id}">
+    <input type="hidden" name="count" value="1">
+    <input type="hidden" name="ms3_action" value="cart/add">
+
+    {set $options = 'msProductOptions' | snippet : [
         'return' => 'data',
         'onlyOptions' => 'material,length'
     ]}
@@ -257,31 +260,13 @@ When options are selectable (for example, color and size):
             <label>{$option.caption}</label>
             <select name="options[{$key}]" required>
                 <option value="">Select {$option.caption | lower}</option>
-                {if $option.value is array}
-                    {foreach $option.value as $val}
-                        <option value="{$val}">{$val}</option>
-                    {/foreach}
-                {/if}
+                {foreach $option.value as $val}
+                    <option value="{$val}">{$val}</option>
+                {/foreach}
             </select>
         </div>
     {/foreach}
 
-    <button type="button"
-            data-ms-action="cart/add"
-            data-id="{$_modx->resource.id}">
-        Add to cart
-    </button>
+    <button type="submit">Add to cart</button>
 </form>
 ```
-
-## When to use
-
-| Suitable | Not suitable |
-| --- | --- |
-| You need ALL product options | Only 2–3 specific options needed |
-| Metadata is required | Maximum speed matters |
-| Filtering by groups | Simple fixed list |
-| Flexible sorting is required | |
-| Options are built dynamically | |
-
-For simple output of specific options without metadata, use [msOptions](msoptions).

@@ -3,7 +3,13 @@ title: msProductOptions
 ---
 # msProductOptions
 
-Расширенный сниппет для вывода всех или отфильтрованных опций товара с полной информацией о каждой (метаданные, категории, типы).
+Выводит все опции товара вместе с их метаданными — подписью, группой, типом поля. Если ключи опций известны заранее, берите [msOptions](msoptions): он отдаёт метаданные плоскими ключами вида `material.caption`.
+
+::: warning Опция должна быть заведена и включена для категории
+В вывод попадают только опции, включённые для категории, в которой лежит товар. На чистой установке опций нет вообще — компонент их не добавляет, поэтому первый вызов на новом сайте вернёт пустоту.
+
+Имена полей товара для опций заняты: `color`, `size`, `weight`, `article`, `price`, `vendor`, `description`, `source`, `action` и прочие из правила `reserved` модели `msOption`. Опция с таким ключом молча затеняется полем товара.
+:::
 
 ## Параметры
 
@@ -18,19 +24,15 @@ title: msProductOptions
 | **sortOptions** | | Порядок сортировки опций (через запятую) |
 | **sortGroups** | | Порядок сортировки групп (через запятую) |
 | **sortOptionValues** | | Сортировка значений внутри опций (см. [msOptions](msoptions#сортировка-значений-опций)) |
-| **return** | `tpl` | Формат вывода: `tpl`, `data`, `array` |
+| **return** | `tpl` | Формат вывода: `tpl`, `data`, `array`. В свойствах сниппета не объявлен ([#805](https://github.com/modx-pro/MiniShop3/issues/805)) |
 
-::: tip Автосортировка
-Если указан `onlyOptions`, но не указан `sortOptions`, то опции автоматически сортируются в порядке, указанном в `onlyOptions`.
-:::
-
-Опции с пустым значением (`value`) **не попадают** в вывод. Параметры `groups` и `ignoreGroups` сравниваются со строкой `group_name` из msOptionGroup, регистр учитывается.
+Опция без сохранённых значений в вывод не попадает. Опция с сохранённой пустой строкой проходит фильтр и выводится пустой: проверка смотрит на массив значений, а не на их содержимое.
 
 ### Устаревшие параметры
 
-::: warning Обратная совместимость
-Параметр `&input` устарел. Используйте `&product`.
-:::
+| Параметр | Замена |
+| --- | --- |
+| `&input` | `&product` |
 
 ## Примеры
 
@@ -56,6 +58,14 @@ title: msProductOptions
 ]}
 ```
 
+::: tip Автосортировка
+Если указан `onlyOptions`, но не указан `sortOptions`, опции сортируются в порядке, указанном в `onlyOptions`.
+:::
+
+::: warning Лишняя запятая отключает `onlyOptions`
+Значение вида `,material,length` — с запятой в начале — молча снимает фильтрацию, и выводятся все опции товара ([#842](https://github.com/modx-pro/MiniShop3/issues/842)). Проверьте список, если вместо выбранных опций видите весь набор.
+:::
+
 ### Исключить опции
 
 ```fenom
@@ -72,6 +82,12 @@ title: msProductOptions
 ]}
 ```
 
+::: warning Фильтры учитывают регистр, сортировки — нет
+`groups`, `ignoreGroups`, `onlyOptions` и `ignoreOptions` сравнивают строки как есть: `Основные` и `основные` для них разные группы, и опечатка в регистре молча оставит вывод пустым.
+
+А `sortGroups` и `sortOptions` приводят значения к нижнему регистру, поэтому работают при любом написании. Из-за этой разницы одно и то же имя группы в двух параметрах ведёт себя по-разному.
+:::
+
 ### С сортировкой групп и опций
 
 ```fenom
@@ -80,6 +96,12 @@ title: msProductOptions
     'sortOptions' => 'material,length,season'
 ]}
 ```
+
+::: warning Два параметра сортировки не складываются в иерархию
+Сначала выполняется `sortGroups`, потом `sortOptions` пересортировывает **весь** список заново. Опции из `sortOptions` уходят в начало независимо от того, в какой они группе, и порядок групп рассыпается.
+
+Указывайте что-то одно: либо порядок групп, либо порядок опций.
+:::
 
 ### Возврат данных для обработки
 
@@ -91,14 +113,14 @@ title: msProductOptions
 {foreach $options as $key => $option}
     <div class="option">
         <strong>{$option.caption}:</strong>
-        {if $option.value is array}
-            {$option.value | join : ', '}
-        {else}
-            {$option.value}
-        {/if}
+        {$option.value | join : ', '}
     </div>
 {/foreach}
 ```
+
+::: info Ключ опции
+Обходите массив через `{foreach $options as $key => $option}`: в `$key` попадёт имя опции. То же значение лежит в поле `{$option.key}`.
+:::
 
 ## Структура данных
 
@@ -109,28 +131,27 @@ title: msProductOptions
     'material' => [
         'caption' => 'Материал',
         'value' => ['хлопок', 'лён'],
-        'category' => 'main',
         'group_name' => 'Основные характеристики',
-        'type' => 'combo-options',
-        'properties' => [...]
+        'type' => 'comboOptions',
+        'properties' => '{"source":"manual"}',
     ],
     'length' => [
         'caption' => 'Длина',
-        'value' => '120 см',
-        'category' => 'main',
-        'group_name' => 'Основные характеристики'
+        'value' => ['120 см'],
+        'group_name' => 'Основные характеристики',
+        'type' => 'textfield',
     ],
     'season' => [
         'caption' => 'Сезон',
-        'value' => 'зима',
-        'category' => 'specs',
-        'group_name' => 'Характеристики'
-    ]
+        'value' => ['зима'],
+        'group_name' => 'Характеристики',
+        'type' => 'combobox',
+    ],
 ]
 ```
 
-::: info Ключ опции
-Имя опции (`material`, `length`, `season`) — это ключ массива, а не поле внутри опции. Для доступа к нему используйте синтаксис `{foreach $options as $key => $option}`.
+::: warning `value` всегда массив, даже для одного значения
+Значения складываются в массив при любом типе поля — отдельного пути для скалярного значения в коде нет. Поэтому ветка `{else}` в проверке `{if $option.value is iterable}` никогда не выполнится, а `{$option.value}` без обхода напечатает `Array`.
 :::
 
 ## Плейсхолдеры в чанке
@@ -144,15 +165,22 @@ title: msProductOptions
 | Поле | Описание |
 | --- | --- |
 | `{$option.caption}` | Название опции (человекочитаемое) |
-| `{$option.value}` | Значение (строка или массив) |
-| `{$option.category}` | Ключ группы опций |
+| `{$option.value}` | Значения опции — всегда массив |
 | `{$option.group_name}` | Название группы |
-| `{$option.type}` | Тип поля (textfield, combo-options и т.д.) |
-| `{$option.properties}` | Дополнительные свойства опции |
+| `{$option.type}` | Тип поля: `textfield`, `numberfield`, `textarea`, `checkbox`, `combobox`, `comboBoolean`, `comboColors`, `comboMultiple`, `comboOptions`, `datefield` |
+| `{$option.measure_unit}` | Единица измерения |
+| `{$option.description}` | Описание опции |
+| `{$option.properties}` | Дополнительные свойства — строка JSON, а не массив |
+| `{$option.key}` | Имя опции, то же что ключ массива |
+| `{$option.option_group_id}` | ID группы опций |
+| `{$option.id}` | ID самой опции |
+
+::: tip Подпись и описание можно переопределить для категории
+`caption` и `description` берутся из опции, но если для категории заданы свои — в выводе окажутся они. Так одна опция выглядит по-разному в разных разделах каталога.
+:::
 
 ## Чанк по умолчанию
 
-Стандартный чанк `tpl.msProductOptions` выводит опции в виде строк:
 
 ```fenom
 {* tpl.msProductOptions *}
@@ -162,44 +190,19 @@ title: msProductOptions
             {$option.caption}:
         </label>
         <div class="col-6 col-md-9">
-            {if $option.value is array}
-                {$option.value | join : ', '}
-            {else}
-                {$option.value}
-            {/if}
+            {$option.value | join : ', '}
         </div>
     </div>
 {/foreach}
 ```
 
-## Альтернативный чанк с таблицей
+## Свои чанки
+
+### Группировка по группам
+
 
 ```fenom
-{* tpl.msProductOptions.table *}
-{if $options?}
-    <table class="product-options">
-        <tbody>
-            {foreach $options as $option}
-                <tr>
-                    <th>{$option.caption}</th>
-                    <td>
-                        {if $option.value is array}
-                            {$option.value | join : ', '}
-                        {else}
-                            {$option.value}
-                        {/if}
-                    </td>
-                </tr>
-            {/foreach}
-        </tbody>
-    </table>
-{/if}
-```
-
-## Группировка по группам
-
-```fenom
-{* tpl.msProductOptions.grouped *}
+{* tpl.myProductOptions.grouped *}
 {if $options?}
     {set $grouped = []}
 
@@ -218,11 +221,7 @@ title: msProductOptions
                     <tr>
                         <th>{$option.caption}</th>
                         <td>
-                            {if $option.value is array}
-                                {$option.value | join : ', '}
-                            {else}
-                                {$option.value}
-                            {/if}
+                            {$option.value | join : ', '}
                         </td>
                     </tr>
                 {/foreach}
@@ -234,10 +233,9 @@ title: msProductOptions
 
 ## Выбор опций при добавлении в корзину
 
-Если опции можно выбирать (например, цвет и размер):
 
 ```fenom
-<form method="post" class="ms3_form product-form" data-ms3-form>
+<form method="post" class="ms3_form" data-ms3-form>
     <input type="hidden" name="id" value="{$_modx->resource.id}">
     <input type="hidden" name="count" value="1">
     <input type="hidden" name="ms3_action" value="cart/add">
@@ -252,11 +250,9 @@ title: msProductOptions
             <label>{$option.caption}</label>
             <select name="options[{$key}]" required>
                 <option value="">Выберите {$option.caption | lower}</option>
-                {if $option.value is array}
-                    {foreach $option.value as $val}
-                        <option value="{$val}">{$val}</option>
-                    {/foreach}
-                {/if}
+                {foreach $option.value as $val}
+                    <option value="{$val}">{$val}</option>
+                {/foreach}
             </select>
         </div>
     {/foreach}
@@ -264,15 +260,3 @@ title: msProductOptions
     <button type="submit">В корзину</button>
 </form>
 ```
-
-## Когда использовать
-
-| Подходит | Не подходит |
-| --- | --- |
-| Нужны ВСЕ опции товара | Нужны только 2-3 конкретные опции |
-| Требуются метаданные | Важна максимальная скорость |
-| Нужна фильтрация по группам | Простой фиксированный список |
-| Требуется гибкая сортировка | |
-| Опции формируются динамически | |
-
-Для простого вывода конкретных опций без метаданных используйте [msOptions](msoptions).

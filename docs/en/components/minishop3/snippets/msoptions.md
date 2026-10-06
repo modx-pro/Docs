@@ -174,7 +174,7 @@ Under the option key sits the array of its values, and next to it the metadata w
     'material'              => ['cotton', 'linen'],
     'material.caption'      => 'Material',
     'material.description'  => 'Fabric composition',
-    'material.type'         => 'select',
+    'material.type'         => 'comboOptions',
     'material.measure_unit' => '',
     'material.group_name'   => 'Specifications',
 ]
