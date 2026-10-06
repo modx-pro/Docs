@@ -13,20 +13,24 @@ title: Руководство по админке
 
 ## Ключевые настройки
 
-| Ключ | По умолчанию | Что контролирует |
-| --- | --- | --- |
-| `mxquickview_allowed_chunk` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Какие чанки можно отрисовать (`mxqv_resource` — новости, статьи, страницы) |
-| `mxquickview_allowed_snippet` | `msCart,msMiniCart` | Какие сниппеты можно отрисовать |
-| `mxquickview_allowed_template` | | Какие шаблоны можно отрисовать |
-| `mxquickview_mouseover_delay` | `300` | Задержка перед загрузкой по наведению |
-| `mxquickview_modal_size` | `modal-lg` | Размер native/bootstrap (`modal-sm`, `modal-lg`, `modal-xl`) |
-| `mxquickview_debug` | `0` | Диагностика `[mxqv]` в консоли, если параметр `debug` у сниппета не задан |
-| `mxquickview_fancybox_css` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Путь/URL к Fancybox CSS |
-| `mxquickview_fancybox_js` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.umd.js` | Путь/URL к Fancybox JS |
-| `mxquickview_bootstrap_css` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.css` | Путь/URL к Bootstrap CSS. Пусто — файлы в `vendor/bootstrap`, затем CDN |
-| `mxquickview_bootstrap_js` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.js` | Путь/URL к Bootstrap JS. Пусто — файлы в `vendor/bootstrap`, затем CDN |
+| Ключ | Тип | По умолчанию | Что контролирует |
+| --- | --- | --- | --- |
+| `mxquickview_allowed_chunk` | `textfield` | `mxqv_product,mxqv_resource,ms3_product_content,ms3_products_row` | Какие чанки можно отрисовать (`mxqv_resource` — новости, статьи, страницы) |
+| `mxquickview_allowed_snippet` | `textfield` | `msCart,msMiniCart` | Какие сниппеты можно отрисовать |
+| `mxquickview_allowed_template` | `textfield` | | Какие шаблоны можно отрисовать |
+| `mxquickview_mouseover_delay` | `numberfield` | `300` | Задержка перед загрузкой по наведению |
+| `mxquickview_modal_size` | `textfield` | `modal-lg` | Размер native/bootstrap (`modal-sm`, `modal-lg`, `modal-xl`) |
+| `mxquickview_debug` | `combo-boolean` | `0` | Диагностика `[mxqv]` в консоли, если параметр `debug` у сниппета не задан |
+| `mxquickview_fancybox_css` | `textfield` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.css` | Путь/URL к Fancybox CSS. Пусто — файлы в `vendor/fancybox`, затем CDN |
+| `mxquickview_fancybox_js` | `textfield` | `[[++assets_url]]components/mxquickview/vendor/fancybox/fancybox.umd.js` | Путь/URL к Fancybox JS. Пусто — файлы в `vendor/fancybox`, затем CDN |
+| `mxquickview_bootstrap_css` | `textfield` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.css` | Путь/URL к Bootstrap CSS. Пусто — файлы в `vendor/bootstrap`, затем CDN |
+| `mxquickview_bootstrap_js` | `textfield` | `[[++assets_url]]components/mxquickview/vendor/bootstrap/bootstrap.min.js` | Путь/URL к Bootstrap JS. Пусто — файлы в `vendor/bootstrap`, затем CDN |
 
 Параметр сниппета `modalLibrary` принимает `native`, `bootstrap`, `fancybox`.
+
+::: tip
+При обновлении с 1.0.0 резолвер удаляет мёртвые настройки `mxquickview_front_css`, `mxquickview_front_js`, `mxquickview_frontend_assets`. Если вы переносили их значения в `mxquickview_fancybox_*` и `mxquickview_bootstrap_*`, проверьте результат после обновления.
+:::
 
 ## Рекомендованный порядок настройки
 
@@ -63,14 +67,14 @@ title: Руководство по админке
 
 - Для `modalLibrary = native` стили меняются без правки HTML/JS.
 - Переопределяйте `--mxqv-*` в теме после подключения `mxqv.css`.
-- Для `modalLibrary = fancybox` компонент берёт файлы из `assets/components/mxquickview/vendor/fancybox/`. Если их нет, подключается CDN `@fancyapps/ui`.
-- Для `modalLibrary = bootstrap` — файлы из `assets/components/mxquickview/vendor/bootstrap/`. Если их нет, CDN `bootstrap`.
+- Для `modalLibrary = fancybox` компонент берёт путь из `mxquickview_fancybox_css` / `mxquickview_fancybox_js` как есть. По умолчанию это файлы в `assets/components/mxquickview/vendor/fancybox/`. Только если настройка пустая, идёт поиск файла в `vendor/fancybox/`, затем CDN `@fancyapps/ui`.
+- Для `modalLibrary = bootstrap` то же: путь из `mxquickview_bootstrap_css` / `mxquickview_bootstrap_js` как есть, по умолчанию файлы в `assets/components/mxquickview/vendor/bootstrap/`. Поиск в `vendor/bootstrap/` и CDN `bootstrap@5.3.2` — только при пустой настройке.
 - Чаще меняют:
   - `--mxqv-modal-size-lg`, `--mxqv-modal-size-xl`
   - `--mxqv-backdrop-bg`
   - `--mxqv-header-padding`, `--mxqv-body-padding`
   - `--mxqv-modal-bg`, `--mxqv-modal-shadow`
-- Полный список: [API и интерфейсы](/components/mxquickview/api) → [CSS переменные нативной модалки](/components/mxquickview/api#css-peremennye-nativnoj-modalki).
+- Полный список: [API и интерфейсы](/components/mxquickview/api) → [CSS переменные нативной модалки](/components/mxquickview/api#css-peremennye-nativnoy-modalki).
 
 ## Логика `allowed_template`
 
