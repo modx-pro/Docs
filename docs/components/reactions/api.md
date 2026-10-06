@@ -83,6 +83,15 @@ GET  /assets/components/reactions/api.php?action=admin/types
 
 GET-эндпоинты кэшируются на стороне CDN только если вы сами так настроите. Ответ `counts` зависит от cookie/сессии (`user_reaction`) — **не** кэшируйте его публично.
 
+```mermaid
+flowchart LR
+  C["GET csrf"] --> T[Токен в сессии]
+  T --> R["POST react с class_key, object_id, type и csrf"]
+  Q["GET counts"] --> S[Счётчики и user_reaction]
+  TP["GET top, trending, latest"] --> A[Агрегаты без записи]
+  R -->|added, changed или removed| S
+```
+
 ---
 
 ## GET csrf
