@@ -76,7 +76,7 @@ items: [
 | Требование | Версия |
 | --- | --- |
 | MODX Revolution | 3.0+ |
-| PHP | 8.2–8.4 |
+| PHP | 8.2+ |
 | СУБД | MySQL / MariaDB (InnoDB) |
 
 ## Установка
