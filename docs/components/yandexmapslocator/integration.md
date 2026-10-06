@@ -87,7 +87,7 @@ return $result['success'] ? "{$result['object']['latitude']}, {$result['object']
 
 :::
 
-Из кода пакета процессор вызывается напрямую через `LocatorService::get($modx)->getGeocoder()->geocode($address)`: [Extension API](extension-api#доступ-из-кода-пакета).
+Из кода пакета процессор вызывается напрямую через `LocatorService::get($modx)->getGeocoder()->geocode($address)`: [Extension API](extension-api#dostup-iz-koda-paketa).
 
 ## Точка входа коннектора
 

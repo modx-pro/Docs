@@ -72,7 +72,7 @@ use YandexMapsLocator\Support\LocatorService;
 LocatorService::get($modx)->getCacheService()->clearPartition();
 ```
 
-Сервисы пакета разобраны в разделе [Extension API](extension-api#доступ-из-кода-пакета).
+Сервисы пакета разобраны в разделе [Extension API](extension-api#dostup-iz-koda-paketa).
 
 ## search.php vs api.php
 
