@@ -13,12 +13,12 @@ description: Каталог и заказы MiniShop3 через mxHeadless Exte
 | --- | --- |
 | `products` | Товары (price, SKU, options) |
 | `ms_categories` | Категории товаров. Имя `categories` занято `modCategory` в core |
-| `orders` | Заказы (`protected`, не публичные) |
+| `orders` | Заказы. Не публичные: только по scope и ACL |
 | `order_addresses` | Адреса |
 | `product_options` | Опции |
 | `product_links` | Связи товаров |
 
-Заказы требуют scope `orders.read` (шаблон `{name}.read`) и ACL. Никогда не публичные.
+Заказы требуют scope по шаблону `{name}.read`, то есть `orders.read`, и ACL в MODX.
 
 ## Пример регистрации
 
@@ -70,7 +70,11 @@ curl -s 'https://example.com/api/v1/objects/products/101?include=category'
 
 ЧПУ `/api/v1/cart/...` перехватит плагин mxHeadless и вернёт `404`. Корзину вызывайте через `api.php?route=`.
 
-CORS: выровняйте `mxheadless_cors_*` и `ms3_cors_allowed_origins`.
+## CORS
+
+`ms3_cors_allowed_origins` это настройка MiniShop3, а не mxHeadless. Её читает MS3 при сборке Web API middleware в `core/components/minishop3/config/routes/web.php` и передаёт в `MiniShop3\Middleware\CorsMiddleware` вместе с жёстко заданным `allow_credentials: true`. Пустое значение означает CORS только same-origin.
+
+Пакет mxHeadless такого ключа не знает: у него только `mxheadless_cors_*`. Если SPA в браузере бьёт в оба API, продублируйте origin в обеих настройках.
 
 ## Фронтенд
 

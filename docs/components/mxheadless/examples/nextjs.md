@@ -28,6 +28,7 @@ import 'server-only'
 type Envelope<T> = {
   data: T
   meta?: Record<string, unknown>
+  // links приходит только в ответах списков
   links?: Record<string, string>
 }
 
@@ -119,7 +120,9 @@ export async function GET(req: NextRequest) {
 
 ## ISR и webhooks
 
-Webhook mxHeadless можно направить в Route Handler с проверкой `X-MxHeadless-Signature` и вызовом `revalidatePath` / `revalidateTag`. См. [Webhooks](/components/mxheadless/operations/webhooks).
+Webhook mxHeadless можно направить в Route Handler, который сверяет `X-MxHeadless-Signature` и вызывает `revalidateTag` по `meta.revalidate`. Готовый обработчик и формат заголовка: [ISR revalidation](/components/mxheadless/operations/isr-revalidation).
+
+События дают только мутации через API mxHeadless. Правка контента в админке MODX webhook не порождает и кэш фронта не сбрасывает.
 
 ## См. также
 
