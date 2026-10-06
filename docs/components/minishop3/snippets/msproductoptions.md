@@ -52,7 +52,7 @@ title: msProductOptions
 
 ```fenom
 {'msProductOptions' | snippet : [
-    'onlyOptions' => 'color,size,material,weight'
+    'onlyOptions' => 'material,length,season'
 ]}
 ```
 
@@ -77,7 +77,7 @@ title: msProductOptions
 ```fenom
 {'msProductOptions' | snippet : [
     'sortGroups' => 'Основные,Габариты,Дополнительные',
-    'sortOptions' => 'weight,dimensions,material,color'
+    'sortOptions' => 'material,length,season'
 ]}
 ```
 
@@ -106,23 +106,23 @@ title: msProductOptions
 
 ```php
 [
-    'color' => [
-        'caption' => 'Цвет',
-        'value' => ['Красный', 'Синий'],
+    'material' => [
+        'caption' => 'Материал',
+        'value' => ['хлопок', 'лён'],
         'category' => 'main',
         'group_name' => 'Основные характеристики',
         'type' => 'combo-options',
         'properties' => [...]
     ],
-    'size' => [
-        'caption' => 'Размер',
-        'value' => 'M',
+    'length' => [
+        'caption' => 'Длина',
+        'value' => '120 см',
         'category' => 'main',
         'group_name' => 'Основные характеристики'
     ],
-    'weight' => [
-        'caption' => 'Вес',
-        'value' => '250 г',
+    'season' => [
+        'caption' => 'Сезон',
+        'value' => 'зима',
         'category' => 'specs',
         'group_name' => 'Характеристики'
     ]
@@ -130,7 +130,7 @@ title: msProductOptions
 ```
 
 ::: info Ключ опции
-Имя опции (`color`, `size`, `weight`) — это ключ массива, а не поле внутри опции. Для доступа к нему используйте синтаксис `{foreach $options as $key => $option}`.
+Имя опции (`material`, `length`, `season`) — это ключ массива, а не поле внутри опции. Для доступа к нему используйте синтаксис `{foreach $options as $key => $option}`.
 :::
 
 ## Плейсхолдеры в чанке
@@ -244,7 +244,7 @@ title: msProductOptions
 
     {set $options = 'msProductOptions' | snippet : [
         'return' => 'data',
-        'onlyOptions' => 'color,size'
+        'onlyOptions' => 'material,length'
     ]}
 
     {foreach $options as $key => $option}
