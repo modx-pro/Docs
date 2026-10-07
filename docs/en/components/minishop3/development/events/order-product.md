@@ -3,16 +3,20 @@ title: Order product events
 ---
 # Order product events
 
-Events for order line items: add, update, remove.
+Adding, updating and removing order line items.
 
 ::: info Context
-Since 1.12 the manager edits lines via **Manager API** (`OrdersController`: `POST/PUT/DELETE …/orders/{id}/products/…`), not legacy processors. Parameters include `msOrder` and `msOrderProduct`.
+Since 1.12 the manager edits lines via the **Manager API** (`OrdersController`: `POST/PUT/DELETE …/orders/{id}/products/…`), not the older processors. Parameters include `msOrder` and `msOrderProduct`.
 
 For storefront cart events see [Cart events](cart).
 :::
 
-::: warning After hooks do not roll back DB
-`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` run **after** `save()` / `remove()`. If an after-plugin returns `output`, core logs a warning only — the Vue client still gets success. Validation and veto belong in matching `msOnBefore*`.
+::: info A second source of msOnBeforeCreateOrderProduct / msOnCreateOrderProduct
+Besides the Manager API, this pair is also fired from `OrderDraftManager` — when an order is created programmatically without a session (`ProgrammaticOrderService`, the sessionless API for integrations and cron). In that channel the event parameters carry an **extra `origin` key** (`'integration'` by default), which the Manager API call does not have.
+:::
+
+::: warning After-events do not roll back the database
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` run **after** `save()` / `remove()`. If such a plugin returns `output`, the core only logs a warning — the Vue client still gets a success response. Checks that must abort the operation belong in the paired `msOnBefore*`.
 :::
 
 ## msOnBeforeCreateOrderProduct
@@ -55,7 +59,7 @@ switch ($modx->event->name) {
 
 ## msOnCreateOrderProduct
 
-Fired **after** successful `save()`. A plugin error does not roll back the row.
+Fired **after** a successful `save()`. A plugin error does not roll back the row.
 
 ### Parameters
 
@@ -138,7 +142,7 @@ switch ($modx->event->name) {
 
 ## msOnUpdateOrderProduct
 
-Fired **after** successful `save()`. A plugin error does not roll back changes.
+Fired **after** a successful `save()`. A plugin error does not roll back the changes.
 
 ### Parameters
 
@@ -178,7 +182,7 @@ switch ($modx->event->name) {
 
 ## msOnBeforeRemoveOrderProduct
 
-Fired **before** `remove()`. API rejects deleting the last line (HTTP 400 before the event).
+Fired **before** `remove()`. The API rejects deleting the last line — HTTP 400 before the event.
 
 ### Parameters
 
@@ -209,7 +213,7 @@ switch ($modx->event->name) {
 
 ## msOnRemoveOrderProduct
 
-Fired **after** successful `remove()`. A plugin error does not restore the row.
+Fired **after** a successful `remove()`. A plugin error does not restore the row.
 
 ### Parameters
 

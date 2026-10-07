@@ -3,7 +3,11 @@ title: Cost events
 ---
 # Cost events
 
-Events for calculating and modifying cost: cart, delivery, payment.
+Calculating and modifying the cost of the cart, the delivery and the payment.
+
+::: warning The cart controller arrives under two different names
+In the cart and order-total events the parameter is called `cart`, while in the delivery and payment events it is `cartController`. This is a historical inconsistency of the core: a plugin copied from `msOnGetCartCost` to `msOnGetDeliveryCost` receives `null` instead of the controller. Check the parameter table of the event you need.
+:::
 
 ## msOnBeforeGetCartCost
 
@@ -13,8 +17,9 @@ Fired **before** calculating cart cost.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Cost calculator |
 | `cart` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
+| `draft` | `msOrder` \| `null` | Order draft (`null` when the cart is empty) |
 
 ### Aborting the operation
 
@@ -41,8 +46,9 @@ Fired **after** calculating cart cost. Lets you modify the total.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `controller` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Cost calculator |
 | `cart` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
+| `draft` | `msOrder` \| `null` | Order draft |
 | `cost` | `float` | Calculated cost |
 
 ### Modifying data
@@ -121,9 +127,9 @@ Fired **before** calculating delivery cost.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `storageController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Cost calculator |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
-| `orderController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` | Order draft |
 
 ### Aborting the operation
 
@@ -147,9 +153,9 @@ Fired **after** calculating delivery cost. Lets you modify the cost.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `storageController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Cost calculator |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
-| `orderController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` | Order draft |
 | `cost` | `float` | Calculated delivery cost |
 
 ### Modifying data
@@ -159,11 +165,11 @@ Fired **after** calculating delivery cost. Lets you modify the cost.
 switch ($modx->event->name) {
     case 'msOnGetDeliveryCost':
         $cost = $scriptProperties['cost'];
-        $orderController = $scriptProperties['orderController'];
+        $cartController = $scriptProperties['cartController'];
 
         // Get cart cost
-        $cartCostResponse = $orderController->getCartCost();
-        $cartCost = $cartCostResponse['data']['cost'] ?? 0;
+        $response = $cartController->status();
+        $cartCost = $response['data']['total_cost'] ?? 0;
 
         $values = &$modx->event->returnedValues;
 
@@ -212,12 +218,11 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnGetDeliveryCost':
         $cost = $scriptProperties['cost'];
-        $orderController = $scriptProperties['orderController'];
+        $draft = $scriptProperties['draft'];
 
-        // Get order data
-        $response = $orderController->get();
-        $order = $response['data']['order'] ?? [];
-        $city = $order['address_city'] ?? '';
+        // Get the delivery city from the draft address
+        $address = $draft ? $draft->getOne('Address') : null;
+        $city = $address ? $address->get('city') : '';
 
         // Delivery zones
         $zones = [
@@ -245,9 +250,9 @@ Fired **before** calculating payment method fee.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `storageController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Cost calculator |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
-| `orderController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` | Order draft |
 
 ---
 
@@ -259,9 +264,9 @@ Fired **after** calculating payment method fee. Lets you modify the fee.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `storageController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `calculator` | `\MiniShop3\Services\Order\OrderCostCalculator` | Cost calculator |
 | `cartController` | `\MiniShop3\Controllers\Cart\Cart` | Cart controller |
-| `orderController` | `\MiniShop3\Controllers\Order\Order` | Order controller |
+| `draft` | `msOrder` | Order draft |
 | `cost` | `float` | Calculated fee |
 
 ### Modifying data
@@ -297,11 +302,11 @@ switch ($modx->event->name) {
 switch ($modx->event->name) {
     case 'msOnGetPaymentCost':
         $cost = $scriptProperties['cost'];
-        $orderController = $scriptProperties['orderController'];
+        $cartController = $scriptProperties['cartController'];
 
         // Get cart cost
-        $cartCostResponse = $orderController->getCartCost();
-        $cartCost = $cartCostResponse['data']['cost'] ?? 0;
+        $response = $cartController->status();
+        $cartCost = $response['data']['total_cost'] ?? 0;
 
         $values = &$modx->event->returnedValues;
 
@@ -317,7 +322,7 @@ switch ($modx->event->name) {
 
 ## msOnBeforeGetOrderCost
 
-Fired **before** the order total is assembled in `OrderCostCalculator`. After this hook, core calculates cart / delivery / payment cost and composes the breakdown.
+Fired **before** the order total is assembled in `OrderCostCalculator`: after the event the core calculates the cart, delivery and payment cost and composes the breakdown.
 
 ### Parameters
 
@@ -335,7 +340,7 @@ Abort with `$modx->event->output('...')` — the calculator returns an error.
 
 ## msOnGetOrderCost
 
-Fired **after** breakdown compose. Override any of the four amounts via `returnedValues`; core recomposes the final `cost`.
+Fired **after** the breakdown is composed. Override any of the four amounts via `returnedValues` — the core recomposes the final `cost`.
 
 ### Parameters
 
@@ -372,23 +377,21 @@ switch ($modx->event->name) {
             $values['delivery_cost'] = 0;
         }
 
-        // You may set cost explicitly; otherwise core recomputes from the three parts
-        // $values['cost'] = ($values['cart_cost'] ?? $cartCost)
-        //     + ($values['delivery_cost'] ?? $deliveryCost)
-        //     + ($values['payment_cost'] ?? $paymentCost);
         break;
 }
 ```
 
-::: tip Partial vs total events
+::: warning `cost` in returnedValues has no effect
+The core **always** recomposes the final `cost` from `cart_cost`/`delivery_cost`/`payment_cost` after the event — any `$values['cost'] = ...` set by a plugin is silently discarded. To influence the total, change `cart_cost`/`delivery_cost`/`payment_cost`, as shown above.
+:::
+
+::: tip A partial event or the total one
 For a products-only discount prefer `msOnGetCartCost`. For a rule that must touch cart + delivery + payment together, use `msOnGetOrderCost`.
 :::
 
 ---
 
 ## Full example: discount system
-
-Complete discount system using several events:
 
 ```php
 <?php
@@ -446,7 +449,6 @@ switch ($modx->event->name) {
 
     case 'msOnGetDeliveryCost':
         $cost = $scriptProperties['cost'];
-        $orderController = $scriptProperties['orderController'];
 
         // Free delivery when discount >= 1000
         $totalDiscount = $modx->eventData['total_discount'] ?? 0;

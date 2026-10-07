@@ -3,11 +3,11 @@ title: Order status events
 ---
 # Order status events
 
-Events for tracking and controlling order status changes.
+Tracking and controlling order status changes.
 
 ## msOnBeforeChangeOrderStatus
 
-Fired **before** changing order status. Lets you validate or cancel the change.
+Fired **before** changing order status. Lets you validate or abort the change.
 
 ### Parameters
 
@@ -42,6 +42,24 @@ switch ($modx->event->name) {
 }
 ```
 
+### Redirecting to a different status
+
+Besides aborting through `output()`, a plugin can **redirect** the change to another status: the core re-validates the transition and applies the returned status instead of the requested one.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnBeforeChangeOrderStatus':
+        $newStatus = $scriptProperties['status'];
+
+        // Orders without prepayment go to "needs confirmation" instead of "paid"
+        if ($newStatus === 3) { // 3 = "paid"
+            $modx->event->returnedValues = ['status' => 7]; // 7 = "needs confirmation"
+        }
+        break;
+}
+```
+
 ### Checking products before shipping
 
 ```php
@@ -68,6 +86,14 @@ switch ($modx->event->name) {
 ## msOnChangeOrderStatus
 
 Fired **after** successful order status change.
+
+::: warning A plugin error does not undo the status change
+By the time this fires, the status is already persisted along with the inventory movements, and the transition is written to the order history — the entry is made before the event on purpose, so that a plugin error cannot erase that history.
+
+If a plugin calls `output()`, the caller receives the error message but the status stays new: there is no rollback. Status-change notifications are sent as well — the core dispatches them first and only then returns the error.
+
+Put any check that should abort the transition into `msOnBeforeChangeOrderStatus`.
+:::
 
 ### Parameters
 

@@ -3,7 +3,7 @@ title: Working with plugins
 ---
 # Working with plugins
 
-Guide to creating MiniShop3 event plugins: getting parameters, returning data, aborting operations, passing data between plugins.
+A plugin on MiniShop3 events: how to get the parameters, return data, abort an operation and pass data to another plugin.
 
 ## Component plugin (MODX events)
 
@@ -79,11 +79,11 @@ $modx->log(modX::LOG_LEVEL_ERROR, '[' . $modx->event->name . '] ' . print_r($scr
 
 ## controller parameter
 
-::: info Important
-In all MiniShop3 controller events the `controller` parameter is passed automatically — the current controller instance (Cart, Order, Customer).
+::: info Passed automatically
+Every MiniShop3 controller event receives a `controller` parameter — the instance of the current controller (Cart, Order, Customer).
 :::
 
-Through the controller you can access:
+The controller gives access to MiniShop3 and MODX:
 
 ```php
 <?php
@@ -101,7 +101,7 @@ switch ($modx->event->name) {
 
 ## Aborting the operation
 
-For events with the `Before` prefix you can stop the operation by returning an error message:
+An event with the `Before` prefix is aborted by returning an error message:
 
 ### $modx->event->output()
 
@@ -149,7 +149,7 @@ switch ($modx->event->name) {
 
 ### returnedValues
 
-To change parameters used later:
+To change the parameters the core continues with:
 
 ```php
 <?php
@@ -168,7 +168,7 @@ switch ($modx->event->name) {
 }
 ```
 
-### Important: use reference (&)
+### Take returnedValues by reference (&)
 
 ```php
 // Correct — changes apply
@@ -195,7 +195,7 @@ Shallow merge: if two plugins set `returnedValues['count']`, the plugin with **h
 
 ### Two ways to change data
 
-1. **By reference** in `$scriptProperties` (legacy MS2, still works where params are passed with `&`).
+1. **By reference** in `$scriptProperties` (the older MS2 way; still works where params are passed with `&`).
 2. **`returnedValues`** — preferred contract since 1.11+.
 
 ```php
@@ -215,8 +215,15 @@ Callers read `$response['data']['count']` after merge.
 | Signal | Where | Effect |
 | --- | --- | --- |
 | `$modx->event->output('text')` | `Utils::invokeEvent` | `success = false`, text in `message` |
-| `return false` from plugin | import, notifications, some raw calls | `EventGate::isCancelled()` → operation aborted |
-| `return 'cancel'` | same | import counts the row as **skipped** |
+| `return false` or `return 'cancel'` | import, notifications, some raw calls | `EventGate::isCancelled()` → `true` |
+
+For `isCancelled()`, `false` and the string `'cancel'` are equivalent. What the cancellation means is decided by the calling code:
+
+| Event | What the core does on cancellation |
+| --- | --- |
+| `msOnBeforeImport` | The whole import aborts with the `ms3_utilities_import_cancelled` error |
+| `msOnImportRow` | The current row goes into the `skipped` counter, the import continues |
+| `msOnBeforeSendNotification` | The notification is not sent, no error is raised |
 
 ```php
 <?php
@@ -227,8 +234,8 @@ case 'msOnImportRow':
     break;
 ```
 
-::: warning After hooks in Vue order manager
-`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` run **after** save/remove. An after-plugin error is logged only; the HTTP response stays success. Veto belongs in `msOnBefore*`. See [Order product events](order-product).
+::: warning After-events in the order manager
+`msOnCreateOrderProduct`, `msOnUpdateOrderProduct`, `msOnRemoveOrderProduct` run **after** `save()` / `remove()`. A plugin error is only logged, and the HTTP response to the client stays successful. The operation can be aborted only in the paired `msOnBefore*`. See [Order product events](order-product).
 :::
 
 ### Named returnedValues channels (import, msProducts, notifications)
@@ -308,13 +315,11 @@ $modx->eventData = [
 ];
 ```
 
-::: warning Important
+::: warning Data lives for one request
 `$modx->eventData` is cleared after the request. Use `$_SESSION` or the database to persist data between requests.
 :::
 
 ## Showing messages in the manager
-
-For manager events you can show messages to the user:
 
 ### JavaScript alert via addHtml
 
@@ -387,60 +392,37 @@ $modx->log(modX::LOG_LEVEL_ERROR,
 );
 ```
 
-### Common mistakes
-
-### 1. Forgetting return after output()
+### Checking whether the plugin fires
 
 ```php
-// Wrong
-if ($error) {
-    $modx->event->output('Error');
-}
-doSomething();
+<?php
+// At the top of the plugin
+$modx->log(modX::LOG_LEVEL_ERROR, '=== PLUGIN START: ' . $modx->event->name . ' ===');
 
-// Correct
-if ($error) {
-    $modx->event->output('Error');
-    return;
-}
-```
-
-### 2. Not using reference for returnedValues
-
-```php
-// Wrong
-$values = $modx->event->returnedValues;
-$values['count'] = 10;
-
-// Correct
-$values = &$modx->event->returnedValues;
-$values['count'] = 10;
-```
-
-### 3. Wrong event for aborting
-
-```php
-// msOnAddToCart — AFTER add; output() here won't stop the add
-case 'msOnAddToCart':
-    $modx->event->output('Error'); // Useless
-    break;
-
-// msOnBeforeAddToCart — BEFORE add
-case 'msOnBeforeAddToCart':
-    $modx->event->output('Error'); // Stops the add
-    break;
-```
-
-### 4. Forgetting break in switch
-
-```php
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
-        // code
-        // Forgot break — next case runs too!
-
-    case 'msOnAddToCart':
+        $modx->log(modX::LOG_LEVEL_ERROR, 'msOnBeforeAddToCart triggered');
+        // ...
         break;
+}
+
+$modx->log(modX::LOG_LEVEL_ERROR, '=== PLUGIN END ===');
+```
+
+### Listing the plugins subscribed to an event
+
+```php
+<?php
+// Fetch every plugin subscribed to the event
+$plugins = $modx->getCollection('modPluginEvent', [
+    'event' => 'msOnBeforeAddToCart'
+]);
+
+foreach ($plugins as $pluginEvent) {
+    $plugin = $pluginEvent->getOne('Plugin');
+    $modx->log(modX::LOG_LEVEL_INFO,
+        'Plugin: ' . $plugin->get('name') . ', priority: ' . $pluginEvent->get('priority')
+    );
 }
 ```
 

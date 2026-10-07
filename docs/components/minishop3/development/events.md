@@ -3,7 +3,7 @@ title: События
 ---
 # События и плагины
 
-MiniShop3 использует систему событий MODX для расширения функциональности. Плагины позволяют вмешиваться в процессы обработки корзины, заказов, товаров и покупателей без изменения исходного кода.
+MiniShop3 работает на системе событий MODX. Плагин вмешивается в обработку корзины, заказов, товаров и покупателей без правки исходного кода.
 
 ## Начало работы
 
@@ -83,8 +83,8 @@ MiniShop3 использует систему событий MODX для рас�
 | [msOnErrorValidateCustomerValue](events/customer#msonerrorvalidatecustomervalue) | Ошибка валидации |
 | [msOnBeforeCreateCustomer](events/customer#msonbeforecreatecustomer) | Перед созданием покупателя |
 | [msOnCreateCustomer](events/customer#msoncreatecustomer) | После создания покупателя |
-| [msOnBeforeUpdateCustomer](events/customer#msonbeforeupdatecustomer) | Перед обновлением покупателя (процессор; встроенный UI пока не вызывает) |
-| [msOnUpdateCustomer](events/customer#msonupdatecustomer) | После обновления покупателя |
+| [msOnBeforeUpdateCustomer](events/customer#msonbeforeupdatecustomer) | Перед обновлением покупателя (процессор; ни админка, ни Web API его пока не вызывают) |
+| [msOnUpdateCustomer](events/customer#msonupdatecustomer) | После обновления покупателя (процессор; ни админка, ни Web API его пока не вызывают) |
 | [msOnBeforeAddCustomerAddress](events/customer#msonbeforeaddcustomeraddress) | Перед добавлением адреса |
 | [msOnAddCustomerAddress](events/customer#msonaddcustomeraddress) | После добавления адреса |
 
@@ -99,7 +99,7 @@ MiniShop3 использует систему событий MODX для рас�
 
 ### Сниппет msProducts
 
-События для интеграции внешних пакетов (ms3Variants, msBrands и др.) без модификации кода ядра.
+События для интеграции внешних пакетов (ms3Variants, msBrands и другие) без правки кода ядра.
 
 | Событие | Описание |
 | --- | --- |
@@ -129,8 +129,8 @@ MiniShop3 использует систему событий MODX для рас�
 | [msOnSaveOrder](events/order-model#msonsaveorder) | После сохранения (xPDO) |
 | [msOnBeforeRemoveOrder](events/order-model#msonbeforeremoveorder) | Перед удалением (xPDO) |
 | [msOnRemoveOrder](events/order-model#msonremoveorder) | После удаления (xPDO) |
-| [msOnBeforeUpdateOrder](events/order-model#msonbeforeupdateorder) | Перед обновлением (админка) |
-| [msOnUpdateOrder](events/order-model#msonupdateorder) | После обновления (админка) |
+| [msOnBeforeUpdateOrder](events/order-model#msonbeforeupdateorder) | Зарезервировано — не вызывается ([#844](https://github.com/modx-pro/MiniShop3/issues/844)) |
+| [msOnUpdateOrder](events/order-model#msonupdateorder) | Зарезервировано — не вызывается ([#844](https://github.com/modx-pro/MiniShop3/issues/844)) |
 
 ### Уведомления
 
@@ -151,6 +151,8 @@ MiniShop3 использует систему событий MODX для рас�
 | [msOnBeforeVendorDelete](events/vendor#msonbeforevendordelete) | Перед удалением |
 | [msOnVendorDelete](events/vendor#msonvendordelete) | После удаления |
 
+Все шесть событий производителя вызывают только прежние процессоры `Settings/Vendor/*`. CRUD в админке идёт через Manager API, а он их не вызывает — подробности в [событиях производителя](events/vendor) и [issue #847](https://github.com/modx-pro/MiniShop3/issues/847).
+
 ### Импорт
 
 | Событие | Описание |
@@ -167,15 +169,15 @@ MiniShop3 использует систему событий MODX для рас�
 
 ### Отгрузки (shipment)
 
-Логика `ShipmentLifecycleService` (`ms3_shipment_lifecycle`). Таблицы `ms3_shipments` / `ms3_shipment_events`. Создание и `setTracking` работают и при `ms3_shipment_enabled=0`. Webhook доставки при выкл. отвечает 404. Before-события: отмена через `success=false` в ответе `invokeEvent`.
+Логика — `ShipmentLifecycleService` (`ms3_shipment_lifecycle`), таблицы — `ms3_shipments` и `ms3_shipment_events`. Создание отгрузки и `setTracking` работают и при `ms3_shipment_enabled=0`, а вебхук доставки в этом случае отвечает 404. Before-события прерываются через `success=false` в ответе `invokeEvent`.
 
 | Событие | Параметры | Когда |
 | --- | --- | --- |
-| `msOnBeforeCreateShipment` / `msOnCreateShipment` | before: `order_id`, `delivery_id`; after: `shipment` (row) | `create()` |
-| `msOnBeforeChangeShipmentStatus` / `msOnChangeShipmentStatus` | before: `shipment`, `status`; after: `shipment` | `transition()` / provider webhook |
-| `msOnBeforeUpdateShipmentTracking` / `msOnUpdateShipmentTracking` | before: `shipment`, `tracking_number`; after: `shipment` | `setTracking()` / webhook при смене трека |
+| `msOnBeforeCreateShipment` / `msOnCreateShipment` | before: `order_id`, `delivery_id`; after: `shipment` (запись) | `create()` |
+| `msOnBeforeChangeShipmentStatus` / `msOnChangeShipmentStatus` | before: `shipment`, `status`; after: `shipment` | `transition()` / вебхук службы доставки |
+| `msOnBeforeUpdateShipmentTracking` / `msOnUpdateShipmentTracking` | before: `shipment`, `tracking_number`; after: `shipment` | `setTracking()` / вебхук при смене трек-номера |
 
-Статусы row: `preparing`, `shipped`, `in_transit`, `delivered`, `cancelled`, `returned`, `failed` (`ShipmentStatus`).
+Статусы отгрузки: `preparing`, `shipped`, `in_transit`, `delivered`, `cancelled`, `returned`, `failed` (`ShipmentStatus`).
 
 ```mermaid
 flowchart TB
@@ -192,12 +194,12 @@ flowchart TB
 
 ### Остатки (inventory)
 
-При `ms3_inventory_enabled=1` — `ProductStockInventory` (`ms3_inventory`). Контракт: `InventoryServiceInterface`. Параметры событий: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin`). Before с `success=false` → `InventoryException` (`ms3_err_inventory_cancelled`). `$notify=false` на reserve/release пропускает пару событий (компенсация внутри SQL-транзакции).
+При `ms3_inventory_enabled=1` работает `ProductStockInventory` (`ms3_inventory`), контракт — `InventoryServiceInterface`. Параметры событий: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin`). Before-событие с `success=false` приводит к `InventoryException` (`ms3_err_inventory_cancelled`). `$notify=false` у reserve и release пропускает пару событий — компенсация идёт внутри SQL-транзакции.
 
 | Событие | Когда в статусах заказа |
 | --- | --- |
-| `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Резерв на `ms3_status_new` (и перед commit при прыжке к paid) |
-| `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Commit на `ms3_status_paid` (повторно stock не уменьшает) |
+| `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Резерв на `ms3_status_new` (и перед commit, если заказ сразу переходит в paid) |
+| `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Commit на `ms3_status_paid` (повторно остаток не уменьшает) |
 | `msOnBeforeInventoryRelease` / `msOnInventoryRelease` | Release на `ms3_status_canceled` до commit. Также при сбое `payment send()` |
 
 ```mermaid
@@ -250,7 +252,7 @@ flowchart TB
 | --- | --- |
 | Очистка черновика (`order/clean`) | `msOnBeforeEmptyOrder` → reset полей → `msOnEmptyOrder` |
 | Итог на витрине | cart/delivery/payment cost → `msOnBeforeGetOrderCost` → compose → `msOnGetOrderCost` (можно вернуть все 4 суммы) |
-| Submit витрины | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
+| Отправка заказа на витрине | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
 | Финализация в админке | `msOnBeforeMgrCreateOrder` → `msOnBeforeCreateOrder` → `msOnCreateOrder` → `msOnMgrCreateOrder` |
 
-Источник реестра: `_build/elements/events.php` (имена выше зарегистрированы в MODX).
+Все имена выше зарегистрированы в MODX; список регистрации — `_build/elements/events.php`.

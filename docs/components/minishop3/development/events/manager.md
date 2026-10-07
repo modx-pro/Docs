@@ -33,8 +33,12 @@ title: События админки
 | `notifications` | Управление уведомлениями | `controllers/mgr/notifications.class.php` |
 | `utilities` | Утилиты | `controllers/mgr/utilities.class.php` |
 
-::: info Vue-страницы
-Ext-less Vue-страницы (собственный `addVueModule`, без ExtJS-обёрток): `orders`, `order`, `customers`, `settings`, `notifications`, `utilities`. ExtJS-страницы (обычный `addJavascript`/`addCss`): `product_create`, `product_update`, `category_create`, `category_update`.
+::: info Чем отличаются страницы
+Экраны MS3 из меню компонента собраны целиком на Vue, через собственный `addVueModule` и без ExtJS-обёрток: `orders`, `order`, `customers`, `settings`, `notifications`, `utilities`.
+
+Страницы правки товара и категории — гибридные: ExtJS-панель ресурса MODX плюс Vue-модули поверх неё. `product_update` подключает `product-tabs.min.js`, `category_update` — `category-products.min.js` и `category-options.min.js`. Именно поэтому на них работает Plugin Registry из подсказки ниже.
+
+Только ExtJS, без Vue: `product_create` и `category_create`.
 :::
 
 ### Подключение файлов
