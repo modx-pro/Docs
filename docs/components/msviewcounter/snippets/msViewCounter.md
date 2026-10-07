@@ -118,7 +118,7 @@ description: Вывод просмотров и active-посетителей т
 
 ## Связь с плагинами
 
-- **`msViewCounterBootstrap`** (событие `OnMODXInit`) — подключает `bootstrap.php`: автозагрузчик классов и функцию `msvc_get_service()`. Выключите его, и сниппет и `msViewCounterTrack` упадут с фатальной ошибкой.
+- **`msViewCounterBootstrap`** (событие `OnMODXInit`) — подключает `bootstrap.php`: автозагрузчик классов и функцию `msvc_get_service()`. С версии 1.0.1 сниппет подключает `bootstrap.php` сам, поэтому выключенный плагин не приводит к фатальной ошибке, но счётчик останется без учёта просмотров, без CSS и без heartbeat.
 - **`msViewCounterTrack`** (`OnLoadWebDocument`) — определяет страницу товара по `class_key` с `msProduct` или по шаблону `ms3_template_product_default`, вызывает `recordVisit`, регистрирует JS с конфигом `window.msViewCounterConfig` (connector URL, productId, sessionId, interval).
 
 ## Connector
@@ -131,7 +131,7 @@ Heartbeat уходит в `assets/components/msviewcounter/connector.php` обы
 | `product_id` | число | ID товара, `> 0`. Значение `0` и пустой `session_id` дают `Invalid payload` |
 | `session_id` | строка | Идентификатор сессии, обрезается до 64 символов |
 
-Ответ всегда `{"success": true}`, обработка ошибок на клиенте пустая. Значения приходят в запросе как есть, без подписи и проверки прав, поэтому ограничить поток можно только правилами веб-сервера — см. [FAQ](../faq#mozhno-li-nakrutit-online).
+Ответ всегда `{"success": true}`, обработка ошибок на клиенте пустая. Значения приходят в запросе, но `session_id` сверяется с сессией на сервере, а частота ограничена 10 запросами в минуту на сессию — подробности в [FAQ](../faq#mozhno-li-nakrutit-online).
 
 ## См. также
 

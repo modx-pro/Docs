@@ -35,10 +35,12 @@ flowchart TB
   ONL --> SN
 ```
 
-Сервиса в терминах MODX пакет не регистрирует: `msviewcounter` в `$modx->services` не появляется. Вместо этого есть PHP-функция `msvc_get_service()`, которая собирает `ViewCounter` с репозиторием и помощниками и запоминает экземпляр в статической переменной. Функция объявлена в `include/factory.php` и становится доступна только после подключения `bootstrap.php` — то есть через плагин `msViewCounterBootstrap` или напрямую из `connector.php`.
+Сервиса в терминах MODX пакет не регистрирует: `msviewcounter` в `$modx->services` не появляется. Вместо этого есть PHP-функция `msvc_get_service()`, которая собирает `ViewCounter` с репозиторием и помощниками и запоминает экземпляр в статической переменной. Функция объявлена в `include/factory.php` и становится доступна после подключения `bootstrap.php`. Путей подключения три: плагин `msViewCounterBootstrap` на `OnMODXInit`, сам сниппет `msViewCounter` (с версии 1.0.1 подключает `bootstrap.php` сам, если функция ещё не объявлена) и напрямую из `connector.php`.
 
-::: warning Обязательность `msViewCounterBootstrap`
-Выключите этот плагин, и `msvc_get_service()` будет недоступна: сниппет `msViewCounter` и плагин `msViewCounterTrack` упадут с `Call to undefined function msvc_get_service()`. На странице товара это выглядит как HTTP 500, а не как пустой блок.
+::: warning `msViewCounterBootstrap` больше не обязателен
+До версии 1.0.1 плагин был обязателен: без него `msvc_get_service()` не объявлялась, и страница товара отдавала HTTP 500 с `Call to undefined function msvc_get_service()`.
+
+Теперь сам сниппет подключает `bootstrap.php`, если функция ещё не объявлена, поэтому страница не падает. Но если `msViewCounterBootstrap` выключен, не подключатся `viewcounter.js` и CSS: блок и числа появятся, однако без оформления и без heartbeat, то есть `online` не будет продлеваться. Плагин `msViewCounterTrack` при этом тоже не работает — он регистрирует просмотры и ассеты на странице товара, и без него счётчик не считает вовсе.
 :::
 
 ## Режимы работы

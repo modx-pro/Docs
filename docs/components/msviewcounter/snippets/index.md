@@ -11,7 +11,7 @@ description: Обзор сниппетов msViewCounter для MiniShop3
 
 ## Порядок на типовой странице товара
 
-1. Плагин **`msViewCounterBootstrap`** на `OnMODXInit` — подключает автозагрузчик и функцию `msvc_get_service()`. Без него остальные элементы падают.
+1. Плагин **`msViewCounterBootstrap`** на `OnMODXInit` — подключает автозагрузчик и функцию `msvc_get_service()`. С версии 1.0.1 сниппет подключает `bootstrap.php` самостоятельно, так что без плагина страница не падает, но теряются учёт просмотров, стили и heartbeat.
 2. Плагин **`msViewCounterTrack`** на `OnLoadWebDocument` — определяет страницу товара, записывает просмотр и подключает CSS и JS.
 3. **`msViewCounter`** в шаблоне — HTML-блок и регистрация CSS.
 4. **`viewcounter.js`** в браузере — шлёт heartbeat в `connector.php`, который продлевает active-сессию в БД.

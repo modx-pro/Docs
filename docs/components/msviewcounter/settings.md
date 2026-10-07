@@ -23,8 +23,24 @@ description: Ключи msviewcounter_* — режимы, online, boost, fake, �
 | `msviewcounter_dedup_session` | Да/Нет | Да | — | Не увеличивать total повторно в той же сессии |
 | `msviewcounter_block_bots` | Да/Нет | Да | — | Исключать ботов из записи статистики |
 
-::: warning Границы значений
-Пакет не показывает ошибку, а молча подставляет минимум: введёте `online_ttl = 10` — получите `30`, `heartbeat_interval = 5` — получите `10`. Границы применяет `Config::fromModx()` при каждом чтении настроек, поэтому «забытое» значение исправляется само.
+::: warning Границы значений применяются молча
+Пакет не показывает ошибку и не пишет в лог, а подставляет минимум: введёте `online_ttl = 10` — получите `30`, `heartbeat_interval = 5` — получите `10`. В форме при этом остаётся введённое вами число, то есть **реальное значение посмотреть негде**.
+
+Границы применяет `Config::fromModx()` при каждом чтении настроек (`src/Config.php:46-59`), поэтому «забытое» значение исправляется само. Затронуты девять настроек:
+
+| Ключ | Минимум |
+|------|---------|
+| `msviewcounter_online_ttl` | `30` |
+| `msviewcounter_heartbeat_interval` | `10` |
+| `msviewcounter_cleanup_interval` | `60` |
+| `msviewcounter_cleanup_batch_limit` | `100` |
+| `msviewcounter_boost_total_base` | `0` |
+| `msviewcounter_boost_total_multiplier` | `0` |
+| `msviewcounter_boost_total_jitter_max` | `0` |
+| `msviewcounter_boost_online_base` | `0` |
+| `msviewcounter_boost_online_jitter_max` | `0` |
+
+Отдельно `fake_total_min` / `fake_total_max` и `fake_online_min` / `fake_online_max` проходят через `orderedBounds()`: если минимум больше максимума, значения меняются местами, отрицательные обрезаются до нуля, а равные дают фиксированное число без разброса. Пустой `fake_salt` заменяется дефолтом.
 :::
 
 Значения `show_total` и `show_online` управляют **только выводом**. Запись просмотров в `msviewcounter_totals` идёт независимо от них: если `show_total = Нет`, просмотры всё равно копятся. Флаги читает `ViewCounter::counterInput()`: если соответствующий флаг выключен, в стратегию идёт `0`.
