@@ -21,15 +21,7 @@ mSearch индексирует не только ресурсы MODX, но и л
 └──────────────────────────────────────────────────────────────┘
 ```
 
-Каждый адаптер:
-
-- Декларирует, какие классы объектов поддерживает (`supports()`).
-- Возвращает идентификатор типа для маршрутизации шаблонов (`getType()`).
-- Указывает поля для индексации и их веса (`getIndexableFields()`).
-- Извлекает текст из полей объекта (`extractContent()`).
-- Выдаёт объекты для пакетной индексации (`getObjects()`, `getTotal()`).
-- Формирует плейсхолдеры для рендера в подсказках и результатах (`getDisplayData()`).
-- Возвращает имена дефолтных чанков (`getDefaultSuggestTpl()`, `getDefaultResultTpl()`).
+Обязанности адаптера описаны в интерфейсе `ContentAdapterInterface` — каждый метод снабжён комментарием.
 
 ## Интерфейс ContentAdapterInterface
 
@@ -81,7 +73,7 @@ interface ContentAdapterInterface
      *
      * Возвращает [id => array_of_placeholders]. Адаптер сам подсвечивает
      * нужные поля при непустом $query, дополняет данные computed-полями
-     * (url, type, idx).
+     * (url, type, class_key, context_key).
      *
      * $options может содержать `element` (имя внешнего сниппета-загрузчика)
      * и `elementProperties` — адаптер сам решает, использовать их или нет.
@@ -102,9 +94,9 @@ interface ContentAdapterInterface
 
 ## Базовый класс AbstractAdapter
 
-Для удобства наследуйтесь от `AbstractAdapter` — он реализует разумные дефолты и предоставляет полезные helper-методы.
+Наследуйтесь от `AbstractAdapter`: он реализует значения по умолчанию и даёт вспомогательные методы.
 
-### Дефолтные реализации
+### Реализации по умолчанию
 
 | Метод | Поведение по умолчанию |
 |-------|------------------------|
@@ -114,7 +106,19 @@ interface ContentAdapterInterface
 | `getDefaultSuggestTpl()` | `'mSearch.suggest.row'` |
 | `getDefaultResultTpl()` | `'mSearch.row'` |
 
-### Helper-методы
+### Обязательные к реализации методы
+
+`AbstractAdapter` не реализует эти методы — их обязан дать наследник:
+
+- `supports(string $className): bool`
+- `getIndexableFields(): array`
+- `extractContent(object $object, string $field): string`
+- `getObjects(array $criteria, int $limit, int $offset): iterable`
+- `getTotal(array $criteria = []): int`
+
+Остальные методы интерфейса имеют рабочие реализации по умолчанию (см. таблицу выше) и переопределяются по необходимости.
+
+### Вспомогательные методы
 
 | Метод | Назначение |
 |-------|------------|
@@ -122,9 +126,12 @@ interface ContentAdapterInterface
 | `parseFieldWeights(string $fields)` | Парсит строку формата `field1:3,field2:1` в `[field => weight]` |
 | `extractTvContent(object $object, string $tvName)` | Извлекает значение TV — поддерживает скаляры и JSON (MIGX) |
 | `flattenArray(array $array)` | Превращает многомерный массив в строку из его строковых leaf-значений |
-| `loadIntros(int[] $ids)` | Батч-загрузка `mse_intro` по списку ID |
+| `loadIntros(int[] $ids)` | Пакетная загрузка `mse_intro` по списку ID |
 | `loadViaElement(string $element, int[] $ids, array $extraProps = [])` | Вызов внешнего сниппета (`runSnippet`) с проверкой существования и валидацией JSON-ответа. Ключи `resources` и `return` всегда переопределяются |
 | `highlight(string $text, string $query, array $options = [])` | Обёртка над `MSearch::highlight()` — возвращает HTML-safe строку (escape + `<mark>`) |
+| `parseTvFields(string $includeTVs, string $tvPrefix = '')` | Разбирает список TV через запятую в имена плейсхолдеров (с префиксом), схлопывает дубли |
+| `highlightableTvFields(array $tvFields, array $extraReserved = [], string $processTVs = '', string $prepareTVs = '', string $tvPrefix = '')` | Отбирает TV, которые можно подсвечивать: исключает зарезервированные поля и те, что отрендерены через `processTVs`/`prepareTVs` |
+| `highlightTvFields(array $data, array $row, array $tvFields, string $query)` | Подсвечивает значения перечисленных TV в `$data` по сырым значениям из `$row`, возвращает изменённую копию |
 
 ### Конструктор
 
@@ -340,7 +347,7 @@ switch ($modx->event->name) {
 
 ### Шаг 4. Чанк подсказки
 
-Дефолтное имя из адаптера — `mSearch.suggest.comment`. Создайте чанк в админке:
+Имя по умолчанию из адаптера — `mSearch.suggest.comment`. Создайте чанк в админке:
 
 ```fenom
 <a href="{$url}" class="mse-suggest-item mse-suggest-item--comment">
@@ -392,7 +399,7 @@ class MyProductAdapter extends MsProductAdapter
 
 ## Интеграция через внешний сниппет (element)
 
-В сниппете `mSearchForm` можно указать `&element=msProducts` — в этом случае адаптер вместо собственного SQL загружает данные через указанный сниппет. Это даёт доступ ко всем событиям сниппета (например, плагинам скидок miniShop3) и кастомному форматированию.
+В сниппете `mSearchForm` можно указать `&element=msProducts` — в этом случае адаптер вместо собственного SQL загружает данные через указанный сниппет. Это даёт доступ ко всем событиям сниппета (например, плагинам скидок miniShop3) и собственному форматированию.
 
 В адаптере поддержка element-интеграции реализуется через helper `loadViaElement()`:
 
@@ -417,6 +424,8 @@ public function getDisplayData(array $ids, string $query = '', array $options = 
 ```
 
 Адаптер сам решает, поддерживает ли он указанный `element` — если нет, можно игнорировать `$options['element']` и всегда идти нативным путём.
+
+Методы `loadNatively()` и `enrich()` в примере — не методы `AbstractAdapter`, а собственные методы адаптера, которые пишет его автор (как в `MsProductAdapter`). Базовый класс даёт только `loadViaElement()`, `loadIntros()` и остальные вспомогательные методы из таблицы выше.
 
 ::: warning Безопасность
 `$element` приходит из конфигурации сниппета `mSearchForm`, хранящейся в кэше MODX. Никогда не передавайте в `loadViaElement()` значение, пришедшее напрямую от клиента — `runSnippet()` исполнит указанный сниппет, и в случае произвольного имени это становится RCE.
@@ -459,6 +468,7 @@ $results = $msearch->search('купить смартфон', [
     'limit' => 20,
     'offset' => 0,
     'contexts' => ['web'],
+    // 'class_keys' => ['MiniShop3\Model\msProduct'], // фильтр по классам (опционально)
 ]);
 
 $results->getTotal();        // общее количество
@@ -522,15 +532,15 @@ ResourceAdapter    (priority 0)    ← фолбэк для всего modResourc
 - В одних таблицах сосуществуют ресурсы, товары, комментарии и любые другие модели.
 - При поиске `Searcher` возвращает `ResultSet`, в котором каждому ID сопоставлен `class_key`.
 - `SearchController` группирует результаты по `class_key` и для каждой группы вызывает свой адаптер с собственным `getDisplayData()` и шаблоном строки.
-- Маршрутизация чанков подсказок прозрачна для пользователя сниппета — товары рисуются `mSearch.suggest.product`, обычные ресурсы — `mSearch.suggest.row`.
+- Маршрутизация чанков подсказок прозрачна для пользователя сниппета (см. «Соглашения по неймингу чанков» ниже).
 
 ## Соглашения по неймингу чанков
 
-Дефолтные имена встроенных адаптеров:
+Имена по умолчанию для встроенных адаптеров:
 
 | Адаптер | Suggest | Result |
 |---------|---------|--------|
 | `ResourceAdapter` | `mSearch.suggest.row` | `mSearch.row` |
 | `MsProductAdapter` | `mSearch.suggest.row` | `mSearch.row` |
 
-В версии 1.3.0 все встроенные адаптеры используют **один общий** чанк `mSearch.suggest.row`, который ветвится по плейсхолдеру `{$type}` (`product` / `resource`). Свой адаптер может задать собственное имя через `getDefaultSuggestTpl()` — например `mSearch.suggest.comment` для комментариев.
+В версии 1.3.0 все встроенные адаптеры используют **один общий** чанк `mSearch.suggest.row` — он ветвится по плейсхолдеру `{$type}` (`product` / `resource`). Свой адаптер может задать собственное имя через `getDefaultSuggestTpl()` — например `mSearch.suggest.comment` для комментариев.

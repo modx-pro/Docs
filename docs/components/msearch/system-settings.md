@@ -2,7 +2,7 @@
 
 Все настройки компонента находятся в пространстве имён **`msearch`** и имеют префикс **`mse_`**. В админке они сгруппированы по трём областям: **Индексация**, **Поиск**, **Фронтенд**.
 
-## Индексация (`mse_index`)
+## Индексация (`mse_index`) {#index-settings}
 
 | Ключ | Тип | По умолчанию | Описание |
 |------|-----|--------------|----------|
@@ -23,6 +23,7 @@ pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 Вес влияет на ранжирование результатов: совпадение в поле с весом `3` даёт в 3 раза больший вклад в score, чем совпадение в поле с весом `1`.
 
 Поддерживаются:
+
 - Обычные поля `modResource` (`pagetitle`, `longtitle`, `description`, `introtext`, `content`, `alias` и т.д.).
 - TV-поля с префиксом `tv_` или `tv.` (например, `tv_color:2` или `tv.tags:1`).
 - Для `mse_index_fields_product` — поля `msProductData` (например, `article`).
@@ -39,7 +40,7 @@ pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 | `mse_search_exact_match_bonus` | numberfield | `10` | Дополнительный вес результата, если в `mse_intro` найдено точное вхождение всего запроса целиком |
 | `mse_search_like_match_bonus` | numberfield | `3` | Дополнительный вес для результатов, найденных только через LIKE-fallback (когда слов нет в индексе) |
 | `mse_search_all_words_bonus` | numberfield | `5` | Дополнительный вес, если в документе найдены **все** слова запроса (а не только часть) |
-| `mse_suggest_min_query_length` | numberfield | `2` | Минимальная длина запроса для срабатывания автокомплита. Запросы короче — `/search/suggest` отвечает пустым массивом без обращения к индексу |
+| `mse_suggest_min_query_length` | numberfield | `2` | Минимальная длина запроса для срабатывания автодополнения. Запросы короче — `/search/suggest` отвечает `{"items": []}` без обращения к индексу. Нижний порог — `1`: значение `0` трактуется как `1`, на пустой запрос подсказки не выдаются |
 
 ### Как работают бонусы
 
@@ -60,7 +61,7 @@ pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 | `mse_frontend_css` | textfield | `[[++assets_url]]components/msearch/css/web/msearch.css` | URL CSS-файла, который регистрирует `mSearchForm`. Пустое значение — CSS не подключается |
 | `mse_frontend_js` | textfield | `[[++assets_url]]components/msearch/js/web/msearch.js` | Зарезервировано; в текущей реализации `mSearchForm` использует жёстко прописанный layered-стек из 6 файлов (см. ниже). Настройка не подключается автоматически |
 
-### Кастомизация CSS
+### Замена CSS
 
 Для замены стилей — скопируйте файл в свою тему и укажите путь:
 
@@ -70,9 +71,10 @@ mse_frontend_css = [[++assets_url]]templates/mytheme/css/my-msearch.css
 
 ### Замечание о `mse_frontend_js`
 
-Настройка унаследована от mSearch2, где весь JS был одним файлом. После layered-архитектуры (1.2.0+) сниппет `mSearchForm` регистрирует шесть отдельных файлов жёстким кодом. Кастомизация JS-стека через эту настройку не работает.
+Настройка унаследована от mSearch2, где весь JS был одним файлом. После перехода на многослойную архитектуру (1.2.0+) сниппет `mSearchForm` регистрирует шесть отдельных файлов жёстким кодом. Настроить JS-стек через эту настройку нельзя.
 
 Возможные пути расширения JS-поведения без изменения стека:
+
 - Подписаться на хуки `msearchHooks` в своём `<script>` после загрузки наших файлов (см. [JavaScript API](/components/msearch/javascript-api)).
 - Установить свой плагин и зарегистрировать дополнительные скрипты через `OnWebPagePrerender`.
 
@@ -96,30 +98,5 @@ mse_frontend_css = [[++assets_url]]templates/mytheme/css/my-msearch.css
 Используется при интеграции mSearch с отдельным SPA-фронтендом на другом домене.
 
 ::: warning Cookies при cross-origin
-Конфигурация autocomplete (`tpl`, `limit`, `element` и т.д.) хранится в **кэше MODX** под `formId`, а не в куках, поэтому проблем с `withCredentials` обычно не возникает. Но если SPA-клиент не вызывает сниппет `mSearchForm` для регистрации конфига — он работает в headless-режиме с дефолтами. См. [Сниппет mSearchForm → Headless-режим](/components/msearch/snippets/msearchform#headless-режим).
+Конфигурация автодополнения (`tpl`, `limit`, `element` и т.д.) хранится в **кэше MODX** под `formId`, а не в куках, поэтому проблем с `withCredentials` обычно не возникает. Но если SPA-клиент не вызывает сниппет `mSearchForm` для регистрации конфига — он работает в headless-режиме со значениями по умолчанию. См. [Сниппет mSearchForm → Headless-режим](/components/msearch/snippets/msearchform#headless-rezhim).
 :::
-
-## Резюме по областям
-
-```
-Индексация
-├── mse_index_fields              — поля modResource с весами
-├── mse_index_fields_product      — поля msProduct с весами
-├── mse_index_min_word_length     — минимальная длина слова
-├── mse_index_split_words         — regex разбиения текста
-└── mse_use_scheduler             — фоновая индексация через Scheduler
-
-Поиск
-├── mse_search_split_words        — regex разбиения запроса
-├── mse_search_exact_match_bonus  — бонус за точную фразу
-├── mse_search_like_match_bonus   — бонус за LIKE-fallback
-├── mse_search_all_words_bonus    — бонус за все слова
-└── mse_suggest_min_query_length  — минимум символов для автокомплита
-
-Фронтенд
-├── mse_frontend_css              — URL CSS-файла
-└── mse_frontend_js               — legacy (не используется)
-
-Опционально (создаётся вручную)
-└── mse_cors_origin               — CORS origin для публичного API
-```

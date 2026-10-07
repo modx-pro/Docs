@@ -1,22 +1,24 @@
 # JavaScript API
 
-mSearch предоставляет слоёную JavaScript-архитектуру для интеграции поиска на фронтенде. Можно использовать полный стек с UI (по сценарию сниппета `mSearchForm`) или только headless-режим для кастомных интерфейсов на React, Vue, Svelte и т. д.
+Архитектура JavaScript слоёная. Доступны два режима: полный стек с UI (сценарий сниппета `mSearchForm`) или headless для собственных интерфейсов на React, Vue, Svelte и т. д.
 
 ## Архитектура
 
 ```
-ApiClient        — HTTP-клиент для API
+window.MSearchApiClient  — HTTP-клиент для API
     ↓
-SearchAPI        — фасад поискового API
+window.MSearchAPI        — фасад поискового API
     ↓
-msearchHooks     — система хуков (опционально)
+window.msearchHooks      — система хуков (опционально)
     ↓
-msearch          — headless точка входа (window.msearch)
+window.msearch           — headless точка входа
     ↓
-MSearchUI        — UI-слой автокомплита (опционально)
+window.MSearchUI         — UI-слой автокомплита (опционально)
     ↓
-msearch.js       — автоинициализация по data-msearch-form (опционально)
+msearch.js               — автоинициализация по data-msearch-form (опционально)
 ```
+
+Напрямую нужен только `window.msearch` (и `window.msearchHooks` для расширения). `MSearchApiClient` и `MSearchAPI` — внутренние слои, обращаться к ним вручную не требуется.
 
 ## Публичный API endpoint
 
@@ -24,9 +26,9 @@ msearch.js       — автоинициализация по data-msearch-form (
 
 ### Контракт
 
-API принимает от клиента **минимальный набор параметров** — `query` (поисковый запрос), `offset` (для пагинации основного поиска), `ctx` (фильтр по контекстам), и `form` (идентификатор сниппет-формы для серверной конфигурации).
+API принимает от клиента минимальный набор параметров — см. таблицу ниже.
 
-Параметры рендера (`tpl`, имя чанка), `limit`, имя внешнего сниппета `element` и `elementProperties` хранятся **в кэше MODX** и подбираются по `form`. Это закрывает SSTI-вектор: клиент не может подсунуть произвольный чанк или сниппет.
+Параметры отрисовки (`tpl`, имя чанка), `limit`, имя внешнего сниппета `element` и `elementProperties` хранятся **в кэше MODX** и подбираются по `form`. Это закрывает SSTI-вектор: клиент не может подсунуть произвольный чанк или сниппет.
 
 ### Параметры
 
@@ -87,9 +89,11 @@ GET /assets/components/msearch/api.php?route=/search/suggest&query=те&form=abc
 }
 ```
 
+Каждый элемент также несёт поле `pagetitle` — чистый заголовок без `<mark>`. Это служебное поле для админ-превью; фронтенд его игнорирует и читает `html`.
+
 ### Поле `html`
 
-Сервер заранее рендерит каждый результат через `pdoTools::getChunk` по шаблону, который задан в сниппет-форме (`&tpl=`). Клиенту приходит готовый HTML — для UI-вставки через `innerHTML`.
+Сервер заранее отрисовывает каждый результат через `pdoTools::getChunk` по шаблону из сниппет-формы (`&tpl=`). Клиенту приходит готовый HTML — для вставки через `innerHTML`.
 
 Внутри чанка плейсхолдеры зависят от адаптера:
 
@@ -98,7 +102,7 @@ GET /assets/components/msearch/api.php?route=/search/suggest&query=те&form=abc
 
 ### Headless без сниппета
 
-Если запрос идёт **без** `form` (например, SPA на другом домене вызывает API напрямую без рендера сниппета `mSearchForm`), сервер использует дефолтные значения: `limit=5` для suggest и `limit=10` для search, `tpl` из адаптера, `ctx` — из query-параметра, если указан, иначе без фильтра. `html` в ответе всё равно будет — рендер происходит на сервере.
+Если запрос идёт **без** `form` (например, SPA на другом домене вызывает API напрямую, без сниппета `mSearchForm`), сервер использует значения по умолчанию: `limit=5` для suggest и `limit=10` для search, `tpl` из адаптера, `ctx` — из query-параметра, если указан, иначе без фильтра. `html` в ответе всё равно будет — отрисовка идёт на сервере.
 
 ::: warning Нет «сырых данных»
 Endpoint всегда возвращает HTML в поле `html`. Чтобы получить структурированные данные на стороне SPA — придётся пройти через сниппет на странице (он напишет `formId` в кэш с минимальным чанком, который выводит JSON), либо подключить серверное расширение через событие `mseOnAfterSearch` и формировать свой ответ.
@@ -106,7 +110,7 @@ Endpoint всегда возвращает HTML в поле `html`. Чтобы �
 
 ## Headless-режим
 
-`window.msearch` предоставляет программный API без привязки к DOM. Подходит для React, Vue, Svelte и любых кастомных интерфейсов.
+`window.msearch` предоставляет программный API без привязки к DOM. Подходит для React, Vue, Svelte и любых собственных интерфейсов.
 
 ### Подключение
 
@@ -129,7 +133,7 @@ window.msearchConfig = {
 </script>
 ```
 
-При `autoInit: true` (default) объект `window.msearch` инициализируется автоматически после загрузки DOM.
+Авто-инициализация после загрузки DOM и событие `msearch:ready` срабатывают только при наличии объекта `window.msearchConfig` (и `autoInit !== false`). Без `msearchConfig` объект `window.msearch` всё равно существует, но инициализируется лениво — при первом вызове `search()`/`suggest()` или явном `init()`.
 
 `ctx` в `msearchConfig` — публичный фильтр по контексту; передаётся в каждый запрос, если в options вызова не указан явно.
 
@@ -161,6 +165,14 @@ await msearch.init({
     apiUrl: '/assets/components/msearch/api.php',
     ctx: 'web'
 });
+```
+
+### Уничтожение
+
+Для SPA, где компонент поиска монтируется и размонтируется, доступен `msearch.destroy()` — сбрасывает HTTP-клиент, API и хуки, переводит объект в неинициализированное состояние (следующий `search()`/`suggest()` инициализирует заново).
+
+```js
+msearch.destroy();
 ```
 
 ### События DOM
@@ -207,6 +219,16 @@ const unsubscribe = msearchHooks.add('beforeSearch', function(context) {
 // Отписаться
 unsubscribe();
 ```
+
+### Методы `msearchHooks`
+
+| Метод | Описание |
+|-------|----------|
+| `add(name, fn, priority = 10)` | Подписать колбэк на хук; возвращает функцию отписки |
+| `remove(name, fn)` | Снять конкретный колбэк с хука |
+| `clear(name)` | Удалить все колбэки хука; без аргумента — очистить все хуки |
+| `has(name)` | `true`, если у хука есть хотя бы один колбэк |
+| `count(name)` | Число колбэков, подписанных на хук |
 
 ### Приоритеты
 
@@ -259,7 +281,7 @@ msearchHooks.add('onError', function(context) {
 
 ## UI-слой
 
-UI-слой `MSearchUI` добавляет автокомплит к формам с атрибутом `data-msearch-form`. Подключается автоматически через сниппет `mSearchForm` при `autocomplete=1`.
+UI-слой `MSearchUI` добавляет автодополнение к формам с атрибутом `data-msearch-form`. Подключается автоматически через сниппет `mSearchForm` при `autocomplete=1`.
 
 ### Защита от гонки
 
@@ -281,7 +303,7 @@ const instance = MSearchUI.create(document.querySelector('#my-form'), {
 |-------|---------|----------|
 | `inputSelector` | `.mse-input` | CSS-селектор поля ввода внутри формы |
 | `resultsSelector` | `.mse-results` | CSS-селектор контейнера результатов (зарезервировано) |
-| `autocomplete` | `true` | Включить автокомплит |
+| `autocomplete` | `true` | Включить автодополнение |
 | `minQueryLength` | `2` | Минимальная длина запроса (на стороне клиента; сервер дополнительно проверяет `mse_suggest_min_query_length`) |
 | `debounceDelay` | `300` | Задержка debounce, мс |
 | `connectorUrl` | `''` | URL API endpoint (обычно подхватывается из `data-connector-url`) |
@@ -296,7 +318,7 @@ const instance = MSearchUI.create(document.querySelector('#my-form'), {
 | `data-msearch-form` | Маркер для автоинициализации `msearch.js` |
 | `data-connector-url` | URL API endpoint |
 | `data-form-id` | 12-символьный formId, связывающий форму с серверной конфигурацией |
-| `data-autocomplete` | `true` / `false` — включить автокомплит |
+| `data-autocomplete` | `true` / `false` — включить автодополнение |
 | `data-min-query-length` | Переопределяет `minQueryLength` |
 | `data-debounce-delay` | Переопределяет `debounceDelay` (мс) |
 
@@ -379,7 +401,7 @@ export default {
 };
 ```
 
-Поскольку `items[].html` — это готовый HTML, для рендера через Vue используйте `v-html`:
+`items[].html` — готовый HTML, поэтому во Vue выводите его через `v-html`:
 
 ```html
 <div v-for="item in results" :key="item.id" v-html="item.html" />
@@ -421,8 +443,6 @@ function Search() {
 В headless-режиме без сниппета `mSearchForm` cookies не нужны (formId не передаётся, серверная конфигурация не используется) — стандартный CORS работает.
 
 ## Безопасность контракта
-
-Резюме принципов:
 
 - Клиент **не может** задать имя чанка, имя сниппета (`element`), `limit` или `elementProperties` — эти параметры приходят только из серверного кэша по `formId`.
 - `ctx` — публичный фильтр по столбцу `context_key`, безопасен для приёма от клиента.

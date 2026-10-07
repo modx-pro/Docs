@@ -46,10 +46,10 @@ items: [
 - **Статистика запросов** — отслеживание популярных запросов
 - **Автоматическая индексация** — при сохранении ресурсов
 - **Отложенная индексация** — фоновая индексация через [Scheduler](/components/scheduler/)
-- **Vue-интерфейс** — современная админ-панель на Vue 3 + PrimeVue
+- **Vue-интерфейс** — админ-панель на Vue 3 + PrimeVue
 - **Автодополнение** — подсказки при вводе запроса
 - **Публичный API** — REST endpoint для AJAX-поиска и интеграций
-- **Headless-режим** — JavaScript API (`window.msearch`) для React/Vue/кастомных решений
+- **Headless-режим** — JavaScript API (`window.msearch`) для React, Vue и своих решений
 - **Система хуков** — расширение поведения поиска через `msearchHooks`
 - **Мульти-контекст** — фильтрация результатов по контекстам MODX
 
@@ -114,9 +114,9 @@ mse_index_fields = pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 
 ## Системные настройки
 
-Все настройки имеют префикс `mse_` и находятся в пространстве имён `msearch`. Сгруппированы по областям **Индексация**, **Поиск**, **Фронтенд**.
+Настройки — в пространстве имён `msearch` с префиксом `mse_`, сгруппированы по областям **Индексация**, **Поиск**, **Фронтенд**.
 
-Полное описание всех настроек с дефолтами и use-cases — на отдельной странице [Системные настройки](/components/msearch/system-settings).
+Полное описание со значениями по умолчанию и сценариями применения — на странице [Системные настройки](/components/msearch/system-settings).
 
 ## Плейсхолдеры
 
@@ -139,7 +139,7 @@ mse_index_fields = pagetitle:3,longtitle:2,description:2,introtext:2,content:1
 
 | Событие | Описание |
 |---------|----------|
-| `mseOnRegisterAdapters` | Регистрация адаптеров для индексации кастомных моделей |
+| `mseOnRegisterAdapters` | Регистрация адаптеров для индексации своих моделей |
 | `mseOnBeforeIndex` | Перед индексацией ресурса |
 | `mseOnGetWorkFields` | Изменение списка полей для индексации |
 | `mseOnAfterIndex` | После индексации ресурса |
@@ -185,11 +185,13 @@ mSearch — это полностью переписанный компонен�
 
 ### С пагинацией
 
-```fenom
-{'!mSearchForm' | snippet : ['pageId' => $_modx->resource.id]}
+`mSearch` сам постраничную навигацию не делает — он отдаёт ID найденных ресурсов, а `pdoPage` пагинирует по ним:
 
+```fenom
 {'!pdoPage' | snippet : [
-    'element' => 'mSearch',
+    'element' => 'pdoResources',
+    'resources' => '!mSearch' | snippet : ['return' => 'ids', 'limit' => 0] | default : '0',
+    'sortby' => 'ids',
     'tpl' => 'mSearch.row',
     'limit' => 10
 ]}
