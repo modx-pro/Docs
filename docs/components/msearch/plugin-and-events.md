@@ -41,6 +41,16 @@ MODX-плагин `mSearch` автоматически поддерживает 
 Только если ресурсы тяжёлые (TV-поля с большими JSON, content на десятки тысяч символов) или их сотни тысяч. Для типичного сайта прямая индексация быстрее — один ресурс индексируется за миллисекунды.
 :::
 
+```mermaid
+flowchart TB
+  SAVE["Сохранение ресурса"] --> C{"published и не deleted и searchable?"}
+  C -->|нет| RM["Убрать из индекса"]
+  C -->|да| SCH{"Scheduler включён и доступен?"}
+  SCH -->|да| Q["Задача mse_index_resource в очередь"]
+  SCH -->|задачи нет| L["Синхронно + предупреждение в лог"]
+  SCH -->|не установлен| MU["Синхронно, молча"]
+```
+
 ### Что плагин НЕ делает
 
 - Не индексирует ресурсы при изменении через прямой SQL-запрос (нужна переиндексация через админку).
@@ -50,6 +60,19 @@ MODX-плагин `mSearch` автоматически поддерживает 
 ## Системные события mSearch
 
 Все события компонента имеют префикс `mse` и сгруппированы в категории **mSearch** при настройке плагинов.
+
+```mermaid
+flowchart TB
+  R(["mseOnRegisterAdapters — регистрация адаптеров"])
+  subgraph IDX["Индексация"]
+    direction TB
+    BI(["mseOnBeforeIndex"]) --> GW(["mseOnGetWorkFields — менять fields"]) --> AI(["mseOnAfterIndex"])
+  end
+  subgraph SRCH["Поиск"]
+    direction TB
+    BS(["mseOnBeforeSearch — менять query, options"]) --> AS(["mseOnAfterSearch"])
+  end
+```
 
 ### mseOnRegisterAdapters
 

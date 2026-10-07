@@ -144,6 +144,23 @@
 3. Сервер читает конфигурацию формы из кэша по `formId`, выполняет поиск с морфологическим анализом, рендерит каждую подсказку через указанный `tpl` и возвращает массив с готовым HTML.
 4. UI вставляет готовый HTML в dropdown.
 
+```mermaid
+sequenceDiagram
+  participant Б as Браузер
+  participant A as api.php
+  participant К as Кэш MODX
+  participant S as Searcher
+  Б->>Б: Ввод, пауза 300 мс
+  Б->>A: GET /search/suggest (query, form)
+  A->>К: Настройки формы по formId
+  К-->>A: tpl, limit, ctx, element
+  A->>S: Поиск с морфологией
+  S-->>A: Найденные ID и веса
+  A->>A: Отрисовка чанков в HTML
+  A-->>Б: Массив готового HTML
+  Б->>Б: Вставка в dropdown
+```
+
 ### Безопасность
 
 Сервер принимает от клиента только `query`, `offset` (для основного поиска) и `ctx` (для headless-режима). Все остальные параметры (`tpl`, `limit`, `element`, `elementProperties`) приходят исключительно из кэша по `formId`. Клиент не может подменить имя чанка или подсунуть произвольный сниппет — это закрывает вектор SSTI.

@@ -534,6 +534,17 @@ ResourceAdapter    (priority 0)    ← фолбэк для всего modResourc
 - `SearchController` группирует результаты по `class_key` и для каждой группы вызывает свой адаптер с собственным `getDisplayData()` и шаблоном строки.
 - Маршрутизация чанков подсказок прозрачна для пользователя сниппета (см. «Соглашения по неймингу чанков» ниже).
 
+```mermaid
+flowchart TB
+  RS["ResultSet: ID + class_key"] --> GRP["SearchController: группировка по class_key"]
+  GRP --> A1["modResource → ResourceAdapter"]
+  GRP --> A2["msProduct → MsProductAdapter"]
+  A1 --> GD["getDisplayData()"]
+  A2 --> GD
+  GD --> TPL["Отрисовка чанка адаптера"]
+  TPL --> OUT["Общий список ответа"]
+```
+
 ## Соглашения по неймингу чанков
 
 Имена по умолчанию для встроенных адаптеров:

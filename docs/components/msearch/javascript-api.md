@@ -240,6 +240,17 @@ msearchHooks.add('afterSearch', transformHook, 10);   // второй
 msearchHooks.add('afterSearch', renderHook, 20);      // третий
 ```
 
+```mermaid
+flowchart TB
+  CALL["search() / suggest()"] --> BS(["beforeSearch"])
+  BS --> X{"context.cancelled?"}
+  X -->|да| RES["Вернуть context.result"]
+  X -->|нет| REQ["Запрос к API"]
+  REQ -->|успех| AS(["afterSearch"])
+  AS --> OUT["Результат"]
+  REQ -->|ошибка| ERR(["onError"])
+```
+
 ### Примеры
 
 #### Логирование запросов
