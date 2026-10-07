@@ -22,26 +22,28 @@ description: "MiniShop3 error envelope: code, errors, error_code, HTTP"
 | `code` | HTTP status |
 | `errors` | Field map or `null` (key always present) |
 | `error_code` | Machine code |
-| `data` | Optional when passed |
+| `data` | Present only when it is passed |
 
-Error bodies always include an `errors` key (often `null`) and usually `error_code`. Some scenarios put validation fields in `errors` or in `data`.
+Error bodies always include an `errors` key (often `null`) and usually `error_code`. Validation fields arrive either in `errors` or in `data`, depending on the scenario.
 
-## Typical error_code
+## error_code values
 
-Examples from `Response` / `ApiErrorCode`: `validation_failed`, `unauthorized`, `token_required`, `token_expired`, `token_invalid`, `not_found`, `conflict`, `rate_limited`, `business_rule`, `bad_request`, `forbidden`, `internal_error`.
+The complete list from `ApiErrorCode` — twelve values: `validation_failed`, `unauthorized`, `token_required`, `token_expired`, `token_invalid`, `not_found`, `conflict`, `rate_limited`, `business_rule`, `bad_request`, `forbidden`, `internal_error`. The core emits no others; an add-on can send its own code through `Response::errorWithCode()`.
 
 ## HTTP
 
 | Status | When |
 | --- | --- |
-| 400 | Validation / bad request |
-| 401 | Missing / expired / invalid token |
+| 400 | Validation, bad request |
+| 401 | Token missing, expired, or invalid |
 | 404 | Entity not found |
 | 409 | Conflict |
 | 429 | Rate limit |
 | 500 | Internal error |
 
-403 is less common on the storefront than 401/400. TypeScript client: union success | error with `error_code` and optional `errors`.
+403 is less common on the storefront than 401 and 400.
+
+In TypeScript, type the response as a union: success | error with `error_code` and an optional `errors`.
 
 ## Rate limit
 
