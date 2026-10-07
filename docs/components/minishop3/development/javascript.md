@@ -109,6 +109,12 @@ const response = await cart.add(123, 2, { color: 'red' })
 | `window.ms3Message` | Уведомления (если подключён UI) |
 | `window.ms3Config` | Конфигурация с сервера |
 
+::: warning `ms3Config` можно отключить настройкой
+При `ms3_register_global_config = false` объект на страницу не выводится. Но регистрация сниппетов корзины печатается всегда и обращается к нему без проверки, поэтому в консоли появится `ReferenceError: ms3Config is not defined`, а перерисовка корзины и виджета итогов перестанет работать.
+
+По умолчанию настройка включена. Выключать её стоит, только если конфиг выводится своим кодом.
+:::
+
 ```javascript
 // Использование через глобальный объект
 await ms3.cartAPI.add(123, 1)
@@ -198,11 +204,10 @@ await ms3.cartAPI.add(123, 1, { color: 'red', size: 'L' })
   success: true,
   message: "Товар добавлен в корзину",
   data: {
-    cart: [...],           // Обновлённая корзина
+    cart: {...},           // Позиции корзины, ключ — product_key
     status: {...},         // Итоги
     render: {              // HTML (если запрошен)
-      mini: "<div>...</div>",
-      full: "<div>...</div>"
+      "ms3_a1b2c3...": "<div>...</div>"   // ключ — токен вызова сниппета
     }
   }
 }
@@ -363,7 +368,7 @@ const response = await ms3.orderAPI.getCost()
 API для работы с данными авторизованного покупателя.
 
 :::warning Требуется авторизация
-Все методы CustomerAPI доступны только для авторизованных пользователей. Для гостей используйте `OrderAPI.add()` для сохранения данных заказа.
+Большинство методов CustomerAPI требует авторизации. Исключения — вход, регистрация и сброс пароля: они и нужны тому, кто ещё не вошёл. Данные заказа гостя сохраняются через `OrderAPI.add()`.
 :::
 
 ### Методы
@@ -442,6 +447,10 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterRemoveCart` | `{ productKey, response }` | После удаления товара |
 | `beforeCleanCart` | `{}` | Перед очисткой корзины |
 | `afterCleanCart` | `{ response }` | После очистки корзины |
+| `beforeChangeOptionCart` | `{ productKey, options }` | Перед сменой опции позиции |
+| `afterChangeOptionCart` | `{ productKey, options, response }` | После смены опции |
+| `beforeQuantityChange` | `{ productKey, count, form }` | Перед изменением количества кнопками «+» и «−» |
+| `afterQuantityChange` | `{ productKey, count, response }` | После изменения количества |
 
 #### Заказ
 
@@ -453,6 +462,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterSubmitOrder` | `{ response }` | После оформления |
 | `beforeCleanOrder` | `{}` | Перед очисткой |
 | `afterCleanOrder` | `{ response }` | После очистки |
+| `afterUpdateOrderCosts` | `{ cost, cart_cost, delivery_cost }` | После пересчёта стоимости заказа |
 
 #### Покупатель
 
@@ -464,6 +474,36 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterUpdateProfile` | `{ data, response }` | После обновления профиля |
 | `beforeCreateAddress` | `{ data }` | Перед созданием адреса |
 | `afterCreateAddress` | `{ data, response }` | После создания адреса |
+| `beforeUpdateAddress` | `{ addressId, data }` | Перед правкой адреса |
+| `afterUpdateAddress` | `{ addressId, data, response }` | После правки адреса |
+| `beforeDeleteAddress` | `{ addressId }` | Перед удалением адреса |
+| `afterDeleteAddress` | `{ addressId, response }` | После удаления адреса |
+| `beforeSetDefaultAddress` | `{ addressId }` | Перед выбором адреса по умолчанию |
+| `afterSetDefaultAddress` | `{ addressId, response }` | После выбора адреса по умолчанию |
+| `beforeChangeAddressCustomer` | `{ addressId }` | Перед сменой адреса в форме заказа |
+| `afterChangeAddressCustomer` | `{ addressId, response }` | После смены адреса в форме заказа |
+| `beforeCancelOrder` | `{ orderId }` | Перед отменой заказа покупателем |
+| `afterCancelOrder` | `{ orderId, response }` | После отмены заказа |
+| `beforeResendVerificationEmail` | `{ button }` | Перед повторной отправкой письма с подтверждением |
+| `afterResendVerificationEmail` | `{ button, response }` | После отправки письма |
+
+#### Вход и регистрация
+
+| Хук | Контекст | Описание |
+| --- | --- | --- |
+| `beforeLogin` | `{ email }` | Перед входом |
+| `afterLogin` | `{ email, response }` | После входа |
+| `beforeRegister` | `{ email }` | Перед регистрацией |
+| `afterRegister` | `{ email, response }` | После регистрации |
+
+#### Любая форма
+
+| Хук | Контекст | Описание |
+| --- | --- | --- |
+| `beforeFormSubmit` | `{ entity, method, formData }` | Перед отправкой любой формы MiniShop3 |
+| `afterFormSubmit` | `{ entity, method, formData }` | После отправки |
+
+Эта пара срабатывает на все формы — корзины, заказа и покупателя — и получает `formData` целиком. Если нужны введённые значения, подписывайтесь сюда: специализированные хуки вроде `beforeSubmitOrder` данных формы не получают.
 
 ### Примеры хуков
 
@@ -518,7 +558,7 @@ ms3Hooks.addHook('beforeCleanCart', async (ctx) => {
 | Событие | Описание | detail |
 | --- | --- | --- |
 | `ms3:ready` | ms3 инициализирован | — |
-| `ms3:cart:updated` | Корзина обновлена | `{ cart, status }` |
+| `ms3:cart:updated` | Корзина обновлена | `{ cart, items, status }`, при перерисовке добавляется `render`. Иногда приходит пустым — см. ниже |
 
 ### Подписка
 
@@ -528,13 +568,22 @@ document.addEventListener('ms3:ready', () => {
 })
 
 document.addEventListener('ms3:cart:updated', (e) => {
-  const { cart, status } = e.detail
+  const { cart, items, status } = e.detail ?? {}
+  if (!status) {
+    return
+  }
 
   // Обновить счётчик в шапке
   document.querySelector('.cart-count').textContent = status.total_count
   document.querySelector('.cart-total').textContent = status.total_cost + ' руб.'
 })
 ```
+
+::: warning Событие приходит и без данных
+Очистка формы заказа шлёт его пустым — `detail` будет `null`. Форма очистки есть в поставляемом чанке `ms3_order.tpl`, так что путь живой: обработчик, читающий поля сразу, упадёт с `TypeError` ([#802](https://github.com/modx-pro/MiniShop3/issues/802)).
+
+Проверяйте `detail` перед обращением к полям — во всех примерах ниже это сделано.
+:::
 
 ## Использование в SPA
 
@@ -602,6 +651,9 @@ export function useCart() {
 
     // Подписка на внешние обновления
     document.addEventListener('ms3:cart:updated', (e) => {
+      if (!e.detail) {
+        return
+      }
       cart.value = e.detail.cart
       status.value = e.detail.status
     })
@@ -634,7 +686,7 @@ const { cart, status, loading, addToCart, removeFromCart } = useCart()
     <div v-if="loading">Загрузка...</div>
 
     <div v-for="item in cart" :key="item.product_key" class="cart-item">
-      <span>{{ item.pagetitle }}</span>
+      <span>{{ item.name }}</span>
       <span>{{ item.count }} x {{ item.price }} руб.</span>
       <button @click="removeFromCart(item.product_key)">Удалить</button>
     </div>
@@ -691,6 +743,9 @@ export function useCart() {
     loadCart()
 
     const handleCartUpdate = (e) => {
+      if (!e.detail) {
+        return
+      }
       setCart(e.detail.cart)
       setStatus(e.detail.status)
     }
@@ -717,6 +772,9 @@ class CartManager {
     await this.load()
 
     document.addEventListener('ms3:cart:updated', (e) => {
+      if (!e.detail) {
+        return
+      }
       this.cart = e.detail.cart
       this.status = e.detail.status
       this.notify()
@@ -776,7 +834,7 @@ document.querySelector('.add-to-cart').addEventListener('click', () => {
   success: true,           // Успех операции
   message: "Текст",        // Сообщение (опционально)
   data: {                  // Данные (при success: true)
-    cart: [...],
+    cart: {...},
     status: {...},
     render: {...}
   }
@@ -801,9 +859,9 @@ MiniShop3 использует токены для идентификации с
 
 ### Как работает
 
-1. При первом запросе клиент получает токен (`GET /customer/token/get` или auto-mint на cart)
+1. При первом запросе клиент получает токен (`GET /api/v1/customer/token/get`, либо он выдаётся сам при первом обращении к корзине)
 2. С 1.6 для браузера основной способ это httpOnly cookie `ms3_token`, не `localStorage`
-3. Запросы same-site идут с `credentials: 'include'`; headless может слать `Authorization: Bearer`
+3. Клиент шлёт запросы с `credentials: 'same-origin'` — cookie уходит сама. Для обращений с другого домена есть `Authorization: Bearer`
 4. Ротация на login / `token/refresh`
 
 Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth), [Frontend JavaScript](/components/minishop3/development/frontend-js).
@@ -811,15 +869,20 @@ MiniShop3 использует токены для идентификации с
 ### Ручное управление
 
 ```javascript
-// Получить текущий токен
-const token = ms3.tokenManager.getToken()
+// Получить токен с сервера, если его ещё нет
+await ms3.tokenManager.ensureToken()
 
-// Принудительно обновить
+// Запросить новый принудительно
 await ms3.tokenManager.fetchNewToken()
-
-// Удалить токен
-ms3.tokenManager.removeToken()
 ```
+
+Оба метода обращаются к `/api/v1/customer/token/get`, а сервер ставит cookie в ответе.
+
+::: warning Прочитать токен из браузера нельзя
+`getToken()` и `getTokenData()` всегда возвращают `null`, а `setToken()` ничего не делает. Это не ошибка: с версии 1.6 токен хранится в httpOnly cookie, и JavaScript к ней доступа не имеет — в этом и смысл такой куки.
+
+`removeToken()` тоже не удаляет текущий токен: он лишь подчищает остатки в `localStorage` от прежних версий. Сбросить сессию корзины из браузера нельзя, это делает сервер.
+:::
 
 ## Связанные страницы
 

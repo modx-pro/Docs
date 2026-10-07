@@ -1177,11 +1177,15 @@ document.addEventListener('ms3:ready', () => {
 
 // Обновление корзины
 document.addEventListener('ms3:cart:updated', (e) => {
-  console.log('Корзина обновлена:', e.detail)
+  // detail приходит не всегда — очистка заказа шлёт событие пустым
+  const status = e.detail && e.detail.status
+  if (!status) {
+    return
+  }
 
   const counter = document.querySelector('.cart-counter')
   if (counter) {
-    counter.textContent = e.detail.total_count || 0
+    counter.textContent = status.total_count
   }
 })
 
