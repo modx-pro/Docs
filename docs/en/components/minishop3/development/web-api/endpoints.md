@@ -58,7 +58,7 @@ Request and response bodies: [auth](auth), [catalog](catalog), [cart](cart), [ch
 | `POST` | `/customer/forgot-password` | none | Request reset |
 | `POST` | `/customer/reset-password` | none | Reset via email token |
 | `POST` | `/customer/add` | auto-mint | Quick profile field |
-| `GET` | `/customer/token/get` | none | Guest / current API token |
+| `GET` | `/customer/token/get` | optional | Guest / current API token |
 | `POST` | `/customer/token/refresh` | auto-mint | Token rotation |
 | `GET` | `/customer/addresses` | auto-mint | Address list |
 | `GET` | `/customer/addresses/{id}` | auto-mint | Single address |

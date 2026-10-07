@@ -19,29 +19,31 @@ description: "Envelope ошибок MiniShop3: code, errors, error_code, HTTP"
 
 | Поле | Смысл |
 | --- | --- |
-| `code` | HTTP status |
-| `errors` | Field-map или `null` (ключ есть всегда) |
+| `code` | HTTP-статус |
+| `errors` | Карта полей или `null` (ключ есть всегда) |
 | `error_code` | Машинный код |
-| `data` | Опционально, если передан |
+| `data` | Есть только тогда, когда его передали |
 
-В теле ошибки всегда есть ключ `errors` (часто `null`) и обычно `error_code`. Часть сценариев кладёт поля валидации в `errors` или в `data`.
+Ключ `errors` есть в теле ошибки всегда (часто с `null`), `error_code` — обычно. Поля валидации приходят либо в `errors`, либо в `data`: зависит от сценария.
 
-## Типичные error_code
+## Значения error_code
 
-Примеры из `Response` / `ApiErrorCode`: `validation_failed`, `unauthorized`, `token_required`, `token_expired`, `token_invalid`, `not_found`, `conflict`, `rate_limited`, `business_rule`, `bad_request`, `forbidden`, `internal_error`.
+Полный перечень из `ApiErrorCode` — двенадцать значений: `validation_failed`, `unauthorized`, `token_required`, `token_expired`, `token_invalid`, `not_found`, `conflict`, `rate_limited`, `business_rule`, `bad_request`, `forbidden`, `internal_error`. Других ядро не отдаёт; дополнение может прислать свой код через `Response::errorWithCode()`.
 
 ## HTTP
 
-| Status | Когда |
+| Статус | Когда |
 | --- | --- |
-| 400 | Валидация / bad request |
-| 401 | Нет / просрочен / битый токен |
+| 400 | Валидация, некорректный запрос |
+| 401 | Токена нет, он просрочен или испорчен |
 | 404 | Сущность не найдена |
 | 409 | Конфликт |
 | 429 | Rate limit |
 | 500 | Внутренняя ошибка |
 
-Код 403 на витрине встречается реже, чем 401/400. Клиент TypeScript: union success | error с `error_code` и опциональным `errors`.
+Код 403 на фронтенде встречается реже, чем 401 и 400.
+
+В TypeScript описывайте ответ как union: success | error с `error_code` и необязательным `errors`.
 
 ## Rate limit
 

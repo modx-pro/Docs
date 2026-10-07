@@ -5,40 +5,40 @@ description: "Токен MiniShop3: cookie, Bearer, auto-mint, login, me, refres
 
 # Авторизация
 
-Web API не использует сессию менеджера MODX. Клиент ходит с API-токеном покупателя (гость или авторизованный).
+Web API не использует сессию админки MODX. Клиент передаёт API-токен покупателя — гостевой или авторизованный.
 
-## Порядок resolve
+## Где сервер ищет токен
 
-`TokenService::resolveTokenFromRequest()`:
+Порядок источников в `TokenService::resolveTokenFromRequest()`:
 
 1. `Authorization: Bearer {token}`
-2. Заголовок `MS3TOKEN` (legacy)
+2. Заголовок `MS3TOKEN` (устаревший)
 3. httpOnly cookie `ms3_token`
-4. `$_REQUEST['ms3_token']` (после inject cookie middleware)
+4. `$_REQUEST['ms3_token']` (после middleware, которое подставляет cookie в запрос)
 5. `$_SESSION['ms3']['customer_token']`
 
-Query-параметры `token` и `ms3_token` снимаются и не принимаются как credentials. Не копируйте старые примеры с `?ms3_token=` в URL.
+Query-параметры `token` и `ms3_token` сервер отбрасывает: как credentials они больше не принимаются. Не копируйте старые примеры с `?ms3_token=` в URL.
 
 ## Cookie vs Bearer
 
 | Режим | Как передавать | Когда |
 | --- | --- | --- |
-| Same-site витрина | cookie `ms3_token` + `credentials: 'include'` | Браузер на том же сайте |
+| Same-site фронтенд | cookie `ms3_token` + `credentials: 'include'` | Браузер на том же сайте |
 | Nuxt BFF / mobile | `Authorization: Bearer` | Другой origin или серверный прокси |
 
-Не храните API-токен в `localStorage`: с 1.6 для браузера основной способ это httpOnly cookie. Same-origin JS витрины: [Frontend JavaScript](/components/minishop3/development/frontend-js).
+Не храните API-токен в `localStorage`: с 1.6 основной способ для браузера — httpOnly cookie. Фронтенд на том же origin: [Frontend JavaScript](/components/minishop3/development/frontend-js).
 
 Cookie наследует параметры сессии MODX: `session_cookie_domain`, `session_cookie_path`, `session_cookie_secure`, `session_cookie_samesite`.
 
 ## Auto-mint
 
-На роутах с `TokenMiddleware` (корзина, заказ, часть customer) без валидного токена сервер создаёт гостевой токен и ставит cookie. Каталог и health middleware не вешают. `GET /customer/token/get` вешает middleware в режиме optional (`publicRoutes`).
+На роутах с `TokenMiddleware` (корзина, заказ, часть customer) без валидного токена сервер создаёт гостевой токен и ставит cookie. У каталога и `/health` этого middleware нет.
 
-`POST /customer/logout` висит на middleware, но путь в `publicRoutes`: без токена не mint и не 401.
+У `GET /customer/token/get` и `POST /customer/logout` middleware работает в режиме optional: путь указан в `publicRoutes`, поэтому без токена сервер не создаёт гостевой токен и не отвечает 401.
 
 ## GET /customer/token/get
 
-Публичный. Возвращает текущий или новый токен.
+Публичный. Возвращает текущий или новый токен и ставит httpOnly cookie.
 
 ```json
 {
@@ -46,22 +46,26 @@ Cookie наследует параметры сессии MODX: `session_cookie_
   "message": "",
   "data": {
     "token": "…",
-    "lifetime": 604800000
+    "lifetime": 86400000
   }
 }
 ```
 
-`lifetime` это миллисекунды до expiry (из `ms3_customer_token_ttl`, default 7 дней → ~`604800000` для свежего токена). Поле `expires` во внутреннем генераторе есть, в HTTP `data` не отдаётся.
+`lifetime` — миллисекунды до истечения срока: секунды из `ms3_customer_token_ttl`, умноженные на 1000. Поле `expires` есть во внутреннем генераторе, но в `data` не отдаётся.
 
-Сервер также выставляет httpOnly cookie.
+::: warning Два разных значения TTL в поставке
+Транспортный пакет создаёт `ms3_customer_token_ttl` со значением **86400** (24 часа) — именно оно действует на установленном сайте, и свежий токен отдаёт `lifetime` около `86400000`.
+
+Настройки нет — код подставляет **604800** (7 дней). Если ориентироваться на это число, ожидаемое время жизни токена завышено в семь раз. Проверяйте фактическое значение настройки в своём проекте ([issue #848](https://github.com/modx-pro/MiniShop3/issues/848)).
+:::
 
 ## Login / register
 
-`POST /customer/login` и `POST /customer/register` без TokenMiddleware. Тело JSON: `email`, `password` (+ поля регистрации).
+`POST /customer/login` и `POST /customer/register` работают без TokenMiddleware. Тело JSON: `email`, `password` (+ поля регистрации).
 
-После успеха сервер ротирует токен (защита от fixation): старый гостевой отзывается, черновик корзины переносится на сессию покупателя, новый токен уходит в cookie.
+После успеха сервер ротирует токен (защита от фиксации сессии): старый гостевой отзывается, черновик корзины переносится на сессию покупателя, новый токен уходит в cookie.
 
-Для bind корзины при login headless передайте текущий гостевой токен через Bearer или cookie до вызова.
+Чтобы при headless-входе корзина привязалась к покупателю, передайте текущий гостевой токен — через Bearer или cookie — до вызова.
 
 ## GET /customer/me
 
@@ -69,11 +73,11 @@ Cookie наследует параметры сессии MODX: `session_cookie_
 
 ## POST /customer/token/refresh
 
-Ротация: нужен валидный токен. Успех отдаёт новый token и метаданные (`expires_at`, `customer_id`).
+Ротация: нужен валидный токен. При успехе возвращает новый токен и метаданные (`expires_at`, `customer_id`).
 
 ## CORS и credentials
 
-Для cookie с другого origin укажите явные origins в `ms3_cors_allowed_origins` и `credentials: 'include'`. Значение `*` с credentials несовместимо: см. [CORS](cors).
+Для cookie с другого origin перечислите origins в `ms3_cors_allowed_origins` и отправляйте запросы с `credentials: 'include'`. Значение `*` с credentials несовместимо: см. [CORS](cors).
 
 ## См. также
 
