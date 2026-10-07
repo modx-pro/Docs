@@ -9,10 +9,37 @@ description: Режимы real, boost и fake, стилизация, CrawlerDete
 
 | Плагин | Событие | Назначение |
 |--------|---------|------------|
-| `msViewCounterBootstrap` | `OnMODXInit` | Автозагрузка, сервис `msviewcounter` |
+| `msViewCounterBootstrap` | `OnMODXInit` | Подключает `bootstrap.php`: автозагрузчик классов и функцию `msvc_get_service()` |
 | `msViewCounterTrack` | `OnLoadWebDocument` | Запись просмотра на странице товара, подключение CSS/JS |
 
 Оба плагина должны быть **включены**. Трекинг привязан к **`OnLoadWebDocument`**, а не к `OnWebPageInit`: на раннем событии ресурс может быть ещё не загружен.
+
+```mermaid
+flowchart TB
+  PL[Плагин Track на загрузке страницы]
+  PL --> PD{Страница товара?}
+  PD -->|нет| STOP[Выход: ничего не пишем]
+  PD -->|да| GUARD{Бот или дубль в сессии?}
+  GUARD -->|да| NOTOT[total не растёт]
+  GUARD -->|нет| TOT[(Таблица totals)]
+  PL --> AS[registerAssets: CSS, JS, pid и session_id]
+  AS --> SN[Сниппет и чанк: число по стратегии режима]
+  TOT --> SN
+  SN --> HB[JS: ping каждые heartbeat_interval]
+  HB --> CN[connector.php: action ping]
+  CN --> PP{"Верны pid и session_id? Нет — без записи"}
+  PP -->|да| BOT{block_bots и бот?}
+  BOT -->|да| SKIP[Без записи active]
+  BOT -->|нет| ACT[(Таблица active: last_seen обновлён)]
+  ACT --> ONL[online: строки за online_ttl]
+  ONL --> SN
+```
+
+Сервиса в терминах MODX пакет не регистрирует: `msviewcounter` в `$modx->services` не появляется. Вместо этого есть PHP-функция `msvc_get_service()`, которая собирает `ViewCounter` с репозиторием и помощниками и запоминает экземпляр в статической переменной. Функция объявлена в `include/factory.php` и становится доступна только после подключения `bootstrap.php` — то есть через плагин `msViewCounterBootstrap` или напрямую из `connector.php`.
+
+::: warning Обязательность `msViewCounterBootstrap`
+Выключите этот плагин, и `msvc_get_service()` будет недоступна: сниппет `msViewCounter` и плагин `msViewCounterTrack` упадут с `Call to undefined function msvc_get_service()`. На странице товара это выглядит как HTTP 500, а не как пустой блок.
+:::
 
 ## Режимы работы
 
@@ -26,7 +53,9 @@ description: Режимы real, boost и fake, стилизация, CrawlerDete
 | Числа на витрине | Как в БД | Усиленные | Синтетические |
 | Нужен трафик для правдоподобия | Да | Частично | Нет |
 
-\* JS подключается, если включён `msviewcounter_show_online` и режим не `fake`.
+\* JS подключается, если включён `msviewcounter_show_online` и режим не `fake`. Подключает его плагин `msViewCounterTrack`, а не наоборот.
+
+`boost` с настройками по умолчанию (`base = 0`, `multiplier = 1`, `jitter_max = 0`) считает ровно то же, что и `real`, — см. [Системные настройки](settings#boost-msviewcounterboost).
 
 ```mermaid
 flowchart LR
@@ -55,23 +84,31 @@ flowchart LR
 
 #### Запись просмотра (total)
 
-1. Плагин **`msViewCounterTrack`** на `OnLoadWebDocument` определяет, что открыта страница товара (`msProduct`).
+1. Плагин **`msViewCounterTrack`** на `OnLoadWebDocument` определяет, что открыта страница товара. Признака два, и срабатывает **любой** из них: `class_key` ресурса содержит `msProduct` **или** шаблон ресурса равен значению системной настройки MiniShop3 `ms3_template_product_default`. Второй признак объясняет записи на «не-товарных» страницах: если шаблон карточки назначен чему-то ещё, плагин посчитает это товаром.
 2. Вызывается `recordVisit(productId)`:
    - если **`block_bots`** и User-Agent похож на бота — выход;
    - если **`dedup_session`** и этот товар уже был в текущей PHP-сессии — total **не** увеличивается;
    - иначе в `msviewcounter_totals` выполняется `INSERT … ON DUPLICATE KEY UPDATE total_views + 1`.
-3. ID сессии для дедупликации хранится в `$_SESSION['msviewcounter_viewed_products']`.
+3. Отметка о просмотре кладётся в `$_SESSION['msviewcounter_viewed_products']` как карта `[productId => true]`. Это флаги просмотренных товаров, а не идентификатор сессии. Идентификатор для online лежит отдельно, в `$_SESSION['msviewcounter_session_id']`, и создаётся как `bin2hex(random_bytes(16))` с обрезкой до 64 символов.
 
 Один посетитель = **один total на товар за сессию** (при включённой дедупликации). Обновление страницы (F5) total не накручивает.
+
+«Сессия» здесь — обычная PHP-сессия сайта. Компонент сам вызывает `session_start()`, если сессия не запущена, поэтому дедупликация живёт примерно до `session.gc_maxlifetime`. Если на сайте свой обработчик сессий, совместимость стоит проверить.
 
 #### Online (active-сессии)
 
 1. На карточке товара плагин подключает **`viewcounter.js`** и передаёт конфиг: URL connector, `productId`, `sessionId`, интервал heartbeat.
-2. JS периодически (по **`heartbeat_interval`**, по умолчанию 30 с) шлёт ping в `connector.php`.
+2. JS периодически (по **`heartbeat_interval`**, по умолчанию 30 с, минимум 10) шлёт ping в `connector.php`.
 3. Connector вызывает `upsertActive`: строка `(product_id, session_id)` в **`msviewcounter_active`**, поле **`last_seen`** обновляется.
 4. При выводе сниппета **`online`** = число строк по товару, у которых `last_seen` не старше **`online_ttl`** секунд (по умолчанию 120).
 
-Устаревшие строки удаляются пачками во время heartbeat (**`cleanup_interval`**, **`cleanup_batch_limit`**).
+`online` считает **уникальные PHP-сессии, а не посетителей**: несколько вкладок одного браузера дают одну строку, потому что `session_id` у них общий.
+
+Устаревшие строки удаляются пачками во время heartbeat: порог устаревания задаёт **`online_ttl`**, периодичность прохода — **`cleanup_interval`**, размер батча — **`cleanup_batch_limit`**. Очистка запускается только из heartbeat, поэтому при выключенном `msviewcounter_show_online` или в режиме `fake` она не идёт.
+
+#### Connector и его открытость
+
+`connector.php` принимает только `action=ping`, но `product_id` и `session_id` берёт из тела запроса без проверки прав и без авторизации, а ответ всегда `{"success": true}`. Это значит, что любой посетитель может отправить запрос с чужим `product_id` и произвольным `session_id` и накрутить онлайн для чужого товара. Пакет защиты endpoint не добавляет: ограничить поток можно только правилами веб-сервера — подробности и пример в [FAQ](faq#mozhno-li-nakrutit-online).
 
 #### Вывод на витрине
 
@@ -174,6 +211,25 @@ display = max(2, 4) = 4
 
 Режим для **новых магазинов**, демо-стендов и ситуаций, когда нужен блок доверия **без накопления статистики**.
 
+Как режим превращается в число, видно на схеме: в `fake` в БД не идёт ничего, а значение рождается из `product_id` и соли.
+
+```mermaid
+flowchart TB
+  M{"msviewcounter_mode"}
+  M -->|real| RD[Читать raw из БД]
+  M -->|boost| BW[Читать raw из БД]
+  M -->|fake| NOBD[БД не используется]
+  BW --> F1["floor(raw × multiplier) + jitter по дню"]
+  F1 --> F2[max от base]
+  NOBD --> F3[min + hash от pid и salt mod диапазон]
+  RD --> TXT[Число в чанке]
+  F2 --> TXT
+  F3 --> TXT
+  TXT --> OUT{show_total и show_online}
+  OUT -->|оба Нет| EMPTY[Пустой блок]
+  OUT -->|иначе| SHOW[Строка из лексикона]
+```
+
 #### Что не происходит
 
 - `recordVisit` **не пишет** в `msviewcounter_totals`.
@@ -251,7 +307,7 @@ display = fake_*_min + (offset % range)
    - `real` / `boost` + online → есть `viewcounter.js`;
    - `fake` → JS нет, числа не растут от визитов.
 
-Подробнее про ключи boost/fake: [Системные настройки — Boost](settings#boost-msviewcounter_boost) и [Системные настройки — Fake](settings#fake-msviewcounter_fake).
+Подробнее про ключи boost/fake: [Системные настройки — Boost](settings#boost-msviewcounterboost) и [Системные настройки — Fake](settings#fake-msviewcounterfake).
 
 ## Стилизация
 
@@ -364,7 +420,36 @@ display = fake_*_min + (offset % range)
 | `msviewcounter_totals` | Агрегат просмотров: одна строка на `product_id` |
 | `msviewcounter_active` | Текущие online-сессии с `last_seen` |
 
-`msviewcounter_active` очищается во время heartbeat: интервал `cleanup_interval`, лимит `cleanup_batch_limit`. Индекс по `last_seen` ускоряет удаление устаревших строк.
+### msviewcounter_totals
+
+| Колонка | Тип | Назначение |
+|---------|-----|------------|
+| `product_id` | `INT UNSIGNED` | Первичный ключ, ID товара |
+| `total_views` | `INT UNSIGNED` | Счётчик, по умолчанию `0` |
+| `updated_at` | `TIMESTAMP` | Обновляется при каждом изменении счётчика |
+
+Одна строка на товар, дополнительных индексов нет.
+
+### msviewcounter_active
+
+| Колонка | Тип | Назначение |
+|---------|-----|------------|
+| `id` | `INT UNSIGNED` | Идентификатор строки, растёт автоматически; первичный ключ |
+| `product_id` | `INT UNSIGNED` | ID товара |
+| `session_id` | `VARCHAR(64)` | Идентификатор сессии |
+| `last_seen` | `TIMESTAMP` | Время последнего heartbeat |
+
+| Индекс | Поля | Зачем |
+|--------|------|-------|
+| `product_session` (UNIQUE) | `product_id`, `session_id` | Не даёт одной сессии создать несколько строк, `ON DUPLICATE KEY UPDATE` обновляет `last_seen` |
+| `product_last_seen` | `product_id`, `last_seen` | Подсчёт online по товару с фильтром по TTL |
+| `last_seen` | `last_seen` | Ускоряет удаление устаревших строк |
+
+### Требования к серверу БД
+
+Обе таблицы создаются с `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci`, используется синтаксис `ON DUPLICATE KEY UPDATE`. Нужна MySQL 5.7+ или MariaDB 10.2+ с включённым InnoDB.
+
+`msviewcounter_active` чистится во время heartbeat: порог задаёт `online_ttl`, период — `cleanup_interval`, лимит — `cleanup_batch_limit`.
 
 При **удалении пакета** системные настройки удаляются; **таблицы статистики сохраняются**, чтобы не потерять данные магазина.
 

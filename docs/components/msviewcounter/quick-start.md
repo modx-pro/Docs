@@ -31,7 +31,9 @@ flowchart TB
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | установлен |
-| pdoTools | 3.x (для примеров Fenom) |
+| MySQL / MariaDB | 5.7+ / 10.2+ с InnoDB |
+
+Пакет объявляет pdoTools 3.x в требованиях транспорта, поэтому MODX потребует его при установке. В коде компонента pdoTools и Fenom не используются: примеры с `{'!msViewCounter' | snippet}` работают на встроенном в MODX 3 Fenom.
 
 ## Шаг 1: Установка пакета
 

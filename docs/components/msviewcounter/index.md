@@ -44,8 +44,8 @@ items: [
 ## Минимальный путь на витрине
 
 1. Установить **MiniShop3** и **msViewCounter** через ModStore.
-2. Убедиться, что плагины **`msViewCounterBootstrap`** и **`msViewCounterTrack`** включены.
-3. В шаблоне **msProduct** вывести сниппет (см. [Быстрый старт](quick-start#шаг-2-вызов-на-странице-товара)).
+2. Убедиться, что плагины **`msViewCounterBootstrap`** и **`msViewCounterTrack`** включены. Первый обязателен: выключите его, и страница товара отдаст 500 с фатальной ошибкой.
+3. В шаблоне **msProduct** вывести сниппет (см. [Быстрый старт](quick-start#shag-2-vyzov-na-stranice-tovara)).
 4. При необходимости выбрать режим в настройках **`msviewcounter_mode`** — [Системные настройки](settings).
 5. **Очистить кэш** и открыть страницу товара.
 
@@ -55,8 +55,8 @@ items: [
 | --- | --- |
 | Установить и вывести счётчик | [Быстрый старт](quick-start) |
 | Все ключи `msviewcounter_*` | [Системные настройки](settings) |
-| Режимы `real`, `boost`, `fake` | [Интеграция](integration#режимы-работы) |
-| Стилизация через `--msvc-*` | [Интеграция — стилизация](integration#стилизация) |
+| Режимы `real`, `boost`, `fake` | [Интеграция](integration#rezhimy-raboty) |
+| Стилизация через `--msvc-*` | [Интеграция — стилизация](integration#stilizaciya) |
 | Параметры сниппета | [msViewCounter](snippets/msViewCounter) |
 | Вывод в каталоге | [Каталог товаров](frontend/catalog) |
 | CrawlerDetect и боты | [Интеграция — CrawlerDetect](integration#crawlerdetect) |
@@ -67,7 +67,7 @@ items: [
 - **Общий счётчик** — «Этот товар просмотрели 248 раз»
 - **Live-online** — «Сейчас смотрят 3 человека» с heartbeat через JS
 - **Три режима** — `real` (честная статистика), `boost` (реальные данные с базой и разбросом), `fake` (синтетика без записи в БД)
-- **Дедупликация** — один просмотр на товар в рамках сессии (`msviewcounter_dedup_session`)
+- **Дедупликация** — один просмотр на товар в рамках PHP-сессии (`msviewcounter_dedup_session`)
 - **Фильтр ботов** — [CrawlerDetect](https://modstore.pro/packages/other/crawlerdetect) при наличии, fallback по `User-Agent`
 - **Контроль БД** — агрегат в `msviewcounter_totals`, active-сессии в `msviewcounter_active` с batch-очисткой
 - **Готовый UI** — чанк `tplMsViewCounter`, CSS-карточка с переменными `--msvc-*`
@@ -80,7 +80,7 @@ items: [
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | 1.0+ |
-| pdoTools | 3.0+ (рекомендуется для Fenom) |
+| MySQL / MariaDB | 5.7+ / 10.2+ с InnoDB |
 
 ### Зависимости
 
@@ -89,6 +89,12 @@ items: [
 ### Опционально
 
 - **[CrawlerDetect](https://modstore.pro/packages/other/crawlerdetect)** — расширенная фильтрация ботов
+
+### Про pdoTools
+
+Пакет объявляет `pdotools >= 3.0.0` в требованиях транспорта, поэтому MODX проверит его при установке. В самом коде дополнения pdoTools и Fenom не используются: нет ни одного вызова, чанк `tplMsViewCounter` — обычный MODX-чанк, а сниппет работает через `getChunk()`. Если pdoTools на сайте нет, установка не пройдёт, а вот код компонента без него работает.
+
+Fenom в MODX 3 встроен в ядро, так что примеры с `{'!msViewCounter' | snippet}` дополнительных пакетов не требуют.
 
 ## Установка
 
@@ -102,7 +108,7 @@ items: [
 | Термин | Описание |
 |--------|----------|
 | **total** | Суммарное число просмотров товара (одна строка на товар в `msviewcounter_totals`) |
-| **online** | Число активных сессий на странице товара (строки в `msviewcounter_active`) |
+| **online** | Число активных PHP-сессий на странице товара (строки в `msviewcounter_active`). Не люди и не вкладки: несколько вкладок одного браузера дают одну строку |
 | **heartbeat** | Периодический POST из `viewcounter.js` в connector для продления active-сессии |
 | **TTL online** | Сколько секунд (`msviewcounter_online_ttl`) посетитель считается «смотрящим» |
 | **boost** | Режим: реальные данные в БД, на витрине — с базой, множителем и дневным разбросом |
