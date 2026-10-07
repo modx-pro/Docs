@@ -163,6 +163,29 @@ Fired **before** sending a notification. Lets you modify data or cancel sending.
 | `recipientType` | `string` | `customer` or `manager` |
 | `channels` | `string[]` (by reference) | Channel names, e.g. `['email', 'telegram']` |
 
+### The `recipient` payload
+
+For a **customer** recipient (since MiniShop3 1.12.0) `recipient` is assembled in `OrderStatusService::getCustomerRecipient()` with the following source priority:
+
+1. **`msOrderAddress`** of the order — the email and phone from the checkout form of **this particular** order.
+2. **`msCustomer`** — a fallback for email and phone, plus the source of `telegram_chat_id` and of the `customer` payload.
+3. **`modUserProfile`** — the last fallback for email, phone and telegram when the first two are empty.
+
+The resolved `email` and `phone` are also mirrored into `recipient['customer']['email']` and `['phone']`, for plugins that read the contact from there.
+
+| Key | Type | Source | Description |
+| --- | --- | --- | --- |
+| `type` | `string` | — | `customer` or `manager` (duplicates `recipientType`) |
+| `email` | `string \| null` | address → customer → profile | Resolved recipient email |
+| `phone` | `string \| null` | address → customer → profile | Resolved phone number |
+| `telegram_chat_id` | `string \| null` | `customer.extended` → profile | Telegram chat ID, when set |
+| `address` | `array` | `msOrderAddress->toArray()` | The full order address (customer recipient only) |
+| `customer` | `array` | `msCustomer->toArray()` | The customer object (customer recipient only); its `email` and `phone` are already synced with the resolved values |
+
+::: tip Why the address and the customer are kept apart
+Before 1.12.0 notifications went to the contacts stored on `msCustomer`, which could differ from the contacts of the order at hand — if two orders were placed in one session with different emails, both notifications went to the `msCustomer` email.
+:::
+
 ### Aborting the operation
 
 If the plugin returns non-empty output, sending is cancelled:

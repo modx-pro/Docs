@@ -3,10 +3,10 @@ title: Product events (catalog)
 ---
 # Product events (catalog)
 
-Events for modifying product price, weight and fields when output in the catalog.
+Modifying product price, weight and fields on catalog output.
 
 ::: info Feature
-These events support a **plugin chain** — each plugin can read the previous result via `$modx->eventData` and pass its result to the next.
+These events support a **plugin chain** — each plugin can read the previous result from `$modx->eventData` and pass its own result to the next one.
 :::
 
 ## msOnGetProductPrice
@@ -307,6 +307,40 @@ switch ($modx->event->name) {
         $modx->eventData['msOnGetProductFields']['data'] = $data;
         $values = &$modx->event->returnedValues;
         $values['data'] = $data;
+        break;
+}
+```
+
+## msOnGetPublicSeo
+
+Fired in `PublicSeoService` after the SEO set and the TV overlay map (`ms3_public_seo_tv_map`) are assembled, just before the final whitelist. Works for both products and categories. On list and tree requests `include_seo=0` by default; on get it is `1`.
+
+### Parameters
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `seo` | `array` | The current SEO whitelist |
+| `payload` | `array` | The catalog row (product or category) |
+| `og_type` | `string` | `product`, or `website` for a category |
+
+### Modifying
+
+A plugin returns a patch in `$modx->event->returnedValues['seo']`. Unknown keys are dropped by the whitelist. `og.title` / `og.description` copy `title` / `description` unless the patch sets them explicitly in `seo.og`.
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnGetPublicSeo':
+        $seo = $scriptProperties['seo'];
+        $payload = $scriptProperties['payload'];
+        $ogType = $scriptProperties['og_type'];
+
+        if ($ogType === 'product' && !empty($payload['vendor'])) {
+            $seo['description'] = trim(($seo['description'] ?? '') . ' — ' . $payload['vendor']);
+        }
+
+        $values = &$modx->event->returnedValues;
+        $values['seo'] = $seo;
         break;
 }
 ```

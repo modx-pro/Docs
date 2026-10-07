@@ -3,7 +3,15 @@ title: Order events
 ---
 # Order events
 
-Events for managing order fields: adding, validation, removing fields, order submission.
+Adding, validating and removing order fields, and submitting the order.
+
+## Which events can abort the operation
+
+Unlike the [cart events](cart), the core reads the plugin response almost everywhere here — after-events included. `$modx->event->output(...)` returns an error from every event on this page **except** `msOnMgrCreateOrder`, which is called without reading the response.
+
+So `msOnRemoveFromOrder`, `msOnEmptyOrder` and `msOnCreateOrder` can fail an operation that already happened: the field is removed or the order is created, yet the client gets an error.
+
+The validation events use the response differently — not to abort the operation but to substitute the value: `msOnBeforeValidateOrderValue` and `msOnValidateOrderValue` return `value`, `msOnErrorValidateOrderValue` returns `error`.
 
 ## msOnBeforeAddToOrder
 
@@ -299,7 +307,7 @@ switch ($modx->event->name) {
 
 ## msOnEmptyOrder
 
-Fired **after** draft fields are cleared. Plugin `output` makes the caller treat the operation as failed.
+Fired **after** the draft fields are cleared. A plugin `output` makes the caller treat the operation as failed.
 
 ### Parameters
 
@@ -373,7 +381,7 @@ Fired **before** final order creation (assigning "New" status). Three scenarios:
 
 1. Storefront submit — `OrderSubmitHandler` (params have **no** `origin` / `from_manager`; has `handler`, `customFields`)
 2. Manager finalization — `OrderFinalizeService` (`origin=manager`, `from_manager=true`, `service`)
-3. Programmatic creation — `ProgrammaticOrderService` → `finalize` (`origin=integration`, without `from_manager`, `service`)
+3. Programmatic creation — `ProgrammaticOrderService` → `finalize` (`origin=integration`, `from_manager=false`, `service`)
 
 ### Parameters
 
@@ -383,7 +391,7 @@ Fired **before** final order creation (assigning "New" status). Three scenarios:
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront submit only |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Manager or integration |
 | `origin` | `string` | Finalize paths only: `manager` \| `integration` (`OrderOrigin` constants) |
-| `from_manager` | `bool` | Only when `origin=manager` |
+| `from_manager` | `bool` | Present on both finalize paths (`true` with `origin=manager`, `false` with `origin=integration`); missing only on the storefront submit |
 | `customFields` | `array` | Storefront only — fields from `properties._validated` |
 
 ::: tip Distinguishing scenarios
@@ -460,7 +468,7 @@ Fired **after** successful order creation. Pair to `msOnBeforeCreateOrder` — s
 | `handler` | `\MiniShop3\Services\Order\OrderSubmitHandler` | Storefront only |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Manager or integration |
 | `origin` | `string` | Finalize paths only |
-| `from_manager` | `bool` | Manager only |
+| `from_manager` | `bool` | Present on both finalize paths (`true`/`false`); missing only on the storefront submit |
 | `customFields` | `array` | Storefront only |
 
 ### Example
@@ -541,10 +549,10 @@ switch ($modx->event->name) {
 
 ## msOnBeforeMgrCreateOrder
 
-Fired **before** finalizing an order from the manager (when the manager turns a draft into a full order — the «Submit» button on the order page). This is the manager counterpart of `msOnSubmitOrder`.
+Fired **before** finalizing an order in the manager — when a manager turns a draft into a full order with the "Submit" button on the order page. This is the manager counterpart of `msOnSubmitOrder`.
 
 ::: tip Relation to msOnBeforeCreateOrder
-After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same three parameters. Use `msOnBeforeMgrCreateOrder` for manager-specific logic; use `msOnBeforeCreateOrder` for shared logic on both frontend and manager.
+After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still runs with the same three parameters. Take `msOnBeforeMgrCreateOrder` for manager-only logic, and `msOnBeforeCreateOrder` when the same logic is needed on both the frontend and the manager.
 :::
 
 ### Parameters
@@ -560,13 +568,13 @@ After `msOnBeforeMgrCreateOrder`, the universal `msOnBeforeCreateOrder` still ru
 
 ## msOnMgrCreateOrder
 
-Fired **after** successful order finalization from the manager. Pair to `msOnBeforeMgrCreateOrder`.
+Fired **after** an order has been finalized in the manager. Pair to `msOnBeforeMgrCreateOrder`.
 
 ### Parameters
 
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `service` | `\MiniShop3\Services\Order\OrderFinalizeService` | Order finalization service |
-| `msOrder` | `msOrder` | Finalized order (status already changed to «New») |
+| `msOrder` | `msOrder` | Finalized order (status already changed to "New") |
 | `origin` | `string` | `manager` |
 | `from_manager` | `bool` | Always `true` |

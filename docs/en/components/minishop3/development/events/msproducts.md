@@ -3,10 +3,10 @@ title: msProducts snippet events
 ---
 # msProducts snippet events
 
-Events for integrating third-party packages (ms3Variants, msBrands, etc.) into the msProducts snippet without modifying MiniShop3 core code.
+Integrating third-party packages (ms3Variants, msBrands and others) into the msProducts snippet without changing MiniShop3 core code.
 
 ::: tip usePackages parameter
-To enable a package's data loading, pass its name in the snippet parameter:
+To let a package load its data, pass the package name in the snippet parameter:
 
 ```fenom
 {'msProducts' | snippet : [
@@ -133,6 +133,10 @@ switch ($modx->event->name) {
 }
 ```
 
+::: warning Mutating `$scriptProperties['row']` by reference does not work
+Although `row` is passed as a reference on the calling side (`EventGate::invokeRaw(..., ['row' => &$rows[$k], ...])`), the PHP reference does not survive the merge pipeline of the MODX core: both `modElement::getProperties()` and `modX::invokeEvent()` use `array_merge()`, and that drops the reference. Changing `$scriptProperties['row']['field'] = ...` inside a plugin **never reaches** the template — set `$modx->event->returnedValues['row']` instead, as shown below.
+:::
+
 ### Basic example
 
 ```php
@@ -146,11 +150,13 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
 
-        // Attach data to product
+        // Attach the data to the product — only through returnedValues;
+        // mutating $scriptProperties['row'] by reference never reaches the template
         if (isset($myData[$productId])) {
-            $row['my_field'] = $myData[$productId];
+            $modx->event->returnedValues = [
+                'row' => ['my_field' => $myData[$productId]],
+            ];
         }
         break;
 }
@@ -170,19 +176,25 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
 
+        // Attach the variants — only through returnedValues (see the warning above)
         if (isset($variantsMap[$productId])) {
-            $row['variants'] = $variantsMap[$productId];
-            $row['variants_count'] = count($variantsMap[$productId]);
-            $row['variants_json'] = json_encode($variantsMap[$productId]);
-            $row['has_variants'] = true;
+            $row = [
+                'variants' => $variantsMap[$productId],
+                'variants_count' => count($variantsMap[$productId]),
+                'variants_json' => json_encode($variantsMap[$productId]),
+                'has_variants' => true,
+            ];
         } else {
-            $row['variants'] = [];
-            $row['variants_count'] = 0;
-            $row['variants_json'] = '[]';
-            $row['has_variants'] = false;
+            $row = [
+                'variants' => [],
+                'variants_count' => 0,
+                'variants_json' => '[]',
+                'has_variants' => false,
+            ];
         }
+
+        $modx->event->returnedValues = ['row' => $row];
         break;
 }
 
@@ -234,7 +246,7 @@ switch ($modx->event->name) {
         }
 
         $productId = $scriptProperties['productId'];
-        $row = &$scriptProperties['row'];
+        $row = $scriptProperties['row'];
 
         $badges = [];
 
@@ -257,9 +269,14 @@ switch ($modx->event->name) {
             ];
         }
 
-        $row['badges'] = $badges;
-        $row['badges_json'] = json_encode($badges);
-        $row['has_badges'] = !empty($badges);
+        // Write through returnedValues (see the warning above)
+        $modx->event->returnedValues = [
+            'row' => [
+                'badges' => $badges,
+                'badges_json' => json_encode($badges),
+                'has_badges' => !empty($badges),
+            ],
+        ];
         break;
 }
 
@@ -322,8 +339,6 @@ Use your package name as the key in `eventData` to avoid conflicts with other pl
 ---
 
 ## Performance
-
-Events are designed for optimal performance:
 
 1. **msOnProductsLoad** — runs **once** to load data for all products
 2. **msOnProductPrepare** — runs per product but only attaches already-loaded data
