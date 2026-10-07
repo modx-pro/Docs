@@ -15,13 +15,14 @@ The product page shows a single product in detail: gallery, price, options, and 
 | --- | --- | --- |
 | Page template | `elements/templates/product.tpl` | Product page layout |
 | Gallery | `tpl.msGallery` | Image slider with lightbox |
-| Product options | `tpl.msProductOptions` | Product attributes output |
+
+The attribute table is rendered by the [`msProductOptions`](/en/components/minishop3/snippets/msproductoptions) snippet with its own `tpl.msProductOptions` chunk. The demo template does not call it — add the call to your own template.
 
 ## Page template
 
 **Path:** `core/components/minishop3/elements/templates/product.tpl`
 
-The template extends the base template (`base.tpl`) and contains the following sections:
+The template extends the base template (`base.tpl`) and contains these sections:
 
 ```fenom
 {extends 'file:templates/base.tpl'}
@@ -77,24 +78,17 @@ The gallery uses [Splide](https://splidejs.com/) for the slider and [GLightbox](
 - **Lazy loading** — deferred image loading
 - **Placeholder** — shown when there are no images
 
-#### Placeholders in tpl.msGallery
+#### What the stock chunk uses
 
-| Placeholder | Type | Description |
-| --- | --- | --- |
-| `{$files}` | array | Product image array |
-| `{$file['url']}` | string | Full image URL |
-| `{$file['small']}` | string | Thumbnail URL (small) |
-| `{$file['medium']}` | string | Medium size URL (medium) |
-| `{$file['name']}` | string | File name |
-| `{$file['description']}` | string | Image description |
+The chunk iterates the `{$files}` array and takes five fields from each item: `url` for the lightbox link, `medium` and `small` for the main slider and the thumbnails, `name` and `description` for the captions. Each size has a fallback — `{$file['medium'] ?: $file['url']}` — so the slider works even without generated thumbnails.
 
-See also: [msGallery](/en/components/minishop3/snippets/msgallery)
+The full list of fields available for each file, including `thumb` / `large` and the thumbnail dimensions, is on the [msGallery](/en/components/minishop3/snippets/msgallery) snippet page.
 
 ---
 
 ### Product information
 
-The right column with product data includes:
+Product data is rendered in the right column.
 
 #### Vendor and name
 
@@ -159,7 +153,7 @@ Price is shown in a separate block with background:
 ```
 
 ::: tip Discount calculation
-The discount percentage is calculated automatically by the msProducts snippet when `old_price` is set. Formula: `(old_price - price) / old_price * 100`
+The `{$discount}` percentage is filled only by the **msProducts** loop (catalog cards): `(old_price - price) / old_price * 100`. On the product page the placeholder stays empty until the template calculates the same expression itself. The "Discount {$discount}%" block in the demo `product.tpl` does not work without that extra step ([issue #814](https://github.com/modx-pro/MiniShop3/issues/814)).
 :::
 
 ---
@@ -189,16 +183,21 @@ JavaScript activates the first option by default and handles clicks for switchin
 
 ### Add to cart form
 
-The page contains two forms with state switching:
+The page contains two forms with state switching. Both sit inside a shared wrapper — that is how the JavaScript finds the card:
+
+```fenom
+<div class="ms3-product-card" data-product-id="{$_modx->resource.id}" data-ms3-product-card>
+    {* both forms go in here *}
+</div>
+```
 
 #### "Add" state
 
 Shown when the product is not in the cart:
 
 ```fenom
-<form method="post" class="ms3_form" data-cart-state="add">
+<form method="post" class="ms3_form" data-cart-state="add" data-ms3-form>
     <input type="hidden" name="id" value="{$_modx->resource.id}">
-    <input type="hidden" name="options" value="[]">
     <input type="hidden" name="ms3_action" value="cart/add">
 
     <div class="row g-3 align-items-end">
@@ -220,7 +219,7 @@ Shown when the product is not in the cart:
 Shown when the product is already in the cart:
 
 ```fenom
-<form method="post" class="ms3_form product-cart-controls-hidden" data-cart-state="change">
+<form method="post" class="ms3_form product-cart-controls-hidden" data-cart-state="change" data-ms3-form>
     <input type="hidden" name="product_key" value="">
     <input type="hidden" name="ms3_action" value="cart/change">
 
@@ -241,7 +240,7 @@ Shown when the product is already in the cart:
 </form>
 ```
 
-Switching happens automatically through the `ProductCardUI` JavaScript module on the `ms3:cart:updated` event.
+The `ProductCardUI` JavaScript module switches the forms on the `ms3:cart:updated` event.
 
 ---
 
@@ -263,20 +262,28 @@ Block with icons for weight, country of origin, and delivery:
             <span class="text-muted">Country of origin:</span> <strong>{$made_in}</strong>
         </li>
     {/if}
+    <li>
+        <svg width="16" height="16"><use href="#icon-truck"/></svg>
+        <span class="text-muted">Delivery:</span> <strong>1-3 business days</strong>
+    </li>
 </ul>
 ```
+
+The delivery line is always printed and its caption is hardcoded in the template: it is not tied to the delivery methods configured in MiniShop3.
 
 ---
 
 ### Information tabs
 
-Bootstrap tabs for organizing content:
-
 | Tab | Content |
 | --- | --- |
-| **Description** | Full description from `{$_modx->resource.description}` |
+| **Description** | Full description from `{$_modx->resource.description}`, or a "no detailed description" message when empty |
 | **Specifications** | Product properties table |
-| **Delivery** | Delivery methods information |
+| **Delivery** | Two static placeholder blocks |
+
+::: warning The "Delivery" tab is a stub
+In the demo template this is hardcoded markup: "Courier delivery — from 300 ₽" and "Pickup — Free". The delivery methods configured in MiniShop3 and their costs are not rendered here. Replace the block with your own or remove it.
+:::
 
 ```fenom
 <ul class="nav nav-tabs mb-4" role="tablist">
@@ -345,10 +352,15 @@ Block with products from the same category:
 | `parents` | Parent category ID | Products from the same category |
 | `resources` | `-` current product ID | Exclude the current product |
 | `limit` | `4` | Show 4 products |
+| `withCurrency` | `0` | No currency symbol in `{$price_formatted}` |
+
+As in `catalog.tpl`, `formatPrices` is passed here too — msProducts has no such parameter and ignores it ([issue #818](https://github.com/modx-pro/MiniShop3/issues/818)).
 
 ## Product placeholders
 
-The product page exposes all fields from the msProduct and msProductData tables:
+The product page exposes all fields from the msProduct and msProductData tables.
+
+The placeholders are set by `ProductService::processForDisplay()`, called from `msProduct::process()` — that is, on every product page render. It publishes all `msProductData` columns (except `id`), the product options, and the vendor fields prefixed with `vendor_`.
 
 ### Main fields
 
@@ -366,16 +378,28 @@ The product page exposes all fields from the msProduct and msProductData tables:
 | Placeholder | Type | Description |
 | --- | --- | --- |
 | `{$article}` | string | SKU |
-| `{$price}` | float | Price |
-| `{$old_price}` | float | Old price |
-| `{$weight}` | float | Weight |
-| `{$stock}` | int | Stock quantity |
+| `{$price}` | string | Price, **already formatted** per `ms3_price_format` |
+| `{$old_price}` | string | Old price, formatted as well |
+| `{$weight}` | string | Weight, formatted per `ms3_weight_format` |
+| `{$stock}` | string | Stock quantity (`decimal` column) |
+| `{$image}` | string | Main image URL |
+| `{$thumb}` | string | Thumbnail URL |
+| `{$tags}` | mixed | Tags |
+| `{$source_id}` | int | Media Source ID |
+| `{$preview_file_id}` | int | Gallery preview file ID |
 | `{$vendor_id}` | int | Vendor ID |
-| `{$vendor_name}` | string | Vendor name |
 | `{$made_in}` | string | Country of origin |
 | `{$new}` | bool | "New" flag |
 | `{$popular}` | bool | "Popular" flag |
 | `{$favorite}` | bool | "Recommended" flag |
+
+`{$vendor_name}` is not an `msProductData` column: the name comes from the `msVendor` relation via `vendor_id`. In the `msProducts` snippet the `vendor_`-prefixed fields appear when `includeVendorFields` is set.
+
+::: warning Price and weight arrive as strings
+`price`, `old_price` and `weight` pass through `Format::price()` and `Format::weight()` before they reach the placeholders, so they carry the thousand separators from the system settings. Arithmetic and comparisons in the template (`{if $price > 1000}`, `{$price * $count}`) will not work on them — read the value from `$_modx->resource` for calculations, or compute it in the snippet. The currency symbol is not added: the demo template appends `₽` by hand.
+
+Inside the `msProducts` loop the same names mean something else: there `price` and `weight` stay numeric, and the formatted values live separately in `price_formatted` and `weight_formatted`. Code moved from the catalog card chunk to the product page can therefore behave differently.
+:::
 
 ### Product options
 
@@ -383,14 +407,14 @@ The product page exposes all fields from the msProduct and msProductData tables:
 | --- | --- | --- |
 | `{$_modx->resource.color}` | array | Available colors |
 | `{$_modx->resource.size}` | array | Available sizes |
-| `{$discount}` | int | Discount percentage (calculated) |
+| `{$discount}` | int | Discount percentage: only from `msProducts`, never filled on the product page |
 
 ## Customization
 
 ### Creating a custom template
 
-1. Copy `product.tpl` to your theme folder
-2. Make the required changes
+1. Copy `product.tpl` to your theme
+2. Make your changes
 3. Assign the template to products in the Manager
 
 ### Changing the gallery
@@ -403,9 +427,11 @@ Create your own chunk and specify it in the call:
 ]}
 ```
 
+The stock chunk loads Splide and GLightbox from the CDN itself. In your own chunk either repeat those tags or drop the slider: without the libraries the slider and the lightbox never initialize. There is no error — the gallery falls back to a static list.
+
 ### Adding custom tabs
 
-Extend the tabs block in the template:
+Extend the tabs block in the template. MiniShop3 ships no reviews snippet — add your own extra or your own markup:
 
 ```fenom
 <li class="nav-item">
@@ -415,9 +441,13 @@ Extend the tabs block in the template:
 </li>
 
 <div class="tab-pane fade" id="reviews">
-    {'!msProductReviews' | snippet : ['product' => $_modx->resource.id]}
+    {* your own reviews snippet or chunk — not part of MiniShop3 *}
 </div>
 ```
+
+::: warning color/size options in the demo template
+The color and size buttons in `product.tpl` only toggle the `active` class and never write the values into the `cart/add` form. The options do not reach the cart until you add a hidden input or JavaScript ([issue #815](https://github.com/modx-pro/MiniShop3/issues/815)). The API side is ready: `cart/add` accepts an `options` parameter.
+:::
 
 ## CSS classes
 
@@ -433,16 +463,20 @@ Extend the tabs block in the template:
 | `.related-products` | Related products block |
 | `.ms3-gallery` | Gallery container |
 | `.ms3-gallery-main` | Main slider |
-| `.ms3-gallery-thumbs` | Thumbnail slider |
+| `.ms3-gallery-thumbs` | Thumbnail slider (only with two or more images) |
+| `.ms3-gallery-empty` | Gallery container with no images |
+| `.ms3-gallery-placeholder` | Wrapper for the `ms3_medium.png` placeholder |
+| `.ms3-product-card` | Cart forms wrapper that `ProductCardUI` binds to |
 
 ## Dependencies
 
-The template uses the following libraries:
+| Library | Version | Purpose | Loaded in |
+| --- | --- | --- | --- |
+| Bootstrap 5 | 5.3.3 | CSS framework | `base.tpl` |
+| Bootstrap Icons | 1.11.0 | Icon font | `base.tpl` |
+| Splide | 4.1.4 | Gallery slider | `tpl.msGallery` |
+| GLightbox | 3.3.0 | Image lightbox | `tpl.msGallery` |
 
-| Library | Version | Purpose |
-| --- | --- | --- |
-| Bootstrap 5 | 5.3.3 | CSS framework |
-| Splide | 4.1.4 | Gallery slider |
-| GLightbox | 3.3.0 | Image lightbox |
+All four are loaded from the jsdelivr CDN. On a live site replace them with local copies.
 
-Libraries are loaded via CDN. For production, use local copies.
+In the gallery chunk Splide and GLightbox are loaded inside the `{if $files?}` branch, so a product with no images does not load them.
