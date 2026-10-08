@@ -1,23 +1,21 @@
 # MiniShop3
 
-ms3PromoCode — глубоко интегрированный плагин MS3. Эта страница объясняет, как именно компонент встраивается в жизненный цикл заказа и почему сделан именно так.
-
 ## Учёт скидки в позициях
 
-**Главное архитектурное решение**: при применении кода скидка распределяется по подпадающим позициям и записывается в `msOrderProduct.price` (а оригинальная цена сохраняется в `properties.ms3promocode.original_price`).
+При применении кода скидка распределяется по подпадающим позициям и уценивает `msOrderProduct.price`; исходная цена сохраняется в `properties.ms3promocode.original_price`.
 
 ### Что это даёт
 
-| Что              | Как работает                                                                                               |
-|------------------|------------------------------------------------------------------------------------------------------------|
-| Чек 54-ФЗ        | ОФД-агенты формируют чек по позициям, считывая `msOrderProduct.price` — суммы автоматически совпадают с оплаченной |
-| Email-уведомления| Стандартные email-шаблоны MS3 показывают `price` каждой позиции — после применения кода они уценённые      |
-| Личный кабинет   | Аналогично — без правок шаблонов покупатель видит реальные оплаченные цены                                 |
-| Аналитика MS3    | `msOrder.cart_cost` вычисляется как `SUM(msOrderProduct.cost)` — и в submit, и в finalize заказа           |
+| Что               | Эффект                                                                                   |
+|-------------------|------------------------------------------------------------------------------------------|
+| Чек 54-ФЗ         | ОФД формирует чек по `msOrderProduct.price` — суммы совпадают с оплаченной автоматически |
+| Email-уведомления | Стандартные email-шаблоны MS3 показывают уценённую `price` каждой позиции                |
+| Личный кабинет    | Покупатель видит реальные оплаченные цены без правки шаблонов                            |
+| Аналитика MS3     | `msOrder.cart_cost = SUM(msOrderProduct.cost)` на всех этапах жизненного цикла заказа     |
 
-### Альтернатива, которую мы НЕ выбрали
+### Альтернатива — скидка отдельной строкой
 
-Можно было бы выводить скидку отдельной строкой в итогах:
+Можно было показывать скидку отдельной строкой в итогах:
 
 ```
 Товары:           5000 ₽
@@ -25,15 +23,13 @@ ms3PromoCode — глубоко интегрированный плагин MS3.
 Итого:            4500 ₽
 ```
 
-Так делают крупные маркетплейсы (Ozon, WB, Я.Маркет) — но у них своя фискализация, и расхождение между «общая сумма позиций» и «оплачено» не вызывает проблем.
+Так работают крупные маркетплейсы: у них своя фискализация, расхождение между суммой позиций и оплатой проблем не создаёт.
 
-Для типичного MS3-магазина такой подход потребовал бы:
+Для типичного MS3-магазина потребовались бы:
 
-- Доработки email-шаблонов (показать строку скидки).
-- Доработки шаблонов личного кабинета.
-- Кастомизации формирования чека ОФД (отдельная позиция-скидка).
-
-Подход «уценка позиций» решает все эти проблемы автоматически, без правки шаблонов.
+- доработка email-шаблонов (строка скидки);
+- доработка шаблонов личного кабинета;
+- доработка формирования чека ОФД (отдельная позиция-скидка).
 
 ## Точки интеграции
 
@@ -41,30 +37,30 @@ ms3PromoCode — глубоко интегрированный плагин MS3.
 
 См. [Развёрнутый список событий](../development/events).
 
-### Lifecycle применения кода
+### Жизненный цикл применения кода
 
 ```
 1. Покупатель заходит в корзину
-   └─→ Сниппет ms3PromoCodeForm рендерит SSR-форму
+   └─→ Сниппет ms3PromoCodeForm отрисовывает SSR-форму
 
 2. Покупатель применяет код
    └─→ POST /api/v1/promo/apply
        └─→ ApplicationService::apply()
-           ├─ ValidationService::validateCode → lifecycle OK
+           ├─ ValidationService::validateCode → жизненный цикл OK
            ├─ ValidationService::validateForOrder → min_order OK
-           ├─ findMatchingItems (по rules)
+           ├─ restoreLineItems (снять предыдущую уценку, если была)
+           ├─ findMatchingItems (по правилам кода)
            ├─ DiscountCalculator::calculate → breakdown
            ├─ applyToLineItems (уценка позиций + properties)
            ├─ saveToOrder (msOrder.properties.promo_code)
            └─ recalculateOrderTotals (cart_cost, cost)
 
 3. Покупатель меняет состав корзины
-   └─→ msOnAdd/Change/RemoveFromCart
-       └─→ syncAfterCartChange
-           ├─ restoreLineItems (восстановить оригиналы)
-           ├─ findMatchingItems (на новом составе)
-           ├─ DiscountCalculator (новый breakdown)
-           └─ applyToLineItems  (или remove если стало невалидно)
+   └─→ msOnAddToCart / msOnChangeInCart / msOnChangeOptionInCart / msOnRemoveFromCart
+       └─→ ApplicationService::syncAfterCartChange()
+           ├─ apply (повторно; шаги — см. п. 2)
+           └─ если apply вернул ошибку → remove
+              и на фронт шлётся событие ms3promocode:auto-removed
 
 4. Покупатель оформляет заказ
    └─→ msOnCreateOrder
@@ -72,26 +68,35 @@ ms3PromoCode — глубоко интегрированный плагин MS3.
            ├─ INSERT в ms3_promo_code_usages
            └─ UPDATE ms3_promo_codes.used_count + 1
 
-5. Менеджер переводит заказ в "Отменён"
+5. Менеджер меняет статус заказа
    └─→ msOnChangeOrderStatus
-       └─→ UsageTracker::cancelApplication
-           ├─ UPDATE usage SET cancelled_at = NOW()
-           └─ UPDATE ms3_promo_codes.used_count - 1
+       ├─ Переход в статус из ms3promocode.cancel_statuses
+       │  └─→ UsageTracker::cancelApplication
+       │      ├─ UPDATE usage SET cancelled_at = NOW()
+       │      └─ UPDATE ms3_promo_codes.used_count − 1
+       └─ Обратный переход (из статуса отмены в активный)
+          └─→ UsageTracker::reinstateApplication
+              ├─ UPDATE usage SET cancelled_at = NULL
+              └─ UPDATE ms3_promo_codes.used_count + 1
 ```
 
 ## Менеджер изменяет состав уже созданного заказа
 
-Vue-админка MS3 не вызывает MODX-процессоры при изменении позиций (см. [issue #207](https://github.com/modx-pro/MiniShop3/issues/207)). Поэтому события `msOnCreateOrderProduct / msOnUpdateOrderProduct / msOnRemoveOrderProduct`, на которые подписан наш плагин, не срабатывают.
+Плагин подключает `order-tab.js` к окну заказа через событие `msOnManagerCustomCssJs` и регистрирует вкладку «Промо-код» через `window.MS3OrderTabsRegistry`.
+
+Vue-админка MS3 не вызывает MODX-процессоры при изменении позиций (см. [issue #207](https://github.com/modx-pro/MiniShop3/issues/207)). Поэтому события `msOnCreateOrderProduct / msOnUpdateOrderProduct / msOnRemoveOrderProduct`, на которые плагин подписан, не срабатывают.
 
 ### Решение
 
-В [order-tab.js](https://github.com/biz87/ms3PromoCode/blob/main/assets/components/ms3promocode/js/mgr/order-tab.js) установлен JS-перехватчик `window.fetch`:
+В [order-tab.js](https://github.com/biz87/ms3PromoCode/blob/main/assets/components/ms3promocode/js/mgr/order-tab.js) установлен JS-перехватчик HTTP-мутаций (основной — `window.fetch`, запасной — `XMLHttpRequest`):
 
-1. Перехватывает каждый успешный `POST/PUT/DELETE` к `/api/mgr/orders/{id}/products*`.
-2. **До** возврата response клиенту дёргает `Mgr/Order/Resync` процессор.
-3. Vue-админка получает ответ только после нашего `await resync(...)` — и затем перезапрашивает данные заказа, видя уже пересчитанные цены.
+1. Перехватывает каждый успешный `POST/PUT/PATCH/DELETE` к `/api/mgr/orders/{id}/products*`.
+2. **До** возврата ответа клиенту вызывает процессор `Mgr/Order/Resync`.
+3. Vue-админка получает ответ только после `await resync(...)` — и затем перезапрашивает данные заказа, видя уже пересчитанные цены.
 
-После мерджа PR в MS3 этот обходной механизм можно убрать — встроенные подписки на события заработают.
+::: warning Ручная правка цены позиции в админке
+Если менеджер правит `price` позиции вручную (не через процесс добавления/изменения/удаления), сохранённое оригинальное значение цены становится недействительным. При последующем снятии кода `remove` не возвращает прежнюю цену — текущая остаётся как есть.
+:::
 
 ## Что НЕ модифицирует ms3PromoCode
 
@@ -111,4 +116,4 @@ Vue-админка MS3 не вызывает MODX-процессоры при и
 | 1.8 – 1.9    | Не тестировалось, но скорее всего работает (минорные изменения схемы)           |
 | < 1.8        | Не поддерживается                                                               |
 
-Для 1.10+ требуется применение PR на события `msOn*OrderProduct` ([#207](https://github.com/modx-pro/MiniShop3/issues/207)) для полноценной работы менеджерского редактирования заказа без JS-перехватчика. Без PR — работает через JS-перехватчик.
+JS-перехватчик нужен, пока Vue-админка MS3 не начнёт вызывать `msOn{Create,Update,Remove}OrderProduct` ([issue #207](https://github.com/modx-pro/MiniShop3/issues/207)). Когда события появятся — обход можно убрать: плагин уже на них подписан.
