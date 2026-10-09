@@ -54,7 +54,7 @@ Potentially dangerous capabilities can be restricted or disabled through the com
 
 ## Installation
 
-The transport package can be downloaded from the [project releases on GitHub](https://github.com/rumata-estor/modx3-mcp/releases).
+The transport package can be downloaded from the [project releases on GitHub](https://github.com/rumata-estor/modx3-mcp/releases/tag/modx2-v1.2.0).
 
 For MODX Revolution 2.8.x, use:
 

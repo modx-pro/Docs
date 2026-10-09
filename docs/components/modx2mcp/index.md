@@ -54,7 +54,7 @@ MODX2MCP также позволяет анализировать связи м�
 
 ## Установка
 
-Транспортный пакет можно скачать из [релизов проекта на GitHub](https://github.com/rumata-estor/modx3-mcp/releases).
+Транспортный пакет можно скачать из [релизов проекта на GitHub](https://github.com/rumata-estor/modx3-mcp/releases/tag/modx2-v1.2.0).
 
 Для MODX Revolution 2.8.x используется пакет:
 
