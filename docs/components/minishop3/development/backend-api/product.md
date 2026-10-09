@@ -1,6 +1,6 @@
 ---
 title: API товара
-description: Программное создание, обновление товаров, работа с опциями, изображениями, категориями и связями
+description: Программное создание и обновление товаров, опции, изображения, категории, связи, производители
 ---
 
 # API товара
@@ -16,7 +16,7 @@ description: Программное создание, обновление то�
 
 ## Вызов процессоров
 
-Процессоры MiniShop3 — классы в namespace `MiniShop3\Processors\`. Их нужно вызывать **полным именем класса** (как параметр `action` в connector и vueManager), а не коротким путём вида `Gallery\Upload` с опцией `processors_path`.
+Процессоры MiniShop3 — классы в namespace `MiniShop3\Processors\`. Вызывайте их **полным именем класса** — тем же, что connector и vueManager передают в параметре `action`. Короткий путь вида `Gallery\Upload` с опцией `processors_path` не работает: по короткому имени MODX ищет файл с суффиксом `.class.php`, а процессоры MiniShop3 лежат без него.
 
 ```php
 // Правильно — полное имя класса
@@ -31,13 +31,15 @@ $response = $modx->runProcessor('Gallery\\Upload', [...], [
 ]);
 ```
 
-В таблицах ниже для краткости указан суффикс после `MiniShop3\Processors\` (например, `Product\Create` означает `MiniShop3\Processors\Product\Create`).
+В исходниках MiniShop3 рядом с полным именем иногда идёт и `processors_path` — например, в `RunsMs3Processors`. Это дополнение к полному имени, а не замена: короткое имя не заработает даже с указанным путём.
+
+В таблицах ниже имена сокращены до части после `MiniShop3\Processors\`: `Product\Create` означает `MiniShop3\Processors\Product\Create`.
 
 ## Создание товара
 
 ### Через процессор
 
-Рекомендуемый способ — процессор `MiniShop3\Processors\Product\Create`. Он создаёт и `msProduct`, и `msProductData`, устанавливает значения по умолчанию и вызывает системные события.
+Рекомендуемый способ — процессор `MiniShop3\Processors\Product\Create`: он создаёт обе модели сразу и вызывает системные события.
 
 ```php
 $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\Create', [
@@ -154,7 +156,7 @@ $productData->save();
 
 ### Обновление через сервис
 
-`ProductDataService` предоставляет удобные методы для чтения и обновления:
+Методы `ProductDataService` для чтения и обновления:
 
 ```php
 $service = $modx->services->get('ms3_product_data_service');
@@ -196,7 +198,7 @@ $updated = $service->updateProductData($productId, [
 
 ### Модификация цены и веса через события
 
-Методы `getPrice()` и `getWeight()` вызывают события, позволяющие плагинам модифицировать значения:
+Методы `getPrice()` и `getWeight()` вызывают события, в которых плагин может изменить значение:
 
 ```php
 // Получение цены с учётом плагинов
@@ -213,11 +215,9 @@ $fields = $productData->modifyFields();
 
 ## Опции товара
 
-Опции реализованы через EAV-паттерн (Entity-Attribute-Value) в таблице `ms3_product_options`. Каждая запись содержит `product_id`, `key` (имя опции) и `value` (значение).
+Опции реализованы через EAV-паттерн (Entity-Attribute-Value) в таблице `ms3_product_options`. Каждая запись содержит `product_id`, `key` (имя опции) и `value`.
 
 ### OptionService
-
-Основной сервис для работы с опциями:
 
 ```php
 $optionService = $modx->services->get('ms3_option_service');
@@ -260,10 +260,10 @@ $options = $optionService->loadOptionsForProduct($productId);
 // [
 //     'color' => ['Red', 'Blue'],
 //     'color.caption' => 'Цвет',
-//     'color.type' => 'combo-multiple',
+//     'color.type' => 'comboMultiple',
 //     'size' => ['L', 'XL'],
 //     'size.caption' => 'Размер',
-//     'size.type' => 'combo-multiple',
+//     'size.type' => 'comboMultiple',
 // ]
 
 // Пакетная загрузка (предотвращает N+1 запросов)
@@ -285,7 +285,7 @@ $keys = $optionService->getAvailableOptionKeys($productId);
 
 ## Изображения (галерея)
 
-Изображения товара хранятся как объекты `msProductFile` в таблице `ms3_product_files`. Файлы загружаются в медиа-источник, настроенный для товара.
+Изображения товара — объекты `msProductFile` в таблице `ms3_product_files`. Сами файлы лежат в медиа-источнике, настроенном для товара.
 
 ### Загрузка через процессор
 
@@ -306,7 +306,7 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', [
 ]);
 ```
 
-Для загрузки из `$_FILES` (multipart/form-data) файл передаётся штатным механизмом PHP — процессор автоматически его обнаружит.
+Файл из `$_FILES` (multipart/form-data) передавайте штатным механизмом PHP — процессор обнаружит его сам.
 
 Процессор автоматически:
 
@@ -316,8 +316,6 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', [
 - Обновляет поля `image` и `thumb` в `msProductData` (если загруженное изображение первое)
 
 ### ProductImageService
-
-Сервис для программной работы с изображениями:
 
 ```php
 $imageService = $modx->services->get('ms3_product_image');
@@ -343,22 +341,23 @@ $imageService->removeProductCatalog($productData);
 
 | Процессор | Описание |
 | --- | --- |
-| `MiniShop3\Processors\Gallery\Upload` | Загрузка изображения (файл, URL, путь) |
-| `MiniShop3\Processors\Gallery\GetList` | Список изображений товара |
-| `MiniShop3\Processors\Gallery\Update` | Обновление описания изображения |
-| `MiniShop3\Processors\Gallery\Remove` | Удаление одного изображения |
-| `MiniShop3\Processors\Gallery\RemoveAll` | Удаление всех изображений товара |
-| `MiniShop3\Processors\Gallery\Sort` | Сортировка изображений |
-| `MiniShop3\Processors\Gallery\Multiple` | Массовые операции (удаление нескольких) |
-| `MiniShop3\Processors\Gallery\Generate` | Генерация миниатюр для одного изображения |
-| `MiniShop3\Processors\Gallery\GenerateAll` | Генерация миниатюр для всех изображений товара |
-| `MiniShop3\Processors\Gallery\SetPreview` | Назначить главное изображение (`preview_file_id` в `msProductData`) |
+| `Gallery\Upload` | Загрузка изображения (файл, URL, путь) |
+| `Gallery\GetList` | Список изображений товара |
+| `Gallery\Update` | Обновление описания изображения |
+| `Gallery\Remove` | Удаление одного изображения |
+| `Gallery\RemoveAll` | Удаление всех изображений товара |
+| `Gallery\Sort` | Сортировка изображений |
+| `Gallery\SortByName` | Сортировка по имени файла (естественный порядок) — после пакетной загрузки |
+| `Gallery\Multiple` | Массовые операции (удаление нескольких) |
+| `Gallery\Generate` | Генерация миниатюр для одного изображения |
+| `Gallery\GenerateAll` | Генерация миниатюр для всех изображений товара |
+| `Gallery\SetPreview` | Назначение главного изображения (`preview_file_id` в `msProductData`) |
 
 ## Дополнительные категории
 
 Товар может принадлежать нескольким категориям. Основная категория — поле `parent` в `msProduct`. Дополнительные хранятся в таблице `ms3_product_categories` через модель `msCategoryMember`.
 
-Дерево категорий товара в менеджере: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
+Дерево категорий товара в админке: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
 
 ### Программное управление
 
@@ -391,7 +390,7 @@ if ($member) {
 
 ### Через msProductData
 
-При сохранении `msProductData` можно передать массив категорий — сервис автоматически синхронизирует таблицу:
+Передайте массив категорий при сохранении `msProductData` — таблица синхронизируется сама:
 
 ```php
 $productData = $modx->getObject(msProductData::class, $productId);
@@ -408,7 +407,7 @@ $productData->save();
 
 ## Связи товаров
 
-Связи позволяют объединять товары (например, «Похожие», «С этим покупают»). Используются две модели:
+Связи объединяют товары — «Похожие», «С этим покупают». За них отвечают две модели:
 
 - **msLink** — тип связи (id, type, name)
 - **msProductLink** — конкретная связь между товарами (link, master, slave)
@@ -426,14 +425,40 @@ foreach ($links as $link) {
 }
 ```
 
-Типы связей управляются через процессоры `MiniShop3\Processors\Settings\Link\*` или интерфейс администратора.
+Типами связей управляют процессоры `MiniShop3\Processors\Settings\Link\*` и админка.
 
 ### Программное управление связями
+
+::: warning Создавайте связи через процессор, а не через `newObject`
+Одна связь в админке — не обязательно одна запись `msProductLink`. Сколько записей появится, решает `ProductLinkService` по типу связи:
+
+| `msLink.type` | Что создаётся |
+| --- | --- |
+| `one_to_many` | одна запись `master` → `slave` |
+| `many_to_one` | одна запись, но перевёрнутая: `slave` → `master` |
+| `one_to_one` | две записи, в обе стороны |
+| `many_to_many` | две записи в обе стороны, плюс сервис связывает попарно всех участников группы |
+
+Тип вне этого списка даёт ошибку `ms3_err_no_link`. Связь товара с самим собой и ссылку на несуществующий тип сервис тоже отклоняет.
+
+Поэтому записывайте через процессор `MiniShop3\Processors\Product\ProductLink\Create` (удаление — `…\ProductLink\Remove`). Прямой `newObject` оставьте для чтения и для случаев, когда все нужные пары собираете сами.
+:::
+
+```php
+// Через процессор — сервис сам создаст нужный набор записей
+$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Create', [
+    'master' => $productId,
+    'slave' => $relatedId,
+    'link' => $linkTypeId,
+]);
+```
+
+Прямая работа с моделью:
 
 ```php
 use MiniShop3\Model\msProductLink;
 
-// Создать связь между товарами
+// Создать одну запись связи
 $productLink = $modx->newObject(msProductLink::class);
 $productLink->set('link', $linkTypeId);   // ID типа связи (msLink)
 $productLink->set('master', $productId);  // ID основного товара
@@ -484,7 +509,7 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Re
 
 ### Через msProductData
 
-Связи также доступны через виртуальное поле `links`:
+Виртуальное поле `links` возвращает связи с обеих сторон:
 
 ```php
 $links = $productData->get('links');
@@ -496,7 +521,7 @@ $links = $productData->get('links');
 
 ## Производители
 
-Производители хранятся в модели `msVendor` (таблица `ms3_vendors`). Привязка к товару — через поле `vendor_id` в `msProductData`.
+Производители — модель `msVendor` (таблица `ms3_vendors`). Привязка к товару — поле `vendor_id` в `msProductData`.
 
 ### Поля msVendor
 
@@ -537,41 +562,41 @@ echo $vendor->get('name');  // "Samsung"
 
 ### Процессоры производителей
 
-Управление производителями через процессоры `MiniShop3\Processors\Settings\Vendor\*`:
+Производителями управляют процессоры `MiniShop3\Processors\Settings\Vendor\*`:
 
 | Процессор | Описание |
 | --- | --- |
-| `MiniShop3\Processors\Settings\Vendor\Create` | Создание |
-| `MiniShop3\Processors\Settings\Vendor\Get` | Получение |
-| `MiniShop3\Processors\Settings\Vendor\GetList` | Список |
-| `MiniShop3\Processors\Settings\Vendor\Update` | Обновление |
-| `MiniShop3\Processors\Settings\Vendor\Remove` | Удаление |
-| `MiniShop3\Processors\Settings\Vendor\Multiple` | Массовые операции |
+| `Settings\Vendor\Create` | Создание |
+| `Settings\Vendor\Get` | Получение |
+| `Settings\Vendor\GetList` | Список |
+| `Settings\Vendor\Update` | Обновление |
+| `Settings\Vendor\Remove` | Удаление |
+| `Settings\Vendor\Multiple` | Массовые операции |
 
 ## Процессоры товара
 
-Полный список процессоров для работы с товарами (каталог `core/components/minishop3/src/Processors/Product/`):
+Все процессоры товара — каталог `core/components/minishop3/src/Processors/Product/`:
 
 | Процессор | Описание |
 | --- | --- |
-| `MiniShop3\Processors\Product\Create` | Создание товара |
-| `MiniShop3\Processors\Product\Update` | Обновление товара |
-| `MiniShop3\Processors\Product\UpdateFromGrid` | Обновление из таблицы (inline-редактирование) |
-| `MiniShop3\Processors\Product\Delete` | Пометка на удаление |
-| `MiniShop3\Processors\Product\Undelete` | Снятие пометки удаления |
-| `MiniShop3\Processors\Product\Get` | Получение товара |
-| `MiniShop3\Processors\Product\GetList` | Список товаров |
-| `MiniShop3\Processors\Product\GetOptions` | Получение опций товара |
-| `MiniShop3\Processors\Product\Publish` | Публикация |
-| `MiniShop3\Processors\Product\Unpublish` | Снятие с публикации |
-| `MiniShop3\Processors\Product\Show` | Показать в дереве |
-| `MiniShop3\Processors\Product\Hide` | Скрыть из дерева |
-| `MiniShop3\Processors\Product\Sort` | Сортировка |
-| `MiniShop3\Processors\Product\Multiple` | Массовые операции |
-| `MiniShop3\Processors\Product\Category` | Работа с категориями товара |
-| `MiniShop3\Processors\Product\UpdateSource` | Смена медиа-источника товара |
+| `Product\Create` | Создание товара |
+| `Product\Update` | Обновление товара |
+| `Product\UpdateFromGrid` | Обновление из таблицы (inline-редактирование) |
+| `Product\Delete` | Пометка на удаление |
+| `Product\Undelete` | Снятие пометки удаления |
+| `Product\Get` | Получение товара |
+| `Product\GetList` | Список товаров |
+| `Product\GetOptions` | Получение опций товара |
+| `Product\Publish` | Публикация |
+| `Product\Unpublish` | Снятие с публикации |
+| `Product\Show` | Показать в дереве |
+| `Product\Hide` | Скрыть из дерева |
+| `Product\Sort` | Сортировка |
+| `Product\Multiple` | Массовые операции |
+| `Product\Category` | Работа с категориями товара |
+| `Product\UpdateSource` | Смена медиа-источника товара |
 
-Автодополнение (поиск товаров) — не процессор, а эндпоинт Manager API: `GET /api/mgr/references/products`. См. [Эндпоинты References](../routing#references).
+Автодополнение (поиск товаров) — не процессор, а метод Manager API: `GET /api/mgr/references/products`. См. [Справочники](../routing#references).
 
 ### Пример вызова из PHP
 

@@ -1,6 +1,6 @@
 ---
 title: Product API
-description: 'Programmatic product create/update, options, images, categories and links'
+description: 'Programmatic product create and update, options, images, categories, links, vendors'
 ---
 # Product API
 
@@ -13,14 +13,35 @@ A product in MiniShop3 uses two models:
 
 Relation is one-to-one by `id`.
 
+## Calling the processors
+
+MiniShop3 processors are classes in the namespace `MiniShop3\Processors\`. Call them by **full class name** — the same value the connector and vueManager pass in the `action` parameter. A short path like `Gallery\Upload` with a `processors_path` option does not work: given a short name, MODX looks for a file with the `.class.php` suffix, and MiniShop3 processors have none.
+
+```php
+// Correct — the full class name
+$response = $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', [
+    'id' => $productId,
+    'file' => '/path/to/image.jpg',
+]);
+
+// Wrong — a short path without the namespace
+$response = $modx->runProcessor('Gallery\Upload', [...], [
+    'processors_path' => $modx->getOption('core_path') . 'components/minishop3/src/Processors/',
+]);
+```
+
+The MiniShop3 sources sometimes pass `processors_path` next to the full name — in `RunsMs3Processors`, for example. That is an addition to the full name, not a replacement: a short name will not work even with the path supplied.
+
+The tables below shorten names to the part after `MiniShop3\Processors\`: `Product\Create` means `MiniShop3\Processors\Product\Create`.
+
 ## Creating a product
 
 ### Via processor
 
-Recommended way is processor `Product\Create`. It creates both `msProduct` and `msProductData`, sets defaults and fires system events.
+Recommended way is processor `MiniShop3\Processors\Product\Create`: it creates both models at once and fires system events.
 
 ```php
-$response = $modx->runProcessor('Product\\Create', [
+$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\Create', [
     'pagetitle' => 'New product',
     'parent' => 5,          // Category ID (msCategory)
     'price' => 1500,
@@ -32,9 +53,6 @@ $response = $modx->runProcessor('Product\\Create', [
     // Options use prefix options-
     'options-color' => ['Red', 'Blue'],
     'options-size' => ['L', 'XL'],
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 
 if ($response->isError()) {
@@ -116,15 +134,12 @@ $links = $productData->get('links');             // ['master' => [...], 'slave' 
 ### Update via processor
 
 ```php
-$response = $modx->runProcessor('Product\\Update', [
+$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\Update', [
     'id' => $productId,
     'price' => 2000,
     'old_price' => 2500,
     'popular' => true,
     'options-color' => ['Red', 'Green'],
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 ```
 
@@ -140,7 +155,7 @@ $productData->save();
 
 ### Update via service
 
-`ProductDataService` provides helpers for read and update:
+`ProductDataService` methods for reading and updating:
 
 ```php
 $service = $modx->services->get('ms3_product_data_service');
@@ -182,7 +197,7 @@ $updated = $service->updateProductData($productId, [
 
 ### Price and weight modification via events
 
-`getPrice()` and `getWeight()` fire events so plugins can modify values:
+`getPrice()` and `getWeight()` fire events where a plugin can change the value:
 
 ```php
 // Get price with plugin logic
@@ -202,8 +217,6 @@ Events used: `msOnGetProductPrice`, `msOnGetProductWeight`, `msOnGetProductField
 Options use the EAV pattern (Entity-Attribute-Value) in table `ms3_product_options`. Each row has `product_id`, `key` (option name) and `value`.
 
 ### OptionService
-
-Main service for options:
 
 ```php
 $optionService = $modx->services->get('ms3_option_service');
@@ -246,7 +259,7 @@ $options = $optionService->loadOptionsForProduct($productId);
 // [
 //     'color' => ['Red', 'Blue'],
 //     'color.caption' => 'Color',
-//     'color.type' => 'combo-multiple',
+//     'color.type' => 'comboMultiple',
 //     ...
 // ]
 
@@ -269,34 +282,28 @@ Always use `OptionService` for options. Creating/saving `msProductOption` object
 
 ## Images (gallery)
 
-Product images are `msProductFile` objects in table `ms3_product_files`. Files are stored in the media source configured for the product.
+Product images are `msProductFile` objects in table `ms3_product_files`. The files themselves live in the media source configured for the product.
 
 ### Upload via processor
 
-Main upload path is processor `Gallery\Upload`:
+Main upload path is processor `MiniShop3\Processors\Gallery\Upload`:
 
 ```php
 // Upload from URL
-$response = $modx->runProcessor('Gallery\\Upload', [
+$response = $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', [
     'id' => $productId,
     'file' => 'https://example.com/image.jpg',
     'description' => 'Product photo',
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 
 // Upload from local file
-$response = $modx->runProcessor('Gallery\\Upload', [
+$response = $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', [
     'id' => $productId,
     'file' => '/path/to/image.jpg',
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 ```
 
-For `$_FILES` (multipart/form-data) pass the file as usual in PHP; the processor picks it up.
+Pass a `$_FILES` upload (multipart/form-data) the usual PHP way — the processor picks it up itself.
 
 The processor:
 
@@ -306,8 +313,6 @@ The processor:
 - Updates `image` and `thumb` in `msProductData` if this is the first image
 
 ### ProductImageService
-
-Service for working with images in code:
 
 ```php
 $imageService = $modx->services->get('ms3_product_image');
@@ -339,16 +344,17 @@ $imageService->removeProductCatalog($productData);
 | `Gallery\Remove` | Remove one image |
 | `Gallery\RemoveAll` | Remove all product images |
 | `Gallery\Sort` | Sort images |
+| `Gallery\SortByName` | Re-sort by filename in natural order — after a batch upload |
 | `Gallery\Multiple` | Bulk operations (remove several) |
 | `Gallery\Generate` | Generate thumbnails for one image |
 | `Gallery\GenerateAll` | Generate thumbnails for all product images |
-| `MiniShop3\Processors\Gallery\SetPreview` | Set main image (`preview_file_id` in `msProductData`) |
-
-Product category tree in the manager: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
+| `Gallery\SetPreview` | Set main image (`preview_file_id` in `msProductData`) |
 
 ## Additional categories
 
 A product can belong to multiple categories. The main category is `parent` on `msProduct`. Additional ones are in table `ms3_product_categories` via model `msCategoryMember`.
+
+Product category tree in the manager: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
 
 ### Managing in code
 
@@ -381,7 +387,7 @@ if ($member) {
 
 ### Via msProductData
 
-On save you can pass a categories array — the service syncs the table:
+Pass a categories array when saving `msProductData` — the table syncs itself:
 
 ```php
 $productData = $modx->getObject(msProductData::class, $productId);
@@ -398,7 +404,7 @@ $productData->save();
 
 ## Product links
 
-Links relate products (e.g. "Similar", "Frequently bought together"). Two models:
+Links relate products — "Similar", "Frequently bought together". Two models are involved:
 
 - **msLink** — link type (id, type, name)
 - **msProductLink** — link between products (link, master, slave)
@@ -416,14 +422,40 @@ foreach ($links as $link) {
 }
 ```
 
-Link types are managed via processors `Settings\Link\*` or admin UI.
+Link types are managed by processors `MiniShop3\Processors\Settings\Link\*` and by the manager.
 
 ### Managing links in code
+
+::: warning Create links through the processor, not through `newObject`
+One link in the manager is not necessarily one `msProductLink` row. `ProductLinkService` decides how many rows appear, and it goes by the link type:
+
+| `msLink.type` | What gets created |
+| --- | --- |
+| `one_to_many` | one row, `master` → `slave` |
+| `many_to_one` | one row, reversed: `slave` → `master` |
+| `one_to_one` | two rows, one in each direction |
+| `many_to_many` | two rows in both directions, plus the service links every member of the group pairwise |
+
+A type outside this list fails with `ms3_err_no_link`. The service also rejects a product linked to itself and a reference to a link type that does not exist.
+
+So write through the processor `MiniShop3\Processors\Product\ProductLink\Create` (`…\ProductLink\Remove` to delete). Keep plain `newObject` for reads and for the cases where you assemble every pair yourself.
+:::
+
+```php
+// Through the processor — the service creates the whole set of rows
+$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Create', [
+    'master' => $productId,
+    'slave' => $relatedId,
+    'link' => $linkTypeId,
+]);
+```
+
+Working with the model directly:
 
 ```php
 use MiniShop3\Model\msProductLink;
 
-// Create link between products
+// Create one link row
 $productLink = $modx->newObject(msProductLink::class);
 $productLink->set('link', $linkTypeId);   // Link type ID (msLink)
 $productLink->set('master', $productId);  // Master product ID
@@ -454,23 +486,17 @@ if ($link) {
 
 ```php
 // Create link
-$response = $modx->runProcessor('Product\\ProductLink\\Create', [
+$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Create', [
     'link' => $linkTypeId,
     'master' => $productId,
     'slave' => $relatedId,
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 
 // Remove link
-$response = $modx->runProcessor('Product\\ProductLink\\Remove', [
+$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Remove', [
     'link' => $linkTypeId,
     'master' => $productId,
     'slave' => $relatedId,
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 ```
 
@@ -480,7 +506,7 @@ $response = $modx->runProcessor('Product\\ProductLink\\Remove', [
 
 ### Via msProductData
 
-Links are also available via virtual field `links`:
+The `links` virtual field returns links from both sides:
 
 ```php
 $links = $productData->get('links');
@@ -492,7 +518,7 @@ $links = $productData->get('links');
 
 ## Vendors
 
-Vendors are in model `msVendor` (table `ms3_vendors`). Product link is `vendor_id` on `msProductData`.
+Vendors are model `msVendor` (table `ms3_vendors`). The link to a product is `vendor_id` on `msProductData`.
 
 ### msVendor fields
 
@@ -533,7 +559,7 @@ echo $vendor->get('name');  // "Samsung"
 
 ### Vendor processors
 
-Vendors are managed via processors `Settings\Vendor\*`:
+Vendors are managed by processors `MiniShop3\Processors\Settings\Vendor\*`:
 
 | Processor | Description |
 | --- | --- |
@@ -546,27 +572,28 @@ Vendors are managed via processors `Settings\Vendor\*`:
 
 ## Product processors
 
-Full list of product-related processors (`core/components/minishop3/src/Processors/Product/`):
+All product processors — directory `core/components/minishop3/src/Processors/Product/`:
 
 | Processor | Description |
 | --- | --- |
-| `MiniShop3\Processors\Product\Create` | Create product |
-| `MiniShop3\Processors\Product\Update` | Update product |
-| `MiniShop3\Processors\Product\UpdateFromGrid` | Update from grid (inline edit) |
-| `MiniShop3\Processors\Product\Delete` | Mark for deletion |
-| `MiniShop3\Processors\Product\Undelete` | Unmark deletion |
-| `MiniShop3\Processors\Product\Get` | Get product |
-| `MiniShop3\Processors\Product\GetList` | List products |
-| `MiniShop3\Processors\Product\GetOptions` | Get product options |
-| `MiniShop3\Processors\Product\Publish` | Publish |
-| `MiniShop3\Processors\Product\Unpublish` | Unpublish |
-| `MiniShop3\Processors\Product\Show` | Show in tree |
-| `MiniShop3\Processors\Product\Hide` | Hide from tree |
-| `MiniShop3\Processors\Product\Sort` | Sort |
-| `MiniShop3\Processors\Product\Multiple` | Bulk operations |
-| `MiniShop3\Processors\Product\Autocomplete` | Autocomplete (product search) |
-| `MiniShop3\Processors\Product\Category` | Product categories |
-| `MiniShop3\Processors\Product\UpdateSource` | Change product media source |
+| `Product\Create` | Create product |
+| `Product\Update` | Update product |
+| `Product\UpdateFromGrid` | Update from grid (inline edit) |
+| `Product\Delete` | Mark for deletion |
+| `Product\Undelete` | Unmark deletion |
+| `Product\Get` | Get product |
+| `Product\GetList` | List products |
+| `Product\GetOptions` | Get product options |
+| `Product\Publish` | Publish |
+| `Product\Unpublish` | Unpublish |
+| `Product\Show` | Show in tree |
+| `Product\Hide` | Hide from tree |
+| `Product\Sort` | Sort |
+| `Product\Multiple` | Bulk operations |
+| `Product\Category` | Product categories |
+| `Product\UpdateSource` | Change product media source |
+
+Autocomplete (product search) is not a processor but a Manager API route: `GET /api/mgr/references/products`. See [References](../routing#references).
 
 ### Calling from PHP
 
@@ -576,9 +603,6 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\GetList', [
     'limit' => 20,
     'sort' => 'price',
     'dir' => 'ASC',
-], [
-    'processors_path' => $modx->getOption('core_path')
-        . 'components/minishop3/src/Processors/',
 ]);
 
 if (!$response->isError()) {
