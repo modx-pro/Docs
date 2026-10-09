@@ -15,19 +15,31 @@ description: Программный интерфейс MiniShop3 для рабо
 $modx->runProcessor('MiniShop3\\Processors\\Gallery\\Upload', ['id' => $productId, 'file' => $path]);
 ```
 
-Короткий путь `Gallery\Upload` с опцией `processors_path` не используется — передавайте полное имя класса.
+Короткий путь вида `Gallery\Upload` с опцией `processors_path` не работает: по короткому имени MODX ищет файл с суффиксом `.class.php`, а процессоры MiniShop3 лежат без него.
 
 ## Manager API vs процессоры
 
 | Слой | Когда использовать |
 | --- | --- |
-| `Controllers\Api\Manager\*` | Vue-интерфейс менеджера (заказы, клиенты, настройки) |
-| `Controllers\Api\Web\*` | Витрина, SPA, мобильные клиенты |
+| `Controllers\Api\Manager\*` | Vue-админка (заказы, покупатели, настройки) |
+| `Controllers\Api\Web\*` | Фронтенд, SPA, мобильные приложения |
 | `MiniShop3\Processors\*` | `runProcessor()` из PHP, прежний connector, утилиты с `RunsMs3Processors` |
 
-Примеры групп процессоров: `Gallery/*`, `Settings/Vendor/*`, `Settings/Delivery/*`, `Api/Customer/*` (аутентификация Web API делегирует сюда), `Utilities/Import/*`, `Category/*`.
+Группы процессоров:
 
-Vue-CRUD настроек **не** вызывает `Processors/Settings/Vendor/*` — см. [События производителей](../events/vendor).
+| Группа | Что внутри |
+| --- | --- |
+| `Product/*`, `Product/ProductLink/*` | Товары и связи между ними |
+| `Category/*` | Категории товаров |
+| `Gallery/*`, `Utilities/Gallery/*` | Изображения товара и утилиты галереи |
+| `Customer/*`, `Customer/Address/*` | Покупатели и их адреса |
+| `Api/Customer/*` | Вход, регистрация, сброс пароля, верификация email — сюда Web API делегирует аутентификацию |
+| `Settings/Vendor/*`, `Settings/Delivery/*`, `Settings/Payment/*`, `Settings/Status/*`, `Settings/Link/*` | Справочники: производители, способы доставки, способы оплаты, статусы, типы связей |
+| `Utilities/Import/*` | Импорт товаров из CSV |
+| `System/*`, `System/Element/*`, `System/User/*` | Служебные операции |
+| `Resource/*` | Ресурсы MODX |
+
+Исключение — Vue-CRUD настроек: он **не** вызывает `Processors/Settings/Vendor/*`, см. [События производителей](../events/vendor).
 
 ## Содержание
 
