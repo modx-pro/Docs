@@ -17,8 +17,15 @@ description: Программная работа с покупателями —
 
 Высокоуровневый интерфейс для сниппетов и плагинов.
 
-::: warning Часть методов отдаёт результат в конверте
-`getFields()`, `set()`, `add()`, `generateToken()` и `updateToken()` возвращают конверт `['success' => bool, 'message' => string, 'data' => array]` — тот же `Utils::success()` / `Utils::error()`, что и в Web API. Нужные значения лежат в `data`, при пустом токене `success` равен `false`.
+::: warning Часть методов возвращает не сами данные
+`getFields()`, `set()`, `add()`, `generateToken()` и `updateToken()` отдают массив из трёх ключей: `success` — успех операции, `message` — текст сообщения из лексикона, `data` — то, за чем вы звали метод.
+
+```php
+$result = $customerController->getFields(5);
+$fields = $result['data'];
+```
+
+При пустом токене `success` равен `false`. Так же устроены ответы Web API — их собирает тот же `Utils::success()` / `Utils::error()`.
 
 Остальные методы отдают значение напрямую:
 

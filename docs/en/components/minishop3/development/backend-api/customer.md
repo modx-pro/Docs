@@ -18,7 +18,14 @@ The `modUser` link is optional (field `user_id`) — a customer can exist withou
 High-level interface for snippets and plugins.
 
 ::: warning Some methods return the result in an envelope
-`getFields()`, `set()`, `add()`, `generateToken()` and `updateToken()` return the envelope `['success' => bool, 'message' => string, 'data' => array]` — the same `Utils::success()` / `Utils::error()` shape the Web API uses. The values you need are in `data`; with an empty token `success` is `false`.
+`getFields()`, `set()`, `add()`, `generateToken()` and `updateToken()` return an array of three keys: `success` for the outcome, `message` for the lexicon text, and `data` for what you actually called the method for.
+
+```php
+$result = $customerController->getFields(5);
+$fields = $result['data'];
+```
+
+With an empty token `success` is `false`. Web API responses have the same shape — built by the same `Utils::success()` / `Utils::error()`.
 
 The remaining methods return the value directly:
 

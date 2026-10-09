@@ -20,7 +20,14 @@ Order lifecycle: **draft** → **submit** → **status changes**.
 The `Order` facade controller is the main way to work with orders from PHP: a single entry point backed by dedicated services.
 
 ::: warning The result comes in an envelope
-Every controller method that returns an `array` returns the envelope `['success' => bool, 'message' => string, 'data' => array]` — the same `Utils::success()` / `Utils::error()` shape the Web API uses. The values you need are in `data`; for `get()` they sit one level deeper, in `data['order']`.
+Every controller method that returns an `array` gives you three keys: `success` for the outcome, `message` for the lexicon text, and `data` for what you actually called the method for. With `get()` the data sits one level deeper — order fields are in `data['order']`:
+
+```php
+$result = $ms3->order->get();
+$order = $result['data']['order'];
+```
+
+Web API responses have the same shape — built by the same `Utils::success()` / `Utils::error()`.
 
 Only these return a value directly: `initialize()`, `initDraft()`, `remove()` and `hasPayment()` — `bool`; `getDraft()` — an `msOrder` object or `null`; `getUserId()` — `int`.
 :::
