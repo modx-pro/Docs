@@ -1,0 +1,292 @@
+{
+  "info": {
+    "name": "msYandexCommerce YCP",
+            "description": "Эмуляция клиента Yandex Commerce Protocol + smoke Pay webhook против api.php пакета (0.1.3+).\n\nПеременные:\n- baseUrl — путь к api.php **без** /api/v1 и без /v1/webhook\n- token — msyandexcommerce_api_token (Bearer)\n- offerId — id ресурса msProduct\n- deliveryId — id msDelivery из delivery/options\n- sessionId — заполняется тестом после Checkout (пишется и в collection, и в active environment)\n- externalOrderId — внешний order_id для placed (попадёт в ycp_external_order_id и в ответ order_number)\n- yapayJwt — сырой JWT для POST /v1/webhook (без Bearer)\n\nКонтракт ответов:\n- checkout → order_number = session_id\n- placed → order_number = external order_id из тела\n- Pay webhook ошибки → {\"reasonCode\":\"…\"}, не YCP error.code\n\nКабинет Яндекса часто принимает только боевой домен. Бейте коллекцией в тот же URL, что в кабинете.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://YOUR-DOMAIN/assets/components/msyandexcommerce/api.php" },
+    { "key": "token", "value": "" },
+    { "key": "offerId", "value": "1" },
+    { "key": "sessionId", "value": "" },
+    { "key": "externalOrderId", "value": "ya-postman-1" },
+    { "key": "deliveryId", "value": "1" },
+    { "key": "yapayJwt", "value": "" },
+    { "key": "idempotencyKey", "value": "postman-checkout-1" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "YCP",
+      "description": "Маршруты Yandex Commerce Protocol. Нужны enabled=true, HTTPS, Bearer token. Цены в ответах — копейки.",
+      "item": [
+        {
+          "name": "0. Health (без auth)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "description": "Без Bearer и без HTTPS-проверки. Ожидание: {\"status\":\"ok\"}.",
+            "url": "{{baseUrl}}/health"
+          }
+        },
+        {
+          "name": "1. Warehouses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/warehouses"
+          }
+        },
+        {
+          "name": "2. Basket check",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"offer_id\": {{offerId}},\n      \"count\": 1\n    }\n  ]\n}"
+            },
+            "description": "Цены в копейках. available=true при успехе. INSUFFICIENT_STOCK → details.errors[].available.",
+            "url": "{{baseUrl}}/api/v1/checkout/basket/check"
+          }
+        },
+        {
+          "name": "3. Delivery options",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"offer_id\": {{offerId}},\n      \"count\": 1\n    }\n  ]\n}"
+            },
+            "description": "Тарифы + date_from/date_to. Подставьте id из ответа в переменную deliveryId перед Checkout.",
+            "url": "{{baseUrl}}/api/v1/checkout/delivery/options"
+          }
+        },
+        {
+          "name": "4. Pickup points",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/checkout/delivery/pickup_points"
+          }
+        },
+        {
+          "name": "5. Checkout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+            "exec": [
+              "pm.test('checkout 2xx', function () {",
+              "  pm.response.to.be.success;",
+              "});",
+              "try {",
+              "  const j = pm.response.json();",
+              "  if (j.session_id) {",
+              "    pm.collectionVariables.set('sessionId', j.session_id);",
+              "    pm.environment.set('sessionId', j.session_id);",
+              "  }",
+              "  pm.test('order_number equals session_id', function () {",
+              "    pm.expect(j.order_number).to.eql(j.session_id);",
+              "  });",
+              "} catch (e) {}"
+            ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"offer_id\": {{offerId}},\n      \"count\": 1\n    }\n  ],\n  \"delivery\": {\n    \"id\": {{deliveryId}}\n  },\n  \"customer\": {\n    \"first_name\": \"Ivan\",\n    \"last_name\": \"Testov\",\n    \"phone\": \"+79001234567\",\n    \"email\": \"ycp-test@example.com\"\n  },\n  \"address\": {\n    \"city\": \"Moscow\",\n    \"street\": \"Tverskaya\",\n    \"house\": \"1\",\n    \"flat\": \"10\",\n    \"postcode\": \"101000\"\n  }\n}"
+            },
+            "description": "Создаёт сессию + soft-reserve. Ответ: session_id, order_number (= session_id), status=checkout. Повтор с тем же Idempotency-Key не удваивает резерв.",
+            "url": "{{baseUrl}}/api/v1/checkout"
+          }
+        },
+        {
+          "name": "6. Placed",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('placed 2xx', function () {",
+                  "  pm.response.to.be.success;",
+                  "});",
+                  "try {",
+                  "  const j = pm.response.json();",
+                  "  const external = pm.collectionVariables.get('externalOrderId');",
+                  "  pm.test('order_number equals external order_id', function () {",
+                  "    pm.expect(j.order_number).to.eql(external);",
+                  "    pm.expect(j.external_order_id).to.eql(external);",
+                  "  });",
+                  "  pm.test('order_id is msOrder id', function () {",
+                  "    pm.expect(j.order_id).to.be.a('number').and.above(0);",
+                  "  });",
+                  "} catch (e) {}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{sessionId}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{sessionId}}\",\n  \"order_id\": \"{{externalOrderId}}\",\n  \"payment_method\": \"cod\"\n}"
+            },
+            "description": "Создаёт msOrder. order_number и external_order_id = order_id из тела (не msOrder.id). payment_method: cod | online. Повтор с тем же session_id идемпотентен.",
+            "url": "{{baseUrl}}/api/v1/checkout/placed"
+          }
+        },
+        {
+          "name": "6b. Placed (online)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{sessionId}}-online" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{sessionId}}\",\n  \"order_id\": \"{{externalOrderId}}\",\n  \"payment_method\": \"online\"\n}"
+            },
+            "description": "Тот же placed с payment_method=online (нужен payment_online_id). Для нового цикла сначала снова Checkout с другим idempotencyKey / новым sessionId.",
+            "url": "{{baseUrl}}/api/v1/checkout/placed"
+          }
+        },
+        {
+          "name": "7. Order status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "description": "delivery_statuses: delivered | cancelled | in_progress (по status_*_id).",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/order?session_id={{sessionId}}&order_id={{externalOrderId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "order"],
+              "query": [
+                { "key": "session_id", "value": "{{sessionId}}" },
+                { "key": "order_id", "value": "{{externalOrderId}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "8. Order cancel",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{sessionId}}-cancel" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{sessionId}}\",\n  \"order_id\": \"{{externalOrderId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/order/cancel"
+          }
+        },
+        {
+          "name": "9. Checkout cancel (до placed)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{sessionId}}-checkout-cancel" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{sessionId}}\"\n}"
+            },
+            "description": "Отмена сессии до placed. Soft-reserve снимается. Не путать с order/cancel.",
+            "url": "{{baseUrl}}/api/v1/checkout/cancel"
+          }
+        },
+        {
+          "name": "10. Order delivered",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{sessionId}}-delivered" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"session_id\": \"{{sessionId}}\",\n  \"order_id\": \"{{externalOrderId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/order/delivered"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Yandex Pay webhook",
+      "description": "POST /v1/webhook — JWT ES256, без Bearer. Нужны yapay_webhook_enabled и yapay_merchant_id. Callback URL в ЛК Pay = baseUrl без /v1/webhook.\n\nУспех: HTTP 200, пустое тело.\nОшибки: {\"reasonCode\":\"FORBIDDEN\"|\"UNAUTHORIZED\"|\"TOKEN_EXPIRED\"|\"ORDER_NOT_FOUND\"}.\nДедуп: повтор того же eventId → 200 без смены статуса.",
+      "item": [
+        {
+          "name": "11. Pay webhook CAPTURED (JWT)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/octet-stream" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{yapayJwt}}"
+            },
+            "description": "Тело = сырой JWT (три части через точку), не JSON. order.orderId в payload должен совпасть с externalOrderId (ycp_external_order_id) или numeric msOrder.id после placed.\n\nПеременную yapayJwt заполните валидным JWT (sandbox JWKS при mode=sandbox). Подпись пакетом не генерируется.",
+            "url": "{{baseUrl}}/v1/webhook"
+          }
+        },
+        {
+          "name": "12. Pay webhook без JWT (ожидание reasonCode)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Pay error uses reasonCode', function () {",
+                  "  const j = pm.response.json();",
+                  "  pm.expect(j).to.have.property('reasonCode');",
+                  "  pm.expect(j).to.not.have.property('error');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/octet-stream" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "not-a-jwt"
+            },
+            "description": "Негативный smoke: пустой/битый JWT → 403 + reasonCode (не YCP error.code). Если webhook выключен — тоже FORBIDDEN.",
+            "url": "{{baseUrl}}/v1/webhook"
+          }
+        }
+      ]
+    }
+  ]
+}
