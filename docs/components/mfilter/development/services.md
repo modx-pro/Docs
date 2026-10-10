@@ -331,7 +331,7 @@ $placeholders = $parser->extractPlaceholders($templateString): array;
 
 ## WordFormsManager
 
-Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#словоформы).
+Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#slovoformy).
 
 ```php
 $wm = $mfilter->getWordFormsManager();
