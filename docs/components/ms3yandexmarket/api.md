@@ -14,10 +14,12 @@ description: Маршруты коннектора MiniShop3 для ms3YandexMar
 | HTTP | `code` | Когда |
 | --- | --- | --- |
 | 403 | `access_denied` | Нет права процессора, своего XML или Fenom |
-| 404 | `not_found` | Прайс не найден |
+| 404 | `not_found` | Не найдены прайс, тег, атрибут, условие, запись журнала или товар |
 | 409 | `version_conflict` | Чужая `version` при сохранении тега |
 | 409 | `generation_locked` | Этот прайс уже пишется |
-| 422 | `domain_error` | Правило компонента, в том числе битый XML |
+| 422 | `domain_error` | Исключение компонента, в том числе битый XML |
+| 422 | `invalid_params`, `invalid_id`, `invalid_field_id` | В запросе нет нужного id или параметра |
+| 422 | `not_tree` | Фрагмент предпросмотра запрошен у прайса без дерева полей. Новый прайс этот код не получает |
 | 400 | `request_failed` | Прочий сбой |
 
 | Метод | Путь | Действие |
@@ -60,22 +62,35 @@ description: Маршруты коннектора MiniShop3 для ms3YandexMar
 | GET | `/yml` | Прочитать файл прайса |
 | GET | `/yml/download` | Скачать файл. Путь проверяется внутри сайта |
 
-Чужая `version` при сохранении тега, атрибута или условия возвращает 409. Повторите чтение и сохранение.
+Чужая `version` у тега, атрибута или условия отвечает 409. Прочитайте запись снова и сохраните.
 
 ## Что принимает запись
 
-Кнопки менеджера и тела этих маршрутов совпадают. Полный разбор кнопок: [действия](/components/ms3yandexmarket/actions).
+<!-- MEDIA: output | must | Пример JSON тела POST /pricelists/update: name, marketplace, categories с category_id и custom_name, offer_source | На тестовом стенде сохранить прайс через менеджер, повторить запрос через коннектор с CSRF; обезличить id и домен -->
 
-`POST /pricelists/create` и `POST /pricelists/update` принимают `name`, `description`, `active`, `offer_source`, `stock_source`, `generation_mode`, `offer_type`, `marketplace`, `feed_purpose`, `generate_interval`, `file_path`, `file_url`, `managed_fields`, `categories`. У update нужен `id`. Элемент `categories`: `category_id`, `excluded`, `custom_name`. Смена `marketplace` или `feed_purpose` стирает дерево тегов и заполняет его профилем заново.
+Тела записи совпадают с полями кнопок менеджера. Разбор кнопок: [действия](/components/ms3yandexmarket/actions).
 
-`POST /fields/create` и `POST /fields/update` принимают `name`, `value`, `handler`, `type`, `active`, `rank`, `parent_id`, `properties`. У create нужен `pricelist_id`, у update `id` и `version`.
+`POST /pricelists/create` и `POST /pricelists/update`:
 
-`POST /fields/reorder` принимает `pricelist_id`, `parent_id` и `items`: список id или объектов `{id, rank}`.
+| Поле | Замечание |
+| --- | --- |
+| `name`, `description`, `active`, `offer_source`, `stock_source`, `generation_mode`, `offer_type`, `generate_interval`, `file_path`, `file_url` | |
+| `marketplace`, `feed_purpose` | Смена стирает дерево тегов и заполняет его профилем заново |
+| `managed_fields`, `categories` | Элемент `categories`: `category_id`, `excluded`, `custom_name` |
+| `id` | Нужен у update |
 
-`POST /attributes/create` принимает `field_id`, `name`, `value`, `type` (по умолчанию `text`), `handler`. Update и remove требуют `id` и `version`.
+`POST /fields/create` и `POST /fields/update`: `name`, `value`, `handler`, `type`, `active`, `rank`, `parent_id`, `properties`. У create нужен `pricelist_id`, у update `id` и `version`.
 
-`POST /conditions/create` принимает `pricelist_id`, `column`, `operator`, `value`, `target` (`resource` или `offer`). Update принимает те же поля плюс `id` и `version`.
+`POST /fields/reorder`: `pricelist_id`, `parent_id` и `items` (список id или объектов `{id, rank}`).
 
-`POST /generate/run` принимает `id` (так шлёт менеджер) или `pricelist_id`. `POST /generate/run-all` без тела пишет активные прайсы не в режиме `manual`, которым пора обновиться. Кнопки на это в менеджере нет.
+`POST /attributes/create`: `field_id`, `name`, `value`, `type` (по умолчанию `text`), `handler`. Update и remove требуют `id` и `version`.
 
-Фрагменты: `pricelist_id`, для предложения ещё `product_id` и `variant_id`. Список предложений: `pricelist_id`, `search`, `offset`, `limit` (в менеджере 20). Журнал: `pricelist_id` необязателен.
+`POST /conditions/create`: `pricelist_id`, `column`, `operator`, `value`, `target` (`resource` или `offer`). Update принимает те же поля плюс `id` и `version`.
+
+`POST /generate/run`: `id` (так шлёт менеджер) или `pricelist_id`. `POST /generate/run-all` без тела. Кнопки на `run-all` в менеджере нет.
+
+| Запрос | Поля |
+| --- | --- |
+| Фрагменты XML | `pricelist_id`. Для предложения ещё `product_id` и `variant_id` |
+| Список предложений | `pricelist_id`, `search`, `offset`, `limit` (в менеджере 20) |
+| Журнал | `pricelist_id` необязателен |

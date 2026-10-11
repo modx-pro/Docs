@@ -63,13 +63,13 @@ items: [
 
 По желанию: pdoTools для Fenom, [ms3Variants](/components/ms3variants/), [ms3Remains](/components/ms3remains/), Scheduler 1.9.
 
-Версии MiniShop3, VueTools и Scheduler указаны в README пакета. Сборка их не проверяет. MiniShop2 и MODX 2 не поддерживаются.
+VueTools 1.2 в `requires` сборки нет. Без него контроллер менеджера показывает ошибку «нужен VueTools 1.2.0+». Scheduler в требованиях пакета нет. MiniShop2 и MODX 2 не поддерживаются.
 
 ## Установка
 
 <!-- MEDIA: screenshot-admin | must | Установка transport-пакета ms3YandexMarket через «Управление пакетами» после загрузки zip | На тестовом стенде MODX 3: «Управление пакетами» → установить собранный zip, дождаться успеха, очистить кэш сайта -->
 
-Соберите пакет из репозитория и поставьте zip через управление пакетами. После установки очистите `core/cache`.
+Соберите пакет из репозитория и поставьте zip через «Управление пакетами». После установки очистите `core/cache`.
 
 ```bash
 pnpm --dir vueManager install && pnpm --dir vueManager build

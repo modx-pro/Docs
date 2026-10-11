@@ -19,31 +19,27 @@ description: Системные настройки и права ms3YandexMarket
 
 ## Права в поставке
 
-<!-- MEDIA: screenshot-admin | must | Шаблон политики ms3yandexmarketPolicyTemplate и политика ms3yandexmarketPolicy с правами view, manage, generate, settings у группы Administrator | На тестовом стенде: «Безопасность» → «Политики доступа», найти шаблон и политику компонента после установки пакета -->
+<!-- MEDIA: screenshot-admin | must | Шаблон политики ms3yandexmarketPolicyTemplate и политика ms3yandexmarketPolicy с правами view, manage, generate, edit_raw_xml, edit_fenom у группы Administrator | На тестовом стенде: «Безопасность» → «Политики доступа», найти шаблон и политику компонента после установки пакета -->
 
-Установщик создаёт шаблон `ms3yandexmarketPolicyTemplate` и политику `ms3yandexmarketPolicy` с четырьмя правами. Группа Administrator получает политику в `mgr`.
+Установщик создаёт шаблон `ms3yandexmarketPolicyTemplate` и политику `ms3yandexmarketPolicy` с пятью правами. Группа Administrator получает политику в `mgr`. При обновлении ключ `ms3yandexmarket_settings` из шаблона и из политики убирается.
 
 | Ключ | Что делает код |
 | --- | --- |
-| `ms3yandexmarket_view` | Открывает менеджер и читает данные |
-| `ms3yandexmarket_manage` | Создаёт и меняет прайсы, теги и условия |
+| `ms3yandexmarket_view` | Пункт меню, список и карточка прайса, диагностика, журнал, предпросмотр, чтение и скачивание файла |
+| `ms3yandexmarket_manage` | Запись прайса, чтение и запись тегов, атрибутов и условий |
 | `ms3yandexmarket_generate` | Запускает запись файла |
-| `ms3yandexmarket_settings` | Ключ есть в политике. Процессоры менеджера его не проверяют. Системные настройки MODX открывает право `settings` самого MODX |
-
-## Свой XML и Fenom
-
-Процессоры проверяют ещё два права. Установщик их в шаблон не кладёт. Пока вы не добавите ключи в шаблон и не включите их в политике, сохранение отвечает 403.
-
-| Ключ | Когда проверяется |
-| --- | --- |
 | `ms3yandexmarket_edit_raw_xml` | Тип тега `19` (`RAW_XML`) |
 | `ms3yandexmarket_edit_fenom` | Непустой обработчик Fenom у тега или атрибута |
 
-Фрагмент своего XML перед записью проверяется как XML. Пустой фрагмент допустим. PHP в Fenom не выполняется. Нужен pdoTools.
+Страницу компонента открывают `ms3yandexmarket_view`, `ms3yandexmarket_manage` или право MODX `settings`. Пункт меню требует только `ms3yandexmarket_view`. С одним правом `settings` процессоры отвечают 403. Системные настройки MODX по-прежнему открывает право `settings` ядра.
+
+## Свой XML и Fenom
+
+Фрагмент своего XML перед записью проверяется как XML. Пустой фрагмент допустим. PHP в Fenom не выполняется. Нужен pdoTools. Без права из таблицы выше сохранение отвечает 403.
 
 ## Настройки вне поставки
 
-Этих ключей нет в transport. Создайте их вручную, если путь или производитель нестандартные.
+Этих ключей нет в поставке. Создайте запись вручную, если нужен ключ из таблицы.
 
 | Ключ | Если записи нет | Эффект |
 | --- | --- | --- |
@@ -56,7 +52,7 @@ description: Системные настройки и права ms3YandexMarket
 
 ## Каталог файлов без настройки
 
-Пока `ms3yandexmarket_files_path` в базе, запись и диагностика используют этот каталог. Без настройки диагностика смотрит `assets/components/ms3yandexmarket/yml/`, запись файла смотрит `assets/components/ms3yandexmarket/files/`.
+Пока `ms3yandexmarket_files_path` в базе, запись и диагностика используют этот каталог. Без настройки оба смотрят `assets/components/ms3yandexmarket/files/`.
 
 ## Назначение файла и площадка
 
@@ -65,10 +61,10 @@ description: Системные настройки и права ms3YandexMarket
 | Назначение | Площадка | Файл |
 | --- | --- | --- |
 | `catalog` | `yandex.market` | YML каталога: магазин, категории, предложения |
-| `items` | `yandex.market` | Тот же набор тегов, что у `catalog` |
-| `placement` | `yandex.market` | YML размещения без блока категорий. Список управляемых полей в файл не фильтрует теги |
+| `items` | `yandex.market` | Тот же набор тегов, что у `catalog`. Вкладка категорий есть, в файл блок категорий не пишется |
+| `placement` | `yandex.market` | YML размещения без блока категорий. Непустой `managed_fields` оставляет в `offer` имена из списка. Атрибут `id` пишется всегда |
 | любое | `google.rss20` | RSS 2.0. Назначение состав не меняет. Это файл для загрузки, не Merchant API |
 
 Состав тегов: [состав файла](/components/ms3yandexmarket/feeds).
 
-Тип предложения `simple` или `vendor.model` выбирается в карточке прайса. Подробнее: [параметры прайса](/components/ms3yandexmarket/pricelist).
+Тип оффера `simple` или `vendor.model` выбирается в карточке прайса. Подробнее: [параметры прайса](/components/ms3yandexmarket/pricelist).

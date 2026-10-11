@@ -5,9 +5,11 @@ description: Входящие и исходящие события ms3YandexMark
 
 # События
 
-Плагин компонента слушает чужие события. Сервис генерации вызывает свои. Исходящие имена перечислены в `_build/elements/events.php` и ставятся пакетом.
+Плагин компонента слушает чужие события. Сервис генерации вызывает свои. Пакет задаёт имена исходящих событий.
 
 ## Входящие
+
+<!-- MEDIA: diagram | must | Отметка «нужно сгенерировать»: события OnDocFormSave, OnDocPublished, OnDocUnPublished и ms3remainsOnAfterRemainChange → проверка режима manual, категорий прайса и активности → отметка или пропуск | Схема по таблице раздела и абзацу про пустой выбор категорий -->
 
 | Событие | Что делает компонент |
 | --- | --- |
@@ -29,12 +31,12 @@ description: Входящие и исходящие события ms3YandexMark
 | `OnMs3YandexMarketBeforeGenerate` | До чтения товаров, после блокировки и старта журнала | |
 | `OnMs3YandexMarketBeforeQuery` | До выборки товаров | `context` = `offers` |
 | `OnMs3YandexMarketBeforeOffer` | На каждую строку товара или варианта | `row` |
-| `OnMs3YandexMarketAfterOffer` | После проверки, что у строки есть id товара. На дереве полей `offer` равен `null` | `row`, `offer` |
+| `OnMs3YandexMarketAfterOffer` | На дереве полей: после проверки id товара и после порога остатка. Строка без id и строка, которую убрал порог, событие не получают. `offer` на этом пути `null`. На пути RSS событие идёт после сборки предложения и вызывается даже если сборка не удалась | `row`, `offer` |
 | `OnMs3YandexMarketOffersQuery` | После сборки предложений. При записи YML из дерева полей не вызывается | `offers_count` |
 | `OnMs3YandexMarketBeforeWritingOffer` | Перед записью одного предложения из дерева полей | `row` |
 | `OnMs3YandexMarketBeforeWritingCategory` | Перед записью категории из дерева полей | `category` |
 | `OnMs3YandexMarketCategoriesQuery` | Перед обходом выбранных корней категорий. Если корни не выбраны, событие не вызывается | `root_ids` |
 | `OnMs3YandexMarketBeforeWrite` | Перед записью Google RSS. При записи YML из дерева полей не вызывается | `offers_count` у RSS |
-| `OnMs3YandexMarketAfterGenerate` | После успешной записи. При ошибке не вызывается. Журнал закрывается с ошибкой, отметка «нужно сгенерировать» остаётся | `result` |
+| `OnMs3YandexMarketAfterGenerate` | После подмены файла, в том числе если в журнале статус `error` из‑за числа ошибок. В `catch` при исключении не вызывается. Отметка «нужно сгенерировать» снимается только при статусе не `error` | `result` |
 
 При записи YML из дерева полей нет `OnMs3YandexMarketBeforeWrite`. Смотрите `BeforeWritingOffer` и `BeforeWritingCategory`.
