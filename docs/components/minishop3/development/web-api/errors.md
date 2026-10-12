@@ -1,6 +1,6 @@
 ---
 title: Ошибки Web API
-description: "Envelope ошибок MiniShop3: code, errors, error_code, HTTP"
+description: "Формат ошибок MiniShop3: code, errors, error_code, HTTP"
 ---
 
 # Ошибки
