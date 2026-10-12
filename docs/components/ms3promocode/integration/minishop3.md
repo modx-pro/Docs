@@ -60,7 +60,7 @@
        └─→ ApplicationService::syncAfterCartChange()
            ├─ apply (повторно; шаги — см. п. 2)
            └─ если apply вернул ошибку → remove
-              и на фронт шлётся событие ms3promocode:auto-removed
+              фронтовое ms3promocode:auto-removed формирует headless-ядро
 
 4. Покупатель оформляет заказ
    └─→ msOnCreateOrder
