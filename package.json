@@ -29,7 +29,7 @@
     "spellcheck:changed": "node scripts/spellcheck.mjs --changed",
     "check:links": "node scripts/check-markdown-links.mjs",
     "check:links:external": "node scripts/check-markdown-links.mjs --external",
-    "check:links:changed": "node scripts/check-markdown-links.mjs --changed",
+    "check:links:changed": "node scripts/check-markdown-links.mjs --changed --check-anchors",
     "check:sync": "node scripts/check-docs-sync.mjs",
     "check:sync:changed": "node scripts/check-docs-sync.mjs --changed",
     "check:structure": "node scripts/check-docs-structure-sync.mjs",
