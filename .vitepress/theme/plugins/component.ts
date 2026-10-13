@@ -14,6 +14,7 @@ import { categoryKeys } from '../categories.ts'
 
 import type { Author } from '../../../docs/authors.ts'
 import { findPath } from '../utils.ts'
+import { pageExcerpt } from '../excerpt.ts'
 
 const LOGO_CACHE_VERSION = (
   process.env.GITHUB_SHA?.slice(0, 8)
@@ -223,14 +224,12 @@ export default class DocsComponent {
         : pageData.title
     pageData.title = decodeHtmlEntities(rawTitle) ?? rawTitle
 
-    if (
-      component
-      && !pageData.description
-      && component.description
-    ) {
-      pageData.description = component.description
-    } else if (pageData.description) {
-      pageData.description = decodeHtmlEntities(pageData.description) ?? pageData.description
+    const ownDescription = pageData.frontmatter.description
+    const home = pageData.relativePath === 'index.md' || pageData.relativePath === 'en/index.md'
+    if (typeof ownDescription === 'string' && ownDescription.trim()) {
+      pageData.description = decodeHtmlEntities(ownDescription.trim()) ?? ownDescription.trim()
+    } else if (!home) {
+      pageData.description = pageExcerpt(pageData.relativePath) || pageData.title
     }
 
     return pageData

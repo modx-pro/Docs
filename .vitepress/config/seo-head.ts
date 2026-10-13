@@ -47,7 +47,10 @@ function samePath(left: string, right: string): boolean {
 
 export function pageDescription(pageData: PageData): string {
   if (pageData.description) return pageData.description
-  return isEnglish(pageData.relativePath) ? EN_DESCRIPTION : RU_DESCRIPTION
+  if (isHome(pageData.relativePath)) {
+    return isEnglish(pageData.relativePath) ? EN_DESCRIPTION : RU_DESCRIPTION
+  }
+  return pageData.title
 }
 
 function pairPath(relativePath: string): string | undefined {
