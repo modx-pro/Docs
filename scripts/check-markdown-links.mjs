@@ -5,9 +5,14 @@
  *   node scripts/check-markdown-links.mjs docs/components/indexnow
  *   node scripts/check-markdown-links.mjs --external
  *   node scripts/check-markdown-links.mjs --changed
+ *   node scripts/check-markdown-links.mjs --check-anchors
+ *   node scripts/check-markdown-links.mjs --strict-anchors
  * Links are taken from the markdown-it parse, so code blocks, inline code and HTML comments
  * are skipped and reference-style links ([text][id] + [id]: url) are checked too.
  * --changed checks Markdown changed against the base branch and takes no paths.
+ * --check-anchors warns when a fragment is not a heading slug, a custom id,
+ * a repeated-heading suffix (-1, -2) or a settings-table row id.
+ * --strict-anchors reports those misses as errors.
  * Exit 0 if OK, 1 if broken, on unknown options or on a path that matches no Markdown.
  */
 import { execFileSync } from 'child_process'
@@ -17,8 +22,6 @@ import { fileURLToPath } from 'url'
 import fg from 'fast-glob'
 import matter from 'gray-matter'
 import MarkdownIt from 'markdown-it'
-import { slugify } from '@mdit-vue/shared'
-import { headingSlug, legacyHeadingSlug } from '../.vitepress/theme/anchors.ts'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
@@ -209,6 +212,90 @@ async function checkHttp(url) {
 }
 
 const anchorCache = new Map()
+let anchorFns = null
+
+function headingPlain(inline) {
+  const children = inline?.children ?? []
+  return children
+    .filter(child => child.type !== 'html_inline' && child.type !== 'emoji')
+    .map(child => child.content)
+    .join('')
+    .trim()
+}
+
+function splitCustomId(text) {
+  const match = text.match(/\{#([A-Za-z0-9_.:-]+)\}\s*$/)
+  if (!match) return { text, id: null }
+  return { text: text.slice(0, match.index).trim(), id: match[1] }
+}
+
+function claimSlug(base, seen, userDefined) {
+  if (!base) return null
+  if (userDefined) {
+    if (seen.has(base)) return null
+    seen.add(base)
+    return base
+  }
+  let slug = base
+  let index = 1
+  while (seen.has(slug)) {
+    slug = `${base}-${index}`
+    index += 1
+  }
+  seen.add(slug)
+  return slug
+}
+
+function addAnchor(anchors, slug) {
+  if (!slug) return
+  anchors.add(slug)
+  if (slug.includes('%')) {
+    try {
+      anchors.add(decodeURIComponent(slug))
+    } catch {
+      // keep the encoded slug
+    }
+  }
+}
+
+function inlineAt(tokens, index) {
+  const next = tokens[index + 1]
+  return next?.type === 'inline' ? next.content.trim() : ''
+}
+
+function collectTableAnchors(tokens, anchors) {
+  const seen = new Set()
+  let inHead = false
+  let headerCells = []
+  let headers = null
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i]
+    if (token.type === 'thead_open') {
+      inHead = true
+      headerCells = []
+      continue
+    }
+    if (token.type === 'thead_close') {
+      inHead = false
+      headers = headerCells
+      continue
+    }
+    if (inHead && token.type === 'th_open') {
+      headerCells.push(inlineAt(tokens, i))
+      continue
+    }
+    if (inHead || token.type !== 'tr_open' || !headers?.length) continue
+    let cell = ''
+    for (let j = i + 1; j < tokens.length; j++) {
+      if (tokens[j].type === 'tr_close') break
+      if (tokens[j].type === 'td_open') {
+        cell = inlineAt(tokens, j)
+        break
+      }
+    }
+    addAnchor(anchors, anchorFns.uniqueSettingAnchor(headers[0], cell, seen))
+  }
+}
 
 function extractPageAnchors(filePath) {
   if (anchorCache.has(filePath)) {
@@ -221,48 +308,25 @@ function extractPageAnchors(filePath) {
   const src = readFileSync(filePath, 'utf8')
   const { content } = matter(src)
   const anchors = new Set()
-
-  // 1. Explicit HTML tags with id or name: <... id="foo"> or <a name="foo">
-  const idRegex = /<(?:[a-zA-Z0-9]+)\s+[^>]*?(?:id|name)=["']([^"']+)["'][^>]*>/gi
-  let m
-  while ((m = idRegex.exec(content)) !== null) {
-    anchors.add(m[1])
-    anchors.add(m[1].toLowerCase())
-    anchors.add(encodeURIComponent(m[1]))
-  }
-
-  // 2. Parse tokens via markdown-it for headings and custom anchors
+  const seen = new Set()
   const tokens = md.parse(content, {})
-  for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].type === 'heading_open') {
-      const next = tokens[i + 1]
-      if (next && next.type === 'inline') {
-        let text = next.content.trim()
-        // Check for custom {#custom-id}
-        const custom = text.match(/\{#([a-zA-Z0-9_.:-]+)\}\s*$/)
-        if (custom) {
-          anchors.add(custom[1])
-          anchors.add(custom[1].toLowerCase())
-          text = text.replace(/\{#([a-zA-Z0-9_.:-]+)\}\s*$/, '').trim()
-        }
 
-        const s1 = headingSlug(text)
-        const s2 = legacyHeadingSlug(text)
-        const s3 = slugify ? slugify(text) : null
-        ;[s1, s2, s3, text].forEach((s) => {
-          if (s) {
-            anchors.add(s)
-            anchors.add(s.toLowerCase())
-            anchors.add(encodeURIComponent(s))
-            try {
-              anchors.add(decodeURIComponent(s))
-            } catch {}
-          }
-        })
-      }
-    }
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type !== 'heading_open') continue
+    const inline = tokens[i + 1]
+    if (!inline || inline.type !== 'inline') continue
+    const split = splitCustomId(headingPlain(inline))
+    const id = split.id
+      ? claimSlug(split.id, seen, true)
+      : claimSlug(anchorFns.headingSlug(split.text), seen, false)
+    addAnchor(anchors, id)
+    const key = anchorFns.headingAnchor(split.text)
+    if (!key) continue
+    const legacy = anchorFns.legacyHeadingSlug(split.text)
+    if (legacy && legacy !== key) addAnchor(anchors, legacy)
   }
 
+  collectTableAnchors(tokens, anchors)
   anchorCache.set(filePath, anchors)
   return anchors
 }
@@ -277,6 +341,10 @@ if (files.length === 0) {
 const errors = []
 const warnings = []
 
+if (checkAnchors) {
+  anchorFns = await import('../.vitepress/theme/anchors.ts')
+}
+
 for (const file of files) {
   const rel = relative(ROOT, file)
   const src = readFileSync(file, 'utf8')
@@ -290,7 +358,7 @@ for (const file of files) {
 
     // Anchor validation when enabled
     const hashIdx = href.indexOf('#')
-    if (checkAnchors && hashIdx !== -1) {
+    if (checkAnchors && !link.image && hashIdx !== -1) {
       const rawHash = href.slice(hashIdx + 1).split('?')[0]
       if (rawHash) {
         let targetFile = file
@@ -304,12 +372,13 @@ for (const file of files) {
         }
         if (targetFile) {
           const anchors = extractPageAnchors(targetFile)
-          const decoded = decodeURIComponent(rawHash)
-          const ok =
-            anchors.has(rawHash) ||
-            anchors.has(rawHash.toLowerCase()) ||
-            anchors.has(decoded) ||
-            anchors.has(decoded.toLowerCase())
+          let decoded = rawHash
+          try {
+            decoded = decodeURIComponent(rawHash)
+          } catch {
+            decoded = rawHash
+          }
+          const ok = anchors.has(rawHash) || anchors.has(decoded)
           if (!ok) {
             const msg = `${rel}: ${href} (anchor #${decoded} not found in ${relative(ROOT, targetFile)})`
             if (strictAnchors) {
