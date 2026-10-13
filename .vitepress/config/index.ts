@@ -13,6 +13,7 @@ import { withMermaid } from 'vitepress-plugin-mermaid'
 import { modstore, modxpro, telegram } from '../../docs/icons.ts'
 import { coreMembers } from '../../docs/authors.ts'
 import { normalize } from '../theme/utils.ts'
+import { buildSeoHead, pageDescription } from './seo-head.ts'
 
 const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
@@ -233,18 +234,19 @@ export default withMermaid(
       ['meta', { name: 'twitter:image', content: image }],
     ]
 
-    if (pageData.description) {
-      output.push(
-        ['meta', { property: 'og:description', content: pageData.description }],
-        ['meta', { name: 'twitter:description', content: pageData.description }],
-      )
-    }
+    const description = pageDescription(pageData)
+    output.push(
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { name: 'twitter:description', content: description }],
+    )
 
     if (pageData.component && author) {
       output.push(
         ['meta', { property: 'article:author', content: author }],
       )
     }
+
+    output.push(...buildSeoHead({ pageData, url, image }))
 
     return output
   },
