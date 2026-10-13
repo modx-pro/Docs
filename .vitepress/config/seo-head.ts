@@ -124,57 +124,59 @@ function breadcrumbList(pageData: PageData): Record<string, unknown> | undefined
   }
 }
 
+function jsonLdScript(graph: Record<string, unknown>[]): HeadConfig {
+  const payload = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': graph,
+  }).replace(/</g, '\\u003c')
+  return ['script', { type: 'application/ld+json' }, payload]
+}
+
 function jsonLd({ pageData, url, image }: SeoPage): HeadConfig {
   const lang: Lang = isEnglish(pageData.relativePath) ? 'en' : 'ru'
   const home = lang === 'en' ? `${SITE_HOST}en/` : SITE_HOST
   const websiteId = `${home}#website`
   const siteName = lang === 'en' ? EN_NAME : RU_NAME
   const siteDescription = lang === 'en' ? EN_DESCRIPTION : RU_DESCRIPTION
-  const graph: Record<string, unknown>[] = [
-    {
-      '@type': 'WebSite',
-      '@id': websiteId,
+  const website: Record<string, unknown> = {
+    '@type': 'WebSite',
+    '@id': websiteId,
+    name: siteName,
+    url: home,
+    description: siteDescription,
+    inLanguage: lang,
+    publisher: {
+      '@type': 'Organization',
       name: siteName,
       url: home,
-      description: siteDescription,
-      inLanguage: lang,
-      publisher: {
-        '@type': 'Organization',
-        name: siteName,
-        url: home,
-      },
     },
-  ]
-
-  if (!isHome(pageData.relativePath)) {
-    const article: Record<string, unknown> = {
-      '@type': 'TechArticle',
-      headline: pageData.title,
-      description: pageDescription(pageData),
-      url,
-      inLanguage: lang,
-      image,
-      isPartOf: { '@id': websiteId },
-      mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    }
-    if (pageData.lastUpdated && pageData.frontmatter.lastUpdated !== false) {
-      article.dateModified = new Date(pageData.lastUpdated).toISOString()
-    }
-    const component = pageData.component
-    if (component && pageData.relativePath === component.path) {
-      article.about = softwareApplication(component, url, lang)
-    }
-    graph.push(article)
-    const crumbs = breadcrumbList(pageData)
-    if (crumbs) graph.push(crumbs)
   }
 
-  const payload = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@graph': graph,
-  }).replace(/</g, '\\u003c')
+  if (isHome(pageData.relativePath)) {
+    return jsonLdScript([website])
+  }
 
-  return ['script', { type: 'application/ld+json' }, payload]
+  const article: Record<string, unknown> = {
+    '@type': 'TechArticle',
+    headline: pageData.title,
+    description: pageDescription(pageData),
+    url,
+    inLanguage: lang,
+    image,
+    isPartOf: { '@id': websiteId },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  }
+  if (pageData.lastUpdated && pageData.frontmatter.lastUpdated !== false) {
+    article.dateModified = new Date(pageData.lastUpdated).toISOString()
+  }
+  const component = pageData.component
+  if (component && pageData.relativePath === component.path) {
+    article.about = softwareApplication(component, url, lang)
+  }
+  const graph = [article]
+  const crumbs = breadcrumbList(pageData)
+  if (crumbs) graph.push(crumbs)
+  return jsonLdScript(graph)
 }
 
 export function buildSeoHead(page: SeoPage): HeadConfig[] {
