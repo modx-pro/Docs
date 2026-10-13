@@ -2,9 +2,10 @@
 title: ms3YandexMarket
 description: Файл YML для Яндекс Маркета или RSS для Google из товаров MiniShop3
 author: Ibochkarev
+logo: https://modstore.pro/assets/extras/ms3yandexmarket/logo.png
+modstore: https://modstore.pro/packages/ecommerce/ms3yandexmarket
 dependencies: miniShop3
 categories: import-export
-repository: https://github.com/Ibochkarev/ms3YandexMarket
 compatibility:
   - modx3
   - php82
@@ -42,7 +43,6 @@ items: [
     text: 'Интеграция',
     items: [
       { text: 'События', link: 'events' },
-      { text: 'Маршруты менеджера', link: 'api' },
     ],
   },
 ]
@@ -63,19 +63,16 @@ items: [
 
 По желанию: pdoTools для Fenom, [ms3Variants](/components/ms3variants/), [ms3Remains](/components/ms3remains/), Scheduler 1.9.
 
-VueTools 1.2 в `requires` сборки нет. Без него контроллер менеджера показывает ошибку «нужен VueTools 1.2.0+». Scheduler в требованиях пакета нет. MiniShop2 и MODX 2 не поддерживаются.
-
 ## Установка
 
-<!-- MEDIA: screenshot-admin | must | Установка transport-пакета ms3YandexMarket через «Управление пакетами» после загрузки zip | На тестовом стенде MODX 3: «Управление пакетами» → установить собранный zip, дождаться успеха, очистить кэш сайта -->
+<!-- MEDIA: screenshot-admin | must | Управление пакетами: провайдер modstore.pro и установка ms3YandexMarket | Тестовый стенд MODX 3: провайдер URL https://modstore.pro/extras/, пакет ms3YandexMarket установлен -->
 
-Соберите пакет из репозитория и поставьте zip через «Управление пакетами». После установки очистите `core/cache`.
+Пакет платный, transport зашифрован. Без провайдера установка падает с `Package provider not found`.
 
-```bash
-pnpm --dir vueManager install && pnpm --dir vueManager build
-composer install
-php _build/build.php
-```
+1. Установите **MiniShop3** и **VueTools** 1.2+.
+2. Добавьте провайдер **modstore.pro** (**Система → Управление пакетами → Провайдеры**): URL `https://modstore.pro/extras/`, email и API-ключ из личного кабинета [modstore.pro](https://modstore.pro).
+3. Установите пакет **ms3YandexMarket** через **Управление пакетами** (в **Show Details** выберите провайдер **modstore.pro**).
+4. **Очистите кэш** MODX.
 
 Если коннектор отвечает `Requested processor not found`, в `core/config/ms3.routes.d/manager/` нет `50-ms3yandexmarket.php` или MiniShop3 его не читает.
 

@@ -34,17 +34,17 @@ description: Типовые вопросы по Tickets
 ## Письма не приходят
 
 1. Проверьте `tickets.mail_from` или системный `emailsender`
-2. Уровень BCC: `tickets.mail_bcc_level` (`0` — выкл., `2` — тикеты и комментарии)
+2. Уровень BCC: `tickets.mail_bcc_level` (`0` выкл., `2` тикеты и комментарии)
 3. Очередь: при `tickets.mail_queue` = `1` добавьте в cron `core/components/tickets/cron/mail_queue.php`
 
 ## Неопубликованный или закрытый тикет
 
-- Неопубликованный: редирект на `tickets.unpublished_ticket_page`
-- Закрытый (`private`): без `ticket_view_private` пользователь уходит на `tickets.private_ticket_page`
+- Неопубликованный: только запрос по короткому URI раздела. Страница подменяется ресурсом `tickets.unpublished_ticket_page` с кодом 403, если id не `0`. Прямой адрес тикета настройка не перехватывает
+- Закрытый (`privateweb`): без `ticket_view_private` страница подменяется ресурсом `tickets.private_ticket_page`. Адрес в браузере не меняется
 
 ## Плоский список комментариев
 
-`` &tree=`0` `` и пагинация `&limit` / `&offset`. Дерево ответов отключается, вложенность в DOM не строится.
+`` &tree=`0` `` и пагинация `&limit` / `&offset`. Дерево ответов отключается. Вложенность в DOM не строится.
 
 ## Несколько веток на одной странице
 
@@ -56,16 +56,16 @@ Jevix фильтрует контент тикетов, если у тикета
 
 ## Файлы и изображения
 
-Источник файлов: `tickets.source_default` (после установки — «Tickets Files»). Лимит вложений: `tickets.max_files_upload` (`0` — без лимита). Описание картинки задают на странице тикета в списке файлов. Процессор: `web/file/desc` (AJAX-действие `ticket/file/desc`, с 1.14).
+Источник файлов: `tickets.source_default` (после установки «Tickets Files»). Лимит вложений: `tickets.max_files_upload` (`0` без лимита). Описание картинки задают на странице тикета в списке файлов. Процессор: `web/file/desc` (AJAX-действие `ticket/file/desc`, с 1.14).
 
 ## PHP и удаление пакета
 
-- Пакет 1.14.x рассчитан на PHP 8+, в changelog описаны правки под 8.2
+- Пакет 1.14.x ориентируют на PHP 8+. В транспорте требования к PHP нет
 - При удалении пакета 1.14 очищаются CRC, таблицы и меню (см. changelog #172)
 
 ## FormIt не срабатывает
 
-Нужен установленный FormIt. Параметры `&validate` и `&customValidators` передают в `Tickets::saveTicket()` и в сохранение комментария. Разметка ошибок: [TicketFormit](ticketformit).
+Нужен установленный FormIt. Параметр `&validate` при установленном FormIt читается. Имени `customValidators` в PHP Tickets нет: в сервис FormIt уходит весь config. Разметка ошибок: [TicketFormit](ticketformit).
 
 ## Счётчик комментариев в списке неверный
 
