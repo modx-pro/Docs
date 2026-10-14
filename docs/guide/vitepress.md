@@ -62,7 +62,7 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 | col 2 is      |   centered    |   $12 |
 | zebra stripes |   are neat    |    $1 |
 
-## Эмоджи
+## Эмодзи
 
 **Пример:**
 
@@ -74,7 +74,7 @@ VitePress использует [markdown-it](https://github.com/markdown-it/mark
 
 :tada: :100:
 
-[Список всех доступных эмоджи здесь](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json).
+[Список всех доступных эмодзи здесь](https://github.com/markdown-it/markdown-it-emoji/blob/master/lib/data/full.json).
 
 ## Вывод оглавления в любом месте
 
@@ -138,7 +138,7 @@ This is a dangerous warning.
 This is a details block.
 :::
 
-## Уведомдения с произвольными заголовками
+## Уведомления с произвольными заголовками
 
 **Пример:**
 
@@ -568,5 +568,5 @@ const line3 = 'Третья строка кода'
 Для сохранения ресурса нажмите сочетание клавиш [[Ctrl]] или [[⌘ Cmd]] + [[s]]
 
 ::: warning Помните
-Значение `[[toc]]` зарезервированно плагином **toc** (table of contents) и оно выведет оглавление страницы.
+Значение `[[toc]]` зарезервировано плагином **toc** (table of contents) и оно выведет оглавление страницы.
 :::

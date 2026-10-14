@@ -1,6 +1,7 @@
 ---
 title: FileMan
 description: FileMan – это компонент для MODX Revolution 3, дающий возможность прикреплять к ресурсам файлы через административную панель.
+categories: media
 logo: https://modstore.pro/assets/extras/fileman/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/photos-and-files/fileman

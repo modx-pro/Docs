@@ -47,13 +47,13 @@ Standard filter class methods:
 | `getMsOptionValues` | `msoption` | Fetches data from MS2 product JSON options table |
 | `buildDefaultFilter` | `default` | Builds default checkbox filter |
 | `buildNumberFilter` | `number` | Builds numeric filter (e.g. slider) |
-| `buildVendorsFilter` | `vendors` | Filter by MS2 vendor names. Only for **vendor**: `ms|vendor:vendors` |
+| `buildVendorsFilter` | `vendors` | Filter by MS2 vendor names. Only for **vendor**: `ms\|vendor:vendors` |
 | `buildBooleanFilter` | `boolean` | Boolean filter (Yes/No instead of 0/1) |
-| `buildParentsFilter` | `parents` | Filter by two parent levels. Only for **parent**: `resource|parent:parents` |
-| `buildCategoriesFilter` | `categories` | Filter by one parent. Only for **parent**: `resource|parent:categories` |
-| `buildGrandParentsFilter` | `grandparents` | Filter by second parent. Only for **parent**: `resource|parent:grandparents` |
-| `buildFullnameFilter` | `fullname` | Filter by user full name. Only for user id, e.g. `resource|createdby:fullname` |
-| `buildYearFilter` | `year` | Filter by year, e.g. `resource|createdon:year` |
+| `buildParentsFilter` | `parents` | Filter by two parent levels. Only for **parent**: `resource\|parent:parents` |
+| `buildCategoriesFilter` | `categories` | Filter by one parent. Only for **parent**: `resource\|parent:categories` |
+| `buildGrandParentsFilter` | `grandparents` | Filter by second parent. Only for **parent**: `resource\|parent:grandparents` |
+| `buildFullnameFilter` | `fullname` | Filter by user full name. Only for user id, e.g. `resource\|createdby:fullname` |
+| `buildYearFilter` | `year` | Filter by year, e.g. `resource\|createdon:year` |
 | `filterDefault` | `default` | Default filter logic |
 | `filterGrandParents` | `grandparents` | Filter by second parent |
 | `filterNumber` | `number` | Filter by numeric range |

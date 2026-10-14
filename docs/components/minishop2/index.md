@@ -1,6 +1,8 @@
 ---
 title: miniShop2
 description: Самый гибкий и быстрый компонент интернет-магазина для MODX Revolution
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/minishop2/logo.png
 author: modx-pro
 modstore: https://modstore.pro/packages/ecommerce/minishop2

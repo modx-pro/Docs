@@ -3,19 +3,58 @@ title: msCustomer
 ---
 # msCustomer
 
-Snippet for displaying the customer account.
+Renders the customer account. The `service` parameter picks the section: `profile`, `addresses` or `orders`.
 
-::: warning Caching
-The snippet uses the user session and must be called **uncached** (`!msCustomer`).
+::: warning The account page must not be cached
+Untick «Cacheable» on the resource in the admin. The snippet outputs one specific customer's data; on a cacheable page it lands in the cache and reaches the next visitor.
+
+The `!` prefix is not enough for this. In MODX `[[!msCustomer]]` defers execution to the uncacheable pass, while in Fenom `{'!msCustomer'|snippet}` the snippet runs where it stands. The prefix only disables the element cache inside pdoTools: keep it, but rely on the resource setting.
 :::
 
 ## How it works
 
-The snippet is driven by the **`service`** parameter. Different values render different account pages with different data and behavior.
+```mermaid
+flowchart TB
+  call[msCustomer]
+  auth{Customer signed in?}
+  unauth[unauthorizedTpl / return data]
+  svc{service}
+  profile[profile]
+  addresses[addresses]
+  orders[orders]
+  outTpl[Section chunk]
+  outData[return=data array]
+  call --> auth
+  auth -->|No| unauth
+  auth -->|Yes| svc
+  svc --> profile
+  svc --> addresses
+  svc --> orders
+  profile --> outTpl
+  addresses --> outTpl
+  orders --> outTpl
+  profile --> outData
+  addresses --> outData
+  orders --> outData
+```
 
-### profile — Customer profile
+## Call and parameters
 
-Edit personal data: name, email, phone. Shows email and phone verification status.
+### Common parameters
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| **service** | `profile` | Section: `profile`, `addresses`, `orders` |
+| **return** | `tpl` | Format: `tpl` (HTML), `data` (array) |
+| **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Chunk for signed-out visitors |
+
+::: tip The snippet has no properties in the admin
+msCustomer declares none, so its property grid is empty: every parameter is set in the call only. The same goes for `selector` on msCart and msOrderTotal ([#805](https://github.com/modx-pro/MiniShop3/issues/805)).
+:::
+
+### Customer profile (`service=profile`)
+
+Editing personal data: name, email, phone and their verification states.
 
 ```fenom
 {'!msCustomer' | snippet : [
@@ -27,13 +66,11 @@ Edit personal data: name, email, phone. Shows email and phone verification statu
 | --- | --- | --- |
 | **tpl** | `tpl.msCustomer.profile` | Profile chunk |
 
-See also: [Customer profile](/en/components/minishop3/frontend/customer-profile)
+More: [Customer profile](/en/components/minishop3/frontend/customer-profile)
 
----
+### Delivery addresses (`service=addresses`)
 
-### addresses — Address management
-
-List of saved delivery addresses with create, edit, delete, and set-default options.
+Saved delivery addresses: create, edit, delete, pick the default one.
 
 ```fenom
 {'!msCustomer' | snippet : [
@@ -47,13 +84,11 @@ List of saved delivery addresses with create, edit, delete, and set-default opti
 | **addressTpl** | `tpl.msCustomer.address.row` | Address row chunk |
 | **formTpl** | `tpl.msCustomer.address.form` | Address form chunk |
 
-See also: [Customer addresses](/en/components/minishop3/frontend/customer-addresses)
+More: [Delivery addresses](/en/components/minishop3/frontend/customer-addresses)
 
----
+### Order history (`service=orders`)
 
-### orders — Order history
-
-List of all customer orders with status filter and pagination. Click an order for details.
+The customer's orders: status filter, pagination, order details. Drafts (status id 1) appear neither in the list nor in the status filter.
 
 ```fenom
 {'!msCustomer' | snippet : [
@@ -69,19 +104,9 @@ List of all customer orders with status filter and pagination. Click an order fo
 | **detailTpl** | `tpl.msCustomer.order.details` | Order details chunk |
 | **limit** | `20` | Orders per page |
 
-See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
+More: [Order history](/en/components/minishop3/frontend/customer-orders)
 
----
-
-## Common parameters
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| **service** | `profile` | Service: `profile`, `addresses`, `orders` |
-| **return** | `tpl` | Format: `tpl` (HTML), `data` (array) |
-| **unauthorizedTpl** | `tpl.msCustomer.unauthorized` | Chunk for unauthorized users |
-
-## Get data without rendering
+## Getting data as an array (`return=data`)
 
 ```fenom
 {set $profile = '!msCustomer' | snippet : [
@@ -98,42 +123,28 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
 
 ## GET parameters
 
-### For service=orders
+| Parameter | Service | Description |
+| --- | --- | --- |
+| `action=logout` | any | Sign out of the account |
+| `order` | `orders` | Order UUID (36 characters) — show the details |
+| `status` | `orders` | Filter by status ID |
+| `offset` | `orders` | Pagination offset |
+| `mode` | `addresses` | Mode: `list`, `edit`, `create` |
+| `id` | `addresses` | Address ID for `mode=edit` |
 
-| Parameter | Description |
-| --- | --- |
-| `order_id` | Order ID for details view |
-| `status` | Filter by status ID |
-| `offset` | Pagination offset |
-
-```
-/cabinet/?order_id=15      — order #15 details
-/cabinet/?status=2         — orders with status 2
-/cabinet/?offset=20        — second page
-```
-
-### For service=addresses
-
-| Parameter | Description |
-| --- | --- |
-| `mode` | Mode: `list`, `edit`, `create` |
-| `id` | Address ID to edit |
-
-```
-/cabinet/addresses/              — address list
-/cabinet/addresses/?mode=create  — create address
-/cabinet/addresses/?mode=edit&id=5  — edit address #5
-```
-
-### Logout
-
-```
-/cabinet/?action=logout
+```text
+/cabinet/?action=logout                               — sign out
+/cabinet/?order=0f9e8d7c-1a2b-3c4d-5e6f-7a8b9c0d1e2f  — order details
+/cabinet/?status=2                                    — orders with status 2
+/cabinet/?offset=20                                   — second page
+/cabinet/addresses/                                   — address list
+/cabinet/addresses/?mode=create                       — create an address
+/cabinet/addresses/?mode=edit&id=5                    — edit address #5
 ```
 
 ## Data structure
 
-### service=profile (return=data)
+### Profile (`service=profile`)
 
 ```php
 [
@@ -143,20 +154,20 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
         'id' => 1,
         'email' => 'user@example.com',
         'first_name' => 'John',
-        'last_name' => 'Doe',
-        'phone' => '+7 999 123-45-67',
+        'last_name' => 'Smith',
+        'phone' => '+1 555 123-45-67',
         // ... other msCustomer fields
     ],
     'email_verified' => true,
     'email_verified_at' => '15.01.2024 12:30',
-    'phone_verified' => false,
+    'phone_verified' => false,      // always false, see #138
     'phone_verified_at' => null,
     'errors' => [],
     'success' => false,
 ]
 ```
 
-### service=orders (return=data) — list
+### Order list (`service=orders`)
 
 ```php
 [
@@ -165,7 +176,7 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
     'orders' => [
         [
             'id' => 15,
-            'num' => 'MS-00015',
+            'num' => '2610/5',
             'createdon' => '2024-01-15 10:30:00',
             'createdon_formatted' => '15.01.2024 10:30',
             'cost' => 7500,
@@ -173,6 +184,7 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
             'status_id' => 2,
             'status_name' => 'Paid',
             'status_color' => '008000',
+            'can_cancel' => false,
             // ... other msOrder fields
         ],
         // ...
@@ -181,7 +193,7 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
     'total' => 12,
     'statuses' => [
         ['id' => 2, 'name' => 'Paid', 'color' => '008000', 'selected' => false],
-        ['id' => 3, 'name' => 'Shipped', 'color' => '0000FF', 'selected' => false],
+        ['id' => 3, 'name' => 'Sent', 'color' => '0000FF', 'selected' => false],
     ],
     'pagination' => [
         'total' => 12,
@@ -196,12 +208,13 @@ See also: [Customer orders](/en/components/minishop3/frontend/customer-orders)
         'next_offset' => 10,
     ],
     'customer' => [...],
+    'page_url' => 'https://example.com/cabinet/',
 ]
 ```
 
-### service=orders (return=data) — order details
+### Order details (`service=orders`)
 
-When GET parameter `order_id` is present:
+With the `order` GET parameter present:
 
 ```php
 [
@@ -209,10 +222,11 @@ When GET parameter `order_id` is present:
     'service' => 'orders',
     'order' => [
         'id' => 15,
-        'num' => 'MS-00015',
+        'num' => '2610/5',
         'status_name' => 'Paid',
         'status_color' => '008000',
         'createdon_formatted' => '15.01.2024 10:30',
+        'can_cancel' => false,
         'order_comment' => 'Call before delivery',
         // ... other msOrder fields
     ],
@@ -225,7 +239,8 @@ When GET parameter `order_id` is present:
             'price' => '3 500',
             'old_price' => '4 000',
             'cost' => '7 000',
-            'weight' => '500 g',
+            'weight' => '500',
+            'weight_formatted' => '500 g',
             'options' => ['color' => 'Red', 'size' => 'M'],
         ],
         // ...
@@ -240,8 +255,8 @@ When GET parameter `order_id` is present:
         'name' => 'Bank card',
     ],
     'address' => [
-        'city' => 'Moscow',
-        'street' => 'Sample St',
+        'city' => 'New York',
+        'street' => 'Main St',
         'building' => '15',
         'room' => '42',
         // ... other address fields
@@ -250,39 +265,44 @@ When GET parameter `order_id` is present:
         'cost' => '7 800',
         'cart_cost' => '7 500',
         'delivery_cost' => '300',
-        'weight' => '1 kg',
+        'weight' => '1',
+        'weight_formatted' => '1 kg',
     ],
+    'customer' => [...],
+    'api_url' => '/api/v1/',
+    'assets_url' => '/assets/components/minishop3/',
+]
+```
+
+When the order is not found or belongs to another customer:
+
+```php
+[
+    'error' => 'Order not found',
     'customer' => [...],
 ]
 ```
 
-### Unauthorized user
+### Signed-out visitor
 
 ```php
 [
     'authorized' => false,
-    'login_url' => '/login/',
-    'register_url' => '/register/',
+    'login_url' => '/login/',       // empty until ms3_customer_login_page_id is set
+    'register_url' => '/register/', // empty until ms3_customer_register_page_id is set
 ]
 ```
 
 ## Chunk architecture
 
-Customer account chunks use **inheritance** via a base layout:
+Section chunks extend the base chunk and fill its `content` block:
 
-```
+```text
 tpl.msCustomer.base          — base layout (sidebar + content)
 ├── tpl.msCustomer.profile   — extends base, profile block
 ├── tpl.msCustomer.orders    — extends base, order list block
 └── tpl.msCustomer.addresses — extends base, addresses block
 ```
-
-### Base layout
-
-Chunk `tpl.msCustomer.base` contains:
-
-- Sidebar (`tpl.msCustomer.sidebar`)
-- Content area via `{block 'content'}`
 
 ```fenom
 {* tpl.msCustomer.base *}
@@ -300,83 +320,7 @@ Chunk `tpl.msCustomer.base` contains:
 </div>
 ```
 
-### Example profile chunk
-
-```fenom
-{* tpl.msCustomer.profile *}
-{extends 'tpl.msCustomer.base'}
-
-{block 'content'}
-<div class="ms3-customer-profile">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">{'ms3_customer_profile_title' | lexicon}</h5>
-        </div>
-        <div class="card-body">
-            {if $success?}
-            <div class="alert alert-success">
-                {'ms3_customer_profile_updated' | lexicon}
-            </div>
-            {/if}
-
-            <form class="ms3_form ms3-customer-profile-form" method="post">
-                <input type="hidden" name="ms3_action" value="customer/update-profile">
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="first_name" class="form-label">
-                            {'ms3_customer_first_name' | lexicon}
-                        </label>
-                        <input type="text"
-                               class="form-control {if $errors.first_name?}is-invalid{/if}"
-                               name="first_name"
-                               value="{$customer.first_name}"
-                               required>
-                        {if $errors.first_name?}
-                        <div class="invalid-feedback">{$errors.first_name}</div>
-                        {/if}
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="last_name" class="form-label">
-                            {'ms3_customer_last_name' | lexicon}
-                        </label>
-                        <input type="text"
-                               class="form-control"
-                               name="last_name"
-                               value="{$customer.last_name}"
-                               required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">{'ms3_customer_email' | lexicon}</label>
-                    <div class="input-group">
-                        <input type="email" class="form-control"
-                               name="email" value="{$customer.email}" required>
-                        {if $email_verified}
-                        <span class="input-group-text bg-success text-white">
-                            {'ms3_customer_email_verified' | lexicon}
-                        </span>
-                        {/if}
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">{'ms3_customer_phone' | lexicon}</label>
-                    <input type="tel" class="form-control"
-                           name="phone" value="{$customer.phone}" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary ms3_link">
-                    {'ms3_customer_profile_save' | lexicon}
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-{/block}
-```
+The full section chunks are on the [Customer profile](/en/components/minishop3/frontend/customer-profile), [Delivery addresses](/en/components/minishop3/frontend/customer-addresses) and [Order history](/en/components/minishop3/frontend/customer-orders) pages. The required form markup is in [Form handling](#forms).
 
 ## Placeholders in chunks
 
@@ -392,44 +336,23 @@ Chunk `tpl.msCustomer.base` contains:
 | `{$customer.phone}` | Phone |
 | `{$email_verified}` | Email verified (bool) |
 | `{$email_verified_at}` | Email verification date |
-| `{$phone_verified}` | Phone verified (bool) |
-| `{$phone_verified_at}` | Phone verification date |
+| `{$phone_verified}` | Always `false` — phone verification is planned ([#138](https://github.com/modx-pro/MiniShop3/issues/138)) |
+| `{$phone_verified_at}` | Always empty, for the same reason |
 | `{$errors}` | Validation errors (array) |
-| `{$success}` | Save success (bool) |
-
-### tpl.msCustomer.orders
-
-| Placeholder | Description |
-| --- | --- |
-| `{$orders}` | Rendered order rows (HTML) |
-| `{$orders_count}` | Orders on current page |
-| `{$total}` | Total order count |
-| `{$statuses}` | Status list for filter |
-| `{$pagination}` | Pagination data |
-| `{$customer}` | Customer data |
+| `{$success}` | Saved successfully (bool) |
 
 ### tpl.msCustomer.order.row
 
 | Placeholder | Description |
 | --- | --- |
 | `{$id}` | Order ID |
-| `{$num}` | Order number (MS-00015) |
-| `{$createdon_formatted}` | Created date |
+| `{$num}` | Order number. A date per `ms3_order_format_num` plus a separator and a counter — for example `2610/5` |
+| `{$createdon_formatted}` | Creation date |
 | `{$cost_formatted}` | Order total |
 | `{$status_name}` | Status name |
-| `{$status_color}` | Status color |
+| `{$status_color}` | Status colour |
 
-### tpl.msCustomer.order.details
-
-| Placeholder | Description |
-| --- | --- |
-| `{$order}` | Order data |
-| `{$products}` | Order products array |
-| `{$delivery}` | Delivery method |
-| `{$payment}` | Payment method |
-| `{$address}` | Delivery address |
-| `{$total}` | Totals (cost, cart_cost, delivery_cost, weight) |
-| `{$customer}` | Customer data |
+Placeholders of the other chunks, with value types: [Order history](/en/components/minishop3/frontend/customer-orders) — `tpl.msCustomer.orders` and `tpl.msCustomer.order.details`; [Delivery addresses](/en/components/minishop3/frontend/customer-addresses) — the address list and form.
 
 ## System settings
 
@@ -437,53 +360,74 @@ Chunk `tpl.msCustomer.base` contains:
 | --- | --- |
 | `ms3_customer_login_page_id` | Login page ID |
 | `ms3_customer_register_page_id` | Registration page ID |
+| `ms3_customer_profile_page_id` | Profile page ID |
+| `ms3_customer_orders_page_id` | Order history page ID |
+| `ms3_customer_addresses_page_id` | Addresses page ID |
+| `ms3_customer_cancel_allowed_statuses` | Comma-separated status IDs the customer may cancel an order from |
 
-## Example account page
+::: warning The account pages must be set in the settings
+`ms3_customer_login_page_id`, `ms3_customer_register_page_id`, `ms3_customer_profile_page_id`, `ms3_customer_addresses_page_id` and `ms3_customer_orders_page_id` all ship as zero. MODX returns an empty link for a zero id and writes an error to the log.
 
-Create three resources with the same template but different snippet calls:
+Until they are filled in, the account has empty «Log in» and «Register» links. Logout goes nowhere, section navigation does not work and neither does the order details link.
+:::
 
-### Profile (/cabinet/profile/)
+::: tip What `ms3_customer_cancel_allowed_statuses` controls
+It drives `{$can_cancel}` in the order row. The package ships `2,3`.
 
-```fenom
-{'!msCustomer' | snippet : ['service' => 'profile']}
-```
+Clearing the setting does not forbid cancellation: the code falls back to the statuses from `ms3_status_new` and `ms3_status_paid`. To forbid it entirely, set `0`.
+:::
 
-### Orders (/cabinet/orders/)
+## Form handling {#forms}
 
-```fenom
-{'!msCustomer' | snippet : ['service' => 'orders']}
-```
+Profile and address forms are submitted by POST; the action is set by the hidden `ms3_action` field:
 
-### Addresses (/cabinet/addresses/)
-
-```fenom
-{'!msCustomer' | snippet : ['service' => 'addresses']}
-```
-
-## Form handling
-
-Profile and address forms are submitted via POST with `ms3_action`:
+| `ms3_action` | Action |
+| --- | --- |
+| `customer/update-profile` | Update the profile |
+| `customer/address-create` | Create an address |
+| `customer/address-update` | Update an address |
 
 ```html
-<form method="post">
+<form method="post" data-ms3-form="customer">
     <input type="hidden" name="ms3_action" value="customer/update-profile">
-    <!-- form fields -->
+    <div>
+        <input type="text" name="first_name" value="{$customer.first_name}">
+        <div class="invalid-feedback"></div>
+    </div>
 </form>
 ```
 
-Available actions:
+::: warning Two marks, both required
+`data-ms3-form="customer"` (or the `ms3_customer_form` class) switches on auto-saving: each field goes to the server right after it changes. Without that mark the form silently behaves like a plain HTML form — it reloads the page and saves nothing.
 
-| Action | Description |
+The `<div>` wrapper around the field is required too: the handler looks for the nearest parent `div` and stops without one, never reaching the save. Put `.invalid-feedback` in the same `div` — that is where the field error text goes.
+:::
+
+### Actions without `ms3_action`
+
+JavaScript intercepts a click on the selector:
+
+| Selector | Action |
 | --- | --- |
-| `customer/update-profile` | Update profile |
-| `customer/create-address` | Create address |
-| `customer/update-address` | Update address |
-| `customer/delete-address` | Delete address |
-| `customer/set-default-address` | Set default address |
+| `.delete-address` | Delete an address |
+| `.set-default-address` | Pick the default address |
+| `.ms3-order-cancel` | Cancel an order |
+| `#resend-verification-email` | Resend the verification email |
+
+The first two live in the default address row chunk — `tpl.msCustomer.address.row`, file `ms3_customer_address_row.tpl`.
+
+### Address form: the action depends on the mode
+
+There is one `ms3_action` field and its value changes with the mode — the default chunk fills it in:
+
+```fenom
+<input type="hidden" name="ms3_action"
+       value="customer/{if $mode == 'edit'}address-update{else}address-create{/if}">
+```
+
+Your own chunk has to do the same: with `address-create` in edit mode a second address appears instead of the existing one being changed.
 
 ## CSS classes
-
-Main classes for styling:
 
 | Class | Element |
 | --- | --- |

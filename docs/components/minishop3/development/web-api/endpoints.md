@@ -58,7 +58,7 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | `POST` | `/customer/forgot-password` | нет | Запрос сброса |
 | `POST` | `/customer/reset-password` | нет | Сброс по токену письма |
 | `POST` | `/customer/add` | auto-mint | Быстрое поле профиля |
-| `GET` | `/customer/token/get` | нет | Гостевой / текущий API-токен |
+| `GET` | `/customer/token/get` | optional | Гостевой / текущий API-токен |
 | `POST` | `/customer/token/refresh` | auto-mint | Ротация токена |
 | `GET` | `/customer/addresses` | auto-mint | Список адресов |
 | `GET` | `/customer/addresses/{id}` | auto-mint | Один адрес |
@@ -101,9 +101,10 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | --- | --- | --- | --- |
 | `GET` | `/delivery/get/{id}` | нет | Способ доставки |
 | `GET` | `/delivery/list` | нет | Активные доставки |
-| `POST` | `/delivery/webhook/{delivery_id}` | нет | Webhook провайдера (подпись, не customer token) |
+| `POST` | `/delivery/webhook/{delivery_id}` | нет | Webhook доставки (подпись handler’а; при `ms3_shipment_enabled=0` → 404) |
 | `GET` | `/payment/get/{id}` | нет | Способ оплаты |
 | `GET` | `/payment/list` | нет | Активные оплаты |
+| `POST` | `/payment/webhook/{payment_method_id}` | нет | Webhook оплаты (`PaymentWebhookHandlerInterface`) |
 
 ## Health
 
@@ -111,4 +112,4 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | --- | --- | --- | --- |
 | `GET` | `/health` | нет | Статус API |
 
-Программное создание заказа из PHP (cron/extra) это не Web HTTP: [ProgrammaticOrderService](/components/minishop3/development/backend-api/order#программное-создание-заказа-programmaticorderservice).
+Программное создание заказа из PHP (cron/extra) это не Web HTTP: [ProgrammaticOrderService](/components/minishop3/development/backend-api/order#programmnoe-sozdanie-zakazaprogrammaticorderservice).

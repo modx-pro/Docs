@@ -42,7 +42,7 @@ flowchart TB
 | MODX Revolution | 3.0+ |
 | PHP | 8.2+ |
 | MiniShop3 | установлен и настроен (каталог, оплата, доставка) |
-| pdoTools | 3.x (для примеров Fenom) |
+| pdoTools | 3.0+ (жёсткая зависимость транспорта) |
 
 ## Шаг 1: Установка пакета
 
@@ -50,8 +50,8 @@ flowchart TB
 
 1. [Подключите репозиторий ModStore](https://modstore.pro/info/connection) в настройках MODX.
 2. Перейдите в **Extras → Installer** и нажмите **Download Extras** (в MODX 3: **Пакеты → Установщик**).
-3. Убедитесь, что на сайте уже установлен **MiniShop3** (и при необходимости **pdoTools** 3.x для примеров Fenom в этой документации).
-4. Найдите **msFastOrder** в списке пакетов, нажмите **Download**, затем **Install** и дождитесь завершения резолверов (таблица логов, настройки, чанки, сниппеты, плагин).
+3. Убедитесь, что на сайте уже установлены **MiniShop3** и **pdoTools** 3.0+ (требование установщика msFastOrder).
+4. Найдите **msFastOrder**, нажмите **Download**, затем **Install**. Дождитесь резолверов: таблица логов, настройки, чанки, сниппеты, плагин.
 5. **Настройки → Очистить кэш**.
 
 Пакет в каталоге: [msFastOrder на modstore.pro](https://modstore.pro/packages/integration/msfastorder).
@@ -77,13 +77,13 @@ flowchart TB
 | `msfastorder_method` | `MS` |
 | `msfastorder_payment_id` | Числовой **ID активного** способа оплаты в MiniShop3 |
 | `msfastorder_delivery_id` | ID способа доставки MS3 |
-| `msfastorder_email_manager` | Email для уведомлений (опционально для MS, обязателен для MAIL) |
+| `msfastorder_email_manager` | Для **MAIL**: email менеджера (цепочка → `ms3_email_manager` → `emailsender`; пустой итог = заказ не создаётся) |
 
-Для **MAIL** (только письмо, без заказа в MS3): `msfastorder_method` = `MAIL` и непустой `msfastorder_email_manager`.
+Для **MAIL** (только письмо, без заказа в MS3): `msfastorder_method` = `MAIL` и рабочий адрес по цепочке выше.
 
-Резолвер установки может создать способы **Fast Order Payment** / **Fast Order Delivery** и записать их ID в `msfastorder_payment_id` и `msfastorder_delivery_id` — проверьте в **MiniShop3 → Способы оплаты / доставки**.
+Резолвер установки может создать способы **Fast Order Payment** / **Fast Order Delivery** и записать их ID в `msfastorder_payment_id` и `msfastorder_delivery_id`. Проверьте в **MiniShop3 → Способы оплаты / доставки**.
 
-Подробная таблица всех ключей: [Системные настройки](settings).
+Все ключи: [Системные настройки](/components/msfastorder/settings).
 
 ## Шаг 3: Страница «Спасибо» (режим MS)
 
@@ -91,11 +91,11 @@ flowchart TB
 
 1. Создайте ресурс «Спасибо за заказ» (alias, например `spasibo-zakaz`).
 2. В контент или шаблон добавьте сниппет просмотра заказа MS3, например `[[!ms3_get_order]]` (по документации вашей сборки MS3).
-3. Укажите ID ресурса в настройке MiniShop3 **`ms3_order_success_page_id`** (или аналог в вашей версии MS3).
+3. Укажите ID ресурса в **`ms3_order_success_page_id`**. Если пусто — используется **`ms3_order_redirect_thanks_id`**, затем **`site_start`** (логика `normalizePaymentLink` в пакете).
 
 ## Шаг 4: Сниппет на карточке товара
 
-Откройте шаблон или чанк **страницы товара** (`msProduct`). Вызов должен быть **некэшированным** — иначе CSRF и скрипты могут не обновиться.
+Откройте шаблон или чанк **страницы товара** (`msProduct`). Вызов должен быть **некэшированным**. Иначе CSRF и скрипты могут не обновиться.
 
 ::: code-group
 
@@ -123,11 +123,11 @@ flowchart TB
 
 :::
 
-Параметры сниппета: [Сниппет msFastOrder](snippets/msFastOrder).
+Параметры сниппета: [Сниппет msFastOrder](/components/msfastorder/snippets/msFastOrder).
 
 ## Шаг 5: Рекомендуемая разметка (варианты и количество)
 
-Если на сайте есть [ms3Variants](/components/ms3variants/), оберните селекторы вариантов и поле количества в одну форму с классом `ms3variants-product-{id}` — msFastOrder при открытии модалки скопирует количество и `variant_id` со страницы.
+Если на сайте есть [ms3Variants](/components/ms3variants/), оберните селекторы вариантов и поле количества в одну форму с классом `ms3variants-product-{id}`. При открытии модалки msFastOrder скопирует количество и `variant_id` со страницы.
 
 ::: code-group
 
@@ -157,7 +157,7 @@ flowchart TB
 
 :::
 
-ms3Variants по умолчанию пишет выбранный вариант в `input[name="_variant_id"]`. Если в шаблоне остаётся только это поле, при смене варианта копируйте значение в `variant_id` (событие `msfo:modal:beforeLoad` или правка чанка `ms3_variants`) — см. [Интеграция → ms3Variants](integration#интеграция-с-ms3variants).
+ms3Variants по умолчанию пишет выбранный вариант в `input[name="_variant_id"]`. Если в шаблоне остаётся только это поле, при смене варианта копируйте значение в `variant_id` (событие `msfo:modal:beforeLoad` или правка чанка `ms3_variants`) — см. [Интеграция → ms3Variants](/components/msfastorder/integration#интеграция-с-ms3variants).
 
 На **каталоге** в цикле товаров задайте класс `msfastorder-count-{id}` у поля количества:
 
@@ -176,8 +176,6 @@ ms3Variants по умолчанию пишет выбранный вариант
 :::
 
 Иначе может подтянуться чужой `input[name="count"]` со страницы.
-
-См. [Интеграция → ms3Variants](integration#интеграция-с-ms3variants).
 
 ## Шаг 6: Проверка на фронте
 
@@ -206,7 +204,7 @@ ms3Variants по умолчанию пишет выбранный вариант
 3. В MS3 включите способ **«Оплата через ЮKassa»**, возьмите его **ID**.
 4. Пропишите ID в **`msfastorder_payment_id`**, `msfastorder_method` = `MS`.
 
-Пошагово: [Интеграция → ЮKassa](integration#оплата-через-юkassa-msp3yookassa).
+Пошагово: [Интеграция → ЮKassa](/components/msfastorder/integration#оплата-через-юkassa-msp3yookassa).
 
 ## Что подключается на странице
 
@@ -218,7 +216,7 @@ ms3Variants по умолчанию пишет выбранный вариант
 
 ## Что дальше
 
-- [Системные настройки](settings) — маска телефона, модалки, rate limit, редирект
-- [Подключение на сайте](frontend) — кастомизация формы, `msFastOrder.openOrderModal()`
-- [Интеграция](integration) — кастомная кнопка, аналитика, CRM
-- [FAQ](faq) — если модалка не открывается или нет `payment_link`
+- [Системные настройки](/components/msfastorder/settings) — маска телефона, модалки, rate limit, редирект
+- [Подключение на сайте](/components/msfastorder/frontend) — своя форма, `msFastOrder.openOrderModal()`
+- [Интеграция](/components/msfastorder/integration) — своя кнопка, аналитика, CRM
+- [FAQ](/components/msfastorder/faq) — если модалка не открывается или нет `payment_link`

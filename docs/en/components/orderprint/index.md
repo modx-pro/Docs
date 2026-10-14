@@ -1,6 +1,7 @@
 ---
 title: orderPrint
 description: Component for preparing and printing documents with order information
+categories: orders
 logo: https://modstore.pro/assets/extras/orderprint/logo-lg.jpg
 modstore: https://modstore.pro/packages/integration/orderprint
 

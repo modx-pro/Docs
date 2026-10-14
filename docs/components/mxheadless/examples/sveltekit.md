@@ -7,7 +7,7 @@ description: SvelteKit server load и proxy к mxHeadless
 
 Серверный `fetch` в `+page.server.ts` и API proxy.
 
-## Env
+## Переменные среды
 
 `.env`:
 
@@ -27,6 +27,7 @@ import { env as publicEnv } from '$env/dynamic/public'
 type Envelope<T> = {
   data: T
   meta?: Record<string, unknown>
+  // links приходит только в ответах списков
   links?: Record<string, string>
 }
 
@@ -75,7 +76,7 @@ export const load: PageServerLoad = async ({ params, fetch }) => {
   const uri = `${params.slug}.html`
 
   try {
-    const page = await mxGet<Record<string, unknown>>(fetch, `/pages/${encodeURIComponent(uri)}`, {
+    const page = await mxGet<Record<string, unknown>>(fetch, `/pages/${uri}`, {
       fields: 'id,pagetitle,content,uri',
     })
     return { page: page.data }

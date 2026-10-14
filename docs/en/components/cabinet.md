@@ -1,6 +1,7 @@
 ---
 title: Cabinet
 description: User cabinet
+categories: users
 logo: https://modstore.pro/assets/extras/cabinet/logo.png
 author: prihod
 modstore: https://modstore.pro/packages/users/cabinet
@@ -209,7 +210,7 @@ Snippet for outputting login, registration and password recovery forms.
 | Name          | Default                           | Description                                                                                                                                           |
 |-------------------|-------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
 | groups            | -                                               | Comma-separated list of groups for user registration. If empty, value from system option `cabinet_auth_user_group` is used   |
-| addContexts       | -                                               | Additional contexts, comma-separated. E.g. &addContexts=`web,ru,en`                                                                        |
+| addContexts       | -                                               | Additional contexts, comma-separated. E.g. `` &addContexts=`web,ru,en` ``                                                                        |
 | widget            | login                                           | Active form widget. Allowed values: login; register; recovery                                                                              |
 | loginPageId       | 0                                               | Page ID to send the user to after login. If 0, value from system option `cabinet_login_page_id` is used        |
 | logoutPageId      | 0                                               | Page ID to send the user to after logout. If 0, value from system option `cabinet_logout_page_id` is used |

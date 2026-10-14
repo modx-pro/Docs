@@ -19,7 +19,7 @@ flowchart TB
 
 ## Before you start
 
-You already have MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools, and PHP 8.2+. You need a product with option `color` and at least one value. For the Swatches tab and CMP the role needs `msproduct_save` (same as saving a miniShop3 product). The package does not create separate ACL keys.
+You already have MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools, and PHP 8.2+. You need a product with option `color` and at least one value. The Swatches tab and CMP need `msproduct_save` on the role (same as saving a miniShop3 product). The package does not create separate ACL keys.
 
 ## Installation
 
@@ -27,7 +27,7 @@ You already have MODX 3, miniShop3, VueTools ≥ 1.1.2-pl, pdoTools, and PHP 8.2
 2. Clear the MODX cache.
 3. Open **Extras → ms3OptionsColor**. The dictionary list should load without a blank screen or VueTools errors.
 
-On install the package prepares the database for the dictionary and RAL Classic, adds the menu item, and enables the plugin: product tab, storefront styles, mFilter.
+The package prepares the dictionary and RAL Classic database, the menu item, and the plugin: product tab, storefront styles, mFilter.
 
 ## Step 1. Open the dictionary
 
@@ -35,7 +35,7 @@ Direct link: `manager/?a=index&namespace=ms3optionscolor`.
 
 ![Swatch dictionary](/components/ms3optionscolor/screenshots/overview.png)
 
-The **Dictionary** tab shows key/value pairs. **RAL** opens the RAL Classic reference when `ms3optionscolor_ral_enabled` is enabled.
+**RAL** opens the RAL Classic reference when `ms3optionscolor_ral_enabled` is enabled.
 
 ## Step 2. Assign a color on the product card
 
@@ -53,7 +53,7 @@ The record goes into the shared dictionary. The same `color=Синий` on anoth
 
 ## Step 3. Output on the storefront
 
-CSS (`css/web/main.css`) loads automatically when `ms3optionscolor_frontend_css=Yes`. On the product template, the snippet is enough:
+CSS (`css/web/main.css`) loads when `ms3optionscolor_frontend_css=Yes`. On the product template the snippet is enough:
 
 ::: code-group
 
@@ -75,7 +75,7 @@ CSS (`css/web/main.css`) loads automatically when `ms3optionscolor_frontend_css=
 
 :::
 
-If CSS is disabled in settings, add a manual `<link>`:
+If CSS is disabled, add a manual `<link>`:
 
 ::: code-group
 
@@ -123,7 +123,7 @@ Include `select.js` and call the chunk:
 
 :::
 
-With `native=1` you keep a plain `<select>`. Without the flag, when jQuery + Select2 are on the page, the script builds a dropdown with swatches.
+With `native=1` you keep a plain `<select>`. Without the flag, if jQuery and Select2 are on the page, the script builds a dropdown with swatches.
 
 ![Select with swatch](/components/ms3optionscolor/screenshots/storefront-select.png)
 

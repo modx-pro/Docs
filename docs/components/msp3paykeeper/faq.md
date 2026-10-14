@@ -7,11 +7,13 @@ description: "Частые сбои msp3PayKeeper: ключи, webhook, возв
 
 ## Payment is not configured
 
-Пустые `server_url`, логин или пароль. Проверьте properties способа, затем системные настройки, затем кеш.
+Пустые `server_url`, логин или пароль API (`Settings::isConfigured()` ложно). Проверьте properties способа, затем системные настройки, затем кэш.
+
+При оплате `send()` возвращает эту ошибку. Кнопка **Sync** на вкладке при тех же пустых полях отвечает success: отдаёт список попыток и `note` `msp3paykeeper.err_not_configured`, без запроса к PayKeeper.
 
 ## Webhook 401 / Error
 
-Неверный `secret_word` или обработчик недоступен по HTTPS. Секрет оповещений и пароль API это разные поля.
+Неверная **`msp3paykeeper_secret_word`** (или `secret_word` в properties способа) или обработчик недоступен по HTTPS. Секрет оповещений и пароль API это разные поля.
 
 URL в кабинете:
 
@@ -23,7 +25,7 @@ HTTPS без Basic Auth и без 301.
 
 ## Нет идентификатора платежа на возврате
 
-Возврат идёт по `id` из уведомления. `invoice_id` для reverse не подходит. Пока попытка `pending` или `authorized`, вкладка не зовёт `reverse`: сначала webhook или capture.
+Возврат идёт по `id` из уведомления. `invoice_id` для reverse не подходит. Пока попытка `pending` или `authorized`, вкладка не вызывает `reverse`: сначала webhook или capture.
 
 ## Настройки заполнены, токен не берётся
 

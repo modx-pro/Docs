@@ -17,17 +17,17 @@ description: MODX permissions msreviews_* для CMP и API менеджера
 | `msreviews_review_moderate` | Ручное create/update, статус, bulk, закреп, удаление медиа |
 | `msreviews_review_reply` | Ответ магазина на отзыв |
 | `msreviews_review_export` | Экспорт CSV, список очереди писем |
-| `msreviews_review_import` | Импорт отзывов из CSV |
+| `msreviews_review_import` | Импорт отзывов и вопросов из CSV |
 | `msreviews_review_analytics` | Дашборд, аналитика, поиск товара |
 | `msreviews_question_moderate` | Вопросы, ответы, закреп Q&A; также доступ к `mgr/catalog/*` для выбора ресурса в форме |
 | `msreviews_queue_process` | Ручная обработка очереди писем |
 | `msreviews_settings_manage` | Зарезервировано (настройки в **Система → Настройки**) |
 
-## Fallback на права MODX
+## Запасной вариант на права MODX
 
-Если specific-право msReviews не выдано, часть действий допускает стандартные права MODX (`view`, `save`). Для production выдавайте **`msreviews_*`** явно.
+Если отдельное право msReviews не выдано, часть действий допускает стандартные права MODX (`view`, `save`). Для рабочей среды выдавайте **`msreviews_*`** явно.
 
-| Логический ключ | Specific | Fallback MODX |
+| Логический ключ | Отдельное | Запасное MODX |
 | --- | --- | --- |
 | `review_view` | `msreviews_review_view` | `view` |
 | `review_moderate` | `msreviews_review_moderate` | `save` |
@@ -37,6 +37,7 @@ description: MODX permissions msreviews_* для CMP и API менеджера
 | `review_analytics` | `msreviews_review_analytics` | `view` |
 | `question_moderate` | `msreviews_question_moderate` | `save` |
 | `queue_process` | `msreviews_queue_process` | `save` |
+| `settings_manage` | `msreviews_settings_manage` | `settings` |
 
 ## Примеры ролей
 

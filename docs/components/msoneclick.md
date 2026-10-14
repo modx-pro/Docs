@@ -6,6 +6,7 @@ author: webnitros
 modstore: https://modstore.pro/packages/integration/msoneclick
 
 dependencies: miniShop2
+categories: orders
 ---
 
 # msOneClick

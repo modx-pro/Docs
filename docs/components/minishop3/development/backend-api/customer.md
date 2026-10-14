@@ -5,26 +5,41 @@ description: Программная работа с покупателями —
 
 # API покупателя
 
-Программный интерфейс для работы с покупателями MiniShop3 из PHP-кода.
-
 Покупатель в MiniShop3 — **отдельная сущность**, не зависящая от `modUser`:
 
 - **msCustomer** — профиль покупателя (email, телефон, пароль, статистика заказов)
 - **msCustomerToken** — токены аутентификации и верификации
 - **msCustomerAddress** — сохранённые адреса доставки
 
-Связь с `modUser` опциональна (поле `user_id`). Покупатель может существовать без пользователя MODX.
+Связь с `modUser` необязательна (поле `user_id`) — покупатель может существовать без пользователя MODX.
 
 ## Контроллер Customer
 
-Высокоуровневый интерфейс для работы с покупателями из сниппетов и плагинов.
+Высокоуровневый интерфейс для сниппетов и плагинов.
+
+::: warning Часть методов отдаёт результат в конверте
+`getFields()`, `set()`, `add()`, `generateToken()` и `updateToken()` возвращают конверт `['success' => bool, 'message' => string, 'data' => array]` — тот же `Utils::success()` / `Utils::error()`, что и в Web API. Нужные значения лежат в `data`, при пустом токене `success` равен `false`.
+
+Остальные методы отдают значение напрямую:
+
+| Метод | Возвращает |
+| --- | --- |
+| `getObject()`, `getByToken()` | `msCustomer` или `null` |
+| `create()` | `msCustomer` или `null` |
+| `addAddress()` | `bool` |
+| `getAddresses()` | массив адресов |
+| `getOrCreate()` | `int` |
+| `validate()` | значение или массив ошибок |
+
+:::
 
 ```php
 $ms3 = $modx->services->get('ms3');
 
 // Получить данные текущего покупателя (по токену сессии)
-$fields = $ms3->customer->getFields();
-// ['id' => 5, 'email' => 'user@example.com', 'first_name' => 'Иван', ...]
+$response = $ms3->customer->getFields();
+// ['success' => true, 'message' => '', 'data' => ['id' => 5, 'email' => 'user@example.com', ...]]
+$fields = $response['data'];
 
 // Получить объект msCustomer
 $customer = $ms3->customer->getObject();
@@ -95,16 +110,19 @@ $result = $ms3->customer->validate('email', 'user@example.com');
 
 ```php
 // Сгенерировать новый токен
-$data = $ms3->customer->generateToken();
-// ['token' => 'abc123...', 'lifetime' => 86400]
+$response = $ms3->customer->generateToken();
+// ['success' => true, 'message' => '', 'data' => ['token' => 'abc123...', 'lifetime' => 86400000]]
+$token = $response['data']['token'];
 
-// Обновить существующий токен
-$data = $ms3->customer->updateToken($currentToken);
+// Обновить существующий токен (при пустом аргументе создаст новый)
+$response = $ms3->customer->updateToken($currentToken);
 ```
+
+`lifetime` — миллисекунды до истечения: секунды из `ms3_customer_token_ttl`, умноженные на 1000. Транспортный пакет создаёт настройку со значением 86400 (сутки), поэтому у свежего токена здесь около `86400000` ([issue #848](https://github.com/modx-pro/MiniShop3/issues/848)).
 
 ## Аутентификация (AuthManager)
 
-`AuthManager` реализует стратегию с подключаемыми провайдерами аутентификации.
+`AuthManager` аутентифицирует покупателя через подключаемые провайдеры.
 
 ```php
 $authManager = $modx->services->get('ms3_auth_manager');
@@ -125,7 +143,7 @@ if ($customer) {
 }
 ```
 
-`AuthManager` автоматически проверяет `is_active` и `is_blocked` перед аутентификацией.
+`AuthManager` проверяет `is_active` и `is_blocked` перед аутентификацией.
 
 ### Подключаемые провайдеры
 
@@ -162,7 +180,7 @@ class TelegramAuthProvider implements AuthProviderInterface
 $authManager->registerProvider(new TelegramAuthProvider($modx));
 ```
 
-При вызове `authenticate()` менеджер перебирает провайдеры и использует первый, чей `supports()` вернёт `true`.
+При вызове `authenticate()` `AuthManager` перебирает провайдеры и использует первый, чей `supports()` вернёт `true`.
 
 ### Управление токенами
 
@@ -193,8 +211,11 @@ $deleted = $authManager->cleanupExpiredTokens();
 | `refresh` | `msCustomerToken::TYPE_REFRESH` | Токен обновления сессии | Нет |
 | `magic_link` | `msCustomerToken::TYPE_MAGIC_LINK` | Ссылка для входа без пароля | Да |
 | `email_verification` | `msCustomerToken::TYPE_EMAIL_VERIFICATION` | Подтверждение email | Да |
+| `password_reset` | `msCustomerToken::TYPE_PASSWORD_RESET` | Сброс пароля | Да |
 
 Одноразовые токены помечаются как использованные (`used_at`) после первого применения.
+
+Токен сброса пароля — исключение: его не помечают через `markAsUsed()`. После успешной смены пароля `AuthManager::revokeTokens()` вызывается без указания типа и отзывает **все** токены покупателя — активные сессии на других устройствах тоже прекращаются.
 
 ### Блокировка при неудачных попытках
 
@@ -203,7 +224,7 @@ $deleted = $authManager->cleanupExpiredTokens();
 $authManager->handleFailedLogin($customer);
 // Увеличивает failed_login_attempts
 // При достижении ms3_customer_max_login_attempts (по умолчанию 5)
-// блокирует на ms3_customer_block_duration секунд (по умолчанию 3600)
+// блокирует на ms3_customer_block_duration секунд (по умолчанию 300)
 ```
 
 ## Регистрация (RegisterService)
@@ -273,20 +294,20 @@ $result = $verification->resendVerificationEmail($customer);
 
 Настройка `ms3_email_verification_token_ttl` (по умолчанию 86400) — время жизни токена верификации в секундах.
 
-### Web API endpoint'ы покупателя — `/api/v1/customer/*`
+### Web API покупателя — `/api/v1/customer/*`
 
-Web API контроллер `CustomerProfileController`. Ниже — endpoint'ы, появившиеся в 1.10.x / 1.11.0 для интеграции с витриной.
+Контроллер — `CustomerProfileController`. Методы появились в 1.10.x / 1.11.0.
 
 | Метод | Путь | Описание |
 | --- | --- | --- |
-| `POST` | `/api/v1/customer/add` | Быстрое обновление полей профиля. Принимает `key` + `value` (одиночное поле). С 1.11.0 разрешены все колонки `msCustomer` из xPDO-карты (включая Object Extension) — исключения в denylist (`id`, `user_id`, `token`, `password`, `email_verified_at`, статусы, агрегаты, служебные даты). Для `first_name`, `last_name`, `email`, `phone` применяется Rakit-валидация; для остальных значение нормализуется по `phptype` метаданных. При смене email сбрасывается `email_verified_at`. |
-| `POST` | `/api/v1/customer/changeAddress` | Выбор сохранённого адреса в черновике заказа. Принимает `address_hash`. |
-| `GET` | `/api/v1/customer/email/verify` | Подтверждение email по токену из письма. Параметры: `token`, `html=1` (HTML-редирект вместо JSON), `format=json`. По умолчанию редирект на сайт с `ms3_email_verified=1\|0`. Кастомный URL подстановки — настройка `ms3_email_verification_url`; URL успешного подтверждения — `ms3_email_verification_success_url`. |
-| `POST` | `/api/v1/customer/email/resend-verification` | Повторная отправка письма верификации текущему авторизованному покупателю. На уровне сервиса защита от спама (5 минут между отправками). |
+| `POST` | `/api/v1/customer/add` | Обновляет одно поле профиля: `key` + `value`. С 1.11.0 разрешены все колонки `msCustomer` из xPDO-карты (включая Object Extension), кроме 18 полей из `CustomerPublicDto::SYSTEM_NON_EDITABLE_FIELDS`: `id`, `user_id`, `customer_group_id`, `token`, `password`, `email_verified_at`, флаги и счётчики блокировки, агрегаты заказов, служебные даты. `first_name`, `last_name`, `email`, `phone` проходят Rakit-валидацию, остальные значения нормализуются по `phptype` из метаданных поля. Смена email сбрасывает `email_verified_at`. |
+| `POST` | `/api/v1/customer/changeAddress` | Выбирает сохранённый адрес в черновике заказа. Принимает `address_hash`. |
+| `GET` | `/api/v1/customer/email/verify` | Подтверждает email по токену из письма. Параметры: `token`, `html=1` (HTML-редирект вместо JSON), `format=json`. По умолчанию редирект на сайт с `ms3_email_verified=1\|0`. Свой URL — настройка `ms3_email_verification_url`, URL успешного подтверждения — `ms3_email_verification_success_url`. |
+| `POST` | `/api/v1/customer/email/resend-verification` | Отправляет письмо верификации заново авторизованному покупателю. Сервис не даёт отправлять чаще раза в 5 минут. |
 
 ## Ограничение частоты запросов (RateLimiter)
 
-Сервис для защиты от brute-force атак. Использует кеш MODX.
+Защита от brute-force атак. Использует кеш MODX.
 
 ```php
 $limiter = $modx->services->get('ms3_rate_limiter');
@@ -346,11 +367,11 @@ $addressManager->delete($addressId, $customerId);
 
 ### Дедупликация адресов
 
-Хеш адреса вычисляется как MD5 от `city|street|building|room` (в нижнем регистре). При добавлении адреса с уже существующим хешем — дубликат не создаётся.
+Хеш адреса — MD5 от `city|street|building|room` в нижнем регистре. Адрес с уже существующим хешем повторно не создаётся.
 
 ## Проверка дубликатов (CustomerDuplicateChecker)
 
-Используется при создании покупателей для предотвращения дублей.
+Вызывается при создании покупателя.
 
 ```php
 $checker = $modx->services->get('ms3_customer_duplicate_checker');
@@ -383,7 +404,7 @@ $checker->setCheckFields(['email']);  // только по email
 
 ## Фабрика покупателей (CustomerFactory)
 
-Создаёт покупателя из данных заказа. Используется при финализации заказа из админки.
+Создаёт покупателя из данных заказа при финализации заказа в админке.
 
 ```php
 $factory = $modx->services->get('ms3_customer_factory');
@@ -449,7 +470,7 @@ $customer = $factory->createFromOrderData([
 | --- | --- | --- | --- |
 | `customer_id` | integer | 0 | ID покупателя |
 | `token` | string | '' | Строка токена (128 символов, unique) |
-| `type` | enum | 'api' | Тип: api, refresh, magic_link, email_verification |
+| `type` | enum | 'api' | Тип: api, refresh, magic_link, email_verification, password_reset |
 | `expires_at` | datetime | — | Срок действия |
 | `created_at` | datetime | now | Дата создания |
 | `used_at` | datetime | null | Дата использования (для одноразовых) |
@@ -459,30 +480,36 @@ $customer = $factory->createFromOrderData([
 | Настройка | По умолчанию | Описание |
 | --- | --- | --- |
 | `ms3_customer_max_login_attempts` | 5 | Попыток входа до блокировки |
-| `ms3_customer_block_duration` | 3600 | Длительность блокировки (секунды) |
-| `ms3_customer_api_token_ttl` | 86400 | Время жизни API-токена (секунды) |
-| `ms3_customer_require_email_verification` | true | Требовать подтверждение email |
+| `ms3_customer_block_duration` | 300 | Длительность блокировки (секунды) |
+| `ms3_customer_token_ttl` | 86400 | Время жизни токена сессии (секунды) |
+| `ms3_customer_require_email_verification` | false | Требовать подтверждение email |
 | `ms3_customer_send_welcome_email` | true | Отправлять приветственное письмо |
-| `ms3_customer_auto_login_after_register` | false | Автовход после регистрации |
+| `ms3_customer_auto_login_after_register` | true | Автовход после регистрации |
 | `ms3_customer_auto_register_on_order` | true | Авторегистрация при оформлении |
-| `ms3_customer_auto_login_on_order` | false | Автовход при оформлении |
+| `ms3_customer_auto_login_on_order` | true | Автовход при оформлении |
 | `ms3_customer_require_privacy_consent` | true | Требовать согласие на обработку данных |
-| `ms3_customer_duplicate_fields` | `["email","phone"]` | Поля для проверки дубликатов |
+| `ms3_customer_duplicate_fields` | `["email", "phone"]` | Поля для проверки дубликатов |
 | `ms3_customer_sync_create_moduser` | false | Создавать modUser при создании покупателя |
-| `ms3_customer_sync_user_group` | '' | Группа MODX для новых пользователей |
+| `ms3_customer_sync_user_group` | 0 | ID группы MODX для новых пользователей |
 | `ms3_password_min_length` | 8 | Минимальная длина пароля |
 | `ms3_password_reset_token_ttl` | 3600 | Время жизни токена сброса пароля |
 | `ms3_email_verification_token_ttl` | 86400 | Время жизни токена верификации |
+
+::: warning Настройка-двойник в админке
+Рядом в том же разделе стоит `ms3_customer_api_token_ttl` — её не читает ни одна строка кода, хотя значение у неё такое же. Рабочая настройка — `ms3_customer_token_ttl` из таблицы выше ([issue #797](https://github.com/modx-pro/MiniShop3/issues/797)).
+
+У рабочей настройки своя особенность: если строки нет в базе, код подставляет `604800` (неделю), а транспортный пакет создаёт её со значением `86400` (сутки) — [issue #848](https://github.com/modx-pro/MiniShop3/issues/848).
+:::
 
 ## События
 
 | Событие | Когда вызывается |
 | --- | --- |
 | `msOnBeforeCreateCustomer` / `msOnCreateCustomer` | Создание покупателя |
-| `msOnBeforeUpdateCustomer` / `msOnUpdateCustomer` | Обновление из админки |
+| `msOnBeforeUpdateCustomer` / `msOnUpdateCustomer` | Процессор `Customer/Update`; встроенная админка его не вызывает ([#847](https://github.com/modx-pro/MiniShop3/issues/847)) |
 | `msOnBeforeAddToCustomer` / `msOnAddToCustomer` | Изменение поля через контроллер |
 | `msOnBeforeValidateCustomerValue` / `msOnValidateCustomerValue` | Валидация значения поля |
 | `msOnBeforeGetOrderCustomer` / `msOnGetOrderCustomer` | Поиск/создание при оформлении |
 | `msOnBeforeAddCustomerAddress` / `msOnAddCustomerAddress` | Добавление адреса |
 
-Подробное описание параметров событий — в разделе [События](../events).
+Параметры событий — в разделе [События](../events).

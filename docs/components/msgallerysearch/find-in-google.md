@@ -60,7 +60,7 @@ Google кэширует изображения у себя на сервера, 
 ## Системные настройки
 
 - **msgallerysearch_api_cs**  - Идентификатор поисковой системы
-- **msgallerysearch_api_key** - Ключ API полученый на [странице](https://developers.google.com/custom-search/v1/overview)
+- **msgallerysearch_api_key** - Ключ API полученный на [странице](https://developers.google.com/custom-search/v1/overview)
 
 ![](https://file.modx.pro/files/c/d/5/cd58a02124eb2e909d7dca612158002as.jpg)
 

@@ -1,6 +1,7 @@
 ---
 title: resComments
 description: Многоуровневые комментарии с пагинацией для MODX3
+categories: utilities
 logo: https://file.modx.pro/files/a/9/4/a9499643bf99f8080a37405836d0a504.png
 author: Romanov Pavel
 modstore: https://modstore.pro/packages/utilities/rescomments
@@ -48,7 +49,7 @@ modstore: https://modstore.pro/packages/utilities/rescomments
 
 ## Сниппет resComments
 Выводит комментарии к ресурсу, подключает все необходимые скрипты и стили.
-Вызывается некешированным:
+Вызывается некэшированным:
 ```
 [[!resComments]]
 ```

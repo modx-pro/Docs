@@ -19,6 +19,7 @@ items: [
 
 ]
 dependencies: [ 'pdoTools', 'SendIt', 'miniShop2' ]
+categories: orders
 ---
 
 # msAltCart

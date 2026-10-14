@@ -5,7 +5,7 @@ description: "Панели на нативных details без JavaScript. Сл
 
 # Аккордеон
 
-Секция `accordion` рендерит панели как `<details>`. Отдельного JS нет. Chunk: `pagebuilderpro_accordion`. Требуется PageBuilder Pro.
+Секция `accordion` рендерит панели как `<details>`. Отдельного JS нет.
 
 У панели `open` отмечает, открыта ли она по умолчанию.
 
@@ -16,6 +16,16 @@ description: "Панели на нативных details без JavaScript. Сл
 - Короткий FAQ без отдельной секции вопросов
 - Условия и оговорки
 - Раскрывающиеся блоки в статье
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `accordion` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_accordion` |
+| Требования | pro |
 
 ## Поля
 

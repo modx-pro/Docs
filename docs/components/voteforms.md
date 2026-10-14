@@ -1,6 +1,7 @@
 ---
 title: VoteForms
 description: Система голосования и опросов для MODX Revolution
+categories: utilities
 logo: https://modstore.pro/assets/extras/voteforms/logo-lg.jpg
 author: me6iaton
 modstore: https://modstore.pro/packages/utilities/voteforms
@@ -68,7 +69,7 @@ repository: https://github.com/me6iaton/VoteForms
 [[getVoteFormRating?form=1&field=2]]
 ```
 
-Испрользование вместе с pdoResources : сортировка ресурсов по рейтингу из формы c id 1
+Использование вместе с pdoResources : сортировка ресурсов по рейтингу из формы c id 1
 
 ```modx
 [[pdoResources?

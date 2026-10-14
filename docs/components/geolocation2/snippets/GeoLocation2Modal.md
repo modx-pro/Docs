@@ -81,8 +81,8 @@ description: Модалка подтверждения и смены город�
 
 | Действие | Когда |
 |----------|--------|
-| `confirm` | «Да» на шаге confirm |
 | `save` | Выбор города из списка |
+| `confirm` | Кнопка «Да» на шаге подтверждения |
 | `dismiss` | Закрытие крестиком или backdrop |
 
 В каждом POST нужен `csrf` из `data-gl2-csrf` и заголовок `X-Requested-With: XMLHttpRequest`.

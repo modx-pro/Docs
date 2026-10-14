@@ -1,6 +1,7 @@
 ---
 title: mxBackup
 description: Резервное копирование сайта MODX Revolution 2 и 3 — архив файлов и SQL-дамп из менеджера, CLI и cron, обезличенные копии для разработки, шифрование AES-256 и безопасное восстановление.
+categories: utilities
 outline: [2, 3]
 lastUpdated: true
 logo: /components/mxbackup.jpg

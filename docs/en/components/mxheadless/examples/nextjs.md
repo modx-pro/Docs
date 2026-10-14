@@ -5,9 +5,9 @@ description: Next.js App Router and mxHeadless server fetch
 
 # Next.js
 
-App Router: server helper, page by URI, Route Handler proxy.
+Page by URI, server helper, and Route Handler.
 
-## Env
+## Environment variables
 
 `.env.local`:
 
@@ -80,7 +80,7 @@ export default async function CmsPage({ params }: Props) {
 
   let page
   try {
-    page = await mxGet<Record<string, unknown>>(`/pages/${encodeURIComponent(uri)}`, {
+    page = await mxGet<Record<string, unknown>>(`/pages/${uri}`, {
       fields: 'id,pagetitle,content,uri',
     })
   } catch {

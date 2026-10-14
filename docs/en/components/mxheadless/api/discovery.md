@@ -5,7 +5,7 @@ description: GET /api/v1 and capability snapshot in mxHeadless
 
 # Discovery
 
-`GET /api/v1` returns basic API metadata. Use it to verify the gateway and read the package version before wiring a frontend or CI.
+`GET /api/v1` returns basic API metadata. Use it to check the gateway and version before connecting a frontend or CI.
 
 No authentication required. Works with the kill switch enabled (along with `/health`).
 
@@ -21,11 +21,11 @@ The path prefix comes from `mxheadless_api_prefix` (default `/api`). The `v1` se
 {
   "data": {
     "name": "mxHeadless",
-    "version": "1.0.42",
+    "version": "1.0.43",
     "api": "/api/v1",
     "cors": {
-      "enabled": true,
-      "allowed_origins": ["http://localhost:3000"]
+      "enabled": false,
+      "allowed_origins": []
     },
     "links": {
       "health": "/api/v1/health",
@@ -34,8 +34,17 @@ The path prefix comes from `mxheadless_api_prefix` (default `/api`). The `v1` se
       "endpoints": "/api/v1/meta/endpoints",
       "openapi": "/api/v1/meta/openapi",
       "openapi_json": "/api/v1/meta/openapi.json",
+      "auth_token": "/api/v1/auth/token",
       "resources": "/api/v1/resources",
-      "pages": "/api/v1/pages/{uri}"
+      "pages": "/api/v1/pages/{uri}",
+      "contexts": "/api/v1/contexts",
+      "chunks": "/api/v1/chunks",
+      "templates": "/api/v1/templates",
+      "snippets": "/api/v1/snippets",
+      "tvs": "/api/v1/tvs",
+      "categories": "/api/v1/categories",
+      "content_types": "/api/v1/content_types",
+      "objects": "/api/v1/objects/{name}"
     }
   },
   "meta": {}

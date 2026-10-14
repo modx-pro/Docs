@@ -1,6 +1,7 @@
 ---
 title: SVResolution
 description: Служебный индикатор Bootstrap-брейкпоинта и ширины окна браузера
+categories: utilities
 logo: /components/svresolution/screenshots/logo.webp
 author: rumata-estor
 ---

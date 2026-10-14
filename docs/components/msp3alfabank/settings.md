@@ -5,18 +5,21 @@ description: Логин и пароль Альфа-Банка, тестовый 
 
 # Системные настройки msp3AlfaBank
 
-Установка и ключи: [Быстрый старт](quick-start).
+Ключ в MODX: `msp3alfabank_<имя>`. Установка: [Быстрый старт](quick-start).
 
-Ключ в MODX: `msp3alfabank_<имя>`. Логин и пароль можно положить в `msPayment.properties` (`user_name` или `login`, `password` или `secret`). Если properties пусты, пакет читает системные настройки.
+| Сценарий | Откуда берутся логин и пароль |
+| --- | --- |
+| Создание платежа (`send`) | Сначала `msPayment.properties`, иначе системные ключи и алиасы ниже |
+| Колбэк `webhook.php` | Та же цепочка: properties, системные ключи, устаревшие `mspalfabank_*` |
 
-После смены настроек очистите кеш MODX. Иначе создание платежа идёт со старыми значениями.
+После смены настроек очистите кэш MODX. Иначе создание платежа идёт со старыми значениями.
 
 Где взять логин и какой адрес шлюза выбрать: [Быстрый старт](quick-start#откуда-брать-ключи).
 
 | Ключ | Тип | По умолчанию | Назначение |
 | --- | --- | --- | --- |
 | `msp3alfabank_user_name` | text | пусто | Логин API с суффиксом `-api` |
-| `msp3alfabank_password` | password | пусто | Пароль из письма банка |
+| `msp3alfabank_password` | text-password | пусто | Пароль из письма банка |
 | `msp3alfabank_test_mode` | bool | да | Да: `alfa.rbsuat.com`. Нет: `pay.alfabank.ru` |
 | `msp3alfabank_api_base_url` | text | пусто | Свой адрес шлюза. Для логина `r-` часто `payment.alfabank.ru` |
 | `msp3alfabank_currency` | text | `643` | Числовой код валюты. `643` это рубль |
@@ -24,3 +27,15 @@ description: Логин и пароль Альфа-Банка, тестовый 
 | `msp3alfabank_success_url` | text | пусто | Куда вернуть покупателя после оплаты. Пусто: страница благодарности MS3 |
 | `msp3alfabank_fail_url` | text | пусто | Куда вернуть после ошибки. Пусто: та же страница с `payment_fail=1` |
 | `msp3alfabank_debug` | bool | нет | Подробный лог создания платежа и успешного колбэка. На бою выключите |
+
+## Алиасы логина и пароля {#алиасы-логина-и-пароля}
+
+Один и тот же логин и пароль можно записать под разными именами. Пакет берёт первое непустое значение по цепочке.
+
+| Где | Имена |
+| --- | --- |
+| `msPayment.properties` | `user_name`, `login`, `password`, `secret`, `secret_key`, `api_password` |
+| Системные настройки | `msp3alfabank_user_name`, `msp3alfabank_password`, `msp3alfabank_login`, `msp3alfabank_secret_key` |
+| Только чтение, без копирования при обновлении | `mspalfabank_user_name`, `mspalfabank_password`, если новые ключи пусты |
+
+Копирование `mspalfabank_*` в `msp3alfabank_*` при **первой установке** описано в [переходе](integration#переход-со-старого-mspalfabank).

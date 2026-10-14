@@ -1,6 +1,7 @@
 ---
 title: PageBreaker
 description: Разбивка страницы на части по специальному тегу
+categories: content
 logo: https://modstore.pro/assets/extras/pagebreaker/logo-lg.jpg
 author: bezumkin
 modstore: https://modstore.pro/packages/content/pagebreaker
@@ -84,7 +85,7 @@ items: [
 В режиме Ajax плагин старается работать через Javascript HistoryApi, то есть адрес страницы будет переключаться так же, как и без ajax.
 Никаких дополнительных параметров в строке адреса.
 
-Если у посетителя старый браузер - придётся задействовать хэш в url.
+Если у посетителя старый браузер - придётся задействовать хеш в url.
 
 [1]: http://demo.modx.pro/pagebreaker
 [2]: /system/basics/output-filters

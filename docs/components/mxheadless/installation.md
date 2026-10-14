@@ -5,7 +5,7 @@ description: Сборка transport-пакета mxHeadless, gateway и пров
 
 # Установка
 
-mxHeadless рассчитан на MODX Revolution **3.2.3+** и PHP **8.1+**.
+Требование транспорта: MODX Revolution **3.0.0+** (`modx >= 3.0.0`) и PHP **8.1+**. README пакета указывает более строгое значение: 3.2.3+.
 
 ## Через Package Manager
 
@@ -36,9 +36,9 @@ mxHeadless рассчитан на MODX Revolution **3.2.3+** и PHP **8.1+**.
 
 ## Обновление с 1.0.42
 
-Ключи настроек перешли с точек (`mxheadless.cors.enabled`) на подчёркивания (`mxheadless_cors_enabled`). Resolver при upgrade копирует значения и удаляет старые строки. После обновления очистите кэш MODX.
+При обновлении ключи настроек перешли с точек (`mxheadless.cors.enabled`) на подчёркивания (`mxheadless_cors_enabled`). Resolver копирует значения и удаляет старые строки. После обновления очистите кэш MODX.
 
-Добавлена настройка `mxheadless_context` (default `web`): bootstrap-контекст для gateway и `api.php`. Значение `mgr` игнорируется.
+Добавлена настройка `mxheadless_context` (по умолчанию `web`): контекст запуска для шлюза и `api.php`. Значение `mgr` игнорируется.
 
 ## Вручную (разработка)
 
@@ -72,14 +72,29 @@ composer install --no-dev --optimize-autoloader
 https://your-site.example/assets/components/mxheadless/api.php/v1/health
 ```
 
-На nginx/Herd (часто без PATH_INFO у вложенных `.php`) используйте query `route`:
+На nginx/Herd (часто без PATH_INFO у вложенных `.php`) используйте query-параметры `route` или `path`:
 
 ```text
 https://your-site.example/assets/components/mxheadless/api.php?route=/v1/health
 https://your-site.example/assets/components/mxheadless/api.php?route=/api/v1/resources&limit=5
+https://your-site.example/assets/components/mxheadless/api.php?path=/v1/health
 ```
 
-Голый `api.php` ведёт на discovery. Оба входа используют один pipeline middleware.
+Приоритет разбора пути: `PATH_INFO`, затем `ORIG_PATH_INFO`, затем путь после `api.php` в `REQUEST_URI`, затем `?route=`, затем `?path=`. Значение может начинаться с `/v1/...` или с префикса из `mxheadless_api_prefix` (`/api/v1/...`). Если ни один источник не дал путь, срабатывает discovery. `route` и `path` на этом входе вырезаются из query, в обработчик они не попадают.
+
+Голый `api.php` ведёт на discovery. Все входы используют одну цепочку middleware.
+
+```mermaid
+flowchart LR
+  subgraph entry [Точки входа]
+    P["OnHandleRequest /api/v1/..."]
+    F["api.php: PATH_INFO, ?route=, ?path="]
+  end
+  M[Одна цепочка middleware]
+  P --> M
+  F --> M
+  M --> H[Обработчики /v1]
+```
 
 ## Что создаётся
 
@@ -88,11 +103,11 @@ https://your-site.example/assets/components/mxheadless/api.php?route=/api/v1/res
 | Таблицы | `mxheadless_api_keys`, `mxheadless_oauth_clients`, `mxheadless_oauth_tokens`, `mxheadless_webhook_subscriptions`, `mxheadless_webhook_deliveries`, `mxheadless_api_log` |
 | Право | `mxheadless_apikeys` (по умолчанию у Administrator) |
 | Меню | **Компоненты → mxHeadless** |
-| Событие | `OnMxHeadlessRegister` |
+| События | `OnMxHeadlessRegister`, `OnMxHeadlessRegisterMiddleware`, `OnMxHeadlessBeforeRequest`, `OnMxHeadlessAfterRequest` |
 
 ## ЧПУ
 
-Включите friendly URLs. Отдельный ресурс MODX для API не нужен. За балансировщиком настройте [trusted proxies](configuration/trusted-proxies).
+Включите ЧПУ. Отдельный ресурс MODX для API не нужен. За балансировщиком настройте [trusted proxies](configuration/trusted-proxies).
 
 ## Проверка
 

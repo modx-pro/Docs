@@ -478,7 +478,7 @@ Read and write are split into two middleware groups.
 
 | Method | Route | Description |
 | --- | --- | --- |
-| GET | `` | List orders |
+| GET | (root) | List orders |
 | GET | `/filters` | Filter config |
 | GET | `/stats` | Aggregates for dashboard and filters |
 | GET | `/{id}` | Get order |
@@ -489,7 +489,7 @@ Read and write are split into two middleware groups.
 
 | Method | Route | Description |
 | --- | --- | --- |
-| POST | `` | Create order from manager |
+| POST | (root) | Create order from manager |
 | DELETE | `/bulk` | Bulk delete |
 | POST | `/{id}/finalize` | Finalize draft |
 | POST | `/{id}/recalculate-cost` | Recalculate cost |
@@ -510,7 +510,7 @@ Read and write are split into two middleware groups.
 
 | Method | Route | Description | Permission |
 | --- | --- | --- | --- |
-| GET | `` | List customers | `msorder_list` |
+| GET | (root) | List customers | `msorder_list` |
 | DELETE | `/bulk` | Bulk delete | `msorder_remove` |
 | GET | `/{id}` | Get customer | `msorder_view` |
 | PUT | `/{id}` | Update customer | `msorder_save` |
@@ -542,9 +542,9 @@ Read and write are split into two middleware groups.
 | Method | Route | Description | Permission |
 | --- | --- | --- | --- |
 | GET | `/references` | Form references | `mssetting_save` |
-| GET | `` | List notifications | `mssetting_save` |
+| GET | (root) | List notifications | `mssetting_save` |
 | GET | `/{id}` | Get notification | `mssetting_save` |
-| POST | `` | Create notification | `mssetting_save` |
+| POST | (root) | Create notification | `mssetting_save` |
 | PUT | `/{id}` | Update | `mssetting_save` |
 | DELETE | `/{id}` | Delete | `mssetting_save` |
 

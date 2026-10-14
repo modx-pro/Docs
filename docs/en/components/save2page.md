@@ -1,6 +1,7 @@
 ---
 title: Save2Page
 description: Component for saving pages to PDF, Markdown, and TXT
+categories: content
 ---
 # Save2Page
 

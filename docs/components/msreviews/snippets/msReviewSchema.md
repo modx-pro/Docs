@@ -9,7 +9,7 @@ description: JSON-LD Product и Review для SEO на карточке това
 
 ## Назначение
 
-SEO-разметка на URL товара: агрегированный рейтинг и выборка отзывов. HTML-рейтинг для пользователя даёт [msRatingSummary](msRatingSummary). JSON-LD выводит только этот сниппет.
+HTML-рейтинг для посетителя даёт [msRatingSummary](msRatingSummary). JSON-LD выводит только этот сниппет.
 
 ## Где вызывать
 
@@ -33,7 +33,7 @@ SEO-разметка на URL товара: агрегированный рей�
 | `product_url` | canonical URL ресурса | URL товара |
 | `image_url` | *(пусто)* | Картинка товара для schema |
 
-`msReviewsHub` и `msReviewsTabbed` проксируют `product_name`, `product_url`, `image_url` в schema.
+`msReviewsHub` проксирует `product_name`, `product_url`, `image_url` в schema. Рядом с `msReviewsTabbed` schema вызывайте отдельным сниппетом: Tabbed эти параметры не передаёт.
 
 ## Вызов MODX
 

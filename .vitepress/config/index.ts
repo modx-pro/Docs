@@ -1,22 +1,26 @@
 import { createHash } from 'node:crypto'
-import type { DocsTheme } from '../theme/types'
+import type { DocsTheme } from '../theme/types/index.ts'
 import { type HeadConfig, defineConfigWithTheme } from 'vitepress'
-import { config as en, searchLocale as searchLocaleEn } from './en'
-import { config as root, searchLocale as searchLocaleRu } from './ru'
-import languages from '../theme/syntaxes'
-import { darkTheme, lightTheme } from '../theme/syntaxes/themes'
-import { addPlugins } from '../theme/plugins/markdown'
-import { components, prepareData } from '../theme/plugins/component'
-import { headingSlug } from '../theme/anchors'
+import { config as en, searchLocale as searchLocaleEn } from './en.ts'
+import { config as root, searchLocale as searchLocaleRu } from './ru.ts'
+import languages from '../theme/syntaxes/index.ts'
+import { darkTheme, lightTheme } from '../theme/syntaxes/themes.ts'
+import { addPlugins } from '../theme/plugins/markdown.ts'
+import { components, prepareData } from '../theme/plugins/component.ts'
+import { headingSlug } from '../theme/anchors.ts'
 import { fileURLToPath, URL } from 'node:url'
 import { withMermaid } from 'vitepress-plugin-mermaid'
-import { modstore, modxpro, telegram } from '../../docs/icons'
-import { coreMembers } from '../../docs/authors'
-import { normalize } from '../theme/utils'
+import { modstore, modxpro, telegram } from '../../docs/icons.ts'
+import { coreMembers } from '../../docs/authors.ts'
+import { normalize } from '../theme/utils.ts'
+import { documentTitle } from '../theme/seo-snippet.ts'
+import { buildSeoHead, pageDescription } from './seo-head.ts'
 
 const SITE_HOST = 'https://docs.modx.pro/'
 const SITE_TITLE = 'docs.modx.pro'
 const SITE_TITLE_SEPARATOR = ' / '
+// сборка для превью PR (.github/workflows/preview.yml): без счётчика посещаемости
+const IS_PREVIEW = Boolean(process.env.DOCS_PREVIEW)
 
 const OG_CACHE_VERSION = (
   process.env.GITHUB_SHA?.slice(0, 8)
@@ -63,6 +67,24 @@ const readabilityLayoutScript = `(function () {
   } catch (e) {}
 })();`
 
+const metrikaScript: HeadConfig = [
+  'script',
+  {},
+  `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+  ym(103589705, "init", {
+    clickmap:true,
+    trackLinks:true,
+    accurateTrackBounce:true,
+    webvisor:false,
+    trackHash:true,
+  });`,
+]
+
 export default withMermaid(
   defineConfigWithTheme<DocsTheme.Config>({
   lastUpdated: true,
@@ -91,6 +113,11 @@ export default withMermaid(
 
   markdown: {
     languages,
+    // shiki has no `env` and `cron`: .env files are dotenv, a crontab line is a shell command
+    languageAlias: {
+      env: 'dotenv',
+      cron: 'shellscript',
+    },
     theme: {
       light: lightTheme,
       dark: darkTheme,
@@ -109,7 +136,7 @@ export default withMermaid(
       addPlugins(md)
     },
     image: {
-      lazyLoading: true
+      lazyLoad: true
     }
   },
 
@@ -125,23 +152,7 @@ export default withMermaid(
 
     ['script', {}, readabilityLayoutScript],
 
-    [
-      'script',
-      {},
-      `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-      m[i].l=1*new Date();
-      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-      ym(103589705, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true,
-        webvisor:false,
-        trackHash:true,
-      });`,
-    ],
+    ...(IS_PREVIEW ? [] : [metrikaScript]),
   ],
 
   themeConfig: {
@@ -170,32 +181,14 @@ export default withMermaid(
     ],
 
     search: {
-      provider: 'local',
+      provider: 'algolia',
       options: {
+        appId: 'BCE7F5SAJ2',
+        apiKey: 'b1fa3914451fbbf1ae1d1d65cd2b24d8',
+        indexName: 'modx',
         locales: {
           ...searchLocaleRu,
           ...searchLocaleEn,
-        },
-        detailedView: false,
-        miniSearch: {
-          options: {
-            // @ts-expect-error
-            fields: ['title', 'titles', 'text', 'isComponentIndex'],
-            storeFields: ['title', 'titles', 'isComponentIndex'],
-            extractField(document, fieldName) {
-              if (fieldName === 'isComponentIndex') {
-                return /(?<=(\/en)?)\/components\/(\w*)\/?(#\w+)?$/.test(document.id)
-              }
-
-              return document[fieldName]
-            },
-          },
-          searchOptions: {
-            boostDocument(documentId, term, storedFields) {
-              if (storedFields?.isComponentIndex) return 2.0
-              return 1.0
-            },
-          },
         },
       },
     },
@@ -212,8 +205,8 @@ export default withMermaid(
     return prepareData(pageData, siteConfig)
   },
 
-  transformHead({ pageData }: { pageData }) {
-    const title = pageData.title + SITE_TITLE_SEPARATOR + SITE_TITLE
+  transformHead({ pageData }) {
+    const title = documentTitle(pageData.title, pageData.titleTemplate)
     const image = pageData?.component
       ? SITE_HOST + 'og/' + getComponentSlug(pageData.component) + '.png?v=' + getOgImageVersion({
           v: OG_CACHE_VERSION,
@@ -242,18 +235,19 @@ export default withMermaid(
       ['meta', { name: 'twitter:image', content: image }],
     ]
 
-    if (pageData.description) {
-      output.push(
-        ['meta', { property: 'og:description', content: pageData.description }],
-        ['meta', { name: 'twitter:description', content: pageData.description }],
-      )
-    }
+    const description = pageDescription(pageData)
+    output.push(
+      ['meta', { property: 'og:description', content: description }],
+      ['meta', { name: 'twitter:description', content: description }],
+    )
 
     if (pageData.component && author) {
       output.push(
         ['meta', { property: 'article:author', content: author }],
       )
     }
+
+    output.push(...buildSeoHead({ pageData, url, image }))
 
     return output
   },
@@ -284,13 +278,16 @@ export default withMermaid(
       ],
     },
     resolve: {
+      // подмена компонентов темы: …/VPName.vue → theme/components/DocsName.vue;
+      // ловит и импорты внутри самого VitePress (VPSidebarGroup → VPSidebarItem)
       alias: [
         'VPSidebar',
+        'VPSidebarItem',
         'VPDocFooter',
         'VPNavTranslations',
         'VPNavBar',
       ].map(componentName => ({
-        find: new RegExp(`^.*\/${componentName}\.vue$`),
+        find: new RegExp(`^.*/${componentName}\\.vue$`),
         replacement: fileURLToPath(
           new URL(`../theme/components/${componentName.replace(/^VP/, 'Docs')}.vue`, import.meta.url)
         )

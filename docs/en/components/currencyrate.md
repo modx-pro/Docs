@@ -1,6 +1,7 @@
 ---
 title: CurrencyRate
 description: Foreign exchange rates from the Bank of Russia website
+categories: other
 logo: https://modstore.pro/assets/extras/currencyrate/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/other/currencyrate

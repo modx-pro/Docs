@@ -33,7 +33,7 @@ flowchart TB
 | MiniShop3 | установлен |
 | VueTools | установлен |
 
-Права делает администратор. Менеджеру каталога нужны минимум `msbulkeditor_view` и `msbulkeditor_edit`.
+Права выдаёт администратор. Менеджеру каталога нужны минимум `msbulkeditor_view` и `msbulkeditor_edit`.
 
 ## Шаг 1. Установить пакет
 
@@ -65,7 +65,7 @@ flowchart TB
 
 ## Шаг 3. Открыть панель
 
-1. Войдите под учёткой с правом `msbulkeditor_view`.
+1. Войдите под учётной записью с правом `msbulkeditor_view`.
 2. Откройте **Пакеты → msBulkEditor**.
 3. Прямая ссылка: `manager/?a=index&namespace=msbulkeditor`.
 

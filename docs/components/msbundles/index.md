@@ -7,7 +7,7 @@ modstore: https://modstore.pro/packages/ecommerce/msbundles
 dependencies:
   - miniShop3
   - VueTools
-categories: minishop3
+categories: catalog
 compatibility:
   - modx3
   - php82

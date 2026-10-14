@@ -32,9 +32,9 @@ description: Обзор сниппетов GeoLocation2
 | Инициализация | `[[!GeoLocation2Initialize]]` | `{'!GeoLocation2Initialize' \| snippet}` |
 | Текущий город | `[[!GeoLocation2Current]]` | `{'!GeoLocation2Current' \| snippet}` |
 | Модалка | `[[!GeoLocation2Modal]]` | `{'!GeoLocation2Modal' \| snippet}` |
-| Список городов | `[[!GeoLocation2? &limit=`0`]]` | `{'!GeoLocation2' \| snippet : ['limit' => 0]}` |
+| Список городов | `` [[!GeoLocation2? &limit=`0`]] `` | `{'!GeoLocation2' \| snippet : ['limit' => 0]}` |
 | SxGeo | `[[!GeoLocation2Location]]` | `{'!GeoLocation2Location' \| snippet}` |
-| Данные города | `[[!GeoLocation2Data? &forCurrent=`1`]]` | `{'!GeoLocation2Data' \| snippet : ['forCurrent' => 1]}` |
+| Данные города | `` [[!GeoLocation2Data? &forCurrent=`1`]] `` | `{'!GeoLocation2Data' \| snippet : ['forCurrent' => 1]}` |
 
 ## См. также
 

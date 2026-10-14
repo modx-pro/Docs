@@ -15,7 +15,7 @@ Two packages. **Free** covers the map, list, address search, and geolocation. **
 | Geolocation, "All locations", route | yes | yes |
 | `category` filter, sort by `distance` | yes | yes |
 | `return=chunks` / `data` / `json` | yes | yes |
-| `search.php` (same-origin AJAX) | yes | fallback when REST is off |
+| `search.php` (same-origin AJAX) | yes | fallback when REST is off or `api_token` is set |
 | Geocode button in mgr | yes | yes |
 | Extension API (contract for extras) | yes | uses Free |
 | REST API v1 (`api.php`, CORS, Bearer, `fields`/`include`) | - | yes |
@@ -73,7 +73,7 @@ Export: UTF-8 with BOM. Import from mgr is sent to the server as base64 (Cyrilli
 
 Keys `yandexmapslocator_api_*` come from Free (shared rate limit for `search.php`). Endpoint and kill switch `api_enabled` work after Pro is installed.
 
-Empty `api_token` means public REST (handy on a local stack). On production set a Bearer token.
+Empty `api_token` means public REST (handy on a local stack). On production set Bearer for server-side clients. The on-page locator never receives the token and stays on `search.php` when a secret is set.
 
 ```text
 /assets/components/yandexmapslocatorpro/api.php?route=api/v1/locations

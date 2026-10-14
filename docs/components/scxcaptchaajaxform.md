@@ -1,6 +1,7 @@
 ---
 title: scxcaptchaAjaxForm
 description: Неблокирующая числовая CAPTCHA (5 цифр) для AjaxForm и FormIt. Простая для человека, сложнее для ботов.
+categories: utilities
 logo: https://sait-modx.by/assets/images/components/scxcaptchaajaxform/logo_captha.png
 author: sait-modx.by
 compatibility:

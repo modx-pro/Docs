@@ -12,8 +12,8 @@ description: Чанки msfo_* — кнопка, письма, эталоны ф
 | Чанк | Используется в рантайме | Назначение |
 |------|-------------------------|------------|
 | `msfo_button` | **Да** | Кнопка «Купить в 1 клик» (сниппет `msFastOrder`, `tplBtn`) |
-| `msfo_email_manager` | **Да** | Письмо менеджеру (MAIL и уведомления) |
-| `msfo_email_customer` | **Да** | Письмо покупателю |
+| `msfo_email_manager` | **Да** (MAIL) | Письмо менеджеру |
+| `msfo_email_customer` | **Да** (MAIL) | Письмо покупателю, если указан email |
 | `msfo_modal` | Нет | Эталон оболочки модалки |
 | `msfo_form` | Нет | Эталон разметки формы |
 | `msfo_success` | Нет | Эталон экрана успеха |
@@ -41,7 +41,7 @@ flowchart LR
 ```
 
 ::: warning Форма и success в модалке
-По умолчанию HTML формы и экрана успеха **не** берётся из чанков `msfo_form` / `msfo_success` на сервере. Их собирает JavaScript (`renderForm`, `renderSuccess` в `msfo.js`). Изменение только чанка **не изменит** модалку — см. [Подключение на сайте](frontend#форма-в-модалке-важно).
+По умолчанию HTML формы и экрана успеха **не** берётся из чанков `msfo_form` / `msfo_success` на сервере. Их собирает JavaScript (`renderForm`, `renderSuccess` в `msfo.js`). Изменение только чанка **не изменит** модалку — см. [Подключение на сайте](/components/msfastorder/frontend#форма-в-модалке-важно).
 :::
 
 ## msfo_button
@@ -51,12 +51,11 @@ flowchart LR
 | Плейсхолдер | Описание |
 |-------------|----------|
 | `product_id` | ID товара |
-| `hash` | `md5(product_id + site_key)` |
 | `primary` | Если true — класс `msfo-trigger--primary` |
 
 Текст кнопки — лексикон `msfastorder_button_text`.
 
-Кастомный чанк кнопки (`tplBtn`):
+Свой чанк кнопки (`tplBtn`):
 
 ::: code-group
 
@@ -75,13 +74,13 @@ flowchart LR
 ::: code-group
 
 ```fenom
-<button type="button" class="msfo-trigger" data-msfo-trigger data-msfo-product-id="{$product_id}" data-msfo-hash="{$hash}">
+<button type="button" class="msfo-trigger" data-msfo-trigger data-msfo-product-id="{$product_id}">
   {$_modx->lexicon('msfastorder_button_text')}
 </button>
 ```
 
 ```modx
-<button type="button" class="msfo-trigger" data-msfo-trigger data-msfo-product-id="[[+product_id]]" data-msfo-hash="[[+hash]]">
+<button type="button" class="msfo-trigger" data-msfo-trigger data-msfo-product-id="[[+product_id]]">
   [[%msfastorder_button_text]]
 </button>
 ```
@@ -90,7 +89,7 @@ flowchart LR
 
 ## msfo_form (эталон)
 
-Плейсхолдеры для серверного рендера или как образец полей:
+Плейсхолдеры для серверной отрисовки или как образец полей:
 
 `product_id`, `pagetitle`, `price`, `old_price`, `thumb`, `count`, `options`, `phone_mask`.
 
@@ -98,7 +97,7 @@ flowchart LR
 
 ## msfo_success (эталон)
 
-Используется как образец для кнопки оплаты:
+Образец кнопки оплаты:
 
 ::: code-group
 
@@ -118,23 +117,25 @@ flowchart LR
 
 :::
 
-В рантайме аналогичная разметка создаётся в `FormHandler.renderSuccess()` (чанк на сервере по умолчанию не подставляется).
+В рантайме аналогичную разметку создаёт `FormHandler.renderSuccess()` (чанк на сервере по умолчанию не подставляется).
 
 ## Письма
 
 | Чанк | Когда отправляется |
 |------|-------------------|
-| `msfo_email_manager` | Режим MAIL; также уведомления менеджеру при настройке |
-| `msfo_email_customer` | Если указан email клиента |
+| `msfo_email_manager` | Только режим **MAIL** |
+| `msfo_email_customer` | Режим **MAIL**, если указан email клиента |
 
-Проверьте настройку почты MODX (SMTP), если письма не доходят — [FAQ](faq#режим-mail--письмо-не-приходит).
+В режиме **MS** письма через эти чанки **не** уходят. Почта заказов — настройки MiniShop3.
+
+Если письма не доходят, проверьте почту MODX (SMTP) — [FAQ](/components/msfastorder/faq#режим-mail--письмо-не-приходит).
 
 ## Кастомизация
 
 | Задача | Подход |
 |--------|--------|
 | Своя кнопка | Чанк `tplBtn` или HTML с `data-msfo-trigger` |
-| Своя форма в модалке | Событие `msfo:modal:loaded`, эталон `msfo_form` — [Подключение на сайте](frontend#форма-в-модалке-важно) |
+| Своя форма в модалке | Событие `msfo:modal:loaded`, эталон `msfo_form` — [Подключение на сайте](/components/msfastorder/frontend#форма-в-модалке-важно) |
 | Доработка после загрузки | Событие `msfo:modal:loaded` |
 | Свой success | Правка `renderSuccess()` или событие `msfo:order:success` |
 

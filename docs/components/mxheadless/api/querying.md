@@ -5,15 +5,15 @@ description: filter, sort, fields, pagination и includes в mxHeadless
 
 # Запросы
 
-Общие query-параметры для list/detail на registered objects.
+Параметры списка и карточки для зарегистрированных объектов.
 
 ## Pagination
 
-| Параметр | Default | Примечание |
+| Параметр | По умолчанию | Примечание |
 | --- | --- | --- |
-| `limit` | `20` | Max: `mxheadless_max_limit` (100) |
-| `offset` | `0` | Max: `mxheadless_max_offset` |
-| `page` | - | Альтернатива offset. **Не** комбинируйте с `offset` (422) |
+| `limit` | `20` | Не больше `mxheadless_max_limit` (100) |
+| `offset` | `0` | Не больше `mxheadless_max_offset` |
+| `page` | - | Вместо `offset`. Вместе с `offset` даёт `422` |
 
 В `meta`: `total`, `count`, `limit`, `offset`, `has_more`. В `links`: `self`, `next`, `prev` при наличии.
 
@@ -23,29 +23,43 @@ description: filter, sort, fields, pagination и includes в mxHeadless
 fields=id,pagetitle,uri
 ```
 
-Максимум полей: `mxheadless_max_fields` (50). Неизвестное или forbidden поле → `422`.
+Не больше `mxheadless_max_fields` (50) полей. Неизвестное или запрещённое поле даёт `422`.
 
 ## Filter
-
-Простые формы:
 
 ```text
 filter[published]=1
 filter[parent]=5
-filter[pagetitle][like]=news
+filter[alias][like]=%news%
 ```
 
-Операторы зависят от definition (eq, like, gt, …). Только зарегистрированные filterable fields.
+`filter[field]=value` равен `filter[field][eq]=value`. Синоним параметра: `filters`. Неизвестное поле или оператор даёт `422`.
+
+Для boolean-полей (`published`, `deleted`, `hidemenu`, `isfolder`, `richtext`, `searchable`, `cacheable`, `uri_override`, `hide_children_in_tree`, `show_in_tree`) значение нормализуется: принимаются `1`, `0`, `true`, `false`, `yes`, `no`, `on`, `off` и пустая строка. Остальное даёт `422`.
+
+| Оператор | Синоним |
+| --- | --- |
+| `eq` | |
+| `neq` | `ne` |
+| `gt` `gte` `lt` `lte` | |
+| `like` | |
+| `in` `not_in` | |
+| `null` `not_null` | |
+
+У `resources` нет `pagetitle` в `filterable`. Поиск по заголовку: `?q=`.
 
 ## Sort
 
 ```text
 sort=menuindex
 sort=-createdon
-sort=parent,-id
+sort=menuindex,-id
+sort=publishedon:desc
 ```
 
-Префикс `-` задаёт DESC.
+Префикс `-` или суффикс `:desc` задаёт DESC. `:asc` и `+` задают ASC. У `resources` нельзя `sort=parent`.
+
+Без `sort` выборка сортируется по primary key объекта по возрастанию. Для `resources` это `id`, для `contexts` — `key`. Это гарантирует стабильный порядок при пагинации с `offset`: строки не «прыгают» между страницами. Поле, которое нужно сортировать по порядку дерева, обязано попадать в `sortable`.
 
 ## Поиск
 
@@ -53,17 +67,28 @@ sort=parent,-id
 ?q=installation
 ```
 
-`QueryParser` строит `LIKE %term%` по полям из `searchable` в definition. У `resources` в ядре: `pagetitle`, `longtitle`, `description`, `introtext`, `alias`, `uri`. Поля объединяются через OR.
+`QueryParser` строит `LIKE %term%` по полям `searchable` из определения. У `resources` в ядре: `pagetitle`, `longtitle`, `description`, `introtext`, `alias`, `uri`. Поля объединяются через OR.
 
-Короткий термин может вернуть много строк. Сужайте выборку через `filter`. Если searchable пуст, ответ `422 Search not supported`. Список полей: [Schema](schema).
+Короткий термин может вернуть много строк. Сужайте выборку через `filter`. Если `searchable` пуст, ответ `422 Search not supported`. Список полей: [Schema](schema).
+
+::: warning `q` конфликтует с friendly URL
+
+Значение `q`, совпадающее с путём запроса, вырезается из query до разбора (`Psr7RequestFactory::stripRoutingQueryParams`). Например, `GET /api/v1/resources?q=resources` обработает `q` как путь и поиск не выполнит. Это сделано, чтобы friendly URL MODX вида `/?q=installation` не конфликтовал с поиском.
+
+Подставляйте термин так, чтобы он не был равен пути: используйте URL-кодирование, другой регистр не поможет. На части хостингов параметр может быть съеден и до входа в PHP, тогда поиск не отработает без ошибки. Проверяйте выдачу.
+
+:::
 
 ## Includes
 
 ```text
-include=template,tvs
+include=parent,children
+include=tvs
 ```
 
-Лимиты: `mxheadless_max_include_relations` (10), `mxheadless_max_include_depth` (2). Имена relations берутся из schema.
+У `resources` связи: `parent`, `children`. Поле `template` — id шаблона, не include. TV: `include=tvs` / `include=tv`, `?tv_fields=name1,name2` или `?include_tv=1`. Чанки, шаблоны, сниппеты, TV: `include=category`. Категории: `include=parent`.
+
+Лимиты: `mxheadless_max_include_relations` (10), `mxheadless_max_include_depth` (2). Имена связей берутся из schema.
 
 ## Контекст
 
@@ -72,15 +97,16 @@ include=template,tvs
 X-Context: web
 ```
 
-Заголовок удобнее для кэша. Без параметра используется bootstrap-контекст (`mxheadless_context`, по умолчанию `web`).
+Заголовок удобнее для кэша. Без параметра берётся контекст запуска: `mxheadless_context`, по умолчанию `web`.
 
-Whitelist `mxheadless_allowed_contexts` (default `web,mgr`) ограничивает допустимые значения. Каталог и settings: [Elements и Contexts](elements).
+Список `mxheadless_allowed_contexts` (по умолчанию `web,mgr`) ограничивает допустимые значения. Каталог и settings: [Elements и Contexts](elements).
 
 ## Preview / deleted
 
 ```text
 ?preview=true
 ?include_deleted=1
+?includeDeleted=1
 ```
 
 Только с соответствующими правами. Подробнее: [Preview](preview), [Авторизация](/components/mxheadless/authorization).

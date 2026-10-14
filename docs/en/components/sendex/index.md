@@ -1,11 +1,11 @@
 ---
 title: Sendex
 description: Email newsletters in MODX — subscribers, send queue, and a front-end subscribe form
+categories: notifications
 logo: https://modstore.pro/assets/extras/sendex/logo-lg.jpg
 author: modx-pro
 modstore: https://modstore.pro/packages/alerts-mailing/sendex
 repository: https://github.com/modx-pro/Sendex
-categories: utilities
 
 compatibility:
   - modx2

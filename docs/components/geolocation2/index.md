@@ -1,11 +1,11 @@
 ---
 title: GeoLocation2
 description: Геоданные MODX — справочник gl_*, SxGeo, модалка выбора города, REST action.php
+categories: maps
 author: Ibochkarev
 logo: https://modstore.pro/assets/extras/geolocation2/logo.png
 modstore: https://modstore.pro/packages/maps/geolocation2
 repository: https://github.com/Ibochkarev/GeoLocation2
-categories: utilities
 compatibility:
   - modx3
   - php82
@@ -38,7 +38,7 @@ items: [
 
 - Таблицы `gl_countries`, `gl_regions`, `gl_cities`, `gl_data` и менеджер в админке MODX
 - SxGeo (локальная база `.dat`, без внешних API на каждый запрос)
-- Сессия `$_SESSION['gl2']`: выбранный город, флаг подтверждения, CSRF-токен
+- Сессия `$_SESSION['geolocation2']`: выбранный город, флаг подтверждения, CSRF-токен
 - Сниппеты для списка городов, SxGeo-lookup, `gl_data`, модалки
 - CSV-импорт и экспорт справочников из менеджера
 - Задача Scheduler для автообновления SxGeo (опционально)

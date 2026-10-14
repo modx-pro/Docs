@@ -5,9 +5,17 @@ description: Public ID и API Secret CloudPayments, чек 54-ФЗ, валюта
 
 # Системные настройки msp3CloudPayments
 
-Установка и ключи: [Быстрый старт](quick-start).
+Ключ в MODX: `msp3cloudpayments_<имя>`. Установка: [Быстрый старт](quick-start).
 
-Ключ в MODX: `msp3cloudpayments_<имя>`. Public ID и секрет можно положить в `msPayment.properties` (`public_id`, `api_secret`, `secret`, `webhook_secret`). Если properties пусты, пакет читает системные настройки.
+Счёт, вкладка заказа и `webhook.php` берут ключи по цепочке:
+
+1. Непустые `msPayment.properties`: `public_id` или `login`, `api_secret`, `secret`, `webhook_secret`, `secret_key`.
+2. `msp3cloudpayments_*`.
+3. `mspcloudpayments_*`.
+
+Кеш не подставляет ключи.
+
+HMAC на `webhook.php` идёт по той же цепочке, что счёт и вкладка.
 
 После смены настроек очистите кеш MODX.
 
@@ -26,6 +34,6 @@ description: Public ID и API Secret CloudPayments, чек 54-ФЗ, валюта
 | `msp3cloudpayments_payment_object` | number | `1` | Предмет расчёта товара |
 | `msp3cloudpayments_payment_object_delivery` | number | `4` | Предмет расчёта доставки |
 | `msp3cloudpayments_json_data_extra` | textarea | пусто | Дополнительный JSON. Пакет сливает его с номером попытки и чеком |
-| `msp3cloudpayments_success_url` | text | пусто | Куда вернуть покупателя после оплаты |
-| `msp3cloudpayments_fail_url` | text | пусто | Куда вернуть после ошибки |
+| `msp3cloudpayments_success_url` | text | пусто | Куда вернуть после оплаты. Пусто: страница из `ms3_order_redirect_thanks_id` с `msorder` |
+| `msp3cloudpayments_fail_url` | text | пусто | Куда вернуть после ошибки. Пусто: та же страница с `msorder` и `payment_fail=1` |
 | `msp3cloudpayments_debug` | bool | нет | Подробный лог. На бою выключите |

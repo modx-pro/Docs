@@ -12,7 +12,7 @@ description: 'Установка YandexMapsLocator: ключ Яндекс.Кар
 | Куда | Зачем |
 |------|--------|
 | Браузер (`api-maps.yandex.ru/2.1`) | Карта и маркеры |
-| Сервер (`geocode-maps.yandex.ru`) | Поиск по адресу, геолокация, кнопка в mgr, REST geocode (Pro) |
+| Сервер (`geocode-maps.yandex.ru`) | Поиск по адресу, геолокация, кнопка в менеджере, REST geocode (Pro) |
 
 1. Войдите в [Кабинет разработчика](https://developer.tech.yandex.ru/) с Яндекс ID.
 2. Подключите **JavaScript API и HTTP Геокодер**.
@@ -104,7 +104,7 @@ description: 'Установка YandexMapsLocator: ключ Яндекс.Кар
 После установки Pro:
 
 1. Задайте `yandexmapslocator_timezone` (омская сеть: `Asia/Omsk`) и при необходимости TV `yandexmaps_timezone` на точках.
-2. Для REST: `yandexmapslocator_api_token` и `api_cors_origins` на production.
-3. CSV и bulk geocode: **Компоненты → YandexMapsLocator Pro**.
+2. Для REST серверных клиентов: `yandexmapslocator_api_token` и `api_cors_origins` на рабочем сайте. Локатор на сайте при заданном токене остаётся на `search.php`.
+3. CSV и массовый геокод: **Компоненты → YandexMapsLocator Pro**.
 
 Pro ≥ 1.1.0-pl2, Free ≥ 1.0.0-pl7. См. [Free и Pro](free-vs-pro), [Что даёт Pro](pro/).

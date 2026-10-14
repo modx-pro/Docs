@@ -13,7 +13,6 @@
 | Русская версия | [docs.modx.pro](https://docs.modx.pro/) |
 | English | [docs.modx.pro/en](https://docs.modx.pro/en/) |
 
-
 ## 📑 Содержание
 
 - [Русский](#русский)
@@ -94,7 +93,9 @@ See [Getting started](https://docs.modx.pro/en/guide/getting-started) on the doc
 
 <h1 id="local-dev">🔧 Локальная разработка / Local development</h1>
 
-**Требования:** Node.js **18+**. В репозитории зафиксирован менеджер пакетов **pnpm** (см. `package.json` → `packageManager`).
+**Требования:** Node.js **22.18+**. В репозитории зафиксирован менеджер пакетов **pnpm** (см. `package.json` → `packageManager`); установите pnpm 10 или новее, и он сам переключится на эту версию. Настройки pnpm — в `pnpm-workspace.yaml`.
+
+pnpm не ставит версии пакетов моложе суток (`minimumReleaseAge`) и при `pnpm add`/`pnpm update` молча берёт предыдущую, даже с `@latest`. Если свежая версия нужна срочно (например, исправление уязвимости), укажите её явно: `pnpm add пакет@X.Y.Z --config.minimumReleaseAge=0`. До истечения суток CI и деплой с таким `pnpm-lock.yaml` не пройдут.
 
 ```bash
 pnpm install
@@ -108,18 +109,20 @@ pnpm dev
 | `pnpm dev` | Локальный предпросмотр (VitePress dev, hot reload) |
 | `pnpm build` | Продакшен-сборка (перед сборкой запускается генерация OG; для Node задан лимит памяти — см. скрипт в `package.json`) |
 | `pnpm preview` | Просмотр уже собранного статического сайта |
-| `pnpm lint` / `pnpm lint:fix` | Markdownlint по `**/*.md` |
-| `pnpm spellcheck` | Проверка орфографии для `docs/**/*.md` **кроме** `docs/en/**` (отдельная проверка английского при необходимости — вручную или своими правилами) |
+| `pnpm generate:og` | OG-картинки компонентов (запускается и в `pnpm build`). Перерисовываются только изменившиеся, кэш — `.vitepress/cache/og`; в git картинки (`docs/public/og/`, `og-default.png`) не хранятся. `pnpm generate:og -- --force` перерисовывает всё и заново скачивает логотипы |
+| `pnpm lint:changed` / `pnpm lint` | Markdownlint: изменённые строки / все файлы; автоисправление — `pnpm exec markdownlint --fix <путь>` (`pnpm lint:fix` — по всему репозиторию) |
+| `pnpm spellcheck:changed` / `pnpm spellcheck` | Проверка орфографии (RU и EN): изменённые строки / все файлы |
+| `pnpm check:sync:changed` | У новых русских страниц есть английские версии (заготовка — `node scripts/sync-docs-en.mjs <путь>`); предупреждение, если изменена только русская |
+| `pnpm check:structure:changed` / `pnpm check:structure` | Разделов `##`/`###` в EN не меньше, чем в RU: изменённые страницы (предупреждения, как в CI) / все страницы |
 | `pnpm generate` | Мастер создания заготовок документации (Plop) |
 
 <h1 id="contributor-tips">💡 Советы контрибьюторам / Contributor tips</h1>
 
 - ✅ **Мелкие PR** проще и быстрее ревьюить: одна тема (один компонент, один раздел) вместо «всего сразу».
-- ✅ Перед отправкой PR полезно прогнать **`pnpm lint`** (и при правках по-русски — **`pnpm spellcheck`**).
+- ✅ Перед отправкой PR прогоните **`pnpm lint:changed`**, **`pnpm spellcheck:changed`** и **`pnpm check:sync:changed`** — их же запускает CI в PR (разметка и орфография — по изменённым строкам).
 - ✅ Следуйте структуре соседних статей в том же каталоге: front matter, заголовки, внутренние ссылки VitePress.
 - ✅ Скриншоты и схемы кладите в соответствующие папки рядом с документацией или в `docs/public/`, если так принято для вашего раздела — ориентируйтесь на существующие статьи.
 - ✅ Не знаете, с чего начать? Откройте [Issues][repository-issues] — там можно обсудить идею до большого объёма правок.
-
 
 <h1 id="useful-links">🔗 Полезные ссылки / Links</h1>
 

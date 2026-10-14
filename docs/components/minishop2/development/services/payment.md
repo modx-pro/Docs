@@ -8,7 +8,7 @@
 - **success($message, $data, $placeholders)** — Формирование успешного ответа.
 - **error($message, $data, $placeholders)** — Формирование ответа об ошибке.
 
-Стандартный класс `msPaymentHandler` также имеет публичный метод **getOrderHash($order)** — генерирует MD5-хэш заказа для верификации (на основе id, num, cart_cost, delivery_cost и createdon).
+Стандартный класс `msPaymentHandler` также имеет публичный метод **getOrderHash($order)** — генерирует MD5-хеш заказа для верификации (на основе id, num, cart_cost, delivery_cost и createdon).
 
 ## Создание операции и отправка на оплату
 

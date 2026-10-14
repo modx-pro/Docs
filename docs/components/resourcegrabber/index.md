@@ -1,6 +1,7 @@
 ---
 title: ResourceGrabber
 description: Компонент реализует функционал парсинга данных по ссылке
+categories: import-export
 logo: https://modstore.pro/assets/extras/resourcegrabber/logo.png
 author: vgrish
 modstore: https://modstore.pro/packages/import-and-export/resourcegrabber

@@ -3,6 +3,6 @@ title: Snippets
 ---
 # mxQuickView snippets
 
-The component provides one snippet:
+One snippet:
 
-- [mxQuickView.initialize](mxquickview-initialize) — loads CSS/JS and built-in modal HTML.
+- [mxQuickView.initialize](/en/components/mxquickview/snippets/mxquickview-initialize) — CSS/JS and built-in modal HTML. Parameters `debug` and `loadingText` are not in transport properties but work in the call.

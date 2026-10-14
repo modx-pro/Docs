@@ -3,10 +3,10 @@ title: Vendor events
 ---
 # Vendor events
 
-Events for tracking vendor (brand) operations.
+Tracking operations on vendors (brands).
 
 ::: warning Vue settings vs processors
-Vendor CRUD in the admin (**Extras → MiniShop3 → Vendors**) goes through `VendorsController` (Manager API) **without** `$modx->invokeEvent`. The events below fire only when legacy processors `MiniShop3\Processors\Settings\Vendor\*` are called (`runProcessor`, old connector). To intercept changes from Vue, use post-save hooks via your own REST middleware or by extending the controller in an addon.
+Vendor CRUD in the manager (**Extras → MiniShop3 → Vendors**) goes through `VendorsController` (Manager API) **without** `$modx->invokeEvent`. The events below fire only when the older processors `MiniShop3\Processors\Settings\Vendor\*` are called (`runProcessor`, the old connector). To intercept changes made in the Vue manager, add your own REST middleware after the save, or extend the controller in an add-on.
 :::
 
 ## msOnBeforeVendorCreate
@@ -18,7 +18,10 @@ Fired **before** creating a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Vendor object |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
 | `mode` | `string` | Mode: `new` |
+| `data` | `array` | Vendor fields at call time (`$object->toArray()`) |
+| `id` | `int` | Vendor ID (`0` — not created yet) |
 
 ### Aborting the operation
 
@@ -52,7 +55,9 @@ Fired **after** creating a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Created vendor object |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
 | `mode` | `string` | Mode: `new` |
+| `id` | `int` | ID of the created vendor |
 
 ### Example
 
@@ -83,10 +88,17 @@ Fired **before** updating a vendor.
 
 | Parameter | Type | Description |
 | --- | --- | --- |
-| `msVendor` | `msVendor` | Vendor object |
+| `msVendor` | `msVendor` | Vendor object (fields already hold the NEW values — no snapshot of the old ones) |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
 | `mode` | `string` | Mode: `upd` |
+| `data` | `array` | Vendor fields at call time — already the new values (`$object->toArray()`) |
+| `id` | `int` | ID of the vendor being updated |
 
-### Example
+::: warning The previous field values are gone
+By the time this event fires, `msVendor` already holds the new values — MODX applies them before `beforeSaveEvent` runs. The object has no `getPrevious()`-style method, so take the "before" snapshot earlier, for example in the controller ahead of `runProcessor`.
+:::
+
+### Aborting the operation
 
 ```php
 <?php
@@ -94,10 +106,11 @@ switch ($modx->event->name) {
     case 'msOnBeforeVendorUpdate':
         $vendor = $scriptProperties['msVendor'];
 
-        $modx->eventData['vendor_before'] = [
-            'name' => $vendor->getPrevious('name'),
-            'logo' => $vendor->getPrevious('logo'),
-        ];
+        // Reject an empty name
+        if (trim((string) $vendor->get('name')) === '') {
+            $modx->event->output('Vendor name cannot be empty');
+            return;
+        }
         break;
 }
 ```
@@ -113,7 +126,9 @@ Fired **after** updating a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Updated vendor object |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
 | `mode` | `string` | Mode: `upd` |
+| `id` | `int` | ID of the updated vendor |
 
 ### Example
 
@@ -147,6 +162,8 @@ Fired **before** deleting a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Vendor object to delete |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
+| `id` | `int` | ID of the vendor being deleted |
 
 ### Aborting the operation
 
@@ -182,6 +199,8 @@ Fired **after** deleting a vendor.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `msVendor` | `msVendor` | Deleted vendor object |
+| `object` | `msVendor` | The same reference as `msVendor` (MS2-style alias) |
+| `id` | `int` | ID of the deleted vendor |
 
 ### Example
 

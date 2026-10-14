@@ -1,6 +1,7 @@
 ---
 title: ePochta
 description: Component for sending SMS via ePochta API and phone number validation
+categories: notifications
 ---
 # ePochta
 

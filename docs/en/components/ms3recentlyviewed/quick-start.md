@@ -3,8 +3,6 @@ title: Quick start
 ---
 # Quick start
 
-Step-by-step setup of the “Recently viewed” block on a MiniShop3 site.
-
 ## Requirements
 
 | Requirement | Version |
@@ -13,17 +11,18 @@ Step-by-step setup of the “Recently viewed” block on a MiniShop3 site.
 | PHP | 8.1+ |
 | MiniShop3 | installed |
 | pdoTools | 3.0.0+ |
-| Fenom | required for snippets and chunks |
+| VueTools | 1.2.0+ for the manager (Import Map `vue` + `vuetools/theme`). Without it the Extras page is empty |
+| Fenom | used by chunks via pdoTools; no hard `class_exists(Fenom)` check |
 
 ## Step 1: Installation
 
 1. Go to **Extras → Installer**
 2. Find **ms3RecentlyViewed** in the list of available packages
-3. Click **Download** then **Install**
+3. Click **Download** then **Install**. Manager UI needs **VueTools ≥ 1.2.0** even though it is not in package `requires`.
 
 ## Step 2: Lexicon, styles and script
 
-In the template (or shared head/footer), load **first** the lexicon, then CSS and JS.
+In the template (or shared head/footer), load the lexicon **first**, then CSS and JS.
 
 ::: code-group
 
@@ -41,11 +40,13 @@ In the template (or shared head/footer), load **first** the lexicon, then CSS an
 
 :::
 
-Without ms3rvLexiconScript the script falls back to Russian strings; for a multilingual site the lexicon is required.
+Without `ms3rvLexiconScript` the script falls back to Russian strings. For a multilingual site the lexicon is required.
 
 ## Step 3: Product page — pass ID for tracking
 
-The list is filled **automatically** when a product page is opened. Pass the current resource ID in one of these ways.
+The list fills when a product page opens.
+
+On the MiniShop3 product template (`ms3_template_product_default`) the plugin **ms3recentlyviewedsync** sets `window.ms3rvCurrentProductId`. On a custom product template set the ID yourself.
 
 **Attribute on `<body>` (recommended):**
 
@@ -61,7 +62,7 @@ The list is filled **automatically** when a product page is opened. Pass the cur
 
 :::
 
-**JS variable (before viewed.js):**
+**JS variable (before `viewed.js`):**
 
 ::: code-group
 
@@ -81,9 +82,9 @@ The list is filled **automatically** when a product page is opened. Pass the cur
 
 | Scenario | When to use |
 |----------|-------------|
-| **JS `render()`** | Default: **`localStorage`**, shared template. The server on a normal GET **cannot** read localStorage — without JS the list is empty. |
-| **Snippet with `fromDB`** | Logged-in user in the **web** context and DB sync on — IDs come from the server table. |
-| **Snippet with `ids` + cookie** | You need **server** HTML for guests: set **`ms3recentlyviewed.storage_type` = `cookie`**, plugin **ms3recentlyviewedViewedIdsPlaceholder** sets placeholder **`viewedIds`**, pass `ids` from **`[[+viewedIds]]`** or `{$_modx->getPlaceholder('viewedIds')}` in Fenom. The name **`viewedIds` is reserved** — do not override it. |
+| **JS `render()`** | Default: **`localStorage`**, shared template. A normal GET cannot read `localStorage`. Without JS the list is empty. |
+| **Snippet with `fromDB`** | User authenticated in the **current** context. `sync_enabled` controls writes, not this read. |
+| **Snippet with `ids` + cookie** | Server HTML for guests. Set **`ms3recentlyviewed.storage_type`** = `cookie`. Plugin **ms3recentlyviewedViewedIdsPlaceholder** sets placeholder **`viewedIds`**. Pass `ids` from **`[[+viewedIds]]`** or `{$_modx->getPlaceholder('viewedIds')}` in Fenom. The name **`viewedIds` is reserved**. Do not override it. |
 
 ### Client-side (JS)
 
@@ -100,13 +101,15 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 ```
 
-The script will request the list from the connector and output HTML. When there are no items the block is hidden.
+The script writes the list or `emptyTpl` into the container (`display` stays visible). Only `#ms3-recently-viewed-section` is hidden when empty. A wrapper `#ms3-recently-viewed` without that section stays on the page.
 
-**Current package conveniences:** class **`row`** may be **added automatically** to **`.ms3rv__list`** (Bootstrap); if **`#ms3-recently-viewed`** and **`#ms3-similar`** exist, the script may **auto-call render** on `DOMContentLoaded`. Still load `viewed.css` in the template; if missing, JS may inject styles.
+A server snippet with no IDs (guest + `localStorage`) marks the container with `data-ms3rv-hydrate` so `viewed.js` can fill it from the browser.
+
+Class **`row`** may be added automatically to **`.ms3rv__list`** (Bootstrap). If **`#ms3-recently-viewed`** and **`#ms3-similar`** exist, the script may auto-call render on `DOMContentLoaded`. Still load `viewed.css` in the template. If the link is missing, JS may inject styles.
 
 ### Server output: cookie and `viewedIds` placeholder
 
-With **`storage_type` = `cookie`**, the plugin fills the placeholder; server-side “Recently viewed” list:
+With **`storage_type` = `cookie`**, the plugin fills the placeholder:
 
 ::: code-group
 
@@ -130,7 +133,7 @@ With **`storage_type` = `cookie`**, the plugin fills the placeholder; server-sid
 
 ### Server output: from DB only (`fromDB`)
 
-For **logged-in** users (**web** context, sync on) you can omit `ids`:
+For a user authenticated in the current context you can omit `ids`:
 
 ::: code-group
 
@@ -148,17 +151,17 @@ For **logged-in** users (**web** context, sync on) you can omit `ids`:
 
 ## Step 5: Viewed count (optional)
 
-Where you want to show the number of viewed items (icon, header):
+Where you want the number of viewed items (icon, header):
 
 ```html
 <span data-viewed-count style="display: none;">0</span>
 ```
 
-The value is set on load (1–99 or “99+”); when 0 the element is hidden.
+The value is set on load (1–99 or “99+”). When 0 the element is hidden.
 
 ## Step 6: “Similar to viewed” block (optional)
 
-Below recently viewed you can output products from the same categories. Server output — snippet **ms3recentlyviewedSimilar** with parameter `ids` (list of viewed IDs). For AJAX-rendered list pass the same `ids` to the connector with `action=similar`.
+Server output: snippet **ms3recentlyviewedSimilar** with `ids` (viewed IDs). For an AJAX-rendered list pass the same `ids` to the connector with `action=similar`.
 
 ::: code-group
 
@@ -182,11 +185,11 @@ Below recently viewed you can output products from the same categories. Server o
 
 :::
 
-With **localStorage** only, “Similar” is easier via **JS** `renderSimilar()` or passing `ids` from the front; placeholder **`viewedIds`** is **empty** when `storage_type` = `localStorage`. See: [Snippet ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Frontend setup](frontend).
+With **`localStorage`** only, use JS `renderSimilar()` or pass `ids` from the front. Placeholder **`viewedIds`** is **empty** when `storage_type` = `localStorage`. See [Snippet ms3recentlyviewedSimilar](snippets/ms3recentlyviewedSimilar), [Frontend setup](frontend).
 
 ## Next steps
 
 - [System settings](settings) — limit, storage type, DB sync
-- [Snippets](snippets/) — parameters for ms3recentlyviewed, ms3recentlyviewedSimilar, ms3rvLexiconScript
+- [Snippets](snippets/) — parameters for `ms3recentlyviewed`, `ms3recentlyviewedSimilar`, `ms3rvLexiconScript`
 - [Manager interface](interface/) — dashboard and view history
-- [Frontend setup](frontend) — custom chunks and styles
+- [Frontend setup](frontend) — chunks and styles

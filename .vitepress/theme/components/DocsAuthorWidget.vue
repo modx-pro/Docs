@@ -9,7 +9,7 @@ import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 const { page, frontmatter, lang } = useData()
 
 const authorLabel = computed<string>(() => lang.value === 'ru' ? 'Автор' : 'Author')
-const author = computed<Author>(() => {
+const author = computed<Author | undefined>(() => {
   const data = page.value?.component?.author || authors[frontmatter.value.author]
 
   if (!data) {

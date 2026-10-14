@@ -24,7 +24,11 @@ description: Типовые сбои mxHeadless и что проверить
 
 ## 429
 
-Rate limit. Смотрите `X-RateLimit-*`. Поднимите global или per-key лимит. Проверьте trusted proxies (иначе все за LB делят один IP).
+Rate limit. Смотрите `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset` и `Retry-After` в секундах. Поднимите global или per-key лимит. Проверьте trusted proxies (иначе все за LB делят один IP).
+
+## 409 `idempotency_conflict`
+
+Ответ при повторном `Idempotency-Key` с другим телом или при параллельной обработке того же ключа. Ключ принимается только для `POST`, 1–128 символов из `[A-Za-z0-9._:-]`. Смените ключ или отправьте то же тело.
 
 ## 422
 
@@ -45,11 +49,18 @@ Rate limit. Смотрите `X-RateLimit-*`. Поднимите global или p
 - Worker в cron
 - URL проходит SSRF-проверку
 - Подписка active
-- Смотрите `mxheadless_webhook_deliveries`
+- В списке событий стоят точные имена или `*`. Префиксы вроде `resources.*` не поддержаны, подписка с ними не получит ничего
+- Смотрите `mxheadless_webhook_deliveries`: статус, `attempts`, `last_error`, `next_attempt_on`
 
 ## CSRF на POST из mgr
 
 Нужен `X-CSRF-Token`. Bearer API key CSRF не требует.
+
+## Фронт не обновился после правки в админке
+
+События и вебхуки возникают только при мутациях через API mxHeadless. Плагин пакета слушает один `OnHandleRequest`, `OnResourceSave` в нём нет. Правка ресурса в админке не инвалидирует кэш mxHeadless и фронт-кэш.
+
+Что делать: править через API, повесить свой плагин на `OnResourceSave`, который дёргает ваш revalidate-обработчик, или сбросить кэш вручную. Подробности: [ISR revalidation](isr-revalidation).
 
 ## Логи
 

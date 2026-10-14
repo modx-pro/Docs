@@ -1,6 +1,7 @@
 ---
 title: BannerY
 description: Component for managing site banners. Create banners and ad positions, link them, and output them where needed. Click statistics are tracked.
+categories: media
 logo: https://modstore.pro/assets/extras/bannery/logo-lg.jpg
 author: biz87
 modstore: https://modstore.pro/packages/photos-and-files/bannery

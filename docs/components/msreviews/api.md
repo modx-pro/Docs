@@ -19,7 +19,7 @@ description: Публичные и mgr action коннектора msReviews
 
 :::
 
-На витрине обычно хватает сниппетов. Коннектор нужен для кастомного JS, cron и интеграций с CMP.
+На витрине обычно хватает сниппетов. Коннектор нужен для своего JS, cron и интеграций с CMP.
 
 Запрос: **POST** с полем **`action`**. Ответ JSON: `success`, `message`, `data`, `errors`.
 
@@ -76,18 +76,25 @@ action=request/process&key=ВАШ_КЛЮЧ
 | `mgr/analytics/summary` | Расширенная аналитика | `review_analytics` |
 | `mgr/export/reviews` | CSV отзывов | `review_export` |
 | `mgr/export/questions` | CSV вопросов | `review_export` |
-| `mgr/import/reviews` | Импорт CSV | `review_import` |
+| `mgr/export/request_queue` | CSV очереди писем | `review_export` |
+| `mgr/import/reviews` | Импорт отзывов CSV | `review_import` |
+| `mgr/import/questions` | Импорт вопросов CSV (с **1.2.4**) | `review_import` |
 | `mgr/media/list` | Список медиа | `review_view` |
+| `mgr/media/upload` | Загрузка медиа в CMP | `review_moderate` |
 | `mgr/media/delete` | Удалить медиа | `review_moderate` |
+| `mgr/review/product-summary` | Сводка для вкладки «Отзывы» на ресурсе | `review_view` |
+| `mgr/request_queue/list` | Список очереди писем | `review_export` |
 | `mgr/queue/process` | Очередь из mgr | `queue_process` |
 | `mgr/catalog/search` | Поиск папок, товаров или ресурсов | `review_analytics` или `question_moderate` |
 | `mgr/catalog/resolve` | Подписи по ID | `review_analytics` или `question_moderate` |
 
-Полные параметры **`mgr/review/create`** и **`mgr/review/update`**: `product_id` (любой неудалённый `site_content`, не только `msProduct`), `rating` (1–5), `title`, `text`, `author_name`, `author_email`, `status`, `is_verified` (0/1). У update обязателен `id`. Опционально **`shop_reply`** при праве **`review_reply`**. Смена `product_id` пересчитывает агрегаты старого и нового ресурса.
+Полные параметры **`mgr/review/create`** и **`mgr/review/update`**: `product_id`, `rating` (1–5), `title`, `text`, `author_name`, `author_email`, `status`, `is_verified` (0/1). `product_id` принимает любой неудалённый `site_content`, не только `msProduct`. У update обязателен `id`. Опционально **`shop_reply`** при праве **`review_reply`**. Смена `product_id` пересчитывает агрегаты старого и нового ресурса.
 
-**`mgr/question/create`** / **`update`** (только POST): `product_id` (любой неудалённый `site_content`), `text`, `author_name`, `author_email`, `status`, `notify` (0/1), опционально `answer_text`. У update обязателен `id`. Ответ пишет `AnswerService` (уведомление автора). Статус из поля формы перезаписывает авто-публикацию ответа. Быстрый `mgr/answer/create` публикует вопрос. **`mgr/question/get`**: `id`.
+**`mgr/question/create`** / **`update`** (только POST): `product_id` (любой неудалённый `site_content`), `text`, `author_name`, `author_email`, `status`, `notify` (0/1), опционально `answer_text`. У update обязателен `id`. Ответ пишет `AnswerService` (уведомление автора). Статус из поля формы перезаписывает автопубликацию ответа. `mgr/answer/create` остаётся в API и публикует вопрос. Из списка вопросов CMP его не вызывают с **1.2.4**. **`mgr/question/get`**: `id`.
 
-**`mgr/catalog/search`:** `type` равен `parent`, `product` или `resource`. `q` до 80 символов. `limit` от 1 до 100, по умолчанию 50. `product` ищет только `msreviews_product_class_key`. `resource` ищет любой неудалённый `site_content` (форма и фильтр отзывов/вопросов в CMP). Ответ `data.items`: `{ id, label }[]`. **`mgr/catalog/resolve`** принимает те же `type` и список `ids`. Право: `review_analytics` или `question_moderate`.
+**`mgr/import/questions`** (только POST, с **1.2.4**): CSV-файл с колонками `product_id`, `text`, `status` и `author_email` или `author_name`. Опционально `answer_text`, `notify`, `pinned`.
+
+**`mgr/catalog/search`:** `type` равен `parent`, `product` или `resource`. `q` до 80 символов. `limit` от 1 до 100, по умолчанию 50. `product` ищет только `msreviews_product_class_key`. `resource` ищет любой неудалённый `site_content` (форма и фильтр отзывов и вопросов в CMP). Ответ `data.items`: `{ id, label }[]`. **`mgr/catalog/resolve`** принимает те же `type` и список `ids`. Право: `review_analytics` или `question_moderate`.
 
 Полный список действий — в исходниках `ConnectorRegistryFactory` и [Права доступа](permissions).
 

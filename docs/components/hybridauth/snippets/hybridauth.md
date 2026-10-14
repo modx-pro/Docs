@@ -15,7 +15,7 @@
 | **&logoutResourceId**  | `0`                              | Идентификатор ресурса, на который отправлять юзера после завершения сессии. По умолчанию, это 0 - обновляет текущую страницу.                                                                                   |
 | **&logoutTpl**         | `tpl.HybridAuth.logout`          | Этот чанк будет показан авторизованному пользователю.                                                                                                                                                           |
 | **&providerTpl**       | `tpl.HybridAuth.provider`        | Чанк для вывода ссылки на авторизацию или привязку сервиса к учетной записи.                                                                                                                                    |
-| **&providers**         | `all available`                  | Список провайдеров авторизации, через запятую. Все доступные провайдеры находятся тут `{core_path}components/hybridauth/model/hybridauth/lib/Providers/`. Например, ```&providers=`Google,Twitter,Facebook````. |
+| **&providers**         | `all available`                  | Список провайдеров авторизации, через запятую. Все доступные провайдеры находятся тут `{core_path}components/hybridauth/model/hybridauth/lib/Providers/`. Например, `` &providers=`Google,Twitter,Facebook` ``. |
 | **&rememberme**        | `1`                              | Запоминает пользователя на долгое время. По умолчанию - включено.                                                                                                                                               |
 
 ## Примеры

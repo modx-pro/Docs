@@ -1,6 +1,7 @@
 ---
 title: easyRedirects
 description: Управляйте редиректами (с кодами 301, 302, 307, 308) на вашем сайте на базе MODX Revolution
+categories: utilities
 logo: https://modstore.pro/assets/extras/easyredirects/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/utilities/easyredirects
@@ -40,7 +41,7 @@ repository: https://github.com/createit-ru/easyRedirects
 
 У компонента единственная системная настройка:
 
-* easyredirects_track - если включена, то компонент будет автоматически создавать новый редирект при смене uri страницы при редактировании рресурса. Примечание: этот механизм не учитывает смену адреса для дочерних страниц.
+* easyredirects_track - если включена, то компонент будет автоматически создавать новый редирект при смене uri страницы при редактировании ресурса. Примечание: этот механизм не учитывает смену адреса для дочерних страниц.
 
 ## Примеры правил редиректов
 

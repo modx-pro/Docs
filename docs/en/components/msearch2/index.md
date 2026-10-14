@@ -1,6 +1,8 @@
 ---
 title: mSearch2
 description: Morphological search and data filtering
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/msearch2/logo-lg.jpg
 author: ilyautkin
 modstore: https://modstore.pro/packages/ecommerce/msearch2

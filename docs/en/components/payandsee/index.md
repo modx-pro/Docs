@@ -1,6 +1,7 @@
 ---
 title: PayAndSee
 description: Paid/closed resources on MODX
+categories: catalog
 logo: https://modstore.pro/assets/extras/payandsee/logo-lg.jpg
 author: vgrish
 modstore: https://modstore.pro/packages/ecommerce/payandsee

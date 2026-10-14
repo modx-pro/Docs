@@ -14,6 +14,7 @@ description: Установка msp3Prodamus, демо-страница payform,
 | MODX Revolution | 3.0+ |
 | MiniShop3 | 1.14.0-beta1 и новее |
 | PHP | 8.2+ |
+| pdoTools | 3.0.0+ |
 | Кабинет | URL страницы payform и секрет со страницы настроек |
 | Сайт | HTTPS на webhook без 301 |
 
@@ -30,55 +31,48 @@ description: Установка msp3Prodamus, демо-страница payform,
 
 Резолвер создаёт способ **Оплата через Prodamus**, класс `Msp3Prodamus\Payment\ProdamusPayment`.
 
-Секрет и URL страницы положите в `msPayment.properties` (`secret` или `secret_key`, `payform_url`). Если properties пусты, пакет читает системные настройки.
+Секрет и URL для ссылки можно положить в `msPayment.properties`. Поля: `secret`, `secret_key`, `payform_url`. При миграции: `form_url`, `webhook_secret`. Непустые properties перекрывают системные настройки.
+
+Секрет нужен и для ссылки, и для `webhook.php`. Достаточно одного места: properties способа или **`msp3prodamus_secret_key`**.
 
 Заказ дешевле 1 копейки пакет на оплату не отправляет.
 
 ## Откуда брать ключи {#откуда-брать-ключи}
 
-Демо-страница описана в [шаге 3](#шаг-3-демо-страница). Ниже путь для своей платёжной страницы.
+Демо-страница описана в [шаге 3](#шаг-3-демо-страница).
 
-### URL страницы
+| Что | Откуда |
+| --- | --- |
+| URL страницы | **`msp3prodamus_payform_url`**: адрес страницы, с которой покупатель платит. Скопируйте из адресной строки. Обычно `https://имя.payform.ru/`. |
+| Секрет | Войдите на платёжную страницу как владелец. Нижнее меню: **Настройки**. Скопируйте ключ в **`msp3prodamus_secret_key`**. В properties способа: `secret` или `secret_key`. |
+| `sys` | **`msp3prodamus_sys`**: код интеграции. Согласуют с поддержкой Prodamus. У всех магазинов одной интеграции код один и тот же. |
+| URL уведомлений | **Настройки**, поле **Настройка уведомлений**. После ввода нажмите **сохранить**. |
 
-**`msp3prodamus_payform_url`** это адрес страницы, с которой покупатель платит. Скопируйте его из адресной строки. Обычно это `https://имя.payform.ru/`.
+Как войти на страницу: инструкция Prodamus в ссылке ниже. Новый ключ на этой странице не генерируется. Его выдаёт поддержка Prodamus. Поля и кнопка сохранения URL: [где найти секрет и URL уведомлений](https://help.prodamus.ru/payform/integracii/rest-api/url-dlya-uvedomlenii-i-sekretnyi-klyuch). Описание `sys`: [самостоятельная интеграция](https://help.prodamus.ru/payform/integracii/rest-api/instrukcii-dlya-samostoyatelnaya-integracii-servisov).
 
-HMAC считается секретом именно этой страницы. Секрет другой страницы, в том числе демо, к ней не подойдёт.
-
-### Секретный ключ
-
-1. Войдите на платёжную страницу как владелец. Как войти, Prodamus описывает в инструкции к шагу ниже.
-2. Нижнее меню: **Настройки**.
-3. Скопируйте секретный ключ в **`msp3prodamus_secret_key`**. В properties способа то же значение можно положить в `secret` или `secret_key`.
-
-Новый ключ на этой странице не генерируется. Его выдаёт поддержка Prodamus. Поля и кнопка сохранения URL: [где найти секрет и URL уведомлений](https://help.prodamus.ru/payform/integracii/rest-api/url-dlya-uvedomlenii-i-sekretnyi-klyuch).
+HMAC считают секретом именно этой страницы. Секрет другой страницы, в том числе демо, к ней не подойдёт.
 
 **`msp3prodamus_test_mode`** = Да только добавляет в ссылку `demo_mode=1`. Секрет HMAC от этого не меняется.
 
 Если на стороне Prodamus у страницы выключен боевой режим, подпись считают другим ключом, с суффиксом `demo`. Такой webhook не должен проходить как боевой.
 
-### Код sys
+Без `sys` пакет не передаёт `urlNotification`. Prodamus не примет URL из запроса.
 
-**`msp3prodamus_sys`** это код вашей интеграции. Его согласуют с поддержкой Prodamus. У всех магазинов одной интеграции код один и тот же.
-
-Без `sys` пакет не передаёт `urlNotification`, и Prodamus не примет URL из запроса. Описание параметра: [самостоятельная интеграция](https://help.prodamus.ru/payform/integracii/rest-api/instrukcii-dlya-samostoyatelnaya-integracii-servisov).
-
-### URL уведомлений
-
-На странице **Настройки**, поле **Настройка уведомлений**:
+URL уведомлений:
 
 ```text
 https://ваш-домен.ru/assets/components/msp3prodamus/webhook.php
 ```
 
-Нажмите **сохранить**. HTTPS, без Basic Auth и без 301. HTTP на `*.test` часто отвечает 301, и тело POST пропадает.
+HTTPS, без Basic Auth и без 301. HTTP на `*.test` часто отвечает 301, и тело POST пропадает.
 
 Переход покупателя на `urlSuccess` заказ не оплачивает. Оплату подтверждает только webhook с верным заголовком `Sign`.
 
 ## Шаг 2: Куда вписать в MODX
 
 1. **Настройки → Системные настройки**, фильтр **`msp3prodamus`**.
-2. Либо properties способа: `payform_url`, `secret` или `secret_key`, при необходимости `sys`. Непустые properties перекрывают системные настройки.
-3. Очистите кеш MODX.
+2. Либо properties способа: `payform_url`, `secret` или `secret_key`, при необходимости `sys`. Непустые properties перекрывают системные настройки для ссылки и `webhook.php`.
+3. Очистите кэш MODX.
 
 Список полей: [Системные настройки](settings).
 

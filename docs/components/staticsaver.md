@@ -1,6 +1,7 @@
 ---
 title: StaticSaver
 description: Плагин для автоматической установки путей и источников файлов при переводе элементов в статический режим
+categories: utilities
 ---
 # StaticSaver
 

@@ -29,7 +29,7 @@ Donations help the team spend more time on the MODX community ecosystem.
 
 ## Site stack
 
-The static site is built with [VitePress](https://vitepress.dev/) on top of [Vite](https://vitejs.dev/): Markdown to HTML, code highlighting (Shiki), search, dark mode, embedded Mermaid diagrams. The repo is a standard Node.js project: dependencies via **pnpm** / npm / yarn, scripts in `package.json`.
+The static site is built with [VitePress](https://vitepress.dev/) on top of [Vite](https://vitejs.dev/): Markdown to HTML, code highlighting (Shiki), search, dark mode, embedded Mermaid diagrams. The repo is a standard Node.js project: dependencies via **pnpm**, scripts in `package.json`.
 
 ## Where to start as a contributor
 

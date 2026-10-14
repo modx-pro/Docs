@@ -1,6 +1,7 @@
 ---
 title: SEOtabs
 description: Product tabs package. Tabs for your SEO
+categories: catalog
 logo: https://modstore.pro/assets/extras/seotabs/logo-lg.jpg
 modstore: https://modstore.pro/packages/ecommerce/seotabs
 

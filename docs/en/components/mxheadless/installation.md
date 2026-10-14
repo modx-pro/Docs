@@ -36,9 +36,9 @@ The installer creates namespace `mxheadless`, the `OnHandleRequest` plugin, menu
 
 ## Upgrade from 1.0.42
 
-Setting keys moved from dots (`mxheadless.cors.enabled`) to underscores (`mxheadless_cors_enabled`). The upgrade resolver copies values and removes the old rows. Clear the MODX cache after upgrade.
+On upgrade, setting keys moved from dots (`mxheadless.cors.enabled`) to underscores (`mxheadless_cors_enabled`). The resolver copies values and removes the old rows. Clear the MODX cache after upgrade.
 
-New setting `mxheadless_context` (default `web`): bootstrap context for the gateway and `api.php`. Value `mgr` is ignored.
+New setting `mxheadless_context` (default `web`): startup context for the gateway and `api.php`. Value `mgr` is ignored.
 
 ## Manual install (development)
 
@@ -79,7 +79,19 @@ https://your-site.example/assets/components/mxheadless/api.php?route=/v1/health
 https://your-site.example/assets/components/mxheadless/api.php?route=/api/v1/resources&limit=5
 ```
 
-Bare `api.php` serves discovery. Both entry points share the same middleware pipeline.
+Bare `api.php` serves discovery. Both entry points share the same middleware chain.
+
+```mermaid
+flowchart LR
+  subgraph entry [Entry points]
+    P["OnHandleRequest /api/v1/..."]
+    F["api.php PATH_INFO or ?route="]
+  end
+  M[Shared middleware chain]
+  P --> M
+  F --> M
+  M --> H[/v1 handlers]
+```
 
 ## What gets created
 
@@ -88,7 +100,7 @@ Bare `api.php` serves discovery. Both entry points share the same middleware pip
 | Tables | `mxheadless_api_keys`, `mxheadless_oauth_clients`, `mxheadless_oauth_tokens`, `mxheadless_webhook_subscriptions`, `mxheadless_webhook_deliveries`, `mxheadless_api_log` |
 | Permission | `mxheadless_apikeys` (default for Administrator) |
 | Menu | **Components → mxHeadless** |
-| Event | `OnMxHeadlessRegister` |
+| Events | `OnMxHeadlessRegister`, `OnMxHeadlessRegisterMiddleware`, `OnMxHeadlessBeforeRequest`, `OnMxHeadlessAfterRequest` |
 
 ## Friendly URLs
 

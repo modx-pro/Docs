@@ -3,9 +3,9 @@ title: Подключение на сайте
 ---
 # Подключение на сайте
 
-Для пошагового внедрения используйте [Интеграция на сайт](integration).
+Пошаговое внедрение: [Интеграция на сайт](integration).
 
-На этой странице краткий минимум:
+Минимум:
 
 1. Подключите `mspsLexiconScript`, `productsets.css`, `productsets.js`.
 2. Выведите блок через `ms3ProductSets` или `window.ms3ProductSets.render(...)`.

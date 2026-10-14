@@ -14,8 +14,7 @@ Content-Type: application/x-www-form-urlencoded
 
 По умолчанию: `/assets/components/msfastorder/connector.php`
 
-Файл: `assets/components/msfastorder/connector.php`
-Вызывается из `msfo.js` (`ProductLoader`, `FormHandler`).
+Файл: `assets/components/msfastorder/connector.php`. Вызывается из `msfo.js` (`ProductLoader`, `FormHandler`).
 
 ```mermaid
 flowchart TD
@@ -42,7 +41,7 @@ flowchart TD
 | `csrf_token` | Обязателен; из `window.msfoConfig.csrfToken` |
 | `action` | Whitelist (см. ниже) |
 | Ответ | JSON, UTF-8 |
-| Rate limit | На `order/create` по IP (сессия) |
+| Rate limit | На **успешные** `order/create` по IP (сессия). При `msfastorder_debug=1` лимит **выключен** |
 
 При неверном токене: HTTP **403**, `success: false`.
 
@@ -207,15 +206,15 @@ sequenceDiagram
 ```
 
 - `payment_link` — из `MiniShop3Integration::getPaymentLink()` для `msfastorder_payment_id`.
-- При пустом `email` в MS-режиме PHP может сгенерировать email (`generateEmail()`), чтобы MS3 принял заказ.
-- Настройка `msfastorder_generate_email` в транспорте **пока не переключает** это поведение.
+- При пустом `email` в MS-режиме PHP **всегда** вызывает `generateEmail()` (отдельной настройки нет).
+- В `data` **нет** `product_id` и `count` — только идентификаторы заказа, сумма и `payment_link`.
 
 | Способ оплаты MS3 | `payment_link` |
 |-------------------|----------------|
-| DefaultPayment | Страница успеха `?msorder={uuid}` |
-| ЮKassa ([msp3YooKassa](https://docs.modx.pro/components/msp3yookassa/)) | URL checkout |
+| DefaultPayment | Страница «Спасибо» `?msorder={uuid}`; при `msorder=num` код может заменить параметр на uuid (см. [настройки](/components/msfastorder/settings#payment-link)) |
+| ЮKassa ([msp3YooKassa](/components/msp3yookassa/)) | URL checkout от обработчика MS3 |
 
-См. [Системные настройки](settings#payment-link), [Интеграция](integration).
+См. [Системные настройки](/components/msfastorder/settings#payment-link), [Интеграция](/components/msfastorder/integration).
 
 ### Успех (MAIL)
 
@@ -279,7 +278,7 @@ curl -sS -X POST 'https://example.com/assets/components/msfastorder/connector.ph
   --data-urlencode 'options={"variant_id":null}'
 ```
 
-Сброс rate limit (staging, `msfastorder_debug=1`):
+Сброс rate limit (тестовый стенд, `msfastorder_debug=1`):
 
 ```bash
 curl -X POST '.../connector.php' \
@@ -287,7 +286,7 @@ curl -X POST '.../connector.php' \
   -d 'csrf_token=YOUR_TOKEN'
 ```
 
-## PHP (плагины, кастом)
+## PHP (плагины, свой код)
 
 ```php
 $modx->lexicon->load('msfastorder:default');
@@ -307,9 +306,21 @@ $result = $processor->createOrder([
 | Класс | Назначение |
 |-------|------------|
 | `MiniShop3Integration` | Товар, заказ MS3, `payment_link` |
-| `OrderService` | `msfastorder_logs` |
+| `OrderService` | Запись в `msfastorder_logs`; методы `getStatistics()` и `getLogs()` — **без UI**, connector их не вызывает |
 | `EmailService` | Письма MAIL |
 | `OrderValidator` | Валидация полей |
 | `ClientConfig` | `msfoConfig`, CSRF |
 
-Связка с фронтом: [frontend](frontend).
+Пример чтения логов из своего кода (пакет xPDO уже подключён через сервис `msfastorder` после bootstrap компонента):
+
+```php
+$service = new \MsFastOrder\Services\OrderService($modx);
+$stats = $service->getStatistics(['method' => 'MS']);
+$logs = $service->getLogs(1, 20, ['search' => '+7999']);
+```
+
+::: warning Лексикон
+При невалидном `count` сервер может запросить ключ `msfastorder_error_count_invalid`, которого в поставке лексикона может не быть — сообщение будет пустым или техническим.
+:::
+
+Связка с фронтом: [Подключение на сайте](/components/msfastorder/frontend).

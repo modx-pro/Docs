@@ -14,16 +14,27 @@ description: Полный список scopes, MODX ACL и field policy в mxHea
 
 Нет нужного scope у API key / OAuth → `403` `scope_denied`.
 
+```mermaid
+flowchart TD
+  R[Запрос с identity] --> P{Маршрут public?}
+  P -->|нет, нет identity| E401[401 token_required]
+  P --> S{Scope key или token}
+  S -->|нет| E403[403 scope_denied]
+  S --> ACL[MODX ACL контекст ресурс]
+  ACL --> F[Field policy]
+  F --> OK[Обработчик]
+```
+
 ## Как проверяются scopes
 
-| Identity | Проверка |
+| Тип | Проверка |
 | --- | --- |
 | API key (`mxh_*`) | Список scopes ключа. Есть `*` → все действия |
 | OAuth (`mxt_*`) | Scopes токена (пересечение с scopes клиента) |
 | Session | `modX->hasPermission()` с той же строкой (`resources.read` и т.д.) |
 | Anonymous | Только public GET. Scopes не задают |
 
-Для интеграций обычно хватает API key. Session удобна для mgr / same-origin UI с CSRF.
+Для интеграций обычно хватает API key. Сессия удобна для mgr и UI на том же origin с CSRF.
 
 ## Core scopes (фиксированные маршруты)
 
@@ -41,13 +52,14 @@ description: Полный список scopes, MODX ACL и field policy в mxHea
 | `categories.read` | `GET /categories`, `GET /categories/{id}` |
 | `content_types.read` | `GET /content_types`, `GET /content_types/{id}` |
 | `preview` | `?preview=true` без `view_unpublished` у сессии. Также участвует в проверке `include_deleted` |
+| `fields.{field}` | Поле из `protectedFields` объекта |
 | `*` | Все scopes (только для ключей и токенов) |
 
 Meta-маршруты (`/`, `/health`, `/schema`, `/docs`, `/meta/*`) и `POST /auth/token` не требуют scope.
 
 ## Scopes для `/objects/{name}`
 
-Паттерн из кода: `{name}.{action}`, где `{name}` — имя в registry, не PHP-класс и не префикс `objects.`.
+Шаблон из кода: `{name}.{action}`, где `{name}` — имя в registry, не PHP-класс и не префикс `objects.`.
 
 | Scope | Method | Path |
 | --- | --- | --- |
@@ -61,11 +73,11 @@ Meta-маршруты (`/`, `/health`, `/schema`, `/docs`, `/meta/*`) и `POST /
 | Scope | Смысл |
 | --- | --- |
 | `products.read` | Каталог товаров |
-| `categories.read` | Категории |
+| `ms_categories.read` | Категории товаров MS3. Core `categories.read` — элементы `modCategory` |
 | `orders.read` | Заказы (обычно не public, плюс ACL) |
 | `orders.update` | Обновление заказа, если object writable |
 
-Список зарегистрированных имён: `GET /schema` или `GET /meta/endpoints` на живом сайте.
+Список зарегистрированных имён: `GET /schema` или `GET /meta/endpoints` на этом сайте.
 
 ## Пример набора для ключа
 
@@ -80,7 +92,7 @@ resources.read,preview,chunks.read,templates.read
 Каталог MS3 + CMS:
 
 ```text
-resources.read,products.read,categories.read
+resources.read,products.read,ms_categories.read
 ```
 
 Admin API (узко, без `*`):
@@ -95,26 +107,36 @@ resources.read,resources.create,resources.update,orders.read
 
 Anonymous может читать discovery, health, schema, docs, meta, `GET /resources` и `GET /pages/{uri}` в рамках ACL опубликованных ресурсов.
 
-Элементы, контексты, write-операции и `/objects/*` требуют credentials.
+Элементы, контексты, операции записи и `/objects/*` требуют учётных данных.
 
 ## Контекст
 
-Bootstrap: `mxheadless_context` (default `web`) задаёт контекст при инициализации MODX в gateway и `api.php`. Значение `mgr` игнорируется.
+Контекст запуска: `mxheadless_context` (по умолчанию `web`) задаёт контекст при инициализации MODX в шлюзе и `api.php`. Значение `mgr` игнорируется.
 
-В запросе: заголовок `X-Context` или query `?context=`. Значение должно входить в `mxheadless_allowed_contexts` (default `web,mgr`). Иначе `422 Invalid context`.
+В запросе: заголовок `X-Context` или query `?context=`. Значение должно входить в `mxheadless_allowed_contexts` (по умолчанию `web,mgr`). Иначе `422 Invalid context`.
 
 Мутации по id находят строку в любом контексте, затем проверяют доступ `context.{key}` / `context_{key}`. Запись `context_key` на неизвестный или незагружаемый контекст даёт `422`, не `500`.
 
 ## Поля
 
-Скрытые поля не попадают в JSON. Protected отдаются только при отдельном праве в definition. Запрос `fields=` на неизвестное или запрещённое поле даёт `422`.
+Скрытые поля не попадают в JSON. Protected отдаются и записываются только при отдельном field-level праве: scope `fields.{field}` у ключа или токена, MODX-право `mxheadless_fields_{field}` у сессии. Запрос `fields=` на неизвестное или запрещённое поле даёт `422`.
+
+| Право | Кто | Что открывает |
+| --- | --- | --- |
+| `fields.{field}` | API key, OAuth | Поле `{field}` из `protectedFields` на чтение и запись |
+| `mxheadless_fields_{field}` | Сессия MODX | То же для текущего пользователя |
+| `mxheadless_fields_all` | Сессия MODX | Все `protectedFields` объекта |
+
+Поля из `hiddenFields` (`properties` у `resources`) не открываются никаким флагом: они вырезаются из ответа и запись в них даёт `422`. Поля из `immutableFields` не пишутся даже с полным набором прав.
+
+Поля из `protectedFields` у `resources`: `createdby`, `editedby`, `deletedby`, `publishedby`.
 
 ## Preview и deleted
 
 | Query | Кто |
 | --- | --- |
-| `preview=true` | Session с `view_unpublished` или scope `preview` |
-| `include_deleted=1` | Не для anonymous. Нужны `preview`, `resources.update`, `resources.delete` или соответствующие права MODX |
+| `preview=true` | Session с `view_unpublished` или scope `preview`. Достаточно одного из двух: права пользователя-владельца ключа не проверяются |
+| `include_deleted=1` | Не для anonymous. Нужны `preview`, `resources.update`, `resources.delete`, `view_unpublished` или `empty_recycle_bin` |
 
 ## См. также
 

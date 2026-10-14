@@ -5,6 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/bannerpro/logo.png
 modstore: https://modstore.pro/packages/photos-and-files/bannerpro
 dependencies: [pdoTools, VueTools]
+categories: media
 
 compatibility:
   - modx3
@@ -60,7 +61,7 @@ items: [
 
 **BannerPro** выводит баннеры по позициям через сниппет `BannerPro`, считает клики по URL `/{bannerpro_click}/{adposition}` и фиксирует показы через `impression.js`, если включён учёт. Админка на Vue 3 и PrimeVue через **VueTools**.
 
-Namespace настроек: **`bannerpro`**. Таблицы: `bannerpro_ads`, `bannerpro_positions`, `bannerpro_ads_positions`, `bannerpro_clicks`, `bannerpro_impressions`.
+Namespace настроек: **`bannerpro`**. Таблицы: `bannerpro_ads`, `bannerpro_positions`, `bannerpro_ads_positions`, `bannerpro_clicks`, `bannerpro_impressions`, `bannerpro_audit`, `bannerpro_ad_templates`.
 
 ![Админка BannerPro](/components/bannerpro/screenshots/page-overview.png)
 

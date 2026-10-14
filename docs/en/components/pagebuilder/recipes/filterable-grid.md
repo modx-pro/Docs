@@ -19,7 +19,7 @@ Result: the visitor filters rows without a full reload. Without JavaScript the f
 2. Pick a datasource: `modx-resources`, `pagebuilder-tables`, or `minishop3`. For a table set the key.
 3. **Save** the resource. On the site the form, sort, and pagination run through `pagebuilder-filterable-grid.js`. The address updates with `history.pushState`.
 4. Parameters: `pb_fg_{id}_search`, `_sort`, `_dir`, `_page`, `_f_{field}`. `DatasourceSectionEnricher` writes the prefix `pb_fg_{id}_` into `filter_param_prefix`.
-5. The operator follows the field type: text → `contains`, number and currency → `gte`, color → `eq`. An `image` column is left out of filters and sorting. The filter label comes from the column `label`.
+5. The operator follows the field type: text → `contains`, number and currency → `gte`, color, yesno, and toggle → `eq`. An `image` column is left out of filters and sorting. The filter label comes from the column `label`.
 
 A page number past the last page is clamped. An empty result uses `pagebuilder_fe_filter_empty`. The reset button uses `pagebuilder_fe_filter_clear`.
 

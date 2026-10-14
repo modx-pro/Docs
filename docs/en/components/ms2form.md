@@ -7,6 +7,7 @@ modstore: https://modstore.pro/packages/users/ms2form
 repository: https://github.com/me6iaton/ms2form
 
 dependencies: miniShop2
+categories: users
 ---
 
 # ms2form

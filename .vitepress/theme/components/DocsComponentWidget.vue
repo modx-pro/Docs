@@ -7,8 +7,9 @@ import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 import DocsList from './DocsList.vue'
 import DocsCompatibility from './DocsCompatibility.vue'
 import { normalizeCompatibility } from '../compatibility'
+import type { DocsTheme } from '../types/index.ts'
 
-const { page, theme, lang } = useData()
+const { page, theme, lang } = useData<DocsTheme.Config>()
 
 const component = computed(() => {
   if (!page.value?.component) {
@@ -26,17 +27,18 @@ const component = computed(() => {
 })
 
 const links = computed<DefaultTheme.SidebarItem[]>(() => {
-  if (!component.value) {
+  const data = component.value
+  if (!data) {
     return []
   }
 
-  return links.value = ['modstore', 'modx', 'repository']
+  return (['modstore', 'modx', 'repository'] as const)
     .reduce((filtered, key) => {
-      if (!Object.prototype.hasOwnProperty.call(component.value, key)) {
+      if (!Object.prototype.hasOwnProperty.call(data, key)) {
         return filtered
       }
 
-      const value = component.value[key]
+      const value = data[key]
       const urls = Array.isArray(value)
         ? value.filter((link): link is string => typeof link === 'string' && !!link)
         : (typeof value === 'string' && value ? [value] : [])
@@ -50,8 +52,9 @@ const links = computed<DefaultTheme.SidebarItem[]>(() => {
         const host = match[1].split('.').slice(-2).join('.')
         const repoPath = match[2]
 
+        // owner/repo only for repositories: several of them need telling apart
         filtered.push({
-          text: repoPath || host,
+          text: key === 'repository' ? repoPath || host : host,
           link,
         })
       }
@@ -67,7 +70,7 @@ const dependencies = computed<DefaultTheme.SidebarItem[]>(() => {
   }
 
   return names.map(name => {
-    const match = theme.value.components.find(item => item.title === name)
+    const match = theme.value.components?.find(item => item.title === name)
     return {
       text: match?.title || name,
       link: match?.link || '',

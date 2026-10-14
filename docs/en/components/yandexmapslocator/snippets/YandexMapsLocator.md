@@ -25,8 +25,8 @@ Pro does not replace the snippet: same parameters, plus filters and fields from 
 | `tplEmpty` | `yandexmapslocator.empty` | Empty result |
 | `tplError` | `yandexmapslocator.error` | Error |
 | `includeTVs` | *(empty)* | Extra TVs in location placeholders |
-| `context` | *(current)* | Context key or comma-separated list |
-| `where` | *(empty)* | JSON condition for resources (**snippet only**). Forbidden in `search.php` and REST |
+| `context` / `contexts` | *(current)* | Context key or comma-separated list. Alias `contexts` is read the same way |
+| `where` | *(empty)* | xPDO JSON merged on top of `parent` / `published` / `deleted` / context. Snippet only. Forbidden in `search.php` and REST |
 | `filters` | *(empty)* | Comma-separated or JSON filter names |
 | `category` | *(empty)* | Category value |
 | `amenity` / `amenities` | *(empty)* | **Pro:** comma-separated amenity tags |
@@ -50,8 +50,8 @@ Pro does not replace the snippet: same parameters, plus filters and fields from 
 
 | Filter | Package | How to enable |
 |--------|---------|---------------|
-| `category` | Free | `filters=category` + parameter `category` |
-| `working_now` | Pro | `filters=working_now` or `working_now=1` |
+| `category` | Free | `category` parameter. `filters=category` is not required |
+| `working_now` | Pro | `filters=working_now` only. Query `working_now=1` is ignored |
 | `minishop_product` | Pro | `productId` (explicit `filters=minishop_product` optional) |
 | `amenity` | Pro | `amenity` / `amenities` |
 | `brand` | Pro | `brand` |
@@ -67,11 +67,15 @@ Pro does not replace the snippet: same parameters, plus filters and fields from 
 | `{$latitude}`, `{$longitude}` | Coordinates |
 | `{$phone}`, `{$email}`, `{$working_hours}` | Contacts |
 | `{$working_hours_formatted}`, `{$working_hours_compact}` | Schedule (plain text) |
-| `{$working_hours_compact_html}` | Compact HTML (`\| raw` in Fenom) |
+| `{$working_hours_compact_html}` | Compact HTML. Package chunk: `{raw $ymlHoursHtml}` |
 | `{$is_open_now}` | **Pro:** open now |
 | `{$category}` | Category |
+| `{$context_key}` | Resource context |
 | `{$balloon_image}`, `{$marker_icon}` | Media |
-| `{$distance_formatted}` | Distance (when search center is set) |
+| `{$distance}`, `{$distance_km}`, `{$distance_m}` | Number and km / m strings |
+| `{$distance_formatted}` | Distance in `distance_unit` |
+| `{$timezone}`, `{$amenities}`, `{$brand}` | **Pro:** from location extra |
+| `{$ms3_product_ids}` | **Pro:** product IDs. `{$ms3_product_id}` only if the legacy TV is set |
 | `{$idx}` | Index |
 
 Route icon in default chunk: `{$_modx->config['assets_url']}components/yandexmapslocator/img/yandex-navigator.svg`.
@@ -420,7 +424,7 @@ In `tpl` (fragment):
     </span>
 {/if}
 {if $working_hours_compact_html?}
-    <p class="yml-store__hours">{$working_hours_compact_html | raw}</p>
+    <p class="yml-store__hours">{raw $working_hours_compact_html}</p>
 {/if}
 ```
 

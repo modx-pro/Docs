@@ -5,9 +5,9 @@ description: App Router Next.js и mxHeadless server fetch
 
 # Next.js
 
-App Router: server helper, страница по URI, Route Handler proxy.
+Страница по URI, серверная обёртка и Route Handler.
 
-## Env
+## Переменные среды
 
 `.env.local`:
 
@@ -18,7 +18,7 @@ MXHEADLESS_API_KEY=mxh_...
 
 Ключ только в Server Components, Route Handlers или модулях с `server-only`.
 
-## Server helper
+## Серверная обёртка
 
 `lib/mxheadless.ts`:
 
@@ -28,6 +28,7 @@ import 'server-only'
 type Envelope<T> = {
   data: T
   meta?: Record<string, unknown>
+  // links приходит только в ответах списков
   links?: Record<string, string>
 }
 
@@ -80,7 +81,7 @@ export default async function CmsPage({ params }: Props) {
 
   let page
   try {
-    page = await mxGet<Record<string, unknown>>(`/pages/${encodeURIComponent(uri)}`, {
+    page = await mxGet<Record<string, unknown>>(`/pages/${uri}`, {
       fields: 'id,pagetitle,content,uri',
     })
   } catch {
@@ -119,7 +120,9 @@ export async function GET(req: NextRequest) {
 
 ## ISR и webhooks
 
-Webhook mxHeadless можно направить в Route Handler с проверкой `X-MxHeadless-Signature` и вызовом `revalidatePath` / `revalidateTag`. См. [Webhooks](/components/mxheadless/operations/webhooks).
+Webhook mxHeadless можно направить в Route Handler, который сверяет `X-MxHeadless-Signature` и вызывает `revalidateTag` по `meta.revalidate`. Готовый обработчик и формат заголовка: [ISR revalidation](/components/mxheadless/operations/isr-revalidation).
+
+События дают только мутации через API mxHeadless. Правка контента в админке MODX webhook не порождает и кэш фронта не сбрасывает.
 
 ## См. также
 

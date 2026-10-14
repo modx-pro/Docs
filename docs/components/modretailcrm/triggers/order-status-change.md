@@ -23,6 +23,7 @@
     | retailCRM_action | `change_status`                   |
     | status           | `{{order.getStatus().getCode()}}` |
     | order_id         | `{{order.getExternalId()}}`       |
+
     :::
 
 8. Сохраняю.

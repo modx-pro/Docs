@@ -11,14 +11,9 @@ Options UI is on Vue 3 + PrimeVue. Old ExtJS windows and processors `Processors/
 
 ## Purpose
 
-Options store product attributes (EAV): color, size, material, any custom keys. You do not touch core MODX tables for this.
+Options store product attributes (EAV): color, size, material, any key of your own. The component does not change core MODX tables.
 
 ## Interface
-
-Two tabs:
-
-1. **Options:** category tree on the left, options grid on the right.
-2. **Option groups:** CRUD and drag-and-drop sort for `msOptionGroup` (since v1.11).
 
 <!-- ![Options directory](/components/minishop3/screenshots/mgr-options.png) -->
 
@@ -26,19 +21,22 @@ Two tabs:
 
 ### Options tab
 
-- **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select children. Context menu: refresh branch, expand or collapse, select or clear selection on the branch. Search by name is available.
-- **Right:** options grid. Filters: selected categories + group (`option_group_id`). Bulk actions: assign options to categories, delete.
+- **Left:** MODX category tree (`class_key = msCategory`). Checkboxes are independent: checking a parent does not select its children. The context menu works on a branch (refresh, expand or collapse, select or clear selection), and there is a search by name.
+- **Right:** options grid. Filters: selected categories and group (`option_group_id`). Bulk actions: assign options to categories, delete.
 
-Create and edit dialog: form on the left (key, caption, description, type, `msOptionGroup` group, unit), category tree on the right for binding. For `combobox` / `comboMultiple` / `comboColors` there is a value editor with drag-drop. For `comboColors`, a `ColorPicker` sits next to the hex field.
+Create and edit dialog: form on the left (key, caption, description, type, `msOptionGroup` group, unit), category tree on the right for binding. For `combobox` / `comboMultiple` / `comboColors` there is a value editor with drag-and-drop ordering. For `comboColors`, a `ColorPicker` sits next to the hex field.
 
 ### Option groups tab
 
-Groups live in table `ms3_option_groups` (`name`, `description`, `sort_order`). This is not `modCategory`: unrelated categories from other packages no longer clutter the list.
+The tab manages `msOptionGroup`: create, edit, delete, and reorder groups by dragging. Groups live in table `ms3_option_groups` (`name`, `description`, `sort_order`). This is not `modCategory`: categories from other packages no longer clutter the list.
 
-Option field: `option_group_id` (nullable). Deleting a group unlinks options (`option_group_id = NULL`) and does not delete the options themselves.
+An option has an `option_group_id` field. Deleting a group only unlinks its options (`option_group_id = NULL`) — the options themselves stay.
 
-::: warning Breaking (v1.11)
-Previously the group used `msOption.modcategory_id` and `modCategory`. A Phinx migration moves data into `msOptionGroup`. In chunks replace `{$option.category_name}` / `{$option.category}` with `{$option.group_name}`. Endpoint `/api/mgr/options/modcategories` was removed. Use `/api/mgr/option-groups`.
+::: warning Breaking changes (v1.11)
+Existing groups are migrated during the upgrade. Two things you have to fix by hand:
+
+- in chunks, replace `{$option.category_name}` and `{$option.category}` with `{$option.group_name}`;
+- in your own code, call `/api/mgr/option-groups` instead of the removed `/api/mgr/options/modcategories`.
 :::
 
 ## Option fields
@@ -65,8 +63,8 @@ Type is stored in `msOption.type` as `lowerCamelCase`. All 10 supported types:
 | `datefield` | Date | — | DatePicker (YYYY-MM-DD) |
 | `checkbox` | Checkbox (Yes / No) | — | Checkbox |
 | `comboBoolean` | Yes / No dropdown | — | Select with two values |
-| `combobox` | Single select from list | String list (drag-drop) | Select |
-| `comboMultiple` | Multiple select from list | String list (drag-drop) | MultiSelect |
+| `combobox` | Single select from list | String list, ordered by dragging | Select |
+| `comboMultiple` | Multiple select from list | String list, ordered by dragging | MultiSelect |
 | `comboColors` | Multiple select with colors | List `{value, name=hex}` + ColorPicker | MultiSelect with color squares |
 | `comboOptions` | Free-form tags with autocomplete | — (values accumulate when saving products) | PrimeVue InputChips + suggestions from previously entered values |
 
@@ -91,30 +89,25 @@ Type is stored in `msOption.type` as `lowerCamelCase`. All 10 supported types:
 }
 ```
 
-`comboOptions` does not require a preset list — on the product card the user enters any text (Enter, comma, or blur → chip). Autocomplete loads values already used for the same key on **other products** via `/api/mgr/options/suggestions`.
+`comboOptions` does not require a preset list. On the product card you type any text — Enter, a comma, or a click outside the field commits the value. Autocomplete takes values of the same key from **other products** via `/api/mgr/options/suggestions`.
 
 ## Category binding
 
-Options appear only on products in bound categories. Binding options:
+Options appear only on products in bound categories. There are three ways to bind:
 
-- **In the option edit dialog** — check categories in the tree on the right.
-- **On category card → Options tab** — add the option to that category.
-- **Bulk assign** — select multiple options in the grid, click "Assign to categories", pick categories.
+- **In the option dialog** — check categories in the tree on the right.
+- **On the category card, Options tab** — add the option there.
+- **In the options grid** — select several options and click "Assign to categories".
 
-### Per-category caption / description override
+### Per-category caption / description override {#per-category-caption-description-override}
 
 ::: info Starting with v1.10.0-beta1
 The "option ↔ category" link (`msCategoryOption`) has its own `caption` and `description`.
 :::
 
-If an option should have a different label in a category than globally — set an override
-in the category options grid (inline edit on "Caption (for category)") or in the
-"Add option" dialog. Empty means "use global". Non-empty —
-shown in the manager (product form in that category) and on the storefront via
-`OptionLoaderService::loadForProduct` / `loadForProducts`.
+If an option needs a different caption in this category, set it in the category options grid (inline edit in the "Caption (for category)" column) or in the "Add option" dialog. An empty field means the global caption is used. A filled one shows up in the manager on products of that category and on the storefront via `OptionLoaderService::loadForProduct` / `loadForProducts`.
 
-**Conflict resolution when a product is in multiple categories:** if the product belongs to several
-categories and each has its own override, resolution order:
+**A product in several categories.** If the parent and the additional categories have different captions, this order applies:
 
 1. Product parent category (`msProduct.parent`)
 2. Lower `msCategoryOption.position`
@@ -143,8 +136,7 @@ $optionService->addOptionToCategory(
 ## Product option values
 
 Values are stored in `ms3_product_options` (`product_id`, `key`, `value`).
-For multi-value types (`comboMultiple`, `comboColors`, `comboOptions`) — multiple rows
-with the same `key` per product.
+For multi-value types (`comboMultiple`, `comboColors`, `comboOptions`) a product gets several rows with the same `key`.
 
 ### Adding a value
 
@@ -205,6 +197,8 @@ Shows options for a specific product:
 
 ### On the product page
 
+Options are available in the template through the `$options` variable:
+
 ```fenom
 {if $options?}
 <div class="product-options">
@@ -242,17 +236,17 @@ Options are stored on the cart line and available in the chunk:
 
 ## REST API
 
-All UI operations use these endpoints (manager API, `/assets/components/minishop3/connector.php`, action `MiniShop3\Processors\Api\Router`). Permissions: `mssetting_save` for options, `mscategory_save` for category binding.
+All UI operations go through the Manager API (`/assets/components/minishop3/connector.php`, action `MiniShop3\Processors\Api\Router`). Permissions: `mssetting_save` for options, `mscategory_save` for category binding.
 
 ### Options
 
 | Method | Path | Description |
 | --- | --- | --- |
 | `GET` | `/api/mgr/options` | List. Params: `start`, `limit`, `option_group_id` (`0` = no group), `category_id`, `categories[]` |
-| `GET` | `/api/mgr/options/{id}` | Detail + `categories` map |
+| `GET` | `/api/mgr/options/{id}` | One option + `categories` map |
 | `POST` | `/api/mgr/options` | Create (`key`, `caption`, `type`, `option_group_id`, `properties`, `categories`, …) |
 | `PUT` | `/api/mgr/options/{id}` | Update (partial) |
-| `DELETE` | `/api/mgr/options/{id}` | Delete option (cascade product values) |
+| `DELETE` | `/api/mgr/options/{id}` | Delete option (product values are deleted as a cascade) |
 | `DELETE` | `/api/mgr/options/bulk` | Bulk delete (`ids[]`) |
 | `POST` | `/api/mgr/options/bulk/assign` | Assign `options[]` to `categories[]` |
 | `GET` | `/api/mgr/options/types` | Type list |
@@ -261,7 +255,7 @@ All UI operations use these endpoints (manager API, `/assets/components/minishop
 | `GET` | `/api/mgr/option-groups` | Group list |
 | `POST` | `/api/mgr/option-groups` | Create group |
 | `GET` / `PUT` / `DELETE` | `/api/mgr/option-groups/{id}` | Read, update, delete |
-| `PUT` | `/api/mgr/option-groups/positions` | Order after DnD |
+| `PUT` | `/api/mgr/option-groups/positions` | Order after drag-and-drop |
 | `DELETE` | `/api/mgr/option-groups/bulk` | Bulk delete |
 
 ### Category bindings
@@ -278,11 +272,11 @@ All UI operations use these endpoints (manager API, `/assets/components/minishop
 
 ## Option import
 
-When importing products from CSV, options are created automatically from columns with the `option_` prefix:
+When importing products from CSV, options are created automatically from columns with the `option.` prefix — a dot, not an underscore:
 
-| pagetitle | price | option_color | option_size |
+| pagetitle | price | option.color | option.size |
 | --- | --- | --- | --- |
 | T-shirt | 1500 | Red | L |
 | T-shirt | 1500 | Blue | M |
 
-Options `color` and `size` are created automatically if missing. By default they are created as `textfield` — change the type later in the UI.
+Options `color` and `size` are created automatically if missing. The default type is `textfield` — you can change it later in the UI.

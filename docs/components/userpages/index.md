@@ -1,6 +1,7 @@
 ---
 title: userPages
 description: Импорт и экспорт ресурсов MODX Revolution / MODX 3 и товаров miniShop2 / miniShop3
+categories: users
 logo: https://modstore.pro/assets/extras/userpages/logo-md.png
 author: Romanov Pavel
 modstore: https://modstore.pro/packages/users/userpages
@@ -19,7 +20,7 @@ items: [
 
 - Работает со стандартными ресурсами и товарами MiniShop3
 - WYSIWYG-редактор [Pell](https://github.com/jaredreich/pell)
-- Загрузка файлов и изобажений с возможностью использования Dropzone
+- Загрузка файлов и изображений с возможностью использования Dropzone
 - Поддержка TV-параметров (с учётом источников файлов), MIGX-полей, а также галереи, полей и опций товаров MiniShop3
 - Возможность сохранения черновика
 - Email-уведомления менеджеров

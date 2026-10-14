@@ -19,6 +19,7 @@ items: [
 ]
 
 dependencies: miniShop2
+categories: discounts
 ---
 
 # msDiscount

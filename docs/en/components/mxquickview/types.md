@@ -3,14 +3,12 @@ title: Render types
 ---
 # mxQuickView render types
 
-This page describes how to choose `data-mxqv-action` and output mode.
-
 ## General rules
 
-1. Always pass a valid `data-mxqv-id` (resource must exist and be viewable).
+1. Always pass a valid `data-mxqv-id` (the resource must exist and be viewable).
 2. `data-mxqv-action` defines what to render: `chunk`, `snippet`, or `template`.
 3. `data-mxqv-mode` defines where to output: `modal` or `selector`.
-4. Connector accepts only `POST` and only `action=render`.
+4. The connector accepts only `POST` and only `action=render`.
 
 ## Choice matrix
 
@@ -18,7 +16,7 @@ This page describes how to choose `data-mxqv-action` and output mode.
 | --- | --- | --- |
 | Product card | `chunk` | `modal` |
 | Cart / mini-cart | `snippet` | `modal` |
-| Quick view in custom block | `chunk` or `snippet` | `selector` |
+| Quick view in a custom block | `chunk` or `snippet` | `selector` |
 | Resource template render | `template` | `modal` or `selector` |
 
 ## 1. `chunk`
@@ -69,7 +67,9 @@ Use for elements already built by a snippet (e.g. `msCart`).
 
 - Checked against `mxquickview_allowed_snippet`.
 - Render: `$modx->runSnippet($name, $props)`.
-- Resource properties are passed as snippet parameters.
+- Resource fields are passed as snippet parameters; for `msCart`, `id` is removed and `resource_id` is set.
+- The snippet name in `data-mxqv-element` may start with `!` (stripped in the processor).
+- POST fields `mode`, `output`, `modal_library` apply only to `msCart` render (cart selector), not `template`.
 
 ### Example
 
@@ -101,14 +101,14 @@ Use for elements already built by a snippet (e.g. `msCart`).
 
 ### For manager
 
-Used less often: when the resource should be rendered with its template.
+Used less often: when the resource should be rendered with a full template.
 
 ### For developer
 
 - Always checked against `mxquickview_allowed_template`.
 - Empty `mxquickview_allowed_template` means `template` render is disabled.
-- `element` accepts template ID or `templatename`.
-- Render is done by processing the resource with the chosen template.
+- `element` accepts a template ID or `templatename`.
+- Render: the resource `template` is swapped temporarily, then `$resource->process()` runs with the template from `data-mxqv-element` (not necessarily the resource’s default template in the manager).
 
 ### Example
 
@@ -140,10 +140,11 @@ Used less often: when the resource should be rendered with its template.
 
 ### `modal`
 
-- Uses mode from `modalLibrary` (`native`, `bootstrap`, `fancybox`) in `mxQuickView.initialize`.
-- Supports title (`data-mxqv-title`) and prev/next navigation.
+- Uses the mode from `modalLibrary` (`native`, `bootstrap`, `fancybox`) in `mxQuickView.initialize`.
+- Supports a title (`data-mxqv-title`).
+- Prev/next buttons and ←/→ keys work only with `modalLibrary` `native` or `bootstrap`. Fancybox has no loop navigation.
 
 ### `selector`
 
-- Inserts response into container from `data-mxqv-output`.
-- Useful when the site already has its own modal or a dedicated output area.
+- Inserts the response into the container from `data-mxqv-output`.
+- Use this when the site already has its own modal or a dedicated output area.

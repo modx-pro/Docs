@@ -1,6 +1,7 @@
 ---
 title: ClickToCall
 description: Call widget for mobile devices
+categories: notifications
 logo: https://modstore.pro/assets/extras/clicktocall/logo.png
 author: core01
 modstore: https://modstore.pro/packages/alerts-mailing/clicktocall

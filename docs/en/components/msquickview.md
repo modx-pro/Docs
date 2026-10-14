@@ -2,6 +2,7 @@
 title: msQuickView
 description: Component for quick product view and cart widget with live updates
 dependencies: miniShop2
+categories: catalog
 ---
 
 # msQuickView

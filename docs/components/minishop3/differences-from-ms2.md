@@ -5,12 +5,24 @@ title: Отличия от miniShop2
 
 Это руководство поможет разработчикам, знакомым с miniShop2, быстро освоить MiniShop3 и понять ключевые изменения.
 
+```mermaid
+flowchart TB
+  ms2[miniShop2 сайт]
+  export[Экспорт каталога / ручной перенос]
+  install[Установить MS3 + VueTools + pdoTools 3]
+  settings[Ключи ms3_* вместо ms2_*]
+  forms[Формы ms3_form / Web API]
+  grids[Колонки в Утилитах гридов]
+  ms2 --> export --> install --> settings --> forms
+  install --> grids
+```
+
 ## Системные требования
 
 | Требование | miniShop2 | MiniShop3 |
 | --- | --- | --- |
-| MODX | 2.3+ | **3.0.0+** |
-| PHP | 7.0+ | **8.1+** |
+| MODX | 2.3+ | **3.0.3+** |
+| PHP | 7.0+ | **8.2+** |
 | MySQL | 5.5+ | 5.7+ / MariaDB 10.3+ |
 | pdoTools | 2.x | **3.x** |
 
@@ -178,7 +190,7 @@ miniShop2Config.actionUrl;
 // MiniShop3
 await ms3.cartAPI.add(123, 1);
 await ms3.orderAPI.submit();
-ms3Config.apiUrl;
+ms3Config.actionUrl;
 ```
 
 ### Callbacks → Hooks
@@ -221,13 +233,13 @@ ms3Hooks.addHook('afterAddCart', async ({ response }) => {
     </button>
 </form>
 
-<!-- MiniShop3 — декларативный подход -->
-<button type="button"
-        data-ms-action="cart/add"
-        data-id="123"
-        data-count="1">
-    В корзину
-</button>
+<!-- MiniShop3 — форма с ms3_action -->
+<form method="post" class="ms3_form" data-ms3-form>
+    <input type="hidden" name="id" value="123">
+    <input type="hidden" name="count" value="1">
+    <input type="hidden" name="ms3_action" value="cart/add">
+    <button type="submit">В корзину</button>
+</form>
 ```
 
 ## События плагинов
@@ -245,18 +257,19 @@ switch ($modx->event->name) {
 // MiniShop3
 switch ($modx->event->name) {
     case 'msOnBeforeAddToCart':
-        $cart = $scriptProperties['cart'];  // MiniShop3\Controllers\Cart\Cart
+        $product = $scriptProperties['msProduct'];
+        $count = $scriptProperties['count'];
+        $options = $scriptProperties['options'];
         break;
 }
 ```
 
 ### Новые события MiniShop3
 
-- `msOnCustomerCreate` — создание клиента
-- `msOnCustomerUpdate` — обновление клиента
-- `msOnCustomerLogin` — вход клиента
-- `msOnBeforeAPIRequest` — перед API запросом
-- `msOnAfterAPIRequest` — после API запроса
+- `msOnCreateCustomer` — создание клиента
+- `msOnUpdateCustomer` — обновление клиента
+
+Полный список: [События](/components/minishop3/development/events).
 
 ## Сниппеты
 
@@ -279,7 +292,7 @@ switch ($modx->event->name) {
 
 ### msMiniCart → msOrderTotal
 
-Параметр `formatPrices` удалён. Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`.
+Параметр `formatPrices` у сниппетов витрины удалён (у `msProducts` его нет). Числовые плейсхолдеры — `float`, для вывода используйте `*_formatted`. У `msOrderTotal` свойства `formatPrices` / `withCurrency` ещё могут быть в админке, код их не читает ([#825](https://github.com/modx-pro/MiniShop3/issues/825)).
 
 ```fenom
 {* miniShop2 *}
@@ -417,7 +430,12 @@ await ms3.cartAPI.add(id, 1);
     <button name="ms2_action" value="cart/add">
 
 <!-- Стало -->
-<button data-ms-action="cart/add" data-id="{$id}">
+<form method="post" class="ms3_form" data-ms3-form>
+    <input type="hidden" name="id" value="{$id}">
+    <input type="hidden" name="count" value="1">
+    <input type="hidden" name="ms3_action" value="cart/add">
+    <button type="submit">В корзину</button>
+</form>
 ```
 
 ### Шаг 9: Проверка

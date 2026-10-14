@@ -3,15 +3,13 @@ title: msReviewForm
 description: Форма отправки отзыва на карточке товара msReviews
 ---
 
-<!-- TODO: translate from docs/components/msreviews/snippets/msReviewForm.md -->
-
 # Сниппет msReviewForm
 
 Выводит форму отзыва: оценка 1–5★, текст, медиа, структурированные поля, капча. Отправляет AJAX на connector msReviews.
 
 ## Назначение
 
-Сбор UGC на странице товара: новый отзыв, verified-токен из письма, загрузка фото. После отправки показывает экран успеха (см. скриншот ниже).
+Сбор UGC на странице товара: новый отзыв, verified-токен из письма, загрузка фото. После отправки показывает экран успеха.
 
 ## Где вызывать
 
@@ -24,9 +22,9 @@ description: Форма отправки отзыва на карточке то
 ## Зависимости
 
 - **MiniShop3**, **msReviews**
-- **pdoTools 3.0+** — рендер чанков на Fenom
+- **pdoTools 3.0+** — отрисовка чанков на Fenom
 - **msReviewsLexiconScript** — переводы для `review-form.js`
-- Настройки: `msreviews_media_enabled`, `msreviews_moderation_enabled`
+- Настройки: `msreviews_media_enabled`
 - Капча: плагин на `msrOnCaptchaVerify` — [События](../events)
 
 ## Параметры
@@ -62,7 +60,7 @@ description: Форма отправки отзыва на карточке то
 
 ## Внешний заголовок секции
 
-Паттерн: заголовок в разметке темы, в форме `showHeading=0`:
+Заголовок в разметке темы, в форме `showHeading=0`:
 
 ::: code-group
 

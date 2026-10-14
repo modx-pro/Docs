@@ -7,7 +7,7 @@ description: Событие OnMxHeadlessRegister и ExtensionApi mxHeadless
 
 Сторонние Extras регистрируют объекты без правок core. Точка входа: событие **`OnMxHeadlessRegister`**.
 
-## Event hook
+## Событие
 
 ```php
 <?php
@@ -29,15 +29,16 @@ switch ($modx->event->name) {
 }
 ```
 
-После listeners registry замораживается. Поздняя регистрация выбрасывает `RegistryFrozenException`.
+После обработчиков реестр и коллекция маршрутов замораживаются (`ExtensionApi::freeze()`). Поздний `registerObject` или `registerRelation` бросает `RegistryFrozenException`, поздний `registerEndpoint` бросает `RuntimeException` с текстом `Route collection is frozen`.
 
 ## Методы ExtensionApi
 
 | Метод | Назначение |
 | --- | --- |
-| `registerObject(ObjectDefinition)` | xPDO-класс под public name |
+| `registerObject(ObjectDefinition)` | xPDO-класс под публичным именем |
 | `registerRelation(string $object, RelationDefinition)` | Связь для `include=` |
-| `registerEndpoint(...)` | Custom route с handler |
+| `registerEndpoint(...)` | Свой маршрут с обработчиком |
+| `registry()` | Доступ к зарегистрированным определениям |
 
 ## ObjectDefinition
 
@@ -55,7 +56,18 @@ ObjectDefinition::create('locations')
     ->contexts(['web']);
 ```
 
-Флаги: `readable`, `creatable`, `updatable`, `deletable`, `hiddenFields`, `protectedFields`, `contexts`.
+Флаги: `readable`, `creatable`, `updatable`, `deletable`, `searchable`, `hiddenFields`, `protectedFields`, `immutableFields`, `requiredFields`, `primaryKey`, `contexts`, `contextAccessGated`.
+
+`contextAccessGated` отключает проверку списка `contexts` и переключает контроль доступа на проверку ACL по ключу контекста конкретной записи. Так помечен core-объект `contexts`.
+
+## События цепочки
+
+| Событие | Когда |
+| --- | --- |
+| `OnMxHeadlessRegister` | Регистрация objects, relations, endpoints |
+| `OnMxHeadlessRegisterMiddleware` | До freeze стека. `registrar`: `prepend` / `append` |
+| `OnMxHeadlessBeforeRequest` | После auth, до handler. Можно подменить `request` через `$modx->event->returned` |
+| `OnMxHeadlessAfterRequest` | После handler. Можно подменить `response` |
 
 ## Дальше
 

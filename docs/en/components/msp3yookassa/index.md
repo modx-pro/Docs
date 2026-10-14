@@ -5,7 +5,7 @@ author: Ibochkarev
 logo: https://modstore.pro/assets/extras/msp3yookassa/logo.png
 modstore: https://modstore.pro/packages/payment-system/msp3yookassa
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 
 compatibility:
   - modx3

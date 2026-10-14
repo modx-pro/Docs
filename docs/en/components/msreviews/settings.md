@@ -2,7 +2,7 @@
 title: Системные настройки
 description: Ключи msreviews_* — модерация, медиа, письма, антиспам, витрина, рейтинг, schema, engagement
 ---
-<!-- TODO: translate from docs/components/msreviews/settings.md -->
+
 # Системные настройки
 
 Откройте **Система → Настройки**, фильтр namespace **`msreviews`**.
@@ -45,7 +45,7 @@ description: Ключи msreviews_* — модерация, медиа, пись
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `msreviews_request_enabled` | boolean | `1` | Письма с просьбой оставить отзыв |
-| `msreviews_request_order_statuses` | text | *(пусто)* | ID статусов заказа — триггер очереди |
+| `msreviews_request_order_statuses` | text | *(пусто)* | ID статусов заказа: запуск очереди |
 | `msreviews_request_delay_hours` | number | `72` | Задержка перед отправкой (ч) |
 | `msreviews_request_token_ttl_days` | number | `30` | TTL ссылки в письме (дни) |
 | `msreviews_request_email_subject_chunk` | text | `tplMsReviewsEmailSubject` | Чанк темы письма |
@@ -53,7 +53,7 @@ description: Ключи msreviews_* — модерация, медиа, пись
 | `msreviews_moderator_notify_enabled` | boolean | `0` | Письмо модератору о новом отзыве или вопросе с витрины |
 | `msreviews_moderator_notify_emails` | text | *(пусто)* | Адреса через запятую |
 | `msreviews_moderator_notify_on` | text | `pending_only` | `pending_only` — только pending, `all` — любой новый с витрины |
-| `msreviews_moderator_email_subject_chunk` | text | *(пусто)* | Чанк темы. Пустое имя: текст из лексикона. Имя задано, рендер пустой: ERROR в лог, письмо не уходит |
+| `msreviews_moderator_email_subject_chunk` | text | *(пусто)* | Чанк темы. Пустое имя: текст из лексикона. Имя задано, отрисовка пустая: ERROR в лог, письмо не уходит |
 | `msreviews_moderator_email_body_chunk` | text | *(пусто)* | Чанк тела. То же правило, что у темы |
 
 Плагин **msReviews Order status** слушает **`msOnChangeOrderStatus`**. Обработка очереди: CMP или cron с **`action=request/process`** и **`msreviews_cron_key`**.
@@ -62,7 +62,7 @@ description: Ключи msreviews_* — модерация, медиа, пись
 
 Включите **`msreviews_moderator_notify_enabled`** и заполните **`msreviews_moderator_notify_emails`**. При новом отзыве или вопросе с витрины модератор получит письмо со ссылкой на CMP.
 
-С **1.2.2** письма пакета (модератор, invite, reply/answer) уходят как `text/html`. Кастомный чанк тела может содержать вёрстку. Plain-текст из лексикона нормализуется (escape + `<br>`).
+С **1.2.2** письма пакета (модератор, invite, reply/answer) уходят как `text/html`. Свой чанк тела может содержать вёрстку. Обычный текст из лексикона нормализуется (escape + `<br>`).
 
 - По умолчанию (`pending_only`) письмо уходит только для материалов со статусом `pending`. Значение `all` включает и автоматически опубликованные.
 - CSV-импорт и создание отзыва в CMP письма не шлют.
@@ -77,7 +77,7 @@ description: Ключи msreviews_* — модерация, медиа, пись
 | `msreviews_verified_first_enabled` | boolean | `1` | Verified выше обычных (после закреплённых) |
 | `msreviews_frontend_js_enabled` | boolean | `1` | Подключать JS сниппетами |
 | `msreviews_frontend_css_enabled` | boolean | `1` | Подключать CSS сниппетами |
-| `msreviews_storefront_date_format` | text | `d.m.Y` | Формат даты в карточке (`PHP date()`). Override: `dateFormat` у `msReviews` |
+| `msreviews_storefront_date_format` | text | `d.m.Y` | Формат даты в карточке (`PHP date()`). Переопределение: `dateFormat` у `msReviews` |
 | `msreviews_qna_form_position` | text | `after` | Q&A: `after` (список → форма) или `before` |
 
 ## Рейтинг
@@ -103,7 +103,6 @@ description: Ключи msreviews_* — модерация, медиа, пись
 | `msreviews_honeypot_field` | text | `msr_hp` | Имя поля → POST `data[msr_hp]` |
 | `msreviews_crawler_block_enabled` | boolean | `0` | Блок ботов ([CrawlerDetect](/components/crawlerdetect/)) |
 | `msreviews_rate_limit_per_hour` | number | `3` | Лимит создания отзыва/вопроса с IP/час |
-| `msreviews_vote_rate_limit_per_hour` | number | `60` | Лимит голосов «полезно» |
 | `msreviews_rate_limit_retention_days` | number | `7` | Хранение записей rate limit |
 | `msreviews_max_links` | number | `1` | Макс. ссылок в тексте |
 | `msreviews_spam_action` | text | `pending` | Статус при срабатывании антиспама |
@@ -118,6 +117,7 @@ description: Ключи msreviews_* — модерация, медиа, пись
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `msreviews_helpful_voting_enabled` | boolean | `1` | Голос «полезно» |
+| `msreviews_vote_rate_limit_per_hour` | number | `60` | Лимит голосов «полезно» |
 | `msreviews_self_edit_enabled` | boolean | `1` | Редактирование своего отзыва |
 | `msreviews_self_delete_enabled` | boolean | `1` | Удаление своего отзыва |
 | `msreviews_self_edit_window_minutes` | number | `15` | Окно правки (мин) |
@@ -128,7 +128,7 @@ description: Ключи msreviews_* — модерация, медиа, пись
 | Ключ | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `msreviews_cron_key` | text | *(пусто)* | Секрет для `action=request/process` |
-| `msreviews_product_class_key` | text | `msProduct` | class_key товаров в фильтрах CMP |
+| `msreviews_product_class_key` | text | `msProduct` | class_key для поиска CMP `type=product` и метрики `products_without_reviews`. С 1.2.5 не ограничивает вкладку «Отзывы» и `parents` |
 
 ## Verified purchase
 

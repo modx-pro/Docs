@@ -13,6 +13,8 @@ items:
     link: thanks
   - text: Личный кабинет
     items:
+      - text: Вход и регистрация
+        link: customer-auth
       - text: Профиль покупателя
         link: customer-profile
       - text: Адреса доставки
@@ -24,6 +26,17 @@ items:
 
 Описание пользовательского интерфейса MiniShop3 на сайте.
 
+```mermaid
+flowchart TB
+  Catalog[Каталог msProducts] --> Product[Страница товара]
+  Product --> Cart[Корзина msCart]
+  Catalog --> Cart
+  Cart --> Order[Оформление msOrder]
+  Order --> Thanks[Спасибо msGetOrder]
+  Thanks --> Cabinet[ЛК msCustomer]
+  Auth[Вход AuthUI] --> Cabinet
+```
+
 ## Разделы
 
 - [Каталог товаров](catalog) — шаблон категории и карточка товара
@@ -34,6 +47,7 @@ items:
 
 ### Личный кабинет
 
+- [Вход и регистрация](customer-auth) — формы входа, регистрации и восстановления пароля
 - [Профиль покупателя](customer-profile) — редактирование личных данных
 - [Адреса доставки](customer-addresses) — управление сохранёнными адресами
 - [История заказов](customer-orders) — просмотр и фильтрация заказов

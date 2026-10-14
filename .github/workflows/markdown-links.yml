@@ -8,6 +8,7 @@ on:
       - 'scripts/check-markdown-links.mjs'
       - '.github/workflows/markdown-links.yml'
       - 'package.json'
+      - 'pnpm-workspace.yaml'
 
 jobs:
   markdown-links:

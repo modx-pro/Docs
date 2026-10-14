@@ -5,7 +5,7 @@ description: Create and use mxh_ keys in mxHeadless
 
 # API keys
 
-Long-lived credentials for CI, static builds, and integrations. Prefix `mxh_`.
+Keys `mxh_*` for CI, static builds, and server-to-server calls.
 
 ## Format
 
@@ -15,8 +15,9 @@ mxh_{lookupId}_{secret}
 
 - `lookupId`: public id in `{prefix}mxheadless_api_keys`
 - `secret` is shown once at creation
+- empty scopes in CLI and Manager mean `*` (all scopes)
 
-Per-key rate limits: columns `rate_limit_max`, `rate_limit_window`.
+Per-key limits: columns `rate_limit_max`, `rate_limit_window`.
 
 ## Manager
 
@@ -32,7 +33,7 @@ php core/components/mxheadless/bin/api-key-create.php \
   --rate-limit-window=60
 ```
 
-The script prints the full key once. Store it in a secret manager.
+The script prints the full key once. Store it in a secret store.
 
 ## Request
 
@@ -52,9 +53,7 @@ API keys do not need CSRF.
 
 Comma-separated list at creation. Examples: `resources.read`, `resources.create`, `orders.read`, `*`.
 
-Full list: [Authorization](authorization).
-
-An empty scope set is usually useless for protected routes. See [Authorization](authorization).
+Omitting `--scopes=` gives `*`. An empty list in Manager also grants all scopes. Full list: [Authorization](authorization).
 
 ## Rotation
 

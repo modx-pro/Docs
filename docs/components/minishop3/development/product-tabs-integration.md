@@ -5,59 +5,109 @@ description: Руководство по добавлению собственн
 
 # Интеграция вкладок товара
 
-MiniShop3 предоставляет API для добавления собственных вкладок на страницу редактирования товара. Вы можете интегрировать как Vue компоненты, так и ExtJS панели.
+Свою вкладку на страницу редактирования товара в админке добавляет плагин MODX: он регистрирует Vue-компонент или панель ExtJS в `window.MS3ProductTabsRegistry`.
+
+::: info Аналогичный API
+Для вкладок заказа используйте [`MS3OrderTabsRegistry`](/components/minishop3/development/order-tabs-integration).
+:::
 
 ## Архитектура
 
-Страница редактирования товара использует гибридную архитектуру:
+Страница редактирования товара гибридная: Vue-вкладки работают внутри ExtJS TabPanel.
 
 ```
 ExtJS TabPanel (верхний уровень)
-├── Document (системная вкладка MODX)
+├── Документ (системная вкладка MODX)
 ├── Товар (Vue ProductTabs)
-│   ├── Свойства (Vue)
+│   ├── Свойства товара (Vue)
 │   ├── Галерея (Vue)
 │   ├── Категории (Vue ProductCategoriesTab)
 │   ├── Связи (Vue ProductLinksTab)
 │   ├── Опции товара (Vue)
 │   └── [Ваши вкладки]
-├── Page Settings (системная вкладка MODX)
-└── Access Permissions (системная вкладка MODX)
+├── Дополнительные поля (TV) (системная вкладка MODX)
+├── Настройки (системная вкладка MODX)
+└── Группы ресурсов (системная вкладка MODX)
 ```
 
-Вкладка «Товар» — Vue-компонент `ProductTabs` (PrimeVue TabView). Категории и связи тоже Vue, не ExtJS.
+Встроенные вкладки показываются не все и не всегда:
 
-## Plugin Registry API
+| Вкладка | Ключ | Позиция | Когда показывается |
+| --- | --- | --- | --- |
+| Свойства товара | `properties` | 0 | Всегда |
+| Галерея | `gallery` | 1 | Если `show_gallery` не выключена |
+| Категории | `categories` | 2 | Если `show_categories` не выключена |
+| Связи | `links` | 3 | Если `show_links` не выключена |
+| Опции товара | `options` | 4 | Если `show_options` не выключена и у товара есть опции |
 
-Для регистрации вкладок используется глобальный объект `window.MS3ProductTabsRegistry`.
+## Регистрация вкладки
 
-### Методы
-
-#### `register(tabConfig)`
-
-Регистрирует новую вкладку.
-
-**Параметры:**
+Метод `window.MS3ProductTabsRegistry.register(tabConfig)` принимает:
 
 | Параметр | Тип | Обязательный | Описание |
 | --- | --- | --- | --- |
 | `key` | string | Да | Уникальный идентификатор вкладки |
-| `title` | string | Да | Заголовок вкладки (отображается в табе) |
-| `type` | string | Нет | Тип вкладки: `'vue'` или `'extjs'` (по умолчанию `'vue'`) |
-| `component` | string | Для Vue | Имя Vue компонента |
+| `title` | string | Да | Заголовок вкладки |
+| `type` | string | Нет | `'vue'` (по умолчанию) или `'extjs'` |
+| `component` | object | Для Vue | Объект компонента — например, импортированный SFC. Строковое имя подойдёт только если компонент уже зарегистрирован в приложении через `app.component()`; имена из `window` ядро не ищет |
 | `xtype` | string | Для ExtJS | xtype ExtJS компонента |
-| `extConfig` | object | Нет | Дополнительная конфигурация для ExtJS компонента |
-| `props` | object | Нет | Props для Vue компонента |
-| `position` | number | Нет | Позиция вкладки (по умолчанию `100`) |
+| `extConfig` | object | Нет | Дополнительная конфигурация для ExtJS |
+| `props` | object | Нет | Дополнительные props для Vue-компонента |
+| `position` | number | Нет | Позиция вкладки среди остальных (по умолчанию `100`) |
 
-**Возвращает:** `boolean` - успешность регистрации
+**Возвращает:** `boolean` — успешность регистрации.
 
-## Интеграция Vue компонента
+**Ключи встроенных вкладок** (`properties`, `gallery`, `categories`, `links`, `options`) занимать нельзя: ядро проверяет повторы только среди вкладок плагинов и такое совпадение не отлавливает.
 
-### Шаг 1: Создайте Vue компонент
+## Что получает компонент
+
+Эти данные вкладка получает автоматически:
+
+| Параметр | Тип | Описание | Где доступен |
+| --- | --- | --- | --- |
+| `productId` | number | ID товара | props Vue-компонента |
+| `record` | object | Данные товара | props Vue-компонента, `config.record` у панели ExtJS |
+
+Для ExtJS-вкладок `record` подставляет в `extConfig` само ядро — передавать его не нужно.
+
+## Порядок загрузки
+
+`product-tabs.min.js` подключается как ES-модуль, а модули выполняются после разбора страницы. Поэтому обычный скрипт плагина всегда работает раньше, и в момент его выполнения `window.MS3ProductTabsRegistry` ещё не существует.
+
+::: warning Заглушку создавать нельзя
+На [странице заказа](/components/minishop3/development/order-tabs-integration#registry-stub) принят приём с заглушкой и очередью. Здесь он не работает: реестр создаётся как `window.MS3ProductTabsRegistry || new ProductTabsRegistry()`, то есть ваш объект-заглушка останется на месте настоящего реестра. Инициализация вкладок вызовет у него `_onMounted()`, которого нет, и ни одна вкладка из очереди не появится.
+
+Вместо этого дождитесь появления реестра — см. [функцию ниже](#waiting-for-registry).
+:::
+
+<!-- MEDIA: diagram | must | Порядок загрузки двумя дорожками с общим началом: скрипт плагина выполняется раньше `product-tabs.min.js`, объекта `window.MS3ProductTabsRegistry` ещё нет. Верхняя дорожка с пометкой «нельзя»: плагин кладёт на его место заглушку → модуль создаёт `new ProductTabsRegistry()` только когда объекта нет, поэтому заглушка остаётся → инициализация вкладок вызывает у неё `_onMounted()` → `TypeError`, вкладки из очереди не появляются. Нижняя дорожка с пометкой «так надо»: плагин вызывает `whenRegistryReady` → объекта нет, повтор через 100 мс → модуль создаёт настоящий объект → следующий опрос его находит → вызывается `register()`. Только шаги, названные в тексте раздела. | Нарисовать по тексту предупреждения «Заглушку создавать нельзя» и подраздела «Ожидание реестра», а не по коду. SVG, фон прозрачный; две версии (русская и английская) из одного источника; имена из кода не переводить. Оформить так же, как схему порядка загрузки на странице заказа: обе страницы читаются парой. Не рисовать монтирование Vue-приложения и передачу очереди в него: в тексте раздела этого нет. -->
+
+### Ожидание реестра {#waiting-for-registry}
+
+Регистрацию откладывает эта функция — она годится и для Vue-, и для ExtJS-вкладок:
 
 ```javascript
-// my-component/src/VariantsTab.vue
+function whenRegistryReady(callback, attemptsLeft) {
+    if (window.MS3ProductTabsRegistry) {
+        callback(window.MS3ProductTabsRegistry)
+        return
+    }
+    if (attemptsLeft === undefined) attemptsLeft = 50 // ~5 секунд
+    if (attemptsLeft <= 0) return
+    setTimeout(function() { whenRegistryReady(callback, attemptsLeft - 1) }, 100)
+}
+```
+
+Ограничение попыток обязательно: без него опрос не остановится там, где реестра не бывает — например, на странице создания товара.
+
+В примерах ниже она вызывается по имени.
+
+## Интеграция Vue-компонента
+
+### 1. Создайте компонент
+
+```vue
+<!-- my-component/src/components/VariantsTab.vue -->
 <template>
   <div class="variants-tab">
     <h3>Варианты товара #{{ productId }}</h3>
@@ -77,76 +127,53 @@ defineProps({
   }
 })
 </script>
-
 ```
 
-### Шаг 2: Создайте entry point
+### 2. Создайте точку входа
 
 ```javascript
 // my-component/src/entries/variants-tab.js
-import { createApp } from 'vue'
-import PrimeVue from 'primevue/config'
 import VariantsTab from '../components/VariantsTab.vue'
 
-// Регистрируем компонент глобально
-window.MS3VariantsTab = VariantsTab
-
-// Регистрируем вкладку
-if (window.MS3ProductTabsRegistry) {
-  window.MS3ProductTabsRegistry.register({
+whenRegistryReady(registry => {
+  registry.register({
     key: 'variants',
     title: 'Варианты',
     type: 'vue',
-    component: 'MS3VariantsTab',
-    position: 5 // После Опций
+    component: VariantsTab, // объект компонента, не строка
+    position: 5, // после «Опций товара»
   })
-}
-
+})
 ```
 
-### Шаг 3: Подключите скрипт в контроллере MODX
+### 3. Подключите скрипт плагином MODX
 
 ```php
-// core/components/mycomponent/controllers/product.class.php
-public function loadCustomCssJs()
-{
-    $assetsUrl = $this->modx->getOption('mycomponent.assets_url');
+<?php
+// Плагин MODX — событие: msOnManagerCustomCssJs
 
-    // Подключаем после product-tabs.min.js
-    $this->addLastJavascript($assetsUrl . 'js/variants-tab.min.js');
+$page = $scriptProperties['page'] ?? '';
+if ($page !== 'product_update') {
+    return;
 }
 
+$controller = $scriptProperties['controller'];
+$assetsUrl = MODX_ASSETS_URL . 'components/mycomponent/';
+
+$controller->addHtml(
+    '<script type="module" src="' . $assetsUrl . 'js/variants-tab.min.js"></script>'
+);
 ```
 
-### Шаг 4: Обработка в ProductTabs
+::: warning При создании товара вкладок нет
+Событие поднимается и на странице создания, с `page => 'product_create'`, но `product-tabs.min.js` там не подключается, вкладки «Товар» на странице нет и реестр не появляется. Поэтому проверять `product_create` незачем: скрипт отработает впустую, а ожидание реестра будет опрашивать страницу до её закрытия. Свои вкладки доступны только у сохранённого товара.
+:::
 
-Для полной интеграции Vue компонента, вам нужно зарегистрировать его в ProductTabs. Добавьте обработку в шаблоне:
+Vue-компонент внутри `ProductTabs` наследует стили контейнера `.vueApp`.
 
-```vue
-<!-- В ProductTabs.vue уже есть поддержка plugin компонентов -->
-<template v-else-if="tab.type === 'vue' && tab.component">
-  <component
-    :is="getComponent(tab.component)"
-    v-bind="tab.props"
-    :product-id="productId"
-    :record="record"
-  />
-</template>
+## Интеграция ExtJS-компонента
 
-```
-
-```javascript
-// В script setup
-function getComponent(name) {
-  // Ищем компонент в глобальном scope
-  return window[name] || null
-}
-
-```
-
-## Интеграция ExtJS компонента
-
-### Шаг 1: Создайте ExtJS панель
+### 1. Создайте панель ExtJS
 
 ```javascript
 // assets/components/mycomponent/js/mgr/widgets/custom.panel.js
@@ -166,155 +193,76 @@ MyComponent.panel.CustomTab = function(config) {
 };
 Ext.extend(MyComponent.panel.CustomTab, MODx.Panel);
 Ext.reg('mycomponent-custom-tab', MyComponent.panel.CustomTab);
-
 ```
 
-### Шаг 2: Зарегистрируйте вкладку
+### 2. Зарегистрируйте вкладку
 
 ```javascript
 // assets/components/mycomponent/js/mgr/product-integration.js
-Ext.onReady(function() {
-    if (window.MS3ProductTabsRegistry) {
-        window.MS3ProductTabsRegistry.register({
-            key: 'custom',
-            title: 'Кастомная вкладка',
-            type: 'extjs',
-            xtype: 'mycomponent-custom-tab',
-            extConfig: {
-                // record передаётся автоматически!
-                // Дополнительные параметры:
-                myParam: 'value'
-            },
-            position: 6
-        });
-    }
+whenRegistryReady(function(registry) {
+    registry.register({
+        key: 'custom',
+        title: 'Своя вкладка',
+        type: 'extjs',
+        xtype: 'mycomponent-custom-tab',
+        extConfig: {
+            // record ядро подставляет само, здесь — только свои параметры
+            myParam: 'value'
+        },
+        position: 6
+    });
 });
-
 ```
 
-::: tip Автоматическая передача record
-Для ExtJS вкладок `record` с данными товара передаётся автоматически в `extConfig`. Вам не нужно указывать его явно.
-:::
+`Ext.onReady()` для регистрации не годится: он срабатывает раньше, чем выполнится ES-модуль с реестром. Дождитесь реестра [функцией из раздела выше](#waiting-for-registry).
 
-### Шаг 3: Подключите скрипты
+### 3. Подключите скрипты
 
 ```php
-public function loadCustomCssJs()
-{
-    $assetsUrl = $this->modx->getOption('mycomponent.assets_url');
+<?php
+// Плагин MODX — событие: msOnManagerCustomCssJs
 
-    // Сначала панель
-    $this->addLastJavascript($assetsUrl . 'js/mgr/widgets/custom.panel.js');
-    // Затем интеграцию
-    $this->addLastJavascript($assetsUrl . 'js/mgr/product-integration.js');
+$page = $scriptProperties['page'] ?? '';
+if ($page !== 'product_update' && $page !== 'product_create') {
+    return;
 }
 
+$controller = $scriptProperties['controller'];
+$assetsUrl = MODX_ASSETS_URL . 'components/mycomponent/';
+
+// Сначала панель, затем регистрацию
+$controller->addLastJavascript($assetsUrl . 'js/mgr/widgets/custom.panel.js');
+$controller->addLastJavascript($assetsUrl . 'js/mgr/product-integration.js');
 ```
+
+Панель ExtJS монтируется только при переключении на вкладку и уничтожается вместе со страницей.
 
 ## Позиционирование вкладок
 
-Встроенные вкладки имеют следующие позиции:
+Встроенные вкладки занимают позиции 0–4, своя вкладка без `position` получает `100`. Чтобы встать сразу за встроенными, задайте значение из диапазона 5–99.
 
-| Вкладка | Позиция |
+`position: 0` до вкладки не доедет: ядро читает значение как `position || 100` и подставит `100`. Чтобы встать перед «Свойствами товара», нужно отрицательное число.
+
+## Если вкладка не появилась
+
+Причину ядро пишет в консоль, и префикс зависит от того, когда вкладку отклонили:
+
+| Сообщение | Когда |
 | --- | --- |
-| Свойства | 0 |
-| Галерея | 1 |
-| Категории | 2 |
-| Связи | 3 |
-| Опции | 4 |
+| `[ProductTabsRegistry] Tab must have key and title` | Не задан `key` или `title` |
+| `[ProductTabsRegistry] Tab "…" already registered` | Повтор ключа в очереди, до передачи в Vue |
+| `[ProductTabs] Tab with key "…" already registered` | Повтор ключа при регистрации на уже открытой странице |
+| `TypeError: … _onMounted is not a function` | Вы создали заглушку — см. предупреждение в «Порядке загрузки» |
 
-Рекомендуемые позиции для кастомных вкладок: **5-99**.
+Фильтровать консоль по `[ProductTabs]` недостаточно: часть сообщений приходит с префиксом `[ProductTabsRegistry]`.
 
-## Доступ к данным товара
-
-Ваш компонент автоматически получает:
-
-### Vue компоненты
+Что смотреть в консоли браузера:
 
 ```javascript
-const props = defineProps({
-  productId: Number,  // ID товара
-  record: Object      // Полные данные товара
-})
-
-// Использование
-console.log(props.record.pagetitle)
-console.log(props.record.price)
-
-```
-
-### ExtJS компоненты
-
-```javascript
-MyComponent.panel.CustomTab = function(config) {
-    // config.record содержит данные товара
-    console.log(config.record.id);
-    console.log(config.record.pagetitle);
-
-    // ...
-};
-
-```
-
-## Пример: Интеграция ms3Variants
-
-```javascript
-// variants.wrapper.js
-(function() {
-    'use strict';
-
-    // Ждём загрузки MS3ProductTabsRegistry
-    function registerVariantsTab() {
-        if (!window.MS3ProductTabsRegistry) {
-            setTimeout(registerVariantsTab, 100);
-            return;
-        }
-
-        window.MS3ProductTabsRegistry.register({
-            key: 'variants',
-            title: _('ms3variants_tab_title') || 'Варианты',
-            type: 'extjs',
-            xtype: 'ms3variants-product-panel',
-            extConfig: {
-                // record передаётся автоматически
-            },
-            position: 5
-        });
-
-        console.log('[ms3Variants] Tab registered');
-    }
-
-    // Запускаем регистрацию
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', registerVariantsTab);
-    } else {
-        registerVariantsTab();
-    }
-})();
-
-```
-
-## Важные замечания
-
-1. **Порядок загрузки**: Ваши скрипты должны загружаться ПОСЛЕ `product-tabs.min.js`
-
-2. **Уникальность ключей**: Каждая вкладка должна иметь уникальный `key`
-
-3. **Ленивая загрузка**: ExtJS компоненты монтируются только при переключении на вкладку
-
-4. **Очистка ресурсов**: При уничтожении страницы ExtJS компоненты автоматически уничтожаются
-
-5. **CSS изоляция**: Vue компоненты внутри ProductTabs наследуют стили из `.vueApp` контейнера
-
-## Отладка
-
-Проверьте регистрацию вкладки в консоли:
-
-```javascript
-// Проверить зарегистрированные вкладки
+// Очередь вкладок, ещё не переданных в Vue
 console.log(window.MS3ProductTabsRegistry.pendingTabs);
-
-// Проверить экземпляр ProductTabs
-console.log(window.MS3ProductTabsRegistry._instance);
-
 ```
+
+Непустая очередь после загрузки страницы означает, что вкладки не дошли до Vue.
+
+<!-- MEDIA: output | must | Что пишет консоль браузера в случаях из этого раздела: по одной строке на причину с пометкой `console.error` или `console.warn` (нет `key` или `title`; повторный ключ) и строка `TypeError`, когда вместо `MS3ProductTabsRegistry` стоит заглушка. Рядом вывод `console.log(window.MS3ProductTabsRegistry.pendingTabs)`: пустой список при верной регистрации и непустой при заглушке. | Текстовый блок, не кадр. На стенде: временный плагин на событии `msOnManagerCustomCssJs` с проверкой `page === 'product_update'`. Первый заход: регистрация через `whenRegistryReady`, по одному ошибочному вызову на случай, открыть товар, скопировать строки из консоли. Второй заход: плагин создаёт заглушку `window.MS3ProductTabsRegistry = {pendingTabs: [], register: …}` и регистрирует верную вкладку; взять строку `TypeError` и вывод `pendingTabs`. Префиксы записать так, как они напечатаны, и проверить, зависят ли они от момента вызова. Второй аргумент с настройками вкладки заменить на `{…}`; у `TypeError` оставить первую строку без пути стенда. Плагин после съёмки удалить. -->

@@ -1,6 +1,7 @@
 ---
 title: textAdvs
 description: Smart ads in page content
+categories: content
 logo: https://modstore.pro/assets/extras/textadvs/logo.png
 author: gvozdb
 modstore: https://modstore.pro/packages/content/textadvs

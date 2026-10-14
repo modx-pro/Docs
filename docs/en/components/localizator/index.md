@@ -1,6 +1,8 @@
 ---
 title: Localizator
 description: Language versions and satellites without contexts — auto-translation of resource fields and lexicons, SEO
+categories: utilities
+popular: true
 logo: https://modstore.pro/assets/extras/localizator/logo.png
 author: modx-pro
 modstore: https://modstore.pro/packages/utilities/localizator

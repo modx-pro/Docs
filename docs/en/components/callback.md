@@ -1,6 +1,7 @@
 ---
 title: CallBack
 description: Component for displaying, processing, and logging callback requests
+categories: notifications
 
 ---
 

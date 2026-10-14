@@ -13,5 +13,4 @@ Examples for CSS frameworks. Every form needs `[data-error]`. For AJAX, add `[da
 - [Fomantic-UI](/en/components/fetchit/examples/form/fomantic)
 - [Pico.css](/en/components/fetchit/examples/form/pico)
 - [Cirrus CSS](/en/components/fetchit/examples/form/cirrus)
-- [turretcss](/en/components/fetchit/examples/form/turretcss)
 - [Vanilla](/en/components/fetchit/examples/form/vanilla)

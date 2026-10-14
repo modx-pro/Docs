@@ -107,7 +107,7 @@ description: "Заголовок, текст, кнопка и фоновое и�
 Fenom chunk `pagebuilder_hero`:
 
 ```fenom
-{set $heroBg = is_array($background) ? ($background.url ?: '') : ($background ?: '')}
+{set $heroBg = $background|pb_image_src}
 <section class="pb-section pb-section--hero pb-hero{if $alignment == 'center'} pb-hero--center{/if}{if $cssClass} {$cssClass|escape}{/if}" data-pb-section="hero"{if $id} id="pb-{$id|escape}"{/if}{if $heroBg} style="--pb-hero-bg: url('{$heroBg|escape}')"{/if}>
   <div class="pb-section__inner pb-hero__inner">
     <h2 class="pb-hero__title">{$title|pb_text}</h2>

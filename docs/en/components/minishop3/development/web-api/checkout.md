@@ -18,13 +18,20 @@ No customer token:
 | `GET` | `/payment/list` |
 | `GET` | `/payment/get/{id}` |
 
-Only active methods are listed. The delivery↔payment link is checked at checkout: submit fails without a valid pair.
+Only active methods are listed. The delivery↔payment link is checked at checkout: without a valid pair, `submit` fails.
 
-`POST /delivery/webhook/{delivery_id}` is a provider callback (signature), not a customer token.
+Provider webhooks are authenticated by the handler's own signature, not by a customer token. API prefix: `/api/v1`.
+
+| Method | Path | Condition |
+| --- | --- | --- |
+| `POST` | `/delivery/webhook/{delivery_id}` | Requires a delivery handler; returns 404 when `ms3_shipment_enabled=0` |
+| `POST` | `/payment/webhook/{payment_method_id}` | Requires a payment class that implements `PaymentWebhookHandlerInterface`; otherwise 400 |
+
+Payment webhook chain: JSON body → `verifyWebhook` → `parseWebhook` → `PaymentLifecycleService::applyWebhook`. On success the response returns `attempt_id`, `status`, and `order_id`. The classic `webhook.php` / `callback.php` entry points in payment extras keep working as long as the payment class does not implement the Web API interface.
 
 ## Order draft
 
-All `/order/*` use token auto-mint.
+All `/order/*` routes use token auto-mint.
 
 | Method | Path | Purpose |
 | --- | --- | --- |
@@ -47,9 +54,9 @@ Typical draft fields: `delivery_id`, `payment_id`, `address_*`, and contact fiel
 
 ## Submit
 
-After successful `submit` the response may include a redirect (thank-you page / payment). Read `data` and redirect fields/headers in the controller `Response`.
+After a successful `submit` the response may include a redirect (thank-you page or payment). Read the `data` and the redirect fields and headers from the controller `Response`.
 
-Online payment comes from a payment extra. A base method without `class` only records the choice.
+Online payment is handled by a payment extra. A base method without `class` only records the choice.
 
 ## Typical order
 
@@ -59,4 +66,4 @@ Online payment comes from a payment extra. A base method without `class` only re
 4. `GET /order/cost`
 5. `POST /order/submit`
 
-The Fenom storefront can build the form via `msOrder`. Headless uses the lists above. See [Examples](examples).
+A Fenom storefront can build the form with `msOrder`; headless clients use the lists above. See [Examples](examples).

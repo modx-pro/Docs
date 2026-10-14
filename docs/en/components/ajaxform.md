@@ -1,6 +1,7 @@
 ---
 title: AjaxForm
 description: Submit forms via Ajax. Uses FormIt, but you can specify your own snippet
+categories: utilities
 logo: https://modstore.pro/assets/extras/ajaxform/logo-lg.jpg
 author: modx-pro
 modstore: https://modstore.pro/packages/utilities/ajaxform

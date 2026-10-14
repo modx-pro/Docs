@@ -3,7 +3,7 @@ title: msProducts
 ---
 # msProducts
 
-Snippet for outputting a list of products. Based on pdoTools and supports all of its filtering, sorting, and pagination features.
+Outputs a list of products. Based on pdoTools and supports all of its filtering, sorting, and pagination features.
 
 ## Parameters
 
@@ -25,6 +25,19 @@ Snippet for outputting a list of products. Based on pdoTools and supports all of
 | **sortby** | `id` | Sort field |
 | **sortdir** | `ASC` | Direction: `ASC` or `DESC` |
 | **sortbyOptions** | | Sort by product option (see below) |
+
+Since 1.14 the `sortby` value is checked against a list of what is allowed before it reaches the query. These pass:
+
+- product and resource fields — they get the right alias automatically;
+- declared TVs, vendor fields and `sortbyOptions` keys;
+- the `RAND`, `FIELD`, `IFNULL`, `COALESCE` and `CAST` functions, provided their arguments pass too;
+- parts carrying a table alias — only for aliases from `leftJoin` and `innerJoin` of the same call.
+
+::: warning A rejected part is dropped silently
+A dropped sort part raises no error: the page renders, the products come in the wrong order. If the whole value is dropped, the list falls back to `msProduct.id`.
+
+The reason goes to the MODX error log as `ms3_products dropped unsafe/unknown sortby part(s)`. Check it there if the product order changed after an upgrade.
+:::
 
 ### Related products
 
@@ -73,21 +86,39 @@ When `link` is set, the snippet automatically sets `parents => 0` and `depth => 
 | **outputSeparator** | `\n` | Separator between products |
 | **tplWrapper** | | Wrapper chunk for the full output |
 | **wrapIfEmpty** | `true` | Use wrapper when result is empty |
-| **showLog** | `false` | Show execution log (managers in mgr context only) |
+| **showLog** | `false` | Show the execution log. Visible only to someone signed in to the Manager — on any page of the site |
 
 ### Category scope
 
-pdoTools filters products by `parent` but ignores extra categories from `msCategoryMember`. The snippet uses `CategoryProductScopeService`: when `parents` is not `0`, it builds a `WHERE` for primary and extra categories and resets `parents` to `0` so pdoTools does not drop products from linked categories.
+pdoTools filters products by `parent` only and does not see extra categories from `msCategoryMember`. So when `parents` is not `0`, the snippet builds its own `WHERE` for the primary and extra categories — that is the job of `CategoryProductScopeService`. Then `parents` is reset to `0`, otherwise pdoTools drops products from linked categories.
 
-### Output with `return=data`
+### Restricted products and resource groups
+
+If a product or category is closed by a MODX resource group, the snippet hides it from outsiders. The check is on by default through the `ms3_web_catalog_respect_resource_groups` system setting and works together with the MODX setting `access_resource_group_enabled`.
+
+A signed-in customer whose customer group is linked to a MODX user group sees the restricted section.
+
+::: danger A restricted catalog does not work on a cached page
+MODX serves the finished HTML before the snippet runs. The first guest writes their reduced list into the cache, and a signed-in customer sees exactly that — with no sign of anything being wrong.
+
+On pages with restricted sections call the snippet uncached: `[[!ms3_products]]`.
+:::
+
+### Output `return=data`
 
 With `return=data` (the default) the snippet does **not** return a PHP array. For each row it picks a chunk (`tpl` or `@FILE`) and joins the result with `outputSeparator`. For an array use Fenom `{set $rows = 'msProducts' | snippet : ['return' => 'json']}` and `json_decode`, or `return=ids`.
 
-With `showLog=1` and a manager session, the pdoTools log is available in the `msProducts.log` placeholder.
+With `showLog=1` and an open Manager session the snippet returns the pdoTools log. Where it lands depends on `return`:
+
+| `return` | Where to find the log |
+| --- | --- |
+| `data` (default) | Appended to the output as the last element, after the products |
+| `json`, `ids`, `sql` | The `msProducts.log` placeholder |
+| any, with `toSeparatePlaceholders` | The `<prefix>log` placeholder |
 
 ## Table aliases
 
-The msProducts snippet automatically joins related product tables. Fields from the main table (msProduct) are available without a prefix; joined tables require an alias.
+Fields of the main table `msProduct` are available without a prefix; fields of joined tables only through an alias. The tables themselves are joined automatically.
 
 ### Tables and their fields
 
@@ -105,7 +136,7 @@ The msProducts snippet automatically joins related product tables. Fields from t
 | `{size}` | With `includeThumbs` | Thumbnails. Alias = size name (small, medium...) |
 | `{option}` | With `optionFilters` / `sortbyOptions` | Product options. Alias = option key (color, size...) |
 
-### Example
+### Example with aliases
 
 ```fenom
 {'msProducts' | snippet : [
@@ -120,8 +151,8 @@ The msProducts snippet automatically joins related product tables. Fields from t
 ]}
 ```
 
-::: warning Important
-Product fields (price, article, new, popular, etc.) are in the `Data` table. Without the alias the query fails: use `'Data.price:>' => 1000`, not `'price:>' => 1000`.
+::: warning Product fields only with the `Data` alias
+Product fields (`price`, `article`, `new`, `popular` and others) live in the `Data` table. Without the alias the query fails: write `'Data.price:>' => 1000`, not `'price:>' => 1000`.
 :::
 
 ## Examples
@@ -158,19 +189,17 @@ Product fields (price, article, new, popular, etc.) are in the `Data` table. Wit
 ]}
 ```
 
-### Popular products
+### Select by a product field
 
 ```fenom
+{* Popular products *}
 {'msProducts' | snippet : [
     'parents' => 0,
     'where' => ['Data.popular' => 1],
     'limit' => 4
 ]}
-```
 
-### Products from a specific vendor
-
-```fenom
+{* Products from a specific vendor *}
 {'msProducts' | snippet : [
     'parents' => 0,
     'where' => ['Data.vendor_id' => 5]
@@ -185,12 +214,8 @@ Product fields (price, article, new, popular, etc.) are in the `Data` table. Wit
     'parents' => 0,
     'optionFilters' => ['color' => 'red', 'size' => 'M']
 ]}
-```
 
-### OR condition in options
-
-```fenom
-{* Red OR blue products *}
+{* Red OR blue products — the OR: prefix *}
 {'msProducts' | snippet : [
     'parents' => 0,
     'optionFilters' => ['color' => 'red', 'OR:color' => 'blue']
@@ -199,43 +224,43 @@ Product fields (price, article, new, popular, etc.) are in the `Data` table. Wit
 
 ### Related products
 
-Product links let you output accessories, related products, alternatives, and more.
-
 ```fenom
 {* Accessories for the current product *}
 {'msProducts' | snippet : [
     'link' => 2,
     'master' => $_modx->resource.id,
-    'parents' => 0,
     'limit' => 4,
     'tpl' => 'tpl.msProducts.related'
 ]}
-```
 
-The `master` parameter specifies the product for which linked items are searched. The link ID (`link`) matches the link type in MiniShop3 settings.
-
-### Reverse link (products for which the current one is an accessory)
-
-```fenom
+{* Reverse link: products for which the current one is an accessory *}
 {'msProducts' | snippet : [
     'link' => 2,
     'slave' => $_modx->resource.id,
-    'parents' => 0,
     'limit' => 4
 ]}
 ```
 
-### Link types
+`master` is the product whose linked items are searched; `slave` is the opposite direction. `link` is the ID of a link from **MiniShop3 → Product links**. The `2` here is arbitrary: [use the ID of your own link](#link-id).
 
-MiniShop3 includes these link types by default:
+### Where the link ID comes from {#link-id}
 
-| ID | Name |
+The package ships no links: after install the links table is empty and there is nothing to pass in `link`. Links are created by hand under **MiniShop3 → Product links**.
+
+Create as many links as your shop needs — “Accessories”, “Alternatives”, “Frequently bought together”. You choose the name; the `ID` is assigned on save: `1` for the first link, `2` for the second, and so on. That number goes into `link`.
+
+Every link also has a type, which sets its cardinality rather than its meaning:
+
+| Type | What it means |
 | --- | --- |
-| 1 | Recommended (Related) |
-| 2 | Accessories |
-| 3 | Alternatives |
+| `one_to_one` | One product links to one |
+| `one_to_many` | One product links to many |
+| `many_to_one` | Many products link to one |
+| `many_to_many` | Many link to many |
 
-Create new link types under **Settings → Link types**.
+::: warning The examples above will not work on a clean install
+They use `'link' => 2`, but until you create links no such row exists and the snippet returns nothing. Create the links in the Manager first, then substitute their real IDs.
+:::
 
 ### Sort by option
 
@@ -267,11 +292,11 @@ Create new link types under **Settings → Link types**.
 ]}
 ```
 
-In the chunk you get `{$small}`, `{$medium}` — URL of the first image for each size.
+In the chunk you get `{$small}`, `{$medium}` — the URL of the main image in each size.
 
 ### Multiple product images
 
-The `includeThumbs` parameter returns only the first image (position = 0). To get 2–3 images for a carousel or gallery, use `leftJoin` and `select`:
+The `includeThumbs` parameter returns a single image per product — the main one. The main image is the one marked as the preview in the gallery; with no preview set, the image with the lowest position is used. To get two or three images for a carousel, use `leftJoin` and `select`:
 
 ```fenom
 {'msProducts' | snippet : [
@@ -338,9 +363,7 @@ In the chunk you get `{$img1}`, `{$img2}`, `{$img3}` — image URLs in gallery o
 {$_modx->getPlaceholder('page.nav')}
 ```
 
-## Placeholders in the chunk
-
-In the `tpl` chunk all product fields are available:
+## Placeholders of the `tpl` chunk
 
 ### Resource fields
 
@@ -384,7 +407,7 @@ Numeric `{$price}`, `{$old_price}`, `{$weight}` are for calculations. For displa
 - `{$old_price_formatted}` — old price
 - `{$weight_formatted}` — weight with unit (e.g. `500 g`)
 
-The `formatPrices` parameter was removed in v1.7.0.
+The `formatPrices` parameter was removed in 1.11.0-beta1. In the same release plain price and weight placeholders became numbers for arithmetic, while display strings moved to `*_formatted`.
 
 ### Vendor fields (Vendor)
 
@@ -418,31 +441,35 @@ With `includeVendorFields`:
         <h3>{$pagetitle}</h3>
 
         {if $old_price > $price}
-            <span class="old-price">{$old_price} руб.</span>
+            <span class="old-price">{$old_price_formatted}</span>
         {/if}
 
-        <span class="price">{$price} руб.</span>
+        <span class="price">{$price_formatted}</span>
 
         {if $new}
             <span class="badge badge-new">New</span>
         {/if}
     </a>
 
-    <button type="button"
-            data-ms-action="cart/add"
-            data-id="{$id}">
-        Add to cart
-    </button>
+    {* Adding to the cart works through a form: the storefront script looks for ms3_action inside one *}
+    <form method="post" class="ms3_form" data-ms3-form>
+        <input type="hidden" name="id" value="{$id}">
+        <input type="hidden" name="count" value="1">
+        <input type="hidden" name="ms3_action" value="cart/add">
+        <button type="submit">Add to cart</button>
+    </form>
 </div>
 ```
 
+::: warning A bare button will not add anything to the cart
+The script intercepts the submit of a form carrying the `ms3_form` class or the `data-ms3-form` attribute and reads the `ms3_action` field. A button with attributes instead of a form does nothing and reports no error — the product simply is not added. The stock chunk `ms3_products_row.tpl` is a complete working example.
+:::
+
 ## Integration with external packages
 
-The msProducts snippet integrates with external packages (ms3Variants, msBrands, etc.) via the event system. This lets you extend product data without modifying MiniShop3 core code.
+External packages (ms3Variants, msBrands and others) add their own data to products through events — MiniShop3 core code stays untouched.
 
 ### usePackages parameter
-
-To load data from an external package, pass its name in the `usePackages` parameter:
 
 ```fenom
 {* Load product variants *}
@@ -460,9 +487,9 @@ To load data from an external package, pass its name in the `usePackages` parame
 
 Without `usePackages`, external package data is not loaded — this saves resources on pages that do not need it.
 
-### Available placeholders
+### Package placeholders
 
-Each package adds its own placeholders. For example, ms3Variants adds:
+Each package adds its own. For example, ms3Variants:
 
 | Placeholder | Type | Description |
 | --- | --- | --- |
@@ -486,7 +513,7 @@ Each package adds its own placeholders. For example, ms3Variants adds:
 ```fenom
 <div class="product-card" data-product-id="{$id}">
     <h3>{$pagetitle}</h3>
-    <div class="price">{$price} руб.</div>
+    <div class="price">{$price_formatted}</div>
 
     {if $has_variants}
         <div class="variants-selector" data-variants='{$variants_json}'>
@@ -494,9 +521,11 @@ Each package adds its own placeholders. For example, ms3Variants adds:
         </div>
     {/if}
 
-    <form method="post" class="ms-product-form">
+    <form method="post" class="ms3_form" data-ms3-form>
         <input type="hidden" name="id" value="{$id}">
         <input type="hidden" name="variant_id" value="">
+        <input type="hidden" name="count" value="1">
+        <input type="hidden" name="ms3_action" value="cart/add">
         <button type="submit">Add to cart</button>
     </form>
 </div>
@@ -504,4 +533,4 @@ Each package adds its own placeholders. For example, ms3Variants adds:
 
 ### Events for developers
 
-External packages use the `msOnProductsLoad` and `msOnProductPrepare` events for integration. See [Events](/en/components/minishop3/development/events).
+Packages hook into the `msOnProductsLoad` and `msOnProductPrepare` events — see [Events](/en/components/minishop3/development/events).

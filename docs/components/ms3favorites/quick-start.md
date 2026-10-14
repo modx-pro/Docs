@@ -3,7 +3,7 @@ title: Быстрый старт
 ---
 # Быстрый старт
 
-Пошаговое подключение списка избранного (Wishlist) к сайту с MiniShop3.
+Подключение списка избранного (Wishlist) на сайте с MiniShop3.
 
 **Имена сниппетов:** `ms3FavoritesBtn`, `ms3FavoritesCounter`, `ms3FavoritesIds`, `ms3FavoritesLists`.
 
@@ -15,7 +15,7 @@ title: Быстрый старт
 
 | Требование | Версия |
 |------------|--------|
-| MODX Revolution | 3.0+ |
+| MODX Revolution | 3.0.3+ |
 | PHP | 8.1+ |
 | MiniShop3 | установлен |
 | pdoTools | 3.0.0+ |
@@ -32,13 +32,13 @@ title: Быстрый старт
 
 ### После установки
 
-По умолчанию CSS/JS и inline-конфиг подключаются плагином **ms3fFrontend** — достаточно разместить кнопку в карточке товара и вывести блок избранного. Подробнее — ниже.
+По умолчанию CSS/JS и inline-конфиг подключает плагин **ms3fFrontend**. Достаточно кнопки в карточке товара и блока избранного.
 
 ---
 
 ## Шаг 1: Лексикон, стили и скрипт
 
-**По умолчанию** достаточно включённого плагина **ms3fFrontend**: CSS/JS из настройки [ms3favorites.frontend_assets](settings) (`favorites.min.css`, `favorites.min.js`), лексикон и `window.ms3fConfig` — через **register_global_config** (как `ms3_frontend_assets` / `ms3_register_global_config` в MiniShop3). Ручные теги в шаблоне **не нужны**.
+**По умолчанию** достаточно включённого плагина **ms3fFrontend**. CSS/JS — из настройки [ms3favorites.frontend_assets](settings) (`favorites.min.css`, `favorites.min.js`). Лексикон и `window.ms3fConfig` — через **register_global_config** (как `ms3_frontend_assets` / `ms3_register_global_config` в MiniShop3). Ручные теги в шаблоне **не нужны**.
 
 **Ручной режим** — если плагин отключён, `register_global_config = Нет` или нужен полный контроль в шаблоне. Подключите **сначала** лексикон, затем CSS и JS:
 
@@ -145,7 +145,7 @@ title: Быстрый старт
 </a>
 ```
 
-Ограничить счётчик одним `resource_type` (например только товары): `<span data-favorites-count data-resource-type="products"></span>`.
+Без атрибута `data-resource-type` счётчик показывает количество по типу из `ms3fConfig.resourceType` (обычно `products`), а не сумму всех типов. Один `resource_type` (только товары): `<span data-favorites-count data-resource-type="products"></span>`.
 
 **Серверный сниппет** [ms3FavoritesCounter](snippets/ms3FavoritesCounter):
 
@@ -171,11 +171,11 @@ title: Быстрый старт
 
 Сумма по всем спискам: `&list=all` / `['list' => 'all']`.
 
-После загрузки страницы скрипт подставит в счётчик число от 1 до 99 или подпись «99+», если позиций больше. Если в избранном ничего нет, элемент остаётся скрытым.
+После загрузки скрипт подставит в счётчик число от 1 до 99 или подпись «99+», если позиций больше. Если в избранном ничего нет, элемент остаётся скрытым.
 
 ## Шаг 4: Блок избранного
 
-**Клиентский рендер (JS):**
+**Клиентская отрисовка (JS):**
 
 Класс `ms3f__list` — flex и горизонтальный скролл на мобильных. Контейнер заполняется из **localStorage/cookie** через коннектор:
 
@@ -191,6 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 
 Опции `render`: `limit`, `tpl`, `emptyTpl`, `list`, `resource_type` — те же имена, что у [коннектора](frontend#connector-ajax).
+
+Если локальный список пуст, коннектор не вызывается: в контейнер подставляется `<p class="ms3f__empty">` с текстом из лексикона. Опция `emptyTpl` уходит на сервер только при непустом списке ID.
 
 **Серверный вывод:**
 
@@ -244,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ### Своя страница с пагинацией (pdoPage + msProducts)
 
-Отдельный ресурс, если нужен **свой** шаблон с постраничным выводом. На `/wishlist/` при **`serverList=1`** (по умолчанию) и **`resource_type=products`** пагинация уже встроена в **ms3FavoritesPage** (**pdoPage** + **msProducts**). Здесь: ID → проверка пустоты → вывод и кнопка «Очистить»:
+Отдельный ресурс, если нужен **свой** шаблон с постраничным выводом. На `/wishlist/` при **`serverList=1`** (по умолчанию) и **`resource_type=products`** пагинация уже встроена в **ms3FavoritesPage** (**pdoPage** + **msProducts**). Цепочка здесь: ID → проверка пустоты → вывод и кнопка «Очистить».
 
 ::: code-group
 ```modx
@@ -284,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ### Каталог: pdoPage + msProducts, счётчик и кнопка в строке
 
-Это **не** страница избранного, а обычный **каталог** с пагинацией: в строке вывода — список `default`, сверху — счётчик. Для строки каталога используйте чанк **`tplCatalogRowMs3f`**. AJAX и полный пример с `@INLINE` — в [Интеграции](integration#catalog-pdopage-row).
+Это **не** страница избранного, а обычный **каталог** с пагинацией. В строке — список `default`, сверху — счётчик. Для строки каталога используйте чанк **`tplCatalogRowMs3f`**. AJAX и полный пример с `@INLINE` — в [Интеграции](integration#catalog-pdopage-row).
 
 ::: code-group
 ```modx
@@ -376,7 +378,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 **Поведение по умолчанию:** при **`resource_type=products`** и **`serverList=1`** (по умолчанию) карточки на `/wishlist/` выводятся **на сервере** в чанке (**pdoPage** + **msProducts**). При **`serverList=0`** список дорисовывает **`favorites.js`** (до 100 позиций на вкладку). Для других типов ресурсов список — через **JS** после sync. См. [Интеграцию](integration#wishlist-serverlist) и [ms3FavoritesPage](snippets/ms3FavoritesPage).
 
-Отдельная кастомная страница с пагинацией — **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`) — примеры выше и в [Интеграции](integration).
+Отдельная своя страница с пагинацией — **ms3FavoritesIds → pdoPage → ms3Favorites** (или `msProducts`). Примеры выше и в [Интеграции](integration).
 
 **Расширенная панель** (Каталог / Очистить / Поделиться): `extendedToolbar` или чанк `tplFavoritesPageDemo` — см. [ms3FavoritesPage](snippets/ms3FavoritesPage).
 
@@ -400,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
 php /полный/путь/к/сайту/core/components/ms3favorites/cli/cleanup_guests.php
 ```
 
-Скрипт находит MODX через `config.core.php` (обход вверх от `cli/`). Если `guest_ttl_days = 0`, очистка по TTL не выполняется.
+Скрипт ищет `config.core.php` в корне сайта и на уровень выше. Если `guest_ttl_days = 0`, очистка по TTL не выполняется.
 
 ## Что дальше
 

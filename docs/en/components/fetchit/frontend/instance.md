@@ -1,13 +1,23 @@
+---
+title: FetchIt instance
+description: "Instance methods: field errors, form messages, disable/enable"
+---
+
 # FetchIt instance
 
 Access: `FetchIt.instances.get(formElement)`. In events the instance is in `e.detail.fetchit`.
+
+Types of the methods for TypeScript: [`fetchit.d.ts`](/en/components/fetchit/frontend/typescript).
 
 Properties:
 
 | Property | Description |
 | --- | --- |
 | `form` | `HTMLFormElement` |
-| `config` | Config from `FetchIt.create()` (actionUrl, pageId, classes, clearFieldsOnSuccess) |
+| `config` | Config from `FetchIt.create()`: `actionUrl`, `pageId`, classes, `clearFieldsOnSuccess`, protection. Shared by the forms of one snippet call |
+| `formData` | The data of the submission in progress or of the last one; `undefined` before the first |
+| `fields` | The `input`, `select` and `textarea` elements of the form |
+| `elements` | All elements of the form |
 
 ## clearErrors()
 
@@ -61,7 +71,7 @@ Hides and clears `[data-success]` and `[data-validation-error]`.
 
 ## disableFields() / enableFields()
 
-During the request the script calls `disable` / `enable` itself. You can call them manually.
+During the request the script calls `disable` / `enable` itself. You can call them manually. Fields disabled in the markup stay disabled after a submission.
 
 ## getFields(name)
 

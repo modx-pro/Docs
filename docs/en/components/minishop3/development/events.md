@@ -3,7 +3,7 @@ title: Events
 ---
 # Events and plugins
 
-MiniShop3 uses the MODX event system to extend functionality. Plugins let you hook into cart, order, product and customer processing without changing the source code.
+MiniShop3 runs on the MODX event system. A plugin steps into cart, order, product and customer processing without changing the source code.
 
 ## Getting started
 
@@ -85,6 +85,8 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 | [msOnCreateCustomer](events/customer#msoncreatecustomer) | After creating customer |
 | [msOnBeforeAddCustomerAddress](events/customer#msonbeforeaddcustomeraddress) | Before adding address |
 | [msOnAddCustomerAddress](events/customer#msonaddcustomeraddress) | After adding address |
+| [msOnBeforeUpdateCustomer](events/customer#msonbeforeupdatecustomer) | Before updating customer (processor; neither the manager nor the Web API calls it yet) |
+| [msOnUpdateCustomer](events/customer#msonupdatecustomer) | After updating customer (processor; neither the manager nor the Web API calls it yet) |
 
 ### Products (catalog)
 
@@ -93,10 +95,11 @@ MiniShop3 uses the MODX event system to extend functionality. Plugins let you ho
 | [msOnGetProductPrice](events/product#msongetproductprice) | Product price modification |
 | [msOnGetProductWeight](events/product#msongetproductweight) | Product weight modification |
 | [msOnGetProductFields](events/product#msongetproductfields) | Product fields modification |
+| [msOnGetPublicSeo](events/product#msongetpublicseo) | After the public SEO set is assembled (`PublicSeoService`, `ms3_public_seo_tv_map`) |
 
 ### msProducts snippet
 
-Events for integrating third-party packages (ms3Variants, msBrands, etc.) without modifying core code.
+Events for integrating third-party packages (ms3Variants, msBrands and others) without changing core code.
 
 | Event | Description |
 | --- | --- |
@@ -126,8 +129,8 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 | [msOnSaveOrder](events/order-model#msonsaveorder) | After save (xPDO) |
 | [msOnBeforeRemoveOrder](events/order-model#msonbeforeremoveorder) | Before remove (xPDO) |
 | [msOnRemoveOrder](events/order-model#msonremoveorder) | After remove (xPDO) |
-| [msOnBeforeUpdateOrder](events/order-model#msonbeforeupdateorder) | Before update (manager) |
-| [msOnUpdateOrder](events/order-model#msonupdateorder) | After update (manager) |
+| [msOnBeforeUpdateOrder](events/order-model#msonbeforeupdateorder) | Reserved — never fired ([#844](https://github.com/modx-pro/MiniShop3/issues/844)) |
+| [msOnUpdateOrder](events/order-model#msonupdateorder) | Reserved — never fired ([#844](https://github.com/modx-pro/MiniShop3/issues/844)) |
 
 ### Notifications
 
@@ -148,6 +151,8 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 | [msOnBeforeVendorDelete](events/vendor#msonbeforevendordelete) | Before deleting |
 | [msOnVendorDelete](events/vendor#msonvendordelete) | After deleting |
 
+All six vendor events are fired only by the older `Settings/Vendor/*` processors. CRUD in the manager goes through the Manager API, and that does not call them — see [vendor events](events/vendor) and [issue #847](https://github.com/modx-pro/MiniShop3/issues/847).
+
 ### Import
 
 | Event | Description |
@@ -161,6 +166,52 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 | Event | Description |
 | --- | --- |
 | [msOnManagerCustomCssJs](events/manager#msonmanagercustomcssjs) | Loading scripts and styles |
+
+### Shipments
+
+The logic lives in `ShipmentLifecycleService` (`ms3_shipment_lifecycle`), the tables are `ms3_shipments` and `ms3_shipment_events`. Creating a shipment and `setTracking` work even with `ms3_shipment_enabled=0`, while the delivery webhook answers 404 in that case. Before-events are aborted with `success=false` in the `invokeEvent` response.
+
+| Event | Parameters | When |
+| --- | --- | --- |
+| `msOnBeforeCreateShipment` / `msOnCreateShipment` | before: `order_id`, `delivery_id`; after: `shipment` (the record) | `create()` |
+| `msOnBeforeChangeShipmentStatus` / `msOnChangeShipmentStatus` | before: `shipment`, `status`; after: `shipment` | `transition()` / delivery provider webhook |
+| `msOnBeforeUpdateShipmentTracking` / `msOnUpdateShipmentTracking` | before: `shipment`, `tracking_number`; after: `shipment` | `setTracking()` / webhook on a tracking change |
+
+Shipment statuses: `preparing`, `shipped`, `in_transit`, `delivered`, `cancelled`, `returned`, `failed` (`ShipmentStatus`).
+
+```mermaid
+flowchart TB
+  create[create / webhook]
+  beforeCreate[msOnBeforeCreateShipment]
+  afterCreate[msOnCreateShipment]
+  transition[transition / provider event]
+  beforeStatus[msOnBeforeChangeShipmentStatus]
+  sync[syncOrderStatus if enabled]
+  afterStatus[msOnChangeShipmentStatus]
+  create --> beforeCreate --> afterCreate
+  transition --> beforeStatus --> sync --> afterStatus
+```
+
+### Inventory
+
+With `ms3_inventory_enabled=1` the work is done by `ProductStockInventory` (`ms3_inventory`), the contract is `InventoryServiceInterface`. Event parameters: `key` (`InventoryKey`), `qty`, `ctx` (`InventoryContext`: `orderId`, `origin`). A before-event returning `success=false` raises an `InventoryException` (`ms3_err_inventory_cancelled`). Passing `$notify=false` to reserve and release skips the event pair — compensation happens inside the SQL transaction.
+
+| Event | When, in terms of order status |
+| --- | --- |
+| `msOnBeforeInventoryReserve` / `msOnInventoryReserve` | Reserve on `ms3_status_new` (and right before commit, when an order goes straight to paid) |
+| `msOnBeforeInventoryCommit` / `msOnInventoryCommit` | Commit on `ms3_status_paid` (does not decrease the stock twice) |
+| `msOnBeforeInventoryRelease` / `msOnInventoryRelease` | Release on `ms3_status_canceled` before commit. Also when payment `send()` fails |
+
+```mermaid
+flowchart TB
+  assert[assertAvailable on submit]
+  reserve[reserve on new]
+  commit[commit on paid]
+  release[release on canceled]
+  assert --> reserve
+  reserve --> commit
+  reserve --> release
+```
 
 ## Changes from miniShop2
 
@@ -179,8 +230,23 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 | — | `msOnImportRow` | New event |
 | — | `msOnProductsLoad` | Third-party package integration |
 | — | `msOnProductPrepare` | Third-party package integration |
+| — | `msOnGetPublicSeo` | Public SEO for the Web API |
+| — | `msOn*Shipment*` | Shipment lifecycle |
+| — | `msOn*Inventory*` | Stock reserve / commit / release |
 
 ### Call chains (where to look in code)
+
+```mermaid
+flowchart TB
+  submit[msOnSubmitOrder]
+  beforeCreate[msOnBeforeCreateOrder]
+  create[msOnCreateOrder]
+  mgrBefore[msOnBeforeMgrCreateOrder]
+  mgrAfter[msOnMgrCreateOrder]
+  submit --> beforeCreate --> create
+  mgrBefore --> beforeCreate
+  create --> mgrAfter
+```
 
 | Action | Events in order |
 | --- | --- |
@@ -189,4 +255,4 @@ To enable data loading, pass the package name in the snippet parameter: `&usePac
 | Storefront submit | `msOnSubmitOrder` → … → `msOnBeforeCreateOrder` → `msOnCreateOrder` |
 | Manager finalize | `msOnBeforeMgrCreateOrder` → `msOnBeforeCreateOrder` → `msOnCreateOrder` → `msOnMgrCreateOrder` |
 
-Registry source: `_build/elements/events.php` (all names above are registered in MODX).
+All names above are registered in MODX; the registration list is `_build/elements/events.php`.

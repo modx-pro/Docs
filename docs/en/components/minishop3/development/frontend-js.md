@@ -1033,11 +1033,15 @@ window.ms3Message = {
 ```javascript
 // Cart update
 document.addEventListener('ms3:cart:updated', (e) => {
-  console.log('Cart updated:', e.detail)
+  // detail does not always arrive — clearing the order dispatches it empty
+  const status = e.detail && e.detail.status
+  if (!status) {
+    return
+  }
 
   const counter = document.querySelector('.cart-counter')
   if (counter) {
-    counter.textContent = e.detail.total_count || 0
+    counter.textContent = status.total_count
   }
 })
 ```

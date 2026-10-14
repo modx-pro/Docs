@@ -31,7 +31,7 @@ By default the snippet registers:
 - `pagebuilder-sections.css` for base Free section styles
 - `pagebuilder-sections.js` with Pro and interactive sections (tabs, carousel)
 
-Disable globally: `pagebuilder_load_frontend_css = 0`. Per call: `&load_css=`0``.
+Disable globally: `pagebuilder_load_frontend_css = 0`. Per call: `` &load_css=`0` ``.
 
 Page wrapper `<div class="pb-page">` is controlled by `wrap_page` (defaults to the same as `load_css`).
 

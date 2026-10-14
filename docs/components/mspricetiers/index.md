@@ -4,7 +4,7 @@ description: Оптовые цены по количеству для MiniShop3 
 author: Ibochkarev
 modstore: https://modstore.pro/packages/ecommerce/mspricetiers
 dependencies: miniShop3
-categories: minishop3
+categories: discounts
 
 compatibility:
   - modx3

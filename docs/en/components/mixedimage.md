@@ -1,6 +1,7 @@
 ---
 title: mixedImage
 description: Custom TV — mixed file upload
+categories: media
 logo: https://modstore.pro/assets/extras/mixedimage/logo-lg.jpg
 author: webinmd
 modstore: https://modstore.pro/packages/photos-and-files/mixedimage

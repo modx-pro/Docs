@@ -1,6 +1,7 @@
 ---
 title: simpleQueue
 description: Simple task queue for use in other components
+categories: utilities
 logo: https://modstore.pro/assets/extras/simplequeue/logo.png
 author: biz87
 modstore: https://modstore.pro/packages/utilities/simplequeue

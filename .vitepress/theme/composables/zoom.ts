@@ -1,5 +1,4 @@
 import 'glightbox/dist/css/glightbox.css'
-import { scrollbarWidth } from '@xobotyi/scrollbar-width'
 
 import {
   watch,
@@ -71,11 +70,6 @@ export async function createZoom(app: App, router: Router) {
     lightbox.setElements(elements)
   }
 
-  const scrollWidth = scrollbarWidth()
-
-  lightbox.on('open', () => updateFixedElements(scrollWidth))
-  lightbox.on('close', () => updateFixedElements())
-
   app.provide(glightboxSymbol, lightbox)
 
   watch(
@@ -85,8 +79,4 @@ export async function createZoom(app: App, router: Router) {
     }),
     { immediate: true }
   )
-}
-
-function updateFixedElements(scrollWidth?: number) {
-  document.documentElement.style.setProperty('--scrollbar-width', scrollWidth ? scrollWidth + 'px' : '')
 }

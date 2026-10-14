@@ -5,7 +5,7 @@ description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 
 # Справочник типов полей
 
-35 типов в Free и 27 в Pro. Большинство Pro-типов включается флагом `advanced-fields`. Типы `datasource`, `form`, `product` и `products` дополнительно требуют capabilities `datasources`, `forms` и `minishop3`. У каждого типа есть страница: JSON настройки и блок данных секции.
+35 типов в Free и 27 в Pro. Большинство Pro-типов включается флагом `advanced-fields`. Типы `datasource`, `form`, `product` и `products` дополнительно требуют capabilities `datasources`, `forms` и `minishop3`.
 
 Общие meta-ключи (`tab`, `width`, `description`, `default`, `active`): [обзор](overview#общие-свойства-поля).
 
@@ -13,65 +13,65 @@ description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 
 ## Free
 
-| type | Слой | Страница | Вывод и пример |
-| --- | --- | --- | --- |
-| `text` | Free | [text](text) | [JSON и Fenom](text#vyvod-v-section-data) |
-| `email` | Free | [email](email) | [JSON и Fenom](email#vyvod-v-section-data) |
-| `textarea` | Free | [textarea](textarea) | [JSON и Fenom](textarea#vyvod-v-section-data) |
-| `richtext` | Free | [richtext](richtext) | [JSON и Fenom](richtext#vyvod-v-section-data) |
-| `ace` | Free | [ace](ace) | [JSON и Fenom](ace#vyvod-v-section-data) |
-| `number` | Free | [number](number) | [JSON и Fenom](number#vyvod-v-section-data) |
-| `url` | Free | [url](url) | [JSON и Fenom](url#vyvod-v-section-data) |
-| `slug` | Free | [slug](slug) | [JSON и Fenom](slug#vyvod-v-section-data) |
-| `select` | Free | [select](select) | [JSON и Fenom](select#vyvod-v-section-data) |
-| `multiselect` | Free | [multiselect](multiselect) | [JSON и Fenom](multiselect#vyvod-v-section-data) |
-| `radio` | Free | [radio](radio) | [JSON и Fenom](radio#vyvod-v-section-data) |
-| `checkbox` | Free | [checkbox](checkbox) | [JSON и Fenom](checkbox#vyvod-v-section-data) |
-| `checkboxgroup` | Free | [checkboxgroup](checkboxgroup) | [JSON и Fenom](checkboxgroup#vyvod-v-section-data) |
-| `yesno` | Free | [yesno](yesno) | [JSON и Fenom](yesno#vyvod-v-section-data) |
-| `toggle` | Free | [toggle](toggle) | [JSON и Fenom](toggle#vyvod-v-section-data) |
-| `date` | Free | [date](date) | [JSON и Fenom](date#vyvod-v-section-data) |
-| `time` | Free | [time](time) | [JSON и Fenom](time#vyvod-v-section-data) |
-| `datetime` | Free | [datetime](datetime) | [JSON и Fenom](datetime#vyvod-v-section-data) |
-| `color` | Free | [color](color) | [JSON и Fenom](color#vyvod-v-section-data) |
-| `colorpalette` | Free | [colorpalette](colorpalette) | [JSON и Fenom](colorpalette#vyvod-v-section-data) |
-| `file` | Free | [file](file) | [JSON и Fenom](file#vyvod-v-section-data) |
-| `image` | Free | [image](image) | [JSON и Fenom](image#vyvod-v-section-data) |
-| `migx` | Free | [migx](migx) | [JSON и Fenom](migx#vyvod-v-section-data) |
-| `video` | Free | [video](video) | [JSON и Fenom](video#vyvod-v-section-data) |
-| `button` | Free | [button](button) | [JSON и Fenom](button#vyvod-v-section-data) |
-| `resourcelist` | Free | [resourcelist](resourcelist) | [JSON и Fenom](resourcelist#vyvod-v-section-data) |
-| `hidden` | Free | [hidden](hidden) | [JSON и Fenom](hidden#vyvod-v-section-data) |
-| `readonly` | Free | [readonly](readonly) | [JSON и Fenom](readonly#vyvod-v-section-data) |
-| `xtype` | Free | [xtype](xtype) | [JSON и Fenom](xtype#vyvod-v-section-data) |
-| `heading` | Free | [heading](heading) | [JSON и Fenom](heading#vyvod-v-section-data) |
-| `repeater` | Free | [repeater](repeater) | [JSON и Fenom](repeater#vyvod-v-section-data) |
-| `tag` | Free | [tag](tag) | [JSON и Fenom](tag#vyvod-v-section-data) |
-| `tv` | Free | [tv](tv) | [JSON и Fenom](tv#vyvod-v-section-data) |
-| `chunk` | Free | [chunk](chunk) | [JSON и Fenom](chunk#vyvod-v-section-data) |
-| `snippet` | Free | [snippet](snippet) | [JSON и Fenom](snippet#vyvod-v-section-data) |
+| type | Страница | Вывод и пример |
+| --- | --- | --- |
+| `text` | [text](text) | [JSON и Fenom](text#vyvod-v-section-data) |
+| `email` | [email](email) | [JSON и Fenom](email#vyvod-v-section-data) |
+| `textarea` | [textarea](textarea) | [JSON и Fenom](textarea#vyvod-v-section-data) |
+| `richtext` | [richtext](richtext) | [JSON и Fenom](richtext#vyvod-v-section-data) |
+| `ace` | [ace](ace) | [JSON и Fenom](ace#vyvod-v-section-data) |
+| `number` | [number](number) | [JSON и Fenom](number#vyvod-v-section-data) |
+| `url` | [url](url) | [JSON и Fenom](url#vyvod-v-section-data) |
+| `slug` | [slug](slug) | [JSON и Fenom](slug#vyvod-v-section-data) |
+| `select` | [select](select) | [JSON и Fenom](select#vyvod-v-section-data) |
+| `multiselect` | [multiselect](multiselect) | [JSON и Fenom](multiselect#vyvod-v-section-data) |
+| `radio` | [radio](radio) | [JSON и Fenom](radio#vyvod-v-section-data) |
+| `checkbox` | [checkbox](checkbox) | [JSON и Fenom](checkbox#vyvod-v-section-data) |
+| `checkboxgroup` | [checkboxgroup](checkboxgroup) | [JSON и Fenom](checkboxgroup#vyvod-v-section-data) |
+| `yesno` | [yesno](yesno) | [JSON и Fenom](yesno#vyvod-v-section-data) |
+| `toggle` | [toggle](toggle) | [JSON и Fenom](toggle#vyvod-v-section-data) |
+| `date` | [date](date) | [JSON и Fenom](date#vyvod-v-section-data) |
+| `time` | [time](time) | [JSON и Fenom](time#vyvod-v-section-data) |
+| `datetime` | [datetime](datetime) | [JSON и Fenom](datetime#vyvod-v-section-data) |
+| `color` | [color](color) | [JSON и Fenom](color#vyvod-v-section-data) |
+| `colorpalette` | [colorpalette](colorpalette) | [JSON и Fenom](colorpalette#vyvod-v-section-data) |
+| `file` | [file](file) | [JSON и Fenom](file#vyvod-v-section-data) |
+| `image` | [image](image) | [JSON и Fenom](image#vyvod-v-section-data) |
+| `migx` | [migx](migx) | [JSON и Fenom](migx#vyvod-v-section-data) |
+| `video` | [video](video) | [JSON и Fenom](video#vyvod-v-section-data) |
+| `button` | [button](button) | [JSON и Fenom](button#vyvod-v-section-data) |
+| `resourcelist` | [resourcelist](resourcelist) | [JSON и Fenom](resourcelist#vyvod-v-section-data) |
+| `hidden` | [hidden](hidden) | [JSON и Fenom](hidden#vyvod-v-section-data) |
+| `readonly` | [readonly](readonly) | [JSON и Fenom](readonly#vyvod-v-section-data) |
+| `xtype` | [xtype](xtype) | [JSON и Fenom](xtype#vyvod-v-section-data) |
+| `heading` | [heading](heading) | [JSON и Fenom](heading#vyvod-v-section-data) |
+| `repeater` | [repeater](repeater) | [JSON и Fenom](repeater#vyvod-v-section-data) |
+| `tag` | [tag](tag) | [JSON и Fenom](tag#vyvod-v-section-data) |
+| `tv` | [tv](tv) | [JSON и Fenom](tv#vyvod-v-section-data) |
+| `chunk` | [chunk](chunk) | [JSON и Fenom](chunk#vyvod-v-section-data) |
+| `snippet` | [snippet](snippet) | [JSON и Fenom](snippet#vyvod-v-section-data) |
 
 ## Pro
 
 | type | Слой | Страница | Вывод и пример |
 | --- | --- | --- | --- |
-| `relation` | Pro | [relation](relation) | [JSON и Fenom](relation#vyvod-v-section-data) |
-| `multirelation` | Pro | [multirelation](multirelation) | [JSON и Fenom](multirelation#vyvod-v-section-data) |
-| `gallery` | Pro | [gallery](gallery) | [JSON и Fenom](gallery#vyvod-v-section-data) |
-| `map` | Pro | [map](map) | [JSON и Fenom](map#vyvod-v-section-data) |
-| `table` | Pro | [table](table) | Сетка в инспекторе. [JSON и Fenom](table#vyvod-v-section-data) |
-| `embeddedTable` | Pro | [embeddedTable](embeddedTable) | [JSON и Fenom](embeddedTable#vyvod-v-section-data) |
-| `keyvalue` | Pro | [keyvalue](keyvalue) | [JSON и Fenom](keyvalue#vyvod-v-section-data) |
+| `relation` | Pro, `advanced-fields` | [relation](relation) | [JSON и Fenom](relation#vyvod-v-section-data) |
+| `multirelation` | Pro, `advanced-fields` | [multirelation](multirelation) | [JSON и Fenom](multirelation#vyvod-v-section-data) |
+| `gallery` | Pro, `advanced-fields` | [gallery](gallery) | [JSON и Fenom](gallery#vyvod-v-section-data) |
+| `map` | Pro, `advanced-fields` | [map](map) | [JSON и Fenom](map#vyvod-v-section-data) |
+| `table` | Pro, `advanced-fields` | [table](table) | Сетка в инспекторе. [JSON и Fenom](table#vyvod-v-section-data) |
+| `embeddedTable` | Pro, `advanced-fields` | [embeddedTable](embeddedTable) | [JSON и Fenom](embeddedTable#vyvod-v-section-data) |
+| `keyvalue` | Pro, `advanced-fields` | [keyvalue](keyvalue) | [JSON и Fenom](keyvalue#vyvod-v-section-data) |
 | `editorjs` | Pro, `advanced-fields` | [editorjs](editorjs) | Новое поле создаётся только в Pro. Уже сохранённое открывается и пишется |
-| `currency` | Pro | [currency](currency) | [JSON и Fenom](currency#vyvod-v-section-data) |
-| `imask` | Pro | [imask](imask) | [JSON и Fenom](imask#vyvod-v-section-data) |
-| `combo` | Pro | [combo](combo) | [JSON и Fenom](combo#vyvod-v-section-data) |
-| `multicombo` | Pro | [multicombo](multicombo) | [JSON и Fenom](multicombo#vyvod-v-section-data) |
-| `tablecombo` | Pro | [tablecombo](tablecombo) | Выпадающий список из класса MODX. [JSON и Fenom](tablecombo#vyvod-v-section-data) |
-| `tablemulticombo` | Pro | [tablemulticombo](tablemulticombo) | Несколько значений из класса MODX. [JSON и Fenom](tablemulticombo#vyvod-v-section-data) |
-| `fieldset` | Pro | [fieldset](fieldset) | [JSON и Fenom](fieldset#vyvod-v-section-data) |
-| `dependent` | Pro | [dependent](dependent) | [JSON и Fenom](dependent#vyvod-v-section-data) |
-| `jsongrid` | Pro | [jsongrid](jsongrid) | [JSON и Fenom](jsongrid#vyvod-v-section-data) |
+| `currency` | Pro, `advanced-fields` | [currency](currency) | [JSON и Fenom](currency#vyvod-v-section-data) |
+| `imask` | Pro, `advanced-fields` | [imask](imask) | [JSON и Fenom](imask#vyvod-v-section-data) |
+| `combo` | Pro, `advanced-fields` | [combo](combo) | [JSON и Fenom](combo#vyvod-v-section-data) |
+| `multicombo` | Pro, `advanced-fields` | [multicombo](multicombo) | [JSON и Fenom](multicombo#vyvod-v-section-data) |
+| `tablecombo` | Pro, `advanced-fields` | [tablecombo](tablecombo) | Выпадающий список из класса MODX. [JSON и Fenom](tablecombo#vyvod-v-section-data) |
+| `tablemulticombo` | Pro, `advanced-fields` | [tablemulticombo](tablemulticombo) | Несколько значений из класса MODX. [JSON и Fenom](tablemulticombo#vyvod-v-section-data) |
+| `fieldset` | Pro, `advanced-fields` | [fieldset](fieldset) | [JSON и Fenom](fieldset#vyvod-v-section-data) |
+| `dependent` | Pro, `advanced-fields` | [dependent](dependent) | [JSON и Fenom](dependent#vyvod-v-section-data) |
+| `jsongrid` | Pro, `advanced-fields` | [jsongrid](jsongrid) | [JSON и Fenom](jsongrid#vyvod-v-section-data) |
 | `daterange` | Pro, `advanced-fields` | [daterange](daterange) | [JSON и Fenom](daterange#vyvod-v-section-data) |
 | `icon` | Pro, `advanced-fields` | [icon](icon) | [JSON и Fenom](icon#vyvod-v-section-data) |
 | `link` | Pro, `advanced-fields` | [link](link) | [JSON и Fenom](link#vyvod-v-section-data) <!-- markdownlint-disable-line MD059 --> |
@@ -131,9 +131,7 @@ description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 
 Другой класс не загружается: процессор вернёт пустой список.
 
-| Ключ | Значение по умолчанию | Максимум |
-| --- | --- | --- |
-| `optionsSource.limit` | 100 | 500 |
+`optionsSource.limit`: по умолчанию 100, максимум 500.
 
 ### Таблицы ресурса
 
@@ -141,7 +139,19 @@ description: "35 типов Free и 27 Pro в инспекторе PageBuilder"
 
 ## Алиасы
 
-Полный список в `FIELD_TYPE_ALIASES` (`fieldDefaults.ts`). Частые: `relationship` → `relation`, `resources` → `resourcelist`, `boolean` / `listyesno` → `yesno`, `onlyreading` → `readonly`, `colorpicker` → `color`, `editor_js` → `editorjs`, `table_combo` → `tablecombo`, `table_multicombo` → `tablemulticombo`, `templatevar` / `template_var` → `tv`.
+Полный список в `FIELD_TYPE_ALIASES` (`fieldDefaults.ts`). Частые:
+
+| Алиас | Тип |
+| --- | --- |
+| `relationship` | `relation` |
+| `resources` | `resourcelist` |
+| `boolean`, `listyesno` | `yesno` |
+| `onlyreading` | `readonly` |
+| `colorpicker` | `color` |
+| `editor_js` | `editorjs` |
+| `table_combo` | `tablecombo` |
+| `table_multicombo` | `tablemulticombo` |
+| `templatevar`, `template_var` | `tv` |
 
 ## Дальше
 

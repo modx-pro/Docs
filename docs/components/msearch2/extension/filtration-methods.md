@@ -48,13 +48,13 @@ class myCustomFilter extends mse2FiltersHandler {
 | `getMsOptionValues`       | `msoption`     | Выбирает данные из специальной таблицы JSON полей товара MS2                                                                                              |
 | `buildDefaultFilter`      | `default`      | Строит фильтр по умолчанию, состоящий их чекбоксов                                                                                                        |
 | `buildNumberFilter`       | `number`       | Строит фильтр для чисел, который можно вывести в виде слайдера                                                                                            |
-| `buildVendorsFilter`      | `vendors`      | Строит фильтр, в котором значениями являются имена производителей товаров MS2. Можно применять только к полю **vendor** `ms|vendor:vendors`.              |
+| `buildVendorsFilter`      | `vendors`      | Строит фильтр, в котором значениями являются имена производителей товаров MS2. Можно применять только к полю **vendor** `ms\|vendor:vendors`.              |
 | `buildBooleanFilter`      | `boolean`      | Строит фильтр для булевых значений. Нужен для того, чтобы вместо 0 и 1 вы видели "Да" и "Нет".                                                            |
-| `buildParentsFilter`      | `parents`      | Строит фильтр, в котором выбираются и показываются два родителя ресурса. Можно применять только к полю **parent** `resource|parent:parents`.              |
-| `buildCategoriesFilter`   | `categories`   | Строит фильтр, в котором выбирается и показывается один родитель ресурса. Можно применять только к полю **parent** `resource|parent:categories`.          |
-| `buildGrandParentsFilter` | `grandparents` | Строит фильтр, в котором выбираются и показываются второй родитель ресурса. Можно применять только к полю **parent** `resource|parent:grandparents`.      |
-| `buildFullnameFilter`     | `fullname`     | Строит фильтр, в котором выбираются и показываются полные имена пользователей. Можно применять только к id юзера, например `resource|createdby:fullname`. |
-| `buildYearFilter`         | `year`         | Строит фильтр, в котором показывается год, например `resource|createdon:year`.                                                                            |
+| `buildParentsFilter`      | `parents`      | Строит фильтр, в котором выбираются и показываются два родителя ресурса. Можно применять только к полю **parent** `resource\|parent:parents`.              |
+| `buildCategoriesFilter`   | `categories`   | Строит фильтр, в котором выбирается и показывается один родитель ресурса. Можно применять только к полю **parent** `resource\|parent:categories`.          |
+| `buildGrandParentsFilter` | `grandparents` | Строит фильтр, в котором выбираются и показываются второй родитель ресурса. Можно применять только к полю **parent** `resource\|parent:grandparents`.      |
+| `buildFullnameFilter`     | `fullname`     | Строит фильтр, в котором выбираются и показываются полные имена пользователей. Можно применять только к id юзера, например `resource\|createdby:fullname`. |
+| `buildYearFilter`         | `year`         | Строит фильтр, в котором показывается год, например `resource\|createdon:year`.                                                                            |
 | `filterDefault`           | `default`      | Обычная фильтрация, работает по умолчанию, если нет специального метода.                                                                                  |
 | `filterGrandParents`      | `grandparents` | Специальная фильтрация по второму родителю (дедушке ресурса).                                                                                              |
 | `filterNumber`            | `number`       | Специальная фильтрация по диапазонам числовых значений.                                                                                                   |

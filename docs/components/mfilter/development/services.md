@@ -309,29 +309,31 @@ $seo = $seoBuilder->build($resourceId, $filters);
 
 ## TemplateParser
 
-Парсер плейсхолдеров SEO-шаблонов (`mfl_seo_templates`). Поддерживает `{$filters.vendor_id}`, `{$filters.color|gen}` (склонение через WordFormsManager), `{$resource.pagetitle}`, фильтры Fenom.
+Парсер SEO-шаблонов (`mfl_seo_templates`). Понимает плейсхолдеры `{$ключ}`, условия `{if $ключ}…{else}…{/if}` и модификаторы через точку — падежи из словоформ и текстовые. Это не Fenom: модификаторы через `|` не работают. Синтаксис — в [SEO шаблонах](../interface/seo-templates).
+
+Контекст для страницы каталога собирает `SeoBuilder`: поля ресурса, его TV, значения фильтров с `_first` и `_count`, `site_name`.
 
 ```php
 $parser = $mfilter->getTemplateParser();
 
 // Подставить значения в шаблон
-$h1 = $parser->parse('Купить {$filters.vendor_id} в Москве', [
-    'filters' => ['vendor_id' => 'Apple'],
-    'resource' => $modx->resource->toArray(),
+$h1 = $parser->parse('Купить {$vendor}{if $color} {$color.gen} цвета{/if}', [
+    'vendor' => 'Apple',
+    'color' => 'чёрный',
 ]);
-// 'Купить Apple в Москве'
+// 'Купить Apple чёрного цвета' — если «чёрный» есть в словоформах
 
-// Валидация шаблона на этапе сохранения (синтаксические ошибки)
-$errors = $parser->validate($templateString): array;
+// Синтаксические ошибки: незакрытый {if}, лишние символы в плейсхолдере
+$errors = $parser->validate($templateString);
 
-// Извлечь плейсхолдеры из шаблона (для UI-подсказок)
-$placeholders = $parser->extractPlaceholders($templateString): array;
-// ['filters.vendor_id', 'resource.pagetitle']
+// Ключи плейсхолдеров — без модификаторов и того, что после точки
+$keys = $parser->extractPlaceholders('{$pagetitle} {$color.gen}');
+// ['pagetitle', 'color']
 ```
 
 ## WordFormsManager
 
-Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#словоформы).
+Склонение значений в SEO-текстах. Использует таблицу `mfl_word_forms` (12 падежных форм + 3 направительные «где/куда/откуда»). Может автогенерировать формы через [Morpher API](/components/mfilter/settings#slovoformy).
 
 ```php
 $wm = $mfilter->getWordFormsManager();
@@ -434,6 +436,21 @@ $stats = $builder->syncByEditedon();
 // При установленном MS3 → только msProduct. Без MS3 → всегда true.
 $builder->shouldIndexClassKey($resource->get('class_key'));
 ```
+
+### Одна пересборка за раз
+
+`buildAll()` и `syncByEditedon()` не выполняются, пока идёт другая пересборка индекса: она начинается с очистки таблиц, и вторая выбросила бы всё, что успела записать первая. Вместо работы метод возвращает `['locked' => true]` с нулевой статистикой.
+
+```php
+$stats = $builder->buildAll();
+if (!empty($stats['locked'])) {
+    // Индекс занят — повторить позже
+}
+```
+
+Тот же признак возвращают `TvIndexer::indexAll()` и `SlugManager::generateForAllConfigs()`.
+
+Точечные методы — `rebuildKeys()`, `buildForProducts()`, `removeProducts()` — не блокируются. Они удаляют и вставляют строки по своим ключам или товарам, а повторная вставка той же строки отсекается первичным ключом `(filter_key, filter_value, product_id)`, поэтому совпасть с идущей пересборкой для них безопасно.
 
 ### Прогресс-callback
 

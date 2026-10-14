@@ -1,6 +1,7 @@
 ---
 title: DigitalSignage
 description: Приложение для создания трансляций на MODX
+categories: other
 logo: https://modstore.pro/assets/extras/digitalsignage/logo.png
 author: Sterc
 modstore: https://modstore.pro/packages/other/digitalsignage
@@ -50,9 +51,9 @@ CSS и Javascript устанавливаются в директорию `digita
 
 1. Создайте проигрыватель:
 
-    1.1. **Название**: Гостинная
+    1.1. **Название**: Гостиная
 
-    1.2. **Описание**: Телевизор в гостинной
+    1.2. **Описание**: Телевизор в гостиной
 
     1.3. **Разрешение**: 1920x1080
 

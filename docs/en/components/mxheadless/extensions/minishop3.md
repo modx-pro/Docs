@@ -9,14 +9,14 @@ description: MiniShop3 catalog and orders via mxHeadless Extension API
 
 ## Typical objects
 
-| Public name | Description |
+| Name | Description |
 | --- | --- |
 | `products` | Products (price, SKU, options) |
-| `categories` | Categories |
-| `orders` | Orders (protected, not public) |
+| `ms_categories` | Product categories. `categories` is taken by core `modCategory` |
+| `orders` | Orders (`protected`, not public) |
 | `order_addresses` | Addresses |
 | `product_options` | Options |
-| `product_links` | Links / upsell |
+| `product_links` | Product links |
 
 Orders need scope `orders.read` (pattern `{name}.read`) and ACL. Never public.
 
@@ -68,10 +68,10 @@ curl -s 'https://example.com/api/v1/objects/products/101?include=category'
 | Entry | `/api/v1/...` | `assets/components/minishop3/api.php?route=/api/v1/...` |
 | Envelope | `{ data, meta, links }` | `{ success, message, data, ... }` |
 
-Pretty URL `/api/v1/cart/...` is intercepted by mxHeadless → 404. Call cart via `api.php?route=`.
+Friendly URL `/api/v1/cart/...` is intercepted by mxHeadless and returns `404`. Call cart via `api.php?route=`.
 
 CORS: align `mxheadless_cors_*` and `ms3_cors_allowed_origins`.
 
 ## Frontend
 
-Two base URLs (cms + shop), a BFF, or careful nginx split. Nuxt/Next guides: [docs/examples in the repository](https://github.com/Ibochkarev/mxHeadless/tree/main/docs/examples).
+Two base URLs (CMS and shop), a server proxy, or an nginx split. Nuxt and Next examples: [docs/examples in the repository](https://github.com/Ibochkarev/mxHeadless/tree/main/docs/examples).

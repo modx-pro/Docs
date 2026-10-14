@@ -157,6 +157,31 @@ switch ($modx->event->name) {
 }
 ```
 
+### Post-processing
+
+```php
+<?php
+switch ($modx->event->name) {
+    case 'msOnAfterImport':
+        $stats = $scriptProperties['stats'];
+
+        // Clear the cache
+        $modx->cacheManager->refresh();
+
+        // Refresh the search index
+        // $modx->runProcessor('MySearch\Processors\Reindex');
+
+        // Regenerate the sitemap
+        // $modx->runProcessor('pdoSitemap\Processors\Generate');
+
+        // Sync with an external system
+        if ($stats['created'] > 0 || $stats['updated'] > 0) {
+            // $onec->syncProducts();
+        }
+        break;
+}
+```
+
 ---
 
 ## msOnImportRow

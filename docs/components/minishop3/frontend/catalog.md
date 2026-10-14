@@ -3,7 +3,7 @@ title: Каталог товаров
 ---
 # Каталог товаров
 
-Каталог — основная страница магазина, где выводится список товаров из категории. MiniShop3 предоставляет готовый шаблон и чанк карточки товара.
+Каталог — основная страница магазина, где выводится список товаров из категории.
 
 Для SPA или мобильного клиента без msProducts используйте публичный Web API: `GET /api/v1/product/list`, `GET /api/v1/category/list` / `tree`, `GET /api/v1/product/filters`. Ответ каталога проходит через `ProductCatalogService` с allowlist полей. См. [Web API: каталог](/components/minishop3/development/web-api/catalog).
 
@@ -12,8 +12,6 @@ title: Каталог товаров
 [![](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6s.jpg)](https://file.modx.pro/files/e/4/2/e42014d3fca7e7073ef6e30d7709cff6.png)
 
 ## Структура каталога
-
-Каталог состоит из двух компонентов:
 
 | Компонент | Файл | Назначение |
 | --- | --- | --- |
@@ -39,24 +37,29 @@ title: Каталог товаров
                 {/if}
             </div>
 
-            {* Сетка товаров *}
+            {* Сетка товаров Bootstrap Grid *}
             <div class="row">
-                {'!msProducts' | snippet : [
+                {* Вызов сниппета msProducts с параметрами *}
+                {'!msProducts'|snippet:[
                     'tpl' => 'tpl.msProducts.row',
                     'includeThumbs' => 'small,medium',
                     'includeVendorFields' => 'name,logo',
                     'formatPrices' => 1,
                     'withCurrency' => 1,
                     'limit' => 12,
+                    'showLog' => 0,
                     'sortby' => 'menuindex',
                     'sortdir' => 'ASC',
-                    'showZeroPrice' => 0
+                    'includeTVs' => '',
+                    'showZeroPrice' => 0,
                 ]}
             </div>
         </main>
     </div>
 {/block}
 ```
+
+Ниже в файле лежит закомментированный пример разметки пагинации — рабочий вариант через pdoPage описан [в конце страницы](#пагинация).
 
 ### Ключевые параметры вызова
 
@@ -65,9 +68,22 @@ title: Каталог товаров
 | `tpl` | `tpl.msProducts.row` | Чанк карточки товара |
 | `includeThumbs` | `small,medium` | Загрузить превью изображений |
 | `includeVendorFields` | `name,logo` | Подключить данные производителя |
-| `formatPrices` | `1` | Форматировать цены (пробелы, копейки) |
-| `withCurrency` | `1` | Добавить символ валюты |
+| `withCurrency` | `1` | Добавить символ валюты в `{$price_formatted}` и `{$old_price_formatted}` |
 | `showZeroPrice` | `0` | Скрыть товары без цены |
+
+Параметра `formatPrices` у `msProducts` нет (он есть у `msOrderTotal`). Демо-шаблон `catalog.tpl` всё ещё его передаёт — сниппет молча игнорирует ([issue #818](https://github.com/modx-pro/MiniShop3/issues/818)).
+
+Штатный чанк карточки печатает сырой `{$price}`. Для форматированной цены используйте `{$price_formatted}` при `withCurrency`. Поле `{$weight_formatted}` заполняется всегда, от `withCurrency` не зависит.
+
+```mermaid
+flowchart TB
+  Call["msProducts withCurrency=1"] --> Raw["price / old_price / weight"]
+  Call --> Fmt["price_formatted / old_price_formatted / weight_formatted"]
+  Call --> Disc["discount при old_price больше price"]
+  Raw --> Row[tpl.msProducts.row]
+  Fmt --> Row
+  Disc --> Row
+```
 
 ::: tip Подробнее о параметрах
 Полный список параметров смотрите в документации сниппета [msProducts](/components/minishop3/snippets/msproducts).
@@ -81,22 +97,23 @@ title: Каталог товаров
 
 [![](https://file.modx.pro/files/2/e/8/2e8fceaf20e53d57b44631b3fea62888s.jpg)](https://file.modx.pro/files/2/e/8/2e8fceaf20e53d57b44631b3fea62888.png)
 
-Карточка построена на Bootstrap 5 и включает:
+Карточка построена на Bootstrap 5.
 
 ### Элементы карточки
 
-- **Изображение** с hover-эффектом и overlay "Быстрый просмотр"
+- **Изображение** с плавным увеличением при наведении (`transform: scale(1.05)`), при отсутствии превью — заглушка `ms3_small.png`
 - **Бейджи статуса**: наличие, скидка, NEW, ХИТ, избранное
 - **Информация о товаре**: производитель, артикул, название
 - **Варианты товара**: цвет, размер (первые 3 + счётчик остальных)
-- **Цена**: старая и текущая с форматированием
-- **Кнопки корзины**: адаптивное состояние
+- **Цена**: старая и текущая, сырыми значениями `{$old_price}` и `{$price}`
+- **Вес и срок доставки**: `{$weight}` кг при `weight > 0` и жёстко прописанная подпись «1-3 дня»
+- **Кнопки корзины**: две формы с переключением состояния
+
+Блока «Быстрый просмотр» в чанке нет: правила `.product-overlay` в `default.css` остались, но сам элемент из разметки убран.
 
 ### Бейджи и метки
 
-Карточка автоматически показывает бейджи в зависимости от данных товара:
-
-| Бейдж | Условие | Расположение |
+| Бейдж | Условие в чанке | Расположение |
 | --- | --- | --- |
 | В наличии / Под заказ | `{$weight > 0}` | Левый верхний угол |
 | Скидка (-XX%) | `{$discount > 0}` | Правый верхний угол |
@@ -104,30 +121,41 @@ title: Каталог товаров
 | ХИТ | `{$popular}` | Правый верхний угол |
 | FAV | `{$favorite}` | Правый верхний угол |
 
+::: warning Наличие по weight
+В штатном чанке бейдж смотрит на вес `weight`, а не на остаток `stock`. `itemprop="availability"` всегда `InStock`. См. [issue #813](https://github.com/modx-pro/MiniShop3/issues/813).
+:::
+
+Процент `{$discount}` считает цикл `msProducts` при `old_price > price`.
+
 ### Состояния кнопки корзины
 
-Карточка содержит две формы, переключаемые JavaScript-модулем `ProductCardUI`:
+Карточка содержит две формы:
 
-**Состояние "Добавить"** — товара нет в корзине:
+**Состояние «Добавить»** — товара нет в корзине:
 
 ```html
-<form class="ms3-add-to-cart" data-cart-state="add">
+<form method="post" class="ms3_form ms3-add-to-cart" data-cart-state="add" data-ms3-form>
+    <input type="hidden" name="id" value="{$id}">
+    <input type="hidden" name="count" value="1">
+    <input type="hidden" name="ms3_action" value="cart/add">
     <button type="submit">В корзину</button>
 </form>
 ```
 
-**Состояние "В корзине"** — товар уже добавлен:
+**Состояние «В корзине»** — товар уже добавлен:
 
 ```html
-<form class="ms3-cart-controls" data-cart-state="change">
-    <button class="dec-qty">−</button>
-    <input name="count" value="1">
-    <button class="inc-qty">+</button>
+<form method="post" class="ms3_form ms3-cart-controls" data-cart-state="change" data-ms3-form>
+    <input type="hidden" name="product_key" value="">
+    <input type="hidden" name="ms3_action" value="cart/change">
+    <button class="dec-qty" data-ms3-qty="dec">−</button>
+    <input name="count" value="1" data-ms3-qty="input">
+    <button class="inc-qty" data-ms3-qty="inc">+</button>
     <span>✓ В корзине</span>
 </form>
 ```
 
-Переключение происходит автоматически при событии `ms3:cart:updated`.
+Обе формы лежат в разметке одновременно, показом управляет JavaScript-модуль `ProductCardUI` по атрибуту `data-cart-state`. Переключение срабатывает на событии `ms3:cart:updated`. Действие задаёт скрытое поле `ms3_action`: `cart/add` и `cart/change`. Поле `product_key` скрипт заполняет после того, как товар попал в корзину.
 
 [![](https://file.modx.pro/files/2/c/b/2cbef63bd61c6ee6e707163e52917a12s.jpg)](https://file.modx.pro/files/2/c/b/2cbef63bd61c6ee6e707163e52917a12.png)
 
@@ -136,18 +164,24 @@ title: Каталог товаров
 Карточка включает разметку для поисковых систем:
 
 ```html
-<div itemtype="http://schema.org/Product" itemscope>
+<div class="card ..." itemtype="http://schema.org/Product" itemscope>
+    <meta itemprop="description" content="{$description ?: $pagetitle}">
     <meta itemprop="name" content="{$pagetitle}">
-    <meta itemprop="description" content="{$description}">
-    <img itemprop="image" src="{$thumb}">
 
-    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    {if $thumb?}
+        <img itemprop="image" src="{$thumb}" alt="{$pagetitle}">
+    {/if}
+
+    <div class="card-body ..." itemtype="http://schema.org/Offer" itemprop="offers" itemscope>
         <meta itemprop="price" content="{$price}">
         <meta itemprop="priceCurrency" content="RUB">
-        <link itemprop="availability" href="http://schema.org/InStock">
+        <link itemprop="availability" href="http://schema.org/InStock"/>
+        <link itemprop="url" href="{$id | url : ['scheme' => 'full']}"/>
     </div>
 </div>
 ```
+
+В штатной разметке `description` при пустом описании подставляет `pagetitle`, а `itemprop="image"` ставится только при наличии превью: у товара с заглушкой изображение в микроразметку не попадает. Валюта `priceCurrency` жёстко прописана как `RUB`.
 
 ## Адаптивная сетка
 

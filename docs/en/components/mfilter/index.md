@@ -1,6 +1,8 @@
 ---
 title: mFilter
 description: Faceted filtering for MODX 3 with SEO URL support
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/mfilter/logo.png
 author: biz87
 

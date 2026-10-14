@@ -77,13 +77,13 @@ For SPA apps (Vue, React, Svelte) load only the core:
 ```javascript
 // Config
 const config = {
-  apiUrl: '/assets/components/minishop3/api.php',
+  actionUrl: '/assets/components/minishop3/api.php',
   tokenName: 'ms3_token'
 }
 
 // Core init
 const tokenManager = new TokenManager(config)
-const apiClient = new ApiClient({ baseUrl: config.apiUrl, tokenManager })
+const apiClient = new ApiClient({ baseUrl: config.actionUrl, tokenManager })
 tokenManager.setApiClient(apiClient)
 
 // Getting the token
@@ -108,6 +108,12 @@ With standard loading the following are available:
 | `window.ms3Hooks` | Hook system |
 | `window.ms3Message` | Notifications (if UI loaded) |
 | `window.ms3Config` | Server config |
+
+::: warning `ms3Config` can be switched off by a setting
+With `ms3_register_global_config = false` the object is not printed on the page. But the cart snippet registration is printed regardless and reaches for it without a check, so the console gets `ReferenceError: ms3Config is not defined`, and re-rendering of the cart and the totals widget stops working.
+
+The setting is on by default. Turn it off only if you print the config yourself.
+:::
 
 ```javascript
 // Using the global object
@@ -198,11 +204,10 @@ The `render` parameter lets you get ready HTML from the server. Tokens must be r
   success: true,
   message: "Product added to cart",
   data: {
-    cart: [...],           // Updated cart
+    cart: {...},           // Cart lines, keyed by product_key
     status: {...},         // Totals
     render: {              // HTML (if requested)
-      mini: "<div>...</div>",
-      full: "<div>...</div>"
+      "ms3_a1b2c3...": "<div>...</div>"   // the key is the snippet call token
     }
   }
 }
@@ -241,6 +246,10 @@ Clear cart.
 ```javascript
 await ms3.cartAPI.clean()
 ```
+
+::: warning An API call only
+`cartAPI.clean()` is a headless method: it only sends the request to the server. The mini-cart, counters and product cards **do not refresh** by themselves. For a full UI update use `ms3.cartUI.handleClean()` — it calls the API, renders the HTML and dispatches `ms3:cart:updated`. More in [Frontend JavaScript](frontend-js#cartui).
+:::
 
 ## OrderAPI
 
@@ -359,7 +368,7 @@ const response = await ms3.orderAPI.getCost()
 API for working with authenticated customer data.
 
 :::warning Authorization required
-All CustomerAPI methods are only available for authenticated users. For guests use `OrderAPI.add()` to save order data.
+Most CustomerAPI methods require authentication. The exceptions are login, registration and password reset: those exist precisely for someone who has not signed in yet. Guest order data is stored through `OrderAPI.add()`.
 :::
 
 ### Methods
@@ -438,6 +447,10 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterRemoveCart` | `{ productKey, response }` | After removing product |
 | `beforeCleanCart` | `{}` | Before clearing cart |
 | `afterCleanCart` | `{ response }` | After clearing cart |
+| `beforeChangeOptionCart` | `{ productKey, options }` | Before changing a line option |
+| `afterChangeOptionCart` | `{ productKey, options, response }` | After changing an option |
+| `beforeQuantityChange` | `{ productKey, count, form }` | Before a quantity change via the «+» and «−» buttons |
+| `afterQuantityChange` | `{ productKey, count, response }` | After a quantity change |
 
 #### Order
 
@@ -449,6 +462,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterSubmitOrder` | `{ response }` | After submit |
 | `beforeCleanOrder` | `{}` | Before clear |
 | `afterCleanOrder` | `{ response }` | After clear |
+| `afterUpdateOrderCosts` | `{ cost, cart_cost, delivery_cost }` | After the order cost is recalculated |
 
 #### Customer
 
@@ -460,6 +474,36 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterUpdateProfile` | `{ data, response }` | After updating profile |
 | `beforeCreateAddress` | `{ data }` | Before creating address |
 | `afterCreateAddress` | `{ data, response }` | After creating address |
+| `beforeUpdateAddress` | `{ addressId, data }` | Before editing an address |
+| `afterUpdateAddress` | `{ addressId, data, response }` | After editing an address |
+| `beforeDeleteAddress` | `{ addressId }` | Before deleting an address |
+| `afterDeleteAddress` | `{ addressId, response }` | After deleting an address |
+| `beforeSetDefaultAddress` | `{ addressId }` | Before picking the default address |
+| `afterSetDefaultAddress` | `{ addressId, response }` | After picking the default address |
+| `beforeChangeAddressCustomer` | `{ addressId }` | Before switching the address in the order form |
+| `afterChangeAddressCustomer` | `{ addressId, response }` | After switching the address |
+| `beforeCancelOrder` | `{ orderId }` | Before the customer cancels an order |
+| `afterCancelOrder` | `{ orderId, response }` | After an order is cancelled |
+| `beforeResendVerificationEmail` | `{ button }` | Before resending the verification email |
+| `afterResendVerificationEmail` | `{ button, response }` | After the email is sent |
+
+#### Login and registration
+
+| Hook | Context | Description |
+| --- | --- | --- |
+| `beforeLogin` | `{ email }` | Before login |
+| `afterLogin` | `{ email, response }` | After login |
+| `beforeRegister` | `{ email }` | Before registration |
+| `afterRegister` | `{ email, response }` | After registration |
+
+#### Any form
+
+| Hook | Context | Description |
+| --- | --- | --- |
+| `beforeFormSubmit` | `{ entity, method, formData }` | Before any MiniShop3 form is submitted |
+| `afterFormSubmit` | `{ entity, method, formData }` | After submission |
+
+This pair fires for every form — cart, order and customer — and receives the whole `formData`. Subscribe here when you need the entered values: the specialized hooks such as `beforeSubmitOrder` do not get the form data.
 
 ### Hook examples
 
@@ -514,7 +558,7 @@ ms3Hooks.addHook('beforeCleanCart', async (ctx) => {
 | Event | Description | detail |
 | --- | --- | --- |
 | `ms3:ready` | ms3 initialized | — |
-| `ms3:cart:updated` | Cart updated | `{ cart, status }` |
+| `ms3:cart:updated` | Cart updated | `{ cart, items, status }`, plus `render` on re-render. Sometimes arrives empty — see below |
 
 ### Subscribing
 
@@ -524,13 +568,22 @@ document.addEventListener('ms3:ready', () => {
 })
 
 document.addEventListener('ms3:cart:updated', (e) => {
-  const { cart, status } = e.detail
+  const { cart, items, status } = e.detail ?? {}
+  if (!status) {
+    return
+  }
 
   // Update header counter
   document.querySelector('.cart-count').textContent = status.total_count
   document.querySelector('.cart-total').textContent = status.total_cost
 })
 ```
+
+::: warning The event also arrives without data
+Clearing the order form dispatches it empty — `detail` will be `null`. The clearing form ships in the default chunk `ms3_order.tpl`, so the path is live: a handler that reads the fields straight away throws a `TypeError` ([#802](https://github.com/modx-pro/MiniShop3/issues/802)).
+
+Check `detail` before touching the fields — every example below does.
+:::
 
 ## Usage in SPA
 
@@ -598,6 +651,9 @@ export function useCart() {
 
     // Subscribe to external updates
     document.addEventListener('ms3:cart:updated', (e) => {
+      if (!e.detail) {
+        return
+      }
       cart.value = e.detail.cart
       status.value = e.detail.status
     })
@@ -687,6 +743,9 @@ export function useCart() {
     loadCart()
 
     const handleCartUpdate = (e) => {
+      if (!e.detail) {
+        return
+      }
       setCart(e.detail.cart)
       setStatus(e.detail.status)
     }
@@ -713,6 +772,9 @@ class CartManager {
     await this.load()
 
     document.addEventListener('ms3:cart:updated', (e) => {
+      if (!e.detail) {
+        return
+      }
       this.cart = e.detail.cart
       this.status = e.detail.status
       this.notify()
@@ -772,7 +834,7 @@ All methods return a Promise with an object:
   success: true,           // Operation success
   message: "Text",         // Message (optional)
   data: {                  // Data (when success: true)
-    cart: [...],
+    cart: {...},
     status: {...},
     render: {...}
   }
@@ -797,7 +859,7 @@ MiniShop3 uses tokens to identify the cart session.
 
 ### How it works
 
-1. On first request the client gets a token (`GET /customer/token/get` or auto-mint on cart)
+1. On the first request the client gets a token (`GET /api/v1/customer/token/get`, or it is minted automatically on the first cart call)
 2. Since 1.6 the main browser approach is httpOnly cookie `ms3_token`, not `localStorage`
 3. Same-site requests use `credentials: 'include'`; headless can send `Authorization: Bearer`
 4. Rotation on login / `token/refresh`
@@ -807,15 +869,20 @@ Details: [Web API authorization](/en/components/minishop3/development/web-api/au
 ### Manual control
 
 ```javascript
-// Get current token
-const token = ms3.tokenManager.getToken()
+// Get a token from the server if there is none yet
+await ms3.tokenManager.ensureToken()
 
-// Force refresh
+// Force a new one
 await ms3.tokenManager.fetchNewToken()
-
-// Remove token
-ms3.tokenManager.removeToken()
 ```
+
+Both methods call `/api/v1/customer/token/get`, and the server sets the cookie in its response.
+
+::: warning The token cannot be read from the browser
+`getToken()` and `getTokenData()` always return `null`, and `setToken()` does nothing. That is not a bug: since 1.6 the token lives in an httpOnly cookie, and JavaScript has no access to it — that is the whole point of such a cookie.
+
+`removeToken()` does not remove the current token either: it only cleans up leftovers in `localStorage` from earlier versions. The cart session cannot be reset from the browser; the server does that.
+:::
 
 ## Related pages
 

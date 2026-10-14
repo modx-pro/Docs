@@ -5,7 +5,7 @@ description: Generic CRUD at /objects/{name} for registered xPDO objects
 
 # Objects
 
-Generic CRUD for objects from `ObjectRegistry`. The URL name is a logical name (`products`, `orders`), not a PHP class.
+Generic CRUD for objects from `ObjectRegistry`. The URL uses a name (`products`, `orders`), not a PHP class.
 
 | Method | Path | Scope |
 | --- | --- | --- |
@@ -30,8 +30,8 @@ Unregistered name → `404`.
 
 ## MiniShop3
 
-Typical names: `products`, `categories`, `orders`, … Orders are usually protected. Details: [MiniShop3](/components/mxheadless/extensions/minishop3).
+Typical names: `products`, `ms_categories`, `orders`. Core `categories` is `modCategory` elements. Orders are usually `protected`. Details: [MiniShop3](/components/mxheadless/extensions/minishop3).
 
 ## Query and mutations
 
-Same [querying](querying) and [mutations](mutations) rules as resources, within definition fields/filters.
+Same [querying](querying) and [mutations](mutations) rules as resources. Fields and filters come from the object definition.

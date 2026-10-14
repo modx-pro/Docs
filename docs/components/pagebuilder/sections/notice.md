@@ -5,7 +5,7 @@ description: "Короткое сообщение с тоном info, success, w
 
 # Уведомление
 
-Секция `notice` выводит короткое сообщение. Chunk: `pagebuilderpro_notice`. Требуется PageBuilder Pro.
+Секция `notice` выводит короткое сообщение.
 
 ![Уведомление](/components/pagebuilder/screenshots/sections/notice.jpg)
 
@@ -16,6 +16,16 @@ description: "Короткое сообщение с тоном info, success, w
 - Предупреждение на странице услуги
 - Статус акции
 - Служебная пометка над формой
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `notice` |
+| Слой | Pro |
+| Категория | контент (`content`) |
+| Chunk | `pagebuilderpro_notice` |
+| Требования | pro |
 
 ## Поля
 

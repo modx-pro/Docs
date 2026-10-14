@@ -7,7 +7,7 @@ description: OnMxHeadlessRegister event and ExtensionApi in mxHeadless
 
 Third-party extras register objects without editing core. Entry point: event **`OnMxHeadlessRegister`**.
 
-## Event hook
+## Event
 
 ```php
 <?php
@@ -29,7 +29,7 @@ switch ($modx->event->name) {
 }
 ```
 
-After listeners run, the registry freezes. Late registration throws `RegistryFrozenException`.
+After handlers run, the registry freezes. Late registration throws `RegistryFrozenException`.
 
 ## ExtensionApi methods
 
@@ -37,7 +37,7 @@ After listeners run, the registry freezes. Late registration throws `RegistryFro
 | --- | --- |
 | `registerObject(ObjectDefinition)` | xPDO class under public name |
 | `registerRelation(string $object, RelationDefinition)` | Relation for `include=` |
-| `registerEndpoint(...)` | Custom route with handler |
+| `registerEndpoint(...)` | Custom route with a handler |
 
 ## ObjectDefinition
 
@@ -55,7 +55,16 @@ ObjectDefinition::create('locations')
     ->contexts(['web']);
 ```
 
-Flags: `readable`, `creatable`, `updatable`, `deletable`, `hiddenFields`, `protectedFields`, `contexts`.
+Flags: `readable`, `creatable`, `updatable`, `deletable`, `hiddenFields`, `protectedFields`, `immutableFields`, `requiredFields`, `searchable`, `primaryKey`, `contexts`.
+
+## Request chain events
+
+| Event | When |
+| --- | --- |
+| `OnMxHeadlessRegister` | Register objects, relations, endpoints |
+| `OnMxHeadlessRegisterMiddleware` | Before the stack freezes. `registrar`: `prepend` / `append` |
+| `OnMxHeadlessBeforeRequest` | After auth, before the handler. You may replace `request` via `$modx->event->returned` |
+| `OnMxHeadlessAfterRequest` | After the handler. You may replace `response` |
 
 ## Next steps
 

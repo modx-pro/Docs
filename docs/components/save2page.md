@@ -1,6 +1,7 @@
 ---
 title: Save2Page
 description: Компонент для сохранения страниц в PDF, Markdown и TXT
+categories: content
 ---
 # Save2Page
 

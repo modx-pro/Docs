@@ -1,6 +1,6 @@
 # Консоль
 
-Запуск команд из под консоля ssh с помощью `php core/scheduler/artisan`
+Запуск команд из-под консоли ssh с помощью `php core/scheduler/artisan`
 
 ## Исполняемый файл
 

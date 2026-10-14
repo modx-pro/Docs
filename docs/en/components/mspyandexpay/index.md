@@ -3,7 +3,7 @@ title: mspYandexPay
 description: 'Оплата через Яндекс Пэй для MiniShop3: Merchant API, webhook JWT, Сплит, двухстадийная схема, QR, возвраты'
 author: Ibochkarev
 dependencies: miniShop3
-categories: minishop3
+categories: payment
 compatibility:
   - modx3
   - php82

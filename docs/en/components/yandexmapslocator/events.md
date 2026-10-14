@@ -22,13 +22,13 @@ In a plugin, return the modified `Store` via `$modx->event->output($store)` or a
 
 ## REST and BeforeSearch
 
-`OnYandexMapsLocatorBeforeSearch` runs for both the snippet and REST. After the event, the API runs `ApiSearchGuard` again: parent scope, limits, `where` forbidden, `product_id` cleared without Pro.
+`OnYandexMapsLocatorBeforeSearch` runs for both the snippet and REST. In REST, `ApiSearchGuard` runs once before `search()`. The event runs after the guard and sees criteria by-ref: a plugin can set `where` and `product_id` again. There is no second guard pass.
 
 ## Package plugins
 
 | Package | Events |
 |-------|---------|
 | Free | `OnDocFormSave`, `OnSiteRefresh`, `OnDocFormRender` (mgr geocoding) |
-| Pro | RegisterFeatureProviders, RegisterFilters, AfterStorePrepare, SerializeLocation |
+| Pro | RegisterFeatureProviders, RegisterFilters, BeforeStorePrepare (TZ, products, amenity, brand), AfterStorePrepare, SerializeLocation, OnDocFormRender (schedule preview) |
 
 Extension contract: [Extension API](extension-api).

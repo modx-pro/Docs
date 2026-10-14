@@ -1,6 +1,7 @@
 ---
 title: UserAuthHash
 description: User login via link (hash) without entering username and password
+categories: users
 
 author: vgrish
 modstore: https://modstore.pro/packages/users/userauthhash
@@ -46,9 +47,9 @@ You can set the hash lifetime and choose login contexts.
 | Parameter           | Default | Description                                                    |
 |---------------------|---------|----------------------------------------------------------------|
 | **user**            |         | User ID or email                                              |
-| **loginContext**    |         | Contexts for login, comma-separated. E.g. &contexts=`web,ru,en` |
+| **loginContext**    |         | Contexts for login, comma-separated. E.g. `` &contexts=`web,ru,en` `` |
 | **excludeContext**  |         | Contexts to exclude, comma-separated                          |
-| **lifeTime**        | `1h`    | Auth hash lifetime. E.g. &lifeTime=`1h` — 1 hour              |
+| **lifeTime**        | `1h`    | Auth hash lifetime. E.g. `` &lifeTime=`1h` `` — 1 hour              |
 
 ### Call example
 

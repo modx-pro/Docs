@@ -47,6 +47,7 @@ items: [
 ]
 
 dependencies: miniShop2
+categories: discounts
 ---
 
 # msPromoCode

@@ -3,13 +3,13 @@
 Доступны следующие события:
 
 * `uahOnBeforeGetAuthHash`
-* `uahOnGetAuthHash` - получение хэш-кода
-  *`object` - хэш-код объект
+* `uahOnGetAuthHash` - получение хеш-кода
+  *`object` - хеш-код объект
   *`user` - пользователь объект
 * `uahOnBeforeProcessAuthHash`
-* `uahOnProcessAuthHash` - обработка хэш-кода
-  *`object` - хэш-код объект
+* `uahOnProcessAuthHash` - обработка хеш-кода
+  *`object` - хеш-код объект
   *`user` - пользователь объект
 * `uahOnBeforeRemoveAuthHash`
-* `uahOnRemoveAuthHash` - удаление хэш-кода
+* `uahOnRemoveAuthHash` - удаление хеш-кода
   *`user` - пользователь объект

@@ -3,42 +3,36 @@ title: Опции товаров
 ---
 # Опции товаров
 
-Откройте **Extras → MiniShop3 → Настройки → Опции**.
+Откройте **Пакеты → MiniShop3 → Настройки → Свойства товаров**.
 
 ::: info С v1.10.0-beta1
-UI опций на Vue 3 + PrimeVue. Старые ExtJS-окна и процессоры `Processors/Settings/Option/*`, `Processors/Category/Option/*` удалены. Все операции идут через `/api/mgr/options/*` и `/api/mgr/categories/{id}/options/*`.
+Интерфейс опций построен на Vue 3 + PrimeVue. Старые ExtJS-окна и процессоры `Processors/Settings/Option/*`, `Processors/Category/Option/*` удалены. Все операции идут через `/api/mgr/options/*` и `/api/mgr/categories/{id}/options/*`.
 :::
 
 ## Назначение
 
-Опции хранят характеристики товара (EAV): цвет, размер, материал, любые свои ключи. Таблицы ядра MODX под это не трогаете.
+Опции хранят характеристики товара (EAV): цвет, размер, материал, любые свои ключи. Компонент не изменяет таблицы ядра MODX.
 
 ## Интерфейс
 
-Две вкладки:
-
-1. **Опции:** дерево категорий слева, грид опций справа.
-2. **Группы опций:** CRUD и drag-and-drop сортировка `msOptionGroup` (с v1.11).
-
-<!-- ![Справочник опций](/components/minishop3/screenshots/mgr-options.png) -->
-
-<!-- ![Группы опций](/components/minishop3/screenshots/mgr-option-groups.png) -->
-
 ### Вкладка «Опции»
 
-- **Слева:** дерево категорий MODX (`class_key = msCategory`). Чекбоксы независимые: галка на родителе не отмечает детей. Контекстное меню: обновить ветку, развернуть или свернуть, выделить или снять выделение по ветке. Есть поиск по названию.
+- **Слева:** дерево категорий MODX (`class_key = msCategory`). Флажки независимые: отметка на родителе не выделяет дочерние категории. Контекстное меню управляет ветками (обновить, развернуть, выделить), есть поиск по названию.
 - **Справа:** грид опций. Фильтры: выбранные категории и группа (`option_group_id`). Массовые действия: назначить опции категориям, удалить.
 
-Диалог создания и правки: слева форма (ключ, название, описание, тип, группа `msOptionGroup`, единица измерения), справа дерево категорий для привязки. Для `combobox` / `comboMultiple` / `comboColors` есть редактор значений с drag-drop. У `comboColors` рядом с hex стоит `ColorPicker`.
+Диалог создания и правки: слева форма (ключ, название, описание, тип, группа `msOptionGroup`, единица измерения), справа дерево категорий для привязки. Для `combobox` / `comboMultiple` / `comboColors` есть редактор значений с сортировкой перетаскиванием. У `comboColors` рядом с полем hex стоит `ColorPicker`.
 
 ### Вкладка «Группы опций»
 
-Группы лежат в `ms3_option_groups` (`name`, `description`, `sort_order`). Это не `modCategory`: чужие категории других пакетов в списке больше не всплывают.
+Вкладка управляет `msOptionGroup`: создание, правка, удаление, порядок перетаскиванием. Группы лежат в `ms3_option_groups` (`name`, `description`, `sort_order`). Это не `modCategory`: категории других пакетов в списке больше не появляются.
 
-У опции поле `option_group_id` (nullable). Удалите группу: опции отвяжутся (`option_group_id = NULL`), сами записи опций останутся.
+У опции есть поле `option_group_id`. Удаление группы только отвязывает опции (`option_group_id = NULL`) — сами опции остаются.
 
-::: warning Breaking (v1.11)
-Раньше группа шла через `msOption.modcategory_id` и `modCategory`. Миграция Phinx переносит данные в `msOptionGroup`. В чанках замените `{$option.category_name}` / `{$option.category}` на `{$option.group_name}`. Эндпоинт `/api/mgr/options/modcategories` удалён. Используйте `/api/mgr/option-groups`.
+::: warning Несовместимые изменения (v1.11)
+Существующие группы переносятся при обновлении автоматически. Руками нужно поправить два места:
+
+- в чанках заменить `{$option.category_name}` и `{$option.category}` на `{$option.group_name}`;
+- в своём коде — вместо удалённого `/api/mgr/options/modcategories` вызывать `/api/mgr/option-groups`.
 :::
 
 ## Поля опции
@@ -57,7 +51,7 @@ UI опций на Vue 3 + PrimeVue. Старые ExtJS-окна и процес
 
 Тип хранится в `msOption.type` в формате `lowerCamelCase`. Все 10 поддерживаемых типов:
 
-| type | Описание | Редактор значений в настройках | UI в карточке товара |
+| type | Описание | Редактор значений в настройках | Виджет в карточке товара |
 | --- | --- | --- | --- |
 | `textfield` | Однострочное текстовое поле | — | InputText |
 | `textarea` | Многострочный текст | — | Textarea |
@@ -65,8 +59,8 @@ UI опций на Vue 3 + PrimeVue. Старые ExtJS-окна и процес
 | `datefield` | Дата | — | DatePicker (YYYY-MM-DD) |
 | `checkbox` | Флажок (Да / Нет) | — | Checkbox |
 | `comboBoolean` | Выпадающий Да / Нет | — | Select из двух значений |
-| `combobox` | Одиночный выбор из списка | Список строк (drag-drop) | Select |
-| `comboMultiple` | Множественный выбор из списка | Список строк (drag-drop) | MultiSelect |
+| `combobox` | Одиночный выбор из списка | Список строк, порядок перетаскиванием | Select |
+| `comboMultiple` | Множественный выбор из списка | Список строк, порядок перетаскиванием | MultiSelect |
 | `comboColors` | Множественный выбор с цветами | Список `{value, name=hex}` + ColorPicker | MultiSelect с цветовыми квадратами |
 | `comboOptions` | Свободный ввод тегов с автодополнением | — (значения накапливаются при сохранении товаров) | PrimeVue InputChips + список подсказок из ранее введённых значений |
 
@@ -91,29 +85,29 @@ UI опций на Vue 3 + PrimeVue. Старые ExtJS-окна и процес
 }
 ```
 
-`comboOptions` не требует готового списка. На карточке товара вводите любой текст (Enter, запятая или клик вне поля создаёт чип). Автодополнение тянет значения того же ключа у **других товаров** через `/api/mgr/options/suggestions`.
+`comboOptions` не требует готового списка. На карточке товара вводите любой текст (Enter, запятая или клик вне поля фиксируют значение). Автодополнение берёт значения того же ключа с **других товаров** через `/api/mgr/options/suggestions`.
 
 ## Привязка к категориям
 
-Опция видна в товарах только привязанных категорий. Сделайте привязку так:
+Опция видна в товарах только привязанных категорий. Привязать можно тремя способами:
 
-1. В диалоге опции отметьте категории в дереве справа.
-2. В карточке категории на вкладке «Опции» добавьте опцию.
-3. В гриде выделите несколько опций → «Назначить в категории».
+- **В диалоге опции** — отметьте категории в дереве справа.
+- **В карточке категории, вкладка «Опции»** — добавьте опцию.
+- **В гриде опций** — выделите несколько и нажмите «Назначить в категории».
 
-### Per-category caption / description override
+### Переопределение названия и описания для категории {#per-category-caption-description-override}
 
 ::: info С v1.10.0-beta1
 У связи «опция ↔ категория» (`msCategoryOption`) есть свои `caption` и `description`.
 :::
 
-Если в этой категории нужно другое название, задайте override в гриде опций категории (inline-edit «Название (для категории)») или в диалоге «Добавить опцию». Пустое значение берёт глобальное. Непустое видно в админке на товаре этой категории и на витрине через `OptionLoaderService::loadForProduct` / `loadForProducts`.
+Если в этой категории нужно другое название, задайте его в гриде опций категории (правка по месту в колонке «Название (для категории)») или в диалоге «Добавить опцию». Пустое поле — берётся глобальное название. Заполненное видно в админке на товарах этой категории и на фронтенде через `OptionLoaderService::loadForProduct` / `loadForProducts`.
 
-**Несколько категорий у товара.** Если у родителя и у доп. категорий разные override, побеждает такой порядок:
+**Несколько категорий у товара.** Если у родительской и дополнительных категорий названия разные, действует такой порядок:
 
 1. Категория-родитель товара (`msProduct.parent`)
 2. Меньший `msCategoryOption.position`
-3. Меньший `category_id` (стабильный tiebreak)
+3. Меньший `category_id` (решает при равенстве)
 
 ### Через PHP
 
@@ -138,8 +132,7 @@ $optionService->addOptionToCategory(
 ## Значения опций товара
 
 Значения хранятся в таблице `ms3_product_options` (`product_id`, `key`, `value`).
-Для multi-value типов (`comboMultiple`, `comboColors`, `comboOptions`) — несколько строк
-с одним `key` на товар.
+Для многозначных типов (`comboMultiple`, `comboColors`, `comboOptions`) на товар приходится несколько строк с одним `key`.
 
 ### Добавление значения
 
@@ -200,6 +193,8 @@ $byProduct = $loader->loadForProducts([123, 124, 125]);
 
 ### В карточке товара
 
+Опции доступны в шаблоне через переменную `$options`:
+
 ```fenom
 {if $options?}
 <div class="product-options">
@@ -215,7 +210,7 @@ $byProduct = $loader->loadForProducts([123, 124, 125]);
 
 ## Опции в корзине
 
-При добавлении товара в корзину можно передать выбранные опции:
+При добавлении товара в корзину передайте выбранные опции:
 
 ### JavaScript (Web API)
 
@@ -225,7 +220,7 @@ await ms3.cartAPI.add(123, 1, { color: 'Красный', size: 'L' })
 
 ### Отображение в корзине
 
-Опции сохраняются в позиции корзины и доступны в чанке:
+Опции пишутся в позицию корзины и доступны в чанке:
 
 ```fenom
 {if $options?}
@@ -237,26 +232,26 @@ await ms3.cartAPI.add(123, 1, { color: 'Красный', size: 'L' })
 
 ## REST API
 
-Все операции UI идут через эти эндпойнты (manager API, `/assets/components/minishop3/connector.php`, action `MiniShop3\Processors\Api\Router`). Permissions: `mssetting_save` для опций, `mscategory_save` для привязки к категории.
+Все операции интерфейса идут через Manager API (`/assets/components/minishop3/connector.php`, action `MiniShop3\Processors\Api\Router`). Права: `mssetting_save` для опций, `mscategory_save` для привязки к категории.
 
 ### Опции
 
 | Метод | Путь | Описание |
 | --- | --- | --- |
 | `GET` | `/api/mgr/options` | Список. Параметры: `start`, `limit`, `option_group_id` (`0` = без группы), `category_id`, `categories[]` |
-| `GET` | `/api/mgr/options/{id}` | Деталь + карта `categories` |
+| `GET` | `/api/mgr/options/{id}` | Одна опция + карта `categories` |
 | `POST` | `/api/mgr/options` | Создать (`key`, `caption`, `type`, `option_group_id`, `properties`, `categories`, …) |
-| `PUT` | `/api/mgr/options/{id}` | Обновить (partial) |
-| `DELETE` | `/api/mgr/options/{id}` | Удалить опцию (cascade по значениям у товаров) |
+| `PUT` | `/api/mgr/options/{id}` | Частичное обновление |
+| `DELETE` | `/api/mgr/options/{id}` | Удалить опцию (каскадом удалятся значения у товаров) |
 | `DELETE` | `/api/mgr/options/bulk` | Массовое удаление (`ids[]`) |
 | `POST` | `/api/mgr/options/bulk/assign` | Назначить `options[]` к `categories[]` |
 | `GET` | `/api/mgr/options/types` | Список типов |
-| `GET` | `/api/mgr/options/tree` | Дерево категорий `msCategory` (lazy по `parent`) |
+| `GET` | `/api/mgr/options/tree` | Дерево категорий `msCategory` (ленивая загрузка по `parent`) |
 | `GET` | `/api/mgr/options/suggestions` | Уникальные значения для `comboOptions` (`key`, `query`, `limit`) |
 | `GET` | `/api/mgr/option-groups` | Список групп |
 | `POST` | `/api/mgr/option-groups` | Создать группу |
 | `GET` / `PUT` / `DELETE` | `/api/mgr/option-groups/{id}` | Чтение, правка, удаление |
-| `PUT` | `/api/mgr/option-groups/positions` | Порядок после DnD |
+| `PUT` | `/api/mgr/option-groups/positions` | Порядок после перетаскивания |
 | `DELETE` | `/api/mgr/option-groups/bulk` | Массовое удаление |
 
 ### Привязки категорий
@@ -265,7 +260,7 @@ await ms3.cartAPI.add(123, 1, { color: 'Красный', size: 'L' })
 | --- | --- | --- |
 | `GET` | `/api/mgr/categories/{category_id}/options` | Опции, привязанные к категории (с `global_caption`/`global_description` + `category_caption`/`category_description` override) |
 | `POST` | `/api/mgr/categories/{category_id}/options` | Добавить опцию к категории (`option_id`, `value`, `active`, `required`, `caption`, `description`) |
-| `PUT` | `/api/mgr/categories/{category_id}/options/{option_id}` | Partial update связки (value / active / required / position / caption / description) |
+| `PUT` | `/api/mgr/categories/{category_id}/options/{option_id}` | Частичное обновление связки (value / active / required / position / caption / description) |
 | `DELETE` | `/api/mgr/categories/{category_id}/options/{option_id}` | Удалить связку |
 | `POST` | `/api/mgr/categories/{category_id}/options/sort` | Сохранить новый порядок (`option_ids[]`) |
 | `POST` | `/api/mgr/categories/{category_id}/options/bulk` | Массовые действия: `activate` / `deactivate` / `require` / `unrequire` / `remove` для `option_ids[]` |
@@ -273,11 +268,11 @@ await ms3.cartAPI.add(123, 1, { color: 'Красный', size: 'L' })
 
 ## Импорт опций
 
-При импорте товаров из CSV опции создаются автоматически из столбцов с префиксом `option_`:
+При импорте товаров из CSV опции создаются автоматически из столбцов с префиксом `option.` (точка, не подчёркивание):
 
-| pagetitle | price | option_color | option_size |
+| pagetitle | price | option.color | option.size |
 | --- | --- | --- | --- |
 | Футболка | 1500 | Красный | L |
 | Футболка | 1500 | Синий | M |
 
-Опции `color` и `size` будут созданы автоматически, если не существуют. По умолчанию они создаются как `textfield` — тип можно поменять позже через UI.
+Опции `color` и `size` создаются сами, если их ещё нет. Тип по умолчанию — `textfield`, поменять его можно потом в интерфейсе.

@@ -5,17 +5,17 @@ description: Generic CRUD /objects/{name} для зарегистрирован�
 
 # Objects
 
-Универсальный CRUD для объектов из `ObjectRegistry`. Имя в URL, logical name (`products`, `orders`), не PHP-класс.
+Универсальный CRUD для объектов из `ObjectRegistry`. В URL — имя (`products`, `orders`), не PHP-класс.
 
-| Method | Path | Scope |
-| --- | --- | --- |
-| GET | `/objects/{name}` | `{name}.read` |
-| GET | `/objects/{name}/{id}` | `{name}.read` |
-| POST | `/objects/{name}` | `{name}.create` |
-| PUT / PATCH | `/objects/{name}/{id}` | `{name}.update` |
-| DELETE | `/objects/{name}/{id}` | `{name}.delete` |
+| Метод | Path | Scope | Успех |
+| --- | --- | --- | --- |
+| GET | `/objects/{name}` | `{name}.read` | `200` |
+| GET | `/objects/{name}/{id}` | `{name}.read` | `200` |
+| POST | `/objects/{name}` | `{name}.create` | `201` |
+| PUT / PATCH | `/objects/{name}/{id}` | `{name}.update` | `200` |
+| DELETE | `/objects/{name}/{id}` | `{name}.delete` | `200` |
 
-Паттерн фиксирован в `RoutesRegistrar`: `{name}.{action}`. Не `objects.{name}.read`.
+Шаблон фиксирован в `RoutesRegistrar`: `{name}.{action}`. Не `objects.{name}.read`.
 
 ```bash
 curl -s 'https://example.com/api/v1/objects/products?limit=10' \
@@ -30,8 +30,13 @@ curl -s 'https://example.com/api/v1/objects/products?limit=10' \
 
 ## MiniShop3
 
-Типичные имена: `products`, `categories`, `orders`, … Заказы обычно protected. Подробнее: [MiniShop3](/components/mxheadless/extensions/minishop3).
+Типичные имена: `products`, `ms_categories`, `orders`. Имя `categories` в core — элементы `modCategory`. Заказы обычно `protected`. Подробнее: [MiniShop3](/components/mxheadless/extensions/minishop3).
 
 ## Query и мутации
 
-Те же правила [querying](querying) и [mutations](mutations), что у resources, в пределах fields/filters definition.
+Те же правила [querying](querying) и [mutations](mutations), что у resources. Поля и фильтры из определения объекта.
+
+Два отличия от `resources`:
+
+- каскадного удаления нет: `DELETE` трогает одну запись, даже если в объекте есть поле `parent`
+- правила валидации записей применяются одинаково, но проверки `alias`, `parent`, `class_key`, `template`, `content_type` имеют смысл только для ресурсов. Для extras-объектов реальны проверки типов, `immutable`, `hidden` и `required`.

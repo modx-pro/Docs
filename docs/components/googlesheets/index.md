@@ -1,6 +1,7 @@
 ---
 title: GoogleSheets
 description: Импорт и экспорт товаров / ресурсов / заказов / пользователей
+categories: import-export
 logo: https://modstore.pro/assets/extras/googlesheets/logo-lg.jpg
 author: boshnik
 modstore: https://modstore.pro/packages/import-and-export/googlesheets

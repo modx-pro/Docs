@@ -7,7 +7,7 @@ description: Reference for mxheadless keys in MODX System Settings
 
 Namespace: `mxheadless`. Keys use underscores (`mxheadless_cors_enabled`), not dots.
 
-From **1.0.42**, upgrade migrates values from old dotted keys (`mxheadless.cors.enabled`) to the new names.
+From **1.0.42**, upgrade migrates values from old keys with dots (`mxheadless.cors.enabled`) to the new names.
 
 ## API
 
@@ -39,7 +39,7 @@ From **1.0.42**, upgrade migrates values from old dotted keys (`mxheadless.cors.
 | `mxheadless_rate_limit_max_requests` | numberfield | `120` | Requests per window |
 | `mxheadless_rate_limit_window_seconds` | numberfield | `60` | Window length (seconds) |
 
-Per-key overrides: columns `rate_limit_max`, `rate_limit_window` on `mxheadless_api_keys` and `mxheadless_oauth_clients`.
+Per-key limits: columns `rate_limit_max`, `rate_limit_window` on `mxheadless_api_keys` and `mxheadless_oauth_clients`.
 
 ## CORS
 
@@ -49,7 +49,7 @@ Per-key overrides: columns `rate_limit_max`, `rate_limit_window` on `mxheadless_
 | `mxheadless_cors_allowed_origins` | textarea | empty | Comma-separated origins or `*` |
 | `mxheadless_cors_allowed_methods` | textfield | `GET,POST,PUT,PATCH,DELETE,OPTIONS` | Preflight methods |
 | `mxheadless_cors_allowed_headers` | textfield | `Authorization,Content-Type,X-Request-ID,X-CSRF-Token,X-Context,X-API-Key,Idempotency-Key` | Allowed headers |
-| `mxheadless_cors_expose_headers` | textfield | `ETag,X-Request-ID,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,Idempotency-Replayed` | Expose-Headers for JS |
+| `mxheadless_cors_expose_headers` | textfield | `ETag,X-Request-ID,X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset,Idempotency-Replayed,X-CSRF-Token` | Expose-Headers for JS |
 | `mxheadless_cors_allow_credentials` | combo-boolean | `false` | Do not combine with origins=`*` |
 
 Details: [CORS](configuration/cors).
@@ -86,10 +86,10 @@ Details: [CORS](configuration/cors).
 | Key | Type | Default | Description |
 | --- | --- | --- | --- |
 | `mxheadless_audit_enabled` | combo-boolean | `false` | Log to `mxheadless_api_log` |
-| `mxheadless_audit_retention_days` | numberfield | `90` | Retention for `audit-prune.php` |
+| `mxheadless_audit_retention_days` | numberfield | `90` | Retention period for `audit-prune.php` |
 | `mxheadless_audit_log_get` | combo-boolean | `false` | Log GET requests |
 
-## Query limits (code defaults)
+## Query limits (defaults in code)
 
 `QueryParser` reads these via `getOption`. You can add them as system settings:
 

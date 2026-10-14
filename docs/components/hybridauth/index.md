@@ -1,6 +1,8 @@
 ---
 title: HybridAuth
 description: Авторизация через соцсети и другие сервисы
+categories: users
+popular: true
 logo: https://modstore.pro/assets/extras/hybridauth/logo-lg.jpg
 author: biz87
 modstore: https://modstore.pro/packages/users/hybridauth

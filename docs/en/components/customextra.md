@@ -1,6 +1,7 @@
 ---
 title: customExtra
 description: Custom table in the MODX Manager
+categories: utilities
 logo: https://modstore.pro/assets/extras/customextra/logo.png
 author: ilyautkin
 modstore: https://modstore.pro/packages/utilities/customextra

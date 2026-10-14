@@ -1,6 +1,6 @@
 ---
 title: Web API
-description: "Обзор Web API MiniShop3: api.php, envelope и middleware"
+description: "Обзор Web API MiniShop3: api.php, формат ответа и middleware"
 ---
 
 # Web API
@@ -15,7 +15,9 @@ description: "Обзор Web API MiniShop3: api.php, envelope и middleware"
 
 Manager API (`connector.php`) на этой странице не описан.
 
-## Envelope
+## Формат ответа
+
+Любой метод отвечает массивом из трёх ключей: `success` — успех операции, `message` — текст сообщения, `data` — то, за чем обращались. У ошибки к ним добавляются ещё три.
 
 **Успех:**
 

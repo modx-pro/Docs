@@ -27,7 +27,7 @@ Teleport в настоящее время функционирует преим�
 
 - [Profile][1] - **Сгенерировать JSON профиль** сайта MODX который может быть использован другими Командами для работы.
 
-- [Extract][2] - **Извлечь** файлы, данные, и/или другие арефакты описанные в [Шаблоне Извлечения (extract tpl)](https://github.com/modxcms/teleport/blob/master/doc/use/extract/tpl.md), из сайта MODX описанного в особом формате, и упаковать его в транспортный пакет, который позже может быть впрыснут (Injected) в любой другой сайт на MODX.
+- [Extract][2] - **Извлечь** файлы, данные, и/или другие артефакты описанные в [Шаблоне Извлечения (extract tpl)](https://github.com/modxcms/teleport/blob/master/doc/use/extract/tpl.md), из сайта MODX описанного в особом формате, и упаковать его в транспортный пакет, который позже может быть впрыснут (Injected) в любой другой сайт на MODX.
 
 - [Inject][3] - Инъекция (впрыскивание) указанного транспортного пакета, сгенерированного с помощью Teleport Extract, в сайт MODX, согласно описанию в заданном **Профиле**.
 
@@ -60,7 +60,7 @@ php composer.phar create-project --prefer-source --stability=dev modxcms/telepor
 
 ### Кастомные Извлечения
 
-Teleport [Команда Extract](https://github.com/modxcms/teleport/blob/master/doc/use/extract.md) использует JSON [Шаблоны Извлечения (extract tpl)](https://github.com/modxcms/teleport/blob/master/doc/use/extract/tpl.md) чтобы описать как транспортный пакет создаётся из различных ресурсов/объектов сайта MODX. Вы можете легко создать Ваши собственные шаблоны чтобы быстро создавать кастомные пакеты для бесконечного количества целей от бекапирования сайтов до создания своих дополнений и создания вашего специфичного процесса разработки (workflow). Читайте [Создание кастомных Шаблонов Извлечения (Extract Tpls)](https://github.com/modxcms/teleport/blob/master/doc/extend/custom-extract-tpls.md) для большей информации.
+Teleport [Команда Extract](https://github.com/modxcms/teleport/blob/master/doc/use/extract.md) использует JSON [Шаблоны Извлечения (extract tpl)](https://github.com/modxcms/teleport/blob/master/doc/use/extract/tpl.md) чтобы описать как транспортный пакет создаётся из различных ресурсов/объектов сайта MODX. Вы можете легко создать Ваши собственные шаблоны чтобы быстро создавать кастомные пакеты для бесконечного количества целей от бэкапирования сайтов до создания своих дополнений и создания вашего специфичного процесса разработки (workflow). Читайте [Создание кастомных Шаблонов Извлечения (Extract Tpls)](https://github.com/modxcms/teleport/blob/master/doc/extend/custom-extract-tpls.md) для большей информации.
 
 ### Кастомные команды Teleport'а
 

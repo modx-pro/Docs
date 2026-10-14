@@ -3,13 +3,13 @@ title: Quick start
 ---
 # Quick start
 
-Minimal setup to enable `mxQuickView` on a catalog page in 5–10 minutes.
+Enable `mxQuickView` on a catalog page.
 
 ## 1. Install the package
 
 1. Install `mxQuickView` via **Extras → Installer**.
-2. Clear MODX cache.
-3. Check system settings in namespace `mxquickview`.
+2. Clear the MODX cache.
+3. Check system settings in namespace `mxquickview` (whitelist; for Fenom chunks — pdoTools 3.x).
 
 ## 2. Load initialization in the template
 
@@ -25,7 +25,7 @@ Minimal setup to enable `mxQuickView` on a catalog page in 5–10 minutes.
 
 :::
 
-## 3. Add quick view button
+## 3. Add a quick view button
 
 ::: code-group
 
@@ -55,11 +55,11 @@ Minimal setup to enable `mxQuickView` on a catalog page in 5–10 minutes.
 
 :::
 
-## 4. Check whitelist
+## 4. Check the whitelist
 
 - `mxquickview_allowed_chunk` must include `mxqv_product` (or your chunk).
-- For quick view of regular resources add `mxqv_resource`.
-- For `snippet`/`template` fill `mxquickview_allowed_snippet` and `mxquickview_allowed_template` accordingly.
+- For regular resources add `mxqv_resource`.
+- For `snippet`/`template` fill `mxquickview_allowed_snippet` and `mxquickview_allowed_template`.
 
 ## 5. Verify
 
@@ -69,7 +69,7 @@ Minimal setup to enable `mxQuickView` on a catalog page in 5–10 minutes.
 
 ## Next steps
 
-- [System settings](settings)
-- [Site integration](integration)
-- [Render types](types)
-- [API and interfaces](api)
+- [System settings](/en/components/mxquickview/settings)
+- [Site integration](/en/components/mxquickview/integration)
+- [Render types](/en/components/mxquickview/types)
+- [API and interfaces](/en/components/mxquickview/api)

@@ -38,3 +38,4 @@
   'tpl' => '@INLINE <tr><td>{$procent}% {$question}</td><td>{$value}</td></tr>',
   'tplFooter' => '@INLINE <p>Проголосовали {$total} пользователей</p>',
 ]}
+```

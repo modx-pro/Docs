@@ -11,21 +11,21 @@ description: "Один boolean-флаг: true или false"
 
 ## Зачем этот тип
 
-Один флажок для одного варианта. В данных это да или нет, не строка "1" или "0". Рядом с `showWhen` им включают и выключают другие поля.
+Один флажок для одного варианта. В данных `true` или `false`, не строка `1` или `0`.
 
 ## Когда использовать
 
 - «Показать кнопку», «Открыть в новой вкладке»
-- Флаг включения блока или overlay
+- Флаг включения блока или всплывающего слоя
 - Триггер showWhen для зависимых полей
 
 ## Советы
 
-Несколько независимых флагов: [checkboxgroup](checkboxgroup). Переключатель on/off на виду: [toggle](toggle).
+Несколько независимых флагов: [checkboxgroup](checkboxgroup).
 
 ## Похожие типы
 
-- [toggle](toggle) для switch UI
+- [toggle](toggle) для переключателя on/off
 - [yesno](yesno) для классического да/нет MODX
 
 ## Настройка
@@ -60,7 +60,7 @@ description: "Один boolean-флаг: true или false"
 ::: code-group
 
 ```modx
-<span class="badge">Избранное</span>
+[[+featured:is=`1`:then=`<span class="badge">Избранное</span>`]]
 ```
 
 ```fenom

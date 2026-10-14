@@ -59,8 +59,8 @@ tpl.msCustomer.base          # базовый layout
 | `{$customer.phone}` | string | Телефон |
 | `{$email_verified}` | bool | Email подтверждён |
 | `{$email_verified_at}` | string | Дата подтверждения email |
-| `{$phone_verified}` | bool | Телефон подтверждён |
-| `{$phone_verified_at}` | string | Дата подтверждения телефона |
+| `{$phone_verified}` | bool | Всегда `false`: подтверждение телефона запланировано ([#138](https://github.com/modx-pro/MiniShop3/issues/138)) |
+| `{$phone_verified_at}` | string | Всегда пусто, по той же причине |
 | `{$errors}` | array | Ошибки валидации |
 | `{$success}` | bool | Успешное сохранение |
 
@@ -214,6 +214,13 @@ tpl.msCustomer.base          # базовый layout
 ```
 
 JavaScript MiniShop3 перехватывает формы с классом `ms3_form` и шлёт данные в API.
+
+### Хуки профиля
+
+| Хук | Когда |
+| --- | --- |
+| `beforeUpdateProfile` / `afterUpdateProfile` | Сохранение профиля |
+| `beforeResendVerificationEmail` / `afterResendVerificationEmail` | Повторная отправка письма подтверждения |
 
 ## Ошибки
 

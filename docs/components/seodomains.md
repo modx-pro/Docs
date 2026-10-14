@@ -1,6 +1,7 @@
 ---
 title: SEO Domains
 description: Добавление доп. доменов для сайта, без контекстов с добавлением в Вебмастер
+categories: other
 logo: https://modstore.pro/assets/extras/seodomains/logo.png
 author: tventos
 modstore: https://modstore.pro/packages/other/seodomains
@@ -98,7 +99,7 @@ modstore: https://modstore.pro/packages/other/seodomains
 
 ## Управление доменами через админку MODX
 
-Для это достаточно в Алиасах к сайту прописать wildcart поддомен (Пример: `*.seodomains.tyrsyna.ru`). При обращении к несуществующему домену будет происходить редирект на основной домен который был введен в настройках (ключ `seodomains_main_host`)
+Для этого достаточно в Алиасах к сайту прописать wildcard поддомен (Пример: `*.seodomains.tyrsyna.ru`). При обращении к несуществующему домену будет происходить редирект на основной домен который был введен в настройках (ключ `seodomains_main_host`)
 
 ![Управление доменами через админку MODX](https://file.modx.pro/files/2/0/7/207d143762c6b2b502e7b1684d541dcds.jpg)
 

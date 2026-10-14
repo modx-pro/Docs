@@ -5,6 +5,7 @@ repository: https://github.com/adm93rus/ManagerButtons
 author: adm93rus
 dependencies:
   - VueTools
+categories: utilities
 compatibility:
   - modx3
   - php81

@@ -11,6 +11,7 @@ items: [
 ]
 
 dependencies: ['miniShop2', 'msOptionsPrice2']
+categories: import-export
 ---
 
 # allGifts

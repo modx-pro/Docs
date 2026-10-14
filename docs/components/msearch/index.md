@@ -1,6 +1,7 @@
 ---
 title: mSearch
 description: Полнотекстовый поиск с морфологическим анализом для MODX 3
+categories: catalog
 logo: https://modstore.pro/assets/extras/msearch/logo.png
 author: biz87
 repository: https://github.com/modx-pro/msearch
@@ -50,7 +51,7 @@ items: [
 - **Публичный API** — REST endpoint для AJAX-поиска и интеграций
 - **Headless-режим** — JavaScript API (`window.msearch`) для React/Vue/кастомных решений
 - **Система хуков** — расширение поведения поиска через `msearchHooks`
-- **Мульти-контекст** — фильтрация результатов по контекстам MODX
+- **Мультиконтекст** — фильтрация результатов по контекстам MODX
 
 ## Системные требования
 

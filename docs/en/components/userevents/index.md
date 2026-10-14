@@ -1,6 +1,7 @@
 ---
 title: UserEvents
 description: Creating events by users on resources
+categories: booking
 logo: https://modstore.pro/assets/extras/userevents/logo.png
 author: vgrish
 modstore: https://modstore.pro/packages/booking/userevents

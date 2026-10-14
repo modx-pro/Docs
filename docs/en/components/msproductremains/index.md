@@ -14,6 +14,7 @@ items: [
 ]
 
 dependencies: miniShop2
+categories: catalog
 ---
 
 # msProductRemains

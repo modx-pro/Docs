@@ -5,7 +5,7 @@ description: "Два изображения с подписями Before и Afte
 
 # До и после
 
-Секция `before_after` ставит два кадра рядом. Chunk: `pagebuilderpro_before_after`. Требуется PageBuilder Pro. Категория: медиа.
+Секция `before_after` ставит два кадра рядом.
 
 ![До и после](/components/pagebuilder/screenshots/sections/before_after.jpg)
 
@@ -13,6 +13,16 @@ description: "Два изображения с подписями Before и Afte
 
 - Результат ремонта, ретуши, клинического случая
 - Сравнение двух состояний одного объекта
+
+## Параметры блока
+
+| Параметр | Значение |
+| --- | --- |
+| key | `before_after` |
+| Слой | Pro |
+| Категория | медиа (`media`) |
+| Chunk | `pagebuilderpro_before_after` |
+| Требования | pro |
 
 ## Поля
 

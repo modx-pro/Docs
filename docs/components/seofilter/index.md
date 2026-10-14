@@ -1,6 +1,8 @@
 ---
 title: SeoFilter
 description: Удобное управление ЧПУ, мета-тегами и генерация текстов
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/seofilter/logo.png
 author: sheronov
 modstore: https://modstore.pro/packages/ecommerce/seofilter

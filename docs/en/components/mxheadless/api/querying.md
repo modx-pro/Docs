@@ -5,15 +5,15 @@ description: filter, sort, fields, pagination, and includes in mxHeadless
 
 # Querying
 
-Common query parameters for list/detail on registered objects.
+Query parameters for list and detail on registered objects.
 
 ## Pagination
 
 | Parameter | Default | Note |
 | --- | --- | --- |
-| `limit` | `20` | Max: `mxheadless_max_limit` (100) |
-| `offset` | `0` | Max: `mxheadless_max_offset` |
-| `page` | - | Alternative to offset. **Do not** combine with `offset` (422) |
+| `limit` | `20` | At most `mxheadless_max_limit` (100) |
+| `offset` | `0` | At most `mxheadless_max_offset` |
+| `page` | - | Instead of `offset`. Together with `offset` returns `422` |
 
 In `meta`: `total`, `count`, `limit`, `offset`, `has_more`. In `links`: `self`, `next`, `prev` when applicable.
 
@@ -23,29 +23,39 @@ In `meta`: `total`, `count`, `limit`, `offset`, `has_more`. In `links`: `self`, 
 fields=id,pagetitle,uri
 ```
 
-Max fields: `mxheadless_max_fields` (50). Unknown or forbidden field → `422`.
+At most `mxheadless_max_fields` (50) fields. Unknown or forbidden field returns `422`.
 
 ## Filter
-
-Simple forms:
 
 ```text
 filter[published]=1
 filter[parent]=5
-filter[pagetitle][like]=news
+filter[alias][like]=%news%
 ```
 
-Operators depend on the definition (eq, like, gt, …). Only registered filterable fields.
+`filter[field]=value` is the same as `filter[field][eq]=value`. Parameter alias: `filters`. Unknown field or operator returns `422`.
+
+| Operator | Alias |
+| --- | --- |
+| `eq` | |
+| `neq` | `ne` |
+| `gt` `gte` `lt` `lte` | |
+| `like` | |
+| `in` `not_in` | |
+| `null` `not_null` | |
+
+`pagetitle` is not in `filterable` on `resources`. Search by title with `?q=`.
 
 ## Sort
 
 ```text
 sort=menuindex
 sort=-createdon
-sort=parent,-id
+sort=menuindex,-id
+sort=publishedon:desc
 ```
 
-A leading `-` sorts DESC.
+A leading `-` or `:desc` sorts DESC. `:asc` and `+` sort ASC. `sort=parent` is not allowed on `resources`.
 
 ## Search
 
@@ -53,15 +63,18 @@ A leading `-` sorts DESC.
 ?q=installation
 ```
 
-`QueryParser` builds `LIKE %term%` over fields from `searchable` in the definition. For core `resources`: `pagetitle`, `longtitle`, `description`, `introtext`, `alias`, `uri`. Fields are ORed.
+`QueryParser` builds `LIKE %term%` over `searchable` fields from the definition. For core `resources`: `pagetitle`, `longtitle`, `description`, `introtext`, `alias`, `uri`. Fields are ORed.
 
-A short term may return many rows. Narrow with `filter`. Empty searchable list → `422 Search not supported`. Field list: [Schema](schema).
+A short term may return many rows. Narrow with `filter`. Empty `searchable` list returns `422 Search not supported`. Field list: [Schema](schema).
 
 ## Includes
 
 ```text
-include=template,tvs
+include=parent,children
+include=tvs
 ```
+
+`resources` relations: `parent`, `children`. `template` is a field (template id), not an include. TVs: `include=tvs` / `include=tv` or `?tv_fields=name1,name2`. Chunks, templates, snippets, TVs: `include=category`. Categories: `include=parent`.
 
 Limits: `mxheadless_max_include_relations` (10), `mxheadless_max_include_depth` (2). Relation names come from schema.
 
@@ -72,15 +85,16 @@ Limits: `mxheadless_max_include_relations` (10), `mxheadless_max_include_depth` 
 X-Context: web
 ```
 
-The header works better with caches. When omitted, the bootstrap context applies (`mxheadless_context`, default `web`).
+The header works better with caches. When omitted, the startup context applies: `mxheadless_context`, default `web`.
 
-The `mxheadless_allowed_contexts` whitelist (default `web,mgr`) limits allowed values. Catalog and settings: [Elements and Contexts](elements).
+The `mxheadless_allowed_contexts` list (default `web,mgr`) limits allowed values. Catalog and settings: [Elements and Contexts](elements).
 
 ## Preview / deleted
 
 ```text
 ?preview=true
 ?include_deleted=1
+?includeDeleted=1
 ```
 
 Requires matching permissions. Details: [Preview](preview), [Authorization](/components/mxheadless/authorization).

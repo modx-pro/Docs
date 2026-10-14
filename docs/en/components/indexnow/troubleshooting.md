@@ -1,41 +1,45 @@
 ---
-title: Решение проблем
-description: Очередь не уходит, HTTP 403/429, key file и connector
+title: Troubleshooting
+description: Stuck queue, HTTP 403/429, key file, connector
 ---
 
-# Решение проблем
+# Troubleshooting
 
-## Очередь растёт, ничего не уходит
+## Queue grows, nothing is sent
 
-1. Установите [Scheduler](/components/scheduler/) и проверьте задачу **IndexNow: Process Queue**.
-2. Или нажмите **Обработать очередь**.
-3. Откройте **Историю**: смотрите HTTP-код и текст ошибки.
-4. Убедитесь, что `indexnow_enabled = Да`.
+1. Check `indexnow_enabled = Yes` and valid key and `indexnow_endpoint`. With invalid values the worker skips silently: the queue grows, **history stays empty**, MODX log shows `Worker skipped`.
+2. Wait for queue tick (any front-end request or manager reload) or click **Process queue**.
+3. If the site has little HTTP traffic, install [Scheduler](/en/components/scheduler/) and task **IndexNow: Process Queue**.
+4. Open **History** for HTTP code and error text.
 
-## Файл ключа не найден
+## Key file not found
 
-Создайте `{key}.txt` в web root. В файле должен быть только ключ.
+Create `{key}.txt` in the web root. File body must be the key only.
 
-На мультидомене положите файл в каждый публичный корень. См. [Ключ и key file](key).
+On multi-domain setups, place the file in each public document root. See [Key and key file](/en/components/indexnow/key).
 
 ## HTTP 403
 
-Частые причины: нет key file, неверный ключ, endpoint отверг запрос (в том числе локальный host вроде `project.test`).
+Common causes: missing key file, wrong key, endpoint rejected the request (including local hosts like `project.test`).
 
-Исправьте файл ключа, затем **Повторить** у failed-строки.
+Fix the key file, then **Retry** on the `failed` row: `attempts` is reset, and the worker starts a full attempt series.
 
-## HTTP 429 или 5xx
+## HTTP 429 or 5xx
 
-Временная ошибка. Worker ставит паузу `indexnow_retry_delay`. При необходимости увеличьте задержку или уменьшите `indexnow_batch_size`.
+Temporary error. Worker schedules retry after [`indexnow_retry_delay`](/en/components/indexnow/settings). Increase delay or lower `indexnow_batch_size` if needed.
 
-## Страница сохранилась, в логе ошибка IndexNow
+## HTTP 401, 404, 410, and other 4xx
 
-Так и задумано. Плагин ловит исключения и пишет в лог MODX. Сохранение ресурса не откатывается.
+Treated as permanent: immediate `failed`, no retry loop (except codes explicitly treated as temporary in the worker). Full code table: [Queue and delivery → HTTP codes](/en/components/indexnow/queue#http-codes).
 
-## Ручной URL отклонён
+## Resource saved but IndexNow error in the log
 
-Разрешены только host ваших контекстов. Проверьте абсолютный URL и настройки `site_url` / `http_host`.
+Expected. The plugin catches exceptions and logs them. The save is not rolled back.
 
-## Manager / AJAX не отвечает
+## Manual URL rejected
 
-Проверьте, что `assets/components/indexnow/connector.php` находит `config.core.php` сайта. При нестандартной раскладке каталогов connector ищет файл вверх по дереву директорий.
+Only hosts from your contexts are allowed. `localhost`, private/reserved IPs, and `metadata.google.internal` are blocked. Check the absolute URL and `site_url` / `http_host`.
+
+## Manager / AJAX errors
+
+Ensure `assets/components/indexnow/connector.php` finds the site `config.core.php`. With non-standard directory layout the connector walks up to eight levels.

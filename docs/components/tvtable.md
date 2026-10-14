@@ -1,6 +1,7 @@
 ---
 title: TVTable
 description: Дополнительное поле в виде таблицы
+categories: utilities
 logo: https://modstore.pro/assets/extras/tvtable/logo.png
 author: wax100
 modstore: https://modstore.pro/packages/utilities/tvtable

@@ -59,7 +59,7 @@ export function usePrevNext(): ComputedRef {
     const currentPath = normalizePath(route.path)
     let index = candidates.findIndex((link) => normalizePath(link.link) === currentPath)
     if (index === -1) {
-      index = candidates.findIndex((link) => isActive(page.value.relativePath, link.link))
+      index = candidates.findIndex((link) => isActive(page.value.relativePath, '', link.link, false, true))
     }
 
     const prevLink = index === -1 ? undefined : getNeighbor(candidates, index, -1, currentPath)

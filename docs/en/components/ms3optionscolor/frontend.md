@@ -5,7 +5,11 @@ description: Select, cart, CSS, and JS for ms3OptionsColor on the storefront
 
 # Frontend
 
-On the storefront you render swatches with snippet `ms3OptionsColor`, select with chunk `tplMs3OptionsColorSelect`, and filters with type `ms3oc`. Snippet parameters and chunk list: [Snippets](snippets/). Styles rely on data attributes (`[data-ms3oc-swatch]`, `[data-empty]`, `[data-size]`…), not required CSS classes.
+On the storefront snippet `ms3OptionsColor` draws swatches. Chunk `tplMs3OptionsColorSelect` builds the select. Type `ms3oc` draws the filter. Parameters and chunks: [Snippets](snippets/).
+
+Styles read `[data-ms3oc-swatch]`, `[data-empty]`, `[data-size]`. Theme classes are optional.
+
+After AJAX insert of `[data-ms3oc-select]`, call `window.ms3ocInitColorSelects()`.
 
 ```mermaid
 flowchart TB
@@ -42,7 +46,7 @@ When `ms3optionscolor_frontend_css=Yes` the plugin and snippet load `css/web/mai
 
 :::
 
-`select.js` finds `[data-ms3oc-select]`. With jQuery + Select2 it builds a dropdown with swatches. Otherwise you keep a plain `<select>` with `data-ms3oc-select-plain` (parameter `native=1` / `data-ms3oc-native`).
+`select.js` finds `[data-ms3oc-select]`. With jQuery + Select2 it builds a dropdown with swatches. Otherwise you keep a plain `<select>` with `data-ms3oc-select-plain` (`native=1` / `data-ms3oc-native`).
 
 ```mermaid
 flowchart LR
@@ -55,7 +59,7 @@ flowchart LR
   Check -->|no or native=1| Native
 ```
 
-Set swatch size with `data-size`: `sm`, `md`, `lg`. Without the attribute the size is 1.75rem.
+`data-size` sets the swatch size: `sm`, `md`, `lg`. Without the attribute the size is 1.75rem.
 
 ![Select](/components/ms3optionscolor/screenshots/storefront-select.png)
 
@@ -83,9 +87,7 @@ Set swatch size with `data-size`: `sm`, `md`, `lg`. Without the attribute the si
 
 :::
 
-Default `tplMs3OptionsColor` renders `<span data-ms3oc-swatch>` with `data-color`, `data-pattern`, `data-ral`, `data-status`. An empty swatch gets `data-empty`.
-
-Parameters and row fields: [ms3OptionsColor snippet](snippets/ms3OptionsColor).
+Default `tplMs3OptionsColor` draws `<span data-ms3oc-swatch>` with `data-color`, `data-pattern`, `data-ral`, `data-status`. An empty swatch gets `data-empty`. Row fields: [ms3OptionsColor snippet](snippets/ms3OptionsColor).
 
 ### Select
 
@@ -113,7 +115,7 @@ Parameters and row fields: [ms3OptionsColor snippet](snippets/ms3OptionsColor).
 
 :::
 
-The chunk calls the snippet with `tplMs3OptionsColorSelectOption`. Parameters `tpl` / `optionTpl` override the single-option chunk. Form field name: `options[color]` (or your `option_key`).
+The chunk calls the snippet with `tplMs3OptionsColorSelectOption`. Parameters `tpl` / `optionTpl` replace the single-option chunk. Form field name: `options[color]` (or your `option_key`).
 
 | Chunk parameter | Purpose |
 | --- | --- |
@@ -123,13 +125,14 @@ The chunk calls the snippet with `tplMs3OptionsColorSelectOption`. Parameters `t
 | `placeholder` | Empty option at the top |
 | `native` | `1` disables Select2 |
 | `selected` / `selectedValue` | Preselected value |
-| `activeOnly` / `includeUnset` | Same as snippet |
+| `activeOnly` | Same as snippet |
+| `includeUnset` | Chunk default `1`. Snippet auto: `1` only with `byOptions`, else `0` |
 | `multiple` / `required` | `<select>` attributes |
 | `field_id` | Element id |
 
 ## Catalog
 
-On listing rows pass the product ID:
+On listing rows pass the product ID from the row:
 
 ::: code-group
 
@@ -159,7 +162,7 @@ On listing rows pass the product ID:
 
 ## byOptions
 
-When values already exist (cart, custom JSON), do not read product options from the database:
+When values already exist (cart, your JSON), do not read product options from the database:
 
 ::: code-group
 
@@ -181,34 +184,32 @@ When values already exist (cart, custom JSON), do not read product options from 
 
 :::
 
-`byOptions` is a JSON string. In a cart chunk Fenom/`runSnippet` is easier. In MODX tags pass already serialized JSON.
+`byOptions` is a JSON string. In a cart chunk Fenom and `runSnippet` are easier. In MODX tags pass already serialized JSON.
 
 ## Cart
 
-Example chunk `tplMs3OptionsColorCart` has three branches:
+Chunk `tplMs3OptionsColorCart` has three branches:
 
 | Cart line | Behavior |
 | --- | --- |
-| Has `options._variant_id` | Read-only swatch for `color` (+ label `size` when present). Without color the swatch block is not rendered. **No** `cart/changeOption`. Link "change variant" → PDP `?variant=ID` |
-| Bundle (`options.msbundles` / `bundle_hash`) | Read-only. Swatch when `options.color`. Otherwise one color from `product.color` or all product colors. **No** `cart/changeOption` |
-| Regular line | When the product has option `color`, `<select>` + `cart/changeOption` shows even without `options.color` on the line. Inline swatch and label only when color is already selected. Size: select only when `options.size` is already set |
+| Has `options._variant_id` | Swatch for `color` with no option change. `size` label when present. Without color the swatch block is not drawn. **No** `cart/changeOption`. Link "change variant" goes to the product `?variant=ID` |
+| Bundle (`options.msbundles` / `bundle_hash`) | No option change. Swatch when `options.color`. Otherwise one color from `product.color` or all product colors. **No** `cart/changeOption` |
+| Regular line | When the product has option `color`, `<select>` + `cart/changeOption` shows even without `options.color` on the line. Swatch and label only when color is already selected. Size select only when `options.size` is already set |
 
 Storefront CSS must be loaded. Otherwise the cart swatch often stays zero width.
 
-Display contract for the chunk: color swatch and size label. Other option keys are not output. Variant identity (`_variant_id`, price, canonical options) stays with ms3variants.
+The chunk outputs a color swatch and a size label. It does not show other option keys. Variant fields `_variant_id`, price, and canonical options stay with ms3variants.
 
-Include the chunk in `tpl.msCart` row template under the product name, or replace it with your own using the same branches.
+`tplMs3OptionsColorCart` is a **full** `tpl.msCart` stand-in (`$products`, qty, `cart/clean`). Assign it as the cart snippet `tpl`, do not include it inside a row. There is no row-only fragment in the package.
 
 ## mFilter and ms3variants
-
-Separate pages:
 
 - [mFilter](mfilter) — filter type `ms3oc`, Filter Set, row chunk
 - [ms3variants](ms3variants) — `variants[].swatches` in the catalog
 
 ## Custom swatch chunk
 
-Minimum contract for CSS and select:
+Minimum contract for CSS and select (color and pattern via `data-color` / `data-pattern`; `main.css` paints the square):
 
 ::: code-group
 
@@ -216,29 +217,25 @@ Minimum contract for CSS and select:
 <span data-ms3oc-swatch
       {if !$color && !$pattern}data-empty{/if}
       {if $pattern}data-has-pattern{/if}
-      title="{($title ?: $value) | escape}"
       data-option="{$option_key | escape}"
       data-value="{$value | escape}"
       data-color="{if $color}#{$color | escape}{/if}"
       data-pattern="{$pattern | escape}"
       data-ral="{$ral | escape}"
-      data-status="{$status ?: 'active'}"
-      style="{if $color}background-color:#{$color | escape};{/if}{if $pattern}background-image:url('{$pattern | escape}');background-size:cover;{/if}">
+      data-status="{$status ?: 'active'}">
 </span>
 ```
 
 ```modx
 <span data-ms3oc-swatch[[+color:empty=`[[+pattern:empty=` data-empty`]]`]][[+pattern:notempty=` data-has-pattern`]]
-      title="[[+title:default=`[[+value]]`]]"
       data-option="[[+option_key]]"
       data-value="[[+value]]"
       data-color="[[+color:notempty=`#[[+color]]`]]"
       data-pattern="[[+pattern]]"
       data-ral="[[+ral]]"
-      data-status="[[+status:default=`active`]]"
-      style="[[+color:notempty=`background-color:#[[+color]];`]][[+pattern:notempty=`background-image:url('[[+pattern]]');background-size:cover;`]]"></span>
+      data-status="[[+status:default=`active`]]"></span>
 ```
 
 :::
 
-You can change theme classes. Select JS and default CSS rely on `data-ms3oc-*`. Stock package chunks are Fenom.
+You can change theme classes. Select JS and default CSS read `data-ms3oc-*`. Stock package chunks are Fenom.

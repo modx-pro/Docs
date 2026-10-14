@@ -93,7 +93,7 @@ GET /assets/components/msearch/api.php?route=/search/suggest&query=те&form=abc
 
 Внутри чанка плейсхолдеры зависят от адаптера:
 
-- **`type = 'resource'`** (плеxодит через `ResourceAdapter`) — `pagetitle`, `longtitle`, `description`, `intro` и т. д.
+- **`type = 'resource'`** (проходит через `ResourceAdapter`) — `pagetitle`, `longtitle`, `description`, `intro` и т. д.
 - **`type = 'product'`** (через `MsProductAdapter`, при наличии miniShop3) — `price_display`, `old_price_display`, `thumb`, `article`, `has_discount`.
 
 ### Headless без сниппета
@@ -263,7 +263,7 @@ UI-слой `MSearchUI` добавляет автокомплит к форма�
 
 ### Защита от гонки
 
-При быстром вводе UI отбрасывает устаревшие ответы — каждый запрос получает порядковый номер (`requestSeq`), и при возврате сравнивается с текущим. Ответы более раннего запроса игнорируются, новый запрос отменения не делает — только consumer-side фильтрация.
+При быстром вводе UI отбрасывает устаревшие ответы — каждый запрос получает порядковый номер (`requestSeq`), и при возврате сравнивается с текущим. Ответы более раннего запроса игнорируются, новый запрос отмены не делает — только consumer-side фильтрация.
 
 ### Ручное создание
 

@@ -1,6 +1,7 @@
 ---
 title: ClickToCall
 description: Виджет звонка для мобильных устройств
+categories: notifications
 logo: https://modstore.pro/assets/extras/clicktocall/logo.png
 author: core01
 modstore: https://modstore.pro/packages/alerts-mailing/clicktocall
@@ -13,7 +14,7 @@ repository: https://github.com/core01/ClickToCall
 
 ## Особенности
 
-- Выводит виджет только для пользоваталей мобильных устройств (используется mobile-detect.js).
+- Выводит виджет только для пользователей мобильных устройств (используется mobile-detect.js).
 - Гибкая настройка времени отображения виджета по каждому дню.
 - Можно выключить используемую библиотеку mobile-detect.js в настройках, если Вы уже её используете на сайте.
 - Имеется возможность использовать собственные JS/CSS файлы.

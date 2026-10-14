@@ -105,7 +105,7 @@ The customer can cancel an order if its current status is in the allowed list (s
 | --- | --- | --- |
 | `{$id}` | int | Order ID |
 | `{$uuid}` | string | Order UUID (for URL) |
-| `{$num}` | string | Order number (MS-00015) |
+| `{$num}` | string | Order number: a date per `ms3_order_format_num` plus a separator and a counter, e.g. `2610/5` |
 | `{$createdon_formatted}` | string | Created date |
 | `{$cost_formatted}` | string | Order total |
 | `{$status_id}` | int | Status ID |

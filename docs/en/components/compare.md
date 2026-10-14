@@ -1,6 +1,7 @@
 ---
 title: Compare for MODX 3 - Documentation
 description: Compare component documentation — product comparison for MiniShop3 (MODX 3) by characteristics
+categories: catalog
 logo: https://modstore.pro/assets/extras/compare/logo.png
 author: createit-ru
 modstore: https://modstore.pro/packages/ecommerce/compare

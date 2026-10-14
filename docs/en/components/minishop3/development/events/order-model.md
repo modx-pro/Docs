@@ -19,12 +19,12 @@ Fired **before** saving the order object (xPDO `save()`).
 
 ### Parameters
 
-| Parameter | Type | Description | | |
-| --- | --- | --- | --- | --- |
-| `mode` | `string` | Mode: `new` or `upd` | | |
-| `object` | `msOrder` | Order object (MS2-style alias) | | |
-| `msOrder` | `msOrder` | Order object (MS3-style; same record) | | |
-| `cacheFlag` | `bool` \ | `int` \ | `null` | Cache flag passed to `save()` |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `mode` | `string` | Mode: `new` or `upd` |
+| `object` | `msOrder` | Order object (MS2-style alias) |
+| `msOrder` | `msOrder` | Order object (MS3-style; same record) |
+| `cacheFlag` | `bool` \| `int` \| `null` | Cache flag passed to `save()` |
 
 ### Example
 
@@ -78,12 +78,12 @@ Fired **after** successfully saving the order object.
 
 ### Parameters
 
-| Parameter | Type | Description | | |
-| --- | --- | --- | --- | --- |
-| `mode` | `string` | Mode: `new` or `upd` | | |
-| `object` | `msOrder` | Saved order object (MS2-style alias) | | |
-| `msOrder` | `msOrder` | Saved order object (MS3-style; same record) | | |
-| `cacheFlag` | `bool` \ | `int` \ | `null` | Cache flag passed to `save()` |
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `mode` | `string` | Mode: `new` or `upd` |
+| `object` | `msOrder` | Saved order object (MS2-style alias) |
+| `msOrder` | `msOrder` | Saved order object (MS3-style; same record) |
+| `cacheFlag` | `bool` \| `int` \| `null` | Cache flag passed to `save()` |
 
 ### Example
 

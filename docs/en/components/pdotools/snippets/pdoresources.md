@@ -30,7 +30,7 @@ These parameters define which resources appear in the generated list.
 | **&first** | `1` | Index of first output iteration. |
 | **&last** | Auto: total + first - 1 | Index of last output iteration. |
 | **&loadModels** | | Comma-separated list of components whose models to load for the query, e.g. `ms2gallery,msearch2`. |
-| **&tvFilters** | | TV filters with AND and OR. OR delimiter is in **&tvFiltersOrDelimiter**; conditions are grouped by OR first. Within a group use **&tvFiltersAndDelimiter**. Filter in a specific TV: `myTV==value`, or in any: `value`. Example: `filter2==one,filter1==bar%||filter1==foo`. Uses LIKE; % is wildcard. Search is on values stored in DB, not TV default values. |
+| **&tvFilters** | | TV filters with AND and OR. OR delimiter is in **&tvFiltersOrDelimiter**; conditions are grouped by OR first. Within a group use **&tvFiltersAndDelimiter**. Filter in a specific TV: `myTV==value`, or in any: `value`. Example: `filter2==one,filter1==bar%\|\|filter1==foo`. Uses LIKE; % is wildcard. Search is on values stored in DB, not TV default values. |
 | **&tvFiltersAndDelimiter** | `,` | Delimiter for AND conditions in **&tvFilters**. |
 | **&tvFiltersOrDelimiter** | `\|\|` | Delimiter for OR conditions in **&tvFilters**. |
 

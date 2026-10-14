@@ -7,6 +7,7 @@ modstore: https://modstore.pro/packages/integration/msmanagerordermap
 repository: https://github.com/webinmd/msManagerOrderMap
 
 dependencies: miniShop2
+categories: orders
 ---
 
 # msManagerOrderMap

@@ -1,6 +1,8 @@
 ---
 title: mFilter
 description: Фасетная фильтрация для MODX 3 с поддержкой SEO URL
+categories: catalog
+popular: true
 logo: https://modstore.pro/assets/extras/mfilter/logo.png
 author: biz87
 
@@ -79,6 +81,7 @@ items: [
       { text: 'Свой тип фильтра', link: 'cookbook/custom-filter-type' },
       { text: 'Фильтры на странице поиска', link: 'cookbook/search-results-integration' },
       { text: 'Синхронизация индекса фасетов', link: 'cookbook/facet-index-sync' },
+      { text: 'Посадочная страница под комбинацию фильтров', link: 'cookbook/landing-page' },
     ],
   },
   { text: 'История изменений', link: 'changelog/' },

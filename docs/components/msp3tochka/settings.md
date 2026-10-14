@@ -7,7 +7,7 @@ description: Ключи msp3Tochka, JWT, customerCode, песочница, ср�
 
 Установка и ключи: [Быстрый старт](quick-start).
 
-Ключ в MODX: `msp3tochka_<имя>`. JWT и `customerCode` можно положить в `msPayment.properties` (`jwt_token`, `token` или `secret`). Если properties пусты, пакет читает системные настройки.
+Ключ в MODX: `msp3tochka_<имя>`. JWT и `customerCode` можно положить в `msPayment.properties` (`jwt_token`, `token`, `secret` или `secret_key`). Если properties пусты, пакет читает системные настройки, затем устаревший `msptochka_jwt_token`. Та же цепочка у `send()`, вкладки и `webhook.php`.
 
 После смены настроек очистите кеш MODX. Иначе запросы к API идут со старыми значениями.
 
@@ -29,6 +29,19 @@ description: Ключи msp3Tochka, JWT, customerCode, песочница, ср�
 | `msp3tochka_webhook_verify_jwt` | bool | да | Проверять подпись уведомления банка. На бою оставьте Да |
 | `msp3tochka_webhook_jwk_url` | text | ключ банка | `https://enter.tochka.com/doc/openapi/static/keys/public` |
 | `msp3tochka_webhook_jwk_json` | textarea | пусто | JWK вручную, если URL недоступен |
-| `msp3tochka_debug` | bool | нет | Тело create и успешный webhook в лог MODX. На бою выключите |
+| `msp3tochka_debug` | bool | нет | Отладочные строки в лог MODX. На бою выключите |
 
 Хост при **`msp3tochka_test_mode`** = Да: `https://enter.tochka.com/sandbox/v2`. При значении Нет: `https://enter.tochka.com/uapi`.
+
+## Отладка и JWK
+
+При **`msp3tochka_debug`** = Да пакет пишет в лог MODX уровня DEBUG. В `error.log` эти строки не попадут, если уровень сайта выше:
+
+| Где | Поля в контексте |
+| --- | --- |
+| Создание ссылки | `order_id`, `paymentLinkId`, `two_stage` |
+| Успешный webhook | `attempt_id`, `status` |
+
+Точка входа `webhook.php` задаёт уровень лога ERROR. Отладочные строки webhook при включённом debug в `core/cache/logs/error.log` не попадут.
+
+Ключ с `msp3tochka_webhook_jwk_url` кешируется сутки в `core/cache/msp3tochka/tochka_webhook_jwk.json`. После смены ключа банка удалите файл или очистите кеш MODX. Значение `msp3tochka_webhook_jwk_json` кеш не использует.
