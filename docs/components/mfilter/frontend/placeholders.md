@@ -82,7 +82,7 @@ MODX-плейсхолдер `mfilter.something` доступен из шабло
 | `mfilter.seo.h1` | string | SEO H1 |
 | `mfilter.seo.description` | string | SEO meta description |
 | `mfilter.seo.canonical` | string | Canonical URL (при `noindex` указывает на страницу без фильтров) |
-| `mfilter.seo.noindex` | bool | Флаг noindex (см. [Системные настройки](../settings.md#seo-оптимизация)) |
+| `mfilter.seo.noindex` | bool | Флаг noindex (см. [Системные настройки](../settings.md#seo-optimizaciya)) |
 | `mfilter.seo.text` | string | Произвольный SEO-текст из SEO Templates |
 
 ### Прочее
