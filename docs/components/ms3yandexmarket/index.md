@@ -50,7 +50,7 @@ items: [
 
 # ms3YandexMarket
 
-Компонент пишет файл из товаров MiniShop3: YML для Яндекс Маркета или RSS 2.0 для Google. Площадка забирает файл по URL. Кабинет и Partner API компонент не вызывает. В менеджере пункт **Яндекс Маркет**.
+Компонент пишет файл из товаров MiniShop3: YML для Яндекс Маркета или RSS 2.0 для Google. Адрес файла вы задаёте в карточке прайса, площадка скачивает его сама. В менеджере пункт **Яндекс Маркет**.
 
 ## Требования
 
@@ -61,11 +61,9 @@ items: [
 | MiniShop3 | 1.13+ |
 | VueTools | 1.2+ (Vue 3.5, Pinia 3, PrimeVue 4) |
 
-По желанию: pdoTools для Fenom, [ms3Variants](/components/ms3variants/), [ms3Remains](/components/ms3remains/), Scheduler 1.9.
+По желанию: [ms3Variants](/components/ms3variants/), [ms3Remains](/components/ms3remains/), Scheduler 1.9.
 
 ## Установка
-
-<!-- MEDIA: screenshot-admin | must | Управление пакетами: провайдер modstore.pro и установка ms3YandexMarket | Тестовый стенд MODX 3: провайдер URL https://modstore.pro/extras/, пакет ms3YandexMarket установлен -->
 
 Пакет платный, transport зашифрован. Без провайдера установка падает с `Package provider not found`.
 
@@ -74,6 +72,8 @@ items: [
 3. Установите пакет **ms3YandexMarket** через **Управление пакетами** (в **Show Details** выберите провайдер **modstore.pro**).
 4. **Очистите кэш** MODX.
 
-Если коннектор отвечает `Requested processor not found`, в `core/config/ms3.routes.d/manager/` нет `50-ms3yandexmarket.php` или MiniShop3 его не читает.
+Установщик копирует маршруты в `core/config/ms3.routes.d/manager/50-ms3yandexmarket.php`. Каталог `core/config/` должен быть доступен на запись.
+
+Если коннектор отвечает `Route not found`, этого файла нет или MiniShop3 не смог его подключить. В журнале MODX ищите строку `[MiniShop3 Router] Failed to load routes file`.
 
 Дальше: [первый прайс-лист](/components/ms3yandexmarket/quick-start).

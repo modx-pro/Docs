@@ -33,8 +33,6 @@ description: Идентификатор предложения, порог ос�
 
 ## Идентификатор в XML
 
-<!-- MEDIA: screenshot-admin | must | Поле стратегии идентификатора offer (offer_id_strategy) и связанные параметры offer_settings в карточке прайса | На тестовом стенде открыть карточку прайса с tree_v2, показать выбор стратегии product_id / variant_id / product_id_variant_id -->
-
 Стратегия `offer_settings.offer_id_strategy` задаёт атрибут `id` у предложения. Неизвестная строка считается как `product_id_variant_id`.
 
 | Значение | Что пишется в `id` |
@@ -94,7 +92,5 @@ description: Идентификатор предложения, порог ос�
 У `pipeline:vendor` между MiniShop3 и системной настройкой ещё ключ `vendor_fallback` в `offer_settings`.
 
 ## Управляемые поля размещения
-
-<!-- MEDIA: screenshot-admin | nice | Список управляемых полей managed_fields при назначении файла placement | На тестовом стенде создать или открыть прайс с feed_purpose placement, показать чекбоксы полей в карточке -->
 
 При `placement` карточка показывает список: `price`, `oldprice`, `stock`, `available`, `delivery`, `pickup`, `store`, `url`, `categoryId`. Пустой список сохранить нельзя. Форма подставляет все девять ключей. Запрос с пустым списком отвечает 422, код `invalid_managed_fields`. Непустой список оставляет в `offer` только имена из списка. Имя `available` из списка пишется атрибутом. Атрибут `id` пишется всегда.

@@ -21,7 +21,7 @@ description: Режимы записи YML, Scheduler и cron для ms3YandexMa
 
 ## Планировщик
 
-<!-- MEDIA: screenshot-admin | must | Вкладка «Диагностика»: строки «Планировщик» и «Задача планировщика» в состоянии «ОК» и «Зарегистрирована» | На тестовом стенде с установленным Scheduler и ms3yandexmarket_scheduler_enabled = 1 открыть менеджер «Яндекс Маркет» → «Диагностика» -->
+![Вкладка «Диагностика» ms3YandexMarket](/components/ms3yandexmarket/screenshots/diagnostics.png)
 
 Если установлен Scheduler и `ms3yandexmarket_scheduler_enabled` не равна `0`, открытие менеджера регистрирует задачу `ms3yandexmarket_generate`. Повтор каждый час.
 
@@ -66,7 +66,7 @@ flowchart TD
 
 ## Что происходит с файлом
 
-<!-- MEDIA: screenshot-front | must | Готовый YML прайса в браузере по публичному URL файла (фрагмент shop, categories, offer) | На тестовом стенде после успешной генерации открыть URL из карточки прайса, синтетические товары и названия магазина -->
+![Готовый YML прайса ms3YandexMarket](/components/ms3yandexmarket/screenshots/file.png)
 
 Генерация берёт блокировку на прайс, пишет во временный файл и подменяет итоговый только после завершения. Имя файла всегда `pricelist-{id}.xml`. Каталог задаёт настройка `ms3yandexmarket_files_path`. Он должен быть доступен для записи. Проверка каталога на **Диагностике**. Успешный прогон пишет путь и URL в карточку прайса.
 

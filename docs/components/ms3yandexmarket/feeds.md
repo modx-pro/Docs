@@ -11,8 +11,6 @@ description: Что попадает в YML Яндекс Маркета и в RS
 
 ## Яндекс Маркет, каталог
 
-<!-- MEDIA: output | must | Фрагмент YML: yml_catalog, shop с name и url, блок categories и один offer с id, price, url | На тестовом стенде назначение catalog, синтетические названия магазина и товара, без данных заказчиков -->
-
 Назначение `catalog` или `items` создаёт один и тот же набор тегов. Файл пишется из дерева полей, не из JSON-карты полей.
 
 Блок `<categories>` наполняется только у `catalog`. У `items` вкладка **Категории** есть, но выбранные разделы в YML не пишутся. Пустой список тег `categories` пропускает.
@@ -46,8 +44,6 @@ description: Что попадает в YML Яндекс Маркета и в RS
 
 ## Яндекс Маркет, размещение
 
-<!-- MEDIA: output | must | Фрагмент YML размещения: shop без categories, offer только с полями из managed_fields (например url, price, available как атрибут) | На тестовом стенде feed_purpose placement, непустой managed_fields, синтетический товар -->
-
 У назначения `placement` вкладки **Категории** нет, контейнера `categories` в наборе нет.
 
 На **Магазине** предупреждение: файл размещения заменяет условия в кабинете Маркета. Список **Управляемые поля** пишется в `managed_fields`: `price`, `oldprice`, `stock`, `available`, `delivery`, `pickup`, `store`, `url`, `categoryId`. Пустой список сохранить нельзя. Форма подставляет все девять ключей и пишет, что нужно хотя бы одно поле. Запрос с пустым списком отвечает 422, код `invalid_managed_fields`. Непустой список оставляет в `offer` только имена из списка. Имя `available` из списка пишется атрибутом. Атрибут `id` пишется всегда.
@@ -67,8 +63,6 @@ description: Что попадает в YML Яндекс Маркета и в RS
 При `skip` предложение без остатка или с остатком не выше `min_stock` в файл не попадает. Подробнее: [параметры прайса](/components/ms3yandexmarket/pricelist).
 
 ## Google RSS 2.0
-
-<!-- MEDIA: output | must | Фрагмент RSS: channel с title, link, description и lastBuildDate; один item с g:id, g:title, g:link, g:price вида 199.00 RUB, g:availability | На тестовом стенде площадка google.rss20 после успешной генерации, синтетические значения -->
 
 У площадки `google.rss20` назначение не различается: в файл всегда пишется лента товаров.
 
@@ -100,8 +94,6 @@ flowchart TD
 Карта полей по умолчанию ещё содержит `oldprice`, `currencyId`, `categoryId`, `vendorCode`, `country_of_origin`, `vendor`. В RSS-элемент они не выводятся.
 
 ## Когда Google пропускает товар
-
-<!-- MEDIA: output | must | Строки журнала запуска с префиксом Offer resolver: и текстами g:title is required, g:link is required или g:price must be greater than 0 | На тестовом стенде google.rss20 с товаром без названия, без uri или с нулевой ценой, после «Сгенерировать» -->
 
 Пустые название, адрес или цена убирают строку из файла и пишут ошибку журнала. Внутри сообщения: `g:title is required`, `g:link is required`, `g:price is required` или `g:price must be greater than 0`. В журнале строка начинается с `Offer resolver: `. Статус запуска становится `error`, отметка «нужно сгенерировать» не снимается. На пути YML из дерева этих сообщений нет.
 
