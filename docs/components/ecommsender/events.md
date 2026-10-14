@@ -28,8 +28,9 @@ if ($event === 'add') {
 ## `OnSendEventByMeasurementProtocol`
 
 Вызывается перед серверной отправкой по Measurement Protocol. Параметры:
-`$commerceEventName`, `$object`. Данные запроса — `$object->outputProtocol`;
-пустой массив отменяет отправку.
+`$commerceEventName`, `$object`. Данные запроса — `$object->outputProtocol`: объект
+параметров или, с версии 1.3.0, список хитов ([подробнее](index#measurement-protocol-несколько-хитов)).
+Пустой массив отменяет отправку.
 
 ```php
 $object->outputProtocol = [];
