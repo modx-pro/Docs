@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import matter from 'gray-matter'
 
 const DOCS = join(dirname(fileURLToPath(import.meta.url)), '../../docs')
+const MIN = 120
 const MAX = 160
 
 function decode(text: string): string {
@@ -31,26 +32,55 @@ function plain(text: string): string {
     .trim()
 }
 
-function clip(text: string): string {
-  if (text.length <= MAX) return text
+function clipWords(text: string): string {
   const slice = text.slice(0, MAX + 1)
-  const sentence = Math.max(slice.lastIndexOf('. '), slice.lastIndexOf('! '), slice.lastIndexOf('? '))
-  if (sentence > 40) return text.slice(0, sentence + 1)
   const space = slice.lastIndexOf(' ')
-  return space > 40 ? text.slice(0, space) : text.slice(0, MAX)
+  let cut = (space > 40 ? text.slice(0, space) : text.slice(0, MAX)).replace(/[,:;]\s*$/, '').trimEnd()
+  const bits = cut.split(' ')
+  while (bits.length > 4 && bits[bits.length - 1].length <= 2) bits.pop()
+  cut = bits.join(' ')
+  return cut
 }
 
-function firstParagraph(content: string): string {
+export function clipSnippet(text: string): string {
+  const value = text.replace(/\s+/g, ' ').trim()
+  if (value.length <= MAX) return value
+  const parts = value.split(/(?<=[.!?])\s+/)
+  let out = ''
+  for (const part of parts) {
+    const next = out ? `${out} ${part}` : part
+    if (next.length > MAX) {
+      if (out) return out
+      return clipWords(part)
+    }
+    out = next
+  }
+  return out
+}
+
+function words(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length
+}
+
+function proseBlocks(content: string): string[] {
   const lines = content.split(/\r?\n/)
   let inFence = false
   let inComment = false
-  const buf: string[] = []
+  const blocks: string[] = []
+  let buf: string[] = []
+
+  const flush = () => {
+    if (!buf.length) return
+    const text = plain(buf.join(' '))
+    if (text) blocks.push(text)
+    buf = []
+  }
 
   for (const line of lines) {
     const trimmed = line.trim()
     if (trimmed.startsWith('```')) {
       inFence = !inFence
-      if (buf.length) break
+      flush()
       continue
     }
     if (inFence) continue
@@ -63,7 +93,7 @@ function firstParagraph(content: string): string {
       continue
     }
     if (!trimmed) {
-      if (buf.length) break
+      flush()
       continue
     }
     if (
@@ -72,20 +102,63 @@ function firstParagraph(content: string): string {
       || trimmed.startsWith('|')
       || trimmed.startsWith('<')
       || trimmed.startsWith('{')
-    ) continue
+    ) {
+      flush()
+      continue
+    }
     if (/^[-*+]\s/.test(trimmed) || /^\d+\.\s/.test(trimmed)) {
-      if (!buf.length) buf.push(trimmed.replace(/^([-*+]|\d+\.)\s+/, ''))
-      break
+      flush()
+      const item = plain(trimmed.replace(/^([-*+]|\d+\.)\s+/, ''))
+      if (item) blocks.push(item)
+      continue
     }
     buf.push(trimmed.replace(/^>\s?/, ''))
   }
-
-  return buf.join(' ')
+  flush()
+  return blocks
 }
 
-export function pageExcerpt(relativePath: string): string {
+function merge(base: string, extra: string): string {
+  const left = base.trim()
+  const right = extra.trim()
+  if (!left) return right
+  if (!right) return left
+  const leftFold = left.toLowerCase()
+  const rightFold = right.toLowerCase()
+  if (leftFold.includes(rightFold)) return left
+  if (rightFold.includes(leftFold)) return right
+  return `${left.replace(/[.!?…]+$/, '')}. ${right}`
+}
+
+export function pageProse(relativePath: string): string {
   const file = join(DOCS, relativePath)
   if (!existsSync(file)) return ''
   const { content } = matter(readFileSync(file, 'utf8'))
-  return clip(plain(firstParagraph(content)))
+  let text = ''
+  for (const block of proseBlocks(content)) {
+    text = merge(text, block)
+    if (text.length >= MAX) break
+  }
+  return clipSnippet(text)
+}
+
+function usable(text: string | undefined, title: string): string {
+  if (!text) return ''
+  const value = text.trim()
+  if (!value || words(value) <= 1) return ''
+  if (value.toLowerCase() === title.trim().toLowerCase()) return ''
+  return value
+}
+
+export function snippetDescription(
+  title: string,
+  own: string | undefined,
+  prose: string,
+  componentDescription?: string,
+): string {
+  let text = usable(own, title)
+  if (text.length < MIN) text = merge(text, prose)
+  const component = usable(componentDescription, title)
+  if (text.length < MIN && component) text = merge(text, component)
+  return clipSnippet(text)
 }

@@ -50,7 +50,7 @@ export function pageDescription(pageData: PageData): string {
   if (isHome(pageData.relativePath)) {
     return isEnglish(pageData.relativePath) ? EN_DESCRIPTION : RU_DESCRIPTION
   }
-  return pageData.title
+  return ''
 }
 
 function pairPath(relativePath: string): string | undefined {
