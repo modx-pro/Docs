@@ -33,7 +33,7 @@ description: Системные настройки и права ms3YandexMarket
 | `ms3yandexmarket_edit_raw_xml` | Тип тега `19` (`RAW_XML`) |
 | `ms3yandexmarket_edit_fenom` | Непустой обработчик Fenom у тега или атрибута |
 
-Страницу компонента открывают `ms3yandexmarket_view`, `ms3yandexmarket_manage` или право MODX `settings`. Пункт меню требует только `ms3yandexmarket_view`. С одним правом `settings` процессоры отвечают 403. Системные настройки MODX по-прежнему открывает право `settings` ядра.
+Страницу компонента открывают `ms3yandexmarket_view`, `ms3yandexmarket_manage` или право MODX `settings`. Пункт меню требует только `ms3yandexmarket_view`. С одним правом `settings` процессоры отвечают 403. Системные настройки MODX открывает право `settings` ядра.
 
 ## Свой XML и Fenom
 
@@ -50,7 +50,7 @@ description: Системные настройки и права ms3YandexMarket
 | `ms3yandexmarket_price_min` | не задана | Нижняя граница `pipeline:price`, если в прайсе нет `price_min` |
 | `ms3yandexmarket_price_max` | не задана | Верхняя граница `pipeline:price`, если в прайсе нет `price_max` |
 | `ms3yandexmarket_price_multiplier` | `1` | Множитель `pipeline:price`, если в прайсе нет `price_multiplier` |
-| `ms3yandexmarket_core_path` | `core/components/ms3yandexmarket/` | Каталог ядра, если классы компонента ещё не загружены |
+| `ms3yandexmarket_core_path` | абсолютный каталог ядра MODX и `components/ms3yandexmarket/` | Каталог классов, если они ещё не загружены |
 
 ## Каталог файлов без настройки
 
@@ -69,4 +69,4 @@ description: Системные настройки и права ms3YandexMarket
 
 Состав тегов: [состав файла](/components/ms3yandexmarket/feeds).
 
-Тип оффера `simple` или `vendor.model` задают в карточке прайса. См. [параметры прайса](/components/ms3yandexmarket/pricelist).
+Тип оффера `simple` или `vendor.model` задайте в карточке прайса. См. [параметры прайса](/components/ms3yandexmarket/pricelist).

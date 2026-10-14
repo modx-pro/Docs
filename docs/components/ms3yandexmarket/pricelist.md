@@ -14,10 +14,10 @@ description: Идентификатор предложения, порог ос�
 | Поле | Значения |
 | --- | --- |
 | Площадка | `yandex.market`, `google.rss20`. Пустая строка при создании становится `yandex.market` |
-| Назначение | `catalog`, `placement`, `items`. Неизвестная строка становится `catalog` |
+| Назначение | В списке формы `catalog` и `placement`. Значение `items` выбрать нельзя. Если оно уже в базе, генерация его оставляет. Неизвестная строка становится `catalog` |
 | Тип оффера | `simple`, `vendor.model`. Для YML из дерева атрибут `type` не пишется. Для RSS `vendor.model` требует производителя и артикул, иначе строка пропускается |
 | Источник предложений | `product`, `variant`, `combination`, `automatic` |
-| Источник остатков | `minishop3`, `ms3variants`, `ms3remains`, `automatic` |
+| Источник остатков | `minishop3`, `ms3variants`, `ms3remains`, `automatic`, `custom` |
 | Режим и интервал | См. [генерацию](/components/ms3yandexmarket/generation) |
 
 Новый прайс кладёт в `shop_settings`:
@@ -47,7 +47,7 @@ description: Идентификатор предложения, порог ос�
 
 Артикул и результат шаблона передаются и при записи YML из дерева, и в RSS. Шаблон считается через Fenom. Нет артикула при `variant_sku` или пустой результат при `fenom`: предложение в файл не попадает. В журнал пишется ошибка.
 
-У `variant_id` и `product_id_variant_id` без варианта пишется id товара. Если id варианта известен, а стратегия не сошлась, пишется `товар-вариант`.
+У `product_id_variant_id` без варианта пишется id товара. Если id варианта известен, а стратегия не сошлась, пишется `товар-вариант`.
 
 У строки с `offer_row_source` = `combination` и непустыми опциями к любому `id` дописывается `-` и 12 символов SHA-1 от отсортированных опций. Так и в YML из дерева, и в RSS. Без опций или не у комбинации суффикса нет.
 
@@ -55,7 +55,10 @@ description: Идентификатор предложения, порог ос�
 
 Запись YML из дерева (`catalog`, `items`, `placement`) и RSS применяют порог. Нет ключа поведения: тоже `skip`.
 
-`skip` и `exclude` убирают предложение, если остатка нет или он не выше `min_stock`. `include` и `out` предложение оставляют.
+| Поведение | Предложение |
+| --- | --- |
+| `skip`, `exclude` | Убирают, если остатка нет или он не выше `min_stock` |
+| `include`, `out` | Оставляют |
 
 Строка `g:availability` пишется только у оставшегося предложения RSS. Нет числа остатка: `in stock`. Число выше `min_stock`: `in stock`. Иначе `out of stock`.
 
@@ -82,7 +85,13 @@ description: Идентификатор предложения, порог ос�
 
 ## Тип `vendor.model`
 
-Порядок поиска производителя: `vendor_name` в `offer_settings`, `msVendor` по `vendor_id`, `ms3yandexmarket_vendor_fallback`. У `pipeline:vendor` между MiniShop3 и системной настройкой ещё ключ `vendor_fallback` в `offer_settings`.
+Порядок поиска производителя:
+
+1. `vendor_name` в `offer_settings`
+2. `msVendor` по `vendor_id`
+3. `ms3yandexmarket_vendor_fallback`
+
+У `pipeline:vendor` между MiniShop3 и системной настройкой ещё ключ `vendor_fallback` в `offer_settings`.
 
 ## Управляемые поля размещения
 
