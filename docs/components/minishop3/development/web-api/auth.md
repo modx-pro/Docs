@@ -5,9 +5,18 @@ description: "Токен MiniShop3: cookie, Bearer, auto-mint, login, me, refres
 
 # Авторизация
 
-Web API не использует сессию админки MODX. Клиент передаёт API-токен покупателя — гостевой или авторизованный.
+Web API не использует сессию админки MODX. Клиент передаёт API-токен покупателя: гостевой или авторизованный.
 
 ## Где сервер ищет токен
+
+```mermaid
+flowchart TD
+  bearer["Authorization Bearer"] --> header["Заголовок MS3TOKEN"]
+  header --> cookie["Cookie ms3_token"]
+  cookie --> request["REQUEST ms3_token после middleware"]
+  request --> session["SESSION ms3 customer_token"]
+  query["Query ms3_token"] --> drop["Не credential, параметр снимается"]
+```
 
 Порядок источников в `TokenService::resolveTokenFromRequest()`:
 
@@ -17,7 +26,7 @@ Web API не использует сессию админки MODX. Клиент
 4. `$_REQUEST['ms3_token']` (после middleware, которое подставляет cookie в запрос)
 5. `$_SESSION['ms3']['customer_token']`
 
-Query-параметры `token` и `ms3_token` сервер отбрасывает: как credentials они больше не принимаются. Не копируйте старые примеры с `?ms3_token=` в URL.
+Query `ms3_token` сервер не принимает как credential и снимает его из query. Параметр `token` в query credentials не является, но и не вычищается: им пользуется `GET /customer/email/verify`. Не копируйте старые примеры с `?ms3_token=` в URL.
 
 ## Cookie vs Bearer
 
@@ -26,17 +35,32 @@ Query-параметры `token` и `ms3_token` сервер отбрасыва�
 | Same-site фронтенд | cookie `ms3_token` + `credentials: 'include'` | Браузер на том же сайте |
 | Nuxt BFF / mobile | `Authorization: Bearer` | Другой origin или серверный прокси |
 
-Не храните API-токен в `localStorage`: с 1.6 основной способ для браузера — httpOnly cookie. Фронтенд на том же origin: [Frontend JavaScript](/components/minishop3/development/frontend-js).
+Не храните API-токен в `localStorage`. Для браузера на том же origin основной способ: httpOnly cookie `ms3_token`. Фронтенд: [Frontend JavaScript](/components/minishop3/development/frontend-js).
 
 Cookie наследует параметры сессии MODX: `session_cookie_domain`, `session_cookie_path`, `session_cookie_secure`, `session_cookie_samesite`.
 
 ## Auto-mint
+
+```mermaid
+flowchart TD
+  route{"Группа роута"}
+  route -->|каталог, health, login| none["Middleware нет"]
+  route -->|cart, order, часть customer| mint{"Токен есть?"}
+  mint -->|нет| guest["Гостевой токен и cookie"]
+  mint -->|да| handler["Обработчик"]
+  guest --> handler
+  route -->|token/get и logout| optional["publicRoutes: без mint и без 401"]
+```
 
 На роутах с `TokenMiddleware` (корзина, заказ, часть customer) без валидного токена сервер создаёт гостевой токен и ставит cookie. У каталога и `/health` этого middleware нет.
 
 У `GET /customer/token/get` и `POST /customer/logout` middleware работает в режиме optional: их пути указаны в `publicRoutes`. Без токена сервер не создаёт гостевой токен и не отвечает 401.
 
 ## GET /customer/token/get
+
+| Ключ | Установщик | Если строки нет в базе |
+| --- | --- | --- |
+| `ms3_customer_token_ttl` | 86400 секунд | fallback кода 86400 |
 
 Публичный. Возвращает текущий или новый токен и ставит httpOnly cookie.
 
@@ -51,7 +75,7 @@ Cookie наследует параметры сессии MODX: `session_cookie_
 }
 ```
 
-`lifetime` — миллисекунды до истечения срока: секунды из `ms3_customer_token_ttl`, умноженные на 1000. Поле `expires` есть во внутреннем генераторе, но в `data` не отдаётся.
+`lifetime` в миллисекундах до истечения срока: секунды из `ms3_customer_token_ttl`, умноженные на 1000. Поле `expires` есть во внутреннем генераторе, но в `data` не отдаётся.
 
 Значение по умолчанию у `ms3_customer_token_ttl` — **86400** секунд (24 часа). Его создаёт транспортный пакет, и это же значение подставляет код, если настройки в базе нет.
 
@@ -61,19 +85,28 @@ Cookie наследует параметры сессии MODX: `session_cookie_
 
 ## Login / register
 
-`POST /customer/login` и `POST /customer/register` работают без TokenMiddleware. Тело JSON: `email`, `password` (+ поля регистрации).
+`POST /customer/login` и `POST /customer/register` работают без TokenMiddleware.
 
-После успеха сервер ротирует токен (защита от фиксации сессии): старый гостевой отзывается, черновик корзины переносится на сессию покупателя, новый токен уходит в cookie.
+| Метод | Тело |
+| --- | --- |
+| `POST /customer/login` | `email`, `password` |
+| `POST /customer/register` | `email`, `password`, `first_name`, `last_name`, `phone`, `privacy_accepted` (bool) |
+| `POST /customer/forgot-password` | `email` |
+| `POST /customer/reset-password` | `token`, `password`, `password_confirm` |
 
-Чтобы при headless-входе корзина привязалась к покупателю, передайте текущий гостевой токен — через Bearer или cookie — до вызова.
+IP-лимит входа зашит в процессор: 5 попыток за 300 секунд. Настройки `ms3_customer_max_login_attempts` и `ms3_customer_block_duration` он не читает ([баг #902](https://github.com/modx-pro/MiniShop3/issues/902)). Блокировка учётки эти настройки читает. Если строки настройки нет в базе, код берёт длительность блокировки 3600 секунд. Установщик пишет 300 ([баг #898](https://github.com/modx-pro/MiniShop3/issues/898)).
+
+После успеха сервер ротирует токен: отзывает старый гостевой и переносит черновик корзины на сессию покупателя. Новый токен уходит в cookie.
+
+Чтобы при headless-входе корзина привязалась к покупателю, передайте текущий гостевой токен (Bearer или cookie) до вызова.
 
 ## GET /customer/me
 
-`TokenMiddleware` + auto-mint. Ответ строится из текущего токена: `authenticated`, `customer` (или `null`), сведения о токене (`expires_at`, `customer_id`). Невалидный токен → 401.
+`TokenMiddleware` и auto-mint. Для гостя ответ успешный: `authenticated: false`, `customer: null`. Невалидный токен даёт 401.
 
 ## POST /customer/token/refresh
 
-Ротация: нужен валидный токен. При успехе возвращает новый токен и метаданные (`expires_at`, `customer_id`).
+Ротация валидного токена, в том числе гостевого. При успехе возвращает новый токен и метаданные (`expires_at`, `customer_id`).
 
 ## CORS и credentials
 
