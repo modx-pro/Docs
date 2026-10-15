@@ -19,6 +19,12 @@ Web API MiniShop3 (`api.php`) обслуживает фронтенд и headles
 
 ## Документация
 
+```mermaid
+flowchart LR
+  store[Витрина и headless] --> web["api.php /api/v1"]
+  mgr[Vue-админка] --> man["connector.php /api/mgr"]
+```
+
 | Раздел | Содержание |
 | --- | --- |
 | [Обзор](web-api/) | Формат ответа, middleware, базовый URL |

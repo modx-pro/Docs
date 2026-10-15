@@ -47,6 +47,8 @@ $customer = $modx->getObject(msCustomer::class, ['email' => $email]);
 
 ## Файл схемы
 
+Схема базы данных задана в XML:
+
 ```
 core/components/minishop3/schema/minishop3.mysql.schema.xml
 ```
@@ -148,11 +150,11 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | Поле | Тип | Описание |
 | --- | --- | --- |
 | `id` | int | ID группы |
-| `name` | varchar(191) | Название группы |
+| `name` | varchar(255) | Название группы |
 | `user_group_id` | int | ID группы пользователей MODX (принципал для modAccessResourceGroup) |
 | `active` | tinyint(1) | Активна |
-| `created_at` | datetime | Дата создания |
-| `updated_at` | datetime | Дата обновления |
+| `created_at` | timestamp | Дата создания |
+| `updated_at` | timestamp | Дата обновления |
 
 #### msCustomer — основные поля
 
@@ -161,7 +163,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `id` | int | ID покупателя |
 | `user_id` | int | ID связанного modUser (опционально) |
 | `first_name` | varchar(191) | Имя |
-| `last_name` | varchar(191) | Фамилия |
+| `last_name` | varchar(191) | Фамилия. В схеме индекс помечен уникальным, см. [#905](https://github.com/modx-pro/MiniShop3/issues/905) |
 | `phone` | varchar(50) | Телефон |
 | `email` | varchar(191) | Email |
 | `password` | varchar(255) | Хеш пароля |
@@ -291,7 +293,7 @@ $orderProduct->fromArray([
     'price' => $price,
     'count' => $count,
     'cost' => $price * $count,
-    'options' => json_encode($options),
+    'options' => $options,
 ]);
 $orderProduct->save();
 ```
@@ -374,11 +376,13 @@ foreach ($modx->getIterator(msProduct::class, $criteria) as $product) {
 // src/Model/msProductData.php
 class msProductData extends xPDOSimpleObject
 {
-    public function getPrice(array $data = []): float
+    public function getPrice($data = [])
     {
-        // Делегирование в сервис форматирования
-        $ms3 = $this->xpdo->services->get('ms3');
-        return $ms3->format->price($this->get('price'));
+        if (empty($data)) {
+            $data = $this->toArray();
+        }
+
+        return $this->getProductDataService()->getModifiedPrice($this, $data);
     }
 }
 ```
@@ -386,15 +390,15 @@ class msProductData extends xPDOSimpleObject
 ## Регенерация моделей
 
 ::: warning Модели создаются вручную
-В MiniShop3 модели НЕ генерируются автоматически из XML-схемы через `buildModel()`. Они создаются и поддерживаются вручную в директории `src/Model/`.
+В MiniShop3 модели не генерируются автоматически из XML-схемы через `buildModel()`. Они создаются и поддерживаются вручную в директории `src/Model/`.
 
 Это позволяет:
 
-- Добавлять свои методы в модели
-- Использовать полную типизацию PHP 8
-- Иметь полный контроль над кодом моделей
+- добавлять свои методы в модели;
+- использовать полную типизацию PHP 8;
+- иметь полный контроль над кодом моделей.
 
-**Важно:** Не запускайте `buildModel()` — это перезапишет методы, добавленные вручную.
+Не запускайте `buildModel()`: это перезапишет методы, добавленные вручную.
 :::
 
 ### Структура файлов модели
@@ -453,6 +457,7 @@ class msProduct extends \MiniShop3\Model\msProduct
 core/components/minishop3/migrations/
 ├── 20251020000000_initial_schema.php
 ├── 20251021000000_seed_page_sections.php
+├── 20251022000000_seed_product_fields.php
 ├── 20251023000000_seed_order_statuses.php
 └── ...
 ```

@@ -88,7 +88,13 @@ $controller->addHtml('
 В этот момент `MS3OrderTabsRegistry` ещё не существует — необходимо создать заглушку с очередью. Vue-модуль при загрузке подхватит `pendingTabs` из заглушки.
 :::
 
-<!-- MEDIA: diagram | must | Порядок загрузки на странице заказа по шагам: 1) на событии `msOnManagerCustomCssJs` плагин выводит свой скрипт; 2) скрипт выполняется до `order.min.js`, реестра ещё нет, поэтому скрипт создаёт заглушку, и `register()` кладёт вкладку в `pendingTabs`; 3) загружается `order.min.js`, создаёт настоящий реестр и подхватывает очередь; 4) очередь пуста, вкладки приняты. Только шаги, названные в тексте раздела. | Нарисовать по тексту предупреждения «Порядок загрузки»; имена из кода не переводить; две версии (русская и английская) из одного источника. -->
+```mermaid
+flowchart LR
+  plug["msOnManagerCustomCssJs"] --> early["Скрипт до order.min.js"]
+  early --> stub["Заглушка, register пишет в pendingTabs"]
+  stub --> vue["order.min.js забирает очередь"]
+  vue --> done["Очередь пуста, вкладки приняты"]
+```
 
 ### Заглушка с очередью {#registry-stub}
 
@@ -351,4 +357,15 @@ console.log(window.MS3OrderTabsRegistry)
 console.log(window.MS3OrderTabsRegistry.pendingTabs)
 ```
 
-<!-- MEDIA: output | must | Что пишет консоль браузера, когда плагин с заглушкой регистрирует отклонённые вкладки: по одной строке на каждый случай из списка (нет `key` или `title`; ключ из зарезервированных; повторный ключ; нет `component` при `type: 'vue'`; нет `xtype` при `type: 'extjs'`) с пометкой `console.error` или `console.warn`. Рядом — вывод `console.log(window.MS3OrderTabsRegistry)` на загруженной странице заказа. | На стенде: временный плагин на событии `msOnManagerCustomCssJs` с заглушкой из страницы и несколькими ошибочными вызовами `register()`, открыть заказ, скопировать строки из консоли; вывод реестра снять, оставив одну верную вкладку. Вручную из консоли не снимать: после загрузки страницы префикс сообщений другой. Плагин после съёмки удалить. -->
+Разбор очереди из заглушки пишет так:
+
+```text
+console.error [OrderTabsRegistry] Tab must have key and title {…}
+console.error [OrderTabsRegistry] Tab key "info" is reserved {key: "info", …}
+console.error [OrderTabsRegistry] Unsupported tab type "custom" (use vue or extjs) {type: "custom", …}
+console.error [OrderTabsRegistry] Vue tab requires component (component name or definition) {type: "vue", …}
+console.error [OrderTabsRegistry] ExtJS tab requires xtype {type: "extjs", …}
+console.warn [OrderTabsRegistry] Tab "tracking" already registered
+```
+
+На уже открытой странице те же отказы идут с префиксом `[OrderView]`. После загрузки с одной принятой вкладкой `pendingTabs` равен `[]`.
