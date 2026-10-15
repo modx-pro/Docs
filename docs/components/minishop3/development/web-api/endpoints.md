@@ -13,7 +13,7 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | --- | --- |
 | нет | `TokenMiddleware` на роуте нет |
 | auto-mint | Middleware есть: без валидного токена сервер создаёт гостевой |
-| optional | Middleware есть, путь в `publicRoutes`: без токена не mint и не 401 |
+| optional | Middleware есть, путь в `publicRoutes`: без токена сервер не создаёт гостевой токен и не отвечает 401 |
 
 Тела запросов и ответы: [auth](auth), [catalog](catalog), [cart](cart), [checkout](checkout), [customer](customer).
 
@@ -74,7 +74,9 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | `GET` | `/customer/orders/{id}` | auto-mint | Карточка заказа |
 | `POST` | `/customer/orders/{id}/cancel` | auto-mint | Отмена |
 
-ЛК-эндпоинты с auto-mint требуют покупателя в токене: иначе контроллер вернёт unauthorized / business error. См. [Клиент](customer).
+ЛК с auto-mint требует покупателя в токене у адресов, профиля, `customer/add`, повторной отправки письма и заказов ЛК.
+
+`GET /customer/me` и `POST /customer/token/refresh` для гостя успешны. У `me` будет `authenticated: false` и `customer: null`. См. [Клиент](customer).
 
 ## Product (публичный)
 
@@ -101,7 +103,7 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 | --- | --- | --- | --- |
 | `GET` | `/delivery/get/{id}` | нет | Способ доставки |
 | `GET` | `/delivery/list` | нет | Активные доставки |
-| `POST` | `/delivery/webhook/{delivery_id}` | нет | Webhook доставки (подпись handler’а; при `ms3_shipment_enabled=0` → 404) |
+| `POST` | `/delivery/webhook/{delivery_id}` | нет | Webhook доставки (подпись `handler`, при `ms3_shipment_enabled=0` → 404) |
 | `GET` | `/payment/get/{id}` | нет | Способ оплаты |
 | `GET` | `/payment/list` | нет | Активные оплаты |
 | `POST` | `/payment/webhook/{payment_method_id}` | нет | Webhook оплаты (`PaymentWebhookHandlerInterface`) |
@@ -110,6 +112,6 @@ description: "Полная таблица Web API MiniShop3 = config/routes/web.
 
 | Метод | Путь | Токен | Назначение |
 | --- | --- | --- | --- |
-| `GET` | `/health` | нет | Статус API |
+| `GET` | `/health` | нет | `status`, `version` (`ms3_version`, иначе `1.0.0`), `timestamp`, `api: web` |
 
 Программное создание заказа из PHP (cron/extra) это не Web HTTP: [ProgrammaticOrderService](/components/minishop3/development/backend-api/order#programmnoe-sozdanie-zakazaprogrammaticorderservice).

@@ -5,7 +5,7 @@ description: "Публичный product и category API MiniShop3 для headle
 
 # Каталог
 
-Публичные эндпоинты, API-токен не нужен. Набор данных тот же, что у фронтенда с серверной отрисовкой (SSR).
+Публичные эндпоинты, API-токен не нужен. Видимость по группам ресурсов общая со сниппетом каталога. Состав JSON задаёт `ProductCatalogService`, а не pdoFetch сниппета.
 
 ## Product
 
@@ -17,29 +17,44 @@ description: "Публичный product и category API MiniShop3 для headle
 | `GET` | `/product/filters` | Фасеты (те же фильтры, что у `list`) |
 | `GET` | `/product/{id}/images` | Галерея |
 
-Параметры запроса для `get` и resolve: `context`, `include_images` (0\|1, по умолчанию 0), `include_seo` (по умолчанию 1).
+Параметры `get` и resolve: `context`, `include_images` (0\|1, по умолчанию 0), `include_seo` (по умолчанию 1).
 
-Основные параметры запроса для `list`:
+Основные параметры `list`:
 
 | Параметр | Смысл |
 | --- | --- |
-| `parent` / `category` | ID категории (оставлен для совместимости; игнорируется, если задан `parents`) |
+| `parent` / `category` | ID категории. Игнорируется, если задан `parents`. Оставлен для совместимости |
 | `parents` | CSV / массив ID категорий (OR + members) |
-| `nested` | 0\|1 — раскрыть дерево при `parents` |
+| `nested` | 0\|1, раскрыть дерево при `parents` |
 | `price_min`, `price_max` | Диапазон цены |
 | `in_stock`, `stock_min` | Наличие |
 | `vendor_id`, `new`, `popular`, `favorite` | Флаги / производитель |
 | `options` | JSON опций |
-| `limit`, `offset` / `page` | Пагинация |
+| `limit`, `offset` / `page` | Пагинация. `limit` по умолчанию 20, максимум 100 |
 | `sort`, `dir`, `query`, `context` | Сортировка и поиск |
-| `include_options`, `include_content`, `include_images` | Вложения (`include_images` по умолчанию 0, не более 10 файлов на товар) |
-| `include_seo` | SEO-блок; у `list` по умолчанию **0**, у `get` — `1` |
+| `include_options`, `include_content`, `include_images` | Вложения. `include_images` по умолчанию 0. В списке не больше 10 файлов на товар |
+| `include_seo` | SEO-блок. У `list` по умолчанию 0, у `get` 1 |
 
 Ответ `list`: `{ items, total, limit, offset }` внутри `data`.
 
+```json
+{
+  "success": true,
+  "message": null,
+  "data": {
+    "items": [
+      { "id": 12, "pagetitle": "Кружка" }
+    ],
+    "total": 1,
+    "limit": 20,
+    "offset": 0
+  }
+}
+```
+
 `filters`: те же фильтры, что у `list`, плюс `keys`, `include_price` (по умолчанию 1), `include_vendors` (по умолчанию 0).
 
-Поля товара отдаются по allowlist из `ProductCatalogService`.
+`GET /product/{id}/images` и карточка товара отдают до 50 файлов галереи.
 
 ## Category
 
@@ -50,13 +65,34 @@ description: "Публичный product и category API MiniShop3 для headle
 | `GET` | `/category/list` | Список |
 | `GET` | `/category/tree` | Дерево |
 
+Параметры `get`: `context`, `include_hidden`, `include_content`, `include_breadcrumbs`, `include_children`, `include_seo` (по умолчанию 1).
+
+Параметры `list`: `parent`, `limit`, `offset` или `page`, `sort`, `dir`, `context`, `include_hidden`, `include_content`, `include_seo` (по умолчанию 0).
+
+Параметры `tree`: `parent`, `depth`, `context`, `include_hidden`, `sort`, `dir`, `include_seo` (по умолчанию 0).
+
 ## ACL групп ресурсов
 
-Настройка `ms3_web_catalog_respect_resource_groups`: если включена, публичный каталог скрывает товары и категории из групп ресурсов MODX, закрытых ACL для контекста запроса.
+```mermaid
+flowchart TD
+  both{"access_resource_group_enabled и ms3_web_catalog_respect_resource_groups"}
+  both -->|нет| open["Фильтр выключен"]
+  both -->|да| who{"Кто смотрит?"}
+  who -->|гость| anon["Разрешение без пользователя"]
+  who -->|покупатель| groups["Группы из msCustomerGroup"]
+  anon --> any{"Хотя бы одна группа открыта?"}
+  groups --> any
+  any -->|да| visible["Документ в выдаче"]
+  any -->|нет| hidden["Документ скрыт"]
+```
 
-Проверка учитывает и анонимных посетителей, и авторизованных покупателей: гостю ищется разрешение, выданное без привязки к пользователю, а покупателю добавляются группы, выведенные из `msCustomerGroup` через ACL групп пользователей MODX. Членство считается по принципу «хотя бы одна»: документ остаётся видимым, если доступ даёт любая из его групп, даже когда другая закрыта.
+Фильтр включён, только если истинны обе настройки: MODX `access_resource_group_enabled` (по умолчанию да) и `ms3_web_catalog_respect_resource_groups` (установщик пишет `true`).
 
-Выключите настройку, чтобы каталог отдавал товары без оглядки на группы ресурсов.
+Проверка учитывает гостя и авторизованного покупателя. Гостю ищется разрешение без привязки к пользователю. Покупателю добавляются группы из `msCustomerGroup` через ACL групп пользователей MODX.
+
+Членство считается по принципу «хотя бы одна». Документ виден, если доступ даёт любая из его групп, даже когда другая закрыта.
+
+Выключите `ms3_web_catalog_respect_resource_groups`, чтобы каталог отдавал товары без учёта групп ресурсов.
 
 ## Пример
 
