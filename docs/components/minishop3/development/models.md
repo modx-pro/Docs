@@ -3,7 +3,7 @@ title: Модели и схема БД
 ---
 # Модели и схема базы данных
 
-MiniShop3 использует xPDO ORM для работы с базой данных. Все модели находятся в namespace `MiniShop3\Model`.
+MiniShop3 использует xPDO ORM. Все модели находятся в namespace `MiniShop3\Model`.
 
 ## xPDO модели
 
@@ -47,24 +47,26 @@ $order->getMany('Products');
 // Заказ → Клиент (N:1)
 $order->getOne('msCustomer');
 
-// Клиент → Адреса (1:N)
-$customer->getMany('Addresses');
+// Адреса клиента: отдельная модель, агрегата Addresses у msCustomer нет
+$modx->getCollection(\MiniShop3\Model\msCustomerAddress::class, [
+    'customer_id' => $customer->get('id'),
+]);
 ```
 
 ## Schema-файл
 
-Схема базы данных определена в XML-файле:
+Схема базы данных задана в XML:
 
 ```
 core/components/minishop3/schema/minishop3.mysql.schema.xml
 ```
 
-Основные атрибуты схемы:
-
-- `package`: `MiniShop3\Model`
-- `baseClass`: `xPDO\Om\xPDOObject`
-- `platform`: `mysql`
-- `version`: `3.0`
+| Атрибут | Значение |
+| --- | --- |
+| `package` | `MiniShop3\Model` |
+| `baseClass` | `xPDO\Om\xPDOObject` |
+| `platform` | `mysql` |
+| `version` | `3.0` |
 
 ## Таблицы базы данных
 
@@ -156,11 +158,11 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | Поле | Тип | Описание |
 | --- | --- | --- |
 | `id` | int | ID группы |
-| `name` | varchar(191) | Название группы |
+| `name` | varchar(255) | Название группы |
 | `user_group_id` | int | ID группы пользователей MODX (принципал для modAccessResourceGroup) |
 | `active` | tinyint(1) | Активна |
-| `created_at` | datetime | Дата создания |
-| `updated_at` | datetime | Дата обновления |
+| `created_at` | timestamp | Дата создания |
+| `updated_at` | timestamp | Дата обновления |
 
 #### msCustomer — основные поля
 
@@ -169,7 +171,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `id` | int | ID клиента |
 | `user_id` | int | ID связанного modUser (опционально) |
 | `first_name` | varchar(191) | Имя |
-| `last_name` | varchar(191) | Фамилия |
+| `last_name` | varchar(191) | Фамилия. В схеме индекс помечен уникальным, см. [#905](https://github.com/modx-pro/MiniShop3/issues/905) |
 | `phone` | varchar(50) | Телефон |
 | `email` | varchar(191) | Email |
 | `password` | varchar(255) | Хеш пароля |
@@ -182,7 +184,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `privacy_accepted_at` | datetime | Дата принятия политики |
 
 ::: tip Отличие от miniShop2
-В miniShop2 клиент = modUser. В MiniShop3 клиент — отдельная сущность msCustomer, которая может быть связана с modUser опционально.
+В miniShop2 клиент = modUser. В MiniShop3 клиент выделен в сущность msCustomer и может быть связан с modUser опционально.
 :::
 
 ### Доставка и оплата
@@ -235,7 +237,7 @@ core/components/minishop3/schema/minishop3.mysql.schema.xml
 | `msOption` | `ms3_options` | Справочник опций |
 | `msOptionGroup` | `ms3_option_groups` | Группы опций (заменили использование `modCategory` для группировки, начиная с 1.11.0) |
 
-### Конфигурация полей (новое в MiniShop3)
+### Конфигурация полей
 
 | Модель | Таблица | Описание |
 | --- | --- | --- |
@@ -282,7 +284,7 @@ $orderProduct->fromArray([
     'price' => $price,
     'count' => $count,
     'cost' => $price * $count,
-    'options' => json_encode($options),
+    'options' => $options,
 ]);
 $orderProduct->save();
 ```
@@ -316,7 +318,9 @@ $address->fromArray([
 $address->save();
 
 // Получение всех адресов клиента
-$addresses = $customer->getMany('Addresses');
+$addresses = $modx->getCollection(msCustomerAddress::class, [
+    'customer_id' => $customer->get('id'),
+]);
 ```
 
 ### Итерация по записям
@@ -335,11 +339,7 @@ foreach ($modx->getIterator(msOrder::class, ['status_id' => 2]) as $order) {
 
 ## Архитектура моделей
 
-### Отличие от miniShop2
-
-В miniShop2 использовались «толстые модели» (Fat Models) — классы моделей содержали большое количество бизнес-логики: валидацию, расчёты, отправку уведомлений и т.д.
-
-В MiniShop3 бизнес-логика вынесена в **сервисный слой** (`src/Services/`, `src/Controllers/`):
+В miniShop2 логика жила в моделях: валидация, расчёты, уведомления. В MiniShop3 она вынесена в сервисный слой (`src/Services/`, `src/Controllers/`).
 
 ### miniShop2 — толстая модель
 
@@ -361,14 +361,10 @@ flowchart LR
   NotificationManager["NotificationManager — уведомления"] --> msOrder
 ```
 
-### Прагматичный подход
-
 ::: info Компромисс с архитектурой MODX
-В современных концепциях (Clean Architecture, DDD) модели должны отвечать только за работу с базой данных и не знать о сервисном слое, репозиториях и контроллерах.
+Архитектура MODX держит бизнес-логику в моделях (`modResource`, `modUser` и др.). Часть моделей MiniShop3 расширяет классы MODX (`msProduct extends modResource`, `msCategory extends modResource`) и следует тому же шаблону.
 
-Однако архитектура MODX повсеместно использует бизнес-логику в моделях (`modResource`, `modUser` и др.). Поскольку некоторые модели MiniShop3 расширяют классы MODX (`msProduct extends modResource`, `msCategory extends modResource`), они обязаны следовать аналогичным паттернам.
-
-Поэтому модели MiniShop3 содержат ссылки на сервисы для вызова методов бизнес-логики — это прагматичный компромисс для совместимости с экосистемой MODX.
+Поэтому модели MiniShop3 содержат ссылки на сервисы и вызывают через них бизнес-логику. Это компромисс ради совместимости с MODX.
 :::
 
 ### Пример: вызов сервиса из модели
@@ -377,11 +373,13 @@ flowchart LR
 // src/Model/msProductData.php
 class msProductData extends xPDOSimpleObject
 {
-    public function getPrice(array $data = []): float
+    public function getPrice($data = [])
     {
-        // Делегирование в сервис форматирования
-        $ms3 = $this->xpdo->services->get('ms3');
-        return $ms3->format->price($this->get('price'));
+        if (empty($data)) {
+            $data = $this->toArray();
+        }
+
+        return $this->getProductDataService()->getModifiedPrice($this, $data);
     }
 }
 ```
@@ -389,15 +387,15 @@ class msProductData extends xPDOSimpleObject
 ## Регенерация моделей
 
 ::: warning Модели создаются вручную
-В MiniShop3 модели НЕ генерируются автоматически из XML-схемы через `buildModel()`. Они создаются и поддерживаются вручную в директории `src/Model/`.
+В MiniShop3 модели не генерируются автоматически из XML-схемы через `buildModel()`. Они создаются и поддерживаются вручную в директории `src/Model/`.
 
 Это позволяет:
 
-- Добавлять свои методы в модели
-- Использовать полную типизацию PHP 8
-- Иметь полный контроль над кодом моделей
+- добавлять свои методы в модели;
+- использовать полную типизацию PHP 8;
+- иметь полный контроль над кодом моделей.
 
-**Важно:** Не запускайте `buildModel()` — это перезапишет методы, добавленные вручную.
+Не запускайте `buildModel()`: это перезапишет методы, добавленные вручную.
 :::
 
 ### Структура файлов модели
@@ -454,8 +452,9 @@ class msProduct extends \MiniShop3\Model\msProduct
 
 ```
 core/components/minishop3/migrations/
-├── 20240101000000_create_customers_table.php
-├── 20240102000000_add_customer_fields.php
+├── 20251020000000_initial_schema.php
+├── 20251021000000_seed_page_sections.php
+├── 20251022000000_seed_product_fields.php
 └── ...
 ```
 
@@ -518,4 +517,4 @@ erDiagram
   ms3_shipments ||--o{ ms3_shipment_events : "1:N"
 ```
 
-`ms3_shipments` / `ms3_shipment_events` — PDO-таблицы (не классы `MiniShop3\Model\*`).
+`ms3_shipments` / `ms3_shipment_events`: PDO-таблицы (не классы `MiniShop3\Model\*`).

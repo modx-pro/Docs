@@ -80,7 +80,20 @@ ExtJS TabPanel (верхний уровень)
 Вместо этого дождитесь появления реестра — см. [функцию ниже](#waiting-for-registry).
 :::
 
-<!-- MEDIA: diagram | must | Порядок загрузки двумя дорожками с общим началом: скрипт плагина выполняется раньше `product-tabs.min.js`, объекта `window.MS3ProductTabsRegistry` ещё нет. Верхняя дорожка с пометкой «нельзя»: плагин кладёт на его место заглушку → модуль создаёт `new ProductTabsRegistry()` только когда объекта нет, поэтому заглушка остаётся → инициализация вкладок вызывает у неё `_onMounted()` → `TypeError`, вкладки из очереди не появляются. Нижняя дорожка с пометкой «так надо»: плагин вызывает `whenRegistryReady` → объекта нет, повтор через 100 мс → модуль создаёт настоящий объект → следующий опрос его находит → вызывается `register()`. Только шаги, названные в тексте раздела. | Нарисовать по тексту предупреждения «Заглушку создавать нельзя» и подраздела «Ожидание реестра», а не по коду. SVG, фон прозрачный; две версии (русская и английская) из одного источника; имена из кода не переводить. Оформить так же, как схему порядка загрузки на странице заказа: обе страницы читаются парой. Не рисовать монтирование Vue-приложения и передачу очереди в него: в тексте раздела этого нет. -->
+```mermaid
+flowchart TB
+  start["Скрипт плагина раньше product-tabs.min.js"]
+  start --> missing["MS3ProductTabsRegistry ещё нет"]
+  missing --> stub[Заглушка на месте объекта]
+  missing --> wait[whenRegistryReady]
+  stub --> keep["Реестр не создаётся: объект уже есть"]
+  keep --> mount["_onMounted"]
+  mount --> err["TypeError, вкладки из очереди не появляются"]
+  wait --> poll{Объект есть}
+  poll -->|нет| again["Повтор через 100 мс"]
+  again --> poll
+  poll -->|да| reg[register]
+```
 
 ### Ожидание реестра {#waiting-for-registry}
 
@@ -265,4 +278,12 @@ console.log(window.MS3ProductTabsRegistry.pendingTabs);
 
 Непустая очередь после загрузки страницы означает, что вкладки не дошли до Vue.
 
-<!-- MEDIA: output | must | Что пишет консоль браузера в случаях из этого раздела: по одной строке на причину с пометкой `console.error` или `console.warn` (нет `key` или `title`; повторный ключ) и строка `TypeError`, когда вместо `MS3ProductTabsRegistry` стоит заглушка. Рядом вывод `console.log(window.MS3ProductTabsRegistry.pendingTabs)`: пустой список при верной регистрации и непустой при заглушке. | Текстовый блок, не кадр. На стенде: временный плагин на событии `msOnManagerCustomCssJs` с проверкой `page === 'product_update'`. Первый заход: регистрация через `whenRegistryReady`, по одному ошибочному вызову на случай, открыть товар, скопировать строки из консоли. Второй заход: плагин создаёт заглушку `window.MS3ProductTabsRegistry = {pendingTabs: [], register: …}` и регистрирует верную вкладку; взять строку `TypeError` и вывод `pendingTabs`. Префиксы записать так, как они напечатаны, и проверить, зависят ли они от момента вызова. Второй аргумент с настройками вкладки заменить на `{…}`; у `TypeError` оставить первую строку без пути стенда. Плагин после съёмки удалить. -->
+```text
+console.error [ProductTabsRegistry] Tab must have key and title {…}
+console.warn [ProductTabsRegistry] Tab "specs" already registered
+console.warn [ProductTabs] Invalid plugin tab data: {…}
+console.warn [ProductTabs] Tab with key "specs" already registered
+TypeError: window.MS3ProductTabsRegistry._onMounted is not a function
+```
+
+`pendingTabs` после загрузки страницы: `[]`, если вкладки ушли в Vue. Если на месте реестра заглушка, в очереди остаётся переданная вкладка, например `[{ key: "specs", title: "Характеристики" }]`.
