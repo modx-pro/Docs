@@ -629,21 +629,37 @@ document.addEventListener('ms3:cart:updated', (e) => {
 ### Vue 3
 
 ```javascript
+// composables/useCart.js
 import { ref, onMounted } from 'vue'
 
 export function useCart() {
   const cart = ref([])
   const status = ref({ total_count: 0, total_cost: 0 })
+  const loading = ref(false)
 
   async function loadCart() {
+    loading.value = true
     const response = await ms3.cartAPI.get()
-    if (!response.success) return
-    cart.value = response.data.cart
-    status.value = response.data.status
+    if (response.success) {
+      cart.value = response.data.cart
+      status.value = response.data.status
+    }
+    loading.value = false
   }
 
   async function addToCart(id, count = 1, options = {}) {
+    loading.value = true
     const response = await ms3.cartAPI.add(id, count, options)
+    if (response.success) {
+      cart.value = response.data.cart
+      status.value = response.data.status
+    }
+    loading.value = false
+    return response
+  }
+
+  async function removeFromCart(productKey) {
+    const response = await ms3.cartAPI.remove(productKey)
     if (response.success) {
       cart.value = response.data.cart
       status.value = response.data.status
@@ -651,68 +667,201 @@ export function useCart() {
     return response
   }
 
+  async function changeQuantity(productKey, count) {
+    const response = await ms3.cartAPI.change(productKey, count)
+    if (response.success) {
+      cart.value = response.data.cart
+      status.value = response.data.status
+    }
+    return response
+  }
+
+  async function clearCart() {
+    const response = await ms3.cartAPI.clean()
+    if (response.success) {
+      cart.value = []
+      status.value = { total_count: 0, total_cost: 0 }
+    }
+    return response
+  }
+
   onMounted(() => {
     loadCart()
+
+    // Подписка на внешние обновления
     document.addEventListener('ms3:cart:updated', (e) => {
-      if (!e.detail) return
+      if (!e.detail) {
+        return
+      }
       cart.value = e.detail.cart
       status.value = e.detail.status
     })
   })
 
-  return { cart, status, addToCart, loadCart }
+  return {
+    cart,
+    status,
+    loading,
+    addToCart,
+    removeFromCart,
+    changeQuantity,
+    clearCart,
+    loadCart
+  }
 }
 ```
 
-В шаблоне переберите `cart` и вызывайте `addToCart`. `remove`, `change` и `clean` устроены так же: при `success` берите `data.cart` и `data.status`.
+**Использование в компоненте:**
+
+```vue
+<script setup>
+import { useCart } from '@/composables/useCart'
+
+const { cart, status, loading, addToCart, removeFromCart } = useCart()
+</script>
+
+<template>
+  <div class="cart">
+    <div v-if="loading">Загрузка...</div>
+
+    <div v-for="item in cart" :key="item.product_key" class="cart-item">
+      <span>{{ item.name }}</span>
+      <span>{{ item.count }} x {{ item.price }} руб.</span>
+      <button @click="removeFromCart(item.product_key)">Удалить</button>
+    </div>
+
+    <div class="cart-total">
+      Итого: {{ status.total_cost }} руб.
+    </div>
+  </div>
+</template>
+```
 
 ### React
 
 ```javascript
+// hooks/useCart.js
 import { useState, useEffect, useCallback } from 'react'
 
 export function useCart() {
   const [cart, setCart] = useState([])
   const [status, setStatus] = useState({ total_count: 0, total_cost: 0 })
+  const [loading, setLoading] = useState(false)
 
   const loadCart = useCallback(async () => {
+    setLoading(true)
     const response = await window.ms3.cartAPI.get()
-    if (!response.success) return
-    setCart(response.data.cart)
-    setStatus(response.data.status)
+    if (response.success) {
+      setCart(response.data.cart)
+      setStatus(response.data.status)
+    }
+    setLoading(false)
+  }, [])
+
+  const addToCart = useCallback(async (id, count = 1, options = {}) => {
+    setLoading(true)
+    const response = await window.ms3.cartAPI.add(id, count, options)
+    if (response.success) {
+      setCart(response.data.cart)
+      setStatus(response.data.status)
+    }
+    setLoading(false)
+    return response
+  }, [])
+
+  const removeFromCart = useCallback(async (productKey) => {
+    const response = await window.ms3.cartAPI.remove(productKey)
+    if (response.success) {
+      setCart(response.data.cart)
+      setStatus(response.data.status)
+    }
+    return response
   }, [])
 
   useEffect(() => {
     loadCart()
-    const onUpdate = (e) => {
-      if (!e.detail) return
+
+    const handleCartUpdate = (e) => {
+      if (!e.detail) {
+        return
+      }
       setCart(e.detail.cart)
       setStatus(e.detail.status)
     }
-    document.addEventListener('ms3:cart:updated', onUpdate)
-    return () => document.removeEventListener('ms3:cart:updated', onUpdate)
+
+    document.addEventListener('ms3:cart:updated', handleCartUpdate)
+    return () => document.removeEventListener('ms3:cart:updated', handleCartUpdate)
   }, [loadCart])
 
-  return { cart, status, loadCart }
+  return { cart, status, loading, addToCart, removeFromCart, loadCart }
 }
 ```
-
-Добавление: `window.ms3.cartAPI.add(id, count, options)` и те же поля `data.cart` / `data.status`.
 
 ### Vanilla JavaScript
 
 ```javascript
-const response = await ms3.cartAPI.get()
-if (response.success) {
-  // response.data.cart, response.data.status
+class CartManager {
+  constructor() {
+    this.cart = []
+    this.status = { total_count: 0, total_cost: 0 }
+    this.listeners = []
+  }
+
+  async init() {
+    await this.load()
+
+    document.addEventListener('ms3:cart:updated', (e) => {
+      if (!e.detail) {
+        return
+      }
+      this.cart = e.detail.cart
+      this.status = e.detail.status
+      this.notify()
+    })
+  }
+
+  async load() {
+    const response = await ms3.cartAPI.get()
+    if (response.success) {
+      this.cart = response.data.cart
+      this.status = response.data.status
+      this.notify()
+    }
+  }
+
+  async add(id, count = 1, options = {}) {
+    const response = await ms3.cartAPI.add(id, count, options)
+    if (response.success) {
+      this.cart = response.data.cart
+      this.status = response.data.status
+      this.notify()
+    }
+    return response
+  }
+
+  subscribe(callback) {
+    this.listeners.push(callback)
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== callback)
+    }
+  }
+
+  notify() {
+    this.listeners.forEach(cb => cb(this.cart, this.status))
+  }
 }
 
-document.addEventListener('ms3:cart:updated', (e) => {
-  if (!e.detail) return
-  // e.detail.cart, e.detail.status
+// Использование
+const cartManager = new CartManager()
+await cartManager.init()
+
+cartManager.subscribe((cart, status) => {
+  document.querySelector('.cart-count').textContent = status.total_count
 })
 
-await ms3.cartAPI.add(123, 1, { size: 'L' })
+document.querySelector('.add-to-cart').addEventListener('click', () => {
+  cartManager.add(123, 1, { size: 'L' })
+})
 ```
 
 ## Формат ответов

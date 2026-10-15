@@ -159,6 +159,25 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 Объект `ms3` создаётся сам при загрузке `ms3.js`. Селекторы собираются из `getSelectors()` и `ms3Config.selectors`.
 
 ```javascript
+// assets/components/minishop3/js/web/ms3.js
+
+const ms3 = {
+  config: {},
+  selectors: {},
+  tokenManager: null,
+  apiClient: null,
+  cartAPI: null,
+  orderAPI: null,
+  customerAPI: null,
+  cartUI: null,
+  orderUI: null,
+  customerUI: null,
+  authUI: null,
+  quantityUI: null,
+  productCardUI: null,
+  hooks: null,
+  message: null,
+
 async init() {
   this.config = window.ms3Config || {}
   this.hooks = window.ms3Hooks
@@ -195,6 +214,8 @@ async init() {
 
   document.dispatchEvent(new Event('ms3:ready'))
 }
+}
+
 ```
 
 ### Конфигурация ms3Config
@@ -274,11 +295,95 @@ MS3 **не** слушает события сторонних компонент
 
 `ensureToken()` не читает cookie: JavaScript её не видит. Метод запрашивает `GET /api/v1/customer/token/get` с `credentials: 'same-origin'`, и сервер ставит cookie сам. Перед вызовом `init()` передаёт клиент через `setApiClient()`.
 
+```javascript
+class TokenManager {
+  constructor(config) {
+    this.tokenName = config.tokenName || 'ms3_token'
+    this.apiClient = null
+  }
+
+  setApiClient(apiClient) {
+    this.apiClient = apiClient
+  }
+
+  // Проверить наличие токена и получить при необходимости
+  async ensureToken() {
+    // Токен в httpOnly cookie — JS не видит его напрямую.
+    // При отсутствии cookie запрашивает новый токен с сервера
+    return this.fetchNewToken()
+  }
+
+  // Запросить новый токен (сервер установит httpOnly cookie)
+  async fetchNewToken() {
+    if (!this.apiClient) {
+      console.error('TokenManager: ApiClient not set. Use setApiClient()')
+      return
+    }
+    const url = this.apiClient.buildUrl('/api/v1/customer/token/get')
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'same-origin',
+      headers: {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    })
+    const data = await response.json()
+    return data.success
+  }
+}
+
+```
+
 ### ApiClient
 
 HTTP-клиент. Токен уходит сам через httpOnly cookie.
 
 `buildUrl()` кладёт путь в query `route` и контекст в `ctx`. `request()` шлёт JSON с `credentials: 'same-origin'`. Методы: `get(route)`, `post(route, data)`, `put(route, data)`, `patch(route, data)`, `delete(route)`.
+
+```javascript
+class ApiClient {
+  constructor({ baseUrl, tokenManager, ctx }) {
+    this.baseUrl = baseUrl || '/assets/components/minishop3/api.php'
+    this.tokenManager = tokenManager
+    this.ctx = ctx || 'web'
+  }
+
+  buildUrl(endpoint) {
+    const url = new URL(this.baseUrl, window.location.origin)
+    url.searchParams.set('route', endpoint)
+    url.searchParams.set('ctx', this.ctx)
+    return url
+  }
+
+  async request(method, route, data = null) {
+    const url = this.buildUrl(route)
+
+    const options = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      },
+      credentials: 'same-origin'  // Включает httpOnly cookie
+    }
+
+    if (data && method !== 'GET') {
+      options.body = JSON.stringify(data)
+    }
+
+    const response = await fetch(url.toString(), options)
+    return response.json()
+  }
+
+  get(route) { return this.request('GET', route) }
+  post(route, data) { return this.request('POST', route, data) }
+  put(route, data) { return this.request('PUT', route, data) }
+  patch(route, data) { return this.request('PATCH', route, data) }
+  delete(route) { return this.request('DELETE', route) }
+}
+
+```
 
 ### CartAPI
 
@@ -435,36 +540,102 @@ class CustomerAPI {
 
 ### CartUI
 
-Обработчик интерфейса корзины.
-
-`handleAdd` и `handleClean` гоняют хуки, затем API. При успехе `renderCart` подставляет HTML по `token` из `config.render.cart` и шлётся `ms3:cart:updated`.
+Обработчик интерфейса корзины:
 
 ```javascript
-async handleAdd(id, count = 1, options = {}) {
-  const hookData = { id, count, options }
-  await this.hooks.runHooks('beforeAddCart', hookData)
-  if (hookData.cancel) return
+class CartUI {
+  constructor(cartAPI, hooks, message, config) {
+    this.cart = cartAPI
+    this.hooks = hooks
+    this.message = message
+    this.config = config
+  }
 
-  const response = await this.cart.add(id, count, options, this.getRenderTokens())
-  await this.hooks.runHooks('afterAddCart', { id, count, options, response })
-  if (response.success && response.data?.render) this.renderCart(response.data.render)
-  if (response.success) this.dispatchCartUpdated(response.data)
+  init() {
+    this.initQuantityButtons()  // Кнопки +/-
+    this.initQuantityInputs()   // Поля количества
+    this.initOptionSelects()    // Селекты опций
+  }
+
+  // Добавление товара
+  async handleAdd(id, count = 1, options = {}) {
+    const hookData = { id, count, options }
+    await this.hooks.runHooks('beforeAddCart', hookData)
+
+    if (hookData.cancel) return
+
+    const renderTokens = this.getRenderTokens()
+    const response = await this.cart.add(id, count, options, renderTokens)
+
+    await this.hooks.runHooks('afterAddCart', { id, count, options, response })
+
+    if (response.success) {
+      if (response.data?.render) {
+        this.renderCart(response.data.render)
+      }
+      this.dispatchCartUpdated(response.data)
+      if (response.message) {
+        this.message.success(response.message)
+      }
+    } else {
+      if (response.message) {
+        this.message.error(response.message)
+      }
+    }
+  }
+
+  // Автоматический рендеринг
+  renderCart(renderData) {
+    const cartRenderConfig = this.config.render?.cart
+
+    for (const token in renderData) {
+      const html = renderData[token]
+      const config = cartRenderConfig.find(item => item.token === token)
+
+      if (config?.selector) {
+        const element = document.querySelector(config.selector)
+        if (element) {
+          element.innerHTML = html
+        }
+      }
+    }
+
+    // Переинициализация обработчиков
+    setTimeout(() => this.init(), 100)
+  }
+
+  // Очистка корзины
+  async handleClean() {
+    const hookData = {}
+    await this.hooks.runHooks('beforeCleanCart', hookData)
+
+    if (hookData.cancel) return
+
+    const renderTokens = this.getRenderTokens()
+    const response = await this.cart.clean(renderTokens)
+
+    await this.hooks.runHooks('afterCleanCart', { response })
+
+    if (response.success) {
+      if (response.data?.render) {
+        this.renderCart(response.data.render)
+      }
+      this.dispatchCartUpdated(response.data)
+    }
+  }
+
+  // Событие обновления корзины
+  dispatchCartUpdated(data) {
+    document.dispatchEvent(new CustomEvent('ms3:cart:updated', {
+      detail: data
+    }))
+  }
 }
 
-async handleClean() {
-  const hookData = {}
-  await this.hooks.runHooks('beforeCleanCart', hookData)
-  if (hookData.cancel) return
-
-  const response = await this.cart.clean(this.getRenderTokens())
-  await this.hooks.runHooks('afterCleanCart', { response })
-  if (response.success && response.data?.render) this.renderCart(response.data.render)
-  if (response.success) this.dispatchCartUpdated(response.data)
-}
 ```
 
 ::: tip Очистка корзины из внешнего скрипта
-Вызов `cartAPI.clean()` напрямую шлёт только API-запрос. Отрисовки и события `ms3:cart:updated` нет. Чтобы обновить мини-корзину, счётчики и карточки, вызывайте `cartUI.handleClean()`:
+При вызове `cartAPI.clean()` напрямую — выполняется только API-запрос без рендеринга и без события `ms3:cart:updated`. Для полного обновления интерфейса (мини-корзина, счётчики, карточки товаров) используйте `cartUI.handleClean()`:
 
 ```javascript
 // ❌ Неправильно — API-вызов без обновления UI
@@ -495,64 +666,222 @@ document.addEventListener('fetchit:success', async (e) => {
 
 ### OrderUI
 
-Обработчик интерфейса заказа.
-
-Смена поля вызывает `handleAdd(name, value)` с хуками `beforeAddOrder` / `afterAddOrder`. Отправка:
+Обработчик интерфейса заказа:
 
 ```javascript
-async handleSubmit() {
-  const hookData = {}
-  await this.hooks.runHooks('beforeSubmitOrder', hookData)
-  if (hookData.cancel) return { success: false }
-
-  const response = await this.order.submit()
-  await this.hooks.runHooks('afterSubmitOrder', { response })
-  if (response.success && response.data?.redirect) {
-    window.location.href = response.data.redirect
+class OrderUI {
+  init() {
+    document.querySelectorAll(this.selectors.formOrder).forEach(form => {
+      this.initForm(form)
+    })
   }
-  return response
+
+  // Автосохранение полей
+  initRegularInput(input) {
+    input.addEventListener('change', async () => {
+      const response = await this.handleAdd(input.name, input.value)
+
+      if (response.success) {
+        if (response.data?.[input.name] !== undefined) {
+          input.value = response.data[input.name]
+        }
+      } else {
+        input.classList.add('is-invalid')
+      }
+    })
+  }
+
+  // Оформление заказа
+  async handleSubmit() {
+    const hookData = {}
+    await this.hooks.runHooks('beforeSubmitOrder', hookData)
+
+    if (hookData.cancel) return { success: false }
+
+    const response = await this.order.submit()
+
+    await this.hooks.runHooks('afterSubmitOrder', { response })
+
+    if (response.success && response.data?.redirect) {
+      window.location.href = response.data.redirect
+    }
+
+    return response
+  }
 }
+
 ```
 
 ### CustomerUI
 
-Профиль, адреса и отмена заказов.
-
-Поле `ms3_action` в профиль не уходит. Контекст хука профиля: `{ data }`, после ответа ещё `response`. Отмена заказа: `{ orderId }`. Адреса: `setDefaultAddress(id)` и `deleteAddress(id)` с хуками `beforeSetDefaultAddress` / `beforeDeleteAddress`.
+Обработчик интерфейса покупателя. Управляет профилем, адресами и отменой заказов:
 
 ```javascript
-async handleProfileUpdate(formData) {
-  const data = {}
-  for (const [key, value] of formData.entries()) {
-    if (key === 'ms3_action') continue
-    data[key] = value
+class CustomerUI {
+  init() {
+    document.querySelectorAll(this.selectors.formCustomer).forEach(form => {
+      this.initForm(form)
+    })
+    this.initOrderCancel()
+    this.initAddressManagement()
   }
-  const hookData = { data }
-  await this.hooks.runHooks('beforeUpdateProfile', hookData)
-  if (hookData.cancel) return { success: false }
 
-  const response = await this.customer.updateProfile(data)
-  await this.hooks.runHooks('afterUpdateProfile', { data, response })
-  return response
+  // Обновление профиля
+  async handleProfileUpdate(formData) {
+    const data = {}
+    for (const [key, value] of formData.entries()) {
+      if (key === 'ms3_action') continue
+      data[key] = value
+    }
+
+    const hookData = { data }
+    await this.hooks.runHooks('beforeUpdateProfile', hookData)
+    if (hookData.cancel) return
+
+    const response = await this.customer.updateProfile(data)
+
+    await this.hooks.runHooks('afterUpdateProfile', { data, response })
+
+    if (response.success) {
+      this.message.success(response.message)
+      setTimeout(() => window.location.reload(), 1000)
+    }
+
+    return response
+  }
+
+  // Отмена заказа
+  initOrderCancel() {
+    document.querySelectorAll(this.selectors.orderCancel).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const orderId = btn.dataset.orderId
+        const confirmMessage = btn.dataset.confirm
+
+        // Диалог подтверждения с красной кнопкой
+        const confirmed = await ms3Confirm(confirmMessage, {
+          confirmClass: 'danger'
+        })
+        if (!confirmed) return
+
+        const hookData = { orderId }
+        await this.hooks.runHooks('beforeCancelOrder', hookData)
+        if (hookData.cancel) return
+
+        const response = await this.customer.cancelOrder(orderId)
+
+        await this.hooks.runHooks('afterCancelOrder', { orderId, response })
+
+        if (response.success) {
+          this.message.success(response.message)
+          window.location.reload()
+        } else {
+          this.message.error(response.message)
+        }
+      })
+    })
+  }
+
+  // Управление адресами
+  initAddressManagement() {
+    // Установить по умолчанию
+    document.querySelectorAll(this.selectors.addressSetDefault).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.addressId
+        const response = await this.customer.setDefaultAddress(id)
+        if (response.success) window.location.reload()
+      })
+    })
+
+    // Удалить адрес
+    document.querySelectorAll(this.selectors.addressDelete).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.addressId
+        const confirmed = await ms3Confirm(/* сообщение из data-confirm */)
+        if (!confirmed) return
+
+        const response = await this.customer.deleteAddress(id)
+        if (response.success) window.location.reload()
+      })
+    })
+  }
 }
+
 ```
 
 ### AuthUI
 
-Формы входа и регистрации.
-
-`beforeLogin` и `beforeRegister` получают `{ email }`. `login` вызывается двумя аргументами. В `register` уходят `email`, `password`, `first_name`, `last_name`, `phone` и `privacy_accepted` (`'1'` или `'0'`). `password_confirm` сверяется в форме и на сервер не отправляется. Если в ответе есть `redirect_url`, страница уходит туда, иначе перезагружается.
+Обработчик форм авторизации и регистрации:
 
 ```javascript
-const hookData = { email: data.email }
-await this.hooks.runHooks('beforeLogin', hookData)
-if (hookData.cancel) return
+class AuthUI {
+  constructor(customerAPI, hooks, message, config) {
+    this.customer = customerAPI
+    this.hooks = hooks
+    this.message = message
+    this.config = config
+  }
 
-const response = await this.customer.login(data.email, data.password)
-await this.hooks.runHooks('afterLogin', { email: data.email, response })
+  init() {
+    this.initLoginForm()
+    this.initRegisterForm()
+  }
+
+  // Авторизация
+  async handleLogin(form) {
+    const data = this.serializeForm(form)
+    const hookData = { email: data.email }
+    await this.hooks.runHooks('beforeLogin', hookData)
+    if (hookData.cancel) return
+
+    const response = await this.customer.login(data.email, data.password)
+
+    await this.hooks.runHooks('afterLogin', { email: data.email, response })
+
+    if (response.success) {
+      this.message.success(response.message)
+      if (response.data?.redirect_url) {
+        window.location.href = response.data.redirect_url
+      } else {
+        window.location.reload()
+      }
+    } else {
+      this.showFormErrors('login', response)
+    }
+  }
+
+  async handleRegister(form) {
+    const data = this.serializeForm(form)
+    const hookData = { email: data.email }
+    await this.hooks.runHooks('beforeRegister', hookData)
+    if (hookData.cancel) return
+
+    const response = await this.customer.register({
+      email: data.email,
+      password: data.password,
+      first_name: data.first_name || '',
+      last_name: data.last_name || '',
+      phone: data.phone || '',
+      privacy_accepted: data.privacy_accepted ? '1' : '0'
+    })
+
+    await this.hooks.runHooks('afterRegister', { email: data.email, response })
+
+    if (response.success) {
+      this.message.success(response.message)
+      if (response.data?.redirect_url) {
+        window.location.href = response.data.redirect_url
+      } else {
+        window.location.reload()
+      }
+    } else {
+      this.showFormErrors('register', response)
+    }
+  }
+}
+
 ```
 
-**Чанк авторизации:** `tpl.msCustomer.unauthorized` содержит формы входа и регистрации с табами (Bootstrap). Инлайн-скрипт пишет лексиконы в `window.ms3Lexicon`:
+**Чанк авторизации:** `tpl.msCustomer.unauthorized` — содержит формы входа и регистрации с табами (Bootstrap). Инлайн-скрипт экспортирует лексиконы в `window.ms3Lexicon`:
 
 ```fenom
 <script>
@@ -568,7 +897,7 @@ window.ms3Lexicon.ms3_customer_login_success = '{'ms3_customer_login_success' | 
 
 ### Модуль confirm.js
 
-Диалог подтверждения на Bootstrap Modal. Если модалки нет, запасной вариант: `window.confirm()`:
+Promise-based диалог подтверждения с Bootstrap Modal и fallback на `window.confirm()`:
 
 ```javascript
 // Глобальная функция
@@ -600,7 +929,7 @@ const ok = await ms3Confirm('Удалить адрес?', {
 
 ### Автоматическая привязка
 
-Язык кнопок берётся из `<html lang>`:
+i18n кнопок определяется по атрибуту `<html lang>`:
 
 - `lang="ru"` → «Подтвердить» / «Отмена»
 - Другие → «Confirm» / «Cancel»
@@ -615,7 +944,7 @@ window.ms3Lexicon.ms3_confirm_cancel = 'Нет'
 
 ### Декларативная привязка
 
-Атрибут `data-ms3-confirm` на элементе показывает диалог перед действием:
+Атрибут `data-ms3-confirm` на любом элементе автоматически показывает диалог перед действием:
 
 ```html
 <button data-ms3-confirm="Удалить этот адрес?"
