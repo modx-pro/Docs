@@ -3,21 +3,7 @@ title: Frontend JavaScript
 ---
 # Frontend JavaScript
 
-Модульная архитектура JavaScript на стороне сайта.
-
-## Обзор
-
-MiniShop3 использует модульную архитектуру JavaScript без зависимости от jQuery. Все модули написаны на чистом ES6+ и работают в современных браузерах.
-
-**Ключевые особенности:**
-
-- Модульная структура (core, ui, modules)
-- REST API клиент с httpOnly cookie токенизацией
-- Система хуков для расширения
-- Централизованные селекторы с переопределением
-- Автоматический рендеринг корзины
-- Promise-based диалоги подтверждения
-- События для интеграции
+JavaScript на стороне сайта: модули без jQuery, ES6+, современные браузеры.
 
 ## Структура модулей
 
@@ -53,7 +39,7 @@ assets/components/minishop3/js/web/
 
 ### Системная настройка `ms3_frontend_assets`
 
-Контролирует порядок загрузки CSS и JS файлов:
+Задаёт порядок загрузки CSS и JS:
 
 ```json
 [
@@ -71,31 +57,31 @@ assets/components/minishop3/js/web/
     "[[+jsUrl]]web/ui/CartUI.js",
     "[[+jsUrl]]web/ui/OrderUI.js",
     "[[+jsUrl]]web/ui/CustomerUI.js",
-    "[[+jsUrl]]web/ui/AuthUI.js",
     "[[+jsUrl]]web/ui/QuantityUI.js",
     "[[+jsUrl]]web/ui/ProductCardUI.js",
+    "[[+jsUrl]]web/ui/AuthUI.js",
     "[[+jsUrl]]web/ms3.js"
 ]
 
 ```
 
-**Поддерживаемые плейсхолдеры:**
+**Плейсхолдеры:**
 
 | Плейсхолдер | Значение |
 | --- | --- |
 | `[[+cssUrl]]` | `assets/components/minishop3/css/` |
 | `[[+jsUrl]]` | `assets/components/minishop3/js/` |
 
-**Особенности загрузки:**
+**Куда попадает файл:**
 
 - CSS файлы подключаются в `<head>`
 - JS файлы подключаются в конце HTML с атрибутом `defer`
 
 ### Изменение порядка
 
-Для изменения или отключения файлов отредактируйте системную настройку `ms3_frontend_assets`.
+Чтобы отключить или переставить файлы, измените `ms3_frontend_assets`.
 
-**Пример: отключение iziToast (использование своих уведомлений):**
+**Пример: без iziToast, со своими уведомлениями:**
 
 ```json
 [
@@ -113,10 +99,10 @@ assets/components/minishop3/js/web/
 
 ### Модуль Selectors.js
 
-Централизованные CSS/data-* селекторы для всех UI-компонентов. Селекторы используют data-атрибуты как приоритетные с fallback на CSS-классы для обратной совместимости.
+Селекторы UI собраны в одном месте. Сначала data-атрибуты, затем CSS-классы для обратной совместимости.
 
 ```javascript
-// Дефолтные селекторы
+// Стандартные селекторы
 {
   form: '[data-ms3-form], .ms3_form',
   formOrder: '[data-ms3-form="order"], .ms3_order_form',
@@ -143,7 +129,7 @@ assets/components/minishop3/js/web/
 
 ### Переопределение селекторов
 
-Через `ms3Config.selectors` можно частично переопределить селекторы — они сливаются с дефолтными:
+Через `ms3Config.selectors` можно подменить часть селекторов. Они сливаются со стандартными:
 
 ```javascript
 window.ms3Config = {
@@ -157,7 +143,7 @@ window.ms3Config = {
 
 ### Использование в UI-классах
 
-Все UI-классы получают селекторы из `ms3.selectors`:
+UI-классы берут селекторы из `ms3.selectors`:
 
 ```javascript
 // Внутри UI-класса
@@ -170,7 +156,7 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 
 ### Инициализация
 
-Главный объект `ms3` инициализируется автоматически при загрузке `ms3.js`:
+Объект `ms3` создаётся сам при загрузке `ms3.js`. Селекторы собираются из `getSelectors()` и `ms3Config.selectors`.
 
 ```javascript
 // assets/components/minishop3/js/web/ms3.js
@@ -178,70 +164,63 @@ const cancelBtns = document.querySelectorAll(this.selectors.orderCancel)
 const ms3 = {
   config: {},
   selectors: {},
-
-  // Ядро
   tokenManager: null,
   apiClient: null,
-
-  // API модули
   cartAPI: null,
   orderAPI: null,
   customerAPI: null,
-
-  // UI модули
   cartUI: null,
   orderUI: null,
   customerUI: null,
   authUI: null,
   quantityUI: null,
   productCardUI: null,
-
-  // Утилиты
   hooks: null,
   message: null,
 
-  async init() {
-    this.config = window.ms3Config || {}
-    this.selectors = getSelectors(this.config)
+async init() {
+  this.config = window.ms3Config || {}
+  this.hooks = window.ms3Hooks
+  this.message = window.ms3Message
 
-    // Хуки и сообщения
-    this.hooks = window.ms3Hooks
-    this.message = window.ms3Message
+  this.tokenManager = new TokenManager({
+    tokenName: this.config.tokenName || 'ms3_token',
+  })
+  this.apiClient = new ApiClient({
+    baseUrl: this.config.actionUrl || '/assets/components/minishop3/api.php',
+    tokenManager: this.tokenManager,
+    ctx: this.config.ctx,
+  })
+  this.tokenManager.setApiClient(this.apiClient)
+  await this.tokenManager.ensureToken()
 
-    // Токены и API клиент
-    this.tokenManager = new TokenManager(this.config)
-    await this.tokenManager.ensureToken()
-    this.apiClient = new ApiClient(this.config, this.tokenManager)
+  this.cartAPI = new CartAPI(this.apiClient)
+  this.orderAPI = new OrderAPI(this.apiClient)
+  this.customerAPI = new CustomerAPI(this.apiClient)
 
-    // API модули
-    this.cartAPI = new CartAPI(this.apiClient)
-    this.orderAPI = new OrderAPI(this.apiClient)
-    this.customerAPI = new CustomerAPI(this.apiClient)
+  this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
+  this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
+  this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
+  this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
+  this.quantityUI = new QuantityUI(this.cartAPI, this.hooks, this.message, this.config)
+  this.productCardUI = new ProductCardUI(this.cartAPI, this.hooks, this.message, this.config)
 
-    // UI модули
-    this.cartUI = new CartUI(this.cartAPI, this.hooks, this.message, this.config)
-    this.orderUI = new OrderUI(this.orderAPI, this.hooks, this.message, this.config)
-    this.customerUI = new CustomerUI(this.customerAPI, this.hooks, this.message, this.config)
-    this.authUI = new AuthUI(this.customerAPI, this.hooks, this.message, this.config)
+  this.cartUI.init()
+  this.orderUI.init()
+  this.customerUI.init()
+  this.authUI.init()
+  this.quantityUI.init()
+  await this.productCardUI.init()
 
-    // Инициализация
-    this.cartUI.init()
-    this.orderUI.init()
-    this.customerUI.init()
-    this.authUI.init()
-
-    this.initFormHandler()
-
-    // Событие готовности
-    document.dispatchEvent(new CustomEvent('ms3:ready'))
-  }
+  document.dispatchEvent(new Event('ms3:ready'))
+}
 }
 
 ```
 
 ### Конфигурация ms3Config
 
-Передаётся с сервера через сниппеты:
+Сервер кладёт конфиг через сниппеты:
 
 ```javascript
 window.ms3Config = {
@@ -276,7 +255,7 @@ document.addEventListener('ms3:ready', () => {
 
 ### Публичный refresh API (с 1.11.0)
 
-`window.ms3.refresh()` — единая точка для интеграции со сторонними AJAX-компонентами (mFilter, mSearch2, кастомный AJAX, бесконечный скролл), которые заменяют DOM каталога. После замены вызовите этот метод — MS3 ре-привязывает состояние своих UI-модулей (`ProductCardUI.updateAllCards()`, `QuantityUI.reinit()`) к новой разметке.
+`window.ms3.refresh()` заново привязывает UI MiniShop3 к разметке каталога. Вызовите его после того, как сторонний AJAX (mFilter, mSearch2, свой код, бесконечный скролл) заменил DOM. Метод вызывает `ProductCardUI.updateAllCards()` и `QuantityUI.reinit()`.
 
 ```javascript
 // Универсальный паттерн для любого AJAX-компонента:
@@ -296,23 +275,25 @@ document.addEventListener('mse2_load.response', () => {
 
 ```
 
-Эквивалентный вариант через DOM-событие — `document.dispatchEvent(new CustomEvent('ms3:refresh'))`. Listener зарегистрирован один раз на module scope, повторные `init()` его не дублируют.
+Тот же вызов через DOM: `document.dispatchEvent(new CustomEvent('ms3:refresh'))`. Слушатель зарегистрирован один раз на уровне модуля. Повторные `init()` его не дублируют.
 
-**Важно:** MS3 **не** слушает специфические события сторонних компонентов (`mfilter:contentLoaded`, `mse2_load.response` и т.п.). Связь односторонняя: сторонний компонент → MS3. Это сделано чтобы не плодить зависимости MS3 от каждого совместимого компонента.
+MS3 **не** слушает события сторонних компонентов (`mfilter:contentLoaded`, `mse2_load.response` и подобные). Связь односторонняя: сторонний компонент вызывает MS3. Так MiniShop3 не зависит от каждого совместимого компонента.
 
-Аргумент `detail` зарезервирован для будущего scoped-refresh (`ms3.refresh({ scope: container })`) — сейчас не используется, но включён в сигнатуру, чтобы будущие изменения не ломали API.
+Аргумент `detail` зарезервирован для будущего scoped-refresh (`ms3.refresh({ scope: container })`). Сейчас не используется, но уже есть в сигнатуре, чтобы не ломать API позже.
 
 ## Ядро (Core)
 
 ### TokenManager
 
-Управление токенами авторизации. Токен хранится в httpOnly cookie `ms3_token`, которая устанавливается сервером автоматически.
+Токен лежит в httpOnly cookie `ms3_token`. Сервер ставит её сам.
 
 ::: info httpOnly cookie
-Начиная с версии 1.6, токен хранится в httpOnly cookie вместо localStorage. Это значительно повышает безопасность — токен недоступен из JavaScript и защищён от XSS-атак.
+С версии 1.6 токен хранится в httpOnly cookie, а не в localStorage. JavaScript его не видит, XSS до cookie не достаёт.
 
-Cookie автоматически передаётся браузером при каждом запросе.
+Браузер передаёт cookie сам при каждом запросе.
 :::
+
+`ensureToken()` не читает cookie: JavaScript её не видит. Метод запрашивает `GET /api/v1/customer/token/get` с `credentials: 'same-origin'`, и сервер ставит cookie сам. Перед вызовом `init()` передаёт клиент через `setApiClient()`.
 
 ```javascript
 class TokenManager {
@@ -356,7 +337,9 @@ class TokenManager {
 
 ### ApiClient
 
-HTTP-клиент. Токен передаётся автоматически через httpOnly cookie:
+HTTP-клиент. Токен уходит сам через httpOnly cookie.
+
+`buildUrl()` кладёт путь в query `route` и контекст в `ctx`. `request()` шлёт JSON с `credentials: 'same-origin'`. Методы: `get(route)`, `post(route, data)`, `put(route, data)`, `patch(route, data)`, `delete(route)`.
 
 ```javascript
 class ApiClient {
@@ -404,7 +387,7 @@ class ApiClient {
 
 ### CartAPI
 
-API для работы с корзиной:
+Методы корзины:
 
 ```javascript
 class CartAPI {
@@ -422,22 +405,22 @@ class CartAPI {
     })
   }
 
-  async change(key, count, renderTokens = null) {
-    return this.api.post('/api/v1/cart/change', {
-      key, count, render: renderTokens
-    })
+  async change(productKey, count, render = null) {
+    const data = { product_key: productKey, count }
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/change', data)
   }
 
-  async remove(key, renderTokens = null) {
-    return this.api.post('/api/v1/cart/remove', {
-      key, render: renderTokens
-    })
+  async remove(productKey, render = null) {
+    const data = { product_key: productKey }
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/remove', data)
   }
 
-  async clean(renderTokens = null) {
-    return this.api.post('/api/v1/cart/clean', {
-      render: renderTokens
-    })
+  async clean(render = null) {
+    const data = {}
+    if (render) data.render = JSON.stringify(render)
+    return this.api.post('/api/v1/cart/clean', data)
   }
 }
 
@@ -459,7 +442,7 @@ await ms3.cartAPI.remove('abc123')
 
 ### OrderAPI
 
-API для работы с заказом:
+Методы заказа:
 
 ```javascript
 class OrderAPI {
@@ -492,7 +475,7 @@ class OrderAPI {
 
 ### CustomerAPI
 
-API для работы с данными покупателя:
+Методы покупателя:
 
 ```javascript
 class CustomerAPI {
@@ -536,8 +519,8 @@ class CustomerAPI {
   }
 
   // Авторизация
-  async login(data) {
-    return this.api.post('/api/v1/customer/login', data)
+  async login(email, password) {
+    return this.api.post('/api/v1/customer/login', { email, password })
   }
 
   // Регистрация
@@ -745,19 +728,19 @@ class CustomerUI {
 
   // Обновление профиля
   async handleProfileUpdate(formData) {
-    const hookData = { formData }
-    await this.hooks.runHooks('beforeUpdateProfile', hookData)
-    if (hookData.cancel) return
-
     const data = {}
     for (const [key, value] of formData.entries()) {
       if (key === 'ms3_action') continue
       data[key] = value
     }
 
+    const hookData = { data }
+    await this.hooks.runHooks('beforeUpdateProfile', hookData)
+    if (hookData.cancel) return
+
     const response = await this.customer.updateProfile(data)
 
-    await this.hooks.runHooks('afterUpdateProfile', { response })
+    await this.hooks.runHooks('afterUpdateProfile', { data, response })
 
     if (response.success) {
       this.message.success(response.message)
@@ -844,48 +827,52 @@ class AuthUI {
   }
 
   // Авторизация
-  async handleLogin(formData) {
-    const hookData = { formData }
+  async handleLogin(form) {
+    const data = this.serializeForm(form)
+    const hookData = { email: data.email }
     await this.hooks.runHooks('beforeLogin', hookData)
     if (hookData.cancel) return
 
-    const response = await this.customer.login({
-      email: formData.get('email'),
-      password: formData.get('password')
-    })
+    const response = await this.customer.login(data.email, data.password)
 
-    await this.hooks.runHooks('afterLogin', { response })
+    await this.hooks.runHooks('afterLogin', { email: data.email, response })
 
     if (response.success) {
       this.message.success(response.message)
-      // Редирект на страницу профиля или текущую
-      window.location.href = response.data?.redirect_url || window.location.href
+      if (response.data?.redirect_url) {
+        window.location.href = response.data.redirect_url
+      } else {
+        window.location.reload()
+      }
     } else {
       this.showFormErrors('login', response)
     }
   }
 
-  // Регистрация
-  async handleRegister(formData) {
-    const hookData = { formData }
+  async handleRegister(form) {
+    const data = this.serializeForm(form)
+    const hookData = { email: data.email }
     await this.hooks.runHooks('beforeRegister', hookData)
     if (hookData.cancel) return
 
     const response = await this.customer.register({
-      email: formData.get('email'),
-      password: formData.get('password'),
-      password_confirm: formData.get('password_confirm'),
-      first_name: formData.get('first_name'),
-      last_name: formData.get('last_name'),
-      phone: formData.get('phone'),
-      privacy_accepted: formData.get('privacy_accepted') ? true : false
+      email: data.email,
+      password: data.password,
+      first_name: data.first_name || '',
+      last_name: data.last_name || '',
+      phone: data.phone || '',
+      privacy_accepted: data.privacy_accepted ? '1' : '0'
     })
 
-    await this.hooks.runHooks('afterRegister', { response })
+    await this.hooks.runHooks('afterRegister', { email: data.email, response })
 
     if (response.success) {
       this.message.success(response.message)
-      window.location.href = response.data?.redirect_url || window.location.href
+      if (response.data?.redirect_url) {
+        window.location.href = response.data.redirect_url
+      } else {
+        window.location.reload()
+      }
     } else {
       this.showFormErrors('register', response)
     }
@@ -976,26 +963,26 @@ window.ms3Lexicon.ms3_confirm_cancel = 'Нет'
 // window.ms3Hooks
 
 const ms3Hooks = {
-  hooks: {},
+  items: {},
 
-  addHook(name, callback, priority = 10) {
-    if (!this.hooks[name]) {
-      this.hooks[name] = []
-    }
-    this.hooks[name].push({ callback, priority })
-    this.hooks[name].sort((a, b) => a.priority - b.priority)
+  addHook(name, fn) {
+    if (!this.items[name]) this.items[name] = []
+    this.items[name].push(fn)
   },
 
-  async runHooks(name, data = {}) {
-    if (!this.hooks[name]) return data
+  async runHooks(name, context) {
+    if (!this.items[name]) return
 
-    for (const hook of this.hooks[name]) {
-      await hook.callback(data)
-      if (data.cancel) break
+    for (const fn of this.items[name]) {
+      if (context.cancel) return false
+
+      try {
+        await fn(context)
+      } catch (error) {
+        console.error(`Error executing hook "${name}":`, error)
+      }
     }
-
-    return data
-  }
+  },
 }
 
 ```
@@ -1144,7 +1131,7 @@ const ms3Message = {
 
 ```
 
-### Кастомизация уведомлений
+### Свои уведомления
 
 **Замена на свою библиотеку:**
 
@@ -1195,24 +1182,26 @@ document.addEventListener('ms3:cart:updated', (e) => {
 
 ### Автоматическая обработка форм
 
-MiniShop3 автоматически обрабатывает формы с классом `.ms3_form` (или `[data-ms3-form]`). Роутинг определяется по полю `ms3_action`:
+MiniShop3 сам обрабатывает формы с классом `.ms3_form` или `[data-ms3-form]`. Маршрут берётся из поля `ms3_action`:
 
 ```html
 <!-- Добавление в корзину -->
-<form class="ms3_form" data-ms3-entity="cart" data-ms3-method="add">
+<form class="ms3_form">
+  <input type="hidden" name="ms3_action" value="cart/add">
   <input type="hidden" name="id" value="123">
   <input type="number" name="count" value="1">
   <button type="submit">В корзину</button>
 </form>
 
 <!-- Оформление заказа -->
-<form class="ms3_form" data-ms3-entity="order" data-ms3-method="submit">
+<form class="ms3_form">
+  <input type="hidden" name="ms3_action" value="order/submit">
   <button type="submit">Оформить заказ</button>
 </form>
 
 ```
 
-## Расширение и кастомизация
+## Расширение
 
 ### Замена API модуля
 
@@ -1304,7 +1293,7 @@ window.ms3Lexicon = {
 
 ### order-addresses.js
 
-Выбор сохранённого адреса при оформлении заказа. Модуль **не** входит в JSON `ms3_frontend_assets`: его подключает сниппет `msOrder` через `regClientStartupScript`.
+Выбор сохранённого адреса при оформлении заказа. Модуль **не** входит в JSON `ms3_frontend_assets`. Его подключает сниппет `msOrder` через `regClientStartupScript`.
 
 ```html
 <select id="saved_address_id">
@@ -1320,19 +1309,15 @@ window.ms3Lexicon = {
 
 ### Встроенный хук afterSendRequest
 
-В `hooks.js` зарегистрирован `afterSendRequest`: после любого API-запроса через ~100 ms вызывается `cartUI.init()` для перевешивания обработчиков на обновлённый DOM. Учитывайте это при кастомных partial-обновлениях корзины.
+В `hooks.js` зарегистрирован `afterSendRequest`: после любого API-запроса через ~100 ms вызывается `cartUI.init()`, чтобы повесить обработчики на новый DOM. Учитывайте это при своих частичных обновлениях корзины.
 
 ### change-option
 
-Смена опций позиции: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Хуки: `beforeChangeOptionCart` / `afterChangeOptionCart` (если подключены в вашей сборке).
+Смена опций позиции: `CartAPI.changeOption()` → `POST /api/v1/cart/change-option`. Хуки `beforeChangeOptionCart` и `afterChangeOptionCart` вызывает штатный `CartUI.js`.
 
 ## Совместимость
 
-### Требования
-
-- Современные браузеры (ES6+)
-- Без jQuery зависимости
-- Поддержка `fetch`, `Promise`, `async/await`
+Нужны современные браузеры (ES6+), `fetch`, `Promise`, `async/await`. jQuery не требуется.
 
 ## Связанные страницы
 

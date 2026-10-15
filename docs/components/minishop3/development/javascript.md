@@ -4,11 +4,11 @@ description: Headless JavaScript API для программной работы 
 ---
 # JavaScript API
 
-Headless API для программного взаимодействия с MiniShop3 без привязки к DOM.
+Headless API для работы с корзиной, заказом и покупателем без привязки к DOM.
 
 ## Архитектура
 
-MiniShop3 использует двухуровневую архитектуру:
+Два слоя: UI для серверной разметки и headless-ядро.
 
 ```mermaid
 flowchart TB
@@ -35,33 +35,21 @@ flowchart TB
 
 ### API Core (Headless)
 
-Независимое ядро без привязки к DOM:
-
-- **ApiClient.js** — HTTP-клиент для запросов к серверу
-- **TokenManager.js** — управление токенами авторизации
-- **CartAPI.js** — методы работы с корзиной
-- **OrderAPI.js** — методы работы с заказом
-- **CustomerAPI.js** — методы работы с покупателем
-- **hooks.js** — система хуков для расширения
+Ядро без DOM: `ApiClient.js`, `TokenManager.js`, `CartAPI.js`, `OrderAPI.js`, `CustomerAPI.js`, `hooks.js`.
 
 ### UI Layer (SSR)
 
-DOM-привязки для работы с серверной разметкой:
-
-- **CartUI.js** — обработчики форм корзины, рендеринг
-- **OrderUI.js** — обработчики форм заказа
-- **CustomerUI.js** — обработчики форм покупателя
-- **ProductCardUI.js** — переключение состояний карточек товаров
+Привязки к серверной разметке: `CartUI.js` (формы корзины и отрисовка), `OrderUI.js`, `CustomerUI.js`, `ProductCardUI.js`.
 
 ## Подключение
 
 ### Полное (по умолчанию)
 
-Плагин MiniShop3 автоматически подключает все скрипты. Управление через системную настройку `ms3_frontend_assets`.
+Плагин MiniShop3 сам подключает все скрипты. Список файлов задаёт настройка `ms3_frontend_assets`.
 
 ### Минимальное (только Headless)
 
-Для SPA-приложений (Vue, React, Svelte) подключите только ядро:
+Для SPA (Vue, React, Svelte) подключите только ядро:
 
 ```html
 <script src="/assets/components/minishop3/js/web/modules/hooks.js"></script>
@@ -100,7 +88,7 @@ const response = await cart.add(123, 2, { color: 'red' })
 
 ## Глобальные объекты
 
-При стандартном подключении доступны:
+При стандартном подключении:
 
 | Объект | Описание |
 | --- | --- |
@@ -110,9 +98,9 @@ const response = await cart.add(123, 2, { color: 'red' })
 | `window.ms3Config` | Конфигурация с сервера |
 
 ::: warning `ms3Config` можно отключить настройкой
-При `ms3_register_global_config = false` объект на страницу не выводится. Но регистрация сниппетов корзины печатается всегда и обращается к нему без проверки, поэтому в консоли появится `ReferenceError: ms3Config is not defined`, а перерисовка корзины и виджета итогов перестанет работать.
+При `ms3_register_global_config = false` объект на страницу не выводится. Регистрация сниппетов корзины печатается всегда и обращается к нему без проверки. В консоли появится `ReferenceError: ms3Config is not defined`. Перерисовка корзины и виджета итогов перестанет работать.
 
-По умолчанию настройка включена. Выключать её стоит, только если конфиг выводится своим кодом.
+По умолчанию настройка включена. Выключайте её, только если конфиг выводится своим кодом.
 :::
 
 ```javascript
@@ -124,7 +112,7 @@ await ms3.customerAPI.updateProfile({ email: 'new@example.com' })
 
 ## CartAPI
 
-API для работы с корзиной.
+Методы корзины.
 
 ### Методы
 
@@ -194,7 +182,7 @@ await ms3.cartAPI.add(123, 1, { color: 'red', size: 'L' })
 ```
 
 :::tip SSR (Server-Side Rendering)
-Параметр `render` позволяет получить готовый HTML с сервера. Токены должны быть зарегистрированы на сервере через `TokenService`. Если токены настроены, HTML возвращается в `response.data.render`. Это продвинутая функция для оптимизации — в большинстве случаев не требуется.
+Параметр `render` возвращает готовый HTML с сервера. Токены должны быть зарегистрированы через `TokenService`. Если токены настроены, HTML приходит в `response.data.render`. Для большинства витрин это не нужно.
 :::
 
 **Формат ответа:**
@@ -228,7 +216,7 @@ await ms3.cartAPI.change('ms5d41d8cd98f00b204e9800998ecf8427e', 5)
 ```
 
 :::tip product_key
-Каждый товар в корзине имеет уникальный `product_key`. Один товар с разными опциями — разные ключи.
+У каждой позиции в корзине свой `product_key`. Один товар с разными опциями даёт разные ключи.
 :::
 
 #### remove(productKey, render)
@@ -248,18 +236,18 @@ await ms3.cartAPI.clean()
 ```
 
 ::: warning Только API-вызов
-`cartAPI.clean()` — это headless метод, он только отправляет запрос к серверу. Мини-корзина, счётчики и карточки товаров **не обновятся** автоматически. Для полного обновления UI используйте `ms3.cartUI.handleClean()` — он вызовет API, отрендерит HTML и выбросит событие `ms3:cart:updated`. Подробнее — в разделе [Frontend JavaScript](frontend-js#cartui).
+`cartAPI.clean()` только отправляет запрос к серверу. Мини-корзина, счётчики и карточки товаров **не обновятся** сами. Для полного обновления UI вызывайте `ms3.cartUI.handleClean()`: он вызовет API, отрисует HTML и отправит событие `ms3:cart:updated`. Подробнее: [Frontend JavaScript](frontend-js#cartui).
 :::
 
 ## OrderAPI
 
-API для работы с заказом.
+Методы заказа.
 
 ### Методы
 
 #### get()
 
-Получить текущий заказ (данные из сессии).
+Текущий заказ (данные из сессии).
 
 ```javascript
 const response = await ms3.orderAPI.get()
@@ -292,7 +280,7 @@ await ms3.orderAPI.add('order_comment', 'Позвонить перед дост�
 ```
 
 :::info Автосохранение
-Каждый вызов `add()` сохраняет значение на сервере. Данные не теряются при перезагрузке страницы.
+Каждый вызов `add()` сохраняет значение на сервере. После перезагрузки страницы данные на месте.
 :::
 
 #### remove(key)
@@ -319,21 +307,24 @@ await ms3.orderAPI.clean()
 const response = await ms3.orderAPI.submit()
 
 if (response.success) {
+  // Штатная оплата DefaultPayment кладёт payment_link (msorder = номер),
+  // order_id и order_num. Если в ответе оплаты нет data.redirect,
+  // submit дописывает redirect с msorder = uuid заказа.
   // response.data:
   {
+    payment_link: "https://shop.example/thanks?msorder=251015-1",
     order_id: 42,
-    redirect: "/shop/order-success?msorder=42"
+    order_num: "251015-1",
+    redirect: "/shop/order-success?msorder=8f3c-uuid"
   }
 
   window.location.href = response.data.redirect
 } else {
-  // response:
+  // Обязательные поля: data — массив имён, лексикон ms3_order_err_requires
   {
     success: false,
-    message: "Заполните обязательные поля",
-    data: {
-      errors: ["first_name", "email", "phone"]
-    }
+    message: "Не заполнены обязательные поля",
+    data: ["first_name", "email", "phone"]
   }
 }
 ```
@@ -365,10 +356,10 @@ const response = await ms3.orderAPI.getCost()
 
 ## CustomerAPI
 
-API для работы с данными авторизованного покупателя.
+Методы авторизованного покупателя.
 
 :::warning Требуется авторизация
-Большинство методов CustomerAPI требует авторизации. Исключения — вход, регистрация и сброс пароля: они и нужны тому, кто ещё не вошёл. Данные заказа гостя сохраняются через `OrderAPI.add()`.
+Большинство методов CustomerAPI требует авторизации. Исключения в этом классе: `login` и `register`. Сброса пароля на витрине в `CustomerAPI` нет: `AuthUI` показывает, что действие недоступно. Серверные маршруты при этом есть: `POST /api/v1/customer/forgot-password` и `POST /api/v1/customer/reset-password`. Данные заказа гостя сохраняются через `OrderAPI.add()`.
 :::
 
 ### Методы
@@ -420,9 +411,57 @@ await ms3.customerAPI.updateAddress(5, {
 await ms3.customerAPI.deleteAddress(5)
 ```
 
+#### add(key, value)
+
+Записать одно поле покупателя. `POST /api/v1/customer/add`.
+
+```javascript
+await ms3.customerAPI.add('phone', '+7 900 123-45-67')
+```
+
+#### changeAddress(key, value)
+
+Сменить адрес в форме заказа. Контекст хуков: `{ key, value }`, после ответа ещё `response`.
+
+```javascript
+await ms3.customerAPI.changeAddress('address_hash', 'addr_123')
+```
+
+#### login(email, password)
+
+`POST /api/v1/customer/login`. Два аргумента, не объект.
+
+```javascript
+await ms3.customerAPI.login('ivan@example.com', 'secret')
+```
+
+#### register(data)
+
+`POST /api/v1/customer/register`.
+
+#### setDefaultAddress(id)
+
+`PUT /api/v1/customer/addresses/{id}/set-default`.
+
+#### getOrders(params)
+
+`GET /api/v1/customer/orders`. Параметры запроса: `limit`, `offset`, `status`.
+
+#### getOrder(orderId)
+
+`GET /api/v1/customer/orders/{orderId}`.
+
+#### cancelOrder(orderId)
+
+`POST /api/v1/customer/orders/{orderId}/cancel`.
+
+#### resendVerificationEmail()
+
+`POST /api/v1/customer/email/resend-verification`.
+
 ## Система хуков
 
-Хуки позволяют расширять поведение без изменения исходного кода.
+Хуки расширяют поведение, не трогая исходный код.
 
 ### Регистрация хука
 
@@ -480,8 +519,8 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `afterDeleteAddress` | `{ addressId, response }` | После удаления адреса |
 | `beforeSetDefaultAddress` | `{ addressId }` | Перед выбором адреса по умолчанию |
 | `afterSetDefaultAddress` | `{ addressId, response }` | После выбора адреса по умолчанию |
-| `beforeChangeAddressCustomer` | `{ addressId }` | Перед сменой адреса в форме заказа |
-| `afterChangeAddressCustomer` | `{ addressId, response }` | После смены адреса в форме заказа |
+| `beforeChangeAddressCustomer` | `{ key, value }` | Перед сменой адреса в форме заказа |
+| `afterChangeAddressCustomer` | `{ key, value, response }` | После смены адреса в форме заказа |
 | `beforeCancelOrder` | `{ orderId }` | Перед отменой заказа покупателем |
 | `afterCancelOrder` | `{ orderId, response }` | После отмены заказа |
 | `beforeResendVerificationEmail` | `{ button }` | Перед повторной отправкой письма с подтверждением |
@@ -503,7 +542,7 @@ ms3Hooks.addHook('hookName', async (context) => {
 | `beforeFormSubmit` | `{ entity, method, formData }` | Перед отправкой любой формы MiniShop3 |
 | `afterFormSubmit` | `{ entity, method, formData }` | После отправки |
 
-Эта пара срабатывает на все формы — корзины, заказа и покупателя — и получает `formData` целиком. Если нужны введённые значения, подписывайтесь сюда: специализированные хуки вроде `beforeSubmitOrder` данных формы не получают.
+Эта пара срабатывает на все формы (корзина, заказ, покупатель) и получает `formData` целиком. Если нужны введённые значения, подписывайтесь сюда. Специализированные хуки вроде `beforeSubmitOrder` данных формы не получают.
 
 ### Примеры хуков
 
@@ -558,7 +597,7 @@ ms3Hooks.addHook('beforeCleanCart', async (ctx) => {
 | Событие | Описание | detail |
 | --- | --- | --- |
 | `ms3:ready` | ms3 инициализирован | — |
-| `ms3:cart:updated` | Корзина обновлена | `{ cart, items, status }`, при перерисовке добавляется `render`. Иногда приходит пустым — см. ниже |
+| `ms3:cart:updated` | Корзина обновлена | `{ cart, items, status }`, при перерисовке добавляется `render`. Иногда приходит пустым, см. ниже |
 
 ### Подписка
 
@@ -580,9 +619,9 @@ document.addEventListener('ms3:cart:updated', (e) => {
 ```
 
 ::: warning Событие приходит и без данных
-Очистка формы заказа шлёт его пустым — `detail` будет `null`. Форма очистки есть в поставляемом чанке `ms3_order.tpl`, так что путь живой: обработчик, читающий поля сразу, упадёт с `TypeError` ([#802](https://github.com/modx-pro/MiniShop3/issues/802)).
+Очистка формы заказа шлёт его пустым: `detail` будет `null`. Форма очистки есть в поставляемом чанке `ms3_order.tpl`, путь живой. Обработчик, который сразу читает поля, упадёт с `TypeError` ([#802](https://github.com/modx-pro/MiniShop3/issues/802)).
 
-Проверяйте `detail` перед обращением к полям — во всех примерах ниже это сделано.
+Проверяйте `detail` перед обращением к полям. Во всех примерах ниже это сделано.
 :::
 
 ## Использование в SPA
@@ -827,7 +866,7 @@ document.querySelector('.add-to-cart').addEventListener('click', () => {
 
 ## Формат ответов
 
-Все методы возвращают Promise с объектом:
+Все методы возвращают Promise:
 
 ```javascript
 {
@@ -855,14 +894,22 @@ document.querySelector('.add-to-cart').addEventListener('click', () => {
 
 ## Токены и авторизация
 
-MiniShop3 использует токены для идентификации сессии корзины.
+```mermaid
+flowchart LR
+  first[Первый запрос] --> get["token/get или корзина"]
+  get --> cookie["httpOnly cookie ms3_token"]
+  cookie --> next["Запросы с credentials same-origin"]
+  next --> rotate["Ротация на login и token/refresh"]
+```
+
+Токен идентифицирует сессию корзины.
 
 ### Как работает
 
-1. При первом запросе клиент получает токен (`GET /api/v1/customer/token/get`, либо он выдаётся сам при первом обращении к корзине)
-2. С 1.6 для браузера основной способ это httpOnly cookie `ms3_token`, не `localStorage`
-3. Клиент шлёт запросы с `credentials: 'same-origin'` — cookie уходит сама. Для обращений с другого домена есть `Authorization: Bearer`
-4. Ротация на login / `token/refresh`
+1. При первом запросе клиент получает токен (`GET /api/v1/customer/token/get`, либо он выдаётся сам при первом обращении к корзине).
+2. С 1.6 для браузера основной способ: httpOnly cookie `ms3_token`, не `localStorage`.
+3. Клиент шлёт запросы с `credentials: 'same-origin'`, cookie уходит сама. Для обращений с другого домена есть `Authorization: Bearer`.
+4. Ротация на login / `token/refresh`.
 
 Подробнее: [Авторизация Web API](/components/minishop3/development/web-api/auth), [Frontend JavaScript](/components/minishop3/development/frontend-js).
 
@@ -876,16 +923,16 @@ await ms3.tokenManager.ensureToken()
 await ms3.tokenManager.fetchNewToken()
 ```
 
-Оба метода обращаются к `/api/v1/customer/token/get`, а сервер ставит cookie в ответе.
+Оба метода обращаются к `/api/v1/customer/token/get`. Сервер ставит cookie в ответе.
 
 ::: warning Прочитать токен из браузера нельзя
-`getToken()` и `getTokenData()` всегда возвращают `null`, а `setToken()` ничего не делает. Это не ошибка: с версии 1.6 токен хранится в httpOnly cookie, и JavaScript к ней доступа не имеет — в этом и смысл такой куки.
+`getToken()` и `getTokenData()` всегда возвращают `null`, а `setToken()` ничего не делает. Это не ошибка: с версии 1.6 токен хранится в httpOnly cookie, и JavaScript к ней доступа не имеет. В этом смысл такой куки.
 
 `removeToken()` тоже не удаляет текущий токен: он лишь подчищает остатки в `localStorage` от прежних версий. Сбросить сессию корзины из браузера нельзя, это делает сервер.
 :::
 
 ## Связанные страницы
 
-- [Frontend JavaScript](frontend-js) — полная документация включая UI
-- [REST API](api) — описание серверных endpoints
+- [Frontend JavaScript](frontend-js) — UI-слой
+- [REST API](api) — серверные endpoints
 - [События](events) — PHP события компонента
