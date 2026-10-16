@@ -132,9 +132,9 @@ flowchart TB
   loop -->|список исчерпан| failed["null, invalid_credentials"]
   failed --> lock["Login: handleFailedLoginByEmail"]
   auth -->|msCustomer| access{активен и не заблокирован}
-  access -->|нет| denied["null, inactive или blocked:<br/>перебор прерван, счётчик не растёт"]
-  access -->|да| ok["Покупатель: last_login_at,<br/>счётчик попыток сброшен"]
-  ok --> session["establishCustomerSession: новый токен,<br/>сессия, cookie, перенос черновика"]
+  access -->|нет| denied["null, inactive или blocked: счётчик попыток не растёт"]
+  access -->|да| ok["Покупатель: last_login_at, счётчик попыток сброшен"]
+  ok --> session["establishCustomerSession: новый токен, сессия, cookie, черновик"]
 ```
 
 ```php
