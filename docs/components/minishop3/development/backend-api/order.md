@@ -115,6 +115,10 @@ $data = $draftManager->toArray($draft);
 
 // Обновить одно поле
 $draftManager->updateField($draft, 'order_comment', 'Позвоните перед доставкой');
+// С 1.14.2-beta1 ключ пишется только в одну таблицу: заказ приоритетнее
+// адреса. Для общих колонок (id, createdon, updatedon, properties) адрес
+// больше не обновляется — properties адреса ставьте напрямую:
+// $draft->Address->set('properties', [...]); $draft->Address->save();
 
 // Привязать клиента к черновику
 $draftManager->attachCustomer($draft, $customerId);
@@ -141,6 +145,12 @@ $draftManager->deleteDraft($draft);
 ## Поля и валидация (OrderFieldManager)
 
 Сервис управляет полями заказа и их валидацией, а при изменениях вызывает события.
+
+::: warning Служебные поля через `add()` не записать
+С 1.14.2-beta1 `add()` и `remove()` отклоняют служебные колонки черновика — те же, что закрыты для Web API (см. [оформление заказа](/components/minishop3/development/web-api/checkout#какие-поля-витрина-менять-не-вправе)). Запрет статический, он не зависит от того, пришёл вызов по HTTP или из дополнения, и срабатывает до события `msOnBeforeAddToOrder`: плагин, который раньше перехватывал запись в `status_id` или `customer_id`, до события не доедет.
+
+Служебные поля из PHP пишутся напрямую: `OrderDraftManager::updateField()`, `attachCustomer()`, `setDeliveryCost()` — они через фильтр не идут.
+:::
 
 ```php
 $fieldManager = $modx->services->get('ms3_order_field_manager');

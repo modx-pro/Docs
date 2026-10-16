@@ -52,6 +52,30 @@ Webhooks провайдеров (подпись handler’а, не customer toke
 
 В черновике типичны `delivery_id`, `payment_id`, `address_*` и контактные поля. Точный набор зависит от правил доставки.
 
+### Какие поля витрина менять не вправе
+
+С 1.14.2-beta1 служебные колонки черновика закрыты для записи с витрины. До этого `/order/add` принимал любой ключ с одноимённой колонкой: посетитель с токеном своей корзины мог подставить чужой `customer_id` или обнулить `cost`.
+
+| Объект | Закрытые колонки |
+| --- | --- |
+| Заказ | `id`, `user_id`, `customer_id`, `token`, `uuid`, `idempotency_key`, `createdon`, `updatedon`, `num`, `cost`, `cart_cost`, `delivery_cost`, `weight`, `status_id`, `context`, `properties` |
+| Адрес | `id`, `order_id`, `createdon`, `updatedon`, `properties` |
+
+Писать можно поля формы (`delivery_id`, `payment_id`, `order_comment`), остальные колонки адреса и свои колонки, добавленные через дополнительные поля. Ключи, которых нет ни у заказа, ни у адреса, по-прежнему уходят в `properties['_validated']`.
+
+Реакция на закрытый ключ:
+
+| Запрос | Ответ |
+| --- | --- |
+| `POST /order/add` | `400`, `error_code: business_rule`, лексикон `ms3_err_field_protected` |
+| `POST /order/set` | `422`, `error_code: validation_failed`, ключ попадает в `errors` |
+| `POST /order/remove` | `404`, лексикон `ms3_err_field_nf` |
+| `POST /order/submit` | ключ в `data` отбрасывается молча, оформление продолжается |
+
+::: tip Запись служебного поля из дополнения
+Перечень закрытых колонок задан константами `OrderFieldManager`. Чтобы изменить его, подмените DI-ключ `ms3_order_field_manager` своим подклассом в [`core/config/ms3.services.d/*.php`](/components/minishop3/development/services) — этот каталог лежит вне компонента и переживает обновление. Из PHP служебные поля доступны и без подмены: `OrderDraftManager::updateField()`, `attachCustomer()`, `setDeliveryCost()`.
+:::
+
 ## Submit
 
 После успешного `submit` ответ может содержать redirect (страница «Спасибо» / оплата). Читайте `data` и заголовки/поля redirect в `Response` контроллера.

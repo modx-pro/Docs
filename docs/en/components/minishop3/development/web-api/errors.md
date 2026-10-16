@@ -45,6 +45,12 @@ The complete list from `ApiErrorCode` — twelve values: `validation_failed`, `u
 
 In TypeScript, type the response as a union: success | error with `error_code` and an optional `errors`.
 
+## A closed draft field
+
+Since 1.14.2-beta1 the internal columns of the order draft are closed for storefront writes. An attempt returns the `ms3_err_field_protected` lexicon entry: `POST /order/add` answers 400 with `business_rule`, `POST /order/set` answers 422 with `validation_failed` and the key in `errors`. `POST /order/remove` answers 404 `ms3_err_field_nf` on such a key, and `POST /order/submit` drops it silently.
+
+The list of closed columns and how to extend it: see [checkout](checkout#fields-the-storefront-may-not-change).
+
 ## Rate limit
 
 `RateLimitMiddleware`: settings `ms3_rate_limit_max_attempts`, `ms3_rate_limit_decay_seconds`. Exceeded → 429 / `rate_limited`.

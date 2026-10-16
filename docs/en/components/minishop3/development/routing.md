@@ -265,7 +265,13 @@ $router->post('/api/mgr/products', function($params) use ($modx) {
 - `msorder_list` — order and customer lists, customer addresses (GET)
 - `msorder_view` — view customer card
 - `msorder_save` — edit orders and customers, order line mutations
-- `msorder_remove` — delete orders, customers, bulk delete
+- `msorder_remove` — delete orders, customers, bulk delete
+
+::: tip Where a user gets these permissions
+They all live in the `miniShopManagerPolicy` access policy created by the install. The policy grants nothing until it is assigned to a user group: since 1.14.2-beta1 install and upgrade assign it to every group that already has access to the `mgr` context, as an additional record with `authority 9999` — the group's own permissions still win.
+
+A group created after the install does not get the policy: the resolver only runs while the package is being installed or upgraded. Details in the [quick start](/en/components/minishop3/quick-start#what-installation-creates).
+:::
 
 #### TokenMiddleware
 
