@@ -14,7 +14,7 @@ description: Программное создание и обновление т�
 
 ## Вызов процессоров
 
-Процессоры MiniShop3: классы в namespace `MiniShop3\Processors\`. Вызывайте **полным именем класса**. То же имя connector и vueManager передают в параметре `action`. Короткое имя вроде `Gallery\Upload` процессор не находит.
+Процессоры MiniShop3: классы в namespace `MiniShop3\Processors\`. Вызывайте **полным именем класса**. То же имя передают в параметре `action` connector и запросы Vue-админки. Короткое имя вроде `Gallery\Upload` не работает.
 
 ```php
 // Правильно — полное имя класса
@@ -29,7 +29,7 @@ $response = $modx->runProcessor('Gallery\\Upload', [...], [
 ]);
 ```
 
-В исходниках MiniShop3 рядом с полным именем иногда идёт и `processors_path`, например в `RunsMs3Processors`. Это дополнение к полному имени, а не замена: короткое имя не заработает даже с указанным путём.
+Рядом с полным именем иногда передают и `processors_path` — так делает `RunsMs3Processors`. Это дополнение к полному имени, а не замена: короткое имя не заработает даже с указанным путём.
 
 В таблицах ниже имена сокращены до части после `MiniShop3\Processors\`: `Product\Create` означает `MiniShop3\Processors\Product\Create`.
 
@@ -178,7 +178,7 @@ $updated = $service->updateProductData($productId, [
 | `weight` | decimal(13,3) | float | 0.0 | Вес |
 | `image` | varchar(255) | string | null | Путь к главному изображению |
 | `thumb` | varchar(255) | string | null | Путь к миниатюре |
-| `preview_file_id` | int unsigned | integer | null | ID файла превью. Его пишет `Gallery\SetPreview` |
+| `preview_file_id` | int unsigned | integer | null | ID файла превью, см. врезку ниже |
 | `vendor_id` | int unsigned | integer | 0 | ID производителя |
 | `made_in` | varchar(100) | string | '' | Страна производства |
 | `new` | tinyint(1) | boolean | false | Флаг «Новинка» |
@@ -191,6 +191,14 @@ $updated = $service->updateProductData($productId, [
 
 ::: info JSON-поля и опции
 Поля `tags`, `color`, `size` хранятся в `msProductData` как JSON, но при сохранении дублируются в таблицу опций `ms3_product_options`. По этим полям можно фильтровать через EAV-систему опций.
+:::
+
+::: warning `preview_file_id` напрямую не записывается
+Поле исключено из разрешённых к записи: процессоры сохранения товара убирают его из входных данных (`getAllowedProductDataFieldNames()`), поэтому `PUT /api/mgr/product-data/{id}` и сохранение карточки его не меняют.
+
+Записать значение можно только через `Gallery\SetPreview` — процессор отдаёт работу `ProductImageService::setProductPreview()`, а тот сначала проверяет, что файл действительно принадлежит галерее этого товара.
+
+Сбрасывает поле `ProductImageService::updateProductImage()` — в двух случаях: назначенный файл пропал из галереи или галерея опустела. Тогда `preview_file_id` становится `null`, а главным изображением снова становится первое по позиции.
 :::
 
 ### Модификация цены и веса через события
@@ -311,14 +319,13 @@ $imageService->removeProductCatalog($productData);
 
 Основная категория: поле `parent` в `msProduct`. Дополнительные лежат в таблице `ms3_product_categories` (модель `msCategoryMember`).
 
-Дерево категорий товара в админке: `GET /api/mgr/product-data/{id}/categories/tree` (`ProductDataController::getCategoriesTree()`).
-
-Карточка и связи, право группы `msproduct_save`:
+Карточка, дерево категорий и связи — вся группа `/api/mgr/product-data` закрыта сессией mgr и правом `msproduct_save`:
 
 | Метод | Путь | Описание |
 | --- | --- | --- |
 | `GET` | `/api/mgr/product-data/{id}` | Карточка данных товара |
 | `PUT` | `/api/mgr/product-data/{id}` | Обновление данных товара |
+| `GET` | `/api/mgr/product-data/{id}/categories/tree` | Дерево категорий товара (`getCategoriesTree()`) |
 | `GET` | `/api/mgr/product-data/{id}/links` | Связи товара |
 | `POST` | `/api/mgr/product-data/{id}/links` | Создать связь |
 | `DELETE` | `/api/mgr/product-data/{id}/links` | Удалить связи |
@@ -371,6 +378,11 @@ $productData->save();
 
 ## Связи товаров
 
+Связи объединяют товары: «Похожие», «С этим покупают». Две модели:
+
+- **msLink**: тип связи (id, type, name)
+- **msProductLink**: конкретная связь между товарами (link, master, slave)
+
 ```mermaid
 flowchart TB
   create[ProductLink Create] --> t{msLink.type}
@@ -379,13 +391,6 @@ flowchart TB
   t -->|one_to_one| c[две записи в обе стороны]
   t -->|many_to_many| d[две записи и пары группы]
 ```
-
-Записи собирает `ProductLinkService`. Вызов идёт через процессор `ProductLink\Create`.
-
-Связи объединяют товары: «Похожие», «С этим покупают». Две модели:
-
-- **msLink**: тип связи (id, type, name)
-- **msProductLink**: конкретная связь между товарами (link, master, slave)
 
 ### Типы связей (msLink)
 
@@ -416,17 +421,8 @@ foreach ($links as $link) {
 
 Тип вне этого списка даёт ошибку `ms3_err_no_link`. Связь товара с самим собой и ссылку на несуществующий тип сервис тоже отклоняет.
 
-Поэтому записывайте через процессор `MiniShop3\Processors\Product\ProductLink\Create` (удаление: `…\ProductLink\Remove`). Прямой `newObject` оставьте для чтения и для случаев, когда все нужные пары собираете сами.
+Поэтому записывайте через процессор `MiniShop3\Processors\Product\ProductLink\Create`: он отдаёт работу `ProductLinkService`, а сервис сам создаёт нужный набор записей (вызовы — в разделе [Через процессоры](#link-processors)). Прямой `newObject` оставьте для чтения и для случаев, когда все пары собираете сами.
 :::
-
-```php
-// Через процессор — сервис сам создаст нужный набор записей
-$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Create', [
-    'master' => $productId,
-    'slave' => $relatedId,
-    'link' => $linkTypeId,
-]);
-```
 
 Прямая работа с моделью:
 
@@ -460,9 +456,16 @@ if ($link) {
 }
 ```
 
-### Через процессоры
+### Через процессоры {#link-processors}
 
 ```php
+// Создание связи — сервис сам решит, сколько записей нужно по типу связи
+$response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Create', [
+    'link' => $linkTypeId,
+    'master' => $productId,
+    'slave' => $relatedId,
+]);
+
 // Удаление связи
 $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Remove', [
     'link' => $linkTypeId,
@@ -470,6 +473,8 @@ $response = $modx->runProcessor('MiniShop3\\Processors\\Product\\ProductLink\\Re
     'slave' => $relatedId,
 ]);
 ```
+
+Оба процессора требуют право `msproduct_save`.
 
 ::: info Составной первичный ключ
 `msProductLink` использует составной PK из `link` + `master` + `slave`. Для получения или удаления объекта передавайте все три поля.
@@ -541,7 +546,7 @@ echo $vendor->get('name');  // "Samsung"
 | `Settings\Vendor\Remove` | Удаление |
 | `Settings\Vendor\Multiple` | Массовые операции |
 
-## Процессоры товара
+## Процессоры товара {#processors}
 
 Все процессоры товара лежат в `core/components/minishop3/src/Processors/Product/`:
 
@@ -549,7 +554,7 @@ echo $vendor->get('name');  // "Samsung"
 | --- | --- | --- |
 | `Product\Create` | `msproduct_save` | Создание товара |
 | `Product\Update` | `msproduct_save` | Обновление товара |
-| `Product\UpdateFromGrid` | не задано | Обновление из таблицы (inline-редактирование) |
+| `Product\UpdateFromGrid` | `msproduct_save` | Обновление из таблицы (inline-редактирование). Право наследуется от `Product\Update` |
 | `Product\Delete` | `msproduct_delete` | Пометка на удаление |
 | `Product\Undelete` | `msproduct_delete` | Снятие пометки удаления |
 | `Product\Get` | не задано | Получение товара |
@@ -557,8 +562,8 @@ echo $vendor->get('name');  // "Samsung"
 | `Product\GetOptions` | не задано | Получение опций товара |
 | `Product\Publish` | `msproduct_publish` | Публикация |
 | `Product\Unpublish` | `msproduct_publish` | Снятие с публикации |
-| `Product\Show` | не задано | Показать в дереве |
-| `Product\Hide` | не задано | Скрыть из дерева |
+| `Product\Show` | `msproduct_save` | Показать в дереве. Право наследуется от `Product\Update` |
+| `Product\Hide` | `msproduct_save` | Скрыть из дерева. Право наследуется от `Product\Update` |
 | `Product\Sort` | `msproduct_save` | Сортировка |
 | `Product\Multiple` | `msproduct_save` | Массовые операции |
 | `Product\Category` | `msproduct_save` | Работа с категориями товара |

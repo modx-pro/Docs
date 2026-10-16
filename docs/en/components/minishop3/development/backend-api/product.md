@@ -195,6 +195,14 @@ $updated = $service->updateProductData($productId, [
 `tags`, `color`, `size` are stored in `msProductData` as JSON but on save are synced to options table `ms3_product_options`. This allows filtering by these fields via the EAV options system.
 :::
 
+::: warning `preview_file_id` cannot be written directly
+The field is excluded from the writable set: the product save processors strip it from the incoming data (`getAllowedProductDataFieldNames()`), so neither `PUT /api/mgr/product-data/{id}` nor saving the product card changes it.
+
+The only way to set it is `Gallery\SetPreview`, which hands the work to `ProductImageService::setProductPreview()` — and that first verifies the file really belongs to this product's gallery.
+
+`ProductImageService::updateProductImage()` clears the field in two cases: the chosen file disappeared from the gallery, and the gallery became empty. Then `preview_file_id` goes back to `null` and the first image by position becomes the main one again.
+:::
+
 ### Price and weight modification via events
 
 `getPrice()` and `getWeight()` fire events where a plugin can change the value:

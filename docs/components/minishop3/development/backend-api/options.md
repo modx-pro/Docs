@@ -23,6 +23,8 @@ msOption (color, "Цвет", comboMultiple)
 
 ## OptionService (фасад)
 
+`OptionService` читает и пишет значения, назначает опции категориям. Он объединяет три сервиса.
+
 ```mermaid
 flowchart LR
   opt[msOption] --> cat[msCategoryOption]
@@ -34,8 +36,6 @@ flowchart LR
   sync -->|saveProductOptions| val
   category -->|assignOptionToCategories| cat
 ```
-
-`OptionService` читает и пишет значения, назначает опции категориям. Объединяет три сервиса.
 
 ```php
 $optionService = $modx->services->get('ms3_option_service');
@@ -76,7 +76,7 @@ $options = $optionService->loadOptionsForProduct($productId, false);
 
 ### Пакетная загрузка
 
-Для каталога используйте пакетную загрузку. Она избавляет от N+1 запросов:
+Для каталога используйте пакетную загрузку — она избавляет от N+1 запросов:
 
 ```php
 $allOptions = $optionService->loadOptionsForProducts([1, 2, 3, 4, 5]);
@@ -156,7 +156,7 @@ $category = $optionService->getCategory(); // OptionCategoryService — кате
 
 | Поле | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `key` | varchar(191) | '' | Уникальный ключ (латиница, цифры, дефис, подчёркивание) |
+| `key` | varchar(191) | '' | Уникальный ключ. Допустимый набор символов шире, чем кажется — см. [Валидация ключа](#key-validation) |
 | `caption` | varchar(191) | '' | Отображаемое название |
 | `description` | text | null | Описание |
 | `measure_unit` | tinytext | null | Единица измерения |
@@ -164,11 +164,19 @@ $category = $optionService->getCategory(); // OptionCategoryService — кате
 | `type` | varchar(191) | '' | Тип опции (comboMultiple, textfield, numberfield и др.) |
 | `properties` | json | null | Дополнительные свойства |
 
-### Валидация ключа
+### Валидация ключа {#key-validation}
 
 Карта модели `msOption` задаёт regex ключа и список зарезервированных имён (`id`, `type`, `price`, `color`, `size` и другие поля товара и ресурса).
 
-`POST /api/mgr/options` и прямой `save()` эти правила не запускают. Контроллер обрезает ключ, меняет точку на `_` и проверяет уникальность. Правила карты срабатывают, только если код вызовет `$option->validate()`. Regex карты шире описания поля `key`: он допускает точку, слэш и байты `\x7f-\xff`.
+`POST /api/mgr/options` и прямой `save()` эти правила не запускают. Контроллер обрезает ключ, меняет точку на `_` и проверяет уникальность. Правила карты срабатывают, только если код вызовет `$option->validate()`.
+
+Regex карты — `/^(?!\W+)(?!\d)[a-zA-Z0-9\x2d-\x2f\x7f-\xff-_]+(?!\s)$/`. Из него следуют три правила, которых нет в описании поля:
+
+- ключ не начинается с цифры: `1c_code` правило карты не пропустит, `c1_code` пропустит;
+- ключ не начинается с не-словесного символа и не заканчивается пробелом;
+- набор символов шире, чем можно ожидать: помимо латиницы и цифр допустимы `-`, `.`, `/`, `_` и байты `\x7f-\xff`, то есть кириллица в ключе проходит.
+
+Из-за этого ключ `1c_code` через Manager API сохранится, а код, который пишет опцию через модель с `validate()`, тот же ключ отвергнет.
 
 Зарезервированный ключ вроде `color` через Manager API сохраняется и в шаблоне перекрывается колонкой товара ([#841](https://github.com/modx-pro/MiniShop3/issues/841)).
 
@@ -271,7 +279,7 @@ $link->remove();
 
 ## CategoryOptionService
 
-`CategoryOptionService` отдаёт опции категории. В админке на нём построен список опций категории.
+`CategoryOptionService` отдаёт опции категории — на нём построен их список в админке.
 
 ```php
 use MiniShop3\Model\msCategory;
@@ -415,7 +423,7 @@ $categoryService->removeFromCategories($optionId, [5, 12, 18]);
 
 ### Schema API — `msOptionType::getSchema()`
 
-С v1.10.0-beta1 каждый класс типа в `Controllers/Options/Types/` умеет `getField()` (строка для ExtJS) и `getSchema()`. В `option_fields` попадает только `ext_field` из `getField()`.
+С v1.10.0-beta1 каждый класс типа в `Controllers/Options/Types/` умеет `getField()` (строка для ExtJS) и `getSchema()`.
 
 ```php
 abstract class msOptionType
@@ -425,4 +433,8 @@ abstract class msOptionType
 }
 ```
 
-`OptionLoaderService::getFieldsForProduct()` не кладёт `getSchema()` в `option_fields`. Карточка товара читает `type`. Поле `ext_field` ядро по-прежнему заполняет строкой `getField()`.
+::: warning `getSchema()` сейчас никто не вызывает
+Метод объявлен в `msOptionType` и продублирован в модели `msOption`, но в поставке нет ни одного вызова. `OptionLoaderService::getFieldsForProduct()` не кладёт его в `option_fields`, а Vue-карточка товара его не запрашивает и строит поле по `type`. Поле `ext_field` ядро по-прежнему заполняет строкой из `getField()`.
+
+Переопределять `getSchema()` в своём типе опции бессмысленно — результат никуда не попадёт. Пока отрисовка по схеме не подключена, поведение поля задаётся через `getField()` и `type`.
+:::

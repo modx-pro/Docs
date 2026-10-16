@@ -16,6 +16,8 @@ description: Программное создание, оформление за�
 
 ## Контроллер Order (фасад)
 
+Контроллер `Order` (`$ms3->order`) — точка входа к сервисам заказа из PHP.
+
 ```mermaid
 flowchart LR
   draft[Черновик] --> init[initialize или initDraft]
@@ -25,14 +27,12 @@ flowchart LR
   status --> svc[OrderStatusService]
 ```
 
-`add`, `set` и `submit` отдают конверт `success` и `data`. `initialize` и `initDraft` возвращают `bool`.
-
-Контроллер `Order` (`$ms3->order`): точка входа к сервисам заказа из PHP.
-
 ::: warning Результат приходит в конверте
 Методы контроллера, которые возвращают `array`, отдают конверт `['success' => bool, 'message' => string, 'data' => array]`. Это тот же `Utils::success()` / `Utils::error()`, что и в Web API. Нужные значения лежат в `data`. У `get()` поля заказа вложены ещё на уровень: `data['order']`.
 
-Значение напрямую отдают только: `initialize()`, `initDraft()`, `remove()` и `hasPayment()` (`bool`); `getDraft()` (объект `msOrder` или `null`); `getUserId()` (`int`).
+Значение напрямую отдают только: `initialize()`, `initDraft()`, `remove()` и `hasPayment()` (`bool`); `getDraft()` (объект `msOrder` или `null`); `getUserId()` (`int`); `getNewOrderNum()` (`string`).
+
+Особый случай — `restrictDraft()`: он объявлен как `void`. Метод пересчитывает черновик (`OrderDraftManager::recalculate()`), и об успехе судят не по возвращаемому значению, а по состоянию заказа.
 :::
 
 ```php
@@ -101,7 +101,7 @@ $ms3->order->initDraft();
 | `getDraft()` | Объект черновика `msOrder` |
 | `hasPayment($deliveryId, $paymentId)` | Допустима ли пара «доставка и оплата» |
 | `getUserId()` | ID пользователя MODX для текущего заказа. Если его нет, регистрирует |
-| `getNewOrderNum()` | Следующий номер, не занимая его. Устарел: номер при оформлении выдаёт `OrderNumberGenerator::runWithNextNumber()` |
+| `getNewOrderNum()` | Устарел. Показывает следующий номер, не занимая его; при оформлении номер выдаёт `OrderNumberGenerator::runWithNextNumber()` |
 | `restrictDraft($draft)` | Пересчитать стоимость черновика через `OrderDraftManager::recalculate()` |
 
 ## Черновики (OrderDraftManager)
@@ -173,7 +173,7 @@ $draftManager->deleteDraft($draft);
 `OrderFieldManager` пишет поля черновика и вызывает события при изменении.
 
 ::: warning Служебные поля через `add()` не записать
-С 1.14.2-beta1 `add()` и `remove()` отклоняют служебные колонки черновика — те же, что закрыты для Web API (см. [оформление заказа](/components/minishop3/development/web-api/checkout#protected-fields)). Запрет статический, он не зависит от того, пришёл вызов по HTTP или из дополнения, и срабатывает до события `msOnBeforeAddToOrder`: плагин, который раньше перехватывал запись в `status_id` или `customer_id`, до события не доедет.
+С 1.14.2-beta1 `add()` и `remove()` отклоняют служебные колонки черновика — те же, что закрыты для Web API (см. [оформление заказа](/components/minishop3/development/web-api/checkout#protected-fields)). Запрет статический: он не зависит от того, пришёл вызов по HTTP или из дополнения. Срабатывает он до события `msOnBeforeAddToOrder`, поэтому плагин, который раньше перехватывал запись в `status_id` или `customer_id`, до события не доедет.
 
 Служебные поля из PHP пишутся напрямую: `OrderDraftManager::updateField()`, `attachCustomer()`, `setDeliveryCost()` — они через фильтр не идут.
 :::
@@ -308,6 +308,8 @@ curl -X POST 'https://example.com/api/mgr/orders/42/recalculate-cost' \
 
 ## Оформление заказа (OrderSubmitHandler)
 
+`OrderSubmitHandler` проводит полный цикл оформления — от валидации до вызова оплаты.
+
 ```mermaid
 flowchart TB
   a[msOnSubmitOrder] --> b[Корзина не пуста]
@@ -324,8 +326,6 @@ flowchart TB
   l --> m[redirect если его не было]
 ```
 
-`OrderSubmitHandler` проводит полный цикл оформления: валидация → создание покупателя → расчёт стоимости → генерация номера → смена статуса → вызов оплаты.
-
 ```php
 $submitHandler = $modx->services->get('ms3_order_submit_handler');
 
@@ -341,29 +341,43 @@ $result = $submitHandler->submit($draft, $orderData, $token);
 
 ### Порядок действий при оформлении
 
-1. Событие `msOnSubmitOrder`
-2. Проверка: корзина не пуста
-3. Валидация `delivery_id`, `payment_id` и обязательных полей доставки
-4. Поиск или создание покупателя (`msCustomer`)
-5. Опционально: создание пользователя MODX (настройка `ms3_order_register_user_on_submit`)
-6. Расчёт стоимости (корзина + доставка + оплата)
-7. Проверка остатка `inventory()->assertOrderAvailable()` до выдачи номера
-8. Номер и суммы пишет `OrderNumberGenerator::runWithNextNumber()`
-9. Адрес покупателя сохраняется, только если в `properties` есть `save_address` и у заказа есть `customer_id`
-10. События `msOnBeforeCreateOrder` / `msOnCreateOrder`
-11. Смена статуса на `ms3_status_new` (по умолчанию: 2)
-12. Вызов `$msPayment->send()`
-13. Если в ответе оплаты нет `data.redirect`, обработчик дописывает URL страницы «Спасибо» с uuid заказа
+1. Событие `msOnSubmitOrder`. Поля, которые плагин вернул в `data['data']`, дописываются через `OrderFieldManager::add()`, поэтому служебные колонки отбрасываются и здесь — см. [Какие поля фронтенд менять не вправе](/components/minishop3/development/web-api/checkout#protected-fields)
+2. Проверка: корзина не пуста (`ms3_order_err_empty`)
+3. Заданы `delivery_id` и `payment_id`
+4. Способ оплаты существует и активен (`ms3_order_err_payment_not_found`)
+5. Выбранная пара «доставка + оплата» допустима (`DeliveryService::getDeliveryPaymentPairError()`)
+6. Обязательные поля выбранной доставки заполнены. Поле считается заполненным, если пришло само значение, значение с префиксом `address_` или ключ уже лежит в `properties['_validated']`
+7. Поиск или создание покупателя (`msCustomer`) — необязательный шаг: без email и телефона покупатель не создаётся, а оформление продолжается с данными только в `msOrderAddress`
+8. Опционально: создание пользователя MODX (настройка `ms3_order_register_user_on_submit`). В отличие от шага 7, неудача здесь прерывает оформление ошибкой `ms3_err_user_nf`
+9. Расчёт стоимости (корзина + доставка + оплата)
+10. Проверка остатка `inventory()->assertOrderAvailable()` до выдачи номера
+11. Номер и суммы пишет `OrderNumberGenerator::runWithNextNumber()` — выдача номера и сохранение идут под блокировкой
+12. Адрес покупателя сохраняется в адресную книгу, только если в `properties` есть `save_address` и у заказа есть `customer_id`
+13. События `msOnBeforeCreateOrder` / `msOnCreateOrder`
+14. Смена статуса на `ms3_status_new` (по умолчанию: 2)
+15. Вызов `$msPayment->send()`
+16. Если в ответе оплаты нет `data.redirect`, обработчик дописывает URL страницы «Спасибо» с uuid заказа
+
+С шага 11 заказ держит номер. Что будет с номером при сбое:
+
+| Где сбой | Номер заказа |
+| --- | --- |
+| Шаги 13–14, включая повторную проверку остатка перед сменой статуса | Снимается через `revertAllocatedNumber()`, но только при включённом складском учёте |
+| Шаги 15–16 — вызов оплаты и редирект | Остаётся за заказом. Обработчик снимает лишь складской резерв (`abortInventoryHold()`) и отдаёт ошибку |
 
 ### Генерация номера заказа
 
+::: warning `getNewOrderNum()` устарел
+Метод помечен `@deprecated` и на каждый вызов пишет предупреждение в журнал MODX. Он только подсматривает следующий номер и **не занимает его**. Между подсмотром и сохранением тот же номер может уйти другому заказу. Выдавать номер нужно через `OrderNumberGenerator::runWithNextNumber()`, где выдача и сохранение идут под одной блокировкой.
+
+Метод оставлен для совместимости со старыми плагинами. Для показа «какой номер будет у следующего заказа» он годится, для записи — нет.
+:::
+
 ```php
 $num = $submitHandler->getNewOrderNum();
-// Следующий номер для просмотра. Метод устарел и номер не занимает.
-// При оформлении номер выдаёт OrderNumberGenerator::runWithNextNumber().
+// Формат номера задают две настройки:
 // ms3_order_format_num — формат даты (по умолчанию 'ym')
 // ms3_order_format_num_separator — разделитель (по умолчанию '/')
-
 ```
 
 ## Управление статусами (OrderStatusService)
@@ -411,7 +425,7 @@ $result = $statusService->change($orderId, $newStatusId, true);
 
 ## Позиции заказа (msOrderProduct)
 
-Модель `msOrderProduct` (таблица `ms3_order_products`) хранит позиции заказа.
+Позиции лежат в таблице `ms3_order_products`.
 
 ### Поля msOrderProduct
 
@@ -596,7 +610,7 @@ $result = $finalizeService->finalize($orderId, [
 ]);
 ```
 
-Финализация принимает ключи `skip_*` и работает с уже созданным черновиком. Платёжный сервис здесь не вызывается, в отличие от `submit` на фронтенде.
+Финализация работает с уже созданным черновиком. Платёжный сервис здесь не вызывается, в отличие от `submit` на фронтенде.
 
 Параметр `origin` (`OrderOrigin`): `manager` (по умолчанию), `storefront`, `integration`. При `manager` дополнительно вызываются `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder`. Ключ `from_manager` в событиях равен `true` только при `origin=manager`.
 
@@ -730,27 +744,49 @@ Composite-связи удаляются каскадно при удалении
 
 ## События
 
-| Событие | Когда вызывается |
+| Событие | Когда вызывается | Кто вызывает |
+| --- | --- | --- |
+| `msOnBeforeSaveOrder` / `msOnSaveOrder` | Сохранение заказа — любое, включая сохранение черновика | `msOrder` (модель) |
+| `msOnBeforeRemoveOrder` / `msOnRemoveOrder` | Удаление заказа | `msOrder` (модель) |
+| `msOnBeforeGetOrderCost` / `msOnGetOrderCost` | Сборка итога заказа | `OrderCostCalculator` |
+| `msOnBeforeGetCartCost` / `msOnGetCartCost` | Расчёт стоимости корзины | `OrderCostCalculator` |
+| `msOnBeforeGetDeliveryCost` / `msOnGetDeliveryCost` | Расчёт стоимости доставки | `OrderCostCalculator` |
+| `msOnBeforeGetPaymentCost` / `msOnGetPaymentCost` | Расчёт комиссии оплаты | `OrderCostCalculator` |
+| `msOnBeforeAddToOrder` / `msOnAddToOrder` | Добавление/изменение поля | `OrderFieldManager` |
+| `msOnBeforeRemoveFromOrder` / `msOnRemoveFromOrder` | Удаление поля | `OrderFieldManager` |
+| `msOnBeforeValidateOrderValue` / `msOnValidateOrderValue` | Валидация значения | `OrderFieldManager` |
+| `msOnErrorValidateOrderValue` | Ошибка валидации | `OrderFieldManager` |
+| `msOnSubmitOrder` | Начало оформления | `OrderSubmitHandler` |
+| `msOnBeforeCreateOrder` / `msOnCreateOrder` | Создание заказа — все три источника, см. примечание ниже | `OrderSubmitHandler`, `OrderFinalizeService` |
+| `msOnBeforeCreateOrderProduct` / `msOnCreateOrderProduct` | Добавление позиции в заказ | `ManagerOrderProductsService` (админка), `OrderDraftManager` (программное создание) |
+| `msOnBeforeUpdateOrderProduct` / `msOnUpdateOrderProduct` | Изменение позиции — только в админке | `ManagerOrderProductsService` |
+| `msOnBeforeRemoveOrderProduct` / `msOnRemoveOrderProduct` | Удаление позиции — только в админке | `ManagerOrderProductsService` |
+| `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Очистка заказа | `OrderDraftManager` |
+| `msOnBeforeChangeOrderStatus` / `msOnChangeOrderStatus` | Смена статуса | `OrderStatusService` |
+| `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Поиск/создание пользователя | `OrderUserResolver` |
+| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Финализация из админки (только `origin=manager`) | `OrderFinalizeService` |
+
+Покупатель работает с корзиной, а не с позициями заказа. Поэтому ни одно из шести событий позиции на фронтенде не возникает — даже при добавлении товара в корзину, хотя физически там создаётся `msOrderProduct` (`CartItemManager`). Изменения корзины ловят её собственные события: `msOnBeforeAddToCart`, `msOnBeforeChangeInCart`, `msOnBeforeRemoveFromCart` (см. [События корзины](../events/cart)).
+
+Вызов из `OrderDraftManager` — это `addProductFromSnapshot()`, и приходит он только из `ProgrammaticOrderService` (sessionless создание заказа для интеграций и cron). В параметрах такого вызова есть дополнительный ключ `origin`, которого нет у вызова из админки. Подробный разбор параметров — на странице [событий позиций](../events/order-product).
+
+### Параметры msOnBeforeCreateOrder и msOnCreateOrder {#create-order-event-params}
+
+Заказ создают два разных сервиса, и набор параметров у них не совпадает. Плагин, рассчитывающий на один источник, на другом получит `null` вместо ожидаемого объекта.
+
+| Источник | Параметры |
 | --- | --- |
-| `msOnBeforeSaveOrder` / `msOnSaveOrder` | Сохранение заказа |
-| `msOnBeforeRemoveOrder` / `msOnRemoveOrder` | Удаление заказа |
-| `msOnBeforeGetOrderCost` / `msOnGetOrderCost` | Сборка итога заказа |
-| `msOnBeforeGetCartCost` / `msOnGetCartCost` | Расчёт стоимости корзины |
-| `msOnBeforeGetDeliveryCost` / `msOnGetDeliveryCost` | Расчёт стоимости доставки |
-| `msOnBeforeGetPaymentCost` / `msOnGetPaymentCost` | Расчёт комиссии оплаты |
-| `msOnBeforeAddToOrder` / `msOnAddToOrder` | Добавление/изменение поля |
-| `msOnBeforeRemoveFromOrder` / `msOnRemoveFromOrder` | Удаление поля |
-| `msOnBeforeValidateOrderValue` / `msOnValidateOrderValue` | Валидация значения |
-| `msOnErrorValidateOrderValue` | Ошибка валидации |
-| `msOnSubmitOrder` | Начало оформления |
-| `msOnBeforeCreateOrder` / `msOnCreateOrder` | Создание заказа на витрине |
-| `msOnBeforeCreateOrderProduct` / `msOnCreateOrderProduct` | Добавление позиции |
-| `msOnBeforeUpdateOrderProduct` / `msOnUpdateOrderProduct` | Изменение позиции |
-| `msOnBeforeRemoveOrderProduct` / `msOnRemoveOrderProduct` | Удаление позиции |
-| `msOnBeforeEmptyOrder` / `msOnEmptyOrder` | Очистка заказа |
-| `msOnBeforeChangeOrderStatus` / `msOnChangeOrderStatus` | Смена статуса |
-| `msOnBeforeGetOrderUser` / `msOnGetOrderUser` | Поиск/создание пользователя |
-| `msOnBeforeMgrCreateOrder` / `msOnMgrCreateOrder` | Финализация из админки (только `origin=manager`) |
+| Оформление на фронтенде (`OrderSubmitHandler`) | `handler` — сам обработчик, `msOrder` — черновик, `customFields` — свои поля из `properties['_validated']` |
+| Финализация из админки и программное создание (`OrderFinalizeService`) | `service` — сам сервис, `msOrder` — заказ, `origin` — `manager` или `integration`, `from_manager` — `true` только при `origin=manager` |
+
+Разбирать оба случая удобно по наличию ключа:
+
+```php
+$order = $params['msOrder'] ?? null;
+$origin = $params['origin'] ?? 'storefront'; // ключа нет — значит оформление с фронтенда
+```
+
+Возврат ошибки из любого из двух событий отменяет создание: заказ остаётся черновиком, а в ответе приходит сообщение плагина. Номер к этому моменту уже выдан. При оформлении с фронтенда он снимается обратно (`revertAllocatedNumber()`), но только при включённом складском учёте — без учёта номер остаётся за черновиком. При финализации из админки номер не откатывается никогда.
 
 ## Manager REST API
 
