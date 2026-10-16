@@ -601,7 +601,7 @@ All product processors — directory `core/components/minishop3/src/Processors/P
 | `Product\Category` | Product categories |
 | `Product\UpdateSource` | Change product media source |
 
-Autocomplete (product search) is not a processor but a Manager API route: `GET /api/mgr/references/products`. See [References](../routing#references).
+Autocomplete (product search) is not a processor but a Manager API route: `GET /api/mgr/references/products`. It is listed with the product-data routes in the [API Router](../routing) route map.
 
 ### Calling from PHP
 
