@@ -18,7 +18,7 @@ The validation events use the response differently — not to abort the operatio
 Fired **before** adding or changing an order field.
 
 ::: warning No event arrives for internal fields
-Since 1.14.2-beta1 `OrderFieldManager` rejects the internal draft columns before the event is fired. A plugin that used to intercept writes to `customer_id`, `status_id`, `cost` or `properties` no longer runs. The same check covers all four field events: `msOnBeforeAddToOrder`, `msOnAddToOrder`, `msOnBeforeRemoveFromOrder`, `msOnRemoveFromOrder`. The list of closed columns is in [fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#fields-the-storefront-may).
+Since 1.14.2-beta1 `OrderFieldManager` rejects the internal draft columns before the event is fired. A plugin that used to intercept writes to `customer_id`, `status_id`, `cost` or `properties` no longer runs. The same check covers all four field events: `msOnBeforeAddToOrder`, `msOnAddToOrder`, `msOnBeforeRemoveFromOrder`, `msOnRemoveFromOrder`. The list of closed columns is in [fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#protected-fields).
 :::
 
 ### Parameters

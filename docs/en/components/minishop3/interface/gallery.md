@@ -184,7 +184,6 @@ For small shops with limited disk space.
 
 Balance of quality and performance with support for all browsers.
 
-
 ```json
 {
   "thumb_webp": {

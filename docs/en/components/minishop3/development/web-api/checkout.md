@@ -52,7 +52,7 @@ All `/order/*` routes use token auto-mint.
 
 Typical draft fields: `delivery_id`, `payment_id`, `address_*`, and contact fields. The exact set depends on delivery rules.
 
-### Fields the storefront may not change
+### Fields the storefront may not change {#protected-fields}
 
 Since 1.14.2-beta1 the internal draft columns are closed for storefront writes. Before that `/order/add` accepted any key backed by a column of the same name: a visitor holding their own cart token could set someone else's `customer_id` or zero out `cost`.
 

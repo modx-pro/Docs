@@ -25,7 +25,6 @@ Sends messages via Telegram Bot API. Requires settings:
 - `ms3_telegram_bot_token` — bot token
 - `ms3_telegram_manager` — recipient Chat ID
 
-
 ::: warning Telegram limitation
 A Telegram bot cannot start a conversation. The customer must send the first message to the bot. So Telegram notifications only work for managers who have set their Chat ID in advance.
 :::
@@ -128,7 +127,6 @@ switch ($modx->event->name) {
 #### Step 5: Link button in customer account
 
 Add to the customer profile template:
-
 
 ```fenom
 {if $customer.telegram_chat_id}

@@ -146,7 +146,7 @@ $draftManager->deleteDraft($draft);
 The service manages order fields and their validation, and fires events on every change.
 
 ::: warning `add()` will not write internal fields
-Since 1.14.2-beta1 `add()` and `remove()` reject the internal draft columns — the same ones closed for the Web API (see [checkout](/en/components/minishop3/development/web-api/checkout#fields-the-storefront-may-not-change)). The rule is static: it does not care whether the call arrived over HTTP or from an add-on, and it runs before the `msOnBeforeAddToOrder` event, so a plugin that used to intercept writes to `status_id` or `customer_id` never sees them.
+Since 1.14.2-beta1 `add()` and `remove()` reject the internal draft columns — the same ones closed for the Web API (see [checkout](/en/components/minishop3/development/web-api/checkout#protected-fields)). The rule is static: it does not care whether the call arrived over HTTP or from an add-on, and it runs before the `msOnBeforeAddToOrder` event, so a plugin that used to intercept writes to `status_id` or `customer_id` never sees them.
 
 From PHP the internal fields are written directly: `OrderDraftManager::updateField()`, `attachCustomer()`, `setDeliveryCost()` skip the filter.
 :::

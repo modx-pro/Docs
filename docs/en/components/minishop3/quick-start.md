@@ -31,7 +31,7 @@ Install the package, create service pages, add a product, and place a test order
 
 Other install methods: [main page](index).
 
-### What installation creates
+### What installation creates {#install-creates}
 
 1. Tables via Phinx (catalog, orders, customers, `ms3_grid_fields`, etc.).
 2. Snippets, plugins, chunks.

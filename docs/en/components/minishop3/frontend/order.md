@@ -131,7 +131,7 @@ A field that neither the order nor the address has a column for (for example a c
 On the storefront the checkbox must send `input.checked` (`1` / `0`), not a static `value`. For consent use the `accepted` rule on the delivery.
 
 ::: tip A custom field named after an order column will not go through
-The internal columns are closed since 1.14.2-beta1: the server returns an error and the key is not stored in properties. The list is in [fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#fields-the-storefront-may).
+The internal columns are closed since 1.14.2-beta1: the server returns an error and the key is not stored in properties. The list is in [fields the storefront may not change](/en/components/minishop3/development/web-api/checkout#protected-fields).
 :::
 
 ## JavaScript API

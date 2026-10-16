@@ -124,6 +124,7 @@ flowchart TB
 ```fenom
 <td>{$address.comment | e}</td>
 ```
+
 :::
 
 Пример минимального чанка `tpl.msEmail.order.new`:

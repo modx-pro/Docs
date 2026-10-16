@@ -145,7 +145,6 @@ switch ($modx->event->name) {
 
 Добавьте в шаблон профиля покупателя:
 
-
 ```fenom
 {if $customer.telegram_chat_id}
     <div class="alert alert-success">
